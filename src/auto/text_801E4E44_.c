@@ -25,38 +25,41 @@ extern void fn_802D68C4(s32, s32, s32, s32);
 #pragma scheduling invalid_target
 void fn_801E4E44(void) {
     if ((s32)lbl_8055EAA8 > 2) {
-        s32 indexCount = lbl_8055EAAC;
-        if (indexCount > 2) {
-            fn_802D68C4((s32)&lbl_80487578, lbl_8055EAA8, (s32)&lbl_80487B18, indexCount);
+        {
+            register s32 indexCount asm("r6") = lbl_8055EAAC;
+            if (indexCount > 2) {
+                fn_802D68C4((s32)&lbl_80487578, lbl_8055EAA8, (s32)&lbl_80487B18, indexCount);
+            }
         }
         {
-            s32 count = lbl_8055EAA8;
-            s32 base = (s32)&lbl_80487578;
-            s32 index = count - 2;
-            s32 offset = index * 0x18;
-            s32 source = base + offset;
-            s32 first = *(volatile s32 *)(base + offset);
-            s32 secondWord = *(s32 *)(source + 4);
+            register s32 count asm("r4") = lbl_8055EAA8;
+            register s32 base asm("r6") = (s32)&lbl_80487578;
+            register s32 index asm("r3") = count - 2;
+            register s32 offset asm("r0") = index * 0x18;
+            register s32 source asm("r7") = base + offset;
+            register s32 first asm("r5") = *(volatile s32 *)(base + offset);
+            register s32 lastIndex asm("r0") = count - 1;
+            register s32 secondWord asm("r4") = *(s32 *)(source + 4);
+            register s32 lastOffset asm("r3") = lastIndex * 0x18;
+            register s32 last asm("r4") = base + lastOffset;
             lbl_8055EAA8 = 2;
             *(s32 *)(base + 4) = secondWord;
             *(s32 *)base = first;
             {
-                s32 lastIndex = count - 1;
-                s32 lastOffset = lastIndex * 0x18;
-                register s32 *last asm("r4") = (s32 *)(base + lastOffset);
-                s32 thirdWord = *(s32 *)(source + 8);
-                lbl_8055EAAC = 0;
+                register s32 zero asm("r0") = 0;
+                register s32 thirdWord asm("r3") = *(s32 *)(source + 8);
+                lbl_8055EAAC = zero;
                 *(s32 *)(base + 8) = thirdWord;
-                *(s32 *)(base + 0xC) = *(s32 *)(source + 0xC);
-                *(f32 *)(base + 0x10) = *(f32 *)(source + 0x10);
-                *(f32 *)(base + 0x14) = *(f32 *)(source + 0x14);
-                *(s32 *)(base + 0x18) = last[0];
-                *(s32 *)(base + 0x1C) = last[1];
-                *(s32 *)(base + 0x20) = last[2];
-                *(s32 *)(base + 0x24) = last[3];
-                *(f32 *)(base + 0x28) = *(f32 *)&last[4];
-                *(f32 *)(base + 0x2C) = *(f32 *)&last[5];
             }
+            *(s32 *)(base + 0xC) = *(s32 *)(source + 0xC);
+            *(f32 *)(base + 0x10) = *(f32 *)(source + 0x10);
+            *(f32 *)(base + 0x14) = *(f32 *)(source + 0x14);
+            *(s32 *)(base + 0x18) = *(s32 *)last;
+            *(s32 *)(base + 0x1C) = *(s32 *)(last + 4);
+            *(s32 *)(base + 0x20) = *(s32 *)(last + 8);
+            *(s32 *)(base + 0x24) = *(s32 *)(last + 0xC);
+            *(f32 *)(base + 0x28) = *(f32 *)(last + 0x10);
+            *(f32 *)(base + 0x2C) = *(f32 *)(last + 0x14);
         }
     }
 }
@@ -71,23 +74,24 @@ s32 fn_801E4F20(void) {
 
 #pragma scheduling invalid_target
 #pragma scheduling on
-s32 fn_801E4F3C(s32 arg0, s32 arg1, f32 x, f32 y, f32 z, f32 u, f32 v) {
+/* Appends a vertex to the active mesh buffer and emits a triangle index strip when requested, flushing if buffers fill. */
+s32 fn_801E4F3C(s32 color, s32 emitTriangle, f32 x, f32 y, f32 z, f32 u, f32 v) {
     Unk801E4E44Vertex* vertex;
-    s32 count;
+    s32 vertexCount;
     vertex = &lbl_80487578[lbl_8055EAA8++];
     vertex->x = x;
     vertex->y = y;
     vertex->z = z;
     vertex->unk_0x10 = u;
     vertex->unk_0x14 = v;
-    vertex->unk_0xC = arg0;
-    count = lbl_8055EAA8;
-    if (arg1 && count > 2) {
-        lbl_80487B18[lbl_8055EAAC++] = count - 3;
-        lbl_80487B18[lbl_8055EAAC++] = count - 2;
-        lbl_80487B18[lbl_8055EAAC++] = count - 1;
+    vertex->unk_0xC = color;
+    vertexCount = lbl_8055EAA8;
+    if (emitTriangle && vertexCount > 2) {
+        lbl_80487B18[lbl_8055EAAC++] = vertexCount - 3;
+        lbl_80487B18[lbl_8055EAAC++] = vertexCount - 2;
+        lbl_80487B18[lbl_8055EAAC++] = vertexCount - 1;
     }
-    if (count == 60 || lbl_8055EAAC == 174) fn_801E4E44();
+    if (vertexCount == 60 || lbl_8055EAAC == 174) fn_801E4E44();
     return 0;
 }
 /* End the current mesh pass: flush/compact the vertex and index buffers
