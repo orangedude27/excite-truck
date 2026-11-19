@@ -1475,9 +1475,13 @@ typedef struct ControllerWait {
 #define COUNTDOWN_SECONDS 2.0f /* the countdown every restart begins from */
 
 #pragma scheduling invalid_target
-void fn_80248BD0(void *arg0) {
-    *(float *)((char *)arg0 + 0x20) = 2.0f;
-    *(unsigned char *)((char *)arg0 + 0x1C) = fn_802E8690(*(s32 *)((char *)arg0 + 0x18));
+/* Restart the controller-wait countdown: put the timer back to its full two
+ * seconds and sample the watched controller's ready flag (rjoy state record
+ * +0x124, fn_802E8690) once.  The per-frame update fn_80248C0C holds the timer
+ * here while the controller stays ready and counts it down once it is not. */
+void fn_80248BD0(ControllerWait *wait) {
+    wait->timer = COUNTDOWN_SECONDS;
+    wait->ready = fn_802E8690(wait->controllerIndex);
 }
 #pragma scheduling on
 void fn_80248C0C(void *obj) {
