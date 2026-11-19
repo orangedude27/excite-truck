@@ -2382,7 +2382,6 @@ void fn_80188E2C(void *arg0, void *arg1) {
         *(int *)(dst + 0xFA4) = 0;
     }
 }
-#pragma pop
 
 extern double fabs(double);
 extern float lbl_80561E00, lbl_80561EFC, lbl_80561DC0, lbl_80561D40, lbl_80561F00, lbl_80561F04, lbl_80561F08;
