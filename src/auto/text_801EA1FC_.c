@@ -93,6 +93,7 @@ void fn_801EA31C(s32 *arg0) {
     lbl_8055EB59 = 1;
 }
 #pragma pop
+/* Prepare the EB context subordinate resource lists, or run the fallback cleanup. */
 void fn_801EA38C(void) {
     fn_801EBC2C();
 }
