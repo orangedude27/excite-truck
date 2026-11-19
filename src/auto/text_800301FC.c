@@ -1590,7 +1590,7 @@ s32 AXRmtGetSamplesLeft(void) {
     return result;
 }
 
-extern u8 lbl_8035EE60[];
+extern s16 lbl_8035EE60[][0xB4];
 extern void DCInvalidateRange(void *, u32);
 s32 AXRmtGetSamples(register s32 arg0, s16 *arg1, s32 arg2) {
     s32 count;
