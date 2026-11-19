@@ -1073,9 +1073,13 @@ extern "C" void fn_80219660(void *arg0) {
     x = ((Dispatch *)self)->At84();
     y = ((Dispatch *)self)->At88();
     register s32 z = ((Dispatch *)self)->At78();
-    s32 zero = 0;
-    f32 scale = lbl_805634A4;
-    ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, s32))fn_8022BAD0)(*(s32 *)((u8 *)self + 0x250), *(s32 *)((u8 *)self + 0x244) + b, *(s32 *)((u8 *)self + 0x248) + a, *(s32 *)((u8 *)self + 0x24C), z, diff, y, x, scale, zero);
+    f32 scale = 1.0f;
+    ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, u8))fn_8022BAD0)(
+        *(s32 *)((u8 *)self + 0x250),
+        *(s32 *)((u8 *)self + 0x244) + b,
+        *(s32 *)((u8 *)self + 0x248) + a,
+        *(s32 *)((u8 *)self + 0x24C),
+        z, diff, y, x, scale, 0);
 }
 #pragma scheduling on
 #pragma pop
