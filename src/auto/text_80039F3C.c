@@ -1154,7 +1154,7 @@ int fn_8003BB58(void *arg0) {
         next = 0;
         lbl_8055D8E8 = 0;
     }
-    callbackEntry = base + (slot << 5);
+    callbackEntry = (unsigned char *)lbl_8037B820 + slot * 0x20;
     result = IOS_IoctlAsync(lbl_80558E18, 0x7A,
         lbl_8055D8FC + lbl_8055D8E4 * 0x20, 0x20,
         &lbl_8037B8C0, 0x20,
@@ -1177,7 +1177,7 @@ unsigned int DVDLowUnmaskStatusInterrupts(void) { return 1; }
 /* DVD low-level: mask the cover interrupt. On Broadway this is a no-op stub that always reports success (TRUE). */
 unsigned int DVDLowMaskCoverInterrupt(void) { return 1; }
 
-#pragma scheduling reset
+#pragma scheduling invalid_target
 int fn_8003BCDC(void *arg0) {
     const char *msg = lbl_80302848;
     int index = lbl_8055D8E4 + 1;
