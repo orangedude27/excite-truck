@@ -1109,7 +1109,7 @@ int fn_8003BB48(void) {
     #undef sDriveStatusBuffer
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling reset
 int fn_8003BB58(void *arg0) {
     const char *msg = lbl_80302848;
     int index = lbl_8055D8E4 + 1;
