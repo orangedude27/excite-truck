@@ -775,12 +775,12 @@ extern "C" void fn_800E2F84(void *self)
       {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322124, 0x1F1, lbl_80322100);
       }
-      register void *node = *((void **) (base + 0x18));
+      void *node = *((void **) (base + 0x18));
       if (node == 0)
       {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
       }
-      register void *voice = ((char *) node) - 0x1A8;
+      void *voice = ((char *) node) - 0x1A8;
       if (voice == 0)
       {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220F4, 0x193, lbl_803220D0);
@@ -1266,10 +1266,12 @@ extern "C" void fn_800E4064(void *arg0, void *arg1) {
         unsigned char active;
     };
     struct Owner *owner = (Owner *)arg0;
-    void *sentinel;
-    unsigned int level;
-    void *node;
-    if (arg1 == arg1 && 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
+    struct { unsigned int irq; } irqHolder;
+    unsigned int &level = irqHolder.irq;
+    struct { void *head; } cursor;
+    void *&node = cursor.head;
+    struct { void *end; } sentinelHolder;
+    void *&sentinel = sentinelHolder.end;
     level = OSDisableInterrupts();
     node = owner->head;
     owner->active = 1;
@@ -1751,21 +1753,22 @@ extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
+    int zero = 0;
     int interruptState = OSDisableInterrupts();
-    if (*((unsigned char *)self + 0x11C) == 0) {
+    if (*((unsigned char *)self + 0x11C) == zero) {
         OSRestoreInterrupts(interruptState);
         return;
     }
     char *row = (char *)self;
     char *entry;
-    int rowIndex = 0;
+    int rowIndex = zero;
     while (rowIndex < *((int *)((char *)self + 0x104))) {
         entry = row;
-        int column = 0;
+        int column = zero;
         while (column < *((int *)((char *)self + 0x108))) {
-            if (*((int *)(entry + 0xC)) != 0) {
+            if (*((int *)(entry + 0xC)) != zero) {
                 TRKGetFreeBuffer(*((void **)(entry + 0xC)));
-                *((int *)(entry + 0xC)) = 0;
+                *((int *)(entry + 0xC)) = zero;
             }
             entry += 4;
             column++;
@@ -1773,12 +1776,12 @@ extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
         row += 0x10;
         rowIndex++;
     }
-    *((int *)((char *)self + 0x104)) = 0;
+    *((int *)((char *)self + 0x104)) = zero;
     UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
         GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(), self);
     FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(
         Instance__15EmissionManagerFv(), self);
-    *((unsigned char *)self + 0x11C) = 0;
+    *((unsigned char *)self + 0x11C) = zero;
     OSRestoreInterrupts(interruptState);
 }
 #pragma pop
@@ -2459,9 +2462,9 @@ extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
 
 #pragma use_lmw_stmw off
 extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
-    int size;
-    int level;
-    int position;
+    register int size;
+    register int level;
+    register int position;
     int format;
     unsigned int p;
     p = (unsigned int)self;
@@ -3177,9 +3180,10 @@ extern "C" int GetDspAddressBySample__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hb
     case 0: {
         unsigned long sample = arg1;
         unsigned long doubled = base << 1;
-        unsigned long q = __mulhwu(0x24924925U, (unsigned int)sample);
-        unsigned long block = q + ((sample - q) >> 1);
-        unsigned long rem = sample - ((block >> 3) * 14);
+        unsigned long rem, block, q;
+        q = __mulhwu(0x24924925U, (unsigned int)sample);
+        block = q + ((sample - q) >> 1);
+        rem = sample - ((block >> 3) * 14);
         result = (int)(rem + doubled) + (int)((block << 1) & 0xFFFFFFF0UL) + 2;
         break;
     }
@@ -3657,7 +3661,7 @@ extern "C" int ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3sn
     extern const char lbl_80322760[];
     extern const char lbl_80559830;
     extern float lbl_80560FA8;
-    const char *base = lbl_803224F0;
+    char *base = (char *)lbl_803224F0;
     char *ref;
     char *entry;
     unsigned int address;
