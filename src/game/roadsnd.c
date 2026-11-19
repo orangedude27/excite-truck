@@ -76,6 +76,13 @@ void fn_8020CA34(void) {
 
 }
 
+/* Road-sound module release hook, empty in this build.  The third of this TU's
+ * lifecycle stubs after the start-up hook fn_8020CA30 and the shutdown hook
+ * fn_8020CA34: fn_8000AA38 calls it while tearing the sound/UI state down
+ * (after releasing the sound block through fn_80129324 and resetting the
+ * mixer through fn_80206518).  Nothing to give back: each road-sound
+ * container is destroyed by fn_8020CC78 through its own vtable, so the
+ * module holds no global state to release. */
 void fn_8020CA38(void) {
 
 }
