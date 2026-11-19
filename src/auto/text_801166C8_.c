@@ -1716,17 +1716,28 @@ s32 fn_80118F78(void *bink, s32 paused) {
 #pragma opt_loop_invariants off
 /* Start (start != 0) or stop every StreamPlayer of a movie and report whether
  * any of them ended up playing.  Each player's setPlay callback (+0x18 of the
- * 0x17C-byte entry in the movie's player table at +0x2F0, fn_80119C0C) takes
- * the flag and returns the player's new `playing` state.  The movie keeps a "a
- * stream is playing" flag at +0x288: when a stream stops while that flag is up
- * its source ring is rewound to its start (+0x34 and the read cursor +0x38
- * back to +0x2C, free-byte counter +0x40 cleared) and drained by fn_80116F8C
- * -- skipped on the movie's first frame (+0xC == 1) when the last tick did not
- * end there (+0x2D4) -- and when one starts while the flag is down the movie's
- * timing is restarted (timeBase +0x268, +0x328 and savedElapsed +0x330).  The
- * pass runs under the shared Bink tick lock, taken on the first player that has
- * a callback and released at the end. */
+ * 0x17C-byte entry in the movie's player table, fn_80119C0C) takes the flag
+ * and returns the player's new `playing` state.  The movie keeps a "a stream
+ * is playing" flag: when a stream stops while that flag is up its source ring
+ * is rewound to its start (cursor +0x34 and read cursor +0x38 back to +0x2C,
+ * free-byte counter +0x40 cleared) and drained by fn_80116F8C -- skipped on
+ * the movie's first frame when the last tick did not end there -- and when one
+ * starts while the flag is down the movie's timing is restarted (timeBase,
+ * +0x328 and savedElapsed).  The pass runs under the shared Bink tick lock,
+ * taken on the first player that has a callback and released at the end. */
 s32 fn_801190B0(void *mgr, s32 start) {
+    /* The movie object's fields this touches (see Bink). */
+    #define MOVIE_FRAME        (*(u32 *)((u8 *)mgr + 0x0C))  /* frame being shown */
+    #define MOVIE_TIME_BASE    (*(s32 *)((u8 *)mgr + 0x268)) /* tick play started on */
+    #define MOVIE_STREAMS_ON   (*(s32 *)((u8 *)mgr + 0x288)) /* a stream is playing */
+    #define MOVIE_TICK_FRAME   (*(u32 *)((u8 *)mgr + 0x2D4)) /* frame at the last tick */
+    #define MOVIE_PLAYER_COUNT (*(u32 *)((u8 *)mgr + 0x2E8))
+    #define MOVIE_PLAYERS      (*(u8 **)((u8 *)mgr + 0x2F0)) /* 0x17C-byte StreamPlayers */
+    #define MOVIE_TIMING_328   (*(s32 *)((u8 *)mgr + 0x328))
+    #define MOVIE_SAVED_MS     (*(s32 *)((u8 *)mgr + 0x330)) /* elapsed before a pause */
+    #define PLAYER_AT(i)       (MOVIE_PLAYERS + (i))         /* player at byte i */
+    #define PLAYER_SETPLAY(i)  (*(s32 *)(PLAYER_AT(i) + 0x18)) /* fn_80119C0C */
+
     s32 entryOff;
     s32 anyPlaying;
     s32 locked;
@@ -1745,48 +1756,48 @@ s32 fn_801190B0(void *mgr, s32 start) {
         one = 1;
         goto loop_check;
     loop_body:
-        if (*(s32 *)(*(u8 **)((u8 *)mgr + 0x2F0) + entryOff + 0x18) != 0) {/* player->setPlay */
+        if (PLAYER_SETPLAY(entryOff) != 0) {
             if (locked == 0) {
                 locked = 1;
                 fn_8011C274(lbl_8055DED4,
                     (void *)((s32)mgr + 0x340));
             }
             playing = (*(s32 (**)(void *, s32))(
-                *(u8 **)((u8 *)mgr + 0x2F0) + entryOff + 0x18))(
-                    *(u8 **)((u8 *)mgr + 0x2F0) + entryOff,
+                PLAYER_AT(entryOff) + 0x18))(
+                    PLAYER_AT(entryOff),
                     start ? 1 : 0);
             if (playing) {
                 anyPlaying = 1;
             }
-            if (playing == 0 && *(s32 *)((u8 *)mgr + 0x288) != 0) {
+            if (playing == 0 && MOVIE_STREAMS_ON != 0) {
                 /* the stream went idle: rewind its source ring */
-                *(s32 *)(*(u8 **)((u8 *)mgr + 0x2F0) + entryOff + 0x34) =
-                    *(s32 *)(*(u8 **)((u8 *)mgr + 0x2F0) + entryOff + 0x2C);
-                *(s32 *)(*(u8 **)((u8 *)mgr + 0x2F0) + entryOff + 0x38) =
-                    *(s32 *)(*(u8 **)((u8 *)mgr + 0x2F0) + entryOff + 0x2C);
-                *(s32 *)(*(u8 **)((u8 *)mgr + 0x2F0) + entryOff + 0x40) =
+                *(s32 *)(PLAYER_AT(entryOff) + 0x34) =
+                    *(s32 *)(PLAYER_AT(entryOff) + 0x2C);
+                *(s32 *)(PLAYER_AT(entryOff) + 0x38) =
+                    *(s32 *)(PLAYER_AT(entryOff) + 0x2C);
+                *(s32 *)(PLAYER_AT(entryOff) + 0x40) =
                     zero;
-                frame = *(u32 *)((u8 *)mgr + 0xC);
+                frame = MOVIE_FRAME;
                 if (frame == 1 &&
-                    *(u32 *)((u8 *)mgr + 0x2D4) != frame) {
+                    MOVIE_TICK_FRAME != frame) {
                     /* first frame of a seeked movie: nothing to drain */
                 } else {
-                    fn_80116F8C(*(u8 **)((u8 *)mgr + 0x2F0) + entryOff);
+                    fn_80116F8C(PLAYER_AT(entryOff));
                 }
-                *(s32 *)((u8 *)mgr + 0x288) = zero;
+                MOVIE_STREAMS_ON = zero;
             } else if (playing != 0 &&
-                       *(s32 *)((u8 *)mgr + 0x288) == 0) {
+                       MOVIE_STREAMS_ON == 0) {
                 /* the first stream to start: restart the movie's timing */
-                *(s32 *)((u8 *)mgr + 0x288) = one;
-                *(s32 *)((u8 *)mgr + 0x268) = zero;
-                *(s32 *)((u8 *)mgr + 0x328) = zero;
-                *(s32 *)((u8 *)mgr + 0x330) = zero;
+                MOVIE_STREAMS_ON = one;
+                MOVIE_TIME_BASE = zero;
+                MOVIE_TIMING_328 = zero;
+                MOVIE_SAVED_MS = zero;
             }
         }
         entryOff += 0x17C;
         index++;
     loop_check:
-        if (index < *(u32 *)((u8 *)mgr + 0x2E8)) {
+        if (index < MOVIE_PLAYER_COUNT) {
             goto loop_body;
         }
         if (locked != 0) {
@@ -1794,6 +1805,16 @@ s32 fn_801190B0(void *mgr, s32 start) {
         }
     }
     return anyPlaying;
+    #undef MOVIE_FRAME
+    #undef MOVIE_TIME_BASE
+    #undef MOVIE_STREAMS_ON
+    #undef MOVIE_TICK_FRAME
+    #undef MOVIE_PLAYER_COUNT
+    #undef MOVIE_PLAYERS
+    #undef MOVIE_TIMING_328
+    #undef MOVIE_SAVED_MS
+    #undef PLAYER_AT
+    #undef PLAYER_SETPLAY
 }
 #pragma pop
 void fn_80119214(void) {
