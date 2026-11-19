@@ -3889,7 +3889,7 @@ extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
 extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
     extern s32 fn_800A4C14(u16 *, s32);
     u8 *dst = (u8 *)arg0;
-    u8 *src = (u8 *)arg1;
+    const u8 *src = (const u8 *)arg1;
     u32 raw = src[0];
     u32 count = raw & 0xFFFFFFBF;
     u32 tag = src[0xD];
@@ -3920,9 +3920,9 @@ extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
     dst[0x20B] = index;
     dst[0x20C] = tag;
     entry = dst + ((u8)index - 1) * 0x1A;
-    VFipf_memcpy(entry, src + 1, 0xA);
-    VFipf_memcpy(entry + 0xA, src + 0xE, 0xC);
-    VFipf_memcpy(entry + 0x16, src + 0x1C, 4);
+    VFipf_memcpy(entry, (void *)(src + 1), 0xA);
+    VFipf_memcpy(entry + 0xA, (void *)(src + 0xE), 0xC);
+    VFipf_memcpy(entry + 0x16, (void *)(src + 0x1C), 4);
     fn_800A4C14((u16 *)entry, 0xA);
     fn_800A4C14((u16 *)(entry + 0xA), 0xC);
     fn_800A4C14((u16 *)(entry + 0x16), 4);
@@ -10104,7 +10104,12 @@ extern "C" s32 VFiPFPATH_parseShortName(void *arg0, void *arg1) {
 loop_3:
         {
             u8 ch = *cursor;
-            if ((s8)ch == 0x20 || (s8)ch == 0x2E) {
+            if ((s8)ch == 0x20) {
+                truncated = 1;
+                cursor += 1;
+                goto loop_3;
+            }
+            if ((s8)ch == 0x2E) {
                 truncated = 1;
                 cursor += 1;
                 goto loop_3;
@@ -10113,18 +10118,14 @@ loop_3:
         u16 lastDot = 0;
         u16 prevDot = 0;
         u16 pos = 0;
-        u16 cur;
-loop_11:
-        cur = (u8)cursor[pos];
-        if ((s8)cur != 0) {
-            if ((s8)cur == 0x2E) {
+        while ((s8)cursor[pos] != 0) {
+            if ((s8)cursor[pos] == 0x2E) {
                 if (lastDot != 0) {
                     prevDot = lastDot;
                 }
                 lastDot = pos;
             }
             pos += 1;
-            goto loop_11;
         }
         if ((lastDot != 0) && ((s8)cursor[lastDot + 1] == 0)) {
             if (prevDot != 0) {
@@ -10164,22 +10165,29 @@ loop_64:
 loop_45:
                                 if (mult != 0) {
                                     u8* at = cursor + i2;
-                                    s32 scan = (at[0] << 8) + at[1];
                                     void *cbv2 = *(void **)(lbl_803D2140 + 0x48);
                                     ((s32 (*)(u8, u16 *, s32))cbv2)(at[0], &spC, 0);
-                                    if ((spC >= -0xBF) && (spC <= -0xA6)) {
+                                    s32 ok = 0;
+                                    if ((s16)spC >= -0xBF && (s16)spC <= -0xA6) {
                                         spC = (u16)(spC - 0x20);
+                                        ok = 1;
                                     }
-                                    if ((u16)spC != scan) {
-                                        truncated = 1;
+                                    if (ok) {
+                                        void *cbv3 = *(void **)(lbl_803D2140 + 0x4c);
+                                        if (((s32 (*)(u16 *, u16 *))cbv3)(&spC, &spC) != 0) {
+                                            u8* outPos = dest + written;
+                                            mult -= 2;
+                                            written += 2;
+                                            *(u8 *)outPos = (u8)(spC >> 8);
+                                            i2 += 2;
+                                            *(s8 *)(outPos + 1) = (s8)spC;
+                                            *countPtr += 2;
+                                            found = 1;
+                                        } else {
+                                            truncated = 1;
+                                        }
                                     } else {
-                                        u8* outPos = dest + written;
-                                        mult -= 2;
-                                        written += 2;
-                                        *(u8 *)outPos = (u8)(scan >> 8);
-                                        i2 += 2;
-                                        *(s8 *)(outPos + 1) = (s8)scan;
-                                        *countPtr += 2;
+                                        truncated = 1;
                                     }
                                     goto loop_45;
                                 }
@@ -10262,15 +10270,12 @@ loop_81:
                 }
             } else if (((u16)(goal + 2) > sp10) && (spE + 1 > goal)) {
                 s16 k = (s16)(spE + 1);
-                s16 k2 = k;
                 s16 gap = (s16)((goal + 2) - sp10);
-                s16 n2 = (s16)(k + 1);
-                s16 base = (s16)gap;
-                if (n2 > 8) {
-                    ;
-                }
-                for (;;) {
-                    break;
+                s16 need = (s16)(sp10 - (goal + 2));
+                s16 n = 0;
+                while (n < need) {
+                    dest[(u16)(n + goal + 2)] = dest[(u16)(n + sp10)];
+                    n += 1;
                 }
             }
             if (sp10 != 0) {
@@ -14620,6 +14625,8 @@ extern "C" u8 lbl_80559250;
 extern "C" u8 lbl_80559258;
 extern "C" u8 lbl_80559260;
 extern "C" u8 lbl_80559268;
+#pragma push
+#pragma use_lmw_stmw on
  extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s16 *arg5, s16 *arg6, u8 *arg7, s16 arg_sp8) {
          
  
@@ -18067,7 +18074,7 @@ extern "C" void fn_800C34B4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 extern "C" void fn_800C3574(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 *win = (s32 *)arg0;
     s32 *c = (s32 *)arg1;
-    s16 *out = (s16 *)arg3;
+    char *out = (char *)arg3;
     s32 n = arg2;
     s32 i;
     for (i = 0; i < 15; i++) {
@@ -18163,11 +18170,11 @@ extern "C" void fn_800C3574(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4
             r2 = (r2 >> 31) ^ 0x7FFF;
         }
         if (arg4 == 0) {
-            out[2 * i] = r1;
-            out[0x1E - i] = r2;
+            *(s16 *)(out + 4 * i) = r1;
+            *(s16 *)(out + 2 * (0x3C - 2 * i)) = r2;
         } else {
-            out[i] = r1;
-            out[0x1E - i] = r2;
+            *(s16 *)(out + 2 * i) = r1;
+            *(s16 *)(out + 2 * (0x1E - i)) = r2;
         }
         n++;
         c += 16;
