@@ -4573,53 +4573,85 @@ typedef struct {
 
 extern unsigned char lbl_80558E48, lbl_80558E50, lbl_80558E58;
 extern unsigned char lbl_80558E60, lbl_80558E68, lbl_80558E70, lbl_80558E78;
+/* The seven BP register addresses (low byte of the word) that get stamped into the
+   words below, one table per word and one byte per texmap channel: channels 0..3
+   sit at 0x80..0x9B, channels 4..7 in the mirrored block at 0xA0..0xBB. */
+#define gTex0RegTab lbl_80558E48
+#define gTex1RegTab lbl_80558E50
+#define gTex2RegTab lbl_80558E58
+#define gTlutARegTab lbl_80558E60
+#define gTlutBRegTab lbl_80558E68
+#define gTex3RegTab lbl_80558E70
+#define gTlutIdRegTab lbl_80558E78
+#define GX_BP_TEX_CHANGE 0x61   /* RFIFOP opcode: writes one BP register per word */
+#define GX_TEX_IMAGE_WORD 0x564 /* __GXData: per-channel TEX2 (image address) word */
+#define GX_TEX_MODE_WORD 0x584  /* __GXData: per-channel TEX0 word */
+#define GX_WRITE_FIFO_LOCK 2    /* __GXData: held while a BP write is being built */
+
+/* Bind a texture object that already has a texture cache region to one texmap
+ * channel: stamp the channel's BP register address into the object's four image
+ * words and the region's two TLUT words and write all six to the BP. For a
+ * non-CLUT texture the same is done for the TLUT region the object's tlut name
+ * maps to. The channel then remembers its TEX0/TEX2 words in __GXData, the BP
+ * state is marked dirty and the FIFO write is released. */
 void GXLoadTexObjPreLoaded(void *__restrict obj, void *__restrict region, int map) {
-    unsigned int *a = (unsigned int *)obj;
-    unsigned int *b = (unsigned int *)region;
-    unsigned int v0, v1, v2, v3, v4, v5;
-    unsigned int *data;
-    unsigned int *dst;
-    unsigned char opcode = 0x61;
+    unsigned int *tex = (unsigned int *)obj;
+    unsigned int *tlut = (unsigned int *)region;
+    unsigned int tex0, tex1, tex2, tlut0, tlut1, tex3;
+    GXTexRegionData *data;
+    unsigned int *tlutRegion;
+    unsigned char opcode = GX_BP_TEX_CHANGE;
 
-    v0 = __rlwimi(a[0], (&lbl_80558E48)[map], 24, 0, 7);
-    v1 = __rlwimi(a[1], (&lbl_80558E50)[map], 24, 0, 7);
-    v2 = __rlwimi(a[2], (&lbl_80558E58)[map], 24, 0, 7);
-    v3 = __rlwimi(b[0], (&lbl_80558E60)[map], 24, 0, 7);
-    v4 = __rlwimi(b[1], (&lbl_80558E68)[map], 24, 0, 7);
-    v5 = __rlwimi(a[3], (&lbl_80558E70)[map], 24, 0, 7);
+    tex0 = __rlwimi(tex[0], (&gTex0RegTab)[map], 24, 0, 7);
+    tex1 = __rlwimi(tex[1], (&gTex1RegTab)[map], 24, 0, 7);
+    tex2 = __rlwimi(tex[2], (&gTex2RegTab)[map], 24, 0, 7);
+    tlut0 = __rlwimi(tlut[0], (&gTlutARegTab)[map], 24, 0, 7);
+    tlut1 = __rlwimi(tlut[1], (&gTlutBRegTab)[map], 24, 0, 7);
+    tex3 = __rlwimi(tex[3], (&gTex3RegTab)[map], 24, 0, 7);
 
     *(volatile unsigned char *)0xCC008000 = opcode;
-    *(volatile unsigned int *)0xCC008000 = v0;
+    *(volatile unsigned int *)0xCC008000 = tex0;
     *(volatile unsigned char *)0xCC008000 = opcode;
-    *(volatile unsigned int *)0xCC008000 = v1;
+    *(volatile unsigned int *)0xCC008000 = tex1;
     *(volatile unsigned char *)0xCC008000 = opcode;
-    *(volatile unsigned int *)0xCC008000 = v2;
+    *(volatile unsigned int *)0xCC008000 = tex2;
     *(volatile unsigned char *)0xCC008000 = opcode;
-    *(volatile unsigned int *)0xCC008000 = v3;
+    *(volatile unsigned int *)0xCC008000 = tlut0;
     *(volatile unsigned char *)0xCC008000 = opcode;
-    *(volatile unsigned int *)0xCC008000 = v4;
+    *(volatile unsigned int *)0xCC008000 = tlut1;
     *(volatile unsigned char *)0xCC008000 = opcode;
 
-    a[0] = v0;
-    a[1] = v1;
-    a[2] = v2;
-    b[0] = v3;
-    b[1] = v4;
-    a[3] = v5;
-    *(volatile unsigned int *)0xCC008000 = v5;
+    tex[0] = tex0;
+    tex[1] = tex1;
+    tex[2] = tex2;
+    tlut[0] = tlut0;
+    tlut[1] = tlut1;
+    tex[3] = tex3;
+    *(volatile unsigned int *)0xCC008000 = tex3;
 
     if ((*(unsigned char *)((char *)obj + 0x1F) & 2) == 0) {
-        data = __GXData;
-        dst = ((unsigned int *(*)(unsigned int))data[0x51C / 4])(*(unsigned int *)((char *)obj + 0x18));
-        dst[1] = __rlwimi(dst[1], (&lbl_80558E78)[map], 24, 0, 7);
+        data = (GXTexRegionData *)__GXData;
+        tlutRegion = (unsigned int *)data->tlutRegionCallback(*(unsigned int *)((char *)obj + 0x18));
+        tlutRegion[1] = __rlwimi(tlutRegion[1], (&gTlutIdRegTab)[map], 24, 0, 7);
         *(volatile unsigned char *)0xCC008000 = opcode;
-        *(volatile unsigned int *)0xCC008000 = dst[1];
+        *(volatile unsigned int *)0xCC008000 = tlutRegion[1];
     }
-    ((unsigned int *)((char *)__GXData + 0x564))[map] = a[2];
-    ((unsigned int *)((char *)__GXData + 0x584))[map] = a[0];
+    ((unsigned int *)((char *)__GXData + GX_TEX_IMAGE_WORD))[map] = tex[2];
+    ((unsigned int *)((char *)__GXData + GX_TEX_MODE_WORD))[map] = tex[0];
     __GXData[0x5FC / 4] |= 1;
-    *(unsigned short *)((char *)__GXData + 2) = 0;
+    *(unsigned short *)((char *)__GXData + GX_WRITE_FIFO_LOCK) = 0;
 }
+#undef GX_WRITE_FIFO_LOCK
+#undef GX_TEX_MODE_WORD
+#undef GX_TEX_IMAGE_WORD
+#undef GX_BP_TEX_CHANGE
+#undef gTlutIdRegTab
+#undef gTex3RegTab
+#undef gTlutBRegTab
+#undef gTlutARegTab
+#undef gTex2RegTab
+#undef gTex1RegTab
+#undef gTex0RegTab
 
 void GXLoadTexObj(void *obj, unsigned int map) {
     /* Bind a texture object to one texmap channel: ask the installed texture-region
