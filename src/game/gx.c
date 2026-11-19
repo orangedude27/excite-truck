@@ -302,6 +302,7 @@ void fn_802CEC44(void) {
 }
 
 #pragma scheduling invalid_target
+/* GX draw-sync callback: token 1 records the start tick, token 2 computes and smooths elapsed milliseconds then processes depth queries. */
 void fn_802CEC50(int token) {
     /* Handle a GX draw-sync token: case 1 snapshots the start tick and clears the
        sync-done flag, case 2 computes the elapsed time (with smoothing) and
