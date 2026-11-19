@@ -2247,19 +2247,24 @@ extern f32 lbl_805611B0;
 extern f32 lbl_805611B4;
 extern f64 lbl_805611B8;
 extern f32 lbl_805611C0;
-void fn_80119B38(void *arg0, s32 arg1) {
-    s32 value = arg1;
+void fn_80119B38(void *obj, s32 input) {
+    /* Clamp input to [0, 0x10000], compute complementary 0.3-power weights, store results, and apply. */
+    s32 value = input;
     f32 temp_f31;
     f32 temp_f3;
     f32 temp_f1;
+
     if (value < 0) value = 0;
     if (value > 0x10000) value = 0x10000;
+
     temp_f31 = (f32)value / lbl_805611B0;
     temp_f3 = (f32)fn_8002EFBC(lbl_805611B4 - temp_f31, (double)0.3f);
-    *(s32*)((u8*)arg0 + 0xa8) = (s32)(lbl_805611C0 * temp_f3);
+    *(s32*)((u8*)obj + 0xa8) = (s32)(lbl_805611C0 * temp_f3);
+
     temp_f1 = (f32)fn_8002EFBC(temp_f31, (double)0.3f);
-    *(s32*)((u8*)arg0 + 0xac) = (s32)(lbl_805611C0 * temp_f1);
-    fn_80119288(arg0, temp_f1);
+    *(s32*)((u8*)obj + 0xac) = (s32)(lbl_805611C0 * temp_f1);
+
+    fn_80119288(obj, temp_f1);
 }
 
 extern f64 lbl_80561198;
