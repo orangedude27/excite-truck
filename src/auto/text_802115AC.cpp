@@ -2408,7 +2408,14 @@ extern "C" void fn_80215420(void *widget) {
 
 }
 
-extern "C" void fn_80215424(void) {
+/* Empty default of the base widget class (vtable lbl_8033FB38) at vtable slot
+ * 0x30, between the draw slot 0x28 and the pair at 0x34/0x38 that set and clear
+ * the widget's flag byte at +0x19.  The layout wrapper forwards its own slot
+ * 0x30 to the object at +0x244 (fn_80215B44), but no widget class gives this
+ * hook a body: lbl_8033FA28, lbl_8033F4B8, lbl_8033F768, lbl_8033F880,
+ * lbl_8033EBA0, lbl_8033ED44 and lbl_8033EF68 all still point here, so the
+ * default is to do nothing. */
+extern "C" void fn_80215424(void *widget) {
 
 }
 
