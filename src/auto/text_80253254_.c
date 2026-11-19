@@ -1561,8 +1561,6 @@ void fn_80255A84(void *arg0) {
     }
 }
 #pragma scheduling on
-#pragma push
-#pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" int stricmp(const char *, const char *);
 extern "C" void fn_80255B5C(void *arg0) {
