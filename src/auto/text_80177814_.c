@@ -49,10 +49,12 @@ extern void fn_8018A180(void);
 int fn_802E2C20(void);
 extern int lbl_8055E464;
 void fn_80177814(int *arg0) {
+#pragma scheduling invalid_target
     *arg0 = (fn_802E2C20() + lbl_8055E464) % 30000;
     lbl_8055E464 = *arg0 + 0x9947;
     arg0[1] = (fn_802E2C20() + lbl_8055E464) % 30000;
     lbl_8055E464 = arg0[1] + 0x2F1CD;
+#pragma scheduling reset
 }
 
 #pragma dont_inline on
@@ -606,7 +608,7 @@ int fn_801784AC(void *start, void *end, void *outHit, int flags, void *outValue,
 }
 
 extern float lbl_80561B64;
-#pragma scheduling invalid_target
+#pragma scheduling on
 s32 fn_801784DC(Vec *arg0, f32 *arg1, Vec *arg2, s32 *arg3, s32 arg4) {
     Vec start;
     Vec hit;
@@ -630,6 +632,7 @@ s32 fn_801784DC(Vec *arg0, f32 *arg1, Vec *arg2, s32 *arg3, s32 arg4) {
     }
     return 0;
 }
+#pragma scheduling invalid_target
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_801B5318(void *);
