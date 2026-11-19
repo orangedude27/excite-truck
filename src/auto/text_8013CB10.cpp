@@ -1,9 +1,4 @@
 #include "types.h"
-static inline int halfMinusMasked8014445C(int v) {
-    int m = v & 0xA;
-    int h = v >> 1;
-    return h - m;
-}
 /* The virtual calls fn_8013FAC4 makes: v9 is the zone HUD's own test (+0x24),
  * v10/vC are the scene object it holds at +0x54 looking something up by name
  * (+0x10 gives the object it finds, +0x0C the same kind of lookup, unused). */
