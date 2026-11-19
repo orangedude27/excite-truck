@@ -595,6 +595,7 @@ void fn_801771A8(void) {
 #pragma pop
 #pragma push
 #pragma opt_common_subs off
+/* RealName: Fader_StepAndApplyVolume (rename_symbol unavailable). */
 /* Step the phys-fader ramp once -- exactly as fn_801771A8 does, but without
  * finishing the fade or running its callback -- and return where the fade
  * stands: `alpha` while fading out (mode FADE_MODE_OUT/DONE), its inverse
