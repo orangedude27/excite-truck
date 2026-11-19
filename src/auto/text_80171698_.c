@@ -138,6 +138,7 @@ void fn_8017188C(char *arg0) {
     }
 }
 
+/* Empty stub with no implementation. */
 void fn_80171930(void) {
 }
 
