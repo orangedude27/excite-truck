@@ -4027,20 +4027,27 @@ void fn_801D8C18(void) {
 
 extern float lbl_80562AE4;
 extern void fn_801E1F78(void);
+extern float lbl_80562AE4; /* 0.5f: the round-to-nearest offset */
+extern void fn_801E1F78(void); /* sets gForceWeather */
 #pragma scheduling invalid_target
-void fn_801D8C1C(void *arg0, float farg0) {
-    float tmp = farg0 / *(float *)((char *)arg0 + 0x14);
-    float v;
-    int t;
-    if (tmp < 0.0f) {
-        v = tmp - lbl_80562AE4;
+/* Lightning_ASE level watcher: divide value by the step size kept at +0x14,
+ * round the quotient to the nearest integer (add 0.5f, or subtract it when
+ * negative, then truncate) and compare it with the level cached at +0x18.
+ * When the level changed, ask for an immediate weather refresh
+ * (gForceWeather = 1) and store the new level. */
+void fn_801D8C1C(void *lightning, float value) {
+    float quotient = value / *(float *)((char *)lightning + 0x14); /* step size */
+    float rounded;
+    int level;
+    if (quotient < 0.0f) {
+        rounded = quotient - lbl_80562AE4;
     } else {
-        v = lbl_80562AE4 + tmp;
+        rounded = lbl_80562AE4 + quotient;
     }
-    t = (int)v;
-    if (t != *(int *)((char *)arg0 + 0x18)) {
-        fn_801E1F78();
-        *(int *)((char *)arg0 + 0x18) = t;
+    level = (int)rounded;
+    if (level != *(int *)((char *)lightning + 0x18)) { /* cached level */
+        fn_801E1F78(); /* gForceWeather = 1 */
+        *(int *)((char *)lightning + 0x18) = level;
     }
 }
 #pragma scheduling on
