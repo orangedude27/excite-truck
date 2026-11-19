@@ -8718,6 +8718,8 @@ static __inline u8 *btm_find_dev_by_addr_80068D68(BD_ADDR bd_addr) {
 #pragma optimization_level 3
 #pragma dont_inline off
 tBTM_STATUS BTM_ReadLinkQuality(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
+    /* Issue the link-quality read for the ACL connection to remote_bda and report
+       the result through p_cb (busy if one is pending, not-found if unknown). */
     u8 *p_dev_rec;
 
     if (lbl_803C0F78[0x27C0] >= 3) {
