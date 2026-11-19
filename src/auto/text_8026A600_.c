@@ -18,10 +18,11 @@ void *fn_8026A600(void *camera) {
 }
 
 #pragma scheduling invalid_target
-float fn_8026A63C(const float * __restrict arg0, const float * __restrict arg1, const float * __restrict arg2) {
+float fn_8026A63C(const float *arg0, const float *arg1, const float *arg2) {
     float sp8[3];
-    float f4 = arg0[0];
-    sp8[0] = f4 - arg1[0];
+    float t0 = arg0[0];
+    t0 -= arg1[0];
+    sp8[0] = t0;
     sp8[1] = arg0[1] - arg1[1];
     sp8[2] = arg0[2] - arg1[2];
     return PSVECDotProduct(sp8, arg2);
