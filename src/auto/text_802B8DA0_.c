@@ -176,7 +176,8 @@ void *fn_802B8EB8(s32 centerX, s32 centerY, u32 span, s32 cornerFlags) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
-void *fn_802B8EF0(int arg0, void *arg1) {
+void *fn_802B8EF0(int slot, void *source) {
+    /* Return the cached emitter entry for slot, creating and registering it on first use. */
     struct Entry {
         char *name;
         int state;
@@ -188,7 +189,7 @@ void *fn_802B8EF0(int arg0, void *arg1) {
         int count;
     };
     void **table = (void **)lbl_804C0088;
-    struct Entry *entry = (struct Entry *)table[arg0];
+    struct Entry *entry = (struct Entry *)table[slot];
     void *data;
     char *name;
     int state;
@@ -200,7 +201,7 @@ void *fn_802B8EF0(int arg0, void *arg1) {
         entry = (struct Entry *)fn_801284F8(0x10, (void *)&lbl_8055CECC);
         if (entry) {
             entry->name = name;
-            data = *(void * volatile *)((char *)arg1 + 8);
+            data = *(void * volatile *)((char *)source + 8);
             if (*(volatile signed char *)name != 0)
                 state = fn_802B110C((void *)fn_802B8E50, name);
             else
@@ -211,14 +212,14 @@ void *fn_802B8EF0(int arg0, void *arg1) {
             entry->reserved = 0;
             entry->data = data;
         }
-        table[arg0] = entry;
+        table[slot] = entry;
         list = (struct List *)lbl_804BFFF4;
         items = ((struct List *)lbl_804BFFF4)->items;
         count = list->count;
         list->count = count + 1;
         items[count] = (void *)entry;
     }
-    return table[arg0];
+    return table[slot];
 }
 #pragma pop
 #pragma push
@@ -990,9 +991,12 @@ extern double lbl_80564CD0;
 extern float lbl_80564CCC, lbl_80564CC4, lbl_80564CD8;
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
+#pragma ppc_psq_save off
+#pragma scheduling invalid_target
 extern "C" void fn_802BA010(void *arg0, int arg1) {
     struct Dummy { virtual void v0(); virtual void *v1(int); };
-    volatile char scratch[0x40];
+    volatile char scratch[0x50];
     char *sp = (char *)scratch;
     void *record;
     void *entry;
