@@ -61,7 +61,7 @@ static inline void mtx33_mult_vec(const float *m, const float *v, float *d) {
     float outY;
     float outZ;
 
-    if (v == d) {
+    if (d == v) {
         float x = v[0];
         float y = v[1];
         float z = v[2];
@@ -800,7 +800,7 @@ void fn_802545C4(void *arg0, s32 arg1, s32 arg2) {
     extern float fn_801F159C(s32);
     extern float lbl_80498E18[3];
     extern float lbl_80563A04, lbl_80563A14, lbl_80563A18;
-    extern float lbl_80563A34, lbl_80563A38, lbl_80563A3C;
+    extern float lbl_80563A30, lbl_80563A34, lbl_80563A38, lbl_80563A3C;
     extern char lbl_8055C178[], lbl_8055C180[], lbl_8055C188[];
     extern void fn_80254568(void *, s32, const char *);
     struct Stack {
@@ -809,74 +809,77 @@ void fn_802545C4(void *arg0, s32 arg1, s32 arg2) {
         float sp20[3];
         float sp2c[3];
     } stack;
-    memset(arg0, 0, 0x78);
-    *(u8 *)((char *)arg0 + 0x30) = 1;
-    if (*(u8 *)(char *)arg2 != 0) {
-        *(float *)((char *)arg0 + 0x40) = *(float *)((char *)arg2 + 0x58C);
-        if (arg1 != -1)
-            *(float *)((char *)arg0 + 0x40) = *(float *)((char *)arg0 + 0x40) - 0.20316814f;
-        *(float *)((char *)arg0 + 0x44) = *(float *)((char *)arg2 + 0x58C);
-        if (arg1 != -1)
-            *(float *)((char *)arg0 + 0x44) = *(float *)((char *)arg0 + 0x44) - 0.20316814f;
-        *(float *)((char *)arg0 + 0x48) = *(float *)((char *)arg2 + 0x58C);
-        if (arg1 != -1)
-            *(float *)((char *)arg0 + 0x48) = *(float *)((char *)arg0 + 0x48) - 0.20316814f;
-        *(float *)((char *)arg0 + 0x4C) = *(float *)((char *)arg2 + 0x58C);
-        if (arg1 != -1)
-            *(float *)((char *)arg0 + 0x4C) = *(float *)((char *)arg0 + 0x4C) - 0.20316814f;
+    register struct View545C4 *v = (struct View545C4 *)arg0;
+    register struct Info545C4 *inf = (struct Info545C4 *)arg2;
+    register s32 idx = arg1;
+    memset(v, 0, 0x78);
+    v->flag30 = 1;
+    if (inf->flag0 != 0) {
+        v->v40 = inf->f58C;
+        if (idx != -1)
+            v->v40 = v->v40 - lbl_80563A30;
+        v->v44 = inf->f58C;
+        if (idx != -1)
+            v->v44 = v->v44 - lbl_80563A30;
+        v->v48 = inf->f58C;
+        if (idx != -1)
+            v->v48 = v->v48 - lbl_80563A30;
+        v->v4C = inf->f58C;
+        if (idx != -1)
+            v->v4C = v->v4C - lbl_80563A30;
     }
-    if (arg1 != -1) {
-        fn_80254568(stack.sp2c, arg1, lbl_8055C178);
-        fn_80254568(stack.sp20, arg1, lbl_8055C180);
-        fn_80254568(stack.sp14, arg1, lbl_8055C188);
+    if (idx != -1) {
+        fn_80254568(stack.sp2c, idx, lbl_8055C178);
+        fn_80254568(stack.sp20, idx, lbl_8055C180);
+        fn_80254568(stack.sp14, idx, lbl_8055C188);
         stack.sp8[0] = stack.sp20[0] + lbl_80563A18 * (stack.sp2c[0] - stack.sp20[0]);
         stack.sp8[1] = stack.sp20[1] + lbl_80563A18 * (stack.sp2c[1] - stack.sp20[1]);
         stack.sp8[2] = stack.sp20[2] + lbl_80563A18 * (stack.sp2c[2] - stack.sp20[2]);
-        *(float *)((char *)arg0 + 0x18) = stack.sp8[0] - stack.sp14[0];
-        *(float *)((char *)arg0 + 0x1C) = stack.sp8[1] - stack.sp14[1];
-        *(float *)((char *)arg0 + 0x20) = stack.sp8[2] - stack.sp14[2];
-        *(float *)arg0 = stack.sp2c[0] - stack.sp20[0];
-        *(float *)((char *)arg0 + 4) = stack.sp2c[1] - stack.sp20[1];
-        *(float *)((char *)arg0 + 8) = stack.sp2c[2] - stack.sp20[2];
-        PSVECCrossProduct((float *)((char *)arg0 + 0x18), (float *)arg0, (float *)((char *)arg0 + 0xC));
-        PSVECCrossProduct((float *)((char *)arg0 + 0xC), (float *)((char *)arg0 + 0x18), (float *)arg0);
-        PSVECNormalize((float *)arg0, (float *)arg0);
-        PSVECNormalize((float *)((char *)arg0 + 0xC), (float *)((char *)arg0 + 0xC));
-        PSVECNormalize((float *)((char *)arg0 + 0x18), (float *)((char *)arg0 + 0x18));
-        lbl_80498E18[0] = stack.sp8[0] + *(float *)((char *)arg0 + 0x18) * lbl_80563A34;
-        lbl_80498E18[1] = stack.sp8[1] + *(float *)((char *)arg0 + 0x1C) * lbl_80563A34;
-        lbl_80498E18[2] = stack.sp8[2] + *(float *)((char *)arg0 + 0x20) * lbl_80563A34;
-        lbl_80498E18[0] += *(float *)((char *)arg0 + 0xC) * lbl_80563A38;
-        lbl_80498E18[1] += *(float *)((char *)arg0 + 0x10) * lbl_80563A38;
-        lbl_80498E18[2] += *(float *)((char *)arg0 + 0x14) * lbl_80563A38;
-        if (*(u8 *)(char *)arg2 != 0) {
-            float distance = fn_801F159C(*(s32 *)((char *)arg2 + 0x18));
-            float scale = -(lbl_80563A3C + *(float *)((char *)arg2 + 0x440));
-            float lateral = lbl_80563A04 + (-*(float *)((char *)arg0 + 0x44) + (-*(float *)((char *)arg2 + 0x43C) + distance));
-            *(float *)((char *)arg0 + 0x24) = stack.sp8[0] + *(float *)((char *)arg0 + 0x18) * scale;
-            *(float *)((char *)arg0 + 0x28) = stack.sp8[1] + *(float *)((char *)arg0 + 0x1C) * scale;
-            *(float *)((char *)arg0 + 0x2C) = stack.sp8[2] + *(float *)((char *)arg0 + 0x20) * scale;
-            *(float *)((char *)arg0 + 0x24) += *(float *)((char *)arg0 + 0xC) * lateral;
-            *(float *)((char *)arg0 + 0x28) += *(float *)((char *)arg0 + 0x10) * lateral;
-            *(float *)((char *)arg0 + 0x2C) += *(float *)((char *)arg0 + 0x14) * lateral;
+        v->v18 = stack.sp8[0] - stack.sp14[0];
+        v->v1C = stack.sp8[1] - stack.sp14[1];
+        v->v20 = stack.sp8[2] - stack.sp14[2];
+        v->v0 = stack.sp2c[0] - stack.sp20[0];
+        v->v4 = stack.sp2c[1] - stack.sp20[1];
+        v->v8 = stack.sp2c[2] - stack.sp20[2];
+        PSVECCrossProduct(&v->v18, &v->v0, &v->vC);
+        PSVECCrossProduct(&v->vC, &v->v18, &v->v0);
+        PSVECNormalize(&v->v0, &v->v0);
+        PSVECNormalize(&v->vC, &v->vC);
+        PSVECNormalize(&v->v18, &v->v18);
+        lbl_80498E18[0] = stack.sp8[0] + v->v18 * lbl_80563A34;
+        lbl_80498E18[1] = stack.sp8[1] + v->v1C * lbl_80563A34;
+        lbl_80498E18[2] = stack.sp8[2] + v->v20 * lbl_80563A34;
+        lbl_80498E18[0] += v->vC * lbl_80563A38;
+        lbl_80498E18[1] += v->v10 * lbl_80563A38;
+        lbl_80498E18[2] += v->v14 * lbl_80563A38;
+        if (inf->flag0 != 0) {
+            float distance = fn_801F159C(inf->id18);
+            float scale = -(lbl_80563A3C + inf->f440);
+            float lateral = lbl_80563A04 + (-v->v44 + (-inf->f43C + distance));
+            v->v24 = stack.sp8[0] + v->v18 * scale;
+            v->v28 = stack.sp8[1] + v->v1C * scale;
+            v->v2C = stack.sp8[2] + v->v20 * scale;
+            v->v24 += v->vC * lateral;
+            v->v28 += v->v10 * lateral;
+            v->v2C += v->v14 * lateral;
         } else {
-            *(float *)((char *)arg0 + 0x24) = lbl_80498E18[0];
-            *(float *)((char *)arg0 + 0x28) = lbl_80498E18[1];
-            *(float *)((char *)arg0 + 0x2C) = lbl_80498E18[2];
+            v->v24 = lbl_80498E18[0];
+            v->v28 = lbl_80498E18[1];
+            v->v2C = lbl_80498E18[2];
         }
     } else {
-        *(float *)((char *)arg0 + 4) = lbl_80563A04;
-        *(float *)arg0 = lbl_80563A14;
-        *(float *)((char *)arg0 + 8) = lbl_80563A04;
-        *(float *)((char *)arg0 + 0xC) = lbl_80563A04;
-        *(float *)((char *)arg0 + 0x10) = lbl_80563A14;
-        *(float *)((char *)arg0 + 0x14) = lbl_80563A04;
-        *(float *)((char *)arg0 + 0x18) = lbl_80563A04;
-        *(float *)((char *)arg0 + 0x1C) = lbl_80563A04;
-        *(float *)((char *)arg0 + 0x20) = lbl_80563A14;
-        *(float *)((char *)arg0 + 0x24) = lbl_80563A04;
-        *(float *)((char *)arg0 + 0x28) = lbl_80563A04;
-        *(float *)((char *)arg0 + 0x2C) = lbl_80563A04;
+        v->v4 = lbl_80563A04;
+        v->v0 = lbl_80563A14;
+        v->v8 = lbl_80563A04;
+        v->vC = lbl_80563A04;
+        v->v10 = lbl_80563A14;
+        v->v14 = lbl_80563A04;
+        v->v18 = lbl_80563A04;
+        v->v1C = lbl_80563A04;
+        v->v20 = lbl_80563A14;
+        v->v24 = lbl_80563A04;
+        v->v28 = lbl_80563A04;
+        v->v2C = lbl_80563A04;
     }
 }
 
