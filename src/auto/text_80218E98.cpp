@@ -1062,24 +1062,25 @@ extern "C" void fn_80219660(void *arg0) {
         virtual s32 At88();
     };
     register void *self = arg0;
-    register s32 y;
-    register s32 x;
-    register s32 diff;
-    register s32 b;
-    register s32 a;
-    a = *(s32 *)((u8 *)self + 8);
-    b = *(s32 *)((u8 *)self + 4);
-    diff = *(s32 *)((u8 *)self + 0x10) - a;
-    x = ((Dispatch *)self)->At84();
-    y = ((Dispatch *)self)->At88();
-    register s32 z = ((Dispatch *)self)->At78();
+    register s32 textSlot;
+    register s32 textIndex;
+    register s32 height;
+    register s32 left;
+    register s32 top;
+    /* Draw the widget's text by computing its on-screen bounds and forwarding them to the text draw helper. */
+    top = *(s32 *)((u8 *)self + 8);
+    left = *(s32 *)((u8 *)self + 4);
+    height = *(s32 *)((u8 *)self + 0x10) - top;
+    textIndex = ((Dispatch *)self)->At84();
+    textSlot = ((Dispatch *)self)->At88();
+    register s32 contentHeight = ((Dispatch *)self)->At78();
     f32 scale = 1.0f;
     ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, u8))fn_8022BAD0)(
         *(s32 *)((u8 *)self + 0x250),
-        *(s32 *)((u8 *)self + 0x244) + b,
-        *(s32 *)((u8 *)self + 0x248) + a,
+        *(s32 *)((u8 *)self + 0x244) + left,
+        *(s32 *)((u8 *)self + 0x248) + top,
         *(s32 *)((u8 *)self + 0x24C),
-        z, diff, y, x, scale, 0);
+        contentHeight, height, textSlot, textIndex, scale, 0);
 }
 #pragma scheduling on
 #pragma pop
