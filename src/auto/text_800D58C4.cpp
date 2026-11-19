@@ -891,14 +891,11 @@ static inline u8 *ChildPane_800D77DC(const ChildIter_800D77DC &it) {
 static inline bool ChildNotEqual_800D77DC(const ChildIter_800D77DC &a, const ChildIter_800D77DC &b) { return a.node != b.node; }
 static inline void ChildNext_800D77DC(ChildIter_800D77DC &it) { it.node = it.node->next; }
 /* Inline levels of the recursive tag-processor walk (fn_800D6CA0), as the recursion is expanded in fn_800D6CA0/fn_800D77DC. */
-#pragma push
-#pragma dont_inline on
-static void SetTagProcessorDeep_800D77DC(u8 *child, s32 arg1);
-#pragma pop
+static inline void SetTagProcessorCall_800D77DC(u8 *child, s32 arg1) { fn_800D6CA0((s32)child, arg1); }
 static inline void SetTagProcessorLevel3_800D77DC(u8 *self, s32 arg1) {
     if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
     for (ChildIter_800D77DC it = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it)) {
-        fn_800D6CA0((s32)ChildPane_800D77DC(it), arg1);
+        SetTagProcessorCall_800D77DC(ChildPane_800D77DC(it), arg1);
     }
 }
 static inline void SetTagProcessorLevel2_800D77DC(u8 *self, s32 arg1) {
