@@ -70,17 +70,17 @@ typedef struct V3 { f32 x, y, z; } V3;
 /* v * 3x3 matrix m (rows of 3 floats); out may alias v */
 static inline void Mtx3MultVec(f32 *m, f32 *v, f32 *out) {
     if (out == v) {
-        f32 x = v[0], y = v[1], z = v[2];
-        f32 a = x * m[0] + y * m[3];
-        f32 b = x * m[1] + y * m[4];
-        f32 c = x * m[2] + y * m[5];
-        out[0] = z * m[6] + a;
-        out[1] = z * m[7] + b;
-        out[2] = z * m[8] + c;
-    } else {
         out[0] = v[2] * m[6] + (v[0] * m[0] + v[1] * m[3]);
         out[1] = v[2] * m[7] + (v[0] * m[1] + v[1] * m[4]);
         out[2] = v[2] * m[8] + (v[0] * m[2] + v[1] * m[5]);
+    } else {
+        f32 x = v[0], y = v[1], z = v[2];
+        f32 a = y * m[3] + x * m[0];
+        f32 b = y * m[4] + x * m[1];
+        f32 c = y * m[5] + x * m[2];
+        out[0] = z * m[6] + a;
+        out[1] = z * m[7] + b;
+        out[2] = z * m[8] + c;
     }
 }
 
@@ -109,18 +109,18 @@ f32 fn_8026B844(f32 input) {
 void fn_8026B8A0(void) {
     s32 a, b, c;
     s32 ok;
-    f32 dt;
-    V3 right;
-    V3 fwd;
-    f32 in[8];
-    f32 groundY;
-    V3 move;
-    V3 mv;
-    V3 push;
-    V3 fv;
-    V3 ang;
+    f32 dt, groundY;
+    f32 in[25];
     f32 m1[9];
     f32 m2[9];
+    V3 right;
+    V3 fwd;
+    V3 move;
+    V3 push;
+    V3 ang1;
+    V3 ang2;
+    V3 mv;
+    V3 fv;
     fn_80127A84(&a, &b, &c);
     ok = 1;
     if (lbl_8055F4E8 != 0 && ((s32 (*)(s32, s32))lbl_8055F4E8)(a, b) == 0) {
@@ -188,7 +188,7 @@ void fn_8026B8A0(void) {
         s = s > lbl_80563D78 ? s : lbl_80563D78;
         f4 = lbl_80563D78;
         f5 = f4;
-        p = lbl_80563DC4 * (lbl_80563DC4 * 0 + lbl_80563D94 + s * lbl_80563DC0);
+        p = lbl_80563DC4 * (lbl_80563D94 + s * lbl_80563DC0);
         if (a < 0x50) {
             f4 = lbl_80563D98 + (f32)a / lbl_80563DC8;
         } else {
@@ -224,15 +224,15 @@ void fn_8026B8A0(void) {
     ((f32 *)lbl_80499050)[6] = lbl_80563D78;
     ((f32 *)lbl_80499050)[7] = lbl_80563D78;
     ((f32 *)lbl_80499050)[8] = lbl_80563D94;
-    ang.x = lbl_80563D78;
-    ang.y = lbl_8055F4F4;
-    ang.z = lbl_80563D78;
-    fn_80015A20(m1, &ang);
+    ang1.x = lbl_80563D78;
+    ang1.y = lbl_8055F4F4;
+    ang1.z = lbl_80563D78;
+    fn_80015A20(m1, &ang1);
     fn_80015B20((f32 *)lbl_80499050, m1, (f32 *)lbl_80499050);
-    ang.x = -lbl_8055F4F8;
-    ang.y = lbl_80563D78;
-    ang.z = lbl_80563D78;
-    fn_80015A20(m2, &ang);
+    ang2.x = -lbl_8055F4F8;
+    ang2.y = lbl_80563D78;
+    ang2.z = lbl_80563D78;
+    fn_80015A20(m2, &ang2);
     fn_80015B20((f32 *)lbl_80499050, m2, (f32 *)lbl_80499050);
 }
 #pragma pop
