@@ -4054,6 +4054,7 @@ extern "C" void fn_8015DD9C(Unk801577F0* arg0, void* arg1) {
  }
 }
 #pragma pop
+/* No-op stub used by bonus-tracker vtables. */
 extern "C" void fn_8015E0FC(void) {
 }
 
