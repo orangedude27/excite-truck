@@ -84,6 +84,7 @@ static inline void Mtx3MultVec(f32 *m, f32 *v, f32 *out) {
 typedef struct Words12 { u32 w[12]; } Words12;
 void fn_8026B840(void) {}
 
+#pragma dont_inline on
 /* Shapes an input value around 0 using a deadzone/linear ramp: positive side ramps from (f-deadzone)/0.8 clamped below 0, negative side ramps from (deadzone+f)/1.2 clamped above 0. */
 f32 fn_8026B844(f32 input) {
  f32 result = lbl_80563D78;
@@ -98,11 +99,11 @@ f32 fn_8026B844(f32 input) {
  }
  return result;
 }
+#pragma dont_inline off
 
 #pragma push
 #pragma processor 750
 void fn_8026B8A0(void) {
-    f32 *cam = (f32 *)lbl_80499050;
     s32 a, b, c;
     s32 ok;
     f32 dt;
@@ -125,9 +126,9 @@ void fn_8026B8A0(void) {
     dt = (f32)(fn_802E2C20() - lbl_8055F4FC) / lbl_80563D88;
     dt = dt < lbl_80563D8C ? dt : lbl_80563D8C;
     lbl_8055F4FC = fn_802E2C20();
-    right = *(V3 *)&cam[0];
+    right = *(V3 *)((f32 *)lbl_80499050 + 0);
     right.y = lbl_80563D78;
-    fwd = *(V3 *)&cam[6];
+    fwd = *(V3 *)((f32 *)lbl_80499050 + 6);
     fwd.y = lbl_80563D78;
     if (fn_801298E8(in, 0) != 0) {
         f32 t, s, k, u;
@@ -153,10 +154,10 @@ void fn_8026B8A0(void) {
         move.z = u * (dt * -fn_8026B844(in[2]));
         move.x = u * (dt * fn_8026B844(in[3]));
         move.y = lbl_80563D78;
-        Mtx3MultVec(cam, &move.x, &mv.x);
-        cam[9] = cam[9] + mv.x;
-        cam[10] = cam[10] + mv.y;
-        cam[11] = cam[11] + mv.z;
+        Mtx3MultVec((f32 *)lbl_80499050, &move.x, &mv.x);
+        ((f32 *)lbl_80499050)[9] = ((f32 *)lbl_80499050)[9] + mv.x;
+        ((f32 *)lbl_80499050)[10] = ((f32 *)lbl_80499050)[10] + mv.y;
+        ((f32 *)lbl_80499050)[11] = ((f32 *)lbl_80499050)[11] + mv.z;
     }
     {
         f32 z = lbl_80563D78;
@@ -170,12 +171,12 @@ void fn_8026B8A0(void) {
         push.x = dt * (z * sc);
         push.y = lbl_80563D78;
         push.z = dt * (dir * sc);
-        Mtx3MultVec(cam, &push.x, &fv.x);
-        cam[9] = cam[9] + fv.x;
-        cam[10] = cam[10] + fv.y;
-        cam[11] = cam[11] + fv.z;
+        Mtx3MultVec((f32 *)lbl_80499050, &push.x, &fv.x);
+        ((f32 *)lbl_80499050)[9] = ((f32 *)lbl_80499050)[9] + fv.x;
+        ((f32 *)lbl_80499050)[10] = ((f32 *)lbl_80499050)[10] + fv.y;
+        ((f32 *)lbl_80499050)[11] = ((f32 *)lbl_80499050)[11] + fv.z;
     }
-    groundY = cam[10] - fn_801EA0E8(cam[9], cam[11]);
+    groundY = ((f32 *)lbl_80499050)[10] - fn_801EA0E8(((f32 *)lbl_80499050)[9], ((f32 *)lbl_80499050)[11]);
     if (ok != 0) {
         f32 t, s, p, q, f4, f5;
         s = lbl_80563D94;
@@ -203,33 +204,33 @@ void fn_8026B8A0(void) {
         }
         q = dt * (f4 * p);
         p = dt * (-f5 * p);
-        cam[9] = cam[9] + right.x * q + fwd.x * p;
-        cam[10] = cam[10] + right.y * q + fwd.y * p;
-        cam[11] = cam[11] + right.z * q + fwd.z * p;
+        ((f32 *)lbl_80499050)[9] = ((f32 *)lbl_80499050)[9] + right.x * q + fwd.x * p;
+        ((f32 *)lbl_80499050)[10] = ((f32 *)lbl_80499050)[10] + right.y * q + fwd.y * p;
+        ((f32 *)lbl_80499050)[11] = ((f32 *)lbl_80499050)[11] + right.z * q + fwd.z * p;
     }
     {
-        f32 y = cam[10];
-        cam[10] = y + (groundY - (y - fn_801EA0E8(cam[9], cam[11])));
+        f32 y = ((f32 *)lbl_80499050)[10];
+        ((f32 *)lbl_80499050)[10] = y + (groundY - (y - fn_801EA0E8(((f32 *)lbl_80499050)[9], ((f32 *)lbl_80499050)[11])));
     }
-    cam[0] = lbl_80563D94;
-    cam[1] = lbl_80563D78;
-    cam[2] = lbl_80563D78;
-    cam[3] = lbl_80563D78;
-    cam[4] = lbl_80563D94;
-    cam[5] = lbl_80563D78;
-    cam[6] = lbl_80563D78;
-    cam[7] = lbl_80563D78;
-    cam[8] = lbl_80563D94;
+    ((f32 *)lbl_80499050)[0] = lbl_80563D94;
+    ((f32 *)lbl_80499050)[1] = lbl_80563D78;
+    ((f32 *)lbl_80499050)[2] = lbl_80563D78;
+    ((f32 *)lbl_80499050)[3] = lbl_80563D78;
+    ((f32 *)lbl_80499050)[4] = lbl_80563D94;
+    ((f32 *)lbl_80499050)[5] = lbl_80563D78;
+    ((f32 *)lbl_80499050)[6] = lbl_80563D78;
+    ((f32 *)lbl_80499050)[7] = lbl_80563D78;
+    ((f32 *)lbl_80499050)[8] = lbl_80563D94;
     ang.x = lbl_80563D78;
     ang.y = lbl_8055F4F4;
     ang.z = lbl_80563D78;
     fn_80015A20(m1, &ang);
-    fn_80015B20(cam, m1, cam);
+    fn_80015B20((f32 *)lbl_80499050, m1, (f32 *)lbl_80499050);
     ang.x = -lbl_8055F4F8;
     ang.y = lbl_80563D78;
     ang.z = lbl_80563D78;
     fn_80015A20(m2, &ang);
-    fn_80015B20(cam, m2, cam);
+    fn_80015B20((f32 *)lbl_80499050, m2, (f32 *)lbl_80499050);
 }
 #pragma pop
 
@@ -1257,14 +1258,18 @@ extern void *fn_8017960C(s32);
 extern void fn_801BFD34(void *, void *, void *);
 extern void fn_80015B20(void *, void *, void *);
 extern void fn_8026E688(f32 *, f32 *, f32 *, f32 *);
-#pragma dont_inline on
+#pragma opt_common_subs off
 void fn_8026DAA8(void *arg0) {
-    typedef struct { u32 v[12]; } Block12;
+    typedef struct { u32 v[8]; } Block8;
+    typedef struct { u32 v[2]; } Block2;
     void *self = arg0;
 
     if (*(u8 *)((u8 *)self + 0x138) != 0 &&
         !fn_8026BFF0((s32)lbl_8055F4E0)) {
-        *(Block12 *)lbl_80499050 = *(Block12 *)((u8 *)self + 0x58);
+        *(Block8 *)lbl_80499050 = *(Block8 *)((u8 *)self + 0x58);
+        *(u32 *)((u8 *)lbl_80499050 + 0x20) = *(u32 *)((u8 *)self + 0x78);
+        *(Block2 *)((u8 *)lbl_80499050 + 0x24) = *(Block2 *)((u8 *)self + 0x7C);
+        *(u32 *)((u8 *)lbl_80499050 + 0x2C) = *(u32 *)((u8 *)self + 0x84);
         lbl_8055F47C = *(f32 *)((u8 *)self + 0x194);
     }
 
