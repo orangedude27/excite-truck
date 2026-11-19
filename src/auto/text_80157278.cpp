@@ -2720,7 +2720,6 @@ extern "C" f32 fn_8015B404(void* arg0) {
     f32 zero = 0.0f;
     u8* p = base;
     s32 i;
-    BOOL flag;
     *(u8*)(base + 0x294) = 0;
     *(f32*)(base + 0x290) = zero;
     *(f32*)(base + 0x28C) = zero;
@@ -2734,13 +2733,15 @@ extern "C" f32 fn_8015B404(void* arg0) {
                 f32 t = *(volatile f32*)(p + 0x24C);
                 *(f32*)(p + 0x24C) = t - one;
             }
-            if ((flag = isSlotMoving_8015B404(i)) || !isSlotActive_8015B404(p)) {
+            BOOL flag = isSlotMoving_8015B404(i);
+            if (flag || !isSlotActive_8015B404(p)) {
+                f32 d;
+                f32 c;
                 *(f32*)(p + 0x24C) = zero;
-                *(u8*)(base + 0x294) = flag;
-                f32 d = *(f32*)(p + 0x250);
-                f32 c = *(f32*)(base + 0x290);
-                c = (c > d) ? c : d;
-                *(f32*)(base + 0x290) = c;
+                *(u8*)(base + 0x294) = (u8)flag;
+                d = *(f32*)(p + 0x250);
+                c = *(f32*)(base + 0x290);
+                *(f32*)(base + 0x290) = (c > d) ? c : d;
             }
         }
     }
@@ -3463,7 +3464,7 @@ extern "C" void fn_8015CD0C(void) {
 
 extern "C" f32 lbl_805617C8;
 #pragma scheduling reset
-extern "C" f32 fn_8015CD10(Unk801577F0* arg0) {
+extern "C" f32 fn_8015CD10(Unk801577F0* tracker) {
     class LocalVtable {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
@@ -3475,17 +3476,19 @@ extern "C" f32 fn_8015CD10(Unk801577F0* arg0) {
         virtual void v28(); virtual void v29(); virtual void v30(); virtual s32 v31(); virtual void v32();
         virtual void v33(f32*);
     };
-    f32 value = 0.0f;
-    if (*(f32*)((u8*)arg0 + 0x250) > 0.0f) {
-        ((LocalVtable*)arg0)->v30();
-        ((LocalVtable*)arg0)->v32();
-        s32 idx = ((LocalVtable*)arg0)->v21();
-        value = ((LocalVtable*)arg0)->v18(idx);
-        ((LocalVtable*)arg0)->v33(&value);
-        ((LocalVtable*)arg0)->v31();
+
+    /* If a gain is pending, score the current record and apply it, then clear the pending gain. */
+    f32 score = 0.0f;
+    if (*(f32*)((u8*)tracker + 0x250) > 0.0f) {
+        ((LocalVtable*)tracker)->v30();
+        ((LocalVtable*)tracker)->v32();
+        s32 index = ((LocalVtable*)tracker)->v21();
+        score = ((LocalVtable*)tracker)->v18(index);
+        ((LocalVtable*)tracker)->v33(&score);
+        ((LocalVtable*)tracker)->v31();
     }
-    *(f32*)((u8*)arg0 + 0x250) = lbl_805617C8;
-    return value;
+    *(f32*)((u8*)tracker + 0x250) = lbl_805617C8;
+    return score;
 }
 extern "C" void fn_8015CDD8(void) {
 }
