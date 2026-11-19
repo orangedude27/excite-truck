@@ -1192,6 +1192,7 @@ int fn_8027F958(int *selection, void *collection) {
     widget->unk44 = 0;
     return result;
 }
+#undef lbl_804B3048
  #pragma scheduling invalid_target
 
 extern int fn_80216D28(void);
@@ -3973,12 +3974,12 @@ extern "C" void *fn_8028732C(void *arg0, int arg1) {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
         virtual void *get();
     };
-    void *cached = *(void **)((char *)arg0 + 8);
-    if (cached != 0 && arg1 == *(int *)((char *)arg0 + 12)) {
-        return cached;
+    void *hit = *(void **)((char *)arg0 + 8);
+    if (hit != 0 && arg1 == *(int *)((char *)arg0 + 12)) {
+        return hit;
     }
-    Obj *obj = *(Obj **)((char *)arg0 + 4);
-    return obj->get();
+    Obj *p = *(Obj **)((char *)arg0 + 4);
+    return p->get();
 }
 #pragma cplusplus off
 void fn_80287360(void) {
