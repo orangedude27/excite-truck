@@ -3186,9 +3186,10 @@ void fn_80198E7C(int slotIndex) {
 #pragma dont_inline reset
 
   void fn_80198E7C(int index);
-    void fn_80198EA0(int index) {
-        fn_80198E7C(index);
-    }
+/* Tail-call wrapper that invokes fn_80198E7C for the given racer slot. */
+void fn_80198EA0(int slotIndex) {
+    fn_80198E7C(slotIndex);
+}
 
   
     typedef unsigned char u8;
