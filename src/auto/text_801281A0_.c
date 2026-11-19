@@ -834,40 +834,41 @@ void fn_80128F68(void *allocator) {
 extern s32 fn_801281F4(s32, s32);
 extern s32 fn_802E317C(void *, void *);
 extern char lbl_8032A470[];
-void *fn_80128F94(void *arg0, s32 arg1, void *arg2, s32 arg3) {
-    register u32 *header = (u32 *)arg0;
-    register void *logArg = arg2;
-    s32 total;
-    s32 size;
-    u32 used;
-    u8 *start;
-    u8 *base;
-    u8 *result;
-    u8 *tag;
-    volatile u32 *vh;
-    s32 h4;
+void *fn_80128F94(void *heapBlock, s32 requestSize, void *allocName, s32 allocTag) {
+    /* Allocate from a light/stack heap with debug canaries, logging if it would overflow. */
+    register u32 *heap = (u32 *)heapBlock;
+    register void *name = allocName;
+    s32 totalSize;
+    s32 alignedSize;
+    u32 usedOffset;
+    u8 *bufferStart;
+    u8 *blockBase;
+    u8 *userPtr;
+    u8 *trailer;
+    volatile u32 *heapVol;
+    s32 highWater;
 
-    size = ((s32 (*)(s32, s32))fn_801281F4)(arg1, 0x10);
-    total = size + 0x20;
-    if (total + header[2] > header[3]) {
-        ((void (*)(void *, ...))fn_802E317C)(lbl_8032A470, logArg, size / 1024);
+    alignedSize = ((s32 (*)(s32, s32))fn_801281F4)(requestSize, 0x10);
+    totalSize = alignedSize + 0x20;
+    if (totalSize + heap[2] > heap[3]) {
+        ((void (*)(void *, ...))fn_802E317C)(lbl_8032A470, name, alignedSize / 1024);
     }
-    used = header[2];
-    start = (u8 *)header[1];
-    base = start + used;
-    result = base + 0x10;
-    *(u32 *)base = 0xAAAA5555;
-    *(s32 *)(base + 4) = arg3;
-    vh = header;
-    tag = (u8 *)(vh[1] + vh[2]);
-    tag += size;
-    *(u32 *)(tag + 0x10) = 0xFEEDFACE;
-    *(s32 *)(tag + 0x14) = size;
-    header[2] = header[2] + total;
-    memset(result, 0xE3, size);
-    h4 = (s32)vh[4];
-    header[4] = ((s32)header[2] > h4) ? header[2] : h4;
-    return result;
+    usedOffset = heap[2];
+    bufferStart = (u8 *)heap[1];
+    blockBase = bufferStart + usedOffset;
+    userPtr = blockBase + 0x10;
+    *(u32 *)blockBase = 0xAAAA5555;
+    *(s32 *)(blockBase + 4) = allocTag;
+    heapVol = heap;
+    trailer = (u8 *)(heapVol[1] + heapVol[2]);
+    trailer += alignedSize;
+    *(u32 *)(trailer + 0x10) = 0xFEEDFACE;
+    *(s32 *)(trailer + 0x14) = alignedSize;
+    heap[2] = heap[2] + totalSize;
+    memset(userPtr, 0xE3, alignedSize);
+    highWater = (s32)heapVol[4];
+    heap[4] = ((s32)heap[2] > highWater) ? heap[2] : highWater;
+    return userPtr;
 }
 
 #pragma dont_inline on
