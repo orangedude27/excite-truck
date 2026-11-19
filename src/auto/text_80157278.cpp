@@ -2220,6 +2220,7 @@ extern "C" void fn_8015A538(void* tracker, void* player) {
 extern f32 lbl_8055A02C;
 extern f32 lbl_80561788;
 extern f32 lbl_805617B4;
+#pragma scheduling invalid_target
 extern "C" void fn_8015A5E0(void *arg0, void *arg1, s32 arg2, u32 arg3) {
     u8 *base;
     u8 *p;
@@ -2229,10 +2230,10 @@ extern "C" void fn_8015A5E0(void *arg0, void *arg1, s32 arg2, u32 arg3) {
     f32 now;
     f32 tol;
     f32 lim;
-    if (!(*(f32 *)((u8 *)arg1 + 0x25d4) > 0.444444f * lbl_8055A02C) || arg2 != 0x3eb || *((u8 *)arg0 + 0x2d1)) {
-        return;
-    }
-    lim = 5.0f;
+    if (!(*(f32 *)((u8 *)arg1 + 0x25d4) > lbl_805617B4 * lbl_8055A02C)) return;
+    if (arg2 != 0x3eb) return;
+    if (*((u8 *)arg0 + 0x2d1)) return;
+    lim = lbl_80561788;
     tol = lbl_80558DC4[0];
     now = lbl_8055E3C8;
     base = (u8 *)arg0 + 0x26c;
@@ -2286,7 +2287,6 @@ extern "C" void fn_8015A5E0(void *arg0, void *arg1, s32 arg2, u32 arg3) {
     p[8] = found;
     *(u32 *)p = arg3;
 }
-
 // lbl_80558DC4 is the "has this float moved at all" tolerance; lbl_8055E3C8 is
 // the running game clock, saved here as the tracker's start time.
 #define MOVE_SPEED_EPS  lbl_80558DC4  // .sdata: 2^-23, "is the player moving" tolerance
@@ -3301,23 +3301,29 @@ extern "C" void fn_8015C5D0(void* bonus) {
 }
 
 #pragma scheduling on
-extern "C" void fn_8015C5E4(void* arg0) {
+/* Bonus-tracker update: round the accumulated bonus value (+0x278) to a whole
+ * number of bonuses - away from zero, so 2.7 becomes 3 and -2.7 becomes -3 -
+ * into the pending counter (+0x26C), run the tracker's v13 hook, and if that
+ * left anything pending tell this tracker's context (m4) about it with event
+ * 0x48203 and the count, which clears the pending counter and restarts the
+ * accumulated value from zero. */
+extern "C" void fn_8015C5E4(Unk801577F0* tracker) {
     f32 offset;
     s32 count;
-    if (*(f32*)((u8*)arg0 + 0x278) < 0.0f) {
-        offset = *(f32*)((u8*)arg0 + 0x278) - 0.5f;
+    if (tracker->m278 < 0.0f) {
+        offset = tracker->m278 - 0.5f;
     } else {
-        offset = 0.5f + *(f32*)((u8*)arg0 + 0x278);
+        offset = 0.5f + tracker->m278;
     }
-    *(s32*)((u8*)arg0 + 0x26c) = (s32)offset;
-    ((Unk801577F0*)arg0)->v13();
-    count = *(s32*)((u8*)arg0 + 0x26c);
+    tracker->m26c = (s32)offset;
+    tracker->v13();
+    count = tracker->m26c;
     if (count > 0) {
         if (count > 0) {
-            ((void (*)(void*, s32, s32))fn_801CB6E4)((void*)0x48203, *(s32*)((u8*)arg0 + 4), count);
-            *(s32*)((u8*)arg0 + 0x26c) = 0;
+            ((void (*)(void*, s32, s32))fn_801CB6E4)((void*)0x48203, tracker->m4, count);
+            tracker->m26c = 0;
         }
-        *(f32*)((u8*)arg0 + 0x278) = lbl_80561754;
+        tracker->m278 = lbl_80561754;
     }
 }
 /* Bonus-tracker category getter: returns index 4. */
