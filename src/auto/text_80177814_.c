@@ -1169,6 +1169,9 @@ extern "C" void fn_80179140(void) {
 }
 #pragma cplusplus off
 
+/* No-op hook of the scene/system manager, placed between the object-table
+ * update fn_80179140 and the global shutdown fn_801791A8.  It compiles to a
+ * bare blr and no caller has shown up in the decompiled code yet. */
 void fn_801791A4(void) {
 
 }
