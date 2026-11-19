@@ -436,7 +436,8 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *);
 extern "C" void fn_80112528(void *, const u16 *, s32);
 extern "C" void fn_80112960(void *, void *);
 extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2);
-extern "C" void fn_800DD70C(register u8 *self) {
+#pragma cplusplus reset
+extern void fn_800DD70C(u8 *self) {
     CWBuf w;
     f32 bounds[4];
     f32 line[4];
@@ -481,21 +482,21 @@ extern "C" void fn_800DD70C(register u8 *self) {
     SetupGX__Q36nw4hbm2ut10CharWriterFv(&w);
     fn_800DF208(bounds, self, &w);
     switch (self[0xFC] % 3) {
-    case 1: fa = lbl_80560EE0; break;
-    case 2: fa = lbl_80560EE4; break;
-    default: fa = lbl_80560ED0; break;
+    case 1: fa = 0.5f; break;
+    case 2: fa = 1.0f; break;
+    default: fa = 0.0f; break;
     }
     str = *(const u16 **)(self + 0xD4);
     SetCursor__Q36nw4hbm2ut10CharWriterFff(&w, bounds[0], bounds[1]);
     n = *(u16 *)(self + 0xFA);
-    zero = lbl_80560ED0;
+    zero = 0.0f;
     while (n > 0) {
         CWBuf w2;
         s32 used;
         f32 mx = *(f32 *)(self + 0x4C);
         PTRCHECK(&w, 0x113, 0x194)
         PTRCHECK(str, 0x114, 0x1D0)
-        if (n < 0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x115, msg + 0x208, n, 0);
+        if (n < 0) PANIC(msg + 0x10, 0x115, msg + 0x208, n, 0);
         w2 = w;
         line[0] = line[1] = line[2] = line[3] = zero;
         SetCursor__Q36nw4hbm2ut10CharWriterFff(&w2, zero, zero);
