@@ -3,14 +3,13 @@
 extern float lbl_80563490;
 extern void fn_802E30C8(const char *, ...);
 struct Rec80216 { int w[12]; float f[3]; };
-#define CPYPAIR80216(DD, SS, I) { int a = ((int *)(SS))[(I)]; int b = ((int *)(SS))[(I) + 1]; ((int *)(DD))[(I)] = a; ((int *)(DD))[(I) + 1] = b; }
 #define CPYREC80216(DD, SS, SF) \
-    CPYPAIR80216(DD, SS, 0) \
-    CPYPAIR80216(DD, SS, 2) \
-    CPYPAIR80216(DD, SS, 4) \
-    CPYPAIR80216(DD, SS, 6) \
-    CPYPAIR80216(DD, SS, 8) \
-    CPYPAIR80216(DD, SS, 10) \
+    ((unsigned long long *)(DD))[0] = ((unsigned long long *)(SS))[0]; \
+    ((unsigned long long *)(DD))[1] = ((unsigned long long *)(SS))[1]; \
+    ((unsigned long long *)(DD))[2] = ((unsigned long long *)(SS))[2]; \
+    ((unsigned long long *)(DD))[3] = ((unsigned long long *)(SS))[3]; \
+    ((unsigned long long *)(DD))[4] = ((unsigned long long *)(SS))[4]; \
+    ((unsigned long long *)(DD))[5] = ((unsigned long long *)(SS))[5]; \
     ((float *)(DD))[12] = (SF)[12]; \
     ((float *)(DD))[13] = (SF)[13]; \
     ((float *)(DD))[14] = (SF)[14];
