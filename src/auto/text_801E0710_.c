@@ -897,6 +897,7 @@ void fn_801E1710(void *arg0) {
     }
 }
 #pragma pop
+/* No-op stub. */
 void fn_801E1868(void) {
 
 }
