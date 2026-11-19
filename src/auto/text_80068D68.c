@@ -21816,6 +21816,7 @@ void *l2cu_find_lcb_by_state(s32 state) {
 }
 
 u8 l2cu_lcb_disconnecting(void) {
+    /* Return nonzero if any active LCB is disconnecting, or has a single CCB in a disconnecting state. */
     u8 *p_lcb = lbl_803C4040 + 8;
     u16 i;
     u8 status = 0;
