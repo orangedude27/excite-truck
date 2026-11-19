@@ -9,7 +9,7 @@ void fn_801B664C(void) {
 }
 
 void fn_801B6650(void) {
-
+    /* No-op stub. */
 }
 
 void fn_801B6654(void) {
