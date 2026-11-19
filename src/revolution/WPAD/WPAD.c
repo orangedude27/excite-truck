@@ -322,17 +322,14 @@ static void WPADiRadioSensitivity(s32 chan) {
     }
 }
 
-#pragma push
-#pragma always_inline on
-static inline u8 IsButtonChanged(u16 lhs, u16 rhs) {
+static u8 IsButtonChanged(u16 lhs, u16 rhs) {
     return lhs != rhs ? TRUE : FALSE;
 }
 
-static inline u8 IsAnalogChanged(s32 lhs, s32 rhs, s32 threshold) {
+static u8 IsAnalogChanged(s32 lhs, s32 rhs, s32 threshold) {
     s32 diff = lhs - rhs < 0 ? rhs - lhs : lhs - rhs;
     return diff > threshold ? TRUE : FALSE;
 }
-#pragma pop
 
 static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
 #define WPAD_BUTTON_CHANGED(lhs, rhs) ((lhs) != (rhs))
