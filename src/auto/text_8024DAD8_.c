@@ -38,7 +38,7 @@ static inline void CleanupEntries(void *table) {
         fn_80128668(table);
     }
 }
-extern const double lbl_80563958;
+extern double lbl_80563958;
 extern unsigned char lbl_80498C48[];
 s32 fn_8001668C(s32, s32);
 s32 *fn_80016BC8(s32);
@@ -2541,7 +2541,7 @@ extern "C" void fn_80251B04(void *arg0) {
     extern u32 lbl_8055CFF4;
     extern const f32 lbl_80563964, lbl_80563980, lbl_8056398C, lbl_80563990, lbl_80563994, lbl_80563998, lbl_8056399C, lbl_805639A0, lbl_805639A4, lbl_805639A8, lbl_805639AC, lbl_805639B0, lbl_805639B4, lbl_805639B8, lbl_805639BC;
     extern double __fabs(double);
-    f32 f23, f26, f27, temp_f3, temp_f10;
+    f32 temp_f3, temp_f10, f27, f26, f23;
     s32 off, i;
     temp_f10 = (f32)((s32)(((u32)lbl_8055CFF4 >> 31) + lbl_8055CFF4) >> 1);
     temp_f3 = (lbl_80563990 * (f32)lbl_8055CFF0) / lbl_80563994;
