@@ -324,6 +324,7 @@ int fn_8018FF84(int object, int deleteFlag) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
+#pragma opt_strength_reduction off
     class ResultMethods {
     public:
         virtual u8 f0(); virtual u8 f1(); virtual u8 f2(); virtual u8 f3();
@@ -402,6 +403,7 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     if (fn_80019B78() != 0) {
         lbl_8055E528 = 1;
     }
+#pragma opt_strength_reduction on
 }
 #pragma scheduling on
 #pragma use_lmw_stmw reset
@@ -1380,12 +1382,10 @@ extern "C" void fn_801912D8(void *arg0) {
     int enabled;
     int mask;
     unsigned int flags;
-    float first;
     unsigned char spA, sp9, sp8;
     *(unsigned char *)(*(unsigned char **)(self + 0x34) + 0x2680) = (*(Obj **)(self + 0x38))->getFlag();
-    first = lbl_80562090;
     *(int *)(*(unsigned char **)(self + 0x34) + 0x267C) = 0;
-    *(float *)(*(unsigned char **)(self + 0x34) + 0x5F0) = first;
+    *(float *)(*(unsigned char **)(self + 0x34) + 0x5F0) = 1.0f;
     enabled = 1;
     self[4] = 1;
     fn_801333E8((*(Obj **)(self + 0x38))->getKey(), base + 0x7C, self + 4);
