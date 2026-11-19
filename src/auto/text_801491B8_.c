@@ -5094,7 +5094,7 @@ void fn_801560F8(void *record, s32 value) {
     *(s32 *)((u8 *)record + 0xF4) = value;
 }
 
-/* Empty stub; does nothing. */
+/* Empty no-op callback. */
 void fn_80156100(void) {
 
 }
