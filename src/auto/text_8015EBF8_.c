@@ -40,10 +40,11 @@ void* fn_8015EBF8(void* arg0, s32 arg1) {
 }
 
 static inline int fn_8015ECC0_isValid(void *obj) {
+    int ok = 0;
     if (((int *)obj)[8] < 1000 && ((unsigned int *)obj)[6] == 0x54554245) {
-        return 1;
+        ok = 1;
     }
-    return 0;
+    return ok;
 }
 
 #pragma dont_inline on
