@@ -4736,7 +4736,7 @@ void uusb_WriteCtrlDataCB(s32 arg0, void *arg1) {
 void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
-    register uusb_cb_t *control;
+    register u8 *control;
     register int status = arg0;
     register char *report = lbl_803142C8;
     u16 offset;
@@ -4753,22 +4753,22 @@ void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
         fn_8006EB88();
     }
     {
-        control = &lbl_803BD1E0;
-        if (((u8 *)control)[0x38] < 5 && *(u16 *)((u8 *)control + 0x34) != 0) {
-            arg1 = (s32)GKI_dequeue((BUFFER_Q *)((u8 *)control + 0x2C));
+        control = (u8 *)&lbl_803BD1E0;
+        if (control[0x38] < 5 && *(u16 *)(control + 0x34) != 0) {
+            arg1 = (s32)GKI_dequeue((BUFFER_Q *)(control + 0x2C));
             offset = *(u16 *)((u8 *)arg1 + 4);
-            if (IUSB_WriteBlkMsgAsync(lbl_803BD1E0.fd, ((u8 *)control)[0x10],
+            if (IUSB_WriteBlkMsgAsync(lbl_803BD1E0.fd, control[0x10],
                                       *(u16 *)((u8 *)arg1 + 2),
                                       (u8 *)arg1 + offset + 8,
                                       (void (*)(void))uusb_WriteBulkDataCB, (void *)arg1) < 0) {
-                if (((u8 *)control)[0x28] != 0) {
+                if (control[0x28] != 0) {
                     OSReport(report + 0x588);
                 }
                 GKI_enqueue_head((BUFFER_Q *)((u8 *)&lbl_803BD1E0 + 0x2C), (void *)arg1);
                 return;
             }
             fn_8006EBAC();
-            ((u8 *)control)[0x38] = ((u8 *)control)[0x38] + 1;
+            control[0x38] = control[0x38] + 1;
             fn_8006EB88();
         }
     }
@@ -5010,8 +5010,7 @@ void UUSB_Close(void *arg0) {
     extern s32 IUSB_CloseDeviceAsync(s32, void (*)(void), void *);
     fn_8006EBAC();
     {
-        u32 hi = (u32)&lbl_803BD1E0;
-        u8 *base = (u8 *)hi;
+        u8 *base = (u8 *)&lbl_803BD1E0;
         base[0x29] = 0;
         fn_8006EB88();
         if (*(u16 *)(base + 0x34) != 0) {
@@ -5021,8 +5020,7 @@ void UUSB_Close(void *arg0) {
         }
     }
     {
-        u32 hi = (u32)&lbl_803BD1E0;
-        u8 *base = (u8 *)hi;
+        u8 *base = (u8 *)&lbl_803BD1E0;
         if (*(u16 *)(base + 0x44) != 0) {
             while (*(u16 *)(base + 0x44) != 0) {
                 GKI_freebuf(GKI_dequeue((BUFFER_Q *)(base + 0x3C)));
@@ -8854,47 +8852,49 @@ tBTM_STATUS btm_remove_acl(BD_ADDR bd_addr) {
 }
 #pragma pop
 void btm_chg_all_acl_pkt_types(BOOLEAN start) {
-    register u32 i;
-    register u8 * const log = lbl_80315CA0;
-    u8 *p = lbl_803C0F78 + 0x34;
     u16 mask, pkt, temp;
     u8 mode, sp8;
     u8 spC[12];
-    if (start) {
-        for (i = 0; i < 4; ++i, p += 0x11C) {
-            if (!p[0x119]) continue;
-            if (lbl_803C0F78[0x27C0] >= 5) fn_80070954(0xD0004, log + 0x38C, *(u16 *)p);
-            *(u16 *)(p + 4) = *(u16 *)(p + 2);
-            pkt = 0x18;
-            mode = lbl_803C0F78[0x636];
-            if (mode >= 3) pkt |= 0x3300;
-            mask = *(u16 *)(lbl_803C0F78 + 0x654);
-            temp = pkt & mask & 0xCC18;
-            if (mode >= 3) temp |= (pkt | mask) & 0x3306;
-            else temp &= ~0x3306;
-            if (lbl_803C0F78[0x27C0] >= 4) fn_80070954(0xD0003, log + 0x40, temp);
-            if (btsnd_hcic_change_conn_type(*(u16 *)p, temp)) *(u16 *)(p + 2) = temp;
-        }
-    } else {
-        for (i = 0; i < 4; ++i, p += 0x11C) {
-            if (!p[0x119]) continue;
-            if (!*(u16 *)(p + 4)) continue;
-            if (BTM_ReadPowerMode(p + 8, &sp8)) continue;
-            if (sp8 == 2) {
-                if (lbl_803C0F78[0x27C0] >= 5) fn_80070954(0xD0004, log + 0x3BC, *(u16 *)p);
-                spC[8] = 0;
-                BTM_SetPowerMode(0x80, p + 8, (void *)spC);
-            } else {
-                if (lbl_803C0F78[0x27C0] >= 5) fn_8007096C(0xD0004, log + 0x3EC, *(u16 *)p, *(u16 *)(p + 2));
-                pkt = *(u16 *)(p + 4);
-                mask = *(u16 *)(lbl_803C0F78 + 0x654);
+    {
+        u8 *log = lbl_80315CA0;
+        u32 i;
+        u8 *p = lbl_803C0F78 + 0x34;
+        if (start) {
+            for (i = 0; i < 4; ++i, p += 0x11C) {
+                if (!p[0x119]) continue;
+                if (lbl_803C0F78[0x27C0] >= 5) fn_80070954(0xD0004, log + 0x38C, *(u16 *)p);
+                *(u16 *)(p + 4) = *(u16 *)(p + 2);
+                pkt = 0x18;
                 mode = lbl_803C0F78[0x636];
+                if (mode >= 3) pkt |= 0x3300;
+                mask = *(u16 *)(lbl_803C0F78 + 0x654);
                 temp = pkt & mask & 0xCC18;
                 if (mode >= 3) temp |= (pkt | mask) & 0x3306;
                 else temp &= ~0x3306;
                 if (lbl_803C0F78[0x27C0] >= 4) fn_80070954(0xD0003, log + 0x40, temp);
                 if (btsnd_hcic_change_conn_type(*(u16 *)p, temp)) *(u16 *)(p + 2) = temp;
-                *(u16 *)(p + 4) = 0;
+            }
+        } else {
+            for (i = 0; i < 4; ++i, p += 0x11C) {
+                if (!p[0x119]) continue;
+                if (!*(u16 *)(p + 4)) continue;
+                if (BTM_ReadPowerMode(p + 8, &sp8)) continue;
+                if (sp8 == 2) {
+                    if (lbl_803C0F78[0x27C0] >= 5) fn_80070954(0xD0004, log + 0x3BC, *(u16 *)p);
+                    spC[8] = 0;
+                    BTM_SetPowerMode(0x80, p + 8, (void *)spC);
+                } else {
+                    if (lbl_803C0F78[0x27C0] >= 5) fn_8007096C(0xD0004, log + 0x3EC, *(u16 *)p, *(u16 *)(p + 2));
+                    pkt = *(u16 *)(p + 4);
+                    mask = *(u16 *)(lbl_803C0F78 + 0x654);
+                    mode = lbl_803C0F78[0x636];
+                    temp = pkt & mask & 0xCC18;
+                    if (mode >= 3) temp |= (pkt | mask) & 0x3306;
+                    else temp &= ~0x3306;
+                    if (lbl_803C0F78[0x27C0] >= 4) fn_80070954(0xD0003, log + 0x40, temp);
+                    if (btsnd_hcic_change_conn_type(*(u16 *)p, temp)) *(u16 *)(p + 2) = temp;
+                    *(u16 *)(p + 4) = 0;
+                }
             }
         }
     }
@@ -22541,20 +22541,22 @@ void port_rfc_closed(struct t_port_info *p_port, u8 reason) {
 extern char lbl_80319570[];
 #pragma push
 #pragma opt_propagation off
+#pragma peephole off
 void port_select_mtu(void *arg0) {
+    #pragma opt_propagation reset
     register char *messages = lbl_80319570;
     register u8 *port = (u8 *)arg0;
     u16 packet_size;
-    u32 raw_size;
+    s32 raw_size;
     u32 mtu;
 
     mtu = *(u16 *)(port + 0x12);
     if (mtu == 0) {
-        raw_size = ((u32 (*)(u8 *))btm_get_max_packet_size)(port + 6);
+        raw_size = ((s32 (*)(u8 *))btm_get_max_packet_size)(port + 6);
         packet_size = raw_size;
         if (packet_size == 0) {
             if (lbl_803C4828[0x414] >= 2)
-                ((void (*)(u32, char *))fn_8007093C)(0x90001, messages);
+                fn_8007093C(0x90001, messages);
             *(u16 *)(port + 0x12) = 0x7F;
         } else if (packet_size <= 0x69F) {
             mtu = ((0x69F / packet_size) * raw_size) - 0xA;
