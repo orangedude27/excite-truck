@@ -1427,18 +1427,36 @@ extern "C" s32 fn_8012C33C(char *path) {
 }
 
 #pragma use_lmw_stmw off
-extern "C" s32 fn_8012C370(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+/* ResourceGet: the public resource lookup, a retrying wrapper around the
+ * entry lookup of fn_8012B85C.  Every attempt clears the load-retry flag
+ * (raised by fn_8012A7FC when a read of the archive had to wait), asks for
+ * `path`'s data carrying the type tag `dataTag` (a fourcc such as 'ETOC') and
+ * stops as soon as no read error happened or the data is in hand; a failed
+ * read is logged and the background-task pump (fn_80127464) is run so the
+ * pending load can finish - up to 10 attempts.  The last lookup result is
+ * returned: the entry's data, or 0.  The four arguments after dataTag are the
+ * out pointers fn_8012B85C fills: entry id, data size, first reference and
+ * newly-requested flag. */
+extern "C" s32 fn_8012C370(s32 path, s32 dataTag, s32 outId, s32 outSize, s32 outFirstUse, s32 outNewRequest) {
+#define sLoadRetryFlag   lbl_8055DFF9
+#define ResourceGetInner fn_8012B85C
+#define badReadMsg       lbl_8032AB78 /* "ResourceGet(%s): BAD READ, retrying" */
+#define pumpTasks        fn_80127464
     s32 result;
-    s32 i;
-    for (i = 0; i < 10; i++) {
-        lbl_8055DFF9 = 0;
-        result = fn_8012B85C(arg0, arg1, arg2, arg3, arg4, arg5);
-        if (lbl_8055DFF9 == 0 || result != 0)
+    s32 attempt;
+    for (attempt = 0; attempt < 10; attempt++) {
+        sLoadRetryFlag = 0;
+        result = ResourceGetInner(path, dataTag, outId, outSize, outFirstUse, outNewRequest);
+        if (sLoadRetryFlag == 0 || result != 0)
             break;
-        fn_802E30C8(lbl_8032AB78, arg0);
-        fn_80127464();
+        fn_802E30C8(badReadMsg, path);
+        pumpTasks();
     }
     return result;
+#undef sLoadRetryFlag
+#undef ResourceGetInner
+#undef badReadMsg
+#undef pumpTasks
 }
 #pragma push
 #pragma use_lmw_stmw off
