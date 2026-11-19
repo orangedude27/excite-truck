@@ -1878,9 +1878,10 @@ void fn_80196328(void *controller) {
     extern void fn_801B2F40(int);
           extern int fn_8019643C();
       void fn_80194844();
-      void fn_8019639C(void) {
-      fn_80194844();
-  }
+/* Tail-call wrapper: forwards the current controller/driver object to fn_80194844. */
+void fn_8019639C(void) {
+    fn_80194844();
+}
 
 #pragma dont_inline on
 void fn_801963A0(void *state) {
