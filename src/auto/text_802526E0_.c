@@ -14,7 +14,7 @@ typedef struct {
     f32 dirX, dirY;
     f32 unk28;
     f32 upY;
-    f32 unk30, unk34, unk38;
+    f32 unk30, unk34, unk38, upZ;
     f32 resX, resY, resZ, resW;
     f32 latX, latY, latZ, latW;
     f32 tmpX, tmpY, tmpZ, tmpW;
