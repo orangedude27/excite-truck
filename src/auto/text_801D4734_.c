@@ -3935,10 +3935,10 @@ extern "C" void fn_801D8ABC(void *obj) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" s32 fn_801D8ACC(void *arg0, void *arg1) {
+extern "C" s32 fn_801D8ACC(void *effectPtr, void *valueReader) {
     extern char lbl_8055ACB8;
     extern char lbl_8055ACB0;
-    struct Dummy {
+    struct ValueReader {
         virtual void v0();
         virtual void v1();
         virtual void v2();
@@ -3947,14 +3947,18 @@ extern "C" s32 fn_801D8ACC(void *arg0, void *arg1) {
         virtual void v5();
         virtual void v6();
         virtual void v7();
-        virtual float get(char *, float);
+        virtual float readFloat(char *, float);
     };
-    Dummy *obj = (Dummy *)arg1;
-    float value = 0.0f;
-    *(int *)((char *)arg0 + 4) = 1;
-    *(float *)((char *)arg0 + 0x10) = value;
-    *(float *)((char *)arg0 + 8) = obj->get(&lbl_8055ACB8, value);
-    *(float *)((char *)arg0 + 0xC) = obj->get(&lbl_8055ACB0, 5.0f);
+    ValueReader *reader = (ValueReader *)valueReader;
+    TimedEffect *effect = (TimedEffect *)effectPtr;
+    float zero = 0.0f;
+
+    /* Initialize a timed effect from the value reader: mark it ready, clear its
+       start time, and read the "delay" (default 0) and "length" (default 5). */
+    effect->state = 1;
+    effect->startTime = zero;
+    effect->delay = reader->readFloat(&lbl_8055ACB8, zero);
+    effect->length = reader->readFloat(&lbl_8055ACB0, 5.0f);
     return 1;
 }
 #pragma pop
