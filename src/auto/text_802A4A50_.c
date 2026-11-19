@@ -1200,6 +1200,7 @@ void fn_802A6838(void *arg0) {
     float divisor;
     float dt;
     float speed;
+    float rx = lbl_80564858;
     float scale;
     float one;
     float curve;
@@ -1208,7 +1209,6 @@ void fn_802A6838(void *arg0) {
     double absY;
     float ax;
     float ay;
-    float rx;
     float ry;
     float end;
     float start;
@@ -1226,8 +1226,8 @@ void fn_802A6838(void *arg0) {
         samples[0] = *(float *)(p + 0x50) * (scale - product);
         absX = __fabs((double)samples[0]);
         absY = __fabs((double)samples[1]);
-        ax = one - (float)absX;
         ay = one - (float)absY;
+        ax = one - (float)absX;
         rx = fn_80287BC8(-ax, ax);
         ry = fn_80287BC8(-ay, ay);
         end = *(float *)(p + 0x28);
@@ -1679,7 +1679,6 @@ extern char lbl_8055CBF8, lbl_8055CBFC, lbl_8055CC04, lbl_8055CC0C, lbl_8055CC10
 extern double fn_8002F208(float);
 extern s32 fn_801EA140(void *);
 #pragma push
-#pragma processor 750
 #pragma cplusplus on
 extern "C" s32 fn_802A7370(s32 arg0, void *arg1) {
     struct Vec3 {
@@ -1724,10 +1723,8 @@ extern "C" s32 fn_802A7370(s32 arg0, void *arg1) {
     }
     {
         s32 h = fn_802CAC28(obj->v3(&lbl_8055CC18), 0);
-        f32 denominator, numerator;
-        numerator = *(volatile f32 *)&lbl_80564850;
-        denominator = *(volatile f32 *)(arg0 + 8);
-        *(f32 *)(arg0 + 0x30) = (f32)fn_8002F208((*(volatile s32 *)(arg0 + 0x2C) = h, numerator / denominator));
+        register f32 num = lbl_80564850;
+        *(f32 *)(arg0 + 0x30) = (f32)fn_8002F208(num / (*(s32 *)(arg0 + 0x2C) = h, *(f32 *)(arg0 + 8)));
     }
     {
         const Vec3 &c = obj->get(&lbl_8055CC20);
