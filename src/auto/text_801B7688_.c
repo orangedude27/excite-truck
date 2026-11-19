@@ -153,6 +153,9 @@ float fn_801B79AC(void) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma ppc_psq_save off
+#pragma opt_loop_invariants off
+#pragma opt_common_subs off
+#pragma scheduling invalid_target
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" float lbl_80562700, lbl_80562708, lbl_8056270C, lbl_80562710, lbl_80562714;
@@ -168,29 +171,31 @@ extern "C" void *__AXFXGetLfoSinTable_801769CC(void);
 extern "C" void fn_801B79D4(void *arg0, unsigned int arg1, int arg2) {
     struct V1 {
         virtual void v0(); virtual void v1(); virtual void v2();
-        virtual void v3(); virtual void v4(); virtual void v5();
-        virtual void v6(); virtual int v5x();
+        virtual void v3(); virtual void v4(); virtual int v5();
     };
     struct V2 {
         virtual void w0(); virtual void *w1(int); virtual void w2();
         virtual void *w3();
     };
     struct Node {
+        char pad[0x10];
         unsigned int key;
         Node *next;
+        char pad2[4];
         float value;
     };
     unsigned int var28 = arg1;
-    int r30 = ((V1 *)fn_801B2ED0(var28))->v5x();
+    int r30 = ((V1 *)fn_801B2ED0(var28))->v5();
     float f31 = fn_80139048();
-    float sum = lbl_8056270C + (fn_801B79AC() + f31);
+    float a = fn_801B79AC();
+    float sum = lbl_8056270C + (a + f31);
     if (arg2 != 0x53 && arg2 != 0x54) var28 = fn_801B3050(var28);
     float f30 = (var28 & 1) ? lbl_80562700 : -lbl_80562700;
     float f1 = -fn_801B79AC() * lbl_80562710;
     float f29 = lbl_80562714;
     float v31 = f1 - (float)((int)((var28 >> 31) + var28) >> 1) * sum;
     V2 *holder = (V2 *)((V2 *)fn_80156A40(f1))->w1(0);
-    Node *head = (Node *)(((char *)holder) + 0x1C);
+    Node *head = *(Node **)((char *)holder + 0x1C);
     Node *cur = head;
     Node *best = head;
     do {
