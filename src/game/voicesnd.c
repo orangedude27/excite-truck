@@ -574,6 +574,10 @@ void fn_8020B2BC(void *mixer, int voiceSound, int slotIndex) {
     slots[slotIndex] = 0;
 }
 
+/* "Voice Mixer" device (callback table lbl_8033C458, installed by the device
+ * constructor fn_8020A860), slot +0x3C: a mixer-device method this backend
+ * does not implement.  The null backend's device table leaves the same slot
+ * empty too (fn_80206480), so neither sound device in this build answers it. */
 void fn_8020B2D0(void) {
 
 }
