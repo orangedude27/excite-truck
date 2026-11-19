@@ -296,6 +296,7 @@ void fn_8017A578(void *arg0) {
     fn_8017A580(arg0);
 }
 
+/* Empty stub (no operation). */
 void fn_8017A57C(void) {
 
 }
