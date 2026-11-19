@@ -1634,7 +1634,7 @@ void fn_80069408(void) {
     }
     case 0xF: {
         u8 result = 0xFF;
-        if (memcmp(base + 0xB60 + 6, lbl_803130C8 + 0x1A0, 0x10) == 0) {
+        if (memcmp(base + 0xB60 + 6, strings + 0x1A0, 0x10) == 0) {
             u8 *info = base + 0xC68;
             info[0x59] = 2;
             BTA_HhOpen(info + 0x40, 0, 0x12);
