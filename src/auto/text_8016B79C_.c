@@ -3266,7 +3266,6 @@ loop_80:
 
 extern f64 fn_8002F234(f32, f32, f32, f32, f32);
 #pragma use_lmw_stmw off
-struct Item70DA8 { char pad[0x24]; float v24, v28, v2c, v30, v34; };
 void fn_80170DA8(void *arg0, void *arg1) {
     u8 *base;
     u8 *item;
