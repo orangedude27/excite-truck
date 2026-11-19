@@ -129,7 +129,7 @@ extern const char lbl_80322438[];
 extern const char lbl_80322010[];
 extern const char lbl_80322034[];
 extern "C" float lbl_80560FB4;
-__declspec(section ".sdata2") extern double lbl_80560FB8;
+extern double lbl_80560FB8;
 // BasicSound::Pause: this object's vtable has the player accessor at 0x5C; its vf6(int) is at 0x14.
 class PauseVt {
 public:
