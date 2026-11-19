@@ -72,7 +72,7 @@ void fn_801E9DD4(void) {
 }
 
 void fn_801E9DD8(void) {
-
+    /* Empty stub (returns immediately). */
 }
 
 #pragma scheduling invalid_target
