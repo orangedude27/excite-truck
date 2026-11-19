@@ -102,15 +102,20 @@ int fn_802CCD0C(void *arg0, void *arg1) {
 }
 
 #pragma cplusplus on
-extern "C" int fn_802CCDC4(void *** __restrict arg0, void *** __restrict arg1) {
-    struct Local {
-        virtual void v0();
-        virtual void v1();
-        virtual int v2();
-    };
-    Local *obj0 = (Local *)*arg0;
-    Local *obj1 = (Local *)*arg1;
-    return obj0->v2() - obj1->v2();
+// One element of the draw-entry pointer array at mlist+0x90. The virtual method
+// at vtable+0x10 returns the entry's sort key.
+struct MListEntry {
+    virtual void method0();
+    virtual void method1();
+    virtual int getSortKey();
+};
+
+// qsort comparator for the 4-byte entry pointers in the array at mlist+0x90
+// (installed by fn_802CCE24): orders the entries by their virtual sort key.
+extern "C" int fn_802CCDC4(void *** __restrict itemA, void *** __restrict itemB) {
+    MListEntry *entryA = (MListEntry *)*itemA;
+    MListEntry *entryB = (MListEntry *)*itemB;
+    return entryA->getSortKey() - entryB->getSortKey();
 }
 #pragma cplusplus reset
 extern int fn_802CAC28(void *, int);
