@@ -1843,51 +1843,52 @@ extern "C" s32 fn_800A6FC4(void *arg0, s32 arg1, u32 arg2) {
 
 #pragma push
 #pragma opt_propagation off
-extern "C" s32 fn_800A7090(void *arg0, s32 arg1, s32 *arg2) {
+/* Allocates a device request slot from the global pool at lbl_803D1640 and binds it to the device. */
+extern "C" s32 fn_800A7090(void *device, s32 param, s32 *outHandle) {
     u8 *base;
-    u16 index;
-    u32 pair;
-    u32 offset;
-    u8 *record;
-    u16 count;
-    s32 *out;
+    u16 slotIndex;
+    u32 i;
+    u32 slotOffset;
+    u8 *slotBase;
+    u16 activeCount;
+    s32 *slotEntry;
     s32 result;
 
-    *arg2 = 0;
+    *outHandle = 0;
     if (*(u16 *)&lbl_803D1640 >= 0x1A)
         return 10;
 
-    pair = 0;
+    i = 0;
     base = (u8 *)&lbl_803D1640;
-    index = 0;
-    for (; pair < 13; pair++) {
-        u8 *entry = base + index * 0x28;
+    slotIndex = 0;
+    for (; i < 13; i++) {
+        u8 *entry = base + slotIndex * 0x28;
         if ((*(u32 *)(entry + 0x61C) & 1) == 0)
             goto found;
-        index++;
-        entry = base + index * 0x28;
+        slotIndex++;
+        entry = base + slotIndex * 0x28;
         if ((*(u32 *)(entry + 0x61C) & 1) == 0)
             goto found;
-        index++;
+        slotIndex++;
     }
 
 found:
-    if (index == 0x1A)
+    if (slotIndex == 0x1A)
         return 10;
 
-    offset = (u32)index * 0x28;
-    result = fn_800A625C(arg0, (s32)((u8 *)&lbl_803D1640 + offset + 0x61C));
+    slotOffset = (u32)slotIndex * 0x28;
+    result = fn_800A625C(device, (s32)((u8 *)&lbl_803D1640 + slotOffset + 0x61C));
     if (result != 0)
         return result;
 
-    count = *(u16 *)&lbl_803D1640;
-    record = (u8 *)((u32)&lbl_803D1640 + offset);
-    out = (s32 *)(record + 0x61C);
-    *(u16 *)&lbl_803D1640 = count + 1;
-    *(u32 *)(record + 0x61C) |= 1;
-    *(s32 *)(record + 0x620) = (s32)arg0;
-    *(s32 *)(record + 0x624) = arg1;
-    *arg2 = (s32)out;
+    activeCount = *(u16 *)&lbl_803D1640;
+    slotBase = (u8 *)((u32)&lbl_803D1640 + slotOffset);
+    slotEntry = (s32 *)(slotBase + 0x61C);
+    *(u16 *)&lbl_803D1640 = activeCount + 1;
+    *(u32 *)(slotBase + 0x61C) |= 1;
+    *(s32 *)(slotBase + 0x620) = (s32)device;
+    *(s32 *)(slotBase + 0x624) = param;
+    *outHandle = (s32)slotEntry;
     return 0;
 }
 #pragma pop
