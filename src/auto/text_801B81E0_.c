@@ -320,6 +320,7 @@ extern "C" void fn_801B841C(void) {
         lbl_8055E750 = lbl_80562744;
 }
 #pragma cplusplus off
+/* No operation. */
 void fn_801B8488(void) {
 
 }
