@@ -3885,14 +3885,14 @@ extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
 }
 
 #pragma push
-#pragma scheduling 750
+#pragma scheduling on
 extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
     extern s32 fn_800A4C14(u16 *, s32);
-    register u8 *dst = (u8 *)arg0;
-    register u8 *src = (u8 *)arg1;
-    register u32 raw = src[0];
-    register u32 count = raw & 0xFFFFFFBF;
-    register u32 tag = src[0xD];
+    u8 *dst = (u8 *)arg0;
+    u8 *src = (u8 *)arg1;
+    u32 raw = src[0];
+    u32 count = raw & 0xFFFFFFBF;
+    u32 tag = src[0xD];
     u32 index;
     u8 *entry;
     s32 first;
