@@ -130,15 +130,16 @@ extern char lbl_8034AC90[];
 #pragma scheduling invalid_target
 #pragma dont_inline on
 #pragma use_lmw_stmw off
+/* Allocate and clear the FanInfo cell grids for each supported cell size (lbl_804C06E0, indexed by cell size 4..64), then load faninfo.fnf via fn_802BE38C. */
 void fn_802BE694(void) {
-    s32 size;
-    u32 i;
-    s32 j;
-    for (i = 4; i < 0x41U; i <<= 1) {
-        size = fn_802BE378((s16)i);
-        lbl_804C06E0[i] = fn_8012850C(size * 0xC, lbl_8034AC90);
-        for (j = 0; j < size; j++) {
-            fn_802BE364((char *)lbl_804C06E0[i] + j * 0xC);
+    s32 cellCount;
+    u32 cellSize;
+    s32 cellIndex;
+    for (cellSize = 4; cellSize < 0x41U; cellSize <<= 1) {
+        cellCount = fn_802BE378((s16)cellSize);
+        lbl_804C06E0[cellSize] = fn_8012850C(cellCount * 0xC, lbl_8034AC90);
+        for (cellIndex = 0; cellIndex < cellCount; cellIndex++) {
+            fn_802BE364((char *)lbl_804C06E0[cellSize] + cellIndex * 0xC);
         }
     }
     fn_802BE38C();
@@ -212,6 +213,7 @@ void fn_802BE8B4(s16 arg0, s16 arg1, s32 arg2) {
     typedef union { u32 raw; struct { u32 hi : 23; u32 best : 3; u32 lo : 6; } b; } Cell;
     s32 counts[6];
     s32 *countPtr;
+    s32 flags;
     s16 x;
     s16 y;
     s32 i;
@@ -221,7 +223,7 @@ void fn_802BE8B4(s16 arg0, s16 arg1, s32 arg2) {
     s32 yOffset;
     s32 best;
     Cell *entry;
-    s32 flags;
+
     flags = 0;
     memset(counts, 0, 0x18);
     if (arg2 == 4) {
@@ -385,9 +387,9 @@ void fn_802BEB70(void)
     goto x_loop;
   }
 
-  size *= 2;
+  size = (s16) (size * 2);
   size_check:
-  if ((size - 1) < 0x40)
+  if (size <= 0x40)
   {
     goto size_loop;
   }
