@@ -436,21 +436,22 @@ noModulation:
 
 #pragma push
 #pragma dont_inline on
-extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(void* out, void* color, u8 alpha) {
-    u8* d = (u8*)out;
-    volatile u8* s = (volatile u8*)color;
-    u8 a3, a2, a1, a0;
-    a0 = s[0];
-    a1 = s[1];
-    a2 = s[2];
-    a3 = s[3];
-    d[0] = a0;
-    d[1] = a1;
-    d[2] = a2;
-    d[3] = a3;
+extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(void *dst, void *src, u8 alpha) {
+    /* Copy src to dst, scaling the alpha byte by alpha unless alpha is 0xFF. */
+    u8 *dstBytes = (u8 *)dst;
+    volatile u8 *srcBytes = (volatile u8 *)src;
+    u8 b3, b2, b1, b0;
+    b0 = srcBytes[0];
+    b1 = srcBytes[1];
+    b2 = srcBytes[2];
+    b3 = srcBytes[3];
+    dstBytes[0] = b0;
+    dstBytes[1] = b1;
+    dstBytes[2] = b2;
+    dstBytes[3] = b3;
     if (alpha != 0xFF) {
-        u8 v = s[3];
-        d[3] = (u8)((v * alpha) / 255);
+        u8 srcAlpha = srcBytes[3];
+        dstBytes[3] = (u8)((srcAlpha * alpha) / 255);
     }
 }
 #pragma pop
