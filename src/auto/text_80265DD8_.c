@@ -404,15 +404,16 @@ void *fn_80266120(void *cursor) {
 }
 
 #pragma scheduling invalid_target
-void fn_80266150(void *arg0) {
-    float f0;
-    float f1;
-    *(int *)((char *)arg0 + 4) = 0;
-    f0 = 1.0f;
-    *(int *)((char *)arg0 + 0) = 0;
-    f1 = lbl_8055C4C0;
-    *(float *)((char *)arg0 + 8) = f1;
-    *(float *)((char *)arg0 + 0xC) = f0;
+void fn_80266150(void *cursor) {
+    /* Initialize a camera spline cursor: clear both indices, set the value at +8 from lbl_8055C4C0 (130.0), and set the scale at +0xC to 1.0. */
+    float scale;
+    float limit;
+    *(int *)((char *)cursor + 4) = 0;
+    scale = 1.0f;
+    *(int *)((char *)cursor + 0) = 0;
+    limit = lbl_8055C4C0;
+    *(float *)((char *)cursor + 8) = limit;
+    *(float *)((char *)cursor + 0xC) = scale;
 }
 void fn_80266170(void *arg0, int arg1, int arg2, int arg3, float farg0) {
     float temp_f0_2;
@@ -757,8 +758,8 @@ void fn_802671CC(void *arg0, int arg1) {
     i = 0;
     for (; i < 4; i++) {
         float x, y, heightDiff;
-        if ((i & 1) != 0) x = xstep; else x = -xstep;
-        if ((i & 2) != 0) y = ystep; else y = -ystep;
+        x = (i & 1) ? xstep : -xstep;
+        y = (i & 2) ? ystep : -ystep;
         in[0] = x; in[1] = y; in[2] = z;
         if (out == in) {
             out[0] = x * matrix[0] + y * matrix[3] + z * matrix[6];
