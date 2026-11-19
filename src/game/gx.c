@@ -2243,7 +2243,7 @@ extern unsigned char lbl_8055FD19;
 extern Mtx24_802D1C04 lbl_802FAC90;
 extern float lbl_80564F90, lbl_80564FD8, lbl_80564F88;
 #pragma push
-#pragma dont_inline off
+#pragma dont_inline on
 void fn_802D1C04(void) {
     unsigned char *base = (unsigned char *)lbl_804C5650;
     if (*(unsigned char *)&lbl_8055FD70 != 0) {
