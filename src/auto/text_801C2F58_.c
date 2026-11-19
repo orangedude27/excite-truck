@@ -185,15 +185,12 @@ static inline void mtx_to_quat(float m[3][3], float *q) {
         if (m[2][2] > m[i][i]) i = 2;
         j = (i + 1) % 3;
         k = (j + 1) % 3;
-        {
-            float *mi = m[i], *mj = m[j], *mk = m[k];
-            sn = (float)fn_8002F234(lbl_8056296C + (mi[i] - (mj[j] + mk[k])));
-            inv = lbl_80562974 / sn;
-            q3 = lbl_80562974 * sn;
-            q0 = inv * (mj[k] - mk[j]);
-            q1 = inv * (mi[j] + mj[i]);
-            q2 = inv * (mi[k] + mk[i]);
-        }
+        sn = (float)fn_8002F234(lbl_8056296C + (m[i][i] - (m[j][j] + m[k][k])));
+        inv = lbl_80562974 / sn;
+        q3 = lbl_80562974 * sn;
+        q0 = inv * (m[j][k] - m[k][j]);
+        q1 = inv * (m[i][j] + m[j][i]);
+        q2 = inv * (m[i][k] + m[k][i]);
         dst[i] = q3; dst[3] = q0; dst[j] = q1; dst[k] = q2;
     }
 }
