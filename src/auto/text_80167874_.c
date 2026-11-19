@@ -1175,7 +1175,7 @@ extern "C" s32 fn_80169160(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
     diffs[6] = cursor[2] - cursor[8];
     dist[3] = (f32)fn_8002F234(diffs[6] * diffs[6] + diffs[7] * diffs[7]);
     off = (dist[0] + dist[2] <= dist[1] + dist[3]);
-    total = lbl_80561938 * (dist[off] + dist[(off + 2) % 4]);
+    total = 0.5f * (dist[off] + dist[(off + 2) % 4]);
     outerCount = 1;
     {
         s32 tmp = (s32)(total / *arg3);
@@ -1193,7 +1193,7 @@ extern "C" s32 fn_80169160(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
         center.u = fn_80139C5C(values);
         entry->f8 = center.f[0];
         entry->fC = center.f[1];
-        entry->f10 = lbl_80561924;
+        entry->f10 = 0.0f;
         {
             u8 *cur = (u8 *)values;
             s32 k = 0;
@@ -1207,12 +1207,12 @@ extern "C" s32 fn_80169160(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
                 k++;
             } while (k < *values);
         }
-        entry->f10 = lbl_80561950 * (f32)fn_8002F234(entry->f10);
+        entry->f10 = 1.1f * (f32)fn_8002F234(entry->f10);
     } else {
         entry->byte1C = 0;
-        entry->f8 = lbl_80561924;
-        entry->fC = lbl_80561924;
-        entry->f10 = lbl_80561924;
+        entry->f8 = 0.0f;
+        entry->fC = 0.0f;
+        entry->f10 = 0.0f;
     }
     entry->recordStart = arg2->recordCount;
     entry->recordCount = 0;
@@ -1220,7 +1220,7 @@ extern "C" s32 fn_80169160(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
     entry->id = -1;
     entry->active = 1;
     arg2->flag1E158 = 1;
-    outerStart = lbl_80561938 * outerRem;
+    outerStart = 0.5f * outerRem;
     {
         f32 *pA0 = (f32 *)((u8 *)values + off * 8);
         f32 *pA1 = (f32 *)((u8 *)values + ((off + 1) % 4) * 8);
@@ -1239,7 +1239,7 @@ extern "C" s32 fn_80169160(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
                 if (tmp > 1)
                     innerCount = tmp;
             }
-            f32 innerStart = lbl_80561938 * (segLen - (f32)innerCount * *arg3);
+            f32 innerStart = 0.5f * (segLen - (f32)innerCount * *arg3);
             for (j = 0; j <= innerCount; j++) {
                 f32 v = (innerStart + (f32)j * *arg3) / segLen;
                 p.x = a.x + v * (b.x - a.x);
@@ -1249,9 +1249,9 @@ extern "C" s32 fn_80169160(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
                 rec->obj = 0;
                 rec->obj = (DummyRecordObj *)fn_80167874(selVal);
                 rec->x = p.x;
-                rec->y = lbl_80561924;
+                rec->y = 0.0f;
                 rec->z = p.y;
-                rec->hit = lbl_80561924;
+                rec->hit = 0.0f;
                 fn_801E9E30(0, &rec->x);
                 rec->y = rec->y + rec->obj->f18 + rec->hit;
                 rec->flag = 0;
@@ -1481,7 +1481,7 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
     {
         DummyEntry *entry = &arg2->entries[arg2->entryCount++];
         entry->byte1C = 0;
-        zero = lbl_80561924;
+        zero = 0.0f;
         entry->f8 = zero;
         entry->fC = zero;
         entry->f10 = zero;
