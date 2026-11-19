@@ -11400,6 +11400,7 @@ void fn_8007D4C4(void) {
     extern const struct S16 lbl_802EEBF8;
     extern u8 lbl_803C0F78[];
 
+    /* Initialize fields in the global state block with a default template. */
     *(u16 *)(lbl_803C0F78 + 0x18F6) = 0xFFFF;
     *(struct S16 *)(lbl_803C0F78 + 0x18F8) = lbl_802EEBF8;
     lbl_803C0F78[0x1909] = 2;
