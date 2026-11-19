@@ -662,10 +662,10 @@ void fn_80013724(void) {
 }
 
 extern int lbl_8055D518;
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_80013A34(void) {
-    register int count = lbl_8055D518;
-    register char *p = lbl_803551E0;
+    int count = lbl_8055D518;
+    char *p = lbl_803551E0;
     int blocks, i;
     int zero = 0;
     if (count > 0) {
