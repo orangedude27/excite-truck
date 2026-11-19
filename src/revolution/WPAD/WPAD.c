@@ -331,6 +331,9 @@ static u8 IsAnalogChanged(s32 lhs, s32 rhs, s32 threshold) {
     return diff > threshold ? TRUE : FALSE;
 }
 
+#pragma push
+#pragma inline_max_size(1000)
+#pragma inline_max_total_size(10000)
 static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
 #define WPAD_BUTTON_CHANGED(lhs, rhs) ((lhs) != (rhs))
 #define WPAD_ANALOG_CHANGED(lhs, rhs, threshold) \
