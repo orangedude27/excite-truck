@@ -3454,35 +3454,33 @@ struct EmbeddedTrackEffectAse {
 #pragma opt_propagation off
 #pragma cplusplus on
 extern "C" int fn_801D8424(void *arg0, void *arg1) {
-    struct Dummy {
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void set(char *, int);
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual float get(char *, float);
+    struct ValueTable {
+        virtual void v0();                     /* 0x08 */
+        virtual void v1();                     /* 0x0C */
+        virtual void v2();                     /* 0x10 */
+        virtual char *getEntry(char *, int);   /* 0x14 */
+        virtual void v4();   virtual void v5();
+        virtual void v6();   virtual void v7();
+        virtual float getFloat(float, char *); /* 0x28: default in f1, key in r4 */
     };
     extern char lbl_8055ACB0;
     extern char lbl_8055ACB8;
     extern char lbl_8055AD48;
-    extern int fn_8029F3BC(void);
-    Dummy *obj = (Dummy *)arg1;
-    float first = obj->get(&lbl_8055ACB0, 0.0f);
-    float second = obj->get(&lbl_8055ACB8, 0.0f);
-    float scaledFirst = 59.94f * first;
-    float scaledSecond = 59.94f * second;
-    int resultFirst = (int)scaledFirst;
-    int resultSecond = (int)scaledSecond;
-    *(int *)((char *)arg0 + 8) = resultFirst;
-    *(int *)((char *)arg0 + 0xC) = resultSecond;
-    obj->set(&lbl_8055AD48, resultFirst);
-    int status = fn_8029F3BC();
-    *(int *)((char *)arg0 + 0x14) = status;
-    if (status < 0) return 0;
-    *(int *)((char *)arg0 + 4) = 1;
+    extern int fn_8029F3BC(char *);
+    EmbeddedTrackEffectAse *effect = (EmbeddedTrackEffectAse *)arg0;
+    ValueTable *table = (ValueTable *)arg1;
+    float lengthSeconds = table->getFloat(0.0f, &lbl_8055ACB0);
+    float delaySeconds = table->getFloat(0.0f, &lbl_8055ACB8);
+    float lengthTicks = 59.94f * lengthSeconds;
+    float delayTicks = 59.94f * delaySeconds;
+    int lengthFrames = (int)lengthTicks;
+    int delayFrames = (int)delayTicks;
+    effect->length = lengthFrames;
+    effect->delay = delayFrames;
+    int effectId = fn_8029F3BC(table->getEntry(&lbl_8055AD48, lengthFrames));
+    effect->effectId = effectId;
+    if (effectId < 0) return 0;
+    effect->state = TIMED_EFFECT_READY;
     return 1;
 }
 #pragma pop
