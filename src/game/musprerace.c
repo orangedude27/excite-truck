@@ -54,15 +54,18 @@ extern void fn_8021037C(void);
 extern s32 fn_80207848(const char *, s32);
 extern const char lbl_8033C5FC[];
 extern s32 lbl_8055EE38;
+#pragma push
+#pragma ctrloop on
 #pragma scheduling invalid_target
 void fn_8020C140(void) {
     f32 v1;
     f32 v2;
     f32 v31;
     f32 dc;
-    void *obj;
+    f32 scaled;
     s32 *base;
     s32 ctr;
+    void *obj;
     int k;
     v1 = lbl_8055EE48 * lbl_8055EE4C;
     if ((u8)lbl_8055EE58 != 0) {
@@ -82,23 +85,23 @@ void fn_8020C140(void) {
         if ((u8)lbl_8055EE46 != 0)
             v31 *= (f32)(0xFF - fn_801E8838()) / lbl_805632E0;
         fn_80210510(lbl_805632DC);
-        ctr = 3;
+        scaled = lbl_805632D8 * v31;
+        ctr = 4;
         base = &lbl_80489BE0;
         do {
-            obj = *(void **)((char *)base + 0x20);
-            if (obj != 0) {
+            void * __restrict o = *(void **)((char *)base + 0x20);
+            if (o != 0) {
                 if ((u8)lbl_8055EE40 != 0)
-                    v2 = lbl_805632D8 * v31;
+                    v2 = scaled;
                 else
                     v2 = v31;
-                if (v2 != *(f32 *)((char *)obj + 8)) {
-                    *(char *)((char *)obj + 0x4D) = 1;
-                    *(f32 *)((char *)obj + 8) = v2;
+                if (v2 != *(f32 *)((char *)o + 8)) {
+                    *(char *)((char *)o + 0x4D) = 1;
+                    *(f32 *)((char *)o + 8) = v2;
                 }
             }
             base += 9;
-            ctr--;
-        } while (ctr != 0);
+        } while (--ctr);
     }
 }
 
@@ -106,15 +109,15 @@ void fn_8020C140(void) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_8020C2AC(void) {
-    s32 *__restrict sel;
-    s32 *__restrict base;
+    s32 *sel;
+    s32 *base;
     s32 idx;
-    u8 *__restrict flag;
-    s32 one;
+    u8 *flag;
     f32 f31val;
     s32 tmp;
     void *o1;
     void *o2;
+    s32 one = 1;
 
     lbl_8055EE40 = 0;
     lbl_8055EE48 = fn_8020A5F0();
@@ -122,7 +125,6 @@ void fn_8020C2AC(void) {
     f31val = lbl_805632DC;
     lbl_8055EE4C = lbl_805632F0;
     idx = 0;
-    one = 1;
     lbl_8055EE50 = lbl_805632F0;
     lbl_8055EE54 = lbl_805632F0;
     do {
