@@ -450,19 +450,20 @@ void fn_801BFB2C(char *base, float *out, FV3 *points) {
 #pragma opt_propagation reset
 
 #pragma scheduling invalid_target
-void fn_801BFD34(float *out, float *in, const float *m) {
+/* Transform a 3D point by a 3x4 matrix (3x3 rotation/scale in elements 0-8, translation in 9-11) into out; handles out == in. */
+void fn_801BFD34(float *out, float *in, const float *mtx) {
     if (out == in) {
         float x, y, z;
         float m0, m3, m6, m1, m4, m7, m2, m5, m8;
-        m3 = m[3];
-        m4 = m[4];
-        m5 = m[5];
-        m0 = m[0];
-        m1 = m[1];
-        m2 = m[2];
-        m6 = m[6];
-        m7 = m[7];
-        m8 = m[8];
+        m3 = mtx[3];
+        m4 = mtx[4];
+        m5 = mtx[5];
+        m0 = mtx[0];
+        m1 = mtx[1];
+        m2 = mtx[2];
+        m6 = mtx[6];
+        m7 = mtx[7];
+        m8 = mtx[8];
         x = in[0];
         y = in[1];
         z = in[2];
@@ -472,15 +473,15 @@ void fn_801BFD34(float *out, float *in, const float *m) {
     } else {
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
         float y;
-        m10 = m[3];
-        m00 = m[0];
-        m20 = m[6];
-        m11 = m[4];
-        m01 = m[1];
-        m21 = m[7];
-        m12 = m[5];
-        m02 = m[2];
-        m22 = m[8];
+        m10 = mtx[3];
+        m00 = mtx[0];
+        m20 = mtx[6];
+        m11 = mtx[4];
+        m01 = mtx[1];
+        m21 = mtx[7];
+        m12 = mtx[5];
+        m02 = mtx[2];
+        m22 = mtx[8];
         out[0] = in[2] * m20 + (in[0] * m00 + in[1] * m10);
         y = in[1];
         out[1] = in[2] * m21 + (in[0] * m01 + y * m11);
@@ -488,9 +489,9 @@ void fn_801BFD34(float *out, float *in, const float *m) {
         out[2] = in[2] * m22 + (in[0] * m02 + y * m12);
     }
     {
-        float tx = out[0] + m[9];
-        float ty = out[1] + m[10];
-        float tz = out[2] + m[11];
+        float tx = out[0] + mtx[9];
+        float ty = out[1] + mtx[10];
+        float tz = out[2] + mtx[11];
         out[0] = tx;
         out[1] = ty;
         out[2] = tz;
