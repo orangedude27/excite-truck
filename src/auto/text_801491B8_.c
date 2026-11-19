@@ -138,18 +138,18 @@ extern void fn_801796EC(s32, void *, s32);
 extern void fn_8018A120(void *);
 extern void fn_80161A38(s32, s32, s32);
 extern void fn_80206750(void *, s32, s32);
-static inline void Transform801533E8(f32 *dst, const f32 *src, const f32 *m) {
-    if (dst == src) {
-        f32 x = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
-        f32 y = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
-        f32 z = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
-        dst[0] = x; dst[1] = y; dst[2] = z;
-    } else {
-        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
-        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
-        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
-    }
-}
+#define Transform801533E8(dst, src, m) do {                                   \
+    if ((dst) == (src)) {                                                     \
+        f32 _x = (src)[2] * (m)[6] + ((src)[0] * (m)[0] + (src)[1] * (m)[3]); \
+        f32 _y = (src)[2] * (m)[7] + ((src)[0] * (m)[1] + (src)[1] * (m)[4]); \
+        f32 _z = (src)[2] * (m)[8] + ((src)[0] * (m)[2] + (src)[1] * (m)[5]); \
+        (dst)[0] = _x; (dst)[1] = _y; (dst)[2] = _z;                          \
+    } else {                                                                  \
+        (dst)[0] = (src)[2] * (m)[6] + ((src)[0] * (m)[0] + (src)[1] * (m)[3]); \
+        (dst)[1] = (src)[2] * (m)[7] + ((src)[0] * (m)[1] + (src)[1] * (m)[4]); \
+        (dst)[2] = (src)[2] * (m)[8] + ((src)[0] * (m)[2] + (src)[1] * (m)[5]); \
+    }                                                                         \
+} while (0)
 
 extern s32 lbl_8032E1A0[];
 extern f32 lbl_80561648;
@@ -591,19 +591,16 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
 
 #pragma dont_inline on
 #pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_80149CEC(void *arg0, void * __restrict arg1) {
+extern "C" void fn_80149CEC(void *arg0, void *arg1) {
     struct Dummy {
         virtual void f0();
         virtual void f1();
         virtual void* f2();
     };
-    void *r5 = *(void **)((u8 *)arg1 + 0x68);
     void *r3;
     s32 val;
-    *(f32 *)((u8 *)arg0 + 0x28) = *(f32 *)((u8 *)r5 + 0x8D4);
+    *(f32 *)((u8 *)arg0 + 0x28) = *(const f32 *)(*(u8 * const *)((const u8 *)arg1 + 0x68) + 0x8D4);
     r3 = *(void **)((u8 *)fn_8017960C(*(s32 *)arg1) + 0x270);
     r3 = ((Dummy *)r3)->f2();
     val = *(s32 *)((u8 *)r3 + 4);
@@ -3714,7 +3711,7 @@ void fn_801537C8(s32 *light) {
 
 }
 
-#pragma scheduling reset
+#pragma scheduling on
 s32 fn_801537CC(s32 arg0, s32 arg1, f32 t) {
     u8 *a = (u8 *)&arg0;
     u8 *b = (u8 *)&arg1;
@@ -3727,12 +3724,12 @@ s32 fn_801537CC(s32 arg0, s32 arg1, f32 t) {
     f32 b3 = (f32)b[3];
     f32 a3 = (f32)a[3];
     f32 delta0 = b0 - a0;
-    s32 c0 = (s32)(a0 + t * delta0);
     f32 delta1 = b1 - a1;
-    s32 c1 = (s32)(a1 + t * delta1);
     f32 delta2 = b2 - a2;
-    s32 c2 = (s32)(a2 + t * delta2);
     f32 delta3 = b3 - a3;
+    s32 c0 = (s32)(a0 + t * delta0);
+    s32 c1 = (s32)(a1 + t * delta1);
+    s32 c2 = (s32)(a2 + t * delta2);
     s32 c3 = (s32)(a3 + t * delta3);
     u8 out[4];
     out[0] = (u8)c0;
