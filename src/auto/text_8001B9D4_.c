@@ -1124,7 +1124,6 @@ double arg4;
 
 #pragma scheduling on
 #pragma processor 750
-#pragma scheduling invalid_target
 s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 arg5, f32 arg6) {
     struct SavedValues {
         char *name;
@@ -1143,6 +1142,7 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
     s32 remaining;
     s32 oldCount;
     s32 *pool;
+    char *base;
     char *dest;
     void *entry;
     void *layout;
@@ -1193,13 +1193,14 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
             maxCount = oldCount <= 4 ? oldCount : 4;
             *(s32 *)((u8 *)record + 0x6C) = maxCount;
             offset = count * 0x14;
-            dest = (char *)record + offset + 8;
+            base = (char *)record + offset;
+            dest = base + 8;
             memmove(dest + 0x14, dest, (maxCount - count) * 0x14);
             *(char **)dest = saved.name;
-            *(s32 *)((char *)record + offset + 0xC) = saved.value0;
-            *(s32 *)((char *)record + offset + 0x10) = saved.value1;
-            *(f32 *)((char *)record + offset + 0x14) = saved.scale;
-            *(s32 *)((char *)record + offset + 0x18) = saved.encoded;
+            *(s32 *)(base + 0xC) = saved.value0;
+            *(s32 *)(base + 0x10) = saved.value1;
+            *(f32 *)(base + 0x14) = saved.scale;
+            *(s32 *)(base + 0x18) = saved.encoded;
             oldCount = *(s32 *)((u8 *)record + 0x6C);
             *(s32 *)((u8 *)record + 0x6C) = oldCount + 1;
             return 1;
