@@ -528,6 +528,18 @@ extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12L
  * callback can never be seen half done by the per-frame update. */
 extern "C" void Stop__Q46nw4hbm3snd6detail7ChannelFv(void *arg0)
 {
+  /* The parts of a Channel this path touches. */
+  struct ChannelState {
+    unsigned char pad0[0x39];
+    unsigned char paused;        /* +0x39: Update() runs the channel at zero speed */
+    unsigned char started;       /* +0x3A: Start() has been called on it */
+    unsigned char inActiveList;  /* +0x3B: AllocChannel() put it on the active list */
+    unsigned char pad3C[0xD8 - 0x3C];
+    void (*callback)(void *, int, unsigned long); /* +0xD8: client's ChannelCallback hook */
+    unsigned long callbackArg;                    /* +0xDC: its user argument */
+    void *voice;                                  /* +0xE0: the AxVoice it is playing */
+  };
+
   int enabled;
   void *insertPos;
   void *idleBeginNode;
@@ -535,14 +547,14 @@ extern "C" void Stop__Q46nw4hbm3snd6detail7ChannelFv(void *arg0)
   char *activeBegin;
   char *idleBegin;
   void *voice;
-  void *callback;
+  void (*callback)(void *, int, unsigned long);
   void *idleSentinel;
   char *dtorRecord;
   void *activeSentinel;
-  void *channel = arg0;
+  ChannelState *channel = (ChannelState *)arg0;
 
   enabled = OSDisableInterrupts();
-  voice = *((void **) (((char *) channel) + 0xE0));
+  voice = channel->voice;
   if (!voice)
   {
     /* Nothing was playing; the channel is already in the idle list. */
@@ -550,15 +562,14 @@ extern "C" void Stop__Q46nw4hbm3snd6detail7ChannelFv(void *arg0)
     return;
   }
   Stop__Q46nw4hbm3snd6detail7AxVoiceFv(voice);
-  Free__Q46nw4hbm3snd6detail7AxVoiceFv(*((void **) (((char *) channel) + 0xE0)));
-  /* +0x3B: set by AllocChannel() when the channel went onto the active list. */
-  int active = *((unsigned char *) (0x3B + ((char *) channel)));
-  *((int *) (((char *) channel) + 0xE0)) = 0;   /* voice */
-  *((unsigned char *) (((char *) channel) + 0x39)) = 0;  /* paused */
-  *((unsigned char *) (((char *) channel) + 0x3A)) = 0;  /* started */
+  Free__Q46nw4hbm3snd6detail7AxVoiceFv(channel->voice);
+  int active = channel->inActiveList;
+  channel->voice = 0;
+  channel->paused = 0;
+  channel->started = 0;
   if (active)
   {
-    *((unsigned char *) (((char *) channel) + 0x3B)) = 0;  /* inActiveList */
+    channel->inActiveList = 0;
     if (((signed char) sChannelManagerInitialized) == 0)
     {
       /* First use from this path: build the ChannelManager singleton, both of
@@ -567,19 +578,19 @@ extern "C" void Stop__Q46nw4hbm3snd6detail7ChannelFv(void *arg0)
       manager = sChannelManager;
       idleBegin = manager + 4;   // &manager->idle.head
       dtorRecord = sChannelManagerDtorRecord;
-      *((volatile int *) manager) = 0;                    // idle.size
+      *(volatile int *)manager = 0;                   // idle.size
       idleSentinel = idleBegin;
       activeBegin = manager + 0x10;   // &manager->active.head
       activeSentinel = activeBegin;
-      *((void * volatile *) idleBegin) = 0;               // idle.head.next
-      *((void * volatile *) (manager + 8)) = 0;           // idle.head.prev
-      *((void * volatile *) activeBegin) = 0;             // active.head.next
-      *((void * volatile *) (manager + 0x14)) = 0;        // active.head.prev
-      *((void * volatile *) idleBegin) = idleSentinel;    // empty list circles itself
-      *((void * volatile *) (manager + 8)) = idleSentinel;
-      *((volatile int *) (manager + 0xC)) = 0;            // active.size
-      *((void * volatile *) activeBegin) = activeSentinel;
-      *((void * volatile *) (manager + 0x14)) = activeSentinel;
+      *(void * volatile *)idleBegin = 0;              // idle.head.next
+      *(void * volatile *)(manager + 8) = 0;          // idle.head.prev
+      *(void * volatile *)activeBegin = 0;            // active.head.next
+      *(void * volatile *)(manager + 0x14) = 0;       // active.head.prev
+      *(void * volatile *)idleBegin = idleSentinel;   // an empty list circles itself
+      *(void * volatile *)(manager + 8) = idleSentinel;
+      *(volatile int *)(manager + 0xC) = 0;           // active.size
+      *(void * volatile *)activeBegin = activeSentinel;
+      *(void * volatile *)(manager + 0x14) = activeSentinel;
       ((void (*)(void *, void *, void *)) __register_global_object)(manager, &__dt__Q46nw4hbm3snd6detail14ChannelManagerFv, dtorRecord);
       sChannelManagerInitialized = 1;
     }
@@ -588,7 +599,7 @@ extern "C" void Stop__Q46nw4hbm3snd6detail7ChannelFv(void *arg0)
     {
       Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322A64 /* "InstanceManager.h" */, 0x77, lbl_80322A3C /* "NW4HBM:Pointer must not be NULL (obj)" */);
     }
-    if (*((int *) (manager + 0xC)))   // the manager's active list is not empty
+    if (*(int *)(manager + 0xC))   // the manager's active list is not empty
     {
       /* Take the channel out of the active list (+0xC) and put it back at the
        * head of the idle one (iterator at +4, its sentinel). */
@@ -606,11 +617,11 @@ extern "C" void Stop__Q46nw4hbm3snd6detail7ChannelFv(void *arg0)
       Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(manager, &insertPos, channel);
     }
   }
-  callback = *((void **) (((char *) channel) + 0xD8));
+  callback = channel->callback;
   if (callback)
   {
     /* Channel::ChannelCallbackStatus 0 = stopped. */
-    ((void (*)(void *, int, unsigned long)) callback)(channel, 0, *((unsigned long *) (((char *) channel) + 0xDC)));
+    callback(channel, 0, channel->callbackArg);
   }
   OSRestoreInterrupts(enabled);
 }
