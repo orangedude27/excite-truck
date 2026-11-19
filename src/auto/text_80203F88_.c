@@ -246,6 +246,13 @@ void fn_80204004(void) {
 
 }
 
+/* Terrain-system hook that does nothing in this build.  It belongs to the run of
+ * empty terrain defaults in this unit -- fn_80203FE8 (called from the world
+ * teardown sequence), fn_80203FEC (end of world setup) and fn_80203FF8 (end of
+ * the per-frame animation pass) -- next to the screen-ray ground probe
+ * fn_80204054 and its "TERRAIN SYSTEM IS LYING: no terrain is really at %.2f,
+ * %.2f" warning.  No function in the game calls it, so the terrain subsystem
+ * simply leaves this entry point empty. */
 void fn_80203FFC(void) {
 
 }
