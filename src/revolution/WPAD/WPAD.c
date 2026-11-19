@@ -557,7 +557,6 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
 #undef WPAD_BUTTON_CHANGED
 #undef WPAD_ANALOG_CHANGED
 }
-#pragma pop
 
 void fn_8005E09C(s32 port) {
     WPADCB* p;
