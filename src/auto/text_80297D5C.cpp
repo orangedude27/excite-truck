@@ -935,11 +935,11 @@ extern "C" void fn_80299504(void* manager) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_80299544(void* arg0) {
-    register float dt = fn_801E7E24();
-    register float f5 = lbl_80564590;
-    register float f4 = lbl_8056459C;
-    register float f6 = lbl_80564594;
-    register float f2 = lbl_805645E0;
+    float dt = fn_801E7E24();
+    float f2 = lbl_805645E0;
+    float f4 = lbl_8056459C;
+    float f5 = lbl_80564590;
+    float f6 = lbl_80564594;
     char* p = (char*)arg0;
     for (int i = 0; i < 4; i++, p += 0x40) {
         int state = *(int*)(p + 0x34);
@@ -1391,10 +1391,10 @@ void fn_8029A318(float *a, float *b, float *c, float *d, float x, float y, float
     }
 }
 #pragma cplusplus reset
-extern "C" int fn_801EE0C8(int);
-extern "C" void fn_802C77F0(int, float *);
-extern "C" int lbl_80488648[];
-extern "C" float lbl_80564608;
+extern "C" int fn_801EE0C8(int);   /* render object -> its model (field +0x48) */
+extern "C" void fn_802C77F0(int, float *); /* model -> 6 bounds: minX,maxX,minY,maxY,minZ,maxZ */
+extern "C" int lbl_80488648[];     /* up to 8 live vehicle render objects, by vehicle index */
+extern "C" float lbl_80564608;     /* 20.0f: life a freshly reserved shadow slot is given */
 #pragma dont_inline off
 #pragma auto_inline off
 extern "C" void fn_8029A4B4(void *arg0, int arg1) {
@@ -2219,11 +2219,11 @@ extern "C" void fn_8029B824(void *arg0) {
                 value = fn_80287B24(i);
                 fn_801BFD34(item + 0x24, (char *)object + 0x24, value);
                 fn_80015B20(item, object, value);
-                scale = *(volatile float *)(entry + 0x30);
+                scale = *(float *)(entry + 0x30);
                 az = *(float *)(item + 0x14) * scale;
                 x = *(float *)(item + 0x24) + *(float *)(item + 0x0C) * scale;
+                z = *(float *)(item + 0x2C) + az;
                 y = *(float *)(item + 0x28) + *(float *)(item + 0x10) * scale;
-                z = *(float *)(item + 0x2C) + *(float *)(item + 0x14) * scale;
                 scratch[6] = x;
                 scratch[1] = y;
                 scratch[5] = z;
