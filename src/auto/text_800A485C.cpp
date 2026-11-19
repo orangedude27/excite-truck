@@ -26601,7 +26601,6 @@ extern "C" void fn_800A52DC(u32 arg0) {
         ptr += 0x3F90;
     }
 }
-#pragma opt_dead_assignments reset
 #pragma opt_propagation reset
 extern "C" void fn_800A535C(u32 arg0) {
     u8 *ptr = (u8 *)lbl_803D2140 + 0xA0;
