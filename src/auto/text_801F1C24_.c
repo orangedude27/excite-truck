@@ -1600,6 +1600,7 @@ void fn_801F3F44(int unused, volatile unsigned char *buffer) {
     temp = buffer[0x30]; buffer[0x30] = buffer[0x33]; buffer[0x33] = temp;
     temp = buffer[0x31]; buffer[0x31] = buffer[0x32]; buffer[0x32] = temp;
 }
+/* Empty stub. */
 void fn_801F3F88(void) {
 
 }
