@@ -2970,7 +2970,15 @@ extern "C" void fn_80215CC8(void) {
     /* Empty no-op: a default widget-wrapper vtable method with no behaviour. */
 }
 
-extern "C" void fn_80215CCC(void) {
+/* Empty default hook at vtable slot 0x3C of the UI-group timeout controller.
+ * That class (base vtable lbl_8033D618) hides UI group 0x1D when started (its
+ * slot 0xC fn_80262FCC / fn_802876A8 stores the start time at +0x18, clears
+ * the expired flag at +0x1C and hides the group) and shows the group again
+ * once the 1.5 s timer expires (slot 0x1C fn_8026300C / fn_802876E8; slot 0x58
+ * reports whether it is still running).  The two global instances registered
+ * by fn_80262EF8 and fn_802874C8 use the derived vtables lbl_80345F70 and
+ * lbl_803489C0, and neither overrides this slot, so it does nothing. */
+extern "C" void fn_80215CCC(void *timer) {
 
 }
 
