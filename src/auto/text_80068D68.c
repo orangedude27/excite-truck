@@ -1320,6 +1320,20 @@ static inline u8 WUDGetState664(void) {
     return state;
 }
 
+/* Interrupt-protected lookup of device record `index`: records 0-9 at +0x64,
+ * the rest at +0x424, each 0x60 bytes. */
+static inline u8 *WUDGetDevRecord(s32 index) {
+    BOOL interrupts = OSDisableInterrupts();
+    u8 *record;
+    if (index >= 0 && index < 0xA) {
+        record = lbl_80392960 + index * 0x60 + 0x64;
+    } else {
+        record = lbl_80392960 + (index - 0xA) * 0x60 + 0x424;
+    }
+    OSRestoreInterrupts(interrupts);
+    return record;
+}
+
 #pragma use_lmw_stmw off
 u8 fn_80068F94(void) {
     BOOL interrupts;
@@ -1338,41 +1352,41 @@ u8 fn_80068F94(void) {
         if (state2 == 4) return 0xE;
     }
     if (base[0x667] != 0) {
-        u8 *scan_base;
-        u8 *record;
-        u8 *i;
-        s32 offset;
+        register u8 *scan_base;
+        register u8 *record;
+        register s32 i;
+        register s32 offset;
         offset = 0;
         record = lbl_80392960;
-        i = (u8 *)0;
-        while (offset < 0x10) {
-            interrupts = OSDisableInterrupts();
-            if (offset < 0) goto high_record;
-            if (offset >= 0xA) goto high_record;
-            scan_base = (u8 *)((u32)record + ((u32)i * 1u) + 0x64);
-            goto selected_record;
-        high_record:
-            scan_base = (u8 *)((u32)record + ((u32)(offset - 0xA) * 0x60u) + 0x424);
-        selected_record:
-            OSRestoreInterrupts(interrupts);
-            if (scan_base[0x59] == 9) {
-                tBTM_PM_PWR_MD mode;
-                mode.mode = 0;
-                mode.max = 0;
-                mode.min = 0;
-                mode.attempt = 1;
-                mode.timeout = 0;
-                BTM_SetPowerMode(lbl_80392960[0x68A], scan_base + 0x40, &mode);
-                return 1;
-            }
-            offset++;
-            i += 0x60;
+        i = 0;
+    loop:
+        interrupts = OSDisableInterrupts();
+        if (offset < 0) goto high_record;
+        if (offset >= 0xA) goto high_record;
+        scan_base = (u8 *)((u32)record + (u32)i + 0x64);
+        goto selected_record;
+    high_record:
+        scan_base = (u8 *)((u32)record + ((u32)(offset - 0xA) * 0x60u) + 0x424);
+    selected_record:
+        OSRestoreInterrupts(interrupts);
+        if (scan_base[0x59] == 9) {
+            tBTM_PM_PWR_MD mode;
+            mode.mode = 0;
+            mode.max = 0;
+            mode.min = 0;
+            mode.attempt = 1;
+            mode.timeout = 0;
+            BTM_SetPowerMode(lbl_80392960[0x68A], scan_base + 0x40, &mode);
+            return 1;
         }
+        offset++;
+        i += 0x60;
+        if (offset < 0x10) goto loop;
     }
     if ((s8)base[0x668] > 0) base[0x668]--;
     if ((s8)base[0x668] == -1) {
-        register u8 timer_state;
         register s32 interval;
+        register u8 timer_state;
         ((s8 *)base)[0x668] = -2;
         interrupts = OSDisableInterrupts();
         timer_state = lbl_80392960[0x665];
@@ -1384,9 +1398,9 @@ u8 fn_80068F94(void) {
         OSRestoreInterrupts(interrupts);
         if (timer_state == 4) {
             interrupts = OSDisableInterrupts();
-            state2 = lbl_80392960[0x664];
+            timer_state = lbl_80392960[0x664];
             OSRestoreInterrupts(interrupts);
-            if (state2 == 4) lbl_80392960[0xC] = 0xE;
+            if (timer_state == 4) lbl_80392960[0xC] = 0xE;
         }
         OSCreateAlarm((OSAlarm *)lbl_80393028);
         OSSetAlarm((OSAlarm *)lbl_80393028,
