@@ -8614,6 +8614,8 @@ void fn_80124AD8(void *arg0, void *arg1) {
 }
 
 #define ASMKW a##sm
+#pragma push
+#pragma processor 750
 void fn_80124CE8(void *arg0, void *arg1) {
     f32 v0, v1, v5, v4, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28;
     f32 v29, v30, v31, v2, v3, v6, v9, v7, v10, v8, v11, v12, v13;
