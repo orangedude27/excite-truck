@@ -134,7 +134,10 @@ extern char lbl_8055FC8C;
 extern char lbl_8055FC8D;
 extern float lbl_8055D024;
 extern float lbl_80564EFC;
-extern char lbl_8034B498[];
+char lbl_8034B498[] = "display_type";
+static char lbl_8034B4A8[] = "mr: normal mode";
+static char lbl_8034B4B8[] = "mr: widescreen mode";
+static char lbl_8034B4CC[] = "mr: letterbox mode";
 extern int fn_80019B9C(void);
 extern int fn_802E9A0C(void);
 extern void fn_80133348(int, const char *, int);
@@ -179,9 +182,9 @@ void* fn_802C83C4(void) {
 
 #pragma scheduling invalid_target
 void fn_802C83CC(void) {
-    register int ten = 10;
-    float *dst = (float *)lbl_804C1410;
+    int ten = 10;
     float temp_f1 = (float)ten;
+    float *dst = (float *)lbl_804C1410;
     *dst++ = lbl_80564EF8;
     *dst++ = lbl_80564F00;
     *dst++ = lbl_80564F00;
@@ -391,26 +394,21 @@ extern double lbl_80564F10;
 extern float lbl_80564F18, lbl_80564F1C;
 #pragma scheduling invalid_target
 void fn_802C88FC(float *arg0) {
-    float x;
-    float y;
-    float z;
-    float value;
-    float fill;
-    float scale;
-    float divisor;
+    float value, fill, scale, divisor;
+    float x, y, z;
 
-    x = (float)(unsigned int)lbl_8055FC64;
     scale = lbl_80564F18;
     divisor = lbl_8055FC44;
     value = lbl_80564EF8;
-    z = value / lbl_8055D020;
     fill = lbl_80564F00;
+    z = value / lbl_8055D020;
+    x = (float)(unsigned int)lbl_8055FC64;
+    y = (scale * x) / divisor;
 
     arg0[0] = value;
     arg0[1] = fill;
     arg0[2] = fill;
     arg0[3] = fill;
-    y = (scale * x) / divisor;
     arg0[5] = fill;
     arg0[4] = lbl_80564F1C;
     arg0[6] = fill;
@@ -421,7 +419,7 @@ void fn_802C88FC(float *arg0) {
     arg0[9] = (float)(unsigned int)lbl_8055FC5C + scale * (float)(unsigned int)lbl_8055FC64;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling reset
 void fn_802C89E8(unsigned int *arg0, unsigned int arg1, unsigned int arg2, unsigned int arg3, unsigned int arg4, unsigned int arg5, unsigned int arg6, unsigned int arg7) {
     float var_f2;
     float var_f4;
@@ -584,43 +582,29 @@ void fn_802C8E48(void) {
     sRenderMode = 2;
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802C8E70(float *arg0, float *arg1) {
     float *m = (float *)lbl_804C1410;
+    float sy, sx, v1, v2, limit, scale;
+    float rx, ry, rz;
+    float dz, dy, dx;
     float z, y, x;
-    float dx, dy, dz;
-    float rx, ry, rz, limit, scale;
-    float sy, sx, v1, v2;
 
-    x = arg0[0];
-    y = arg0[1];
-    z = arg0[2];
-    dx = x - m[9];
-    arg1[0] = dx;
-    dy = y - m[10];
-    arg1[1] = dy;
-    dz = z - m[11];
-    arg1[2] = dz;
-
+    x = arg0[0]; y = arg0[1]; z = arg0[2];
+    dx = x - m[9]; arg1[0] = dx;
+    dy = y - m[10]; arg1[1] = dy;
+    dz = z - m[11]; arg1[2] = dz;
     rx = dy * m[1] + dx * m[0];
     ry = dx * m[3] + dy * m[4];
     rz = dx * m[6] + dy * m[7];
     rx = dz * m[2] + rx;
     ry = dz * m[5] + ry;
     rz = dz * m[8] + rz;
-
-    arg1[0] = rx;
-    arg1[1] = ry;
-    arg1[2] = rz;
-
+    arg1[0] = rx; arg1[1] = ry; arg1[2] = rz;
     limit = (lbl_8055FC38 > rz) ? lbl_8055FC38 : rz;
-
     scale = lbl_80564EF8 / (lbl_8055FC44 * limit);
-    sy = scale * -arg1[1];
-    sx = scale * arg1[0];
-    v1 = lbl_80564EF8 + sx;
-    v2 = lbl_80564EF8 + lbl_8055FC6C * sy;
-
+    sy = scale * -arg1[1]; sx = scale * arg1[0];
+    v1 = lbl_80564EF8 + sx; v2 = lbl_80564EF8 + lbl_8055FC6C * sy;
     arg1[0] = (float)(int)lbl_8055FC5C + (lbl_80564F18 * (float)(int)lbl_8055FC64) * v1;
     arg1[1] = (float)(int)lbl_8055FC60 + (lbl_80564F18 * (float)(int)lbl_8055FC68) * v2;
 }
@@ -763,17 +747,16 @@ extern float PSVECDotProduct(const Vec *, const Vec *);
 extern float __fabsf(float);
 extern float lbl_80564F20, lbl_8055FC50, lbl_8055FC54, lbl_8055FC58;
 #pragma scheduling invalid_target
-int fn_802C94A0(float *arg0, unsigned char *arg1, float *arg2, float tolerance) {
-    float *matrix;
-    volatile float delta[3];
-    float temp_f0;
-    float temp_f1;
+int fn_802C94A0(Vec *arg0, unsigned char *arg1, float *arg2, float tolerance) {
+    Vec *matrix;
+    float delta[3];
+    float dx;
+    float dy;
+    float dz;
     float temp_f1_2;
     float temp_f1_3;
     float temp_f1_4;
-    float temp_f2;
-    float temp_f3;
-    float temp_f4;
+    float temp_f0;
     float var_f2;
     float var_f2_2;
 
@@ -781,21 +764,15 @@ int fn_802C94A0(float *arg0, unsigned char *arg1, float *arg2, float tolerance) 
         *arg1 = 1;
     }
 
-    matrix = (float *)lbl_804C1410;
-    temp_f4 = arg0[0];
-    temp_f3 = arg0[1];
-    temp_f0 = matrix[9];
-    temp_f2 = matrix[10];
-    temp_f4 = temp_f4 - temp_f0;
-    temp_f1 = arg0[2];
-    temp_f0 = matrix[11];
-    temp_f2 = temp_f3 - temp_f2;
-    temp_f1 = temp_f1 - temp_f0;
-    delta[0] = temp_f4;
-    delta[1] = temp_f2;
-    delta[2] = temp_f1;
+    matrix = (Vec *)lbl_804C1410;
+    dx = arg0->x - matrix[3].x;
+    dy = arg0->y - matrix[3].y;
+    dz = arg0->z - matrix[3].z;
+    delta[0] = dx;
+    delta[1] = dy;
+    delta[2] = dz;
 
-    temp_f1_2 = PSVECDotProduct((Vec *)&delta[0], (Vec *)(matrix + 6));
+    temp_f1_2 = PSVECDotProduct((Vec *)delta, &matrix[2]);
     if ((temp_f1_2 < lbl_8055FC38 - tolerance) || (temp_f1_2 > lbl_8055FC3C + tolerance)) {
         return 0;
     }
@@ -803,7 +780,7 @@ int fn_802C94A0(float *arg0, unsigned char *arg1, float *arg2, float tolerance) 
         return 0;
     }
 
-    temp_f1_3 = (float)__fabs((double)PSVECDotProduct((Vec *)&delta[0], (Vec *)matrix));
+    temp_f1_3 = (float)__fabs((double)PSVECDotProduct((Vec *)delta, &matrix[0]));
     temp_f0 = temp_f1_2 * lbl_8055FC44;
     var_f2 = lbl_80564F00;
     var_f2 = (var_f2 > temp_f0) ? var_f2 : temp_f0;
@@ -811,7 +788,7 @@ int fn_802C94A0(float *arg0, unsigned char *arg1, float *arg2, float tolerance) 
         return 0;
     }
 
-    temp_f1_4 = (float)__fabs((double)PSVECDotProduct((Vec *)&delta[0], (Vec *)((float *)lbl_804C1410 + 3)));
+    temp_f1_4 = (float)__fabs((double)PSVECDotProduct((Vec *)delta, (Vec *)((float *)lbl_804C1410 + 3)));
     temp_f0 = temp_f1_2 * lbl_8055FC50;
     var_f2_2 = lbl_80564F00;
     var_f2_2 = (var_f2_2 > temp_f0) ? var_f2_2 : temp_f0;
@@ -1305,8 +1282,8 @@ int fn_802C9E94(void *arg0, int arg1, int arg2, float farg0, float farg1, float 
     float q[3];
     float diff[3];
     float result;
-    float new_w;
     float step;
+    float new_w;
     int old_count;
 
     if (state->count == 0) {
