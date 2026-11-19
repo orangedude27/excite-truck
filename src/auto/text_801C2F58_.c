@@ -185,12 +185,15 @@ static inline void mtx_to_quat(float m[3][3], float *q) {
         if (m[2][2] > m[i][i]) i = 2;
         j = (i + 1) % 3;
         k = (j + 1) % 3;
-        sn = (float)fn_8002F234(lbl_8056296C + (m[i][i] - (m[j][j] + m[k][k])));
-        inv = lbl_80562974 / sn;
-        q3 = lbl_80562974 * sn;
-        q0 = inv * (m[j][k] - m[k][j]);
-        q1 = inv * (m[i][j] + m[j][i]);
-        q2 = inv * (m[i][k] + m[k][i]);
+        {
+            float *mi = m[i], *mj = m[j], *mk = m[k];
+            sn = (float)fn_8002F234(lbl_8056296C + (mi[i] - (mj[j] + mk[k])));
+            inv = lbl_80562974 / sn;
+            q3 = lbl_80562974 * sn;
+            q0 = inv * (mj[k] - mk[j]);
+            q1 = inv * (mi[j] + mj[i]);
+            q2 = inv * (mi[k] + mk[i]);
+        }
         dst[i] = q3; dst[3] = q0; dst[j] = q1; dst[k] = q2;
     }
 }
@@ -213,16 +216,17 @@ f32 fn_801C2F58(s32 count, f32 factor) {
 #pragma scheduling invalid_target
 void fn_801C2FF4(float *out, float *a, float *b, float weight) {
     float av[4], bv[4], q[4];
+    float tv[3];
     mtx_to_quat((float (*)[3])a, av);
     mtx_to_quat((float (*)[3])b, bv);
     fn_8012F57C(q, av, bv, weight);
     {
         float x = q[0], y = q[1], z = q[2], w = q[3];
         float x2 = 2 * x, y2 = 2 * y, z2 = 2 * z;
-        float tz = a[11] + weight * (b[11] - a[11]);
-        float tx = a[9] + weight * (b[9] - a[9]);
-        float ty = a[10] + weight * (b[10] - a[10]);
-        out[11] = tz;
+        tv[0] = a[11] + weight * (b[11] - a[11]);
+        tv[1] = a[9] + weight * (b[9] - a[9]);
+        tv[2] = a[10] + weight * (b[10] - a[10]);
+        out[11] = tv[0];
         out[0] = 1.0f - (y * y2 + z * z2);
         out[4] = 1.0f - (x * x2 + z * z2);
         out[7] = y * z2 - w * x2;
@@ -232,8 +236,8 @@ void fn_801C2FF4(float *out, float *a, float *b, float weight) {
         out[3] = x * y2 - w * z2;
         out[1] = x * y2 + w * z2;
         out[8] = 1.0f - (x * x2 + y * y2);
-        out[9] = tx;
-        out[10] = ty;
+        out[9] = tv[1];
+        out[10] = tv[2];
     }
 }
 #pragma pop
