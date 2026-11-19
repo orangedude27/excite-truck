@@ -1804,7 +1804,7 @@ void fn_80069408(void) {
             v = base[0x664];
             OSRestoreInterrupts(interrupts);
             if (v == 4) {
-                DBPrintf_8006CFA8((const char *)(lbl_803130C8 + 0x250));
+                DBPrintf_8006CFA8((const char *)(strings + 0x250));
                 fn_80073CA8();
                 base[0xC] = 0x1A;
                 return;
