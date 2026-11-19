@@ -81,13 +81,14 @@ extern int lbl_802FA690[5];
 extern int lbl_80498EE8[5];
 __declspec(section ".sdata") extern char lbl_8055BAC0[];
 __declspec(section ".sdata") extern char lbl_8055B860[];
-#pragma push
-#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_8025E034(void)
 {
     extern void *fn_801284F8(int, const char *);
     extern void *lbl_8055F2E4;
     extern int lbl_8055F2E8;
+    int old;
+    char *str;
     struct DbgMenu { int w0; DbgMenuItem *items; int w2; int w3; int w4; };
     struct DbgCtx {
         void *list;
@@ -101,9 +102,8 @@ void fn_8025E034(void)
     struct DbgCtx ctx;
     DbgMenuItem items[35];
     struct DbgMenu menu;
-    int old;
-    char *str = lbl_80345828;
 
+    str = lbl_80345828;
     old = fn_80012810();
     if (old != 0x130) {
         fn_80012794();
@@ -197,7 +197,6 @@ void fn_8025E034(void)
         lbl_8055F2E4 = 0;
     }
 }
-#pragma pop
 void* __dt__Q28PSSystem7SeqHeapFv_8025E614(void* arg0, int arg1) {
     /* Destroy a PSSystem::SeqHeap: reset its vtable, tear down the owned
        object at +0x2C, and optionally free the storage when arg1 > 0. */
@@ -713,11 +712,11 @@ void fn_8025F46C(void *arg0) {
     unsigned char *recPtr;
     unsigned char *dest1, *dest2, *dest3;
     void *obj, *obj2, *item;
-    char *str, *src;
+    char *src;
     char buf0[0x24], buf1[0x24], buf2[0x24];
     int outBuf[6];
     int tmpBuf[6];
-    int i, n, sel, cnt;
+    int i, sel, cnt;
     void *table, *key;
     char *arr;
     int foundIdx, byteOff;
@@ -733,21 +732,26 @@ void fn_8025F46C(void *arg0) {
             char *q;
             int k;
             obj = *(void **)base;
-            str = ((char *(*)(void *, int))(*(void ***)obj)[4])(obj, i18);
-            src = ((char *(*)(void *))(*(void ***)str)[3])(str);
+            src = ((char *(*)(void *, int))(*(void ***)obj)[4])(obj, i18);
+            src = ((char *(*)(void *))(*(void ***)src)[3])(src);
             p = (char *)p16;
             q = src;
             k = 0x20;
-            while (--k > 0 && (*p++ = *q++) != 0) {}
-            p[-1] = 0;
+            for (;;) {
+                char c;
+                if (--k <= 0) { *--p = 0; break; }
+                c = *q++;
+                *p++ = c;
+                if (c == 0) break;
+            }
             *(int *)(p17 + 0x38) = (i18 == *(int *)(base + 0x10)) ? 6 : 7;
             p16 += 0x24;
             p17 += 0x24;
             i18++;
+            obj = *(void **)base;
             cnt = ((int (*)(void *))(*(void ***)obj)[3])(obj);
-            n = (cnt >= 6) ? 6 : cnt;
             if (cnt >= 6) break;
-            if (i18 >= n) break;
+            if (i18 >= cnt) break;
         }
     }
     {
@@ -787,15 +791,25 @@ void fn_8025F46C(void *arg0) {
         p = (char *)dest1;
         q = src;
         k = 0x20;
-        while (--k > 0 && (*p++ = *q++) != 0) {}
-        p[-1] = 0;
+        for (;;) {
+            char c;
+            if (--k <= 0) { *--p = 0; break; }
+            c = *q++;
+            *p++ = c;
+            if (c == 0) break;
+        }
         obj2 = ((void *(*)(void *, int))(*(void ***)o1)[7])(o1, i);
         src = ((char *(*)(void *))(*(void ***)obj2)[3])(obj2);
         p = (char *)dest2;
         q = src;
         k = 0x20;
-        while (--k > 0 && (*p++ = *q++) != 0) {}
-        p[-1] = 0;
+        for (;;) {
+            char c;
+            if (--k <= 0) { *--p = 0; break; }
+            c = *q++;
+            *p++ = c;
+            if (c == 0) break;
+        }
         {
             void *tmp = ((void *(*)(void *))(*(void ***)o1)[8])(o1);
             void *conv = fn_8000DA10(tmp);
@@ -864,9 +878,8 @@ void fn_8025F46C(void *arg0) {
 next_iter:
         dest1 += 0x58; dest2 += 0x58; base += 4; dest3 += 0x58; recPtr += 0x58;
         cnt = ((int (*)(void *))(*(void ***)item)[6])(item);
-        n = (cnt >= 6) ? 6 : cnt;
         if (cnt >= 6) break;
-        if (i + 1 >= n) break;
+        if (i + 1 >= cnt) break;
     }
 }
 void fn_8025F9B8(void* seqObj, int heap) {
@@ -884,6 +897,22 @@ void* fn_8025F9C0(void* self) {
     return self;
 }
 
+#pragma cplusplus on
+struct ParamItem_8025FA18 {
+    virtual char *getName();
+    virtual void *v1();
+    virtual void *v2();
+    virtual char *getParam(const char *);
+    virtual void *v4();
+    virtual void *v5();
+    virtual void *v6();
+    virtual float getFloat(const char *);
+};
+struct ParamDir_8025FA18 {
+    virtual void *v0();
+    virtual ParamItem_8025FA18 *getAt(int);
+};
+#pragma cplusplus reset
 extern void *fn_801284F8(int, const char *);
 extern "C" void *fn_8012850C(int, const char *);
 extern void *fn_80131808(const char *);
