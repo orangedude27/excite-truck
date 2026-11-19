@@ -697,7 +697,6 @@ found_scan:
 }
 
 #pragma scheduling on
-#define lbl_804B3048 (((struct Fn8027F958Global *)state)->list)
 int fn_8027F958(int *selection, void *collection) {
     struct Fn8027F958State {
         char pad[0x50];
@@ -3982,12 +3981,12 @@ extern "C" void *fn_8028732C(void *arg0, int arg1) {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
         virtual void *get();
     };
-    void *hit = *(void **)((char *)arg0 + 8);
-    if (hit != 0 && arg1 == *(int *)((char *)arg0 + 12)) {
-        return hit;
+    void *cached = *(void **)((char *)arg0 + 8);
+    if (cached != 0 && arg1 == *(int *)((char *)arg0 + 12)) {
+        return cached;
     }
-    Obj *p = *(Obj **)((char *)arg0 + 4);
-    return p->get();
+    Obj *obj = *(Obj **)((char *)arg0 + 4);
+    return obj->get();
 }
 #pragma cplusplus off
 void fn_80287360(void) {
