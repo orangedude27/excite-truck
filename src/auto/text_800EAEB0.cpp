@@ -315,21 +315,40 @@ extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallback
 extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(void* object, u32 size, void* user) {
     extern u8 lbl_80322B44[];
     extern u8 lbl_80322B20[];
-    struct ListNode { void* next; void* previous; };
+    struct ListNode { ListNode* next; ListNode* previous; };
     struct Callback : ListNode {
         virtual void unused();
         virtual void dispose(void*, void*);
     };
+    struct Iterator {
+        ListNode* mPointer;
+        Iterator(ListNode* p) : mPointer(p) {}
+        Iterator operator++(int) {
+            Iterator it = *this;
+            mPointer = mPointer->next;
+            return it;
+        }
+        Callback* operator->() const {
+            if (!mPointer)
+                Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B44, 0x23D, (const char*)lbl_80322B20);
+            return (Callback*)mPointer;
+        }
+        bool operator==(const Iterator& o) const { return mPointer == o.mPointer; }
+        bool operator!=(const Iterator& o) const { return !(*this == o); }
+    };
+    struct List {
+        u32 count;
+        ListNode node;
+        Iterator GetBeginIter() { return Iterator(node.next); }
+        Iterator GetEndIter() { return Iterator(&node); }
+    };
     void* start = object;
     void* end = (u8*)start + size;
     unsigned long outerLevel = OSDisableInterrupts();
-    register void* node = *(void**)((u8*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv() + 4);
-    while (node != (u8*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv() + 4) {
-        register void* current = node;
-        node = *(void**)node;
-        if (!current)
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B44, 0x23D, (const char*)lbl_80322B20);
-        ((Callback*)current)->dispose(start, end);
+    for (Iterator it = ((List*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv())->GetBeginIter();
+         it != ((List*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv())->GetEndIter();) {
+        Iterator cur = it++;
+        cur->dispose(start, end);
     }
     OSRestoreInterrupts(outerLevel);
 }
@@ -339,22 +358,42 @@ extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(voi
 extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv_800EB214(void* object, u32 size, void* user) {
     extern u8 lbl_80322B44[];
     extern u8 lbl_80322B20[];
-    struct ListNode { void* next; void* previous; };
+    struct ListNode { ListNode* next; ListNode* previous; };
     struct Callback : ListNode {
         virtual void unused0();
         virtual void unused1();
         virtual void dispose(void*, void*);
     };
+    struct Iterator {
+        ListNode* mPointer;
+        Iterator(ListNode* p) : mPointer(p) {}
+        Iterator operator++(int) {
+            Iterator it = *this;
+            mPointer = mPointer->next;
+            return it;
+        }
+        Callback* operator->() const {
+            if (!mPointer)
+                Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B44, 0x23D, (const char*)lbl_80322B20);
+            return (Callback*)mPointer;
+        }
+        bool operator!=(const Iterator& o) const { return mPointer != o.mPointer; }
+    };
+    struct List {
+        u32 count;
+        ListNode node;
+        Iterator GetBeginIter() { return Iterator(node.next); }
+        Iterator GetEndIter() { return Iterator(&node); }
+    };
     void* start = object;
     void* end = (u8*)start + size;
     unsigned long outerLevel = OSDisableInterrupts();
-    void* node = *(void**)((u8*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv() + 4);
-    while (node != (u8*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv() + 4) {
-        void* current = node;
-        node = *(void**)node;
-        if (!current)
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B44, 0x23D, (const char*)lbl_80322B20);
-        ((Callback*)current)->dispose(start, end);
+    {
+        Iterator it = ((List*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv())->GetBeginIter();
+        while (it != ((List*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv())->GetEndIter()) {
+            Callback* cur = (it++).operator->();
+            cur->dispose(start, end);
+        }
     }
     OSRestoreInterrupts(outerLevel);
 }
@@ -701,14 +740,14 @@ extern "C" void fn_800EBB88(void *arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void *__dt__Q46nw4hbm3snd6detail9FrameHeapFv(void *self, s32 flag) {
-    struct { void *p; } listBox;
-    void *&list = listBox.p;
     if (self != 0) {
         FrameHeapDestroyView *state = (FrameHeapDestroyView *)self;
         void *heap = state->heap;
         if (heap == 0) goto done;
         if (heap == 0) goto done;
         if (state->count != 0) {
+            struct { void *p; } listBox;
+            void *&list = listBox.p;
             struct { FrameHeapDestroyListView *p; } headBox;
             FrameHeapDestroyListView *&head = headBox.p;
             head = &state->list;
@@ -865,10 +904,9 @@ loop_body:
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1FB, (const char *)lbl_80322FF8);
     }
     {
-        register FrameHeapDestroyListView *h = head;
         struct { void *p; } listBox;
         void *&list = listBox.p;
-        list = h->tail;
+        list = head->tail;
         if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
         if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
         if (list != 0) {
@@ -1029,22 +1067,17 @@ extern "C" u32 fn_800EC56C(void *__restrict soundHeapRef) {
 extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, void* buffer, u32 size, u32 blockSize) {
     extern u8 lbl_80323058[], lbl_80323070[];
     void** head = (void**)headArg;
-    u32 count;
-    u32 stride;
-    u32 start;
-    u32 idx;
-    u32 irq;
-    u32 previous;
-    u32 node;
+    u32 start, stride, i, irq, previous, node;
     if (buffer == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323058, 0x26, (const char*)lbl_80323070);
     irq = OSDisableInterrupts();
-    stride = (blockSize + 3) & ~3u;
-    start = ((u32)buffer + 3) & ~3u;
-    count = (size - (start - (u32)buffer)) / stride;
-    if (count != 0) {
-        node = start;
+    start = ((u32)buffer + 3) & ~3;
+    i = 0;
+    stride = (blockSize + 3) & ~3;
+    blockSize = (size - (start - (u32)buffer)) / stride;
+    if (blockSize != 0) {
         previous = (u32)*head;
-        for (idx = 0; idx < count; idx++) {
+        node = start;
+        for (; i < blockSize; i++) {
             *(u32*)node = previous;
             *head = (void*)node;
             previous = node;
@@ -1163,9 +1196,9 @@ extern "C" f32 GetValue__Q46nw4hbm3snd6detail3LfoCFv(void *__restrict arg0) {
 
     if (index < 0x20) tableValue = lbl_802F4D90[index];
     else if (index < 0x40) {
-        register s32 off = index - 0x20;
-        tableValue = lbl_802F4D90[0x20 - off];
-    } else if (index < 0x60) tableValue = -lbl_802F4D90[index - 0x40];
+        s32 off = (s32)((u32)index - 0x20u);
+        tableValue = lbl_802F4D90[(s32)(0x20u - (u32)off)];
+    } else if (index < 0x60) tableValue = -lbl_802F4D90[(u32)index - 0x40u];
     else {
         register s32 off = index - 0x60;
         tableValue = -lbl_802F4D90[0x20 - off];
