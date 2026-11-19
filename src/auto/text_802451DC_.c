@@ -92,7 +92,7 @@ int fn_80245264(struct MenuTextContext *context) {
 
 extern int lbl_8055CFF0, lbl_8055CFF4, lbl_8055FB9C, lbl_8055FBA0;
 extern const float lbl_80563834, lbl_80563838, lbl_8056383C, lbl_80563840, lbl_80563844, lbl_80563848, lbl_8056384C, lbl_80563850, lbl_80563854, lbl_80563858, lbl_8056385C, lbl_80563860, lbl_80563864, lbl_80563868, lbl_8056386C, lbl_80563870, lbl_80563874, lbl_80563878, lbl_8056387C, lbl_80563888, lbl_8056388C, lbl_80563890;
-extern const double lbl_80563880;
+extern double lbl_80563880;
 extern char lbl_80343080[];
 extern char lbl_8055BE50, lbl_8055BE58, lbl_8055BE5C;
 extern int fn_80129AFC(void);
@@ -169,28 +169,24 @@ int fn_80245360(int *a, struct Menu *b) {
     unsigned long long buf[64];
     char *s;
     float y;
-
     int selected = b->selected;
-    float temp_f19 = lbl_80563854;
-    float temp_f20 = lbl_8056384C;
-    float temp_f21 = lbl_8056385C;
-    float temp_f23 = lbl_80563864;
-    float temp_f24 = lbl_80563838;
-    float temp_f25 = lbl_80563870;
-    float temp_f26 = lbl_8056386C;
-    float temp_f27 = lbl_80563868;
-    float temp_f28 = lbl_80563844;
-    float temp_f29 = lbl_8056387C;
-    float temp_f16 = lbl_80563840;
-    float temp_f17 = lbl_80563834;
-    float temp_f18 = lbl_80563850;
-    float temp_f31 = lbl_80563874;
-    float temp_f30 = lbl_80563878;
-
+    register float temp_f19 = lbl_80563854;
+    register float temp_f20 = lbl_8056384C;
+    register float temp_f21 = lbl_8056385C;
+    register float temp_f23 = lbl_80563864;
+    register float temp_f24 = lbl_80563838;
+    register float temp_f25 = lbl_80563870;
+    register float temp_f26 = lbl_8056386C;
+    register float temp_f27 = lbl_80563868;
+    register float temp_f28 = lbl_80563844;
+    register float temp_f29 = lbl_8056387C;
+    register float temp_f16 = lbl_80563840;
+    register float temp_f17 = lbl_80563834;
+    register float temp_f18 = lbl_80563850;
+    register float temp_f31 = lbl_80563874;
+    register float temp_f30 = lbl_80563878;
     for (;;) {
-        float w, h;
-        float fw, fh;
-        float x0, x1;
+        float w, h, fw, fh, x0, x1;
         char *desc;
         fn_802C8530();
         fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
@@ -227,42 +223,30 @@ int fn_80245360(int *a, struct Menu *b) {
             char *p_buf;
             unsigned int j;
             signed char save;
-            for (i = 0; i < 64; i++) {
-                buf[i] = 0;
-            }
+            for (i = 0; i < 64; i++) buf[i] = 0;
             last_space = 0;
             p_buf = (char *)buf;
             j = 0;
             while (j < strlen(s) && fn_8023293C(a[3], (char *)buf, lbl_80563834) < temp_f19) {
                 char ch = s[j];
                 char *curr = &s[j];
-                if (ch == ' ') {
-                    last_space = curr;
-                } else if (ch == '^') {
-                    *curr = ' ';
-                }
+                if (ch == ' ') last_space = curr;
+                else if (ch == '^') *curr = ' ';
                 j++;
                 *p_buf++ = *curr;
                 *p_buf = 0;
             }
             save = 0;
             if (j != strlen(s)) {
-                if (last_space == 0) {
-                    last_space = &s[j];
-                    save = s[j];
-                }
+                if (last_space == 0) { last_space = &s[j]; save = s[j]; }
                 *last_space = 0;
             } else {
                 last_space = &s[j] - 1;
             }
             fn_80232BA4(s, a[3], 0xFF000000, 12, temp_f20 + ((float *)a)[5], y - temp_f20, lbl_80563858, lbl_80563830, lbl_80563834);
             fn_80232BA4(s, a[3], -1, 12, ((float *)a)[5], y, lbl_80563858, lbl_80563830, lbl_80563834);
-            if (save == 0) {
-                s = last_space + 1;
-            } else {
-                *last_space = save;
-                s = last_space;
-            }
+            if (save == 0) s = last_space + 1;
+            else { *last_space = save; s = last_space; }
             y -= temp_f21;
         }
         y = lbl_80563860;
@@ -275,11 +259,8 @@ int fn_80245360(int *a, struct Menu *b) {
                 char *name = *(char **)((char *)item_ptr + 0x18);
                 int color;
                 fn_80232BA4(name, a[3], 0xFF000000, 12, temp_f20 + ((float *)a)[5], y - temp_f20, lbl_80563834, lbl_80563830, lbl_80563834);
-                if (selected == i) {
-                    color = ((int)alpha << 24) | 0x00FFD03F;
-                } else {
-                    color = 0xC8646464;
-                }
+                if (selected == i) color = ((int)alpha << 24) | 0x00FFD03F;
+                else color = 0xC8646464;
                 fn_80232BA4(name, a[3], color, 12, ((float *)a)[5], y, lbl_80563834, lbl_80563830, lbl_80563834);
                 y -= temp_f21;
                 item_ptr = (char *)item_ptr + 8;
@@ -299,16 +280,10 @@ int fn_80245360(int *a, struct Menu *b) {
         if (fn_802E47B8()) {
             switch ((unsigned short)fn_802E46F0()) {
             case 0x126:
-                if (selected > 0) {
-                    fn_80214D50(0);
-                    selected--;
-                }
+                if (selected > 0) { fn_80214D50(0); selected--; }
                 break;
             case 0x128:
-                if (selected + 1 < b->count) {
-                    fn_80214D50(0);
-                    selected++;
-                }
+                if (selected + 1 < b->count) { fn_80214D50(0); selected++; }
                 break;
             case 0xd:
                 fn_80214D50(2);
@@ -317,10 +292,7 @@ int fn_80245360(int *a, struct Menu *b) {
         }
         {
             int (*callback)(int *) = b->callback;
-            if (callback != 0) {
-                sp8 = -1;
-                if (callback(&sp8) == 1) return sp8;
-            }
+            if (callback != 0) { sp8 = -1; if (callback(&sp8) == 1) return sp8; }
         }
         fn_802E2D74(5);
     }
@@ -336,13 +308,14 @@ extern double fabs(double);
 #pragma use_lmw_stmw off
 #pragma opt_unroll_loops off
 extern double __fabs(double);
+#pragma scheduling invalid_target
 void fn_8024590C(int *a, int *b) {
     char obj[0x30];
     char tail[0x40];
     struct { int a, b; } buf[64];
-    char text[0x200];
-    char *s, *split, *p;
+    char text[0x1FC];
     int i, j, n, save;
+    char *s, *split, *p, *line;
     float step, shadow, limit, y, h, w, f, x1, x0;
     fn_802C8530();
     fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
@@ -373,33 +346,33 @@ void fn_8024590C(int *a, int *b) {
     limit = lbl_80563854;
     shadow = lbl_8056384C;
     step = lbl_8056385C;
-    s = text;
-    while (strlen(s) != 0) {
-        for (i = 0; i < 64; i++) { buf[i].a = 0; buf[i].b = 0; }
+    line = text;
+    while (strlen(line) != 0) {
+        memset(buf, 0, sizeof(buf));
         split = 0;
         j = 0;
         do {
-            p = s + j;
+            p = line + j;
             if (*p == 32) split = p;
             else if (*p == 94) *p = 32;
             ((char *)buf)[j] = *p;
             j++;
             ((char *)buf)[j] = 0;
-        } while ((unsigned)j < strlen(s) && fn_8023293C(a[3], (char *)buf, lbl_80563834) < limit);
+        } while ((unsigned)j < strlen(line) && fn_8023293C(a[3], (char *)buf, lbl_80563834) < limit);
         save = 0;
-        if ((unsigned)j != strlen(s)) {
+        if ((unsigned)j != strlen(line)) {
             if (split == 0) {
-                split = s + j;
+                split = line + j;
                 save = *split;
             }
             *split = 0;
         } else {
-            split = s + j - 1;
+            split = line + j - 1;
         }
-        fn_80232BA4(s, a[3], 0xFF000000, 12, shadow + ((float *)a)[5], y - shadow, lbl_80563858, lbl_80563830, lbl_80563834);
-        fn_80232BA4(s, a[3], -1, 12, ((float *)a)[5], y, lbl_80563858, lbl_80563830, lbl_80563834);
-        if (save == 0) s = split + 1;
-        else { *split = save; s = split; }
+        fn_80232BA4(line, a[3], 0xFF000000, 12, shadow + ((float *)a)[5], y - shadow, lbl_80563858, lbl_80563830, lbl_80563834);
+        fn_80232BA4(line, a[3], -1, 12, ((float *)a)[5], y, lbl_80563858, lbl_80563830, lbl_80563834);
+        if (save == 0) line = split + 1;
+        else { *split = save; line = split; }
         y -= step;
     }
     f = ((float *)b)[2];
@@ -413,7 +386,6 @@ void fn_8024590C(int *a, int *b) {
     fn_802C855C();
     fn_802C2B48();
 }
-#pragma pop
 
 extern int fn_8012C33C(void *, void *);
 extern int fn_80214D50(int);
@@ -460,7 +432,7 @@ extern "C" void fn_80245D2C(void *object) {
     fn_80214D50(4);
 }
 
-extern "C" void fn_80245D74(void *arg0, void *arg1, int arg2) {
+extern "C" void fn_80245D74(void *arg0, void *arg1) {
     struct State {
         void *p1C;
         int pad20;
@@ -496,7 +468,6 @@ extern "C" void fn_80245D74(void *arg0, void *arg1, int arg2) {
     int len1;
     int len2;
     int has8;
-    (void)arg2;
     if (*(unsigned char *)((char *)arg0 + 0x1D) == 0) {
         ((struct Dummy *)((char *)arg0 + 4))->f2();
         return;
@@ -693,15 +664,15 @@ extern "C" void fn_802462A0(register void *arg0, register void *arg1) {
     frame.state.result = fn_8023512C(&lbl_803430CC);
 
     frame.config[3] = strlen(*(char **)arg1);
+    frame.config[1] = 3;
     frame.config[0] = (unsigned int)&lbl_8055BE70;
     frame.config[2] = *(int *)arg1;
-    frame.config[1] = 3;
     frame.config[4] = 0;
 
-    frame.config[8] = strlen(*(char **)((char *)arg1 + 4));
     frame.config[5] = (unsigned int)&lbl_8055BE78;
-    frame.config[7] = *(int *)((char *)arg1 + 4);
     frame.config[6] = 3;
+    frame.config[7] = *(int *)((char *)arg1 + 4);
+    frame.config[8] = strlen(*(char **)((char *)arg1 + 4));
     frame.config[9] = 0;
 
     frame.config[10] = (unsigned int)&lbl_803430D8;
