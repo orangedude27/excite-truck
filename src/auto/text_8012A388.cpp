@@ -1430,18 +1430,14 @@ extern "C" s32 fn_8012C33C(char *path) {
 extern "C" s32 fn_8012C370(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     s32 result;
     s32 i;
-    s32 zero;
-    i = 0;
-    zero = 0;
-    do {
-        lbl_8055DFF9 = (u8)zero;
+    for (i = 0; i < 10; i++) {
+        lbl_8055DFF9 = 0;
         result = fn_8012B85C(arg0, arg1, arg2, arg3, arg4, arg5);
         if (lbl_8055DFF9 == 0 || result != 0)
             break;
         fn_802E30C8(lbl_8032AB78, arg0);
         fn_80127464();
-        i++;
-    } while (i < 10);
+    }
     return result;
 }
 #pragma push
