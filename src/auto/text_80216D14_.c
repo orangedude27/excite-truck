@@ -3,7 +3,7 @@
 extern float lbl_80563490;
 extern void fn_802E30C8(const char *, ...);
 struct Rec80216 { int w[12]; float f[3]; };
-#define CPYPAIR80216(DD, SS, I) { int b = ((int *)(SS))[(I) + 1]; int a = ((int *)(SS))[(I)]; ((int *)(DD))[(I)] = a; ((int *)(DD))[(I) + 1] = b; }
+#define CPYPAIR80216(DD, SS, I) { int a = ((int *)(SS))[(I)]; int b = ((int *)(SS))[(I) + 1]; ((int *)(DD))[(I)] = a; ((int *)(DD))[(I) + 1] = b; }
 #define CPYREC80216(DD, SS, SF) \
     CPYPAIR80216(DD, SS, 0) \
     CPYPAIR80216(DD, SS, 2) \
