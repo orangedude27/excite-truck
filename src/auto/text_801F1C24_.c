@@ -1848,6 +1848,7 @@ extern "C" void fn_801F4378(void *arg0, int arg1, void *arg2, int arg3, int arg4
     *(int *)((char *)obj + 0x104) = count + 1;
 }
 #pragma cplusplus reset
+/* No-op stub. */
 void fn_801F447C(void) {
 
 }
