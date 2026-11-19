@@ -1275,9 +1275,32 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
 }
 
 extern "C" void fn_800D6CA0(s32, s32);
+/* Layout::SetTagProcessor's expansion of the tag-processor walk (three inlined levels, then fn_800D6CA0). */
+static inline u8 *LayoutDynCast_800D77DC(u8 *obj) {
+    StateNode_800D6CA0 *typeInfo = (StateNode_800D6CA0 *)&lbl_8055DE08;
+    if (HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)obj)->v1(), typeInfo)) return obj;
+    return 0;
+}
+static inline void LayoutTagLevel3_800D77DC(u8 *self, s32 arg1) {
+    if (u8 *cast = LayoutDynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
+    for (ChildIter_800D77DC it = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it)) {
+        fn_800D6CA0((s32)ChildPane_800D77DC(it), arg1);
+    }
+}
+static inline void LayoutTagLevel2_800D77DC(u8 *self, s32 arg1) {
+    if (u8 *cast = LayoutDynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
+    for (ChildIter_800D77DC it = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it)) {
+        LayoutTagLevel3_800D77DC(ChildPane_800D77DC(it), arg1);
+    }
+}
+static inline void LayoutTagLevel1_800D77DC(u8 *self, s32 arg1) {
+    if (u8 *cast = LayoutDynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
+    for (ChildIter_800D77DC it = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it)) {
+        LayoutTagLevel2_800D77DC(ChildPane_800D77DC(it), arg1);
+    }
+}
 #pragma push
 #pragma opt_common_subs off
-#pragma inline_depth(4)
 extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
     StateNode_800D6CA0 *sentinel = (StateNode_800D6CA0 *)&lbl_8055DE08;
     u8 *self = *(u8 **)((u8 *)arg0 + 0x10);
