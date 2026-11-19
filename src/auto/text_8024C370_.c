@@ -471,7 +471,6 @@ void fn_8024CBF4(void) {
 }
 
 #pragma scheduling invalid_target
-#pragma cplusplus on
 #pragma dont_inline on
 int fn_8024CC54(void *out, void *arg1, int arg2) {
     int args[90];
