@@ -1425,13 +1425,14 @@ extern "C" void GXSetIndTexMtx(f32*, s8);
 extern "C" f32 lbl_80560E88;
 extern "C" f32 lbl_80560E94;
 extern "C" f32 lbl_80560E98;
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_800D7D5C(void* arg0, f32* m) {
-    f32 maxT = lbl_80560E94;
     s8 scale=0;
     f32 a=m[0], b=m[1], c=m[2], d=m[3], e=m[4], f=m[5];
     f32 aa=__fabsf(a), bb=__fabsf(b), cc=__fabsf(c), dd=__fabsf(d), ee=__fabsf(e), ff=__fabsf(f);
-    if (!(aa >= maxT || bb >= maxT || cc >= maxT || dd >= maxT || ee >= maxT || ff >= maxT)) {
-        while (scale < 0x2E && !(aa >= maxT || bb >= maxT || cc >= maxT || dd >= maxT || ee >= maxT || ff >= maxT)) {
+    if (!(aa >= 1.0f || bb >= 1.0f || cc >= 1.0f || dd >= 1.0f || ee >= 1.0f || ff >= 1.0f)) {
+        while (scale < 0x2E && !(aa >= 1.0f || bb >= 1.0f || cc >= 1.0f || dd >= 1.0f || ee >= 1.0f || ff >= 1.0f)) {
             aa *= lbl_80560E88; a *= lbl_80560E88; b *= lbl_80560E88;
             c *= lbl_80560E88; d *= lbl_80560E88; e *= lbl_80560E88; f *= lbl_80560E88;
             bb *= lbl_80560E88; cc *= lbl_80560E88; dd *= lbl_80560E88; ee *= lbl_80560E88; ff *= lbl_80560E88;
@@ -1449,6 +1450,7 @@ extern "C" void fn_800D7D5C(void* arg0, f32* m) {
         ((void (*)(void *, f32 *, s8))GXSetIndTexMtx)(arg0, mtx, scale);
     }
 }
+#pragma pop
 
 #pragma dont_inline fn_800D7F58
 extern "C" f32 fn_800D7F58(f32 *out, const f32 *src) {
@@ -2101,12 +2103,12 @@ extern "C" void fn_800D8B28(void *self, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, 
     MatGXBits_800D8B28 *cap = (MatGXBits_800D8B28 *)((u8 *)self + 0x4C);
     MatGXBits_800D8B28 *cnt = (MatGXBits_800D8B28 *)((u8 *)self + 0x50);
     u8 *mem;
-    if (a1 > 8) Panic__Q26nw4hbm2dbFPCciPCce(data, 0x295, data + 0x1E4);
-    if (a2 > 10) Panic__Q26nw4hbm2dbFPCciPCce(data, 0x296, data + 0x218);
-    if (a3 > 8) Panic__Q26nw4hbm2dbFPCciPCce(data, 0x297, data + 0x248);
-    if (a4 > 16) Panic__Q26nw4hbm2dbFPCciPCce(data, 0x298, data + 0x284);
-    if (a6 > 4) Panic__Q26nw4hbm2dbFPCciPCce(data, 0x299, data + 0x2BC);
-    if (a7 > 3) Panic__Q26nw4hbm2dbFPCciPCce(data, 0x29A, data + 0x2F8);
+    if (a1 > 8) Panic__Q26nw4hbm2dbFPCciPCce(&data[0], 0x295, data + 0x1E4);
+    if (a2 > 10) Panic__Q26nw4hbm2dbFPCciPCce(&data[0], 0x296, data + 0x218);
+    if (a3 > 8) Panic__Q26nw4hbm2dbFPCciPCce(&data[0], 0x297, data + 0x248);
+    if (a4 > 16) Panic__Q26nw4hbm2dbFPCciPCce(&data[0], 0x298, data + 0x284);
+    if (a6 > 4) Panic__Q26nw4hbm2dbFPCciPCce(&data[0], 0x299, data + 0x2BC);
+    if (a7 > 3) Panic__Q26nw4hbm2dbFPCciPCce(&data[0], 0x29A, data + 0x2F8);
     if (cap->tex < a1 || cap->srt < a2 || cap->gen < a3 || cap->g < a4 || cap->f < a5 ||
         cap->e < a6 || cap->ind < a7 || cap->h < h || cap->i < i || cap->j < j || cap->k < k) {
         if (*(u8 **)((u8 *)self + 0x58) != 0) {
@@ -2303,8 +2305,8 @@ extern "C" s32 fn_800D9524(void* arg0) {
     u32 c = (x >> 6) & 4;
     u32 d = (x >> 5) & 4;
     u32 e = (x >> 12) & 4;
-    u32 f = (x >> 23) & 0x1E0;
     u32 g = (x >> 18) & 0x3C;
+    u32 f = (x >> 23) & 0x1E0;
     u32 h = (x >> 4) & 4;
     u32 i = (x >> 3) & 4;
     u32 j = (x >> 13) & 0x1C;
