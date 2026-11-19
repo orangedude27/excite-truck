@@ -1608,7 +1608,26 @@ void *fn_801D62A8(void *arg0, int arg1) {
     return arg0;
 }
 
-int fn_801D6320(void *out, void *object) {
+#pragma cplusplus on
+struct Dummy6320 {
+    virtual void v0();
+    virtual int getBool(const char *);
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual float getFloat(const char *);
+    virtual float getFloatArg(const char *, float);
+    virtual void v9();
+    virtual signed char getS8(const char *, int);
+    virtual void v11(); virtual void v12(); virtual void v13();
+    virtual void v14(); virtual void v15(); virtual void v16();
+    virtual void v17(); virtual void v18(); virtual void v19();
+    virtual void v20(); virtual void v21();
+    virtual int getBool2(const char *);
+};
+extern "C" int fn_801D6320(void *out, void *object) {
     extern char lbl_80338460;
     extern char lbl_8055ACB0, lbl_8055ACB8, lbl_8055ACC0, lbl_8055ACC8;
     extern float lbl_80562ADC, lbl_80562AE4, lbl_80562B0C;
@@ -1633,6 +1652,7 @@ int fn_801D6320(void *out, void *object) {
     *(int *)((char *)out + 4) = 1;
     return 1;
 }
+#pragma cplusplus reset
 
 /* AX effect helper: return the address of the LFO sine table used by the FX. */
 int *__AXFXGetLfoSinTable_801D64F4(void) {
@@ -2270,10 +2290,11 @@ extern "C" int fn_801D707C(void *arg0, void *arg1) {
     char *src;
     int remaining;
     char *dst;
+    float second;
 
     obj = (Dummy *)arg1;
     if (obj->check(&lbl_8055AC80) == 0) {
-        ((void (*)(const char *, ...))fn_802E30C8)(lbl_80338888);
+        ((void (*)(const char *, ...))fn_802E30C8)(&lbl_80338888[0]);
         return 0;
     }
     src = obj->get(&lbl_8055AC80);
@@ -2289,10 +2310,11 @@ copy_body:
     if ((signed char)(*dst++ = *src++) != 0)
         goto copy_limit;
 copy_done:
-    *(float *)((char *)arg0 + 0x28) = obj->value(&lbl_8055ACB8, lbl_80562ADC);
-    *(float *)((char *)arg0 + 0x30) = obj->value(&lbl_8055ACB0, lbl_80562AEC);
-    *(float *)((char *)arg0 + 0x2C) = lbl_80562ADC;
+    *(float *)((char *)arg0 + 0x28) = obj->value(&lbl_8055ACB8, 0.0f);
+    second = -1.0f;
+    *(float *)((char *)arg0 + 0x30) = obj->value(&lbl_8055ACB0, second);
     *(int *)((char *)arg0 + 4) = 1;
+    *(float *)((char *)arg0 + 0x2C) = 0.0f;
     *((char *)arg0 + 0x34) = 0;
     *(int *)((char *)arg0 + 0x38) = fn_80207848(lbl_803388C8, 1);
     return 1;
