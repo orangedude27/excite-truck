@@ -2477,28 +2477,29 @@ extern "C" int fn_80283B58(void) {
 #pragma scheduling invalid_target
 int fn_80283E28(void) {
     char *base = (char *)&lbl_804B2FF8;
+    struct Fn80283E28List *list = (struct Fn80283E28List *)(base + 0xE0);
     int i;
     int idx;
     int count;
     unsigned int value;
     struct Fn80283E28Obj **items;
     struct Fn80283E28Obj *obj;
-    count = ((struct Fn80283E28List *)(base + 0xE0))->count;
-    items = ((struct Fn80283E28List *)(base + 0xE0))->items;
+    count = list->count;
+    items = list->items;
     value = (unsigned int)lbl_8055F698;
-    idx = fn_80283B58_find((struct Fn80283E28List *)(base + 0xE0), value);
+    idx = fn_80283B58_find(list, value);
     if (idx >= 0) {
         i = idx;
         do {
             i--;
             if (i < 0) i += count;
         } while (items[i]->sub == 0 && i != idx);
-        if (i >= 0 && i < ((struct Fn80283E28List *)(base + 0xE0))->count && items[i]->sub != 0) {
+        if (i >= 0 && i < list->count && items[i]->sub != 0) {
             lbl_8055F698 = (void *)items[i];
         } else {
             lbl_8055F698 = 0;
         }
-        if (i >= 0 && i < ((struct Fn80283E28List *)(base + 0xE0))->count && items[i]->sub != 0) {
+        if (i >= 0 && i < list->count && items[i]->sub != 0) {
             obj = items[i];
             if (obj != 0) {
                 char *s;
@@ -2914,6 +2915,8 @@ extern "C" float lbl_80564218;
 extern "C" float lbl_80564228;
 extern "C" float lbl_8056422C;
 extern unsigned char lbl_804B3068[];
+#pragma push
+#pragma processor gekko
 extern "C" void fn_802849E8(void *arg0) {
     typedef void (*BE4)(int, int, int, int, int);
     class Item { public:
