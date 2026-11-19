@@ -3343,6 +3343,7 @@ void fn_802D3D94(int texMtxIndex, void *mtx) {
     GXLoadTexMtxImm(mtx, texMtxIndex * 3 + 30, 1);
 }
 
+#pragma scheduling on
 #pragma opt_propagation off
 void fn_802D3DAC(void) {
     int id;
