@@ -77,12 +77,28 @@ void fn_802B0690(int *handleSlot) {
     }
 }
 
-void fn_802B06D4(void) {
-    int *obj = (int *)fn_802B59CC();
-    int *vt = (int *)obj[0];
-    ((void (*)(void *, void *, int))vt[12])(obj, lbl_8034A078, 0);
+#pragma cplusplus on
+#pragma scheduling 750
+extern "C" void fn_802B06D4(void) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void call(void *, int);
+    };
+    Obj *obj = (Obj *)fn_802B59CC();
+    obj->call(lbl_8034A078, 0);
 }
-
+#pragma scheduling reset
+#pragma cplusplus off
 extern void *fn_801284F8(int, void *);
 extern void *fn_8012850C(int, void *);
 extern void *fn_8002F37C(void *, void (*)(void *), void *(*)(void *, int), int, int);
@@ -892,26 +908,30 @@ int fn_802B1B50(int *base, int step) {
 extern float lbl_80564BF8;
 extern int fn_802DA704(int, void *, int);
 extern void fn_802DAA18(void);
+/* Queues a pair of 3D points built from the source list at offset 0xC of this
+ * object into the stack allocator, then flushes the pending record. Each entry
+ * contributes its values at +4 and +8 as X/Y with Z fixed to 1/2048. */
 void fn_802B1B60(void *arg0) {
-    float sp8[3];
-    register char *list;
-    register int offset;
-    register float *out;
-    register int count;
-    list = *(char **)((char *)arg0 + 0xC);
-    out = sp8;
-    count = 0;
-    offset = 0;
-    while (count < *(int *)(list + 8)) {
-        char *base = *(char **)(list + 4);
-        *out = *(float *)(base + offset + 4);
-        out[1] = *(float *)(*(char **)(list + 4) + offset + 8);
-        out[2] = 0.00048828125f;
-        out += 3;
-        offset += 0x10;
-        count++;
+    float points[3];
+    register char *sourceList;
+    register int entryOffset;
+    register float *dst;
+    register int index;
+
+    sourceList = *(char **)((char *)arg0 + 0xC);
+    dst = points;
+    index = 0;
+    entryOffset = 0;
+    while (index < *(int *)(sourceList + 8)) {
+        char *entries = *(char **)(sourceList + 4);
+        *dst = *(float *)(entries + entryOffset + 4);
+        dst[1] = *(float *)(*(char **)(sourceList + 4) + entryOffset + 8);
+        dst[2] = 0.00048828125f;
+        dst += 3;
+        entryOffset += 0x10;
+        index++;
     }
-    fn_802DA704(1, sp8, 2);
+    fn_802DA704(1, points, 2);
     fn_802DAA18();
 }
 
