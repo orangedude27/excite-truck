@@ -15016,9 +15016,9 @@ extern "C" s32 fn_800BDEB4(const u8 *data, s32 bitCount, u32 *bitOffset) {
     if (remaining == 0)
         return 0;
     position = *bitOffset;
-    *bitOffset = position + remaining;
     byteIndex = (position >> 3) & 0x1FFF;
     bitsInByte = 8 - (position & 7);
+    *bitOffset = position + remaining;
     while (remaining > 0) {
         if (bitsInByte == 0) {
             byteIndex += 1;
