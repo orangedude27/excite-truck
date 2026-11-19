@@ -4734,6 +4734,7 @@ void fn_8015536C(void *arg0, void *arg1, s32 index) {
 }
 #pragma pop
 
+/* Empty stub. */
 void fn_801556F0(void) {
 
 }
