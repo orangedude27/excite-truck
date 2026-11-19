@@ -3302,18 +3302,21 @@ extern "C" void fn_8015C5D0(void* bonus) {
 
 #pragma scheduling on
 extern "C" void fn_8015C5E4(void* arg0) {
-    f32 offset = (*(f32*)((u8*)arg0 + 0x278) < lbl_80561754) ?
-        *(f32*)((u8*)arg0 + 0x278) - lbl_80561760 :
-        lbl_80561760 + *(f32*)((u8*)arg0 + 0x278);
+    f32 offset;
     s32 count;
+    if (*(f32*)((u8*)arg0 + 0x278) < 0.0f) {
+        offset = *(f32*)((u8*)arg0 + 0x278) - 0.5f;
+    } else {
+        offset = 0.5f + *(f32*)((u8*)arg0 + 0x278);
+    }
     *(s32*)((u8*)arg0 + 0x26c) = (s32)offset;
     ((Unk801577F0*)arg0)->v13();
     count = *(s32*)((u8*)arg0 + 0x26c);
     if (count > 0) {
         if (count > 0) {
             ((void (*)(void*, s32, s32))fn_801CB6E4)((void*)0x48203, *(s32*)((u8*)arg0 + 4), count);
+            *(s32*)((u8*)arg0 + 0x26c) = 0;
         }
-        *(s32*)((u8*)arg0 + 0x26c) = 0;
         *(f32*)((u8*)arg0 + 0x278) = lbl_80561754;
     }
 }
