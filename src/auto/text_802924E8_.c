@@ -1643,17 +1643,18 @@ void fn_80294710(void *object) {
 extern float lbl_80564510, lbl_805644D4, lbl_80564500, lbl_805644FC, lbl_805644D8;
 extern unsigned char lbl_804B4030[];
 #pragma scheduling on
-void fn_80294780(void *arg0)
+/* Steps active particles in an emitter: integrate velocity with drag and gravity, copy template data, age, and compact the live list. */
+void fn_80294780(void *emitter)
 {
-  struct W3
+  struct WordTriple
   {
-    unsigned int a;
-    unsigned int b;
-    unsigned int c;
+    unsigned int x;
+    unsigned int y;
+    unsigned int z;
   };
   struct Particle
   {
-    struct W3 copy[3];
+    struct WordTriple copy[3];
     float x;
     float y;
     float z;
@@ -1668,51 +1669,51 @@ void fn_80294780(void *arg0)
   struct ParticleTemplate
   {
     unsigned int pad[4];
-    struct W3 copy[3];
+    struct WordTriple copy[3];
   };
   struct 
   {
     float x;
     float y;
     float z;
-  } v;
-  register struct ParticleTemplate *src;
-  register struct Particle *cur;
-  register struct Particle *out;
+  } velocity;
+  register struct ParticleTemplate *templateData;
+  register struct Particle *particle;
+  register struct Particle *write;
   register int i;
-  float dt = fn_801E7E24(arg0);
-  float scale = 1.0f - (1.5f * dt);
-  cur = (struct Particle *) (((unsigned char *) arg0) + 0x2C);
-  out = cur;
-  for (i = 0; i < (*((int *) (((unsigned char *) arg0) + 0x222C))); ++i, ++cur)
+  float dt = fn_801E7E24(emitter);
+  float drag = 1.0f - (1.5f * dt);
+  particle = (struct Particle *) (((unsigned char *) emitter) + 0x2C);
+  write = particle;
+  for (i = 0; i < (*((int *) (((unsigned char *) emitter) + 0x222C))); ++i, ++particle)
   {
-    if (cur->age < 0.0f)
+    if (particle->age < 0.0f)
     {
       continue;
     }
-    if (cur->age >= 5.0f)
+    if (particle->age >= 5.0f)
     {
       continue;
     }
-    v.x = cur->vx * scale;
-    v.y = cur->vy * scale;
-    v.z = cur->vz * scale;
-    v.y -= (9.81f * dt) * (*((float *) (((unsigned char *) arg0) + 4)));
-    out->x = cur->x + (v.x * dt);
-    out->y = cur->y + (v.y * dt);
-    out->z = cur->z + (v.z * dt);
-    src = (struct ParticleTemplate *) (lbl_804B4030 + (cur->type * 0x34));
-    out->copy[0] = src->copy[0];
-    out->copy[1] = src->copy[1];
-    out->copy[2] = src->copy[2];
-    out->vx = v.x;
-    out->vy = v.y;
-    out->vz = v.z;
-    out->age = cur->age + dt;
-    out->flag = cur->flag;
-    out->type = cur->type;
-    ++out;
+    velocity.x = particle->vx * drag;
+    velocity.y = particle->vy * drag;
+    velocity.z = particle->vz * drag;
+    velocity.y -= (9.81f * dt) * (*((float *) (((unsigned char *) emitter) + 4)));
+    write->x = particle->x + (velocity.x * dt);
+    write->y = particle->y + (velocity.y * dt);
+    write->z = particle->z + (velocity.z * dt);
+    templateData = (struct ParticleTemplate *) (lbl_804B4030 + (particle->type * 0x34));
+    write->copy[0] = templateData->copy[0];
+    write->copy[1] = templateData->copy[1];
+    write->copy[2] = templateData->copy[2];
+    write->vx = velocity.x;
+    write->vy = velocity.y;
+    write->vz = velocity.z;
+    write->age = particle->age + dt;
+    write->flag = particle->flag;
+    write->type = particle->type;
+    ++write;
   }
 
-  *((int *) (((unsigned char *) arg0) + 0x222C)) = (((int) out) - (((int) arg0) + 0x2C)) / 0x44;
+  *((int *) (((unsigned char *) emitter) + 0x222C)) = (((int) write) - (((int) emitter) + 0x2C)) / 0x44;
 }
