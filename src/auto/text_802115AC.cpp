@@ -2480,7 +2480,15 @@ extern "C" void fn_80215470(void *widget) {
 
 }
 
-extern "C" void fn_80215474(void) {
+/* Base widget class (vtable lbl_8033FB38) default for vtable slot 0x4C (vf17):
+ * the widget's update handler, run right after its switch-on flag at +0x244 is
+ * set (fn_80229FF0 raises the flag and dispatches it; the layout wrapper's
+ * slot 0x34 handler fn_80215A48 sets its own flags and forwards the call to
+ * the widget at +0x244).  The slider overrides it as fn_8021CE8C, which re-runs
+ * its press handler vf13 while that flag is set, and its release handler
+ * fn_8021CEAC runs this update before clearing the flag.  The base widget has
+ * nothing to refresh, so the default does nothing. */
+extern "C" void fn_80215474(void *widget) {
 
 }
 
