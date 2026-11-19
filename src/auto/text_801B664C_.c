@@ -31,6 +31,7 @@ void fn_801B6660(void) {
 
 }
 
+/* No operation. */
 void fn_801B6664(void) {
 
 }
