@@ -3815,12 +3815,9 @@ void GKI_delete_pool(UINT8 pool_id) {
     FREE_QUEUE_T *Q;
     tGKI_COM_CB *p_cb = &((tGKI_CB *)lbl_803946C0)->com;
 
-    if (pool_id >= 9)
+    if (pool_id >= 9 || p_cb->pool_start[pool_id] == NULL)
         return;
-    if (p_cb->pool_start[pool_id] != NULL)
-        goto body;
-    return;
-body:
+
     fn_8006EBAC();
     Q = &p_cb->freeq[pool_id];
     if (Q->cur_cnt != 0)
@@ -7761,23 +7758,23 @@ extern "C" u8 bta_hh_find_cb(u8 *bd_addr) {
     devices.base = lbl_803C0D48;
     u8 *&controls = devices.base;
     table.base = lbl_803159E0;
-    u8 *&messages = table.base;
+    const u8 *&messages = (const u8 *&)table.base;
     u8 i;
 
     for (i = 0; i < 0x10; i++) {
         if (bdcmp(bd_addr, controls + ((i & 0xFF) << 5) + 0x18) == 0 &&
             bdcmp(bd_addr, &lbl_80565228) != 0) {
             if (lbl_8055DC80 >= 5)
-                fn_8007096C(0x504, messages + 0, i,
-                            controls[((i & 0xFF) << 5) + 0x26]);
+                fn_8007096C(0x504, (void *)(messages + 0), i,
+                            *(controls + ((i & 0xFF) << 5) + 0x26));
             return i;
         }
         if (5 <= lbl_8055DC80)
             ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)
-                (0x504, messages + 0x24,
-                 controls[((i & 0xFF) << 5) + 0x28],
-                 i, controls[((i & 0xFF) << 5) + 0x26],
-                 controls[((i & 0xFF) << 5) + 0x2C]);
+                (0x504, (void *)(messages + 0x24),
+                 *(controls + ((i & 0xFF) << 5) + 0x28),
+                 i, *(controls + ((i & 0xFF) << 5) + 0x26),
+                 *(controls + ((i & 0xFF) << 5) + 0x2C));
     }
 
     for (i = 0; i < 0x10; i++) {
@@ -7787,7 +7784,7 @@ extern "C" u8 bta_hh_find_cb(u8 *bd_addr) {
         }
     }
     if (lbl_8055DC80 >= 5)
-        fn_8007096C(0x504, messages + 0x58, i, 0x10);
+        fn_8007096C(0x504, (void *)(messages + 0x58), i, 0x10);
     return i;
 }
 #pragma pop
@@ -10788,41 +10785,41 @@ void btm_process_inq_results(UINT8 *p, UINT8 mode)
 }
 
 void btm_process_inq_complete(UINT8 status, UINT8 unused) {
-    u8 *cleanup_base;
-    u32 zero;
+    register u8 *cleanup_base;
+    register u32 zero;
     u8 *base;
     void (*callback)(void *);
     u8 result;
     void *buffer;
     base = lbl_803C0F78;
     callback = *(void (**)(void *))(base + 0x16B0);
-    if (base[0x1848] == 0)
-        return;
-    result = 10;
-    *(u32 *)(base + 0x16C0) += 1;
-    if (status == 0)
-        result = 0;
-    base[0x183E] = result;
-    if ((base[0x1848] & 4) != 0)
-        return;
-    cleanup_base = lbl_803C0F78;
-    zero = 0;
-    buffer = *(void **)(cleanup_base + 0x16DC);
-    *(u32 *)(base + 0x16B4) = zero;
-    base[0x1848] = zero;
-    base[0x1847] = zero;
-    *(void (**)(void *))(base + 0x16B0) = NULL;
-    if (buffer != NULL) {
-        GKI_freebuf(buffer);
-        *(void **)(cleanup_base + 0x16DC) = (void *)zero;
+    if (base[0x1848] != 0) {
+        result = 10;
+        *(u32 *)(base + 0x16C0) += 1;
+        if (status == 0)
+            result = 0;
+        base[0x183E] = result;
+        if ((base[0x1848] & 4) == 0) {
+            cleanup_base = lbl_803C0F78;
+            zero = 0;
+            buffer = *(void **)(cleanup_base + 0x16DC);
+            *(u32 *)(base + 0x16B4) = zero;
+            base[0x1848] = zero;
+            base[0x1847] = zero;
+            *(void (**)(void *))(base + 0x16B0) = NULL;
+            if (buffer != NULL) {
+                GKI_freebuf(buffer);
+                *(void **)(cleanup_base + 0x16DC) = (void *)zero;
+            }
+            *(u16 *)(cleanup_base + 0x16E0) = zero;
+            *(u16 *)(cleanup_base + 0x16E2) = zero;
+            if (lbl_803C0F78[0x27C0] >= 5)
+                fn_8007096C(0xD0004, lbl_803164F4,
+                            base[0x183E], base[0x183F]);
+            if (callback != NULL)
+                callback(base + 0x183E);
+        }
     }
-    *(u16 *)(cleanup_base + 0x16E0) = zero;
-    *(u16 *)(cleanup_base + 0x16E2) = zero;
-    if (lbl_803C0F78[0x27C0] >= 5)
-        fn_8007096C(0xD0004, lbl_803164F4,
-                    base[0x183E], base[0x183F]);
-    if (callback != NULL)
-        callback(base + 0x183E);
 }
 
 #pragma push
@@ -14785,8 +14782,8 @@ void *arg0;
     u16 count;
     u16 opcode;
     u16 offset;
-    u8 highByte;
     u8 lowByte;
+    u8 highByte;
 
     if (msg != 0 && *(u16 *)(lbl_803C0A50 + 0x6C) != 0) {
         GKI_enqueue((BUFFER_Q *)(lbl_803C0A50 + 0x64), msg);
@@ -14821,13 +14818,12 @@ void *arg0;
         }
         count = *(u16 *)(queueBase + 0x80);
         *(u16 *)(queueBase + 0x80) = count - 1;
-        ((void (*)(void *, u16))fn_8007079C)(msg, 0x2000);
+        ((void (*)(void *, u16, u16))fn_8007079C)(msg, 0x2000, count);
         msg = 0;
     }
 
     if (msg != 0)
         GKI_enqueue((BUFFER_Q *)(lbl_803C0A50 + 0x64), msg);
-    return;
 }
 
 /* Handle HCI Connection Complete event: dispatch ACL links to security/L2CAP and SCO links to SCO manager. */
@@ -17575,7 +17571,7 @@ u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param,
 u8 HID_HostCloseDev(u8 dev_handle) {
     extern u8 hidh_conn_disconnect(u32);
     tHID_HOST_DEV_VIEW *device;
-    tHID_HOST_DEV_VIEW *devices = (tHID_HOST_DEV_VIEW *)&lbl_803C3C38[0];
+    register tHID_HOST_DEV_VIEW *devices = (tHID_HOST_DEV_VIEW *)lbl_803C3C38;
     if (lbl_803C3C38[0x400] == 0)
         return 1;
     if (dev_handle > 0x10 || (device = &devices[dev_handle])->in_use == 0)
@@ -20284,6 +20280,7 @@ void l2c_rcv_acl_data(register BT_HDR *arg0) {
     s32 temp_r3;
     s32 temp_r3_2;
     s32 var_r28;
+    register u8 *gki_cb;
     register u32 temp_r0_3;
     u32 temp_r0_4;
     u32 temp_r24;
@@ -20316,12 +20313,10 @@ void l2c_rcv_acl_data(register BT_HDR *arg0) {
                     *(u16 *)(lbl_803C4040 + 0x7C8));
             }
             arg0->layer_specific = 2;
-            {
-                register u8 *gki_cb = lbl_803C4040;
-                GKI_enqueue((BUFFER_Q *)(gki_cb + 0x7C0), arg0);
-                if (*(u16 *)(gki_cb + 0x7C8) == 1)
-                    btu_start_timer((TIMER_LIST_ENT *)(gki_cb + 0x7CC), 4, 1);
-            }
+            gki_cb = lbl_803C4040;
+            GKI_enqueue((BUFFER_Q *)(gki_cb + 0x7C0), arg0);
+            if (*(u16 *)(gki_cb + 0x7C8) == 1)
+                btu_start_timer((TIMER_LIST_ENT *)(gki_cb + 0x7CC), 4, 1);
         } else {
             GKI_freebuf(arg0);
         }
@@ -20330,8 +20325,8 @@ void l2c_rcv_acl_data(register BT_HDR *arg0) {
     temp_r4 = arg0->offset;
     temp_r0_3 = (u16)(data[10] + (data[11] << 8));
     arg0->offset = (u16)(temp_r4 + 4);
-    temp_r24 = (u16)(data[14] + (data[15] << 8));
     temp_r25 = (u16)(data[12] + (data[13] << 8));
+    temp_r24 = (u16)(data[14] + (data[15] << 8));
     if (temp_r24 > 2) {
         temp_r3_2 = (s32)l2cu_find_ccb_by_cid((void *)temp_r3, temp_r24);
         var_r28 = temp_r3_2;
@@ -22862,7 +22857,7 @@ void RFCOMM_ConfigInd(u32 arg0, u8 *arg1) {
     u16 port_lcid;
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, &trace_msg[index - index], arg0);
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, trace_msg + 0 * index, arg0);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
@@ -22890,7 +22885,7 @@ void RFCOMM_ConfigCnf_800910D4(u32 arg0, u8 *arg1) {
     u16 port_lcid;
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, &lbl_803196B8[0], arg0);
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, trace_msg + (index >= 10 ? 0 : 0), arg0);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
@@ -22918,20 +22913,19 @@ void fn_800911DC(void) {
 }
 
 void RFCOMM_DisconnectInd(u16 arg0, s32 arg1) {
-    struct TraceMsgs { char m0[0x1C]; char m1[0x8C]; char m2[1]; };
-    struct TraceMsgs *messages = (struct TraceMsgs *)lbl_803196B8;
+    register char *messages = lbl_803196B8;
     s32 temp_r0 = arg0 - 0x40;
     void *var_r30;
 
     if (temp_r0 >= 0xA) {
         if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, messages->m0, arg0);
+            fn_80070954(0x90000, messages, arg0);
         var_r30 = 0;
     } else {
         var_r30 = *(void **)((u8 *)&lbl_803C4828 + temp_r0 * 4 + 0x3C);
         if (var_r30 && *(u16 *)((u8 *)var_r30 + 0x68) != arg0) {
             if (lbl_803C4828[0x414] >= 2)
-                fn_8007096C(0x90001, messages->m1, arg0, *(u16 *)((u8 *)var_r30 + 0x68));
+                fn_8007096C(0x90001, messages + 0x1C, arg0, *(u16 *)((u8 *)var_r30 + 0x68));
             var_r30 = 0;
         }
     }
@@ -22939,7 +22933,7 @@ void RFCOMM_DisconnectInd(u16 arg0, s32 arg1) {
         L2CA_DisconnectRsp(arg0);
     if (!var_r30) {
         if (lbl_803C4828[0x414] >= 2)
-            fn_80070954(0x90001, messages->m2, arg0);
+            fn_80070954(0x90001, messages + 0xA8, arg0);
     } else {
         fn_800916F4(var_r30, 0xE, 0);
     }
@@ -23105,17 +23099,21 @@ void RFCOMM_BufDataInd(u32 lcid, BT_HDR *p_buf) {
 #undef rfc_mx_sm_execute
 #undef p_mcb
 }
-#pragma pop
+#pragma push
+#pragma opt_common_subs off
 void RFCOMM_CongestionStatusInd(UINT16 lcid, BOOLEAN is_congested) {
     register char *messages = lbl_803196B8;
     void *p_mcb;
     s32 index;
     u16 mcb_lcid;
+    u32 firstOff;
 
     index = lcid - 0x40;
     if (index >= 0xA) {
-        if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, messages + 0, lcid);
+        if (lbl_803C4828[0x414] >= 1) {
+            firstOff = 0;
+            fn_80070954(0x90000, messages + firstOff, lcid);
+        }
         p_mcb = 0;
     } else {
         p_mcb = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
@@ -23138,7 +23136,7 @@ void RFCOMM_CongestionStatusInd(UINT16 lcid, BOOLEAN is_congested) {
         rfc_process_l2cap_congestion(p_mcb, is_congested);
     }
 }
-
+#pragma pop
 void fn_800916D8(void *p_mcb, u32 lcid) {
     /* Register an RFCOMM multiplexer control block in rfc_cb's lcid -> MCB
        lookup table, one pointer slot per application L2CAP channel. */
