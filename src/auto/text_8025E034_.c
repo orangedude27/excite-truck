@@ -931,73 +931,75 @@ __declspec(section ".sdata") extern char lbl_8055C10C[];
 __declspec(section ".sdata") extern char lbl_8055C114[];
 extern void *lbl_8055F2E4;
 extern int lbl_8055F2E8;
-#pragma push
-#pragma processor 750
+static inline void setRecordIds_8025FA18(char *dst, int index) {
+    *(int *)(dst + 0x20) = fn_802CAC28(index ? lbl_80344750 : lbl_80344740, 0);
+    *(int *)(dst + 0x24) = fn_802CAC28(index ? lbl_80344730 : lbl_80344720, 0);
+}
+#pragma cplusplus on
 #pragma use_lmw_stmw off
-void *fn_8025FA18(void) {
-    int count, index;
-    void *heap, *set, *entry;
+extern "C" void *fn_8025FA18(void) {
+    int index, count;
+    void *heap;
+    ParamItem_8025FA18 *entry;
+    ParamDir_8025FA18 *set;
     char *dst, *src, *q;
-    int *record;
     int n;
     char c;
     if (lbl_8055F2E8 == 0) {
         heap = fn_801284F8(8, lbl_8055C114);
         if (heap != 0) {
-            set = fn_80131808(lbl_80344760);
+            set = (ParamDir_8025FA18 *)fn_80131808(lbl_80344760);
             *(int *)((char *)heap + 4) = 0;
             *(void **)heap = fn_8012850C(0xAF0, lbl_8055C10C);
-            count = 0;
-            for (;;) {
-                entry = ((void *(*)(void *, int))((void **)*(void **)set)[3])(set, count);
-                if (entry == 0) break;
-                if (strcmp(((char *(*)(void *))((void **)*(void **)entry)[2])(entry), lbl_8055C108) == 0) {
+            for (count = 0; (entry = set->getAt(count)) != 0; count++) {
+                if (strcmp(entry->getName(), lbl_8055C108) == 0) {
                     index = 0;
                     do {
                         int nn = *(int *)((char *)heap + 4);
-                        record = (int *)((char *)*(void **)heap + nn * 0x38);
+                        dst = (char *)*(void **)heap + nn * 0x38;
                         *(int *)((char *)heap + 4) = nn + 1;
-                        src = ((char *(*)(void *, const char *))((void **)*(void **)entry)[5])(entry, lbl_8055C100);
-                        dst = (char *)record;
+                        src = entry->getParam(lbl_8055C100);
                         q = dst;
                         n = 0x20;
-                        for (;;) {
-                            c = *src++;
-                            *q++ = c;
-                            if (c == 0) break;
-                            if (--n <= 0) {
-                                q[-1] = 0;
-                                break;
-                            }
-                        }
+                        goto copy1_check;
+                    copy1_dec:
+                        if (--n <= 0) { q[-1] = 0; goto copy1_done; }
+                    copy1_check:
+                        c = *src++;
+                        *q++ = c;
+                        if (c != 0) goto copy1_dec;
+                    copy1_done:
                         if (index != 0) {
-                            dst = (char *)record;
-                            for (n = 0; n < 0x20 && dst[n] != 0; n++) {}
-                            if (n < 0x20) {
-                                dst += n;
+                            n = 0x20;
+                            q = dst;
+                            goto scan_check;
+                        scan_dec:
+                            n--;
+                            q++;
+                        scan_check:
+                            c = *q;
+                            if (c != 0) goto scan_dec;
+                            if (n > 0) {
                                 src = lbl_8055C0FC;
-                                n = 0x20 - n;
-                                for (;;) {
-                                    c = *src++;
-                                    *dst++ = c;
-                                    if (c == 0) break;
-                                    if (--n <= 0) {
-                                        dst[-1] = 0;
-                                        break;
-                                    }
-                                }
+                                goto copy2_check;
+                            copy2_dec:
+                                if (--n <= 0) { q[-1] = 0; goto copy2_done; }
+                            copy2_check:
+                                c = *src++;
+                                *q++ = c;
+                                if (c != 0) goto copy2_dec;
+                            copy2_done: ;
                             }
                         }
-                        record[8] = fn_802CAC28(index ? lbl_80344750 : lbl_80344740, 0);
-                        record[9] = fn_802CAC28(index ? lbl_80344730 : lbl_80344720, 0);
-                        *(float *)((char *)record + 0x28) = ((float (*)(void *, const char *))((void **)*(void **)entry)[9])(entry, lbl_8055C0F8);
-                        *(float *)((char *)record + 0x2C) = ((float (*)(void *, const char *))((void **)*(void **)entry)[9])(entry, lbl_8055C0F4);
-                        *(float *)((char *)record + 0x30) = ((float (*)(void *, const char *))((void **)*(void **)entry)[9])(entry, lbl_8055C0F0);
+                        *(int *)(dst + 0x20) = fn_802CAC28(index ? lbl_80344750 : lbl_80344740, 0);
+                        *(int *)(dst + 0x24) = fn_802CAC28(index ? lbl_80344730 : lbl_80344720, 0);
+                        *(float *)(dst + 0x28) = entry->getFloat(lbl_8055C0F8);
+                        *(float *)(dst + 0x2C) = entry->getFloat(lbl_8055C0F4);
+                        *(float *)(dst + 0x30) = entry->getFloat(lbl_8055C0F0);
+                        *(float *)(dst + 0x34) = entry->getFloat(lbl_8055C0EC);
                         index++;
-                        *(float *)((char *)record + 0x34) = ((float (*)(void *, const char *))((void **)*(void **)entry)[9])(entry, lbl_8055C0EC);
                     } while (index < 2);
                 }
-                count++;
             }
             fn_80131818(set);
         }
@@ -1006,7 +1008,7 @@ void *fn_8025FA18(void) {
     lbl_8055F2E8++;
     return lbl_8055F2E4;
 }
-#pragma pop
+#pragma cplusplus reset
 extern float lbl_80563B70;
 extern float lbl_80563B74;
 extern float lbl_80563B78;
