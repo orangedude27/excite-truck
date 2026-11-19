@@ -1212,6 +1212,7 @@ extern "C" void fn_80182DF4(void *arg0) {
 }
 #pragma cplusplus reset
 #pragma pop
+/* Empty stub (no operation). */
 void fn_801836DC(void) {
 
 }
