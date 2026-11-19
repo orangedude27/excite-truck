@@ -239,13 +239,24 @@ int fn_8000DC70(int identIndex) {
     return (int)((char *)lbl_8055D46C + identIndex * 0x12 + 0x64);
 }
 
+static inline void setIdentFields(int value) {
+    int *p = lbl_8055D46C;
+    if (p[1] != 0) p[1] = value;
+    p = lbl_8055D46C;
+    if (p[7] != 0) p[7] = value;
+    p = lbl_8055D46C;
+    if (p[13] != 0) p[13] = value;
+    p = lbl_8055D46C;
+    if (p[19] != 0) p[19] = value;
+}
+
 #pragma push
 #pragma optimization_level reset
 #pragma dont_inline on
 void fn_8000DC84(int arg0) {
+    struct Chunk { int a, b, c, d, e, f; };
+    struct Chunk *p;
     int value;
-    int *p;
-    int t;
     switch (arg0) {
     case 1:
         fn_8000D984(*lbl_8055D46C);
@@ -257,25 +268,25 @@ void fn_8000DC84(int arg0) {
         fn_8000DF2C(1);
     case 4:
         value = 1;
-        p = lbl_8055D46C;
-        t = p[1]; if (t != 0) p[1] = value;
-        p = lbl_8055D46C;
-        t = p[7]; if (t != 0) p[7] = value;
-        p = lbl_8055D46C;
-        t = p[13]; if (t != 0) p[13] = value;
-        p = lbl_8055D46C;
-        t = p[19]; if (t != 0) p[19] = value;
+        p = (struct Chunk *)lbl_8055D46C;
+        if (p[0].b != 0) p[0].b = value;
+        p = (struct Chunk *)lbl_8055D46C;
+        if (p[1].b != 0) p[1].b = value;
+        p = (struct Chunk *)lbl_8055D46C;
+        if (p[2].b != 0) p[2].b = value;
+        p = (struct Chunk *)lbl_8055D46C;
+        if (p[3].b != 0) p[3].b = value;
         break;
     case 5:
         value = 2;
-        p = lbl_8055D46C;
-        t = p[1]; if (t != 0) p[1] = value;
-        p = lbl_8055D46C;
-        t = p[7]; if (t != 0) p[7] = value;
-        p = lbl_8055D46C;
-        t = p[13]; if (t != 0) p[13] = value;
-        p = lbl_8055D46C;
-        t = p[19]; if (t != 0) p[19] = value;
+        p = (struct Chunk *)lbl_8055D46C;
+        if (p[0].b != 0) p[0].b = value;
+        p = (struct Chunk *)lbl_8055D46C;
+        if (p[1].b != 0) p[1].b = value;
+        p = (struct Chunk *)lbl_8055D46C;
+        if (p[2].b != 0) p[2].b = value;
+        p = (struct Chunk *)lbl_8055D46C;
+        if (p[3].b != 0) p[3].b = value;
         break;
     }
 }
