@@ -3077,16 +3077,22 @@ extern "C" s32 fn_800A8C90(void *arg0, s32 arg1, void **arg2, s32 *arg3) {
 #pragma scheduling on
 extern "C" s32 fn_800A7C20(void *, void **, u32, void **, s32 *);
 extern "C" s32 fn_800A8D08(s32 arg0, void **arg1, s32 *arg2, s32 arg3, s32 *arg4) {
+    struct VolTail {
+        u8 pad0[0x162C];
+        void *cacheObject;
+        s32 fatPages;
+        s32 dataPages;
+        void *cacheBuffer;
+    };
+    struct VolTail *v = (struct VolTail *)arg0;
     s32 result;
-    if (*(s32 *)((u8 *)arg0 + 0x1634) == 0) {
-        *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x162C) + 4) =
-            *(s32 *)((u8 *)arg0 + 0x1638);
-        *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x162C) + 8) =
-            *(s32 *)((u8 *)arg0 + 0x1638);
-        *arg2 = (s32)*(void **)((u8 *)arg0 + 0x162C);
+    if (v->dataPages == 0) {
+        *(s32 *)((u8 *)v->cacheObject + 4) = (s32)v->cacheBuffer;
+        *(s32 *)((u8 *)v->cacheObject + 8) = (s32)v->cacheBuffer;
+        *arg2 = (s32)v->cacheObject;
         return 0;
     }
-    result = ((s32 (*)(void *, s32, void *, s32))fn_800A7C20)((void *)arg0, (s32)((u8 *)arg0 + 0x1634), (void *)arg1, (s32)arg2);
+    result = fn_800A7C20((void *)arg0, (void **)&v->dataPages, (u32)arg1, (void **)arg2, (s32 *)arg3);
     return result & ((s32)(-result | result) >> 31);
 }
 
