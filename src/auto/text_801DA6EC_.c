@@ -372,7 +372,7 @@ void fn_801DAEF4(void) {
 }
 
 void fn_801DAEF8(void) {
-
+    /* No-op placeholder (returns immediately). */
 }
 
 /* Copies each entry's pending flag to its active flag and resets its timer. */
