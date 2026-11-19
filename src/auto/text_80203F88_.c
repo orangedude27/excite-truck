@@ -172,6 +172,14 @@ void fn_8020404C(void) {
 
 }
 
+/* Terrain/solid (SolBuilder) hook called once the stage's "track.sol" resource has
+ * been applied to the static-object table.  fn_801FA9AC (run at the end of the
+ * world setup, from WorldBeginCommon's sequence) looks up "track.sol", copies each
+ * of its entries onto the static object whose id matches, frees the resource, then
+ * calls this before walking the two static-object lists (lbl_8055EC4C /
+ * lbl_8055EC50) to register the objects that no entry claimed -- i.e. where the
+ * track's solid geometry would be built from the freshly loaded data.  It does
+ * nothing in this build. */
 void fn_80204050(void) {
 
 }
