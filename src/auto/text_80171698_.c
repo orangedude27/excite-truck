@@ -226,7 +226,6 @@ __declspec(section ".sdata") extern char lbl_8055A288[];
 __declspec(section ".sdata") extern char lbl_8055A290[];
 __declspec(section ".sdata") extern char lbl_8055A294[];
 extern f32 lbl_80561A34;
-#pragma ppc_psq_save off
 extern "C" void fn_80171A80(void *arg0) {
     class Node {
     public:
@@ -281,11 +280,11 @@ extern "C" void fn_80171A80(void *arg0) {
     };
     char sp8[8];
     f32 v[4];
-    int n;
     f32 *p;
     f32 *o;
     int k, j;
     char *e;
+    int n;
     f32 d1, d2;
     Mgr *mgr = *(Mgr **)((char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
     int i = 0;
