@@ -1079,16 +1079,12 @@ void fn_802CB82C(int arg0) {
         pool = *(char **)(*(char **)(temp_r29 + 0x38) + 4);
         link = (char **)(pool + 0xC);
         node = (char *)(*(int *)(temp_r30 + 0x44) - (*(int *)(pool + 4) + 1));
-        other = *link;
-        if (other != 0) {
-            do {
-                if (other == node) {
-                    *link = *(char **)(node + 8);
-                    break;
-                }
-                link = (char **)(other + 8);
-                other = *link;
-            } while (other != 0);
+        while ((other = *link) != 0) {
+            if (other == node) {
+                *link = *(char **)(node + 8);
+                break;
+            }
+            link = (char **)(other + 8);
         }
         mergeLink = (char **)(pool + 8);
         *(char **)(node + 8) = *mergeLink;
@@ -1099,23 +1095,20 @@ void fn_802CB82C(int arg0) {
         merge2:
             other = *scanLink;
             if (other != 0) {
-                joined = *mergeLink;
                 pageSize = *(int *)(pool + 4);
                 mergeCandidate = 1;
-                if (((char *)joined + pageSize + *(int *)(joined + 4) + 1 != other) &&
-                    ((char *)other + pageSize + *(int *)(other + 4) + 1 != joined))
+                if (((char *)*mergeLink + pageSize + *(int *)(*mergeLink + 4) + 1 != other) &&
+                    ((char *)other + pageSize + *(int *)(other + 4) + 1 != *mergeLink))
                     mergeCandidate = 0;
                 if (mergeCandidate != 0) {
                     link = mergeLink;
-                    if ((char *)other + pageSize + *(int *)(other + 4) + 1 == joined) {
+                    if ((char *)other + pageSize + *(int *)(other + 4) + 1 == *mergeLink) {
                         link = scanLink;
                         scanLink = mergeLink;
                     }
-                    joined = *link;
-                    mergeLink = link;
                     merged = 1;
-                    *(int *)(joined + 4) = (((pageSize + 0x10) & ~pageSize) +
-                        (*(int *)(joined + 4) + *(int *)(*scanLink + 4)));
+                    *(int *)(*link + 4) = (((pageSize + 0x10) & ~pageSize) +
+                        (*(int *)(*link + 4) + *(int *)(*scanLink + 4)));
                     *scanLink = *(char **)(*scanLink + 8);
                 } else {
                     scanLink = (char **)(other + 8);
@@ -1148,16 +1141,12 @@ void fn_802CB82C(int arg0) {
                 pool = *(char **)(*(char **)(temp_r29 + 0x38) + 4);
                 link = (char **)(pool + 0xC);
                 node = (char *)(*(int *)(temp_r30 + 8) - (*(int *)(pool + 4) + 1));
-                other = *link;
-                if (other != 0) {
-                    do {
-                        if (other == node) {
-                            *link = *(char **)(node + 8);
-                            break;
-                        }
-                        link = (char **)(other + 8);
-                        other = *link;
-                    } while (other != 0);
+                while ((other = *link) != 0) {
+                    if (other == node) {
+                        *link = *(char **)(node + 8);
+                        break;
+                    }
+                    link = (char **)(other + 8);
                 }
                 mergeLink = (char **)(pool + 8);
                 *(char **)(node + 8) = *mergeLink;
@@ -1168,23 +1157,20 @@ void fn_802CB82C(int arg0) {
                 merge1:
                     other = *scanLink;
                     if (other != 0) {
-                        joined = *mergeLink;
                         pageSize = *(int *)(pool + 4);
                         mergeCandidate = 1;
-                        if (((char *)joined + pageSize + *(int *)(joined + 4) + 1 != other) &&
-                            ((char *)other + pageSize + *(int *)(other + 4) + 1 != joined))
+                        if (((char *)*mergeLink + pageSize + *(int *)(*mergeLink + 4) + 1 != other) &&
+                            ((char *)other + pageSize + *(int *)(other + 4) + 1 != *mergeLink))
                             mergeCandidate = 0;
                         if (mergeCandidate != 0) {
                             link = mergeLink;
-                            if ((char *)other + pageSize + *(int *)(other + 4) + 1 == joined) {
+                            if ((char *)other + pageSize + *(int *)(other + 4) + 1 == *mergeLink) {
                                 link = scanLink;
                                 scanLink = mergeLink;
                             }
-                            joined = *link;
-                            mergeLink = link;
                             merged = 1;
-                            *(int *)(joined + 4) = (((pageSize + 0x10) & ~pageSize) +
-                                (*(int *)(joined + 4) + *(int *)(*scanLink + 4)));
+                            *(int *)(*link + 4) = (((pageSize + 0x10) & ~pageSize) +
+                                (*(int *)(*link + 4) + *(int *)(*scanLink + 4)));
                             *scanLink = *(char **)(*scanLink + 8);
                         } else {
                             scanLink = (char **)(other + 8);
@@ -1669,27 +1655,29 @@ void fn_802CC518(int arg0, float arg1) {
     lbl_8055FCC4 = result;
 }
 #pragma dont_inline on
-void fn_802CC550(int arg0, float arg1, float arg2) {
+/* Clamps a texture slot's keep-alive weight (+0x38) to a scaled minimum,
+ * ignoring invalid indices, when the texture system is disabled, or unused slots. */
+void fn_802CC550(int textureIndex, float minWeight, float scale) {
     #pragma scheduling invalid_target
-    int offset;
-    char *entry;
-    float limit;
-    float value;
-    float result;
-    if (arg0 == -1)
+    int slotOffset;
+    char *textureSlot;
+    float clampedMin;
+    float currentWeight;
+    float maxWeight;
+    if (textureIndex == -1)
         return;
-    offset = arg0 * 0x4C;
-    entry = (char *)lbl_8055FCB0 + offset;
+    slotOffset = textureIndex * 0x4C;
+    textureSlot = (char *)lbl_8055FCB0 + slotOffset;
     if ((unsigned char)lbl_8055D07D == 0)
         return;
-    if (*(int *)(entry + 0x3C) == 0)
+    if (*(int *)(textureSlot + 0x3C) == 0)
         return;
-    limit = lbl_80564F40;
-    limit = (limit > arg1) ? limit : arg1;
-    value = *(float *)(entry + 0x38);
-    result = arg2 * (lbl_8055FCC4 * limit);
-    value = (value < result) ? value : result;
-    *(float *)(entry + 0x38) = value;
+    clampedMin = lbl_80564F40;
+    clampedMin = (clampedMin > minWeight) ? clampedMin : minWeight;
+    currentWeight = *(float *)(textureSlot + 0x38);
+    maxWeight = scale * (lbl_8055FCC4 * clampedMin);
+    currentWeight = (currentWeight < maxWeight) ? currentWeight : maxWeight;
+    *(float *)(textureSlot + 0x38) = currentWeight;
 }
 #pragma dont_inline off
 /* Marks a texture slot as used this pass: raises its keep-alive weight (+0x38)
@@ -1715,41 +1703,41 @@ extern float lbl_80564F48;
 extern int fn_802E2C20(void);
 #pragma scheduling on
 void fn_802CC60C(void) {
+    float f = 1000000000000.0f;
     int offset = 0;
     int i;
-    int counter;
     int zero = 0;
     int next;
     void *root;
 
     for (i = 0; i < 0x40; i++) {
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x38) = lbl_80564F48;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x38) = f;
         *(int *)((char *)lbl_8055FCB0 + offset + 0x48) = zero;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x84) = lbl_80564F48;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x84) = f;
         *(int *)((char *)lbl_8055FCB0 + offset + 0x94) = zero;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0xD0) = lbl_80564F48;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0xD0) = f;
         *(int *)((char *)lbl_8055FCB0 + offset + 0xE0) = zero;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x11C) = lbl_80564F48;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x11C) = f;
         *(int *)((char *)lbl_8055FCB0 + offset + 0x12C) = zero;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x168) = lbl_80564F48;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x168) = f;
         *(int *)((char *)lbl_8055FCB0 + offset + 0x178) = zero;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x1B4) = lbl_80564F48;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x1B4) = f;
         *(int *)((char *)lbl_8055FCB0 + offset + 0x1C4) = zero;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x200) = lbl_80564F48;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x200) = f;
         *(int *)((char *)lbl_8055FCB0 + offset + 0x210) = zero;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x24C) = lbl_80564F48;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x24C) = f;
         *(int *)((char *)lbl_8055FCB0 + offset + 0x25C) = zero;
         offset += 0x260;
     }
 
     root = *(void **)lbl_8055FCBC;
     *(int *)((char *)root + 0x2844) = 0;
-    counter = lbl_8055FCC0;
+    i = lbl_8055FCC0;
     *(int *)((char *)root + 0x283C) = 0;
-    next = counter + 1;
+    next = i + 1;
     *(int *)((char *)root + 0x2840) = 0;
     lbl_8055FCC0 = next;
-    if ((unsigned char)counter == 0)
+    if ((unsigned char)i == 0)
         *(int *)((char *)root + 0x1C) = fn_802E2C20();
 }
 
@@ -1766,16 +1754,16 @@ char fn_802CC744(void) {
 }
 
 #pragma push
-#pragma optimization_level 2
+#pragma scheduling invalid_target
 int fn_802CC74C(void) {
-    int result = 0;
+    int ready = 0;
     char *p = *(char **)lbl_8055FCBC;
     if (p != 0) {
         if (*(int *)(p + 4) != 0) {
-            result = 1;
+            ready = 1;
         }
     }
-    return result;
+    return ready;
 }
 #pragma pop
 extern float lbl_80564F4C;
