@@ -117,6 +117,12 @@ struct FontForWidth { virtual int v0(); virtual int v1(); virtual int v2(); virt
 struct SetupGXFontType { virtual int f0(); virtual int f1(); virtual int f2(); virtual int f3(); virtual int f4(); virtual int f5(); virtual int f6(); virtual int f7(); virtual int f8(); virtual int f9(); virtual int GetType(); };
 namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; struct Glyph; struct PrintFont { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void GetGlyph(void*, unsigned short); }; class CharWriter { public: CharWriter(); enum GradationMode { GRADATION_SOLID, GRADATION_VERTICAL, GRADATION_HORIZONTAL }; void PrintGlyph(float, float, float, const Glyph&); void SetTextColor(Color); void SetTextColor(Color, Color); float Print(unsigned short); void SetGradationMode(GradationMode); void SetFontSize(float, float); void SetupGX(); }; }}
 #pragma cplusplus reset
+// Color(u32) as the CharWriter constructor builds its default colours (0x00000000 / 0xFFFFFFFF).
+static inline nw4hbm::ut::Color CW_MakeColor(unsigned int rgba) {
+    nw4hbm::ut::Color color;
+    *(unsigned int *)&color = rgba;
+    return color;
+}
 namespace nw4hbm { namespace snd { namespace detail {
 class Channel { public: enum ChannelCallbackStatus { Status }; };
 class WsdTrack { public: struct WsdCallback { virtual int f0() const; virtual int GetWave(void *, void *, void *, int, int, int, unsigned long) const; }; static void ChannelCallbackFunc(Channel *, Channel::ChannelCallbackStatus, unsigned long); void Close(); int ParseNextTick(const WsdCallback *, unsigned long, bool); int Parse(const WsdCallback *, unsigned long, bool); };
@@ -205,22 +211,31 @@ check:
 #pragma use_lmw_stmw off
 #pragma scheduling off
 int nw4hbm::snd::detail::WsdTrack::ParseNextTick(const WsdCallback *callback, unsigned long arg1, bool arg2) {
+    int valid = *(int *)((char *)this + 0x2C);
     void *channel;
-    if (*(volatile int *)((char *)this + 0x2C) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8, 0x6F, lbl_80327CCC);
+    if (valid == 0) {
+        const char *file = lbl_80327CB8;
+        const char *msg = lbl_80327CCC;
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x6F, msg);
     }
     channel = *(void **)((char *)this + 0x30);
     goto check;
 loop:
     if (*(int *)((char *)channel + 0xD4) > 0) {
         *(int *)((char *)channel + 0xD4) -= 1;
-        if (*(unsigned char *)((char *)channel + 0x3C) == 0) fn_800EA880(channel, 1);
-        if (*(int *)((char *)channel + 0xD4) == 0) Release__Q46nw4hbm3snd6detail7ChannelFv(channel);
+        if (*(unsigned char *)((char *)channel + 0x3C) == 0) {
+            fn_800EA880(channel, 1);
+        }
+        if (*(int *)((char *)channel + 0xD4) == 0) {
+            Release__Q46nw4hbm3snd6detail7ChannelFv(channel);
+        }
     }
     channel = *(void **)((char *)channel + 0xE4);
 check:
     if (channel != 0) goto loop;
-    if (*(int *)((char *)this + 8) != 0 && *(void **)((char *)this + 0x30) == 0) return -1;
+    if (*(int *)((char *)this + 8) != 0 && *(void **)((char *)this + 0x30) == 0) {
+        return -1;
+    }
     return Parse__Q46nw4hbm3snd6detail8WsdTrackFPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUlb(this, callback, arg1, arg2);
 }
 #pragma scheduling reset
@@ -645,7 +660,6 @@ extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36n
 nw4hbm::ut::CharWriter::CharWriter() {
     unsigned char *self = (unsigned char *)this;
     unsigned char *source1, *source2, *source3;
-    nw4hbm::ut::Color colorA, colorB, white;
     unsigned int addr = (unsigned int)this;
     int r9 = 1, r10 = 1, r11 = 1, r12 = 1, r30 = 1, r29 = 1;
     unsigned int top = addr & 0xFF000000U;
@@ -670,9 +684,11 @@ nw4hbm::ut::CharWriter::CharWriter() {
     if (r11 == 0 && (addr & 0xF8000000U) != 0xD0000000U) r10 = 0;
     if (r10 == 0 && (addr & 0xFFFFC000U) != 0xE0000000U) r9 = 0;
     if (r9 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x11C, lbl_8032818C, this);
-    *(int *)&colorA = 0;
-    *(int *)&colorB = -1;
-    SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(this, &colorA, &colorB);
+    {
+        int colorA = 0;
+        int colorB = -1;
+        SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(this, &colorA, &colorB);
+    }
     CW_CHECK_THIS(this, 0x163);
     *(int *)(self + 0x20) = 0;
     CW_CHECK_THIS(this, 0x4DA);
@@ -684,14 +700,21 @@ nw4hbm::ut::CharWriter::CharWriter() {
     if (*(int *)(self + 0x20) == 0) source3 = self + 0x18; else source3 = self + 0x1C;
     self[0x14] = source3[0]; self[0x15] = source3[1]; self[0x16] = source3[2];
     {
-        int alpha = *(volatile unsigned char *)(self + 0x42);
-        int product_b = self[0xB] * alpha, product_f = self[0xF] * alpha;
-        int product_13 = self[0x13] * alpha, product_17 = source3[3] * alpha;
-        self[0xB] = product_b / 255; self[0xF] = product_f / 255;
-        self[0x13] = product_13 / 255; self[0x17] = product_17 / 255;
+        unsigned char bv = self[0xB];
+        unsigned char fv = self[0xF];
+        unsigned char v13 = self[0x13];
+        unsigned char v17 = source3[3];
+        int alpha = self[0x42];
+        self[0xB] = (bv * alpha) / 255;
+        self[0xF] = (fv * alpha) / 255;
+        self[0x13] = (v13 * alpha) / 255;
+        self[0x17] = (v17 * alpha) / 255;
     }
-    *(int *)&white = -1;
-    SetTextColor(white);
+    {
+        nw4hbm::ut::Color white;
+        *(int *)&white = -1;
+        SetTextColor(white);
+    }
     CW_CHECK_THIS(this, 0x1E7);
     *(float *)(self + 0x24) = 1.0f;
     *(float *)(self + 0x28) = 1.0f;
