@@ -412,23 +412,24 @@ extern int __cntlzw(unsigned int);
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 extern "C" s32 fn_8012AA60(void *arg0, s32 arg1, s32 arg2) {
-    s32 count;
-    s32 result;
-    void *base;
     void *p;
+    s32 count;
+    void *base;
+    s32 expected;
+    s32 flag;
     s32 i;
 
     count = *(s32 *)((char *)arg0 + 0x88);
     p = *(void **)((char *)arg0 + 0x60);
-    result = *(s32 *)((char *)arg0 + 0x94);
+    expected = *(s32 *)((char *)arg0 + 0x94);
     base = p;
-    result = (u32)__cntlzw((u32)(fn_80132E7C(p, count * 0x44) - result)) >> 5;
-    if (result != 0) {
+    flag = (u32)__cntlzw((u32)(fn_80132E7C(p, count * 0x44) - expected)) >> 5;
+    if (flag != 0) {
         for (i = 0; i < count; i++) {
             fn_8012A388(p);
             if (*(s32 *)((char *)p + 0x2C) + *(s32 *)((char *)p + 0x28) <= arg1) {
                 if (fn_8012A470(arg0, i, p, base) == 0) {
-                    result = 0;
+                    flag = 0;
                     break;
                 }
             }
@@ -437,7 +438,7 @@ extern "C" s32 fn_8012AA60(void *arg0, s32 arg1, s32 arg2) {
     } else {
         fn_802E30C8(lbl_8032A7E8, arg0);
     }
-    return result;
+    return flag;
 }
 #pragma pop
 /* Read a 0x34-byte RST0 header from fileHandle into headerBuffer, byte-swap
@@ -507,7 +508,7 @@ extern "C" s32 fn_8012ACA0(void *arg0, void *arg1, s32 arg2) {
     char sp10[128];
     s32 spC;
     u8 sp8;
-    u8 *messages = (u8 *)lbl_8032A630;
+    register const char *messages = (const char *)lbl_8032A630;
     char *var_r4;
     s32 var_r5;
     char *var_r6;
@@ -523,8 +524,7 @@ extern "C" s32 fn_8012ACA0(void *arg0, void *arg1, s32 arg2) {
     u8 *temp_r3_3;
     u8 *temp_r26, *var_r25_2, *var_r31;
     char *dot;
-    u32 headerValue, objectValue;
-    if (lbl_8055DFFC == 0) fn_802E317C((const char *)(messages + 0x1D0), arg0);
+    if (lbl_8055DFFC == 0) fn_802E317C(messages + 0x1D0, arg0);
     var_r4 = (char *)arg0; var_r6 = sp10; var_r5 = 0x80;
     goto loop_5_copy;
 loop_5_limit:
@@ -586,19 +586,13 @@ loop_23:
 loop_23_test:
         if (var_r26 < *(u32 *)(temp_r3_3 + 0xC)) goto loop_23;
     }
-    if (temp_r3_3 == 0) fn_802E317C((const char *)(messages + 0x200), arg0);
-    headerValue = *(u32 *)(temp_r3_3 + 8);
-    objectValue = *(u32 *)((u8 *)arg0 + 0x7C);
-    if (headerValue != objectValue)
-        fn_802E317C((const char *)(messages + 0x228), arg0);
-    headerValue = *(u32 *)(temp_r3_3 + 0xC);
-    objectValue = *(u32 *)((u8 *)arg0 + 0x88);
-    if (headerValue != objectValue)
-        fn_802E317C((const char *)(messages + 0x258), arg0);
-    headerValue = *(u32 *)(temp_r3_3 + 0x10);
-    objectValue = *(u32 *)((u8 *)arg0 + 0x8C);
-    if (headerValue != objectValue)
-        fn_802E317C((const char *)(messages + 0x288), arg0);
+    if (temp_r3_3 == 0) fn_802E317C(messages + 0x200, arg0);
+    if (*(u32 *)(temp_r3_3 + 8) != *(u32 *)((u8 *)arg0 + 0x7C))
+        fn_802E317C(messages + 0x228, arg0);
+    if (*(u32 *)(temp_r3_3 + 0xC) != *(u32 *)((u8 *)arg0 + 0x88))
+        fn_802E317C(messages + 0x258, arg0);
+    if (*(u32 *)(temp_r3_3 + 0x10) != *(u32 *)((u8 *)arg0 + 0x8C))
+        fn_802E317C(messages + 0x288, arg0);
     temp_r26 = temp_r3_3 + 0x14; var_r31 = temp_r26; var_r25 = 1; var_r24 = 0;
     goto loop_37_test;
 loop_37:
