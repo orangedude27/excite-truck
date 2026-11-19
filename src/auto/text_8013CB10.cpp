@@ -1118,6 +1118,9 @@ static inline f32 PSQUATMultiply_f32(void *a, void *b) {
     return PSQUATMultiply(a, b);
 }
 extern "C" f32 lbl_80561498, lbl_805614A4;
+#pragma pack(push, 1)
+struct Spill8013 { float o0, o1, o2, o3, o4, o5, m0, m1, m2; };
+#pragma pack(pop)
 #pragma push
 #pragma processor 750
 extern "C" void fn_8013E19C(void *arg0, float arg1) {
