@@ -3808,8 +3808,8 @@ void fn_8018BF44(int *flags) { *flags = 0x0FF807FF; }
 /* Virtual accessor returning the fixed constant 0 (false). */
 int fn_8018BF54(void) { return 0; }
 
+/* No-op stub (empty function). */
 void fn_8018BF5C(void) {
-
 }
 
 /* Empty stub (no operation). */
