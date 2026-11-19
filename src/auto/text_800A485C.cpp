@@ -5178,8 +5178,8 @@ static inline s32 VFiPFENT_ITER_ReadEntry(u8 *iter) {
     return code & (s32)(-(u32)code | (u32)code) >> 31;
 }
 static inline s32 VFiPFENT_ITER_MoveNextAndRead(u8 *iter) {
-    s32 result;
     u32 old = *(u32 *)iter;
+    s32 result;
     s32 code;
     u32 sp8;
     *(u32 *)iter = old + 1;
