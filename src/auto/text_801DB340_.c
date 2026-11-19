@@ -205,6 +205,7 @@ float fn_801DB398(float grid[4][4], float t, float u) {
         float twice21 = lbl_80562B68 * dp21b;
         float coeff3 = c3t - twice20;
         float coeff2 = sum - twice21;
+        dp21 = dp21b;
         coeff3 = coeff3 - half31;
         return (coeff2 * u3 + coeff3 * u2) + half20 * u + p1;
     }
@@ -443,6 +444,16 @@ extern void *fn_801284F8(int, const char *);
 extern void *fn_8012850C(int, const char *);
 extern void *memset(void *, int, unsigned int);
 extern double fn_8002F234(double);
+extern double lbl_80562BB0;
+static inline float m2c_i2f(int x) {
+    union {
+        double d;
+        struct { unsigned int hi, lo; } s;
+    } u;
+    u.s.hi = 0x43300000u;
+    u.s.lo = (unsigned int)x ^ 0x80000000u;
+    return (float)(u.d - lbl_80562BB0);
+}
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
@@ -564,9 +575,9 @@ void fn_801DCE10(void) {
 #pragma scheduling invalid_target
 int fn_801DCE14(short *arg0, float *arg1, float *arg2, int arg3, int *arg4) {
     float spC;
+    int sp8;
     float b0;
     float b2;
-    int sp8;
     float t0;
     float tC;
     float t2;
@@ -899,8 +910,8 @@ extern float lbl_80562B84;
 extern float fn_801DCF0C(void);
 #pragma scheduling invalid_target
 void fn_801DD88C(void) {
-    int i, j;
     float temp[75];
+    int i, j;
 
     for (i = 0; i < 72; i += 8) {
         temp[i + 0] = lbl_804424B0[i + 0];
