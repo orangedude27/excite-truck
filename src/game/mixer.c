@@ -445,7 +445,8 @@ int fn_8020921C(void) {
     extern struct Config lbl_8048929C;
     extern unsigned int lbl_8055E044;
     extern void fn_80131318(void);
-    if (lbl_8055E044 != lbl_8048929C.version)
+    struct Config *c = &lbl_8048929C;
+    if (c->version != lbl_8055E044)
         fn_80131318();
     return lbl_8048929C.value;
 }
@@ -458,8 +459,12 @@ int fn_80209268(void) { return 1; }
 /* Null-backend virtual stub: always reports true (1). */
 int fn_80209270(void) { return 1; }
 
+/* Null-mixer backend device method, slot +0x20 of the Null Mixer vtable
+ * (lbl_8033C058), just past its createSound (+0x1C, Sound_CreateNullSource
+ * fn_80209280).  The null backend has no hardware to act on, so this method
+ * does nothing; fn_8020927C is the same no-op for slot +0x24. */
 void fn_80209278(void) {
-
+	return;
 }
 
 void fn_8020927C(void) {
