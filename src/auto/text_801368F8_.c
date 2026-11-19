@@ -187,7 +187,7 @@ void fn_80136CB8(void *table, s32 index) {
 
 #pragma push
 #pragma cplusplus on
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma opt_propagation off
 extern "C" void fn_80136D20(void *arg0, s32 arg1) {
     struct Dummy {
@@ -212,7 +212,7 @@ extern "C" void fn_80136D20(void *arg0, s32 arg1) {
         f0 = (f0 - f1) * f2 + f1;
         f2 = f3 + f0;
         f1 = *(float*)((char*)obj + 0x48) + *(float*)((char*)r5 + 0x30);
-        if (*(unsigned char*)((char*)entry + 0x14) != 0) {
+        if (*(volatile unsigned char*)((char*)entry + 0x14) != 0) {
             f1 = *(float*)((char*)arg0 + 0x14) - f1;
         }
         *(float*)((char*)entry + 8) = *(float*)((char*)obj + 0x44);
