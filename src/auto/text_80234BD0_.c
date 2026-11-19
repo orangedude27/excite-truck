@@ -6,6 +6,7 @@ typedef struct {
     unsigned int unk4;
     unsigned int unk8;
 } StaticObj;
+typedef struct { unsigned int field0; } Head;
 extern char lbl_80497F08[];
 extern __declspec(section ".sdata") char lbl_8055F038[];
 extern __declspec(section ".sdata") unsigned short lbl_8055F040;
