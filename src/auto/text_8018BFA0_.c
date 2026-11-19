@@ -136,23 +136,24 @@ static inline float Chan_8018F2C0(unsigned char v) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
+/* Return the index of the entry (starting at 1) in the 0x34-byte table at +0x26C of arg0 whose field at +0x20 has the smallest PSQUATMultiply result with arg1. */
 int fn_8018C514(void *arg0, void *arg1) {
-    float min = lbl_80561F70;
-    int offset, best, i;
-    int **countPtr = (int **)((char *)arg0 + 0x26C);
-    best = 0;
-    i = 1;
-    offset = 0x34;
-    while (i < **countPtr) {
-        float value = PSQUATMultiply(arg1, (char *)*countPtr + offset + 0x20);
-        if (value < min) {
-            min = value;
-            best = i;
+    float minValue = lbl_80561F70;
+    int entryOffset, bestIndex, entryIndex;
+    int **tableInfo = (int **)((char *)arg0 + 0x26C);
+    bestIndex = 0;
+    entryIndex = 1;
+    entryOffset = 0x34;
+    while (entryIndex < **tableInfo) {
+        float value = PSQUATMultiply(arg1, (char *)*tableInfo + entryOffset + 0x20);
+        if (value < minValue) {
+            minValue = value;
+            bestIndex = entryIndex;
         }
-        offset += 0x34;
-        i++;
+        entryOffset += 0x34;
+        entryIndex++;
     }
-    return best;
+    return bestIndex;
 }
 #pragma use_lmw_stmw reset
 #pragma dont_inline reset
