@@ -6654,19 +6654,20 @@ done:
 
 void bta_dm_pm_btm_status(void *arg0) {
     register u8 *p = (u8 *)arg0;
+    u8 *entry;
+    u8 *timer;
     s32 offset;
     s32 mask;
-    u32 i;
     u8 j;
-    void *entry;
-    void *record;
+    u32 i;
 
     i = 0;
 loop_first:
     entry = (u8 *)&lbl_803C0C14 + ((i << 5) & 0x1FE0);
     if (*(u8 *)((u8 *)entry + 0xB6) != 0 &&
         bdcmp((u8 *)entry + 0xB0, p + 8) == 0) {
-        fn_8007148C((s32)((u8 *)entry + 0x98));
+        timer = entry + 0x98;
+        fn_8007148C((s32)timer);
         *(u8 *)((u8 *)entry + 0xB6) = 0;
     } else {
         i++;
@@ -6688,10 +6689,9 @@ check_links:
     while (j < lbl_803C0C14[0x4D]) {
         offset = j * 0xB;
         if (bdcmp((u8 *)&lbl_803C0C14 + offset, p + 8) == 0) {
-            record = (u8 *)&lbl_803C0C14 + offset;
-            mask = *(u8 *)((u8 *)record + 9) & 3;
+            mask = lbl_803C0C14[offset + 9] & 3;
             if (mask != 0) {
-                *(u8 *)((u8 *)record + 0xA) |= mask;
+                lbl_803C0C14[offset + 0xA] |= mask;
                 bta_dm_pm_set_mode(p + 8, 0);
             }
             goto done;
@@ -27191,7 +27191,7 @@ void sdp_conn_timeout(tCONN_CB *p_ccb) {
 
 extern void process_service_search(tCONN_CB *, UINT16, UINT16, UINT8 *);
 static void process_service_attr_req(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *);
-typedef struct { UINT8 pad0[0x26]; UINT8 data[0x450]; volatile UINT16 cont_off; } tCCB_CONT_VIEW;
+typedef struct { UINT8 pad0[0x26]; UINT8 data[0x450]; UINT16 cont_off; } tCCB_CONT_VIEW;
 static void process_service_search_attr_req(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *);
 /* Dispatch an incoming SDP server request PDU and route it to the appropriate handler. */
 void sdp_server_handle_client_req(tCONN_CB *p_ccb, BT_HDR *p_msg) {
@@ -27584,8 +27584,8 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
         len_to_send = (UINT16)(p_rsp - ((UINT8 *)p_ccb + 0x26));
         p_ccb->list_len = len_to_send;
         if (len_to_send > 0xFF) {
-            UINT16 adjusted = len_to_send - 3;
-            *((UINT8 *)p_ccb + 0x26) = 0x36;
+            s32 adjusted = len_to_send - 3;
+            ((tCCB_CONT_VIEW *)p_ccb)->data[0] = 0x36;
             *((UINT8 *)p_ccb + 0x27) = adjusted >> 8;
             *((UINT8 *)p_ccb + 0x28) = adjusted;
         } else {
@@ -27604,14 +27604,14 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
     }
 
     p_buf->offset = 9;
-    p_rsp = p_rsp_start = (UINT8 *)p_buf + 0x11;
+    p_rsp_start = (UINT8 *)p_buf + 0x11;
+    p_rsp = p_rsp_start;
     p_rsp[0] = 7;
     p_rsp[1] = trans_num >> 8;
     p_rsp[2] = trans_num;
     p_rsp_param_len = p_rsp + 3;
     len_to_send = p_ccb->list_len;
-    if (len_to_send > max_list_len)
-        len_to_send = max_list_len;
+    len_to_send = (len_to_send > max_list_len) ? max_list_len : len_to_send;
     p_rsp_param_len[2] = len_to_send >> 8;
     p_rsp_param_len[3] = len_to_send;
     p_rsp = p_rsp_param_len + 4;
