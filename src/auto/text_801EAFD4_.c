@@ -509,6 +509,7 @@ extern "C" void fn_801EB90C(void) {
 }
 #pragma cplusplus reset
 
+/* No-op stub. */
 void fn_801EB968(void) {
 
 }
