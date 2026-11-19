@@ -17,8 +17,7 @@ extern const float lbl_80563028;
 extern char lbl_8033B5C8[];
 #pragma scheduling on
 void fn_801FC8A8(void) {
-    register float f = 2.0f;
-    fn_801EBEF4(f);
+    fn_801EBEF4(lbl_80563028);
     fn_801EB9FC(lbl_8033B5C8);
 }
 void fn_801FC8D8(void) {
