@@ -1830,25 +1830,29 @@ done:
 }
 #pragma pop
 void fn_801C7698(void) {
-    s32 offset;
-    s32 index;
-    f32 value;
-    f32 score;
-    f32 result;
+    s32 entryOffset;
+    s32 entryIndex;
+    f32 deltaTime;
+    f32 entryTime;
+    f32 adjustedTime;
+    /* Apply the time offset entered in the input line to the debug timeline:
+     * starting at the selected entry, reject the change if it would make that
+     * entry's time negative, otherwise adjust each following entry's time via
+     * fn_801C3450, re-sort the timeline, and close the text field. */
     if (lbl_8055E7F0 > 0) {
-        value = (f32)atof(lbl_804380F0);
-        index = lbl_8055E828;
-        offset = index * 0x30C;
-        score = *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset);
-        if (value + score < lbl_80562970) {
+        deltaTime = (f32)atof(lbl_804380F0);
+        entryIndex = lbl_8055E828;
+        entryOffset = entryIndex * 0x30C;
+        entryTime = *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + entryOffset);
+        if (deltaTime + entryTime < lbl_80562970) {
             sprintf(lbl_80437FC0, lbl_80336F0C);
         } else {
-            while (index < lbl_8055E7F0) {
-                score = *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset);
-                result = fn_801C3450(value + score);
-                *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset) = result;
-                index++;
-                offset += 0x30C;
+            while (entryIndex < lbl_8055E7F0) {
+                entryTime = *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + entryOffset);
+                adjustedTime = fn_801C3450(deltaTime + entryTime);
+                *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + entryOffset) = adjustedTime;
+                entryIndex++;
+                entryOffset += 0x30C;
             }
             qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C,
                   (int (*)(const void *, const void *))fn_801C3B7C);
