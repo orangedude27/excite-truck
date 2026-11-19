@@ -1560,6 +1560,7 @@ void fn_801F3E68(int unused, unsigned char *buffer) {
     buffer[0x2E] = b1;
     *(unsigned int *)(buffer + 0x2C) = 1 << (*(unsigned int *)(buffer + 0x2C) - 1);
 }
+/* No-op stub. */
 void fn_801F3EA0(void) {
 
 }
