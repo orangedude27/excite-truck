@@ -632,7 +632,6 @@ void fn_801C4BAC(void) {
         fn_8017960C(fn_80179630(0));
     }
 }
-#pragma peephole on
 #pragma opt_common_subs reset
 extern float lbl_8055A958;
 extern void fn_80176A00(s32);
