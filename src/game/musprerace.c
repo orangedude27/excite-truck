@@ -404,6 +404,14 @@ void fn_8020C59C(void) {
            fn_80210688(0);
        }
 #pragma pop
+/* Pre-race music module entry point, empty in this build.  The debug action
+ * timeline's "sound" command (fn_801C4CE8) calls it when the record names one
+ * sound (rec+0xC != -1) and its sibling fn_8020C8F8 when the record names all
+ * of them (-1), so this is the "act on the named pre-race track" hook; the
+ * retail timeline leaves it a no-op, like fn_8020C8F8, fn_8020C8FC,
+ * fn_8020C918 and fn_8020C91C.  The module's live entry points are
+ * fn_8020C900 (audio-active flag), fn_8020C908 (master volume) and
+ * fn_8020C910 (fade target). */
 void fn_8020C8F4(void) {
 
 }
