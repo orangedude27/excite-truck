@@ -457,7 +457,16 @@ void fn_8020C910(f32 fadeTarget) {
     lbl_8055EE50 = fadeTarget;
 }
 
-void fn_8020C918(void) {
+/* Pre-race music module entry point, empty in this build.  The only call in
+ * the recovered game is the secret key-code handler fn_802485FC: after it has
+ * silenced the music with fn_80246CAC(0.0f) (which scales the saved demo
+ * volume into fn_8020A5F8) it asks this module to mute its own tracks too by
+ * calling it with 1; the retail build ignores the request, like the debug
+ * timeline hooks fn_8020C8F4, fn_8020C8F8 and fn_8020C8FC.  The module's live
+ * entry points are fn_8020C900 (audio-active flag), fn_8020C908 (master
+ * volume), fn_8020C910 (fade target) and fn_8020C91C (song id picked by the
+ * kiosk/demo selection). */
+void fn_8020C918(s32 muteRequested) {
 
 }
 
