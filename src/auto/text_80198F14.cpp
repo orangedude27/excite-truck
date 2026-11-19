@@ -2661,6 +2661,8 @@ extern "C" void fn_8019F414(void *arg0) {
     fn_8019EF00(arg0);
 }
 
+#pragma scheduling reset
+#pragma opt_lifetimes off
 extern "C" void fn_8019F4D4(void *arg0, void *arg1) {
     fn_8019EC84(arg0);
     f32 scale = -PSVECDotProduct(
