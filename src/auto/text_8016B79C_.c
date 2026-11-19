@@ -2653,7 +2653,7 @@ s32 fn_8016FFE4(void) { return 0x1408; /* fixed constant 0x1408 (5128) */ }
 
 extern void *fn_8000AC38(void);
 extern char lbl_80330DF4[];
-extern char lbl_8055A270[];
+__declspec(section ".sdata") extern char lbl_8055A270[];
 extern float lbl_80561980;
 #pragma push
 #pragma ppc_psq_save off
