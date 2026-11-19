@@ -3839,7 +3839,6 @@ void fn_8005F248(s32 chan, s32 result) {
 }
 
 static inline void fn_8005F3E8_enqueue(WPADCB *cb, WPADCommand *cmd) {
-    WPADCommand copy = *cmd;
     BOOL intr, intr2;
     s8 count;
     u8 back;
@@ -3854,7 +3853,7 @@ static inline void fn_8005F3E8_enqueue(WPADCB *cb, WPADCommand *cmd) {
         return;
     }
     memset((u8 *)cb->stdCmdQueue.buffer + (s8)cb->stdCmdQueue.back * 0x30, 0, 0x30);
-    memcpy((u8 *)cb->stdCmdQueue.buffer + (s8)cb->stdCmdQueue.back * 0x30, &copy, 0x30);
+    memcpy((u8 *)cb->stdCmdQueue.buffer + (s8)cb->stdCmdQueue.back * 0x30, cmd, 0x30);
     back = cb->stdCmdQueue.back;
     t4 = cb->stdCmdQueue.capacity - 1;
     count = (s8)back - t4;
