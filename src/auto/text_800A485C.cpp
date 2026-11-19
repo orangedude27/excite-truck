@@ -3077,23 +3077,26 @@ extern "C" s32 fn_800A8C90(void *arg0, s32 arg1, void **arg2, s32 *arg3) {
 }
 #pragma scheduling on
 extern "C" s32 fn_800A7C20(void *, void **, u32, void **, s32 *);
-extern "C" s32 fn_800A8D08(s32 arg0, void **arg1, s32 *arg2, s32 arg3, s32 *arg4) {
-    struct VolTail {
+/* Returns a page from the volume's data-page cache for the requested sector. If the
+ * volume has no data-page list, it initializes the base cache object from the cache
+ * buffer and returns that object instead. */
+extern "C" s32 fn_800A8D08(s32 volume, void **sector, s32 *outPage, s32 cached, s32 *unused) {
+    struct VolumeCacheInfo {
         u8 pad0[0x162C];
         void *cacheObject;
-        s32 fatPages;
-        s32 dataPages;
+        s32 fatPageList;
+        s32 dataPageList;
         void *cacheBuffer;
     };
-    struct VolTail *v = (struct VolTail *)arg0;
+    struct VolumeCacheInfo *vol = (struct VolumeCacheInfo *)volume;
     s32 result;
-    if (v->dataPages == 0) {
-        *(s32 *)((u8 *)v->cacheObject + 4) = (s32)v->cacheBuffer;
-        *(s32 *)((u8 *)v->cacheObject + 8) = (s32)v->cacheBuffer;
-        *arg2 = (s32)v->cacheObject;
+    if (vol->dataPageList == 0) {
+        *(s32 *)((u8 *)vol->cacheObject + 4) = (s32)vol->cacheBuffer;
+        *(s32 *)((u8 *)vol->cacheObject + 8) = (s32)vol->cacheBuffer;
+        *outPage = (s32)vol->cacheObject;
         return 0;
     }
-    result = fn_800A7C20((void *)arg0, (void **)&v->dataPages, (u32)arg1, (void **)arg2, (s32 *)arg3);
+    result = fn_800A7C20((void *)volume, (void **)&vol->dataPageList, (u32)sector, (void **)outPage, (s32 *)cached);
     return result & ((s32)(-result | result) >> 31);
 }
 
@@ -19023,25 +19026,15 @@ extern "C" void fn_800C56A4(void *arg0, void *arg1, s32 arg2) {
     }
 }
 
+#pragma optimize_for_size on
 void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
-    s32 *p5;
-    s32 *p7;
-    s32 a;
-    s32 b;
-    s32 tmp;
-    s32 flag;
-    s32 done;
-    u32 k;
-    u32 r;
+    s32 *p5; s32 *p7; s32 a; s32 b; s32 tmp; s32 flag; s32 done; u32 k; u32 r;
     if ((arg2 & 7) != 0) {
-        p7 = (s32 *)((u8 *)arg3 + 0x3F00);
-        p5 = (s32 *)((u8 *)arg3 + 0x1B00);
-        done = 0;
+        p7 = (s32 *)((u8 *)arg3 + 0x3F00); p5 = (s32 *)((u8 *)arg3 + 0x1B00); done = 0;
         if (arg0 <= 0) return;
         tmp = arg0 - 8;
         if (arg0 > 8) {
-            flag = 0;
-            if (arg0 >= 8 && arg0 <= 0x7FFFFFFE) flag = 1;
+            flag = 0; if (arg0 >= 8 && arg0 <= 0x7FFFFFFE) flag = 1;
             if (flag != 0) {
                 k = (u32)(tmp + 7) >> 3;
                 if (tmp > 0) {
@@ -19060,16 +19053,12 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
         }
         r = (u32)(arg0 - done);
         if (done < arg0) {
-            do {
-                a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1;
-            } while (--r != 0);
+            do { a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1; } while (--r != 0);
         }
         return;
     }
     if ((arg2 & 8) != 0) {
-        p7 = (s32 *)((u8 *)arg3 + 0x3F00);
-        p5 = (s32 *)((u8 *)arg3 + 0x1B00);
-        k = 6;
+        p7 = (s32 *)((u8 *)arg3 + 0x3F00); p5 = (s32 *)((u8 *)arg3 + 0x1B00); k = 6;
         do {
             a = p5[0]; done = 0; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
             a = p5[1]; b = p7[1]; p5[1] = a + b; p7[1] = a - b;
@@ -19080,18 +19069,13 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
         } while (--k != 0);
         r = (u32)(arg1 - done);
         if (done < arg1) {
-            do {
-                a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1;
-            } while (--r != 0);
+            do { a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1; } while (--r != 0);
         }
-        p7 = (s32 *)((u8 *)arg3 + 0x2430);
-        p5 = (s32 *)((u8 *)arg3 + 0x30);
-        done = 0;
+        p7 = (s32 *)((u8 *)arg3 + 0x2430); p5 = (s32 *)((u8 *)arg3 + 0x30); done = 0;
         if (arg1 > 0) {
             tmp = arg1 - 8;
             if (arg1 > 8) {
-                flag = 0;
-                if (arg1 >= 8 && arg1 <= 0x7FFFFFFE) flag = 1;
+                flag = 0; if (arg1 >= 8 && arg1 <= 0x7FFFFFFE) flag = 1;
                 if (flag != 0) {
                     k = (u32)(tmp + 7) >> 3;
                     if (tmp > 0) {
@@ -19110,19 +19094,14 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
             }
             r = (u32)(arg1 - done);
             if (done < arg1) {
-                do {
-                    a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1;
-                } while (--r != 0);
+                do { a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1; } while (--r != 0);
             }
         }
-        p7 = (s32 *)((u8 *)arg3 + 0x2D30);
-        p5 = (s32 *)((u8 *)arg3 + 0x930);
-        done = 0;
+        p7 = (s32 *)((u8 *)arg3 + 0x2D30); p5 = (s32 *)((u8 *)arg3 + 0x930); done = 0;
         if (arg1 > 0) {
             tmp = arg1 - 8;
             if (arg1 > 8) {
-                flag = 0;
-                if (arg1 >= 8 && arg1 <= 0x7FFFFFFE) flag = 1;
+                flag = 0; if (arg1 >= 8 && arg1 <= 0x7FFFFFFE) flag = 1;
                 if (flag != 0) {
                     k = (u32)(tmp + 7) >> 3;
                     if (tmp > 0) {
@@ -19141,19 +19120,14 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
             }
             r = (u32)(arg1 - done);
             if (done < arg1) {
-                do {
-                    a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1;
-                } while (--r != 0);
+                do { a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1; } while (--r != 0);
             }
         }
-        p7 = (s32 *)((u8 *)arg3 + 0x3630);
-        p5 = (s32 *)((u8 *)arg3 + 0x1230);
-        done = 0;
+        p7 = (s32 *)((u8 *)arg3 + 0x3630); p5 = (s32 *)((u8 *)arg3 + 0x1230); done = 0;
         if (arg1 > 0) {
             tmp = arg1 - 8;
             if (arg1 > 8) {
-                flag = 0;
-                if (arg1 >= 8 && arg1 <= 0x7FFFFFFE) flag = 1;
+                flag = 0; if (arg1 >= 8 && arg1 <= 0x7FFFFFFE) flag = 1;
                 if (flag != 0) {
                     k = (u32)(tmp + 7) >> 3;
                     if (tmp > 0) {
@@ -19172,21 +19146,16 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
             }
             r = (u32)(arg1 - done);
             if (done < arg1) {
-                do {
-                    a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1;
-                } while (--r != 0);
+                do { a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1; } while (--r != 0);
             }
         }
     }
     if ((arg2 & 0x10) == 0) return;
-    p7 = (s32 *)((u8 *)arg3 + 0x2400);
-    p5 = (s32 *)arg3;
-    done = 0;
+    p7 = (s32 *)((u8 *)arg3 + 0x2400); p5 = (s32 *)arg3; done = 0;
     if (arg1 > 0) {
         tmp = arg1 - 8;
         if (arg1 > 8) {
-            flag = 0;
-            if (arg1 >= 8 && arg1 <= 0x7FFFFFFE) flag = 1;
+            flag = 0; if (arg1 >= 8 && arg1 <= 0x7FFFFFFE) flag = 1;
             if (flag != 0) {
                 k = (u32)(tmp + 7) >> 3;
                 if (tmp > 0) {
@@ -19205,19 +19174,14 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
         }
         r = (u32)(arg1 - done);
         if (done < arg1) {
-            do {
-                a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1;
-            } while (--r != 0);
+            do { a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1; } while (--r != 0);
         }
     }
-    p7 = (s32 *)((u8 *)arg3 + 0x2D00);
-    p5 = (s32 *)((u8 *)arg3 + 0x900);
-    done = 0;
+    p7 = (s32 *)((u8 *)arg3 + 0x2D00); p5 = (s32 *)((u8 *)arg3 + 0x900); done = 0;
     if (arg1 > 0) {
         tmp = arg1 - 8;
         if (arg1 > 8) {
-            flag = 0;
-            if (arg1 >= 8 && arg1 <= 0x7FFFFFFE) flag = 1;
+            flag = 0; if (arg1 >= 8 && arg1 <= 0x7FFFFFFE) flag = 1;
             if (flag != 0) {
                 k = (u32)(tmp + 7) >> 3;
                 if (tmp > 0) {
@@ -19236,19 +19200,14 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
         }
         r = (u32)(arg1 - done);
         if (done < arg1) {
-            do {
-                a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1;
-            } while (--r != 0);
+            do { a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1; } while (--r != 0);
         }
     }
-    p7 = (s32 *)((u8 *)arg3 + 0x3600);
-    p5 = (s32 *)((u8 *)arg3 + 0x1200);
-    done = 0;
+    p7 = (s32 *)((u8 *)arg3 + 0x3600); p5 = (s32 *)((u8 *)arg3 + 0x1200); done = 0;
     if (arg1 > 0) {
         tmp = arg1 - 8;
         if (arg1 > 8) {
-            flag = 0;
-            if (arg1 >= 8 && arg1 <= 0x7FFFFFFE) flag = 1;
+            flag = 0; if (arg1 >= 8 && arg1 <= 0x7FFFFFFE) flag = 1;
             if (flag != 0) {
                 k = (u32)(tmp + 7) >> 3;
                 if (tmp > 0) {
@@ -19267,13 +19226,11 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
         }
         r = (u32)(arg1 - done);
         if (done < arg1) {
-            do {
-                a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1;
-            } while (--r != 0);
+            do { a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1; } while (--r != 0);
         }
     }
 }
-
+#pragma optimize_for_size reset
 /* Encode a block of PCM samples into 4-bit Nintendo ADPCM.
  *
  * Every sample is described by the sign of its difference from the predicted
