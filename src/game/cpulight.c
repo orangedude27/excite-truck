@@ -28,6 +28,7 @@ extern void fn_802D3DF8(int, int, float, float);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 typedef struct { unsigned char r, g, b, a; } fn_802DCAE4_GXColor;
+typedef struct { unsigned int w[12]; float f; } fn_802DCAE4_Record;
 extern void GXSetTevKColor(int, fn_802DCAE4_GXColor);
 
 extern unsigned char lbl_8055FEC0;
@@ -119,8 +120,6 @@ void fn_802DB3FC(void) {
 #pragma scheduling on
 void fn_802DB4E4(void) {
     volatile int m[16];
-    float *p = (float *)&m[8];
-    const float *q = (const float *)lbl_804DB068;
     m[8] = 0;
     m[14] = 0;
     m[0] = 0;
@@ -131,17 +130,17 @@ void fn_802DB4E4(void) {
     m[12] = 0;
     m[13] = 0;
     m[15] = 0;
-    *(volatile float *)&m[8] = q[3];
-    *(volatile float *)&m[14] = q[4];
+    *(volatile float *)&m[8] = *(float *)(lbl_804DB068 + 0xc);
+    *(volatile float *)&m[14] = *(float *)(lbl_804DB068 + 0x10);
     m[1] = 0;
     m[2] = 0;
     m[3] = 0;
     m[4] = 0;
     m[5] = 0;
     m[7] = 0;
-    *(volatile float *)&m[0] = q[6];
-    *(volatile float *)&m[6] = q[7];
-    GXLoadTexMtxImm(p, 0x1e, 1);
+    *(volatile float *)&m[0] = *(float *)(lbl_804DB068 + 0x18);
+    *(volatile float *)&m[6] = *(float *)(lbl_804DB068 + 0x1c);
+    GXLoadTexMtxImm((float *)&m[8], 0x1e, 1);
     GXLoadTexMtxImm((float *)m, 0x21, 1);
 }
 #pragma pop
@@ -858,179 +857,185 @@ extern float lbl_80565040, lbl_80565044, lbl_80565048, lbl_8056504C;
 #pragma push
 #pragma small_data off
 extern unsigned char lbl_804DB480[];
-#pragma push
-#pragma processor 750
+#pragma scheduling invalid_target
 void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
-     void *input;
-     void *state;
-     float alpha;
-     unsigned char *g;
-     input = arg1;
-     state = arg0;
-     alpha = farg0;
-     if (lbl_8055FEBB != 0) {
-         unsigned int first;
-         unsigned char *dest;
-         int count;
-         g = lbl_804DB480;
-         first = *(unsigned int *)input;
-         dest = *(void **)g;
-         count = *(int *)(g + 4);
-         *(void **)(g + 0x214) = state;
-         dest += count * 0x34;
-         *(int *)(g + 4) = ++count;
-         *(unsigned int *)dest = first;
-         *(unsigned int *)(dest + 0x04) = *(unsigned int *)((unsigned char *)input + 0x04);
-         *(unsigned int *)(dest + 0x08) = *(unsigned int *)((unsigned char *)input + 0x08);
-         *(unsigned int *)(dest + 0x0C) = *(unsigned int *)((unsigned char *)input + 0x0C);
-         *(unsigned int *)(dest + 0x10) = *(unsigned int *)((unsigned char *)input + 0x10);
-         *(unsigned int *)(dest + 0x14) = *(unsigned int *)((unsigned char *)input + 0x14);
-         *(unsigned int *)(dest + 0x18) = *(unsigned int *)((unsigned char *)input + 0x18);
-         *(unsigned int *)(dest + 0x1C) = *(unsigned int *)((unsigned char *)input + 0x1C);
-         *(unsigned int *)(dest + 0x20) = *(unsigned int *)((unsigned char *)input + 0x20);
-         *(unsigned int *)(dest + 0x24) = *(unsigned int *)((unsigned char *)input + 0x24);
-         *(unsigned int *)(dest + 0x28) = *(unsigned int *)((unsigned char *)input + 0x28);
-         *(unsigned int *)(dest + 0x2C) = *(unsigned int *)((unsigned char *)input + 0x2C);
-         *(float *)(dest + 0x30) = alpha;
-         if (*(int *)(g + 4) + 1 > *(int *)(g + 8)) {
-             unsigned char *colors = (unsigned char *)fn_802CFF64(0x28);
-             unsigned char *coords = (unsigned char *)fn_802CFF64(0x50);
-             if (colors != 0 && coords != 0) {
-                 void *data;
-                 int n = *(int *)(g + 4);
-                 int i = 0;
-                 int byteOffset = 0;
-                 unsigned char *colorOut = colors;
-                 unsigned char *coordOut = coords;
-                 float temp_f29;
-                 float temp_f30;
-                 float temp_f31;
-                 if (*(unsigned char *)(g + 0x218) != 0)
-                     fn_802D6B54(*(void **)(g + 0x214));
-                 data = ((void *(*)(void *))fn_802DC628)(*(void **)(g + 0x214));
-                 temp_f31 = lbl_80565040;
-                 temp_f30 = lbl_8056504C;
-                 temp_f29 = lbl_80565044;
-                 while (i < n) {
-                     unsigned char *r = *(unsigned char **)g + byteOffset;
-                     int v = (int)(temp_f31 * *(float *)(r + 0x30));
-                     int c;
-                     v = (unsigned char)v;
-                     v = v & ((-v & ~v) >> 31);
-                     c = 0xFF;
-                     if (v < 0xFF) c = v;
-                     *(unsigned int *)colorOut = 0xFFFFFF00U | (unsigned char)c;
-                     *(float *)coordOut = temp_f29 + *(float *)(r + 0x24) / temp_f30;
-                     *(float *)(coordOut + 4) = temp_f29 + *(float *)(r + 0x2C) / temp_f30;
-                     fn_802D2ED8((int)r, i);
-                     byteOffset += 0x34;
-                     colorOut += 4;
-                     coordOut += 8;
-                     i++;
-                 }
-                 if (i < 10) {
-                     float matrix[3][4];
-                     PSMTXScale(matrix, lbl_80565048, lbl_80565048, lbl_80565048);
-                     byteOffset = i * 3;
-                     while (i < 10) {
-                         GXLoadPosMtxImm(matrix, byteOffset);
-                         byteOffset += 3;
-                         i++;
-                     }
-                 }
-                 if (*(unsigned char *)(g + 0x218) != 0) {
-                     GXSetArray(9, *(void **)((unsigned char *)data + 0x20), 0xC);
-                     GXSetArray(0xD, *(void **)((unsigned char *)data + 0x28), 4);
-                 }
-                 GXSetArray(0xB, colors, 4);
-                 GXSetArray(0xE, coords, 8);
-                 GXCallDisplayList(*(void **)((unsigned char *)data + 0x30), *(unsigned int *)((unsigned char *)data + 0x2C));
-                 *(unsigned char *)(g + 0x218) = 0;
-             }
-             *(int *)(g + 4) = 0;
-             *(void **)(g + 0x214) = 0;
-         }
-     } else {
-         if (lbl_8055FEB9 != 0) {
-             fn_802DCAE4_GXColor col;
-             float t = lbl_80565040 * alpha;
-             float rounded;
-             int a;
-             unsigned int pixel;
-             if (t < lbl_80565048)
-                 rounded = t - lbl_80565044;
-             else
-                 rounded = lbl_80565044 + t;
-             a = 0xFF;
-             {
-                 int raw = (int)rounded;
-                 int masked = raw & ((-raw & ~raw) >> 31);
-                 if (masked < 0xFF) a = masked;
-             }
-             pixel = fn_802DC6AC(((int)*(float *)((unsigned char *)input + 0x24) / 4) + 0x100,
-                                 ((int)*(float *)((unsigned char *)input + 0x2C) / 4) + 0x100);
-             col.r = (unsigned char)(pixel >> 16);
-             col.g = (unsigned char)(pixel >> 8);
-             col.b = (unsigned char)pixel;
-             col.a = a;
-             GXSetTevKColor(1, col);
-         } else {
-             float matrix[2][4];
-             float x = *(float *)((unsigned char *)input + 0x24);
-             float scale = lbl_8056504C;
-             float y = *(float *)((unsigned char *)input + 0x2C);
-             matrix[0][0] = lbl_80565048;
-             matrix[0][1] = lbl_80565048;
-             matrix[0][2] = lbl_80565048;
-             matrix[1][0] = lbl_80565048;
-             matrix[1][1] = lbl_80565048;
-             matrix[1][2] = lbl_80565048;
-             matrix[0][3] = lbl_80565044 + x / scale;
-             matrix[1][3] = lbl_80565044 + y / scale;
-             fn_802D3D94(0, (int)matrix);
-             {
-                 fn_802DCAE4_GXColor col;
-                 float t = lbl_80565040 * alpha;
-                 float rounded;
-                 int a;
-                 if (t < lbl_80565048)
-                     rounded = t - lbl_80565044;
-                 else
-                     rounded = lbl_80565044 + t;
-                 a = 0xFF;
-                 {
-                     int raw = (int)rounded;
-                     int masked = raw & ((-raw & ~raw) >> 31);
-                     if (masked < 0xFF) a = masked;
-                 }
-                 if ((unsigned char)a != lbl_8055FEA0) {
-                     fn_802DCAE4_GXColor color;
-                     color.r = 0xFF; color.g = 0xFF; color.b = 0xFF; color.a = a;
-                     GXSetTevKColor(1, color);
-                 }
-             }
-         }
-         fn_802D2F70((int)input);
-         if (lbl_8055FEB4 != state) {
-             lbl_8055FEB4 = state;
-             if (lbl_8055FEB0 != 0) {
-                 fn_802D6B7C(state);
-                 return;
-             }
-             fn_802D6B78(state);
-             return;
-         }
-         if (lbl_8055FEB0 != 0) {
-             fn_802D0E48(0);
-             GXCallDisplayList(*(void **)((unsigned char *)state + 0x30), *(unsigned int *)((unsigned char *)state + 0x2C));
-             fn_802D0E48(1);
-             GXCallDisplayList(*(void **)((unsigned char *)state + 0x30), *(unsigned int *)((unsigned char *)state + 0x2C));
-         } else {
-             GXCallDisplayList(*(void **)((unsigned char *)state + 0x30), *(unsigned int *)((unsigned char *)state + 0x2C));
-         }
-     }
- }
+    unsigned char *g;
+    void *data;
+    float *coordOut;
+    unsigned int *colorOut;
+    void *input;
+    void *state;
+    int byteOffset;
+    int n;
+    int i;
+    float *coords;
+    unsigned int *colors;
+    float matrix[3][4];
+    float temp_f31;
+    float temp_f30;
+    float temp_f29;
+    float alpha;
+    int count;
+    unsigned int first;
+    unsigned char *dest;
 
+    input = arg1;
+    state = arg0;
+    alpha = farg0;
+    if (lbl_8055FEBB != 0) {
+        g = lbl_804DB480;
+        first = *(unsigned int *)input;
+        dest = *(void **)g;
+        count = *(int *)(g + 4);
+        *(void **)(g + 0x214) = state;
+        dest += count * 0x34;
+        *(int *)(g + 4) = count + 1;
+        *(unsigned int *)dest = first;
+        *(unsigned int *)(dest + 0x04) = *(unsigned int *)((unsigned char *)input + 0x04);
+        *(unsigned int *)(dest + 0x08) = *(unsigned int *)((unsigned char *)input + 0x08);
+        *(unsigned int *)(dest + 0x0C) = *(unsigned int *)((unsigned char *)input + 0x0C);
+        *(unsigned int *)(dest + 0x10) = *(unsigned int *)((unsigned char *)input + 0x10);
+        *(unsigned int *)(dest + 0x14) = *(unsigned int *)((unsigned char *)input + 0x14);
+        *(unsigned int *)(dest + 0x18) = *(unsigned int *)((unsigned char *)input + 0x18);
+        *(unsigned int *)(dest + 0x1C) = *(unsigned int *)((unsigned char *)input + 0x1C);
+        *(unsigned int *)(dest + 0x20) = *(unsigned int *)((unsigned char *)input + 0x20);
+        *(unsigned int *)(dest + 0x24) = *(unsigned int *)((unsigned char *)input + 0x24);
+        *(unsigned int *)(dest + 0x28) = *(unsigned int *)((unsigned char *)input + 0x28);
+        *(unsigned int *)(dest + 0x2C) = *(unsigned int *)((unsigned char *)input + 0x2C);
+        *(float *)(dest + 0x30) = alpha;
+        if (*(int *)(lbl_804DB480 + 4) + 1 > *(int *)(lbl_804DB480 + 8)) {
+            colors = (unsigned int *)fn_802CFF64(0x28);
+            coords = (float *)fn_802CFF64(0x50);
+            if (colors != 0 && coords != 0) {
+                if (*(unsigned char *)(lbl_804DB480 + 0x218) != 0)
+                    fn_802D6B54(*(void **)(lbl_804DB480 + 0x214));
+                data = ((void *(*)(void *))fn_802DC628)(*(void **)(lbl_804DB480 + 0x214));
+                n = *(int *)(lbl_804DB480 + 4);
+                temp_f29 = lbl_80565040;
+                colorOut = colors;
+                temp_f30 = lbl_8056504C;
+                temp_f31 = lbl_80565044;
+                coordOut = coords;
+                i = 0;
+                byteOffset = 0;
+                while (i < n) {
+                    unsigned char *r = *(unsigned char **)lbl_804DB480 + byteOffset;
+                    int v = (int)(temp_f29 * *(float *)(r + 0x30));
+                    int c = 0xFF;
+                    v = (unsigned char)v;
+                    v = v & ((-v & ~v) >> 31);
+                    if (v < 0xFF) c = v;
+                    *colorOut = 0xFFFFFF00U | (unsigned char)c;
+                    coordOut[0] = temp_f31 + *(float *)(r + 0x24) / temp_f30;
+                    coordOut[1] = temp_f31 + *(float *)(r + 0x2C) / temp_f30;
+                    fn_802D2ED8((int)r, i);
+                    byteOffset += 0x34;
+                    colorOut++;
+                    coordOut += 2;
+                    i++;
+                }
+                if (i < 10) {
+                    int mtxId;
+                    PSMTXScale(matrix, lbl_80565048, lbl_80565048, lbl_80565048);
+                    mtxId = i * 3;
+                    while (i < 10) {
+                        GXLoadPosMtxImm(matrix, mtxId);
+                        mtxId += 3;
+                        i++;
+                    }
+                }
+                if (*(unsigned char *)(lbl_804DB480 + 0x218) != 0) {
+                    GXSetArray(9, *(void **)((unsigned char *)data + 0x20), 0xC);
+                    GXSetArray(0xD, *(void **)((unsigned char *)data + 0x28), 4);
+                }
+                GXSetArray(0xB, colors, 4);
+                GXSetArray(0xE, coords, 8);
+                GXCallDisplayList(*(void **)((unsigned char *)data + 0x30), *(unsigned int *)((unsigned char *)data + 0x2C));
+                *(unsigned char *)(lbl_804DB480 + 0x218) = 0;
+            }
+            *(int *)(lbl_804DB480 + 4) = 0;
+            *(void **)(lbl_804DB480 + 0x214) = 0;
+        }
+    } else {
+        if (lbl_8055FEB9 != 0) {
+            fn_802DCAE4_GXColor col;
+            float t = lbl_80565040 * alpha;
+            float rounded;
+            int a;
+            unsigned int pixel;
+            if (t < lbl_80565048)
+                rounded = t - lbl_80565044;
+            else
+                rounded = lbl_80565044 + t;
+            a = 0xFF;
+            {
+                int raw = (int)rounded;
+                int masked = raw & ((-raw & ~raw) >> 31);
+                if (masked < 0xFF) a = masked;
+            }
+            pixel = fn_802DC6AC(((int)*(float *)((unsigned char *)input + 0x24) / 4) + 0x100,
+                                ((int)*(float *)((unsigned char *)input + 0x2C) / 4) + 0x100);
+            col.r = (unsigned char)(pixel >> 16);
+            col.g = (unsigned char)(pixel >> 8);
+            col.b = (unsigned char)pixel;
+            col.a = a;
+            GXSetTevKColor(1, col);
+        } else {
+            float matrix[2][4];
+            float x = *(float *)((unsigned char *)input + 0x24);
+            float scale = lbl_8056504C;
+            float y = *(float *)((unsigned char *)input + 0x2C);
+            matrix[0][0] = lbl_80565048;
+            matrix[0][1] = lbl_80565048;
+            matrix[0][2] = lbl_80565048;
+            matrix[1][0] = lbl_80565048;
+            matrix[1][1] = lbl_80565048;
+            matrix[1][2] = lbl_80565048;
+            matrix[0][3] = lbl_80565044 + x / scale;
+            matrix[1][3] = lbl_80565044 + y / scale;
+            fn_802D3D94(0, (int)matrix);
+            {
+                fn_802DCAE4_GXColor col;
+                float t = lbl_80565040 * alpha;
+                float rounded;
+                int a;
+                if (t < lbl_80565048)
+                    rounded = t - lbl_80565044;
+                else
+                    rounded = lbl_80565044 + t;
+                a = 0xFF;
+                {
+                    int raw = (int)rounded;
+                    int masked = raw & ((-raw & ~raw) >> 31);
+                    if (masked < 0xFF) a = masked;
+                }
+                if ((unsigned char)a != lbl_8055FEA0) {
+                    fn_802DCAE4_GXColor color;
+                    color.r = 0xFF; color.g = 0xFF; color.b = 0xFF; color.a = a;
+                    GXSetTevKColor(1, color);
+                }
+            }
+        }
+        fn_802D2F70((int)input);
+        if (lbl_8055FEB4 != state) {
+            lbl_8055FEB4 = state;
+            if (lbl_8055FEB0 != 0) {
+                fn_802D6B7C(state);
+                return;
+            }
+            fn_802D6B78(state);
+            return;
+        }
+        if (lbl_8055FEB0 != 0) {
+            fn_802D0E48(0);
+            GXCallDisplayList(*(void **)((unsigned char *)state + 0x30), *(unsigned int *)((unsigned char *)state + 0x2C));
+            fn_802D0E48(1);
+            GXCallDisplayList(*(void **)((unsigned char *)state + 0x30), *(unsigned int *)((unsigned char *)state + 0x2C));
+        } else {
+            GXCallDisplayList(*(void **)((unsigned char *)state + 0x30), *(unsigned int *)((unsigned char *)state + 0x2C));
+        }
+    }
+}
 /* Set up the CPU-light indirect-texture (bump-map) pass: optionally bind the pass texture to texcoord slot 1, derive a base-2 indirect-matrix scale from the light level (farg0) and load it into indirect matrix 1, then configure the indirect TEV and vertex state. A texture-slot value of -2 skips that binding; arg0 is unused. */
 void fn_802DCFCC(int arg0, int indTexSlot, int texSlot1, float lightLevel, float texScale) {
     float logDiff;
