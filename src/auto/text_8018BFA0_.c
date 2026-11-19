@@ -130,8 +130,9 @@ typedef struct { char b[0x290]; } Blob290_8018;
 typedef struct { float a, b; int c, d; unsigned char e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17; } Blob22_8018;
 extern float lbl_80561F78, lbl_80561F7C, lbl_80561F80, lbl_80561F84;
 static inline float Chan_8018F2C0(unsigned char v) {
-    float t = (1.0f < (((float)v - 0.0f) / 255.0f)) ? 1.0f : (((float)v - 0.0f) / 255.0f);
-    t = (t > 0.0f) ? t : 0.0f;
+    const float zero = lbl_80561F74;
+    float t = (1.0f < (((float)v - zero) / 255.0f)) ? 1.0f : (((float)v - zero) / 255.0f);
+    t = (t > zero) ? t : zero;
     return -0.508f + t * 1.016f;
 }
 #pragma dont_inline on
@@ -1680,7 +1681,7 @@ void fn_8018F2C0(void *arg0, void *arg1) {
     *(int *)(d + 0x1928) = ((unsigned char *)s)[0x2A7]; *(char *)(d + 0x1924) = 0;
     *(int *)(d + 0x19A8) = ((unsigned char *)s)[0x2A8]; *(char *)(d + 0x19A4) = 0;
     *(int *)(d + 0x1A28) = ((unsigned char *)s)[0x2A9]; *(char *)(d + 0x1A24) = 0;
-    *(int *)(d + 0x1AA8) = ((unsigned char *)s)[0x2AA]; *(char *)(d + 0x1AA4) = 0;
+    *(int *)(d + 0x1AA8) = ((unsigned char *)s)[0x2AA]; *(char *)(d + 0x1A24) = 0;
     *(int *)(d + 0x1B28) = ((unsigned char *)s)[0x2AB]; *(char *)(d + 0x1B24) = 0;
     *(int *)(d + 0x1BA8) = ((unsigned char *)s)[0x2AC]; *(char *)(d + 0x1BA4) = 0;
     *(int *)(d + 0x1C28) = ((unsigned char *)s)[0x2AD]; *(char *)(d + 0x1C24) = 0;
