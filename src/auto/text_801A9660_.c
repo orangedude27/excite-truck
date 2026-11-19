@@ -1145,6 +1145,7 @@ extern "C" void fn_801ABC28(void *arg0) {
 
 #pragma scheduling on
 void fn_801ABFF4(void) {
+    /* Tail-call wrapper for fn_8017A57C. */
     fn_8017A57C();
 }
 
