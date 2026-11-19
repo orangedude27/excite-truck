@@ -1189,6 +1189,7 @@ void fn_8017D334(void) {
     if (storage != 0) freeHeapBlock((char*)storage - 0x10);
 }
 
+/* Empty stub. */
 void fn_8017D358(void) {
 
 }
