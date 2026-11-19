@@ -1618,7 +1618,7 @@ struct Dummy6320 {
     virtual void v5();
     virtual void v6();
     virtual float getFloat(const char *);
-    virtual float getFloatArg(const char *, float);
+    virtual double getFloatArg(const char *, float);
     virtual void v9();
     virtual signed char getS8(const char *, int);
     virtual void v11(); virtual void v12(); virtual void v13();
