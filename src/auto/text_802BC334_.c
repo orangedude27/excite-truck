@@ -1276,9 +1276,12 @@ void fn_802BDFF4(void *node, int value) {
 }
 
 #pragma scheduling invalid_target
+#pragma push
+#pragma dont_inline off
 static inline char *fn_802BE008_item(char *list) {
     return *(char **)(list + 8);
 }
+#pragma pop
 void *fn_802BE008(void *arg0) {
     int count = *(int *)((char *)&lbl_804C00D4 + 4);
     int found;
