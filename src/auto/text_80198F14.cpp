@@ -1698,10 +1698,11 @@ extern "C" s32 fn_8019D484(const Vec *p0, const Vec *v0, const Vec *p1, const Ve
         *out1 = b / den;
         return 1;
     }
-    return 0;
-}
+         return 0;
+ }
+#pragma pop
 
-s32 fn_8019D618(void* arg0, void* arg1, s32 clamp, void* arg3) {
+ s32 fn_8019D618(void* arg0, void* arg1, s32 clamp, void* arg3) {
     f32* aMat = *(f32**)((u8*)arg0 + 0xC);
     f32* bMat = *(f32**)((u8*)arg1 + 0xC);
     Vec aPos, bPos, p, q, aAxis, bAxis, diff, cross, mid, da, db, normal, center, delta;
