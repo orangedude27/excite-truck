@@ -135,6 +135,12 @@ static inline float Chan_8018F2C0(unsigned char v) {
     t = (t > zero) ? t : zero;
     return -0.508f + t * 1.016f;
 }
+
+static inline float ChanB_8018F2C0(unsigned char v, float zero) {
+    float t = (1.0f < (((float)v - zero) / 255.0f)) ? 1.0f : (((float)v - zero) / 255.0f);
+    t = (t > zero) ? t : zero;
+    return -0.508f + t * 1.016f;
+}
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
@@ -1681,7 +1687,7 @@ void fn_8018F2C0(void *arg0, void *arg1) {
     *(int *)(d + 0x1928) = ((unsigned char *)s)[0x2A7]; *(char *)(d + 0x1924) = 0;
     *(int *)(d + 0x19A8) = ((unsigned char *)s)[0x2A8]; *(char *)(d + 0x19A4) = 0;
     *(int *)(d + 0x1A28) = ((unsigned char *)s)[0x2A9]; *(char *)(d + 0x1A24) = 0;
-    *(int *)(d + 0x1AA8) = ((unsigned char *)s)[0x2AA]; *(char *)(d + 0x1A24) = 0;
+    *(int *)(d + 0x1AA8) = ((unsigned char *)s)[0x2AA]; *(char *)(d + 0x1AA4) = 0;
     *(int *)(d + 0x1B28) = ((unsigned char *)s)[0x2AB]; *(char *)(d + 0x1B24) = 0;
     *(int *)(d + 0x1BA8) = ((unsigned char *)s)[0x2AC]; *(char *)(d + 0x1BA4) = 0;
     *(int *)(d + 0x1C28) = ((unsigned char *)s)[0x2AD]; *(char *)(d + 0x1C24) = 0;
