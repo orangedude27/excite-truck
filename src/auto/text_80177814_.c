@@ -636,7 +636,6 @@ s32 fn_801784DC(Vec *arg0, f32 *arg1, Vec *arg2, s32 *arg3, s32 arg4) {
     }
     return 0;
 }
-#pragma scheduling invalid_target
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_801B5318(void *);
