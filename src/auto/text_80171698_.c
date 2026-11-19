@@ -339,7 +339,7 @@ extern "C" void fn_80171A80(void *arg0) {
 #pragma processor reset
 #pragma pop
 
+/* No-op stub (empty function). */
 void fn_80171CE0(void) {
-
 }
 
