@@ -1473,6 +1473,7 @@ void fn_80162258(void) {
 
 }
 
+/* Empty stub (no-op placeholder among the popup/menu helpers). */
 void fn_8016225C(void) {
 }
 
