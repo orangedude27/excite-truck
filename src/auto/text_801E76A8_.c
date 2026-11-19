@@ -17,15 +17,13 @@ extern char lbl_80339B70[];
 extern char lbl_80339B80[];
 void *fn_801E76A8(void *arg0, int arg1) {
     #pragma scheduling invalid_target
-    int rem;
-    int addr;
-    *(void **)arg0 = fn_8012850C(arg1 * 0x18, lbl_80339B70);
-    rem = arg1 - 2;
+    char *tmp = lbl_80339B70;
+    *(void **)arg0 = fn_8012850C(arg1 * 0x18, tmp);
+    tmp = (char *)(arg1 - 2);
     *(int *)((char *)arg0 + 8) = arg1;
-    arg1 = (rem * 4) - rem;
+    arg1 = ((int)tmp * 4) - (int)tmp;
     *(int *)((char *)arg0 + 4) = 0;
-    addr = (int)lbl_80339B80;
-    *(void **)((char *)arg0 + 0xC) = fn_8012850C(arg1 * 2, (void *)addr);
+    *(void **)((char *)arg0 + 0xC) = fn_8012850C(arg1 * 2, lbl_80339B80);
     *(int *)((char *)arg0 + 0x10) = 0;
     *(int *)((char *)arg0 + 0x14) = arg1;
     return arg0;
@@ -43,28 +41,26 @@ void *__dt__12PhysicsWorldFv_801E7730(void *object, int shouldDelete) {
 }
 
 void fn_801E7790(void *buf, int id, int emit, float x, float y, float z, float u, float v) {
-    struct Buf { void *base; int count; int pad; void *arr; int ic; };
-    struct Buf *b = (struct Buf *)buf;
-    float *dst = (float *)((char *)b->base + b->count * 0x18);
+    S76 *b = (S76 *)buf;
+    float *dst;
     int ic;
+    dst = (float *)((char *)b->a + b->b * 0x18);
     dst[0] = x;
     dst[1] = y;
     dst[2] = z;
     ((int *)dst)[3] = id;
     dst[4] = u;
     dst[5] = v;
-    b->count = b->count + 1;
+    ic = b->e;
+    b->b = b->b + 1;
     if (emit == 0) return;
-    if (b->count <= 1) return;
-    ic = b->ic;
-    ((short *)b->arr)[ic] = (short)(b->count - 3);
-    b->ic = ic + 1;
-    ic++;
-    ((short *)b->arr)[ic] = (short)(b->count - 2);
-    b->ic = ic + 1;
-    ic++;
-    ((short *)b->arr)[ic] = (short)(b->count - 1);
-    b->ic = ic + 1;
+    if (b->b <= 1) return;
+    ((short *)b->d)[ic] = (short)(b->b - 3);
+    b->e = ic + 1;
+    ((short *)b->d)[ic + 1] = (short)(b->b - 2);
+    b->e = ic + 2;
+    ((short *)b->d)[ic + 2] = (short)(b->b - 1);
+    b->e = ic + 3;
 }
 
 /* GenericDrawList draw: unpacks the descriptor (vertices, vertexCount, cap, indices, indexCount) and forwards it to the immediate-mode triangle renderer. */
@@ -106,6 +102,7 @@ void fn_801E7890(void *a, int b, int c, float d, float e, float f, float g, floa
     fn_801E7790(a, b, c, d, e, f, g, h);
 }
 
+/* Tail-call wrapper for GenericDrawList draw. */
 void fn_801E7894(void) {
     fn_801E7828();
 }
