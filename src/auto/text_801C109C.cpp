@@ -464,8 +464,9 @@ extern "C" void fn_801C1C7C(int object) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_801C1CBC(void *arg0, int arg1, void *arg2, int arg3, void *arg4, int arg5, void *arg6) {
+    register float zero = 0.0f;
     char *base = (char *)arg0;
     char *src = (char *)arg2;
     *(int *)(base + 0x14) = 0;
@@ -476,57 +477,48 @@ extern "C" void fn_801C1CBC(void *arg0, int arg1, void *arg2, int arg3, void *ar
         unsigned int count = (unsigned int)arg1 >> 1;
         int index;
         float x, y, z;
-        char *dst;
-        float zero = 0.0f;
-        if (count != 0) {
-            do {
+        for (; count != 0; count--) {
 #pragma unroll 2
-                for (int pairIter = 0; pairIter < 2; pairIter++) {
-                    index = *(int *)(base + 0x14);
-                    dst = *(char **)(base + 0x24) + index * 12;
-                    index++;
-                    *(int *)(base + 0x14) = index;
-                    x = *(float *)(src + 0);
-                    y = *(float *)(src + 4);
-                    z = *(float *)(src + 8);
-                    *(float *)dst = x;
-                    *(float *)(dst + 4) = y;
-                    *(float *)(dst + 8) = z;
-                    dst = *(char **)(base + 0x28) + (index - 1) * 12;
-                    *(float *)dst = x;
-                    *(float *)(dst + 4) = y;
-                    *(float *)(dst + 8) = z;
-                    dst = *(char **)(base + 0x2C) + (index - 1) * 12;
-                    *(float *)dst = zero;
-                    *(float *)(dst + 4) = zero;
-                    *(float *)(dst + 8) = zero;
-                    (*(float **)(base + 0x30))[index - 1] = *(float *)(src + 0x10);
-                    (*(float **)(base + 0x34))[index - 1] = *(float *)(src + 0xC);
-                    (*(int **)(base + 0x38))[index - 1] = 1;
-                    src += 0x14;
-                }
-                count--;
-            } while (count != 0);
+            for (int pairIter = 0; pairIter < 2; pairIter++) {
+                float (*p)[3];
+                index = *(int *)(base + 0x14);
+                index++;
+                *(int *)(base + 0x14) = index;
+                p = (float (*)[3])*(char **)(base + 0x24);
+                p[index - 1][0] = x = *(float *)(src + 0);
+                p[index - 1][1] = y = *(float *)(src + 4);
+                p[index - 1][2] = z = *(float *)(src + 8);
+                p = (float (*)[3])*(char **)(base + 0x28);
+                p[index - 1][0] = x;
+                p[index - 1][1] = y;
+                p[index - 1][2] = z;
+                p = (float (*)[3])*(char **)(base + 0x2C);
+                p[index - 1][0] = zero;
+                p[index - 1][1] = zero;
+                p[index - 1][2] = zero;
+                (*(float **)(base + 0x30))[index - 1] = *(float *)(src + 0x10);
+                (*(float **)(base + 0x34))[index - 1] = *(float *)(src + 0xC);
+                (*(int **)(base + 0x38))[index - 1] = 1;
+                src += 0x14;
+            }
         }
         if (((unsigned int)arg1 & 1) != 0) {
+            float (*p)[3];
             index = *(int *)(base + 0x14);
-            dst = *(char **)(base + 0x24) + index * 12;
             index++;
             *(int *)(base + 0x14) = index;
-            x = *(float *)(src + 0);
-            y = *(float *)(src + 4);
-            z = *(float *)(src + 8);
-            *(float *)dst = x;
-            *(float *)(dst + 4) = y;
-            *(float *)(dst + 8) = z;
-            dst = *(char **)(base + 0x28) + (index - 1) * 12;
-            *(float *)dst = x;
-            *(float *)(dst + 4) = y;
-            *(float *)(dst + 8) = z;
-            dst = *(char **)(base + 0x2C) + (index - 1) * 12;
-            *(float *)dst = zero;
-            *(float *)(dst + 4) = zero;
-            *(float *)(dst + 8) = zero;
+            p = (float (*)[3])*(char **)(base + 0x24);
+            p[index - 1][0] = x = *(float *)(src + 0);
+            p[index - 1][1] = y = *(float *)(src + 4);
+            p[index - 1][2] = z = *(float *)(src + 8);
+            p = (float (*)[3])*(char **)(base + 0x28);
+            p[index - 1][0] = x;
+            p[index - 1][1] = y;
+            p[index - 1][2] = z;
+            p = (float (*)[3])*(char **)(base + 0x2C);
+            p[index - 1][0] = zero;
+            p[index - 1][1] = zero;
+            p[index - 1][2] = zero;
             (*(float **)(base + 0x30))[index - 1] = *(float *)(src + 0x10);
             (*(float **)(base + 0x34))[index - 1] = *(float *)(src + 0xC);
             (*(int **)(base + 0x38))[index - 1] = 1;
