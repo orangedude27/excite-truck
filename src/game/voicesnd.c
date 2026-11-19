@@ -609,6 +609,9 @@ void fn_8020B320(void) {
     *(volatile int *)(voiceState + 8) = 0x20;
 }
 
+extern void fn_802E5824(void); /* SPU voice layer, slot +0x40 of the device: empty here */
+extern void fn_802E5828(void); /* SPU voice layer, slot +0x44 of the device: empty here */
+
 /* "Voice Mixer" device method, slot +0x40 of the voice backend's device vtable
  * (lbl_8033C458, installed by the constructor fn_8020A860): forwards the call to
  * the SPU voice layer's routine at 0x802E5824, dropping the device pointer.
