@@ -794,8 +794,11 @@ long fn_802104FC(void) {
 }
 
  
-void fn_80210510(void) {
-    fn_802EC1C0();
+/* Tail-call thunk: set the master sound volume (branches to fn_802EC1C0), which
+ * stores it and re-applies it if sound is already enabled. Used by pre-race music
+ * (fn_8020C140) to set/fade the volume. */
+void fn_80210510(float volume) {
+    ((void (*)(float))fn_802EC1C0)(volume);
 }
 
 /* Select the track-music mode (0/1) using the current DA parameter, or do nothing for 2. */
