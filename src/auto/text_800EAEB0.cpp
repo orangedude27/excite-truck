@@ -2593,7 +2593,7 @@ extern "C" int Setup__Q46nw4hbm3snd6detail9SeqPlayerFPQ46nw4hbm3snd6detail17SeqT
             valid = 0;
             if (state >= 0 && state < 16) valid = 1;
             if (valid == 0)
-                Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x2FD, file + 0x14, state, 0, 16);
+                Panic__Q26nw4hbm2dbFPCciPCce(file, 0x2FD, file + 0x14, state, 0, 16);
             seq = state > 15 ? (void *)temp : *(void **)(entry + 0x9C);
             if (seq != 0) {
                 Close__Q46nw4hbm3snd6detail8SeqTrackFv(seq);
