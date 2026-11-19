@@ -176,11 +176,12 @@ void fn_801AFDCC(void *arg0, void *arg1) {
     }
 }
 
+#pragma scheduling invalid_target
 void fn_801AFF64(void *arg0, int arg1) {
     struct WordPair { unsigned int a, b; };
     unsigned char *src = (unsigned char *)arg0;
     unsigned char *dst = (unsigned char *)arg1 + *(unsigned int *)(src + 8);
-    float c = lbl_80562588;
+    float c = 1.0f;
     float t = lbl_8055E460;
     float delta = t - c;
     if ((float)fabs(delta) <= lbl_80558DC4[0]) {
@@ -348,14 +349,14 @@ void fn_801B02E0(void *arg0) {
             *(f32 *)(self + 0x64) = lbl_80562598;
         v124 = *(f32 *)(self + 0x124);
         v128 = *(f32 *)(self + 0x128);
-        out124 = v124 * lbl_8056259C;
         v12c = *(f32 *)(self + 0x12C);
-        out128 = v128 * lbl_8056259C;
         v118 = *(f32 *)(self + 0x118);
-        out12c = v12c * lbl_8056259C;
         v11c = *(f32 *)(self + 0x11C);
-        out118 = v118 * lbl_805625A0;
         v120 = *(f32 *)(self + 0x120);
+        out124 = v124 * lbl_8056259C;
+        out128 = v128 * lbl_8056259C;
+        out12c = v12c * lbl_8056259C;
+        out118 = v118 * lbl_805625A0;
         out11c = v11c * lbl_805625A0;
         out120 = v120 * lbl_805625A0;
         *(f32 *)(self + 0x124) = out124;
@@ -500,27 +501,26 @@ extern "C" void fn_801B05E4(void *arg0, u8 *arg1, u8 *arg2, s32 *arg3, s32 *arg4
     };
     s32 spC;
     s32 sp8;
-    u8 firstFlag;
     s32 result;
+    u32 firstFlag;
     f32 zeroValue;
     f32 resetValue;
     *arg3 = ((Callback0 *)arg0)->get();
     result = ((Callback1 *)arg0)->get(arg2);
     firstFlag = *arg1;
     *arg4 = result;
-    if (firstFlag == 0) goto fallback;
-    if (*arg2 == 0) goto fallback;
-    *(u8 *)((u8 *)arg0 + 0x1F8) = 1;
-    fn_8017D160(arg0, arg1 + 1, arg2 + 1, &spC, &sp8, arg5);
-    return;
-fallback:
-    zeroValue = lbl_80562578;
-    resetValue = lbl_805625B0;
-    *(u8 *)((u8 *)arg0 + 0x1F8) = 0;
-    *(f32 *)((u8 *)arg0 + 0x64) = resetValue;
-    *(f32 *)((u8 *)arg0 + 0x118) = zeroValue;
-    *(f32 *)((u8 *)arg0 + 0x11C) = zeroValue;
-    *(f32 *)((u8 *)arg0 + 0x120) = zeroValue;
+    if (firstFlag != 0 && *arg2 != 0) {
+        *(u8 *)((u8 *)arg0 + 0x1F8) = 1;
+        fn_8017D160(arg0, arg1 + 1, arg2 + 1, &spC, &sp8, arg5);
+    } else {
+        zeroValue = lbl_80562578;
+        resetValue = lbl_805625B0;
+        *(u8 *)((u8 *)arg0 + 0x1F8) = 0;
+        *(f32 *)((u8 *)arg0 + 0x64) = resetValue;
+        *(f32 *)((u8 *)arg0 + 0x118) = zeroValue;
+        *(f32 *)((u8 *)arg0 + 0x11C) = zeroValue;
+        *(f32 *)((u8 *)arg0 + 0x120) = zeroValue;
+    }
 }
 #pragma pop
 void __AXDSPInitCallback_801AFC38(void) {
