@@ -2400,27 +2400,20 @@ increment:
     return -1;
 }
 
+#pragma scheduling reset
 int fn_80283B58(void) {
     char *base = (char *)&lbl_804B2FF8;
     struct Fn80283E28List *list = (struct Fn80283E28List *)(base + 0xE0);
     int count;
     int idx;
     struct Fn80283E28Obj **items;
-    struct Fn80283E28Obj **p;
     unsigned int value;
     int i;
     struct Fn80283E28Obj *obj;
-    idx = 0;
     count = list->count;
     items = list->items;
     value = (unsigned int)lbl_8055F698;
-    p = items;
-    for (; idx < count; ++idx) {
-        if ((unsigned int)*p == value) goto found;
-        ++p;
-    }
-    idx = -1;
-found:
+    idx = fn_80283B58_find(list, value);
     if (idx >= 0) {
         i = idx;
         do {
@@ -2473,7 +2466,8 @@ found:
     }
     return 0;
 }
-
+#pragma cplusplus off
+#pragma scheduling invalid_target
 int fn_80283E28(void) {
     char *base = (char *)&lbl_804B2FF8;
     int i;
