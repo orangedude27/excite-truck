@@ -992,12 +992,13 @@ extern "C" void fn_80190CBC(void *container) {
 #pragma pop
 
 #pragma scheduling invalid_target
-int fn_80190CD0(float a, float b, float c) {
-    float lower = 1.0f;
-    float value = (a - b) / (c - b);
-    if (lower < value) { lower = lower; } else { lower = value; }
-    if (lower > lbl_8056208C) { lower = lower; } else { lower = lbl_8056208C; }
-    return (((int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620AC)))) >> 4) & 0xF;
+/* Returns a 4-bit quantized level (0-15) for value interpolated between min and max. */
+int fn_80190CD0(float value, float min, float max) {
+    float clamped = 1.0f;
+    float t = (value - min) / (max - min);
+    if (clamped < t) { clamped = clamped; } else { clamped = t; }
+    if (clamped > lbl_8056208C) { clamped = clamped; } else { clamped = lbl_8056208C; }
+    return (((int)(lbl_80562080 + (lbl_8056208C + (clamped * lbl_805620AC)))) >> 4) & 0xF;
 }
 #pragma scheduling on
 int fn_80190D38(float a, float b, float c) {
