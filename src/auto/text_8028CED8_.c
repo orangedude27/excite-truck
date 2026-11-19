@@ -135,7 +135,7 @@ extern "C" void fn_8028D084(void *arg0, void *arg1) {
     char *base = (char *)&lbl_80348C50;
     int value;
     *(int *)arg0 = fn_802CAC28(((Obj8028D084 *)arg1)->f5(lbl_8055C8C8), 0);
-    *(float *)((char *)arg0 + 4) = ((Obj8028D084 *)arg1)->f9(((struct Tbl8028D084 *)base)->f);
+    *(float *)((char *)arg0 + 4) = ((Obj8028D084 *)arg1)->f9((char *)&lbl_80348C50);
     *(float *)((char *)arg0 + 8) = ((Obj8028D084 *)arg1)->f9(base + 0xC);
     *(float *)((char *)arg0 + 0xC) = ((Obj8028D084 *)arg1)->f9(base + 0x18);
     value = ((Obj8028D084 *)arg1)->f7(base + 0x24);
@@ -473,15 +473,15 @@ void fn_8028D89C(void *arg0, int arg1, float arg2) {
     kind = *(int *)(entry + 0xa8);
     idx = arg1 + *(int *)((unsigned char *)arg0 + 4) * 4;
     state = (int *)((unsigned char *)(unsigned long)*(volatile int *)&lbl_8055F720 + idx * 8);
-    if (kind >= 8) goto clear;
+    if (kind >= 8) goto clear1;
     key = ((int *)&lbl_804B3470)[kind];
-    if (key < 0) goto clear;
+    if (key < 0) goto clear1;
     group = (unsigned char *)&lbl_804B3400 + key * 0x1c;
     flag = 0;
     if (*(unsigned char *)(entry + 0xa0) != 0 &&
         *(float *)(entry + 0x98) > *(float *)(group + 0xc))
         flag = 1;
-    if (flag == 0) goto clear;
+    if (flag == 0) goto clear2;
     if (state[0] == key) {
         if (arg2 > lbl_80564400 + *(float *)(state + 1)) {
             scale = lbl_80564404;
@@ -510,8 +510,8 @@ void fn_8028D89C(void *arg0, int arg1, float arg2) {
             t = *(float *)(entry + 0x98) - lim;
             i = (int)(lbl_80564410 * (*(float *)(group + 4) + *(float *)(group + 8) * t));
             clamped = i & (((-i) & ~i) >> 31);
-            if (clamped < 0xFFFF) *(unsigned short *)(item + 0x24) = clamped;
-            *(unsigned char *)(item + 0x26) = 1;
+            if (clamped < 0xFFFF) { int v = clamped; *(unsigned short *)(item + 0x24) = v; }
+        *(unsigned char *)(item + 0x26) = 1;
             *(int *)(g + 4) = *(int *)(g + 4) + 1;
             *(int *)(group + 0x18) = *(int *)(group + 0x18) + 1;
             *(float *)(state + 1) = arg2;
@@ -591,7 +591,10 @@ void fn_8028D89C(void *arg0, int arg1, float arg2) {
     }
     state[0] = key;
     return;
-clear:
+clear2:
+    state[0] = -1;
+    return;
+clear1:
     state[0] = -1;
 }
 #pragma pop
