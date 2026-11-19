@@ -2662,13 +2662,13 @@ extern "C" void fn_8019F414(void *arg0) {
 }
 
 #pragma scheduling reset
-#pragma always_inline on
+extern "C" {
 static inline void fn_8019F4D4_store(volatile f32 *s, f32 x, f32 y, f32 z) {
     s[6] = x;
     s[1] = y;
     s[5] = z;
 }
-#pragma always_inline reset
+}
 #pragma opt_lifetimes off
 extern "C" void fn_8019F4D4(void *arg0, void *arg1) {
     fn_8019EC84(arg0);
