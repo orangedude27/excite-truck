@@ -342,6 +342,7 @@ struct Obj3910 {
     float unk50;
 };
 #pragma scheduling invalid_target
+#pragma scheduling on
 void fn_801D3910(void *arg0) {
     char *p;
     int i;
@@ -350,10 +351,10 @@ void fn_801D3910(void *arg0) {
     p = (char *)arg0 + 0x248;
     *(void **)((char *)arg0 + 0x244) = p;
     if (p != 0) {
+        void *initialVtable = lbl_80333B98;
         float value = lbl_80562AAC;
         float zero = lbl_80562AB8;
         volatile float temp[3];
-        void *initialVtable = lbl_80333B98;
 
         *(volatile void **)p = initialVtable;
         temp[0] = zero;
