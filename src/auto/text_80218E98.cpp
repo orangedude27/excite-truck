@@ -3660,7 +3660,7 @@ extern "C" s32 fn_8021E1C8(void *arg0, s32 arg1, s32 arg2) {
     s32 var_r5;
     void *temp_r6;
     s32 var_r7;
-    s32 *temp_r4_3 = 0;
+    s32 *temp_r4_3;
     *(s32 *)((u8 *)arg0 + 0x260) = 0;
     if (*(u8 *)((u8 *)arg0 + 0x268) != 0) {
         if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
@@ -4492,6 +4492,7 @@ extern "C" void fn_8021F7EC(void *object) {
 }
 
 extern "C" f32 lbl_80563518;
+extern "C" f64 lbl_805634B8;
 #pragma push
 #pragma opt_common_subs off
 extern "C" s32 fn_8021F848(void *arg0, s32 arg1) {
@@ -5022,10 +5023,10 @@ extern "C" void fn_80220A50(void *arg0, s32 arg1) {
     register s32 frame = arg1;
     register s32 field4 = *(s32 *)((u8 *)arg0 + 4);
     register s32 field250 = *(s32 *)((u8 *)arg0 + 0x250);
-    register s32 duration = ((Dispatch *)arg0)->get();
+    s32 duration = ((Dispatch *)arg0)->get();
     register s32 range = *(volatile s32 *)((u8 *)arg0 + 0x254);
-    s32 time = frame - field4 - 5;
-    s32 distance = range - field250;
+    register s32 time = frame - field4 - 5;
+    register s32 distance = range - field250;
     register s32 result = field250 + distance * time / (duration - 10);
     result = result < field250 ? field250 : result;
     register s32 max = *(volatile s32 *)((u8 *)arg0 + 0x254);
@@ -5420,7 +5421,6 @@ extern "C" void fn_80221970(Fn80221970Object *self) {
     Child *child;
     Child *child0;
     Child *child1;
-    s32 x;
     s32 left;
     long right;
     s32 y0;
@@ -5442,11 +5442,11 @@ extern "C" void fn_80221970(Fn80221970Object *self) {
     base = child->base;
     if (child->length < base) {
         if (self->flag == 0) {
-            x = self->x;
-            left = x + 1;
             scale = (f32)(self->end - self->y) / (f32)base;
+            base = self->x;
+            left = base + 1;
             scroll = ((Vf78 *)self)->get();
-            right = x + scroll - 1;
+            right = base + scroll - 1;
             child0 = self->child;
             y0 = self->y + (s32)(scale * (f32)child0->offset) + 5;
             y1 = self->y + (s32)(scale * (f32)(child0->offset + child0->length)) - 5;
@@ -8061,7 +8061,7 @@ extern "C" void *fn_80226CBC(void *arg0, void *arg1) {
     u8 *self = (u8 *)arg0;
     u8 *arg = (u8 *)arg1;
     char *base = lbl_8033D878;
-    f32 x, y, z;
+    register f32 x, y, z;
     ((void *(*)(void *, void *))fn_80218F80)(arg0, arg1);
     *(void **)self = &lbl_8033E038;
     *(f32 *)(self + 0x250) = (f32)(*(s32 *)(self + 0x10) - *(s32 *)(self + 8));
@@ -8443,13 +8443,12 @@ extern "C" void fn_802278F0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3
         {
             f32 offset = fn_80235F64(arg0, 2);
             f32 difference = farg1 - farg3;
-            f32 y = offset + (difference - lbl_805634EC);
+            f32 y = (difference - lbl_805634EC) + offset;
             fn_802353F4(arg0, 2, farg0 - lbl_805634EC, y, lbl_805634A8);
         }
         {
             f32 offset = fn_80235F64(arg0, 3);
-            f32 difference = farg1 - farg3;
-            f32 y = (difference - lbl_805634EC) + offset;
+            f32 y = ((farg1 - farg3) - lbl_805634EC) + offset;
             f32 xoffset = fn_80235EF0(arg0, 3);
             f32 width = farg0 + farg2;
             f32 x = (lbl_805634EC + width) - xoffset;
