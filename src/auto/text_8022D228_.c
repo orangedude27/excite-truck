@@ -10,7 +10,6 @@ extern double lbl_805635C8;
 extern char lbl_803401A0[];
 extern float lbl_805635C0;
 extern float lbl_805635C4;
-typedef union { double d; struct { unsigned int hi, lo; } w; } D98C_Bias;
 
 extern char *strcpy(char *, const char *);
 void fn_80128668(void);
@@ -239,14 +238,15 @@ void fn_8022D98C(void *arg0, int arg1, float arg2, float arg3, float arg4, float
     *(float *)((char *)arg0 + 0x10) = arg6;
     *count = 0;
     do {
+        float frac;
         n = *count;
-        value = value * lbl_805635C0;
+        value *= lbl_805635C0;
         *count = n + 1;
-        if ((value - (float)(int)value > lbl_805635C4) == 0)
+        frac = value - (float)(int)value;
+        if ((frac > lbl_805635C4) == 0)
             break;
-        if (*count < 4)
-            continue;
-        break;
+        if (*count >= 4)
+            break;
     } while (1);
     *(float *)((char *)arg0 + 0x14) = arg4 / (arg3 - arg2);
 }
