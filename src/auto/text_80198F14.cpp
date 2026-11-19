@@ -1792,6 +1792,7 @@ extern "C" s32 fn_8019DAB0(void *arg0, void *arg1) {
 }
 
 extern "C" s32 fn_8019DC04(void *arg0, void *arg1) {
+#pragma scheduling invalid_target
     struct Interface {
         virtual ~Interface() {}
         virtual void m0() = 0;
@@ -1822,14 +1823,13 @@ extern "C" s32 fn_8019DC04(void *arg0, void *arg1) {
     f32 radiusSquared = radius * radius;
     if (PSVECDotProduct((Vec *)&local[12], (Vec *)&local[12]) < radiusSquared) {
         u32 found = 0;
-        s32 result = fn_8019DAB0(object0, object1);
-        u32 raw = (u32)result;
-        found = ((u32)(-result) | raw) >> 31;
+        u32 raw = (u8)(u32)fn_8019DAB0(object0, object1);
+        found = ((u32)(-raw) | raw) >> 31;
         if (found != 0) {
             return 1;
         }
-        void *mat = *(void **)((u8 *)object0 + 0xC);
-        f32 w = *(f32 *)((u8 *)object0 + 0x28);
+        register f32 w = *(f32 *)((u8 *)object0 + 0x28);
+        register void *mat = *(void **)((u8 *)object0 + 0xC);
         volatile u32 *words = (volatile u32 *)mat;
         u32 v14 = words[6];
         u32 v18 = words[7];
@@ -2903,6 +2903,17 @@ extern "C" void fn_8019FF8C(void* object) {
 }
 
 #pragma small_data off
+struct Init8019FFD8 {
+    void *vtable;
+    s32 f04, f08, f0C;
+    f32 f10, f14;
+    s32 f18, f1C, f20;
+    char pad[0x144];
+    f32 f168, f16C, f170;
+    s32 f174;
+    f32 f178;
+    s32 f17C, f180;
+};
 extern "C" void fn_8019FFD8(void* arg0, s32 arg1, s32 arg2) {
     f32 zeroFloat = lbl_805622D0;
     s32 zero = 0;
@@ -4061,12 +4072,11 @@ extern "C" void fn_801A1F44(void* arg0, void* arg1) {
         virtual void* a16() = 0; virtual void* a17() = 0; virtual void* f() = 0;
     };
     void* result = ((V*)arg1)->f();
-    volatile u32* words = (volatile u32*)result;
-    u32 y = words[10];
-    u32 x = words[9];
-    *(u32*)arg0 = x;
-    *(u32*)((u8*)arg0 + 4) = y;
-    *(u32*)((u8*)arg0 + 8) = *(u32*)((u8*)result + 0x2C);
+    s32 x = *(s32*)((u8*)result + 0x24);
+    s32 y = *(s32*)((u8*)result + 0x28);
+    *(s32*)arg0 = x;
+    *(s32*)((u8*)arg0 + 4) = y;
+    *(s32*)((u8*)arg0 + 8) = *(s32*)((u8*)result + 0x2C);
 }
 
 #pragma push
@@ -4270,15 +4280,14 @@ extern "C" void fn_801A2474(void *arg0) {
     register u32 *mw = self->matrix;
     register f32 *m = (f32 *)mw;
     u32 *cache = (u32 *)((char *)self + 0x44);
-    u32 m0, m1, m2, m3, m4, m5, m6, m7, m8;
-    m0 = mw[0]; m1 = mw[1];
-    cache[0] = m0; cache[1] = m1;
+    u32 m0 = mw[0], m1 = mw[1], m2, m3, m4, m5, m6, m7, m8;
+    cache[1] = m1; cache[0] = m0;
     m2 = mw[2]; cache[2] = m2;
     m3 = mw[3]; m4 = mw[4];
-    cache[3] = m3; cache[4] = m4;
+    cache[4] = m4; cache[3] = m3;
     m5 = mw[5]; cache[5] = m5;
     m6 = mw[6]; m7 = mw[7];
-    cache[6] = m6; cache[7] = m7;
+    cache[7] = m7; cache[6] = m6;
     m8 = mw[8]; cache[8] = m8;
     if (&self->output == (volatile Vec *)&self->input) {
         register f32 y = self->input.y;
@@ -5285,46 +5294,101 @@ extern "C" s32 fn_801A40F8(void *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 *arg4
     f32 dz = iz - m[11];
     stack[8] = dz;
     f32 m8, m7, m6, m5, m4, m3, m2, m1, m0;
-    m0 = m[0]; m1 = m[1]; m2 = m[2]; m3 = m[3]; m4 = m[4];
-    m5 = m[5]; m6 = m[6]; m7 = m[7]; m8 = m[8];
+    m0 = m[0];
+    m1 = m[1];
+    m2 = m[2];
+    m3 = m[3];
+    m4 = m[4];
+    m5 = m[5];
+    m6 = m[6];
+    m7 = m[7];
+    m8 = m[8];
     stack[6] = (dz * m2) + ((dy * m1) + (dx * m0));
     stack[7] = (dz * m5) + ((dy * m4) + (dx * m3));
     stack[8] = (dz * m8) + ((dy * m7) + (dx * m6));
     f32 *m2p = (f32 *)*(void **)((u8 *)arg0 + 0xC);
     if (&stack[3] == arg2) {
-        f32 y = arg2[1]; f32 x = arg2[0]; f32 z = arg2[2];
+        f32 y = arg2[1];
+        f32 x = arg2[0];
+        f32 z = arg2[2];
         f32 a8, a7, a6, a5, a4, a3, a2, a1, a0;
-        a0 = m2p[0]; a1 = m2p[1]; a2 = m2p[2]; a3 = m2p[3]; a4 = m2p[4];
-        a5 = m2p[5]; a6 = m2p[6]; a7 = m2p[7]; a8 = m2p[8];
+        a0 = m2p[0];
+        a1 = m2p[1];
+        a2 = m2p[2];
+        a3 = m2p[3];
+        a4 = m2p[4];
+        a5 = m2p[5];
+        a6 = m2p[6];
+        a7 = m2p[7];
+        a8 = m2p[8];
         stack[3] = (z * a2) + ((x * a0) + (y * a1));
         stack[4] = (z * a5) + ((x * a3) + (y * a4));
         stack[5] = (z * a8) + ((x * a6) + (y * a7));
     } else {
-        { f32 c2, c0, c1; c1 = m2p[1]; c0 = m2p[0]; c2 = m2p[2];
-          stack[3] = (arg2[2] * c2) + ((arg2[0] * c0) + (arg2[1] * c1)); }
-        { f32 c5, c3, c4; c4 = m2p[4]; c3 = m2p[3]; c5 = m2p[5];
-          stack[4] = (arg2[2] * c5) + ((arg2[0] * c3) + (arg2[1] * c4)); }
-        { f32 c8, c6, c7; c7 = m2p[7]; c6 = m2p[6]; c8 = m2p[8];
-          stack[5] = (arg2[2] * c8) + ((arg2[0] * c6) + (arg2[1] * c7)); }
+        {
+            f32 c2, c0, c1;
+            c1 = m2p[1];
+            c0 = m2p[0];
+            c2 = m2p[2];
+            stack[3] = (arg2[2] * c2) + ((arg2[0] * c0) + (arg2[1] * c1));
+        }
+        {
+            f32 c5, c3, c4;
+            c4 = m2p[4];
+            c3 = m2p[3];
+            c5 = m2p[5];
+            stack[4] = (arg2[2] * c5) + ((arg2[0] * c3) + (arg2[1] * c4));
+        }
+        {
+            f32 c8, c6, c7;
+            c7 = m2p[7];
+            c6 = m2p[6];
+            c8 = m2p[8];
+            stack[5] = (arg2[2] * c8) + ((arg2[0] * c6) + (arg2[1] * c7));
+        }
     }
     typedef s32 (*Call)(s32, f32 *, f32 *, s32, f32 *);
     if (((Call)fn_801CF828)(*(s32 *)((u8 *)arg0 + 0x24), &stack[6], &stack[3], arg3, &stack[0]) != 0) {
         f32 *m3 = (f32 *)*(void **)((u8 *)arg0 + 0xC);
         if (arg4 == &stack[0]) {
-            f32 y = stack[1]; f32 x = stack[0]; f32 z = stack[2];
+            f32 y = stack[1];
+            f32 x = stack[0];
+            f32 z = stack[2];
             f32 b8, b7, b6, b5, b4, b3, b2, b1, b0;
-            b0 = m3[0]; b1 = m3[1]; b2 = m3[2]; b3 = m3[3]; b4 = m3[4];
-            b5 = m3[5]; b6 = m3[6]; b7 = m3[7]; b8 = m3[8];
+            b0 = m3[0];
+            b1 = m3[1];
+            b2 = m3[2];
+            b3 = m3[3];
+            b4 = m3[4];
+            b5 = m3[5];
+            b6 = m3[6];
+            b7 = m3[7];
+            b8 = m3[8];
             arg4[0] = (z * b6) + ((x * b0) + (y * b3));
             arg4[1] = (z * b7) + ((x * b1) + (y * b4));
             arg4[2] = (z * b8) + ((x * b2) + (y * b5));
         } else {
-            { f32 d6, d0, d3; d3 = m3[3]; d0 = m3[0]; d6 = m3[6];
-              arg4[0] = (stack[2] * d6) + ((stack[0] * d0) + (stack[1] * d3)); }
-            { f32 d7, d1, d4; d4 = m3[4]; d1 = m3[1]; d7 = m3[7];
-              arg4[1] = (stack[2] * d7) + ((stack[0] * d1) + (stack[1] * d4)); }
-            { f32 d8, d2, d5; d5 = m3[5]; d2 = m3[2]; d8 = m3[8];
-              arg4[2] = (stack[2] * d8) + ((stack[0] * d2) + (stack[1] * d5)); }
+            {
+                f32 d6, d0, d3;
+                d3 = m3[3];
+                d0 = m3[0];
+                d6 = m3[6];
+                arg4[0] = (stack[2] * d6) + ((stack[0] * d0) + (stack[1] * d3));
+            }
+            {
+                f32 d7, d1, d4;
+                d4 = m3[4];
+                d1 = m3[1];
+                d7 = m3[7];
+                arg4[1] = (stack[2] * d7) + ((stack[0] * d1) + (stack[1] * d4));
+            }
+            {
+                f32 d8, d2, d5;
+                d5 = m3[5];
+                d2 = m3[2];
+                d8 = m3[8];
+                arg4[2] = (stack[2] * d8) + ((stack[0] * d2) + (stack[1] * d5));
+            }
         }
         return 1;
     }
