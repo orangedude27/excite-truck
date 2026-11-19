@@ -345,9 +345,9 @@ void fn_80177F40(void) {
     extern int lbl_8055E488;
     extern float lbl_80561B50, lbl_80561B54, lbl_80561B58, lbl_80561B5C;
     int other;
-    int flag;
-    int active;
-    int saved;
+    unsigned char flag;
+    unsigned active;
+    unsigned char saved;
     char *base = (char *)lbl_80430590;
     float *dst, *src;
     int i;
@@ -887,6 +887,7 @@ void fn_80178C88(void) {
 
 }
 
+/* Empty stub. */
 void fn_80178C8C(void) {
 
 }
@@ -1295,11 +1296,10 @@ void* fn_80179318(void) {
 #pragma scheduling invalid_target
 void fn_80179320(void) {
     extern float lbl_8055E460;
-    extern float lbl_80561B6C;
-    float initial = lbl_80561B6C;
+    float initial = 1.0f;
+    register char *base = (char *)lbl_80430590;
     register int offset;
     register int i;
-    register char *base = (char *)lbl_80430590;
     void *object;
     int old;
     int *field;
@@ -1577,29 +1577,42 @@ void *fn_80179824(void) {
     char *arg;
     char *q;
     int *e;
-    int j, i;
+    int k, i;
     *(int *)(p + 0x398) = lbl_8055E448;
     arg = p + 0x2ee8;
     *(int *)(p + 0x394) = lbl_8055E440;
-    *(int *)(p + 0x388) = tbl[1];
     *(int *)(p + 0x384) = tbl[0];
+    *(int *)(p + 0x388) = tbl[1];
     *(int *)(p + 0x38c) = tbl[2];
     *(int *)(p + 0x390) = tbl[3];
-    if (fn_801CF050() == 0 || (int)fn_801781C0(fn_8026A368(0)) != 0 || fn_801B526C() != 0) {
+    if (fn_801CF050(&lbl_80430590[0]) == 0 || (int)fn_801781C0(fn_8026A368(0)) != 0 || fn_801B526C() != 0) {
         *(int *)(p + 0x394) = 1;
     }
     lbl_8055E444 = *(void **)(p + 0x394);
+    q = p + 4;
     e = tbl + 4;
-    for (i = 0, q = p + 4; i < lbl_8055E440; i++, q += 0xe0) {
+    for (i = 0; i < lbl_8055E440; i++, q += 0xe0) {
         fn_802678E8(q, i);
         *(int *)(q + 0x70) = e[0];
         *(int *)(q + 0x6c) = e[1];
         e += 2;
     }
     fn_80206550((int)lbl_8055E444);
-    *(float *)p = lbl_8055E3C8 + lbl_80561B60 * (lbl_8055E460 - lbl_80561B6C);
-    for (i = 0, j = 0; i < lbl_8055E438; i++, j += 4) {
-        void **o = *(void ***)((char *)lbl_8055E434 + j);
+    {
+        float scale;
+        float bottom;
+        float top;
+        float center;
+        float diff;
+        top = lbl_8055E460;
+        bottom = lbl_80561B6C;
+        scale = lbl_80561B60;
+        center = lbl_8055E3C8;
+        diff = top - bottom;
+        *(float *)p = center + scale * diff;
+    }
+    for (k = 0; k < lbl_8055E438; k++) {
+        void **o = ((void ***)lbl_8055E434)[k];
         ((void (*)(void *, void *))(((void **)*o)[10]))(o, arg);
     }
     fn_801B2D28(p);
@@ -1610,16 +1623,16 @@ void *fn_80179824(void) {
         *(int *)(p + 0x57c) = t[0];
         *(int *)(p + 0x580) = t[1];
         *(float *)(p + 0x584) = ((float *)t)[2];
-        *(float *)((unsigned short)p + 0x588) = ((float *)t)[3];
+        *(float *)(p + 0x588) = ((float *)t)[3];
         *(float *)(p + 0x58c) = ((float *)t)[4];
+        fn_801E1EA4(p, t);
     }
-    fn_801E1EA4(p);
     {
         float *s = (float *)(tbl + 17);
         char *dst = p;
         int idx = 0;
-        int k;
-        for (k = 0; k < 3; k++) {
+        int n;
+        for (n = 0; n < 3; n++) {
             idx += 0x18;
             *(float *)(dst + 0xdb4) = s[0];
             *(float *)(dst + 0xdb8) = s[1];
@@ -1666,7 +1679,8 @@ void *fn_80179824(void) {
 extern float lbl_80561B6C;
 extern float lbl_8055E460;
 extern char lbl_80558DC4[];
-#pragma scheduling invalid_target
+#pragma push
+#pragma opt_common_subs off
 void fn_80179AF4(void *arg0, int arg1) {
     struct WordPair { unsigned int a, b; };
     extern char lbl_80558DC4[];
@@ -1676,7 +1690,8 @@ void fn_80179AF4(void *arg0, int arg1) {
     unsigned char *dst = (unsigned char *)arg1 + *(unsigned int *)(src + 8);
     float base = lbl_80561B6C;
     float top = lbl_8055E460;
-    if ((float)__fabs((double)(top - base)) <= *(float *)lbl_80558DC4) {
+    float delta = top - base;
+    if ((float)__fabs((double)delta) <= *(float *)lbl_80558DC4) {
         struct WordPair *s = (struct WordPair *)(src + 0x70);
         struct WordPair *d = (struct WordPair *)dst;
         d[0] = s[0]; d[1] = s[1]; d[2] = s[2]; d[3] = s[3];
@@ -1715,7 +1730,7 @@ void fn_80179AF4(void *arg0, int arg1) {
     }
     *(short *)(dst + 0x30) = *(short *)(src + 0x6C);
 }
-#pragma scheduling on
+#pragma pop
 /* Return a pointer to the per-racer state block at offset 0x2EE8 of the global race-state buffer
    (the same sub-block fn_80179824 passes to each racer's virtual method). */
 int fn_80179CB0(void) {
