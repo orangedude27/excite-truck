@@ -96,26 +96,6 @@ extern "C" void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
 extern "C" s32 fn_800A7C20(void *, void **, u32, void **, s32 *);
 extern "C" s32 fn_800A586C(void *, s32, s32, s32, s32);
 extern "C" s32 fn_800A7B34(void *, void *);
-static inline void fn_800A9DC0_loadNumericFields(u8 *p_ent, u8 *p_buf) {
-    u32 word;
-    u32 a, b;
-    u16 hiSwap, loSwap;
-    p_ent[0x21C] = p_buf[0xB];
-    p_ent[0x21B] = p_buf[0xC];
-    p_ent[0x21D] = p_buf[0xD];
-    __sthbrx(*(u16 *)(p_buf + 0xE), p_ent + 0x21E, 0);
-    __sthbrx(*(u16 *)(p_buf + 0x10), p_ent + 0x220, 0);
-    __sthbrx(*(u16 *)(p_buf + 0x12), p_ent + 0x222, 0);
-    __sthbrx(*(u16 *)(p_buf + 0x16), p_ent + 0x224, 0);
-    __sthbrx(*(u16 *)(p_buf + 0x18), p_ent + 0x226, 0);
-    word = *(u32 *)(p_buf + 0x1C);
-    *(u32 *)(p_ent + 0x228) = (word >> 24) | ((word >> 8) & 0xFF00) | ((word & 0xFF00) << 8) | (word << 24);
-    b = *(u16 *)(p_buf + 0x1A);
-    a = *(u16 *)(p_buf + 0x14);
-    hiSwap = (u16)((a >> 8) | ((a & 255) << 8));
-    loSwap = (u16)((b >> 8) | ((b & 255) << 8));
-    *(u32 *)(p_ent + 0x234) = ((u32)hiSwap << 16) | loSwap;
-}
 extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
  register u32 attr;
  register u8 *it=(u8 *)iterator;
@@ -126,6 +106,7 @@ extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32
  u32 b,a;
  s32 len;
  u16 hiSwap, loSwap;
+ u16 *d0,*d1,*d2,*d3,*d4;
  if (((s32 (*)(u8 *,u8 *,s32,s32,u32,s32,s32 *))fn_800A9BB4)((u8 *)object,it+0x4c,arg2,flags,arg3,arg4,arg5)==1) {
   if ((flags&15)==15) {
    if (VFiPFENT_LoadLFNEntryFieldsFromBuf(object,it+0x4c)) { ((u8 *)object)[0x20a]=0; *(u16 *)object=0; }
@@ -142,15 +123,20 @@ extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32
   ((u8 *)object)[0x20c]=sum;
   ((u8 *)object)[0x20b]=1;
  }
+ d0=(u16 *)((u8 *)object+0x21e);
+ d1=(u16 *)((u8 *)object+0x220);
+ d2=(u16 *)((u8 *)object+0x222);
+ d3=(u16 *)((u8 *)object+0x224);
+ d4=(u16 *)((u8 *)object+0x226);
  attr=it[0x57];
  ((u8 *)object)[0x21c]=(u8)attr;
- if (attr & 0x10) attr = 1; else attr = 0;
+ if (attr & 0x10) attr = 0x10; else attr = 0;
  ((u8 *)object)[0x21b]=it[0x58]; ((u8 *)object)[0x21d]=it[0x59];
- __sthbrx(*(u16 *)(it+0x5a),(u8 *)object+0x21e,0);
- __sthbrx(*(u16 *)(it+0x5c),(u8 *)object+0x220,0);
- __sthbrx(*(u16 *)(it+0x5e),(u8 *)object+0x222,0);
- __sthbrx(*(u16 *)(it+0x62),(u8 *)object+0x224,0);
- __sthbrx(*(u16 *)(it+0x64),(u8 *)object+0x226,0);
+ __sthbrx(*(u16 *)(it+0x5a),d0,0);
+ __sthbrx(*(u16 *)(it+0x5c),d1,0);
+ __sthbrx(*(u16 *)(it+0x5e),d2,0);
+ __sthbrx(*(u16 *)(it+0x62),d3,0);
+ __sthbrx(*(u16 *)(it+0x64),d4,0);
  word=*(u32 *)(it+0x68);
  *(u32 *)((u8 *)object+0x228)=(word>>24)|((word>>8)&0xff00)|((word&0xff00)<<8)|(word<<24);
  b=*(u16 *)(it+0x66); a=*(u16 *)(it+0x60);
