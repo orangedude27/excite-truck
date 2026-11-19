@@ -451,6 +451,7 @@ void fn_801EB81C(void) {
 
 }
 
+/* No-op stub. */
 void fn_801EB820(void) {
 
 }
