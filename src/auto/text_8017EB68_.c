@@ -1921,7 +1921,7 @@ void fn_80181480(void *tracker, int value) {
 #pragma processor 750
 #pragma paired_single off
 #pragma scheduling invalid_target
-#pragma opt_dead_assignments off
+#pragma opt_lifetimes off
 extern "C" float fn_80181498(void *arg0) {
     class Callback {
     public:
@@ -1937,7 +1937,7 @@ extern "C" float fn_80181498(void *arg0) {
     a = *(float *)((char *)arg0 + 0xC);
     a = (a > 1.0f) ? a : 1.0f;
     b = *(float *)((char *)arg0 + 0xC);
-    b = (b < lbl_80561C58) ? lbl_80561C58 : b;
+    b = (b < -1.0f) ? -1.0f : b;
     a = (a < (*(float *)((char *)arg0 + 0xC) + *(float *)((char *)arg0 + 0x10))) ? (*(float *)((char *)arg0 + 0xC) + *(float *)((char *)arg0 + 0x10)) : a;
     a = (a > b) ? b : a;
     if (((Callback *)arg0)->f21() != 0) {
