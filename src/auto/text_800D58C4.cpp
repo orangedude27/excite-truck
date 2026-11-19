@@ -794,12 +794,12 @@ extern "C" void* __dt__Q36nw4hbm3lyt14GroupContainerFv(void* arg0, s32 arg1) {
     struct GroupContainerDispatch { virtual void Destroy(s32); };
     struct GroupContainerObject : GroupContainerDispatch, GroupListNode {};
     if (arg0 != 0) {
+        GroupListNode* node = *(GroupListNode**)((char*)arg0 + 4);
         void* end = (char*)arg0 + 4;
-        void* node = *(void**)((char*)arg0 + 4);
         while (node != end) {
-            GroupListNode* current = (GroupListNode*)node;
+            GroupListNode* current = node;
             void* slot;
-            node = current->next;
+            node = node->next;
             slot = current;
             Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(arg0, &slot);
             if (current == 0)
@@ -2376,12 +2376,12 @@ extern "C" const char lbl_8031F990[];
 extern "C" void SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(void *self, unsigned char count) {
     struct MatBits { u32 a : 8; u32 num : 4; u32 b : 20; };
     u32 *p = (u32 *)self;
-    const u32 *msgw = (const u32 *)lbl_8031F990;
+    const char *msg = lbl_8031F990;
     if (count > ((p[0x4C / 4] >> 20) & 15))
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)(msgw + 0), 0x39c, (const char *)msgw + 0x38c);
+        Panic__Q26nw4hbm2dbFPCciPCce(msg + 0, 0x39c, msg + 0x38c);
     if (count != 0) {
         if (p[0x58 / 4] == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce((const char *)(msgw + 0), 0x39f, (const char *)msgw + 0x360);
+            Panic__Q26nw4hbm2dbFPCciPCce(msg + 0, 0x39f, msg + 0x360);
         u32 raw = p[0x4C / 4];
         u8 *base = (u8 *)p[0x58 / 4] + ((raw >> 24) & 15) * 20 + ((raw >> 23) & 0x1E0);
         u32 old = (p[0x50 / 4] >> 20) & 15;
@@ -3219,14 +3219,13 @@ extern "C" u16 GXGetTexObjWrapT(void *);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 #pragma opt_propagation off
 extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f32 *out, void *material, u8 index) {
-    struct GetTextureSizeMsgBlock_800D58C4 { char file[0x42C]; char msg1[0x2C]; char msg2[0x2C]; };
-    const GetTextureSizeMsgBlock_800D58C4& messages = *(const GetTextureSizeMsgBlock_800D58C4 *)&lbl_8031F990[0];
     u32 texObj[8];
     u32 count;
     u32 word7, word6, word5, word4, word3, word2, word1, word0;
     f32 defaultValue;
     f32 wrapT;
     u16 wrapS;
+    const char *file = (const char *)&lbl_8031F990;
 
     count = *(u32 *)((u8 *)material + 0x50) >> 28;
     if (index >= count) {
@@ -3237,12 +3236,12 @@ extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f
     }
 
     if ((void *)texObj == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(messages.file, 0x3DC, messages.msg1);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x3DC, file + 0x42C);
     }
 
     count = *(u32 *)((u8 *)material + 0x50) >> 28;
     if (index >= count) {
-        Panic__Q26nw4hbm2dbFPCciPCce(messages.file, 0x3DD, messages.msg2);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x3DD, file + 0x458);
     }
 
     u32 *base = (u32 *)*(void **)((u8 *)material + 0x58);
@@ -3371,8 +3370,8 @@ extern "C" void *__dt__Q36nw4hbm3lyt4PaneFv(void *self, s32 del) {
         }
         if (&pane->secondList != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv(&pane->secondList, 0);
         if (&pane->childList != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv(&pane->childList, 0);
+        if (del > 0) ((void (*)(void*))fn_80128668)(self);
     }
-    if (del > 0) ((void (*)(void*))fn_80128668)(self);
     return self;
 }
 #pragma pop
