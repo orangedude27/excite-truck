@@ -425,33 +425,25 @@ extern "C" void fn_80145538(TextSizeEntry80145538 *entry, void *propertySource) 
     entry->color = fn_801454E8(propertySource, lbl_80559DFC);     /* "color" */
 }
 
-extern "C" s32 fn_801455B8(void *arg0, void *arg1) {
-    struct Obj {
+void fn_801455B8(void *arg0, void *arg1) {
+    class Obj {
+    public:
         virtual void f0();
         virtual void f1();
         virtual void f2();
-        virtual void f3();
-        virtual void f4();
-        virtual void f5(const char *);
-        virtual s32 f6(const char *, const char *);
-        virtual void f7();
-        virtual void f8();
-        virtual f32 f9(const char *);
+        virtual const char *f3(const char *);
+        virtual s32 f4(const char *, const char *);
+        virtual void f5();
+        virtual void f6();
+        virtual f32 f7(const char *);
     };
-    extern char lbl_8032CEC8[];
-    extern char lbl_80559E04[];
-    extern char lbl_80559E0C[];
-    extern s32 fn_80145368(void);
-    extern s32 fn_80144F40(const char *);
-    extern s32 fn_801454E8(void *, const char *);
     Obj *obj = (Obj *)arg1;
-    fn_80145368();
-    obj->f5(lbl_80559E04);
-    *(s32 *)((u8 *)arg0 + 0x14) = fn_80144F40(lbl_8032CEC8 + 0x10);
-    *(f32 *)((u8 *)arg0 + 0x10) = obj->f9(lbl_80559E0C);
+    char *base = lbl_8032CEC8;
+    fn_80145368(arg0, arg1);
+    *(s32 *)((u8 *)arg0 + 0x14) = fn_80144F40(obj->f3(lbl_80559E04), base + 0x10);
+    *(f32 *)((u8 *)arg0 + 0x10) = obj->f7(lbl_80559E0C);
     *(s32 *)((u8 *)arg0 + 0x18) = fn_801454E8(arg1, lbl_80559DFC);
-    *(s32 *)((u8 *)arg0 + 0x1C) = obj->f6(lbl_8032CEC8 + 0x5C, lbl_8032CEC8 + 0x70);
-    return 0;
+    *(s32 *)((u8 *)arg0 + 0x1C) = obj->f4(base + 0x5C, base + 0x70);
 }
 
 extern "C" void fn_80145670(void *outEntry, void *propertySource) {
@@ -1053,8 +1045,9 @@ extern "C" void *fn_80146310(void *collection, const char *wantedName, s32 unuse
 
 extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *arg0, s32 arg1) {
     if (arg0 != NULL) {
-        if (*(void**)((u8*)arg0 + sizeof(void*) * 2)) {
-            fn_80235380();
+        void *v = *(void **)((u8 *)arg0 + 8);
+        if (v != NULL) {
+            ((void (*)(void *))fn_80235380)(v);
         }
         if (arg1 > 0) {
             fn_80128668(arg0);
