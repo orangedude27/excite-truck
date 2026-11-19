@@ -217,6 +217,8 @@ public:
     virtual void d8();
     virtual void d9();
     virtual void d10();
+    virtual void d10a();
+    virtual void d10b();
     virtual Vec3_801F4F9C d11(const char *);
     virtual Vec3_801F4F9C d12(const char *, Vec3_801F4F9C);
     virtual Vec2_801F4F9C d13(const char *);
@@ -956,11 +958,12 @@ void fn_801F6880(void *arg0) {
     extern void fn_802C8E00(int, int, void *, float, float, float, float, float);
     extern void fn_802C8E48(void);
     extern void fn_802C8D74(void);
+    float scale = *(float *)((char *)arg0 + 0x28);
     float temp_f31;
     int temp_r0, temp_r0_2, temp_r3, temp_r4, temp_r5_2;
-    int var_r30, var_r31, var_r28;
+    int var_r31, var_r30, var_r28;
     void *temp_r3_2, *temp_r3_3, *temp_r5, *temp_r5_3;
-    temp_f31 = fn_802C9A4C(*(float *)((char *)arg0 + 0x28));
+    temp_f31 = fn_802C9A4C(scale);
     fn_802C8BD0(*(void **)((char *)arg0 + 0x24));
     if (fn_802C8DBC((*(int *)((char *)arg0 + 0x30) - 1) * (*(int *)((char *)arg0 + 0x2C) * 2)) != 0) {
         var_r31 = 1;
@@ -1514,9 +1517,9 @@ void fn_801F7400(void *out, void *base, void *obj) {
             obj, (int)lbl_8033AD7C, (char *)out + 0x60, 4,
             c1C, a10, recordA, b1C,
             sumX, sum2, sum1, sum0, t5, t6, t7, t8) == 0)
-        dstF[24] = lbl_80562FB8;
+        dstF[24] = *(volatile float *)&lbl_80562FB8;
     if (((int (*)(void *, int, void *, int))fn_801F52BC)(obj, (int)lbl_8033AD88, (char *)out + 0x64, 4) == 0)
-        dstF[25] = lbl_80562FB8;
+        dstF[25] = *(volatile float *)&lbl_80562FB8;
 }
 #pragma pop
 extern void *fn_802C9C24(void *);
