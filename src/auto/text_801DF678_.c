@@ -191,9 +191,12 @@ void fn_801DFF1C(int arg0) {
     int index = arg0;
     char* entry = (char*)lbl_8055EA04 + index * 0x1C;
     void* vec = ((void**)lbl_804348E8)[index];
-    *(float*)(entry + 4) = lbl_80562C3C;
-    *(float*)(entry + 0x10) = lbl_80562C1C;
-    *(float*)(entry + 8) = lbl_80562C40;
+    float x = -100.0f;
+    float y = 0.0f;
+    float z = 0.15f;
+    *(float*)(entry + 4) = z;
+    *(float*)(entry + 0x10) = y;
+    *(float*)(entry + 8) = x;
     *(char*)(entry + 0xC) = 0;
     *(float*)(entry + 0x14) = lbl_80562C44 * (lbl_8055AE30 * PSVECMag((char*)vec + 0x118)) / lbl_80562C48;
     *(char*)(entry + 0x18) = 0;
