@@ -637,7 +637,7 @@ extern "C" void fn_8027F288(Fn8027F288Obj *arg0, Fn8027F288Obj *arg1) {
     int frame[60];
     if (arg1 != 0) {
         fn_801345D8(buf, 0x64, lbl_80347E50 + 0x46C, arg0->getName());
-    } else if (arg0 != 0 && arg0->v10() != 0) {
+    } else if (arg0 != 0 && arg0->v8() != 0) {
         fn_801345D8(buf, 0x64, lbl_80347E50 + 0x488, arg0->getName());
     } else {
         fn_801345D8(buf, 0x64, lbl_80347E50 + 0x4B0, arg0->getName());
