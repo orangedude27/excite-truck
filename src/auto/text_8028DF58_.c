@@ -1534,6 +1534,8 @@ void fn_80290160(void *arg0, void *arg1, void *arg2, float farg0) {
 extern void *fn_802C86DC(void);
 extern void fn_802C8DB8(void *, int, void *, int);
 extern float PSVECDotProduct(float *, float *);
+#pragma push
+#pragma processor 750
 void fn_80290224(void *arg0, void *arg1, int arg2) {
     struct { EfVtx v[32]; short idx[48]; } buf;
     volatile int count;
@@ -1750,24 +1752,26 @@ void fn_802908CC(void *arg0, void *arg1, int arg2) {
 #pragma pop
 extern float lbl_80564460, lbl_80564464, lbl_80564468, lbl_8056446C, lbl_80564470;
 extern double lbl_80564478;
+#pragma scheduling on
 void fn_80290FC4(void *arg0, void *arg1, int arg2) {
+    typedef struct { EfMtx3 m; EfVec p; } EfCam;
     struct { EfVtx v[32]; short idx[48]; } buf;
-    volatile int count;
+    int count;
     int n;
     int i;
     int j;
     EfVec pos;
     EfVec axA;
     EfVec axB;
-    EfMtx3 mtx;
-    EfVec campos;
+    EfCam cam2;
     EfVec dir;
     EfVtx q[4];
     char *p;
     float *cam;
-    float one, k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12;
-    float t, tm, k, alpha, h, nh, ang, inv, m, ts;
+    float one, k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11;
+    float t, tm, k, h, nh, ang, inv, m, ts;
     int r, g, b, a;
+    float *bb;
 
     cam = (float *)fn_802C86DC();
     k0 = lbl_8056444C * *(float *)((char *)arg0 + 0x48);
@@ -1791,16 +1795,14 @@ void fn_80290FC4(void *arg0, void *arg1, int arg2) {
     k10 = lbl_80564434;
     k9 = lbl_80564470;
     k11 = lbl_8056445C;
-    k12 = lbl_8055F738;
     count = 0;
     p = (char *)arg1;
     for (n = 0; n < arg2; n++, p += 0x28) {
-        float *bb;
         t = one - *(float *)(p + 0x18);
         k = t * *(float *)((char *)arg0 + 0xa0);
         h = k1 * (*(float *)((char *)arg0 + 0x54) + *(float *)((char *)arg0 + 0x50) * t
               + k1 * *(float *)((char *)arg0 + 0x4c) * (t * t));
-        if (!(h > k5)) h = k5;
+        h = (h > k5) ? h : k5;
         inv = k2 / (k6 * h);
         ts = *(float *)(p + 0x20) * t;
         ang = k7 + (float)fn_8002EFB4(
@@ -1810,18 +1812,17 @@ void fn_80290FC4(void *arg0, void *arg1, int arg2) {
         fn_80290160(arg0, (float *)&pos, p, t);
         fn_8028F608((float *)&axA, (float *)&axB, (float (*)[3])cam, ang);
         bb = (float *)fn_802C86DC();
-        mtx = *(EfMtx3 *)bb;
-        campos = *(EfVec *)(bb + 9);
-        dir.x = campos.x - pos.x;
-        dir.y = campos.y - pos.y;
-        dir.z = campos.z - pos.z;
+        cam2 = *(EfCam *)bb;
+        dir.x = cam2.p.x - pos.x;
+        dir.y = cam2.p.y - pos.y;
+        dir.z = cam2.p.z - pos.z;
         {
             float c0 = *(float *)((char *)arg0 + 0x3c);
             float c1 = *(float *)((char *)arg0 + 0x40);
             tm = c1 + (PSVECDotProduct((float *)&dir, (float *)&dir) / (k2 + c0 * c0)) * (k2 - c1);
         }
         if (k2 < tm) tm = k2;
-        if (!(tm > k3)) tm = k3;
+        tm = (tm > k3) ? tm : k3;
         nh = -h;
         q[0].x = pos.x + axA.x * nh + axB.x * h;
         q[0].y = pos.y + axA.y * nh + axB.y * h;
@@ -1849,7 +1850,7 @@ void fn_80290FC4(void *arg0, void *arg1, int arg2) {
             g = g > 0 ? g : 0; if (g > 255) g = 255;
             r = (int)(m * (*(float *)((char *)arg0 + 0x74) + *(float *)((char *)arg0 + 0x70) * k));
             r = r > 0 ? r : 0; if (r > 255) r = 255;
-            q[j].color = (a << 24) | ((b & 0xff) << 16) | ((g & 0xff) << 8) | (r & 0xff);
+            q[j].color = ((unsigned char)a << 24) | ((unsigned char)b << 16) | ((unsigned char)g << 8) | (unsigned char)r;
         }
         if (count >= 8) {
             fn_802C8DB8(buf.v, count * 4, buf.idx, count * 6);
@@ -1866,8 +1867,6 @@ void fn_80290FC4(void *arg0, void *arg1, int arg2) {
         count = 0;
     }
 }
-
-#pragma pop
 extern int fn_80128668(void *);
 int fn_8029169C(int object, int deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object when deleting, then return it. */
