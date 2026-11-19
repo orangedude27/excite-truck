@@ -833,7 +833,6 @@ extern "C" int fn_802996B0(void *, int *);
 #pragma paired_single off
 #pragma scheduling invalid_target
 extern "C" void fn_80299338(void *arg0, unsigned int arg1, void *arg2, void *arg3, void *arg4, short arg5) {
-#pragma use_lmw_stmw off
     struct Work {
         short angle;
         char pad[2];
@@ -992,26 +991,29 @@ extern "C" void fn_80299628(void *arg0) {
     fn_802C8D74();
 }
 
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 extern "C" int fn_802996B0(void *arg0, int *out) {
- #pragma scheduling invalid_target
- int state, best=-1, found=0;
+ int state, best=-1, found=0, idx;
  state=*(int*)((char*)arg0+0x34);
- if(state==0){*out=0;return 1;}
+ idx=0;
+ if(state==0){*out=idx;return 1;}
  if(state==2 && (!found || *(float*)((char*)arg0+0x38)<*(float*)((char*)arg0-8))){best=0;found=1;}
  state=*(int*)((char*)arg0+0x74);
- if(state==0){*out=1;return 1;}
+ idx=1;
+ if(state==0){*out=idx;return 1;}
  if(state==2 && (!found || *(float*)((char*)arg0+0x78)<*(float*)((char*)arg0+(best<<6)+0x38))){best=1;found=1;}
  state=*(int*)((char*)arg0+0xB4);
- if(state==0){*out=2;return 1;}
+ idx=2;
+ if(state==0){*out=idx;return 1;}
  if(state==2 && (!found || *(float*)((char*)arg0+0xB8)<*(float*)((char*)arg0+(best<<6)+0x38))){best=2;found=1;}
  state=*(int*)((char*)arg0+0xF4);
- if(state==0){*out=3;return 1;}
+ idx=3;
+ if(state==0){*out=idx;return 1;}
  if(state==2 && (!found || *(float*)((char*)arg0+0xF8)<*(float*)((char*)arg0+(best<<6)+0x38))){best=3;found=1;}
  if(found)*out=best;
  return found;
 }
-#pragma scheduling on
+#pragma opt_propagation reset
 
 extern "C" void *fn_802997F4(void *slots, int id) {
     void *slot = slots;
@@ -1149,7 +1151,8 @@ static inline void MatrixMul801FD5E8(float* dst, const float* left, const float*
     }
 }
 extern "C" char lbl_803494F0[];
-extern float lbl_805645E4, lbl_805645E8, lbl_805645EC, lbl_805645F0, lbl_805645F4;
+ extern float lbl_805645E4, lbl_805645E8, lbl_805645EC, lbl_805645F4;
+ extern const float lbl_805645F0;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
@@ -1176,8 +1179,8 @@ void fn_80299A88(void *arg0, void *out, unsigned int unused, float scale) {
     init[0xe8/4] = lbl_80564590; *(int *)&init[0xec/4] = 0x40; ((unsigned char*)init)[0xf0]=1;
     *(int *)&init[0xac/4] = 2; ((unsigned char*)init)[0xf1]=1;
     void *res = fn_8028E2F8(&init[0x68/4], lbl_803494F0, lbl_8055CA80);
-    *(void**)out = res;
     count = (int)(lbl_805645F0 * scale) < 12 ? (int)(lbl_805645F0 * scale) : 12;
+    *(void**)out = res;
     count = count > 1 ? count : 1;
     q = frame.rotation.v;
     float c = (float)cos((double)(lbl_805645F4 / (float)count));
@@ -1196,15 +1199,13 @@ void fn_80299A88(void *arg0, void *out, unsigned int unused, float scale) {
     if (count > 0) {
         cursor=(char*)out;
         for (; n<count; cursor+=0xc, n++) {
-            float product, b=p[10], a=p[9], c=p[11];
-            product = frame.matrix.v[3]*scale;
+            float b=p[10], a=p[9], c=p[11];
+            float product=frame.matrix.v[3]*scale;
             a += product;
             *(float *)(cursor+4)=a;
-            a = frame.matrix.v[4]*scale;
-            b += a;
+            b += frame.matrix.v[4]*scale;
             *(float *)(cursor+8)=b;
-            b = frame.matrix.v[5]*scale;
-            c += b;
+            c += frame.matrix.v[5]*scale;
             *(float *)(cursor+0xc)=c;
             MatrixMul801FD5E8(frame.matrix.v, frame.matrix.v, q);
         }
@@ -1370,8 +1371,8 @@ done:
 #pragma pop
 extern float lbl_805645C8;
 extern float lbl_805645E8;
-#pragma cplusplus off
-void fn_8029A318(float *a, float *b, float *c, float *d, float x, float y, float z) {
+#pragma scheduling invalid_target
+extern "C" void fn_8029A318(float *a, float *b, float *c, float *d, float x, float y, float z) {
     if ((unsigned char *)b == (unsigned char *)a + 0x30) {
         float ax, ay, az;
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
@@ -1394,8 +1395,8 @@ void fn_8029A318(float *a, float *b, float *c, float *d, float x, float y, float
         b[2] = a[14] * m22 + (a[12] * m02 + a[13] * m12);
     }
     {
-        float cScale = 0.4f;
-        float dScale = 0.75f;
+        const float cScale = 0.4f;
+        const float dScale = 0.75f;
         b[0] += a[9];
         b[1] += a[10];
         b[2] += a[11];
@@ -1407,7 +1408,7 @@ void fn_8029A318(float *a, float *b, float *c, float *d, float x, float y, float
         d[2] = a[8] * dScale;
     }
 }
-#pragma cplusplus reset
+#pragma scheduling on
 extern "C" int fn_801EE0C8(int);   /* render object -> its model (field +0x48) */
 extern "C" void fn_802C77F0(int, float *); /* model -> 6 bounds: minX,maxX,minY,maxY,minZ,maxZ */
 extern "C" int lbl_80488648[];     /* up to 8 live vehicle render objects, by vehicle index */
@@ -2030,8 +2031,8 @@ extern "C" void fn_8029B274(void *arg0, float *c, unsigned char arg2, void *arg3
     py = cy + a->y * neg;
     q.x = px;
     q.y = py;
-    h1 = lbl_8056460C * f;
-    h2 = lbl_805645D8 * f;
+    h1 = 2.0f * f;
+    h2 = -2.0f * f;
     pz = cz + a->z * neg;
     q.x = px + b->x * f;
     q.y = py + b->y * f;
@@ -2335,6 +2336,7 @@ extern "C" void fn_8029BA94(void *__restrict arg0, void *__restrict arg1) {
         int unused;
         int value;
     };
+    static const u32 kCase = 1;
     int count;
     int index;
     char *record;
@@ -2352,7 +2354,7 @@ extern "C" void fn_8029BA94(void *__restrict arg0, void *__restrict arg1) {
     record = (char *)arg0 + index * 0x14;
     flag = *(u32 *)(record + 4) & 0xF;
     switch (flag) {
-    case 1U:
+    case kCase:
         info = fn_80288208(index);
         index = ((const Args *)arg1)->index;
         value = ((const Args *)arg1)->value;
