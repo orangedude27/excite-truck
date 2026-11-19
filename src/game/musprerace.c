@@ -56,6 +56,7 @@ extern const char lbl_8033C5FC[];
 extern s32 lbl_8055EE38;
 #pragma scheduling invalid_target
 #pragma push
+#pragma processor 750
 #pragma ctrloop on
 #pragma unroll off
 void fn_8020C140(void) {
@@ -87,7 +88,7 @@ void fn_8020C140(void) {
             v31 *= (f32)(0xFF - fn_801E8838()) / lbl_805632E0;
         fn_80210510(lbl_805632DC);
         scaled = lbl_805632D8 * v31;
-        ctr = 4;
+        ctr = 3;
         base = &lbl_80489BE0;
         do {
             void * __restrict o = *(void **)((char *)base + 0x20);
@@ -102,7 +103,7 @@ void fn_8020C140(void) {
                 }
             }
             base += 9;
-        } while (--ctr);
+        } while (--ctr != 0);
     }
 }
 #pragma pop
