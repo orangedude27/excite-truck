@@ -1218,8 +1218,6 @@ float fn_80160588(void * __restrict arg0, void * __restrict arg1, void * __restr
 }
 
 #pragma scheduling reset
-#pragma push
-#pragma optimization_level 3
 f32 fn_801605C8(void *arg0, void *arg1, void *arg2) {
     f32 result2;
     f32 result1;
