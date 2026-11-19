@@ -4,12 +4,12 @@ extern float lbl_80563490;
 extern void fn_802E30C8(const char *, ...);
 struct Rec80216 { int w[12]; float f[3]; };
 #define CPYREC80216(DD, SS, SF) \
-    ((long long *)(DD))[0] = ((long long *)(SS))[0]; \
-    ((long long *)(DD))[1] = ((long long *)(SS))[1]; \
-    ((long long *)(DD))[2] = ((long long *)(SS))[2]; \
-    ((long long *)(DD))[3] = ((long long *)(SS))[3]; \
-    ((long long *)(DD))[4] = ((long long *)(SS))[4]; \
-    ((long long *)(DD))[5] = ((long long *)(SS))[5]; \
+    ((unsigned long long *)(DD))[0] = ((unsigned long long *)(SS))[0]; \
+    ((unsigned long long *)(DD))[1] = ((unsigned long long *)(SS))[1]; \
+    ((unsigned long long *)(DD))[2] = ((unsigned long long *)(SS))[2]; \
+    ((unsigned long long *)(DD))[3] = ((unsigned long long *)(SS))[3]; \
+    ((unsigned long long *)(DD))[4] = ((unsigned long long *)(SS))[4]; \
+    ((unsigned long long *)(DD))[5] = ((unsigned long long *)(SS))[5]; \
     ((float *)(DD))[12] = (SF)[12]; \
     ((float *)(DD))[13] = (SF)[13]; \
     ((float *)(DD))[14] = (SF)[14];
@@ -137,7 +137,6 @@ __declspec(section ".sdata") extern char lbl_8055B870[];
 void *fn_80216D40(void *arg0, char *arg1, int arg2, int arg3, int arg4, int arg5, int arg6) {
 #pragma scheduling invalid_target
     char *obj = (char *)arg0;
-    char zero = 0;
     *(int *)(obj + 0x454) = arg2;
     *(int *)(obj + 0x490) = arg6;
     *(int *)(obj + 0x458) = arg3;
@@ -174,8 +173,8 @@ void *fn_80216D40(void *arg0, char *arg1, int arg2, int arg3, int arg4, int arg5
     {
         char *p = obj + 0x46D;
         int i;
-        for (i = 0; i < 0x20; i++) p[i] = zero;
-        *(int *)(obj + 0x494) = zero;
+        for (i = 0; i < 0x20; i++) p[i] = 0;
+        *(int *)(obj + 0x494) = 0;
         *(int *)(obj + 0x498) = -1;
     }
     {
