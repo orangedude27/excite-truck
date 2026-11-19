@@ -172,10 +172,10 @@ void fn_80129690(void *arg0, s32 arg1, void *arg2) {
             value = dst[offset + 0x3C];
             if (value != 0) {
                 dst[8] = 1;
-                if (*(volatile u8 *)(dst + i + 9) == 0) {
+                if (dst[i + 9] == 0) {
                     ((void (*)(s32, s32))fn_801294FC)(type, arg1);
                 }
-                *(volatile u8 *)(dst + i + 9) = value;
+                dst[i + 9] = value;
             }
         }
         i++;
