@@ -6146,6 +6146,7 @@ void GXLoadPosMtxImm(const f32 mtx[3][4], u32 id) {
     *fifo64 = p4;
     *fifo64 = p5;
 }
+#pragma pop
 
 #pragma push
 #pragma paired_single on
