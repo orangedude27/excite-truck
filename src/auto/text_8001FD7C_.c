@@ -656,6 +656,7 @@ extern int fn_8001BA6C(int);
 extern signed char lbl_8055D671;
 extern int lbl_802ED850[3];
 extern int lbl_80558DA0;
+#pragma ppc_psq_save off
 void fn_800209A0(int arg0, float arg1) {
     int color;
     int color2;
@@ -813,7 +814,7 @@ g2done:
                 }
                 break;
             case 9:
-                res = fn_8001BB58(lbl_8055D668, lbl_8055D66C, 0);
+                res = fn_8001BB58(fn_8000DA10(), lbl_8055D668, lbl_8055D66C, 0);
                 {
                     char *d = buf;
                     char *s;
@@ -834,7 +835,7 @@ g2done:
                 textId = fn_80131234(&base[0x1e8]);
                 break;
             case 10:
-                res = fn_8001BB58(lbl_8055D668, lbl_8055D66C, 0);
+                res = fn_8001BB58(fn_8000DA10(), lbl_8055D668, lbl_8055D66C, 0);
                 if (res != 0 && *(int *)((char *)res + 4) >= 0) {
                     fn_80130FCC(buf, 0x40, *(int *)((char *)res + 4));
                 } else {
