@@ -1598,6 +1598,7 @@ void fn_801F76F8(void *arg0, unsigned char *p) {
     p[0x88]=(unsigned char)b4; p[0x8b]=(unsigned char)a4; p[0x89]=(unsigned char)b7; p[0x8a]=(unsigned char)a5;
 }
 #pragma use_lmw_stmw on
+/* No-op stub. */
 void fn_801F78D8(void) {
 
 }
