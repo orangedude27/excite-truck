@@ -353,7 +353,7 @@ void fn_801EB66C(void *field, s32 base) {
 }
 
 void fn_801EB6A4(void) {
-
+    /* Empty stub (returns immediately). */
 }
 
 #pragma dont_inline on
