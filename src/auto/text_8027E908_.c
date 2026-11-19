@@ -3116,7 +3116,6 @@ extern "C" void fn_802849E8(void *arg0) {
         fn_80214A9C(0x1f);
     }
 }
-#pragma pop
 
 #pragma scheduling reset
 #pragma pop
