@@ -2025,6 +2025,7 @@ void fn_801F4684(register void *spinList, register int drawContext) {
     }
 }
 #pragma scheduling on
+/* Empty stub. */
 void fn_801F49F4(void) {
 
 }
