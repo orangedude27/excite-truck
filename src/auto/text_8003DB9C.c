@@ -374,30 +374,34 @@ done:
 }
 
 void __GXInitRevisionBits(void) {
-    register volatile unsigned int *p = __GXData;
-    register unsigned int n = 0;
-    register volatile unsigned char *b = (volatile unsigned char *)0xCC008000;
-    register volatile unsigned int *w = (volatile unsigned int *)0xCC008000;
-    register unsigned int i;
-    register unsigned int code;
+    volatile unsigned int *p = __GXData;
+    unsigned int n = 0;
+    volatile unsigned char *b = (volatile unsigned char *)0xCC008000;
+    volatile unsigned int *w = (volatile unsigned int *)0xCC008000;
+    unsigned int i;
+    unsigned int code;
+
     for (i = 0; i < 2; i++) {
         code = 0x80 | n++;
         p[7] |= 0x40000000;
         p[15] |= 0x80000000;
         *b = 8;
         *b = (unsigned char)code;
+
         code = 0x80 | n++;
         *w = p[15];
         p[8] |= 0x40000000;
         p[16] |= 0x80000000;
         *b = 8;
         *b = (unsigned char)code;
+
         code = 0x80 | n++;
         *w = p[16];
         p[9] |= 0x40000000;
         p[17] |= 0x80000000;
         *b = 8;
         *b = (unsigned char)code;
+
         code = 0x80 | n++;
         *w = p[17];
         p[10] |= 0x40000000;
@@ -407,17 +411,15 @@ void __GXInitRevisionBits(void) {
         *w = p[18];
         p += 4;
     }
-    {
-        unsigned int zero = 0;
-        *b = 0x10;
-        *w = 0x1000;
-        *w = zero | 0x3F;
-        *b = 0x10;
-        *w = 0x1012;
-        *w = zero | 1;
-        *b = 0x61;
-        *w = (0x58 << 24) | (zero | 0xF);
-    }
+
+    *b = 0x10;
+    *w = 0x1000;
+    *w = 0x3F;
+    *b = 0x10;
+    *w = 0x1012;
+    *w = 1;
+    *b = 0x61;
+    *w = 0x5800000F;
 }
 
 void GXSetMisc(s32, u32);
@@ -3613,9 +3615,9 @@ void GXSetCopyClear(unsigned char *color, unsigned int depth) {
     *(volatile unsigned int *)0xCC008000 = first;
     second = __rlwimi(second, color[2], 0, 24, 31);
     second = __rlwimi(second, color[1], 8, 16, 23);
+    data = __GXData;
     *(volatile unsigned char *)0xCC008000 = 0x61;
     second = __rlwimi(second, 0x50, 24, 0, 7);
-    data = __GXData;
     *(volatile unsigned int *)0xCC008000 = second;
     third = __rlwimi(third, depth, 0, 8, 31);
     third = __rlwimi(third, 0x51, 24, 0, 7);
@@ -5359,40 +5361,43 @@ void GXSetTevAlphaOp(s32 stage, s32 op, s32 bias, s32 scale, s32 clamp, s32 outR
 }
 
 void GXSetTevColor(s32 arg0, unsigned int *arg1) {
-    s32 index = arg0 * 2;
     unsigned int value = *arg1;
-    unsigned int first = (unsigned int)((index + 0xE0) << 24);
-    unsigned int second;
+    s32 index = arg0 * 2;
+    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
+    volatile unsigned int *fifo32 = (volatile unsigned int *)0xCC008000;
+    unsigned int first, second;
+    first = (unsigned int)((index + 0xE0) << 24);
     first = __rlwimi(first, value, 8, 24, 31);
-    WGPIPE.c = 0x61;
+    *fifo8 = 0x61;
     first = __rlwimi(first, value, 12, 12, 19);
     second = (unsigned int)((index + 0xE1) << 24);
-    WGPIPE.i = first;
     second = __rlwimi(second, value, 24, 24, 31);
-    WGPIPE.c = 0x61;
+    *fifo32 = first;
+    *fifo8 = 0x61;
     second = __rlwimi(second, value, 28, 12, 19);
-    WGPIPE.i = second;
-    WGPIPE.c = 0x61;
-    WGPIPE.i = second;
-    WGPIPE.c = 0x61;
-    WGPIPE.i = second;
+    *fifo32 = second;
+    *fifo8 = 0x61;
+    *fifo32 = second;
+    *fifo8 = 0x61;
+    *fifo32 = second;
     *(unsigned short *)((char *)__GXData + 2) = 0;
 }
 
 void GXSetTevColorS10(s32 tevReg, void *color) {
-    s32 index = tevReg << 1;
-    unsigned int c0 = ((unsigned int *)color)[0];
-    unsigned int c1 = ((unsigned int *)color)[1];
-    unsigned int regRA = (unsigned int)((index + 0xE0) << 24);
-    unsigned int regBG;
+    unsigned int c0, c1, regRA, regBG;
+    s32 index;
+    c0 = ((unsigned int *)color)[0];
+    c1 = ((unsigned int *)color)[1];
+    index = tevReg << 1;
+    regRA = (unsigned int)((index + 0xE0) << 24);
     regRA = __rlwimi(regRA, c0, 16, 21, 31);
-    WGPIPE.c = 0x61;
     regRA = __rlwimi(regRA, c1, 12, 9, 19);
     regBG = (unsigned int)((index + 0xE1) << 24);
-    WGPIPE.i = regRA;
     regBG = __rlwimi(regBG, c1, 16, 21, 31);
-    WGPIPE.c = 0x61;
     regBG = __rlwimi(regBG, c0, 12, 9, 19);
+    WGPIPE.c = 0x61;
+    WGPIPE.i = regRA;
+    WGPIPE.c = 0x61;
     WGPIPE.i = regBG;
     WGPIPE.c = 0x61;
     WGPIPE.i = regBG;
@@ -5402,16 +5407,15 @@ void GXSetTevColorS10(s32 tevReg, void *color) {
 }
 
 void GXSetTevKColor(s32 tevReg, unsigned int *color) {
+    volatile unsigned char *fifo = (volatile unsigned char *)0xCC008000;
     unsigned int index = tevReg << 1;
-    unsigned int idx0 = index + 0xE0;
-    unsigned int idx1 = index + 0xE1;
     unsigned int value = *color;
-    unsigned int first = __rlwimi(__rlwimi(__rlwimi(idx0 << 24, value, 8, 24, 31), value, 12, 12, 19), 8, 20, 8, 11);
-    unsigned int second = __rlwimi(__rlwimi(__rlwimi(idx1 << 24, value, 24, 24, 31), value, 28, 12, 19), 8, 20, 8, 11);
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = first;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = second;
+    unsigned int first = __rlwimi(__rlwimi(__rlwimi((index + 0xE0) << 24, value, 8, 24, 31), value, 12, 12, 19), 8, 20, 8, 11);
+    unsigned int second = __rlwimi(__rlwimi(__rlwimi((index + 0xE1) << 24, value, 24, 24, 31), value, 28, 12, 19), 8, 20, 8, 11);
+    *fifo = 0x61;
+    *(volatile unsigned int *)fifo = first;
+    *fifo = 0x61;
+    *(volatile unsigned int *)fifo = second;
     *(unsigned short *)((char *)__GXData + 2) = 0;
 }
 
@@ -6108,8 +6112,10 @@ void GXSetProjection(float *arg0, int arg1) {
 }
 
 void GXSetProjectionv(float *arg0) {
-    unsigned int *data = __GXData;
-    int value = (lbl_80560BC8 != arg0[0]);
+    unsigned int *data;
+    int value = 1;
+    if (lbl_80560BC8 == arg0[0]) value = 0;
+    data = __GXData;
     data[0x528 / 4] = value;
     *(float *)((char *)data + 0x52C) = arg0[1];
     *(float *)((char *)data + 0x534) = arg0[2];
@@ -6117,6 +6123,10 @@ void GXSetProjectionv(float *arg0) {
     data[0x5FC / 4] |= 0x08000000;
 }
 
+#pragma push
+#pragma processor 750
+#pragma paired on
+#pragma paired_single on
 void GXLoadPosMtxImm(const f32 mtx[3][4], u32 id) {
     volatile u8 *fifo8 = (volatile u8 *)0xCC008000;
     volatile u32 *fifo32 = (volatile u32 *)0xCC008000;
@@ -6234,6 +6244,7 @@ void __GXSetViewport(void) {
     f0 = *(f32 *)((u8 *)d + 0x55C);
     f3 = f3 * f2;
     f9 = f1 * f2;
+
     *bp8 = 16;
     f2 = lbl_80560BD0;
     f1 = f4 + f5;
