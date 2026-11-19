@@ -268,13 +268,13 @@ extern char *strchr(char *, int);
 #pragma push
 #pragma processor 750
 void fn_801D490C(void) {
-    float width, right, x, alpha, t, edge, dy, y, limit;
+    float width, right, x, t, edge, dy, y, alpha;
+    float limit = lbl_8055E3C8;
     int color, n;
     char text[0x40], *src, *dst, *part, *caret;
     x = *(float *)lbl_80442310;
     width = *(float *)(lbl_80442310 + 4);
     right = x + width;
-    limit = lbl_8055E3C8;
     if (limit < right) {
         alpha = lbl_80562AE0;
         if (width > lbl_80562AE4) {
@@ -768,45 +768,48 @@ extern "C" void fn_801D52A4(void *arg0) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
-void fn_801D5328(int arg0, int arg1) {
- struct Dummy { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual int state(); virtual void v6(); virtual int apply(int); };
- int offset;
- int mode;
- int changed;
- int i;
- if(*(int *)(arg0+4)!=1) return;
- *(unsigned char *)(arg0+0x2c)=arg1;
- mode=((unsigned char)arg1==0);
- changed=0;
- i=0;
- offset=0;
- goto test1;
+void fn_801D5328(int sequence, int startFlag) {
+    /* Start/stop this action sequence's elements when it is ready (state 1):
+       store startFlag, try applying mode (1 when startFlag is 0, else 0) to
+       idle elements, and if any changed apply to the rest, then set state to 2. */
+    struct Dummy { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual int state(); virtual void v6(); virtual int apply(int); };
+    int offset;
+    int mode;
+    int changed;
+    int i;
+    if(*(int *)(sequence+4)!=1) return;
+    *(unsigned char *)(sequence+0x2c)=startFlag;
+    mode=((unsigned char)startFlag==0);
+    changed=0;
+    i=0;
+    offset=0;
+    goto test1;
 loop1:
- {
-   Dummy *item=*(Dummy **)(*(int *)(arg0+0x30)+offset);
-   if(item->state()==0 && item->apply(mode)!=0) changed=1;
- }
- offset+=4;
- i++;
+    {
+        Dummy *element=*(Dummy **)(*(int *)(sequence+0x30)+offset);
+        if(element->state()==0 && element->apply(mode)!=0) changed=1;
+    }
+    offset+=4;
+    i++;
 test1:
- if(i<*(int *)(arg0+0x34)) goto loop1;
- if(changed==0) goto done;
- {
-   int j=0;
-   offset=0;
-   goto test2;
+    if(i<*(int *)(sequence+0x34)) goto loop1;
+    if(changed==0) goto done;
+    {
+        int j=0;
+        offset=0;
+        goto test2;
 loop2:
-   {
-     Dummy *item=*(Dummy **)(*(int *)(arg0+0x30)+offset);
-     if(item->state()!=0) item->apply(mode);
-   }
-   offset+=4;
-   j++;
+        {
+            Dummy *element=*(Dummy **)(*(int *)(sequence+0x30)+offset);
+            if(element->state()!=0) element->apply(mode);
+        }
+        offset+=4;
+        j++;
 test2:
-   if(j<*(int *)(arg0+0x34)) goto loop2;
- }
+        if(j<*(int *)(sequence+0x34)) goto loop2;
+    }
 done:
- *(int *)(arg0+4)=2;
+    *(int *)(sequence+4)=2;
 }
 #pragma cplusplus reset
 #pragma pop
@@ -1198,22 +1201,18 @@ void fn_801D5AA8(void *object) {
 extern void fn_801D0824(void *);
 void *fn_801D5AF0(void *arg0, int arg1) {
     int field8;
-    int has_field;
     void *table;
-    void *table2;
-    void *child;
+    register void *table2;
     if (arg0 != 0) {
         field8 = *(int *)((char *)arg0 + 8);
         table = lbl_80338D20;
         table2 = (char *)table + 0x38;
         *(void **)arg0 = table;
-        has_field = field8 != 0;
         *(void **)((char *)arg0 + 4) = table2;
-        if (has_field) {
+        if (field8 != 0) {
             *(int *)((char *)arg0 + 8) = 0;
-            child = (char *)arg0 + 4;
             if (arg0 != 0) {
-                fn_801D0824(child);
+                fn_801D0824((char *)arg0 + 4);
             }
             *(int *)((char *)arg0 + 0xC) = -1;
         }
@@ -1628,13 +1627,15 @@ struct Dummy6320 {
     virtual int getBool2(const char *);
 };
 extern "C" int fn_801D6320(void *out, void *object) {
+#pragma scheduling off
     extern char lbl_80338460;
     extern char lbl_8055ACB0, lbl_8055ACB8, lbl_8055ACC0, lbl_8055ACC8;
     extern float lbl_80562ADC, lbl_80562AE4, lbl_80562B0C;
     extern int fn_801399FC(void);
     extern void fn_802E30C8(const char *, const char *);
     char *messages = &lbl_80338460;
-    float a, b;
+    float a;
+    double b;
     Dummy6320 *o = (Dummy6320 *)object;
     #define LOG ((void (*)(const char *, ...))fn_802E30C8)
     if (o->getBool(&lbl_8055ACB0) == 0) { LOG(messages + 0x210); return 0; }
@@ -1643,7 +1644,7 @@ extern "C" int fn_801D6320(void *out, void *object) {
     *(int *)((char *)out + 0xC) = (int)(lbl_80562B0C * a);
     *(int *)((char *)out + 8) = (int)(lbl_80562B0C * o->getFloatArg(&lbl_8055ACB8, lbl_80562ADC));
     if (o->getBool(&lbl_8055ACC0) == 0) { LOG(messages + 0x2A4); return 0; }
-    b = (float)o->getFloatArg(&lbl_8055ACC0, lbl_80562AE4);
+    b = o->getFloatArg(&lbl_8055ACC0, lbl_80562AE4);
     *(float *)((char *)out + 0x10) = b;
     if ((float)b < lbl_80562ADC) { LOG(messages + 0x2E8, (float)b); return 0; }
     *(int *)((char *)out + 0x14) = 0;
@@ -1651,6 +1652,7 @@ extern "C" int fn_801D6320(void *out, void *object) {
     *(signed char *)((char *)out + 0x18) = o->getS8(messages + 0x338, 0);
     *(int *)((char *)out + 4) = 1;
     return 1;
+#pragma scheduling reset
 }
 #pragma cplusplus reset
 
