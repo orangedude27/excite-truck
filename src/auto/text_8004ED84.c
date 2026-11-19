@@ -106,28 +106,29 @@ int _ES_GetTicketViews(int *fd, int unused, int titleIdHi, int titleIdLo, void *
     return ((int (*)(int, int, int, int, void *))IOS_Ioctlv)(*fd, 0x13, 2, 1, vec);
 }
 #pragma opt_propagation reset
-int _ES_LaunchTitle(int *fd, int unused, int tidHigh, int tidLow, void *views)
+/* Launches a title via ES ioctlv: validates fd/views alignment, packs title ID, and reboots into IOS ioctlv 8. */
+int _ES_LaunchTitle(int *fd, int unused, int titleIdHigh, int titleIdLow, void *ticketViews)
 {
-    struct Vector {
+    struct IoctlvVector {
         void *base;
         unsigned int length;
     } vectors[2];
-    unsigned char work[0x100] __attribute__((aligned(32)));
-    struct Vector *pVectors = vectors;
-    unsigned int *pTid = (unsigned int *)work;
+    unsigned char titleIdWork[0x100] __attribute__((aligned(32)));
+    struct IoctlvVector *ioVectors = vectors;
+    unsigned int *titleIdWords = (unsigned int *)titleIdWork;
 
     if (*fd < 0)
         return -0x3F9;
-    if (((unsigned int)views & 31) != 0)
+    if (((unsigned int)ticketViews & 31) != 0)
         return -0x3F9;
 
-    pTid[1] = tidLow;
-    pTid[0] = tidHigh;
-    pVectors[0].base = pTid;
-    pVectors[0].length = 8;
-    pVectors[1].base = views;
-    pVectors[1].length = 0xD8;
-    return IOS_IoctlvReboot(*fd, 8, 2, 0, pVectors);
+    titleIdWords[1] = titleIdLow;
+    titleIdWords[0] = titleIdHigh;
+    ioVectors[0].base = titleIdWords;
+    ioVectors[0].length = 8;
+    ioVectors[1].base = ticketViews;
+    ioVectors[1].length = 0xD8;
+    return IOS_IoctlvReboot(*fd, 8, 2, 0, ioVectors);
 }
 
 extern void OSGetFontTexel(char *, unsigned char *, int, int, int *);
