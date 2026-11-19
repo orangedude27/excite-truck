@@ -506,8 +506,8 @@ void fn_8001C0E8(void) {
 extern const char lbl_802FD718[];
 #pragma dont_inline on
 s32 fn_8001C0EC(void *arg0, s32 arg1) {
-    s32 mode;
     s32 value;
+    s32 mode;
     if (fn_8001BCF0(arg0) == 0) {
         if (((s32 (*)(void *))fn_8001BD30)(arg0) == 0)
             goto return_one;
@@ -519,18 +519,11 @@ s32 fn_8001C0EC(void *arg0, s32 arg1) {
     }
     mode = fn_8001BD28(arg0) & 0x60000;
     switch (mode) {
-    case 0x40000:
-        goto compare_a;
-    case 0x20000:
-        goto compare_b;
-    default:
-        break;
+    case 0x40000: goto compare_a;
+    case 0x20000: goto compare_b;
+    default: break;
     }
-    {
-        s32 logBits = fn_8001BD28(arg0) & 0x60000;
-        s32 logValue = fn_8001BD28(arg0);
-        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD718, logValue, logBits);
-    }
+    ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD718, fn_8001BD28(arg0), fn_8001BD28(arg0) & 0x60000);
 compare_a:
     return value < arg1;
 compare_b:
