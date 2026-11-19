@@ -1418,70 +1418,84 @@ extern s32 fn_801190B0(void*, s32);
 #pragma push
 #pragma opt_loop_invariants off
 #pragma opt_common_subs off
-void fn_80118C44(void* arg0) {
-    s32 temp_r5;
+/* Advance a Bink movie by one frame, on the player's 20 ms tick.
+ *
+ * Each sound stream that asked to be flushed (stream +0x5C) is cleared, and one
+ * whose start frame (stream +0x48) the movie has already passed forces a
+ * resync: the movie's streams are paused, the decoder is pumped through the
+ * file interface's fill hook until its buffered frames (bink +0x13C) reach
+ * 29/32ths of a full buffer (bink +0x138), the decode timing is cleared and the
+ * streams are unpaused again - all with the shared Bink tick locked so the
+ * tick's own callback cannot run.  The sound buffers are then refilled, this
+ * frame's decode time is folded into the running total and the movie is sent to
+ * its next frame, wrapping back to the first at the end.  bink +0x11C is the
+ * guard that keeps the tick callback out while this runs. */
+void fn_80118C44(void* bink) {
+    s32 value;
     s32 var_r4;
-    s32 var_r6;
-    u32 temp_r5_2;
-    u32 temp_r7;
-    s32 var_r8;
-    u32 var_r9;
-    void* temp_r4;
-    volatile s32 *flag;
-    volatile u32 *iterations;
+    s32 entryOff;
+    u32 bufferedFrames;
+    u32 bufferTarget;
+    s32 resync;
+    u32 index;
+    void* stream;
+    volatile s32 *inCallback;
+    volatile u32 *streamCount;
 
-    flag = (volatile s32 *)((u8*)arg0 + 0x11C);
-    iterations = (volatile u32 *)((u8*)arg0 + 0x2E8);
-    var_r8 = 0;
-    if (arg0 != 0) {
-        *flag = 1;
-        temp_r5 = 0;
-        *(s32*)((u8*)arg0 + 0x2F8) = temp_r5;
-        *flag = temp_r5;
-        var_r9 = 0;
-        var_r6 = 0;
-        while (var_r9 < *iterations) {
-            temp_r4 = (u8*)*(void**)((u8*)arg0 + 0x2F0) + var_r6;
-            if (*(s32*)((u8*)temp_r4 + 0x5C) != 0) {
-                *(s32*)((u8*)temp_r4 + 0x5C) = 0;
-                temp_r7 = *(u32*)((u8*)arg0 + 0x0C);
-                if (temp_r7 > 1) {
-                    temp_r4 = (u8*)*(void**)((u8*)arg0 + 0x2F0) + var_r6;
-                    if ((s32)temp_r7 <= *(s32*)((u8*)temp_r4 + 0x48))
-                        var_r8 = 1;
+    inCallback = (volatile s32 *)((u8*)bink + 0x11C);
+    streamCount = (volatile u32 *)((u8*)bink + 0x2E8);
+    resync = 0;
+    if (bink != 0) {
+        *inCallback = 1;
+        value = 0;
+        *(s32*)((u8*)bink + 0x2F8) = value;
+        *inCallback = value;
+        index = 0;
+        entryOff = 0;
+        while (index < *streamCount) {
+            stream = (u8*)*(void**)((u8*)bink + 0x2F0) + entryOff;
+            if (*(s32*)((u8*)stream + 0x5C) != 0) {   /* the stream wants a flush */
+                *(s32*)((u8*)stream + 0x5C) = 0;
+                value = 0;
+                bufferTarget = *(u32*)((u8*)bink + 0x0C);   /* the movie's frame */
+                if (bufferTarget > 1) {
+                    stream = (u8*)*(void**)((u8*)bink + 0x2F0) + entryOff;
+                    if ((s32)bufferTarget <= *(s32*)((u8*)stream + 0x48))
+                        resync = 1;                      /* it starts at/after us */
                 }
             }
-            var_r6 += 0x17C;
-            var_r9 += 1;
+            entryOff += 0x17C;
+            index += 1;
         }
-        if (var_r8 != 0) {
-            temp_r5 = *(s32*)((u8*)arg0 + 0x2EC);
-            *(s32*)((u8*)arg0 + 0x2EC) = temp_r5 + 1;
-            fn_8011C274(lbl_8055DED4, (u8*)arg0 + 0x340);
-            fn_801190B0(arg0, 0);
+        if (resync != 0) {
+            value = *(s32*)((u8*)bink + 0x2EC);
+            *(s32*)((u8*)bink + 0x2EC) = value + 1;    /* resyncs done so far */
+            fn_8011C274(lbl_8055DED4, (u8*)bink + 0x340);   /* lock the Bink tick */
+            fn_801190B0(bink, 0);                          /* pause its streams */
             for (;;) {
-                temp_r7 = *(u32*)((u8*)arg0 + 0x138);
-                temp_r5_2 = *(u32*)((u8*)arg0 + 0x13C);
-                temp_r7 = (temp_r7 * 0x1D) >> 5;
-                if (temp_r5_2 < temp_r7) {
-                    temp_r5_2 = ((s32 (*)(void*))(*(void**)((u8*)arg0 + 0x100)))((u8*)arg0 + 0xF0);
-                    if (temp_r5_2 != 0) continue;
+                bufferTarget = *(u32*)((u8*)bink + 0x138);
+                bufferedFrames = *(u32*)((u8*)bink + 0x13C);
+                bufferTarget = (bufferTarget * 0x1D) >> 5; /* 29/32ths of a buffer */
+                if (bufferedFrames < bufferTarget) {
+                    /* not enough decoded yet: ask the file interface for more */
+                    bufferedFrames = ((s32 (*)(void*))(*(void**)((u8*)bink + 0x100)))((u8*)bink + 0xF0);
+                    if (bufferedFrames != 0) continue;
                 }
-                *(s32*)((u8*)arg0 + 0x268) = 0;
-                *(s32*)((u8*)arg0 + 0x328) = 0;
-                *(s32*)((u8*)arg0 + 0x330) = 0;
-                fn_801190B0(arg0, 1);
-                fn_8011C2EC(lbl_8055DED4, (u8*)arg0 + 0x340);
+                *(s32*)((u8*)bink + 0x268) = 0;        /* decode timing, restarts */
+                *(s32*)((u8*)bink + 0x328) = 0;
+                *(s32*)((u8*)bink + 0x330) = 0;
+                fn_801190B0(bink, 1);                      /* streams running again */
+                fn_8011C2EC(lbl_8055DED4, (u8*)bink + 0x340);
                 break;
             }
         }
-        *flag = 1;
-        if (*(s32*)((u8*)arg0 + 0x2E8) != 0)
-            fn_80117074(arg0);
-        fn_80118C1C(arg0, fn_80116D30());
-        temp_r5_2 = *(u32*)((u8*)arg0 + 0x0C);
-        fn_80117380(arg0, (temp_r5_2 < *(u32*)((u8*)arg0 + 0x08)) ? (s32)(temp_r5_2 + 1) : 1);
-        *flag = 0;
+        *inCallback = 1;
+        if (*(s32*)((u8*)bink + 0x2E8) != 0)
+            fn_80117074(bink);              /* refill every stream's output buffer */
+        fn_80118C1C(bink, fn_80116D30());   /* fold this frame's time into the total */
+        bufferedFrames = *(u32*)((u8*)bink + 0x0C);
+        fn_80117380(bink, (bufferedFrames < *(u32*)((u8*)bink + 0x08)) ? (s32)(bufferedFrames + 1) : 1);
+        *inCallback = 0;
     }
 }
 #pragma pop
@@ -3504,7 +3518,7 @@ void fn_8011B94C(void *arg0, s32 *arg1, s32 *arg2, s32 arg3, s32 *arg4, s32 arg5
         for (; i < count; i++) {
             s16 *a = *(s16 **)(p + 0x14);
             s16 *b = *(s16 **)(p + 0x2C);
-            a[i] = (s16)(((u32)i * a[i] + b[i] * (u32)(count - i)) / count);
+            a[i] = (i * a[i] + b[i] * (count - i)) / count;
         }
     }
     memcpy(*(void **)(p + 0x2C), (u8 *)*(void **)(p + 0x14) + (*(u32 *)(p + 8) - *(u32 *)(p + 0xC)), *(u32 *)(p + 0xC));
@@ -4339,10 +4353,10 @@ void fn_8011CD90(s32 objectBase, s32 bitReader, s32 workBuffer) {
 const u8 lbl_80561208[] = {0x04, 0x08, 0x0C, 0x20};
 void fn_8011CE18(void *arg0, void *arg1) {
     u32 *bits;
-    u32 value, bitCount, available, mask, count, code, len, s, w;
-    register u32 fill;
-    register u8 *dst;
-    u8 *table, *lookup;
+    u32 value, bitCount, available, count, code, len, s, w, fill;
+    register u32 mask;
+    u8 *dst, *table;
+    register u8 *lookup;
     u32 sym;
     u8 run;
     u32 fw;
@@ -4368,11 +4382,12 @@ void fn_8011CE18(void *arg0, void *arg1) {
         if (bitCount == 0) { w = *bits++; bitCount = 31; value = w >> 1; }
         else { w = value; value >>= 1; bitCount--; }
         if ((w & 1) == 0) {
+            dst = *(u8 **)((u8 *)arg0 + 0x2C);
             table = (u8 *)arg0 + 0x10;
             lookup = *(u8 **)((u8 *)arg0 + 0x24);
             available = *(u32 *)((u8 *)arg0 + 0x20);
-            mask = 0xFFFFFFFFU >> (32 - available);
             fill = 0;
+            mask = 0xFFFFFFFFU >> (32 - available);
             while (count != 0) {
                 if (bitCount >= available) {
                     code = value & mask;
@@ -5190,7 +5205,6 @@ void fn_8011FE20(u32 **arg0, u32 arg1) {
     void *newSizes;
     void *newBuffer;
     u32 base;
-    u32 rounded;
     u32 extra;
     u32 total;
     if (lbl_80559950 == lbl_8055DEF4) {
@@ -5206,9 +5220,9 @@ void fn_8011FE20(u32 **arg0, u32 arg1) {
         lbl_8055994C = (u32 *)newSizes;
     }
     base = (u32)lbl_8055DEF0;
-    rounded = arg1 + 0x1F;
-    extra = (((base >> 5) & 0x1F) + 0x21 - ((rounded >> 5) & 0x1F)) & 0x1F;
-    total = (rounded & ~0x1F) + (extra << 5);
+    arg1 += 0x1F;
+    extra = (((base >> 5) & 0x1F) + 0x21 - ((arg1 >> 5) & 0x1F)) & 0x1F;
+    total = (arg1 & ~0x1F) + (extra << 5);
     lbl_8055DEF0 = (void *)(base + total);
     lbl_8055994C[lbl_8055DEF4] = total;
     lbl_80559948[lbl_8055DEF4] = arg0;
