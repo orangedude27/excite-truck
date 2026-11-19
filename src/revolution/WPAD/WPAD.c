@@ -77,7 +77,7 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs);
 BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback);
 extern void (*lbl_80312338[])(u8 port, u8* p_rpt);
 void fn_80060AFC(s32 chan);
-#define WPAD_DECODE_LEN_T s32
+#define WPAD_DECODE_LEN_T u16
 void WPADiDecode(s32 chan, u8* data, WPAD_DECODE_LEN_T len, s32 seed);
 typedef struct { f64 d[6]; } Cmd64;
 typedef struct {
@@ -7236,8 +7236,7 @@ void fn_800684D0(s32 chan) {
     OSRestoreInterrupts(en);
 }
 
-void WPADiDecode(s32 chan, u8* data, s32 len, s32 seed) {
-#pragma unroll 8
+void WPADiDecode(s32 chan, u8* data, WPAD_DECODE_LEN_T len, s32 seed) {
     WPADCB* cb = lbl_8038F4F0[chan];
     u8* base = (u8*)cb;
     u16 i;
