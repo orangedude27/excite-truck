@@ -38,7 +38,7 @@ static inline void CleanupEntries(void *table) {
         fn_80128668(table);
     }
 }
-extern double lbl_80563958;
+extern const double lbl_80563958;
 extern unsigned char lbl_80498C48[];
 s32 fn_8001668C(s32, s32);
 s32 *fn_80016BC8(s32);
@@ -1281,9 +1281,10 @@ extern "C" void fn_8024FBD8(void *arg0, s32 arg1) {
     extern s32 fn_80240928(void);
     class Counter { public: virtual void d(int); virtual void a(); virtual void b(); virtual int count(); };
     u8 stack[0x728];
-    u8 *base = lbl_80344170;
-    s32 i, count;
     void *object;
+    s32 count;
+    s32 i;
+    u8 *base = lbl_80344170;
     fn_8013C804();
     fn_8001880C();
     fn_802556BC(stack+0x320, 1);
@@ -1484,9 +1485,9 @@ void fn_80250108(void *arg0) {
     f32 coef;
     i = 0;
     offset = 0;
-    speed = lbl_8056396C;
-    limit = lbl_80563960;
     coef = lbl_80563968;
+    limit = lbl_80563960;
+    speed = lbl_8056396C;
     current = *(f32 *)((u8 *)arg0 + 0x28);
     *(f32 *)((u8 *)arg0 + 0x28) = current + coef * ((f32)*(s32 *)((u8 *)arg0 + 0x2C) - current);
     subtract = lbl_80563970;
@@ -2695,8 +2696,8 @@ extern "C" void fn_80251D7C(void *arg0) {
                     ((Selector*)o188)->v12(&lbl_80344714);
                 }
                 srcA = (u8*)((Selector*)M2C_FIELD(arg0, void **, 0x18))->get0(M2C_FIELD(arg0, s32, 0x18C));
-                n = 0x20;
                 dstA = (u8*)arg0 + 0x28;
+                n = 0x20;
                 goto copy1_body;
 copy1_cnt:
                 n--;
@@ -2710,8 +2711,8 @@ copy1_body:
 copy1_end: ;
                 save31 = (void *)fn_8001668C((s32)((u8*)arg0 + 0x28), 0);
                 srcB = (u8*)save31 + 0xC;
-                n = 0x40;
                 dstB = (u8*)arg0 + 0x48;
+                n = 0x40;
                 goto copy2_body;
 copy2_cnt:
                 n--;
@@ -2725,8 +2726,8 @@ copy2_body:
 copy2_end: ;
                 if (((u32)M2C_FIELD(save31, u32, 0xA0) & 2) == 0) {
                     srcC = &lbl_803446FC[0];
-                    n = 0x80;
                     dstC = (u8*)arg0 + 0x88;
+                    n = 0x80;
                     goto copy3_body;
 copy3_cnt:
                     n--;
@@ -2741,8 +2742,8 @@ copy3_end: ;
                     fn_80255918(M2C_FIELD(arg0, void *, 0x20), M2C_FIELD((u8*)save31 + (M2C_FIELD(save31, s32, 0x94) * 4), s32, 0x64));
                 } else {
                     srcD = &lbl_803446E0[0];
-                    n = 0x80;
                     dstD = (u8*)arg0 + 0x88;
+                    n = 0x80;
                     goto copy4_body;
 copy4_cnt:
                     n--;
@@ -2767,8 +2768,8 @@ copy4_end: ;
                     u8 *res = fn_80131234((u8*)arg0 + 0x88);
                     if (res != (u8*)arg0 + 0x88) {
                         srcE = res;
-                        n = 0x80;
                         dstE = (u8*)arg0 + 0x88;
+                        n = 0x80;
                         goto copy5_body;
 copy5_cnt:
                         n--;
@@ -2783,8 +2784,8 @@ copy5_end: ;
                     }
                 }
                 srcF = (u8*)((Selector*)M2C_FIELD(arg0, void **, 0x18))->get1(M2C_FIELD(arg0, s32, 0x18C));
-                n = 0x80;
                 dstF = (u8*)arg0 + 0x108;
+                n = 0x80;
                 goto copy6_body;
 copy6_cnt:
                 n--;
@@ -2841,8 +2842,8 @@ copy6_end: ;
         do {
             srcG = M2C_FIELD(entryPtr, u8 *, 4);
             if (srcG != 0) {
-                n = 0x64;
                 dstG = copyDst;
+                n = 0x64;
                 goto copy7_body;
 copy7_cnt:
                 n--;
