@@ -96,6 +96,26 @@ extern "C" void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
 extern "C" s32 fn_800A7C20(void *, void **, u32, void **, s32 *);
 extern "C" s32 fn_800A586C(void *, s32, s32, s32, s32);
 extern "C" s32 fn_800A7B34(void *, void *);
+static inline void fn_800A9DC0_loadNumericFields(u8 *p_ent, u8 *p_buf) {
+    u32 word;
+    u32 a, b;
+    u16 hiSwap, loSwap;
+    p_ent[0x21C] = p_buf[0xB];
+    p_ent[0x21B] = p_buf[0xC];
+    p_ent[0x21D] = p_buf[0xD];
+    __sthbrx(*(u16 *)(p_buf + 0xE), p_ent + 0x21E, 0);
+    __sthbrx(*(u16 *)(p_buf + 0x10), p_ent + 0x220, 0);
+    __sthbrx(*(u16 *)(p_buf + 0x12), p_ent + 0x222, 0);
+    __sthbrx(*(u16 *)(p_buf + 0x16), p_ent + 0x224, 0);
+    __sthbrx(*(u16 *)(p_buf + 0x18), p_ent + 0x226, 0);
+    word = *(u32 *)(p_buf + 0x1C);
+    *(u32 *)(p_ent + 0x228) = (word >> 24) | ((word >> 8) & 0xFF00) | ((word & 0xFF00) << 8) | (word << 24);
+    b = *(u16 *)(p_buf + 0x1A);
+    a = *(u16 *)(p_buf + 0x14);
+    hiSwap = (u16)((a >> 8) | ((a & 255) << 8));
+    loSwap = (u16)((b >> 8) | ((b & 255) << 8));
+    *(u32 *)(p_ent + 0x234) = ((u32)hiSwap << 16) | loSwap;
+}
 extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
  register u32 attr;
  register u8 *it=(u8 *)iterator;
@@ -971,8 +991,7 @@ extern "C" s32 fn_800A59FC(void *arg0) {
     while (((value = (value >> 1) & 0x7FFF) != 0)) {
         state->shift1++;
     }
-    s32 n = state->value0 + (state->value4 << 5) - 1;
-    s32 x = n >> state->shift0;
+    s32 x = ((state->value0 + (state->value4 << 5)) - 1) >> state->shift0;
     state->result24 = (s16)x;
     s32 scaled = state->value7 * state->valueC;
     s32 base = (u16)x + state->value2;
@@ -1824,7 +1843,7 @@ extern "C" s32 fn_800A6FC4(void *arg0, s32 arg1, u32 arg2) {
     if (arg2 == value)
         return arg1 + M2C_FIELD(arg0, u32 *, 0xC);
     u32 shift = (value >> 9) & 0x7F;
-    register u32 result = M2C_FIELD(arg0, u32 *, 0xC);
+    u32 result = M2C_FIELD(arg0, u32 *, 0xC);
     if (shift == 2)
         result <<= 1;
     else if (shift == 4)
@@ -17865,69 +17884,45 @@ extern "C" void fn_800C280C(s32 *a0, s32 *a1, s32 *o2, s32 *o3) {
 }
 
 extern "C" void fn_800C2A88(volatile s32 *a, volatile s32 *b, volatile s32 *c, volatile s32 *d) {
-    volatile const s32 *k = lbl_8031D700;
     s32 n0 = -a[0]; c[0] = b[0]; d[0] = n0 + b[17];
     s32 n1 = -a[1]; c[64] = b[1]; d[-64] = n1 + b[16];
     s32 n2 = -a[2]; c[128] = b[2]; d[-128] = n2 + b[15];
     s32 n3 = -a[3]; c[192] = b[3]; d[-192] = n3 + b[14];
     s32 n4 = -a[4]; c[256] = b[4]; d[-256] = n4 + b[13];
     s32 n5 = -a[5]; c[320] = b[5]; d[-320] = n5 + b[12];
-
-    s32 value, coefficient0, coefficient1;
-    s32 result, reverse;
-    s64 product;
-
-    coefficient0 = *k++;
-    value = a[6];
-    coefficient1 = *k++;
-    product = (s64)value * coefficient0;
-    result = (s32)(product >> 20);
-    c[384] = b[6] + result;
-    product = (s64)value * coefficient1;
-    reverse = (s32)(product >> 20);
-    d[-384] = b[11] + reverse;
-
-    value = a[7];
-    coefficient0 = *k++;
-    coefficient1 = *k++;
-    product = (s64)value * coefficient0;
-    result = (s32)(product >> 20);
-    c[448] = b[7] + result;
-    product = (s64)value * coefficient1;
-    reverse = (s32)(product >> 20);
-    d[-448] = b[10] + reverse;
-
-    value = a[8];
-    coefficient0 = *k++;
-    coefficient1 = *k++;
-    product = (s64)value * coefficient0;
-    result = (s32)(product >> 20);
-    c[512] = b[8] + result;
-    product = (s64)value * coefficient1;
-    reverse = (s32)(product >> 20);
-    d[-512] = b[9] + reverse;
+    volatile const s32 *k = lbl_8031D700;
+    s32 value, c0, c1, result, rev;
+    s64 p;
+    c0 = *k++; value = a[6]; c1 = *k++;
+    p = (s64)value * c0; result = (s32)(p >> 20); c[384] = b[6] + result;
+    p = (s64)value * c1; rev = (s32)(p >> 20); d[-384] = b[11] + rev;
+    value = a[7]; c0 = *k++; c1 = *k++;
+    p = (s64)value * c0; result = (s32)(p >> 20); c[448] = b[7] + result;
+    p = (s64)value * c1; rev = (s32)(p >> 20); d[-448] = b[10] + rev;
+    value = a[8]; c0 = *k++; c1 = *k++;
+    p = (s64)value * c0; result = (s32)(p >> 20); c[512] = b[8] + result;
+    p = (s64)value * c1; rev = (s32)(p >> 20); d[-512] = b[9] + rev;
 }
 
 extern "C" s32 lbl_8031D718[];
 extern "C" void fn_800C2C18(s32 *a, s32 *b, s32 *o1, s32 *o2) {
     s32 t;
     s32 a6, a7, a8;
-    s32 *b44 = &b[17];
-    t = -a[0]; o1[0] = b[0]; o2[0] = -(t + b44[0]);
-    t = -a[1]; o1[64] = -b[1]; o2[-64] = t + b44[-1];
-    t = -a[2]; o1[128] = b[2]; o2[-128] = -(t + b44[-2]);
-    t = -a[3]; o1[192] = -b[3]; o2[-192] = t + b44[-3];
-    t = -a[4]; o1[256] = b[4]; o2[-256] = -(t + b44[-4]);
-    t = -a[5]; o1[320] = -b[5]; o2[-320] = t + b44[-5];
+    t = -a[0]; o1[0] = b[0]; o2[0] = -(t + b[17]);
+    t = -a[1]; o1[64] = -b[1]; o2[-64] = t + b[16];
+    t = -a[2]; o1[128] = b[2]; o2[-128] = -(t + b[15]);
+    t = -a[3]; o1[192] = -b[3]; o2[-192] = t + b[14];
+    t = -a[4]; o1[256] = b[4]; o2[-256] = -(t + b[13]);
+    t = -a[5]; o1[320] = -b[5]; o2[-320] = t + b[12];
     a6 = a[6];
-    o1[384] = (s32)(((s64)a6 * lbl_8031D718[0]) >> 20) + b[6];
-    o2[-384] = -((s32)(((s64)a6 * lbl_8031D718[1]) >> 20) + b44[-6]);
+    o1[384]=(s32)(((s64)a6*lbl_8031D718[0])>>20)+b[6];
+    o2[-384]= -((s32)(((s64)a6*lbl_8031D718[1])>>20)+b[11]);
     a7 = a[7];
-    o1[448] = -((s32)(((s64)a7 * lbl_8031D718[2]) >> 20) + b[7]);
-    o2[-448] = (s32)(((s64)a7 * lbl_8031D718[3]) >> 20) + b44[-7];
+    o1[448]= -((s32)(((s64)a7*lbl_8031D718[2])>>20)+b[7]);
+    o2[-448]= (s32)(((s64)a7*lbl_8031D718[3])>>20)+b[10];
     a8 = a[8];
-    o1[512] = (s32)(((s64)a8 * lbl_8031D718[4]) >> 20) + b[8];
-    o2[-512] = -((s32)(((s64)a8 * lbl_8031D718[5]) >> 20) + b44[-8]);
+    o1[512]=(s32)(((s64)a8*lbl_8031D718[4])>>20)+b[8];
+    o2[-512]= -((s32)(((s64)a8*lbl_8031D718[5])>>20)+b[9]);
 }
 
 extern u32 lbl_8031D730[];
@@ -18826,24 +18821,24 @@ extern "C" s32 fn_800C4E5C(s32 arg0, void *arg1) {
     out[0xC0 / 4] = -sp[0];
     temp_r0 = sp[31] + sp[30] + (sp[24] + sp[28]);
     out[0xBC / 4] = -(sp[16] + temp_r0);
-    temp_r4 = (sp[15] + sp[12]) + sp[14];
+    temp_r4 = sp[15] + (sp[12] + sp[14]);
     out[0xB8 / 4] = -(sp[8] + temp_r4);
-    temp_r5 = (sp[23] + sp[20]) + sp[22];
+    temp_r5 = sp[23] + (sp[20] + sp[22]);
     out[0xB4 / 4] = -(temp_r5 + temp_r0);
-    out[0xB0 / 4] = -((sp[7] + sp[4]) + sp[6]);
+    out[0xB0 / 4] = -(sp[7] + (sp[4] + sp[6]));
     temp_r0_2 = temp_r0 + ((sp[26] + sp[27]) - sp[24]);
     out[0xAC / 4] = -(temp_r5 + temp_r0_2);
-    temp_r4_2 = (temp_r4 + sp[10]) + sp[11];
+    temp_r4_2 = temp_r4 + (sp[10] + sp[11]);
     out[0xA8 / 4] = -temp_r4_2;
-    out[0xA4 / 4] = -((temp_r0_2 + sp[18]) + sp[19]);
+    out[0xA4 / 4] = -(temp_r0_2 + (sp[18] + sp[19]));
     out[0xA0 / 4] = -(sp[2] + sp[3]);
     temp_r0_3 = temp_r0_2 + (sp[29] - sp[28]);
-    out[0x9C / 4] = -((temp_r0_3 + sp[18]) + sp[19]);
+    out[0x9C / 4] = -(temp_r0_3 + (sp[18] + sp[19]));
     temp_r4_3 = temp_r4_2 + (sp[13] - sp[12]);
     out[0x98 / 4] = -temp_r4_3;
     temp_r5_2 = temp_r5 + (sp[21] - sp[20]);
     out[0x94 / 4] = -(temp_r5_2 + temp_r0_3);
-    out[0x90 / 4] = -((sp[7] + sp[5]) + sp[6]);
+    out[0x90 / 4] = -(sp[7] + (sp[5] + sp[6]));
     temp_r0_4 = temp_r0_3 + ((sp[25] - sp[26]) - sp[27]);
     out[0x8C / 4] = -(temp_r5_2 + temp_r0_4);
     temp_r4_4 = temp_r4_3 + ((sp[9] - sp[10]) - sp[11]);
@@ -18860,13 +18855,13 @@ extern "C" s32 fn_800C4E5C(s32 arg0, void *arg1) {
     out[4] = sp[5] + sp[7];
     temp_r0_6 = temp_r0_5 + (sp[27] - sp[25]);
     out[5] = temp_r5_3 + temp_r0_6;
-    out[6] = sp[13] + (sp[15] + sp[11]);
+    out[6] = sp[15] + (sp[11] + sp[13]);
     temp_r0_7 = temp_r0_6 + sp[19];
     out[7] = temp_r0_7;
     out[8] = sp[3];
     out[9] = temp_r0_7 - sp[29];
     out[10] = sp[11] + sp[15];
-    out[11] = sp[27] + (sp[31] + sp[23]);
+    out[11] = sp[31] + (sp[23] + sp[27]);
     out[12] = sp[7];
     out[13] = sp[23] + sp[31];
     out[14] = sp[15];
@@ -24221,10 +24216,10 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                 (*(VirtualHandler **)((u8 *)arg0 + 0x1f8))->vf9(arg1, 0, 0, 0, 0, 0.0f, -180.0f);
                 *(s32 *)((u8 *)arg0 + 0x14) = 2;
                 void *c3c8 = *(void **)((u8 *)arg0 + 0x3c8);
-                fn_800CF3EC(c3c8);
+                ((void (*)(void *))fn_800CF3EC)(c3c8);
                 *(s32 *)((u8 *)c3c8 + 0x14) = 1;
                 void *c3ec = *(void **)((u8 *)arg0 + 0x3ec);
-                fn_800CF3EC(c3ec);
+                ((void (*)(void *))fn_800CF3EC)(c3ec);
                 *(s32 *)((u8 *)c3ec + 0x14) = 1;
                 *(s32 *)((u8 *)arg0 + 0x10) = 0xa;
                 *(s32 *)arg0 = 0;
@@ -24256,7 +24251,7 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                 *(s32 *)((u8 *)arg0 + 0xac) = 0;
                 *(s32 *)((u8 *)arg0 + 0x14) = 4;
                 void *c3d0 = *(void **)((u8 *)arg0 + 0x3d0);
-                fn_800CF3EC(c3d0);
+                ((void (*)(void *))fn_800CF3EC)(c3d0);
                 *(s32 *)((u8 *)c3d0 + 0x14) = 1;
                 *(s32 *)((u8 *)arg0 + 0x10) = 0xe;
                 {
@@ -24295,7 +24290,7 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                         if (p[0] == *(s32 *)((u8 *)arg0 + 0x80) + 0x15 && p[1] == 9) { idx2 = i; break; }
                     }
                     void *p2 = *(void **)((u8 *)arg0 + 0x298 + idx2 * 4);
-                    fn_800CF3EC(p2);
+                    ((void (*)(void *))fn_800CF3EC)(p2);
                     *(s32 *)((u8 *)p2 + 0x14) = 1;
 
                     s32 idx3 = -1;
@@ -24304,7 +24299,7 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                         if (p[0] == 0xb && p[1] == 5) { idx3 = i; break; }
                     }
                     void *p3 = *(void **)((u8 *)arg0 + 0x298 + idx3 * 4);
-                    fn_800CF3EC(p3);
+                    ((void (*)(void *))fn_800CF3EC)(p3);
                     *(s32 *)((u8 *)p3 + 0x14) = 1;
 
                     if (*(s32 *)((u8 *)arg0 + 0x80) == 0) {
@@ -24383,7 +24378,7 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                         if (p[0] == *(s32 *)((u8 *)arg0 + 0x80) + 0x15 && p[1] == 0xa) { idx2 = i; break; }
                     }
                     void *p2 = *(void **)((u8 *)arg0 + 0x298 + idx2 * 4);
-                    fn_800CF3EC(p2);
+                    ((void (*)(void *))fn_800CF3EC)(p2);
                     *(s32 *)((u8 *)p2 + 0x14) = 1;
 
                     *(s32 *)((u8 *)arg0 + 0x80) = *(s32 *)((u8 *)arg0 + 0x80) + 1;
@@ -24394,7 +24389,7 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                         if (p[0] == 0xc && p[1] == 5) { idx3 = i; break; }
                     }
                     void *p3 = *(void **)((u8 *)arg0 + 0x298 + idx3 * 4);
-                    fn_800CF3EC(p3);
+                    ((void (*)(void *))fn_800CF3EC)(p3);
                     *(s32 *)((u8 *)p3 + 0x14) = 1;
 
                     if (*(s32 *)((u8 *)arg0 + 0x80) == 10) {
