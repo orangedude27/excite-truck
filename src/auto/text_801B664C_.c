@@ -3,6 +3,7 @@
 
 typedef signed long s32;
 
+/* No operation. */
 void fn_801B664C(void) {
 
 }
