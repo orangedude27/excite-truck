@@ -235,7 +235,6 @@ static inline Vec3 fn_801EC59C_getv(void *property, char *label) {
 }
 }
 #pragma cplusplus reset
-#pragma scheduling invalid_target
 void fn_801EC59C(void *out, void *parent, int index, int value, float scale, float bias) {
     extern char lbl_8055AFDC, lbl_8055AFE4;
     register void *result;
@@ -251,9 +250,9 @@ void fn_801EC59C(void *out, void *parent, int index, int value, float scale, flo
         second.f.x = second.f.x * scale - bias;
         first.f.y = first.f.y * 0.0254f;
         second.f.y = second.f.y * 0.0254f;
-        dx = second.f.x - first.f.x;
         first.f.z = first.f.z * 0.0254f;
         second.f.z = second.f.z * 0.0254f;
+        dx = second.f.x - first.f.x;
         dy = second.f.z - first.f.z;
         slopeX = (second.f.y - first.f.y) / dx;
         slopeY = dy / dx;
