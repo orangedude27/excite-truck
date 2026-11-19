@@ -223,10 +223,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
             for (i = 0; i < *(s32 *)(rec + 0x98); i++) {
                 ((void (*)(void *, void *, s32, s32))(*(void ***)list)[3])(list, m.screen + 0x60, 1, 0);
             }
-            fn_8024F17C(m.sub, list,
-                        slots[4] ? (s32 *)(slots + idx * 16 + 0x14) : (s32 *)(slots + idx * 16 + 0xc),
-                        slots[4] ? (s32 *)(slots + idx * 16 + 0x10) : (s32 *)(slots + idx * 16 + 0x8),
-                        m.opts, m.work);
+            fn_8024F17C(m.sub, list, pA, pB, m.opts, m.work);
             *(void **)m.sub = lbl_80344410;
             *(void **)(m.sub + 0xd8) = m.work;
             *(void ***)(m.sub + 0xd4) = list;
