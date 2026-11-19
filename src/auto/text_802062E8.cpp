@@ -389,8 +389,8 @@ public:
     virtual void setUnused30(float);      /* +0x48 sound+0x30 */
     virtual void setUnused34(float);      /* +0x4C sound+0x34 */
     virtual void setAuxFlags(int);        /* +0x50 Sound3D.auxFlags */
-    virtual void slot54();                /* +0x54 */
-    virtual void slot58();                /* +0x58 */
+    virtual void set3d();                 /* +0x54 unimplemented: SndVoice only reports "SndVoice::Set3D" */
+    virtual void slot58();                /* +0x58 empty in both backends; nothing calls it */
     virtual void setParam(void *);        /* +0x5C the block queued at Sound3D+0x50 */
 };
 
