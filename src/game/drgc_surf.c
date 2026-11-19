@@ -1055,16 +1055,18 @@ void fn_802D5DE8(u32 flags) {
 
 #pragma scheduling invalid_target
 #pragma dont_inline on
+#pragma push
+#pragma scheduling off
 void fn_802D5F88(s32 arg0) {
     u32 normalized = *(u32 *)((u8 *)arg0 + 0xC) & 0xFFCFFFFF;
-    u32 cur = lbl_8055FDE8;
     u8 mode = *(u8 *)((u8 *)arg0 + 9);
-    if (normalized != cur) {
+    if (normalized != lbl_8055FDE8) {
         GXCallDisplayList(*(void **)((u8 *)arg0 + 0x10), (u32)*(u8 *)((u8 *)arg0 + 0xB) << 5);
         lbl_8055FDE8 = normalized;
         lbl_8055FDEC = mode;
     }
 }
+#pragma pop
 
 #pragma push
 #pragma dont_inline on
@@ -1336,18 +1338,20 @@ void fn_802D65F8(s32 arg0, s32 arg1) {
     u8 a,b,c,d,e,f,g,h;
     s32 i;
     u8 *entries;
+    s32 second;
     extern void fn_802D63FC(void *,s32);
     fn_802D63FC((void *)arg0,arg1);
     a=bytes[0x2C]; b=bytes[0x2F]; c=bytes[0x2D]; d=bytes[0x2E];
     e=bytes[0x30]; f=bytes[0x33]; g=bytes[0x31]; h=bytes[0x32];
     bytes[0x2C]=b; bytes[0x2F]=a; bytes[0x2D]=d; bytes[0x2E]=c;
     bytes[0x30]=f; bytes[0x33]=e; bytes[0x31]=h; bytes[0x32]=g;
-    fn_802D657C((s32 *)((u8 *)bytes+0x30),arg1);
+    second=arg1;
+    ((void (*)(s32 *, s32, u8, u8, u8, u8, u8, u8))fn_802D657C)((s32 *)((u8 *)bytes+0x30),second,f,d,b,a,e,c);
     if((s8)bytes[8]==0x1A) fn_802D6594((void *)bytes);
     if(bytes[8]==0x13) {
         entries=*(u8 **)(bytes+0x20);
         for(i=0;i<*(s32 *)(bytes+0x1C);i++) {
-            if((entries[0xC]!=0x4C && entries[0xC]!=0x4D) || entries[0xD]!=0) goto second;
+            if((entries[0xC]!=0x4C && entries[0xC]!=0x4D) || entries[0xD]!=0) goto second_label;
             entries+=0x10;
         }
         fn_802E317C(lbl_8034C3B4);
@@ -1358,16 +1362,17 @@ void fn_802D65F8(s32 arg0, s32 arg1) {
             f32 divisor = lbl_80565014;
             for(i=0;i<*(s32 *)(bytes+0x1C);++i) {
                 f32 value=factor*(f32)entries[0xE]/divisor;
-                *(f32 *)(entries+0xC)=entries[0xC]==0x4C ? value : -value;
+                if (entries[0xC]==0x4C) *(f32 *)(entries+0xC)=value;
+                else *(f32 *)(entries+0xC)=-value;
                 entries+=0x10;
             }
         }
     }
-second:
+second_label:
     if(bytes[8]==0x19) {
         entries=*(u8 **)(bytes+0x20);
         for(i=0;i<*(s32 *)(bytes+0x1C);i++) {
-            if((entries[0xC]!=0x4C && entries[0xC]!=0x4D) || entries[0xD]!=0) return;
+            if((entries[0xC]!=0x4C && entries[0xC]!=0x4D) || entries[0xD]!=0) goto done;
             entries+=0x18;
         }
         bytes[8]=0x1B;
@@ -1377,11 +1382,13 @@ second:
             f32 divisor = lbl_80565014;
             for(i=0;i<*(s32 *)(bytes+0x1C);++i) {
                 f32 value=factor*(f32)entries[0xE]/divisor;
-                *(f32 *)(entries+0xC)=entries[0xC]==0x4C ? value : -value;
+                if (entries[0xC]==0x4C) *(f32 *)(entries+0xC)=value;
+                else *(f32 *)(entries+0xC)=-value;
                 entries+=0x18;
             }
         }
     }
+done: ;
 }
 
 #pragma push
@@ -1464,10 +1471,9 @@ extern void fn_802E317C(const char *, ...);
 extern const char lbl_8034C440[];
 #pragma scheduling invalid_target
 void fn_802D6B80(u8 *arg0, s32 arg1, s32 arg2) {
+    union Buf { u32 word; u8 bytes[5]; } buf;
     s32 result;
     u8 t;
-    u8 *p;
-    u32 sp8;
     t = arg0[0];
     arg0[0] = arg0[3];
     arg0[3] = t;
@@ -1478,16 +1484,16 @@ void fn_802D6B80(u8 *arg0, s32 arg1, s32 arg2) {
     if (result != 0) {
         ((void (*)(s32, s32, s32))fn_802D65F8)(result, arg1, arg2);
     } else {
-        sp8 = *(u32 *)arg0;
-        p = (u8 *)&sp8;
-        t = p[0];
-        p[0] = p[3];
-        p[3] = t;
-        t = p[1];
-        p[1] = p[2];
-        p[2] = t;
-        p[4] = 0;
-        fn_802E317C(lbl_8034C440, arg2, &sp8);
+        u8 x, y;
+        buf.word = *(u32 *)arg0;
+        buf.bytes[4] = 0;
+        x = buf.bytes[0];
+        buf.bytes[0] = buf.bytes[3];
+        buf.bytes[3] = x;
+        y = buf.bytes[1];
+        buf.bytes[1] = buf.bytes[2];
+        buf.bytes[2] = y;
+        fn_802E317C(lbl_8034C440, arg2, &buf);
     }
 }
 #pragma scheduling on
