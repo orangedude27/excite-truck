@@ -95,7 +95,7 @@ void fn_802449A0(void) {
     f.hdr[2] = ((int *)lbl_802FA338)[2];
     f.hdr[3] = ((int *)lbl_802FA338)[3];
     f.hdr[4] = ((int *)lbl_802FA338)[4];
-    fn_802146BC(f.hdr, -999, -999, 1);
+    ((int (*)(void *, int, int, int, int, int, int, int))fn_802146BC)(f.hdr, -999, -999, 1, 2, (int)(base + 0x90), (int)f.e, ((int *)lbl_802FA338)[4]);
     f.p98 = lbl_80342ED8;
     fn_802328D4(f.sp148, lbl_80342ED8);
     f.sp148 = zero;
@@ -124,29 +124,38 @@ void fn_80244C50(void) { fn_8013C804(); }
 
 void fn_80244C54(void) { fn_8013C8B8(); }
 
-s32 fn_80244C58(void *arg0, s32 arg1) {
+/* Handle a seek/index command: record the current kernel timer tick into the state's
+ * timestamp slot for command 0x126 (decrement index) or 0x128 (increment index),
+ * then clamp the index at +0x1C to the range [0, *(s32*)(state+0x18) - 3].
+ * Returns 1 if the command was handled, 0 otherwise. */
+s32 fn_80244C58(void *state, s32 command)
+{
 #pragma scheduling invalid_target
-    s32 *f1c = (s32 *)((char *)arg0 + 0x1C);
-    s32 v;
-    s32 limit;
-    s32 r;
-    switch (arg1) {
+    s32 *indexPtr = (s32 *)((char *)state + 0x1C);
+    s32 indexValue;
+    s32 upperBound;
+    s32 clamped;
+
+    switch (command) {
     case 0x126:
-        *(s32 *)((char *)arg0 + 0xA8) = fn_802E2C20();
-        *f1c = *f1c - 1;
+        *(s32 *)((char *)state + 0xA8) = fn_802E2C20();
+        *indexPtr = *indexPtr - 1;
         break;
     case 0x128:
-        *(s32 *)((char *)arg0 + 0xAC) = fn_802E2C20();
-        *f1c = *f1c + 1;
+        *(s32 *)((char *)state + 0xAC) = fn_802E2C20();
+        *indexPtr = *indexPtr + 1;
         break;
     default:
         return 0;
     }
-    v = *f1c;
-    limit = *(s32 *)((char *)arg0 + 0x18) - 3;
-    r = v & ((-v & ~v) >> 31);
-    if (r < limit) limit = r;
-    *f1c = limit;
+
+    indexValue = *indexPtr;
+    upperBound = *(s32 *)((char *)state + 0x18) - 3;
+    clamped = indexValue & ((-indexValue & ~indexValue) >> 31);
+    if (clamped < upperBound) {
+        upperBound = clamped;
+    }
+    *indexPtr = upperBound;
     return 1;
 }
 
