@@ -243,9 +243,8 @@ void *fn_8024A204(void *self, s32 deleteFlag) {
 #pragma scheduling reset
 void *fn_8024A268(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        *(s32 *)((char *)arg0 + 0x10) = 0;
-        *(s32 *)((char *)arg0 + 0x1C) = 0;
         *(s32 *)((char *)arg0 + 0x18) = -1;
+        *(s32 *)((char *)arg0 + 0x1C) = *(s32 *)((char *)arg0 + 0x10) = 0;
         if (arg1 > 0) {
             fn_80128668(arg0);
         }
@@ -276,70 +275,89 @@ extern char lbl_80343E7C[];
 #pragma scheduling invalid_target
 void fn_8024A304(void *arg0, void **arg1, int arg2, int arg3) {
     extern unsigned char lbl_8055F290;
-    void *record;
+    int zero = 0;
     register void *object;
     register void **list;
     register int index;
-    register int offset;
-    register int archiveIndex;
-    register int archiveCount;
     (void)arg3;
     *(int *)((char *)arg0 + 0x1C) = arg2;
     object = arg0;
-    *(int *)((char *)object + 0x10) = 0;
+    *(int *)((char *)object + 0x10) = zero;
     list = arg1;
-    index = 0;
-    *(int *)((char *)object + 0x14) = 0;
-    offset = 0;
-    goto outer_check;
+    index = zero;
+    *(int *)((char *)object + 0x14) = zero;
+    {
+        register int archiveIndex;
+        register int archiveCount;
+        register void *record;
+        register int offset;
+        offset = zero;
+        goto outer_check;
 outer_body:
-    if (stricmp((char *)fn_800081BC(*(void **)((char *)*(void **)*list + offset)), *(char **)((char *)object + 0x1C)) == 0) {
-        void *header = *list;
-        int itemCount = *(int *)((char *)object + 0x14);
-        char *array = *(char **)header;
-        char *entry = array + offset;
-        record = *(void **)(entry + 4);
-        {
-            char *item = (char *)object + itemCount * 0xC;
-            *(int *)(item + 0x20) = *(int *)((char *)record + 4);
-        }
-        archiveCount = *(int *)((char *)fn_80012820(*(int *)((char *)record + 4)) + 0x70);
-        for (archiveIndex = 0; archiveIndex < archiveCount; archiveIndex++) {
-            if (record != (void *)fn_80012870(*(int *)((char *)record + 4), archiveIndex))
-                continue;
-            break;
-        }
-        if (archiveIndex >= archiveCount)
+        if (stricmp((char *)fn_800081BC(
+                        *(void **)((char *)*(void **)*list + offset)),
+                    *(char **)((char *)object + 0x1C)) == 0) {
+            record = *(void **)(*(char **)(*(void **)list) + offset + 4);
+            *(int *)((char *)object +
+                     *(int *)((char *)object + 0x14) * 0xC + 0x20) =
+                *(int *)((char *)record + 4);
+            archiveCount = *(int *)((char *)fn_80012820(
+                             *(int *)((char *)record + 4)) + 0x70);
+            archiveIndex = 0;
+            while (archiveIndex < archiveCount) {
+                if (record != (void *)fn_80012870(
+                        *(int *)((char *)record + 4), archiveIndex)) {
+                    archiveIndex++;
+                } else {
+                    goto archive_done;
+                }
+            }
             archiveIndex = -1;
-        *(int *)((char *)object + *(int *)((char *)object + 0x14) * 0xC + 0x24) = archiveIndex;
-        {
-            int tableIndex = 0;
-            int tableOffset = 0;
-            void *table = lbl_8055F28C;
-            int tableCount = *(int *)((char *)table + 4);
-            for (; tableIndex < tableCount; tableIndex++, tableOffset += 0x18) {
-                if (*(int *)(*(char **)table + tableOffset) != *(int *)record)
-                    continue;
-                goto table_found;
-            }
-            tableIndex = -1;
+archive_done:
+            *(int *)((char *)object +
+                     *(int *)((char *)object + 0x14) * 0xC + 0x24) =
+                archiveIndex;
+            {
+                int tableIndex = 0;
+                int tableOffset = 0;
+                void *table = lbl_8055F28C;
+                int tableCount = *(int *)((char *)table + 4);
+                while (tableIndex < tableCount) {
+                    if (*(int *)(*(char **)table + tableOffset) !=
+                        *(int *)record) {
+                        tableIndex++;
+                        tableOffset += 0x18;
+                    } else {
+                        goto table_found;
+                    }
+                }
+                tableIndex = -1;
 table_found:
-            if (lbl_8055F290 != 0 && tableIndex >= 0) {
-                *(int *)((char *)object + *(int *)((char *)object + 0x14) * 0xC + 0x28) = *(int *)(*(char **)table + tableIndex * 0x18 + 4);
-            } else {
-                int key = fn_80012910(*(int *)record);
-                void *dispatchObject = *(void **)((char *)record + 0x20);
-                int (*method)(void *, char *, int) = (int (*)(void *, char *, int))(*(void ***)dispatchObject)[6];
-                *(int *)((char *)object + *(int *)((char *)object + 0x14) * 0xC + 0x28) = method(dispatchObject, lbl_80343E7C, key);
+                if (lbl_8055F290 != 0 && tableIndex >= 0) {
+                    *(int *)((char *)object +
+                             *(int *)((char *)object + 0x14) * 0xC + 0x28) =
+                        *(int *)(*(char **)table + tableIndex * 0x18 + 4);
+                } else {
+                    int key = fn_80012910(*(int *)record);
+                    void *dispatchObject =
+                        *(void **)((char *)record + 0x20);
+                    int (*method)(void *, char *, int) =
+                        (int (*)(void *, char *, int))
+                        (*(void ***)dispatchObject)[6];
+                    *(int *)((char *)object +
+                             *(int *)((char *)object + 0x14) * 0xC + 0x28) =
+                        method(dispatchObject, lbl_80343E7C, key);
+                }
             }
+            *(int *)((char *)object + 0x14) =
+                *(int *)((char *)object + 0x14) + 1;
         }
-        *(int *)((char *)object + 0x14) = *(int *)((char *)object + 0x14) + 1;
-    }
-    offset += 8;
-    index += 1;
+        offset += 8;
+        index += 1;
 outer_check:
-    if (index < *(int *)((char *)*list + 4))
-        goto outer_body;
+        if (index < *(int *)((char *)*list + 4))
+            goto outer_body;
+    }
 }
 #pragma scheduling reset
 #pragma use_lmw_stmw on
@@ -460,6 +478,7 @@ s32 fn_8024A6A4(s32 *outValue) {
     }
 }
 
+#pragma use_lmw_stmw off
 s32 fn_8024A6EC(s32* arg0, void* arg1) {
     extern int fn_802411D4(void);
     extern void* fn_8024B3E8(void*, void*, int);
@@ -474,8 +493,8 @@ s32 fn_8024A6EC(s32* arg0, void* arg1) {
     extern int lbl_8055BF68, lbl_8055BF70, lbl_8055BF78, lbl_8055BF80;
     extern int lbl_8055BF88, lbl_8055BF90, lbl_8055BF98, lbl_8055BFA0;
     extern int lbl_8055BFA8, lbl_8055BFB0, lbl_8055BFB8;
-    char work[0x2C0];
-    s32 cfg[0xA6];
+    char work[0x2B0];
+    s32 cfg[0xA0];
     char* base = lbl_80343998;
     s32 zero = 0;
     s32 three = 3;
@@ -522,7 +541,6 @@ s32 fn_8024A6EC(s32* arg0, void* arg1) {
     }
     return 0;
 }
-
 void *fn_8024AC54(void *object, int shouldDelete) {
     /* Destructor helper: clear embedded fields at offsets 0x18-0x20, then optionally free the object. */
     if (object != 0) {
@@ -552,9 +570,7 @@ extern char lbl_80343998[];
 extern s32 lbl_80498998[];
 extern int lbl_8055B860;
 extern int lbl_8055BF68;
-#pragma push
-#pragma scheduling invalid_target
-#pragma scheduling on
+#pragma opt_common_subs off
 #pragma use_lmw_stmw off
 s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
     char storage[0x1F8];
@@ -568,11 +584,10 @@ s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
     register s32 minusOne = -1;
     register s32 hex12 = 0x12;
     register s32 *configStackPointer;
+    register char *label;
     s32 result;
 
-    if (fn_802411D4() == 0) {
-        return 0;
-    }
+    if (fn_802411D4() == 0) return 0;
     fn_8024B73C((char *)storage + 0x18, (const char *)key, work);
     fn_8024B830((char *)storage + 0x18, *output);
     work = (char *)storage + 0x18;
@@ -585,57 +600,62 @@ s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
     configStackPointer[50] = zero;
 
     configStackPointer[53] = fn_8024B87C(work, 0);
-    configStackPointer[51] = (s32)(name + 0x16c);
+    label = name + 0x16c;
     configStackPointer[52] = three;
+    configStackPointer[51] = (s32)label;
     configStackPointer[54] = zero;
-    configStackPointer[55] = (s32)work;
+    configStackPointer[55] = zero;
     configStackPointer[59] = fn_8024B8A4(work, 0);
-    configStackPointer[56] = (s32)(name + 0x16c);
-    configStackPointer[57] = (s32)work;
+    configStackPointer[57] = zero;
+    configStackPointer[56] = (s32)label;
     configStackPointer[58] = zero;
     configStackPointer[60] = zero;
 
     configStackPointer[63] = fn_8024B87C(work, 1);
-    configStackPointer[61] = (s32)(name + 0x178);
+    label = name + 0x178;
     configStackPointer[62] = three;
+    configStackPointer[61] = (s32)label;
     configStackPointer[64] = zero;
-    configStackPointer[65] = (s32)work;
+    configStackPointer[65] = zero;
     configStackPointer[69] = fn_8024B8A4(work, 1);
-    configStackPointer[66] = (s32)(name + 0x178);
-    configStackPointer[67] = (s32)work;
+    configStackPointer[67] = zero;
+    configStackPointer[66] = (s32)label;
     configStackPointer[68] = zero;
     configStackPointer[70] = zero;
 
     configStackPointer[73] = fn_8024B87C(work, 2);
-    configStackPointer[71] = (s32)(name + 0x184);
+    label = name + 0x184;
     configStackPointer[72] = three;
+    configStackPointer[71] = (s32)label;
     configStackPointer[74] = zero;
-    configStackPointer[75] = (s32)work;
+    configStackPointer[75] = zero;
     configStackPointer[79] = fn_8024B8A4(work, 2);
-    configStackPointer[76] = (s32)(name + 0x184);
-    configStackPointer[77] = (s32)work;
+    configStackPointer[77] = zero;
+    configStackPointer[76] = (s32)label;
     configStackPointer[78] = zero;
     configStackPointer[80] = zero;
 
     configStackPointer[83] = fn_8024B87C(work, 3);
-    configStackPointer[81] = (s32)(name + 0x190);
+    label = name + 0x190;
     configStackPointer[82] = three;
+    configStackPointer[81] = (s32)label;
     configStackPointer[84] = zero;
-    configStackPointer[85] = (s32)work;
+    configStackPointer[85] = zero;
     configStackPointer[89] = fn_8024B8A4(work, 3);
-    configStackPointer[86] = (s32)(name + 0x190);
-    configStackPointer[87] = (s32)work;
+    configStackPointer[87] = zero;
+    configStackPointer[86] = (s32)label;
     configStackPointer[88] = zero;
     configStackPointer[90] = zero;
 
     configStackPointer[93] = fn_8024B87C(work, 4);
-    configStackPointer[91] = (s32)(name + 0x19c);
+    label = name + 0x19c;
     configStackPointer[92] = three;
+    configStackPointer[91] = (s32)label;
     configStackPointer[94] = zero;
-    configStackPointer[95] = (s32)work;
+    configStackPointer[95] = zero;
     configStackPointer[99] = fn_8024B8A4(work, 4);
-    configStackPointer[96] = (s32)(name + 0x19c);
-    configStackPointer[97] = (s32)work;
+    configStackPointer[97] = zero;
+    configStackPointer[96] = (s32)label;
     configStackPointer[98] = zero;
     configStackPointer[100] = zero;
 
@@ -687,9 +707,6 @@ s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
     configStackPointer[14] = zero;
     return 0;
 }
-#pragma pop
-
-#pragma use_lmw_stmw on
 /* Destructor of the sound-archive selector object: tears down the embedded
  * nw4hbm::snd::MemorySoundArchive at +0x4C (flag -1: the archive itself is a
  * member, so it is not freed), drops the entry-array descriptor at +0x18
@@ -744,7 +761,7 @@ static inline s32 findEntry8024B070(s32 **arg1, s32 *arg0, s32 n) {
     return -1;
 }
 
-#pragma scheduling on
+#pragma scheduling 603
 u8 fn_8024B070(s32 *arg0, s32 **arg1) {
     s32 sp8;
     s32 i = findEntry8024B070(arg1, arg0, *(s32 *)((u8 *)arg1 + 4));
@@ -776,29 +793,39 @@ extern char lbl_804989AC[];
 #pragma dont_inline on
 #pragma dont_inline fn_8024B178
 extern s32 fn_8024B178(s32);
+#pragma push
+#pragma scheduling on
 #pragma cplusplus on
 s32 fn_8024B178(s32 arg0) {
     class Obj {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual char *get(const char *);
     };
-    void *manager; void *object; char *result; char *prefix; s32 comparison; char *buffer; s32 len;
+    void *manager;
+    void *object;
+    char *result;
+    char *prefix;
+    s32 comparison;
+    char *buffer;
+
     manager = ((void *(*)(s32))fn_8001285C)(arg0);
     object = *(void **)((char *)manager + 0x20);
     result = ((Obj *)object)->get((const char *)&lbl_8055BFC0);
     prefix = (char *)&lbl_8055BFC8;
     comparison = strncmp(result, prefix, strlen(prefix));
-    if (comparison != 0) goto mismatch;
-    len = strlen(prefix);
-    result = result + len;
+    if (comparison != 0)
+        goto mismatch;
+    result += strlen(prefix);
     buffer = lbl_804989AC;
-    ((void (*)(void *, int, const char *, ...))fn_801345D8)(buffer, 0x21, (const char *)&lbl_8055BFD0, result);
+    ((void (*)(void *, int, const char *, ...))fn_801345D8)(
+        buffer, 0x21, (const char *)&lbl_8055BFD0, result);
+    result = result;
     return (s32)buffer;
 mismatch:
     return comparison;
 }
 #pragma cplusplus off
-#pragma dont_inline off
+#pragma pop
 /* RealName: CompareArchiveEntryByName (qsort comparator: flagged entries first, then case-insensitive name) */
 int fn_8024B214(char *arg0, char *arg1) {
 #define CompareArchiveEntryByName fn_8024B214
@@ -823,10 +850,12 @@ void fn_8024B260(arg0)
 void *arg0;
 {
     s32 selected;
+    s32 one;
     s32 i;
     s32 offset;
     char *search;
     void *list;
+    s32 zero;
     unsigned int entry;
     unsigned int record;
     u8 **strings;
@@ -835,13 +864,15 @@ void *arg0;
     strings = *(u8 ***)((u8 *)arg0 + 0x18);
     search = (char *)strings[selected * 2];
     memset((u8 *)arg0 + 0x78, 0, 0x208);
+    one = 1;
     i = 0;
-    *(s32 *)((u8 *)arg0 + 0xDC) = 1;
+    *(s32 *)((u8 *)arg0 + 0xDC) = one;
     offset = 0;
-    *(s32 *)((u8 *)arg0 + 0x144) = 1;
-    *(s32 *)((u8 *)arg0 + 0x1AC) = 1;
-    *(s32 *)((u8 *)arg0 + 0x214) = 1;
-    *(s32 *)((u8 *)arg0 + 0x27C) = 1;
+    *(s32 *)((u8 *)arg0 + 0x144) = one;
+    zero = 0;
+    *(s32 *)((u8 *)arg0 + 0x1AC) = one;
+    *(s32 *)((u8 *)arg0 + 0x214) = one;
+    *(s32 *)((u8 *)arg0 + 0x27C) = one;
     goto check_loop;
 loop_body:
     entry = *(unsigned int *)list + offset;
@@ -853,7 +884,7 @@ loop_body:
             char *dst = (char *)record;
             while ((s8)(*dst++ = *src++) != 0) {
                 if (--remaining <= 0) {
-                    dst[-1] = 0;
+                    dst[-1] = zero;
                     break;
                 }
             }
@@ -864,22 +895,22 @@ loop_body:
             char *dst = (char *)(record + 0x32);
             while ((s8)(*dst++ = *src++) != 0) {
                 if (--remaining <= 0) {
-                    dst[-1] = 0;
+                    dst[-1] = zero;
                     break;
                 }
             }
-            *(s32 *)(record + 0x64) = 1;
+            *(s32 *)(record + 0x64) = one;
         } else {
             char *src = (char *)fn_80131234(lbl_80343B54);
             s32 remaining = 0x32;
             char *dst = (char *)(record + 0x32);
             while ((s8)(*dst++ = *src++) != 0) {
                 if (--remaining <= 0) {
-                    dst[-1] = 0;
+                    dst[-1] = zero;
                     break;
                 }
             }
-            *(s32 *)(record + 0x64) = 0;
+            *(s32 *)(record + 0x64) = zero;
         }
     }
     offset += 0x18;
