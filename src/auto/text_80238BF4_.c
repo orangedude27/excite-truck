@@ -32,12 +32,6 @@ extern void fn_802E317C(const char *, ...);
 extern char lbl_80340AD0[];
 extern char lbl_80340B00[];
 
-static inline s32 clamp255(s32 x) {
-    if (x <= 0) return 0;
-    if (x >= 255) return 255;
-    return x;
-}
-
 #define SWF_DATA(obj) (*(u8 **)((u8 *)(obj) + 0x14))
 
 #define SWAP32_FIELD(base, off) do { \
@@ -78,7 +72,7 @@ static inline s32 clampHigh_80238BF4(s32 v) {
 }
 #pragma scheduling invalid_target
 void fn_80238BF4(void *arg0, u8 *arg1) {
-#pragma optimization_level 3
+#pragma optimization_level 2
     struct LocalFrame {
         u16 indices3[3];
         u8 pad06[2];
