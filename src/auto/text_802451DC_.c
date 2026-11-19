@@ -123,6 +123,13 @@ extern void fn_802C9A70(int);
 extern void fn_802C855C(void);
 extern void fn_802C2B48(void);
 extern char *strcpy(char *, const char *);
+typedef union { double d; struct { unsigned int hi, lo; } w; } M2F_Bias;
+static inline float m2f(int v, double bias) {
+    M2F_Bias u;
+    u.w.hi = 0x43300000;
+    u.w.lo = (unsigned int)v ^ 0x80000000;
+    return (float)(u.d - bias);
+}
 
 struct MenuItem {
     char *name;
@@ -162,11 +169,12 @@ void fn_802452E4(struct MenuTextContext *context) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma opt_unroll_loops off
+extern void *memset(void *, int, unsigned int);
 int fn_80245360(int *a, struct Menu *b) {
     int sp8;
     char obj[0x30];
     char text[0x200];
-    unsigned long long buf[64];
+    int buf[128];
     char *s;
     float y;
     int selected = b->selected;
@@ -218,12 +226,15 @@ int fn_80245360(int *a, struct Menu *b) {
         strcpy(text, desc);
         s = text;
         while (strlen(s) != 0) {
-            int i;
             char *last_space;
             char *p_buf;
             unsigned int j;
             signed char save;
-            for (i = 0; i < 64; i++) buf[i] = 0;
+            {
+                int *bp = buf;
+                int k = 128;
+                do { *bp++ = 0; } while (--k != 0);
+            }
             last_space = 0;
             p_buf = (char *)buf;
             j = 0;
