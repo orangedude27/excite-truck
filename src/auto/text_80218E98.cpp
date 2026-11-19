@@ -6390,31 +6390,34 @@ extern "C" void fn_802235B4(void *arg0) {
 }
 
 #pragma opt_common_subs off
-extern "C" void fn_80223644(void *arg0) {
-    s32 i = 1;
-    s32 *pIndex = *(s32 **)((u8 *)arg0 + 0x2CC);
-    s32 cur = *pIndex;
-    goto loop_cond;
-loop_body:
+extern "C" void fn_80223644(void *list) {
+    s32 step = 1;
+    s32 *selectedIndexPtr = *(s32 **)((u8 *)list + 0x2CC);
+    s32 selectedIndex = *selectedIndexPtr;
+    goto search_backward_cond;
+
+search_backward_body:
     {
-        u8 *p = (u8 *)arg0 + (cur - i);
-        if (p[0x2D0] != 0) {
-            *pIndex -= i;
-            ((void (*)(void *))fn_8022375C)(arg0);
+        u8 *entry = (u8 *)list + (selectedIndex - step);
+        if (entry[0x2D0] != 0) {
+            *selectedIndexPtr -= step;
+            ((void (*)(void *))fn_8022375C)(list);
             return;
         }
     }
-    i++;
-loop_cond:
-    if (cur - i >= 0) goto loop_body;
-    s32 count = *(s32 *)((u8 *)arg0 + 0x2C8);
-    u8 *base = (u8 *)arg0 + cur;
-    s32 diff = count - cur;
-    for (s32 j = diff - 1; j > 0; j--) {
-        u8 *p = (u8 *)((u32)j + (u32)base);
-        if (p[0x2D0]) {
-            *pIndex += j;
-            ((void (*)(void *))fn_8022375C)(arg0);
+    step++;
+
+search_backward_cond:
+    if (selectedIndex - step >= 0) goto search_backward_body;
+
+    s32 itemCount = *(s32 *)((u8 *)list + 0x2C8);
+    u8 *selectedEntry = (u8 *)list + selectedIndex;
+    s32 remaining = itemCount - selectedIndex;
+    for (s32 offset = remaining - 1; offset > 0; offset--) {
+        u8 *entry = (u8 *)((u32)offset + (u32)selectedEntry);
+        if (entry[0x2D0]) {
+            *selectedIndexPtr += offset;
+            ((void (*)(void *))fn_8022375C)(list);
             return;
         }
     }
