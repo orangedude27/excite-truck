@@ -413,16 +413,14 @@ extern "C" void fn_801679F0(void) {
             i = 0;
             goto item_check;
         item_body:
-            slot = local.sp40;
-            do {
+            for (slot = local.sp40; *slot != 0; slot++) {
                 register value = (s32)((DummyArg1 *)item)->getName();
                 if (((DummyParamLocal *)*slot)->check(value) != 0) {
                     ((DummyParamLocal *)*slot)->apply(
                         item, (void *)lbl_8055E354, local.sp18);
                     break;
                 }
-                slot++;
-            } while (*slot != 0);
+            }
             i += 1;
         item_check:
             item = container->getItem(i);
@@ -668,10 +666,11 @@ void fn_80168104(void) {
 void fn_80168328(void) {
     extern s32 lbl_8055E354;
     extern void fn_801678D8(void);
-    s32 *root;
-    s32 i, offset, j, count;
-    s32 *slot;
-    u8 *entry;
+    register s32 *root;
+    register s32 i, offset, j, count;
+    register s32 *slot;
+    register u8 *entry;
+    register s32 flag;
     root = (s32 *)lbl_8055E354;
     fn_801678D8();
     i = 0;
@@ -681,15 +680,16 @@ void fn_80168328(void) {
         if (entry[0x1D] == 0) {
             entry[0x1D] = 1;
             count = *(s32 *)(entry + 0x18);
-            j = 0;
-            while (count-- > 0) {
+            for (j = 0; j < count; j++) {
+                flag = 0;
                 slot = (s32 *)((u8 *)*(s32 **)root + (*(s32 *)(entry + 0x14) + j) * 0x18);
-                if (*slot == 0) goto next;
-                if (*((u8 *)slot + 0x14) != 0) goto next;
-                entry[0x1D] = 0;
-                break;
-            next:
-                j++;
+                if (*slot != 0 && *((u8 *)slot + 0x14) == 0) {
+                    flag = 1;
+                }
+                if (flag != 0) {
+                    entry[0x1D] = 0;
+                    break;
+                }
             }
         }
         offset += 0x20;
@@ -1301,7 +1301,7 @@ s32 fn_801698B8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 s32 fn_80169928(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    #pragma scheduling invalid_target
+    s32 ret;
     if (arg1 > arg3 - arg1)
         arg1 = arg3 - arg1;
     if (arg0 > arg2 - arg0)
@@ -1310,12 +1310,10 @@ s32 fn_80169928(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
         arg0 = arg1;
     if (arg0 > 2)
         return 3;
-    switch (arg0) {
-    case 1:
-        return 1;
-    default:
-        return 2;
-    }
+    ret = 1;
+    if (arg0 > 1)
+        ret = 2;
+    return ret;
 }
 
 extern s32 lbl_8055A198;
