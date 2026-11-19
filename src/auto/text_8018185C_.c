@@ -2709,6 +2709,7 @@ void fn_80189CB4(void *arg0, void *arg1) {
 }
 #pragma dont_inline reset
 #pragma opt_propagation reset
+/* Empty stub (no operation). */
 void fn_8018A088(void) {
 
 }
