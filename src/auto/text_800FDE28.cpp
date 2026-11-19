@@ -307,7 +307,8 @@ extern "C" void fn_800FE1D0(void *taskManager) {
     /* nw4hbm::snd::detail::TaskManager::Execute(): drain the manager's task
        queues -- run tasks one at a time with ExecuteSingle() until every
        priority queue is empty.  The sound thread calls this when it is woken
-       with the "work" message (fn_800FE814). */
+       with the "work" message (fn_800FE814); the manager itself is the single
+       instance fn_800FDE60() builds. */
     do {
     } while (ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv(taskManager) != 0);
 }
