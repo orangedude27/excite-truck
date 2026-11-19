@@ -48,7 +48,7 @@ void *fn_802E77C0(int statusCode) {
 
   #pragma push
  #pragma scheduling invalid_target
- float fn_802E7824(float arg0, float arg1) {
+float fn_802E7824(float arg0, float arg1) {
     float c = lbl_80565164;
     float t = lbl_80565160 / (lbl_80565160 - arg1);
     if (arg0 >= c) {
@@ -418,12 +418,15 @@ void fn_802E7FD0(void) {
     unsigned char *lastState;
     unsigned char *base;
     int channel;
-    int i;
-    int changed;
+    int probe;
+    int readCount;
+    register int queueIndex;
+    register int changed;
     int current;
     int old;
     int active;
     int result;
+    int filtered;
     int timeNow;
 
     formatBase = (char *)&lbl_8034D898;
@@ -440,14 +443,14 @@ void fn_802E7FD0(void) {
     changed = fn_802ECC10();
     if ((unsigned int)changed != (unsigned int)lbl_80560009) {
         lbl_80560009 = changed;
-        i = 0;
+        queueIndex = 0;
         do {
             if (changed != 0)
-                WPADiClearQueue(i);
+                WPADiClearQueue(queueIndex);
             else
-                WPADiDisableRecalibration(i);
-            i += 1;
-        } while (i < 4);
+                WPADiDisableRecalibration(queueIndex);
+            queueIndex += 1;
+        } while (queueIndex < 4);
     }
 
     record = lbl_80505978;
@@ -477,15 +480,16 @@ void fn_802E7FD0(void) {
             }
         }
 
-        i = WPADProbe(channel, devices);
+        probe = WPADProbe(channel, devices);
         result = KPADRead(channel, record + 0xC8, 1);
-        if (result >= 1 && i == 0 && record[0xC4] != 0) {
+        if (result >= 1 && probe == 0 && record[0xC4] != 0) {
             current = *(signed char *)(record + 0x14D);
             old = *(signed char *)lastState;
             if (current != old) {
-                i = (int)fn_802E77C0((signed char)current);
+                result = (int)fn_802E77C0((signed char)current);
+                probe = (int)fn_802E77C0(*(signed char *)lastState);
                 ((void (*)(const char *, ...))fn_802E30C8)(
-                    formatBase + 0x94, channel, (int)fn_802E77C0(*(signed char *)lastState), i);
+                    formatBase + 0x94, channel, probe, result);
                 *lastState = (unsigned char)current;
             }
             if ((signed char)current == 0) {
@@ -516,13 +520,13 @@ void fn_802E7FD0(void) {
             record[0xC5] = 0;
         }
 
-        i = 0;
+        filtered = 0;
         if (((int (*)(int))fn_802E77B8)(channel) != 0 &&
             record[0x2B] != 0 && record[0x29] != 0 &&
             record[0x27] != 0)
-            i = 1;
+            filtered = 1;
         timeNow = fn_802E2C20();
-        if (i == 0)
+        if (filtered == 0)
             *(int *)(record + 0xC0) = timeNow;
         else if (timeNow - *(int *)(record + 0xC0) > 0x3E8)
             fn_802E2E38(0);
@@ -630,21 +634,18 @@ void fn_802E8524(void) {}
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_802E8528(int index, float value, float unused) {
-    extern float lbl_80565164, lbl_80565170, lbl_80565198, lbl_8056519C;
     extern unsigned char lbl_80505978[];
-    float delta;
     float scaled;
     float rounded;
     int result;
     int converted;
     int magnitude;
 
-    delta = value - lbl_80565198;
-    scaled = lbl_8056519C * delta;
-    if (scaled < lbl_80565164)
-        rounded = scaled - lbl_80565170;
+    scaled = (value - 0.01f) * 65535.0f;
+    if (scaled < 0.0f)
+        rounded = scaled - 0.5f;
     else
-        rounded = lbl_80565170 + scaled;
+        rounded = 0.5f + scaled;
     converted = (int)rounded;
     magnitude = converted & ((-converted & ~converted) >> 31);
     result = 0xFFFF;
