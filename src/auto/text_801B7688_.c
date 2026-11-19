@@ -152,6 +152,7 @@ float fn_801B79AC(void) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma ppc_psq_save off
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" float lbl_80562700, lbl_80562708, lbl_8056270C, lbl_80562710, lbl_80562714;
@@ -216,18 +217,20 @@ extern "C" void fn_801B79D4(void *arg0, unsigned int arg1, int arg2) {
 
 void PSVECCrossProduct(float *, float *, float *);
 void PSVECNormalize(float *, float *);
-#pragma opt_propagation off
+#pragma processor 750
 void fn_801B7BA8(float *arg0, float *arg1, float *arg2) {
     float a[3];
     float b[3];
     float c[3];
     float v, w, u, z, y, x;
+    const float *p1 = arg1;
+    const float *p2 = arg2;
 
-    x = arg1[0];
-    y = arg1[1];
-    z = arg1[2];
-    u = arg2[0];
-    v = arg2[1];
+    x = p1[0];
+    y = p1[1];
+    z = p1[2];
+    u = p2[0];
+    v = p2[1];
     w = lbl_80562708;
     a[0] = x;
     a[1] = y;
@@ -244,7 +247,6 @@ void fn_801B7BA8(float *arg0, float *arg1, float *arg2) {
     arg0[3] = a[0]; arg0[4] = a[1]; arg0[5] = a[2];
     arg0[6] = b[0]; arg0[7] = b[1]; arg0[8] = b[2];
 }
-#pragma opt_propagation reset
 void fn_801E9DC4(void *, float *, float *);
 int fn_801E9E30(void *, float *);
 void fn_801E9E78(void *, float *, float *, int *);
