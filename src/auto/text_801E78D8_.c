@@ -1296,7 +1296,13 @@ void fn_801E8F10(long arg0) {
     volatile struct Loc78 loc;
     struct Rec78 *p;
     long i;
-    long cnt;
+    volatile long cnt;
+    int res;
+#define X(n) loc.r.b##n = p->b##n;
+#define Y10 X(10) X(11) X(12) X(13) X(14) X(15) X(16) X(17) X(18) X(19)
+#define Y2 X(20) X(21) X(22) X(23) X(24) X(25) X(26) X(27) X(28) X(29)
+#define Y3 X(30) X(31) X(32) X(33) X(34) X(35) X(36) X(37) X(38) X(39)
+#define Y5 X(50) X(51) X(52) X(53) X(54) X(55) X(56) X(57) X(58) X(59)
     fn_8012E81C(lbl_80339BA0 + 0x178);
     fn_8012E81C(lbl_80339BA0 + 0x188);
     cnt = arg0 + 0x20;
@@ -1306,7 +1312,18 @@ void fn_801E8F10(long arg0) {
         sprintf(lbl_804881E8, lbl_80339BA0 + 0x1B0, i);
         fn_80127464();
         fn_8001255C(lbl_804881E8, lbl_80562DA0);
-        loc.r = *p;
+        X(1a)
+        X(1c) X(1d) X(1e) X(1f) Y2 Y3 X(40) X(41) X(42) X(43)
+        loc.r.tag = p->tag;
+        X(04) X(05) X(06) X(07) X(08) X(09) X(0a) X(0b) X(0c) X(0d) X(0e) X(0f) Y10
+        X(1b)
+        X(5c) X(5d) X(5e) X(5f) X(60) X(61) X(62) X(63)
+        loc.r.a64 = p->a64;
+        loc.r.a68 = p->a68;
+        loc.r.a6c = p->a6c;
+        loc.r.c70 = p->c70;
+        loc.r.a74 = p->a74;
+        X(44) X(45) X(46) X(47) X(48) X(49) X(4a) X(4b) X(4c) X(4d) X(4e) X(4f) Y5
         loc.idx = i;
         e = (long *)fn_801E8EA4(loc.r.tag);
         ctx.w0 = e[0];
@@ -1314,12 +1331,19 @@ void fn_801E8F10(long arg0) {
         memset((void *)ctx.pad, 0, 0x50);
         fn_801E9DC4((char *)&ctx + 0x58);
         if (p->tag == 0x53) {
-            if (((int (*)(int, void *))fn_801284F8)(0x4E4, lbl_80339BA0 + 0x1C0)) fn_801EEEB0((void *)&ctx, p);
+            res = ((int (*)(int, void *))fn_801284F8)(0x4E4, lbl_80339BA0 + 0x1C0);
+            if (res) ((void (*)(int, void *, void *))fn_801EEEB0)(res, (void *)&ctx, p);
         } else {
-            if (((int (*)(int, void *))fn_801284F8)(0x4E4, lbl_80339BA0 + 0x1D0)) fn_801EC750((void *)&ctx, p);
+            res = ((int (*)(int, void *))fn_801284F8)(0x4E4, lbl_80339BA0 + 0x1D0);
+            if (res) ((void (*)(int, void *, void *))fn_801EC750)(res, (void *)&ctx, p);
         }
         ((void (*)(void))fn_801E87D4)();
     }
+#undef Y5
+#undef Y3
+#undef Y2
+#undef Y10
+#undef X
 }
 
 #pragma scheduling on
@@ -1351,7 +1375,7 @@ void fn_801E95DC(void) {
     extern double lbl_80562E10;
     extern float lbl_80562E18;
     float matrix[12];
-    double y, x;
+    double x, y, tmp;
     float time;
     long flags;
     unsigned long index;
@@ -1372,12 +1396,12 @@ void fn_801E95DC(void) {
         matrix[11] = lbl_80562DBC;
         time = ((float (*)(float))fn_801E7E18)(lbl_80562DD4);
         x = lbl_80562DD4 - (float)fn_8002EFB4(time, lbl_80562E10);
-        y = lbl_80562DBC;
+        tmp = lbl_80562DBC;
         index = fn_801E866C((long)lbl_8055AF0C);
         if (index < 8) entry = lbl_80488648[index];
         else entry = 0;
         matrix[10] = *(float *)(entry + 0x2c);
-        y = (float)y - matrix[10] / fn_80203FE0();
+        y = (float)tmp - matrix[10] / fn_80203FE0();
         flags = *(long *)((char *)fn_801E87A8() + 0x10);
         mode = 2;
         if (flags & 2) mode = 1;
@@ -1424,11 +1448,11 @@ void fn_801E96D8(long arg0) {
     long zero, hundred, magic;
     long tailres;
     void *temp_r3_4;
-    void **temp_r3_3;
-    void **var_r22;
-    void *temp;
-    void *r31base;
-    char *sbase;
+    register void **temp_r3_3;
+    register void **var_r22;
+    register void *temp;
+    register void *r31base;
+    register char *sbase;
     temp = (void *)fn_8001285C(*(long *)(arg0 + 0x3E4));
     sbase = lbl_80339BA0;
     if ((((long (*)(void *, void *, long))(*(void ***)(*(void **)((char *)temp + 0x20)))[6])((*(void **)((char *)temp + 0x20)), sbase + 0x1DC, 0)) != 0) {
