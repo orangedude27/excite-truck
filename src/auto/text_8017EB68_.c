@@ -1870,6 +1870,11 @@ void fn_80181438(void) {
 
 }
 
+/* Empty virtual method of the DriverInterface base class: base vtable
+ * lbl_80331EFC slot +0x78, a no-op default like the neighbouring stubs at
+ * slots +0x74 (fn_80181438) and +0x7C (fn_80181440), just before the deleting
+ * destructor at +0x80. The live vtable lbl_80331E78 has no such slot, so this
+ * base implementation is never dispatched on a constructed DriverInterface. */
 void fn_8018143C(void) {
 
 }
