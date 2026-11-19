@@ -917,7 +917,7 @@ void fn_80267420(void) {
 
 #pragma scheduling invalid_target
 #pragma push
-#pragma optimize_for_size on
+#pragma optimize_for_size off
 #pragma use_lmw_stmw off
 #pragma processor 750
 void fn_80267680(void) {
@@ -932,10 +932,7 @@ void fn_80267680(void) {
     extern void fn_80268B94(int);
     extern void fn_80270484(void);
     char *p;
-    struct StackData {
-        volatile float matrix[12];
-        union { double value; unsigned int word[2]; } conv;
-    } stack;
+    volatile float matrix[12];
     int i;
     float bottom, limit;
     double bias;
@@ -974,18 +971,18 @@ void fn_80267680(void) {
         *(int *)(p + 0x14C) = -1;
         *(int *)(p + 0x150) = -1;
         if (fn_801796B4() == 0) {
-            stack.matrix[0] = one;
-            stack.matrix[1] = zero;
-            stack.matrix[2] = zero;
-            stack.matrix[3] = zero;
-            stack.matrix[4] = one;
-            stack.matrix[5] = zero;
-            stack.matrix[6] = zero;
-            stack.matrix[7] = zero;
-            stack.matrix[8] = one;
-            stack.matrix[9] = zero;
-            stack.matrix[10] = zero;
-            stack.matrix[11] = zero;
+            matrix[0] = one;
+            matrix[1] = zero;
+            matrix[2] = zero;
+            matrix[3] = zero;
+            matrix[4] = one;
+            matrix[5] = zero;
+            matrix[6] = zero;
+            matrix[7] = zero;
+            matrix[8] = one;
+            matrix[9] = zero;
+            matrix[10] = zero;
+            matrix[11] = zero;
             fn_80276BE4((int)(p + 0x1A4), (int)(p + 0x1D4));
         }
         fn_801E9DC4((int *)(p + 0x1EC));
