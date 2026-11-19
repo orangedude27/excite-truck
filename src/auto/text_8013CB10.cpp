@@ -1991,17 +1991,23 @@ extern "C" int fn_8013FC6C(void* self) {
     return 0;
 }
 #pragma scheduling on
-extern "C" s32 fn_8013FD20(const void *arg0, s32 arg1) {
+extern "C" s32 fn_8013FD20(const void *arg0, s32 index) {
+    /* True unless the entry at `index` in this object's record array (records of
+     * 0x12C bytes, base at +0xB8) is flagged timed (+0x11C) while the object's
+     * timer is not running.  The timer counts a duration in seconds (+0x74) from
+     * the start stamp taken from the game clock (+0x78), the same pair
+     * fn_80142978 measures; fn_8001DAE8 reads that clock and ignores its
+     * argument. */
     const u8 *self = (const u8 *)arg0;
-    const u8 *entry = *(u8 *const *)(self + 0xB8) + arg1 * 0x12C;
+    const u8 *entry = *(u8 *const *)(self + 0xB8) + index * 0x12C;
     s32 result = 1;
     if (*(const s32 *)(entry + 0x11C) != 0) {
-        f32 diff = fn_8001DAE8((void *)(self + 0x74)) - *(const f32 *)(self + 0x78);
-        s32 valid = 0;
-        if (diff >= lbl_805614A4 && diff < *(const f32 *)(self + 0x74)) {
-            valid = 1;
+        f32 elapsed = fn_8001DAE8((void *)(self + 0x74)) - *(const f32 *)(self + 0x78);
+        s32 timerRunning = 0;
+        if (elapsed >= lbl_805614A4 /* 0.0f */ && elapsed < *(const f32 *)(self + 0x74)) {
+            timerRunning = 1;
         }
-        if (valid == 0) {
+        if (timerRunning == 0) {
             result = 0;
         }
     }
@@ -3229,7 +3235,7 @@ extern "C" void fn_80142650(void *arg0) {
 #pragma scheduling invalid_target
 extern "C" s32 fn_801427DC(void *arg0, s32 arg1) {
     u8 *table = *(u8 **)((u8 *)arg0 + 0x64);
-    f32 scale = lbl_8042FB3C_arr[7];
+    f32 scale = *(f32 *)(lbl_8042FB3C + 0x1C);
     u8 *items = *(u8 **)(table + 4);
     u8 *item = items + arg1 * 0x14;
     f32 first = (f32)*(s32 *)(item + 0x10);
