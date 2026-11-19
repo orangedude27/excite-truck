@@ -226,6 +226,7 @@ __declspec(section ".sdata") extern char lbl_8055A288[];
 __declspec(section ".sdata") extern char lbl_8055A290[];
 __declspec(section ".sdata") extern char lbl_8055A294[];
 extern f32 lbl_80561A34;
+#pragma processor 750
 extern "C" void fn_80171A80(void *arg0) {
     class Node {
     public:
