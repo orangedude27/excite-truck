@@ -610,27 +610,19 @@ void fn_801B42D0(void *owner) {
 }
 #pragma pop
 void fn_801B435C(void *arg0) {
-    register u32 zero = 0;
-    f32 value;
-    register u32 *p = (u32 *)arg0;
+    struct Entry {
+        s32 a;
+        s32 b;
+        f32 c;
+        u8 pad[0x20];
+    } *e = (struct Entry *)((u8 *)arg0 + 0x31C);
+    int i;
 
-    value = lbl_80562650;
-    p[0x31C / 4] = zero; p[0x320 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x324) = value;
-    p[0x348 / 4] = zero; p[0x34C / 4] = zero; *(f32 *)((u8 *)arg0 + 0x350) = value;
-    p[0x374 / 4] = zero; p[0x378 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x37C) = value;
-    p[0x3A0 / 4] = zero; p[0x3A4 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x3A8) = value;
-    p[0x3CC / 4] = zero; p[0x3D0 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x3D4) = value;
-    p[0x3F8 / 4] = zero; p[0x3FC / 4] = zero; *(f32 *)((u8 *)arg0 + 0x400) = value;
-    p[0x424 / 4] = zero; p[0x428 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x42C) = value;
-    p[0x450 / 4] = zero; p[0x454 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x458) = value;
-    p[0x47C / 4] = zero; p[0x480 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x484) = value;
-    p[0x4A8 / 4] = zero; p[0x4AC / 4] = zero; *(f32 *)((u8 *)arg0 + 0x4B0) = value;
-    p[0x4D4 / 4] = zero; p[0x4D8 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x4DC) = value;
-    p[0x500 / 4] = zero; p[0x504 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x508) = value;
-    p[0x52C / 4] = zero; p[0x530 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x534) = value;
-    p[0x558 / 4] = zero; p[0x55C / 4] = zero; *(f32 *)((u8 *)arg0 + 0x560) = value;
-    p[0x584 / 4] = zero; p[0x588 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x58C) = value;
-    p[0x5B0 / 4] = zero; p[0x5B4 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x5B8) = value;
+    for (i = 0; i < 16; i++) {
+        e[i].a = 0;
+        e[i].b = 0;
+        e[i].c = -5.0f;
+    }
 }
 
 extern void fn_802E317C(const char *, ...);
