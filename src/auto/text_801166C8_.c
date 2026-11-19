@@ -1435,7 +1435,7 @@ void fn_80118C44(void* bink) {
     s32 var_r4;
     s32 entryOff;
     u32 bufferedFrames;
-    u32 bufferTarget;
+    u32 frameOrTarget;
     s32 resync;
     u32 index;
     void* stream;
@@ -1456,11 +1456,10 @@ void fn_80118C44(void* bink) {
             stream = (u8*)*(void**)((u8*)bink + 0x2F0) + entryOff;
             if (*(s32*)((u8*)stream + 0x5C) != 0) {   /* the stream wants a flush */
                 *(s32*)((u8*)stream + 0x5C) = 0;
-                value = 0;
-                bufferTarget = *(u32*)((u8*)bink + 0x0C);   /* the movie's frame */
-                if (bufferTarget > 1) {
+                frameOrTarget = *(u32*)((u8*)bink + 0x0C);   /* the movie's frame */
+                if (frameOrTarget > 1) {
                     stream = (u8*)*(void**)((u8*)bink + 0x2F0) + entryOff;
-                    if ((s32)bufferTarget <= *(s32*)((u8*)stream + 0x48))
+                    if ((s32)frameOrTarget <= *(s32*)((u8*)stream + 0x48))
                         resync = 1;                      /* it starts at/after us */
                 }
             }
@@ -1473,10 +1472,10 @@ void fn_80118C44(void* bink) {
             fn_8011C274(lbl_8055DED4, (u8*)bink + 0x340);   /* lock the Bink tick */
             fn_801190B0(bink, 0);                          /* pause its streams */
             for (;;) {
-                bufferTarget = *(u32*)((u8*)bink + 0x138);
+                frameOrTarget = *(u32*)((u8*)bink + 0x138);
                 bufferedFrames = *(u32*)((u8*)bink + 0x13C);
-                bufferTarget = (bufferTarget * 0x1D) >> 5; /* 29/32ths of a buffer */
-                if (bufferedFrames < bufferTarget) {
+                frameOrTarget = (frameOrTarget * 0x1D) >> 5; /* 29/32ths of a buffer */
+                if (bufferedFrames < frameOrTarget) {
                     /* not enough decoded yet: ask the file interface for more */
                     bufferedFrames = ((s32 (*)(void*))(*(void**)((u8*)bink + 0x100)))((u8*)bink + 0xF0);
                     if (bufferedFrames != 0) continue;
@@ -8809,8 +8808,8 @@ void fn_80125014(void *arg0) {
     f32 temp_f0;
     f32 temp_f1;
     f32 temp_f3;
-    f32 temp_f4;
     f32 temp_f2;
+    f32 temp_f4;
     f32 temp_f5;
     f32 temp_f6;
     f32 temp_f7;
@@ -8823,23 +8822,23 @@ void fn_80125014(void *arg0) {
     temp_f1 = *(f32 *)((u8 *)arg0 + 0);
     temp_f0 = *(f32 *)((u8 *)arg0 + 0x10);
     temp_f5 = *(f32 *)((u8 *)arg0 + 4);
-    temp_f4 = *(f32 *)((u8 *)arg0 + 0x14);
+    temp_f2 = *(f32 *)((u8 *)arg0 + 0x14);
     temp_f6 = temp_f1 + temp_f0;
     temp_f8 = temp_f1 - temp_f0;
     temp_f3 = *(f32 *)((u8 *)arg0 + 8);
-    temp_f2 = *(f32 *)((u8 *)arg0 + 0x18);
-    temp_f7 = temp_f5 + temp_f4;
+    temp_f4 = *(f32 *)((u8 *)arg0 + 0x18);
+    temp_f7 = temp_f5 + temp_f2;
     temp_f0 = *(f32 *)((u8 *)arg0 + 0x1C);
     temp_f1 = *(f32 *)((u8 *)arg0 + 0xC);
-    temp_f9 = temp_f5 - temp_f4;
+    temp_f9 = temp_f5 - temp_f2;
     temp_f12 = temp_f1 - temp_f0;
-    temp_f4 = temp_f1 + temp_f0;
-    temp_f10 = temp_f3 + temp_f2;
-    temp_f11 = temp_f3 - temp_f2;
+    temp_f2 = temp_f1 + temp_f0;
+    temp_f10 = temp_f3 + temp_f4;
+    temp_f11 = temp_f3 - temp_f4;
     *(f32 *)((u8 *)arg0 + 0) = temp_f6 + temp_f10;
-    *(f32 *)((u8 *)arg0 + 4) = temp_f7 + temp_f4;
+    *(f32 *)((u8 *)arg0 + 4) = temp_f7 + temp_f2;
     *(f32 *)((u8 *)arg0 + 0x10) = temp_f6 - temp_f10;
-    *(f32 *)((u8 *)arg0 + 0x14) = temp_f7 - temp_f4;
+    *(f32 *)((u8 *)arg0 + 0x14) = temp_f7 - temp_f2;
     *(f32 *)((u8 *)arg0 + 8) = temp_f8 + temp_f12;
     *(f32 *)((u8 *)arg0 + 0xC) = temp_f9 - temp_f11;
     *(f32 *)((u8 *)arg0 + 0x18) = temp_f8 - temp_f12;
