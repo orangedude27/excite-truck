@@ -508,6 +508,7 @@ void fn_801BFE7C(float *out, float *a, float *b) {
     out[2] = z;
 }
 
+/* No-op stub. */
 void fn_801BFEB0(void) {
 
 }
