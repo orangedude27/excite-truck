@@ -633,6 +633,7 @@ void fn_801B5354(void) {
     #undef gReplayQueue
 }
 
+/* Empty audio-update callback: fn_80177E14 calls this for normal playback instead of the replay audio processor (fn_801B50B4). */
 void fn_801B535C(void) {
 
 }
