@@ -241,15 +241,17 @@ void *fn_8024A204(void *self, s32 deleteFlag) {
     return self;
 }
 #pragma scheduling reset
-void *fn_8024A268(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(s32 *)((char *)arg0 + 0x18) = -1;
-        *(s32 *)((char *)arg0 + 0x1C) = *(s32 *)((char *)arg0 + 0x10) = 0;
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+/* Deleting-destructor helper: reset fields at +0x10, +0x18, and +0x1C, then free the
+ * object when deleteFlag > 0. */
+void *fn_8024A268(void *self, s32 deleteFlag) {
+    if (self != 0) {
+        *(s32 *)((char *)self + 0x18) = -1;
+        *(s32 *)((char *)self + 0x1C) = *(s32 *)((char *)self + 0x10) = 0;
+        if (deleteFlag > 0) {
+            fn_80128668(self);
         }
     }
-    return arg0;
+    return self;
 }
 
 #pragma push
