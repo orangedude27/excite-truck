@@ -252,6 +252,7 @@ float fn_8013AA68(void *, void *, void *, void *);
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8013AC2C(int *__restrict arg0) {
+    /* Set the "rtt_speed_factor" parameter to 1.0 on the target object for the given entry id. */
     struct Target {
         virtual void f0();
         virtual void f1();
@@ -263,11 +264,11 @@ extern "C" void fn_8013AC2C(int *__restrict arg0) {
         virtual void f7();
         virtual void f8(char *, float);
     };
-    int id = *arg0;
-    void *tmp = fn_8001285C(id);
-    void *parent = fn_80012820(*(int *)((char *)tmp + 4));
-    Target *object = *(Target **)((char *)parent + 0x80);
-    object->f8(lbl_8032C264, lbl_80561440);
+    int entryId = *arg0;
+    void *entry = fn_8001285C(entryId);
+    void *owner = fn_80012820(*(int *)((char *)entry + 4));
+    Target *target = *(Target **)((char *)owner + 0x80);
+    target->f8(lbl_8032C264, lbl_80561440);
 }
 extern int *fn_801E87A8(void);
 extern int fn_80135108(void);
