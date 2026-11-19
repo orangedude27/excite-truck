@@ -199,6 +199,32 @@ static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *
     dst[1] += matrix[10];
     dst[2] += matrix[11];
 }
+static inline void transform_vec_reordered(f32 x, f32 y, f32 z, const f32 *matrix, const f32 *src, f32 *dst) {
+    if (src == dst) {
+        f32 xy3 = y * matrix[3];
+        f32 xx0 = x * matrix[0];
+        f32 xx1 = x * matrix[1];
+        f32 yy4 = y * matrix[4];
+        f32 xx2 = x * matrix[2];
+        f32 yy5 = y * matrix[5];
+        f32 outX = (xx0 + xy3) + z * matrix[6];
+        f32 outY = (xx1 + yy4) + z * matrix[7];
+        f32 outZ = (xx2 + yy5) + z * matrix[8];
+        dst[0] = outX;
+        dst[1] = outY;
+        dst[2] = outZ;
+    } else {
+        x = src[0];
+        y = src[1];
+        z = src[2];
+        dst[0] = x * matrix[0] + y * matrix[3] + z * matrix[6];
+        dst[1] = x * matrix[1] + y * matrix[4] + z * matrix[7];
+        dst[2] = x * matrix[2] + y * matrix[5] + z * matrix[8];
+    }
+    dst[0] += matrix[9];
+    dst[1] += matrix[10];
+    dst[2] += matrix[11];
+}
 #define transform_vec(matrix, src, dst) transform_vec_values(matrix, src, dst, (src)[0], (src)[1], (src)[2])
 extern s32 fn_802315FC(s32);
 extern void fn_802E30C8(const char *);
@@ -410,9 +436,9 @@ f32 outX, outY, outZ;
 #pragma small_data off
 #pragma scheduling invalid_target
 void fn_80231780(void *arg0) {
+    f32 x, y, z;
     f32 f25, f26, f27, f28, f29, f30, f31;
     volatile f32 sp10, spC, sp8;
-    f32 x, y, z;
     u8 *record;
     s32 color;
     s32 offset;
