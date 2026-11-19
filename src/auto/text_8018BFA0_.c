@@ -97,8 +97,8 @@ void fn_8018C50C(void) {
 
 }
 
+/* No-op stub (empty function). */
 void fn_8018C510(void) {
-
 }
 
 extern float lbl_80332840[16];
