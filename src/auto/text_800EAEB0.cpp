@@ -2593,7 +2593,7 @@ extern "C" int Setup__Q46nw4hbm3snd6detail9SeqPlayerFPQ46nw4hbm3snd6detail17SeqT
             valid = 0;
             if (state >= 0 && state < 16) valid = 1;
             if (valid == 0)
-                Panic__Q26nw4hbm2dbFPCciPCce(file, 0x2FD, file + 0x14, state, 0, 16);
+                Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323B28, 0x2FD, (const char *)lbl_80323B28 + 0x14, state, 0, 16);
             seq = state > 15 ? (void *)temp : *(void **)(entry + 0x9C);
             if (seq != 0) {
                 Close__Q46nw4hbm3snd6detail8SeqTrackFv(seq);
@@ -3420,6 +3420,8 @@ extern "C" void fn_800F0360(void *self) {
         virtual void unused1();
         virtual void RemoveTrack(void *);
     };
+    struct { s32 v; } tickHolder;
+    s32 &ticks = tickHolder.v;
     register void *player = self;
     register const char *file = (const char *)lbl_80323B28;
     register s32 i;
@@ -3430,7 +3432,7 @@ extern "C" void fn_800F0360(void *self) {
     if (*(u8 *)((u8 *)player + 0x15) != 0 && *(u8 *)((u8 *)player + 0x17) != 0) {
         if (*(u8 *)((u8 *)player + 0x18) == 0 && *(u8 *)((u8 *)player + 0x19) == 0 &&
             (*(u8 *)((u8 *)player + 0x14) != 0 || *((u8 *)Instance__15EmissionManagerFv() + 0x6C32) == 0)) {
-            register s32 ticks = 0;
+            ticks = 0;
             while (*(u16 *)((u8 *)player + 0x88) >= 0x1A0) {
                 ticks++;
                 *(u16 *)((u8 *)player + 0x88) -= 0x1A0;
