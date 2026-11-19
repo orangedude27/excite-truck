@@ -523,22 +523,20 @@ void *memset(void *, int, unsigned int);
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802B257C(void *arg0) {
-    int count = *(int *)((char *)arg0 + 0x40C);
-    int **list = *(int ***)((char *)arg0 + 0x408);
     int total = 0;
-    int i;
-    for (i = 0; i < count; i++) {
-        total += *list[i];
+    int i, idx;
+    for (i = 0; i < *(int *)((char *)arg0 + 0x40C); i++) {
+        total += *(*(int ***)((char *)arg0 + 0x408))[i];
     }
     if (total > 0x80) {
-        int idx = fn_80129D90(0, 0, count);
+        idx = fn_80129D90(0, 0, *(int *)((char *)arg0 + 0x40C));
         while (total > 0x80) {
-            int *p = list[idx];
+            int *p = (*(int ***)((char *)arg0 + 0x408))[idx];
             if (*p > 0) {
                 *p = *p - 1;
                 total--;
             }
-            idx = (idx + 1) % count;
+            idx = (idx + 1) % *(int *)((char *)arg0 + 0x40C);
         }
     }
     memset((char *)arg0 + 0x208, 0, 0x200);
@@ -547,9 +545,9 @@ void fn_802B257C(void *arg0) {
         int dbl = remain * 2;
         int pos = 0;
         int k;
-        for (k = 0; k < count; k++) {
-            int *obj = list[k];
-            int lim = dbl / count;
+        for (k = 0; k < *(int *)((char *)arg0 + 0x40C); k++) {
+            int *obj = (*(int ***)((char *)arg0 + 0x408))[k];
+            int lim = dbl / *(int *)((char *)arg0 + 0x40C);
             if (lim > remain)
                 lim = remain;
             if (lim > 0) {
@@ -1147,7 +1145,7 @@ void *fn_802B3DA4(void *container, int slot, int index) {
     return result;
 }
 
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_802B3E00(void *arg0, void *arg1, short arg2, float farg0) {
     extern int lbl_8055F9B8;
     extern void *lbl_8055F9BC;
@@ -1163,7 +1161,7 @@ void fn_802B3E00(void *arg0, void *arg1, short arg2, float farg0) {
     Node802B3E00 *tail = queue->tail;
     Pool802B3E00 *pool = (Pool802B3E00 *)lbl_8055F9BC;
     Entry802B3E00 *out = 0;
-    char *data; int index; Node802B3E00 *node;
+    int index; char *data; Node802B3E00 *node;
     if (tail == 0 || tail->count + 1 > tail->capacity) {
         Node802B3E00 *newNode = 0;
         if (pool->used + 1 <= pool->capacity) {
@@ -1190,7 +1188,7 @@ void fn_802B3E00(void *arg0, void *arg1, short arg2, float farg0) {
         out->value = arg2; out->weight = farg0;
     } else lbl_8055F9B8 += 1;
 }
-#pragma scheduling on
+#pragma opt_propagation reset
 /* Return the element count at +4 of a container (whose base pointer is at +0). */
 int fn_802B3F0C(void *container) {
     return ((int *)container)[1];
