@@ -8950,10 +8950,11 @@ BOOLEAN BTM_SecAddDevice(BD_ADDR bd_addr, DEV_CLASS dev_class, BD_NAME bd_name, 
 #pragma push
 #pragma dont_inline off
 BOOLEAN BTM_SecDeleteDevice(BD_ADDR bd_addr) {
-    u8 *entry = btm_find_dev_entry(bd_addr);
-    if (entry == 0)
+    /* Find the device record for bd_addr, clear its in-use flag, and delete its stored link key. */
+    u8 *devRec = btm_find_dev_entry(bd_addr);
+    if (devRec == 0)
         return FALSE;
-    entry[0x76] = 0;
+    devRec[0x76] = 0;
     BTM_DeleteStoredLinkKey(bd_addr, 0);
     return TRUE;
 }
