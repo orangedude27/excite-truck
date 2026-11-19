@@ -168,10 +168,10 @@ BOOL ARCFastOpen(ARCHandle *handle, s32 entrynum, ARCFileInfo *info) {
 }
 
 extern u8 lbl_802FE850[];
-s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *__restrict path) {
-    register u32 entry = handle->currDir;
-    register u32 *fst = (u32 *)handle->FSTStart;
-    register u8 *locale = *(u8 **)(lbl_802FE850 + 0x38);
+s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
+    u32 entry = handle->currDir;
+    u32 *fst = (u32 *)handle->FSTStart;
+    u8 *locale = *(u8 **)(lbl_802FE850 + 0x38);
     for (;;) {
         const char *end;
         u32 length, limit, node;
@@ -2855,14 +2855,23 @@ extern u32 fn_8011A240(void *, u32, s32, u32);
 extern void fn_8011A45C(void *, s32, s32);
 extern void fn_8011A1A0(u32 *, u32);
 u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
-    u8 *obj = (u8 *)arg0;
-    u8 *buf = (u8 *)arg3;
-    u8 *buf0 = buf;
-    u32 len = arg4;
-    u32 total = 0;
-    s32 seek = arg2;
-    u32 t0, t1, chunk, first;
-    u32 *rd;
+    u8 *obj;
+    u8 *buf;
+    u32 len;
+    u8 *buf0;
+    u32 total;
+    s32 seek;
+    volatile u32 *rd;
+    u32 t0;
+    u32 t1;
+    u32 chunk;
+    u32 first;
+    obj = (u8 *)arg0;
+    buf = (u8 *)arg3;
+    len = arg4;
+    buf0 = buf;
+    total = 0;
+    seek = arg2;
     if (*(s32 *)(obj + 0x20) != 0)
         return 0;
     t0 = fn_80116D30();
@@ -2902,7 +2911,7 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
             *(s32 *)(obj + 0x20) = 1;
             fn_8011A330(arg0);
         }
-        rd = (u32 *)(obj + 0x98);
+        rd = (volatile u32 *)(obj + 0x98);
         *(u32 *)(obj + 0x90) += total;
         *rd += total;
         *(u32 *)(obj + 0x28) += total;
@@ -2914,7 +2923,7 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
             *(u32 *)(obj + 0x34) += now - t0;
         }
     } else {
-        rd = (u32 *)(obj + 0x98);
+        rd = (volatile u32 *)(obj + 0x98);
         while (len != 0 && *(s32 *)(obj + 0x20) == 0) {
             fn_8011A6A0(arg0);
             chunk = *(u32 *)(obj + 0x4C);
@@ -3687,11 +3696,10 @@ void *fn_8011BE48(s32 arg0) {
         memset(ptr, 0, 0x40);
         *(s32 *)((u8 *)ptr + 0x00) = 0;
         *(s32 *)((u8 *)ptr + 0x04) = 1;
-        arg0 = (arg0 < 0) ? -arg0 : arg0;
         *(s32 *)((u8 *)ptr + 0x30) = 0;
         *(s32 *)((u8 *)ptr + 0x34) = 1;
         *(s32 *)((u8 *)ptr + 0x38) = 0;
-        *(s32 *)((u8 *)ptr + 0x3C) = arg0;
+        *(s32 *)((u8 *)ptr + 0x3C) = (arg0 < 0) ? -arg0 : arg0;
     }
     return ptr;
 }
@@ -7414,48 +7422,48 @@ void fn_801233F8(s32 arg0, volatile f32 *input, f32 *arg2) {
 }
 
 void fn_801237C4(s32 arg0, void *arg1, void *arg2) {
-    f32 temp_f0;
-    f32 temp_f0_2;
-    f32 temp_f0_3;
-    f32 temp_f0_4;
-    f32 temp_f0_5;
-    f32 temp_f0_6;
-    f32 temp_f10;
-    f32 temp_f10_2;
-    f32 temp_f10_3;
-    f32 temp_f10_4;
-    f32 temp_f10_5;
-    f32 temp_f10_6;
-    f32 temp_f11;
-    f32 temp_f11_2;
-    f32 temp_f11_3;
-    f32 temp_f11_4;
-    f32 temp_f11_5;
-    f32 temp_f11_6;
-    f32 temp_f11_7;
-    f32 temp_f12;
-    f32 temp_f12_2;
-    f32 temp_f12_3;
-    f32 temp_f12_4;
-    f32 temp_f12_5;
-    f32 temp_f12_6;
-    f32 temp_f12_7;
-    f32 temp_f12_8;
-    f32 temp_f13;
-    f32 temp_f13_2;
-    f32 temp_f13_3;
-    f32 temp_f13_4;
-    f32 temp_f13_5;
-    f32 temp_f13_6;
-    f32 temp_f13_7;
-    f32 temp_f1;
-    f32 temp_f1_2;
-    f32 temp_f1_3;
-    f32 temp_f1_4;
-    f32 temp_f1_5;
-    f32 temp_f1_6;
-    f32 temp_f1_7;
-    f32 temp_f1_8;
+    register f32 temp_f0;
+    register f32 temp_f0_2;
+    register f32 temp_f0_3;
+    register f32 temp_f0_4;
+    register f32 temp_f0_5;
+    register f32 temp_f0_6;
+    register f32 temp_f10;
+    register f32 temp_f10_2;
+    register f32 temp_f10_3;
+    register f32 temp_f10_4;
+    register f32 temp_f10_5;
+    register f32 temp_f10_6;
+    register f32 temp_f11;
+    register f32 temp_f11_2;
+    register f32 temp_f11_3;
+    register f32 temp_f11_4;
+    register f32 temp_f11_5;
+    register f32 temp_f11_6;
+    register f32 temp_f11_7;
+    register f32 temp_f12;
+    register f32 temp_f12_2;
+    register f32 temp_f12_3;
+    register f32 temp_f12_4;
+    register f32 temp_f12_5;
+    register f32 temp_f12_6;
+    register f32 temp_f12_7;
+    register f32 temp_f12_8;
+    register f32 temp_f13;
+    register f32 temp_f13_2;
+    register f32 temp_f13_3;
+    register f32 temp_f13_4;
+    register f32 temp_f13_5;
+    register f32 temp_f13_6;
+    register f32 temp_f13_7;
+    register f32 temp_f1;
+    register f32 temp_f1_2;
+    register f32 temp_f1_3;
+    register f32 temp_f1_4;
+    register f32 temp_f1_5;
+    register f32 temp_f1_6;
+    register f32 temp_f1_7;
+    register f32 temp_f1_8;
     f32 temp_f23;
     f32 temp_f24;
     f32 temp_f24_2;
@@ -8810,33 +8818,44 @@ void fn_80124CE8(void *arg0, void *arg1) {
 
 #pragma opt_propagation off
 void fn_80124F90(void *arg0) {
-    f32 r4_f12, r4_f11, r4_f10, r4_f9, r4_f1b, r4_f0b;
-    f32 r4_f7, r4_f2, r4_f3, r4_f8, r4_f6, r4_f4, r4_f5, r4_f0, r4_f1;
+    f32 temp_f0;
+    f32 temp_f1;
+    f32 temp_f3;
+    f32 temp_f2;
+    f32 temp_f4;
+    f32 temp_f5;
+    f32 temp_f6;
+    f32 temp_f7;
+    f32 temp_f8;
+    f32 temp_f9;
+    f32 temp_f10;
+    f32 temp_f11;
+    f32 temp_f12;
 
-    r4_f1 = *(f32 *)((u8 *)arg0 + 0x0);
-    r4_f0 = *(f32 *)((u8 *)arg0 + 0x10);
-    r4_f5 = *(f32 *)((u8 *)arg0 + 0x4);
-    r4_f4 = *(f32 *)((u8 *)arg0 + 0x14);
-    r4_f6 = r4_f1 + r4_f0;
-    r4_f8 = r4_f1 - r4_f0;
-    r4_f3 = *(f32 *)((u8 *)arg0 + 0x8);
-    r4_f2 = *(f32 *)((u8 *)arg0 + 0x18);
-    r4_f7 = r4_f5 + r4_f4;
-    r4_f1b = *(f32 *)((u8 *)arg0 + 0xC);
-    r4_f0b = *(f32 *)((u8 *)arg0 + 0x1C);
-    r4_f9 = r4_f5 - r4_f4;
-    r4_f10 = r4_f3 + r4_f2;
-    r4_f11 = r4_f3 - r4_f2;
-    r4_f12 = r4_f1b - r4_f0b;
-    r4_f4 = r4_f1b + r4_f0b;
-    *(f32 *)((u8 *)arg0 + 0) = r4_f6 + r4_f10;
-    *(f32 *)((u8 *)arg0 + 4) = r4_f7 + r4_f4;
-    *(f32 *)((u8 *)arg0 + 0x10) = r4_f6 - r4_f10;
-    *(f32 *)((u8 *)arg0 + 0x14) = r4_f7 - r4_f4;
-    *(f32 *)((u8 *)arg0 + 8) = r4_f8 - r4_f12;
-    *(f32 *)((u8 *)arg0 + 0xC) = r4_f9 + r4_f11;
-    *(f32 *)((u8 *)arg0 + 0x18) = r4_f8 + r4_f12;
-    *(f32 *)((u8 *)arg0 + 0x1C) = r4_f9 - r4_f11;
+    temp_f1 = *(f32 *)((u8 *)arg0 + 0);
+    temp_f0 = *(f32 *)((u8 *)arg0 + 0x10);
+    temp_f5 = *(f32 *)((u8 *)arg0 + 4);
+    temp_f4 = *(f32 *)((u8 *)arg0 + 0x14);
+    temp_f6 = temp_f1 + temp_f0;
+    temp_f8 = temp_f1 - temp_f0;
+    temp_f3 = *(f32 *)((u8 *)arg0 + 8);
+    temp_f2 = *(f32 *)((u8 *)arg0 + 0x18);
+    temp_f7 = temp_f5 + temp_f4;
+    temp_f0 = *(f32 *)((u8 *)arg0 + 0xC);
+    temp_f1 = *(f32 *)((u8 *)arg0 + 0x1C);
+    temp_f9 = temp_f5 - temp_f4;
+    temp_f12 = temp_f0 - temp_f1;
+    temp_f4 = temp_f0 + temp_f1;
+    temp_f10 = temp_f3 + temp_f2;
+    temp_f11 = temp_f3 - temp_f2;
+    *(f32 *)((u8 *)arg0 + 0) = temp_f6 + temp_f10;
+    *(f32 *)((u8 *)arg0 + 4) = temp_f7 + temp_f4;
+    *(f32 *)((u8 *)arg0 + 0x10) = temp_f6 - temp_f10;
+    *(f32 *)((u8 *)arg0 + 0x14) = temp_f7 - temp_f4;
+    *(f32 *)((u8 *)arg0 + 8) = temp_f8 - temp_f12;
+    *(f32 *)((u8 *)arg0 + 0xC) = temp_f9 + temp_f11;
+    *(f32 *)((u8 *)arg0 + 0x18) = temp_f8 + temp_f12;
+    *(f32 *)((u8 *)arg0 + 0x1C) = temp_f9 - temp_f11;
 }
 #pragma opt_propagation reset
 void fn_80125014(void *arg0) {
