@@ -574,6 +574,10 @@ void fn_802093EC(void) {
 
 }
 
+/* Null Sound method, slot +0x3C of the "Null Sound" vtable (lbl_8033C0E8): set the
+ * sound's pan.  The voice backend's slot +0x3C (fn_8020BC68) stores the value in
+ * the VoiceSnd's pan field (+0x20), which its mixer tick then splits between the
+ * two channels; a null sound has no channels to place, so it ignores the value. */
 void fn_802093F0(void) {
 
 }
