@@ -1089,6 +1089,7 @@ f32 fn_8016029C(f32 *out, f32 *vec) {
     return x;
 }
 
+/* Empty stub. */
 void fn_801602B0(void) {
 }
 
