@@ -993,10 +993,11 @@ extern "C" void fn_80190CBC(void *container) {
 
 #pragma scheduling invalid_target
 int fn_80190CD0(float a, float b, float c) {
-    float t = (a - b) / (c - b);
-    t = (lbl_80562090 < t) ? lbl_80562090 : t;
-    t = (t > lbl_8056208C) ? lbl_8056208C : t;
-    return (((int)(lbl_80562080 + (lbl_8056208C + (t * lbl_805620AC)))) >> 4) & 0xF;
+    float lower = 1.0f;
+    float value = (a - b) / (c - b);
+    if (lower < value) { lower = lower; } else { lower = value; }
+    if (lower > lbl_8056208C) { lower = lower; } else { lower = lbl_8056208C; }
+    return (((int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620AC)))) >> 4) & 0xF;
 }
 #pragma scheduling on
 int fn_80190D38(float a, float b, float c) {
