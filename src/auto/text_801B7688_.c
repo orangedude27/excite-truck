@@ -13,25 +13,30 @@ extern void *__AXFXGetLfoSinTable_801769CC(void);
 extern int fn_801769A8(void);
 extern int fn_801769B8(void);
 extern int fn_801796B4(void);
-int fn_801B7688(int arg0) {
+/* Determine a control/result state for a physics command request.
+ * Returns 1 by default, 2 when the command flags bit 0x100 is clear, and can
+ * return 0, 3, or 4 depending on the active command mode, command flags, and
+ * the cached per-frame mode flag. Requests 0x50/0x51 are forced to 0 while
+ * that cached flag is set. */
+int fn_801B7688(int requestId) {
     int result;
-    int state;
-    int zero;
-    int flags;
+    int activeMode;
+    int isIdleMode;
+    int commandFlags;
 
-    flags = *((int *)__AXFXGetLfoSinTable_801769CC() + 1);
+    commandFlags = *((int *)__AXFXGetLfoSinTable_801769CC() + 1);
     result = 1;
-    if (flags & 0x100) {
-        state = fn_801769B8();
-        zero = (state == 0);
-        switch (arg0) {
+    if (commandFlags & 0x100) {
+        activeMode = fn_801769B8();
+        isIdleMode = (activeMode == 0);
+        switch (requestId) {
         case 0x51:
-            if (zero != 0 || state == 1) result = 0;
+            if (isIdleMode != 0 || activeMode == 1) result = 0;
             break;
         case 0x50:
         case 0x52:
-            if (zero != 0) result = 0;
-            if (state == 1) result = 3;
+            if (isIdleMode != 0) result = 0;
+            if (activeMode == 1) result = 3;
             if (fn_801769A8() & 0x400) result = 4;
             break;
         case 0x53:
@@ -41,7 +46,7 @@ int fn_801B7688(int arg0) {
         result = 2;
     }
 
-    if (fn_801796B4() != 0 && (unsigned)(arg0 - 0x50) <= 1) result = 0;
+    if (fn_801796B4() != 0 && (unsigned)(requestId - 0x50) <= 1) result = 0;
     return result;
 }
 
