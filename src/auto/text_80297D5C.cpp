@@ -167,19 +167,20 @@ extern "C" int fn_80297D90(void *out, int value) {
     return 0;
 }
 
-    extern "C" void fn_80297DC8(void* arg0) {
-     float f0=lbl_805645B4,f1=lbl_805645B0,f2=lbl_805645AC,f3=lbl_805645A8,f4=lbl_805645A4,f5=lbl_805645A0,f6=lbl_8056459C,f7=lbl_80564598,f8=lbl_80564594,f9=lbl_80564590;
-     float tmp[6];
-     *(int*)((char*)arg0+4)=0xC0; *(float*)((char*)arg0+8)=f9; *(float*)((char*)arg0+0xC)=f8; *(int*)arg0=1;
-     tmp[0]=f7; tmp[1]=f8; tmp[2]=f7; tmp[3]=f9; tmp[4]=f9; tmp[5]=f9;
-     *(float*)((char*)arg0+0x10)=tmp[0]; *(float*)((char*)arg0+0x14)=tmp[1]; *(float*)((char*)arg0+0x18)=tmp[2];
-     *(float*)((char*)arg0+0x1C)=tmp[3]; *(float*)((char*)arg0+0x20)=tmp[4]; *(float*)((char*)arg0+0x24)=tmp[5];
-     *(float*)((char*)arg0+0x28)=f6; *(float*)((char*)arg0+0x30)=f5; *(float*)((char*)arg0+0x50)=f9;
-     *(float*)((char*)arg0+0x54)=f4; *(float*)((char*)arg0+0x58)=f3; *(float*)((char*)arg0+0x5C)=f2;
-     *(float*)((char*)arg0+0x70)=f1; *(float*)((char*)arg0+0x68)=f1; *(float*)((char*)arg0+0x60)=f1;
-     *(float*)((char*)arg0+0x74)=f0; *(float*)((char*)arg0+0x6C)=f0; *(float*)((char*)arg0+0x64)=f0;
-     *(float*)((char*)arg0+0x80)=f9; *(int*)((char*)arg0+0x84)=0x40; *(unsigned char*)((char*)arg0+0x88)=1; *(int*)((char*)arg0+0x44)=2; *(unsigned char*)((char*)arg0+0x89)=1;
-    }
+extern "C" void fn_80297DC8(void* arg0) {
+    float f0=lbl_805645B4,f1=lbl_805645B0,f2=lbl_805645AC,f3=lbl_805645A8,f4=lbl_805645A4,f5=lbl_805645A0,f6=lbl_8056459C,f7=lbl_80564598,f8=lbl_80564594,f9=lbl_80564590;
+    float tmpA[3], tmpB[3];
+    *(int*)((char*)arg0+4)=0xC0; *(float*)((char*)arg0+8)=f9; *(float*)((char*)arg0+0xC)=f8; *(int*)arg0=1;
+    tmpA[0]=f7; tmpA[1]=f8; tmpA[2]=f7;
+    *(float*)((char*)arg0+0x10)=tmpA[0]; *(float*)((char*)arg0+0x14)=tmpA[1]; *(float*)((char*)arg0+0x18)=tmpA[2];
+    tmpB[0]=f9; tmpB[1]=f9; tmpB[2]=f9;
+    *(float*)((char*)arg0+0x1C)=tmpB[0]; *(float*)((char*)arg0+0x20)=tmpB[1]; *(float*)((char*)arg0+0x24)=tmpB[2];
+    *(float*)((char*)arg0+0x28)=f6; *(float*)((char*)arg0+0x30)=f5; *(float*)((char*)arg0+0x50)=f9;
+    *(float*)((char*)arg0+0x54)=f4; *(float*)((char*)arg0+0x58)=f3; *(float*)((char*)arg0+0x5C)=f2;
+    *(float*)((char*)arg0+0x70)=f1; *(float*)((char*)arg0+0x68)=f1; *(float*)((char*)arg0+0x60)=f1;
+    *(float*)((char*)arg0+0x74)=f0; *(float*)((char*)arg0+0x6C)=f0; *(float*)((char*)arg0+0x64)=f0;
+    *(float*)((char*)arg0+0x80)=f9; *(int*)((char*)arg0+0x84)=0x40; *(unsigned char*)((char*)arg0+0x88)=1; *(int*)((char*)arg0+0x44)=2; *(unsigned char*)((char*)arg0+0x89)=1;
+}
 
     extern "C" void* fn_8028E61C(void*);
     extern "C" void fn_80297DC8(void*);
@@ -416,21 +417,27 @@ extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, voi
     float e1[3];
     float e2[3];
     float l2;
+    float a0, a1, a2, b0, b1, b2;
+
     ((int*)p0)[0] = ((int*)base)[0];
     ((int*)p0)[1] = ((int*)base)[1];
     ((int*)p0)[2] = ((int*)base)[2];
-    p1[1] = p0[1] + d1[1];
-    p1[0] = p0[0] + d1[0];
-    p2[0] = p0[0] + d2[0];
-    p2[1] = p0[1] + d2[1];
-    p1[2] = p0[2] + d1[2];
-    p2[2] = p0[2] + d2[2];
+    a1 = p0[1] + d1[1];
+    a0 = p0[0] + d1[0];
+    b0 = p0[0] + d2[0];
+    b1 = p0[1] + d2[1];
+    a2 = p0[2] + d1[2];
+    b2 = p0[2] + d2[2];
+    p1[0] = a0; p1[1] = a1; p1[2] = a2;
+    p2[0] = b0; p2[1] = b1; p2[2] = b2;
+#pragma opt_common_subs off
     fn_801E9DD4(lbl_8055CA70, lbl_8055CA7C);
     if (fn_801E9E30(ctx, p0) == 0 || fn_801E9E30(ctx, p1) == 0 || fn_801E9E30(ctx, p2) == 0) {
         fn_801E9DD8();
         return 0;
     }
     fn_801E9DD8();
+#pragma opt_common_subs reset
     e1[0] = p1[0] - p0[0]; e1[1] = p1[1] - p0[1]; e1[2] = p1[2] - p0[2];
     e2[0] = p2[0] - p0[0]; e2[1] = p2[1] - p0[1]; e2[2] = p2[2] - p0[2];
     if ((float)fabs(PSVECDotProduct(e1, e1)) <= lbl_80558DC4 || (float)fabs(PSVECDotProduct(e2, e2)) <= lbl_80558DC4) {
@@ -1217,11 +1224,14 @@ extern "C" float fn_80129DC4(int, float, float);
 extern "C" void fn_80288A58(void *, float *);
 extern float lbl_80564600;
 #pragma scheduling on
-extern "C" void fn_80299FE0(void *unused, void *arg1, float unusedTime) {
+extern "C" void fn_80299FE0(void *unused, void *strip, float unusedTime) {
+    /* Updates a point strip over time: once its timer is near 1.0, interpolate
+       between consecutive points (wrapping around) and emit segments via
+       fn_8028E584/fn_80288A58, then advance the cycle timer; otherwise step the timer. */
     float upper = 1.0f;
-    float time = *(float *)((char *)arg1 + 0x98);
+    float time = *(float *)((char *)strip + 0x98);
     if (time > upper - lbl_80558DC4) {
-        register void *obj = arg1;
+        register void *obj = strip;
         register char *entry = (char *)obj;
         register int i = 0;
         float previous[3];
@@ -1257,7 +1267,7 @@ extern "C" void fn_80299FE0(void *unused, void *arg1, float unusedTime) {
         }
         *(float *)((char *)obj + 0x98) += lbl_80564600;
     } else {
-        *(float *)((char *)arg1 + 0x98) = time + lbl_80564594;
+        *(float *)((char *)strip + 0x98) = time + lbl_80564594;
     }
 }
 /* The 0x44-byte shadow record shared by the functions below (fn_8029A114,
