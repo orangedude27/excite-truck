@@ -179,6 +179,14 @@ extern "C" s32 fn_8012A388(void *arg0) {
 extern "C" const char lbl_8032A630[];
 extern "C" void fn_8012A46C(void *, const char *);
 extern "C" s32 fn_80132E7C(void *, s32);
+struct UnkMsgTable8012A470 {
+    char f0[0xC];
+    char f1[0x28];
+    char f2[0x28];
+    char f3[0x2C];
+    char f4[0x20];
+    char f5[1];
+};
 extern "C" void fn_8012A46C(void *, const char *) {
 
 }
@@ -193,7 +201,7 @@ extern "C" s32 fn_8012A470(void *arg0, s32 arg1, void *arg2, void *arg3) {
 
     buffer = (char *)arg3 + *(s32 *)((char *)arg2 + 0x2C) - 8;
     *(void **)((char *)arg2 + 0x3C) = buffer;
-    fn_8012A46C(buffer = buffer + 8, strings);
+    fn_8012A46C(buffer + 8, (const char *)&lbl_8032A630);
     result = (u32)__cntlzw((u32)*(s32 *)((char *)arg2 + 0x30) -
                            (u32)fn_80132E7C((char *)*(void **)((char *)arg2 + 0x3C) + 8,
                                             *(s32 *)((char *)arg2 + 0x28))) >> 5;
@@ -1104,29 +1112,29 @@ static inline s32 res_entry_use_count(s32 a, s32 b, struct ResEntry *entry) { re
 static inline u32 res_entry_flags(s32 a, s32 b, struct ResEntry *entry) { return entry->flags; }
 
 extern "C" void fn_8012BA1C(void *arg0) {
-    struct ResManager *mgr = (struct ResManager *)arg0;
     const char *strings = lbl_8032A630;
     s32 offset, i;
     s32 j, offset2;
-    struct ResEntry *entry;
-    s32 value;
-    u32 flags;
+    register s32 value;
+    register u8 *entry;
+    register u32 flags;
 
     i = 0;
     offset = 0;
-    while (i < mgr->entryCount) {
-        entry = (struct ResEntry *)((char *)mgr->entries + offset);
-        value = res_entry_use_count(0, 0, entry);
+    while (i < *(s32 *)((char *)arg0 + 0x88)) {
+        entry = *(u8 **)((char *)arg0 + 0x60) + offset;
+        value = *(volatile s32 *)(entry + 0x38);
         if (value > 0) fn_802E30C8(strings + 0x470, arg0);
         offset += 0x44;
         i++;
     }
-    if (strstr((const char *)arg0, &lbl_805599A4[0]) != 0 && stricmp((const char *)arg0, strings + 0x4A0) != 0) {
+    if (strstr((const char *)arg0, &lbl_805599A4[0]) != 0 &&
+        stricmp((const char *)arg0, strings + 0x4A0) != 0) {
         j = 0;
         offset2 = 0;
-        while (j < mgr->entryCount) {
-            entry = (struct ResEntry *)((char *)mgr->entries + offset2);
-            flags = res_entry_flags(0, 0, entry);
+        while (j < *(s32 *)((char *)arg0 + 0x88)) {
+            entry = *(u8 **)((char *)arg0 + 0x60) + offset2;
+            flags = *(u32 *)(entry + 0x34);
             if ((flags & 0xA) == 8) fn_802E30C8(strings + 0x4AC, arg0);
             offset2 += 0x44;
             j++;
@@ -1316,12 +1324,10 @@ extern "C" const char lbl_8032AED4[];
 extern "C" const char lbl_8032AEB4[];
 extern "C" u8 lbl_805599D8;
 #pragma push
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
-#pragma cplusplus reset
+#pragma scheduling on
 extern "C" void fn_8012BF28(void) {
-    s32 *pathPtr, *table;
     s32 paths[3], header[5], inner, size;
+    s32 *pathPtr, *table;
     u32 i;
     char filename[128], name[128];
     char *src_a1;
@@ -1336,15 +1342,12 @@ extern "C" void fn_8012BF28(void) {
     u8 ch1, ch2;
     u8 ok;
     u8 *data;
-    s32 handle;
     if (lbl_8055DFFC == 0) return;
     table = lbl_802F8E50;
-    pathPtr = paths;
     paths[0] = *table++; paths[1] = *table++; paths[2] = *table;
-    i = 0;
+    pathPtr = paths; i = 0;
     do {
         s32 opened = fn_802E3BB4(*pathPtr, filename, 0x80);
-        handle = opened;
         if ((u32)(opened + 0x10000) != 0xFFFF) {
             do {
                 *fn_80029004(filename, '.') = 0;
@@ -1413,13 +1416,13 @@ suffix_done_2:
                 } else fn_802E30C8(lbl_8032AEB4, filename);
 read_rest:
                 ;
-            } while (fn_802E3C24(handle, filename, 0x80) != 0);
-            fn_802E3CA4(handle);
+            } while (fn_802E3C24(opened, filename, 0x80) != 0);
+            fn_802E3CA4(opened);
         }
         ++pathPtr; ++i;
     } while (i < 3);
 }
-#pragma cplusplus on
+#pragma pop
 /* Return nonzero if the given resource path resolves to a registered entry;
    the index of the found entry is written to a throwaway local and ignored. */
 extern "C" s32 fn_8012C33C(char *path) {
