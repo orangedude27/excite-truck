@@ -336,6 +336,7 @@ extern "C" void fn_801B84A4(void *playerIndex) {
     ((Dummy_801B8318 *)lbl_8055E744)->f17(playerIndex);
 }
 #pragma cplusplus off
+/* No operation. */
 void fn_801B84BC(void) {
 
 }
