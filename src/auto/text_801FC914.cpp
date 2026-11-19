@@ -438,7 +438,8 @@ extern "C" void fn_801FD024(void* arg0, void* arg1) {
     *(void**)(dst + 4) = arg1;
     void* src = *(void**)arg1;
     *(int*)(dst + 0x3C) = 0;
-    register float one = lbl_80563030;
+    register float z, y, x2, yy, xx, one, w, x, yz, xw, z2, y2;
+    one = lbl_80563030;
     *(float*)(dst + 0x40) = initial;
     *(float*)(dst + 0x44) = *(float*)((char*)src + 0x1C);
     *(float*)(dst + 0x48) = *(float*)((char*)src + 0x20);
@@ -456,23 +457,20 @@ extern "C" void fn_801FD024(void* arg0, void* arg1) {
     *(float*)(dst + 0x34) = *(float*)((char*)src + 0x14);
     *(float*)(dst + 0x38) = *(float*)((char*)src + 0x18);
     volatile float* quat = (volatile float*)((char*)src + 0x1C);
-    register float x, y, z, w;
     x = quat[0];
     y = quat[1];
     z = quat[2];
-    register float z2, y2, x2;
     x2 = x + x;
     y2 = y + y;
     w = quat[3];
     z2 = z + z;
-    register float zz, yy, xx;
     xx = x * x2;
     yy = y * y2;
-    zz = z * z2;
-    float xw = w * x2;
-    float yz = y * z2;
-    float sum0 = yy + zz;
-    float sum1 = xx + zz;
+    z = z * z2;
+    xw = w * x2;
+    yz = y * z2;
+    float sum0 = yy + z;
+    float sum1 = xx + z;
     float sum2 = xx + yy;
     float m00 = one - sum0;
     float m11 = one - sum1;
@@ -483,7 +481,6 @@ extern "C" void fn_801FD024(void* arg0, void* arg1) {
     float yw = w * y2;
     float xz = x * z2;
     float zw = w * z2;
-    *(float*)(dst + 0x1C) = m11;
     float xy = x * y2;
     float m24 = xz + yw;
     float m14 = xz - yw;
@@ -494,6 +491,7 @@ extern "C" void fn_801FD024(void* arg0, void* arg1) {
     *(float*)(dst + 0x18) = m18;
     *(float*)(dst + 0x10) = m10;
     *(float*)(dst + 0x14) = m14;
+    *(float*)(dst + 0x1C) = m11;
     *(float*)(dst + 0x20) = m21;
     *(float*)(dst + 0x2C) = m22;
 }
@@ -1143,9 +1141,9 @@ extern "C" void fn_801FE77C(void* container) {
 }
 
 extern "C" void fn_801FE7E8(void* arg0) {
-    float threshold = lbl_80563034;
     char* item = (char*)arg0 + 4;
     int i = 0;
+    float threshold = lbl_80563034;
     while (i < *(int*)((char*)arg0 + 0x94)) {
         if (*(unsigned short*)(item + 0x14) == 1) {
             float time = *(float*)(item + 0x20) - fn_801E7E24();
@@ -1794,6 +1792,11 @@ extern "C" void* __dt__10SHMainMenuFv_801FFA68(void* thisPtr, int shouldDelete) 
     return thisPtr;
 }
 #pragma dont_inline reset
+/* LinearDroneTMH's empty implementation of the virtual stored at vtable
+ * lbl_8033B730 + 0xC, the slot just after the class's deleting destructor
+ * fn_801FEFC8 (the object is the 8-byte "LinearDroneTMH" built by fn_801FC94C).
+ * The sibling HermiteDroneTMH leaves the same slot of its vtable lbl_8033B700
+ * empty as well (fn_801FF118), so neither drone path type does anything here. */
 extern "C" void fn_801FEFC4(void) {
 
 }
