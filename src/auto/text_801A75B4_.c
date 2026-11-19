@@ -24,6 +24,7 @@ typedef struct Rec2_801A7A5C {
     unsigned char b16, b17, b18, b19, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b30, b31;
     int w0, w1, w2, w3, w4, w5, w6, w7;
     unsigned char c;
+    unsigned char pad[3];
 } Rec2_801A7A5C;
 typedef struct Tail_801A7A5C { float x, y; unsigned char a, b, c; } Tail_801A7A5C;
 extern unsigned char lbl_80435370[];
