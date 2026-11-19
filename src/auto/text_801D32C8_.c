@@ -480,28 +480,35 @@ extern float lbl_80562AC0;
 #pragma push
 #pragma processor 750
 #pragma cplusplus on
+/*
+ * Updates this object's damping/scale state based on its current mode.
+ * Mode 2 applies the cached global value through fn_801D4598; otherwise, if the
+ * cached value is below the threshold at +0x224/+0x234, the six scale values at
+ * +0x118 are damped by lbl_80562AC0. If neither case applies, fn_801D411C
+ * resets the object and clears the field at +0x1E4.
+ */
 extern "C" void fn_801D3BF0(void *arg0) {
-    float temp_f31;
-    float s;
-    float x;
-    float *p;
-    temp_f31 = lbl_8055E3C8;
+    float currentValue;
+    float dampingFactor;
+    float firstScale;
+    float *scaleValues;
+    currentValue = lbl_8055E3C8;
     if (*(int *)((char *)arg0 + 0x230) == 2) {
         fn_8017B81C();
-        fn_801D4598(arg0, temp_f31);
+        fn_801D4598(arg0, currentValue);
         return;
     }
-    if (temp_f31 < *(float *)((char *)arg0 + 0x224) + *(float *)((char *)arg0 + 0x234)) {
+    if (currentValue < *(float *)((char *)arg0 + 0x224) + *(float *)((char *)arg0 + 0x234)) {
         fn_8017B81C();
-        p = (float *)((char *)arg0 + 0x118);
-        x = p[0];
-        s = lbl_80562AC0;
-        p[0] = x * s;
-        p[1] *= s;
-        p[2] *= s;
-        p[3] *= s;
-        p[4] *= s;
-        p[5] *= s;
+        scaleValues = (float *)((char *)arg0 + 0x118);
+        firstScale = scaleValues[0];
+        dampingFactor = lbl_80562AC0;
+        scaleValues[0] = firstScale * dampingFactor;
+        scaleValues[1] *= dampingFactor;
+        scaleValues[2] *= dampingFactor;
+        scaleValues[3] *= dampingFactor;
+        scaleValues[4] *= dampingFactor;
+        scaleValues[5] *= dampingFactor;
         return;
     }
     fn_801D411C(arg0);
