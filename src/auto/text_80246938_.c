@@ -1385,7 +1385,7 @@ void fn_802487A8(void *group) {
 void fn_802487B4(void *arg0) {
  extern void fn_80214BE4(s32,s32,s32);
  extern float lbl_805638B8,lbl_805638BC,lbl_805638C0,lbl_805638C4;
- float t, x1,x0,y1,y0, factor;
+ float t, x1,x0,y1,y0, factor, pa, pb, pc;
  s32 y,x;
  if (*(s32 *)((char *)arg0+0x20)!=*(s32 *)((char *)arg0+0x24)) {
  if (*(s32 *)((char *)arg0+0x20)==0) fn_80214AF0(*(s32 *)((char *)arg0+0x1C)); else fn_80214A9C(*(s32 *)((char *)arg0+0x1C));
@@ -1399,7 +1399,7 @@ void fn_802487B4(void *arg0) {
  }
  if (*(unsigned char *)((char *)arg0+0x5C)) {
  *(s32 *)((char *)arg0+0x28)=*(s32 *)((char *)arg0+0x4); *(s32 *)((char *)arg0+0x2C)=*(s32 *)((char *)arg0+0x8); *(s32 *)((char *)arg0+0x30)=*(s32 *)((char *)arg0+0x54); *(s32 *)((char *)arg0+0x34)=*(s32 *)((char *)arg0+0x58);
- *(float *)((char *)arg0+0x3C)=lbl_805638B0; *(unsigned char *)((char *)arg0+0x5C)=0;
+ *(float *)((char *)arg0+0x3C)=0.0f; *(unsigned char *)((char *)arg0+0x5C)=0;
  }
  t=*(float *)((char *)arg0+0x3C)+*(float *)((char *)arg0+0x38)*fn_80214D48();
  *(float *)((char *)arg0+0x3C)=t;
@@ -1411,8 +1411,8 @@ void fn_802487B4(void *arg0) {
  t=t<lbl_80563898?t:lbl_80563898;
  factor=t<lbl_805638C0?lbl_805638C0:
  t>lbl_80563898?lbl_80563898:
- t>lbl_805638B0?t*((lbl_805638C4*t)*t)+((lbl_805638B8*t)*t):
- t*((lbl_805638C4*t)*t)-((lbl_805638B8*t)*t);
+ t>lbl_805638B0?(pa=lbl_805638C4*t, pb=lbl_805638B8*t, pc=pa*t, t*pc+pb*t):
+ (pa=lbl_805638C4*t, pb=lbl_805638B8*t, pc=pa*t, t*pc-pb*t);
  break;
  default: factor=*(float *)((char *)arg0+0x3C); factor=factor<lbl_80563898?factor:lbl_80563898;
  }
