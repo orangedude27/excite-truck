@@ -343,6 +343,7 @@ extern "C" void *fn_801E0150(void *object, int freeFlag) {
 }
 #pragma cplusplus reset
 
+/* No-op stub. */
 void fn_801E02A8(void) {
 
 }
