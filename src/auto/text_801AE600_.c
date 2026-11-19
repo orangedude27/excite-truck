@@ -867,6 +867,10 @@ void fn_801AFABC(int recordMgr, int rank) {
 
 }
 
+/* Stubbed RecordMgr callback.  The end-of-race pass (fn_801AF6FC) fires it as
+ * (gRecordMgr, records = gRaceResultTable[0], count = gRaceResultTable[1]) once
+ * the RaceResult records have been ranked and reported (fn_801AEBD0 /
+ * fn_801AE628), when mode == 2; this build ignores all three arguments. */
 void fn_801AFAB8(void) {
 
 }
