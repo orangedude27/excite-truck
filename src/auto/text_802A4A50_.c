@@ -115,9 +115,18 @@ extern float fn_802C9A50(void);
 static inline void Mtx33MultVec_802A6470(const f32 *m, const f32 *src, f32 *dst) {
     if (src == dst) {
         f32 x = src[0], y = src[1], z = src[2];
-        f32 o0 = z * m[2] + (x * m[0] + y * m[1]);
-        f32 o1 = z * m[5] + (x * m[3] + y * m[4]);
-        f32 o2 = z * m[8] + (x * m[6] + y * m[7]);
+        f32 t0 = y * m[1];
+        f32 s0 = x * m[0];
+        f32 t1 = y * m[4];
+        f32 s1 = x * m[3];
+        f32 t2 = y * m[7];
+        f32 s2 = x * m[6];
+        f32 z0 = z * m[2];
+        f32 z1 = z * m[5];
+        f32 z2 = z * m[8];
+        f32 o0 = (s0 + t0) + z0;
+        f32 o1 = (s1 + t1) + z1;
+        f32 o2 = (s2 + t2) + z2;
         dst[0] = o0; dst[1] = o1; dst[2] = o2;
     } else {
         f32 x = src[0], y = src[1], z = src[2];
