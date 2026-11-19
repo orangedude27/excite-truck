@@ -126,37 +126,29 @@ extern char lbl_80339F6C[];
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_801EB13C(void *arg0, s32 arg1) {
-    volatile u8 *v = (volatile u8 *)arg0;
+#define SWAP32(p) { u8 t0 = (p)[0]; u8 t1 = (p)[3]; (p)[0] = t1; (p)[3] = t0; { u8 t2 = (p)[1]; u8 t3 = (p)[2]; (p)[1] = t3; (p)[2] = t2; } }
+    u8 *v = (u8 *)arg0;
     u32 offset, address;
-    u8 a, b, c, d, e, f, g, h, i, j, k, l;
-    char *name = lbl_80339F6C;
-    a = v[8]; b = v[11]; c = v[9]; d = v[10]; v[8] = b;
-    e = v[4]; f = v[7]; v[11] = a; g = v[5]; h = v[6]; v[10] = c;
-    i = v[12]; j = v[15]; v[9] = d; k = v[13]; l = v[14];
-    offset = *(volatile u32 *)(v + 8);
-    v[4] = f; address = (u32)v + offset; v[7] = e; v[5] = h; v[6] = g;
-    v[12] = j; v[15] = i; v[13] = l; v[14] = k;
-    *(volatile u32 *)(v + 8) = address;
-    fn_802C61BC((void *)address, name, l, j, h, f, e, i);
-    if (*(volatile s32 *)v == 1) {
-        u8 a10, a13, a11, a12, a14, a17, a15, a16;
-        u8 a18, a1B, a19, a1A, a1C, a1F, a1D, a1E;
-        u8 t0, t1;
-        a10 = v[0x10]; a13 = v[0x13]; a11 = v[0x11]; a12 = v[0x12];
-        a14 = v[0x14]; a17 = v[0x17]; a15 = v[0x15]; a16 = v[0x16];
-        a18 = v[0x18]; a1B = v[0x1B]; a19 = v[0x19]; a1A = v[0x1A];
-        a1C = v[0x1C]; a1F = v[0x1F]; a1D = v[0x1D]; a1E = v[0x1E];
-        v[0x10] = a13; v[0x13] = a10; v[0x11] = a12; v[0x12] = a11;
-        v[0x14] = a17; v[0x17] = a14; v[0x15] = a16; v[0x16] = a15;
-        v[0x18] = a1B; v[0x1B] = a18; v[0x19] = a1A; v[0x1A] = a19;
-        v[0x1C] = a1F; v[0x1F] = a1C; v[0x1D] = a1E; v[0x1E] = a1D;
-        t0 = v[0x20]; t1 = v[0x23]; v[0x20] = t1; v[0x23] = t0;
-        t0 = v[0x21]; t1 = v[0x22]; v[0x21] = t1; v[0x22] = t0;
-        t0 = v[0x24]; t1 = v[0x27]; v[0x24] = t1; v[0x27] = t0;
-        t0 = v[0x25]; t1 = v[0x26]; v[0x25] = t1; v[0x26] = t0;
-        t0 = v[0x28]; t1 = v[0x2B]; v[0x28] = t1; v[0x2B] = t0;
-        t0 = v[0x29]; t1 = v[0x2A]; v[0x29] = t1; v[0x2A] = t0;
+    int i;
+    (void)arg1;
+
+    SWAP32(v + 8);
+    SWAP32(v + 4);
+    SWAP32(v + 12);
+    offset = *(u32 *)(v + 8);
+    address = (u32)v + offset;
+    *(u32 *)(v + 8) = address;
+    ((void (*)(void *, char *))fn_802C61BC)((void *)address, lbl_80339F6C);
+    if (*(s32 *)v == 1) {
+        SWAP32(v + 0x10);
+        SWAP32(v + 0x14);
+        SWAP32(v + 0x18);
+        SWAP32(v + 0x1C);
+        for (i = 0; i < 3; i++) {
+            SWAP32(v + 0x20 + i * 4);
+        }
     }
+#undef SWAP32
 }
 #pragma scheduling on
 #pragma use_lmw_stmw on
@@ -181,7 +173,6 @@ extern "C" void fn_801EB2D4(s32 arg0, register s32 arg1) {
     s32 var_r27;
     s32 var_r22 = 0;
     s32 var_r24 = 8;
-    u32 nt6;
     u8 temp_r5;
     u8 temp_r0;
     u8 *temp_r27;
@@ -189,6 +180,7 @@ extern "C" void fn_801EB2D4(s32 arg0, register s32 arg1) {
     u8 *ptr4;
     u8 ba4;
     u8 bb4;
+    register s32 nt6;
     while (var_r28 != 0) {
         temp_r5 = var_r28[0];
         var_r28[0] = var_r28[3];
@@ -197,7 +189,7 @@ extern "C" void fn_801EB2D4(s32 arg0, register s32 arg1) {
         var_r28[1] = var_r28[2];
         var_r28[2] = temp_r5;
         fn_801EB634(var_r28 + 4, (s32)arg1);
-        nt6 = *(u32 *)var_r28;
+        nt6 = *(s32 *)var_r28;
         switch (nt6) {
         case 0:
             temp_r5 = var_r28[8];
@@ -318,7 +310,7 @@ extern "C" void fn_801EB2D4(s32 arg0, register s32 arg1) {
             }
             break;
         default:
-            fn_802E317C((const char *)lbl_80339FA0);
+            fn_802E317C(lbl_80339FA0);
             break;
         }
         var_r28 = (u8 *)*(u32 *)(var_r28 + 4);
@@ -393,51 +385,43 @@ extern "C" void fn_801EB6A8(s32 arg0) {
     register s32 *node;
     register s32 *context;
     register s32 *child;
-    register s32 type;
     register s32 i;
     node = (s32 *)arg0;
     while (node) {
-        type = node[0];
-        if (type == 4) { goto state4; }
-        if (type >= 4) { goto high; }
-        switch (type) {
-        case 0: goto state0;
-        default: goto error;
-        }
-high:
-        if (type >= 0x104) { goto error; }
-        if (type < 0x101) { goto error; }
-        goto state_special;
-state0:
-        item = node;
-        i = 0;
-        while (i < node[5]) {
-            fn_801EB6A8(item[7]);
-            item += 2;
-            i++;
-        }
-        goto next;
-state_special:
-        fn_801EAFD4(node);
-        fn_801EB6A8(node[2]);
-        goto next;
-state4:
-        child = (s32 *)node[2];
-        if (child) {
-            child[1] = fn_802C6DC4((const char *)&lbl_8055AFC0, child[2], 0, 0);
-            fn_802C6FA8(child[2]);
-            if (child[0] == 1) {
-                FirstDispatch *first = (FirstDispatch *)fn_801EB110(child);
-                first->dispatch(child);
-                context = lbl_8055EBA0;
-                SecondDispatch *second = (SecondDispatch *)fn_801EB110(child);
-                second->dispatch(child, context[1], child[7], context[2], child[6]);
+        switch (node[0]) {
+        case 0:
+            item = node;
+            i = 0;
+            while (i < node[5]) {
+                fn_801EB6A8(item[7]);
+                item += 2;
+                i++;
             }
+            break;
+        case 0x101:
+        case 0x102:
+        case 0x103:
+            fn_801EAFD4(node);
+            fn_801EB6A8(node[2]);
+            break;
+        case 4:
+            child = (s32 *)node[2];
+            if (child) {
+                child[1] = fn_802C6DC4((const char *)&lbl_8055AFC0, child[2], 0, 0);
+                fn_802C6FA8(child[2]);
+                if (child[0] == 1) {
+                    FirstDispatch *first = (FirstDispatch *)fn_801EB110(child);
+                    first->dispatch(child);
+                    context = lbl_8055EBA0;
+                    SecondDispatch *second = (SecondDispatch *)fn_801EB110(child);
+                    second->dispatch(child, context[1], child[7], context[2], child[6]);
+                }
+            }
+            break;
+        default:
+            fn_802E317C(lbl_80339FD4);
+            break;
         }
-        goto next;
-error:
-        fn_802E317C(lbl_80339FD4);
-next:
         node = (s32 *)node[1];
     }
 }
@@ -462,6 +446,7 @@ extern "C" void fn_801EB800(void *object, s32 argA, s32 argB) {
     ((Dispatch *)object)->dispatch(argB, argA);
 }
 #pragma cplusplus reset
+/* Empty stub. */
 void fn_801EB81C(void) {
 
 }
