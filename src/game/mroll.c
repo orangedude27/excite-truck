@@ -890,12 +890,12 @@ void fn_80241820(void *arg0) {
         int i;
         fn_80230C30(&sx, &sy, *(int *)(self + 0x14), *(int *)(self + 0x18));
         w = (float)*(int *)(self + 0x1c);
-        cw = w / lbl_80563780;
         h = (float)*(int *)(self + 0x20);
+        cw = w / lbl_80563780;
         t = (float)((int)(lbl_80563768 * fn_8023659C()) - *(int *)(self + 0x48)) / lbl_8056376C;
         t = (lbl_80563764 < t) ? lbl_80563764 : t;
         t = (t > lbl_80563758) ? t : lbl_80563758;
-        c = (t < lbl_80563770) ? lbl_80563770 : ((t > lbl_80563764) ? lbl_80563764 : ((t > lbl_80563758) ? (t * (lbl_80563774 * t * t) + lbl_80563778 * t * t) : (t * (lbl_80563774 * t * t) - lbl_80563778 * t * t)));
+        c = (t < lbl_80563770) ? lbl_80563770 : ((t > lbl_80563764) ? lbl_80563764 : ((t > lbl_80563758) ? (lbl_80563774 * t * t * t + lbl_80563778 * t * t) : (lbl_80563774 * t * t * t - lbl_80563778 * t * t)));
         f4c = *(float *)(self + 0x4c);
         half = lbl_80563784;
         zero = lbl_80563758;
@@ -1223,7 +1223,6 @@ extern void *fn_80016BC8(void *, s32);
 extern void *fn_80018A8C(void *, s32, s32 *, s32);
 extern s32 fn_80255918(void *, void *);
 extern char lbl_8034287C[];
-extern float lbl_80563750;
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
