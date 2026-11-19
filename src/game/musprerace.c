@@ -104,6 +104,7 @@ void fn_8020C140(void) {
         } while (--ctr);
     }
 }
+#pragma pop
 
 #pragma push
 #pragma processor 750
