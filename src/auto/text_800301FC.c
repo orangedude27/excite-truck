@@ -591,6 +591,7 @@ void TRKGetInput(void) {
         third += 9;
     } while (--i != 0);
 }
+#pragma pop
 
 /* Disable serial input by clearing the three AX aux input callbacks (A/B/C). */
 void usr_puts_serial(void) {
