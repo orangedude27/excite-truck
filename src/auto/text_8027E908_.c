@@ -62,6 +62,13 @@ struct Fn8027F288Obj {
     virtual void v7();
     virtual void v8();
     virtual void v9();
+    virtual int v10();
+    virtual void v11();
+    virtual void v12();
+    virtual void v13();
+    virtual int v14();
+    virtual void v15();
+    virtual int v16();
 };
 #pragma cplusplus reset
 typedef struct Fn8027F958Widget {
@@ -418,6 +425,8 @@ extern "C" int fn_8027EE88(void) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" void fn_8027EEE4(int arg0) {
+#pragma opt_common_subs off
+#pragma scheduling on
     extern void fn_801345D8(char *, int, const char *, ...);
     extern int fn_80131234(int);
     extern int lbl_802FA85C[];
@@ -3790,10 +3799,10 @@ int fn_802869CC(void *obj, int request) {
 
 #pragma cplusplus on
 extern "C" void fn_80286A34(void *arg0) {
-    char *base = (char *)lbl_804B2FF8;
-    char *strs = (char *)lbl_80347E50;
-    char *self = (char *)arg0;
-    char *st = *(char **)(self + 0x20);
+    register char *base = (char *)lbl_804B2FF8;
+    register char *strs = (char *)lbl_80347E50;
+    register char *self = (char *)arg0;
+    register char *st = *(char **)(self + 0x20);
     if (st != 0) {
         if (*(unsigned char *)(self + 0x29) == 0) {
             int v = (int)((float)*(int *)st + *(float *)(st + 0x10));
