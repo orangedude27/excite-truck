@@ -736,6 +736,7 @@ extern "C" void fn_801E8410(void) {
 }
 #pragma cplusplus off
 #pragma scheduling on
+/* No-op stub. */
 void fn_801E85A0(void) {
 
 }
