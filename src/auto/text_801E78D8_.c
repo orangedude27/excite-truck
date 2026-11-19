@@ -424,13 +424,14 @@ void fn_801E7E48(void) {
     char *dst;
     char *src;
     float scale;
+    unsigned long idx;
     t0 = (long)(((long long (*)())fn_802E2C9C)());
     obj = (char *)fn_80176A70();
     f = *(float *)obj - lbl_8055EB18;
     g = lbl_80562DB4;
     if (f > g) g = f;
     if (g > lbl_80562DB8) g = lbl_80562DB8;
-    h = (float)g;
+    h = (float)(double)g;
     h = (h <= lbl_80562DBC) ? h : lbl_80562DBC;
     lbl_8055EB14 = h;
     lbl_8055EB18 = *(float *)obj;
@@ -489,8 +490,8 @@ void fn_801E7E48(void) {
         ((void (*)(void))*(void **)((char *)*(void **)v + 0xC))();
     }
     if ((long)lbl_8055EB2C == 1) {
-        long idx = fn_801E866C(0);
         long val = 0;
+        idx = fn_801E866C(0);
         if (idx < 8) val = (long)lbl_80488648[idx];
         fn_80202AD4(val + 0x28);
     }
@@ -498,7 +499,7 @@ void fn_801E7E48(void) {
     fn_80134994();
     fn_8000D7FC();
     t1 = (long)(((long long (*)())fn_802E2C9C)());
-    lbl_8055EB28 = (double)(t1 - t0) / lbl_80562DA8;
+    lbl_8055EB28 = (float)(t1 - t0) / lbl_80562DA8;
 }
 void fn_801E8144(void) {
 
@@ -1048,6 +1049,7 @@ void fn_801E89F4(void *phase) {
 }
 
 #pragma opt_propagation off
+/* Randomizes the global wind/direction vector: XYZ from bounded random ranges, normalized, and W from [0, 3). */
 void fn_801E89FC(void) {
     extern float fn_80129DC4(long, float, float);
     extern float lbl_804881D8[];
