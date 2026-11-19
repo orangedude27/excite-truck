@@ -2662,13 +2662,6 @@ extern "C" void fn_8019F414(void *arg0) {
 }
 
 #pragma scheduling reset
-extern "C" {
-static inline void fn_8019F4D4_store(volatile f32 *s, f32 x, f32 y, f32 z) {
-    s[6] = x;
-    s[1] = y;
-    s[5] = z;
-}
-}
 #pragma opt_lifetimes off
 extern "C" void fn_8019F4D4(void *arg0, void *arg1) {
     fn_8019EC84(arg0);
@@ -2677,10 +2670,9 @@ extern "C" void fn_8019F4D4(void *arg0, void *arg1) {
         (const Vec *)arg1);
     void *vector = *(void **)((u8 *)arg0 + 0xC);
     volatile f32 scratch[10];
-    fn_8019F4D4_store(scratch,
-        ((f32 *)arg1)[0] + ((f32 *)vector)[3] * scale,
-        ((f32 *)arg1)[1] + ((f32 *)vector)[4] * scale,
-        ((f32 *)arg1)[2] + ((f32 *)vector)[5] * scale);
+    scratch[6] = ((f32 *)arg1)[0] + ((f32 *)vector)[3] * scale;
+    scratch[1] = ((f32 *)arg1)[1] + ((f32 *)vector)[4] * scale;
+    scratch[5] = ((f32 *)arg1)[2] + ((f32 *)vector)[5] * scale;
 }
 extern "C" void fn_8019F560(void) {
     fn_8019F1A4();
