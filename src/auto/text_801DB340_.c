@@ -449,7 +449,6 @@ extern double fn_8002F234(double);
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma opt_propagation off
-#pragma scheduling invalid_target
 int fn_801DCA60(void) {
     float *object;
     float pi, amplitude, zero, range, offset, one, peak, maxR, minR, falloff;
