@@ -260,6 +260,11 @@ extern "C" void* fn_80207B60(void* arg0, signed long arg1) {
 }
 #pragma cplusplus reset
 #pragma pop
+/* No-op member of soundmgr.cpp.  It sits between the SoundManager destructor
+ * (fn_80207B60) and the small accessors of a sound object (fn_80207C50 seeds an
+ * emitter slot, fn_80207C74 sets the +0x8C flag), next to two other empty stubs,
+ * fn_80207C4C and fn_80207C7C: the shipped build compiled their bodies away, so
+ * each is just a return.  Nothing in the recovered code calls this one. */
 void fn_80207C48(void) {
 	return;
 }
