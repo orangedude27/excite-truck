@@ -2661,7 +2661,6 @@ extern "C" void fn_8019F414(void *arg0) {
     fn_8019EF00(arg0);
 }
 
-#pragma opt_lifetimes off
 extern "C" void fn_8019F4D4(void *arg0, void *arg1) {
     fn_8019EC84(arg0);
     f32 scale = -PSVECDotProduct(
@@ -2677,10 +2676,10 @@ extern "C" void fn_8019F560(void) {
     fn_8019F1A4();
 }
 
-#pragma dont_inline on
+#pragma scheduling invalid_target
 extern "C" void *fn_8019F564(void *arg0,s32 arg1,void *arg2,s32 arg3,f32 a,f32 b,f32 c,f32 d,f32 e,f32 f) {
- extern void* lbl_80333A58;
- f32 z, z2, e8; f32 m=f; if(e>m)m=e;if(d>m)m=d;
+ extern char lbl_80333A58[];
+ f32 z, z2, e8; f32 m = (e>f) ? e : f; if(d>m)m=d;
  z=lbl_805622D0;
  *(s32*)((u8*)arg0+0xC)=arg1;*(s32*)((u8*)arg0+4)=arg3;*(s32*)((u8*)arg0+8)=0;
  *(s32*)((u8*)arg0+0x18)=0x53504852;*(f32*)((u8*)arg0+0x10)=a;*(f32*)((u8*)arg0+0x14)=b;
@@ -2701,7 +2700,6 @@ extern "C" void *fn_8019F564(void *arg0,s32 arg1,void *arg2,s32 arg3,f32 a,f32 b
  *(f32*)((u8*)arg0+0xA4)=z2;*(f32*)((u8*)arg0+0xA8)=z2;*(f32*)((u8*)arg0+0xAC)=z2;*(f32*)((u8*)arg0+0xB0)=z2;
  *(f32*)((u8*)arg0+0xB4)=z2;*(f32*)((u8*)arg0+0xB8)=z2;*(f32*)((u8*)arg0+0xBC)=z2;*(f32*)((u8*)arg0+0xC0)=z2;return arg0;
 }
-#pragma dont_inline off
 extern "C" void fn_8019F6F0(void *arg0) {
     /* Reset object fields by reinitializing its base state and zeroing the float block at +0x64..+0xC0. */
     f32 zeroValue;
