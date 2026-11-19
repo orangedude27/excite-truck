@@ -116,6 +116,7 @@ extern "C" int fn_802CCDC4(void ***arg0, void ***arg1) {
     return obj0->v2() - obj1->v2();
 }
 #pragma cplusplus reset
+#pragma pop
 extern int fn_802CAC28(void *, int);
 extern void fn_802E317C(const char *, ...);
 extern void *memset(void *, int, unsigned int);
