@@ -5,6 +5,28 @@ extern f32 lbl_80558DC4[];
 extern f32 fn_8002F234(f32);
 extern f32 PSVECDotProduct(void *, void *);
 typedef struct { f32 x, y, z, w; } Vec4_80252;
+
+typedef struct {
+    f32 unk0, unk4;
+    f32 fwdSaveX, fwdSaveZ;
+    f32 perpX, perpY;
+    f32 unitX, unitY;
+    f32 dirX, dirY;
+    f32 unk28;
+    f32 upY;
+    f32 unk30, unk34, unk38;
+    f32 resX, resY, resZ, resW;
+    f32 latX, latY, latZ, latW;
+    f32 tmpX, tmpY, tmpZ, tmpW;
+    Vec normal;
+    Vec right;
+    f32 upX;
+    f32 unk8C, unk90;
+    Vec forward;
+    Vec velocity;
+    Vec latTemp;
+    f32 posX, posY, posZ;
+} Scratch8025280C;
 extern f32 lbl_805639C8, lbl_805639D0, lbl_805639D4, lbl_805639D8;
 extern f32 fn_80129DC4(s32, f32, f32);
 extern f64 cos(void);
@@ -80,34 +102,34 @@ void fn_802526E0(void *arg0) {
 #pragma push
 #pragma processor 750
 void fn_8025280C(void *arg0,f32 amount) {
-    extern float __fabsf(float);
     Quaternion position, lateral, result, temp, lateralTemp;
     Vec normal, forward, right, velocity, up;
     Vec2 direction, unit, perpendicular;
     f32 length, scale, height, a, b, a3, b3;
+    f32 len[1];
     f32 *self=arg0;
     position.x=self[0]; position.y=self[1]; position.z=self[2];
     direction.x=position.x; direction.y=position.z;
     if(direction.x*direction.x+direction.y*direction.y<lbl_805639D4) {
         direction.x=lbl_805639D4; direction.y=lbl_805639CC;
     }
-    length=(f32)fn_8002F234(direction.x*direction.x+direction.y*direction.y);
-    if (!((f32)(double)__fabsf(length)<=lbl_80558DC4[0])) {
-        scale=lbl_805639C8/length;
+    len[0]=(f32)fn_8002F234(direction.x*direction.x+direction.y*direction.y);
+    if (!((f32)__fabs(len[0])<=lbl_80558DC4[0])) {
+        scale=lbl_805639C8/len[0];
         direction.x*=scale; direction.y*=scale;
     }
     position.x=direction.x; position.z=direction.y;
     temp.x=position.x; temp.y=position.y; temp.z=position.z;
     self[0]=temp.x; self[1]=temp.y; self[2]=temp.z; self[3]=temp.w;
     unit.x=direction.x; unit.y=direction.y;
-    length=(f32)fn_8002F234(unit.x*unit.x+unit.y*unit.y);
-    scale=lbl_805639D4/length;
+    len[0]=(f32)fn_8002F234(unit.x*unit.x+unit.y*unit.y);
+    scale=lbl_805639D4/len[0];
     unit.x*=scale; unit.y*=scale;
     *(f64 *)&perpendicular=*(f64 *)&unit;
     perpendicular.x=-unit.y; perpendicular.y=unit.x;
-    length=(f32)fn_8002F234(perpendicular.x*perpendicular.x+perpendicular.y*perpendicular.y);
-    if (!((f32)(double)__fabsf(length)<=lbl_80558DC4[0])) {
-        scale=amount/length;
+    len[0]=(f32)fn_8002F234(perpendicular.x*perpendicular.x+perpendicular.y*perpendicular.y);
+    if (!((f32)__fabs(len[0])<=lbl_80558DC4[0])) {
+        scale=amount/len[0];
         perpendicular.x*=scale; perpendicular.y*=scale;
     }
     lateral.x=perpendicular.x; lateral.y=self[0x54/4]; lateral.z=perpendicular.y;
