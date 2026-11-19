@@ -1055,6 +1055,11 @@ float fn_8020BCA8(void *snd) {
     return ((VoiceSnd *)snd)->length;
 }
 
+/* "SndVoice" (the voice backend's Sound object, vtable lbl_8033C3F4), vtable
+ * slot +0x58: the Sound interface method between Set3D (+0x54, which only
+ * reports "SndVoice::Set3D") and setParam (+0x5C).  No recovered game code
+ * calls it through a sound and the null backend's "Null Sound" leaves the same
+ * slot empty as well (fn_80209408), so a voice sound has nothing to do here. */
 void fn_8020BCB0(void) {
 
 }
