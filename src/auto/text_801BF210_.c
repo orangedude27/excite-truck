@@ -15,6 +15,7 @@ extern void fn_8019EECC(void *, void *);
 extern void fn_8017A580(int, int, int, int, int, int);
 extern void fn_8017A57C(float, float);
 
+/* No operation. */
 void fn_801BF210(void) {
 
 }
