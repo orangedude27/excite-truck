@@ -187,7 +187,7 @@ void fn_80136CB8(void *table, s32 index) {
 
 #pragma push
 #pragma cplusplus on
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma opt_propagation off
 extern "C" void fn_80136D20(void *arg0, s32 arg1) {
     struct Dummy {
