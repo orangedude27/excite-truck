@@ -385,7 +385,6 @@ extern "C" int fn_8025E678(void) {
 }
 
 #pragma scheduling invalid_target
-#pragma scheduling invalid_target
 extern "C" int fn_8025ECBC(void) {
     typedef SeqObj Obj;
     int tmpArr[3], outArr[3];
