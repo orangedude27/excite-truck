@@ -335,8 +335,8 @@ int fn_8013365C(int arg0, int arg1) {
 
 #pragma scheduling invalid_target
 void fn_801336E0(int arg0, int arg1) {
-    int *entry = &lbl_8042F718[arg0 * 2];
     int offset = arg0 * 8;
+    int *entry = &lbl_8042F718[arg0 * 2];
     if (entry[1] == 0) {
         fn_802E317C(lbl_8032B940, arg0);
     }
@@ -345,7 +345,7 @@ void fn_801336E0(int arg0, int arg1) {
     }
     entry[1] = 0;
 }
-#pragma opt_propagation off
+#pragma scheduling invalid_target
 int fn_80133780(void *arg0, void *arg1) {
     int result = *(int *)((char *)arg0 + 4) - *(int *)((char *)arg1 + 4);
     switch (result) {
@@ -357,7 +357,6 @@ int fn_80133780(void *arg0, void *arg1) {
     }
     return result;
 }
-#pragma opt_propagation reset
 extern void qsort(void *, int, int, int (*)(void *, void *));
 int fn_80133780(void *, void *);
 #pragma scheduling invalid_target
@@ -394,11 +393,13 @@ char *fn_801337E4(char *str) {
 }
 #pragma dont_inline on
 int fn_80133844(const char *arg0) {
-    char *p = fn_801337E4((char *)arg0);
+    /* Return nonzero if the whitespace-trimmed string is a nonzero integer or "yes". */
+    char *text = fn_801337E4((char *)arg0);
     int invalid = 0;
-    int c = (signed char)*p;
-    int table;
-    int isnum;
+    int c = (signed char)*text;
+    int ctypeTable;
+    int isDigit;
+
     if (c < 0)
         goto set_invalid;
     if (c < 0x100)
@@ -407,14 +408,14 @@ set_invalid:
     invalid = 1;
 check_invalid:
     if (invalid != 0)
-        isnum = 0;
+        isDigit = 0;
     else {
-        table = *(int *)((char *)&lbl_802FE850 + 0x38);
-        isnum = (*(unsigned short *)(*(int *)(table + 8) + (c * 2)) & 8);
+        ctypeTable = *(int *)((char *)&lbl_802FE850 + 0x38);
+        isDigit = (*(unsigned short *)(*(int *)(ctypeTable + 8) + (c * 2)) & 8);
     }
-    if (isnum != 0)
-        return atoi(p) != 0;
-    return stricmp(p, lbl_80559B64) == 0;
+    if (isDigit != 0)
+        return atoi(text) != 0;
+    return stricmp(text, lbl_80559B64) == 0;
 }
 #pragma dont_inline reset
 
