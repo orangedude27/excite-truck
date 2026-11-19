@@ -190,29 +190,30 @@ extern f32 lbl_8055E3C8;
 #pragma push
 #pragma small_data off
 void fn_8016A240(const char *name) {
-    s32 recordIdx;
-    u8 *entry;
-    u8 *record;
-    s32 entryOffset;
-    s32 entryIdx;
-    entryIdx = 0;
-    entryOffset = 0;
-    while (entryIdx < lbl_80430340.unk_0x4) {
-        if (stricmp(lbl_80430340.unk_0x0 + entryOffset + 1, name) == 0) {
-            entry = (u8 *)lbl_80430340.unk_0x0 + entryOffset;
-            entry[0x28] = 0;
-            recordIdx = 0;
-            while (recordIdx < *(s32 *)(entry + 0x24)) {
-                record = (u8 *)*(s32 *)lbl_80430318 + ((*(s32 *)(entry + 0x20) + recordIdx) * 0x48);
-                if (record[0x3c] != 0) {
-                    record[0x3c] = 0;
-                    *(f32 *)(record + 0x44) = lbl_8055E3C8;
+    /* Deactivate the named object group: clear its active flag and reset each active instance's timer. */
+    s32 instanceIndex;
+    u8 *group;
+    u8 *instance;
+    s32 groupOffset;
+    s32 groupIndex;
+    groupIndex = 0;
+    groupOffset = 0;
+    while (groupIndex < lbl_80430340.unk_0x4) {
+        if (stricmp(lbl_80430340.unk_0x0 + groupOffset + 1, name) == 0) {
+            group = (u8 *)lbl_80430340.unk_0x0 + groupOffset;
+            group[0x28] = 0;
+            instanceIndex = 0;
+            while (instanceIndex < *(s32 *)(group + 0x24)) {
+                instance = (u8 *)*(s32 *)lbl_80430318 + ((*(s32 *)(group + 0x20) + instanceIndex) * 0x48);
+                if (instance[0x3c] != 0) {
+                    instance[0x3c] = 0;
+                    *(f32 *)(instance + 0x44) = lbl_8055E3C8;
                 }
-                recordIdx++;
+                instanceIndex++;
             }
         }
-        entryOffset += 0x2c;
-        entryIdx++;
+        groupOffset += 0x2c;
+        groupIndex++;
     }
 }
 #pragma pop
