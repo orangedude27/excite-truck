@@ -618,6 +618,7 @@ void fn_801DCEDC(int weightIndex, float weight) {
     lbl_804425DC[weightIndex] = weight;
 }
 
+/* Empty stub / no-op placeholder. */
 void fn_801DCEF0(void) {
 
 }
