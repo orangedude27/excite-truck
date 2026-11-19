@@ -2395,7 +2395,14 @@ extern "C" void fn_8021541C(void *widget) {
 
 }
 
-extern "C" void fn_80215420(void) {
+/* Base widget class (vtable lbl_8033FB38) default for vtable slot 0x28, the
+ * widget's draw method (VfObj::vf8; the layout wrapper forwards its own slot
+ * 0x28 to the widget held at +0x244 -- fn_80215B30).  Derived widgets override
+ * it to draw their content: fn_80219660 draws a text line through fn_8022BAD0,
+ * fn_802299FC hands the box to a callback, and the option widget's fn_8021D378
+ * chains to fn_80219660 before drawing its blinker arrows.  The base widget has
+ * nothing of its own to draw, so the default does nothing. */
+extern "C" void fn_80215420(void *widget) {
 
 }
 
