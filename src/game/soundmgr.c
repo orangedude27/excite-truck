@@ -799,6 +799,11 @@ signed long fn_802089D0(signed long object, signed long deleteFlag) {
     return object;
 }
 
+/* Trampoline for the sound-object registration helper: tail-calls fn_80208408
+ * (which inserts a sound object into its soundclass list on the manager) with no
+ * adaptation.  The sound-object initializer in text_802062E8.cpp calls it through
+ * this stub, passing the sSoundManager (lbl_8055ED80) instance and the object,
+ * right after the object acquires its sound handle. */
 void fn_802085EC(void) {
 	((void (*)(void))fn_80208408)();
 }
