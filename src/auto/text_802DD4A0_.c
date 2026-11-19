@@ -85,37 +85,38 @@ void fn_802DD5F4(void) {
 }
 
 extern float lbl_80565088, lbl_8056508C, lbl_80565090, lbl_80565094;
-void fn_802DD63C(int count) {
-    float f2;
-    float f1;
-    float f0;
-    float f3;
+/* Initialize per-region split-screen UV/bounds entries for the given region count and clear the cached texture dirty flag. */
+void fn_802DD63C(int numRegions) {
+    float two;
+    float one;
+    float zero;
+    float negOne;
     int i;
     float *entry;
-    int c;
+    int regionCount;
 
-    f0 = lbl_80565090;
-    f1 = lbl_8056508C;
-    f2 = lbl_80565094;
-    f3 = lbl_80565088;
-    *(int *)((char *)lbl_804DB6A0 + 0x90) = count;
+    zero = lbl_80565090;
+    one = lbl_8056508C;
+    two = lbl_80565094;
+    negOne = lbl_80565088;
+    *(int *)((char *)lbl_804DB6A0 + 0x90) = numRegions;
     entry = lbl_804DB6A0;
-    for (i = 0; i < (c = *(int *)((char *)lbl_804DB6A0 + 0x90)); entry += 9, i++) {
-        if (c < 3) {
-            entry[0] = f3; entry[1] = f1; entry[4] = f0; entry[5] = f1;
+    for (i = 0; i < (regionCount = *(int *)((char *)lbl_804DB6A0 + 0x90)); entry += 9, i++) {
+        if (regionCount < 3) {
+            entry[0] = negOne; entry[1] = one; entry[4] = zero; entry[5] = one;
         } else if (i % 2 == 0) {
-            entry[0] = f3; entry[1] = f0; entry[4] = f0; entry[5] = f2;
+            entry[0] = negOne; entry[1] = zero; entry[4] = zero; entry[5] = two;
         } else {
-            entry[0] = f0; entry[1] = f1; entry[4] = f2; entry[5] = f1;
+            entry[0] = zero; entry[1] = one; entry[4] = two; entry[5] = one;
         }
-        if (c == 1) {
-            entry[2] = f1; entry[3] = f3; entry[6] = f0; entry[7] = f1;
-        } else if (i < (c + 1) / 2) {
-            entry[2] = f1; entry[3] = f0; entry[6] = f0; entry[7] = f2;
+        if (regionCount == 1) {
+            entry[2] = one; entry[3] = negOne; entry[6] = zero; entry[7] = one;
+        } else if (i < (regionCount + 1) / 2) {
+            entry[2] = one; entry[3] = zero; entry[6] = zero; entry[7] = two;
         } else {
-            entry[2] = f0; entry[3] = f3; entry[6] = f2; entry[7] = f1;
+            entry[2] = zero; entry[3] = negOne; entry[6] = two; entry[7] = one;
         }
-        entry[8] = f0;
+        entry[8] = zero;
     }
     *(unsigned char *)((char *)lbl_8055FED8 + 0x4D) = 0;
 }
