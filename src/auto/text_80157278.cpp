@@ -1079,7 +1079,7 @@ extern "C" void* fn_80157F98(void* self, s32 initialValue, s32 owner) {
     return self;
 }
 #pragma push
-#pragma opt_propagation on
+#pragma opt_propagation off
 extern "C" void *fn_80158054(void *arg0, s32 arg1, s32 arg2, void *arg3) {
     struct Tail {
         u8 pad[0x244];
