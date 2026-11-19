@@ -1888,8 +1888,8 @@ extern int sprintf(char *, const char *, ...);
 #pragma dont_inline on
 f32 fn_80011EDC(void) {
     char buffer[0x10];
-    f32 scale = lbl_805602C8;
-    f32 best = lbl_80560280;
+    f32 scale = 0.73333335f;
+    f32 best = 0.0f;
     f32 value;
     s32 i = 0;
 
