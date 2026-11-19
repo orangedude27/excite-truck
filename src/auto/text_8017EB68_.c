@@ -1874,8 +1874,8 @@ void fn_8018143C(void) {
 
 }
 
+/* No-op stub (empty function). */
 void fn_80181440(void) {
-
 }
 
 /* Return the driver's sound id (soundId at +0x34C), derived from its AX stack head. */
