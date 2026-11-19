@@ -35,16 +35,16 @@ extern float lbl_80562E60;
 extern float lbl_80562E64;
 extern short lbl_80562E28;
 extern u8 lbl_80339E60[];
-void fn_801EAB2C(void *arg0) {
+void fn_801EAB2C(void * __restrict arg0) {
     float b;
-    float a = lbl_80562E60;
+    float a;
     void *vptr = &lbl_80339E60;
     float *p = (float *)arg0;
+    a = lbl_80562E60;
     b = lbl_80562E64;
     p[1] = a;
-    *(short *)((char *)arg0 + 0x38) = lbl_80562E28;
     *(int *)arg0 = (int)vptr;
-    p[1] = a;
+    *(float volatile *)((char *)arg0 + 4) = a;
     p[2] = b;
     p[3] = b;
     p[4] = b;
@@ -56,6 +56,7 @@ void fn_801EAB2C(void *arg0) {
     p[10] = b;
     p[11] = b;
     p[12] = b;
+    *(short *)((char *)arg0 + 0x38) = lbl_80562E28;
 }
 
 /* Trampoline during SeqHeap setup: forward (id, object+0x34, object) to fn_80176948. */
@@ -227,6 +228,7 @@ s32 fn_801EAF20(s32 object, s32 deleteFlag) {
     return object;
 }
 
+/* No-op stub. */
 void fn_801EAF60(void) {
 
 }
