@@ -8,6 +8,16 @@ __declspec(section ".data") extern int lbl_80335DCC;
 extern char lbl_8055E6D0;
 extern int memset(void *, int, unsigned int);
 extern int lbl_8055E6D4;
+static inline void fn_801B4720_tail(int arg0) {
+    register int value asm("r0") = *(int *)(arg0 + 4);
+    register int zero asm("r4") = 0;
+    *(int *)(arg0 + 8) = zero;
+    *(int *)(arg0 + 0xC) = value;
+    *(int *)(arg0 + 0x10) = value;
+    *(int *)(arg0 + 0x14) = zero;
+    *(int *)(arg0 + 0x20) = zero;
+    *(int *)(arg0 + 0x24) = zero;
+}
 extern void fn_80128670(int);
 extern void fn_80128668(void *);
 #pragma cplusplus on
@@ -255,6 +265,7 @@ int fn_801B4818(void) { return 0x100000; }
 void fn_801B4820(int unused, int *arg0, int *arg1, unsigned int arg2) {
     unsigned int value;
     unsigned int limit;
+
     value = arg2 / ((fn_801B2F24() + 1) * 0x44 + 0xC);
     limit = 0x7E90;
     if ((int)value < 0x7E90) {
@@ -262,7 +273,8 @@ void fn_801B4820(int unused, int *arg0, int *arg1, unsigned int arg2) {
     }
     *arg0 = 0x5000;
     *arg1 = 0x32;
-    fn_802E30C8((int *)&lbl_80335DCC, (limit / 9) / 60, (limit / 9) % 60, (0x32 * 0xC) >> 10, *arg0 / 1024, arg2 >> 10);
+    fn_802E30C8(&lbl_80335DCC, (limit / 9) / 60, (limit / 9) % 60,
+                (*arg1 * 0xC) >> 10, *arg0 / 1024, arg2 >> 10);
 }
 #pragma pop
 
