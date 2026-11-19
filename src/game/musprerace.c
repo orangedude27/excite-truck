@@ -427,6 +427,14 @@ void fn_8020C8F8(void) {
 
 }
 
+/* Pre-race music module entry point, empty in this build.  The debug action
+ * timeline's "sound" command (fn_801C4CE8) calls it before fn_8020C8F8 /
+ * fn_8020C8F4 when the record's second flag byte (rec+0x15) is set; the flag
+ * also picks whether the timeline marks itself waiting for the music
+ * (lbl_8055E7E9, cleared again by fn_801C4BAC).  Like fn_8020C8F4,
+ * fn_8020C8F8, fn_8020C918 and fn_8020C91C it does nothing in this build; the
+ * module's live entry points are fn_8020C900 (audio-active flag),
+ * fn_8020C908 (master volume) and fn_8020C910 (fade target). */
 void fn_8020C8FC(void) {
 
 }
