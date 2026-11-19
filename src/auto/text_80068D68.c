@@ -1326,9 +1326,9 @@ static inline u8 *WUDGetDevRecord(s32 index) {
     BOOL interrupts = OSDisableInterrupts();
     u8 *record;
     if (index >= 0 && index < 0xA) {
-        record = lbl_80392960 + index * 0x60 + 0x64;
+        record = (u8 *)((u32)lbl_80392960 + (u32)index * 0x60u + 0x64);
     } else {
-        record = lbl_80392960 + (index - 0xA) * 0x60 + 0x424;
+        record = (u8 *)((u32)lbl_80392960 + ((u32)(index - 0xA) * 0x60u) + 0x424);
     }
     OSRestoreInterrupts(interrupts);
     return record;
