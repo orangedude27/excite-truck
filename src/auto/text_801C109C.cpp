@@ -51,7 +51,7 @@ extern "C" int fn_801C109C(int arg0, int arg1, int arg2, int arg3, int arg4) {
     int step12 = arg1 * 0xC;
     base[0] = memory;
     base[9] = memory;
-    int p = memory + step12;
+    register int p asm("r4") = memory + step12;
     base[10] = p;
     p += step12;
     base[11] = p;
@@ -464,7 +464,7 @@ extern "C" void fn_801C1C7C(int object) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_801C1CBC(void *arg0, int arg1, void *arg2, int arg3, void *arg4, int arg5, void *arg6) {
     char *base = (char *)arg0;
     char *src = (char *)arg2;
@@ -477,6 +477,7 @@ extern "C" void fn_801C1CBC(void *arg0, int arg1, void *arg2, int arg3, void *ar
         int index;
         float x, y, z;
         char *dst;
+        float zero = 0.0f;
         if (count != 0) {
             do {
 #pragma unroll 2
@@ -496,9 +497,9 @@ extern "C" void fn_801C1CBC(void *arg0, int arg1, void *arg2, int arg3, void *ar
                     *(float *)(dst + 4) = y;
                     *(float *)(dst + 8) = z;
                     dst = *(char **)(base + 0x2C) + (index - 1) * 12;
-                    *(float *)dst = lbl_80562904;
-                    *(float *)(dst + 4) = lbl_80562904;
-                    *(float *)(dst + 8) = lbl_80562904;
+                    *(float *)dst = zero;
+                    *(float *)(dst + 4) = zero;
+                    *(float *)(dst + 8) = zero;
                     (*(float **)(base + 0x30))[index - 1] = *(float *)(src + 0x10);
                     (*(float **)(base + 0x34))[index - 1] = *(float *)(src + 0xC);
                     (*(int **)(base + 0x38))[index - 1] = 1;
@@ -523,9 +524,9 @@ extern "C" void fn_801C1CBC(void *arg0, int arg1, void *arg2, int arg3, void *ar
             *(float *)(dst + 4) = y;
             *(float *)(dst + 8) = z;
             dst = *(char **)(base + 0x2C) + (index - 1) * 12;
-            *(float *)dst = lbl_80562904;
-            *(float *)(dst + 4) = lbl_80562904;
-            *(float *)(dst + 8) = lbl_80562904;
+            *(float *)dst = zero;
+            *(float *)(dst + 4) = zero;
+            *(float *)(dst + 8) = zero;
             (*(float **)(base + 0x30))[index - 1] = *(float *)(src + 0x10);
             (*(float **)(base + 0x34))[index - 1] = *(float *)(src + 0xC);
             (*(int **)(base + 0x38))[index - 1] = 1;
@@ -534,15 +535,15 @@ extern "C" void fn_801C1CBC(void *arg0, int arg1, void *arg2, int arg3, void *ar
     {
         char *p = (char *)arg4;
         int i;
+        float bound = -0.001f;
         for (i = 0; i < arg3; i++) {
             float factor;
             float v;
             char *q;
             int idx, first, second;
-            float bound = lbl_80562928;
             factor = *(float *)(p + 0xC);
             if ((float)__fabs(factor) == lbl_80558DC4[0])
-                factor = lbl_8056290C;
+                factor = 1.0f;
             idx = *(int *)(base + 0x18);
             first = *(int *)p;
             second = *(int *)(p + 4);
@@ -747,16 +748,9 @@ check:
     if (index < *(int *)(base + 0x14))
         goto loop;
 }
-#pragma pop
+#pragma scheduling on
 extern "C" void fn_801C2694(void *arg0, float *arg1, int *arg2, float *arg3, float *arg4, float *arg5) {
-    extern float lbl_80562930;
-    float sp8, spC, sp10;
-    register float f5 = arg5[0] * lbl_80562930;
-    register float f4 = arg5[2] * lbl_80562930;
-    register float f0 = arg5[1] * lbl_80562930;
-    register float r5 = (float)((double)f5);
-    register float r4 = (float)((double)f4);
-    register float r0 = (float)((double)f0);
+    float scaled[3];
     float b2 = arg4[2];
     float b1 = arg4[1];
     float b0 = arg4[0];
@@ -769,23 +763,23 @@ extern "C" void fn_801C2694(void *arg0, float *arg1, int *arg2, float *arg3, flo
     int i2;
     int off2;
 
+    scaled[0] = 0.0110053914f * arg5[0];
+    scaled[1] = 0.0110053914f * arg5[1];
+    scaled[2] = 0.0110053914f * arg5[2];
     *(float *)((char *)arg0 + 0x58) = a0;
     *(float *)((char *)arg0 + 0x5C) = a1;
     *(float *)((char *)arg0 + 0x60) = a2;
     *(float *)((char *)arg0 + 0x64) = b0;
     *(float *)((char *)arg0 + 0x68) = b1;
     *(float *)((char *)arg0 + 0x6C) = b2;
-    sp8 = f5;
-    spC = f0;
-    sp10 = f4;
     goto check1;
 loop1:
     p = (float *)(*(char **)((char *)arg0 + 0x2C) + off);
     ++i;
-    p[0] += r5;
+    p[0] += scaled[0];
     off += 0xC;
-    p[1] += r0;
-    p[2] += r4;
+    p[1] += scaled[1];
+    p[2] += scaled[2];
 check1:
     if (i < *(int *)((char *)arg0 + 0x14))
         goto loop1;
@@ -809,7 +803,6 @@ check2:
         goto loop2;
     *arg2 = i2;
 }
-
 extern float lbl_80562930;
 extern float lbl_80562928;
 extern "C" float PSQUATMultiply(void *, void *, void *);
@@ -826,6 +819,7 @@ extern "C" void fn_801C27D8(void *arg0, float *arg1, float *arg2, float *arg3) {
     float b2 = arg2[2];
     int i = 0;
     int off = 0;
+    float *p;
     *(float *)((char *)arg0 + 0x58) = a0;
     *(float *)((char *)arg0 + 0x5C) = a1;
     *(float *)((char *)arg0 + 0x60) = a2;
@@ -834,14 +828,12 @@ extern "C" void fn_801C27D8(void *arg0, float *arg1, float *arg2, float *arg3) {
     *(float *)((char *)arg0 + 0x6C) = b2;
     goto check;
 loop:
-    {
-        float *p = (float *)(*(char **)((char *)arg0 + 0x2C) + off);
-        ++i;
-        p[0] += f5;
-        off += 0xC;
-        p[1] += f4;
-        p[2] += f0;
-    }
+    p = (float *)(*(char **)((char *)arg0 + 0x2C) + off);
+    ++i;
+    p[0] += f5;
+    off += 0xC;
+    p[1] += f4;
+    p[2] += f0;
 check:
     if (i < *(int *)((char *)arg0 + 0x14))
         goto loop;
