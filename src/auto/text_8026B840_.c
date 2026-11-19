@@ -69,15 +69,18 @@ typedef struct V3 { f32 x, y, z; } V3;
 
 /* v * 3x3 matrix m (rows of 3 floats); out may alias v */
 static inline void Mtx3MultVec(f32 *m, f32 *v, f32 *out) {
-    f32 x = v[0], y = v[1], z = v[2];
     if (out == v) {
-        out[0] = z * m[6] + (x * m[0] + y * m[3]);
-        out[1] = z * m[7] + (x * m[1] + y * m[4]);
-        out[2] = z * m[8] + (x * m[2] + y * m[5]);
+        f32 x = v[0], y = v[1], z = v[2];
+        f32 a = x * m[0] + y * m[3];
+        f32 b = x * m[1] + y * m[4];
+        f32 c = x * m[2] + y * m[5];
+        out[0] = z * m[6] + a;
+        out[1] = z * m[7] + b;
+        out[2] = z * m[8] + c;
     } else {
-        out[0] = z * m[6] + (x * m[0] + y * m[3]);
-        out[1] = z * m[7] + (x * m[1] + y * m[4]);
-        out[2] = z * m[8] + (x * m[2] + y * m[5]);
+        out[0] = v[2] * m[6] + (v[0] * m[0] + v[1] * m[3]);
+        out[1] = v[2] * m[7] + (v[0] * m[1] + v[1] * m[4]);
+        out[2] = v[2] * m[8] + (v[0] * m[2] + v[1] * m[5]);
     }
 }
 
@@ -185,7 +188,7 @@ void fn_8026B8A0(void) {
         s = s > lbl_80563D78 ? s : lbl_80563D78;
         f4 = lbl_80563D78;
         f5 = f4;
-        p = lbl_80563DC4 * (lbl_80563D94 + s * lbl_80563DC0);
+        p = lbl_80563DC4 * (lbl_80563DC4 * 0 + lbl_80563D94 + s * lbl_80563DC0);
         if (a < 0x50) {
             f4 = lbl_80563D98 + (f32)a / lbl_80563DC8;
         } else {
