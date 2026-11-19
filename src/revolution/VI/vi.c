@@ -342,7 +342,6 @@ extern u32 lbl_8037B5B0;
 
 #pragma dont_inline on
 void fn_80058A60(s16 intr, OSContext *context) {
-#pragma scheduling 750
     OSContext exceptionContext;
     BOOL intr1;
     s16 spA;
@@ -700,6 +699,7 @@ void __VIInit(VITVMode mode)
     VITiming *tm;
     u32 nonInter;
     s32 tv;
+    s32 tvForReg;
     volatile u32 a;
     u32 temp;
 
@@ -734,18 +734,21 @@ void __VIInit(VITVMode mode)
     temp = (u16)(((u32)tm->nhlines >> 1) + 1);
     __VIRegs[25] = tm->hlw + 1;
     __VIRegs[24] = temp | 0x1000;
-    if (tv < 4) {
-        if (tv < 1) {
-            tv = 0;
-        }
-    } else {
-        tv = 0;
+    switch (tv) {
+    case 1:
+    case 2:
+    case 3:
+        tvForReg = tv;
+        break;
+    default:
+        tvForReg = 0;
+        break;
     }
     if (nonInter <= 1) {
-        __VIRegs[1] = (tv << 8) | ((nonInter & 1) << 2) | 1;
+        __VIRegs[1] = (tvForReg << 8) | ((nonInter & 1) << 2) | 1;
         __VIRegs[54] = 0;
     } else {
-        __VIRegs[1] = (tv << 8) | 5;
+        __VIRegs[1] = (tvForReg << 8) | 5;
         __VIRegs[54] = 1;
     }
 }
@@ -756,13 +759,14 @@ void fn_8005954C(void)
      extern SomeVIStruct lbl_8038F398;
      extern u16 lbl_8038F418[];
      register u32 bootTv;
-     register u32 tv;
+     register s32 tv;
      register VITiming* tm;
      register u32 value;
+     register BOOL screenSaver;
+     s32 prog;
      u16 dspCfg;
      BOOL enabled;
      s32 coeff, frac;
-     BOOL screenSaver;
      u16 scanBit;
      u16 acv;
  
@@ -855,21 +859,25 @@ void fn_8005954C(void)
      tv = CurrTvMode;
      switch (tv) {
      case 0: case 3: case 6: case 7:
-         tv = 0;
+         prog = 0;
          break;
      case 1: case 4:
-         tv = 1;
+         prog = 1;
          break;
      case 2: case 5:
+         prog = tv;
          break;
      }
      OSRestoreInterrupts(enabled);
-     if (tv == 1) {
+     switch (prog) {
+     case 1:
          lbl_8055DB48 = 15000;
          lbl_8055DB4C = 90000;
-     } else {
+         break;
+     default:
          lbl_8055DB48 = 18000;
          lbl_8055DB4C = 108000;
+         break;
      }
      lbl_8055DB50 = 0;
      lbl_8055DB54 = 0;
