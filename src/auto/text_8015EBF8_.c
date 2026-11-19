@@ -58,16 +58,12 @@ void fn_8015EC50(unsigned short *out, void *stream) {
 int fn_8015ECC0(void *arg0)
 {
   register int result = 0;
-  register int test = 0;
-  if ((((int *) arg0)[8] < 1000) && (((unsigned int *) arg0)[6] == 0x54554245))
-  {
-    test = 1;
-  }
+  register int test = (((int *) arg0)[8] < 1000 && ((unsigned int *) arg0)[6] == 0x54554245) ? 1 : 0;
   if (test != 0)
   {
-    if (((float) fabs(((float *) ((void **) arg0)[test = 3])[7])) > lbl_805617D0)
+    if ((float) fabs(((float *) ((void **) arg0)[3])[7]) > lbl_805617D0)
     {
-      result = test | 1;
+      result = 1;
     }
   }
   return result;
