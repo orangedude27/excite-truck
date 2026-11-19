@@ -106,7 +106,6 @@ f32 fn_8026B844(f32 input) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
 void fn_8026B8A0(void) {
     s32 a, b, c;
     s32 ok;
