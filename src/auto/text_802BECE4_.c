@@ -137,6 +137,9 @@ extern "C" void fn_802BEDFC(void) {
 #pragma scheduling on
 #pragma cplusplus reset
 
+static inline float fn_clampHigh(float x) {
+    return x > lbl_80564D90 ? x : lbl_80564D90;
+}
 #pragma dont_inline on
 float fn_802BEFB4(void) {
     float value;
@@ -1069,18 +1072,44 @@ extern float fn_802C9C38(void);
 extern float fn_802C9C48(void);
 extern void fn_802BED90(float *);
 extern void fn_802C03F0(void *arg0) {
-    float m[12];
-    float a, b, c, d;
-    float e, f, g, h;
-    fn_802C8B08(m);
-    fn_802C98DC(&a, &b, &c, &d, m[10]);
-    (void)fn_8002F234(0, 0);
+    float s[0x83];
+    float f0, f1, f2, f14;
+    void **vo;
+    fn_802C8B08(&s[84]);
+    f14 = s[94] - lbl_8055FAF4;
+    fn_802C98DC(&s[5], &s[3], &s[4], &s[2], s[94]);
+    f2 = lbl_80564DF4 * s[4];
+    s[126] = f14 * s[91];
+    s[127] = s[3];
+    f1 = (float)fn_8002F234(lbl_80564DF8, lbl_80564DF4);
+    s[5] *= f1;
+    (void)fn_802DD42C(0x6000, f1);
     (void)fn_802C9C50();
     (void)fn_802C9C40();
     (void)fn_802C9C38();
     (void)fn_802C9C48();
-    (void)arg0;
-    (void)e; (void)f; (void)g; (void)h;
+    vo = *(void ***)((char *)arg0 + 0x2C58);
+    f14 = ((float (*)(void *))((void **)vo[0])[6])(vo);
+    f0 = lbl_80564E00 / (f14 * lbl_80564DF4);
+    s[60] = s[90]; s[61] = s[91]; s[62] = s[92];
+    if ((float)fabs(s[91]) < lbl_80564E04) {
+        s[60] = s[92]; s[61] = s[93]; s[62] = s[94];
+    } else {
+        s[60] = s[87]; s[61] = s[88]; s[62] = s[89];
+    }
+    s[61] = lbl_80564D90;
+    f1 = PSVECMag(&s[60]);
+    f2 = lbl_80564E08;
+    if (f2 > f1) f2 = f1;
+    f1 = lbl_80564D80 / f2;
+    f0 = s[60] * f1;
+    s[15] = lbl_80564D90;
+    s[16] = lbl_80564D80;
+    s[62] = s[62] * f1;
+    s[61] = s[61] * f1;
+    s[60] = f0;
+    s[17] = lbl_80564D90;
+    PSVECCrossProduct(&s[60], &s[15], &s[57]);
 }
 
 #pragma pop
