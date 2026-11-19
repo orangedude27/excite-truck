@@ -153,7 +153,13 @@ void fn_80204044(s32 sample, f32 worldX, f32 worldY) {
 
 }
 
-void fn_80204048(void) {
+/* "tedash.val" terrain debug viewer, view mode 5: open the world-space overlay
+ * that the sampled cells are reported to (fn_80204044) and closed by
+ * fn_8020404C().  fn_802B6F34() hands it the two opposite corners of the brush
+ * area in world units -- corner0 (x,y) at grid cell (0,0) and corner1 (x,y) at
+ * (width-1,height-1), each a pair of floats -- plus the far corner's unscaled
+ * grid x.  The overlay draws nothing in this build, so all three are ignored. */
+void fn_80204048(f32 *corner0, f32 *corner1, f32 farGridX) {
 
 }
 
