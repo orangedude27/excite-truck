@@ -12,10 +12,10 @@ extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *, u8);
 /* forward decls for helpers defined further down in this file */
 extern "C" s32 fn_80128668(void *);
 extern "C" void *fn_800FDE60(void);
-#define FN800FE1D0_ARG void
-#define FN800FE1D0_USED_ARG ((void *)0)
-#define FN800FE1D0_SEPARATE_CALL fn_800FDE60()
-#define FN800FE1D0_CALL /* empty */
+#define FN800FE1D0_ARG void *arg0
+#define FN800FE1D0_USED_ARG arg0
+#define FN800FE1D0_SEPARATE_CALL ((void)0)
+#define FN800FE1D0_CALL (void *)fn_800FDE60()
 extern "C" void fn_800FE1D0(FN800FE1D0_ARG);
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0(void *, s32);
 extern u8 lbl_8055DE80;
