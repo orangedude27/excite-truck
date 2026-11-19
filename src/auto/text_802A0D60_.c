@@ -199,50 +199,64 @@ extern "C" inline void *fn_802A1120_getSecond(void) {
 #pragma push
 #pragma processor 750
 #pragma cplusplus on
-extern "C" void fn_802A1120(float *arg0, float *arg1) {
-    struct Dummy {
-        virtual void *getFirst(s32);
-        virtual void *getSecond(s32);
+/* The decal is laid across the track segment that straddles this plane: the
+   interpolation parameter runs over one segment, from 0.0f to 1.0f in 1/40ths. */
+#define kSegStart lbl_805646F0 /* 0.0f */
+#define kSegEnd lbl_805646F4   /* 1.0f */
+#define kSegStep lbl_80564700  /* 0.025f */
+/* Find where the track crosses the decal plane. The resource manager hands out the
+   path object (whose +0x1C is the plane: origin at +0x00, normal at +0x08) and the
+   node the tracking starts from; the plane's origin is projected onto the track, the
+   node list is walked to the segment that straddles the plane, and that segment is
+   stepped through in 1/40ths until the interpolated point reaches the plane.
+   *outPoint gets that crossing point, *outNormal the plane's normal. */
+extern "C" void fn_802A1120(float *outPoint, float *outNormal) {
+    struct ResourceManager {
+        virtual void *getPath(s32);
+        virtual void *getStartNode(s32);
     };
-    struct Search { s32 index; float value; s32 max; };
-    char work[0x34];
-    Search search;
-    void *manager;
-    void *entry;
-    void *data;
+    struct Projection { void *node; float fraction; s32 max; };
+    char tracker[0x34];
+    Projection projection;
+    void *path;
+    void *node;
+    void *plane;
     register float end;
     register float increment;
     register float baseline;
     register float step;
-    manager = ((Dummy *)fn_80156A40())->getFirst(0);
-    data = *(void **)((char *)manager + 0x1C);
-    arg1[0] = *(float *)((char *)data + 8);
-    arg1[1] = *(float *)((char *)data + 0xC);
-    fn_801352B8(work);
-    entry = ((Dummy *)fn_80156A40())->getSecond(0);
-    fn_80135D60(work, (s32)entry);
-    search.index = 0;
-    search.max = 0x2710;
-    search.value = lbl_805646F0;
-    fn_801355C0(work, *(void **)((char *)manager + 0x1C), 0, &search, 0);
-    entry = fn_802A1040(*(void **)((char *)manager + 0x1C), (void *)search.index, entry);
-    step = lbl_805646F0;
-    baseline = lbl_805646F0;
-    increment = lbl_80564700;
-    end = lbl_805646F4;
+    path = ((ResourceManager *)fn_80156A40())->getPath(0);
+    plane = *(void **)((char *)path + 0x1C);
+    outNormal[0] = *(float *)((char *)plane + 8);
+    outNormal[1] = *(float *)((char *)plane + 0xC);
+    fn_801352B8(tracker);
+    node = ((ResourceManager *)fn_80156A40())->getStartNode(0);
+    fn_80135D60(tracker, (s32)node);
+    projection.node = 0;
+    projection.max = 0x2710;
+    projection.fraction = kSegStart;
+    fn_801355C0(tracker, *(void **)((char *)path + 0x1C), 0, &projection, 0);
+    node = fn_802A1040(*(void **)((char *)path + 0x1C), projection.node, node);
+    step = kSegStart;
+    baseline = kSegStart;
+    increment = kSegStep;
+    end = kSegEnd;
     while (step < end) {
-        arg0[0] = *(float *)entry + step * (*(float *)*(void **)((char *)entry + 0x14) -
-                                             *(float *)entry);
-        arg0[1] = *(float *)((char *)entry + 4) +
-                  step * (*(float *)((char *)*(void * volatile *)((char *)entry + 0x14) + 4) -
-                          *(float *)((char *)entry + 4));
-        if (fn_802A0F7C((char *)*(char **)((char *)manager + 0x1C) + 8, arg0,
-                        *(void **)((char *)manager + 0x1C)) >= baseline)
+        outPoint[0] = *(float *)node + step * (*(float *)*(void **)((char *)node + 0x14) -
+                                               *(float *)node);
+        outPoint[1] = *(float *)((char *)node + 4) +
+                  step * (*(float *)((char *)*(void * volatile *)((char *)node + 0x14) + 4) -
+                          *(float *)((char *)node + 4));
+        if (fn_802A0F7C((char *)*(char **)((char *)path + 0x1C) + 8, outPoint,
+                        *(void **)((char *)path + 0x1C)) >= baseline)
             break;
         step += increment;
     }
-    fn_8013530C(work, -1);
+    fn_8013530C(tracker, -1);
 }
+#undef kSegStep
+#undef kSegEnd
+#undef kSegStart
 #pragma pop
 
 extern double fn_8002F208(double);
