@@ -6349,7 +6349,8 @@ void __GXSetMatrixIndex(s32 index) {
     *(unsigned short *)((char *)gxData + 2) = 1;
 }
 
-void GXSetGPMetric(unsigned int metric1, unsigned int metric2) {
+/* Configure the two GX performance metrics, clearing the previous metric selections and programming the requested counters. */
+void GXSetGPMetric(unsigned int perf0, unsigned int perf1) {
     unsigned int *data = __GXData;
     switch (data[0x5EC / 4]) {
     case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9: case 10:
@@ -6392,8 +6393,8 @@ void GXSetGPMetric(unsigned int metric1, unsigned int metric2) {
     default:
         break;
     }
-    data[0x5EC / 4] = metric1;
-    switch (metric1) {
+    data[0x5EC / 4] = perf0;
+    switch (perf0) {
     case 0:
         WGPIPE.c = 0x10; WGPIPE.i = 0x1006; WGPIPE.i = 0x273; break;
     case 1:
@@ -6467,8 +6468,8 @@ void GXSetGPMetric(unsigned int metric1, unsigned int metric2) {
     case 35:
         break;
     }
-    data[0x5F0 / 4] = metric2;
-    switch (metric2) {
+    data[0x5F0 / 4] = perf1;
+    switch (perf1) {
     case 0:
         WGPIPE.c = 0x61; WGPIPE.i = 0x67000042; break;
     case 1:
