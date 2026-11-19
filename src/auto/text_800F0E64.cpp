@@ -516,7 +516,7 @@ extern "C" const char lbl_803243F0[];
 #pragma use_lmw_stmw off
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void* arg0, int arg1) {
     UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(arg0);
-    u32 irq = OSDisableInterrupts();
+    register u32 irq = OSDisableInterrupts();
     fn_800E402C(Instance__15EmissionManagerFv());
     void* channel = *(void**)((u8*)arg0 + 0xB8);
     while (channel != 0) {
@@ -2262,12 +2262,16 @@ extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hb
         virtual void *Alloc(u32);
     };
     struct { u32 pad[5]; s32 hasWave; } info;
+    Stream *stream;
+    u32 remain;
+    void *p;
+    void *buf;
 
     if (allocator == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E40, 0x53, lbl_80324E5C);
     }
     OSLockMutex(self);
-    Stream *stream = (Stream *)detail_OpenGroupStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void **)((char *)self + 0x18), groupId, (char *)self + 0x1c, 0x200);
+    stream = (Stream *)detail_OpenGroupStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void **)((char *)self + 0x18), groupId, (char *)self + 0x1c, 0x200);
     if (stream == 0) {
         if (stream != 0)
             stream->Close();
@@ -2280,7 +2284,7 @@ extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hb
         OSUnlockMutex(self);
         return 0;
     }
-    void *buf = ((Allocator *)allocator)->Alloc(stream->GetSize());
+    buf = ((Allocator *)allocator)->Alloc(stream->GetSize());
     if (buf == 0) {
         if (stream != 0)
             stream->Close();
@@ -2297,8 +2301,8 @@ extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hb
             return 0;
         }
     } else {
-        void *p = buf;
-        u32 remain = stream->GetSize();
+        p = buf;
+        remain = stream->GetSize();
         while (remain != 0) {
             if (stream->Read(p, blockSize > remain ? remain : blockSize) == 0) {
                 *(void **)((char *)self + 0x21c) = 0;
@@ -8157,11 +8161,11 @@ extern "C" void ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(void* self) {
     OSRestoreInterrupts(irq);
     ((Manager*)*(void**)((u8*)self + 0x430))->m3(self, *(u32*)((u8*)self + 0x434));
     irq = OSDisableInterrupts();
+    s32 iterator;
+    s32 eraseValue;
     u32 head;
     head = p->activeHead;
     if (head == 0) goto done;
-    s32 iterator;
-    s32 eraseValue;
     goto check;
 loop:
     if (head == 0)
