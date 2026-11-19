@@ -725,6 +725,7 @@ void fn_80293230(void *arg0, float *arg1, float *arg2, short arg3, signed char a
     template = lbl_804B4030 + offset;
     a = arg2[0];
     *(float *)(record + 0x58) = z;
+    arg1 = (float *)index;
     b = arg2[1];
     firstWord = *(unsigned int *)(template + 0x10);
     secondWord = *(unsigned int *)(template + 0x14);
@@ -752,7 +753,7 @@ void fn_80293230(void *arg0, float *arg1, float *arg2, short arg3, signed char a
         mode = 2;
     *(int *)(record + 0x70) = mode;
     *(unsigned char *)(record + 0x74) = ((int (*)(int))fn_80287B5C)(*(int *)(object + 0x28));
-    *(unsigned char *)(record + 0x75) = (unsigned char)index;
+    *(unsigned char *)(record + 0x75) = (unsigned char)arg1;
     *(unsigned char *)(record + 0x76) = (unsigned char)arg4;
     count = *(int *)(object + 0x2FAC);
     *(int *)(object + 0x2FAC) = count + 1;
@@ -799,10 +800,10 @@ void fn_80293530(void* arg0) {
 }
 
 #pragma scheduling invalid_target
-void *fn_802935A0(void *__restrict arg0) {
+void *fn_802935A0(void *arg0) {
     register u8 *out = (u8 *)arg0;
     register unsigned int *table = lbl_80488648;
-    register float scale = lbl_805644EC;
+    float scale = lbl_805644EC;
     unsigned int color;
     unsigned int checkValue;
     unsigned int count = 0;
@@ -829,7 +830,7 @@ body:
     tmp = (s32)(scale * (float)(u8)(color >> 16));
     if (tmp <= 0xFF) comp = tmp;
     blue = ((comp & 0xFF) << 16) | 0xFF000000;
-    *(unsigned int *)(out + 0x2FB0) = (unsigned int)(blue | green | red);
+    *(unsigned int *)(out + 0x2FB0) = (unsigned int)((blue | green) | red);
     *(unsigned int *)(out + 0x2FB4) = color;
     table++;
     count++;
@@ -1669,7 +1670,7 @@ void fn_80294780(void *arg0)
     unsigned int pad[4];
     struct W3 copy[3];
   };
-  struct
+  struct 
   {
     float x;
     float y;
@@ -1679,33 +1680,28 @@ void fn_80294780(void *arg0)
   register struct Particle *cur;
   register struct Particle *out;
   register int i;
-  float gravity;
   float dt = fn_801E7E24(arg0);
-  float maxAge, minAge, scale;
-  gravity = lbl_80564500;
-  maxAge = lbl_805644FC;
-  minAge = lbl_805644D8;
-  scale = lbl_805644D4 - (lbl_80564510 * dt);
-  cur = (struct Particle *)(((unsigned char *)arg0) + 0x2C);
+  float scale = 1.0f - (1.5f * dt);
+  cur = (struct Particle *) (((unsigned char *) arg0) + 0x2C);
   out = cur;
-  for (i = 0; i < (*((int *)(((unsigned char *)arg0) + 0x222C))); ++i, ++cur)
+  for (i = 0; i < (*((int *) (((unsigned char *) arg0) + 0x222C))); ++i, ++cur)
   {
-    if (cur->age < minAge)
+    if (cur->age < 0.0f)
     {
       continue;
     }
-    if (cur->age >= maxAge)
+    if (cur->age >= 5.0f)
     {
       continue;
     }
+    v.x = cur->vx * scale;
     v.y = cur->vy * scale;
     v.z = cur->vz * scale;
-    v.x = cur->vx * scale;
-    v.y -= (gravity * dt) * (*((float *)(((unsigned char *)arg0) + 4)));
+    v.y -= (9.81f * dt) * (*((float *) (((unsigned char *) arg0) + 4)));
     out->x = cur->x + (v.x * dt);
     out->y = cur->y + (v.y * dt);
     out->z = cur->z + (v.z * dt);
-    src = (struct ParticleTemplate *)(lbl_804B4030 + (cur->type * 0x34));
+    src = (struct ParticleTemplate *) (lbl_804B4030 + (cur->type * 0x34));
     out->copy[0] = src->copy[0];
     out->copy[1] = src->copy[1];
     out->copy[2] = src->copy[2];
@@ -1717,5 +1713,6 @@ void fn_80294780(void *arg0)
     out->type = cur->type;
     ++out;
   }
-  *((int *)(((unsigned char *)arg0) + 0x222C)) = (((int)out) - (((int)arg0) + 0x2C)) / 0x44;
+
+  *((int *) (((unsigned char *) arg0) + 0x222C)) = (((int) out) - (((int) arg0) + 0x2C)) / 0x44;
 }
