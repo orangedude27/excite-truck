@@ -2765,12 +2765,12 @@ if (((int (*)(void *, void *, int, float, float, float))*(void **)((char *)*(voi
 fn_801352B8(s.query);
 fn_80135D60(s.query, ((int (*)(int))*(void **)((char *)*(void **)fn_80156A40() + 0xC))(0));
 {
-float tt = lbl_80561980;
 *(void **)s.stk50 = 0;
 *(int *)(s.stk50 + 8) = 0x2710;
 *(float *)(s.stk50 + 4) = lbl_80561980;
 fn_801355C0(s.query, &s.f38, 0, s.stk50, 0);
 {
+float tt = *(float *)(s.stk50 + 4);
 void *nd = *(void **)s.stk50;
 float v0 = *(float *)nd;
 float w0 = *(float *)(*(void **)((char *)nd + 0x14));
