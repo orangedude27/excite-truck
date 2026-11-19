@@ -6882,6 +6882,7 @@ void fn_80066EB0(s32 arg0, u8 *arg1) {
     (*(u8 *)((s8*)(temp_r31) + (0x806))) = (u8) ((*(u8 *)((s8*)(temp_r31) + (0x806))) == 0);
     OSRestoreInterrupts(enabled);
 }
+#pragma opt_propagation reset
 
 // Empty placeholder: this WPAD function has no body in the original.
 void fn_800678D8(void) {
