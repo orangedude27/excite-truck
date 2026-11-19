@@ -864,8 +864,12 @@ extern "C" void fn_800D6CA0(s32, s32);
 /* ut::DynamicCast: the target type info is taken before the virtual GetRuntimeTypeInfo call. */
 static inline u8 *DynCast_800D77DC(u8 *obj) {
     StateNode_800D6CA0 *typeInfo = (StateNode_800D6CA0 *)&lbl_8055DE08;
-    if (HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)obj)->v1(), typeInfo)) return obj;
-    return 0;
+    bool derived;
+    for (StateNode_800D6CA0 *t = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)obj)->v1(); ; t = t->next) {
+        if (!t) { derived = false; break; }
+        if (t == typeInfo) { derived = true; break; }
+    }
+    return derived ? obj : 0;
 }
 /* Child-list iterator (ut::LinkList style): node pointer wrapped in a struct. */
 struct ChildIter_800D77DC { StateNode_800D6CA0 *node; };
