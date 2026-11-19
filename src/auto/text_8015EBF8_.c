@@ -640,6 +640,7 @@ extern "C" void fn_8015F670(void **arg0, s32 arg1) {
 #pragma cplusplus reset
 #pragma pop
 
+/* Empty stub. */
 void fn_8015F79C(void) {
 }
 
@@ -655,8 +656,7 @@ f32 PSVECDotProduct(void *, void *);
 #pragma dont_inline on
 s32 fn_8015F7A0(s32 arg0, void *arg1, void *arg2) {
     f32 scale = (f32)arg0 * lbl_805617E4;
-    f32 dot = PSVECDotProduct(arg1, arg2);
-    f32 t = (dot - lbl_805617EC) / lbl_805617F0;
+    f32 t = (PSVECDotProduct(arg1, arg2) - lbl_805617EC) / lbl_805617F0;
     f32 clamp = lbl_805617E8;
     clamp = (clamp > t) ? t : clamp;
     clamp = (lbl_805617D4 > clamp) ? lbl_805617D4 : clamp;
