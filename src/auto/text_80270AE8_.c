@@ -239,12 +239,6 @@ int fn_80270D1C(int sourceType) {
     }
 }
 
-static float *fn_80270D4C_value(void *node) {
-    if (*((unsigned char *)node + 4) != 0) {
-        return (float *)(*(char **)node + 0xC);
-    }
-    return (float *)(*(char **)node + 4);
-}
 #pragma peephole on
 int fn_80270D4C(void *arg0, void *arg1) {
     float *right;
