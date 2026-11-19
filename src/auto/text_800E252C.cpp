@@ -104,8 +104,8 @@ extern const char lbl_80322734[];
 extern "C" unsigned int GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(unsigned char, unsigned int, const void *);
 #pragma push
 #pragma small_data on
-extern char lbl_80559820[];
-extern char lbl_80559828[];
+extern const char lbl_80559820;
+extern const char lbl_80559828;
 #pragma pop
 extern float lbl_80560F38;
 extern float lbl_80560F3C;
@@ -3722,7 +3722,7 @@ extern "C" void *fn_800E8690(void *arg0, void *arg1, int arg2) {
         return arg1;
     case 2:
         base = *(unsigned int *)((char *)arg0 + 4) + 8;
-        if (type != 2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559820, 0x71, lbl_80322708);
+        if (type != 2) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559820, 0x71, lbl_80322708);
         address = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*(unsigned char *)arg1, *(unsigned int *)((char *)arg1 + 4), (const void *)base);
         data = (unsigned char *)address;
         if (!data) return 0;
@@ -3735,12 +3735,12 @@ extern "C" void *fn_800E8690(void *arg0, void *arg1, int arg2) {
     body:
         if (arg2 <= data[i + 1]) {
             unsigned int off = (data[0] + 4) & ~3;
-            return (void *)((unsigned int)(data + i * 8) + off);
+            return (void *)(off + (unsigned int)(data + i * 8));
         }
         goto inc;
     case 3:
         base = *(unsigned int *)((char *)arg0 + 4) + 8;
-        if (type != 3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559828, 0x72, lbl_80322734);
+        if (type != 3) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559828, 0x72, lbl_80322734);
         address = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*(unsigned char *)arg1, *(unsigned int *)((char *)arg1 + 4), (const void *)base);
         data = (unsigned char *)address;
         if (!data) return 0;
