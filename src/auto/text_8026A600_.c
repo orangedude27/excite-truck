@@ -18,16 +18,20 @@ void *fn_8026A600(void *camera) {
 }
 
 #pragma scheduling invalid_target
-float fn_8026A63C(const float *arg0, const float *arg1, const float *arg2) {
-    float sp8[3];
-    float t0 = arg0[0];
-    t0 -= arg1[0];
-    sp8[0] = t0;
-    sp8[1] = arg0[1] - arg1[1];
-    sp8[2] = arg0[2] - arg1[2];
-    return PSVECDotProduct(sp8, arg2);
+/* How far `point` lies along `direction` measured from `origin`:
+ * dot(point - origin, direction).  The difference is built on the stack as a
+ * plain 3-float vector before PSVECDotProduct; the camera code calls it with a
+ * terrain ray hit, the ray's start and the ray's (normalised) direction to get
+ * the distance the ray travelled (fn_8026A698). */
+float fn_8026A63C(const float *point, const float *origin, const float *direction) {
+    float diff[3];
+    float dx = point[0];
+    dx -= origin[0];
+    diff[0] = dx;
+    diff[1] = point[1] - origin[1];
+    diff[2] = point[2] - origin[2];
+    return PSVECDotProduct(diff, direction);
 }
-
 extern float lbl_80558DC4;
 extern int lbl_8055E3C4;
 extern float lbl_80563D18;
