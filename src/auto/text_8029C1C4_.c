@@ -294,20 +294,22 @@ void fn_8029C664(void) {
     extern float PSQUATMultiply(float *, float *);
     extern char lbl_803495E8[];
     extern void fn_802E317C(const char *, ...);
-    float a[3], b[3], radiusA, radiusB;
-    float margin;
-    int *base, *p, *q;
+    float positionA[3], positionB[3], radiusA, radiusB;
+    float minDistance;
+    int *poolBase, *poolA, *poolB;
     int i, j;
-    margin = lbl_80564648;
-    p = lbl_804B5010;
-    base = p;
-    for (i=0; i<lbl_8055F7F0; ++p, ++i) {
-        fn_8029D550((void *)*p, a, &radiusA);
-        j=i+1;
-        q=base+j;
-        for (; j<lbl_8055F7F0; ++q, ++j) {
-            fn_8029D550((void *)*q, b, &radiusB);
-            if (PSQUATMultiply(a,b)<radiusB+(margin+radiusA))
+    /* Warn if any two 3D water pools are closer together than the minimum
+     * separation (250 units) based on their positions and radii. */
+    minDistance = lbl_80564648;
+    poolA = lbl_804B5010;
+    poolBase = poolA;
+    for (i = 0; i < lbl_8055F7F0; ++poolA, ++i) {
+        fn_8029D550((void *)*poolA, positionA, &radiusA);
+        j = i + 1;
+        poolB = poolBase + j;
+        for (; j < lbl_8055F7F0; ++poolB, ++j) {
+            fn_8029D550((void *)*poolB, positionB, &radiusB);
+            if (PSQUATMultiply(positionA, positionB) < radiusB + (minDistance + radiusA))
                 fn_802E317C(lbl_803495E8);
         }
     }
