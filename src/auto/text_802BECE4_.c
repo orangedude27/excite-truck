@@ -410,7 +410,7 @@ extern "C" void fn_802BF600(void *arg0, void *dst, void *src) {
     int t28 = *(int *)((char *)src + 0x28);
     float f10, f4, scale, f1c, f28;
     float s4, s10, s1c, s28;
-    int i0, i8, ic, i14, i18, i20, i24, i2c;
+    int i2c, i24, i20, i18, i14, ic, i8, i0;
     scale = lbl_80564DA8;
     *(int *)((char *)dst + 4) = t4;
     *(int *)((char *)dst + 0x10) = t10;
@@ -828,18 +828,20 @@ extern void fn_80015B20(float *, void *, float *);
 extern void fn_802C8B98(int, float *);
 extern void fn_802C8DB8(void *, int, unsigned short *, int);
 extern void fn_802C8D74(void);
+#pragma scheduling invalid_target
 void fn_802BFE48(void *arg0, void *arg1, float arg2) {
     if (*(int *)((char *)arg0 + 0x18) != -2) {
         struct V { float x, y, z; int color; float u, v; } v[4];
         float matbuf[12];
         float rot[9];
-        unsigned short idx[6] = { 0, 1, 2, 2, 1, 3 };
+        struct Idx { unsigned short a[6]; } idx;
         float vec[3];
         float x, y;
         float *mat = matbuf;
         int i;
         x = lbl_80564DCC * arg2;
         y = lbl_80564DD0 * arg2;
+        idx = *(const struct Idx *)lbl_802FAC20;
         for (i = 0; i < 4; i++) {
             v[i].x = (i & 1) ? x : -x;
             v[i].y = (i & 2) ? x : -x;
@@ -858,11 +860,10 @@ void fn_802BFE48(void *arg0, void *arg1, float arg2) {
         fn_80015A20(rot, vec);
         fn_80015B20(mat, rot, mat);
         fn_802C8B98(*(int *)((char *)arg0 + 0x18), mat);
-        fn_802C8DB8(v, 4, idx, 6);
+        fn_802C8DB8(v, 4, idx.a, 6);
         fn_802C8D74();
     }
 }
-
 void fn_802C0054(void *dst, const void *src) {
     /* Copy a 36-byte block (9 32-bit words) from src to dst. */
     struct Copy {
@@ -1057,6 +1058,9 @@ int fn_802C03E0(unsigned int color) {
     return middle | outer;
 }
 
+extern float lbl_80564DF4, lbl_80564E00, lbl_80564E04, lbl_80564E08;
+extern double lbl_80564DF8;
+extern int fn_802DD42C(int, float);
 extern void fn_802C98DC(float *, float *, float *, float *, float);
 extern double fn_8002F234(double, double);
 extern float fn_802C9C50(void);
