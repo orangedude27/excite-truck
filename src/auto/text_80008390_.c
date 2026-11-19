@@ -151,17 +151,11 @@ extern void fn_80010188(int, int, const char *, ...);
 extern int sprintf(char *, const char *, ...);
 #define ID_LIST (&lbl_8034F3D0)
 static inline void IdList_Add(s32 *src) {
+    s32 value = *src;
     s32 *data = lbl_8034F3D0.data;
     s32 n = lbl_8034F3D0.count;
-    s32 value = *src;
     lbl_8034F3D0.count = n + 1;
     data[n] = value;
-}
-static inline void push4(s32 *p) {
-    IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3);
-}
-static inline void push5(s32 *p) {
-    IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3); IdList_Add(p + 4);
 }
 #define ID_PUSH(v) { s32 n_ = ID_LIST->count; ID_LIST->count = n_ + 1; ID_LIST->data[n_] = (v); }
 #pragma scheduling invalid_target
