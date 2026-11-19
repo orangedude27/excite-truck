@@ -232,6 +232,7 @@ void fn_801C2FF4(float *out, float *a, float *b, float weight) {
         out[10] = ty;
     }
 }
+#pragma pop
 
 #pragma dont_inline on
 #pragma push
