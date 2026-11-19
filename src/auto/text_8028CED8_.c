@@ -163,7 +163,6 @@ int fn_8028D17C(void) {
         virtual void v20();
         virtual void *get(void *);
     };
-    char *base;
     register int *slot;
     int i;
     register int invalid;
@@ -171,7 +170,6 @@ int fn_8028D17C(void) {
     void *obj;
     slot = (int *)lbl_804B3470;
     lbl_8055F728 = 0;
-    base = (char *)&lbl_804B3400;
     i = 0;
     invalid = -1;
     for (; i < 8; i++) {
@@ -181,7 +179,7 @@ int fn_8028D17C(void) {
             obj = ((Obj *)obj)->get(&lbl_8055C8D0);
         }
         if (obj != 0) {
-            fn_8028D084(base + lbl_8055F728 * 0x1C, obj);
+            fn_8028D084((char *)&lbl_804B3400 + lbl_8055F728 * 0x1C, obj);
             *slot = lbl_8055F728;
             lbl_8055F728++;
         } else {
