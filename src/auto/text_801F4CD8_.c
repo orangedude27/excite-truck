@@ -217,8 +217,6 @@ public:
     virtual void d8();
     virtual void d9();
     virtual void d10();
-    virtual void d10a();
-    virtual void d10b();
     virtual Vec3_801F4F9C d11(const char *);
     virtual Vec3_801F4F9C d12(const char *, Vec3_801F4F9C);
     virtual Vec2_801F4F9C d13(const char *);
