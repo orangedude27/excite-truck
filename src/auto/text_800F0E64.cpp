@@ -364,13 +364,13 @@ extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi_800F0E9C(void *
 }
 
 extern "C" f32 lbl_80561078;
-extern "C" void fn_800EC890(void *, int, int, int, int, f32);
+extern "C" void fn_800EC890(void *, u8, u8, u8, u8, f32);
 #pragma opt_propagation off
 extern "C" void InitParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0) {
     u8 *p = (u8 *)arg0;
     f32 zero = 0.0f;
     f32 one = 1.0f;
-    int n2 = 2, nff = 0xFF, n7f = 0x7F, n40 = 0x40;
+    u8 n2 = 2, nff = 0xFF, n7f = 0x7F, n40 = 0x40;
     *(f32 *)(p + 0x08) = one;
     *(f32 *)(p + 0x0C) = one;
     *(f32 *)(p + 0x10) = zero;
@@ -393,28 +393,28 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0) {
     *(u32 *)(p + 0x54) = 0;
     *(u32 *)(p + 0x60) = 0;
     *(u32 *)(p + 0x64) = 0;
-    p[0x88] = (u8)n40;
+    p[0x88] = n40;
     *(u32 *)(p + 0x58) = 0;
     p[0x5C] = 0;
     p[0x5D] = 0;
     p[0x5E] = 0;
     p[0x5F] = 0;
-    p[0x80] = (u8)n7f;
-    p[0x81] = (u8)n7f;
+    p[0x80] = n7f;
+    p[0x81] = n7f;
     p[0x84] = 0;
     p[0x85] = 0;
     p[0x86] = 0;
     p[0x82] = 0;
-    p[0x8B] = (u8)nff;
-    p[0x8C] = (u8)nff;
-    p[0x8D] = (u8)nff;
-    p[0x8E] = (u8)nff;
-    p[0x8F] = (u8)n7f;
+    p[0x8B] = nff;
+    p[0x8C] = nff;
+    p[0x8D] = nff;
+    p[0x8E] = nff;
+    p[0x8F] = n7f;
     p[0x90] = 0;
     p[0x91] = 0;
     p[0x92] = 0;
-    p[0x93] = (u8)n40;
-    p[0x83] = (u8)n2;
+    p[0x93] = n40;
+    p[0x83] = n2;
     p[0x89] = 0x3C;
     p[0x8A] = 0;
     *(f32 *)(p + 0x7C) = zero;
