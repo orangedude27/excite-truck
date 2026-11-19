@@ -6655,16 +6655,17 @@ extern "C" void *fn_80223B94(void *self, s32 deleting) {
 }
 
 #pragma processor 750
-extern "C" void fn_80223C20(void *arg0) {
-    register f32 temp_f31 = 0.0f;
-    u8 sp8[0x40];
-    *(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x260) + 0x30) = 1.0f - *(f32 *)((u8 *)arg0 + 0x25C);
-    if (*(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x260) + 0x30) > temp_f31 && *(s32 *)((u8 *)arg0 + 0x250) != 0) {
-        fn_8022EEF8(sp8, (s32)*(void **)((u8 *)arg0 + 0x260), fn_8022EDC4());
-        fn_8022ED00(sp8);
-        fn_802C5320(*(s32 *)((u8 *)arg0 + 0x250), 0,
-            *(f32 *)((u8 *)arg0 + 0x244), *(f32 *)((u8 *)arg0 + 0x248), temp_f31,
-            *(f32 *)((u8 *)arg0 + 0x254), *(f32 *)((u8 *)arg0 + 0x258));
+extern "C" void fn_80223C20(void *widget) {
+    /* Draw this image widget faded by its progress value, using a temporary UI context on the context stack. */
+    register f32 zero = 0.0f;
+    u8 localContext[0x40];
+    *(f32 *)((u8 *)*(void **)((u8 *)widget + 0x260) + 0x30) = 1.0f - *(f32 *)((u8 *)widget + 0x25C);
+    if (*(f32 *)((u8 *)*(void **)((u8 *)widget + 0x260) + 0x30) > zero && *(s32 *)((u8 *)widget + 0x250) != 0) {
+        fn_8022EEF8(localContext, (s32)*(void **)((u8 *)widget + 0x260), fn_8022EDC4());
+        fn_8022ED00(localContext);
+        fn_802C5320(*(s32 *)((u8 *)widget + 0x250), 0,
+            *(f32 *)((u8 *)widget + 0x244), *(f32 *)((u8 *)widget + 0x248), zero,
+            *(f32 *)((u8 *)widget + 0x254), *(f32 *)((u8 *)widget + 0x258));
         fn_8022EDB8();
     }
 }
