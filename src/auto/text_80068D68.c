@@ -15399,41 +15399,26 @@ found:
     L2CA_Deregister(psm);
 }
 void gap_config_ind(u16 cid, void *p_cfg) {
+#pragma optimization_level 1
     u8 *conn = lbl_803C3740 + 0xAC;
-    u32 outer = 2;
-    do {
-        if (conn[0] == 0) goto next1;
-        do { if (*(u16 *)(conn + 6) == cid) goto found; } while (0);
-        goto next1;
-next1:
-        conn += 0x60;
-        if (conn[0] == 0) goto next2;
-        do { if (*(u16 *)(conn + 6) == cid) goto found; } while (0);
-        goto next2;
-next2:
-        conn += 0x60;
-        if (conn[0] == 0) goto next3;
-        do { if (*(u16 *)(conn + 6) == cid) goto found; } while (0);
-        goto next3;
-next3:
-        conn += 0x60;
-        if (conn[0] == 0) goto next4;
-        do { if (*(u16 *)(conn + 6) == cid) goto found; } while (0);
-        goto next4;
-next4:
-        conn += 0x60;
-    } while (--outer != 0);
-    conn = NULL;
+    u8 i;
+    u8 flag;
+    for (i = 0; i < 8; i++, conn += 0x60) {
+        if (conn[0] == 0) continue;
+        if (*(u16 *)(conn + 6) != cid) continue;
+        goto found;
+    }
+    conn = 0;
 found:
-    if (conn == NULL)
-        return;
-    if (((u8 *)p_cfg)[2] != 0) {
+    if (conn == 0) return;
+    flag = ((u8 *)p_cfg)[2];
+    if (flag != 0) {
         u16 value = *(u16 *)((u8 *)p_cfg + 4);
         if (value > 0x69B)
             value = 0x69B;
         *(u16 *)(conn + 0x12) = value;
     } else {
-        *(u16 *)(conn + 0x12) = 0;
+        *(u16 *)(conn + 0x12) = flag;
     }
     ((u8 *)p_cfg)[0x20] = 0;
     ((u8 *)p_cfg)[2] = 0;
@@ -15444,6 +15429,7 @@ found:
         conn[0] = 4;
         ((void (*)(u16, u16))*(void **)(conn + 0x20))(*(u16 *)(conn + 4), 0x100);
     }
+#pragma optimization_level 4
 }
 
 #pragma push
@@ -24150,7 +24136,12 @@ typedef struct {
 #define RFC_RSP_MSC             0x08  /* peer answers our MSC command */
 
 #define PORT_STATE_OPENED       2     /* tPORT.state: the port is connected */
+#define RFC_STATE_ORIG_WAIT_SEC_CHECK 2 /* tRFC_PORT.rfc.state: originator waits for the security check */
+#define RFC_STATE_TERM_WAIT_SEC_CHECK 3 /* tRFC_PORT.rfc.state: responder waits for the security check */
 #define RFC_STATE_OPENED        4     /* tRFC_PORT.rfc.state: the DLCI is established */
+
+/* Port events of rfc_port_sm_execute() (rfc_int.h's port events) */
+#define RFC_EVENT_SEC_COMPLETE  15    /* the Security Manager check has finished */
 
 #define PORT_CTRL_REQ_SENT          0x01  /* tPORT.port_ctrl: we sent a modem status (MSC) request */
 #define PORT_CTRL_REQ_CONFIRMED     0x02  /* the peer answered it */
