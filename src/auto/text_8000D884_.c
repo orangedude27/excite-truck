@@ -243,9 +243,9 @@ int fn_8000DC70(int identIndex) {
 #pragma optimization_level reset
 #pragma dont_inline on
 void fn_8000DC84(int arg0) {
-    struct Chunk { int a, b, c, d, e, f; };
-    struct Chunk *p;
+    int *p;
     int value;
+    int i;
     switch (arg0) {
     case 1:
         fn_8000D984(*lbl_8055D46C);
@@ -257,25 +257,17 @@ void fn_8000DC84(int arg0) {
         fn_8000DF2C(1);
     case 4:
         value = 1;
-        p = (struct Chunk *)lbl_8055D46C;
-        if (p[0].b != 0) p[0].b = value;
-        p = (struct Chunk *)lbl_8055D46C;
-        if (p[1].b != 0) p[1].b = value;
-        p = (struct Chunk *)lbl_8055D46C;
-        if (p[2].b != 0) p[2].b = value;
-        p = (struct Chunk *)lbl_8055D46C;
-        if (p[3].b != 0) p[3].b = value;
+        for (i = 1; i < 20; i += 6) {
+            p = lbl_8055D46C;
+            if (p[i] != 0) p[i] = value;
+        }
         break;
     case 5:
         value = 2;
-        p = (struct Chunk *)lbl_8055D46C;
-        if (p[0].b != 0) p[0].b = value;
-        p = (struct Chunk *)lbl_8055D46C;
-        if (p[1].b != 0) p[1].b = value;
-        p = (struct Chunk *)lbl_8055D46C;
-        if (p[2].b != 0) p[2].b = value;
-        p = (struct Chunk *)lbl_8055D46C;
-        if (p[3].b != 0) p[3].b = value;
+        for (i = 1; i < 20; i += 6) {
+            p = lbl_8055D46C;
+            if (p[i] != 0) p[i] = value;
+        }
         break;
     }
 }
