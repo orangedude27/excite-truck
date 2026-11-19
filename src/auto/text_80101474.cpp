@@ -667,7 +667,7 @@ static inline void CW_ResetColorMapping(void *writer) {
 nw4hbm::ut::CharWriter::CharWriter() {
     unsigned char *self = (unsigned char *)this;
     unsigned char *source1, *source2, *source3;
-    nw4hbm::ut::Color colorA, colorB, white;
+    nw4hbm::ut::Color white;
     unsigned int addr = (unsigned int)this;
     int r9 = 1, r10 = 1, r11 = 1, r12 = 1, r30 = 1, r29 = 1;
     unsigned int top = addr & 0xFF000000U;
@@ -692,9 +692,7 @@ nw4hbm::ut::CharWriter::CharWriter() {
     if (r11 == 0 && (addr & 0xF8000000U) != 0xD0000000U) r10 = 0;
     if (r10 == 0 && (addr & 0xFFFFC000U) != 0xE0000000U) r9 = 0;
     if (r9 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x11C, lbl_8032818C, this);
-    *(int *)&colorA = 0;
-    *(int *)&colorB = -1;
-    SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(this, &colorA, &colorB);
+    CW_ResetColorMapping(this);
     CW_CHECK_THIS(this, 0x163);
     *(int *)(self + 0x20) = 0;
     CW_CHECK_THIS(this, 0x4DA);
