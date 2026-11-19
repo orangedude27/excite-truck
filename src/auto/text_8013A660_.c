@@ -450,6 +450,7 @@ extern void *fn_80138B1C(int);
 extern float lbl_80561430;
 #pragma cplusplus on
 extern "C" float fn_8013B590(void) {
+    /* Return the base timing from the current object's IDEAL_EXT_TIMING resource extension, or 60.0 by default. */
     class Obj {
     public:
         virtual void v0() {}
@@ -459,11 +460,11 @@ extern "C" float fn_8013B590(void) {
         virtual void v4() {}
         virtual int getValue() { return 0; }
     };
-    Obj *object = (Obj *)fn_801B2ED0();
-    int value = object->getValue();
-    void *result = fn_80138B1C(*(int *)((char *)value + 0x2C));
-    if (result != 0) {
-        return *(float *)((char *)result + 0xC);
+    Obj *accessor = (Obj *)fn_801B2ED0();
+    int entry = accessor->getValue();
+    void *timingExt = fn_80138B1C(*(int *)((char *)entry + 0x2C));
+    if (timingExt != 0) {
+        return *(float *)((char *)timingExt + 0xC);
     }
     return lbl_80561430;
 }
