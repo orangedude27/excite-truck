@@ -96,14 +96,15 @@ void fn_8023D4B8(int arg0) {
     Rec_8023D4B8 recs[10];
     int tbl[5];
     int r7;
-    lbl_8055F19C = (void *)arg0;
+    register int self = arg0;
+    lbl_8055F19C = (void *)self;
     fn_8023DB68();
     fn_80137C78(1);
-    fn_80137C84(arg0, 0);
+    fn_80137C84(self, 0);
     fn_8017EBE0();
-    fn_80137C98(arg0);
+    fn_80137C98(self);
     lbl_8055F198 = (void *)fn_8018108C();
-    fn_8023E078(ctx, arg0);
+    fn_8023E078(ctx, self);
     lbl_8055F190 = ctx;
     recs[0].name = &lbl_8055BC58; recs[0].type = 0xD; recs[0].arg = ctx; recs[0].x = 0; recs[0].id = 0;
     recs[1].name = &lbl_8055BC60; recs[1].type = 0xD; recs[1].arg = ctx; recs[1].x = 1; recs[1].id = 0;
@@ -112,7 +113,7 @@ void fn_8023D4B8(int arg0) {
     recs[4].name = &lbl_8055B860; recs[4].type = 6; recs[4].arg = (void *)fn_8023DD80; recs[4].x = 0; recs[4].id = 0xD;
     recs[5].name = &lbl_8055B860; recs[5].type = 6; recs[5].arg = 0; recs[5].x = -1; recs[5].id = 0x1B;
     recs[6].name = &lbl_8055B860; recs[6].type = 6; recs[6].arg = (void *)fn_8023DFB0; recs[6].x = 0; recs[6].id = 0x6F;
-    r7 = fn_802E85B8(arg0, (void *)fn_8023DFB0, 0x1B, -1, (void *)fn_8023DD80, 0x126, (void *)fn_8023DFD4, 0x128);
+    r7 = fn_802E85B8(self, (void *)fn_8023DFB0, 0x1B, -1, (void *)fn_8023DD80, 0x126, (void *)fn_8023DFD4, 0x128);
     recs[7].name = lbl_803419EC; recs[7].type = 3; recs[7].arg = (void *)r7; recs[7].x = 0; recs[7].id = 0;
     fn_8000DA10();
     recs[8].name = lbl_80341A00; recs[8].type = 3; recs[8].arg = (void *)fn_8000DB34(); recs[8].x = 0; recs[8].id = 0;
@@ -428,9 +429,9 @@ extern "C" int fn_8023DD80(void) {
         virtual void slot24(); virtual void slot25(); virtual void *query();
     };
     volatile int local[0x33];
-    register char *config;
-    register char **table;
     register int zero = 0;
+    register char **table;
+    register char *config;
     int state;
     int query;
     int index;
@@ -653,7 +654,10 @@ extern char lbl_80341BE0[];
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_8023E1FC(void *arg0) {
+extern "C" void fn_8023E1FC(void *table) {
+    /* Rebuild the control-bindings list (17 controls + "Restore Defaults"): for
+       each row set column 0 to the control's display name and column 1 to its
+       current binding string (or the default/empty string when unbound). */
     struct Interface {
         virtual void slot00(); virtual void slot01(); virtual void slot02(); virtual void slot03();
         virtual void slot04(); virtual void slot05(); virtual void slot06(); virtual void slot07();
@@ -664,31 +668,31 @@ extern "C" void fn_8023E1FC(void *arg0) {
         virtual void slot24(); virtual void slot25(); virtual void *query();
     };
     struct Frame {
-        int result;
-        int state;
+        int lookupResult;
+        int contextId;
         char pad0[4];
-        char zero;
+        char terminator;
         char pad1[3];
-        char string[0x14];
+        char bindingText[0x14];
     } frame;
     register int zero = 0;
-    register char *entry;
-    int i;
-    Interface *object;
+    register char *controlEntry;
+    int row;
+    Interface *bindingSource;
 
     fn_8022D76C();
-    frame.state = *(int *)((char *)arg0 + 0x30);
-    entry = &lbl_802FA190[zero];
-    frame.zero = zero;
-    for (i = 0; i < 0x11; i++, entry += 8) {
-        fn_8022D894(arg0, i, 0, (long)*(char **)fn_8023DC38(*(char **)entry), 0);
-        object = *(Interface **)((char *)arg0 + 0x34);
-        fn_801A7974((const char *)&frame.result, (int)*(char **)entry, (int)object->query());
-        if (frame.result == 0) {
+    frame.contextId = *(int *)((char *)table + 0x30);
+    controlEntry = &lbl_802FA190[zero];
+    frame.terminator = zero;
+    for (row = 0; row < 0x11; row++, controlEntry += 8) {
+        fn_8022D894(table, row, 0, (long)*(char **)fn_8023DC38(*(char **)controlEntry), 0);
+        bindingSource = *(Interface **)((char *)table + 0x34);
+        fn_801A7974((const char *)&frame.lookupResult, (int)*(char **)controlEntry, (int)bindingSource->query());
+        if (frame.lookupResult == 0) {
             char c;
             char *src = lbl_8055BBA0;
             int count = 0x14;
-            char *dst = frame.string;
+            char *dst = frame.bindingText;
             goto read;
             do {
                 count--;
@@ -701,11 +705,11 @@ extern "C" void fn_8023E1FC(void *arg0) {
                 *dst++ = c;
             } while ((signed char)c != 0);
         } else {
-            fn_801A7E54(frame.string, 0x14, &frame.result);
+            fn_801A7E54(frame.bindingText, 0x14, &frame.lookupResult);
         }
-        fn_8022D894(arg0, i, 1, (long)frame.string, 0);
+        fn_8022D894(table, row, 1, (long)frame.bindingText, 0);
     }
-    fn_8022D894(arg0, 0x11, 0, (long)lbl_80341BE0, 0);
+    fn_8022D894(table, 0x11, 0, (long)lbl_80341BE0, 0);
 }
 #pragma cplusplus reset
 #pragma pop
