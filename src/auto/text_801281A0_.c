@@ -19,7 +19,7 @@ extern u32 lbl_80559968;
 extern char lbl_8032A430[];
 extern char lbl_8032A01C[];
 extern u8 lbl_8055DF80;
-extern volatile s32 lbl_8055DF84;
+extern s32 lbl_8055DF84;
 extern s32 lbl_8055DF98;
 extern char lbl_8041E140[];
 extern s32 lbl_8041E140_s32[];
@@ -265,11 +265,9 @@ void fn_8012850C(void *size, void *name) {
 
 #pragma opt_propagation off
 s32 fn_80128520(s32 arg0) {
-    register s32 ptrval;
     if (lbl_8055DF80 == 0)
         goto do_log;
-    ptrval = (s32)lbl_8055DF84;
-    switch (ptrval) {
+    switch ((s32)lbl_8055DF84) {
     case 0:
         return ((s32 (*)(void *, void *, s32))fn_8012834C)(lbl_8032A068, (void *)arg0, 3);
     default:
