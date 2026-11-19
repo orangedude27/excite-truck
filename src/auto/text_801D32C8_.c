@@ -212,8 +212,9 @@ extern void *lbl_804421D8[];
 #pragma processor 750
 #pragma cplusplus on
 #pragma scheduling invalid_target
+/* Select a phob object from the global pool: return the first slot whose vtable check reports free, otherwise reset and reuse the slot with the smallest timestamp at +0x224. */
 extern "C" int fn_801D36E8(void) {
-    struct Dummy {
+    struct PhobPoolObject {
         virtual void f0();
         virtual void f1();
         virtual void f2();
@@ -229,24 +230,24 @@ extern "C" int fn_801D36E8(void) {
         virtual void f12();
         virtual void f13();
         virtual void f14();
-        virtual int check();
+        virtual int isAvailable();
     };
-    float bestValue;
+    float bestTimestamp;
     void **entry;
     void *best;
     int index;
 
-    bestValue = 0.0f;
+    bestTimestamp = 0.0f;
     entry = lbl_804421D8;
     best = 0;
     index = 0;
     goto check_loop;
 loop:
-    if (((struct Dummy *)*entry)->check() == 0)
+    if (((struct PhobPoolObject *)*entry)->isAvailable() == 0)
         return (int)lbl_804421D8[index];
-    if (best == 0 || *(float *)((char *)*entry + 0x224) < bestValue) {
+    if (best == 0 || *(float *)((char *)*entry + 0x224) < bestTimestamp) {
         best = *entry;
-        bestValue = *(float *)((char *)best + 0x224);
+        bestTimestamp = *(float *)((char *)best + 0x224);
     }
     entry++;
     index++;
