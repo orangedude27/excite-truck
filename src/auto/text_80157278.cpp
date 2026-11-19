@@ -513,10 +513,11 @@ extern "C" s32 lbl_8032E540[];
 // BonusTracker::GetType(); fn_80158618 looks names up in it.
 #define gBonusCategoryNames lbl_8032E540
 #pragma scheduling invalid_target
-extern "C" s32 fn_80157278(s32 arg0) {
-    s32* item = (s32*)lbl_804348E8[arg0];
-    s32 value = item[4];
-    return value == 0x41434152;
+extern "C" s32 fn_80157278(s32 carIndex) {
+    /* Return nonzero if the car entry at carIndex in lbl_804348E8 has the 'ACAR' tag at offset 0x10. */
+    s32 *carEntry = (s32 *)lbl_804348E8[carIndex];
+    s32 tag = carEntry[4];
+    return tag == 0x41434152;
 }
 #pragma scheduling on
 struct VObj;
