@@ -1249,6 +1249,9 @@ void fn_8028C11C(void *arg0, s32 *arg1, s32 *arg2) {
 #pragma pop
 
 #pragma opt_propagation off
+/* Allocate and initialize a shard-table object: allocate backing storage for 'count'
+ * 0x28-byte entries, construct the array with fn_8028C8BC, then store the array pointer,
+ * current count (0), capacity, a "shard.tex" texture handle, and a derived float scale. */
 void *fn_8028C824(void *arg0, s32 arg1) {
     s32 count = arg1;
     s32 size = arg1 * 0x28;
