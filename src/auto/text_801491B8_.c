@@ -1643,11 +1643,12 @@ extern "C" void fn_8014D700(void *context, s32 param) {
 
 #pragma push
 #pragma opt_propagation off
-extern "C" void fn_8014D794(void *arg0, void *arg1) {
+extern "C" void fn_8014D794(void *state, void *context) {
+    /* When state's active flag (+0xA0) is clear, apply mode-specific parameters to context's target object (+8). */
     fn_801E7E18();
-    if (*(u8 *)((u8 *)arg0 + 0xA0) == 0) {
+    if (*(u8 *)((u8 *)state + 0xA0) == 0) {
         if (fn_800167F4() == 2) {
-            void *target = *(void **)((u8 *)arg1 + 8);
+            void *target = *(void **)((u8 *)context + 8);
             f32 values[4];
             values[0] = lbl_80561688;
             values[1] = lbl_805616C0;
@@ -1657,12 +1658,12 @@ extern "C" void fn_8014D794(void *arg0, void *arg1) {
                 ((void (*)(void *, void *))fn_802AE220)(target, values);
             }
         } else {
-            void *target = *(void **)((u8 *)arg1 + 8);
+            void *target = *(void **)((u8 *)context + 8);
             if (target != 0) {
                 ((void (*)(void *, void *))fn_802AE220)(target, 0);
             }
         }
-        if (*(f32 *)((u8 *)arg0 + 0x64) >= lbl_80561648) {
+        if (*(f32 *)((u8 *)state + 0x64) >= lbl_80561648) {
             return;
         }
     }
