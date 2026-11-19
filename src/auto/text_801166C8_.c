@@ -5463,7 +5463,6 @@ void fn_8012023C(s32 n, s32 isgn, f32 *a, s32 ip, s32 w) {
     }
 }
 
-extern f64 lbl_80561228;
 void fn_80120834(s32 n, s32 *info, f32 *table) {
     register s32 i;
     register s32 stage;
