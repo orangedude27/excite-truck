@@ -4114,23 +4114,24 @@ loop_test:
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-extern "C" void fn_8015E238(Unk801577F0V* arg0) {
-    struct Dummy {
+/* Activates a group: sets its active flag, resets its indexed multiplier to 1.0, and invokes each entry's callback. */
+extern "C" void fn_8015E238(Unk801577F0V *group) {
+    struct EntryVTable {
         virtual void v0();
         virtual void Call();
     };
-    s32 offset;
-    s32 i;
-    volatile u8* self = (volatile u8*)arg0;
-    offset = 0;
-    i = 0;
-    *(u8*)(self + 0x54) = 1;
-    lbl_8042FD08[*(s32*)(self + 0x58)] = 1.0f;
-    while (i < *(volatile s32*)(self + 8)) {
-        void* item = *(void**)((u8*)*(void* volatile*)(self + 4) + offset);
-        ((Dummy*)item)->Call();
-        offset += 4;
-        i++;
+    s32 byteOffset;
+    s32 index;
+    volatile u8 *self = (volatile u8 *)group;
+    byteOffset = 0;
+    index = 0;
+    *(u8 *)(self + 0x54) = 1;
+    lbl_8042FD08[*(s32 *)(self + 0x58)] = 1.0f;
+    while (index < *(volatile s32 *)(self + 8)) {
+        void *entry = *(void **)((u8 *)*(void *volatile *)(self + 4) + byteOffset);
+        ((EntryVTable *)entry)->Call();
+        byteOffset += 4;
+        index++;
     }
 }
 #pragma scheduling on
