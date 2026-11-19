@@ -322,7 +322,6 @@ int fn_8018FF84(int object, int deleteFlag) {
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-#pragma processor 750
 #pragma cplusplus on
 extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     class ResultMethods {
@@ -356,7 +355,6 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     Method18 *method18Obj;
     Method0C1 *method0C1Obj;
     Method0C2 *method0C2Obj;
-    u32 zeroFlag;
 
     *(s32 *)((u8 *)arg0 + 0x28) = *(u8 *)((u8 *)arg1 + 0x260) & 3;
     temp_r3 = fn_801284F8(0x24, &lbl_8055A478);
@@ -385,8 +383,7 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     }
     *(void **)((u8 *)arg0 + 4) = temp_r3;
     *(void **)((u8 *)*(void **)((u8 *)arg0 + 0xC) + 0x38) = temp_r3;
-    zeroFlag = __rlwinm(__cntlzw(*(u32 *)((u8 *)arg2 + 0x5C)), 27, 5, 31);
-    *(u8 *)((u8 *)arg0 + 0x25) = (u8)zeroFlag;
+    *(u8 *)((u8 *)arg0 + 0x25) = (u32)__cntlzw(*(u32 *)((u8 *)arg2 + 0x5C)) >> 5;
     {
         s32 value = *(s32 *)((u8 *)arg2 + 0x5C);
         s32 negative = -value;
