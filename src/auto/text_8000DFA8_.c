@@ -30,6 +30,7 @@ extern s32 lbl_80558A90;
 extern f32 lbl_805602C8;
 extern void fn_802344CC(char *, s32, s32, s32, f32, f32, f32);
 extern f64 lbl_80560268;
+extern f64 lbl_805602D8;
 extern s32 fn_8023441C(void);
 extern s32 fn_80232B70(s32);
 extern f32 fn_80011EDC(void);
@@ -419,7 +420,7 @@ void fn_8000F4F0(void) {
             a.unk_0x10=p->unk_0x10; a.unk_0x14=p->unk_0x14; a.unk_0x18=p->unk_0x18; a.unk_0x1C=p->unk_0x1C;
             b.unk_0x00=q->unk_0x00; b.unk_0x04=q->unk_0x04; b.unk_0x08=q->unk_0x08; b.unk_0x0C=q->unk_0x0C;
             b.unk_0x10=q->unk_0x10; b.unk_0x14=q->unk_0x14; b.unk_0x18=q->unk_0x18; b.unk_0x1C=q->unk_0x1C;
-            a.unk_0x18 = (a.unk_0x18 & 0xFFFFFF) | (alpha << 24);
+            a.unk_0x18 = (alpha << 24) | (a.unk_0x18 & 0xFFFFFF);
             b.unk_0x18 = a.unk_0x18;
             fn_80232928(-1);
             fn_80147ABC(&a,&b,(const char *)&lbl_80558AA4,text,scale);
