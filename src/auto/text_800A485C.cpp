@@ -2193,7 +2193,7 @@ extern "C" s32 fn_800A7774(void *a, void *out, void *base, void *data, u16 count
         p += advance; d += stride; i += step;
     }
     {
-        u32 prevOff = (-(step * 2) - rem) + (u32)count;
+        u32 prevOff = (-(s32)(step * 2) - (s32)rem) + (s32)count;
         u32 last2 = ((u32)count - rem) - step;
         u8 *q = b + last2 * 40;
         *(void **)(q + 0x24) = (void *)(b + prevOff * 40);
@@ -26584,24 +26584,37 @@ extern "C" void fn_800A52A0(void *volume, const void *name) {
 
 #pragma opt_propagation off
 extern "C" void fn_800A52DC(u32 arg0) {
-    u8 *base = (u8 *)lbl_803D2140;
-    u8 *ptr = base + 0xA0;
-    s32 i = 0;
-    for (; i < 13; ++i) {
+    u8 *ptr = (u8 *)lbl_803D2140 + 0xA0;
+    s32 i;
+    for (i = 0; i < 13; i++, ptr += 0x3F90) {
         if (*(u32 *)(ptr + 0x1FBC) == arg0) {
             u16 value = *(u16 *)(ptr + 0x1F8C);
-            if (value & 8) *(u16 *)(ptr + 0x1F8C) = value | 0x20;
+            if (value & 8) {
+                *(u16 *)(ptr + 0x1F8C) = value | 0x20;
+            }
             *(u16 *)(ptr + 0x1F8C) &= ~0xC;
         }
         if (*(u32 *)(ptr + 0x3F84) == arg0) {
             u16 value = *(u16 *)(ptr + 0x3F54);
-            if (value & 8) *(u16 *)(ptr + 0x3F54) = value | 0x20;
+            if (value & 8) {
+                *(u16 *)(ptr + 0x3F54) = value | 0x20;
+            }
             *(u16 *)(ptr + 0x3F54) &= ~0xC;
         }
-        ptr += 0x3F90;
     }
 }
 #pragma opt_propagation reset
+struct A535CEntry {
+    u8 pad1[0x1F8C];
+    u16 f1;
+    u8 pad2[0x2E];
+    u32 id1;
+    u8 pad3[0x1F94];
+    u16 f2;
+    u8 pad4[0x2E];
+    u32 id2;
+    u8 pad5[8];
+};
 extern "C" void fn_800A535C(u32 arg0) {
     u8 *ptr = (u8 *)lbl_803D2140 + 0xA0;
     s32 i, n;
