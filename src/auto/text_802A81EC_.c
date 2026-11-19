@@ -368,7 +368,7 @@ extern f32 lbl_8056494C;
 __declspec(section ".data") extern f32 lbl_80558DC4;
 #pragma push
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma paired off
 #pragma paired_single off
 #pragma use_lmw_stmw off
@@ -378,12 +378,12 @@ void fn_802A8DE8(void) {
     f32 crossOut[3];
     f32 fx;
     f32 fy;
-    s32 i;
-    s32 *table;
+    register s32 i;
+    register s32 *table;
     register s32 offset;
     register u8 *vec;
-    void *entry;
-    s32 j;
+    register void *entry;
+    register s32 j;
 
     fy = lbl_80564928;
     fx = lbl_8056494C;
