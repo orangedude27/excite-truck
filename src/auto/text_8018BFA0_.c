@@ -905,38 +905,39 @@ public:
 #pragma cplusplus reset
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void fn_8018E330(void *arg0) {
+extern "C" void fn_8018E330(void *state) {
+    /* Reset this object's runtime state: register with the manager, reinit linked resources, and clear cached fields/timers. */
     void *manager;
-    void *object;
-    int tmp;
-    int objInt;
+    void *linkedObject;
+    int linkedId;
+    int linkedObjectRaw;
     register float f0;
     register float f1;
     manager = (void *)fn_801B83A0();
-    ((Mgr_8018E330 *)manager)->v39(arg0);
-    fn_80161A38(0, *(int *)((char *)arg0 + 0x1EC), 0);
-    fn_801DFF1C(*(int *)((char *)arg0 + 0x1EC));
+    ((Mgr_8018E330 *)manager)->v39(state);
+    fn_80161A38(0, *(int *)((char *)state + 0x1EC), 0);
+    fn_801DFF1C(*(int *)((char *)state + 0x1EC));
     f0 = lbl_80561F74;
     f1 = lbl_80561F8C;
-    *(volatile float *)((char *)arg0 + 0x258C) = f0;
-    objInt = *(volatile int *)((char *)arg0 + 0x270);
-    object = (void *)objInt;
-    *(float *)((char *)arg0 + 0x2690) = f1;
-    *(float *)((char *)arg0 + 0x25BC) = f0;
-    *(float *)((char *)arg0 + 0x26A0) = lbl_8055E3C8;
-    object = ((Mgr_8018E330 *)object)->v2();
-    tmp = (int)*(volatile int *)((char *)object + 4);
+    *(volatile float *)((char *)state + 0x258C) = f0;
+    linkedObjectRaw = *(volatile int *)((char *)state + 0x270);
+    linkedObject = (void *)linkedObjectRaw;
+    *(float *)((char *)state + 0x2690) = f1;
+    *(float *)((char *)state + 0x25BC) = f0;
+    *(float *)((char *)state + 0x26A0) = lbl_8055E3C8;
+    linkedObject = ((Mgr_8018E330 *)linkedObject)->v2();
+    linkedId = (int)*(volatile int *)((char *)linkedObject + 4);
     f0 = (float)*(volatile float *)&lbl_80561F74;
-    *(int *)((char *)arg0 + 0x26A4) = tmp;
-    *(float *)((char *)arg0 + 0x2588) = f0;
-    *(float *)((char *)arg0 + 0x25A0) = f0;
-    *(char *)((char *)arg0 + 0x259D) = 0;
-    *(char *)((char *)arg0 + 0x259C) = 0;
-    *(int *)((char *)arg0 + 0x2638) = 0;
-    *(int *)((char *)arg0 + 0x2644) = 0;
-    *(float *)((char *)arg0 + 0x2630) = f0;
-    *(float *)((char *)arg0 + 0x262C) = f0;
-    *(float *)((char *)arg0 + 0x2628) = f0;
+    *(int *)((char *)state + 0x26A4) = linkedId;
+    *(float *)((char *)state + 0x2588) = f0;
+    *(float *)((char *)state + 0x25A0) = f0;
+    *(char *)((char *)state + 0x259D) = 0;
+    *(char *)((char *)state + 0x259C) = 0;
+    *(int *)((char *)state + 0x2638) = 0;
+    *(int *)((char *)state + 0x2644) = 0;
+    *(float *)((char *)state + 0x2630) = f0;
+    *(float *)((char *)state + 0x262C) = f0;
+    *(float *)((char *)state + 0x2628) = f0;
 }
 #pragma cplusplus reset
 #pragma scheduling on
