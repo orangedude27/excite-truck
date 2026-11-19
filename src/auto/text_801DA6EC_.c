@@ -78,14 +78,15 @@ void fn_801DA758(int arg0, unsigned char *arg1, int arg2) {
     register int category = arg2;
     register char *record;
     register unsigned char *src;
+    unsigned char c;
+    int count;
     register unsigned char *dst;
     char *space;
     unsigned int zero[3];
-    int count;
     int i;
     int entryAddress;
     char *text;
-    unsigned char c;
+    register unsigned char flag;
     float result;
 
     space = (char *)lbl_8055E984;
@@ -97,14 +98,17 @@ void fn_801DA758(int arg0, unsigned char *arg1, int arg2) {
     count = 0x10;
     src = name;
     dst = (unsigned char *)record;
-    while (--count > 0) {
-        dst = dst;
-    }
+    goto copy_body;
+copy_check:
+    count--;
+    if (count > 0) goto copy_body;
     dst[-1] = 0;
-    do {
-        c = *src++;
-        *dst++ = c;
-    } while ((signed char)c != 0);
+    goto copied;
+copy_body:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c != 0) goto copy_check;
+copied:
 
     *(int *)(record + 0x20) = value;
     if (fn_801284F8(0x10, &lbl_8055ADA0) != 0)
@@ -124,13 +128,14 @@ void fn_801DA758(int arg0, unsigned char *arg1, int arg2) {
         }
     }
     record[0x18] = record[0x19];
-    if ((unsigned char)record[0x19] != 0) {
+    flag = record[0x19];
+    if (flag != 0) {
         *(float *)(record + 0x1C) = lbl_80562B50;
         record[0x10] = 0;
     } else {
-        zero[0] = 0;
-        zero[2] = 0;
-        zero[1] = 0;
+        zero[0] = flag;
+        zero[2] = flag;
+        zero[1] = flag;
         result = ((float (*)(void))fn_801DD88C)();
         *(float *)(record + 0x14) = (*(float *)&zero[1]) - result;
         goto finished;
@@ -190,7 +195,7 @@ void *fn_801DA8C8(const char *arg0, const char *arg1) {
             dst = (char *)result + 0x10;
             len = 0x10;
             *(int *)((char *)result + 0xC) = count;
-            for (; --len > 0;) {
+            while (--len > 0) {
             }
             dst[-1] = 0;
             src = (unsigned char *)text;
@@ -229,18 +234,22 @@ void *__dt__14CollisionSpaceFv_801DAB70(void *this_, int flag) {
     return this_;
 }
 
+#pragma push
+#pragma processor 750
+#pragma ppc_psq_save off
+#pragma opt_loop_invariants off
+#pragma opt_common_subs off
 #pragma scheduling invalid_target
 float fn_801DABD4(void *arg0) {
     float value;
-    float max = lbl_80562B54;
+    float max = 0.0f;
     register int i = 0;
     register int offset = 0;
 
     goto check;
 loop:
     value = fn_801DA6B8(*(int *)((char *)(*(void ***)((char *)arg0 + 4))[offset / 4] + 0x28));
-    if (max <= value)
-        max = value;
+    max = (max > value) ? max : value;
     i++;
     offset += 4;
 check:
@@ -248,7 +257,7 @@ check:
         goto loop;
     return max;
 }
-#pragma scheduling on
+#pragma pop
 float fn_801DAC5C(void *arg0)
 {
     /* Returns the maximum float value at offset +0xC of each item's +0x28 data, or 0.0 if there are no items. */
@@ -275,6 +284,7 @@ extern char lbl_803392F0[];
 #pragma scheduling invalid_target
 #pragma push
 #pragma processor 750
+/* Activate all path entries for a client at the given time, warning if already active. */
 void fn_801DACA0(void *arg0, float arg1) {
     float value;
     int offset;
