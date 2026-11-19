@@ -189,33 +189,30 @@ s32 fn_8016A15C(const char *name) {
 extern f32 lbl_8055E3C8;
 #pragma push
 #pragma small_data off
-void fn_8016A240(const char *arg0) {
-    s32 *state;
-    s32 offset;
-    s32 i;
-    s32 zero;
-
-    state = &lbl_80430340.unk_0x4;
-    i = 0;
-    offset = 0;
-    zero = 0;
-
-    while (i < *state) {
-        if (stricmp(lbl_80430340.unk_0x0 + offset + 1, arg0) == 0) {
-            s32 j = 0;
-            char *entry = lbl_80430340.unk_0x0 + offset;
-            entry[0x28] = zero;
-            while (j < *(s32 *)(entry + 0x24)) {
-                char *record = *(char **)lbl_80430318 + (*(s32 *)(entry + 0x20) + j) * 0x48;
-                if (*(u8 *)(record + 0x3c) != 0) {
-                    *(u8 *)(record + 0x3c) = zero;
+void fn_8016A240(const char *name) {
+    s32 recordIdx;
+    u8 *entry;
+    u8 *record;
+    s32 entryOffset;
+    s32 entryIdx;
+    entryIdx = 0;
+    entryOffset = 0;
+    while (entryIdx < lbl_80430340.unk_0x4) {
+        if (stricmp(lbl_80430340.unk_0x0 + entryOffset + 1, name) == 0) {
+            entry = (u8 *)lbl_80430340.unk_0x0 + entryOffset;
+            entry[0x28] = 0;
+            recordIdx = 0;
+            while (recordIdx < *(s32 *)(entry + 0x24)) {
+                record = (u8 *)*(s32 *)lbl_80430318 + ((*(s32 *)(entry + 0x20) + recordIdx) * 0x48);
+                if (record[0x3c] != 0) {
+                    record[0x3c] = 0;
                     *(f32 *)(record + 0x44) = lbl_8055E3C8;
                 }
-                j++;
+                recordIdx++;
             }
         }
-        offset += 0x2c;
-        i++;
+        entryOffset += 0x2c;
+        entryIdx++;
     }
 }
 #pragma pop
