@@ -9262,7 +9262,7 @@ void fn_80126018(void *arg0, BitReader8011 *arg1) {
     } \
 } while (0)
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80126A10(s8 *arg0, void *arg1, u32 arg2) {
     u8 buf[0xC0];
     u32 var_r31;
