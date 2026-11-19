@@ -1789,7 +1789,7 @@ int fn_8017483C(Fn8017483CKeyList *keyList, Fn8017483CFrame *frame, int index) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80174918(void *arg0, int arg1) {
     extern int fn_801E866C(int);
     extern int fn_80171D38(int);
