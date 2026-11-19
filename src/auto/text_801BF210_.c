@@ -30,15 +30,12 @@ void *fn_801BF214(void) {
     extern int lbl_8055E7BC;
     void *p = fn_801284F8(0x278, &lbl_8055A948);
     if (p != 0) {
-        register int index;
         fn_8017B0B0();
         *(char **)p = lbl_80336A90;
         *(int *)((char *)p + 0x1EC) = 0;
         *(int *)((char *)p + 0x1F0) = -1;
-        index = lbl_8055E7BC;
-        *(void **)(lbl_80437D48 + index * 4) = p;
-        lbl_8055E7BC = index + 1;
-        *(int *)((char *)p + 0x214) = fn_801C1BA4(4, 6, 2, lbl_80437D48, index + 1);
+        *(void **)(lbl_80437D48 + lbl_8055E7BC * 4) = p;
+        *(int *)((char *)p + 0x214) = fn_801C1BA4(4, 6, 2, lbl_80437D48, ++lbl_8055E7BC);
     }
     return p;
 }
@@ -589,30 +586,35 @@ static inline void inline_transform_vec(float *out, const float *in, const float
 }
 
 #pragma scheduling invalid_target
-void fn_801BFF64(float *m, const float *in) {
-    float tmp[3];
-    if (tmp == in) {
+/* Add a point to a 3x4 transform: rotate `vec` by the matrix's 3x3 orientation
+ * (rows [0..2], [3..5], [6..8], read as out[i] = x*m[i] + y*m[3+i] + z*m[6+i])
+ * and add the result into its translation column [9..11].  The in-place case
+ * (vec pointing at the caller's own scratch, which is what `moved` is here)
+ * reads the vector first so the partial results don't overwrite it. */
+void fn_801BFF64(float *mtx, const float *vec) {
+    float moved[3];
+    if (moved == vec) {
         float x, y, z;
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
-        m10 = m[3]; m11 = m[4]; m12 = m[5];
-        m00 = m[0]; m01 = m[1]; m02 = m[2];
-        m20 = m[6]; m21 = m[7]; m22 = m[8];
-        x = in[0]; y = in[1]; z = in[2];
-        tmp[0] = z * m20 + (x * m00 + y * m10);
-        tmp[1] = z * m21 + (x * m01 + y * m11);
-        tmp[2] = z * m22 + (x * m02 + y * m12);
+        m10 = mtx[3]; m11 = mtx[4]; m12 = mtx[5];
+        m00 = mtx[0]; m01 = mtx[1]; m02 = mtx[2];
+        m20 = mtx[6]; m21 = mtx[7]; m22 = mtx[8];
+        x = vec[0]; y = vec[1]; z = vec[2];
+        moved[0] = z * m20 + (x * m00 + y * m10);
+        moved[1] = z * m21 + (x * m01 + y * m11);
+        moved[2] = z * m22 + (x * m02 + y * m12);
     } else {
         float m00, m01, m02, m10, m11, m12, m20, m21, m22;
-        m10 = m[3]; m00 = m[0]; m20 = m[6];
-        tmp[0] = in[2] * m20 + (in[0] * m00 + in[1] * m10);
-        m11 = m[4]; m01 = m[1]; m21 = m[7];
-        tmp[1] = in[2] * m21 + (in[0] * m01 + in[1] * m11);
-        m12 = m[5]; m02 = m[2]; m22 = m[8];
-        tmp[2] = in[2] * m22 + (in[0] * m02 + in[1] * m12);
+        m10 = mtx[3]; m00 = mtx[0]; m20 = mtx[6];
+        moved[0] = vec[2] * m20 + (vec[0] * m00 + vec[1] * m10);
+        m11 = mtx[4]; m01 = mtx[1]; m21 = mtx[7];
+        moved[1] = vec[2] * m21 + (vec[0] * m01 + vec[1] * m11);
+        m12 = mtx[5]; m02 = mtx[2]; m22 = mtx[8];
+        moved[2] = vec[2] * m22 + (vec[0] * m02 + vec[1] * m12);
     }
-    m[9] += tmp[0];
-    m[10] += tmp[1];
-    m[11] += tmp[2];
+    mtx[9] += moved[0];
+    mtx[10] += moved[1];
+    mtx[11] += moved[2];
 }
 extern void fn_8019EECC(void *, void *);
 /* Copy a 3D position into the object's +0x28 field, then add the source object's
