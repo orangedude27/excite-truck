@@ -227,7 +227,7 @@ void fn_801EA1D8(void) {
     fn_801DCEF4();
 }
 
-/* Thunk: reset the active-entry count via fn_801DCF00, emptying the pending value-accumulation queue (sActiveEntryCount / lbl_8055E9A8). */
+/* Thunk: reset the ground-query active-entry count, emptying the pending value-accumulation queue. */
 void fn_801EA1DC(void) {
     fn_801DCF00();
 }
