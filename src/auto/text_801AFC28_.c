@@ -176,6 +176,7 @@ void fn_801AFDCC(void *arg0, void *arg1) {
     }
 }
 
+#pragma processor gekko
 void fn_801AFF64(void *arg0, int arg1) {
     struct WordPair { unsigned int a, b; };
     unsigned char *src = (unsigned char *)arg0;
@@ -227,42 +228,42 @@ void fn_801AFF64(void *arg0, int arg1) {
     *(unsigned char *)(dst + 0x40) = *(unsigned char *)(src + 0x1F8);
 }
 
-#pragma pop
-
+/* Update this object's active flag and selection value based on its Y position
+ * relative to a threshold and a vertical range. */
 void fn_801B0174(void *this_) {
-    f32 k2590;
+    f32 minY;
     f32 threshold;
-    f32 temp;
-    f32 t64;
-    u8 var0;
-    u8 flagval;
-    long var3;
-    s32 v;
+    f32 yOffset;
+    f32 yPos;
+    u8 inRange;
+    u8 activeFlag;
+    long shouldSelect;
+    s32 selectedValue;
 
     fn_8017A57C(this_);
     threshold = lbl_8055E3C8;
-    var0 = 0;
-    temp = *(f32 *)((u8 *)this_ + 0x1EC);
-    if (threshold > temp && threshold < lbl_8056258C + temp) {
-        var0 = 1;
+    inRange = 0;
+    yOffset = *(f32 *)((u8 *)this_ + 0x1EC);
+    if (threshold > yOffset && threshold < lbl_8056258C + yOffset) {
+        inRange = 1;
     }
-    t64 = *(f32 *)((u8 *)this_ + 0x64);
-    k2590 = -499.5f;
-    *(u8 *)((u8 *)this_ + 0x1F8) = var0;
-    if (t64 <= k2590) {
+    yPos = *(f32 *)((u8 *)this_ + 0x64);
+    minY = -499.5f;
+    *(u8 *)((u8 *)this_ + 0x1F8) = inRange;
+    if (yPos <= minY) {
         *(u8 *)((u8 *)this_ + 0x1F8) = 0;
     }
-    flagval = *(u8 *)((u8 *)this_ + 0x1F8);
-    var3 = 0;
-    if (flagval != 0 && threshold >= lbl_80562594 + *(f32 *)((u8 *)this_ + 0x1EC)) {
-        var3 = 1;
+    activeFlag = *(u8 *)((u8 *)this_ + 0x1F8);
+    shouldSelect = 0;
+    if (activeFlag != 0 && threshold >= lbl_80562594 + *(f32 *)((u8 *)this_ + 0x1EC)) {
+        shouldSelect = 1;
     }
-    if (var3) {
-        v = *(s32 *)((u8 *)this_ + 0x28);
+    if (shouldSelect) {
+        selectedValue = *(s32 *)((u8 *)this_ + 0x28);
     } else {
-        v = 0;
+        selectedValue = 0;
     }
-    *(s32 *)((u8 *)this_ + 0x24) = v;
+    *(s32 *)((u8 *)this_ + 0x24) = selectedValue;
 }
 
 extern s32 fn_8017D274(u8 *);
