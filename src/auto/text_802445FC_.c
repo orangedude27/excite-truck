@@ -9,7 +9,6 @@ extern char lbl_80342DC8[];
 extern int lbl_80498860[];
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
 void fn_802445FC(int arg0, int arg1, int arg2) {
@@ -26,16 +25,16 @@ void fn_802445FC(int arg0, int arg1, int arg2) {
     work[25] = 1000;
     *(float *)&work[26] = fn_8020A5F0();
     v1 = lbl_802FA320[1];
-    s3 = lbl_80498860[3];
-    s4 = lbl_80498860[4];
     s0 = lbl_80498860[0];
     s1 = lbl_80498860[1];
     s2 = lbl_80498860[2];
+    *(volatile int *)&work[1] = v1;
+    s3 = lbl_80498860[3];
+    s4 = lbl_80498860[4];
     v0 = lbl_802FA320[0];
     v2 = lbl_802FA320[2];
     v3 = lbl_802FA320[3];
     v4 = lbl_802FA320[4];
-    work[1] = v1;
     work[7] = 5;
     work[6] = 0;
     work[8] = (int)ctx;
