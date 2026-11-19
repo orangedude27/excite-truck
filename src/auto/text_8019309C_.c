@@ -1777,8 +1777,8 @@ void fn_80195F6C(void *arg0, void *arg1) {
 
 #pragma cplusplus reset
 
-  void fn_801961F8(void) {
-
+void fn_801961F8(void) {
+    /* Empty stub (no operation). */
 }
 
 /* Per-frame orbit (race-director) scaling for one AI driver, run first in the
