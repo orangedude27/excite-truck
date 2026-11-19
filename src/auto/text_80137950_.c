@@ -15,6 +15,7 @@ extern char lbl_8032BECC[];
 extern int lbl_80559C04;
 extern int lbl_80559C08;
 extern int lbl_80559C10;
+#pragma scheduling off
 char *fn_80137950(int arg0) {
     switch (arg0) {
     case 3:
@@ -25,9 +26,11 @@ char *fn_80137950(int arg0) {
         return (char *)&lbl_80559C08;
     case 0:
         return (char *)&lbl_80559C10;
-    default:
-        fn_802E317C(lbl_8032BECC, arg0);
+    default: {
+        void (*report)(const char *, ...) = fn_802E317C;
+        report(lbl_8032BECC, arg0);
         return 0;
+    }
     }
 }
 
