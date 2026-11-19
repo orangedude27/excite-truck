@@ -10627,6 +10627,19 @@ extern "C" s32 fn_800B5260(void *volume, void *dst, u32 sector, u32 offset, s32 
 
 struct CacheSlotData { u8 b[0x240]; };
 struct CacheSlot { u32 flag; s32 key; CacheSlotData data; };
+#pragma unroll off
+static inline void CopyCacheSlotData(void *dst, const void *src) {
+    u32 *d = (u32 *)((u8 *)dst - 4);
+    u32 *s = (u32 *)((u8 *)src - 4);
+    u32 k;
+    for (k = 0; k < 0x48; k++) {
+        u32 a = s[1];
+        u32 b = *(s += 2);
+        d[1] = a;
+        *(d += 2) = b;
+    }
+}
+#pragma unroll reset
 
 /* One cached page: the run of `sectors` sectors starting at `first`, read
  * through `data` (buffer is the same run from its first byte).  Dropping a
