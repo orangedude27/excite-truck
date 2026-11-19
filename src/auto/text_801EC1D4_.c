@@ -167,35 +167,39 @@ void fn_801E353C(long, float);
 void fn_801E34E4(void *, long);
 #pragma push
 #pragma scheduling invalid_target
-void fn_801EC4A8(void *arg0, long arg1) {
-    char *p;
-    long object;
-    long i, count;
-    char *a, *b;
-    float lower, value, upper;
-    float x, y, nextY;
-    object = *(long *)arg0;
-    if (object != 0) {
-        value = *(float *)((char *)arg0 + 8);
-        upper = **(float **)((char *)arg0 + 0x50);
-        lower = *(float *)((char *)arg0 + 4);
-        value = value < upper ? value : upper;
-        value = value > lower ? value : lower;
-        p = arg0;
-        i = 0;
-        count = *(long *)((char *)arg0 + 0x4C) - 2;
-        for (; count > 0; count--) {
-            if (*(float *)(p + 0x14) > value) break;
-            p += 8;
-            i++;
+void fn_801EC4A8(void *curve, long param) {
+    /* Clamp curve->input between the curve's min and max, locate its segment in
+     * the point table, linearly interpolate the output, apply it as a negated
+     * Z-rotation to the target object, and update the object with param. */
+    char *cursor;
+    long target;
+    long index, remaining;
+    char *point;
+    char *nextPoint;
+    float minValue, inputValue, maxValue;
+    float x0, y0, y1;
+    target = *(long *)curve;
+    if (target != 0) {
+        inputValue = *(float *)((char *)curve + 8);
+        maxValue = **(float **)((char *)curve + 0x50);
+        minValue = *(float *)((char *)curve + 4);
+        inputValue = inputValue < maxValue ? inputValue : maxValue;
+        inputValue = inputValue > minValue ? inputValue : minValue;
+        cursor = curve;
+        index = 0;
+        remaining = *(long *)((char *)curve + 0x4C) - 2;
+        for (; remaining > 0; remaining--) {
+            if (*(float *)(cursor + 0x14) > inputValue) break;
+            cursor += 8;
+            index++;
         }
-        a = (char *)arg0 + i * 8;
-        b = (char *)arg0 + (i + 1) * 8;
-        x = *(float *)(a + 0xC);
-        y = *(float *)(a + 0x10);
-        nextY = *(float *)(b + 0x10);
-        fn_801E353C(object, -(y + (nextY - y) * ((value - x) / (*(float *)(b + 0xC) - x))));
-        fn_801E34E4(*(void **)arg0, arg1);
+        point = (char *)curve + index * 8;
+        nextPoint = (char *)curve + (index + 1) * 8;
+        x0 = *(float *)(point + 0xC);
+        y0 = *(float *)(point + 0x10);
+        y1 = *(float *)(nextPoint + 0x10);
+        fn_801E353C(target, -(y0 + (y1 - y0) * ((inputValue - x0) / (*(float *)(nextPoint + 0xC) - x0))));
+        fn_801E34E4(*(void **)curve, param);
     }
 }
 
