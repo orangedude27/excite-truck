@@ -1771,6 +1771,7 @@ int fn_801F4334(int object, int deleteFlag) {
     return object;
 }
 
+/* No-op stub. */
 void fn_801F4374(void) {
 
 }
