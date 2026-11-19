@@ -283,7 +283,7 @@ extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7PictureFUlUc(
 
 extern "C" s32 IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(void*, u8);
 extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(s32, u8);
-extern "C" void* GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
+extern "C" u64 GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(void*, void*, u8, s32, void*, u8);
 struct PicVTable {
     virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
@@ -302,17 +302,17 @@ extern "C" void DrawSelf__Q36nw4hbm3lyt7PictureFRCQ36nw4hbm3lyt8DrawInfo(void* t
     u8* self = (u8*)this_;
     void* tex = *(void**)(self + 0x28);
     u8 fmt;
-    s32 modret;
     s32 sz;
-    u8 color;
+    s32 color;
+    s32 modret;
     void* cols;
-    void* pos;
+    u64 pos;
     if (tex == 0) return;
     ((PicVTable*)this_)->prep();
     color = self[0xCE];
-    modret = IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(self + 0xD4, color);
+    modret = IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(self + 0xD4, (u8)color);
     tex = *(void**)(self + 0x28);
-    modret = ((TexVTable*)tex)->mod(modret, color);
+    modret = ((TexVTable*)tex)->mod(modret, (u8)color);
     SetVertexFormat__Q34nw4r3lyt6detailFbUc(modret, self[0xE5]);
     cols = modret ? self + 0xD4 : 0;
     sz = *(s32*)(self + 0xE8);
