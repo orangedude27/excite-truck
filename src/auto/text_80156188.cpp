@@ -275,7 +275,7 @@ extern "C" char lbl_80559FE0;
 extern "C" char lbl_80559FE8;
 extern "C" char lbl_80559FF0;
 extern "C" f32 lbl_80561738;
-extern "C" f32 lbl_8056173C;
+extern "C" const f32 lbl_8056173C;
 #pragma dont_inline on
 #pragma scheduling invalid_target
 extern "C" void fn_801564B0(void) {
@@ -414,13 +414,15 @@ extern "C" void fn_801564B0(void) {
             IndexReader *list = (IndexReader *)reader->open((const char *)base + 0x128);
             if (list != 0) {
                 s32 index = 0;
+                s32 oc;
                 goto list_test;
                 do {
                     resource->objects[resource->objectCount++] = fn_801399FC();
                     index++;
                 list_test:
                     if (list->valid(index) == 0) break;
-                } while (resource->objectCount + 1 <= resource->objectCapacity);
+                    oc = resource->objectCount;
+                } while (oc + 1 <= resource->objectCapacity);
             }
 
             {
@@ -693,17 +695,17 @@ extern "C" s32 fn_80156C84(void *arg0, s32 arg1) {
         if (found) {
             s32 idx = fn_80129D90(4, 0, *(s32 *)((u8 *)self + 8));
             u32 *table = *(u32 **)((u8 *)self + 4);
-            s32 tbl = *(s32 *)((u8 *)table + idx * 8);
-            if (tbl == 0) {
+            i = *(s32 *)((u8 *)table + idx * 8);
+            if (i == 0) {
                 s32 next = idx + 1;
                 s32 divisor = *(s32 *)((u8 *)self + 8);
                 idx = next % divisor;
-                tbl = *(s32 *)((u8 *)table + idx * 8);
+                i = *(s32 *)((u8 *)table + idx * 8);
             }
             *(f32 *)(element + 0xE4) = f31 +
                 ((f32 (*)(s32, f32, f32))fn_80129DC4)(
                     4, *(f32 *)((u8 *)self + 0xDC), *(f32 *)((u8 *)self + 0xE0));
-            ((s32 *)self)[arg1 * 2 + 0x3A] = tbl;
+            ((s32 *)self)[arg1 * 2 + 0x3A] = i;
         } else {
             *(f32 *)(element + 0xE4) += lbl_80561740;
         }
@@ -753,18 +755,17 @@ extern "C" void fn_80156E74(void *arg0, s32 arg1, void *arg2) {
     s32 offset = 0;
     s32 best = -1;
     s32 i = 0;
-
     point[0] = ((f32 *)arg2)[0];
     point[1] = ((f32 *)arg2)[2];
     minimum = lbl_80561748;
     while (i < *(s32 *)((u8 *)arg0 + 8)) {
         void *entry = *(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + offset);
         void *result = fn_80135420(point, 0, (s32)entry);
-        f32 dy = point[1] - *(f32 *)((u8 *)result + 4);
-        f32 dx = point[0] - *(f32 *)result;
-        f32 distance = dy * dy + dx * dx;
-        vs1 = dy;
-        vs0 = dx;
+        f32 dx = point[1] - *(f32 *)((u8 *)result + 4);
+        f32 dy = point[0] - *(f32 *)result;
+        f32 distance = dx * dx + dy * dy;
+        vs1 = dx;
+        vs0 = dy;
         if (distance < minimum) {
             best = i;
             minimum = distance;
@@ -772,7 +773,6 @@ extern "C" void fn_80156E74(void *arg0, s32 arg1, void *arg2) {
         offset += 8;
         i++;
     }
-
     {
         void *tbl = *(void **)((u8 *)arg0 + 4);
         f32 base;
@@ -780,8 +780,7 @@ extern "C" void fn_80156E74(void *arg0, s32 arg1, void *arg2) {
         offset = *(s32 *)((u8 *)tbl + best * 8);
         base = lbl_8055E3C8;
         best = arg1 * 8;
-        result = ((f32 (*)(s32, f32, f32))fn_80129DC4)(
-            4, *(f32 *)((u8 *)arg0 + 0xDC), *(f32 *)((u8 *)arg0 + 0xE0));
+        result = ((f32 (*)(s32, f32, f32))fn_80129DC4)(4, *(f32 *)((u8 *)arg0 + 0xDC), *(f32 *)((u8 *)arg0 + 0xE0));
         *(f32 *)((u8 *)arg0 + best + 0xE4) = base + result;
         *(s32 *)((u8 *)arg0 + best + 0xE8) = offset;
     }
@@ -821,9 +820,14 @@ extern "C" void fn_80156F6C(void *arg0) {
         count = 0;
         Object *obj = (Object *)fn_801B2ED0(i);
         obj = obj->call();
-        s32 category = 0;
-        if (*(f32 *)((u8 *)obj + 0x34) > threshold)
+        s32 category;
+        if (*(f32 *)((u8 *)obj + 0x34) > threshold) {
             category = 1;
+        } else {
+            if (*(f32 *)((u8 *)obj + 0x34) <= threshold) {
+                category = 0;
+            }
+        }
         s32 offset = 0;
         s32 j = 0;
         while (j < *(s32 *)(base + 8) && count + 1 <= max) {
