@@ -518,8 +518,8 @@ extern "C" s32 fn_800FE814(s32 taskThread) {
     for (;;) {
         OSReceiveMessage((OSMessageQueue *)(taskThread + 0x2320), (OSMessage *)&message, 1);
         if (message == 1) {
-            FN800FE1D0_SEPARATE_CALL;
-            fn_800FE1D0(FN800FE1D0_CALL);
+            /* run every task queued so far */
+            fn_800FE1D0(fn_800FDE60());
             continue;
         }
         if (message != 2) {
