@@ -1079,11 +1079,14 @@ extern "C" void* fn_80157F98(void* self, s32 initialValue, s32 owner) {
     return self;
 }
 #pragma push
-#pragma opt_propagation off
+#pragma opt_propagation on
 extern "C" void *fn_80158054(void *arg0, s32 arg1, s32 arg2, void *arg3) {
-    u8 *ptr = (u8 *)arg0 + 0x14;
+    struct Tail {
+        u8 pad[0x244];
+        s32 arg1;
+    };
     u8 *end = (u8 *)arg0 + 0x244;
-    s32 zero = 0;
+    u8 *ptr = (u8 *)arg0 + 0x14;
     *(void **)arg0 = lbl_8032F2BC;
     *(void **)((u8 *)arg0 + 8) = ptr;
     *(s32 *)((u8 *)arg0 + 0x10) = 10;
@@ -1093,9 +1096,10 @@ extern "C" void *fn_80158054(void *arg0, s32 arg1, s32 arg2, void *arg3) {
         ptr += 0x38;
     } while (ptr < end);
     f32 f0 = lbl_80561768;
+    s32 zero = (s32)(end - (u8 *)arg0) - 0x244;
     *(s32 *)((u8 *)arg0 + 4) = arg2;
     *(s32 *)((u8 *)arg0 + 0x0C) = zero;
-    *(s32 *)((u8 *)arg0 + 0x244) = arg1;
+    ((Tail *)arg0)->arg1 = arg1;
     *(s32 *)((u8 *)arg0 + 0x258) = 0x41206;
     *(f32 *)((u8 *)arg0 + 0x250) = f0;
     *(s32 *)((u8 *)arg0 + 0x268) = zero;
@@ -1127,7 +1131,7 @@ extern "C" void* fn_8015812C(void* arg0, s32 arg1, s32 arg2, void* arg3) {
     };
     u8 *end = (u8 *)arg0 + 0x244;
     u8 *ptr = (u8 *)arg0 + 0x14;
-    s32 zero = 0;
+    void *zero = 0;
     *(void **)((u8 *)arg0 + 8) = ptr;
     *(void **)arg0 = &lbl_8032F2BC;
     *(s32 *)((u8 *)arg0 + 0x10) = 10;
@@ -1136,18 +1140,18 @@ extern "C" void* fn_8015812C(void* arg0, s32 arg1, s32 arg2, void* arg3) {
         memset(ptr, 0, 4);
         ptr += 0x38;
     } while (ptr < end);
-    ((Tail *)arg0)->field248 = zero;
-    *(s32 *)((u8 *)arg0 + 0x0C) = zero;
-    *(s32 *)((u8 *)arg0 + 4) = (s32)arg3;
+    ((Tail *)arg0)->field248 = (s32)zero;
+    *(s32 *)((u8 *)arg0 + 0x0C) = (s32)zero;
+    *(s32 *)((u8 *)arg0 + 4) = arg2;
     ((Tail *)arg0)->field244 = arg1;
     ((Tail *)arg0)->field268 = 0x40902;
     ((Tail *)arg0)->field24C = 15.0f;
     ((Tail *)arg0)->field250 = 1.0f;
     ((Tail *)arg0)->field254 = 305.0f;
-    ((Tail *)arg0)->field248 = zero;
-    ((Tail *)arg0)->field26C = zero;
+    ((Tail *)arg0)->field248 = (s32)zero;
+    ((Tail *)arg0)->field26C = (s32)zero;
     *(void **)arg0 = &lbl_8032F0E8;
-    ((Tail *)arg0)->field278 = zero;
+    ((Tail *)arg0)->field278 = (s32)zero;
     if (ptr != end) {
         u8 *zeroPtr = (u8 *)zero;
         zeroPtr[0x4D] = 1;
