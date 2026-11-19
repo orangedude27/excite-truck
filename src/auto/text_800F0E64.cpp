@@ -1394,11 +1394,7 @@ extern "C" s32 detail_OpenGroupStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void *
     if (path != 0) {
         meta14 = info.unkC;
         meta10 = info.unk8;
-        if (*path != 0x2f)
-            goto strlen_path;
-        goto open_stream;
-    strlen_path:
-        {
+        if (*path != '/') {
             unsigned long pathLen = strlen(path);
             unsigned long prefixLen = strlen((const char *)self + 8);
             if (pathLen + prefixLen >= 0x100) {
@@ -1410,6 +1406,7 @@ extern "C" s32 detail_OpenGroupStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void *
             fn_80028E2C(buf, path, pathLen + 1);
             path = buf;
         }
+        goto open_stream;
     open_stream:
         return ((Archive *)self)->f5(arg2, arg3, path, meta10, meta14);
     }
@@ -1436,11 +1433,10 @@ extern "C" s32 detail_OpenGroupWaveDataStream__Q36nw4hbm3snd12SoundArchiveCFUlPv
     if (path != 0) {
         meta14 = info.unk14;
         meta10 = info.unk10;
-        if (*path != 0x2f)
-            goto strlen_path;
-        goto open_stream;
-    strlen_path:
-        {
+        const char *openPath;
+        if (*path == '/') {
+            openPath = path;
+        } else {
             unsigned long pathLen = strlen(path);
             unsigned long prefixLen = strlen((const char *)self + 8);
             if (pathLen + prefixLen >= 0x100) {
@@ -1450,10 +1446,9 @@ extern "C" s32 detail_OpenGroupWaveDataStream__Q36nw4hbm3snd12SoundArchiveCFUlPv
             char buf[0x100];
             strncpy(buf, (const char *)((char *)self + 8), prefixLen + 1);
             fn_80028E2C(buf, path, pathLen + 1);
-            path = buf;
+            openPath = buf;
         }
-    open_stream:
-        return archive->f5(arg2, arg3, path, meta10, meta14);
+        return archive->f5(arg2, arg3, openPath, meta10, meta14);
     }
     return archive->f4(arg2, arg3, info.unk10, info.unk14);
 }
