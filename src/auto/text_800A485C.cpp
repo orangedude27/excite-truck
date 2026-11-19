@@ -7482,57 +7482,56 @@ extern "C" s32 fn_800AF8EC(void *fatCtx, s32 cluster, u32 entryValue, void *page
     return savedError;
 }
 extern "C" s32 fn_800AFBA8(void *arg0, u16 arg1, u32 *result, void *page) {
-    u8 *ctx = (u8 *)arg0;
-    u8 *pg = (u8 *)page;
+    u8 *ctx=(u8*)arg0;
+    u8 *pg=(u8*)page;
     u32 sector;
     u32 copy;
     s32 status;
     u32 offset;
-    offset = (u16)(arg1 + ((u32)arg1 >> 1));
-    sector = (u16)(*(u32 *)(ctx + 0x28) + (offset >> *(u8 *)(ctx + 0x20)));
-    copy = 1;
-    if (*(u16 *)(ctx + 0x18) & 0x80) copy = *(u16 *)(ctx + 0x18) & 7;
-    status = 0;
-    while (1) {
-        if (status == 0x1000 && *(s32 (**)(s32))(ctx + 0x1fc0)) {
-            s32 action = (*(s32 (**)(s32))(ctx + 0x1fc0))(*(s32 *)(ctx + 0x1f84));
-            if (action == 0) { status = 0; continue; }
-            if (action == 1 && *(u8 *)(ctx + 0x22) >= 2 && copy < *(u8 *)(ctx + 0x22)) {
-                status = 0; copy++; sector += *(u32 *)(ctx + 0xc); continue;
+    u32 a1c;
+    a1c = arg1;
+    offset=(u16)(a1c+((u32)a1c>>1));
+    sector=(u16)(*(u32*)(ctx+0x28)+(offset>>*(u8*)(ctx+0x20)));
+    copy=1;
+    if(*(u16*)(ctx+0x18)&0x80) copy=*(u16*)(ctx+0x18)&7;
+    status=0;
+retry:
+    if(status==0x1000 && *(s32 (**)(s32))(ctx+0x1fc0)) {
+        s32 action=(*(s32 (**)(s32))(ctx+0x1fc0))(*(s32*)(ctx+0x1f84));
+        if(action==0) { status=0; goto retry; }
+        if(action==1 && *(u8*)(ctx+0x22)>=2 && copy<*(u8*)(ctx+0x22)) {
+            status=0; copy++; sector+=*(u32*)(ctx+0xc); goto retry;
+        }
+    } else {
+        if(*(u32*)(pg+0x18)!=sector) {
+            if(*(u16*)(pg+2)==1) {
+                for(status=0;(u16)status<*(u8*)(ctx+0x22);status++)
+                    fn_800B5618(arg0,*(void**)(pg+8),*(u32*)(pg+0x18)+(u16)status**(u32*)(ctx+0xc),0,*(u16*)ctx);
             }
-            break;
+            status=fn_800B5260(arg0,*(void**)(pg+8),sector,0,*(u16*)ctx);
+            if(status) goto retry;
+            *(u32*)(pg+0x18)=sector;
+        }
+        u32 mask=*(u16*)ctx-1;
+        offset &= mask;
+        if(offset==mask) {
+            *result=(*(u8**)(pg+8))[offset];
+            if(*(u16*)(pg+2)==1) {
+                u16 i;
+                for(i=0;i<*(u8*)(ctx+0x22);i++)
+                    fn_800B5618(arg0,*(void**)(pg+8),*(u32*)(pg+0x18)+i**(u32*)(ctx+0xc),0,*(u16*)ctx);
+            }
+            status=fn_800B5260(arg0,*(void**)(pg+8),sector+1,0,*(u16*)ctx);
+            if(status) goto retry;
+            *(u32*)(pg+0x18)=sector+1;
+            *result+=(*(u8**)(pg+8))[0]<<8;
         } else {
-            if (*(u32 *)(pg + 0x18) != sector) {
-                if (*(u16 *)(pg + 2) == 1) {
-                    for (status = 0; (u16)status < *(u8 *)(ctx + 0x22); status++)
-                        fn_800B5618(arg0, *(void **)(pg + 8), *(u32 *)(pg + 0x18) + (u16)status * *(u32 *)(ctx + 0xc), 0, *(u16 *)ctx);
-                }
-                status = fn_800B5260(arg0, *(void **)(pg + 8), sector, 0, *(u16 *)ctx);
-                if (status) continue;
-                *(u32 *)(pg + 0x18) = sector;
-            }
-            u32 mask = *(u16 *)ctx - 1;
-            offset &= mask;
-            if (offset == mask) {
-                *result = (*(u8 **)(pg + 8))[offset];
-                if (*(u16 *)(pg + 2) == 1) {
-                    u16 i;
-                    for (i = 0; i < *(u8 *)(ctx + 0x22); i++)
-                        fn_800B5618(arg0, *(void **)(pg + 8), *(u32 *)(pg + 0x18) + i * *(u32 *)(ctx + 0xc), 0, *(u16 *)ctx);
-                }
-                status = fn_800B5260(arg0, *(void **)(pg + 8), sector + 1, 0, *(u16 *)ctx);
-                if (status) continue;
-                *(u32 *)(pg + 0x18) = sector + 1;
-                *result += (*(u8 **)(pg + 8))[0] << 8;
-            } else {
-                u8 *buf = *(u8 **)(pg + 8);
-                *result = (buf[offset + 1] << 8) + buf[offset];
-            }
-            break;
+            u8 *buf=*(u8**)(pg+8);
+            *result=(buf[offset+1]<<8)+buf[offset];
         }
     }
-    if (status) { *result = -1; return status; }
-    if (arg1 & 1) *result >>= 4; else *result &= 0xfff;
+    if(status) { *result=-1; return status; }
+    if(arg1&1) *result>>=4; else *result&=0xfff;
     return 0;
 }
 
@@ -13563,7 +13562,7 @@ extern "C" s32 fn_800BA160(s32 handle) {
 }
 #pragma push
 #pragma small_data off
-extern "C" u32 lbl_8031C2B8[];
+extern "C" u8 lbl_8031C2B8[];
 extern "C" u32 lbl_802F3F54[];
 /* Validate the handle, destination buffer and output pointer, then read
  * `count` sectors of the device's sector size starting at `lba` into `addr`
@@ -17473,11 +17472,10 @@ extern "C" s32 lbl_8031D778[];
 extern "C" void fn_800C2F98(s32 *in, s32 *out, s32 *negOut) {
     const s32 *k = lbl_8031D778;
     s32 zero = 0;
-    register s32 value;
-    register s32 coefficient;
+    s32 value;
+    s32 coefficient;
     s32 result;
     s32 negative;
-    register s32 sample;
     s64 product;
     s64 second;
 
@@ -17488,7 +17486,7 @@ extern "C" void fn_800C2F98(s32 *in, s32 *out, s32 *negOut) {
     value = in[4]; out[4] = value; negOut[-4] = zero;
     value = in[5]; out[5] = value; negOut[-5] = zero;
 
-    sample = in[6];
+    s32 sample = in[6];
     coefficient = *k++;
     product = (s64)sample * coefficient;
     coefficient = *k++;
@@ -20937,9 +20935,8 @@ extern "C" void Start__Q210homebutton9RemoteSpkFv(void *this_ptr) {
         u32 ticks = *(volatile u32 *)0x800000F8;
         u32 q = (ticks >> 2) / 125000U;
         u32 period = q * 0x0065B9ABU;
-        u32 interval = period / 8000U;
         ((void (*)(void *, u32, u32, u32, u32, u32, void *))OSSetPeriodicAlarm)(
-            self + 0x1A0, q, (u32)(time >> 32), (u32)time, 0, interval, (void *)&fn_800D16C4);
+            self + 0x1A0, q, (u32)(time >> 32), (u32)time, 0, period / 8000U, (void *)&fn_800D16C4);
     }
 }
 
@@ -21139,7 +21136,7 @@ extern "C" void fn_800D1F7C(s32 *arg0, s32 arg1) {
     u32 temp_r28;
     u32 var_r27;
     s32 var_r0;
-    fn_800D1EC4(messages->header + 0);
+    fn_800D1EC4(messages->summary - 0x28);
     fn_800D1EC4(messages->summary);
     var_r27 = 0;
 loop_1:
@@ -22122,31 +22119,24 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
     }
 }
 
-void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Pane *pane, bool bind) {
-    register u8 *paneCopy = (u8 *)pane;
-    register u8 *offsets = (u8 *)*(void **)((u8 *)this + 0xC);
-    register u16 i = 0;
+void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Material *material) {
+    register u8 *self = (u8 *)this;
+    register u8 *offsets = (u8 *)*(void **)(self + 0xC);
     offsets += *(s32 *)(offsets + 0x10);
-    while (i < *(u16 *)(*(u8 **)((u8 *)this + 0xC) + 0xE)) {
-        u8 *entry = *(u8 **)((u8 *)this + 0xC) + *(s32 *)(offsets + i * 4);
-        void *boundObject;
-        if (entry[0x15] == 0) {
-            boundObject = ((PaneAnimTransformDispatch *)paneCopy)->bindPane(entry, bind);
-            if (boundObject != 0) {
-                u8 *link = (u8 *)*(void **)((u8 *)this + 0x18) + i * 0x10;
-                *(void **)(link + 8) = (u8 *)this;
+    register u16 i = 0;
+    register u8 *materialPtr = (u8 *)material;
+    while (i < *(u16 *)((u8 *)*(void **)(self + 0xC) + 0xE)) {
+        u8 *entry = *(u8 **)(self + 0xC) + *(s32 *)(offsets + i * 4);
+        if (entry[0x15] == 1) {
+            if (((s32 (*)(void *, void *))fn_800D58F0)(materialPtr + 4, entry) != 0) {
+                entry = entry;
+                u32 off = (u32)i << 4;
+                u8 *link = (u8 *)*(void **)(self + 0x18) + off;
+                *(void **)(link + 8) = self;
                 *(u16 *)(link + 0xC) = i;
-                AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(
-                    boundObject, (u8 *)*(void **)((u8 *)this + 0x18) + i * 0x10);
-            }
-        } else {
-            boundObject = ((PaneAnimTransformDispatch *)paneCopy)->bindMaterial(entry, bind);
-            if (boundObject != 0) {
-                u8 *link = (u8 *)*(void **)((u8 *)this + 0x18) + i * 0x10;
-                *(void **)(link + 8) = (u8 *)this;
-                *(u16 *)(link + 0xC) = i;
+                u8 *base = (u8 *)*(void **)(self + 0x18);
                 AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(
-                    boundObject, (u8 *)*(void **)((u8 *)this + 0x18) + i * 0x10);
+                    materialPtr, base + off);
             }
         }
         i++;
