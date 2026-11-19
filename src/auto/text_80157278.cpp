@@ -4114,24 +4114,28 @@ loop_test:
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-/* Activates a group: sets its active flag, resets its indexed multiplier to 1.0, and invokes each entry's callback. */
-extern "C" void fn_8015E238(Unk801577F0V *group) {
-    struct EntryVTable {
+/* ArrayTracker's slot-0xC tracker method (vtable lbl_8032EB0C+0xC), the group's
+ * "reset": take the group back part in scoring (mActive at +0x54), set this
+ * course's row of the score-multiplier table back to 1.0, and call slot 0xC on
+ * every tracker in the array, which zeroes its records and progress counters
+ * (e.g. the air tracker's fn_80158A84). */
+extern "C" void fn_8015E238(Unk801577F0V* group) {
+    struct Tracker {
         virtual void v0();
-        virtual void Call();
+        virtual void reset();
     };
-    s32 byteOffset;
-    s32 index;
-    volatile u8 *self = (volatile u8 *)group;
-    byteOffset = 0;
-    index = 0;
-    *(u8 *)(self + 0x54) = 1;
-    lbl_8042FD08[*(s32 *)(self + 0x58)] = 1.0f;
-    while (index < *(volatile s32 *)(self + 8)) {
-        void *entry = *(void **)((u8 *)*(void *volatile *)(self + 4) + byteOffset);
-        ((EntryVTable *)entry)->Call();
-        byteOffset += 4;
-        index++;
+    s32 offset;
+    s32 i;
+    volatile u8* self = (volatile u8*)group;
+    offset = 0;
+    i = 0;
+    *(u8*)(self + 0x54) = 1;                    /* ArrayTracker::mActive */
+    BONUS_TYPE_SCALE[*(s32*)(self + 0x58)] = 1.0f; /* this course's multiplier (mCourse) */
+    while (i < *(volatile s32*)(self + 8)) {    /* ArrayTracker::mCount, re-read each pass */
+        void* tracker = *(void**)((u8*)*(void* volatile*)(self + 4) + offset); /* mTrackers[i] */
+        ((Tracker*)tracker)->reset();           /* tracker vtable slot 0xC */
+        offset += 4;
+        i++;
     }
 }
 #pragma scheduling on
