@@ -142,14 +142,13 @@ void fn_8013B950(void) {
 }
 #pragma cplusplus reset
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_8013BAE4(int arg0) {
     float sp10[12];
     int spC;
     float sp8;
     float *p;
     float t0, t1, t2, t3;
-    float outv;
     float vf;
     double v;
     int index;
@@ -162,14 +161,11 @@ void fn_8013BAE4(int arg0) {
     p = sp10 + spC * 4;
     t0 = p[0];
     t1 = p[1];
-    outv = (float)(t0 + sp8 * (p[4] - t0));
-    *(volatile float*)&lbl_8042F8B8[0] = outv;
+    *(volatile float*)&lbl_8042F8B8[0] = (float)(t0 + sp8 * (p[4] - t0));
     t2 = p[2];
-    outv = (float)(t1 + sp8 * (p[5] - t1));
-    *(volatile float*)&lbl_8042F8B8[1] = outv;
+    *(volatile float*)&lbl_8042F8B8[1] = (float)(t1 + sp8 * (p[5] - t1));
     t3 = p[3];
-    outv = (float)(t2 + sp8 * (p[6] - t2));
-    *(volatile float*)&lbl_8042F8B8[2] = outv;
+    *(volatile float*)&lbl_8042F8B8[2] = (float)(t2 + sp8 * (p[6] - t2));
     v = t3 + sp8 * (p[7] - t3);
     vf = (float)v;
     *(volatile float*)&lbl_8042F8B8[3] = (float)v;
