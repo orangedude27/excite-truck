@@ -10354,9 +10354,14 @@ extern "C" void fn_800B783C(void *);
 extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559224[]; }
 extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_8055922C[]; }
 #pragma opt_lifetimes off
+/* Convert the path/pattern `arg2` from its Unicode form into `arg0`.  A single-
+ * token name is copied directly (or reduced to "*" for "*.*"); otherwise the
+ * Unicode form is copied into `arg1` ("*.*" becomes "*") and transformed to
+ * normal form, with the global context at lbl_803D2140 (+0x60 flags, +0x64 lock)
+ * held across the transform when bit 1 is set. */
 extern "C" void fn_800B4BD8(char *arg0, u16 *arg1, void *arg2) {
     struct Ctrl { u8 pad[0x60]; u32 flags; u8 data[4]; };
-    u16 sp8[2];
+    u16 wildcard[2];
     if (fn_800A4D44((u16 **)arg2) == 1U) {
         if (fn_800A4AD0((u8 *)*(u16 **)arg2, (u8 *)lbl_8055922C) == 0) {
             fn_800A4AAC(arg0, (char *)lbl_80559224);
@@ -10366,9 +10371,9 @@ extern "C" void fn_800B4BD8(char *arg0, u16 *arg1, void *arg2) {
         return;
     }
     if (VFiPFSTR_StrCmp((u16 **)arg2, (s32)lbl_8055922C) == 0) {
-        sp8[0] = 0x2A;
-        sp8[1] = 0;
-        fn_800A4B78(arg1, sp8);
+        wildcard[0] = 0x2A;
+        wildcard[1] = 0;
+        fn_800A4B78(arg1, wildcard);
     } else {
         fn_800A4B78(arg1, *(u16 **)arg2);
     }
@@ -15265,9 +15270,11 @@ extern "C" void fn_800BD710(void *arg0, s16 arg1, s16 arg2, void *arg3, void *ar
     s32 *out0 = (s32 *)arg3;
     s32 *out1 = (s32 *)arg4;
     if (obj->mode == 0) {
+        register s32 *tbl1 = (s32 *)(t + 0x20);
+        register s32 *tbl0 = (s32 *)t;
         s32 v = *out0;
-        *out1 = fn_800BD710_scale(v, (s32 *)(t + 0x20), arg2);
-        *out0 = fn_800BD710_scale(*out0, (s32 *)t, arg2);
+        *out1 = (s32)(((s64)v * tbl1[arg2]) >> 20);
+        *out0 = (s32)(((s64)*out0 * tbl0[arg2]) >> 20);
         return;
     }
     if (obj->inited == 0) {
@@ -17268,26 +17275,26 @@ u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
     u32 bits = *arg2;
     u32 index = (bits >> 3) & 0x1FFF;
     s32 shift = 0x18 - (bits & 7);
-    *arg2 = bits + arg1;
     volatile u8 *bytes = (volatile u8 *)arg0;
-    u8 a;
-    u8 b;
-    u8 c;
+    u8 a, b, c;
+    *arg2 = bits + arg1;
+#pragma opt_propagation off
     if (index < 0x1FFE) {
         u32 next = index + 1;
         a = bytes[index];
         b = bytes[next];
-        next = next + 1;
+        next++;
         c = bytes[next + 0];
     } else {
         u32 next = index + 1;
         a = bytes[index];
         next &= 0x1FFF;
         b = bytes[next];
-        next = next + 1;
+        next++;
         next &= 0x1FFF;
-        c = bytes[next + 0];
+        c = bytes[next];
     }
+#pragma opt_propagation reset
     u32 value = ((u32)a << 16) | ((u32)b << 8) | c;
     return (value & lbl_802F3F54[shift]) >> (shift - arg1);
 }
@@ -21683,15 +21690,14 @@ extern "C" s32 fn_800D2E14(void) {
 }
 
 void fn_800D2E3C(s32 x, s32 y, s32 width, s32 height) {
-    s32 right, bottom, startX, startY, row, col;
-    u16 *dest;
-    u16 w, h;
+    register s32 right, startX;
+    s32 bottom, startY, row, col;
     s32 endX, endY, stride;
+    u16 *dest;
     if (lbl_80407BD8[0] == 0)
         return;
-    w = *(u16 *)((u8 *)lbl_80407BD8 + 8);
-    endX = w;
-    if (((w < 0x190) ? 1 : 2) == 2) {
+    endX = *(u16 *)((u8 *)lbl_80407BD8 + 8);
+    if ((((u32)endX < 0x190) ? 1 : 2) == 2) {
         x *= 2;
         width *= 2;
     }
@@ -21699,9 +21705,8 @@ void fn_800D2E3C(s32 x, s32 y, s32 width, s32 height) {
     startX = x & (((u32)x >> 31) - 1);
     if (right <= endX)
         endX = right;
-    h = *(u16 *)((u8 *)lbl_80407BD8 + 0xA);
-    endY = h;
-    if (((h < 0x12C) ? 1 : 2) == 2) {
+    endY = *(u16 *)((u8 *)lbl_80407BD8 + 0xA);
+    if ((((u32)endY < 0x12C) ? 1 : 2) == 2) {
         y *= 2;
         height *= 2;
     }
@@ -25171,12 +25176,12 @@ void homebutton::HomeButton::startLeftEvent(const char *name) {
     if (count <= 0) return;
     s32 f8 = *(s32 *)(self + 8);
     if (paneNo == f8 + 1) {
-        s32 *e = (s32 *)(self + (f8 + 9) * 4);
-        *(s32 *)((u8 *)e + 0x1c) -= 1;
+        *(s32 *)((u8 *)entry + 0x1c) -= 1;
     } else if (paneNo == f8 + 9) {
-        s32 *e = (s32 *)(self + (f8 + 9) * 4);
-        *(s32 *)((u8 *)e + 0x1c) -= 1;
-        *(s32 *)((u8 *)e + 0x1c) -= 1;
+        s32 *e1 = (s32 *)(self + (f8 + 1) * 4);
+        s32 *e9 = (s32 *)(self + (f8 + 9) * 4);
+        *(s32 *)((u8 *)e1 + 0x1c) -= 1;
+        *(s32 *)((u8 *)e9 + 0x1c) -= 1;
     } else {
         *(s32 *)((u8 *)entry + 0x1c) -= 1;
     }
@@ -26144,7 +26149,7 @@ void VFipf_memcpy(void *dstArg, const void *srcArg, u32 size) {
     const u8 *in = (const u8 *)srcArg;
     u32 blocks;
     u32 words;
-    s32 byteAdjustment;
+    u32 byteAdjustment;
     u32 value;
     int i;
     if (((u32)dstArg & 3) != 0)
@@ -26156,7 +26161,7 @@ void VFipf_memcpy(void *dstArg, const void *srcArg, u32 size) {
     if (size <= 3)
         goto copy_bytes;
     blocks = words >> 3;
-    byteAdjustment = -(s32)(words << 2);
+    byteAdjustment = -(words << 2);
     if (blocks != 0) {
         for (i = 0; i < (int)blocks; i++) {
             value = *(u32 *)(in + 0x00); *(u32 *)(out + 0x00) = value;
@@ -26606,8 +26611,8 @@ extern "C" void fn_800A52DC(u32 arg0) {
 #pragma opt_propagation reset
 extern "C" void fn_800A535C(u32 arg0) {
     u8 *ptr = (u8 *)lbl_803D2140 + 0xA0;
-    s32 i, n;
-    for (i = 0, n = 13; n > 0; n--, i++, ptr += 0x3F90) {
+    s32 i;
+    for (i = 0; i < 13; i++, ptr += 0x3F90) {
         if (*(u32 *)(ptr + 0x1FBC) == arg0) {
             *(u16 *)(ptr + 0x1F8C) |= 0x14;
         }
