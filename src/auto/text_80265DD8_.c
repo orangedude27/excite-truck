@@ -1,5 +1,4 @@
 extern char lbl_80499080[];
-const double lbl_80563C38_test = 4503599627370496.0 + 2147483648.0;
 typedef struct { int w[0x8A]; } Rec_80269BB0;
 typedef struct {
     int w0, w4; float f8, fc;
