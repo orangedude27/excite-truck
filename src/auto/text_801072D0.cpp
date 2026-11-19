@@ -168,6 +168,7 @@ typedef s32 (*VFun1)(void*);
 typedef u32 (*ReadFn)(void*, void*, u32);
 #pragma push
 #pragma opt_propagation off
+/* Cancel an asynchronous file-stream operation, panicking if wait or cancel is unsupported. */
 extern "C" s32 CancelAsync__Q36nw4hbm2ut10FileStreamFPFlPQ36nw4hbm2ut8IOStreamPv_vPv_801075D0(nw4hbm::ut::FileStream3* this_) {
     if (this_->Wait() == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(sFile, 0x66, sWrite);
