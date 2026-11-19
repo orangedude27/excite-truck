@@ -3378,6 +3378,7 @@ int fn_80165240(void) {
     return 0;
 }
 
+/* Empty stub. */
 void fn_80165248(void) {
 
 }
