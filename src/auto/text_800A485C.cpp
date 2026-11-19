@@ -16952,18 +16952,18 @@ s32 arg3, s32 arg4, s32 arg5, s32 arg6, s16 arg7,
 s32 arg8, s16* arg9, s16* arg10
 ) {
 Fn800C0440Context* ctx = (Fn800C0440Context*)arg0;
-s32 sp14 = arg4 & 1;
-s16 spC = arg7;
 void* sp8 = arg2;
+s16 spC = arg7;
+s16 spE;
+volatile s16 sp10;
+s32 sp14 = arg4 & 1;
+volatile s32 sp18;
 s32 sp1C = 0x80320000 - 0x3D68;
 s32 sp20 = 0x80320000 - 0x2A80;
-volatile s16 sp10;
-s16 spE;
 register s32 maxOutput;
   register u8* table = (u8*)lbl_802F3D60;
   u32* maskTable = (u32*)(table + 0x1F4);
   s16* decodeTable = (s16*)(table + 0x1D0);
-volatile s32 sp18;
 register s32 i = 0;
 register s32 outputIndex = 0;
 register s16* output;
@@ -22352,6 +22352,9 @@ extern "C" u16 fn_800D4138(const void *arg0, u32 arg1, f32 farg0) {
 
 extern "C" f32 lbl_80560E48, lbl_80560E4C, lbl_80560E50, lbl_80560E54, lbl_80560E58, lbl_80560E5C;
 extern "C" f32 fn_800D4220(const void *arg0, u32 arg1, f32 farg0) {
+    /* Evaluate a cubic Hermite keyframe curve: each 12-byte key is (time, value, tangent),
+     * keys are searched for the span containing farg0 and the value is interpolated (with
+     * endpoint clamping and a small-epsilon check for hitting a key exactly). */
     const u8 *base = (const u8 *)arg0;
     if (arg1 == 1 || farg0 <= *(f32 *)base) return *(f32 *)(base + 4);
     const u8 *end = base + arg1 * 12;
