@@ -8,6 +8,7 @@ extern void fn_8002F53C(void *, void *, void *, int, int);
 extern void fn_801312EC(void *, void *);
 extern void fn_8022D98C(void *, void *, float, float, float, float, float);
 extern void fn_80215EA8(void), fn_80215EC4(void), fn_80215F04(void), fn_80215F1C(void), fn_80215F5C(void);
+typedef struct Obj80215CF4 { int f00, f04, f08, f0c, f10; } Obj80215CF4;
 extern char lbl_8033D678[], lbl_8033D684[], lbl_8033D6F0[], lbl_80490510[];
 extern int lbl_8055B840, lbl_8055B848, lbl_8055B850, lbl_8055B858, lbl_8055EEF8;
 extern int lbl_8055EF00, lbl_8055EF04;
@@ -16,21 +17,23 @@ extern float lbl_80563434, lbl_80563450, lbl_80563454;
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
+#pragma opt_common_subs off
 extern "C" void fn_80215CF4(void) {
-    char *base;
-    unsigned int zero;
-    unsigned int *hp;
+    register char *base asm("r30");
+    register unsigned int zero asm("r31");
 
     base = lbl_80490510;
     fn_8000D838(&lbl_8055EEF8);
     zero = 0;
     lbl_8055EF00 = 0xFFFF0000;
-    ((volatile unsigned int *)base)[0] = zero;
-    hp = (unsigned int *)base;
-    hp[1] = 0x7B;
-    hp[2] = zero;
-    hp[3] = zero;
-    hp[4] = zero;
+    {
+        unsigned int *p = (unsigned int *)base;
+        ((volatile unsigned int *)base)[0] = zero;
+        p[1] = 0x7B;
+        p[2] = zero;
+        p[3] = zero;
+        p[4] = zero;
+    }
     lbl_8055EF04 = 0x7F000000;
     fn_801312EC(base + 0x108, &lbl_8055B840);
     fn_801312EC(base + 0x114, lbl_8033D678);
@@ -40,9 +43,9 @@ extern "C" void fn_80215CF4(void) {
     fn_801312EC(base + 0x144, lbl_8033D684);
     fn_8022D98C(base + 0x160, lbl_8055EF50, lbl_80563434, lbl_80563454, lbl_80563450, lbl_80563434, lbl_80563450);
     __register_global_object(base + 0x160, &fn_80215F5C, base + 0x150);
-    base[0x18C] = (char)zero;
     {
         char *p = base + 0x18C;
+        base[0x18C] = (char)zero;
         p[8] = (char)zero;
         *(int *)(p + 0xC) = (int)lbl_8033D6F0;
         *(int *)(p + 4) = -1;
@@ -63,5 +66,4 @@ extern "C" void fn_80215CF4(void) {
         p[2] = zero;
     }
 }
-#pragma cplusplus reset
-#pragma scheduling on
+#pragma opt_common_subs reset
