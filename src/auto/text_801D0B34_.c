@@ -42,37 +42,42 @@ void fn_801D0BE4(void) {
     lbl_8055E8DC = 0;
 }
 
+/* No-op stub. */
 void fn_801D0BF4(void) {
 
 }
 
+#pragma scheduling invalid_target
 int fn_801D0BF8(int arg0, int arg1) {
     struct Entry *entry = lbl_80438758;
-    int i;
     int count = lbl_8055E8D8;
+    register int i = 0;
     if (count > 0) {
-        for (i = 0; i < count; entry++, i++) {
+        for (; i < count; entry++, i++) {
             if (arg0 == entry->first && arg1 == entry->second)
                 return lbl_80438758[i].value;
         }
     }
     return 0;
 }
-
-#pragma push
-#pragma optimization_level 3
-void fn_801D0C58(int arg0, int arg1, int arg2) {
-    register volatile struct Entry *entry;
-    register int count;
-    count = lbl_8055E8D8;
-    entry = (volatile struct Entry *)&lbl_80438758[count];
-    entry->second = arg2;
-    ((volatile struct Entry *)lbl_80438758)[count].first = arg1;
-    ((volatile struct Entry *)lbl_80438758)[count].value = arg0;
-    *(volatile int *)&lbl_8055E8D8 = count + 1;
+#pragma scheduling on
+void fn_801D0C58(int arg0, int arg1, int arg2)
+{
+  int count;
+  int next;
+  int index;
+  volatile struct Entry *entry;
+  count = lbl_8055E8D8;
+  next = count + 1;
+  index = count * 12;
+  entry = (volatile struct Entry *)((char *)lbl_80438758 + index);
+  entry->second = arg2;
+  ((volatile struct Entry *) lbl_80438758)[count].first = arg1;
+  ((volatile struct Entry *) lbl_80438758)[count].value = arg0;
+  lbl_8055E8D8 = next;
 }
-#pragma pop
 void fn_801D0C84(unsigned int arg0) {
+#pragma scheduling off
     int count = lbl_8055E8D8;
     struct Entry *entry = lbl_80438758;
     struct Entry *base = entry;
