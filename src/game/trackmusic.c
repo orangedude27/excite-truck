@@ -196,7 +196,7 @@ long fn_8020F608(long arg0, long arg1) {
     } while (--i);
     return 0;
 }
-#pragma opt_unroll_loops reset
+#pragma ctrloop reset
 #pragma dont_inline reset
 
 void fn_8020F6E0(long contextIndex, long event) {
