@@ -4,7 +4,7 @@
 #include <types.h>
 
 // This file's float constants, all in .sdata2 (read_data shows their values).
-extern f32 lbl_805615B8;  //  1.0f
+extern const f32 lbl_805615B8;  //  1.0f
 extern f32 lbl_805615BC;  //  0.0f
 extern f32 lbl_805615C0;  //  0.5f
 extern f32 lbl_805615C4;  //  3.0f
@@ -69,38 +69,50 @@ void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az) {
     f32 c, s;
     c = cos(ax);
     s = sin(ax);
-    m[0] = c;
-    m[1] = lbl_805615BC;
-    m[3] = lbl_805615BC;
-    m[2] = -s;
-    m[4] = lbl_805615B8;
-    m[5] = lbl_805615BC;
-    m[6] = s;
-    m[7] = lbl_805615BC;
-    m[8] = c;
+    {
+        f32 z = lbl_805615BC;
+        f32 o = lbl_805615B8;
+        m[0] = c;
+        m[1] = z;
+        m[3] = z;
+        m[2] = -s;
+        m[4] = o;
+        m[5] = z;
+        m[6] = s;
+        m[7] = z;
+        m[8] = c;
+    }
     c = cos(ay);
     s = sin(ay);
-    bp[1] = lbl_805615BC;
-    bp[0] = lbl_805615B8;
-    bp[2] = lbl_805615BC;
-    bp[3] = lbl_805615BC;
-    bp[4] = c;
-    bp[5] = s;
-    bp[6] = lbl_805615BC;
-    bp[7] = -s;
-    bp[8] = c;
+    {
+        f32 z = lbl_805615BC;
+        f32 o = lbl_805615B8;
+        bp[1] = z;
+        bp[0] = o;
+        bp[2] = z;
+        bp[3] = z;
+        bp[4] = c;
+        bp[5] = s;
+        bp[6] = z;
+        bp[7] = -s;
+        bp[8] = c;
+    }
     M33Cat(m, bp, m);
     c = cos(az);
     s = sin(az);
-    bp[0] = c;
-    bp[1] = s;
-    bp[2] = lbl_805615BC;
-    bp[3] = -s;
-    bp[4] = c;
-    bp[5] = lbl_805615BC;
-    bp[6] = lbl_805615BC;
-    bp[7] = lbl_805615BC;
-    bp[8] = lbl_805615B8;
+    {
+        f32 z = lbl_805615BC;
+        f32 o = lbl_805615B8;
+        bp[0] = c;
+        bp[1] = s;
+        bp[2] = z;
+        bp[3] = -s;
+        bp[4] = c;
+        bp[5] = z;
+        bp[6] = z;
+        bp[7] = z;
+        bp[8] = o;
+    }
     M33Cat(m, bp, m);
 }
 #pragma opt_propagation reset
@@ -209,8 +221,7 @@ f32 fn_80144CC8(f32 value) {
     return value * value;
 }
 
-#pragma push
-#pragma scheduling invalid_target
+#pragma processor 7400
 void fn_80144CD0(float *out, float *vec, float (*m)[4]) {
     float x = vec[0] - m[2][1];
     float y = vec[1] - m[2][2];
@@ -222,9 +233,9 @@ void fn_80144CD0(float *out, float *vec, float (*m)[4]) {
     float b2 = y * m[1][3];
     float o0 = a0 + b0;
     float o1 = a1 + b1;
-    float o2 = a2 + b2;
     float m5v = m[1][1];
     float z = vec[2] - m[2][3];
+    float o2 = a2 + b2;
     float c1 = z * m5v;
     float c0 = z * m[0][2];
     float c2 = z * m[2][0];
@@ -235,7 +246,6 @@ void fn_80144CD0(float *out, float *vec, float (*m)[4]) {
     out[0] = o0;
     out[2] = o2;
 }
-#pragma pop
 /* Copy three consecutive s32 words from src to dst.  The source is read through
  * a volatile pointer into staged locals so all three loads precede any store. */
 void fn_80144D64(s32 *dst, s32 *src) {
