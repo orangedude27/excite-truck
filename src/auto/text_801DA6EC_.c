@@ -324,17 +324,18 @@ int fn_801DAD7C(void *ctx) {
     return 1;
 }
 #pragma scheduling on
-void fn_801DADBC(void *arg0) {
-    register int *object = (int *)arg0;
-    register int byteOffset = 0;
+/* Reset each entry's path-follower cursor in the collection to time 0. */
+void fn_801DADBC(void *collection) {
+    register int *list = (int *)collection;
+    register int entryOffset = 0;
     register int index = 0;
     goto check;
 loop:
-    fn_801DA198(*(int *)(*(int *)((unsigned char *)object[1] + byteOffset) + 0x28), lbl_80562B54);
-    byteOffset += 4;
+    fn_801DA198(*(int *)(*(int *)((unsigned char *)list[1] + entryOffset) + 0x28), lbl_80562B54);
+    entryOffset += 4;
     index++;
 check:
-    if (index < object[2]) goto loop;
+    if (index < list[2]) goto loop;
 }
 #pragma scheduling reset
 extern void fn_801D9F44(void *, int);
