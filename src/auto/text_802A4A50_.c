@@ -856,6 +856,7 @@ void fn_802A5C1C(void *arg0) {
     fn_802A6234(c, b, a);
     fn_802A6790(arg0);
 }
+#pragma scheduling on
 #pragma opt_propagation reset
 extern f32 lbl_8056488C;
 extern void *fn_801E8718();
