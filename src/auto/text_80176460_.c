@@ -131,6 +131,17 @@ typedef struct FadeState {
 #define fader           (*(FadeState *)sFadeState) /* ... reached by field name */
 #define sPhysicsFlag    lbl_8055E3BD /* physics module is up (fn_801769F8); picks the fader's time base */
 #define sFrameCount     lbl_8055E3C4 /* global frame/tick counter */
+#define FADE_FULL       0xFF         /* alpha at the end of the ramp == fully faded */
+#define FADE_FROZEN     0xFA         /* alpha an outgoing fade is held at while the Home menu is open */
+#define HOME_MENU_HOLD  7            /* steps to sit at the end of the ramp before its callback may fire */
+#define RAMP_MS         750          /* ms the whole ramp takes once the physics module is up */
+#define RAMP_MS_MAX     0x21         /* ... counting at most 33 ms per step */
+#define RAMP_FRAMES_MAX 2            /* ... and at most 2 frames per step while it is down */
+#define TIME_SCALE_NONE lbl_80561B1C /* 1.0f: no time scaling outside gameplay */
+#define TIME_SCALE_MIN  lbl_80561B30 /* 0.001f: floor for the time scale */
+#define RAMP_PER_FRAME  lbl_80561B40 /* 45.0f: ramp units a frame adds at time scale 1 */
+#define FADE_TO_VOLUME  lbl_80561B44 /* 255.0f: divides a fade level into a mixer volume */
+#define sFaderVolume    lbl_8055E3F0 /* mixer volume handle the fader drives (fn_802090D4/fn_80209190) */
 extern void *fn_80176A1C(void);
 extern f32 fn_80176A2C(void);
 extern f32 lbl_80561B44;
