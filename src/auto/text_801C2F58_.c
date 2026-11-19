@@ -2424,11 +2424,12 @@ void fn_801C84E0(void) {
 
 extern char lbl_8033707C[];
 extern void fn_801C7374(void);
+/* Parse the text-field input as a time value, quantize it, store it as the new event time, show the confirmation text, and close the text field. */
 void fn_801C8500(void) {
-    f32 value = fn_801C3450((f32)atof(lbl_804380F0));
-    lbl_8055E810 = value;
+    f32 eventTime = fn_801C3450((f32)atof(sInputLine));
+    lbl_8055E810 = eventTime;
     lbl_8055E80D = 1;
-    sprintf(lbl_80437FC0, lbl_8033707C, (f32)(f64)value);
+    sprintf(lbl_80437FC0, lbl_8033707C, (f32)(f64)eventTime);
     fn_801C7374();
 }
 
