@@ -4743,6 +4743,7 @@ void fn_801556F4(void) {
 
 }
 
+/* Empty stub. */
 void fn_801556F8(void) {
 
 }
