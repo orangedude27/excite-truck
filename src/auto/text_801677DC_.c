@@ -22,6 +22,10 @@ void *fn_801677DC(void *object, s32 shouldDelete) {
 void fn_80167834(void) {
 }
 
+/* No-op teardown hook of the betarace manager.  fn_8014E9C4 calls it, together
+ * with fn_8016A68C, once the manager object is released; its counterpart on the
+ * create side is fn_80167834 (called by fn_8014DE50).  This build has nothing
+ * to undo here. */
 void fn_80167838(void) {
 
 }
