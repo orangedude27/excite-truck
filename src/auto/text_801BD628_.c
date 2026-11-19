@@ -661,6 +661,7 @@ void fn_801BF198(void *dst, void *src) {
     ((float *)dst)[2] = z;
 }
 
+/* No-op stub. */
 void fn_801BF1B4(void) {
 
 }
