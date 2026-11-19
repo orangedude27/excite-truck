@@ -519,7 +519,7 @@ void fn_8020FE90(void) {
     lbl_8055B658 = resolvedTrack;
 }
 
-static long clamp_delta(long value, long limit) {
+static inline long clamp_delta(long value, long limit) {
     value &= ((-value & ~value) >> 31);
     if (value < limit) limit = value;
     return limit;
