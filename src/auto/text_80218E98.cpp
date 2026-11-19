@@ -1904,21 +1904,22 @@ extern "C" void *fn_8021B0CC(void *obj, s32 x, s32 y, s32 valuePtr, s32 rangeMin
 }
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void fn_8021B134(void *arg0) {
-    register s32 *p = *(s32 **)((u8 *)arg0 + 0x254);
-    s32 increment = *(s32 *)((u8 *)arg0 + 0x260);
-    s32 value = *p;
+extern "C" /* Step the indexed counter at +0x254 by +0x260 and wrap or clamp it to [+0x258, +0x25C) based on whether the range spans exactly two values. */
+void fn_8021B134(void *arg0) {
+    register s32 *counterPtr = *(s32 **)((u8 *)arg0 + 0x254);
+    s32 step = *(s32 *)((u8 *)arg0 + 0x260);
+    s32 value = *counterPtr;
     s32 end;
     s32 start;
     start = *(s32 *)((u8 *)arg0 + 0x258);
     end = *(s32 *)((u8 *)arg0 + 0x25C);
-    *p = value + increment;
+    *counterPtr = value + step;
     u32 t = __cntlzw(end - start - 2);
     s32 *check = *(s32 **)((u8 *)arg0 + 0x254);
     s32 end2 = *(s32 *)((u8 *)arg0 + 0x25C);
-    int flag = t >> 5;
+    int wrapMode = t >> 5;
     if (*check >= end2) {
-        if (flag)
+        if (wrapMode)
             *check = *(s32 *)((u8 *)arg0 + 0x258);
         else
             *check = end2 - 1;
@@ -1927,7 +1928,7 @@ extern "C" void fn_8021B134(void *arg0) {
         s32 *check2 = *(s32 **)((u8 *)arg0 + 0x254);
         s32 start2 = *(s32 *)((u8 *)arg0 + 0x258);
         if (*check2 < start2) {
-            if (flag)
+            if (wrapMode)
                 *check2 = *(s32 *)((u8 *)arg0 + 0x25C) - 1;
             else
                 *check2 = start2;
