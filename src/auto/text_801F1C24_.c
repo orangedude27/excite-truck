@@ -1753,6 +1753,7 @@ void fn_801F4284(void *unused, void *arg1) {
     }
 }
 
+/* Empty stub. */
 void fn_801F4330(void) {
 
 }
