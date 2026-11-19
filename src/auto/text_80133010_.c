@@ -192,18 +192,21 @@ void fn_801331C4(int arg0,int arg1,float *arg2) {
 __declspec(section ".sdata") extern const char lbl_80559B5C[];
 #pragma push
 #pragma processor 750
-int fn_8013323C(int arg0, int arg1, float arg2) {
+int fn_8013323C(int section, int key, float value) {
     extern float lbl_805612D0;
     extern int sprintf(char *, const char *, ...);
-    void *sp8;
     int intValue;
-    fn_80133E10(&sp8, arg0, arg1);
-    intValue = (int)arg2;
-    *(float *)((char *)sp8 + 0x10) = arg2;
-    *(unsigned char *)((char *)sp8 + 8) = lbl_805612D0 != arg2;
-    *(int *)((char *)sp8 + 0x0C) = intValue;
-    sprintf((char *)sp8 + 0x14, lbl_80559B5C, arg2);
-    *(int *)sp8 = 4;
+    char *entryData;
+    char *result;
+    fn_80133E10((void **)&entryData, section, key);
+    intValue = (int)value;
+    *(float *)(entryData + 0x10) = value;
+    *(unsigned char *)(entryData + 8) = lbl_805612D0 != value;
+    *(int *)(entryData + 0xC) = intValue;
+    sprintf(entryData + 0x14, lbl_80559B5C, value);
+    result = entryData;
+    *(int *)result = 4;
+    return (int)result;
 }
 #pragma pop
 extern int fn_80133348(int, int, int);
@@ -420,6 +423,7 @@ check_invalid:
 }
 #pragma dont_inline reset
 
+#pragma dont_inline on
 int fn_801338D8(const char *arg0) {
     char *p = fn_801337E4((char *)arg0);
     unsigned char b = *p;
