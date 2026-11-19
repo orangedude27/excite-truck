@@ -135,9 +135,11 @@ void fn_801DB340(int userData) { fn_801DB13C(userData - 4); }
 
 #pragma auto_inline off
 #pragma dont_inline on
-int fn_801DB348(int arg0, int arg1, float *arg2, int *arg3) {
+int fn_801DB348(int arg0, int arg1, float *arg2, int *arg3, void *arg4) {
     int width, height;
     float *data;
+    int result;
+    (void)arg4;
     if (arg3 != 0) {
         *arg3 = 0;
     }
@@ -145,9 +147,11 @@ int fn_801DB348(int arg0, int arg1, float *arg2, int *arg3) {
     height = lbl_80446F08[1];
     data = (float *)lbl_80446F08[2];
     arg0 &= width - 1;
-    arg1 = (arg1 & (height - 1)) * width;
+    arg1 &= height - 1;
+    arg1 *= width;
     *arg2 = data[arg0 + arg1];
-    return 1;
+    result = 1;
+    return result;
 }
 #pragma dont_inline reset
 #pragma auto_inline reset
@@ -434,6 +438,7 @@ int fn_801DC9B0(void) {
 #pragma scheduling on
 
 #pragma paired_single reset
+/* Release a resource reference (tail-calls the resource manager's release path). */
 void fn_801DCA5C(void) {
     fn_8012C4D8();
 }
@@ -644,9 +649,9 @@ float fn_801DCF0C(void) {
 #pragma scheduling on
  extern double fabs(double);
  extern double lbl_80562B78;
- #pragma push
- #pragma processor 750
- #pragma use_lmw_stmw off
+#pragma paired_single off
+#pragma opt_common_subs on
+#pragma scheduling invalid_target
 float fn_801DCF48(void *arg0, float farg0, float farg1) {
     extern float lbl_80562B84;
     extern float lbl_80562BBC;
@@ -778,7 +783,6 @@ float fn_801DCF48(void *arg0, float farg0, float farg1) {
 done:
     return var_f31;
 }
-#pragma pop
 extern float lbl_80558DC4[];
 #pragma push
 #pragma processor 750
@@ -981,9 +985,8 @@ int fn_801DDA84(int unused, int *out, int max, float x, float z, float thr) {
     GroundDesc *ground = (GroundDesc *)lbl_8055E990;
     int ix, iz, qx, qz, tileX, tileZ, remX, remZ;
     unsigned short tile;
-    int count, idx;
+    int count, idx, oi;
     char *node, *map;
-    float bias = (float)lbl_80562B78;
     if (ground->tiled == 0) return 0;
     x = (x + ground->offsetX) * ground->scaleX;
     z = (z + ground->offsetZ) * ground->scaleZ;
@@ -996,21 +999,27 @@ int fn_801DDA84(int unused, int *out, int max, float x, float z, float thr) {
     tileZ = qz - lbl_8055E9A0;
     remX = ix - qx * 32;
     remZ = iz - qz * 32;
-    if (tileX < 0 || tileZ < 0 || tileX >= 0x60 || tileZ >= 0x60) return 0;
+    if (tileX < 0 || tileZ < 0) return 0;
+    if (tileX >= 0x60 || tileZ >= 0x60) return 0;
     tile = ((unsigned short (*)[0x60])lbl_80442708)[tileX][tileZ];
-    if (tile == 0xFFFF) return 0;
-    node = (char *)ground->nodes + tile * 0x894;
-    if ((unsigned long)node == 0) return 0;
+    if (tile == 0xFFFF) {
+        node = 0;
+    } else {
+        node = (char *)ground->nodes + tile * 0x894;
+    }
+    if (node == 0) return 0;
     idx = *(int *)(node + 0x890);
     count = 0;
+    oi = 0;
     if (idx < 0) return 0;
     map = (char *)ground->layers + idx * 0x810;
     while (1) {
         GroundLayer *layer = (GroundLayer *)map;
-        float h = (float)fabs(layer->baseHeight + layer->heightScale * ((float)layer->samples[remX][remZ] - bias));
-        if (h < thr && count < max) {
-            out[count] = *(int *)(map + 0x808);
+        float h = (float)fabs(layer->baseHeight + layer->heightScale * (float)layer->samples[remX][remZ]);
+        if (thr > h && count < max) {
+            *(int *)((char *)out + oi) = *(int *)(map + 0x808);
             count++;
+            oi += 4;
         }
         idx = layer->next;
         if (idx < 0) break;
