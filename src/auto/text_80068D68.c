@@ -20993,39 +20993,40 @@ void *l2cu_build_header(u16 arg0, u8 arg1, u8 arg2, s32 arg3) {
 }
 
 extern char lbl_80319158[];
-void l2cu_send_peer_cmd_reject(void *arg0, u16 arg1, u8 arg2, u16 arg3, u16 arg4) {
-    u16 size;
-    void *packet;
+/* Send an L2CAP Command Reject to a peer with the given reason and optional data fields. */
+void l2cu_send_peer_cmd_reject(void *p_lcb, u16 reason, u8 ident, u16 data1, u16 data2) {
+    u16 dataLen;
+    void *p_buf;
     u8 *p;
 
-    if (arg1 == 1) {
-        size = 2;
-    } else if (arg1 == 2) {
-        size = 4;
+    if (reason == 1) {
+        dataLen = 2;
+    } else if (reason == 2) {
+        dataLen = 4;
     } else {
-        size = 0;
+        dataLen = 0;
     }
 
-    packet = ((void *(*)(u16, u16, u8, s32))l2cu_build_header)(
-        *(u16 *)((u8 *)arg0 + 0x28), size + 2, 1, arg2);
-    if (packet == 0) {
+    p_buf = ((void *(*)(u16, u16, u8, s32))l2cu_build_header)(
+        *(u16 *)((u8 *)p_lcb + 0x28), dataLen + 2, 1, ident);
+    if (p_buf == 0) {
         if (lbl_803C4040[0] >= 2) {
             fn_8007093C(0x80001, lbl_80319158);
         }
     } else {
-        ((u8 *)packet)[0x14] = arg1;
-        ((u8 *)packet)[0x15] = arg1 >> 8;
-        p = (u8 *)packet + 0x16;
-        if (size >= 2) {
-            p[0] = arg3;
-            p[1] = arg3 >> 8;
+        ((u8 *)p_buf)[0x14] = reason;
+        ((u8 *)p_buf)[0x15] = reason >> 8;
+        p = (u8 *)p_buf + 0x16;
+        if (dataLen >= 2) {
+            p[0] = data1;
+            p[1] = data1 >> 8;
             p += 2;
         }
-        if (size >= 4) {
-            p[0] = arg4;
-            p[1] = arg4 >> 8;
+        if (dataLen >= 4) {
+            p[0] = data2;
+            p[1] = data2 >> 8;
         }
-        ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(arg0, 0, packet);
+        ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(p_lcb, 0, p_buf);
     }
 }
 
