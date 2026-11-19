@@ -914,8 +914,9 @@ static inline void SetTagProcessorLevel1_800D77DC(u8 *self, s32 arg1) {
 static inline void SetTagProcessorChild_800D6CA0(u8 *child, s32 arg1) { fn_800D6CA0((s32)child, arg1); }
 /* SetTagProcessorImpl: set the tag processor on a text-box pane, then recurse into its children. */
 static inline void SetTagProcessorImpl_800D6CA0(u8 *pane, s32 arg1) {
-    if (u8 *cast = DynCast_800D77DC(pane)) *(s32 *)(cast + 0xF4) = arg1;
-    for (ChildIter_800D77DC it = ChildBegin_800D77DC(pane); ChildNotEqual_800D77DC(it, ChildEnd_800D77DC(pane)); ChildNext_800D77DC(it)) {
+    u8 *self = pane;
+    if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
+    for (ChildIter_800D77DC it = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it)) {
         SetTagProcessorChild_800D6CA0(ChildPane_800D77DC(it), arg1);
     }
 }
