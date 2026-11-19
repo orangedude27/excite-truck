@@ -1740,8 +1740,7 @@ extern "C" s32 fn_801628E8(void *arg0) {
         virtual void v0();
         virtual void call(char *);
     };
-    f32 *pf = (f32 *)((u8 *)arg0 + 0x8C);
-    if (*pf > lbl_8056185C) {
+    if (*(f32 *)((u8 *)arg0 + 0x8C) > 0.5f) {
         ((Dummy *)lbl_8055E2E0)->call(lbl_8032F698);
         fn_801476C4();
     }
