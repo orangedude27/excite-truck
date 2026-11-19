@@ -37,6 +37,7 @@ void fn_801D14EC(void) {
 
 extern float lbl_80562A58;
 void fn_801D1540();
+/* Tail-call trampoline into fn_801D1540. */
 void fn_801D153C(void) {
     fn_801D1540();
 }
@@ -75,8 +76,8 @@ void fn_801D1540(Obj801D *p, int idx) {
     {
     float a, b, x, y, t, u, z;
     float zero = lbl_80562A58, dscale = lbl_80562A68, cscale = lbl_80562A64, last = lbl_80562A60, step = lbl_80562A5C;
-    unsigned char *prev = (unsigned char *)p;
     Rec801D *r = p->rec;
+    unsigned char *prev = (unsigned char *)p;
     int count;
     int i;
     for (i = 0; i < (count = p->max); i++, r++, prev += 16) {
@@ -146,7 +147,6 @@ void fn_801D183C(int arg0, int idx) {
     int cur;
     int tgt;
     float x;
-    float step = lbl_80562A7C;
     float t1;
     p->f4 = lbl_80562A58;
     if (in == -10) {
@@ -163,15 +163,21 @@ void fn_801D183C(int arg0, int idx) {
         p->cur = cur;
     } else if (cur == p->target) {
         Rec801D *r;
-        float lo, v, k;
+        float lo, v, k, m, a, b, div, c, d;
         if (cur < 1) {
             cur = 1;
             p->target = cur;
         }
         r = &p->rec[cur - 1];
+        m = *(float *)(cfg + 0x25D8);
+        a = lbl_80562A6C;
         k = *(float *)(cfg + 0x25CC);
-        v = (k + lbl_80562A70 * (*(float *)(cfg + 0x25D8) * lbl_80562A6C - k)) / p->div;
-        lo = r->d + g * (r->c - r->d);
+        b = lbl_80562A70;
+        div = p->div;
+        c = r->c;
+        d = r->d;
+        v = (k + b * (a * m - k)) / div;
+        lo = d + g * (c - d);
         if (cur > 0) {
             if (v > r->b) {
                 if (cur < p->max) cur++;
@@ -193,9 +199,9 @@ void fn_801D183C(int arg0, int idx) {
         }
     }
     tgt = p->target;
-    p->timer2 = p->timer2 + step;
+    p->timer2 = p->timer2 + lbl_80562A7C;
     if (tgt != cur) {
-        t1 = p->timer1 + step;
+        t1 = p->timer1 + lbl_80562A7C;
         p->timer1 = t1;
         if (cur >= 1 && tgt >= 1 && t1 > lbl_80562A80) {
             p->prev = tgt;
