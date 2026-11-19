@@ -2143,38 +2143,41 @@ void *fn_8014E4BC(void *arg0) {
 extern s32 fn_801DF074(s32, s32);
 #pragma cplusplus on
 #pragma processor 750
-extern "C" void fn_8014E61C(s32 arg0, s32 arg1, f32 arg2) {
+extern "C" void fn_8014E61C(s32 playerIndex, s32 eventType, f32 eventValue) {
     extern void *lbl_8055E268;
     extern s32 fn_801DF074(s32, s32);
-    struct Entry8014E61C {
+    struct RaceEntry {
         u8 pad[0xC0];
     };
-    struct Mgr8014E61C {
+    struct BetaraceManager {
         u8 pad[0x9E4];
-        Entry8014E61C entries[8];
+        RaceEntry entries[8];
     };
-    class V8014E61C {
+    class RaceEntryHandler {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual void v8();
-        virtual void call(void *, s32, f32);
+        virtual void Dispatch(void *, s32, f32);
     };
     u8 *entry;
-    f32 value;
-    void *other;
-    V8014E61C *obj;
+    f32 savedValue;
+    void *playerObject;
+    RaceEntryHandler *handler;
+    /* Dispatch a per-player race event to the matching betarace entry: for
+     * events 1/6/8 stamp a 1.5s timer field, show popup 1 when event 1 fires
+     * for a player in state 0x50, then forward the event to the entry's handler. */
     if (lbl_8055E268 != 0) {
-        entry = (u8 *)&((Mgr8014E61C *)lbl_8055E268)->entries[arg0];
+        entry = (u8 *)&((BetaraceManager *)lbl_8055E268)->entries[playerIndex];
         if (entry != 0) {
-            value = arg2;
-            switch (arg1) {
+            savedValue = eventValue;
+            switch (eventType) {
             case 8:
                 *(f32 *)(entry + 0x4C) = lbl_80561688;
                 break;
             case 1:
                 *(f32 *)(entry + 0x44) = lbl_80561688;
-                if (*(s32 *)((u8 *)fn_8017960C(arg0) + 0x1F0) == 0x50)
+                if (*(s32 *)((u8 *)fn_8017960C(playerIndex) + 0x1F0) == 0x50)
                     fn_801DF074(1, 1);
                 break;
             case 6:
@@ -2183,9 +2186,9 @@ extern "C" void fn_8014E61C(s32 arg0, s32 arg1, f32 arg2) {
             case 0: case 2: case 3: case 4: case 5: case 7: case 9:
                 break;
             }
-            other = fn_8017960C(arg0);
-            obj = *(V8014E61C **)(entry + 0x10);
-            obj->call(other, arg1, value);
+            playerObject = fn_8017960C(playerIndex);
+            handler = *(RaceEntryHandler **)(entry + 0x10);
+            handler->Dispatch(playerObject, eventType, savedValue);
         }
     }
 }
