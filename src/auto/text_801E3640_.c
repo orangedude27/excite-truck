@@ -22,6 +22,10 @@ typedef struct {
     float u, v;
 } TrailPt;
 
+typedef struct {
+    float x, y, z;
+} Vec3;
+
 extern int lbl_8055EA6C;
 extern int lbl_8055EA64;
 extern int fn_802CAC54(int);
@@ -193,8 +197,9 @@ void fn_801E3CB4(void *arg0, void *arg1, int arg2, float farg0) {
     float scale;
     float mag;
     float s;
-    int i;
     int result;
+    TrailPt *p;
+    int i;
 
     fn_801E3640(arg1, vec);
     scale = lbl_80562D0C * farg0;
@@ -235,19 +240,25 @@ void fn_801E3CB4(void *arg0, void *arg1, int arg2, float farg0) {
     pts[4].y = vec[7] + vec[4] * lbl_80562CF8;
     pts[4].z = vec[8] + vec[5] * lbl_80562CF8;
     result = fn_801E36F0(arg2);
-    for (i = 0; i < 5; i++) {
-        pts[i].id = arg2;
-        pts[i].u = lbl_80562D10 * i;
-        pts[i].v = lbl_80562D10 * i;
-        pts[i].x = pts[i].x + ((float *)arg0)[0];
-        pts[i].y = pts[i].y + ((float *)arg0)[1];
-        pts[i].z = pts[i].z + ((float *)arg0)[2];
+    p = pts;
+    for (i = 0; i < 5; i++, p++) {
+        float ax = ((float *)arg0)[0];
+        float ay = ((float *)arg0)[1];
+        float az = ((float *)arg0)[2];
+        float u = lbl_80562D10 * i;
+        float v = lbl_80562D10 * i;
+        p->id = arg2;
+        p->u = u;
+        p->v = v;
+        p->x = p->x + ax;
+        p->y = p->y + ay;
+        p->z = p->z + az;
     }
     pts[0].id = result;
     {
-        unsigned short *p = lbl_802F99E8;
+        unsigned short *up = lbl_802F99E8;
         for (i = 0; i < 6; i++) {
-            frame[i] = *p++;
+            frame[i] = *up++;
         }
     }
     fn_802C8BD0(lbl_8055EA6C);
@@ -258,9 +269,9 @@ void fn_801E3CB4(void *arg0, void *arg1, int arg2, float farg0) {
 #pragma scheduling reset
 void fn_801E3FC8(void *arg0, float farg0) {
     f32 sp[12];
+    float zero;
     float tx;
     float tz;
-    float zero;
     float s;
     float ty;
     int handle;
@@ -287,18 +298,22 @@ void fn_801E3FC8(void *arg0, float farg0) {
     sp[11] = tz;
     fn_802C744C(handle, sp);
 }
+#pragma push
+#pragma processor 750
 int fn_801E4040(void *arg0, void *arg1, int arg2, int arg3, float farg0) {
-    float *a;
+    float *a = (float *)arg0;
     float *b = (float *)arg1;
     float delta[3];
     float matrix[4][3];
     float mag;
     float scale;
-    float tx, ty, tz;
-    int a2, a3;
-    delta[0] = b[0] - ((float *)arg0)[0];
-    delta[1] = b[0x1] - ((float *)arg0)[1];
-    delta[2] = b[2] - ((float *)arg0)[2];
+    float tx;
+    float ty;
+    float tz;
+
+    delta[0] = b[0] - a[0];
+    delta[1] = b[1] - a[1];
+    delta[2] = b[2] - a[2];
     fn_801E3640(delta, &matrix[0][0]);
     matrix[2][0] = delta[0] * lbl_80562D08;
     matrix[2][1] = delta[1] * lbl_80562D08;
@@ -317,17 +332,15 @@ int fn_801E4040(void *arg0, void *arg1, int arg2, int arg3, float farg0) {
         matrix[1][1] *= scale;
         matrix[1][2] *= scale;
     }
-    a = (float *)arg0;
-    a2 = arg2;
-    a3 = arg3;
     tx = a[0] + matrix[2][0];
     ty = a[1] + matrix[2][1];
     tz = a[2] + matrix[2][2];
     matrix[3][0] = tx;
     matrix[3][1] = ty;
     matrix[3][2] = tz;
-    fn_801E370C(&matrix[0][0], a2, a3);
+    fn_801E370C(&matrix[0][0], arg2, arg3);
 }
+#pragma pop
 extern float lbl_8055EA68, lbl_80562CF4;
 extern int fn_802C744C(int, float *);
 extern int fn_801E4040(void *, void *, int, int, float);
