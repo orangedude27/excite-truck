@@ -5091,27 +5091,24 @@ extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *arg0) {
     index = p->index;
     old = p->position;
     p->position = (index + 1) << p->shift;
-    {
-        VFiPFEntIter *iter = (VFiPFEntIter *)arg0;
-        if (fn_800AB378(p, 0) != 0) {
-            iter->position = old;
-            iter->index = index;
-            return 1;
-        }
-        if (iter->sector == 0xFFFFFFFFu)
-            goto short_one;
-        if (iter->sector != 0xFFFFFFFFu)
-            goto read_entry;
-        status = 0x10;
-        goto finish_status;
-read_entry:
-        result = fn_800B5324(iter->volume, iter->entry, iter->sector, iter->sectorOff, 0x20, &sp8, 0);
-        status = 0x11;
-        if (sp8 == 0x20)
-            status = result;
-finish_status:
-        return status != 0;
+    if (fn_800AB378(arg0, 0) != 0) {
+        p->position = old;
+        p->index = index;
+        return 1;
     }
+    if (p->sector == 0xFFFFFFFFu)
+        goto short_one;
+    if (p->sector != 0xFFFFFFFFu)
+        goto read_entry;
+    status = 0x10;
+    goto finish_status;
+read_entry:
+    result = fn_800B5324(p->volume, p->entry, p->sector, p->sectorOff, 0x20, &sp8, 0);
+    status = 0x11;
+    if (sp8 == 0x20)
+        status = result;
+finish_status:
+    return status != 0;
 short_one:
     return 1;
 return_zero:
@@ -21686,7 +21683,7 @@ extern "C" u8 fn_800D3840(s32 arg0) {
 }
 
 extern "C" u8 (*lbl_8055DDD8)(const char *);
-extern "C" const char lbl_8031EC50[];
+extern "C" const char lbl_8031EC50[0x200];
 extern "C" const char lbl_8031ED84[];
 // Fix note: use post-decrement for the delimiter count and signed newline comparison to match the original loop.
 extern "C" char *fn_800D3944(char *str, s32 count, u32 delim) {
