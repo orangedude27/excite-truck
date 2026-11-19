@@ -604,8 +604,12 @@ int fn_802093FC(void) {
     return 0;
 }
 
-/* +0x54 Set3D: the voice backend has no implementation either and just reports
- * "SndVoice::Set3D" (fn_8020BC98); the null backend does not even report. */
+/* "Null Sound" (the null mixer backend's Sound object, vtable lbl_8033C0E8),
+ * vtable slot +0x54 Set3D: hand the sound its 3D placement.  A null sound is
+ * bookkeeping only -- a vtable, a timer and a state word -- so there is no
+ * position to store.  The voice backend never implemented the method either:
+ * its SndVoice slot +0x54 (fn_8020BC98) only reports "SndVoice::Set3D", while
+ * the null backend does not even report. */
 void fn_80209404(void) {
 
 }
