@@ -578,6 +578,7 @@ int fn_8024CC54(void *out, void *arg1, int arg2) {
     }
     return 1;
 }
+#pragma cplusplus reset
 extern char lbl_80343FC4[];
 extern char lbl_80343FF0[];
 #pragma scheduling reset
@@ -892,13 +893,18 @@ extern char lbl_8055C098[1], lbl_8055C0A0[1], lbl_8055C0A8[1];
 #pragma use_lmw_stmw off
 void fn_8024D810(void *arg0) {
     float x, y;
-    float dx, dy, cx, cy, e;
+    float dy, dx, e, cx, cy;
     int row, col, base;
+    int w, col0, h, row0;
     fn_80230C30(&x, &y, *(int *)((char *)arg0 + 4), *(int *)((char *)arg0 + 8));
-    dx = (float)*(int *)((char *)arg0 + 0xC) / lbl_80563948;
-    dy = (float)*(int *)((char *)arg0 + 0x10) * lbl_80563944;
-    cx = x + dx * (float)(*(int *)((char *)arg0 + 0x64) + 1);
-    cy = y - dy * (float)(*(int *)((char *)arg0 + 0x68) + 1);
+    w = *(int *)((char *)arg0 + 0xC);
+    col0 = *(int *)((char *)arg0 + 0x64);
+    h = *(int *)((char *)arg0 + 0x10);
+    row0 = *(int *)((char *)arg0 + 0x68);
+    dx = (float)w / lbl_80563948;
+    cx = x + dx * (float)(col0 + 1);
+    dy = (float)h * lbl_80563944;
+    cy = y - dy * (float)(row0 + 1);
     e = lbl_80563950;
     fn_80230924((void *)0xFFAF7F00, cx, cy, cx + dx, cy - e, lbl_80563940);
     fn_80230924((void *)0xFFAF7F00, cx, cy, cx + dx, e + (cy - dy), lbl_80563940);
