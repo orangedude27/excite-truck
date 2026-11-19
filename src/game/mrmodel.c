@@ -732,60 +732,50 @@ struct MasterList {
 } while (0)
 #pragma scheduling on
 void fn_802C6080(void) {
-    register struct SubList *e;
+    struct SubList { int count; int capacity; void *buf; };
+    register struct SubList *e64;
     register struct SubList *e58;
     register struct SubList *e7c;
     register char *base;
     register int offset;
     register int i;
-    register int zero;
+    int zero;
     void *ptr;
-
-    zero = 0;
     base = (char *)lbl_804C1338;
-    e = (struct SubList *)(base + 0x64);
-    for (i = 0, offset = 0; i < *(int *)(base + 0x64); i++, offset += 0x10) {
-        if (*(int *)((char *)e->buf + offset) > 0) {
+    e64 = (struct SubList *)(base + 0x64);
+    for (i = 0, offset = 0; i < e64->count; i++, offset += 0x10) {
+        if (*(int *)((char *)e64->buf + offset) > 0) {
             ((void (*)(const char *, ...))fn_802E30C8)(lbl_8034B258, i);
             ((void (*)(const char *, ...))fn_802E30C8)(lbl_8034B294, ((int (*)(int))fn_802C7A10)(i));
         }
     }
-
     e7c = (struct SubList *)(base + 0x7C);
     fn_80128670(e7c->buf);
     ptr = *(void **)(base + 0x70 + 8);
     e7c->buf = 0;
     e7c->capacity = 0;
     *(int *)(base + 0x7C) = 0;
-    if (ptr != 0) {
-        fn_80128670((char *)ptr - 0x10);
-    }
-
+    if (ptr != 0) fn_80128670((char *)ptr - 0x10);
     e58 = (struct SubList *)(base + 0x58);
+    zero = 0;
     ptr = e58->buf;
     *(int *)(base + 0x70) = zero;
     *(void **)(base + 0x70 + 8) = (void *)zero;
     *(int *)(base + 0x70 + 4) = zero;
     fn_80128670(ptr);
-
-    e = (struct SubList *)base;
+    ptr = ((struct SubList *)(base + 0))->buf;
     e58->buf = (void *)zero;
-    ptr = e->buf;
     e58->capacity = zero;
     *(int *)(base + 0x58) = zero;
     fn_80128670(ptr);
-
-    e->buf = (void *)zero;
-    ptr = *(void **)(base + 0x64 + 8);
-    e->capacity = zero;
+    ((struct SubList *)(base + 0))->buf = (void *)zero;
+    ptr = e64->buf;
+    ((struct SubList *)(base + 0))->capacity = zero;
     *(int *)base = zero;
-    if (ptr != 0) {
-        fn_80128670((char *)ptr - 0x10);
-    }
-
-    *(int *)(base + 0x64) = 0;
-    *(void **)(base + 0x64 + 8) = 0;
-    *(int *)(base + 0x64 + 4) = 0;
+    if (ptr != 0) fn_80128670((char *)ptr - 0x10);
+    e64->count = 0;
+    e64->buf = 0;
+    e64->capacity = 0;
 }
 
 extern void fn_802C6A84(s32 *value, s32 delta);
@@ -924,47 +914,49 @@ void fn_802C6C30(void) {}
 void *fn_802C6C34(int arg0) { return (void *)fn_802C53A8(arg0); }
 
 #pragma scheduling invalid_target
-void fn_802C6C38(int arg0) {
-    u8 *manager = (u8 *)fn_802C5390(arg0);
-    s32 outerOff, innerOff, i;
-    u8 *innerInfo;
-    s32 j;
-    u8 *outerInfo, *outerTable, *innerTable, *item;
+void fn_802C6C38(int modelId) {
+    u8 *instance = (u8 *)fn_802C5390(modelId);
+    s32 outerOff, innerOff, outerIndex;
+    u8 *group;
+    s32 innerIndex;
+    u8 *groupList, *outerTable, *elementTable, *element;
     u8 *node;
 
-    if (--*(s32 *)manager <= 0) {
-        i = 0;
+    /* Release the instance's display nodes and clear its group links when its
+     * refcount drops to zero. */
+    if (--*(s32 *)instance <= 0) {
+        outerIndex = 0;
         outerOff = 0;
         goto outer_check;
 
     outer_setup:
-        outerInfo = *(u8 **)(manager + 4);
-        outerTable = *(u8 **)(outerInfo + 0xC);
-        innerInfo = *(u8 **)(outerTable + outerOff);
-        j = 0;
+        groupList = *(u8 **)(instance + 4);
+        outerTable = *(u8 **)(groupList + 0xC);
+        group = *(u8 **)(outerTable + outerOff);
+        innerIndex = 0;
         innerOff = 0;
         goto inner_check;
 
     inner_body:
-        innerTable = *(u8 **)(innerInfo + 4);
-        item = *(u8 **)(innerTable + innerOff);
-        node = *(u8 **)(item + (*(s32 *)(manager + 8) << 2) + 0x14);
-        *(u8 **)(item + (*(s32 *)(manager + 8) << 2) + 0x14) = 0;
+        elementTable = *(u8 **)(group + 4);
+        element = *(u8 **)(elementTable + innerOff);
+        node = *(u8 **)(element + (*(s32 *)(instance + 8) << 2) + 0x14);
+        *(u8 **)(element + (*(s32 *)(instance + 8) << 2) + 0x14) = 0;
         fn_802C5BA0((int *)node);
         innerOff += 4;
-        j++;
+        innerIndex++;
 
     inner_check:
-        if (j < *(s32 *)innerInfo) goto inner_body;
+        if (innerIndex < *(s32 *)group) goto inner_body;
         outerOff += 4;
-        i++;
+        outerIndex++;
 
     outer_check:
-        outerInfo = *(u8 **)(manager + 4);
-        if (i < *(s32 *)(outerInfo + 8)) goto outer_setup;
+        groupList = *(u8 **)(instance + 4);
+        if (outerIndex < *(s32 *)(groupList + 8)) goto outer_setup;
 
-        *(void **)(manager + 4) = 0;
-        *(void **)(manager + 0xC) = 0;
+        *(void **)(instance + 4) = 0;
+        *(void **)(instance + 0xC) = 0;
     }
 }
 /* mrModelUnload: release a model instance handle, or warn if MODEL_INVALID (-1). */
