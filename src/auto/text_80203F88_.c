@@ -116,6 +116,12 @@ int fn_8020402C(void) {
     return 0;
 }
 
+/* Empty entry point of the terrain/solid (SolBuilder/StaticGOB) module -- the unit
+ * that owns the stage init/shutdown hooks fn_8020401C/fn_80204020, the "setup
+ * already active" guard fn_8020402C and the screen-ray ground probe fn_80204054.
+ * Unlike its neighbours (fn_8020401C/20/2C/38/3C are all called from the world
+ * setup and draw paths) nothing in the game calls this one or takes its address,
+ * so it is one of the module's defaults that is linked in but never reached. */
 void fn_80204034(void) {
 
 }
