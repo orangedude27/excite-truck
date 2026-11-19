@@ -42,11 +42,9 @@ static inline void matVecAlias_8018(Vec_8018 *dest, const float *m, const Vec_80
         dest->y = ty;
         dest->z = tz;
     } else {
-        const float *s = (const float *)src;
-        float *d = (float *)dest;
-        d[0] = m[0] * s[0] + m[3] * s[1] + m[6] * s[2];
-        d[1] = m[1] * s[0] + m[4] * s[1] + m[7] * s[2];
-        d[2] = m[2] * s[0] + m[5] * s[1] + m[8] * s[2];
+        dest->x = m[0] * src->x + m[3] * src->y + m[6] * src->z;
+        dest->y = m[1] * src->x + m[4] * src->y + m[7] * src->z;
+        dest->z = m[2] * src->x + m[5] * src->y + m[8] * src->z;
     }
 }
 
