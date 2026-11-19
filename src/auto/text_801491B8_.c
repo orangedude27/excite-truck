@@ -3703,6 +3703,7 @@ void fn_801533E8(void *arg0, f32 *arg1) {
     fn_802C744C(lbl_80559ED8, mat.m);
     fn_802C744C(lbl_80559ED4, values.m);
 }
+#pragma dont_inline on
 
 #pragma pop
 /* Initialises a GX light struct built on the caller's stack.  This build links an
