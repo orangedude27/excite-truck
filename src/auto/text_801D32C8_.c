@@ -85,8 +85,8 @@ extern void fn_8017A57C(void *);
 extern void fn_8017A580(void *);
 extern void fn_8017B164(void *);
 
+/* No-op stub. */
 void fn_801D32C8(void) {
-
 }
 
 void fn_801D32CC(void) {
