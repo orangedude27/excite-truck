@@ -816,7 +816,7 @@ s32 *fn_80176C0C(register s32 *arg0, s32 *arg1) {
     memcpy(arg0 + 1, arg1, length);
     return arg0;
 }
-#pragma scheduling on
+#pragma pop
 #pragma scheduling on
 #pragma dont_inline on
 /* Promotes the pending PhysicsCommand (sPendingCommand / lbl_804303D4) into the active command slot (lbl_804303C8), resets the pending command to PHYS_MODE_NONE, runs physics world reset (fn_80179320), and advances the physics state machine (lbl_8055E3F4) to state 3. */
