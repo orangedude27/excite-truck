@@ -591,7 +591,11 @@ void fn_802093F4(void) {
 
 }
 
-void fn_802093F8(void) { /* +0x34 set volume  (voice: fn_8020BC58, VoiceSnd+0x1C) */
+/* Null Sound method, slot +0x34 of the "Null Sound" vtable (lbl_8033C0E8): set the
+ * sound's volume.  The voice backend's slot +0x34 (fn_8020BC58) stores it in
+ * VoiceSnd+0x1C, which its mixer tick multiplies with the sound group's volume to
+ * get the voice gain; a null sound plays nothing, so it ignores the value. */
+void fn_802093F8(void) {
 
 }
 
