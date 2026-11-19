@@ -73,6 +73,29 @@ struct FxSpawnQueue {
 /* the live instance count: word 0x50 of the queue, right after the 16 slots */
 #define FX_SPAWN_COUNT (lbl_804B32B8[0x50])
 
+/* One spark in a spark emitter's pool: fn_8028BED4 spawns them, fn_8028BFEC
+   ages them (dropping the ones older than the emitter's life) and fn_8028C11C
+   draws each as a short streak from its position along its velocity. */
+struct Spark {
+    f32 x, y, z;    /* +0x00 world position */
+    f32 vx, vy, vz; /* +0x0C velocity */
+    f32 born;       /* +0x18 game time the spark was spawned at */
+};
+
+/* Front of a spark emitter object ("short sparks" / "long sparks", both made
+   by fn_8028A664 through fn_8028BB68; 0xDC bytes in all).  What follows these
+   fields is the per-viewpoint transform snapshot fn_8028BC88 clears and
+   fn_8028BD60 refreshes every frame. */
+struct SparkSystem {
+    struct Spark *spark; /* +0x00 pool of sparks, from the "sparks" heap tag */
+    s32 spawned;         /* +0x04 sparks written so far; bound of the draw loop */
+    s32 live;            /* +0x08 sparks the update pass scans (capacity at first) */
+    f32 life;            /* +0x0C seconds a spark lives */
+    f32 invLife;         /* +0x10 1.0/life: turns a spark's age into 0..1 */
+    s32 texture;         /* +0x14 texture handle registered for "spark.tex" */
+    f32 log2Value;       /* +0x18 log2(40/3) */
+};
+
 /* Settings handed to the particle emitter factory fn_8028E2F8; fn_8028E61C
    clears the first 0x8C bytes and fn_8028FD00 copies them into the new
    emitter, which keeps them at the same offsets.  fn_8028E654 reads the same
