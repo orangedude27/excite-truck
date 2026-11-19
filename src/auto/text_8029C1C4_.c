@@ -1651,8 +1651,6 @@ int fn_8029EB54(void *arg0, void *arg1)
   return result;
 }
 
-#pragma push
-#pragma scheduling off
 void fn_8029EC64(void *area, void *arg1, int arg2) {
     struct Locals { float sp8, spC, sp10, sp14, sp18, sp1C; } s;
     float *f = (float *)arg1;
