@@ -283,7 +283,8 @@ extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7PictureFUlUc(
 
 extern "C" s32 IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(void*, u8);
 extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(s32, u8);
-extern "C" void* GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
+struct V2Ret { u32 a, b; };
+extern "C" V2Ret GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(void*, void*, u8, s32, void*, u8);
 struct PicVTable {
     virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
@@ -306,7 +307,7 @@ extern "C" void DrawSelf__Q36nw4hbm3lyt7PictureFRCQ36nw4hbm3lyt8DrawInfo(void* t
     s32 sz;
     u8 color;
     void* cols;
-    void* pos;
+    V2Ret pos;
     if (tex == 0) return;
     ((PicVTable*)this_)->prep();
     color = self[0xCE];
