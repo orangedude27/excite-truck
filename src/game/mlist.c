@@ -101,6 +101,9 @@ int fn_802CCD0C(void *arg0, void *arg1) {
     return stricmp((char *)arg0, (char *)arg1);
 }
 
+#pragma push
+#pragma processor 750
+#pragma scheduling on
 #pragma cplusplus on
 extern "C" int fn_802CCDC4(void ***arg0, void ***arg1) {
     struct Local {
