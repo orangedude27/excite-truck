@@ -186,12 +186,24 @@ void fn_80264098(void *item, int type) {
 }
 #pragma dont_inline off
 
-#pragma push
-#pragma scheduling invalid_target
+#pragma cplusplus on
+extern void *operator new(unsigned long, void *);
 void fn_802640A0(void *arg0) {
-    initCreditsItem((struct CreditsItemInit *)arg0, &lbl_8055C458, 0x7b, 0);
+    struct CreditsMenuItem {
+        void *name;
+        int type;
+        void *data;
+        int a;
+        int b;
+    };
+    struct CreditsMenuItem *item = (struct CreditsMenuItem *)arg0;
+    item->name = &lbl_8055C458;
+    item->type = 0x7b;
+    item->data = 0;
+    item->a = 0;
+    item->b = 0;
 }
-#pragma pop
+#pragma cplusplus reset
 
 #pragma push
 #pragma processor 750
@@ -452,13 +464,13 @@ void fn_80264618(void *obj) {
 #pragma push
 #pragma use_lmw_stmw off
 void *fn_802646D0(void *arg0) {
-#pragma opt_propagation off
     extern int lbl_802FA700[], lbl_80346364[], lbl_80346678[];
     extern char lbl_8055C490[4];
     extern float lbl_80563BFC, lbl_80563C04;
     extern void *fn_8023512C(const char *);
     extern void *fn_8012850C(int, void *);
     struct Desc { int a[15]; };
+    register int *vt = lbl_80346678;
     const struct Desc *src = (const struct Desc *)lbl_802FA700;
     char *p = (char *)arg0;
     int n;
@@ -471,7 +483,7 @@ void *fn_802646D0(void *arg0) {
     d9 = src->a[9]; d10 = src->a[10]; d11 = src->a[11];
     d12 = src->a[12]; d13 = src->a[13]; d14 = src->a[14];
     *(int *)(p+0x14) = 0;
-    *(int **)(p+0) = lbl_80346678;
+    *(int **)(p+0) = vt;
     *(int *)(p+0x18) = d0; *(int *)(p+0x1c) = d1; *(int *)(p+0x20) = d2;
     *(int *)(p+0x24) = d3; *(int *)(p+0x28) = d4; *(int *)(p+0x2c) = d5;
     *(int *)(p+0x30) = d6; *(int *)(p+0x34) = d7; *(int *)(p+0x38) = d8;
@@ -779,6 +791,35 @@ extern "C" void fn_80264FD4(void *obj) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+static inline void fn_80264FE4_loop(char *p, int delta) {
+    char *q = p + delta;
+    float base, intensity, value, limit, zero;
+    int id, offset;
+    char *item;
+    int i, alpha, a;
+    limit = lbl_80563C00;
+    zero = lbl_80563BF0;
+    offset = 0;
+    i = 0;
+    while (i < *(int *)(q + 0xBC)) {
+        item = *(char **)(q + 0xB8) + offset;
+        value = *(float *)(q + 0xD0) * (*(float *)(q + 0xA4) - *(float *)(item + 0x18));
+        if (limit < value) value = limit;
+        value = (value > zero) ? value : zero;
+        alpha = 0xFF;
+        a = (int)(value * (*(float *)(item + 0x18) * *(float *)(q + 0xCC)));
+        a = (a > 0) ? a : 0;
+        if (a < 0xFF) alpha = a;
+        id = *(int *)(item + 0x1C);
+        base = *(float *)(q + 0xAC) + *(float *)(q + 0xB0) * (limit - *(float *)(item + 0x18) * *(float *)(q + 0xC8));
+        intensity = base * fn_80235F64(*(void **)(q + 0xB4), id);
+        fn_80235AFC(*(void **)(q + 0xB4), id, ((unsigned int)alpha << 24) | 0xFFFFFF,
+                    *(float *)item, *(float *)(item + 4), lbl_80563BF0,
+                    base * fn_80235EF0(*(void **)(q + 0xB4), *(int *)(item + 0x1C)), intensity, *(float *)(item + 0x10));
+        offset += 0x20;
+        i++;
+    }
+}
 extern "C" void fn_80264FE4(void *arg0) {
     char *p = (char *)arg0;
     float base, intensity, value, limit, zero;
