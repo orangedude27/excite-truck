@@ -111,6 +111,7 @@ void fn_8023B904(void *arg0, void *dest, s32 flag) {
     s32 *source;
     s32 *target;
     s32 count;
+
     if (flag == 0) {
         local.data = lbl_803413A8;
         ((void (*)(void *, void *))fn_8000BF20)(arg0, &local);
@@ -160,6 +161,7 @@ extern char lbl_80341328[];
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 void fn_8023B9EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    /* Run the single-player event loop ("msingle:do_event()"): initialize a frame context each iteration, enable mirror mode when requested, process/update it, and repeat while active. */
     struct Context {
         u8 pad[0x3E4];
         s32 value;
@@ -176,13 +178,13 @@ void fn_8023B9EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         s32 resource2;
         struct Context context;
     } frame;
-    const char *resource;
-    s32 active = fn_802ECEEC();
-    if (active != 0)
+    const char *eventResource;
+    s32 wasActive = fn_802ECEEC();
+    if (wasActive != 0)
         fn_802ECEC0();
-    resource = lbl_80341314;
+    eventResource = lbl_80341314;
     do {
-        frame.resource = resource;
+        frame.resource = eventResource;
         frame.resource0 = fn_80128314(0);
         frame.resource1 = fn_80128314(1);
         frame.resource2 = fn_80265D58();
@@ -200,12 +202,9 @@ void fn_8023B9EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         fn_8023B8AC((s32)&frame.context);
     } while (fn_80204024() != 0);
     fn_80129AEC(0);
-    if (active != 0)
+    if (wasActive != 0)
         fn_802ECEC4();
 }
-#pragma dont_inline reset
-#pragma use_lmw_stmw reset
-#pragma scheduling on
 void fn_8023BB0C(void) {
     /* Refresh the cached per-driver state for every active driver slot. */
     s32 outA, outC, outB;
