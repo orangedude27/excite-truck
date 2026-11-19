@@ -445,6 +445,7 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017B038(long self, long shouldDe
     return self;
 }
 
+/* Empty stub. */
 void fn_8017B090(void) {
 
 }
