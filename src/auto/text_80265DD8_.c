@@ -2067,14 +2067,15 @@ void fn_8026A2C8(void) {
 }
 
 #pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8026A2CC(int *arg0, int arg1, float arg2) {
-    int a, b, c, d, e;
-    char *p = (char *)lbl_80499080 + arg1 * 0x228 + 0x1a4;
-    int *dst = (int *)p;
+    int e, d, c, b, a;
+    int *dst;
     a = arg0[0];
     b = arg0[1];
     c = arg0[2];
     d = arg0[3];
+    dst = (int *)((char *)lbl_80499080 + arg1 * 0x228 + 0x1a4);
     e = arg0[4];
     dst[0] = a;
     a = arg0[5];
