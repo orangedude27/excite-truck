@@ -1177,8 +1177,9 @@ extern u32 lbl_802ED7A0[];
 extern s32 lbl_8055D484;
 extern s32 lbl_8055D488;
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling off
 void fn_80010D88(f64 farg0, f64 farg1, f64 farg2) {
+    u32 word;
     volatile s32 sp34, sp30;
     volatile f32 sp2C, sp28, sp24, sp20;
     volatile s32 sp1C, sp18;
@@ -1195,7 +1196,6 @@ void fn_80010D88(f64 farg0, f64 farg1, f64 farg2) {
     register f32 temp_f5;
     register f32 temp_f6;
     register f32 temp_f4;
-    u32 word;
 
     index = lbl_8055D4A8;
     if (index < 0xFF) {
