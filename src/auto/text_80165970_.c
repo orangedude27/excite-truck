@@ -377,6 +377,9 @@ void fn_80166098(void) {
 #pragma push
 #pragma dont_inline on
 #pragma cplusplus on
+#pragma processor 750
+#pragma ppc_psq_save off
+#pragma scheduling invalid_target
 float fn_801660C0(void) {
     class Object {
     public:
@@ -388,7 +391,7 @@ float fn_801660C0(void) {
     };
     Object *object = (Object *)((void *(*)(void))fn_80166098)();
     int index = *(int *)((char *)object->progress() + 0x10) - 1;
-    float factor = fn_8013672C(index);
+    float factor = ((float (*)(void))fn_8013672C)();
     float value = (float)index * factor + *(float *)((char *)object->other() + 0x48);
     if (lbl_8056189C > value) {
         return lbl_8056189C;
