@@ -50,13 +50,13 @@ typedef struct Obj801ADB44 {
 
 static inline void xf(f32 *out, f32 *in, u8 *m) {
     if (out == in) {
-        f32 y = in[1], x = in[0], z = in[2];
-        f32 o0 = z * F(m, 0x54) + (x * F(m, 0x3C) + y * F(m, 0x48));
-        f32 o1 = z * F(m, 0x58) + (x * F(m, 0x40) + y * F(m, 0x4C));
-        f32 o2 = z * F(m, 0x5C) + (x * F(m, 0x44) + y * F(m, 0x50));
-        out[0] = o0;
-        out[1] = o1;
-        out[2] = o2;
+        f32 x = in[0], y = in[1], z = in[2];
+        f32 t0 = y * F(m, 0x48), t1 = y * F(m, 0x4C), t2 = y * F(m, 0x50);
+        f32 u0 = x * F(m, 0x3C), u1 = x * F(m, 0x40), u2 = x * F(m, 0x44);
+        f32 w0 = z * F(m, 0x54), w1 = z * F(m, 0x58), w2 = z * F(m, 0x5C);
+        out[0] = u0 + t0 + w0;
+        out[1] = u1 + t1 + w1;
+        out[2] = u2 + t2 + w2;
     } else {
         out[0] = in[2] * F(m, 0x54) + (in[0] * F(m, 0x3C) + in[1] * F(m, 0x48));
         out[1] = in[2] * F(m, 0x58) + (in[0] * F(m, 0x40) + in[1] * F(m, 0x4C));
@@ -132,10 +132,10 @@ void fn_801ADB44(Ent801ADB44 *a, Obj801ADB44 *b) {
     s32 found;
     f32 dist, dot, k, m, lim, q, pen;
     f32 *av = a->v;
-    if (a->v[1] * F(b, 0x4C) + a->v[0] * F(b, 0x40) + a->v[2] * F(b, 0x58) > lbl_80562520) {
+    if (av[1] * F(b, 0x4C) + av[0] * F(b, 0x40) + av[2] * F(b, 0x58) > lbl_80562520) {
         return;
     }
-    xf(s.pos, av, (u8 *)b);
+    xf(s.pos, a->v, (u8 *)b);
     s.pos[0] += b->org[0];
     s.pos[1] += b->org[1];
     s.pos[2] += b->org[2];
@@ -237,7 +237,7 @@ void fn_801AE158(void *obj) {
 
    #pragma scheduling invalid_target
  #pragma ctrloop on
- void *fn_801AE180(void) {
+void *fn_801AE180(void) {
     s32 temp_r12, temp_r3, temp_r8_2, temp_r9, var_r4, var_r5, var_r5_2, var_r8;
     u32 temp_r11;
     void **temp_r31;
@@ -338,7 +338,7 @@ void fn_801AE158(void *obj) {
 }
  #pragma ctrloop reset
  #pragma scheduling on
- void fn_801AE4C4(void) {
+void fn_801AE4C4(void) {
     void *result = (void *)fn_801284F8(8, &lbl_8033596C);
     if (result != NULL) {
         *(s32 *)result = 0;
