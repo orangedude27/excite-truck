@@ -892,20 +892,17 @@ extern "C" void *fn_80207428(void *object, int arg1, int arg2, int soundIndex, i
     return self;
 }
 
-extern "C" void fn_80207490(Obj80207490 *obj, Rec80207490 *arr, int n) {
+#pragma scheduling invalid_target
+extern "C" void fn_80207490(Obj80207490 *obj, const Rec80207490 *arr, int n) {
     obj->flag6e = false;
-    bool f = obj->flag6e;
+    int i = 0;
     if (n > 0) {
-        for (int i = 0; i < n; i++) {
-            f = (f | (obj->key == arr[i].v)) != 0;
+        for (; i < n; i++) {
+            obj->flag6e = (obj->flag6e | (obj->key == arr[i].v)) != 0;
         }
     }
-    obj->flag6e = f;
     obj->flag18 = (obj->flag18 & obj->flag6e) != 0;
 }
-
-#pragma dont_inline reset
-#pragma dont_inline on
 extern "C" void fn_8020769C(void* arg0, int arg1, int arg2) {
 	fn_802073A4(arg0, arg1, arg2);
 }
