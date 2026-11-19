@@ -9400,7 +9400,7 @@ adv_both:
 #pragma opt_propagation reset
 extern "C" s32 VFiPFPATH_cmpNameImpl(u8 *arg0, u8 *arg1, s32 *arg2) {
     s32 var_r31;
-    u16 var_r30, var_r29;
+    s32 var_r30, var_r29;
     s32 *var_r28 = arg2;
     u8 *var_r27 = arg1;
     u8 *var_r26 = arg0;
@@ -9414,10 +9414,8 @@ extern "C" s32 VFiPFPATH_cmpNameImpl(u8 *arg0, u8 *arg1, s32 *arg2) {
     while ((s8)*var_r27 != 0) {
         temp_r23 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r27);
         var_r31 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r26);
-        if (temp_r23 == 1) var_r3 = fn_800A485C((s8)*var_r27); else var_r3 = fn_800A4C04(var_r27);
-        var_r30 = var_r3;
-        if (var_r31 == 1) var_r3_2 = fn_800A485C((s8)*var_r26); else var_r3_2 = fn_800A4C04(var_r26);
-        var_r29 = var_r3_2;
+        var_r30 = (u16)((temp_r23 == 1) ? fn_800A485C((s8)*var_r27) : fn_800A4C04(var_r27));
+        var_r29 = (u16)((var_r31 == 1) ? fn_800A485C((s8)*var_r26) : fn_800A4C04(var_r26));
         if (temp_r23 == 2) {
             M2C_FIELD(table, s32 (**)(u8 *, u16 *), 0x48)(var_r27, &spA);
             if (spA >= 0xFF41U && spA <= 0xFF5AU) { var_r3_3 = 1U; spA -= 0x20; } else var_r3_3 = 0U;
@@ -9432,43 +9430,40 @@ extern "C" s32 VFiPFPATH_cmpNameImpl(u8 *arg0, u8 *arg1, s32 *arg2) {
         }
         var_r27 = &var_r27[temp_r23];
         if (var_r30 == 0x3F) {
-            if ((s32)var_r29 == 0) return 1;
+            if (var_r29 == 0) return 1;
             var_r26 = &var_r26[var_r31];
             continue;
         }
         if (var_r30 != 0x2A) goto loop_57;
 loop_33:
         temp_r3_2 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r27);
-        if (temp_r3_2 != 1) var_r3_7 = fn_800A4C04(var_r27); else var_r3_7 = fn_800A485C((s8)*var_r27);
-        var_r30 = var_r3_7;
+        var_r30 = (u16)((temp_r3_2 != 1) ? fn_800A4C04(var_r27) : fn_800A485C((s8)*var_r27));
         var_r27 = &var_r27[temp_r3_2];
         if (var_r30 == 0x3F) {
-            if ((s32)var_r29 == 0) return 1;
+            if (var_r29 == 0) return 1;
             var_r26 = &var_r26[var_r31];
             temp_r3_3 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r26);
             var_r31 = temp_r3_3;
-            if (temp_r3_3 == 1) var_r3_8 = fn_800A485C((s8)*var_r26); else var_r3_8 = fn_800A4C04(var_r26);
-            var_r29 = var_r3_8;
+            var_r29 = (u16)((temp_r3_3 == 1) ? fn_800A485C((s8)*var_r26) : fn_800A4C04(var_r26));
         }
         if (var_r30 == 0x3F || var_r30 == 0x2A) goto loop_33;
-        if ((s32)var_r30 == 0) return 0;
+        if (var_r30 == 0) return 0;
 loop_57:
-        if ((s32)var_r29 == 0 && ((s8)*var_r26 == 0 || (s8)*var_r27 == 0)) *var_r28 = one;
+        if (var_r29 == 0 && ((s8)*var_r26 == 0 || (s8)*var_r27 == 0)) *var_r28 = one;
         if (var_r29 != var_r30) return 1;
         var_r26 = &var_r26[var_r31];
         if (var_r30 == 0x2A) goto loop_33;
         if (var_r30 == 0x3F) continue;
-        if ((s32)var_r29 == 0) continue;
+        if (var_r29 == 0) continue;
         var_r26 = &var_r26[var_r31];
         if (var_r29 == var_r30) {
             temp_r3 = VFiPFPATH_cmpNameImpl(var_r26, var_r27, var_r28);
             if (temp_r3 == 0) return 0;
-            if ((s32)*var_r28 != 0) return temp_r3;
+            if (*var_r28 != 0) return temp_r3;
         }
         temp_r3_4 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r26);
         var_r31 = temp_r3_4;
-        if (temp_r3_4 == 1) var_r3_9 = fn_800A485C((s8)*var_r26); else var_r3_9 = fn_800A4C04(var_r26);
-        var_r29 = var_r3_9;
+        var_r29 = (u16)((temp_r3_4 == 1) ? fn_800A485C((s8)*var_r26) : fn_800A4C04(var_r26));
         goto loop_57;
     }
     return (s8)*var_r26 != 0;
@@ -11228,6 +11223,7 @@ static inline s32 CacheKeyFind(s32 key) {
     if (CacheKeyMatch(e + 2, key)) return 1;
     return 0;
 }
+#pragma dont_inline reset
 extern "C" s32 fn_800B6200(void *arg0, void *arg1) {
     s32 key;
     s32 i, j, found;
@@ -11269,6 +11265,7 @@ extern "C" s32 fn_800B6200(void *arg0, void *arg1) {
     fn_800B783C((u8 *)lbl_803D2140 + 0x64);
     return 0;
 }
+#pragma dont_inline on
 
 #pragma opt_propagation off
 extern "C" s32 fn_800B63FC(void) {
@@ -15379,17 +15376,18 @@ extern "C" s32 lbl_802F33E8[];
 #pragma push
 #pragma use_lmw_stmw on
 extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
-#pragma use_lmw_stmw on
-    s32 row, i, n = arg0 * 0x12;
+    s8 row, i;
+    s32 n = arg0 * 0x12;
+    s32 *a, *b, *c, *d;
+    s32 j;
     if (arg3 & 7) {
         for (row = 0; row < arg2; ++row, arg4 = (s32 *)((u8 *)arg4 + 0x2400)) {
             for (i = 1; i < arg0; ++i) {
-                s32 k = 0x10 * i + 2;
-                s32 *a = (s32 *)((u8 *)arg4 + 0x1b00 + k * 4);
-                s32 *b = a - 1;
-                s32 *c = lbl_802F33C8;
-                s32 *d = lbl_802F33E8;
-                s32 j;
+                s16 k = (s16)(0x12 * i);
+                a = (s32 *)((u8 *)arg4 + 0x1b00 + k * 4);
+                b = a - 1;
+                c = lbl_802F33C8;
+                d = lbl_802F33E8;
                 for (j = 0; j < 4; ++j) {
                     s32 si = d[0], x = a[0], co = c[0], y = b[0];
                     b[0] = (s32)(((s64)y * co) >> 24) - (s32)(((s64)x * si) >> 24);
@@ -15401,15 +15399,14 @@ extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
                 }
             }
             if (arg1 < n)
-                for (i = arg1; i < n; ++i)
-                    *((s32 *)((u8 *)arg4 + 0x1b00) + i) = 0;
+                for (s32 i2 = arg1; i2 < n; ++i2)
+                    *((s32 *)((u8 *)arg4 + 0x1b00) + i2) = 0;
         }
     } else {
         for (row = 0; row < arg2; ++row, arg4 = (s32 *)((u8 *)arg4 + 0x2400)) {
-            s32 *a = (s32 *)((u8 *)arg4 + 0x1b48);
-            s32 *b = (s32 *)((u8 *)arg4 + 0x1b44);
-            s32 *c = lbl_802F33C8, *d = lbl_802F33E8;
-            s32 j;
+            a = (s32 *)((u8 *)arg4 + 0x1b48);
+            b = (s32 *)((u8 *)arg4 + 0x1b44);
+            c = lbl_802F33C8; d = lbl_802F33E8;
             for (j = 0; j < 4; ++j) {
                 s32 si = d[0], x = a[0], co = c[0], y = b[0];
                 b[0] = (s32)(((s64)y * co) >> 24) - (s32)(((s64)x * si) >> 24);
@@ -15435,13 +15432,13 @@ extern "C" s16 fn_800BDD7C(s32 arg0, s32 arg1, s32 *arg2) {
 }
 
 extern "C" s16 fn_800BDE18(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
-    s32 remaining = arg2;
+    register s32 remaining = arg2;
     s32 take;
     s32 bitsInByte;
     s32 position = *arg3;
     s32 piece;
     s16 result = 0;
-    volatile u8 *data = (volatile u8 *)arg1 + (position >> 3);
+    u8 *data = (u8 *)arg1 + (position >> 3);
 
     bitsInByte = 8 - (position & 7);
     while (remaining > 0) {
@@ -17688,10 +17685,10 @@ extern s32 lbl_8031D5E0[];
 #pragma push
 #pragma scheduling off
 extern "C" void fn_800C21D8(s32* arg0, s32* arg1) {
-    s32* p = (s32*)((u32)arg0 + 72);
-    s32* q = (s32*)((u32)arg1 + 72);
-    s32* coeff = lbl_8031D5E0;
-    s32 c0, c1, value;
+    register s32* p = (s32*)((u32)arg0 + 72);
+    register s32* q = (s32*)((u32)arg1 + 72);
+    register s32* coeff = lbl_8031D5E0;
+    register s32 c0, c1, value;
     c0 = *coeff++;
     value = p[-18];
     c1 = *coeff++;
@@ -17791,32 +17788,41 @@ extern "C" s32 lbl_8031D670[];
 extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     s32 *t = (s32 *)lbl_8031D670;
     s32 a0 = arg0[0]; s32 c0 = *t++; s32 c1 = *t++;
-    arg2[0] = arg1[0] + (s32)(((s64)a0 * c0) >> 20);
-    arg3[0] = arg1[17] + (s32)(((s64)a0 * c1) >> 20);
+    s32 p0 = (s32)(((s64)a0 * c0) >> 20); s32 p1 = (s32)(((s64)a0 * c1) >> 20);
+    arg2[0] = arg1[0] + p0;
+    arg3[0] = arg1[17] + p1;
     s32 a1 = arg0[1]; s32 d0 = *t++; s32 d1 = *t++;
-    arg2[64] = arg1[1] + (s32)(((s64)a1 * d0) >> 20);
-    arg3[-64] = arg1[16] + (s32)(((s64)a1 * d1) >> 20);
+    s32 p2 = (s32)(((s64)a1 * d0) >> 20); s32 p3 = (s32)(((s64)a1 * d1) >> 20);
+    arg2[64] = arg1[1] + p2;
+    arg3[-64] = arg1[16] + p3;
     s32 a2 = arg0[2]; s32 e0 = *t++; s32 e1 = *t++;
-    arg2[128] = arg1[2] + (s32)(((s64)a2 * e0) >> 20);
-    arg3[-128] = arg1[15] + (s32)(((s64)a2 * e1) >> 20);
+    s32 p4 = (s32)(((s64)a2 * e0) >> 20); s32 p5 = (s32)(((s64)a2 * e1) >> 20);
+    arg2[128] = arg1[2] + p4;
+    arg3[-128] = arg1[15] + p5;
     s32 a3 = arg0[3]; s32 f0 = *t++; s32 f1 = *t++;
-    arg2[192] = arg1[3] + (s32)(((s64)a3 * f0) >> 20);
-    arg3[-192] = arg1[14] + (s32)(((s64)a3 * f1) >> 20);
+    s32 p6 = (s32)(((s64)a3 * f0) >> 20); s32 p7 = (s32)(((s64)a3 * f1) >> 20);
+    arg2[192] = arg1[3] + p6;
+    arg3[-192] = arg1[14] + p7;
     s32 a4 = arg0[4]; s32 g0 = *t++; s32 g1 = *t++;
-    arg2[256] = arg1[4] + (s32)(((s64)a4 * g0) >> 20);
-    arg3[-256] = arg1[13] + (s32)(((s64)a4 * g1) >> 20);
+    s32 p8 = (s32)(((s64)a4 * g0) >> 20); s32 p9 = (s32)(((s64)a4 * g1) >> 20);
+    arg2[256] = arg1[4] + p8;
+    arg3[-256] = arg1[13] + p9;
     s32 a5 = arg0[5]; s32 h0 = *t++; s32 h1 = *t++;
-    arg2[320] = arg1[5] + (s32)(((s64)a5 * h0) >> 20);
-    arg3[-320] = arg1[12] + (s32)(((s64)a5 * h1) >> 20);
+    s32 p10 = (s32)(((s64)a5 * h0) >> 20); s32 p11 = (s32)(((s64)a5 * h1) >> 20);
+    arg2[320] = arg1[5] + p10;
+    arg3[-320] = arg1[12] + p11;
     s32 a6 = arg0[6]; s32 i0 = *t++; s32 i1 = *t++;
-    arg2[384] = arg1[6] + (s32)(((s64)a6 * i0) >> 20);
-    arg3[-384] = arg1[11] + (s32)(((s64)a6 * i1) >> 20);
+    s32 p12 = (s32)(((s64)a6 * i0) >> 20); s32 p13 = (s32)(((s64)a6 * i1) >> 20);
+    arg2[384] = arg1[6] + p12;
+    arg3[-384] = arg1[11] + p13;
     s32 a7 = arg0[7]; s32 j0 = *t++; s32 j1 = *t++;
-    arg2[448] = arg1[7] + (s32)(((s64)a7 * j0) >> 20);
-    arg3[-448] = arg1[10] + (s32)(((s64)a7 * j1) >> 20);
+    s32 p14 = (s32)(((s64)a7 * j0) >> 20); s32 p15 = (s32)(((s64)a7 * j1) >> 20);
+    arg2[448] = arg1[7] + p14;
+    arg3[-448] = arg1[10] + p15;
     s32 a8 = arg0[8]; s32 k0 = *t++; s32 k1 = *t++;
-    arg2[512] = arg1[8] + (s32)(((s64)a8 * k0) >> 20);
-    arg3[-512] = arg1[9] + (s32)(((s64)a8 * k1) >> 20);
+    s32 p16 = (s32)(((s64)a8 * k0) >> 20); s32 p17 = (s32)(((s64)a8 * k1) >> 20);
+    arg2[512] = arg1[8] + p16;
+    arg3[-512] = arg1[9] + p17;
 }
 #pragma pop
 extern u32 lbl_8031D6B8[];
@@ -17824,47 +17830,47 @@ extern "C" void fn_800C280C(s32 *a0, s32 *a1, s32 *o2, s32 *o3) {
     s32 *t = (s32 *)lbl_8031D6B8;
     s32 x0 = a0[0]; s32 c0 = *t++; s32 c1 = *t++;
     s32 p0 = (s32)(((s64)x0 * c0) >> 20);
-    o2[0] = a1[0] + p0;
+    o2[0] = p0 + a1[0];
     s32 q0 = (s32)(((s64)x0 * c1) >> 20);
     o3[0] = q0 - a1[17];
     s32 x1 = a0[1]; s32 d0 = *t++; s32 d1 = *t++;
     s32 p1 = (s32)(((s64)x1 * d0) >> 20);
     o2[64] = p1 - a1[1];
     s32 q1 = (s32)(((s64)x1 * d1) >> 20);
-    o3[-64] = a1[16] + q1;
+    o3[-64] = q1 + a1[16];
     s32 x2 = a0[2]; s32 e0 = *t++; s32 e1 = *t++;
     s32 p2 = (s32)(((s64)x2 * e0) >> 20);
-    o2[128] = a1[2] + p2;
+    o2[128] = p2 + a1[2];
     s32 q2 = (s32)(((s64)x2 * e1) >> 20);
     o3[-128] = q2 - a1[15];
     s32 x3 = a0[3]; s32 f0 = *t++; s32 f1 = *t++;
     s32 p3 = (s32)(((s64)x3 * f0) >> 20);
     o2[192] = p3 - a1[3];
     s32 q3 = (s32)(((s64)x3 * f1) >> 20);
-    o3[-192] = a1[14] + q3;
+    o3[-192] = q3 + a1[14];
     s32 x4 = a0[4]; s32 g0 = *t++; s32 g1 = *t++;
     s32 p4 = (s32)(((s64)x4 * g0) >> 20);
-    o2[256] = a1[4] + p4;
+    o2[256] = p4 + a1[4];
     s32 q4 = (s32)(((s64)x4 * g1) >> 20);
     o3[-256] = q4 - a1[13];
     s32 x5 = a0[5]; s32 h0 = *t++; s32 h1 = *t++;
     s32 p5 = (s32)(((s64)x5 * h0) >> 20);
     o2[320] = p5 - a1[5];
     s32 q5 = (s32)(((s64)x5 * h1) >> 20);
-    o3[-320] = a1[12] + q5;
+    o3[-320] = q5 + a1[12];
     s32 x6 = a0[6]; s32 i0 = *t++; s32 i1 = *t++;
     s32 p6 = (s32)(((s64)x6 * i0) >> 20);
-    o2[384] = a1[6] + p6;
+    o2[384] = p6 + a1[6];
     s32 q6 = (s32)(((s64)x6 * i1) >> 20);
     o3[-384] = q6 - a1[11];
     s32 x7 = a0[7]; s32 j0 = *t++; s32 j1 = *t++;
     s32 p7 = (s32)(((s64)x7 * j0) >> 20);
     o2[448] = p7 - a1[7];
     s32 q7 = (s32)(((s64)x7 * j1) >> 20);
-    o3[-448] = a1[10] + q7;
+    o3[-448] = q7 + a1[10];
     s32 x8 = a0[8]; s32 k0 = *t++; s32 k1 = *t++;
     s32 p8 = (s32)(((s64)x8 * k0) >> 20);
-    o2[512] = a1[8] + p8;
+    o2[512] = p8 + a1[8];
     s32 q8 = (s32)(((s64)x8 * k1) >> 20);
     o3[-512] = q8 - a1[9];
 }
@@ -17914,7 +17920,7 @@ extern "C" void fn_800C2C18(s32 *a, s32 *b, s32 *o1, s32 *o2) {
 extern u32 lbl_8031D730[];
 extern "C" void fn_800C2DBC(s32 *arg0, s32 *arg1, s32 *arg2) {
     s32 *t = (s32 *)lbl_8031D730;
-#define STEP(i) { register s32 a = arg0[i]; register s32 c0 = t[2 * (i)]; register s32 c1 = t[2 * (i) + 1]; c0 = (s32)(((s64)a * c0) >> 20); arg1[i] = c0; c1 = (s32)(((s64)a * c1) >> 20); arg2[-(i)] = c1; }
+#define STEP(i) { s32 a = arg0[i]; s32 c0 = t[2 * (i)]; s32 c1 = t[2 * (i) + 1]; c0 = (s32)(((s64)a * c0) >> 20); arg1[i] = c0; c1 = (s32)(((s64)a * c1) >> 20); arg2[-(i)] = c1; }
     STEP(0) STEP(1) STEP(2) STEP(3) STEP(4) STEP(5) STEP(6) STEP(7) STEP(8)
 #undef STEP
 }
