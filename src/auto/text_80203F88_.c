@@ -71,7 +71,15 @@ void fn_80204018(void) {
 
 }
 
-void fn_8020401C(void) {
+/* Terrain/solid module's stage-init hook: empty in this build.  The
+ * SolBuilder/StaticGOB subsystem init (fn_801F9E04) calls it last, once its
+ * "race.res/obstacle.val" / "%s.trk/obstacle.val" / "tree.class.val" resource
+ * names are logged, its 4-byte "SolBuilder" handle is allocated and its
+ * GOB-flag event handler (fn_801F9CF8, event 0xC) is registered, handing it the
+ * stage context it was given.  fn_80204020 is the matching (also empty) hook of
+ * the teardown path fn_801F9F08, so this is where the terrain solids of a stage
+ * would be built if this build did anything with them. */
+void fn_8020401C(void *stageContext) {
 
 }
 
