@@ -5999,29 +5999,29 @@ extern "C" void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi(
 }
 
 extern "C" void *GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlayerFv(void *);
+static inline u8 *getPlayableNode(void *player) {
+    return *(u8 **)((u8 *)player + 0x10) - 0xC8;
+}
 extern "C" const char lbl_803263A8[];
 extern "C" const char lbl_80326384[];
 extern "C" const char lbl_80326378[];
 extern "C" const char lbl_80326354[];
 #pragma opt_propagation off
 extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer(void *self, int priority, void *external) {
+    int limit;
+    (void)lbl_803263A8;
+    (void)lbl_80326384;
     if (*(u16 *)((u8 *)self + 0x24) == 0)
         return 0;
     while (*(s32 *)self >= *(u16 *)((u8 *)self + 0x24)) {
-        u8 *sound;
-        int limit;
         if (*(s32 *)((u8 *)self + 0xC) == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_803263A8, 0x1F1, lbl_80326384);
-        {
-            u8 *first = *(u8 **)((u8 *)self + 0x10);
-            u8 *obj;
-            if (first == 0)
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
-            obj = first - 0xC8;
-            if (obj == 0)
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326378, 0x193, lbl_80326354);
-            sound = obj;
-        }
+        u8 *sound = *(u8 **)((u8 *)self + 0x10);
+        if (sound == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
+        sound -= 0xC8;
+        if (sound == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326378, 0x193, lbl_80326354);
         if (sound == 0)
             return 0;
         limit = sound[0x74] + *(s32 *)(sound + 0x40);
@@ -6034,15 +6034,14 @@ extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3s
         if (*(u16 *)((u8 *)external + 0xC) == 0)
             return 0;
         while (*(s32 *)external >= *(u16 *)((u8 *)external + 0xC)) {
-            int limit;
-            u8 *sound = (u8 *)GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlayerFv(external);
-            if (sound == 0)
+            u8 *snd = (u8 *)GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlayerFv(external);
+            if (snd == 0)
                 return 0;
-            limit = sound[0x74] + *(s32 *)(sound + 0x40);
+            limit = snd[0x74] + *(s32 *)(snd + 0x40);
             limit = (limit > 0x7F) ? 0x7F : ((limit < 0) ? 0 : limit);
             if (priority < limit)
                 return 0;
-            ((DummyCheckPlayable *)sound)->f7();
+            ((DummyCheckPlayable *)snd)->f7();
         }
     }
     return 1;
