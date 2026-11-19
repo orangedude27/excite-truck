@@ -13541,27 +13541,29 @@ void fn_8007F5A4(void) {
     }
 }
 
-void btm_sec_abort_access_req(BD_ADDR arg0) {
-    tBTM_SEC_DEV_REC *dev;
-    void (*cb)(BD_ADDR, void *, void *);
-    u8 state;
-    u32 *p;
-    dev = btm_find_dev(arg0);
-    if (dev != 0) {
-        cb = *(void (**)(BD_ADDR, void *, void *))((u8 *)lbl_803C0F78 + 0x1920);
-        if (cb != 0) {
-            cb(arg0, (u8 *)dev + 0x22, (u8 *)dev + 0x35);
+/* Abort a pending security access request for a device, notifying the callback and clearing its security state. */
+void btm_sec_abort_access_req(BD_ADDR bd_addr) {
+    tBTM_SEC_DEV_REC *p_dev_rec;
+    void (*p_callback)(BD_ADDR, void *, void *);
+    u8 sec_state;
+    u32 *p_sm_cb;
+
+    p_dev_rec = btm_find_dev(bd_addr);
+    if (p_dev_rec != 0) {
+        p_callback = *(void (**)(BD_ADDR, void *, void *))((u8 *)lbl_803C0F78 + 0x1920);
+        if (p_callback != 0) {
+            p_callback(bd_addr, (u8 *)p_dev_rec + 0x22, (u8 *)p_dev_rec + 0x35);
         }
-        state = *((u8 *)dev + 0x7f);
-        if (state == 4 || state == 1) {
-            *((u8 *)dev + 0x7f) = 0;
-            if (*((u8 *)dev + 0x80) != 0) {
-                p = *(u32 **)dev;
-                if (p != 0 && *p == 3) {
-                    p[1] = 0;
+        sec_state = *((u8 *)p_dev_rec + 0x7f);
+        if (sec_state == 4 || sec_state == 1) {
+            *((u8 *)p_dev_rec + 0x7f) = 0;
+            if (*((u8 *)p_dev_rec + 0x80) != 0) {
+                p_sm_cb = *(u32 **)p_dev_rec;
+                if (p_sm_cb != 0 && *p_sm_cb == 3) {
+                    p_sm_cb[1] = 0;
                 }
             }
-            *(u32 *)((u8 *)dev + 4) = 0;
+            *(u32 *)((u8 *)p_dev_rec + 4) = 0;
         }
     }
 }
