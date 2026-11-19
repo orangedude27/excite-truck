@@ -3910,6 +3910,7 @@ extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
     *(u32 *)(p_ent + 0x228) = (word >> 24) | ((word >> 8) & 0xFF00) | ((word & 0xFF00) << 8) | (word << 24);
     *(u32 *)(p_ent + 0x234) = (h1A >> 8) | ((h1A & 255) << 8) | ((h14 >> 8) << 16) | ((h14 & 255) << 24);
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling on
