@@ -1890,6 +1890,7 @@ void fn_801F44DC(void *unused, int target, int baseValue, int param) {
 #undef mlftoVTable
 #undef mlftoTag
 }
+/* Empty stub. */
 void fn_801F4550(void) {
 
 }
