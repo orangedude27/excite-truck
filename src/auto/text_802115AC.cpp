@@ -2385,7 +2385,13 @@ extern "C" void fn_80215418(void) {
 
 }
 
-extern "C" void fn_8021541C(void) {
+/* Base widget class (vtable lbl_8033FB38) default for vtable slot 0x14, the
+ * third virtual (VfObj::vf3) after the destructor and the two empty slots at
+ * 0x0C/0x10.  The layout wrapper forwards its own slot 0x14 to the object held
+ * at +0x244 (fn_802158F0), but no widget class in the game overrides this one:
+ * lbl_8033FA28, lbl_8033F4B8, lbl_8033F768 and lbl_8033F880 all still point
+ * here, so a widget that says nothing simply does nothing. */
+extern "C" void fn_8021541C(void *widget) {
 
 }
 
