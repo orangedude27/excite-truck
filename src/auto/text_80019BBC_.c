@@ -57,25 +57,22 @@ extern double sin(double);
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_80019BBC(void) {
-    float step;
-    float initial;
-    float angle;
+    register float step = 0.314159f;
+    register float initial;
+    register float angle = 0.0f;
     float *p = (float *)lbl_803582C0;
     int i = 0;
-    step = lbl_8056041C;
-    angle = lbl_80560418;
     initial = angle;
     do {
         *p++ = (float)cos(angle);
-        p[0] = (float)sin(angle);
-        p[1] = initial;
-        p += 2;
+        *p++ = (float)sin(angle);
+        *p++ = initial;
         angle += step;
         i++;
     } while (i < 20);
-    ((float *)lbl_803582C0)[60] = lbl_80560418;
-    ((float *)lbl_803582C0)[61] = lbl_80560418;
-    ((float *)lbl_803582C0)[62] = lbl_80560418;
+    ((float *)lbl_803582C0)[60] = 0.0f;
+    ((float *)lbl_803582C0)[61] = 0.0f;
+    ((float *)lbl_803582C0)[62] = 0.0f;
 }
 
 #pragma cplusplus on
