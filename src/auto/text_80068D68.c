@@ -6053,9 +6053,8 @@ void bta_dm_compress_cback(s32 event, u8 service, u8 id, s32 addr) {
         for (i = 1; i <= table[1]; i++) {
             entry = table + i * 3;
             if ((id == entry[1] || entry[1] == 0xff) && service == entry[0] && entry[2] == 1) {
-                u8 count;
+                u8 count = *(volatile u8 *)(table + 1);
                 found = 0;
-                count = *(volatile u8 *)(table + 1);
                 for (j = 1; j <= count; j++) {
                     if (table[j * 3 + 2] == 2) {
                         for (k = 0; k < lbl_803C0D18[0]; k++) {
@@ -8154,12 +8153,13 @@ process:
 }
 
 extern void *fn_8007A3A4(void);
+#pragma push
+#pragma dont_inline off
 tBTM_STATUS BTM_SetLinkPolicy(BD_ADDR remote_bda, UINT16 *settings)
 {
     u8 *strings = lbl_80315CA0;
     u8 *features;
     u32 value;
-    u32 i;
     u8 *entry;
     u16 policy;
 
@@ -8202,24 +8202,7 @@ tBTM_STATUS BTM_SetLinkPolicy(BD_ADDR remote_bda, UINT16 *settings)
         }
     }
 
-    i = 0;
-    entry = lbl_803C0F78 + 0x34;
-loop:
-    if (entry[0x119] == 0) {
-        goto next;
-    }
-    if (memcmp(entry + 8, remote_bda, 6) != 0) {
-        goto next;
-    }
-    goto found;
-next:
-    i++;
-    entry += 0x11C;
-    if (i < 4) {
-        goto loop;
-    }
-    entry = NULL;
-found:
+    entry = btm_bda_to_acl_inl(remote_bda);
     if (entry != NULL) {
         if (btsnd_hcic_write_policy_set(*(u16 *)entry, *settings) != 0) {
             return 1;
@@ -8228,7 +8211,7 @@ found:
     }
     return 7;
 }
-
+#pragma pop
 /* Set btm_cb's default ACL link policy mask (btm_def_link_policy at +0x4C4). */
 void fn_800778C8(s16 linkPolicy) {
     *(s16 *)(lbl_803C0F78 + 0x4C4) = linkPolicy;
@@ -15125,8 +15108,8 @@ void btu_hcif_command_status_evt(UINT8 *p, UINT16 len) {
     status = p[0];
     *(UINT16 *)(lbl_803C0A50 + 0x80) = p[1];
     buf = 0;
-    opcode = (UINT16)(p[2] + (p[3] << 8));
     cmd = 0;
+    opcode = (UINT16)(p[2] + (p[3] << 8));
     if (opcode != 0xC03 && opcode != 0xC35 && opcode != 0) {
         buf = GKI_dequeue((BUFFER_Q *)(lbl_803C0A50 + 0x70));
         if (buf != 0) {
