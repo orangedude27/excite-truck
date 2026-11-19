@@ -1433,17 +1433,17 @@ extern "C" void fn_800D7D5C(void* arg0, f32* m) {
     f32 aa=__fabsf(a), bb=__fabsf(b), cc=__fabsf(c), dd=__fabsf(d), ee=__fabsf(e), ff=__fabsf(f);
     if (!(aa >= 1.0f || bb >= 1.0f || cc >= 1.0f || dd >= 1.0f || ee >= 1.0f || ff >= 1.0f)) {
         while (scale < 0x2E && !(aa >= 1.0f || bb >= 1.0f || cc >= 1.0f || dd >= 1.0f || ee >= 1.0f || ff >= 1.0f)) {
-            aa *= lbl_80560E88; a *= lbl_80560E88; b *= lbl_80560E88;
-            c *= lbl_80560E88; d *= lbl_80560E88; e *= lbl_80560E88; f *= lbl_80560E88;
-            bb *= lbl_80560E88; cc *= lbl_80560E88; dd *= lbl_80560E88; ee *= lbl_80560E88; ff *= lbl_80560E88;
+            aa *= 0.5f; a *= 0.5f; b *= 0.5f;
+            c *= 0.5f; d *= 0.5f; e *= 0.5f; f *= 0.5f;
+            bb *= 0.5f; cc *= 0.5f; dd *= 0.5f; ee *= 0.5f; ff *= 0.5f;
             scale++;
         }
-    } else if (aa < lbl_80560E88 && bb < lbl_80560E88 && cc < lbl_80560E88 && dd < lbl_80560E88 && ee < lbl_80560E88 && ff < lbl_80560E88) {
+    } else if (aa < 0.5f && bb < 0.5f && cc < 0.5f && dd < 0.5f && ee < 0.5f && ff < 0.5f) {
         do {
-            aa *= lbl_80560E98; scale--; a *= lbl_80560E98; b *= lbl_80560E98;
-            c *= lbl_80560E98; d *= lbl_80560E98; e *= lbl_80560E98; f *= lbl_80560E98;
-            bb *= lbl_80560E98; cc *= lbl_80560E98; dd *= lbl_80560E98; ee *= lbl_80560E98; ff *= lbl_80560E98;
-        } while (aa < lbl_80560E88 && bb < lbl_80560E88 && cc < lbl_80560E88 && dd < lbl_80560E88 && ee < lbl_80560E88 && ff < lbl_80560E88 && scale > -0x11);
+            aa *= 2.0f; scale--; a *= 2.0f; b *= 2.0f;
+            c *= 2.0f; d *= 2.0f; e *= 2.0f; f *= 2.0f;
+            bb *= 2.0f; cc *= 2.0f; dd *= 2.0f; ee *= 2.0f; ff *= 2.0f;
+        } while (aa < 0.5f && bb < 0.5f && cc < 0.5f && dd < 0.5f && ee < 0.5f && ff < 0.5f && scale > -0x11);
     }
     if (scale <= -0x11) {
         f32 mtx[6] = {a, b, c, d, e, f};
@@ -2237,11 +2237,13 @@ extern "C" s32 fn_800D93BC(void *arg0) {
     return (((x >> 0x18) & 0xF) * 0x14) + ((a + b) + c) + (d + y);
 }
 
+#pragma scheduling off
 extern "C" s32 fn_800D93F4(void *arg0) {
     MatGXBits_800D8B28 *c = (MatGXBits_800D8B28 *)((u8 *)arg0 + 0x4C);
     u8 *base = *(u8 **)((u8 *)arg0 + 0x58);
     return (s32)((c->srt * 0x14 + (c->gen * 4 + c->tex * 32)) + (base + (c->f * 4 + c->i * 4 + c->h * 4)));
 }
+#pragma scheduling on
 
 extern "C" s32 fn_800D9434(void *arg0) {
     u32 x = *(u32 *)((u8 *)arg0 + 0x4C);
