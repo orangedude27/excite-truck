@@ -1983,7 +1983,7 @@ void *fn_801B2EC0(s32 slotIndex) {
 #pragma dont_inline reset
 
 #pragma dont_inline on
-/* Returns the deity slot entry for the given slot index. */
+/* Tail-call wrapper that returns the deity slot for the given slot index. */
 void *fn_801B2ED0(s32 slotIndex) {
     return fn_801B2EC0(slotIndex);
 }
