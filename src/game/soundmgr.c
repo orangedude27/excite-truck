@@ -269,6 +269,9 @@ void fn_80207C48(void) {
 	return;
 }
 
+/* Second of the three empty members of soundmgr.cpp in this stretch (see the note
+ * on fn_80207C48): the shipped build compiled its body away, leaving a bare return,
+ * and nothing in the recovered code calls it. */
 void fn_80207C4C(void) {
 	return;
 }
