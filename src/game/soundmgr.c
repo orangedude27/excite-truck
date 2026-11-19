@@ -303,6 +303,10 @@ void fn_80207C74(void *object, signed long value) {
     ((struct SoundObject *)object)->flag8C = value;
 }
 
+/* The last of the three empty members of this stretch of soundmgr.cpp (see the note
+ * on fn_80207C48): the shipped build kept no body for it.  It sits right after the
+ * setter of a sound object's +0x8C flag (fn_80207C74) and just before the manager's
+ * per-frame pass fn_80207C80, and nothing in the recovered code calls it. */
 void fn_80207C7C(void) {
 	return;
 }
