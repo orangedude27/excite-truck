@@ -596,6 +596,7 @@ void fn_801B52CC(void) {
     lbl_8055E6D8 = (void *)replayQueue;
 }
 #pragma pop
+/* No operation. */
 void fn_801B5318(void) {
 
 }
