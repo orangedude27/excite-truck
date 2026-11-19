@@ -171,26 +171,27 @@ extern void fn_802CE7D4(int, int, void *);
 extern int fn_80134424(int, void *, int, int *, void *, void *, int, int);
 #pragma push
 #pragma scheduling invalid_target
-void fn_802CE744(void *arg0) {
-    void *resource = *(void **)((char *)arg0 + 4);
-    int result;
-    int sp8;
+void fn_802CE744(void *slot) {
+    /* Stamp the slot with the pool's load counter and, if idle, start an async MODL load. */
+    void *manager = *(void **)((char *)slot + 4);
+    int requestId;
+    int resultSize;
 
-    *(int *)((char *)arg0 + 0x3C) = (*(int *)((char *)resource + 0x10))++;
-    if (*(int *)((char *)arg0 + 0x38) == 0) {
-        sp8 = 0;
-        result = fn_80134424(
-            *(int *)((char *)resource + 4),
-            (char *)arg0 + 8,
+    *(int *)((char *)slot + 0x3C) = (*(int *)((char *)manager + 0x10))++;
+    if (*(int *)((char *)slot + 0x38) == 0) {
+        resultSize = 0;
+        requestId = fn_80134424(
+            *(int *)((char *)manager + 4),
+            (char *)slot + 8,
             0x4D4F444C,
-            &sp8,
+            &resultSize,
             (void *)fn_802CE7D4,
-            arg0,
+            slot,
             0,
             -1);
-        if (result >= 0) {
-            *(int *)((char *)arg0 + 0x2C) = result;
-            *(int *)((char*)arg0 + 0x38) = 1;
+        if (requestId >= 0) {
+            *(int *)((char *)slot + 0x2C) = requestId;
+            *(int *)((char*)slot + 0x38) = 1;
         }
     }
 }
