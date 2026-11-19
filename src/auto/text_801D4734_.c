@@ -1624,7 +1624,7 @@ struct Dummy6320 {
     virtual void v11(); virtual void v12(); virtual void v13();
     virtual void v14(); virtual void v15(); virtual void v16();
     virtual void v17(); virtual void v18(); virtual void v19();
-    virtual void v20(); virtual void v21();
+    virtual void v20();
     virtual int getBool2(const char *);
 };
 extern "C" int fn_801D6320(void *out, void *object) {
@@ -1635,20 +1635,20 @@ extern "C" int fn_801D6320(void *out, void *object) {
     extern void fn_802E30C8(const char *, const char *);
     char *messages = &lbl_80338460;
     float a, b;
-    #define VT(off) (*(void **)((char *)*(void ***)object + (off)))
+    Dummy6320 *o = (Dummy6320 *)object;
     #define LOG ((void (*)(const char *, ...))fn_802E30C8)
-    if (((int (*)(void *, const char *))VT(0xC))(object, &lbl_8055ACB0) == 0) { LOG(messages + 0x210); return 0; }
-    a = ((float (*)(void *, const char *))VT(0x24))(object, &lbl_8055ACB0);
+    if (o->getBool(&lbl_8055ACB0) == 0) { LOG(messages + 0x210); return 0; }
+    a = o->getFloat(&lbl_8055ACB0);
     if (a < lbl_80562ADC) { LOG(messages + 0x254, a); return 0; }
     *(int *)((char *)out + 0xC) = (int)(lbl_80562B0C * a);
-    *(int *)((char *)out + 8) = (int)(lbl_80562B0C * ((float (*)(void *, const char *, float))VT(0x28))(object, &lbl_8055ACB8, lbl_80562ADC));
-    if (((int (*)(void *, const char *))VT(0xC))(object, &lbl_8055ACC0) == 0) { LOG(messages + 0x2A4); return 0; }
-    b = ((float (*)(void *, const char *, float))VT(0x28))(object, &lbl_8055ACC0, lbl_80562AE4);
+    *(int *)((char *)out + 8) = (int)(lbl_80562B0C * o->getFloatArg(&lbl_8055ACB8, lbl_80562ADC));
+    if (o->getBool(&lbl_8055ACC0) == 0) { LOG(messages + 0x2A4); return 0; }
+    b = o->getFloatArg(&lbl_8055ACC0, lbl_80562AE4);
     *(float *)((char *)out + 0x10) = b;
     if (b < lbl_80562ADC) { LOG(messages + 0x2E8, b); return 0; }
     *(int *)((char *)out + 0x14) = 0;
-    if (((int (*)(void *, const char *))VT(0x5C))(object, &lbl_8055ACC8)) *(int *)((char *)out + 0x14) = fn_801399FC();
-    *(signed char *)((char *)out + 0x18) = ((signed char (*)(void *, const char *, int))VT(0x30))(object, messages + 0x338, 0);
+    if (o->getBool2(&lbl_8055ACC8)) *(int *)((char *)out + 0x14) = fn_801399FC();
+    *(signed char *)((char *)out + 0x18) = o->getS8(messages + 0x338, 0);
     *(int *)((char *)out + 4) = 1;
     return 1;
 }
