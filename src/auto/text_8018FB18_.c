@@ -1003,7 +1003,13 @@ int fn_80190D38(float a, float b, float c) { float lower; float value; lower = l
 
 extern float lbl_805620B8;
 #pragma scheduling reset
-int fn_80190D9C(float a, float b, float c) { float lower; float value; lower = lbl_80562090; value = (a - b) / (c - b); if (lower < value) { lower = lower; } else { lower = value; } if (lower > lbl_8056208C) { lower = lower; } else { lower = lbl_8056208C; } return (int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620B8))); }
+int fn_80190D9C(float a, float b, float c) {
+    float lower = 1.0f;
+    float value = (a - b) / (c - b);
+    if (lower < value) { lower = lower; } else { lower = value; }
+    if (lower > lbl_8056208C) { lower = lower; } else { lower = lbl_8056208C; }
+    return (int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620B8)));
+}
 /* Return the record pointer kept at +0x8 of the audio object (base + index*8). */
 int fn_80190E00(void *obj) { return ((int *)obj)[2]; }
 
@@ -1699,6 +1705,7 @@ void *fn_801916AC(void *obj, int doDestroy) {
 #pragma cplusplus on
 #pragma scheduling on
 extern "C" void fn_801916F4(void *arg0) {
+#pragma opt_propagation off
     struct Obj {
         virtual void f0();
         virtual void f1();
@@ -1718,6 +1725,7 @@ extern "C" void fn_801916F4(void *arg0) {
         *(s32 *)((u8 *)arg0 + 0x0C) = invalid;
         *(f32 *)((u8 *)arg0 + 0x40) = value;
     }
+#pragma opt_propagation reset
 }
 #pragma cplusplus off
 extern char *strcpy(char *, const char *);
