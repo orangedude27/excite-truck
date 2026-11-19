@@ -2058,7 +2058,7 @@ f32 vector2[3];
 volatile f32 *input;
 f32 *output;
 s32 i, made;
-f32 t5, t3, t6, t2, t0;
+f32 t2, t0, t5, t3, t6;
 fn_8021B2B0(arg0, *(s32 *)((u8 *)arg1 + 8), *(s32 *)((u8 *)arg1 + 0xC),
 (const char *)arg2, 8, arg3, *(s32 *)((u8 *)arg1 + 0x10));
 *(void **)arg0 = (void *)&lbl_8033F180;
@@ -5828,7 +5828,7 @@ extern "C" void fn_802225E8(void *obj, s32 gridX, s32 gridY) {
 }
 
 extern "C" void fn_8022264C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6) {
-    f32 scale = lbl_805634A4;
+    f32 scale = 1.0f;
     *arg3 = arg1;
     *arg4 = arg2;
     s32 value = (s32)fn_8023293C(*(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8), scale);
