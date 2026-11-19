@@ -150,8 +150,9 @@ extern const char lbl_803475D8[];
 extern double lbl_805640B0;
 #pragma push
 #pragma scheduling invalid_target
+extern char lbl_8055C660;
 void fn_80278360(void *arg0) {
-    register unsigned char state;
+    unsigned char state;
     int count;
     int *base;
     volatile int *dst;
@@ -165,18 +166,18 @@ void fn_80278360(void *arg0) {
     int offset;
     float f;
 
-    state = (unsigned char)lbl_8055F5B8;
+    state = *(volatile unsigned char *)&lbl_8055F5B8;
     if (state == 0)
         goto record;
-    count = lbl_8055F5B4;
+    count = *(volatile int *)&lbl_8055F5B4;
     if (count != 0)
         goto record;
-    now = lbl_8055E3C4;
+    now = *(volatile int *)&lbl_8055E3C4;
     if (now > 10)
         return;
-    if (state == 0)
+    if (*(volatile unsigned char *)&lbl_8055F5B8 == 0)
         goto report_once;
-    count = lbl_8055F5B4;
+    count = *(volatile int *)&lbl_8055F5B4;
     if (count >= 2)
         goto report_once;
     if (count == 0)
@@ -195,7 +196,8 @@ record:
     now = *(volatile int *)&lbl_8055E3C4;
     first = src[0x16];
     second = src[0x17];
-    *(volatile int *)&lbl_8055F5B4 = count + 1;
+    count = count + 1;
+    *(volatile int *)&lbl_8055F5B4 = count;
     dst = (volatile int *)((char *)base + offset);
     value = src[0x18];
     dst[13] = now;
@@ -226,12 +228,12 @@ record:
 
 report_always:
     lbl_8055F5C9 = 1;
-    fn_802E30C8(lbl_803475D8);
+    fn_802E30C8(&lbl_8055C660, lbl_803475D8);
     return;
 report_once:
     if (lbl_8055F5C9 == 0) {
         lbl_8055F5C9 = 1;
-        fn_802E30C8(lbl_803475D8);
+        fn_802E30C8(&lbl_8055C660, lbl_803475D8);
     }
 }
 
@@ -276,26 +278,15 @@ void fn_8027847C(void *arg0) {
             lbl_8055F5BA=0;
             fn_802E30C8(base+0x90);
         }
-        if (*(unsigned char *)&lbl_8055F5BA) {
-            int now2 = lbl_8055E3C4;
-            int tmp = lbl_8055F5C4;
-            int end, length;
-            if (now2 == tmp) goto frame_done;
-            tmp = *(volatile int *)&lbl_8055F5C0;
-            lbl_8055F5C4 = now2;
-            frame = now2 - tmp;
-            if (frame < 0) goto frame_done;
-            end = *(volatile int *)&lbl_8055F5BC;
-            length = end - tmp;
-            if (frame > length) goto frame_done;
-            if (tmp > end) goto frame_done;
-            if (frame % 2 != 0) goto frame_done;
-            fn_802E30C8(base+0xa8,frame);
-            fn_801345D8(buffer,256,base+0xd0,lbl_804A15D0,frame/2);
-            fn_802D08B4(2,2,1);
-            fn_802D07E4(buffer,1);
+        if (*(unsigned char *)&lbl_8055F5BA && lbl_8055E3C4!=lbl_8055F5C4) {
+            lbl_8055F5C4=lbl_8055E3C4;
+            if ((frame=lbl_8055E3C4-lbl_8055F5C0)>=0 && frame<=lbl_8055F5BC-lbl_8055F5C0 && lbl_8055F5C0<=lbl_8055F5BC && frame%2==0) {
+                fn_802E30C8(base+0xa8,frame);
+                fn_801345D8(buffer,256,base+0xd0,lbl_804A15D0,frame/2);
+                fn_802D08B4(2,2,1);
+                fn_802D07E4(buffer,1);
+            }
         }
-frame_done:;
     } else {
         float *m=(float *)(obj+0x58);
         float end, zero, one;
@@ -379,19 +370,18 @@ void *fn_802678E4(int);
 
 extern int lbl_8055F5BC;
 extern double lbl_805640B0;
-#pragma scheduling invalid_target
+#pragma scheduling reset
 void fn_8027889C(float arg0) {
     float t;
-    float result = 0.0f;
-    t = arg0 / lbl_805640B8;
-    if (t < lbl_805640A8) {
-        result = t - lbl_805640BC;
+    float result;
+    t = arg0 / 0.016683366149663925f;
+    if (t < 0.0f) {
+        result = t - 0.5f;
     } else {
-        result = lbl_805640BC + t;
+        result = 0.5f + t;
     }
     lbl_8055F5C0 = (int)result;
 }
-
 extern float lbl_805640B8, lbl_805640BC;
 #pragma processor 750
 #pragma scheduling off
@@ -404,7 +394,8 @@ void fn_802788E0(float farg0) {
         v = lbl_805640BC + q;
     lbl_8055F5BC = (int)v;
 }
-#pragma scheduling on
+#pragma push
+#pragma scheduling invalid_target
 int fn_80278924(float *arg0, float *arg1) {
     int result = 0;
     float scale = lbl_805640B8;
@@ -413,7 +404,7 @@ int fn_80278924(float *arg0, float *arg1) {
     if (lbl_8055F5C0 >= 0 && lbl_8055F5BC >= lbl_8055F5C0) result = 1;
     return result;
 }
-
+#pragma pop
 void fn_8027888C(char playFlag) {
     /* Set the global scripted-movie playback flag. */
 #define sPlayFlag lbl_8055F5C8
