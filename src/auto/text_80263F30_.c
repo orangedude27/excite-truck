@@ -325,8 +325,6 @@ void fn_80264484(void *arg0) {
     extern char lbl_803464A8[];
     extern char lbl_803464F8[];
     extern unsigned char lbl_80498F78[];
-    int count;
-    void **items;
     void *result;
 
     result = fn_801284F8(0x18, lbl_803464A8);
@@ -334,10 +332,7 @@ void fn_80264484(void *arg0) {
         *(int *)((char *)result + 0x14) = 0;
         *(void **)result = lbl_803464F8;
     }
-    items = *(void ***)(lbl_80498F78 + 0);
-    count = *(int *)(lbl_80498F78 + 4);
-    *(int *)(lbl_80498F78 + 4) = count + 1;
-    items[count] = result;
+    ADD_CREDITS_ITEM(result);
     *(int *)arg0 = 0;
     fn_80264098(arg0, 5);
     *(void **)((char *)arg0 + 8) = result;
