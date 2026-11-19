@@ -301,6 +301,7 @@ void fn_802CEC44(void) {
 #undef sGxSyncDone
 }
 
+#pragma scheduling invalid_target
 void fn_802CEC50(int arg0) {
     extern unsigned long long fn_802E2C9C(void);
     extern float fn_8002FD54(unsigned int, unsigned int);
@@ -312,7 +313,7 @@ void fn_802CEC50(int arg0) {
     extern float lbl_80564F80, lbl_80564F84;
     unsigned long long now;
     unsigned long long delta;
-    float value;
+    float value, prev;
     switch (arg0) {
     case 1:
         now = fn_802E2C9C();
@@ -324,8 +325,9 @@ void fn_802CEC50(int arg0) {
         now = fn_802E2C9C();
         delta = now - (lbl_8055FD14 | ((unsigned long long)lbl_8055FD10 << 32));
         value = lbl_80564F80 * fn_8002FD54((unsigned int)(delta >> 32), (unsigned int)delta);
+        prev = lbl_8055D0B4;
         lbl_8055D0B0 = value;
-        lbl_8055D0B4 = value + lbl_80564F84 * (lbl_8055D0B4 - value);
+        lbl_8055D0B4 = value + lbl_80564F84 * (prev - value);
         fn_802D3900();
         break;
     default:
