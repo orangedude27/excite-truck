@@ -778,7 +778,7 @@ void fn_801E1684(void) {
 }
 
 void fn_801E1688(void) {
-
+    /* Empty stub (returns immediately). */
 }
 
 #pragma push
