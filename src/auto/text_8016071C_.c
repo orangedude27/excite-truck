@@ -218,6 +218,7 @@ int fn_80160AB4(void *alarm) {
     return fn_80160A74();
 }
 #pragma dont_inline reset
+/* Tail-call wrapper that forwards to fn_801607F8. */
 void fn_80160AE4(void) {
     fn_801607F8();
 }
