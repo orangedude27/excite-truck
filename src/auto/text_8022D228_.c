@@ -10,6 +10,7 @@ extern double lbl_805635C8;
 extern char lbl_803401A0[];
 extern float lbl_805635C0;
 extern float lbl_805635C4;
+typedef union { double d; struct { unsigned int hi, lo; } w; } D98C_Bias;
 
 extern char *strcpy(char *, const char *);
 void fn_80128668(void);
@@ -225,8 +226,7 @@ int fn_8022D97C(int *basePtr, int index) {
     return *basePtr + index * 0x28;
 }
 
-#pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8022D98C(void *arg0, int arg1, float arg2, float arg3, float arg4, float arg5, float arg6) {
     float value = arg4;
     volatile int *count = (volatile int *)((char *)arg0 + 0x1C);
@@ -250,7 +250,6 @@ void fn_8022D98C(void *arg0, int arg1, float arg2, float arg3, float arg4, float
     } while (1);
     *(float *)((char *)arg0 + 0x14) = arg4 / (arg3 - arg2);
 }
-#pragma pop
 int fn_8022DA34(int object, int deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
     if (object != 0 && deleteFlag > 0) {
