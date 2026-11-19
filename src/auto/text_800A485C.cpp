@@ -14653,21 +14653,19 @@ extern "C" u8 lbl_80559268;
 static inline void fn_800BC538_setShort(Fn800BC538Obj *obj, s16 *thr, u8 *val) {
     s32 k;
     for (k = 0; k < 12; k++) {
-        obj->shortThr[k] = thr[k];
-        obj->shortVal[k] = val[k];
+        obj->shortThr[k] = *thr++;
+        obj->shortVal[k] = *val++;
     }
 }
 #pragma push
 #pragma use_lmw_stmw on
- extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s16 *arg5, s16 *arg6, u8 *arg7, s16 arg_sp8) {
+extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s16 *arg5, s16 *arg6, u8 *arg7, s16 arg_sp8) {
     Fn800BC538Obj *obj = (Fn800BC538Obj *)arg0;
     Fn800BC538Tbl *tbl = (Fn800BC538Tbl *)&lbl_8031BFA8;
     u8 *p;
     u8 *a;
     u8 *b;
     u8 *band;
-    s16 *ts;
-    u8 *tv;
     s32 i, j, k;
     s32 lim;
     s32 sel;
@@ -14708,23 +14706,17 @@ static inline void fn_800BC538_setShort(Fn800BC538Obj *obj, s16 *thr, u8 *val) {
             s32 mode = obj->mode;
             obj->shortInit = 1;
             if (mode == 0 && obj->sub == 0) {
-                ts = tbl[0].thr; tv = tbl[0].val;
-                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
+                fn_800BC538_setShort(obj, tbl[0].thr, tbl[0].val);
             } else if (mode == 0 && obj->sub == 1) {
-                ts = tbl[1].thr; tv = tbl[1].val;
-                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
+                fn_800BC538_setShort(obj, tbl[1].thr, tbl[1].val);
             } else if (mode == 0 && obj->sub == 2) {
-                ts = tbl[2].thr; tv = tbl[2].val;
-                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
+                fn_800BC538_setShort(obj, tbl[2].thr, tbl[2].val);
             } else if (mode == 1 && obj->sub == 0) {
-                ts = tbl[3].thr; tv = tbl[3].val;
-                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
+                fn_800BC538_setShort(obj, tbl[3].thr, tbl[3].val);
             } else if (mode == 1 && obj->sub == 1) {
-                ts = tbl[4].thr; tv = tbl[4].val;
-                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
+                fn_800BC538_setShort(obj, tbl[4].thr, tbl[4].val);
             } else {
-                ts = tbl[5].thr; tv = tbl[5].val;
-                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
+                fn_800BC538_setShort(obj, tbl[5].thr, tbl[5].val);
             }
         }
         p = arg4;
@@ -14762,14 +14754,11 @@ static inline void fn_800BC538_setShort(Fn800BC538Obj *obj, s16 *thr, u8 *val) {
                 obj->mixVal[k] = (&lbl_80559258)[k];
             }
             if (sub == 0) {
-                ts = tbl[0].thr; tv = tbl[0].val;
-                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
+                fn_800BC538_setShort(obj, tbl[0].thr, tbl[0].val);
             } else if (sub == 1) {
-                ts = tbl[1].thr; tv = tbl[1].val;
-                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
+                fn_800BC538_setShort(obj, tbl[1].thr, tbl[1].val);
             } else {
-                ts = tbl[2].thr; tv = tbl[2].val;
-                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
+                fn_800BC538_setShort(obj, tbl[2].thr, tbl[2].val);
             }
         } else {
             s16 sub = obj->sub;
@@ -14778,14 +14767,11 @@ static inline void fn_800BC538_setShort(Fn800BC538Obj *obj, s16 *thr, u8 *val) {
                 obj->mixVal[k] = (&lbl_80559268)[k];
             }
             if (sub == 0) {
-                ts = tbl[3].thr; tv = tbl[3].val;
-                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
+                fn_800BC538_setShort(obj, tbl[3].thr, tbl[3].val);
             } else if (sub == 1) {
-                ts = tbl[4].thr; tv = tbl[4].val;
-                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
+                fn_800BC538_setShort(obj, tbl[4].thr, tbl[4].val);
             } else {
-                ts = tbl[5].thr; tv = tbl[5].val;
-                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
+                fn_800BC538_setShort(obj, tbl[5].thr, tbl[5].val);
             }
         }
     }
