@@ -258,6 +258,7 @@ void *fn_801D2008(void *arg0) {
     return result;
 }
 #pragma pop
+/* Tail-call trampoline into fn_8012C4D8. */
 void fn_801D21B4(void) {
     fn_8012C4D8();
 }
