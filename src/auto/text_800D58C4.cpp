@@ -2245,7 +2245,6 @@ extern "C" s32 fn_800D947C(void* arg0) {
     return low4 + top;
 }
 
-namespace nw4hbm { namespace lyt { struct Material { s32 GetIndTexSRTAry(); }; }}
 extern "C" s32 GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(void *arg0) {
     register u32 x = *(u32*)((u8*)arg0 + 0x4C);
     register s32 base = *(s32*)((u8*)arg0 + 0x58);
