@@ -116,7 +116,7 @@ void fn_802DB3FC(void) {
     GXSetTevAlphaIn(3, 7, 0, 4, 7);
 }
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802DB4E4(void) {
     volatile int m[16];
     float *p = (float *)&m[8];
