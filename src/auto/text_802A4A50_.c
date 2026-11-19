@@ -814,12 +814,13 @@ extern s32 lbl_8055F890;
 s32 fn_802A7680(s32);
 #pragma scheduling on
 s32 fn_802A5B8C(s32 arg0, s32 arg1) {
-    s32 temp;
+    s32 v3, temp;
     s32 *p = (s32 *)arg0;
     if (arg0 != 0) {
         fn_802CAC54(p[4]);
+        v3 = p[3];
         p[4] = -1;
-        fn_802CAC54(p[3]);
+        fn_802CAC54(v3);
         temp = p[0];
         p[3] = -1;
         if (temp != 0) fn_80128670(temp - 0x10);
@@ -829,11 +830,12 @@ s32 fn_802A5B8C(s32 arg0, s32 arg1) {
     return arg0;
 }
 #pragma opt_propagation off
+#pragma scheduling off
 void fn_802A5C1C(void *arg0) {
-    f32 zero = lbl_80564858;
-    f32 a = lbl_8056485C;
-    f32 b = lbl_80564850;
-    f32 c = lbl_80564888;
+    register float zero = 0.0f;
+    register float a = 1.0f;
+    f32 b = 0.5f;
+    f32 c = 5.0f;
     *(f32 *)((u8 *)arg0 + 0x20) = a;
     *(f32 *)((u8 *)arg0 + 0x24) = b;
     *(f32 *)((u8 *)arg0 + 0x28) = c;
@@ -866,6 +868,7 @@ extern void fn_802A6408(void *);
 extern void fn_802A6790(void *);
 #pragma scheduling invalid_target
 void fn_802A5CA4(void *arg0) {
+#pragma scheduling invalid_target
     struct Obj { u8 pad0[0x1C]; s32 model; u8 pad20[0x0C]; f32 pos[3]; f32 axis[3]; f32 scaled[3]; f32 base[3]; };
     struct Work { f32 input[3]; f32 cross[3]; f32 transformed[3]; s32 pad; s32 matrix[12]; } w;
     register f32 *m = (f32 *)w.matrix;
@@ -881,7 +884,7 @@ void fn_802A5CA4(void *arg0) {
     a=source[11]; w.matrix[11]=a;
     fn_802A62CC(obj, w.matrix[9]);
     {
-        register f32 y=lbl_80564874, x=lbl_80564858, z=lbl_80564858;
+        f32 y=lbl_80564874, x=lbl_80564858, z=lbl_80564858;
         w.input[0]=x; w.input[1]=y; w.input[2]=z;
         if (obj->base==&w.input[0]) {
             f32 xy1=y*m[1];
@@ -941,7 +944,7 @@ void fn_802A5FE4(void *arg0) {
     Obj802A5FE4 *o = (Obj802A5FE4 *)arg0;
     f32 saved;
     s32 scaled, t;
-    f32 c884, c888, one;
+    f32 one, c888, c884;
     s32 j, i;
     if (o->count >= 1) {
         saved = fn_802C9A4C(lbl_8055F880);
@@ -962,9 +965,9 @@ void fn_802A5FE4(void *arg0) {
         fn_802C8D74();
         fn_802C9A4C(saved);
         fn_802C90F0(o->unk10);
-        c884 = lbl_80564884;
-        c888 = lbl_80564888;
         one = lbl_8056485C;
+        c888 = lbl_80564888;
+        c884 = lbl_80564884;
         i = 0;
         while (i < lbl_8055CFF0 / 64 + 1) {
             j = 0;
@@ -1273,35 +1276,33 @@ s32 fn_802A6A44(s32 *arg0) {
 #pragma scheduling on
 extern f32 lbl_805648A4;
 #pragma scheduling invalid_target
-#pragma opt_propagation off
 void fn_802A6A7C(void *arg0) {
     struct Obj { u8 pad0[0x10]; s32 model; u8 pad14[0xC]; f32 pos[3]; f32 vel[3]; f32 axis[3]; } *obj = (struct Obj *)arg0;
     f32 *m = (f32 *)fn_801E8718(obj->model);
     f32 disp[3];
     f32 in[3];
+    f32 x;
     fn_802A6E34(obj);
-    {
-        f32 y = lbl_8056485C, x = lbl_80564858;
-        in[0] = x; in[1] = y; in[2] = x;
-        if (obj->axis == &in[0]) {
-            f32 xy1 = y * m[1];
-            f32 xx0 = x * m[0];
-            f32 xx1 = x * m[3];
-            f32 yy4 = y * m[4];
-            f32 xx2 = x * m[6];
-            f32 yy5 = y * m[7];
-            f32 s0 = xx0 + xy1;
-            f32 s1 = xx1 + yy4;
-            f32 s2 = xx2 + yy5;
-            f32 o0 = x * m[2] + s0;
-            f32 o1 = x * m[5] + s1;
-            f32 o2 = x * m[8] + s2;
-            obj->axis[0] = o0; obj->axis[1] = o1; obj->axis[2] = o2;
-        } else {
-            obj->axis[0] = in[2] * m[2] + (in[0] * m[0] + in[1] * m[1]);
-            obj->axis[1] = in[2] * m[5] + (in[0] * m[3] + in[1] * m[4]);
-            obj->axis[2] = in[2] * m[8] + (in[0] * m[6] + in[1] * m[7]);
-        }
+    x = lbl_80564858;
+    in[0] = x; in[1] = lbl_8056485C; in[2] = x;
+    if (obj->axis == &in[0]) {
+        f32 m1 = m[1];
+        f32 m0 = m[0];
+        f32 m3 = m[3];
+        f32 m4 = m[4];
+        f32 m6 = m[6];
+        f32 m7 = m[7];
+        f32 m2 = m[2];
+        f32 m5 = m[5];
+        f32 m8 = m[8];
+        f32 y = lbl_8056485C;
+        obj->axis[0] = (x * m2) + ((x * m0) + (y * m1));
+        obj->axis[1] = (x * m5) + ((x * m3) + (y * m4));
+        obj->axis[2] = (x * m8) + ((x * m6) + (y * m7));
+    } else {
+        obj->axis[0] = in[2] * m[2] + (in[0] * m[0] + in[1] * m[1]);
+        obj->axis[1] = in[2] * m[5] + (in[0] * m[3] + in[1] * m[4]);
+        obj->axis[2] = in[2] * m[8] + (in[0] * m[6] + in[1] * m[7]);
     }
     if (fn_801E8758(obj->model) == 0) {
         f32 s;
@@ -1348,7 +1349,6 @@ void fn_802A6A7C(void *arg0) {
     obj->pos[1] = m[10];
     obj->pos[2] = m[11];
 }
-#pragma opt_propagation reset
 extern float lbl_8055F884;
 extern float lbl_805648B4;
 extern float fn_802C9A4C(float);
