@@ -650,7 +650,7 @@ extern void fn_80233010(int, int, int, int, int, float, float, float, float, flo
 extern int fn_800167F4(void);
 extern void fn_80130FCC(void *, int, int);
 extern void fn_80130980(void *, int, int, float);
-extern void *fn_8001BB58(int, int, int);
+extern void *fn_8001BB58();
 extern char *__AXGetStackHead(void);
 extern int fn_8001BA6C(int);
 extern signed char lbl_8055D671;
@@ -673,6 +673,7 @@ void fn_800209A0(int arg0, float arg1) {
     int textId;
     void *res;
     char ch;
+    char *base = lbl_802FE138;
 
     f5 = fn_802C9A58() != 0 ? lbl_80560500 : lbl_805604B4;
     t0 = (f32)lbl_8055CFF0;
@@ -729,7 +730,7 @@ g1done:
         f26b = (f32)lbl_8055CFF0 * (lbl_8056051C * g) - lbl_80560528;
         fn_80011280(alpha, lbl_8055D658, f26b, f25b, lbl_8056052C);
         if (lbl_8055D671 == 0) {
-            fn_801312EC(&lbl_8035BAF0, &lbl_802FE138[0x1a8]);
+            fn_801312EC(&lbl_8035BAF0, &base[0x1a8]);
             lbl_8055D671 = 1;
         }
         if (lbl_8035BAF0.f8 != lbl_8055E044) fn_80131318();
@@ -792,12 +793,12 @@ g2done:
                 buf[0] = 0;
                 break;
             case 6:
-                textId = fn_80131234(&lbl_802FE138[0x1b4]);
+                textId = fn_80131234(&base[0x1b4]);
                 fn_80130FCC(buf, 0x40, lbl_8035BAD8.f8);
                 break;
             case 7:
                 if (fn_800167F4() == 1) {
-                    textId = fn_80131234(&lbl_802FE138[0x1c4]);
+                    textId = fn_80131234(&base[0x1c4]);
                     fn_80130FCC(buf, 0x40, lbl_8035BAD8.f4);
                 } else {
                     buf[0] = 0;
@@ -805,7 +806,7 @@ g2done:
                 break;
             case 8:
                 if (fn_800167F4() == 1) {
-                    textId = fn_80131234(&lbl_802FE138[0x1d4]);
+                    textId = fn_80131234(&base[0x1d4]);
                     fn_80130980(buf, 0x40, 2, lbl_8035BAD8.f0);
                 } else {
                     buf[0] = 0;
@@ -830,7 +831,7 @@ g2done:
                     } while (n > 0);
                     if (n <= 0) d[-1] = 0;
                 }
-                textId = fn_80131234(&lbl_802FE138[0x1e8]);
+                textId = fn_80131234(&base[0x1e8]);
                 break;
             case 10:
                 res = fn_8001BB58(lbl_8055D668, lbl_8055D66C, 0);
@@ -848,7 +849,7 @@ g2done:
                     } while (n > 0);
                     if (n <= 0) d[-1] = 0;
                 }
-                textId = fn_80131234(&lbl_802FE138[0x1fc]);
+                textId = fn_80131234(&base[0x1fc]);
                 break;
             default:
                 buf[0] = 0;
