@@ -252,6 +252,7 @@ void fn_801765B8(void) {
 }
 
 #pragma dont_inline on
+/* Step the physics state machine once. */
 void fn_80176610(void) {
     fn_80176CC8();
 }
