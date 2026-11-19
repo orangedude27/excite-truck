@@ -358,23 +358,24 @@ long fn_8017EAF4(long);
 long fn_8017EAFC(long);
 long fn_8017EB04(long);
 void fn_8017DEE0(void *, long, long, short, float);
-void fn_8017DA8C(void *arg0) {
-    float sp[3];
-    int flags;
+void fn_8017DA8C(void *body) {
+    /* Reset the ball body to its target's spawn position and clear movement/placement state. */
+    float spawnPos[3];
+    int enabled;
     fn_8017B164();
-    fn_8017D380(sp, *(int *)((char *)arg0 + 0x1F8));
-    *(float *)((char *)arg0 + 0x60) = sp[0];
-    *(float *)((char *)arg0 + 0x64) = sp[1];
-    *(float *)((char *)arg0 + 0x68) = sp[2];
-    fn_8017A580(arg0);
-    *((char *)arg0 + 0x1E9) = 0;
-    flags = (lbl_8055D430 & 1) && (lbl_8055D430 & 8);
-    if (flags != 0) {
-        *(int *)((char *)arg0 + 0x1F0) = 0;
-        *(float *)((char *)arg0 + 0x1F4) = lbl_80561C0C + fn_8017D378();
+    fn_8017D380(spawnPos, *(int *)((char *)body + 0x1F8));
+    *(float *)((char *)body + 0x60) = spawnPos[0];
+    *(float *)((char *)body + 0x64) = spawnPos[1];
+    *(float *)((char *)body + 0x68) = spawnPos[2];
+    fn_8017A580(body);
+    *((char *)body + 0x1E9) = 0;
+    enabled = (lbl_8055D430 & 1) && (lbl_8055D430 & 8);
+    if (enabled != 0) {
+        *(int *)((char *)body + 0x1F0) = 0;
+        *(float *)((char *)body + 0x1F4) = lbl_80561C0C + fn_8017D378();
     }
-    *((char *)arg0 + 0x1FC) = 0;
-    *((char *)arg0 + 0x1FE) = 0;
+    *((char *)body + 0x1FC) = 0;
+    *((char *)body + 0x1FE) = 0;
 }
 
 extern void fn_8017D404(float *, int, float, float, int);
@@ -795,9 +796,9 @@ void fn_8017E764(void *arg0, int arg1) {
         t0 = *(unsigned int *)(src + 0x9C);
         *(unsigned int *)(dst + 0x2C) = t0;
     } else {
-        float tmp[12];
         float *a = (float *)(src + 0x70);
         float *b = (float *)(src + 0xA0);
+        float tmp[12];
         int i;
         for (i = 0; i < 2; i++) {
             float a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5];
