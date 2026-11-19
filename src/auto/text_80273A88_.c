@@ -91,7 +91,7 @@ void fn_80273B48(void) {
 
 #pragma scheduling invalid_target
 /* Applies a conditional Y-axis rotation to this object's local transform when it has a linked object. */
-#pragma dont_inline fn_80273B4C
+#pragma dont_inline on
 void fn_80273B4C(void *arg0) {
     extern void fn_80015A20(void *, float *, float, float);
     extern void fn_80015B20(void *, void *, void *);
@@ -115,6 +115,7 @@ void fn_80273B4C(void *arg0) {
         fn_80015B20(transform, rotationMatrix, transform);
     }
 }
+#pragma dont_inline reset
 
 #pragma push
 #pragma processor 750
