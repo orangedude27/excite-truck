@@ -259,17 +259,17 @@ void fn_8018185C(void *arg0, const float *arg1) {
     out[5] = t + second * (out[10] * out[10]);
     out[4] = out[6] + (-2.0f * second) * out[10];
 }
-#pragma scheduling invalid_target
+#pragma scheduling on
 
-void fn_801819A0(void *dst, void *arg1, void *arg2, float scale, float farg1, float farg2) {
+void fn_801819A0(void *dst, float * __restrict arg1, void *arg2, float scale, float farg1, float farg2) {
     float a, b, c, d;
     float values[6];
-    a = *(float *)((char *)arg1 + 0x54);
-    b = *(float *)((char *)arg1 + 0x50);
-    c = *(float *)((char *)arg1 + 0x5C);
-    d = *(float *)((char *)arg1 + 0x58);
-    values[4] = *(float *)((char *)arg1 + 0x68);
-    values[5] = *(float *)((char *)arg1 + 0x60);
+    a = arg1[0x54 / 4];
+    b = arg1[0x50 / 4];
+    c = arg1[0x5C / 4];
+    d = arg1[0x58 / 4];
+    values[4] = arg1[0x68 / 4];
+    values[5] = arg1[0x60 / 4];
     values[0] = (a * scale) / lbl_80561CC4;
     values[2] = (b * scale) / lbl_80561CC8;
     values[1] = c * farg2;
