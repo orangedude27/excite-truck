@@ -436,8 +436,7 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *);
 extern "C" void fn_80112528(void *, const u16 *, s32);
 extern "C" void fn_80112960(void *, void *);
 extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2);
-#pragma cplusplus reset
-extern void fn_800DD70C(u8 *self) {
+extern "C" void fn_800DD70C(register u8 *self) {
     CWBuf w;
     f32 bounds[4];
     f32 line[4];
