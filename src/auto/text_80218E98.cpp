@@ -5022,11 +5022,11 @@ extern "C" void fn_80220A50(void *arg0, s32 arg1) {
     register s32 frame = arg1;
     register s32 field4 = *(s32 *)((u8 *)arg0 + 4);
     register s32 field250 = *(s32 *)((u8 *)arg0 + 0x250);
-    s32 duration = ((Dispatch *)arg0)->get();
+    s32 span = ((Dispatch *)arg0)->get() - 10;
     register s32 range = *(volatile s32 *)((u8 *)arg0 + 0x254);
     register s32 time = frame - field4 - 5;
     register s32 distance = range - field250;
-    register s32 result = field250 + distance * time / (duration - 10);
+    register s32 result = field250 + distance * time / span;
     result = result < field250 ? field250 : result;
     register s32 max = *(volatile s32 *)((u8 *)arg0 + 0x254);
     max -= 1;
