@@ -160,13 +160,12 @@ void fn_80202BFC(s32 mapSlot) {
 
 #pragma scheduling invalid_target
 void fn_80202D50(f32 *arg0) {
-    f32 mag, inv, y, ny, lo, t, th;
+    f32 y, mag, inv, ny, lo, t, th;
     s32 i, n, r;
     lbl_8048897C_entry *e;
     lbl_8048897C_entry *a;
     lbl_8048897C_entry *b;
     s32 ha, hb;
-    f64 bias;
     union { f64 d; u32 w[2]; } cvt1, cvt2;
     cvt1.w[0] = 0x43300000;
     cvt2.w[0] = 0x43300000;
@@ -232,7 +231,7 @@ void fn_80202F58(void *arg0, void *arg1, void *arg2) {
     f32 scale, zero, one;
     u32 copy0, copy1;
 
-    if ((f32)__fabs((double)(*(f32 *)((u8 *)arg1 + 0x1C))) < lbl_805630F0) {
+    if ((f32)__fabs((double)(*(f32 *)((u8 *)arg1 + 0x1C))) < 0.999f) {
         temp_f6 = (*(f32 *)((u8 *)arg0 + 0)) - (*(f32 *)((u8 *)arg1 + 0x24));
         temp_f3 = (*(f32 *)((u8 *)arg0 + 8)) - (*(f32 *)((u8 *)arg1 + 0x2C));
         temp_f5 = (*(f32 *)((u8 *)arg0 + 4));
@@ -675,6 +674,8 @@ void fn_80203A88(void* arg0, s32 arg1, unk_80203A88_dest* arg2) {
         fn_802D306C(0);
     }
 }
+#pragma push
+#pragma scheduling on
 void fn_80203B20(void *arg0, void *arg1, s32 arg2) {
     u8 stack[0x60];
     fn_802CB274(lbl_8055ECFC);
@@ -702,7 +703,7 @@ void fn_80203B20(void *arg0, void *arg1, s32 arg2) {
     if (fn_80202BE4() == 0 && arg2 != 0)
         fn_80203A88(arg1, (s32)arg0, (unk_80203A88_dest *)stack);
     fn_802C9294(-1, 0);
-    *(u8 *)&lbl_8055ED08 = __rlwinm(__cntlzw(*(u8 *)&lbl_8055ED08), 27, 5, 31);
+    lbl_8055ED08 = (u8)__cntlzw(lbl_8055ED08) / 32;
 }
 #pragma pop
 extern s32 fn_8012C33C(char *);
