@@ -1129,9 +1129,9 @@ extern "C" void *CreateAnimTransform__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16Re
             }
             }
             if (result) {
-                void *it=(char *)self+8;
+                void *it=((LLHead *)self)->term;
                 if (result==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F8C0,0x233,lbl_8031F89C);
-                Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)self+4,(void **)&it,(char *)result+4);
+                Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&((LLHead *)self)->list,(void **)&it,(char *)result+4);
             }
             break;
         }
@@ -3343,7 +3343,6 @@ extern "C" void AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane(void* arg0, 
     *(void**)((u8*)child + 0xC) = parent;
 }
 
-extern "C" f32 lbl_80560EA8;
 extern "C" void fn_800DB76C(f32 *out, void *self, f32 *arg2) {
     struct VR2 {
         f32 x;
