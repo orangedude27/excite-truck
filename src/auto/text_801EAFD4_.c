@@ -704,6 +704,7 @@ extern "C" void fn_801EBCAC(void) {
     }
 }
 #pragma cplusplus reset
+/* Empty stub. */
 void fn_801EBD14(void) {
 
 }
