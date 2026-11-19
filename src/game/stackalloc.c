@@ -454,28 +454,31 @@ void fn_802DA1F4(int arg0, void *arg1, int arg2) {
 
 #pragma push
 #pragma scheduling invalid_target
+/* Initializes the global BoneHandleAlloc stack allocator and its associated bone
+ * matrix tables, setting the main table to repeated identity-like 4-float blocks
+ * and the tail table to a 3x3 identity diagonal. */
 void fn_802DA2F4(void) {
-    void *object;
-    void *buffer;
+    void *alloc;
+    void *arena;
     float *matrix;
     int count;
     int i;
     float value1;
     float value0;
-    float *last;
-    object = fn_801284F8(0x28, lbl_8055D128);
-    if (object != 0) {
-        buffer = (void *)fn_8012850C(0x19000, lbl_8034C908);
-        *(void **)((char *)object + 8) = lbl_8034C8F8;
-        *(int *)((char *)object + 0x10) = 0;
-        *(int *)((char *)object + 0xC) = 0x19000;
-        *(void **)((char *)object + 4) = buffer;
-        *(void **)object = lbl_8034C8E8;
-        *(void **)((char *)object + 0x14) = (void *)fn_802D9C5C;
-        *(void **)((char *)object + 0x18) = (void *)fn_802D9DE4;
-        *(void **)((char *)object + 0x1C) = (void *)fn_802DA1F4;
+    float *tail;
+    alloc = fn_801284F8(0x28, lbl_8055D128);
+    if (alloc != 0) {
+        arena = (void *)fn_8012850C(0x19000, lbl_8034C908);
+        *(void **)((char *)alloc + 8) = lbl_8034C8F8;
+        *(int *)((char *)alloc + 0x10) = 0;
+        *(int *)((char *)alloc + 0xC) = 0x19000;
+        *(void **)((char *)alloc + 4) = arena;
+        *(void **)alloc = lbl_8034C8E8;
+        *(void **)((char *)alloc + 0x14) = (void *)fn_802D9C5C;
+        *(void **)((char *)alloc + 0x18) = (void *)fn_802D9DE4;
+        *(void **)((char *)alloc + 0x1C) = (void *)fn_802DA1F4;
     }
-    lbl_8055FE5C = object;
+    lbl_8055FE5C = alloc;
     value0 = lbl_80565030;
     value1 = lbl_80565034;
     matrix = lbl_804DAC48;
@@ -509,16 +512,16 @@ void fn_802DA2F4(void) {
     }
     value1 = lbl_80565030;
     value0 = lbl_80565034;
-    last = lbl_804DB434;
-    *last++ = value1;
-    *last++ = value0;
-    *last++ = value0;
-    *last++ = value0;
-    *last++ = value1;
-    *last++ = value0;
-    *last++ = value0;
-    *last++ = value0;
-    *last = value1;
+    tail = lbl_804DB434;
+    *tail++ = value1;
+    *tail++ = value0;
+    *tail++ = value0;
+    *tail++ = value0;
+    *tail++ = value1;
+    *tail++ = value0;
+    *tail++ = value0;
+    *tail++ = value0;
+    *tail = value1;
 }
 #pragma pop
 /* Destructor-like cleanup for the stack allocator object: installs its vtable, frees the owned buffer, and optionally deletes the object. */
