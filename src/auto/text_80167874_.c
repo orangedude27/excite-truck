@@ -1303,20 +1303,23 @@ s32 fn_801698B8(s32 xIndex, s32 yIndex, s32 xCount, s32 yCount) {
     return tier;
 }
 
-s32 fn_80169928(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 ret;
-    if (arg1 > arg3 - arg1)
-        arg1 = arg3 - arg1;
-    if (arg0 > arg2 - arg0)
-        arg0 = arg2 - arg0;
-    if (arg1 < arg0)
-        arg0 = arg1;
-    if (arg0 > 2)
+/* Returns a tier (1-3) based on the nearest distance of (x, y) to the edges
+ * of an xSize by ySize area: 3 if within 2, 2 if exactly 2, otherwise 1. */
+s32 fn_80169928(s32 x, s32 y, s32 xSize, s32 ySize) {
+    s32 tier;
+
+    if (y > ySize - y)
+        y = ySize - y;
+    if (x > xSize - x)
+        x = xSize - x;
+    if (y < x)
+        x = y;
+    if (x > 2)
         return 3;
-    ret = 1;
-    if (arg0 > 1)
-        ret = 2;
-    return ret;
+    tier = 1;
+    if (x > 1)
+        tier = 2;
+    return tier;
 }
 
 extern s32 lbl_8055A198;
