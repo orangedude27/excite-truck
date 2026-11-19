@@ -169,12 +169,11 @@ typedef u32 (*ReadFn)(void*, void*, u32);
 #pragma push
 #pragma opt_propagation off
 extern "C" s32 CancelAsync__Q36nw4hbm2ut10FileStreamFPFlPQ36nw4hbm2ut8IOStreamPv_vPv_801075D0(nw4hbm::ut::FileStream3* this_) {
-    register const char *file = lbl_803285B8;
     if (this_->Wait() == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x66, file + 0x5C);
+        Panic__Q26nw4hbm2dbFPCciPCce(sFile, 0x66, sWrite);
     }
     if (this_->Cancel() == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x67, file + 0x34);
+        Panic__Q26nw4hbm2dbFPCciPCce(sFile, 0x67, sAsync);
     }
     return 0;
 }
