@@ -7420,11 +7420,9 @@ void bta_hh_cback(u8 arg0, u8 arg1, u32 arg2, BT_HDR *arg3) {
     case 6:
     case 7:
     case 8:
-        xx = 0;
-        while (xx < 9) {
+        for (xx = 0; xx < 18; xx++) {
             u8 *e = lbl_803C0D48 + (xx << 5);
             if (arg0 == e[0x26]) { e[0x27] = 1; break; }
-            xx++;
         }
         break;
     default: break;
@@ -12761,10 +12759,13 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
     u8 *p_setup;
     u16 temp_pkt;
     u16 req;
-    tBTM_STATUS status;
-    if (sco_inx >= 3) { status = BTM_WRONG_MODE; goto done; }
+    if (sco_inx >= 3) {
+        return BTM_WRONG_MODE;
+    }
     p_sco = lbl_803C0F78 + sco_inx * 0x34;
-    if (*(u16 *)(p_sco + 0x185C) != 4) { status = BTM_WRONG_MODE; goto done; }
+    if (*(u16 *)(p_sco + 0x185C) != 4) {
+        return BTM_WRONG_MODE;
+    }
     p_setup = p_sco + 0x1868;
     if (*(u8 *)(p_sco + 0x1882) == 0 || lbl_803C0F78[0x1908] == 0) {
         *(u16 *)(p_setup + 0xC) = (*(u16 *)(pp + 2) & (*(u16 *)(lbl_803C0F78 + 0x656) & 7));
@@ -12772,11 +12773,9 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
             fn_8007096C(0xD0002, strBase + 0x248, *(u16 *)(p_sco + 0x185E), *(u16 *)(p_setup + 0xC));
         }
         if (btsnd_hcic_change_conn_type(*(u16 *)(p_sco + 0x185E), (*(u16 *)(p_setup + 0xC) << 5) & 0xE0) == 0) {
-            status = BTM_NO_RESOURCES;
-        } else {
-            status = BTM_CMD_STARTED;
+            return BTM_NO_RESOURCES;
         }
-        goto done;
+        return BTM_CMD_STARTED;
     }
     req = *(u16 *)(pp + 2);
     temp_pkt = ((req & *(u16 *)(lbl_803C0F78 + 0x656)) & 0x3F);
@@ -12790,13 +12789,10 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
         fn_800709CC(0xD0002, strBase + 0x8C, *(u32 *)(p_sco + 0x1868), *(u32 *)(p_setup + 4), *(u16 *)(pp + 0), *(u16 *)(p_setup + 0xA), *(pp + 4), temp_pkt);
     }
     if (btsnd_hcic_setup_esco_conn(*(u16 *)(p_sco + 0x185E), *(u32 *)(p_sco + 0x1868), *(u32 *)(p_setup + 4), *(u16 *)(pp + 0), *(u16 *)(p_setup + 0xA), *(pp + 4), temp_pkt) == 0) {
-        status = BTM_NO_RESOURCES;
-        goto done;
+        return BTM_NO_RESOURCES;
     }
     *(u16 *)(pp + 2) = temp_pkt;
-    status = BTM_CMD_STARTED;
-done:
-    return status;
+    return BTM_CMD_STARTED;
 }
 
 extern u8 lbl_80316834[];
@@ -24728,16 +24724,17 @@ void rfc_send_pn(void *p_mcb, s32 dlci, s32 is_command, s32 mtu, s32 cl, s32 k) 
     rfc_send_buf_uih(p_mcb, 0, (BT_HDR *)buf);
 }
 
-void rfc_send_fcon(void *arg0, s32 arg1, void *arg2) {
+/* Send an RFCOMM flow-control-on (FCON) multiplexer control command/response. */
+void rfc_send_fcon(void *p_mcb, s32 is_command, void *unused) {
     BT_HDR *p_buf;
     UINT8 *p_data;
     if ((p_buf = (BT_HDR *)GKI_getpoolbuf(2)) == NULL) return;
     p_buf->offset = 12;
     p_data = (UINT8 *)(p_buf + 1) + p_buf->offset;
-    *p_data++ = (UINT8)(0xa1 | (arg1 ? 2 : 0));
+    *p_data++ = (UINT8)(0xa1 | (is_command ? 2 : 0));
     *p_data = 1;
     p_buf->len = 2;
-    rfc_send_buf_uih(arg0, 0, p_buf);
+    rfc_send_buf_uih(p_mcb, 0, p_buf);
 }
 
 void rfc_send_fcon_80093FDC(void *arg0, s32 arg1) {
