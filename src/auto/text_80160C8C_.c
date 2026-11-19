@@ -1399,8 +1399,9 @@ done:
     return challengeCount;
 }
 #pragma pop
-s32 fn_8016212C(s32 arg0) {
-    return fn_801613E0(arg0);
+/* Tail-call wrapper that forwards to fn_801613E0. */
+s32 fn_8016212C(s32 eventId) {
+    return fn_801613E0(eventId);
 }
 
 int fn_80162130(int object, int deleteFlag) {
