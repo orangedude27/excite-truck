@@ -1118,14 +1118,10 @@ static inline f32 PSQUATMultiply_f32(void *a, void *b) {
     return PSQUATMultiply(a, b);
 }
 extern "C" f32 lbl_80561498, lbl_805614A4;
-#pragma pack(push, 1)
-struct Spill8013 { float o0, o1, o2, o3, o4, o5, m0, m1, m2; };
-#pragma pack(pop)
 #pragma push
 #pragma processor 750
 extern "C" void fn_8013E19C(void *arg0, float arg1) {
-    struct S { float o0, o1, o2, o3, o4, o5, m0, m1, m2; };
-    S s;
+    int s[9];
     float *p = (float *)arg0;
     float unit = lbl_805614A4;
     void *other = (char *)arg0 + 0xC;
@@ -1144,9 +1140,9 @@ extern "C" void fn_8013E19C(void *arg0, float arg1) {
     float bx = b - x;
     float by = d - y;
     float bz = g - z;
-    s.m2 = x;
-    s.m0 = z;
-    s.m1 = y;
+    *(float *)&s[2] = x;
+    *(float *)&s[0] = z;
+    *(float *)&s[1] = y;
     float ax = a - x;
     float ay = c - y;
     float az = e - z;
@@ -1156,12 +1152,12 @@ extern "C" void fn_8013E19C(void *arg0, float arg1) {
     float rx = x + t * ax;
     float ry = y + t * ay;
     float rz = z + t * az;
-    s.o5 = qx;
-    s.o3 = qz;
-    s.o4 = qy;
-    s.o0 = rz;
-    s.o1 = ry;
-    s.o2 = rx;
+    *(float *)&s[5] = qx;
+    *(float *)&s[3] = qz;
+    *(float *)&s[4] = qy;
+    *(float *)&s[0] = rz;
+    *(float *)&s[1] = ry;
+    *(float *)&s[2] = rx;
     p[2] = qx;
     p[0] = qz;
     p[1] = qy;
