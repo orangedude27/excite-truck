@@ -1,19 +1,11 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-#pragma cplusplus on
-inline void *operator new(unsigned long, void *ptr) { return ptr; }
 typedef struct InitArrayB59D4 {
     void **data;
     int count, capacity;
     void *storage[16];
-    InitArrayB59D4() {
-        data = storage;
-        capacity = 16;
-        count = 0;
-    }
 } InitArrayB59D4;
-#pragma cplusplus reset
 extern unsigned char lbl_804BE448[];
 __declspec(section ".sdata") extern unsigned char lbl_8055F9E0[];
 extern void fn_8000D838(void *);
