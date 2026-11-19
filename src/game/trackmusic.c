@@ -474,21 +474,22 @@ extern "C" void fn_8020FCC4(void) {
 
 extern char *strncpy(char *, const char *, unsigned long);
 #pragma dont_inline on
-void fn_8020FDE4(long arg0, const char *arg1, register char *arg2) {
-    char *block;
+void fn_8020FDE4(long trackId, const char *name, register char *slotKey) {
+    /* Initialize a track-music slot: store the track id, copy the display name, and copy the slot key (truncated to 0x20). */
+    char *entry;
     long remaining;
-    char *dst;
-    unsigned char value;
+    char *keyDst;
+    unsigned char ch;
 
-    block = (char *)((void *(*)(char *))fn_8020FAF0)(arg2);
-    memset(block, 0, 4);
-    *(long *)block = arg0;
-    strncpy(block + 0x24, arg1, 0x3F);
-    dst = block + 4;
+    entry = (char *)((void *(*)(char *))fn_8020FAF0)(slotKey);
+    memset(entry, 0, 4);
+    *(long *)entry = trackId;
+    strncpy(entry + 0x24, name, 0x3F);
+    keyDst = entry + 4;
     remaining = 0x20;
-    while ((signed char)(value = (unsigned char)*arg2++, *dst++ = value) != 0) {
+    while ((signed char)(ch = (unsigned char)*slotKey++, *keyDst++ = ch) != 0) {
         if (--remaining <= 0) {
-            dst[-1] = 0;
+            keyDst[-1] = 0;
             break;
         }
     }
