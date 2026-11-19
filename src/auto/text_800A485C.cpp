@@ -3127,6 +3127,7 @@ extern "C" void VFiPFCACHE_FreeFATPage(void *cache, void *pagePtr) {
 }
 
 extern "C" void VFiPFCACHE_FreeFATPage_800A8E10(void *cache, void *pagePtr) {
+    /* Clear a FAT cache page and remove or relink it in the cache's page list at offset 0x1634. */
     u8 *page = (u8 *)pagePtr;
     void *head = *(void **)((u8 *)cache + 0x1634);
     void *nextHead;
