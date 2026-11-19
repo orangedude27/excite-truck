@@ -251,6 +251,7 @@ void fn_801D1B0C(void) {
     lbl_8055E918 = 0;
 }
 
+/* No-op stub. */
 void fn_801D1B44(void) {
 
 }
