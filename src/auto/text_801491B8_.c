@@ -4874,6 +4874,7 @@ extern "C" void fn_80155700(void *arg0, void *arg1, s32 index) {
 }
 #pragma cplusplus off
 
+/* Empty stub. */
 void fn_80155AEC(void) {
 
 }
