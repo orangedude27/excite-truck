@@ -174,10 +174,6 @@ extern void fn_802C8D74(void);
 extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8E48(void);
 static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *dst, f32 x, f32 y, f32 z) {
-    f32 outX;
-    f32 outY;
-    f32 outZ;
-
     if (src == dst) {
         f32 xy3 = y * matrix[3];
         f32 xx0 = x * matrix[0];
@@ -185,20 +181,20 @@ static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *
         f32 yy4 = y * matrix[4];
         f32 xx2 = x * matrix[2];
         f32 yy5 = y * matrix[5];
-        outX = (xx0 + xy3) + z * matrix[6];
-        outY = (xx1 + yy4) + z * matrix[7];
-        outZ = (xx2 + yy5) + z * matrix[8];
+        dst[0] = (xx0 + xy3) + z * matrix[6];
+        dst[1] = (xx1 + yy4) + z * matrix[7];
+        dst[2] = (xx2 + yy5) + z * matrix[8];
     } else {
         x = src[0];
         y = src[1];
         z = src[2];
-        outX = x * matrix[0] + y * matrix[3] + z * matrix[6];
-        outY = x * matrix[1] + y * matrix[4] + z * matrix[7];
-        outZ = x * matrix[2] + y * matrix[5] + z * matrix[8];
+        dst[0] = x * matrix[0] + y * matrix[3] + z * matrix[6];
+        dst[1] = x * matrix[1] + y * matrix[4] + z * matrix[7];
+        dst[2] = x * matrix[2] + y * matrix[5] + z * matrix[8];
     }
-    dst[0] = outX + matrix[9];
-    dst[1] = outY + matrix[10];
-    dst[2] = outZ + matrix[11];
+    dst[0] += matrix[9];
+    dst[1] += matrix[10];
+    dst[2] += matrix[11];
 }
 #define transform_vec(matrix, src, dst) transform_vec_values(matrix, src, dst, (src)[0], (src)[1], (src)[2])
 extern s32 fn_802315FC(s32);
@@ -1257,18 +1253,11 @@ void fn_80233354(u8 *text, u8 *ctx, s32 arg2, s32 flags, f32 x, f32 y, f32 sx, f
     strlen((char *)text);
     if ((s8)*text != 0) {
         u8 c0 = *text;
-        charW = (f32)ctx[4] * sx;
-        switch (c0 & 0xF0) {
-        case 0xE0:
-        case 0xC0:
-        default:
-            switch (c0 & 0xE0) {
-            case 0xC0:
-            default:
-                break;
-            }
-            break;
-        }
+        s32 width;
+        if ((c0 & 0xF0) == 0xE0) width = 3;
+        else if ((c0 & 0xE0) == 0xC0) width = 2;
+        else width = 1;
+        charW = (f32)ctx[4] * sx + width * 0.0f;
         if (flags & 1) {
         } else if (flags & 2) {
             fn_8023293C((s32)ctx, (char *)text, lbl_80563684);
@@ -1410,34 +1399,39 @@ extern u16 lbl_802F9FF0[];
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
-    register void *object = arg0;
-    register s32 font;
-    register s32 offset;
-    u8 out3[0x18], out2[0x18], out1[0x18], out0[0x18];
-    u16 values[6];
+    struct Frame {
+        u16 indices[6];
+        u8 pad[4];
+        f32 output[4][6];
+    } frame;
     u8 *entry;
+    s32 offset;
+    s32 mode;
+
     if (arg1 != 0x20) {
-        font = lbl_8055F050;
         offset = arg1 * 0x1C;
-        entry = *(u8 **)((u8 *)object + 0x10) + offset;
-        fn_80231380(out0, font, farg0, farg1, farg4,
+        entry = *(u8 **)((u8 *)arg0 + 0x10) + offset;
+        mode = lbl_8055F050;
+
+        fn_80231380(frame.output[0], mode, farg0, farg1, farg4,
                     *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x10));
-        entry = *(u8 **)((u8 *)object + 0x10) + offset;
-        fn_80231380(out1, font, farg2, farg1, farg4,
+        entry = *(u8 **)((u8 *)arg0 + 0x10) + offset;
+        fn_80231380(frame.output[1], mode, farg2, farg1, farg4,
                     *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x10));
-        entry = *(u8 **)((u8 *)object + 0x10) + offset;
-        fn_80231380(out2, font, farg0, farg3, farg4,
+        entry = *(u8 **)((u8 *)arg0 + 0x10) + offset;
+        fn_80231380(frame.output[2], mode, farg0, farg3, farg4,
                     *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x18));
-        entry = *(u8 **)((u8 *)object + 0x10) + offset;
-        fn_80231380(out3, font, farg2, farg3, farg4,
+        entry = *(u8 **)((u8 *)arg0 + 0x10) + offset;
+        fn_80231380(frame.output[3], mode, farg2, farg3, farg4,
                     *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x18));
-        values[0] = lbl_802F9FF0[0];
-        values[1] = lbl_802F9FF0[1];
-        values[2] = lbl_802F9FF0[2];
-        values[3] = lbl_802F9FF0[3];
-        values[4] = lbl_802F9FF0[4];
-        values[5] = lbl_802F9FF0[5];
-        fn_802C8DB8(out0, 4, values, 6,
+
+        frame.indices[0] = lbl_802F9FF0[0];
+        frame.indices[1] = lbl_802F9FF0[1];
+        frame.indices[2] = lbl_802F9FF0[2];
+        frame.indices[3] = lbl_802F9FF0[3];
+        frame.indices[4] = lbl_802F9FF0[4];
+        frame.indices[5] = lbl_802F9FF0[5];
+        fn_802C8DB8(frame.output[0], 4, frame.indices, 6,
                     lbl_802F9FF0[4], lbl_802F9FF0[3], lbl_802F9FF0[2], lbl_802F9FF0[1]);
     }
 }
