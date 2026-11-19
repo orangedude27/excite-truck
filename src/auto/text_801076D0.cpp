@@ -340,18 +340,21 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...)
 #pragma push
 #pragma use_lmw_stmw off
 void* nw4hbm::ut::List_GetNth(const nw4hbm::ut::List* list, unsigned short index) {
+    /* nw4hbm::ut (ut_list.cpp): step `index` times along the intrusive list and
+       return that element, or 0 when the list holds fewer than index + 1 of them. */
     int i = 0;
     void* node = 0;
     if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328828, 0x129, lbl_80328834);
-    goto body;
+    goto get_next;
 loop:
     if (index == i) return node;
     i++;
-body:
+get_next:
+    /* nw4hbm::ut::List_GetNext(list, node), which the original inlined here. */
     if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328828, 0xf5, lbl_80328834);
     void* next;
-    if (node == 0) next = *(void**)list;
-    else next = *(void**)((char*)node + *(unsigned short*)((char*)list + 0xa) + 4);
+    if (node == 0) next = list->head;
+    else next = ((nw4hbm::ut::ListLink*)((char*)node + list->nodeOffset))->next;
     node = next;
     if (node != 0) goto loop;
     return 0;
