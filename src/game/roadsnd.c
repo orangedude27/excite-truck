@@ -67,6 +67,11 @@ void fn_8020CA30(void) {
 
 }
 
+/* Road-sound module shutdown hook, empty in this build.  It is the twin of
+ * the start-up hook fn_8020CA30: the bootstrap teardown fn_80004CB4 calls it
+ * among the other subsystem stops (between fn_800218F8 and fn_802789B0).
+ * Nothing to release here -- every road-sound container is destroyed by
+ * fn_8020CC78 through its own vtable, so the module holds no global state. */
 void fn_8020CA34(void) {
 
 }
