@@ -467,6 +467,10 @@ void fn_80209278(void) {
 	return;
 }
 
+/* Null Mixer device method, slot +0x24 of the "Null Mixer" vtable (lbl_8033C058).
+ * The voice backend's slot +0x24 (fn_8020A8E8) reports every sound still left in
+ * its 512-entry sound list at shutdown and frees that list; the null backend
+ * allocates no list and has no hardware to stop, so there is nothing to release. */
 void fn_8020927C(void) {
 
 }
