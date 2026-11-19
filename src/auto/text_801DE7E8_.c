@@ -99,6 +99,7 @@ void fn_801DE7E8(int popupId) {
         break;
     }
 }
+/* Empty stub / no-op placeholder. */
 void fn_801DE88C(void) {
 
 }
