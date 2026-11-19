@@ -1412,6 +1412,7 @@ int fn_80162130(int object, int deleteFlag) {
     return object;
 }
 
+/* Empty stub. */
 void fn_80162170(void) {
 
 }
