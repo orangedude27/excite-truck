@@ -1092,6 +1092,10 @@ s16 fn_802B6ED8(s32 base, s32 index, u32 count) {
 
 extern void fn_80204048();
 extern void fn_8020404C(void);
+/* The terrain viewer's mode-5 overlay, drawn around each brush pass and empty
+ * in this build (see fn_802B7518, which reports the sampled cells to it). */
+#define beginSampleOverlay fn_80204048 /* open it on the area's world corners */
+#define endSampleOverlay   fn_8020404C /* flush it once the pass is done */
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
@@ -1979,10 +1983,7 @@ void fn_802B84E4(void *state) {
 #undef REF_WIDTH
 }
 
-#pragma push
-#pragma processor 750
 #pragma scheduling invalid_target
-#pragma opt_propagation off
 s32 fn_802B8510(s32 arg0) {
     struct Entry {
         u8 unk[0x20];
@@ -1990,44 +1991,35 @@ s32 fn_802B8510(s32 arg0) {
         u32 second;
         u8 pixels[0x100];
     } copy;
-    struct Entry *entry;
     s32 index;
-    s32 width;
-    s32 height;
+    struct Entry *entry;
     u32 row;
     u32 col;
-    u8 *pixelData;
-
+    u32 height;
+    u32 width;
     if ((u32)(arg0 - 6) > 1U) return;
     index = lbl_8055FA2C;
     if (index < 0) return;
     if (index >= *(s32 *)((u8 *)&lbl_804BE7D8 + 4)) return;
     entry = (struct Entry *)(*(u32 *)&lbl_804BE7D8) + index;
     copy = *entry;
-
     width = copy.second;
-    pixelData = copy.pixels;
     row = 0;
     entry->first = width;
     height = copy.first;
     entry->second = height;
-
     while (row < entry->first) {
         col = 0;
         while (col < entry->second) {
-            if (arg0 == 6) {
-                entry->pixels[row + col * entry->first] =
-                    height * (row + 1) - 1 - col;
-            } else {
-                entry->pixels[row + col * entry->first] =
-                    (width - row - 1) * height + col;
-            }
+            if (arg0 == 6)
+                entry->pixels[row + col * entry->first] = height * (row + 1) - 1 - col;
+            else
+                entry->pixels[row + col * entry->first] = (width - row - 1) * height + col;
             col++;
         }
         row++;
     }
 }
-#pragma pop
 /* Apply a 5-word UI configuration to the global UI state, recompute layout, apply changes, and refresh. */ 
 void fn_802B8624(void *config) {
     #pragma small_data off
