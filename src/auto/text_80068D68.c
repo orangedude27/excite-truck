@@ -18858,6 +18858,7 @@ success:
 }
 
 extern u8 lbl_80560D48[];
+/* Sets the L2CAP idle timeout for the link to bdAddr, or for all connected links when bdAddr is the special any-address value. */
 BOOLEAN L2CA_SetIdleTimeoutByBdAddr(BD_ADDR addr, UINT16 timeout) {
     extern u8 lbl_80560D48[6];
     typedef struct {
