@@ -1734,7 +1734,7 @@ void fn_80069408(void) {
             sp20 = ((u8 *)info)[0x53];
             sp24 = ((u8 *)info)[0x54];
             sp28 = ((u8 *)info)[0x55];
-            DBPrintf_8006CFA8((const char *)(lbl_803130C8 + 0x1F8), ((u8 *)info)[0x46], ((u8 *)info)[0x47], ((u8 *)info)[0x48], ((u8 *)info)[0x49], ((u8 *)info)[0x4A], ((u8 *)info)[0x4B], ((u8 *)info)[0x4C]);
+            DBPrintf_8006CFA8((const char *)(strings + 0x1F8), ((u8 *)info)[0x46], ((u8 *)info)[0x47], ((u8 *)info)[0x48], ((u8 *)info)[0x49], ((u8 *)info)[0x4A], ((u8 *)info)[0x4B], ((u8 *)info)[0x4C]);
             base[0xE] = 2;
             BTM_WriteStoredLinkKey(1, (BD_ADDR *)((u8 *)info + 0x40), (LINK_KEY *)((u8 *)info + 0x46), WUDStoredLinkKeyCallback);
             base[0xC] = 8;
