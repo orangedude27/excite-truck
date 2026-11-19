@@ -177,17 +177,9 @@ extern "C" s32 fn_8012A388(void *arg0) {
 }
 #pragma use_lmw_stmw reset
 extern "C" const char lbl_8032A630[];
-extern "C" void fn_8012A46C(void *, const char *);
+extern "C" void fn_8012A46C(void *, const void *);
 extern "C" s32 fn_80132E7C(void *, s32);
-struct UnkMsgTable8012A470 {
-    char f0[0xC];
-    char f1[0x28];
-    char f2[0x28];
-    char f3[0x2C];
-    char f4[0x20];
-    char f5[1];
-};
-extern "C" void fn_8012A46C(void *, const char *) {
+extern "C" void fn_8012A46C(void *, const void *) {
 
 }
 
@@ -201,7 +193,7 @@ extern "C" s32 fn_8012A470(void *arg0, s32 arg1, void *arg2, void *arg3) {
 
     buffer = (char *)arg3 + *(s32 *)((char *)arg2 + 0x2C) - 8;
     *(void **)((char *)arg2 + 0x3C) = buffer;
-    fn_8012A46C(buffer + 8, (const char *)&lbl_8032A630);
+    fn_8012A46C(buffer + 8, strings);
     result = (u32)__cntlzw((u32)*(s32 *)((char *)arg2 + 0x30) -
                            (u32)fn_80132E7C((char *)*(void **)((char *)arg2 + 0x3C) + 8,
                                             *(s32 *)((char *)arg2 + 0x28))) >> 5;
