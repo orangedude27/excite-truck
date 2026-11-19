@@ -65,29 +65,30 @@ extern "C" void fn_802AE328(void);
 #pragma scheduling invalid_target
 #pragma opt_common_subs off
 #pragma dont_inline on
-extern "C" int fn_802AE414(void *arg0) {
-    class Object {
+extern "C" int fn_802AE414(void *arg) {
+    /* Find the first registered handler that accepts arg and return its result, initializing the list if needed. */
+    class Handler {
     public:
-        virtual int m0(void *);
-        virtual void m1();
-        virtual int m2(void *);
+        virtual int Handle(void *arg);
+        virtual void Reserved();
+        virtual int Accepts(void *arg);
     };
     register int offset;
-    register int i;
-    Object *object;
+    register int index;
+    Handler *handler;
 
     if (lbl_8055F958 == 0)
         fn_802AE328();
-    i = 0;
+    index = 0;
     offset = 0;
-    while (i < lbl_804BD8CC[1]) {
-        object = *(Object * volatile *)((char *)lbl_804BD8CC[0] + offset);
-        if (object->m2(arg0)) {
-            object = ((Object **)lbl_804BD8CC[0])[i];
-            return object->m0(arg0);
+    while (index < lbl_804BD8CC[1]) {
+        handler = *(Handler * volatile *)((char *)lbl_804BD8CC[0] + offset);
+        if (handler->Accepts(arg)) {
+            handler = ((Handler **)lbl_804BD8CC[0])[index];
+            return handler->Handle(arg);
         }
         offset += 4;
-        i++;
+        index++;
     }
     return 0;
 }
