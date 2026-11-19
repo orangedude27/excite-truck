@@ -21688,7 +21688,7 @@ extern "C" u8 fn_800D3840(s32 arg0) {
 }
 
 extern "C" u8 (*lbl_8055DDD8)(const char *);
-extern "C" const char lbl_8031EC50[0x200];
+extern "C" const char lbl_8031EC50[];
 extern "C" const char lbl_8031ED84[];
 // Fix note: use post-decrement for the delimiter count and signed newline comparison to match the original loop.
 extern "C" char *fn_800D3944(char *str, s32 count, u32 delim) {
