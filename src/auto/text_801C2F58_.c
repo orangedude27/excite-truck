@@ -575,11 +575,11 @@ void fn_801C4B74(void) {
 
 #pragma opt_common_subs off
 void fn_801C4BAC(void) {
-    struct Tail { char pad[8]; f32 x; };
     register Unk_80437D88 *state;
     register s32 zero;
-    u8 *lo;
     s32 flag;
+    char *p0;
+    char *p1;
     state = &lbl_80437D88;
     zero = 0;
     lbl_8055E800 = zero;
@@ -588,31 +588,33 @@ void fn_801C4BAC(void) {
     lbl_8055E7F4 = zero;
     lbl_8055E7E3 = zero;
     lbl_8055E7E4 = lbl_80562970;
-    memset(state, zero, 0x9C);
-    *(f32 *)((u8 *)state + 0x14) = lbl_8056296C;
-    *(f32 *)((u8 *)state + 0x18) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x1C) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x20) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x24) = lbl_8056296C;
-    *(f32 *)((u8 *)state + 0x28) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x2C) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x30) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x34) = lbl_8056296C;
-    *(f32 *)((u8 *)state + 0x50) = lbl_805629A8;
-    *(f32 *)((u8 *)state + 0x68) = lbl_8056296C;
-    *(f32 *)((u8 *)state + 0x6C) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x70) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x74) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x78) = lbl_8056296C;
-    *(f32 *)((u8 *)state + 0x7C) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x80) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x84) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x88) = lbl_8056296C;
-    *(f32 *)((u8 *)state + 0x8C) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x90) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x94) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x98) = lbl_805629A8;
-    ((struct Tail *)((u8 *)state + 0x9C))->x = lbl_80562994;
+    p0 = state->pad_0;
+    memset(p0, zero, 0x9C);
+    p1 = state->pad_0;
+    *(f32 *)(p1 + 0x14) = lbl_8056296C;
+    *(f32 *)(p1 + 0x18) = lbl_80562970;
+    *(f32 *)(p1 + 0x1C) = lbl_80562970;
+    *(f32 *)(p1 + 0x20) = lbl_80562970;
+    *(f32 *)(p1 + 0x24) = lbl_8056296C;
+    *(f32 *)(p1 + 0x28) = lbl_80562970;
+    *(f32 *)(p1 + 0x2C) = lbl_80562970;
+    *(f32 *)(p1 + 0x30) = lbl_80562970;
+    *(f32 *)(p1 + 0x34) = lbl_8056296C;
+    *(f32 *)(p1 + 0x50) = lbl_805629A8;
+    *(f32 *)(p1 + 0x68) = lbl_8056296C;
+    *(f32 *)(p1 + 0x6C) = lbl_80562970;
+    *(f32 *)(p1 + 0x70) = lbl_80562970;
+    *(f32 *)(p1 + 0x74) = lbl_80562970;
+    *(f32 *)(p1 + 0x78) = lbl_8056296C;
+    *(f32 *)(p1 + 0x7C) = lbl_80562970;
+    *(f32 *)(p1 + 0x80) = lbl_80562970;
+    *(f32 *)(p1 + 0x84) = lbl_80562970;
+    *(f32 *)(p1 + 0x88) = lbl_8056296C;
+    *(f32 *)(p1 + 0x8C) = lbl_80562970;
+    *(f32 *)(p1 + 0x90) = lbl_80562970;
+    *(f32 *)(p1 + 0x94) = lbl_80562970;
+    *(f32 *)(p1 + 0x98) = lbl_805629A8;
+    *(f32 *)((u8 *)state + 0xA4) = lbl_80562994;
     *(s32 *)((u8 *)state + 0x9C) = zero;
     if (lbl_8055E7F0 == 0) {
         lbl_8055E7E2 = zero;
@@ -626,8 +628,7 @@ void fn_801C4BAC(void) {
     flag = (fn_801769A8() >> 14) & 1;
     lbl_8055E7E2 = flag;
     if (flag != 0) {
-        lo = (u8 *)state + 0xA8;
-        memset(lo, zero, 0xA0);
+        memset((u8 *)state + 0xA8, zero, 0xA0);
         fn_8017960C(fn_80179630(0));
     }
 }
@@ -2090,15 +2091,14 @@ void fn_801C7BA0(void) {
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_801C7C04(void) {
     extern f32 lbl_805629D4, lbl_8055E84C;
     extern char lbl_80336F4C[], lbl_80336F88[];
     extern double fn_8002EFB0(f32, f32);
     char *base = (char *)&lbl_80437D88;
     char *obj;
-    u32 mode;
-    Vec *start = (Vec *)(base + 0x6F8), *mid = (Vec *)(base + 0x704), *end = (Vec *)(base + 0x710);
+    f32 *sp = (f32 *)(base + 0x6F8), *mp = (f32 *)(base + 0x704), *ep = (f32 *)(base + 0x710);
     f32 a[2], b[2], c[2], d[2], e[2], f[2], g[2], h[2], i[2];
     f32 *q, *p;
     f32 x, y, len, scale;
@@ -2112,22 +2112,21 @@ void fn_801C7C04(void) {
     *(s32 *)(obj + 0xC) = fn_801C3954((s32)obj + 0x10);
     *(s32 *)(obj + 0xC) &= ~fn_801C3954((s32)obj + 0x110);
     *(f32 *)(obj + 0x214) = lbl_8055E84C;
-    mode = *(u32 *)(obj + 0x210);
-    switch (mode) {
+    switch (*(s32 *)(obj + 0x210)) {
     case 2:
         *(f32 *)(obj + 0x220) = lbl_80562970;
-        b[1] = end->z; b[0] = end->x;
+        b[1] = ep[2]; b[0] = *(f32 *)(base + 0x710);
         *(f32 *)(obj + 0x218) = b[0]; *(f32 *)(obj + 0x21C) = b[1];
         break;
     case 0:
-        c[0] = start->x; c[1] = start->z;
+        c[0] = *(f32 *)(base + 0x6F8); c[1] = sp[2];
         *(f32 *)(obj + 0x218) = c[0]; *(f32 *)(obj + 0x21C) = c[1];
         g[0] = lbl_80562970; g[1] = lbl_8056296C;
-        d[0] = end->x; d[1] = end->z;
-        *(f32 *)(obj + 0x224) = d[0] - *(f32 *)(obj + 0x218);
+        d[0] = *(f32 *)(base + 0x710); d[1] = ep[2];
+        *(f32 *)(obj + 0x224) = d[0] - (f32)*(f32 *)(base + 0x6F8);
         *(f32 *)(obj + 0x228) = d[1] - *(f32 *)(obj + 0x21C);
-        f[1] = start->z; e[1] = mid->z;
-        f[0] = start->x; e[0] = mid->x;
+        f[1] = sp[2]; e[1] = mp[2];
+        f[0] = *(f32 *)(base + 0x6F8); e[0] = *(f32 *)(base + 0x704);
         a[0] = e[0] - f[0]; a[1] = e[1] - f[1];
         q = g; p = a;
         len = a[0]*a[0] + a[1]*a[1];
@@ -2148,7 +2147,7 @@ void fn_801C7C04(void) {
         fn_802E317C(lbl_80336F4C);
         break;
     }
-    sprintf(base + 0x238, lbl_80336F88, *(f32 *)(base+0x6F8), *(f32 *)(base+0x700), *(f32 *)obj);
+    sprintf(base + 0x238, lbl_80336F88, *(f32 *)(base+0x6F8), sp[2], *(f32 *)obj);
     fn_801C7BA0();
     qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
 }
@@ -3139,11 +3138,13 @@ void fn_801C95EC(f32 arg0) {
     struct Entry *entry;
     s32 id;
     s32 prev;
+    s32 sel;
 
     strcpy(lbl_80437FC0, lbl_8055AA44);
     entry = &(*(struct Entry **)((char *)lbl_8055E86C + lbl_8055E81C * 0x10))[lbl_8055E820];
     entry->callback(entry);
-    id = *(s32 *)(*(u32 *)((u32)lbl_8055E86C + (lbl_8055E81C << 4)) + (lbl_8055E820 << 4) + 8);
+    sel = lbl_8055E820;
+    id = *(s32 *)(*(u32 *)((u32)lbl_8055E86C + (lbl_8055E81C << 4)) + (sel << 4) + 8);
     if (id == 0x22) {
         lbl_8055E81C = lbl_8055E870;
     } else {
