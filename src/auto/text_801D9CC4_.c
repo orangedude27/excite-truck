@@ -20,9 +20,9 @@ void *fn_801D9CC4(void *arg0) {
     u8 flag = 0;
     volatile u8 *base;
     int i, j;
-    u32 off;
+    register u32 off asm("r8");
     volatile u8 *e;
-    volatile u8 *r;
+    register volatile u8 *r asm("r9");
     base = (volatile u8 *)fn_8012C370(arg0, 0x50507468, &type, 0, 0, &flag);
     if (base == 0) {
         fn_802E317C(lbl_80339200, arg0);
@@ -56,6 +56,7 @@ void *fn_801D9CC4(void *arg0) {
     return (void *)base;
 }
 #pragma opt_propagation reset
+/* Forward to fn_8012C4D8. */
 void fn_801D9F24(void) {
     fn_8012C4D8();
 }
