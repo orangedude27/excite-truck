@@ -178,8 +178,9 @@ static inline void mtx_to_quat(float m[3][3], float *q) {
         q0 = inv * (m[1][2] - m[2][1]);
         q1 = inv * (m[2][0] - m[0][2]);
         q2 = inv * (m[0][1] - m[1][0]);
-        dst[3] = q3; dst[0] = q0; dst[1] = q1; dst[2] = q2;
+        q[3] = q3; q[0] = q0; q[1] = q1; q[2] = q2;
     } else {
+        dst = q;
         i = 0;
         if (m[1][1] > m[0][0]) i = 1;
         if (m[2][2] > m[i][i]) i = 2;
