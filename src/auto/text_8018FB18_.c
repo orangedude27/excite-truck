@@ -626,8 +626,6 @@ s32 fn_80190368(s32 value) {
  #pragma push
  #pragma processor 750
  #pragma use_lmw_stmw off
- #pragma cplusplus on
- #pragma ppc_psq_save off
  void fn_80190388(void *arg0)
 {
     void *first;
