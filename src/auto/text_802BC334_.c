@@ -1277,6 +1277,7 @@ void fn_802BDFF4(void *node, int value) {
 
 #pragma scheduling invalid_target
 #pragma push
+#pragma optimization_level 3
 #pragma dont_inline off
 static inline char *fn_802BE008_item(char *list) {
     return *(char **)(list + 8);
