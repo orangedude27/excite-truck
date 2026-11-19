@@ -3891,9 +3891,9 @@ extern "C" void fn_800AA4EC(u8 *p_ent, u8 *p_buf) {
 }
 #pragma pop
 extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
-    u32 h14;
-    u32 word;
-    u32 h1A;
+    register u32 word;
+    register u16 h1A;
+    register u16 h14;
     p_ent[0x21C] = p_buf[0xB];
     p_ent[0x21B] = p_buf[0xC];
     p_ent[0x21D] = p_buf[0xD];
@@ -17713,27 +17713,94 @@ extern "C" void fn_800C3574(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4
 }
 #pragma use_lmw_stmw on
 extern "C" void fn_800C3960(s32 *tbl, s32 *coef, u32 idx, s16 *out, u32 mask, s32 flag) {
-    register s32 *tbl2 = tbl + 0x10;
-    register s64 sumA = 0;
-    register s64 sumB = 0;
-    s32 k;
+    s32 *tbl2 = tbl + 0x10;
+    s64 sumA = 0;
+    s64 sumB = 0;
     s32 a, b;
-    register u32 off = idx;
-    register s32 *cp = coef;
-    for (k = 0; k < 8; k++) {
-        u32 o0 = off & mask;
-        u32 o1 = (off + 0x60) & mask;
-        sumA += (s64)tbl[o0] * cp[0];
-        sumA += (s64)tbl[o1] * cp[1];
-        sumB += (s64)tbl2[o0] * cp[0x10];
-        sumB += (s64)tbl2[o1] * cp[0x11];
-        cp += 2;
-        off += 0x80;
+    u32 i = idx;
+    {
+        s32 s = tbl[i & mask];
+        sumA += (s64)s * coef[0];
+    }
+    {
+        s32 s = tbl[(i + 0x60) & mask];
+        sumA += (s64)s * coef[1];
+        sumB += (s64)tbl2[(i + 0x60) & mask] * coef[0x11];
+    }
+    i += 0x80;
+    {
+        s32 s = tbl[i & mask];
+        sumA += (s64)s * coef[2];
+    }
+    {
+        s32 s = tbl[(i + 0x60) & mask];
+        sumA += (s64)s * coef[3];
+        sumB += (s64)tbl2[(i + 0x60) & mask] * coef[0x13];
+    }
+    i += 0x80;
+    {
+        s32 s = tbl[i & mask];
+        sumA += (s64)s * coef[4];
+    }
+    {
+        s32 s = tbl[(i + 0x60) & mask];
+        sumA += (s64)s * coef[5];
+        sumB += (s64)tbl2[(i + 0x60) & mask] * coef[0x15];
+    }
+    i += 0x80;
+    {
+        s32 s = tbl[i & mask];
+        sumA += (s64)s * coef[6];
+    }
+    {
+        s32 s = tbl[(i + 0x60) & mask];
+        sumA += (s64)s * coef[7];
+        sumB += (s64)tbl2[(i + 0x60) & mask] * coef[0x17];
+    }
+    i += 0x80;
+    {
+        s32 s = tbl[i & mask];
+        sumA += (s64)s * coef[8];
+    }
+    {
+        s32 s = tbl[(i + 0x60) & mask];
+        sumA += (s64)s * coef[9];
+        sumB += (s64)tbl2[(i + 0x60) & mask] * coef[0x19];
+    }
+    i += 0x80;
+    {
+        s32 s = tbl[i & mask];
+        sumA += (s64)s * coef[10];
+    }
+    {
+        s32 s = tbl[(i + 0x60) & mask];
+        sumA += (s64)s * coef[11];
+        sumB += (s64)tbl2[(i + 0x60) & mask] * coef[0x1B];
+    }
+    i += 0x80;
+    {
+        s32 s = tbl[i & mask];
+        sumA += (s64)s * coef[12];
+    }
+    {
+        s32 s = tbl[(i + 0x60) & mask];
+        sumA += (s64)s * coef[13];
+        sumB += (s64)tbl2[(i + 0x60) & mask] * coef[0x1D];
+    }
+    i += 0x80;
+    {
+        s32 s = tbl[i & mask];
+        sumA += (s64)s * coef[14];
+    }
+    {
+        s32 s = tbl[(i + 0x60) & mask];
+        sumA += (s64)s * coef[15];
+        sumB += (s64)tbl2[(i + 0x60) & mask] * coef[0x1F];
     }
     a = (s32)(sumA >> 25);
     b = (s32)(sumB >> 25);
-    if (a != (s16)a) a = (a >> 31) ^ 0x7fff;
-    if (b != (s16)b) b = (b >> 31) ^ 0x7fff;
+    if ((a >> 31) != (a >> 15)) a = (a >> 31) ^ 0x7FFF;
+    if ((b >> 31) != (b >> 15)) b = (b >> 31) ^ 0x7FFF;
     if (flag == 0) {
         out[0] = a;
         out[0x20] = b;
@@ -19266,6 +19333,8 @@ extern "C" char lbl_805597B8[];
 void fn_800C6CE8(void *arg0) {
     char *p = (char *)arg0;
     void *acc;
+    void *container;
+    void *r;
     int i;
 
     p[0x8b] = 0;
@@ -19294,13 +19363,13 @@ void fn_800C6CE8(void *arg0) {
             }
         }
     }
-    {
-        void *container = MEMAllocFromAllocator(lbl_80559708, 0x24);
-        if (container != 0) {
-            container = fn_800D6EEC(container);
-        }
-        *(void **)(p + 0x1e0) = container;
+    container = MEMAllocFromAllocator(lbl_80559708, 0x24);
+    if (container != 0) {
+        container = fn_800D6EEC(container);
     }
+    *(void **)(p + 0x1e0) = container;
+    r = ((void *(*)(void *, void *, void *, void *))(((void ***)acc)[0][3]))(acc, 0, p + 0xa4, 0);
+    ((void *(*)(void *, void *, void *, void *))(((void ***)container)[0][3]))(container, r, acc, 0);
 }
 
 extern "C" s32 fn_800C771C(s32 object, s32 deleteFlag) {
@@ -23697,6 +23766,11 @@ extern "C" void fn_800CA234(s32 event, s32 value) {
     (*(void (*)(s32, s32))callback)(event, value);
 }
 
+extern "C" void fn_800CAB04(void *, s32);
+extern "C" f32 Atan2FIdx__Q24nw4r4mathFff(f32, f32, f32);
+extern "C" void calc_battery__Q210homebutton10HomeButtonFi(void *, s32);
+extern "C" s32 lbl_80559724, lbl_80559730;
+extern "C" f32 lbl_80560E04, lbl_80560E08;
 extern "C" void fn_800CA264(void *arg0, void *arg1) {
     char *self = (char *)arg0;
     s32 mode = *(s32 *)(self + 0x404);
