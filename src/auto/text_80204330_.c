@@ -71,13 +71,14 @@ int fn_8020437C(void) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_802043B0(int *arg0) {
+void fn_802043B0(int *colorPtr) {
+    /* Compute a fade-in alpha from GUI elapsed time and write it into the high byte of the 32-bit color. */
     struct ColorBits {
         unsigned int a : 8;
         unsigned int rgb : 24;
     };
     int elapsed;
-    int *out = arg0;
+    int *out = colorPtr;
     float temp;
     float value;
     elapsed = fn_80204354();
@@ -142,9 +143,9 @@ extern "C" int fn_802044E8(void) {
  float matrix[12];
  struct Text80204 label, value;
  int normal, selected;
- int result, count, start, end, i;
  struct Text80204 *a, *b, *c;
  char *area, *entry;
+ int count, result, start, end, i;
  float step;
  fn_80230B5C(matrix);
  fn_802C8638(matrix);
@@ -158,10 +159,12 @@ extern "C" int fn_802044E8(void) {
    c = (struct Text80204 *)((Gui80204 *)lbl_8055ED44)->v1(lbl_8055B438);
    area = (char *)((Gui80204 *)lbl_8055ED44)->v3(lbl_8055B440);
    if (a && b && c && area) {
+    float tmp;
     normal = a->color; selected = b->color;
     fn_802043B0(&normal); fn_802043B0(&selected);
     step = b->y - a->y;
-    count = (int)(*(float *)(area+0x14)/step);
+    tmp = *(float *)(area+0x14)/step;
+    count = (int)tmp;
     label.unk_0x0=a->unk_0x0;
     { int t1=a->unk_0x4; int t2=*(int *)&a->y; label.unk_0x4=t1; *(int *)&label.y=t2; }
     label.unk_0xc=a->unk_0xc; label.unk_0x10=a->unk_0x10; label.unk_0x14=a->unk_0x14; label.color=a->color; label.unk_0x1c=a->unk_0x1c;
