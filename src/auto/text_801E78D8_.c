@@ -351,8 +351,12 @@ extern "C" void fn_801E7C28(void *sceneData) {
 #pragma cplusplus off
 
 extern void fn_801E7C28(void *);
-void fn_801E7DEC(void *arg0) {
-    fn_801E7C28(arg0);
+/* Entry point that ends the race: tail-calls the game's own "WorldEndCommon"
+ * shutdown (its progress name, lbl_80339BA0 + 0x7C) for the scene described by
+ * sceneData.  Counterpart of fn_801E7C1C, which clears the "scene is owned
+ * elsewhere" flag and calls WorldBeginCommon (fn_801E7984). */
+void fn_801E7DEC(void *sceneData) {
+    fn_801E7C28(sceneData);
 }
 
 long fn_801E7DF0(long slot) {
