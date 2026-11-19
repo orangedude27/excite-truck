@@ -1274,6 +1274,7 @@ void *fn_8016060C(void *arg0, void *arg1) {
     return arg0;
 }
 #pragma scheduling on
+/* Empty stub. */
 void fn_801606B8(void) {
 }
 
