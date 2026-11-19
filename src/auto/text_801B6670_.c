@@ -38,11 +38,11 @@ extern void *memset(void *, int, unsigned long);
 #pragma push
 #pragma scheduling invalid_target
 void fn_801B6670(void) {
+    UnkEntry *table;
     unsigned char *base = (unsigned char*)&lbl_80335F70;
     void *temp_r10;
     void *temp_r22;
     void *temp_r9;
-    UnkEntry *table;
 
     fn_8000D838(&lbl_8055E728);
     table = (UnkEntry*)lbl_80435EE8;
