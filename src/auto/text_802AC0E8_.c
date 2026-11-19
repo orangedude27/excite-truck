@@ -13,20 +13,16 @@ extern double atof(const char *);
 extern int fn_802E2C20(void);
 extern int sscanf(const char *, const char *, ...);
 #pragma scheduling invalid_target
-void *fn_802AC0E8(void *arg0, const char *arg1, int arg2) {
-    register int key = arg2;
-    char *node = (char *)arg0;
-    const char *name = arg1;
+void *fn_802AC0E8(void *node, const char *name, int key) {
     if (node == 0)
         return 0;
     while (*(int *)node != 0) {
-        if (*(int *)node == key && strcmp(*(const char **)(node + 4), name) == 0)
+        if (*(int *)node == key && strcmp(*(const char **)((char *)node + 4), name) == 0)
             return node;
-        node += 0xC;
+        node = (char *)node + 0xC;
     }
     return 0;
 }
-#pragma scheduling on
 /* RealName: ParseHexColorCode (parses a "#%x" hex string into an integer, or -1 on failure). */
 int fn_802AC174(const char *hexString) {
     int value;
@@ -606,31 +602,33 @@ void fn_802AD30C(void *arg0) {
 
 #pragma scheduling invalid_target
 void fn_802AD414(void *arg0, float farg0) {
+    struct Entry {
+        volatile float lower;
+        char pad[0x30];
+        int *out;
+    };
     float base = lbl_80564ACC;
-    int outer = 0;
     int offset = 0;
+    int outer = 0;
     while (outer < *(int *)((char *)arg0 + 0x24)) {
         int inner = 0;
         int byteOffset = 0;
         char *group = *(char **)((char *)arg0 + 0x28) + offset;
         int count = *(int *)(group + 4);
-        if (count > 0) {
-            char *entries = *(char **)(group + 8);
-            do {
-                float a = *(float *)(entries + byteOffset);
-                char *entry = entries + byteOffset;
-                float b = *(float *)(entries + byteOffset + 0x38);
-                if (farg0 >= a && farg0 <= base + b) {
-                    int idx = *(int *)group;
-                    char *records = *(char **)((char *)arg0 + 0x20);
-                    char *record = records + idx * 0x28;
-                    int *p = *(int **)(record + 4);
-                    if (p) *p = *(int *)(entry + 0x34);
-                    break;
-                }
-                byteOffset += 0x38;
-                inner++;
-            } while (--count > 0);
+        struct Entry *entries = *(struct Entry **)(group + 8);
+        for (; inner < count - 1; inner++) {
+            char *entry = (char *)entries + byteOffset;
+            float a = *(volatile float *)entry;
+            float b = entries[inner + 1].lower;
+            if (farg0 >= a && farg0 <= base + b) {
+                int idx = *(int *)group;
+                char *records = *(char **)((char *)arg0 + 0x20);
+                char *record = records + idx * 0x28;
+                int *p = *(int **)(record + 4);
+                if (p) *p = *(int *)((char *)entry + 0x34);
+                break;
+            }
+            byteOffset += 0x38;
         }
         offset += 0xC;
         outer++;
@@ -661,6 +659,7 @@ void fn_802AD4C4(void *arg0, int arg1, float t) {
     int i;
     int boff;
     float one, eps, lo, c1, c2, zero, half;
+    register float qx, qw;
     h = fn_802C2C00(0);
     one = lbl_80564AB4;
     eps = lbl_80564ACC;
@@ -675,10 +674,8 @@ void fn_802AD4C4(void *arg0, int arg1, float t) {
         int j;
         int jo = 0;
         for (j = 0; j < n; j++, jo += 0x38) {
-            int k = j + 1;
-            char *base = *(char **)(seg + 8);
-            char *a = base + jo;
-            char *b = base + k * 0x38;
+            char *a = *(char **)(seg + 8) + jo;
+            char *b = *(char **)(seg + 8) + (j + 1) * 0x38;
             float f23, u, f4, f6, a0 = *(float *)a;
             if (t >= a0 && t <= *(float *)b + eps) {
                 char *c;
@@ -735,6 +732,7 @@ void fn_802AD4C4(void *arg0, int arg1, float t) {
                     m[9] = sp20[0] * f4;
                     m[10] = sp20[1] * f4;
                     m[11] = sp20[2] * f4;
+                    qx = x; qw = w;
                 }
                 sp14[2] = *(float *)(a + 0xC) + f23 * (*(float *)(b + 0xC) - *(float *)(a + 0xC));
                 sp14[1] = *(float *)(a + 8) + f23 * (*(float *)(b + 8) - *(float *)(a + 8));
@@ -762,12 +760,12 @@ void fn_802AD4C4(void *arg0, int arg1, float t) {
                     m[10] += sp8[1];
                     m[11] += sp8[2];
                     {
-                        float k2 = f6 * (f4 * (sp14[0] * *(float *)(c + 0x10)));
-                        m[0] *= k2; m[1] *= k2; m[2] *= k2;
-                        k2 = f6 * (f4 * (sp14[1] * *(float *)(c + 0x10)));
-                        m[3] *= k2; m[4] *= k2; m[5] *= k2;
-                        k2 = f6 * (f4 * (sp14[2] * *(float *)(c + 0x10)));
-                        m[6] *= k2; m[7] *= k2; m[8] *= k2;
+                        float k = f6 * (f4 * (sp14[0] * *(float *)(c + 0x10)));
+                        m[0] *= k; m[1] *= k; m[2] *= k;
+                        k = f6 * (f4 * (sp14[1] * *(float *)(c + 0x10)));
+                        m[3] *= k; m[4] *= k; m[5] *= k;
+                        k = f6 * (f4 * (sp14[2] * *(float *)(c + 0x10)));
+                        m[6] *= k; m[7] *= k; m[8] *= k;
                     }
                     fn_802C9900();
                     {
@@ -793,6 +791,7 @@ void fn_802AD4C4(void *arg0, int arg1, float t) {
                     fn_8023389C(*(int *)(c + 0xC), (col & 0x00FFFFFF) | ((unsigned int)iv << 24), *(int *)(c + 0x10), m, &lbl_8055CD68, *(int *)(c + 0x1C),
                         zero, zero, zero, f6 * (f4 * (sp14[0] * *(float *)(c + 0x18))), one);
                 }
+                (void)qx; (void)qw;
                 break;
             }
         }
