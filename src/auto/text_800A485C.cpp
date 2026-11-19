@@ -22805,15 +22805,16 @@ extern "C" void fn_800D54E0(s32 archive, s32 subDirFourCC, s32 fileName, s32 out
     fn_800D51F4(archive + 4, archive + 0x30, subDirFourCC, fileName, outSize, subDirFourCC);
 }
 
-extern "C" s32 fn_800D5500(void *obj, const char *name) {
-    u8 *base = (u8 *)obj;
+extern "C" s32 fn_800D5500(void *container, const char *name) {
+    /* Find the entry with the given name in this container's list and return its value, or 0 if not found. */
+    u8 *base = (u8 *)container;
     struct { u32 node; } cursor;
     cursor.node = *(u32 *)(base + 0x28);
     u32 &entry = cursor.node;
     struct { u32 end; } sentinel;
     sentinel.end = (u32)base + 0x28;
-    u32 &end = sentinel.end;
-    while (entry != end) {
+    u32 &listEnd = sentinel.end;
+    while (entry != listEnd) {
         if (entry == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
         if (strcmp(name, (char *)(entry + 8)) == 0) {
