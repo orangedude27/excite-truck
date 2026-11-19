@@ -1216,7 +1216,7 @@ extern void fn_8029C450(void *, int);
 extern float lbl_8056469C;
 #pragma scheduling invalid_target
 void fn_8029DF64(void *arg0, int arg1, int arg2, float arg3) {
-    int low = -32768;
+    int low;
     int stride;
     short *data;
     int index;
@@ -1228,6 +1228,7 @@ void fn_8029DF64(void *arg0, int arg1, int arg2, float arg3) {
     index = arg1 + arg2 * stride;
     val = lbl_8056469C * arg3 + (float)data[index];
     cvt = (int)val;
+    low = -32768;
     if (cvt > -32768) low = cvt;
     out = 32767;
     if (low < 32767) out = low;
@@ -1542,18 +1543,21 @@ void fn_8029EA34(void *area, void **__restrict targetRef) {
     }
 }
 #pragma scheduling on
-int fn_8029EAE8(void *arg0) {
-    register float limit = 22500.0f;
-    int result = 0;
-    if (fn_802C88E8((char *)arg0 + 0x30) < limit) {
-        void *second_obj = (char *)arg0 + 0x18;
-        float value = *(float *)((char *)arg0 + 0x3C);
-        second_obj = (char *)second_obj + 0x18;
-        if (((int (*)(void *, float))fn_802C9640)(second_obj, value) != 0) {
-            result = 1;
+/* Returns nonzero when this object's world position is within 150 units of the
+ * reference point and passes the view-volume test at its stored tolerance. */
+int fn_8029EAE8(void *object) {
+    register float maxDistanceSq = 22500.0f;
+    int inView = 0;
+
+    if (fn_802C88E8((char *)object + 0x30) < maxDistanceSq) {
+        void *position = (char *)object + 0x18;
+        float tolerance = *(float *)((char *)object + 0x3C);
+        position = (char *)position + 0x18;
+        if (((int (*)(void *, float))fn_802C9640)(position, tolerance) != 0) {
+            inView = 1;
         }
     }
-    return result;
+    return inView;
 }
 /* Tests whether a point lies within the XZ bounds of a region and below its Y threshold.
  * The region's X range is [min(a[0],a[9]), max(a[0],a[9])] and Z range is
