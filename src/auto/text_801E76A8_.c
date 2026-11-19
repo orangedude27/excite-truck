@@ -98,8 +98,9 @@ void *fn_801E7888(void *world) {
     return __dt__12PhysicsWorldFv_801E7730(world, 1);
 }
 
-void fn_801E7890(void *a, int b, int c, float d, float e, float f, float g, float h) {
-    fn_801E7790(a, b, c, d, e, f, g, h);
+void fn_801E7890(void *buf, int id, int emit, float x, float y, float z, float u, float v) {
+    /* Tail-call thunk forwarding to fn_801E7790. */
+    fn_801E7790(buf, id, emit, x, y, z, u, v);
 }
 
 /* Tail-call wrapper for GenericDrawList draw. */
