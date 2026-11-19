@@ -220,26 +220,26 @@ int doTransactionCallback(int arg0, void *arg1) {
 
 #pragma scheduling 750
 /* DVD low-level cover-register callback: validates the context, updates flags, and invokes the registered callback. */
-int doPrepareCoverRegisterCallback(int arg0, void *arg1) {
-    int result = arg0;
+int doPrepareCoverRegisterCallback(int result, void *context) {
+    int status = result;
 
     lbl_8055D8E0 = 0;
     ((unsigned int *)lbl_8037B8A0)[1] = *(unsigned int *)&lbl_8037B8C0;
-    if (*(unsigned int *)((char *)arg1 + 0xC) != 0xFEEBDAED) {
+    if (*(unsigned int *)((char *)context + 0xC) != 0xFEEBDAED) {
         OSReport(lbl_80302848);
-        *(unsigned int *)((char *)arg1 + 0xC) = 0xFEEBDAED;
+        *(unsigned int *)((char *)context + 0xC) = 0xFEEBDAED;
     } else {
-        if (*(unsigned int *)arg1 != 0) {
+        if (*(unsigned int *)context != 0) {
             lbl_8055D8E1 = 1;
             if (lbl_8055D900 == 1) {
                 lbl_8055D900 = 0;
-                result |= 8;
+                status |= 8;
             }
-            ((int (*)(int))*(unsigned int *)arg1)(result);
+            ((int (*)(int))*(unsigned int *)context)(status);
             lbl_8055D8E1 = 0;
         }
     }
-    *(unsigned char *)((char *)arg1 + 8) = 0;
+    *(unsigned char *)((char *)context + 8) = 0;
     return 0;
 }
 #pragma scheduling reset
