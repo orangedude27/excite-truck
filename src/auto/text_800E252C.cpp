@@ -129,7 +129,7 @@ extern const char lbl_80322438[];
 extern const char lbl_80322010[];
 extern const char lbl_80322034[];
 extern "C" float lbl_80560FB4;
-extern double lbl_80560FB8;
+__declspec(section ".sdata2") extern double lbl_80560FB8;
 // BasicSound::Pause: this object's vtable has the player accessor at 0x5C; its vf6(int) is at 0x14.
 class PauseVt {
 public:
@@ -3299,10 +3299,10 @@ void nw4r::snd::detail::Voice::TransformDpl2Pan(float *outPan, float *outSurroun
     *outSurround += lbl_80560F38;
 }
 extern "C" void CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(void *arg0, int arg1, int arg2, void *arg3) {
-    register char *self = (char *)arg0;
-    register int a1 = arg1;
-    register int a2 = arg2;
-    register unsigned short *out = (unsigned short *)arg3;
+    unsigned short *out = (unsigned short *)arg3;
+    int a2 = arg2;
+    int a1 = arg1;
+    char *self = (char *)arg0;
     float f22 = lbl_80560F38;
     float f21 = f22;
     float f23 = f22;
@@ -3325,7 +3325,7 @@ extern "C" void CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(void *arg
     default: break;
     }
     float f24;
-    if ((*(int *)(self + 0x13c) & 1) != 0) f24 = lbl_80560F38 * *(float *)(self + 0x140);
+    if (*(int *)(self + 0x13c) & 1) f24 = lbl_80560F38 * *(float *)(self + 0x140);
     else f24 = lbl_80560F3C;
     mode = fn_800E394C((int *)Instance__15EmissionManagerFv());
     switch (mode) {
@@ -3618,30 +3618,35 @@ void *nw4hbm::snd::detail::Bank::NoteOn(const nw4hbm::snd::detail::NoteOnInfo &n
 
 extern const char lbl_803224F0[];
 extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *self, const void *bank) {
-    register const char *messages = lbl_803224F0;
-    *(void **)self = 0;
-    *(void **)((char *)self + 4) = 0;
-    *(void **)((char *)self + 8) = 0;
-    if (bank == 0) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x58, messages + 0xB8);
-    unsigned int magic = *(unsigned int *)bank;
+    register void *me;
+    register const void *bk;
+    register const char *messages;
+    me = self;
+    bk = bank;
+    messages = lbl_803224F0;
+    *(void **)me = 0;
+    *(void **)((char *)me + 4) = 0;
+    *(void **)((char *)me + 8) = 0;
+    if (bk == 0) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x58, messages + 0xB8);
+    unsigned int magic = *(unsigned int *)bk;
     if (magic != 0x52424E4B) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x36, messages + 0x14);
-    magic = *(unsigned int *)bank;
-    if (magic != 0x52424E4B) return self;
-    unsigned short version = *(unsigned short *)((char *)bank + 6);
+    magic = *(unsigned int *)bk;
+    if (magic != 0x52424E4B) return me;
+    unsigned short version = *(unsigned short *)((char *)bk + 6);
     if (version < 0x100) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x3E, messages + 0x60);
-    version = *(unsigned short *)((char *)bank + 6);
-    if (version < 0x100) return self;
+    version = *(unsigned short *)((char *)bk + 6);
+    if (version < 0x100) return me;
     if (version > 0x101) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x44, messages + 0x60);
-    version = *(unsigned short *)((char *)bank + 6);
-    if (version < 0x100 || version > 0x101) return self;
-    *(const void **)self = bank;
-    const char *data = (const char *)bank + *(unsigned int *)((char *)bank + 0x10);
-    *(const char **)((char *)self + 4) = data;
+    version = *(unsigned short *)((char *)bk + 6);
+    if (version < 0x100 || version > 0x101) return me;
+    *(const void **)me = bk;
+    const char *data = (const char *)bk + *(unsigned int *)((char *)bk + 0x10);
+    *(const char **)((char *)me + 4) = data;
     if (*(unsigned int *)data != 0x44415441) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x61, messages + 0xE4);
-    const char *wave = (const char *)bank + *(unsigned int *)((char *)bank + 0x18);
-    *(const char **)((char *)self + 8) = wave;
+    const char *wave = (const char *)bk + *(unsigned int *)((char *)bk + 0x18);
+    *(const char **)((char *)me + 8) = wave;
     if (*(unsigned int *)wave != 0x57415645) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x65, messages + 0x13C);
-    return self;
+    return me;
 }
 
 extern "C" int ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8InstInfoiii(void *arg0, void *arg1, int arg2, int arg3, int arg4) {
