@@ -9262,32 +9262,27 @@ void fn_80126018(void *arg0, BitReader8011 *arg1) {
     } \
 } while (0)
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_80126A10(s8 *arg0, void *arg1, u32 arg2) {
     u8 buf[0xC0];
-    const u8 *var_r29;
+    u32 var_r31;
     u32 var_r30;
-    u32 var_r27;
+    const u8 *var_r29;
     u32 var_r28;
-    u32 var_r11;
+    u32 var_r27;
+    u8 *var_r26;
+    u32 var_r24;
+    s32 var_r25;
     s32 var_r12;
     s32 var_r8;
-    u32 var_r31;
-    u8 *var_r26;
     u8 *var_r9;
     u8 *var_r10;
-    u32 var_r24;
-    s32 var_ctr;
-    u8 *var_r11_2;
+    u32 var_r11;
     u8 temp_r25;
     u32 temp_r7, temp_shift;
     u32 temp_r26, temp_r26_2, temp_r26_3, var_r26_2;
     s32 temp_r7_2;
-    s32 var_r24_2, var_r24_3, var_r24_4, var_r24_5, var_r24_6;
-    s32 var_r24_7, var_r24_8, var_r24_9, var_r24_10, var_r24_11;
-    s32 var_r24_12, var_r24_13, var_r24_14;
-    s32 var_r25, var_r25_2, var_r25_3;
-    s32 stop, stop2, stop3, stop4, stop5, stop6;
+    s32 var_ctr;
 
     var_r30 = 0;
     var_r27 = ((BitReader8011 *)arg1)->count;
@@ -9315,102 +9310,92 @@ void fn_80126A10(s8 *arg0, void *arg1, u32 arg2) {
     buf[0x86] = 0xb0;
     buf[0x87] = 2;
     while (var_r8 != 0) {
+        u8 *var_r11_2;
         temp_r7_2 = -var_r12;
         var_r26 = buf;
-        var_ctr = var_r31;
-        if (var_r31 > 0) {
-        loop_5:
+        for (var_ctr = var_r31; var_ctr != 0; var_ctr--) {
             RB8011(var_r11);
             if (var_r11 & 1) {
                 temp_r25 = *var_r26;
-                var_r24_2 = var_r12;
-                if ((s8)*(arg0 + temp_r25) < 0) var_r24_2 = temp_r7_2;
-                stop = (var_r30 == arg2);
+                var_r25 = var_r12;
+                if ((s8)*(arg0 + temp_r25) < 0) var_r25 = temp_r7_2;
+                if (var_r30 == arg2) goto done;
                 var_r30 += 1;
-                *(arg0 + temp_r25) = *(arg0 + temp_r25) + var_r24_2;
-                if (stop == 0) goto block_12;
-                goto done;
+                *(arg0 + temp_r25) = *(arg0 + temp_r25) + var_r25;
             }
-        block_12:
             var_r26 += 1;
-            var_ctr -= 1;
-            if (var_ctr != 0) goto loop_5;
         }
         var_r11_2 = var_r9;
     loop_82:
         if (var_r11_2 >= var_r10) goto loop_done;
         temp_r26 = *var_r11_2;
         if ((s32)temp_r26 == 0) goto block_81;
-        RB8011(var_r24_3);
-        if (var_r24_3 & 1) {
+        RB8011(var_r24);
+        if (var_r24 & 1) {
             switch (temp_r26 & 3) {
             case 0:
                 var_r26_2 = temp_r26 >> 2U;
                 *var_r11_2 = ((var_r26_2 + 4) * 4) + 1;
             block_29:
-                RB8011(var_r24_4);
-                if (var_r24_4 & 1) {
+                RB8011(var_r24);
+                if (var_r24 & 1) {
                     var_r9--;
                     *var_r9 = (s8)((var_r26_2 * 4) + 3);
                     goto block_40;
                 }
                 buf[var_r31] = (u8)var_r26_2;
                 var_r31 += 1;
-                RB8011(var_r24_5);
-                var_r24_6 = var_r12;
-                if (var_r24_5 & 1) var_r24_6 = temp_r7_2;
-                stop2 = (var_r30 == arg2);
-                *(arg0 + var_r26_2) = var_r24_6;
+                RB8011(var_r24);
+                var_r25 = var_r12;
+                if (var_r24 & 1) var_r25 = temp_r7_2;
+                if (var_r30 == arg2) goto done;
                 var_r30 += 1;
-                if (stop2 != 0) goto done;
+                *(arg0 + var_r26_2) = var_r25;
             block_40:
-                RB8011(var_r24_7);
-                if (var_r24_7 & 1) {
+                RB8011(var_r24);
+                if (var_r24 & 1) {
                     var_r9--;
                     *var_r9 = (s8)(((var_r26_2 + 1) * 4) + 3);
                     goto block_51;
                 }
                 buf[var_r31] = (u8)(var_r26_2 + 1);
                 var_r31 += 1;
-                RB8011(var_r24_8);
+                RB8011(var_r24);
                 var_r25 = var_r12;
-                if (var_r24_8 & 1) var_r25 = temp_r7_2;
-                stop3 = (var_r30 == arg2);
-                *((s8 *)arg0 + var_r26_2 + 1) = (s8)var_r25;
+                if (var_r24 & 1) var_r25 = temp_r7_2;
+                if (var_r30 == arg2) goto done;
                 var_r30 += 1;
-                if (stop3 != 0) goto done;
+                *((s8 *)arg0 + var_r26_2 + 1) = (s8)var_r25;
             block_51:
-                RB8011(var_r24_9);
-                if (var_r24_9 & 1) {
+                RB8011(var_r24);
+                if (var_r24 & 1) {
                     var_r9--;
                     *var_r9 = (s8)(((var_r26_2 + 2) * 4) + 3);
                     goto block_62;
                 }
                 buf[var_r31] = (u8)(var_r26_2 + 2);
                 var_r31 += 1;
-                RB8011(var_r24_10);
-                var_r25_2 = var_r12;
-                if (var_r24_10 & 1) var_r25_2 = temp_r7_2;
-                stop4 = (var_r30 == arg2);
-                *((s8 *)arg0 + var_r26_2 + 2) = (s8)var_r25_2;
+                RB8011(var_r24);
+                var_r25 = var_r12;
+                if (var_r24 & 1) var_r25 = temp_r7_2;
+                if (var_r30 == arg2) goto done;
                 var_r30 += 1;
-                if (stop4 != 0) goto done;
+                *((s8 *)arg0 + var_r26_2 + 2) = (s8)var_r25;
             block_62:
-                RB8011(var_r24_11);
-                if (var_r24_11 & 1) {
+                RB8011(var_r24);
+                if (var_r24 & 1) {
                     var_r9--;
                     *var_r9 = (s8)(((var_r26_2 + 3) * 4) + 3);
                     goto loop_82;
                 }
                 buf[var_r31] = (u8)(var_r26_2 + 3);
                 var_r31 += 1;
-                RB8011(var_r24_12);
-                var_r24_13 = var_r12;
-                if (var_r24_12 & 1) var_r24_13 = temp_r7_2;
-                stop5 = (var_r30 == arg2);
-                *((s8 *)arg0 + var_r26_2 + 3) = (s8)var_r24_13;
+                RB8011(var_r24);
+                var_r25 = var_r12;
+                if (var_r24 & 1) var_r25 = temp_r7_2;
+                if (var_r30 == arg2) goto done;
                 var_r30 += 1;
-                if (stop5 != 0) goto done;
+                *((s8 *)arg0 + var_r26_2 + 3) = (s8)var_r25;
                 goto loop_82;
             case 1:
                 temp_r26_2 = temp_r26 >> 2U;
@@ -9429,13 +9414,12 @@ void fn_80126A10(s8 *arg0, void *arg1, u32 arg2) {
                 temp_r26_3 = temp_r26 >> 2U;
                 buf[var_r31] = (u8)temp_r26_3;
                 var_r31 += 1;
-                RB8011(var_r24_14);
-                var_r25_3 = var_r12;
-                if (var_r24_14 & 1) var_r25_3 = temp_r7_2;
-                stop6 = (var_r30 == arg2);
-                *(arg0 + temp_r26_3) = var_r25_3;
+                RB8011(var_r24);
+                var_r25 = var_r12;
+                if (var_r24 & 1) var_r25 = temp_r7_2;
+                if (var_r30 == arg2) goto done;
                 var_r30 += 1;
-                if (stop6 != 0) goto done;
+                *(arg0 + temp_r26_3) = var_r25;
                 *var_r11_2 = 0;
                 break;
             }
