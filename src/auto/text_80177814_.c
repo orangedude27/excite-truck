@@ -883,8 +883,8 @@ s32 fn_80178C4C(void *entry) {
 }
 
 #pragma dont_inline off
+/* Empty stub. */
 void fn_80178C88(void) {
-
 }
 
 /* Empty stub. */
