@@ -67,7 +67,16 @@ void fn_80204014(s32 code, s32 resourceGetter, s32 senderValue, void *sender) {
 
 }
 
-void fn_80204018(void) {
+/* Stage-load half of the dynamic-object spawner, empty in this build.
+ * fn_801F973C(typeDef, params, flags) walks a type definition's object list
+ * (links at +0x24) and calls each entry's create method (vtable at +0x108, slot
+ * index 4) with a parameter record built from the entry's +0x30 / +0x54
+ * transforms plus the caller's params; when bit 0 of flags is set it then
+ * forwards (typeDef, params) here as well.  Runtime spawns pass flags 2
+ * (fn_801FA7F4), so only the stage load -- fn_801F9B28 -> fn_801F9928(list, 3)
+ * over a resource's "objects" child -> fn_801F981C -> fn_801F973C -- reaches
+ * this hook, where the per-type extra setup would happen. */
+void fn_80204018(void *typeDef, void *params) {
 
 }
 
