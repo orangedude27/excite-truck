@@ -71,8 +71,9 @@ extern int fn_802D9628(short, short, unsigned int);
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_802BB958(short arg0, int arg1, unsigned char *arg2, unsigned char *arg3) {
-    int *var_r31; // v4
+    int *var_r31;
     short temp_r30;
     int temp_r29;
     int var_r28;
@@ -85,10 +86,12 @@ void fn_802BB958(short arg0, int arg1, unsigned char *arg2, unsigned char *arg3)
         if (value != 0) {
             unsigned char temp_r4 = *arg2;
             if (temp_r4 != *arg3) {
-                ((void (*)(void *, int, int, unsigned int))fn_802D9628)(
-                    (void *)value, temp_r30, temp_r29,
-                    ((unsigned int)temp_r4 << 24) | ((unsigned int)temp_r4 << 16) |
-                    ((unsigned int)temp_r4 << 8) | temp_r4);
+                unsigned int packed = ((unsigned int)temp_r4 << 24) | ((unsigned int)temp_r4 << 16) |
+                                      ((unsigned int)temp_r4 << 8) | temp_r4;
+                int a3 = temp_r29;
+                int a2 = temp_r30;
+                void *a1 = (void *)value;
+                ((void (*)(void *, int, int, unsigned int))fn_802D9628)(a1, a2, a3, packed);
             }
         }
         var_r28 += 1;
@@ -286,7 +289,6 @@ void fn_802BBCC4(void) {
     } while (i < 6);
 }
 
-#pragma push
 #pragma use_lmw_stmw off
 unsigned char fn_802BBD38(int arg0, int arg1, int arg2) {
     extern signed char lbl_8055FA90;
@@ -298,7 +300,7 @@ unsigned char fn_802BBD38(int arg0, int arg1, int arg2) {
     int x2;
     int y2;
     unsigned char invalid;
-    unsigned char result;
+    int result;
 
     if ((unsigned char)lbl_8055FA90 != 0)
         return (unsigned char)(~((arg2 - 1) | (1 - arg2)) >> 31);
@@ -320,12 +322,11 @@ unsigned char fn_802BBD38(int arg0, int arg1, int arg2) {
             return (unsigned char)(((unsigned int)((int (*)(void *, int, int))fn_802D972C)(
                 (void *)value, x2, y2)) >> 8);
         } else {
-            result = (unsigned char)(~((arg2 - 2) | (2 - arg2)) >> 31);
+            result = ~((arg2 - 2) | (2 - arg2)) >> 31;
         }
     }
-    return result;
+    return (unsigned char)result;
 }
-#pragma pop
   extern int lbl_804C0098[];
 extern void fn_802BB8E4(int*);
 extern int fn_802D972C(void *, int, int);
@@ -501,21 +502,23 @@ extern double lbl_80564D08;
 int fn_802BC09C(short arg0, int arg1, int arg2, signed char arg3, float farg0) {
     unsigned char sp10[6];
     unsigned char sp8[6];
-    int result = 0;
-    int cur = fn_802B05DC();
+    int cur;
+    int x;
+    short y;
+    int bad;
+    int i, k;
+    unsigned char base, old;
+    unsigned char *d, *s, *w;
+    int result;
+    result = 0;
+    cur = fn_802B05DC();
     if (arg2 != cur) {
-        int bad;
-        int x = fn_802BB928(arg0);
-        short y = fn_802BB93C(arg1);
-        int i;
-        float f, a, b;
-        unsigned char base, old;
-        unsigned char *d;
-        unsigned char *s;
+        x = fn_802BB928(arg0);
+        y = fn_802BB93C(arg1);
         bad = 0;
         if ((short)x < 0 || (short)x >= 0x200 || y < 0 || y >= 0x200) bad = 1;
         if (bad == 0) {
-            unsigned char *w = sp10;
+            w = sp10;
             for (i = 0; i < 6; i++) { *w = fn_802BBD38(arg0, arg1, i); w++; }
             if (cur == -1 || sp10[cur] < 0x80) {
                 if (cur == -1) base = 0;
@@ -524,27 +527,32 @@ int fn_802BC09C(short arg0, int arg1, int arg2, signed char arg3, float farg0) {
                 sp8[arg2] = arg3;
                 d = sp8;
                 s = sp10;
-                for (i = 0; i < 3; i++) {
-                    double ds0, dd0, ds1, dd1;
-                    int hi = 0x43300000;
-                    ((int *)&ds0)[0] = hi; ((int *)&ds0)[1] = s[0];
-                    a = (float)(ds0 - lbl_80564D08);
-                    ((int *)&dd0)[0] = hi; ((int *)&dd0)[1] = d[0];
-                    b = (float)(dd0 - lbl_80564D08);
-                    f = a + farg0 * (b - a);
-                    if (f < lbl_80564D00) f = f - lbl_80564D04;
-                    else f = lbl_80564D04 + f;
-                    d[0] = (unsigned char)(int)f;
-                    ((int *)&ds1)[0] = hi; ((int *)&ds1)[1] = s[1];
-                    a = (float)(ds1 - lbl_80564D08);
-                    ((int *)&dd1)[0] = hi; ((int *)&dd1)[1] = d[1];
-                    b = (float)(dd1 - lbl_80564D08);
-                    f = a + farg0 * (b - a);
-                    if (f < lbl_80564D00) f = f - lbl_80564D04;
-                    else f = lbl_80564D04 + f;
-                    d[1] = (unsigned char)(int)f;
-                    s += 2;
-                    d += 2;
+                {
+                    int hi = *(int *)&lbl_80564D08;
+                    float f, a, b;
+                    double ds, dd;
+                    for (k = 0; k < 3; k++) {
+                        float zero = lbl_80564D00;
+                        float half = lbl_80564D04;
+                        ((int *)&dd)[0] = hi; ((int *)&dd)[1] = d[0];
+                        b = (float)(dd - lbl_80564D08);
+                        ((int *)&ds)[0] = hi; ((int *)&ds)[1] = s[0];
+                        a = (float)(ds - lbl_80564D08);
+                        f = a + farg0 * (b - a);
+                        if (f < zero) f = f - half;
+                        else f = half + f;
+                        d[0] = (unsigned char)(int)f;
+                        ((int *)&dd)[0] = hi; ((int *)&dd)[1] = d[1];
+                        b = (float)(dd - lbl_80564D08);
+                        ((int *)&ds)[0] = hi; ((int *)&ds)[1] = s[1];
+                        a = (float)(ds - lbl_80564D08);
+                        f = a + farg0 * (b - a);
+                        if (f < zero) f = f - half;
+                        else f = half + f;
+                        d[1] = (unsigned char)(int)f;
+                        s += 2;
+                        d += 2;
+                    }
                 }
                 if (cur != -1) {
                     old = sp8[cur];
