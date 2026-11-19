@@ -117,7 +117,8 @@ check:
     if (c != 0) goto loop;
 }
 
-int stricmp(unsigned char *a, unsigned char *b) {
+int stricmp(unsigned char *str1, unsigned char *str2) {
+    /* Compare two strings case-insensitively using the active locale's character mapping table. */
     register int locale;
     register int c1;
     register int c2;
@@ -125,10 +126,10 @@ int stricmp(unsigned char *a, unsigned char *b) {
     register unsigned char skip;
     locale = *(int *)(lbl_802FE850 + 0x38);
     for (;;) {
-        skip = (c1 = (signed char)*a, a++, c1 < 0 || c1 >= 256);
+        skip = (c1 = (signed char)*str1, str1++, c1 < 0 || c1 >= 256);
         c1 = (skip != 0) ? c1 : (unsigned char)*(unsigned char *)(*(int *)(locale + 0x10) + c1);
         sc1 = (signed char)c1;
-        skip = (c2 = (signed char)*b, b++, c2 < 0 || c2 >= 256);
+        skip = (c2 = (signed char)*str2, str2++, c2 < 0 || c2 >= 256);
         c2 = (skip != 0) ? c2 : (unsigned char)*(unsigned char *)(*(int *)(locale + 0x10) + c2);
         if (sc1 < (signed char)c2) return -1;
         if (sc1 > (signed char)c2) return 1;
@@ -1196,20 +1197,23 @@ double __kernel_tan(int iy, double x, double y) {
 extern double lbl_802EE748[];
 extern double lbl_80560A48, lbl_80560A50, lbl_80560A58, lbl_80560A60, lbl_80560A68;
 double atan(double x) {
+    struct AtanTable {
+        double atanhi[4];
+        double atanlo[4];
+        double aT[11];
+    };
     double w, s1, s2, z, t;
     int ix, hx, id;
-    double *atanhi = lbl_802EE748;
-    double *atanlo = lbl_802EE748 + 4;
-    double *aT = lbl_802EE748 + 8;
+    struct AtanTable *tab = (struct AtanTable *)lbl_802EE748;
     hx = __HI(x);
     ix = hx & 0x7fffffff;
     if (ix >= 0x44100000) {
         if (ix > 0x7ff00000 || (ix == 0x7ff00000 && (__LO(x) != 0)))
             return x + x;
         if (hx > 0)
-            return atanhi[3] + atanlo[3];
+            return tab->atanhi[3] + tab->atanlo[3];
         else
-            return -atanhi[3] - atanlo[3];
+            return -tab->atanhi[3] - tab->atanlo[3];
     }
     if (ix < 0x3fdc0000) {
         if (ix < 0x3e200000) {
@@ -1239,11 +1243,11 @@ double atan(double x) {
     }
     z = x * x;
     w = z * z;
-    s1 = z * (aT[0] + w * (aT[2] + w * (aT[4] + w * (aT[6] + w * (aT[8] + w * aT[10])))));
-    s2 = w * (aT[1] + w * (aT[3] + w * (aT[5] + w * (aT[7] + w * aT[9]))));
+    s1 = z * (tab->aT[0] + w * (tab->aT[2] + w * (tab->aT[4] + w * (tab->aT[6] + w * (tab->aT[8] + w * tab->aT[10])))));
+    s2 = w * (tab->aT[1] + w * (tab->aT[3] + w * (tab->aT[5] + w * (tab->aT[7] + w * tab->aT[9]))));
     if (id < 0)
         return x - x * (s1 + s2);
-    z = atanhi[id] - ((x * (s1 + s2) - atanlo[id]) - x);
+    z = tab->atanhi[id] - ((x * (s1 + s2) - tab->atanlo[id]) - x);
     return (hx < 0) ? -z : z;
 }
 
