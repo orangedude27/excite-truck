@@ -730,31 +730,32 @@ enum OSFontEncode {
     OS_FONT_ENCODE_UTF32
 };
 
+// Advance past one encoded character, selecting the font data and returning its glyph code.
 char *ParseStringS(int format, char *text, int **outWidths, int *outCode) {
     int *widths = outCode;
-    unsigned short first = 0;
-    int valid;
-    unsigned char second;
+    unsigned short code = 0;
+    int isValid;
+    unsigned char trail;
     switch (format) {
     case 0:
-        first = *(unsigned char *)text;
+        code = *(unsigned char *)text;
         widths = lbl_8055DA54;
-        if (first != 0) text = text + 1;
+        if (code != 0) text = text + 1;
         break;
     case 1:
-        first = *(unsigned char *)text;
+        code = *(unsigned char *)text;
         widths = lbl_8055DA50;
-        if (first != 0) {
+        if (code != 0) {
             text = text + 1;
-            valid = 0;
-            if ((first >= 0x81 && first <= 0x9F) || (first >= 0xE0 && first <= 0xFC))
-                valid = 1;
-            if (valid != 0) {
-                second = *(unsigned char *)text;
-                valid = 0;
-                if (second >= 0x40 && second <= 0xFC && second != 0x7F) valid = 1;
-                if (valid != 0) {
-                    first = (first << 8) | *(volatile unsigned char *)text;
+            isValid = 0;
+            if ((code >= 0x81 && code <= 0x9F) || (code >= 0xE0 && code <= 0xFC))
+                isValid = 1;
+            if (isValid != 0) {
+                trail = *(unsigned char *)text;
+                isValid = 0;
+                if (trail >= 0x40 && trail <= 0xFC && trail != 0x7F) isValid = 1;
+                if (isValid != 0) {
+                    code = (code << 8) | *(volatile unsigned char *)text;
                     text = text + 1;
                 }
             }
@@ -762,7 +763,7 @@ char *ParseStringS(int format, char *text, int **outWidths, int *outCode) {
         break;
     }
     *outWidths = widths;
-    *outCode = ((u32 (*)(int, unsigned short))GetFontCode)(format, first);
+    *outCode = ((u32 (*)(int, unsigned short))GetFontCode)(format, code);
     return text;
 }
 
