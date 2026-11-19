@@ -147,31 +147,56 @@ void fn_802C82C0(void) {
 
 #pragma cplusplus on
 extern "C" int fn_80133010(void);
-extern "C" void fn_802C82C4(int arg0) {
-    int mode = arg0;
+extern "C" void fn_802C82C4(int requestedMode) {
+#define DISPLAY_TYPE_KEY lbl_8034B498
+#define LOG_NORMAL_MODE  lbl_8034B4A8
+#define LOG_WIDESCREEN_MODE lbl_8034B4B8
+#define LOG_LETTERBOX_MODE  lbl_8034B4CC
+#define sDisplayType    lbl_8055FC90
+#define sWidescreenMode lbl_8055FC8C
+#define sLetterboxMode  lbl_8055FC8D
+#define sScaleX         lbl_8055D020
+#define sScaleY         lbl_8055D024
+#define SCALE_NORMAL    lbl_80564EF8
+#define SCALE_WIDE      lbl_80564EFC
+    /* Set the drawlist display mode (0 normal, 1 widescreen, 2 letterbox), forcing
+     * widescreen when required, save it to config, and update the mode flags,
+     * scale factors, and log message. */
+    int mode = requestedMode;
     if (fn_80019B9C() != 0 || fn_802E9A0C() == 1) mode = 1;
-    lbl_8055FC90 = (void *)mode;
-    if (fn_80133010() != 0) fn_80133348(1, lbl_8034B498, (int)lbl_8055FC90);
-    lbl_8055FC8C = 0;
-    lbl_8055D020 = lbl_80564EF8;
-    lbl_8055D024 = lbl_80564EF8;
-    lbl_8055FC8D = 0;
+    sDisplayType = (void *)mode;
+    if (fn_80133010() != 0) fn_80133348(1, DISPLAY_TYPE_KEY, (int)sDisplayType);
+    sWidescreenMode = 0;
+    sScaleX = SCALE_NORMAL;
+    sScaleY = SCALE_NORMAL;
+    sLetterboxMode = 0;
     switch (mode) {
     case 0:
-        fn_802E30C8(lbl_8034B4A8);
+        fn_802E30C8(LOG_NORMAL_MODE);
         break;
     case 1:
-        fn_802E30C8(lbl_8034B4B8);
-        lbl_8055FC8C = 1;
-        lbl_8055D020 = lbl_80564EFC;
+        fn_802E30C8(LOG_WIDESCREEN_MODE);
+        sWidescreenMode = 1;
+        sScaleX = SCALE_WIDE;
         break;
     case 2:
-        fn_802E30C8(lbl_8034B4CC);
-        lbl_8055FC8D = 1;
-        lbl_8055D020 = lbl_80564EFC;
-        lbl_8055D024 = lbl_80564EFC;
+        fn_802E30C8(LOG_LETTERBOX_MODE);
+        sLetterboxMode = 1;
+        sScaleX = SCALE_WIDE;
+        sScaleY = SCALE_WIDE;
         break;
     }
+#undef SCALE_WIDE
+#undef SCALE_NORMAL
+#undef sScaleY
+#undef sScaleX
+#undef sLetterboxMode
+#undef sWidescreenMode
+#undef sDisplayType
+#undef LOG_LETTERBOX_MODE
+#undef LOG_WIDESCREEN_MODE
+#undef LOG_NORMAL_MODE
+#undef DISPLAY_TYPE_KEY
 }
 #pragma cplusplus reset
 /* Get the "display_type" setting (0 normal, 1 widescreen, 2 letterbox). */
