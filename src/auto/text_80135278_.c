@@ -113,10 +113,10 @@ static Diffs2_80135278 fn_80135278_diff(float *b, float *c) {
 float fn_80135278(float *a, float *b, float *c) {
     return a[0] * (b[0] - c[0]) + a[1] * (b[1] - c[1]);
 }
-#pragma scheduling off
+#pragma scheduling on
 void *fn_801352B8(Unk_80135278 *arg0) {
     Unk_80135278 *self;
-    float value = lbl_80561320;
+    float value = 0.0f;
 
     arg0->unk_0 = (s32)&lbl_8032BE80;
     self = arg0;
@@ -361,6 +361,7 @@ done:
     return;
 }
 
+#pragma ctrloop on
 s32 fn_801357A4(Unk_80135278 *self, float *point) {
     extern double fn_8002F234(float);
     extern float lbl_80561334;
@@ -378,8 +379,8 @@ s32 fn_801357A4(Unk_80135278 *self, float *point) {
         self->unk_14 = *(float *)(node+12) + t * (*(float *)(*(char **)(node+0x14)+12) - *(float *)(node+12));
         inv = lbl_80561324 / (float)fn_8002F234(self->unk_10*self->unk_10 + self->unk_14*self->unk_14);
         dx = point[0]-self->unk_20;
-        dy = point[1]-self->unk_24;
         x = self->unk_10*inv;
+        dy = point[1]-self->unk_24;
         y = self->unk_14*inv;
         self->unk_10=x; self->unk_14=y;
         self->unk_18=dx; self->unk_1c=dy;
@@ -439,8 +440,6 @@ s32 fn_801357A4(Unk_80135278 *self, float *point) {
     self->unk_1c=point[1]-self->unk_24;
     return 2;
 }
-
-#pragma scheduling invalid_target
 /* Fill a path sample by walking the follower's circular stretch list from its
  * current node until a stretch reaches the requested distance (or the chain
  * ends), then set the sample's node and interpolation fraction. */
@@ -655,6 +654,7 @@ void fn_80135F4C(void *follower) {
     fn_80135F64((int)follower, start, start + 8, 1, 0);
 }
 
+#pragma scheduling 750
 #pragma dont_inline on
 void fn_80135F64(int arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
  s32 offset, i;
@@ -670,10 +670,9 @@ void fn_80135F64(int arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
  {
   Unk_80135278 *obj=(Unk_80135278 *)arg0;
   volatile float *v=(volatile float *)obj;
-  Unk_80135278 *p;
+  Unk_80135278 *p=(Unk_80135278 *)obj->unk_4;
   float a,z,c,e,d,f,g,h,b;
   a=-v[4]; z=lbl_80561320;
-  p=*(Unk_80135278 **)((char *)obj+4);
   obj->unk_44=z;
   b=v[6];
   obj->unk_4c=z;
@@ -691,6 +690,7 @@ void fn_80135F64(int arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
  }
 }
 #pragma dont_inline off
+#pragma scheduling on
 
 void fn_8013605C(void *follower) {
     /* Clear the path-update flag byte at +0x64 of a path follower (Unk_80135278). */
@@ -841,7 +841,7 @@ void fn_80136414(void *arg0, void *arg1, s32 arg2) {
     unsigned long index;
 
     node = *(char **)((char *)arg1 + 0x2C);
-    fraction = (float)(unsigned short)arg2;
+    fraction = (float)(unsigned int)(unsigned short)arg2;
     index = ((unsigned long)arg2) >> 16;
     base = *(char **)(node + 0x1C);
     *(char **)arg0 = base + index * 0x3C;
@@ -855,59 +855,56 @@ extern const char lbl_8032BE30[];
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_80136468(Unk_80135278 *out, Unk_80135278 *self, float f) {
-    char *p = (char *)*(void **)((char *)self + 0x2c);
-    char *latestP;
-    char *sentinel;
-    register char *cursor;
-    char *q;
+extern "C" void fn_80136468(PathSample *out, Unk_80135278 *self, float f) {
+    char *data = (char *)*(void **)((char *)self + 0x2c);
+    char *cursor;
+    char *next;
+    char *head;
     float *period;
-    float d;
     s32 mode;
     s32 limit;
-    if (p == 0) {
+    if (data == 0) {
         float zero = lbl_80561320;
-        *(s32 *)out = 0;
-        *(s32 *)((char *)out + 8) = 0x2710;
-        *(float *)((char *)out + 4) = zero;
+        out->node = 0;
+        out->tag = 0x2710;
+        out->fraction = zero;
         return;
     }
     mode = *(s32 *)((char *)self + 0xc);
     if (f > lbl_80561320) {
-        period = (float *)(p + 8);
-        d = (float)fn_8002EFB4((double)f, (double)*period);
+        period = (float *)(data + 8);
+        f = (float)fn_8002EFB4(f, *period);
     } else {
-        period = (float *)(p + 8);
-        d = *period - (float)fn_8002EFB4((double)-f, (double)*period);
+        period = (float *)(data + 8);
+        f = (float)fn_8002EFB4(-f, *period);
+        f = *period - f;
     }
     limit = 0x2710;
-    cursor = *(char **)(p + 0x1c);
-    latestP = (char *)*(void * volatile *)((char *)self + 0x2c);
-    sentinel = *(char **)(latestP + 0x1c);
-    while (1) {
-        q = *(char **)(cursor + 0x14);
-        if (q == sentinel)
+    cursor = *(char **)(data + 0x1c);
+    head = *(char **)((char *)*(void * volatile *)((char *)self + 0x2c) + 0x1c);
+    for (;;) {
+        next = *(char **)(cursor + 0x14);
+        if (next == head)
             break;
-        if (*(float *)(q + 0x1c) >= d)
+        if (*(float *)(next + 0x1c) >= f)
             break;
         limit--;
-        cursor = q;
+        cursor = next;
         if (limit <= 0) {
-            fn_802E30C8(lbl_8032BE30, mode, (double)d, (double)*period);
-            d = lbl_80561320;
+            fn_802E30C8(lbl_8032BE30, mode, (double)*period);
+            f = lbl_80561320;
+            cursor = *(char **)((char *)*(void * volatile *)((char *)self + 0x2c) + 0x1c);
             break;
         }
     }
-    latestP = (char *)*(void * volatile *)((char *)self + 0x2c);
-    sentinel = *(char **)(latestP + 0x1c);
-    if (*(u8 *)(sentinel + 0x34) != *(u8 *)(q + 0x34)) {
-        d = lbl_80561320;
+    if (*(u8 *)(cursor + 0x34) != *(u8 *)(next + 0x34)) {
+        f = lbl_80561320;
     } else {
-        d = (d - *(float *)(sentinel + 0x1c)) / *(float *)(sentinel + 0x18);
+        f = (f - *(float *)(cursor + 0x1c)) / *(float *)(cursor + 0x18);
     }
-    *(s32 *)out = (s32)q;
-    *(float *)((char *)out + 4) = d;
-    *(s32 *)((char *)out + 8) = mode;
+    out->node = (PathNode *)cursor;
+    out->fraction = f;
+    out->tag = mode;
 }
 #pragma cplusplus reset
 
@@ -926,21 +923,25 @@ void fn_80136594(void *stateOut, s32 path, s32 point) {
 #pragma push
 #pragma scheduling invalid_target
 float fn_801365C4(Unk_80135278 *a, Unk_80135278 *b) {
-    s32 offset, same, pos, count, i, j;
+    register s32 pos;
+    register s32 unk34;
+    register void *data;
+    register s32 count;
+    s32 same, offset, i, j;
     unsigned long length;
     Unk_80135278 *p;
-    void *data;
     float value, result;
     data = (void *)a->unk_2c;
     if (data == 0 || b->unk_4 == 0 || a->unk_4 == 0 || b->unk_54 != a->unk_54)
         return lbl_80561320;
     p = (Unk_80135278 *)a->unk_4;
+    unk34 = a->unk_34;
+    pos = *(s32 *)((char *)p + 0x10);
     same = p == (Unk_80135278 *)b->unk_4;
     offset = ((-same | same) >> 31) - 1;
-    pos = *(s32 *)((char *)p + 0x10);
-    if (a->unk_34 != 0) {
+    if (unk34 != 0) {
         length = *(unsigned long *)((char *)data + 0x18);
-        pos = (length + (pos - a->unk_34)) % length;
+        pos = (length + (pos - unk34)) % length;
     }
     count = a->unk_54;
     i = ((pos >> 16) + (count + offset)) % count;
