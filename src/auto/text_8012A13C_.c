@@ -12,12 +12,12 @@ int fn_802E317C(int *, ...);
 int fn_80128658(int);
 int fn_80128668(void *);
 void fn_8013B950(void);
+#pragma scheduling invalid_target
 void *fn_8012A13C(void *arg0, int arg1, int arg2, int arg3) {
     *(int **)arg0 = (int *)lbl_8032A620;
     fn_8012A17C(arg0, arg1, arg2, arg3, 0);
     return arg0;
 }
-
 extern s32 fn_801284E8(s32, s32);
 extern void fn_8012A218(void *);
 extern char lbl_8032A5D8[];
