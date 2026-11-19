@@ -1814,9 +1814,9 @@ extern "C" f32 lbl_805614A4, lbl_805614AC, lbl_80561530, lbl_80561538, lbl_80561
 #pragma scheduling on
 #pragma dont_inline on
 extern "C" s32 fn_8013F438(f32 x) {
-    f32 t = (x - lbl_80561530) / lbl_80561538;
-    f32 v = (lbl_805614AC < t) ? lbl_805614AC : t;
-    v = (v > lbl_805614A4) ? v : lbl_805614A4;
+    f32 t = (x - 0.2f) / 0.6f;
+    f32 v = (1.0f < t) ? 1.0f : t;
+    v = (v > 0.0f) ? v : 0.0f;
     return (s32)(lbl_8056153C + v * lbl_80561540);
 }
 #pragma dont_inline reset
@@ -1949,8 +1949,8 @@ extern "C" void fn_8013F918(void *arg0, void *arg1, void *arg2) {
         s32 col = (c << 24) | 0xFF7F00;
         fn_8013F498(outA, outB, v);
         f32 f = (v - lbl_805614E4) / lbl_80561554;
-        if (f < lbl_805614AC) f = lbl_805614AC;
-        if (f > lbl_805614A4) f = lbl_805614A4;
+        f = (f < lbl_805614AC) ? f : lbl_805614AC;
+        f = (f > lbl_805614A4) ? lbl_805614A4 : f;
         f32 g = f * lbl_8056155C;
         f32 res = lbl_80561558 + g;
         f32 sp = outA[1];
@@ -1958,11 +1958,8 @@ extern "C" void fn_8013F918(void *arg0, void *arg1, void *arg2) {
     }
     f32 x = *(f32 *)(b + 0x94);
     if (x < *(f32 *)(lbl_8042FB3C + 8)) {
-        f32 low = lbl_805614AC;
         f32 q = x / *(f32 *)(lbl_8042FB3C + 8);
-        if (low > q) low = q;
-        if (low > lbl_805614A4) low = lbl_805614A4;
-        f32 diff = lbl_805614AC - low;
+        f32 diff = lbl_805614AC - q;
         s32 c2 = (s32)(lbl_8056151C * diff);
         c2 = (c2 << 24) | 0xFFFFFF;
         s32 c3 = (s32)(lbl_80561568 * (lbl_805614AC - diff));
