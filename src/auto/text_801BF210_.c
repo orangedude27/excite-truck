@@ -452,28 +452,40 @@ void fn_801BFB2C(char *base, float *out, FV3 *points) {
 #pragma scheduling invalid_target
 void fn_801BFD34(float *out, float *in, const float *m) {
     if (out == in) {
-        float y = in[1];
-        float y0 = y * m[3];
-        float y1 = y * m[4];
-        float y2 = y * m[5];
-        float x = in[0];
-        float x0 = x * m[0];
-        float x1 = x * m[1];
-        float x2 = x * m[2];
-        float z = in[2];
-        float z0 = z * m[6];
-        float z1 = z * m[7];
-        float z2 = z * m[8];
-        out[0] = (x0 + y0) + z0;
-        out[1] = (x1 + y1) + z1;
-        out[2] = (x2 + y2) + z2;
+        float x, y, z;
+        float m0, m3, m6, m1, m4, m7, m2, m5, m8;
+        m3 = m[3];
+        m4 = m[4];
+        m5 = m[5];
+        m0 = m[0];
+        m1 = m[1];
+        m2 = m[2];
+        m6 = m[6];
+        m7 = m[7];
+        m8 = m[8];
+        x = in[0];
+        y = in[1];
+        z = in[2];
+        out[0] = z * m6 + (x * m0 + y * m3);
+        out[1] = z * m7 + (x * m1 + y * m4);
+        out[2] = z * m8 + (x * m2 + y * m5);
     } else {
-        float m0 = m[0], m1 = m[1], m2 = m[2];
-        float m3 = m[3], m4 = m[4], m5 = m[5];
-        float m6 = m[6], m7 = m[7], m8 = m[8];
-        out[0] = (m3 * in[1] + m0 * in[0]) + m6 * in[2];
-        out[1] = (m4 * in[1] + m1 * in[0]) + m7 * in[2];
-        out[2] = (m5 * in[1] + m2 * in[0]) + m8 * in[2];
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        float y;
+        m10 = m[3];
+        m00 = m[0];
+        m20 = m[6];
+        m11 = m[4];
+        m01 = m[1];
+        m21 = m[7];
+        m12 = m[5];
+        m02 = m[2];
+        m22 = m[8];
+        out[0] = in[2] * m20 + (in[0] * m00 + in[1] * m10);
+        y = in[1];
+        out[1] = in[2] * m21 + (in[0] * m01 + y * m11);
+        y = in[1];
+        out[2] = in[2] * m22 + (in[0] * m02 + y * m12);
     }
     {
         float tx = out[0] + m[9];
