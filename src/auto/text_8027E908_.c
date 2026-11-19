@@ -540,32 +540,25 @@ extern "C" void fn_8027F09C(int arg0) {
     extern int lbl_8055C7D0;
     extern int lbl_8055C7D8;
     struct Local { int args[30]; char buffer[0x64]; char pad[8]; } local;
-    register const char *base = lbl_80347E50;
-    register int zeroMain = 0;
-    register int val3 = 3;
-    register int b860 = (int)&lbl_8055B860;
-    register int minusTwo = -2;
-    register int zeroB = 0;
-    register int c7d8 = (int)&lbl_8055C7D8;
-    register int zeroC = 0;
+    const char *base = lbl_80347E50;
+    int c7d8, six, b860, minusTwo, thirteen;
     int result1, result2, *atable;
     int b0, b1, b2, b3, b4;
     int a0, a2, a3, a4;
     ((int (*)(char *, int, const char *, ...))fn_801345D8)(local.buffer, 0x64, base + 0x3D8, arg0);
-    local.args[5] = zeroMain; local.args[6] = 5; local.args[7] = (int)lbl_804B3018;
-    local.args[8] = zeroMain; local.args[9] = zeroMain;
+    local.args[5] = 0; local.args[6] = 5; local.args[7] = (int)lbl_804B3018;
+    local.args[8] = 0; local.args[9] = 0;
     result1 = ((int (*)(int, int))fn_80131234)((int)(base + 0x40C), (int)lbl_804B3018);
-    local.args[12] = result1;
-    local.args[11] = val3; local.args[10] = (int)&lbl_8055C7D0;
-    local.args[13] = zeroB; local.args[14] = zeroMain;
+    local.args[12] = result1; local.args[11] = 3; local.args[10] = (int)&lbl_8055C7D0;
+    local.args[13] = 0; local.args[14] = 0;
     result2 = fn_80131234((int)local.buffer);
-    local.args[17] = result2; local.args[16] = val3; local.args[18] = zeroC; local.args[19] = zeroMain;
-    val3 = 6; zeroB = 13;
+    local.args[17] = result2; local.args[16] = 3; local.args[18] = 0; local.args[19] = 0;
+    c7d8 = (int)&lbl_8055C7D8; six = 6; b860 = (int)&lbl_8055B860; minusTwo = -2; thirteen = 13;
     b0 = ((int *)&lbl_804B2FF8)[0]; b1 = ((int *)&lbl_804B2FF8)[1];
     b2 = ((int *)&lbl_804B2FF8)[2]; b3 = ((int *)&lbl_804B2FF8)[3]; b4 = ((int *)&lbl_804B2FF8)[4];
     atable = (int *)lbl_802FA8AC; a0 = *atable++; a2 = atable[1]; a3 = atable[2]; a4 = atable[3];
-    local.args[15] = c7d8; local.args[20] = b860; local.args[21] = val3; local.args[22] = zeroMain;
-    local.args[23] = minusTwo; local.args[24] = zeroB;
+    local.args[15] = c7d8; local.args[20] = b860; local.args[21] = six; local.args[22] = 0;
+    local.args[23] = minusTwo; local.args[24] = thirteen;
     local.args[25] = b0; local.args[26] = b1; local.args[27] = b2; local.args[28] = b3; local.args[29] = b4;
     local.args[0] = a0; local.args[2] = a2; local.args[3] = a3; local.args[4] = a4;
     local.args[1] = (int)&local.args[5];
@@ -2395,6 +2388,18 @@ int fn_80283AC8(void) {
     return 0;
 }
 
+static inline int fn_80283B58_find(struct Fn80283E28List *l, unsigned int value) {
+    struct Fn80283E28Obj **p = l->items;
+    int i;
+    for (i = 0; i < l->count; ++i) {
+        if ((unsigned int)*p != value) goto increment;
+        return i;
+increment:
+        ++p;
+    }
+    return -1;
+}
+
 int fn_80283B58(void) {
     char *base = (char *)&lbl_804B2FF8;
     struct Fn80283E28List *list = (struct Fn80283E28List *)(base + 0xE0);
@@ -2411,9 +2416,7 @@ int fn_80283B58(void) {
     value = (unsigned int)lbl_8055F698;
     p = items;
     for (; idx < count; ++idx) {
-        if ((unsigned int)*p != value) goto increment;
-        goto found;
-increment:
+        if ((unsigned int)*p == value) goto found;
         ++p;
     }
     idx = -1;
