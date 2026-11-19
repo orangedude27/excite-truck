@@ -25851,36 +25851,37 @@ u8 fn_80096670(u8 level) {
 }
 
 extern BOOLEAN find_uuid_in_seq(UINT8 *p, UINT32 seq_len, UINT8 *p_uuid, UINT16 uuid_len, int nest_level);
-tSDP_RECORD *sdp_db_service_search(tSDP_RECORD *p_rec, tSDP_UUID_SEQ *p_seq) {
-    UINT16 xx, yy;
+/* Search the local SDP server database for the next service record that contains every UUID in the requested sequence. */
+tSDP_RECORD *sdp_db_service_search(tSDP_RECORD *p_startRecord, tSDP_UUID_SEQ *p_uuidSeq) {
+    UINT16 attrIndex, uuidIndex;
     tSDP_ATTRIBUTE *p_attr;
-    tSDP_RECORD_BUILD_VIEW *p_end = &sdp_cb_record_db[sdp_cb_num_records];
+    tSDP_RECORD_BUILD_VIEW *p_endRecord = &sdp_cb_record_db[sdp_cb_num_records];
 
-    if (p_rec == NULL)
-        p_rec = (tSDP_RECORD *)&sdp_cb_record_db[0];
+    if (p_startRecord == NULL)
+        p_startRecord = (tSDP_RECORD *)&sdp_cb_record_db[0];
     else
-        p_rec = (tSDP_RECORD *)((tSDP_RECORD_BUILD_VIEW *)p_rec + 1);
+        p_startRecord = (tSDP_RECORD *)((tSDP_RECORD_BUILD_VIEW *)p_startRecord + 1);
 
-    for (; (tSDP_RECORD_BUILD_VIEW *)p_rec < p_end; p_rec = (tSDP_RECORD *)((tSDP_RECORD_BUILD_VIEW *)p_rec + 1)) {
-        for (yy = 0; yy < p_seq->num_uids; yy++) {
-            p_attr = &p_rec->attribute[0];
-            for (xx = 0; xx < p_rec->num_attributes; xx++, p_attr++) {
+    for (; (tSDP_RECORD_BUILD_VIEW *)p_startRecord < p_endRecord; p_startRecord = (tSDP_RECORD *)((tSDP_RECORD_BUILD_VIEW *)p_startRecord + 1)) {
+        for (uuidIndex = 0; uuidIndex < p_uuidSeq->num_uids; uuidIndex++) {
+            p_attr = &p_startRecord->attribute[0];
+            for (attrIndex = 0; attrIndex < p_startRecord->num_attributes; attrIndex++, p_attr++) {
                 if (p_attr->type == UUID_DESC_TYPE) {
                     if (!sdpu_compare_uuid_arrays(p_attr->value_ptr, p_attr->len,
-                            &p_seq->uuid_entry[yy].value[0], p_seq->uuid_entry[yy].len))
+                            &p_uuidSeq->uuid_entry[uuidIndex].value[0], p_uuidSeq->uuid_entry[uuidIndex].len))
                         continue;
                     break;
                 } else if (p_attr->type == DATA_ELE_SEQ_DESC_TYPE) {
                     if (find_uuid_in_seq(p_attr->value_ptr, p_attr->len,
-                            &p_seq->uuid_entry[yy].value[0], p_seq->uuid_entry[yy].len, 0))
+                            &p_uuidSeq->uuid_entry[uuidIndex].value[0], p_uuidSeq->uuid_entry[uuidIndex].len, 0))
                         break;
                 }
             }
-            if (xx == p_rec->num_attributes)
+            if (attrIndex == p_startRecord->num_attributes)
                 break;
         }
-        if (yy == p_seq->num_uids)
-            return p_rec;
+        if (uuidIndex == p_uuidSeq->num_uids)
+            return p_startRecord;
     }
     return NULL;
 }
