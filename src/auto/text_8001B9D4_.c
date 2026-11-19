@@ -1124,6 +1124,7 @@ double arg4;
 
 #pragma scheduling on
 #pragma processor 750
+#pragma scheduling invalid_target
 s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 arg5, f32 arg6) {
     struct SavedValues {
         char *name;
@@ -1132,43 +1133,34 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
         f32 scale;
         s32 encoded;
     };
-    register s32 savedArg2 = arg2;
-    register const char *savedArg3 = arg3;
-    register s32 savedArg4 = arg4;
-    register s32 savedArg5 = arg5;
-    register s32 savedArg0 = arg0;
-    register s32 savedArg1 = arg1;
+    char *cursor;
     void *record;
     s32 count;
     s32 temp;
     s32 maxCount;
     s32 offset;
+    s32 sourceByte;
     s32 remaining;
     s32 oldCount;
-    s32 sourceByte;
     s32 *pool;
-    char *cursor;
-    char *base;
     char *dest;
     void *entry;
     void *layout;
     volatile struct SavedValues saved;
-    temp = fn_8001D25C(savedArg1);
+    temp = fn_8001D25C(arg1);
     if (temp != 0) {
-        record = fn_8001C540(savedArg0, temp, savedArg2, 1);
-        count = fn_8001CED4(record, savedArg1, savedArg4, arg6);
+        record = fn_8001C540(arg0, temp, arg2, 1);
+        count = fn_8001CED4(record, arg1, arg4, arg6);
         if (count < 5) {
             pool = lbl_8055D5D0;
             *(u8 *)((u8 *)pool + 8) = 0;
             cursor = *(char **)pool;
             while (*(s8 *)cursor != 0 &&
                    cursor - *(char **)pool < *(s32 *)((u8 *)pool + 4)) {
-                if (stricmp(cursor, savedArg3) != 0) goto skip_name;
+                if (stricmp(cursor, arg3) != 0) goto skip_name;
                 goto name_ready;
             skip_name:
-                do {
-                    cursor++;
-                } while (*(s8 *)cursor != 0);
+                while (*(s8 *)cursor != 0) cursor++;
                 cursor++;
             }
             dest = cursor;
@@ -1182,15 +1174,15 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
                 goto name_ready;
             }
         copy_name:
-            sourceByte = (u8)*savedArg3;
-            savedArg3++;
+            sourceByte = (u8)*arg3;
+            arg3++;
             *dest = (u8)sourceByte;
             dest++;
             if ((s8)sourceByte != 0) goto decrement;
         name_ready:
             saved.name = cursor;
-            saved.value0 = savedArg4;
-            saved.value1 = savedArg5;
+            saved.value0 = arg4;
+            saved.value1 = arg5;
             saved.scale = arg6;
             entry = fn_800167CC(0);
             layout = fn_80016BC8(entry, 0);
@@ -1201,14 +1193,13 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
             maxCount = oldCount <= 4 ? oldCount : 4;
             *(s32 *)((u8 *)record + 0x6C) = maxCount;
             offset = count * 0x14;
-            base = (char *)record + offset;
-            dest = base + 8;
+            dest = (char *)record + offset + 8;
             memmove(dest + 0x14, dest, (maxCount - count) * 0x14);
             *(char **)dest = saved.name;
-            *(s32 *)(base + 0xC) = saved.value0;
-            *(s32 *)(base + 0x10) = saved.value1;
-            *(f32 *)(base + 0x14) = saved.scale;
-            *(s32 *)(base + 0x18) = saved.encoded;
+            *(s32 *)((char *)record + offset + 0xC) = saved.value0;
+            *(s32 *)((char *)record + offset + 0x10) = saved.value1;
+            *(f32 *)((char *)record + offset + 0x14) = saved.scale;
+            *(s32 *)((char *)record + offset + 0x18) = saved.encoded;
             oldCount = *(s32 *)((u8 *)record + 0x6C);
             *(s32 *)((u8 *)record + 0x6C) = oldCount + 1;
             return 1;
