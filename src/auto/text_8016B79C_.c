@@ -2680,8 +2680,6 @@ extern void *fn_80156A40(void);
 extern void fn_801B7C8C(void *, float *, float *);
 extern char lbl_80330DF4[];
 extern char lbl_80330E04[];
-extern char lbl_8055A270[];
-extern char lbl_8055A278[];
 extern float lbl_80561980;
 extern float lbl_80561984;
 extern float lbl_80561988;
