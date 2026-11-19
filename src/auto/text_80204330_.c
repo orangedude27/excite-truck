@@ -76,8 +76,6 @@ void fn_802043B0(int *arg0) {
         unsigned int a : 8;
         unsigned int rgb : 24;
     };
-    const float scale = -255.0f;
-    const float bias = 255.0f;
     int elapsed;
     int *out = arg0;
     float temp;
@@ -96,7 +94,7 @@ void fn_802043B0(int *arg0) {
         value = 0.0f;
     }
     *out &= 0xFFFFFF;
-    ((struct ColorBits *)out)->a = (int)(bias + value * scale);
+    ((struct ColorBits *)out)->a = (int)(lbl_80563178 + value * lbl_8056317C);
 }
 #pragma pop
 /* Start up the Tune Dash tuning screen: clear the entry count, selected row and
