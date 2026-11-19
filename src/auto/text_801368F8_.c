@@ -346,9 +346,7 @@ s32 fn_8013705C(f32 valueA, f32 valueB) {
 }
 
 extern float PSVECDotProduct(const void *, const void *);
-#pragma push
-#pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 s32 fn_80137078(void *arg0, void *arg1, f32 farg0, f32 farg1) {
     f32 sp28, sp24, sp20, sp1C, sp18, sp14, sp10, spC, sp8;
     f32 temp_f10, temp_f11, temp_f1, temp_f2, temp_f3, temp_f4, temp_f5;
@@ -376,7 +374,6 @@ s32 fn_80137078(void *arg0, void *arg1, f32 farg0, f32 farg1) {
     PSVECDotProduct(&sp8, (char *)arg1 + 0x18);
     return PSVECDotProduct(&sp8, (char *)arg1 + 0x18) > lbl_80561368;
 }
-#pragma pop
 s32 fn_80137140(s32 indexA, s32 indexB) {
     s32 objA;
     s32 objB;
