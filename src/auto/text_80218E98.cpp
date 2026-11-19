@@ -7258,13 +7258,6 @@ extern "C" void *fn_80224D40(void *obj, s32 deleteFlags) {
     }
     return obj;
 }
-#pragma always_inline on
-static inline void ScaleVec80224DDC(f32 *dst, f32 c, f32 x, f32 y, f32 z) {
-    dst[0] = c * x;
-    dst[1] = c * y;
-    dst[2] = c * z;
-}
-#pragma always_inline reset
 #pragma scheduling invalid_target
 extern "C" void fn_80224DDC(void *arg0, f32 x, f32 y, f32 z) {
     f32 result[11];
@@ -8144,6 +8137,8 @@ extern "C" void fn_80226F94(void *arg0) {
 extern "C" void fn_80227044(void *arg0, f32 x, f32 y, f32 z) {
     f32 result[11];
     f32 scaled[3];
+    f32 *pResult = &result[0];
+    f32 *pScaled = &scaled[0];
     *(u8 *)((u8 *)arg0 + 0x260) = 1;
     void *tmp = fn_8022EE9C();
     f32 k = lbl_805634F8;
@@ -8151,12 +8146,12 @@ extern "C" void fn_80227044(void *arg0, f32 x, f32 y, f32 z) {
     f32 sx = k * x;
     f32 sy = k * y;
     f32 sz = k * z;
-    scaled[0] = sx;
-    scaled[1] = sy;
-    scaled[2] = sz;
+    pScaled[0] = sx;
+    pScaled[1] = sy;
+    pScaled[2] = sz;
     void *handle = *(void **)((u8 *)arg0 + 0x25C);
-    ((void (*)(void *, void *, f32, f32))fn_80015A20)(&result[0], &scaled[0], sx, sy);
-    fn_80015B20(handle, &result[0], handle);
+    ((void (*)(void *, void *, f32, f32))fn_80015A20)(pResult, pScaled, sx, sy);
+    fn_80015B20(handle, pResult, handle);
 }
 #pragma pop
 extern "C" void *fn_802270DC(void *arg0, void *arg1) {
