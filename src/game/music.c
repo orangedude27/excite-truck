@@ -316,18 +316,19 @@ void fn_8020A47C(void) {
 extern const char lbl_8033C288[];
 /* Music event 3 exports the local volume, 1/2 import it, and 0 applies default. */
 #pragma cplusplus on
-extern "C" void fn_8020A03C(s32 object, s32 event) {
+/* Handles music volume events by syncing the global and per-player music volume settings. */
+extern "C" void fn_8020A03C(s32 musicObj, s32 event) {
     f32 volume = 0.7f;
     switch (event) {
     case 3:
-        fn_801331C4(object + 0xC, (void *)lbl_8033C288, &volume);
+        fn_801331C4(musicObj + 0xC, (void *)lbl_8033C288, &volume);
         fn_8013323C(4, (void *)lbl_8033C278, volume);
         fn_8020A5F8(volume);
         break;
     case 1:
     case 2:
         fn_801331C4(4, (void *)lbl_8033C278, &volume);
-        fn_8013323C(object + 0xC, (void *)lbl_8033C288, volume);
+        fn_8013323C(musicObj + 0xC, (void *)lbl_8033C288, volume);
         break;
     case 0:
         fn_8013323C(4, (void *)lbl_8033C278, volume);
