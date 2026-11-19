@@ -102,6 +102,7 @@ void __AXDSPInitCallback_801D32D0(void) {
 #undef sAXDspInitFlag
 }
 
+/* Empty stub / no-op placeholder. */
 void fn_801D32DC(void) {
 
 }
