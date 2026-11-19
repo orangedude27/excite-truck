@@ -90,15 +90,15 @@ float fn_802E78A4(float axis) {
 #undef RJOY_HALF
 #undef RJOY_CURVE_AMOUNT
 }
-#pragma cplusplus off
+#pragma scheduling invalid_target
 void fn_802E7920(int arg0) {
     extern int WPADControlMotor(int, int);
     extern int fn_802D9BF0(void);
     extern int fn_802E2C20(void);
     extern unsigned char lbl_80505978[];
     extern unsigned char lbl_80560008;
-    unsigned char *p;
     int player = arg0;
+    unsigned char *p;
     int time;
     int motor;
     int value;
@@ -127,7 +127,6 @@ void fn_802E7920(int arg0) {
     }
     WPADControlMotor(player, cmd);
 }
-#pragma cplusplus reset
 extern int fn_801282EC(int);
 extern int fn_801282F4(void);
 extern int fn_801284E8(void *, int);
@@ -201,7 +200,7 @@ done:
     return;
 dispatch:
     if (lbl_80507268[var_r30] != 0) {
-        ((void (*)(void))lbl_80507268[var_r30])();
+        ((void (*)(int, int))lbl_80507268[var_r30])(var_r30, var_r31);
     }
     record = lbl_80505978 + var_r30 * 0x638;
     if (var_r31 == -1) {
