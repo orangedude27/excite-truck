@@ -1217,10 +1217,10 @@ extern "C" void fn_8013E2AC(void *destPtr, void *srcPtr) {
 #pragma dont_inline off
 extern "C" f64 fn_8002F234(f32);
 #pragma scheduling on
-extern "C" f32 fn_8013E300(void *arg0) {
-#pragma scheduling reset
-    f32 y = *(f32 *)((u8 *)arg0 + 4);
-    f32 x = *(f32 *)arg0;
+extern "C" f32 fn_8013E300(void * __restrict arg0) {
+    const f32 *p = (const f32 *)arg0;
+    f32 y = p[1];
+    f32 x = p[0];
     return (f32)fn_8002F234(x * x + y * y);
 }
 /* Element-constructor callback for the 0x24-byte PathNode arrays of a path group:
@@ -2316,13 +2316,50 @@ struct StageVec {
 };
 // fn_80140D1C: processes array items, flushing buffer to fn_80141558 when item[0x1E] set, or stores to dst
 extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2) {
- f32 buffer[16]; f32 *dst=buffer; s32 count=*(s32 *)((u8 *)arg1+4)-1, idx=0, i, cap, head, end; u8 *item;
- fn_8013EB30(arg0);
- while(count>=0){ item=*(u8 **)(*(u8 **)arg1+count*8);
- if(item[0x1E]){ if(idx>0){fn_80141558((u8 *)arg0+0x280,(s32)dst,idx,*(s32 *)((u8 *)arg0+0x288));idx=0;} fn_80140B98(arg0,*(void **)(*(u8 **)arg1+count*8),2);}
- else {dst[idx*3]=*(f32 *)item;dst[idx*3+1]=*(f32 *)(item+4);dst[idx*3+2]=*(f32 *)(item+8);idx++;dst[idx*3]=*(f32 *)(item+0xC);dst[idx*3+1]=*(f32 *)(item+0x10);dst[idx*3+2]=*(f32 *)(item+0x14);idx++;} count--;}
- if(idx>0){fn_80141558((u8 *)arg0+0x280,(s32)dst,idx,*(s32 *)((u8 *)arg0+0x288));idx=0;}
- i=0; do {cap=*(s32 *)((u8 *)arg0+0xC4);head=*(s32 *)((u8 *)arg0+0xCC);end=(cap+(*(s32 *)((u8 *)arg0+0xC8)-head))%cap;if(i>=end)break;item=*(u8 **)((u8 *)arg0+0xC0);fn_80140B98(arg0,*(void **)(item+((i+cap+head)%cap)*12+8),4);i++;}while(1);
+    f32 buffer[96];
+    StageVec st;
+    s32 count, i, cap, head, end, j;
+    u8 *item;
+    fn_8013EB30(arg0);
+    count = *(s32 *)((u8 *)arg1 + 4) - 1;
+    st.buf = buffer;
+    st.idx = 0;
+    st.cap = 32;
+    while (count >= 0) {
+        item = *(u8 **)(*(u8 **)arg1 + count * 8);
+        if (item[0x1E]) {
+            if (st.idx > 0) {
+                fn_80141558((u8 *)arg0 + 0x280, (s32)st.buf, st.idx, *(s32 *)((u8 *)arg0 + 0x288));
+                st.idx = 0;
+            }
+            fn_80140B98(arg0, *(void **)(*(u8 **)arg1 + count * 8), 2);
+        } else {
+            j = st.idx++;
+            st.buf[j * 3] = *(f32 *)item;
+            st.buf[j * 3 + 1] = *(f32 *)(item + 4);
+            st.buf[j * 3 + 2] = *(f32 *)(item + 8);
+            j = st.idx++;
+            st.buf[j * 3] = *(f32 *)(item + 0xC);
+            st.buf[j * 3 + 1] = *(f32 *)(item + 0x10);
+            st.buf[j * 3 + 2] = *(f32 *)(item + 0x14);
+        }
+        count--;
+    }
+    if (st.idx > 0) {
+        fn_80141558((u8 *)arg0 + 0x280, (s32)st.buf, st.idx, *(s32 *)((u8 *)arg0 + 0x288));
+        st.idx = 0;
+    }
+    i = 0;
+    do {
+        cap = *(s32 *)((u8 *)arg0 + 0xC4);
+        head = *(s32 *)((u8 *)arg0 + 0xCC);
+        end = (cap + (*(s32 *)((u8 *)arg0 + 0xC8) - head)) % cap;
+        if (i >= end) break;
+        item = *(u8 **)((u8 *)arg0 + 0xC0);
+        fn_80140B98(arg0, *(void **)(item + ((i + cap + head) % cap) * 12 + 8), 4);
+        i++;
+    } while (1);
+    memset(&st, 0, sizeof(st));
 }
 
 #pragma push
