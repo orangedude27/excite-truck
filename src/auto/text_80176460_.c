@@ -306,6 +306,7 @@ void fn_80176734(void) {
     fn_80177048();
 }
 #pragma scheduling on
+/* Empty stub; called as a no-op hook from fn_80176780. */
 void fn_8017677C(void) {
 }
 
