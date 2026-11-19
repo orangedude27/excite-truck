@@ -574,7 +574,6 @@ void fn_801C4B74(void) {
 }
 
 #pragma opt_common_subs off
-#pragma peephole off
 void fn_801C4BAC(void) {
     register Unk_80437D88 *state;
     register s32 zero;
