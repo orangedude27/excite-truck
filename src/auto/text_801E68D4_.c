@@ -5,8 +5,9 @@ typedef unsigned char u8;
 typedef signed char s8;
 typedef long s32;
 
+/* Drop a reference to a loaded resource (forwards to Resource_Release). */
 void fn_801E6CC4(void) {
-    fn_8012C4D8();
+    Resource_Release();
 }
 
 extern void fn_801E6924(s32);
@@ -108,9 +109,10 @@ extern const char lbl_80339A48[];
 extern char lbl_8055AEF8;
 extern float lbl_80562D78;
 extern float lbl_80562D7C;
+#pragma scheduling on
 void *fn_801E6A3C(s32 arg0, s32 arg1, s32 arg2) {
-    s32 handle;
     void *result;
+    s32 handle;
     s32 *entry;
     float *dst;
     float *src;
@@ -124,7 +126,7 @@ void *fn_801E6A3C(s32 arg0, s32 arg1, s32 arg2) {
     handle = fn_802C6FC0(arg0, arg2, 0);
     entry = fn_801E592C();
     if (entry == 0) {
-        fn_802E317C(lbl_80339A48, result);
+        ((void (*)(const char *, void *, void *))fn_802E317C)(lbl_80339A48, result, (void *)handle);
     }
     result = fn_801284F8(0x73C, (const char *)&lbl_8055AEF8);
     memset(result, 0, 0x73C);
@@ -170,8 +172,6 @@ void *fn_801E6A3C(s32 arg0, s32 arg1, s32 arg2) {
     }
     return result;
 }
-
-#pragma scheduling reset
 /* Free an animation player object (the 0x73C-byte AnimPlayer fn_801E6A3C builds):
  * hand its streaming buffer slot back to the 8-slot pool, release its resource
  * entry and model handle, then return the object's memory to the allocator. */
@@ -309,12 +309,12 @@ extern double fn_8002F234(double);
 #pragma push
 #pragma processor 750
 void fn_801E6CD0(void *arg0, void *arg1, float farg0) {
-    const char *messages = lbl_80339A20;
-    u32 sp8 = 0;
     float *dst;
     float *src;
     s32 i;
-    double a, b, c, d;
+    float a, b, c, d;
+    u32 sp8 = 0;
+    const char *messages = lbl_80339A20;
 
     *(void **)((u8 *)arg0 + 0x10) = arg1;
     *(s32 *)((u8 *)arg0 + 0x18) = 0;
@@ -329,18 +329,18 @@ void fn_801E6CD0(void *arg0, void *arg1, float farg0) {
     while (i < *(s32 *)((u8 *)arg0 + 8) + 1) {
         a = src[0x53C / 4];
         i++;
-        dst[4] = (float)a;
+        dst[4] = a;
         b = src[0x540 / 4];
-        dst[5] = (float)b;
+        dst[5] = b;
         c = src[0x544 / 4];
-        dst[6] = (float)c;
+        dst[6] = c;
         d = src[0x548 / 4];
         src += 4;
-        dst[7] = (float)d;
-        dst[0] = (float)a;
-        dst[1] = (float)b;
-        dst[2] = (float)c;
-        dst[3] = (float)d;
+        dst[7] = d;
+        dst[0] = a;
+        dst[1] = b;
+        dst[2] = c;
+        dst[3] = d;
         dst[9] = -farg0;
         dst[8] = -farg0;
         dst += 10;
@@ -369,6 +369,7 @@ void fn_801E6CD0(void *arg0, void *arg1, float farg0) {
 #pragma processor 750
 void fn_801E6E9C(AnimPlayer *obj, float dt) {
     AnimData *data = obj->data;
+    float cScale, cBase, cMul, cDiv, cTScale, cZero, cOne;
     float time = obj->time;
     float t;
     AnimKey key;
@@ -380,7 +381,6 @@ void fn_801E6E9C(AnimPlayer *obj, float dt) {
     s32 i;
 
     if (data != 0) {
-        float cZero, cOne, cDiv, cBase, cScale, cTScale, cMul;
         if (obj->stream != 0) {
             fn_8012EE80(obj->stream);
         }
@@ -460,7 +460,6 @@ void fn_801E6E9C(AnimPlayer *obj, float dt) {
         float zz = lbl_80562D78;
         for (i = 0; i < obj->trackCount + 1; i++) {
             AnimTrack *k = &obj->tr[i];
-            float *o = obj->out[i];
             float t0 = k->t0;
             float lim = k->t1 - lo;
             float s, r;
@@ -471,21 +470,21 @@ void fn_801E6E9C(AnimPlayer *obj, float dt) {
             r = zero - s;
             if (i > 0) {
                 float len;
-                o[0] = k->a[0] * r + k->b[0] * s;
-                o[1] = k->a[1] * r + k->b[1] * s;
-                o[2] = k->a[2] * r + k->b[2] * s;
-                o[3] = k->a[3] * r + k->b[3] * s;
-                len = (float)fn_8002F234(o[0] * o[0] + (o[1] * o[1] + (o[3] * o[3] + o[2] * o[2])));
+                obj->out[i][0] = k->a[0] * r + k->b[0] * s;
+                obj->out[i][1] = k->a[1] * r + k->b[1] * s;
+                obj->out[i][2] = k->a[2] * r + k->b[2] * s;
+                obj->out[i][3] = k->a[3] * r + k->b[3] * s;
+                len = (float)fn_8002F234(obj->out[i][0] * obj->out[i][0] + (obj->out[i][1] * obj->out[i][1] + (obj->out[i][3] * obj->out[i][3] + obj->out[i][2] * obj->out[i][2])));
                 len = zero / len;
-                o[0] = o[0] * len;
-                o[1] = o[1] * len;
-                o[2] = o[2] * len;
-                o[3] = o[3] * len;
+                obj->out[i][0] *= len;
+                obj->out[i][1] *= len;
+                obj->out[i][2] *= len;
+                obj->out[i][3] *= len;
             } else {
-                o[0] = k->a[0] * r + k->b[0] * s;
-                o[1] = k->a[1] * r + k->b[1] * s;
-                o[2] = k->a[2] * r + k->b[2] * s;
-                o[3] = zz;
+                obj->out[i][0] = k->a[0] * r + k->b[0] * s;
+                obj->out[i][1] = k->a[1] * r + k->b[1] * s;
+                obj->out[i][2] = k->a[2] * r + k->b[2] * s;
+                obj->out[i][3] = zz;
             }
         }
     }
