@@ -1526,7 +1526,7 @@ void fn_80069408(void) {
     s32 sp24;
     s32 sp28;
     u8 sp30[0x30];
-    switch (base[0xC]) {
+    switch (state[0xC]) {
     case 1:
         base[0xC] = fn_80068F94();
         return;
