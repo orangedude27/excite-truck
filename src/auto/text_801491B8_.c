@@ -4739,6 +4739,7 @@ void fn_801556F0(void) {
 
 }
 
+/* Empty stub; does nothing. */
 void fn_801556F4(void) {
 
 }
