@@ -820,6 +820,7 @@ void fn_801B8AEC(void) {
 
 }
 
+/* No-op stub. */
 void fn_801B8AF0(void) {
 
 }
