@@ -334,6 +334,7 @@ extern "C" void fn_80171A80(void *arg0) {
     }
     fn_802E30C8(lbl_80330F24, *(int *)((char *)arg0 + 0xC));
 }
+#pragma processor reset
 #pragma pop
 
 void fn_80171CE0(void) {
