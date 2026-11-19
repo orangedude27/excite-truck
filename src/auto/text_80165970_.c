@@ -501,9 +501,9 @@ void fn_801662FC(void) {
     int flag;
     int count;
     count = lbl_8055E330;
-    flag = ((unsigned char)count == 0xFF);
-    lbl_8055E329 = (unsigned char)flag;
+    flag = ((unsigned char)count == 255);
     lbl_8055E330 = count + 1;
+    lbl_8055E329 = (unsigned char)flag;
     if (flag && lbl_8055E328) {
         if (!((float)__fabs(lbl_8055E31C - lbl_805618D0) <= lbl_80558DC4)) {
             fn_802E30C8(lbl_8032FEC0, lbl_8055E31C, lbl_8055E320, *(float *)((char *)&lbl_8042FE38 + 0x48), fn_80166274());
@@ -519,7 +519,7 @@ extern void *fn_80166754(void *);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_801663C8(int count, void *records, void *config) {
-    typedef struct Entry { int id; unsigned char flag; char pad[0x83]; } Entry;
+    typedef struct Entry { int id; signed char flag; char pad[0x83]; } Entry;
     typedef struct Holder { Entry *entries; int used; int count; Entry *base; } Holder;
     typedef struct Record { int type; char pad[0x74]; } Record;
     char *strings = lbl_8032FCC0;
@@ -549,7 +549,7 @@ void fn_801663C8(int count, void *records, void *config) {
         Holder *h = *(Holder **)&lbl_8055E32C;
         Entry *p = &h->entries[h->used++];
         p->id = i;
-        p->flag = type == 0x50;
+        p->flag = (signed char)(type == 0x50);
     }
     lbl_8055E32B = 0;
     lbl_8055E32A = *(int *)((char *)config + 4) != 0x180304;
@@ -576,7 +576,7 @@ void *fn_80166754(void *arg0)
   *((float *) (((char *) arg0) + 0x34)) = 0.0f;
   *((float *) (((char *) arg0) + 0x40)) = 0.0f;
   *((float *) (((char *) arg0) + 0x3C)) = 0.0f;
-  result = ((float (*)(int, float, float)) fn_80129DC4)(3, 8.0f, arg2);
+  result = ((float (*)(int, float, float)) fn_80129DC4)(3, 8.0f, 15.0f);
   base3c = *((float *) (base + 0x3C));
   scale = 0.5f;
   *((float *) (((char *) arg0) + 0x4C)) = base3c;
