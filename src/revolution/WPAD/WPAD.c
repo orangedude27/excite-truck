@@ -24,6 +24,7 @@
 
 
 extern void DBPrintf_80068D68(const char* pFmt, ...);
+extern const char lbl_80312164[], lbl_8031219C[], lbl_80558FE4[];
 extern volatile u16 lbl_80560CC8, lbl_80560CCA, lbl_80560CCC, lbl_80560CCE;
 extern volatile u16 lbl_80560CD0, lbl_80560CD2, lbl_80560CD4, lbl_80560CD6;
 extern u8 lbl_803928E8[];
