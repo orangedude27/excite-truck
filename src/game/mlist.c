@@ -33,6 +33,11 @@ struct Dummy {
     virtual void method1();
     virtual void method2(int);
 };
+struct MListLocal {
+    virtual void v0();
+    virtual void v1();
+    virtual int v2();
+};
 #pragma cplusplus reset
 void fn_802CCBC0(void) {}
 
@@ -110,8 +115,7 @@ extern "C" int fn_802CCDC4(void ***arg0, void ***arg1) {
     };
     Local *obj0 = (Local *)*arg0;
     Local *obj1 = (Local *)*arg1;
-    int first = obj0->v2();
-    return first - obj1->v2();
+    return obj0->v2() - obj1->v2();
 }
 #pragma cplusplus reset
 extern int fn_802CAC28(void *, int);
@@ -125,10 +129,11 @@ extern char lbl_8034BBC0[];
 void fn_802CCE24(void *arg0) {
     union SwapTemp { unsigned int word[3]; unsigned short half[6]; };
     union SwapTemp saved;
+    unsigned char *temp_r30;
     {
+        int var_r27;
         unsigned char *record;
         int var_r28;
-        int var_r27;
         var_r28 = 0;
         var_r27 = 0;
         goto loop_2_test;
@@ -151,12 +156,14 @@ loop_2_test:
 loop_11_body:
         {
             int var_r4 = 0;
+            int half;
+            unsigned char *dst;
             unsigned char *temp_r5 = *(unsigned char **)((char *)arg0 + 0x34) + var_r11;
             int temp_r7 = *(int *)(temp_r5 + 0x14);
             int temp_len = *(int *)(temp_r5 + 0x18) - temp_r7;
-            unsigned char *temp_r30 = *(unsigned char **)((char *)arg0 + 0x2C) + temp_r7 * 0xC;
-            int half = temp_len / 2;
-            unsigned char *dst = temp_r30;
+            temp_r30 = *(unsigned char **)((char *)arg0 + 0x2C) + temp_r7 * 0xC;
+            half = temp_len / 2;
+            dst = temp_r30;
             for (var_r4 = 0; var_r4 < half; var_r4++) {
                 unsigned char *other = temp_r30 + (temp_len - var_r4) * 0xC;
                 saved.word[0] = *(unsigned int *)dst;
@@ -189,7 +196,6 @@ loop_11_test:
         int var_r27 = 0;
         char *var_r28 = (char *)arg0;
         int var_r25_2;
-        int var_r27_4;
         int value;
         void *object;
         do {
@@ -206,7 +212,7 @@ loop_21_body:
             if (var_r26 == value) {
                 *(int *)(var_r28 + 0x40) = var_r25;
                 var_r25_2 = var_r25 + 1;
-                var_r27_4 = var_r25_2 * 4;
+                var_r27 = var_r25_2 * 4;
                 *(int *)(var_r28 + 0x44) = var_r25_2;
                 goto loop_23_test;
             }
@@ -214,10 +220,10 @@ loop_21_body:
             var_r25++;
             goto loop_21_test;
 loop_23_body:
-            object = *(void **)((char *)*(void ***)((char *)arg0 + 0x90) + var_r27_4);
+            object = *(void **)((char *)*(void ***)((char *)arg0 + 0x90) + var_r27);
             value = ((int (*)(void *))((int (**)(void *))*(void **)object)[4])(object);
             if (var_r26 != value) goto loop_23_end;
-            var_r27_4 += 4;
+            var_r27 += 4;
             var_r25_2++;
             *(int *)(var_r28 + 0x44) += 1;
 loop_23_test:
@@ -490,6 +496,7 @@ void fn_802CDB5C(int arg0) {
     struct Item *item;
     int cursor;
     int callbackCount;
+    int callbackEnd;
     int i;
     float *fxTable;
     char *config;
@@ -562,7 +569,7 @@ void fn_802CDB5C(int arg0) {
                 if (cursor == 0) {
                     fn_802C8D74();
                     started = 0;
-                    continue;
+                    break;
                 }
             }
             handle = *(int *)(table + work.cur.state * 4 + 0x64);
@@ -586,13 +593,11 @@ void fn_802CDB5C(int arg0) {
     }
     fn_802DB2A0();
     __AXDSPInitCallback_801293D0();
-#pragma opt_propagation reset
-    i = work.config44;
-    for (callbackCount = work.config40; callbackCount < i; callbackCount++) {
+    callbackEnd = work.config44;
+    for (callbackCount = work.config40; callbackCount < callbackEnd; callbackCount++) {
         object = (*(void ***)(context + 0x90))[callbackCount];
-        ((void (*)(void *, void *))(((void **)(*(void **)object))[5]))(object, context);
+        MlistCallV3(object, context);
     }
-#pragma opt_propagation off
 }
 #pragma opt_propagation reset
 void fn_802CE260(int *, int);
@@ -603,7 +608,7 @@ void fn_802CE2C0(int *, int);
 void fn_802CE2D8(int *, int);
 void fn_802CE2F0(int *, int);
 #pragma scheduling on
-void fn_802CDDC8(void *__restrict arg0, int arg1) {
+void fn_802CDDC8(void *arg0, int arg1) {
     volatile unsigned char *base = (volatile unsigned char *)arg0;
     volatile unsigned char *rec;
     unsigned char t;
