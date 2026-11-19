@@ -648,7 +648,7 @@ struct Record_802101F8 {
     long f18;
 };
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_802101F8(Dummy_802101F8 *arg0, long arg1, long arg2, struct Record_802101F8 *arg3) {
@@ -661,10 +661,10 @@ extern "C" void fn_802101F8(Dummy_802101F8 *arg0, long arg1, long arg2, struct R
     i = 0;
     rec.f0 = arg3->f0;
     {
-        long f8 = arg3->f8;
         long f4 = arg3->f4;
-        rec.f4 = f4;
+        long f8 = arg3->f8;
         rec.f8 = f8;
+        rec.f4 = f4;
     }
     rec.fC = arg3->fC;
     rec.f10 = arg3->f10;
