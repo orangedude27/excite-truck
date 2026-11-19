@@ -448,17 +448,18 @@ extern void fn_802799EC(int, float);
 #pragma push
 #pragma processor 750
 #pragma dont_inline on
-void fn_80181EAC(int arg0) {
-    float minA = 0.6f;
-    float maxA = 0.85f;
-    float temp_f1;
-    float temp_f30;
-    float temp_f31;
-    temp_f30 = fn_80129DC4(4, minA, maxA);
-    temp_f31 = fn_80129DC4(4, lbl_80561D0C, lbl_80561CFC);
-    temp_f1 = fn_802798E8(arg0);
-    if ((temp_f1 > temp_f30) && (temp_f1 > temp_f31))
-        fn_802799EC(arg0, temp_f1 - temp_f31);
+/* Clamps an object's value to a random threshold when it exceeds two sampled bounds, reducing it by the second threshold. */
+void fn_80181EAC(int object) {
+    float lowerBound = 0.6f;
+    float upperBound = 0.85f;
+    float currentValue;
+    float randomUpper;
+    float randomLower;
+    randomUpper = fn_80129DC4(4, lowerBound, upperBound);
+    randomLower = fn_80129DC4(4, lbl_80561D0C, lbl_80561CFC);
+    currentValue = fn_802798E8(object);
+    if ((currentValue > randomUpper) && (currentValue > randomLower))
+        fn_802799EC(object, currentValue - randomLower);
 }
 void fn_80181F30(void) {
     /* Reset vehicle/audio state, read AXFX LFO config mode, and initialize related subsystems. */
