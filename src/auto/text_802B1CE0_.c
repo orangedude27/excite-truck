@@ -597,16 +597,17 @@ void fn_802B28BC(int *entries, int count) {
 #undef RandomIntInRange
 }
 
+ #pragma cplusplus off
  #pragma push
  #pragma optimization_level 3
  #pragma opt_pointer_aliasing on
 void **fn_802B2934(void *arg0, void **arg1) {
-    int val = *(int *)arg1;
+    void *val = *arg1;
     int count = ((int *)arg0)[1];
     void **data = *(void ***)arg0;
     int next = count + 1;
     ((int *)arg0)[1] = next;
-    data[count] = (void *)val;
+    data[count] = val;
     return &data[count];
 }
  #pragma pop
@@ -969,84 +970,163 @@ check:
         goto loop;
     }
 }
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma ctrloop on
+#pragma opt_loop_invariants off
+#pragma opt_common_subs off
+#pragma scheduling invalid_target
 int fn_802B3340(int arg) {
-    char *p = (char *)arg;
-    if (((unsigned char *)p)[5] != ((unsigned char *)p)[4]) {
-        int count, **list, total, i, idx, remain, dbl, pos, k;
-        void *shadow[128];
-        count = *(int *)(p + 0x40C);
-        list = *(int ***)(p + 0x408);
+    unsigned char *p = (unsigned char *)arg;
+    int sp420[128];
+    volatile int sp41C;
+    volatile int sp418;
+    volatile int *sp414;
+    int sp214[128];
+    int sp210;
+    volatile int sp20C;
+    volatile int *sp208;
+    int sp8[128];
+    int total, remain, dbl, idx, k, pos, i;
+    int **list;
+
+    if (p[5] != p[4]) {
         total = 0;
-        for (i = 0; i < count; i++) total += *list[i];
+        i = *(int *)((char *)p + 0x40C);
+        for (list = *(int ***)((char *)p + 0x408); i > 0; i--) total += *list[0], list++;
         if (total > 0x80) {
+            int count = *(int *)((char *)p + 0x40C);
             idx = fn_80129D90(0, 0, count);
-            while (total > 0x80) {
-                int *q = list[idx];
+            do {
+                int *q = (*(int ***)((char *)p + 0x408))[idx];
                 if (*q > 0) { *q = *q - 1; total--; }
                 idx = (idx + 1) % count;
-            }
+            } while (total > 0x80);
         }
-        memset((void *)(p + 0x208), 0, 0x200);
+        memset((char *)p + 0x208, 0, 0x200);
         remain = 0x80 - total;
         dbl = remain * 2;
         pos = 0;
-        for (k = 0; k < count; k++) {
-            int *obj = list[k];
-            int lim = dbl / count;
+        for (k = 0; k < *(int *)((char *)p + 0x40C); k++) {
+            int *obj = (*(int ***)((char *)p + 0x408))[k];
+            int lim = dbl / *(int *)((char *)p + 0x40C);
+            int c, j;
             if (lim > remain) lim = remain;
             if (lim > 0) {
-                int n = *(int *)(p + 8 + ((k & 0x7F) << 2)) % lim;
-                int j;
-                for (j = 0; j < n; j++) *(void **)(p + 0x208 + (pos++ << 2)) = 0;
+                int n = *(int *)((char *)p + 8 + ((k & 0x7F) << 2)) % lim;
+                for (j = 0; j < n; j++) *(void **)((char *)p + 0x208 + (pos++ << 2)) = 0;
                 remain -= n;
             }
-            {
-                int c = *obj;
-                int j;
-                for (j = 0; j < c; j++) *(void **)(p + 0x208 + (pos++ << 2)) = obj;
-            }
+            c = *obj;
+            for (j = 0; j < c; j++) *(void **)((char *)p + 0x208 + (pos++ << 2)) = obj;
         }
-        if (*(unsigned char *)(p + 4) == 0) fn_802B28BC((int *)(p + 0x208), 0x80);
-        memcpy((void *)shadow, (void *)(p + 0x208), 0x200);
-        for (i = 0; i < 16; i++) shadow[i] = (void *)*(int *)(p + (i << 2));
-        count = *(int *)(p + 0x40C);
-        list = *(int ***)(p + 0x408);
+        if (p[4] == 0) fn_802B28BC((int *)((char *)p + 0x208), 0x80);
+    } else {
+        sp41C = 0x80;
+        sp414 = &sp420[0];
+        sp418 = 0;
+        sp208 = &sp214[0];
+        sp210 = 0x80;
+        sp20C = 0;
+        memcpy(sp8, (char *)p + 0x208, 0x200);
         total = 0;
-        for (i = 0; i < count; i++) total += *list[i];
+        i = *(int *)((char *)p + 0x40C);
+        for (list = *(int ***)((char *)p + 0x408); i > 0; i--) total += *list[0], list++;
         if (total > 0x80) {
+            int count = *(int *)((char *)p + 0x40C);
             idx = fn_80129D90(0, 0, count);
-            while (total > 0x80) {
-                int *q = list[idx];
+            do {
+                int *q = (*(int ***)((char *)p + 0x408))[idx];
                 if (*q > 0) { *q = *q - 1; total--; }
                 idx = (idx + 1) % count;
-            }
+            } while (total > 0x80);
         }
-        memset((void *)shadow, 0, 0x200);
+        memset((char *)p + 0x208, 0, 0x200);
         remain = 0x80 - total;
         dbl = remain * 2;
         pos = 0;
-        for (k = 0; k < count; k++) {
-            int *obj = list[k];
-            int lim = dbl / count;
+        for (k = 0; k < *(int *)((char *)p + 0x40C); k++) {
+            int *obj = (*(int ***)((char *)p + 0x408))[k];
+            int lim = dbl / *(int *)((char *)p + 0x40C);
+            int c, j;
             if (lim > remain) lim = remain;
             if (lim > 0) {
-                int n = (int)shadow[k & 0x7F] % lim;
-                int j;
-                for (j = 0; j < n; j++) shadow[pos++] = 0;
+                int n = sp8[k & 0x7F] % lim;
+                for (j = 0; j < n; j++) sp8[pos++] = 0;
                 remain -= n;
             }
-            {
-                int c = *obj;
-                int j;
-                for (j = 0; j < c; j++) shadow[pos++] = obj;
+            c = *obj;
+            for (j = 0; j < c; j++) sp8[pos++] = (int)obj;
+        }
+        if (p[4] == 0) fn_802B28BC((int *)((char *)p + 0x208), 0x80);
+        {
+            int ctr = 16;
+            int *src = sp8;
+            do {
+                sp414[sp418++] = src[0];
+                sp414[sp418++] = src[1];
+                sp414[sp418++] = src[2];
+                sp414[sp418++] = src[3];
+                sp414[sp418++] = src[4];
+                sp414[sp418++] = src[5];
+                sp414[sp418++] = src[6];
+                sp414[sp418++] = src[7];
+                src += 8;
+            } while (--ctr);
+        }
+        {
+            int ctr = 16;
+            char *q = (char *)p + 0x208;
+            do {
+                sp208[sp20C++] = *(int *)q;
+                sp208[sp20C++] = *(int *)(q + 4);
+                sp208[sp20C++] = *(int *)(q + 8);
+                sp208[sp20C++] = *(int *)(q + 0xC);
+                sp208[sp20C++] = *(int *)(q + 0x10);
+                sp208[sp20C++] = *(int *)(q + 0x14);
+                sp208[sp20C++] = *(int *)(q + 0x18);
+                sp208[sp20C++] = *(int *)(q + 0x1C);
+                q += 0x20;
+            } while (--ctr);
+        }
+        {
+            int m = 0, found, j;
+            while (m < sp418) {
+                found = -1;
+                for (j = 0; j < sp20C; j++) {
+                    if ((unsigned)sp208[j] == (unsigned)sp414[m]) { found = j; break; }
+                }
+                if (found != -1) {
+                    if (found != sp20C - 1) sp208[found] = sp208[sp20C - 1];
+                    sp20C--;
+                    if (m != sp418 - 1) sp414[m] = sp414[sp418 - 1];
+                    sp418--;
+                } else {
+                    m++;
+                }
+            }
+            i = 0;
+            while (sp20C > 0) {
+                int idx2 = ((int *)((char *)p + 8))[i];
+                if ((unsigned)sp8[idx2] == (unsigned)sp414[0]) {
+                    sp8[idx2] = sp208[0];
+                    if (sp20C - 1 != 0) sp208[0] = sp208[sp20C - 1];
+                    sp20C--;
+                    if (sp418 - 1 != 0) sp414[0] = sp414[sp418 - 1];
+                    sp418--;
+                }
+                i = (i + 1) % 128;
             }
         }
-        memcpy((void *)(p + 0x208), (void *)shadow, 0x200);
+        memcpy((char *)p + 0x208, sp8, 0x200);
+        sp208 = 0; sp20C = 0; sp210 = 0;
+        sp414 = 0; sp418 = 0; sp41C = 0;
     }
-    ((unsigned char *)p)[5] = ((unsigned char *)p)[4];
+    p[5] = p[4];
     return arg;
 }
-
+#pragma pop
 void *fn_802B3DA4(void *container, int slot, int index) {
     /* Look up a field data pointer by index within a slot; returns 0 if out of range or uninitialized. */
     void *result = 0;
