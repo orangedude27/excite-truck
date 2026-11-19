@@ -1256,29 +1256,30 @@ void fn_802AFF80(void *list, short value) {
 #pragma scheduling invalid_target
 int fn_802AFFA8(int arg0, int arg1) {
     float out[3];
-    float x = (float)arg0 * lbl_80564AF0;
-    float z = (float)arg1 * lbl_80564AF0;
+    float x = 2.0f * (float)arg0;
+    float z = 2.0f * (float)arg1;
     out[0] = x;
     out[2] = z;
     out[1] = fn_801DCF48(0, x, z);
     return (unsigned short)fn_802B127C(lbl_8055F974, (int)out);
 }
-
-void fn_802B0024(void *arg0, short arg1) {
+/* Reset a bounded short list { short* items; u16 count; u16 capacity; },
+ * seed element 0 when capacity allows, then append value if space remains. */
+void fn_802B0024(void *list, short value) {
     u32 count = 0;
     u32 temp;
     short *items;
-    *(unsigned short *)((char *)arg0 + 4) = count;
-    if (count < *(unsigned short *)((char *)arg0 + 6)) {
-        *(short *)*(void **)arg0 = count;
-        *(unsigned short *)((char *)arg0 + 4) = 1;
+    *(unsigned short *)((char *)list + 4) = count;
+    if (count < *(unsigned short *)((char *)list + 6)) {
+        *(short *)*(void **)list = count;
+        *(unsigned short *)((char *)list + 4) = 1;
     }
-    temp = *(unsigned short *)((char *)arg0 + 4);
-    if (temp < *(unsigned short *)((char *)arg0 + 6)) {
-        items = *(short **)arg0;
-        items[temp] = arg1;
+    temp = *(unsigned short *)((char *)list + 4);
+    if (temp < *(unsigned short *)((char *)list + 6)) {
+        items = *(short **)list;
+        items[temp] = value;
         temp = temp + 1;
-        *(unsigned short *)((char *)arg0 + 4) = temp;
+        *(unsigned short *)((char *)list + 4) = temp;
     }
 }
 
