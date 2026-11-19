@@ -185,7 +185,6 @@ void fn_80136CB8(void *table, s32 index) {
     *(f32 *)((char *)entryBase + 0x10) = zeroValue;
 }
 
-#pragma optimization_level 2
 #pragma push
 #pragma cplusplus on
 #pragma scheduling invalid_target
