@@ -1846,6 +1846,7 @@ void fn_801B2BE8(void *obj) {
     *(s32 *)((char *)obj + 0x28) = 1;
 }
 #pragma scheduling on
+/* No operation. */
 void fn_801B2C6C(void) {
 
 }
