@@ -99,6 +99,7 @@ void fn_801EA38C(void) {
 }
 
 void fn_801EA390(void) {
+    /* Tail-call thunk that clears the EB context material lists. */
     fn_801EBC70();
 }
 
