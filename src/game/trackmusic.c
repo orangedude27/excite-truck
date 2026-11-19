@@ -718,8 +718,13 @@ void fn_8021037C(void) {
 #undef GOALLINE_SFX_NAME
 }
 #pragma scheduling on
+/* Tail-call thunk: mark all three track-music load slots as loaded (branches to
+ * fn_8020F5C8). Called at the end of pre-race setup (fn_8000AB48); the pointer it
+ * is passed is ignored by the callee. */
 void fn_802103B8(void) {
-    fn_8020F5C8();
+#define TrackMusic_MarkAllLoaded fn_8020F5C8
+    TrackMusic_MarkAllLoaded();
+#undef TrackMusic_MarkAllLoaded
 }
 
 #pragma push
