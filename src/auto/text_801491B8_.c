@@ -5104,7 +5104,7 @@ void fn_80156104(void) {
 
 }
 
-/* Empty stub; does nothing. */
+/* Empty no-op callback. */
 void fn_80156108(void) {
 
 }
