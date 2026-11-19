@@ -901,6 +901,11 @@ int fn_802E967C(char *fileName, void *src, int size) {
 }
 
 __declspec(section ".data") extern int lbl_80507288;
+struct NandSaveState {
+    int state;
+    char pad[0x258];
+    int field;
+};
 #pragma opt_propagation off
 void fn_802E97B4(void) {
     if (lbl_80560035 == 0) {
