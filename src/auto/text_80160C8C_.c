@@ -1736,12 +1736,13 @@ extern void *lbl_8055E2E0;
 extern int fn_801476C4(void);
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" s32 fn_801628E8(void *arg0) {
+extern "C" s32 fn_801628E8(void *state) {
+    /* If the timer at offset 0x8C exceeds 0.5, trigger "continue" and notify the handler. */
     struct Dummy {
         virtual void v0();
         virtual void call(char *);
     };
-    if (*(f32 *)((u8 *)arg0 + 0x8C) > 0.5f) {
+    if (*(f32 *)((u8 *)state + 0x8C) > 0.5f) {
         ((Dummy *)lbl_8055E2E0)->call(lbl_8032F698);
         fn_801476C4();
     }
