@@ -383,6 +383,7 @@ void fn_801AEBD0(void) {
         }
     }
 }
+/* No-op callback (empty stub). */
 void fn_801AED54(void) {
 
 }
