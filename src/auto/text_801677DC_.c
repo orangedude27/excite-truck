@@ -18,6 +18,7 @@ void *fn_801677DC(void *object, s32 shouldDelete) {
     return object;
 }
 
+/* Empty stub. */
 void fn_80167834(void) {
 }
 
