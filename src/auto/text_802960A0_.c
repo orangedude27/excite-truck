@@ -573,6 +573,7 @@ int fn_80296D2C(void *arg0, float *arg1, float farg0) {
     }
     return 1;
 }
+#pragma pop
 
 #pragma push
 #pragma cplusplus on
