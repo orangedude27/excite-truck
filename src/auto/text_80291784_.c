@@ -267,6 +267,7 @@ extern float lbl_80564494, lbl_805644A4, lbl_805644A8, lbl_805644AC;
 extern double lbl_805644B0;
 extern float lbl_805644B8, lbl_805644BC;
 extern double __fabs(double);
+extern double lbl_805644C0;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
@@ -319,8 +320,8 @@ void fn_80291C7C(void *arg0, int arg1) {
         b[1] = lbl_805644BC;
         b[2] = 1.0f;
     }
-         fn_802D3BB4(*(int *)((char *)&lbl_804B4010 + 0x10), (float *)&pos, a, b, color, p[7]);
- }
+    fn_802D3BB4(*(int *)((char *)&lbl_804B4010 + 0x10), (float *)&pos, a, b, color, p[7]);
+}
  #pragma pop
 
  extern double lbl_805644C0;
