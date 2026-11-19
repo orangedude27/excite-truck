@@ -2672,6 +2672,17 @@ struct Frame_8016FFEC {
     char query[56];
 };
 s32 fn_8016FFEC(void *arg0, void *arg1, s32 arg2) {
+struct Frame8016FFEC {
+    float f8, fC, f10, f14, f18, f1C;
+    float ret[2];
+    float d28[2];
+    float f30, f34, f38, f3C;
+    char sp40[16];
+    char stk50[16];
+    char sp60[16];
+    float pts[3][2];
+    char query[56];
+};
 extern void fn_801345D8(void *, s32, const char *, ...);
 extern double fn_8002F234(float, float, float, float, float);
 extern void fn_801352B8(void *);
@@ -2686,8 +2697,7 @@ extern float lbl_80561980;
 extern float lbl_80561984;
 extern float lbl_80561988;
 extern float lbl_80561A10;
-struct Frame_8016FFEC s;
-void *manager;
+struct Frame8016FFEC s;
 void *obj;
 int i;
 float *p;
@@ -2696,12 +2706,13 @@ int o1, o2;
 float sqf;
 float inv;
 float nx;
+void *manager;
 manager = *(void **)((char *)fn_8000AC38() + 0x20);
 if (manager != 0) {
 fn_801345D8(s.sp60, 0x10, lbl_80330DF4, arg2);
 obj = ((void *(*)(void *, void *))*(void **)((char *)*(void **)manager + 0x5C))(manager, s.sp60);
 if (obj != 0) {
-p = s.pts;
+p = (float *)s.pts;
 i = 0;
 s.f38 = lbl_80561980;
 s.f3C = lbl_80561980;
@@ -2710,18 +2721,22 @@ s.f34 = lbl_80561980;
 do {
 fn_801345D8(s.sp40, 0x10, lbl_8055A270, i);
 *(unsigned long long *)s.ret = ((unsigned long long (*)(void *, void *))*(void **)((char *)*(void **)obj + 0x3C))(obj, s.sp40);
-p[0] = s.ret[0];
-p[1] = s.ret[1];
+{
+float a = s.ret[0];
+float b = s.ret[1];
+p[0] = a;
+p[1] = b;
+}
 p += 2;
 i += 1;
 } while (i < 3);
 idx = 2;
-s.f18 = s.pts[4] - s.pts[0];
-s.f1C = s.pts[5] - s.pts[1];
+s.f18 = s.pts[2][0] - s.pts[0][0];
+s.f1C = s.pts[2][1] - s.pts[0][1];
 {
 float len1 = s.f18 * s.f18 + s.f1C * s.f1C;
-float d0 = s.pts[0] - s.pts[2];
-float c0 = s.pts[1] - s.pts[3];
+float d0 = s.pts[0][0] - s.pts[1][0];
+float c0 = s.pts[0][1] - s.pts[1][1];
 float len2 = d0 * d0 + c0 * c0;
 s.f10 = d0;
 s.f14 = c0;
@@ -2730,8 +2745,8 @@ len1 = len2;
 idx = 0;
 }
 {
-float g = s.pts[3] - s.pts[5];
-float h = s.pts[2] - s.pts[4];
+float g = s.pts[1][1] - s.pts[2][1];
+float h = s.pts[1][0] - s.pts[2][0];
 s.f14 = g;
 s.f10 = h;
 if (h * h + g * g > len1) {
@@ -2739,17 +2754,17 @@ idx = 1;
 }
 }
 }
-o1 = ((idx + 1) % 3) * 2;
-o2 = idx * 2;
-s.fC = s.pts[o2 + 1] + lbl_80561988 * (s.pts[o1 + 1] - s.pts[o2 + 1]);
-s.f8 = s.pts[o2] + lbl_80561988 * (s.pts[o1] - s.pts[o2]);
-o1 = ((idx + 2) % 3) * 2;
+o1 = (idx + 1) % 3;
+o2 = idx;
+s.fC = s.pts[o2][1] + lbl_80561988 * (s.pts[o1][1] - s.pts[o2][1]);
+s.f8 = s.pts[o2][0] + lbl_80561988 * (s.pts[o1][0] - s.pts[o2][0]);
+o1 = (idx + 2) % 3;
 {
 double dd = *(double *)&s.f8;
 *(double *)s.d28 = dd;
 {
-float dx = s.pts[o1] - (float)dd;
-float dy = s.pts[o1 + 1] - *((float *)&s.d28 + 1);
+float dx = s.pts[o1][0] - (float)dd;
+float dy = s.pts[o1][1] - *((float *)&s.d28 + 1);
 s.f38 = (float)dd;
 s.f3C = *((float *)&s.d28 + 1);
 s.f30 = dx;
@@ -3163,16 +3178,12 @@ loop_80:
                     var_f7 = lbl_80561984;
                     temp_f2 = lbl_805619B0 + (lbl_805619CC + (lbl_805619C8 * (f32) temp_r8)) + (lbl_805619C8 * (f32) (temp_r8 - (temp_r6 - temp_r4_6)));
                     temp_f0_2 = ((lbl_8055E3C8 - M2C_FIELD(temp_r7, f32 *, 8)) - temp_f2) / ((lbl_805619D0 + temp_f2) - temp_f2);
-                    if (var_f7 < temp_f0_2) {
-
-                    } else {
-                        var_f7 = temp_f0_2;
-                    }
-                    if (var_f7 > lbl_80561980) {
-
-                    } else {
-                        var_f7 = lbl_80561980;
-                    }
+                                         if (var_f7 < temp_f0_2) {
+                         var_f7 = temp_f0_2;
+                     }
+                     if (var_f7 > lbl_80561980) {
+                         var_f7 = lbl_80561980;
+                     }
                     temp_r3_10 = (s32) (lbl_80561980 + (var_f7 * lbl_80561984));
                     if (temp_r3_10 != 0) {
                         temp_r4_7 = M2C_FIELD(arg0, void **, 0x88);
