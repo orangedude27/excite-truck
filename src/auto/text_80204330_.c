@@ -21,7 +21,7 @@ extern float lbl_80563188;
 extern void* lbl_8055ED48;
 extern int fn_802E2C20(void);
 int fn_80204354(void);
-extern float lbl_80563168, lbl_8056316C, lbl_80563170, lbl_80563174, lbl_80563178, lbl_8056317C;
+extern const float lbl_80563168, lbl_8056316C, lbl_80563170, lbl_80563174, lbl_80563178, lbl_8056317C;
 extern double lbl_80563180;
 extern char lbl_80488BD0[];
 struct Entry80204 { int unk_0x0, unk_0x4, unk_0x8; float unk_0xc, unk_0x10, unk_0x14; };
@@ -72,42 +72,32 @@ int fn_8020437C(void) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802043B0(int *arg0) {
+    struct ColorBits {
+        unsigned int a : 8;
+        unsigned int rgb : 24;
+    };
+    const float scale = -255.0f;
+    const float bias = 255.0f;
     int elapsed;
     int *out = arg0;
-    int original;
-    int packed;
-    int final_value;
     float temp;
     float value;
-    float coefficient;
-    float product;
-    float offset;
-    float result;
     elapsed = fn_80204354();
-    temp = ((float)elapsed - lbl_8056316C) / lbl_80563170;
-    value = lbl_80563168;
+    temp = ((float)elapsed - 2500.0f) / 1000.0f;
+    value = 1.0f;
     if (value < temp) {
+        value = value;
+    } else {
         value = temp;
-    } else {
-        value = value;
     }
-    if (value > lbl_80563174) {
-        value = lbl_80563174;
-    } else {
+    if (value > 0.0f) {
         value = value;
+    } else {
+        value = 0.0f;
     }
-    coefficient = lbl_8056317C;
-    original = *out;
-    product = value * coefficient;
-    offset = lbl_80563178;
-    packed = original & 0xFFFFFF;
-    *out = packed;
-    result = offset + product;
-    final_value = (int)result;
-    packed |= final_value << 24;
-    *out = packed;
+    *out &= 0xFFFFFF;
+    ((struct ColorBits *)out)->a = (int)(bias + value * scale);
 }
-#pragma dont_inline reset
 #pragma pop
 /* Start up the Tune Dash tuning screen: clear the entry count, selected row and
  * timestamp, then build the OverlayLayout from "tunedash.val". */
@@ -174,9 +164,13 @@ extern "C" int fn_802044E8(void) {
     fn_802043B0(&normal); fn_802043B0(&selected);
     step = b->y - a->y;
     count = (int)(*(float *)(area+0x14)/step);
-    label.unk_0x0=a->unk_0x0; label.unk_0x4=a->unk_0x4; *(int *)&label.y=*(int *)&a->y; label.unk_0xc=a->unk_0xc; label.unk_0x10=a->unk_0x10; label.unk_0x14=a->unk_0x14; label.color=a->color; label.unk_0x1c=a->unk_0x1c;
+    label.unk_0x0=a->unk_0x0;
+    { int t1=a->unk_0x4; int t2=*(int *)&a->y; label.unk_0x4=t1; *(int *)&label.y=t2; }
+    label.unk_0xc=a->unk_0xc; label.unk_0x10=a->unk_0x10; label.unk_0x14=a->unk_0x14; label.color=a->color; label.unk_0x1c=a->unk_0x1c;
     start = lbl_8055ED40 - lbl_8055ED40 % count;
-    value.unk_0x0=c->unk_0x0; value.unk_0x4=c->unk_0x4; *(int *)&value.y=*(int *)&c->y; value.unk_0xc=c->unk_0xc; value.unk_0x10=c->unk_0x10; value.unk_0x14=c->unk_0x14; value.color=c->color; value.unk_0x1c=c->unk_0x1c;
+    value.unk_0x0=c->unk_0x0;
+    { int t1=c->unk_0x4; int t2=*(int *)&c->y; value.unk_0x4=t1; *(int *)&value.y=t2; }
+    value.unk_0xc=c->unk_0xc; value.unk_0x10=c->unk_0x10; value.unk_0x14=c->unk_0x14; value.color=c->color; value.unk_0x1c=c->unk_0x1c;
     entry = lbl_80488BD0 + start*0x18;
     end = start + count;
     for (i=start; i<end && i<lbl_8055ED3C; ++i,entry+=0x18) {
@@ -206,86 +200,72 @@ extern "C" int fn_802044E8(void) {
 #pragma processor gekko
 extern int __cntlzw(unsigned int);
 int fn_80204870(int arg0) {
+    struct Entry {
+        int unused;
+        int type;
+        float *value;
+        float lo;
+        float hi;
+        float step;
+    };
     int index;
-    if (fn_8020437C() == 0)
-        goto return_zero;
-    if (arg0 == 0x127)
-        goto edit_record;
-    if (arg0 >= 0x127)
-        goto above_127;
-    if (arg0 == 0x125)
-        goto edit_record;
-    if (arg0 >= 0x125)
+    struct Entry *rec;
+    if (fn_8020437C() != 0) {
+        if (arg0 == 0x127)
+            goto edit_record;
+        if (arg0 >= 0x127)
+            goto above_127;
+        if (arg0 == 0x125)
+            goto edit_record;
+        if (arg0 < 0x125)
+            goto return_zero;
         goto decrement;
-    goto return_zero;
-above_127:
-    if (arg0 >= 0x129)
+    above_127:
+        if (arg0 < 0x129)
+            goto increment;
         goto return_zero;
-    goto increment;
-decrement:
-    index = lbl_8055ED40 - 1;
-    lbl_8055ED40 = index & ~(index >> 31);
-    goto update;
-increment: {
-    int limit = lbl_8055ED3C - 1;
-    index = lbl_8055ED40 + 1;
-    if (limit >= index)
-        goto increment_store;
-    index = limit;
-increment_store:
-    lbl_8055ED40 = index;
-    goto update;
-}
-edit_record: {
-    char *rec;
-    int type;
-    index = lbl_8055ED40;
-    if (index < 0 || index >= lbl_8055ED3C)
-        goto return_zero;
-    rec = lbl_80488BD0 + index * 0x18;
-    type = *(int *)(rec + 4);
-    switch (type) {
-    case 1:
-        if ((unsigned int)arg0 == 0x127u) {
-            float *value = (float *)(unsigned int)*(int *)(rec + 8);
-            float step = *(float *)(rec + 0x14);
-            float current = *value;
-            float bound = *(float *)(rec + 0x10);
-            float candidate = current + step;
-            float result;
-            if (bound < candidate)
-                result = bound;
-            else
-                result = candidate;
-            *value = result;
-        } else {
-            float *value = (float *)(unsigned int)*(int *)(rec + 8);
-            float step = *(float *)(rec + 0x14);
-            float current = *value;
-            float bound = *(float *)(rec + 0xc);
-            float candidate = current - step;
-            float result;
-            if (bound > candidate)
-                result = bound;
-            else
-                result = candidate;
-            *value = result;
+    decrement:
+        index = lbl_8055ED40 - 1;
+        lbl_8055ED40 = index & ~(index >> 31);
+        goto update;
+    increment: {
+        int limit = lbl_8055ED3C - 1;
+        index = lbl_8055ED40 + 1;
+        if (limit >= index)
+            goto increment_store;
+        index = limit;
+    increment_store:
+        lbl_8055ED40 = index;
+        goto update;
+    }
+    edit_record:
+        index = lbl_8055ED40;
+        if (index < 0 || index >= lbl_8055ED3C)
+            goto return_zero;
+        rec = (struct Entry *)lbl_80488BD0 + index;
+        switch (rec->type) {
+        case 1:
+            if ((unsigned int)arg0 == 0x127u) {
+                float candidate = *rec->value + rec->step;
+                *rec->value = (rec->hi < candidate) ? rec->hi : candidate;
+            } else {
+                float candidate = *rec->value - rec->step;
+                *rec->value = (rec->lo > candidate) ? rec->lo : candidate;
+            }
+            goto update;
+        case 0:
+            *(unsigned char *)rec->value = !*(unsigned char *)rec->value;
+            goto update;
+        default:
+            goto return_zero;
         }
-        goto update;
-    case 0: {
-        unsigned char *value = (unsigned char *)(unsigned int)*(int *)(rec + 8);
-        *value = (unsigned int)__cntlzw(*value) / 32;
-        goto update;
+    return_zero:
+        return 0;
+    update:
+        fn_80204330();
+        return 1;
     }
-    default:
-        goto return_zero;
-    }
-}
-return_zero:
     return 0;
-update:
-    fn_80204330();
-    return 1;
 }
 
 #pragma push
