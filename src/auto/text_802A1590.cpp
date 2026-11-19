@@ -5,9 +5,9 @@ extern "C" void fn_802A41D8(void *arg0, s32 arg1);
 static inline void MtxMultVecLocal(const unsigned char *m, const f32 *src, f32 *dst) {
     f32 x = src[0], y = src[1], z = src[2];
     if (src == dst) {
-        f32 rx = z * *(f32 *)(m + 0x18) + (x * *(f32 *)m + y * *(f32 *)(m + 0xC));
-        f32 ry = z * *(f32 *)(m + 0x1C) + (x * *(f32 *)(m + 4) + y * *(f32 *)(m + 0x10));
-        f32 rz = z * *(f32 *)(m + 0x20) + (x * *(f32 *)(m + 8) + y * *(f32 *)(m + 0x14));
+        f32 rx = (y * *(f32 *)(m + 0xC) + x * *(f32 *)m) + z * *(f32 *)(m + 0x18);
+        f32 ry = (y * *(f32 *)(m + 0x10) + x * *(f32 *)(m + 4)) + z * *(f32 *)(m + 0x1C);
+        f32 rz = (y * *(f32 *)(m + 0x14) + x * *(f32 *)(m + 8)) + z * *(f32 *)(m + 0x20);
         dst[0] = rx; dst[1] = ry; dst[2] = rz;
     } else {
         dst[0] = *(f32 *)(m + 0x18) * z + (*(f32 *)m * x + *(f32 *)(m + 0xC) * y);
@@ -709,23 +709,26 @@ extern "C" void fn_802A2120(void* arg0, void* arg1, s32 arg2) {
     f32 vec[4];
     f32 var_f1;
     f32 f31;
-    f32 fa, fb;
+    f32 fa, fb, r;
+    f32 x, y, z;
     s32 flag;
     s32 take;
 
     p = *(unsigned char**)arg1 + arg2 * 0x3c;
     if (*(f32*)((char*)arg1 + 8) > lbl_80564754) goto end;
-    if (*(f32*)(p + 0x94) * *(f32*)(p + 0x94) > lbl_80564758) goto body;
-    goto end;
-body:
+    if (*(f32*)(p + 0x94) * *(f32*)(p + 0x94) < lbl_80564758) {
+        goto end;
+    } else {
     flag = 1;
     if (arg2 != 2 && arg2 != 3) flag = 0;
     var_f1 = lbl_8056475C;
+    if (*(f32*)(p + 0x70) > lbl_80564744) var_f1 = lbl_80564730;
     if (*(f32*)(p + 0x94) > lbl_80564744) var_f1 = lbl_80564730;
     else var_f1 = lbl_8056475C;
-    vec[2] = *(f32*)(p + 0x78) - lbl_80564760 * var_f1;
-    vec[0] = *(f32*)(p + 0x70);
-    vec[1] = lbl_80564764 + *(f32*)(p + 0x74);
+    z = *(f32*)(p + 0x78) - lbl_80564760 * var_f1;
+    x = *(f32*)(p + 0x70);
+    y = lbl_80564764 + *(f32*)(p + 0x74);
+    vec[0] = x; vec[1] = y; vec[2] = z;
     MtxMultVecLocal(*(unsigned char**)arg1, vec, vec);
     vec[0] += *(f32*)(*(unsigned char**)arg1 + 0x24);
     vec[1] += *(f32*)(*(unsigned char**)arg1 + 0x28);
@@ -734,12 +737,10 @@ body:
     fb = *(f32*)(*(unsigned char**)arg1 + 0x14c);
     fa = *(f32*)(*(unsigned char**)arg1 + 0x110);
     fa = (fa > fb) ? fa : fb;
-    {
-        f32 r = (fa - lbl_80564744) / lbl_80564768;
-        fa = (r > lbl_80564730) ? fa : r;
-        fa = (fa > lbl_80564744) ? fa : lbl_80564744;
-    }
-    f31 = lbl_80564740 + fa * lbl_80564738;
+    r = (fa - lbl_80564744) / lbl_80564768;
+    r = (lbl_80564730 < r) ? lbl_80564730 : r;
+    r = (r > lbl_80564744) ? r : lbl_80564744;
+    f31 = lbl_80564740 + r * lbl_80564738;
 
     if (*(f32*)((char*)arg1 + 8) < lbl_8056476C) {
         fn_8028E58C((void*)*(s32*)((char*)arg0 + 4), (void*)vec, (void*)(*(unsigned char**)arg1 + 0x34), f31);
@@ -754,6 +755,7 @@ body:
                 fn_802A4538((void*)*(s32*)((char*)arg0 + 0x10), (void*)vec, (void*)(*(unsigned char**)arg1 + 0x34), f31);
             }
         }
+    }
     }
 end: ;
 }
@@ -939,26 +941,52 @@ extern "C" void fn_802A2E08(void *arg0, s32 arg1) {
         s32 size;
         f32 a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s;
     } params;
+    register float q;
+    register float o;
+    register float n;
+    register float m;
+    register float l;
+    register float i;
+    register float k;
+    register float j;
+    register float gp;
+    register float fh;
+    register float cde;
+    register float b;
+    register float a;
+    cde = 0.3f;
+    fh = 1.0f;
+    gp = 0.25f;
+    k = 0.0f;
+    a = *(volatile float *)&lbl_805647C0;
+    b = *(volatile float *)&lbl_805647C4;
+    j = *(volatile float *)&lbl_805647CC;
+    i = *(volatile float *)&lbl_805647AC;
+    l = *(volatile float *)&lbl_80564734;
+    m = *(volatile float *)&lbl_805647D0;
+    n = *(volatile float *)&lbl_805647D4;
+    o = *(volatile float *)&lbl_80564780;
+    q = *(volatile float *)&lbl_805647D8;
     params.size = 0x834;
-    params.a = lbl_805647C0;
-    params.b = lbl_805647C4;
-    params.c = lbl_805647C8;
-    params.d = lbl_805647C8;
-    params.e = lbl_805647C8;
-    params.f = lbl_80564730;
-    params.g = lbl_80564740;
-    params.h = lbl_80564730;
-    params.j = lbl_805647CC;
-    params.k = lbl_80564744;
-    params.i = lbl_805647AC;
-    params.l = lbl_80564734;
-    params.m = lbl_805647D0;
-    params.n = lbl_805647D4;
-    params.o = lbl_80564780;
-    params.p = lbl_80564740;
-    params.q = lbl_805647D8;
-    params.r = lbl_80564744;
-    params.s = lbl_805647C8;
+    params.a = a;
+    params.b = b;
+    params.c = cde;
+    params.d = cde;
+    params.e = cde;
+    params.f = fh;
+    params.g = gp;
+    params.h = fh;
+    params.j = j;
+    params.k = k;
+    params.i = i;
+    params.l = l;
+    params.m = m;
+    params.n = n;
+    params.o = o;
+    params.p = gp;
+    params.q = q;
+    params.r = k;
+    params.s = cde;
     void *obj = fn_801284F8(0x68, (void *)lbl_80349A34);
     if (obj != 0) {
         *(s32 *)((u8 *)arg0 + 0x10) =
@@ -1373,12 +1401,14 @@ extern "C" void* __dt__14CollisionSpaceFv_802A392C(void* object, s32 shouldDelet
 extern "C" float fn_80287BC8(float, float);
 extern "C" void fn_8028E590(int, float *, float *, float);
 extern "C" float lbl_80564730, lbl_80564740, lbl_80564744, lbl_80564758, lbl_8056475C, lbl_80564760, lbl_80564764, lbl_8056476C, lbl_8056477C, lbl_805647A4, lbl_8056481C, lbl_8056482C;
+#pragma scheduling invalid_target
 extern "C" void fn_802A3990(void *arg0, void *arg1, int arg2) {
     f32 v[3], w[3];
     f32 s, t, k;
     unsigned char *obj = *(unsigned char **)arg1;
     unsigned char *p = obj + arg2 * 0x3C;
-    if (!(*(f32 *)((char *)arg1 + 8) > lbl_8056476C) && !(*(f32 *)(p + 0x94) * *(f32 *)(p + 0x94) < lbl_80564758)) {
+    if (!(*(f32 *)((char *)arg1 + 8) > lbl_8056476C)) {
+      if (!(*(f32 *)(p + 0x94) * *(f32 *)(p + 0x94) < lbl_80564758)) {
         f32 sx, sz;
         if (*(f32 *)(p + 0x70) > lbl_80564744) sx = lbl_80564730; else sx = lbl_8056475C;
         if (*(f32 *)(p + 0x94) > lbl_80564744) sz = lbl_80564730; else sz = lbl_8056475C;
@@ -1401,9 +1431,9 @@ extern "C" void fn_802A3990(void *arg0, void *arg1, int arg2) {
         w[1] += *(f32 *)(obj + 0x10) * k;
         w[2] += *(f32 *)(obj + 0x14) * k;
         fn_8028E590(*(int *)((char *)arg0 + 4), v, w, -sx * fn_80287BC8(lbl_80564744, lbl_8056477C));
+      }
     }
 }
-
 extern "C" s32 fn_8028E2F8(void*, void*, s32, s32);
 extern "C" void fn_8028E61C(void*);
 extern "C" int lbl_80349A80[];
