@@ -259,12 +259,14 @@ void fn_802799EC(void *arg0, float amount) {
 #pragma push
 #pragma optimize_for_size on
 void fn_80279B28(unsigned char *arg0, unsigned char *arg1) {
-    unsigned char *target = arg1 - 1;
-    unsigned char *source = arg0 + 3;
+    unsigned char second = arg0[5];
     unsigned char first;
-    unsigned char second;
+    unsigned char *source;
+    unsigned char *target;
     int i;
 
+    target = arg1 - 1;
+    source = arg0 + 3;
     for (i = 0; i < 0x148; i++) {
         first = source[1];
         second = *(source += 2);
