@@ -77,6 +77,7 @@ void fn_801BD784(void) {
 
 }
 
+/* Empty constructor callback for csList (0x1F0-byte orientation record) pool elements. */
 void fn_801BD788(void) {
 
 }
