@@ -126,6 +126,11 @@ void fn_80204034(void) {
 
 }
 
+/* Empty default of the terrain/solid (SolBuilder/StaticGOB) module, the run of
+ * stubs that also holds the stage hooks fn_8020401C/fn_80204020 and the screen-ray
+ * ground probe fn_80204054.  It sits between the two unreferenced stubs of that
+ * run -- like fn_80204034 nothing calls it or takes its address -- just before the
+ * always-true enable flag fn_8020403C, so the entry point stays empty here. */
 void fn_80204038(void) {
 
 }
