@@ -218,10 +218,9 @@ int fn_801DA1F8(void *arg0, void **arg1, void **arg2, float *arg3) {
     register float *values;
     register float *next;
     register float *current;
-    float value;
-    float difference;
-    float numerator;
-    float clamped;
+    register float value;
+    register float difference;
+    register float numerator;
 
     obj = *(void **)((char *)arg0 + 4);
     if (obj != 0) {
@@ -236,12 +235,7 @@ int fn_801DA1F8(void *arg0, void **arg1, void **arg2, float *arg3) {
         next = values + (index + 1) * 8;
         current = values + index * 8;
         value = *(float *)((char *)arg0 + 0xC);
-        if (value < *next) {
-            clamped = *next;
-        } else {
-            clamped = value;
-        }
-        value = clamped;
+        value = (value < *next) ? value : *next;
         difference = *next - *current;
         difference = (difference > lbl_80562B3C) ? difference : lbl_80562B3C;
         numerator = value - *current;
@@ -265,7 +259,7 @@ extern float __fabsf(float);
 #pragma scheduling invalid_target
 int fn_801DA294(void *arg0, void *arg1, void *arg2, void *arg3) {
     float *a = 0, *b = 0;
-    float t = lbl_80562B38;
+    float t = 0.0f;
     float tr[3], ax[3], qb[4], qa[4], dl[3], q[4];
     float inv, sc, len, w, omt;
     float *m = (float *)arg1, *d = (float *)arg2, *r = (float *)arg3;
@@ -276,16 +270,16 @@ int fn_801DA294(void *arg0, void *arg1, void *arg2, void *arg3) {
         m[0xB] = tr[2];
         m[0xA] = tr[1];
         m[9] = tr[0];
-        omt = lbl_80562B40 - t;
+        omt = 1.0f - t;
         q[3] = b[7] * t + a[7] * omt;
         q[2] = b[6] * t + a[6] * omt;
         q[0] = b[4] * t + a[4] * omt;
         q[1] = b[5] * t + a[5] * omt;
-        inv = lbl_80562B40 / (float)fn_8002F234(q[0]*q[0] + (q[1]*q[1] + (q[3]*q[3] + q[2]*q[2])));
+        inv = 1.0f / (float)fn_8002F234(q[0]*q[0] + (q[1]*q[1] + (q[3]*q[3] + q[2]*q[2])));
         q[1] *= inv; q[2] *= inv; q[0] *= inv; q[3] *= inv;
-        m[0] = lbl_80562B40 - (q[1]*(q[1]+q[1]) + q[2]*(q[2]+q[2]));
-        m[4] = lbl_80562B40 - (q[0]*(q[0]+q[0]) + q[2]*(q[2]+q[2]));
-        m[8] = lbl_80562B40 - (q[0]*(q[0]+q[0]) + q[1]*(q[1]+q[1]));
+        m[0] = 1.0f - (q[1]*(q[1]+q[1]) + q[2]*(q[2]+q[2]));
+        m[4] = 1.0f - (q[0]*(q[0]+q[0]) + q[2]*(q[2]+q[2]));
+        m[8] = 1.0f - (q[0]*(q[0]+q[0]) + q[1]*(q[1]+q[1]));
         m[6] = q[0]*(q[2]+q[2]) + q[3]*(q[1]+q[1]);
         m[3] = q[0]*(q[1]+q[1]) - q[3]*(q[2]+q[2]);
         m[1] = q[0]*(q[1]+q[1]) + q[3]*(q[2]+q[2]);
@@ -293,33 +287,33 @@ int fn_801DA294(void *arg0, void *arg1, void *arg2, void *arg3) {
         m[2] = q[0]*(q[2]+q[2]) - q[3]*(q[1]+q[1]);
         m[5] = q[1]*(q[2]+q[2]) + q[3]*(q[0]+q[0]);
         len = b[0] - a[0];
-        w = lbl_80562B44;
-        sc = lbl_80562B40 / (len > w ? len : w);
+        w = 1e-5f;
+        sc = 1.0f / (len > w ? len : w);
         dl[0] = b[1] - a[1];
         dl[1] = b[2] - a[2];
         dl[2] = b[3] - a[3];
         d[0] = dl[0] * sc;
         d[1] = dl[1] * sc;
         d[2] = dl[2] * sc;
-        qa[0] = a[4] * lbl_80562B48;
-        qa[1] = a[5] * lbl_80562B48;
-        qa[2] = a[6] * lbl_80562B48;
-        qa[3] = a[7] * lbl_80562B48;
+        qa[0] = a[4] * -1.0f;
+        qa[1] = a[5] * -1.0f;
+        qa[2] = a[6] * -1.0f;
+        qa[3] = a[7] * -1.0f;
         qb[0] = b[4] + qa[0];
         qb[1] = b[5] + qa[1];
         qb[2] = b[6] + qa[2];
         qb[3] = b[7] + qa[3];
         len = fn_8002EFA8(qb[3]);
         w = sin(len);
-        if ((float)__fabs(w) > lbl_80558DC4) {
-            inv = lbl_80562B4C * len / w;
+        if ((float)__fabs(w) > 1.1920929e-7f) {
+            inv = 2.0f * len / w;
             ax[0] = qb[0] * inv;
             ax[1] = qb[1] * inv;
             ax[2] = qb[2] * inv;
         } else {
-            ax[0] = lbl_80562B38;
-            ax[1] = lbl_80562B38;
-            ax[2] = lbl_80562B38;
+            ax[0] = 0.0f;
+            ax[1] = 0.0f;
+            ax[2] = 0.0f;
         }
         r[0] = ax[0] * sc;
         r[1] = ax[1] * sc;
