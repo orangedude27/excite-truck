@@ -3216,6 +3216,7 @@ s32 fn_801C9708(s32 arg0) {
     }
     return 1;
 }
+/* No operation. */
 void fn_801C9830(void) {
     return;
 }
