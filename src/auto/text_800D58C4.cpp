@@ -922,6 +922,7 @@ extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
         SetTagProcessorChild_800D6CA0(ChildPane_800D77DC(cur), arg1);
     }
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
