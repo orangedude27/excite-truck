@@ -15,7 +15,7 @@ extern float lbl_802FAC60[];
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802CE86C(void *arg0, int arg1, float scale, float x0, float y0, float z0) {
     struct SignTable { float v[3]; };
     struct Locals { volatile float output[3]; float signs[3]; volatile float homes[3]; };
