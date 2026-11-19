@@ -8069,25 +8069,25 @@ void fn_80123E98(void *arg0, void *arg1) {
 }
 
 void fn_8012440C(void *arg0, void *arg1) {
-    volatile f64 spB8;
-    volatile f64 spB0;
-    volatile f64 spA8;
-    volatile f64 spA0;
-    volatile f64 sp98;
-    volatile f64 sp90;
-    volatile f64 sp88;
-    volatile f64 sp80;
-    volatile f64 sp78;
-    volatile f64 sp70;
-    volatile f64 sp68;
-    volatile f64 sp60;
-    volatile f64 sp58;
-    volatile f64 sp50;
-    volatile f64 sp48;
-    volatile f64 sp40;
-    volatile f64 sp38;
-    volatile f64 sp30;
-    volatile f64 sp28;
+    f64 spB8;
+    f64 spB0;
+    f64 spA8;
+    f64 spA0;
+    f64 sp98;
+    f64 sp90;
+    f64 sp88;
+    f64 sp80;
+    f64 sp78;
+    f64 sp70;
+    f64 sp68;
+    f64 sp60;
+    f64 sp58;
+    f64 sp50;
+    f64 sp48;
+    f64 sp40;
+    f64 sp38;
+    f64 sp30;
+    f64 sp28;
     f32 sp24;
     f32 sp20;
     f32 sp1C;
