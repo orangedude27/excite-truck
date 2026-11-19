@@ -629,6 +629,7 @@ void fn_801B535C(void) {
 
 }
 
+/* No operation. */
 void fn_801B5360(void) {
 
 }
