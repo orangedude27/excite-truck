@@ -91,42 +91,44 @@ void __copy_longs_rev_aligned(unsigned char *dst, const unsigned char *src, unsi
 
 void __copy_longs_unaligned(unsigned char *dst, const unsigned char *src, unsigned int n) {
     unsigned int align = (-(unsigned int)dst) & 3;
-    unsigned char *worddst;
-    unsigned int words;
+    unsigned char *wordDst;
+    unsigned int wordPairs;
     const unsigned char *s = src - 1;
-    unsigned int offset, shift, right;
-    unsigned int prev, cur;
-    unsigned char *taildst;
-    const unsigned char *tailsrc;
+    unsigned int srcOffset, shift, rightShift;
+    unsigned int prevWord, curWord;
+    unsigned char *tailDst;
+    const unsigned char *tailSrc;
+    /* Copy n bytes from src to dst when dst is not word-aligned, shifting
+     * misaligned source words into aligned destination word stores. */
     dst--;
     if (align) {
         n -= align;
         do { *++dst = *++s; } while (--align);
     }
-    offset = (unsigned int)(s + 1) & 3;
-    worddst = dst - 3;
-    words = n >> 3;
-    s -= offset;
-    shift = offset << 3;
-    right = 32 - shift;
-    prev = *(const unsigned int *)(s += 1);
+    srcOffset = (unsigned int)(s + 1) & 3;
+    wordDst = dst - 3;
+    wordPairs = n >> 3;
+    s -= srcOffset;
+    shift = srcOffset << 3;
+    rightShift = 32 - shift;
+    prevWord = *(const unsigned int *)(s += 1);
     do {
-        cur = *(const unsigned int *)(s + 4);
-        --words;
-        *(unsigned int *)(worddst + 4) = (prev << shift) | (cur >> right);
-        prev = *(const unsigned int *)(s += 8);
-        *(unsigned int *)(worddst += 8) = (cur << shift) | (prev >> right);
-    } while (words);
+        curWord = *(const unsigned int *)(s + 4);
+        --wordPairs;
+        *(unsigned int *)(wordDst + 4) = (prevWord << shift) | (curWord >> rightShift);
+        prevWord = *(const unsigned int *)(s += 8);
+        *(unsigned int *)(wordDst += 8) = (curWord << shift) | (prevWord >> rightShift);
+    } while (wordPairs);
     if (n & 4) {
-        cur = *(const unsigned int *)(s += 4);
-        *(unsigned int *)(worddst += 4) = (prev << shift) | (cur >> right);
+        curWord = *(const unsigned int *)(s += 4);
+        *(unsigned int *)(wordDst += 4) = (prevWord << shift) | (curWord >> rightShift);
     }
     n &= 3;
-    tailsrc = s + 3;
-    taildst = worddst + 3;
+    tailSrc = s + 3;
+    tailDst = wordDst + 3;
     if (n) {
-        tailsrc -= 4 - offset;
-        do { *++taildst = *++tailsrc; } while (--n);
+        tailSrc -= 4 - srcOffset;
+        do { *++tailDst = *++tailSrc; } while (--n);
     }
 }
 
