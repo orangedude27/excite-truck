@@ -246,7 +246,6 @@ extern "C" void fn_80136D20(void *arg0, s32 arg1) {
     }
 }
 #pragma pop
-#pragma optimization_level reset
 
 void fn_80136E8C(void *proxer, s32 carIndex, signed char active) {
     /* Set the ProxRow.active flag (+0x15) of car carIndex's row in the proxer table. */
