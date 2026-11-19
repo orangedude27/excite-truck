@@ -230,6 +230,9 @@ static inline void *fn_801EC59C_parent_get(void *parent, int index) {
 static inline void fn_801EC59C_property_get(void *out, void *property, char *label) {
     *(Vec3 *)out = ((Property *)property)->getVector(label);
 }
+static inline Vec3 fn_801EC59C_vector(void *property, char *label) {
+    return ((Property *)property)->getVector(label);
+}
 }
 #pragma cplusplus reset
 void fn_801EC59C(void *out, void *parent, int index, int value, float scale, float bias) {
@@ -249,14 +252,14 @@ void fn_801EC59C(void *out, void *parent, int index, int value, float scale, flo
         x1 = second.f.x * scale - bias;
         y0 = first.f.y * lbl_80562E8C;
         y1 = second.f.y * lbl_80562E8C;
-        dx = x0 - x1;
-        dy = first.f.z * lbl_80562E8C - second.f.z * lbl_80562E8C;
+        dx = x1 - x0;
+        dy = second.f.z * lbl_80562E8C - first.f.z * lbl_80562E8C;
         slopeX = (y1 - y0) / dx;
         slopeY = dy / dx;
         *(float *)((char *)out + 4) = slopeX;
         *(float *)((char *)out + 0xC) = slopeY;
-        *(float *)((char *)out + 8) = y0 - slopeX * x1;
-        *(float *)((char *)out + 0x10) = first.f.z * lbl_80562E8C - slopeY * x1;
+        *(float *)((char *)out + 8) = y0 - slopeX * x0;
+        *(float *)((char *)out + 0x10) = first.f.z * lbl_80562E8C - slopeY * x0;
     } else {
         *(float *)((char *)out + 0x10) = lbl_80562E88;
         *(float *)((char *)out + 0xC) = lbl_80562E88;
