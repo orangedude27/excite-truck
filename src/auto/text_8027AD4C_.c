@@ -516,49 +516,52 @@ void fn_8027B60C(void *container) {
 }
 
 #pragma use_lmw_stmw off
+/* Initialize event path/goal data for all player groups: load career entries
+ * (3 per player) and challenge entries (2 per player) into the global table
+ * and mark it initialized. */
 void fn_8027B690(void) {
-    long state;
-    char *base;
-    char *row1;
-    char *row2;
-    long outer;
-    unsigned long inner1;
-    unsigned long inner2;
-    long newState;
+    long savedMode;
+    char *playerBase;
+    char *careerSlot;
+    char *challengeSlot;
+    long playerIndex;
+    unsigned long careerIndex;
+    unsigned long challengeIndex;
+    long currentMode;
 
-    state = fn_80012810();
-    if (state != 0x130) {
-        if (state != 0x134)
+    savedMode = fn_80012810();
+    if (savedMode != 0x130) {
+        if (savedMode != 0x134)
             fn_80012794();
         fn_80012790(0x130);
     }
-    base = lbl_804A4380;
-    outer = 0;
+    playerBase = lbl_804A4380;
+    playerIndex = 0;
     do {
-        row1 = base;
-        inner1 = 0;
+        careerSlot = playerBase;
+        careerIndex = 0;
         do {
-            ((void (*)(long, long, long))fn_8027CCB4)((long)row1, outer, inner1);
-            row1 += 0xBD0;
-            inner1++;
-        } while (inner1 < 3);
-        row2 = base + 0x2370;
-        inner2 = 0;
+            ((void (*)(long, long, long))fn_8027CCB4)((long)careerSlot, playerIndex, careerIndex);
+            careerSlot += 0xBD0;
+            careerIndex++;
+        } while (careerIndex < 3);
+        challengeSlot = playerBase + 0x2370;
+        challengeIndex = 0;
         do {
-            ((void (*)(long, long, long))fn_8027CD80)((long)row2, outer, inner2);
-            row2 += 0xBD0;
-            inner2++;
-        } while (inner2 < 2);
-        base += 0x3B10;
-        outer++;
-    } while (outer < 4);
+            ((void (*)(long, long, long))fn_8027CD80)((long)challengeSlot, playerIndex, challengeIndex);
+            challengeSlot += 0xBD0;
+            challengeIndex++;
+        } while (challengeIndex < 2);
+        playerBase += 0x3B10;
+        playerIndex++;
+    } while (playerIndex < 4);
     lbl_8055F650 = 1;
-    newState = fn_80012810();
-    if (state != newState) {
-        if (newState != 0x134)
+    currentMode = fn_80012810();
+    if (savedMode != currentMode) {
+        if (currentMode != 0x134)
             fn_80012794();
-        if (state != 0x134)
-            fn_80012790(state);
+        if (savedMode != 0x134)
+            fn_80012790(savedMode);
     }
 }
 void fn_8027B77C(void) {
