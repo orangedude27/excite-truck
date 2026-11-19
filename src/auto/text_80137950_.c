@@ -33,6 +33,7 @@ char *fn_80137950(int arg0) {
     }
     }
 }
+#pragma scheduling on
 
 #pragma push
 #pragma scheduling invalid_target
