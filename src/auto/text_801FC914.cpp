@@ -1443,6 +1443,9 @@ extern "C" void fn_801FEFB4(void* object) {
     fn_801FF770((char*)object + 0x1008);
 }
 
+/* No-op virtual method (vtable lbl_8033B730, slot 0x1C) of the drone-holder class
+ * that owns the DroneManager entry point fn_801FEEC0; the sibling class at
+ * vtable lbl_8033B700 leaves its slot 0x1C (fn_801FF110) empty as well. */
 extern "C" void fn_801FEFBC(void) {
 
 }
