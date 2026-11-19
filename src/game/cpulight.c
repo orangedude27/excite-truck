@@ -116,9 +116,11 @@ void fn_802DB3FC(void) {
     GXSetTevAlphaIn(3, 7, 0, 4, 7);
 }
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802DB4E4(void) {
     volatile int m[16];
+    float *p = (float *)&m[8];
+    const float *q = (const float *)lbl_804DB068;
     m[8] = 0;
     m[14] = 0;
     m[0] = 0;
@@ -129,17 +131,17 @@ void fn_802DB4E4(void) {
     m[12] = 0;
     m[13] = 0;
     m[15] = 0;
-    *(volatile float *)&m[8] = *(float *)(lbl_804DB068 + 0xc);
-    *(volatile float *)&m[14] = *(float *)(lbl_804DB068 + 0x10);
+    *(volatile float *)&m[8] = q[3];
+    *(volatile float *)&m[14] = q[4];
     m[1] = 0;
     m[2] = 0;
     m[3] = 0;
     m[4] = 0;
     m[5] = 0;
     m[7] = 0;
-    *(volatile float *)&m[0] = *(float *)(lbl_804DB068 + 0x18);
-    *(volatile float *)&m[6] = *(float *)(lbl_804DB068 + 0x1c);
-    GXLoadTexMtxImm((float *)&m[8], 0x1e, 1);
+    *(volatile float *)&m[0] = q[6];
+    *(volatile float *)&m[6] = q[7];
+    GXLoadTexMtxImm(p, 0x1e, 1);
     GXLoadTexMtxImm((float *)m, 0x21, 1);
 }
 #pragma pop
