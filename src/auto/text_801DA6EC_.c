@@ -341,29 +341,29 @@ extern void fn_801D9F44(void *, int);
 extern void fn_801D9F24(void *);
 extern void fn_801D0DFC(void *);
 #pragma scheduling off
-void *fn_801DAE28(void *arg0, int arg1) {
+void *fn_801DAE28(void *object, int freeFlag) {
     #pragma scheduling invalid_target
     unsigned char *entry;
     int i;
-    if (arg0 != 0) {
-        void *base = lbl_80339258;
-        *(void **)arg0 = base;
-        *(void **)((char *)arg0 + 4) = (char *)base + 0x1C;
+    if (object != 0) {
+        void *vtableBase = lbl_80339258;
+        *(void **)object = vtableBase;
+        *(void **)((char *)object + 4) = (char *)vtableBase + 0x1C;
         lbl_8055E984 = (void *)0;
-        entry = (unsigned char *)arg0 + 8;
-        for (i = 0; i < *(int *)((char *)arg0 + 0x5808); i++) {
+        entry = (unsigned char *)object + 8;
+        for (i = 0; i < *(int *)((char *)object + 0x5808); i++) {
             fn_801D9F44(*(void **)(entry + 0x28), 1);
             fn_801D9F24(*(void **)(entry + 0x24));
             entry += 0x2C;
         }
-        if (arg0 != 0) {
-            *(void **)arg0 = lbl_803381C0;
-            fn_801D0DFC(arg0);
+        if (object != 0) {
+            *(void **)object = lbl_803381C0;
+            fn_801D0DFC(object);
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (freeFlag > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 #pragma scheduling on
 void fn_801DAEF4(void) {
