@@ -2350,11 +2350,12 @@ extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
             u8 sp58[0x28];
             u8 sp30[0x28];
             u8 sp8[0x28];
-            unsigned int tmp;
+            unsigned int a8, a4, b8, b4, c8, c4;
             *(s32 *)sp58 = *(s32 *)temp_r28;
-            tmp = *(s32 *)((u8 *)temp_r28 + 4);
-            *(s32 *)(sp58 + 8) = *(s32 *)((u8 *)temp_r28 + 8);
-            *(s32 *)(sp58 + 4) = tmp;
+            a4 = *(s32 *)((u8 *)temp_r28 + 4);
+            a8 = *(s32 *)((u8 *)temp_r28 + 8);
+            *(s32 *)(sp58 + 4) = a4;
+            *(s32 *)(sp58 + 8) = a8;
             *(s32 *)(sp58 + 0xC) = *(s32 *)((u8 *)temp_r28 + 0xC);
             *(f32 *)(sp58 + 0x10) = *(f32 *)((u8 *)temp_r28 + 0x10);
             *(f32 *)(sp58 + 0x14) = *(f32 *)((u8 *)temp_r28 + 0x14);
@@ -2363,9 +2364,10 @@ extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
             *(f32 *)(sp58 + 0x20) = *(f32 *)((u8 *)temp_r28 + 0x20);
             *(f32 *)(sp58 + 0x24) = *(f32 *)((u8 *)temp_r28 + 0x24);
             *(s32 *)sp30 = *(s32 *)temp_r29;
-            tmp = *(s32 *)((u8 *)temp_r29 + 4);
-            *(s32 *)(sp30 + 8) = *(s32 *)((u8 *)temp_r29 + 8);
-            *(s32 *)(sp30 + 4) = tmp;
+            b4 = *(s32 *)((u8 *)temp_r29 + 4);
+            b8 = *(s32 *)((u8 *)temp_r29 + 8);
+            *(s32 *)(sp30 + 4) = b4;
+            *(s32 *)(sp30 + 8) = b8;
             *(s32 *)(sp30 + 0xC) = *(s32 *)((u8 *)temp_r29 + 0xC);
             *(f32 *)(sp30 + 0x10) = *(f32 *)((u8 *)temp_r29 + 0x10);
             *(f32 *)(sp30 + 0x14) = *(f32 *)((u8 *)temp_r29 + 0x14);
@@ -2374,9 +2376,10 @@ extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
             *(f32 *)(sp30 + 0x20) = *(f32 *)((u8 *)temp_r29 + 0x20);
             *(f32 *)(sp30 + 0x24) = *(f32 *)((u8 *)temp_r29 + 0x24);
             *(s32 *)sp8 = *(s32 *)temp_r3;
-            tmp = *(s32 *)((u8 *)temp_r3 + 4);
-            *(s32 *)(sp8 + 8) = *(s32 *)((u8 *)temp_r3 + 8);
-            *(s32 *)(sp8 + 4) = tmp;
+            c4 = *(s32 *)((u8 *)temp_r3 + 4);
+            c8 = *(s32 *)((u8 *)temp_r3 + 8);
+            *(s32 *)(sp8 + 4) = c4;
+            *(s32 *)(sp8 + 8) = c8;
             *(s32 *)(sp8 + 0xC) = *(s32 *)((u8 *)temp_r3 + 0xC);
             *(f32 *)(sp8 + 0x10) = *(f32 *)((u8 *)temp_r3 + 0x10);
             *(f32 *)(sp8 + 0x14) = *(f32 *)((u8 *)temp_r3 + 0x14);
@@ -2392,7 +2395,7 @@ extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
                 f32 scaled = x * lbl_80561498;
                 f32 ratio = ((delta - lbl_805614A4)) / (scaled - lbl_805614A4);
                 f32 v = lbl_805614AC;
-                v = (ratio < v) ? ratio : v;
+                v = (v < ratio) ? v : ratio;
                 v = (v > lbl_805614A4) ? v : lbl_805614A4;
                 fn_80147BD0((s32)sp58, (s32)sp8, -1, 0xFFFFFF, *(s32 *)((u8 *)arg0 + 0xAC), lbl_805614A4 + (v * lbl_805614AC));
                 delta = fn_8013CB3C() - *(f32 *)((u8 *)arg2 + 0xDC);
@@ -2400,13 +2403,13 @@ extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
                 scaled = x * lbl_80561498;
                 ratio = (delta - scaled) / (x - scaled);
                 v = lbl_805614AC;
-                v = (ratio < v) ? ratio : v;
+                v = (v < ratio) ? v : ratio;
                 v = (v > lbl_805614A4) ? v : lbl_805614A4;
                 fn_80147BD0((s32)sp30, (s32)sp8, -1, 0xFFFFFF, *(s32 *)((u8 *)arg0 + 0xAC), lbl_805614A4 + (v * lbl_805614AC));
             } else {
                 f32 ratio = lbl_805614C4 * fn_8001DAF0((f32 *)((u8 *)arg2 + 0xD8));
                 f32 v = lbl_805614AC;
-                v = (ratio < v) ? ratio : v;
+                v = (v < ratio) ? v : ratio;
                 v = (v > lbl_805614A4) ? v : lbl_805614A4;
                 fn_80147BD0((s32)sp30, (s32)sp8, -1, 0xFFFFFF, *(s32 *)((u8 *)arg0 + 0xAC), v);
             }
