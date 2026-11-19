@@ -24,28 +24,23 @@ int fn_801B7688(int arg0) {
     if (flags & 0x100) {
         state = fn_801769B8();
         zero = (state == 0);
-        if (arg0 == 0x52) goto shared;
-        if (arg0 >= 0x52) goto done;
-        if (arg0 == 0x50) goto shared;
-        if (arg0 >= 0x50) goto middle;
-        if (arg0 < 0x50) goto done;
-        goto done;
-
-middle:
-        if (zero == 0) {
-            if (state == 1) result = 0;
+        switch (arg0) {
+        case 0x51:
+            if (zero != 0 || state == 1) result = 0;
+            break;
+        case 0x50:
+        case 0x52:
+            if (zero != 0) result = 0;
+            if (state == 1) result = 3;
+            if (fn_801769A8() & 0x400) result = 4;
+            break;
+        case 0x53:
+            break;
         }
-        goto done;
-
-shared:
-        if (zero != 0) result = 0;
-        if (state == 1) result = 3;
-        if (fn_801769A8() & 0x400) result = 4;
     } else {
         result = 2;
     }
 
-done:
     if (fn_801796B4() != 0 && (unsigned)(arg0 - 0x50) <= 1) result = 0;
     return result;
 }
@@ -187,13 +182,14 @@ extern "C" void fn_801B79D4(void *arg0, unsigned int arg1, int arg2) {
     unsigned int var28 = arg1;
     int r30 = ((V1 *)fn_801B2ED0(var28))->v5();
     float f31 = fn_80139048();
-    float a = fn_801B79AC();
-    float sum = lbl_8056270C + (a + f31);
+    f31 = lbl_8056270C + (fn_801B79AC() + f31);
     if (arg2 != 0x53 && arg2 != 0x54) var28 = fn_801B3050(var28);
     float f30 = (var28 & 1) ? lbl_80562700 : -lbl_80562700;
     float f1 = -fn_801B79AC() * lbl_80562710;
     float f29 = lbl_80562714;
-    float v31 = f1 - (float)((int)((var28 >> 31) + var28) >> 1) * sum;
+    unsigned int sign = var28 >> 31;
+    int half = (int)(sign + var28) >> 1;
+    f31 = f1 - (float)half * f31;
     V2 *holder = (V2 *)((V2 *)fn_80156A40(f1))->w1(0);
     Node *head = *(Node **)((char *)holder + 0x1C);
     Node *cur = head;
@@ -203,17 +199,18 @@ extern "C" void fn_801B79D4(void *arg0, unsigned int arg1, int arg2) {
         cur = cur->next;
     } while (cur != head);
     f29 = best->value - f29;
-    if (((int *)((char *)__AXFXGetLfoSinTable_801769CC() + 0x10))[0] & 1) { } else v31 += f29;
-    fn_801B78EC((int)arg0, r30, 0, f30, v31, lbl_80562708);
+    if (((int *)((char *)__AXFXGetLfoSinTable_801769CC() + 0x10))[0] & 1) { } else f31 += f29;
+    fn_801B78EC((int)arg0, r30, 0, f30, f31, lbl_80562708);
     if (*(int *)((char *)arg0 + 0x44) == 1) {
         float scale = fn_80134C1C();
         *(float *)((char *)arg0 + 0x30) = *(float *)((char *)arg0 + 0x18) * scale;
         *(float *)((char *)arg0 + 0x34) = *(float *)((char *)arg0 + 0x1C) * scale;
         *(float *)((char *)arg0 + 0x38) = *(float *)((char *)arg0 + 0x20) * scale;
     } else {
-        *(float *)((char *)arg0 + 0x30) = lbl_80562708;
-        *(float *)((char *)arg0 + 0x34) = lbl_80562708;
-        *(float *)((char *)arg0 + 0x38) = lbl_80562708;
+        float z = lbl_80562708;
+        *(float *)((char *)arg0 + 0x30) = z;
+        *(float *)((char *)arg0 + 0x34) = z;
+        *(float *)((char *)arg0 + 0x38) = z;
     }
 }
 #pragma cplusplus reset
