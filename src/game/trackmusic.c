@@ -521,6 +521,7 @@ void fn_8020FE90(void) {
 
 long fn_8020FEF0(long arg0) {
     long state = lbl_8055EEE0;
+    int sum;
     long count;
     long pos;
     long max;
@@ -540,10 +541,10 @@ long fn_8020FEF0(long arg0) {
     } else {
         pos = lbl_8055EEE4;
         max = lbl_8055EEE8 - 1;
-        arg0 += pos;
-        arg0 &= ((-arg0 & ~arg0) >> 31);
-        if (arg0 < max) {
-            max = arg0;
+        sum = pos + arg0;
+        sum &= ((-sum & ~sum) >> 31);
+        if (sum < max) {
+            max = sum;
         }
         lbl_8055EEE4 = max;
         count = lbl_8055EEBC;
@@ -647,7 +648,7 @@ struct Record_802101F8 {
     long f18;
 };
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_802101F8(Dummy_802101F8 *arg0, long arg1, long arg2, struct Record_802101F8 *arg3) {
@@ -655,16 +656,13 @@ extern "C" void fn_802101F8(Dummy_802101F8 *arg0, long arg1, long arg2, struct R
     struct Record_802101F8 rec;
     long i;
 
-    if (arg0 == 0) return;
-    if (arg3 != 0) goto body;
-    goto done;
-body:
+    if (arg0 == 0 || arg3 == 0) return;
     temp_r31 = arg0->v4();
     i = 0;
     rec.f0 = arg3->f0;
     {
-        long f4 = arg3->f4;
         long f8 = arg3->f8;
+        long f4 = arg3->f4;
         rec.f4 = f4;
         rec.f8 = f8;
     }
@@ -684,8 +682,6 @@ body:
         i++;
         *(float *)&rec.f4 += rec.f10;
     } while (i < 3);
-done:
-    return;
 }
 #pragma cplusplus reset
  
