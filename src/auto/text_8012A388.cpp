@@ -1100,22 +1100,23 @@ extern "C" s32 strstr(const char *, const char *);
 #pragma push
 #pragma scheduling invalid_target
 #pragma dont_inline off
-static inline s32 res_entry_use_count(s32 a, s32 b, struct ResEntry *entry) { return entry->useCount; }
-static inline u32 res_entry_flags(s32 a, s32 b, struct ResEntry *entry) { return entry->flags; }
+static inline s32 res_entry_use_count(s32 a, s32 b, struct ResEntry *entry, s32 dummy) { return entry->useCount; }
+static inline u32 res_entry_flags(s32 a, s32 b, struct ResEntry *entry, s32 dummy) { return entry->flags; }
 
 extern "C" void fn_8012BA1C(void *arg0) {
     struct ResManager *mgr = (struct ResManager *)arg0;
     const char *strings = lbl_8032A630;
     s32 offset, i;
     s32 j, offset2;
-    struct ResEntry *entry;
-    s32 value;
-    u32 flags;
+    register struct ResEntry *entry;
+    register s32 value;
+    register u32 flags;
+
     i = 0;
     offset = 0;
     while (i < mgr->entryCount) {
         entry = (struct ResEntry *)((char *)mgr->entries + offset);
-        value = res_entry_use_count(0, 0, entry);
+        value = entry->useCount;
         if (value > 0) fn_802E30C8(strings + 0x470, arg0);
         offset += 0x44;
         i++;
@@ -1125,7 +1126,7 @@ extern "C" void fn_8012BA1C(void *arg0) {
         offset2 = 0;
         while (j < mgr->entryCount) {
             entry = (struct ResEntry *)((char *)mgr->entries + offset2);
-            flags = res_entry_flags(0, 0, entry);
+            flags = entry->flags;
             if ((flags & 0xA) == 8) fn_802E30C8(strings + 0x4AC, arg0);
             offset2 += 0x44;
             j++;
@@ -1920,6 +1921,7 @@ extern "C" void fn_8012D1A8(s32 arg0) {
 #pragma push
 #pragma scheduling invalid_target
 
+#pragma use_lmw_stmw off
 extern "C" void fn_8012D33C(u32 *arg0, u32 *arg1) {
     u32 v4 = arg1[4];
     u32 v3 = arg1[3];
@@ -1948,7 +1950,6 @@ extern "C" void fn_8012D33C(u32 *arg0, u32 *arg1) {
     arg0[11] = v11;
     arg0[12] = v12;
 }
-
 /* Readiness hook for a resource-set load request.  fn_8012CC24 tests it once the
    request is in state 2 (LOAD_REQ_STATUS) and its stream handle (LOAD_REQ_HANDLE)
    reports data, before closing the stream and consuming the 13-word block header
