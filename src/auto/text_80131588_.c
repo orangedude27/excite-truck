@@ -648,6 +648,7 @@ extern unsigned long strlen(const char*);
 extern char lbl_8032B790[];
 #pragma push
 #pragma scheduling invalid_target
+/* Returns the index of a value string in a NUL-terminated enum string list, or logs an error and returns -1 if not found. */
 extern "C" s32 fn_80132290(void* valueNode, const char* fieldName, const char* enumStrings) {
     class ValueNode {
     public:
