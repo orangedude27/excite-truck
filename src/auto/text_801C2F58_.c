@@ -3498,6 +3498,7 @@ extern "C" void fn_801CA070(char *fileName) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
+/* Draw type-specific detail lines for the selected debug timeline entry at (x, y), advancing y by lineHeight between lines. */
 extern "C" void fn_801CA1C4(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     char buf[256];
     char *base = lbl_80336B00;
