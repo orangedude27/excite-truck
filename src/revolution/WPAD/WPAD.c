@@ -6653,6 +6653,7 @@ void fn_80066EAC(void) {
 }
 
 // fn_80066EB0: WPAD data processing
+#pragma opt_propagation off
 void fn_80066EB0(s32 arg0, u8 *arg1) {
     s32 enabled;
     s16 temp_r0;
