@@ -1123,6 +1123,7 @@ double arg4;
 }
 
 #pragma scheduling on
+#pragma processor 750
 s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 arg5, f32 arg6) {
     struct SavedValues {
         char *name;
