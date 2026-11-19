@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "types.h"
 
-extern f64 fn_8002F234(f32);
+extern double fn_8002F234(float, float, float);
 extern void *fn_801284E8(void *, s32);
 __declspec(section ".data") extern unsigned int lbl_8032C108;
 extern f32 lbl_80562C78;
