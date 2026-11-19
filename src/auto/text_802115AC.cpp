@@ -2379,6 +2379,8 @@ extern "C" void fn_80215414(void) {
 
 }
 
+/* Default (empty) virtual hook in the VfWidget method group: does nothing, so a
+ * subclass that doesn't override it simply gets no behaviour. */
 extern "C" void fn_80215418(void) {
 
 }
