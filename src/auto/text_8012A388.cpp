@@ -3271,15 +3271,16 @@ extern "C" s32 fn_8012EFB0(void *stream, void *dst, s32 length) {
 
 extern "C" s32 fn_8012D838(s32);
 #pragma scheduling invalid_target
+/* Pumps queued resource requests on this loader: starts idle requests, attaches completed resources into the global list, and pops them, guarded by the busy flag at +0xA20. */
 extern "C" void fn_8012F06C(void *arg0) {
-    u8 *obj = (u8 *)arg0;
-    if (obj[0xA20] == 0) {
+    u8 *loader = (u8 *)arg0;
+    if (loader[0xA20] == 0) {
         s32 one = 1;
         s32 done;
-        obj[0xA20] = (u8)one;
+        loader[0xA20] = (u8)one;
         do {
             done = 0;
-            void *entry = (void *)fn_8012E490((s32 *)(obj + 0xA18));
+            void *entry = (void *)fn_8012E490((s32 *)(loader + 0xA18));
             if (entry != 0) {
                 s32 state = fn_8012D838(*(s32 *)((u8 *)entry + 0x4C));
                 switch (state) {
@@ -3287,10 +3288,10 @@ extern "C" void fn_8012F06C(void *arg0) {
                     fn_8012E40C((void *)*(s32 *)((u8 *)entry + 0x4C), (s32)((u8 *)entry + 0xC));
                     break;
                 case 2: {
-                    void *node = fn_8012BD3C(lbl_8055E000, (const char *)((u8 *)entry + 0xC));
-                    *(s32 *)((u8 *)node + 0x9C) = *(s32 *)((u8 *)entry + 8);
-                    *(u8 *)((u8 *)node + 0xAD) = (u8)one;
-                    fn_8012E3D4(obj + 0xA18);
+                    void *resource = fn_8012BD3C(lbl_8055E000, (const char *)((u8 *)entry + 0xC));
+                    *(s32 *)((u8 *)resource + 0x9C) = *(s32 *)((u8 *)entry + 8);
+                    *(u8 *)((u8 *)resource + 0xAD) = (u8)one;
+                    fn_8012E3D4(loader + 0xA18);
                     done = 1;
                     break;
                 }
@@ -3299,7 +3300,7 @@ extern "C" void fn_8012F06C(void *arg0) {
                 }
             }
         } while (done != 0);
-        obj[0xA20] = 0;
+        loader[0xA20] = 0;
     }
 }
 #pragma scheduling on
