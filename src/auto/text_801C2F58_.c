@@ -207,6 +207,7 @@ f32 fn_801C2F58(s32 count, f32 factor) {
 #pragma scheduling on
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 #pragma ppc_psq_save off
 #pragma scheduling invalid_target
 void fn_801C2FF4(float *out, float *a, float *b, float weight) {
