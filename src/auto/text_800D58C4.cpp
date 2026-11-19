@@ -1258,6 +1258,11 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
 }
 
 extern "C" void fn_800D6CA0(s32, s32);
+/* Dynamic cast of a pane: obj when its runtime type chain contains lbl_8055DE08, else 0. */
+static inline u8 *DynCast_800D77DC(u8 *obj) {
+    StateNode_800D6CA0 *type = (StateNode_800D6CA0 *)&lbl_8055DE08;
+    return HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)obj)->v1(), type) ? obj : 0;
+}
 #pragma push
 #pragma opt_common_subs off
 extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
