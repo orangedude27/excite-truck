@@ -294,45 +294,47 @@ typedef void (*Cross4)(float *, float *, float *, float);
 typedef void (*Cross5)(float *, float *, float *, float, float);
 typedef void (*Cross7)(float *, float *, float *, float, float, float, float);
 #pragma scheduling invalid_target
-void fn_80020070(float *arg0) {
-    float axis[3];
-    float vec2[3];
-    float cross[3];
-    float vec0[3];
+/* Rebuilds and orthonormalizes a 3x3 basis matrix in-place using the world up axis (0,1,0)
+ * and the basis's third vector, producing three mutually perpendicular unit vectors. */
+void fn_80020070(float *basis) {
+    float worldUp[3];
+    float tempZ[3];
+    float tempY[3];
+    float tempX[3];
     float x, y, z, a, b, c;
 
-    axis[0] = 0.0f;
-    axis[1] = 1.0f;
-    axis[2] = 0.0f;
-    ((Cross3)PSVECCrossProduct)(axis, arg0 + 6, arg0);
-    ((Cross3)PSVECCrossProduct)(arg0 + 6, arg0, arg0 + 3);
+    worldUp[0] = 0.0f;
+    worldUp[1] = 1.0f;
+    worldUp[2] = 0.0f;
+    ((Cross3)PSVECCrossProduct)(worldUp, basis + 6, basis);
+    ((Cross3)PSVECCrossProduct)(basis + 6, basis, basis + 3);
 
-    z = arg0[2];
-    y = arg0[1];
-    x = arg0[0];
-    vec0[0] = x;
-    vec0[1] = y;
-    vec0[2] = z;
-    c = arg0[8];
-    b = arg0[7];
-    a = arg0[6];
-    vec2[0] = a;
-    vec2[1] = b;
-    vec2[2] = c;
-    ((Cross3)PSVECCrossProduct)(vec2, vec0, cross);
-    PSVECNormalize(vec0, vec0);
-    PSVECNormalize(cross, cross);
-    ((Cross3)PSVECCrossProduct)(vec0, cross, vec2);
+    z = basis[2];
+    y = basis[1];
+    x = basis[0];
+    tempX[0] = x;
+    tempX[1] = y;
+    tempX[2] = z;
+    c = basis[8];
+    b = basis[7];
+    a = basis[6];
+    tempZ[0] = a;
+    tempZ[1] = b;
+    tempZ[2] = c;
+    ((Cross3)PSVECCrossProduct)(tempZ, tempX, tempY);
+    PSVECNormalize(tempX, tempX);
+    PSVECNormalize(tempY, tempY);
+    ((Cross3)PSVECCrossProduct)(tempX, tempY, tempZ);
 
-    arg0[0] = vec0[0];
-    arg0[1] = vec0[1];
-    arg0[2] = vec0[2];
-    arg0[3] = cross[0];
-    arg0[4] = cross[1];
-    arg0[5] = cross[2];
-    arg0[6] = vec2[0];
-    arg0[7] = vec2[1];
-    arg0[8] = vec2[2];
+    basis[0] = tempX[0];
+    basis[1] = tempX[1];
+    basis[2] = tempX[2];
+    basis[3] = tempY[0];
+    basis[4] = tempY[1];
+    basis[5] = tempY[2];
+    basis[6] = tempZ[0];
+    basis[7] = tempZ[1];
+    basis[8] = tempZ[2];
 }
 /* Disable the AXFX audio hooks by requesting the disabled state (enabled = 0). */
 void fn_8002017C(void) {
@@ -978,10 +980,14 @@ int fn_800213DC(int keyCode) {
     return handled;
 }
 
-void fn_80021464(int arg1, KArg *a) {
+#pragma push
+#pragma opt_propagation off
+#pragma opt_common_subs off
+#pragma scheduling invalid_target
+void fn_80021464(KArg *a, int arg1) {
     KArg *p;
     int sp[6];
-    int c, n, rk, vhh;
+    int n, rk, vhh, c;
     char *base = lbl_802FE138;
     lbl_8055D62C = 1;
     fn_8001FEE8();
@@ -1027,7 +1033,9 @@ void fn_80021464(int arg1, KArg *a) {
     fn_8001FFD0(vhh, c, lbl_8035BB18, 0x40);
     lbl_8055D65C = fn_80131234(lbl_8035BB18);
 }
-
+#pragma scheduling on
+#pragma opt_common_subs on
+#pragma opt_propagation on
 #pragma pop
 void fn_8002167C(void) {
     #define HideOverlay fn_8001FF24
