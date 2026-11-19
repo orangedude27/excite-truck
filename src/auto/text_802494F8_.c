@@ -84,8 +84,8 @@ void fn_80249588(void) {}
 int fn_8024958C(int *arg0) {
     #pragma scheduling invalid_target
     int result = arg0[2] == 0x180302;
-    if (result != 0) result = find_sound_entry_first(arg0) != -1;
-    if (result != 0) result = *(unsigned char *)(*(char **)lbl_8055F28C + find_sound_entry_inline(arg0) * 0x18 + 0x14);
+    if (result) result = find_sound_entry_first(arg0) != -1;
+    if (result) result = *(unsigned char *)(*(char **)lbl_8055F28C + find_sound_entry_inline(arg0) * 0x18 + 0x14);
     return result;
 }
 /* "Accept all" filter callback used as the sound-entry filter when no filtering is
