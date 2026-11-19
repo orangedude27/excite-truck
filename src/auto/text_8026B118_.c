@@ -128,8 +128,9 @@ extern "C" void fn_8026B260(void) {
     public:
         virtual const char *getName();
     };
+    struct Config { char path[0xC]; char pad[0x50]; };
     char name[12];
-    char *base = (char *)lbl_80346988;
+    Config *base = (Config *)&lbl_80346988;
     register int iteratorOrZero = 0;
     void *obj;
     FileName *nameObj;
@@ -140,14 +141,14 @@ extern "C" void fn_8026B260(void) {
     lbl_8055F4C8 = iteratorOrZero;
     obj = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
     nameObj = *(FileName **)((char *)obj + 0x20);
-    dot = nameObj->getFileName(&base[0], 0);
+    dot = nameObj->getFileName(((Config *)lbl_80346988)->path, 0);
     if (dot != 0) {
         strncpy(name, dot, 11);
         dot = strchr(name, '.');
         if (dot) *dot = iteratorOrZero;
         fn_80028E00(name, (const char *)&lbl_8055C504);
         if (!fn_8012C33C(name)) {
-            fn_802E30C8(base + 0xC, name);
+            fn_802E30C8((const char *)base + 0xC, name);
             return;
         }
         iteratorOrZero = (int)fn_80131808(name);
@@ -161,10 +162,10 @@ extern "C" void fn_8026B260(void) {
             }
         } while (entry);
         fn_80131818(it);
-        fn_802E30C8(base + 0x34, lbl_8055F4C8, name);
+        fn_802E30C8((const char *)base + 0x34, lbl_8055F4C8, name);
         return;
     }
-    fn_802E30C8(base + 0x5C);
+    fn_802E30C8((const char *)base + 0x5C);
 }
 
 #pragma cplusplus reset
@@ -200,8 +201,8 @@ void fn_8026B3D4(int arg0) {
                 ((struct Ent *)lbl_8049A0E8)[arg0].v = lbl_80563D70;
             }
         } else {
-            float sp10[2];
-            float sp8[2];
+            volatile float sp10[2];
+            volatile float sp8[2];
             float x = *(float *)(p + 0x60);
             float z = *(float *)(p + 0x68);
             float *tab = (float *)lbl_8049A028;
