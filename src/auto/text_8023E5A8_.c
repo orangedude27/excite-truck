@@ -123,64 +123,112 @@ extern unsigned char lbl_802FA294[];
 extern unsigned char lbl_80341CF0[];
 extern unsigned char lbl_8055F1AC;
 extern int fn_802E2C20(void);
-extern void fn_802E30C8(const char *);
+extern void fn_802E30C8(const char *, ...);
 extern int fn_802146BC(void *, int, int, int);
 extern void fn_8023EC94(void);
 extern void fn_80236914(void);
 void fn_8023E7A8(unsigned int mode) {
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+    register char *base = (char *)lbl_80341CC8;
     char name[32] = {0};
+    int hdr[8];
     char a[128] = {0}, b[128] = {0}, c[128] = {0};
+    volatile int table[65];
+    int t;
     switch (mode) {
-    case 0: strcpy(name, (char *)lbl_80341CC8 + 0x34); break;
-    case 1: strcpy(name, (char *)lbl_80341CC8 + 0x40); break;
-    case 2: strcpy(name, (char *)lbl_80341CC8 + 0x4c); break;
+    case 0: strcpy(name, base + 0x34); break;
+    case 1: strcpy(name, base + 0x40); break;
+    case 2: strcpy(name, base + 0x4c); break;
     case 3: strcpy(name, (char *)&lbl_8055BCA8); break;
     case 4: strcpy(name, (char *)&lbl_8055BCB0); break;
-    case 5: strcpy(name, (char *)lbl_80341CC8 + 0x58); break;
-    case 6: strcpy(name, (char *)lbl_80341CC8 + 0x68); break;
+    case 5: strcpy(name, base + 0x58); break;
+    case 6: strcpy(name, base + 0x68); break;
     case 7:
-        strcpy(name, (char *)lbl_80341CC8 + 0x74);
-        strcpy(a, (char *)lbl_80341CC8 + 0x84);
-        strcpy(b, (char *)lbl_80341CC8 + 0xa0);
-        strcpy(c, (char *)lbl_80341CC8 + 0xb8);
+        strcpy(name, base + 0x74);
+        strcpy(a, base + 0x84);
+        strcpy(b, base + 0xa0);
+        strcpy(c, base + 0xb8);
         break;
     case 8:
-        strcpy(name, (char *)lbl_80341CC8 + 0xc4);
-        strcpy(a, (char *)lbl_80341CC8 + 0xd4);
-        strcpy(b, (char *)lbl_80341CC8 + 0xf4);
+        strcpy(name, base + 0xc4);
+        strcpy(a, base + 0xd4);
+        strcpy(b, base + 0xf4);
         strcpy(c, (char *)&lbl_8055BCB8);
         break;
     case 9:
-        strcpy(name, (char *)lbl_80341CC8 + 0xc4);
-        strcpy(a, (char *)lbl_80341CC8 + 0x114);
-        strcpy(b, (char *)lbl_80341CC8 + 0x138);
-        strcpy(c, (char *)lbl_80341CC8 + 0x14c);
+        strcpy(name, base + 0xc4);
+        strcpy(a, base + 0x114);
+        strcpy(b, base + 0x138);
+        strcpy(c, base + 0x14c);
         break;
     case 10:
-        strcpy(name, (char *)lbl_80341CC8 + 0x160);
-        strcpy(a, (char *)lbl_80341CC8 + 0x174);
-        strcpy(b, (char *)lbl_80341CC8 + 0x198);
+        strcpy(name, base + 0x160);
+        strcpy(a, base + 0x174);
+        strcpy(b, base + 0x198);
         strcpy(c, (char *)&lbl_8055BCB8);
         break;
     default:
-        fn_802E30C8((const char *)(lbl_80341CC8 + 0x1ac));
-        strcpy(name, (char *)lbl_80341CC8 + 0x1e8);
-        strcpy(a, (char *)lbl_80341CC8 + 0x1f8);
-        strcpy(b, (char *)lbl_80341CC8 + 0x21c);
-        strcpy(c, (char *)lbl_80341CC8 + 0x238);
+        fn_802E30C8(base + 0x1ac);
+        strcpy(name, base + 0x1e8);
+        strcpy(a, base + 0x1f8);
+        strcpy(b, base + 0x21c);
+        strcpy(c, base + 0x238);
         break;
     }
     lbl_8055F1AC = 0;
     *((char *)&lbl_8055F1AC + 1) = 0;
     *((char *)&lbl_8055F1AC + 2) = 0;
-    if (mode == 1) { *((char *)&lbl_8055F1AC + 1)=1; *((char *)&lbl_8055F1AC + 2)=1; }
-    if (mode == 2) { *((char *)&lbl_8055F1AC + 1)=1; *((char *)&lbl_8055F1AC + 2)=1; }
-    if (mode == 3) {
-        lbl_8055F1AC=1;
-        fn_802E2C20();
-        lbl_8055F1C8=fn_802E2C20()+100;
-        fn_802146BC(0, -999, -999, 1);
+    hdr[2] = 1; hdr[1] = 0; hdr[0] = 0;
+    switch (mode) {
+    case 0:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+    case 10:
+    default:
+        break;
+    case 1: hdr[0] = 1; hdr[1] = 1; lbl_8055F1AC = 1; *((char *)&lbl_8055F1AC+1)=1; *((char *)&lbl_8055F1AC+2)=1; break;
+    case 2: hdr[0] = 1; hdr[1] = 1; hdr[2] = 0; lbl_8055F1AC = 1; *((char *)&lbl_8055F1AC+1)=1; *((char *)&lbl_8055F1AC+2)=1; break;
+    case 3:
+        hdr[1] = 1; lbl_8055F1AC = 1;
+        t = fn_802E2C20();
+        lbl_8055F1C8 = t + 100;
+        break;
     }
+    table[0] = (int)&lbl_8055BAC0; table[1] = 8; table[2] = (int)fn_8023EC94;
+    table[3] = 0; table[4] = 0; table[5] = 8; table[6] = 2;
+    table[7] = (int)&hdr[2]; table[8] = 0; table[9] = 0;
+    table[10] = (int)&lbl_8055BCC8; table[11] = 2; table[12] = (int)&hdr[1];
+    table[13] = 0; table[14] = 0;
+    table[15] = (int)&lbl_8055BCD0; table[16] = 2; table[17] = (int)&hdr[0];
+    table[18] = 0; table[19] = 0;
+    table[20] = (int)&lbl_8055BCA0; table[21] = 3; table[22] = (int)name;
+    table[23] = 32; table[24] = 0;
+    table[25] = (int)&lbl_8055BCD8; table[26] = 3; table[27] = (int)c;
+    table[28] = 128; table[29] = 0;
+    table[30] = (int)&lbl_8055BCE0; table[31] = 3; table[32] = (int)b;
+    table[33] = 128; table[34] = 0;
+    table[35] = (int)&lbl_8055BCE8; table[36] = 3; table[37] = (int)a;
+    table[38] = 128; table[39] = 0;
+    table[40] = (int)&lbl_8055BCF0; table[41] = 3; table[42] = lbl_8055F1C8;
+    table[43] = 4; table[44] = 0;
+    table[45] = (int)&lbl_8055BCF8; table[46] = 3; table[47] = lbl_8055F1C8;
+    table[48] = 4; table[49] = 0;
+    table[50] = (int)&lbl_8055BD00; table[51] = 3; table[52] = lbl_8055F1C8;
+    table[53] = 4; table[54] = 0;
+    table[55] = (int)&lbl_8055BD08; table[56] = 3; table[57] = lbl_8055F1C8;
+    table[58] = 4; table[59] = 0;
+    table[60] = lbl_804987E0[0]; table[61] = lbl_804987E0[1];
+    table[62] = lbl_804987E0[2]; table[63] = lbl_804987E0[3];
+    table[64] = lbl_804987E0[4];
+    hdr[3] = *(int *)lbl_802FA294; hdr[4] = (int)table;
+    hdr[5] = *(int *)(lbl_802FA294 + 2); hdr[6] = *(int *)(lbl_802FA294 + 3);
+    hdr[7] = *(int *)(lbl_802FA294 + 4);
+    if (mode == 3 && hdr[0] == 0) fn_802146BC(&hdr[3], -999, -999, 1);
 }
 
 #pragma scheduling invalid_target
@@ -307,73 +355,101 @@ void fn_8023ED30(void) {
 
 extern int lbl_802FA2BC[5];
 #pragma cplusplus on
-int fn_8023EEF8(void) {
-    struct Data { void *first; void *second; int zero[3]; int values[55]; };
-    volatile struct Data data;
-    data.values[0]=(int)&lbl_8055B860;
-    data.values[1]=6;
-    data.values[2]=0;
-    data.values[3]=-2;
-    data.values[4]=0xD;
-    data.values[5]=(int)&lbl_8055B860;
-    data.values[6]=6;
-    data.values[7]=0;
-    data.values[8]=-1;
-    data.values[9]=0x1B;
-    data.values[10]=(int)&lbl_8055BCA0;
-    data.values[11]=3;
-    data.values[12]=(int)(lbl_80341CC8+0x304);
-    data.values[13]=4;
-    data.values[14]=0;
-    data.values[15]=(int)&lbl_8055BCD8;
-    data.values[16]=3;
-    data.values[17]=(int)(lbl_80341CC8+0x310);
-    data.values[18]=4;
-    data.values[19]=0;
-    data.values[20]=(int)&lbl_8055BCE0;
-    data.values[21]=3;
-    data.values[22]=(int)(lbl_80341CC8+0x330);
-    data.values[23]=4;
-    data.values[24]=0;
-    data.values[25]=(int)&lbl_8055BCE8;
-    data.values[26]=3;
-    data.values[27]=(int)(lbl_80341CC8+0x350);
-    data.values[28]=4;
-    data.values[29]=0;
-    data.values[30]=(int)&lbl_8055BCF0;
-    data.values[31]=3;
-    data.values[32]=(int)(lbl_80341CC8+0x374);
-    data.values[33]=4;
-    data.values[34]=0;
-    data.values[35]=(int)&lbl_8055BCF8;
-    data.values[36]=3;
-    data.values[37]=(int)&lbl_8055BCB8;
-    data.values[38]=4;
-    data.values[39]=0;
-    data.values[40]=(int)&lbl_8055BD08;
-    data.values[41]=3;
-    data.values[42]=(int)(lbl_80341CC8+0x2F4);
-    data.values[43]=4;
-    data.values[44]=0;
-    data.values[45]=(int)&lbl_8055BD00;
-    data.values[46]=3;
-    data.values[47]=(int)(lbl_80341CC8+0x390);
-    data.values[48]=4;
-    data.values[49]=0;
-    data.values[50]=lbl_804987E0[0];
-    data.values[51]=lbl_804987E0[1];
-    data.values[52]=lbl_804987E0[2];
-    data.values[53]=lbl_804987E0[3];
-    data.values[54]=lbl_804987E0[4];
-    lbl_8055F1C4=0;
-    data.first=(void *)lbl_802FA2BC[0];
-    data.second=(void *)lbl_802FA2BC[1];
-    data.zero[0]=lbl_802FA2BC[2];
-    data.zero[1]=lbl_802FA2BC[3];
-    data.zero[2]=lbl_802FA2BC[4];
-    data.first=fn_8023E5A8();
-    data.second=(void *)(int *)&data.values[0];
-    return (((int (*)(void *,int,int,int))fn_802146BC)((void *)&data,-999,-999,1)+2)==0;
+extern "C" int fn_8023EEF8(void) {
+    struct Descriptor { int args[5]; int values[55]; };
+    int c0 = lbl_804987E0[0];
+    int c1 = lbl_804987E0[1];
+    int c2 = lbl_804987E0[2];
+    int c3 = lbl_804987E0[3];
+    int c4 = lbl_804987E0[4];
+    int *source = (int *)lbl_802FA2BC - 1;
+    int a0 = *++source;
+    int a1 = *++source;
+    int a2 = *++source;
+    int a3 = *++source;
+    int a4 = *++source;
+    int zero = 0;
+    int three = 3;
+    int four = 4;
+    int six = 6;
+    int pB860 = (int)&lbl_8055B860;
+    int pBCA0 = (int)&lbl_8055BCA0;
+    int pBCD8 = (int)&lbl_8055BCD8;
+    int pBCE0 = (int)&lbl_8055BCE0;
+    int pBCE8 = (int)&lbl_8055BCE8;
+    int pBCF0 = (int)&lbl_8055BCF0;
+    int pBCF8 = (int)&lbl_8055BCF8;
+    int pBD00 = (int)&lbl_8055BD00;
+    int pBD08 = (int)&lbl_8055BD08;
+    int pBCB8 = (int)&lbl_8055BCB8;
+    int base = (int)lbl_80341CC8;
+    struct Descriptor d;
+
+    d.values[1] = six;
+    d.values[0] = pB860;
+    d.values[6] = six;
+    d.values[5] = pB860;
+    d.values[3] = -2;
+    d.values[4] = 0xD;
+    d.values[2] = zero;
+    d.values[7] = zero;
+    d.values[8] = -1;
+    d.values[9] = 0x1B;
+    d.values[11] = three;
+    d.values[10] = pBCA0;
+    d.values[12] = base + 0x304;
+    d.values[13] = four;
+    d.values[14] = zero;
+    d.values[15] = pBCD8;
+    d.values[16] = three;
+    d.values[17] = base + 0x310;
+    d.values[18] = four;
+    d.values[19] = zero;
+    d.values[20] = pBCE0;
+    d.values[21] = three;
+    d.values[22] = base + 0x330;
+    d.values[23] = four;
+    d.values[24] = zero;
+    d.values[25] = pBCE8;
+    d.values[26] = three;
+    d.values[27] = base + 0x350;
+    d.values[28] = four;
+    d.values[29] = zero;
+    d.values[30] = pBCF0;
+    d.values[31] = three;
+    d.values[32] = base + 0x374;
+    d.values[33] = four;
+    d.values[34] = zero;
+    d.values[35] = pBCF8;
+    d.values[36] = three;
+    d.values[37] = pBCB8;
+    d.values[38] = four;
+    d.values[39] = zero;
+    d.values[40] = pBD08;
+    d.values[41] = three;
+    d.values[42] = base + 0x2F4;
+    d.values[43] = four;
+    d.values[44] = zero;
+    d.values[45] = pBD00;
+    d.values[46] = three;
+    d.values[47] = base + 0x390;
+    d.values[48] = four;
+    d.values[49] = zero;
+    d.values[50] = c0;
+    d.values[51] = c1;
+    d.values[52] = c2;
+    d.values[53] = c3;
+    d.values[54] = c4;
+    lbl_8055F1C4 = 0;
+
+    d.args[0] = a0;
+    d.args[1] = a1;
+    d.args[2] = a2;
+    d.args[3] = a3;
+    d.args[4] = a4;
+    d.args[0] = (int)fn_8023E5A8();
+    d.args[1] = (int)d.values;
+    return (((int (*)(void *,int,int,int))fn_802146BC)((void *)&d,-999,-999,1)+2)==0;
 }
 #pragma cplusplus reset
 
@@ -513,7 +589,7 @@ int fn_8023F2C4(void) {
     values[38] = 4;
     values[39] = 0;
     values[41] = 3;
-    config0 = config[0];
+    config0 = *(volatile int *)lbl_804987E0;
     arg0 = input[0];
     config1 = config[1];
     config2 = config[2];
@@ -688,7 +764,6 @@ extern unsigned char lbl_8055BD2C;
 extern int __cntlzw(unsigned int);
 int fn_8023F694(void) {
     int data[59];
-    int args[5];
 
     data[7] = (int)&fn_8023F9E8;
     data[0] = (int)&lbl_8055B860;
@@ -746,16 +821,19 @@ int fn_8023F694(void) {
     data[53] = lbl_804987E0[3];
     data[54] = lbl_804987E0[4];
 
-    args[0] = 0;
-    args[1] = 0;
-    args[2] = 0;
-    args[3] = 0;
-    args[4] = 0;
-    args[0] = (int)((int (*)(int, int, int, int, int, int, int, int))fn_8023E5A8)(
-        lbl_804987E0[3], lbl_804987E0[2], lbl_804987E0[1],
-        (int)lbl_804987E0, lbl_804987E0[0], 3, 4, 0);
-    args[1] = (int)data;
-    return (fn_802146BC(args, -999, -999, 1) + 2) == 0;
+    {
+        int args[5];
+        args[0] = 0;
+        args[1] = 0;
+        args[2] = 0;
+        args[3] = 0;
+        args[4] = 0;
+        args[0] = (int)((int (*)(int, int, int, int, int, int, int, int))fn_8023E5A8)(
+            lbl_804987E0[3], lbl_804987E0[2], lbl_804987E0[1],
+            (int)lbl_804987E0, lbl_804987E0[0], 3, 4, 0);
+        args[1] = (int)data;
+        return (fn_802146BC(args, -999, -999, 1) + 2) == 0;
+    }
 }
 #pragma use_lmw_stmw on
 
