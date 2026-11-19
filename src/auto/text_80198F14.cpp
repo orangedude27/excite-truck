@@ -4762,16 +4762,26 @@ extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *ar
     *(f32*)((u8*)arg0 + 0x38) = b2;
 }
 
+struct Obj324C {
+    void *vtbl;
+    int f4, f8, fc;
+    f32 f10, f14;
+    int f18, f1c, f20;
+    f32 f24, f28, f2c, f30, f34, f38;
+    u8 pad[0xBC - 0x3C];
+    int bc;
+};
 #pragma use_lmw_stmw off
 extern "C" void *fn_801A324C(void *arg0, int arg1, void *arg2, f32 farg0, f32 farg1) {
-    register TagList *list;
+    register u8 *self;
+    TagList *list;
     unsigned int i;
     TagNode *child;
     TagNode *node;
     *(int *)((u8 *)arg0 + 0xC) = arg1;
     *(int *)((u8 *)arg0 + 4) = 0;
     *(int *)((u8 *)arg0 + 8) = 0;
-    u8 *self = (u8 *)arg0;
+    self = (u8 *)arg0;
     *(f32 *)(self + 0x10) = farg0;
     *(int *)(self + 0x18) = 0x504F4C59;
     *(f32 *)(self + 0x14) = farg1;
