@@ -265,8 +265,13 @@ void ClearArena(void) {
 #pragma push
 #pragma scheduling invalid_target
 void ClearMEM2Arena(void) {
-#define regionStart __OSRebootParams[3]
-#define regionEnd   __OSRebootParams[4]
+#define regionStart __OSRebootParams[3] /* void*: start of the region to keep */
+#define regionEnd   __OSRebootParams[4] /* void*: end of the region to keep */
+    /* Zero the MEM2 arena the title is about to run in.  A reboot can hand a
+     * region over to the next title (the exec parameters): the arena before
+     * regionStart and after regionEnd is cleared and that region is left alone.
+     * On a cold reset, or when no region was handed over (or it is not in MEM2),
+     * the whole arena is cleared. */
     void *keepEnd;
 
     if ((OSGetResetCode() >> 31) == 0) {
@@ -297,8 +302,6 @@ void ClearMEM2Arena(void) {
 #undef regionEnd
 }
 #pragma pop
-#pragma push
-#pragma small_data off
 void InquiryCallback(s32 result, struct DVDCommandBlock* block) {
     /* DVD inquiry completion: on a successful (idle) transfer publish the drive's
        device code from DriveInfo with the "code read" flag (0x8000) set; for any
