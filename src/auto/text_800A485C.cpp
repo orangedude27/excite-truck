@@ -26447,34 +26447,38 @@ extern "C" s32 fn_800A4D74(void *pathName, u32 selector) {
     return ((s32 *)pathName)[2];
 }
 
-extern "C" void VFiPFSTR_MoveStrPos(void *arg0, s16 arg1, s32 arg2) {
-    struct Data { u8 *pos; u8 *secondary; u32 unk; u32 mode; };
-    struct Table { u8 pad[0x54]; s32 (*is_lead)(s8, s32); s32 (*length)(u8 *); };
-    Data *data = (Data *)arg0;
-    Table *table;
-    u8 *str;
-    s16 count = 0;
-    if (data->mode == 1) {
-        str = data->pos;
-        table = (Table *)lbl_803D2140;
-        while (arg1 != 0) {
-            if (table->is_lead((s8)*str, 1) != 0)
-                count = (s16)(count + 1);
-            count++;
-            arg1--;
+extern "C" void VFiPFSTR_MoveStrPos(void *cursor, s16 charCount, s32 unused) {
+    /* Advance the string cursor's position by charCount characters. In mode 1
+       each character is at least one byte and lead bytes add an extra byte;
+       otherwise each character occupies a variable number of 2-byte units and
+       the cursor advances by that encoded length. */
+    struct StringCursor { u8 *pos; u8 *secondary; u32 unk; u32 mode; };
+    struct CharEncoding { u8 pad[0x54]; s32 (*isLeadByte)(s8, s32); s32 (*charLength)(u8 *); };
+    StringCursor *state = (StringCursor *)cursor;
+    CharEncoding *encoding;
+    u8 *scan;
+    s16 byteOffset = 0;
+    if (state->mode == 1) {
+        scan = state->pos;
+        encoding = (CharEncoding *)lbl_803D2140;
+        while (charCount != 0) {
+            if (encoding->isLeadByte((s8)*scan, 1) != 0)
+                byteOffset = (s16)(byteOffset + 1);
+            byteOffset++;
+            charCount--;
         }
     } else {
-        s16 i = 0;
-        u8 *str2 = data->pos;
-        table = (Table *)lbl_803D2140;
-        while (i < arg1) {
-            s32 len = table->length(str2);
-            str2 += len * 2;
-            i++;
-            count += (s16)len;
+        s16 index = 0;
+        u8 *wideScan = state->pos;
+        encoding = (CharEncoding *)lbl_803D2140;
+        while (index < charCount) {
+            s32 length = encoding->charLength(wideScan);
+            wideScan += length * 2;
+            index++;
+            byteOffset += (s16)length;
         }
     }
-    data->pos += count;
+    state->pos += byteOffset;
 }
 
 /* Initialize a path/string range object with begin/end pointers for a byte (1)
