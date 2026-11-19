@@ -181,9 +181,12 @@ static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *
         f32 yy4 = y * matrix[4];
         f32 xx2 = x * matrix[2];
         f32 yy5 = y * matrix[5];
-        dst[0] = (xx0 + xy3) + z * matrix[6];
-        dst[1] = (xx1 + yy4) + z * matrix[7];
-        dst[2] = (xx2 + yy5) + z * matrix[8];
+        f32 outX = (xx0 + xy3) + z * matrix[6];
+        f32 outY = (xx1 + yy4) + z * matrix[7];
+        f32 outZ = (xx2 + yy5) + z * matrix[8];
+        dst[0] = outX;
+        dst[1] = outY;
+        dst[2] = outZ;
     } else {
         x = src[0];
         y = src[1];
@@ -460,14 +463,14 @@ loop_body:
         else
             fn_802C8B98(*(s32 *)(*(u8 **)lbl_80497F14 + *(s32 *)record * 0x1C + 8), fn_8022EDC4());
         fn_802C8DBC(4);
-        f27 = *(f32 *)(record + 4);
+        f25 = *(f32 *)(record + 4);
         f26 = *(f32 *)(record + 8);
-        f25 = f27 + *(f32 *)(record + 0x14);
+        f27 = f25 + *(f32 *)(record + 0x14);
         f28 = f26 - *(f32 *)(record + 0x10);
-        fn_802C8E00(color, 0, f27, f26, *(f32 *)(record + 0x0C), lbl_8056368C, lbl_8056368C);
-        fn_802C8E00(color, 0, f25, f26, *(f32 *)(record + 0x0C), lbl_80563684, lbl_8056368C);
-        fn_802C8E00(color, 1, f27, f28, *(f32 *)(record + 0x0C), lbl_8056368C, lbl_80563684);
-        fn_802C8E00(color, 1, f25, f28, *(f32 *)(record + 0x0C), lbl_80563684, lbl_80563684);
+        fn_802C8E00(color, 0, f25, f26, *(f32 *)(record + 0x0C), lbl_8056368C, lbl_8056368C);
+        fn_802C8E00(color, 0, f27, f26, *(f32 *)(record + 0x0C), lbl_80563684, lbl_8056368C);
+        fn_802C8E00(color, 1, f25, f28, *(f32 *)(record + 0x0C), lbl_8056368C, lbl_80563684);
+        fn_802C8E00(color, 1, f27, f28, *(f32 *)(record + 0x0C), lbl_80563684, lbl_80563684);
         fn_802C8E48();
         fn_802C8D74();
     }
