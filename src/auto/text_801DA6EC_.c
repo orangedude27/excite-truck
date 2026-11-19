@@ -368,7 +368,7 @@ void *fn_801DAE28(void *object, int freeFlag) {
 }
 #pragma scheduling on
 void fn_801DAEF4(void) {
-
+    /* Empty stub (returns immediately). */
 }
 
 void fn_801DAEF8(void) {
