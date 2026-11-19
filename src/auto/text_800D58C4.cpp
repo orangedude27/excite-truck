@@ -1279,7 +1279,7 @@ static inline u8 *ChildPane_800D77DC(ChildIter_800D77DC it) {
     if (!p) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
     return p;
 }
-static inline bool ChildNotEqual_800D77DC(ChildIter_800D77DC a, ChildIter_800D77DC b) { return a.node != b.node; }
+static inline bool ChildNotEqual_800D77DC(const ChildIter_800D77DC &a, const ChildIter_800D77DC &b) { return a.node != b.node; }
 static inline void ChildNext_800D77DC(ChildIter_800D77DC &it) { it.node = it.node->next; }
 static inline void SetTagProcessorLevel3_800D77DC(u8 *self, s32 arg1) {
     if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
