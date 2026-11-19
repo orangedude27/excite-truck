@@ -925,7 +925,7 @@ static inline void SetTagProcessorImpl_800D6CA0(u8 *pane, s32 arg1) {
 extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
     if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
-    for (ChildIter_800D77DC it = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it)) {
+    for (ChildIter_800D77DC it = ChildBegin_800D77DC((u8 *)arg0); ChildNotEqual_800D77DC(it, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it)) {
         SetTagProcessorChild_800D6CA0(ChildPane_800D77DC(it), arg1);
     }
 }
@@ -3498,16 +3498,17 @@ extern "C" const char lbl_8031E8FC[];
 extern "C" const char lbl_8031E8D8[];
 extern "C" const char lbl_8031F1D8[];
 extern "C" const char lbl_8031F1FC[];
+/* Find the material with the given name on this pane, optionally searching child panes. */
 extern "C" void* FindMaterialByName__Q36nw4hbm3lyt4PaneFPCcb(void* self, const char* name, bool recursive) {
-    struct V {
+    struct PaneVTable {
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
         virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
         virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
         virtual void f12(); virtual void f13();
         virtual void* find(const char*, bool);
     };
-    void* data = *(void**)((u8*)self + 0x28);
-    if (data != 0 && ((int (*)(const char*, const char*))fn_800D58F0)((const char*)((u8*)data + 4), name))
+    void* material = *(void**)((u8*)self + 0x28);
+    if (material != 0 && ((int (*)(const char*, const char*))fn_800D58F0)((const char*)((u8*)material + 4), name))
         return *(void**)((u8*)self + 0x28);
     if (recursive) {
         u8* pane = (u8*)self;
@@ -3520,8 +3521,8 @@ extern "C" void* FindMaterialByName__Q36nw4hbm3lyt4PaneFPCcb(void* self, const c
         while (node != end) {
             if (!node)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-            V* object = (V*)((u8*)node - 4);
-            void* result = object->find(name, true);
+            PaneVTable* child = (PaneVTable*)((u8*)node - 4);
+            void* result = child->find(name, true);
             if (result != 0)
                 return result;
             node = *(void**)node;
