@@ -243,11 +243,9 @@ void ConfigureVideo(short width, short height) {
 
 #pragma push
 #pragma use_lmw_stmw off
-void OSFatal(unsigned char *arg0, unsigned char *arg1, int arg2) {
+void OSFatal(GXColor textColor, GXColor bgColor, const char *msg) {
     int start;
     unsigned long long t0;
-    unsigned char b0, b1, b2, b3, b4, b5, b6, b7;
-    unsigned char *dst;
     OSDisableInterrupts();
     OSDisableScheduler();
     OSClearContext(lbl_8038E060);
@@ -284,19 +282,9 @@ void OSFatal(unsigned char *arg0, unsigned char *arg1, int arg2) {
     GXGetVtxAttrFmtv();
     OSSetArenaLo((void *)0x81400000);
     OSSetArenaHi(*(void **)0x80000038);
-    dst = (unsigned char *)lbl_8038E328;
-    b0 = arg0[0];
-    b1 = arg0[1];
-    *dst++ = b0;
-    b2 = arg0[2];
-    b3 = arg0[3];
-    b4 = arg1[0];
-    b5 = arg1[1];
-    b6 = arg1[2];
-    b7 = arg1[3];
-    dst[0] = b1; dst[1] = b2; dst[2] = b3;
-    dst[3] = b4; dst[4] = b5; dst[5] = b6; dst[6] = b7;
-    *(int *)(dst + 7) = arg2;
+    ((OSFatalParam *)lbl_8038E328)->textColor = textColor;
+    ((OSFatalParam *)lbl_8038E328)->bgColor = bgColor;
+    *(const char **)((char *)lbl_8038E328 + 8) = msg;
     ((void (*)(void *, void *))OSSwitchFiber)(Halt, OSGetArenaHi());
 }
 
@@ -610,20 +598,14 @@ extern u16 lbl_80560CBC;
 extern u16 lbl_80560CBE;
 #pragma use_lmw_stmw off
 int ReadFont(int dst, int encode, int font) {
+    u32 size;
     u8* tex;
     u32 code;
-    u32 size;
     s32 sheet;
     s32 numRestTex;
     s32 row;
     s32 col;
     u8* tmp;
-    int i;
-    int k;
-    int m;
-    int n;
-    int o;
-    int p;
     OSFontHeader* f = (OSFontHeader*)font;
 
     if ((u32)encode == 1) {
@@ -849,7 +831,7 @@ void *ParseStringW(int encode, void *str, int *fontOut, int *codeOut, int unused
     *codeOut = ((unsigned int (*)(int, unsigned short))GetFontCode)(encode, code);
     return str;
 }
-#pragma use_lmw_stmw off
+#pragma processor 750
 void OSGetFontTexel(char *arg0, unsigned char *arg1, int arg2, int arg3, int *arg4) {
     unsigned char *spC;
     int sp8;
@@ -860,20 +842,19 @@ void OSGetFontTexel(char *arg0, unsigned char *arg1, int arg2, int arg3, int *ar
     unsigned char *data;
     unsigned char *table;
 
-    if (mode == 0xFFFF) {
+    if (mode != 0xFFFF) goto no_init;
+    {
         int console = *(volatile int *)0x800000CC;
         if (console == 0) {
             mode = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
             lbl_80558F58 = mode;
-        } else if (console < 0) {
-            mode = 0;
-            lbl_80558F58 = 0;
         } else {
             mode = 0;
             lbl_80558F58 = 0;
         }
         lbl_8055DA48 = ParseStringS;
     }
+no_init:
     ((char *(*)(int, char *, int **, int *))lbl_8055DA48)(mode, arg0, (int **)&spC, &sp8);
     perSheet = *(unsigned short *)(spC + 0x1A) * *(unsigned short *)(spC + 0x1C);
     tileRowBytes = ((arg3 * 4) / 8) * 32;
