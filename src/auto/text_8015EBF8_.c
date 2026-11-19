@@ -39,14 +39,6 @@ void* fn_8015EBF8(void* arg0, s32 arg1) {
     return arg0;
 }
 
-static inline int fn_8015ECC0_isValid(void *obj) {
-    int ok = 0;
-    if (((int *)obj)[8] < 1000 && ((unsigned int *)obj)[6] == 0x54554245) {
-        ok = 1;
-    }
-    return ok;
-}
-
 #pragma dont_inline on
 /* Convert a sample offset from a stream position into frames (1/60 s) relative to the stream base. */
 void fn_8015EC50(unsigned short *out, void *stream) {
