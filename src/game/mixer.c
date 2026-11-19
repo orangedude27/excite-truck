@@ -461,8 +461,11 @@ int fn_80209270(void) { return 1; }
 
 /* Null-mixer backend device method, slot +0x20 of the Null Mixer vtable
  * (lbl_8033C058), just past its createSound (+0x1C, Sound_CreateNullSource
- * fn_80209280).  The null backend has no hardware to act on, so this method
- * does nothing; fn_8020927C is the same no-op for slot +0x24. */
+ * fn_80209280).  Slot +0x20 is the mixer's per-frame tick -- the voice backend
+ * implements it as fn_8020AC2C, which walks its sound list and updates every
+ * playing sound.  The null backend has no sounds and no hardware to act on, so
+ * this method does nothing; fn_8020927C is the same no-op for slot +0x24
+ * (the voice backend's shutdown/release-all, fn_8020A8E8). */
 void fn_80209278(void) {
 	return;
 }
