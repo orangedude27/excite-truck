@@ -37,11 +37,6 @@ void fn_802090BC(void);
 extern s32 lbl_8055F144, lbl_8055F148, lbl_8055F14C, lbl_8055F150, lbl_8055F154;
 extern char lbl_8055BB48[];
 __declspec(section ".sdata") extern char lbl_8055BB48[];
-static inline s32 fn_8023C308_adjust(s32 val, s32 cur) {
-    s32 diff = val - cur;
-    lbl_8055F154 += diff;
-    return diff;
-}
 #pragma scheduling invalid_target
 s32 fn_8023C308(s32 arg0) {
     s32 val, cur, diff, mode;
@@ -58,9 +53,7 @@ s32 fn_8023C308(s32 arg0) {
             else
                 val = tmp;
         }
-        diff = val - cur;
-        lbl_8055F154 += diff;
-        if (diff) fn_80214BE4(7, 0);
+        if (fn_8023C308_adjust(val, cur)) fn_80214BE4(7, 0);
     }
     if (lbl_8055F148 != lbl_8055F150) {
         lbl_8055F150 = lbl_8055F148;
