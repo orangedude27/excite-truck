@@ -332,6 +332,7 @@ static inline u8 IsAnalogChanged(s32 lhs, s32 rhs, s32 threshold) {
     s32 diff = lhs - rhs < 0 ? rhs - lhs : lhs - rhs;
     return diff > threshold ? TRUE : FALSE;
 }
+#pragma pop
 
 static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
 #define WPAD_BUTTON_CHANGED(lhs, rhs) ((lhs) != (rhs))
