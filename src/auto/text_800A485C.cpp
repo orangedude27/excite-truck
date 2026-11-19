@@ -22847,14 +22847,16 @@ extern "C" void* fn_800D55B0(void *self, s32 shouldDelete) {
     return self;
 }
 #pragma pop
-extern "C" s32 fn_800D5640(void *obj, s32 arg1, s32 arg2, s32 arg3) {
-    u8 *base = (u8 *)obj;
+extern "C" s32 fn_800D5640(void *list, s32 arg1, s32 arg2, s32 arg3) {
+    u8 *base = (u8 *)list;
     struct { u32 node; } cursor;
     cursor.node = *(u32 *)(base + 8);
     u32 &entry = cursor.node;
     struct { u32 end; } sentinel;
     sentinel.end = (u32)base + 8;
     u32 &end = sentinel.end;
+    /* Iterate the linked list from head+8 until the sentinel, invoking
+     * fn_800D51F4 on each entry and returning its result if nonzero. */
     while (entry != end) {
         if (entry == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F4A4, 0x23d, lbl_8031F480);
