@@ -791,35 +791,6 @@ extern "C" void fn_80264FD4(void *obj) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-static inline void fn_80264FE4_loop(char *p, int delta) {
-    char *q = p + delta;
-    float base, intensity, value, limit, zero;
-    int id, offset;
-    char *item;
-    int i, alpha, a;
-    limit = lbl_80563C00;
-    zero = lbl_80563BF0;
-    offset = 0;
-    i = 0;
-    while (i < *(int *)(q + 0xBC)) {
-        item = *(char **)(q + 0xB8) + offset;
-        value = *(float *)(q + 0xD0) * (*(float *)(q + 0xA4) - *(float *)(item + 0x18));
-        if (limit < value) value = limit;
-        value = (value > zero) ? value : zero;
-        alpha = 0xFF;
-        a = (int)(value * (*(float *)(item + 0x18) * *(float *)(q + 0xCC)));
-        a = (a > 0) ? a : 0;
-        if (a < 0xFF) alpha = a;
-        id = *(int *)(item + 0x1C);
-        base = *(float *)(q + 0xAC) + *(float *)(q + 0xB0) * (limit - *(float *)(item + 0x18) * *(float *)(q + 0xC8));
-        intensity = base * fn_80235F64(*(void **)(q + 0xB4), id);
-        fn_80235AFC(*(void **)(q + 0xB4), id, ((unsigned int)alpha << 24) | 0xFFFFFF,
-                    *(float *)item, *(float *)(item + 4), lbl_80563BF0,
-                    base * fn_80235EF0(*(void **)(q + 0xB4), *(int *)(item + 0x1C)), intensity, *(float *)(item + 0x10));
-        offset += 0x20;
-        i++;
-    }
-}
 extern "C" void fn_80264FE4(void *arg0) {
     char *p = (char *)arg0;
     float base, intensity, value, limit, zero;
