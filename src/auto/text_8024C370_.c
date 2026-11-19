@@ -578,7 +578,6 @@ int fn_8024CC54(void *out, void *arg1, int arg2) {
     }
     return 1;
 }
-#pragma cplusplus reset
 extern char lbl_80343FC4[];
 extern char lbl_80343FF0[];
 #pragma scheduling reset
