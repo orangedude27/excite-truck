@@ -287,7 +287,7 @@ extern "C" f64 __fabs(f64);
 #pragma paired off
 #pragma paired_single off
 #pragma processor 750
-#pragma use_lmw_stmw off
+#pragma use_lmw_stmw on
 extern "C" int fn_80198F64(void *arg0, int arg1, void *arg2, float *arg3, void *arg4, float *arg5, float farg0) {
     f32 *pt = (f32 *)arg0;
     u8 *obj = (u8 *)arg1;
@@ -3757,27 +3757,10 @@ fail:
 #pragma use_lmw_stmw reset
 extern "C" void fn_801A17B8(void* arg0) {
     extern f32 lbl_8056234C;
-    extern void fn_801E41D8(f32*, f32*, s32, f32, f32, void*, void*, f32, f32, f32, f32, f32, f32, f32, f32, f32);
-    f32 sp34;
-    f32 sp30;
-    f32 sp2C;
-    f32 sp28;
-    f32 sp24;
-    f32 sp20;
-    f32 sp1C;
-    f32 sp18;
-    f32 sp14;
-    f32 sp10;
-    f32 spC;
-    f32 sp8;
-    f32 temp_f0;
-    f32 temp_f0_2;
-    f32 temp_f2;
-    f32 temp_f3;
-    f32 temp_r6;
-    f32 temp_r7;
+    extern void fn_801E41D8(f32*, f32*, s32, void*, void*, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32);
+    f32 sp34, sp30, sp2C, sp28, sp24, sp20, sp1C, sp18, sp14, sp10, spC, sp8;
+    f32 temp_f0, temp_f0_2, temp_f2, temp_f3, temp_r6, temp_r7;
     void* temp_r8;
-
     temp_r8 = *(void**)((u8*)arg0 + 0xC);
     temp_f0 = *(f32*)((u8*)arg0 + 0x28);
     sp20 = *(f32*)((u8*)temp_r8 + 0x18);
@@ -3797,7 +3780,7 @@ extern "C" void fn_801A17B8(void* arg0) {
     sp8 = temp_f3;
     spC = temp_f2;
     sp10 = sp34 + (sp28 * temp_f0_2);
-    fn_801E41D8(&sp14, &sp8, 0x40FFFF00, temp_r6, temp_r7, temp_r8, arg0, lbl_8056234C * *(f32*)((u8*)arg0 + 0x24), temp_f2, temp_f3, sp34, sp28, sp30, sp24, sp2C, sp20);
+    fn_801E41D8(&sp14, &sp8, 0x40FFFF00, temp_r8, arg0, lbl_8056234C * *(f32*)((u8*)arg0 + 0x24), temp_f2, temp_f3, sp34, sp28, sp30, sp24, sp2C, sp20, temp_r6, temp_r7);
 }
 #pragma scheduling on
 extern int lbl_80333918[64];
@@ -4222,11 +4205,15 @@ extern "C" void fn_801A22A4(void* obj) {
 
 #pragma scheduling invalid_target
 extern "C" void* fn_801A2354(void* arg0, s32 arg1, void* arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
-    extern f32 lbl_80562300;
     extern char lbl_80333868[];
-    f32 diffX = farg3 - lbl_80562300;
-    f32 diffY = farg2 - lbl_80562300;
-    f32 diffZ = farg4 - lbl_80562300;
+    f32 radius, dist, x, y, z;
+    f32 diffY = farg2 - 0.2f;
+    f32 diffX = farg3 - 0.2f;
+    f32 diffZ = farg4 - 0.2f;
+    f32 dx2 = diffX * diffX;
+    f32 dy2 = diffY * diffY;
+    f32 dz2 = diffZ * diffZ;
+    dist = dx2 + dy2 + dz2;
     *(f32*)((u8*)arg0 + 0x10) = farg0;
     *(s32*)((u8*)arg0 + 0xC) = arg1;
     *(s32*)((u8*)arg0 + 4) = arg3;
@@ -4240,15 +4227,14 @@ extern "C" void* fn_801A2354(void* arg0, s32 arg1, void* arg2, s32 arg3, f32 far
     *(f32*)((u8*)arg0 + 0x28) = diffX;
     *(f32*)((u8*)arg0 + 0x2C) = diffZ;
     *(s32*)((u8*)arg0 + 0x34) = 0;
-    f32 dist = diffX * diffX + diffY * diffY + diffZ * diffZ;
-    f32 radius = lbl_80562300 + (f32)fn_8002F234(dist);
+    radius = 0.2f + (f32)fn_8002F234(dist);
     volatile f32* input = (volatile f32*)arg2;
-    f32 x = input[0];
-    f32 y = input[1];
-    f32 z = input[2];
+    x = input[0];
+    y = input[1];
     *(f32*)((u8*)arg0 + 0x38) = x;
     *(f32*)((u8*)arg0 + 0x30) = radius;
     *(void**)arg0 = lbl_80333868;
+    z = input[2];
     *(f32*)((u8*)arg0 + 0x3C) = y;
     *(f32*)((u8*)arg0 + 0x40) = z;
     return arg0;
