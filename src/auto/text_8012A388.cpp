@@ -1126,7 +1126,7 @@ extern "C" void fn_8012BA1C(void *arg0) {
         offset2 = 0;
         while (j < mgr->entryCount) {
             entry = (struct ResEntry *)((char *)mgr->entries + offset2);
-            flags = res_entry_flags(0, 0, entry, 0);
+            flags = res_entry_flags(0, 0, entry);
             if ((flags & 0xA) == 8) fn_802E30C8(strings + 0x4AC, arg0);
             offset2 += 0x44;
             j++;
