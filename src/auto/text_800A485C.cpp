@@ -18322,6 +18322,7 @@ extern "C" s32 fn_800C4E5C(s32, void *);
 #pragma push
 #pragma use_lmw_stmw on
 #pragma dont_inline fn_800C34B4
+#pragma scheduling off
 void fn_800C4CF4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s8 arg4, s32 arg5) {
   struct W16 { s32 v; } w16;
   struct W17 { s32 v; } w17;
