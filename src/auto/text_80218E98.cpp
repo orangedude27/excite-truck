@@ -1870,11 +1870,15 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021AF9C(void *self, 
 
 extern double lbl_805634B8;
 extern float lbl_805634C4;
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 extern "C" void fn_8021AFF4(void *arg0) {
-    f32 step = (*(f32 *)((u8 *)arg0 + 0x25C) - *(f32 *)((u8 *)arg0 + 0x258)) / (f32)(*(s32 *)((u8 *)arg0 + 0x260) - 1);
+    s32 n = *(s32 *)((u8 *)arg0 + 0x260) - 1;
+    f32 denom = (f32)n;
+    f32 half = lbl_805634C4;
+    f32 step = (*(f32 *)((u8 *)arg0 + 0x25C) - *(f32 *)((u8 *)arg0 + 0x258)) / denom;
     *(f32 *)*(void **)((u8 *)arg0 + 0x254) += (f32)*(s32 *)((u8 *)arg0 + 0x264) * step;
-    *(f32 *)*(void **)((u8 *)arg0 + 0x254) = step * (f32)(s32)((*(f32 *)*(void **)((u8 *)arg0 + 0x254) / step) + lbl_805634C4);
+    *(f32 *)*(void **)((u8 *)arg0 + 0x254) = step * (f32)(s32)((*(f32 *)*(void **)((u8 *)arg0 + 0x254) / step) + half);
     if (*(f32 *)*(void **)((u8 *)arg0 + 0x254) < *(f32 *)((u8 *)arg0 + 0x258)) {
         *(f32 *)*(void **)((u8 *)arg0 + 0x254) = *(f32 *)((u8 *)arg0 + 0x258);
     }
@@ -1882,7 +1886,7 @@ extern "C" void fn_8021AFF4(void *arg0) {
         *(f32 *)*(void **)((u8 *)arg0 + 0x254) = *(f32 *)((u8 *)arg0 + 0x25C);
     }
 }
-#pragma scheduling on
+#pragma pop
 extern "C" char lbl_8033F5D0[];
 #pragma dont_inline on
 /* Initialize a UI object that steps/clamps an integer value: set up the base
@@ -5047,29 +5051,35 @@ extern "C" void fn_80220B3C(void *widget) {
         ((VfObj *)widget)->vf13();
 }
 
-extern "C" void fn_80220B5C(void *arg0, s32 arg1) {
-    s32 *entries;
-    u32 cur;
-    s32 *p;
-    s32 f8b;
-    s32 f4b;
-    s32 div;
-    s32 v1;
-    fn_802C3034(arg1);
-    s32 v0 = ((VfObj *)arg0)->vf28() - 11;
-    entries = *(s32 **)((u8 *)arg0 + 0x244);
-    p = *(s32 **)((u8 *)arg0 + 0x25C);
-    s32 flag = 0;
-    cur = *(u32 *)((u8 *)arg0 + 0x250);
-    div = ((*entries - (s32)cur) * v0) / ((s32)*(s32 *)((u8 *)arg0 + 0x254) - (s32)cur - 1);
-    if (p != 0 && *p == *(s32 *)((u8 *)arg0 + 0x260)) {
-        flag = 1;
+extern "C" void fn_80220B5C(void *widget, s32 canvas) {
+    /* Draw this slider's track and fill on the given canvas: the track image
+       (+0x248) spans the widget's full width at (x,y), and the fill image
+       (+0x24C) spans a proportion of that width (inset by 5 pixels) from the
+       current value *valuePtr (+0x244) within [minValue (+0x250), maxValue
+       (+0x254)). Both are drawn highlighted when the focused id (*+0x25C)
+       matches this widget's id (+0x260). */
+    s32 *valuePtr;
+    u32 minValue;
+    s32 *selectionPtr;
+    s32 y;
+    s32 x;
+    s32 fillWidth;
+    s32 width;
+    fn_802C3034(canvas);
+    s32 trackSpan = ((VfObj *)widget)->vf28() - 11;
+    valuePtr = *(s32 **)((u8 *)widget + 0x244);
+    selectionPtr = *(s32 **)((u8 *)widget + 0x25C);
+    s32 isSelected = 0;
+    minValue = *(u32 *)((u8 *)widget + 0x250);
+    fillWidth = ((*valuePtr - (s32)minValue) * trackSpan) / ((s32)*(s32 *)((u8 *)widget + 0x254) - (s32)minValue - 1);
+    if (selectionPtr != 0 && *selectionPtr == *(s32 *)((u8 *)widget + 0x260)) {
+        isSelected = 1;
     }
-    f8b = *(s32 *)((u8 *)arg0 + 8);
-    f4b = *(s32 *)((u8 *)arg0 + 4);
-    v1 = ((VfObj *)arg0)->vf28();
-    fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x248), f4b, f8b, v1, flag);
-    fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x24C), *(s32 *)((u8 *)arg0 + 4) + 5, *(s32 *)((u8 *)arg0 + 8) + 5, div, flag);
+    y = *(s32 *)((u8 *)widget + 8);
+    x = *(s32 *)((u8 *)widget + 4);
+    width = ((VfObj *)widget)->vf28();
+    fn_80228DC4(canvas, *(s32 *)((u8 *)widget + 0x248), x, y, width, isSelected);
+    fn_80228DC4(canvas, *(s32 *)((u8 *)widget + 0x24C), *(s32 *)((u8 *)widget + 4) + 5, *(s32 *)((u8 *)widget + 8) + 5, fillWidth, isSelected);
 }
 
 #pragma push
