@@ -2108,7 +2108,9 @@ void fn_801AD8C8(void *arg0, unsigned int *arg1, float *arg2, float *arg3) {
 #pragma push
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void fn_801AD99C(void *arg0, float *arg1, float *arg2) {
+extern "C" void fn_801AD99C(void *self, float *velocity, float *positionOffset) {
+    /* Scales velocity by this object's +0xD4 factor, offsets positionOffset by
+     * this object's position at +0x60, and dispatches virtual slot 0x48. */
     class Obj {
     public:
         virtual void v0();
@@ -2130,16 +2132,16 @@ extern "C" void fn_801AD99C(void *arg0, float *arg1, float *arg2) {
         virtual void v16(float *, float *, int, int);
     };
     float scale;
-    float sp14[3];
-    float sp8[3];
-    scale = *(float *)((char *)arg0 + 0xD4) / 0.016683381f;
-    sp14[0] = arg1[0] * scale;
-    sp14[1] = arg1[1] * scale;
-    sp14[2] = arg1[2] * scale;
-    sp8[0] = *(float *)((char *)arg0 + 0x60) + arg2[0];
-    sp8[1] = *(float *)((char *)arg0 + 0x64) + arg2[1];
-    sp8[2] = *(float *)((char *)arg0 + 0x68) + arg2[2];
-    ((Obj *)arg0)->v16(sp14, sp8, 100, 0);
+    float scaledVelocity[3];
+    float targetPosition[3];
+    scale = *(float *)((char *)self + 0xD4) / 0.016683381f;
+    scaledVelocity[0] = velocity[0] * scale;
+    scaledVelocity[1] = velocity[1] * scale;
+    scaledVelocity[2] = velocity[2] * scale;
+    targetPosition[0] = *(float *)((char *)self + 0x60) + positionOffset[0];
+    targetPosition[1] = *(float *)((char *)self + 0x64) + positionOffset[1];
+    targetPosition[2] = *(float *)((char *)self + 0x68) + positionOffset[2];
+    ((Obj *)self)->v16(scaledVelocity, targetPosition, 100, 0);
 }
 #pragma pop
 void fn_801ADA38(void *object, int enable) {
