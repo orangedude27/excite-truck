@@ -214,8 +214,8 @@ void* __dt__Q28PSSystem7SeqHeapFv_8025E614(void* arg0, int arg1) {
 #pragma cplusplus on
 extern "C" int fn_8025E678(void) {
     typedef SeqObj Obj;
-    char buf0[0x24], buf1[0x24], buf2[0x24];
     struct Key { int a; int b; unsigned char c; } out, tmp;
+    char buf0[0x24], buf1[0x24], buf2[0x24];
     char *base, *recPtr, *dest1, *dest2, *dest3, *p, *q, *src, *chosen, *arr;
     Obj *obj, *item, *o1;
     void *obj300, *table, *key;
@@ -384,7 +384,8 @@ extern "C" int fn_8025E678(void) {
     return 0;
 }
 
-#pragma cplusplus on
+#pragma scheduling invalid_target
+#pragma scheduling invalid_target
 extern "C" int fn_8025ECBC(void) {
     typedef SeqObj Obj;
     int tmpArr[3], outArr[3];
@@ -557,7 +558,6 @@ extern "C" int fn_8025ECBC(void) {
     }
     return 0;
 }
-#pragma cplusplus reset
 
 #pragma cplusplus reset
 extern int fn_80214A9C(int);
@@ -990,7 +990,7 @@ extern float lbl_80563B70, lbl_80563B74, lbl_80563B78;
 #pragma scheduling invalid_target
 #pragma processor 750
 #pragma paired_single off
-extern "C" void fn_8025FC8C(void* p, int arg1) {
+void fn_8025FC8C(void* p, int arg1) {
     float spC, sp8, outC, out8, f29, f28, f27, f26, f25, f24;
     float tmpA, tmpB;
     unsigned int color, packed;
