@@ -1055,8 +1055,6 @@ void fn_802D5DE8(u32 flags) {
 
 #pragma scheduling invalid_target
 #pragma dont_inline on
-#pragma push
-#pragma scheduling off
 void fn_802D5F88(s32 arg0) {
     u32 normalized = *(u32 *)((u8 *)arg0 + 0xC) & 0xFFCFFFFF;
     u8 mode = *(u8 *)((u8 *)arg0 + 9);
@@ -1066,7 +1064,6 @@ void fn_802D5F88(s32 arg0) {
         lbl_8055FDEC = mode;
     }
 }
-#pragma pop
 
 #pragma push
 #pragma dont_inline on
