@@ -106,7 +106,7 @@ void fn_8013BD30(void *arg0) {
 #pragma dont_inline reset
 
 extern void fn_8013BD30(void *);
-extern char lbl_8032C3D8[];
+extern char lbl_8032C3D8[][12];
 __declspec(section ".sdata") extern const char lbl_80559CE0[];
 __declspec(section ".sdata") extern const char lbl_80559CE8[];
 __declspec(section ".sdata") extern const char lbl_80559CF0[];
@@ -150,17 +150,18 @@ extern "C" void fn_8013BD5C(void *arg0, void *arg1) {
         virtual void v7();
         virtual float get(const char *, float);
     };
+    typedef char NameRow[12];
+    NameRow *rows = (NameRow *)lbl_8032C3D8;
     float *v = (float *)arg0;
-    const char *names = lbl_8032C3D8;
     void *p;
 
     fn_8013BD30(arg0);
-    p = ((Selector *)arg1)->select(names);
+    p = ((Selector *)arg1)->select(rows[0]);
     if (p != 0) {
         v[0] = ((Getter *)p)->get(lbl_80559CE0, v[0]);
         v[1] = ((Getter *)p)->get(lbl_80559CE8, v[1]);
-        v[2] = ((Getter *)p)->get(names + 0xC, v[2]);
-        v[4] = ((Getter *)p)->get(names + 0x18, v[4]);
+        v[2] = ((Getter *)p)->get(rows[1], v[2]);
+        v[4] = ((Getter *)p)->get(rows[2], v[4]);
         v[3] = ((Getter *)p)->get(lbl_80559CF0, v[3]);
     }
 }
