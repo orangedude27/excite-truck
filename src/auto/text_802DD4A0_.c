@@ -35,36 +35,38 @@ void *fn_801284F8(int, void *);
 int fn_8012850C(int, void *);
 void GXInitTexObj(void *, void *, unsigned short, unsigned short, int, int, int, int);
 void GXInitTexObjFilter(void *, int, int);
+/* Allocates and initializes the cached blur texture object from the current render
+ * target dimensions, storing half-size width/height and an RGB565 texture buffer. */
 void fn_802DD4FC(void) {
 #pragma scheduling invalid_target
 #pragma opt_common_subs off
-    void *info = fn_802D2D14();
-    lbl_8055FED0 = *(unsigned short *)((char *)info + 4);
-    lbl_8055FED4 = *(unsigned short *)((char *)info + 6);
+    void *renderInfo = fn_802D2D14();
+    lbl_8055FED0 = *(unsigned short *)((char *)renderInfo + 4);
+    lbl_8055FED4 = *(unsigned short *)((char *)renderInfo + 6);
     {
-        void *obj = fn_801284F8(0x50, lbl_8034CB50);
-        if (obj != 0) {
-            int h, w;
-            h = lbl_8055FED4;
-            w = lbl_8055FED0;
-            *(unsigned char *)((char *)obj + 0x4C) = 1;
-            if (*(unsigned char *)((char *)obj + 0x4C)) {
-                *(volatile int *)((char *)obj + 0x44) = w / 2;
-                *(volatile int *)((char *)obj + 0x48) = h / 2;
+        void *texObj = fn_801284F8(0x50, lbl_8034CB50);
+        if (texObj != 0) {
+            int height, width;
+            height = lbl_8055FED4;
+            width = lbl_8055FED0;
+            *(unsigned char *)((char *)texObj + 0x4C) = 1;
+            if (*(unsigned char *)((char *)texObj + 0x4C)) {
+                *(volatile int *)((char *)texObj + 0x44) = width / 2;
+                *(volatile int *)((char *)texObj + 0x48) = height / 2;
             } else {
-                *(volatile int *)((char *)obj + 0x44) = w;
-                *(volatile int *)((char *)obj + 0x48) = h;
+                *(volatile int *)((char *)texObj + 0x44) = width;
+                *(volatile int *)((char *)texObj + 0x48) = height;
             }
             {
-                int tw = *(volatile int *)((char *)obj + 0x44);
-                int th = *(volatile int *)((char *)obj + 0x48);
-                *(int *)((char *)obj + 0x40) = fn_8012850C(th * (tw * 2), lbl_8034CB5C);
+                int texWidth = *(volatile int *)((char *)texObj + 0x44);
+                int texHeight = *(volatile int *)((char *)texObj + 0x48);
+                *(int *)((char *)texObj + 0x40) = fn_8012850C(texHeight * (texWidth * 2), lbl_8034CB5C);
             }
-            GXInitTexObj(obj, *(void **)((char *)obj + 0x40), *(int *)((char *)obj + 0x44), *(int *)((char *)obj + 0x48), 4, 0, 0, 0);
-            GXInitTexObjFilter(obj, 1, 1);
-            *(unsigned char *)((char *)obj + 0x4D) = 0;
+            GXInitTexObj(texObj, *(void **)((char *)texObj + 0x40), *(int *)((char *)texObj + 0x44), *(int *)((char *)texObj + 0x48), 4, 0, 0, 0);
+            GXInitTexObjFilter(texObj, 1, 1);
+            *(unsigned char *)((char *)texObj + 0x4D) = 0;
         }
-        lbl_8055FED8 = obj;
+        lbl_8055FED8 = texObj;
     }
 }
 
