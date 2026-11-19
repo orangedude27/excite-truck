@@ -788,6 +788,7 @@ done:
     return physicsObj;
 }
 
+/* Empty stub. */
 void fn_80176BA8(void) {
 
 }
