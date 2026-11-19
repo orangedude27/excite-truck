@@ -2707,38 +2707,48 @@ enum {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline off
-void nw4hbm::snd::detail::AxVoice::SetLoopEnd(int arg1, const void *arg2, unsigned long arg3) {
+/* Queue the loop end of channel `channelIndex` at `sampleCount` samples into the
+ * stream that starts at `address` (snd_AxVoice.cpp:561).
+ * The address is first taken in the form the DSP sees it, then converted to the
+ * unit the voice's end-address register counts in for the stream's format
+ * (+0x118): 0 ADPCM - 4-bit units, a 14-sample frame being 16 of them plus a
+ * 2-unit header; 25 - 8-bit samples, one unit each; 10 - 16-bit samples, one
+ * unit per two bytes.  Every AX voice of the channel gets the new end, split
+ * into its 16-bit halves, and the AX_PBSYNC_END_ADDR bit queued so the next
+ * __AXSyncPBs hands it to the DSP - unless the voice is already resyncing its
+ * address group (AX_PBSYNC_ADDR), which would pick it up anyway. */
+void nw4hbm::snd::detail::AxVoice::SetLoopEnd(int channelIndex, const void *address, unsigned long sampleCount) {
     nw4hbm::ut::AutoInterruptLock lock;
     int format = *(int *)((char *)this + 0x118);
-    unsigned int value = (unsigned int)arg2;
-    unsigned int end;
-    if (arg2 != 0) value += 0x80000000;
-    end = 0;
+    unsigned int dspAddress = (unsigned int)address;
+    unsigned int endAddress;
+    if (address != 0) dspAddress += 0x80000000;
+    endAddress = 0;
     switch (format) {
     case 0:
-        end = (arg3 - 1) % 14 + value * 2 + ((arg3 - 1) / 14) * 16 + 2;
+        endAddress = (sampleCount - 1) % 14 + dspAddress * 2 + ((sampleCount - 1) / 14) * 16 + 2;
         break;
     case 25:
-        end = value + arg3 - 1;
+        endAddress = dspAddress + sampleCount - 1;
         break;
     case 10:
-        end = (value >> 1) + arg3 - 1;
+        endAddress = (dspAddress >> 1) + sampleCount - 1;
         break;
     default:
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438);
         break;
     }
-    unsigned int *voice = (unsigned int *)((char *)this + arg1 * 0x10);
-    unsigned int ch;
-    unsigned int hi = end >> 16;
-    unsigned int lo = end & 0xFFFF;
-    for (int i = 0; i < *(int *)((char *)this + 0x108); voice++, i++) {
-        ch = voice[3];
-        unsigned int inner = OSDisableInterrupts();
-        *(unsigned short *)(ch + 0x1B8) = hi;
-        *(unsigned short *)(ch + 0x1BA) = lo;
-        if (!(*(unsigned int *)(ch + 0x1C) & 0x800)) *(unsigned int *)(ch + 0x1C) |= 0x4000;
-        OSRestoreInterrupts(inner);
+    unsigned int *entry = (unsigned int *)((char *)this + channelIndex * 0x10);
+    AxVoicePB *vpb;
+    unsigned int endHi = endAddress >> 16;
+    unsigned int endLo = endAddress & 0xFFFF;
+    for (int i = 0; i < *(int *)((char *)this + 0x108); entry++, i++) {
+        vpb = (AxVoicePB *)entry[3];
+        unsigned int savedIrq = OSDisableInterrupts();
+        vpb->addr.endAddressHi = endHi;
+        vpb->addr.endAddressLo = endLo;
+        if (!(vpb->sync & AX_PBSYNC_ADDR)) vpb->sync |= AX_PBSYNC_END_ADDR;
+        OSRestoreInterrupts(savedIrq);
     }
 }
 #pragma pop
