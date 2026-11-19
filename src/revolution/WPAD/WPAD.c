@@ -5821,8 +5821,8 @@ void fn_80064740(s32 chan, s32 result) {
 void getGameInfo(s32 chan, s32 param_2, s32 param_3) {
     WPADCB* cb = lbl_8038F4F0[chan];
     u8* src = (u8*)cb->samplingBufSize;
-    u8 sum = 0;
     s32 i;
+    u8 sum = 0;
 
     if (param_2 == 0) {
         for (i = 0; i < 0x2F; i++) {
