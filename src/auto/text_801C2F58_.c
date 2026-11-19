@@ -205,10 +205,6 @@ f32 fn_801C2F58(s32 count, f32 factor) {
     return result;
 }
 #pragma scheduling on
-#pragma push
-#pragma processor 750
-#pragma ppc_psq_save off
-#pragma scheduling invalid_target
 void fn_801C2FF4(float *out, float *a, float *b, float weight) {
     float q[4], av[4], bv[4];
     mtx_to_quat((float (*)[3])a, av);
