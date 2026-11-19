@@ -3812,6 +3812,7 @@ void fn_8018BF5C(void) {
 
 }
 
+/* Empty stub (no operation). */
 void fn_8018BF60(void) {
 
 }
