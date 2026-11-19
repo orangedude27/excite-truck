@@ -186,8 +186,22 @@ void fn_80264098(void *item, int type) {
 }
 #pragma dont_inline off
 
+struct CreditsItemInit {
+    void *name;
+    int type;
+    void *data;
+    int a;
+    int b;
+};
+static inline void initCreditsItem(struct CreditsItemInit *item, void *name, int type, void *data) {
+    item->name = name;
+    item->type = type;
+    item->data = data;
+    item->a = 0;
+    item->b = 0;
+}
+
 #pragma push
-#pragma processor 750
 #pragma scheduling invalid_target
 void fn_802640A0(void *arg0) {
     struct CreditsMenuItem {
@@ -199,7 +213,7 @@ void fn_802640A0(void *arg0) {
     };
     struct CreditsMenuItem *item = (struct CreditsMenuItem *)arg0;
     item->name = &lbl_8055C458;
-    *(volatile int *)&item->type = 0x7b;
+    item->type = 0x7b;
     item->data = 0;
     item->a = 0;
     item->b = 0;
@@ -1226,7 +1240,7 @@ void fn_80265A74(void) {
     int t0, t1, t2, t3, t4;
     int v0, v2, v3, v4;
     int f1, f2;
-    register int c8 = 8;
+    int c8 = 8;
     int c0 = 0;
     int c2 = 2;
     int b8;
