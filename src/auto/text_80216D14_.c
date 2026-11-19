@@ -3,13 +3,14 @@
 extern float lbl_80563490;
 extern void fn_802E30C8(const char *, ...);
 struct Rec80216 { int w[12]; float f[3]; };
+#define CPYPAIR80216(DD, SS, I) { int b = ((int *)(SS))[(I) + 1]; int a = ((int *)(SS))[(I)]; ((int *)(DD))[(I)] = a; ((int *)(DD))[(I) + 1] = b; }
 #define CPYREC80216(DD, SS, SF) \
-    ((unsigned long long *)(DD))[0] = ((unsigned long long *)(SS))[0]; \
-    ((unsigned long long *)(DD))[1] = ((unsigned long long *)(SS))[1]; \
-    ((unsigned long long *)(DD))[2] = ((unsigned long long *)(SS))[2]; \
-    ((unsigned long long *)(DD))[3] = ((unsigned long long *)(SS))[3]; \
-    ((unsigned long long *)(DD))[4] = ((unsigned long long *)(SS))[4]; \
-    ((unsigned long long *)(DD))[5] = ((unsigned long long *)(SS))[5]; \
+    CPYPAIR80216(DD, SS, 0) \
+    CPYPAIR80216(DD, SS, 2) \
+    CPYPAIR80216(DD, SS, 4) \
+    CPYPAIR80216(DD, SS, 6) \
+    CPYPAIR80216(DD, SS, 8) \
+    CPYPAIR80216(DD, SS, 10) \
     ((float *)(DD))[12] = (SF)[12]; \
     ((float *)(DD))[13] = (SF)[13]; \
     ((float *)(DD))[14] = (SF)[14];
@@ -137,6 +138,7 @@ __declspec(section ".sdata") extern char lbl_8055B870[];
 void *fn_80216D40(void *arg0, char *arg1, int arg2, int arg3, int arg4, int arg5, int arg6) {
 #pragma scheduling invalid_target
     char *obj = (char *)arg0;
+    char zero = 0;
     *(int *)(obj + 0x454) = arg2;
     *(int *)(obj + 0x490) = arg6;
     *(int *)(obj + 0x458) = arg3;
@@ -173,8 +175,8 @@ void *fn_80216D40(void *arg0, char *arg1, int arg2, int arg3, int arg4, int arg5
     {
         char *p = obj + 0x46D;
         int i;
-        for (i = 0; i < 0x20; i++) p[i] = 0;
-        *(int *)(obj + 0x494) = 0;
+        for (i = 0; i < 0x20; i++) p[i] = zero;
+        *(int *)(obj + 0x494) = zero;
         *(int *)(obj + 0x498) = -1;
     }
     {
@@ -186,18 +188,18 @@ void *fn_80216D40(void *arg0, char *arg1, int arg2, int arg3, int arg4, int arg5
         float *sf = (float *)rec;
         for (iter = 0; iter < 5; iter++) {
             int *d;
-            d = (int *)(dest + 0x6A0); d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3]; d[4]=s[4]; d[5]=s[5]; d[6]=s[6]; d[7]=s[7]; d[8]=s[8]; d[9]=s[9]; d[10]=s[10]; d[11]=s[11]; ((float *)d)[12]=sf[12]; ((float *)d)[13]=sf[13]; ((float *)d)[14]=sf[14];
-            d = (int *)(dest + 0x6DC); d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3]; d[4]=s[4]; d[5]=s[5]; d[6]=s[6]; d[7]=s[7]; d[8]=s[8]; d[9]=s[9]; d[10]=s[10]; d[11]=s[11]; ((float *)d)[12]=sf[12]; ((float *)d)[13]=sf[13]; ((float *)d)[14]=sf[14];
-            d = (int *)(dest + 0x718); d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3]; d[4]=s[4]; d[5]=s[5]; d[6]=s[6]; d[7]=s[7]; d[8]=s[8]; d[9]=s[9]; d[10]=s[10]; d[11]=s[11]; ((float *)d)[12]=sf[12]; ((float *)d)[13]=sf[13]; ((float *)d)[14]=sf[14];
-            d = (int *)(dest + 0x754); d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3]; d[4]=s[4]; d[5]=s[5]; d[6]=s[6]; d[7]=s[7]; d[8]=s[8]; d[9]=s[9]; d[10]=s[10]; d[11]=s[11]; ((float *)d)[12]=sf[12]; ((float *)d)[13]=sf[13]; ((float *)d)[14]=sf[14];
+            d = (int *)(dest + 0x6A0); CPYREC80216(d, s, sf);
+            d = (int *)(dest + 0x6DC); CPYREC80216(d, s, sf);
+            d = (int *)(dest + 0x718); CPYREC80216(d, s, sf);
+            d = (int *)(dest + 0x754); CPYREC80216(d, s, sf);
             slot += 6;
-            d = (int *)(dest + 0x790); d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3]; d[4]=s[4]; d[5]=s[5]; d[6]=s[6]; d[7]=s[7]; d[8]=s[8]; d[9]=s[9]; d[10]=s[10]; d[11]=s[11]; ((float *)d)[12]=sf[12]; ((float *)d)[13]=sf[13]; ((float *)d)[14]=sf[14];
+            d = (int *)(dest + 0x790); CPYREC80216(d, s, sf);
             dest += 0x168;
         }
         {
             char *finalDest = obj + slot * 0x3C;
             int *d = (int *)(finalDest + 0x6A0);
-            d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3]; d[4]=s[4]; d[5]=s[5]; d[6]=s[6]; d[7]=s[7]; d[8]=s[8]; d[9]=s[9]; d[10]=s[10]; d[11]=s[11]; ((float *)d)[12]=sf[12]; ((float *)d)[13]=sf[13]; ((float *)d)[14]=sf[14];
+            CPYREC80216(d, s, sf);
             fn_8022EE98(s[10], finalDest);
         }
     }
