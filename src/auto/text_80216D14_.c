@@ -64,6 +64,7 @@ struct UiMenuGroup {
     unsigned char gap4[0x38];
     int entryCount;    /* 0x494: entries in the selection list below */
     int selectedKey;   /* 0x498: key of the selected entry, -1 for none (fn_8021818C) */
+    unsigned char gap5[4];
     struct UiMenuEntry entries[1]; /* 0x4A0: entryCount (key, widget) pairs, sorted by key */
 };
 
