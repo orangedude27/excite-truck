@@ -149,6 +149,13 @@ extern char lbl_80348798[];
 extern unsigned int lbl_8055F688;
  struct Fn8027F834List { void **items; int count; int pad[2]; };
  extern struct Fn8027F834List lbl_804B3048;
+struct Fn8027F958Global {
+    int fields[5];
+    char pad[0x4B];
+    struct Fn8027F834List list;
+    char pad2[0x18];
+    char name[0x90];
+};
  
 
 /* One entry of the ebi UI's record list: it shows the record its +0x60 child points at
