@@ -1277,6 +1277,7 @@ extern "C" void fn_800D6CA0(s32, s32);
 #pragma push
 #pragma opt_common_subs off
 #pragma inline_depth(5)
+#pragma auto_inline on
 extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
     StateNode_800D6CA0 *sentinel = (StateNode_800D6CA0 *)&lbl_8055DE08;
     u8 *self = *(u8 **)((u8 *)arg0 + 0x10);
