@@ -135,12 +135,6 @@ static inline float Chan_8018F2C0(unsigned char v) {
     t = (t > zero) ? t : zero;
     return -0.508f + t * 1.016f;
 }
-
-static inline float ChanB_8018F2C0(unsigned char v, float zero) {
-    float t = (1.0f < (((float)v - zero) / 255.0f)) ? 1.0f : (((float)v - zero) / 255.0f);
-    t = (t > zero) ? t : zero;
-    return -0.508f + t * 1.016f;
-}
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
