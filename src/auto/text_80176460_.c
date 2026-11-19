@@ -732,6 +732,7 @@ void fn_80176A34(s32 frameCount) {
     sFrameTime = FRAME_SECONDS * (f32)frameCount;
 }
 
+/* Step the physics fade ramp once for the current frame. */
 void fn_80176A6C(void) {
     fn_801771A8();
 }
