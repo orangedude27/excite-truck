@@ -14657,11 +14657,19 @@ static inline void fn_800BC538_setShort(Fn800BC538Obj *obj, s16 *thr, u8 *val) {
         obj->shortVal[k] = *val++;
     }
 }
+static inline void fn_800BC538_setShortT(Fn800BC538Obj *obj, Fn800BC538Tbl *t) {
+    s16 *thr = t->thr;
+    u8 *val = t->val;
+    s32 k;
+    for (k = 0; k < 12; k++) {
+        obj->shortThr[k] = thr[k];
+        obj->shortVal[k] = val[k];
+    }
+}
 #pragma push
 #pragma use_lmw_stmw on
-extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s16 *arg5, s16 *arg6, u8 *arg7, s16 arg_sp8) {
+ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s16 *arg5, s16 *arg6, u8 *arg7, s16 arg_sp8) {
     Fn800BC538Obj *obj = (Fn800BC538Obj *)arg0;
-    Fn800BC538Tbl *tbl = (Fn800BC538Tbl *)&lbl_8031BFA8;
     u8 *p;
     u8 *a;
     u8 *b;
@@ -14706,17 +14714,17 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s1
             s32 mode = obj->mode;
             obj->shortInit = 1;
             if (mode == 0 && obj->sub == 0) {
-                fn_800BC538_setShort(obj, tbl[0].thr, tbl[0].val);
+                fn_800BC538_setShort(obj, ((Fn800BC538Tbl *)&lbl_8031BFA8)[0].thr, ((Fn800BC538Tbl *)&lbl_8031BFA8)[0].val);
             } else if (mode == 0 && obj->sub == 1) {
-                fn_800BC538_setShort(obj, tbl[1].thr, tbl[1].val);
+                fn_800BC538_setShort(obj, ((Fn800BC538Tbl *)&lbl_8031BFA8)[1].thr, ((Fn800BC538Tbl *)&lbl_8031BFA8)[1].val);
             } else if (mode == 0 && obj->sub == 2) {
-                fn_800BC538_setShort(obj, tbl[2].thr, tbl[2].val);
+                fn_800BC538_setShort(obj, ((Fn800BC538Tbl *)&lbl_8031BFA8)[2].thr, ((Fn800BC538Tbl *)&lbl_8031BFA8)[2].val);
             } else if (mode == 1 && obj->sub == 0) {
-                fn_800BC538_setShort(obj, tbl[3].thr, tbl[3].val);
+                fn_800BC538_setShort(obj, ((Fn800BC538Tbl *)&lbl_8031BFA8)[3].thr, ((Fn800BC538Tbl *)&lbl_8031BFA8)[3].val);
             } else if (mode == 1 && obj->sub == 1) {
-                fn_800BC538_setShort(obj, tbl[4].thr, tbl[4].val);
+                fn_800BC538_setShort(obj, ((Fn800BC538Tbl *)&lbl_8031BFA8)[4].thr, ((Fn800BC538Tbl *)&lbl_8031BFA8)[4].val);
             } else {
-                fn_800BC538_setShort(obj, tbl[5].thr, tbl[5].val);
+                fn_800BC538_setShort(obj, ((Fn800BC538Tbl *)&lbl_8031BFA8)[5].thr, ((Fn800BC538Tbl *)&lbl_8031BFA8)[5].val);
             }
         }
         p = arg4;
@@ -14754,11 +14762,11 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s1
                 obj->mixVal[k] = (&lbl_80559258)[k];
             }
             if (sub == 0) {
-                fn_800BC538_setShort(obj, tbl[0].thr, tbl[0].val);
+                fn_800BC538_setShort(obj, ((Fn800BC538Tbl *)&lbl_8031BFA8)[0].thr, ((Fn800BC538Tbl *)&lbl_8031BFA8)[0].val);
             } else if (sub == 1) {
-                fn_800BC538_setShort(obj, tbl[1].thr, tbl[1].val);
+                fn_800BC538_setShort(obj, ((Fn800BC538Tbl *)&lbl_8031BFA8)[1].thr, ((Fn800BC538Tbl *)&lbl_8031BFA8)[1].val);
             } else {
-                fn_800BC538_setShort(obj, tbl[2].thr, tbl[2].val);
+                fn_800BC538_setShort(obj, ((Fn800BC538Tbl *)&lbl_8031BFA8)[2].thr, ((Fn800BC538Tbl *)&lbl_8031BFA8)[2].val);
             }
         } else {
             s16 sub = obj->sub;
@@ -14767,11 +14775,11 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s1
                 obj->mixVal[k] = (&lbl_80559268)[k];
             }
             if (sub == 0) {
-                fn_800BC538_setShort(obj, tbl[3].thr, tbl[3].val);
+                fn_800BC538_setShort(obj, ((Fn800BC538Tbl *)&lbl_8031BFA8)[3].thr, ((Fn800BC538Tbl *)&lbl_8031BFA8)[3].val);
             } else if (sub == 1) {
-                fn_800BC538_setShort(obj, tbl[4].thr, tbl[4].val);
+                fn_800BC538_setShort(obj, ((Fn800BC538Tbl *)&lbl_8031BFA8)[4].thr, ((Fn800BC538Tbl *)&lbl_8031BFA8)[4].val);
             } else {
-                fn_800BC538_setShort(obj, tbl[5].thr, tbl[5].val);
+                fn_800BC538_setShort(obj, ((Fn800BC538Tbl *)&lbl_8031BFA8)[5].thr, ((Fn800BC538Tbl *)&lbl_8031BFA8)[5].val);
             }
         }
     }
