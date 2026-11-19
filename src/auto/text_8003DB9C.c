@@ -1129,7 +1129,7 @@ typedef struct GPFifoCopy {
 } GPFifoCopy;
 #pragma push
 #pragma opt_pointer_aliasing on
-void GXSetGPFifo(unsigned int *fifo) {
+void GXSetGPFifo(unsigned int *__restrict fifo) {
     unsigned int a, b;
     unsigned int tmp;
     int intStatus;
@@ -2143,8 +2143,10 @@ void GXSetVtxAttrFmtv(s16 fmt, const GXVtxAttrFmtList *list) {
     for (; list->attr != 0xFF; list++) {
         int attr = *(volatile int *)&list->attr;
         unsigned char shift = list->shift;
-        int compType = list->compType;
-        int compCnt = list->compCnt;
+        int compCnt;
+        int compType;
+        compType = list->compType;
+        compCnt = list->compCnt;
 
         switch (attr) {
         case 9:
@@ -4860,7 +4862,7 @@ void __SetSURegs(s32 arg0, s32 arg1) {
 void __GXSetSUTexRegs(void) {
     unsigned int *gx = __GXData;
     unsigned int *g2;
-    char *tr;
+    unsigned int *tr;
     unsigned int count, i, limit, map, coord, word, off;
     if (gx[0x5E4 / 4] != 0xFF) {
         word = gx[0x254 / 4];
@@ -4880,18 +4882,19 @@ void __GXSetSUTexRegs(void) {
             if ((gx[0x5E4 / 4] & (1 << coord)) == 0) __SetSURegs(map, coord);
         }
         g2 = GXD;
-        tr = (char *)g2 + 0x150;
+        tr = (unsigned int *)((char *)g2 + 0x150);
         for (i = 0; i < limit; i++) {
             off = (i & ~1) << 1;
             map = g2[0x5A4 / 4 + i] & ~0x100;
-            if (i & 1) coord = (*(unsigned int *)(tr + off) >> 15) & 7;
-            else coord = (*(unsigned int *)(tr + off) >> 3) & 7;
+            if (i & 1) coord = (*(unsigned int *)((char *)tr + off) >> 15) & 7;
+            else coord = (*(unsigned int *)((char *)tr + off) >> 3) & 7;
             if (map != 0xFF && (gx[0x5E4 / 4] & (1 << coord)) == 0 && (g2[0x5E8 / 4] & (1 << i)) != 0)
                 __SetSURegs(map, coord);
         }
     }
 }
 
+#pragma optimization_level 4
 void __GXSetTmemConfig(s32 arg0) {
     volatile u8 *fifo8 = (volatile u8 *)0xCC008000;
     volatile u32 *fifo32 = (volatile u32 *)0xCC008000;
@@ -5003,8 +5006,7 @@ default_case:
 done:
     ;
 }
-
-#pragma dont_inline GXSetTevIndirect
+#pragma optimization_level reset
 /* Configures indirect texturing for a TEV stage by writing its indirect control register. */
 void GXSetTevIndirect(s32 tevStage, s32 indStage, s32 format, s32 biasSel, s32 matrixSel, s32 wrapS, s32 wrapT, s32 addPrev, u8 utcLod, s32 alphaSel) {
     u32 cmd = 0;
