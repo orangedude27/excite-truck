@@ -523,6 +523,8 @@ extern "C" void fn_80206A5C(void* arg0) {
     }
 }
 
+/* Sound module: empty entry point, the first of the three no-op stubs next to
+ * fn_80206B0C (see its comment). */
 extern "C" void fn_80206B08(void) {
 	return;
 }
