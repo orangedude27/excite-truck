@@ -1286,7 +1286,7 @@ static inline void SetTagProcessorLevel2_800D77DC(u8 *self, s32 arg1) {
     }
 }
 static inline void SetTagProcessorLevel1_800D77DC(u8 *self, s32 arg1) {
-    u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)self)->v1(), (StateNode_800D6CA0 *)&lbl_8055DE08) ? self : 0;
+    u8 *cast = DynCast_800D77DC(self);
     if (cast) *(s32 *)(cast + 0xF4) = arg1;
     for (StateNode_800D6CA0 *n = *(StateNode_800D6CA0 **)(self + 0x14); n != (StateNode_800D6CA0 *)(self + 0x14); n = n->next) {
         if (!n) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
