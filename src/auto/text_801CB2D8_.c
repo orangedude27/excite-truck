@@ -2041,6 +2041,7 @@ void fn_801CE6A4(Struct_801CE670 *out, s32 value1, s32 value2) {
     *out = node;
 }
 
+/* No-op stub. */
 void fn_801CE6CC(void) {
 
 }
