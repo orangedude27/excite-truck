@@ -5818,37 +5818,16 @@ void fn_80064740(s32 chan, s32 result) {
 }
 
 #pragma push
-#pragma opt_propagation off
 void getGameInfo(s32 chan, s32 param_2, s32 param_3) {
     WPADCB* cb = lbl_8038F4F0[chan];
     u8* src = (u8*)cb->samplingBufSize;
-    s32 sum = 0;
+    u8 sum = 0;
     s32 i;
-    s32 j;
-    s32 offset;
-    u8* p;
 
     if (param_2 == 0) {
-        offset = 0;
-        for (i = 0; i < 2; i++) {
-            for (j = 0; j < 3; j++) {
-                p = src + offset;
-                sum += src[offset];
-                sum += p[1];
-                sum += p[2];
-                sum += p[3];
-                sum += p[4];
-                sum += p[5];
-                sum += p[6];
-                offset += 7;
-            }
+        for (i = 0; i < 0x2F; i++) {
+            sum += src[i];
         }
-        sum += src[offset];
-        sum += src[offset + 1];
-        sum += src[offset + 2];
-        sum += src[offset + 3];
-        sum += src[offset + 4];
-
         if (src[0x2F] == (u8)(sum + 0x55)) {
             memcpy(cb, src, 0x38);
             *(s32*)((u8*)cb + (u8)param_3 * 4 + 0x38) = 0;
