@@ -82,6 +82,7 @@ void fn_801BD788(void) {
 
 }
 
+/* Empty constructor callback for massList (0xB0-byte body record) pool elements. */
 void fn_801BD78C(void) {
 
 }
