@@ -5,7 +5,6 @@ extern int lbl_8055FB08;
 extern float lbl_8055FB10;
 extern float lbl_80564E4C;
 int fn_8000D838(int *);
-static inline void setFB10_802C10E0(float v) { lbl_8055FB10 = v; }
 #pragma processor 750
 void fn_802C10E0(void) {
     fn_8000D838(&lbl_8055FB08);
