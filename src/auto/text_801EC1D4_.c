@@ -1119,7 +1119,7 @@ extern char lbl_8055AFFC[], lbl_8055B000[], lbl_8055B004[], lbl_8055B00C[];
 extern int fn_8012C33C(void *);
 extern void fn_80131818(void *);
 extern int fn_801E320C(int, int);
-extern void *fn_802C6C34(void);
+extern void *fn_802C6C34(int);
 extern void fn_80297988(void *);
 extern int fn_802002D4(int, int, int);
 extern int fn_801EF1F0(int);
