@@ -541,14 +541,14 @@ void fn_80253CA4(void *arg0, void *arg1, float *arg2, void *arg3) {
     u8 *sca = base;
     u8 *vecp = base;
     u8 *outp = base;
+    float res[3];
+    float t1[3];
     int ibuf[12];
     float *buf = (float *)ibuf;
     int rot1[9];
     int rot2[9];
     float pin1[3];
     float pin2[3];
-    float res[3];
-    float t1[3];
     float zero;
     float pi;
     int i;
@@ -1673,6 +1673,7 @@ scan58_test:
             fn_8025567C();
     }
 }
+#pragma cplusplus off
 
 #pragma push
 #pragma processor 750
