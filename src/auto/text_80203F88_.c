@@ -57,7 +57,13 @@ int fn_8020400C(void) {
     return 0;
 }
 
-void fn_80204014(void) {
+/* Notification sink that ignores everything it is handed.  The stage-object code
+ * forwards a notification to it as (message code, the notified object's
+ * resource-getter at +0x34, the sender's field at +0x19C, the sender itself)
+ * when that notification has no effect in this build: fn_801FB40C forwards
+ * straight here, and fn_801FC654 calls it through a three-argument function
+ * pointer with the global resource manager in place of the sender. */
+void fn_80204014(s32 code, s32 resourceGetter, s32 senderValue, void *sender) {
 
 }
 
