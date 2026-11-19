@@ -25422,16 +25422,21 @@ void fn_80095518(void *p_tle) {
     rfc_port_sm_execute(*(void **)((u8 *)p_tle + 0x10), 5, 0);
 }
 
+/* rfc_utils.c's rfc_sec_check_complete(): the Security Manager's callback for the
+ * RFCOMM port access check btm_sec_mx_access_request() started.  Hand the result
+ * to the port state machine, unless the port went away or is no longer waiting
+ * for the check.  (SDK: rfc_sec_check_complete(BD_ADDR bd_addr, void *p_ref_data,
+ * UINT8 res); the first argument is the checked device's BD ADDR and is unused.) */
 void rfc_sec_check_complete(void *bd_addr, void *p_ref_data, s8 res) {
     tPORT_VIEW *p_port = (tPORT_VIEW *)p_ref_data;
 
     /* Verify that PORT is still waiting for Security to complete */
     if (!p_port->in_use
-     || ((p_port->rfc_state != 2)
-      && (p_port->rfc_state != 3)))
+     || ((p_port->rfc_state != RFC_STATE_ORIG_WAIT_SEC_CHECK)
+      && (p_port->rfc_state != RFC_STATE_TERM_WAIT_SEC_CHECK)))
         return;
 
-    rfc_port_sm_execute(p_ref_data, 15, &res);
+    rfc_port_sm_execute(p_ref_data, RFC_EVENT_SEC_COMPLETE, &res);
 }
 
 void rfc_port_closed(void *arg0) {
