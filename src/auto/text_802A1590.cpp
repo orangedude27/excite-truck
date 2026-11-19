@@ -513,7 +513,6 @@ extern "C" f32 lbl_80564738, lbl_8056473C;
 #pragma scheduling invalid_target
 extern "C" void fn_802A1CC4(void) {
     u8 config[0x90];
-    const s32 zero = 0;
     void *name = lbl_803499E8;
     s32 enabled = ((lbl_8055D430 & 1) && (lbl_8055D430 & 8)) ? 1 : 0;
     if (enabled != 0) {
@@ -521,7 +520,7 @@ extern "C" void fn_802A1CC4(void) {
         *(int *)(config + 0x04) = 0x80;
         *(f32 *)(config + 0x08) = lbl_8056472C;
         *(f32 *)(config + 0x0C) = lbl_80564730;
-        *(int *)(config + 0x00) = zero;
+        *(int *)(config + 0x00) = 0;
         *(f32 *)(config + 0x10) = lbl_80564730;
         *(f32 *)(config + 0x14) = lbl_80564730;
         *(f32 *)(config + 0x18) = lbl_80564730;
@@ -541,7 +540,7 @@ extern "C" void fn_802A1CC4(void) {
         *(f32 *)(config + 0x64) = lbl_80564730;
         *(f32 *)(config + 0x74) = lbl_80564744;
         lbl_8055F870 = ((int (*)(void *, void *, void *, int, f32, f32, f32, f32, f32, f32))fn_8028E2F8)(
-            config, lbl_803499F4, name, zero,
+            config, lbl_803499F4, name, 0,
             lbl_80564740, lbl_8056473C, lbl_80564738,
             lbl_80564734, lbl_80564730, lbl_8056472C);
     } else {
@@ -1470,14 +1469,14 @@ extern "C" void* __dt__14CollisionSpaceFv_802A3D98(void* self, s32 shouldDelete)
 }
 
 extern "C" void fn_802A3DFC(void *arg0) {
-    f32 value = lbl_80564744;
+    register f32 value = 0.0f;
     u8 *cursor = (u8 *)arg0;
     s32 i = 0;
-    do {
+    while (i < ((s32 (*)(void))fn_80287B14)()) {
         *(f32 *)(cursor + 8) = value;
         cursor += 4;
         ++i;
-    } while (i < ((s32 (*)(void))fn_80287B14)());
+    }
 }
 
 extern "C" void fn_802A3E58(void *arg0, void *arg1, int arg2) {
