@@ -253,9 +253,31 @@ int fn_80288BF0(int arg0, int arg1, int arg2) {
                 }
             }
         } else {
-            frame[6] = matrix[6] * vector[2] + ((matrix[3] * vector[1]) + (matrix[0] * vector[0]));
-            frame[7] = matrix[7] * vector[2] + ((matrix[4] * vector[1]) + (matrix[1] * vector[0]));
-            frame[8] = matrix[8] * vector[2] + ((matrix[5] * vector[1]) + (matrix[2] * vector[0]));
+            float nv6, nv7, nv8;
+            nv6 = matrix[6];
+            {
+                float m6, m0, m3;
+                m3 = matrix[3];
+                m0 = matrix[0];
+                m6 = nv6;
+                frame[6] = (vector[2] * m6) + ((vector[0] * m0) + (vector[1] * m3));
+            }
+            nv7 = matrix[7];
+            {
+                float m7, m1, m4;
+                m4 = matrix[4];
+                m1 = matrix[1];
+                m7 = nv7;
+                frame[7] = (vector[2] * m7) + ((vector[0] * m1) + (vector[1] * m4));
+            }
+            nv8 = matrix[8];
+            {
+                float m8, m2, m5;
+                m5 = matrix[5];
+                m2 = matrix[2];
+                m8 = nv8;
+                frame[8] = (vector[2] * m8) + ((vector[0] * m2) + (vector[1] * m5));
+            }
         }
         t2 = frame[7];
         t1 = frame[8];
@@ -288,9 +310,31 @@ int fn_80288BF0(int arg0, int arg1, int arg2) {
                 }
             }
         } else {
-            frame[3] = matrix[6] * vector[2] + ((matrix[3] * vector[1]) + (matrix[0] * vector[0]));
-            frame[4] = matrix[7] * vector[2] + ((matrix[4] * vector[1]) + (matrix[1] * vector[0]));
-            frame[5] = matrix[8] * vector[2] + ((matrix[5] * vector[1]) + (matrix[2] * vector[0]));
+            float nv6, nv7, nv8;
+            nv6 = matrix[6];
+            {
+                float m6, m0, m3;
+                m3 = matrix[3];
+                m0 = matrix[0];
+                m6 = nv6;
+                frame[3] = (vector[2] * m6) + ((vector[0] * m0) + (vector[1] * m3));
+            }
+            nv7 = matrix[7];
+            {
+                float m7, m1, m4;
+                m4 = matrix[4];
+                m1 = matrix[1];
+                m7 = nv7;
+                frame[4] = (vector[2] * m7) + ((vector[0] * m1) + (vector[1] * m4));
+            }
+            nv8 = matrix[8];
+            {
+                float m8, m2, m5;
+                m5 = matrix[5];
+                m2 = matrix[2];
+                m8 = nv8;
+                frame[5] = (vector[2] * m8) + ((vector[0] * m2) + (vector[1] * m5));
+            }
         }
         t2 = frame[4];
         t1 = frame[5];
@@ -323,9 +367,31 @@ int fn_80288BF0(int arg0, int arg1, int arg2) {
                 }
             }
         } else {
-            frame[0] = matrix[6] * vector[2] + ((matrix[3] * vector[1]) + (matrix[0] * vector[0]));
-            frame[1] = matrix[7] * vector[2] + ((matrix[4] * vector[1]) + (matrix[1] * vector[0]));
-            frame[2] = matrix[8] * vector[2] + ((matrix[5] * vector[1]) + (matrix[2] * vector[0]));
+            float nv6, nv7, nv8;
+            nv6 = matrix[6];
+            {
+                float m6, m0, m3;
+                m3 = matrix[3];
+                m0 = matrix[0];
+                m6 = nv6;
+                frame[0] = (vector[2] * m6) + ((vector[0] * m0) + (vector[1] * m3));
+            }
+            nv7 = matrix[7];
+            {
+                float m7, m1, m4;
+                m4 = matrix[4];
+                m1 = matrix[1];
+                m7 = nv7;
+                frame[1] = (vector[2] * m7) + ((vector[0] * m1) + (vector[1] * m4));
+            }
+            nv8 = matrix[8];
+            {
+                float m8, m2, m5;
+                m5 = matrix[5];
+                m2 = matrix[2];
+                m8 = nv8;
+                frame[2] = (vector[2] * m8) + ((vector[0] * m2) + (vector[1] * m5));
+            }
         }
         t2 = frame[1];
         t1 = frame[2];
@@ -373,79 +439,80 @@ void fn_80289084(void *arg0) {
 extern float lbl_80564274, lbl_8056427C, lbl_80564280, lbl_80564284, lbl_80564288;
 extern float lbl_8056428C, lbl_80564290, lbl_80564294, lbl_80564298, lbl_8056429C;
 extern float lbl_805642A0, lbl_805642A4, lbl_805642A8, lbl_805642AC;
-int fn_80289154(int arg0) {
+/* Create the "light engine smoke" effect and store its handle at offset 0x60 of the smoke-effect slot object. */
+int fn_80289154(int smokeSlots) {
     fn_802897E0Frame frame;
-    register float f0;
-    register float f1;
-    register float f2;
-    register float f3;
-    register float f4;
-    register float f5;
-    register float f6;
-    register float f7;
-    register float f8;
-    register float f9;
-    register float f10;
-    register float f11;
-    register float f12;
-    register float f13;
-    register int size;
-    register int type;
+    register float negHalf;
+    register float onePointNine;
+    register float pointFour;
+    register float negPointFour;
+    register float negPointOne;
+    register float pointEight;
+    register float negPoint15;
+    register float three;
+    register float zero;
+    register float one;
+    register float pointNine;
+    register float half;
+    register float pointTwo;
+    register float onePointFive;
+    register int emitterCount;
+    register int effectType;
 
     fn_8028E61C((int *)&frame.sp20);
-    f9 = *(volatile float *)&lbl_8056428C;
-    size = 0x60;
-    f10 = *(volatile float *)&lbl_80564288;
-    type = 2;
-    f5 = *(volatile float *)&lbl_80564298;
-    f4 = *(volatile float *)&lbl_8056429C;
-    f13 = *(volatile float *)&lbl_8056427C;
-    f12 = *(volatile float *)&lbl_80564280;
-    f11 = *(volatile float *)&lbl_80564284;
-    f8 = *(volatile float *)&lbl_80564274;
-    f7 = *(volatile float *)&lbl_80564290;
-    f6 = *(volatile float *)&lbl_80564294;
-    f3 = *(volatile float *)&lbl_805642A0;
-    f2 = *(volatile float *)&lbl_805642A4;
-    f1 = *(volatile float *)&lbl_805642A8;
-    f0 = *(volatile float *)&lbl_805642AC;
+    one = *(volatile float *)&lbl_8056428C;
+    emitterCount = 0x60;
+    pointNine = *(volatile float *)&lbl_80564288;
+    effectType = 2;
+    pointEight = *(volatile float *)&lbl_80564298;
+    negPointOne = *(volatile float *)&lbl_8056429C;
+    onePointFive = *(volatile float *)&lbl_8056427C;
+    pointTwo = *(volatile float *)&lbl_80564280;
+    half = *(volatile float *)&lbl_80564284;
+    zero = *(volatile float *)&lbl_80564274;
+    three = *(volatile float *)&lbl_80564290;
+    negPoint15 = *(volatile float *)&lbl_80564294;
+    negPointFour = *(volatile float *)&lbl_805642A0;
+    pointFour = *(volatile float *)&lbl_805642A4;
+    onePointNine = *(volatile float *)&lbl_805642A8;
+    negHalf = *(volatile float *)&lbl_805642AC;
 
-    frame.sp24 = size;
-    frame.sp28 = f13;
-    frame.sp2C = f12;
-    frame.sp20 = type;
-    frame.sp68 = f11;
+    frame.sp24 = emitterCount;
+    frame.sp28 = onePointFive;
+    frame.sp2C = pointTwo;
+    frame.sp20 = effectType;
+    frame.sp68 = half;
     frame.sp64 = 5;
-    frame.sp14 = f10;
-    frame.sp18 = f10;
-    frame.sp1C = f10;
-    frame.sp30 = f10;
-    frame.sp34 = f10;
-    frame.sp38 = f10;
-    frame.sp8 = f9;
-    frame.spC = f9;
-    frame.sp10 = f9;
-    frame.sp3C = f9;
-    frame.sp40 = f9;
-    frame.sp44 = f9;
-    frame.sp48 = f8;
-    frame.sp4C = f7;
-    frame.sp50 = f6;
-    frame.sp54 = f9;
-    frame.sp90 = f5;
-    frame.sp88 = f5;
-    frame.sp80 = f5;
-    frame.sp94 = f4;
-    frame.sp8C = f4;
-    frame.sp84 = f4;
-    frame.sp78 = f3;
-    frame.sp7C = f2;
-    frame.sp70 = f1;
-    frame.sp74 = f5;
-    frame.sp98 = f0;
-    frame.sp9C = f9;
+    frame.sp14 = pointNine;
+    frame.sp18 = pointNine;
+    frame.sp1C = pointNine;
+    frame.sp30 = pointNine;
+    frame.sp34 = pointNine;
+    frame.sp38 = pointNine;
+    frame.sp8 = one;
+    frame.spC = one;
+    frame.sp10 = one;
+    frame.sp3C = one;
+    frame.sp40 = one;
+    frame.sp44 = one;
+    frame.sp48 = zero;
+    frame.sp4C = three;
+    frame.sp50 = negPoint15;
+    frame.sp54 = one;
+    frame.sp90 = pointEight;
+    frame.sp88 = pointEight;
+    frame.sp80 = pointEight;
+    frame.sp94 = negPointOne;
+    frame.sp8C = negPointOne;
+    frame.sp84 = negPointOne;
+    frame.sp78 = negPointFour;
+    frame.sp7C = pointFour;
+    frame.sp70 = onePointNine;
+    frame.sp74 = pointEight;
+    frame.sp98 = negHalf;
+    frame.sp9C = one;
 
-    return *(int *)((char *)arg0 + 0x60) =
+    return *(int *)((char *)smokeSlots + 0x60) =
         ((int (*)(int *, const char *, int))fn_8028E2F8)(
             (int *)&frame.sp20, (const char *)&lbl_80348AE8, lbl_8055C880);
 }
