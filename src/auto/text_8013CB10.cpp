@@ -14,8 +14,6 @@ extern "C" void fn_801CB648(s32, s32, f32);
 extern "C" f32 lbl_8056158C, lbl_80561590;
 extern "C" f32 lbl_80558DC4[];
 extern "C" u8 lbl_802F93B0[];
-static inline f32 fnMaxF(f32 a, f32 b) { return a < b ? b : a; }
-static inline f32 fnMinF(f32 a, f32 b) { return a > b ? b : a; }
 struct SubArray8013D2C4 {
     void **ptr;
     s32 count;
@@ -3542,7 +3540,8 @@ extern "C" f32 fn_801429E0(f32 a, f32 b) {
 }
 
 extern "C" f32 fabs(f32);
-#pragma dont_inline fn_8013CB3C
+#pragma push
+#pragma dont_inline off
 extern "C" void fn_801429F0(void *arg0) {
     u8 *p = (u8 *)arg0;
     *(f32 *)(p + 0xA4) = fn_8001DAE8(p + 0xA0);
@@ -3588,6 +3587,7 @@ extern "C" void fn_801429F0(void *arg0) {
 done:
     ;
 }
+#pragma pop
 extern "C" void fn_80142B60(void *arg0) {
     /* Mark a UI widget for refresh: raise the update flag at +0x49 and clear the two state bytes at +0x4A/+0x4B. */
     u8 *widget = (u8 *)arg0;
