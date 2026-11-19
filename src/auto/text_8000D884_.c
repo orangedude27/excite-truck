@@ -242,11 +242,13 @@ int fn_8000DC70(int identIndex) {
 #pragma push
 #pragma optimization_level reset
 #pragma dont_inline on
-void fn_8000DC84(int arg0) {
-    int *p;
-    int value;
-    int i;
-    switch (arg0) {
+void fn_8000DC84(int event) {
+    int *slotTable;
+    int slotState;
+    int slotIndex;
+    /* Handle IdentInfo events: select the current slot, reset slots, or
+     * update the state of each occupied slot. */
+    switch (event) {
     case 1:
         fn_8000D984(*lbl_8055D46C);
         break;
@@ -256,17 +258,17 @@ void fn_8000DC84(int arg0) {
     case 3:
         fn_8000DF2C(1);
     case 4:
-        value = 1;
-        for (i = 1; i < 20; i += 6) {
-            p = lbl_8055D46C;
-            if (p[i] != 0) p[i] = value;
+        slotState = 1;
+        for (slotIndex = 1; slotIndex < 20; slotIndex += 6) {
+            slotTable = lbl_8055D46C;
+            if (slotTable[slotIndex] != 0) slotTable[slotIndex] = slotState;
         }
         break;
     case 5:
-        value = 2;
-        for (i = 1; i < 20; i += 6) {
-            p = lbl_8055D46C;
-            if (p[i] != 0) p[i] = value;
+        slotState = 2;
+        for (slotIndex = 1; slotIndex < 20; slotIndex += 6) {
+            slotTable = lbl_8055D46C;
+            if (slotTable[slotIndex] != 0) slotTable[slotIndex] = slotState;
         }
         break;
     }
