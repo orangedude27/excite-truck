@@ -3127,6 +3127,7 @@ void fn_80164D38(void *menu) {
     *(u8 *)((char *)menu + 7) = 0;
 }
 
+/* Empty stub (no-op placeholder among the popup/menu helpers). */
 void fn_80164D58(void) {
 
 }
