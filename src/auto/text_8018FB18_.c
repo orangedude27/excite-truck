@@ -999,7 +999,13 @@ int fn_80190CD0(float a, float b, float c) {
     return (((int)(lbl_80562080 + (lbl_8056208C + (t * lbl_805620AC)))) >> 4) & 0xF;
 }
 #pragma scheduling on
-int fn_80190D38(float a, float b, float c) { float lower; float value; lower = lbl_80562090; value = (a - b) / (c - b); if (lower < value) { lower = value; } else { lower = lower; } if (lower > lbl_8056208C) { lower = lbl_8056208C; } else { lower = lower; } return (int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620AC))); }
+int fn_80190D38(float a, float b, float c) {
+    float lower = 1.0f;
+    float value = (a - b) / (c - b);
+    if (lower < value) { lower = lower; } else { lower = value; }
+    if (lower > lbl_8056208C) { lower = lower; } else { lower = lbl_8056208C; }
+    return (int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620AC)));
+}
 
 extern float lbl_805620B8;
 #pragma scheduling reset
