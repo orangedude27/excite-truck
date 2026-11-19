@@ -397,19 +397,20 @@ void fn_80193870(void *driver) {
 }
 
 void fn_80193878(void *arg0) {
+    register float zero = 0.0f;
     float a[3], b[3], low[3];
     void *obj;
-    a[0] = lbl_80562144;
-    a[1] = lbl_80562144;
-    a[2] = lbl_80562178;
-    low[0] = lbl_8056217C;
-    low[1] = lbl_80562144;
-    low[2] = lbl_80562144;
+    a[0] = zero;
+    a[1] = zero;
+    a[2] = 13350.0f;
+    low[0] = 10.0f;
+    low[1] = zero;
+    low[2] = zero;
     obj = *(void **)((unsigned char *)arg0 + 0x294);
     b[0] = *(float *)((unsigned char *)obj + 0x94) + low[0];
-    b[1] = *(float *)((unsigned char *)obj + 0x98) + low[2];
-    b[2] = *(float *)((unsigned char *)obj + 0x9C) + low[2];
-    fn_8017B4E0(*(void **)((unsigned char *)arg0 + 0x294), a, b, lbl_80562140);
+    b[1] = *(float *)((unsigned char *)obj + 0x98) + low[1];
+    b[2] = *(float *)((unsigned char *)obj + 0x9C) + low[1];
+    fn_8017B4E0(*(void **)((unsigned char *)arg0 + 0x294), a, b, 1.0f);
 }
 
 #pragma cplusplus on
@@ -898,10 +899,12 @@ extern float fn_801673A4(int, float *);
 float fn_801948B0(void *arg0, int arg1, float arg2) {
     float *f = (float *)arg0;
     float high = f[0x224/4];
-    float one = lbl_80562140;
-    float out = lbl_80562144;
+    register float one = 1.0f;
+    register float out = 0.0f;
     float lim[2];
     float t, current, value, adjust, scale, alt, weight, sample, a, b, factor;
+    float c184, v2e4, c1C0, v2cc, mul;
+    int flag;
     int mode;
     current = f[0x228/4];
     t = (f[0x26C/4] - f[0x22C/4]) / f[0x230/4];
@@ -909,20 +912,25 @@ float fn_801948B0(void *arg0, int arg1, float arg2) {
     factor = factor > lbl_80562144 ? factor : lbl_80562144;
     f[0x220/4] = current + factor * (high - current);
     weight = fn_801673A4(*(int *)((char *)arg0 + 0x290), &sample);
-    current = f[0x220/4];
-    f[0x220/4] = current + weight * (sample - current);
-    scale = lbl_8055E544 * ((lbl_80562184 * lbl_8055A488) * f[0x2E4/4]);
-    alt = (lbl_805621C0 * lbl_8055A488) * lbl_8055E568;
-    weight = fn_801931EC(arg2, f[0x2CC/4]);
+    c184 = lbl_80562184;
+    v2e4 = f[0x2E4/4];
+    c1C0 = lbl_805621C0;
+    v2cc = f[0x2CC/4];
+    f[0x220/4] = f[0x220/4] + weight * (sample - f[0x220/4]);
+    scale = lbl_8055E544 * ((c184 * lbl_8055A488) * v2e4);
+    alt = ((lbl_8055A488 * c1C0) * lbl_8055E568);
+    weight = fn_801931EC(arg2, v2cc);
+    flag = 1;
     mode = *(int *)((char *)arg0 + 0x268);
-    mode = (mode != 0 && mode != 3) ? 0 : 1;
-    if (mode) weight *= scale; else weight *= alt;
+    if (mode != 0 && mode != 3) flag = 0;
+    if (flag != 0) weight *= scale; else weight *= alt;
     adjust = lbl_80562144;
     if (arg1 && *((unsigned char *)arg0 + 0x14)) {
         value = f[2];
         t = weight * lbl_8056215C + (float)__fabs(value) - f[0x274/4];
         t = t > adjust ? t : adjust;
-        if (value > lbl_80562144) t *= lbl_80562140; else t *= -lbl_805621A4;
+        mul = (value > lbl_80562144) ? lbl_80562140 : -lbl_805621A4;
+        t = mul * t;
         adjust = t;
     }
     *(int *)&lim[0] = 0; *(int *)&lim[1] = 0;
@@ -1462,17 +1470,13 @@ void fn_80195B28(void *arg0, float arg1) {
     float value;
     float scale;
     unsigned int tableValue;
-    unsigned int expected = 0x180201u;
-    unsigned int d1, d2;
     int index;
     unsigned int selected;
 
     if (p[0x234 / 4] < p[0x26C / 4] || lbl_80562144 != arg1) {
         table = (float *)__AXFXGetLfoSinTable_801769CC();
         tableValue = *(unsigned int *)((char *)table + 4);
-        d1 = expected - tableValue;
-        d2 = tableValue - expected;
-        if ((d1 | d2) >> 31) {
+        if (((0x180201u - tableValue) | (tableValue - 0x180201u)) >> 31) {
             index = *(int *)((char *)arg0 + 0x268);
             selected = (unsigned int)__cntlzw(index - 1) >> 5;
             table = lbl_80333308;
@@ -1604,7 +1608,7 @@ struct Self_80195D80 {
     int f2c8;
     float f2cc;
 };
-#pragma opt_propagation reset
+#pragma opt_lifetimes off
 extern "C" void fn_80195D80(void *arg0, float arg1) {
     Self_80195D80 *self = (Self_80195D80 *)arg0;
     Obj_80195D80 *obj = ((Vt_80195D80 *)self->src)->v5();
@@ -1665,6 +1669,7 @@ extern "C" void fn_80195D80(void *arg0, float arg1) {
         fn_801353C4(self->f168, vec);
     }
 }
+#pragma opt_lifetimes reset
 extern "C" void fn_80135B9C(void *, void *, void *, void *, void *, float);
 extern "C" int fn_802E30C8(const char *, ...);
 void fn_80195F6C(void *arg0, void *arg1) {
@@ -1804,37 +1809,31 @@ void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, 
     float out0;
     int var_r0;
     temp_f5 = farg0 - farg1;
-    temp_f5 += lbl_80562230;
+    temp_f5 += 1.33333f;
     temp_f5 /= farg2;
     mag0 = __fabs((double)farg0);
     abs0 = (float)mag0;
-    if (abs0 < lbl_80562168) {
-        value0 = lbl_80562140;
-        value1 = lbl_80562144;
-        *arg1 = value0;
-        *arg0 = value1;
+    if (abs0 < 0.1f) {
+        *arg1 = 1.0f;
+        *arg0 = 0.0f;
         *arg2 = 0;
         return;
     }
-    if ((float)__fabs((double)farg1) < lbl_80562208)
+    if ((float)__fabs((double)farg1) < 0.444444f)
         goto direct_case;
     spC = farg1;
     sp8 = temp_f5;
     if ((int)(*(unsigned int *)&spC & 0x80000000U) != (int)(*(unsigned int *)&sp8 & 0x80000000U))
         goto different_sign;
 direct_case:
-    out1 = lbl_80562144;
-    out0 = (float)__fabs((double)temp_f5) / lbl_80562234;
-    *arg0 = out0;
-    *arg1 = out1;
+    *arg0 = (float)__fabs((double)temp_f5) / 4.905f;
+    *arg1 = 0.0f;
     goto finish;
 different_sign:
-    out0 = lbl_80562144;
-    out1 = (float)__fabs((double)temp_f5) / lbl_80562238;
-    *arg0 = out0;
-    *arg1 = out1;
+    *arg0 = 0.0f;
+    *arg1 = (float)__fabs((double)temp_f5) / 11.772f;
 finish:
-    if (farg0 > lbl_80562144)
+    if (farg0 > 0.0f)
         var_r0 = 1;
     else
         var_r0 = -1;
@@ -2658,13 +2657,13 @@ void fn_8019743C(void *p, void *arg1) {
     if(active) {
         fn_80198488(p);
         if(((u8 *)p)[0x74]) {
-            { float a=*(float *)((u8 *)p+0x84); float m=lbl_8056215C*a; float pos=*(float *)((u8 *)p+0x7c)+m; float margin=lbl_805621DC+lbl_8055A488; float pp=*(float *)((u8 *)p+0x278)+pos; limit=margin+pp; }
+            { float a=*(float *)((u8 *)p+0x84); float m=lbl_8056215C*a; float pos=m+*(float *)((u8 *)p+0x7c); float margin=lbl_805621DC+lbl_8055A488; float pp=*(float *)((u8 *)p+0x278)+pos; limit=margin+pp; }
             f=*(float *)((u8 *)p+0xc4);
             f = f>limit ? f : limit;
             *(float *)((u8 *)p+0xc4)=f;
         }
         if(((u8 *)p)[0x9c]) {
-            { float a=*(float *)((u8 *)p+0xac); float m=lbl_8056215C*a; float pos=*(float *)((u8 *)p+0xa4)+m; float margin=lbl_805621DC+lbl_8055A488; float pp=*(float *)((u8 *)p+0x278)+pos; limit=pp-margin; }
+            { float a=*(float *)((u8 *)p+0xac); float m=lbl_8056215C*a; float pos=m+*(float *)((u8 *)p+0xa4); float pp=*(float *)((u8 *)p+0x278)+pos; float margin=lbl_805621DC+lbl_8055A488; limit=pp-margin; }
             f=*(float *)((u8 *)p+0xc8);
             f = f<limit ? f : limit;
             *(float *)((u8 *)p+0xc8)=f;
@@ -3129,7 +3128,7 @@ void fn_80198530(void *arg0) {
     fn_801961FC(arg0);
 }
 
-#pragma dont_inline reset
+#pragma opt_common_subs off
 void *fn_80198DD0(void *arg0, int arg1) {
     struct Table {
         void *items[8];
@@ -3159,8 +3158,6 @@ void *fn_80198DD0(void *arg0, int arg1) {
     }
     return arg0;
 }
-
-#pragma dont_inline on
 /* If the racer registered at slotIndex is active, apply a random directional impulse to it. */
 void fn_80198E7C(int slotIndex) {
     void *racer = lbl_804349C0[slotIndex];
