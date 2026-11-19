@@ -41,7 +41,7 @@ typedef struct {
     s32 count;
 } Fn80231D84_Table;
 extern s32 lbl_8055F050;
-extern s8 lbl_8055F074;
+extern u8 lbl_8055F074;
 extern f32 lbl_80563690;
 extern void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4);
 extern void fn_80231D84(char *, void *, f32, f32, f32, f32, f32, f32, f32);
@@ -1837,7 +1837,6 @@ extern void fn_802C8BD0(s32);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802346C8(void) {
-#pragma scheduling on
 f32 f30 = lbl_80563688;
 f32 f31 = lbl_8056368C;
 f32 f28;
@@ -1866,7 +1865,9 @@ s32 code;
 s32 *queue;
 u8 *render;
 u8 *glyphs;
+
 s8 *end;
+
 object = (u8 *)lbl_8055F058;
 mode = (*(u8 **)(object + 8) != 0) + 1;
 goto outer_test;
@@ -1901,7 +1902,9 @@ glyphOffset = 0;
 goto name_test;
 name_body:
 glyphDef = *(u8 **)lbl_80497F14 + glyphOffset;
-if (fn_8002B1D8((const char *)(start + 1), (const char *)*(u8 **)glyphDef, strlen((const char *)*(u8 **)glyphDef)) == 0) {
+if (fn_8002B1D8((const char *)(start + 1),
+(const char *)*(u8 **)glyphDef,
+strlen((const char *)*(u8 **)glyphDef)) == 0) {
 queue = (s32 *)lbl_8049846C;
 f24 = lbl_8056368C;
 glyphIndex = queue[1];
@@ -1909,16 +1912,22 @@ render = *(u8 **)queue + glyphIndex * 0x1C;
 queue[1] = glyphIndex + 1;
 *(s32 *)render = nameIndex;
 if (*(s32 *)(glyphDef + 0x0C) != 0) {
-f24 = f28 / fn_80235F64(*(s32 *)(glyphDef + 0x0C), *(s32 *)(glyphDef + 0x10));
+f24 = f28 / fn_80235F64(*(s32 *)(glyphDef + 0x0C),
+*(s32 *)(glyphDef + 0x10));
 *(f32 *)(render + 0x10) = f28 * *(f32 *)(glyphDef + 4);
-*(f32 *)(render + 0x14) = f24 * *(f32 *)(glyphDef + 4) * fn_80235EF0(*(s32 *)(glyphDef + 0x0C), *(s32 *)(glyphDef + 0x10));
-f24 = *(f32 *)(glyphDef + 4) * (*(f32 *)(glyphDef + 0x18) * f24);
+*(f32 *)(render + 0x14) =
+f24 * *(f32 *)(glyphDef + 4) *
+fn_80235EF0(*(s32 *)(glyphDef + 0x0C),
+*(s32 *)(glyphDef + 0x10));
+f24 = *(f32 *)(glyphDef + 4) *
+(*(f32 *)(glyphDef + 0x18) * f24);
 } else {
 *(f32 *)(render + 0x14) = f28 * *(f32 *)(glyphDef + 4);
 *(f32 *)(render + 0x10) = f28 * *(f32 *)(glyphDef + 4);
 }
 *(f32 *)(render + 4) = f25;
-*(f32 *)(render + 8) = f27 + f30 * (*(f32 *)(render + 0x10) - f28);
+*(f32 *)(render + 8) =
+f27 + f30 * (*(f32 *)(render + 0x10) - f28);
 *(f32 *)(render + 0x0C) = f31;
 *(s32 *)(render + 0x18) = fontColor;
 if (&sp8 != 0) {
@@ -1943,7 +1952,8 @@ f25 += sp8;
 goto char_test;
 }
 if ((start[0] & 0xF0) == 0xE0) {
-decoded = ((start[0] & 0x0F) << 12) | ((start[1] & 0x3F) << 6) | (start[2] & 0x3F);
+decoded = ((start[0] & 0x0F) << 12) |
+((start[1] & 0x3F) << 6) | (start[2] & 0x3F);
 end = start + 3;
 } else if ((start[0] & 0xE0) == 0xC0) {
 decoded = ((start[0] & 0x1F) << 6) | (start[1] & 0x3F);
@@ -1958,10 +1968,14 @@ glyphs = *(u8 **)(object + 0x10);
 f25 += *(f32 *)(record + 0x54) * *(f32 *)(glyphs += glyphOffset);
 f24 = f25 + *(f32 *)(record + 0x50) * *(f32 *)(glyphs + 4);
 if (code != 0x20) {
-fn_802C8E00(*colorPtr, 0, f25, f27, lbl_8056368C, *(f32 *)(glyphs + 0x0C), *(f32 *)(glyphs + 0x10));
-fn_802C8E00(*colorPtr, 0, f24, f27, lbl_8056368C, *(f32 *)(glyphs + 0x14), *(f32 *)(glyphs + 0x10));
-fn_802C8E00(*colorPtr, 1, f25, f26, lbl_8056368C, *(f32 *)(glyphs + 0x0C), *(f32 *)(glyphs + 0x18));
-fn_802C8E00(*colorPtr, 1, f24, f26, lbl_8056368C, *(f32 *)(glyphs + 0x14), *(f32 *)(glyphs + 0x18));
+fn_802C8E00(*colorPtr, 0, f25, f27, lbl_8056368C,
+*(f32 *)(glyphs + 0x0C), *(f32 *)(glyphs + 0x10));
+fn_802C8E00(*colorPtr, 0, f24, f27, lbl_8056368C,
+*(f32 *)(glyphs + 0x14), *(f32 *)(glyphs + 0x10));
+fn_802C8E00(*colorPtr, 1, f25, f26, lbl_8056368C,
+*(f32 *)(glyphs + 0x0C), *(f32 *)(glyphs + 0x18));
+fn_802C8E00(*colorPtr, 1, f24, f26, lbl_8056368C,
+*(f32 *)(glyphs + 0x14), *(f32 *)(glyphs + 0x18));
 }
 charIndex += end - start;
 f25 += *(f32 *)(record + 0x50) * *(f32 *)(glyphs + 4);
