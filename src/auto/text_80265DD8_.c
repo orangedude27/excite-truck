@@ -24,6 +24,7 @@ typedef struct {
     float f1f0, f1f4;
     int w1f8, w1fc, w200, w204, w208, w20c, w210, w214, w218, w21c, w220, w224;
 } Rec2_80269BB0;
+#define COPYF(f) r.f = p->f
 extern void fn_8027445C(void *);
 extern void fn_80273BD0(void *);
 extern void fn_802704D4(int, void *);
@@ -1606,8 +1607,8 @@ struct InputVec {
 #pragma push
 #pragma processor 750
 void fn_80268BD4(void *out, int arg1, float t, float angle) {
-    struct InputVec *in = (struct InputVec *)arg1;
-    float *b = (float *)in->b;
+    float *inp = (float *)arg1;
+    float *b = *(float **)((char *)inp + 0x14);
     float vec[4];
     float rot[2];
     float x;
@@ -1621,12 +1622,17 @@ void fn_80268BD4(void *out, int arg1, float t, float angle) {
     float rotation;
     float cosine;
     float sine;
+    float d2, d3, d0, d1;
 
-    x = in->a[2] + t * (b[2] - in->a[2]);
-    y = in->a[3] + t * (b[3] - in->a[3]);
+    d2 = b[2] - inp[2];
+    d3 = b[3] - inp[3];
+    d0 = b[0] - inp[0];
+    d1 = b[1] - inp[1];
+    x = inp[2] + t * d2;
+    y = inp[3] + t * d3;
+    z = inp[0] + t * d0;
     sumSq = x * x + y * y;
-    z = in->a[0] + t * (b[0] - in->a[0]);
-    w = in->a[1] + t * (b[1] - in->a[1]);
+    w = inp[1] + t * d1;
     vec[0] = x;
     vec[1] = y;
     vec[2] = z;
@@ -1634,14 +1640,14 @@ void fn_80268BD4(void *out, int arg1, float t, float angle) {
 
     scale = lbl_80563C2C /
         (float)((double (*)(void *, float, float, float, float, float, float, float, float))fn_8002F234)(
-            out, sumSq, x * x, t * (b[1] - in->a[1]), z, in->a[0], in->a[1], y, x);
+            out, sumSq, x * x, t * d1, z, inp[0], inp[1], y, x);
     xScaled = vec[0] * scale;
     yScaled = vec[1] * scale;
     vec[0] = yScaled;
     vec[1] = -xScaled;
 
     *(float *)((char *)out + 0x28) = lbl_80563C20;
-    rotation = lbl_80563C8C * in->rest[4] - lbl_80563C90;
+    rotation = lbl_80563C8C * inp[10] - lbl_80563C90;
     rot[0] = vec[2] + yScaled * rotation;
     rot[1] = vec[3] + vec[1] * rotation;
     *(float *)((char *)out + 0x24) = rot[0];
