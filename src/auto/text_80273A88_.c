@@ -91,6 +91,7 @@ void fn_80273B48(void) {
 
 #pragma scheduling invalid_target
 /* Applies a conditional Y-axis rotation to this object's local transform when it has a linked object. */
+#pragma dont_inline fn_80273B4C
 void fn_80273B4C(void *arg0) {
     extern void fn_80015A20(void *, float *, float, float);
     extern void fn_80015B20(void *, void *, void *);
@@ -271,56 +272,76 @@ void fn_80273BD0(void *arg0) {
 }
 #pragma pop
 
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
+#pragma dont_inline fn_80273B4C
 void fn_80274268(void *arg0) {
     extern void fn_80274460(void *);
     extern void fn_80273B4C(void *);
-    extern float lbl_80563FB0, lbl_80563FE4, lbl_80563FE8, lbl_80563FEC;
-    Vec vector;
-    volatile Vec result;
+    struct MtxWords { unsigned int word[12]; };
+    struct TransformObj {
+        unsigned char pad0[0x58];
+        struct MtxWords mtx;
+        unsigned char pad1[0x20];
+        unsigned char pad2[0x18];
+        struct MtxWords srcMtx;
+    };
+    float x, y, z;
+    struct { Vec result; Vec offset; } work;
     char *state = *(char **)((char *)arg0 + 0x140);
     if (*(unsigned char *)(state + 0x260C) != 0) {
         fn_80274460(arg0);
         return;
     }
-    *(int *)((char *)arg0 + 0x58) = *(int *)((char *)arg0 + 0xC0);
-    *(int *)((char *)arg0 + 0x5C) = *(int *)((char *)arg0 + 0xC4);
-    *(int *)((char *)arg0 + 0x60) = *(int *)((char *)arg0 + 0xC8);
-    *(int *)((char *)arg0 + 0x64) = *(int *)((char *)arg0 + 0xCC);
-    *(int *)((char *)arg0 + 0x68) = *(int *)((char *)arg0 + 0xD0);
-    *(int *)((char *)arg0 + 0x6C) = *(int *)((char *)arg0 + 0xD4);
-    *(int *)((char *)arg0 + 0x70) = *(int *)((char *)arg0 + 0xD8);
-    *(int *)((char *)arg0 + 0x74) = *(int *)((char *)arg0 + 0xDC);
-    *(int *)((char *)arg0 + 0x78) = *(int *)((char *)arg0 + 0xE0);
-    *(int *)((char *)arg0 + 0x7C) = *(int *)((char *)arg0 + 0xE4);
-    *(int *)((char *)arg0 + 0x80) = *(int *)((char *)arg0 + 0xE8);
-    *(int *)((char *)arg0 + 0x84) = *(int *)((char *)arg0 + 0xEC);
-    vector.x = lbl_80563FB0;
-    vector.y = lbl_80563FE8;
-    vector.z = lbl_80563FEC + (*(float *)(state + 0x2458) - lbl_80563FE4);
-    if (&result == (volatile Vec *)&vector) {
-        float x = vector.x, y = vector.y, z = vector.z;
-        float m00 = *(float *)((char *)arg0 + 0x58), m10 = *(float *)((char *)arg0 + 0x64), m20 = *(float *)((char *)arg0 + 0x70);
-        float m01 = *(float *)((char *)arg0 + 0x5C), m11 = *(float *)((char *)arg0 + 0x68), m21 = *(float *)((char *)arg0 + 0x74);
-        float m02 = *(float *)((char *)arg0 + 0x60), m12 = *(float *)((char *)arg0 + 0x6C), m22 = *(float *)((char *)arg0 + 0x78);
-        result.x = z * m20 + (x * m00 + y * m10);
-        result.y = z * m21 + (x * m01 + y * m11);
-        result.z = z * m22 + (x * m02 + y * m12);
-    } else {
-        result.x = vector.x * *(float *)((char *)arg0 + 0x58) + vector.y * *(float *)((char *)arg0 + 0x64) + vector.z * *(float *)((char *)arg0 + 0x70);
-        result.y = vector.x * *(float *)((char *)arg0 + 0x5C) + vector.y * *(float *)((char *)arg0 + 0x68) + vector.z * *(float *)((char *)arg0 + 0x74);
-        result.z = vector.x * *(float *)((char *)arg0 + 0x60) + vector.y * *(float *)((char *)arg0 + 0x6C) + vector.z * *(float *)((char *)arg0 + 0x78);
+    ((struct TransformObj *)arg0)->mtx = ((struct TransformObj *)arg0)->srcMtx;
+    x = 0.0f;
+    y = 0.8f;
+    z = -0.1f + (*(float *)(state + 0x2458) - 1.397f);
+    work.offset.x = x;
+    work.offset.y = y;
+    work.offset.z = z;
+    {
+        float *vector;
+        float *result;
+        result = &work.result.x;
+        vector = &work.offset.x;
+        if (result == vector) {
+            float m00, m01, m02, m10, m11, m20, m21, m12, m22;
+            float o0, o1, o2;
+            m10 = *(float *)((char *)arg0 + 0x64);
+            m00 = *(float *)((char *)arg0 + 0x58);
+            m11 = *(float *)((char *)arg0 + 0x68);
+            m01 = *(float *)((char *)arg0 + 0x5C);
+            m12 = *(float *)((char *)arg0 + 0x6C);
+            m02 = *(float *)((char *)arg0 + 0x60);
+            m20 = *(float *)((char *)arg0 + 0x70);
+            m21 = *(float *)((char *)arg0 + 0x74);
+            m22 = *(float *)((char *)arg0 + 0x78);
+            o0 = z * m20 + (x * m00 + y * m10);
+            o1 = z * m21 + (x * m01 + y * m11);
+            o2 = z * m22 + (x * m02 + y * m12);
+            result[0] = o0;
+            result[1] = o1;
+            result[2] = o2;
+        } else {
+            float m00, m01, m02, m10, m11, m12, m20, m21, m22;
+            m10 = *(float *)((char *)arg0 + 0x64);
+            m00 = *(float *)((char *)arg0 + 0x58);
+            m20 = *(float *)((char *)arg0 + 0x70);
+            result[0] = vector[2] * m20 + (vector[0] * m00 + vector[1] * m10);
+            m11 = *(float *)((char *)arg0 + 0x68);
+            m01 = *(float *)((char *)arg0 + 0x5C);
+            m21 = *(float *)((char *)arg0 + 0x74);
+            result[1] = vector[2] * m21 + (vector[0] * m01 + vector[1] * m11);
+            m12 = *(float *)((char *)arg0 + 0x6C);
+            m02 = *(float *)((char *)arg0 + 0x60);
+            m22 = *(float *)((char *)arg0 + 0x78);
+            result[2] = vector[2] * m22 + (vector[0] * m02 + vector[1] * m12);
+        }
     }
-    *(float *)((char *)arg0 + 0x7C) += result.x;
-    *(float *)((char *)arg0 + 0x80) += result.y;
-    *(float *)((char *)arg0 + 0x84) += result.z;
+    *(float *)((char *)arg0 + 0x7C) += work.result.x;
+    *(float *)((char *)arg0 + 0x80) += work.result.y;
+    *(float *)((char *)arg0 + 0x84) += work.result.z;
     fn_80273B4C(arg0);
 }
-#pragma pop
-
-#pragma scheduling on
 void fn_8027445C(void) {
     extern void fn_80274268();
   extern void fn_80274460();
@@ -780,7 +801,7 @@ void fn_802750C4(void *object, float gain, float desired) {
 }
 #pragma processor 750
 void fn_802751AC(void *arg0, float angle) {
-    float axis[3], input[3], matrix[12];
+    float axis[3], input[3], matrix[16];
     float mag, scale, x, y, z, s, c, t;
     unsigned int *src = (unsigned int *)((char *)arg0 + 0xC0);
     unsigned int *dst = (unsigned int *)((char *)arg0 + 0x58);
