@@ -187,6 +187,28 @@ extern "C" void fn_801DFEB8(void *arg0, int arg1, int arg2, int arg3) {
 /* Return the vehicle stored in the car table (lbl_804348E8) at the given slot index. */
 int fn_801DFF08(int index) { return lbl_804348E8[index]; }
 
+/* One slip/skid instance: how far one vehicle's tyres have been sliding, and
+ * the sound zone and screen effect that slip has reached.  fn_801DFF1C sets one
+ * up, fn_801E02B0 clears them all and fn_801E0300 runs them once a frame. */
+struct SlipRecord {
+    float charge;           /* 0x00: 0.15..1.0, how strong the effect is */
+    float timer;            /* 0x04: when it was raised; < 0 while waiting */
+    unsigned char active;   /* 0x08: it has been raised */
+    char pad09[3];          /* 0x09 */
+    float elapsed;          /* 0x0C: seconds it has been running */
+    float slip;             /* 0x10: slip built up since it started */
+    unsigned char started;  /* 0x14: its sound has been started */
+    char pad15[3];          /* 0x15 */
+    int zone;               /* 0x18: sound zone that slip reached, -1 none */
+};
+
+/* The slip/skid manager built by fn_801DF6FC (the object in lbl_8055EA04):
+ * behind its first word, one slip record per vehicle of lbl_804348E8. */
+struct SlipManager {
+    void *vtable;               /* 0x00 */
+    struct SlipRecord entries[1]; /* 0x04: lbl_8055E4D0 of them */
+};
+
 void fn_801DFF1C(int arg0) {
     int index = arg0;
     char* entry = (char*)lbl_8055EA04 + index * 0x1C;
