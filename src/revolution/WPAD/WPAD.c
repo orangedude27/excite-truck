@@ -3709,9 +3709,16 @@ void fn_8005EEC4(s32 chan, s32 result) {
     OSRestoreInterrupts(enabled);
 }
 
+/* WPAD's retry callback for the first game-info block: when that read ends in a
+ * transfer error, queue the very same read of WM_ADDR_MEM_GAME_INFO_0 again,
+ * with this same callback on it, so WPAD keeps trying until the Wii Remote
+ * answers.  Every other result is ignored. */
 void fn_8005F0A8(s32 chan, s32 result) {
     WPADCB *cb = lbl_8038F4F0[chan];
     WPADCommandQueue *queue = &cb->stdCmdQueue;
+    /* the WPADCommand built here (at buf + 8) and the copy of it that the
+     * inlined WPADiPushCommand inserts (at buf + 0x38); the ring's front and
+     * back indices are the queue's first two bytes */
     u8 buf[0x68] ALIGN(8);
     s8 diff;
     BOOL enabled;
@@ -3723,32 +3730,39 @@ void fn_8005F0A8(s32 chan, s32 result) {
     s32 lastIndex;
     s32 wrapMask;
     if (result != WPAD_ERR_TRANSFER) return;
+    /* WPADiSendReadData(queue, read buffer, sizeof(WPADGameInfo),
+     * WM_ADDR_MEM_GAME_INFO_0, fn_8005F0A8) inlined: the command's report ID,
+     * payload length and callback, then its read address and length staged
+     * where the two memcpys below can take their addresses. */
     *(u32 *)&buf[4] = WM_ADDR_MEM_GAME_INFO_0;
     *(u16 *)&buf[0] = sizeof(WPADGameInfo);
-    *(u32 *)&buf[8] = RPTID_READ_DATA;
-    *(u16 *)&buf[0x22] = RPT17_SIZE;
-    *(u32 *)&buf[0x34] = (u32)fn_8005F0A8;
-    memcpy(&buf[0x0c], &buf[4], sizeof(u32));
-    memcpy(&buf[0x10], &buf[0], sizeof(u16));
+    *(u32 *)&buf[8] = RPTID_READ_DATA;                  /* command.reportID */
+    *(u16 *)&buf[0x22] = RPT17_SIZE;                    /* command.dataLength */
+    *(u32 *)&buf[0x34] = (u32)fn_8005F0A8;              /* command.cmdCB: retry here */
+    memcpy(&buf[0x0c], &buf[4], sizeof(u32));  /* command.dataBuf's read address */
+    memcpy(&buf[0x10], &buf[0], sizeof(u16));  /* command.dataBuf's read length */
     len = *(u16 *)&buf[0];
-    dst = (u32)((u8 *)cb + 0x874);
+    dst = (u32)((u8 *)cb + 0x874); /* command.dstBuf: cb's 0x40-byte Wii-memory read buffer */
     addr = *(u32 *)&buf[4];
-    *(u32 *)&buf[0x24] = dst;
+    *(u32 *)&buf[0x24] = dst;                           /* command.dstBuf */
     *(double *)&buf[0x38] = *(double *)&buf[8];
     *(double *)&buf[0x40] = *(double *)&buf[0x10];
     *(double *)&buf[0x48] = *(double *)&buf[0x18];
     *(double *)&buf[0x50] = *(double *)&buf[0x20];
-    *(u16 *)&buf[0x28] = len;
-    *(u32 *)&buf[0x2c] = addr;
+    *(u16 *)&buf[0x28] = len;                        /* command.readLength */
+    *(u32 *)&buf[0x2c] = addr;                       /* command.readAddress */
     *(double *)&buf[0x58] = *(double *)&buf[0x28];
     *(double *)&buf[0x60] = *(double *)&buf[0x30];
     enabled = OSDisableInterrupts();
+    /* WPADiPushCommand's "is the ring full?" test: back - front, wrapped by the
+     * capacity; one slot short of the capacity means full.  The queue's first
+     * two bytes are its front and back indices. */
     innerEnabled = OSDisableInterrupts();
     diff = (s8)(((u8 *)queue)[1] - ((u8 *)queue)[0]);
     if (diff < 0)
         diff = (s8)(diff + queue->capacity);
     OSRestoreInterrupts(innerEnabled);
-    if (queue->capacity - 1 == (u32)diff) {
+    if (queue->capacity - 1 == (u32)diff) { /* the command ring is full */
         OSRestoreInterrupts(enabled);
         return;
     }
@@ -3757,7 +3771,7 @@ void fn_8005F0A8(s32 chan, s32 result) {
     index = (s8)((u8 *)queue)[1];
     lastIndex = queue->capacity - 1;
     wrapMask = ~(((s32)index - lastIndex) | (lastIndex - (s32)index)) >> 31;
-    ((u8 *)queue)[1] = (index + 1) & ~wrapMask;
+    ((u8 *)queue)[1] = (index + 1) & ~wrapMask; /* back, wrapped at the capacity */
     OSRestoreInterrupts(enabled);
 }
 
@@ -4629,237 +4643,514 @@ u32 fn_80062460(s32 chan) {
 extern u8 lbl_802EE898[];
 extern u8 lbl_802EE8C8[];
 s32 fn_800624A4(s32 chan, s32 arg1, WPADCallback arg2) {
- u8 frame[0x420] ALIGN(8);
- register s32 channel asm("r31") = chan;
- register u32 value81C asm("r30");
- register WPADCallback callback asm("r28") = arg2;
- register u32 value778 asm("r26");
- register s32 status asm("r25");
- register WPADCB* p asm("r29") = lbl_8038F4F0[channel];
- register u32 arg asm("r27") = arg1;
- BOOL outerEnabled, enabled, nestedEnabled; s8 used, index; s32 lastIndex, wrapMask; u32 capacity;
- enabled = OSDisableInterrupts();
- value778 = *(u32*)((u8*)p + 0x778);
- status = *(s32*)((u8*)p + 0x7FC);
- value81C = *(u32*)((u8*)p + 0x81C);
- OSRestoreInterrupts(enabled);
- if (status == WPAD_ERR_NO_CONTROLLER) goto finish;
- if (value81C == 0) { status = -2; goto finish; }
- if (arg != 0) goto extended;
- if (value778 == 0) { status = 0; goto finish; }
- outerEnabled = OSDisableInterrupts(); nestedEnabled = OSDisableInterrupts();
- used = p->stdCmdQueue.back - p->stdCmdQueue.front;
- if (used < 0) used += p->stdCmdQueue.capacity;
- OSRestoreInterrupts(nestedEnabled); capacity = p->stdCmdQueue.capacity;
- if (used + 3 > p->stdCmdQueue.capacity - 1) goto queue_three_fail;
- {
-  WPADCommand* cmd = (WPADCommand*)(frame + 0x3C0); WPADCommand* copy = (WPADCommand*)(frame + 0x3F0);
-  *(u32*)cmd = 0x13; *((u8*)cmd + 4) = 0; cmd->dataLength = 1; cmd->cmdCB = NULL;
-  ((double*)copy)[0]=((double*)cmd)[0]; ((double*)copy)[1]=((double*)cmd)[1]; ((double*)copy)[2]=((double*)cmd)[2];
-  ((double*)copy)[3]=((double*)cmd)[3]; ((double*)copy)[4]=((double*)cmd)[4]; ((double*)copy)[5]=((double*)cmd)[5];
- }
- enabled = OSDisableInterrupts(); nestedEnabled = OSDisableInterrupts();
- used = p->stdCmdQueue.back - p->stdCmdQueue.front;
- if (used < 0) used += p->stdCmdQueue.capacity;
- OSRestoreInterrupts(nestedEnabled); capacity = p->stdCmdQueue.capacity;
- if (capacity - 1 == used) { OSRestoreInterrupts(enabled); } else {
-  memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
-  memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x3F0), sizeof(WPADCommand));
-  { register s32 ringIndex asm("r6") = p->stdCmdQueue.back; register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1; register s32 ringMask;
-    ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31; p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask; }
-  OSRestoreInterrupts(enabled);
- }
- {
-  WPADCommand* cmd = (WPADCommand*)(frame + 0x360); WPADCommand* copy = (WPADCommand*)(frame + 0x390);
-  *(u32*)cmd = 0x1A; *((u8*)cmd + 4) = 0; cmd->dataLength = 1; cmd->cmdCB = NULL;
-  ((double*)copy)[0]=((double*)cmd)[0]; ((double*)copy)[1]=((double*)cmd)[1]; ((double*)copy)[2]=((double*)cmd)[2];
-  ((double*)copy)[3]=((double*)cmd)[3]; ((double*)copy)[4]=((double*)cmd)[4]; ((double*)copy)[5]=((double*)cmd)[5];
- }
- enabled = OSDisableInterrupts(); nestedEnabled = OSDisableInterrupts();
- used = p->stdCmdQueue.back - p->stdCmdQueue.front;
- if (used < 0) used += p->stdCmdQueue.capacity;
- OSRestoreInterrupts(nestedEnabled); capacity = p->stdCmdQueue.capacity;
- if (capacity - 1 == used) { OSRestoreInterrupts(enabled); } else {
-  memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
-  memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x390), sizeof(WPADCommand));
-  { register s32 ringIndex asm("r6") = p->stdCmdQueue.back; register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1; register s32 ringMask;
-    ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31; p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask; }
-  OSRestoreInterrupts(enabled);
- }
- {
-  WPADCommand* cmd = (WPADCommand*)(frame + 0x300); WPADCommand* copy = (WPADCommand*)(frame + 0x330);
-  *(u32*)cmd = 0x15; *((u8*)cmd + 4) = 0; cmd->dataLength = 1; cmd->cmdCB = (WPADCallback)callback;
-  ((double*)copy)[0]=((double*)cmd)[0]; ((double*)copy)[1]=((double*)cmd)[1]; ((double*)copy)[2]=((double*)cmd)[2];
-  ((double*)copy)[3]=((double*)cmd)[3]; ((double*)copy)[4]=((double*)cmd)[4]; ((double*)copy)[5]=((double*)cmd)[5];
- }
- enabled = OSDisableInterrupts(); nestedEnabled = OSDisableInterrupts();
- used = p->stdCmdQueue.back - p->stdCmdQueue.front;
- if (used < 0) used += p->stdCmdQueue.capacity;
- OSRestoreInterrupts(nestedEnabled); capacity = p->stdCmdQueue.capacity;
- if (capacity - 1 == used) { OSRestoreInterrupts(enabled); } else {
-  memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
-  memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x330), sizeof(WPADCommand));
-  { register s32 ringIndex asm("r6") = p->stdCmdQueue.back; register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1; register s32 ringMask;
-    ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31; p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask; }
-  OSRestoreInterrupts(enabled);
- }
- OSRestoreInterrupts(outerEnabled); return 0;
+    u8 frame[0x420] ALIGN(8);
+    register s32 channel asm("r31") = chan;
+    register u32 value81C asm("r30");
+    register WPADCallback callback asm("r28") = arg2;
+    register u32 value778 asm("r26");
+    register s32 status asm("r25");
+    register WPADCB* p asm("r29") = lbl_8038F4F0[channel];
+    register u32 arg asm("r27") = arg1;
+    BOOL outerEnabled;
+    BOOL enabled;
+    BOOL nestedEnabled;
+    s8 used;
+    s8 index;
+    s32 lastIndex;
+    s32 wrapMask;
+    u32 capacity;
+
+    enabled = OSDisableInterrupts();
+    value778 = *(u32*)((u8*)p + 0x778);
+    status = *(s32*)((u8*)p + 0x7FC);
+    value81C = *(u32*)((u8*)p + 0x81C);
+    OSRestoreInterrupts(enabled);
+    if (status == WPAD_ERR_NO_CONTROLLER) goto finish;
+    if (value81C == 0) {
+        status = -2;
+        goto finish;
+    }
+    if (arg != 0) goto extended;
+    if (value778 == 0) {
+        status = 0;
+        goto finish;
+    }
+
+    outerEnabled = OSDisableInterrupts();
+    nestedEnabled = OSDisableInterrupts();
+    used = p->stdCmdQueue.back - p->stdCmdQueue.front;
+    if (used < 0) used += p->stdCmdQueue.capacity;
+    OSRestoreInterrupts(nestedEnabled);
+    capacity = p->stdCmdQueue.capacity;
+    if (used + 3 > p->stdCmdQueue.capacity - 1) goto queue_three_fail;
+
+    {
+        WPADCommand* cmd = (WPADCommand*)(frame + 0x3C0);
+        WPADCommand* copy = (WPADCommand*)(frame + 0x3F0);
+        *(u32*)cmd = 0x13;
+        *((u8*)cmd + 4) = 0;
+        cmd->dataLength = 1;
+        cmd->cmdCB = NULL;
+        ((double*)copy)[0] = ((double*)cmd)[0];
+        ((double*)copy)[1] = ((double*)cmd)[1];
+        ((double*)copy)[2] = ((double*)cmd)[2];
+        ((double*)copy)[3] = ((double*)cmd)[3];
+        ((double*)copy)[4] = ((double*)cmd)[4];
+        ((double*)copy)[5] = ((double*)cmd)[5];
+    }
+
+        enabled = OSDisableInterrupts();
+        nestedEnabled = OSDisableInterrupts();
+        used = p->stdCmdQueue.back - p->stdCmdQueue.front;
+        if (used < 0) used += p->stdCmdQueue.capacity;
+        OSRestoreInterrupts(nestedEnabled);
+        capacity = p->stdCmdQueue.capacity;
+        if (capacity - 1 == used) {
+            OSRestoreInterrupts(enabled);
+        } else {
+            memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
+            memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x3F0), sizeof(WPADCommand));
+            {
+                register s32 ringIndex asm("r6") = p->stdCmdQueue.back;
+                register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1;
+                register s32 ringMask;
+                ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31;
+                p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask;
+            }
+            OSRestoreInterrupts(enabled);
+        }
+
+
+    {
+        WPADCommand* cmd = (WPADCommand*)(frame + 0x360);
+        WPADCommand* copy = (WPADCommand*)(frame + 0x390);
+        *(u32*)cmd = 0x1A;
+        *((u8*)cmd + 4) = 0;
+        cmd->dataLength = 1;
+        cmd->cmdCB = NULL;
+        ((double*)copy)[0] = ((double*)cmd)[0];
+        ((double*)copy)[1] = ((double*)cmd)[1];
+        ((double*)copy)[2] = ((double*)cmd)[2];
+        ((double*)copy)[3] = ((double*)cmd)[3];
+        ((double*)copy)[4] = ((double*)cmd)[4];
+        ((double*)copy)[5] = ((double*)cmd)[5];
+    }
+
+        enabled = OSDisableInterrupts();
+        nestedEnabled = OSDisableInterrupts();
+        used = p->stdCmdQueue.back - p->stdCmdQueue.front;
+        if (used < 0) used += p->stdCmdQueue.capacity;
+        OSRestoreInterrupts(nestedEnabled);
+        capacity = p->stdCmdQueue.capacity;
+        if (capacity - 1 == used) {
+            OSRestoreInterrupts(enabled);
+        } else {
+            memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
+            memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x390), sizeof(WPADCommand));
+            {
+                register s32 ringIndex asm("r6") = p->stdCmdQueue.back;
+                register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1;
+                register s32 ringMask;
+                ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31;
+                p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask;
+            }
+            OSRestoreInterrupts(enabled);
+        }
+
+
+    {
+        WPADCommand* cmd = (WPADCommand*)(frame + 0x300);
+        WPADCommand* copy = (WPADCommand*)(frame + 0x330);
+        *(u32*)cmd = 0x15;
+        *((u8*)cmd + 4) = 0;
+        cmd->dataLength = 1;
+        cmd->cmdCB = (WPADCallback)callback;
+        ((double*)copy)[0] = ((double*)cmd)[0];
+        ((double*)copy)[1] = ((double*)cmd)[1];
+        ((double*)copy)[2] = ((double*)cmd)[2];
+        ((double*)copy)[3] = ((double*)cmd)[3];
+        ((double*)copy)[4] = ((double*)cmd)[4];
+        ((double*)copy)[5] = ((double*)cmd)[5];
+    }
+
+        enabled = OSDisableInterrupts();
+        nestedEnabled = OSDisableInterrupts();
+        used = p->stdCmdQueue.back - p->stdCmdQueue.front;
+        if (used < 0) used += p->stdCmdQueue.capacity;
+        OSRestoreInterrupts(nestedEnabled);
+        capacity = p->stdCmdQueue.capacity;
+        if (capacity - 1 == used) {
+            OSRestoreInterrupts(enabled);
+        } else {
+            memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
+            memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x330), sizeof(WPADCommand));
+            {
+                register s32 ringIndex asm("r6") = p->stdCmdQueue.back;
+                register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1;
+                register s32 ringMask;
+                ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31;
+                p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask;
+            }
+            OSRestoreInterrupts(enabled);
+        }
+
+    OSRestoreInterrupts(outerEnabled);
+    return 0;
+
 queue_three_fail:
- status = -2; OSRestoreInterrupts(outerEnabled); goto finish;
+    status = -2;
+    OSRestoreInterrupts(outerEnabled);
+    goto finish;
+
 extended:
- outerEnabled = OSDisableInterrupts(); nestedEnabled = OSDisableInterrupts();
- used = p->stdCmdQueue.back - p->stdCmdQueue.front;
- if (used < 0) used += p->stdCmdQueue.capacity;
- OSRestoreInterrupts(nestedEnabled); capacity = p->stdCmdQueue.capacity;
- if (used + 8 > p->stdCmdQueue.capacity - 1) goto queue_eight_fail;
+    outerEnabled = OSDisableInterrupts();
+    nestedEnabled = OSDisableInterrupts();
+    used = p->stdCmdQueue.back - p->stdCmdQueue.front;
+    if (used < 0) used += p->stdCmdQueue.capacity;
+    OSRestoreInterrupts(nestedEnabled);
+    capacity = p->stdCmdQueue.capacity;
+    if (used + 8 > p->stdCmdQueue.capacity - 1) goto queue_eight_fail;
 queue_eight:
- {
-  WPADCommand* cmd = (WPADCommand*)(frame + 0x2A0); WPADCommand* copy = (WPADCommand*)(frame + 0x2D0);
-  *(u32*)cmd = 0x13; *((u8*)cmd + 4) = 4; cmd->dataLength = 1; cmd->cmdCB = NULL;
-  ((double*)copy)[0]=((double*)cmd)[0]; ((double*)copy)[1]=((double*)cmd)[1]; ((double*)copy)[2]=((double*)cmd)[2];
-  ((double*)copy)[3]=((double*)cmd)[3]; ((double*)copy)[4]=((double*)cmd)[4]; ((double*)copy)[5]=((double*)cmd)[5];
- }
- enabled = OSDisableInterrupts(); nestedEnabled = OSDisableInterrupts();
- used = p->stdCmdQueue.back - p->stdCmdQueue.front;
- if (used < 0) used += p->stdCmdQueue.capacity;
- OSRestoreInterrupts(nestedEnabled); capacity = p->stdCmdQueue.capacity;
- if (capacity - 1 == used) { OSRestoreInterrupts(enabled); } else {
-  memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
-  memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x2D0), sizeof(WPADCommand));
-  { register s32 ringIndex asm("r6") = p->stdCmdQueue.back; register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1; register s32 ringMask;
-    ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31; p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask; }
-  OSRestoreInterrupts(enabled);
- }
- {
-  WPADCommand* cmd = (WPADCommand*)(frame + 0x240); WPADCommand* copy = (WPADCommand*)(frame + 0x270);
-  *(u32*)cmd = 0x1A; *((u8*)cmd + 4) = 4; cmd->dataLength = 1; cmd->cmdCB = NULL;
-  ((double*)copy)[0]=((double*)cmd)[0]; ((double*)copy)[1]=((double*)cmd)[1]; ((double*)copy)[2]=((double*)cmd)[2];
-  ((double*)copy)[3]=((double*)cmd)[3]; ((double*)copy)[4]=((double*)cmd)[4]; ((double*)copy)[5]=((double*)cmd)[5];
- }
- enabled = OSDisableInterrupts(); nestedEnabled = OSDisableInterrupts();
- used = p->stdCmdQueue.back - p->stdCmdQueue.front;
- if (used < 0) used += p->stdCmdQueue.capacity;
- OSRestoreInterrupts(nestedEnabled); capacity = p->stdCmdQueue.capacity;
- if (capacity - 1 == used) { OSRestoreInterrupts(enabled); } else {
-  memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
-  memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x270), sizeof(WPADCommand));
-  { register s32 ringIndex asm("r6") = p->stdCmdQueue.back; register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1; register s32 ringMask;
-    ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31; p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask; }
-  OSRestoreInterrupts(enabled);
- }
- {
-  WPADCommand* cmd = (WPADCommand*)(frame + 0x1E0); WPADCommand* copy = (WPADCommand*)(frame + 0x210);
-  *(u32*)cmd = 0x15; *((u8*)cmd + 4) = 0; cmd->dataLength = 1; cmd->cmdCB = NULL;
-  ((double*)copy)[0]=((double*)cmd)[0]; ((double*)copy)[1]=((double*)cmd)[1]; ((double*)copy)[2]=((double*)cmd)[2];
-  ((double*)copy)[3]=((double*)cmd)[3]; ((double*)copy)[4]=((double*)cmd)[4]; ((double*)copy)[5]=((double*)cmd)[5];
- }
- enabled = OSDisableInterrupts(); nestedEnabled = OSDisableInterrupts();
- used = p->stdCmdQueue.back - p->stdCmdQueue.front;
- if (used < 0) used += p->stdCmdQueue.capacity;
- OSRestoreInterrupts(nestedEnabled); capacity = p->stdCmdQueue.capacity;
- if (capacity - 1 == used) { OSRestoreInterrupts(enabled); } else {
-  memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
-  memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x210), sizeof(WPADCommand));
-  { register s32 ringIndex asm("r6") = p->stdCmdQueue.back; register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1; register s32 ringMask;
-    ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31; p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask; }
-  OSRestoreInterrupts(enabled);
- }
- { u32 addr = 0x04B00030; u8 firstByte = 1; u8 secondByte = 1;
-  WPADCommand* cmd = (WPADCommand*)(frame + 0x1B0); WPADCommand* copy = (WPADCommand*)(frame + 0x180);
-  *(u32*)cmd = 0x16; cmd->dataLength = 0x15; cmd->cmdCB = NULL;
-  memcpy((u8*)cmd + 4, &addr, 4); memcpy((u8*)cmd + 8, &firstByte, 1); memcpy((u8*)cmd + 9, &secondByte, 1);
-  ((double*)copy)[0]=((double*)cmd)[0]; ((double*)copy)[1]=((double*)cmd)[1]; ((double*)copy)[2]=((double*)cmd)[2];
-  ((double*)copy)[3]=((double*)cmd)[3]; ((double*)copy)[4]=((double*)cmd)[4]; ((double*)copy)[5]=((double*)cmd)[5];
- }
- enabled = OSDisableInterrupts(); nestedEnabled = OSDisableInterrupts();
- used = p->stdCmdQueue.back - p->stdCmdQueue.front;
- if (used < 0) used += p->stdCmdQueue.capacity;
- OSRestoreInterrupts(nestedEnabled); capacity = p->stdCmdQueue.capacity;
- if (capacity - 1 == used) { OSRestoreInterrupts(enabled); } else {
-  memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
-  memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x180), sizeof(WPADCommand));
-  { register s32 ringIndex asm("r6") = p->stdCmdQueue.back; register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1; register s32 ringMask;
-    ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31; p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask; }
-  OSRestoreInterrupts(enabled);
- }
- { s32 ix = lbl_8055DC19 - 1; u8* tableData = (u8*)lbl_802EE898 + ((ix << 3) + ix); u32 addr = 0x04B00000; u8 firstByte = 9;
-  WPADCommand* cmd = (WPADCommand*)(frame + 0x120); WPADCommand* copy = (WPADCommand*)(frame + 0x150);
-  *(u32*)cmd = 0x16; cmd->dataLength = 0x15; cmd->cmdCB = NULL;
-  memcpy((u8*)cmd + 4, &addr, 4); memcpy((u8*)cmd + 8, &firstByte, 1); memcpy((u8*)cmd + 9, tableData, 9);
-  ((double*)copy)[0]=((double*)cmd)[0]; ((double*)copy)[1]=((double*)cmd)[1]; ((double*)copy)[2]=((double*)cmd)[2];
-  ((double*)copy)[3]=((double*)cmd)[3]; ((double*)copy)[4]=((double*)cmd)[4]; ((double*)copy)[5]=((double*)cmd)[5];
- }
- enabled = OSDisableInterrupts(); nestedEnabled = OSDisableInterrupts();
- used = p->stdCmdQueue.back - p->stdCmdQueue.front;
- if (used < 0) used += p->stdCmdQueue.capacity;
- OSRestoreInterrupts(nestedEnabled); capacity = p->stdCmdQueue.capacity;
- if (capacity - 1 == used) { OSRestoreInterrupts(enabled); } else {
-  memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
-  memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x150), sizeof(WPADCommand));
-  { register s32 ringIndex asm("r6") = p->stdCmdQueue.back; register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1; register s32 ringMask;
-    ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31; p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask; }
-  OSRestoreInterrupts(enabled);
- }
- { s32 ix = lbl_8055DC19 - 1; u8* tableData = (u8*)lbl_802EE8C8 + (ix << 1); u32 addr = 0x04B0001A; u8 firstByte = 2;
-  WPADCommand* cmd = (WPADCommand*)(frame + 0xC0); WPADCommand* copy = (WPADCommand*)(frame + 0xF0);
-  *(u32*)cmd = 0x16; cmd->dataLength = 0x15; cmd->cmdCB = NULL;
-  memcpy((u8*)cmd + 4, &addr, 4); memcpy((u8*)cmd + 8, &firstByte, 1); memcpy((u8*)cmd + 9, tableData, 2);
-  ((double*)copy)[0]=((double*)cmd)[0]; ((double*)copy)[1]=((double*)cmd)[1]; ((double*)copy)[2]=((double*)cmd)[2];
-  ((double*)copy)[3]=((double*)cmd)[3]; ((double*)copy)[4]=((double*)cmd)[4]; ((double*)copy)[5]=((double*)cmd)[5];
- }
- enabled = OSDisableInterrupts(); nestedEnabled = OSDisableInterrupts();
- used = p->stdCmdQueue.back - p->stdCmdQueue.front;
- if (used < 0) used += p->stdCmdQueue.capacity;
- OSRestoreInterrupts(nestedEnabled); capacity = p->stdCmdQueue.capacity;
- if (capacity - 1 == used) { OSRestoreInterrupts(enabled); } else {
-  memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
-  memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0xF0), sizeof(WPADCommand));
-  { register s32 ringIndex asm("r6") = p->stdCmdQueue.back; register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1; register s32 ringMask;
-    ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31; p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask; }
-  OSRestoreInterrupts(enabled);
- }
- { u32 addr = 0x04B00033; u8 firstByte = 1; u8 secondByte = (u8)arg;
-  WPADCommand* cmd = (WPADCommand*)(frame + 0x90); WPADCommand* copy = (WPADCommand*)(frame + 0x60);
-  *(u32*)cmd = 0x16; cmd->dataLength = 0x15; cmd->cmdCB = NULL;
-  memcpy((u8*)cmd + 4, &addr, 4); memcpy((u8*)cmd + 8, &firstByte, 1); memcpy((u8*)cmd + 9, &secondByte, 1);
-  ((double*)copy)[0]=((double*)cmd)[0]; ((double*)copy)[1]=((double*)cmd)[1]; ((double*)copy)[2]=((double*)cmd)[2];
-  ((double*)copy)[3]=((double*)cmd)[3]; ((double*)copy)[4]=((double*)cmd)[4]; ((double*)copy)[5]=((double*)cmd)[5];
- }
- enabled = OSDisableInterrupts(); nestedEnabled = OSDisableInterrupts();
- used = p->stdCmdQueue.back - p->stdCmdQueue.front;
- if (used < 0) used += p->stdCmdQueue.capacity;
- OSRestoreInterrupts(nestedEnabled); capacity = p->stdCmdQueue.capacity;
- if (capacity - 1 == used) { OSRestoreInterrupts(enabled); } else {
-  memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
-  memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x60), sizeof(WPADCommand));
-  { register s32 ringIndex asm("r6") = p->stdCmdQueue.back; register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1; register s32 ringMask;
-    ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31; p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask; }
-  OSRestoreInterrupts(enabled);
- }
- { u32 addr = 0x04B00030; u8 firstByte = 1; u8 secondByte = 8;
-  WPADCommand* cmd = (WPADCommand*)(frame + 0x30); WPADCommand* copy = (WPADCommand*)(frame + 0x00);
-  *(u32*)cmd = 0x16; cmd->dataLength = 0x15; cmd->cmdCB = (WPADCallback)callback;
-  memcpy((u8*)cmd + 4, &addr, 4); memcpy((u8*)cmd + 8, &firstByte, 1); memcpy((u8*)cmd + 9, &secondByte, 1);
-  ((double*)copy)[0]=((double*)cmd)[0]; ((double*)copy)[1]=((double*)cmd)[1]; ((double*)copy)[2]=((double*)cmd)[2];
-  ((double*)copy)[3]=((double*)cmd)[3]; ((double*)copy)[4]=((double*)cmd)[4]; ((double*)copy)[5]=((double*)cmd)[5];
- }
- enabled = OSDisableInterrupts(); nestedEnabled = OSDisableInterrupts();
- used = p->stdCmdQueue.back - p->stdCmdQueue.front;
- if (used < 0) used += p->stdCmdQueue.capacity;
- OSRestoreInterrupts(nestedEnabled); capacity = p->stdCmdQueue.capacity;
- if (capacity - 1 == used) { OSRestoreInterrupts(enabled); } else {
-  memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
-  memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x00), sizeof(WPADCommand));
-  { register s32 ringIndex asm("r6") = p->stdCmdQueue.back; register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1; register s32 ringMask;
-    ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31; p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask; }
-  OSRestoreInterrupts(enabled);
- }
- OSRestoreInterrupts(outerEnabled); return 0;
+
+    {
+        WPADCommand* cmd = (WPADCommand*)(frame + 0x2A0);
+        WPADCommand* copy = (WPADCommand*)(frame + 0x2D0);
+        *(u32*)cmd = 0x13;
+        *((u8*)cmd + 4) = 4;
+        cmd->dataLength = 1;
+        cmd->cmdCB = NULL;
+        ((double*)copy)[0] = ((double*)cmd)[0];
+        ((double*)copy)[1] = ((double*)cmd)[1];
+        ((double*)copy)[2] = ((double*)cmd)[2];
+        ((double*)copy)[3] = ((double*)cmd)[3];
+        ((double*)copy)[4] = ((double*)cmd)[4];
+        ((double*)copy)[5] = ((double*)cmd)[5];
+    }
+
+        enabled = OSDisableInterrupts();
+        nestedEnabled = OSDisableInterrupts();
+        used = p->stdCmdQueue.back - p->stdCmdQueue.front;
+        if (used < 0) used += p->stdCmdQueue.capacity;
+        OSRestoreInterrupts(nestedEnabled);
+        capacity = p->stdCmdQueue.capacity;
+        if (capacity - 1 == used) {
+            OSRestoreInterrupts(enabled);
+        } else {
+            memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
+            memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x2D0), sizeof(WPADCommand));
+            {
+                register s32 ringIndex asm("r6") = p->stdCmdQueue.back;
+                register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1;
+                register s32 ringMask;
+                ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31;
+                p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask;
+            }
+            OSRestoreInterrupts(enabled);
+        }
+
+
+    {
+        WPADCommand* cmd = (WPADCommand*)(frame + 0x240);
+        WPADCommand* copy = (WPADCommand*)(frame + 0x270);
+        *(u32*)cmd = 0x1A;
+        *((u8*)cmd + 4) = 4;
+        cmd->dataLength = 1;
+        cmd->cmdCB = NULL;
+        ((double*)copy)[0] = ((double*)cmd)[0];
+        ((double*)copy)[1] = ((double*)cmd)[1];
+        ((double*)copy)[2] = ((double*)cmd)[2];
+        ((double*)copy)[3] = ((double*)cmd)[3];
+        ((double*)copy)[4] = ((double*)cmd)[4];
+        ((double*)copy)[5] = ((double*)cmd)[5];
+    }
+
+        enabled = OSDisableInterrupts();
+        nestedEnabled = OSDisableInterrupts();
+        used = p->stdCmdQueue.back - p->stdCmdQueue.front;
+        if (used < 0) used += p->stdCmdQueue.capacity;
+        OSRestoreInterrupts(nestedEnabled);
+        capacity = p->stdCmdQueue.capacity;
+        if (capacity - 1 == used) {
+            OSRestoreInterrupts(enabled);
+        } else {
+            memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
+            memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x270), sizeof(WPADCommand));
+            {
+                register s32 ringIndex asm("r6") = p->stdCmdQueue.back;
+                register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1;
+                register s32 ringMask;
+                ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31;
+                p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask;
+            }
+            OSRestoreInterrupts(enabled);
+        }
+
+
+    {
+        WPADCommand* cmd = (WPADCommand*)(frame + 0x1E0);
+        WPADCommand* copy = (WPADCommand*)(frame + 0x210);
+        *(u32*)cmd = 0x15;
+        *((u8*)cmd + 4) = 0;
+        cmd->dataLength = 1;
+        cmd->cmdCB = NULL;
+        ((double*)copy)[0] = ((double*)cmd)[0];
+        ((double*)copy)[1] = ((double*)cmd)[1];
+        ((double*)copy)[2] = ((double*)cmd)[2];
+        ((double*)copy)[3] = ((double*)cmd)[3];
+        ((double*)copy)[4] = ((double*)cmd)[4];
+        ((double*)copy)[5] = ((double*)cmd)[5];
+    }
+
+        enabled = OSDisableInterrupts();
+        nestedEnabled = OSDisableInterrupts();
+        used = p->stdCmdQueue.back - p->stdCmdQueue.front;
+        if (used < 0) used += p->stdCmdQueue.capacity;
+        OSRestoreInterrupts(nestedEnabled);
+        capacity = p->stdCmdQueue.capacity;
+        if (capacity - 1 == used) {
+            OSRestoreInterrupts(enabled);
+        } else {
+            memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
+            memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x210), sizeof(WPADCommand));
+            {
+                register s32 ringIndex asm("r6") = p->stdCmdQueue.back;
+                register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1;
+                register s32 ringMask;
+                ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31;
+                p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask;
+            }
+            OSRestoreInterrupts(enabled);
+        }
+
+
+    {
+        u32 addr = 0x04B00030;
+        u8 firstByte = 1;
+        u8 secondByte = 1;
+        WPADCommand* cmd = (WPADCommand*)(frame + 0x1B0);
+        WPADCommand* copy = (WPADCommand*)(frame + 0x180);
+        *(u32*)cmd = 0x16;
+        cmd->dataLength = 0x15;
+        cmd->cmdCB = NULL;
+        memcpy((u8*)cmd + 4, &addr, 4);
+        memcpy((u8*)cmd + 8, &firstByte, 1);
+        memcpy((u8*)cmd + 9, &secondByte, 1);
+        ((double*)copy)[0] = ((double*)cmd)[0];
+        ((double*)copy)[1] = ((double*)cmd)[1];
+        ((double*)copy)[2] = ((double*)cmd)[2];
+        ((double*)copy)[3] = ((double*)cmd)[3];
+        ((double*)copy)[4] = ((double*)cmd)[4];
+        ((double*)copy)[5] = ((double*)cmd)[5];
+    }
+
+        enabled = OSDisableInterrupts();
+        nestedEnabled = OSDisableInterrupts();
+        used = p->stdCmdQueue.back - p->stdCmdQueue.front;
+        if (used < 0) used += p->stdCmdQueue.capacity;
+        OSRestoreInterrupts(nestedEnabled);
+        capacity = p->stdCmdQueue.capacity;
+        if (capacity - 1 == used) {
+            OSRestoreInterrupts(enabled);
+        } else {
+            memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
+            memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x180), sizeof(WPADCommand));
+            {
+                register s32 ringIndex asm("r6") = p->stdCmdQueue.back;
+                register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1;
+                register s32 ringMask;
+                ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31;
+                p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask;
+            }
+            OSRestoreInterrupts(enabled);
+        }
+
+
+    {
+        s32 ix = lbl_8055DC19 - 1;
+        u8* tableData = (u8*)lbl_802EE898 + ((ix << 3) + ix);
+        u32 addr = 0x04B00000;
+        u8 firstByte = 9;
+        
+        WPADCommand* cmd = (WPADCommand*)(frame + 0x120);
+        WPADCommand* copy = (WPADCommand*)(frame + 0x150);
+        *(u32*)cmd = 0x16;
+        cmd->dataLength = 0x15;
+        cmd->cmdCB = NULL;
+        memcpy((u8*)cmd + 4, &addr, 4);
+        memcpy((u8*)cmd + 8, &firstByte, 1);
+        
+        memcpy((u8*)cmd + 9, tableData, 9);
+        ((double*)copy)[0] = ((double*)cmd)[0];
+        ((double*)copy)[1] = ((double*)cmd)[1];
+        ((double*)copy)[2] = ((double*)cmd)[2];
+        ((double*)copy)[3] = ((double*)cmd)[3];
+        ((double*)copy)[4] = ((double*)cmd)[4];
+        ((double*)copy)[5] = ((double*)cmd)[5];
+    }
+
+        enabled = OSDisableInterrupts();
+        nestedEnabled = OSDisableInterrupts();
+        used = p->stdCmdQueue.back - p->stdCmdQueue.front;
+        if (used < 0) used += p->stdCmdQueue.capacity;
+        OSRestoreInterrupts(nestedEnabled);
+        capacity = p->stdCmdQueue.capacity;
+        if (capacity - 1 == used) {
+            OSRestoreInterrupts(enabled);
+        } else {
+            memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
+            memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x150), sizeof(WPADCommand));
+            {
+                register s32 ringIndex asm("r6") = p->stdCmdQueue.back;
+                register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1;
+                register s32 ringMask;
+                ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31;
+                p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask;
+            }
+            OSRestoreInterrupts(enabled);
+        }
+
+
+    {
+        s32 ix = lbl_8055DC19 - 1;
+        u8* tableData = (u8*)lbl_802EE8C8 + (ix << 1);
+        u32 addr = 0x04B0001A;
+        u8 firstByte = 2;
+        
+        WPADCommand* cmd = (WPADCommand*)(frame + 0xC0);
+        WPADCommand* copy = (WPADCommand*)(frame + 0xF0);
+        *(u32*)cmd = 0x16;
+        cmd->dataLength = 0x15;
+        cmd->cmdCB = NULL;
+        memcpy((u8*)cmd + 4, &addr, 4);
+        memcpy((u8*)cmd + 8, &firstByte, 1);
+        
+        memcpy((u8*)cmd + 9, tableData, 2);
+        ((double*)copy)[0] = ((double*)cmd)[0];
+        ((double*)copy)[1] = ((double*)cmd)[1];
+        ((double*)copy)[2] = ((double*)cmd)[2];
+        ((double*)copy)[3] = ((double*)cmd)[3];
+        ((double*)copy)[4] = ((double*)cmd)[4];
+        ((double*)copy)[5] = ((double*)cmd)[5];
+    }
+
+        enabled = OSDisableInterrupts();
+        nestedEnabled = OSDisableInterrupts();
+        used = p->stdCmdQueue.back - p->stdCmdQueue.front;
+        if (used < 0) used += p->stdCmdQueue.capacity;
+        OSRestoreInterrupts(nestedEnabled);
+        capacity = p->stdCmdQueue.capacity;
+        if (capacity - 1 == used) {
+            OSRestoreInterrupts(enabled);
+        } else {
+            memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
+            memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0xF0), sizeof(WPADCommand));
+            {
+                register s32 ringIndex asm("r6") = p->stdCmdQueue.back;
+                register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1;
+                register s32 ringMask;
+                ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31;
+                p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask;
+            }
+            OSRestoreInterrupts(enabled);
+        }
+
+
+    {
+        u32 addr = 0x04B00033;
+        u8 firstByte = 1;
+        u8 secondByte = (u8)arg;
+        WPADCommand* cmd = (WPADCommand*)(frame + 0x90);
+        WPADCommand* copy = (WPADCommand*)(frame + 0x60);
+        *(u32*)cmd = 0x16;
+        cmd->dataLength = 0x15;
+        cmd->cmdCB = NULL;
+        memcpy((u8*)cmd + 4, &addr, 4);
+        memcpy((u8*)cmd + 8, &firstByte, 1);
+        memcpy((u8*)cmd + 9, &secondByte, 1);
+        
+        ((double*)copy)[0] = ((double*)cmd)[0];
+        ((double*)copy)[1] = ((double*)cmd)[1];
+        ((double*)copy)[2] = ((double*)cmd)[2];
+        ((double*)copy)[3] = ((double*)cmd)[3];
+        ((double*)copy)[4] = ((double*)cmd)[4];
+        ((double*)copy)[5] = ((double*)cmd)[5];
+    }
+
+        enabled = OSDisableInterrupts();
+        nestedEnabled = OSDisableInterrupts();
+        used = p->stdCmdQueue.back - p->stdCmdQueue.front;
+        if (used < 0) used += p->stdCmdQueue.capacity;
+        OSRestoreInterrupts(nestedEnabled);
+        capacity = p->stdCmdQueue.capacity;
+        if (capacity - 1 == used) {
+            OSRestoreInterrupts(enabled);
+        } else {
+            memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
+            memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x60), sizeof(WPADCommand));
+            {
+                register s32 ringIndex asm("r6") = p->stdCmdQueue.back;
+                register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1;
+                register s32 ringMask;
+                ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31;
+                p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask;
+            }
+            OSRestoreInterrupts(enabled);
+        }
+
+
+    {
+        u32 addr = 0x04B00030;
+        u8 firstByte = 1;
+        u8 secondByte = 8;
+        WPADCommand* cmd = (WPADCommand*)(frame + 0x30);
+        WPADCommand* copy = (WPADCommand*)(frame + 0x00);
+        *(u32*)cmd = 0x16;
+        cmd->dataLength = 0x15;
+        cmd->cmdCB = (WPADCallback)callback;
+        memcpy((u8*)cmd + 4, &addr, 4);
+        memcpy((u8*)cmd + 8, &firstByte, 1);
+        memcpy((u8*)cmd + 9, &secondByte, 1);
+        
+        ((double*)copy)[0] = ((double*)cmd)[0];
+        ((double*)copy)[1] = ((double*)cmd)[1];
+        ((double*)copy)[2] = ((double*)cmd)[2];
+        ((double*)copy)[3] = ((double*)cmd)[3];
+        ((double*)copy)[4] = ((double*)cmd)[4];
+        ((double*)copy)[5] = ((double*)cmd)[5];
+    }
+
+        enabled = OSDisableInterrupts();
+        nestedEnabled = OSDisableInterrupts();
+        used = p->stdCmdQueue.back - p->stdCmdQueue.front;
+        if (used < 0) used += p->stdCmdQueue.capacity;
+        OSRestoreInterrupts(nestedEnabled);
+        capacity = p->stdCmdQueue.capacity;
+        if (capacity - 1 == used) {
+            OSRestoreInterrupts(enabled);
+        } else {
+            memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
+            memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], (WPADCommand*)(frame + 0x00), sizeof(WPADCommand));
+            {
+                register s32 ringIndex asm("r6") = p->stdCmdQueue.back;
+                register s32 ringLimit asm("r4") = p->stdCmdQueue.capacity - 1;
+                register s32 ringMask;
+                ringMask = ~((ringIndex - ringLimit) | (ringLimit - ringIndex)) >> 31;
+                p->stdCmdQueue.back = (ringIndex + 1) & ~ringMask;
+            }
+            OSRestoreInterrupts(enabled);
+        }
+
+    OSRestoreInterrupts(outerEnabled);
+    return 0;
+
 queue_eight_fail:
- status = -2; OSRestoreInterrupts(outerEnabled); goto finish;
+    status = -2;
+    OSRestoreInterrupts(outerEnabled);
+    goto finish;
+
 finish:
- if (callback != NULL) ((void (*)(s32, s32))callback)(channel, status);
- return status;
+    if (callback != NULL) ((void (*)(s32, s32))callback)(channel, status);
+    return status;
 }
 extern const char lbl_803122F4[];
 void fn_80063324(s32 chan, WPADGameInfo *pCommand) {
