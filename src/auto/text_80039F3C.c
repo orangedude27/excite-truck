@@ -191,17 +191,15 @@ void __DVDPrintFatalMessage(void) {
     }
 }
 
+#pragma scheduling 750
 int doTransactionCallback(int arg0, void *arg1) {
     int result = arg0;
-    int (*callback)(int);
-
-    if (((unsigned int)*(unsigned int *)((char *)arg1 + 0xC) + 0x01150000) != 0xFEEBDAED) {
+    if (*(unsigned int *)((char *)arg1 + 0xC) != 0xFEEBDAED) {
         OSReport(lbl_80302848);
         *(unsigned int *)((char *)arg1 + 0xC) = 0xFEEBDAED;
     } else {
         lbl_8055D8E0 = 0;
-        callback = *(int (**)(int))arg1;
-        if (callback != 0) {
+        if (*(unsigned int *)arg1 != 0) {
             lbl_8055D8E1 = 1;
             if (lbl_8055D900 == 1) {
                 lbl_8055D900 = 0;
@@ -209,16 +207,14 @@ int doTransactionCallback(int arg0, void *arg1) {
             }
             if (result & 1) {
                 lbl_8055D8F4 = 0;
-                callback(result);
             }
+            ((int (*)(int))*(unsigned int *)arg1)(result);
             lbl_8055D8E1 = 0;
         }
     }
     *(unsigned char *)((char *)arg1 + 8) = 0;
     return 0;
 }
-
-#pragma scheduling 750
 /* DVD low-level cover-register callback: validates the context, updates flags, and invokes the registered callback. */
 int doPrepareCoverRegisterCallback(int result, void *context) {
     int status = result;
@@ -900,7 +896,7 @@ int fn_8003B508(int arg0, int arg1, int arg2)
   {
     lbl_8055D8E8 = 0;
   }
-  callbackEntry = ((unsigned char *) lbl_8037B820) + (slot * 0x20);
+  callbackEntry = ((unsigned char *) lbl_8037B820) + ((slot * 8) * 4);
   index = lbl_8055D8E4 + 1;
   lbl_8055D8E4 = index;
   if (index >= 4)
