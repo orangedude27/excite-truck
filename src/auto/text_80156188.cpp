@@ -264,7 +264,7 @@ s32 fn_801563BC(s32 nameArg, void *provider) {
 extern "C" void *fn_801284F8(s32, const char *);
 extern "C" void fn_8012E81C(void *);
 extern "C" void fn_802E317C(const char *, ...);
-extern "C" void *fn_801399FC(void);
+extern "C" void *fn_801399FC(void *);
 extern "C" u8 lbl_8032E238[];
 extern "C" u8 lbl_8032E424[];
 extern "C" u8 lbl_8032E3F8[];
@@ -303,7 +303,7 @@ extern "C" void fn_801564B0(void) {
         virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
         virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
         virtual void v20(); virtual void v21();
-        virtual s32 valid(s32);
+        virtual void *get(s32);
     };
     struct TextManager {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -414,15 +414,13 @@ extern "C" void fn_801564B0(void) {
             IndexReader *list = (IndexReader *)reader->open((const char *)base + 0x128);
             if (list != 0) {
                 s32 index = 0;
-                s32 oc;
-                goto list_test;
-                do {
-                    resource->objects[resource->objectCount++] = fn_801399FC();
+                void *item;
+                while ((item = list->get(index)) != 0 &&
+                       resource->objectCount + 1 <= resource->objectCapacity) {
+                    resource->objects[resource->objectCount++] =
+                        ((void *(*)(void *))fn_801399FC)(item);
                     index++;
-                list_test:
-                    if (list->valid(index) == 0) break;
-                    oc = resource->objectCount;
-                } while (1 + oc <= resource->objectCapacity);
+                }
             }
 
             {
@@ -671,10 +669,12 @@ extern "C" f32 lbl_80561744;
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" s32 fn_80156C84(void *arg0, s32 arg1) {
-    s32 off = arg1 * 8;
+    struct { s32 v; } offH; s32 &off = offH.v;
     f32 f31 = lbl_8055E3C8;
     u8 *element = (u8 *)arg0 + off;
     void *self = arg0;
+    off = arg1 * 8;
+    element = (u8 *)arg0 + off;
 
     if (f31 >= *(f32 *)(element + 0xE4)) {
         void *r29 = fn_8017960C(arg1);
