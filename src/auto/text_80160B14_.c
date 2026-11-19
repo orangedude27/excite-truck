@@ -65,6 +65,7 @@ float fn_80160C20(void) {
     return 5.0f;
 }
 
+/* Empty stub. */
 void fn_80160C28(void) {
 }
 extern float lbl_80561830;
