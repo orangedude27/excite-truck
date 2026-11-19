@@ -185,23 +185,7 @@ extern "C" float fn_8013A90C(void *arg0, int arg1, int arg2, float arg3) {
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8013AB08(float *skill_speed, int *entry) {
-    /* AI skill and speed for one opponent: skill_speed[0] = skill_range and
-     * skill_speed[1] = speed_factor, read from the contest/event tables.
-     *
-     * entry[0] indexes the scene records (fn_8001285C, 0x28 bytes each); the id
-     * at +4 of that record picks an event record (fn_80012820, 0x84 or 0x88
-     * bytes each).  The contest table is the scene record's +0x20 and the event
-     * table the event record's +0x80.  Each can supply the pair two ways:
-     * fn_8013A860 reads the plain "speed_factor"/"skill_range" elements, and
-     * fn_8013A9C0 interpolates them when the table has "easy_skill_range"
-     * (fn_8013B6C0 turns entry[3], the race stage, into the row/fraction pair
-     * that lerps between the "easy_"/"medium_"/"hard_" elements - fn_8013A90C).
-     * If none of the four lookups finds anything, fall back to the defaults
-     * (skill_range 0.05, speed_factor 1.5) and print the "no skill for this
-     * contest" warning.  Then, unless the fn_8027AA48 mode flag is set, the
-     * stage-scaled "srd" and "sfd" adjustments (skill-range and speed-factor
-     * deltas, 0.0 when the contest table has none) are added on. */
-    char *strings = lbl_8032C1A0;
+     char *strings = lbl_8032C1A0;
     void *contest_rec = fn_8001285C(*entry);
     void *event_rec = fn_80012820(*(int *)((char *)contest_rec + 4));
 
