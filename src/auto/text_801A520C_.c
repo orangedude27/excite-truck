@@ -792,35 +792,41 @@ extern float lbl_80562408;
 extern float lbl_8056240C;
 extern void fn_8017B3A8(void *, float *, float *);
 #pragma scheduling invalid_target
-extern "C" void fn_801A60E0(void *arg0, void *arg1) {
-    float sp14[3];
-    float sp8[3];
-    float f1;
-    float f0;
-    float f2;
-    char *p = (char *)arg1;
+/* Kick the vehicle straight up: adds a world-+Y force of controller->+4 to the
+ * rigid body's force/torque accumulators (fn_8017B3A8).  When the body's +0x124
+ * angle is past 15 degrees the force is applied at the body's centre pushed
+ * ahead along its +0x54 velocity by 2*(-0.1 - velocity.y), never backwards, so
+ * a kick lands further ahead the faster the vehicle is falling and pitches it
+ * instead of only lifting it. */
+extern "C" void fn_801A60E0(void *controller, void *body) {
+    float point[3];
+    float force[3];
+    float upForce;
+    float wanted;
+    float ahead;
+    char *b = (char *)body;
 
-    if (*(float *)(p + 0x124) > 0.2617994f) {
-        f0 = 2.0f * (-0.1f - *(float *)(p + 0x58));
-        f2 = 0.0f;
-        if (f2 > f0) {
-            f2 = f2;
+    if (*(float *)(b + 0x124) > 0.2617994f /* 15 degrees */) {
+        wanted = 2.0f * (-0.1f - *(float *)(b + 0x58));
+        ahead = 0.0f;
+        if (ahead > wanted) {
+            ahead = ahead;
         } else {
-            f2 = f0;
+            ahead = wanted;
         }
-        sp14[0] = *(float *)(p + 0x60) + *(float *)(p + 0x54) * f2;
-        sp14[1] = *(float *)(p + 0x64) + *(float *)(p + 0x58) * f2;
-        sp14[2] = *(float *)(p + 0x68) + *(float *)(p + 0x5C) * f2;
+        point[0] = *(float *)(b + 0x60) + *(float *)(b + 0x54) * ahead;
+        point[1] = *(float *)(b + 0x64) + *(float *)(b + 0x58) * ahead;
+        point[2] = *(float *)(b + 0x68) + *(float *)(b + 0x5C) * ahead;
     } else {
-        sp14[0] = *(float *)(p + 0x60);
-        sp14[1] = *(float *)(p + 0x64);
-        sp14[2] = *(float *)(p + 0x68);
+        point[0] = *(float *)(b + 0x60);
+        point[1] = *(float *)(b + 0x64);
+        point[2] = *(float *)(b + 0x68);
     }
-    f1 = *(float *)((char *)arg0 + 4);
-    sp8[0] = 0.0f;
-    sp8[1] = f1;
-    sp8[2] = 0.0f;
-    fn_8017B3A8(arg1, sp8, sp14);
+    upForce = *(float *)((char *)controller + 4);
+    force[0] = 0.0f;
+    force[1] = upForce;
+    force[2] = 0.0f;
+    fn_8017B3A8(body, force, point);
 }
 #pragma scheduling on
 extern void fn_801A60E0(void *, void *);
