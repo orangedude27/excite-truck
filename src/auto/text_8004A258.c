@@ -265,94 +265,36 @@ void ClearArena(void) {
 #pragma push
 #pragma scheduling invalid_target
 void ClearMEM2Arena(void) {
-    unsigned int reset = OSGetResetCode();
-    unsigned int base;
-    unsigned int flush;
-    unsigned int size;
+#define regionStart __OSRebootParams[3]
+#define regionEnd   __OSRebootParams[4]
+    void *keepEnd;
 
-    if ((reset >> 31) == 0) {
-        size = (unsigned int)OSGetMEM2ArenaHi();
-        size -= (unsigned int)OSGetMEM2ArenaLo();
-        base = (unsigned int)OSGetMEM2ArenaLo();
-        if (size <= 0x40000)
-            goto clear0_small;
-        flush = size - 0x40000;
-        flush = base + flush;
-        goto clear0_join;
-    clear0_small:
-        flush = base;
-    clear0_join:
-        DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000);
+    if ((OSGetResetCode() >> 31) == 0) {
+        ClearMEM2Range(OSGetMEM2ArenaLo(), (u32)OSGetMEM2ArenaHi() - (u32)OSGetMEM2ArenaLo());
         return;
     }
 
-    if (__OSRebootParams[3] == 0 ||
-        (__OSRebootParams[3] & 0x30000000) != 0x10000000) {
-        size = (unsigned int)OSGetMEM2ArenaHi();
-        size -= (unsigned int)OSGetMEM2ArenaLo();
-        base = (unsigned int)OSGetMEM2ArenaLo();
-        if (size <= 0x40000)
-            goto clear1_small;
-        flush = size - 0x40000;
-        flush = base + flush;
-        goto clear1_join;
-    clear1_small:
-        flush = base;
-    clear1_join:
-        DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000);
+    if (regionStart == 0 || (regionStart & 0x30000000) != 0x10000000) {
+        ClearMEM2Range(OSGetMEM2ArenaLo(), (u32)OSGetMEM2ArenaHi() - (u32)OSGetMEM2ArenaLo());
         return;
     }
 
-    if ((unsigned int)OSGetMEM2ArenaLo() >= __OSRebootParams[3])
+    if ((u32)OSGetMEM2ArenaLo() >= regionStart)
         return;
 
-    if ((unsigned int)OSGetMEM2ArenaHi() <= __OSRebootParams[3]) {
-        size = (unsigned int)OSGetMEM2ArenaHi();
-        size -= (unsigned int)OSGetMEM2ArenaLo();
-        base = (unsigned int)OSGetMEM2ArenaLo();
-        if (size <= 0x40000)
-            goto clear2_small;
-        flush = size - 0x40000;
-        flush = base + flush;
-        goto clear2_join;
-    clear2_small:
-        flush = base;
-    clear2_join:
-        DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000);
+    if ((u32)OSGetMEM2ArenaHi() <= regionStart) {
+        ClearMEM2Range(OSGetMEM2ArenaLo(), (u32)OSGetMEM2ArenaHi() - (u32)OSGetMEM2ArenaLo());
         return;
     }
 
-    size = __OSRebootParams[3] - (unsigned int)OSGetMEM2ArenaLo();
-    base = (unsigned int)OSGetMEM2ArenaLo();
-    if (size <= 0x40000)
-        goto clear3_small;
-    flush = size - 0x40000;
-    flush = base + flush;
-    goto clear3_join;
-clear3_small:
-    flush = base;
-clear3_join:
-    DCZeroRange((void *)base, size);
-    DCFlushRange(flush, 0x40000);
+    ClearMEM2Range(OSGetMEM2ArenaLo(), regionStart - (u32)OSGetMEM2ArenaLo());
 
-    base = __OSRebootParams[4];
-    if ((unsigned int)OSGetMEM2ArenaHi() > base) {
-        size = (unsigned int)OSGetMEM2ArenaHi();
-        size -= base;
-        if (size <= 0x40000)
-            goto clear4_small;
-        flush = size - 0x40000;
-        flush = base + flush;
-        goto clear4_join;
-    clear4_small:
-        flush = base;
-    clear4_join:
-        DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000);
+    keepEnd = (void *)regionEnd;
+    if ((u32)OSGetMEM2ArenaHi() > (u32)keepEnd) {
+        ClearMEM2Range(keepEnd, (u32)OSGetMEM2ArenaHi() - (u32)keepEnd);
     }
+#undef regionStart
+#undef regionEnd
 }
 #pragma pop
 #pragma push
@@ -376,8 +318,9 @@ extern const char lbl_80558F04[];
 extern const char lbl_80558F04[6];
 #pragma small_data on
 
+#pragma pool_strings off
 void ReportOSInfo_8004AA40(void) {
-    OSConsoleType_Report type;
+    u32 type;
     u32 tdev;
     u32 version;
     u32 builddate;
@@ -386,7 +329,7 @@ void ReportOSInfo_8004AA40(void) {
     OSReport("Kernel built : %s %s\n\0\0", "Sep 21 2006", "14:32:13\0\0\0");
 
     OSReport("Console Type : ");
-    type = (OSConsoleType_Report)OSGetConsoleType();
+    type = OSGetConsoleType();
     switch (type & OS_CONSOLE_MASK) {
     case OS_CONSOLE_MASK_RVL:
         switch (type) {
@@ -456,9 +399,7 @@ void ReportOSInfo_8004AA40(void) {
     OSReport("MEM1 Arena : 0x%x - 0x%x\n\0\0", OSGetMEM1ArenaLo(), OSGetMEM1ArenaHi());
     OSReport("MEM2 Arena : 0x%x - 0x%x\n", OSGetMEM2ArenaLo(), OSGetMEM2ArenaHi());
 }
-
-#pragma push
-#pragma small_data on
+#pragma pool_strings on
 extern BOOL AreWeInitialized_8055D9CC;
 extern u32 BI2DebugFlagHolder_8055D9F0;
 extern u32* BI2DebugFlag_8055D9F4;
