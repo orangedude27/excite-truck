@@ -9249,7 +9249,6 @@ void fn_80126018(void *arg0, BitReader8011 *arg1) {
     }
 }
 
-#define CHKSTORE8011(S) do { if (var_r30 == arg2) { var_r30 += 1; S; goto done; } var_r30 += 1; S; } while (0)
 #define RB8011(out) do { \
     if (var_r27 == 0) { \
         (out) = *(const u32 *)var_r29; \
