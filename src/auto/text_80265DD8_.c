@@ -1360,6 +1360,10 @@ void fn_802682B0(void *object) {
     *(float *)(p + 0xbc) = lbl_8055F47C;
 }
 
+#pragma push
+#pragma processor 750
+#pragma ppc_psq_save off
+#pragma scheduling invalid_target
 void fn_80268358(void *arg0) {
     struct Obj {
         int w0;
