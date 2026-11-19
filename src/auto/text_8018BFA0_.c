@@ -130,9 +130,9 @@ typedef struct { char b[0x290]; } Blob290_8018;
 typedef struct { float a, b; int c, d; unsigned char e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17; } Blob22_8018;
 extern float lbl_80561F78, lbl_80561F7C, lbl_80561F80, lbl_80561F84;
 static inline float Chan_8018F2C0(unsigned char v) {
-    float t = (lbl_80561F88 < (((float)v - lbl_80561F74) / lbl_80562038)) ? lbl_80561F88 : (((float)v - lbl_80561F74) / lbl_80562038);
-    t = (t > lbl_80561F74) ? t : lbl_80561F74;
-    return lbl_8056203C + t * lbl_80562040;
+    float t = (1.0f < (((float)v - 0.0f) / 255.0f)) ? 1.0f : (((float)v - 0.0f) / 255.0f);
+    t = (t > 0.0f) ? t : 0.0f;
+    return -0.508f + t * 1.016f;
 }
 #pragma dont_inline on
 #pragma scheduling invalid_target
@@ -663,15 +663,17 @@ void fn_8018CB3C(char *arg0) {
 extern float lbl_80561FC8, lbl_80561FCC, lbl_80561FD8, lbl_80561FDC, lbl_80561FE0, lbl_80561FE4, lbl_80561FE8, lbl_8055E460;
 extern float lbl_80561FD0, lbl_80561FD4, lbl_80558DC4;
 void fn_8018DA5C(char *arg0, char *arg1) {
-    int n; float *v = (float *)(arg0 + 0xd94); char *out = arg1; char *p = arg0;
-    float smooth=0.8f, inv=0.2f;
+    char *p = arg0; float *v = (float *)(arg0 + 0xd94); char *out = arg1; int n;
+    float inv=lbl_80561FCC;
+    float rx, ry, rz;
+    float smooth=lbl_80561FC8;
     for (n=0; n < M2C_FIELD(arg0,int*,0x5f8); n++) {
-        float x = M2C_FIELD(p,float*,0xd94) * smooth;
-        float y = M2C_FIELD(p,float*,0xd98) * smooth;
-        float z = M2C_FIELD(p,float*,0xd9c) * smooth;
-        M2C_FIELD(p,float*,0xd94) = x + M2C_FIELD(p,float*,0x5fc) * inv;
-        M2C_FIELD(p,float*,0xd98) = y + M2C_FIELD(p,float*,0x600) * inv;
-        M2C_FIELD(p,float*,0xd9c) = z + M2C_FIELD(p,float*,0x604) * inv;
+        rx = M2C_FIELD(p,float*,0xd94) * smooth;
+        ry = M2C_FIELD(p,float*,0xd98) * smooth;
+        rz = M2C_FIELD(p,float*,0xd9c) * smooth;
+        M2C_FIELD(p,float*,0xd94) = rx + M2C_FIELD(p,float*,0x5fc) * inv;
+        M2C_FIELD(p,float*,0xd98) = ry + M2C_FIELD(p,float*,0x600) * inv;
+        M2C_FIELD(p,float*,0xd9c) = rz + M2C_FIELD(p,float*,0x604) * inv;
         p += 12;
         M2C_FIELD(out,float*,0x2e0)=v[0]; M2C_FIELD(out,float*,0x2e4)=v[1]; M2C_FIELD(out,float*,0x2e8)=v[2];
         v+=3; out+=12;
@@ -686,7 +688,8 @@ void fn_8018DA5C(char *arg0, char *arg1) {
         mult=0.5f*f;
         out=arg1+12;
         for (n=1;n<M2C_FIELD(arg0,int*,0x5f8);n++,out+=12) {
-            float x,y,z,dist,t;
+            volatile float x,y,z;
+            float dist,t;
             char *entry=M2C_FIELD(arg0,char**,0x26c)+n*0x34;
             float ex=M2C_FIELD(entry,float*,0x20), ey=M2C_FIELD(entry,float*,0x24), ez=M2C_FIELD(entry,float*,0x28);
             dist=(float)fabs(ez);
