@@ -57,16 +57,14 @@ extern s32 lbl_8055EE38;
 #pragma scheduling invalid_target
 #pragma push
 #pragma processor 750
-#pragma ctrloop on
-#pragma unroll off
 void fn_8020C140(void) {
+    f32 factor;
     f32 v1;
     f32 v2;
     f32 v31;
     f32 dc;
-    f32 scaled;
     s32 *base;
-    s32 ctr;
+    u32 ctr;
     void *obj;
     int k;
     v1 = lbl_8055EE48 * lbl_8055EE4C;
@@ -87,14 +85,14 @@ void fn_8020C140(void) {
         if ((u8)lbl_8055EE46 != 0)
             v31 *= (f32)(0xFF - fn_801E8838()) / lbl_805632E0;
         fn_80210510(lbl_805632DC);
-        scaled = lbl_805632D8 * v31;
+        factor = lbl_805632D8;
         ctr = 3;
         base = &lbl_80489BE0;
         do {
             void * __restrict o = *(void **)((char *)base + 0x20);
             if (o != 0) {
                 if ((u8)lbl_8055EE40 != 0)
-                    v2 = scaled;
+                    v2 = factor * v31;
                 else
                     v2 = v31;
                 if (v2 != *(f32 *)((char *)o + 8)) {
