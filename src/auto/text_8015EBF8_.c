@@ -728,21 +728,43 @@ extern long lbl_8055E2A8;
 extern float lbl_8056180C;
 void fn_8015F92C(float *arg0, float farg0)
 {
+  #pragma scheduling off
+  #pragma opt_propagation off
   s32 v;
   s32 i;
   s32 count;
   float value;
   float temp;
-  v = lbl_8055E2A8;
+  float *p;
+  v = *(volatile long *)&lbl_8055E2A8;
   i = 0;
   count = (v / 2) + 1;
   value = farg0;
-  arg0 = arg0;
+  p = arg0;
   for (; i < count; i++)
   {
-    temp = arg0[64];
+    temp = p[64];
     value = (value < temp) ? (value) : (temp);
- temp = arg0[(32 - i) * 2]; value = (value < temp) ? (value) : (temp); arg0 += 2; } { float scale = lbl_8056180C; float current0; float current1; float current2; float current3; float current4; float current5; float current6; float current7; for (i = 0; i < 8; i++) { current0 = (current4 = arg0[0]);
+    temp = arg0[(32 - i) * 2];
+    value = (value < temp) ? (value) : (temp);
+    p += 2;
+  }
+  {
+    s32 n;
+    float scale;
+    float current0;
+    float current1;
+    float current2;
+    float current3;
+    float current4;
+    float current5;
+    float current6;
+    float current7;
+    n = 8;
+    scale = lbl_8056180C;
+    for (i = 0; i < n; i++)
+    {
+      current0 = (current4 = arg0[0]);
       arg0[0] = current0 + ((current0 - value) * scale);
       current1 = arg0[2];
       arg0[2] = current1 + ((current1 - value) * scale);
@@ -760,7 +782,6 @@ void fn_8015F92C(float *arg0, float farg0)
       arg0[14] = current7 + ((current7 - value) * scale);
       arg0 += 16;
     }
-
   }
 }
 
