@@ -292,8 +292,9 @@ void fn_8017A028(void *o,u16 *p,u16 *q,s32 *r,s32 *s,f32 angle) {
  fn_8017AE94((u8*)o+0x3c,m,n,angle);fn_8017A580(o);*r=20;*s=20;
 }
 #pragma pop
-void fn_8017A578(void *arg0) {
-    fn_8017A580(arg0);
+/* Tail-calls fn_8017A580 with the same object. */
+void fn_8017A578(void *object) {
+    fn_8017A580(object);
 }
 
 /* Empty stub (no operation). */
