@@ -150,12 +150,12 @@ check_object:
         offset = 0;
         goto check_count;
 search:
-        if (stricmp(*(const char **)((char *)*(void **)&lbl_803580A4 + offset), name) != 0)
-            goto search_advance;
+        if (stricmp(*(const char **)((char *)*(void **)&lbl_803580A4 + offset), name) != 0) {
+            offset += 0x10;
+            row++;
+            goto check_count;
+        }
         goto found;
-search_advance:
-        offset += 0x10;
-        row++;
 check_count:
         if (row < *(volatile int *)((char *)&lbl_803580A4 + 4))
             goto search;
@@ -382,13 +382,14 @@ static inline s32 fn_80019098_find_inl(const char *name) {
 #pragma use_lmw_stmw off
 #pragma small_data off
 #pragma scheduling invalid_target
-s32 fn_80019098(s32 arg0) {
+s32 fn_80019098(s32 name) {
+    /* Look up a named record in lbl_803580A4 and return its value at offset 0xC, or 0 if not found. */
     s32 row;
-    char *entry;
-    row = fn_80019098_find_inl((const char *)arg0);
-    entry = (char *)lbl_803580A4 + row * 0x10 + 4;
-    if (row < 0) entry = 0;
-    if (entry != 0) return *(s32 *)(entry + 8);
+    char *record;
+    row = fn_80019098_find_inl((const char *)name);
+    record = (char *)lbl_803580A4 + row * 0x10 + 4;
+    if (row < 0) record = 0;
+    if (record != 0) return *(s32 *)(record + 8);
     return 0;
 }
 #pragma pop
