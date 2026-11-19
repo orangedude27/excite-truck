@@ -173,6 +173,8 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
                 m.opts, m.work);
     *(void **)m.screen = lbl_80344474;
     lbl_8055F2EC = (unsigned int)m.screen;
+    pA = slots[4] ? (s32 *)(slots + idx * 16 + 0x14) : (s32 *)(slots + idx * 16 + 0xc);
+    pB = slots[4] ? (s32 *)(slots + idx * 16 + 0x10) : (s32 *)(slots + idx * 16 + 0x8);
 
     for (;;) {
         if (slots[4] == 0) {
