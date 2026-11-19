@@ -2087,7 +2087,7 @@ static inline void Fn801A4548Swap2(u8* q) {
     u8 t = q[0]; q[0] = q[1]; q[1] = t;
 }
 static inline void Fn801A4548Swap4(u8* q) {
-    u32 t;
+    u8 t;
     t=q[0]; q[0]=q[3]; q[3]=t;
     t=q[1]; q[1]=q[2]; q[2]=t;
 }
@@ -5442,12 +5442,13 @@ extern "C" void* fn_801A4548(s32 arg0) {
     u8 ok = 0;
     Fn801A4548Hdr* h = (Fn801A4548Hdr*)((s32 (*)(s32, s32, s32*, s32, s32, s32))fn_8012C370)(arg0, 0x534F424C, &size, 0, 0, (s32)&ok);
     if (h && ok) {
+        s32* lp = (s32*)&h->list;
         Fn801A4548Swap4((u8*)h);
         Fn801A4548Swap4((u8*)h+8);
-        Fn801A4548Swap4((u8*)h+4);
+        Fn801A4548Swap4((u8*)lp);
         Fn801A4548Swap4((u8*)h+12);
         Fn801A4548Swap4((u8*)h+16);
-        fn_801A4768((s32*)&h->list, (s32)h);
+        fn_801A4768(lp, (s32)h);
         fn_801A4780((s32*)&h->unk10, (s32)h);
         fn_801A4798((s32*)&h->shorts, (s32)h);
         for (s32 i=0; i<h->count; i++) {
