@@ -480,10 +480,10 @@ void fn_801F5664(void *arg0, int arg1) {
     case 2:
         var_r31 = 4;
         break;
+    case 3:
+        break;
     case 5:
         var_r31 = temp_r0_6;
-        break;
-    case 3:
         break;
     default:
         fn_802E317C(lbl_8033ADA4, arg1);
@@ -585,6 +585,7 @@ void fn_801F5664(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 0x20) = var_r31;
 }
 #pragma pop
+/* Empty stub. */
 void fn_801F596C(void) {
 
 }
