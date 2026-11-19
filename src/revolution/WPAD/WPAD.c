@@ -322,6 +322,8 @@ static void WPADiRadioSensitivity(s32 chan) {
     }
 }
 
+#pragma push
+#pragma always_inline on
 static inline u8 IsButtonChanged(u16 lhs, u16 rhs) {
     return lhs != rhs ? TRUE : FALSE;
 }
