@@ -616,7 +616,7 @@ short fn_802B9954(void *roadObject) {
 void fn_802B9960(void) {
 }
 
-#pragma scheduling 750
+#pragma scheduling invalid_target
 void fn_802B9964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     typedef struct Node {
         s32 *data;
@@ -1164,9 +1164,7 @@ extern "C" void fn_802BA348(void) {
     }
     entry = fn_801284F8(0x10, lbl_8034A9E4);
     if (entry != 0) {
-        int size = total * 0x54 + 0x10;
-        void *label = lbl_8034A9E4;
-        buffer = ((void *(*)(int, void *))fn_8012850C)(size, label);
+        buffer = ((void *(*)(int, void *))fn_8012850C)(total * 0x54 + 0x10, lbl_8034A9E4);
         items = fn_8002F37C(buffer, (void *)fn_802BA560, 0, 0x54, total);
         *(void **)entry = items;
         *(int *)((char *)entry + 8) = total;
@@ -1254,30 +1252,33 @@ extern "C" void *fn_802BA580(void **arg0, void *arg1, float scale) {
     fn_801602B0(f);
     fn_801E0F78(f,arg1,b,lbl_80564CC4);
     fn_8001BA68(j);
-    if (fn_801DCF48(j,f[0],f[1]) != lbl_80564CD8) {
-        fn_801602B0(g);
-        fn_8016029C(g,j);
-        fn_80160BA0(b,b,fn_8014C8B4(lbl_80564CE0,lbl_80564CE4,lbl_80564CE8,lbl_80564CCC,fn_801E0FA4(g,e)));
+    {
+        float diff = fn_801DCF48(j,f[0],f[1]);
+        if (diff != lbl_80564CD8) {
+            fn_801602B0(g);
+            fn_8016029C(g,j);
+            fn_80160BA0(b,b,fn_8014C8B4(lbl_80564CE0,lbl_80564CE4,lbl_80564CE8,lbl_80564CCC,fn_801E0FA4(g,e)));
+        }
     }
     fn_802BA848(result,c,b,a);
     *(int *)(result+8)=1;
     name=((Object *)arg0)->name(&lbl_8055CEF8);
-    RenderList *list = (RenderList *)lbl_804BFFF4;
-    for(index=0; index < list->count; index++) {
-        entry=(int *)list->items[index];
-        if (stricmp((char *)entry[0],name)==0) break;
+    for(index=0; index < *(int *)((char *)&lbl_804BFFF4+4); index++) {
+        entry=(*(int ***)&lbl_804BFFF4)[index];
+        if (stricmp((char *)entry[0],name) != 0) continue;
+        break;
     }
-    if (index < list->count) goto found;
-    count=list->count;
-    items=(int **)list->items;
-    list->count=count+1;
+    if (index < *(int *)((char *)&lbl_804BFFF4+4)) goto found;
+    count=*(int *)((char *)&lbl_804BFFF4+4);
+    items=*(int ***)&lbl_804BFFF4;
+    *(int *)((char *)&lbl_804BFFF4+4)=count+1;
     entry=(int *)fn_801284F8(0x10,&lbl_8055CECC);
     if(entry) {
         entry[0]=(int)name;
         if ((signed char)*name) state=fn_802B110C((void *)fn_802B8E50,name);
         else state=-2;
         entry[1]=state;
-        if(state==-2 && (signed char)*name) fn_802E317C((char *)lbl_8034AA2C,name);
+        if(state==-2 && (signed char)*name) fn_802E317C((char *)&lbl_8034AA2C,name);
         entry[3]=0;
         entry[2]=999;
     }
@@ -1292,8 +1293,7 @@ found:
 extern f32 lbl_80564CCC, lbl_80564CD8, lbl_80564CEC;
 extern "C" f32 lbl_80564CCC, lbl_80564CD8, lbl_80564CEC;
 extern "C" void fn_802BA848(f32 *out, f32 *a, f32 *b, f32 *c) {
-#pragma opt_common_subs on
-    f32 x0 = b[0], y1 = a[1], y0 = a[0], x1 = b[1], z0 = c[0];
+    register f32 x0 = b[0], y1 = a[1], y0 = a[0], x1 = b[1], z0 = c[0];
     f32 d = y0 * x1 - x0 * y1;
     f32 hi = x0 + (z0 + y0);
     f32 k1 = lbl_80564CEC;
@@ -1395,14 +1395,13 @@ extern "C" void *fn_802BAA68(void **arg0, char *arg1) {
     int index;
     int *entry;
     int off;
-    int state;
     int count;
-    int **items;
     char *result;
     char *name;
+    int state;
+    int **items;
     float angle;
     float k;
-    Object *obj = (Object *)arg0;
     result = *(char **)lbl_8055FA7C + (*(int *)((char *)lbl_8055FA7C+4))*0x44;
     ++*(int *)((char *)lbl_8055FA7C+4);
     fn_801602B0(a); fn_801602B0(b); fn_801602B0(c);
@@ -1411,37 +1410,42 @@ extern "C" void *fn_802BAA68(void **arg0, char *arg1) {
     fn_8016029C(c, arg1);
     fn_80160B18(c);
     fn_8016029C(a, arg1 + 0x24);
-    value.bits = obj->value(&lbl_8055CF10);
+    value.bits = ((Object *)arg0)->value(&lbl_8055CF10);
     fn_80160288(e, &value);
     fn_80160BA0(b, b, e[1]);
     fn_80160BA0(c, c, e[1]);
     k = lbl_80564CEC;
-    angle = fn_802BAD90(k * obj->v8(&lbl_8055CF0C, lbl_80564CD8));
+    angle = fn_802BAD90(k * ((Object *)arg0)->v8(&lbl_8055CF0C, lbl_80564CD8));
     fn_802BAD0C(b, angle);
     fn_802BAD0C(c, angle);
     fn_801E0F78(a, a, c, lbl_80564CDC);
     fn_801E0F78(a, a, b, lbl_80564CDC);
     fn_802BA848((float *)result, c, b, a);
     *(int *)(result+8) = 0;
-    name = obj->name(&lbl_8055CEF8);
-    extra = obj->v6(&lbl_8055CEE4, 0x378);
-    RenderList *list = (RenderList *)lbl_804BFFF4;
+    name = ((Object *)arg0)->name(&lbl_8055CEF8);
+    extra = ((Object *)arg0)->v6(&lbl_8055CEE4, 0x378);
     off = 0;
-    for(index=0; index < list->count; index++) {
-        entry=(int *)((int **)list->items)[off >> 2];
-        if (stricmp((char *)entry[0],name)==0) goto found;
-        off += 4;
-    }
-    count=list->count;
-    items=(int **)list->items;
-    list->count=count+1;
+    index = 0;
+    goto cond;
+loop:
+    entry=(int *)(((int **)*(char **)&lbl_804BFFF4)[off >> 2]);
+    if (stricmp((char *)entry[0],name) != 0) goto incr;
+    goto found;
+incr:
+    off += 4;
+    index++;
+cond:
+    if (index < *(int *)((char *)&lbl_804BFFF4+4)) goto loop;
+    count=*(int *)((char *)&lbl_804BFFF4+4);
+    items=*(int ***)&lbl_804BFFF4;
+    *(int *)((char *)&lbl_804BFFF4+4)=count+1;
     entry=(int *)fn_801284F8(0x10,&lbl_8055CECC);
     if(entry) {
         entry[0]=(int)name;
         if ((signed char)*name) state=fn_802B110C((void *)fn_802B8E50,name);
         else state=-2;
         entry[1]=state;
-        if(state==-2 && (signed char)*name) fn_802E317C((char *)lbl_8034AA2C,name);
+        if(state==-2 && (signed char)*name) fn_802E317C((char *)&lbl_8034AA2C,name);
         entry[3]=0;
         entry[2]=extra;
     }
@@ -1519,13 +1523,17 @@ extern void fn_80265DCC(void *, void *, int, int (**)(int **, int **));
 extern void fn_802E30C8(void *, ...);
 void fn_802BAE50(void) {
     #pragma scheduling invalid_target
+    /* Build the global object-grid pool (lbl_8055FA80, "gpobject"): size it for
+       4..64 cell grids over 1024 units, allocate the slot buffer, run fn_802B9108
+       for each grid size to populate it, trim unused slots, sort the object list
+       in lbl_804BFFF4, and warn if "XLEndAddObjects" took over 500 ms. */
     int total;
     volatile int start;
     int n;
     void *table;
     void *items;
-    char * volatile name;
-    char *allocationName;
+    char * volatile name; /* lbl_8034AA00 "XLEndAddObjects" */
+    char *allocationName; /* lbl_8034AA10 "gpobject" */
     short listSize;
     short passSize;
     int elapsed;
