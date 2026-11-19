@@ -338,6 +338,7 @@ struct ZoneState28 { s32 word[7]; };
 typedef struct ZoneState28 S28_80142118;
 
 struct TVec2 { f32 x; f32 y; };
+union VecU8013E054 { u64 u; f64 d; f32 f[2]; };
 struct Fn801436E0TextStyle { u32 a, b, c, d; f32 size; u32 f, g, h; };
 extern "C" void *fn_801E7E3C(void);
 extern "C" void fn_8000FBE4(void);
@@ -1084,14 +1085,17 @@ public:
 #pragma processor 750
 extern "C" void fn_8013E054(void *outPtr, void *objPtr, f32 angle) {
     u8 *out = (u8 *)outPtr;
-    TVec2 center = ((TVec2 (*)(void *, const char *))(*(void ***)objPtr)[0x3C / 4])(objPtr, lbl_80559D58);
-    TVec2 tanv = ((TVec2 (*)(void *, const char *))(*(void ***)objPtr)[0x3C / 4])(objPtr, lbl_80559D40);
-    f32 a = center.x;
-    f32 b = center.y;
-    f32 c = tanv.x;
-    f32 d = tanv.y;
-    f32 negAngle = -angle;
-    f32 nc = -c;
+    union { u64 u; f32 f[2]; } uc, ut;
+    f32 a, b, c, d;
+    f32 negAngle, nc;
+    uc.u = ((u64 (*)(void *, const char *))(*(void ***)objPtr)[0x3C / 4])(objPtr, lbl_80559D58);
+    ut.u = ((u64 (*)(void *, const char *))(*(void ***)objPtr)[0x3C / 4])(objPtr, lbl_80559D40);
+    a = uc.f[0];
+    b = uc.f[1];
+    c = ut.f[0];
+    d = ut.f[1];
+    negAngle = -angle;
+    nc = -c;
     *(f32 *)(out + 0x10) = lbl_805614A4;
     *(f32 *)(out + 4) = lbl_805614A4;
     *(f32 *)(out + 0xC) = a + d * angle;
