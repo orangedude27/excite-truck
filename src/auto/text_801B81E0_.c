@@ -825,6 +825,7 @@ void fn_801B8AF0(void) {
 
 }
 
+/* No-op stub. */
 void fn_801B8AF4(void) {
 
 }
