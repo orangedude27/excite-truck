@@ -1237,7 +1237,6 @@ f32 fn_801605C8(void *arg0, void *arg1, void *arg2) {
     *(volatile f32 *)&sp8 = dy;
     return result1 + result2;
 }
-#pragma pop
 void *fn_8016060C(void *arg0, void *arg1) {
 #pragma scheduling invalid_target
     f32 *dst = (f32 *)arg0;
