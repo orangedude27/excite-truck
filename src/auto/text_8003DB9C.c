@@ -1805,10 +1805,10 @@ void GXSetVtxDescv(unsigned int *list) {
 void __GXSetVCD(void) {
     unsigned int count;
     unsigned int value;
-    unsigned int masked;
     unsigned int compCount;
     unsigned int vatPart;
     unsigned int vatCount;
+    unsigned int masked;
     unsigned int sizeCount;
     unsigned int sizePart;
     unsigned int countPart;
@@ -3548,13 +3548,14 @@ f32 GXGetYScaleFactor(u32 efbHeight, u32 xfbHeight) {
 }
 
 extern f32 lbl_80560B40;
-unsigned int GXSetDispCopyYScale(f32 yScale) {
-    unsigned int scale = (unsigned int)(256.0f / yScale);
-    unsigned int height = scale & 0x1FF;
-    unsigned int width;
-    unsigned int result;
-    unsigned int value;
-    unsigned int tmp;
+/* Sets the display-copy vertical scale register and returns the number of XFB lines produced. */
+unsigned int GXSetDispCopyYScale(f32 vscale) {
+    unsigned int vscaleReg = (unsigned int)(256.0f / vscale);
+    unsigned int vscaleBits = vscaleReg & 0x1FF;
+    unsigned int efbHeight;
+    unsigned int numLines;
+    unsigned int efbHeightPlus1;
+    unsigned int rangeCheck;
     volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
     union {
         unsigned int value;
@@ -3574,26 +3575,26 @@ unsigned int GXSetDispCopyYScale(f32 yScale) {
     } copyState;
 
     packet.value = 0;
-    packet.fields.scale = scale;
+    packet.fields.scale = vscaleReg;
     packet.fields.tag = 0x4E;
     *(volatile unsigned char *)fifo = 0x61;
     *fifo = packet.value;
     ((volatile unsigned short *)__GXData)[1] = 0;
-    tmp = (0x100 - height) | (height - 0x100);
+    rangeCheck = (0x100 - vscaleBits) | (vscaleBits - 0x100);
     copyState.value = __GXData[0x23C / 4];
-    copyState.fields.flag = tmp >> 31;
+    copyState.fields.flag = rangeCheck >> 31;
     __GXData[0x23C / 4] = copyState.value;
-    width = (__GXData[0x234 / 4] >> 10) & 0x3FF;
-    value = width + 1;
-    result = (((value - 1) << 8) / height) + 1;
-    if (height > 0x80 && height < 0x100) {
-        while ((height & 1) == 0) {
-            height >>= 1;
+    efbHeight = (__GXData[0x234 / 4] >> 10) & 0x3FF;
+    efbHeightPlus1 = efbHeight + 1;
+    numLines = (((efbHeightPlus1 - 1) << 8) / vscaleBits) + 1;
+    if (vscaleBits > 0x80 && vscaleBits < 0x100) {
+        while ((vscaleBits & 1) == 0) {
+            vscaleBits >>= 1;
         }
-        if (value % height == 0) result++;
+        if (efbHeightPlus1 % vscaleBits == 0) numLines++;
     }
-    if (result > 0x400) result = 0x400;
-    return result;
+    if (numLines > 0x400) numLines = 0x400;
+    return numLines;
 }
 
 void GXSetCopyClear(unsigned char *color, unsigned int depth) {
@@ -4816,28 +4817,38 @@ void *GXSetTlutRegionCallback(void *callback) {
 }
 
 void __SetSURegs(s32 arg0, s32 arg1) {
-    unsigned int *data = __GXData;
-    unsigned int *tex = data + arg0;
-    unsigned int *su = data + arg1;
+    unsigned int *tex = __GXData + arg0;
+    unsigned int *su = __GXData + arg1;
     unsigned int value;
+    unsigned int v1;
+    unsigned int v2;
     unsigned int su1;
     unsigned int su2;
     unsigned int mode;
+    union { unsigned int v; struct { unsigned int lo : 16; unsigned int hi : 16; } f; } u;
     value = tex[0x564 / 4];
-    su1 = (su[0x108 / 4] & 0xFFFF0000) | (value & 0x3FF);
+    v1 = value & 0x3FF;
+    v2 = (value >> 10) & 0x3FF;
+    su1 = su[0x108 / 4];
+    u.v = su1;
+    u.f.hi = v1;
+    su1 = u.v;
     su[0x108 / 4] = su1;
-    su2 = (su[0x128 / 4] & 0xFFFF0000) | ((value >> 10) & 0x3FF);
+    su2 = su[0x128 / 4];
+    u.v = su2;
+    u.f.hi = v2;
+    su2 = u.v;
     su[0x128 / 4] = su2;
     mode = tex[0x584 / 4];
-    su1 = (su1 & 0xFFFEFFFF) | ((__cntlzw((mode & 3) - 1) << 11) & 0x10000);
+    su1 = __rlwimi(su1, __cntlzw((mode & 3) - 1), 11, 15, 15);
     su[0x108 / 4] = su1;
-    su2 = (su2 & 0xFFFEFFFF) | ((__cntlzw(((mode >> 2) & 3) - 1) << 11) & 0x10000);
+    su2 = __rlwimi(su2, __cntlzw(((mode >> 2) & 3) - 1), 11, 15, 15);
     su[0x128 / 4] = su2;
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = su[0x108 / 4];
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = su[0x128 / 4];
-    *((unsigned short *)((char *)data + 2)) = 0;
+    *((unsigned short *)((char *)__GXData + 2)) = 0;
 }
 
 void __GXSetSUTexRegs(void) {
@@ -5012,9 +5023,9 @@ void GXSetTevIndirect(s32 tevStage, s32 indStage, s32 format, s32 biasSel, s32 m
 void GXSetIndTexMtx(s32 type, f32 *matrix, s32 scale) {
     register s32 index3;
     register s32 scaleField;
-    register u32 first;
-    register u32 second;
     register u32 third;
+    register u32 second;
+    register u32 first;
     volatile u8 *fifo8 = (volatile u8 *)0xCC010000;
     volatile u32 *fifo32 = (volatile u32 *)0xCC010000;
     switch (type) {
@@ -5221,8 +5232,8 @@ void GXSetTevOp(int stage, int mode) {
     unsigned int *base = lbl_80303C30;
     unsigned int *data;
     unsigned int *tev;
-    register unsigned int *color;
-    register unsigned int *alpha;
+    unsigned int *color;
+    unsigned int *alpha;
     unsigned int value;
     unsigned int oldValue;
     unsigned int inputValue;
@@ -5240,8 +5251,8 @@ void GXSetTevOp(int stage, int mode) {
     }
     data = __GXData;
     tev = data + stage;
-    inputValue = *color;
     oldValue = tev[0x180 / 4];
+    inputValue = *color;
     *(volatile unsigned char *)0xCC008000 = 0x61;
     value = oldValue & 0xFF000000;
     value = __rlwimi(value, inputValue, 0, 8, 31);
