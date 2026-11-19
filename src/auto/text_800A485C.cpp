@@ -26583,7 +26583,6 @@ extern "C" void fn_800A52A0(void *volume, const void *name) {
 }
 
 #pragma opt_propagation off
-#pragma opt_dead_assignments off
 extern "C" void fn_800A52DC(u32 arg0) {
     u8 *base = (u8 *)lbl_803D2140;
     u8 *ptr = base + 0xA0;
