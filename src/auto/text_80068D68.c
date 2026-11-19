@@ -19927,10 +19927,10 @@ s32 l2c_link_send_to_lower(void *p_lcb, void *p_buf) {
 
 extern char lbl_80318BE8[];
 void l2c_link_check_send_pkts(void *arg0, u8 arg1, void *arg2, u8 arg3) {
-    u8 *p_buf = (u8 *)arg2;
-    u8 *p_lcb = (u8 *)arg0;
-    register char *p_trace = lbl_80318BE8;
     register u8 *p_ccb;
+    register char *p_trace = lbl_80318BE8;
+    u8 *p_lcb = (u8 *)arg0;
+    u8 *p_buf = (u8 *)arg2;
     u8 mode;
     tBTM_PM_PWR_MD pm;
 
@@ -28911,23 +28911,22 @@ BOOL __AllocDelayLine(AXFX_REVERBHI_EXP_FREE_VIEW *reverb) {
 }
 
 void __BzeroDelayLines(void *arg0) {
-    u8 *entry = (u8 *)arg0;
-    u8 *entry2 = (u8 *)arg0;
-    u8 *entry3 = (u8 *)arg0;
-    register u32 i = 0;
-    do {
-        if (*(void **)entry) memset(*(void **)entry, 0, *(u32 *)((u8 *)arg0 + 0x1C) * 4);
-        if (*(void **)(entry + 0x2C)) memset(*(void **)(entry + 0x2C), 0, *(u32 *)((u8 *)arg0 + 0x40) * 4);
-        { u8 *p = entry2; u8 *q = (u8 *)arg0; u32 j = 0;
-            do { if (*(void **)(p + 0x44)) memset(*(void **)(p + 0x44), 0, *(u32 *)(q + 0x80) * 4); j++; q += 4; p += 4; } while (j < 3); }
-        { u8 *p = entry3; u8 *q = (u8 *)arg0; u32 j = 0;
-            do { if (*(void **)(p + 0x98)) memset(*(void **)(p + 0x98), 0, *(u32 *)(q + 0xC0) * 4); j++; q += 4; p += 4; } while (j < 2); }
-        if (*(void **)(entry + 0xC8)) memset(*(void **)(entry + 0xC8), 0, *(u32 *)(entry + 0xEC) * 4);
-        entry += 4;
-        entry2 += 0xC;
-        entry3 += 8;
-        i++;
-    } while (i < 3);
+    u32 channel, i;
+    AXFX_REVERBHI_EXP_FREE_VIEW *fx = arg0;
+    for (channel = 0; channel < 3; channel++) {
+        if (fx->earlyLine[channel])
+            memset(fx->earlyLine[channel], 0, fx->earlyMaxLength * 4);
+        if (fx->preDelayLine[channel])
+            memset(fx->preDelayLine[channel], 0, fx->preDelayMaxLength * 4);
+        for (i = 0; i < 3; i++)
+            if (fx->combLine[channel][i])
+                memset(fx->combLine[channel][i], 0, fx->combMaxLength[i] * 4);
+        for (i = 0; i < 2; i++)
+            if (fx->allpassLine[channel][i])
+                memset(fx->allpassLine[channel][i], 0, fx->allpassMaxLength[i] * 4);
+        if (fx->lastAllpassLine[channel])
+            memset(fx->lastAllpassLine[channel], 0, fx->lastAllpassMaxLength[channel] * 4);
+    }
 }
 
 void __FreeDelayLine(void *arg0) {
