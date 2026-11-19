@@ -46,6 +46,7 @@ extern float PSVECDotProduct();
 #pragma optimize_for_size on
 #pragma scheduling invalid_target
 extern "C" void fn_80259148(void) {
+    /* Register the achievement sound effects in the global sound bank. */
     class Obj {
     public:
         virtual void f0();
@@ -140,8 +141,8 @@ extern "C" int fn_80259224(void **arg0) {
     public:
         virtual void destroy(int);
     };
-    void *button;
     unsigned int frame[0x9E];
+    void *button;
     void *buttonA;
     void *buttonB;
     int size;
@@ -427,11 +428,8 @@ int fn_8025A1C4(int object, int deleteFlag) {
     return object;
 }
 
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
+#pragma cplusplus on
 void fn_8025A204(void) {
-    #pragma scheduling on
     extern unsigned char *fn_8001EFAC(int, int);
     struct State {
         char pad0[0x0C]; volatile int state; volatile int object; volatile int selected; volatile int next;
@@ -523,7 +521,7 @@ void fn_8025A204(void) {
     } while (index < 7);
     fn_802591D8();
 }
-#pragma pop
+#pragma cplusplus reset
 
 extern float lbl_80563AF4;
 extern float lbl_80563AF8;
@@ -554,10 +552,11 @@ void fn_8025A50C(void) {
         char pad3[2]; int saved; float value;
     } state;
     float base;
-    int index, changed, current, result, objectValue, firstResult, secondResult;
+    int index;
+    unsigned int running;
+    int current, result, objectValue, firstResult, secondResult, changed;
     char *src;
     int count;
-    unsigned int running;
     char *dst;
     char * volatile text;
     register int zero = 0;
@@ -583,8 +582,8 @@ void fn_8025A50C(void) {
             firstResult = fn_8001EFA0(state.object, state.next);
             secondResult = fn_8001EFA0(state.object, state.selected);
         }
+        state.difference = (firstResult == secondResult) ? 0 : 1;
         state.number = (float)(int)state.selected;
-        state.difference = (unsigned char)((unsigned int)((firstResult - secondResult) | (secondResult - firstResult)) >> 31);
         current = (int)(state.number + lbl_80558DC4);
         fn_80130FCC(state.shortText, 0x14, current);
         changed = 1;
@@ -635,6 +634,7 @@ void fn_8025A50C(void) {
     }
     ((void (*)(void))fn_802591D8)();
 }
+#pragma pop
 #pragma cplusplus on
 extern "C" void fn_8025A83C(void *object) {
     /* Store a 3x3 identity matrix at +0x84, then hand the object's +0x4 data to apply(). */
@@ -1669,6 +1669,7 @@ done:
 void fn_8025BED0(void *arg0) {
     typedef void (*Fmt)(char *, int, const char *, ...);
     void *tmp = arg0;
+    unsigned char *self = (unsigned char *)tmp;
     void *data = *(void **)((char *)arg0 + 0x1C);
     void *obj;
     int size;
@@ -1682,9 +1683,9 @@ void fn_8025BED0(void *arg0) {
     if (*(unsigned char *)((char *)data + 0x58) != 0)
         return;
     size = *(int *)((char *)data + 0xC8);
-    obj = *(void **)((char *)tmp + 0x18);
-    res = *(int *)((char *)data + 0x18);
+    obj = *(void **)(self + 0x18);
     *(int *)((char *)arg0 + 0x24) = size;
+    res = *(int *)((char *)data + 0x18);
     *(int *)((char *)arg0 + 0x20) = res;
     *(int *)((char *)obj + 0x4C) = size;
     src = fn_8001EFAC(res, size);
@@ -1712,7 +1713,7 @@ done:
         ((Fmt)fn_801345D8)((char *)obj + 0x36, 0x14, lbl_80344F08, size);
     else
         *((unsigned char *)obj + 0x36) = 0;
-    obj = *(void **)((char *)arg0 + 0x18);
+    obj = *(void **)(self + 0x18);
     *(unsigned char *)((char *)obj + 0x4A) = 1;
 }
 #pragma scheduling on
