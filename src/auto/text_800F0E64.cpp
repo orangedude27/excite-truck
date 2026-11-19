@@ -6372,31 +6372,53 @@ extern "C" void Shutdown__Q36nw4hbm3snd18SoundArchivePlayerFv(void *self) {
 }
 
 extern "C" void fn_800FA6E8(void) {
-    void *object;
-    s8 isInitialized;
+    /* nw4hbm::snd::detail::SoundThread's AX mix callback.
+     *
+     * Runs on every DSP sound-mix tick; the sound thread registers it with
+     * AxManager (list node at its +0x2378) in its entry fn_800FA77C.  It first
+     * runs the singleton SoundThread's lazy construction -- the same inlined
+     * Instance() body GetInstance(), fn_800FA4C4 and Shutdown() carry: clear
+     * the dummy-worker link list (count +0x2384, head/tail node +0x2388 /
+     * +0x238c) and the thread's running flag (+0x2394), then queue the object's
+     * destructor for exit.  It then posts message 1 to the thread's message
+     * queue (+0x2338), waking fn_800FA7E0's update loop, and refills the
+     * streaming buffers of every WavePlayer and StrmPlayer. */
+#define soundThread         lbl_80412CC8        /* the one SoundThread object */
+#define soundThreadDtor     __dt__10TitleSceneFv /* its destructor */
+#define soundThreadDtorLink lbl_80412CB8        /* its __register_global_object link */
+#define soundThreadBuilt    lbl_8055DE68        /* construction guard */
+#define msgWakeSoundThread  1
 
-    isInitialized = (s8)lbl_8055DE68;
-    if (isInitialized != 0) {
-        goto skip_init;
+    void *workerListNode;
+    s8 isBuilt;
+
+    isBuilt = (s8)soundThreadBuilt;
+    if (isBuilt != 0) {
+        goto already_built;
     }
 
-    object = (void *)&lbl_80412CC8[0x2388];
-    *(volatile u32 *)&lbl_80412CC8[0x2388] = 0;
-    *(volatile u32 *)&lbl_80412CC8[0x238c] = 0;
-    *(u32 *)&lbl_80412CC8[0x2378] = 0;
-    *(u32 *)&lbl_80412CC8[0x237c] = 0;
-    *(u32 *)&lbl_80412CC8[0x2384] = 0;
-    *(void **)&lbl_80412CC8[0x2388] = object;
-    *(void **)&lbl_80412CC8[0x238c] = object;
-    *(u8 *)&lbl_80412CC8[0x2394] = 0;
-    __register_global_object((void *)lbl_80412CC8, (void *)&__dt__10TitleSceneFv,
-                             (void *)&lbl_80412CB8, object);
-    lbl_8055DE68 = 1;
+    workerListNode = (void *)&soundThread[0x2388];
+    *(volatile u32 *)&soundThread[0x2388] = 0;
+    *(volatile u32 *)&soundThread[0x238c] = 0;
+    *(u32 *)&soundThread[0x2378] = 0;
+    *(u32 *)&soundThread[0x237c] = 0;
+    *(u32 *)&soundThread[0x2384] = 0;
+    *(void **)&soundThread[0x2388] = workerListNode;
+    *(void **)&soundThread[0x238c] = workerListNode;
+    *(u8 *)&soundThread[0x2394] = 0;
+    __register_global_object((void *)soundThread, (void *)&soundThreadDtor,
+                             (void *)&soundThreadDtorLink, workerListNode);
+    soundThreadBuilt = 1;
 
-skip_init:
-    OSSendMessage((void*)&lbl_80412CC8[0x2338], (void*)1, 0);
+already_built:
+    OSSendMessage((void*)&soundThread[0x2338], (void*)msgWakeSoundThread, 0);
     detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv();
     UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv();
+#undef soundThread
+#undef soundThreadDtor
+#undef soundThreadDtorLink
+#undef soundThreadBuilt
+#undef msgWakeSoundThread
 }
 
 extern "C" s32 fn_800FA77C(s32 arg0) {
