@@ -17,7 +17,7 @@ extern void *fn_80016BC8(void *, s32);
 extern void *fn_80018A8C(void *, s32, s32 *, s32);
 extern s32 fn_80255918(void *, void *);
 extern char lbl_8034287C[];
-extern float lbl_80563750;
+extern double lbl_80563750;
 extern u8 lbl_8055F1FC;
 extern s32 lbl_8055F200;
 extern float lbl_80563758;
