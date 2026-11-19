@@ -1149,49 +1149,6 @@ void fn_801F1AD0(void *arg0) {
 void fn_801EABA8(void);
 int fn_801F1848(void);
 
-static inline void CopyDesc_801F1B1C(char *dst, char *src) {
-    int v1, v2, v3, v4, v5;
-    int v6, v7, v8, v9, v10, v11, v12;
-    short v16;
-    int v13, v14;
-    unsigned char flag;
-    float v17;
-    flag = *(volatile unsigned char *)(src + 0x40);
-    v1 = *(volatile int *)(src + 0x00);
-    v2 = *(volatile int *)(src + 0x04);
-    v3 = *(volatile int *)(src + 0x08);
-    v4 = *(volatile int *)(src + 0x0C);
-    v5 = *(volatile int *)(src + 0x10);
-    v6 = *(volatile int *)(src + 0x14);
-    v7 = *(volatile int *)(src + 0x18);
-    v8 = *(volatile int *)(src + 0x1C);
-    v9 = *(volatile int *)(src + 0x20);
-    v10 = *(volatile int *)(src + 0x24);
-    v11 = *(volatile int *)(src + 0x28);
-    v12 = *(volatile int *)(src + 0x2C);
-    v16 = *(volatile short *)(src + 0x30);
-    v13 = *(volatile int *)(src + 0x34);
-    v14 = *(volatile int *)(src + 0x38);
-    v17 = *(volatile float *)(src + 0x3C);
-    *(volatile int *)(dst + 0x3C) = v1;
-    *(volatile int *)(dst + 0x40) = v2;
-    *(volatile int *)(dst + 0x44) = v3;
-    *(volatile int *)(dst + 0x48) = v4;
-    *(volatile int *)(dst + 0x4C) = v5;
-    *(volatile int *)(dst + 0x50) = v6;
-    *(volatile int *)(dst + 0x54) = v7;
-    *(volatile int *)(dst + 0x58) = v8;
-    *(volatile int *)(dst + 0x5C) = v9;
-    *(volatile int *)(dst + 0x60) = v10;
-    *(volatile int *)(dst + 0x64) = v11;
-    *(volatile int *)(dst + 0x68) = v12;
-    *(volatile short *)(dst + 0x6C) = v16;
-    *(volatile int *)(dst + 0x70) = v13;
-    *(volatile int *)(dst + 0x74) = v14;
-    *(volatile float *)(dst + 0x78) = v17;
-    *(volatile unsigned char *)(dst + 0x7C) = flag;
-}
-
 #pragma scheduling invalid_target
 void fn_801F1B1C(void *arg0, void *arg1) {
     float v17;
