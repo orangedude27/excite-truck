@@ -1714,71 +1714,86 @@ s32 fn_80118F78(void *bink, s32 paused) {
 
 #pragma push
 #pragma opt_loop_invariants off
-s32 fn_801190B0(void *arg0, s32 arg1) {
-    s32 var_r31;
-    s32 var_r30;
-    s32 var_r29;
-    u32 temp_r3_5;
-    s32 temp_r3_2;
-    u32 var_r28;
+/* Start (start != 0) or stop every StreamPlayer of a movie and report whether
+ * any of them ended up playing.  Each player's setPlay callback (+0x18 of the
+ * 0x17C-byte entry in the movie's player table at +0x2F0, fn_80119C0C) takes
+ * the flag and returns the player's new `playing` state.  The movie keeps a "a
+ * stream is playing" flag at +0x288: when a stream stops while that flag is up
+ * its source ring is rewound to its start (+0x34 and the read cursor +0x38
+ * back to +0x2C, free-byte counter +0x40 cleared) and drained by fn_80116F8C
+ * -- skipped on the movie's first frame (+0xC == 1) when the last tick did not
+ * end there (+0x2D4) -- and when one starts while the flag is down the movie's
+ * timing is restarted (timeBase +0x268, +0x328 and savedElapsed +0x330).  The
+ * pass runs under the shared Bink tick lock, taken on the first player that has
+ * a callback and released at the end. */
+s32 fn_801190B0(void *mgr, s32 start) {
+    s32 entryOff;
+    s32 anyPlaying;
+    s32 locked;
+    u32 frame;
+    s32 playing;
+    u32 index;
     s32 zero;
     s32 one;
 
-    var_r30 = 0;
-    if (arg0 != 0) {
-        var_r29 = 0;
-        var_r28 = 0;
-        var_r31 = 0;
+    anyPlaying = 0;
+    if (mgr != 0) {
+        locked = 0;
+        index = 0;
+        entryOff = 0;
         zero = 0;
         one = 1;
         goto loop_check;
     loop_body:
-        if (*(s32 *)(*(u8 **)((u8 *)arg0 + 0x2F0) + var_r31 + 0x18) != 0) {
-            if (var_r29 == 0) {
-                var_r29 = 1;
+        if (*(s32 *)(*(u8 **)((u8 *)mgr + 0x2F0) + entryOff + 0x18) != 0) {/* player->setPlay */
+            if (locked == 0) {
+                locked = 1;
                 fn_8011C274(lbl_8055DED4,
-                    (void *)((s32)arg0 + 0x340));
+                    (void *)((s32)mgr + 0x340));
             }
-            temp_r3_2 = (*(s32 (**)(void *, s32))(
-                *(u8 **)((u8 *)arg0 + 0x2F0) + var_r31 + 0x18))(
-                    *(u8 **)((u8 *)arg0 + 0x2F0) + var_r31,
-                    arg1 ? 1 : 0);
-            if (temp_r3_2) {
-                var_r30 = 1;
+            playing = (*(s32 (**)(void *, s32))(
+                *(u8 **)((u8 *)mgr + 0x2F0) + entryOff + 0x18))(
+                    *(u8 **)((u8 *)mgr + 0x2F0) + entryOff,
+                    start ? 1 : 0);
+            if (playing) {
+                anyPlaying = 1;
             }
-            if (temp_r3_2 == 0 && *(s32 *)((u8 *)arg0 + 0x288) != 0) {
-                *(s32 *)(*(u8 **)((u8 *)arg0 + 0x2F0) + var_r31 + 0x34) =
-                    *(s32 *)(*(u8 **)((u8 *)arg0 + 0x2F0) + var_r31 + 0x2C);
-                *(s32 *)(*(u8 **)((u8 *)arg0 + 0x2F0) + var_r31 + 0x38) =
-                    *(s32 *)(*(u8 **)((u8 *)arg0 + 0x2F0) + var_r31 + 0x2C);
-                *(s32 *)(*(u8 **)((u8 *)arg0 + 0x2F0) + var_r31 + 0x40) =
+            if (playing == 0 && *(s32 *)((u8 *)mgr + 0x288) != 0) {
+                /* the stream went idle: rewind its source ring */
+                *(s32 *)(*(u8 **)((u8 *)mgr + 0x2F0) + entryOff + 0x34) =
+                    *(s32 *)(*(u8 **)((u8 *)mgr + 0x2F0) + entryOff + 0x2C);
+                *(s32 *)(*(u8 **)((u8 *)mgr + 0x2F0) + entryOff + 0x38) =
+                    *(s32 *)(*(u8 **)((u8 *)mgr + 0x2F0) + entryOff + 0x2C);
+                *(s32 *)(*(u8 **)((u8 *)mgr + 0x2F0) + entryOff + 0x40) =
                     zero;
-                temp_r3_5 = *(u32 *)((u8 *)arg0 + 0xC);
-                if (temp_r3_5 == 1 &&
-                    *(u32 *)((u8 *)arg0 + 0x2D4) != temp_r3_5) {
+                frame = *(u32 *)((u8 *)mgr + 0xC);
+                if (frame == 1 &&
+                    *(u32 *)((u8 *)mgr + 0x2D4) != frame) {
+                    /* first frame of a seeked movie: nothing to drain */
                 } else {
-                    fn_80116F8C(*(u8 **)((u8 *)arg0 + 0x2F0) + var_r31);
+                    fn_80116F8C(*(u8 **)((u8 *)mgr + 0x2F0) + entryOff);
                 }
-                *(s32 *)((u8 *)arg0 + 0x288) = zero;
-            } else if (temp_r3_2 != 0 &&
-                       *(s32 *)((u8 *)arg0 + 0x288) == 0) {
-                *(s32 *)((u8 *)arg0 + 0x288) = one;
-                *(s32 *)((u8 *)arg0 + 0x268) = zero;
-                *(s32 *)((u8 *)arg0 + 0x328) = zero;
-                *(s32 *)((u8 *)arg0 + 0x330) = zero;
+                *(s32 *)((u8 *)mgr + 0x288) = zero;
+            } else if (playing != 0 &&
+                       *(s32 *)((u8 *)mgr + 0x288) == 0) {
+                /* the first stream to start: restart the movie's timing */
+                *(s32 *)((u8 *)mgr + 0x288) = one;
+                *(s32 *)((u8 *)mgr + 0x268) = zero;
+                *(s32 *)((u8 *)mgr + 0x328) = zero;
+                *(s32 *)((u8 *)mgr + 0x330) = zero;
             }
         }
-        var_r31 += 0x17C;
-        var_r28++;
+        entryOff += 0x17C;
+        index++;
     loop_check:
-        if (var_r28 < *(u32 *)((u8 *)arg0 + 0x2E8)) {
+        if (index < *(u32 *)((u8 *)mgr + 0x2E8)) {
             goto loop_body;
         }
-        if (var_r29 != 0) {
-            fn_8011C2EC(lbl_8055DED4, (u8 *)arg0 + 0x340);
+        if (locked != 0) {
+            fn_8011C2EC(lbl_8055DED4, (u8 *)mgr + 0x340);
         }
     }
-    return var_r30;
+    return anyPlaying;
 }
 #pragma pop
 void fn_80119214(void) {
@@ -2455,9 +2470,10 @@ void fn_8011A1A0(u32 *data, u32 size) {
     union { u32 *p; u32 i; } u;
     u32 count;
     u32 groups;
-    register void *z = 0;
+    register void *z;
     u.p = data;
     count = (size + 3) >> 2;
+    z = 0;
     if (count == 0) return;
     groups = count >> 3;
     while (groups--) {
@@ -8822,23 +8838,23 @@ void fn_80125014(void *arg0) {
     temp_f1 = *(f32 *)((u8 *)arg0 + 0);
     temp_f0 = *(f32 *)((u8 *)arg0 + 0x10);
     temp_f5 = *(f32 *)((u8 *)arg0 + 4);
-    temp_f2 = *(f32 *)((u8 *)arg0 + 0x14);
+    temp_f4 = *(f32 *)((u8 *)arg0 + 0x14);
     temp_f6 = temp_f1 + temp_f0;
     temp_f8 = temp_f1 - temp_f0;
     temp_f3 = *(f32 *)((u8 *)arg0 + 8);
-    temp_f4 = *(f32 *)((u8 *)arg0 + 0x18);
-    temp_f7 = temp_f5 + temp_f2;
-    temp_f0 = *(f32 *)((u8 *)arg0 + 0x1C);
-    temp_f1 = *(f32 *)((u8 *)arg0 + 0xC);
-    temp_f9 = temp_f5 - temp_f2;
-    temp_f12 = temp_f1 - temp_f0;
-    temp_f2 = temp_f1 + temp_f0;
-    temp_f10 = temp_f3 + temp_f4;
-    temp_f11 = temp_f3 - temp_f4;
+    temp_f2 = *(f32 *)((u8 *)arg0 + 0x18);
+    temp_f7 = temp_f5 + temp_f4;
+    temp_f0 = *(f32 *)((u8 *)arg0 + 0xC);
+    temp_f1 = *(f32 *)((u8 *)arg0 + 0x1C);
+    temp_f9 = temp_f5 - temp_f4;
+    temp_f12 = temp_f0 - temp_f1;
+    temp_f4 = temp_f0 + temp_f1;
+    temp_f10 = temp_f3 + temp_f2;
+    temp_f11 = temp_f3 - temp_f2;
     *(f32 *)((u8 *)arg0 + 0) = temp_f6 + temp_f10;
-    *(f32 *)((u8 *)arg0 + 4) = temp_f7 + temp_f2;
+    *(f32 *)((u8 *)arg0 + 4) = temp_f7 + temp_f4;
     *(f32 *)((u8 *)arg0 + 0x10) = temp_f6 - temp_f10;
-    *(f32 *)((u8 *)arg0 + 0x14) = temp_f7 - temp_f2;
+    *(f32 *)((u8 *)arg0 + 0x14) = temp_f7 - temp_f4;
     *(f32 *)((u8 *)arg0 + 8) = temp_f8 + temp_f12;
     *(f32 *)((u8 *)arg0 + 0xC) = temp_f9 - temp_f11;
     *(f32 *)((u8 *)arg0 + 0x18) = temp_f8 - temp_f12;
