@@ -5079,6 +5079,8 @@ extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
     return var_r31;
 }
 #pragma pop
+#pragma push
+#pragma opt_lifetimes off
 extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *arg0) {
     u32 sp8;
     s32 index;
@@ -5117,6 +5119,7 @@ short_one:
 return_zero:
     return 0;
 }
+#pragma pop
 
 extern "C" s32 VFiPFENT_ITER_Advance(void *arg0, s32 arg1) {
     void *iter = arg0;
