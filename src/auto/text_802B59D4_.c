@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #pragma cplusplus on
+inline void *operator new(unsigned long, void *ptr) { return ptr; }
 typedef struct InitArrayB59D4 {
     void **data;
     int count, capacity;
