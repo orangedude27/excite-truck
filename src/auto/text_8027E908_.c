@@ -141,6 +141,17 @@ static struct Fn80283E28Obj *fn_80283E28_get(struct Fn80283E28List *l, int i) {
     if (i >= 0 && i < l->count && l->items[i]->sub != 0) return l->items[i];
     return 0;
 }
+static inline int fn_80283E28_find(struct Fn80283E28Obj **items, int count, unsigned int value) {
+    struct Fn80283E28Obj **p = items;
+    int i;
+    for (i = 0; i < count; ++i) {
+        if ((unsigned int)*p != value) goto increment;
+        return i;
+    increment:
+        ++p;
+    }
+    return -1;
+}
 extern char lbl_8034862C[];
 extern int lbl_8055C7E0;
 extern int fn_80128668();
@@ -2413,11 +2424,11 @@ extern "C" int fn_80283B58(void) {
     struct Fn80283E28List *list = (struct Fn80283E28List *)(base + 0xE0);
     int count;
     int idx;
-    struct Fn80283E28Obj **items;
     unsigned int value;
+    struct Fn80283E28Obj **items;
     int i;
     struct Fn80283E28Obj *obj;
-    count = list->count;
+    count = ((int *)(base + 0xE0))[1];
     items = list->items;
     value = (unsigned int)lbl_8055F698;
     idx = fn_80283B58_find(list, value);
@@ -2427,12 +2438,12 @@ extern "C" int fn_80283B58(void) {
             i++;
             if (i >= count) i = 0;
         } while (items[i]->sub == 0 && i != idx);
-        if (i >= 0 && i < list->count && items[i]->sub != 0) {
+        if (i >= 0 && i < ((int *)(base + 0xE0))[1] && items[i]->sub != 0) {
             lbl_8055F698 = (void *)items[i];
         } else {
             lbl_8055F698 = 0;
         }
-        if (i >= 0 && i < list->count && items[i]->sub != 0) {
+        if (i >= 0 && i < ((int *)(base + 0xE0))[1] && items[i]->sub != 0) {
             obj = items[i];
             if (obj != 0) {
                 char *s;
@@ -2482,21 +2493,11 @@ int fn_80283E28(void) {
     int count;
     unsigned int value;
     struct Fn80283E28Obj **items;
-    struct Fn80283E28Obj **p;
     struct Fn80283E28Obj *obj;
-    idx = 0;
     count = ((struct Fn80283E28List *)(base + 0xE0))->count;
     items = ((struct Fn80283E28List *)(base + 0xE0))->items;
     value = (unsigned int)lbl_8055F698;
-    p = items;
-    for (; idx < count; ++idx) {
-        if ((unsigned int)*p != value) goto increment;
-        goto found;
-increment:
-        ++p;
-    }
-    idx = -1;
-found:
+    idx = fn_80283B58_find((struct Fn80283E28List *)(base + 0xE0), value);
     if (idx >= 0) {
         i = idx;
         do {
