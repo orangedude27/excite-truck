@@ -994,6 +994,9 @@ extern "C" int fn_801F88F4(void *arg0) {
     return 0;
 }
 
+/* Initialize an obstacle shape record ("OBST", 0x84 bytes) from config properties.
+ * Rejects disallowed types, fills header/mass/inertia/surface/shape data, and
+ * returns 1 on success or 0 on failure. */
 extern "C" s32 fn_801F8988(void *arg0, void *arg1) {
     char *dest = (char *)arg0;
     const char *base = lbl_8033AF80;
@@ -1505,44 +1508,52 @@ extern "C" void fn_801BFD34(void *, void *, void *);
 extern "C" void fn_80015B20(void *, void *, void *);
 extern "C" void fn_80204018(void *, void *);
 extern "C" u8 lbl_8055EC7C;
-extern "C" void fn_801F973C(void *arg0, void *arg1, u32 arg2) {
-    class DispatchPad {
-    public:
-        char pad[0x108];
-    };
-    class Dispatchable : public DispatchPad {
-    public:
-        virtual void v0();
-        virtual void v1();
-        virtual void call(void *);
-    };
-    u8 scratch[0x38];
-    u32 temp;
-    u32 flags;
-    register s32 zero;
-    void *node;
-
-    if ((arg2 & 2) != 0) {
-        temp = *(volatile u8 *)&lbl_8055EC7C == 0;
-        flags = *(volatile u32 *)((u8 *)arg0 + 0x24) != 0;
-        *(volatile u8 *)&lbl_8055EC7C = temp;
-        if (temp != 0)
-            flags |= 2;
-        node = arg0;
-        zero = 0;
-        while (node != 0) {
-            *(s32 *)(scratch + 0x34) = zero;
-            *(s32 *)(scratch + 0x30) = zero;
-            fn_801BFD34(scratch + 0x24, (u8 *)node + 0x54, arg1);
-            fn_80015B20(scratch, (u8 *)node + 0x30, arg1);
-            s32 value = *(s32 *)((u8 *)arg1 + 0x34);
-            *(s32 *)(scratch + 0x30) = flags;
-            *(s32 *)(scratch + 0x34) = value;
-            ((Dispatchable *)node)->call(scratch);
-            node = *(void **)((u8 *)node + 0x24);
-        }
+extern "C" void fn_801F973C(void *arg0, void *arg1, u32 arg2)
+{
+  u8 scratch[0x38];
+  u32 temp;
+  void (**new_var)(void *, void *);
+  u32 flags;
+  register s32 zero;
+  void *node;
+  if (((!node) && (!node)) && (!node))
+  {
+  }
+  if ((arg2 & 2) != 0)
+  {
+    temp = (*((volatile u8 *) (&lbl_8055EC7C))) == 0;
+    flags = (*((volatile u32 *) (((u8 *) arg0) + 0x24))) != 0;
+    *((volatile u8 *) (&lbl_8055EC7C)) = temp;
+    if (temp != 0)
+    {
+      flags |= 2;
     }
-    if ((arg2 & 1) != 0) fn_80204018(arg0, arg1);
+    node = arg0;
+    zero = 0;
+    goto next_node;
+    new_var = &((void (**)(void *, void *)) (*((void **) (((u8 *) node) + 0x108))))[4];
+    loop_body:
+    *((s32 *) (scratch + 0x34)) = zero;
+
+    *((s32 *) (scratch + 0x30)) = zero;
+    fn_801BFD34(scratch + 0x24, ((u8 *) node) + 0x54, arg1);
+    fn_80015B20(scratch, ((u8 *) node) + 0x30, arg1);
+    s32 value = *((s32 *) (((u8 *) arg1) + 0x34));
+    *((s32 *) (scratch + 0x30)) = flags;
+    *((s32 *) (scratch + 0x34)) = value;
+    (*new_var)(node, scratch);
+    next_node:
+    node = *((void **) (((u8 *) node) + 0x24));
+
+    if (node != 0)
+    {
+      goto loop_body;
+    }
+  }
+  if ((arg2 & 1) != 0)
+  {
+    fn_80204018(arg0, arg1);
+  }
 }
 
 extern "C" void *fn_801F981C(void *object, s32 flags) {
@@ -2297,12 +2308,11 @@ extern "C" void fn_801FA738(void) {
 
 extern "C" void *fn_801F96C8(void *);
 extern "C" void fn_801F973C(void *, void *, u32);
-#pragma dont_inline on
-#pragma use_lmw_stmw on
+#pragma use_lmw_stmw off
 extern "C" void fn_801FA7F4(void *arg0, u32 *arg1, s32 arg2) {
+    s32 zero = 0;
     volatile u32 *src = (volatile u32 *)arg1;
     s32 t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
-    s32 zero = 0;
     f32 data[14];
     t0 = src[0];
     ((u32 *)data)[13] = zero;
@@ -2340,8 +2350,6 @@ extern "C" void fn_801FA7F4(void *arg0, u32 *arg1, s32 arg2) {
         fn_801F973C(obj, data, 2);
     }
 }
-#pragma push
-#pragma use_lmw_stmw off
 extern "C" void *fn_801FA8E0(s32 arg0, s32 arg1, s32 arg2) {
     /* Allocates a StaticObject node, constructs it, pushes it onto the global list, and returns its payload pointer. */
     s32 id = lbl_8055EC78++;
@@ -2673,31 +2681,27 @@ extern "C" s32 fn_801FB244(s32 object, s32 deleteFlag) {
 extern "C" f32 fn_801EA0E8(f32, f32, f32, f32, f32, f32);
 extern "C" void fn_801F7D10(void *, void *, void *);
 extern "C" void fn_801FB284(void *arg0, void *arg1) {
-    f32 temp_f1, temp_f2, temp_f3, temp_f4, temp_f5, temp_f6, temp_f3_2, temp_f1_2, temp_f6_2;
     ((void (*)(void))fn_801F7D10)();
     if (*(u32 *)((u8 *)arg0 + 0x190) & 0x100) {
-        temp_f3 = -*(f32 *)((u8 *)arg0 + 0x28);
-        temp_f5 = *(f32 *)((u8 *)arg1 + 0x24);
-        temp_f6 = *(f32 *)((u8 *)arg1 + 0x0C) * temp_f3;
-        temp_f4 = *(f32 *)((u8 *)arg1 + 0x10) * temp_f3;
-        temp_f3_2 = *(f32 *)((u8 *)arg1 + 0x28);
-        temp_f2 = *(f32 *)((u8 *)arg1 + 0x2C) + (*(f32 *)((u8 *)arg1 + 0x14) * temp_f3);
-        temp_f1 = temp_f5 + temp_f6;
-        *(f32 *)((u8 *)arg1 + 0x2C) = temp_f2;
-        *(f32 *)((u8 *)arg1 + 0x24) = temp_f1;
-        *(f32 *)((u8 *)arg1 + 0x28) = temp_f3_2 + temp_f4;
-        temp_f1_2 = fn_801EA0E8(temp_f1, temp_f2, temp_f3_2, temp_f4, temp_f5, temp_f6);
-        *(f32 *)((u8 *)arg1 + 0x28) = temp_f1_2;
-        temp_f6_2 = *(f32 *)((u8 *)arg0 + 0x28);
-        *(f32 *)((u8 *)arg1 + 0x24) += *(f32 *)((u8 *)arg1 + 0x0C) * temp_f6_2;
-        *(f32 *)((u8 *)arg1 + 0x28) = temp_f1_2 + *(f32 *)((u8 *)arg1 + 0x10) * temp_f6_2;
-        *(f32 *)((u8 *)arg1 + 0x2C) += *(f32 *)((u8 *)arg1 + 0x14) * temp_f6_2;
+        f32 d, x, y, z;
+        d = -*(f32 *)((u8 *)arg0 + 0x28);
+        x = *(f32 *)((u8 *)arg1 + 0x24) + *(f32 *)((u8 *)arg1 + 0x0C) * d;
+        y = *(f32 *)((u8 *)arg1 + 0x28) + *(f32 *)((u8 *)arg1 + 0x10) * d;
+        z = *(f32 *)((u8 *)arg1 + 0x2C) + *(f32 *)((u8 *)arg1 + 0x14) * d;
+        *(f32 *)((u8 *)arg1 + 0x24) = x;
+        *(f32 *)((u8 *)arg1 + 0x28) = y;
+        *(f32 *)((u8 *)arg1 + 0x2C) = z;
+        y = ((f32 (*)(f32, f32))fn_801EA0E8)(x, z);
+        *(f32 *)((u8 *)arg1 + 0x28) = y;
+        d = *(f32 *)((u8 *)arg0 + 0x28);
+        *(f32 *)((u8 *)arg1 + 0x24) += *(f32 *)((u8 *)arg1 + 0x0C) * d;
+        *(f32 *)((u8 *)arg1 + 0x28) = (f32)(f64)y + *(f32 *)((u8 *)arg1 + 0x10) * d;
+        *(f32 *)((u8 *)arg1 + 0x2C) += *(f32 *)((u8 *)arg1 + 0x14) * d;
     }
 }
 
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 extern "C" void fn_801FB354(void *arg0, void *arg1) {
-    u32 check = *(u32 *)((u8 *)arg0 + 0x190);
     s32 result;
     s32 flags;
     f32 cz;
@@ -2708,7 +2712,9 @@ extern "C" void fn_801FB354(void *arg0, void *arg1) {
     f32 x;
     f32 delta[3];
     void *camera;
+    u32 check;
 
+    check = *(u32 *)((u8 *)arg0 + 0x190);
     if (check & 1) {
         camera = fn_802C86DC();
         x = *(f32 *)((u8 *)arg1 + 0x24);
@@ -2727,6 +2733,7 @@ extern "C" void fn_801FB354(void *arg0, void *arg1) {
     }
     fn_802C70AC(*(s32 *)((u8 *)arg0 + 0x74), arg1, -1, flags);
 }
+#pragma use_lmw_stmw reset
 extern "C" void fn_801FB40C(void *sender, s32 code, void *target) {
     // Forward a notification to the no-op handler: pull a field from each object and append the sender.
     fn_80204014(code, *(s32 *)((u8 *)target + 0x34), *(s32 *)((u8 *)sender + 0x19C), sender);
@@ -2914,13 +2921,14 @@ extern "C" void *fn_801FBE1C(void **head, s32 arg1, s32 arg2, s32 arg3, s32 arg4
 extern "C" void fn_801FBEA8(void *arg0) {
     void *obj = fn_801284F8(0x2C, lbl_8033B51C);
     if (obj != 0) {
-        f32 x = *(f32 *)((char *)arg0 + 0x58);
-        f32 y = *(f32 *)((char *)arg0 + 0x5C);
+        f32 x, y;
         *(void **)obj = lbl_80333B98;
         *(s32 *)((char *)obj + 0xC) = 0;
         *(s32 *)((char *)obj + 4) = 0;
         *(s32 *)((char *)obj + 8) = 0;
         *(s32 *)((char *)obj + 0x18) = 0x54554245;
+        x = *(f32 *)((char *)arg0 + 0x58);
+        y = *(f32 *)((char *)arg0 + 0x5C);
         *(f32 *)((char *)obj + 0x10) = 50000.0f;
         *(f32 *)((char *)obj + 0x14) = 1.0f;
         *(s32 *)((char *)obj + 0x20) = 100;
@@ -2967,13 +2975,13 @@ extern "C" void fn_8019EECC(void);
 #pragma push
 #pragma processor 750
 extern "C" void fn_8019EECC(void);
-#pragma scheduling on
+#pragma optimization_level 2
 extern "C" void fn_801FC048(void *arg0) {
     volatile f32 sp10;
     volatile f32 spC;
     volatile f32 sp8;
-    void *heap = lbl_8033B54C;
     register f32 temp_f31 = lbl_80563010;
+    void *heap = lbl_8033B54C;
     void *obj = fn_801284F8(0x54, heap);
     if (obj != 0) {
         f32 value, zero, x;
@@ -3009,7 +3017,7 @@ extern "C" void fn_801FC048(void *arg0) {
         fn_8019EECC();
     }
 }
-#pragma scheduling invalid_target
+#pragma optimization_level reset
 extern f32 lbl_80563014, lbl_80563018;
 extern u8 lbl_803338C0[], lbl_8033B55C[];
 extern "C" f64 fn_8002F234(void);
@@ -3083,9 +3091,12 @@ extern "C" void fn_801FC274(void *arg0, void *arg1) {
     };
     struct Obj5c { u8 pad[0x5c]; f32 val; };
     volatile u32 *input = (volatile u32 *)arg1;
-    u32 w11 = input[11], w10 = input[10], w9 = input[9], w8 = input[8];
-    register u32 w7 = input[7], w6 = input[6], w5 = input[5], w4 = input[4];
-    u32 w3 = input[3], w2 = input[2], w1 = input[1], w0 = input[0];
+    u32 w11, w10, w9, w8;
+    register u32 w7, w6, w5, w4;
+    u32 w3, w2, w1, w0;
+    w0 = input[0]; w1 = input[1]; w2 = input[2]; w3 = input[3];
+    w4 = input[4]; w5 = input[5]; w6 = input[6]; w7 = input[7];
+    w8 = input[8]; w9 = input[9]; w10 = input[10]; w11 = input[11];
     *(u32 *)((u8 *)arg0 + 0x10c) = w0;
     *(u32 *)((u8 *)arg0 + 0x110) = w1;
     *(u32 *)((u8 *)arg0 + 0x114) = w2;
@@ -3132,14 +3143,18 @@ extern "C" void fn_801FC274(void *arg0, void *arg1) {
             o5c->val = o5c->val * o5c->val;
         } else {
             *(s32 *)((u8 *)object + 0x60) = 2;
-            unsigned index = fn_80129D90(0, 0, *(s32 *)((u8 *)object + 0x54));
-            volatile s32 *entries = (volatile s32 *)((u8 *)object + index * 4);
-            fn_801E6CD0(*(void **)((u8 *)object + 0x30),
-                        entries[0x34 / 4], lbl_80562FF0);
+            if (*(s32 *)((u8 *)object + 0x60) != 1) {
+                unsigned index = fn_80129D90(0, 0, *(s32 *)((u8 *)object + 0x54));
+                volatile s32 *entries = (volatile s32 *)((u8 *)object + index * 4);
+                fn_801E6CD0(*(void **)((u8 *)object + 0x30),
+                            entries[0x34 / 4], lbl_80562FF0);
+            } else {
+                fn_801E6CD0(*(void **)((u8 *)object + 0x30), 0, lbl_80562FF0);
+            }
         }
         *(u8 *)((u8 *)object + 0x5a) = 0;
-        u32 a = *(u32 *)((u8 *)arg0 + 0x10c);
-        register u32 b = *(u32 *)((u8 *)arg0 + 0x110);
+        register int a = *(u32 *)((u8 *)arg0 + 0x10c);
+        u32 b = *(u32 *)((u8 *)arg0 + 0x110);
         *(u32 *)((u8 *)object + 4) = b;
         *(u32 *)object = a;
         b = *(u32 *)((u8 *)arg0 + 0x118);
