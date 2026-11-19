@@ -589,6 +589,49 @@ void* fn_80264A54(void) {
 #undef currentCreditsObject
 }
 
+typedef struct EmitBlk80264A5C {
+    char pad00[4];
+    float f04, f08, f0C, f10;
+    char pad14[8];
+    float f1C, f20;
+    char pad24[4];
+    float f28;
+    float f2C;
+    char pad30[0xC];
+    int f3C;
+    void *f40;
+    int f44;
+    int f48;
+    char pad4C[0x10];
+    float f5C;
+} EmitBlk80264A5C;
+static inline void emitBlk80264A5C(EmitBlk80264A5C *e, float x, float y) {
+    extern float fn_80129DC4(int, float, float);
+    extern int fn_80129D18(int, int);
+    extern int fn_80235FD8(int);
+    extern double cos(double);
+    extern double sin(double);
+    float t = e->f5C + e->f28;
+    e->f5C = t;
+    if (t > 1.0f && e->f44 + 1 <= e->f48) {
+        int idx = e->f44;
+        void *buf = e->f40;
+        SparkParticle *el;
+        float ang, spd;
+        e->f44 = idx + 1;
+        el = (SparkParticle *)((char *)buf + (idx << 5));
+        el->x = x;
+        el->y = y;
+        ang = fn_80129DC4(6, e->f04, e->f08);
+        spd = fn_80129DC4(6, e->f0C, e->f10);
+        el->vx = spd * (float)cos((double)ang);
+        el->vy = spd * (float)sin((double)ang);
+        el->a10 = fn_80129DC4(6, 0.0f, 6.283185f);
+        el->a14 = fn_80129DC4(6, e->f1C, e->f20);
+        el->life = e->f2C;
+        el->id = fn_80129D18(6, fn_80235FD8(e->f3C));
+    }
+}
 #pragma push
 #pragma processor 750
 #pragma cplusplus on
@@ -627,10 +670,10 @@ extern "C" void fn_80264A5C(float farg0, float farg1) {
     int temp_r5_2;
     int temp_r6;
     int temp_r6_2;
-    void *temp_r31;
-    void *temp_r31_2;
     SparkParticle *temp_r30;
     SparkParticle *temp_r30_2;
+    void *temp_r31;
+    void *temp_r31_2;
     if (!((float)__fabs((double)fn_80214D48()) <= lbl_80558DC4[0])) {
         fn_80230C30(&spC, &sp8, (int)farg0, (int)farg1);
         temp_f4 = spC + (farg0 - (float)(int)farg0);
