@@ -574,12 +574,13 @@ void fn_801C4B74(void) {
 }
 
 #pragma opt_common_subs off
+#pragma peephole off
 void fn_801C4BAC(void) {
     register Unk_80437D88 *state;
     register s32 zero;
     s32 flag;
-    char *p0;
     char *p1;
+    f32 *q;
     state = &lbl_80437D88;
     zero = 0;
     lbl_8055E800 = zero;
@@ -588,9 +589,8 @@ void fn_801C4BAC(void) {
     lbl_8055E7F4 = zero;
     lbl_8055E7E3 = zero;
     lbl_8055E7E4 = lbl_80562970;
-    p0 = state->pad_0;
-    memset(p0, zero, 0x9C);
-    p1 = state->pad_0;
+    memset(state->x00, zero, 0x9C);
+    p1 = state->x00;
     *(f32 *)(p1 + 0x14) = lbl_8056296C;
     *(f32 *)(p1 + 0x18) = lbl_80562970;
     *(f32 *)(p1 + 0x1C) = lbl_80562970;
@@ -614,8 +614,9 @@ void fn_801C4BAC(void) {
     *(f32 *)(p1 + 0x90) = lbl_80562970;
     *(f32 *)(p1 + 0x94) = lbl_80562970;
     *(f32 *)(p1 + 0x98) = lbl_805629A8;
-    *(f32 *)((u8 *)state + 0xA4) = lbl_80562994;
-    *(s32 *)((u8 *)state + 0x9C) = zero;
+    q = (f32 *)&state->x9C;
+    q[2] = lbl_80562994;
+    state->x9C = zero;
     if (lbl_8055E7F0 == 0) {
         lbl_8055E7E2 = zero;
         return;
@@ -632,6 +633,7 @@ void fn_801C4BAC(void) {
         fn_8017960C(fn_80179630(0));
     }
 }
+#pragma peephole on
 #pragma opt_common_subs reset
 extern float lbl_8055A958;
 extern void fn_80176A00(s32);
@@ -2098,7 +2100,8 @@ void fn_801C7C04(void) {
     extern double fn_8002EFB0(f32, f32);
     char *base = (char *)&lbl_80437D88;
     char *obj;
-    f32 *sp = (f32 *)(base + 0x6F8), *mp = (f32 *)(base + 0x704), *ep = (f32 *)(base + 0x710);
+    s32 mode;
+    Vec *sv = (Vec *)(base + 0x6F8), *mv = (Vec *)(base + 0x704), *ev = (Vec *)(base + 0x710);
     f32 a[2], b[2], c[2], d[2], e[2], f[2], g[2], h[2], i[2];
     f32 *q, *p;
     f32 len, scale;
@@ -2112,20 +2115,21 @@ void fn_801C7C04(void) {
     *(s32 *)(obj + 0xC) = fn_801C3954((s32)obj + 0x10);
     *(s32 *)(obj + 0xC) &= ~fn_801C3954((s32)obj + 0x110);
     *(f32 *)(obj + 0x214) = lbl_8055E84C;
-    switch (*(s32 *)(obj + 0x210)) {
+    mode = *(s32 *)(obj + 0x210);
+    switch (mode) {
     case 2:
         *(f32 *)(obj + 0x220) = lbl_80562970;
-        b[1] = ep[2]; b[0] = *(f32 *)(base + 0x710);
+        b[1] = ev[0].z; b[0] = *(f32 *)(base + 0x710);
         *(f32 *)(obj + 0x218) = b[0]; *(f32 *)(obj + 0x21C) = b[1];
         break;
     case 0:
-        c[0] = *(f32 *)(base + 0x6F8); c[1] = sp[2];
+        c[0] = *(f32 *)(base + 0x6F8); c[1] = sv[0].z;
         *(f32 *)(obj + 0x218) = c[0]; *(f32 *)(obj + 0x21C) = c[1];
         g[0] = lbl_80562970; g[1] = lbl_8056296C;
-        d[0] = *(f32 *)(base + 0x710); d[1] = ep[2];
+        d[0] = *(f32 *)(base + 0x710); d[1] = ev[0].z;
         *(f32 *)(obj + 0x224) = d[0] - (f32)(f64)*(f32 *)(base + 0x6F8);
         *(f32 *)(obj + 0x228) = d[1] - *(f32 *)(obj + 0x21C);
-        f[1] = sp[2]; e[1] = mp[2];
+        f[1] = sv[0].z; e[1] = mv[0].z;
         f[0] = *(f32 *)(base + 0x6F8); e[0] = *(f32 *)(base + 0x704);
         a[0] = e[0] - f[0]; a[1] = e[1] - f[1];
         q = g; p = a;
@@ -2147,7 +2151,7 @@ void fn_801C7C04(void) {
         fn_802E317C(lbl_80336F4C);
         break;
     }
-    sprintf(base + 0x238, lbl_80336F88, *(f32 *)(base+0x6F8), sp[2], *(f32 *)obj);
+    sprintf(base + 0x238, lbl_80336F88, *(f32 *)(base+0x6F8), sv[0].z, *(f32 *)obj);
     fn_801C7BA0();
     qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
 }
