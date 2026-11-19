@@ -10628,19 +10628,6 @@ extern "C" s32 fn_800B5260(void *volume, void *dst, u32 sector, u32 offset, s32 
 struct CacheSlotData { u8 b[0x240]; };
 struct CacheSlot { u32 flag; s32 key; CacheSlotData data; };
 typedef struct { u64 b[0x48]; } U64Copy;
-#pragma opt_unroll_loops off
-static inline void CopyCacheSlotData(void *dst, const void *src) {
-    u32 *d = (u32 *)((u8 *)dst - 4);
-    u32 *s = (u32 *)((u8 *)src - 4);
-    u32 k;
-    for (k = 0; k < 0x48; k++) {
-        u32 a = s[1];
-        u32 b = *(s += 2);
-        d[1] = a;
-        *(d += 2) = b;
-    }
-}
-#pragma opt_unroll_loops reset
 
 /* One cached page: the run of `sectors` sectors starting at `first`, read
  * through `data` (buffer is the same run from its first byte).  Dropping a
@@ -11250,7 +11237,7 @@ extern "C" s32 fn_800B6200(void *arg0, void *arg1) {
     slots = (CacheSlot *)((u8 *)arg0 + 0x1654);
     for (i = 1; i < 4; i++) {
         if ((slots[i].flag & 1) && slots[i].key == key) {
-            *(CacheSlotData *)arg1 = slots[i].data;
+            *(U64Copy *)arg1 = *(U64Copy *)&slots[i].data;
             break;
         }
     }
@@ -11269,16 +11256,16 @@ extern "C" s32 fn_800B6200(void *arg0, void *arg1) {
                 if ((slots[i].flag & 1) == 0) {
                     slots[i].flag |= 1;
                     slots[i].key = key;
-                    *(CacheSlotData *)arg1 = slots[i].data;
+                    *(U64Copy *)arg1 = *(U64Copy *)&slots[i].data;
                     break;
                 }
             }
         } else {
-            *(CacheSlotData *)arg1 = slots[0].data;
+            *(U64Copy *)arg1 = *(U64Copy *)&slots[0].data;
         }
     }
     fn_800B783C((u8 *)lbl_803D2140 + 0x64);
-        return 0;
+    return 0;
 }
 #pragma unroll reset
 #pragma dont_inline on
