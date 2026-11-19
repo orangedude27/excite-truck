@@ -916,6 +916,7 @@ extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
         n1 = n1->next;
     }
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
