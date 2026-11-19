@@ -56,6 +56,13 @@ typedef struct RoadSndParamItem Item_8020CA3C;
 typedef struct RoadSndParamDir Dir_8020CA3C;
 #pragma cplusplus reset
 
+/* Road-sound module start-up hook, empty in this build.  The bootstrap init
+ * fn_80004B5C calls it once among the other subsystem starts (just after
+ * fn_802789A8), and its teardown fn_80004CB4 calls the matching empty
+ * shutdown hook fn_8020CA34; the third empty hook fn_8020CA38 is called by
+ * fn_8000AA38 when it releases the sound/UI state.  Nothing to do here: the
+ * road-sound container is built per owner by fn_8020CA3C and released by
+ * fn_8020CC78, so the module keeps no global state to start up. */
 void fn_8020CA30(void) {
 
 }
@@ -162,12 +169,13 @@ void *fn_8020CC78(void *obj, int freeFlag) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_8020CD28(char *arg0) {
+    #pragma scheduling invalid_target
     char *ctx = *(char **)(arg0 + 4);
     char *e;
-    int i;
     int max = 0;
+    int i;
     int v;
-    f32 hi, lo, cur, scale;
+    f32 hi, cur, scale, lo;
 
     v = *(int *)(ctx + 0x2410);
     if (v > max) max = v;
@@ -193,23 +201,23 @@ void fn_8020CD28(char *arg0) {
                     f32 base = *(f32 *)(e + 0x14);
                     f32 d = *(f32 *)(e + 0x20);
                     t = (cur - base) / (s - base);
-                    if (hi < t) t = hi;
-                    if (t > lo) { } else t = lo;
+                    t = (hi < t) ? hi : t;
+                    t = (t > lo) ? t : lo;
                     a = lo + t * (d - lo);
                 } else {
                     f32 base2 = *(f32 *)(e + 0x18);
                     f32 d2 = *(f32 *)(e + 0x20);
                     t = (cur - base2) / (*(f32 *)(e + 0x1C) - base2);
-                    if (hi < t) t = hi;
-                    if (t > lo) { } else t = lo;
+                    t = (hi < t) ? hi : t;
+                    t = (t > lo) ? t : lo;
                     a = d2 + t * (*(f32 *)(e + 0x24) - d2);
                 }
                 {
                     f32 base3 = *(f32 *)(e + 0x14);
                     f32 d3 = *(f32 *)(e + 0x28);
                     t2 = (cur - base3) / (*(f32 *)(e + 0x1C) - base3);
-                    if (hi < t2) t2 = hi;
-                    if (t2 > lo) { } else t2 = lo;
+                    t2 = (hi < t2) ? hi : t2;
+                    t2 = (t2 > lo) ? t2 : lo;
                     b = d3 + t2 * (*(f32 *)(e + 0x2C) - d3);
                 }
                 *(char *)(obj + 0x4A) = 0;
