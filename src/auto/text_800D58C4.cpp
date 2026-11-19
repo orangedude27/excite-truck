@@ -1096,6 +1096,7 @@ s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *
     return 1;
 }
 #pragma pop
+struct LLHead { char pad[4]; void *list; void *term; };
 extern "C" void *CreateAnimTransform__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16ResourceAccessor(void *self, const void *resource, void *accessor) {
     extern const char lbl_8031F8C0[];
     extern const char lbl_8031F89C[];
@@ -3231,9 +3232,7 @@ extern "C" s32 fn_800DB398(s32 object, s32 deleteFlag) {
 
 void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *src) {
     u32 zero = 0;
-    void *vtable = lbl_8032012C;
     void *list14 = (u8 *)dst + 0x14;
-    f32 defaultValue = lbl_80560EA8;
     void *list20 = (u8 *)dst + 0x20;
     *(volatile u32 *)((u8 *)dst + 0x14) = zero;
     *(volatile u32 *)((u8 *)dst + 0x18) = zero;
@@ -3241,15 +3240,15 @@ void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *s
     *(volatile u32 *)((u8 *)dst + 0x24) = zero;
     *(volatile u32 *)((u8 *)dst + 4) = zero;
     *(volatile u32 *)((u8 *)dst + 8) = zero;
-    *(void **)dst = vtable;
+    *(void **)dst = lbl_8032012C;
     *(u32 *)((u8 *)dst + 0x10) = zero;
     *(void **)((u8 *)dst + 0x14) = list14;
     *(void **)((u8 *)dst + 0x18) = list14;
     *(u32 *)((u8 *)dst + 0x1C) = zero;
     *(void **)((u8 *)dst + 0x20) = list20;
     *(void **)((u8 *)dst + 0x24) = list20;
-    *(f32 *)((u8 *)dst + 0x4C) = defaultValue;
-    *(f32 *)((u8 *)dst + 0x50) = defaultValue;
+    *(f32 *)((u8 *)dst + 0x4C) = 0.0f;
+    *(f32 *)((u8 *)dst + 0x50) = 0.0f;
     *(u32 *)((u8 *)dst + 0xC) = zero;
     *(u32 *)((u8 *)dst + 0x28) = zero;
     *((u8 *)dst + 0xD0) = (u8)zero;
