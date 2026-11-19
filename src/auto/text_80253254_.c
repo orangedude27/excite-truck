@@ -81,23 +81,20 @@ static inline void mtx33_mult_vec(const float *m, const float *v, float *d) {
 #define AO(T, o) (*(T *)((char *)arg0 + (o)))
 void fn_80253254(void) {}
 
-#pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_80253258(void) {
-    extern float lbl_80563A04, lbl_80563A08, lbl_80563A0C, lbl_80563A10;
     extern void PSVECNormalize(float *, float *);
     extern void fn_802C9A1C(float *);
     float v[6];
-    v[0] = lbl_80563A04;
-    v[1] = lbl_80563A08;
-    v[2] = lbl_80563A0C;
-    v[3] = v[0] * lbl_80563A10;
-    v[4] = v[1] * lbl_80563A10;
-    v[5] = v[2] * lbl_80563A10;
+    v[0] = 0.0f;
+    v[1] = 250.0f;
+    v[2] = -150.0f;
+    v[3] = v[0] * -1.0f;
+    v[4] = v[1] * -1.0f;
+    v[5] = v[2] * -1.0f;
     PSVECNormalize(&v[3], &v[3]);
     fn_802C9A1C(&v[3]);
 }
-#pragma pop
 void fn_802532BC(void *arg0) {
     #pragma scheduling invalid_target
     struct Struct_802532BC_Offset28 {
@@ -454,11 +451,10 @@ void fn_80253890(void *arg0, void *arg1) {
         virtual void v34();
         virtual Vec3 getVec(const char *, const Vec3 &);
     };
-    char *labels;
+    char *const labels = lbl_803447C0;
     char cfgPath[0x100];
     Res *manager;
     Res *res;
-    labels = lbl_803447C0;
     if (*(int *)((char *)arg0 + 0x28) != -1) return;
     fn_801345D8(cfgPath, 0x100, labels + 0x50, arg1);
     manager = (Res *)fn_80131810(cfgPath);
@@ -782,6 +778,21 @@ void fn_80254568(void *outValue, s32 archiveCtx, const char *entryName) {
 }
 
 #pragma dont_inline on
+struct View545C4 {
+    float v0, v4, v8, vC, v10, v14, v18, v1C, v20, v24, v28, v2C;
+    u8 flag30;
+    char pad31[0xF];
+    float v40, v44, v48, v4C;
+};
+struct Info545C4 {
+    u8 flag0;
+    char pad1[0x17];
+    s32 id18;
+    char pad1C[0x420];
+    float f43C, f440;
+    char pad444[0x148];
+    float f58C;
+};
 void fn_802545C4(void *arg0, s32 arg1, s32 arg2) {
     extern void *memset(void *, int, unsigned long);
     extern void PSVECCrossProduct(float *, float *, float *);
@@ -789,7 +800,7 @@ void fn_802545C4(void *arg0, s32 arg1, s32 arg2) {
     extern float fn_801F159C(s32);
     extern float lbl_80498E18[3];
     extern float lbl_80563A04, lbl_80563A14, lbl_80563A18;
-    extern float lbl_80563A30, lbl_80563A34, lbl_80563A38, lbl_80563A3C;
+    extern float lbl_80563A34, lbl_80563A38, lbl_80563A3C;
     extern char lbl_8055C178[], lbl_8055C180[], lbl_8055C188[];
     extern void fn_80254568(void *, s32, const char *);
     struct Stack {
@@ -803,16 +814,16 @@ void fn_802545C4(void *arg0, s32 arg1, s32 arg2) {
     if (*(u8 *)(char *)arg2 != 0) {
         *(float *)((char *)arg0 + 0x40) = *(float *)((char *)arg2 + 0x58C);
         if (arg1 != -1)
-            *(float *)((char *)arg0 + 0x40) = *(float *)((char *)arg0 + 0x40) - lbl_80563A30;
+            *(float *)((char *)arg0 + 0x40) = *(float *)((char *)arg0 + 0x40) - 0.20316814f;
         *(float *)((char *)arg0 + 0x44) = *(float *)((char *)arg2 + 0x58C);
         if (arg1 != -1)
-            *(float *)((char *)arg0 + 0x44) = *(float *)((char *)arg0 + 0x44) - lbl_80563A30;
+            *(float *)((char *)arg0 + 0x44) = *(float *)((char *)arg0 + 0x44) - 0.20316814f;
         *(float *)((char *)arg0 + 0x48) = *(float *)((char *)arg2 + 0x58C);
         if (arg1 != -1)
-            *(float *)((char *)arg0 + 0x48) = *(float *)((char *)arg0 + 0x48) - lbl_80563A30;
+            *(float *)((char *)arg0 + 0x48) = *(float *)((char *)arg0 + 0x48) - 0.20316814f;
         *(float *)((char *)arg0 + 0x4C) = *(float *)((char *)arg2 + 0x58C);
         if (arg1 != -1)
-            *(float *)((char *)arg0 + 0x4C) = *(float *)((char *)arg0 + 0x4C) - lbl_80563A30;
+            *(float *)((char *)arg0 + 0x4C) = *(float *)((char *)arg0 + 0x4C) - 0.20316814f;
     }
     if (arg1 != -1) {
         fn_80254568(stack.sp2c, arg1, lbl_8055C178);
@@ -1772,108 +1783,60 @@ void fn_802566A4(void *arg0) {
     extern int fn_802C9C8C(int);
     extern void fn_802C9CE0(void);
     extern unsigned int lbl_802FA5B8[9];
-    extern float lbl_80563A04;
-    extern float lbl_80563A14;
+    struct Vec3 { float v[3]; };
     struct Frame {
-        float u[3];
-        float v[3];
-        float w[3];
-        float fallback[3];
-        float output[3];
+        float u[3]; float v[3]; float w[3]; float fallback[3]; float output[3];
         unsigned int pad;
-        union {
-            unsigned int word[12];
-            float value[12];
-        } basis;
+        union { unsigned int word[12]; float value[12]; } basis;
         unsigned int config[9];
     } frame;
-    float zero = lbl_80563A04;
-    float one = lbl_80563A14;
+    float zero = 0.0f, one = 1.0f;
     int i = 0;
     void *ctx = arg0;
     float *out = frame.output;
     unsigned int *config = lbl_802FA5B8;
-
-    frame.config[0] = *config++;
-    frame.config[1] = *config++;
-    frame.config[2] = *config++;
-    frame.config[3] = *config++;
-    frame.config[4] = *config++;
-    frame.config[5] = *config++;
-    frame.config[6] = *config++;
-    frame.config[7] = *config++;
+    frame.config[0] = *config++; frame.config[1] = *config++;
+    frame.config[2] = *config++; frame.config[3] = *config++;
+    frame.config[4] = *config++; frame.config[5] = *config++;
+    frame.config[6] = *config++; frame.config[7] = *config++;
     frame.config[8] = *config++;
-
     do {
         unsigned int *matrix = (unsigned int *)fn_802C86DC();
         unsigned int m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11;
-        m0 = matrix[0];
-        m2 = matrix[2];
-        frame.basis.word[0] = m0;
-        m6 = matrix[6];
-        frame.basis.word[2] = m2;
-        m8 = matrix[8];
-        frame.basis.word[6] = m6;
-        m1 = matrix[1];
-        frame.basis.word[8] = m8;
-        m4 = matrix[4];
-        frame.basis.word[1] = m1;
-        m7 = matrix[7];
-        frame.basis.word[4] = m4;
-        m3 = matrix[3];
-        frame.basis.word[7] = m7;
-        m5 = matrix[5];
-        frame.basis.word[3] = m3;
-        m9 = matrix[9];
-        m10 = matrix[10];
-        m11 = matrix[11];
-        frame.basis.word[5] = m5;
-        frame.basis.word[9] = m9;
-        frame.basis.word[10] = m10;
+        m0 = matrix[0]; m2 = matrix[2]; frame.basis.word[0] = m0;
+        m6 = matrix[6]; frame.basis.word[2] = m2; m8 = matrix[8];
+        frame.basis.word[6] = m6; m1 = matrix[1]; frame.basis.word[8] = m8;
+        m4 = matrix[4]; frame.basis.word[1] = m1; m7 = matrix[7];
+        frame.basis.word[4] = m4; m3 = matrix[3]; frame.basis.word[7] = m7;
+        m5 = matrix[5]; frame.basis.word[3] = m3; m9 = matrix[9];
+        m10 = matrix[10]; m11 = matrix[11]; frame.basis.word[5] = m5;
+        frame.basis.word[9] = m9; frame.basis.word[10] = m10;
         frame.basis.word[11] = m11;
-
-        frame.u[0] = frame.basis.value[0];
-        frame.u[1] = zero;
+        frame.u[0] = frame.basis.value[0]; frame.u[1] = zero;
         frame.u[2] = frame.basis.value[2];
-        frame.w[0] = frame.basis.value[6];
-        frame.w[1] = zero;
+        frame.w[0] = frame.basis.value[6]; frame.w[1] = zero;
         frame.w[2] = frame.basis.value[8];
         PSVECCrossProduct(frame.w, frame.u, frame.v);
-        PSVECNormalize(frame.u, frame.u);
-        PSVECNormalize(frame.v, frame.v);
+        PSVECNormalize(frame.u, frame.u); PSVECNormalize(frame.v, frame.v);
         PSVECCrossProduct(frame.u, frame.v, frame.w);
-        frame.basis.value[0] = frame.u[0];
-        frame.basis.value[1] = frame.u[1];
-        frame.basis.value[2] = frame.u[2];
-        frame.basis.value[3] = frame.v[0];
-        frame.basis.value[4] = frame.v[1];
-        frame.basis.value[5] = frame.v[2];
-        frame.basis.value[6] = frame.w[0];
-        frame.basis.value[7] = frame.w[1];
+        frame.basis.value[0] = frame.u[0]; frame.basis.value[1] = frame.u[1];
+        frame.basis.value[2] = frame.u[2]; frame.basis.value[3] = frame.v[0];
+        frame.basis.value[4] = frame.v[1]; frame.basis.value[5] = frame.v[2];
+        frame.basis.value[6] = frame.w[0]; frame.basis.value[7] = frame.w[1];
         frame.basis.value[8] = frame.w[2];
-
         {
             float *input;
-            if (i > 0) {
-                input = (float *)frame.config + (i - 1) * 3;
-            } else {
-                frame.fallback[0] = zero;
-                frame.fallback[1] = one;
-                frame.fallback[2] = zero;
-                input = frame.fallback;
+            if (i > 0) input = ((struct Vec3 *)frame.config)[i - 1].v;
+            else {
+                frame.fallback[0] = zero; frame.fallback[1] = one;
+                frame.fallback[2] = zero; input = frame.fallback;
             }
             if (out == input) {
-                float x = input[0];
-                float y = input[1];
-                float z = input[2];
-                float a0 = frame.basis.value[0];
-                float a3 = frame.basis.value[3];
-                float a6 = frame.basis.value[6];
-                float a1 = frame.basis.value[1];
-                float a4 = frame.basis.value[4];
-                float a7 = frame.basis.value[7];
-                float a2 = frame.basis.value[2];
-                float a5 = frame.basis.value[5];
+                float x = input[0], y = input[1], z = input[2];
+                float a0 = frame.basis.value[0], a3 = frame.basis.value[3];
+                float a6 = frame.basis.value[6], a1 = frame.basis.value[1];
+                float a4 = frame.basis.value[4], a7 = frame.basis.value[7];
+                float a2 = frame.basis.value[2], a5 = frame.basis.value[5];
                 float a8 = frame.basis.value[8];
                 out[0] = (x * a0 + y * a3) + z * a6;
                 out[1] = (x * a1 + y * a4) + z * a7;
@@ -1890,17 +1853,14 @@ void fn_802566A4(void *arg0) {
                           input[2] * frame.basis.value[8];
             }
         }
-
         fn_802C9A1C(out);
         if (fn_802C9C8C(0x14000000) != 0) {
             unsigned char *flag = *(unsigned char **)((char *)ctx + 8);
-            if (*flag != 0) {
-                fn_80254354(flag);
-            }
+            if (*flag != 0) fn_80254354(flag);
             fn_802C9CE0();
         }
         i++;
-    } while (i < 4);
+    } while (i < 4U);
 }
 
 #pragma push
