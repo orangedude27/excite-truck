@@ -119,18 +119,23 @@ extern "C" void *fn_800FDE60(void) {
     extern u8 lbl_80326E20[];
     struct Manager {
         u8 pad[0x1C];
-        volatile s32 unk_0x1C;
+        s32 unk_0x1C;
     };
     u8 *base = lbl_804190A0;
     if ((s8)lbl_8055DE78 == 0) {
-        volatile Manager *manager = (volatile Manager *)(base + 0x2050);
+        Manager *manager = (Manager *)(base + 0x2050);
         manager->unk_0x1C = 0;
-        fn_8002F53C((u8 *)manager + 0x20, (void *)fn_800FDFF8, (void *)__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0, 0xC, 3);
+        fn_8002F53C((u8 *)manager + 0x20, (void *)fn_800FDFF8,
+                    (void *)__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0, 0xC, 3);
         OSInitMutex((void *)manager);
-        *(void **)((u8 *)manager + 0x18) = MEMRecordStateForFrmHeap((void *)&lbl_804190A0[0], 0x2044, 0x40, 4, 0);
+        *(void **)((u8 *)manager + 0x18) =
+            MEMRecordStateForFrmHeap((void *)&lbl_804190A0[0], 0x2044, 0x40, 4, 0);
         if (MEMResizeForMBlockFrmHeap() < 0x80)
-            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x37, (const char *)lbl_80326E20);
-        __register_global_object(base + 0x2050, (void *)__dt__Q46nw4hbm3snd6detail11TaskManagerFv, base + 0x2044);
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x37,
+                                        (const char *)lbl_80326E20);
+        __register_global_object(base + 0x2050,
+                                 (void *)__dt__Q46nw4hbm3snd6detail11TaskManagerFv,
+                                 base + 0x2044);
         lbl_8055DE78 = 1;
     }
     return base + 0x2050;
@@ -400,8 +405,8 @@ extern "C" void CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(void *arg0,
     };
     TaskManager *mgr = (TaskManager *)arg0;
     u32 level = OSDisableInterrupts();
-    int count = 0;
-    int offset = 0;
+    s32 count = 0;
+    s32 offset = 0;
     void *node;
     for (; count < 3; count++, offset += 0xC) {
         void *current;
@@ -685,8 +690,8 @@ extern "C" s32 ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3s
     u32 *dst;
     u32 *table;
     s32 i;
-    u8 *h = (u8 *)*self;
-    u8 *h2;
+    register u8 *h = (u8 *)*self;
+    register u8 *h2;
     u32 fmt;
     u32 f;
     out[0] = h[0];
@@ -839,27 +844,24 @@ extern "C" void fn_800FF090(void *arg0) {
         const void *sampleData;
         u8 pad[0x34];
     };
-    struct WaveData waveData[2];
-    u8 *wave;
-    u32 interruptLevel;
-    const char *base;
-    u32 format;
-    u8 *waveOut;
-    int i;
-
-    base = (const char *)lbl_80327040;
+    struct AutoInterruptLock {
+        u32 mLevel;
+        AutoInterruptLock() : mLevel(OSDisableInterrupts()) {}
+        ~AutoInterruptLock() { OSRestoreInterrupts(mLevel); }
+    };
+    const char *base = (const char *)lbl_80327040;
     if (*(u32 *)((u8 *)arg0 + 4) == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(base, 0x1F7, base + 0x240);
     }
     if (*(void **)((u8 *)arg0 + 0x18) == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(base, 0x1F8, base + 0x274);
     }
-    interruptLevel = OSDisableInterrupts();
+    AutoInterruptLock lock;
     if (*(u32 *)((u8 *)arg0 + 4) == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327430, 0x1F1,
                                     (const char *)lbl_8032740C);
     }
-    wave = (u8 *)*(void **)((u8 *)arg0 + 8);
+    u8 *wave = (u8 *)*(void **)((u8 *)arg0 + 8);
     if (wave == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327490, 0x23D,
                                     (const char *)lbl_8032746C);
@@ -869,6 +871,8 @@ extern "C" void fn_800FF090(void *arg0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327460, 0x193,
                                     (const char *)lbl_8032743C);
     }
+    struct WaveData waveData[2];
+    u32 format;
     switch (*(u32 *)((u8 *)arg0 + 0x20)) {
     case 1:
         waveData[0].format = 1;
@@ -880,7 +884,6 @@ extern "C" void fn_800FF090(void *arg0) {
         break;
     default:
         Panic__Q26nw4hbm2dbFPCciPCce(base, 0x20B, base + 0xD4);
-        OSRestoreInterrupts(interruptLevel);
         return;
     }
     waveData[0].loop = 0;
@@ -890,8 +893,8 @@ extern "C" void fn_800FF090(void *arg0) {
     waveData[0].sampleBytes =
         GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(
             *(u32 *)(wave + 0x10), format);
-    waveOut = (u8 *)&waveData[0];
-    for (i = 0; i < *(int *)((u8 *)arg0 + 0x10); i++) {
+    u8 *waveOut = (u8 *)&waveData[0];
+    for (int i = 0; i < *(int *)((u8 *)arg0 + 0x10); i++) {
         *(const void **)(waveOut + 0x10) = *(const void **)(wave + 8);
         wave += 4;
         waveOut += 0x44;
@@ -903,7 +906,6 @@ extern "C" void fn_800FF090(void *arg0) {
                                          *(u8 *)((u8 *)arg0 + 0x1F));
     *(u8 *)((u8 *)arg0 + 0x1D) = 1;
     *(u8 *)((u8 *)arg0 + 0x1E) = 0;
-    OSRestoreInterrupts(interruptLevel);
 }
 
 #pragma pop
@@ -1176,20 +1178,28 @@ extern "C" void fn_800FF708(void *);
 #pragma pop
 #pragma use_lmw_stmw off
 extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FF824(void) {
+#define seqPlayerList lbl_8041D4AC   /* nw4hbm::snd::detail::SeqPlayer list */
+#define linkListH lbl_80327370       /* "LinkList.h" */
+#define nullPointerMsg lbl_8032734C  /* "NW4HBM:Pointer must not be NULL (p)" */
+
+    /* Apply cached voice parameters to every sequence player in the global list. */
     struct LinkListIter { void *node; };
     LinkListIter begin;
-    begin.node = *(void **)&lbl_8041D4AC[0x04];
+    begin.node = *(void **)&seqPlayerList[0x04];
     LinkListIter it = begin;
 
-    while (it.node != (void *)&lbl_8041D4AC[0x04]) {
+    while (it.node != (void *)&seqPlayerList[0x04]) {
         void *node = it.node;
         it.node = *(void **)it.node;
         if (node == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327370, 0x23D,
-                                         (const char *)lbl_8032734C);
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)linkListH, 0x23D,
+                                         (const char *)nullPointerMsg);
         }
         fn_800FF708(&((u8 *)node)[-0x94]);
     }
+#undef seqPlayerList
+#undef linkListH
+#undef nullPointerMsg
 }
 #pragma use_lmw_stmw off
 extern "C" void detail_StopAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void) {
