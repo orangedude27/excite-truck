@@ -11277,10 +11277,10 @@ extern "C" s32 fn_800B6200(void *arg0, void *arg1) {
         }
     }
     fn_800B783C((u8 *)lbl_803D2140 + 0x64);
-    return 0;
+        return 0;
 }
+#pragma unroll reset
 #pragma dont_inline on
-
 #pragma opt_propagation off
 extern "C" s32 fn_800B63FC(void) {
     s32 result, found;
