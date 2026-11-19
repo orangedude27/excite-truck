@@ -1011,10 +1011,11 @@ int fn_80190D38(float a, float b, float c) {
 
 extern float lbl_805620B8;
 #pragma scheduling reset
-int fn_80190D9C(float a, float b, float c) {
+/* Map a value within [start, end] to a 0-65535 range, clamped to [0, 1]. */
+int fn_80190D9C(float value, float start, float end) {
     float lower = 1.0f;
-    float value = (a - b) / (c - b);
-    if (lower < value) { lower = lower; } else { lower = value; }
+    float t = (value - start) / (end - start);
+    if (lower < t) { lower = lower; } else { lower = t; }
     if (lower > lbl_8056208C) { lower = lower; } else { lower = lbl_8056208C; }
     return (int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620B8)));
 }
