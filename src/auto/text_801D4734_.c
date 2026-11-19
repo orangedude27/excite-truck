@@ -3885,8 +3885,6 @@ extern "C" void fn_801D8ABC(void *obj) {
 #pragma push
 #pragma cplusplus on
 extern "C" s32 fn_801D8ACC(void *arg0, void *arg1) {
-    extern float lbl_80562ADC;
-    extern float lbl_80562B14;
     extern char lbl_8055ACB8;
     extern char lbl_8055ACB0;
     struct Dummy {
@@ -3900,15 +3898,13 @@ extern "C" s32 fn_801D8ACC(void *arg0, void *arg1) {
         virtual void v7();
         virtual float get(char *, float);
     };
-    #pragma opt_propagation off
-    float value = lbl_80562ADC;
     Dummy *obj = (Dummy *)arg1;
+    float value = 0.0f;
     *(int *)((char *)arg0 + 4) = 1;
     *(float *)((char *)arg0 + 0x10) = value;
     *(float *)((char *)arg0 + 8) = obj->get(&lbl_8055ACB8, value);
-    *(float *)((char *)arg0 + 0xC) = obj->get(&lbl_8055ACB0, lbl_80562B14);
+    *(float *)((char *)arg0 + 0xC) = obj->get(&lbl_8055ACB0, 5.0f);
     return 1;
-    #pragma opt_propagation reset
 }
 #pragma pop
 #pragma cplusplus reset
@@ -4102,7 +4098,7 @@ extern "C" int fn_801D8E10(void *arg0, void *arg1) {
     extern char lbl_8055AD50;
     extern char lbl_8055ACB8;
     extern float lbl_80562ADC;
-    extern char lbl_8033908C;
+    extern char lbl_8033908C[];
     extern void fn_802E30C8();
     struct Lookup {
         virtual void f0();
@@ -4130,22 +4126,22 @@ extern "C" int fn_801D8E10(void *arg0, void *arg1) {
 
     lookup = (Lookup *)arg1;
     src = lookup->get(&lbl_8055AD50, &lbl_8055ACF0);
-    dst = (char *)arg0 + 8;
     count = 0x14;
+    dst = (char *)arg0 + 8;
     goto copy;
-copy:
+count_check:
     count--;
-    if (count <= 0) {
-        dst[-1] = 0;
-        goto copied;
-    }
-    *dst++ = *src++;
-    if ((signed char)dst[-1] != 0) {
+    if (count > 0)
         goto copy;
-    }
+    dst[-1] = 0;
+    goto copied;
+copy:
+    *dst++ = *src++;
+    if ((signed char)dst[-1] != 0)
+        goto count_check;
 copied:
     if ((signed char)*((char *)arg0 + 8) == 0) {
-        ((void (*)(char *))fn_802E30C8)(&lbl_8033908C);
+        ((void (*)(const char *, ...))fn_802E30C8)(lbl_8033908C);
         return 0;
     }
     measure = (Measure *)arg1;
