@@ -28,22 +28,12 @@ extern char lbl_80559CD8;
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" void fn_8013B7B4(float *arg0, int value) {
-    struct List {
-        virtual void v0() = 0;
-        virtual void *getAt(int) = 0;
-    };
-    struct Item {
-        virtual const char *getName() = 0;
-    };
+    struct List { virtual void v0() = 0; virtual void *getAt(int) = 0; };
+    struct Item { virtual const char *getName() = 0; };
     struct DataItem {
-        virtual void v0() = 0;
-        virtual void v1() = 0;
-        virtual void v2() = 0;
-        virtual void v3() = 0;
-        virtual void v4() = 0;
-        virtual void v5() = 0;
-        virtual void v6() = 0;
-        virtual float getFloat(const char *) = 0;
+        virtual void v0() = 0; virtual void v1() = 0; virtual void v2() = 0;
+        virtual void v3() = 0; virtual void v4() = 0; virtual void v5() = 0;
+        virtual void v6() = 0; virtual float getFloat(const char *) = 0;
     };
     const char **table;
     char *keys = lbl_8032C390;
@@ -55,15 +45,13 @@ extern "C" void fn_8013B7B4(float *arg0, int value) {
     const char *name;
     const char *names[3];
     unsigned int j;
-    list = fn_80131808((char *)&lbl_8032C390);
+    list = fn_80131808(*(char (*)[1])keys);
     if (list == 0) goto error;
     table = lbl_802F9388;
     i = 0;
     while ((item = ((List *)list)->getAt(i)) != 0) {
         name = ((Item *)item)->getName();
-        names[0] = table[0];
-        names[1] = table[1];
-        names[2] = table[2];
+        names[0] = table[0]; names[1] = table[1]; names[2] = table[2];
         out = arg0;
         for (j = 0, namep = names; j < 3; j++, namep++, out += 4) {
             if (stricmp(*namep, name) == 0) {
@@ -104,8 +92,8 @@ void fn_8013B950(void) {
     int remaining;
     int index;
     int bestIndex;
-    float rounded;
     double score;
+    float rounded;
 
     *((volatile u8 *)lbl_8042F8A8 + 4) = 0;
     selected = fn_80179630(0);
@@ -154,12 +142,15 @@ void fn_8013B950(void) {
 }
 #pragma cplusplus reset
 
+#pragma scheduling on
 void fn_8013BAE4(int arg0) {
     float sp10[12];
     int spC;
     float sp8;
     float *p;
-    float x;
+    float t0, t1, t2, t3;
+    float outv;
+    float vf;
     double v;
     int index;
     int i;
@@ -169,14 +160,21 @@ void fn_8013BAE4(int arg0) {
     index = *(int*)((char*)fn_801E87A8() + 0xC);
     fn_8013B6C0(&spC, &sp8, index);
     p = sp10 + spC * 4;
-    x = sp8;
-    lbl_8042F8B8[0] = p[0] + x * (p[4] - p[0]);
-    lbl_8042F8B8[1] = p[1] + x * (p[5] - p[1]);
-    lbl_8042F8B8[2] = p[2] + x * (p[6] - p[2]);
-    v = p[3] + x * (p[7] - p[3]);
-    lbl_8042F8B8[3] = (float)v;
-    if ((float)v < lbl_80561478) v = (float)v - lbl_8056147C;
-    else v = lbl_8056147C + (float)v;
+    t0 = p[0];
+    t1 = p[1];
+    outv = (float)(t0 + sp8 * (p[4] - t0));
+    *(volatile float*)&lbl_8042F8B8[0] = outv;
+    t2 = p[2];
+    outv = (float)(t1 + sp8 * (p[5] - t1));
+    *(volatile float*)&lbl_8042F8B8[1] = outv;
+    t3 = p[3];
+    outv = (float)(t2 + sp8 * (p[6] - t2));
+    *(volatile float*)&lbl_8042F8B8[2] = outv;
+    v = t3 + sp8 * (p[7] - t3);
+    vf = (float)v;
+    *(volatile float*)&lbl_8042F8B8[3] = (float)v;
+    if (vf < lbl_80561478) v = vf - lbl_8056147C;
+    else v = lbl_8056147C + vf;
     i = (int)v;
     n = 1;
     if (i > 1) n = i;
@@ -185,7 +183,7 @@ void fn_8013BAE4(int arg0) {
     lbl_8055E170 = i;
     lbl_8042F8B8[2] = (lbl_8042F8B8[2] < lbl_80561474) ? lbl_80561474 : lbl_8042F8B8[2];
 }
-
+#pragma scheduling on
 /* Reset the shared status record: set the value at +0x08 to its default of 1.0,
  * clear the periodic-update counter, and clear the flag byte at +0x04. */
 void fn_8013BC34(void) {
