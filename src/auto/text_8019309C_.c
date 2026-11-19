@@ -2192,9 +2192,10 @@ extern "C" void fn_8019684C(void) {
 #pragma cplusplus reset
 #pragma pop
 
-  void fn_80196A9C(void) {
-      fn_8019684C();
-  }
+void fn_80196A9C(void) {
+    /* Update all active racer and controller objects for the current frame. */
+    fn_8019684C();
+}
 
 extern float lbl_80562160, lbl_805621A4, lbl_80562258, lbl_8056225C;
 extern float lbl_80562250[2];
