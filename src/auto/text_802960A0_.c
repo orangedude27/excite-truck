@@ -518,6 +518,7 @@ struct KF { float dur; float a[4]; unsigned int col; int p18; float h; float v[3
 #pragma scheduling invalid_target
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 int fn_80296D2C(void *arg0, float *arg1, float farg0) {
     struct KF *kf[2];
     struct KF *base;
