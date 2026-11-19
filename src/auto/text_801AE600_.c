@@ -812,7 +812,6 @@ done:
 #pragma use_lmw_stmw reset
 #pragma small_data on
 float fn_801AF9EC(int arg0, float *arg1) {
-    #pragma opt_common_subs off
     if (arg1 != 0) *arg1 = *(float *)((char *)lbl_80435740 + (arg0 << 3) + 4);
     return lbl_80435740[arg0 * 2];
 }
@@ -872,7 +871,7 @@ void fn_801AFAB8(void) {
 }
 
 void fn_801AFAB0(void) {
-
+    /* Empty stub (no operation). */
 }
 extern int fn_801284F8(int, const char *);
 extern void fn_801AFA64(int *);
