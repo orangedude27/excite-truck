@@ -1,4 +1,9 @@
 #include "types.h"
+static inline int halfMinusMasked8014445C(int v) {
+    int m = v & 0xA;
+    int h = v >> 1;
+    return h - m;
+}
 /* The virtual calls fn_8013FAC4 makes: v9 is the zone HUD's own test (+0x24),
  * v10/vC are the scene object it holds at +0x54 looking something up by name
  * (+0x10 gives the object it finds, +0x0C the same kind of lookup, unused). */
@@ -1036,8 +1041,8 @@ extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
     f32 *out = (f32 *)arg0;
     f32 s[2], e[2], d[2], c[2], o[2];
     u32 i = 0;
-    f32 unit = lbl_805614A4;
-    f32 one = lbl_805614AC;
+    f32 unit = 0.0f;
+    f32 one = 1.0f;
     do {
         s[0] = from[0];
         s[1] = from[2];
@@ -1049,14 +1054,14 @@ extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
         i++;
         f32 scale = one / length;
         c[0] = out[0];
-        c[1] = out[2];
         o[0] = c[0] - s[0];
-        o[1] = c[1] - s[1];
         d[0] = d[0] * scale;
         d[1] = d[1] * scale;
-        f32 p = d[0] * o[0] + d[1] * o[1];
+        c[1] = out[2];
+        o[1] = c[1] - s[1];
         from += 3;
         to += 3;
+        f32 p = d[0] * o[0] + d[1] * o[1];
         c[0] = s[0] + d[0] * p;
         c[1] = s[1] + d[1] * p;
         out[0] = c[0];
@@ -1736,7 +1741,6 @@ struct RenderData {
 };
 #pragma scheduling invalid_target
 extern "C" void fn_8013F0A0(void *arg0, void *arg1, void *arg2) {
-    #pragma scheduling invalid_target
     struct VStringFloat { virtual void d0(); virtual void d1(); virtual u8 *v10(const char *, f32); };
     struct RenderData { u32 f0; u32 f4; u32 f8; u32 fC; f32 f10; f32 f14; f32 f18; f32 f1C; f32 f20; f32 f24; };
     f32 delta, progress, normalized, scale, factor, f27, f29, f28;
