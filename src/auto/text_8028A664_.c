@@ -882,23 +882,18 @@ __declspec(section ".sdata") extern char lbl_8055C8BC[];
 extern "C" void fn_8028BC18(void);
 void *fn_8028BB68(void *arg0, s32 arg1, f32 farg0) {
     extern char lbl_80348C28[];
-    extern f32 lbl_8056432C;
     extern f64 lbl_805643B0;
-    s32 offset = arg1 * 0x1C;
-    s32 result;
-    f32 ratio;
-
-    result = ((s32 (*)(void *, void *, s32, s32, s32))fn_8002F37C)(
-        (void *)fn_8012850C(offset + 0x10, lbl_8055C8BC, offset),
-        (void *)fn_8028BC18, 0, 0x1C, arg1);
-    ratio = lbl_8056432C / farg0;
-    *(s32 *)arg0 = result;
-    *(s32 *)((u8 *)arg0 + 4) = 0;
-    *(s32 *)((u8 *)arg0 + 8) = arg1;
-    *(f32 *)((u8 *)arg0 + 0xC) = farg0;
-    *(f32 *)((u8 *)arg0 + 0x10) = ratio;
-    *(s32 *)((u8 *)arg0 + 0x14) = fn_802CAC28(lbl_80348C28, 0);
-    *(f32 *)((u8 *)arg0 + 0x18) = (f32)fn_8002F208(lbl_805643B0);
+    s32 count = arg1;
+    s32 size = arg1 * 0x1C;
+    s32 memory = fn_8012850C(size + 0x10, lbl_8055C8BC, size);
+    void *array = ((void *(*)(s32, void *, s32, s32, s32))fn_8002F37C)(memory, (void *)fn_8028BC18, 0, 0x1C, count);
+    ((void **)arg0)[0] = array;
+    ((s32 *)arg0)[1] = 0;
+    ((s32 *)arg0)[2] = count;
+    ((f32 *)arg0)[3] = farg0;
+    ((f32 *)arg0)[4] = 1.0f / farg0;
+    ((s32 *)arg0)[5] = fn_802CAC28((void *)lbl_80348C28, 0);
+    ((f32 *)arg0)[6] = (f32)fn_8002F208(lbl_805643B0);
     return arg0;
 }
 #pragma cplusplus off
