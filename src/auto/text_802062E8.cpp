@@ -812,10 +812,13 @@ extern "C" f32 fn_802072DC(void) {
 
 #pragma push
 #pragma processor 750
+/* Initialize a sound object: set its vtable and default fields, acquire a
+ * VoiceSnd handle from the sound manager, register it, and cache the sound's
+ * initial parameter value. */
 extern "C" void *fn_802072E4(void *arg0, int arg1, int arg2) {
     void *vtable;
-    float value;
-    void *obj;
+    float cachedValue;
+    void *voiceSnd;
     fn_802065F8();
     vtable = &lbl_8033BD90;
     *(volatile void **)arg0 = vtable;
@@ -823,12 +826,12 @@ extern "C" void *fn_802072E4(void *arg0, int arg1, int arg2) {
     *(char *)((char *)arg0 + 0x6C) = 1;
     *(float *)((char *)arg0 + 0x68) = 1.0f;
     *(char *)((char *)arg0 + 0x6D) = 1;
-    obj = fn_80208994(lbl_8055ED80, arg1, arg2, 0.0f);
-    *(void **)((char *)arg0 + 0xC) = obj;
-    if (obj != 0)
+    voiceSnd = fn_80208994(lbl_8055ED80, arg1, arg2, 0.0f);
+    *(void **)((char *)arg0 + 0xC) = voiceSnd;
+    if (voiceSnd != 0)
         fn_802085E8(lbl_8055ED80, arg0);
-    obj = *(void **)((char *)arg0 + 0xC);
-    if (obj != 0) {
+    voiceSnd = *(void **)((char *)arg0 + 0xC);
+    if (voiceSnd != 0) {
         struct Cb {
             virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
             virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
@@ -838,11 +841,11 @@ extern "C" void *fn_802072E4(void *arg0, int arg1, int arg2) {
             virtual void m20(); virtual void m21();
             virtual float get();
         };
-        value = ((Cb *)obj)->get();
+        cachedValue = ((Cb *)voiceSnd)->get();
     } else {
-        value = 0.0f;
+        cachedValue = 0.0f;
     }
-    *(float *)((char *)arg0 + 0x24) = value;
+    *(float *)((char *)arg0 + 0x24) = cachedValue;
     return arg0;
 }
 #pragma pop
