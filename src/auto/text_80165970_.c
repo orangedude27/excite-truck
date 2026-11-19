@@ -381,18 +381,19 @@ void fn_80166098(void) {
 #pragma ppc_psq_save off
 #pragma scheduling invalid_target
 float fn_801660C0(void) {
-    class Object {
+    class RacerObject {
     public:
         virtual void v0();
         virtual void v1();
-        virtual void *progress();
+        virtual void *getProgress();
         virtual void unused();
-        virtual void *other();
+        virtual void *getState();
     };
-    Object *object = (Object *)((void *(*)(void))fn_80166098)();
-    int index = *(int *)((char *)object->progress() + 0x10) - 1;
-    float factor = ((float (*)(void))fn_8013672C)();
-    float value = (float)index * factor + *(float *)((char *)object->other() + 0x48);
+    /* Compute the reference racer's progress-derived value: (progress count - 1) scaled plus a base offset, clamped to a minimum of zero. */
+    RacerObject *racer = (RacerObject *)((void *(*)(void))fn_80166098)();
+    int progressCount = *(int *)((char *)racer->getProgress() + 0x10) - 1;
+    float scale = ((float (*)(void))fn_8013672C)();
+    float value = (float)progressCount * scale + *(float *)((char *)racer->getState() + 0x48);
     if (lbl_8056189C > value) {
         return lbl_8056189C;
     }
