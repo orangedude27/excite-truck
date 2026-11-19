@@ -28,7 +28,6 @@ extern void fn_802D3DF8(int, int, float, float);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 typedef struct { unsigned char r, g, b, a; } fn_802DCAE4_GXColor;
-typedef struct { unsigned int w[12]; float f; } fn_802DCAE4_Record;
 extern void GXSetTevKColor(int, fn_802DCAE4_GXColor);
 
 extern unsigned char lbl_8055FEC0;
