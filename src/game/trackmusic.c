@@ -152,6 +152,7 @@ void *fn_8020F5F0(long trackIndex) {
 #pragma dont_inline reset
 extern void *memset(void *, int, unsigned long);
 #pragma dont_inline on
+#pragma opt_unroll_loops off
 long fn_8020F608(long arg0, long arg1) {
     long i = 2;
     char *ptr;
