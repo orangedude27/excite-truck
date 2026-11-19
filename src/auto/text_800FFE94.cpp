@@ -80,7 +80,7 @@ extern "C" char lbl_803278D8[];
 extern "C" char lbl_80327904[];
 extern "C" char lbl_80559918;
 extern "C" char lbl_80559920;
-#pragma use_lmw_stmw off
+#pragma use_lmw_stmw on
 extern "C" int ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail13WaveSoundInfoi(void* arg0, void* arg1, int arg2) {
     register unsigned char* base = (unsigned char*)*(void**)((char*)arg0 + 4);
     register unsigned char* data = base + 8;
@@ -108,12 +108,10 @@ extern "C" int ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hb
         *(float*)arg1 = lbl_80561118;
         ((unsigned char*)arg1)[4] = 0x40; ((unsigned char*)arg1)[5] = 0;
         ((unsigned char*)arg1)[6] = 0; ((unsigned char*)arg1)[7] = 0;
-        ((unsigned char*)arg1)[8] = 0; ((unsigned char*)arg1)[9] = 0;
-        ((unsigned char*)arg1)[9] = 0x7F;
+        ((unsigned char*)arg1)[8] = 0; ((unsigned char*)arg1)[9] = 0x7F;
     }
     return 1;
 }
-#pragma use_lmw_stmw reset
 extern "C" char lbl_80327880[], lbl_803278AC[], lbl_803278D8[];
 extern "C" char lbl_80559908, lbl_80559910;
 extern "C" int ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail17WaveSoundNoteInfoii(void* readerPtr, void* outNoteInfo, int soundIndex, int noteIndex) {
@@ -657,24 +655,22 @@ extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_80101300(void) 
         virtual void Dummy1();
         virtual void Stop();
     };
-    void* pList = (void*)&lbl_8041D4C4[0x04];
-    void* pHead = *(void**)pList;
-    void* pPlayer;
-
-    while (pHead != pList) {
-        pPlayer = pHead;
-        pHead = *(void**)pPlayer;
-        if (pPlayer == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327C7C, 0x23D,
-                                         (const char*)lbl_80327C58);
-        }
-        ((PlayerVTable*)((char*)pPlayer - 0x14))->Stop();
+    struct Iter { void* node; };
+    Iter begin;
+    begin.node = *(void**)&lbl_8041D4C4[0x04];
+    Iter it = begin;
+    struct EndWrap { void* e; } sentinel;
+    sentinel.e = (void*)&lbl_8041D4C4[0x04];
+    void*& end = sentinel.e;
+    while (it.node != end) {
+        void* node = it.node;
+        it.node = *(void**)it.node;
+        if (node == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327C7C, 0x23D, (const char*)lbl_80327C58);
+        ((PlayerVTable*)((char*)node - 0x14))->Stop();
     }
-
-    if (*(int*)&lbl_8041D4C4[0] != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327930, 0x24D,
-                                     (const char*)lbl_80327AC4);
-    }
+    if (*(int*)&lbl_8041D4C4[0] != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327930, 0x24D, (const char*)lbl_80327AC4);
 }
 #pragma pop
 extern "C" void fn_801013B0(void) {
