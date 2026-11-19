@@ -20810,7 +20810,7 @@ extern "C" s32 fn_800D0BD0(void) { return 0; }
 
 extern "C" void wpadExtensionCallback__Q210homebutton10ControllerFll(s32, s32);
 extern "C" s32 WPADSetSamplingCallback_800603D0(void *);
-void wpadConnectCallback__Q210homebutton10ControllerFll(s32 chan, s32 status) {
+void homebutton::Controller::wpadConnectCallback(long chan, long status) {
  void *entry;
  void (*callback)(s32,s32);
  if(status==0) {
