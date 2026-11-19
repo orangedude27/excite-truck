@@ -2,39 +2,23 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern unsigned char lbl_802FE850[];
-int fn_800248A4(unsigned char *a, unsigned char *b, int n) {
-    unsigned int locale;
-    int c, first, scratch;
-    int raw;
-    locale = *(volatile unsigned int *)(lbl_802FE850 + 0x38);
+int fn_800248A4(unsigned char *a, unsigned char *b, int n)
+{
+    register int locale;
+    register int c1;
+    register int c2;
+    register signed char sc1;
+    register unsigned char skip;
+    locale = *(int *)(lbl_802FE850 + 0x38);
     while (n > 0) {
-        raw = *a++;
-        c = (signed char)raw;
-        scratch = 0;
-        if (c < 0 || c >= 256) scratch = 1;
-        switch (scratch) {
-            case 0:
-                c = *(unsigned char *)(*(unsigned int *)(locale + 16) + c);
-                break;
-            default:
-                break;
-        }
-        raw = *b++;
-        first = (signed char)c;
-        c = (signed char)raw;
-        scratch = 0;
-        if (c < 0 || c >= 256) scratch = 1;
-        switch (scratch) {
-            case 0:
-                c = *(unsigned char *)(*(unsigned int *)(locale + 16) + c);
-                break;
-            default:
-                break;
-        }
-        scratch = (signed char)c;
-        if (first < scratch) return -1;
-        if (first > scratch) return 1;
-        if (first == 0) return 0;
+        skip = (c1 = (signed char)*a, a++, c1 < 0 || c1 >= 256);
+        c1 = (skip != 0) ? c1 : (unsigned char)*(unsigned char *)(*(int *)(locale + 0x10) + c1);
+        sc1 = (signed char)c1;
+        skip = (c2 = (signed char)*b, b++, c2 < 0 || c2 >= 256);
+        c2 = (skip != 0) ? c2 : (unsigned char)*(unsigned char *)(*(int *)(locale + 0x10) + c2);
+        if (sc1 < (signed char)c2) return -1;
+        if (sc1 > (signed char)c2) return 1;
+        if (sc1 == 0) return 0;
         n--;
     }
     return 0;
