@@ -274,7 +274,7 @@ extern "C" char lbl_80559FD8;
 extern "C" char lbl_80559FE0;
 extern "C" char lbl_80559FE8;
 extern "C" char lbl_80559FF0;
-extern "C" f32 lbl_80561738;
+extern "C" const f32 lbl_80561738;
 extern "C" const f32 lbl_8056173C;
 #pragma dont_inline on
 #pragma scheduling invalid_target
@@ -422,7 +422,7 @@ extern "C" void fn_801564B0(void) {
                 list_test:
                     if (list->valid(index) == 0) break;
                     oc = resource->objectCount;
-                } while (oc + 1 <= resource->objectCapacity);
+                } while (1 + oc <= resource->objectCapacity);
             }
 
             {
