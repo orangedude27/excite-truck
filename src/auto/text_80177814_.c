@@ -608,16 +608,20 @@ int fn_801784AC(void *start, void *end, void *outHit, int flags, void *outValue,
 }
 
 extern float lbl_80561B64;
-#pragma scheduling on
+#pragma scheduling invalid_target
 s32 fn_801784DC(Vec *arg0, f32 *arg1, Vec *arg2, s32 *arg3, s32 arg4) {
     Vec start;
     Vec hit;
     Vec normal;
     s32 value;
     s32 other;
-    start.y = arg0->y - lbl_80561B64;
-    start.z = arg0->z;
-    start.x = arg0->x;
+    register f32 y = arg0->y;
+    register f32 sy = y - 1000.0f;
+    register f32 sz = arg0->z;
+    register f32 sx = arg0->x;
+    start.z = sz;
+    start.x = sx;
+    start.y = sy;
     if (((s32 (*)(Vec *, Vec *, Vec *, Vec *, s32 *, s32 *, s32))fn_801784AC)(arg0, &start, &hit, &normal, &value, &other, arg4)) {
         *arg1 = hit.y;
         if (arg2 != 0) {
