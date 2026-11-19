@@ -10969,9 +10969,7 @@ extern "C" s32 fn_800B5988(void *arg0) {
                 e[0x88 / 8].flag &= 1;
                 if (e[0x88 / 8].flag && key == e[0x88 / 8].key) hit = 1;
                 else {
-                    union { u32 w; CacheEnt *p; } u;
-                    u.w = (u32)e + 0x10;
-                    CacheEnt *g = u.p;
+                    CacheEnt *g = (CacheEnt *)((u8 *)e + 16);
                     g[0x80 / 8].flag &= 1;
                     if (g[0x80 / 8].flag && key == g[0x80 / 8].key) hit = 1;
                     else {
@@ -11010,7 +11008,6 @@ done:
     if (r != 0) *(u16 *)((u8 *)arg0 + 0x1F8C) &= ~8;
     return r;
 }
-
 extern "C" s32 fn_800B5B94(void *arg0, s32 arg1) {
     s32 err = 0;
     s32 tmp;
