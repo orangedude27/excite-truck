@@ -990,9 +990,19 @@ float fn_80194B60(float a, float b, float c, float d) {
     } else if (ratio > lbl_80562140) {
         curve = lbl_80562140;
     } else if (ratio > lbl_80562144) {
-        curve = ratio * ((lbl_805621D0 * ratio) * ratio) + ((lbl_805621D4 * ratio) * ratio);
+        curve = lbl_805621D0 * ratio;
+        d = lbl_805621D4 * ratio;
+        curve *= ratio;
+        d *= ratio;
+        curve = ratio * curve;
+        curve = curve + d;
     } else {
-        curve = ratio * ((lbl_805621D0 * ratio) * ratio) - ((lbl_805621D4 * ratio) * ratio);
+        curve = lbl_805621D0 * ratio;
+        d = lbl_805621D4 * ratio;
+        curve *= ratio;
+        d *= ratio;
+        curve = ratio * curve;
+        curve = curve - d;
     }
     return a + curve * (b - a);
 }
