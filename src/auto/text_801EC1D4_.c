@@ -235,9 +235,9 @@ static inline Vec3 fn_801EC59C_getv(void *property, char *label) {
 }
 }
 #pragma cplusplus reset
+#pragma scheduling invalid_target
 void fn_801EC59C(void *out, void *parent, int index, int value, float scale, float bias) {
     extern char lbl_8055AFDC, lbl_8055AFE4;
-    extern float lbl_80562E88, lbl_80562E8C;
     register void *result;
     Vec3 first, second;
     float dx, dy, slopeX, slopeY;
@@ -249,11 +249,11 @@ void fn_801EC59C(void *out, void *parent, int index, int value, float scale, flo
         second = fn_801EC59C_getv(result, &lbl_8055AFE4);
         first.f.x = first.f.x * scale - bias;
         second.f.x = second.f.x * scale - bias;
-        first.f.y = first.f.y * lbl_80562E8C;
-        second.f.y = second.f.y * lbl_80562E8C;
-        first.f.z = first.f.z * lbl_80562E8C;
-        second.f.z = second.f.z * lbl_80562E8C;
+        first.f.y = first.f.y * 0.0254f;
+        second.f.y = second.f.y * 0.0254f;
         dx = second.f.x - first.f.x;
+        first.f.z = first.f.z * 0.0254f;
+        second.f.z = second.f.z * 0.0254f;
         dy = second.f.z - first.f.z;
         slopeX = (second.f.y - first.f.y) / dx;
         slopeY = dy / dx;
@@ -262,10 +262,10 @@ void fn_801EC59C(void *out, void *parent, int index, int value, float scale, flo
         *(float *)((char *)out + 8) = first.f.y - slopeX * first.f.x;
         *(float *)((char *)out + 0x10) = first.f.z - slopeY * first.f.x;
     } else {
-        *(float *)((char *)out + 0x10) = lbl_80562E88;
-        *(float *)((char *)out + 0xC) = lbl_80562E88;
-        *(float *)((char *)out + 8) = lbl_80562E88;
-        *(float *)((char *)out + 4) = lbl_80562E88;
+        *(float *)((char *)out + 0x10) = 0.0f;
+        *(float *)((char *)out + 0xC) = 0.0f;
+        *(float *)((char *)out + 8) = 0.0f;
+        *(float *)((char *)out + 4) = 0.0f;
     }
 }
 #pragma pop
