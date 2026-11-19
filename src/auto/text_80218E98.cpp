@@ -6648,13 +6648,15 @@ extern "C" void *fn_80223B94(void *self, s32 deleting) {
 
 #pragma processor 750
 extern "C" void fn_80223C20(void *arg0) {
-    float temp_f31 = lbl_805634A8;
-    unsigned char sp8[0x40];
-    *(float *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x260) + 0x30) = lbl_805634A4 - *(float *)((unsigned char *)arg0 + 0x25C);
-    if (*(float *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x260) + 0x30) > temp_f31 && *(int *)((unsigned char *)arg0 + 0x250) != 0) {
-        fn_8022EEF8(sp8, (int)*(void **)((unsigned char *)arg0 + 0x260), fn_8022EDC4());
+    register f32 temp_f31 = 0.0f;
+    u8 sp8[0x40];
+    *(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x260) + 0x30) = 1.0f - *(f32 *)((u8 *)arg0 + 0x25C);
+    if (*(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x260) + 0x30) > temp_f31 && *(s32 *)((u8 *)arg0 + 0x250) != 0) {
+        fn_8022EEF8(sp8, (s32)*(void **)((u8 *)arg0 + 0x260), fn_8022EDC4());
         fn_8022ED00(sp8);
-        fn_802C5320(*(int *)((unsigned char *)arg0 + 0x250), 0, *(float *)((unsigned char *)arg0 + 0x244), *(float *)((unsigned char *)arg0 + 0x248), temp_f31, *(float *)((unsigned char *)arg0 + 0x254), *(float *)((unsigned char *)arg0 + 0x258));
+        fn_802C5320(*(s32 *)((u8 *)arg0 + 0x250), 0,
+            *(f32 *)((u8 *)arg0 + 0x244), *(f32 *)((u8 *)arg0 + 0x248), temp_f31,
+            *(f32 *)((u8 *)arg0 + 0x254), *(f32 *)((u8 *)arg0 + 0x258));
         fn_8022EDB8();
     }
 }
