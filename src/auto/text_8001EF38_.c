@@ -423,14 +423,14 @@ void fn_8001F578(void) {
 #pragma scheduling on
 extern void *memcpy(void *, const void *, unsigned long);
 void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
-    s32 *a = (s32 *)arg0;
-    s32 *b = (s32 *)arg1;
+    int *a = (int *)arg0;
+    int *b = (int *)arg1;
     char *input = (char *)arg1 + 0x50;
     char *output = (char *)arg0;
     char *entry;
-    s32 sum7, sum6, sum5, sum4, sum3, sum2, sum1, sum0;
+    int sum7, sum6, sum5, sum4, sum3, sum2, sum1, sum0;
     int found, empty;
-    u32 i, j;
+    unsigned int i, j;
     sum0 = a[0] + b[0];
     sum1 = a[1] + b[1];
     sum2 = a[2] + b[2];
@@ -495,7 +495,7 @@ void fn_8001F76C(void) {
 }
 
 #pragma scheduling invalid_target
-int fn_8001F7E4(s32 arg0, s32 arg1) {
+void fn_8001F7E4_tmp(s32 arg0, s32 arg1) {
     s32 limit;
     s32 adjusted;
 
