@@ -2401,7 +2401,14 @@ increment:
 }
 
 #pragma scheduling reset
-int fn_80283B58(void) {
+#pragma cplusplus on
+extern "C" int fn_8000DA10(void);
+extern "C" int fn_8001BCF0(void *);
+extern "C" int fn_8001BE94(void *, int, int, int, int);
+extern "C" int fn_8001BEE8(void *);
+extern "C" int fn_80130980(void *, int, int);
+extern "C" int fn_80131234(int);
+extern "C" int fn_80283B58(void) {
     char *base = (char *)&lbl_804B2FF8;
     struct Fn80283E28List *list = (struct Fn80283E28List *)(base + 0xE0);
     int count;
