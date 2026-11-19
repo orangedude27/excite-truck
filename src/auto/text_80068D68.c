@@ -8836,12 +8836,13 @@ void btm_read_link_quality_complete(u8 *hciEvent) {
 
 #pragma push
 #pragma dont_inline off
+/* Disconnect the ACL link for the given device address; returns BTM_NO_RESOURCES if the HCI disconnect command cannot be sent. */
 tBTM_STATUS btm_remove_acl(BD_ADDR bd_addr) {
-    u8 *entry = btm_bda_to_acl_inl(bd_addr);
+    u8 *aclEntry = btm_bda_to_acl_inl(bd_addr);
     u16 handle;
 
-    if (entry != 0)
-        handle = *(u16 *)entry;
+    if (aclEntry != 0)
+        handle = *(u16 *)aclEntry;
     else
         handle = 0xFFFF;
 
@@ -15442,20 +15443,20 @@ found:
     }
 }
 
+#pragma push
+#pragma optimization_level 4
 void gap_config_cfm(u32 cid, u16 *p_cfg) {
+    u16 psm;
     u8 *ccb = (u8 *)&lbl_803C3740 + 0xAC;
     u8 i = 0;
-    u16 psm;
     while (i < 8) {
-        if (ccb[0] != 0 && *(u16 *)(ccb + 6) == cid)
-            goto found;
+        if (ccb[0] != 0 && *(u16 *)(ccb + 6) == cid) goto found;
         i++;
         ccb += 0x60;
     }
     ccb = 0;
 found:
-    if (ccb == 0)
-        return;
+    if (ccb == 0) return;
     if (*p_cfg == 0) {
         ccb[1] |= 4;
         if (ccb[1] & 2) {
@@ -15473,21 +15474,17 @@ found:
         u8 *scan = (u8 *)lbl_803C3740 + 0xAC;
         u8 j = 0;
         while (j < 8) {
-            if (scan[0] != 0 && *(u16 *)(scan + 0x10) == psm)
-                return;
-            if (scan[0x60] != 0 && *(u16 *)(scan + 0x70) == psm)
-                return;
-            if (scan[0xC0] != 0 && *(u16 *)(scan + 0xD0) == psm)
-                return;
-            if (scan[0x120] != 0 && *(u16 *)(scan + 0x130) == psm)
-                return;
+            if (scan[0] != 0 && *(u16 *)(scan + 0x10) == psm) return;
+            if (scan[0x60] != 0 && *(u16 *)(scan + 0x70) == psm) return;
+            if (scan[0xC0] != 0 && *(u16 *)(scan + 0xD0) == psm) return;
+            if (scan[0x120] != 0 && *(u16 *)(scan + 0x130) == psm) return;
             j += 4;
             scan += 0x180;
         }
     }
     L2CA_Deregister(psm);
 }
-
+#pragma pop
 extern char lbl_80317380[];
 void gap_disconnect_ind(u16 cid, BOOLEAN ack_needed)
 {
