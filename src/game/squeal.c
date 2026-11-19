@@ -48,30 +48,31 @@ extern void fn_80128668(void *);
 #pragma scheduling invalid_target
 #pragma push
 #pragma cplusplus on
-extern "C" void *fn_80209DE4(void *arg0, int arg1) {
+extern "C" void *fn_80209DE4(void *self, int shouldDelete) {
+    /* Destroy the squeal object, releasing its owned child objects and optionally freeing it. */
     struct V { virtual void c(int); };
-    void *q;
-    void *r;
-    if (arg0 != 0) {
-        q = *(void **)((char *)arg0 + 8);
-        *(void **)arg0 = (void *)lbl_8033C258;
-        if (q != 0) {
-            if (q != 0) {
-                ((struct V *)q)->c(1);
+    void *sfxHandle;
+    void *roadSound;
+    if (self != 0) {
+        sfxHandle = *(void **)((char *)self + 8);
+        *(void **)self = (void *)lbl_8033C258;
+        if (sfxHandle != 0) {
+            if (sfxHandle != 0) {
+                ((struct V *)sfxHandle)->c(1);
             }
-            *(void **)((char *)arg0 + 8) = 0;
+            *(void **)((char *)self + 8) = 0;
         }
-        r = *(void **)((char *)arg0 + 0xC);
-        if (r != 0) {
-            if (r != 0) {
-                ((struct V *)r)->c(1);
+        roadSound = *(void **)((char *)self + 0xC);
+        if (roadSound != 0) {
+            if (roadSound != 0) {
+                ((struct V *)roadSound)->c(1);
             }
         }
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        if (shouldDelete > 0) {
+            fn_80128668(self);
         }
     }
-    return arg0;
+    return self;
 }
 #pragma pop
 
