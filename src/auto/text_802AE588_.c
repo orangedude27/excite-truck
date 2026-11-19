@@ -1294,14 +1294,13 @@ unsigned short fn_802B0070(int point) {
     return fn_802B127C(lbl_8055F974, point);
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802B009C(void *arg0, int arg1, int arg2, int arg3) {
     float x = (float)arg2 * lbl_80564AF0;
     float z = (float)arg3 * lbl_80564AF0;
-    float *out = (float *)arg0;
-    out[0] = x;
-    out[2] = z;
-    out[1] = fn_801DCF48(arg1, x, z);
+    ((float *)arg0)[0] = x;
+    ((float *)arg0)[2] = z;
+    ((float *)arg0)[1] = fn_801DCF48(arg1, x, z);
 }
 void fn_802B0114(void) {
 }
@@ -1438,10 +1437,9 @@ extern float lbl_80564B84;
 extern int __cntlzw(unsigned int);
 #pragma scheduling invalid_target
 s32 fn_802B02C8(void *arg0) {
+    f32 val;
     f32 bound;
-    f32 x;
     f32 neg_bound;
-    f32 z;
     s32 var_r0;
     f32 fx;
     f32 fz;
@@ -1453,14 +1451,12 @@ s32 fn_802B02C8(void *arg0) {
 
     if (fn_802AE7AC() != 0) {
         var_r0 = 0;
-        bound = lbl_80564B84;
-        bound *= lbl_80564AF0;
-        x = *(f32 *)arg0;
-        bound *= lbl_80564B6C;
-        neg_bound = -bound;
-        if (x > neg_bound && x < bound) {
-            z = *(f32 *)((u8 *)arg0 + 8);
-            if (z > neg_bound && z < bound)
+        bound = lbl_80564B84 * lbl_80564AF0;
+        val = *(f32 *)arg0;
+        neg_bound = -(bound *= lbl_80564B6C);
+        if (val > neg_bound && val < bound) {
+            val = *(f32 *)((u8 *)arg0 + 8);
+            if (val > neg_bound && val < bound)
                 var_r0 = 1;
         }
         if (var_r0 != 0) {
@@ -1514,6 +1510,22 @@ s32 fn_802B03C0(void *arg0) {
     return v31;
 }
 #pragma dont_inline reset
+static inline s32 IsInWaveArea(void *pos) {
+    f32 bound;
+    f32 neg_bound;
+    f32 v;
+    s32 inside = 0;
+    bound = lbl_80564B84 * lbl_80564AF0 * lbl_80564B6C;
+    neg_bound = -bound;
+    v = *(f32 *)pos;
+    if ((v > neg_bound) && (v < bound)) {
+        v = *(f32 *)((char *)pos + 8);
+        if ((v > neg_bound) && (v < bound)) {
+            inside = 1;
+        }
+    }
+    return inside;
+}
 s32 fn_802B04D4(void *arg0) {
     f32 temp_f0;
     f32 temp_f0_2;
@@ -1530,7 +1542,11 @@ s32 fn_802B04D4(void *arg0) {
     mode = (s32)lbl_8055CD78;
     if (mode >= 0) {
         var_r0 = 0;
-        temp_f2 = lbl_80564B84 * lbl_80564AF0 * lbl_80564B6C;
+        temp_f2 = lbl_80564B84;
+        temp_f0 = lbl_80564AF0;
+        temp_f2 *= temp_f0;
+        temp_f1 = lbl_80564B6C;
+        temp_f2 *= temp_f1;
         temp_f1 = -temp_f2;
         temp_f0 = *(f32 *)arg0;
         if ((temp_f0 > temp_f1) && (temp_f0 < temp_f2)) {
@@ -1546,7 +1562,7 @@ s32 fn_802B04D4(void *arg0) {
         }
         return 1;
     }
-    return 0;
+    return mode & 0;
 }
 
 extern void fn_802C10C8(void);
