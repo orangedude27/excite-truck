@@ -656,6 +656,7 @@ extern int fn_8001BA6C(int);
 extern signed char lbl_8055D671;
 extern int lbl_802ED850[3];
 extern int lbl_80558DA0;
+#pragma processor 750
 #pragma ppc_psq_save off
 void fn_800209A0(int arg0, float arg1) {
     int color;
