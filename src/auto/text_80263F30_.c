@@ -186,21 +186,6 @@ void fn_80264098(void *item, int type) {
 }
 #pragma dont_inline off
 
-struct CreditsItemInit {
-    void *name;
-    int type;
-    void *data;
-    int a;
-    int b;
-};
-static inline void initCreditsItem(struct CreditsItemInit *item, void *name, int type, void *data) {
-    item->data = data;
-    item->type = type;
-    item->name = name;
-    item->a = 0;
-    item->b = 0;
-}
-
 #pragma push
 #pragma scheduling invalid_target
 void fn_802640A0(void *arg0) {
