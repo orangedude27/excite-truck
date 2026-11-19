@@ -1273,7 +1273,7 @@ static inline ChildIter_800D77DC ChildBegin_800D77DC(u8 *self) {
 static inline ChildIter_800D77DC ChildEnd_800D77DC(u8 *self) {
     ChildIter_800D77DC it; it.node = (StateNode_800D6CA0 *)(self + 0x14); return it;
 }
-static inline u8 *ChildPane_800D77DC(ChildIter_800D77DC it) {
+static inline u8 *ChildPane_800D77DC(const ChildIter_800D77DC &it) {
     if (!it.node) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
     u8 *p = (u8 *)it.node - 4;
     if (!p) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
