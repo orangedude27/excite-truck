@@ -38,7 +38,7 @@ static inline void CleanupEntries(void *table) {
         fn_80128668(table);
     }
 }
-extern double lbl_80563958;
+extern const double lbl_80563958;
 extern unsigned char lbl_80498C48[];
 s32 fn_8001668C(s32, s32);
 s32 *fn_80016BC8(s32);
@@ -130,8 +130,6 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
         char names[5][0x64];
     } m;
     u8 *g = lbl_80498C30;
-    const char *str = (const char *)lbl_80344170;
-#define lbl_80344170 str
     u8 *slots;
     s32 *p;
     const void *label;
@@ -145,7 +143,6 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
     void **owned;
     u8 *e;
     s32 *pA, *pB;
-    s32 flagVal;
 
     v = fn_8000DA10();
     if (*(s32 *)(g + 0x18) != v) {
@@ -157,8 +154,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
         p[16] = 0; p[14] = 0; p[17] = 2; p[15] = 2;
     }
     slots = g + 0x18;
-    flagVal = ((s32 (*)(void *))(*(void ***)obj)[5])(obj) == 1;
-    slots[4] = flagVal;
+    slots[4] = ((s32 (*)(void *))(*(void ***)obj)[5])(obj) == 1;
     fn_8013C804();
     fn_8001880C();
     result = -1;
@@ -315,7 +311,6 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
     fn_8013C8B8();
     *out = *pB;
     return result != -1;
-#undef lbl_80344170
 }
 
 #pragma push
@@ -2546,11 +2541,10 @@ extern "C" void fn_80251B04(void *arg0) {
     extern u32 lbl_8055CFF4;
     extern const f32 lbl_80563964, lbl_80563980, lbl_8056398C, lbl_80563990, lbl_80563994, lbl_80563998, lbl_8056399C, lbl_805639A0, lbl_805639A4, lbl_805639A8, lbl_805639AC, lbl_805639B0, lbl_805639B4, lbl_805639B8, lbl_805639BC;
     extern double __fabs(double);
-    f32 temp_f3, temp_f10, f27, f26, f23;
-    s32 i;
-    s32 off;
-    temp_f3 = (lbl_80563990 * (f32)lbl_8055CFF0) / lbl_80563994;
+    f32 f23, f26, f27, temp_f3, temp_f10;
+    s32 off, i;
     temp_f10 = (f32)((s32)(((u32)lbl_8055CFF4 >> 31) + lbl_8055CFF4) >> 1);
+    temp_f3 = (lbl_80563990 * (f32)lbl_8055CFF0) / lbl_80563994;
     f27 = temp_f10 - lbl_8056398C;
     fn_80231220(*(s32 *)((char *)arg0 + 0x20), -1, lbl_8055CFF4, lbl_80563998 * temp_f3, lbl_8056399C, temp_f3, lbl_805639A0, lbl_80563960, lbl_80563960, lbl_805639A4, lbl_80563964);
     f26 = fn_80216CB4();
@@ -2561,11 +2555,11 @@ extern "C" void fn_80251B04(void *arg0) {
         char *p = *(char **)((char *)arg0 + 0x18) + off;
         f32 a, b, c;
         a = lbl_80563964 - (f32)__fabs(*(f32 *)(p + 8));
-        if (a >= f26) a = f26;
+        a = a < f26 ? a : f26;
         c = *(f32 *)((char *)arg0 + 0x28);
         b = (f32)__fabs(c - (f32)i);
-        if (lbl_80563964 < b) b = lbl_80563964;
-        if (b <= f23) b = f23;
+        b = b < lbl_80563964 ? b : lbl_80563964;
+        b = b > f23 ? b : f23;
         (*(void (**)(void *, s32, s32, f32, f32, f32, f32, f32))(*(char **)arg0 + 0x60))(arg0, i, *(s32 *)p, lbl_805639AC * ((f32)i - c) - lbl_805639B0, (f27 - lbl_80563980 * (lbl_805639A8 * (lbl_80563964 - a))) + lbl_805639B4 * a, lbl_805639AC, lbl_805639A8 * a + lbl_805639A4 * a, lbl_80563964 - b);
     }
     fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 2, -1, lbl_805639B8, lbl_805639B4 + f27, lbl_80563960, lbl_805639AC, lbl_805639BC);
