@@ -250,6 +250,13 @@ void fn_80203FFC(void) {
 
 }
 
+/* No-op reset hook of the terrain/environment module (the unit that owns the
+ * screen-ray ground probe fn_80204054 and its "TERRAIN SYSTEM IS LYING: no
+ * terrain is really at %.2f, %.2f" warning, and whose global imap resource list
+ * lbl_8048897C is torn down by fn_80203F88).  WorldBeginCommon (fn_801E7984)
+ * calls it at the end of the race/world setup, between the other subsystem
+ * resets and the boot-progress checkpoint fn_80127464; like the other empty
+ * defaults of this unit it does nothing in this build. */
 void fn_80203FEC(void) {
 
 }
