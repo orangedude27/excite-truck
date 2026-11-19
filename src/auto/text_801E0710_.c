@@ -635,24 +635,24 @@ s32 fn_801E137C(void *list) { return ((List_801E0890 *)list)->count; }
 #pragma opt_propagation off
 void fn_801E1384(s32 arg0, s32 arg1) {
     register s32 *desc = (s32 *)arg0;
-    register s32 left = arg1;
-    register s32 y;
-    register s32 x;
     register s32 color;
+    register s32 x;
+    register s32 y;
+    register s32 left = arg1;
     char *record;
+    char *base;
+    s32 height;
     f32 xval, yval, zval, uval, vval;
     s32 h, h2;
 
     if (*(volatile s32 *)desc != 0) {
         s32 width = *(volatile s32 *)((char *)desc + 8);
-        s32 height = *(volatile s32 *)((char *)desc + 0xC);
+        height = *(volatile s32 *)((char *)desc + 0xC);
         fn_802C8DBC(height * ((width - 1) << 1));
         for (x = 1; x < *(volatile s32 *)((char *)desc + 8); x++) {
-            {
-                s32 height = *(volatile s32 *)((char *)desc + 0xC);
-                char *base = (char *)*(volatile s32 *)((char *)desc + 4);
-                record = base + ((x - 1) * height * 0x18);
-            }
+            height = *(volatile s32 *)((char *)desc + 0xC);
+            base = (char *)*(volatile s32 *)((char *)desc + 4);
+            record = base + ((x - 1) * height * 0x18);
             *(volatile s32 *)(record + 0xC) = left;
             vval = *(f32 *)(record + 0x14);
             uval = *(f32 *)(record + 0x10);
@@ -660,11 +660,9 @@ void fn_801E1384(s32 arg0, s32 arg1) {
             yval = *(f32 *)(record + 4);
             zval = *(f32 *)(record + 8);
             fn_802C8E00(left, 0, xval, yval, zval, uval, vval);
-            {
-                s32 height = *(volatile s32 *)((char *)desc + 0xC);
-                char *base = (char *)*(volatile s32 *)((char *)desc + 4);
-                record = base + (x * height * 0x18);
-            }
+            height = *(volatile s32 *)((char *)desc + 0xC);
+            base = (char *)*(volatile s32 *)((char *)desc + 4);
+            record = base + (x * height * 0x18);
             *(volatile s32 *)(record + 0xC) = left;
             vval = *(f32 *)(record + 0x14);
             uval = *(f32 *)(record + 0x10);
@@ -676,20 +674,18 @@ void fn_801E1384(s32 arg0, s32 arg1) {
             color = x - 1;
             for (y = 1; (h = *(volatile s32 *)((char *)desc + 0xC)) > y; y++) {
                 s32 h2 = *(volatile s32 *)((char *)desc + 0xC);
-                char *base = (char *)*(volatile s32 *)((char *)desc + 4);
-                *(volatile s32 *)(base + ((y + color * h) * 0x18) + 0xC) = left;
-                record = base + ((y + color * h2) * 0x18);
+                char *b = (char *)*(volatile s32 *)((char *)desc + 4);
+                *(volatile s32 *)(b + ((y + color * h) * 0x18) + 0xC) = left;
+                record = b + ((y + color * h2) * 0x18);
                 vval = *(f32 *)(record + 0x14);
                 uval = *(f32 *)(record + 0x10);
                 xval = *(f32 *)(record + 0);
                 yval = *(f32 *)(record + 4);
                 zval = *(f32 *)(record + 8);
                 fn_802C8E00(*(s32 *)(record + 0xC), 1, xval, yval, zval, uval, vval);
-                {
-                    s32 height = *(volatile s32 *)((char *)desc + 0xC);
-                    char *base = (char *)*(volatile s32 *)((char *)desc + 4);
-                    record = base + ((y + x * height) * 0x18);
-                }
+                height = *(volatile s32 *)((char *)desc + 0xC);
+                base = (char *)*(volatile s32 *)((char *)desc + 4);
+                record = base + ((y + x * height) * 0x18);
                 *(volatile s32 *)(record + 0xC) = left;
                 vval = *(f32 *)(record + 0x14);
                 uval = *(f32 *)(record + 0x10);
@@ -778,7 +774,7 @@ void *fn_801E1568(void *self, int shouldDelete) {
 #pragma pop
 
 void fn_801E1684(void) {
-
+    /* No-op placeholder (returns immediately). */
 }
 
 void fn_801E1688(void) {
@@ -789,8 +785,8 @@ void fn_801E1688(void) {
 #pragma scheduling invalid_target
 void fn_801E168C(void *arg0) {
     f32 y;
-    s32 zero = 0;
     f32 x = lbl_80562C78;
+    s32 zero = 0;
     s32 minus = -1;
     y = lbl_80562C7C;
     *(s32 *)((u8 *)arg0 + 0x6C) = minus;
@@ -827,8 +823,8 @@ void fn_801E168C(void *arg0) {
 extern void *fn_8017960C(s32);
 extern s32 fn_801E85A4(void);
 extern f32 lbl_80562C78, lbl_80562C7C, lbl_80562C8C, lbl_80562CA0, lbl_80562CA4;
-#pragma processor 750
-#pragma use_lmw_stmw off
+#pragma push
+#pragma scheduling invalid_target
 void fn_801E1710(void *arg0) {
     register f32 decrement;
     register f32 reset;
@@ -836,11 +832,11 @@ void fn_801E1710(void *arg0) {
     register f32 initialB;
     register f32 initialA;
 
-    register u32 c_ff7f;
-    register u32 c_ffff;
-    register s32 c_neg100;
-    register u32 c_0;
     register s32 c_neg1;
+    register u32 c_0;
+    register s32 c_neg100;
+    register u32 c_ffff;
+    register u32 c_ff7f;
     register u8 *base;
     register u8 *row;
     register s32 i;
@@ -900,6 +896,7 @@ void fn_801E1710(void *arg0) {
         }
     }
 }
+#pragma pop
 void fn_801E1868(void) {
 
 }
