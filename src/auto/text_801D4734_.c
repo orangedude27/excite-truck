@@ -165,7 +165,7 @@ extern "C" void fn_801D4734(void) {
     void *manager;
     Mgr *m;
     lbl_8055E954 = 1;
-    obj = fn_802077A4(&lbl_80338460, 5, lbl_804422F0 + 8, lbl_804422F0 + 0x14);
+    obj = fn_802077A4((void *)((unsigned int)base), 5, lbl_804422F0 + 8, lbl_804422F0 + 0x14);
     *(void **)lbl_804422F0 = obj;
     if (obj != 0) {
         *(float *)((char *)obj + 0x6C) = lbl_80562AD8;
@@ -1280,16 +1280,18 @@ extern "C" int fn_801D5BBC(void *out, void *object) {
     int i;
     char name[20];
     float f;
+    Vec3 def;
+    void *op = out;
 
-    ((int *)out)[3] = obj->count(base + 0x170, -1);
-    if (((int *)out)[3] >= 0) {
+    ((int *)op)[3] = obj->count(base + 0x170, -1);
+    if (((int *)op)[3] >= 0) {
         for (i = 0; i < 4; i++) {
             int *entry;
             fn_801345D8(name, 0x14, base + 0x17C, i);
             if (obj->has(name) != 0) {
-                int n = ((int *)out)[5];
-                ((int *)out)[5] = n + 1;
-                entry = (int *)(((int *)out)[4] + n * 8);
+                int n = ((int *)op)[5];
+                ((int *)op)[5] = n + 1;
+                entry = (int *)(((int *)op)[4] + n * 8);
                 entry[0] = obj->get(name);
                 fn_801345D8(name, 0x14, base + 0x190, i);
                 f = obj->value(name, lbl_80562ADC);
@@ -1297,41 +1299,39 @@ extern "C" int fn_801D5BBC(void *out, void *object) {
             }
         }
         f = obj->value(&lbl_8055AC90, lbl_80562ADC);
-        ((float *)out)[0x18] = f;
-        ((float *)out)[0x19] = obj->value(&lbl_8055AC98, f);
+        ((float *)op)[0x18] = f;
+        ((float *)op)[0x19] = obj->value(&lbl_8055AC98, f);
         {
-            Vec3 def;
             def.x = lbl_80562ADC;
             def.y = lbl_80562ADC;
             def.z = lbl_80562ADC;
             const Vec3 &v = obj->vector2(&lbl_8055ACA0, def);
-            ((float *)out)[0xF] = v.x;
-            ((float *)out)[0x10] = v.y;
-            ((float *)out)[0x11] = v.z;
+            ((float *)op)[0xF] = v.x;
+            ((float *)op)[0x10] = v.y;
+            ((float *)op)[0x11] = v.z;
         }
         {
             Vec3 arg;
-            arg.x = ((float *)out)[0xF];
-            arg.y = ((float *)out)[0x10];
-            arg.z = ((float *)out)[0x11];
+            arg.x = ((float *)op)[0xF];
+            arg.y = ((float *)op)[0x10];
+            arg.z = ((float *)op)[0x11];
             const Vec3 &v = obj->vector2(&lbl_8055ACA8, arg);
-            ((float *)out)[0x12] = v.x;
-            ((float *)out)[0x13] = v.y;
-            ((float *)out)[0x14] = v.z;
+            ((float *)op)[0x12] = v.x;
+            ((float *)op)[0x13] = v.y;
+            ((float *)op)[0x14] = v.z;
         }
         {
-            Vec3 def;
             def.x = lbl_80562ADC;
             def.y = lbl_80562ADC;
             def.z = lbl_80562ADC;
             const Vec3 &v = obj->vector2(base + 0x1A0, def);
-            ((float *)out)[0x15] = v.x;
-            ((float *)out)[0x16] = v.y;
-            ((float *)out)[0x17] = v.z;
+            ((float *)op)[0x15] = v.x;
+            ((float *)op)[0x16] = v.y;
+            ((float *)op)[0x17] = v.z;
         }
-        ((int *)out)[0x1A] = (int)(lbl_80562B0C * obj->value(base + 0x1AC, lbl_80562AEC));
-        fn_801D0800(out ? (char *)out + 4 : (char *)out);
-        ((int *)out)[2] = 1;
+        ((int *)op)[0x1A] = (int)(lbl_80562B0C * obj->value(base + 0x1AC, lbl_80562AEC));
+        fn_801D0800(op ? (char *)op + 4 : (char *)op);
+        ((int *)op)[2] = 1;
         result = 1;
     } else {
         ((void (*)(const char *, ...))fn_802E30C8)(base + 0x1BC);
@@ -1897,7 +1897,7 @@ extern "C" int fn_801D6948(void *out, void *object) {
         float y;
         float z;
         Vec3() {}
-        Vec3(float a, float b, float c) : x(a), y(b), z(c) {}
+        Vec3(float a, float b, float c) { x = a; y = b; z = c; }
     };
     struct Dummy {
         virtual void v0();
@@ -2788,8 +2788,9 @@ extern "C" void fn_801D7874(void *arg0, void *arg1) {
     ObjA *b = (ObjA *)arg1;
     void *node = b->v0();
     int match;
-    int result;
-    if (*(int *)((char *)arg0 + 0xc) >= 0 && node != 0 && (result = ((ObjB *)node)->v6(lbl_803385D0, -1)) == *(int *)((char *)arg0 + 0xc)) {
+    int found;
+    int expected;
+    if (*(int *)((char *)arg0 + 0xc) >= 0 && node != 0 && (found = ((ObjB *)node)->v6(lbl_803385D0, -1), expected = *(int *)((char *)arg0 + 0xc), found == expected)) {
         match = 1;
     } else {
         match = 0;
@@ -3045,8 +3046,8 @@ extern "C" void *fn_801D7EC0(void *arg0, s32 arg1) {
     int val;
 
     if (arg0 != 0) {
-        *(void **)arg0 = (void *)lbl_80338CB0;
         child = *(void **)((u8 *)arg0 + 0x2C);
+        *(void **)arg0 = (void *)lbl_80338CB0;
         *(s32 *)((u8 *)arg0 + 0x40) = 0;
         if (child != 0) {
             if (child != 0)
@@ -3614,9 +3615,7 @@ extern "C" void fn_801D8624(void *obj) {
     ((Dummy *)obj)->f11();
 }
 
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
+#pragma peephole on
 extern "C" int fn_801D8634(void *out, void *obj) {
     extern char lbl_8055ACB8;
     extern char lbl_8055ACB0;
@@ -3635,11 +3634,12 @@ extern "C" int fn_801D8634(void *out, void *obj) {
         virtual float v7(void *);
         virtual float v8(void *, float);
     };
+    Dummy *thing = (Dummy *)obj;
     int result;
-    *(float *)((char *)out + 0xC) = ((Dummy *)obj)->v8(&lbl_8055ACB8, 0.0f);
-    *(float *)((char *)out + 0x14) = ((Dummy *)obj)->v7(&lbl_8055ACB0);
-    *(int *)((char *)out + 8) = ((Dummy *)obj)->v5(lbl_803385D0);
-    ((Dummy *)obj)->v3(lbl_80339050);
+    *(float *)((char *)out + 0xC) = thing->v8(&lbl_8055ACB8, 0.0f);
+    *(float *)((char *)out + 0x14) = thing->v7(&lbl_8055ACB0);
+    *(int *)((char *)out + 8) = thing->v5(lbl_803385D0);
+    thing->v3(lbl_80339050);
     *(int *)((char *)out + 0x1C) = fn_801D04D0();
     result = (int)out;
     if (out != 0) {
@@ -3650,7 +3650,6 @@ extern "C" int fn_801D8634(void *out, void *obj) {
     }
     return result;
 }
-#pragma pop
 
 #pragma cplusplus reset
 
