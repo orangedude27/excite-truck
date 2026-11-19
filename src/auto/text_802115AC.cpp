@@ -2990,7 +2990,14 @@ extern "C" void fn_80215CD4(void) {
 
 }
 
-extern "C" void fn_80215CD8(void) {
+/* Base default for vtable slot 0x48 of the timed UI-group controller class
+ * (base vtable lbl_8033D618; the instances registered by fn_80262EF8 and
+ * fn_802874C8 use the derived vtables lbl_80345F70 and lbl_803489C0).  That
+ * class hides UI group 0x1D when started (slot 0xC fn_80262FCC / fn_802876A8)
+ * and shows it again once its 1.5 s timer expires (slot 0x1C fn_8026300C /
+ * fn_802876E8), while slot 0x58 reports whether it is still running.  None of
+ * the three vtables overrides this slot, so the default does nothing. */
+extern "C" void fn_80215CD8(void *controller) {
 
 }
 
