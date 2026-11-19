@@ -38,16 +38,16 @@ static inline void StoreEntry_80009DC8(ListEntry_80009DC8 *dst, ListEntry_80009D
 
 static inline void CopyStr_80009DC8(char *dst, const char *src, s32 n) {
     u8 c;
-loop:
+    goto body;
+decr:
+    if (--n <= 0) {
+        dst[-1] = 0;
+        return;
+    }
+body:
     c = *src++;
     *dst++ = c;
-    if ((s8)c != 0) {
-        if (--n <= 0) {
-            dst[-1] = 0;
-        } else {
-            goto loop;
-        }
-    }
+    if ((s8)c != 0) goto decr;
 }
 extern void fn_801345D8(void*, s32, void*, s32);
 extern u8 lbl_80558A14;
