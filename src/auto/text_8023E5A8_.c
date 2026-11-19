@@ -37,9 +37,10 @@ extern void fn_8023F874(void);
 extern int lbl_8055F1B4, lbl_8055F1B8;
 extern unsigned char lbl_8055F1BC;
 extern unsigned char lbl_80341CE4[], lbl_80341CF0[];
+#pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_8023E5B4(void *arg0, int arg1) {
+extern "C" void fn_8023E5B4(void *arg0, int arg1) {
     typedef char *(*Fn1)(void *);
     int values[36];
     int now;
