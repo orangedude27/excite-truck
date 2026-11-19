@@ -3564,7 +3564,7 @@ extern "C" void fn_801CA1C4(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         break;
     }
     default:
-        fn_802E317C(base + 0xDF8);
+        fn_802E317C(base + 0xDF8, *(u32 *)(record + 8));
         break;
     }
 }
