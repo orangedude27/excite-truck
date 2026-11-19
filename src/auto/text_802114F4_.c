@@ -8,7 +8,7 @@ extern void fn_8000D838(void *);
 extern void __register_global_object(void *, void *, void *);
 extern void fn_80211604(void);
 extern void fn_802115AC(void);
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802114F4(void) {
     struct Object { void *next; unsigned int zero; unsigned int size; } *obj;
     unsigned char *base = lbl_80489C88;
