@@ -798,10 +798,6 @@ check:
     if (index < lbl_8055F890) goto loop;
 }
 
-static inline s32 AllocArray_802A5AE8(s32 count) {
-    return fn_8012850C(count * 0xC + 0x10, lbl_80349CA0);
-}
-
 #pragma scheduling invalid_target
 void *fn_802A5AE8(void *arg0, s32 arg1, s32 arg2) {
     s32 size = arg1 * 0xC;
