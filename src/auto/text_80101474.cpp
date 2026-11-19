@@ -203,7 +203,7 @@ check:
 }
 
 #pragma use_lmw_stmw off
-#pragma scheduling on
+#pragma scheduling off
 int nw4hbm::snd::detail::WsdTrack::ParseNextTick(const WsdCallback *callback, unsigned long arg1, bool arg2) {
     void *channel;
     if (*(volatile int *)((char *)this + 0x2C) == 0) {
