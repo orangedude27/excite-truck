@@ -799,6 +799,8 @@ int fn_801B8A8C(int object, int deleteFlag) {
 /* Default boolean method for the arena-event master: reports true (1). */
 int fn_801B8ACC(void) { return 1; }
 
+/* Null arena-event master ("null_amaster", vtable lbl_8033678C slot +0x10):
+ * no-op virtual method. */
 void fn_801B8AD4(void) {
 
 }
