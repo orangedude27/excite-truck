@@ -227,7 +227,7 @@ float fn_801931EC(float numerator, float denominator) {
 
 #pragma processor 750
 void fn_8019321C(void *arg0, void *arg1, void *arg2) {
-    float stack[8];
+    float stack[10];
     float x = *(float *)((char *)arg2 + 0x18);
     float y = *(float *)((char *)arg2 + 0x20);
     float magnitude = x * x + y * y;
@@ -260,24 +260,22 @@ void fn_8019321C(void *arg0, void *arg1, void *arg2) {
     oy = (float)neg * c + dy * d;
     ox += stack[6];
     oy += stack[7];
-    *(float *)arg0 = stack[0] = ox;
-    *(float *)((char *)arg0 + 4) = stack[1] = oy;
+    *(float *)arg0 = ox;
+    *(float *)((char *)arg0 + 4) = oy;
+    stack[0] = ox;
+    stack[1] = oy;
 }
 #pragma processor reset
 extern float lbl_80562140, lbl_80562148;
 #pragma dont_inline on
 void fn_8019330C(void *out, void *in, int arg2) {
     volatile float work[8];
-    float y = *(float *)((char *)arg2 + 0x20);
+    float dx, dy, sx, sy, nsx;
     float x = *(float *)((char *)arg2 + 0x18);
-    float sq = x * x + y * y;
-    float length;
-    float denom;
-    float scale;
-    float sx, sy, dx, dy, nsx;
-    length = (float)fn_8002F234(sq);
-    denom = lbl_80562148 > length ? lbl_80562148 : length;
-    scale = lbl_80562140 / denom;
+    float y = *(float *)((char *)arg2 + 0x20);
+    float length = (float)fn_8002F234(x * x + y * y);
+    float denom = lbl_80562148 > length ? lbl_80562148 : length;
+    float scale = lbl_80562140 / denom;
     sy = work[3] * scale;
     sx = work[2] * scale;
     work[6] = *(float *)((char *)arg2 + 0x24);
@@ -380,7 +378,7 @@ void fn_80193604(void *arg0, void *arg1, void *unused, int arg2, void *arg3) {
         }
     }
     if (code == 0x3EA) *(float *)(obj + 0x2A0) += lbl_80562174;
-    if (code == 0x6D) *(u8 *)(obj + 0x2FE) = 0;
+    if (__builtin_expect(code == 0x6D, 0)) *(u8 *)(obj + 0x2FE) = 0;
 }
 #pragma pop
 /* Tail-call wrapper for fn_80193CE0. */
@@ -702,7 +700,7 @@ extern int fn_801B2F24(void);
 extern float lbl_80562198, lbl_805621B8, lbl_805621BC, lbl_805621C0, lbl_805621C4;
 static inline float Cross2D_80194324(float ax, float ay, float bx, float by) {
     float n = -ay;
-    return ax * bx + by * n;
+    return ax * bx + n * by;
 }
 #pragma cplusplus on
 extern "C" int fn_800216D0(void);
@@ -2889,19 +2887,20 @@ extern float lbl_8055A48C, lbl_80562194, lbl_8056227C, lbl_80562280, lbl_8056214
 extern void fn_8019315C(void *, int);
 extern int fn_8019309C(void *, int, signed char);
 void fn_80197BD0(void *arg0, void *arg1) {
- float f31=lbl_8055A488,f30,f5,f6,f4,f3,f2,f1; int done=1, i, special; void *p;
- f30=lbl_80562194*lbl_8055A48C;
+ float f31=lbl_8055A488,f30,f5,f6,f4,f3,f2,f1; int done=1, i, special, cmp; void *p;
+ f30=1.1f*lbl_8055A48C;
  if (*(u8*)((char*)arg0+0xfc)) {
   if (*(float*)((char*)arg0+0xec)<lbl_8056227C || *(int*)((char*)arg0+0x100)>1) {
    fn_8019315C(arg0,*(int*)((char*)arg0+0x114)); i=*(int*)((char*)arg0+0x114); p=lbl_804349C0[i];
-   f5=f31+__fabsf(*(float*)((char*)arg0+0x104))*(f30-f31);
+   f5=f31+(float)__fabs((double)*(float*)((char*)arg0+0x104))*(f30-f31);
    special=p && *(int*)((char*)arg0+0x290)==*(int*)((char*)p+0x114);
    f4=*(float*)((char*)arg0+0xf8); f6=f4-*(float*)((char*)arg0+0x108);
-   if ((*(unsigned int*)&f4 & 0x80000000U) != (*(unsigned int*)&f6 & 0x80000000U)&&!special) f6=f4>lbl_80562144?lbl_80562140:lbl_805621A4;
+   cmp = (float)__fabs((double)f4) > *(float*)((char*)arg0+0x274) - lbl_80562280*(lbl_8055A488+f5);
+   if (cmp && (*(int*)&f4 & (int)0x80000000U) != (*(int*)&f6 & (int)0x80000000U)&&!special) f6=f4>lbl_80562144?lbl_80562140:lbl_805621A4;
    if (*(int*)((char*)arg0+0x114)!=*(int*)((char*)arg0+0x118)||*(float*)((char*)arg0+0xec)>lbl_80562194) {
-    *(float*)((char*)arg0+0x10c)=f6; f3=__fabsf(f6); f30=lbl_80562284+lbl_8056215C*(f5+f31);
+    *(float*)((char*)arg0+0x10c)=f6; f3=(float)__fabs((double)f6); f30=lbl_80562284+lbl_8056215C*(f5+f31);
     if (f3<f30) {
-     if ((*(u8*)((char*)arg0+0x9c)||*(u8*)((char*)arg0+0x74))&&(*(unsigned int*)&f6 & 0x80000000U) != (*(unsigned int*)((char*)arg0+0xcc) & 0x80000000U)) fn_8019309C(arg0,*(int*)((char*)arg0+0xdc),0);
+     if ((*(u8*)((char*)arg0+0x9c)||*(u8*)((char*)arg0+0x74))&&(*(int*)&f6 & (int)0x80000000U) != (*(int*)((char*)arg0+0xcc) & (int)0x80000000U)) fn_8019309C(arg0,*(int*)((char*)arg0+0xdc),0);
      f1=*(float*)((char*)arg0+0x10c)>lbl_80562144?lbl_80562140:lbl_805621A4;
      f2=( *(float*)((char*)arg0+0x54)-lbl_80562144)/(*(float*)((char*)arg0+0xec)-lbl_80562144); if(f2>lbl_80562140) f2=lbl_80562140; if(f2<lbl_80562144) f2=lbl_80562144;
      f3=*(float*)((char*)arg0+0x278); f4=(*(float*)((char*)arg0+0xec)-lbl_8056227C)/lbl_80562288;
@@ -3050,7 +3049,7 @@ void fn_801981A0(void *arg0, void *arg1) {
         }
         var_r4 = 1;
         c = lbl_8055A48C;
-        temp_f6 = (lbl_80562298 * *(float *)(o + 0x2EC) * c) + c;
+        temp_f6 = c + (lbl_80562298 * *(float *)(o + 0x2EC) * c);
         if (*(u8 *)(o + 0xFC) != 0 && *(int *)(o + 0x114) == *(int *)(o + 0x138)) {
             var_r4 = 0;
         }
@@ -3134,19 +3133,30 @@ void fn_80198488(void *arg0) {
 }
 
 void fn_80198530(void *arg0) {
-    char *o = (char *)arg0;
-    float sp10 = lbl_80562140;
-    float spC = lbl_80562144;
-    float v28 = *(float *)(o + 0x28);
-    float v24 = *(float *)(o + 0x24);
-    float r = sp10;
-    if (v28 < spC) {
-        if (v24 < lbl_805621A4) r = v24; else r = lbl_805621A4;
+    char s[0x80];
+    float *o = (float *)arg0;
+    float v28 = o[0x28 / 4];
+    float v24 = o[0x24 / 4];
+    int c4, c0;
+    *(float *)&s[0x10] = lbl_80562140;
+    *(float *)&s[0xc] = lbl_80562144;
+    c4 = (v28 < *(float *)&s[0xc]);
+    if (c4) {
+        c0 = (v24 > *(float *)&s[0x10]);
     } else {
-        if (v24 > v28) { if (v24 < lbl_805621A4) r = v24; }
+        c0 = (v24 < lbl_805621A4);
     }
-    (void)sp10; (void)spC; (void)r;
-    fn_801961FC(arg0);
+    if (c0) {
+        float f4 = lbl_80562140;
+        float f2 = lbl_80562144;
+        float f3 = f4 * o[0x40 / 4] - f2 * o[0x44 / 4];
+        if (c4) {
+            float t = (float)(fabs(*(float *)&s[0xc]) - f2) / lbl_80562274;
+            if (f4 < t) f4 = t;
+            if (f4 > f2) f4 = f2;
+        }
+        fn_801961FC(arg0);
+    }
 }
 
 #pragma opt_common_subs off
