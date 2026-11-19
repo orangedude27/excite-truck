@@ -39,21 +39,21 @@ extern unsigned char lbl_8055F1BC;
 extern unsigned char lbl_80341CE4[], lbl_80341CF0[];
 #pragma cplusplus on
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 extern "C" void fn_8023E5B4(void *arg0, int arg1) {
     class Obj {
     public:
         virtual void f0();
         virtual char *f1();
     };
-    int handle;
-    int length;
+    int values[36];
     int now;
+    int handle;
     int i;
+    int length;
     int *base;
     void *second;
     Obj *object;
-    int values[36];
+    int p_cf0, c10, p_bab8, p_6914, c2;
 
     now = fn_802E2C20();
     lbl_8055F1B0 = arg0;
@@ -65,6 +65,12 @@ extern "C" void fn_8023E5B4(void *arg0, int arg1) {
         handle = ((int (*)(int, int, int))fn_8022D228)(handle, 14, 0x20);
     for (i = 0; i < 14; i++)
         fn_8022D350(handle, &lbl_8055BC98, 0);
+
+    p_cf0 = (int)&lbl_80341CF0;
+    c10 = 10;
+    p_bab8 = (int)&lbl_8055BAB8;
+    p_6914 = (int)fn_80236914;
+    c2 = 2;
 
     values[9] = 0;
     values[7] = 8;
@@ -92,15 +98,15 @@ extern "C" void fn_8023E5B4(void *arg0, int arg1) {
     values[18] = (int)second;
     values[19] = length;
     values[20] = 0;
-    values[21] = (int)lbl_80341CF0;
-    values[22] = 10;
+    values[21] = p_cf0;
+    values[22] = c10;
     values[23] = handle;
     values[24] = 0;
     values[25] = 0;
-    values[26] = (int)&lbl_8055BAB8;
+    values[26] = p_bab8;
     values[27] = 8;
-    values[28] = (int)fn_80236914;
-    values[29] = 2;
+    values[28] = p_6914;
+    values[29] = c2;
     values[30] = 0;
     values[31] = lbl_804987E0[0];
     values[32] = lbl_804987E0[1];
