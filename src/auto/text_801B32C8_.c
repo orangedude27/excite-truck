@@ -319,6 +319,7 @@ void fn_801B34DC(void *arg0, void *arg1, V3_801B34DC *pos, V3_801B34DC *arg3, V3
     }
 }
 #pragma pop
+/* No operation. */
 void fn_801B3B24(void) {
 
 }
