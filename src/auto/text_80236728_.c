@@ -750,14 +750,6 @@ void fn_80237A9C(void) {
 }
 
 extern float lbl_805636E4;
-typedef struct UiTail_37AA0 {
-    char pad0[0x21];
-    unsigned char flag21;
-    char pad1[0x6];
-    void *cb28;
-    void *cb2C;
-    void *cb30;
-} UiTail_37AA0;
 #pragma push
 #pragma cplusplus on
 class SObjV_37AA0 { public: virtual void _d0(); virtual float get(); virtual void set(float); };
@@ -772,9 +764,9 @@ static unsigned char pass_flag_37AA0(int dummy, unsigned char flag, char *base) 
 
 void fn_80237AA0(int arg0, float *arg1, float arg2)
 {
+    unsigned char var_r4;
     float var_f31 = arg2;
     float var_f1, var_f2;
-    unsigned char var_r4;
     void *p;
     if (arg0 == 0) {
         p = *(void **)(lbl_8055F0C0 + 0x28);
