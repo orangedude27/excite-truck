@@ -510,8 +510,8 @@ void fn_8028D89C(void *arg0, int arg1, float arg2) {
             t = *(float *)(entry + 0x98) - lim;
             i = (int)(lbl_80564410 * (*(float *)(group + 4) + *(float *)(group + 8) * t));
             clamped = i & (((-i) & ~i) >> 31);
-            if (clamped < 0xFFFF) { int v = clamped; *(unsigned short *)(item + 0x24) = v; }
-        *(unsigned char *)(item + 0x26) = 1;
+            if (clamped < 0xFFFF) *(unsigned short *)(item + 0x24) = clamped;
+            *(unsigned char *)(item + 0x26) = 1;
             *(int *)(g + 4) = *(int *)(g + 4) + 1;
             *(int *)(group + 0x18) = *(int *)(group + 0x18) + 1;
             *(float *)(state + 1) = arg2;
