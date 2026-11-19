@@ -930,6 +930,7 @@ s32 fn_8028BC1C(s32 arg0, s32 arg1) {
 extern f32 lbl_8056432C;
 #pragma push
 #pragma scheduling on
+/* Initialize this object's transform/state block: clear the flag at +4 and set the 0x30-float sequence at +0x1C to identity-like rows (1,0,0,0 repeating). */
 void fn_8028BC88(s32 arg0) {
     f32 zero, one;
     *(s32 *)(arg0 + 4) = 0;
