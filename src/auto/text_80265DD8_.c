@@ -415,14 +415,13 @@ void fn_80266150(void *arg0) {
     *(float *)((char *)arg0 + 0xC) = f0;
 }
 void fn_80266170(void *arg0, int arg1, int arg2, int arg3, float farg0) {
-    float temp_f0;
     float temp_f0_2;
     float var_f3;
     float temp_f4;
     float var_f0;
-    float var_f4;
     int temp_r0_2;
     int temp_r0;
+    float fb8, fr0, fb4, var_f4;
 
     if (arg3 != 0) {
         register float reset_scale;
@@ -446,8 +445,10 @@ void fn_80266170(void *arg0, int arg1, int arg2, int arg3, float farg0) {
     temp_r0 = temp_r0_2 + temp_r0;
     *(int *)((char *)arg0 + 4) = temp_r0;
     var_f4 = lbl_80563C2C;
-    temp_f0 = (float)lbl_8055C4B4;
-    temp_f0_2 = ((float)temp_r0 - temp_f0) / ((float)lbl_8055C4B8 - temp_f0);
+    fr0 = (float)temp_r0;
+    fb8 = (float)lbl_8055C4B8;
+    fb4 = (float)lbl_8055C4B4;
+    temp_f0_2 = (fr0 - fb4) / (fb8 - fb4);
     var_f4 = (var_f4 < temp_f0_2) ? var_f4 : temp_f0_2;
     var_f4 = (var_f4 > lbl_80563C20) ? var_f4 : lbl_80563C20;
     var_f3 = lbl_80563C28;
@@ -586,7 +587,7 @@ void fn_80266388(int unused, int mode, float *matrix, void *pos, void *owner) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_80266A0C(float *fs, int unused, void *pos) {
+void fn_80266A0C(register float *fs, int unused, register void *pos) {
     float *opos;
     void *cam;
     char *sel;
@@ -1123,7 +1124,7 @@ void fn_802678E8(void *arg0, int arg1) {
  *(int *)(p+0x10) = *(int *)(p+0x14);
  *(float *)(p+0xbc) = 1.7017f;
  *(void **)(p+0x140) = fn_8017960C(*(int *)(p+0x20));
- { float x = *(float *)(p+0x7c), y = *(float *)(p+0x80), z = *(float *)(p+0x84);
+ { float z = *(float *)(p+0x84), y = *(float *)(p+0x80), x = *(float *)(p+0x7c);
  frame.x = x; frame.flag = 0; entity = *(char **)(p+0x140); frame.y = y; frame.z = z; }
  if (entity) {
    ((void (*)(void *, void *, int))fn_802693F4)(p, &frame.flag, arg1);
@@ -1151,20 +1152,25 @@ void fn_802678E8(void *arg0, int arg1) {
  *(float *)((char *)arg0+0x30) = *(float *)(p+0xbc);
  *(float *)((char *)arg0+0x34) = fn_8002EF30(0.5f * *(float *)(p+0xbc));
  if (fn_801769F8() == 0) {
-   if (fn_8026B734(*(int *)(p+0x20), &frame.height)) height = frame.height;
-   else {
-     int mode = *(int *)(p+0x10);
+   if (fn_8026B734(*(int *)(p+0x20), &frame.height)) {
+     height = frame.height;
+     goto set_height;
+   } else {
      int valid = 0;
+     int mode = *(int *)(p+0x10);
      if ((mode >= 0 && mode < 10) || mode == 14) valid = 1;
      if (valid) {
        frame.height = fn_801B8950(*(int *)(p+0x20));
        t = ((float)__fabs(PSVECDotProduct(p+0x70,p+0xd8))-0.97f)/lbl_80563C74;
        t = (1.0f < t) ? 1.0f : t;
        t = (t > 0.0f) ? t : 0.0f;
-       height = frame.height * (1.0f + t * -0.5f);
-     } else height = 0.0f;
+       height = frame.height * (1.0f + -0.5f * t);
+       goto set_height;
+     }
    }
- } else height = 0.0f;
+ }
+ height = 0.0f;
+set_height:
  *(float *)((char *)arg0+0x50) = height;
  *(float *)((char *)arg0+0x54) = *(float *)(p+0x1a0);
  if (*(unsigned char *)(p+0x138)) flags |= 0x10;
@@ -2061,7 +2067,6 @@ void fn_8026A2C8(void) {
 }
 
 #pragma scheduling invalid_target
-#pragma scheduling on
 void fn_8026A2CC(int *arg0, int arg1, float arg2) {
     int a, b, c, d, e;
     char *p = (char *)lbl_80499080 + arg1 * 0x228 + 0x1a4;
