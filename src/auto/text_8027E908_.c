@@ -296,6 +296,28 @@ __declspec(section ".data") extern int lbl_802FA848;
 __declspec(section ".data") extern int lbl_804B2FF8;
 __declspec(section ".data") extern int lbl_803480A8;
 extern int lbl_8055C7C8, lbl_8055B860;
+/* One line of a debug menu passed to fn_802146BC (see text_8025E034_.c). */
+typedef struct CareerMenuItem {
+    void *name;
+    int type;
+    void *data;
+    int a;
+    int b;
+} CareerMenuItem;
+typedef struct CareerMenu {
+    int w0;
+    CareerMenuItem *items;
+    int w2;
+    int w3;
+    int w4;
+} CareerMenu;
+static inline void CareerMenuItemSet(CareerMenuItem *item, void *name, int type, void *data, int a, int b) {
+    item->name = name;
+    item->type = type;
+    item->data = data;
+    item->a = a;
+    item->b = b;
+}
 #pragma use_lmw_stmw off
 void fn_8027ED78(int arg0, int arg1, int arg2) {
 #pragma scheduling invalid_target
@@ -3212,18 +3234,25 @@ void fn_802857A8(void *arg0) {
     unsigned char *p = (unsigned char *)arg0;
     void *obj;
     void **vt;
+    int a, b;
     int mode, i, count;
     float alpha;
+    char *d;
+    const char *s;
+    int n;
+    char ch;
     char tmp0[0x64], tmp1[0x64], tmp2[0x64], tmp3[0x64], other[0x14], *stack;
     p[0x18] = 1;
     *(int *)(p + 0x1c) = fn_80221EA8();
     obj = *(void **)(p + 0x60);
     if (obj != 0) {
+        b = *(int *)(p + 8);
+        a = *(int *)(p + 4);
         *(int *)(p + 0x20) = 0;
         p[0x50] = 1;
-        *(int *)(p + 0x48) = *(int *)(p + 4);
-        *(int *)(p + 0x4c) = *(int *)(p + 8);
-        *(int *)(p + 0x68) = *(int *)(p + 4);
+        *(int *)(p + 0x48) = a;
+        *(int *)(p + 0x4c) = b;
+        *(int *)(p + 0x68) = a;
         alpha = lbl_80564200;
         *(float *)(p + 0x64) = alpha;
 #pragma cplusplus on
@@ -3251,37 +3280,39 @@ void fn_802857A8(void *arg0) {
             c = (Child *)*(void **)(p + 0x60);
             if (c != 0) {
                 fn_801308F4((char *)(p + 0x6c), 0x1e, (const char *)c->v8());
-                {
-                    char *d = (char *)(p + 0x6c);
-                    const char *s = lbl_8055C818;
-                    i = 0x1e;
-                    while (*d != 0) { --i; ++d; }
-                    if (i > 0) {
-                        for (;;) {
-                            if (--i <= 0) { d[-1] = 0; break; }
-                            char ch = *s++;
-                            *d = ch;
-                            ++d;
-                            if (ch == 0) break;
-                        }
-                    }
+                d = (char *)(p + 0x6c);
+                n = 0x1e;
+                s = lbl_8055C818;
+                while (*d != 0) { --n; ++d; }
+                if (n > 0) {
+                    goto copy1;
+                dec1:
+                    --n;
+                    if (n <= 0) { d[-1] = 0; goto done1; }
+                    goto copy1;
+                copy1:
+                    ch = *s++;
+                    *d++ = ch;
+                    if (ch != 0) goto dec1;
+                done1:;
                 }
                 c = (Child *)*(void **)(p + 0x60);
                 fn_801308F4(other, 0x14, (const char *)c->v13());
-                {
-                    char *d = (char *)(p + 0x6c);
-                    char *s = other + 1;
-                    i = 0x1e;
-                    while (*d != 0) { --i; ++d; }
-                    if (i > 0) {
-                        for (;;) {
-                            if (--i <= 0) { d[-1] = 0; break; }
-                            char ch = *s++;
-                            *d = ch;
-                            ++d;
-                            if (ch == 0) break;
-                        }
-                    }
+                d = (char *)(p + 0x6c);
+                n = 0x1e;
+                s = other + 1;
+                while (*d != 0) { --n; ++d; }
+                if (n > 0) {
+                    goto copy2;
+                dec2:
+                    --n;
+                    if (n <= 0) { d[-1] = 0; goto done2; }
+                    goto copy2;
+                copy2:
+                    ch = *s++;
+                    *d++ = ch;
+                    if (ch != 0) goto dec2;
+                done2:;
                 }
                 if (p[0x98] == 0) {
                     c = (Child *)*(void **)(p + 0x60);
@@ -3374,15 +3405,18 @@ void fn_802857A8(void *arg0) {
                         }
                     }
                     {
-                        char *d = (char *)(p + 0x8a);
-                        i = 10;
-                        for (;;) {
-                            if (--i <= 0) { d[-1] = 0; break; }
-                            char ch = *stack++;
-                            *d = ch;
-                            ++d;
-                            if (ch == 0) break;
-                        }
+                        char *dst = (char *)(p + 0x8a);
+                        n = 10;
+                        goto copy3;
+                    dec3:
+                        --n;
+                        if (n <= 0) { dst[-1] = 0; goto done3; }
+                        goto copy3;
+                    copy3:
+                        ch = *stack++;
+                        *dst++ = ch;
+                        if (ch != 0) goto dec3;
+                    done3:;
                     }
                 }
                 *(int *)(p + 0x94) = (arg0 == lbl_8055F698);
