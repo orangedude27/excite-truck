@@ -60,12 +60,6 @@ typedef struct SoundMgr {
     signed long count;        /* +0x14 */
 } SoundMgr;
 
-typedef struct Vt_80207960 {
-    void (*f0)(void);
-    void (*f1)(void*, signed long);
-    void (*f2)(void*);
-} Vt_80207960;
-
 /* The nine sound classes the manager keeps a list of, plus their count; the
  * names are the ones in its assert table (lbl_802F9DA0).  fn_802085F0 calls
  * ENGINE, TIRESQUEAL, CRASH, ENGINE_START and WIND the positional ones, and
@@ -509,9 +503,7 @@ void fn_80207F34(void *arg0) {
     }
 }
 
-#pragma push
-#pragma use_lmw_stmw off
-#pragma dont_inline on
+#pragma scheduling on
 extern "C" signed long fn_8020815C(void *arg0) {
     struct Obj {
         virtual void f0();
@@ -523,20 +515,20 @@ extern "C" signed long fn_8020815C(void *arg0) {
         virtual void f6();
         virtual signed long check();
     };
-    register signed long offset;
-    register signed long limit;
-    register signed long matches;
-    register signed long i;
-    void *entry;
-    void *owner;
-    limit = *(signed long *)((char *)lbl_802F9DC8 + (signed long)fn_802090B4() * 0x2C);
+    signed long offset;
+    signed long limit;
+    signed long matches;
+    signed long i;
+    char *table;
+
+    table = (char *)fn_802090B4();
+    limit = *(signed long *)((char *)lbl_802F9DC8 + (unsigned long)table * 0x2C);
     matches = 0;
     i = 0;
     offset = 0;
     while (i < *(signed long *)((char *)arg0 + 0x10)) {
-        entry = *(void **)((char *)*(void ***)((char *)arg0 + 0xC) + offset);
-        owner = *(void **)((char *)entry + 0xC);
-        if (((Obj *)owner)->check() == 1) {
+        void *entry = *(void **)((char *)*(void ***)((char *)arg0 + 0xC) + offset);
+        if (((Obj *)*(void **)((char *)entry + 0xC))->check() == 1) {
             matches++;
         }
         offset += 4;
@@ -546,7 +538,6 @@ extern "C" signed long fn_8020815C(void *arg0) {
         fn_802E317C(lbl_8033BE20, matches, limit);
     }
 }
-#pragma pop
 
 #pragma cplusplus reset
 #pragma scheduling on
