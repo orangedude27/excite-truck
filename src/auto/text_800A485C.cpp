@@ -4343,9 +4343,10 @@ extern "C" s32 fn_800AB0C0(u8 *p_ent, u32 arg1) {
 
 extern "C" s32 VFiPFENT_findEmptyTailSFN(void *, void *, u32 *);
 extern "C" s32 VFiPFPATH_parseShortNameNumeric(char *, u32);
-extern "C" s32 VFiPFENT_AdjustSFN(void *arg0, s8 *arg1) {
-    u32 sp8;
-    s8 *name = arg1;
+/* Adjusts a short file name's numeric tail (~n) so it refers to an unused name. */
+extern "C" s32 VFiPFENT_AdjustSFN(void *dir, s8 *sfn) {
+    u32 tailIndex;
+    s8 *name = sfn;
     s8 *p = name + 1;
     s8 c;
     s8 d;
@@ -4360,12 +4361,12 @@ extern "C" s32 VFiPFENT_AdjustSFN(void *arg0, s8 *arg1) {
             index++;
         }
         if (d == '.' || d == 0) {
-            s32 result = VFiPFENT_findEmptyTailSFN(arg0, name, &sp8);
+            s32 result = VFiPFENT_findEmptyTailSFN(dir, name, &tailIndex);
             if (result != 0) {
                 return result;
             }
-            if (sp8 != 1) {
-                VFiPFPATH_parseShortNameNumeric((char *)name, sp8);
+            if (tailIndex != 1) {
+                VFiPFPATH_parseShortNameNumeric((char *)name, tailIndex);
             }
         }
     }
