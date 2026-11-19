@@ -23690,7 +23690,7 @@ void rfc_port_sm_state_closed(void *p_port, u16 event, void *p_data) {
      * events, requesting security checks or sending DM/freeing buffers as needed. */
     extern char lbl_80319AC4[];
     extern char lbl_80319AE4[];
-    extern void rfc_sec_check_complete(void *, void *, s8);
+    extern void rfc_sec_check_complete(void *bd_addr, void *p_ref_data, s8 res);
     extern void rfc_port_closed(void *);
     extern void rfc_send_dm(void *, u8, u8);
     extern void Port_TimeOutCloseMux(void *);
