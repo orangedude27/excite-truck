@@ -27,7 +27,6 @@ extern signed char lbl_8055E635;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-struct Pair8 { float a; float b; };
 extern float lbl_80435740[];
 extern const char lbl_80335980[];
 extern const char lbl_80335990[];
