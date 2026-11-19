@@ -728,13 +728,12 @@ get:
     }
     *(void **)((u8 *)arg0 + 0x1C) = obj;
     {
-        f32 zero = lbl_80561998;
         for (i = 0; i < *(s32 *)((u8 *)arg0 + 0x38); i++) {
             Entry e;
             e.b = 0;
             e.w = -1;
-            e.a = zero;
-            e.c = zero;
+            e.a = lbl_80561998;
+            e.c = lbl_80561998;
             fn_8016C55C(*(void **)((u8 *)arg0 + 0x1C), &e);
         }
     }
@@ -1484,19 +1483,22 @@ extern void fn_802E30C8(const char *, ...);
 extern char lbl_80330AA4[];
 #pragma scheduling invalid_target
 extern void fn_8016E15C();
+#pragma push
+#pragma processor 750
 #pragma use_lmw_stmw off
 #pragma ppc_psq_save off
+#pragma opt_loop_invariants off
+#pragma opt_common_subs off
+#pragma scheduling invalid_target
 void fn_8016DA0C(void *arg0) {
     s32 i, j, n;
-    f32 f, zero;
     void *p;
 
-    zero = lbl_80561980;
     for (i = 0; i < M2C_FIELD(arg0, s32 *, 8); i++) {
         p = ((void **) M2C_FIELD(arg0, void **, 4))[i];
         M2C_FIELD(p, s32 *, 0) = 0;
         M2C_FIELD(p, s8 *, 8) = 0;
-        M2C_FIELD(p, f32 *, 0xC) = zero;
+        M2C_FIELD(p, f32 *, 0xC) = 0.0f;
     }
     fn_8016A0D4();
     if (M2C_FIELD(arg0, s32 *, 0x70) == 0) {
@@ -1510,7 +1512,7 @@ void fn_8016DA0C(void *arg0) {
     M2C_FIELD(arg0, s8 *, 0x78) = 0;
     M2C_FIELD(arg0, s8 *, 0x79) = 0;
     M2C_FIELD(arg0, s8 *, 0x7A) = 1;
-    M2C_FIELD(arg0, f32 *, 0x58) = zero;
+    M2C_FIELD(arg0, f32 *, 0x58) = 0.0f;
     if (M2C_FIELD(arg0, s32 *, 0x6C) < M2C_FIELD(arg0, s32 *, 0x68))
         fn_802E30C8(lbl_80330AA4);
     fn_8016E314((u8 *) arg0 + 0x38);
@@ -1525,12 +1527,11 @@ void fn_8016DA0C(void *arg0) {
         fn_8016DFB8((u8 *) arg0 + 0x30);
         fn_8016DE20((u8 *) arg0 + 0x30);
     }
-    f = lbl_80561998;
     for (j = 0; j < fn_8016DE08(M2C_FIELD(arg0, void **, 0x4C)); j++) {
         *(s8 *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), j) = 0;
         M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), j), s32 *, 4) = -1;
-        M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), j), f32 *, 8) = f;
-        M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), j), f32 *, 0xC) = f;
+        M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), j), f32 *, 8) = -100.0f;
+        M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), j), f32 *, 0xC) = -100.0f;
     }
     n = fn_8016DD98((u8 *) arg0 + 0x30);
     M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), M2C_FIELD(arg0, s32 *, 0x5C)), s32 *, 4) = n;
@@ -1542,9 +1543,9 @@ void fn_8016DA0C(void *arg0) {
     if (M2C_FIELD(arg0, s32 *, 0x90)) fn_80144C54(M2C_FIELD(arg0, s32 *, 0x90));
     if (M2C_FIELD(arg0, s32 *, 0x94)) fn_80144C54(M2C_FIELD(arg0, s32 *, 0x94));
     M2C_FIELD(arg0, s8 *, 0x9C) = 1;
-    M2C_FIELD(arg0, f32 *, 0xA0) = lbl_80561998;
+    M2C_FIELD(arg0, f32 *, 0xA0) = -100.0f;
     M2C_FIELD(arg0, s32 *, 0xAC) = 0;
-    M2C_FIELD(arg0, f32 *, 0xB0) = lbl_805619A4;
+    M2C_FIELD(arg0, f32 *, 0xB0) = -1.0f;
     M2C_FIELD(arg0, s8 *, 0xB4) = 1;
     M2C_FIELD(arg0, s8 *, 0xB5) = 0;
     M2C_FIELD(arg0, s8 *, 0xBC) = 0;
@@ -1570,7 +1571,10 @@ void fn_8016DA0C(void *arg0) {
     if (p) { M2C_FIELD(p, s8 *, 0x4A) = 1; M2C_FIELD(p, s8 *, 0x4C) = 0; }
     M2C_FIELD(arg0, s8 *, 0xA8) = 0;
 }
-#pragma use_lmw_stmw reset
+#pragma scheduling on
+#pragma opt_common_subs on
+#pragma opt_loop_invariants on
+#pragma pop
 /* Returns the point value for a ring challenge spec (0->5, 1->10, 2->15); panics on unknown. */
 s32 fn_8016DD98(void *arg0) {
     s32 value = *(s32 *)((u8 *)arg0 + 0x44);
@@ -1720,25 +1724,22 @@ void fn_8016E118(void *obj)
     }
 }
 
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_8016E15C(void *arg0) {
     f32 f = lbl_80561998;
-    s32 off;
-    s32 i;
-#pragma scheduling off
+    int off;
+    int i;
     *(u8 *)((u8 *)arg0 + 9) = 0;
     i = 0;
     off = 0;
     *(f32 *)((u8 *)arg0 + 0xC) = f;
     *(s32 *)((u8 *)arg0 + 0x10) = 0;
-#pragma scheduling on
-    while (i < *(s32 *)(*(char **)((u8 *)arg0 + 4) + 4)) {
-        *(u8 *)(*(char **)*(char **)((u8 *)arg0 + 4) + off + 0x30) = 0;
+    while (i < *(int *)(*(char **)((u8 *)arg0 + 4) + 4)) {
+        *(unsigned char *)(*(char **)*(char **)((u8 *)arg0 + 4) + off + 0x30) = 0;
         off += 0x38;
         i++;
     }
 }
-#pragma scheduling on
 /* Address of the index-th 0x14-byte element in the array whose base pointer is *basePtr. */
 s32 fn_8016E1A4(s32 *basePtr, s32 index) {
     return *basePtr + (index * 0x14);
