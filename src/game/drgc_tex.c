@@ -3,6 +3,11 @@
 // Static-init thunk fn_802D98BC (+ .ctors slot 0x802ED5C8) remains in
 // auto/text_802D98BC_.c pending a promotion pass.
 #include "types.h"
+static int fn_802D7B5C_fmt(int isCi4) {
+    int fmt = 9;
+    if (isCi4 != 0) fmt = 8;
+    return fmt;
+}
 extern void DCFlushRange(void *, unsigned int);
 extern unsigned int GXGetTexBufferSize(unsigned short, unsigned short, unsigned int, int, unsigned char);
 extern void GXInitTexObj(void *, void *, unsigned short, unsigned short, int, int, int, unsigned int);
@@ -1135,7 +1140,7 @@ int fn_802D972C(register void *arg0, register int arg1, register int arg2) {
     unsigned int yoff;
     unsigned int xsign;
     unsigned int xoff;
-    int pixel;
+    register int pixel;
     unsigned int value;
     int doubled;
     mip = GXGetTexObjMipMap((char *)arg0 + 0x24);
