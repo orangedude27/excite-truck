@@ -162,8 +162,8 @@ void fn_80238B44(int arg0, int arg1, int arg2, int arg3, int arg4) {
     int halfY;
     int halfX;
     fn_802C8BD0(-1);
-    halfY = (int)(((unsigned int)lbl_8055CFF4 >> 31) + lbl_8055CFF4) >> 1;
-    halfX = (int)(((unsigned int)lbl_8055CFF0 >> 31) + lbl_8055CFF0) >> 1;
+    halfY = (int)lbl_8055CFF4 / 2;
+    halfX = (int)lbl_8055CFF0 / 2;
     fn_802C92DC(arg0 - halfX, halfY - arg1, arg2 - halfX, halfY - arg3, arg4);
     fn_802C8D74();
 }
