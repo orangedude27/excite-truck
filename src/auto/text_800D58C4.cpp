@@ -912,6 +912,7 @@ static inline void SetTagProcessorLevel1_800D77DC(u8 *self, s32 arg1) {
 }
 
 static inline void SetTagProcessorChild_800D6CA0(u8 *child, s32 arg1) { fn_800D6CA0((s32)child, arg1); }
+static inline void SetTagProcessorPane_800D6CA0(s32 child, s32 arg1) { fn_800D6CA0(child, arg1); }
 #pragma push
 #pragma inline_depth(5)
 extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
