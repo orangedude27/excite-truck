@@ -283,7 +283,10 @@ extern "C" void fn_8017D6E0(void *arg0, void *arg1) {
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void *fn_8017D93C(void *arg0, int arg1) {
+extern "C" void *fn_8017D93C(void *obj, int deleteFlag) {
+    /* Scalar deleting destructor: resets vtables, tears down the secondary base
+       and three owned subobjects (deleting them via vtable slot 2 with flag 1),
+       runs the base destructor, and optionally frees this object. */
     extern char lbl_80331D18[];
     extern void fn_801D0C84(void *);
     extern void fn_80179EE8(void *, int);
@@ -299,27 +302,27 @@ extern "C" void *fn_8017D93C(void *arg0, int arg1) {
     };
     class Derived : public Base0, public Base1 {
     };
-    void *p;
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_80331D18;
-        *(void **)((char *)arg0 + 0x1EC) = lbl_80331D18 + 0x54;
-        fn_801D0C84((Base1 *)(Derived *)arg0);
-        p = *(void **)((char *)arg0 + 0x220);
-        if (p != 0) {
-            if (p != 0) ((VObj_8017D93C *)p)->d0(1);
+    void *child;
+    if (obj != 0) {
+        *(void **)obj = lbl_80331D18;
+        *(void **)((char *)obj + 0x1EC) = lbl_80331D18 + 0x54;
+        fn_801D0C84((Base1 *)(Derived *)obj);
+        child = *(void **)((char *)obj + 0x220);
+        if (child != 0) {
+            if (child != 0) ((VObj_8017D93C *)child)->d0(1);
         }
-        p = *(void **)((char *)arg0 + 0x21C);
-        if (p != 0) {
-            if (p != 0) ((VObj_8017D93C *)p)->d0(1);
+        child = *(void **)((char *)obj + 0x21C);
+        if (child != 0) {
+            if (child != 0) ((VObj_8017D93C *)child)->d0(1);
         }
-        p = *(void **)((char *)arg0 + 0x218);
-        if (p != 0) {
-            if (p != 0) ((VObj_8017D93C *)p)->d0(1);
+        child = *(void **)((char *)obj + 0x218);
+        if (child != 0) {
+            if (child != 0) ((VObj_8017D93C *)child)->d0(1);
         }
-        if (arg0 != 0) fn_80179EE8(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+        if (obj != 0) fn_80179EE8(obj, 0);
+        if (deleteFlag > 0) fn_80128668(obj);
     }
-    return arg0;
+    return obj;
 }
 #pragma scheduling on
 #pragma cplusplus reset
