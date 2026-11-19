@@ -160,6 +160,8 @@ extern s32 fn_80128668(void);
 #pragma optimize_for_size on
 #pragma scheduling invalid_target
 void fn_8028A664(void) {
+    /* Initialize effect pools/resources (short sparks, long sparks, glass shards, debris,
+       explosion sequence) and register effect callbacks. */
     extern char lbl_8055C8A0;
     extern s32 lbl_804B32B8[];
     extern s32 lbl_8055F6F0, lbl_8055F6F4, lbl_8055F6F8, lbl_8055F700;
@@ -177,21 +179,21 @@ void fn_8028A664(void) {
     extern s32 fn_8028BA44(void *);
     extern s32 fn_8028BA9C(void *);
     extern s32 fn_8028BB14(s32);
-    void *p;
-    p = fn_801284F8(0xDC, "short sparks\0\0\0");
-    if (p != 0) p = fn_8028BB68(p, 0x80, lbl_80564328);
-    lbl_8055F6F0 = (s32)p;
-    p = fn_801284F8(0xDC, "long sparks");
-    if (p != 0) p = fn_8028BB68(p, 0x60, lbl_8056432C);
-    lbl_8055F6F4 = (s32)p;
-    p = fn_801284F8(0x14, "glass shards\0\0\0");
-    if (p != 0) p = fn_8028C824(p, 0x60);
-    lbl_8055F6F8 = (s32)p;
+    void *handle;
+    handle = fn_801284F8(0xDC, "short sparks\0\0\0");
+    if (handle != 0) handle = fn_8028BB68(handle, 0x80, lbl_80564328);
+    lbl_8055F6F0 = (s32)handle;
+    handle = fn_801284F8(0xDC, "long sparks");
+    if (handle != 0) handle = fn_8028BB68(handle, 0x60, lbl_8056432C);
+    lbl_8055F6F4 = (s32)handle;
+    handle = fn_801284F8(0x14, "glass shards\0\0\0");
+    if (handle != 0) handle = fn_8028C824(handle, 0x60);
+    lbl_8055F6F8 = (s32)handle;
     lbl_8055F6FC = fn_802929D8(1, &lbl_8055C8A0, 0, 0);
-    p = fn_802974CC("expseq.val");
-    *(volatile s32 *)&lbl_8055F700 = (s32)p;
+    handle = fn_802974CC("expseq.val");
+    *(volatile s32 *)&lbl_8055F700 = (s32)handle;
     *(volatile s32 *)&lbl_804B32B8[0x50] = 0;
-    fn_8028ABE8(p);
+    fn_8028ABE8(handle);
     fn_8028B3CC();
     fn_801EEFDC((s32)fn_8028B93C, 0);
     fn_801EEFDC((s32)fn_8028B500, 1);
@@ -789,9 +791,9 @@ s32 fn_8028B93C(f32 *arg0) {
     f32 temp_y, temp_z, temp_x;
     f32 radius;
     s32 i;
-    f32 x = arg0[0] * lbl_80564328;
-    f32 y = arg0[1] * lbl_80564328;
-    f32 z = arg0[2] * lbl_80564328;
+    f32 x = arg0[0] * 0.5f;
+    f32 y = arg0[1] * 0.5f;
+    f32 z = arg0[2] * 0.5f;
     dir[0] = x;
     dir[1] = y;
     dir[2] = z;
@@ -833,12 +835,13 @@ extern f32 lbl_805643A0;
 extern f32 lbl_80564394;
 extern s32 fn_80287B94(s32, s32, f32, f32, f32);
 extern s32 fn_8028CD80(s32, s32, void *, f32 *, f32);
+#pragma scheduling 750
 s32 fn_8028BA9C(void *arg0) {
-    s32 temp;
+    register f32 c, b, a, scale;
     f32 values[3];
-    f32 c, b, a, scale;
+    s32 temp;
     a = *(f32 *)((u8 *)arg0 + 0xC);
-    scale = lbl_805643A0;
+    scale = 0.05f;
     b = *(f32 *)((u8 *)arg0 + 0x10);
     c = *(f32 *)((u8 *)arg0 + 0x14);
     a *= scale;
@@ -851,7 +854,7 @@ s32 fn_8028BA9C(void *arg0) {
     fn_8028CD80(lbl_8055F6F8, temp, arg0, values, lbl_80564394);
     return 0x1C;
 }
-
+#pragma scheduling invalid_target
 s32 fn_8028BB14(s32 payload) {
     /* Event-handler for event type 8 (registered by fn_8028A664, run by the
      * event-script dispatcher in world/event.c).  Its 0x18-byte payload holds
@@ -889,7 +892,7 @@ void *fn_8028BB68(void *arg0, s32 arg1, f32 farg0) {
         (void *)fn_8012850C(offset + 0x10, lbl_8055C8BC, offset),
         (void *)fn_8028BC18, 0, 0x1C, arg1);
     ratio = lbl_8056432C / farg0;
-    *(volatile s32 *)arg0 = result;
+    *(s32 *)arg0 = result;
     *(s32 *)((u8 *)arg0 + 4) = 0;
     *(s32 *)((u8 *)arg0 + 8) = arg1;
     *(f32 *)((u8 *)arg0 + 0xC) = farg0;
