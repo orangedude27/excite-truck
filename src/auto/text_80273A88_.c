@@ -864,7 +864,6 @@ extern double sin(double), cos(double);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 void fn_802756A4(void *arg0) {
     extern float lbl_802FA7C0[], lbl_80564030, lbl_80563FDC, lbl_80563FD8;
     struct Matrix { int v[12]; };
@@ -874,10 +873,9 @@ void fn_802756A4(void *arg0) {
     struct Params params = *(struct Params *)lbl_802FA7C0;
     float axis[3], input[3], matrix[9];
     float mag, scale, x, y, z, s, c, t;
-    float k0 = lbl_80564030, k1 = lbl_80563FDC, k2 = lbl_80563FD8;
-    axis[0] = *(float *)(state+0x2538) + k0;
-    axis[1] = *(float *)(state+0x253C) + k1;
-    axis[2] = *(float *)(state+0x2540) + k2;
+    axis[0] = *(float *)(state+0x2538) + lbl_80564030;
+    axis[1] = *(float *)(state+0x253C) + lbl_80563FDC;
+    axis[2] = *(float *)(state+0x2540) + lbl_80563FD8;
     *(struct Matrix *)(self+0x58) = *(struct Matrix *)(self+0xC0);
     input[0] = lbl_80564024 * params.a[3];
     input[1] = lbl_80564024 * params.a[4];
