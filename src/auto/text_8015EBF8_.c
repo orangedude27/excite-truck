@@ -461,7 +461,7 @@ extern int fn_8015F3EC(unsigned short *, unsigned short *);
 extern char lbl_8032F4A0[];
 extern int lbl_8055A098, lbl_8055E29C, lbl_8055E2A0;
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_8015F3FC(void *arg0) {
     register int max;
     register int offset;
