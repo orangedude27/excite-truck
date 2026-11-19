@@ -202,11 +202,13 @@ struct SlipRecord {
     int zone;               /* 0x18: sound zone that slip reached, -1 none */
 };
 
-/* The slip/skid manager built by fn_801DF6FC (the object in lbl_8055EA04):
- * behind its first word, one slip record per vehicle of lbl_804348E8. */
-struct SlipManager {
-    void *vtable;               /* 0x00 */
-    struct SlipRecord entries[1]; /* 0x04: lbl_8055E4D0 of them */
+/* The manager built by fn_801DF6FC (the object in lbl_8055EA04) holds one slip
+ * record per vehicle of lbl_804348E8, starting at its +4.  Its setters address
+ * slot i as the object plus i * 0x1C, so a slot begins one word before the
+ * record it holds: that word is the previous slot's zone. */
+struct SlipSlot {
+    int prevZone;             /* 0x00: the previous slot's SlipRecord.zone */
+    struct SlipRecord record; /* 0x04 */
 };
 
 void fn_801DFF1C(int arg0) {
