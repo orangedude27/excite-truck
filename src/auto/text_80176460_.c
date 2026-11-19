@@ -582,6 +582,8 @@ void fn_801771A8(void) {
     }
 }
 #pragma pop
+#pragma push
+#pragma opt_common_subs off
 s32 fn_801773E4(void) {
     f32 f;
     s32 d, t, v;
@@ -643,6 +645,7 @@ s32 fn_801773E4(void) {
     fn_80209190(lbl_8055E3F0, (f32)(0xFF - r) / lbl_80561B44);
     return r;
 }
+#pragma pop
 
 void __AXDSPInitCallback_801769E0(void) {
     /* DSP init callback: advance the sound-init state to 1. */
