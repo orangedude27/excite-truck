@@ -5,11 +5,6 @@ extern void fn_801FC8D8(void);
 extern void fn_801EBBB4(void);
 extern void fn_801EBD70(void);
 extern void fn_801EBDCC(void);
-extern void fn_801EBEF4(float);
-extern void fn_801EB9FC(void *);
-extern const float lbl_80563028;
-extern char lbl_8033B5C8[];
-
 extern void fn_801FC8A8(void);
 extern void fn_801EBEF4(float);
 extern void fn_801EB9FC(void *);
