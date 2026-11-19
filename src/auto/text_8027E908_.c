@@ -673,28 +673,14 @@ static inline int fn_8027F834_find(void **p, void *value, int count) {
 }
 
 void *fn_8027F834(void *arg0, int arg1) {
-    int temp_r0, var_r7;
-    unsigned char *var_r6;
-    int count;
+    int index, count;
     if (arg0 != 0) {
         *(void **)arg0 = lbl_80348798;
         if (lbl_8055F688 == (unsigned int)arg0) lbl_8055F688 = 0;
-        var_r6 = (unsigned char *)lbl_804B3048.items;
-        count = lbl_804B3048.count;
-        var_r7 = 0;
-        for (; var_r7 < count; ++var_r7) {
-            if (*(unsigned int *)var_r6 != (unsigned int)arg0) {
-                var_r6 += 4;
-            } else {
-                goto found_scan;
-            }
-        }
-        var_r7 = -1;
-found_scan:
-        if (var_r7 != -1 && var_r7 >= 0 && var_r7 < *(volatile int *)&lbl_804B3048.count) {
-            temp_r0 = *(volatile int *)&lbl_804B3048.count - 1;
-            if (var_r7 != temp_r0)
-                ((unsigned int *)lbl_804B3048.items)[var_r7] = ((unsigned int *)lbl_804B3048.items)[temp_r0];
+        index = fn_8027F834_find(lbl_804B3048.items, arg0, lbl_804B3048.count);
+        if (index != -1 && index >= 0 && index < (count = *(volatile int *)&lbl_804B3048.count)) {
+            if (index != count - 1)
+                lbl_804B3048.items[index] = lbl_804B3048.items[count - 1];
             *(volatile int *)&lbl_804B3048.count = *(volatile int *)&lbl_804B3048.count - 1;
         }
         if (arg0 != 0) {
