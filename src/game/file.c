@@ -196,22 +196,24 @@ void fn_802E3550(void) {
 #pragma scheduling on
 extern char lbl_8034CF98[];
 s32 fn_802E35C0(const char *arg0, s32 arg1) {
+    /* Allocate a free slot in the open-file table: copy the name, store the
+     * associated handle, and return its index, or -1 if the table is full. */
     char *base;
-    s32 off;
+    s32 offset;
     s32 index = 0;
-    s32 value = arg1;
-    unsigned char *p = (unsigned char *)lbl_804DB810;
-    s32 count;
-    for (count = 16; count != 0; count--) {
-        if (p[0x20] == 0) {
-            off = index * 0x28;
+    s32 handle = arg1;
+    unsigned char *entry = (unsigned char *)lbl_804DB810;
+    s32 remaining;
+    for (remaining = 16; remaining != 0; remaining--) {
+        if (entry[0x20] == 0) {
+            offset = index * 0x28;
             base = lbl_804DB810;
-            *(base + off + 0x20) = 1;
-            strncpy(base + off, arg0, 0x20);
-            *(s32 *)((u32)base + off + 0x24) = value;
+            *(base + offset + 0x20) = 1;
+            strncpy(base + offset, arg0, 0x20);
+            *(s32 *)((u32)base + offset + 0x24) = handle;
             return index;
         }
-        p += 0x28;
+        entry += 0x28;
         index++;
     }
     fn_802E317C(lbl_8034CF98, arg0);
