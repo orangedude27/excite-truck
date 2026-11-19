@@ -559,6 +559,7 @@ void fn_801DCDA4(void) {
     fn_801D049C();
 }
 
+/* Wrapper that calls the ground/collision init routine with no explicit argument. */
 void fn_801DCE0C(void) {
     ((void (*)(void))fn_801DCD28)();
 }
