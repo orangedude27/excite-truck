@@ -1829,6 +1829,7 @@ void fn_80183E7C(void *arg0) {
 // Default callback / stub: always reports failure (0).
 int fn_80186DDC(void) { return 0; }
 
+/* Tail-call wrapper that forwards to fn_8018A8A8. */
 void fn_80186DE4(void) {
     fn_8018A8A8();
 }
