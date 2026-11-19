@@ -131,6 +131,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
     } m;
     u8 *g = lbl_80498C30;
     const char *str = (const char *)lbl_80344170;
+#define lbl_80344170 str
     u8 *slots;
     s32 *p;
     const void *label;
