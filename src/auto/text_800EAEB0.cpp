@@ -2567,6 +2567,7 @@ extern "C" int Setup__Q46nw4hbm3snd6detail9SeqPlayerFPQ46nw4hbm3snd6detail17SeqT
         virtual void FreeTrack(void *);
     };
     void *player = self;
+    const char *file = (const char *)lbl_80323B28;
     u32 level = OSDisableInterrupts();
     if (*(u8 *)((u8 *)player + 0x15) != 0) {
         u32 temp = OSDisableInterrupts();
