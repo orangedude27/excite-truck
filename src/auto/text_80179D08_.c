@@ -340,9 +340,9 @@ s32 fn_8017A804(void *arg0, void *arg1) {
     f32 v[3], q[4];
     f32 *qp;
     f32 (*m)[3] = (f32 (*)[3])((u8 *)arg0 + 0x3C);
-    f32 trace, t, scale, angle, si, x, y, z;
     f32 c0 = lbl_80561B7C;
-    register s32 i, j, k;
+    f32 trace, t, scale, angle, si, x, y, z;
+    s32 k, i, j;
     *(f32 *)((u8 *)arg1+8)=*(f32 *)((u8 *)arg0+0x60);
     *(f32 *)((u8 *)arg1+12)=*(f32 *)((u8 *)arg0+0x64);
     *(f32 *)((u8 *)arg1+16)=*(f32 *)((u8 *)arg0+0x68);
@@ -470,19 +470,21 @@ void** fn_8017ACCC(void** self) {
 typedef struct { int a, b; } Pair8;
 extern void *fn_801284F8(int, void *);
 extern void fn_80179F94(void *, void *);
-extern void fn_802E30C8(const char *);
+extern void fn_802E30C8(const char *, ...);
 extern f32 fn_8002F234(void *, int, int, f32, f32, f32, f32, f32, f32, f32);
 extern f32 lbl_80561BA0, lbl_80561BA4;
 extern const char lbl_80331BF8[], lbl_80331C04[], lbl_80333B98[], lbl_803338C0[];
 #pragma dont_inline fn_80179F94
 void fn_8017AD08(void *dst, void *src) {
+#pragma scheduling on
+#pragma dont_inline on
+#pragma optimization_level 3
     unsigned char *srcBytes = (unsigned char *)src;
     unsigned char *dstBytes = (unsigned char *)dst;
     void *obj;
     int zero = 0;
     int box = 0x424F5820;
     float x, y, z;
-    const char *vtable;
 
     ((void (*)(void *))fn_80179D94)(dst);
 
@@ -495,32 +497,33 @@ void fn_8017AD08(void *dst, void *src) {
     *(int *)(dstBytes + 0x68) = *(int *)(srcBytes + 0x34);
 
     fn_8017A580(dst);
-    if (*(int *)(srcBytes + 0x38) == 0 &&
-        (obj = fn_801284F8(0x38, (void *)lbl_80331BF8)) != 0) {
-        z = *(float *)(srcBytes + 0x44);
-        vtable = lbl_80333B98;
-        y = *(float *)(srcBytes + 0x40);
-        x = *(float *)(srcBytes + 0x3C);
-        *(void **)obj = (void *)vtable;
-        *(void **)((unsigned char *)obj + 0xC) = dstBytes + 0x3C;
-        *(float *)((unsigned char *)obj + 0x10) = lbl_80561BA0;
-        *(float *)((unsigned char *)obj + 0x14) = lbl_80561BA4;
-        *(int *)((unsigned char *)obj + 0x18) = box;
-        *(int *)((unsigned char *)obj + 0x20) = 100;
-        *(int *)((unsigned char *)obj + 4) = zero;
-        *(int *)((unsigned char *)obj + 8) = zero;
-        *(int *)((unsigned char *)obj + 0x1C) = zero;
-        *(void **)obj = (void *)lbl_803338C0;
-        *(float *)((unsigned char *)obj + 0x24) = x;
-        *(float *)((unsigned char *)obj + 0x28) = y;
-        *(float *)((unsigned char *)obj + 0x2C) = z;
-        *(int *)((unsigned char *)obj + 0x34) = zero;
-        *(float *)((unsigned char *)obj + 0x30) = lbl_80561BA4 +
-            (float)((double (*)(float))fn_8002F234)(x * x + y * y + z * z);
-        fn_80179F94(dst, obj);
-    } else {
-        fn_802E30C8(lbl_80331C04);
+    if (*(int *)(srcBytes + 0x38) == 0) {
+        obj = fn_801284F8(0x38, (void *)lbl_80331BF8);
+        if (obj != 0) {
+            z = *(float *)(srcBytes + 0x44);
+            y = *(float *)(srcBytes + 0x40);
+            x = *(float *)(srcBytes + 0x3C);
+            *(void **)obj = (void *)lbl_80333B98;
+            *(void **)((unsigned char *)obj + 0xC) = dstBytes + 0x3C;
+            *(float *)((unsigned char *)obj + 0x10) = lbl_80561BA0;
+            *(float *)((unsigned char *)obj + 0x14) = lbl_80561BA4;
+            *(int *)((unsigned char *)obj + 0x18) = box;
+            *(int *)((unsigned char *)obj + 0x20) = 100;
+            *(int *)((unsigned char *)obj + 4) = zero;
+            *(int *)((unsigned char *)obj + 8) = zero;
+            *(int *)((unsigned char *)obj + 0x1C) = zero;
+            *(void **)obj = (void *)lbl_803338C0;
+            *(float *)((unsigned char *)obj + 0x24) = x;
+            *(float *)((unsigned char *)obj + 0x28) = y;
+            *(float *)((unsigned char *)obj + 0x2C) = z;
+            *(int *)((unsigned char *)obj + 0x34) = zero;
+            *(float *)((unsigned char *)obj + 0x30) = lbl_80561BA4 +
+                (float)((double (*)(float))fn_8002F234)(x * x + y * y + z * z);
+            fn_80179F94(dst, obj);
+            return;
+        }
     }
+    fn_802E30C8(lbl_80331C04);
 }
 
 extern void PSVECCrossProduct(float *, float *, float *);
