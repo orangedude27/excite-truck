@@ -1502,7 +1502,6 @@ int fn_80280DC8(void) {
     char *src;
     char *dst;
     int n;
-    int next;
 
     if (*(volatile unsigned int *)&lbl_8055F688 == 0)
         goto reset;
@@ -1512,8 +1511,10 @@ int fn_80280DC8(void) {
     index = 0;
     p = items;
     while (index < count) {
-        if (*p == (void *)key)
-            goto first_found;
+        if (*p != (void *)key)
+            goto search_next;
+        goto first_found;
+search_next:
         p++;
         index++;
     }
@@ -1523,9 +1524,8 @@ first_found:
     if (*(void * volatile *)((char *)item + 0x60) == 0)
         goto finish;
     obj = *(void **)((char *)item + 0x60);
-    next = index + 1;
     key = ((GetKeyFn)(*(void ***)obj)[11])(obj);
-    index = next;
+    index++;
     while (index < lbl_804B3048.count) {
         item = lbl_804B3048.items[index];
         obj = *(void **)((char *)item + 0x60);
@@ -1556,8 +1556,7 @@ first_found:
         *dst++ = c;
         if ((signed char)c == 0)
             break;
-        n--;
-    } while (n > 0);
+    } while (--n > 0);
     if (n == 0)
         dst[-1] = 0;
     goto finish;
@@ -2405,6 +2404,21 @@ int fn_80283A50(void) {
 }
 
 #pragma scheduling invalid_target
+typedef struct fn_80283AC8_List {
+    void **items;
+    int count;
+} fn_80283AC8_List;
+static inline int fn_80283AC8_find(fn_80283AC8_List *list, unsigned int value) {
+    int i = 0;
+    void **p = list->items;
+    for (; i < list->count; ++i) {
+        if (*p != (void *)value) goto increment;
+        return i;
+increment:
+        ++p;
+    }
+    return -1;
+}
 int fn_80283AC8(void) {
     int i;
     int count;
