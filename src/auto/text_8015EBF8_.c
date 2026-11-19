@@ -511,6 +511,7 @@ void fn_8015F3FC(void *arg0) {
 }
 #pragma pop
 void fn_8015F554(void) {
+    /* Reserved no-op hook called during AI car setup (fn_8013477C), after fn_8013A1E8 and before fn_80160850. */
 }
 
 void fn_8015F558(void) {
