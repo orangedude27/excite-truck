@@ -1190,9 +1190,11 @@ void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
         }
 
         if (lbl_8055FA38 == 5)
-            fn_8020404C();
+            endSampleOverlay();
     }
 }
+#undef beginSampleOverlay
+#undef endSampleOverlay
 #pragma pop
 s32 fn_802B7300(s16 x, s16 y, s32 arg2, s32 arg3, f32 farg0) {
     extern float lbl_80564C74;
