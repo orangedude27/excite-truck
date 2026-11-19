@@ -234,25 +234,26 @@ done:
 
 #pragma push
 #pragma processor 750
-extern "C" f32 fn_801451DC(s32 arg0, f32 farg0) {
-    f32 var_f31 = farg0 - 320.0f;
-    s32 var_r31 = arg0;
+extern "C" f32 fn_801451DC(s32 justification, f32 x) {
+    f32 adjustedX = x - 320.0f;
+    s32 mode = justification;
+    /* Convert a game-space X to screen space and slide it for letterbox/widescreen modes. */
     if ((fn_802C9A58() != 0) || (fn_802C9A60() != 0)) {
-        if (var_r31 == 0) {
-            if (var_f31 < lbl_805615E8) {
-                var_r31 = 2;
-            } else if (var_f31 > lbl_805615E4) {
-                var_r31 = 1;
+        if (mode == 0) {
+            if (adjustedX < lbl_805615E8) {
+                mode = 2;
+            } else if (adjustedX > lbl_805615E4) {
+                mode = 1;
             } else {
-                var_r31 = 3;
+                mode = 3;
             }
         }
-        switch (var_r31 & 0xFFFFFFDF) {
+        switch (mode & 0xFFFFFFDF) {
         case 2:
-            var_f31 -= lbl_805615EC;
+            adjustedX -= lbl_805615EC;
             break;
         case 1:
-            var_f31 += lbl_805615EC;
+            adjustedX += lbl_805615EC;
             break;
         case 3:
             break;
@@ -260,8 +261,8 @@ extern "C" f32 fn_801451DC(s32 arg0, f32 farg0) {
             break;
         }
     }
-    var_f31 += lbl_8055E200;
-    return var_f31;
+    adjustedX += lbl_8055E200;
+    return adjustedX;
 }
 #pragma pop
 
