@@ -176,12 +176,14 @@ void fn_802C2FC4(void) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling off
 void fn_802C2FC8(void *arg0, u32 arg1, u32 arg2, s32 arg3, s32 arg4) {
     s32 var_r0;
     s32 var_r10;
+    u32 sign1;
     var_r10 = *(s32 *)((u8 *)arg0 + 8);
-    *(s32 *)((u8 *)arg0 + 0x14) = (s32)(arg1 & ((arg1 >> 31) - 1));
+    sign1 = arg1 >> 31;
+    *(s32 *)((u8 *)arg0 + 0x14) = (s32)(arg1 & (sign1 - 1));
     *(s32 *)((u8 *)arg0 + 0x18) = (s32)(arg2 & ((arg2 >> 31) - 1));
     if (arg3 < var_r10) {
         var_r10 = arg3;
@@ -387,9 +389,9 @@ void fn_802C3478(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     u16 *p;
     if (x1 == x0 || y1 == y0) return;
     if (!fn_802C307C((void *)lbl_8055FC00, &x0, &y0, &x1, &y1)) return;
+    mode = *(u8 *)lbl_8055FC00;
     width = x1 - x0;
     height = y1 - y0;
-    mode = *(u8 *)lbl_8055FC00;
     pixel = color >> 16;
     if (mode == 3) pixel = (u16)color;
     p = (u16 *)fn_802C3044((void *)lbl_8055FC00, x0, y0);
