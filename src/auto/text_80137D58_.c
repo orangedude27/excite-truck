@@ -470,33 +470,34 @@ void fn_80138594(void *object) {
 extern float lbl_80561398, lbl_8056139C, lbl_805613A0, lbl_805613A4, lbl_805613A8, lbl_805613AC;
 extern float __fabsf(float);
 extern double __fabs(double);
-float fn_801385F0(float arg0, float arg1, float arg2, float arg3) {
-    float diff = arg0 - arg2;
-    float value;
-    if ((float)__fabs((double)diff) > arg1 * lbl_80561398) {
-        float adjust = diff > lbl_805613A4 ? lbl_8056139C : lbl_805613A0;
-        diff -= arg1 * adjust;
+/* Compute a wrapped smoothstep-like falloff weight from a center over a radius. */
+float fn_801385F0(float position, float period, float center, float radius) {
+    float delta = position - center;
+    float weight;
+    if ((float)__fabs((double)delta) > period * lbl_80561398) {
+        float adjust = delta > lbl_805613A4 ? lbl_8056139C : lbl_805613A0;
+        delta -= period * adjust;
     }
-    arg1 = lbl_8056139C;
-    value = arg1 - (float)__fabs((double)diff) / arg3;
-    arg1 = (arg1 < value) ? arg1 : value;
-    arg1 = (arg1 > lbl_805613A4) ? arg1 : lbl_805613A4;
-    if (arg1 < lbl_805613A0) return lbl_805613A0;
-    if (arg1 > lbl_8056139C) return lbl_8056139C;
-    if (arg1 > lbl_805613A4) {
-        value = lbl_805613A8 * arg1;
-        diff = lbl_805613AC * arg1;
-        value *= arg1;
-        diff *= arg1;
-        value = arg1 * value;
-        return value + diff;
+    period = lbl_8056139C;
+    weight = period - (float)__fabs((double)delta) / radius;
+    period = (period < weight) ? period : weight;
+    period = (period > lbl_805613A4) ? period : lbl_805613A4;
+    if (period < lbl_805613A0) return lbl_805613A0;
+    if (period > lbl_8056139C) return lbl_8056139C;
+    if (period > lbl_805613A4) {
+        weight = lbl_805613A8 * period;
+        delta = lbl_805613AC * period;
+        weight *= period;
+        delta *= period;
+        weight = period * weight;
+        return weight + delta;
     }
-    value = lbl_805613A8 * arg1;
-    diff = lbl_805613AC * arg1;
-    value *= arg1;
-    diff *= arg1;
-    value = arg1 * value;
-    return value - diff;
+    weight = lbl_805613A8 * period;
+    delta = lbl_805613AC * period;
+    weight *= period;
+    delta *= period;
+    weight = period * weight;
+    return weight - delta;
 }
 
 extern float lbl_805613B0, lbl_805613B4;
