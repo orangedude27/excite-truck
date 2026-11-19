@@ -511,7 +511,7 @@ extern "C" void fn_8001335C(int a0, int arg1) {
     };
     int i;
     Dummy *obj;
-    char *const base = lbl_802FC610;
+    char *base = lbl_802FC610;
     if (a0 != 0) {
         for (i = 0; (obj = (Dummy *)((Dummy *)a0)->child(i)) != 0; i++) {
             if (stricmp(obj->name(), lbl_80558B68) == 0) {
@@ -619,14 +619,14 @@ void fn_80013724(void) {
         char *entry = base + 0x12a8;
         int n1 = (int)lbl_8055D504;
         int n2 = lbl_8055D518;
-        int id, x, y, found;
+        int x, found;
         for (x = 0; x < xcount; x++, entry += 0x28) {
-            id = *(int *)(entry + 4);
             found = 0;
             {
+                int y;
                 char *p = base + 0x98;
                 for (y = 0; y < n1; y++, p += 0x84) {
-                    if (*(int *)p == id) {
+                    if (*(int *)p == *(int *)(entry + 4)) {
                         *(int *)(entry + 4) = y;
                         found = 1;
                         break;
@@ -634,6 +634,7 @@ void fn_80013724(void) {
                 }
             }
             if (!found) {
+                int y;
                 char *p = base + 0x39b8;
                 for (y = 0; y < n2; y++, p += 0x88) {
                     if (*(int *)p == *(int *)(entry + 4)) {
@@ -661,10 +662,10 @@ void fn_80013724(void) {
 }
 
 extern int lbl_8055D518;
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80013A34(void) {
-    int count = lbl_8055D518;
-    char *p = lbl_803551E0;
+    register int count = lbl_8055D518;
+    register char *p = lbl_803551E0;
     int blocks, i;
     int zero = 0;
     if (count > 0) {
