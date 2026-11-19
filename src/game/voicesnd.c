@@ -361,6 +361,7 @@ void fn_8020AC20(void) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma cplusplus on
 void fn_8020AC2C(void *arg0) {
     float low, high, volume, x, v;
     void *p;
