@@ -9,6 +9,7 @@ extern char lbl_80342DC8[];
 extern int lbl_80498860[];
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
 void fn_802445FC(int arg0, int arg1, int arg2) {
