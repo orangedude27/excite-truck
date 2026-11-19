@@ -315,21 +315,22 @@ int fn_8013358C(int section, int key, char *valueStr) {
 }
 
 #pragma scheduling invalid_target
-int fn_8013365C(int arg0, int arg1) {
+/* Register a named callback in the first free slot of the 8-entry callback table, or log an error and return -1 if full. */
+int fn_8013365C(int name, int callback) {
     typedef struct { int a; int b; } Pair;
-    int *p = lbl_8042F718;
-    int i = 0;
-    int count;
-    for (count = 8; count != 0; count--) {
-        if (p[1] == 0) {
-            ((Pair *)lbl_8042F718)[i].b = arg1;
-            ((Pair *)lbl_8042F718)[i].a = arg0;
-            return i;
+    int *slot = lbl_8042F718;
+    int index = 0;
+    int remaining;
+    for (remaining = 8; remaining != 0; remaining--) {
+        if (slot[1] == 0) {
+            ((Pair *)lbl_8042F718)[index].b = callback;
+            ((Pair *)lbl_8042F718)[index].a = name;
+            return index;
         }
-        p += 2;
-        i++;
+        slot += 2;
+        index++;
     }
-    fn_802E317C(lbl_8032B920, arg0);
+    fn_802E317C(lbl_8032B920, name);
     return -1;
 }
 
