@@ -127,29 +127,32 @@ extern void fn_802E30C8(char *, int);
 extern char lbl_8034A4EC[];
 #pragma push
 #pragma scheduling on
-int fn_802B52C0(int arg0, const void *arg1) {
+int fn_802B52C0(int filePath, const void *image) {
     int result = 0;
-    int value0;
-    int value1;
-    int sp8;
-    unsigned char spC[0x12];
+    int width;
+    int height;
+    int fileHandle;
+    unsigned char header[0x12];
 
-    memset(spC, 0, 0x12);
-    value0 = *(const int *)arg1;
-    spC[2] = 2;
-    value1 = *(const int *)((const char *)arg1 + 4);
-    *(short *)(spC + 0xC) = (short)value0;
-    *(short *)(spC + 0xE) = (short)value1;
-    spC[0x10] = 0x20;
-    sp8 = fn_802E3D68(arg0, value1, value0);
-    if (sp8 != -1) {
-        fn_802E3A64(sp8, spC, 0x12);
-        fn_802E3A64(sp8, *(void * const *)((const char *)arg1 + 8),
-                    *(const int *)((const char *)arg1 + 4) * (*(const int *)arg1 * 4));
-        fn_802E3734(&sp8);
+    /* Save an image as a simple 32-bit TGA file: build an 18-byte header from
+     * the width/height in image, write it and the pixel data, and report
+     * success (1) or log an error and return 0 on failure. */
+    memset(header, 0, 0x12);
+    width = *(const int *)image;
+    header[2] = 2;
+    height = *(const int *)((const char *)image + 4);
+    *(short *)(header + 0xC) = (short)width;
+    *(short *)(header + 0xE) = (short)height;
+    header[0x10] = 0x20;
+    fileHandle = fn_802E3D68(filePath, height, width);
+    if (fileHandle != -1) {
+        fn_802E3A64(fileHandle, header, 0x12);
+        fn_802E3A64(fileHandle, *(void * const *)((const char *)image + 8),
+                    *(const int *)((const char *)image + 4) * (*(const int *)image * 4));
+        fn_802E3734(&fileHandle);
         result = 1;
     } else {
-        ((void (*)(char *, ...))fn_802E30C8)(lbl_8034A4EC, arg0);
+        ((void (*)(char *, ...))fn_802E30C8)(lbl_8034A4EC, filePath);
     }
     return result;
 }
