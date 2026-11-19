@@ -4809,10 +4809,11 @@ void UUSB_Register(tUUSB *uusb) {
     extern s32 lbl_8055DC64;
     extern s32 lbl_80558FF0;
     register char *report = lbl_803142C8;
-    u8 *c = (u8 *)&lbl_803BD1E0;
+    register u8 *c = (u8 *)&lbl_803BD1E0;
+    u8 pool0;
     u8 pool1;
 
-    memset(c, 0, 0x4C);
+    memset(&lbl_803BD1E0, 0, 0x4C);
     fn_8006EBAC();
     c[0x29] = 5;
     fn_8006EB88();
@@ -4855,7 +4856,8 @@ void UUSB_Register(tUUSB *uusb) {
     c[0x38] = 0;
     fn_8006D4C4(c + 0x3C);
     c[0x48] = 0;
-    c[0x1C] = GKI_create_pool(0x294, 0x2D, 1, 0);
+    pool0 = GKI_create_pool(0x294, 0x2D, 1, 0);
+    c[0x1C] = pool0;
     pool1 = GKI_create_pool(0x708, 0x1E, 1, 0);
     c[0x1D] = pool1;
     if (c[0x1C] == 0xFF || pool1 == 0xFF) {
@@ -5006,26 +5008,19 @@ done:
 void UUSB_Close(void *arg0) {
     extern s32 IUSB_CloseDeviceAsync(s32, void (*)(void), void *);
     fn_8006EBAC();
-    {
-        u8 *base = (u8 *)&lbl_803BD1E0;
-        base[0x29] = 0;
-        fn_8006EB88();
-        if (*(u16 *)(base + 0x34) != 0) {
-            while (*(u16 *)(base + 0x34) != 0) {
-                GKI_freebuf(GKI_dequeue((BUFFER_Q *)(base + 0x2C)));
-            }
+    lbl_803BD1E0.state = 0;
+    fn_8006EB88();
+    if (lbl_803BD1E0.acl_q.count != 0) {
+        while (lbl_803BD1E0.acl_q.count != 0) {
+            GKI_freebuf(GKI_dequeue(&lbl_803BD1E0.acl_q));
         }
     }
-    {
-        u8 *base = (u8 *)&lbl_803BD1E0;
-        if (*(u16 *)(base + 0x44) != 0) {
-            while (*(u16 *)(base + 0x44) != 0) {
-                GKI_freebuf(GKI_dequeue((BUFFER_Q *)(base + 0x3C)));
-            }
+    if (lbl_803BD1E0.sco_q.count != 0) {
+        while (lbl_803BD1E0.sco_q.count != 0) {
+            GKI_freebuf(GKI_dequeue(&lbl_803BD1E0.sco_q));
         }
     }
-    IUSB_CloseDeviceAsync(*(s32 *)&lbl_803BD1E0,
-                          (void (*)(void))uusb_CloseDeviceCB, 0);
+    IUSB_CloseDeviceAsync(lbl_803BD1E0.fd, (void (*)(void))uusb_CloseDeviceCB, 0);
 }
 
 /* uusb control block at lbl_803BD1E0 (96 bytes): fd @0, state u8 @0x29,
