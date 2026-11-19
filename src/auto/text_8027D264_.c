@@ -302,9 +302,8 @@ extern "C" void fn_8027D77C(void *__restrict arg0) {
 }
 #pragma scheduling invalid_target
 extern "C" void fn_8027D7B8(void *arg0) {
-    int v = ((int *)arg0)[3];
-    void *r = fn_8001285C(v);
-    fn_80007F90(*(int *)((char *)r + 2 * sizeof(int)));
+    int v = *(volatile int *)((char *)arg0 + 0xC);
+    fn_80007F90(*(int *)((char *)fn_8001285C(v) + 8));
 }
 
 #pragma push
@@ -693,6 +692,8 @@ extern int fn_8024DAE0(int, int, int, void *, int);
 extern char lbl_80347E30[];
 extern char lbl_80347E40[];
 #pragma cplusplus on
+/* Look up the "vehicle_map"/"default_vehicle" entry for the given record and pass it to fn_8024DAE0:
+ * if present wrap the found vehicle id in a handle (fn_8025007C), otherwise build a default list (fn_8027DB40). */
 extern "C" int fn_8027DEDC(int arg0, int arg1, int arg2, int arg3, int arg4) {
     extern void fn_800167FC(int);
     extern int fn_80012820(int);
