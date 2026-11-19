@@ -798,6 +798,10 @@ check:
     if (index < lbl_8055F890) goto loop;
 }
 
+static inline s32 AllocArray_802A5AE8(s32 count) {
+    return fn_8012850C(count * 0xC + 0x10, lbl_80349CA0);
+}
+
 #pragma scheduling invalid_target
 void *fn_802A5AE8(void *arg0, s32 arg1, s32 arg2) {
     s32 size = arg1 * 0xC;
@@ -1034,8 +1038,19 @@ void fn_802A62CC(void *arg0, s32 arg1) {
     f32 sp10;
     s32 spC;
     f32 sp8;
-    f32 temp_f30, temp_f31, temp_f29;
-    f32 temp_f10, temp_f29_2, temp_f2, temp_f30_2, temp_f3, temp_f4, temp_f6, temp_f7, temp_f8, temp_f9;
+    f32 temp_f10;
+    f32 temp_f29;
+    f32 temp_f29_2;
+    f32 temp_f2;
+    f32 temp_f30;
+    f32 temp_f30_2;
+    f32 temp_f31;
+    f32 temp_f3;
+    f32 temp_f4;
+    f32 temp_f6;
+    f32 temp_f7;
+    f32 temp_f8;
+    f32 temp_f9;
 
     temp_f30 = lbl_80564850 * fn_801E8738(*(s32 *)((u8 *)arg0 + 0x1C));
     temp_f31 = fn_801E8874(*(s32 *)((u8 *)arg0 + 0x1C));
@@ -1395,13 +1410,13 @@ void fn_802A6E34(void *arg0) {
     s32 spC;
     f32 sp8;
     u32 conv[2];
-    f32 temp_f30;
-    f32 temp_f31;
-    f32 temp_f29;
     f32 temp_f10;
+    f32 temp_f29;
     f32 temp_f29_2;
     f32 temp_f2;
+    f32 temp_f30;
     f32 temp_f30_2;
+    f32 temp_f31;
     f32 temp_f3;
     f32 temp_f4;
     f32 temp_f6;
