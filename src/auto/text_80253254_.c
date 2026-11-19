@@ -433,6 +433,7 @@ __declspec(section ".sdata") extern char lbl_8055C150[], lbl_8055C158[], lbl_805
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+#pragma opt_common_subs off
 void fn_80253890(void *arg0, void *arg1) {
     struct Keys { int v[4]; };
     extern float lbl_80563A04;
@@ -456,8 +457,8 @@ void fn_80253890(void *arg0, void *arg1) {
     };
     char *labels;
     char cfgPath[0x100];
-    Res *res;
     Res *manager;
+    Res *res;
     labels = lbl_803447C0;
     if (*(int *)((char *)arg0 + 0x28) != -1) return;
     fn_801345D8(cfgPath, 0x100, labels + 0x50, arg1);
