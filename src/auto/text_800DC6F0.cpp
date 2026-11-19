@@ -298,27 +298,30 @@ struct TexVTable {
     virtual void v0();
     virtual s32 mod(s32, u8);
 };
-extern "C" void DrawSelf__Q36nw4hbm3lyt7PictureFRCQ36nw4hbm3lyt8DrawInfo(void* this_) {
-    u8* self = (u8*)this_;
-    void* tex = *(void**)(self + 0x28);
-    u8 fmt;
-    s32 sz;
-    s32 color;
-    s32 modret;
-    void* cols;
-    u64 pos;
-    if (tex == 0) return;
-    ((PicVTable*)this_)->prep();
-    color = self[0xCE];
-    modret = IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(self + 0xD4, (u8)color);
-    tex = *(void**)(self + 0x28);
-    modret = ((TexVTable*)tex)->mod(modret, (u8)color);
-    SetVertexFormat__Q34nw4r3lyt6detailFbUc(modret, self[0xE5]);
-    cols = modret ? self + 0xD4 : 0;
-    sz = *(s32*)(self + 0xE8);
-    fmt = self[0xE5];
-    pos = GetVtxPos__Q34nw4r3lyt4PaneCFv(this_);
-    DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(&pos, self + 0x4C, fmt, sz, cols, self[0xCE]);
+extern "C" void DrawSelf__Q36nw4hbm3lyt7PictureFRCQ36nw4hbm3lyt8DrawInfo(void *this_)
+{
+  u8 *self = (u8 *) this_;
+  void *tex = *((void **) (self + 0x28));
+  u8 fmt;
+  s32 sz;
+  s32 color;
+  void *cols;
+  u64 pos;
+  if (tex == 0)
+  {
+    return;
+  }
+  ((PicVTable *) this_)->prep();
+  color = self[0xCE];
+  sz = IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(self + 0xD4, (u8) color);
+  tex = *((void **) (self + 0x28));
+  sz = ((TexVTable *) tex)->mod(sz, (u8) color);
+  SetVertexFormat__Q34nw4r3lyt6detailFbUc(sz, self[0xE5]);
+  cols = (sz) ? (self + 0xD4) : (0);
+  sz = *((s32 *) (self + 0xE8));
+  fmt = self[0xE5] ^ 0;
+  pos = GetVtxPos__Q34nw4r3lyt4PaneCFv(this_);
+  DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(&pos, self + 0x4C, fmt, sz, cols, self[0xCE]);
 }
 
 extern "C" u32* fn_800DCDFC(void) {
