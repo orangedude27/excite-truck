@@ -2069,6 +2069,7 @@ extern float lbl_80561EE8, lbl_80561EEC, lbl_80561EF0, lbl_80561EF4;
 #pragma processor 750
 #pragma cplusplus on
 extern "C" void fn_80188A80(void *arg0) {
+#pragma optimization_level 3
 struct ObjArg {
 virtual int v0(); virtual int v1(int); virtual int v2(); virtual int v3();
 virtual int v4(); virtual int v5(); virtual int v6(); virtual int v7();
@@ -2145,6 +2146,7 @@ vel[2] = vel[2] > kCAC ? vel[2] : kCAC;
 float c = kEF0, d = vel[5];
 vel[5] = (c < d) ? c : d;
 }
+#pragma optimization_level 4
 }
 #pragma cplusplus off
 #pragma pop
@@ -2152,6 +2154,10 @@ vel[5] = (c < d) ? c : d;
 // Default callback / stub: always reports failure (0).
 int fn_80188E24(void) { return 0; }
 
+#pragma push
+#pragma ppc_psq_save off
+#pragma paired off
+#pragma paired_single off
 void fn_80188E2C(void *arg0, void *arg1) {
 #pragma scheduling invalid_target
     unsigned char *a0 = (unsigned char *)arg0;
@@ -2566,10 +2572,13 @@ void fn_80189CB4(void *arg0, void *arg1) {
     volatile float out[3];
     volatile int matrix[12];
     float temp_f1, temp_f6, temp_f7;
-    int count, index, i;
+    int count, index;
+    register int i;
     int word0, word1, word2, word3, word4, word5;
     int word6, word7, word8, word9;
-    register char *cursor;
+    char *cursor;
+    volatile float *pOut = out;
+    volatile float *pScale = scale;
     {
         float zero = lbl_80561CAC;
         *(float *)((char *)arg0 + 0x130) = zero;
@@ -2609,7 +2618,7 @@ void fn_80189CB4(void *arg0, void *arg1) {
     scale[1] = temp_f6;
     temp_f7 = *(float *)((char *)arg0 + 0x38) * lbl_80561DE4;
     scale[2] = temp_f7;
-    if (&out[0] == &scale[0]) {
+    if (pOut == pScale) {
         out[0] = temp_f7 * ((volatile float *)matrix)[6] + (temp_f1 * ((volatile float *)matrix)[0] + temp_f6 * ((volatile float *)matrix)[3]);
         out[1] = temp_f7 * ((volatile float *)matrix)[7] + (temp_f1 * ((volatile float *)matrix)[1] + temp_f6 * ((volatile float *)matrix)[4]);
         out[2] = temp_f7 * ((volatile float *)matrix)[8] + (temp_f1 * ((volatile float *)matrix)[2] + temp_f6 * ((volatile float *)matrix)[5]);
@@ -3062,7 +3071,7 @@ void fn_8018A8A8(void *arg0) {
 #pragma pop
 extern void fn_801C2BDC(void *, unsigned int *, unsigned int *, unsigned int *);
 void fn_8018A9F0(void *arg0, void *arg1) {
-    float sp54, sp50, sp4C, sp48, sp44, sp40, sp3C, sp38, sp34, sp30, sp2C;
+    float f[11];
     int sp28, sp24, sp20, sp1C, sp18, sp14;
     void *sp10;
     float spC, sp8;
@@ -3092,34 +3101,31 @@ void fn_8018A9F0(void *arg0, void *arg1) {
                 temp_f6 = *(float *)((char *)temp_r4_2 + 8) - *(float *)((char *)arg0 + 0x9C);
                 *(float *)((char *)temp_r3_3 + 0xE2C) = temp_f6;
                 {
-                    float c74, c70, c7C, m0, m1, c80, m2, m3, c78, c8C, m4, c88, s0, c84, m5, m6, c90, out0, s1, m7, s2, m8, out1, out2;
-                    c74 = *(float *)((char *)arg0 + 0x74);
-                    c70 = *(float *)((char *)arg0 + 0x70);
-                    c7C = *(float *)((char *)arg0 + 0x7C);
-                    m0 = temp_f7 * c74;
-                    m1 = temp_f8 * c70;
-                    c80 = *(float *)((char *)arg0 + 0x80);
-                    m2 = temp_f8 * c7C;
-                    m3 = temp_f7 * c80;
-                    c78 = *(float *)((char *)arg0 + 0x78);
-                    c8C = *(float *)((char *)arg0 + 0x8C);
-                    m4 = temp_f6 * c78;
-                    c88 = *(float *)((char *)arg0 + 0x88);
-                    s0 = m1 + m0;
-                    c84 = *(float *)((char *)arg0 + 0x84);
-                    m5 = temp_f8 * c88;
-                    m6 = temp_f7 * c8C;
-                    c90 = *(float *)((char *)arg0 + 0x90);
-                    out0 = m4 + s0;
-                    s1 = m2 + m3;
-                    m7 = temp_f6 * c84;
-                    s2 = m5 + m6;
+                    float c74 = *(float *)((char *)arg0 + 0x74);
+                    float c70 = *(float *)((char *)arg0 + 0x70);
+                    float c7C = *(float *)((char *)arg0 + 0x7C);
+                    float p0 = temp_f7 * c74;
+                    float p1 = temp_f8 * c70;
+                    float c80 = *(float *)((char *)arg0 + 0x80);
+                    float p2 = temp_f8 * c7C;
+                    float p3 = temp_f7 * c80;
+                    float c78 = *(float *)((char *)arg0 + 0x78);
+                    float c8C = *(float *)((char *)arg0 + 0x8C);
+                    float p4 = temp_f6 * c78;
+                    float c88 = *(float *)((char *)arg0 + 0x88);
+                    float p5 = p1 + p0;
+                    float c84 = *(float *)((char *)arg0 + 0x84);
+                    float p6 = temp_f8 * c88;
+                    float p7 = temp_f7 * c8C;
+                    float c90 = *(float *)((char *)arg0 + 0x90);
+                    float out0 = p4 + p5;
+                    float p8 = p2 + p3;
+                    float p9 = temp_f6 * c84;
+                    float p10 = p6 + p7;
+                    float p11 = temp_f6 * c90;
                     *(float *)((char *)temp_r3_3 + 0xE24) = out0;
-                    m8 = temp_f6 * c90;
-                    out1 = m7 + s1;
-                    out2 = m8 + s2;
-                    *(float *)((char *)temp_r3_3 + 0xE28) = out1;
-                    *(float *)((char *)temp_r3_3 + 0xE2C) = out2;
+                    *(float *)((char *)temp_r3_3 + 0xE28) = p9 + p8;
+                    *(float *)((char *)temp_r3_3 + 0xE2C) = p11 + p10;
                 }
             }
         }
@@ -3147,34 +3153,31 @@ void fn_8018A9F0(void *arg0, void *arg1) {
                 temp_f6_2 = *(float *)((char *)temp_r5 + 8) - *(float *)((char *)arg0 + 0x9C);
                 *(float *)((char *)temp_r4_4 + 0xE2C) = temp_f6_2;
                 {
-                    float c74, c70, c7C, m0, m1, c80, m2, m3, c78, c8C, m4, c88, s0, c84, m5, m6, c90, out0, s1, m7, s2, m8, out1, out2;
-                    c74 = *(float *)((char *)arg0 + 0x74);
-                    c70 = *(float *)((char *)arg0 + 0x70);
-                    c7C = *(float *)((char *)arg0 + 0x7C);
-                    m0 = temp_f7_2 * c74;
-                    m1 = temp_f8_2 * c70;
-                    c80 = *(float *)((char *)arg0 + 0x80);
-                    m2 = temp_f8_2 * c7C;
-                    m3 = temp_f7_2 * c80;
-                    c78 = *(float *)((char *)arg0 + 0x78);
-                    c8C = *(float *)((char *)arg0 + 0x8C);
-                    m4 = temp_f6_2 * c78;
-                    c88 = *(float *)((char *)arg0 + 0x88);
-                    s0 = m1 + m0;
-                    c84 = *(float *)((char *)arg0 + 0x84);
-                    m5 = temp_f8_2 * c88;
-                    m6 = temp_f7_2 * c8C;
-                    c90 = *(float *)((char *)arg0 + 0x90);
-                    out0 = m4 + s0;
-                    s1 = m2 + m3;
-                    m7 = temp_f6_2 * c84;
-                    s2 = m5 + m6;
+                    float c74 = *(float *)((char *)arg0 + 0x74);
+                    float c70 = *(float *)((char *)arg0 + 0x70);
+                    float c7C = *(float *)((char *)arg0 + 0x7C);
+                    float p0 = temp_f7_2 * c74;
+                    float p1 = temp_f8_2 * c70;
+                    float c80 = *(float *)((char *)arg0 + 0x80);
+                    float p2 = temp_f8_2 * c7C;
+                    float p3 = temp_f7_2 * c80;
+                    float c78 = *(float *)((char *)arg0 + 0x78);
+                    float c8C = *(float *)((char *)arg0 + 0x8C);
+                    float p4 = temp_f6_2 * c78;
+                    float c88 = *(float *)((char *)arg0 + 0x88);
+                    float p5 = p1 + p0;
+                    float c84 = *(float *)((char *)arg0 + 0x84);
+                    float p6 = temp_f8_2 * c88;
+                    float p7 = temp_f7_2 * c8C;
+                    float c90 = *(float *)((char *)arg0 + 0x90);
+                    float out0 = p4 + p5;
+                    float p8 = p2 + p3;
+                    float p9 = temp_f6_2 * c84;
+                    float p10 = p6 + p7;
+                    float p11 = temp_f6_2 * c90;
                     *(float *)((char *)temp_r4_4 + 0xE24) = out0;
-                    m8 = temp_f6_2 * c90;
-                    out1 = m7 + s1;
-                    out2 = m8 + s2;
-                    *(float *)((char *)temp_r4_4 + 0xE28) = out1;
-                    *(float *)((char *)temp_r4_4 + 0xE2C) = out2;
+                    *(float *)((char *)temp_r4_4 + 0xE28) = p9 + p8;
+                    *(float *)((char *)temp_r4_4 + 0xE2C) = p11 + p10;
                 }
             }
         }
@@ -3184,30 +3187,31 @@ void fn_8018A9F0(void *arg0, void *arg1) {
     fn_801BEB30(*(int *)((char *)arg0 + 0x1EC), (int *)&sp10);
     {
         float zero = lbl_80561CAC;
-        sp44 = *(float *)((char *)sp10 + 0x7C);
-        sp8 = sp44;
-        sp38 = *(float *)((char *)sp10 + 0x70);
-        sp3C = *(float *)((char *)sp10 + 0x74);
-        sp40 = *(float *)((char *)sp10 + 0x78);
+        *(int*)&f[6] = *(int *)((char *)sp10 + 0x7C);
+        sp8 = f[6];
+        *(int*)&f[3] = *(int *)((char *)sp10 + 0x70);
+        *(int*)&f[4] = *(int *)((char *)sp10 + 0x74);
+        *(int*)&f[5] = *(int *)((char *)sp10 + 0x78);
         spC = sp8;
-        sp48 = sp38; sp4C = sp3C; sp50 = sp40; sp54 = spC; sp2C = sp38;
+        f[7] = f[3]; f[8] = f[4]; f[9] = f[5]; f[10] = spC;
+        f[0] = f[3];
         temp_r3_4 = (char *)arg1 + (*(int *)(*(char **)((char *)arg0 + 0x26C0) + 0xCC) * 0xC);
-        sp30 = sp3C;
+        f[1] = f[4];
         *(float *)((char *)temp_r3_4 + 0xE24) = zero;
-        *(float *)((char *)temp_r3_4 + 0xE28) = *(float *)((char *)arg0 + 0x5AC) + (*(float *)((char *)arg1 + 0x80) + sp38);
+        *(float *)((char *)temp_r3_4 + 0xE28) = *(float *)((char *)arg0 + 0x5AC) + (*(float *)((char *)arg1 + 0x80) + f[3]);
         *(float *)((char *)temp_r3_4 + 0xE2C) = zero;
-        sp34 = sp40;
+        f[2] = f[5];
         temp_r3_5 = (char *)arg1 + (*(int *)(*(char **)((char *)arg0 + 0x26C0) + 0xD0) * 0xC);
         *(float *)((char *)temp_r3_5 + 0xE24) = zero;
-        *(float *)((char *)temp_r3_5 + 0xE28) = *(float *)((char *)arg0 + 0x5AC) + (*(float *)((char *)arg1 + 0xEC) + sp4C);
+        *(float *)((char *)temp_r3_5 + 0xE28) = *(float *)((char *)arg0 + 0x5AC) + (*(float *)((char *)arg1 + 0xEC) + f[8]);
         *(float *)((char *)temp_r3_5 + 0xE2C) = zero;
         temp_r3_6 = (char *)arg1 + (*(int *)(*(char **)((char *)arg0 + 0x26C0) + 0xD4) * 0xC);
         *(float *)((char *)temp_r3_6 + 0xE24) = zero;
-        *(float *)((char *)temp_r3_6 + 0xE28) = *(float *)((char *)arg0 + 0x5AC) + (*(float *)((char *)arg1 + 0x158) + sp50);
+        *(float *)((char *)temp_r3_6 + 0xE28) = *(float *)((char *)arg0 + 0x5AC) + (*(float *)((char *)arg1 + 0x158) + f[9]);
         *(float *)((char *)temp_r3_6 + 0xE2C) = zero;
         temp_r3_7 = (char *)arg1 + (*(int *)(*(char **)((char *)arg0 + 0x26C0) + 0xD8) * 0xC);
         *(float *)((char *)temp_r3_7 + 0xE24) = zero;
-        *(float *)((char *)temp_r3_7 + 0xE28) = *(float *)((char *)arg0 + 0x5AC) + (*(float *)((char *)arg1 + 0x1C4) + sp54);
+        *(float *)((char *)temp_r3_7 + 0xE28) = *(float *)((char *)arg0 + 0x5AC) + (*(float *)((char *)arg1 + 0x1C4) + f[10]);
         *(float *)((char *)temp_r3_7 + 0xE2C) = zero;
     }
     *(int *)((char *)arg1 + 0xFA4) = *(int *)(*(char **)((char *)arg0 + 0x26C0) + 0xDC);
