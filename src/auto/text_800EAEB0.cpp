@@ -2639,7 +2639,7 @@ extern "C" int Setup__Q46nw4hbm3snd6detail9SeqPlayerFPQ46nw4hbm3snd6detail17SeqT
                 player = (u8 *)player + 4;
                 idx++;
             }
-            Warning__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323B28, 0xC6, (const char *)lbl_80323B28 + 0x54);
+            Warning__Q26nw4hbm2dbFPCciPCce(file, 0xC6, file + 0x54);
             OSRestoreInterrupts(level);
             return 1;
         }
