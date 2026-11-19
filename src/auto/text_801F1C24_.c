@@ -2039,9 +2039,11 @@ void fn_801F49F4(void) {
 
 void fn_801F49F8(void *arg0, int arg1) {
     void *selected[0x30];
+    void *item;
+    void **cursor;
     char *entry;
     char *next;
-    unsigned int offset;
+    int j;
     int count;
     int i;
     float minimum;
@@ -2060,11 +2062,11 @@ void fn_801F49F8(void *arg0, int arg1) {
         i++;
     }
     maximum = lbl_80562F44;
+    cursor = selected;
     minimum = lbl_80562F40;
-    offset = (unsigned int)selected;
-    i = 0;
-    while (i < count) {
-        void *item = *(void **)offset;
+    j = 0;
+    while (j < count) {
+        item = *cursor;
         value = fn_802C88D4(item);
         if (value > *(float *)((char *)item + 0x14)) {
             value = *(float *)((char *)item + 0x10) * (value - *(float *)((char *)item + 0x14));
@@ -2074,8 +2076,8 @@ void fn_801F49F8(void *arg0, int arg1) {
             fn_802C7040(*(int *)((char *)item + 0xC));
             fn_802C9904();
         }
-        offset += 4;
-        i++;
+        cursor++;
+        j++;
     }
 }
 
