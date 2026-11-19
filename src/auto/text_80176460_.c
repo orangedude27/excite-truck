@@ -1090,8 +1090,9 @@ void fn_801777C0(void) {
     fn_80177658(fn_80177648);
 }
 
-void fn_801777CC(u32 arg0) {
-    fn_801776C4(arg0);
+/* Register a physics state listener. */
+void fn_801777CC(u32 listener) {
+    fn_801776C4(listener);
 }
 
 extern char lbl_8033189C[];
