@@ -657,9 +657,17 @@ extern "C" unsigned short ReadNextCharSJIS__Q36nw4hbm2ut14CharStrmReaderFv(void 
 
 extern "C" float lbl_80561154;
 extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(void *arg0, void *arg1, void *arg2);
+// CharWriter::ResetColorMapping(): SetColorMapping(Color(0x00000000), Color(0xFFFFFFFF)).
+static inline void CW_ResetColorMapping(void *writer) {
+    nw4hbm::ut::Color min, max;
+    *(int *)&min = 0;
+    *(int *)&max = -1;
+    SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(writer, &min, &max);
+}
 nw4hbm::ut::CharWriter::CharWriter() {
     unsigned char *self = (unsigned char *)this;
     unsigned char *source1, *source2, *source3;
+    nw4hbm::ut::Color colorA, colorB, white;
     unsigned int addr = (unsigned int)this;
     int r9 = 1, r10 = 1, r11 = 1, r12 = 1, r30 = 1, r29 = 1;
     unsigned int top = addr & 0xFF000000U;
@@ -684,11 +692,9 @@ nw4hbm::ut::CharWriter::CharWriter() {
     if (r11 == 0 && (addr & 0xF8000000U) != 0xD0000000U) r10 = 0;
     if (r10 == 0 && (addr & 0xFFFFC000U) != 0xE0000000U) r9 = 0;
     if (r9 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x11C, lbl_8032818C, this);
-    {
-        int colorA = 0;
-        int colorB = -1;
-        SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(this, &colorA, &colorB);
-    }
+    *(int *)&colorA = 0;
+    *(int *)&colorB = -1;
+    SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(this, &colorA, &colorB);
     CW_CHECK_THIS(this, 0x163);
     *(int *)(self + 0x20) = 0;
     CW_CHECK_THIS(this, 0x4DA);
@@ -698,23 +704,13 @@ nw4hbm::ut::CharWriter::CharWriter() {
     if (*(int *)(self + 0x20) != 2) source2 = self + 0x18; else source2 = self + 0x1C;
     self[0x10] = source2[0]; self[0x11] = source2[1]; self[0x12] = source2[2]; self[0x13] = source2[3];
     if (*(int *)(self + 0x20) == 0) source3 = self + 0x18; else source3 = self + 0x1C;
-    self[0x14] = source3[0]; self[0x15] = source3[1]; self[0x16] = source3[2];
-    {
-        unsigned char bv = self[0xB];
-        unsigned char fv = self[0xF];
-        unsigned char v13 = self[0x13];
-        unsigned char v17 = source3[3];
-        int alpha = self[0x42];
-        self[0xB] = (bv * alpha) / 255;
-        self[0xF] = (fv * alpha) / 255;
-        self[0x13] = (v13 * alpha) / 255;
-        self[0x17] = (v17 * alpha) / 255;
-    }
-    {
-        nw4hbm::ut::Color white;
-        *(int *)&white = -1;
-        SetTextColor(white);
-    }
+    self[0x14] = source3[0]; self[0x15] = source3[1]; self[0x16] = source3[2]; self[0x17] = source3[3];
+    self[0xB] = self[0xB] * self[0x42] / 255;
+    self[0xF] = self[0xF] * self[0x42] / 255;
+    self[0x13] = self[0x13] * self[0x42] / 255;
+    self[0x17] = self[0x17] * self[0x42] / 255;
+    *(int *)&white = -1;
+    SetTextColor(white);
     CW_CHECK_THIS(this, 0x1E7);
     *(float *)(self + 0x24) = 1.0f;
     *(float *)(self + 0x28) = 1.0f;
