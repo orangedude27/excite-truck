@@ -20929,6 +20929,8 @@ extern "C" void *fn_800D19F8(void *self, s32 shouldDelete) {
     return self;
 }
 
+#pragma push
+#pragma scheduling on
 extern "C" void Start__Q210homebutton9RemoteSpkFv(void *this_ptr) {
     register u8 *self = (u8 *)this_ptr;
     if (self[0x1EC] != 0) {
