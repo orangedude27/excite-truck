@@ -2618,22 +2618,21 @@ typedef struct DvdStream {
                                 gets the +0x54 file info, can find its owner */
 } DvdStream;
 
-#pragma push
 #pragma scheduling on
 #pragma dont_inline on
 void fn_8011A330(void *arg0) {
-    s32 *p = (s32 *)arg0;
     s32 status;
-    p[0xC4 / 4] = 1;
-    DVDCancel((DVDCommandBlock *)((u8 *)arg0 + 0x54));
+    s32 *p;
+    *(s32*)((u8*)arg0 + 0xC4) = 1;
+    DVDCancel((DVDCommandBlock*)((u8*)arg0 + 0x54));
     do {
         status = DVDGetDriveStatus();
     } while (status == 2 || status == 1);
-    p[0xC4 / 4] = 0;
-    p[0x24 / 4] = 0;
+    p = (s32*)arg0;
+    p[0xC4/4] = 0;
+    p[0x24/4] = 0;
 }
 #pragma dont_inline reset
-#pragma pop
 
 u32 fn_8011A388(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
     extern u32 fn_8011A240(void *, u32, s32, u32);
@@ -3731,6 +3730,7 @@ void fn_8011BEC8(void *tick, void *node, s32 checkFn, s32 tickFn) {
 }
 
 void fn_8011C364(s32);
+extern s32 fn_8011BF4C();
 #pragma opt_propagation off
 s32 fn_8011BF4C(s32 arg0, s32 arg1, s32 arg2) {
     s32 ret = 0;
@@ -9265,19 +9265,19 @@ void fn_80126018(void *arg0, BitReader8011 *arg1) {
 #pragma scheduling on
 void fn_80126A10(s8 *arg0, void *arg1, u32 arg2) {
     u8 buf[0xC0];
-    register u32 var_r31;
-    register u32 var_r30;
-    register const u8 *var_r29;
-    register u32 var_r28;
-    register u32 var_r27;
-    register u8 *var_r26;
-    register u32 var_r24;
-    register s32 var_r25;
-    register s32 var_r12;
-    register s32 var_r8;
-    register u8 *var_r9;
-    register u8 *var_r10;
-    register u32 var_r11;
+    u32 var_r31;
+    u32 var_r30;
+    const u8 *var_r29;
+    u32 var_r28;
+    u32 var_r27;
+    u8 *var_r26;
+    u32 var_r24;
+    s32 var_r25;
+    s32 var_r12;
+    s32 var_r8;
+    u8 *var_r9;
+    u8 *var_r10;
+    u32 var_r11;
     u8 temp_r25;
     u32 temp_r7, temp_shift;
     u32 temp_r26, temp_r26_2, temp_r26_3, var_r26_2;
@@ -9310,7 +9310,7 @@ void fn_80126A10(s8 *arg0, void *arg1, u32 arg2) {
     buf[0x86] = 0xb0;
     buf[0x87] = 2;
     while (var_r8 != 0) {
-        register u8 *var_r11_2;
+        u8 *var_r11_2;
         temp_r7_2 = -var_r12;
         var_r26 = buf;
         for (var_ctr = var_r31; var_ctr != 0; var_ctr--) {
