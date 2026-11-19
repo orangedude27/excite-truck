@@ -1200,9 +1200,10 @@ void fn_800357A8(void) {
 
 /* Initialize the DVD driver and file system once on first use. */
 void DVDInit(void) {
-    s32 gameCode;
+    s32 bootMagic;
     s32 one = 1;
-    u8 *bootInfoBytes;
+    u8 *disk;
+
     if (DVDInitialized_8055D888 == 0) {
         OSRegisterVersion(__DVDVersion);
         DVDInitialized_8055D888 = one;
@@ -1215,15 +1216,15 @@ void DVDInit(void) {
         OSInitThreadQueue(__DVDThreadQueue);
         DVDLowUnmaskStatusInterrupts();
         DVDLowMaskCoverInterrupt();
-        gameCode = *(s32 *)((u8 *)bootInfo_8055D8C0 + 0x20);
-        if (((u32)(gameCode + 0x1AE00000) != 0x7C22) && ((u32)(gameCode - 0x0D150000) != 0xEA5E)) {
+        bootMagic = *(s32 *)((u8 *)bootInfo_8055D8C0 + 0x20);
+        if (((u32)(bootMagic + 0x1AE00000) != 0x7C22) && ((u32)(bootMagic - 0x0D150000) != 0xEA5E)) {
             FirstTimeInBootrom_8055D868 = one;
         }
         memset(__ErrorInfo, 0, 0x80);
-        bootInfoBytes = (u8 *)0x80000000;
-        memcpy(__ErrorInfo, bootInfoBytes, 4);
-        __ErrorInfo[4] = bootInfoBytes[6];
-        __ErrorInfo[5] = bootInfoBytes[7];
+        disk = (u8 *)0x80000000;
+        memcpy(__ErrorInfo, disk, 4);
+        __ErrorInfo[4] = disk[6];
+        __ErrorInfo[5] = disk[7];
         __DVDLayoutFormat = 0;
         ((BOOL (*)(BOOL))DVDSetAutoFatalMessaging)(1);
     }
