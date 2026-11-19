@@ -259,7 +259,6 @@ int fn_801E9E30(void *, float *);
 void fn_801E9E78(void *, float *, float *, int *);
 void fn_801B7BA8(float *, float *, float *);
 extern float lbl_80562710, lbl_80562724, lbl_80562728, lbl_8056272C;
-#pragma use_lmw_stmw on
 void fn_801B7C8C(int arg0, float *arg1, float *arg2) {
 #pragma opt_common_subs off
     struct XF { float m[9]; float p[3]; } xf;
