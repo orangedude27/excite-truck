@@ -19,10 +19,14 @@ static inline int has_sound_entry(int *key) {
     return find_sound_entry_inline(key) != -1;
 }
 static inline int find_sound_entry_first(int *key) {
-    register int table = (int)lbl_8055F28C;
-    register int i = 0;
-    register int byteOffset = 0;
-    int count = *(int *)((char *)table + 4);
+    register int byteOffset;
+    register int i;
+    register int table;
+    int count;
+    table = (int)lbl_8055F28C;
+    i = 0;
+    byteOffset = 0;
+    count = *(int *)((char *)table + 4);
     for (; i < count; i++) {
         int value = *(int *)(*(char **)table + byteOffset);
         int id = *key;
@@ -151,13 +155,14 @@ void fn_80249744(void) {
 #pragma push
 #pragma dont_inline on
 s32 fn_8024974C(s32 arg0, s32 arg1, s32 arg2, int arg3) {
+#pragma use_lmw_stmw off
     extern void *fn_801284F8(int, void *);
     extern char lbl_8055BF38[];
     extern s32 lbl_8055BF10, lbl_8055BF14;
     extern void fn_801332D0(s32, s32, s32 *);
     extern void fn_8027BCD0(void *);
+    extern int fn_802411D4(void);
     void *block;
-
     if (arg3 != 0 && fn_802411D4() == 0) {
         return 0;
     }
