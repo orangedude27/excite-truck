@@ -137,7 +137,7 @@ extern "C" void fn_802BEDFC(void) {
 #pragma scheduling on
 #pragma cplusplus reset
 
-static inline float fn_clampHigh(float x) {
+static __inline float fn_clampHigh(float x) {
     return x > lbl_80564D90 ? x : lbl_80564D90;
 }
 #pragma dont_inline on
