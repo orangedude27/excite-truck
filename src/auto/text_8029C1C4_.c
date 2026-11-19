@@ -1707,6 +1707,7 @@ void fn_8029EC64(void *area, void *arg1, int arg2) {
         fn_8028E590(lbl_8055F7F8, &s.sp14, &s.sp8, -var_f31 * fn_80287BC8(lbl_80564628, lbl_80564674));
     }
 }
+#pragma pop
 
 /* Default virtual-method stub in the nw4r::ef effect vtable: returns 0 (false). */
 int fn_8029EF1C(void) {
