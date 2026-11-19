@@ -3277,77 +3277,54 @@ u8 fn_80062458(void) {
 // fn_8005D0DC: WUD initialization helper
 #pragma push
 #pragma opt_propagation off
-s32 fn_8005D0DC(s32 chan, s32 modeArg) {
-    register s32 mode = modeArg;
-    register s32 chanReg = chan;
-    u8* result = NULL;
-    s32 status = fn_8006A940();
+s32 fn_8005D0DC(s32 final, s32 event) {
+    s32 i;
+    u8 *pDev;
+    s32 status;
+    BOOL ret = FALSE;
 
-    if (chanReg != 0)
-        goto return_one;
-    if ((u32)(status - 2) > 1)
-        goto status_tail;
-
-    if (mode == 1)
-        goto reset_path;
-    if (mode >= 1)
-        goto positive_mode;
-    if (mode >= 0)
-        goto clear_path;
-    goto done;
-
-positive_mode:
-    if (mode < 7) {
-        if (mode >= 4)
-            goto reset_path;
-        goto clear_path;
+    status = fn_8006A940();
+    if (final == 0) {
+        if (status == 2 || status == 3) {
+            switch (event) {
+            case 0:
+            case 2:
+            case 3:
+                if (_reset == 0) {
+                    _reset = 1;
+                    WUDSetVisibility(0, 0);
+                    for (i = 10, pDev = lbl_80393058 + 0x2bd; i < 14; i++, pDev += 0x46) {
+                        memset(pDev, 0, 0x46);
+                    }
+                    OSCancelAlarm(&lbl_8038F4C0);
+                    fn_8006ADC4(NULL);
+                    fn_8006A81C();
+                }
+                ret = FALSE;
+                break;
+            case 1:
+            case 4:
+            case 5:
+            case 6:
+                if (_reset == 0) {
+                    _reset = 1;
+                    fn_80073EA4();
+                    OSCancelAlarm(&lbl_8038F4C0);
+                    fn_8006ADC4(NULL);
+                    fn_8006A81C();
+                }
+                ret = FALSE;
+                break;
+            }
+        } else if (status == 4 || status == 1) {
+            ret = FALSE;
+        } else if (status == 0) {
+            ret = TRUE;
+        }
+    } else {
+        ret = TRUE;
     }
-    goto done;
-
-clear_path:
-    if (lbl_8055DC05 == 0) {
-        lbl_8055DC05 = 1;
-        WUDSetVisibility(0, 0);
-    }
-    mode = 10;
-    result = lbl_80393058 + 0x2bd;
-clear_loop:
-    memset(result, 0, 0x46);
-    mode++;
-    result += 0x46;
-    if (mode < 14)
-        goto clear_loop;
-    OSCancelAlarm(&lbl_8038F4C0);
-    fn_8006ADC4(NULL);
-    fn_8006A81C();
-    result = NULL;
-    goto done;
-
-reset_path:
-    if (lbl_8055DC05 == 0) {
-        lbl_8055DC05 = 1;
-        fn_80073EA4();
-    }
-    OSCancelAlarm(&lbl_8038F4C0);
-    fn_8006ADC4(NULL);
-    fn_8006A81C();
-    result = NULL;
-    goto done;
-
-status_tail:
-    if (status == 4 || status == 1) {
-        result = NULL;
-        goto done;
-    }
-    if (status == 0) {
-        result = (u8*)1;
-        goto done;
-    }
-    goto done;
-return_one:
-    result = (u8*)1;
-done:
-    return (s32)result;
+    return ret;
 }
 #pragma pop
 
