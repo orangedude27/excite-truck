@@ -113,6 +113,7 @@ extern void *fn_801EA9A0(int);
 extern float lbl_80563194,lbl_805631A8,lbl_805631B8,lbl_805631C4,lbl_805631C8,lbl_805631CC,lbl_805631D0,lbl_805631D4,lbl_805631D8,lbl_805631DC,lbl_805631E0,lbl_805631E4,lbl_805631E8;
 extern double lbl_805631B0;
 #pragma push
+#pragma use_lmw_stmw off
 #pragma processor 750
 void fn_802059C0(void) {
     double sp18,sp20,bias;
@@ -193,12 +194,12 @@ void fn_80205D5C(void)
   float b[3];
   float c[3];
   float d[3];
-  float f30;
-  float f31;
-  float f29;
   float f3;
+  float f29;
   float f0;
   float new_var;
+  float f31;
+  float f30;
   int i;
   fn_802C8CBC(-1);
   fn_802C8DBC(0x10);
@@ -207,7 +208,7 @@ void fn_80205D5C(void)
   f31 = new_var * lbl_80563198;
   f29 = lbl_805631A8;
   {
-    typedef struct
+    typedef struct 
     {
       int x0;
       int x1;
@@ -273,10 +274,9 @@ typedef struct { Blk32 a; int b; Pair2 c; int d; } Cam48;
 typedef struct { int x, y; } Pair2B;
 typedef union { struct { unsigned int hi, lo; } w; double d; } Conv48;
 typedef struct { Mtx48 buf; Cam48 cam; Conv48 conv1, conv2; } Work48;
-#pragma cplusplus on
 #pragma push
 #pragma processor 750
-extern "C" void fn_80205FCC(void) {
+void fn_80205FCC(void) {
     Cam48 cam;
     Mtx48 buf;
     float f31;
@@ -298,15 +298,14 @@ extern "C" void fn_80205FCC(void) {
         fn_801312EC(lbl_804891DC, lbl_8033BC2C);
         lbl_8055ED71 = 1;
     }
-    if (*(unsigned int *)(lbl_804891DC + 8) != lbl_8055E044) fn_80131318();
+    if (*(unsigned int *)(lbl_804891DC + 8) != lbl_8055E044) ((void (*)(void *))fn_80131318)(lbl_804891DC);
     fn_80010188(-1, 0xC, *(int *)(lbl_804891DC + 4), lbl_805631F0, lbl_80563198 * (float)lbl_8055CFF0, lbl_805631CC + lbl_805631E4 * (float)lbl_8055CFF4);
     f31 = lbl_805631A0 * (float)lbl_8055CFF4 + lbl_805631F4;
-    if (*(unsigned int *)(lbl_804891D0 + 8) != lbl_8055E044) fn_80131318();
+    if (*(unsigned int *)(lbl_804891D0 + 8) != lbl_8055E044) ((void (*)(void *))fn_80131318)(lbl_804891D0);
     fn_80010188(-1, 0x24, *(int *)(lbl_804891D0 + 4), lbl_805631F0, lbl_80563198 * (float)lbl_8055CFF0, f31);
     fn_802C8638(&cam);
 }
 #pragma pop
-#pragma cplusplus reset
 void fn_802061F8(void) {
 #define gMpovCarTexture lbl_8055ED6C
 #define kMpovCarTexPath lbl_8033BC40
