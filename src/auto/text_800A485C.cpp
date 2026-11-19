@@ -16644,10 +16644,13 @@ return 0;
 }
 
 s32 fn_800C083C(s32 arg0, s32 arg1, s32 *arg2) {
-    u32 mask = 0xF;
-    s32 shift = 0x1C;
-    u32 index = 0;
+    u32 mask;
+    s32 shift;
+    u32 index;
     s32 count;
+    index = 0;
+    mask = 0xF;
+    shift = 0x1C;
     for (count = arg1; count > 0; count--) {
         u32 *node = *(u32 **)(*(u32 **)arg2 + index);
         u16 value = *(u16 *)((u8 *)node + ((mask & (arg0 >> shift)) * 2));
