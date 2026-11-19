@@ -20,23 +20,24 @@ extern void fn_802C0FD4(int *queue);
 #pragma dont_inline on
 #pragma push
 #pragma processor 750
-void fn_802C0D70(float *arg0) {
+/* Clamp a direction vector's elevation to the minimum sun angle, logging and adjusting it when the angle is too low. */
+void fn_802C0D70(float *direction) {
 #pragma scheduling invalid_target
     struct Vec3 { float x, y, z; };
-    struct Vec3 *v = (struct Vec3 *)arg0;
-    float length;
-    float y;
-    float z2, x2;
-    z2 = v->z * v->z;
-    x2 = v->x * v->x;
-    length = (float)fn_8002F234((double)(x2 + z2));
-    y = -v->y;
-    if ((float)atan(y / length) < lbl_8055FB10) {
-        fn_802E30C8(lbl_8034AE98, lbl_80564E30 * (float)atan(y / length) / lbl_80564E34,
+    struct Vec3 *vec = (struct Vec3 *)direction;
+    float horizontalLength;
+    float negY;
+    float zSquared, xSquared;
+    zSquared = vec->z * vec->z;
+    xSquared = vec->x * vec->x;
+    horizontalLength = (float)fn_8002F234((double)(xSquared + zSquared));
+    negY = -vec->y;
+    if ((float)atan(negY / horizontalLength) < lbl_8055FB10) {
+        fn_802E30C8(lbl_8034AE98, lbl_80564E30 * (float)atan(negY / horizontalLength) / lbl_80564E34,
                     lbl_80564E30 * lbl_8055FB10 / lbl_80564E34, lbl_80564E30);
-        v->x *= (float)cos(lbl_8055FB10) / length;
-        v->y = -(float)sin(lbl_8055FB10);
-        v->z *= (float)cos(lbl_8055FB10) / length;
+        vec->x *= (float)cos(lbl_8055FB10) / horizontalLength;
+        vec->y = -(float)sin(lbl_8055FB10);
+        vec->z *= (float)cos(lbl_8055FB10) / horizontalLength;
     }
 }
 #pragma pop
