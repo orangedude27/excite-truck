@@ -54,9 +54,9 @@ extern void fn_8021037C(void);
 extern s32 fn_80207848(const char *, s32);
 extern const char lbl_8033C5FC[];
 extern s32 lbl_8055EE38;
+#pragma scheduling invalid_target
 #pragma push
 #pragma ctrloop on
-#pragma scheduling invalid_target
 void fn_8020C140(void) {
     f32 v1;
     f32 v2;
