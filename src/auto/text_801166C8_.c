@@ -1862,34 +1862,38 @@ void fn_80119288(void *arg0, f32 arg1) {
     }
 }
 #pragma pop
-s32 fn_80119300(void *arg0, s32 arg1, s32 arg2) {
-    s32 len;
-    s32 half;
-    u32 size;
-    len = arg2;
-    size = *(u32 *)((u8 *)arg0 + 0x18);
-    if ((u32)(arg2 + arg1) > size) len = (s32)(size - (u32)arg1);
-    if (*(s32 *)((u8 *)arg0 + 4) != 0) {
-        arg1 = (s32)((u32)arg1 >> 1);
-        half = (s32)((u32)len >> 1);
-        memset((u8 *)*(void **)((u8 *)arg0 + 8) + arg1, 0, (u32)half);
-        DCFlushRange((u8 *)*(void **)((u8 *)arg0 + 8) + arg1, (u32)half);
-        memset((u8 *)*(void **)((u8 *)arg0 + 0xC) + arg1, 0, (u32)half);
-        DCFlushRange((u8 *)*(void **)((u8 *)arg0 + 0xC) + arg1, (u32)half);
-        if ((u32)len < (u32)arg2) {
-            len = (s32)((u32)(arg2 - len) >> 1);
-            memset(*(void **)((u8 *)arg0 + 8), 0, (u32)len);
-            DCFlushRange(*(void **)((u8 *)arg0 + 8), (u32)len);
-            memset(*(void **)((u8 *)arg0 + 0xC), 0, (u32)len);
-            DCFlushRange(*(void **)((u8 *)arg0 + 0xC), (u32)len);
+/* Clear `count` bytes starting at `offset` in a ring buffer, flushing the data
+ * cache after each memset.  If +4 is set the buffer is split into two channel
+ * halves (+8, +0xC), so offsets and sizes are halved; a range that runs past
+ * the buffer size (+0x18) is clamped and the remainder is cleared from 0. */
+s32 fn_80119300(void *buffer, s32 offset, s32 count) {
+    s32 clearLen;
+    s32 halfLen;
+    u32 bufSize;
+    clearLen = count;
+    bufSize = *(u32 *)((u8 *)buffer + 0x18);
+    if ((u32)(count + offset) > bufSize) clearLen = (s32)(bufSize - (u32)offset);
+    if (*(s32 *)((u8 *)buffer + 4) != 0) {
+        offset = (s32)((u32)offset >> 1);
+        halfLen = (s32)((u32)clearLen >> 1);
+        memset((u8 *)*(void **)((u8 *)buffer + 8) + offset, 0, (u32)halfLen);
+        DCFlushRange((u8 *)*(void **)((u8 *)buffer + 8) + offset, (u32)halfLen);
+        memset((u8 *)*(void **)((u8 *)buffer + 0xC) + offset, 0, (u32)halfLen);
+        DCFlushRange((u8 *)*(void **)((u8 *)buffer + 0xC) + offset, (u32)halfLen);
+        if ((u32)clearLen < (u32)count) {
+            clearLen = (s32)((u32)(count - clearLen) >> 1);
+            memset(*(void **)((u8 *)buffer + 8), 0, (u32)clearLen);
+            DCFlushRange(*(void **)((u8 *)buffer + 8), (u32)clearLen);
+            memset(*(void **)((u8 *)buffer + 0xC), 0, (u32)clearLen);
+            DCFlushRange(*(void **)((u8 *)buffer + 0xC), (u32)clearLen);
         }
     } else {
-        memset((u8 *)*(void **)((u8 *)arg0 + 8) + arg1, 0, (u32)len);
-        DCFlushRange((u8 *)*(void **)((u8 *)arg0 + 8) + arg1, (u32)len);
-        if ((u32)len < (u32)arg2) {
-            len = arg2 - len;
-            memset(*(void **)((u8 *)arg0 + 8), 0, (u32)len);
-            DCFlushRange(*(void **)((u8 *)arg0 + 8), (u32)len);
+        memset((u8 *)*(void **)((u8 *)buffer + 8) + offset, 0, (u32)clearLen);
+        DCFlushRange((u8 *)*(void **)((u8 *)buffer + 8) + offset, (u32)clearLen);
+        if ((u32)clearLen < (u32)count) {
+            clearLen = count - clearLen;
+            memset(*(void **)((u8 *)buffer + 8), 0, (u32)clearLen);
+            DCFlushRange(*(void **)((u8 *)buffer + 8), (u32)clearLen);
         }
     }
 }
@@ -9463,15 +9467,13 @@ void fn_80125CC8(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, s32 arg
 }
 
 void fn_80126018(void *arg0, BitReader8011 *arg1) {
-    s16 coef[64];
+    s16 coef[64] = {0};
     u8 huff[6];
     u32 count = arg1->count;
     u32 *next = arg1->next;
     u32 value = arg1->value;
     s32 i, bits, n, symbol, sign, run, k;
     u32 top, mask, v;
-
-    for (i = 0; i < 64; i++) coef[i] = 0;
 
     if (count < 4) {
         u32 w = *next++;
