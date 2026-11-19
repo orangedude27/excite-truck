@@ -22894,15 +22894,21 @@ extern "C" void fn_800C7F8C(void *arg0, s32 arg1) {
             self[0x7C + i] = 0;
         }
     }
-    i = 0;
-    do {
-        s32 *ids = lbl_8031E370 + i * 4;
-        for (j = 0; j < 4; j++, ids++) {
-            pane = (void *)((PaneFindDispatch *)*(void **)((u8 *)*(void **)(self + 0x1E0) + 0x10))->find(*ids, 1);
-            ((u8 *)pane)[0xCF] = ((u8 *)pane)[0xCF] & 0xFE;
-        }
-        i++;
-    } while (i < 4);
+    {
+        s32 n;
+        s32 *ids;
+        ids = lbl_8031E370;
+        n = 0;
+        do {
+            s32 *p = ids;
+            for (j = 0; j < 4; j++, p++) {
+                pane = (void *)((PaneFindDispatch *)*(void **)((u8 *)*(void **)(self + 0x1E0) + 0x10))->find(*p, 1);
+                ((u8 *)pane)[0xCF] = ((u8 *)pane)[0xCF] & 0xFE;
+            }
+            n++;
+            ids += 4;
+        } while (n < 4);
+    }
     *(s32 *)(self + 0x78) = 0;
 }
 #pragma pop
@@ -23772,17 +23778,174 @@ extern "C" void calc_battery__Q210homebutton10HomeButtonFi(void *, s32);
 extern "C" s32 lbl_80559724, lbl_80559730;
 extern "C" f32 lbl_80560E04, lbl_80560E08;
 extern "C" void fn_800CA264(void *arg0, void *arg1) {
-    char *self = (char *)arg0;
+#define V3(o, ...) ((void *(*)(void *, ...))(((void ***)*(void **)((char *)*(void **)((u8 *)(o) + 0x1E4) + 0x10))[15]))(*(void **)((char *)*(void **)((u8 *)(o) + 0x1E4) + 0x10), __VA_ARGS__)
+#define VB(o, ...) ((void *(*)(void *, ...))(((void ***)*(void **)((char *)*(void **)((u8 *)(o) + 0x1E0) + 0x10))[15]))(*(void **)((char *)*(void **)((u8 *)(o) + 0x1E0) + 0x10), __VA_ARGS__)
+#define SYS ((char *)*(void **)(self + 4))
+#define V2C(o, ...) ((void (*)(void *, s32, s32, s32, s32, s32, f32, f32))((void **)(*(void **)(*(void **)((u8 *)(o) + 0x1F8))))[0x2C/4])(*(void **)((u8 *)(o) + 0x1F8), __VA_ARGS__)
+    u8 *self = (u8 *)arg0;
+    u8 *in = (u8 *)arg1;
+    u8 *s = self;
+    u8 *ic = in;
+    u8 *info;
+    OSAlarm *alarmA, *alarmB;
+    s32 *ids;
+    s32 i, j, idx, probe, res, ctr;
+    void *ctrl, *pane;
+    f32 z, f29, f30;
+    f32 a, b, ang, px, py;
+    f32 rect[8];
+    s32 progBuf[4];
     s32 mode = *(s32 *)(self + 0x404);
     if (mode == 1) {
         *(s32 *)(self + 0x3FC) = *(s32 *)(self + 0x3FC) + 1;
     } else if (mode == 2) {
         *(s32 *)(self + 0x3FC) = *(s32 *)(self + 0x3FC) - 1;
-        if (*(s32 *)(self + 0x3FC) < 0) *(s32 *)(self + 0x3FC) = 0;
-        if (*(s32 *)(self + 0x3FC) > *(s32 *)(self + 0x400))
-            *(s32 *)(self + 0x3FC) = *(s32 *)(self + 0x400);
     }
-    (void)arg1;
+    if (*(s32 *)(self + 0x3FC) < 0) {
+        *(s32 *)(self + 0x3FC) = 0;
+    } else if (*(s32 *)(self + 0x3FC) > *(s32 *)(self + 0x400)) {
+        *(s32 *)(self + 0x3FC) = *(s32 *)(self + 0x400);
+    }
+    f30 = lbl_80560E08;
+    z = lbl_80560DC8;
+    f29 = lbl_80560E04;
+    info = self + 0x158;
+    alarmA = (OSAlarm *)(self + 0x410);
+    alarmB = (OSAlarm *)(self + 0x4D0);
+    ids = lbl_8031E370;
+    for (i = 0; i < 4; i++, s += 4, ic += 0x10, info += 0x18, alarmA = (OSAlarm *)((u8 *)alarmA + 0x30), alarmB = (OSAlarm *)((u8 *)alarmB + 0x30), ids += 4) {
+        ctrl = *(void **)ic;
+        if (ctrl != 0) {
+            if ((s8)((u8 *)ctrl)[0x85] != -1) {
+                if (*(s32 *)(s + 0x54) > 5) {
+                    if ((s8)((u8 *)ctrl)[0x85] == 0) {
+                        if (*(u32 *)(ic + 0xC) != 2U && *(u32 *)((u8 *)ctrl + 0x5C) != 2U) {
+                            j = (s8)((u8 *)ctrl)[0x84] > 0 ? 1 : 0;
+                        } else {
+                            j = 1;
+                        }
+                        fn_800D1054(*(void **)(s + 0x254), in + i * 0x10, j);
+                        if (*(s32 *)(SYS + 0x20) == 0) {
+                            pane = V3(s, lbl_80559718, 1);
+                            ((u8 *)pane)[0xCF] = (((u8 *)pane)[0xCF] & 0xFE) | 1;
+                        }
+                    }
+                } else {
+                    *(s32 *)(s + 0x54) = *(s32 *)(s + 0x54) + 1;
+                }
+                if (*(u32 *)(ic + 0xC) != 2U) {
+                    if (*(u32 *)((u8 *)(*(void **)ic) + 0x5C) != 2U && (s8)((u8 *)(*(void **)ic))[0x84] <= 0) {
+                        probe = WPADProbe(i, progBuf);
+                        if ((s8)((u8 *)(*(void **)ic))[0x85] != -2 && probe != -2) {
+                            fn_800D11E0(*(void **)(s + 0x254));
+                        }
+                    }
+                }
+            } else {
+                fn_800D11E0(*(void **)(s + 0x254));
+                if (*(s32 *)(SYS + 0x20) == 0) {
+                    pane = V3(s, lbl_80559718, 1);
+                    ((u8 *)pane)[0xCF] = ((u8 *)pane)[0xCF] & 0xFE;
+                }
+            }
+            if (self[0x7C + i] == 0) {
+                self[0x7C + i] = 1;
+                getInfoAsync__Q210homebutton10ControllerFP8WPADInfo(*(void **)(s + 0x254), info);
+                idx = findEventSlot(i + 0x1F, 0x11);
+                pane = ((void **)self)[idx + 166];
+                fn_800CF3EC(pane);
+                *(s32 *)((u8 *)pane + 0x14) = 1;
+                idx = findEventSlot(i + 0x1F, 0xF);
+                pane = ((void **)self)[idx + 166];
+                fn_800CF3EC(pane);
+                *(s32 *)((u8 *)pane + 0x14) = 1;
+                res = 0;
+                if (*(s32 *)(SYS + 0x14) != 0)
+                    res = ((s32 (*)(s32, s32))*(s32 *)(SYS + 0x14))(5, i + 0x11);
+                if (res == 0 && *(s32 *)(self + 0x5C0) != 0 && *(s32 *)(self + 0x5D4) != 0) {
+                    DetachSound__Q34nw4r3snd11SoundHandleFv();
+                    detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo((void *)(*(s32 *)(self + 0x5C0) + 0xC), (void *)*(s32 *)(self + 0x5D4), (unsigned long)(i + 0x11), 0, 0, 0);
+                }
+                fn_800D11F0(*(void **)(s + 0x254));
+                fn_800D155C(*(void **)(s + 0x254));
+                OSSetAlarmUserData(alarmA, *(void **)(s + 0x254));
+                OSCancelAlarm(alarmA);
+                ctr = (*(volatile u32 *)0x800000F8 >> 2) / 1000U;
+                ((void (*)(OSAlarm *, u32, u32, u32, OSAlarmHandler))OSSetAlarm)(alarmA, 0x10624DD3, 0, ctr * 0x12C, (OSAlarmHandler)fn_800CA148);
+                OSSetAlarmUserData(alarmB, (void *)(i << 16 | (i + 2)));
+                OSCancelAlarm(alarmB);
+                ((void (*)(OSAlarm *, u32, u32, u32, OSAlarmHandler))OSSetAlarm)(alarmB, 0x10624DD3, 0, ctr * 0x190, (OSAlarmHandler)fn_800CA064);
+            }
+            if ((s8)((u8 *)(*(void **)ic))[0x85] == 0) {
+                if (*(u32 *)(ic + 0xC) == 2U && *(u32 *)((u8 *)(*(void **)ic) + 0x5C) == 2U) {
+                    px = z; py = z; a = f29; b = z;
+                } else {
+                    a = *(f32 *)((u8 *)(*(void **)ic) + 0x34);
+                    py = *(f32 *)((u8 *)(*(void **)ic) + 0x38);
+                    ang = f30 * Atan2FIdx__Q24nw4r4mathFff(a, -py, a);
+                    px = z; b = z; a = ang;
+                }
+                if (*(s32 *)(SYS + 0x20) == 0) {
+                    pane = V3(s, lbl_80559724, 1);
+                    *(f32 *)((u8 *)pane + 0x38) = px;
+                    *(f32 *)((u8 *)pane + 0x3C) = py;
+                    *(f32 *)((u8 *)pane + 0x40) = a;
+                    pane = V3(s, lbl_80559730, 1, py);
+                    *(f32 *)((u8 *)pane + 0x38) = px;
+                    *(f32 *)((u8 *)pane + 0x3C) = py;
+                    *(f32 *)((u8 *)pane + 0x40) = a;
+                }
+                if (*(s32 *)(self + 0x78) > 0x64) {
+                    getInfoAsync__Q210homebutton10ControllerFP8WPADInfo(*(void **)(s + 0x254), info);
+                }
+                fn_800CAB04(self, i);
+                if (*(s32 *)(SYS + 0x20) == 0) {
+                    void *lay = ((void *(*)(void *))fn_800D1558)(*(void **)(s + 0x254));
+                    GetLayoutRect__Q34nw4lyt6LayoutCFv(rect, *(void **)(self + 0x1E0));
+                    b = *(f32 *)((u8 *)lay + 8) * rect[2];
+                    a = *(f32 *)((u8 *)lay + 0xC);
+                    ang = a * rect[3];
+                    pane = V3(s, lbl_80559718, 1, a, b);
+                    *(f32 *)((u8 *)pane + 0x2C) = b;
+                    *(f32 *)((u8 *)pane + 0x30) = ang;
+                    *(f32 *)((u8 *)pane + 0x34) = z;
+                }
+            }
+            if (fn_800D1688((s32 *)(s + 0x254)) != 0) calc_battery__Q210homebutton10HomeButtonFi(self, i);
+        } else {
+            if (self[0x7C + i] != 0) {
+                idx = findEventSlot(i + 0x1F, 0x11);
+                pane = ((void **)self)[idx + 166];
+                fn_800CF3EC(pane);
+                *(s32 *)((u8 *)pane + 0x14) = 1;
+                idx = findEventSlot(i + 0x1F, 0x12);
+                pane = ((void **)self)[idx + 166];
+                fn_800CF3EC(pane);
+                *(s32 *)((u8 *)pane + 0x14) = 1;
+                for (j = 0; j < 4; j++)
+                    ((u8 *)VB(self, ids[j], 1))[0xCF] = ((u8 *)VB(self, ids[j], 1))[0xCF] & 0xFE;
+                if (*(s32 *)(SYS + 0x20) == 0) {
+                    pane = V3(s, lbl_80559718, 1);
+                    ((u8 *)pane)[0xCF] = ((u8 *)pane)[0xCF] & 0xFE;
+                }
+                *(s32 *)(s + 0x54) = 0;
+                self[0x7C + i] = 0;
+                fn_800D11E0(*(void **)(s + 0x254));
+                fn_800D11CC(*(void **)(s + 0x254));
+                ((void (*)(void *))fn_800D1200)(*(void **)(s + 0x254));
+            }
+            if (i < 0) {
+                for (j = 0; j < 8; j++) V2C(self, j, 0, 0, 0, 0, lbl_80560DD8, lbl_80560DD8);
+            } else {
+                V2C(self, i, 0, 0, 0, 0, lbl_80560DD8, lbl_80560DD8);
+            }
+        }
+    }
+    if (*(s32 *)(self + 0x78) > 0x64) {
+        *(s32 *)(self + 0x78) = 0;
+    } else {
+        *(s32 *)(self + 0x78) = *(s32 *)(self + 0x78) + 1;
+    }
 }
 
 extern "C" void fn_800CF3EC(void *);
