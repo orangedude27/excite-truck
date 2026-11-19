@@ -1258,6 +1258,12 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
 }
 
 extern "C" void fn_800D6CA0(s32, s32);
+/* ut::DynamicCast: the target type info is taken before the virtual GetRuntimeTypeInfo call. */
+static inline u8 *DynCast_800D77DC(u8 *obj) {
+    StateNode_800D6CA0 *typeInfo = (StateNode_800D6CA0 *)&lbl_8055DE08;
+    if (HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)obj)->v1(), typeInfo)) return obj;
+    return 0;
+}
 /* Inline levels of the recursive tag-processor walk (fn_800D6CA0) as expanded into fn_800D77DC. */
 static inline void SetTagProcessorLevel3_800D77DC(u8 *self, s32 arg1) {
     u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)self)->v1(), (StateNode_800D6CA0 *)&lbl_8055DE08) ? self : 0;
