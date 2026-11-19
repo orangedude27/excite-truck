@@ -1150,11 +1150,11 @@ int fn_802D972C(register void *arg0, register int arg1, register int arg2) {
         xoff = arg1 << 29;
         xsign = (unsigned int)arg1 >> 31;
         xoff -= xsign;
-        base = (int)((((xoff << 3) | (xoff >> 29)) + xsign + ((((yoff << 3) | (yoff >> 29)) + ysign) * 8)) * 4) / 8;
+        pixel = (int)((((xoff << 3) | (xoff >> 29)) + xsign + ((((yoff << 3) | (yoff >> 29)) + ysign) * 8)) * 4) / 8;
         if ((arg1 & 1) == 0) {
-            value = (*(unsigned char *)(pixel + base) >> 4) & 0xF;
+            value = (*(unsigned char *)(base + pixel) >> 4) & 0xF;
         } else {
-            value = *(unsigned char *)(pixel + base) & 0xF;
+            value = *(unsigned char *)(base + pixel) & 0xF;
         }
         doubled = value | (value * 0x10);
         return (doubled << 24) | ((doubled << 8) | doubled | (doubled << 16));
