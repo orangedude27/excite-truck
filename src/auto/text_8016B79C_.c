@@ -2265,14 +2265,8 @@ outer_body: {
         temp_f14 = M2C_FIELD(fn_8016DE10(M2C_FIELD(arg0, s32 **, 0x4C), var_r25), f32 *, 8);
         temp_f23 = fn_8016FD58() - temp_f14;
         temp_r0 = M2C_FIELD(arg0, s32 *, 0x5C);
-        {
-            double d;
-            *(u32 *)&d = 0x43300000;
-            *((u32 *)&d + 1) = (u32)var_r20 ^ 0x80000000;
-            s8.y += (f32)(d - lbl_80561990);
-            *((u32 *)&d + 1) = (u32)var_r20 ^ 0x80000000;
-            s28.y += (f32)(d - lbl_80561990);
-        }
+        s8.y += (f32) var_r20;
+        s28.y += (f32) var_r20;
         if (var_r25 > temp_r0) {
             s8.color = 0x66FFFFFF;
         }
