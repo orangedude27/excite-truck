@@ -1141,39 +1141,41 @@ extern "C" s32 fn_80128668(void *);
 extern "C" u32 fn_8012BB18(void) { return 1; }
 
 #pragma scheduling invalid_target
-extern "C" void fn_8012BB20(s32 arg0, void *arg1) {
+/* Frees a resource-set node: reports issues, unlinks it, releases any still-allocated entry data, and frees the node. */
+extern "C" void fn_8012BB20(s32 listHead, void *node) {
     u8 *entry;
     s32 i;
-    s32 offset;
+    s32 entryOffset;
     u32 flags;
-    if (((u32 (*)(void *))fn_8012BB18)(arg1) == 0) return;
-    fn_8012BA1C(arg1);
-    fn_8012BC24((void **)arg0, arg1);
-    if (arg1 == 0) return;
-    if (*(u8 *)((u8 *)arg1 + 0xAC) != 0) {
+
+    if (((u32 (*)(void *))fn_8012BB18)(node) == 0) return;
+    fn_8012BA1C(node);
+    fn_8012BC24((void **)listHead, node);
+    if (node == 0) return;
+    if (*(u8 *)((u8 *)node + 0xAC) != 0) {
         i = 0;
-        offset = 0;
-        while (i < *(s32 *)((u8 *)arg1 + 0x88)) {
-            entry = *(u8 **)((u8 *)arg1 + 0x60) + offset;
+        entryOffset = 0;
+        while (i < *(s32 *)((u8 *)node + 0x88)) {
+            entry = *(u8 **)((u8 *)node + 0x60) + entryOffset;
             flags = *(u32 *)(entry + 0x34);
             if ((flags & 4) != 0) {
                 fn_802E317C(lbl_8032AE20, entry);
             }
             i++;
-            entry = *(u8 **)((u8 *)arg1 + 0x60) + offset;
+            entry = *(u8 **)((u8 *)node + 0x60) + entryOffset;
             flags = *(u32 *)(entry + 0x34);
-            offset += 0x44;
+            entryOffset += 0x44;
             *(u32 *)(entry + 0x34) = flags & 0xFFFFFFF0;
         }
-        if (*(s32 *)((u8 *)arg1 + 0x64) != 0) {
-            fn_8012C4D8(*(void **)((u8 *)arg1 + 0x64));
+        if (*(s32 *)((u8 *)node + 0x64) != 0) {
+            fn_8012C4D8(*(void **)((u8 *)node + 0x64));
         }
-        if (*(s32 *)((u8 *)arg1 + 0xA0) != 0) {
-            fn_80128660(*(s32 *)((u8 *)arg1 + 0xA0));
+        if (*(s32 *)((u8 *)node + 0xA0) != 0) {
+            fn_80128660(*(s32 *)((u8 *)node + 0xA0));
         }
-        *(u8 *)((u8 *)arg1 + 0xAC) = 0;
+        *(u8 *)((u8 *)node + 0xAC) = 0;
     }
-    fn_80128668(arg1);
+    fn_80128668(node);
 }
 extern "C" void fn_8012BC24(void **headPtr, void *node) {
     // Unlink `node` from the singly-linked list whose head pointer is *headPtr;
