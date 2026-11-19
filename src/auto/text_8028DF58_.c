@@ -232,6 +232,7 @@ extern void fn_8028F8C4(int);
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
+/* Reset the playback cursor for every effect in the primary emitter list. */
 void fn_8028E138(void) {
     struct Table { int entries[64]; int count; } *list;
     int *emitter;
