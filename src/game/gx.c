@@ -302,7 +302,10 @@ void fn_802CEC44(void) {
 }
 
 #pragma scheduling invalid_target
-void fn_802CEC50(int arg0) {
+void fn_802CEC50(int token) {
+    /* Handle a GX draw-sync token: case 1 snapshots the start tick and clears the
+       sync-done flag, case 2 computes the elapsed time (with smoothing) and
+       processes queued depth queries, any other token is reported as unhandled. */
     extern unsigned long long fn_802E2C9C(void);
     extern float fn_8002FD54(unsigned int, unsigned int);
     extern void fn_802D3900(void);
@@ -311,27 +314,27 @@ void fn_802CEC50(int arg0) {
     extern unsigned int lbl_8055FD10, lbl_8055FD14;
     extern char lbl_8055FD3C;
     extern float lbl_80564F80, lbl_80564F84;
-    unsigned long long now;
-    unsigned long long delta;
-    float value, prev;
-    switch (arg0) {
+    unsigned long long currentTick;
+    unsigned long long elapsedTicks;
+    float elapsedMs, previousSmoothedMs;
+    switch (token) {
     case 1:
-        now = fn_802E2C9C();
-        lbl_8055FD14 = (unsigned int)now;
-        lbl_8055FD10 = (unsigned int)(now >> 32);
+        currentTick = fn_802E2C9C();
+        lbl_8055FD14 = (unsigned int)currentTick;
+        lbl_8055FD10 = (unsigned int)(currentTick >> 32);
         lbl_8055FD3C = 0;
         break;
     case 2:
-        now = fn_802E2C9C();
-        delta = now - (lbl_8055FD14 | ((unsigned long long)lbl_8055FD10 << 32));
-        value = lbl_80564F80 * fn_8002FD54((unsigned int)(delta >> 32), (unsigned int)delta);
-        prev = lbl_8055D0B4;
-        lbl_8055D0B0 = value;
-        lbl_8055D0B4 = value + lbl_80564F84 * (prev - value);
+        currentTick = fn_802E2C9C();
+        elapsedTicks = currentTick - (lbl_8055FD14 | ((unsigned long long)lbl_8055FD10 << 32));
+        elapsedMs = lbl_80564F80 * fn_8002FD54((unsigned int)(elapsedTicks >> 32), (unsigned int)elapsedTicks);
+        previousSmoothedMs = lbl_8055D0B4;
+        lbl_8055D0B0 = elapsedMs;
+        lbl_8055D0B4 = elapsedMs + lbl_80564F84 * (previousSmoothedMs - elapsedMs);
         fn_802D3900();
         break;
     default:
-        fn_802E317C(lbl_8034BE20, arg0);
+        fn_802E317C(lbl_8034BE20, token);
         break;
     }
 }
