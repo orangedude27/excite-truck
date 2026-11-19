@@ -2309,6 +2309,11 @@ extern "C" void fn_80140B98(void *arg0, void *arg1, s32 arg2) {
 extern "C" void fn_8013EB30(void *);
 extern "C" void fn_80140B98(void *, void *, s32);
 extern "C" void fn_80141558(void *, s32, s32, s32);
+struct StageVec {
+    f32 *buf;
+    s32 idx;
+    s32 cap;
+};
 // fn_80140D1C: processes array items, flushing buffer to fn_80141558 when item[0x1E] set, or stores to dst
 extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2) {
  f32 buffer[16]; f32 *dst=buffer; s32 count=*(s32 *)((u8 *)arg1+4)-1, idx=0, i, cap, head, end; u8 *item;
