@@ -1731,6 +1731,11 @@ void fn_801F4270(void) {
     #undef sLocalFlareUnsupported
 }
 
+/* FlareSource::Draw -- slot +0x20 of the FlareSource vtable (lbl_8033A770), the
+ * per-frame draw method the other scene objects implement (Sky's is
+ * fn_801F3288, PointFacing's fn_801F2DD4).  Flares draw nothing at all:
+ * trackmod has no support for local flare sources, which the class's
+ * +0x10 method (fn_801F4270) reports by panicking. */
 void fn_801F4280(void) {
 
 }
