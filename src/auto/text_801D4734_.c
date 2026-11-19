@@ -1643,9 +1643,9 @@ extern "C" int fn_801D6320(void *out, void *object) {
     *(int *)((char *)out + 0xC) = (int)(lbl_80562B0C * a);
     *(int *)((char *)out + 8) = (int)(lbl_80562B0C * o->getFloatArg(&lbl_8055ACB8, lbl_80562ADC));
     if (o->getBool(&lbl_8055ACC0) == 0) { LOG(messages + 0x2A4); return 0; }
-    b = o->getFloatArg(&lbl_8055ACC0, lbl_80562AE4);
+    b = (float)o->getFloatArg(&lbl_8055ACC0, lbl_80562AE4);
     *(float *)((char *)out + 0x10) = b;
-    if (b < lbl_80562ADC) { LOG(messages + 0x2E8, b); return 0; }
+    if ((float)b < lbl_80562ADC) { LOG(messages + 0x2E8, (float)b); return 0; }
     *(int *)((char *)out + 0x14) = 0;
     if (o->getBool2(&lbl_8055ACC8)) *(int *)((char *)out + 0x14) = fn_801399FC();
     *(signed char *)((char *)out + 0x18) = o->getS8(messages + 0x338, 0);
@@ -3659,7 +3659,7 @@ struct SurfaceChangeAse {
     int state;         /* 0x18 1 = idle, 2 = running */
     int surfaceType;   /* 0x1C fn_801D04D0() of the element's "surftype" */
     int applied;       /* 0x20 0 before the change is applied, 1 after */
-    void *targets;     /* 0x24 12-byte {target, type, type} records */
+    void *targets;     /* 0x24 12-byte {target, its surface type, its override} records (fn_801D89C0 appends) */
     int targetCount;   /* 0x28 */
 };
 
