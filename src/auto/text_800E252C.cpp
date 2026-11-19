@@ -2948,11 +2948,11 @@ extern "C" void fn_800E68EC(void *arg0, int arg1, int arg2, void *arg3, int arg4
     void **entry;
     int i;
     if (arg1 >= 2)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((unsigned int)message + 0), 0x434, message + 0x258);
+        Panic__Q26nw4hbm2dbFPCciPCce(message + 0, 0x434, message + 0x258);
     switch (arg2) {
     case 0:
         if (arg3 == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce((const char *)((unsigned int)message + 0), 0x439, message + 0x2A0);
+            Panic__Q26nw4hbm2dbFPCciPCce(message + 0, 0x439, message + 0x2A0);
         memcpy(sp8, arg3, 0x20);
         *(u16 *)(sp8 + 0x20) = *(u16 *)((char *)arg3 + 0x20);
         *(u16 *)(sp8 + 0x22) = *(u16 *)((char *)arg3 + 0x22);
@@ -3464,7 +3464,7 @@ extern float lbl_80560F38, lbl_80560F3C, lbl_80560F80;
 extern "C" void CalcAXPBRMTMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP11_AXPBRMTMIX(void* self, int a, int b, void* out) {
     char* voice=(char*)self;
     float mainVol[4], auxVol[4];
-    float f = lbl_80560F38;
+    float f = 1.0f;
     for (int i=0;i<4;i++) {
         mainVol[i]=f;
         auxVol[i]=f;
