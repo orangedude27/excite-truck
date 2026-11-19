@@ -52,7 +52,6 @@ static inline s32 Fn800B25CCWide(u16 *w) {
     }
     return 0;
 }
-struct Pool8031EC50 { char file[0x6C]; char rest[0x194]; };
 struct Fn800D3C44Str {
     char file[0x134];
     char msg134[0x80];
@@ -10944,6 +10943,7 @@ extern "C" s32 fn_800B5988(void *arg0) {
     u8 *slot;
     u16 hdr;
     s32 n;
+    CacheEnt *g;
     *(s32 *)((u8 *)arg0 + 0x1F80) = 0;
     *(s32 *)((u8 *)arg0 + 0x1F84) = 0;
     r = fn_800A5530(arg0);
@@ -10969,7 +10969,7 @@ extern "C" s32 fn_800B5988(void *arg0) {
                 e[0x88 / 8].flag &= 1;
                 if (e[0x88 / 8].flag && key == e[0x88 / 8].key) hit = 1;
                 else {
-                    CacheEnt *g = (CacheEnt *)((u8 *)e + 16);
+                    g = e + 2;
                     g[0x80 / 8].flag &= 1;
                     if (g[0x80 / 8].flag && key == g[0x80 / 8].key) hit = 1;
                     else {
