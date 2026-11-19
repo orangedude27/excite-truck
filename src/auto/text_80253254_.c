@@ -1432,14 +1432,6 @@ void fn_80255920(void *arg0, s8 tinted) {
 
 __declspec(section ".sdata") extern char lbl_8055C1C0[];
 __declspec(section ".sdata") extern float lbl_80563A60;
-static inline void copyName_80255928(char *dst, const char *src, s32 count) {
-    while ((signed char)(*dst++ = *src++) != 0) {
-        if (--count <= 0) {
-            dst[-1] = 0;
-            break;
-        }
-    }
-}
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_80255928(void *arg0, char *arg1) {
