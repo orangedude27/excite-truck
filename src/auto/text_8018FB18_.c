@@ -406,6 +406,7 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
         lbl_8055E528 = 1;
     }
 }
+#pragma processor gekko
 #pragma scheduling on
 #pragma use_lmw_stmw reset
 #pragma cplusplus on
