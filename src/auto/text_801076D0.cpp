@@ -428,38 +428,38 @@ extern "C" void* Rebuild__Q36nw4hbm2ut7ResFontFPQ36nw4hbm2ut16BinaryFileHeader(v
     const char* file = lbl_80328888;
     u32 p = (u32)header;
     s32 v5, v6, v7, v8, v9, v10;
-    s32 t;
+    u32 t;
     u32* chunk;
     u32* info;
     int index;
     v5 = 1; v6 = 1; v7 = 1; v8 = 1; v9 = 1; v10 = 1;
-    t = (s32)(p & 0xFF000000);
-    if ((unsigned int)((unsigned int)t + 0x80000000u) != 0u && (unsigned int)((p & 0xFF800000) + 0x7F000000u) != 0u) v10 = 0;
-    if (v10 == 0 && (unsigned int)((p & 0xF8000000) + 0x70000000u) != 0u) v9 = 0;
-    if (v9 == 0 && (unsigned int)((unsigned int)t + 0x40000000u) != 0u) v8 = 0;
-    if (v8 == 0 && (unsigned int)((p & 0xFF800000) + 0x3F000000u) != 0u) v7 = 0;
-    if (v7 == 0 && (unsigned int)((p & 0xF8000000) + 0x30000000u) != 0u) v6 = 0;
-    if (v6 == 0 && (unsigned int)((p & 0xFFFFC000) + 0x20000000u) != 0u) v5 = 0;
+    t = (u32)(p & 0xFF000000);
+    if ((u32)(t + 0x80000000) != 0U && (u32)((p & 0xFF800000) + 0x7F000000) != 0U) v10 = 0;
+    if (v10 == 0 && (u32)((p & 0xF8000000) + 0x70000000) != 0U) v9 = 0;
+    if (v9 == 0 && (u32)(t + 0x40000000) != 0U) v8 = 0;
+    if (v8 == 0 && (u32)((p & 0xFF800000) + 0x3F000000) != 0U) v7 = 0;
+    if (v7 == 0 && (u32)((p & 0xF8000000) + 0x30000000) != 0U) v6 = 0;
+    if (v6 == 0 && (u32)((p & 0xFFFFC000) + 0x20000000) != 0U) v5 = 0;
     if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xDA, file + 0x174, header);
     if (p & 0x1F) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xDB, file + 0x1B0, header);
     info = 0;
     chunk = (u32*)((char*)header + *(u16*)((char*)header + 0xC));
     index = 0;
     for (;;) {
-        s32 ct;
+        u32 ct;
         u32 cp = (u32)chunk;
         if (index >= (int)*(u16*)((char*)header + 0xE)) {
             *(u32*)header = 0x52464E55;
             return info;
         }
         v5 = 1; v6 = 1; v7 = 1; v8 = 1; v9 = 1; v10 = 1;
-        ct = (s32)(cp & 0xFF000000);
-        if ((unsigned int)((unsigned int)ct + 0x80000000u) != 0u && (unsigned int)((cp & 0xFF800000) + 0x7F000000u) != 0u) v10 = 0;
-        if (v10 == 0 && (unsigned int)((cp & 0xF8000000) + 0x70000000u) != 0u) v9 = 0;
-        if (v9 == 0 && (unsigned int)((unsigned int)ct + 0x40000000u) != 0u) v8 = 0;
-        if (v8 == 0 && (unsigned int)((cp & 0xFF800000) + 0x3F000000u) != 0u) v7 = 0;
-        if (v7 == 0 && (unsigned int)((cp & 0xF8000000) + 0x30000000u) != 0u) v6 = 0;
-        if (v6 == 0 && (unsigned int)((cp & 0xFFFFC000) + 0x20000000u) != 0u) v5 = 0;
+        ct = (u32)(cp & 0xFF000000);
+        if ((u32)(ct + 0x80000000) != 0U && (u32)((cp & 0xFF800000) + 0x7F000000) != 0U) v10 = 0;
+        if (v10 == 0 && (u32)((cp & 0xF8000000) + 0x70000000) != 0U) v9 = 0;
+        if (v9 == 0 && (u32)(ct + 0x40000000) != 0U) v8 = 0;
+        if (v8 == 0 && (u32)((cp & 0xFF800000) + 0x3F000000) != 0U) v7 = 0;
+        if (v7 == 0 && (u32)((cp & 0xF8000000) + 0x30000000) != 0U) v6 = 0;
+        if (v6 == 0 && (u32)((cp & 0xFFFFC000) + 0x20000000) != 0U) v5 = 0;
         if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xE6, file + 0xEC, chunk);
         switch (*chunk) {
         case 0x46494E46: {
@@ -470,41 +470,41 @@ extern "C" void* Rebuild__Q36nw4hbm2ut7ResFontFPQ36nw4hbm2ut16BinaryFileHeader(v
             if (*(s32*)((char*)info + 8) == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xF7, file + 0x2B0);
             {
                 u32 q = p + *(u32*)((char*)info + 8);
-                s32 qt = (s32)(q & 0xFF000000);
+                u32 qt = (u32)(q & 0xFF000000);
                 *(u32*)((char*)info + 8) = q;
                 v5 = 1; v6 = 1; v7 = 1; v8 = 1; v9 = 1; v10 = 1;
-                if ((unsigned int)((unsigned int)qt + 0x80000000u) != 0u && (unsigned int)((q & 0xFF800000) + 0x7F000000u) != 0u) v10 = 0;
-                if (v10 == 0 && (unsigned int)((q & 0xF8000000) + 0x70000000u) != 0u) v9 = 0;
-                if (v9 == 0 && (unsigned int)((unsigned int)qt + 0x40000000u) != 0u) v8 = 0;
-                if (v8 == 0 && (unsigned int)((q & 0xFF800000) + 0x3F000000u) != 0u) v7 = 0;
-                if (v7 == 0 && (unsigned int)((q & 0xF8000000) + 0x30000000u) != 0u) v6 = 0;
-                if (v6 == 0 && (unsigned int)((q & 0xFFFFC000) + 0x20000000u) != 0u) v5 = 0;
+                if ((u32)(qt + 0x80000000) != 0U && (u32)((q & 0xFF800000) + 0x7F000000) != 0U) v10 = 0;
+                if (v10 == 0 && (u32)((q & 0xF8000000) + 0x70000000) != 0U) v9 = 0;
+                if (v9 == 0 && (u32)(qt + 0x40000000) != 0U) v8 = 0;
+                if (v8 == 0 && (u32)((q & 0xFF800000) + 0x3F000000) != 0U) v7 = 0;
+                if (v7 == 0 && (u32)((q & 0xF8000000) + 0x30000000) != 0U) v6 = 0;
+                if (v6 == 0 && (u32)((q & 0xFFFFC000) + 0x20000000) != 0U) v5 = 0;
                 if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xF9, file + 0x2E0);
             }
             if (*(s32*)((char*)info + 0xC) != 0) {
                 u32 q = p + *(u32*)((char*)info + 0xC);
-                s32 qt = (s32)(q & 0xFF000000);
+                u32 qt = (u32)(q & 0xFF000000);
                 *(u32*)((char*)info + 0xC) = q;
                 v5 = 1; v6 = 1; v7 = 1; v8 = 1; v9 = 1; v10 = 1;
-                if ((unsigned int)((unsigned int)qt + 0x80000000u) != 0u && (unsigned int)((q & 0xFF800000) + 0x7F000000u) != 0u) v10 = 0;
-                if (v10 == 0 && (unsigned int)((q & 0xF8000000) + 0x70000000u) != 0u) v9 = 0;
-                if (v9 == 0 && (unsigned int)((unsigned int)qt + 0x40000000u) != 0u) v8 = 0;
-                if (v8 == 0 && (unsigned int)((q & 0xFF800000) + 0x3F000000u) != 0u) v7 = 0;
-                if (v7 == 0 && (unsigned int)((q & 0xF8000000) + 0x30000000u) != 0u) v6 = 0;
-                if (v6 == 0 && (unsigned int)((q & 0xFFFFC000) + 0x20000000u) != 0u) v5 = 0;
+                if ((u32)(qt + 0x80000000) != 0U && (u32)((q & 0xFF800000) + 0x7F000000) != 0U) v10 = 0;
+                if (v10 == 0 && (u32)((q & 0xF8000000) + 0x70000000) != 0U) v9 = 0;
+                if (v9 == 0 && (u32)(qt + 0x40000000) != 0U) v8 = 0;
+                if (v8 == 0 && (u32)((q & 0xFF800000) + 0x3F000000) != 0U) v7 = 0;
+                if (v7 == 0 && (u32)((q & 0xF8000000) + 0x30000000) != 0U) v6 = 0;
+                if (v6 == 0 && (u32)((q & 0xFFFFC000) + 0x20000000) != 0U) v5 = 0;
                 if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xFF, file + 0x320);
             }
             if (*(s32*)((char*)info + 0x10) != 0) {
                 u32 q = p + *(u32*)((char*)info + 0x10);
-                s32 qt = (s32)(q & 0xFF000000);
+                u32 qt = (u32)(q & 0xFF000000);
                 *(u32*)((char*)info + 0x10) = q;
                 v5 = 1; v6 = 1; v7 = 1; v8 = 1; v9 = 1; v10 = 1;
-                if ((unsigned int)((unsigned int)qt + 0x80000000u) != 0u && (unsigned int)((q & 0xFF800000) + 0x7F000000u) != 0u) v10 = 0;
-                if (v10 == 0 && (unsigned int)((q & 0xF8000000) + 0x70000000u) != 0u) v9 = 0;
-                if (v9 == 0 && (unsigned int)((unsigned int)qt + 0x40000000u) != 0u) v8 = 0;
-                if (v8 == 0 && (unsigned int)((q & 0xFF800000) + 0x3F000000u) != 0u) v7 = 0;
-                if (v7 == 0 && (unsigned int)((q & 0xF8000000) + 0x30000000u) != 0u) v6 = 0;
-                if (v6 == 0 && (unsigned int)((q & 0xFFFFC000) + 0x20000000u) != 0u) v5 = 0;
+                if ((u32)(qt + 0x80000000) != 0U && (u32)((q & 0xFF800000) + 0x7F000000) != 0U) v10 = 0;
+                if (v10 == 0 && (u32)((q & 0xF8000000) + 0x70000000) != 0U) v9 = 0;
+                if (v9 == 0 && (u32)(qt + 0x40000000) != 0U) v8 = 0;
+                if (v8 == 0 && (u32)((q & 0xFF800000) + 0x3F000000) != 0U) v7 = 0;
+                if (v7 == 0 && (u32)((q & 0xF8000000) + 0x30000000) != 0U) v6 = 0;
+                if (v6 == 0 && (u32)((q & 0xFFFFC000) + 0x20000000) != 0U) v5 = 0;
                 if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x104, file + 0x360);
             }
             break;
@@ -513,15 +513,15 @@ extern "C" void* Rebuild__Q36nw4hbm2ut7ResFontFPQ36nw4hbm2ut16BinaryFileHeader(v
             if (*(s32*)((char*)chunk + 0x1C) == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x112, file + 0x39C);
             {
                 u32 q = p + *(u32*)((char*)chunk + 0x1C);
-                s32 qt = (s32)(q & 0xFF000000);
+                u32 qt = (u32)(q & 0xFF000000);
                 *(u32*)((char*)chunk + 0x1C) = q;
                 v5 = 1; v6 = 1; v7 = 1; v8 = 1; v9 = 1; v10 = 1;
-                if ((unsigned int)((unsigned int)qt + 0x80000000u) != 0u && (unsigned int)((q & 0xFF800000) + 0x7F000000u) != 0u) v10 = 0;
-                if (v10 == 0 && (unsigned int)((q & 0xF8000000) + 0x70000000u) != 0u) v9 = 0;
-                if (v9 == 0 && (unsigned int)((unsigned int)qt + 0x40000000u) != 0u) v8 = 0;
-                if (v8 == 0 && (unsigned int)((q & 0xFF800000) + 0x3F000000u) != 0u) v7 = 0;
-                if (v7 == 0 && (unsigned int)((q & 0xF8000000) + 0x30000000u) != 0u) v6 = 0;
-                if (v6 == 0 && (unsigned int)((q & 0xFFFFC000) + 0x20000000u) != 0u) v5 = 0;
+                if ((u32)(qt + 0x80000000) != 0U && (u32)((q & 0xFF800000) + 0x7F000000) != 0U) v10 = 0;
+                if (v10 == 0 && (u32)((q & 0xF8000000) + 0x70000000) != 0U) v9 = 0;
+                if (v9 == 0 && (u32)(qt + 0x40000000) != 0U) v8 = 0;
+                if (v8 == 0 && (u32)((q & 0xFF800000) + 0x3F000000) != 0U) v7 = 0;
+                if (v7 == 0 && (u32)((q & 0xF8000000) + 0x30000000) != 0U) v6 = 0;
+                if (v6 == 0 && (u32)((q & 0xFFFFC000) + 0x20000000) != 0U) v5 = 0;
                 if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x114, file + 0x3D0);
             }
             if (*(u8*)((char*)chunk + 8) < 1) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x117, file + 0x414, 1);
@@ -553,15 +553,15 @@ extern "C" void* Rebuild__Q36nw4hbm2ut7ResFontFPQ36nw4hbm2ut16BinaryFileHeader(v
             if (*(u16*)((char*)chunk + 8) > *(u16*)((char*)chunk + 0xA)) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x12A, file + 0x694);
             if (*(s32*)((char*)chunk + 0xC) != 0) {
                 u32 q = p + *(u32*)((char*)chunk + 0xC);
-                s32 qt = (s32)(q & 0xFF000000);
+                u32 qt = (u32)(q & 0xFF000000);
                 *(u32*)((char*)chunk + 0xC) = q;
                 v5 = 1; v6 = 1; v7 = 1; v8 = 1; v9 = 1; v10 = 1;
-                if ((unsigned int)((unsigned int)qt + 0x80000000u) != 0u && (unsigned int)((q & 0xFF800000) + 0x7F000000u) != 0u) v10 = 0;
-                if (v10 == 0 && (unsigned int)((q & 0xF8000000) + 0x70000000u) != 0u) v9 = 0;
-                if (v9 == 0 && (unsigned int)((unsigned int)qt + 0x40000000u) != 0u) v8 = 0;
-                if (v8 == 0 && (unsigned int)((q & 0xFF800000) + 0x3F000000u) != 0u) v7 = 0;
-                if (v7 == 0 && (unsigned int)((q & 0xF8000000) + 0x30000000u) != 0u) v6 = 0;
-                if (v6 == 0 && (unsigned int)((q & 0xFFFFC000) + 0x20000000u) != 0u) v5 = 0;
+                if ((u32)(qt + 0x80000000) != 0U && (u32)((q & 0xFF800000) + 0x7F000000) != 0U) v10 = 0;
+                if (v10 == 0 && (u32)((q & 0xF8000000) + 0x70000000) != 0U) v9 = 0;
+                if (v9 == 0 && (u32)(qt + 0x40000000) != 0U) v8 = 0;
+                if (v8 == 0 && (u32)((q & 0xFF800000) + 0x3F000000) != 0U) v7 = 0;
+                if (v7 == 0 && (u32)((q & 0xF8000000) + 0x30000000) != 0U) v6 = 0;
+                if (v6 == 0 && (u32)((q & 0xFFFFC000) + 0x20000000) != 0U) v5 = 0;
                 if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x12F, file + 0x6D4);
             }
             break;
@@ -571,15 +571,15 @@ extern "C" void* Rebuild__Q36nw4hbm2ut7ResFontFPQ36nw4hbm2ut16BinaryFileHeader(v
             if (*(u16*)((char*)chunk + 0xC) > 2) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x13F, file + 0x750);
             if (*(s32*)((char*)chunk + 0x10) != 0) {
                 u32 q = p + *(u32*)((char*)chunk + 0x10);
-                s32 qt = (s32)(q & 0xFF000000);
+                u32 qt = (u32)(q & 0xFF000000);
                 *(u32*)((char*)chunk + 0x10) = q;
                 v5 = 1; v6 = 1; v7 = 1; v8 = 1; v9 = 1; v10 = 1;
-                if ((unsigned int)((unsigned int)qt + 0x80000000u) != 0u && (unsigned int)((q & 0xFF800000) + 0x7F000000u) != 0u) v10 = 0;
-                if (v10 == 0 && (unsigned int)((q & 0xF8000000) + 0x70000000u) != 0u) v9 = 0;
-                if (v9 == 0 && (unsigned int)((unsigned int)qt + 0x40000000u) != 0u) v8 = 0;
-                if (v8 == 0 && (unsigned int)((q & 0xFF800000) + 0x3F000000u) != 0u) v7 = 0;
-                if (v7 == 0 && (unsigned int)((q & 0xF8000000) + 0x30000000u) != 0u) v6 = 0;
-                if (v6 == 0 && (unsigned int)((q & 0xFFFFC000) + 0x20000000u) != 0u) v5 = 0;
+                if ((u32)(qt + 0x80000000) != 0U && (u32)((q & 0xFF800000) + 0x7F000000) != 0U) v10 = 0;
+                if (v10 == 0 && (u32)((q & 0xF8000000) + 0x70000000) != 0U) v9 = 0;
+                if (v9 == 0 && (u32)(qt + 0x40000000) != 0U) v8 = 0;
+                if (v8 == 0 && (u32)((q & 0xFF800000) + 0x3F000000) != 0U) v7 = 0;
+                if (v7 == 0 && (u32)((q & 0xF8000000) + 0x30000000) != 0U) v6 = 0;
+                if (v6 == 0 && (u32)((q & 0xFFFFC000) + 0x20000000) != 0U) v5 = 0;
                 if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x144, file + 0x7F8);
             }
             break;
@@ -1782,9 +1782,9 @@ extern "C" s32 fn_8010D4B0(void *self, void *arg0, s32 arg1, void *arg2) {
  extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(s32), GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80105C2C(s32), GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(s32), GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(s32), GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801056A4(s32), fn_80111C10(s32);
  extern s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_801120E8(s32), IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(s32);
  extern void SetCursor__Q36nw4hbm2ut10CharWriterFff(s32,f32,f32); extern void SetCursorX__Q36nw4hbm2ut10CharWriterFf(s32,f32);
- const char *base=lbl_80329458;
- u32 p=(u32)arg0, hi=p&0xFF000000;
- s32 r4,r5,r6,r7,r8,r9,r10;
+ register const char *base=lbl_80329458;
+ register u32 p=(u32)arg0, hi=p&0xFF000000;
+ register s32 r4,r5,r6,r7,r8,r9,r10;
  r5=r6=r7=r8=r9=r10=1;
  if(hi!=0x80000000U && (p&0xFF800000)!=0x81000000U) r10=0;
  if(r10==0 && (p&0xF8000000)!=0x90000000U) r9=0;
@@ -8036,6 +8036,4 @@ extern "C" f32 fn_80115848(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
      }
      return var_f31;
  }
-namespace nw4hbm { namespace ut { struct List { unsigned char data[0xA]; unsigned short stride; }; } }
-struct List_Remove_Link { List_Remove_Link *prev; List_Remove_Link *next; };
-struct List_Remove_List { void *head; void *tail; u16 count; u16 offset; };
+
