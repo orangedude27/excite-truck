@@ -2820,6 +2820,7 @@ extern "C" void fn_8018A180(void *arg0, float a1, float a2, float a3, float a4, 
     fn_801D1540((char *)lbl_8055E918 + *(int *)((char *)arg0 + 0x1EC) * 0x9C, *(int *)((char *)arg0 + 0x1EC));
 }
 #pragma cplusplus reset
+/* Empty stub (no operation). */
 void fn_8018A2BC(void) {
 
 }
