@@ -123,13 +123,6 @@ extern void fn_802C9A70(int);
 extern void fn_802C855C(void);
 extern void fn_802C2B48(void);
 extern char *strcpy(char *, const char *);
-typedef union { double d; struct { unsigned int hi, lo; } w; } M2F_Bias;
-static inline float m2f(int v, double bias) {
-    M2F_Bias u;
-    u.w.hi = 0x43300000;
-    u.w.lo = (unsigned int)v ^ 0x80000000;
-    return (float)(u.d - bias);
-}
 
 struct MenuItem {
     char *name;
