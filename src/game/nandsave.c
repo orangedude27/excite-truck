@@ -902,7 +902,6 @@ int fn_802E967C(char *fileName, void *src, int size) {
 
 __declspec(section ".data") extern int lbl_80507288;
 #pragma opt_propagation off
-#pragma scheduling on
 void fn_802E97B4(void) {
     if (lbl_80560035 == 0) {
         switch (fn_802ECC10()) {
