@@ -342,7 +342,6 @@ struct Obj3910 {
     float unk50;
 };
 #pragma scheduling invalid_target
-#pragma processor 750
 void fn_801D3910(void *arg0) {
     char *p;
     int i;
