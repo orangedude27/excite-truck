@@ -1271,24 +1271,22 @@ void fn_802D02F8(int arg0, signed char arg1) {
 #pragma push
 #pragma processor 750
 #pragma scheduling on
-void fn_802D0368(float arg0, float arg1, float arg2, float arg3) {
-#pragma scheduling on
-    register unsigned char *p = lbl_804C9778;
-    register int one = 1;
-    float result;
-
-    *(float *)(p + 4) = arg0;
-    lbl_804C9778[0] = one;
-    *(float *)(p + 8) = arg1;
-    *(float *)(p + 0xc) = arg2;
-    *(float *)(p + 0x14) = arg3;
-
-    result = fn_8002EF30(arg2 * lbl_80564F94);
-
-    *(float *)(lbl_804C97B0 + 0x14) = arg0;
-    *(float *)(p + 0x10) = result;
-    *(float *)(lbl_804C97B0 + 0x18) = arg1;
-    lbl_804C97B0[0x1c] = one;
+void fn_802D0368(float arg0, float arg1, float arg2, float arg3)
+{
+  register unsigned char *p = lbl_804C9778;
+  register int one = 1;
+  float result;
+  float scale = 0.5f;
+  lbl_804C9778[0] = one;
+  *((float *) (p + 8)) = arg1;
+  *((float *) (p + 0xc)) = arg2;
+  *((float *) (p + 0x14)) = arg3;
+  *((float *) (p + 4)) = arg0;
+  result = fn_8002EF30(arg2 * scale);
+  *((float *) (lbl_804C97B0 + 0x14)) = arg0;
+  *((float *) (p + 0x10)) = result;
+  *((float *) (lbl_804C97B0 + 0x18)) = arg1;
+  lbl_804C97B0[0x1c] = one;
 }
 
 extern unsigned long lbl_804C56C0[];
