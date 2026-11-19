@@ -24,7 +24,7 @@ typedef struct W3 { int a, b, c; } W3;
 typedef struct M9 { V3 r[3]; } M9;
 static inline void MultVecT_inl(const float *m, const float *src, float *dst) {
     float x, y, z;
-    if (src == dst) {
+    if (dst == src) {
         x = src[0] * m[0] + src[1] * m[1] + src[2] * m[2];
         y = src[0] * m[3] + src[1] * m[4] + src[2] * m[5];
         z = src[0] * m[6] + src[1] * m[7] + src[2] * m[8];
