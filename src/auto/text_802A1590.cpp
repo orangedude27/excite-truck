@@ -784,8 +784,9 @@ extern "C" s32 fn_80287B14(void*);
 #pragma push
 #pragma processor 750
 extern "C" void fn_802A2A38(void* arg0, void* arg1) {
-    f32 max = lbl_80564730;
-    s32 index = *(s32*)((char*)arg1 + 0x28);
+    struct Arg1 { char pad[0x28]; s32 index; };
+    s32 index = ((struct Arg1*)arg1)->index;
+    f32 max = 1.0f;
     f32* value = (f32*)((char*)arg0 + (index << 4) + 0x20);
     f32 limit = max - lbl_80558DC4;
     f32 v = *value;
@@ -794,14 +795,14 @@ extern "C" void fn_802A2A38(void* arg0, void* arg1) {
         ((void (*)(void*, void*, void*))fn_8028E584)(
             *(void**)((char*)arg0 + 0xC), arg1, (char*)arg1 + 0xC);
     }
-    index = *(s32*)((char*)arg1 + 0x28);
+    index = ((struct Arg1*)arg1)->index;
     value = (f32*)((char*)arg0 + (index << 4) + 0x20);
-    f32 limit2 = lbl_80564730 - lbl_80558DC4;
+    f32 limit2 = 1.0f - lbl_80558DC4;
     f32 v2 = *value;
     if (v2 > limit2) {
-        *value = v2 - lbl_80564730;
+        *value = v2 - 1.0f;
     }
-    *value += lbl_80564750;
+    *value += 0.1f;
 }
 #pragma pop
 extern "C" void fn_802A2AE8(void* arg0, s32 arg1) {
@@ -991,18 +992,13 @@ extern "C" void* __dt__8JUTVideoFv(void* thisPtr, s32 shouldDelete) {
 
 extern "C" f32 lbl_805647E0, lbl_805647E4;
 extern "C" void fn_802A2FCC(void *arg0, void *arg1, s32 arg2) {
-    struct Vec {
-        u32 x;
-        f32 y;
-        u32 z;
-    } vec;
-    s32 lt, sign;
+    struct Vec { u32 x; f32 y; u32 z; } vec;
     unsigned char *base = *(unsigned char **)arg1;
     unsigned char *entry = base + arg2 * 0x3C;
-    f32 factor;
-    f32 adjustment;
+    s32 lt, sign;
+    f32 factor, adjustment;
     f32 *third;
-    u32 vx, vy;
+    u32 vy, vx;
     if (*(f32 *)((char *)arg1 + 8) > lbl_8056476C)
         return;
     if (*(f32 *)(entry + 0x98) < lbl_805647DC)
@@ -1170,21 +1166,24 @@ extern "C" void* __dt__14CollisionSpaceFv_802A3370(void* self, s32 shouldDelete)
 }
 
 extern "C" void fn_802A33D4(void* arg0, void* arg1, s32 arg2) {
-    f32 limit = lbl_8056476C;
-    f32 value = *(f32*)((char*)arg1 + 8);
-    s32 offset = arg2 * 0x3C;
-    unsigned char* base = *(unsigned char**)arg1;
-    unsigned char* item = base + offset;
+    f32 limit;
+    f32 value;
+    s32 offset;
+    unsigned char* base;
+    unsigned char* item;
     s32 a[3];
     f32 p[3];
     f32 angle;
+    limit = lbl_8056476C;
+    value = *(f32*)((char*)arg1 + 8);
+    offset = arg2 * 0x3C;
+    base = *(unsigned char**)arg1;
+    item = base + offset;
     if (value > limit) goto done;
-    if (*(f32*)(item + 0x98) >= lbl_805647DC) goto calculate;
-    goto done;
-calculate:
+    if (*(f32*)(item + 0x98) < lbl_805647DC) goto done;
     {
-        s32 a1 = *(s32*)(item + 0x80);
         s32 a0 = *(s32*)(item + 0x7C);
+        s32 a1 = *(s32*)(item + 0x80);
         a[0] = a0; a[1] = a1;
         a[2] = *(s32*)(item + 0x84);
     }
@@ -1468,14 +1467,15 @@ extern "C" void* __dt__14CollisionSpaceFv_802A3D98(void* self, s32 shouldDelete)
     return self;
 }
 
-extern "C" void fn_802A3DFC(void *arg0) {
-    register f32 value = 0.0f;
-    u8 *cursor = (u8 *)arg0;
-    s32 i = 0;
-    while (i < ((s32 (*)(void))fn_80287B14)()) {
-        *(f32 *)(cursor + 8) = value;
+/* Clears the field at offset 8 for each active entry, advancing by 4 bytes per entry. */
+extern "C" void fn_802A3DFC(void *entries) {
+    register f32 zero = 0.0f;
+    u8 *cursor = (u8 *)entries;
+    s32 index = 0;
+    while (index < ((s32 (*)(void))fn_80287B14)()) {
+        *(f32 *)(cursor + 8) = zero;
         cursor += 4;
-        ++i;
+        ++index;
     }
 }
 
