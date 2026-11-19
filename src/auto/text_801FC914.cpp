@@ -1485,6 +1485,11 @@ extern "C" void *fn_801FF11C(void *object, int shouldDelete) {
     }
     return object;
 }
+/* No-op virtual method (vtable lbl_8033B760, slot 0x20) of the path-holder class
+ * whose slot 0x10 is the path-entry adder fn_801FE708.  The two drone-holder
+ * classes implement this slot as the pool-reset forwarder to the DroneManager
+ * at +4 (fn_801FEF90 / fn_801FF0E4); this variant owns no manager, so the
+ * handler does nothing. */
 extern "C" void fn_801FF168(void) {
 
 }
