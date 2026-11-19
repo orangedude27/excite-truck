@@ -37,24 +37,21 @@ extern void fn_8023F874(void);
 extern int lbl_8055F1B4, lbl_8055F1B8;
 extern unsigned char lbl_8055F1BC;
 extern unsigned char lbl_80341CE4[], lbl_80341CF0[];
-#pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-extern "C" void fn_8023E5B4(void *arg0, int arg1) {
-    class Obj {
-    public:
-        virtual void f0();
-        virtual char *f1();
-    };
+void fn_8023E5B4(void *arg0, int arg1) {
+    typedef char *(*Fn1)(void *);
     int values[36];
     int now;
     int handle;
     int i;
     int length;
     int *base;
+    int *e;
+    int t0, t2, t3, t4;
+    int e0, e1, e2, e3, e4;
     void *second;
-    Obj *object;
-    int p_cf0, c10, p_bab8, p_6914, c2;
+    void *object;
 
     now = fn_802E2C20();
     lbl_8055F1B0 = arg0;
@@ -67,12 +64,6 @@ extern "C" void fn_8023E5B4(void *arg0, int arg1) {
     for (i = 0; i < 14; i++)
         fn_8022D350(handle, &lbl_8055BC98, 0);
 
-    p_cf0 = (int)&lbl_80341CF0;
-    c10 = 10;
-    p_bab8 = (int)&lbl_8055BAB8;
-    p_6914 = (int)fn_80236914;
-    c2 = 2;
-
     values[9] = 0;
     values[7] = 8;
     values[8] = (int)fn_8023F874;
@@ -84,36 +75,47 @@ extern "C" void fn_8023E5B4(void *arg0, int arg1) {
     values[14] = 1;
     values[15] = 0;
 
-    object = (Obj *)arg0;
-    length = strlen(object->f1());
-    second = object->f1();
+    object = arg0;
+    length = strlen(((Fn1 *)*(void ***)object)[3](object));
+    second = ((Fn1 *)*(void ***)object)[3](object);
 
     base = (int *)lbl_802FA280;
-    values[0] = *base++;
-    values[2] = base[1];
-    values[3] = base[2];
-    values[4] = base[3];
-    values[1] = (int)&values[6];
+    t0 = *base++;
+    values[18] = (int)second;
+    e = lbl_804987E0;
+    e0 = e[0];
+    e1 = e[1];
+    e2 = e[2];
+    e3 = e[3];
+    e4 = e[4];
+    t2 = base[0];
+    t3 = base[1];
+    t4 = base[2];
+
     values[16] = (int)&lbl_8055BCA0;
     values[17] = 3;
-    values[18] = (int)second;
     values[19] = length;
     values[20] = 0;
-    values[21] = p_cf0;
-    values[22] = c10;
+    values[21] = (int)&lbl_80341CF0;
+    values[22] = 10;
     values[23] = handle;
     values[24] = 0;
     values[25] = 0;
-    values[26] = p_bab8;
+    values[26] = (int)&lbl_8055BAB8;
     values[27] = 8;
-    values[28] = p_6914;
-    values[29] = c2;
+    values[28] = (int)fn_80236914;
+    values[29] = 2;
     values[30] = 0;
-    values[31] = lbl_804987E0[0];
-    values[32] = lbl_804987E0[1];
-    values[33] = lbl_804987E0[2];
-    values[34] = lbl_804987E0[3];
-    values[35] = lbl_804987E0[4];
+    values[31] = e0;
+    values[32] = e1;
+    values[33] = e2;
+    values[34] = e3;
+    values[35] = e4;
+    values[0] = t0;
+    values[2] = t2;
+    values[3] = t3;
+    values[4] = t4;
+    values[1] = (int)&values[6];
     fn_802146BC(values, -999, -999, 1);
     fn_8022D2BC(handle, 1);
 }
