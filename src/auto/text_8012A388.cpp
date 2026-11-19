@@ -1100,8 +1100,8 @@ extern "C" s32 strstr(const char *, const char *);
 #pragma push
 #pragma scheduling invalid_target
 #pragma dont_inline off
-static inline s32 res_entry_use_count(s32 a, s32 b, struct ResEntry *entry, s32 dummy = 0) { return entry->useCount; }
-static inline u32 res_entry_flags(s32 a, s32 b, struct ResEntry *entry, s32 dummy = 0) { return entry->flags; }
+static inline s32 res_entry_use_count(s32 a, s32 b, struct ResEntry *entry) { return entry->useCount; }
+static inline u32 res_entry_flags(s32 a, s32 b, struct ResEntry *entry) { return entry->flags; }
 
 extern "C" void fn_8012BA1C(void *arg0) {
     struct ResManager *mgr = (struct ResManager *)arg0;
