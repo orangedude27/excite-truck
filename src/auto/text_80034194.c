@@ -949,18 +949,22 @@ static inline u32 entryToPath3(u32 entry, char *path, u32 maxlen) {
     loc = entryToPath2(entryParent(entry), path, maxlen);
     return appendPathPart(path, loc, maxlen, name);
 }
+typedef struct DVDCurName {
+    s32 cur;
+    char *name1;
+} DVDCurName;
 #pragma push
 #pragma use_lmw_stmw off
 BOOL DVDGetCurrentDir(const char *path, void *info) {
     char dir[128];
     s32 entry;
-    s32 cur;
+    register s32 cur;
+    register char *name1;
+    register const char *name2;
+    register const char *name3;
     u32 loc;
     u32 p1;
     u32 p2;
-    const char *name3;
-    const char *name2;
-    char *name1;
     u32 offset;
     u8 *fst;
 
@@ -1556,9 +1560,9 @@ static inline void StateCoverClosed(void) {
 
 #pragma dont_inline off
 void fn_80035E6C(u32 arg0) {
-    s32 taskType;
-    u32 kind;
     s32 firstInterrupts;
+    u32 taskType;
+    u32 kind;
     u32 status;
     s32 code;
 
@@ -1582,7 +1586,7 @@ void fn_80035E6C(u32 arg0) {
         return;
     }
 
-    taskType = ((s32 (*)(void))fn_8003BCC0)();
+    taskType = ((u32 (*)(void))fn_8003BCC0)();
     kind = taskType & 0xFF000000;
     status = ((u32 (*)(u32))fn_80035CB4)(taskType);
     if (status == 1) {
@@ -1621,27 +1625,9 @@ void fn_80035E6C(u32 arg0) {
         } else {
             ((void (*)(void *))lbl_8055D8CC)((void *)executing_8055D8C8);
         }
-    } else if (kind == 0x01000000) {
-        *(s32 *)((char *)executing_8055D8C8 + 0xC) = 5;
-        MotorState_8055D8A8 = 1;
-        StartMotorAlarm();
-    } else if (kind == 0x02000000) {
-        *(s32 *)((char *)executing_8055D8C8 + 0xC) = 3;
-        fn_8003773C();
-    } else if (kind == 0x03000000) {
-        *(s32 *)((char *)executing_8055D8C8 + 0xC) = 4;
-        MotorState_8055D8A8 = 1;
-        StartMotorAlarm();
-    } else if (kind == 0) {
-        if ((u32)(taskType - 0x00050000) == 0x3000) {
-            fn_800356F4(0x10, 0, 0);
-            fn_8003AF1C(0, 0, (void *)fn_800373E0);
-        } else {
-            fn_8003A1A0(0x1234567, fn_80035C64);
-        }
-    } else {
-        fn_8003A1A0(0x1234567, fn_80035C64);
+        return;
     }
+    HandleErrorCategory(kind, taskType);
 }
 extern void fn_80036550(u32);
 void fn_80036370(u32 arg0) {
@@ -1924,12 +1910,6 @@ extern void DVDLowOpenPartition(u32, u32, u32, u32, void *, void (*)(u32));
 void fn_80036D24(u32 arg0) {
     register s32 enabled;
     register u8 *base = lbl_80376A80;
-    register u8 *logBase;
-    register u32 *limit;
-    register u32 *entry;
-    register u32 *freeEntry;
-    s32 index;
-    register s32 signedIndex;
     s32 value;
     s32 oldBlock;
     s32 result;
@@ -1951,21 +1931,19 @@ void fn_80036D24(u32 arg0) {
     }
 
     if (arg0 & 1) {
-        entry = (u32 *)(base + 0xC0);
-        *(volatile s32 *)&lbl_8055D860 = 0;
+        u32 *freeEntry = 0;
+        u32 index;
+        lbl_8055D860 = 0;
+        lbl_8055D898 = base + 0xC0;
+        lbl_8055D894 = 0;
         index = 0;
-        freeEntry = 0;
-        limit = *(u32 * volatile *)&lbl_8055D89C;
-        *(volatile u8 **)&lbl_8055D898 = (u8 *)entry;
-        *(u32 * volatile *)&lbl_8055D894 = 0;
-        while ((u32)(s16)index < *limit) {
-            if (entry[1] == 0) {
-                freeEntry = entry;
-                *(u32 * volatile *)&lbl_8055D894 = entry;
+        while ((u32)(s16)index < *lbl_8055D89C) {
+            if (((u32 *)lbl_8055D898)[1] == 0) {
+                freeEntry = (u32 *)lbl_8055D898;
+                lbl_8055D894 = (u32 *)lbl_8055D898;
             }
-            entry += 2;
+            lbl_8055D898 += 8;
             index++;
-            *(volatile u8 **)&lbl_8055D898 = (u8 *)entry;
         }
 
         if (freeEntry != 0) {
@@ -1973,6 +1951,7 @@ void fn_80036D24(u32 arg0) {
             case 3:
                 {
                     register s32 localEnabled;
+                    u8 *logBase;
                     lbl_8055D860 = 0;
                     fn_8003BCDC(0);
                     value = *lbl_8055D894;
@@ -1991,6 +1970,7 @@ void fn_80036D24(u32 arg0) {
                 return;
             default:
                 {
+                    u8 *logBase;
                     register s32 localEnabled;
                     lbl_8055D860 = 0;
                     fn_8003BCDC(0);
@@ -2039,8 +2019,7 @@ void fn_80036D24(u32 arg0) {
             lbl_8055D870 = 1;
             OSCreateAlarm(base + 0x50);
             value = OSGetTick();
-            period = (u32)(((u64)(*(volatile u32 *)0x800000F8 >> 2) * (u32)0x10624DD3U) >> 32);
-            period = (period >> 6) * 100;
+            period = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100;
             OSSetPeriodicAlarm(base + 0x50, 0x10624DD3, 0, value, 0, period, fn_8003801C);
         }
         return;
@@ -3416,6 +3395,7 @@ u32 __DVDGetCoverStatus(void) {
     u64 now;
     u32 hi;
     u32 lo;
+    u64 start;
     lbl_8055D88C = 0;
     fn_8003BB58((void (*)(void))fn_8003998C);
     while (*(volatile u32 *)&lbl_8055D88C == 0) {
@@ -3427,7 +3407,9 @@ u32 __DVDGetCoverStatus(void) {
     now = __OSGetSystemTime();
     hi = lbl_8055D8A0;
     lo = lbl_8055D8A4;
-    if ((s64)now - (s64)(((u64)hi << 32) | lo) < (s64)(((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100)) {
+    start = (u64)hi << 32;
+    start |= lo;
+    if ((s64)now - (s64)start < (s64)(((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100)) {
         return 0;
     }
     status &= 1;
