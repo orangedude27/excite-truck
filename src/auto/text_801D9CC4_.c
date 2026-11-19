@@ -14,6 +14,7 @@ extern char lbl_80339218[];
 #define SWAP4(q, o) do { SWAP2(q, (o), (o) + 3); SWAP2(q, (o) + 1, (o) + 2); } while (0)
 
 #pragma opt_propagation off
+#pragma scheduling invalid_target
 void *fn_801D9CC4(void *arg0) {
     int type = 0;
     u8 flag = 0;
@@ -166,29 +167,27 @@ void fn_801DA0EC(void *arg0, float farg0) {
     zero = lbl_80562B38;
     old = vs->cur;
     vs->cur = old + farg0;
-    if (farg0 >= zero) goto forward;
-    goto backward;
-forward:
-    do {
-        ++vs->idx;
-        o = (void *)vs->obj;
-        idx = vs->idx;
-        if (idx + 1 >= *(int *)((char *)o + 0x10)) {
-            return;
-        }
-        values = *(float **)((char *)o + 0x14);
-    } while (*(float *)((char *)arg0 + 0xC) > values[idx * 8 + 8]);
-    return;
-backward:
-    do {
-        --vs->idx;
-        idx = vs->idx;
-        if (idx <= 0) {
-            return;
-        }
-        o = (void *)vs->obj;
-        values = *(float **)((char *)o + 0x14);
-    } while (values[idx * 8] > *(float *)((char *)arg0 + 0xC));
+    if (farg0 >= zero) {
+        do {
+            ++vs->idx;
+            o = (void *)vs->obj;
+            idx = vs->idx;
+            if (idx + 1 >= *(int *)((char *)o + 0x10)) {
+                return;
+            }
+            values = *(float **)((char *)o + 0x14);
+        } while (*(float *)((char *)arg0 + 0xC) > values[idx * 8 + 8]);
+    } else {
+        do {
+            --vs->idx;
+            idx = vs->idx;
+            if (idx <= 0) {
+                return;
+            }
+            o = (void *)vs->obj;
+            values = *(float **)((char *)o + 0x14);
+        } while (values[idx * 8] > *(float *)((char *)arg0 + 0xC));
+    }
 }
 #pragma scheduling on
 #pragma pop
@@ -221,6 +220,8 @@ int fn_801DA1F8(void *arg0, void **arg1, void **arg2, float *arg3) {
     float value;
     float difference;
     float numerator;
+    float clamped;
+
     obj = *(void **)((char *)arg0 + 4);
     if (obj != 0) {
         max = *(int *)((char *)obj + 0x10) - 2;
@@ -229,18 +230,21 @@ int fn_801DA1F8(void *arg0, void **arg1, void **arg2, float *arg3) {
         } else {
             index = max;
         }
+
         values = *(float **)((char *)obj + 0x14);
         next = values + (index + 1) * 8;
         current = values + index * 8;
         value = *(float *)((char *)arg0 + 0xC);
         if (value < *next) {
-            value = *next;
+            clamped = *next;
         } else {
-            value = value;
+            clamped = value;
         }
+        value = clamped;
         difference = *next - *current;
         difference = (difference > lbl_80562B3C) ? difference : lbl_80562B3C;
         numerator = value - *current;
+
         *(float **)arg1 = current;
         *(float **)arg2 = next;
         *arg3 = numerator / difference;
