@@ -73,7 +73,7 @@ extern unsigned char lbl_8055C920;
 extern int fn_802C2C00(int);
 extern void fn_802D3BB0(int);
 extern void fn_802920D0(void);
-extern void fn_80291E64();
+extern void fn_80291E64(void *);
 #pragma dont_inline on
 extern float lbl_80564480;
 extern float lbl_805644A0;
