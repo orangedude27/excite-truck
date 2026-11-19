@@ -3136,6 +3136,7 @@ void fn_80164D58(void) {
 void fn_80164D5C(void) {
 }
 
+/* Empty stub. */
 void fn_80164D60(void) {
 
 }
