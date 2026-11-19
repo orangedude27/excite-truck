@@ -8678,8 +8678,11 @@ static __inline u8 *btm_find_dev_by_addr_rssi_80068D68(BD_ADDR bd_addr) {
 #pragma push
 #pragma dont_inline off
 tBTM_STATUS BTM_ReadRSSI(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
+    /* Read the RSSI of the ACL link to remote_bda: log the request, reject if a
+       read is already pending or the device is unknown, then issue the HCI read
+       and report success/failure through the RSSI completion slot. */
     extern char lbl_80315F4C[];
-    u8 *entry;
+    u8 *aclRecord;
 
     if (lbl_803C0F78[0x27C0] >= 3) {
         fn_800709CC(0xD0002, lbl_80315F4C,
@@ -8687,11 +8690,11 @@ tBTM_STATUS BTM_ReadRSSI(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
                     remote_bda[3], remote_bda[4], remote_bda[5]);
     }
     if (*(void **)(lbl_803C0F78 + 0x5E0) != NULL) return 2;
-    entry = btm_find_dev_by_addr_rssi_80068D68(remote_bda);
-    if (entry == NULL) goto not_found;
+    aclRecord = btm_find_dev_by_addr_rssi_80068D68(remote_bda);
+    if (aclRecord == NULL) goto not_found;
     btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x5C8), 9, 3);
     *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5E0) = p_cb;
-    if (btsnd_hcic_read_rssi(*(u16 *)entry) == 0) {
+    if (btsnd_hcic_read_rssi(*(u16 *)aclRecord) == 0) {
         *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5E0) = NULL;
         fn_80070F90(lbl_803C0F78 + 0x5C8);
         return 3;
