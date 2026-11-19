@@ -4,10 +4,8 @@
 extern void fn_8000D838(void *);
 extern unsigned char lbl_8041E098[];
 extern unsigned char lbl_8055DF68;
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_80127FC8(void) {
-    #pragma ctrloop on
-    #pragma unroll off
     unsigned char *end;
     unsigned char *p;
     unsigned char *start;
