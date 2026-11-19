@@ -8,16 +8,6 @@ __declspec(section ".data") extern int lbl_80335DCC;
 extern char lbl_8055E6D0;
 extern int memset(void *, int, unsigned int);
 extern int lbl_8055E6D4;
-static inline void fn_801B4720_tail(int arg0) {
-    register int value asm("r0") = *(int *)(arg0 + 4);
-    register int zero asm("r4") = 0;
-    *(int *)(arg0 + 8) = zero;
-    *(int *)(arg0 + 0xC) = value;
-    *(int *)(arg0 + 0x10) = value;
-    *(int *)(arg0 + 0x14) = zero;
-    *(int *)(arg0 + 0x20) = zero;
-    *(int *)(arg0 + 0x24) = zero;
-}
 extern void fn_80128670(int);
 extern void fn_80128668(void *);
 #pragma cplusplus on
