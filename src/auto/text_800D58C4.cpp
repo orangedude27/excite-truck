@@ -865,10 +865,13 @@ extern "C" void fn_800D6CA0(s32, s32);
 static inline u8 *DynCast_800D77DC(u8 *obj) {
     StateNode_800D6CA0 *typeInfo = (StateNode_800D6CA0 *)&lbl_8055DE08;
     bool derived;
-    for (StateNode_800D6CA0 *t = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)obj)->v1(); ; t = t->next) {
-        if (!t) { derived = false; break; }
-        if (t == typeInfo) { derived = true; break; }
+    StateNode_800D6CA0 *t = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)obj)->v1();
+    while (t) {
+        if (t == typeInfo) { derived = true; goto done; }
+        t = t->next;
     }
+    derived = false;
+done:
     return derived ? obj : 0;
 }
 /* Child-list iterator (ut::LinkList style): node pointer wrapped in a struct. */
