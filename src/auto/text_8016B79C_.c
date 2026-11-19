@@ -2657,7 +2657,9 @@ __declspec(section ".sdata") extern char lbl_8055A270[];
 __declspec(section ".sdata") extern char lbl_8055A278[];
 extern float lbl_80561980;
 #pragma push
+#pragma processor 750
 #pragma ppc_psq_save off
+#pragma scheduling invalid_target
 struct Frame_8016FFEC {
     float f8, fC, f10, f14, f18, f1C;
     float ret[2];
@@ -2782,6 +2784,7 @@ w0 = *((float *)nd + 3);
 s.f34 = w0 + tt * (*((float *)(*(void **)((char *)nd + 0x14)) + 3) - w0);
 sqf = (float)((double (*)(float))fn_8002F234)(s.f30 * s.f30 + s.f34 * s.f34);
 }
+}
 inv = lbl_80561984 / sqf;
 nx = s.f30 * inv;
 s.f30 = nx;
@@ -2798,8 +2801,6 @@ float sc = lbl_80561A10 * ((float (*)(void *, void *, float))*(void **)((char *)
 }
 return 1;
 }
-}
-return 0;
 }
 #pragma pop
 
