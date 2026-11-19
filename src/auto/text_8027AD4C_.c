@@ -564,38 +564,56 @@ void fn_8027B690(void) {
             fn_80012790(savedMode);
     }
 }
+/* RealName: FreePlayerGroupEventEntries.  The reverse of fn_8027B690: destroy the
+ * event-entry container of every slot of every player group in the global table
+ * lbl_804A4380 -- the three career slots at the head of a group and the two
+ * challenge slots 0x2370 into it -- and clear the "table is loaded" flag the
+ * initializer set.  Runs whenever the game is not in the state fn_80019B3C
+ * reports (bit 0 of lbl_8055D5A0) or the table really was initialized. */
 void fn_8027B77C(void) {
-    char *base;
-    char *p;
-    unsigned int outer;
-    unsigned int i;
+#define PLAYER_GROUP_COUNT 4      /* the groups the table holds */
+#define PLAYER_GROUP_SIZE  0x3B10 /* one group: five 0xBD0 slots */
+#define GROUP_SLOT_SIZE    0xBD0  /* one event-entry slot (fn_8027B60C's container) */
+#define CAREER_SLOT_COUNT  3      /* the slots at the head of a group */
+#define CHALLENGE_SLOTS    0x2370 /* where a group's challenge slots start */
+#define CHALLENGE_COUNT    2      /* the slots there */
+    char *groupBase;
+    char *slot;
+    unsigned int groupIndex;
+    unsigned int slotIndex;
     if (fn_80019B3C() == 0 || lbl_8055F650 != 0) {
-        base = lbl_804A4380;
-        outer = 0;
+        groupBase = lbl_804A4380;
+        groupIndex = 0;
         do {
-            p = base;
-            i = 0;
+            slot = groupBase;
+            slotIndex = 0;
             do {
-                fn_8027B60C(p);
-                i++;
-                p += 0xBD0;
-            } while (i < 3);
+                fn_8027B60C(slot); /* the group's career slots */
+                slotIndex++;
+                slot += GROUP_SLOT_SIZE;
+            } while (slotIndex < CAREER_SLOT_COUNT);
             {
-                unsigned int i;
-                char *p;
-                p = base + 0x2370;
-                i = 0;
+                unsigned int challengeIndex;
+                char *challengeSlot;
+                challengeSlot = groupBase + CHALLENGE_SLOTS;
+                challengeIndex = 0;
                 do {
-                    fn_8027B60C(p);
-                    i++;
-                    p += 0xBD0;
-                } while (i < 2);
+                    fn_8027B60C(challengeSlot); /* and its challenge slots */
+                    challengeIndex++;
+                    challengeSlot += GROUP_SLOT_SIZE;
+                } while (challengeIndex < CHALLENGE_COUNT);
             }
-            outer++;
-            base += 0x3B10;
-        } while (outer < 4);
+            groupIndex++;
+            groupBase += PLAYER_GROUP_SIZE;
+        } while (groupIndex < PLAYER_GROUP_COUNT);
         lbl_8055F650 = 0;
     }
+#undef PLAYER_GROUP_COUNT
+#undef PLAYER_GROUP_SIZE
+#undef GROUP_SLOT_SIZE
+#undef CAREER_SLOT_COUNT
+#undef CHALLENGE_SLOTS
+#undef CHALLENGE_COUNT
 }
 
 /* RealName: GetPlayerGroupSlot_8027B834 */
