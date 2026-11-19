@@ -838,7 +838,10 @@ void fn_8017F718(void *arg0) {
     value = value > lbl_80561C4C ? value : lbl_80561C4C;
     value2 = lbl_80561C48;
     v->pad64 = value;
-    value2 = value2 < v->pad60 ? value2 : v->pad60;
+    {
+        float p60 = *(volatile float *)&v->pad60;
+        value2 = value2 < p60 ? value2 : p60;
+    }
     value2 = value2 > lbl_80561C4C ? value2 : lbl_80561C4C;
     value = v->level2C[2];
     v->pad60 = value2;
@@ -1453,13 +1456,13 @@ void fn_801808DC(void) {
     int j;
     int count;
     struct Di718 *v;
-    float f90;
-    float f8C;
-    float f88;
-    float f84;
-    float f48;
-    float f80;
     float f7C;
+    float f80;
+    float f48;
+    float f84;
+    float f88;
+    float f8C;
+    float f90;
     float f4C;
     Unk8017Object **table;
     int *keyBase1;
@@ -1862,6 +1865,7 @@ void fn_80181428(void **vtableSlot) {
 }
 #undef s_baseDriverVTable
 
+/* Empty stub (no operation). */
 void fn_80181438(void) {
 
 }
@@ -1924,17 +1928,18 @@ extern "C" float fn_80181498(void *arg0) {
     };
     float a;
     float b;
+    float lower;
     a = *(float *)((char *)arg0 + 0xC);
     a = (a > 1.0f) ? a : 1.0f;
     b = *(float *)((char *)arg0 + 0xC);
-    b = (b < -1.0f) ? -1.0f : b;
+    lower = lbl_80561C58;
+    b = (b < lower) ? lower : b;
     a = (a < (*(float *)((char *)arg0 + 0xC) + *(float *)((char *)arg0 + 0x10))) ? (*(float *)((char *)arg0 + 0xC) + *(float *)((char *)arg0 + 0x10)) : a;
     a = (a > b) ? b : a;
-    float result = a;
     if (((Callback *)arg0)->f21() != 0) {
-        result = *(float *)((char *)arg0 + 0xC);
+        a = *(float *)((char *)arg0 + 0xC);
     }
-    return result;
+    return a;
 }
 #pragma pop
 /* Return the sum of the two driver stats at +0x20 and +0x24, capped at 1.0. */
