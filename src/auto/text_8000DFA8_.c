@@ -954,8 +954,8 @@ void fn_80010724(s32 x, s32 y, s32 arg2) {
 #pragma processor 750
 #pragma paired_single off
 s32 fn_8001084C(s32 arg0, s32 arg1) {
-    f32 s3 = lbl_80560264;
-    return (s32)(((f32)arg0 * ((f32 (*)(s32, s32, f32))fn_8023293C)(lbl_8055D490, arg1, s3)) / (f32)lbl_80558A90);
+    f32 s = 1.0f;
+    return (s32)(((f32)arg0 * ((f32 (*)(s32, s32, f32))fn_8023293C)(lbl_8055D490, arg1, s)) / (f32)lbl_80558A90);
 }
 #pragma pop
 /* Measures text width with the default UI font, scaled by the given factor and the UI text scale. */
