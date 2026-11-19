@@ -6907,13 +6907,14 @@ extern "C" void fn_80224328(void *self) {
 
 #pragma push
 #pragma fp_contract on
-extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 *arg4, void *unused) {
+extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2,
+                                    s32 arg3, s32 *arg4, void *unused) {
     register u8 *resource = (u8 *)arg2;
-    register u8 *self = (u8 *)arg0;
     register s32 initial = arg1;
+    register u8 *self = (u8 *)arg0;
     register s32 length = arg3;
     register s32 *link = arg4;
-    register s32 scratch;
+    register s32 zero = 0;
     char name[0x100];
 
     ((void *(*)(void *, void *))fn_80218F80)(self, resource);
@@ -6939,8 +6940,7 @@ extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 *ar
 
     *(s32 *)(self + 0x254) =
         fn_80228F40(*(s32 *)(self + 4), *(s32 *)(self + 8));
-    scratch = 0;
-    *(s32 *)(self + 0x258) = scratch;
+    *(s32 *)(self + 0x258) = zero;
     *(s32 *)(self + 0x25c) = length;
     *(s32 *)(self + 0x250) = initial;
     s32 flags = *(s32 *)(resource + 0x9c);
@@ -6952,8 +6952,8 @@ extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 *ar
     *(f32 *)(self + 0x24c) = lbl_805634A8;
 
     if (link != 0) {
-        scratch = *link;
-        *(s32 *)(self + 0x244) = scratch;
+        zero = *link;
+        *(s32 *)(self + 0x244) = zero;
         strcpy(name, (char *)(resource + 0x40));
         s32 handle = ((s32 (*)(void *))fn_802C5130)(name);
         *(s32 *)(self + 0x280) = handle;
@@ -7268,11 +7268,14 @@ extern "C" void fn_80224DDC(void *arg0, f32 x, f32 y, f32 z) {
     f32 *ps = scaled;
     *(void **)((u8 *)arg0 + 0x29C) = tmp;
     f32 *pr = result;
-    ps[0] = c * x;
-    ps[1] = c * y;
-    ps[2] = c * z;
+    f32 sx = c * x;
+    f32 sy = c * y;
+    f32 sz = c * z;
+    ps[0] = sx;
+    ps[1] = sy;
+    ps[2] = sz;
     void *handle = *(void **)((u8 *)arg0 + 0x29C);
-    ((void (*)(void *, void *, f32, f32))fn_80015A20)(pr, ps, ps[0], ps[1]);
+    ((void (*)(void *, void *, f32, f32))fn_80015A20)(pr, ps, sx, sy);
     fn_80015B20(handle, pr, handle);
 }
 extern "C" f32 lbl_80563544;
@@ -8137,28 +8140,26 @@ extern "C" void fn_80226F94(void *arg0) {
 extern "C" void fn_80227044(void *arg0, f32 x, f32 y, f32 z) {
     f32 result[11];
     f32 scaled[3];
-    f32 *pResult = &result[0];
-    f32 *pScaled = &scaled[0];
     *(u8 *)((u8 *)arg0 + 0x260) = 1;
     void *tmp = fn_8022EE9C();
     f32 k = lbl_805634F8;
     *(void **)((u8 *)arg0 + 0x25C) = tmp;
-    f32 sx = k * x;
-    f32 sy = k * y;
     f32 sz = k * z;
-    pScaled[0] = sx;
-    pScaled[1] = sy;
-    pScaled[2] = sz;
+    f32 sy = k * y;
+    f32 sx = k * x;
+    scaled[0] = sx;
+    scaled[1] = sy;
+    scaled[2] = sz;
     void *handle = *(void **)((u8 *)arg0 + 0x25C);
-    ((void (*)(void *, void *, f32, f32))fn_80015A20)(pResult, pScaled, sx, sy);
-    fn_80015B20(handle, pResult, handle);
+    ((void (*)(void *, void *, f32, f32))fn_80015A20)(&result[0], &scaled[0], sx, sy);
+    fn_80015B20(handle, &result[0], handle);
 }
 #pragma pop
 extern "C" void *fn_802270DC(void *arg0, void *arg1) {
-    register u8 *obj = (u8 *)arg0;
-    register s32 context = (s32)arg1;
+    u8 *obj = (u8 *)arg0;
+    u8 *context = (u8 *)arg1;
 
-    fn_80218F80();
+    ((void (*)(void *, void *))fn_80218F80)(arg0, arg1);
     *(void **)obj = lbl_8033DFB4;
 
     fn_80230C30((f32 *)(obj + 0x244), (f32 *)(obj + 0x248),
@@ -8169,21 +8170,30 @@ extern "C" void *fn_802270DC(void *arg0, void *arg1) {
     *(f32 *)(obj + 0x24c) = (f32)((VfObj *)obj)->vf28();
 
     *(s32 *)(obj + 0x254) = -1;
-    if ((u8 *)(context + 0x40) != 0)
+    if (context + 0x40 != 0)
         *(s32 *)(obj + 0x254) = fn_802CAC28((void *)(context + 0x40), 0);
 
     s32 handle = *(s32 *)(obj + 0x254);
-    if (handle != -2 && handle == -1)
-        fn_802E30C8(lbl_8033DC20);
-
+    if (handle == -2)
+        goto report;
+    if (handle == -1)
+        goto report;
+    goto next;
+report:
+    fn_802E30C8(lbl_8033DC20);
+next:
     u32 count = *(u32 *)(context + 0x9c);
     *(f32 *)(obj + 0x258) = (f32)count / lbl_805634C8;
     *(f32 *)(obj + 0x25c) = fn_8023659C();
     *(void **)(obj + 0x260) = fn_8022EE9C();
     *(u8 *)(obj + 0x264) = 1;
-    *(f32 *)(obj + 0x268) = lbl_805634A8;
-    *(f32 *)(obj + 0x26c) = lbl_805634A8;
-    *(u8 *)(obj + 0x270) = *(s32 *)(context + 0xb0) != 0;
+    register f32 zero = 0.0f;
+    *(f32 *)(obj + 0x268) = zero;
+    *(f32 *)(obj + 0x26c) = zero;
+    if (*(s32 *)(context + 0xb0) != 0)
+        *(u8 *)(obj + 0x270) = 1;
+    else
+        *(u8 *)(obj + 0x270) = 0;
     return obj;
 }
 #pragma scheduling on
@@ -8523,6 +8533,7 @@ extern f32 lbl_80563578;
 #pragma ppc_psq_save off
 #pragma scheduling invalid_target
 extern "C" void fn_80228010(void* arg0) {
+register VfObj *self = (VfObj *)arg0;
 if (*(s32*)((u8*)arg0 + 0x250) != 0 && *(s32*)((u8*)arg0 + 0x254) != 0 && *(s32*)((u8*)arg0 + 0x258) != 0) {
 f32 duration, initial, radius;
 s32 lastIndex;
@@ -8573,7 +8584,7 @@ progress += step;
 }
 f32 endPos = lbl_8056356C + spC;
 f32 negTop = sp8 + negRadius;
-s32 virtualInt = ((VfObj*)arg0)->vf28();
+s32 virtualInt = self->vf28();
 f32 virtualPos = (f32)virtualInt;
 f32 top = sp8 - radius;
 f32 topAdjusted = top - lbl_80563574;
