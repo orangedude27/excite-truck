@@ -1101,16 +1101,15 @@ extern "C" void fn_8012BA1C(void *arg0) {
     const char *strings = lbl_8032A630;
     s32 offset, i;
     s32 j, offset2;
-    register s32 value;
-    register u8 *entry;
-    register u32 flags;
+    u8 *entry;
+    s32 value;
 
     i = 0;
     offset = 0;
     while (i < *(s32 *)((char *)arg0 + 0x88)) {
         entry = *(u8 **)((char *)arg0 + 0x60) + offset;
-        value = *(volatile s32 *)(entry + 0x38);
-        if (value > 0) fn_802E30C8(strings + 0x470, arg0);
+        value = *(s32 *)(entry + 0x38);
+        if (value > 0) fn_802E30C8(strings + 0x470, arg0, (const char *)entry, value);
         offset += 0x44;
         i++;
     }
@@ -1120,8 +1119,7 @@ extern "C" void fn_8012BA1C(void *arg0) {
         offset2 = 0;
         while (j < *(s32 *)((char *)arg0 + 0x88)) {
             entry = *(u8 **)((char *)arg0 + 0x60) + offset2;
-            flags = *(u32 *)(entry + 0x34);
-            if ((flags & 0xA) == 8) fn_802E30C8(strings + 0x4AC, arg0);
+            if ((*(u32 *)(entry + 0x34) & 0xA) == 8) fn_802E30C8(strings + 0x4AC, arg0, (const char *)entry);
             offset2 += 0x44;
             j++;
         }
