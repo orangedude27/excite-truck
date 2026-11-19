@@ -633,25 +633,31 @@ void fn_802E8524(void) {}
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_802E8528(int index, float value, float unused) {
-    extern unsigned char lbl_80505978[];
+void fn_802E8528(int controllerIndex, float level, float unused) {
+#define gWiimoteStateTable lbl_80505978
+    /* Set one controller's rumble force: scale a 0..1 level to 16 bits
+     * ((level - 0.01) * 65535, rounded to nearest), clamp it to 0..0xFFFF and
+     * store it in that controller's state record at +0xB0.  The third
+     * argument is never read. */
+    extern unsigned char gWiimoteStateTable[];
     float scaled;
     float rounded;
-    int result;
-    int converted;
-    int magnitude;
+    int clampedHigh;
+    int truncated;
+    int clampedLow;
 
-    scaled = (value - 0.01f) * 65535.0f;
+    scaled = (level - 0.01f) * 65535.0f;
     if (scaled < 0.0f)
         rounded = scaled - 0.5f;
     else
         rounded = 0.5f + scaled;
-    converted = (int)rounded;
-    magnitude = converted & ((-converted & ~converted) >> 31);
-    result = 0xFFFF;
-    if (magnitude < result)
-        result = magnitude;
-    *(unsigned short *)(lbl_80505978 + index * 0x638 + 0xB0) = result;
+    truncated = (int)rounded;
+    clampedLow = truncated & ((-truncated & ~truncated) >> 31);
+    clampedHigh = 0xFFFF;
+    if (clampedLow < clampedHigh)
+        clampedHigh = clampedLow;
+    *(unsigned short *)(gWiimoteStateTable + controllerIndex * 0x638 + 0xB0) = clampedHigh;
+#undef gWiimoteStateTable
 }
 #pragma pop
 void fn_802E85A8(void) {}
