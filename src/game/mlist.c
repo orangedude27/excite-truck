@@ -27,6 +27,7 @@ extern float lbl_8055FCE0;
 extern float lbl_80564F60;
 extern int fn_802CAFF0(int);
 extern int stricmp(const char *, const char *);
+typedef struct { int pad[4]; int key; } MlistKey;
 #pragma cplusplus on
 struct Dummy {
     virtual void method0(int);
@@ -82,23 +83,25 @@ int fn_802CCBC4(void *arg0, float *arg1, float arg2, float arg3) {
 }
 #pragma pop
 int fn_802CCD0C(void *arg0, void *arg1) {
-    int x = fn_802CAFC8(*(int *)((char *)arg0 + 0x10));
-    int y = fn_802CAFC8(*(int *)((char *)arg1 + 0x10));
+    void *b = arg1;
+    void *a = arg0;
+    int x = fn_802CAFC8(*(int *)((char *)a + 0x10));
+    int y = fn_802CAFC8(*(int *)((char *)b + 0x10));
     if (x != y) {
         return x - y;
     }
-    x = fn_802CAFF0(*(int *)((char *)arg0 + 0x10));
-    y = fn_802CAFF0(*(int *)((char *)arg1 + 0x10));
+    x = fn_802CAFF0(*(int *)((char *)a + 0x10));
+    y = fn_802CAFF0(*(int *)((char *)b + 0x10));
     if (x != y) {
         return x - y;
     }
-    if (*(int *)((char *)arg0 + 0x10) == -1) {
+    if (*(int *)((char *)a + 0x10) == -1) {
         return 1;
     }
-    if (*(int *)((char *)arg1 + 0x10) == -1) {
+    if (*(int *)((char *)b + 0x10) == -1) {
         return -1;
     }
-    return stricmp((char *)arg0, (char *)arg1);
+    return stricmp((char *)a, (char *)b);
 }
 
 #pragma cplusplus on
