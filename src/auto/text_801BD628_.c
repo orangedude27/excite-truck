@@ -186,7 +186,7 @@ void fn_801BD808(void) {
     ((void (*)(int, void *))fn_801BDA74)(idx, tmp.buf);
 }
 #pragma pop
-/* Wrapper that invokes fn_80279D40. */
+/* Tail-call wrapper that forwards to fn_80279D40. */
 void fn_801BDA70(void) {
     fn_80279D40();
 }
