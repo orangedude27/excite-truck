@@ -2269,19 +2269,6 @@ void GXInvalidateVtxCache(void) {
 void GXSetTexCoordGen2(unsigned int coord, int func, unsigned int line, unsigned int nrm, unsigned int normalize, int postmtx) {
     typedef union {
         u32 val;
-        struct {
-            u32 padHigh : 14;
-            u32 texFunc : 3;
-            u32 texLine : 3;
-            u32 src : 5;
-            u32 type : 3;
-            u32 pad3 : 1;
-            u32 norm : 1;
-            u32 padLow : 2;
-        } f;
-    } TCGValue;
-    typedef union {
-        u32 val;
         struct { u32 p : 20; u32 n : 6; u32 q : 6; } s6;
         struct { u32 p : 14; u32 n : 6; u32 q : 12; } s12;
         struct { u32 p : 8; u32 n : 6; u32 q : 18; } s18;
@@ -2290,18 +2277,22 @@ void GXSetTexCoordGen2(unsigned int coord, int func, unsigned int line, unsigned
     } NrmVal;
     typedef union {
         u32 val;
-        struct { u32 p : 23; u32 norm : 1; u32 q : 2; u32 pmod : 6; } f;
-    } PMVal;
-    TCGValue v;
-    unsigned int source = 5;
-    unsigned int normFlag = 0;
+        struct { u32 pad : 30; u32 one : 1; u32 zero : 1; } f;
+    } Bit1;
+    u32 source;
+    u32 normFlag;
+    u32 v;
 
-    v.val = 0;
+    v = 0;
+    normFlag = 0;
+    source = 5;
     switch (line) {
     case 0: source = 0; normFlag = 1; break;
     case 1: source = 1; normFlag = 1; break;
     case 2: source = 3; normFlag = 1; break;
     case 3: source = 4; normFlag = 1; break;
+    case 19: source = 2; break;
+    case 20: source = 2; break;
     case 4: source = 5; break;
     case 5: source = 6; break;
     case 6: source = 7; break;
@@ -2310,45 +2301,56 @@ void GXSetTexCoordGen2(unsigned int coord, int func, unsigned int line, unsigned
     case 9: source = 10; break;
     case 10: source = 11; break;
     case 11: source = 12; break;
-    case 19: source = 2; break;
-    case 20: source = 2; break;
     default: break;
     }
 
     switch (func) {
-    case 0:
-        v.val = 2;
-        v.f.norm = normFlag;
-        v.f.src = source;
-        break;
     case 1:
-        v.f.norm = normFlag;
-        v.f.src = source;
+        v = __rlwimi(v, normFlag, 2, 29, 29);
+        v = __rlwimi(v, source, 7, 20, 24);
+        break;
+    case 0:
+        {
+            Bit1 t;
+            t.val = 0;
+            t.f.one = 1;
+            v = t.val;
+        }
+        v = __rlwimi(v, normFlag, 2, 29, 29);
+        v = __rlwimi(v, source, 7, 20, 24);
+        break;
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+        v = __rlwimi(v, normFlag, 2, 29, 29);
+        v = __rlwimi(v, 1, 4, 25, 27);
+        v = __rlwimi(v, source, 7, 20, 24);
+        v = __rlwimi(v, line - 0xC, 12, 17, 19);
+        v = __rlwimi(v, func - 2, 15, 14, 16);
         break;
     case 10:
-        v.f.norm = normFlag;
-        if (line == 0x13) v.f.type = 2; else v.f.type = 3;
-        v.f.src = 2;
+        v = __rlwimi(v, normFlag, 2, 29, 29);
+        if ((int)line == 0x13)
+            v = __rlwimi(v, 2, 4, 25, 27);
+        else
+            v = __rlwimi(v, 3, 4, 25, 27);
+        v = __rlwimi(v, 2, 7, 20, 24);
         break;
     default:
-        if (func > 1 && func < 10) {
-            v.f.norm = normFlag;
-            v.f.type = 1;
-            v.f.src = source;
-            v.f.texLine = line - 0xC;
-            v.f.texFunc = func - 2;
-        }
         break;
     }
 
-    *(u32 *)((char *)__GXData + coord * 4 + 0xC8) = v.val;
+    *(u32 *)((char *)__GXData + coord * 4 + 0xC8) = v;
     __GXData[0x5FC / 4] |= 0x10000 << coord;
     {
-        PMVal pm;
-        pm.val = 0;
-        pm.f.pmod = postmtx - 0x40;
-        pm.f.norm = normalize & 1;
-        *(u32 *)((char *)__GXData + coord * 4 + 0xE8) = pm.val;
+        u32 pm = __rlwimi(0, postmtx - 0x40, 0, 26, 31);
+        pm = __rlwimi(pm, normalize & 1, 8, 23, 23);
+        *(u32 *)((char *)__GXData + coord * 4 + 0xE8) = pm;
     }
 
     switch (coord) {
