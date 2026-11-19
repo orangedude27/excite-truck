@@ -917,7 +917,7 @@ void fn_80267420(void) {
 
 #pragma scheduling invalid_target
 #pragma push
-#pragma optimize_for_size off
+#pragma optimize_for_size on
 #pragma use_lmw_stmw off
 #pragma processor 750
 void fn_80267680(void) {
