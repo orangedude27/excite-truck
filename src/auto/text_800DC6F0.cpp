@@ -285,6 +285,19 @@ extern "C" s32 IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(voi
 extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(s32, u8);
 extern "C" void* GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(void*, void*, u8, s32, void*, u8);
+struct PicVTable {
+    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
+    virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
+    virtual void v08(); virtual void v09(); virtual void v0a(); virtual void v0b();
+    virtual void v0c(); virtual void v0d(); virtual void v0e(); virtual void v0f();
+    virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13();
+    virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17();
+    virtual void prep();
+};
+struct TexVTable {
+    virtual void v0(); virtual void v1(); virtual void v2();
+    virtual s32 mod(s32, u8);
+};
 extern "C" void DrawSelf__Q36nw4hbm3lyt7PictureFRCQ36nw4hbm3lyt8DrawInfo(void* this_) {
     u8* self = (u8*)this_;
     void* tex = *(void**)(self + 0x28);
