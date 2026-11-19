@@ -638,7 +638,8 @@ error:
 #pragma dont_inline on
 #pragma scheduling on
 #pragma cplusplus on
-extern "C" void fn_80217AC0(void *arg0) {
+extern "C" void fn_80217AC0(void *menuGroup) {
+    /* Move menu selection to the previous eligible widget, scanning backward from the current one. */
     class Dummy {
     public:
         virtual int f0(); virtual int f1(); virtual int f2(); virtual int f3();
@@ -649,34 +650,34 @@ extern "C" void fn_80217AC0(void *arg0) {
         virtual int f20(); virtual int f21(); virtual int f22(); virtual int f23();
         virtual int f24();
     };
-    char *base = (char *)arg0;
+    char *base = (char *)menuGroup;
     int scan;
     float threshold;
-    int initialCount;
+    int currentWidget;
     int i;
-    initialCount = *(int *)(base + 0x450);
-    if (initialCount != 0) scan = fn_802182F0(arg0, (void *)initialCount);
+    currentWidget = *(int *)(base + 0x450);
+    if (currentWidget != 0) scan = fn_802182F0(menuGroup, (void *)currentWidget);
     else scan = 0;
     threshold = lbl_80563490;
     for (i = 0; i < *(int *)(base + 0x430) - 1; i++) {
         char *entry;
-        void *obj;
+        void *widget;
         int eligible;
         scan--;
         entry = base + (((scan + *(int *)(base + 0x430)) %
                         *(int *)(base + 0x430)) * 4);
-        obj = *(void **)(entry + 0x30);
+        widget = *(void **)(entry + 0x30);
         eligible = 0;
-        if (*(unsigned char *)((char *)obj + 0x1A) != 0) goto eligible_yes;
-        if (*(float *)((char *)obj + 0x20) >= threshold) goto eligible_yes;
+        if (*(unsigned char *)((char *)widget + 0x1A) != 0) goto eligible_yes;
+        if (*(float *)((char *)widget + 0x20) >= threshold) goto eligible_yes;
         goto eligible_check;
     eligible_yes:
         eligible = 1;
     eligible_check:
         if (eligible != 0) {
-            if (((Dummy *)obj)->f24() != 0 &&
-                *(unsigned char *)((char *)obj + 0x1B) != 0) {
-                fn_80218198(arg0, (void **)obj);
+            if (((Dummy *)widget)->f24() != 0 &&
+                *(unsigned char *)((char *)widget + 0x1B) != 0) {
+                fn_80218198(menuGroup, (void **)widget);
                 return;
             }
         }
@@ -1162,24 +1163,24 @@ extern "C" void fn_802184D0(void *arg0) {
         virtual void v8();
         virtual void v9();
     };
-    float threshold = lbl_80563490;
+    register float threshold;
     char *cursor;
     int i;
     char *base;
+    threshold = lbl_80563490;
     base = (char *)arg0;
     cursor = base;
     i = 0;
-    while (i < *(int *)(base + 0x430)) {
+    for (; i < *(int *)(base + 0x430); cursor += 4, i++) {
         void *obj = *(void **)(cursor + 0x30);
         int call = 0;
-        if (*(unsigned char *)((char *)obj + 0x1A) != 0 || *(float *)((char *)obj + 0x20) >= threshold) {
+        if (*(unsigned char *)((char *)obj + 0x1A) != 0 ||
+            *(float *)((char *)obj + 0x20) >= threshold) {
             call = 1;
         }
         if (call != 0) {
             ((Obj *)obj)->v9();
         }
-        cursor += 4;
-        i++;
     }
 }
 #pragma cplusplus off
