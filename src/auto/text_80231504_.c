@@ -188,9 +188,9 @@ static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *
         dst[1] = outY;
         dst[2] = outZ;
     } else {
-        dst[0] = x * matrix[0] + y * matrix[3] + z * matrix[6];
-        dst[1] = x * matrix[1] + y * matrix[4] + z * matrix[7];
-        dst[2] = x * matrix[2] + y * matrix[5] + z * matrix[8];
+        dst[0] = y * matrix[3] + x * matrix[0] + z * matrix[6];
+        dst[1] = y * matrix[4] + x * matrix[1] + z * matrix[7];
+        dst[2] = y * matrix[5] + x * matrix[2] + z * matrix[8];
     }
     dst[0] += matrix[9];
     dst[1] += matrix[10];
