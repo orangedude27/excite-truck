@@ -37,11 +37,14 @@ void fn_802090BC(void);
 extern s32 lbl_8055F144, lbl_8055F148, lbl_8055F14C, lbl_8055F150, lbl_8055F154;
 extern char lbl_8055BB48[];
 __declspec(section ".sdata") extern char lbl_8055BB48[];
+static inline s32 fn_8023C308_adjust(s32 val, s32 cur) {
+    s32 diff = val - cur;
+    lbl_8055F154 += diff;
+    return diff;
+}
 #pragma scheduling invalid_target
 s32 fn_8023C308(s32 arg0) {
-    s32 val, cur;
-    u32 mode;
-    s32 diff;
+    s32 val, cur, diff, mode;
     if (arg0) {
         mode = (u32)(fn_80214D04() - 2) == 0;
         cur = lbl_8055F154;
@@ -125,30 +128,30 @@ void fn_8023C3D4(void) {
     data[12] = 6;
     data[13] = (s32)fn_8023C3CC;
     data[14] = -10;
-    data[15] = (s32)&lbl_8055B860;
-    data[16] = 6;
-    data[17] = (s32)fn_8023C3CC;
-    data[18] = 10;
-    data[19] = 0x128;
-    data[20] = (s32)&lbl_8055B860;
-    data[21] = 6;
-    data[22] = (s32)fn_8023C3CC;
-    data[23] = -1;
-    data[24] = 0x125;
-    data[25] = (s32)&lbl_8055B860;
-    data[26] = 6;
-    data[27] = (s32)fn_8023C3CC;
-    data[28] = 1;
-    data[29] = 0x127;
-    data[30] = (s32)&lbl_8055BAB8;
-    data[31] = 8;
-    data[32] = (s32)fn_80236914;
-    data[33] = 2;
-    data[34] = 0;
-    data[35] = (s32)&lbl_8055BAC0;
-    data[36] = 8;
-    data[37] = (s32)fn_8023C2B4;
-    data[38] = 0;
+    data[15] = 0x126;
+    data[16] = (s32)&lbl_8055B860;
+    data[17] = 6;
+    data[18] = (s32)fn_8023C3CC;
+    data[19] = 10;
+    data[20] = 0x128;
+    data[21] = (s32)&lbl_8055B860;
+    data[22] = 6;
+    data[23] = (s32)fn_8023C3CC;
+    data[24] = -1;
+    data[25] = 0x125;
+    data[26] = (s32)&lbl_8055B860;
+    data[27] = 6;
+    data[28] = (s32)fn_8023C3CC;
+    data[29] = 1;
+    data[30] = 0x127;
+    data[31] = (s32)&lbl_8055BAB8;
+    data[32] = 8;
+    data[33] = (s32)fn_80236914;
+    data[34] = 2;
+    data[35] = 0;
+    data[36] = (s32)&lbl_8055BAC0;
+    data[37] = 8;
+    data[38] = (s32)fn_8023C2B4;
     data[39] = 0;
     data[40] = 0;
     data[41] = w[0];
@@ -159,6 +162,7 @@ void fn_8023C3D4(void) {
     fn_802146BC(data, -0x3E7, -0x3E7, 1, v[3], v[2], v[0], w[4]);
 }
 
+#pragma scheduling on
 void fn_8023C55C(void *arg0) {
     char *base = lbl_803413C0;
     char obj1[0x1C];
@@ -226,8 +230,6 @@ void fn_8023C55C(void *arg0) {
     *(s32 **)(obj1 + 0xC) = &lbl_80341448;
     fn_80128670(*(s32 *)(obj1 + 0x10));
 }
-
-#pragma pop
 extern s32 fn_80128668();
 extern s32 fn_80128670(s32);
 extern s32 lbl_80341448;
