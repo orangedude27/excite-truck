@@ -1960,8 +1960,8 @@ extern "C" f32 fn_8019DF88(void *arg0, f32 *arg1, void *arg2, f32 *arg3, f32 *ar
     Vec velocity, delta, normalCopy, normal, cross, rotated, result;
     f32 *m = (f32 *)arg2;
     f32 *p = (f32 *)arg0;
-    f32 dx = arg3[0] - p[0];
     u32 ny = ((u32 *)arg4)[1];
+    f32 dx = arg3[0] - p[0];
     f32 dy = arg3[1] - p[1];
     f32 dz = arg3[2] - p[2];
     f32 vz = arg1[2], vy = arg1[1], vx = arg1[0];
@@ -2616,7 +2616,7 @@ extern "C" void fn_8019F26C(s32 context, void *shape) {
 }
 
 extern "C" void fn_8019F3D0(void) {
-
+    /* Empty stub (no operation). */
 }
 
 extern "C" s32 fn_80128668(void);
@@ -4341,20 +4341,18 @@ extern "C" void fn_801A2674(void* obj, s32 param28, s32 param2C, f32 extent) {
 
 extern f32 lbl_805622E0;
 extern "C" void fn_801A2684(void* arg0, f32* arg1, f32* arg2) {
-    f32 temp_f1, temp_f2, sp10, spC, sp8;
+    register f32 pos, neg, scale;
     f32 temp_f0 = *(f32*)((u8*)arg0 + 0x24);
     void* temp_r3 = *(void**)((u8*)arg0 + 0xC);
-    temp_f2 = lbl_805622E0 * -temp_f0;
-    sp8 = lbl_805622E0;
-    temp_f1 = lbl_805622E0 * temp_f0;
-    spC = lbl_805622E0;
-    sp10 = lbl_805622E0;
-    arg1[0] = *(f32*)((u8*)temp_r3 + 0x24) + temp_f2;
-    arg1[1] = *(f32*)((u8*)temp_r3 + 0x28) + temp_f2;
-    arg1[2] = *(f32*)((u8*)temp_r3 + 0x2C) + temp_f2;
-    arg2[0] = *(f32*)((u8*)temp_r3 + 0x24) + temp_f1;
-    arg2[1] = *(f32*)((u8*)temp_r3 + 0x28) + temp_f1;
-    arg2[2] = *(f32*)((u8*)temp_r3 + 0x2C) + temp_f1;
+    scale = lbl_805622E0;
+    neg = scale * -temp_f0;
+    pos = scale * temp_f0;
+    arg1[0] = *(f32*)((u8*)temp_r3 + 0x24) + neg;
+    arg1[1] = *(f32*)((u8*)temp_r3 + 0x28) + neg;
+    arg1[2] = *(f32*)((u8*)temp_r3 + 0x2C) + neg;
+    arg2[0] = *(f32*)((u8*)temp_r3 + 0x24) + pos;
+    arg2[1] = *(f32*)((u8*)temp_r3 + 0x28) + pos;
+    arg2[2] = *(f32*)((u8*)temp_r3 + 0x2C) + pos;
 }
 
 struct Fn801A26FCMtx { f32 m[9]; Vec t; };
