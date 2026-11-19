@@ -20122,13 +20122,14 @@ BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *p_cur_buf) {
     u16 handle;
     u16 hci_len;
     u16 pkt_type;
-    BT_HDR *p_cur;
     u8 *p_lcb;
     BT_HDR *p_return_buf;
+    u16 total_len;
+    u32 pcur;
 
-    p_cur = p_cur_buf;
-    p = (u8 *)p_cur + p_cur->offset;
-    p_cur->layer_specific = 0;
+    pcur = (u32)p_cur_buf;
+    p = (u8 *)pcur + ((BT_HDR *)pcur)->offset;
+    ((BT_HDR *)pcur)->layer_specific = 0;
     handle = p[8] + (p[9] << 8);
     hci_len = p[10] + (p[11] << 8);
     pkt_type = (handle >> 12) & 3;
@@ -20136,7 +20137,7 @@ BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *p_cur_buf) {
     *(void **)(lbl_803C4040 + 0x7BC) = 0;
     p_lcb = (u8 *)l2cu_find_lcb_by_handle(handle);
     if (p_lcb == 0)
-        return p_cur;
+        return (BT_HDR *)pcur;
 
     if (pkt_type == 2) {
         if (*(void **)(p_lcb + 0x50) != 0) {
@@ -20144,11 +20145,10 @@ BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *p_cur_buf) {
                 fn_8007093C(0x80001, lbl_80318DE0);
             GKI_freebuf(*(void **)(p_lcb + 0x50));
         }
-        p_return_buf = p_cur;
+        p_return_buf = (BT_HDR *)pcur;
         *(BT_HDR **)(p_lcb + 0x50) = p_return_buf;
         *(void **)(lbl_803C4040 + 0x7BC) = p_lcb;
     } else if (*(void **)(p_lcb + 0x50) != 0) {
-        u16 total_len;
         BT_HDR *p_base_buf = *(BT_HDR **)(p_lcb + 0x50);
         u8 *p_f = (u8 *)p_base_buf + p_base_buf->offset;
 
@@ -20156,20 +20156,20 @@ BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *p_cur_buf) {
         if (total_len + hci_len <= 0x69F) {
             p_return_buf = *(BT_HDR **)(p_lcb + 0x50);
             *(void **)(lbl_803C4040 + 0x7BC) = p_lcb;
-            if (p_cur->len > 4) {
-                u16 cur_len = p_cur->len;
+            if (((BT_HDR *)pcur)->len > 4) {
+                u16 cur_len = ((BT_HDR *)pcur)->len;
                 u16 base_offset = p_return_buf->offset;
                 s32 copy_len = cur_len - 4;
-                u16 cur_offset = p_cur->offset;
+                u16 cur_offset = ((BT_HDR *)pcur)->offset;
                 u8 *p_dst = (u8 *)p_return_buf + base_offset;
                 u16 base_len = p_return_buf->len;
-                u8 *p_data = (u8 *)p_cur + cur_offset;
-                p_dst += base_len + 8;
+                u8 *p_data = (u8 *)pcur + cur_offset;
+                p_dst = 8 + (p_dst + base_len);
                 p_data += 0xC;
                 memcpy(p_dst, p_data, copy_len);
-                p_return_buf->len += p_cur->len - 4;
+                p_return_buf->len += ((BT_HDR *)pcur)->len - 4;
             }
-            GKI_freebuf(p_cur);
+            GKI_freebuf((BT_HDR *)pcur);
             total_len += hci_len;
             p_f[10] = (u8)total_len;
             p_f[11] = (u8)(total_len >> 8);
@@ -20185,7 +20185,7 @@ BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *p_cur_buf) {
     }
 
     if (p_return_buf == 0)
-        GKI_freebuf(p_cur);
+        GKI_freebuf((BT_HDR *)pcur);
     return p_return_buf;
 }
 
