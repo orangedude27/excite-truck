@@ -329,22 +329,23 @@ long fn_8020F9F4(void) {
 
 #pragma push
 #pragma dont_inline on
-void *fn_8020FAF0(arg0)
-char *arg0;
+/* Find the track-music slot in the current context whose key matches `key`, or the first free slot if none match. */
+void *fn_8020FAF0(key)
+char *key;
 {
-    char *entry;
-    char *base = (char *)fn_8020F5F0(fn_8000DA10());
+    char *slot;
+    char *slots = (char *)fn_8020F5F0(fn_8000DA10());
     long i = 0;
-    entry = base;
+    slot = slots;
     for (;;) {
-        if (stricmp(entry + 4, arg0) == 0) {
-            return base + i * 0x64;
+        if (stricmp(slot + 4, key) == 0) {
+            return slots + i * 0x64;
         }
         i++;
-        entry += 0x64;
+        slot += 0x64;
         if (i >= 0x40) break;
     }
-    return base + fn_8020F9F4() * 0x64;
+    return slots + fn_8020F9F4() * 0x64;
 }
 #pragma dont_inline reset
 #pragma pop
