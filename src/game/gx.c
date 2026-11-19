@@ -477,20 +477,20 @@ void fn_802CF104(void) {
 }
 
 void fn_802CF10C(void) {
-    int* fb;
     unsigned char* st;
+    int* fb;
     int i;
     int j;
     fn_802CEF90();
     if ((int)lbl_8055FD44 == 0xFA0) {
         OSReport(lbl_8034BF80);
     }
+    st = lbl_804C5710;
     lbl_8055FD4C++;
     lbl_8055FD44++;
     if (lbl_8055FD4C < 5) {
         return;
     }
-    st = lbl_804C5710;
     if (lbl_8055FD50 == 0 && st[1] == 0) {
         return;
     }
@@ -514,42 +514,47 @@ void fn_802CF10C(void) {
     }
     fb = lbl_804C9760;
     DCInvalidateRange((void*)fb[1], fb[2] * fb[3] * 2);
-    if (lbl_8055FD50 != 0) {
-        int r5 = ((unsigned)lbl_8055FD4C >> 2) & 1;
-        for (; r5 < fb[3]; r5 += 2) {
-            int r6;
-            for (r6 = 0; r6 < fb[2]; r6++) {
-                unsigned short* ptr = (unsigned short*)((unsigned char*)fb[1] + (r6 + r5 * fb[2]) * 2);
-                unsigned short v = *ptr;
-                if ((v & 0xFF) > (v - 0x400)) {
-                    *ptr = v & 0xFF;
+    {
+        unsigned char* fbBase = (unsigned char*)fb[1];
+        if (lbl_8055FD50 != 0) {
+            int r5 = ((unsigned)lbl_8055FD4C >> 2) & 1;
+            for (; r5 < fb[3]; r5 += 2) {
+                int r6;
+                for (r6 = 0; r6 < fb[2]; r6++) {
+                    unsigned short* ptr = (unsigned short*)(fbBase + (r6 + r5 * fb[2]) * 2);
+                    unsigned short v = *ptr;
+                    if ((v & 0xFF) > (v - 0x400)) {
+                        *ptr = v & 0xFF;
+                    }
                 }
             }
         }
-    }
-    if (st[1] != 0) {
-        int* sti = (int*)st;
-        if (lbl_8055FD4C % 60 < 30) {
-            int off = 0;
-            for (i = 0; i < sti[4]; i++) {
-                unsigned short* src = (unsigned short*)(st + 0x14 + off * 2);
-                unsigned short* dst = (unsigned short*)((unsigned char*)fb[1] + (sti[1] + fb[2] * (sti[2] + i)) * 2);
-                for (j = 0; j < sti[3]; j++) {
-                    dst[j] = src[j];
+        if (st[1] != 0) {
+            int* sti = (int*)st;
+            if (lbl_8055FD4C % 60 < 30) {
+                int off = 0;
+                int count = sti[3];
+                for (i = 0; i < sti[4]; i++) {
+                    unsigned short* src = (unsigned short*)(st + 0x14 + off * 2);
+                    unsigned short* dst = (unsigned short*)(fbBase + (sti[1] + fb[2] * (sti[2] + i)) * 2);
+                    for (j = 0; j < count; j++) {
+                        dst[j] = src[j];
+                    }
+                    off += count;
                 }
-                off += sti[3];
-            }
-        } else {
-            unsigned short fill = *(unsigned short*)(st + 0x14);
-            for (i = 0; i < sti[4]; i++) {
-                unsigned short* dst = (unsigned short*)((unsigned char*)fb[1] + (sti[1] + fb[2] * (sti[2] + i)) * 2);
-                for (j = 0; j < sti[3]; j++) {
-                    dst[j] = fill;
+            } else {
+                unsigned short fill = *(unsigned short*)(st + 0x14);
+                int count = sti[3];
+                for (i = 0; i < sti[4]; i++) {
+                    unsigned short* dst = (unsigned short*)(fbBase + (sti[1] + fb[2] * (sti[2] + i)) * 2);
+                    for (j = 0; j < count; j++) {
+                        dst[j] = fill;
+                    }
                 }
             }
         }
+        DCFlushRange(fbBase, fb[4] * (fb[2] * fb[3]));
     }
-    DCFlushRange((void*)fb[1], fb[4] * (fb[2] * fb[3]));
 }
 
 #pragma dont_inline reset
@@ -1117,18 +1122,21 @@ void fn_802CFFAC(int arg0, int arg1, int arg2) {
     volatile unsigned char spA;
     volatile unsigned char sp9;
     volatile unsigned char sp8;
-    register unsigned long packed;
+    unsigned long packed;
+    unsigned char b3;
+    register unsigned char *base = lbl_804C97B0;
 
     packed = fn_802CE9FC(arg0, arg1, arg2, 0);
     spB = (unsigned char)packed;
     sp8 = (unsigned char)(packed >> 24);
     sp9 = (unsigned char)(packed >> 16);
-    lbl_804C97B0[1] = sp8;
-    lbl_804C97B0[2] = sp9;
-    lbl_804C97B0[3] = (unsigned char)(packed >> 8);
-    lbl_804C97B0[4] = (unsigned char)packed;
-    lbl_804C97B0[0x1C] = 1;
-    spA = (unsigned char)(packed >> 8);
+    b3 = (unsigned char)(packed >> 8);
+    base[1] = sp8;
+    base[2] = sp9;
+    base[3] = b3;
+    base[4] = (unsigned char)packed;
+    base[0x1C] = 1;
+    spA = b3;
 }
 void fn_802D0014(float startValue, float endValue, float delta) {
     /* Sets up a float interpolation in the GX state block: stores start/end-step values and marks it active when |delta| exceeds the threshold. */
@@ -1163,10 +1171,10 @@ void fn_802D007C(float arg0) {
 
     temp_f0 = lbl_80564FAC * arg0;
     var_f3 = lbl_80564FA8;
-    if (var_f3 >= (float)(int)temp_f0) {
+    if (var_f3 > (float)(int)temp_f0) {
         var_f3 = (float)(int)temp_f0;
     }
-    if (var_f3 <= lbl_80564F88) {
+    if (var_f3 < lbl_80564F88) {
         var_f3 = lbl_80564F88;
     }
     scratch[2] = 0xFF;
@@ -1262,7 +1270,7 @@ void fn_802D02F8(int arg0, signed char arg1) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802D0368(float arg0, float arg1, float arg2, float arg3) {
 #pragma scheduling on
     register unsigned char *p = lbl_804C9778;
@@ -1543,41 +1551,40 @@ void fn_802D08CC(int cullMode) {
 void fn_802D0910(int, int, int, int, int, int) {
 }
 
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw on
 void fn_802D0914(int arg0, short arg1, short arg2) {
-#pragma use_lmw_stmw off
     extern int fn_802E3A64(int, unsigned char *, int, int, int, int, int, int);
     unsigned char buffer[0x12];
-    unsigned char b8, b9, b10, b11, b12, b13, b14, b15;
+    int first = arg0;
+    unsigned char b15, b13, b11, b9, b8;
     memset(buffer, 0, 0x12);
-    *(unsigned short *)(buffer + 12) = arg1;
     *(unsigned short *)(buffer + 8) = 0;
     *(unsigned short *)(buffer + 10) = 0;
+    *(unsigned short *)(buffer + 12) = arg1;
     *(unsigned short *)(buffer + 14) = arg2;
-    b12 = buffer[12];
+    arg1 = buffer[12];
     b13 = buffer[13];
     b8 = buffer[8];
     b9 = buffer[9];
-    b10 = buffer[10];
+    arg0 = buffer[10];
     b11 = buffer[11];
-    b14 = buffer[14];
+    arg2 = buffer[14];
     b15 = buffer[15];
     buffer[0] = 0;
     buffer[1] = 0;
     buffer[2] = 2;
-    buffer[16] = 24;
+    buffer[16] = 0x18;
     buffer[17] = 0;
     buffer[8] = b9;
     buffer[9] = b8;
     buffer[10] = b11;
-    buffer[11] = b10;
+    buffer[11] = arg0;
     buffer[12] = b13;
-    buffer[13] = b12;
+    buffer[13] = arg1;
     buffer[14] = b15;
-    buffer[15] = b14;
-    fn_802E3A64(arg0, buffer, 0x12, b13, b11, b9, 24, 2);
+    buffer[15] = arg2;
+    fn_802E3A64(first, buffer, 0x12, b13, b11, b9, 0x18, 2);
 }
-#pragma scheduling on
 void fn_802D09E4(void) {
 }
 
@@ -2265,19 +2272,19 @@ void fn_802D1C04(void) {
         float t;
         float k;
         inv.r = src->r;
-        lbl_8055FD70 = 0;
+        *(volatile unsigned char *)&lbl_8055FD70 = 0;
         t = inv.r.m[1]; inv.r.m[1] = inv.r.m[3]; inv.r.m[3] = t;
         t = inv.r.m[2]; inv.r.m[2] = inv.r.m[6]; inv.r.m[6] = t;
         t = inv.r.m[5]; inv.r.m[5] = inv.r.m[7]; inv.r.m[7] = t;
         if (&inv.t == &src->t) {
-            float x = src->t.z * src->r.m[2] + (src->t.x * src->r.m[0] + src->t.y * src->r.m[1]);
-            float y = src->t.z * src->r.m[5] + (src->t.x * src->r.m[3] + src->t.y * src->r.m[4]);
-            float z = src->t.z * src->r.m[8] + (src->t.x * src->r.m[6] + src->t.y * src->r.m[7]);
+            float x = src->t.z * src->r.m[1] + (src->t.x * src->r.m[0] + src->t.y * src->r.m[2]);
+            float y = src->t.z * src->r.m[4] + (src->t.x * src->r.m[3] + src->t.y * src->r.m[5]);
+            float z = src->t.z * src->r.m[7] + (src->t.x * src->r.m[6] + src->t.y * src->r.m[8]);
             inv.t.x = x; inv.t.y = y; inv.t.z = z;
         } else {
-            float x = src->t.z * src->r.m[2] + (src->t.x * src->r.m[0] + src->t.y * src->r.m[1]);
-            float y = src->t.z * src->r.m[5] + (src->t.x * src->r.m[3] + src->t.y * src->r.m[4]);
-            float z = src->t.z * src->r.m[8] + (src->t.x * src->r.m[6] + src->t.y * src->r.m[7]);
+            float x = src->t.z * src->r.m[1] + (src->t.x * src->r.m[0] + src->t.y * src->r.m[2]);
+            float y = src->t.z * src->r.m[4] + (src->t.x * src->r.m[3] + src->t.y * src->r.m[5]);
+            float z = src->t.z * src->r.m[7] + (src->t.x * src->r.m[6] + src->t.y * src->r.m[8]);
             inv.t.x = x; inv.t.y = y; inv.t.z = z;
         }
         inv.t.x *= lbl_80564F90;
@@ -2295,20 +2302,20 @@ void fn_802D1C04(void) {
         switch (*(int *)(base + 0xB4)) {
         case 2:
         case 3:
-            fn_802C8588(&rel, &((Xform_802D1C04 *)(base + 0x70))->t, &((Xform_802D1C04 *)(base + 0x40))->t);
+            fn_802C8588(&rel, &src->t, &b->t);
             relInv.r = rel.r;
             t = relInv.r.m[1]; relInv.r.m[1] = relInv.r.m[3]; relInv.r.m[3] = t;
             t = relInv.r.m[2]; relInv.r.m[2] = relInv.r.m[6]; relInv.r.m[6] = t;
             t = relInv.r.m[5]; relInv.r.m[5] = relInv.r.m[7]; relInv.r.m[7] = t;
             if (&relInv.t == &rel.t) {
-                float x = rel.t.z * rel.r.m[2] + (rel.t.x * rel.r.m[0] + rel.t.y * rel.r.m[1]);
-                float y = rel.t.z * rel.r.m[5] + (rel.t.x * rel.r.m[3] + rel.t.y * rel.r.m[4]);
-                float z = rel.t.z * rel.r.m[8] + (rel.t.x * rel.r.m[6] + rel.t.y * rel.r.m[7]);
+                float x = rel.t.z * rel.r.m[1] + (rel.t.x * rel.r.m[0] + rel.t.y * rel.r.m[2]);
+                float y = rel.t.z * rel.r.m[4] + (rel.t.x * rel.r.m[3] + rel.t.y * rel.r.m[5]);
+                float z = rel.t.z * rel.r.m[7] + (rel.t.x * rel.r.m[6] + rel.t.y * rel.r.m[8]);
                 relInv.t.x = x; relInv.t.y = y; relInv.t.z = z;
             } else {
-                float x = rel.t.z * rel.r.m[2] + (rel.t.x * rel.r.m[0] + rel.t.y * rel.r.m[1]);
-                float y = rel.t.z * rel.r.m[5] + (rel.t.x * rel.r.m[3] + rel.t.y * rel.r.m[4]);
-                float z = rel.t.z * rel.r.m[8] + (rel.t.x * rel.r.m[6] + rel.t.y * rel.r.m[7]);
+                float x = rel.t.z * rel.r.m[1] + (rel.t.x * rel.r.m[0] + rel.t.y * rel.r.m[2]);
+                float y = rel.t.z * rel.r.m[4] + (rel.t.x * rel.r.m[3] + rel.t.y * rel.r.m[5]);
+                float z = rel.t.z * rel.r.m[7] + (rel.t.x * rel.r.m[6] + rel.t.y * rel.r.m[8]);
                 relInv.t.x = x; relInv.t.y = y; relInv.t.z = z;
             }
             relInv.t.x *= lbl_80564F90;
@@ -2327,7 +2334,7 @@ void fn_802D1C04(void) {
             break;
         case 1:
         case 5:
-            rot = ((Xform_802D1C04 *)(base + 0x40))->r;
+            rot = b->r;
             tex = lbl_802FAC90;
             t = rot.m[1]; rot.m[1] = rot.m[3]; rot.m[3] = t;
             t = rot.m[2]; rot.m[2] = rot.m[6]; rot.m[6] = t;
@@ -2345,7 +2352,7 @@ void fn_802D1C04(void) {
             fn_802D18E8();
             break;
         }
-        fn_802D0DD4(nrm, base + 0x40);
+        fn_802D0DD4(nrm, b);
         nrm[3] = nrm[7] = nrm[11] = lbl_80564F88;
         GXLoadNrmMtxImm(nrm, 0);
         if (*(int *)(base + 0xB4) == 2) fn_802D1B58();
@@ -3216,16 +3223,12 @@ void *fn_802D39A4(float step) {
 void fn_802D3A50(void *effect) { ((unsigned char *)effect)[0xC] = 0; }
 
 extern float lbl_80564F88, lbl_80564F8C, lbl_80564FB8, lbl_80564FBC, lbl_80564FE8, lbl_80564FEC;
-#pragma push
 #pragma processor 7400
-#pragma paired off
-#pragma paired_single off
-#pragma scheduling invalid_target
 int fn_802D3A5C(void *arg0, float *arg1) {
     extern unsigned char lbl_804C9778[];
-    float scaledY = arg1[1] * lbl_80564FB8;
+    float scaledY = 448.0f * arg1[1];
     float xValue = arg1[0];
-    float yValue = scaledY / lbl_80564FBC;
+    float yValue = scaledY / 480.0f;
     int x = (int)xValue;
     int y = (int)yValue;
     float target;
@@ -3241,8 +3244,8 @@ int fn_802D3A5C(void *arg0, float *arg1) {
         *(int *)arg0 = x;
         z = -arg1[2];
         *((int *)arg0 + 1) = y;
-        nearZ = *(float *)(lbl_804C9778 + 4);
         farZ = *(float *)(lbl_804C9778 + 8);
+        nearZ = *(float *)(lbl_804C9778 + 4);
         delta = farZ - nearZ;
         a = -nearZ / delta;
         b = farZ * nearZ / delta;
@@ -3257,13 +3260,12 @@ int fn_802D3A5C(void *arg0, float *arg1) {
 
     {
         float old = *(float *)((char *)arg0 + 0x14);
-        float value = old + *(float *)((char *)arg0 + 0x10) * (target - old);
+        float step = *(float *)((char *)arg0 + 0x10);
+        float value = step * (target - old) + old;
         *(float *)((char *)arg0 + 0x14) = value;
-        return value >= lbl_80564FEC;
+        return value >= 0.00784314f;
     }
 }
-#pragma pop
-
 void fn_802D3BB0(void) {}
 
 extern float lbl_80564F88, lbl_80564F8C;
