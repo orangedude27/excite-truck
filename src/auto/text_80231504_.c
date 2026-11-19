@@ -445,7 +445,7 @@ loop_body:
         spC = y;
         sp10 = z;
         if (arg0 != 0) {
-            transform_vec_values((f32 *)arg0, (const f32 *)&sp8, (f32 *)&sp8, x, y, z);
+            transform_vec_values((f32 *)arg0, (const f32 *)&sp8, (f32 *)&sp8, x + 0.0f, y + 0.0f, z + 0.0f);
         }
         {
             f32 rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
@@ -1517,31 +1517,34 @@ extern IndexList_80233EC0 lbl_802F9FFC;
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_80233EC0(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5)
+/* Draw one glyph quad for a non-space character: build four vertices from the glyph's
+ * UV bounds in the font's 0x1C-byte glyph record (color from CurrentDrawColor/lbl_8055F050),
+ * placed at the rectangle (x0,y0,z0)-(x1,y1,z1), and submit them with index list lbl_802F9FFC. */
+void fn_80233EC0(void *arg0, s32 glyphIndex, f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1)
 {
-  register void *object = arg0;
-  s32 new_var[2];
+  register void *font = arg0;
+  s32 glyphInfo[2];
   u8 out3[0x18];
   u8 out2[0x18];
   u8 out1[0x18];
   u8 out0[0x18];
-  IndexList_80233EC0 values;
-  u8 *entry;
-  if (arg1 != 0x20)
+  IndexList_80233EC0 indices;
+  u8 *glyph;
+  if (glyphIndex != 0x20)
   {
-    new_var[0] = arg1 * 0x1C;
-    entry = (*((u8 **) (((u8 *) object) + 0x10))) + new_var[0];
-    new_var[1] = lbl_8055F050;
-    fn_80231380(out0, new_var[1], farg0, farg1, farg2, *((f32 *) (entry + 0xC)), *((f32 *) (entry + 0x18)));
-    entry = (*((u8 **) (((u8 *) object) + 0x10))) + new_var[0];
-    fn_80231380(out1, new_var[1], farg3, farg1, farg2, *((f32 *) (entry + 0xC)), *((f32 *) (entry + 0x10)));
-    entry = (*((u8 **) (((u8 *) object) + 0x10))) + new_var[0];
+    glyphInfo[0] = glyphIndex * 0x1C;
+    glyph = (*((u8 **) (((u8 *) font) + 0x10))) + glyphInfo[0];
+    glyphInfo[1] = lbl_8055F050;
+    fn_80231380(out0, glyphInfo[1], x0, y0, z0, *((f32 *) (glyph + 0xC)), *((f32 *) (glyph + 0x18)));
+    glyph = (*((u8 **) (((u8 *) font) + 0x10))) + glyphInfo[0];
+    fn_80231380(out1, glyphInfo[1], x1, y0, z0, *((f32 *) (glyph + 0xC)), *((f32 *) (glyph + 0x10)));
+    glyph = (*((u8 **) (((u8 *) font) + 0x10))) + glyphInfo[0];
  dummy_label_265160: ;
-    fn_80231380(out2, new_var[1], farg0, farg4, farg5, *((f32 *) (entry + 0x14)), *((f32 *) (entry + 0x18)));
-    entry = (*((u8 **) (((u8 *) object) + 0x10))) + new_var[0];
-    fn_80231380(out3, new_var[1], farg3, farg4, farg5, *((f32 *) (entry + 0x14)), *((f32 *) (entry + 0x10)));
-    values = lbl_802F9FFC;
-    ((void (*)(void *, s32, u16 *, s32)) fn_802C8DB8)(out0, 4, values.idx, 6);
+    fn_80231380(out2, glyphInfo[1], x0, y1, z1, *((f32 *) (glyph + 0x14)), *((f32 *) (glyph + 0x18)));
+    glyph = (*((u8 **) (((u8 *) font) + 0x10))) + glyphInfo[0];
+    fn_80231380(out3, glyphInfo[1], x1, y1, z1, *((f32 *) (glyph + 0x14)), *((f32 *) (glyph + 0x10)));
+    indices = lbl_802F9FFC;
+    ((void (*)(void *, s32, u16 *, s32)) fn_802C8DB8)(out0, 4, indices.idx, 6);
   }
 }
 
