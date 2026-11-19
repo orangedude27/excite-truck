@@ -541,6 +541,7 @@ void fn_801DCD28(int arg0) {
     fn_801D02B0();
 }
 #pragma scheduling on
+/* Empty stub / no-op placeholder. */
 void fn_801DCDA0(void) {
 
 }
