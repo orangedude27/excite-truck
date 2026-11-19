@@ -1700,7 +1700,6 @@ extern "C" s32 fn_8019D484(const Vec *p0, const Vec *v0, const Vec *p1, const Ve
     }
          return 0;
  }
-#pragma pop
 
  s32 fn_8019D618(void* arg0, void* arg1, s32 clamp, void* arg3) {
     f32* aMat = *(f32**)((u8*)arg0 + 0xC);
