@@ -826,8 +826,9 @@ extern "C" void fn_800063A8(void) {
     fn_801B84A4(playerIndex);
 }
 
-extern "C" s32 fn_80006408(void *arg0, s32 arg1, u32 arg2, u32 arg3) {
-    class Obj {
+extern "C" s32 fn_80006408(void *unusedSelf, s32 playerIndex, u32 message, u32 param) {
+    /* Check this player's HUD overlay for a consuming response, or forward UI message 0x3E8 to the global UI handler. */
+    class HudOverlayVTable {
     public:
         virtual void v0();
         virtual void v1();
@@ -841,17 +842,17 @@ extern "C" s32 fn_80006408(void *arg0, s32 arg1, u32 arg2, u32 arg3) {
         virtual void v9();
         virtual s32 v10();
     };
-    void *obj;
+    void *overlay;
     if ((((s32 *)lbl_8055D350)[8] & 4) != 0) {
-        u8 *base = (u8 *)lbl_8034EEB8;
-        base += (arg1 << 4);
-        obj = *(void **)(base + 0x18);
-        if (((Obj *)obj)->v10() != 0) {
+        u8 *overlayBase = (u8 *)lbl_8034EEB8;
+        overlayBase += (playerIndex << 4);
+        overlay = *(void **)(overlayBase + 0x18);
+        if (((HudOverlayVTable *)overlay)->v10() != 0) {
             return 1;
         }
     }
-    if (arg2 == 0x3E8) {
-        return fn_801B87A0(arg1, (s32)(u16)arg3);
+    if (message == 0x3E8) {
+        return fn_801B87A0(playerIndex, (s32)(u16)param);
     }
     return 0;
 }
@@ -968,12 +969,14 @@ extern "C" void fn_800066B4(void *arg0) {
     s32 now;
     s32 i;
     u8 alpha;
+    s32 two;
     void *(*get)(void *, s32);
     void *(*get2)(void *, s32, s32);
     fn_8027AA48();
     fn_80011E70();
     fn_80011E90();
-    fn_800109E4(0x7F000000, lbl_80560140, lbl_80560144, lbl_80560148, lbl_8056014C);
+    two = 2;
+    ((void (*)(u32, f32, f32, f32, f32, f64))fn_800109E4)(0x7F000000, lbl_80560140, lbl_80560144, lbl_80560148, lbl_8056014C, (f64)(u32)two);
     obj = *(void **)((u8 *)arg0 + 0x1C);
     if (obj != 0) ((void (*)(void *, void *, void *, s32))fn_8014784C)(obj, base + 0x1B4, base + 0x1C0, 0);
     f = (f32)fn_802E2C20();
