@@ -2423,24 +2423,23 @@ extern "C" void fn_8013FAC4(void *, int, void *);
 extern "C" void fn_80140A6C(void *arg0, int arg1) {
     extern char lbl_8032CA64[];
     class VObj { public: virtual void d0(); virtual void d1(); virtual int check(const char *); };
-    int tmp;
+    struct Ent { char pad[0x12C]; };
+    void *tmp;
     void *obj;
     int vr;
-    int base;
-    int prod;
-    prod = fn_801E866C(arg1) * 0x12C;
-    base = *(int *)((char *)arg0 + 0xB8);
-    tmp = prod + base;
+    int idx = fn_801E866C(arg1);
+    Ent *base = *(Ent **)((char *)arg0 + 0xB8);
+    tmp = base + idx;
     if (((int (*)(int))fn_8013CB10)(arg1) == 0) {
-        fn_8013F0A0(arg0, (void *)arg1, (void *)tmp);
-        ((void (*)(void *, void *, void *))fn_8013F434)(arg0, (void *)arg1, (void *)tmp);
-        fn_8013F580(arg0, (void *)arg1, (void *)tmp);
-        fn_8013FAC4(arg0, arg1, (void *)tmp);
-        ((void (*)(void *, void *, void *))fn_8013FDB0)(arg0, (void *)arg1, (void *)tmp);
-        fn_8013F918(arg0, (void *)arg1, (void *)tmp);
+        fn_8013F0A0(arg0, (void *)arg1, tmp);
+        ((void (*)(void *, void *, void *))fn_8013F434)(arg0, (void *)arg1, tmp);
+        fn_8013F580(arg0, (void *)arg1, tmp);
+        fn_8013FAC4(arg0, arg1, tmp);
+        ((void (*)(void *, void *, void *))fn_8013FDB0)(arg0, (void *)arg1, tmp);
+        fn_8013F918(arg0, (void *)arg1, tmp);
         fn_8014052C(arg0, arg1, (unsigned char *)tmp);
-        fn_80140728(arg0, (void *)arg1, (void *)tmp);
-        fn_80140614(arg0, (void *)arg1, (void *)tmp);
+        fn_80140728(arg0, (void *)arg1, tmp);
+        fn_80140614(arg0, (void *)arg1, tmp);
         if (lbl_8055E1BC != 0) {
             obj = *(void **)((char *)arg0 + 0x54);
             vr = ((VObj *)obj)->check(lbl_8032CA64);
