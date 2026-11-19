@@ -29,6 +29,7 @@ void fn_80167838(void) {
 void fn_8016783C(void) {
 }
 
+/* Empty stub. */
 void fn_80167840(void) {
 }
 
