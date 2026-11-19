@@ -1279,26 +1279,28 @@ extern "C" s32 fn_80169160(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
 #pragma cplusplus reset
 #pragma pop
 
-s32 fn_801698B8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 var_r3, var_r4, var_r5;
-    s32 mid;
-    s32 ret;
-    var_r3 = arg0;
-    var_r4 = arg1;
-    if (var_r3 > arg2 - var_r3)
-        var_r3 = arg2 - var_r3;
-    if (var_r4 > arg3 - var_r4)
-        var_r4 = arg3 - var_r4;
-    var_r5 = var_r3;
-    if (var_r4 < var_r3)
-        var_r5 = var_r4;
-    if (var_r4 > var_r3)
-        var_r3 = var_r4;
-    mid = var_r3 + var_r5 / 2;
-    if (mid < 3) return 3;
-    ret = 1;
-    if (mid < 5) ret = 2;
-    return ret;
+/* Returns a placement tier for a grid cell based on its distance from the grid edges:
+ * 3 near the edge or corner, 2 for a middle ring, 1 for the interior. */
+s32 fn_801698B8(s32 xIndex, s32 yIndex, s32 xCount, s32 yCount) {
+    s32 xDist, yDist, minDist;
+    s32 edgeScore;
+    s32 tier;
+    xDist = xIndex;
+    yDist = yIndex;
+    if (xDist > xCount - xDist)
+        xDist = xCount - xDist;
+    if (yDist > yCount - yDist)
+        yDist = yCount - yDist;
+    minDist = xDist;
+    if (yDist < xDist)
+        minDist = yDist;
+    if (yDist > xDist)
+        xDist = yDist;
+    edgeScore = xDist + minDist / 2;
+    if (edgeScore < 3) return 3;
+    tier = 1;
+    if (edgeScore < 5) tier = 2;
+    return tier;
 }
 
 s32 fn_80169928(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
