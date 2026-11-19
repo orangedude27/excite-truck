@@ -3178,12 +3178,12 @@ loop_80:
                     var_f7 = lbl_80561984;
                     temp_f2 = lbl_805619B0 + (lbl_805619CC + (lbl_805619C8 * (f32) temp_r8)) + (lbl_805619C8 * (f32) (temp_r8 - (temp_r6 - temp_r4_6)));
                     temp_f0_2 = ((lbl_8055E3C8 - M2C_FIELD(temp_r7, f32 *, 8)) - temp_f2) / ((lbl_805619D0 + temp_f2) - temp_f2);
-                                         if (var_f7 < temp_f0_2) {
-                         var_f7 = temp_f0_2;
-                     }
-                     if (var_f7 > lbl_80561980) {
-                         var_f7 = lbl_80561980;
-                     }
+                    if (var_f7 < temp_f0_2) {
+                        var_f7 = temp_f0_2;
+                    }
+                    if (var_f7 > lbl_80561980) {
+                        var_f7 = lbl_80561980;
+                    }
                     temp_r3_10 = (s32) (lbl_80561980 + (var_f7 * lbl_80561984));
                     if (temp_r3_10 != 0) {
                         temp_r4_7 = M2C_FIELD(arg0, void **, 0x88);
@@ -3239,12 +3239,12 @@ loop_80:
                     if (var_f30 != lbl_80561980) {
                         var_f4 = lbl_80561984;
                         temp_f0_3 = ((lbl_8055E3C8 - *(f32 *)((u8 *)*M2C_FIELD(arg0, s32 **, 0x4C) + temp_r22_2 + 8)) - lbl_80561980) / (var_f29 - lbl_80561980);
-                                                  if (var_f4 < temp_f0_3) {
-                              var_f4 = temp_f0_3;
-                          }
-                          if (var_f4 > lbl_80561980) {
-                              var_f4 = lbl_80561980;
-                          }
+                        if (var_f4 < temp_f0_3) {
+                            var_f4 = temp_f0_3;
+                        }
+                        if (var_f4 > lbl_80561980) {
+                            var_f4 = lbl_80561980;
+                        }
                         temp_r3_13 = M2C_FIELD(arg0, void **, 0x84);
                         temp_f1_3 = var_f30 + (var_f4 * (lbl_80561980 - var_f30));
                         if (temp_f1_3 != M2C_FIELD(temp_r3_13, f32 *, 8)) {
@@ -3266,15 +3266,19 @@ loop_80:
 
 extern f64 fn_8002F234(f32, f32, f32, f32, f32);
 #pragma use_lmw_stmw off
+struct Item70DA8 { char pad[0x24]; float v24, v28, v2c, v30, v34; };
 void fn_80170DA8(void *arg0, void *arg1) {
     u8 *base;
     u8 *item;
     s32 index;
     s32 next;
     volatile f32 sp1C, sp18, sp14, sp10, spC, sp8;
-    f32 x, y, dx, dy;
-    f32 distance = 0.0f;
-    f32 threshold = 0.0f;
+    f32 x;
+    f32 y;
+    f32 dx;
+    f32 dy;
+    register f32 distance;
+    register f32 threshold;
     index = *(s32 *)((u8 *)arg0 + 0x10);
     next = index + 1;
     if (next < *(s32 *)(*(u8 **)((u8 *)arg0 + 4) + 4)) {
