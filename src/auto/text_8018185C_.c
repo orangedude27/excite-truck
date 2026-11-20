@@ -288,14 +288,6 @@ float fn_80181A14(void *truck) {
 #undef dirtyParams
 }
 
-typedef struct {
-    char pad0[0x20];
-    float normal[8];
-    char pad1[8];
-    float dirty[8];
-    float alt[14];
-} TuningParams_80181A48;
-
 float fn_80181A48(void *arg0) {
     volatile float *p = lbl_804348E8;
     float f;
