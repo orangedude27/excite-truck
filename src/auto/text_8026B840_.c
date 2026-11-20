@@ -236,6 +236,7 @@ void fn_8026B8A0(void) {
     fn_80015B20((f32 *)lbl_80499050, m2, (f32 *)lbl_80499050);
 }
 #pragma pop
+#pragma dont_inline fn_8026BFF0
 
 BOOL fn_8026BFF0(s32 mode) {
     /* Return TRUE for view modes 3 and 4, FALSE for any other mode id. */
