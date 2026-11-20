@@ -2927,6 +2927,7 @@ extern "C" void fn_8018A2C0(void *car, void **collector) {
 #pragma scheduling on
 #pragma push
 #pragma opt_common_subs off
+#pragma scheduling invalid_target
 
 void fn_8018A654(void *arg0, void *arg1) {
     void *result;
