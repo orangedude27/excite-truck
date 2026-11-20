@@ -4941,7 +4941,6 @@ extern "C" void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm
 
 #pragma use_lmw_stmw off
 #pragma push
-#pragma opt_propagation off
 #pragma dont_inline off
 /* Inline LinkList<BasicSound, 0xC8> helpers (asserting GetFront / PopFront / PushBack). */
 static inline void *SndPrioListImplIter_Deref(void *node) {
@@ -4990,8 +4989,8 @@ extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0
     extern void* fn_8002F634(void*, void* (*)(void*, int), s32, s32);
     extern void fn_800F8520(void*);
     extern void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540(void*, int);
-    u8* self = (u8*)arg0;
     u8 arr[0x600];
+    u8* self = (u8*)arg0;
     fn_8002F53C(arr, fn_800F8520, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540, 0xC, 0x80);
     while (*(s32*)(self + 0xC) != 0) {
         u8* elt = SndPrioList_GetFront(self + 0xC);
