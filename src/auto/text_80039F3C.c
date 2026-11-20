@@ -683,43 +683,49 @@ int fn_8003AF1C(int arg0, int arg1, int arg2) {
 #pragma opt_propagation off
 int fn_8003B0B0(void *arg0, void *arg1) {
     const char *msg = lbl_80302848;
-    int slot = lbl_8055D8E8;
     unsigned char *base = lbl_8037B820;
-    int offset = slot * sizeof(DVDLowContext);
-    unsigned char *entry = base + offset;
+    int offset;
+    int slot = lbl_8055D8E8;
+    unsigned char *entry;
     unsigned char *callbackEntry;
     unsigned int one = 1;
-    unsigned int flag = entry[8];
+    unsigned int flag;
     int next;
-    int index;
     int result;
-
+    offset = slot * 0x20;
+    entry = base + offset;
+    flag = entry[8];
     lbl_8055D8E0 = one;
-    if (((-flag | flag) >> 31) == 1U) {
+    if (((-flag) | flag) >> 31 == 1U)
+    {
         OSReport(msg + 0x218, slot);
         OSReport(msg + 0x250);
-        for (;;) {}
+        for (;;)
+        {
+        }
     }
-    if ((*(unsigned int *)(entry + 0xC) + 0x01150000U) != 0xDAEDU) {
+    if (((*((unsigned int *)(entry + 0xC))) + 0x01150000U) != 0xDAEDU)
+    {
         OSReport(msg + 0x280);
-        for (;;) {}
+        for (;;)
+        {
+        }
     }
     ((unsigned int *)base)[slot * 8] = (unsigned int)arg1;
-    *(unsigned int *)(entry + 4) = one;
-    entry[8] = one;
+    *((unsigned int *)((base + offset) + 4)) = one;
+    (base + offset)[8] = one;
     next = slot + 1;
     lbl_8055D8E8 = next;
-    if (next >= 4) lbl_8055D8E8 = 0;
-    callbackEntry = (unsigned char *)lbl_8037B820 + offset;
-    index = lbl_8055D8E4 + 1;
-    lbl_8055D8E4 = index;
-    if (index >= 4) {
-        index = 0;
-        lbl_8055D8E4 = 0;
+    if (next >= 4)
+    {
+        lbl_8055D8E8 = 0;
     }
-    lbl_8055D8FC[index * 0x20] = 0x12;
-    result = IOS_IoctlAsync(lbl_80558E18, 0x12, lbl_8055D8FC + lbl_8055D8E4 * 0x20, 0x20, arg0, 0x20, (void (*)(int, void *))doTransactionCallback, callbackEntry);
-    if (result != 0) {
+    callbackEntry = (unsigned char *)&((DVDLowContext *)lbl_8037B820)[slot];
+    nextCommandBuf();
+    lbl_8055D8FC[lbl_8055D8E4 * 0x20] = 0x12;
+    result = IOS_IoctlAsync(lbl_80558E18, 0x12, lbl_8055D8FC + (lbl_8055D8E4 * 0x20), 0x20, arg0, 0x20, (void (*)(int, void *))doTransactionCallback, callbackEntry);
+    if (result != 0)
+    {
         OSReport(msg + 0x4E8, result);
         callbackEntry[8] = 0;
         return 0;
