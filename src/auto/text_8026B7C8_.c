@@ -9,7 +9,7 @@ extern unsigned char lbl_8049A028[];
 extern unsigned char lbl_8055F4B8;
 extern unsigned int lbl_8055F4C0;
 extern int lbl_8055F4C4;
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma opt_propagation off
 void fn_8026B7C8(void) {
     fn_8000D838(&lbl_8055F4B8);
