@@ -1509,6 +1509,7 @@ void fn_800111A4(char *name, s32 a1, s32 a2, s32 a3, s32 a4, f32 f) {
     entry->unk_0x38 = a4;
     entry->unk_0x3C = f;
     entry->unk_0x34 = a3;
+#pragma scheduling invalid_target
 }
 #pragma ppc_psq_save reset
 /* RealName: HudList_DrawAll. Draws each of the three 0x40-byte-entry HUD lists
@@ -1619,8 +1620,10 @@ extern void fn_801E4FF4(void);
 extern f32 lbl_8056025C, lbl_80560264, lbl_80560280, lbl_805602E0, lbl_805602E4;
 extern f32 lbl_805602E0;
 extern f32 lbl_805602E4;
-#pragma scheduling on
-void fn_80011630(s32 arg0, s32 arg1, s32 arg2,
+ #pragma scheduling on
+ #define FPRBIND(n, r) register float n __a##sm(r)
+ void fn_80011630(s32 arg0, s32 arg1, s32 arg2,
+
                  register f32 farg0, register f32 farg1, register f32 farg2, register f32 farg3,
                  register f32 farg4, register f32 farg5, register f32 farg6, register f32 farg7,
                  register f32 arg_sp8, register f32 arg_spC) {
