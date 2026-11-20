@@ -3067,7 +3067,7 @@ void fn_802D3420(void) {
     ident[2][1] = zero;
     ident[2][2] = zero;
     ident[2][3] = zero;
-    fn_802D0DD4(((void)ident, mtx), ident);
+    fn_802D0DD4(mtx, ident);
     GXLoadPosMtxImm(mtx, 0);
     C_MTXOrtho(proj, lbl_80564F88, lbl_80564FBC, lbl_80564F88, lbl_80564FE0, lbl_80564F8C, lbl_80564FCC);
     GXSetProjection(proj, 1);
