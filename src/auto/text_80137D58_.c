@@ -289,7 +289,6 @@ void fn_801381B4(void *arg0) {
     v[0x14] = t1; v[0x17] = t0; v[0x15] = t3; v[0x16] = t2;
     v[0x18] = t5; v[0x1b] = t4; v[0x19] = t7; v[0x1a] = t6;
     v[0x2c] = t9; v[0x2f] = t8; v[0x2d] = t11; v[0x2e] = t10;
-    base = (unsigned char *)arg0;
     for (i = 0; i < *(int *)(base + 0x2c); i++) {
         t0 = p[0]; t1 = p[3]; p[0] = t1; p[3] = t0;
         t0 = p[1]; t1 = p[2]; p[1] = t1; p[2] = t0;
