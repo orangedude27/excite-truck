@@ -443,6 +443,10 @@ void fn_802AA9D4(UnkAA9D4 *arg0, void *arg1, float delta) {
     extern float lbl_805649F4, lbl_80564A08, lbl_80564A04, lbl_80564A48, lbl_80564A4C, lbl_80564A50;
     extern float fn_80287BC8(float, float);
     extern void fn_8028E590(int, Vec *, Vec *, float);
+    /* Per-frame emitter update: ramp the emission amount toward 0 or 1 at
+     * 8.0/sec (clamped), then, while the amount is above a random threshold,
+     * place the emitter in the object's local space (forward*halfWidth,
+     * side*halfDepth, up*randomHeight) and dispatch an emission at that point. */
     Vec pos, dir, callpos, calldir, side, forward;
     float width = lbl_805649F4 * arg0->width;
     float depth = lbl_805649F4 * arg0->depth;
