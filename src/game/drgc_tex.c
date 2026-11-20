@@ -228,7 +228,7 @@ int fn_802D76DC(int format) {
 #pragma dont_inline reset
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling off
 void fn_802D7780(void *arg0, void *arg1) {
     u32 filter = *(u32 *)((u8 *)arg1 + 0x10);
     u32 opts = *(u32 *)((u8 *)arg1 + 0x18);
@@ -395,6 +395,7 @@ copied_name:
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void *fn_802D7D98(void *arg0, void *arg1) {
+    u32 type = *(u32 *)arg0;
     void *texture;
     void *obj = arg0;
     int format;
@@ -404,13 +405,11 @@ void *fn_802D7D98(void *arg0, void *arg1) {
     char *dst;
     unsigned char ch;
     int mult;
-    u32 type;
     unsigned int size;
     unsigned int lod;
     char *buf;
     char *name = (char *)arg1;
     format = -1;
-    type = *(u32 *)obj;
     if (type == 0x47 || type == 3) {
         format = 6;
     } else if (type == 0x45 || type == 2) {
@@ -468,7 +467,7 @@ copied_name:
     *(int *)((char *)texture + 0xD4) = mult;
     DCFlushRange(*(void **)((char *)texture + 0xD0), mult);
     mult = *(int *)((char *)obj + 0x20);
-    lod = (unsigned int)((((mult ^ 2) >> 1) - (mult & (mult ^ 2)))) >> 31;
+    lod = (unsigned int)((((mult ^ 2) >> 1) - ((mult ^ 2) & mult))) >> 31;
     GXInitTexObj((char *)texture + 0x24, buf, (unsigned short)width, (unsigned short)height, format, 1, 1, lod);
     if (lod != 0) {
         GXInitTexObjLOD((char *)((unsigned int)texture + 0x24), 5, 1, lbl_80565018, (float)(*(int *)((char *)obj + 0x20) - 1), lbl_8056501C, 1, 1, 0);
@@ -660,16 +659,15 @@ void fn_802D81C4(void *arg0, int arg1) {
 extern char lbl_8034C5AC[];
 void fn_802D86BC(void *arg0, int arg1) {
     void **data = *(void ***)((char *)arg0 + 0x2c);
-    s32 width = *(s32 *)((char *)arg0 + 0x24);
-    s32 height = *(s32 *)((char *)arg0 + 0x28);
+    int width = *(int *)((char *)arg0 + 0x24);
+    int height = *(int *)((char *)arg0 + 0x28);
     unsigned char *image = (unsigned char *)data[1];
     unsigned char *palette = (unsigned char *)data[0];
     unsigned char *copy;
     unsigned char c;
     int n = arg1 != 0 ? 128 : 128;
     int p;
-    int y, offset, x;
-    int iwidth = (int)width;
+    int x, y, offset;
     for (p = 0; p < n; p++) {
         c = palette[0]; palette[0] = palette[3]; palette[3] = c;
         c = palette[1]; palette[1] = palette[2]; palette[2] = c;
@@ -681,14 +679,14 @@ void fn_802D86BC(void *arg0, int arg1) {
     copy = (unsigned char *)fn_8012850C((void *)(width * height), lbl_8034C5AC);
     memcpy(copy, image, width * height);
     for (y = 0, offset = 0; y < height; y++, offset += width) {
-        for (x = 0; x < iwidth; x++) {
-            image[((y / 4) * (iwidth / 8) + x / 8) * 32 + (y % 4) * 8 + x % 8] = copy[offset + x];
+        for (x = 0; x < width; x++) {
+            image[((y / 4) * (width / 8) + x / 8) * 32 + (y % 4) * 8 + x % 8] = copy[offset + x];
         }
     }
     fn_80128670(copy);
 }
 
-#pragma processor 750
+#pragma processor reset
 void *fn_802D8A84(void *arg0, void *arg1) {
     struct TexHeader { char pad[0x24]; char obj[32]; };
     void *texture;
@@ -749,7 +747,6 @@ copied_name:
     fn_802D7780(texture, obj);
     return texture;
 }
-
 /* Frees the drgc texture-cache pool (lbl_8055FE28, 0x1C2 slots of 0xF4 bytes
  * each) back to the heap, then clears the global pointer. */
 void fn_802D8DA0(void) {
@@ -1012,15 +1009,15 @@ extern void GXSetTexCopyDst(unsigned short, unsigned short, int, unsigned char);
 extern void GXSetZMode(int, int, int);
 extern void GXSetColorUpdate(int);
 extern void fn_802CFF50(void);
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_802D9418(void) {
     void *obj;
-    unsigned int s, t;
-    unsigned short zero = 0;
+    unsigned int s, zero, t;
     fn_802D2614();
     obj = (char *)lbl_8055FE24 + 0x24;
     s = GXGetTexObjWrapS(obj) & 0xFFFF;
     t = GXGetTexObjWrapT(obj) & 0xFFFF;
+    zero = 0;
     GXSetTexCopySrc(zero, zero, s, t);
     GXSetTexCopyDst(s, t, GXGetTexObjMipMap(obj), zero);
     GXSetZMode(1, 7, 1);
@@ -1029,7 +1026,6 @@ void fn_802D9418(void) {
     lbl_8055FE24 = zero;
     fn_802CFF50();
 }
-#pragma scheduling reset
 extern void *lbl_8055FE28;
 extern char lbl_8034C5B8[];
 extern void *fn_8012850C(void *, void *);
@@ -1089,6 +1085,7 @@ void fn_802D9628(register void *arg0, register int arg1, register int arg2, regi
     register int mip;
     int base;
     int tile;
+    int fmt;
     unsigned int ysign;
     unsigned int yoff;
     unsigned int xsign;
@@ -1098,8 +1095,8 @@ void fn_802D9628(register void *arg0, register int arg1, register int arg2, regi
     mip = GXGetTexObjMipMap((char *)arg0 + 0x24);
     wrap = GXGetTexObjWrapS((char *)arg0 + 0x24) & 0xFFFF;
     GXGetTexObjWrapT((char *)arg0 + 0x24);
-    base = (int)GXGetTexObjFmt((char *)arg0 + 0x24);
-    base -= 0x40000000;
+    fmt = (int)GXGetTexObjFmt((char *)arg0 + 0x24);
+    base = fmt - 0x40000000;
     if (mip == 0) {
         tile = arg1 / 8 + (arg2 / 8) * (wrap / 8);
         base += tile << 5;
