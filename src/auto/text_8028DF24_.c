@@ -11,6 +11,7 @@ extern double fn_8002F208(double);
 extern int lbl_8055F708;
 extern double lbl_80564418;
 extern float lbl_8055F710;
+static inline float fn_8028DF24_finish(double x) { return (float)fn_8002F208(x); }
 void fn_8028DF24(void) {
     float f;
     fn_8000D838(&lbl_8055F708);
