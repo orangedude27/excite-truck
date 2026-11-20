@@ -21510,7 +21510,7 @@ extern "C" u32 lbl_8031EC40[];
 extern "C" u8  lbl_802F4858[];
 extern "C" u8  lbl_802F4958[];
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling reset
 extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
     u16 *dest;
     u32 *pal;
