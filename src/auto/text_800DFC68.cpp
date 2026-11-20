@@ -4,6 +4,14 @@ extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
 extern "C" const char lbl_80320BD8[];
 extern "C" f32 lbl_80560EE8;
+extern "C" f64 lbl_80560EF0;
+extern "C" f64 lbl_80560EF8;
+static inline f32 cvtByteU32(s32 v) {
+    union { f64 d; u32 w[2]; } u;
+    u.w[1] = 0x43300000;
+    u.w[0] = (u32)v ^ 0x80000000;
+    return (f32)(u.d - lbl_80560EF0);
+}
 extern "C" s32 IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(void *, u8);
 extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(s32, u8);
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(f32 *, f32 *, u8, f32 (*)[], s32, u8);
@@ -99,7 +107,7 @@ extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hb
     u8 *arr;
     u8 n;
     u8 cnt;
-    int *table;
+    u8 *table;
     u8 *data;
     u8 *m;
     u32 matRes;
@@ -123,7 +131,7 @@ extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hb
     if (set8 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320C14, 0xC1, lbl_80320C24);
     }
-    table = (int *)(*(int *)(set + 8) + 0xC);
+    table = (u8 *)(*(int *)(set + 8) + 0xC);
     data = res + *(int *)(res + 0x60);
     n = data[0x12];
     w0 = *(int *)data;
@@ -144,7 +152,7 @@ extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hb
     }
     m = (u8 *)MEMAllocFromAllocator(lbl_8055DDF0, 0x5C);
     if (m != 0) {
-        matRes = *(int *)(set + 8) + table[*(u16 *)(data + 0x10)];
+        matRes = *(int *)(set + 8) + *(int *)(table + *(u16 *)(data + 0x10) * 4);
         if (m != 0) {
             m = (u8 *)__ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(m, (void *)matRes, set);
         }
@@ -169,7 +177,7 @@ extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hb
                     *(int *)(*(u8 **)(self + 0xFC) + off + 4) = 0;
                     m = (u8 *)MEMAllocFromAllocator(lbl_8055DDF0, 0x5C);
                     if (m != 0) {
-                        matRes = *(int *)(set + 8) + table[*(u16 *)entry];
+                        matRes = *(int *)(set + 8) + *(int *)(table + *(u16 *)entry * 4);
                         if (m != 0) {
                             m = (u8 *)__ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(m, (void *)matRes, set);
                         }
