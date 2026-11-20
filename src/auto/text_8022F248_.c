@@ -304,9 +304,9 @@ void *fn_8022F638(char *arg0, unsigned char arg1, unsigned char arg2, int arg3, 
         fn_8022FF90(node);
         *((unsigned char *)node + 0x9d) = arg2;
         width = 0x2d0;
-        e8 = lbl_805635E8;
-        *((unsigned char *)node + 0x9c) = arg1;
+        e8 = 30.0f;
         height = 0x1e0;
+        *((unsigned char *)node + 0x9c) = arg1;
         ec = lbl_805635EC;
         *(float *)((char *)node + 0xa0) = e8;
         f0 = lbl_805635F0;
