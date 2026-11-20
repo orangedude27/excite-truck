@@ -1134,13 +1134,14 @@ extern char *strchr(const char *, int);
 extern int fn_802C6FC0(void *, int, int);
 extern int fn_802C7830(void);
 extern int fn_801284F8(int, void *);
-extern char lbl_802F9AE0[]; __declspec(section ".sdata") extern char lbl_8055B018[], lbl_8055B020[], lbl_8055B028[], lbl_8055B030[], lbl_8055B038[], lbl_8055B040[], lbl_8055B048[], lbl_8055B050[], lbl_8055B058[], lbl_8055B060[], lbl_8055B068[];
+extern unsigned char lbl_802F9AE0[]; __declspec(section ".sdata") extern char lbl_8055B018[], lbl_8055B020[], lbl_8055B028[], lbl_8055B030[], lbl_8055B038[], lbl_8055B040[], lbl_8055B048[], lbl_8055B050[], lbl_8055B058[], lbl_8055B060[], lbl_8055B068[];
 void fn_801EE0E0(void *arg0, char *arg1, int arg2, int arg3, char *arg4) {
 #define V1(o,sl,t,a) (((t)(*(void ***)(o))[(sl)/4])(o,a))
 #define V2(o,sl,t,a,b) (((t)(*(void ***)(o))[(sl)/4])(o,a,b))
 #define V8(o,sl,t,a,b,c,d,e,f,g) (((t)(*(void ***)(o))[(sl)/4])(o,a,b,c,d,e,f,g))
 #define C(n) text[n] = lbl_802F9AE0[n];
     char nameBuf[0x100];
+    void ** volatile table;
     char small[0x40];
     char big3A0[0x100];
     char big2A0[0x100];
@@ -1151,11 +1152,10 @@ void fn_801EE0E0(void *arg0, char *arg1, int arg2, int arg3, char *arg4) {
     char buf60[0x40];
     char buf20[0x20];
     char buf10[0x10];
-    volatile char text[0x20];
+    char text[0x20];
     float val, fmag;
     volatile int idx;
     int i, j, k, v, h, have;
-    void ** volatile table;
     void **p29, **p3_6, **p15, **p3_10;
     void *found, *node, *obj, *tmp;
     char *cp;
