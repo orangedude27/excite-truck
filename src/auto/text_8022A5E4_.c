@@ -575,19 +575,20 @@ void fn_8022B390(const char *unusedLabel, const char *text, int maxChars, int *o
 #pragma processor 750
 int fn_8022B498(int unused, const char *arg1)
 {
-    int max;
+    struct Holder { int m; } h;
+    int *max = &h.m;
     register void *ctx;
     int value;
 
     ctx = fn_8022CA2C();
     value = *(int *)((char *)ctx + 0x64);
-    max = 0;
+    *max = 0;
     if (value != 0) {
-        max = fn_802C4EE4(value);
+        *max = fn_802C4EE4(value);
     } else {
         int sub = *(int *)((char *)ctx + 0x68);
         if (sub != 0) {
-            max = fn_802C51C0(sub);
+            *max = fn_802C51C0(sub);
         }
     }
 
@@ -630,13 +631,13 @@ int fn_8022B498(int unused, const char *arg1)
         }
 
         value = (height + value) - width;
-        if (max > value) {
-            value = max;
+        if (*max > value) {
+            value = *max;
         }
         return value;
     }
 
-    return max;
+    return *max;
 }
 #pragma pop
 /* One of the 0x100 UI text styles of lbl_80490968, read from styles.val;
