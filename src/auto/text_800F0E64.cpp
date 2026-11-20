@@ -2195,6 +2195,8 @@ extern "C" s32 fn_800F420C(s32 object, s32 shouldDelete) {
 
 extern "C" const char lbl_80324E40[];
 extern "C" const char lbl_80324E5C[];
+#define kLoaderSourceFile lbl_80324E40 /* "snd_SoundArchiveLoader.cpp" */
+#define kMsgNullAllocator lbl_80324E5C  /* "NW4HBM:Pointer must not be NULL (allocater)" */
 
 // The stream a SoundArchive opens for the loader: detail::OpenFileStream,
 // OpenGroupStream and OpenGroupWaveDataStream all return one.  The two leading
