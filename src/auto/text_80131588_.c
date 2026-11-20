@@ -306,29 +306,41 @@ s32 fn_80131B10(s32 object, s32 deleteFlag) {
     return object;
 }
 
-s32 fn_80131B50(void *arg0) {
-    s32 count = *(s32 *)((char *)arg0 + 0xC);
-    s32 off, hash, i;
-    hash = 0xBABBA;
-    off = 0;
-    for (i = 0; i < count; i++) {
-        char *base = *(char * volatile *)((char *)arg0 + 0x10);
-        char *entry = base + off;
-        char *s = *(char **)entry;
-        while (*s != 0) {
-            hash += (s8)*s + 0xBAF;
-            s++;
-        }
-        s = *(char **)(entry + 4);
-        while (*s != 0) {
-            hash += (s8)*s;
-            hash += (s32)0xFAC0000;
-            hash -= 0x5355;
-            s++;
-        }
-        off += 8;
+s32 fn_80131B50(void *arg0)
+{
+  s32 count = *((s32 *) (((char *) arg0) + 0xC));
+  s32 hash;
+  s32 new_var[2];
+  hash = 0xBABBA;
+  new_var[0] = 0;
+  for (new_var[1] = 0; new_var[1] < count; new_var[1]++)
+  {
+    char *base = *((char * volatile *) (((char *) arg0) + 0x10));
+    char *entry = base + new_var[0];
+    char *s = *((char **) entry);
+    while (*s)
+    {
+      hash += ((s8) (*s));
+      hash += 0xBAF;
+      s++;
     }
-    return hash;
+
+    s = *((char **) (entry + 4));
+    while ((*s) != 0)
+    {
+      hash += (s8) (*s);
+      hash += (s32) 0xFAC0000;
+      hash -= 0x5355;
+      s++;
+      if (((!count) && (!count)) && (!count))
+      {
+      }
+    }
+
+    new_var[0] += 8;
+  }
+
+  return hash;
 }
 
 #pragma push
