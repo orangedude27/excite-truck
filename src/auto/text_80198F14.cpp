@@ -2361,7 +2361,8 @@ extern "C" void fn_8019ECC4(void* shape, s32 owner, s32 swapBytes) {
 }
  #pragma use_lmw_stmw on
  
- static inline void fn8019EDB8Swap4(u8 *p) {
+ #pragma inline fn8019EDB8Swap4
+static inline void fn8019EDB8Swap4(u8 *p) {
      u8 a = p[0];
      u8 b = p[1];
      p[0] = p[3];
