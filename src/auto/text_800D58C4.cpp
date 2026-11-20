@@ -4016,7 +4016,6 @@ extern "C" void GXSetCurrentMtx(u32);
 #pragma push
 #pragma optimize_for_size on
 extern "C" void LoadMtx__Q34nw4r3lyt4PaneFRCQ34nw4r3lyt8DrawInfo(void* self_, void* info_) {
-    extern float lbl_80560EA8;
     unsigned char* ip = (unsigned char*)info_;
     unsigned char* sp = (unsigned char*)self_;
     float mtx[3][4];
