@@ -3,14 +3,12 @@
 
 extern char lbl_8055F960[8];
 extern int fn_8000D838(void*);
-extern int lbl_8055F968;
-extern float lbl_8055F96C;
+struct Pair8055F968 { unsigned int a; float b; };
+extern struct Pair8055F968 lbl_8055F968;
 extern float lbl_80564BB4;
-#pragma scheduling invalid_target
-#pragma opt_propagation off
-#pragma opt_dead_assignments off
+#pragma scheduling reset
 void fn_802B05F4(void) {
     fn_8000D838(&lbl_8055F960);
-    lbl_8055F968 = 0xFFFF0000;
-    lbl_8055F96C = lbl_80564BB4;
+    lbl_8055F968.a = 0xFFFF0000;
+    lbl_8055F968.b = lbl_80564BB4;
 }
