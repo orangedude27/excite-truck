@@ -4255,10 +4255,19 @@ static inline BOOL fn_80060CC0_CanQueue(WPADCommandQueue* pQueue, s8 num) {
 #define WPADiPushCommandInline(pQueue, localCommand) \
     { \
         WPADCommand cmdCopy; \
+        f64* cmdSrc; \
+        f64* cmdDst; \
         BOOL queueEnabled; \
         BOOL innerEnabled; \
         s8 queueSize; \
-        memcpy(&cmdCopy, &(localCommand), sizeof(WPADCommand)); \
+        cmdSrc = (f64*)&(localCommand); \
+        cmdDst = (f64*)&cmdCopy; \
+        cmdDst[0] = cmdSrc[0]; \
+        cmdDst[1] = cmdSrc[1]; \
+        cmdDst[2] = cmdSrc[2]; \
+        cmdDst[3] = cmdSrc[3]; \
+        cmdDst[4] = cmdSrc[4]; \
+        cmdDst[5] = cmdSrc[5]; \
         queueEnabled = OSDisableInterrupts(); \
         innerEnabled = OSDisableInterrupts(); \
         queueSize = (pQueue)->back - (pQueue)->front; \
