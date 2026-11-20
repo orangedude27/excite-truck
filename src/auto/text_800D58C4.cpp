@@ -3291,7 +3291,7 @@ void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *s
     *(volatile u32 *)((u8 *)dst + 0x24) = zero;
     *(volatile u32 *)((u8 *)dst + 4) = zero;
     *(volatile u32 *)((u8 *)dst + 8) = zero;
-    *(void **)dst = lbl_8032012C;
+    *(volatile u32 *)dst = (u32)lbl_8032012C;
     *(u32 *)((u8 *)dst + 0x10) = zero;
     *(void **)((u8 *)dst + 0x14) = list14;
     *(void **)((u8 *)dst + 0x18) = list14;
