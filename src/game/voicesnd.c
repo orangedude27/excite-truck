@@ -179,8 +179,9 @@ void fn_8020A8E8(void *arg0) {
     off = 0;
     while (i < 0x200) {
         int *list = *(int **)((char *)arg0 + 4);
-        if (*(int *)((char *)list + off) != 0) {
-            fn_802E317C(lbl_8033C388);
+        int val = *(int *)((char *)list + off);
+        if (val != 0) {
+            fn_802E317C(lbl_8033C388, val);
         }
         i++;
         off += 4;
@@ -362,7 +363,8 @@ void fn_8020AC20(void) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-void fn_8020AC2C(void *arg0) {
+extern "C" void fn_8020AC2C(void *arg0) {
+    class VoiceObj { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); };
     float low, high, volume, x, v;
     void *p;
     int i, j, mode, now;
@@ -375,8 +377,7 @@ void fn_8020AC2C(void *arg0) {
     if (lbl_8055EE00 > 200U) lbl_8055EE00 = 200;
     high = lbl_805632B4;
     low = lbl_805632B0;
-    (*(volatile int *)((char *)(arg0) + (8))) = now;
-    for (i = 0; i < 512; i++) {
+    for (i = 0, (*(int *)((char *)(arg0) + 8)) = now; i < 512; i++) {
         p = (*(void ***)((char *)(arg0) + (4)))[i];
         if (p) {
             mode = 1;
@@ -428,7 +429,7 @@ void fn_8020AC2C(void *arg0) {
                 (*(int *)((char *)(p) + (0x44)))++;
                 if (!(*(unsigned char *)((char *)(p) + (0x3e))) && !((float)__fabs((*(float *)((char *)(p) + (0x24)))) <= lbl_80558DC4)) (*(unsigned int *)((char *)(p) + (0x50))) += lbl_8055EE00;
                 if (!(*(unsigned char *)((char *)(p) + (0x3d))) && (*(unsigned int *)((char *)(p) + (0x50))) > (*(unsigned int *)((char *)(p) + (0x4c))))
-                    ((void (*)(void *))(*(void ***)p)[8])(p);
+                    ((VoiceObj *)p)->v6();
             } else {
                 (*(unsigned int *)((char *)(p) + (0x50))) = 0;
             }
@@ -467,7 +468,8 @@ extern "C" void *fn_8020AF18(void *arg0, char *name, int unused, unsigned char f
                 *(unsigned char *)(obj + 0x3e) = 0;
                 *(unsigned char *)(obj + 0x3c) = flag;
                 *(void **)(obj + 0x10) = fn_802E5AE8(name);
-                if (*(void **)(obj + 0x10) != 0) {
+                if (*(void **)(obj + 0x10) == 0) {
+                } else {
                     { char *copy_src = name; int copy_left = 0x40; char *copy_dst = buffer;
                     goto copy_check;
 copy_next:
