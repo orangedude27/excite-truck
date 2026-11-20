@@ -870,7 +870,7 @@ void fn_8022BB60(float *arg0, float *arg1, float farg0, float farg1) {
     *arg1 -= farg1 - (float)(int)farg1;
 }
 #pragma pop
-const double lbl_805635A0 = 4503599627370496.0;
+extern double lbl_805635A0;
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
 unsigned int fn_8022BC30(unsigned int arg0, unsigned int arg1, float farg0) {
