@@ -4333,22 +4333,29 @@ extern "C" void fn_801A2474(void *arg0) {
 #pragma scheduling on
 extern "C" char lbl_80333818[];
 extern "C" void fn_801A2674(void*, s32, s32, f32);
-#pragma scheduling invalid_target
+typedef struct {
+    s32 w0, w4, w8, wC;
+    f32 f10, f14;
+    s32 w18, w1C, w20;
+    s32 pad[3];
+    s32 w30;
+} Obj801A25F8;
+#pragma scheduling on
 extern "C" void* fn_801A25F8(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
+    f32 init = 1.0f;
     *(s32*)((u8*)arg0 + 0xC) = arg1;
     *(s32*)((u8*)arg0 + 0x30) = arg2;
     *(s32*)((u8*)arg0 + 4) = arg3;
     *(s32*)((u8*)arg0 + 8) = 0;
     *(s32*)((u8*)arg0 + 0x18) = 0x52414744;
-    *(f32*)((u8*)arg0 + 0x10) = lbl_805622E0;
-    *(f32*)((u8*)arg0 + 0x14) = lbl_805622E0;
+    *(f32*)((u8*)arg0 + 0x10) = init;
+    *(f32*)((u8*)arg0 + 0x14) = init;
     *(s32*)((u8*)arg0 + 0x20) = 0x64;
     *(s32*)((u8*)arg0 + 0x1C) = 0;
     *(void**)arg0 = lbl_80333818;
     ((void (*)(void*, s32, s32))fn_801A2674)(arg0, 0, -1);
     return arg0;
 }
-#pragma scheduling on
 /* Set the tail fields of the object built by fn_801A25F8: an extent/scale float
  * at +0x24 and two integer parameters at +0x28 and +0x2C. */
 extern "C" void fn_801A2674(void* obj, s32 param28, s32 param2C, f32 extent) {
