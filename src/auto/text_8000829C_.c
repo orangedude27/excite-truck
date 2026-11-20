@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 void fn_8000D838(void *);
-void fn_801312EC(void *, void *);
+void fn_801312EC();
 extern unsigned char lbl_802FB6E0[];
 extern unsigned char lbl_8034EF20[];
 extern unsigned int lbl_8055D358;
@@ -17,16 +17,19 @@ struct Hdr {
     struct Init init;
     char pad[0x1F0];
 };
+#pragma scheduling invalid_target
 void fn_8000829C(void) {
     register int *src = (int *)lbl_802FB6E0;
     register int *dst = (int *)lbl_8034EF20;
+    volatile int *p;
 
     fn_8000D838(&lbl_8055D358);
     dst[1] = 0x7B;
-    dst[0] = 0;
-    dst[2] = 0;
-    dst[3] = 0;
-    dst[4] = 0;
+    p = dst;
+    p[0] = 0;
+    p[2] = 0;
+    p[3] = 0;
+    p[4] = 0;
     fn_801312EC(dst + 0x80, src + 0x44);
     fn_801312EC(dst + 0x83, src + 0x49);
     fn_801312EC(dst + 0x86, src + 0x4E);
@@ -40,3 +43,4 @@ void fn_8000829C(void) {
     fn_801312EC(dst + 0x9E, src + 0x7A);
     fn_801312EC(dst + 0xA1, src + 0x7F);
 }
+#pragma scheduling reset
