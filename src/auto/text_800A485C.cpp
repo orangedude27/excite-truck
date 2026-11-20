@@ -17056,21 +17056,24 @@ extern "C" void fn_800C1984(s32 *arg0, s32 *arg1) {
     s32 *scale = lbl_802F4060;
     s32 *filteredOut = filtered;
     for (s32 i = 0; i < 9; i++) {
-        s32 left;
-        s32 right;
-        s32 k;
         s32 c;
+        s32 left;
+        s32 k;
+        s32 right;
         s32 reverseIndex;
         s32 reverseK;
+        s32 forward;
+        s32 reverse;
+        s32 delta;
         left = *input++;
         k = *coeff++;
         c = *scale++;
         reverseIndex = 0x11 - i;
         right = arg0[reverseIndex];
         reverseK = lbl_802F4018[reverseIndex];
-        s32 forward = fixedMul20(left, k);
-        s32 reverse = fixedMul20(right, reverseK);
-        s32 delta = forward - reverse;
+        forward = fixedMul20(left, k);
+        reverse = fixedMul20(right, reverseK);
+        delta = forward - reverse;
         *combinedOut++ = forward + reverse;
         *filteredOut++ = fixedMul20(c, delta);
     }
@@ -19161,7 +19164,7 @@ extern "C" void fn_800CEF60(void *, void *, s32);
 #pragma push
 #pragma opt_propagation off
 extern "C" void fn_800C6774(s32 arg0, void *arg1, u32 arg2) {
-    const char *file = (const char *)lbl_8031D840;
+    const Fn800C6774Msgs *msgs = (const Fn800C6774Msgs *)lbl_8031D840;
     void *base;
     void *block;
 
@@ -19181,10 +19184,10 @@ extern "C" void fn_800C6774(s32 arg0, void *arg1, u32 arg2) {
         *(void **)((u8 *)base + 0x5C8) = block;
     }
     if (*(void * volatile *)((u8 *)base + 0x5C8) == NULL) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, (s32)0xEFC, file + 0x4C);
+        Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, (s32)0xEFC, msgs->msg4C);
     }
     if (fn_800ECB90(*(void * volatile *)((u8 *)base + 0x5C8), arg0) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, (s32)0xF01, file + 0x80);
+        Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, (s32)0xF01, msgs->msg80);
     }
     fn_800CEF60(base, *(void * volatile *)((u8 *)base + 0x5C8), 0);
 }
@@ -21443,10 +21446,10 @@ extern "C" void fn_800D337C(s32,s32,s32);
 extern "C" const char *fn_800D3260(s32 arg0, s32 arg1, const char *arg2, s32 arg3) {
     s32 count = 0;
     s32 ch;
-    u32 base = (u32)lbl_8031EBA0;
-    if (!arg2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EBA0, 0x2E9, (const char *)(base + 0x54));
-    if (arg3 <= 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)(base + 0), 0x2EA, (const char *)(base + 0x7C));
-    base = (u32)lbl_802F47D8;
+    const char *base = (const char *)lbl_8031EBA0;
+    if (!arg2) Panic__Q26nw4hbm2dbFPCciPCce(base + 0, 0x2E9, (const char *)((u32)base + 0x54));
+    if (arg3 <= 0) Panic__Q26nw4hbm2dbFPCciPCce(base + 0, 0x2EA, (const char *)((u32)base + 0x7C));
+    base = (const char *)lbl_802F47D8;
     goto cond;
 top:
     if (ch == 10 || ch == 0) return arg2;
@@ -22886,6 +22889,7 @@ extern "C" s32 lbl_80559718;
 #pragma push
 #pragma dont_inline off
 extern "C" void fn_800C7F8C(void *arg0, s32 arg1) {
+    /* Update the home-button panes: toggle each slot's pane state and controller flags, then clear the frame marker. */
     s32 *state = (s32 *)arg1;
     u8 *cursor = (u8 *)arg0;
     u8 *info = (u8 *)arg0 + 0x158;
