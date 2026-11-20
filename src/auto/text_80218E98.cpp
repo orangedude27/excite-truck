@@ -1872,13 +1872,11 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021AF9C(void *self, 
 
 extern double lbl_805634B8;
 extern float lbl_805634C4;
-#pragma push
-#pragma processor 750
 extern "C" void fn_8021AFF4(void *arg0) {
-    s32 n = *(s32 *)((u8 *)arg0 + 0x260) - 1;
-    f32 denom = (f32)n;
+    f32 denom = (f32)(*(s32 *)((u8 *)arg0 + 0x260) - 1);
     f32 half = lbl_805634C4;
-    f32 step = (*(f32 *)((u8 *)arg0 + 0x25C) - *(f32 *)((u8 *)arg0 + 0x258)) / denom;
+    f32 num = *(f32 *)((u8 *)arg0 + 0x25C) - *(f32 *)((u8 *)arg0 + 0x258);
+    f32 step = num / denom;
     *(f32 *)*(void **)((u8 *)arg0 + 0x254) += (f32)*(s32 *)((u8 *)arg0 + 0x264) * step;
     *(f32 *)*(void **)((u8 *)arg0 + 0x254) = step * (f32)(s32)((*(f32 *)*(void **)((u8 *)arg0 + 0x254) / step) + half);
     if (*(f32 *)*(void **)((u8 *)arg0 + 0x254) < *(f32 *)((u8 *)arg0 + 0x258)) {
@@ -1888,7 +1886,6 @@ extern "C" void fn_8021AFF4(void *arg0) {
         *(f32 *)*(void **)((u8 *)arg0 + 0x254) = *(f32 *)((u8 *)arg0 + 0x25C);
     }
 }
-#pragma pop
 extern "C" char lbl_8033F5D0[];
 #pragma dont_inline on
 /* Initialize a UI object that steps/clamps an integer value: set up the base
@@ -5555,6 +5552,7 @@ extern "C" void fn_80221F9C(void *arg0, s32 arg1) {
     s32 temp_r18;
     unsigned int var_r24;
     s32 *items;
+    void *self;
     fn_802C3034(arg1);
     temp_r18 = *(s32 *)((u8 *)arg0 + 4);
     temp_r20 = *(s32 *)((u8 *)arg0 + 8);
@@ -5567,11 +5565,12 @@ extern "C" void fn_80221F9C(void *arg0, s32 arg1) {
     temp_r30 = lbl_8055FBC0;
     temp_r29 = lbl_8055FBFC;
     temp_r28 = lbl_8055FBF8;
+    self = arg0;
     goto outer_check;
 outer_body:
     temp_r21 = *(void **)((u8 *)items + var_r31);
     fn_802C4F58(var_r24 + 2, temp_r23 + 2, (const char *)((u8 *)items + var_r31 + 4), temp_r30);
-    if (var_r22 == *(s32 *)((u8 *)arg0 + 0x24C)) {
+    if (var_r22 == *(s32 *)((u8 *)self + 0x24C)) {
         register temp_r20 = *(s32 *)((u8 *)temp_r21 + 8);
         fn_802C3424(var_r24, temp_r23 + 0xA, var_r24 + 0x32, temp_r23 + (temp_r20 + 1) * 0xA, temp_r29);
         var_r26 = temp_r23 + 0xB;
@@ -5579,10 +5578,10 @@ outer_body:
         var_r20 = 0;
         var_r27 = 0;
         while (var_r20 < *(s32 *)((u8 *)temp_r21 + 8)) {
-            if (var_r20 == *(s32 *)((u8 *)arg0 + 0x250))
+            if (var_r20 == *(s32 *)((u8 *)self + 0x250))
                 fn_802C3424(var_r24 + 1, var_r26, var_r24 + 0x31, temp_r23 + var_r27 + 0x13, temp_r30);
             temp_r18 = temp_r30;
-            if (var_r20 == *(s32 *)((u8 *)arg0 + 0x250))
+            if (var_r20 == *(s32 *)((u8 *)self + 0x250))
                 temp_r18 = temp_r28;
             fn_802C4F58(var_r24 + 2, var_r25, (const char *)((s32 (*)(s32 *, s32))fn_8022D97C)((s32 *)temp_r21, var_r20), temp_r18);
             var_r26 += 0xA;
@@ -5595,7 +5594,7 @@ outer_body:
     var_r31 += 0x24;
     var_r22 += 1;
 outer_check:
-    items = *(s32 **)((u8 *)arg0 + 0x244);
+    items = *(s32 **)((u8 *)self + 0x244);
     if (var_r22 < items[0x120 / 4])
         goto outer_body;
 }
@@ -5635,7 +5634,7 @@ done:
 }
 
 extern "C" void fn_80222234(void *obj, s32 x, s32 y) {
-    s32 left, current, top, count;
+    s32 left, current, top, count, row, col;
     s32 *state = (s32 *)obj;
     s32 *items;
     s32 *entry;
@@ -5647,10 +5646,10 @@ extern "C" void fn_80222234(void *obj, s32 x, s32 y) {
     top = state[2];
     if (y < top + 10) {
         left = state[1];
-        s32 col = (x - left) / 50;
+        col = (x - left) / 50;
         if (col < 0) return;
-        s32 *items2 = *(s32 **)((u8 *)obj + 0x244);
-        if (col >= items2[0x120 / 4]) return;
+        items = *(s32 **)((u8 *)obj + 0x244);
+        if (col >= items[0x120 / 4]) return;
         state[0x24C / 4] = col;
         state[0x250 / 4] = -1;
         return;
@@ -5658,21 +5657,20 @@ extern "C" void fn_80222234(void *obj, s32 x, s32 y) {
     current = state[0x24C / 4];
     if (current < 0) return;
     left = state[1];
-    if (x < left + current * 50) goto fail_x;
-    if (x > left + (current + 1) * 50) goto fail_x;
-    {
-        s32 *list = *(s32 **)((u8 *)obj + 0x244);
-        s32 row = (y - top - 10) / 10;
-        entry = *(s32 **)((u8 *)list + current * 0x24);
-        if (row < 0) goto fail_row;
-        if (row >= entry[2]) goto fail_row;
-        state[0x250 / 4] = row;
-    }
-    return;
-fail_x:
-    state[0x250 / 4] = -1;
+    if (x < current * 50 + left) goto fail_x;
+    if (x > (current + 1) * 50 + left) goto fail_x;
+    s32 delta = y - top;
+    items = *(s32 **)((u8 *)obj + 0x244);
+    entry = *(s32 **)((u8 *)items + current * 0x24);
+    row = (delta - 10) / 10;
+    if (row < 0) goto fail_row;
+    if (row >= entry[2]) goto fail_row;
+    state[0x250 / 4] = row;
     return;
 fail_row:
+    state[0x250 / 4] = -1;
+    return;
+fail_x:
     state[0x250 / 4] = -1;
 }
 
