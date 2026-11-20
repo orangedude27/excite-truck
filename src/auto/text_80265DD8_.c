@@ -1124,9 +1124,9 @@ extern double fn_8002EF30(float), fabs(double);
 extern int lbl_8055E3C4;
 extern char lbl_8055F480;
 extern float lbl_8055E460, lbl_80563C68, lbl_80563C70, lbl_80563C74, lbl_80563C78, lbl_80563C7C;
-#pragma push
-#pragma inline auto
-extern double fn_8002EF30(float), __fabs(double);
+ #pragma push
+ #pragma inline off
+ extern double fn_8002EF30(float), __fabs(double);
 #pragma push
 #pragma opt_unroll_loops off
 void fn_802678E8(void *arg0, int arg1) {
