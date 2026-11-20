@@ -20060,6 +20060,13 @@ void fn_8008C04C(s16 numAclBuffers) {
     *(s16 *)(lbl_803C4040 + 4) = numAclBuffers;
 }
 
+// Called from the HCI transport when the first 4 bytes of an HCI ACL packet
+// arrive. Decodes the handle and packet type, finds the L2CAP link control
+// block, and decides whether this segment starts a new L2CAP message or
+// continues a fragmented one. A continuation is appended to the base buffer
+// (the segment freed) when it fits; otherwise the in-progress message is
+// dropped. Returns the base buffer the transport should keep filling, or NULL
+// on error.
 BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *p_cur_buf) {
     extern char lbl_80318DE0[];
     extern char lbl_80318E00[];
