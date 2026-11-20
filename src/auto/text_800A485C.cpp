@@ -19157,7 +19157,7 @@ extern "C" void *fn_800ECAEC(void *);
 extern "C" s32 fn_800ECB90(void *, s32);
 extern "C" void fn_800CEF60(void *, void *, s32);
 #pragma push
-#pragma opt_propagation on
+#pragma opt_propagation off
 extern "C" void fn_800C6774(s32 arg0, void *arg1, u32 arg2) {
     const Fn800C6774Msgs *msgs = (const Fn800C6774Msgs *)lbl_8031D840;
     void *base;
@@ -19179,10 +19179,10 @@ extern "C" void fn_800C6774(s32 arg0, void *arg1, u32 arg2) {
         *(void **)((u8 *)base + 0x5C8) = block;
     }
     if (*(void * volatile *)((u8 *)base + 0x5C8) == NULL) {
-        Panic__Q26nw4hbm2dbFPCciPCce(&msgs->file[0], (s32)0xEFC, &msgs->msg4C[0]);
+        Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, (s32)0xEFC, msgs->msg4C);
     }
     if (fn_800ECB90(*(void * volatile *)((u8 *)base + 0x5C8), arg0) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(&msgs->file[0], (s32)0xF01, &msgs->msg80[0]);
+        Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, (s32)0xF01, msgs->msg80);
     }
     fn_800CEF60(base, *(void * volatile *)((u8 *)base + 0x5C8), 0);
 }
