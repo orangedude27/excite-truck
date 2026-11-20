@@ -3300,3 +3300,38 @@ struct Dummy_8019684C {
     virtual void f16(); virtual void f17();
 };
 #pragma cplusplus reset
+void fn_8019340C(void *arg0, void *arg1, float *arg2, int arg3, void *arg4) {
+    extern float PSVECDotProduct(const void *, const void *);
+    float sp8, spC, sp10;
+    float dot, val;
+    int flag = 0, gate = 0;
+    int temp;
+    void *ret;
+
+    if (arg4 != 0 && *(unsigned int *)((char *)arg4 + 0x10) + 0xAFBD0000U == 0x4152U) flag = 1;
+    if (flag != 0) {
+        *(float *)((char *)arg0 + 0x1F4) = *(float *)((char *)arg0 + 0x26C);
+        if ((lbl_8055D430 & 1) && (lbl_8055D430 & 0x20)) gate = 1;
+        if (gate != 0) {
+            dot = PSVECDotProduct(arg1, arg1);
+            if (dot > lbl_8056214C) {
+                temp = *(int *)((char *)arg4 + 0x1EC);
+                if (temp != *(int *)((char *)arg0 + 0x2C4)) {
+                    ret = fn_8017960C(temp);
+                    val = lbl_80562150 + dot / lbl_80562154;
+                    if (val > lbl_80562154) {
+                    } else {
+                        val = lbl_80562154;
+                    }
+                    spC = val;
+                    sp8 = lbl_80562158;
+                    sp10 = lbl_80562158;
+                    fn_8017B4E0(ret, &sp8, arg2, lbl_80562140);
+                    *(int *)((char *)arg0 + 0x2C4) = -1;
+                } else {
+                    *(int *)((char *)arg0 + 0x2C4) = temp;
+                }
+            }
+        }
+    }
+}
