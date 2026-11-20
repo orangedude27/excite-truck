@@ -14,7 +14,6 @@ extern f32 lbl_805615CC;  // -2.0f
 extern double cos(double);
 extern double sin(double);
 extern float fn_80144514(float, float, float, float, float, float);
-typedef struct { f32 v; } FHold8014452C;
 #define D6(a, b, c, d, e, f) fn_80144514(a, b, c, d, e, f)
 static f32 *volatile g_alias_probe;
 #define M33CAT(a, b, ab)                                                   \
@@ -71,9 +70,10 @@ void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az)
   f32 *bp = b;
   f32 c;
   int new_var2;
+  f32 s;
   c = cos(ax);
+  s = sin(ax);
   {
-    f32 s = sin(ax);
     f32 z = lbl_805615BC;
     f32 o = lbl_805615B8;
     m[0] = c;
@@ -87,8 +87,8 @@ void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az)
     m[8] = c;
   }
   c = cos(ay);
+  s = sin(ay);
   {
-    f32 s = sin(ay);
     f32 z = lbl_805615BC;
     f32 o = lbl_805615B8;
     bp[1] = z;
@@ -104,8 +104,8 @@ void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az)
   }
   M33Cat(m, bp, m);
   c = cos(az);
+  s = sin(az);
   {
-    f32 s = sin(az);
     f32 z = lbl_805615BC;
     f32 o = lbl_805615B8;
     bp[0] = c;
