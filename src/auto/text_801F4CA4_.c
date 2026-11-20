@@ -7,6 +7,7 @@ extern float lbl_8055EC04;
 extern float lbl_80562FAC_unused;
 extern float lbl_80562FAC;
 
+#pragma scheduling invalid_target
 void fn_801F4CA4(void) {
     volatile float *dest = &lbl_8055EC04;
     fn_8000D838(&lbl_8055EBF8);
