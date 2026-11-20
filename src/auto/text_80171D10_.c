@@ -230,6 +230,7 @@ extern float lbl_80561A3C, lbl_80561A40;
 #pragma processor 750
 #pragma use_lmw_stmw off
 int fn_80171EF8(const void *arg0, const void *arg1) {
+#pragma scheduling invalid_target
     struct Frame {
         float coords[2];
         volatile float savedY;
@@ -1474,6 +1475,14 @@ extern void fn_802AE0E0(void);
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+/* Resets the "crushmaster" object to its idle state (the counterpart of the
+ * builder fn_80173058): every one of its 0x1C-byte records at +0x90 is re-enabled
+ * with its per-record value back to -1 and its three ints and 8-byte tail cleared;
+ * the round (CrushRoundState at +0x1AC, built by fn_8017353C) is put to idle -
+ * state 0, time -1.0, and its sound, counter and text fields zeroed - clearing all
+ * of its animation cues via fn_802AE0E0; and each of the eight overlay objects it
+ * holds at +0x1C0..+0x2B4 (a scene node) is reset by setting its 0x4A byte and
+ * zeroing its 0x4C byte. */
 void fn_801740D4(void *arg0) {
     unsigned char *self = (unsigned char *)arg0;
     float copied = *(float *)(self + 0x1A4);
