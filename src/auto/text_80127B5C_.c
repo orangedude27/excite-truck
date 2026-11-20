@@ -9,6 +9,11 @@ struct BgTaskObj {
     virtual void m0();
     virtual void call();
 };
+extern "C" {
+static inline void bgTaskCall(void *obj) {
+    ((BgTaskObj *)obj)->call();
+}
+}
 #pragma cplusplus reset
 extern char lbl_80329FC0[];
 extern void fn_802E317C(const char *, ...);
