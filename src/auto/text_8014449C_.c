@@ -9,7 +9,6 @@ extern int lbl_8055E1B4;
 extern int lbl_8055E1B8;
 extern int lbl_8055E1C4;
 #pragma scheduling invalid_target
-#pragma opt_propagation off
 void fn_8014449C(void) {
     int v;
     fn_8000D838(&lbl_8055E1A8);
