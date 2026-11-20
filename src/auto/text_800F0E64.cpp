@@ -4962,12 +4962,14 @@ static inline void SndPrioList_PopFront(u8 *list) {
     s32 it = *(s32 *)(list + 4);
     Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(list, &it);
 }
-static inline void SndPrioList_PushBack(u8 *list, u8 *obj) {
+static inline void SndPrioList_Insert(u8 *list, void *it, u8 *obj) {
     if (obj == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326288, 0x233, (const char *)lbl_80326264);
     }
-    void *it = list + 4;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(list, &it, obj + 0xC8);
+}
+static inline void SndPrioList_PushBack(u8 *list, u8 *obj) {
+    SndPrioList_Insert(list, list + 4, obj);
 }
 extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0) {
     extern void* fn_8002F53C(void*, void (*)(void*), void* (*)(void*, int), s32, s32);
