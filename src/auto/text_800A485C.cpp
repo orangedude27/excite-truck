@@ -1,5 +1,4 @@
   #include <types.h>
-#undef __mulhw
 extern "C" {
 __declspec(section ".sdata") extern u8 lbl_805591F8[];
 /* 12.20 fixed-point multiply. */
