@@ -301,10 +301,9 @@ void fn_8013028C(void) {
 #undef sLocaleLanguages
 }
 
-static inline char *getLocaleBase(void) { return (char *)&lbl_804230D0; }
-
 int fn_801302E0(void *arg0) {
-    char *base = getLocaleBase();
+    int *p = &lbl_804230D0;
+    char *base = (char *)p;
     int offset, index;
     if (*(void **)(base + 4) != 0) {
         index = 0;
