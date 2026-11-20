@@ -970,7 +970,7 @@ extern "C" void fn_800066B4(void *arg0) {
     f32 f;
     f32 t0, t1, t2;
     s32 now;
-    s32 i;
+    u32 i;
     u8 alpha;
     s32 two;
     void *(*get)(void *, s32);
