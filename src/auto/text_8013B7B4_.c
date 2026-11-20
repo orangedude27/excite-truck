@@ -37,6 +37,7 @@ extern "C" void fn_8013B7B4(float *arg0, int value) {
     };
     const char **table;
     char *keys = lbl_8032C390;
+    void *(*getList)(void *) = fn_80131808;
     const char **namep;
     float *out;
     void *list;
@@ -45,7 +46,7 @@ extern "C" void fn_8013B7B4(float *arg0, int value) {
     const char *name;
     const char *names[3];
     unsigned int j;
-    list = fn_80131808(*(char (*)[1])keys);
+    list = getList(keys);
     if (list == 0) goto error;
     table = lbl_802F9388;
     i = 0;
@@ -80,6 +81,7 @@ extern "C" u8 fn_8013BC70(float *);
 extern "C" void fn_8013B950(void);
 extern float lbl_80561470;
 #pragma scheduling invalid_target
+static inline float doubleToFloat_8013B950(double d) { return (float)d; }
 void fn_8013B950(void) {
     struct Dummy {
         virtual void v0() = 0;
@@ -113,8 +115,8 @@ void fn_8013B950(void) {
             if (*(int *)((char *)((struct Dummy *)fn_801B2ED0(selected))->get() + 4) >
                 *(int *)((char *)bestItem + 4)) {
                 score = fn_801B2F90(selected, bestIndex);
-                rounded = score;
                 *(float *)lbl_8042F8A8 = score;
+                rounded = score;
                 *(int *)((char *)lbl_8042F8A8 + 0xc) = bestIndex;
                 *((u8 *)lbl_8042F8A8 + 4) = (rounded < lbl_80561470);
             }
@@ -147,7 +149,7 @@ void fn_8013BAE4(int arg0) {
     float sp10[12];
     int spC;
     float sp8;
-    float *p;
+    volatile float *p;
     float t0, t1, t2, t3;
     float vf;
     double v;
@@ -158,14 +160,14 @@ void fn_8013BAE4(int arg0) {
     fn_8013B7B4(sp10, arg0);
     index = *(int*)((char*)fn_801E87A8() + 0xC);
     fn_8013B6C0(&spC, &sp8, index);
-    p = sp10 + spC * 4;
+    p = (volatile float *)(sp10 + spC * 4);
     t0 = p[0];
+    *(volatile float*)&lbl_8042F8B8[0] = t0 + sp8 * (p[4] - t0);
     t1 = p[1];
-    *(volatile float*)&lbl_8042F8B8[0] = (float)(t0 + sp8 * (p[4] - t0));
+    *(volatile float*)&lbl_8042F8B8[1] = t1 + sp8 * (p[5] - t1);
     t2 = p[2];
-    *(volatile float*)&lbl_8042F8B8[1] = (float)(t1 + sp8 * (p[5] - t1));
+    *(volatile float*)&lbl_8042F8B8[2] = t2 + sp8 * (p[6] - t2);
     t3 = p[3];
-    *(volatile float*)&lbl_8042F8B8[2] = (float)(t2 + sp8 * (p[6] - t2));
     v = t3 + sp8 * (p[7] - t3);
     vf = (float)v;
     *(volatile float*)&lbl_8042F8B8[3] = (float)v;
@@ -177,7 +179,7 @@ void fn_8013BAE4(int arg0) {
     i = arg0 - 1;
     if (n < i) i = n;
     lbl_8055E170 = i;
-    lbl_8042F8B8[2] = (lbl_8042F8B8[2] < lbl_80561474) ? lbl_80561474 : lbl_8042F8B8[2];
+    lbl_8042F8B8[2] = (lbl_8042F8B8[2] < lbl_80561474) ? lbl_8042F8B8[2] : lbl_80561474;
 }
 #pragma scheduling on
 /* Reset the shared status record: set the value at +0x08 to its default of 1.0,
