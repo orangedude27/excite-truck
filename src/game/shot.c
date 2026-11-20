@@ -173,15 +173,9 @@ u8 fn_802E4A1C(s32 keyCode) {
 }
 
 void fn_802E4A2C(void) {
-    volatile u32 stack[65];
-    volatile u32 *p;
-    if ((s32)lbl_8055D1C0 < 0) return;
-    p = &stack[1];
-    do {
-        *p = 0;
-        p[1] = 0;
-        p += 2;
-    } while (p < &stack[65]);
+    if ((s32)lbl_8055D1C0 >= 0) {
+        u32 buf[64] = {0};
+    }
 }
 
 extern unsigned char lbl_8055FF58;
