@@ -3219,15 +3219,15 @@ extern "C" u8 lbl_8055E1BC;
 extern "C" f32 fn_8001DAE8(void *);
 extern "C" f32 fn_8013CB3C(void);
 extern "C" void fn_8001DAE8_2(void *, f32);
-#pragma small_data off
+#pragma scheduling on
 extern "C" s32 fn_80141FA8(void *arg0, f32 arg1) {
     s32 result = 1;
     if (lbl_8055E1BC != 0) {
         u8 *p = (u8 *)arg0;
         f32 old = *(f32 *)(p + 0x94);
         f32 var = lbl_805614AC;
-        var = var < (old + arg1 / lbl_8056149C) ? (old + arg1 / lbl_8056149C) : var;
-        var = lbl_805614A4 < var ? lbl_805614A4 : var;
+        var = (var < (old + arg1 / lbl_8056149C)) ? var : (old + arg1 / lbl_8056149C);
+        var = (var > lbl_805614A4) ? var : lbl_805614A4;
         *(f32 *)(p + 0x94) = var;
         if (old < (f32)(f64)var) {
             *(f32 *)(p + 0xEC) = (f32)(f64)var - old;
@@ -3245,8 +3245,8 @@ extern "C" s32 fn_80141FA8(void *arg0, f32 arg1) {
             if (n > 0) {
                 *(s32 *)(p + 0xF4) = n;
                 *(f32 *)(p + 0xF0) = fn_8013CB3C();
+                *(volatile s32 *)(p + 0xE4) = 0;
             }
-            *(volatile s32 *)(p + 0xE4) = 0;
             n = *(volatile s32 *)(p + 0x100);
             if (n > 0) *(f32 *)(p + 0xD4) = fn_8001DAE8(p + 0xD0);
             *(volatile s32 *)(p + 0x100) = 0;
@@ -3695,7 +3695,7 @@ extern "C" u8 *fn_80142C9C(u8 *arg0, s32 arg1) {
     s32 offset = *(s32 *)(base += index * 0x14);
     u8 *array = *(u8 **)(base + 4);
     u8 *end = array + offset * 0x24;
-    register u8 *out = array;
+    u8 *out = array;
     if (result != end - 0x24) {
         out = result + 0x24;
     }
