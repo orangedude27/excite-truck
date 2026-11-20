@@ -272,32 +272,31 @@ static inline void nextCommandBuf(void) {
 }
 
 static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const char *msg) {
-    int slot = lbl_8055D8E8;
+    unsigned char *base = lbl_8037B820;
     int id;
     unsigned int flag;
-    unsigned char *base = lbl_8037B820;
 
-    flag = ((DVDLowContext *)base)[slot].inUse;
+    flag = ((DVDLowContext *)base)[lbl_8055D8E8].inUse;
     if (((-flag | flag) >> 31) == 1U) {
-        OSReport(msg + 0x218, slot);
+        OSReport(msg + 0x218, (int)lbl_8055D8E8);
         OSReport(msg + 0x250);
         for (;;) {}
     }
-    if (((DVDLowContext *)base)[slot].magic != 0xFEEBDAED) {
+    if (((DVDLowContext *)lbl_8037B820)[lbl_8055D8E8].magic != 0xFEEBDAED) {
         OSReport(msg + 0x280);
         for (;;) {}
     }
 
-    ((DVDLowContext *)base)[slot].callback = callback;
-    ((DVDLowContext *)base)[slot].WORD_0x4 = arg2;
-    ((DVDLowContext *)base)[slot].inUse = arg2;
+    ((DVDLowContext *)lbl_8037B820)[lbl_8055D8E8].callback = callback;
+    ((DVDLowContext *)lbl_8037B820)[lbl_8055D8E8].WORD_0x4 = arg2;
+    ((DVDLowContext *)lbl_8037B820)[lbl_8055D8E8].inUse = arg2;
 
-    id = slot;
+    id = lbl_8055D8E8;
     if ((int)++lbl_8055D8E8 >= 4) {
         lbl_8055D8E8 = 0;
     }
 
-    return &((DVDLowContext *)base)[id];
+    return &((DVDLowContext *)lbl_8037B820)[id];
 }
 
 #pragma scheduling 750
