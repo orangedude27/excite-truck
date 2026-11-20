@@ -129,7 +129,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
         u8 res[0xc8];
         char names[5][0x64];
     } m;
-    u8 *g = lbl_80498C30;
+    register u8 *g = lbl_80498C30;
     u8 *slots;
     s32 *p;
     const void *label;
@@ -810,12 +810,12 @@ void *fn_8024F17C(void *arg0, void **arg1, s32 *arg2, s32 *arg3, void *arg4, voi
     extern int strcmp(const char *, const char *);
     extern int stricmp(const char *, const char *);
 
-    register void *this_obj = arg0;
-    register void **v_arg1 = arg1;
-    register s32 *v_arg2 = arg2;
-    register s32 *v_arg3 = arg3;
-    register void *v_arg4 = arg4;
-    register void *v_arg5 = arg5;
+    void *this_obj = arg0;
+    void **v_arg1 = arg1;
+    s32 *v_arg2 = arg2;
+    s32 *v_arg3 = arg3;
+    void *v_arg4 = arg4;
+    void *v_arg5 = arg5;
     const unsigned char *base_4170 = lbl_80344170;
 
     const char *s;
@@ -2551,8 +2551,9 @@ extern "C" void fn_80251B04(void *arg0) {
     i = 0;
     off = 0;
     for (; i < *(s32 *)((char *)arg0 + 0x1C); i++, off += 0xC) {
-        char *p = *(char **)((char *)arg0 + 0x18) + off;
-        f32 a, b, c;
+        register char *p = *(char **)((char *)arg0 + 0x18) + off;
+        register f32 a, b, c;
+        register s32 idx = i;
         a = lbl_80563964 - (f32)__fabs(*(f32 *)(p + 8));
         a = a < f26 ? a : f26;
         c = *(f32 *)((char *)arg0 + 0x28);
