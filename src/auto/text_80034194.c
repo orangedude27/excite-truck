@@ -998,8 +998,10 @@ BOOL DVDGetCurrentDir(const char *path, void *info) {
     s32 entry;
     s32 cur;
     u32 offset;
-    u8 *fst;
+    u8 *fstNode;
 
+    /* Resolve the entry number for path in the DVD file system table; on failure
+     * report the current directory instead. */
     entry = DVDConvertPathToEntrynum(path);
     if (entry < 0) {
         cur = lbl_8055D828;
@@ -1009,12 +1011,12 @@ BOOL DVDGetCurrentDir(const char *path, void *info) {
     }
 
     offset = entry * 12;
-    fst = FstStart_8055D840;
-    if (*(u32 *)(fst + offset) & 0xFF000000) {
+    fstNode = FstStart_8055D840;
+    if (*(u32 *)(fstNode + offset) & 0xFF000000) {
         return FALSE;
     }
-    fst += offset;
-    *(u32 *)((u8 *)info + 0x30) = *(u32 *)(fst + 4) >> __DVDLayoutFormat;
+    fstNode += offset;
+    *(u32 *)((u8 *)info + 0x30) = *(u32 *)(fstNode + 4) >> __DVDLayoutFormat;
     *(u32 *)((u8 *)info + 0x34) = *(u32 *)(FstStart_8055D840 + offset + 8);
     *(u32 *)((u8 *)info + 0x38) = 0;
     *(u32 *)((u8 *)info + 0x0C) = 0;
