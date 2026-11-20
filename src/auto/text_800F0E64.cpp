@@ -4966,7 +4966,8 @@ static inline void SndPrioList_Insert(u8 *list, void *it, u8 *obj) {
     if (obj == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326288, 0x233, (const char *)lbl_80326264);
     }
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(list, &it, obj + 0xC8);
+    void *pos = it;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(list, &pos, obj + 0xC8);
 }
 static inline void SndPrioList_PushBack(u8 *list, u8 *obj) {
     SndPrioList_Insert(list, list + 4, obj);
