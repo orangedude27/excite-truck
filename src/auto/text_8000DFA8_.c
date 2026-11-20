@@ -351,84 +351,132 @@ extern f32 lbl_805602CC, lbl_805602D0, lbl_805602D4;
 #pragma push
 #pragma processor 750
 #pragma opt_common_subs off
-void fn_8000F4F0(void) {
-    char *strBase;
-    char text[32];
-    char buffer[20];
-    UnkF4F0Style a, b;
-    s32 scope[4];
-    f32 time, scale;
-    s32 number;
-    u32 alpha;
-    s32 count;
-    char *src, *dst;
-    UnkF4F0Style *p, *q;
-    UnkF4F0Style *(*lookup)(void *, const char *);
-    strBase = (char *)lbl_802FC2A8;
-    fn_802C86F0(scope, 0, 0, lbl_8055CFF0, lbl_8055CFF4);
-    time = *(f32 *)((u8 *)fn_801E7E3C()+0x10);
-    number = -1;
-    *(s32 *)(text+0)=0; *(s32 *)(text+4)=0; *(s32 *)(text+8)=0; *(s32 *)(text+12)=0;
-    *(s32 *)(text+16)=0; *(s32 *)(text+20)=0; *(s32 *)(text+24)=0; *(s32 *)(text+28)=0;
-    scale = lbl_80560280;
-    alpha = 255;
-    if (!(time > lbl_805602CC)) {
-        if (time > lbl_805602D0 && time <= lbl_805602CC) {
-            number = (s32)(f32)ceil(time);
-            if (number != lbl_80558A98) {
-                u8 *obj = (u8 *)lbl_8055D4B4;
-                obj[0x49] = 1;
-                obj[0x4B] = 0;
-                obj[0x4A] = 0;
-            }
-            scale = (f32)number - time;
-            fn_801345D8(buffer,20,strBase+0x190,number);
-            src = fn_80131268(buffer);
-            dst = text; count = 32;
-            while ((*dst++ = *src++) != 0) {
-                if (--count <= 0) {dst[-1]=0; break;}
-            }
-        } else if (-time < lbl_805602B8) {
-            f32 x, y;
-            number = 0;
-            if (lbl_80558A98 != 0) {
-                u8 *obj = (u8 *)lbl_8055D4B8;
-                obj[0x49] = 1;
-                obj[0x4B] = 0;
-                obj[0x4A] = 0;
-            }
-            x = (-time-lbl_8056025C)/lbl_80560264;
-            x = lbl_80560264 < x ? lbl_80560264 : x;
-            x = x > lbl_80560280 ? x : lbl_80560280;
-            y = lbl_805602B8 - -time;
-            scale = lbl_80560280 + x * lbl_80560264;
-            if (y < lbl_805602D4) alpha = (s32)((f32)alpha * (y/lbl_805602D4));
-            src = fn_80131268(strBase+0x1A4);
-            dst = text; count = 32;
-            while ((*dst++ = *src++) != 0) {
-                if (--count <= 0) {dst[-1]=0; break;}
-            }
+void fn_8000F4F0(void)
+{
+  char *strBase;
+  char text[32];
+  char buffer[20];
+  UnkF4F0Style a;
+  UnkF4F0Style b;
+  s32 scope[4];
+  f32 time;
+  f32 scale;
+  s32 number;
+  u32 alpha;
+  s32 count;
+  char *src;
+  char *dst;
+  UnkF4F0Style *p;
+  UnkF4F0Style *q;
+  strBase = (char *) lbl_802FC2A8;
+  fn_802C86F0(scope, 0, 0, lbl_8055CFF0, lbl_8055CFF4);
+  time = *((f32 *) (((u8 *) fn_801E7E3C()) + 0x10));
+  number = -1;
+  *((s32 *) (text + 0)) = 0;
+  *((s32 *) (text + 4)) = 0;
+  *((s32 *) (text + 8)) = 0;
+  *((s32 *) (text + 12)) = 0;
+  *((s32 *) (text + 16)) = 0;
+  *((s32 *) (text - (-20))) = 0;
+  *((s32 *) (text + 24)) = 0;
+  *((s32 *) (text + 28)) = 0;
+  scale = lbl_80560280;
+  alpha = 255;
+  if (!(time > lbl_805602CC))
+  {
+    if ((time > lbl_805602D0) && (time <= lbl_805602CC))
+    {
+      number = (count = (s32) ((f32) ceil(time)));
+      if (number != lbl_80558A98)
+      {
+        u8 *obj = (u8 *) lbl_8055D4B4;
+        obj[0x49] = 1;
+        obj[0x4B] = 0;
+        obj[0x4A] = 0;
+      }
+      scale = ((f32) number) - time;
+      fn_801345D8(buffer, 20, strBase + 0x190, number);
+      src = fn_80131268(buffer);
+      dst = text;
+      count = 32;
+      while ((*(dst++) = *(src++)) != 0)
+      {
+        if ((--count) <= 0)
+        {
+          dst[-1] = 0;
+          break;
         }
+      }
+
     }
-    lbl_80558A98 = number;
-    if (lbl_8055D4B0) {
-        lookup = *(UnkF4F0Style *(**)(void *, const char *))((u8 *)lbl_8055D4B0->vtable+0xC);
-        p = lookup(lbl_8055D4B0,strBase+0x1B8);
-        lookup = *(UnkF4F0Style *(**)(void *, const char *))((u8 *)lbl_8055D4B0->vtable+0xC);
-        q = lookup(lbl_8055D4B0,strBase+0x1C4);
-        if (p && q) {
-            a.unk_0x00=p->unk_0x00; a.unk_0x04=p->unk_0x04; a.unk_0x08=p->unk_0x08; a.unk_0x0C=p->unk_0x0C;
-            a.unk_0x10=p->unk_0x10; a.unk_0x14=p->unk_0x14; a.unk_0x18=p->unk_0x18; a.unk_0x1C=p->unk_0x1C;
-            b.unk_0x00=q->unk_0x00; b.unk_0x04=q->unk_0x04; b.unk_0x08=q->unk_0x08; b.unk_0x0C=q->unk_0x0C;
-            b.unk_0x10=q->unk_0x10; b.unk_0x14=q->unk_0x14; b.unk_0x18=q->unk_0x18; b.unk_0x1C=q->unk_0x1C;
-            a.unk_0x18 = (alpha << 24) | (a.unk_0x18 & 0xFFFFFF);
-            b.unk_0x18 = a.unk_0x18;
-            fn_80232928(-1);
-            fn_80147ABC(&a,&b,(const char *)&lbl_80558AA4,text,scale);
-            fn_80232930();
+    else
+      if ((-time) < lbl_805602B8)
+    {
+      f32 x;
+      f32 y;
+      number = 0;
+      if (lbl_80558A98 != 0)
+      {
+        u8 *obj = (u8 *) lbl_8055D4B8;
+        obj[0x49] = 1;
+        obj[0x4B] = 0;
+        obj[0x4A] = 0;
+      }
+      x = ((-time) - lbl_8056025C) / lbl_80560264;
+      x = (lbl_80560264 < x) ? (lbl_80560264) : (x);
+      x = (x > lbl_80560280) ? (x) : (lbl_80560280);
+      scale = lbl_80560280 + (x * lbl_80560264);
+      y = lbl_805602B8;
+      y = y - (-time);
+      if (y < lbl_805602D4)
+      {
+        alpha = (s32) (((f32) alpha) * (y / lbl_805602D4));
+      }
+      src = fn_80131268(strBase + 0x1A4);
+      dst = text;
+      count = 32;
+      while ((*(dst++) = *(src++)) != 0)
+      {
+        if ((--count) <= 0)
+        {
+          dst[-1] = 0;
+          break;
         }
+      }
+
     }
-    fn_802C8750(scope,-1);
+  }
+  lbl_80558A98 = number;
+  if (lbl_8055D4B0)
+  {
+    p = (*(UnkF4F0Style *(**)(void *, const char *))(((u8 *) lbl_8055D4B0->vtable) + 0xC))(lbl_8055D4B0, strBase + 0x1B8);
+    q = (*(UnkF4F0Style *(**)(void *, const char *))(((u8 *) lbl_8055D4B0->vtable) + 0xC))(lbl_8055D4B0, strBase + 0x1C4);
+    if (p && q)
+    {
+      a.unk_0x00 = p->unk_0x00;
+      a.unk_0x04 = p->unk_0x04;
+      a.unk_0x08 = p->unk_0x08;
+      a.unk_0x0C = p->unk_0x0C;
+      a.unk_0x10 = p->unk_0x10;
+      a.unk_0x14 = p->unk_0x14;
+      a.unk_0x18 = p->unk_0x18;
+      a.unk_0x1C = p->unk_0x1C;
+      b.unk_0x00 = q->unk_0x00;
+      b.unk_0x04 = ((q->unk_0x04 & 0xFF) & 0xFF) & 0xFF;
+      b.unk_0x08 = q->unk_0x08;
+      b.unk_0x0C = q->unk_0x0C;
+      b.unk_0x10 = q->unk_0x10;
+      b.unk_0x14 = q->unk_0x14;
+      b.unk_0x18 = q->unk_0x18;
+      b.unk_0x1C = q->unk_0x1C;
+      (&a)->unk_0x18 = (alpha << 24) | (a.unk_0x18 & 0xFFFFFF);
+      b.unk_0x18 = a.unk_0x18;
+      fn_80232928(-1);
+      fn_80147ABC(&a, &b, (const char *) (&lbl_80558AA4), text, scale);
+      fn_80232930();
+    }
+  }
+  fn_802C8750(scope, -1);
 }
 #pragma pop
 void fn_8000F884(void) {
@@ -1394,10 +1442,10 @@ void fn_80010FDC(char *name, s32 id) {
     temp_f30 = lbl_8055D4D8;
     temp_f29 = fn_8000EDC0(id);
     if (fn_800108C8(temp_f29, (s32)name) > temp_f30) {
+        root = (Unk80350F88 *)&lbl_803514A0;
         temp_f31 = lbl_80560264;
         bufp = buf;
         zero = 0;
-        root = (Unk80350F88 *)&lbl_803514A0;
         namep = name;
         while (*namep != 0) {
             memset(buf, zero, 0x200);
@@ -2562,6 +2610,7 @@ f32 fn_8000EEC8(s32 regionId, f32 listHeight) {
 
 #pragma push
 #pragma opt_lifetimes off
+#pragma use_lmw_stmw off
 void fn_8000EF74(s32 arg0) {
     extern f32 fn_8000EDC0(s32);
     extern s32 fn_8000EE54(s32);
