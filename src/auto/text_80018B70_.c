@@ -404,6 +404,14 @@ static inline s32 fn_80019144_find_inl(const char *name) {
     }
     return -1;
 }
+static inline char *fn_80019144_entry_inl(const char *name) {
+    s32 index;
+    char *entry;
+    index = fn_80019144_find_inl(name);
+    entry = (char *)lbl_803580A4 + index * 0x10 + 4;
+    if (index < 0) entry = 0;
+    return entry;
+}
 #pragma push
 #pragma use_lmw_stmw off
 #pragma small_data off
@@ -481,6 +489,7 @@ static inline s32 fn_8001931C_find_inl(char *base, const char *name) {
     return -1;
 }
 #pragma push
+#pragma use_lmw_stmw off
 #pragma small_data off
 #pragma scheduling invalid_target
 void fn_8001931C(s32 name) {
