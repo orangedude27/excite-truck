@@ -814,6 +814,7 @@ extern f32 PSVECMag(f32 *);
 extern f32 fn_80287BC8(f32, f32);
 extern f32 lbl_80564328, lbl_805643A4, lbl_805643A8;
 static inline f32 fn_8028B93C_half(f32 v) { return v * 0.5f; }
+static inline f32 fn_8028B93C_scale(f32 v, f32 s) { return v * s; }
 extern void fn_8028BED4(void *, s32, void *, void *, f32);
 extern s32 lbl_8055F6F0, lbl_8055F6F4;
 #pragma scheduling on
@@ -823,9 +824,12 @@ s32 fn_8028B93C(const f32 *arg0) {
     f32 temp_y, temp_z, temp_x;
     f32 radius;
     s32 i;
-    dir[0] = arg0[0] * 0.5f;
-    dir[1] = arg0[1] * 0.5f;
-    dir[2] = arg0[2] * 0.5f;
+    f32 x = fn_8028B93C_half(arg0[0]);
+    f32 y = fn_8028B93C_half(arg0[1]);
+    f32 z = fn_8028B93C_half(arg0[2]);
+    dir[0] = x;
+    dir[1] = y;
+    dir[2] = z;
     radius = lbl_805643A0 * PSVECMag((f32 *)arg0);
     for (i = 0; i < 2; i++) {
         temp_z = fn_80287BC8(lbl_805643A4, lbl_805643A8) + arg0[5];
