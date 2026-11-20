@@ -29,10 +29,10 @@ extern "C" void fn_802960A0(float *pos, unsigned int color, int tex, float s, do
     float uv[8];
     float vtx[4][6];
     unsigned short idx[6];
+    unsigned short *ip = lbl_802FA9C0;
     float ns = -s;
     float t9 = m[0] * ns, t12 = m[1] * ns, t25 = m[2] * ns;
     float f5, f4, f6, px, py, pz, k, f13, f12, f11;
-    float a0, a1, a2, b0, b1, b2, c0, c1, c2, d0;
     v[0] = t9; v[1] = t12; v[2] = t25;
     f5 = t12 + m[4] * s;
     f4 = t25 + m[5] * s;
@@ -43,22 +43,18 @@ extern "C" void fn_802960A0(float *pos, unsigned int color, int tex, float s, do
     vtx[2][0] = px + f6 * lbl_80564548; vtx[2][1] = py + f5 * lbl_80564548; vtx[2][2] = pz + f4 * lbl_80564548;
     uv[0] = u0; uv[1] = v0; uv[2] = u1; uv[3] = v0; uv[4] = u1; uv[5] = v1; uv[6] = u0; uv[7] = v1;
     f13 = f6 + m[0] * k; f12 = f5 + m[1] * k; f11 = f4 + m[2] * k;
-    a0 = px + f13; a1 = py + f12; a2 = pz + f11;
-    b0 = f13 * lbl_80564548; b1 = f12 * lbl_80564548; b2 = f11 * lbl_80564548;
-    c0 = px + b0; c1 = py + b1; c2 = pz + b2;
-    d0 = pz + f11 * lbl_80564548;
-    vtx[1][0] = a0; vtx[1][1] = a1; vtx[1][2] = a2;
-    vtx[3][0] = c0; vtx[3][1] = c1; vtx[3][2] = c2;
+    vtx[1][0] = px + f13; vtx[1][1] = py + f12; vtx[1][2] = pz + f11;
+    vtx[3][0] = px + f13 * lbl_80564548; vtx[3][1] = py + f12 * lbl_80564548; vtx[3][2] = pz + f11 * lbl_80564548;
     v[0] = f13; v[1] = f12; v[2] = f11;
-    vtx[0][4] = u0; vtx[0][5] = v0;
-    vtx[1][4] = u1; vtx[1][5] = v0;
-    vtx[2][4] = u1; vtx[2][5] = v1;
-    vtx[3][4] = u0; vtx[3][5] = v1;
+    vtx[0][4] = uv[0]; vtx[0][5] = uv[1];
+    vtx[1][4] = uv[2]; vtx[1][5] = uv[3];
+    vtx[2][4] = uv[4]; vtx[2][5] = uv[5];
+    vtx[3][4] = uv[6]; vtx[3][5] = uv[7];
     ((int *)vtx[0])[3] = color; ((int *)vtx[1])[3] = color; ((int *)vtx[2])[3] = color; ((int *)vtx[3])[3] = color;
-    fn_802C8BD0(tex, pz, c1, c0, b1, b0, c2, u1, v1, a1, a0, f11, f12, f13);
-    idx[0] = lbl_802FA9C0[0]; idx[1] = lbl_802FA9C0[1]; idx[2] = lbl_802FA9C0[2];
-    idx[3] = lbl_802FA9C0[3]; idx[4] = lbl_802FA9C0[4]; idx[5] = lbl_802FA9C0[5];
-    fn_802C8DB8(vtx, 4, idx, 6, lbl_802FA9C0[4], lbl_802FA9C0[3], lbl_802FA9C0[2], lbl_802FA9C0[1]);
+    fn_802C8BD0(tex, pz, py + f12 * lbl_80564548, px + f13 * lbl_80564548, f12 * lbl_80564548, f13 * lbl_80564548, pz + f11 * lbl_80564548, uv[2], uv[5], py + f12, px + f13, f11, f12, f13);
+    idx[0] = ip[0]; idx[1] = ip[1]; idx[2] = ip[2];
+    idx[3] = ip[3]; idx[4] = ip[4]; idx[5] = ip[5];
+    fn_802C8DB8(vtx, 4, idx, 6, ip[4], ip[3], ip[2], ip[1]);
     fn_802C8D74();
 }
 #pragma pop
@@ -207,7 +203,7 @@ __declspec(section ".sdata") extern char lbl_8055CA24[];
 extern float lbl_80564550;
 extern float lbl_80564554;
 #pragma scheduling invalid_target
-extern "C" int fn_802964EC(void *arg0, void *arg1, void *arg2) {
+extern "C" int fn_802964EC(void *arg0, void *arg1, void *__restrict arg2) {
     struct Vec3 { float x, y, z; };
     class Node {
     public:
@@ -521,45 +517,46 @@ struct KF { float dur; float a[4]; unsigned int col; int p18; float h; float v[3
 #pragma use_lmw_stmw off
 int fn_80296D2C(void *arg0, float *arg1, float farg0) {
     struct KF *kf[2];
+    struct KF **kp = kf;
     struct KF *base;
-    struct KF *cur, *nxt;
-    int count, i, flags;
-    float total, dur, t, ease, x, y, z, w, h;
+    int count, i, flags, off;
+    float dur, total, t, ease, x, y, z, w, h;
     unsigned int packed;
-    float vec[3];
     float sp[3];
-    kf[0] = 0; kf[1] = 0;
+    float vec[3];
+    kp[0] = 0; kp[1] = 0;
     count = *(int *)((char *)arg0 + 0x2C);
     base = *(struct KF **)((char *)arg0 + 0x24);
     total = lbl_8056456C;
+    off = 0;
     for (i = 0; i < count; i++) {
-        dur = base[i].dur;
-        if (farg0 < total + dur) { kf[0] = &base[i]; break; }
+        struct KF *b = *(struct KF **)((char *)arg0 + 0x24);
+        dur = *(float *)((char *)b + off);
+        if (farg0 < total + dur) { kp[0] = (struct KF *)((char *)b + off); break; }
         total += dur;
+        off += 0x30;
     }
-    if (kf[0] == 0) return 0;
-    kf[1] = kf[0];
-    if (kf[0] != &base[count] - 1) kf[1] = kf[1] + 1;
-    cur = kf[0];
-    t = (total - farg0) / cur->dur;
-    nxt = kf[1];
-    flags = nxt->flags;
+    if (kp[0] == 0) goto ret0;
+    if (kp[0] == *(struct KF **)((char *)arg0 + 0x24) + *(int *)((char *)arg0 + 0x2C) - 1) kp[1] = kp[0];
+    else kp[1] = kp[0] + 1;
+    t = (total - farg0) / kp[0]->dur;
+    flags = kp[1]->flags;
     if (t < lbl_80564548) ease = lbl_80564548;
     else if (t > lbl_80564560) ease = lbl_80564560;
     else if (t > lbl_8056456C) ease = t * (lbl_80564570 * t * t) + lbl_80564574 * t * t;
     else ease = t * (lbl_80564570 * t * t) - lbl_80564574 * t * t;
-    if (flags & 1) x = cur->a[0] + ease * (nxt->a[0] - cur->a[0]); else x = cur->a[0];
-    if (flags & 1) y = cur->a[1] + ease * (nxt->a[1] - cur->a[1]); else y = cur->a[1];
-    if (flags & 1) z = cur->a[2] + ease * (nxt->a[2] - cur->a[2]); else z = cur->a[2];
-    if (flags & 1) w = cur->a[3] + ease * (nxt->a[3] - cur->a[3]); else w = cur->a[3];
-    if (flags & 2) packed = fn_80296A10(cur->col, nxt->col, ease); else packed = cur->col;
-    if (flags & 8) h = cur->h + ease * (nxt->h - cur->h); else h = cur->h;
+    if (flags & 1) x = kp[0]->a[0] + ease * (kp[1]->a[0] - kp[0]->a[0]); else x = kp[0]->a[0];
+    if (flags & 1) y = kp[0]->a[1] + ease * (kp[1]->a[1] - kp[0]->a[1]); else y = kp[0]->a[1];
+    if (flags & 1) z = kp[0]->a[2] + ease * (kp[1]->a[2] - kp[0]->a[2]); else z = kp[0]->a[2];
+    if (flags & 1) w = kp[0]->a[3] + ease * (kp[1]->a[3] - kp[0]->a[3]); else w = kp[0]->a[3];
+    if (flags & 2) packed = fn_80296A10(kp[0]->col, kp[1]->col, ease); else packed = kp[0]->col;
+    if (flags & 8) h = kp[0]->h + ease * (kp[1]->h - kp[0]->h); else h = kp[0]->h;
     if (flags & 8) {
-        vec[0] = cur->v[0] + ease * (nxt->v[0] - cur->v[0]);
-        vec[1] = cur->v[1] + ease * (nxt->v[1] - cur->v[1]);
-        vec[2] = cur->v[2] + ease * (nxt->v[2] - cur->v[2]);
+        vec[0] = kp[0]->v[0] + ease * (kp[1]->v[0] - kp[0]->v[0]);
+        vec[1] = kp[0]->v[1] + ease * (kp[1]->v[1] - kp[0]->v[1]);
+        vec[2] = kp[0]->v[2] + ease * (kp[1]->v[2] - kp[0]->v[2]);
     } else {
-        vec[0] = cur->v[0]; vec[1] = cur->v[1]; vec[2] = cur->v[2];
+        vec[0] = kp[0]->v[0]; vec[1] = kp[0]->v[1]; vec[2] = kp[0]->v[2];
     }
     sp[0] = vec[0] + arg1[0];
     sp[1] = vec[1] + arg1[1];
@@ -567,17 +564,20 @@ int fn_80296D2C(void *arg0, float *arg1, float farg0) {
     if (flags & 4) {
         int a = packed >> 24;
         int a2 = fn_802969B4(a, 0, ease) & 0xFF;
-        fn_802960A0(sp, (a2 << 24) | (packed & 0xFFFFFF), kf[0]->p18, h, x, y, z, w);
-        fn_802960A0(sp, (packed & 0xFFFFFF) | ((a - a2) << 24), kf[1]->p18, h, x, y, z, w);
+        fn_802960A0(sp, (a2 << 24) | (packed & 0xFFFFFF), kp[0]->p18, h, x, y, z, w);
+        fn_802960A0(sp, (packed & 0xFFFFFF) | ((a - a2) << 24), kp[1]->p18, h, x, y, z, w);
     } else {
-        fn_802960A0(sp, packed, kf[0]->p18, h, x, y, z, w);
+        fn_802960A0(sp, packed, kp[0]->p18, h, x, y, z, w);
     }
     return 1;
+ret0:
+    return 0;
 }
 #pragma pop
 
 #pragma push
 #pragma cplusplus on
+#pragma unroll off
 extern "C" float fn_802970C8(void *arg0) {
     int count = *(int *)((char *)arg0 + 0x2C);
     int processed = 0;
