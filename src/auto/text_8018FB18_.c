@@ -324,29 +324,51 @@ int fn_8018FF84(int object, int deleteFlag) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
-#pragma opt_strength_reduction off
     class ResultMethods {
     public:
-        virtual u8 f0(); virtual u8 f1(); virtual u8 f2(); virtual u8 f3();
-        virtual u8 f4(); virtual u8 f5(); virtual u8 f6(); virtual u8 f7();
-        virtual u8 f8(); virtual u8 f9(); virtual u8 f10(); virtual u8 f11();
-        virtual u8 f12(); virtual u8 f13(); virtual u8 f14(); virtual u8 f15();
-        virtual u8 f16(); virtual u8 f17(); virtual u8 f18(); virtual u8 f19();
+        virtual u8 f0();
+        virtual u8 f1();
+        virtual u8 f2();
+        virtual u8 f3();
+        virtual u8 f4();
+        virtual u8 f5();
+        virtual u8 f6();
+        virtual u8 f7();
+        virtual u8 f8();
+        virtual u8 f9();
+        virtual u8 f10();
+        virtual u8 f11();
+        virtual u8 f12();
+        virtual u8 f13();
+        virtual u8 f14();
+        virtual u8 f15();
+        virtual u8 f16();
+        virtual u8 f17();
+        virtual u8 f18();
+        virtual u8 f19();
         virtual u8 f20();
-        virtual u8 get5c(); virtual u8 get60(); virtual u8 get64(); virtual u8 get68();
+        virtual u8 get5c();
+        virtual u8 get60();
+        virtual u8 get64();
+        virtual u8 get68();
     };
     class Method18 {
     public:
-        virtual s32 f0(); virtual s32 f1(); virtual s32 f2(); virtual s32 f3();
+        virtual s32 f0();
+        virtual s32 f1();
+        virtual s32 f2();
+        virtual s32 f3();
         virtual s32 get18();
     };
     class Method0C1 {
     public:
-        virtual void f0(); virtual void call(void *, void *);
+        virtual void f0();
+        virtual void call(void *, void *);
     };
     class Method0C2 {
     public:
-        virtual void f0(); virtual void call(void *, void *);
+        virtual void f0();
+        virtual void call(void *, void *);
     };
     s32 temp_r0;
     s32 temp_r27;
@@ -384,7 +406,7 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     }
     *(void **)((u8 *)arg0 + 4) = temp_r3;
     *(void **)((u8 *)*(void **)((u8 *)arg0 + 0xC) + 0x38) = temp_r3;
-    *(u8 *)((u8 *)arg0 + 0x25) = (u32)__cntlzw(*(u32 *)((u8 *)arg2 + 0x5C)) >> 5;
+    *(bool *)((u8 *)arg0 + 0x25) = *(s32 *)((u8 *)arg2 + 0x5C) == 0;
     {
         s32 value = *(s32 *)((u8 *)arg2 + 0x5C);
         s32 negative = -value;
@@ -403,7 +425,6 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     if (fn_80019B78() != 0) {
         lbl_8055E528 = 1;
     }
-#pragma opt_strength_reduction on
 }
 #pragma scheduling on
 #pragma use_lmw_stmw reset
@@ -1788,15 +1809,13 @@ extern "C" void fn_80191860(void *arg0, void *arg1) {
     extern int lbl_802F9550[];
     int buf[9];
     int v;
-    int *p;
-    int a0p4, a0p5;
-    a0p4 = (int)((char *)arg0 + 4);
-    a0p5 = (int)((char *)arg0 + 5);
-    p = lbl_802F9550;
+    int a0p4 = (int)((char *)arg0 + 4);
+    int a0p5 = (int)((char *)arg0 + 5);
+    int *p = lbl_802F9550;
     *(volatile int *)&buf[0] = *p++;
     *(volatile int *)&buf[3] = p[2];
-    buf[1] = p[0];
-    buf[2] = p[1];
+    *(volatile int *)&buf[1] = p[0];
+    *(volatile int *)&buf[2] = p[1];
     buf[4] = p[3];
     buf[5] = p[4];
     buf[6] = p[5];
