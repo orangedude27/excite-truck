@@ -996,10 +996,12 @@ void fn_802D5DE8(u32 flags) {
     GXSetVtxDescv(vtxDescList);
 }
 
+static inline u32 readFlags_802D5F88(const u8 *p) { return *(const u32 *)(p + 0xC); }
+
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802D5F88(s32 arg0) {
-    u32 flags = *(u32 *)((u8 *)arg0 + 0xC);
+    register u32 flags = *(u32 *)((u8 *)arg0 + 0xC);
     u32 normalized = flags & 0xFFCFFFFF;
     u8 mode = *(u8 *)((u8 *)arg0 + 9);
     if (normalized != lbl_8055FDE8) {
