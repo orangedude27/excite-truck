@@ -865,6 +865,7 @@ static inline void SetSoundFlagAll_800E3228(void *list, unsigned char flag) {
     }
     OSRestoreInterrupts(interruptState);
 }
+#pragma always_inline reset
 extern "C" void fn_800E3228(void *arg0) {
     int status = DVDGetDriveStatus();
     if (status == 0) {
