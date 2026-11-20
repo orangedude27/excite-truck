@@ -2,8 +2,6 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #pragma dont_inline fn_802920D0
 
-union FV { float f[3]; double d[3]; };
-
 #pragma cplusplus on
 struct QueryObject_80292114 {
     virtual int f0(int *);
