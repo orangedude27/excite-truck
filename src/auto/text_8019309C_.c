@@ -304,7 +304,6 @@ void fn_8019330C(void *arg0, void *arg1, const void *arg2) {
     stack[0] = dx;
     stack[1] = dy;
 }
-#pragma processor reset
 
 #pragma scheduling off
 /* Projects the 2D point (used as both input and output) into the local frame of the object's vehicle at +0x294 (+0x70). */
