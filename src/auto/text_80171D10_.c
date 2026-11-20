@@ -2022,10 +2022,9 @@ extern "C" int fn_80175238(void *arg0, int arg1) {
  struct Rect { int a; float b; int c,d; float e; int f,g,h; };
  struct Manager { virtual void *unused(); virtual void *get(const char *); };
  struct Frame { Rect rect2; char text2[24]; Rect rect1; char text1[20]; } frame;
+ const char *base = lbl_80330F48;
  struct Manager *mgr; void *one, *two;
- char *base = lbl_80330F48;
- void *panel, *detail;
- float a, time, limit,b,c,d,e, t, blend, value;
+ float limit, a, time, b,c,d,e, t, blend, value;
  time = *(float *)((char *)fn_801E7E3C()+0x10);
  limit=lbl_80561AB8; a=limit-lbl_80561AE0; b=a-lbl_80561AE4;
  c=b-lbl_80561AE8; d=c-lbl_80561AE0; e=d-lbl_80561AE4;
@@ -2036,6 +2035,7 @@ extern "C" int fn_80175238(void *arg0, int arg1) {
  if (time < e) fn_8000FBE4();
  if (!fn_80161C38()) {
    if (time < limit) {
+     void *panel, *detail;
      t=(time-a)/(b-a); blend=lbl_80561A40;
      blend = blend < t ? blend : t;
      blend = blend > lbl_80561A44 ? blend : lbl_80561A44;
@@ -2044,33 +2044,18 @@ extern "C" int fn_80175238(void *arg0, int arg1) {
      panel=mgr->get(base+0x5f8);
      mgr=*(struct Manager **)((char *)arg0+0x1a8);
      detail=mgr->get(base+0x604);
-     ((void (*)(int, int))fn_8001DF08)(fn_801E866C(arg1),0);
+     fn_8001DF08(fn_801E866C(arg1),0);
      if (one && two && panel && detail) {
-       value=lbl_80561A50;
-if (blend < value) {} else {
- value=lbl_80561A40;
- if (blend > value) {} else {
-  if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
-  else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
- }
-}
-       fn_801479A8(one,two,fn_80131234(base+0x610),value);
-       fn_80160A74(); fn_801308F4(frame.text1,0x14,fn_80160998());
+       fn_801479A8(one,two,fn_80131234(base+0x610),HudEase(blend));
+       fn_80160A74(); ((void (*)(void *,int,int))fn_801308F4)(frame.text1,0x14,fn_80160998());
        frame.rect1.a=*(int *)panel;
-       { int bword=*(int *)((char *)panel+4), cword=*(int *)((char *)panel+8); *(int *)&frame.rect1.b=bword; frame.rect1.c=cword; } frame.rect1.d=*(int *)((char *)panel+12); frame.rect1.e=*(float *)((char *)panel+16); frame.rect1.f=*(int *)((char *)panel+20); frame.rect1.g=*(int *)((char *)panel+24); frame.rect1.h=*(int *)((char *)panel+28);
+       { int cword; int bword; bword=*(volatile int *)((char *)panel+4); cword=*(volatile int *)((char *)panel+8); *(int *)&frame.rect1.b=bword; frame.rect1.c=cword; } frame.rect1.d=*(int *)((char *)panel+12); frame.rect1.e=*(float *)((char *)panel+16); frame.rect1.f=*(int *)((char *)panel+20); frame.rect1.g=*(int *)((char *)panel+24); frame.rect1.h=*(int *)((char *)panel+28);
        frame.rect1.b-=lbl_80561A54*fn_80147204(&frame.rect1,frame.text1);
-       value=lbl_80561A50;
-if (blend < value) {} else {
- value=lbl_80561A40;
- if (blend > value) {} else {
-  if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
-  else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
- }
-}
-       fn_801479A8(&frame.rect1,detail,frame.text1,value);
+       fn_801479A8(&frame.rect1,detail,frame.text1,HudEase(blend));
      }
    }
    if (time < c) {
+     void *panel, *detail;
      fn_8014784C(*(void **)((char *)arg0+0x1a8),base+0x500,base+0x510,0);
      t=(time-d)/(e-d); blend=lbl_80561A40;
      blend = blend < t ? blend : t;
@@ -2081,30 +2066,14 @@ if (blend < value) {} else {
      mgr=*(struct Manager **)((char *)arg0+0x1a8);
      detail=mgr->get(lbl_8055A2E4);
      if (one && two && panel && detail) {
-       value=lbl_80561A50;
-if (blend < value) {} else {
- value=lbl_80561A40;
- if (blend > value) {} else {
-  if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
-  else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
- }
-}
-       fn_801479A8(one,two,fn_80131234(base+0x638),value);
+       fn_801479A8(one,two,fn_80131234(base+0x638),HudEase(blend));
        t=*(float *)((char *)arg0+0x19c)-fn_801E7E18();
        value=lbl_80561A44; value = value > t ? value : t;
        fn_80130978(frame.text2,0x14,value);
        frame.rect2.a=*(int *)panel;
-       { int bword=*(int *)((char *)panel+4), cword=*(int *)((char *)panel+8); *(int *)&frame.rect2.b=bword; frame.rect2.c=cword; } frame.rect2.d=*(int *)((char *)panel+12); frame.rect2.e=*(float *)((char *)panel+16); frame.rect2.f=*(int *)((char *)panel+20); frame.rect2.g=*(int *)((char *)panel+24); frame.rect2.h=*(int *)((char *)panel+28);
+       { int cword; int bword; bword=*(volatile int *)((char *)panel+4); cword=*(volatile int *)((char *)panel+8); *(int *)&frame.rect2.b=bword; frame.rect2.c=cword; } frame.rect2.d=*(int *)((char *)panel+12); frame.rect2.e=*(float *)((char *)panel+16); frame.rect2.f=*(int *)((char *)panel+20); frame.rect2.g=*(int *)((char *)panel+24); frame.rect2.h=*(int *)((char *)panel+28);
        frame.rect2.b+=lbl_80561A54*fn_80147204(&frame.rect2,frame.text2);
-       value=lbl_80561A50;
-if (blend < value) {} else {
- value=lbl_80561A40;
- if (blend > value) {} else {
-  if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
-  else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
- }
-}
-       fn_801479A8(&frame.rect2,detail,frame.text2,value);
+       fn_801479A8(&frame.rect2,detail,frame.text2,HudEase(blend));
      }
    }
  }
