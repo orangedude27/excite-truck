@@ -820,19 +820,12 @@ extern "C" void ChannelCallbackFunc__Q46nw4hbm3snd6detail8SeqTrackFPQ46nw4hbm3sn
         virtual void f30(); virtual void f31(); virtual void f32(); virtual void f33(); virtual void f34(); virtual void f35(); virtual void f36(); virtual void f37(); virtual void f38(); virtual void f39();
         virtual void f40(); virtual void f41(); virtual void f42(); virtual void f43(void *);
     };
-    struct Strings {
-        char file[0xA0];
-        char s1[0x30];
-        char s2[0x28];
-        char s3[0x2C];
-        char s4[1];
-    };
     register u32 token;
-    register Strings *file = (Strings *)lbl_80324390;
+    register const char *file = lbl_80324390;
     if (channel == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file->file, 0x209, file->s1);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x209, file + 0xA0);
     if (track == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file->file, 0x20A, file->s2);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x20A, file + 0xD0);
     switch (status) {
     case 0:
     case 2:
@@ -854,7 +847,7 @@ extern "C" void ChannelCallbackFunc__Q46nw4hbm3snd6detail8SeqTrackFPQ46nw4hbm3sn
         return;
     }
     if (node == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file->file, 0x220, file->s3);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x220, file + 0xF8);
     void *next;
     while ((next = *(void **)((u8 *)node + 0xE4)) != 0) {
         if (next == channel) {
@@ -864,7 +857,7 @@ extern "C" void ChannelCallbackFunc__Q46nw4hbm3snd6detail8SeqTrackFPQ46nw4hbm3sn
         }
         node = next;
     }
-    Panic__Q26nw4hbm2dbFPCciPCce(file->file, 0x229, file->s4);
+    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x229, file + 0x124);
     OSRestoreInterrupts(token);
 }
 #pragma pop
@@ -5969,9 +5962,9 @@ extern "C" void SetPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFi(void *self, 
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
         node = (u8 *)node - 0xC8;
         if (node == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326378, 0x193, lbl_80326354);
+            ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(lbl_80326378, 0x193, lbl_80326354);
         if (node == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce((const char *)message, 0x220, (const char *)(message + 0xCC));
+            ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)((const char *)message, 0x220, (const char *)(message + 0xCC));
         ((SoundNode *)node)->Remove();
     }
 }
@@ -6288,24 +6281,27 @@ extern "C" s32 fn_800FA4C4(void *arg0, s32 arg1) {
 }
 s32 nw4hbm::snd::detail::SoundThread::Shutdown() {
     u8 *thread = (u8 *)this;
+    void *object;
+
     if (*(u8 *)(thread + 0x2394) == 0)
         return 0;
+
     if ((s8)lbl_8055DE68 == 0) {
-        volatile u32 *base = (volatile u32 *)lbl_80412CC8;
-        base[0x2388 / 4] = 0;
-        void *object = (void *)((u8 *)base + 0x2388);
-        base[0x238c / 4] = 0;
-        base[0x2378 / 4] = 0;
-        base[0x237c / 4] = 0;
-        base[0x2384 / 4] = 0;
-        base[0x2388 / 4] = (u32)object;
-        base[0x238c / 4] = (u32)object;
-        ((volatile u8 *)base)[0x2394] = 0;
-        __register_global_object((void *)base, (void *)&__dt__10TitleSceneFv,
-                                 (void *)(u32)&lbl_80412CB8, object);
+        object = (void *)&lbl_80412CC8[0x2388];
+        *(volatile u32 *)&lbl_80412CC8[0x2388] = 0;
+        *(volatile u32 *)&lbl_80412CC8[0x238c] = 0;
+        *(u32 *)&lbl_80412CC8[0x2378] = 0;
+        *(u32 *)&lbl_80412CC8[0x237c] = 0;
+        *(u32 *)&lbl_80412CC8[0x2384] = 0;
+        *(void **)&lbl_80412CC8[0x2388] = object;
+        *(void **)&lbl_80412CC8[0x238c] = object;
+        *(u8 *)&lbl_80412CC8[0x2394] = 0;
+        __register_global_object((void *)lbl_80412CC8, (void *)&__dt__10TitleSceneFv,
+                                 (void *)&lbl_80412CB8, object);
         lbl_8055DE68 = 1;
     }
-    if (OSSendMessage((u8 *)lbl_80412CC8 + 0x2338, (void *)2, 0x0) == 0)
+
+    if (OSSendMessage((u8 *)lbl_80412CC8 + 0x2338, (void *)2, 0) == 0)
         return 0;
     if (OSJoinThread((void *)thread, 0) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326450, 0x70, lbl_80326488);
@@ -8191,9 +8187,9 @@ extern "C" void NotifyStrmHeaderAsyncEndCallback__Q46nw4hbm3snd6detail10StrmPlay
 extern "C" void VoiceCallbackFunc__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv(void *voice, s32 status, void *player) {
     const char *base = lbl_80326768;
     if (player == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(base + 0, 0x504, base + 0x238);
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x504, base + 0x238);
     if (*(void **)((char *)player + 0x438) != voice)
-        Panic__Q26nw4hbm2dbFPCciPCce(base + 0, 0x506, base + 0x268);
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x506, base + 0x268);
     if (status < 2) {
         if (status < 0)
             goto invalid_status;
@@ -8214,7 +8210,7 @@ clear_voice:
     goto done;
 
 invalid_status:
-    Panic__Q26nw4hbm2dbFPCciPCce(base + 0, 0x515, base + 0x298, status);
+    Panic__Q26nw4hbm2dbFPCciPCce(base, 0x515, base + 0x298, status);
 
 done:
     return;
