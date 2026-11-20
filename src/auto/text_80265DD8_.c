@@ -251,34 +251,7 @@ static inline void fn_80266388_multiply(float *out, const float *a, const float 
   out[8] = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
  }
  }
- static inline void fn_80268E94_multiply_top(float *out, const float *a, const float *b) {
- float t0,t1,t2,t3,t4,t5,t6,t7,t8;
- if (out == a || out == b) {
- t0 = fn_80144514(b[0], a[0], b[3], a[1], b[6], a[2]);
- t3 = fn_80144514(b[0], a[3], b[3], a[4], b[6], a[5]);
- t6 = fn_80144514(b[0], a[6], b[3], a[7], b[6], a[8]);
- t1 = fn_80144514(b[1], a[0], b[4], a[1], b[7], a[2]);
- t4 = fn_80144514(b[1], a[3], b[4], a[4], b[7], a[5]);
- t7 = fn_80144514(b[1], a[6], b[4], a[7], b[7], a[8]);
- t2 = fn_80144514(b[2], a[0], b[5], a[1], b[8], a[2]);
- t5 = fn_80144514(b[2], a[3], b[5], a[4], b[8], a[5]);
- t8 = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
- out[0] = t0; out[3] = t3; out[6] = t6;
- out[1] = t1; out[4] = t4; out[7] = t7;
- out[2] = t2; out[5] = t5; out[8] = t8;
- } else {
- out[0] = fn_80144514(b[0], a[0], b[3], a[1], b[6], a[2]);
- out[3] = fn_80144514(b[0], a[3], b[3], a[4], b[6], a[5]);
- out[6] = fn_80144514(b[0], a[6], b[3], a[7], b[6], a[8]);
- out[1] = fn_80144514(b[1], a[0], b[4], a[1], b[7], a[2]);
- out[4] = fn_80144514(b[1], a[3], b[4], a[4], b[7], a[5]);
- out[7] = fn_80144514(b[1], a[6], b[4], a[7], b[7], a[8]);
- out[2] = fn_80144514(b[2], a[0], b[5], a[1], b[8], a[2]);
- out[5] = fn_80144514(b[2], a[3], b[5], a[4], b[8], a[5]);
- out[8] = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
- }
-}
- /* Zero a state block via fn_80265E08 and return its pointer (camera block initializer). */
+  /* Zero a state block via fn_80265E08 and return its pointer (camera block initializer). */
 void* fn_80265DD8(void* block) {
     fn_80265E08(block);
     return block;
