@@ -1121,16 +1121,17 @@ s32 fn_802D62E4(void *object) {
 }
 
 #pragma scheduling invalid_target
-void fn_802D62FC(void *arg0, s32 *arg1, s32 *arg2) {
+void fn_802D62FC(void *__restrict arg0, s32 *arg1, s32 *arg2) {
     extern s32 lbl_8055FDF0;
     extern s32 lbl_8055FDF4;
     extern s32 lbl_8055FDF8;
     extern void GXBeginDisplayList(void *, u32);
     extern u32 GXEndDisplayList(void);
     extern void fn_802D5DE8(u32);
+    register u8 *src = (u8 *)arg0;
     register CacheEntry *scan = (CacheEntry *)lbl_804CA438;
-    register u8 key = *(u8 *)((u8 *)arg0 + 9);
-    register u32 id = *(u32 *)((u8 *)arg0 + 0xC);
+    register u8 key = src[9];
+    register u32 id = *(u32 *)(src + 0xC);
     s32 count = lbl_8055FDF0;
     s32 i;
     CacheEntry *write;
