@@ -165,12 +165,11 @@ void fn_800563C8(s32 chan, u32 status) {
 
 void fn_8005649C(s32 chan, u32 type) {
     u8* origin = lbl_8038F080;
-    s32 resetChan;
     u32 chanBit;
+    u32 resetChan;
     u32 recalibrate;
     BOOL rc;
     u32 response[2];
-    u32* typePtr;
     (void)chan;
     resetChan = lbl_80558F74;
     chanBit = PAD_CHAN0_BIT >> resetChan;
@@ -187,8 +186,7 @@ void fn_8005649C(s32 chan, u32 type) {
         return;
     }
     type &= ~0xFF;
-    typePtr = (u32*)(origin + 0x30);
-    typePtr[resetChan] = type;
+    ((u32*)(origin + 0x30))[resetChan] = type;
     if (((type & 0x18000000) != 0x08000000) || !(type & 0x01000000)) {
         lbl_80558F74 = __cntlzw(lbl_8055DB10);
         if (lbl_80558F74 != 32) {
@@ -288,7 +286,10 @@ BOOL fn_800568C4(u32 chanMask) {
     return TRUE;
 }
 
+#pragma opt_propagation off
 BOOL fn_800569D0(void) {
+    u32 id;
+    s64 time;
     if (lbl_8055DB18[0]) {
         return TRUE;
     }
@@ -313,27 +314,21 @@ BOOL fn_800569D0(void) {
         lbl_80558F80 = spec;
     }
     lbl_8055DB18[0] = TRUE;
-    {
-        BOOL flag = lbl_8055DB2C;
-        lbl_8055DB18[0] = TRUE;
-        if (flag) {
-            s64 time = OSGetTime();
-            *(u16*)0x800030E0 = ((time & 0xFFFF) + ((time >> 16) & 0xFFFF) + ((time >> 32) & 0xFFFF) + ((time >> 48) & 0xFFFF)) & 0x3FFF;
-            lbl_8055DB0C = 0xF0000000;
-        }
+    if (lbl_8055DB2C) {
+        time = OSGetTime();
+        *(u16*)0x800030E0 = ((time & 0xFFFF) + ((time >> 16) & 0xFFFF) + ((time >> 32) & 0xFFFF) + ((time >> 48) & 0xFFFF)) & 0x3FFF;
+        lbl_8055DB0C = 0xF0000000;
     }
-    {
-        u32 id = (*(u16*)0x800030E0 & 0x3FFF) << 8;
-        lbl_8038F0C0[0] = id | 0x4D000000;
-        lbl_8038F0C0[1] = id | 0x4D400000;
-        lbl_8038F0C0[2] = id | 0x4D800000;
-        lbl_8038F0C0[3] = id | 0x4DC00000;
-    }
+    id = (*(u16*)0x800030E0 & 0x3FFF) << 8;
+    lbl_8038F0C0[0] = id | 0x4D000000;
+    lbl_8038F0C0[1] = id | 0x4D400000;
+    lbl_8038F0C0[2] = id | 0x4D800000;
+    lbl_8038F0C0[3] = id | 0x4DC00000;
     SIRefreshSamplingRate();
     OSRegisterShutdownFunction(&lbl_803115D8);
     return fn_800567BC(0xF0000000);
 }
-
+#pragma opt_propagation reset
 void SPEC0_MakeStatus(s32 chan, PADStatus *status, u32 data[2])
 {
   (void) chan;
@@ -428,7 +423,7 @@ static inline s32 abs_diff_sqr(s32 a, s32 b) {
 
 static inline s32 sqabs(s32 d) {
     s32 sign = d >> 31;
-    return (d ^ sign) - sign;
+    return (sign ^ d) - sign;
 }
 
 void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]) {
