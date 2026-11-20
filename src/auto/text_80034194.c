@@ -996,12 +996,14 @@ static inline void convertEntrynumPath(u32 entrynum, char *path, u32 maxlen) {
 BOOL DVDGetCurrentDir(const char *path, void *info) {
     char dir[128];
     s32 entry;
+    s32 cur;
     u32 offset;
     u8 *fst;
 
     entry = DVDConvertPathToEntrynum(path);
     if (entry < 0) {
-        convertEntrynumPath(lbl_8055D828, dir, 0x80);
+        cur = lbl_8055D828;
+        convertEntrynumPath(cur, dir, 0x80);
         OSReport(lbl_80302038, path, dir);
         return FALSE;
     }
