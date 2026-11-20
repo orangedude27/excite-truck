@@ -1619,7 +1619,7 @@ static inline int fn_80281138_find(void **items, int count, void *key) {
     return -1;
 }
 
-extern "C" int fn_80281138(void) {
+extern "C" FN81138_RET fn_80281138(void) {
     extern int fn_801345D8(char *, int, const char *, const char *, int);
     extern int fn_802368EC(void);
     extern void fn_80236954(char *);
