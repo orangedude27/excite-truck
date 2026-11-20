@@ -614,7 +614,6 @@ extern s32 fn_802C9A60(void);
 extern s32 fn_802C9A68(void);
 extern f32 lbl_8055D020, lbl_80563610, lbl_80563614, lbl_8056365C;
 extern f32 lbl_80563670, lbl_80563674, lbl_80563678, lbl_8056367C;
-extern f32 lbl_80563670, lbl_80563674, lbl_80563610, lbl_80563678, lbl_8056367C, lbl_8056365C;
 void fn_80231094(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     #pragma scheduling invalid_target
     f32 f2, f0, f1, f3, f4;
@@ -644,9 +643,9 @@ void fn_80231094(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     if (!fn_802C9A60() && fn_802C9A58()) {
         f4 = 1.0f;
         f0 = lbl_8055D020;
-        f1 = 0.5f;
         f2 = 640.0f;
         f3 = f4 / f0;
+        f1 = 0.5f;
         f0 = 0.0f;
         f3 = f3 - f4;
         f2 = f2 * f3;
@@ -655,8 +654,8 @@ void fn_80231094(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
         else f0 = f1 + f2;
         *arg2 -= (s32)f0;
         f4 = 1.0f;
-        f1 = 0.5f;
         f2 = 640.0f;
+        f1 = 0.5f;
         f0 = 0.0f;
         f3 = f4 / lbl_8055D020;
         f3 = f3 - f4;
