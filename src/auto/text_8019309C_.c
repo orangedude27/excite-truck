@@ -229,10 +229,10 @@ float fn_801931EC(float numerator, float denominator) {
 }
 
 #pragma processor 750
-void fn_8019321C(void *arg0, void *arg1, void *arg2) {
-    float stack[10];
-    float x = *(float *)((char *)arg2 + 0x18);
-    float y = *(float *)((char *)arg2 + 0x20);
+void fn_8019321C(void *arg0, void *arg1, const void *arg2) {
+    float stack[8];
+    float x = *(const float *)((const char *)arg2 + 0x18);
+    float y = *(const float *)((const char *)arg2 + 0x20);
     float magnitude = x * x + y * y;
     float length;
     float scale;
@@ -247,11 +247,11 @@ void fn_8019321C(void *arg0, void *arg1, void *arg2) {
     stack[3] = y;
     length = (float)fn_8002F234(magnitude);
     length = lbl_80562148 > length ? lbl_80562148 : length;
-    stack[6] = *(float *)((char *)arg2 + 0x24);
+    stack[6] = *(const float *)((const char *)arg2 + 0x24);
     scale = lbl_80562140 / length;
     dx = stack[2] * scale;
     dy = stack[3] * scale;
-    stack[7] = *(float *)((char *)arg2 + 0x2C);
+    stack[7] = *(const float *)((const char *)arg2 + 0x2C);
     c = *(float *)arg1;
     d = *(float *)((char *)arg1 + 4);
     neg = -(double)dx;
@@ -271,36 +271,46 @@ void fn_8019321C(void *arg0, void *arg1, void *arg2) {
 #pragma processor reset
 extern float lbl_80562140, lbl_80562148;
 #pragma dont_inline on
-void fn_8019330C(void *out, void *in, int arg2) {
-    volatile float work[8];
-    float dx, dy, sx, sy, nsx;
-    float x = *(float *)((char *)arg2 + 0x18);
-    float y = *(float *)((char *)arg2 + 0x20);
-    float length = (float)fn_8002F234(x * x + y * y);
-    float denom = lbl_80562148 > length ? lbl_80562148 : length;
-    float scale = lbl_80562140 / denom;
-    sy = work[3] * scale;
-    sx = work[2] * scale;
-    work[6] = *(float *)((char *)arg2 + 0x24);
-    work[7] = *(float *)((char *)arg2 + 0x2C);
-    dx = *(float *)in - work[6];
-    dy = *(float *)((char *)in + 4) - work[7];
-    work[0] = dx;
-    work[1] = dy;
-    work[2] = sx;
-    work[3] = sy;
-    work[4] = sy;
+void fn_8019330C(void *arg0, void *arg1, const void *arg2) {
+    float stack[8];
+    float x = *(const float *)((const char *)arg2 + 0x18);
+    float y = *(const float *)((const char *)arg2 + 0x20);
+    float magnitude = x * x + y * y;
+    float length;
+    float denom;
+    float scale;
+    float sx;
+    float sy;
+    float nsx;
+    float dx;
+    float dy;
+    stack[2] = x;
+    stack[3] = y;
+    length = (float)fn_8002F234(magnitude);
+    denom = lbl_80562148 > length ? lbl_80562148 : length;
+    stack[6] = *(const float *)((const char *)arg2 + 0x24);
+    scale = lbl_80562140 / denom;
+    sx = stack[2] * scale;
+    sy = stack[3] * scale;
+    stack[7] = *(const float *)((const char *)arg2 + 0x2C);
+    dx = *(const float *)arg1 - stack[6];
+    dy = *(const float *)((const char *)arg1 + 4) - stack[7];
+    stack[2] = sx;
+    stack[3] = sy;
+    stack[4] = sy;
     nsx = -sx;
-    work[5] = nsx;
-    *(float *)((char *)out + 4) = dx * sx + dy * sy;
-    *(float *)out = dx * sy + dy * (float)(double)nsx;
+    stack[5] = nsx;
+    *(float *)((char *)arg0 + 4) = dx * sx + dy * sy;
+    *(float *)arg0 = dx * sy + dy * (float)(double)nsx;
+    stack[0] = dx;
+    stack[1] = dy;
 }
 #pragma dont_inline reset
 
 #pragma scheduling off
 /* Projects the 2D point (used as both input and output) into the local frame of the object's vehicle at +0x294 (+0x70). */
 void fn_801933FC(void *owner, void *point) {
-    fn_8019330C(point, point, (owner = *(void **)((char *)owner + 0x294), (int)((char *)owner + 0x70)));
+    fn_8019330C(point, point, (owner = *(void **)((char *)owner + 0x294), (void *)((char *)owner + 0x70)));
 }
 #pragma scheduling reset
 int fn_80193524(void *first, void *second) {
@@ -2722,9 +2732,9 @@ static inline float dot_801973FC(float *a, Vec2_801973FC *b) {
     return a[0] * b->x + a[1] * b->y;
 }
 float fn_801973FC(float *arg0, float *arg1, void *arg2) {
-    Vec2_801973FC diff;
-    sub_801973FC(&diff, arg1, (float *)arg2);
-    return dot_801973FC(arg0, &diff);
+    float temp_f3 = arg1[0] - ((float *)arg2)[0];
+    float temp_f2 = arg1[1] - ((float *)arg2)[1];
+    return arg0[0] * temp_f3 + arg0[1] * temp_f2;
 }
 
 #pragma push
@@ -3304,8 +3314,9 @@ void fn_8019340C(void *arg0, void *arg1, float *arg2, int arg3, void *arg4) {
     extern float PSVECDotProduct(const void *, const void *);
     float sp8, spC, sp10;
     float dot, val;
+    float threshold;
     int flag = 0, gate = 0;
-    int temp;
+    int temp, cur;
     void *ret;
 
     if (arg4 != 0 && *(unsigned int *)((char *)arg4 + 0x10) + 0xAFBD0000U == 0x4152U) flag = 1;
@@ -3314,9 +3325,11 @@ void fn_8019340C(void *arg0, void *arg1, float *arg2, int arg3, void *arg4) {
         if ((lbl_8055D430 & 1) && (lbl_8055D430 & 0x20)) gate = 1;
         if (gate != 0) {
             dot = PSVECDotProduct(arg1, arg1);
-            if (dot > lbl_8056214C) {
+            threshold = lbl_8056214C;
+            if (dot > threshold) {
+                cur = *(int *)((char *)arg0 + 0x2C4);
                 temp = *(int *)((char *)arg4 + 0x1EC);
-                if (temp != *(int *)((char *)arg0 + 0x2C4)) {
+                if (temp == cur) {
                     ret = fn_8017960C(temp);
                     val = lbl_80562150 + dot / lbl_80562154;
                     if (val > lbl_80562154) {
