@@ -584,7 +584,6 @@ extern float lbl_805604FC;
 extern int fn_802354A0(int, int, s32, f32, f32, f32, f32, f32);
 #pragma push
 #pragma dont_inline on
-#pragma scheduling invalid_target
 void fn_80020860(int arg0) {
     f32 t4;
     f32 t5;
