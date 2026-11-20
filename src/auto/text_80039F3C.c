@@ -275,8 +275,9 @@ static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const
     unsigned char *base = lbl_8037B820;
     int id;
     unsigned int flag;
+    int offset = lbl_8055D8E8 * 0x20;
 
-    flag = ((DVDLowContext *)base)[lbl_8055D8E8].inUse;
+    flag = *(unsigned int *)(base + offset + 8);
     if (((-flag | flag) >> 31) == 1U) {
         OSReport(msg + 0x218, (int)lbl_8055D8E8);
         OSReport(msg + 0x250);
