@@ -20969,12 +20969,8 @@ extern "C" void Start__Q210homebutton9RemoteSpkFv(void *this_ptr) {
     register u8 *self = (u8 *)this_ptr;
     if (self[0x1EC] != 0) {
         OSCreateAlarm((OSAlarm *)(self + 0x1A0));
-        OSTime time = OSGetTime();
-        u32 ticks = *(volatile u32 *)0x800000F8;
-        u32 q = (ticks >> 2) / 125000U;
-        u32 period = q * 0x0065B9ABU;
-        ((void (*)(void *, u32, u32, u32, u32, u32, void *))OSSetPeriodicAlarm)(
-            self + 0x1A0, q, (u32)(time >> 32), (u32)time, 0, period / 8000U, (void *)&fn_800D16C4);
+        OSSetPeriodicAlarm((OSAlarm *)(self + 0x1A0), OSGetTime(), OS_NSEC_TO_TICKS(6666667),
+                           (OSAlarmHandler)fn_800D16C4);
     }
 }
 
