@@ -56,7 +56,6 @@ s32 fn_802EC4E8(s32 arg0) {
     fn_802E3734(&sp8);
     return temp_r31;
 }
-#pragma dont_inline off
 extern s32 lbl_80558898[];
 extern s32 lbl_805600E0, lbl_805600E4;
 extern u8 lbl_805600EC;
@@ -104,6 +103,7 @@ void *fn_802EC598(void) {
 
 #pragma scheduling invalid_target
 void fn_802EC614(void) {
+    // Fix note: initialize the controller flags and configuration, then allocate and register the menu resources in target order.
     char *base = lbl_8034E9E0;
     register s32 zero = 0;
     s32 *config;
