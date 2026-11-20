@@ -95,11 +95,20 @@ extern "C" void Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc(void *, void *, u8
 extern "C" void *MEMAllocFromAllocator(int, int);
 extern "C" void *__ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(void *, void *, void *);
 extern "C" const char lbl_80320C24[];
+typedef struct WindowResData {
+    u32 w0;
+    u32 w1;
+    u32 w2;
+    u32 w3;
+    u16 matIdx;
+    u8 n;
+} WindowResData;
+
 extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hbm3lyt11ResBlockSet(u8 *self, u8 *res, u8 *set) {
     u8 *arr;
     u8 n;
     u8 cnt;
-    u8 *table;
+    int *table;
     u8 *data;
     u8 *m;
     u32 matRes;
@@ -123,7 +132,7 @@ extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hb
     if (set8 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320C14, 0xC1, lbl_80320C24);
     }
-    table = (u8 *)(*(int *)(set + 8) + 0xC);
+    table = (int *)(*(int *)(set + 8) + 0xC);
     data = res + *(int *)(res + 0x60);
     n = data[0x12];
     w0 = *(int *)data;
@@ -144,7 +153,7 @@ extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hb
     }
     m = (u8 *)MEMAllocFromAllocator(lbl_8055DDF0, 0x5C);
     if (m != 0) {
-        matRes = *(int *)(set + 8) + *(int *)(table + *(u16 *)(data + 0x10) * 4);
+        matRes = *(int *)(set + 8) + table[*(u16 *)(data + 0x10)];
         if (m != 0) {
             m = (u8 *)__ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(m, (void *)matRes, set);
         }
@@ -169,7 +178,7 @@ extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hb
                     *(int *)(*(u8 **)(self + 0xFC) + off + 4) = 0;
                     m = (u8 *)MEMAllocFromAllocator(lbl_8055DDF0, 0x5C);
                     if (m != 0) {
-                        matRes = *(int *)(set + 8) + *(int *)(table + *(u16 *)entry * 4);
+                        matRes = *(int *)(set + 8) + table[*(u16 *)entry];
                         if (m != 0) {
                             m = (u8 *)__ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(m, (void *)matRes, set);
                         }
@@ -460,13 +469,7 @@ void nw4r::lyt::Window::DrawContent(const nw4r::math::VEC2 &arg1, const nw4r::ly
     s32 useVtxColor;
     void *vtxColor;
     f32 quad[4];
-    register f32 temp_f0;
-    register f32 temp_f1;
-    register f32 temp_f2;
-    register f32 temp_f4;
-    register f32 temp_f3;
-    register f32 temp_f5;
-    register f32 temp_f6;
+    register f32 t0, t1, t2, t3, t4, t5, t6;
     s32 texture;
     u8 format;
     modulate = IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(self + 0xE4, arg3);
@@ -476,40 +479,40 @@ void nw4r::lyt::Window::DrawContent(const nw4r::math::VEC2 &arg1, const nw4r::ly
         vtxColor = self + 0xE4;
     else
         vtxColor = 0;
-    temp_f1 = *(f32 *)(self + 0x50);
-    temp_f6 = frame[2];
-    temp_f3 = temp_f1 - temp_f6;
-    temp_f0 = *(f32 *)(self + 0x4C);
-    temp_f4 = frame[0];
-    temp_f1 = temp_f0 - temp_f4;
-    temp_f2 = *(f32 *)(self + 0xDC);
-    temp_f0 = *(f32 *)(self + 0xD4);
-    temp_f5 = temp_f2 + temp_f3;
-    temp_f3 = frame[3];
+    t1 = *(f32 *)(self + 0x50);
+    t6 = frame[2];
+    t0 = *(f32 *)(self + 0x4C);
+    t4 = frame[0];
+    t3 = t1 - t6;
+    t2 = *(f32 *)(self + 0xDC);
+    t1 = t0 - t4;
+    t0 = *(f32 *)(self + 0xD4);
+    t5 = t2 + t3;
+    t3 = frame[3];
     texture = *(s32 *)(self + 0xF8);
-    temp_f2 = temp_f0 + temp_f1;
-    temp_f1 = frame[1];
-    temp_f5 = temp_f5 - temp_f3;
-    temp_f3 = *(f32 *)(self + 0xE0);
-    temp_f1 = temp_f2 - temp_f1;
-    temp_f0 = *(f32 *)(self + 0xD8);
-    temp_f3 = temp_f3 + temp_f5;
+    t2 = t0 + t1;
+    t1 = frame[1];
+    t5 = t5 - t3;
+    t3 = *(f32 *)(self + 0xE0);
+    t1 = t2 - t1;
+    t0 = *(f32 *)(self + 0xD8);
+    t3 = t3 + t5;
     format = self[0xF5];
-    temp_f2 = temp_f0 + temp_f1;
-    temp_f1 = pos[1];
-    quad[1] = temp_f3;
-    temp_f3 = temp_f1 + temp_f6;
-    temp_f0 = pos[0];
-    quad[0] = temp_f2;
-    temp_f1 = temp_f0 + temp_f4;
-    temp_f2 = *(f32 *)(self + 0xDC);
-    temp_f0 = *(f32 *)(self + 0xD4);
-    temp_f2 = temp_f3 - temp_f2;
-    temp_f0 = temp_f1 - temp_f0;
-    quad[3] = temp_f2;
-    quad[2] = temp_f0;
+    t2 = t0 + t1;
+    t1 = pos[1];
+    quad[1] = t3;
+    t0 = pos[0];
+    t3 = t1 + t6;
+    quad[0] = t2;
+    t1 = t0 + t4;
+    t2 = *(f32 *)(self + 0xDC);
+    t0 = *(f32 *)(self + 0xD4);
+    t2 = t3 - t2;
+    t0 = t1 - t0;
+    quad[3] = t2;
+    quad[2] = t0;
     DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(
-        (f32 *)&quad[2], (f32 *)&quad[0], format,
+        &quad[2], &quad[0], format,
         (f32 (*)[])texture, (s32)vtxColor, arg3);
 }
 
