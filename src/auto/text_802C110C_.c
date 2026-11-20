@@ -419,9 +419,9 @@ extern "C" void fn_802C1550(void) {
     }
 }
 #pragma pop
-extern f64 sin(f32);
-extern void fn_8022FF10(void *, void *);
-extern void fn_80015B20(void *, void *, void *);
+extern "C" f64 sin(f32);
+extern "C" void fn_8022FF10(void *, void *);
+extern "C" void fn_80015B20(void *, void *, void *);
 extern f32 lbl_80564E50, lbl_80564E54, lbl_80564E5C, lbl_80564E60;
 extern f32 lbl_80564E64, lbl_80564E68, lbl_80564E6C;
 #pragma push
