@@ -81,6 +81,8 @@ int fn_802CCBC4(void *arg0, float *arg1, float arg2, float arg3) {
     return ~mask & 0x15;
 }
 #pragma pop
+#pragma push
+#pragma scheduling invalid_target
 int fn_802CCD0C(void *arg0, void *arg1) {
     int x = fn_802CAFC8(*(int *)((char *)arg0 + 0x10));
     int y = fn_802CAFC8(*(int *)((char *)arg1 + 0x10));
@@ -216,20 +218,20 @@ loop_21_body:
                 *(int *)(var_r28 + 0x44) = var_r25_2;
                 goto loop_23_test;
             }
-            var_r27 += 4;
-            var_r25++;
-            goto loop_21_test;
+            goto loop_21_inc;
 loop_23_body:
             object = *(void **)((char *)*(void ***)((char *)arg0 + 0x90) + var_r27);
             value = ((int (*)(void *))((int (**)(void *))*(void **)object)[4])(object);
-            if (var_r26 != value) goto loop_23_end;
+            if (var_r26 != value) goto loop_21_inc;
             var_r27 += 4;
             var_r25_2++;
             *(int *)(var_r28 + 0x44) += 1;
 loop_23_test:
             if (var_r25_2 < *(int *)((char *)arg0 + 0x88)) goto loop_23_body;
-loop_23_end:
-            ;
+            goto loop_21_inc;
+loop_21_inc:
+            var_r27 += 4;
+            var_r25++;
 loop_21_test:
             if (var_r25 < *(int *)((char *)arg0 + 0x88)) goto loop_21_body;
             var_r26++;
