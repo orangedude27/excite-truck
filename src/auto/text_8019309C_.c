@@ -3208,31 +3208,62 @@ void fn_80198488(void *arg0) {
 }
 
 extern float lbl_805621A0, lbl_80562268, lbl_80562274;
+extern float lbl_805622A8, lbl_805622AC, lbl_805622B0, lbl_805622B4, lbl_805622B8, lbl_805622BC, lbl_805622C4, lbl_805622C8;
+extern void fn_8018AE08(void *);
+extern void fn_8018ADCC(void *, float);
 void fn_80198530(void *arg0) {
     char s[0x80];
-    float *o = (float *)arg0;
-    float v28 = o[0x28 / 4];
-    float v24 = o[0x24 / 4];
+    char *p = (char *)arg0;
+    char *sub = *(char **)(p + 0x294);
+    float v28 = *(float *)(p + 0x28);
+    float v24 = *(float *)(p + 0x24);
     int c4, c0;
+    float f30;
     *(float *)&s[0x10] = lbl_80562140;
     *(float *)&s[0xc] = lbl_80562144;
     c4 = (v28 < *(float *)&s[0xc]);
-    if (c4) {
-        c0 = (v24 > *(float *)&s[0x10]);
-    } else {
-        c0 = (v24 < lbl_805621A4);
-    }
+    if (c4) c0 = (v24 > *(float *)&s[0x10]);
+    else c0 = (v24 < lbl_805621A4);
     if (c0) {
         float f4 = lbl_80562140;
         float f2 = lbl_80562144;
-        float f3 = f4 * o[0x40 / 4] - f2 * o[0x44 / 4];
+        float f3 = f4 * *(float *)(p + 0x40) - f2 * *(float *)(p + 0x44);
+        *(float *)&s[0x18] = f2;
+        *(float *)&s[0x1c] = f4;
         if (c4) {
-            float t = (float)(fabs(*(float *)&s[0xc]) - f2) / lbl_80562274;
+            float t = ((float)fabs(*(float *)&s[0xc]) - f2) / lbl_80562274;
             if (f4 < t) f4 = t;
             if (f4 > f2) f4 = f2;
+            f30 = lbl_80562140;
+            *(float *)&s[0x10] = f30 + f4 * lbl_805621A4;
+            {
+                float t2 = (f3 + lbl_80562268 * *(float *)(sub + 0x128)) / *(float *)(p + 0x24c);
+                if (f30 < t2) f30 = t2;
+                if (f30 > lbl_805621A4) f30 = lbl_805621A4;
+            }
+        } else {
+            f30 = f3 / *(float *)(p + 0x24c);
         }
-        fn_801961FC(arg0);
+    } else {
+        float t = *(float *)(p + 0x20);
+        f30 = lbl_80562140;
+        if (f30 < t) f30 = t;
+        if (f30 > lbl_805621A4) f30 = lbl_805621A4;
+        *(float *)(p + 0x1d4) = *(float *)(p + 0x26c);
+        if (*(float *)(p + 0x278) > lbl_80562144) *(float *)(p + 0x1e0) = lbl_805621A0;
+        *(u32 *)(p + 0x2d0) |= 0x800;
     }
+    fn_801961FC(arg0);
+    if (lbl_80562144 != *(float *)(p + 0x120)) {
+        float v = v28;
+        if (v < *(float *)(p + 0x120)) v = *(float *)(p + 0x120);
+        *(float *)(p + 0x28) = v;
+    }
+    *(int *)&s[8] = 1;
+    fn_80196250((float *)&s[0x10], (float *)&s[0xc], (int *)&s[8],
+                *(float *)(p + 0x28),
+                PSVECDotProduct(sub + 0x54, sub + 0x118),
+                *(float *)(p + 0x2c));
 }
 
 #pragma opt_common_subs off
