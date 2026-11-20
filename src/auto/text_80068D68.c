@@ -2777,7 +2777,7 @@ void fn_8006B330(void) {
 
 extern u8 BTA_DmAddDevice(u8 *, u8 *, u32, u8);
 extern void BTA_HhAddDev(const u8 *, u16, u8, u8, const void *);
-struct Fn8006B488Scratch { f64 argData; u8 pad[8]; u16 len; u16 pad2; u32 ptr; };
+struct Fn8006B488Scratch { f64 argData; u16 len; u16 pad2; u32 ptr; };
 void fn_8006B488(void) {
     u8 *base = lbl_803130C8;
     u8 *control = lbl_80392960;
