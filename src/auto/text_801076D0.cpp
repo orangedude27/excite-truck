@@ -1233,13 +1233,11 @@ extern "C" s8 fn_8010B2BC(void *arg0) {
     volatile u8 b;
     volatile u8 a;
     u8 t;
-    s32 ret;
     a = (u8)(value >> 24);
     b = (u8)(value >> 16);
-    t = (u8)((value & 0xFF00u) >> 8);
-    ret = (u8)(value >> 8);
+    t = (u8)(value >> 8);
     c = t;
-    return (s8)ret;
+    return (s8)t;
 }
 #pragma pop
 extern "C" const char lbl_80329140[];
