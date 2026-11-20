@@ -2015,7 +2015,7 @@ extern "C" void fn_8013F580(void *arg0, void *arg1, void *arg2) {
 extern "C" s32 fn_8013F438(f32);
 extern "C" void fn_8013F498(void *, void *, f32);
 extern "C" f32 fn_8013EFBC(f32);
-extern "C" void fn_8000FF88(s32, s32, void *, f32, f32, f32);
+extern "C" void fn_8000FF88(s32, s32, void *, f32, f32, f32, ...);
 #pragma dont_inline fn_8013F438
 extern "C" void fn_8013F918(void *arg0, void *arg1, void *arg2) {
     u8 *a0 = (u8 *)arg0;
@@ -2833,7 +2833,7 @@ extern "C" void fn_80141574(char *arg0) {
             c[0x4A] = 0;
         }
     }
-    if (((s32 (**)(void *))(*(void ***)self))[9](self) == 0) {
+    if (((ZoneV9_80141574 *)self)->v9() == 0) {
         f32 f31 = lbl_805614A4;
         f32 f30;
         f32 f29 = lbl_8056158C;
@@ -2934,7 +2934,7 @@ extern "C" void fn_80141574(char *arg0) {
                         fn_8017960C(i);
                         f32 vf = fn_801420D4(e) != 0 ? lbl_80561498 : lbl_805614A4;
                         *(f32 *)(e + 0x108) = fn_801429D0(vf, *(f32 *)(e + 0x108) - f29);
-                        if (fn_80141FA8(e, lbl_80561590) == 0 && fn_80141FA0((void *)*(s32 *)(self + 0x27C)) == 0)
+                        if (fn_80141FA8(e, lbl_80561590) == 0 && ((s32 (*)(void *))fn_80141FA0)((void *)*(s32 *)(self + 0x27C)) == 0)
                             fn_80142B60((void *)*(s32 *)(self + 0x27C));
                         if (lbl_8055E1BC == 0 && fn_80141F7C(*(f32 *)(e + 0x108)) != 0)
                             *(f32 *)(e + 0x94) = f31;
@@ -2980,7 +2980,7 @@ extern "C" void fn_80141574(char *arg0) {
     } else {
         f32 f0 = *(f32 *)(self + 0x250) - lbl_8056158C;
         f32 v = lbl_805614A4;
-        v = f0 > v ? f0 : v;
+        v = v < f0 ? f0 : v;
         *(f32 *)(self + 0x250) = v;
         if ((f32)__fabs((f64)v) <= lbl_80558DC4[0]) {
             fn_80140F10(self + 0x134, (void *)(*(u8 **)(self + 0xB8) + fn_80179630(0) * 0x12C));
