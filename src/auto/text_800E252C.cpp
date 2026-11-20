@@ -850,24 +850,6 @@ extern "C" int DVDGetDriveStatus(void);
 extern "C" void fn_80031C8C(unsigned short);
 extern "C" void fn_80031C94(unsigned short);
 extern "C" void fn_80031C9C(unsigned short);
-#pragma always_inline on
-static inline unsigned char *GetSoundFromNode_800E3228(unsigned char *node) {
-    if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
-    return node - 0x8C;
-}
-static inline void SetSoundFlagAll_800E3228(void *list, unsigned char flag) {
-    unsigned int interruptState = OSDisableInterrupts();
-    unsigned char *it = *(unsigned char **)list;
-    while (it != (unsigned char *)list) {
-        unsigned char *node = it;
-        it = *(unsigned char **)it;
-        if (*GetSoundFromNode_800E3228(node) != 0) {
-            GetSoundFromNode_800E3228(node)[7] |= flag;
-        }
-    }
-    OSRestoreInterrupts(interruptState);
-}
-#pragma always_inline reset
 extern "C" void fn_800E3228(void *arg0) {
     int status = DVDGetDriveStatus();
     if (status == 0) {
