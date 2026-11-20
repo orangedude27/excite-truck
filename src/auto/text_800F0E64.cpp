@@ -3881,7 +3881,6 @@ extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv_800F6F18(
 
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 extern "C" const char lbl_80325698[];
 extern "C" void *fn_800FDE60(void);
 extern "C" u32 fn_800FE0DC(void *manager);
