@@ -1763,21 +1763,22 @@ extern "C" u8 lbl_8055B860;
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" s32 fn_8021481C(void *arg0) {
+    struct MapS { s32 a; s32 pad; s32 b; s32 c; s32 d; };
     u8 *base = lbl_8033CAE8;
     s32 *values;
-    s32 *map;
+    struct MapS *map;
     s32 args[20];
     if (fn_802ECEEC() == 0) {
         fn_802E30C8((const char *)(base + 0x72C), arg0);
-        values = lbl_80490510;
-        map = lbl_802F9EA4;
-        args[0] = map[0];
-        args[1] = 0;
-        args[2] = map[2];
-        args[3] = map[3];
-        args[4] = map[4];
         args[5] = (s32)(base + 0x750);
         args[6] = 3;
+        values = lbl_80490510;
+        map = (struct MapS *)lbl_802F9EA4;
+        args[0] = map->a;
+        args[1] = 0;
+        args[2] = map->b;
+        args[3] = map->c;
+        args[4] = map->d;
         args[7] = (s32)arg0;
         args[8] = 0;
         args[9] = 0;
@@ -1792,7 +1793,7 @@ extern "C" s32 fn_8021481C(void *arg0) {
         args[18] = values[3];
         args[19] = values[4];
         args[1] = (s32)&args[5];
-        fn_802146BC(args, -0x3E7, -0x3E7, 1, map[4], map[3], map[2], map[0]);
+        fn_802146BC(args, -0x3E7, -0x3E7, 1, map->d, map->c, map->b, map->a);
         fn_802E30C8((const char *)(base + 0x760), arg0);
     }
 }
