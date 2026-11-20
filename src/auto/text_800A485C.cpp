@@ -16160,16 +16160,14 @@ loop_130:
                         M2C_FIELD(var_r12_7, s32 *, 0x91C) = 0;
                         M2C_FIELD(var_r12_7, s32 *, 0x121C) = 0;
                         var_r12_7 += 0x20;
-                        var_ctr_6 -= 1;
-                    } while (var_ctr_6 != 0);
+                    }
                     var_r11_4 &= 7;
                     if (var_r11_4 != 0) {
                         goto block_135;
                     }
                 } else {
 block_135:
-                    var_ctr_7 = var_r11_4;
-                    do {
+                    for (var_ctr_7 = 0; var_ctr_7 < var_r11_4; var_ctr_7++) {
                         M2C_FIELD(var_r12_7, s32 *, 0) = 0;
                         M2C_FIELD(var_r12_7, s32 *, 0x900) = 0;
                         M2C_FIELD(var_r12_7, s32 *, 0x1200) = 0;
