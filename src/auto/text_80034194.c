@@ -597,11 +597,14 @@ extern s32 DSPReadMailFromDSP(void);
 extern void DSPSendMailToDSP(u32);
 extern void DBPrintf_800343C8(const char *, ...);
 extern char lbl_80301E30[];
+#pragma push
+#pragma always_inline on
+static inline const char *FmtAt(const char *base, int off) { return base + off; }
+#pragma pop
 void __DSP_boot_task(void *arg0) {
     volatile u32 mail;
     u32 *task = (u32 *)arg0;
-    const char *fmt = lbl_80301E30;
-    struct Fmt0 { char s[0x20]; };
+    const char (*fmt)[0x20] = (const char (*)[0x20])lbl_80301E30;
     while (DSPCheckMailFromDSP() == 0) {}
     mail = DSPReadMailFromDSP();
     DSPSendMailToDSP(0x80F3A001);
@@ -624,12 +627,12 @@ void __DSP_boot_task(void *arg0) {
     while (DSPCheckMailToDSP() != 0) {}
     DSPSendMailToDSP(*(u16 *)((u8 *)arg0 + 0x24));
     while (DSPCheckMailToDSP() != 0) {}
-    DBPrintf_800343C8(((const struct Fmt0 *)fmt)[0].s, arg0);
-    DBPrintf_800343C8(fmt + 0x20, task[3]);
-    DBPrintf_800343C8(fmt + 0x50, task[5]);
-    DBPrintf_800343C8(fmt + 0x80, task[4]);
-    DBPrintf_800343C8(fmt + 0xB0, task[7]);
-    DBPrintf_800343C8(fmt + 0xE0, *(u16 *)((u8 *)arg0 + 0x24));
+    DBPrintf_800343C8(fmt[0], arg0);
+    DBPrintf_800343C8((const char *)fmt + 0x20, task[3]);
+    DBPrintf_800343C8((const char *)fmt + 0x50, task[5]);
+    DBPrintf_800343C8((const char *)fmt + 0x80, task[4]);
+    DBPrintf_800343C8((const char *)fmt + 0xB0, task[7]);
+    DBPrintf_800343C8((const char *)fmt + 0xE0, *(u16 *)((u8 *)arg0 + 0x24));
 }
 
 void __DSP_insert_task(void *arg0) {
@@ -1088,7 +1091,7 @@ u32 DVDConvertEntrynumToPath(s32 entry, char *path, u32 max) {
     grandparentName = (char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
     n = DVDConvertEntrynumToPath(n, path, max);
     pos = n;
-    if (pos != max) goto copy_grandparent;
+    if (n != max) goto copy_grandparent;
     goto append_parent;
 copy_grandparent:
     start = pos + 1;
@@ -1929,19 +1932,19 @@ void fn_80036D24(u32 arg0) {
     }
 
     if (arg0 & 1) {
+        u32 *toc;
         u32 *freeEntry = 0;
-        u32 index;
+        s16 index;
         lbl_8055D860 = 0;
         lbl_8055D898 = base + 0xC0;
         lbl_8055D894 = 0;
-        index = 0;
-        while ((u32)(s16)index < *lbl_8055D89C) {
+        toc = lbl_8055D89C;
+        for (index = 0; index < *toc; index++) {
             if (((u32 *)lbl_8055D898)[1] == 0) {
                 freeEntry = (u32 *)lbl_8055D898;
                 lbl_8055D894 = (u32 *)lbl_8055D898;
             }
             lbl_8055D898 += 8;
-            index++;
         }
 
         if (freeEntry != 0) {
