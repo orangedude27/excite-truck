@@ -6416,6 +6416,7 @@ extern u8 lbl_803C0D18[];
 extern tBTM_STATUS fn_8007A2C8(u16 *);
 extern void bta_dm_pm_set_mode(u8 *, u8);
 typedef struct { u8 f0, f1, f2; } PmCfgEntry;
+typedef struct { u8 i, j, k, spec_idx; } PmIdx;
 void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
     u8 version[10];
     u16 policy;
@@ -6427,6 +6428,7 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
     u8 k;
     u8 spec_idx;
     u8 *cfgEnt;
+    u8 m;
     if (fn_8007A2C8((u16 *)version) == 0 && *(u16 *)(version + 6) == 15 && version[0] < 3) {
         if (status == 4) {
             policy = *(u16 *)(lbl_802EE8F0 + 4) & 11;
@@ -6480,10 +6482,10 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
         fn_80070FA4(entry + 1, peer_addr);
         lbl_803C0D18[0]++;
     }
-    for (i = 0; i < lbl_803C0C14[77]; i++) {
-        if (bdcmp(lbl_803C0C14 + i * 11, peer_addr) == 0) {
-            (lbl_803C0C14 + i * 11)[9] = 0;
-            (lbl_803C0C14 + i * 11)[10] = 0;
+    for (m = 0; m < lbl_803C0C14[77]; m++) {
+        if (bdcmp(lbl_803C0C14 + m * 11, peer_addr) == 0) {
+            (lbl_803C0C14 + m * 11)[9] = 0;
+            (lbl_803C0C14 + m * 11)[10] = 0;
             break;
         }
     }
@@ -10386,7 +10388,6 @@ tBTM_STATUS BTM_ClearInqDb(BD_ADDR p_bda) {
 }
 
 void btm_inq_db_reset(void) {
-    u32 zero = 0;
     tBTM_INQUIRY_VAR_ST *pInqDb;
     u8 *base = lbl_803C0F78;
     tBTM_INQUIRY_VAR_ST *pInqFlt;
@@ -10394,6 +10395,8 @@ void btm_inq_db_reset(void) {
     u8 num_responses;
     u8 value;
     u8 temp_inq_active;
+    struct { u32 z; tBTM_INQUIRY_VAR_ST *p; } locals;
+    locals.z = 0;
     fn_80070F90(base + 0x16C4);
     if (base[0x1848] != 0) {
         temp_inq_active = base[0x1848];
@@ -10408,32 +10411,33 @@ void btm_inq_db_reset(void) {
     }
     if (base[0x16AE] & 1) {
         fn_80070F90(base + 0x1680);
-        base[0x16AE] = (u8)zero;
+        base[0x16AE] = (u8)locals.z;
         memset(base + 0x16A8, 0, 6);
         if (*(void (**)(void *))(base + 0x167C) != 0) {
             rem_name.status = 0x000C;
             (*(void (**)(void *))(base + 0x167C))(&rem_name);
-            *(void (**)(void *))(base + 0x167C) = (void *)zero;
+            *(void (**)(void *))(base + 0x167C) = (void *)locals.z;
         }
     }
     if (base[0x1844] != 0) {
-        base[0x1844] = (u8)zero;
+        base[0x1844] = (u8)locals.z;
         if (*(void (**)(void *))(base + 0x16B8) != 0) {
             value = 0x0C;
             (*(void (**)(void *))(base + 0x16B8))(&value);
         }
     }
-    base[0x1847] = (u8)zero;
-    base[0x1845] = (u8)zero;
-    *(u32 *)(base + 0x16B4) = zero;
+    base[0x1847] = (u8)locals.z;
+    base[0x1845] = (u8)locals.z;
+    *(u32 *)(base + 0x16B4) = locals.z;
     {
         u32 i;
         u8 *entry;
-        pInqDb = (tBTM_INQUIRY_VAR_ST *)lbl_803C0F78;
+        locals.p = (tBTM_INQUIRY_VAR_ST *)lbl_803C0F78;
+        pInqDb = locals.p;
         entry = (u8 *)pInqDb + 0x16E4;
         for (i = 0; i < 12; i++, entry += 0x1C) {
             if (entry[0x1A] != 0) {
-                entry[0x1A] = (u8)zero;
+                entry[0x1A] = (u8)locals.z;
                 if (*(void (**)(void *, u32))((u8 *)pInqDb + 0x16BC) != 0)
                     (*(void (**)(void *, u32))((u8 *)pInqDb + 0x16BC))(entry + 8, 0);
             }
@@ -10442,7 +10446,7 @@ void btm_inq_db_reset(void) {
     pInqFlt = (tBTM_INQUIRY_VAR_ST *)lbl_803C0F78;
     if (*(void **)((u8 *)pInqFlt + 0x16DC) != 0) {
         GKI_freebuf(*(void **)((u8 *)pInqFlt + 0x16DC));
-        *(void **)((u8 *)pInqFlt + 0x16DC) = (void *)zero;
+        *(void **)((u8 *)pInqFlt + 0x16DC) = (void *)locals.z;
     }
     *(u16 *)((u8 *)pInqFlt + 0x16E0) = 0;
     *(u16 *)((u8 *)pInqFlt + 0x16E2) = 0;
@@ -15572,7 +15576,7 @@ void btm_cback(u32 index, void *param) {
         inq_res.status = ((u8 *)param)[0] == 0 ? 0 : 0x114;
         param = &inq_res;
         if (lbl_803C3740[0x28] >= 4) {
-            fn_8007096C(0xE0003, p_trace + 0, inq_res.status, inq_res.results);
+            fn_8007096C(0xE0003, p_trace, inq_res.status, inq_res.results);
         }
         break;
     case 3:
@@ -26873,8 +26877,8 @@ UINT8 *add_attr(UINT8 *p, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_REC *p_rec, UINT16 
 void sdp_init(void) {
     u8 *cb;
     char *log = lbl_8031A188;
-    u8 *reg_info;
     register u32 zero = 0;
+    u8 *reg_info;
     memset(lbl_803C4C40, 0, 0x4634);
     cb = lbl_803C4C40;
     reg_info = cb + 0x4604;
@@ -26884,12 +26888,12 @@ void sdp_init(void) {
     *(u16 *)(cb + 0x22) = 0xFFFF;
     *(u16 *)(cb + 0x462C) = 0xF0;
     *(u16 *)(cb + 0x462E) = 0x15;
-    if (!BTM_SetSecurityLevel(0, log + zero, 0, 0, 1, 0, 0)) {
+    if (!BTM_SetSecurityLevel(0, log + 0, 0, 0, 1, 0, 0)) {
         if (cb[0x4630] >= 1)
             fn_8007093C(0xA0000, log + 0x14);
         return;
     }
-    if (!BTM_SetSecurityLevel(1, log + zero, 0, 0, 1, 0, 0)) {
+    if (!BTM_SetSecurityLevel(1, log + 0, 0, 0, 1, 0, 0)) {
         if (cb[0x4630] >= 1)
             fn_8007093C(0xA0000, log + 0x38);
         return;
