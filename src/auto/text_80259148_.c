@@ -397,7 +397,7 @@ int fn_8025978C(void **arg0) {
 }
 #pragma pop
 
-extern double lbl_80563B00;
+__declspec(section ".sdata2") extern double lbl_80563B00;
 extern float lbl_80563AF4;
 extern float lbl_80563AF8;
 extern float lbl_80563AEC;
