@@ -486,7 +486,7 @@ extern "C" void fn_801F7E20(void *arg0, void *arg1) {
 extern u8 lbl_8033AFE8[];
 extern s32 lbl_8055B2A0;
 extern f32 lbl_80562FFC;
-s32 fn_801F7B10(void *, void *, s32);
+s32 fn_801F7B10(u8 *, F7B10Obj *, s32);
 s32 fn_801BFD34(void *, void *, s32);
 extern "C" void fn_801BFD34(void *, void *, void *);
 s32 fn_80015B20(void *, void *, s32);
@@ -2683,11 +2683,10 @@ extern "C" void fn_801F7D10(void *, void *, void *);
 extern "C" void fn_801FB284(void *arg0, void *arg1) {
     ((void (*)(void))fn_801F7D10)();
     if (*(u32 *)((u8 *)arg0 + 0x190) & 0x100) {
-        f32 d, x, y, z;
-        d = -*(f32 *)((u8 *)arg0 + 0x28);
-        x = *(f32 *)((u8 *)arg1 + 0x24) + *(f32 *)((u8 *)arg1 + 0x0C) * d;
-        y = *(f32 *)((u8 *)arg1 + 0x28) + *(f32 *)((u8 *)arg1 + 0x10) * d;
-        z = *(f32 *)((u8 *)arg1 + 0x2C) + *(f32 *)((u8 *)arg1 + 0x14) * d;
+        f32 d = -*(f32 *)((u8 *)arg0 + 0x28);
+        f32 x = *(f32 *)((u8 *)arg1 + 0x24) + *(f32 *)((u8 *)arg1 + 0x0C) * d;
+        f32 y = *(f32 *)((u8 *)arg1 + 0x28) + *(f32 *)((u8 *)arg1 + 0x10) * d;
+        f32 z = *(f32 *)((u8 *)arg1 + 0x2C) + *(f32 *)((u8 *)arg1 + 0x14) * d;
         *(f32 *)((u8 *)arg1 + 0x24) = x;
         *(f32 *)((u8 *)arg1 + 0x28) = y;
         *(f32 *)((u8 *)arg1 + 0x2C) = z;
@@ -3094,6 +3093,7 @@ extern "C" void fn_801FC274(void *arg0, void *arg1) {
     u32 w11, w10, w9, w8;
     register u32 w7, w6, w5, w4;
     u32 w3, w2, w1, w0;
+    u32 zero = 0;
     w0 = input[0]; w1 = input[1]; w2 = input[2]; w3 = input[3];
     w4 = input[4]; w5 = input[5]; w6 = input[6]; w7 = input[7];
     w8 = input[8]; w9 = input[9]; w10 = input[10]; w11 = input[11];
@@ -3152,7 +3152,7 @@ extern "C" void fn_801FC274(void *arg0, void *arg1) {
                 fn_801E6CD0(*(void **)((u8 *)object + 0x30), 0, lbl_80562FF0);
             }
         }
-        *(u8 *)((u8 *)object + 0x5a) = 0;
+        *(u8 *)((u8 *)object + 0x5a) = zero;
         register int a = *(u32 *)((u8 *)arg0 + 0x10c);
         u32 b = *(u32 *)((u8 *)arg0 + 0x110);
         *(u32 *)((u8 *)object + 4) = b;
@@ -3177,7 +3177,7 @@ extern "C" void fn_801FC274(void *arg0, void *arg1) {
         *(u32 *)((u8 *)object + 0x28) = b;
         a = *(u32 *)((u8 *)arg0 + 0x138);
         *(u32 *)((u8 *)object + 0x2c) = a;
-        *(u32 *)((u8 *)object + 0x68) = 0;
+        *(u32 *)((u8 *)object + 0x68) = zero;
         *(u8 *)((u8 *)object + 0x58) = lbl_8055EC40;
     }
     fn_801FC4D8((void **)&lbl_8055EC5C, object);
@@ -3323,15 +3323,22 @@ extern "C" void fn_801FC774(void *arg0)
   u8 *new_var;
   f32 new_var3;
   f32 value;
+  f32 current;
+  f32 time;
+  f32 start;
+  f32 diff;
+  f32 t;
+  f32 blend;
   new_var2 = ((u8 *) arg0) + 0x48;
   new_var3 = fn_802C88E8(((u8 *) arg0) + 0x28);
   if ((new_var3 * speed2) > ((*((f32 *) (((u8 *) arg0) + 0x4C))) * (*((f32 *) (((u8 *) arg0) + 0x4C)))))
   {
-    f32 time = (f32) fn_8002F234();
-    f32 current;
-    f32 start = *((f32 *) new_var2);
-    f32 t = ((time - (*((f32 *) (((u8 *) arg0) + 0x4C)))) - lbl_80562FF0) / lbl_80563020;
-    f32 blend = lbl_80562FFC;
+    time = (f32) fn_8002F234();
+    current = *((f32 *) (((u8 *) arg0) + 0x4C));
+    diff = time - current;
+    start = *((f32 *) new_var2);
+    t = (diff - lbl_80562FF0) / lbl_80563020;
+    blend = lbl_80562FFC;
     blend = (blend < t) ? (t) : (blend);
     blend = (blend > lbl_80562FF0) ? (lbl_80562FF0) : (blend);
     value = start + (blend * (lbl_80562FF0 - start));
