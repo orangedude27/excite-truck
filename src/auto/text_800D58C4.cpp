@@ -3396,7 +3396,6 @@ extern "C" void AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane(void* arg0, 
     *(void**)((u8*)child + 0xC) = parent;
 }
 
-extern "C" f32 lbl_80560EA8;
 extern "C" void fn_800DB76C(f32 *out, void *self, f32 *arg2) {
     struct VR2 {
         f32 x;
@@ -3887,14 +3886,16 @@ extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTran
         void* animation;
     };
     PaneView* p = (PaneView*)pane;
+    void* node;
+    void* end;
+    void* current;
     void* animation = p->animation;
     if (animation != 0) {
         struct V { virtual void a(); virtual void b(); virtual void c(); virtual void d(); };
         ((V*)animation)->d();
     }
-    void* node = p->animList.first;
-    void* end = &p->animList.first;
-    void* current;
+    node = p->animList.first;
+    end = &p->animList.first;
     while (node != end) {
         current = node;
         node = *(void**)node;
