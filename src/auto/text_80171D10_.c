@@ -1289,7 +1289,6 @@ int fn_80173A84(void *arg0) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-#pragma opt_propagation off
 extern "C" void fn_80173ACC(void *arg0) {
     extern float lbl_8043038C[];
     extern char lbl_80330F48[];
@@ -1300,8 +1299,7 @@ extern "C" void fn_80173ACC(void *arg0) {
     char *e;
     int i, n;
     char *base = lbl_80330F48;
-    float zero, big;
-    float one = lbl_8055E3C8;
+    float one = lbl_8055E3C8, big, zero;
     float x;
     char *p = (char *)arg0;
     if (*(unsigned char *)(p + 0x2B8) == 0 && fn_801B306C() < lbl_80561AB8) {
@@ -2008,6 +2006,13 @@ extern void fn_80130978(void *, int, float);
 extern float fn_80147204(void *, void *);
 extern void fn_8014784C(void *, const char *, const char *, int);
 extern void fn_801479A8(void *, void *, void *, ...);
+extern float lbl_80561A40;
+static inline float HudEase(float t) {
+    if (t < lbl_80561A50) return lbl_80561A50;
+    if (t > lbl_80561A40) return lbl_80561A40;
+    if (t > lbl_80561A44) return t * (-2.0f * t * t) + 3.0f * t * t;
+    return t * (-2.0f * t * t) - 3.0f * t * t;
+}
 #pragma cplusplus on
 #pragma push
 #pragma processor 750
@@ -2016,9 +2021,10 @@ extern "C" int fn_80175238(void *arg0, int arg1) {
  struct Rect { int a; float b; int c,d; float e; int f,g,h; };
  struct Manager { virtual void *unused(); virtual void *get(const char *); };
  struct Frame { Rect rect2; char text2[24]; Rect rect1; char text1[20]; } frame;
- struct Manager *mgr; void *one, *two, *panel, *detail;
- float a, time, limit,b,c,d,e, t, blend, value;
+ struct Manager *mgr; void *one, *two;
  char *base = lbl_80330F48;
+ void *panel, *detail;
+ float a, time, limit,b,c,d,e, t, blend, value;
  time = *(float *)((char *)fn_801E7E3C()+0x10);
  limit=lbl_80561AB8; a=limit-lbl_80561AE0; b=a-lbl_80561AE4;
  c=b-lbl_80561AE8; d=c-lbl_80561AE0; e=d-lbl_80561AE4;
@@ -2555,7 +2561,7 @@ extern "C" void fn_80173058(unsigned char *self) {
     labelsBox.p = lbl_80330F48;
     const char *&labels = labelsBox.p;
     char key[0x20];
-    register float initial = lbl_80561A50;
+    float initial = *(volatile float *)&lbl_80561A50;
     ConfigPair73058 pair;
     Config73058 *config, *root;
     char *name;
