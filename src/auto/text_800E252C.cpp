@@ -1759,7 +1759,9 @@ extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7
 #pragma use_lmw_stmw off
 extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
     int zero = 0;
-    int interruptState = OSDisableInterrupts();
+    struct { unsigned int irq; } irqHolder;
+    unsigned int &interruptState = irqHolder.irq;
+    interruptState = OSDisableInterrupts();
     if (*((unsigned char *)self + 0x11C) == zero) {
         OSRestoreInterrupts(interruptState);
         return;
@@ -3948,14 +3950,15 @@ extern "C" void Stop__Q44nw4r3snd6detail10BasicSoundFi(void *self, int target) {
     }
     int elapsed = fields->elapsed;
     int total = fields->total;
-    float start = fields->start;
-    float end = fields->end;
     float current;
-    if (total > elapsed) current = start + (float)elapsed * (end - start) / (float)total;
-    else current = end;
+    if (elapsed >= total) current = fields->end;
+    else current = fields->start + (float)elapsed * (fields->end - fields->start) / (float)total;
+    int newTotal = (int)((float)target * current);
+    if (elapsed >= total) current = fields->end;
+    else current = fields->start + (float)elapsed * (fields->end - fields->start) / (float)total;
     fields->start = current;
     fields->end = lbl_80560FB0;
-    fields->total = (int)((float)target * current);
+    fields->total = newTotal;
     fields->elapsed = 0;
     sound->clear(0);
     fields->flags[0] = 0; fields->flags[1] = 0;
