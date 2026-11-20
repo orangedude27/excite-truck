@@ -4079,67 +4079,70 @@ static inline float HudEase(float t) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+/* Draws the zone HUD's two timed info panels: the "master" box and the
+ * "player data" box slide in and out on a fixed timeline relative to the
+ * round's start. Skipped entirely while a challenge sub-task is active. */
 extern "C" s32 fn_801436E0(void *arg0, s32 arg1) {
     void *style;
-    u8 *self=(u8 *)arg0;
+    u8 *master=(u8 *)arg0;
     char *base=(char *)lbl_8032C530;
-    f32 end,a,b,time,c,d,e;
-    time=*(f32 *)((u8 *)fn_801E7E3C()+0x10);
-    end=lbl_80561588;
-    a=end-lbl_805614C0;
-    b=a-lbl_80561550;
-    c=b-lbl_805615AC;
-    d=c-lbl_805614C0;
-    e=d-lbl_80561550;
-    void *one=(void *)((TObjC *)*(void **)(self+0x54))->vC((s32)(base+0x7a8));
-    void *two=(void *)((TObjC *)*(void **)(self+0x54))->vC((s32)(base+0x7b8));
-    if(time<e)fn_8000FBE4();
+    f32 tTotal,tFadeOut1,elapsed,tFadeIn1,tFadeOut2,tFadeIn2,tFadeStart;
+    elapsed=*(f32 *)((u8 *)fn_801E7E3C()+0x10);
+    tTotal=lbl_80561588;
+    tFadeOut1=tTotal-lbl_805614C0;
+    tFadeIn1=tFadeOut1-lbl_80561550;
+    tFadeOut2=tFadeIn1-lbl_805615AC;
+    tFadeIn2=tFadeOut2-lbl_805614C0;
+    tFadeStart=tFadeIn2-lbl_80561550;
+    void *bgHandle=(void *)((TObjC *)*(void **)(master+0x54))->vC((s32)(base+0x7a8));
+    void *fgHandle=(void *)((TObjC *)*(void **)(master+0x54))->vC((s32)(base+0x7b8));
+    if(elapsed<tFadeStart)fn_8000FBE4();
     if(fn_80161C38()==0) {
-        if(time<end) {
-            f32 value=(time-a)/(b-a);
-            value=lbl_805614AC<value ? lbl_805614AC : value;
-            value=value>lbl_805614A4 ? value : lbl_805614A4;
-            value=lbl_805614A4+value*lbl_805614AC;
-            style=(void *)((TObjC *)*(void **)(self+0x54))->vC((s32)(base+0x7c8));
-            void *target=(void *)((TObjC *)*(void **)(self+0x54))->vC((s32)(base+0x7d4));
+        if(elapsed<tTotal) {
+            f32 fade=(elapsed-tFadeOut1)/(tFadeIn1-tFadeOut1);
+            fade=lbl_805614AC<fade ? lbl_805614AC : fade;
+            fade=fade>lbl_805614A4 ? fade : lbl_805614A4;
+            fade=lbl_805614A4+fade*lbl_805614AC;
+            style=(void *)((TObjC *)*(void **)(master+0x54))->vC((s32)(base+0x7c8));
+            void *detailHandle=(void *)((TObjC *)*(void **)(master+0x54))->vC((s32)(base+0x7d4));
             fn_8001DF08(fn_801E866C(arg1),0);
-            if(one && two && style && target) {
-                fn_801479A8(one,two,(const char *)fn_80131234(base+0x7e0),HudEase(value));
+            if(bgHandle && fgHandle && style && detailHandle) {
+                fn_801479A8(bgHandle,fgHandle,(const char *)fn_80131234(base+0x7e0),HudEase(fade));
                 fn_80160A74();
-                char buf[0x14];
-                fn_801308F4(buf,0x14,fn_80160998());
+                char text[0x14];
+                fn_801308F4(text,0x14,fn_80160998());
                 Fn801436E0TextStyle local;
                 Fn801436E0TextStyle *src=(Fn801436E0TextStyle *)style;
                 local.a=src->a;
                 { int cword; int bword; bword=*(volatile int *)((char *)src+4); cword=*(volatile int *)((char *)src+8); *(int *)&local.b=bword; local.c=cword; }
                 local.d=src->d;local.size=src->size;
                 local.f=src->f;local.g=src->g;local.h=src->h;
-                *(f32 *)&local.b-=lbl_80561498*fn_80147204(&local,buf);
-                fn_801479A8(&local,target,buf,HudEase(value));
+                *(f32 *)&local.b-=lbl_80561498*fn_80147204(&local,text);
+                fn_801479A8(&local,detailHandle,text,HudEase(fade));
             }
         }
-        if(time<c) {
-            fn_8014784C(*(void **)(self+0x54),base+0x47c,base+0x48c,0);
-            f32 value=(time-d)/(e-d);
-            value=lbl_805614AC<value ? lbl_805614AC : value;
-            value=value>lbl_805614A4 ? value : lbl_805614A4;
-            value=lbl_805614A4+value*lbl_805614AC;
-            style=(void *)((TObjC *)*(void **)(self+0x54))->vC((s32)(base+0x7fc));
-            void *target=(void *)((TObjC *)*(void **)(self+0x54))->vC((s32)(base+0x470));
-            if(one && two && style && target) {
-                fn_801479A8(one,two,(const char *)fn_80131234(base+0x808),HudEase(value));
+        if(elapsed<tFadeOut2) {
+            fn_8014784C(*(void **)(master+0x54),base+0x47c,base+0x48c,0);
+            f32 fade=(elapsed-tFadeIn2)/(tFadeStart-tFadeIn2);
+            fade=lbl_805614AC<fade ? lbl_805614AC : fade;
+            fade=fade>lbl_805614A4 ? fade : lbl_805614A4;
+            fade=lbl_805614A4+fade*lbl_805614AC;
+            style=(void *)((TObjC *)*(void **)(master+0x54))->vC((s32)(base+0x7fc));
+            void *detailHandle=(void *)((TObjC *)*(void **)(master+0x54))->vC((s32)(base+0x470));
+            if(bgHandle && fgHandle && style && detailHandle) {
+                fn_801479A8(bgHandle,fgHandle,(const char *)fn_80131234(base+0x808),HudEase(fade));
                 int player=fn_801E866C(0);
-                f32 number=*(f32 *)(*(u8 **)(self+0xb8)+player*0x12c+0x108);
-                char buf[0x14];
-                fn_80130978(buf,0x14,number);
+                f32 number=*(f32 *)(*(u8 **)(master+0xb8)+player*0x12c+0x108);
+                char text[0x14];
+                fn_80130978(text,0x14,number);
                 Fn801436E0TextStyle local;
                 Fn801436E0TextStyle *src=(Fn801436E0TextStyle *)style;
                 local.a=src->a;
                 { int cword; int bword; bword=*(volatile int *)((char *)src+4); cword=*(volatile int *)((char *)src+8); *(int *)&local.b=bword; local.c=cword; }
                 local.d=src->d;local.size=src->size;
                 local.f=src->f;local.g=src->g;local.h=src->h;
-                *(f32 *)&local.b+=lbl_80561498*fn_80147204(&local,buf);
-                fn_801479A8(&local,target,buf,HudEase(value));
+                *(f32 *)&local.b+=lbl_80561498*fn_80147204(&local,text);
+                fn_801479A8(&local,detailHandle,text,HudEase(fade));
             }
         }
     }
