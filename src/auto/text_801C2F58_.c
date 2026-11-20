@@ -168,9 +168,7 @@ extern void fn_8012F57C(float *, float *, float *, float);
 extern f32 lbl_8056296C, lbl_80562974;
 static inline void mtx_to_quat(float m[3][3], float *q) {
     register float *dst asm("r31");
-    register float tr0 asm("f2") = m[0][0];
-    register float tr1 asm("f0") = m[1][1];
-    float sum = tr0 + tr1 + m[2][2];
+    float sum = m[0][0] + m[1][1] + m[2][2];
     float inv, q3, q0, q1, q2, sn;
     int i, j, k;
     if (sum > lbl_80562970) {
