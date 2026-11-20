@@ -166,15 +166,6 @@ void fn_800563C8(s32 chan, u32 status) {
 }
 
 #pragma optimization_level 3
-static void advanceChannel(u8* origin) {
-    lbl_80558F74 = __cntlzw(lbl_8055DB10);
-    if (lbl_80558F74 != 32) {
-        lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
-        memset(origin + lbl_80558F74 * 12, 0, 12);
-        SIGetTypeAsync(lbl_80558F74, fn_8005649C);
-    }
-}
-
 void fn_8005649C(s32 chan, u32 type) {
     u8* origin = lbl_8038F080;
     u32 chanBit;
@@ -189,23 +180,13 @@ void fn_8005649C(s32 chan, u32 type) {
     lbl_8055DB0C &= ~chanBit;
     rc = TRUE;
     if (type & 0x0F) {
-        lbl_80558F74 = __cntlzw(lbl_8055DB10);
-        if (lbl_80558F74 != 32) {
-            lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
-            memset(origin + lbl_80558F74 * 12, 0, 12);
-            SIGetTypeAsync(lbl_80558F74, fn_8005649C);
-        }
+        advanceChannel(origin);
         return;
     }
     type &= ~0xFF;
     ((u32*)(origin + 0x30))[resetChan] = type;
     if (((type & 0x18000000) != 0x08000000) || !(type & 0x01000000)) {
-        lbl_80558F74 = __cntlzw(lbl_8055DB10);
-        if (lbl_80558F74 != 32) {
-            lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
-            memset(origin + lbl_80558F74 * 12, 0, 12);
-            SIGetTypeAsync(lbl_80558F74, fn_8005649C);
-        }
+        advanceChannel(origin);
         return;
     }
     if (lbl_80558F80 < 2) {
@@ -213,12 +194,7 @@ void fn_8005649C(s32 chan, u32 type) {
         SIGetResponse(resetChan, response);
         fn_80057F2C(resetChan, lbl_80558F7C | 0x00400000);
         SIEnablePolling(lbl_8055DB14);
-        lbl_80558F74 = __cntlzw(lbl_8055DB10);
-        if (lbl_80558F74 != 32) {
-            lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
-            memset(origin + lbl_80558F74 * 12, 0, 12);
-            SIGetTypeAsync(lbl_80558F74, fn_8005649C);
-        }
+        advanceChannel(origin);
         return;
     }
     if (!(type & 0x80000000) || (type & 0x04000000)) {
@@ -236,12 +212,7 @@ void fn_8005649C(s32 chan, u32 type) {
     }
     if (!rc) {
         lbl_8055DB00 |= chanBit;
-        lbl_80558F74 = __cntlzw(lbl_8055DB10);
-        if (lbl_80558F74 != 32) {
-            lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
-            memset(origin + lbl_80558F74 * 12, 0, 12);
-            SIGetTypeAsync(lbl_80558F74, fn_8005649C);
-        }
+        advanceChannel(origin);
     }
 }
 BOOL fn_800567BC(u32 mask) {
