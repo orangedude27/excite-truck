@@ -348,6 +348,19 @@ void fn_80259740(int mode, float value) {
 
 #pragma push
 #pragma use_lmw_stmw off
+extern int fn_8001EFA0(int, int);
+extern void fn_8001EFB0(void *);
+extern int fn_80131234(void *);
+extern void fn_80236910(void *);
+extern char lbl_80345038[];
+extern char lbl_8055C29C[], lbl_8055C2A4[], lbl_8055C2AC[], lbl_8055C2B8[];
+extern char lbl_8055C2C0[], lbl_8055C2C8[], lbl_8055C2D0[], lbl_8055C2D8[];
+extern char lbl_8055C2E0[], lbl_8055C2E8[], lbl_8055C2F0[], lbl_8055C2F8[];
+extern char lbl_8055C300[], lbl_8055C308[], lbl_8055C310[], lbl_8055C318[];
+extern char lbl_8055C320[], lbl_8055C328[], lbl_8055C330[], lbl_8055C338[];
+extern char lbl_8055C340[], lbl_8055C348[], lbl_8055C350[], lbl_8055C358[];
+extern char lbl_8055C360[], lbl_8055C368[], lbl_8055C370[], lbl_8055C378[];
+#define FS(t, o) (*(t *)((char *)frame + (o) - 8))
 int fn_8025978C(void **arg0) {
     char s[0x670];
     lbl_8055F3A0 = 0;
