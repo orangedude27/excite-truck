@@ -30,17 +30,17 @@ enum IdealResExtType {
 extern "C" void fn_80137D58(void *arg0, int arg_sp0) {
     volatile int sp18, sp14, sp10, spC, sp8;
     volatile unsigned char *p = (volatile unsigned char *)arg0;
-    register unsigned char temp_r0, temp_r0_2, temp_r0_4, temp_r0_5; register unsigned int temp_r0_3;
-    register unsigned char temp_r4, temp_r5, temp_r6, temp_r7, temp_r8, temp_r9, temp_r10, temp_r11, temp_r12;
-    register unsigned char temp_r14, temp_r15, temp_r16, temp_r17, temp_r18, temp_r19, temp_r20, temp_r21, temp_r22, temp_r23, temp_r24, temp_r25, temp_r26, temp_r27, temp_r28, temp_r29, temp_r30, temp_r31;
-    temp_r4=p[0]; p[0]=p[3]; p[3]=temp_r4;
-    temp_r4=p[1]; p[1]=p[2]; p[2]=temp_r4;
-    temp_r4=p[4]; p[4]=p[7]; p[7]=temp_r4;
-    temp_r4=p[5]; p[5]=p[6]; p[6]=temp_r4;
-    temp_r4=p[8]; p[8]=p[11]; p[11]=temp_r4;
-    temp_r4=p[9]; p[9]=p[10]; p[10]=temp_r4;
-    temp_r4=p[12]; p[12]=p[15]; p[15]=temp_r4;
-    temp_r4=p[13]; p[13]=p[14]; p[14]=temp_r4;
+    register unsigned int temp_r0, temp_r0_2, temp_r0_4, temp_r0_5, temp_r0_3;
+    register unsigned int swap_t;
+    register unsigned int temp_r14 asm("r14"), temp_r4 asm("r4"), temp_r5 asm("r5"), temp_r6 asm("r6"), temp_r7 asm("r7"), temp_r8 asm("r8"), temp_r9 asm("r9"), temp_r10 asm("r10"), temp_r11 asm("r11"), temp_r12 asm("r12"), temp_r31 asm("r31"), temp_r30 asm("r30"), temp_r29 asm("r29"), temp_r28 asm("r28"), temp_r27 asm("r27"), temp_r26 asm("r26"), temp_r25 asm("r25"), temp_r24 asm("r24"), temp_r23 asm("r23"), temp_r22 asm("r22"), temp_r21 asm("r21"), temp_r20 asm("r20"), temp_r19 asm("r19"), temp_r18 asm("r18"), temp_r17 asm("r17"), temp_r16 asm("r16"), temp_r15 asm("r15");
+    swap_t=p[0]; p[0]=p[3]; p[3]=swap_t;
+    swap_t=p[1]; p[1]=p[2]; p[2]=swap_t;
+    swap_t=p[4]; p[4]=p[7]; p[7]=swap_t;
+    swap_t=p[5]; p[5]=p[6]; p[6]=swap_t;
+    swap_t=p[8]; p[8]=p[11]; p[11]=swap_t;
+    swap_t=p[9]; p[9]=p[10]; p[10]=swap_t;
+    swap_t=p[12]; p[12]=p[15]; p[15]=swap_t;
+    swap_t=p[13]; p[13]=p[14]; p[14]=swap_t;
     temp_r0=p[0x2a]; temp_r17=p[0x29]; sp18=temp_r0;
     temp_r0_2=p[0x2f]; temp_r24=p[0x2c]; sp8=temp_r0_2;
     temp_r0_3=p[0x2e]; temp_r16=p[0x2d]; spC=temp_r0_3;
@@ -54,11 +54,11 @@ extern "C" void fn_80137D58(void *arg0, int arg_sp0) {
     temp_r29=p[0x18]; temp_r11=p[0x1b]; p[0x2d]=temp_r0_3;
     temp_r0_4=sp10;
     temp_r21=p[0x19]; temp_r10=p[0x1a]; p[0x30]=temp_r0_4;
-    temp_r0_5=sp14;
+    temp_r14=sp14;
     temp_r28=p[0x1c]; temp_r9=p[0x1f]; temp_r20=p[0x1d]; temp_r8=p[0x1e];
     temp_r27=p[0x20]; temp_r7=p[0x23]; temp_r19=p[0x21]; temp_r6=p[0x22];
     temp_r26=p[0x24]; temp_r5=p[0x27]; temp_r18=p[0x25]; temp_r4=p[0x26];
-    temp_r25=p[0x28]; temp_r14=p[0x2b];
+    temp_r25=p[0x28]; temp_r0_5=p[0x2b];
     p[0x10]=temp_r31; p[0x13]=temp_r30;
     p[0x11]=temp_r12; p[0x12]=temp_r22;
     p[0x18]=temp_r11; p[0x1b]=temp_r29;
@@ -69,10 +69,10 @@ extern "C" void fn_80137D58(void *arg0, int arg_sp0) {
     p[0x21]=temp_r6; p[0x22]=temp_r19;
     p[0x24]=temp_r5; p[0x27]=temp_r26;
     p[0x25]=temp_r4; p[0x26]=temp_r18;
-    p[0x28]=temp_r14; p[0x2b]=temp_r25;
+    p[0x28]=temp_r0_5; p[0x2b]=temp_r25;
     p[0x2a]=temp_r17; p[0x2f]=temp_r24;
     p[0x2e]=temp_r16; p[0x33]=temp_r23;
-    p[0x31]=temp_r0_5; p[0x32]=temp_r15;
+    p[0x31]=temp_r14; p[0x32]=temp_r15;
 }
 #pragma cplusplus reset
 #pragma scheduling on
@@ -540,12 +540,9 @@ int fn_801386D0(void *arg0, float farg0, float farg1, float farg2)
       float v = fn_801385F0(*((float *) (n + 0x1C)), f24, farg1, farg2);
       if (v > 0.0f)
       {
-        float ay = *((float *) (a + 0xC));
-        float ax = *((float *) (a + 8));
-        float k = v * step;
-        p.y = ay + (0.5f * ((*((float *) (n + 0xC))) - ay));
-        p.x = ax + (0.5f * ((*((float *) (n + 8))) - ax));
-        *((float *) (n + 0x2C)) += k;
+        p.y = 0.5f * ((*((float *) (n + 0xC))) - (*((float *) (a + 0xC)))) + (*((float *) (a + 0xC)));
+        p.x = 0.5f * ((*((float *) (n + 8))) - (*((float *) (a + 8)))) + (*((float *) (a + 8)));
+        *((float *) (n + 0x2C)) += v * step;
         {
           double dd = *((double *) (&p));
           *((double *) (&new_var[1])) = dd;
@@ -554,8 +551,8 @@ int fn_801386D0(void *arg0, float farg0, float farg1, float farg2)
           float oldx = new_var[1].x;
           new_var[1].x = new_var[1].y;
           new_var[1].y = -oldx;
-          *((float *) n) += new_var[1].x * k;
-          *((float *) (n + 4)) += new_var[1].y * k;
+          *((float *) n) += new_var[1].x * (v * step);
+          *((float *) (n + 4)) += new_var[1].y * (v * step);
         }
       }
       b = *((char **) (ctx + 0x1C));
@@ -609,20 +606,20 @@ extern float lbl_805613A4;
 int fn_801388F4(void *arg0) {
     struct V { float x; float y; } v;
     void *p;
+    double neg;
     float t;
     float prod1, prod2, sum;
-    int result;
     v = *(struct V *)((char *)arg0 + 8);
     p = *(void **)((char *)arg0 + 0x14);
-    t = (float)(-(double)v.x);
-    v.x = v.y;
-    v.y = t;
+    neg = -(double)v.x;
+    t = (float)neg;
     prod2 = t * *(float *)((char *)p + 0xC);
-    prod1 = v.x * *(float *)((char *)p + 8);
+    prod1 = v.y * *(float *)((char *)p + 8);
+    v.x = v.y;
+    v.y = (float)neg;
     sum = prod1 + prod2;
-    result = 0;
-    if (sum < lbl_805613A4) result = 1;
-    return result;
+    if (sum < lbl_805613A4) return 1;
+    return 0;
 }
 
 /* Forwards an object and the three components of a vec3 (an IDEAL_EXT_POINT's
