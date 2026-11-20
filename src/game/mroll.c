@@ -17,7 +17,7 @@ extern void *fn_80016BC8(void *, s32);
 extern void *fn_80018A8C(void *, s32, s32 *, s32);
 extern s32 fn_80255918(void *, void *);
 extern char lbl_8034287C[];
-extern double lbl_80563750;
+const double lbl_80563750 = 4503599629566976.0;
 extern u8 lbl_8055F1FC;
 extern s32 lbl_8055F200;
 extern float lbl_80563758;
@@ -332,7 +332,6 @@ void *fn_80240A1C(void *arg0, int *arg1, void *arg2) {
     }
     return self;
 }
-#pragma scheduling on
 #pragma cplusplus on
 extern "C" void *fn_80240BA4(void *arg0, s32 arg1, void *arg2, void *arg3, void *arg4, void *arg5) {
     s32 index, result, i, n, wordA, wordB, count, j;
@@ -535,9 +534,8 @@ extern "C" void *fn_80240BA4(void *arg0, s32 arg1, void *arg2, void *arg3, void 
         *(u8 *)((u8 *)infoDst + 0x284) = 0;
     }
 done:
-    return arg0;
+    return self;
 }
-#pragma scheduling on
 #pragma cplusplus reset
 
 extern void fn_8002F53C(void *, void *, void *, s32, s32);
@@ -858,7 +856,7 @@ extern float fn_80235EF0(s32, s32);
 extern void fn_802353F4(s32, s32, float, float, float);
 extern void fn_8022BD40(int, void *, int, int, float, float, float, float, float, float, float, float);
 #pragma scheduling invalid_target
-void fn_80241820(void *arg0) {
+void fn_80241820(void *__restrict arg0) {
     char *self = (char *)arg0;
     float sx, sy;
     if (*(int *)(self + 0x28) != 0 && ((Fn241820Obj *)self)->vt->isActive(self) != 0) {
@@ -1454,14 +1452,25 @@ void fn_80242738(void *arg0, s32 arg1)
       goto copy_check0;
       copy_check_loop0:
       --n;
-      if (n > 0) { goto copy_check0; }
+
+      if (n > 0)
+      {
+        goto copy_check0;
+      }
       dst[-1] = 0;
       goto copy_done0;
       copy_check0:
       c = *(src++);
+
       *(dst++) = (u8) c;
-      if (c != 0) { goto copy_check_loop0; }
+      if (c != 0)
+      {
+        goto copy_check_loop0;
+      }
       copy_done0:
+      ;
+
+      ;
       child = *((u8 **) (entry + 0x18));
     }
     else
@@ -1472,14 +1481,24 @@ void fn_80242738(void *arg0, s32 arg1)
       goto copy_check1;
       copy_check_loop1:
       --n;
-      if (n > 0) { goto copy_check1; }
+
+      if (n > 0)
+      {
+        goto copy_check1;
+      }
       dst[-1] = 0;
       goto copy_done1;
       copy_check1:
       c = *(src++);
+
       *(dst++) = (u8) c;
-      if (c != 0) { goto copy_check_loop1; }
+      if (c != 0)
+      {
+        goto copy_check_loop1;
+      }
       copy_done1:
+      ;
+
       ;
     }
     entry = widget;
@@ -1487,6 +1506,7 @@ void fn_80242738(void *arg0, s32 arg1)
     goto init_child_check;
     init_child_body:
     selectedValue = *(*((s32 **) (widget + 0x34)));
+
     n = ((*((u8 *) (widget + 0x38))) != 0) && (i == (*((s32 *) (widget + 0x30))));
     child = *((u8 **) (entry + 0x18));
     *((u8 *) child) = (u8) n;
@@ -1494,7 +1514,11 @@ void fn_80242738(void *arg0, s32 arg1)
     entry += 4;
     i += 1;
     init_child_check:
-    if (i < (*((volatile s32 *) (widget + 0x2C)))) { goto init_child_body; }
+    if (i < (*((volatile s32 *) (widget + 0x2C))))
+    {
+      goto init_child_body;
+    }
+
     *((s32 *) (base + 0x34)) = 2;
     outer += 1;
     base += 0x20;
@@ -1504,22 +1528,42 @@ void fn_80242738(void *arg0, s32 arg1)
   child = (u8 *) arg0;
   *((s32 *) (((u8 *) arg0) + 0x30)) = 0;
   *((s32 *) (child + 0x50)) = 0;
-  modeA = *((volatile s32 *) (((u8 *) arg0) + 0x34));
+  modeA = *((s32 *) (((u8 *) arg0) + 0x34));
   selected = 0;
   mode = 0;
-  if (modeA <= 1) { goto mode_a_ok; }
-  if (modeA == 4) { goto mode_a_ok; }
+  if (modeA <= 1)
+  {
+    goto mode_a_ok;
+  }
+  if (modeA == 4)
+  {
+    goto mode_a_ok;
+  }
   mode = 0;
   goto mode_done;
   mode_a_ok:
-  if (modeA == 4) { selected = 1; }
-  modeB = *((volatile s32 *) (((u8 *) arg0) + 0x54));
-  if (modeB <= 1) { goto mode_b_ok; }
-  if (modeB == 4) { goto mode_b_ok; }
+  if (modeA == 4)
+  {
+    selected = 1;
+  }
+
+  modeB = *((s32 *) (((u8 *) arg0) + 0x54));
+  if (modeB <= 1)
+  {
+    goto mode_b_ok;
+  }
+  if (modeB == 4)
+  {
+    goto mode_b_ok;
+  }
   mode = 0;
   goto mode_done;
   mode_b_ok:
-  if (modeB == 4) { selected++; }
+  if (modeB == 4)
+  {
+    selected++;
+  }
+
   mode = selected >= 2;
   mode_done:
   if ((*((u8 *) (((u8 *) arg0) + 0x58))) != ((unsigned) mode))
@@ -1527,7 +1571,9 @@ void fn_80242738(void *arg0, s32 arg1)
     *((s32 *) (((u8 *) arg0) + 0x30)) = 0;
     *((s32 *) (((u8 *) arg0) + 0x50)) = 0;
   }
-  for (base = ((u8 *) arg0) + 0x18, refreshIndex = 0; refreshIndex < 2U; refreshIndex++, base += 0x20)
+
+  base = ((u8 *) arg0) + 0x18;
+  for (refreshIndex = 0; refreshIndex < 2U; refreshIndex++, base += 0x20)
   {
     current = *((s32 *) (base + 0x1C));
     previous = *((s32 *) (base + 0x18));
@@ -1535,29 +1581,38 @@ void fn_80242738(void *arg0, s32 arg1)
     {
       switch (current)
       {
-        case 0: break;
+        case 0:
+          break;
+
         case 1:
           fn_80214AF0(*((s32 *) (base + 4)));
           fn_80214A9C(*((s32 *) (base + 8)));
           fn_80214A9C(*((s32 *) (base + 0x0C)));
           break;
+
         case 2:
+
         case 3:
           fn_80214A9C(*((s32 *) (base + 4)));
           fn_80214AF0(*((s32 *) (base + 8)));
           fn_80214A9C(*((s32 *) (base + 0x0C)));
           fn_80214AF0(*((s32 *) (base + 0x14)));
-          if ((refreshIndex != 0) && ((*((s32 *) (base + 0x1C))) == 2))
-            fn_80214A9C(*((s32 *) (base + 0x10)));
-          else
-            fn_80214AF0(*((s32 *) (base + 0x10)));
+          if ((refreshIndex != 0) && ((*((s32 *) (base + ((s32) 0x1C)))) == 2))
+        {
+          fn_80214A9C(*((s32 *) (base + 0x10)));
+        }
+        else
+        {
+          fn_80214AF0(*((s32 *) (base + 0x10)));
+        }
           list = *((u8 **) base);
           *((u8 *) (list + 0x38)) = 1;
           entry = list;
           i = 0;
           goto on_child_check;
           on_child_body:
-          selectedValue = *(*((s32 **) (list + 0x34)));
+        selectedValue = *(*((s32 **) (list + 0x34)));
+
           n = ((*((u8 *) (list + 0x38))) != 0) && (i == (*((s32 *) (list + 0x30))));
           child = *((u8 **) (entry + 0x18));
           *((u8 *) child) = (u8) n;
@@ -1565,8 +1620,13 @@ void fn_80242738(void *arg0, s32 arg1)
           entry += 4;
           i++;
           on_child_check:
-          if (i < (*((volatile s32 *) (list + 0x2C)))) { goto on_child_body; }
+        if (i < (*((volatile s32 *) (list + 0x2C))))
+        {
+          goto on_child_body;
+        }
+
           break;
+
         case 4:
           fn_80214A9C(*((s32 *) (base + 4)));
           fn_80214AF0(*((s32 *) (base + 8)));
@@ -1579,7 +1639,8 @@ void fn_80242738(void *arg0, s32 arg1)
           i = 0;
           goto off_child_check;
           off_child_body:
-          selectedValue = *(*((s32 **) (list + 0x34)));
+        selectedValue = *(*((s32 **) (list + 0x34)));
+
           n = ((*((u8 *) (list + 0x38))) != 0) && (i == (*((s32 *) (list + 0x30))));
           child = *((u8 **) (entry + 0x18));
           *((u8 *) child) = (u8) n;
@@ -1587,19 +1648,31 @@ void fn_80242738(void *arg0, s32 arg1)
           entry += 4;
           i++;
           off_child_check:
-          if (i < (*((volatile s32 *) (list + 0x2C)))) { goto off_child_body; }
+        if (i < (*((volatile s32 *) (list + 0x2C))))
+        {
+          goto off_child_body;
+        }
+
           break;
+
         default:
           fn_802E317C(lbl_80342840, 0, refreshIndex);
           break;
+
       }
+
       *((s32 *) (base + 0x18)) = *((s32 *) (base + 0x1C));
     }
   }
+
   ((mode != 0) ? (fn_80214AF0) : (fn_80214A9C))(0x1E);
   if (mode != 0)
   {
-    for (i = 7; i <= 0xA; i++) { fn_80214A9C(i); }
+    for (i = 7; i <= 0xA; i++)
+    {
+      fn_80214A9C(i);
+    }
+
   }
   *((u8 *) (((u8 *) arg0) + 0x58)) = (u8) mode;
 }
@@ -1812,7 +1885,7 @@ off_child_check:
 }
 #pragma cplusplus reset
 #pragma use_lmw_stmw off
-s32 fn_80242F68(void *arg0, s32 arg1) {
+s32 fn_80242F68(void *__restrict arg0, s32 arg1) {
     u8 *base = (u8 *)arg0;
     s32 channel = fn_802E4A10();
     s32 active, selected, i, state0, pp, eq, cond, modeB, mode, cntSel;
