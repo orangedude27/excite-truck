@@ -1390,20 +1390,22 @@ extern "C" s32 detail_OpenGroupStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void *
     if (path != 0) {
         meta14 = info.unkC;
         meta10 = info.unk8;
-        if (*path == '/')
-            goto open_stream;
-        unsigned long pathLen = strlen(path);
-        unsigned long prefixLen = strlen((const char *)self + 8);
-        if (pathLen + prefixLen >= 0x100) {
-            Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
-            return 0;
+        const char *openPath;
+        if (*path == '/') {
+            openPath = path;
+        } else {
+            unsigned long pathLen = strlen(path);
+            unsigned long prefixLen = strlen((const char *)self + 8);
+            if (pathLen + prefixLen >= 0x100) {
+                Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
+                return 0;
+            }
+            char buf[0x100];
+            strncpy(buf, (const char *)self + 8, prefixLen + 1);
+            fn_80028E2C(buf, path, pathLen + 1);
+            openPath = buf;
         }
-        char buf[0x100];
-        strncpy(buf, (const char *)self + 8, prefixLen + 1);
-        fn_80028E2C(buf, path, pathLen + 1);
-        path = buf;
-    open_stream:
-        return ((Archive *)self)->f5(arg2, arg3, path, meta10, meta14);
+        return ((Archive *)self)->f5(arg2, arg3, openPath, meta10, meta14);
     }
     return ((Archive *)self)->f4(arg2, arg3, info.unk8, info.unkC);
 }
@@ -3656,43 +3658,26 @@ extern "C" const char lbl_80325334[];
 #pragma use_lmw_stmw off
 extern "C" s32 PrepareSeqImpl__Q36nw4hbm3snd18SoundArchivePlayerFPQ46nw4hbm3snd6detail8SeqSoundPCQ46nw4hbm3snd12SoundArchive9SoundInfoPCQ46nw4hbm3snd12SoundArchive12SeqSoundInfoi(void *player, void *seqSound, void *soundInfo, void *seqSoundInfo, s32 offset) {
     struct StreamProxy {
-        virtual void slot0() = 0;
-        virtual void slot1() = 0;
-        virtual void close() = 0;
-        virtual void slot3() = 0;
-        virtual void slot4() = 0;
-        virtual void slot5() = 0;
-        virtual void slot6() = 0;
-        virtual void slot7() = 0;
-        virtual void slot8() = 0;
-        virtual void slot9() = 0;
-        virtual void slot10() = 0;
-        virtual void slot11() = 0;
-        virtual void slot12() = 0;
-        virtual void slot13() = 0;
-        virtual u32 getSize() = 0;
+        virtual void slot0() = 0; virtual void slot1() = 0; virtual void close() = 0;
+        virtual void slot3() = 0; virtual void slot4() = 0; virtual void slot5() = 0;
+        virtual void slot6() = 0; virtual void slot7() = 0; virtual void slot8() = 0;
+        virtual void slot9() = 0; virtual void slot10() = 0; virtual void slot11() = 0;
+        virtual void slot12() = 0; virtual void slot13() = 0; virtual u32 getSize() = 0;
     };
     struct SeqSoundProxy {
-        virtual void slot0() = 0;
-        virtual void slot1() = 0;
-        virtual void slot2() = 0;
-        virtual void slot3() = 0;
-        virtual void slot4() = 0;
-        virtual void slot5() = 0;
-        virtual void slot6() = 0;
-        virtual void slot7() = 0;
-        virtual void slot8() = 0;
-        virtual void slot9() = 0;
-        virtual void slot10() = 0;
-        virtual void setRate(f32) = 0;
+        virtual void slot0() = 0; virtual void slot1() = 0; virtual void slot2() = 0;
+        virtual void slot3() = 0; virtual void slot4() = 0; virtual void slot5() = 0;
+        virtual void slot6() = 0; virtual void slot7() = 0; virtual void slot8() = 0;
+        virtual void slot9() = 0; virtual void slot10() = 0; virtual void setRate(f32) = 0;
     };
+    void *sTmp;
     u8 reader[8];
     u8 streamBuffer[0x200];
+    void *stream;
     void *fileData;
     void *mutex;
-    void *memory;
+    register void *memory;
     u32 fileSize;
-    void *stream;
     register s32 status;
     void *base;
     void *tmp;
@@ -3707,7 +3692,8 @@ extern "C" s32 PrepareSeqImpl__Q36nw4hbm3snd18SoundArchivePlayerFPQ46nw4hbm3snd6
         if (memory == 0)
             return 4;
 
-        stream = detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void **)((u8 *)player + 0x10), *(u32 *)soundInfo, streamBuffer, 0x200);
+        sTmp = detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void **)((u8 *)player + 0x10), *(u32 *)soundInfo, streamBuffer, 0x200);
+        stream = sTmp;
         mutex = (u8 *)memory + 4;
         OSLockMutex(mutex);
         fileSize = fn_800EC56C((void **)((u8 *)memory + 0x1C));
