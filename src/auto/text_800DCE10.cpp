@@ -164,6 +164,7 @@ extern "C" void *__ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4
     const u8 *entry;
     void *font;
     void *material;
+    u32 zeroBits = 0;
 
     __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(this_, res);
     *(void **)self = (void *)lbl_803208D4;
@@ -176,10 +177,10 @@ extern "C" void *__ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4
     if (count != 0) {
         count = (u16)(count - 1);
         q = self[0xFC] / 3;
-        *(u32 *)(self + 0xD4) = 0;
-        *(u16 *)(self + 0xF8) = 0;
-        *(u16 *)(self + 0xFA) = 0;
-        *(u32 *)(self + 0xE0) = 0;
+        *(u32 *)(self + 0xD4) = zeroBits;
+        *(u16 *)(self + 0xF8) = zeroBits;
+        *(u16 *)(self + 0xFA) = zeroBits;
+        *(u32 *)(self + 0xE0) = zeroBits;
         value = q * 3 + 1;
         rem = value % 3;
         sp8 = zero;
@@ -188,7 +189,7 @@ extern "C" void *__ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4
         *(f32 *)(self + 0xE8) = zero;
         *(f32 *)(self + 0xEC) = zero;
         *(f32 *)(self + 0xF0) = zero;
-        *(u32 *)(self + 0xF4) = 0;
+        *(u32 *)(self + 0xF4) = zeroBits;
         self[0xFC] = (u8)(rem + 3);
         memset(self + 0xFD, 0, 1);
     }
@@ -1075,13 +1076,21 @@ nw4hbm::ut::CharStrmReader nw4hbm::ut::Font::GetCharStrmReader() const {
     return nw4hbm::ut::CharStrmReader(*(nw4hbm::ut::CharStrmReader::ReadFunc *)((u8 *)font + 4));
 }
 extern "C" void AllocStringBuffer__Q36nw4hbm3lyt7TextBoxFUs(void *this_ptr, u16 len) {
-    struct VTable { void (*slots[27])(void *); };
-    struct Object { VTable *vtable; };
+    class TextBox {
+    public:
+        virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
+        virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
+        virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11();
+        virtual void m12(); virtual void m13(); virtual void m14(); virtual void m15();
+        virtual void m16(); virtual void m17(); virtual void m18(); virtual void m19();
+        virtual void m20(); virtual void m21(); virtual void m22(); virtual void m23();
+        virtual void FreeStringBuffer();
+    };
     if (len != 0) {
         u16 bytes = (len + 1) * 2;
         u16 current = *(u16 *)((u8 *)this_ptr + 0xF8);
         if (bytes > current) {
-            ((struct Object *)this_ptr)->vtable->slots[26](this_ptr);
+            ((TextBox *)this_ptr)->FreeStringBuffer();
             void *result = MEMAllocFromAllocator(lbl_8055DDF0, bytes);
             *(void **)((u8 *)this_ptr + 0xD4) = result;
             if (result != NULL) *(u16 *)((u8 *)this_ptr + 0xF8) = bytes;
@@ -1194,7 +1203,8 @@ extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
     register SoundEntry60 tmp;
     f32 savedY;
     u64 raw;
-    register f32 fa, fb;
+    f32 h, w;
+    f32 fa, fb;
     s32 sel;
     register f32 z = lbl_80560ED0;
 
@@ -1253,9 +1263,9 @@ extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
     case 1: fb = lbl_80560EE0; break;
     case 2: fb = lbl_80560EE4; break;
     }
+    h = arg0[3] - arg0[1];
+    w = arg0[2] - arg0[0];
     {
-        f32 h = arg0[3] - arg0[1];
-        f32 w = arg0[2] - arg0[0];
         f32 ny = ((f32 *)&posD)[1] + (*(f32 *)(arg1 + 0x50) - h) * fb;
         f32 nx = ((f32 *)&posD)[0] + (*(f32 *)(arg1 + 0x4C) - w) * fa;
         arg0[0] = nx;
