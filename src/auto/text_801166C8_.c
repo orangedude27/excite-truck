@@ -470,45 +470,16 @@ s32 fn_80116E54(s32 (*callback)(s32), s32 arg) {
 }
 
 s8 *fn_80116EE4(s8 *arg0, s16 *arg1, u32 arg2) {
-    s16 *var_r4 = arg1;
-    s8 *var_r3 = arg0;
-    u32 var_r5 = arg2 >> 1U;
-    u32 temp_r0;
-    u32 var_ctr;
-    u32 var_ctr_2;
-    s16 temp_r0_2;
-    s16 temp_r0_3;
-    if (var_r5 != 0) {
-        temp_r0 = var_r5 >> 3U;
-        var_ctr = temp_r0;
-        if (temp_r0 != 0) {
-            do {
-                var_r3[0] = (s8)(var_r4[0] >> 8);
-                var_r3[1] = (s8)(var_r4[1] >> 8);
-                var_r3[2] = (s8)(var_r4[2] >> 8);
-                var_r3[3] = (s8)(var_r4[3] >> 8);
-                var_r3[4] = (s8)(var_r4[4] >> 8);
-                var_r3[5] = (s8)(var_r4[5] >> 8);
-                var_r3[6] = (s8)(var_r4[6] >> 8);
-                temp_r0_2 = var_r4[7];
-                var_r4 += 8;
-                var_r3[7] = (s8)(temp_r0_2 >> 8);
-                var_r3 += 8;
-            } while (--var_ctr != 0);
-            var_r5 &= 7;
-            if (var_r5 != 0) goto tail;
-        } else {
-tail:
-            var_ctr_2 = var_r5;
-            do {
-                temp_r0_3 = *var_r4;
-                var_r4 += 1;
-                *var_r3 = (s8)(temp_r0_3 >> 8);
-                var_r3 += 1;
-            } while (--var_ctr_2 != 0);
-        }
+    s32 i;
+    u32 n = arg2 >> 1U;
+    s16 *src = arg1;
+    s8 *dst = arg0;
+    for (i = n; i != 0; i--) {
+        *dst = (s8)(*src >> 8);
+        src++;
+        dst++;
     }
-    return var_r3;
+    return dst;
 }
 
 #pragma push
@@ -3570,9 +3541,9 @@ void fn_8011B94C(void *arg0, s32 *arg1, s32 *arg2, s32 arg3, s32 *arg4, s32 arg5
         i = 0;
         count = *(u32 *)(p + 0xC) >> 1;
         for (; i < count; i++) {
-            s16 *a = *(s16 **)(p + 0x14);
-            s16 *b = *(s16 **)(p + 0x2C);
-            a[i] = (i * a[i] + b[i] * (count - i)) / count;
+            register s16 *a = *(s16 **)(p + 0x14);
+            register s16 *b = *(s16 **)(p + 0x2C);
+            a[i] = (s16)(((u32)i * a[i] + b[i] * (u32)(count - i)) / count);
         }
     }
     memcpy(*(void **)(p + 0x2C), (u8 *)*(void **)(p + 0x14) + (*(u32 *)(p + 8) - *(u32 *)(p + 0xC)), *(u32 *)(p + 0xC));
