@@ -403,10 +403,9 @@ extern "C" void fn_801F7A14(void *);
 #pragma scheduling invalid_target
 extern "C" s32 fn_801F7B10(void *arg0, void *arg1, s32 arg2) {
     F7B10Obj *obj = (F7B10Obj *)arg1;
-    volatile u8 *dst = (volatile u8 *)arg0;
     int i;
-    if (fn_801F7A88(obj, arg2, (void *)dst, 0x30) != 0) {
-        volatile u8 *p = dst;
+    if (fn_801F7A88(obj, arg2, arg0, 0x30) != 0) {
+        volatile u8 *p = (volatile u8 *)arg0;
         for (i = 0; i < 2; i++) {
             u8 t;
             t=p[0];p[0]=p[3];p[3]=t;t=p[1];p[1]=p[2];p[2]=t;
@@ -418,7 +417,7 @@ extern "C" s32 fn_801F7B10(void *arg0, void *arg1, s32 arg2) {
             p += 0x18;
         }
     } else {
-        f32 *o = (f32 *)dst;
+        f32 *o = (f32 *)arg0;
         const F7B10Vec &a = obj->getVec(lbl_8055B280);
         o[0] = a.x; o[1] = a.y; o[2] = a.z;
         const F7B10Vec &b = obj->getVec(lbl_8055B288);
@@ -2700,7 +2699,7 @@ extern "C" void fn_801FB284(void *arg0, void *arg1) {
 }
 
 #pragma use_lmw_stmw off
-extern "C" void fn_801FB354(void *arg0, void *arg1) {
+extern "C" void fn_801FB354(void *__restrict arg0, void *arg1) {
     s32 result;
     s32 flags;
     f32 cz;
@@ -2711,10 +2710,8 @@ extern "C" void fn_801FB354(void *arg0, void *arg1) {
     f32 x;
     f32 delta[3];
     void *camera;
-    u32 check;
 
-    check = *(u32 *)((u8 *)arg0 + 0x190);
-    if (check & 1) {
+    if (*(u32 *)((u8 *)arg0 + 0x190) & 1) {
         camera = fn_802C86DC();
         x = *(f32 *)((u8 *)arg1 + 0x24);
         y = *(f32 *)((u8 *)arg1 + 0x28);
@@ -2975,7 +2972,7 @@ extern "C" void fn_8019EECC(void);
 #pragma processor 750
 extern "C" void fn_8019EECC(void);
 #pragma optimization_level 2
-extern "C" void fn_801FC048(void *arg0) {
+extern "C" void fn_801FC048(void *__restrict arg0) {
     volatile f32 sp10;
     volatile f32 spC;
     volatile f32 sp8;
