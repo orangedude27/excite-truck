@@ -3346,6 +3346,13 @@ extern "C" const char lbl_8031E92C[];
 #pragma push
 #pragma opt_common_subs off
 extern "C" void *__dt__Q36nw4hbm3lyt4PaneFv(void *self, s32 del) {
+    /* nw4hbm::lyt::Pane destructor: restores the base vtable, then unlinks and
+     * destroys each child pane of the child list at +0x10 (freeing the child's
+     * allocation, whose LinkListNode header sits 4 bytes before the object, when
+     * its +0xCC "owned" flag is clear), runs the base +0x50 virtual destructor,
+     * frees the attached object at +0x28 when its +0x54 flag is clear, destroys
+     * the two LinkListImpl lists at +0x1C and +0x10, and when del > 0 frees this
+     * Pane itself through fn_80128668. */
     struct PaneDispatch { virtual void Destroy(s32); };
     struct PaneObject : PaneDispatch, GroupListNode {};
     struct PaneList { u32 count; GroupListNode* first; GroupListNode* last; };
@@ -3357,13 +3364,13 @@ extern "C" void *__dt__Q36nw4hbm3lyt4PaneFv(void *self, s32 del) {
     };
     PaneLayout* pane = (PaneLayout*)self;
     struct { GroupListNode *v; } nodeH;
-    struct { GroupListNode *v; } endH;
+    struct { GroupListNode *endV; } endH;
     GroupListNode *&node = nodeH.v;
-    GroupListNode *&end = endH.v;
+    GroupListNode *&end = endH.endV;
     GroupListNode* current;
     if (pane != 0) {
         nodeH.v = pane->childList.first;
-        endH.v = (GroupListNode*)&pane->childList.first;
+        endH.endV = (GroupListNode*)&pane->childList.first;
         pane->vtable = lbl_8032012C;
         while (node != end) {
             current = node;
