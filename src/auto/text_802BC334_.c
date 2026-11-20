@@ -750,16 +750,6 @@ int fn_802BD5A8(int value, int delta) { return value + delta; }
 #pragma push
 #pragma inline_depth(0)
 #pragma use_lmw_stmw off
-static inline void fn_802BD5B0_swap(unsigned char *entry, float zero) {
-    unsigned char t;
-    t = entry[4]; entry[4] = entry[5]; entry[5] = t;
-    t = entry[6]; entry[6] = entry[7]; entry[7] = t;
-    t = entry[8]; entry[8] = entry[9]; entry[9] = t;
-    t = entry[10]; entry[10] = entry[11]; entry[11] = t;
-    *(float *)(entry + 12) = zero;
-}
-#pragma inline fn_802BD5B0_swap
-
 void fn_802BD5B0(void *arg0, int arg1) {
     extern int fn_802BD694(int, int);
     extern float lbl_80564D30;
