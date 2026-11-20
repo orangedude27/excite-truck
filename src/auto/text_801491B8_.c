@@ -486,10 +486,18 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
     u8 buf[0x32];
     u8 *tbl = lbl_8032D358;
     s32 id, s30, s26, s25;
-    f32 t, f4;
+    f32 f4, t;
     int i;
     u8 *p;
-    u8 *dst1, *dst2, *srcp;
+    u8 *spa; int na; u8 *dpa;
+    u8 *spb; int nb; u8 *dpb;
+    u8 *spc; int nc; u8 *dpc;
+    u8 *spd; int nd; u8 *dpd;
+    u8 *srcp2;
+    s32 offset;
+    u8 *d1, *d2;
+    int j;
+    u8 *e1, *e2;
     if (*(s32 *)(self + 8) == 0) return 0;
     id = *(s32 *)(a + 4);
     fn_801345D8(self + 0x2C, 0x14, lbl_80559F04, id);
@@ -528,20 +536,34 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
         if (x != -1) StrCopyN80149658(self + 0x8B, __AXGetStackHead(x), 10);
         else StrCopyN80149658(self + 0x8B, lbl_80559F0C, 10);
     }
-    dst1 = self + 0x95;
-    dst2 = self + 0x149;
-    for (i = 0; i < *(s32 *)(list + 8); i++) {
-        srcp = *(u8 **)(list + 4) + i * 0xF8;
-        StrCopyN80149658(dst1, srcp + 4, 0x14);
-        StrCopyN80149658(dst2, srcp + 0xA4, 0x14);
-        dst1 += 0x14; dst2 += 0x14;
+    d1 = self + 0x95;
+    d2 = self + 0x149;
+    j = 0;
+    offset = 0;
+    for (; j < *(s32 *)(list + 8); j++) {
+        srcp2 = *(u8 **)(list + 4) + offset;
+        dpa = d1; spa = srcp2 + 4; na = 0x14;
+        while ((s8)(*dpa++ = *spa++) != 0) {
+            if (--na <= 0) { dpa[-1] = 0; break; }
+        }
+        dpb = d2; spb = srcp2 + 0xA4; nb = 0x14;
+        while ((s8)(*dpb++ = *spb++) != 0) {
+            if (--nb <= 0) { dpb[-1] = 0; break; }
+        }
+        offset += 0xF8; d1 += 0x14; d2 += 0x14;
     }
-    dst1 = self + i * 0x14 + 0x95;
-    dst2 = self + i * 0x14 + 0x149;
-    for (; (u32)i < 9; i++) {
-        StrCopyN80149658(dst1, lbl_80559F0C, 0x14);
-        StrCopyN80149658(dst2, lbl_80559F0C, 0x14);
-        dst1 += 0x14; dst2 += 0x14;
+    e1 = self + j * 0x14 + 0x95;
+    e2 = self + j * 0x14 + 0x149;
+    for (; (u32)j < 9; j++) {
+        dpc = e1; spc = lbl_80559F0C; nc = 0x14;
+        while ((s8)(*dpc++ = *spc++) != 0) {
+            if (--nc <= 0) { dpc[-1] = 0; break; }
+        }
+        dpd = e2; spd = lbl_80559F0C; nd = 0x14;
+        while ((s8)(*dpd++ = *spd++) != 0) {
+            if (--nd <= 0) { dpd[-1] = 0; break; }
+        }
+        e1 += 0x14; e2 += 0x14;
     }
     fn_802AE168(*(s32 *)(self + 8));
     switch (*(s32 *)self) {
@@ -3010,6 +3032,9 @@ void fn_80151688(void) {
 }
 
 #pragma cplusplus on
+/* Resets a particle/effect entry (indexed by the manager's current index): halves its
+ * speed, re-queues all active items in the owner's list to the tail, advances its phase,
+ * calls the object's reset method, decrements its life count, and zeroes its position. */
 extern "C" void fn_8015168C(s32 arg0, void *arg1) {
     class VNode {
     public:
