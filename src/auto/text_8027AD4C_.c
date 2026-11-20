@@ -116,7 +116,7 @@ extern "C" unsigned char fn_8027AD4C(char *a0, void *arg1) {
 
     *(void **)(a0 + 8) = arg1;
     *(unsigned char *)(a0 + 4) = 1;
-    if (stricmp(((First *)arg1)->m0(), base) == 0) {
+    if (stricmp(((First *)arg1)->m0(), &lbl_80347A50[0]) == 0) {
         name = ((First *)arg1)->m3(base + 0xC);
         *(long *)(a0 + 0x30) = fn_8027D1F4();
         found = 0;
@@ -1481,24 +1481,25 @@ extern "C" void *fn_8001BB58(long, long, long, long);
 extern "C" long fn_8001D7EC(void);
 #pragma cplusplus on
 extern "C" long fn_8027CA1C(void *arg0) {
-    long var_r31;
-    long temp_r30;
-    void *temp_r3;
     struct Iface {
         virtual void f0();
         virtual void f1();
         virtual void f2();
         virtual long f3(char *);
     };
-    temp_r30 = fn_8027D1F4();
-    temp_r3 = fn_8001BB58(fn_8000DA10(), *(long *)((char *)arg0 + 4), temp_r30, 0);
-    var_r31 = 0;
-    if (temp_r3 != 0) {
+    struct FlagHolder { long value; } flagHolder;
+    long &flag = flagHolder.value;
+    long value;
+    void *result;
+    value = fn_8027D1F4();
+    result = fn_8001BB58(fn_8000DA10(), *(long *)((char *)arg0 + 4), value, 0);
+    flag = 0;
+    if (result != 0) {
         ((struct Iface *)(*(void **)((char *)arg0 + 0x10)))->f3(lbl_80347BD0);
-        if (*(long *)((char *)temp_r3 + 8) <= fn_8001D7EC())
-            var_r31 = 1;
+        if (*(long *)((char *)result + 8) <= fn_8001D7EC())
+            flag = 1;
     }
-    return var_r31;
+    return flag;
 }
 #pragma cplusplus off
 /* Return 1 if the looked-up event entry exists and its field at +8 is zero, else 0. */
