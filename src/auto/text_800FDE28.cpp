@@ -784,7 +784,7 @@ extern "C" void* __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, s32 deleteFlag, 
 
 #pragma push
 #pragma scheduling on
-#pragma use_lmw_stmw off
+#pragma use_lmw_stmw on
 extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
     typedef void (*Callback)(s32, void *, void *, u32);
     struct LinkList { void *next; void *prev; };
