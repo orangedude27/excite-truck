@@ -788,37 +788,6 @@ extern "C" void fn_80264FD4(void *obj) {
 }
 
 #pragma push
-#pragma always_inline on
-static inline void DrawSparkGroup(void *obj, char *items, int count,
-                                  float a, float b, float c, float d, float e, float f) {
-    float base, intensity, value, limit, zero;
-    int i, alpha, aa, id;
-    char *item;
-    int offset = 0;
-    limit = lbl_80563C00;
-    zero = lbl_80563BF0;
-    i = 0;
-    while (i < count) {
-        item = items + offset;
-        value = b * (a - *(float *)(item + 0x18));
-        if (limit < value) value = limit;
-        value = (value > zero) ? value : zero;
-        alpha = 0xFF;
-        aa = (int)(value * (*(float *)(item + 0x18) * c));
-        aa = (aa > 0) ? aa : 0;
-        if (aa < 0xFF) alpha = aa;
-        id = *(int *)(item + 0x1C);
-        base = d + e * (limit - *(float *)(item + 0x18) * f);
-        intensity = base * fn_80235F64(obj, id);
-        fn_80235AFC(obj, id, ((unsigned int)alpha << 24) | 0xFFFFFF,
-                    *(float *)item, *(float *)(item + 4), lbl_80563BF0,
-                    base * fn_80235EF0(obj, *(int *)(item + 0x1C)), intensity, *(float *)(item + 0x10));
-        offset += 0x20;
-        i++;
-    }
-}
-#pragma pop
-#pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" void fn_80264FE4(void *arg0) {
