@@ -56,6 +56,7 @@ s32 fn_802EC4E8(s32 arg0) {
     fn_802E3734(&sp8);
     return temp_r31;
 }
+#pragma dont_inline reset
 extern s32 lbl_80558898[];
 extern s32 lbl_805600E0, lbl_805600E4;
 extern u8 lbl_805600EC;
