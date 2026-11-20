@@ -33,7 +33,7 @@ extern int lbl_8055E100;
 extern float lbl_80558DC4[];
 extern float lbl_805613BC;
 extern float lbl_805613B8;
-void fn_80138F38(void *);
+void fn_80138F38();
 #pragma dont_inline on
 /* Return nonzero when a*b is negative, i.e. the two values have opposite signs (opposite_signs in the motion-crossing solver). */
 int fn_80138BE4(float a, float b) {
@@ -115,12 +115,9 @@ int fn_80138C28(MotionPair *motion, float *out_time, float *out_distance) {
     }
     return 0;
 }
-#pragma pop
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
 float fn_80138DF4(void *arg0) {
+    register MotionPair *m = (MotionPair *)arg0;
     float spC;
     float sp8;
     float temp_f1;
@@ -131,14 +128,14 @@ float fn_80138DF4(void *arg0) {
     float var_f31;
     float var_f4;
     int state;
-    if (fn_80138BFC(*(float *)((char *)arg0 + 0xC) - *(float *)arg0) == 0) {
-        float b = *(float *)((char *)arg0 + 8);
-        float a = *(float *)((char *)arg0 + 0x14);
+    if (fn_80138BFC(m->target.position - m->self.position) == 0) {
+        float b = m->self.acceleration;
+        float a = m->target.acceleration;
         if (fn_80138BFC(a - b) == 0) {
-            if (fn_80138C28(arg0, &spC, &sp8) != 0) {
-                float pos14 = *(float *)((char *)arg0 + 0x14);
+            if (fn_80138C28(m, &spC, &sp8) != 0) {
+                float pos14 = m->target.acceleration;
                 var_f4 = spC;
-                temp_f1 = (*(float *)((char *)arg0 + 0x10) + (var_f4 * pos14)) - *(float *)((char *)arg0 + 4);
+                temp_f1 = (m->target.velocity + (var_f4 * pos14)) - m->self.velocity;
                 var_f4 = (var_f4 > lbl_805613D0) ? var_f4 : lbl_805613D0;
                 var_f31 = temp_f1 / var_f4;
                 lbl_8055E100 = -5;
@@ -147,16 +144,16 @@ float fn_80138DF4(void *arg0) {
                 lbl_8055E100 = -4;
             }
         } else {
-            temp_f2 = *(float *)((char *)arg0 + 0xC) - *(float *)arg0;
-            temp_f1_2 = *(float *)((char *)arg0 + 0x10) - *(float *)((char *)arg0 + 4);
+            temp_f2 = m->target.position - m->self.position;
+            temp_f1_2 = m->target.velocity - m->self.velocity;
             temp_f3 = temp_f1_2 * temp_f1_2;
             var_f31 = temp_f3 / (lbl_805613C8 * temp_f2);
             if (fn_80138BE4(temp_f1_2, temp_f2) != 0) {
                 var_f31 = -var_f31;
             }
-            temp_f3_2 = *(float *)((char *)arg0 + 0xC);
-            temp_f2 = temp_f3_2 - *(float *)arg0;
-            temp_f1_2 = *(float *)((char *)arg0 + 0x10) - *(float *)((char *)arg0 + 4);
+            temp_f3_2 = m->target.position;
+            temp_f2 = temp_f3_2 - m->self.position;
+            temp_f1_2 = m->target.velocity - m->self.velocity;
             {
                 int result = fn_80138BE4(temp_f1_2, temp_f2);
                 state = -2;
@@ -171,11 +168,8 @@ float fn_80138DF4(void *arg0) {
     }
     return var_f31;
 }
-#pragma pop
-#pragma pop
+#pragma scheduling invalid_target
 void fn_80138F38(void *arg0) {
-    extern float lbl_805613B8;
-    extern float lbl_805613C0;
     extern int lbl_8055E100;
     extern float fn_80138DF4(void*);
     float sp8;
@@ -186,19 +180,18 @@ void fn_80138F38(void *arg0) {
     register float square;
     register float product;
     register float value;
-    if (*(float*)((char*)arg0 + 0x10) > lbl_805613B8) {
-        if (*(float*)((char*)arg0 + 0x14) < lbl_805613B8) {
+    if (*(float*)((char*)arg0 + 0x10) > 0.0f) {
+        if (*(float*)((char*)arg0 + 0x14) < 0.0f) {
             if (fn_80138C28(arg0, &sp8, 0)) {
-                float scale = lbl_805613C0;
                 x = *(float*)((char*)arg0 + 0x10);
                 y = *(float*)((char*)arg0 + 0x14);
                 ratio = -x / y;
                 if (ratio <= sp8) {
-                    product = ratio * x;
                     square = ratio * ratio;
+                    product = ratio * x;
                     value = *(float*)((char*)arg0 + 0xC);
                     value += product;
-                    value += (scale * y) * square;
+                    value += (0.5f * y) * square;
                     ((int*)&sp10)[0] = ((int*)arg0)[0];
                     ((int*)&sp10)[1] = ((int*)arg0)[1];
                     ((int*)&sp10)[2] = ((int*)arg0)[2];
@@ -206,8 +199,8 @@ void fn_80138F38(void *arg0) {
                     ((int*)&sp10)[4] = ((int*)arg0)[4];
                     ((int*)&sp10)[5] = ((int*)arg0)[5];
                     sp10.s.d = value;
-                    sp10.s.e = lbl_805613B8;
-                    sp10.s.f = lbl_805613B8;
+                    sp10.s.e = 0.0f;
+                    sp10.s.f = 0.0f;
                     fn_80138DF4(&sp10);
                     lbl_8055E100 += 6;
                     return;
