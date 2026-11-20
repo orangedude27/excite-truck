@@ -160,13 +160,12 @@ static inline void IdList_Add(s32 *src) {
 #define ID_PUSH(v) { s32 n_ = ID_LIST->count; ID_LIST->count = n_ + 1; ID_LIST->data[n_] = (v); }
 #pragma scheduling invalid_target
 void fn_80008390(void) {
-    s32 *base = lbl_802ED6D8;
-    register s32 *p asm("r8");
+    register s32 *base asm("r31") = lbl_802ED6D8;
+    register s32 *p asm("r8") = base;
     s32 i;
     ID_LIST->count = 0;
     if (fn_800167F4() > 1) IdList_Add(&lbl_805601B0);
     if (lbl_8055D370 == 0) {
-        p = base;
         IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3);
     } else {
         p = base + 4;
@@ -905,7 +904,7 @@ skip16:
         fn_802C8638(sp8);
         fn_802C974C(lbl_805601B8, lbl_805601D4, lbl_805601D8);
         if (var22 != 0) {
-            fn_80012624((float)var21 / lbl_805601E8);
+            fn_80012624((float)(var21 - lbl_805601C8) / lbl_805601E8);
             fn_80206444();
         }
         fn_802C9A70(0);
