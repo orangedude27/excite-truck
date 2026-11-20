@@ -1092,7 +1092,7 @@ int fn_801F1978(int arg) {
         break;
     default: {
         void (*report)(const char *, ...) = fn_802E317C;
-        report(lbl_8033A5B0);
+        report(lbl_8033A5B0, arg);
         break;
     }
     }
