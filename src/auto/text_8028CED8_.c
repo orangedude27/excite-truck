@@ -26,7 +26,6 @@ extern int fn_8028D17C(void);
 extern void fn_8028D2B4(void);
 extern void fn_8028DDF0(void *, int);
 extern void fn_80287B38(void *);
-typedef struct { unsigned char data[0x28]; } Rec28;
 void fn_8028CED8(void) {
     /* RealName: SkidSystem_Init (guess). If skid data is ready, allocate/init buffers, register the update callback, and mark active. */
 #define sSkidSystemActive lbl_8055F714
