@@ -114,7 +114,7 @@ void fn_80009DC8(void *arg0) {
         for (n = 0; n < fn_80137C74(); n++) {
             if (fn_80016804(p->key, n) != 0) {
                 p->kind = 0x50;
-                p->bits.lo = n;
+                p->bits.raw = (p->bits.raw & 0xFC) | (n & 3);
             }
         }
         CopyStr_80009DC8(p->name, a + 8, 0x40);
@@ -136,7 +136,9 @@ void fn_80009DC8(void *arg0) {
         tmp.f74 = 0;
         {
             volatile int wide[93];
-            for (j = 0; j < 85; j++) wide[j] = ((u8 *)&tmp)[j + 0x10];
+            #pragma unroll 84
+            for (j = 0; j < 84; j++) wide[j] = ((u8 *)&tmp)[j + 0x10];
+            #pragma unroll reset
             for (j = 0; j < count; j++) {
                 ListEntry_80009DC8 *e = list + (*countp)++;
                 s32 r = fn_8001675C(1, j)[1];
@@ -162,12 +164,15 @@ void fn_80009DC8(void *arg0) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_8000A644(void* arg0, void* arg1) {
-    s32 count = 0;
-    s32* base = (s32*)((u8*)arg0 + 0x20);
-    s32* dst = base;
-    u8* src = (u8*)arg1;
     s32 w;
     s32 v;
+    s32* dst;
+    s32* base;
+    s32 count;
+    u8* src = (u8*)arg1;
+    base = (s32*)((u8*)arg0 + 0x20);
+    dst = base;
+    count = 0;
     ((s32*)arg0)[0x3E0 / 4] = *(s32*)(src + 0x24);
     while (count < base[0x3C0 / 4]) {
         v = *(s32*)(src + 4);
@@ -178,7 +183,7 @@ void fn_8000A644(void* arg0, void* arg1) {
         dst += 0x78 / 4;
         count++;
     }
-    ((void (*)(void))fn_80009DC8)();
+    fn_80009DC8(arg0);
 }
 #pragma push
 #pragma scheduling invalid_target
