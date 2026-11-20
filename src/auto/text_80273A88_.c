@@ -711,11 +711,11 @@ void fn_80274EA8(void *object) {
 }
 
 static inline void helper_80274F74(void *arg0, void *arg1) {
+    float y;
+    float z;
     float magnitude;
     float scale;
     float cosine;
-    float y;
-    float z;
     float sine;
     float x;
 
@@ -773,8 +773,9 @@ static inline void helper_80274F74(void *arg0, void *arg1) {
 
 #pragma scheduling invalid_target
 void fn_80274F74(void *arg0, void *arg1, float angle) {
+    float a = angle;
     helper_80274F74(arg0, arg1);
-    *(float *)((char *)arg0 + 0xBC) = angle;
+    *(float *)((char *)arg0 + 0xBC) = a;
 }
 
 extern float PSVECDotProduct(float *, float *);
@@ -979,7 +980,7 @@ extern float lbl_8055E3C8, lbl_8055F588, lbl_80563FC4, lbl_80563FD8, lbl_8056404
 extern double lbl_80564038;
 extern double fn_8002EFB4(float, double);
 extern int fn_801E9E30(void *, float *);
-#pragma scheduling on
+#pragma processor 750
 void fn_80275B9C(void *arg0, float farg0, float farg1, float farg2) {
     struct Vec3 {
         float x, y, z;
@@ -989,10 +990,11 @@ void fn_80275B9C(void *arg0, float farg0, float farg1, float farg2) {
     struct Vec3 temp;
     struct Vec3 up;
     char *p = (char *)arg0;
-    float factor;
     float angle;
     float s;
     float c;
+    float py;
+    float factor;
 
     angle = (float)fn_8002EFB4(farg2 * lbl_8055E3C8, lbl_80564038);
     *(float *)(p + 0x15C) = angle;
@@ -1009,7 +1011,8 @@ void fn_80275B9C(void *arg0, float farg0, float farg1, float farg2) {
 
     if (fn_801E9E30(p + 0x1EC, (float *)&pos) == 0) {
         factor = lbl_80563FC4;
-        pos.y = lbl_80563FD8 + lbl_8055F588;
+        py = lbl_80563FD8 + lbl_8055F588;
+        pos.y = py;
         temp.z = pos.z + factor * (*(float *)(p + 0xEC) - pos.z);
         temp.x = pos.x + factor * (*(float *)(p + 0xE4) - pos.x);
         temp.y = pos.y + factor * (*(float *)(p + 0xE8) - pos.y);
@@ -1028,7 +1031,6 @@ void fn_80275B9C(void *arg0, float farg0, float farg1, float farg2) {
     fn_8026E850((float *)&pos, (float *)(p + 0xE4), arg0, (float *)&up);
     *(float *)(p + 0xBC) = lbl_80564040;
 }
-#pragma scheduling invalid_target
 void fn_80275D0C(void *arg0, void *arg1) {
     #pragma use_lmw_stmw off
     struct Words12 { unsigned int value[12]; };
