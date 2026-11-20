@@ -278,6 +278,7 @@ void fn_80273BD0(void *arg0) {
 void fn_80274268(void *arg0) {
     extern void fn_80274460(void *);
     extern void fn_80273B4C(void *);
+    extern const float lbl_80563FE8, lbl_80563FE4, lbl_80563FEC;
     struct MtxWords { unsigned int word[12]; };
     struct TransformObj {
         unsigned char pad0[0x58];
@@ -294,9 +295,9 @@ void fn_80274268(void *arg0) {
         return;
     }
     ((struct TransformObj *)arg0)->mtx = ((struct TransformObj *)arg0)->srcMtx;
-    y = 0.8f;
-    z = -0.1f + (*(float *)(state + 0x2458) - 1.397f);
-    x = 0.0f;
+    x = lbl_80563FB0;
+    y = lbl_80563FE8;
+    z = lbl_80563FEC + (*(float *)(state + 0x2458) - lbl_80563FE4);
     work.offset.x = x;
     work.offset.y = y;
     work.offset.z = z;
