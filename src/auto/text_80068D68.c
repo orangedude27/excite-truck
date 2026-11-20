@@ -16718,7 +16718,7 @@ s32 btsnd_hcic_write_policy_set_80085668(u16 handle, u16 settings) {
     return 1;
 }
 
-#pragma unroll off
+#pragma opt_unroll_loops off
 void btsnd_hcic_write_cur_iac_lap(u8 *p_buf, u8 num_cur_iac, u8 *cur_iac_lap) {
     u8 *p = p_buf + 12;
     u8 *q = cur_iac_lap;
@@ -16738,6 +16738,7 @@ void btsnd_hcic_write_cur_iac_lap(u8 *p_buf, u8 num_cur_iac, u8 *cur_iac_lap) {
     }
     btu_hcif_send_cmd(p_buf);
 }
+#pragma opt_unroll_loops reset
 #pragma unroll 8
 
 s32 btsnd_hcic_inq_cancel_8008576C(void) {
