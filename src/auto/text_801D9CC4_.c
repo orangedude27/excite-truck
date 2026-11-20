@@ -12,48 +12,57 @@ extern char lbl_80339200[];
 extern char lbl_80339218[];
 #define SWAP2(q, a, b) do { u8 t = (q)[a]; (q)[a] = (q)[b]; (q)[b] = t; } while (0)
 #define SWAP4(q, o) do { SWAP2(q, (o), (o) + 3); SWAP2(q, (o) + 1, (o) + 2); } while (0)
+#define SWAP2T(q, a, b, t) do { (t) = (q)[a]; (q)[a] = (q)[b]; (q)[b] = (t); } while (0)
+#define SWAP4T(q, o, t) do { SWAP2T(q, (o), (o) + 3, t); SWAP2T(q, (o) + 1, (o) + 2, t); } while (0)
 
 #pragma opt_propagation off
 #pragma scheduling invalid_target
-void *fn_801D9CC4(void *arg0) {
-    int type = 0;
-    u8 flag = 0;
-    volatile u8 *base;
-    int i, j;
-    register u32 off asm("r8");
-    volatile u8 *e;
-    register volatile u8 *r asm("r9");
-    base = (volatile u8 *)fn_8012C370(arg0, 0x50507468, &type, 0, 0, &flag);
-    if (base == 0) {
-        fn_802E317C(lbl_80339200, arg0);
-        return 0;
+void *fn_801D9CC4(void *arg0)
+{
+  int type = 0;
+  u8 flag = 0;
+  volatile u8 *base;
+  int i;
+  register int j;
+  register u32 off;
+  volatile u8 *e;
+  register volatile u8 *r;
+  base = (volatile u8 *) fn_8012C370(arg0, 0x50507468, &type, 0, 0, &flag);
+  if (base == 0)
+  {
+    fn_802E317C(lbl_80339200, arg0);
+    return 0;
+  }
+  if (type != 0)
+  {
+    fn_802E317C(lbl_80339218, arg0, type, 0);
+    return 0;
+  }
+  if (flag != 0)
+  {
+    SWAP4(base, 0);
+    e = base + 4;
+    for (i = 0; i < *((s32 *) base); i++, e += 0x18)
+    {
+      SWAP4(e, 0x10);
+      SWAP4(e, 0x14);
+      *((u32 *) (e + 0x14)) = ((u32) base) + (*((u32 *) (e + 0x14)));
+      off = 0;
+      for (j = 0; j < (*((s32 *) (e + 0x10))); j++, off += 0x20)
+      {
+        r = ((volatile u8 *) (*((u32 *) (e + 0x14)))) + off;
+        SWAP4(r, 0);
+        SWAP4(r, 4);
+        SWAP4(r, 8);
+        SWAP4(r, 0xC);
+        SWAP4(r, 0x10);
+        SWAP4(r, 0x14);
+        SWAP4(r, 0x18);
+        SWAP4(r, 0x1C);
+      }
     }
-    if (type != 0) {
-        fn_802E317C(lbl_80339218, arg0, 0);
-        return 0;
-    }
-    if (flag != 0) {
-        SWAP4(base, 0);
-        e = base + 4;
-        for (i = 0; i < *(s32 *)base; i++, e += 0x18) {
-            SWAP4(e, 0x10);
-            SWAP4(e, 0x14);
-            *(u32 *)(e + 0x14) = (u32)base + *(u32 *)(e + 0x14);
-            off = 0;
-            for (j = 0; j < *(s32 *)(e + 0x10); j++, off += 0x20) {
-                r = (volatile u8 *)*(u32 *)(e + 0x14) + off;
-                SWAP4(r, 0);
-                SWAP4(r, 4);
-                SWAP4(r, 8);
-                SWAP4(r, 0xC);
-                SWAP4(r, 0x10);
-                SWAP4(r, 0x14);
-                SWAP4(r, 0x18);
-                SWAP4(r, 0x1C);
-            }
-        }
-    }
-    return (void *)base;
+  }
+  return (void *) base;
 }
 #pragma opt_propagation reset
 /* Forward to fn_8012C4D8. */
