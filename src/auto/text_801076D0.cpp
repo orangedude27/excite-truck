@@ -1225,7 +1225,6 @@ void nw4hbm::ut::detail::ResFontBase::SetLineFeed(int lineFeed) {
 
 #pragma push
 #pragma scheduling off
-static inline s8 sign_extend_byte(u8 v) { return (s8)v; }
 extern "C" s8 fn_8010B2BC(void *arg0) {
     struct V { virtual u32 a0()=0; virtual u32 a1()=0; virtual u32 a2()=0; virtual u32 a3()=0; virtual u32 a4()=0; virtual u32 a5()=0; virtual u32 a6()=0; virtual u32 a7()=0; virtual u32 a8()=0; virtual u32 a9()=0; virtual u32 a10()=0; virtual u32 a11()=0; virtual u32 a12()=0; virtual u32 a13()=0; virtual u32 a14()=0; virtual u32 a15()=0; virtual u32 a16()=0; virtual u32 f()=0; };
     u32 value = ((V *)arg0)->f();
