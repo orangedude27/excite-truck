@@ -25,10 +25,6 @@ void fn_80033538(void *arg0, short arg1) {
     OSRestoreInterrupts(savedInterruptState);
 }
 
-struct MixTail33584 {
-    unsigned short f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10;
-    unsigned short f11, f12, f13, f14, f15, f16, f17, f18, f19, f20, f21;
-};
 #pragma opt_strength_reduction off
 void fn_80033584(void *arg0, void *arg1) {
     int state;
