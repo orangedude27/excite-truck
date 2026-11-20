@@ -9255,21 +9255,19 @@ static inline u32 Fn800B25CCUpperWide(u16 c, u16 *out) {
 }
 static inline u32 Fn800B25CCUpperSjis(u16 *c, u16 *out) {
     M2C_FIELD(&lbl_803D2140, s32 (**)(u8 *, u16 *, s32 *), 0x48)((u8 *)c, out, (s32 *)lbl_803D2140);
-    if (Fn800B25CCUpperWide(*out, out) == 1) {
+    u32 r = Fn800B25CCUpperWide(*out, out);
+    if (r == 1) {
         M2C_FIELD(&lbl_803D2140, s32 (**)(u16 *, u16 *), 0x4C)(out, out);
-        return 1;
+    } else {
+        r = 0;
     }
-    return 0;
+    return r;
 }
-#pragma push
-#pragma opt_propagation off
+#pragma opt_propagation on
 u16 fn_800B25CC(void *arg0, s32 arg1) {
     u8 work[0x14];
     s32 var_r0;
     u32 var_r3;
-    u32 var_r3_2;
-    u32 var_r3_3;
-    u32 var_r3_4;
     u8 *temp_r3;
     u8 *temp_r5;
     u8 temp_r4;
@@ -9327,37 +9325,16 @@ block_27:
     }
     (*(u16 *)(work + 4)) = var_r3;
     if (arg1 != 0) {
-        var_r3 = (u16)var_r3;
-        if ((var_r3 >= 0xFF41U) && (var_r3 <= 0xFF5AU)) {
-            var_r3_2 = 1U;
-            (*(u16 *)work) = var_r3 - 0x20;
-        } else {
-            var_r3_2 = 0U;
-        }
-        if (var_r3_2 == 1U) {
+        if (Fn800B25CCUpperWide((u16)var_r3, (u16 *)work) == 1) {
             (*(u16 *)(work + 4)) = (*(u16 *)work);
         }
     } else {
-        M2C_FIELD(&lbl_803D2140, s32 (**)(u8 *, u16 *, s32 *), 0x48)((u8 *) &(*(u16 *)(work + 4)), &(*(u16 *)work), (s32 *)lbl_803D2140);
-        if (((*(u16 *)work) >= 0xFF41U) && ((*(u16 *)work) <= 0xFF5AU)) {
-            var_r3_3 = 1U;
-            (*(u16 *)work) -= 0x20;
-        } else {
-            var_r3_3 = 0U;
-        }
-        if (var_r3_3 == 1U) {
-            M2C_FIELD(&lbl_803D2140, s32 (**)(u16 *, u16 *), 0x4C)(&(*(u16 *)work), &(*(u16 *)work));
-            var_r3_4 = 1U;
-        } else {
-            var_r3_4 = 0U;
-        }
-        if (var_r3_4 == 1U) {
+        if (Fn800B25CCUpperSjis((u16 *)(work + 4), (u16 *)work) == 1) {
             (*(u16 *)(work + 4)) = (*(u16 *)work);
         }
     }
     return (*(u16 *)(work + 4));
 }
-#pragma pop
 extern "C" u32 VFiPFPATH_DoMatchFileNameWithPattern(u16 arg0, s32 *arg1, u16 arg2, s32 *arg3, s32 arg4) {
     struct St { u8 *buf; u32 end; u32 wide; u16 idx; };
     u16 c0 = arg0;
