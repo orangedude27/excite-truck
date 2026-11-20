@@ -81,7 +81,7 @@ void fn_80019BBC(void) {
 #pragma cplusplus on
 inline void *operator new(unsigned long size, char *name) { return fn_801284F8(size, name); }
 struct HeapName { char name[12]; };
-inline void *operator new(unsigned long size, HeapName &tag) { return fn_801284F8(size, tag.name); }
+inline void *operator new(unsigned long size, HeapName &tag) { return fn_801284F8(size, (void *)&tag.name); }
 
 struct TrackMarker {
     int type;
