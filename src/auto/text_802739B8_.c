@@ -5,8 +5,7 @@
 #pragma scheduling invalid_target
 extern char lbl_8049A258[];
 extern float lbl_8055F538;
-extern float lbl_8055F540, lbl_8055F544;
-extern volatile float lbl_8055F560;
+extern float lbl_8055F540, lbl_8055F544, lbl_8055F560;
 extern float lbl_80563FA0, lbl_80563FA4, lbl_80563F9C;
 extern void fn_8000D838(void *);
 extern void fn_8002F53C(void *, void *, void *, int, int);
