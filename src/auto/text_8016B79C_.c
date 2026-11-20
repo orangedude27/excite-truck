@@ -492,12 +492,9 @@ extern "C" void *fn_8016BE60(void *arg0) {
         }
         fn_8016A0B0();
         fn_8016C328(object + 0x30);
-        {
-            f32 initialValue = lbl_80561998;
-            *(s32 *)(object + 0x98) = 0;
-            *(u8 *)(object + 0x9C) = 1;
-            *(f32 *)(object + 0xA0) = initialValue;
-        }
+        *(s32 *)(object + 0x98) = 0;
+        *(u8 *)(object + 0x9C) = 1;
+        *(f32 *)(object + 0xA0) = -100.0f;
         *(s32 *)(object + 0xA4) = fn_80207848(strings + 0x3C, 1);
         *(u8 *)(object + 0xA8) = 0;
     }
@@ -707,7 +704,10 @@ extern "C" void fn_8016C328(void *arg0) {
             i = 0;
             goto get;
             do {
-                fn_8016C768((void *)fn_8016CD4C(*(void **)((u8 *)arg0 + 0x18)), item, (u8 *)arg0 + 0x14);
+                void *p18 = *(void **)((u8 *)arg0 + 0x18);
+                void *v = (void *)fn_8016CD4C(p18);
+                u8 *f14 = (u8 *)arg0 + 0x14;
+                fn_8016C768(v, item, f14);
                 i++;
 get:
                 item = list->get(i);
@@ -732,8 +732,8 @@ get:
             Entry e;
             e.b = 0;
             e.w = -1;
-            e.a = lbl_80561998;
-            e.c = lbl_80561998;
+            e.a = -100.0f;
+            e.c = -100.0f;
             fn_8016C55C(*(void **)((u8 *)arg0 + 0x1C), &e);
         }
     }
@@ -3373,7 +3373,7 @@ public:
 };
 extern "C" u32 fn_80170FDC(void *arg0) {
     s32 temp_r4;
-    if ((lbl_8055E3C8 - *(volatile f32 *)((u8 *)arg0 + 0xA0)) < 2.25f) {
+    if ((lbl_8055E3C8 - *(f32 *)((u8 *)arg0 + 0xA0)) < 2.25f) {
         ((Q70FDC *)arg0)->f17();
     } else {
         if (*(u8 *)((u8 *)arg0 + 0xB4) != 0)
@@ -3553,12 +3553,12 @@ extern "C" s32 fn_8017133C(void *arg0, s32 arg1, s8 *arg2) {
     register void *holder;
     u32 result;
     register s32 index;
-    register s32 d;
-    void *data;
+    s32 d;
+    register void *data;
     register void *item;
-    register s32 r25;
-    register s32 r4v;
-    register s32 cond;
+    s32 r25;
+    s32 r4v;
+    s32 cond;
     volatile f32 sp1C, sp18, sp14, sp10, spC, sp8;
     f32 x, y, dx, dy;
     f32 v;
