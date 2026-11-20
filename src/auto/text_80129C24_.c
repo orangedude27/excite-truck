@@ -104,13 +104,6 @@ float fn_80129DC4(int rngSlot, float minValue, float maxValue) {
 #pragma dont_inline off
 #pragma pop
 extern double fn_8002EFB4(double, double);
-extern double lbl_80561250;
-static inline float itof_rng(int x) {
-    union { double d; struct { unsigned int hi, lo; } parts; } cv;
-    cv.parts.hi = 0x43300000U;
-    cv.parts.lo = (unsigned int)x ^ 0x80000000U;
-    return (float)(cv.d - lbl_80561250);
-}
 extern float lbl_8056125C, lbl_80561298, lbl_80561260, lbl_80561270, lbl_80561288, lbl_8056129C, lbl_805612A8, lbl_805612AC, lbl_805612B0, lbl_805612B4;
 extern double lbl_80561268, lbl_80561278, lbl_80561280, lbl_80561290, lbl_805612A0;
 #pragma push
