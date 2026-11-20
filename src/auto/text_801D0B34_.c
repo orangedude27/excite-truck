@@ -51,30 +51,24 @@ void fn_801D0BF4(void) {
 int fn_801D0BF8(int arg0, int arg1) {
     struct Entry *entry = lbl_80438758;
     int count = lbl_8055E8D8;
-    register int i = 0;
-    if (count > 0) {
-        for (; i < count; entry++, i++) {
-            if (arg0 == entry->first && arg1 == entry->second)
-                return lbl_80438758[i].value;
-        }
+    int i;
+    for (i = 0; i < count; entry++, i++) {
+        if (arg0 == entry->first && arg1 == entry->second)
+            return lbl_80438758[i].value;
     }
     return 0;
 }
-#pragma scheduling on
 void fn_801D0C58(int arg0, int arg1, int arg2)
 {
-  int count;
+  int count = lbl_8055E8D8;
   int next;
-  int index;
-  volatile struct Entry *entry;
-  count = lbl_8055E8D8;
-  next = count + 1;
-  index = count * 12;
-  entry = (volatile struct Entry *)((char *)lbl_80438758 + index);
+  volatile struct Entry *entry = (volatile struct Entry *) (&lbl_80438758[count]);
   entry->second = arg2;
+  next = 1;
+  next = count + next;
   ((volatile struct Entry *) lbl_80438758)[count].first = arg1;
   ((volatile struct Entry *) lbl_80438758)[count].value = arg0;
-  lbl_8055E8D8 = next;
+  *((volatile int *) (&lbl_8055E8D8)) = next;
 }
 void fn_801D0C84(unsigned int arg0) {
 #pragma scheduling off
@@ -84,9 +78,8 @@ void fn_801D0C84(unsigned int arg0) {
     int i;
     for (i = 0; i < count; ) {
         if ((unsigned int)entry->value == arg0) {
-            int off;
+            int off = (count - 1) * 12;
             count--;
-            off = count * 12;
             lbl_8055E8D8 = count;
             entry->first = *(int *)((char *)base + off);
             entry->second = *(int *)((char *)base + off + 4);
