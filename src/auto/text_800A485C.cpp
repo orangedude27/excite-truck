@@ -2704,15 +2704,17 @@ extern "C" s32 fn_800A586C(void *, s32, s32, s32, s32);
 #pragma opt_propagation off
 extern "C" s32 VFiPFCACHE_DoReadNumSector(void *object, s32 list, s32 dest, u32 start, s32 amount, s32 output) {
  u8 *volume=(u8 *)object;
- u32 end, count;
+ u32 end2;
  u8 *page;
- u32 remaining, end2, pos, length;
+ u32 remaining;
  s32 result;
+ struct { u32 count; u32 end; } C;
+ struct { u32 length; u32 shift; u32 pos; } P;
  u32 *read=(u32 *)output;
  *read=0;
  result=fn_800A586C(object,dest,start,amount,output);
  if (result) return result;
- count=*read; page=0; remaining=count; end=start+count;
+ C.count=*read; page=0; remaining=C.count; C.end=start+C.count;
  do {
   if (!page) page=*(u8 **)list;
   else { page=*(u8 **)(page+0x20); if (page==*(u8 **)list) { page=0; goto next; } }
@@ -2727,22 +2729,28 @@ scan:
   page=0;
 next:
   if (page) {
-   pos=*(u32 *)(page+0x18);
-   if (pos!=0xffffffff) {
-    if (pos<=start && pos+*(u32 *)(page+0x14)>=end) {
-     VFipf_memcpy((void *)dest,*(u8 **)(page+4)+((start-pos)<<volume[0x20]),count<<volume[0x20]);
-     remaining-=count;
-    } else if (pos>=start && pos+*(u32 *)(page+0x14)<=end) {
-     length=*(u32 *)(page+0x14);
-     VFipf_memcpy((u8 *)dest+((pos-start)<<volume[0x20]),*(u8 **)(page+4),length<<volume[0x20]);
+   P.pos=*(u32 *)(page+0x18);
+   if (P.pos!=0xffffffff) {
+    if (P.pos<=start && P.pos+*(u32 *)(page+0x14)>=C.end) {
+     P.shift=volume[0x20];
+     VFipf_memcpy((void *)dest,*(u8 **)(page+4)+((start-P.pos)<<P.shift),C.count<<P.shift);
+     remaining-=C.count;
+    } else if (P.pos>=start && P.pos+*(u32 *)(page+0x14)<=C.end) {
+     P.length=*(u32 *)(page+0x14);
+     P.shift=volume[0x20];
+     VFipf_memcpy((u8 *)dest+((P.pos-start)<<P.shift),*(u8 **)(page+4),P.length<<P.shift);
      remaining-=*(u32 *)(page+0x14);
-    } else if (pos>start && pos<end && pos+*(u32 *)(page+0x14)>=end) {
-     end2=start+count;
-     VFipf_memcpy((u8 *)dest+((pos-start)<<volume[0x20]),*(u8 **)(page+4),(end2-pos)<<volume[0x20]);
+    } else if (P.pos>start && P.pos<C.end && P.pos+*(u32 *)(page+0x14)>=C.end) {
+     union { u32 u; } e2;
+     e2.u = C.count;
+     end2=e2.u+start;
+     P.shift=volume[0x20];
+     VFipf_memcpy((u8 *)dest+((P.pos-start)<<P.shift),*(u8 **)(page+4),(end2-P.pos)<<P.shift);
      remaining-=end2-*(u32 *)(page+0x18);
-    } else if (pos<start && pos+*(u32 *)(page+0x14)>start && pos+*(u32 *)(page+0x14)<=end) {
-     length=*(u32 *)(page+0x14);
-     VFipf_memcpy((void *)dest,*(u8 **)(page+4)+((start-pos)<<volume[0x20]),(length-(start-pos))<<volume[0x20]);
+    } else if (P.pos<start && P.pos+*(u32 *)(page+0x14)>start && P.pos+*(u32 *)(page+0x14)<=C.end) {
+     P.length=*(u32 *)(page+0x14);
+     P.shift=volume[0x20];
+     VFipf_memcpy((void *)dest,*(u8 **)(page+4)+((start-P.pos)<<P.shift),(P.length-(start-P.pos))<<P.shift);
      remaining-=*(u32 *)(page+0x14)-(start-*(u32 *)(page+0x18));
     }
    }
@@ -3899,9 +3907,8 @@ extern "C" u8 VFiPFENT_CalcCheckSum(u8 *p_ent) {
 
 #pragma push
 #pragma scheduling on
-extern "C" void fn_800AA4EC(u8 *p_ent, u8 *p_buf) {
-    u8 b = p_buf[0xB];
-    fn_800B3BEC(p_ent + 0x20E, p_buf, b);
+extern "C" void fn_800AA4EC(u8 *p_ent, const u8 *p_buf) {
+    fn_800B3BEC(p_ent + 0x20E, (u8 *)p_buf, p_buf[0xB]);
     if ((s8)p_ent[0x20E] == 5) {
         ((s8 *)p_ent)[0x20E] = -0x1B;
     }
