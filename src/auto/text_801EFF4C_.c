@@ -1077,8 +1077,8 @@ extern char lbl_8033A5B0[];
 #pragma scheduling invalid_target
 int fn_801F1978(int arg) {
     int result = -1;
-    arg &= ~0x10;
-    switch (arg) {
+    int value = arg & ~0x10;
+    switch (value) {
     case 0:
         result = 1;
         result |= 0x100;
@@ -1090,11 +1090,9 @@ int fn_801F1978(int arg) {
     case 2:
         result = 0x200;
         break;
-    default: {
-        void (*report)(const char *, ...) = fn_802E317C;
-        report(lbl_8033A5B0, arg);
+    default:
+        fn_802E317C(lbl_8033A5B0, value);
         break;
-    }
     }
     return result;
 }
