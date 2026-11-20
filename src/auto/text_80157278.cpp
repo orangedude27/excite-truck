@@ -4077,7 +4077,7 @@ extern "C" void fn_8015DC98(Unk801577F0* arg0) {
 }
 #pragma pop
 extern "C" s32 lbl_8055A06C[1];
-static inline f32 fn8015DD9CSumFloat(const Unk801577F0* arg0) {
+static inline f32 fn8015DD9CSumFloat(Unk801577F0* arg0) {
  f32 total=lbl_80561754;
  for(s32 i=0;i<arg0->mCount;i++) total+=*(f32*)(arg0->mData+i*0x38+12);
  return total;
