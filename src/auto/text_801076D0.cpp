@@ -307,11 +307,10 @@ void nw4hbm::ut::List_Append(nw4hbm::ut::List* list, void* item) {
     }
 }
 
-struct PanicFileMsg0 { char text[1]; };
 void nw4hbm::ut::List_Remove(nw4hbm::ut::List* list, void* item) {
-    register const char* file = lbl_80328828;
-    if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xcb, file + 0xc);
-    if (item == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xcc, file + 0x34);
+    const char (*file)[0x100] = (const char (*)[0x100])lbl_80328828;
+    if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(&(*file)[0], 0xcb, &(*file)[0xc]);
+    if (item == 0) Panic__Q26nw4hbm2dbFPCciPCce(&(*file)[0], 0xcc, &(*file)[0x34]);
     unsigned short offset = *(unsigned short*)((char*)list + 0xa);
     char* link = (char*)item + offset;
     void* p = *(void**)link;
@@ -1632,15 +1631,15 @@ extern "C" s32 fn_8010C7EC(s32 object, s32 deleteFlag) {
     return object;
 }
 
+#pragma opt_propagation off
 extern "C" s32 fn_8010C82C(s32 arg0, s32 arg1, void *arg2) {
  extern const char lbl_80329458[]; extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*,int,const char*,...);
  extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(s32), GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80105C2C(s32), GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(s32), GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(s32), fn_8010D9E4(s32);
  extern s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_8010DB5C(s32), IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(s32);
  extern void SetCursor__Q36nw4hbm2ut10CharWriterFff(s32,f32,f32); extern void SetCursorX__Q36nw4hbm2ut10CharWriterFf(s32,f32);
- struct FileBuf { char c[1]; };
  const char* file = lbl_80329458;
  s32 p = (s32)arg2;
- if (arg1 >= 32) Panic__Q26nw4hbm2dbFPCciPCce(((const FileBuf*)file)->c, 0x55, file + 0x18);
+ if (arg1 >= 32) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x55, file + 0x18);
  register u32 top = (u32)p & 0xFF000000U;
  {
   register int r4 = 1, r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1;
@@ -1650,7 +1649,7 @@ extern "C" s32 fn_8010C82C(s32 arg0, s32 arg1, void *arg2) {
   if (r7 == 0 && ((u32)p & 0xFF800000U) != 0xC1000000U) r6 = 0;
   if (r6 == 0 && ((u32)p & 0xF8000000U) != 0xD0000000U) r5 = 0;
   if (r5 == 0 && ((u32)p & 0xFFFFC000U) != 0xE0000000U) r4 = 0;
-  if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(((const FileBuf*)file)->c, 0x56, file + 0x40, arg2);
+  if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x56, file + 0x40, arg2);
  }
  switch (arg1) {
  case 10: {
@@ -1663,9 +1662,9 @@ extern "C" s32 fn_8010C82C(s32 arg0, s32 arg1, void *arg2) {
       a == 0xC1000000U ||
       b == 0xD0000000U ||
       ((u32)p & 0xFFFFC000U) == 0xE0000000U) valid = 1;
-  if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(((const FileBuf*)file)->c, 0xC3, file + 0x40, arg2);
-  s32 obj = *(s32*)p; f32 y = *(f32*)(p+8), w = fn_8010D9E4(obj);
-  SetCursor__Q36nw4hbm2ut10CharWriterFff(obj, y, GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(obj) + w); return 3;
+  if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xC3, file + 0x40, arg2);
+  s32 obj = *(s32*)p; f32 y = *(f32*)(p+8);
+  SetCursor__Q36nw4hbm2ut10CharWriterFff(obj, y, GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(obj) + fn_8010D9E4(obj)); return 3;
  }
  case 9: {
   register u32 b, a;
@@ -1677,7 +1676,7 @@ extern "C" s32 fn_8010C82C(s32 arg0, s32 arg1, void *arg2) {
       a == 0xC1000000U ||
       b == 0xD0000000U ||
       ((u32)p & 0xFFFFC000U) == 0xE0000000U) valid = 1;
-  if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(((const FileBuf*)file)->c, 0xD3, file + 0x40, arg2);
+  if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xD3, file + 0x40, arg2);
   s32 obj = *(s32*)p, font = GetFont__Q36nw4hbm2ut10CharWriterCFv_8010DB5C(obj);
   if (font > 0) {
    f32 fw = IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(obj) ? GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80105C2C(obj) : GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(obj);
@@ -1694,7 +1693,7 @@ extern "C" s32 fn_8010C82C(s32 arg0, s32 arg1, void *arg2) {
  default: return 0;
  }
 }
-
+#pragma opt_propagation reset
 extern "C" s32 fn_8010CBAC(void *self, void *arg0, s32 arg1, void *arg2) {
  extern const char lbl_80329458[];
  extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*,int,const char*,...);
