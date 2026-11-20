@@ -1270,14 +1270,15 @@ struct SndArchiveFilePos {
 };
 
 /* A group of sounds packed together: the block of the archive its data sits in
- * (+0x08, +0x0C), or the path to open when the group is a loose file. */
+ * (+0x08, +0x0C), or the path to open when the group is a loose file; a group
+ * may also carry wave data of its own at +0x10/+0x14. */
 struct SndArchiveGroupInfo {
-    u32 unk0;
-    const char *path; /* +0x04 path to open the group by, 0 when it is packed */
-    u32 offset;       /* +0x08 where the group starts in the archive's data */
-    u32 size;         /* +0x0C how long the group is */
-    u32 unk10;
-    u32 unk14;
+    u32 itemCount;      /* +0x00 how many items the group holds */
+    const char *path;   /* +0x04 path to open the group by, 0 when it is packed */
+    u32 offset;         /* +0x08 where the group starts in the archive's data */
+    u32 size;           /* +0x0C how long the group is */
+    u32 waveDataOffset; /* +0x10 where the group's wave data starts in the archive */
+    u32 waveDataSize;   /* +0x14 how long the group's wave data is */
 };
 
 /* One sound of a group, at an offset inside the group's block. */
