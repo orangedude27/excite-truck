@@ -4732,8 +4732,8 @@ void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
     register u8 *control;
-    register int status = arg0;
     register char *report = lbl_803142C8;
+    register int status = arg0;
     u16 offset;
     if (lbl_803BD1E0.at_0x28 != 0) {
         OSReport(report + 0x518, status);
@@ -10691,6 +10691,19 @@ void btm_event_filter_complete(UINT8 *p_param) {
     }
 }
 
+#pragma push
+#pragma dont_inline off
+#pragma dont_inline fn_8006E4F8
+static __inline UINT8 *find_inq_entry(UINT8 *base, UINT8 *bda) {
+    UINT8 *entry = base + 0x16e4;
+    UINT32 j;
+    for (j = 0; j < 12; j++, entry += 0x1c) {
+        if (!entry[0x1a]) continue;
+        if (memcmp(entry + 0xa, bda, 6) == 0)
+            return entry;
+    }
+    return 0;
+}
 void btm_process_inq_results(UINT8 *p, UINT8 mode)
 {
     UINT8 per, rep;
@@ -10720,18 +10733,7 @@ void btm_process_inq_results(UINT8 *p, UINT8 mode)
         if (btm_inq_find_bdaddr(bda)) continue;
         if (*(UINT8 (**)(UINT8 *, UINT8 *))(base + 0x184c) &&
             !(*(UINT8 (**)(UINT8 *, UINT8 *))(base + 0x184c))(bda, dc)) continue;
-        entry = base + 0x16e4;
-        j = 0;
-    search_loop:
-        if (!entry[0x1a]) goto search_next;
-        if (memcmp(entry + 0xa, bda, 6) != 0) goto search_next;
-        goto found;
-    search_next:
-        j++;
-        entry += 0x1c;
-        if (j < 12) goto search_loop;
-        entry = 0;
-    found:
+        entry = find_inq_entry(base, bda);
         if (!entry) { entry = (UINT8 *)btm_inq_db_new(bda); is_new = 1; }
         else if (*(UINT32 *)(entry + 4) == *(UINT32 *)(base + 0x16c0)) is_new = 0;
         if (is_new == 1) {
@@ -10753,6 +10755,7 @@ void btm_process_inq_results(UINT8 *p, UINT8 mode)
         }
     }
 }
+#pragma pop
 
 void btm_process_inq_complete(UINT8 status, UINT8 unused) {
     register u8 *cleanup_base;
@@ -17507,23 +17510,24 @@ u8 HID_HostOpenDev(u32 arg0) {
 #pragma optimization_level 3
 u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param,
                          u16 data, u8 report_id, BT_HDR *pbuf) {
-    char (*messages)[0x18] = (char (*)[0x18])lbl_80317720;
+    struct TraceMsgs { char flag; char pad[0x17]; char m1[0x18]; char m2[0x18]; };
+    struct TraceMsgs *messages = (struct TraceMsgs *)lbl_80317720;
     u8 status = 0;
 
     if (lbl_803C3C38[0x400] == 0) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, messages[0]);
+            fn_8007093C(0x1E0000, &messages->flag);
         status = 1;
     }
     if ((dev_handle > 0x10) ||
         (*((u8 *)lbl_803C3C38 + dev_handle * 0x34) == 0)) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, messages[1]);
+            fn_8007093C(0x1E0000, messages->m1);
         status = 5;
     }
     if (*((u8 *)lbl_803C3C38 + dev_handle * 0x34 + 0xA) != 1) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_80070954(0x1E0000, messages[2], dev_handle);
+            fn_80070954(0x1E0000, messages->m2, dev_handle);
         status = 4;
     }
     if (status != 0) {
@@ -22508,7 +22512,7 @@ void port_select_mtu(void *arg0) {
         packet_size = raw_size;
         if (packet_size == 0) {
             if (lbl_803C4828[0x414] >= 2)
-                fn_8007093C(0x90001, &((struct { char s[1]; } *)messages)->s[0]);
+                fn_8007093C(0x90001, (char *)((u32)messages + 0u));
             *(u16 *)(port + 0x12) = 0x7F;
         } else if (packet_size <= 0x69F) {
             mtu = ((0x69F / packet_size) * raw_size) - 0xA;
