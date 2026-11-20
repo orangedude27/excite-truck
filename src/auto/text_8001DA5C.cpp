@@ -573,15 +573,22 @@ extern u32 lbl_80558D0C;
 #pragma use_lmw_stmw off
 #pragma processor 603
 extern "C" void fn_8001E634(void *arg0v, s32 arg1, s32 arg2) {
-    struct Obj { u8 pad[0x28]; f32 f28; f32 f2c; f32 f30; f32 f34; };
-    Obj *arg0 = (Obj *)arg0v;
-    PaneData pane1;
-    PaneData pane2;
+    /* Per-player HUD slot update.  arg0v is the overlay's slot array, arg1 the
+     * player index (each slot is 4 floats: [0]=start time, [1]=last level,
+     * [2]=progress, [3]=last warn level) and arg2 the slot's id.  It picks the
+     * betalyt layout variant, scales a "bar" pane by the player's shared
+     * progress (fn_8001DAF0), then renders the slot's text line - fading it in
+     * over the first second after the player's level rose - and stores the
+     * resolved id back into the slot. */
+    struct Slot { u8 pad[0x28]; f32 startTime; f32 lastLevel; f32 progress; f32 lastWarn; };
+    Slot *slot = (Slot *)arg0v;
+    PaneData barPane;
+    PaneData textPane;
     register char *strings = lbl_802FDB68;
     register PaneContainer *layout;
     register s32 value;
     s32 pick;
-    s32 flag;
+    s32 fadingIn;
     PaneData *src;
     u32 a8;
     u32 a4;
@@ -601,79 +608,79 @@ extern "C" void fn_8001E634(void *arg0v, s32 arg1, s32 arg2) {
         fn_8014784C(layout, strings + 0x248, strings + 0x258, 0);
         if (value > 4) goto done;
         if (value < 0) goto done;
-        pick = *(s32 *)((u8 *)arg0 + arg1 * 4 + 4);
+        pick = *(s32 *)((u8 *)slot + arg1 * 4 + 4);
         if (value != pick) {
             if (value == 4) {
-                arg0->f34 = ((f32 (*)(void *))fn_8001DAE8)(&arg0->f30);
+                slot->lastWarn = ((f32 (*)(void *))fn_8001DAE8)(&slot->progress);
             } else {
-                arg0->f2c = ((f32 (*)(void *))fn_8001DAE8)(&arg0->f28);
+                slot->lastLevel = ((f32 (*)(void *))fn_8001DAE8)(&slot->startTime);
             }
         }
-        scaled = lbl_80560494 - fn_8001DAF0(&arg0->f30);
+        scaled = lbl_80560494 - fn_8001DAF0(&slot->progress);
         src = (PaneData *)layout->getPane(strings + 0x26C);
         if (src != 0) {
-            pane1.w0 = src->w0;
+            barPane.w0 = src->w0;
             a4 = ((volatile PaneData *)src)->w4;
             a8 = ((volatile PaneData *)src)->w8;
-            pane1.w4 = a4;
-            pane1.w8 = a8;
-            pane1.wc = src->wc;
+            barPane.w4 = a4;
+            barPane.w8 = a8;
+            barPane.wc = src->wc;
             base = src->f10;
-            pane1.f10 = base;
+            barPane.f10 = base;
             scaled2 = base * scaled;
-            pane1.w14 = src->w14;
+            barPane.w14 = src->w14;
             color = src->w18;
-            pane1.w18 = color;
-            pane1.w1c = src->w1c;
-            pane1.f10 = scaled2;
-            pane1.w18 = fn_80147C50(color & 0xFFFFFF, color, fn_8001DAF0(&arg0->f30));
-            ((void (*)(void *))fn_801476C4)(&pane1);
+            barPane.w18 = color;
+            barPane.w1c = src->w1c;
+            barPane.f10 = scaled2;
+            barPane.w18 = fn_80147C50(color & 0xFFFFFF, color, fn_8001DAF0(&slot->progress));
+            ((void (*)(void *))fn_801476C4)(&barPane);
         }
         if (value >= 0) {
             src = (PaneData *)layout->getPane((const char *)&lbl_80558D0C);
             if (src != 0) {
-                pane2.w0 = src->w0;
+                textPane.w0 = src->w0;
                 a4 = ((volatile PaneData *)src)->w4;
                 a8 = ((volatile PaneData *)src)->w8;
-                pane2.w4 = a4;
-                pane2.w8 = a8;
-                pane2.wc = src->wc;
-                pane2.f10 = src->f10;
-                pane2.w14 = src->w14;
-                pane2.w18 = src->w18;
-                pane2.w1c = src->w1c;
+                textPane.w4 = a4;
+                textPane.w8 = a8;
+                textPane.wc = src->wc;
+                textPane.f10 = src->f10;
+                textPane.w14 = src->w14;
+                textPane.w18 = src->w18;
+                textPane.w1c = src->w1c;
                 strings = (char *)__AXGetStackHead(value, a4);
-                t = ((f32 (*)(void *))fn_8001DAE8)(&arg0->f28) - arg0->f2c;
-                flag = 0;
-                if ((t >= lbl_80560474) && (t < arg0->f28)) {
-                    flag = 1;
+                t = ((f32 (*)(void *))fn_8001DAE8)(&slot->startTime) - slot->lastLevel;
+                fadingIn = 0;
+                if ((t >= lbl_80560474) && (t < slot->startTime)) {
+                    fadingIn = 1;
                 }
-                if (flag != 0) {
+                if (fadingIn != 0) {
                     strings = (char *)((s32 (*)(s32))__AXGetStackHead)(value);
-                    if (fn_8001DAF0(&arg0->f28) > lbl_80560464) {
-                        t = (fn_8001DAF0(&arg0->f28) - lbl_80560470) / lbl_80560498;
+                    if (fn_8001DAF0(&slot->startTime) > lbl_80560464) {
+                        t = (fn_8001DAF0(&slot->startTime) - lbl_80560470) / lbl_80560498;
                         t = (lbl_80560470 < t) ? lbl_80560470 : t;
                         t = (t > lbl_80560474) ? t : lbl_80560474;
-                        pane2.f10 *= lbl_80560470 + t * lbl_8056049C;
+                        textPane.f10 *= lbl_80560470 + t * lbl_8056049C;
                     } else {
-                        t = (fn_8001DAF0(&arg0->f28) - lbl_80560464) / lbl_80560498;
+                        t = (fn_8001DAF0(&slot->startTime) - lbl_80560464) / lbl_80560498;
                         t = (lbl_80560470 < t) ? lbl_80560470 : t;
                         t = (t > lbl_80560474) ? t : lbl_80560474;
-                        pane2.f10 *= lbl_805604A0 + t * lbl_805604A4;
+                        textPane.f10 *= lbl_805604A0 + t * lbl_805604A4;
                     }
                 } else {
-                    pane2.f10 *= scaled;
+                    textPane.f10 *= scaled;
                     {
-                        register u32 color2 = pane2.w18;
-                        pane2.w18 = fn_80147C50(color2 & 0xFFFFFF, color2, fn_8001DAF0(&arg0->f30));
+                        register u32 color2 = textPane.w18;
+                        textPane.w18 = fn_80147C50(color2 & 0xFFFFFF, color2, fn_8001DAF0(&slot->progress));
                     }
                 }
-                fn_80147230(&pane2, strings);
+                fn_80147230(&textPane, strings);
             }
         }
     }
 done:
-    *(s32 *)((u8 *)arg0 + arg1 * 4 + 4) = value;
+    *(s32 *)((u8 *)slot + arg1 * 4 + 4) = value;
 }
 extern "C" void fn_8001E964(void* object) {
     #define INVALID_VALUE lbl_80560490 /* -999.0f */
@@ -704,10 +711,7 @@ extern "C" char lbl_80558D24[];
 __declspec(section ".sdata") extern char lbl_80558D14[];
 __declspec(section ".sdata") extern char lbl_80558D1C[];
 __declspec(section ".sdata") extern char lbl_80558D24[];
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_8001E9B4(s32 arg0, s32 arg1) {
     register char* base = lbl_802FDB68;
     register s32* record;
@@ -843,7 +847,7 @@ extern "C" void fn_8001E9B4(s32 arg0, s32 arg1) {
         }
     }
 }
-#pragma pop
+#pragma scheduling invalid_target
 extern "C" void fn_8001ED2C(void* arg0) {
 #define INVALID_VALUE lbl_80560490 /* -999.0f */
     /* Initialize eight (int, float) pairs at offsets 0x04..0x40 to (0, -999.0f). */
