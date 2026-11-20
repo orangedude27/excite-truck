@@ -232,8 +232,8 @@ extern "C" void fn_8027E908(void) {
     };
     const char *base = lbl_80347E50;
     const char *idName;
-    lbl_8055F680 = fn_80258354();
-    ((InitObj *)lbl_8055F680)->v1(base, base+0x14, 4);
+    lbl_8055F680 = ((void *(*)(const char *))fn_80258354)(base);
+    ((InitObj *)lbl_8055F680)->v1(base+0x0, base+0x14, 4);
     ((InitObj *)lbl_8055F680)->v1(base+0x24, base+0x14, 3);
     ((InitObj *)lbl_8055F680)->v1(base+0x30, base+0x14, 1);
     ((InitObj *)lbl_8055F680)->v1(base+0x3c, base+0x14, 2);
@@ -329,16 +329,16 @@ static inline void CareerMenuItemSet(CareerMenuItem *item, void *name, int type,
 #pragma use_lmw_stmw off
 void fn_8027ED78(int arg0, int arg1, int arg2) {
 #pragma scheduling invalid_target
-    register int a0, a2, a3, a4;
-    register int b0, b1, b2, b3, b4;
     register int ptrA8 = (int)&lbl_803480A8;
-    register int ptrC7 = (int)&lbl_8055C7C8;
-    register int ptrB8 = (int)&lbl_8055B860;
     register int zero = 0;
     register int three = 3;
     register int six = 6;
+    register int ptrB8 = (int)&lbl_8055B860;
     register int minusTwo = -2;
     register int thirteen = 13;
+    register int b0, b1, b2, b3, b4;
+    register int ptrC7 = (int)&lbl_8055C7C8;
+    register int a0, a2, a3, a4;
     int block[26];
     int *at = (int *)lbl_802FA848;
     a0 = *at++;
@@ -1645,14 +1645,15 @@ extern "C" FN81138_RET fn_80281138(void) {
     selected = lbl_8055F694;
     if (selected != 0) {
         char buffer2[0x1E];
+        int idx;
         lbl_8055F688 = 0;
         if (*(unsigned char *)((char *)selected + 0x64) != 0) {
-            index = 5;
+            idx = 5;
         } else {
-            index = fn_80281138_find(lbl_804B3048.items, lbl_804B3048.count, selected);
+            idx = fn_80281138_find(lbl_804B3048.items, lbl_804B3048.count, selected);
         }
         ((void (*)(char *, int, const char *, ...))fn_801345D8)(
-            buffer2, 0x1E, lbl_8034849C, index + 1);
+            buffer2, 0x1E, lbl_8034849C, idx + 1);
         fn_80236954(buffer2);
     }
 }
@@ -3161,6 +3162,7 @@ extern "C" void fn_802854E0(void *arg0) {
     char *q;
     int i;
     char *p = (char *)arg0;
+    half = lbl_80564228;
     if (*(List **)(p + 0x60) != 0) {
         if (*(unsigned char *)(p + 0xcd) != 0) {
             fn_80230C30(&x, &y, *(int *)(p+4), *(int *)(p+8));
@@ -3171,7 +3173,7 @@ extern "C" void fn_802854E0(void *arg0) {
             else step = lbl_80564238;
             base=lbl_8056423C; one=lbl_80564240; zero=lbl_805641FC;
             for (q=p, i=0; i<(*(List **)(p+0x60))->count(); q+=4, i++) {
-                angle = base + step * ((float)i - lbl_80564228 * (float)((*(List **)(p+0x60))->count()-1));
+                angle = base + step * ((float)i - half * (float)((*(List **)(p+0x60))->count()-1));
                 x = cx + radius * (float)cos(angle);
                 y = cy + radius * (float)sin(angle);
                 if ((*(List **)(p+0x60))->get(i)->active()) {
@@ -3433,7 +3435,7 @@ void fn_80285CB8(void *arg0) {
     extern char lbl_8055C818[8];
     extern char lbl_80347E50[];
     char *base = lbl_80347E50;
-    unsigned char *b = (unsigned char *)arg0;
+    unsigned char *__restrict b = (unsigned char *)arg0;
     float alpha, shape;
     float f4, f2, f5, f3, dt;
     double lim;
@@ -3669,7 +3671,7 @@ extern "C" void fn_8028679C(void *plane) {
     ((ebi::title::TPlaneObj*)plane)->m_sub->v7();
 }
 #pragma cplusplus off
-int fn_802867B0(void *arg0) {
+int fn_802867B0(void *__restrict arg0) {
     register void *p = *(void **)((char *)arg0 + 0x20);
     if (p != 0) {
         int value = (int)((float)*(int *)p + *(float *)((char *)p + 0x10));
