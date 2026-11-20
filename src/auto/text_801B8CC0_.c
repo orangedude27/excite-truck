@@ -295,12 +295,24 @@ extern "C" int fn_802C7A10(int);
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" char lbl_803369A0[];
 #pragma cplusplus on
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" void fn_801B8CC0(float *arg0, int arg1, int *arg2, float *arg3, float arg4, float arg5) {
+    unsigned int *dst;
+    unsigned int *src;
+    unsigned int a;
+    unsigned int b;
+    unsigned int c;
     void *p;
     int result;
 
-    *(Vec *)arg0 = *(Vec *)arg3;
+    dst = (unsigned int *)arg0;
+    src = (unsigned int *)arg3;
+    a = src[0];
+    b = src[1];
+    c = src[2];
+    dst[0] = a;
+    dst[1] = b;
+    dst[2] = c;
     result = fn_801E320C(arg1, (int)arg2);
     if (result != 0) {
         p = fn_801E3004(arg1, (int)arg2, -1);
@@ -429,10 +441,11 @@ extern "C" void fn_801B916C(void *arg0) {
     void *obj;
     int id;
     char *p;
-    int *slots;
     int i;
     int sentinel;
     float frequency;
+    typedef struct { int slotId; char pad[0x14]; } DelaySlot;
+    typedef struct { char pad[0x8C]; DelaySlot slot[3]; } Rec;
     if (((int *)__AXFXGetLfoSinTable_801769CC())[1] & 0x400) {
         p = (char *)arg0 + 4;
         table = lbl_80436D28;
@@ -449,13 +462,14 @@ extern "C" void fn_801B916C(void *arg0) {
             obj = 0;
         have_object:
             if (obj != 0) {
+                Rec *rec;
                 id = *(int *)((char *)obj + 0x1EC);
                 if (*(int *)(p + 0x74) == id)
                     *(int *)(p + 0x74) = sentinel;
-                if (*(int *)(p + 0x8C) == id) *(int *)(p + 0x8C) = sentinel;
-                slots = (int *)(p + 0x8C);
-                if (slots[6] == id) slots[6] = sentinel;
-                if (slots[12] == id) slots[12] = sentinel;
+                rec = (Rec *)p;
+                if (rec->slot[0].slotId == id) rec->slot[0].slotId = sentinel;
+                if (rec->slot[1].slotId == id) rec->slot[1].slotId = sentinel;
+                if (rec->slot[2].slotId == id) rec->slot[2].slotId = sentinel;
                 *(int *)(p + 0x74) = id;
                 *(float *)(p + 0x78) = frequency;
                 {
