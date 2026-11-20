@@ -1005,7 +1005,6 @@ extern char lbl_8034BB9C[];
 extern char lbl_8034BBA8[];
 extern char lbl_8055D098;
 #pragma opt_propagation off
-struct TotalHolderCB6B4 { unsigned int value; };
 void fn_802CB6B4(void) {
     register void *manager;
     register unsigned int total;
