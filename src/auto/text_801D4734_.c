@@ -268,7 +268,7 @@ extern char *strchr(char *, int);
 #pragma push
 #pragma processor 750
 void fn_801D490C(void) {
-    float width, right, x, t, edge, dy, y, alpha;
+    float width, right, x, alpha, t, edge, dy, y;
     float limit = lbl_8055E3C8;
     int color, n;
     char text[0x40], *src, *dst, *part, *caret;
@@ -419,6 +419,12 @@ int fn_801D4CB8(int object, int deleteFlag) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" int fn_801D4CF8(void *arg0, void *arg1) {
+    /* Fills an ActionSequence (arg0) from a value-file node (arg1): reads the
+     * "name" attribute, walks the node's children collecting the ones named
+     * "element" (building each via fn_801D7334 and appending to elements), and
+     * reads the auto_reset / reset_time / trigger_resets / has_rumble /
+     * first_active_lap / last_active_lap attributes.  Returns 1 on success,
+     * 0 if the node has no "name". */
     struct Node {
         virtual const char *name();
     };
@@ -1202,7 +1208,8 @@ extern void fn_801D0824(void *);
 void *fn_801D5AF0(void *arg0, int arg1) {
     int field8;
     void *table;
-    register void *table2;
+    void *table2;
+    void *child;
     if (arg0 != 0) {
         field8 = *(int *)((char *)arg0 + 8);
         table = lbl_80338D20;
@@ -1211,8 +1218,9 @@ void *fn_801D5AF0(void *arg0, int arg1) {
         *(void **)((char *)arg0 + 4) = table2;
         if (field8 != 0) {
             *(int *)((char *)arg0 + 8) = 0;
-            if (arg0 != 0) {
-                fn_801D0824((char *)arg0 + 4);
+            child = arg0;
+            if (child != 0) {
+                fn_801D0824((char *)child + 4);
             }
             *(int *)((char *)arg0 + 0xC) = -1;
         }
@@ -1280,17 +1288,16 @@ extern "C" int fn_801D5BBC(void *out, void *object) {
     char name[20];
     float f;
     Vec3 def;
-    void *op = out;
 
-    ((int *)op)[3] = obj->count(base + 0x170, -1);
-    if (((int *)op)[3] >= 0) {
+    ((int *)out)[3] = obj->count(base + 0x170, -1);
+    if (((int *)out)[3] >= 0) {
         for (i = 0; i < 4; i++) {
             int *entry;
             fn_801345D8(name, 0x14, base + 0x17C, i);
             if (obj->has(name) != 0) {
-                int n = ((int *)op)[5];
-                ((int *)op)[5] = n + 1;
-                entry = (int *)(((int *)op)[4] + n * 8);
+                int n = ((int *)out)[5];
+                ((int *)out)[5] = n + 1;
+                entry = (int *)(((int *)out)[4] + n * 8);
                 entry[0] = obj->get(name);
                 fn_801345D8(name, 0x14, base + 0x190, i);
                 f = obj->value(name, lbl_80562ADC);
@@ -1298,39 +1305,39 @@ extern "C" int fn_801D5BBC(void *out, void *object) {
             }
         }
         f = obj->value(&lbl_8055AC90, lbl_80562ADC);
-        ((float *)op)[0x18] = f;
-        ((float *)op)[0x19] = obj->value(&lbl_8055AC98, f);
+        ((float *)out)[0x18] = f;
+        ((float *)out)[0x19] = obj->value(&lbl_8055AC98, f);
         {
             def.x = lbl_80562ADC;
             def.y = lbl_80562ADC;
             def.z = lbl_80562ADC;
             const Vec3 &v = obj->vector2(&lbl_8055ACA0, def);
-            ((float *)op)[0xF] = v.x;
-            ((float *)op)[0x10] = v.y;
-            ((float *)op)[0x11] = v.z;
+            ((float *)out)[0xF] = v.x;
+            ((float *)out)[0x10] = v.y;
+            ((float *)out)[0x11] = v.z;
         }
         {
             Vec3 arg;
-            arg.x = ((float *)op)[0xF];
-            arg.y = ((float *)op)[0x10];
-            arg.z = ((float *)op)[0x11];
+            arg.x = ((float *)out)[0xF];
+            arg.y = ((float *)out)[0x10];
+            arg.z = ((float *)out)[0x11];
             const Vec3 &v = obj->vector2(&lbl_8055ACA8, arg);
-            ((float *)op)[0x12] = v.x;
-            ((float *)op)[0x13] = v.y;
-            ((float *)op)[0x14] = v.z;
+            ((float *)out)[0x12] = v.x;
+            ((float *)out)[0x13] = v.y;
+            ((float *)out)[0x14] = v.z;
         }
         {
             def.x = lbl_80562ADC;
             def.y = lbl_80562ADC;
             def.z = lbl_80562ADC;
             const Vec3 &v = obj->vector2(base + 0x1A0, def);
-            ((float *)op)[0x15] = v.x;
-            ((float *)op)[0x16] = v.y;
-            ((float *)op)[0x17] = v.z;
+            ((float *)out)[0x15] = v.x;
+            ((float *)out)[0x16] = v.y;
+            ((float *)out)[0x17] = v.z;
         }
-        ((int *)op)[0x1A] = (int)(lbl_80562B0C * obj->value(base + 0x1AC, lbl_80562AEC));
-        fn_801D0800(op ? (char *)op + 4 : (char *)op);
-        ((int *)op)[2] = 1;
+        ((int *)out)[0x1A] = (int)(lbl_80562B0C * obj->value(base + 0x1AC, lbl_80562AEC));
+        fn_801D0800((char *)out + 4);
+        ((int *)out)[2] = 1;
         result = 1;
     } else {
         ((void (*)(const char *, ...))fn_802E30C8)(base + 0x1BC);
@@ -1627,7 +1634,6 @@ struct Dummy6320 {
     virtual int getBool2(const char *);
 };
 extern "C" int fn_801D6320(void *out, void *object) {
-#pragma scheduling off
     extern char lbl_80338460;
     extern char lbl_8055ACB0, lbl_8055ACB8, lbl_8055ACC0, lbl_8055ACC8;
     extern float lbl_80562ADC, lbl_80562AE4, lbl_80562B0C;
@@ -1641,8 +1647,11 @@ extern "C" int fn_801D6320(void *out, void *object) {
     if (o->getBool(&lbl_8055ACB0) == 0) { LOG(messages + 0x210); return 0; }
     a = o->getFloat(&lbl_8055ACB0);
     if (a < lbl_80562ADC) { LOG(messages + 0x254, a); return 0; }
-    *(int *)((char *)out + 0xC) = (int)(lbl_80562B0C * a);
-    *(int *)((char *)out + 8) = (int)(lbl_80562B0C * o->getFloatArg(&lbl_8055ACB8, lbl_80562ADC));
+    {
+        float threshold = lbl_80562ADC;
+        *(int *)((char *)out + 0xC) = (int)(lbl_80562B0C * a);
+        *(int *)((char *)out + 8) = (int)(lbl_80562B0C * o->getFloatArg(&lbl_8055ACB8, threshold));
+    }
     if (o->getBool(&lbl_8055ACC0) == 0) { LOG(messages + 0x2A4); return 0; }
     b = o->getFloatArg(&lbl_8055ACC0, lbl_80562AE4);
     *(float *)((char *)out + 0x10) = b;
@@ -1652,7 +1661,6 @@ extern "C" int fn_801D6320(void *out, void *object) {
     *(signed char *)((char *)out + 0x18) = o->getS8(messages + 0x338, 0);
     *(int *)((char *)out + 4) = 1;
     return 1;
-#pragma scheduling reset
 }
 #pragma cplusplus reset
 
@@ -2296,7 +2304,7 @@ extern "C" int fn_801D707C(void *arg0, void *arg1) {
 
     obj = (Dummy *)arg1;
     if (obj->check(&lbl_8055AC80) == 0) {
-        ((void (*)(const char *, ...))fn_802E30C8)(&lbl_80338888[0]);
+        ((void (*)(const char *, ...))fn_802E30C8)(lbl_80338888);
         return 0;
     }
     src = obj->get(&lbl_8055AC80);
@@ -2315,8 +2323,8 @@ copy_done:
     *(float *)((char *)arg0 + 0x28) = obj->value(&lbl_8055ACB8, 0.0f);
     second = -1.0f;
     *(float *)((char *)arg0 + 0x30) = obj->value(&lbl_8055ACB0, second);
-    *(int *)((char *)arg0 + 4) = 1;
     *(float *)((char *)arg0 + 0x2C) = 0.0f;
+    *(int *)((char *)arg0 + 4) = 1;
     *((char *)arg0 + 0x34) = 0;
     *(int *)((char *)arg0 + 0x38) = fn_80207848(lbl_803388C8, 1);
     return 1;
@@ -4187,8 +4195,8 @@ extern "C" int fn_801D8E10(void *arg0, void *arg1) {
 
     lookup = (Lookup *)arg1;
     src = lookup->get(&lbl_8055AD50, &lbl_8055ACF0);
-    count = 0x14;
     dst = (char *)arg0 + 8;
+    count = 0x14;
     goto copy;
 count_check:
     count--;
@@ -4201,7 +4209,7 @@ copy:
     if ((signed char)dst[-1] != 0)
         goto count_check;
 copied:
-    if ((signed char)*((char *)arg0 + 8) == 0) {
+    if ((signed char)((char *)arg0)[8] == 0) {
         ((void (*)(const char *, ...))fn_802E30C8)(lbl_8033908C);
         return 0;
     }
