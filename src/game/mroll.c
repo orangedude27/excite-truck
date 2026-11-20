@@ -225,9 +225,9 @@ void *fn_80240928(void *label, s32 deleteFlag) {
     return label;
 }
 
-void fn_802409A4(void *object, signed char value) {
+void fn_802409A4(void *object, s32 value) {
     /* Set the signed 8-bit field at offset 0x2E8 of a menu/UI object. */
-    *(signed char *)((char *)object + 0x2E8) = value;
+    *(signed char *)((char *)object + 0x2E8) = (signed char)value;
 }
 
 /* Append a menu entry id and refresh each item's selected flag and displayed value from the shared payload. */
@@ -870,7 +870,7 @@ void fn_80241820(void *arg0) {
         t = (float)((int)(lbl_80563768 * fn_8023659C()) - *(int *)(self + 0x48)) / lbl_8056376C;
         t = (lbl_80563764 < t) ? lbl_80563764 : t;
         t = (t > lbl_80563758) ? t : lbl_80563758;
-        c = (t < lbl_80563770) ? lbl_80563770 : ((t > lbl_80563764) ? lbl_80563764 : ((t > lbl_80563758) ? (t * (lbl_80563774 * t * t) + lbl_80563778 * t * t) : (t * (lbl_80563774 * t * t) - lbl_80563778 * t * t)));
+        c = (t < lbl_80563770) ? lbl_80563770 : ((t > lbl_80563764) ? lbl_80563764 : ((t > lbl_80563758) ? (t * ((lbl_80563774 * t) * t) + (lbl_80563778 * t) * t) : (t * ((lbl_80563774 * t) * t) - (lbl_80563778 * t) * t)));
         f4c = *(float *)(self + 0x4c);
         half = lbl_80563784;
         zero = lbl_80563758;
@@ -917,6 +917,7 @@ void fn_80241820(void *arg0) {
                 float m = lbl_80563794 + *(float *)(self + 0x54);
                 fn_802353F4(o, 1, (sx - fn_80235EF0(o, 1)) - m, sy - k, lbl_80563758);
             }
+            if (*(int *)(self + 0x2c) < *(int *)(*(char **)self + 0x28) + 0x98 == 0) {}
             if (*(int *)(self + 0x2c) < *(int *)(*(char **)(self + 0x28) + 0x98) - 1) {
                 s32 o = fn_80211660(1);
                 float k = (h - fn_80235F64(o, 1)) * lbl_80563784;
