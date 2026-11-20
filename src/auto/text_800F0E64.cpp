@@ -7547,18 +7547,18 @@ extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC490(void
 extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC508(void) {
     LinkListIter begin;
     begin.node = *(void**)&lbl_8041506C[0x04];
-    LinkListIter end;
-    end.node = (void*)&lbl_8041506C[0x04];
     LinkListIter it = begin;
-
-    while (it.node != end.node) {
+    struct EndWrap { void* e; } sentinel;
+    sentinel.e = (void*)&lbl_8041506C[0x04];
+    void*& end = sentinel.e;
+    while (it.node != end) {
         void* node = it.node;
         it.node = *(void**)it.node;
         if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326B8C, 0x23D,
                                          (const char*)lbl_80326B68);
         }
-        ((DummyStrmUpdate*)(&((u8*)node)[-0x08]))->f2();
+        ((DummyStrmUpdate*)((char*)node - 0x08))->f2();
     }
     if (*(u32*)lbl_8041506C != 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326768, 0x2EE,
