@@ -521,10 +521,12 @@ void fn_802CAC54(int arg0) {
     if (arg0 == -1)
         return;
     if (arg0 >= 0 && arg0 < 0x200) {
+        register int v;
         offset = arg0 * 0x4C;
         base = (char *)lbl_8055FCB0;
         entry = (int *)(base + offset);
-        if (entry[0] <= 0)
+        v = *entry;
+        if (v <= 0)
             fn_802E317C(lbl_8034B8E0, base + offset + 4);
     }
     offset = arg0 * 0x4C;
@@ -541,7 +543,6 @@ void fn_802CAC54(int arg0) {
         ((void (*)(int))fn_802D8FB4)(entry[0x28 / 4]);
     }
 }
-#pragma opt_strength_reduction reset
 void fn_802CAD28(int slotIndex) {
     int *slot;
     int refCount;
@@ -903,6 +904,8 @@ unsigned short fn_802CB3FC(int slotIndex) {
     return dims[0];
 }
 
+#pragma unroll off
+#pragma ctrloop on
 void fn_802CB424(void) {
     typedef struct Node { int a, b, c, d; struct Node *next; } Node;
     typedef struct Heap { int magic; int size; int unk8; void *sub; } Heap;
@@ -929,7 +932,7 @@ void fn_802CB424(void) {
     if (m != 0) {
         int v;
         int *p;
-        int count;
+        unsigned int count;
         zero = 0;
         m->heap = 0;
         m->sub = 0;
@@ -942,12 +945,14 @@ void fn_802CB424(void) {
         m->heap = (Heap *)fn_8012850C(0x177000, (int *)(strs + 0x494));
         s = (Sub *)fn_801284F8(0x10, strs + 0x4A0);
         if (s != 0) {
+            int mask;
             h = m->heap;
             s->unkC = zero;
             s->mask = 0x7F;
             h->magic = 0xABCFEED0;
             h->unk8 = zero;
-            h->size = 0x177000 - ((s->mask + 0x10) & ~s->mask);
+            mask = s->mask;
+            h->size = 0x177000 - ((mask + 0x10) & ~mask);
             h->sub = s;
             s->heap = h;
             s->used = 1;
@@ -973,20 +978,23 @@ void fn_802CB424(void) {
         memset(m->f18, 0, 8);
         m->f2844 = zero2;
         memset(m->slots, 0, 0x2800);
-        v = 0;
-        p = (int *)m;
         count = 0x40;
+        p = (int *)m;
+        v = 0;
+#pragma ctrloop on
         do {
             int k;
             for (k = 0; k < 8; k++)
                 p[0xF + k * 5] = v++;
             p += 40;
         } while (--count != 0);
+#pragma ctrloop reset
         m->f2848 = 0;
     }
     *(void **)lbl_8055FCBC = m;
 }
-
+#pragma ctrloop reset
+#pragma unroll reset
 extern char lbl_8034BAEC[];
 extern char lbl_8034BB1C[];
 extern char lbl_8034BB5C[];
@@ -1449,6 +1457,7 @@ void fn_802CC03C(int **arg0, int *arg1, int arg2) {
 }
 
 #pragma optimization_level 2
+#pragma opt_common_subs off
 int fn_802CC10C(void *arg0, int arg1, int arg2, int arg3) {
     int result = 0;
     char *table;
@@ -1529,6 +1538,7 @@ int fn_802CC10C(void *arg0, int arg1, int arg2, int arg3) {
     }
     return result;
 }
+#pragma opt_common_subs on
 #pragma optimization_level reset
 
 extern char lbl_8034BB28[];
@@ -1640,7 +1650,7 @@ outer:
 #pragma scheduling on
 #pragma use_lmw_stmw on
 #pragma dont_inline reset
-extern double lbl_80564F38;
+extern const double lbl_80564F38;
 #pragma fp_contract off
 void fn_802CC518(int arg0, float arg1) {
     union {
@@ -1710,6 +1720,7 @@ void fn_802CC60C(void) {
     float f = 1000000000000.0f;
     int offset = 0;
     int i;
+    int counter;
     int zero = 0;
     int next;
     void *root;
@@ -1736,12 +1747,12 @@ void fn_802CC60C(void) {
 
     root = *(void **)lbl_8055FCBC;
     *(int *)((char *)root + 0x2844) = 0;
-    i = lbl_8055FCC0;
+    counter = lbl_8055FCC0;
     *(int *)((char *)root + 0x283C) = 0;
-    next = i + 1;
+    next = counter + 1;
     *(int *)((char *)root + 0x2840) = 0;
     lbl_8055FCC0 = next;
-    if ((unsigned char)i == 0)
+    if ((unsigned char)counter == 0)
         *(int *)((char *)root + 0x1C) = fn_802E2C20();
 }
 
@@ -1757,10 +1768,15 @@ char fn_802CC744(void) {
     return lbl_8055D07D;
 }
 
-#pragma push
-#pragma scheduling invalid_target
-int fn_802CC74C(void) { int result = 0; char *p = *(char **)lbl_8055FCBC; if (p != 0) { if (*(int *)(p + 4) != 0) result = 1; } return result; }
-#pragma pop
+#pragma peephole off
+int fn_802CC74C(void) {
+    int result = 0;
+    int *p = *(int **)&lbl_8055FCBC;
+    if (p != 0) {
+        if (*(int *)((char *)p + 4) != 0) result = 1;
+    }
+    return result;
+}
 extern float lbl_80564F4C;
 extern float lbl_80564F50;
 #pragma push
