@@ -44,7 +44,6 @@ void *fn_801BF214(void) {
     }
     return p;
 }
-#pragma opt_common_subs reset
 
 #pragma push
 #pragma processor 750
