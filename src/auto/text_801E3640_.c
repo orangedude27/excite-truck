@@ -97,9 +97,9 @@ void fn_801E370C(float *arg0, int arg1, int arg2) {
                 out[1] = (in[0] * arg0[1] + in[1] * arg0[4]) + in[2] * arg0[7];
                 out[2] = (in[0] * arg0[2] + in[1] * arg0[5]) + in[2] * arg0[8];
             } else {
-                out[0] = (in[0] * arg0[0] + in[1] * arg0[3]) + in[2] * arg0[6];
-                out[1] = (in[0] * arg0[1] + in[1] * arg0[4]) + in[2] * arg0[7];
-                out[2] = (in[0] * arg0[2] + in[1] * arg0[5]) + in[2] * arg0[8];
+                out[0] = (in[1] * arg0[3] + in[0] * arg0[0]) + in[2] * arg0[6];
+                out[1] = (in[1] * arg0[4] + in[0] * arg0[1]) + in[2] * arg0[7];
+                out[2] = (in[1] * arg0[5] + in[0] * arg0[2]) + in[2] * arg0[8];
             }
             out[0] += arg0[9];
             out[1] += arg0[10];
@@ -423,7 +423,7 @@ void fn_801E41E0(void *arg0, int arg1, float farg0) {
     fn_802C9904();
 }
 void fn_801E43BC(void *arg0, float scale, float alpha) {
-    typedef void (*LineCall)(void *, void *, int, float);
+    typedef void (*LineCall)(float *, float *, int, float);
     float p[3];
     float *v = (float *)arg0;
     float x, y, z, vx, vy, vz;
@@ -440,7 +440,7 @@ void fn_801E43BC(void *arg0, float scale, float alpha) {
     p[0] = vx + x;
     p[1] = vy + y;
     p[2] = vz + z;
-    ((LineCall)fn_801E41D8)((char *)arg0 + 0x24, p, 0xFFFF0000, alpha);
+    ((LineCall)fn_801E41D8)((float *)((char *)v + 0x24), p, 0xFFFF0000, alpha);
 
     vx = v[3];
     vz = v[5];
@@ -454,7 +454,7 @@ void fn_801E43BC(void *arg0, float scale, float alpha) {
     p[0] = vx + x;
     p[1] = vy + y;
     p[2] = vz + z;
-    ((LineCall)fn_801E41D8)((char *)arg0 + 0x24, p, 0xFF00FF00, alpha);
+    ((LineCall)fn_801E41D8)((float *)((char *)v + 0x24), p, 0xFF00FF00, alpha);
 
     vx = v[6];
     vz = v[8];
@@ -468,42 +468,28 @@ void fn_801E43BC(void *arg0, float scale, float alpha) {
     p[0] = vx + x;
     p[1] = vy + y;
     p[2] = vz + z;
-    ((LineCall)fn_801E41D8)((char *)arg0 + 0x24, p, 0xFF0000FF, alpha);
+    ((LineCall)fn_801E41D8)((float *)((char *)v + 0x24), p, 0xFF0000FF, alpha);
 }
 #pragma scheduling on
 #pragma pop
 extern void fn_801E370C();
 #pragma processor 7400
 #pragma scheduling on
-void fn_801E44F4(void *arg0, void *arg1, float farg0, float farg1, float farg2) {
+void fn_801E44F4(const void *arg0, void *arg1, float farg0, float farg1, float farg2) {
+    const float *src = (const float *)arg0;
     float sp[12];
-    float temp_f11, temp_f10, temp_f9, temp_f8, temp_f7;
-    float temp_f6, temp_f2, temp_f1, temp_f0, temp_f5, temp_f4, temp_f3;
 
-    temp_f11 = *(float *)((char *)arg0 + 0x00) * farg0;
-    temp_f10 = *(float *)((char *)arg0 + 0x04) * farg0;
-    temp_f9 = *(float *)((char *)arg0 + 0x08) * farg0;
-    temp_f8 = *(float *)((char *)arg0 + 0x0C) * farg1;
-    temp_f7 = *(float *)((char *)arg0 + 0x10) * farg1;
-    temp_f1 = *(float *)((char *)arg0 + 0x1C) * farg2;
-    temp_f6 = *(float *)((char *)arg0 + 0x14) * farg1;
-    temp_f2 = *(float *)((char *)arg0 + 0x18) * farg2;
-    temp_f0 = *(float *)((char *)arg0 + 0x20) * farg2;
-    temp_f5 = *(float *)((char *)arg0 + 0x24);
-    temp_f4 = *(float *)((char *)arg0 + 0x28);
-    temp_f3 = *(float *)((char *)arg0 + 0x2C);
-
-    sp[9] = temp_f5;
-    sp[10] = temp_f4;
-    sp[11] = temp_f3;
-    sp[0] = temp_f11;
-    sp[1] = temp_f10;
-    sp[2] = temp_f9;
-    sp[3] = temp_f8;
-    sp[4] = temp_f7;
-    sp[5] = temp_f6;
-    sp[6] = temp_f2;
-    sp[7] = temp_f1;
-    sp[8] = temp_f0;
+    sp[9] = src[0x09];
+    sp[10] = src[0x0A];
+    sp[11] = src[0x0B];
+    sp[0] = src[0x00] * farg0;
+    sp[1] = src[0x01] * farg0;
+    sp[2] = src[0x02] * farg0;
+    sp[3] = src[0x03] * farg1;
+    sp[4] = src[0x04] * farg1;
+    sp[5] = src[0x05] * farg1;
+    sp[6] = src[0x06] * farg2;
+    sp[7] = src[0x07] * farg2;
+    sp[8] = src[0x08] * farg2;
     fn_801E370C(sp, (int)arg1, (int)arg1);
 }
