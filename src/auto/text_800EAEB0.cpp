@@ -94,6 +94,7 @@ extern f64 lbl_80561028;
 
 extern f32 lbl_8056106C;
 extern u8 lbl_80323268[];
+struct MmlParserStrPool { u8 file[0x18]; u8 trackNull[0x28]; u8 playerNull[0x2c]; u8 more[0x80]; };
 extern u8 lbl_80323B28[];
 extern u8 lbl_80323B94[];
 extern "C" u32 fn_800FEB9C(void);
@@ -535,6 +536,7 @@ extern "C" void SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *env, int a
 #pragma scheduling on
 void nw4hbm::snd::detail::EnvGenerator::SetDecay(int decay)
 {
+  #pragma opt_propagation off
   const char *file = (const char *) lbl_80322B80;
   f32 value;
   int valid = 0;
@@ -545,7 +547,7 @@ void nw4hbm::snd::detail::EnvGenerator::SetDecay(int decay)
   }
   if (valid == 0)
   {
-    Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x105, file + 0x94, decay, 0, 0x7F);
+    Panic__Q26nw4hbm2dbFPCciPCce((const char *)((unsigned int)file), 0x105, file + 0x94, decay, 0, 0x7F);
   }
   valid = 0;
   if ((decay >= 0) && (decay <= 0x7F))
@@ -554,7 +556,7 @@ void nw4hbm::snd::detail::EnvGenerator::SetDecay(int decay)
   }
   if (valid == 0)
   {
-    Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x132, file + 0xD0, decay, 0, 0x7F);
+    Panic__Q26nw4hbm2dbFPCciPCce((const char *)((unsigned int)file), 0x132, file + 0xD0, decay, 0, 0x7F);
   }
   if (decay == 0x7F)
   {
@@ -938,14 +940,17 @@ free_heap:
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void fn_800EC1A4(void *arg0) {
-    struct AssertFile *file = (struct AssertFile *)lbl_80322D60;
+    struct AssertFileStrings {
+        char file[0x44];
+        char funcClear[0x24];
+        char funcAlloc[0x40];
+    };
+    const struct AssertFileStrings *file = (const struct AssertFileStrings *)lbl_80322D60;
     FrameHeapDestroyView *state = (FrameHeapDestroyView *)arg0;
     struct { FrameHeapDestroyListView *p; } headBox;
     FrameHeapDestroyListView *&head = headBox.p;
-    struct { void *p; } listBox;
-    void *&list = listBox.p;
     if (state->heap == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file->name, 0x87, (const char *)file + 0x44);
+        Panic__Q26nw4hbm2dbFPCciPCce(&file->file[0], 0x87, &file->funcClear[0]);
     }
     if (state->count == 0) goto skip_loop;
     head = &state->list;
@@ -954,26 +959,30 @@ loop_body:
     if (state->count == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1FB, (const char *)lbl_80322FF8);
     }
-    list = head->tail;
-    if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
-    if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
-    if (list != 0) {
-        struct { void *p; } nodeBox;
-        void *&node = nodeBox.p;
-        node = (u8 *)list + 0xC;
-        while (node != *(void **)((u8 *)list + 12)) {
-            void (*callback)(void *, void *, void *);
-            node = *(void **)((u8 *)node + 4);
-            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F5C, 0x23D, (const char *)lbl_80322F38);
-            if (node != 0) {
-                callback = *(void (**)(void *, void *, void *))((u8 *)node + 0xC);
-                if (callback != 0) callback((u8 *)node + 0x20, *(void **)((u8 *)node + 8), *(void **)((u8 *)node + 0x10));
+    {
+        struct { void *p; } listBox;
+        void *&list = listBox.p;
+        list = head->tail;
+        if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
+        if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
+        if (list != 0) {
+            struct { void *p; } nodeBox;
+            void *&node = nodeBox.p;
+            node = (u8 *)list + 0xC;
+            while (node != *(void **)((u8 *)list + 12)) {
+                void (*callback)(void *, void *, void *);
+                node = *(void **)((u8 *)node + 4);
+                if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F5C, 0x23D, (const char *)lbl_80322F38);
+                if (node != 0) {
+                    callback = *(void (**)(void *, void *, void *))((u8 *)node + 0xC);
+                    if (callback != 0) callback((u8 *)node + 0x20, *(void **)((u8 *)node + 8), *(void **)((u8 *)node + 0x10));
+                }
             }
+            if ((u8 *)list + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)list + 8, 0);
         }
-        if ((u8 *)list + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)list + 8, 0);
+        if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
+        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(&state->count, list);
     }
-    if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(&state->count, list);
 loop_test:
     if (state->count != 0) goto loop_body;
 skip_loop:
@@ -1002,7 +1011,7 @@ skip_loop:
         var_r0 = 1;
     }
     if (var_r0 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file->name, 0x91, (const char *)file + 0x68);
+        Panic__Q26nw4hbm2dbFPCciPCce(&file->file[0], 0x91, &file->funcAlloc[0]);
     }
 }
 #pragma pop
@@ -1018,20 +1027,19 @@ extern "C" u32 MEMGetAllocatableSizeForFrmHeapEx(void *, s32);
 #pragma push
 #pragma use_lmw_stmw off
 void *nw4hbm::snd::detail::FrameHeap::Alloc(unsigned long size, void (*callback)(void *, unsigned long, void *), void *user) {
-    register void *block;
+    register u32 block;
     register void *list;
     register void *link;
     register const char *file = (const char *)lbl_80322D60;
-    register void (*cb)(void *, unsigned long, void *) = callback;
     if (*(void **)this == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(file, 0xA2, file + 0x44);
-    block = MEMAllocFromFrmHeapEx(*(void **)this, ((size + 0x1f) & ~31UL) + 0x20, 0x20);
+    block = (u32)MEMAllocFromFrmHeapEx(*(void **)this, ((size + 0x1f) & ~31UL) + 0x20, 0x20);
     if (block == 0)
         return 0;
     *(u32 *)block = 0;
     *((u32 *)block + 1) = 0;
     *((u32 *)block + 2) = size;
-    *((void **)block + 3) = (void *)cb;
+    *((void **)block + 3) = (void *)callback;
     *((void **)block + 4) = user;
     if (*(void **)((u8 *)this + 4) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1fb, (const char *)lbl_80322FF8);
@@ -1043,10 +1051,10 @@ void *nw4hbm::snd::detail::FrameHeap::Alloc(unsigned long size, void (*callback)
     link = (u8 *)list + 0xC;
     if (block == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032304C, 0x233, (const char *)lbl_80323028);
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8 *)list + 8, &link, block);
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8 *)list + 8, &link, (void *)block);
     if ((((u32)block + 0x20) & 0x1f) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(file, 0xae, file + 0x94);
-    return (u8 *)block + 0x20;
+    return (void *)(block + 0x20);
 }
 #pragma pop
 extern "C" u32 fn_800EC56C(void *__restrict soundHeapRef) {
@@ -1247,10 +1255,10 @@ extern "C" s32 fn_800ECB90(void *arg0, s32 arg1) {
     extern void fn_800F2EAC(void *, const void *, u32);
     const char *file = (const char *)lbl_803230E8;
     if (arg1 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)file + 0), 0x43, file + 0x1c);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x43, file + 0x1C);
     }
-    if ((((u32)arg1) & 3u) != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)file + 0), 0x44, file + 0x50, arg1);
+    if (((u32)arg1 & 3) != 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x44, file + 0x50, arg1);
     }
     Init__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCv((u8 *)arg0 + 0x10C, (const void *)arg1);
     detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi_800F2750(arg0, (s32)((u8 *)arg0 + 0x10C));
@@ -1746,7 +1754,7 @@ static inline s16 *MmlGetVariablePtr(SeqPlayer *player, MmlSeqTrack *track, int 
 }
 
 void MmlParser::CommandProc(MmlSeqTrack *track, u32 command, s32 arg1, s32 arg2) const {
-    const char *str = (const char *)lbl_80323268;
+    const char *const str = (const char *)lbl_80323268;
     SeqPlayer *player;
     u8 *param;
 
@@ -1761,88 +1769,34 @@ void MmlParser::CommandProc(MmlSeqTrack *track, u32 command, s32 arg1, s32 arg2)
 
     if (command <= 0xFF) {
         switch (command) {
-        case 0xE1:
-            *(u16 *)((u8 *)player + 0x92) = arg1;
-            break;
+        case 0xE1: *(u16 *)((u8 *)player + 0x92) = arg1; break;
         case 0x81:
-            if (arg1 < 0x10000) {
-                *(u32 *)((u8 *)track + 0x64) = (u16)arg1;
-            } else {
-                Warning__Q26nw4hbm2dbFPCciPCce(str, 0x179, str + 0x98, arg1);
-            }
+            if (arg1 < 0x10000) *(u32 *)((u8 *)track + 0x64) = (u16)arg1;
+            else Warning__Q26nw4hbm2dbFPCciPCce(str, 0x179, str + 0x98, arg1);
             break;
-        case 0xDD:
-            SetMute__Q46nw4hbm3snd6detail8SeqTrackFQ36nw4hbm3snd7SeqMute(track, arg1);
-            break;
-        case 0xC1:
-            *((u8 *)track + 0x80) = arg1;
-            break;
-        case 0xD5:
-            *((u8 *)track + 0x81) = arg1;
-            break;
-        case 0xC2:
-            *((u8 *)player + 0x90) = arg1;
-            break;
-        case 0xC3:
-            *((s8 *)track + 0x87) = arg1;
-            break;
-        case 0xC4:
-            *((s8 *)track + 0x82) = arg1;
-            break;
-        case 0xC5:
-            *((u8 *)track + 0x83) = arg1;
-            break;
-        case 0xC0:
-            if (arg1 <= 1) arg1++;
-            *((s8 *)track + 0x84) = arg1 - 0x40;
-            break;
-        case 0xD7:
-            if (arg1 <= 1) arg1++;
-            *((s8 *)track + 0x85) = arg1 - 0x40;
-            break;
-        case 0xDC:
-            if (arg1 <= 1) arg1++;
-            *((u8 *)track + 0x86) = arg1;
-            break;
-        case 0xC6:
-            *((u8 *)track + 0x88) = arg1;
-            break;
-        case 0xC7:
-            param[1] = arg1 != 0;
-            break;
-        case 0xCF:
-            *((u8 *)track + 0x8A) = arg1;
-            break;
-        case 0xCA:
-            *(f32 *)((u8 *)track + 0x68) = (u8)arg1 / 128.0f;
-            break;
-        case 0xCB:
-            *(f32 *)((u8 *)track + 0x6C) = 0.390625f * (u8)arg1;
-            break;
-        case 0xCC:
-            *((u8 *)track + 0x78) = arg1;
-            break;
-        case 0xCD:
-            *((u8 *)track + 0x74) = arg1;
-            break;
-        case 0xE0:
-            *(u32 *)((u8 *)track + 0x70) = arg1 * 5;
-            break;
-        case 0xE3:
-            *(f32 *)((u8 *)track + 0x7C) = arg1 / 32.0f;
-            break;
-        case 0xD0:
-            *((u8 *)track + 0x8B) = arg1;
-            break;
-        case 0xD1:
-            *((u8 *)track + 0x8C) = arg1;
-            break;
-        case 0xD2:
-            *((u8 *)track + 0x8D) = arg1;
-            break;
-        case 0xD3:
-            *((u8 *)track + 0x8E) = arg1;
-            break;
+        case 0xDD: SetMute__Q46nw4hbm3snd6detail8SeqTrackFQ36nw4hbm3snd7SeqMute(track, arg1); break;
+        case 0xC1: *((u8 *)track + 0x80) = arg1; break;
+        case 0xD5: *((u8 *)track + 0x81) = arg1; break;
+        case 0xC2: *((u8 *)player + 0x90) = arg1; break;
+        case 0xC3: *((s8 *)track + 0x87) = arg1; break;
+        case 0xC4: *((s8 *)track + 0x82) = arg1; break;
+        case 0xC5: *((u8 *)track + 0x83) = arg1; break;
+        case 0xC0: if (arg1 <= 1) arg1++; *((s8 *)track + 0x84) = arg1 - 0x40; break;
+        case 0xD7: if (arg1 <= 1) arg1++; *((s8 *)track + 0x85) = arg1 - 0x40; break;
+        case 0xDC: if (arg1 <= 1) arg1++; *((u8 *)track + 0x86) = arg1; break;
+        case 0xC6: *((u8 *)track + 0x88) = arg1; break;
+        case 0xC7: param[1] = arg1 != 0; break;
+        case 0xCF: *((u8 *)track + 0x8A) = arg1; break;
+        case 0xCA: *(f32 *)((u8 *)track + 0x68) = (u8)arg1 / 128.0f; break;
+        case 0xCB: *(f32 *)((u8 *)track + 0x6C) = 0.390625f * (u8)arg1; break;
+        case 0xCC: *((u8 *)track + 0x78) = arg1; break;
+        case 0xCD: *((u8 *)track + 0x74) = arg1; break;
+        case 0xE0: *(u32 *)((u8 *)track + 0x70) = arg1 * 5; break;
+        case 0xE3: *(f32 *)((u8 *)track + 0x7C) = arg1 / 32.0f; break;
+        case 0xD0: *((u8 *)track + 0x8B) = arg1; break;
+        case 0xD1: *((u8 *)track + 0x8C) = arg1; break;
+        case 0xD2: *((u8 *)track + 0x8D) = arg1; break;
+        case 0xD3: *((u8 *)track + 0x8E) = arg1; break;
         case 0xC8:
             param[2] = arg1 != 0;
             ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(track, -1);
@@ -1852,24 +1806,12 @@ void MmlParser::CommandProc(MmlSeqTrack *track, u32 command, s32 arg1, s32 arg2)
             *((u8 *)track + 0x89) = arg1 + *((s8 *)track + 0x87);
             *((u8 *)track + 0x5F) = 1;
             break;
-        case 0xCE:
-            *((u8 *)track + 0x5F) = arg1 != 0;
-            break;
-        case 0xD8:
-            *((u8 *)track + 0x93) = arg1;
-            break;
-        case 0xD9:
-            *((u8 *)track + 0x90) = arg1;
-            break;
-        case 0xDA:
-            *((u8 *)track + 0x91) = arg1;
-            break;
-        case 0xDE:
-            *((u8 *)track + 0x92) = arg1;
-            break;
-        case 0xDB:
-            *((u8 *)track + 0x8F) = arg1;
-            break;
+        case 0xCE: *((u8 *)track + 0x5F) = arg1 != 0; break;
+        case 0xD8: *((u8 *)track + 0x93) = arg1; break;
+        case 0xD9: *((u8 *)track + 0x90) = arg1; break;
+        case 0xDA: *((u8 *)track + 0x91) = arg1; break;
+        case 0xDE: *((u8 *)track + 0x92) = arg1; break;
+        case 0xDB: *((u8 *)track + 0x8F) = arg1; break;
         case 0xD6:
             if (lbl_8055DE38) {
                 s16 *var = MmlGetVariablePtr(player, track, arg1);
@@ -1881,61 +1823,35 @@ void MmlParser::CommandProc(MmlSeqTrack *track, u32 command, s32 arg1, s32 arg2)
             break;
         case 0x88: {
             void *dest = (void *)fn_800F016C((s32)player, arg1);
-            if (dest == 0) {
-                Warning__Q26nw4hbm2dbFPCciPCce(str, 0x219, str + 0x12C);
-                break;
-            }
-            if (dest == track) {
-                Warning__Q26nw4hbm2dbFPCciPCce(str, 0x21E, str + 0x168);
-                break;
-            }
+            if (dest == 0) { Warning__Q26nw4hbm2dbFPCciPCce(str, 0x219, str + 0x12C); break; }
+            if (dest == track) { Warning__Q26nw4hbm2dbFPCciPCce(str, 0x21E, str + 0x168); break; }
             Close__Q46nw4hbm3snd6detail8SeqTrackFv(dest);
             fn_800F1080(dest, *(const void **)((u8 *)track + 0x50), arg2);
             break;
         }
-        case 0x89:
-            track->cur = *(const u8 **)((u8 *)track + 0x50) + arg1;
-            break;
+        case 0x89: track->cur = *(const u8 **)((u8 *)track + 0x50) + arg1; break;
         case 0x8A:
-            if (param[6] >= 3) {
-                Warning__Q26nw4hbm2dbFPCciPCce(str, 0x22C, str + 0x19C);
-                break;
-            }
+            if (param[6] >= 3) { Warning__Q26nw4hbm2dbFPCciPCce(str, 0x22C, str + 0x19C); break; }
             ((const u8 **)(param + 8))[param[6]] = track->cur;
             param[6]++;
             track->cur = *(const u8 **)((u8 *)track + 0x50) + arg1;
             break;
         case 0xFD:
-            if (param[6] == 0) {
-                Warning__Q26nw4hbm2dbFPCciPCce(str, 0x237, str + 0x1DC);
-                break;
-            }
+            if (param[6] == 0) { Warning__Q26nw4hbm2dbFPCciPCce(str, 0x237, str + 0x1DC); break; }
             param[6]--;
             track->cur = ((const u8 **)(param + 8))[param[6]];
             break;
         case 0xD4:
-            if (param[6] >= 3) {
-                Warning__Q26nw4hbm2dbFPCciPCce(str, 0x241, str + 0x218);
-                break;
-            }
+            if (param[6] >= 3) { Warning__Q26nw4hbm2dbFPCciPCce(str, 0x241, str + 0x218); break; }
             ((const u8 **)(param + 8))[param[6]] = track->cur;
             param[3 + param[6]] = arg1;
             param[6]++;
             break;
         case 0xFC: {
             u8 count;
-            if (param[6] == 0) {
-                Warning__Q26nw4hbm2dbFPCciPCce(str, 0x24D, str + 0x260);
-                break;
-            }
+            if (param[6] == 0) { Warning__Q26nw4hbm2dbFPCciPCce(str, 0x24D, str + 0x260); break; }
             count = param[2 + param[6]];
-            if (count != 0) {
-                count--;
-                if (count == 0) {
-                    param[6]--;
-                    break;
-                }
-            }
+            if (count != 0) { count--; if (count == 0) { param[6]--; break; } }
             param[2 + param[6]] = count;
             track->cur = ((const u8 **)(param + 8))[param[6] - 1];
             break;
@@ -1945,9 +1861,7 @@ void MmlParser::CommandProc(MmlSeqTrack *track, u32 command, s32 arg1, s32 arg2)
         u32 cmd = command >> 8;
         s16 *var;
         command &= 0xFF;
-        if (cmd != 0xF0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(str, 0x264, str + 0x2A0);
-        }
+        if (cmd != 0xF0) Panic__Q26nw4hbm2dbFPCciPCce(str, 0x264, str + 0x2A0);
         var = 0;
         if ((command & 0xF0) == 0x80 || (command & 0xF0) == 0x90) {
             var = MmlGetVariablePtr(player, track, arg1);
@@ -1958,20 +1872,12 @@ void MmlParser::CommandProc(MmlSeqTrack *track, u32 command, s32 arg1, s32 arg2)
         case 0x81: *var += arg2; break;
         case 0x82: *var -= arg2; break;
         case 0x83: *var *= arg2; break;
-        case 0x84:
-            if (arg2 != 0) *var /= arg2;
-            break;
-        case 0x85:
-            if (arg2 >= 0) *var <<= arg2;
-            else *var >>= -arg2;
-            break;
+        case 0x84: if (arg2 != 0) *var /= arg2; break;
+        case 0x85: if (arg2 >= 0) *var <<= arg2; else *var >>= -arg2; break;
         case 0x86: {
             bool neg = false;
             s32 r;
-            if (arg2 < 0) {
-                neg = true;
-                arg2 = (s16)-arg2;
-            }
+            if (arg2 < 0) { neg = true; arg2 = (s16)-arg2; }
             r = ((u16)fn_800FEB9C() * (arg2 + 1)) >> 16;
             if (neg) r = -r;
             *var = r;
@@ -1981,9 +1887,7 @@ void MmlParser::CommandProc(MmlSeqTrack *track, u32 command, s32 arg1, s32 arg2)
         case 0x88: *var |= arg2; break;
         case 0x89: *var ^= arg2; break;
         case 0x8A: *var = ~(u16)arg2; break;
-        case 0x8B:
-            if (arg2 != 0) *var %= arg2;
-            break;
+        case 0x8B: if (arg2 != 0) *var %= arg2; break;
         case 0x90: param[0] = *var == arg2; break;
         case 0x91: param[0] = *var >= arg2; break;
         case 0x92: param[0] = *var > arg2; break;
@@ -2551,7 +2455,7 @@ void nw4hbm::snd::detail::RemoteSpeakerManager::Setup() {
         u32 q = (ticks >> 2) / 125000;
         u32 period = q * 0x0065B9AB;
         u32 interval = period / 8000;
-        OSSetPeriodicAlarm((u8*)this + 8, q, (u32)(time >> 32), (u32)time,
+        OSSetPeriodicAlarm((void*)((u8*)this + 8), q, (u32)(time >> 32), (u32)time,
                            0, interval, (void*)fn_800EEBA8);
         ((u8*)this)[0] = 1;
     }
@@ -2678,36 +2582,41 @@ extern "C" void* fn_800EE5E8(void*, void*);
 #pragma use_lmw_stmw off
 extern "C" void fn_800EEBA8(void* arg0, u64 unused1, u64 unused2) {
     extern u8 lbl_803238F8[];
-    const char* file = (const char*)lbl_803238F8;
+    const char* message = (const char*)lbl_803238F8;
     u8 sampleBuffer[0x48];
-    s32 i;
-    u8* channel;
     u8* state;
     u8* end;
+    u8* channel;
+    s32 i;
+
     if ((s8)lbl_8055DE40 == 0) {
         state = lbl_804127A8;
         state[0] = 0;
         channel = state + 0x38;
         end = state + 0x2B8;
         do { fn_800EE4F0(channel); channel += 0xA0; } while (channel < end);
-        for (i = 0; i < 4; ++i)
-            *(s32*)(state + 0x64 + i * 0xA0) = i;
+        *(s32*)(state + 0x64) = 0;
+        *(s32*)(state + 0x104) = 1;
+        *(s32*)(state + 0x1A4) = 2;
+        *(s32*)(state + 0x244) = 3;
         lbl_8055DE40 = 1;
     }
     state = lbl_804127A8;
     if (state + 8 != (u8*)arg0)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)(file + 0), 0x8D, (const char*)(file + 0x6C));
+        Panic__Q26nw4hbm2dbFPCciPCce(message, 0x8D, message + 0x6C);
     if (AXRmtGetSamplesLeft() >= 0x28) {
         channel = state + 0x38;
-        for (i = 0; i < 4; ++i) {
+        i = 0;
+        do {
             if (state[0x39] != 0) {
                 if (AXRmtGetSamples(i, sampleBuffer, 0x28) != 0x28)
-                    Warning__Q26nw4hbm2dbFPCciPCce((const char*)(file + 0), 0x9D, (const char*)(file + 0xAC));
+                    Warning__Q26nw4hbm2dbFPCciPCce(message, 0x9D, message + 0xAC);
                 fn_800EE5E8(channel, sampleBuffer);
             }
+            ++i;
             channel += 0xA0;
             state += 0xA0;
-        }
+        } while (i < 4);
         AXRmtAdvancePtr(0x28);
     }
 }
@@ -2867,7 +2776,6 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail9SeqPlayerFiPQ46nw4hbm3snd6detail
     register f32 baseValue = lbl_80561068;
     u8 *p = (u8 *)self;
     s32 i;
-    void **tracks;
 
     p[0x16] = 0; p[0x17] = 0;
     p[0x18] = 0; p[0x19] = 0;
@@ -2893,9 +2801,8 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail9SeqPlayerFiPQ46nw4hbm3snd6detail
     *(void **)(p + 0x94) = callback;
     for (i = 0; i < 16; ++i)
         *(s16 *)(p + 0xDC + i * 2) = -1;
-    tracks = (void **)(p + 0x9C);
     for (i = 0; i < 16; ++i)
-        *tracks++ = 0;
+        *(u32 *)(p + 0x9C + i * 4) = 0;
 }
 
 extern "C" void SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl(void *player, const void *seqData, s32 seqDataSize) {
