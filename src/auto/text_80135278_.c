@@ -861,6 +861,7 @@ extern "C" void fn_80136468(PathSample *out, Unk_80135278 *self, float f) {
     char *next;
     char *head;
     float *period;
+    float d;
     s32 mode;
     s32 limit;
     if (data == 0) {
@@ -873,11 +874,10 @@ extern "C" void fn_80136468(PathSample *out, Unk_80135278 *self, float f) {
     mode = *(s32 *)((char *)self + 0xc);
     if (f > lbl_80561320) {
         period = (float *)(data + 8);
-        f = (float)fn_8002EFB4(f, *period);
+        d = (float)fn_8002EFB4(f, *period);
     } else {
         period = (float *)(data + 8);
-        f = (float)fn_8002EFB4(-f, *period);
-        f = *period - f;
+        d = *period - (float)fn_8002EFB4(-f, *period);
     }
     limit = 0x2710;
     cursor = *(char **)(data + 0x1c);
@@ -886,24 +886,24 @@ extern "C" void fn_80136468(PathSample *out, Unk_80135278 *self, float f) {
         next = *(char **)(cursor + 0x14);
         if (next == head)
             break;
-        if (*(float *)(next + 0x1c) >= f)
+        if (*(float *)(next + 0x1c) >= d)
             break;
         limit--;
         cursor = next;
         if (limit <= 0) {
-            fn_802E30C8(lbl_8032BE30, mode, (double)*period);
-            f = lbl_80561320;
+            fn_802E30C8(lbl_8032BE30, mode, (double)d, (double)*period);
+            d = lbl_80561320;
             cursor = *(char **)((char *)*(void * volatile *)((char *)self + 0x2c) + 0x1c);
             break;
         }
     }
     if (*(u8 *)(cursor + 0x34) != *(u8 *)(next + 0x34)) {
-        f = lbl_80561320;
+        d = lbl_80561320;
     } else {
-        f = (f - *(float *)(cursor + 0x1c)) / *(float *)(cursor + 0x18);
+        d = (d - *(float *)(cursor + 0x1c)) / *(float *)(cursor + 0x18);
     }
     out->node = (PathNode *)cursor;
-    out->fraction = f;
+    out->fraction = d;
     out->tag = mode;
 }
 #pragma cplusplus reset
@@ -923,17 +923,20 @@ void fn_80136594(void *stateOut, s32 path, s32 point) {
 #pragma push
 #pragma scheduling invalid_target
 float fn_801365C4(Unk_80135278 *a, Unk_80135278 *b) {
-    register s32 pos;
+    register s32 offset;
     register s32 unk34;
     register void *data;
+    register s32 pos;
     register s32 count;
-    s32 same, offset, i, j;
+    register s32 same;
+    s32 i, j;
     unsigned long length;
     Unk_80135278 *p;
     float value, result;
     data = (void *)a->unk_2c;
     if (data == 0 || b->unk_4 == 0 || a->unk_4 == 0 || b->unk_54 != a->unk_54)
         return lbl_80561320;
+    count = a->unk_54;
     p = (Unk_80135278 *)a->unk_4;
     unk34 = a->unk_34;
     pos = *(s32 *)((char *)p + 0x10);
@@ -943,7 +946,6 @@ float fn_801365C4(Unk_80135278 *a, Unk_80135278 *b) {
         length = *(unsigned long *)((char *)data + 0x18);
         pos = (length + (pos - unk34)) % length;
     }
-    count = a->unk_54;
     i = ((pos >> 16) + (count + offset)) % count;
     j = (i + 1) % count;
     value = a->unk_8 * (b->unk_50[j] - b->unk_50[i]) + b->unk_50[i];
