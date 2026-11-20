@@ -12,12 +12,6 @@ extern "C" s32 fn_8019C854(void*, void*);
 struct CornerV3 {
     f32 x, y, z;
 };
-struct Input8019F1D4 {
-    u8 pad0[0x24];
-    f32 width;
-    u8 pad1[0x0C];
-    f32 pos[3];
-};
 static inline void CornerV3Copy(CornerV3* d, const CornerV3* s) {
     ((u32*)d)[0] = ((const u32*)s)[0];
     ((u32*)d)[1] = ((const u32*)s)[1];
@@ -2539,15 +2533,15 @@ extern "C" void fn_8019F1B4(void *obj, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 }
 
 #pragma scheduling on
-extern "C" void fn_8019F1D4(const void* arg0, void* arg1, void* arg2) {
+extern "C" void fn_8019F1D4(void* arg0, void* arg1, void* arg2) {
     volatile f32 inputA[2];
     volatile f32 inputB[4];
-    f32 width = *(const f32*)((const u8*)arg0 + 0x24);
+    f32 width = *(f32*)((u8*)arg0 + 0x24);
     f32 scaleA = width * lbl_805622DC;
-    f32 left = *(const f32*)((const u8*)arg0 + 0x34);
-    f32 mid = *(const f32*)((const u8*)arg0 + 0x38);
+    f32 left = *(f32*)((u8*)arg0 + 0x34);
+    f32 mid = *(f32*)((u8*)arg0 + 0x38);
     f32 scaleB = width * lbl_805622E0;
-    f32 right = *(const f32*)((const u8*)arg0 + 0x3C);
+    f32 right = *(f32*)((u8*)arg0 + 0x3C);
     f32 x0 = left + scaleA;
     inputA[0] = width;
     f32 x1 = mid + scaleA;
