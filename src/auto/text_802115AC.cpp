@@ -689,7 +689,7 @@ extern "C" void *fn_8021227C(void *arg0, char *arg1, s32 arg2) {
 extern "C" s32 fn_80212338(void) { return 0; }
 
 #pragma dont_inline on
-extern "C" void fn_80212340(void *arg0) {
+extern "C" void fn_80212340(void *__restrict arg0) {
     s32 first = *(s32 *)((char *)arg0 + 0x10);
     s32 *p = (s32 *)arg0;
     if (first != 0) {
