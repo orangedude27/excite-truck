@@ -1770,8 +1770,8 @@ extern "C" int fn_801D6678(void *out, void *object) {
     float first;
     float second;
     float scale;
-    first = obj->value(&lbl_8055ACB0, lbl_80562ADC);
-    second = obj->value(&lbl_8055ACB8, lbl_80562ADC);
+    first = obj->value(&lbl_8055ACB0, 0.0f);
+    second = obj->value(&lbl_8055ACB8, 0.0f);
     scale = lbl_80562B0C;
     *(int *)((char *)out + 8) = (int)(scale * first);
     *(int *)((char *)out + 0xC) = (int)(scale * second);
@@ -2851,9 +2851,9 @@ extern "C" int fn_801D7A0C(void *arg0, void *arg1) {
     Manager *obj = (Manager *)arg1;
     char *base = &lbl_80338460;
     const char *name;
-    int index;
+    int index, initial = 0;
     float value;
-    *(void **)((char *)arg0 + 4) = 0;
+    *(int *)((char *)arg0 + 4) = initial;
     *(int *)((char *)arg0 + 8) = -1;
     if (obj->has(base + 0x994)) {
         name = obj->name(base + 0x994);
