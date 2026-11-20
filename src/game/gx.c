@@ -1065,7 +1065,7 @@ extern unsigned long lbl_8055FD44;
 extern unsigned long lbl_8055FDAC;
 extern void fn_802D0C98(void);
 extern void fn_802D0BD8(void);
-#pragma scheduling invalid_target
+#pragma peephole off
 void fn_802CFF10(void) {
     int zero = 0;
     lbl_8055FD44 = zero;
@@ -1075,6 +1075,7 @@ void fn_802CFF10(void) {
     lbl_8055FDAC = zero;
     lbl_8055FE39 = zero;
 }
+#pragma peephole reset
 extern void *lbl_8055FD20;
 #pragma push
 #pragma dont_inline on
@@ -1158,34 +1159,31 @@ void fn_802D0014(float startValue, float endValue, float delta) {
 #pragma small_data off
 extern __declspec(section ".data") char lbl_804C97D0;
 void fn_802D007C(float arg0) {
-    extern float lbl_80564FAC;
     extern float lbl_80564FA8;
     extern float lbl_80564F88;
     extern char lbl_804C97D0;
     extern unsigned char lbl_804C5700[];
+    unsigned char *tev;
     float temp_f0;
     float var_f3;
     unsigned char temp_r6;
     volatile unsigned char scratch[4];
     int color;
 
-    temp_f0 = lbl_80564FAC * arg0;
+    temp_f0 = 255.5f * arg0;
     var_f3 = lbl_80564FA8;
-    if (var_f3 > (float)(int)temp_f0) {
-        var_f3 = (float)(int)temp_f0;
-    }
-    if (var_f3 < lbl_80564F88) {
-        var_f3 = lbl_80564F88;
-    }
+    var_f3 = (var_f3 < (float)(int)temp_f0) ? var_f3 : (float)(int)temp_f0;
+    var_f3 = (var_f3 > lbl_80564F88) ? var_f3 : lbl_80564F88;
     scratch[2] = 0xFF;
     scratch[1] = 0xFF;
     scratch[0] = 0xFF;
     temp_r6 = (unsigned char)var_f3;
     scratch[3] = temp_r6;
     color = *(int *)scratch;
-    ((unsigned char *)&lbl_804C97D0)[8] = temp_r6;
-    ((unsigned char *)&lbl_804C97D0)[0x5C] = 1;
-    GXSetTevColor(1, &color);
+    tev = (unsigned char *)&lbl_804C97D0;
+    tev[8] = temp_r6;
+    tev[0x5C] = 1;
+    ((void (*)(int, void *))GXSetTevColor)(1, &color);
     lbl_804C5700[0] = 1;
 }
 #pragma push
@@ -1209,6 +1207,8 @@ void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
     p[0x5C] = 1;
     lbl_804C97D0 = a;
 }
+#pragma push
+#pragma opt_lifetimes on
 void fn_802D01B0(float *p, float v) {
     extern char lbl_804C97D0;
     float z, y, x;
@@ -1550,7 +1550,8 @@ void fn_802D0910(int, int, int, int, int, int) {
 #pragma use_lmw_stmw on
 void fn_802D0914(int arg0, short arg1, short arg2) {
     extern int fn_802E3A64(int, unsigned char *, int, int, int, int, int, int);
-    unsigned char buffer[0x12];
+    struct { unsigned char b[0x12]; } p;
+    unsigned char *buffer = p.b;
     int first = arg0;
     unsigned char b15, b13, b11, b9, b8;
     memset(buffer, 0, 0x12);
@@ -3224,12 +3225,12 @@ void *fn_802D39A4(float step) {
 void fn_802D3A50(void *effect) { ((unsigned char *)effect)[0xC] = 0; }
 
 extern float lbl_80564F88, lbl_80564F8C, lbl_80564FB8, lbl_80564FBC, lbl_80564FE8, lbl_80564FEC;
-#pragma processor 7400
-int fn_802D3A5C(void *arg0, float *arg1) {
+#pragma processor 750
+int fn_802D3A5C(void *arg0, const float *arg1) {
     extern unsigned char lbl_804C9778[];
     float scaledY = 448.0f * arg1[1];
-    float xValue = arg1[0];
     float yValue = scaledY / 480.0f;
+    float xValue = arg1[0];
     int x = (int)xValue;
     int y = (int)yValue;
     float target;
