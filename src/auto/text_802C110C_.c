@@ -294,14 +294,16 @@ extern "C" int fn_802C143C(void *modelObject) {
     } while (i < 8);
     return index;
 }
-#pragma scheduling on
-extern "C" int fn_802C1500(int arg0, int arg1) {
+#pragma cplusplus off
+int fn_802C1500(int arg0, int arg1) {
+#pragma scheduling invalid_target
     struct Entry {
         int first;
         int second;
         char padding[0x58];
     };
-    int index = lbl_8055FB2C++;
+    int index = lbl_8055FB2C;
+    lbl_8055FB2C = index + 1;
     ((int *)lbl_8055FB30)[index] = arg0;
     if (((struct Entry *)lbl_804C0810)[arg1].first < 0) {
         ((struct Entry *)lbl_804C0810)[arg1].first = index;
@@ -311,7 +313,7 @@ extern "C" int fn_802C1500(int arg0, int arg1) {
     }
     return lbl_8055CFA0 + index;
 }
-#pragma scheduling invalid_target
+#pragma cplusplus on
 extern char lbl_8034AED0[];
 extern f32 lbl_80564E54, lbl_80564E50, lbl_80564E58;
 extern char lbl_8055CFA4[], lbl_8055CFAC[], lbl_8055CFB8[], lbl_8055CFC0[];
@@ -349,6 +351,7 @@ extern "C" void fn_802C1550(void) {
         virtual void u20();
         virtual Dispatch *find(const char *);
     };
+    Dispatch *obj = 0;
     register char *entry = lbl_804C0810;
     int outer = 0;
     register unsigned long zero = 0;
@@ -360,19 +363,18 @@ extern "C" void fn_802C1550(void) {
     blank = lbl_80564E50;
     depth = lbl_80564E58;
     while (outer < lbl_8055FB28) {
-        void *obj;
+        int count;
         char *index;
         char *name;
         entry[0x28] = ((Dispatch *)*(void **)(entry + (int)0x30))->hasFlag(lbl_8034AED0 + 0x54, zero) == zero;
-        obj = ((Dispatch *)*(void **)(entry + 0x30))->find(lbl_8034AED0 + 0x60);
-        if (obj != 0) {
-            *(f32 *)(entry + 0x2c) = ((Dispatch *)obj)->getValue(lbl_8034AED0 + 0x6c);
-            index = ((Dispatch *)obj)->getResource(lbl_8055CFA4);
-            obj = (void *)((Dispatch *)obj)->getCount(lbl_8055CFAC);
-            *(int *)(entry + 0x38) = (int)obj;
+        if ((obj = ((Dispatch *)*(void **)(entry + 0x30))->find(lbl_8034AED0 + 0x60)) != 0) {
+            *(f32 *)(entry + 0x2c) = obj->getValue(lbl_8034AED0 + 0x6c);
+            index = obj->getResource(lbl_8055CFA4);
+            count = obj->getCount(lbl_8055CFAC);
+            *(int *)(entry + 0x38) = count;
             *(int *)(entry + 0x3c) = zero;
             {
-                register void *buffer = (void *)fn_8012850C((int)obj * 4, lbl_8055CFB8);
+                register void *buffer = (void *)fn_8012850C(count * 4, lbl_8055CFB8);
                 *(void **)(entry + (unsigned)0x34) = buffer;
                 memset(buffer, zero, *(int *)(entry + 0x38) * 4);
             }
@@ -398,9 +400,9 @@ extern "C" void fn_802C1550(void) {
             }
             {
                 int item = 0;
-                if (0 >= (int)obj)
+                if (0 >= count)
                     goto next_entry;
-                for (; item < (int)obj; item++) {
+                for (; item < count; item++) {
                     pos[0] = diagonal;
                     pos[1] = blank; pos[2] = blank;
                     pos[3] = blank; pos[4] = diagonal;
@@ -427,12 +429,15 @@ extern f32 lbl_80564E64, lbl_80564E68, lbl_80564E6C;
 #pragma paired_single off
 extern "C" void fn_802C173C(float time)
 {
+  struct M33 { f32 m[9]; };
+  struct V3 { f32 x, y, z; };
+  struct Pose { struct M33 m; struct V3 p; };
   struct Scratch
   {
     f32 vec[3];
     f32 rot[3];
     char padding[0x18];
-    int data[12];
+    struct Pose pose;
   };
   register f32 scaleBase;
   register f32 base;
@@ -441,7 +446,7 @@ extern "C" void fn_802C173C(float time)
   register f32 min;
   register f32 upper;
   register f32 lower;
-  volatile char *record;
+  struct TreeHitRecord *record;
   int i;
   lbl_8055FB38 = time;
   min = lbl_80564E50;
@@ -451,112 +456,37 @@ extern "C" void fn_802C173C(float time)
   scaleBase = lbl_80564E6C;
   upper = lbl_80564E60;
   lower = lbl_80564E5C;
-  record = lbl_804C0E10;
+  record = (struct TreeHitRecord *)lbl_804C0E10;
   i = 0;
   do
   {
-    if ((*((volatile int *) (record + 4))) != 0)
+    if (record->tree != 0)
     {
-      f32 age = lbl_8055FB38 - (*((volatile f32 *) (record + 0x44)));
+      f32 age = lbl_8055FB38 - record->time;
       if ((age >= lower) && (age < upper))
       {
-        struct Scratch scratch;
-        int d11;
-        int d10;
-        int d9;
-        int d8;
-        int d7;
-        int d6;
-        int d5;
-        int d4;
-        int d3;
-        int d2;
-        int d1;
-        f32 x;
-        int d0;
-        f32 factor;
-        f32 scaledSin;
+        struct Scratch s;
         f32 delta;
-        f32 z;
-        f32 product;
-        f32 y;
         f32 sn;
-        f32 clamped;
-        d0 = *((volatile int *) (record + 8));
-        d1 = *((volatile int *) (record + 0xC));
-        d2 = *((volatile int *) (record + 0x10));
-        d3 = *((volatile int *) (record + 0x14));
-        d4 = *((volatile int *) (record + 0x18));
-        d5 = *((volatile int *) (record + 0x1C));
-        d6 = *((volatile int *) (record + 0x20));
-        d7 = *((volatile int *) (record + 0x24));
-        d8 = *((volatile int *) (record + 0x28));
-        d9 = *((volatile int *) (record + 0x2C));
-        d10 = *((volatile int *) (record + 0x30));
-        d11 = *((volatile int *) (record + 0x34));
-        scratch.data[0] = d0;
-        scratch.data[1] = d1;
-        scratch.data[2] = d2;
-        scratch.data[3] = d3;
-        scratch.data[4] = d4;
-        scratch.data[5] = d5;
-        scratch.data[6] = d6;
-        scratch.data[7] = d7;
-        scratch.data[8] = d8;
-        scratch.data[9] = d9;
-        scratch.data[10] = d10;
-        scratch.data[11] = d11;
-        clamped = (age > min) ? (age) : (min);
-        sn = (f32) sin(angle * clamped);
-        x = *((volatile f32 *) (record + 0x38));
-        product = age * slope;
-        y = *((volatile f32 *) (record + 0x3C));
-        delta = base - product;
-        scaledSin = scaleBase;
-        scaledSin = scaledSin * sn;
-        factor = scaledSin * delta;
-        scratch.vec[0] = x * factor;
-        scratch.vec[1] = y * factor;
-        scratch.vec[2] = (*((volatile f32 *) (record + 0x40))) * factor;
-        fn_8022FF10(scratch.rot, scratch.vec);
-        fn_80015B20(scratch.data, scratch.data, scratch.rot);
-        {
-          volatile int *dst = (volatile int *) (*((volatile int *) (record + 4)));
-          register int out1;
-          register int out0;
-          out0 = scratch.data[0];
-          out1 = scratch.data[1];
-          dst[0] = out0;
-          dst[1] = out1;
-          out0 = scratch.data[2];
-          out1 = (0, scratch.data[3]);
-          dst[2] = out0;
-          dst[3] = out1;
-          out0 = scratch.data[4];
-          out1 = scratch.data[5];
-          dst[4] = out0;
-          dst[5] = out1;
-          out0 = scratch.data[6];
-          out1 = scratch.data[7];
-          dst[6] = scratch.data[6];
-          dst[7] = out1;
-          out0 = scratch.data[8];
-          dst[8] = out0;
-          out0 = scratch.data[9];
-          out1 = scratch.data[10];
-          dst[9] = out0;
-          dst[10] = out1;
-          out0 = scratch.data[11];
-          dst[11] = out0;
-        }
+        f32 factor;
+        s.pose = *(struct Pose *)record->matrix;
+        sn = (f32)sin(angle * ((age > min) ? age : min));
+        delta = base - age * slope;
+        factor = delta * (scaleBase * sn);
+        s.vec[0] = record->axis[0] * factor;
+        s.vec[1] = record->axis[1] * factor;
+        s.vec[2] = record->axis[2] * factor;
+        fn_8022FF10(s.rot, s.vec);
+        fn_80015B20(&s.pose, &s.pose, s.rot);
+        *(struct Pose *)record->tree = s.pose;
       }
       else
       {
-        fn_802C1180((void *) record);
+        fn_802C1180(record);
       }
     }
     i = i + 1;
-    record = record + 0x48;
+    record = record + 1;
   }
   while (i < 8);
 }
