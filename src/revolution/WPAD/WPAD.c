@@ -6860,7 +6860,7 @@ void fn_800678D8(void) {
 }
 
 // fn_800678DC: WPAD data processing
-__declspec(section ".sdata") extern f64 lbl_80560CE8;
+__declspec(section ".sdata") extern const f64 lbl_80560CE8;
 __declspec(section ".sdata") extern f32 lbl_80560CD8;
 __declspec(section ".sdata") extern unsigned char lbl_8055DC20[];
 __declspec(section ".sdata") extern unsigned char lbl_8055DC24[];
@@ -6987,7 +6987,13 @@ void fn_80067ECC(s32 chan, u8 *data) {
     buf[0x28] = *(u8*)((u8*)cb + 0x801);
     *(u32*)((u8*)cb + 0x788) = 0;
 
-    v = (s16)(((s16)(data[3] << 2) & ~3) | ((data[1] >> 6) & 3));
+    {
+        s16 a = (s16)(data[3] << 2);
+        s16 b;
+        a = a & ~3;
+        b = (data[1] >> 6) & 3;
+        v = a | b;
+    }
     *(s16*)(buf + 4) = v - *(s16*)((u8*)cb + 0x7B6);
 
     v = (s16)(((s16)(data[2] << 3) & ~0xFF) | ((data[1] << 1) & 0x300));
