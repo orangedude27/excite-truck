@@ -769,10 +769,10 @@ extern "C" void fn_80271624(int mode, void *arg1)
             idx = -1;
         }
         if (idx >= 0) {
-            e = (Ent *)((char *)tbl + 0x70) + *(int *)(o + 0x148);
+            e = &tbl->ents[*(int *)(o + 0x148)];
             if (e->active != 0) {
                 if (lbl_8055F564 != 0) {
-                    Zone *z = (Zone *)((char *)tbl + 0x5780) + idx;
+                    Zone *z = &tbl->zones[idx];
                     float a = z->a0;
                     float b = z->b0;
                     float t = lbl_80563F48;
@@ -941,6 +941,7 @@ extern "C" void fn_80271624(int mode, void *arg1)
         } else if (idx != -10) {
             float a[3];
             float m[9];
+            int w;
             a[0] = lbl_80563F48;
             a[1] = lbl_80563F6C;
             a[2] = lbl_80563F48;
@@ -955,12 +956,14 @@ extern "C" void fn_80271624(int mode, void *arg1)
             m[8] = lbl_80563F48;
             fn_801BFD34(o + 0x7C, a, o + 0xC0);
             fn_80015B20(o + 0x58, m, o + 0xC0);
-            *(W12 *)lbl_80499050 = *(W12 *)(o + 0x58);
+            for (w = 0; w < 12; w++)
+                ((int *)lbl_80499050)[w] = ((int *)(o + 0x58))[w];
         }
     } else {
         float k = lbl_80563F70;
         float h = lbl_80563F74;
         float c = lbl_80563F40;
+        int w;
         *(float *)(o + 0x7C) = k * ((float)(int)(c + (h + *(float *)(o + 0xE4) / k)) - h);
         *(float *)(o + 0x84) = k * ((float)(int)(c + (h + *(float *)(o + 0xEC) / k)) - h);
         fn_801E9DC4(o + 0x1EC);
@@ -968,7 +971,8 @@ extern "C" void fn_80271624(int mode, void *arg1)
             *(float *)(o + 0x80) = fn_801E9DDC(o + 0x1EC, *(float *)(o + 0xE4), *(float *)(o + 0xEC));
         *(float *)(o + 0x80) += lbl_80563F78;
         fn_80274E94(o);
-        *(W12 *)lbl_80499050 = *(W12 *)(o + 0x58);
+        for (w = 0; w < 12; w++)
+            ((int *)lbl_80499050)[w] = ((int *)(o + 0x58))[w];
     }
 }
 #pragma cplusplus reset
@@ -1588,17 +1592,18 @@ extern "C" int fn_80272DCC(void *arg0, Parser2 *arg1) {
 
 #pragma scheduling invalid_target
 void fn_80273354(void) {
+    int a = 3, b = 2, c = 1;
     unsigned char *ptr = lbl_8049A258;
     memset(ptr, 0, 0x64);
-    *(int *)(ptr + 0x1C) = 1;
+    *(int *)(ptr + 0x1C) = c;
     *(int *)(ptr + 0x18) = 0;
-    *(int *)(ptr + 0x2C) = 1;
-    *(int *)(ptr + 0x30) = 1;
-    *(int *)(ptr + 0x40) = 2;
-    *(int *)(ptr + 0x44) = 3;
+    *(int *)(ptr + 0x2C) = c;
+    *(int *)(ptr + 0x30) = c;
+    *(int *)(ptr + 0x40) = b;
+    *(int *)(ptr + 0x44) = a;
     *(int *)(ptr + 0x54) = 5;
-    *(int *)(ptr + 0x58) = 3;
-    ((void (*)(int, int, int, void *))fn_8027156C)(3, 2, 1, ptr);
+    *(int *)(ptr + 0x58) = a;
+    ((void (*)(int, int, int, void *))fn_8027156C)(a, b, c, ptr);
 }
 extern int lbl_8055F54C;
 /* The CamType the last camera update applied: fn_80271624 compares it with the camera
@@ -1770,13 +1775,15 @@ void fn_80273604(void *arg0, s32 arg1) {
     extern float lbl_80563F48, lbl_80563F4C, lbl_80563F50, lbl_80563F9C;
     u8 *table;
     u8 *state;
+    s32 kind;
     table = (u8 *)&lbl_8049A258 + arg1 * 0x14;
     state = lbl_80346BA0 + ((*(s32 *)(table + 4) + *(s32 *)(table + 0xC))) * 0x28;
-    switch (*(s32 *)state) {
+    kind = *(s32 *)state;
+    switch (kind) {
     case 0x22: {
         struct Scratch { float vec[3]; float pad; float matrix[9]; float pos[3]; } scratch;
+        float mag, nx, ny, nz, sine, oneMinusCos, t0, t1, t2, t3, t4, t5, cosine;
         float scale = lbl_80563F4C;
-        float mag, nx, ny, nz, sine, cosine, oneMinusCos, t0, t1, t2, t3, t4, t5;
         *(s32 *)((u8 *)arg0 + 88) = *(s32 *)((u8 *)arg0 + 192); *(s32 *)((u8 *)arg0 + 92) = *(s32 *)((u8 *)arg0 + 196); *(s32 *)((u8 *)arg0 + 96) = *(s32 *)((u8 *)arg0 + 200); *(s32 *)((u8 *)arg0 + 100) = *(s32 *)((u8 *)arg0 + 204);
         *(s32 *)((u8 *)arg0 + 104) = *(s32 *)((u8 *)arg0 + 208); *(s32 *)((u8 *)arg0 + 108) = *(s32 *)((u8 *)arg0 + 212); *(s32 *)((u8 *)arg0 + 112) = *(s32 *)((u8 *)arg0 + 216); *(s32 *)((u8 *)arg0 + 116) = *(s32 *)((u8 *)arg0 + 220);
         *(s32 *)((u8 *)arg0 + 120) = *(s32 *)((u8 *)arg0 + 224); *(s32 *)((u8 *)arg0 + 124) = *(s32 *)((u8 *)arg0 + 228); *(s32 *)((u8 *)arg0 + 128) = *(s32 *)((u8 *)arg0 + 232); *(s32 *)((u8 *)arg0 + 132) = *(s32 *)((u8 *)arg0 + 236);
@@ -1850,7 +1857,7 @@ void fn_80273604(void *arg0, s32 arg1) {
         return;
     }
     default:
-        fn_802E30C8(lbl_80347310, *(s32 *)state);
+        fn_802E30C8(lbl_80347310, kind);
         fn_802704D4(4, arg0);
         return;
     }
