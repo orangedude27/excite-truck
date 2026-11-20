@@ -200,7 +200,7 @@ void fn_8028A664(void) {
     extern s32 fn_8028B93C(const f32 *);
     extern s32 fn_8028B500(void *);
     extern s32 fn_8028BA44(void *);
-    extern s32 fn_8028BA9C(void *);
+    extern s32 fn_8028BA9C(const void *);
     extern s32 fn_8028BB14(s32);
     void *handle;
     handle = fn_801284F8(0xDC, "short sparks\0\0\0");
@@ -867,7 +867,7 @@ extern f32 lbl_805643A0;
 extern f32 lbl_80564394;
 extern s32 fn_80287B94(s32, s32, f32, f32, f32);
 extern s32 fn_8028CD80(s32, s32, void *, f32 *, f32);
-#pragma scheduling 750
+#pragma scheduling on
 s32 fn_8028BA9C(void *arg0) {
     register f32 c, b, a, scale;
     f32 values[3];
@@ -886,7 +886,6 @@ s32 fn_8028BA9C(void *arg0) {
     fn_8028CD80(lbl_8055F6F8, temp, arg0, values, lbl_80564394);
     return 0x1C;
 }
-#pragma scheduling invalid_target
 s32 fn_8028BB14(s32 payload) {
     /* Event-handler for event type 8 (registered by fn_8028A664, run by the
      * event-script dispatcher in world/event.c).  Its 0x18-byte payload holds
