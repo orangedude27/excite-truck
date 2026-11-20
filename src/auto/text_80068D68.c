@@ -1125,7 +1125,7 @@ static inline u8 hh_get_trans_status(s32 result) {
 extern void fn_8006E6E4(void *);
 extern void fn_80071450(void *);
   extern void fn_80070954(u32 code, void *msg, u16 param);
-  extern char lbl_803196B8[1];
+  extern char lbl_803196B8[];
 extern char lbl_803164F4[];
 extern char lbl_80319D48[];
 extern char lbl_80319EC0[];
