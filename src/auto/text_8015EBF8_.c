@@ -242,6 +242,7 @@ __declspec(section ".sdata") extern char lbl_8055A094[];
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_8015EF84(void **arg0) {
+#pragma scheduling invalid_target
     class Root {
     public:
         virtual void unused01(); virtual void unused02(); virtual void unused03(); virtual void unused04();
@@ -258,12 +259,11 @@ extern "C" void fn_8015EF84(void **arg0) {
         virtual void unused08(); virtual void unused09(); virtual void unused10(); virtual void unused11();
         virtual void unused12(); virtual u64 getPacked(const char *);
     };
+    struct Rec { u16 w0; s16 w2; int w4; int w8; float wC; };
     int index;
     int found = 0;
-    void **root;
     void *obj;
-    root = arg0;
-    if (root == 0)
+    if (arg0 == 0)
         goto report;
     index = 0;
     goto fetch;
@@ -283,8 +283,7 @@ process:
         radius2 = radius * radius;
         i = 0;
         offset = 0;
-    inner:
-        {
+        while (i < ((volatile int *)lbl_8055E29C)[1]) {
             volatile int *table = (volatile int *)lbl_8055E29C;
             char *array = (char *)table[0];
             char *entry = array + offset;
@@ -299,13 +298,7 @@ process:
                     int count = table[1];
                     int last = count - 1;
                     if (i != last) {
-                        int lastOffset = last * 16;
-                        char *from = array + lastOffset;
-                        *(u16 *)(entry + 0) = *(u16 *)(from + 0);
-                        *(s16 *)(entry + 2) = *(s16 *)(from + 2);
-                        *(int *)(entry + 4) = *(int *)(from + 4);
-                        *(int *)(entry + 8) = *(int *)(from + 8);
-                        *(f32 *)(entry + 12) = *(f32 *)(from + 12);
+                        *(Rec *)entry = ((Rec *)array)[last];
                     }
                     table[1] = count - 1;
                 }
@@ -313,14 +306,11 @@ process:
                 offset += 16;
                 i++;
             }
-            table = (volatile int *)lbl_8055E29C;
-            if (i < table[1])
-                goto inner;
         }
     }
     index++;
 fetch:
-    obj = ((Root *)root)->getAt(index);
+    obj = ((Root *)arg0)->getAt(index);
     if (obj != 0)
         goto process;
 report:
@@ -361,7 +351,6 @@ int fn_8015F148(void **arg0, int arg1) {
 }
 
 extern f32 lbl_805617D4, lbl_805617D8, lbl_805617DC, lbl_805617E0;
-#pragma push
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma processor 750
@@ -412,7 +401,6 @@ void fn_8015F1E4(void *arg0, void *arg1)
   *((f32 *) (((char *) arg0) + 8)) = result[4];
   *((u16 *) (((char *) arg0) + 2)) = 0;
 }
-#pragma pop
 void fn_8015F1E4();
 extern f64 fn_8002F234(f32, f32, f32);
 void fn_8015EC50(unsigned short *, void *);
@@ -658,6 +646,7 @@ f32 PSVECDotProduct(void *, void *);
 #pragma processor 750
 #pragma dont_inline on
 s32 fn_8015F7A0(s32 arg0, void *arg1, void *arg2) {
+#pragma scheduling 750
     f32 scale = (f32)arg0 * lbl_805617E4;
     f32 t = (PSVECDotProduct(arg1, arg2) - lbl_805617EC) / lbl_805617F0;
     f32 clamp = lbl_805617E8;
@@ -669,20 +658,18 @@ s32 fn_8015F7A0(s32 arg0, void *arg1, void *arg2) {
 extern f32 lbl_8055E2A4;
 extern f32 lbl_805617DC;
 extern f32 lbl_80561808;
-extern const f64 lbl_805617F8;
-__declspec(section ".sdata") extern const f64 lbl_805617F8;
 s32 fn_8015F848(f32 *arg0, f32 farg0) {
+#pragma scheduling invalid_target
     f32 *var_r5;
-    f32 *temp_r7;
     f32 *var_r6;
-    f32 temp_f2;
-    f32 temp_f6;
+    f32 *temp_r7;
     f32 threshold;
-    f32 spacing;
     f32 multiplier;
-    f64 magic;
+    f32 temp_f6;
+    f32 product;
+    f32 spacing;
+    f32 temp_f2;
     s32 temp_r0;
-    s32 var_ctr;
     s32 var_r9;
     s32 var_r8;
 
@@ -690,30 +677,26 @@ s32 fn_8015F848(f32 *arg0, f32 farg0) {
     var_r8 = -1;
     var_r9 = 0;
     threshold = lbl_8055E2A4;
-    spacing = lbl_80561808;
     multiplier = lbl_805617DC;
-    magic = *(volatile f64 *)&lbl_805617F8;
+    spacing = lbl_80561808;
     do {
         temp_f6 = *var_r5;
         if (temp_f6 < farg0) {
             if (var_r8 > 0) {
                 temp_r0 = var_r8 * 8;
                 temp_r7 = (f32 *)((char *)arg0 + temp_r0);
-                if ((f32)fabs((double)(*temp_r7 - temp_f6)) < farg0 * multiplier &&
-                    threshold * (f32)((double)(var_r9 - var_r8) - magic) < spacing) {
-                    var_ctr = (var_r9 + 1) - var_r8;
+                product = farg0 * multiplier;
+                if ((f32)fabs((double)(*temp_r7 - temp_f6)) < product &&
+                    threshold * (f32)(var_r9 - var_r8) < spacing) {
                     var_r6 = temp_r7;
-                    if (var_r8 <= var_r9) {
-                        do {
-                            temp_f2 = *var_r5;
-                            temp_f6 = *temp_r7;
-                            if (temp_f6 < temp_f2)
-                                temp_f6 = temp_f2;
-                            *var_r6 = temp_f6;
-                            var_r6 = (f32 *)((char *)var_r6 + 8);
-                            temp_r7 = (f32 *)((char *)temp_r7 + 8);
-                        } while (--var_ctr != 0);
+#pragma ctrloop on
+                    for (; var_r8 <= var_r9; var_r6 = (f32 *)((char *)var_r6 + 8), var_r8++) {
+                        temp_f2 = *var_r5;
+                        temp_f6 = *temp_r7;
+                        temp_f6 = (temp_f6 < temp_f2) ? temp_f6 : temp_f2;
+                        *var_r6 = temp_f6;
                     }
+#pragma ctrloop reset
                 }
             }
             var_r8 = var_r9;
@@ -1142,17 +1125,17 @@ void fn_801602D4(void *arg0_, int *arg1_, void *arg2_, unsigned char arg3_, floa
 {
   struct Hit *arg0 = (struct Hit *) arg0_;
   void *arg1 = (void *) arg1_;
-  void *arg2 = arg2_;
-  float new_var;
-  float arg3 = arg4_;
-  float dist;
   char *desc4 = ((char *) arg1) + 4;
-  char *new_var2;
+  void *arg2 = arg2_;
+  float dist;
   float low;
   float high;
   float height;
   float pos;
   float t;
+  float new_var;
+  float arg3 = arg4_;
+  char *new_var2;
   s16 type;
   int first;
   int i;
@@ -1165,7 +1148,7 @@ void fn_801602D4(void *arg0_, int *arg1_, void *arg2_, unsigned char arg3_, floa
     low = (-lbl_80561800) * lbl_805617DC;
     if ((pos + height) > low)
     {
-      high = lbl_80561800 * ((double) lbl_805617DC);
+      high = lbl_80561800 * lbl_805617DC;
       if ((pos - height) < high)
       {
         type = *((s16 *) (((char *) arg1) + 2));
@@ -1176,28 +1159,28 @@ void fn_801602D4(void *arg0_, int *arg1_, void *arg2_, unsigned char arg3_, floa
             t = pos - height;
             t = (t - low) / (high - t);
             new_var2 = ((char *) arg1) + 0xC;
-            t = (t > lbl_805617E8) ? (t) : (lbl_805617E8);
-            t = (t < lbl_805617D4) ? (t) : (lbl_805617D4);
+            t = (t < lbl_805617E8) ? t : lbl_805617E8;
+            t = (t > lbl_805617D4) ? t : lbl_805617D4;
             first = (int) (lbl_805617D4 + (t * lbl_80561828));
             t = ((lbl_8055E2A4 + (pos + (*((float *) new_var2)))) - ((-lbl_80561800) * lbl_805617DC)) / ((lbl_80561800 * lbl_805617DC) - ((-lbl_80561800) * lbl_805617DC));
             new_var = lbl_805617E8;
-            t = (t > new_var) ? (t) : (lbl_805617E8);
-            t = (t < lbl_805617D4) ? (t) : (lbl_805617D4);
+            t = (t < new_var) ? t : lbl_805617E8;
+            t = (t > lbl_805617D4) ? t : lbl_805617D4;
             last = (int) (lbl_805617D4 + (t * lbl_80561828));
             break;
 
           case 2:
             first = 0;
             t = ((pos + lbl_8055E2A4) - low) / (high - low);
-            t = (t > lbl_805617E8) ? (t) : (lbl_805617E8);
-            t = (t < lbl_805617D4) ? (t) : (lbl_805617D4);
+            t = (t < lbl_805617E8) ? t : lbl_805617E8;
+            t = (t > lbl_805617D4) ? t : lbl_805617D4;
             last = (int) (lbl_805617D4 + (t * lbl_80561828));
             break;
 
           case 1:
             t = (pos - low) / (high - low);
-            t = (t > lbl_805617E8) ? (t) : (lbl_805617E8);
-            t = (t < lbl_805617D4) ? (t) : (lbl_805617D4);
+            t = (t < lbl_805617E8) ? t : lbl_805617E8;
+            t = (t > lbl_805617D4) ? t : lbl_805617D4;
             first = (int) (lbl_805617D4 + (t * lbl_80561828));
             last = 0x40;
             break;
@@ -1224,14 +1207,11 @@ void fn_801602D4(void *arg0_, int *arg1_, void *arg2_, unsigned char arg3_, floa
 
 float fn_80160588(void * __restrict arg0, void * __restrict arg1, void * __restrict arg2) {
     volatile f32 d[2];
-    f32 *a = (f32 *)arg0;
-    f32 *b = (f32 *)arg1;
-    f32 *c = (f32 *)arg2;
     f32 dx, dy, t0, t1, r;
-    dx = b[0] - c[0];
-    dy = b[1] - c[1];
-    t0 = a[0] * dx;
-    t1 = a[1] * dy;
+    dx = ((f32 *)arg1)[0] - ((f32 *)arg2)[0];
+    dy = ((f32 *)arg1)[1] - ((f32 *)arg2)[1];
+    t0 = ((f32 *)arg0)[0] * dx;
+    t1 = ((f32 *)arg0)[1] * dy;
     d[0] = dx;
     r = t0 + t1;
     d[1] = dy;
