@@ -706,8 +706,7 @@ extern int fn_80214D50(int);
 extern float fn_8023659C(int *);
 extern float lbl_80563764, lbl_80563768, lbl_8056376C, lbl_80563770;
 extern float lbl_80563774, lbl_80563778, lbl_8056377C;
-#pragma optimize_for_size off
-#pragma scheduling invalid_target
+#pragma scheduling on
 s32 fn_80241354(void *arg0, s32 arg1) {
     char *base = (char *)arg0;
     s32 direction = arg1;
@@ -773,19 +772,9 @@ copy_done_forward:
         *animation = *(int *)(base + 0x2C);
         frame = (int)(fn_8023659C(animation) * lbl_80563768);
         temp = (float)(frame - *(int *)(base + 0x48)) / lbl_8056376C;
-        t = lbl_80563764;
-        if (temp < t) t = temp;
+        t = (lbl_80563764 < temp) ? lbl_80563764 : temp;
         t = (t > lbl_80563758) ? t : lbl_80563758;
-        curve = lbl_80563770;
-        if (t >= lbl_80563770) {
-            if (t > lbl_80563764) {
-                curve = lbl_80563764;
-            } else if (t > lbl_80563758) {
-                curve = t * (lbl_80563774 * t * t) + lbl_80563778 * t * t;
-            } else {
-                curve = t * (lbl_80563774 * t * t) - lbl_80563778 * t * t;
-            }
-        }
+        curve = (t < lbl_80563770) ? lbl_80563770 : ((t > lbl_80563764) ? lbl_80563764 : ((t > lbl_80563758) ? (t * ((lbl_80563774 * t) * t) + (lbl_80563778 * t) * t) : (t * ((lbl_80563774 * t) * t) - (lbl_80563778 * t) * t)));
         start = *(float *)(base + 0x4C);
         end = *(float *)(base + 0x50);
         diff = end - start;
@@ -839,19 +828,9 @@ copy_done_backward:
         *animation = *(int *)(base + 0x2C);
         frame = (int)(fn_8023659C(animation) * lbl_80563768);
         temp = (float)(frame - *(int *)(base + 0x48)) / lbl_8056376C;
-        t = lbl_80563764;
-        if (temp < t) t = temp;
+        t = (lbl_80563764 < temp) ? lbl_80563764 : temp;
         t = (t > lbl_80563758) ? t : lbl_80563758;
-        curve = lbl_80563770;
-        if (t >= lbl_80563770) {
-            if (t > lbl_80563764) {
-                curve = lbl_80563764;
-            } else if (t > lbl_80563758) {
-                curve = t * (lbl_80563774 * t * t) + lbl_80563778 * t * t;
-            } else {
-                curve = t * (lbl_80563774 * t * t) - lbl_80563778 * t * t;
-            }
-        }
+        curve = (t < lbl_80563770) ? lbl_80563770 : ((t > lbl_80563764) ? lbl_80563764 : ((t > lbl_80563758) ? (t * ((lbl_80563774 * t) * t) + (lbl_80563778 * t) * t) : (t * ((lbl_80563774 * t) * t) - (lbl_80563778 * t) * t)));
         start = *(float *)(base + 0x4C);
         end = *(float *)(base + 0x50);
         diff = end - start;
@@ -869,7 +848,6 @@ copy_done_backward:
 done:
     return active;
 }
-
 extern float lbl_80563780, lbl_80563784, lbl_80563788, lbl_8056378C, lbl_80563790, lbl_80563794;
 extern float fn_8023659C();
 extern void fn_802354A0(int, int, unsigned, float, float, float, float, float);
@@ -879,8 +857,7 @@ extern float fn_80235F64(s32, s32);
 extern float fn_80235EF0(s32, s32);
 extern void fn_802353F4(s32, s32, float, float, float);
 extern void fn_8022BD40(int, void *, int, int, float, float, float, float, float, float, float, float);
-#pragma push
-#pragma processor 750
+#pragma scheduling invalid_target
 void fn_80241820(void *arg0) {
     char *self = (char *)arg0;
     float sx, sy;
@@ -895,7 +872,7 @@ void fn_80241820(void *arg0) {
         t = (float)((int)(lbl_80563768 * fn_8023659C()) - *(int *)(self + 0x48)) / lbl_8056376C;
         t = (lbl_80563764 < t) ? lbl_80563764 : t;
         t = (t > lbl_80563758) ? t : lbl_80563758;
-        c = (t < lbl_80563770) ? lbl_80563770 : ((t > lbl_80563764) ? lbl_80563764 : ((t > lbl_80563758) ? (lbl_80563774 * t * t * t + lbl_80563778 * t * t) : (lbl_80563774 * t * t * t - lbl_80563778 * t * t)));
+        c = (t < lbl_80563770) ? lbl_80563770 : ((t > lbl_80563764) ? lbl_80563764 : ((t > lbl_80563758) ? (t * (lbl_80563774 * t * t) + lbl_80563778 * t * t) : (t * (lbl_80563774 * t * t) - lbl_80563778 * t * t)));
         f4c = *(float *)(self + 0x4c);
         half = lbl_80563784;
         zero = lbl_80563758;
@@ -963,7 +940,6 @@ void fn_80241820(void *arg0) {
         fn_8022BD40(0xCC, self + 0x5C, 0, 0, x + lbl_80563784 * w, y + lbl_80563784 * h, lbl_80563758, w, h, lbl_80563764, x, y);
     }
 }
-#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
@@ -1440,6 +1416,7 @@ extern char lbl_80342840[];
 extern char lbl_8055BD60;
 #pragma push
 #pragma use_lmw_stmw off
+#pragma cplusplus on
 void fn_80242738(void *arg0, s32 arg1)
 {
   register unsigned refreshIndex;
@@ -1478,25 +1455,14 @@ void fn_80242738(void *arg0, s32 arg1)
       goto copy_check0;
       copy_check_loop0:
       --n;
-
-      if (n > 0)
-      {
-        goto copy_check0;
-      }
+      if (n > 0) { goto copy_check0; }
       dst[-1] = 0;
       goto copy_done0;
       copy_check0:
       c = *(src++);
-
       *(dst++) = (u8) c;
-      if (c != 0)
-      {
-        goto copy_check_loop0;
-      }
+      if (c != 0) { goto copy_check_loop0; }
       copy_done0:
-      ;
-
-      ;
       child = *((u8 **) (entry + 0x18));
     }
     else
@@ -1507,24 +1473,14 @@ void fn_80242738(void *arg0, s32 arg1)
       goto copy_check1;
       copy_check_loop1:
       --n;
-
-      if (n > 0)
-      {
-        goto copy_check1;
-      }
+      if (n > 0) { goto copy_check1; }
       dst[-1] = 0;
       goto copy_done1;
       copy_check1:
       c = *(src++);
-
       *(dst++) = (u8) c;
-      if (c != 0)
-      {
-        goto copy_check_loop1;
-      }
+      if (c != 0) { goto copy_check_loop1; }
       copy_done1:
-      ;
-
       ;
     }
     entry = widget;
@@ -1532,7 +1488,6 @@ void fn_80242738(void *arg0, s32 arg1)
     goto init_child_check;
     init_child_body:
     selectedValue = *(*((s32 **) (widget + 0x34)));
-
     n = ((*((u8 *) (widget + 0x38))) != 0) && (i == (*((s32 *) (widget + 0x30))));
     child = *((u8 **) (entry + 0x18));
     *((u8 *) child) = (u8) n;
@@ -1540,11 +1495,7 @@ void fn_80242738(void *arg0, s32 arg1)
     entry += 4;
     i += 1;
     init_child_check:
-    if (i < (*((volatile s32 *) (widget + 0x2C))))
-    {
-      goto init_child_body;
-    }
-
+    if (i < (*((volatile s32 *) (widget + 0x2C)))) { goto init_child_body; }
     *((s32 *) (base + 0x34)) = 2;
     outer += 1;
     base += 0x20;
@@ -1554,42 +1505,22 @@ void fn_80242738(void *arg0, s32 arg1)
   child = (u8 *) arg0;
   *((s32 *) (((u8 *) arg0) + 0x30)) = 0;
   *((s32 *) (child + 0x50)) = 0;
-  modeA = *((s32 *) (((u8 *) arg0) + 0x34));
+  modeA = *((volatile s32 *) (((u8 *) arg0) + 0x34));
   selected = 0;
   mode = 0;
-  if (modeA <= 1)
-  {
-    goto mode_a_ok;
-  }
-  if (modeA == 4)
-  {
-    goto mode_a_ok;
-  }
+  if (modeA <= 1) { goto mode_a_ok; }
+  if (modeA == 4) { goto mode_a_ok; }
   mode = 0;
   goto mode_done;
   mode_a_ok:
-  if (modeA == 4)
-  {
-    selected = 1;
-  }
-
-  modeB = *((s32 *) (((u8 *) arg0) + 0x54));
-  if (modeB <= 1)
-  {
-    goto mode_b_ok;
-  }
-  if (modeB == 4)
-  {
-    goto mode_b_ok;
-  }
+  if (modeA == 4) { selected = 1; }
+  modeB = *((volatile s32 *) (((u8 *) arg0) + 0x54));
+  if (modeB <= 1) { goto mode_b_ok; }
+  if (modeB == 4) { goto mode_b_ok; }
   mode = 0;
   goto mode_done;
   mode_b_ok:
-  if (modeB == 4)
-  {
-    selected++;
-  }
-
+  if (modeB == 4) { selected++; }
   mode = selected >= 2;
   mode_done:
   if ((*((u8 *) (((u8 *) arg0) + 0x58))) != ((unsigned) mode))
@@ -1597,9 +1528,7 @@ void fn_80242738(void *arg0, s32 arg1)
     *((s32 *) (((u8 *) arg0) + 0x30)) = 0;
     *((s32 *) (((u8 *) arg0) + 0x50)) = 0;
   }
-
-  base = ((u8 *) arg0) + 0x18;
-  for (refreshIndex = 0; refreshIndex < 2U; refreshIndex++, base += 0x20)
+  for (base = ((u8 *) arg0) + 0x18, refreshIndex = 0; refreshIndex < 2U; refreshIndex++, base += 0x20)
   {
     current = *((s32 *) (base + 0x1C));
     previous = *((s32 *) (base + 0x18));
@@ -1607,38 +1536,29 @@ void fn_80242738(void *arg0, s32 arg1)
     {
       switch (current)
       {
-        case 0:
-          break;
-
+        case 0: break;
         case 1:
           fn_80214AF0(*((s32 *) (base + 4)));
           fn_80214A9C(*((s32 *) (base + 8)));
           fn_80214A9C(*((s32 *) (base + 0x0C)));
           break;
-
         case 2:
-
         case 3:
           fn_80214A9C(*((s32 *) (base + 4)));
           fn_80214AF0(*((s32 *) (base + 8)));
           fn_80214A9C(*((s32 *) (base + 0x0C)));
           fn_80214AF0(*((s32 *) (base + 0x14)));
-          if ((refreshIndex != 0) && ((*((s32 *) (base + ((s32) 0x1C)))) == 2))
-        {
-          fn_80214A9C(*((s32 *) (base + 0x10)));
-        }
-        else
-        {
-          fn_80214AF0(*((s32 *) (base + 0x10)));
-        }
+          if ((refreshIndex != 0) && ((*((s32 *) (base + 0x1C))) == 2))
+            fn_80214A9C(*((s32 *) (base + 0x10)));
+          else
+            fn_80214AF0(*((s32 *) (base + 0x10)));
           list = *((u8 **) base);
           *((u8 *) (list + 0x38)) = 1;
           entry = list;
           i = 0;
           goto on_child_check;
           on_child_body:
-        selectedValue = *(*((s32 **) (list + 0x34)));
-
+          selectedValue = *(*((s32 **) (list + 0x34)));
           n = ((*((u8 *) (list + 0x38))) != 0) && (i == (*((s32 *) (list + 0x30))));
           child = *((u8 **) (entry + 0x18));
           *((u8 *) child) = (u8) n;
@@ -1646,13 +1566,8 @@ void fn_80242738(void *arg0, s32 arg1)
           entry += 4;
           i++;
           on_child_check:
-        if (i < (*((volatile s32 *) (list + 0x2C))))
-        {
-          goto on_child_body;
-        }
-
+          if (i < (*((volatile s32 *) (list + 0x2C)))) { goto on_child_body; }
           break;
-
         case 4:
           fn_80214A9C(*((s32 *) (base + 4)));
           fn_80214AF0(*((s32 *) (base + 8)));
@@ -1665,8 +1580,7 @@ void fn_80242738(void *arg0, s32 arg1)
           i = 0;
           goto off_child_check;
           off_child_body:
-        selectedValue = *(*((s32 **) (list + 0x34)));
-
+          selectedValue = *(*((s32 **) (list + 0x34)));
           n = ((*((u8 *) (list + 0x38))) != 0) && (i == (*((s32 *) (list + 0x30))));
           child = *((u8 **) (entry + 0x18));
           *((u8 *) child) = (u8) n;
@@ -1674,31 +1588,19 @@ void fn_80242738(void *arg0, s32 arg1)
           entry += 4;
           i++;
           off_child_check:
-        if (i < (*((volatile s32 *) (list + 0x2C))))
-        {
-          goto off_child_body;
-        }
-
+          if (i < (*((volatile s32 *) (list + 0x2C)))) { goto off_child_body; }
           break;
-
         default:
           fn_802E317C(lbl_80342840, 0, refreshIndex);
           break;
-
       }
-
       *((s32 *) (base + 0x18)) = *((s32 *) (base + 0x1C));
     }
   }
-
   ((mode != 0) ? (fn_80214AF0) : (fn_80214A9C))(0x1E);
   if (mode != 0)
   {
-    for (i = 7; i <= 0xA; i++)
-    {
-      fn_80214A9C(i);
-    }
-
+    for (i = 7; i <= 0xA; i++) { fn_80214A9C(i); }
   }
   *((u8 *) (((u8 *) arg0) + 0x58)) = (u8) mode;
 }
@@ -1718,13 +1620,16 @@ extern "C" void fn_802E317C(char *, ...);
 #pragma dont_inline on
 extern "C" void fn_80242B1C(void *arg0) {
     register unsigned refreshIndex;
-    unsigned outer;
-    s32 i, n, selected, selectedValue, current, previous;
-    s32 modeA, modeB, mode;
+    s32 i, selected, selectedValue, current, previous;
+    s32 modeA, modeB;
     s32 tick, quotient;
-    u8 *base, *widget, *slot, *entry, *child, *list;
-    signed char c;
-    u8 *src, *dst;
+    s32 mode;
+    u8 *base, *slot, *widget, *entry, *child, *list;
+    unsigned outer;
+    int c;
+    u8 *src;
+    s32 n;
+    u8 *dst;
 
     tick = lbl_8055F1F8 + 1;
     lbl_8055F1F8 = tick;
@@ -1753,7 +1658,7 @@ copy_check_loop0:
                     dst[-1] = 0;
                     goto copy_done0;
 copy_check0:
-                    c = *src++;
+                    c = (signed char)*src++;
                     *dst++ = (u8)c;
                     if (c != 0) goto copy_check_loop0;
 copy_done0:;
@@ -1768,7 +1673,7 @@ copy_check_loop1:
                     dst[-1] = 0;
                     goto copy_done1;
 copy_check1:
-                    c = *src++;
+                    c = (signed char)*src++;
                     *dst++ = (u8)c;
                     if (c != 0) goto copy_check_loop1;
 copy_done1:;
