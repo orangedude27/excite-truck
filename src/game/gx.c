@@ -1498,7 +1498,7 @@ extern float lbl_80564F80;
 extern char lbl_8034BD18[];
 extern int lbl_804C9760[];
 extern unsigned char lbl_804C9830[];
-void fn_802D0914(int, int, int);
+void fn_802D0914(int, short, short);
 void fn_802D09E4(void);
 int fn_802E2C20(void);
 void fn_802E30C8(const char *, ...);
@@ -1548,7 +1548,7 @@ void fn_802D0910(int, int, int, int, int, int) {
 }
 
 #pragma use_lmw_stmw on
-void fn_802D0914(int arg0, int arg1, int arg2) {
+void fn_802D0914(int arg0, short arg1, short arg2) {
     extern int fn_802E3A64(int, unsigned char *, int, int, int, int, int, int);
     unsigned char buffer[0x12];
     int first = arg0;
