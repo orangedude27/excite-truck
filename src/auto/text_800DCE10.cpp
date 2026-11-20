@@ -9,6 +9,16 @@ extern "C" void *MEMAllocFromAllocator(void *, u32);
 extern "C" void MEMFreeToAllocator(void *, void *);
 extern "C" u16 fn_8002AEE8(const u16 *);
 
+struct DD70CVTab {
+    virtual void v00(){} virtual void v01(){} virtual void v02(){} virtual void v03(){}
+    virtual void v04(){} virtual void v05(){} virtual void v06(){} virtual void v07(){}
+    virtual void v08(){} virtual void v09(){} virtual void v10(){} virtual void v11(){}
+    virtual void v12(){} virtual void v13(){} virtual void v14(){} virtual void v15(){}
+    virtual void v16(){} virtual void v17(){} virtual void v18(){} virtual void v19(){}
+    virtual void v20(){} virtual void v21(){}
+    virtual void call(void *arg) {}
+};
+
 extern "C" void lbl_80320548(void);
 extern const char lbl_80320570[];
 extern const char lbl_80320688[];
