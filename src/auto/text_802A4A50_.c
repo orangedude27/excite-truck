@@ -139,19 +139,21 @@ static inline void Mtx33MultVec_802A6470(const f32 *m, const f32 *src, f32 *dst)
 }
 static inline void VecMtxMult_802A53B0(const f32 *m, const f32 *src, f32 *dst) {
     if (src == dst) {
-        f32 x = src[0], y = src[1], z = src[2];
-        f32 y3 = y * m[3];
-        f32 y4 = y * m[4];
-        f32 x0 = x * m[0];
-        f32 x1 = x * m[1];
-        f32 x2 = x * m[2];
-        f32 y5 = y * m[5];
+        f32 y3 = src[1] * m[3];
+        f32 y4 = src[1] * m[4];
+        f32 x0 = src[0] * m[0];
+        f32 x1 = src[0] * m[1];
+        f32 x2 = src[0] * m[2];
+        f32 y5 = src[1] * m[5];
         f32 s0 = x0 + y3;
+        f32 z6 = src[2] * m[6];
         f32 s1 = x1 + y4;
+        f32 z7 = src[2] * m[7];
         f32 s2 = x2 + y5;
-        f32 o0 = z * m[6] + s0;
-        f32 o1 = z * m[7] + s1;
-        f32 o2 = z * m[8] + s2;
+        f32 z8 = src[2] * m[8];
+        f32 o0 = z6 + s0;
+        f32 o1 = z7 + s1;
+        f32 o2 = z8 + s2;
         dst[0] = o0; dst[1] = o1; dst[2] = o2;
     } else {
         dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
@@ -1995,18 +1997,18 @@ struct Obj802A5878 {
 #pragma optimization_level 2
 #pragma cplusplus on
 extern "C" void fn_802A70E4(void *object, float *input) {
-    V3A70E4 *data = *(V3A70E4 **)object;
-    s32 idx = ((s32 *)object)[1];
-    float z;
-    float y;
-    float x;
-    x = input[0];
-    y = input[1];
-    z = input[2];
-    data[idx].x = x;
-    data[idx].y = y;
-    data[idx].z = z;
-    ((s32 *)object)[1] = ((s32 *)object)[1] + 1;
+V3A70E4 *data = *(V3A70E4 **)object;
+s32 idx = ((s32 *)object)[1];
+float z;
+float y;
+float x;
+x = input[0];
+y = input[1];
+z = input[2];
+data[idx].x = x;
+data[idx].y = y;
+data[idx].z = z;
+((s32 *)object)[1] = ((s32 *)object)[1] + 1;
 }
 #pragma pop
 
