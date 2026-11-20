@@ -345,7 +345,7 @@ void fn_802B9108(short arg0) {
         short sz;
         void *grid;
         s32 gridCount;
-        void *mgr;
+        s32 mgr_pad;
         void **items;
         s32 itemCount;
         s32 itemCap;
@@ -356,6 +356,7 @@ void fn_802B9108(short arg0) {
     float f27;
     float f28;
     s32 denom;
+    s32 gridCount;
     s32 i;
     s32 off;
     s32 idx;
@@ -396,30 +397,32 @@ void fn_802B9108(short arg0) {
     s32 knd;
     void *pp;
     void *recs;
+    void *mgr;
     frame.sz = arg0;
-    denom = frame.sz * 2;
-    frame.gridCount = (0x400 / denom) * (0x400 / denom);
-    frame.grid = ((void *(*)(void *, void *, int, int, int))fn_8002F37C)(((void *(*)(int, void *))fn_8012850C)(frame.gridCount * 8 + 0x10, lbl_8055CF00), fn_802B9B40, 0, 8, frame.gridCount);
-    frame.mgr = fn_801284F8(0x14, lbl_8034AA84);
-    if (frame.mgr != 0) {
-        cnt = (frame.gridCount * 6) / 4;
+    denom = arg0 * 2;
+    gridCount = (0x400 / denom) * (0x400 / denom);
+    frame.gridCount = gridCount;
+    frame.grid = ((void *(*)(void *, void *, int, int, int))fn_8002F37C)(((void *(*)(int, void *))fn_8012850C)(gridCount * 8 + 0x10, lbl_8055CF00), fn_802B9B40, 0, 8, gridCount);
+    mgr = fn_801284F8(0x14, lbl_8034AA84);
+    if (mgr != 0) {
+        cnt = (gridCount * 6) / 4;
         recs = ((void *(*)(void *, void *, int, int, int))fn_8002F37C)(((void *(*)(int, void *))fn_8012850C)(cnt * 0x10 + 0x10, &lbl_8055CEF0), fn_802B9B2C, (int)fn_802B9AD4, 0x10, cnt);
-        ((void **)frame.mgr)[1] = recs;
-        ((s32 *)frame.mgr)[3] = cnt;
-        ((s32 *)frame.mgr)[2] = 0;
-        ((void **)frame.mgr)[4] = recs;
-        ((void **)frame.mgr)[0] = ((void *(*)(int, void *))fn_8012850C)(cnt * 0x10, lbl_8034AA74);
+        ((void **)mgr)[1] = recs;
+        ((s32 *)mgr)[3] = cnt;
+        ((s32 *)mgr)[2] = 0;
+        ((void **)mgr)[4] = recs;
+        ((void **)mgr)[0] = ((void *(*)(int, void *))fn_8012850C)(cnt * 0x10, lbl_8034AA74);
         off = 0;
-        for (i = 0; i < ((s32 *)frame.mgr)[3]; i++) {
-            idx = ((s32 *)frame.mgr)[2];
-            ((s32 *)frame.mgr)[2] = idx + 1;
+        for (i = 0; i < ((s32 *)mgr)[3]; i++) {
+            idx = ((s32 *)mgr)[2];
+            ((s32 *)mgr)[2] = idx + 1;
             cell = (void **)((char *)recs + idx * 0x10);
-            *cell = (char *)((void **)frame.mgr)[0] + off;
+            *cell = (char *)((void **)mgr)[0] + off;
             off += 0x10;
             ((s32 *)cell)[2] = 4;
             ((s32 *)cell)[1] = 0;
         }
-        ((s32 *)frame.mgr)[2] = 0;
+        ((s32 *)mgr)[2] = 0;
     }
     k1 = lbl_80564CB0;
     k2 = lbl_80564CC8;
@@ -498,10 +501,10 @@ void fn_802B9108(short arg0) {
                     slot = 0;
                     if (tail == 0 || tail->used + 1 > tail->capacity) {
                         newNode = 0;
-                        if (((Pool *)frame.mgr)->used + 1 <= ((Pool *)frame.mgr)->capacity) {
-                            used = ((Pool *)frame.mgr)->used;
-                            newNode = &((Pool *)frame.mgr)->nodes[used];
-                            ((Pool *)frame.mgr)->used = used + 1;
+                        if (((Pool *)mgr)->used + 1 <= ((Pool *)mgr)->capacity) {
+                            used = ((Pool *)mgr)->used;
+                            newNode = &((Pool *)mgr)->nodes[used];
+                            ((Pool *)mgr)->used = used + 1;
                             newNode->used = 0;
                             newNode->next = 0;
                         }
@@ -564,17 +567,17 @@ void fn_802B9108(short arg0) {
             ((void **)record)[0] = (char *)((void ***)glist)[0] + savedCount * 4;
         }
     }
-    if (frame.mgr != 0) {
-        fn_802B98D0(frame.mgr);
-        if ((char *)frame.mgr + 4 != 0) {
-            fn_8002F6AC(((s32 *)frame.mgr)[4], (void (*)(void))fn_802B9AD4);
-            if ((char *)frame.mgr + 4 != 0) {
-                ((s32 *)frame.mgr)[1] = 0;
-                ((s32 *)frame.mgr)[2] = 0;
-                ((s32 *)frame.mgr)[3] = 0;
+    if (mgr != 0) {
+        fn_802B98D0(mgr);
+        if ((char *)mgr + 4 != 0) {
+            fn_8002F6AC(((s32 *)mgr)[4], (void (*)(void))fn_802B9AD4);
+            if ((char *)mgr + 4 != 0) {
+                ((s32 *)mgr)[1] = 0;
+                ((s32 *)mgr)[2] = 0;
+                ((s32 *)mgr)[3] = 0;
             }
         }
-        fn_80128668(frame.mgr);
+        fn_80128668(mgr);
     }
     if (frame.grid != 0) {
         fn_80128670((s32)frame.grid - 0x10);
@@ -635,8 +638,9 @@ void fn_802B9964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 denom, y, rows, x, index, item, used;
     s32 size;
     Node **cell;
+    s32 *slot;
     Node *node, *new_node, *tail;
-    s32 *data, *slot;
+    s32 *data;
     size = *(s16 *)arg0;
     pool = *(Pool **)((char *)arg0 + 0xC);
     denom = size * 2;
@@ -647,6 +651,7 @@ void fn_802B9964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     cell = (Node **)((char *)*(void **)((char *)arg0 + 4) + index * 8);
     node = cell[1];
     slot = 0;
+    data = tail->data;
     if (node == 0 || node->used + 1 > node->capacity) {
         node = 0;
         if (pool->used + 1 <= pool->capacity) {
@@ -730,6 +735,7 @@ int fn_802B9B50(int **lhs, int **rhs) {
     return (*lhs)[2] - (*rhs)[2];
 }
 
+#pragma scheduling invalid_target
 void fn_802B9B68(void) {
     struct Manager {
         void *pool;
@@ -739,6 +745,7 @@ void fn_802B9B68(void) {
         void *allocation;
     };
     struct Manager *manager;
+    char *base = lbl_8034A990;
     void *memory;
     void *pool;
     void *records;
@@ -746,23 +753,21 @@ void fn_802B9B68(void) {
     int i;
     int offset;
     int index;
-    int count;
 
-    fn_802B8AE0(lbl_8034A990 + 0xC, &lbl_8055FA6C);
-    fn_802B8AE0(lbl_8034A990 + 0x18, &lbl_8055FA70);
+    fn_802B8AE0(base + 0xC, &lbl_8055FA6C);
+    fn_802B8AE0(base + 0x18, &lbl_8055FA70);
     memset(lbl_804C0088, 0, 0x10);
-    manager = fn_801284F8(0x14, lbl_8034A990 + 0x24);
+    manager = fn_801284F8(0x14, base + 0x24);
     if (manager != 0) {
-        count = 0x500;
         memory = ((void *(*)(int, void *))fn_8012850C)(0x5010, &lbl_8055CEF0);
         manager->records = ((void *(*)(void *, void (*)(void *),
                           void *(*)(void *, s32), int, int))fn_8002F37C)(
-            memory, fn_802B9CF4, fn_802B9C9C, 0x10, count);
-        manager->count = count;
+            memory, fn_802B9CF4, fn_802B9C9C, 0x10, 0x500);
+        manager->count = 0x500;
         manager->index = 0;
         manager->allocation = manager->records;
         manager->pool = ((void *(*)(int, void *))fn_8012850C)(
-            count * 0x10, lbl_8034AA1C);
+            manager->count << 4, lbl_8034AA1C);
         i = 0;
         offset = 0;
         while (i < manager->count) {
@@ -771,9 +776,9 @@ void fn_802B9B68(void) {
             pool = manager->pool;
             records = manager->records;
             manager->index = index + 1;
-            entry = (char *)records + index * 0x10;
-            *(void **)entry = (char *)pool + offset;
+            ((void **)records)[index] = (char *)pool + offset;
             offset += 0x10;
+            entry = (char *)records + index * 0x10;
             *(int *)((char *)entry + 8) = 4;
             *(int *)((char *)entry + 4) = 0;
         }
@@ -783,7 +788,6 @@ void fn_802B9B68(void) {
     lbl_8055FA7C = 0;
     lbl_8055FA78 = 0;
 }
-
 /* Resets the three 32-bit fields of a container to zero and, when shouldFree
  * is positive, frees the container itself. */
 void *fn_802B9C9C(void *object, s32 shouldFree) {
@@ -1013,7 +1017,7 @@ extern "C" void fn_802BA010(void *arg0, int arg1) {
     short radius, item;
     void *object = arg0;
     float f30, f31, f29;
-    float f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10;
+    float f0, f2, f1, f3, f4, f5, f6, f7, f8, f9, f10;
     *(void *volatile *)(sp + 0x10) = lbl_8034A9C0;
     *(volatile int *)(sp + 0x14) = fn_802E2C20(arg0);
     if (object == 0) object = ((Dummy *)fn_80156A40())->v1(0);
@@ -1171,7 +1175,9 @@ extern "C" void fn_802BA348(void) {
     }
     entry = fn_801284F8(0x10, lbl_8034A9E4);
     if (entry != 0) {
-        buffer = ((void *(*)(int, void *))fn_8012850C)(total * 0x54 + 0x10, lbl_8034A9E4);
+        void *lbl = lbl_8034A9E4;
+        int sz = total * 0x54;
+        buffer = ((void *(*)(int, void *))fn_8012850C)(0x10 + sz, lbl);
         items = fn_8002F37C(buffer, (void *)fn_802BA560, 0, 0x54, total);
         *(void **)entry = items;
         *(int *)((char *)entry + 8) = total;
@@ -1184,8 +1190,10 @@ extern "C" void fn_802BA348(void) {
     s.data = 0;
     s.count = 0;
     s.cap = 0;
+#pragma scheduling 750
     if (((int (*)(void))fn_802E2C20)() - s.start > 0x1F4)
         fn_802E30C8(lbl_8034A064, s.name);
+#pragma scheduling invalid_target
 }
 #pragma scheduling 750
 
@@ -1272,8 +1280,7 @@ extern "C" void *fn_802BA580(void **arg0, void *arg1, float scale) {
     name=((Object *)arg0)->name(&lbl_8055CEF8);
     for(index=0; index < *(int *)((char *)&lbl_804BFFF4+4); index++) {
         entry=(*(int ***)&lbl_804BFFF4)[index];
-        if (stricmp((char *)entry[0],name) != 0) continue;
-        break;
+        if (stricmp((char *)entry[0],name)==0) break;
     }
     if (index < *(int *)((char *)&lbl_804BFFF4+4)) goto found;
     count=*(int *)((char *)&lbl_804BFFF4+4);
@@ -1300,7 +1307,7 @@ found:
 extern f32 lbl_80564CCC, lbl_80564CD8, lbl_80564CEC;
 extern "C" f32 lbl_80564CCC, lbl_80564CD8, lbl_80564CEC;
 extern "C" void fn_802BA848(f32 *out, f32 *a, f32 *b, f32 *c) {
-    register f32 x0 = b[0], y1 = a[1], y0 = a[0], x1 = b[1], z0 = c[0];
+    f32 x0 = b[0], y1 = a[1], y0 = a[0], x1 = b[1], z0 = c[0];
     f32 d = y0 * x1 - x0 * y1;
     f32 hi = x0 + (z0 + y0);
     f32 k1 = lbl_80564CEC;
@@ -1409,14 +1416,15 @@ extern "C" void *fn_802BAA68(void **arg0, char *arg1) {
     int **items;
     float angle;
     float k;
+    char *localArg1 = arg1;
     result = *(char **)lbl_8055FA7C + (*(int *)((char *)lbl_8055FA7C+4))*0x44;
     ++*(int *)((char *)lbl_8055FA7C+4);
     fn_801602B0(a); fn_801602B0(b); fn_801602B0(c);
-    fn_8016029C(b, arg1 + 0x18);
+    fn_8016029C(b, localArg1 + 0x18);
     fn_80160B18(b);
-    fn_8016029C(c, arg1);
+    fn_8016029C(c, localArg1);
     fn_80160B18(c);
-    fn_8016029C(a, arg1 + 0x24);
+    fn_8016029C(a, localArg1 + 0x24);
     value.bits = ((Object *)arg0)->value(&lbl_8055CF10);
     fn_80160288(e, &value);
     fn_80160BA0(b, b, e[1]);
@@ -1607,24 +1615,18 @@ void fn_802BAFA0(void) {
 #pragma scheduling on
 #pragma pop
 void fn_802BAFF8(void ***arg0, int *arg1) {
-    struct Pool {
-        int unk0;
-        void *blocks;
-        volatile int used;
-        int capacity;
-    };
     int zero = 0;
     arg0 = (void ***)*arg0;
     while (*(void **)arg0 != 0) {
         void *entry = *(void **)arg0;
         void *queue = *(void **)((char *)entry + 4);
         int *slot = 0;
-        struct Pool *pool = (struct Pool *)lbl_8055FA74;
+        void *pool = *(void * volatile *)&lbl_8055FA74;
         int count;
         if (queue == 0 || *(volatile int *)((char *)queue + 4) + 1 > *(volatile int *)((char *)queue + 8)) {
             void *node = 0;
-            if (pool->used + 1 <= pool->capacity) {
-                node = (char *)pool->blocks + pool->used++ * 0x10;
+            if (*(volatile int *)((char *)pool + 8) + 1 <= *(volatile int *)((char *)pool + 0xC)) {
+                node = (char *)*(void **)((char *)pool + 4) + (*(volatile int *)((char *)pool + 8))++ * 0x10;
                 *(int *)((char *)node + 4) = zero;
                 *(int *)((char *)node + 0xC) = zero;
             }
@@ -1660,12 +1662,10 @@ void fn_802BAFF8(void ***arg0, int *arg1) {
 void fn_802BB0FC(int a, int b) {
     RenderNode *node;
     RenderBatch *batch;
-    int j;
-    int i, off;
     RenderEntry *entry;
-    int v;
     u16 **items;
     RenderMatrix matrix;
+    int i, off, j, v;
     for (i = 0, off = 0; i < *(s32 *)(lbl_804BFFF4 + 4); i++, off += 4) {
         entry = *(RenderEntry **)(*(char **)lbl_804BFFF4 + off);
         if (entry->kind != 999) continue;
@@ -1730,71 +1730,71 @@ clear_nodes:
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_802BB3B8(int a, int b) {
-    register int i, off;
-    RenderEntry *entry;
-    RenderNode *node;
-    RenderBatch *batch;
-    int j, v;
+    s32 i, off;
+    void *entry;
+    void *node;
+    void *batch;
+    s32 j, v;
     u16 **items;
-    RenderMatrix matrix; int zero = 0;
+    RenderMatrix matrix; s32 zero = 0;
     for (i = 0, off = 0; i < *(s32 *)(lbl_804BFFF4 + 4); i++, off += 4) {
-        entry = *(RenderEntry **)(*(char **)lbl_804BFFF4 + off);
-        if (entry->kind == 999) continue;
-        node = entry->nodes;
+        entry = *(void **)(*(char **)lbl_804BFFF4 + off);
+        if (*(s32 *)((char *)entry + 8) == 999) continue;
+        node = *(void **)((char *)entry + 0xC);
         if (!node) continue;
-        if (entry->state == -2) goto clear_nodes;
-        switch (node->type) { case 0: case 1: {
+        if (*(s32 *)((char *)entry + 4) == -2) goto clear_nodes;
+        switch (*(s32 *)((char *)node + 8)) { case 0: case 1: {
             fn_802C8BD0(); fn_802DC130();
-            node = entry->nodes;
+            node = *(void **)((char *)entry + 0xC);
             while (node) {
-                if (node->batches) {
-                    if (node->enabled) {
+                if (*(void **)node) {
+                    if (*(u8 *)((char *)node + 0xC)) {
                         ((void (*)(int,void *))fn_802D3D94)(0, (char *)node + 0x24);
-                        batch = node->batches;
+                        batch = *(void **)node;
                         do {
-                            for (j = 0; j < batch->count; j++) {
-                                items = batch->items;
+                            for (j = 0; j < *(s32 *)((char *)batch + 4); j++) {
+                                items = *(u16 ***)((char *)batch + 0);
                                 fn_802DC138(a,b,items[j],*items[j]+1);
                                 v = *items[j] - 1;
                                 lbl_8055FA6C += v & ~(v >> 31);
                             }
-                            batch = batch->next;
+                            batch = *(void **)((char *)batch + 0xC);
                         } while (batch);
                     }
-                    node->count = zero; node->batches = (RenderBatch *)zero;
+                    *(s32 *)((char *)node + 4) = zero; *(void **)node = (void *)zero;
                 }
-                node = node->next;
+                node = *(void **)((char *)node + 0x10);
             }
             fn_802DC134(); fn_802C8D74();
         break; } case 2: {
             fn_802C28C0(); fn_802C8BD0(); fn_802DC278();
-            fn_802CADD0(entry->state,1);
+            fn_802CADD0(*(s32 *)((char *)entry + 4),1);
             fn_802CADD0(((int (*)(void))fn_802C21B8)(),2);
             matrix = *(RenderMatrix *)lbl_802FAB40;
             ((void (*)(int,void *))fn_802D3D94)(2,&matrix);
-            node = entry->nodes;
+            node = *(void **)((char *)entry + 0xC);
             while (node) {
-                if (node->batches) {
+                if (*(void **)node) {
                     ((void (*)(int,void *))fn_802D3D94)(0,(char *)node + 0x34);
-                    batch = node->batches;
+                    batch = *(void **)node;
                     do {
-                        for (j = 0; j < batch->count; j++) {
-                            items = batch->items;
+                        for (j = 0; j < *(s32 *)((char *)batch + 4); j++) {
+                            items = *(u16 ***)((char *)batch + 0);
                             fn_802DC280(a,b,items[j],*items[j]+1);
                             v = *items[j] - 1;
                             lbl_8055FA6C += v & ~(v >> 31);
                         }
-                        batch = batch->next;
+                        batch = *(void **)((char *)batch + 0xC);
                     } while (batch);
-                    node->count = zero; node->batches = (RenderBatch *)zero;
+                    *(s32 *)((char *)node + 4) = zero; *(void **)node = (void *)zero;
                 }
-                node = node->next;
+                node = *(void **)((char *)node + 0x10);
             }
             fn_802CADD0(-1,1); fn_802CADD0(-1,2); fn_802DC27C(); fn_802C8D74();
         break; } }
         continue;
 clear_nodes:
-        while (node) { node->count = zero; node->batches = (RenderBatch *)zero; node = node->next; }
+        while (node) { *(s32 *)((char *)node + 4) = zero; *(void **)node = (void *)zero; node = *(void **)((char *)node + 0x10); }
     }
 }
 #pragma pop
