@@ -564,7 +564,7 @@ extern void fn_802E317C(const char *, ...);
 extern s32 lbl_802FA38C[5];
 extern char lbl_803432C0[];
 extern char lbl_80343970[];
-extern char lbl_80498908[];
+extern char lbl_80498908;
 extern char lbl_8055BE90;
 extern s32 lbl_8055F25C;
 extern s32 lbl_8055B860;
