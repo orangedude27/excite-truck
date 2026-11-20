@@ -170,7 +170,7 @@ void fn_802919AC(void *list) {
 void fn_80291A1C(void) {
     struct QueryObject_80291A1C *obj;
     int *settings;
-    float value = lbl_805644A0;
+    float value = 300.0f;
     obj = (struct QueryObject_80291A1C *)fn_802AE414(&lbl_8055C948);
     if (obj != 0) {
         value = obj->f8(&lbl_8055C938, lbl_805644A0);
@@ -329,17 +329,18 @@ void fn_80291C7C(void *arg0, int arg1) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_80291E64(void *arg0) {
-    char *ctx = (char *)arg0;
+    char *ent;
+    int i;
+    char *ctx;
     float o[3];
     float d[3];
     float s[3];
     float e[3];
     float v[3];
     float *p;
-    char *ent;
-    int i;
     float t, w, negd, one, zero, step, scale, k;
     float sx, sy, sz;
+    ctx = (char *)arg0;
     p = (float *)fn_802C86DC();
     t = *(float *)(ctx + 0x124);
     o[0] = p[0x24 / 4] + p[0x18 / 4] * t;
@@ -365,7 +366,7 @@ void fn_80291E64(void *arg0) {
     sy = e[1] - s[1];
     sz = e[2] - s[2];
     ent = ctx;
-    for (i = 0; i < *(int *)(ctx + 0x120); i++, ent += 0x24) {
+    for (i = 0; i < *(int *)(ctx + 0x120); ent += 0x24, i++) {
         scale = (float)i * step + *(float *)(ent + 0x20) * k;
         if (one < scale)
             scale = one;
@@ -375,7 +376,7 @@ void fn_80291E64(void *arg0) {
         v[1] = s[1] + scale * sy;
         v[2] = s[2] + scale * sz;
         fn_802C8E70(v, ent);
-        if (*(unsigned char *)(ent + 0x14) != 0 && fn_802C8FF4(ent, zero) != 0) {
+        if (*(unsigned char *)(ent + 0x14) != 0 && fn_802C8FF4(ent, lbl_80564484) != 0) {
             fn_802C8C04(*(int *)(ent + 0xC));
             fn_80291C7C(ent, 0);
             fn_802C8D74();
@@ -452,32 +453,28 @@ void fn_802921F4(void) {
 }
 
 void fn_8029222C(void) {
-    register int *base;
-    register char *p;
-    register int count;
-
+    int *base;
+    char *p;
+    int count;
     if (lbl_8055F75C == 0) return;
     p = (char *)&lbl_804B3EC0;
     base = (int *)p;
     count = 0;
-    while (count < base[0x48]) {
-        p[0x14] = 0;
-        p += 0x24;
-        count++;
-    }
+    goto check;
+loop:
+    p[0x14] = 0;
+    p += 0x24;
+    count++;
+check:
+    if (count < base[0x48]) goto loop;
     *((char *)&lbl_804B4010 + 0x14) = 0;
 }
 
 void fn_8029227C(void) {
     int old;
-    switch (lbl_8055F75C) {
-    case 0:
-        goto done;
-    default:
-        if (lbl_8055C920 != 0)
-            goto body;
-        goto done;
-    }
+    if (lbl_8055F75C == 0) goto done;
+    while (lbl_8055C920) goto body;
+    goto done;
 body:
     old = fn_802C2C00(0);
     if (*((unsigned char *)(lbl_804B4010 + 0x14))) fn_802D3BB0(*((int *)(lbl_804B4010 + 0x10)));
