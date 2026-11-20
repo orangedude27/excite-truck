@@ -62,7 +62,6 @@ void fn_8023CA54(void) {
     lbl_8055F178 = 1;
     fn_801332D0(4, &base[0x5C], &lbl_8055F178);
 }
-#pragma peephole reset
 #pragma pop
 s32 fn_8023CB54(void) {
     // Initializes sound options: parses the [SOUND] (section 4) block of the BOPT options file
