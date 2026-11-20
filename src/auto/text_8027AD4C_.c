@@ -1151,6 +1151,7 @@ struct SubIface8027C2B8 {
     virtual void f21();
     virtual void *fetchSub(long index);
 };
+#pragma dont_inline reset
 static inline char *getName8027C2B8(void *obj) {
     return ((ItemIface8027C2B8 *)obj)->getName();
 }
@@ -1182,19 +1183,21 @@ extern "C" void fn_8027C2B8(void *arg0, long arg1, void *arg2) {
     void *outerItem;
     void *innerItem;
     char *name;
+    void **outerArray;
     int outerCount;
     int outerIndex;
-    void **outerArray;
+    char *outerBase;
     int innerIndex;
     int itemCount;
     void **tableArray;
     outerList = fn_80131808(arg2);
     if (outerList == 0)
         return;
-    outerCount = ctx->outerCount;
+    outerCount = *(int *)((char *)ctx + 0xB00C);
     outerIndex = 0;
-    outerArray = ctx->outerArray;
-    ctx->outerCount = outerCount + 1;
+    outerArray = *(void ***)((char *)ctx + 0xB008);
+    outerBase = (char *)ctx + 0x10000;
+    *(int *)(outerBase - 0x4FF4) = outerCount + 1;
     outerArray[outerCount] = outerList;
     goto fetch_outer;
 outer_loop:
