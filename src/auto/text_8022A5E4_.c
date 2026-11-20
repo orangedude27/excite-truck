@@ -1146,21 +1146,39 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
         }
     }
 }
-#pragma pop
+#pragma cplusplus on
 void fn_8022C520(void) {
-    char *base;
+    struct EntryIface {
+        virtual char *getName();
+        virtual int has(const char *);
+        virtual void *u2();
+        virtual char *getStr(const char *);
+        virtual int getIntDef(const char *, int);
+        virtual int getInt(const char *);
+        virtual int get8(const char *, int);
+        virtual void *u7();
+        virtual float getFloat(const char *, float);
+        virtual void *u9();  virtual void *u10(); virtual void *u11(); virtual void *u12();
+        virtual void *u13(); virtual void *u14(); virtual void *u15(); virtual void *u16();
+        virtual void *u17(); virtual void *u18(); virtual void *u19(); virtual void *u20();
+        virtual void *getPtr(const char *);
+    };
+    struct ListIface {
+        virtual void *l0();
+        virtual void *fetch(int);
+    };
     Cfg58 tmpl;
     Cfg58 work;
-    void *list;
-    void *entry;
+    void* list;
+    EntryIface* entry;
     int i;
     int value;
     unsigned flag1;
-    unsigned flag2;
-    char *s;
+    int flag2;
+    char* base;
 
     base = lbl_8033FBE8;
-    tmpl = *(Cfg58 *)&lbl_802F9F58;
+    tmpl = *(Cfg58*)&lbl_802F9F58;
     tmpl.w[3] = 0xffd6003c;
     tmpl.w[4] = 0xffd6003c;
     tmpl.w[5] = 0xff2dc82d;
@@ -1171,32 +1189,31 @@ void fn_8022C520(void) {
     tmpl.w[13] = 0xffd6003c;
     list = fn_80131810(base + 0x64, 0xff2dc82d, 0xffd6003c);
     if (list) {
-        for (i = 0; (entry = ((void *(*)(void *, int))(*(void ***)list)[3])(list, i)) != 0; i++) {
-            if (stricmp(((char *(*)(void *))(*(void ***)entry)[2])(entry), lbl_8055B8C4) != 0) {
+        for (i = 0; (entry = (EntryIface*)((ListIface*)list)->fetch(i)) != 0; i++) {
+            if (stricmp(entry->getName(), lbl_8055B8C4) != 0) {
                 continue;
             }
-            if (((int (*)(void *, const char *))(*(void ***)entry)[3])(entry, base + 0x70) != 0) {
-                value = ((int (*)(void *, const char *))(*(void ***)entry)[7])(entry, base + 0x70);
+            if (entry->has(base + 0x70) != 0) {
+                value = entry->getInt(base + 0x70);
             } else {
-                if (((int (*)(void *, const char *))(*(void ***)entry)[3])(entry, base + 0x7c) == 0) {
+                if (entry->has(base + 0x7c) == 0) {
                     fn_802E30C8(base + 0x88);
                     continue;
                 } else {
-                    s = ((char *(*)(void *, const char *))(*(void ***)entry)[5])(entry, base + 0x7c);
+                    char *s = entry->getStr(base + 0x7c);
                     value = fn_8022CC8C(s);
                 }
             }
             if (value < 0 || value >= 0x100) {
-                fn_802E30C8(base + 0xb4,
-                            ((int (*)(void *, const char *, int))(*(void ***)entry)[6])(entry, base + 0x7c, (int)(base + 0xe4)));
+                fn_802E30C8(base + 0xb4, entry->getIntDef(base + 0x7c, (int)(base + 0xe4)));
                 continue;
             }
             work = tmpl;
-            work.w[0] = ((int (*)(void *, const char *, int))(*(void ***)entry)[6])(entry, base + 0xf0, work.w[0]);
-            *(float *)&work.w[1] = ((float (*)(void *, const char *, float))(*(void ***)entry)[10])(entry, base + 0xfc, *(float *)&work.w[1]);
+            work.w[0] = entry->getIntDef(base + 0xf0, work.w[0]);
+            *(float*)&work.w[1] = entry->getFloat(base + 0xfc, *(float*)&work.w[1]);
             flag1 = 1;
-            if (((int (*)(void *, const char *))(*(void ***)entry)[3])(entry, base + 0x108) != 0) {
-                s = ((char *(*)(void *, const char *))(*(void ***)entry)[5])(entry, base + 0x108);
+            if (entry->has(base + 0x108) != 0) {
+                char *s = entry->getStr(base + 0x108);
                 if (stricmp(s, lbl_8055B8CC) == 0) {
                     flag1 = 1;
                 } else if (stricmp(s, lbl_8055B8D4) == 0) {
@@ -1208,8 +1225,8 @@ void fn_8022C520(void) {
                 }
             }
             flag2 = 8;
-            if (((int (*)(void *, const char *))(*(void ***)entry)[3])(entry, base + 0x154) != 0) {
-                s = ((char *(*)(void *, const char *))(*(void ***)entry)[5])(entry, base + 0x154);
+            if (entry->has(base + 0x154) != 0) {
+                char *s = entry->getStr(base + 0x154);
                 if (stricmp(s, lbl_8055B8E4) == 0) {
                     flag2 = 8;
                 } else if (stricmp(s, lbl_8055B8E8) == 0) {
@@ -1223,21 +1240,21 @@ void fn_8022C520(void) {
                 }
             }
             work.w[2] = flag1 | flag2;
-            fn_8022CDE4((int *)&work.w[3], ((void *(*)(void *, const char *))(*(void ***)entry)[23])(entry, lbl_8055B8F8));
-            fn_8022CDE4((int *)&work.w[10], ((void *(*)(void *, const char *))(*(void ***)entry)[23])(entry, lbl_8055B8FC));
-            if (((int (*)(void *, const char *))(*(void ***)entry)[3])(entry, lbl_8055B900) != 0) {
-                work.w[17] = (int)((char *(*)(void *, const char *))(*(void ***)entry)[5])(entry, lbl_8055B900);
+            fn_8022CDE4((int*)&work.w[3], entry->getPtr(lbl_8055B8F8));
+            fn_8022CDE4((int*)&work.w[10], entry->getPtr(lbl_8055B8FC));
+            if (entry->has(lbl_8055B900) != 0) {
+                work.w[17] = (int)entry->getStr(lbl_8055B900);
             }
-            work.w[21] = ((int (*)(void *, const char *, int))(*(void ***)entry)[8])(entry, lbl_8055B908, work.w[21]);
-            work.w[18] = ((int (*)(void *, const char *, int))(*(void ***)entry)[8])(entry, lbl_8055B910, work.w[18]);
-            *(float *)&work.w[19] = ((float (*)(void *, const char *, float))(*(void ***)entry)[10])(entry, base + 0x1a8, *(float *)&work.w[19]);
-            *(float *)&work.w[20] = ((float (*)(void *, const char *, float))(*(void ***)entry)[10])(entry, base + 0x1b4, *(float *)&work.w[20]);
-            ((void (*)(int, void *))fn_8022A858)(value, &work);
+            work.w[21] = entry->get8(lbl_8055B908, work.w[21]);
+            work.w[18] = entry->get8(lbl_8055B910, work.w[18]);
+            *(float*)&work.w[19] = entry->getFloat(base + 0x1a8, *(float*)&work.w[19]);
+            *(float*)&work.w[20] = entry->getFloat(base + 0x1b4, *(float*)&work.w[20]);
+            ((void (*)(int, void*))fn_8022A858)(value, &work);
         }
         fn_80131818(list);
     }
 }
-
+#pragma cplusplus reset
 void fn_8022C9D0(void) {
     /* Iterate all 0x100 style entries in lbl_80490968 (0x74 bytes each) and destroy/reset
      * any active one (byte 0 set) via fn_8022A8E4. */
