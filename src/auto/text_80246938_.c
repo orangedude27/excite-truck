@@ -290,9 +290,7 @@ extern int fn_802C5130(const char *);
 extern s32 fn_80232578(const char *);
 extern void *fn_801284F8(unsigned long, void *);
 extern s32 fn_8023512C();
-#pragma push
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma opt_pointer_aliasing on
 s32 fn_80246E4C(void) {
     s32 text[11];
     Obj_802470D4 obj;
@@ -322,14 +320,14 @@ s32 fn_80246E4C(void) {
     if (p != 0) {
         p[0] = var_r25;
         p[1] = -1;
-        f = lbl_80563898;
         p[2] = 9;
+        f = 1.0f;
         ((float *)p)[3] = f;
         ((float *)p)[4] = f;
         p[0] = fn_80232578(lbl_80343938);
     }
     obj.field30 = p;
-    ((float *)p)[3] = lbl_8056389C;
+    ((float *)p)[3] = 0.7f;
 
     obj.field30[2] = (obj.field30[2] & ~7) | 4;
     obj.field30[2] = (obj.field30[2] & ~0x58) | 0x10;
@@ -355,8 +353,8 @@ s32 fn_80246E4C(void) {
     item[13] = lbl_804988F0[3];
     item[14] = lbl_804988F0[4];
 
-    menu[0] = lbl_802FA3A0[0];
     menu[1] = lbl_802FA3A0[1];
+    menu[0] = lbl_802FA3A0[0];
     menu[2] = lbl_802FA3A0[2];
     menu[3] = lbl_802FA3A0[3];
     menu[4] = lbl_802FA3A0[4];
@@ -388,7 +386,6 @@ s32 fn_80246E4C(void) {
     }
     return var_r25;
 }
-#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
@@ -1382,47 +1379,70 @@ void fn_802487A8(void *group) {
 
 #pragma push
 #pragma opt_propagation off
-void fn_802487B4(void *arg0) {
- extern void fn_80214BE4(s32,s32,s32);
- extern float lbl_805638B8,lbl_805638BC,lbl_805638C0,lbl_805638C4;
- float t, x1,x0,y1,y0, factor, pa, pb, pc;
- s32 y,x;
- if (*(s32 *)((char *)arg0+0x20)!=*(s32 *)((char *)arg0+0x24)) {
- if (*(s32 *)((char *)arg0+0x20)==0) fn_80214AF0(*(s32 *)((char *)arg0+0x1C)); else fn_80214A9C(*(s32 *)((char *)arg0+0x1C));
- *(s32 *)((char *)arg0+0x24)=*(s32 *)((char *)arg0+0x20);
- }
- if (*(unsigned char *)((char *)arg0+0x50)) {
- x=*(s32 *)((char *)arg0+0x48); y=*(s32 *)((char *)arg0+0x4C);
- *(s32 *)((char *)arg0+0x30)=x; *(s32 *)((char *)arg0+0x28)=x; *(s32 *)((char *)arg0+0x34)=y; *(s32 *)((char *)arg0+0x2C)=y;
- fn_80214BE4(*(s32 *)((char *)arg0+0x1C),x-*(s32 *)((char *)arg0+0x4),y-*(s32 *)((char *)arg0+0x8));
- t=lbl_805638BC; *(unsigned char *)((char *)arg0+0x50)=0; *(float *)((char *)arg0+0x3C)=t;
- }
- if (*(unsigned char *)((char *)arg0+0x5C)) {
- *(s32 *)((char *)arg0+0x28)=*(s32 *)((char *)arg0+0x4); *(s32 *)((char *)arg0+0x2C)=*(s32 *)((char *)arg0+0x8); *(s32 *)((char *)arg0+0x30)=*(s32 *)((char *)arg0+0x54); *(s32 *)((char *)arg0+0x34)=*(s32 *)((char *)arg0+0x58);
- *(float *)((char *)arg0+0x3C)=0.0f; *(unsigned char *)((char *)arg0+0x5C)=0;
- }
- t=*(float *)((char *)arg0+0x3C)+*(float *)((char *)arg0+0x38)*fn_80214D48();
- *(float *)((char *)arg0+0x3C)=t;
- switch (*(s32 *)((char *)arg0+0x40)) {
- case 1:
- t=t<lbl_80563898?t:lbl_80563898;
- factor=t*t; break;
- case 2:
- t=t<lbl_80563898?t:lbl_80563898;
- factor=t<lbl_805638C0?lbl_805638C0:
- t>lbl_80563898?lbl_80563898:
- t>lbl_805638B0?(pa=lbl_805638C4*t, pb=lbl_805638B8*t, pc=pa*t, t*pc+pb*t):
- (pa=lbl_805638C4*t, pb=lbl_805638B8*t, pc=pa*t, t*pc-pb*t);
- break;
- default: factor=*(float *)((char *)arg0+0x3C); factor=factor<lbl_80563898?factor:lbl_80563898;
- }
- x1=(float)*(s32 *)((char *)arg0+0x30); x0=(float)*(s32 *)((char *)arg0+0x28); y1=(float)*(s32 *)((char *)arg0+0x34); y0=(float)*(s32 *)((char *)arg0+0x2C);
- x=(s32)(x0+factor*(x1-x0)); y=(s32)(y0+factor*(y1-y0));
- fn_80214BE4(*(s32 *)((char *)arg0+0x1C),x-*(s32 *)((char *)arg0+0x4),y-*(s32 *)((char *)arg0+0x8));
- if (*(unsigned char *)((char *)arg0+0x44)) {
- s32 done=(*(float *)((char *)arg0+0x3C)>=lbl_80563898);
- if (done) { *(unsigned char *)((char *)arg0+0x44)=0; *(s32 *)((char *)arg0+0x20)=1; }
- }
+void fn_802487B4(void *element) {
+    extern void fn_80214BE4(s32, s32, s32);
+    extern float lbl_805638B8, lbl_805638BC, lbl_805638C0, lbl_805638C4;
+    float value, x1, x0, y1, y0, factor, pa, pb, pc;
+    s32 y, x;
+    /* Interpolate and reposition the UI element: accumulate the scaled frame
+     * delta, apply the mode's interpolation factor, then forward the new position. */
+    if (*(s32 *)((char *)element + 0x20) != *(s32 *)((char *)element + 0x24)) {
+        if (*(s32 *)((char *)element + 0x20) == 0) fn_80214AF0(*(s32 *)((char *)element + 0x1C));
+        else fn_80214A9C(*(s32 *)((char *)element + 0x1C));
+        *(s32 *)((char *)element + 0x24) = *(s32 *)((char *)element + 0x20);
+    }
+    if (*(unsigned char *)((char *)element + 0x50)) {
+        x = *(s32 *)((char *)element + 0x48);
+        y = *(s32 *)((char *)element + 0x4C);
+        *(s32 *)((char *)element + 0x30) = x;
+        *(s32 *)((char *)element + 0x28) = x;
+        *(s32 *)((char *)element + 0x34) = y;
+        *(s32 *)((char *)element + 0x2C) = y;
+        fn_80214BE4(*(s32 *)((char *)element + 0x1C), x - *(s32 *)((char *)element + 0x4), y - *(s32 *)((char *)element + 0x8));
+        value = lbl_805638BC;
+        *(unsigned char *)((char *)element + 0x50) = 0;
+        *(float *)((char *)element + 0x3C) = value;
+    }
+    if (*(unsigned char *)((char *)element + 0x5C)) {
+        *(s32 *)((char *)element + 0x28) = *(s32 *)((char *)element + 0x4);
+        *(s32 *)((char *)element + 0x2C) = *(s32 *)((char *)element + 0x8);
+        *(s32 *)((char *)element + 0x30) = *(s32 *)((char *)element + 0x54);
+        *(s32 *)((char *)element + 0x34) = *(s32 *)((char *)element + 0x58);
+        *(float *)((char *)element + 0x3C) = 0.0f;
+        *(unsigned char *)((char *)element + 0x5C) = 0;
+    }
+    value = *(float *)((char *)element + 0x3C) + *(float *)((char *)element + 0x38) * fn_80214D48();
+    *(float *)((char *)element + 0x3C) = value;
+    switch (*(s32 *)((char *)element + 0x40)) {
+    case 1:
+        value = value < lbl_80563898 ? value : lbl_80563898;
+        factor = value * value;
+        break;
+    case 2:
+        value = value < lbl_80563898 ? value : lbl_80563898;
+        factor = value < lbl_805638C0 ? lbl_805638C0:
+            value > lbl_80563898 ? lbl_80563898:
+            value > lbl_805638B0 ? (pa = lbl_805638C4 * value, pb = lbl_805638B8 * value, pc = pa * value, value * pc + pb * value) :
+            (pa = lbl_805638C4 * value, pb = lbl_805638B8 * value, pc = pa * value, value * pc - pb * value);
+        break;
+    default:
+        factor = *(float *)((char *)element + 0x3C);
+        factor = factor < lbl_80563898 ? factor : lbl_80563898;
+    }
+    x1 = (float)*(s32 *)((char *)element + 0x30);
+    x0 = (float)*(s32 *)((char *)element + 0x28);
+    y1 = (float)*(s32 *)((char *)element + 0x34);
+    y0 = (float)*(s32 *)((char *)element + 0x2C);
+    x = (s32)(x0 + factor * (x1 - x0));
+    y = (s32)(y0 + factor * (y1 - y0));
+    fn_80214BE4(*(s32 *)((char *)element + 0x1C), x - *(s32 *)((char *)element + 0x4), y - *(s32 *)((char *)element + 0x8));
+    if (*(unsigned char *)((char *)element + 0x44)) {
+        s32 done = (*(float *)((char *)element + 0x3C) >= lbl_80563898);
+        if (done) {
+            *(unsigned char *)((char *)element + 0x44) = 0;
+            *(s32 *)((char *)element + 0x20) = 1;
+        }
+    }
 }
 #pragma pop
 // Reset this element's local X scroll offset (+0x1C) to lbl_805638B0 (0.0f).
