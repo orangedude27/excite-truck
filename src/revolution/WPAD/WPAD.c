@@ -662,9 +662,9 @@ void fn_8005E298(void) {
     register WPADCB *temp_r30 asm("r30");
     register s8 var_r29 asm("r29");
     register s8 var_r22 asm("r22");
-    register s32 zero asm("r31");
-    register s32 sixteen asm("r23");
-    register s32 one asm("r24");
+    register s32 zero asm("r31") = 0;
+    register s32 sixteen asm("r23") = 0x10;
+    register s32 one asm("r24") = 1;
     s32 temp_r25;
     s32 temp_r25_2;
     s32 temp_r30_2;
@@ -5984,7 +5984,7 @@ void fn_80064F64(s32 chan, void* data) {
     register s32 cb_8B8 asm("r26");
     register WPADCallback callback asm("r12");
     u8* p;
-    u8 dataLen;
+    s32 dataLen;
     s16 pos;
 
     enabled = OSDisableInterrupts();
@@ -6193,7 +6193,6 @@ void fn_800656E8(s32 chan, WPADStatusEx* pReport)
 void fn_80065934(s32 chan, u8* data)
 {
     u8* cb;
-    u8* dev;
     volatile s8* buf;
     WPADFSStatus* fs;
     WPADCLStatus* cl;
@@ -6205,8 +6204,7 @@ void fn_80065934(s32 chan, u8* data)
 
     enabled = OSDisableInterrupts();
     cb = (u8*)lbl_8038F4F0[(u8)chan];
-    dev = cb + cb[0x806] * 0x60;
-    buf = (volatile s8*)(dev + 0xA0);
+    buf = (volatile s8*)(cb + cb[0x806] * 0x60 + 0xA0);
     for (offset = 0; offset < 96; offset++) {
         buf[offset] = 0;
     }
