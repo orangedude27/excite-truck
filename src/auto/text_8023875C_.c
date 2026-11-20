@@ -94,9 +94,10 @@ void fn_80238920(void) {
 #pragma scheduling dynamic
 void fn_8023895C(void) {
     float sp8[12];
-    fn_802C974C(lbl_805636F8, lbl_80563710, lbl_80563714);
+
+    fn_802C974C(1.0f, lbl_80563710, lbl_80563714);
     fn_80230B5C(&sp8[0]);
-    sp8[11] = (float)(-((int)(((lbl_8055CFF0 >> 31) + lbl_8055CFF0)) >> 1)) / lbl_8055FC88;
+    sp8[11] = (float)(-((int)lbl_8055CFF0 / 2)) / lbl_8055FC88;
     ((void (*)(void *))fn_802C8638)(&sp8[0]);
     lbl_8055F0D8 = 1;
     fn_802344C4(1);
