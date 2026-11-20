@@ -83,7 +83,7 @@ static inline void fn_801E1048_xh(const f32 *m, const f32 *src, f32 *dst) {
 static inline void fn_801E1048_xi(const f32 *m, const f32 *src, f32 *dst) {
     f32 x, y, z;
     if (src == dst) {
-        f32 a, b, c, d, e, f, nx, ny, nz;
+        f32 f, e, d, c, b, a, nx, ny, nz;
         a = m[3];
         b = m[4];
         y = src[1];
@@ -633,7 +633,7 @@ void fn_801E12A4(void) {
 /* Return the current element count of a boost-area list (List_801E0890.count, +0x04). */
 s32 fn_801E137C(void *list) { return ((List_801E0890 *)list)->count; }
 
-#pragma opt_propagation off
+#pragma scheduling invalid_target
 void fn_801E1384(s32 arg0, s32 arg1) {
     register s32 *desc = (s32 *)arg0;
     register s32 color;
@@ -699,7 +699,6 @@ void fn_801E1384(s32 arg0, s32 arg1) {
         fn_802C8E48();
     }
 }
-#pragma opt_propagation reset
 /* Return the address of boost-area record `index` from a list whose data pointer is at *listData (records are 0x1C bytes). */
 s32 fn_801E1510(s32 *listData, s32 index) { return *listData + index * 0x1C; }
 
@@ -789,7 +788,7 @@ void fn_801E168C(void *arg0) {
     f32 x = lbl_80562C78;
     s32 zero = 0;
     s32 minus = -1;
-    y = lbl_80562C7C;
+    y = *(volatile f32 *)&lbl_80562C7C;
     *(s32 *)((u8 *)arg0 + 0x6C) = minus;
     *(s32 *)((u8 *)arg0 + 0x0C) = minus;
     *(u8 *)((u8 *)arg0 + 0x10) = zero;
