@@ -125,18 +125,23 @@ extern void fn_802C61BC(void *, void *, u8, u8, u8, u8, u8, u8);
 extern char lbl_80339F6C[];
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+static inline void swap32bytes(u8 *p) {
+    u8 t0 = p[0]; p[0] = p[3]; p[3] = t0;
+    { u8 t1 = p[1]; p[1] = p[2]; p[2] = t1; }
+}
 void fn_801EB13C(void *arg0, s32 arg1) {
-#define SWAP32(p) { u8 t0 = (p)[0]; u8 t1 = (p)[3]; (p)[0] = t1; (p)[3] = t0; { u8 t2 = (p)[1]; u8 t3 = (p)[2]; (p)[1] = t3; (p)[2] = t2; } }
+#define SWAP32(p) { u8 t = (p)[0]; (p)[0] = (p)[3]; (p)[3] = t; } { u8 t = (p)[1]; (p)[1] = (p)[2]; (p)[2] = t; }
     u8 *v = (u8 *)arg0;
     u32 offset, address;
     int i;
+    u32 pcur = (u32)arg0;
     (void)arg1;
 
     SWAP32(v + 8);
     SWAP32(v + 4);
     SWAP32(v + 12);
     offset = *(u32 *)(v + 8);
-    address = (u32)v + offset;
+    address = pcur + offset;
     *(u32 *)(v + 8) = address;
     ((void (*)(void *, char *))fn_802C61BC)((void *)address, lbl_80339F6C);
     if (*(s32 *)v == 1) {
@@ -381,47 +386,57 @@ extern "C" void fn_801EB6A8(s32 arg0) {
         virtual void unused8();
         virtual void dispatch(s32 *, s32, s32, s32, s32);
     };
-    register s32 *item;
+    register s32 type = 0;
+    register s32 *item = 0;
     register s32 *node;
-    register s32 *context;
-    register s32 *child;
-    register s32 i;
+    register s32 *context = 0;
+    register s32 *child = 0;
+    register s32 i = 0;
     node = (s32 *)arg0;
-    while (node) {
-        switch (node[0]) {
+    while (node != 0) {
+        type = node[0];
+        if (type == 4) goto state4;
+        if (type >= 4) goto high;
+        switch (type) {
         case 0:
-            item = node;
-            i = 0;
-            while (i < node[5]) {
-                fn_801EB6A8(item[7]);
-                item += 2;
-                i++;
-            }
-            break;
-        case 0x101:
-        case 0x102:
-        case 0x103:
-            fn_801EAFD4(node);
-            fn_801EB6A8(node[2]);
-            break;
-        case 4:
-            child = (s32 *)node[2];
-            if (child) {
-                child[1] = fn_802C6DC4((const char *)&lbl_8055AFC0, child[2], 0, 0);
-                fn_802C6FA8(child[2]);
-                if (child[0] == 1) {
-                    FirstDispatch *first = (FirstDispatch *)fn_801EB110(child);
-                    first->dispatch(child);
-                    context = lbl_8055EBA0;
-                    SecondDispatch *second = (SecondDispatch *)fn_801EB110(child);
-                    second->dispatch(child, context[1], child[7], context[2], child[6]);
-                }
-            }
-            break;
+            goto state0;
         default:
-            fn_802E317C(lbl_80339FD4);
-            break;
+            goto error;
         }
+high:
+        if (type >= 0x104) goto error;
+        if (type < 0x101) goto error;
+        goto state_special;
+state0:
+        item = node;
+        i = 0;
+        while (i < node[5]) {
+            fn_801EB6A8(item[7]);
+            item += 2;
+            i++;
+        }
+        goto next;
+state_special:
+        fn_801EAFD4(node);
+        fn_801EB6A8(node[2]);
+        goto next;
+state4:
+        child = (s32 *)node[2];
+        if (child != 0) {
+            child[1] = fn_802C6DC4((const char *)&lbl_8055AFC0, child[2], 0, 0);
+            fn_802C6FA8(child[2]);
+            if (child[0] == 1) {
+                FirstDispatch *first = (FirstDispatch *)fn_801EB110(child);
+                first->dispatch(child);
+                context = lbl_8055EBA0;
+                SecondDispatch *second = (SecondDispatch *)fn_801EB110(child);
+                second->dispatch(child, context[1], child[7], context[2], child[6]);
+            }
+        }
+        goto next;
+error:
+        fn_802E317C(lbl_80339FD4);
+next:
         node = (s32 *)node[1];
     }
 }
