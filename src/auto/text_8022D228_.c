@@ -444,10 +444,9 @@ void fn_8022DDB0(void *arg0) {
 #pragma opt_propagation off
 #pragma scheduling invalid_target
 void fn_8022DE1C(void *arg0) {
-    float c = 0.5f;
     float *p = *(float **)((char *)arg0 + 0x18);
     float step = *(float *)((char *)arg0 + 0x14);
-    float v = step * (float)(int)(((*p - step) / step) + c);
+    float v = step * (float)(int)(0.5f + ((*p - step) / step));
     float low = *(float *)((char *)arg0 + 0x0C);
     *p = (low > v) ? low : v;
 }
