@@ -366,6 +366,7 @@ typedef signed char s8;
 #define FS(t, o) (*(t *)((char *)frame + (o) - 8))
 typedef int (*fn9c8_t)(int, void *, void *, void *, void *, void *, void *, void *);
 #define EF9C8 ((fn9c8_t)fn_8001EF9C)
+#define D8 ((int (*)(char *, int, const char *, ...))fn_801345D8)
 int fn_8025978C(void **arg0) {
     char s[0x670];
     lbl_8055F3A0 = 0;
