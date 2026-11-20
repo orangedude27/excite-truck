@@ -2660,12 +2660,6 @@ static inline void SetAppliedFlags_802D2B0C(unsigned char f8, unsigned char f9, 
     lbl_804C9930[0xC] = fC;
     lbl_804C9930[0xD] = fD;
 }
-typedef struct {
-    unsigned char b0;
-    unsigned char pad[3];
-    unsigned int t4;
-    unsigned char b8, b9, bA, bB, bC, bD;
-} CopyBlock802D2B0C;
 void fn_802D2B0C(void) {
     extern unsigned char lbl_804C9930[];
     extern unsigned short lbl_8055FD0C;
