@@ -12767,7 +12767,7 @@ extern "C" s32 fn_800B878C(void *arg0, u8 *buf, s32 *type, s32 size) {
     if(aligned){buf[0x11]=0x80;buf[0x12]=0;}else *(u16*)(buf+0x12)=0x8000;
     buf[0x15]=0xF0;
     if(n<0x10000) {
-      if((u32)(buf+0x13)&1){buf[0x13]=n;buf[0x14]=n>>8;}else __sthbrx(n, buf+0x14, 0);
+      if((u32)(buf+0x13)&1){buf[0x13]=n;buf[0x14]=n>>8;}else *(u16*)(buf+0x14)=(u16)(((n&0xFF)<<8)|((n>>8)&0xFF));
       if((u32)(buf+0x20)&3){buf[0x20]=0;buf[0x21]=0;buf[0x22]=0;buf[0x23]=0;}else *(u32*)(buf+0x20)=0;
     } else {
       if((u32)(buf+0x13)&1){buf[0x13]=0;buf[0x14]=0;}else *(u16*)(buf+0x14)=0;
@@ -12786,7 +12786,7 @@ extern "C" s32 fn_800B878C(void *arg0, u8 *buf, s32 *type, s32 size) {
       if((u32)(buf+0x43)&3){buf[0x43]=0x34;buf[0x44]=0x12;buf[0x45]=0;buf[0x46]=0;}else *(u32*)(buf+0x4C)=0x34120000;
     }else{
       if(aligned){buf[0x11]=0x80;buf[0x12]=0;}else *(u16*)(buf+0x12)=0x8000;
-      if((u32)(buf+0x16)&1){buf[0x16]=clusters;buf[0x17]=clusters>>8;}else __sthbrx(clusters, buf+0x16, 0);
+      if((u32)(buf+0x16)&1){buf[0x16]=clusters;buf[0x17]=clusters>>8;}else *(u16*)(buf+0x16)=(u16)(((clusters&0xFF)<<8)|((clusters>>8)&0xFF));
       buf[0x25]=0;buf[0x26]=0x29;
       if((u32)(buf+0x27)&3){buf[0x27]=0x34;buf[0x28]=0x12;buf[0x29]=0;buf[0x2A]=0;}else *(u32*)(buf+0x30)=0x34120000;
     }
