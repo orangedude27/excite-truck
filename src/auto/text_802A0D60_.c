@@ -35,12 +35,12 @@ extern char lbl_80349900[];
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_802A0D60(s32 arg0, float *arg1, float *arg2, float *arg3, s32 arg4, float farg0, float farg1) {
-    float sp10[3];
+    float sp10[5];
     float v;
     s32 i, c;
     u32 color;
     s32 n;
-    register float zero;
+    float zero;
     if (arg4 != 0 && !((float)__fabs(farg1) <= lbl_80558DC4[0])) {
         v = lbl_805646E8 * farg1;
         if (v < lbl_805646F0)
@@ -57,7 +57,7 @@ void fn_802A0D60(s32 arg0, float *arg1, float *arg2, float *arg3, s32 arg4, floa
             u32 lo, hi;
             lo = __rlwinm(n, 0, 24, 31);
             lo = __rlwimi(lo, n, 8, 16, 23);
-            hi = __rlwinm(n, 24, 8, 15);
+            hi = (n & 0xFF) << 16;
             hi = __rlwimi(hi, c, 24, 0, 7);
             color = lo | hi;
         }
@@ -72,24 +72,26 @@ void fn_802A0D60(s32 arg0, float *arg1, float *arg2, float *arg3, s32 arg4, floa
             float x, y, u, w;
             x = arg1[0] + arg2[0] * (farg0 * (float)a1) + arg3[0] * (farg0 * (float)b1);
             y = arg1[1] + arg2[1] * (farg0 * (float)a2) + arg3[1] * (farg0 * (float)b2);
-            sp10[0] = x;
-            sp10[1] = zero;
-            sp10[2] = y;
-            fn_801E9E30(arg0, sp10);
+            sp10[2] = x;
+            sp10[3] = zero;
+            sp10[4] = y;
+            fn_801E9E30(arg0, &sp10[2]);
             u = a != 0 ? lbl_805646F4 : lbl_805646F0;
             w = b != 0 ? lbl_805646F4 : lbl_805646F0;
-            fn_802CA09C(lbl_8055F840, color, (u32)(((i ^ 1) >> 1) - ((i ^ 1) & i)) >> 31, sp10[0], sp10[1], sp10[2], u, w);
+            fn_802CA09C(lbl_8055F840, color, (u32)(((i ^ 1) >> 1) - ((i ^ 1) & i)) >> 31, sp10[2], sp10[3], sp10[4], u, w);
         }
     }
 }
 #pragma pop
 
 float fn_802A0F7C(void *arg0, void *arg1, void *arg2) {
-    float t3;
-    float t2;
-    t3 = ((float *)arg1)[0] - ((float *)arg2)[0];
-    t2 = ((float *)arg1)[1] - ((float *)arg2)[1];
-    return ((float *)arg0)[0] * t3 + ((float *)arg0)[1] * t2;
+    float sp8;
+    float spC;
+    float temp_f3 = ((float *)arg1)[0] - ((float *)arg2)[0];
+    float temp_f2 = ((float *)arg1)[1] - ((float *)arg2)[1];
+    sp8 = temp_f3;
+    spC = temp_f2;
+    return ((float *)arg0)[0] * temp_f3 + ((float *)arg0)[1] * temp_f2;
 }
 
 #pragma cplusplus on
@@ -278,11 +280,12 @@ extern double lbl_80564710;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_802A1290(void) {
     float sp18[2];
     float sp10[2];
     float sp8[2];
-    s32 i, j, n;
+    s32 n, i, j;
     float a, k, sz, scale, lo, d, b, hi;
     float x, y, t;
     fn_802A92CC();
@@ -315,7 +318,7 @@ void fn_802A1290(void) {
                 sp18[1] = y;
                 t = ((float)fn_8002F234(sp10[0] * sp10[0] + sp10[1] * sp10[1]) - b) / d;
                 if (hi < t) t = hi;
-                if (!(t > lo)) t = lo;
+                t = (t <= lo) ? lo : t;
                 fn_802A0D60((s32)sp8, sp18, lbl_8055F858, lbl_8055F860, (i + j) & 1, lbl_80564708, hi + t * scale);
             }
         }
