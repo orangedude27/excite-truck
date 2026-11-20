@@ -2483,75 +2483,69 @@ extern "C" int Setup__Q46nw4hbm3snd6detail9SeqPlayerFPQ46nw4hbm3snd6detail17SeqT
         virtual void *AllocTrack(void *);
         virtual void FreeTrack(void *);
     };
-    struct Regs {
-        const char *file;
-        u32 level;
-        u32 ok;
-        s32 state;
-        u8 *entry;
-    } r;
     void *player = self;
-    r.file = (const char *)lbl_80323B28;
-    r.level = OSDisableInterrupts();
+    const char *file = (const char *)lbl_80323B28;
+    u32 level = OSDisableInterrupts();
     if (*(u8 *)((u8 *)player + 0x15) != 0) {
-        r.ok = OSDisableInterrupts();
+        u32 temp = OSDisableInterrupts();
+        s32 state;
         if (*(u8 *)((u8 *)player + 0x17) != 0) {
             if (player == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324054, 0x233, (const char *)lbl_80324030);
             Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((void *)lbl_80412A6C, (u8 *)player + 0x100);
         }
         if (*(u8 *)((u8 *)player + 0x15) != 0) {
-            r.state = (s32)player;
-            if (player != 0) r.state += 8;
+            state = (s32)player;
+            if (player != 0) state += 8;
             void *manager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
-            UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, (void *)r.state);
+            UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, (void *)state);
         }
-        OSRestoreInterrupts(r.ok);
-        r.entry = (u8 *)player;
-        r.state = 0;
-        r.ok = 0;
+        OSRestoreInterrupts(temp);
+        u8 *entry = (u8 *)player;
+        state = 0;
+        temp = 0;
         s32 valid;
         void *seq;
         do {
             valid = 0;
-            if (r.state >= 0 && r.state < 16) valid = 1;
+            if (state >= 0 && state < 16) valid = 1;
             if (valid == 0)
-                Panic__Q26nw4hbm2dbFPCciPCce(r.file, 0x2FD, r.file + 0x14, r.state, 0, 16);
-            seq = r.state > 15 ? (void *)r.ok : *(void **)(r.entry + 0x9C);
+                Panic__Q26nw4hbm2dbFPCciPCce(file, 0x2FD, file + 0x14, state, 0, 16);
+            seq = state > 15 ? (void *)temp : *(void **)(entry + 0x9C);
             if (seq != 0) {
                 Close__Q46nw4hbm3snd6detail8SeqTrackFv(seq);
                 void *manager = *(void **)((u8 *)player + 0x98);
-                ((Allocator *)manager)->FreeTrack(*(void **)(r.entry + 0x9C));
-                *(void **)(r.entry + 0x9C) = (void *)r.ok;
+                ((Allocator *)manager)->FreeTrack(*(void **)(entry + 0x9C));
+                *(void **)(entry + 0x9C) = (void *)temp;
             }
-            ++r.state;
-            r.entry += 4;
-        } while (r.state < 16);
+            ++state;
+            entry += 4;
+        } while (state < 16);
         *(u8 *)((u8 *)player + 0x15) = 0;
     }
     InitParam__Q46nw4hbm3snd6detail9SeqPlayerFiPQ46nw4hbm3snd6detail14NoteOnCallback(player, param, callback);
     {
+        u32 bits = mask;
+        s32 ok = 1;
+        u8 *entry = (u8 *)player;
         s32 idx = 0;
-        r.entry = (u8 *)mask;
-        r.ok = 1;
-        r.state = (s32)player;
-        while ((u32)r.entry != 0) {
-            if ((u32)r.entry & 1) {
+        while (bits != 0) {
+            if (bits & 1) {
                 void *track = ((Allocator *)allocator)->AllocTrack(player);
                 if (track == 0) {
-                    r.ok = 0;
+                    ok = 0;
                     break;
                 }
                 if (idx <= 15) {
-                    *(void **)((u8 *)r.state + 0x9C) = track;
+                    *(void **)(entry + 0x9C) = track;
                     SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi_800F0E9C(track, idx);
                 }
             }
-            r.entry = (u8 *)((u32)r.entry >> 1);
-            r.state = (s32)((u8 *)r.state + 4);
+            bits >>= 1;
+            entry += 4;
             idx++;
         }
-        if (r.ok == 0) {
+        if (ok == 0) {
             idx = 0;
             while (mask != 0) {
                 if (mask & 1) {
@@ -2562,20 +2556,20 @@ extern "C" int Setup__Q46nw4hbm3snd6detail9SeqPlayerFPQ46nw4hbm3snd6detail17SeqT
                 player = (u8 *)player + 4;
                 idx++;
             }
-            Warning__Q26nw4hbm2dbFPCciPCce(r.file, 0xC6, r.file + 0x54);
-            OSRestoreInterrupts(r.level);
+            Warning__Q26nw4hbm2dbFPCciPCce(file, 0xC6, file + 0x54);
+            OSRestoreInterrupts(level);
             return 1;
         }
     }
     {
-        r.state = (s32)player;
-        if (player != 0) r.state += 8;
+        s32 reg = (s32)player;
+        if (player != 0) reg += 8;
         void *manager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
-        RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, (void *)r.state);
+        RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, (void *)reg);
     }
     *(void **)((u8 *)player + 0x98) = allocator;
     *(u8 *)((u8 *)player + 0x15) = 1;
-    OSRestoreInterrupts(r.level);
+    OSRestoreInterrupts(level);
     return 0;
 }
 #pragma pop
