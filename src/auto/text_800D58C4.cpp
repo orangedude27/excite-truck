@@ -1455,7 +1455,7 @@ extern "C" f32 lbl_80560E88;
 extern "C" f32 lbl_80560E94;
 extern "C" f32 lbl_80560E98;
 #pragma push
-extern "C" void fn_800D7D5C(void* arg0, f32* m) {
+extern "C" void fn_800D7D5C(void* arg0, const f32* m) {
     s8 scale=0;
     f32 a=m[0], b=m[1], c=m[2], d=m[3], e=m[4], f=m[5];
     f32 aa=__fabsf(a), bb=__fabsf(b), cc=__fabsf(c), dd=__fabsf(d), ee=__fabsf(e), ff=__fabsf(f);
