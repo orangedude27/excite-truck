@@ -2282,11 +2282,13 @@ extern "C" s32 fn_800D93F4(void *arg0) {
 }
 #pragma scheduling on
 
+#pragma scheduling off
 extern "C" s32 fn_800D9434(void *arg0) {
     u32 x = *(u32 *)((u8 *)arg0 + 0x4C);
     s32 y = *(s32 *)((u8 *)arg0 + 0x58);
     return ((x >> 23) & 0x1E0) + ((x >> 24) & 1) + ((x >> 24) & 0x10) + y + ((x >> 18) & 0x3C) + ((x >> 4) & 4) + ((x >> 5) & 4) + ((x >> 6) & 4) + ((((x >> 24) & 0xF) * 0x14));
 }
+#pragma scheduling on
 
 extern "C" s32 fn_800D947C(void* arg0) {
     s32 x = *(s32*)((u8*)arg0 + 0x4C);
