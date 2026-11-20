@@ -21652,13 +21652,6 @@ extern "C" u8 fn_800D3838(u8 *addr) {
 
 extern "C" s32 OSEnableInterrupts(void);
 extern "C" s32 DVDReadAsyncPrio(void *, void *, s32, s32, s32, s32);
-static inline u32 RefillReadSize(u32 base) {
-    u32 bound = *(volatile u32 *)&lbl_8055DDD0;
-    u32 limit = base + 0x200;
-    if (bound <= limit)
-        return (bound - base + 0x1F) & 0xFFFFFFE0;
-    return 0x200;
-}
 extern "C" u8 fn_800D3840(s32 arg0) {
     s32 var_r29;
     s32 temp_r28;
