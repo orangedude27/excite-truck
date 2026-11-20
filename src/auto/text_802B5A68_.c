@@ -172,7 +172,7 @@ s32 fn_802B5B74(void *arg0) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802B5C24(s32 arg0) {
-    s32 temp_r31;
+    s32 temp_r31 = 0;
     s32 temp_r3;
     s32 value;
     void *object;
@@ -939,6 +939,7 @@ void fn_802B6AC0(void) {
     struct Scratch { char path[0x20]; char formatBuffer[0x40]; char imageBuffer[0x40]; } scratch;
     float seconds;
     s32 below;
+    s32 *state;
     s32 result;
     s32 mode;
     s32 index;
@@ -958,17 +959,18 @@ void fn_802B6AC0(void) {
     if (below)
         return;
     seconds = (float)fn_802E2C20() / lbl_80564C70;
-    ((s32 *)&lbl_804BE7D8)[1] = 0;
+    state = (s32 *)&lbl_804BE7D8;
+    state[1] = 0;
     *(float *)((u8 *)&lbl_8055FA18) = seconds;
     mode = fn_802B6A70(lbl_8055FA38);
     ((s32 (*)(char *, s32, const char *, ...))fn_801345D8)(scratch.imageBuffer, 0x40, lbl_8055CE88, mode);
     result = fn_802E3BB4(scratch.imageBuffer, scratch.path, 0x20);
     if ((u32)result + 0x10000U != 0xFFFFU) {
-        char *suffix = (char *)lbl_8055CE98;
+        register char *suffix = (char *)lbl_8055CE98;
         do {
-            index = ((s32 *)&lbl_804BE7D8)[1];
+            index = state[1];
             entry = (struct Entry *)(*(u32 *)&lbl_804BE7D8 + index * 0x128);
-            ((s32 *)&lbl_804BE7D8)[1] = index + 1;
+            state[1] = index + 1;
             {
                 s32 remaining = 0x20;
                 char *dst = entry->name;
@@ -1049,7 +1051,7 @@ void fn_802B6AC0(void) {
                     done2:;
                 }
             }
-        } while ((((s32 *)&lbl_804BE7D8)[1] + 1 <= ((s32 *)&lbl_804BE7D8)[2]) &&
+        } while ((state[1] + 1 <= state[2]) &&
                  fn_802E3C24(result, scratch.path, 0x20) != 0);
         fn_802E3CA4(result);
     }
@@ -1385,8 +1387,8 @@ s32 fn_802B7694(void) {
 #pragma optimization_level 2
 void fn_802B773C(void) {
     f32 sp8[3];
-    register s32 *state = lbl_804BFF80;
-    register u8 previous = lbl_8055FA58;
+    s32 *state = lbl_804BFF80;
+    u8 previous = lbl_8055FA58;
 
     lbl_8055FA58 = 0;
     if (*(s8 *)((u8 *)state + 0x34) != 0)
@@ -1715,6 +1717,11 @@ void fn_802B7D1C(void) {
 }
 
 #pragma cplusplus on
+static inline void MenuListInit(s32 *list, s32 *buf, s32 cap) {
+    list[1] = 0;
+    list[2] = cap;
+    list[0] = (s32)buf;
+}
 extern "C" void fn_802B7D4C(void) {
     class Dummy {
     public:
@@ -1725,14 +1732,12 @@ extern "C" void fn_802B7D4C(void) {
     };
     s32 workspace[51];
     s32 selected[3];
-    u8 *state;
+    void *state;
     MenuRenderCopy first, second;
     char name[32];
     MenuRenderCopy line, line2;
     register char *base = lbl_8034A598;
     void *object;
-    void *(*lookup)(void *, const char *);
-    void *(*get)(void *, const char *);
     const char *status;
     f32 step;
     s32 offset, i;
@@ -1748,9 +1753,9 @@ extern "C" void fn_802B7D4C(void) {
     state = 0;
     workspace[2] = 16;
     workspace[0] = (s32)&workspace[3];
-    fn_802B321C((s32)workspace, (void **)&state, *(s32 *)((u8 *)object + 8), lbl_8055FA40);
+    fn_802B321C((s32)workspace, &state, *(s32 *)((u8 *)object + 8), lbl_8055FA40);
     status = base + 0x338;
-    if (*state != 0) status = lbl_8055CEB8;
+    if (*(u8 *)state != 0) status = lbl_8055CEB8;
 
     fn_802B6568(((Dummy *)lbl_8055FA48)->call(base + 0x118), lbl_8055CE70, status);
 
@@ -1829,9 +1834,9 @@ s32 fn_802B8110(u32 arg0, s32 arg1)
     s32 entries[51];
   } work;
   void *temp_r3;
-  s32 temp_r29;
   s32 var_r30;
   s32 *temp_r6;
+  s32 temp_r29;
   s32 temp_r3_2;
   s32 temp_r3_3;
   s32 temp_r4;
