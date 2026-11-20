@@ -157,6 +157,13 @@ static inline void IdList_Add(s32 *src) {
     lbl_8034F3D0.count = n + 1;
     data[n] = value;
 }
+static inline void IdList_Add2(IdList *list, s32 *src) {
+    s32 value = *src;
+    s32 *data = list->data;
+    s32 n = list->count;
+    list->count = n + 1;
+    data[n] = value;
+}
 #define ID_PUSH(v) { s32 n_ = ID_LIST->count; ID_LIST->count = n_ + 1; ID_LIST->data[n_] = (v); }
 #pragma scheduling invalid_target
 void fn_80008390(void) {
