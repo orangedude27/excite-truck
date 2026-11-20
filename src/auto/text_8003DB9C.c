@@ -1858,17 +1858,17 @@ extern unsigned char lbl_80558E40;
 void __GXCalculateVLim(void) {
     register unsigned int *gx = __GXData;
     register unsigned int flags;
-    register int extra;
     register unsigned char *table;
     register unsigned int vtx;
     register int sum;
     int tableValue;
+    register int extra;
 
     if (*(unsigned short *)((char *)gx + 4) == 0) return;
 
     flags = gx[0x14 / 4];
-    extra = gx[0x1C / 4];
     table = &lbl_80558E40;
+    extra = gx[0x1C / 4];
 
     sum = flags & 1;
     sum += (flags >> 1) & 1;
@@ -1876,11 +1876,11 @@ void __GXCalculateVLim(void) {
     sum += (flags >> 3) & 1;
     sum += (flags >> 4) & 1;
     vtx = gx[0x18 / 4];
+    tableValue = table[(flags >> 11) & 3];
     sum += (flags >> 5) & 1;
     sum += (flags >> 6) & 1;
     sum += (flags >> 7) & 1;
 
-    tableValue = table[(flags >> 11) & 3];
     sum += (flags >> 8) & 1;
     sum += table[(flags >> 9) & 3];
     sum += tableValue * (((extra >> 9) & 1) == 1 ? 3 : 1);
@@ -4719,8 +4719,8 @@ void GXLoadTlut(void *arg0, int arg1) {
         struct { unsigned int hi : 22; unsigned int lo : 10; } f;
     };
     union Low10 v;
-    unsigned int *dst = ((unsigned int *(*)(int))__GXData[0x51C / 4])(arg1);
     unsigned int *src = (unsigned int *)arg0;
+    unsigned int *dst = ((unsigned int *(*)(int))__GXData[0x51C / 4])(arg1);
     __GXFlushTextureState();
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = src[1];
@@ -5266,10 +5266,10 @@ void GXSetTevOp(int stage, int mode) {
         color += mode;
         alpha += mode;
     }
+    inputValue = *color;
     data = __GXData;
     tev = data + stage;
     oldValue = tev[0x180 / 4];
-    inputValue = *color;
     *(volatile unsigned char *)0xCC008000 = 0x61;
     value = oldValue & 0xFF000000;
     value = __rlwimi(value, inputValue, 0, 8, 31);
@@ -5284,6 +5284,7 @@ void GXSetTevOp(int stage, int mode) {
     tev[0x1C0 / 4] = value;
     *(unsigned short *)((char *)data + 2) = 0;
 }
+#pragma opt_propagation reset
 
 // GXData caches the BP's per-stage TEV combiner registers, one word per stage:
 // the colour combiner (BP register 0xC0 + stage) at 0x180 and the alpha
