@@ -1612,7 +1612,7 @@ finish:
 #pragma pop
 static inline int fn_80281138_find(void **items, int count, void *key) {
     int i;
-    for (i = 0; i < count; ++i, ++items) {
+    for (i = 0; i < count; ++items, ++i) {
         if (*items == key)
             return i;
     }
@@ -1645,15 +1645,14 @@ extern "C" FN81138_RET fn_80281138(void) {
     selected = lbl_8055F694;
     if (selected != 0) {
         char buffer2[0x1E];
-        int idx;
         lbl_8055F688 = 0;
         if (*(unsigned char *)((char *)selected + 0x64) != 0) {
-            idx = 5;
+            index = 5;
         } else {
-            idx = fn_80281138_find(lbl_804B3048.items, lbl_804B3048.count, selected);
+            index = fn_80281138_find(lbl_804B3048.items, lbl_804B3048.count, selected);
         }
         ((void (*)(char *, int, const char *, ...))fn_801345D8)(
-            buffer2, 0x1E, lbl_8034849C, idx + 1);
+            buffer2, 0x1E, lbl_8034849C, index + 1);
         fn_80236954(buffer2);
     }
 }
