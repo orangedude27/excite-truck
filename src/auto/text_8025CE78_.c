@@ -281,12 +281,11 @@ copy2:      *dst++=*src++; } while(dst[-1]);
     *(int *)(obj+0x408)=best_j;
 }
 
-#pragma cplusplus reset
 #pragma scheduling invalid_target
 #pragma processor 750
 #pragma paired_single off
 void fn_8025DDD0(void *arg0, int arg1) {
-    float spC, sp8, outC, out8, f25, f24, f26, f27, f28, f29;
+    float spC, sp8, outC, out8, f29, f28, f27, f26, f25, f24;
     float tmpA, tmpB;
     unsigned int color, packed;
     int blue, green, red;
@@ -295,11 +294,13 @@ void fn_8025DDD0(void *arg0, int arg1) {
         return;
     fn_80230C30(&spC, &sp8, *(int *)((char *)arg0 + 4), *(int *)((char *)arg0 + 8));
     f25 = (float)*(int *)((char *)arg0 + 0xC);
-    f24 = (float)*(int *)((char *)arg0 + 0x10);
     tmpA = spC - lbl_80563B58;
     tmpB = lbl_80563B58 + sp8;
-    fn_802354A0(*(int *)((char *)arg0 + 0x28), *(unsigned char *)((char *)arg0 + 0x2C), -1, tmpA, tmpB, lbl_80563B5C, lbl_80563B60 + f25, lbl_80563B60 + f24);
-    item = *(char **)((char *)arg0 + 0x18) + *(int *)((char *)arg0 + 0x1C) * 0x38;
+    f24 = (float)*(int *)((char *)arg0 + 0x10);
+    fn_802354A0(*(int *)((char *)arg0 + 0x28), *(unsigned char *)((char *)arg0 + 0x2C), -1,
+        tmpA, tmpB, lbl_80563B5C,
+        lbl_80563B60 + f25, lbl_80563B60 + f24);
+    item = (char *)**(void ***)((char *)arg0 + 0x18) + *(int *)((char *)arg0 + 0x1C) * 0x38;
     out8 = sp8;
     outC = spC;
     f26 = *(float *)(item + 0x28);
@@ -318,11 +319,9 @@ void fn_8025DDD0(void *arg0, int arg1) {
     packed |= 0xFF000000;
     packed = (packed & 0xFFFF00FF) | ((green & 255) << 8);
     packed = (packed & 0xFFFFFF00) | (blue & 255);
-    fn_80231220(*(int *)(item + 0x24), packed, outC, out8, f25, f24, f26, f27, f28, f29);
+    fn_80231220(*(int *)(item + 0x24), packed,
+        outC, out8, f25, f24, f26, f27, f28, f29);
 }
-
-#pragma push
-#pragma cplusplus on
 extern "C" void fn_8025DF80(void *arg0) {
     /* Notify each entry in the object's list (array at offset 0x18, count at 0x1C). */
     register long *object = (long *)arg0;
