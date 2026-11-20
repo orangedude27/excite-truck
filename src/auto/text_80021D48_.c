@@ -16,7 +16,7 @@ typedef struct SubBlock {
     Block* bp;
 } SubBlock;
 static inline void SubBlock_construct(SubBlock* ths, unsigned int size, Block* bp, int prev_alloc, int this_alloc) {
-    ths->bp = (Block*)((unsigned int)bp | this_alloc);
+    ths->bp = (Block*)((unsigned int)bp | 1);
     ths->size = size;
     if (prev_alloc) ths->size |= 2;
     if (this_alloc) ths->size |= 1;
