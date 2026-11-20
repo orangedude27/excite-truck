@@ -1865,7 +1865,6 @@ struct AxVoice {
     /* 0x123 */ u8 updateFlags;       /* bits the AX update functions act on */
     /* 0x124 */ u8 pad_124[0x60];
     /* 0x184 */ f32 playbackRate;     /* how fast the wave is played, 1.0 = as recorded */
-    int IsPlayFinished() const;
 };
 
 /* Bits of AxVoice::updateFlags (+0x123).  Setters ask for one thing to be pushed
