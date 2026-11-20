@@ -1581,7 +1581,6 @@ extern f32 lbl_80564850, lbl_80564858, lbl_8056485C, lbl_805648C4;
 f32 fn_802C9A50(void);
 void fn_802A70E4(void *, f32 *);
 #pragma scheduling invalid_target
-#pragma optimization_level 2
 void fn_802A71C4(void *arg0)
 {
   volatile u8 *p = (volatile u8 *) arg0;
