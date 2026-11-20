@@ -654,8 +654,7 @@ void fn_80135F4C(void *follower) {
     fn_80135F64((int)follower, start, start + 8, 1, 0);
 }
 
-#pragma scheduling 750
-#pragma dont_inline on
+#pragma scheduling on
 void fn_80135F64(int arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
  s32 offset, i;
  fn_801353C8((void *)arg0,arg1,arg2,arg4);
@@ -689,9 +688,6 @@ void fn_80135F64(int arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
   obj->unk_40=a;
  }
 }
-#pragma dont_inline off
-#pragma scheduling on
-
 void fn_8013605C(void *follower) {
     /* Clear the path-update flag byte at +0x64 of a path follower (Unk_80135278). */
     *(signed char *)((char *)follower + 0x64) = 0;
@@ -821,7 +817,7 @@ len_cond:
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-int fn_801363A0(void *arg0, void *arg1) {
+int fn_801363A0(void *arg0, void *__restrict arg1) {
     volatile void *temp_r6 = *(void **)arg1;
     int temp_r31 = *(int *)((char *)temp_r6 + 0x10);
     int var = *(int *)((char *)*(void **)((char *)temp_r6 + 0x14) + 0x10);
