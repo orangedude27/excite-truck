@@ -2609,8 +2609,9 @@ f32 fn_8000EEC8(s32 regionId, f32 listHeight) {
 }
 
 #pragma push
-#pragma opt_lifetimes off
+#pragma processor 750
 #pragma use_lmw_stmw off
+#pragma opt_lifetimes off
 void fn_8000EF74(s32 arg0) {
     extern f32 fn_8000EDC0(s32);
     extern s32 fn_8000EE54(s32);
