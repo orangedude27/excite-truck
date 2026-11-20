@@ -2484,9 +2484,9 @@ extern "C" int Setup__Q46nw4hbm3snd6detail9SeqPlayerFPQ46nw4hbm3snd6detail17SeqT
         virtual void FreeTrack(void *);
     };
     struct Regs {
+        const char *file;
         u32 level;
         u32 ok;
-        const char *file;
         s32 state;
         u8 *entry;
     } r;
