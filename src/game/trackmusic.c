@@ -655,17 +655,17 @@ extern "C" void fn_802101F8(Dummy_802101F8 *arg0, long arg1, long arg2, struct R
     long temp_r31;
     struct Record_802101F8 rec;
     long i;
+    long f8;
+    long f4;
 
     if (arg0 == 0 || arg3 == 0) return;
     temp_r31 = arg0->v4();
     i = 0;
     rec.f0 = arg3->f0;
-    {
-        long f4 = arg3->f4;
-        long f8 = arg3->f8;
-        rec.f8 = f8;
-        rec.f4 = f4;
-    }
+    f4 = ((volatile struct Record_802101F8 *)arg3)->f4;
+    f8 = ((volatile struct Record_802101F8 *)arg3)->f8;
+    rec.f4 = f4;
+    rec.f8 = f8;
     rec.fC = arg3->fC;
     rec.f10 = arg3->f10;
     rec.f14 = arg3->f14;
@@ -814,11 +814,12 @@ void fn_80210514(int mode) {
 #pragma push
 #pragma opt_strength_reduction off
 long fn_80210570(void) {
-    register long val = 3;
+    long val = 3;
     char *ptr = (char *)fn_8020F5F0(fn_8000DA10());
-    register long i;
+    long i;
+    long ctr;
     long k;
-    for (i = 0; i < 48; i += 3) {
+    for (i = 0, ctr = 0; ctr < 16; ctr++, i += 3) {
         for (k = 0; k < 1; k++) {
             if (val == 3) {
                 val = *(long *)(ptr + 0x000);
