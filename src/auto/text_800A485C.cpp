@@ -11289,6 +11289,7 @@ compute:
 }
 
 struct CacheKey { u32 flag; s32 key; };
+struct Tail63FC { char pad[0x80]; s32 flag1; s32 key1; s32 flag2; s32 key2; };
 static inline s32 CacheKeyMatch(CacheKey *e, s32 key) {
     e->flag &= 1;
     return e->flag != 0 && key == e->key;
@@ -11360,16 +11361,16 @@ extern "C" s32 fn_800B63FC(void) {
     }
     if (i == 4) {
         s32 k = key;
-        s32 *e = lbl_803D2140;
-        e[0x22] &= 1;
-        if (e[0x22] && k == e[0x23]) found = 1;
+        CacheKey *e = (CacheKey *)lbl_803D2140;
+        e[0x11].flag &= 1;
+        if (e[0x11].flag && k == e[0x11].key) found = 1;
         else {
-            e += 4;
-            e[0x20] &= 1;
-            if (e[0x20] && k == e[0x21]) found = 1;
+            e += 2;
+            e[0x10].flag &= 1;
+            if (e[0x10].flag && k == e[0x10].key) found = 1;
             else {
-                e[0x22] &= 1;
-                if (e[0x22] && k == e[0x23]) found = 1;
+                e[0x11].flag &= 1;
+                if (e[0x11].flag && k == e[0x11].key) found = 1;
                 else found = 0;
             }
         }
