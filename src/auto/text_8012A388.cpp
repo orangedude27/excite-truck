@@ -63,6 +63,8 @@ extern "C" const char lbl_8032A8E8[];
 extern "C" void fn_8012C4D8(void *);
 extern "C" s32 fn_80128668(void *);
 struct Fn8012AFE0Ent { u8 pad[0x34]; u32 flags; u8 pad2[0xC]; };
+/* 13-word resource block header copied into a load request at +0x6C. */
+struct ResBlockHeader { s32 words[13]; };
 extern "C" const char lbl_8032ADF4[];
 extern "C" const char lbl_8032AE20[];
 extern "C" void fn_80128660(s32);
@@ -1242,11 +1244,12 @@ extern "C" const char lbl_8032AB58[];
 extern "C" void *fn_8012BD98(const char *arg0, void **arg1, s32 arg2) {
     void *p;
     s32 tries;
+    register s32 zero = 0;
     p = fn_8012BD3C(*arg1, arg0);
     if (p == 0) {
         tries = 0;
         do {
-            lbl_8055DFF9 = 0;
+            lbl_8055DFF9 = zero;
             p = fn_8012B32C(arg0);
             if (p != 0) {
                 *(void **)((char *)p + 0xA8) = *arg1;
@@ -1868,12 +1871,12 @@ extern "C" void fn_8012D1A8(s32 arg0) {
             *(s32 *)(self + 0xB4) = -1;
         }
         for (i = 0, off = 0; i < *(s32 *)(self + 0x8C); i++, off += 0x44) {
-            u32 *r = (u32 *)(*(s32 *)(self + 0x64) + off);
-            if (r[0x34 / 4] & 4) {
+            u32 *test = (u32 *)(*(s32 *)(self + 0x64) + off);
+            if (test[0x34 / 4] & 4) {
                 fn_802E317C(lbl_8032AE20);
             }
-            r = (u32 *)(*(s32 *)(self + 0x64) + off);
-            r[0x34 / 4] &= ~0xF;
+            u32 *store = (u32 *)(*(s32 *)(self + 0x64) + off);
+            store[0x34 / 4] &= ~0xF;
         }
         if (*(s32 *)(self + 0x68) != 0) {
             fn_8012C4D8((void *)*(s32 *)(self + 0x68));
@@ -1887,12 +1890,12 @@ extern "C" void fn_8012D1A8(s32 arg0) {
         fn_8012BA1C(self + 4);
         fn_8012BC24((void **)&lbl_8055E000, self + 4);
         for (i = 0, off = 0; i < *(s32 *)(self + 0x8C); i++, off += 0x44) {
-            u32 *r = (u32 *)(*(s32 *)(self + 0x64) + off);
-            if (r[0x34 / 4] & 4) {
+            u32 *test = (u32 *)(*(s32 *)(self + 0x64) + off);
+            if (test[0x34 / 4] & 4) {
                 fn_802E317C(lbl_8032AE20);
             }
-            r = (u32 *)(*(s32 *)(self + 0x64) + off);
-            r[0x34 / 4] &= ~0xF;
+            u32 *store = (u32 *)(*(s32 *)(self + 0x64) + off);
+            store[0x34 / 4] &= ~0xF;
         }
         if (*(s32 *)(self + 0x68) != 0) {
             fn_8012C4D8((void *)*(s32 *)(self + 0x68));
@@ -1952,8 +1955,7 @@ extern "C" void fn_8012D3D8(s32 object) {
     fn_8012D1A8(object);
 }
 
-#pragma dont_inline on
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_8012D40C(s32 arg0) {
     u8 *self = (u8 *)arg0;
     s32 *object = (s32 *)self;
@@ -2130,8 +2132,6 @@ extern "C" void fn_8012D40C(s32 arg0) {
         object[0xBC / 4]++;
     } while (!done);
 }
-#pragma scheduling on
-#pragma dont_inline reset
 extern "C" s32 fn_8012D838(s32 obj) {
     /* Refresh state if needed, then map the object's state (+0xB8) to a simple status code. */
     s32 state;
@@ -3365,8 +3365,7 @@ extern "C" void *fn_8012C58C(void *arg0) {
 
 extern "C" const char lbl_8032ABF8[];
 extern "C" const char lbl_8032AC08[];
-#pragma push
-#pragma scheduling invalid_target
+#pragma scheduling reset
 extern "C" s32 fn_8012C5B8(s32 arg0, s32 arg1, s32 arg2) {
     long index;
     long result = 0;
@@ -3417,8 +3416,6 @@ extern "C" s32 fn_8012C5B8(s32 arg0, s32 arg1, s32 arg2) {
     }
     return result;
 }
-#pragma pop
-
 /* Return the 0x800-aligned size of an open resource: round_up(base + size) - round_down(base). */
 extern "C" s32 fn_8012C6F0(void *handle) {
 #define ALIGN_UP 0x7FF        /* round-up addend */
