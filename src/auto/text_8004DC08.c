@@ -418,9 +418,8 @@ static inline s32 BootGetPartOffsetC(BootCmdBlock *cb) {
     if (v != 0) {
         return v;
     } else if (*(s32 *)0x800030F4 != 0) {
-        s32 o = *(s32 *)0x800030F4 >> 2;
         u8 *buf = OSAllocFromMEM1ArenaLo(0x40, 0x20);
-        DVDReadAbsAsyncPrio(cb, buf, 0x40, o, 0, 0);
+        DVDReadAbsAsyncPrio(cb, buf, 0x40, *(s32 *)0x800030F4 >> 2, 0, 0);
         while (DVDGetCommandBlockStatus(cb) != 0) {
             if (DVDGetCommandBlockStatus(cb) > 2 || DVDGetCommandBlockStatus(cb) < 0) {
                 __OSLaunchMenu();
