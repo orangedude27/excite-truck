@@ -80,12 +80,6 @@ u32 lbl_8055DB18[2];
 
 #define PAD_ORIGIN(chan) ((PADStatus*)(lbl_8038F080 + (chan) * sizeof(PADStatus)))
 
-typedef struct {
-    PADStatus st[4];
-    u32 type[4];
-    u8 pad[0x10];
-    PADStatus prev[4];
-} PADWork;
 
 void UpdateOrigin(s32 chan) {
     u32 mask = PAD_CHAN0_BIT >> chan;
