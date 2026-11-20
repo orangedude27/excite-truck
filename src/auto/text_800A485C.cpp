@@ -12,6 +12,10 @@ __declspec(section ".sdata") extern u8 lbl_805591FC[];
 __declspec(section ".sdata") extern u8 lbl_80559200[];
 __declspec(section ".sdata") extern u8 lbl_80559204[];
 }
+extern "C" s16 fn_800BDE18(s32, s32, s32, s32 *);
+static inline u32 fn_800BDE18_32(s32 a, s32 b, s32 c, s32 *d) {
+    return (u32)((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(a, b, c, d);
+}
 extern "C" s32 fn_800B6200(void *, void *);
 extern "C" void fn_800B3330(void *, s32, s32);
 extern "C" s32 fn_800AC708(void *, u8 *, u32, s32 *);
@@ -7615,8 +7619,7 @@ extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2) {
     u16 bits = *(u16 *)arg0;
     u32 offset = arg1 << 1;
     u8 shift = *((u8 *)arg0 + 0x20);
-    u32 shifted = offset >> shift;
-    u32 indexValue = *(u32 *)((u8 *)arg0 + 0x28) + shifted;
+    u32 indexValue = *(u32 *)((u8 *)arg0 + 0x28) + (offset >> shift);
     u32 sectorValue = offset & (bits - 1);
     __sthbrx(arg2, &sp8, 0);
     u16 index = indexValue;
@@ -15012,7 +15015,9 @@ extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
 }
 #pragma pop
 extern "C" s16 fn_800BDD7C(s32 arg0, s32 arg1, s32 *arg2) {
-    register u32 value = ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 0xC, arg2);
+    s32 *p = arg2;
+    u32 mode = 0xC;
+    u32 value = ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, mode, p);
     while ((value & 0xFFFFU) != 0xFFFU) {
         value = (value * 2) & 0xFFFEU;
         value |= ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 1, arg2);
@@ -16838,7 +16843,8 @@ extern "C" void fn_800C0B68(Fn800C0B68Context *arg0, s32 arg1, s32 arg2, s16 *ar
     s16 var_r0, var_r3, var_r4, var_r5;
     s32 temp_r3;
     u32 temp_r5, temp_r8, temp_r8_2, temp_r8_3, temp_r8_4;
-    u32 temp_r0, var_ctr, var_ctr_2, var_r3_2;
+    u32 temp_r0, var_r3_2;
+    s32 var_ctr, var_ctr_2;
     s32 shift;
     s16 *var_r5_2, *var_r31 = arg3 + arg4;
     goto block_25;
@@ -16860,7 +16866,7 @@ loop_25:
         temp_r3 -= arg4;
         var_r3_2 = (u32)temp_r3 >> 2;
         if (arg4 < arg1) {
-            temp_r0 = var_r3_2 >> 3U; var_ctr = temp_r0;
+            temp_r0 = var_r3_2 >> 3U; var_ctr = (s32)temp_r0;
             if (temp_r0 != 0) {
                 do {
                     var_r5_2[0] = var_r4; var_r5_2[1] = var_r4; var_r5_2[2] = var_r4; var_r5_2[3] = var_r4; var_r5_2[4] = var_r4; var_r5_2[5] = var_r4; var_r5_2[6] = var_r4; var_r5_2[7] = var_r4; var_r5_2[8] = var_r4; var_r5_2[9] = var_r4; var_r5_2[10] = var_r4; var_r5_2[11] = var_r4; var_r5_2[12] = var_r4; var_r5_2[13] = var_r4; var_r5_2[14] = var_r4; var_r5_2[15] = var_r4; var_r5_2[16] = var_r4; var_r5_2[17] = var_r4; var_r5_2[18] = var_r4; var_r5_2[19] = var_r4; var_r5_2[20] = var_r4; var_r5_2[21] = var_r4; var_r5_2[22] = var_r4; var_r5_2[23] = var_r4; var_r5_2[24] = var_r4; var_r5_2[25] = var_r4; var_r5_2[26] = var_r4; var_r5_2[27] = var_r4; var_r5_2[28] = var_r4; var_r5_2[29] = var_r4; var_r5_2[30] = var_r4; var_r5_2[31] = var_r4;
@@ -16870,7 +16876,7 @@ loop_25:
                 if (var_r3_2 != 0) goto block_21;
             } else {
 block_21:
-                var_ctr_2 = var_r3_2;
+                var_ctr_2 = (s32)var_r3_2;
                 do {
                     var_r5_2[0] = var_r4; var_r5_2[1] = var_r4; var_r5_2[2] = var_r4; var_r5_2[3] = var_r4;
                     var_r5_2 += 4; var_ctr_2 -= 1;
@@ -21213,26 +21219,35 @@ extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHe
 extern "C" void PPCHalt(void);
 extern "C" void fn_800D2098(const char *file, s32 line, const char *msg, va_list vlist) {
     const char *strings = lbl_8031E9D0;
-    void *head = (u8 *)vlist - 0x68;
     OSDisableInterrupts();
     fn_800591AC(0);
     AIRegisterDMACallback_800591F0(0);
-    if (lbl_8055DDBC != 0) fn_800D3634(0);
-    ((void (*)(s32 *))fn_800D1F7C)((s32 *)head);
+    if (lbl_8055DDBC != 0) {
+        fn_800D3634(0);
+    }
+    ((void (*)(s32 *))fn_800D1F7C)((s32 *)((u8 *)vlist - 0x68));
     if (lbl_8055DDBC != 0) {
         Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(lbl_8055DDBC, strings + 0x60, file, line);
         Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct((void *)3, lbl_8055DDBC, msg, vlist);
         Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(lbl_8055DDBC, lbl_805597DC);
-        head = lbl_8055DDBC;
-        if (head == 0) Panic__Q26nw4hbm2dbFPCciPCce(strings + 0x70, 0x1B2, strings + 0x7C);
+        void *head = lbl_8055DDBC;
+        if (head == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(strings + 0x70, 0x1B2, strings + 0x7C);
+        }
         s32 viewLines = *(u16 *)((u8 *)head + 0x20);
         s32 lines = nw4hbm::db::Console_GetTotalLines((nw4hbm::db::detail::ConsoleHead *)head) - viewLines;
-        if (lines < 0) lines = 0;
+        if (lines < 0) {
+            lines = 0;
+        }
         head = lbl_8055DDBC;
-        if (head == 0) Panic__Q26nw4hbm2dbFPCciPCce(strings + 0x70, 0x22D, strings + 0x7C);
+        if (head == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(strings + 0x70, 0x22D, strings + 0x7C);
+        }
         *(s32 *)((u8 *)head + 0x18) = lines;
         head = lbl_8055DDBC;
-        if (head == 0) Panic__Q26nw4hbm2dbFPCciPCce(strings + 0x70, 0x1F1, strings + 0x7C);
+        if (head == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(strings + 0x70, 0x1F1, strings + 0x7C);
+        }
         ((u8 *)head)[0x22] = 1;
         Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHead(lbl_8055DDBC);
     } else {
