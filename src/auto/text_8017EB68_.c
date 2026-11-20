@@ -838,10 +838,7 @@ void fn_8017F718(void *arg0) {
     value = value > lbl_80561C4C ? value : lbl_80561C4C;
     value2 = lbl_80561C48;
     v->pad64 = value;
-    {
-        float p60 = *(volatile float *)&v->pad60;
-        value2 = value2 < p60 ? value2 : p60;
-    }
+    value2 = value2 < v->pad60 ? value2 : v->pad60;
     value2 = value2 > lbl_80561C4C ? value2 : lbl_80561C4C;
     value = v->level2C[2];
     v->pad60 = value2;
@@ -1446,6 +1443,7 @@ extern void fn_801A9110(void *, const char *);
 extern int sprintf(char *, const char *, ...);
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801808DC(void) {
     char name[64];
     unsigned char flag;
