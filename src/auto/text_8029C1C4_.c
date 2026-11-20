@@ -977,7 +977,6 @@ void fn_8029D7D0(int arg0, void **__restrict arg1) {
     char **st = (char **)arg1;
     char *info = st[0];
     float sp[3];
-    float p0, p1, p2, p3, p4, p5, p6, p7, p8;
     float r = *(float *)(o + 0x60);
     float dz = *(float *)(info + 0x2C) - *(float *)(o + 0x5C);
     float dx = *(float *)(info + 0x24) - *(float *)(o + 0x54);
@@ -1000,15 +999,15 @@ void fn_8029D7D0(int arg0, void **__restrict arg1) {
     v = (float *)fn_802C6C34();
     m = (float *)st[0];
     if (sp == v + 8) {
-        p0 = m[3] * v[9];
-        p1 = m[4] * v[9];
-        p2 = m[0] * v[8];
-        p3 = m[1] * v[8];
-        p4 = m[2] * v[8];
-        p5 = m[5] * v[9];
-        p6 = m[6] * v[10];
-        p7 = m[7] * v[10];
-        p8 = m[8] * v[10];
+        float p0 = m[3] * v[9];
+        float p1 = m[4] * v[9];
+        float p2 = m[0] * v[8];
+        float p3 = m[1] * v[8];
+        float p4 = m[2] * v[8];
+        float p5 = m[5] * v[9];
+        float p6 = m[6] * v[10];
+        float p7 = m[7] * v[10];
+        float p8 = m[8] * v[10];
         sp[0] = p6 + (p2 + p0);
         sp[1] = p7 + (p3 + p1);
         sp[2] = p8 + (p4 + p5);
@@ -1084,8 +1083,9 @@ done:
 extern float PSVECDotProduct(float *, float *);
 extern float lbl_80564690;
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8029DB78(void *arg0, void *arg1, int x, int z) {
+    #pragma scheduling on
     extern double fn_8002F234(float);
     extern float lbl_80564658, lbl_8056465C, lbl_8056468C;
     extern void PSVECNormalize(float *, float *);
@@ -1221,12 +1221,12 @@ extern void fn_8029C450(void *, int);
 extern float lbl_8056469C;
 #pragma scheduling invalid_target
 void fn_8029DF64(void *arg0, int arg1, int arg2, float arg3) {
-    int low;
     int stride;
     short *data;
     int index;
     float val;
     int cvt;
+    int low;
     int out;
     stride = *(int *)((char *)arg0 + 0xC);
     data = *(short **)((char *)arg0 + 4);
@@ -1234,11 +1234,12 @@ void fn_8029DF64(void *arg0, int arg1, int arg2, float arg3) {
     val = lbl_8056469C * arg3 + (float)data[index];
     cvt = (int)val;
     low = -32768;
-    if (cvt > -32768) low = cvt;
+    if (cvt > low) low = cvt;
     out = 32767;
-    if (low < 32767) out = low;
+    if (low < out) out = low;
     data[index] = out;
 }
+#pragma scheduling invalid_target
 int fn_8029DFE0(void *arg0, void *arg1) {
     extern float lbl_805646A0, lbl_8056465C, lbl_80564634;
     struct Delta { float x, z; };
@@ -1269,21 +1270,18 @@ int fn_8029DFE0(void *arg0, void *arg1) {
         result = 1;
     return result;
 }
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
 void fn_8029E130(void *arg0, float *pos, float *vel, float radius) {
  extern double fn_8002F234(float);
  extern float fn_80287BC8(float,float);
  extern void fn_8028E584(int,float *,float *);
- extern float lbl_80564628,lbl_80564640,lbl_8056464C,lbl_80564658,lbl_8056465C,lbl_8056466C,lbl_80564670,lbl_80564698,lbl_805646A4;
+ extern float lbl_80564628,lbl_80564634,lbl_80564640,lbl_8056464C,lbl_80564658,lbl_8056465C,lbl_8056466C,lbl_80564670,lbl_80564698,lbl_805646A4;
  float origin[3], outpos[3], outvel[3], delta[2], direction[2], hit[2], perpendicular[2];
  float factor, cap, lift;
  float height, reach, length, inv, scale, x, z, spread, vertical;
  int ix, iz, count, i;
  char *obj = arg0;
  height = *(float *)(obj+0x3c);
- if (pos[1]-radius > height-0.1f) return;
+ if (pos[1]-radius > height-lbl_80564634) return;
  delta[1]=pos[2]-*(float *)(obj+0x40);
  direction[1]=vel[2]; direction[0]=vel[0];
  delta[0]=pos[0]-*(float *)(obj+0x38);
@@ -1313,7 +1311,7 @@ void fn_8029E130(void *arg0, float *pos, float *vel, float radius) {
  x=lbl_80564670*length;
  if (spread < x) spread=x;
  count=(int)(lbl_8056464C*length)<10 ? (int)(lbl_8056464C*length):10;
- vertical=0.1f*length;
+ vertical=lbl_80564634*length;
  factor=lbl_80564698; cap=lbl_805646A4; lift=lbl_80564640;
  for(i=0;i<count;i++) {
    z=origin[2]+perpendicular[1]*fn_80287BC8(lbl_8056466C,lbl_8056465C);
@@ -1342,29 +1340,29 @@ extern float lbl_80564674;
 void fn_8029E49C(int unused, void *arg1, int arg2) {
     struct Locals { float sp8, spC, sp10, sp14, sp18, sp1C; } s;
     float *f = (float *)arg1;
+    float *m = (float *)((char *)arg1 + arg2 * 0x3C + 0x70);
     float temp_f1, temp_f2, temp_f3, temp_f0_2;
     float var_f1, var_f31, var_f5;
-    register unsigned char *temp_r31, *temp_r5;
-    temp_r5 = (unsigned char *)arg1 + arg2 * 0x3C;
-    temp_r31 = temp_r5 + 0x70;
-    if ((unsigned char *)&s.sp14 == temp_r31) {
-        float a3, m10, m00, m20, p0, p1, p2, p3, p4, p5, p6, p7, p8;
+    if ((unsigned char *)&s.sp14 == (unsigned char *)m) {
+        float a3, m10, a5, a4, m00, a0, a1, a2, a6, m20, a7, a8;
         a3 = f[3];
-        m10 = *(float *)(temp_r31 + 4);
-        m00 = *(float *)temp_r31;
-        m20 = *(float *)(temp_r31 + 8);
-        p0 = m10 * a3; p1 = m10 * f[4]; p5 = m10 * f[5];
-        p2 = m00 * f[0]; p3 = m00 * f[1]; p4 = m00 * f[2];
-        p6 = m20 * f[6]; p7 = m20 * f[7]; p8 = m20 * f[8];
-        s.sp14 = p6 + (p2 + p0);
-        s.sp18 = p7 + (p3 + p1);
-        s.sp1C = p8 + (p4 + p5);
+        m10 = m[1];
+        a4 = f[4]; a5 = f[5];
+        m00 = m[0];
+        a0 = f[0];
+        a1 = f[1]; a2 = f[2];
+        a6 = f[6];
+        m20 = m[2];
+        a7 = f[7]; a8 = f[8];
+        s.sp14 = m20 * a6 + (m00 * a0 + m10 * a3);
+        s.sp18 = m20 * a7 + (m00 * a1 + m10 * a4);
+        s.sp1C = m20 * a8 + (m00 * a2 + m10 * a5);
     } else {
         float b3, m10, m00, m20;
         b3 = f[3];
-        m10 = *(float *)(temp_r31 + 4);
-        m00 = *(float *)temp_r31;
-        m20 = *(float *)(temp_r31 + 8);
+        m10 = m[1];
+        m00 = m[0];
+        m20 = m[2];
         s.sp14 = m20 * f[6] + (m00 * f[0] + m10 * b3);
         s.sp18 = m20 * f[7] + (m00 * f[1] + m10 * f[4]);
         s.sp1C = m20 * f[8] + (m00 * f[2] + m10 * f[5]);
@@ -1375,7 +1373,7 @@ void fn_8029E49C(int unused, void *arg1, int arg2) {
     s.sp1C = temp_f1 + f[11];
     if (fn_8029DFE0((void *)unused, &s.sp14)) {
         s.sp18 += lbl_8056465C;
-        if (*(float *)temp_r31 > lbl_80564628) var_f1 = lbl_80564658; else var_f1 = lbl_80564660;
+        if (*(float *)m > lbl_80564628) var_f1 = lbl_80564658; else var_f1 = lbl_80564660;
         var_f5 = lbl_80564668;
         temp_f3 = lbl_80564664 + lbl_80564634 * (f[20] * var_f1);
         s.sp8 = f[13] + f[0] * temp_f3;
@@ -1386,7 +1384,7 @@ void fn_8029E49C(int unused, void *arg1, int arg2) {
         s.sp8 += f[3] * var_f5;
         s.spC += f[4] * var_f5;
         s.sp10 += f[5] * var_f5;
-        if (*(float *)temp_r31 > lbl_80564628) var_f31 = lbl_80564658; else var_f31 = lbl_80564660;
+        if (*(float *)m > lbl_80564628) var_f31 = lbl_80564658; else var_f31 = lbl_80564660;
         fn_8028E590(lbl_8055F7F8, &s.sp14, &s.sp8, -var_f31 * fn_80287BC8(lbl_80564628, lbl_80564674));
     }
 }
@@ -1473,7 +1471,7 @@ void fn_8029E8E0(float *arg0, int arg1) {
     struct ReverseVec3 center;
     struct Vec3 diff;
     struct Vec3 sp8;
-    float f31, f30, norm, radius;
+    float f31, f30, radius, norm;
     float cx, cy, cz;
     int i;
     int a, b;
@@ -1502,10 +1500,10 @@ void fn_8029E8E0(float *arg0, int arg1) {
                 float y = f30 + sp8.y;
                 float len2 = x2 + z2;
                 radius = y * y + len2;
-                norm = (float)fn_8002F234(radius);
-                norm = f31 / norm;
                 a = (i ^ 1) >> 1;
                 b = (i ^ 1) & i;
+                norm = (float)fn_8002F234(radius);
+                norm = f31 / norm;
                 {
                     float az = f31 + sp8.z * norm;
                     float ax = f31 + sp8.x * norm;
@@ -1652,12 +1650,12 @@ int fn_8029EB54(void *arg0, void *arg1)
 void fn_8029EC64(void *area, void *arg1, int arg2) {
     struct Locals { float sp8, spC, sp10, sp14, sp18, sp1C; } s;
     float *f = (float *)arg1;
-    float *m = (float *)((char *)arg1 + arg2 * 0x3C + 0x70);
+    float *base2 = (float *)((char *)arg1 + arg2 * 0x3C);
+    float *m = base2 + 0x1C;
     float temp_f1, temp_f2, temp_f3, temp_f0_2;
     float var_f1, var_f31, var_f5;
     if ((unsigned char *)&s.sp14 == (unsigned char *)m) {
-        float m10, m00, m20;
-        float a3, a4, a5, a0, a1, a2, a6, a7, a8;
+        float a3, m10, a4, a5, a0, m00, a1, a2, a6, m20, a7, a8;
         a3 = f[3];
         m10 = m[1];
         a4 = f[4]; a5 = f[5];
