@@ -1231,6 +1231,13 @@ void fn_80233010(char *string, s32 font, s32 color, s32 flags, s32 mode, f32 x, 
     }
 }
 
+static inline u8 *first_char_end(u8 *p) {
+    u8 c = *p;
+    if ((c & 0xF0) == 0xE0) return p + 3;
+    if ((c & 0xE0) == 0xC0) return p + 2;
+    return p + 1;
+}
+
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
