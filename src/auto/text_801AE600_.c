@@ -214,11 +214,13 @@ void fn_801AE894(void *arg0) {
     float temp_f2;
     float temp_f4;
     short temp_r0;
+    double bias = lbl_80562568;
 
     temp_r0 = *(short *)((char *)arg0 + 0x18);
     if (temp_r0 > 0) {
         temp_f4 = *(float *)arg0;
         if (temp_f4 > lbl_8056255C) {
+            (void)bias;
             temp_f2 = (lbl_8055E630 * (float)temp_r0) / temp_f4;
             *(float *)((char *)arg0 + 4) = temp_f2;
             *(float *)((char *)arg0 + 4) =
@@ -354,11 +356,11 @@ int fn_801AEB58(const void *a, const void *b) {
 
 #pragma scheduling invalid_target
 void fn_801AEBD0(void) {
-    register int value = lbl_8055E62C;
-    register int count = lbl_80435780[0x3C0 / 4];
-    register int i;
-    register int share;
-    register int remainder;
+    int value = lbl_8055E62C;
+    int count = lbl_80435780[0x3C0 / 4];
+    int i;
+    int share;
+    int remainder;
 
     for (i = 0; i < count; i++) {
         short *item = (short *)(*lbl_8055E624 + i * 0x1C);
@@ -371,7 +373,7 @@ void fn_801AEBD0(void) {
     {
         int offset;
         for (i = 0, offset = 0;
-             i < *(volatile int *)((char *)lbl_80435780 + 0x3C0);
+             i < ((volatile CompetitorTable *)lbl_80435780)->count;
              i++, offset += 0x1C) {
             char *entry = (char *)*(volatile int *)lbl_8055E624 + offset;
             short type = *(short *)(entry + 0xC);
@@ -575,18 +577,11 @@ void fn_801AED74(void)
 #pragma push
 #pragma paired_single off
 void fn_801AEF28(Src *arg0) {
-    int *p;
-    int *q;
-    int i, off;
+    int *p, *q, i, off;
     char *base = (char *)lbl_80435740;
-    Ent78 *dst = (Ent78 *)(base + 0x40);
-    int *dcount = (int *)((char *)dst + 0x3C0);
     lbl_8055E635 = 1;
     p = (int *)fn_801284F8(0x24, lbl_80335980);
-    if (p != 0) {
-        memset(p, 0, 0x20);
-        p[8] = 8;
-    }
+    if (p != 0) { memset(p, 0, 0x20); p[8] = 8; }
     lbl_8055E620 = p;
     q = (int *)fn_801284F8(8, lbl_80335990);
     if (q != 0) {
@@ -600,94 +595,49 @@ void fn_801AEF28(Src *arg0) {
             memset(d, 0, 0x1C);
             *(float *)(d + 8) = v;
             *(short *)(d + 0xC) = -100;
-            if (i < fn_801B2F24())
-                sel = fn_801B3050(i);
-            else
-                sel = -1;
+            sel = (i < fn_801B2F24()) ? fn_801B3050(i) : -1;
             *(short *)(d + 0x1A) = sel;
         }
     }
     lbl_8055E624 = q;
     lbl_8055E628 = ((int (*)(void *))fn_801AFA20)(arg0);
-    *dcount = 0;
-    for (i = 0; i < *(int *)((char *)arg0 + 0x3E0); i++) {
-        Ent78 *s = &arg0->e[i];
-        Ent78 *d = &dst[i];
-        int id = s->id;
-        if (fn_802794AC(id, (char *)arg0 + 0x3E4) == 0)
-            break;
-        d->id = id;
-        ((char *)d)[4] = ((char *)s)[4]; ((char *)d)[5] = ((char *)s)[5];
-        ((char *)d)[6] = ((char *)s)[6]; ((char *)d)[7] = ((char *)s)[7];
-        ((char *)d)[8] = ((char *)s)[8]; ((char *)d)[9] = ((char *)s)[9];
-        ((char *)d)[10] = ((char *)s)[10]; ((char *)d)[11] = ((char *)s)[11];
-        ((char *)d)[12] = ((char *)s)[12]; ((char *)d)[13] = ((char *)s)[13];
-        ((char *)d)[14] = ((char *)s)[14]; ((char *)d)[15] = ((char *)s)[15];
-        ((char *)d)[16] = ((char *)s)[16]; ((char *)d)[17] = ((char *)s)[17];
-        ((char *)d)[18] = ((char *)s)[18]; ((char *)d)[19] = ((char *)s)[19];
-        ((char *)d)[20] = ((char *)s)[20]; ((char *)d)[21] = ((char *)s)[21];
-        ((char *)d)[22] = ((char *)s)[22]; ((char *)d)[23] = ((char *)s)[23];
-        ((char *)d)[24] = ((char *)s)[24]; ((char *)d)[25] = ((char *)s)[25];
-        ((char *)d)[26] = ((char *)s)[26]; ((char *)d)[27] = ((char *)s)[27];
-        ((char *)d)[28] = ((char *)s)[28]; ((char *)d)[29] = ((char *)s)[29];
-        ((char *)d)[30] = ((char *)s)[30]; ((char *)d)[31] = ((char *)s)[31];
-        ((char *)d)[32] = ((char *)s)[32]; ((char *)d)[33] = ((char *)s)[33];
-        ((char *)d)[34] = ((char *)s)[34]; ((char *)d)[35] = ((char *)s)[35];
-        ((char *)d)[36] = ((char *)s)[36]; ((char *)d)[37] = ((char *)s)[37];
-        ((char *)d)[38] = ((char *)s)[38]; ((char *)d)[39] = ((char *)s)[39];
-        ((char *)d)[40] = ((char *)s)[40]; ((char *)d)[41] = ((char *)s)[41];
-        ((char *)d)[42] = ((char *)s)[42]; ((char *)d)[43] = ((char *)s)[43];
-        ((char *)d)[44] = ((char *)s)[44]; ((char *)d)[45] = ((char *)s)[45];
-        ((char *)d)[46] = ((char *)s)[46]; ((char *)d)[47] = ((char *)s)[47];
-        ((char *)d)[48] = ((char *)s)[48]; ((char *)d)[49] = ((char *)s)[49];
-        ((char *)d)[50] = ((char *)s)[50]; ((char *)d)[51] = ((char *)s)[51];
-        ((char *)d)[52] = ((char *)s)[52]; ((char *)d)[53] = ((char *)s)[53];
-        ((char *)d)[54] = ((char *)s)[54]; ((char *)d)[55] = ((char *)s)[55];
-        ((char *)d)[56] = ((char *)s)[56]; ((char *)d)[57] = ((char *)s)[57];
-        ((char *)d)[58] = ((char *)s)[58]; ((char *)d)[59] = ((char *)s)[59];
-        ((char *)d)[60] = ((char *)s)[60]; ((char *)d)[61] = ((char *)s)[61];
-        ((char *)d)[62] = ((char *)s)[62]; ((char *)d)[63] = ((char *)s)[63];
-        ((char *)d)[64] = ((char *)s)[64]; ((char *)d)[65] = ((char *)s)[65];
-        ((char *)d)[66] = ((char *)s)[66]; ((char *)d)[67] = ((char *)s)[67];
-        ((char *)d)[68] = ((char *)s)[68]; ((char *)d)[69] = ((char *)s)[69];
-        ((char *)d)[70] = ((char *)s)[70]; ((char *)d)[71] = ((char *)s)[71];
-        ((char *)d)[72] = ((char *)s)[72]; ((char *)d)[73] = ((char *)s)[73];
-        ((char *)d)[74] = ((char *)s)[74]; ((char *)d)[75] = ((char *)s)[75];
-        ((char *)d)[76] = ((char *)s)[76]; ((char *)d)[77] = ((char *)s)[77];
-        ((char *)d)[78] = ((char *)s)[78]; ((char *)d)[79] = ((char *)s)[79];
-        ((char *)d)[80] = ((char *)s)[80]; ((char *)d)[81] = ((char *)s)[81];
-        ((char *)d)[82] = ((char *)s)[82]; ((char *)d)[83] = ((char *)s)[83];
-        ((char *)d)[84] = ((char *)s)[84]; ((char *)d)[85] = ((char *)s)[85];
-        ((char *)d)[86] = ((char *)s)[86]; ((char *)d)[87] = ((char *)s)[87];
-        ((char *)d)[88] = ((char *)s)[88]; ((char *)d)[89] = ((char *)s)[89];
-        ((char *)d)[90] = ((char *)s)[90]; ((char *)d)[91] = ((char *)s)[91];
-        ((char *)d)[92] = ((char *)s)[92]; ((char *)d)[93] = ((char *)s)[93];
-        ((char *)d)[94] = ((char *)s)[94]; ((char *)d)[95] = ((char *)s)[95];
-        ((char *)d)[96] = ((char *)s)[96]; ((char *)d)[97] = ((char *)s)[97];
-        ((char *)d)[98] = ((char *)s)[98]; ((char *)d)[99] = ((char *)s)[99];
-        d->f64 = s->f64;
-        d->f68 = s->f68;
-        d->f6c = s->f6c;
-        d->f70 = s->f70;
-        d->f74 = s->f74;
-        ((int *)(base + 0x408))[i] = i;
-        (*dcount)++;
-        if (fn_801AE600(id) != 0) {
-            int *r = (int *)lbl_8055E620;
-            int *t = (int *)fn_801284F8(8, lbl_803359AC);
-            if (t != 0) {
-                int k;
-                t[1] = 0x1F5;
-                t[0] = fn_8012850C(0xFA8, lbl_803359BC);
-                for (k = 0; k < t[1]; k++)
-                    *(short *)((char *)t[0] + k * 8 + 6) = 0;
+    q = (int *)lbl_803359BC;
+    {
+        Ent78 *dst = (Ent78 *)(base + 0x40);
+        int *dcount = (int *)((char *)dst + 0x3C0);
+        *dcount = 0;
+        for (i = 0; i < *(int *)((char *)arg0 + 0x3E0); i++) {
+            Ent78 *s = &arg0->e[i];
+            Ent78 *d = &dst[i];
+            int id = s->id;
+            if (fn_802794AC(id, (char *)arg0 + 0x3E4) == 0)
+                break;
+            d->id = id;
+            COPY_BLOB96(d, (char *)s + 0x20);
+            d->f64 = *(int *)((char *)s + 0x64);
+            d->f68 = *(int *)((char *)s + 0x68);
+            d->f6c = *(int *)((char *)s + 0x6C);
+            d->f70 = *((char *)s + 0x70);
+            d->f74 = *(int *)((char *)s + 0x74);
+            ((int *)(base + 0x408))[i] = i;
+            (*dcount)++;
+            if (fn_801AE600(id) != 0) {
+                int *r = (int *)lbl_8055E620;
+                int *t = (int *)fn_801284F8(8, lbl_803359AC);
+                if (t != 0) {
+                    int k;
+                    t[1] = 0x1F5;
+                    t[0] = fn_8012850C(0xFA8, (const char *)q);
+                    for (k = 0; k < t[1]; k++)
+                        *(short *)((char *)t[0] + k * 8 + 6) = 0;
+                }
+                r[i] = (int)t;
             }
-            r[i] = (int)t;
         }
     }
     {
         float *fp = (float *)base;
-        int n = *dcount;
+        int n = *(int *)((char *)base + 0x400);
         for (i = 0; i < n; i++) {
             *fp++ = lbl_80562560;
             *fp++ = lbl_8056255C;
@@ -909,7 +859,7 @@ void fn_801AF92C(void *output) {
 done:
     ;
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma dont_inline reset
 #pragma use_lmw_stmw reset
 #pragma small_data on
