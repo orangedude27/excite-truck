@@ -3214,6 +3214,7 @@ extern void fn_8018ADCC(void *, float);
 extern char lbl_80558DC4[];
 extern float lbl_805622B4, lbl_805622C0, lbl_805622C4, lbl_805622C8;
 extern void PSVECCrossProduct(void *, void *, void *);
+extern float PSVECMag(const void *);
 extern void fn_801DCF48(float *, float, float);
 extern int fn_80167594(int), fn_801675E4(int), fn_80167634(int), fn_80167728(int);
 extern int fn_80167758(void), fn_80167768(float);
