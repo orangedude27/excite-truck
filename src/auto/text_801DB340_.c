@@ -209,7 +209,6 @@ float fn_801DB398(float grid[4][4], float t, float u) {
         float twice21 = lbl_80562B68 * dp21b;
         float coeff3 = c3t - twice20;
         float coeff2 = sum - twice21;
-        dp21 = dp21b;
         coeff3 = coeff3 - half31;
         return (coeff2 * u3 + coeff3 * u2) + half20 * u + p1;
     }
@@ -546,10 +545,9 @@ void fn_801DCDA0(void) {
 }
 
 void fn_801DCDA4(void) {
-    register void *entry = *(void **)((char *)lbl_80446F08 + 8);
-    if (entry != 0) {
-        fn_80128670();
-        *(void **)((char *)lbl_80446F08 + 8) = 0;
+    if (lbl_80446F08[2] != 0) {
+        ((void (*)(void *))fn_80128670)((void *)lbl_80446F08[2]);
+        lbl_80446F08[2] = 0;
     }
     lbl_8055E994(lbl_8055E990);
     lbl_8055E994 = 0;
@@ -984,51 +982,89 @@ extern double lbl_80562B78;
 #pragma paired_single off
 #pragma opt_common_subs on
 #pragma scheduling invalid_target
-int fn_801DDA84(int unused, int *out, int max, float x, float z, float thr) {
-    GroundDesc *ground = (GroundDesc *)lbl_8055E990;
-    int ix, iz, qx, qz, tileX, tileZ, remX, remZ;
-    unsigned short tile;
-    int count, idx, oi;
-    char *node, *map;
-    if (ground->tiled == 0) return 0;
-    x = (x + ground->offsetX) * ground->scaleX;
-    z = (z + ground->offsetZ) * ground->scaleZ;
-    ix = (int)(x < lbl_80562B84 ? x - lbl_80562B64 : lbl_80562B64 + x);
-    iz = (int)(z < lbl_80562B84 ? z - lbl_80562B64 : lbl_80562B64 + z);
-    if (ix < 0 || iz < 0) return 0;
-    qx = ix / 32;
-    qz = iz / 32;
-    tileX = qx - lbl_8055E99C;
-    tileZ = qz - lbl_8055E9A0;
-    remX = ix - qx * 32;
-    remZ = iz - qz * 32;
-    if (tileX < 0 || tileZ < 0) return 0;
-    if (tileX >= 0x60 || tileZ >= 0x60) return 0;
-    tile = ((unsigned short (*)[0x60])lbl_80442708)[tileX][tileZ];
-    if (tile == 0xFFFF) {
-        node = 0;
-    } else {
-        node = (char *)ground->nodes + tile * 0x894;
+int fn_801DDA84(int unused, int *out, int max, float x, float z, float thr)
+{
+  GroundDesc *ground = (GroundDesc *) lbl_8055E990;
+  int ix;
+  int iz;
+  int qx;
+  int qz;
+  int tileX;
+  int tileZ;
+  int remX;
+  int remZ;
+  unsigned short tile;
+  int count;
+  int idx;
+  char *node;
+  char *map;
+  register int oi;
+  if (ground->tiled == 0)
+  {
+    return 0;
+  }
+  x = (x + ground->offsetX) * ground->scaleX;
+  z = (z + ground->offsetZ) * ground->scaleZ;
+  ix = (int) ((x < lbl_80562B84) ? (x - lbl_80562B64) : (lbl_80562B64 + x));
+  iz = (int) ((z < lbl_80562B84) ? (z - lbl_80562B64) : (lbl_80562B64 + z));
+  if ((ix < 0) || (iz < 0))
+  {
+    return 0;
+  }
+  qx = ix / 32;
+  qz = iz / 32;
+  tileX = qx - lbl_8055E99C;
+  tileZ = qz - lbl_8055E9A0;
+  remX = ix - (qx * 32);
+  remZ = iz - (qz * 32);
+  if ((tileX < 0) || (tileZ < 0))
+  {
+    return 0;
+  }
+  if ((tileX >= 0x60) || (tileZ >= 0x60))
+  {
+    return 0;
+  }
+  tile = ((unsigned short (*)[0x60]) lbl_80442708)[tileX][tileZ];
+  if (tile == 0xFFFF)
+  {
+    node = 0;
+  }
+  else
+  {
+    node = ((char *) ground->nodes) + (tile * 0x894);
+  }
+  if (node == 0)
+  {
+    return 0;
+  }
+  idx = *((int *) (node + 0x890));
+  count = 0;
+  oi = 0;
+  if (idx < 0)
+  {
+    goto done;
+  }
+  map = ((char *) ground->layers) + (idx * 0x810);
+  while (1)
+  {
+    GroundLayer *layer = (GroundLayer *) map;
+    float h = (float) fabs(layer->baseHeight + (layer->heightScale * ((float) layer->samples[remX][remZ])));
+    if ((thr > h) && (count < max))
+    {
+      *(int *)((char *)out + oi) = *((int *) (map + 0x808));
+      count++;
+      oi += 4;
     }
-    if (node == 0) return 0;
-    idx = *(int *)(node + 0x890);
-    count = 0;
-    oi = 0;
-    if (idx < 0) return 0;
-    map = (char *)ground->layers + idx * 0x810;
-    while (1) {
-        GroundLayer *layer = (GroundLayer *)map;
-        float h = (float)fabs(layer->baseHeight + layer->heightScale * (float)layer->samples[remX][remZ]);
-        if (thr > h && count < max) {
-            *(int *)((char *)out + oi) = *(int *)(map + 0x808);
-            count++;
-            oi += 4;
-        }
-        idx = layer->next;
-        if (idx < 0) break;
-        map = (char *)ground->layers + idx * 0x810;
+    idx = layer->next;
+    if (0 > idx)
+    {
+      break;
     }
-    return count;
+    map = ((char *) ground->layers) + (idx * 0x810);
+  }
+done:
+  return count;
 }
 /* Ground height at a world X/Z position: rounds the scaled coordinates into a
  * grid cell, finds the covering tile's node, and sums the weighted overlay
