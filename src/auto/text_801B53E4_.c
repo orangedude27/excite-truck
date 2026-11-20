@@ -316,12 +316,10 @@ void *fn_801B5984(void *node) {
 }
 
 void fn_801B59A4(void *arg0, s32 arg1, s32 arg2) {
-    #pragma scheduling invalid_target
     extern u8 lbl_80435EC8[];
     struct Entry { struct Entry *nodes; s32 count; struct Entry *children; } *entry = (struct Entry *)arg0;
-    u16 *records; u16 *record;
+    u16 *records; u16 *record; struct Entry *node;
     s32 offset; s32 childStart; s32 w;
-    struct Entry *node;
     s32 max = *(s32 *)(lbl_80435EC8 + 4);
     if (arg2 >= max) { *(s32 *)(lbl_80435EC8 + 4) = arg2 + 1; }
     records = *(u16 **)(lbl_80435EC8 + 0xC);
@@ -332,9 +330,10 @@ void fn_801B59A4(void *arg0, s32 arg1, s32 arg2) {
     if (entry->children != NULL) { record[2] = *(s32 *)(lbl_80435EC8 + 4); } else { record[2] = 0; }
     node = entry->nodes;
     while (node != NULL) {
+        u16 *values = *(u16 **)(lbl_80435EC8 + 0x18);
         s32 idx = *(s32 *)(lbl_80435EC8 + 0x10);
         u16 value = (u16)node->count;
-        (*(u16 **)(lbl_80435EC8 + 0x18))[idx++] = value;
+        values[idx++] = value;
         *(s32 *)(lbl_80435EC8 + 0x10) = idx;
         node = *(struct Entry **)((u8 *)node + 8);
     }
@@ -349,7 +348,6 @@ void fn_801B59A4(void *arg0, s32 arg1, s32 arg2) {
         } while (w < 4);
     }
 }
-
 #pragma dont_inline on
 void fn_801B5AE4(void) {
     /* Reset the BPX quad-tree linking allocator: zero both node counters and clear its 0x1C-byte state block. */
@@ -374,12 +372,11 @@ extern "C" void fn_801B5B04(void *arg0, void **arg1, s32 arg2) {
     };
     f32 outA[3];
     f32 outB[3];
-    f32 base;
     void **item;
     s32 i;
     void *obj;
+    register f32 base = lbl_805626A0;
 
-    base = lbl_805626A0;
     item = arg1;
     for (i = 0; i < arg2; i++) {
         obj = *item;
@@ -480,7 +477,6 @@ void *fn_801B5D30(s32 *arg0)
   void *p;
   s32 count;
   void *q;
-  s32 e6;
   fn_801B5AE4();
   fn_801B54B0(*arg0);
   count = fn_801B5D10((void *) (*arg0));
@@ -501,8 +497,7 @@ void *fn_801B5D30(s32 *arg0)
   {
     ((void (*)(void *, void *(*)(void *, s32))) fn_8002F6AC)((void *) tmp1[2], fn_801B591C);
   }
-  e6 = lbl_8055E6EC;
-  obj = (QuadNode *) fn_801284E8(lbl_8055A8C8, ((e6 * 2) + (lbl_8055E6E8 * 8) + size) + 0x18);
+  obj = (QuadNode *) fn_801284E8(lbl_8055A8C8, (((lbl_8055E6EC * 2) + (lbl_8055E6E8 * 8)) + size) + 0x18);
   obj->count = count;
   p = ((u8 *) obj) + 0x18;
   q = ((u8 *) p) + (count * 4U);
