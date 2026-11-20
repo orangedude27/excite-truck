@@ -7,13 +7,12 @@ extern int lbl_8055FB68;
 extern float lbl_8055FB74;
 extern float lbl_80564EB0;
 extern float lbl_80564ED4;
-static inline void storeFB74(float v) { lbl_8055FB74 = v; }
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_802C28D8(void) {
     fn_8000D838(&lbl_8055FB60);
     lbl_8055FB68 = 0xFFFF0000;
-    lbl_8055FB74 = lbl_80564ED4 * lbl_80564EB0;
+    storeFB74(lbl_80564ED4 * lbl_80564EB0);
 }
 #pragma pop
