@@ -4256,7 +4256,7 @@ static inline BOOL fn_80060CC0_CanQueue(WPADCommandQueue* pQueue, s8 num) {
     { \
         WPADCommand cmdCopy; \
         f64* cmdSrc; \
-        volatile f64* cmdDst; \
+        f64* cmdDst; \
         BOOL queueEnabled; \
         BOOL innerEnabled; \
         s8 queueSize; \
