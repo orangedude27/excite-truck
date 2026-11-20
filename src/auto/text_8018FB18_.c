@@ -281,30 +281,33 @@ void* fn_8018FD88(void* arg0, s32 arg1, s32 arg2) {
 extern void fn_801B6654();
 extern int fn_80128668();
 
-void *fn_8018FE8C(void *arg0, s32 arg1) {
+#pragma push
+#pragma cplusplus on
+#pragma dont_inline on
+extern "C" void *fn_8018FE8C(void *arg0, s32 arg1) {
+    struct V {
+        virtual void v0(int); virtual void v1(int); virtual void v2(int); virtual void v3(int);
+        virtual void v4(int); virtual void v5(int); virtual void v6(int); virtual void v7(int);
+        virtual void v8(int); virtual void v9(int); virtual void v10(int); virtual void v11(int);
+        virtual void v12(int); virtual void v13(int); virtual void v14(int); virtual void v15(int);
+        virtual void v16(int); virtual void v17(int); virtual void v18(int); virtual void v19(int);
+        virtual void v20(int); virtual void v21(int); virtual void v22(int); virtual void v23(int);
+        virtual void v24(int); virtual void v25(int); virtual void v26(int); virtual void v27(int);
+        virtual void v28(int); virtual void v29(int); virtual void v30(int);
+    };
     s32 temp_r0;
-    void *obj;
-    register void **vtable;
+    V *obj;
     if (arg0 != 0) {
         *(void **)arg0 = lbl_80333018;
-        if (fn_801B6668(arg0) != 0) fn_801B6654();
-        obj = *(void **)((char *)arg0 + 4);
-        if (obj != 0) {
-            vtable = *(void ***)obj;
-            ((void (**)(void *, int))vtable)[0x20](obj, 1);
-        }
-        obj = *(void **)((char *)arg0 + 8);
+        if (fn_801B6668() != 0) fn_801B6654();
+        obj = *(V **)((char *)arg0 + 4);
+        if (obj != 0) obj->v30(1);
+        obj = *(V **)((char *)arg0 + 8);
         *(void **)((char *)arg0 + 4) = 0;
-        if (obj != 0) {
-            vtable = *(void ***)obj;
-            ((void (**)(void *, int))vtable)[2](obj, 1);
-        }
-        obj = *(void **)((char *)arg0 + 0xC);
+        if (obj != 0) obj->v0(1);
+        obj = *(V **)((char *)arg0 + 0xC);
         *(void **)((char *)arg0 + 8) = 0;
-        if (obj != 0) {
-            vtable = *(void ***)obj;
-            ((void (**)(void *, int))vtable)[2](obj, 1);
-        }
+        if (obj != 0) obj->v0(1);
         *(void **)((char *)arg0 + 0xC) = 0;
         temp_r0 = lbl_8055E518 - 1;
         lbl_8055E518 = temp_r0;
@@ -313,7 +316,7 @@ void *fn_8018FE8C(void *arg0, s32 arg1) {
     }
     return arg0;
 }
-
+#pragma pop
 int fn_8018FF84(int object, int deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
     if (object != 0 && deleteFlag > 0) {
