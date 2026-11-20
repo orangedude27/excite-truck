@@ -303,6 +303,8 @@ extern char lbl_80558B48[4];
 extern char lbl_80558B50[4];
 extern char lbl_80558B58[4];
 extern char lbl_80558B60[4];
+#define H2(o, k) ((int (*)(void *, char *))*(void **)((char *)*(void **)(o) + 0xC))((o), (k))
+#define H3(o, k, v) ((int (*)(void *, char *, int))*(void **)((char *)*(void **)(o) + 0xC))((o), (k), (v))
 void fn_80012B50(void *arg0, int arg1, void *arg2, void *arg3) {
     register char *base = lbl_802FC610;
     void *a3 = arg3;
@@ -325,7 +327,6 @@ void fn_80012B50(void *arg0, int arg1, void *arg2, void *arg3) {
     int temp;
     int cnt;
     char c;
-    char *key04;
     memset(obj, 0, 0x84);
     *(int *)obj = a1;
     fn_8022D0D8(spD0, 0x100);
@@ -334,9 +335,8 @@ void fn_80012B50(void *arg0, int arg1, void *arg2, void *arg3) {
         fn_8022D0E8(spD0, 0x100, fn_80137C54(i) + 8);
         i++;
     } while (i < 4);
-    key04 = lbl_80558B04;
-    if (((int (*)(void *, char *))*(void **)((char *)*(void **)a2 + 0xC))(a2, key04) != 0) {
-        sel = ((int (*)(void *, char *, char *))*(void **)((char *)*(void **)a2 + 0x54))(a2, key04, spD0);
+    if (((int (*)(void *, char *))*(void **)((char *)*(void **)a2 + 0xC))(a2, lbl_80558B04) != 0) {
+        sel = ((int (*)(void *, char *, char *))*(void **)((char *)*(void **)a2 + 0x54))(a2, lbl_80558B04, spD0);
     } else {
         sel = 0;
     }
@@ -344,15 +344,18 @@ void fn_80012B50(void *arg0, int arg1, void *arg2, void *arg3) {
     s = ((char *(*)(void *, char *))*(void **)((char *)*(void **)a2 + 0x14))(a2, lbl_80558B0C);
     d = obj + 8;
     n = 0x20;
-    while (--n > 0) {
+    for (;;) {
         c = *s++;
         *d++ = c;
-        if (c == 0) {
-            goto copy_done;
+        if ((signed char)c != 0) {
+            if (--n <= 0) {
+                *(--d) = 0;
+                break;
+            }
+        } else {
+            break;
         }
     }
-    *(d - 1) = 0;
-copy_done:
     if (fn_800080E8(obj + 8) == -1) {
         fn_802E317C(base + 0x168, a3, obj + 0x28);
     }
@@ -376,16 +379,15 @@ copy_done:
         *(int *)(obj + 0x74) = 1;
     }
     *(float *)(obj + 0x78) = lbl_8056035C;
-    list = ((void *(*)(void *, char *))*(void **)((char *)*(void **)a2 + 0x5C))(a2, base + 0x1C8);
-    *(void **)(obj + 0x7C) = list;
-    if (list != 0) {
+    *(void **)(obj + 0x7C) = ((void *(*)(void *, char *))*(void **)((char *)*(void **)a2 + 0x5C))(a2, base + 0x1C8);
+    if (*(void **)(obj + 0x7C) != 0) {
         idx = 0;
         do {
             if (fn_8013C8E8(spC) == 6) {
                 fn_802E317C(base + 0x1D8, obj + 0x28, spC);
             }
             idx++;
-        } while (((int (*)(void *, int, int *, int *))*(void **)((char *)*(void **)list + 0x10))(list, idx, &spC, &sp8) != 0);
+        } while (((int (*)(void *, int, int *, int *))*(void **)((char *)*(void **)(*(void **)(obj + 0x7C)) + 0x10))(*(void **)(obj + 0x7C), idx, &spC, &sp8) != 0);
         if (idx > 7) {
             fn_802E317C(base + 0x208, obj + 0x28, idx, 7);
         }
