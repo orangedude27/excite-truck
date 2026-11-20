@@ -296,11 +296,8 @@ extern "C" void fn_801FCB40(void* arg0, float farg0) {
     pos.x = q[0] + dir.x * s;
     pos.y = q[1] + dir.y * s;
     pos.z = q[2] + dir.z * s;
-    
     Vec d;
-    d.x = q1[0] - pos.x;
-    d.y = q1[1] - pos.y;
-    d.z = q1[2] - pos.z;
+    d.x = q1[0] - pos.x; d.y = q1[1] - pos.y; d.z = q1[2] - pos.z;
     if (PSVECDotProduct(&dir, &d) <= lbl_80563034) {
         count = *(int*)(a + 0x3C) + 1;
         *(int*)(a + 0x3C) = count;
@@ -314,9 +311,7 @@ extern "C" void fn_801FCB40(void* arg0, float farg0) {
         item = base + (count << 5);
         q0 = q1;
         q1 = (float*)(item + 0x30);
-        dir.x = q1[0] - q0[0];
-        dir.y = q1[1] - q0[1];
-        dir.z = q1[2] - q0[2];
+        dir.x = q1[0] - q0[0]; dir.y = q1[1] - q0[1]; dir.z = q1[2] - q0[2];
         mag = PSVECMag(&dir);
         inv = lbl_80563030 / mag;
         float k = inv * PSVECMag(&d);
@@ -329,35 +324,28 @@ extern "C" void fn_801FCB40(void* arg0, float farg0) {
     if (count < *(int*)(*(char**)(a + 4) + 0x310)) {
         item = *(char**)(a + 4) + (count << 5);
         float* q2 = (float*)(item + 0x10);
-        float t2;
         Vec v;
-        v.x = q2[0] - q1[0];
-        v.y = q2[1] - q1[1];
-        v.z = q2[2] - q1[2];
-        t2 = inv * ((float (*)(const void *, const void *))PSQUATMultiply)(a + 0x30, q0);
+        v.x = q2[0] - q1[0]; v.y = q2[1] - q1[1]; v.z = q2[2] - q1[2];
+        float t = inv * ((float (*)(const void *, const void *))PSQUATMultiply)(a + 0x30, q0);
         float* p = (float*)(a + 0xC);
         Vec up;
         float uz = q1[5] - q0[5];
         float uy = q1[4] - q0[4];
         float ux = q1[3] - q0[3];
-        up.x = q0[3] + t2 * ux;
-        up.y = q0[4] + t2 * uy;
-        up.z = q0[5] + t2 * uz;
+        up.x = q0[3] + t * ux;
+        up.y = q0[4] + t * uy;
+        up.z = q0[5] + t * uz;
         *(Vec*)p = up;
-        float nz = dir.z + t2 * (v.z - dir.z);
-        float ny = dir.y + t2 * (v.y - dir.y);
-        float nx = dir.x + t2 * (v.x - dir.x);
+        float nz = dir.z + t * (v.z - dir.z);
+        float ny = dir.y + t * (v.y - dir.y);
+        float nx = dir.x + t * (v.x - dir.x);
         Vec n;
-        n.x = nx;
-        n.y = ny;
-        n.z = nz;
+        n.x = nx; n.y = ny; n.z = nz;
         *(Vec*)(a + 0x24) = n;
         PSVECNormalize((Vec*)(a + 0x24), (Vec*)(a + 0x24));
     } else {
         float* p = (float*)(a + 0xC);
-        p[0] = q0[3];
-        p[1] = q0[4];
-        p[2] = q0[5];
+        p[0] = q0[3]; p[1] = q0[4]; p[2] = q0[5];
         *(float*)(a + 0x24) = dir.x * inv;
         *(float*)(a + 0x28) = dir.y * inv;
         *(float*)(a + 0x2C) = dir.z * inv;
@@ -665,11 +653,11 @@ extern "C" void fn_801FD3F0(void* arg0, float farg0) {
     register int index = *(int*)(obj + 0x3C);
     register float pos = old_pos + farg0;
     register int count = *(int*)(track + 0x6D0);
-    char* nodes = track + 0x10;
-    char* node = nodes + ((count + index) % count) * 0x24;
+    char* base = track + ((count + index) % count) * 0x24;
+    char* node = base + 0x10;
     float length = *(float*)(node + 0x20);
     register float step = length * pos;
-    register float one = lbl_80563030;
+    float one = 1.0f;
     if (step < one) {
         *(float*)(obj + 0x40) = pos;
     } else {
@@ -692,9 +680,9 @@ extern "C" void fn_801FD3F0(void* arg0, float farg0) {
         *(float*)(obj + 0x50) = old60;
         *(float*)(obj + 0x64) = old68;
         char* track2 = *(char* volatile*)slot;
-        nodes = track2 + 0x10;
-        node = nodes + ((count + index) % count) * 0x24;
-        char* end_node = nodes + ((count + index + 1) % count) * 0x24;
+        char* nodes2 = track2 + 0x10;
+        node = nodes2 + ((count + index) % count) * 0x24;
+        char* end_node = nodes2 + ((count + index + 1) % count) * 0x24;
         *(float*)(obj + 0x54) = *(float*)(end_node + 0x1C);
         *(float*)(obj + 0x58) = *(float*)(end_node + 0x20);
         *(float *)(obj + 0x5C) = *(float*)(end_node + 0x24);
@@ -704,10 +692,10 @@ extern "C" void fn_801FD3F0(void* arg0, float farg0) {
     char* call_track = *(char* volatile*)slot;
     int call_count = *(int*)(call_track + 0x6D0);
     char* call_nodes = call_track + 0x10;
-    int base = call_count + index;
-    char* prev = call_nodes + ((base - 1) % call_count) * 0x24;
-    char* next = call_nodes + ((base + 1) % call_count) * 0x24;
-    char* next2 = call_nodes + ((base + 2) % call_count) * 0x24;
+    int base2 = call_count + index;
+    char* prev = call_nodes + ((base2 - 1) % call_count) * 0x24;
+    char* next = call_nodes + ((base2 + 1) % call_count) * 0x24;
+    char* next2 = call_nodes + ((base2 + 2) % call_count) * 0x24;
     fn_801FD144(arg0, prev, node, next, next2, step);
     fn_801FD320(arg0, step);
     float end = *(float*)(obj + 0x68);
@@ -1141,9 +1129,9 @@ extern "C" void fn_801FE77C(void* container) {
 }
 
 extern "C" void fn_801FE7E8(void* arg0) {
+    float threshold = 0.0f;
     char* item = (char*)arg0 + 4;
     int i = 0;
-    float threshold = lbl_80563034;
     while (i < *(int*)((char*)arg0 + 0x94)) {
         if (*(unsigned short*)(item + 0x14) == 1) {
             float time = *(float*)(item + 0x20) - fn_801E7E24();
