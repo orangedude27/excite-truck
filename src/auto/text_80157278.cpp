@@ -1893,10 +1893,10 @@ extern "C" void fn_80159724(void) {
 
 #pragma processor 750
 #pragma scheduling reset
-extern "C" f32 fn_80159728(void* arg0, void* arg1) {
+extern "C" f32 fn_80159728(void* arg0, void *__restrict arg1) {
  Fn8015889C* self = (Fn8015889C*)arg0;
  u8* p = (u8*)arg0;
- f32 result = lbl_80561754;
+ f32 result = 0.0f;
  if ((f32)__fabs(*(f32*)((u8*)arg1+0x2690)) <= lbl_80558DC4[0] && self->v37()) {
   if (*(f32*)(p+0x25c) > *(f32*)(p+0x24c)) self->v32();
   f32 input = *(f32*)((u8*)arg1+0x25d4);
@@ -1906,19 +1906,19 @@ extern "C" f32 fn_80159728(void* arg0, void* arg1) {
   *(f32*)(p+0x264) += step;
   self->v34();
   if (*(f32*)(p+0x25c) > *(f32*)(p+0x24c) && self->v23()>0) {
-   *(f32*)(p+0x258) = lbl_80561754;
+   *(f32*)(p+0x258) = 0.0f;
    if (*(u8**)(p+0x26c)) *(s32*)(*(u8**)(p+0x26c)+8)=0;
   }
-  result = lbl_80561754;
+  result = 0.0f;
  } else if ((f32)__fabs(*(f32*)(p+0x258)) <= lbl_80558DC4[0]) {
-  f32 value = lbl_80561754;
+  f32 value = 0.0f;
   if (*(f32*)(p+0x25c) > *(f32*)(p+0x24c) && self->v23()>0) {
    value = *(f32*)(p+0x250) * self->v20(self->v23());
    self->v35(&value);
    self->v33();
   }
   if (!fn_80141F7C(value)) self->v38(*(f32*)(p+0x25c));
-  f32 x=*(f32*)(p+0x258)+lbl_8056177C, z=lbl_80561754;
+  f32 x=*(f32*)(p+0x258)+lbl_8056177C, z=0.0f;
   *(f32*)(p+0x25c)=z; *(f32*)(p+0x264)=z; *(f32*)(p+0x258)=x;
   result=value;
  } else {
@@ -1926,19 +1926,19 @@ extern "C" f32 fn_80159728(void* arg0, void* arg1) {
   *(f32*)(p+0x258) += lbl_8056177C;
   if (*(f32*)(p+0x260) > *(f32*)(p+0x24c)) {
    if (*(s32*)(p+0x268)) fn_801CB750(*(s32*)(p+0x268),*(s32*)(p+4));
-   *(f32*)(p+0x260)=lbl_80561754;
+   *(f32*)(p+0x260)=0.0f;
   }
  }
  s32 total = *(s32*)(p+0xc);
  s32 current = self->v23();
  if (current == total-1) {
-  f32 value = lbl_80561754;
+  f32 value = 0.0f;
   if (*(f32*)(p+0x25c) > *(f32*)(p+0x24c) && self->v23()>0) {
    value = *(f32*)(p+0x250)*self->v20(self->v23());
    self->v35(&value); self->v33();
   }
   if (!fn_80141F7C(value)) self->v38(*(f32*)(p+0x25c));
-  f32 x=*(f32*)(p+0x258)+lbl_8056177C, z=lbl_80561754;
+  f32 x=*(f32*)(p+0x258)+lbl_8056177C, z=0.0f;
   *(f32*)(p+0x25c)=z; *(f32*)(p+0x264)=z; *(f32*)(p+0x258)=x;
   result=value;
  }
