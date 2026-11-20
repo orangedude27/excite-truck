@@ -5181,22 +5181,24 @@ s32 *fn_8011E0B4(s32 arg0, s32 arg1, s32 width, s32 height, s32 format, s32 *buf
 }
 
 extern s32* fn_8011E0B4(s32, s32, s32, s32, s32, s32*, s32, s32);
+typedef struct { u32 old; u32 cur; } Idx8011FC2C;
 u32 fn_8011FC2C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
     extern s32 *fn_8011E0B4();
     u32 result;
-    s32 old = *(s32 *)((u8 *)arg0 + 0x14);
-    s32 cur;
-    s32 next = old ^ 1;
+    register u32 cur;
+    register u32 old = *(u32 *)((u8 *)arg0 + 0x14);
+    u32 next;
     s32 *ptr;
     s32 *ret;
     s32 curOffset;
     s32 oldOffset;
     s32 *curBase;
     s32 *oldBase;
+    next = old ^ 1;
     if (*(s32 *)((u8 *)arg0 + next * 0x30 + 0x1C) != 0) {
         *(s32 *)((u8 *)arg0 + 0x14) = next;
     }
-    cur = *(s32 *)((u8 *)arg0 + 0x14);
+    cur = *(u32 *)((u8 *)arg0 + 0x14);
     result = 0;
     ptr = arg3;
     if ((arg7 & 0x100000) != 0) {
