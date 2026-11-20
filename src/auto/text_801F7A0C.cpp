@@ -520,7 +520,7 @@ extern "C" s32 fn_801F7EB0(void *out, void *self, s32 arg) {
     };
     s32 result = ((VCall *)self)->get(lbl_8033AFE8);
     if (result != 0) {
-        fn_801F7B10((u8 *)out, (F7B10Obj *)result, (s32)&lbl_8055B2A0);
+        fn_801F7B10(out, (void *)result, (s32)&lbl_8055B2A0);
     } else {
         f32 value0 = lbl_80562FF0;
         f32 value1 = lbl_80562FFC;
