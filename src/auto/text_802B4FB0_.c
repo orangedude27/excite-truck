@@ -55,6 +55,7 @@ int fn_802B5070(void *p, int arg1) {
 out:
     return result;
 }
+#pragma scheduling on
 extern int fn_802B5070(void *, int);
 /* Reads a count of values from an open file into output, using 32-bit or 24-bit entries based on the header. */
 int fn_802B50E8(int unused, int output, int count) {
