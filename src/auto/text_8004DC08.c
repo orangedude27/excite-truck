@@ -25,7 +25,7 @@ extern unsigned int strlen(const char*);
 extern char* strcpy(char*, const char*);
 #pragma push
 #pragma use_lmw_stmw off
-int PackArgs(void* base, int count, char** args, int unused) {
+int PackArgs(register void* base, int count, register char** args) {
     char** argp;
     char* str;
     char* strings;
@@ -51,7 +51,7 @@ int PackArgs(void* base, int count, char** args, int unused) {
         for (; copied < (unsigned int)(original + 1); copied++) {
             ((unsigned int*)table)[copied] = ((unsigned int*)args)[copied];
         }
-        *(int*)(table - 4) = original;
+        ((int*)table)[-1] = original;
         *(int*)((char*)base + 8) = (int)(table - 4 - (char*)base);
     }
     return 1;
@@ -62,7 +62,7 @@ void fn_8004DD88(void (*target)(void)) {
     ICFlashInvalidate();
     __sync();
     __isync();
-    ((void (*)(void))target)();
+    target();
 }
 #pragma dont_inline reset
 
@@ -124,8 +124,9 @@ void fn_8004DDFC(void) {
     unsigned int i;
     unsigned long long title;
     int result;
-    state.count = 1;
-    state.fd = -1;
+    int zero = 0, negone = -1, one = 1;
+    state.count = one;
+    state.fd = negone;
     state.b0 = lbl_80560C70;
     state.b1 = lbl_80560C71;
     state.b2 = lbl_80560C72;
@@ -133,7 +134,7 @@ void fn_8004DDFC(void) {
     base = lbl_8037D900 + 0x10000;
     mem = lbl_8037D900 + 0;
     lbl_8055DA2C = 0;
-    ((int (*)(void *, int, int, int, int, int, int, void *))fn_8003AC24)((void *)fn_8004DDF4, state.b2, state.b1, state.b0, 0, -1, 1, mem);
+    ((int (*)(void *, int, int, int, int, int, int, void *))fn_8003AC24)((void *)fn_8004DDF4, state.b2, state.b1, state.b0, zero, negone, one, mem);
     if (lbl_8055DA2C != 0) {
         if (lbl_8055DA2C != (void *)1) {
             const char *format = lbl_803049C0;
@@ -283,6 +284,7 @@ void fn_8004DDFC(void) {
     }
 }
 extern unsigned char lbl_80560C74, lbl_80560C75, lbl_80560C76, lbl_80560C77;
+#pragma opt_common_subs on
 void __OSLaunchMenu(void) {
     struct LocalState {
         volatile unsigned char b0, b1, b2, b3;
@@ -340,11 +342,12 @@ void __OSLaunchMenu(void) {
     switch (result) {
     case 0:
         break;
+    case -1:
+        return;
     default:
         return;
     }
 }
-
 typedef struct BootCmdBlock { u8 pad[0x30]; } BootCmdBlock;
 extern s32 DVDGetCommandBlockStatus(BootCmdBlock *);
 extern int DVDReadAbsAsyncPrio(BootCmdBlock *, void *, s32, s32, s32, s32);
@@ -399,6 +402,36 @@ static inline s32 BootGetPartOffset(void) {
 static inline void BootReadPart(void *buf, s32 len, s32 add) {
     s32 off = BootGetPartOffset();
     BootReadAbs(buf, len, off + add);
+}
+
+static inline void BootReadAbsC(BootCmdBlock *cb, void *buf, s32 len, s32 off) {
+    DVDReadAbsAsyncPrio(cb, buf, len, off, 0, 0);
+    while (DVDGetCommandBlockStatus(cb) != 0) {
+        if (DVDGetCommandBlockStatus(cb) > 2 || DVDGetCommandBlockStatus(cb) < 0) {
+            __OSLaunchMenu();
+        }
+    }
+}
+
+static inline s32 BootGetPartOffsetC(BootCmdBlock *cb) {
+    s32 v = lbl_8055DA28;
+    if (v != 0) {
+        return v;
+    } else if (*(s32 *)0x800030F4 != 0) {
+        u8 *buf = OSAllocFromMEM1ArenaLo(0x40, 0x20);
+        DVDReadAbsAsyncPrio(cb, buf, 0x40, *(s32 *)0x800030F4 >> 2, 0, 0);
+        while (DVDGetCommandBlockStatus(cb) != 0) {
+            if (DVDGetCommandBlockStatus(cb) > 2 || DVDGetCommandBlockStatus(cb) < 0) {
+                __OSLaunchMenu();
+            }
+        }
+        v = (*(s32 *)0x800030F4 + *(s32 *)(buf + 0x38)) >> 2;
+        lbl_8055DA28 = v;
+    } else {
+        v = 0x910;
+        lbl_8055DA28 = 0x910;
+    }
+    return v;
 }
 
 extern int IOS_Open(const char *, int);
