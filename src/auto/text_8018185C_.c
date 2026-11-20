@@ -262,7 +262,7 @@ void fn_8018185C(void *arg0, const float *arg1) {
 #pragma scheduling on
 
 void fn_801819A0(void *dst, float * __restrict arg1, void *arg2, float scale, float farg1, float farg2) {
-    float a, b, c, d;
+    float b, a, d, c;
     float values[6];
     a = arg1[0x54 / 4];
     b = arg1[0x50 / 4];
@@ -270,11 +270,11 @@ void fn_801819A0(void *dst, float * __restrict arg1, void *arg2, float scale, fl
     d = arg1[0x58 / 4];
     values[4] = arg1[0x68 / 4];
     values[5] = arg1[0x60 / 4];
-    values[0] = (a * scale) / 746.0f;
-    values[2] = (b * scale) / 1.35725f;
+    values[0] = (a * scale) / lbl_80561CC4;
+    values[2] = (b * scale) / lbl_80561CC8;
     values[1] = c * farg2;
     values[3] = d * farg1;
-    fn_8018185C(arg2, values);
+    fn_8018185C(dst, values);
 }
 float fn_80181A14(void *truck) {
 #define dirtyParams lbl_80434930
@@ -1325,14 +1325,14 @@ void fn_801838C8(void *arg0)
 {
   char *p = (char *) arg0;
   char *r;
-  float one;
-  float zero;
+  register float one = 1.0f;
+  register float zero = 0.0f;
   int i;
   char *q;
   void *obj;
   void *v;
   void *path;
-  *((float *) (p + 0x5e4)) = 0.0f;
+  *((float *) (p + 0x5e4)) = zero;
   fn_8018BE54(p, 1.0f);
   one = 1.0;
   zero = 0.0f;
@@ -1443,7 +1443,6 @@ void fn_801838C8(void *arg0)
     r += 12;
     q += 12;
   }
-
   zero = 0.0f;
   one = 1.0f;
   q = p + 0x152c;
@@ -1508,7 +1507,6 @@ void fn_801838C8(void *arg0)
     *((float *) (q + 0x74)) = zero;
     q += 0x80;
   }
-
   *((int *) (p + 0x1e3c)) = 0;
   *((int *) (p + 0x1e40)) = 0;
   q = p + 0x23ac;
@@ -1571,7 +1569,6 @@ void fn_801838C8(void *arg0)
     *((int *) (q + 0x70)) = 0;
     q += 0x74;
   }
-
   obj = fn_801B2ED0(*((int *) (p + 0x1ec)));
   v = (*((void *(**)(void *)) ((*((char **) obj)) + 0x18)))(obj);
   *((int *) (((char *) v) + 0xc)) = 0;
@@ -2825,7 +2822,7 @@ extern "C" void fn_8018A180(void *arg0, float a1, float a2, float a3, float a4, 
     p = (void *)((unsigned int)arg0 + 0x32C);
     inv = lbl_80561CD0;
     *(float *)((char *)arg0 + 0xD4) = x;
-    *(float *)((char *)arg0 + 0xE4) = inv / *(float *)((char *)arg0 + 0xD4);
+    *(float *)((char *)arg0 + 0xE4) = inv / x;
     fn_801BDA74(*(int *)((char *)arg0 + 0x1EC), p, x);
     fn_801D11D8((char *)lbl_8055E908 + *(int *)((char *)arg0 + 0x1EC) * 0x34, *(int *)((char *)arg0 + 0x1EC));
     fn_801D1540((char *)lbl_8055E918 + *(int *)((char *)arg0 + 0x1EC) * 0x9C, *(int *)((char *)arg0 + 0x1EC));
@@ -2928,12 +2925,15 @@ extern "C" void fn_8018A2C0(void *car, void **collector) {
 #pragma cplusplus reset
 #pragma opt_propagation reset
 #pragma scheduling on
+#pragma push
+#pragma opt_common_subs off
 
 void fn_8018A654(void *arg0, void *arg1) {
     void *result;
     int count;
+    signed char flag = *(volatile signed char *)((char *)arg1 + 0xec);
 
-    if (*(volatile signed char *)((char *)arg1 + 0xec) != 0) {
+    if (flag != 0) {
         result = fn_801D2008((char *)arg1 + 0xec);
         *(void **)((char *)arg0 + 0x26c0) = result;
         if (*(int *)((char *)result + 0x10) > 0) {
