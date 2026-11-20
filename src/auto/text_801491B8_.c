@@ -4884,13 +4884,6 @@ void fn_80155AEC(void) {
 
 }
 
-#pragma cplusplus on
-struct Iface80155AF0 {
-    virtual void *m8();
-    virtual s32 mC(void *);
-    virtual void *m10(void *);
-};
-#pragma cplusplus off
 #pragma scheduling invalid_target
 void fn_80155AF0(void *arg0, void *arg1) {
     register u8 *b358 = lbl_8032D358;
