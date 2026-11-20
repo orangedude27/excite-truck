@@ -4106,7 +4106,7 @@ extern "C" s32 fn_800F73E4(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4)
   fileInfo = *((void **) (((u8 *) reader) + 0x10));
   if (fn_800FE0DC(fn_800FDE60()) < 0x28)
   {
-    Panic__Q26nw4hbm2dbFPCciPCce(base, 0x650, base + 0x5B8);
+    Panic__Q26nw4hbm2dbFPCciPCce(*new_var, 0x650, (*new_var) + 0x5B8);
   }
   if (task != 0)
   {
@@ -4130,8 +4130,9 @@ extern "C" s32 fn_800F73E4(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4)
 }
 
 extern "C" s32 fn_800F7528(void *self, void *arg1, unsigned long arg2, long arg3, int arg4, unsigned long arg5, long arg6, bool arg7, __StrmLoadCommandRef &arg8, unsigned long arg9, unsigned long arg10, unsigned long arg11) {
-    register const char *base = lbl_80324E88;
-    register void *reader = *(void **)((u8 *)self + 4);
+    register const char *base;
+    void *reader = *(void **)((u8 *)self + 4);
+    base = lbl_80324E88;
     void *fileInfo = *(void **)((u8 *)reader + 0x10);
     s32 result;
     if (fileInfo == 0)
@@ -4142,17 +4143,17 @@ extern "C" s32 fn_800F7528(void *self, void *arg1, unsigned long arg2, long arg3
         return 1;
     reader = *(void **)((u8 *)self + 4);
     if (*(void **)((u8 *)reader + 0x10) == 0)
-        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)((const char *)(base + 0), 0x2AC, base + 0x288);
-    reader = *(void **)((u8 *)reader + 0x10);
+        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(base + 0, 0x2AC, base + 0x288);
+    fileInfo = *(void **)((u8 *)reader + 0x10);
     void *task = Alloc__Q46nw4hbm3snd6detail11TaskManagerFv(fn_800FDE60());
     if (task == 0)
-        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)((const char *)(base + 0), 0x67B, base + 0x590);
+        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(base + 0, 0x67B, base + 0x590);
     if (fn_800FE0DC(fn_800FDE60()) < 0x40)
-        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)((const char *)(base + 0), 0x67D, base + 0x628);
+        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(base + 0, 0x67D, base + 0x628);
     if (task != 0) {
         task = __ct__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFPvUlliUllbRQ56nw4hbm3snd6detail10StrmPlayer11LoadCommandRCQ36nw4hbm3snd12SoundArchiveUlUlR7OSMutex(
             task, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
-            arg8, *(const __StrmSoundArchiveRef *)reader,
+            arg8, *(const __StrmSoundArchiveRef *)fileInfo,
             arg10, arg9, *(__StrmMutexRef *)((u8 *)self + 8));
     }
     AppendTask__Q46nw4hbm3snd6detail11TaskManagerFPQ46nw4hbm3snd6detail4TaskQ56nw4hbm3snd6detail11TaskManager12TaskPriority(fn_800FDE60(), task, 2);
@@ -6162,7 +6163,7 @@ extern "C" void InitSoundSystem__Q36nw4hbm3snd11SoundSystemFll(s32 arg0, s32 arg
     fn_800E2E24();
     SCInit();
     do { status = SCCheckStatus(); } while (status == 1);
-    if (status != 0) Panic__Q26nw4hbm2dbFPCciPCce(labels - 0, 0x4f, labels + 0x14);
+    if (status != 0) Panic__Q26nw4hbm2dbFPCciPCce(labels, 0x4f, labels + 0x14);
     mode = SCGetSoundMode();
     switch (mode) {
     case 0: ((void (*)(void *, s32))SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10OutputMode)(Instance__15EmissionManagerFv(), 3); break;
@@ -6173,9 +6174,9 @@ extern "C" void InitSoundSystem__Q36nw4hbm3snd11SoundSystemFll(s32 arg0, s32 arg
     GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv();
     Setup__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv();
     if (((s32 (*)(void *, s32))Create__Q46nw4hbm3snd6detail10TaskThreadFl)(fn_800FE648(), arg1) == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(labels - 0, 0x7e, labels + 0x48);
+        Panic__Q26nw4hbm2dbFPCciPCce(labels, 0x7e, labels + 0x48);
     if (fn_800FA4C4(GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(), arg0) == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(labels - 0, 0x82, labels + 0x48);
+        Panic__Q26nw4hbm2dbFPCciPCce(labels, 0x82, labels + 0x48);
 }
 
 extern "C" void fn_800FA350(void) {
@@ -6249,8 +6250,7 @@ extern "C" void* __dt__10TitleSceneFv(void* this_, s32 flag) {
     return this_;
 }
 
-#pragma push
-#pragma opt_lifetimes off
+#pragma optimization_level 2
 extern "C" s32 fn_800FA4C4(void *arg0, s32 arg1) {
     s32 result;
     u8 *thread = (u8 *)arg0;
@@ -6265,19 +6265,18 @@ extern "C" s32 fn_800FA4C4(void *arg0, s32 arg1) {
     OSInitThreadQueue(thread + 0x2318);
     OSInitMutex(thread + 0x2320);
     if ((s8)lbl_8055DE68 == 0) {
-        volatile u32 *base = (volatile u32 *)lbl_80412CC8;
-        volatile u32 *node;
-        base[0x2388 / 4] = 0;
-        node = base + 0x2388 / 4;
-        base[0x238c / 4] = 0;
-        base[0x2378 / 4] = 0;
-        base[0x237c / 4] = 0;
-        base[0x2384 / 4] = 0;
-        node[0] = (u32)node;
-        node[1] = (u32)node;
-        ((volatile u8 *)base)[0x2394] = 0;
-        __register_global_object((void *)base, (void *)__dt__10TitleSceneFv,
-                                 (void *)lbl_80412CB8, (void *)node);
+        void *object;
+        object = (void *)&lbl_80412CC8[0x2388];
+        *(volatile u32 *)&lbl_80412CC8[0x2388] = 0;
+        *(volatile u32 *)&lbl_80412CC8[0x238c] = 0;
+        *(u32 *)&lbl_80412CC8[0x2378] = 0;
+        *(u32 *)&lbl_80412CC8[0x237c] = 0;
+        *(u32 *)&lbl_80412CC8[0x2384] = 0;
+        *(void **)&lbl_80412CC8[0x2388] = object;
+        *(void **)&lbl_80412CC8[0x238c] = object;
+        *(u8 *)&lbl_80412CC8[0x2394] = 0;
+        __register_global_object((void *)lbl_80412CC8, (void *)&__dt__10TitleSceneFv,
+                                 (void *)&lbl_80412CB8, object);
         lbl_8055DE68 = 1;
     }
     result = OSCreateThread(arg0, (void *)fn_800FA77C, (void *)lbl_80412CC8,
@@ -6287,7 +6286,6 @@ extern "C" s32 fn_800FA4C4(void *arg0, s32 arg1) {
     }
     return result != 0;
 }
-#pragma pop
 s32 nw4hbm::snd::detail::SoundThread::Shutdown() {
     u8 *thread = (u8 *)this;
     if (*(u8 *)(thread + 0x2394) == 0)
