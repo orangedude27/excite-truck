@@ -2888,24 +2888,19 @@ extern "C" void SetVoiceType__Q46nw4hbm3snd6detail7AxVoiceFQ56nw4hbm3snd6detail7
 }
 #pragma use_lmw_stmw reset
 extern "C" void UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(void *arg0, int arg1) {
-    unsigned char *src;
-    int offset;
-    unsigned char *channel;
-    int i;
-    int j;
-    int mode;
-    unsigned char *self;
+    register unsigned char *self = (unsigned char *)arg0;
+    register int mode = arg1;
     float gain = lbl_80560F58;
     float min = lbl_80560F3C;
     float max = lbl_80560F38;
     float volume;
     float ratio;
+    int j;
+    int i = 0;
+    unsigned char *channel;
+    int offset = 0;
+    unsigned char *src = self;
     short values[7];
-    self = (unsigned char *)arg0;
-    mode = arg1;
-    src = self;
-    i = 0;
-    offset = 0;
     {
         float scale = (float)(*(int *)(self + 0x114));
         ratio = (*(float *)(self + 0x184) * scale) / lbl_80560F40;
@@ -2915,7 +2910,8 @@ extern "C" void UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(void *arg0, int arg1
         if (volume > max) volume = max;
         else if (volume < min) volume = min;
         if (mode != 0) {
-            unsigned int sample = (unsigned int)(gain * ratio * volume);
+            float scaled = gain * ratio;
+            unsigned int sample = (unsigned int)(scaled * volume);
             values[0] = (short)(sample >> 16);
             values[1] = (short)sample;
             values[2] = 0;
@@ -3465,6 +3461,7 @@ extern "C" void CalcAXPBRMTMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP11_AXPBRMTMIX(vo
     char* voice=(char*)self;
     float mainVol[4], auxVol[4];
     float f = 1.0f;
+    /* Mix the voice's main and aux levels into the output sample buffer. */
     for (int i=0;i<4;i++) {
         mainVol[i]=f;
         auxVol[i]=f;
