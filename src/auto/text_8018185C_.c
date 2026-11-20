@@ -2929,9 +2929,8 @@ extern "C" void fn_8018A2C0(void *car, void **collector) {
 void fn_8018A654(void *arg0, void *arg1) {
     void *result;
     int count;
-    signed char flag = *(volatile signed char *)((char *)arg1 + 0xec);
 
-    if (flag != 0) {
+    if (*(volatile signed char *)((char *)arg1 + 0xec) != 0) {
         result = fn_801D2008((char *)arg1 + 0xec);
         *(void **)((char *)arg0 + 0x26c0) = result;
         if (*(int *)((char *)result + 0x10) > 0) {
@@ -3035,15 +3034,15 @@ void fn_8018A8A8(void *arg0) {
     float calculated;
     register float temp_f31;
     register float temp_f30;
-    sp38[0] = lbl_80561CAC;
-    sp38[1] = lbl_80561DBC;
-    sp38[2] = lbl_80561CAC;
-    sp2C[0] = lbl_80561CAC;
-    sp2C[1] = lbl_80561CD0;
-    sp2C[2] = lbl_80561CAC;
-    sp20[0] = lbl_80561CAC;
-    sp20[1] = lbl_80561CAC;
-    sp20[2] = lbl_80561CAC;
+    sp38[0] = 0.0f;
+    sp38[1] = -10000.0f;
+    sp38[2] = 0.0f;
+    sp2C[0] = 0.0f;
+    sp2C[1] = 1.0f;
+    sp2C[2] = 0.0f;
+    sp20[0] = 0.0f;
+    sp20[1] = 0.0f;
+    sp20[2] = 0.0f;
     if (*(int *)((char *)arg0 + 0x26C4) != 0) {
         temp_f31 = lbl_8055E3C8;
         angle = (float)fn_8002EFB4(temp_f31, lbl_80561F20);
