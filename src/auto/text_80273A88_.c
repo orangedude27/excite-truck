@@ -841,7 +841,8 @@ void fn_802751AC(void *arg0, float angle) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_80275410(void *arg0) {
-    extern float lbl_802FA7A4[], lbl_80563FE8, lbl_80564028, lbl_8056402C;
+    extern float lbl_802FA7A4[], lbl_80564028, lbl_8056402C;
+    extern const float lbl_80563FE8;
     struct Matrix { int v[12]; };
     struct Params { float a[7]; };
     char *self = (char *)arg0;
