@@ -1686,9 +1686,9 @@ void fn_802D0C98(void) {
     extern unsigned char lbl_8055D0C4;
     extern void *lbl_8055FD64;
     extern int lbl_804C9760[];
+    unsigned char *display;
     unsigned short temp_r31;
     int temp_r30 = 0;
-    unsigned char *display;
 
     lbl_8055FD4C = temp_r30;
     GXSetZMode(1, 3, 1);
@@ -3049,11 +3049,9 @@ void fn_802D3360(void) {
 }
 
 extern float lbl_80564FE0, lbl_80564FE4;
-#pragma push
-#pragma processor 750
 void fn_802D3420(void) {
-    register float zero = lbl_80564F88;
-    register float one = lbl_80564F8C;
+    register float zero = 0.0f;
+    register float one = 1.0f;
     float ident[3][4], mtx[3][4], proj[4][4];
     float width, height;
     volatile float *fifo = (volatile float *)0xCC008000;
@@ -3069,7 +3067,7 @@ void fn_802D3420(void) {
     ident[2][1] = zero;
     ident[2][2] = zero;
     ident[2][3] = zero;
-    fn_802D0DD4(mtx, ident);
+    fn_802D0DD4(((void)ident, mtx), ident);
     GXLoadPosMtxImm(mtx, 0);
     C_MTXOrtho(proj, lbl_80564F88, lbl_80564FBC, lbl_80564F88, lbl_80564FE0, lbl_80564F8C, lbl_80564FCC);
     GXSetProjection(proj, 1);
@@ -3090,7 +3088,6 @@ void fn_802D3420(void) {
     lbl_804C9778[0] = 1;
     lbl_8055FD70 = 1;
 }
-
 void fn_802D362C(s32 arg0) {
     unsigned char color[4];
     unsigned int packed;
