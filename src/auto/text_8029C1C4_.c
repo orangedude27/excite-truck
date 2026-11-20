@@ -85,12 +85,11 @@ void fn_8029C22C(void) {
     fn_8029C3EC();
 }
 
-#pragma scheduling on
 void fn_8029C25C(void) {
     float v = fn_801E7E24();
     if (!((float)__fabs((double)v) <= lbl_80558DC4)) {
         int *p = &lbl_804B5010[0];
-        int i = (int)(p - p);
+        int i = 0;
         while (i < lbl_8055F7F0) {
             fn_8029D574(*p);
             p++;
