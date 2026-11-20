@@ -151,9 +151,9 @@ extern void fn_80010188(int, int, const char *, ...);
 extern int sprintf(char *, const char *, ...);
 #define ID_LIST (&lbl_8034F3D0)
 static inline void IdList_Add(s32 *src) {
+    s32 value = *src;
     s32 *data = lbl_8034F3D0.data;
     s32 n = lbl_8034F3D0.count;
-    s32 value = *src;
     lbl_8034F3D0.count = n + 1;
     data[n] = value;
 }
