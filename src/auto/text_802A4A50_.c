@@ -1147,7 +1147,7 @@ void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
 }
 
 #pragma scheduling push
-#pragma scheduling off
+#pragma scheduling on
 #pragma dont_inline on
 void fn_802A6758(void *arg0, f32 *arg1) {
     s32 i = *(s32 *)((u8 *)arg0 + 4);
