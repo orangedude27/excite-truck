@@ -1640,7 +1640,6 @@ extern "C" void fn_8014D700(void *context, s32 param) {
 }
 
 #pragma push
-#pragma opt_propagation off
 extern "C" void fn_8014D794(void *state, void *context) {
     /* When state's active flag (+0xA0) is clear, apply mode-specific parameters to context's target object (+8). */
     fn_801E7E18();
@@ -1676,15 +1675,12 @@ extern "C" void fn_8014D840(void *__restrict arg0, void *arg1) {
         virtual void v0();
         virtual void m(const char *);
     };
-    u8 *manager;
+    u8 *manager = *(u8 **)((u8 *)arg0 + 0x68);
     s32 i;
     s32 best;
-    u8 *entry;
-    s32 count;
-    manager = *(u8 **)((u8 *)arg0 + 0x68);
+    u8 *entry = manager + 0x9E4;
+    s32 count = *(s32 *)(manager + 0xFE4);
     best = -1;
-    entry = manager + 0x9E4;
-    count = *(s32 *)(manager + 0xFE4);
     i = 0;
     while (count > 0) {
         if (best < 0) {
@@ -2648,13 +2644,15 @@ extern "C" void *fn_8015011C(void *arg0, void *arg1) {
     ((s32 *)arg0)[0xD0/4] = ((Entry *)arg1)->m8();
     ((Entry *)arg1)->m8();
     ((s32 *)arg0)[3] = fn_801D4888();
-    if (((Entry *)arg1)->has(lbl_80559F98) != 0) {
-        ((s32 *)arg0)[0x38/4] = ((Entry *)arg1)->m54(lbl_80559F98, lbl_8032D358 + 0xB38);
-    } else {
+    if (((Entry *)arg1)->has(lbl_80559F98) == 0) {
         ((s32 *)arg0)[0x38/4] = 2;
+        ((u8 *)arg0)[0xCC] = (u8)((Entry *)arg1)->m30(lbl_80559FA0, 1);
+        ((s32 *)arg0)[0x38/4] = 3;
+    } else {
+        ((s32 *)arg0)[0x38/4] = ((Entry *)arg1)->m54(lbl_80559F98, lbl_8032D358 + 0xB38);
+        ((s32 *)arg0)[0x10/4] = ((Entry *)arg1)->m14(lbl_8032D358 + 0xB54);
+        ((s32 *)arg0)[0x10/4] = fn_801D4888();
     }
-    ((u8 *)arg0)[0xCC] = (u8)((Entry *)arg1)->m30(lbl_80559FA0, 1);
-    ((s32 *)arg0)[0x38/4] = 3;
     return arg0;
 }
 #pragma cplusplus off
@@ -5122,26 +5120,62 @@ void fn_8014F108(void *owner) {
     *(s32 *)((u8 *)base + 0x9D8) = fn_80145E70(lbl_8032DB40);
 }
 
+extern u8 lbl_80559F54;
+extern u8 lbl_80559F5C;
 void fn_8014F194(void *arg0) {
-    int tbl[120];
-    int *q = tbl;
-    int k;
-    int flags;
-    (void)arg0;
+    struct Desc { s32 type; void *a; void *b; };
+    struct Layout {
+        u8 pad0[0x1A4];
+        struct Desc small[4];
+        u8 pad1[4];
+        struct Desc big[40];
+    } st;
+    s32 flags, t, k, z;
+    u32 r30;
+    u8 *p = (u8 *)arg0;
+    s32 *clr;
+
     flags = fn_80179650();
-    {
-        int r0 = flags ^ 1;
-        int r4 = r0 >> 1;
-        r0 = r0 & flags;
-        r0 = r4 - r0;
-        (void)(r0 >> 31);
-    }
+    t = flags ^ 1;
+    r30 = ((u32)((t >> 1) - (t & flags))) >> 31;
     fn_802C9A58();
-    for (k = 0; k < 0x3C; k++) {
-        q[1] = 0;
-        q[2] = 0;
-        q += 2;
+
+    clr = (s32 *)st.big;
+    k = 0x3C;
+    do { clr[1] = 0; clr[2] = 0; clr += 2; } while (--k != 0);
+
+    st.small[3].type = 3;
+    st.small[3].a = (void *)(lbl_8032D358 + 0x4D8);
+    st.small[3].b = p + 0x20;
+    st.big[0].type = 3;
+    st.big[0].a = (void *)(lbl_8032D358 + 0x4D8);
+    st.big[0].b = p + 0x20;
+
+    st.small[2].type = 3;
+    st.small[2].a = (void *)&lbl_80559F54;
+    st.small[2].b = p + 0x24;
+    st.big[1].type = 3;
+    st.big[1].a = (void *)&lbl_80559F54;
+    st.big[1].b = p + 0x24;
+
+    st.small[1].type = 3;
+    st.small[1].a = (void *)(lbl_8032D358 + 0x7F4);
+    st.small[1].b = p + 0x28;
+    st.big[2].type = 3;
+    st.big[2].a = (void *)(lbl_8032D358 + 0x7F4);
+    st.big[2].b = p + 0x28;
+
+    z = (r30 == 0);
+    if (z && flags == 0) {
+        st.small[0].b = p + 0x2C;
+    } else {
+        st.small[0].b = (void *)lbl_80559F0C;
     }
+    st.small[0].type = 1;
+    st.small[0].a = (void *)&lbl_80559F5C;
+    st.big[3].type = 1;
+    st.big[3].a = (void *)&lbl_80559F5C;
+    st.big[3].b = st.small[0].b;
 }
 
 #pragma cplusplus on
