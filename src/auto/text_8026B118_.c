@@ -246,6 +246,7 @@ void fn_8026B3D4(int arg0) {
         }
     }
 }
+#pragma pop
 
 #pragma cplusplus reset
 #pragma pop
