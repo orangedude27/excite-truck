@@ -327,6 +327,27 @@ float fn_80181AC0(void) {
  * blending an object's value at +0x258C. */
 float fn_80181AEC(void) { return lbl_80434930[3]; }
 
+static inline void init_tuning_blocks_80181AFC(float *p, float *q, float *r) {
+    p[0] = lbl_80561CD4;
+    p[1] = lbl_80561CD8;
+    p[2] = lbl_80561CDC;
+    p[3] = lbl_80561CD0;
+    p[6] = lbl_80561CD8;
+    p[7] = lbl_80561CE0;
+    p[8] = lbl_80561CE4;
+    p[4] = lbl_80561CE8;
+    p[5] = lbl_80561CE8;
+    q[0] = lbl_80561CEC;
+    q[1] = lbl_80561CD0;
+    q[2] = lbl_80561CD8;
+    q[3] = lbl_80561CD0;
+    q[6] = lbl_80561CF0;
+    q[7] = lbl_80561CE0;
+    q[4] = lbl_80561CE8;
+    r[0] = lbl_80561CF4;
+    r[1] = lbl_80561CD8;
+}
+
 #pragma push
 #pragma processor 750
 #pragma opt_propagation off
@@ -350,6 +371,8 @@ if (initialize != 0) {
 temp_r5 = (Block20 *)((char *)base + 0x20);
 temp_r4 = (float *)((char *)base + 0x48);
 (*(float *)((char *)(base) + (0x20))) = (float) lbl_80561CD4;
+#pragma push
+#pragma peephole off
 temp_r5->f[1] = (float) lbl_80561CD8;
 temp_r5->f[2] = (float) lbl_80561CDC;
 temp_r5->f[3] = (float) lbl_80561CD0;
@@ -365,6 +388,7 @@ temp_r4[3] = (float) lbl_80561CD0;
 temp_r4[6] = (float) lbl_80561CF0;
 temp_r4[7] = (float) lbl_80561CE0;
 temp_r4[4] = (float) lbl_80561CE8;
+#pragma pop
 (*(float *)((char *)(&lbl_8055E4E8) + (0))) = (float) lbl_80561CF4;
 (*(float *)((char *)(&lbl_8055E4E8) + (4))) = (float) lbl_80561CD8;
 }
@@ -1059,8 +1083,9 @@ extern "C" void fn_80182DF4(void *arg0) {
         float rearZ;
     };
 #define self ((Truck *)arg0)
-    float minX = lbl_80561CAC, maxX = lbl_80561CAC, minY = lbl_80561CAC;
-    float maxY = lbl_80561CAC, minZ = lbl_80561CAC, maxZ = lbl_80561CAC;
+    float m, half, zero, off;
+    float minX = 0.0f, maxX = 0.0f, minY = 0.0f;
+    float maxY = 0.0f, minZ = 0.0f, maxZ = 0.0f;
     V3 pos;
     V3 sizeB, sizeA, sizeC;
     V3 center;
@@ -1070,14 +1095,14 @@ extern "C" void fn_80182DF4(void *arg0) {
     float mass = lbl_80561D68;
     float f30 = lbl_80561CB8;
     float f29 = lbl_80561D6C;
-    float f28 = lbl_80561CDC / f29;
+    float f28 = 0.5f / f29;
     void *handle;
     float *v;
     PushNode *node;
     void *obj;
     void *obj2;
     float z27, y26, x25, x24, y23, hy, hz, z20, y19, x18, z17, y16, x15, z14;
-    float x, y, z, m, half, zero, off;
+    float x, y, z;
 
     fn_802C7760(self->model, &minX, &maxX, &minY, &maxY, &minZ, &maxZ);
     handle = fn_801E3004(self->model, lbl_8055A3E8, -1);
@@ -1088,11 +1113,11 @@ extern "C" void fn_80182DF4(void *arg0) {
         nodeA.y = lbl_80561D70 + (maxY + self->pos.y);
         node = (PushNode *)fn_801AE180();
         node->values[0] = nodeA.x;
-        m = lbl_80561CD8 * mass;
+        m = 2.0f * mass;
         node->values[1] = nodeA.y;
-        half = lbl_80561CDC;
+        half = 0.5f;
         node->values[2] = nodeA.z;
-        zero = lbl_80561CAC;
+        zero = 0.0f;
         node->values[3] = m;
         off = lbl_80561D70;
         node->values[4] = half;
@@ -1104,11 +1129,11 @@ extern "C" void fn_80182DF4(void *arg0) {
         nodeB.x = -v[0];
         node = (PushNode *)fn_801AE180();
         node->values[0] = nodeB.x;
-        m = lbl_80561CD8 * mass;
+        m = 2.0f * mass;
         node->values[1] = nodeB.y;
-        half = lbl_80561CDC;
+        half = 0.5f;
         node->values[2] = nodeB.z;
-        zero = lbl_80561CAC;
+        zero = 0.0f;
         node->values[3] = m;
         node->values[4] = half;
         node->values[6] = zero; node->values[7] = zero; node->values[8] = zero;
@@ -1134,44 +1159,44 @@ extern "C" void fn_80182DF4(void *arg0) {
     }
     self->group = (CollisionGroupObj *)obj;
 
-    sizeB.x = lbl_80561D84; sizeB.y = lbl_80561D00; sizeB.z = lbl_80561CD0;
-    sizeA.x = lbl_80561D84; sizeA.y = lbl_80561D00; sizeA.z = lbl_80561CD0;
-    sizeC.x = lbl_80561D84; sizeC.y = lbl_80561D00; sizeC.z = lbl_80561CD0;
+    sizeB.x = 0.7f; sizeB.y = 0.1f; sizeB.z = 1.0f;
+    sizeA.x = 0.7f; sizeA.y = 0.1f; sizeA.z = 1.0f;
+    sizeC.x = 0.7f; sizeC.y = 0.1f; sizeC.z = 1.0f;
 
-    x25 = maxX - lbl_80561D78;
-    y26 = lbl_80561D78 + minY;
-    z27 = maxZ - lbl_80561D78;
-    x24 = lbl_80561D7C * x25;
-    y23 = lbl_80561D80 + minY;
-    hy = lbl_80561CDC * (maxY - minY);
-    hz = lbl_80561CDC * (minZ + maxZ);
+    x25 = maxX - 0.45f;
+    y26 = 0.45f + minY;
+    z27 = maxZ - 0.45f;
+    x24 = 0.8f * x25;
+    y23 = 0.36f + minY;
+    hy = 0.5f * (maxY - minY);
+    hz = 0.5f * (minZ + maxZ);
     x18 = maxX - hy;
     y19 = minY + hy;
-    z20 = lbl_80561CDC * (z27 + hz);
+    z20 = 0.5f * (z27 + hz);
     x15 = maxX - lbl_80561D88;
     y16 = lbl_80561D88 + minY;
     z17 = lbl_80561D88 + minZ;
-    z14 = lbl_80561CDC * (z17 + hz);
+    z14 = 0.5f * (z17 + hz);
 
     q0.x = -x24; q0.y = lbl_80561D8C + y23; q0.z = z27;
     d0.x = q0.x - self->pos.x; d0.y = q0.y - self->pos.y; d0.z = q0.z - self->pos.z;
-    fn_801A0258(self->group, &d0, &sizeA, lbl_80561D80, mass, f30, f29, f28);
-    q1.x = lbl_80561CAC; q1.y = lbl_80561D8C + y23; q1.z = z27;
+    fn_801A0258(self->group, &d0, &sizeA, 0.36f, mass, f30, f29, f28);
+    q1.x = 0.0f; q1.y = lbl_80561D8C + y23; q1.z = z27;
     d1.x = q1.x - self->pos.x; d1.y = q1.y - self->pos.y; d1.z = q1.z - self->pos.z;
-    fn_801A0258(self->group, &d1, &sizeA, lbl_80561D80, mass, f30, f29, f28);
+    fn_801A0258(self->group, &d1, &sizeA, 0.36f, mass, f30, f29, f28);
     q2.x = x24; q2.y = lbl_80561D8C + y23; q2.z = z27;
     d2.x = q2.x - self->pos.x; d2.y = q2.y - self->pos.y; d2.z = q2.z - self->pos.z;
-    fn_801A0258(self->group, &d2, &sizeA, lbl_80561D80, mass, f30, f29, f28);
+    fn_801A0258(self->group, &d2, &sizeA, 0.36f, mass, f30, f29, f28);
     q3.x = -x25; q3.y = lbl_80561D8C + y26; q3.z = z20;
     d3.x = q3.x - self->pos.x; d3.y = q3.y - self->pos.y; d3.z = q3.z - self->pos.z;
-    fn_801A0258(self->group, &d3, &sizeA, lbl_80561D78, mass, f30, f29, f28);
+    fn_801A0258(self->group, &d3, &sizeA, 0.45f, mass, f30, f29, f28);
     q4.x = x25; q4.y = lbl_80561D8C + y26; q4.z = z20;
     d4.x = q4.x - self->pos.x; d4.y = q4.y - self->pos.y; d4.z = q4.z - self->pos.z;
-    fn_801A0258(self->group, &d4, &sizeA, lbl_80561D78, mass, f30, f29, f28);
-    q5.x = lbl_80561D7C * -x18; q5.y = lbl_80561D8C + y19; q5.z = hz;
+    fn_801A0258(self->group, &d4, &sizeA, 0.45f, mass, f30, f29, f28);
+    q5.x = 0.8f * -x18; q5.y = lbl_80561D8C + y19; q5.z = hz;
     d5.x = q5.x - self->pos.x; d5.y = q5.y - self->pos.y; d5.z = q5.z - self->pos.z;
     fn_801A0258(self->group, &d5, &sizeB, hy, mass, f30, f29, f28);
-    q6.x = lbl_80561D7C * x18; q6.y = lbl_80561D8C + y19; q6.z = hz;
+    q6.x = 0.8f * x18; q6.y = lbl_80561D8C + y19; q6.z = hz;
     d6.x = q6.x - self->pos.x; d6.y = q6.y - self->pos.y; d6.z = q6.z - self->pos.z;
     fn_801A0258(self->group, &d6, &sizeB, hy, mass, f30, f29, f28);
     q7.x = -x15; q7.y = lbl_80561D8C + y16; q7.z = z14;
@@ -1183,21 +1208,21 @@ extern "C" void fn_80182DF4(void *arg0) {
     q9.x = -x15; q9.y = lbl_80561D8C + y16; q9.z = z17;
     d9.x = q9.x - self->pos.x; d9.y = q9.y - self->pos.y; d9.z = q9.z - self->pos.z;
     fn_801A0258(self->group, &d9, &sizeC, lbl_80561D88, mass, f30, f29, f28);
-    q10.x = lbl_80561CAC; q10.y = lbl_80561D8C + y16; q10.z = z17;
+    q10.x = 0.0f; q10.y = lbl_80561D8C + y16; q10.z = z17;
     d10.x = q10.x - self->pos.x; d10.y = q10.y - self->pos.y; d10.z = q10.z - self->pos.z;
     fn_801A0258(self->group, &d10, &sizeC, lbl_80561D88, mass, f30, f29, f28);
     q11.x = x15; q11.y = lbl_80561D8C + y16; q11.z = z17;
     d11.x = q11.x - self->pos.x; d11.y = q11.y - self->pos.y; d11.z = q11.z - self->pos.z;
     fn_801A0258(self->group, &d11, &sizeC, lbl_80561D88, mass, f30, f29, f28);
 
-    center.z = lbl_80561CDC * (maxZ + minZ);
-    center.y = lbl_80561CDC * (maxY + minY);
-    center.x = lbl_80561CDC * (maxX + minX);
+    center.z = 0.5f * (maxZ + minZ);
+    center.y = 0.5f * (maxY + minY);
+    center.x = 0.5f * (maxX + minX);
     obj2 = fn_801284F8(0x74, lbl_8055A3F0);
     if (obj2 != 0) {
         obj2 = fn_801A2354(obj2, self->frame, &center, self, lbl_80561CF8 * mass, f30,
-                           lbl_80561CDC * (maxX - minX), lbl_80561CDC * (maxY - minY),
-                           lbl_80561CDC * (maxZ - minZ));
+                           0.5f * (maxX - minX), 0.5f * (maxY - minY),
+                           0.5f * (maxZ - minZ));
     }
     fn_801A0444(self->group, obj2);
     fn_80179F94(self, self->group);
@@ -3734,20 +3759,20 @@ extern "C" int fn_8018BA54(void *arg0, void *arg1) {
         var_r5 = *(int *)(var_r3 + 0x70);
         if (*(unsigned char *)(var_r3 + 0x20) != 0) var_r5 |= 1;
         var_f0 = (*(float *)(var_r3 + 0xC) - loop_min) * loop_base;
-        var_f0 = (loop_max < var_f0) ? loop_max : var_f0;
-        var_f0 = (var_f0 > loop_min) ? loop_min : var_f0;
+        if (loop_max < var_f0) var_f0 = loop_max;
+        if (var_f0 > loop_min) var_f0 = loop_min;
         var_r4[2] = (signed char)(loop_base + (loop_min + (var_f0 * loop_scale)));
         var_f0_2 = (*(float *)(var_r3 + 8) - loop_height) / loop_height_scale;
-        var_f0_2 = (loop_max < var_f0_2) ? loop_max : var_f0_2;
-        var_f0_2 = (var_f0_2 > loop_min) ? loop_min : var_f0_2;
+        if (loop_max < var_f0_2) var_f0_2 = loop_max;
+        if (var_f0_2 > loop_min) var_f0_2 = loop_min;
         var_r4[0] = (signed char)(loop_base + (loop_min + (var_f0_2 * loop_scale)));
         var_f0_3 = (*(float *)(var_r3 + 0) - loop_x) / loop_x_scale;
-        var_f0_3 = (loop_max < var_f0_3) ? loop_max : var_f0_3;
-        var_f0_3 = (var_f0_3 > loop_min) ? loop_min : var_f0_3;
+        if (loop_max < var_f0_3) var_f0_3 = loop_max;
+        if (var_f0_3 > loop_min) var_f0_3 = loop_min;
         var_r4[1] = (signed char)(loop_base + (loop_min + (var_f0_3 * loop_scale)));
         var_f0_4 = (*(float *)(var_r3 + 0x68) - loop_min) / loop_y_scale;
-        var_f0_4 = (loop_max < var_f0_4) ? loop_max : var_f0_4;
-        var_f0_4 = (var_f0_4 > loop_min) ? loop_min : var_f0_4;
+        if (loop_max < var_f0_4) var_f0_4 = loop_max;
+        if (var_f0_4 > loop_min) var_f0_4 = loop_min;
         var_r3 += 0x74;
         var_r4[3] = (signed char)(loop_base + (loop_min + (var_f0_4 * loop_scale)));
         var_r4[4] = (signed char)var_r5;
