@@ -1006,10 +1006,10 @@ extern "C" void fn_80219510(void *widget, s32 offsetX, s32 offsetY) {
 extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
     void* p = *(void**)((u8*)arg0 + 0x2C);
     if (*(u8*)((u8*)arg0 + 0x24C) != 0) {
-        s32 dx = *(s32*)((u8*)arg0 + 0x244) + arg1;
-        s32 dy = *(s32*)((u8*)arg0 + 0x248) + arg2;
         s32 old1 = *(s32*)((u8*)p + 0x454);
+        s32 dx = *(s32*)((u8*)arg0 + 0x244) + arg1;
         s32 old2 = *(s32*)((u8*)p + 0x458);
+        s32 dy = *(s32*)((u8*)arg0 + 0x248) + arg2;
         *(s32*)((u8*)p + 0x454) = old1 + dx;
         *(s32*)((u8*)p + 0x458) = old2 + dy;
     }
@@ -3771,6 +3771,7 @@ check:
 #pragma scheduling on
 #pragma pop
 extern "C" s32 fn_8022D3F8(s32, s32, s32 *, s32, s32);
+#pragma scheduling invalid_target
 extern "C" void fn_8021E51C(void *self, s32 arg1) {
     struct Local {
         s32 sp8;
@@ -3824,7 +3825,7 @@ probe:
         goto body;
     }
 }
-
+#pragma scheduling on
 extern "C" void fn_8021E7D4(void *);
 // Manual jump table dispatch to match target
 #pragma push
@@ -5053,34 +5054,39 @@ extern "C" void fn_80220B5C(void *widget, s32 canvas) {
 #pragma processor 750
 extern "C" void fn_80220C54(void *arg0)
 {
+  /* Draw the slider bar fn_80220778 builds: the groove (slider1.img, +0x248) at
+   * full widget width, then the fill (slider2.img, +0x24C) inset by 5px and
+   * scaled to *valuePtr (+0x244) within [minValue (+0x250), maxValue-1
+   * (+0x254)]. Both are highlighted when the focused id (*+0x25C) equals
+   * this widget's id (+0x260). */
   register void *self = arg0;
-  s32 *entries;
-  register s32 size;
-  s32 current;
-  s32 *check;
-  s32 target;
-  register s32 enabled;
-  s32 e0;
-  s32 h = ((Vf78 *) self)->get() - 0xB;
-  entries = *((s32 **) (((u8 *) self) + 0x244));
-  check = *((s32 **) (((u8 *) self) + 0x25C));
-  enabled = 0;
-  current = *((s32 *) (((u8 *) self) + 0x250));
-  e0 = *entries;
-  target = *((s32 *) (((u8 *) self) + 0x254));
-  size = (h * (e0 - current)) / ((target - current) - 1);
-  if ((check != 0) && ((*check) == (*((s32 *) (((u8 *) self) + 0x260)))))
+  s32 *valuePtr;
+  register s32 fillWidth;
+  s32 minValue;
+  s32 *focusedId;
+  s32 maxValue;
+  register s32 highlighted;
+  s32 value;
+  s32 trackSpan = ((Vf78 *) self)->get() - 0xB;
+  valuePtr = *((s32 **) (((u8 *) self) + 0x244));
+  focusedId = *((s32 **) (((u8 *) self) + 0x25C));
+  highlighted = 0;
+  minValue = *((s32 *) (((u8 *) self) + 0x250));
+  value = *valuePtr;
+  maxValue = *((s32 *) (((u8 *) self) + 0x254));
+  fillWidth = (trackSpan * (value - minValue)) / ((maxValue - minValue) - 1);
+  if ((focusedId != 0) && ((*focusedId) == (*((s32 *) (((u8 *) self) + 0x260)))))
   {
-    enabled = 1;
+    highlighted = 1;
   }
-  f32 height, x, y;
+  f32 trackHeight, x, y;
   x = (f32)((*(s32 *) (((u8 *) self) + 4)) - lbl_8055FB9C / 2);
   y = (f32)(lbl_8055FBA0 / 2 - (*(s32 *) (((u8 *) self) + 8)));
-  height = (f32)fn_802C5220(*(s32 *) (((u8 *) self) + 0x248));
+  trackHeight = (f32)fn_802C5220(*(s32 *) (((u8 *) self) + 0x248));
   f32 width = (f32)((Vf78 *) self)->get();
-  fn_802C5320(*(s32 *) (((u8 *) self) + 0x248), enabled, x, y, lbl_805634A8, width, height);
-  f32 height2 = (f32)fn_802C5220(*(s32 *) (((u8 *) self) + 0x24C));
-  fn_802C5320(*(s32 *) (((u8 *) self) + 0x24C), enabled, lbl_805634E0 + x, y - lbl_805634E0, lbl_805634A8, (f32)size, height2);
+  fn_802C5320(*(s32 *) (((u8 *) self) + 0x248), highlighted, x, y, lbl_805634A8, width, trackHeight);
+  f32 fillHeight = (f32)fn_802C5220(*(s32 *) (((u8 *) self) + 0x24C));
+  fn_802C5320(*(s32 *) (((u8 *) self) + 0x24C), highlighted, lbl_805634E0 + x, y - lbl_805634E0, lbl_805634A8, (f32)fillWidth, fillHeight);
 }
 #pragma pop
 
@@ -6010,9 +6016,9 @@ extern "C" void fn_80222CFC(void *arg0, s32 arg1) {
     register s32 var_r30;
     register void *temp_r29;
     register void *temp_r28;
+    register void *temp_r25;
     register void *temp_r27;
     register s32 var_r26;
-    register void *temp_r25;
     register char *temp_r24;
     register f32 *var_r23;
     register f32 *var_r22;
@@ -6025,8 +6031,8 @@ extern "C" void fn_80222CFC(void *arg0, s32 arg1) {
     f32 callScale;
 
     (void)arg1;
-    temp_r3 = *(void **)((u8 *)arg0 + 0x244);
     temp_r25 = arg0;
+    temp_r3 = *(void **)((u8 *)arg0 + 0x244);
     temp_r31 = *(s32 *)((u8 *)temp_r3 + 8);
     temp_f1 = ((f32 (*)(void *))fn_8023659C)(arg0);
     temp_f0 = *(f32 *)((u8 *)arg0 + 0x254);
@@ -6160,8 +6166,8 @@ outer_test:
 #pragma ppc_psq_save off
 #pragma scheduling invalid_target
 extern "C" void *fn_802230A4(void *self, s32 arg1, s32 arg2, void *arg3, s32 arg4) {
-    u8 *obj = (u8 *)self;
-    u8 *input = (u8 *)arg3;
+    register u8 *obj = (u8 *)self;
+    register u8 *input = (u8 *)arg3;
     register s32 data = arg4;
     register s32 i;
     register u8 *row;
@@ -6893,8 +6899,7 @@ extern "C" void fn_80224328(void *self) {
         fn_802C5320(resource, 0, *(f32 *)((u8 *)self + 0x244), *(f32 *)((u8 *)self + 0x248), lbl_805634A8, *(f32 *)((u8 *)self + 0x24C), *(f32 *)((u8 *)self + 0x250));
 }
 
-#pragma push
-#pragma fp_contract on
+#pragma scheduling invalid_target
 extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2,
                                     s32 arg3, s32 *arg4, void *unused) {
     register u8 *resource = (u8 *)arg2;
@@ -6902,7 +6907,7 @@ extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2,
     register u8 *self = (u8 *)arg0;
     register s32 length = arg3;
     register s32 *link = arg4;
-    register s32 zero = 0;
+    register s32 zero;
     char name[0x100];
 
     ((void *(*)(void *, void *))fn_80218F80)(self, resource);
@@ -6928,12 +6933,13 @@ extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2,
 
     *(s32 *)(self + 0x254) =
         fn_80228F40(*(s32 *)(self + 4), *(s32 *)(self + 8));
+    zero = 0;
     *(s32 *)(self + 0x258) = zero;
     *(s32 *)(self + 0x25c) = length;
     *(s32 *)(self + 0x250) = initial;
     s32 flags = *(s32 *)(resource + 0x9c);
     s32 sign = flags >> 31;
-    *(s32 *)(self + 0x264) = (flags ^ sign) - sign;
+    *(s32 *)(self + 0x264) = (sign ^ flags) - sign;
 
     *(void **)(self + 0x284) = fn_8022EE9C();
     *(void **)(self + 0x288) = fn_8022EE9C();
@@ -6950,7 +6956,6 @@ extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2,
     }
     return self;
 }
-#pragma pop
 /* Destructor: reset vtable, release owned resources, destroy base, and optionally delete self. */
 extern "C" void *fn_802244C8(void *self, s32 shouldDelete) {
     if (self != 0) {
@@ -8513,8 +8518,8 @@ extern f32 lbl_80563578;
 #pragma ppc_psq_save off
 #pragma scheduling invalid_target
 extern "C" void fn_80228010(void* arg0) {
-register VfObj *self = (VfObj *)arg0;
-if (*(s32*)((u8*)arg0 + 0x250) != 0 && *(s32*)((u8*)arg0 + 0x254) != 0 && *(s32*)((u8*)arg0 + 0x258) != 0) {
+if (*(s32*)((u8*)arg0 + 0x250) != 0 && *(s32*)((u8*)arg0 + 0x254) != 0) {
+if (*(s32*)((u8*)arg0 + 0x258) == 0) return;
 f32 duration, initial, radius;
 s32 lastIndex;
 duration = fn_80235EF0(*(s32*)((u8*)arg0 + 0x254), 0);
@@ -8564,7 +8569,7 @@ progress += step;
 }
 f32 endPos = lbl_8056356C + spC;
 f32 negTop = sp8 + negRadius;
-s32 virtualInt = self->vf28();
+s32 virtualInt = ((VfObj*)arg0)->vf28();
 f32 virtualPos = (f32)virtualInt;
 f32 top = sp8 - radius;
 f32 topAdjusted = top - lbl_80563574;
