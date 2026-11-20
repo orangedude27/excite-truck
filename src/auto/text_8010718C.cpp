@@ -120,14 +120,14 @@ typedef struct { char file[0x38]; char cancel[0x28]; char async[0x28]; } Msgs801
 #pragma push
 #pragma opt_propagation off
 s32 nw4hbm::ut::FileStream::CancelAsync(CancelCallback callback, void* user) {
-    register u8* base = lbl_80328458;
+    static char sFile[0x38] = "ut_FileStream.cpp";
+    static char sCancel[0x28] = "Stream don't support CANCEL function\n";
+    static char sAsync[0x28] = "Stream don't support ASYNC function\n";
     if (v21(callback, user) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)(base + 0), 0x4E,
-                                     (const char*)(base + 0x38));
+        Panic__Q26nw4hbm2dbFPCciPCce(sFile, 0x4E, sCancel);
     }
     if (v10() == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)(base + 0), 0x4F,
-                                     (const char*)(base + 0x60));
+        Panic__Q26nw4hbm2dbFPCciPCce(sFile, 0x4F, sAsync);
     }
     return 1;
 }
