@@ -1534,7 +1534,7 @@ void fn_801ACA48(void *self) {
 extern float lbl_80558DC4, lbl_8055E460, lbl_805624AC;
 struct Pair_801ACB30 { int a, b; };
 static inline void transform_801ACB30(const float *m, const float *src, float *dst) {
-    if (src == dst) {
+    if (dst == src) {
         float x = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
         float y = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
         float z = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
@@ -1683,6 +1683,8 @@ void fn_801AD0E0(void *arg0, void *arg1, void *arg2, void *arg3, float farg0, fl
     *(float *)((char *)arg0 + 0x24) = farg1;
     *(float *)((char *)arg0 + 0x20) = t;
 }
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_801AD148(void *arg0, void *arg1, void *arg2, f32 farg0, f32 farg1) {
     Vec sp14;
     Vec sp8;
@@ -1712,8 +1714,6 @@ void fn_801AD148(void *arg0, void *arg1, void *arg2, f32 farg0, f32 farg1) {
     }
     fn_801AD0E0(arg0, &sp8, arg2, arg1, farg0, farg1);
 }
-#pragma scheduling on
-#pragma processor reset
 extern void fn_801AD0E0(void *, void *, void *, void *, f32, f32);
 #pragma scheduling on
 void fn_801AD28C(void *arg0, void *arg1, void *arg2, Vec *arg3, f32 farg1, f32 farg0) {
