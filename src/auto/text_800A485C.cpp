@@ -9253,6 +9253,10 @@ static inline u32 Fn800B25CCUpperWide(u16 c, u16 *out) {
     }
     return 0;
 }
+static inline u32 Fn800B25CCToSjis(u16 *c) {
+    M2C_FIELD(&lbl_803D2140, s32 (**)(u16 *, u16 *), 0x4C)(c, c);
+    return 1;
+}
 static inline u32 Fn800B25CCUpperSjis(u16 *c, u16 *out) {
     M2C_FIELD(&lbl_803D2140, s32 (**)(u8 *, u16 *, s32 *), 0x48)((u8 *)c, out, (s32 *)lbl_803D2140);
     u32 r = Fn800B25CCUpperWide(*out, out);
