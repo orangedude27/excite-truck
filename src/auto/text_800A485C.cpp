@@ -9254,11 +9254,10 @@ static inline u32 Fn800B25CCUpperWide(u16 c, u16 *out) {
     return 0;
 }
 static inline u32 Fn800B25CCToSjis(u16 *c) {
-    u32 r = 1;
     M2C_FIELD(&lbl_803D2140, s32 (**)(u16 *, u16 *), 0x4C)(c, c);
-    return r;
+    return 1;
 }
-static inline u32 Fn800B25CCUpperSjis(u16 *c, u16 *out) {
+static inline u16 Fn800B25CCUpperSjis(u16 *c, u16 *out) {
     M2C_FIELD(&lbl_803D2140, s32 (**)(u8 *, u16 *, s32 *), 0x48)((u8 *)c, out, (s32 *)lbl_803D2140);
     if (Fn800B25CCUpperWide(*out, out) == 1) {
         return Fn800B25CCToSjis(out);
@@ -9331,8 +9330,7 @@ block_27:
             (*(u16 *)(work + 4)) = (*(u16 *)work);
         }
     } else {
-        var_r3 = Fn800B25CCUpperSjis((u16 *)(work + 4), (u16 *)work);
-        if (var_r3 == 1) {
+        if (Fn800B25CCUpperSjis((u16 *)(work + 4), (u16 *)work) == 1) {
             (*(u16 *)(work + 4)) = (*(u16 *)work);
         }
     }
