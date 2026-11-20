@@ -36,6 +36,7 @@ BOOL fn_80057460(void);
 
 extern void SIRefreshSamplingRate(void);
 extern void fn_80057F2C(s32 chan, u32 command);
+extern void fn_8005B01C(void);
 extern int __cntlzw(unsigned int);
 extern BOOL lbl_8055DB2C;
 
