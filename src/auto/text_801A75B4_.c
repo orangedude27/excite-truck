@@ -227,6 +227,114 @@ void fn_801A7A08(const char *keySpec, int valueId, int groupId) {
 }
 #pragma pop
 extern float lbl_80562458;
+static inline void copy_recs_801A7A5C(Rec_801A7A5C *src, Rec_801A7A5C *dst) {
+    int i;
+    float fa, fb;
+    unsigned char ba, bb;
+    int wa, wb;
+    for (i = 0; i < 4; i++) {
+        fa = src->f[0];
+        fb = src->f[1];
+        dst->f[0] = fa;
+        fa = src->f[2];
+        dst->f[1] = fb;
+        fb = src->f[3];
+        dst->f[2] = fa;
+        fa = src->f[4];
+        dst->f[3] = fb;
+        fb = src->f[5];
+        dst->f[4] = fa;
+        fa = src->f[6];
+        dst->f[5] = fb;
+        fb = src->f[7];
+        dst->f[6] = fa;
+        dst->f[7] = fb;
+        ba = src->b[0];
+        bb = src->b[1];
+        dst->b[0] = ba;
+        ba = src->b[2];
+        dst->b[1] = bb;
+        bb = src->b[3];
+        dst->b[2] = ba;
+        ba = src->b[4];
+        dst->b[3] = bb;
+        bb = src->b[5];
+        dst->b[4] = ba;
+        ba = src->b[6];
+        dst->b[5] = bb;
+        bb = src->b[7];
+        dst->b[6] = ba;
+        dst->b[7] = bb;
+        ba = src->b[8];
+        bb = src->b[9];
+        dst->b[8] = ba;
+        ba = src->b[10];
+        dst->b[9] = bb;
+        bb = src->b[11];
+        dst->b[10] = ba;
+        ba = src->b[12];
+        dst->b[11] = bb;
+        bb = src->b[13];
+        dst->b[12] = ba;
+        ba = src->b[14];
+        dst->b[13] = bb;
+        bb = src->b[15];
+        dst->b[14] = ba;
+        dst->b[15] = bb;
+        ba = src->b[16];
+        bb = src->b[17];
+        dst->b[16] = ba;
+        ba = src->b[18];
+        dst->b[17] = bb;
+        bb = src->b[19];
+        dst->b[18] = ba;
+        ba = src->b[20];
+        dst->b[19] = bb;
+        bb = src->b[21];
+        dst->b[20] = ba;
+        ba = src->b[22];
+        dst->b[21] = bb;
+        bb = src->b[23];
+        dst->b[22] = ba;
+        dst->b[23] = bb;
+        ba = src->b[24];
+        bb = src->b[25];
+        dst->b[24] = ba;
+        ba = src->b[26];
+        dst->b[25] = bb;
+        bb = src->b[27];
+        dst->b[26] = ba;
+        ba = src->b[28];
+        dst->b[27] = bb;
+        bb = src->b[29];
+        dst->b[28] = ba;
+        ba = src->b[30];
+        dst->b[29] = bb;
+        bb = src->b[31];
+        dst->b[30] = ba;
+        dst->b[31] = bb;
+        wa = src->w[0];
+        wb = src->w[1];
+        dst->w[0] = wa;
+        wa = src->w[2];
+        dst->w[1] = wb;
+        wb = src->w[3];
+        dst->w[2] = wa;
+        wa = src->w[4];
+        dst->w[3] = wb;
+        wb = src->w[5];
+        dst->w[4] = wa;
+        wa = src->w[6];
+        dst->w[5] = wb;
+        wb = src->w[7];
+        dst->w[6] = wa;
+        dst->w[7] = wb;
+        ba = src->c;
+        dst->c = ba;
+        src++;
+        dst++;
+    }
+}
 void fn_801A7A5C(void) {
     int i, j;
     float v;
@@ -551,7 +659,7 @@ float fn_801A85E8(void *arg0) {
     output = (struct Row *)((char *)lbl_80435050 + index * 0x64);
     sourceBase = (volatile char *)base + 0x190;
     source = (struct Row *)(sourceBase + index * 0x64);
-    row->floats[0] = *(volatile float *)(sourceBase + index * 0x64);
+    row->floats[0] = *(volatile float *)((char *)base + 0x190 + index * 0x64);
     copyF0 = source->floats[1];
     copyF1 = source->floats[2];
     output->floats[1] = copyF0;
@@ -767,7 +875,8 @@ float fn_801A85E8(void *arg0) {
     config->flags[2] = saved.bytes[10];
     return result;
 }
-#pragma pop
+#pragma push
+#pragma scheduling invalid_target
 int fn_801A8A10(void *arg0) {
 struct Row {
 float floats[8];
@@ -1077,22 +1186,14 @@ int fn_801A902C(void) {
 }
 
 void fn_801A9050(void *arg0, int arg1) {
-#pragma scheduling invalid_target
-    F801A9050Zero zero;
-    const char **table;
-    const char *name;
-    zero.words[0] = 0;
-    zero.words[1] = 0;
-    zero.words[2] = 0;
-    zero.words[3] = 0;
-    zero.words[4] = 0;
-    zero.words[5] = 0;
-    zero.words[6] = 0;
-    zero.words[7] = 0;
-    table = (const char **)lbl_802F9588;
-    name = *(const char **)((char *)table + arg1 * 8);
-    ((void (*)(void *, const char *, const char **, int, F801A9050Zero))fn_801A9110)(
-        arg0, name, table, 0, zero);
+    volatile int zeros[8];
+    const char **table = (const char **)lbl_802F9588;
+    int zero = 0;
+    int index = arg1 * 8;
+    const char *name = *(const char **)((char *)table + index);
+    zeros[0] = zero; zeros[1] = zero; zeros[2] = zero; zeros[3] = zero;
+    zeros[4] = zero; zeros[5] = zero; zeros[6] = zero; zeros[7] = zero;
+    ((void (*)(void *, const char *, int *))fn_801A9110)(arg0, name, (int *)zeros);
 }
 
 /* Copies the display name of the input binding matching keySpec into outName, truncating to maxLen and always NUL-terminating. */
