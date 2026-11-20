@@ -203,7 +203,7 @@ int fn_80171DE4(void *point) {
     return hit;
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 int fn_80171E3C(void *__restrict arg0) {
     extern int fn_802B04D4(float *);
     extern int fn_80139EC4(int, float, float);
@@ -219,7 +219,6 @@ int fn_80171E3C(void *__restrict arg0) {
     if (lbl_8055E3A4 && fn_80139EC4(lbl_8055E3A4, *(float *)arg0, *(float *)((char *)arg0 + 4))) return 0;
     return 1;
 }
-#pragma scheduling invalid_target
 
 /* Return whether the car in the given slot is the player's truck: its resource
  * (fn_8017960C, with the slot index forwarded in r3) has the 'PCAR' magic at +0x10. */
@@ -288,7 +287,7 @@ unsigned long long fn_80171FF0(void *arg0, int arg1, float angle, float step) {
         c = (float)cos(rad);
         s = (float)sin(rad);
         off[1] = off[0] * s + off[1] * c;
-        off[0] = angle * c - zero * s;
+        off[0] = off[0] * c - zero * s;
         pos[1] = *((float *)arg0 + 1) + off[1];
         pos[0] = *(float *)arg0 + off[0];
         if (fn_80171E3C(pos) != 0)
@@ -311,9 +310,8 @@ RgbaColor fn_801720E0(RgbaColor color) {
 }
 #pragma pop
 
-#pragma push
-#pragma processor 750
-void fn_801720FC(float *arg0, int arg1, float arg2) {
+#pragma scheduling on
+void fn_801720FC(float *__restrict arg0, int arg1, float arg2) {
     extern float PSVECMag(float *);
     extern float lbl_8055E3A8;
     extern float lbl_80561A40, lbl_80561A44, lbl_80561A4C, lbl_80561A50, lbl_80561A54, lbl_80561A58;
@@ -329,6 +327,9 @@ void fn_801720FC(float *arg0, int arg1, float arg2) {
         float v1[3];
         Elem_801720FC e[5];
     } L;
+    Elem_801720FC *p;
+    unsigned short *src;
+    unsigned int t;
     float scale;
     float mag;
     float k;
@@ -382,34 +383,35 @@ void fn_801720FC(float *arg0, int arg1, float arg2) {
     L.e[4].pos[1] = L.v1[1] + L.v3[1] * lbl_80561A40;
     L.e[4].pos[2] = L.v1[2] + L.v3[2] * lbl_80561A40;
     r = fn_801720E0(arg1);
+    p = L.e;
     for (i = 0; i < 5; i++) {
-        L.e[i].w = arg1;
-        L.e[i].a = lbl_80561A58 * (float)i;
-        L.e[i].b = lbl_80561A58 * (float)i;
-        L.e[i].pos[0] += arg0[0];
-        L.e[i].pos[1] += arg0[1];
-        L.e[i].pos[2] += arg0[2];
+        p[i].w = arg1;
+        p[i].a = lbl_80561A58 * (float)i;
+        p[i].b = lbl_80561A58 * (float)i;
+        p[i].pos[0] += arg0[0];
+        p[i].pos[1] += arg0[1];
+        p[i].pos[2] += arg0[2];
     }
     L.e[0].w = r;
-    L.s[0] = lbl_802F9520[0];
-    L.s[1] = lbl_802F9520[1];
-    L.s[2] = lbl_802F9520[2];
-    L.s[3] = lbl_802F9520[3];
-    L.s[4] = lbl_802F9520[4];
-    L.s[5] = lbl_802F9520[5];
+    src = lbl_802F9520;
+    L.s[0] = *src++;
+    L.s[1] = *src++;
+    L.s[2] = *src++;
+    L.s[3] = *src++;
+    L.s[4] = *src++;
+    L.s[5] = *src++;
     fn_802C8BD0(*(int *)&lbl_8055E3A8);
     fn_802C8DB8(L.e, 5, L.s, 6);
     fn_802C8D74();
-    L.e[0].w &= 0x3FFFFFFF;
-    L.e[1].w &= 0x3FFFFFFF;
-    L.e[2].w &= 0x3FFFFFFF;
-    L.e[3].w &= 0x3FFFFFFF;
-    L.e[4].w &= 0x3FFFFFFF;
+    t = L.e[0].w; *(volatile unsigned int *)&L.e[0].w = t & 0x3FFFFFFF;
+    t = L.e[1].w; *(volatile unsigned int *)&L.e[1].w = t & 0x3FFFFFFF;
+    t = L.e[2].w; *(volatile unsigned int *)&L.e[2].w = t & 0x3FFFFFFF;
+    t = L.e[3].w; *(volatile unsigned int *)&L.e[3].w = t & 0x3FFFFFFF;
+    t = L.e[4].w; *(volatile unsigned int *)&L.e[4].w = t & 0x3FFFFFFF;
     fn_802C8BD0(-1);
     fn_802C8DB8(L.e, 5, L.s, 6);
     fn_802C8D74();
 }
-#pragma pop
 extern void *fn_802C86DC(void);
 extern double fn_8002EFB4(float, double);
 extern float lbl_80561A44, lbl_80561A68, lbl_80561A6C;
@@ -448,11 +450,11 @@ void fn_8017248C(int arg0) {
     }
 
     temp_f31 = lbl_80561A70 + (clamp * lbl_80561A70);
-    sp[0] = *((float *)state + 0x18);
+    sp[0] = *((float *)((char *)state + 0x60));
     temp_f30 = lbl_80561A74;
-    sp[1] = *((float *)state + 0x19);
+    sp[1] = *((float *)((char *)state + 0x64));
     temp_f29 = lbl_80561A78;
-    sp[2] = *((float *)state + 0x1A);
+    sp[2] = *((float *)((char *)state + 0x68));
 
     wave = (float)fn_8002EFB4(
         (lbl_80561A7C * (lbl_80561A80 * (float)arg0)) + lbl_8055E3C8,
@@ -1631,21 +1633,21 @@ void fn_8017431C(int arg0, int arg1) {
             inside = 0;
             if (fn_802B04D4(p) != 0 && fn_80171DE4(sp38) == 0) inside = 1;
             if (inside != 0) {
-                float s = lbl_80561A74;
+                float s = 4.0f;
                 float dy = tgt[1] - p[1];
                 float dx2 = tgt[0] - p[0];
                 float dz = tgt[2] - p[2];
                 cam.pos.a[0] = p[0];
-                dir[0] = dx2 * (lbl_80561A40 / s);
-                dir[2] = dz * (lbl_80561A40 / s);
-                dir[1] = dy * (lbl_80561A40 / s) + lbl_80561ACC * s;
+                dir[0] = dx2 * (1.0f / s);
+                dir[2] = dz * (1.0f / s);
+                dir[1] = dy * (1.0f / s) + 9.81f * s;
                 cam.pos.a[1] = p[1];
                 cam.pos.a[2] = p[2];
-                cam.m.a[3] = lbl_80561A44; cam.m.a[4] = lbl_80561A40; cam.m.a[5] = lbl_80561A44;
-                cam.m.a[6] = dir[0]; cam.m.a[7] = lbl_80561A44; cam.m.a[8] = dir[2];
+                cam.m.a[3] = 0.0f; cam.m.a[4] = 1.0f; cam.m.a[5] = 0.0f;
+                cam.m.a[6] = dir[0]; cam.m.a[7] = 0.0f; cam.m.a[8] = dir[2];
                 PSVECNormalize(&cam.m.a[6], &cam.m.a[6]);
                 cam.m.a[0] = cam.m.a[8];
-                cam.m.a[1] = lbl_80561A44;
+                cam.m.a[1] = 0.0f;
                 cam.m.a[2] = -cam.m.a[6];
                 cam.v.a[0] = dir[0];
                 cam.v.a[1] = dir[1];
@@ -2019,18 +2021,23 @@ static inline float HudEase(float t) {
 #pragma use_lmw_stmw off
 #pragma dont_inline off
 extern "C" int fn_80175238(void *arg0, int arg1) {
- struct Rect { int a; float b; int c,d; float e; int f,g,h; };
- struct Manager { virtual void *unused(); virtual void *get(const char *); };
- struct Frame { Rect rect2; char text2[24]; Rect rect1; char text1[20]; } frame;
+ /* HUD update for the crush-mode results overlay.  arg0 is the overlay object;
+    +0x1A8 holds its scene manager and +0x19C a per-frame value.  The manager
+    looks up two shared text nodes (one, two) plus two panels (panel, detail)
+    by key into the label table lbl_80330F48; during the timed window
+    [a..b] / [d..e] the two text lines fade and slide in with a cubic ease. */
+ struct TextRect { int a; float b; int c,d; float e; int f,g,h; };
+ struct SceneManager { virtual void *unused(); virtual void *get(const char *); };
+ struct Frame { TextRect rect2; char text2[24]; TextRect rect1; char text1[20]; } frame;
  const char *base = lbl_80330F48;
- struct Manager *mgr; void *one, *two;
+ struct SceneManager *mgr; void *one, *two;
  float limit, a, time, b,c,d,e, t, blend, value;
  time = *(float *)((char *)fn_801E7E3C()+0x10);
  limit=lbl_80561AB8; a=limit-lbl_80561AE0; b=a-lbl_80561AE4;
  c=b-lbl_80561AE8; d=c-lbl_80561AE0; e=d-lbl_80561AE4;
- mgr=*(struct Manager **)((char *)arg0+0x1a8);
+ mgr=*(struct SceneManager **)((char *)arg0+0x1a8);
  one=mgr->get(base+0x5d8);
- mgr=*(struct Manager **)((char *)arg0+0x1a8);
+ mgr=*(struct SceneManager **)((char *)arg0+0x1a8);
  two=mgr->get(base+0x5e8);
  if (time < e) fn_8000FBE4();
  if (!fn_80161C38()) {
@@ -2040,9 +2047,9 @@ extern "C" int fn_80175238(void *arg0, int arg1) {
      blend = blend < t ? blend : t;
      blend = blend > lbl_80561A44 ? blend : lbl_80561A44;
      blend=lbl_80561A44+blend*lbl_80561A40;
-     mgr=*(struct Manager **)((char *)arg0+0x1a8);
+     mgr=*(struct SceneManager **)((char *)arg0+0x1a8);
      panel=mgr->get(base+0x5f8);
-     mgr=*(struct Manager **)((char *)arg0+0x1a8);
+     mgr=*(struct SceneManager **)((char *)arg0+0x1a8);
      detail=mgr->get(base+0x604);
      fn_8001DF08(fn_801E866C(arg1),0);
      if (one && two && panel && detail) {
@@ -2061,9 +2068,9 @@ extern "C" int fn_80175238(void *arg0, int arg1) {
      blend = blend < t ? blend : t;
      blend = blend > lbl_80561A44 ? blend : lbl_80561A44;
      blend=lbl_80561A44+blend*lbl_80561A40;
-     mgr=*(struct Manager **)((char *)arg0+0x1a8);
+     mgr=*(struct SceneManager **)((char *)arg0+0x1a8);
      panel=mgr->get(base+0x62c);
-     mgr=*(struct Manager **)((char *)arg0+0x1a8);
+     mgr=*(struct SceneManager **)((char *)arg0+0x1a8);
      detail=mgr->get(lbl_8055A2E4);
      if (one && two && panel && detail) {
        fn_801479A8(one,two,fn_80131234(base+0x638),HudEase(blend));
@@ -2326,7 +2333,7 @@ extern "C" void fn_80175D40(void *arg0) {
  if(((ObjView*)obj)->active(i)==0)continue;
  p=fn_8017960C(i);
  old[0]=(*(float *)((char *)(p)+(0x60)));old[1]=(*(float *)((char *)(p)+(0x68)));
- delta[0]=old[0]-(*(float *)((char *)(entry)+(0x14)));delta[1]=old[1]-(*(float *)((char *)(entry)+(0x18)));
+ delta[1]=old[1]-(*(float *)((char *)(entry)+(0x18)));delta[0]=old[0]-(*(float *)((char *)(entry)+(0x14)));
  if(delta[0]*delta[0]+delta[1]*delta[1]<radius*radius || lbl_8055E3C8>(*(float *)((char *)(entry)+(0x20)))){
  p=fn_8017960C(i);
  base[0]=(*(float *)((char *)(p)+(0x60)));base[1]=(*(float *)((char *)(p)+(0x68)));
