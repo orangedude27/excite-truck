@@ -5536,16 +5536,22 @@ void fn_80070FA4(void *dst_addr, const void *src_addr) {
     dst[5] = src[5];
 }
 
-s32 bdcmp(u8 *a, u8 *b) {
-    union PU { u8 *p; u32 i; } ua, ub;
+static inline int bdcmp_tail(u8 *p, u8 *q) {
     int i;
-    ua.p = a; ub.p = b;
-    ua.i += 2; ub.i += 2;
+    for (i = 0; i < 4; i++) {
+        if (p[i] != q[i]) return -1;
+    }
+    return 0;
+}
+s32 bdcmp(u8 *a, u8 *b) {
+    volatile u8 *p0, *p1;
+    int i;
     if (a[0] != b[0]) return -1;
     if (a[1] != b[1]) return -1;
-    a = ua.p; b = ub.p;
+    p0 = (volatile u8 *)(a + 2);
+    p1 = (volatile u8 *)(b + 2);
     for (i = 0; i < 4; i++) {
-        if (a[i] != b[i]) return -1;
+        if (p0[i] != p1[i]) return -1;
     }
     return 0;
 }
@@ -10225,9 +10231,9 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *result
     if (p[0] != 0 && p[0] != 1) return 5;
     if (fn_80079514() == 0) return 6;
     a=p[0]; b=p[1]; state[0x1834]=a; state[0x1835]=b;
-    c=p[3]; d=p[2]; state[0x1836]=d; state[0x1837]=c;
-    e=p[5]; f=p[4]; state[0x1838]=f; state[0x1839]=e;
-    a=p[7]; b=p[6]; state[0x183A]=b; state[0x183B]=a;
+    d=p[2]; c=p[3]; state[0x1836]=d; state[0x1837]=c;
+    f=p[4]; e=p[5]; state[0x1838]=f; state[0x1839]=e;
+    b=p[6]; a=p[7]; state[0x183A]=b; state[0x183B]=a;
     c=p[8]; state[0x183C]=c;
     c=p[9]; state[0x183D]=c;
     state[0x1847]=3;
@@ -15375,7 +15381,7 @@ found:
     L2CA_Deregister(psm);
 }
 void gap_config_ind(u16 cid, void *p_cfg) {
-#pragma optimization_level 1
+#pragma optimization_level 3
     u8 *conn = lbl_803C3740 + 0xAC;
     u8 i;
     u8 flag;
@@ -15539,10 +15545,8 @@ void gap_congestion_ind(u16 cid, u16 congest) {
     }
     p = lbl_803C3740 + 0xAC;
     for (i = 0; i < 8; i++, p += 0x60) {
-        if (p[0] != 0) {
-            if (*(u16 *)(p + 6) == cid)
-                goto found;
-        }
+        if (p[0] != 0 && *(u16 *)(p + 6) == cid)
+            goto found;
     }
     p = NULL;
 found:
