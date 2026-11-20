@@ -8,7 +8,8 @@ extern float lbl_80562FAC_unused;
 extern float lbl_80562FAC;
 
 void fn_801F4CA4(void) {
+    volatile float *dest = &lbl_8055EC04;
     fn_8000D838(&lbl_8055EBF8);
-    lbl_8055EC04 = lbl_80562FAC;
     lbl_8055EC00 = 0xFFFF0000;
+    *dest = lbl_80562FAC;
 }
