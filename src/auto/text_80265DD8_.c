@@ -2196,9 +2196,9 @@ void fn_8026A394(void *arg0) {
    unsigned int value9;
    unsigned int value11;
    one = 1;
+   factor = 0.03f;
    *(volatile unsigned char *)(p + 0x139) = one;
-   factor = lbl_80563CBC;
-   threshold = lbl_80563C2C;
+   threshold = 1.0f;
    *(volatile unsigned char *)(p + 0x138) = one;
    q = *(char * volatile *)(p + 0x140);
    scale = *(float *)(q + 0x25d4);
