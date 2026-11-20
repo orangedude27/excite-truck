@@ -304,7 +304,7 @@ extern char lbl_80558B50[4];
 extern char lbl_80558B58[4];
 extern char lbl_80558B60[4];
 void fn_80012B50(void *arg0, int arg1, void *arg2, void *arg3) {
-    char *base = lbl_802FC610;
+    register char *base = lbl_802FC610;
     void *a3 = arg3;
     int a1 = arg1;
     void *a2 = arg2;
@@ -577,8 +577,8 @@ void fn_80013618(int object) {
 
 #pragma scheduling on
 #pragma cplusplus on
-extern "C" int fn_80013680(void *arg0, void *arg1) {
-    struct Dummy4 {
+extern "C" int fn_80013680(void *__restrict arg0, void *arg1) {
+    struct Dummy {
         virtual int f0();
         virtual int f1();
         virtual int f2();
@@ -588,8 +588,8 @@ extern "C" int fn_80013680(void *arg0, void *arg1) {
         virtual int f6(char *, int);
     };
     void *a = *(void **)((char *)arg0 + 0x80);
-    int x = ((Dummy4 *)a)->f6(lbl_802FCB74, 0x63);
-    int y = ((Dummy4 *)*(void **)((char *)arg1 + 0x80))->f6(lbl_802FCB74, 0x63);
+    int x = ((Dummy *)a)->f6(lbl_802FCB74, 0x63);
+    int y = ((Dummy *)*(void **)((char *)arg1 + 0x80))->f6(lbl_802FCB74, 0x63);
     return x - y;
 }
 #pragma cplusplus reset
