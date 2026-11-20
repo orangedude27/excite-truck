@@ -4069,6 +4069,13 @@ extern "C" void fn_80143398(void *obj) {
     ((VTable43398 *)obj)->f41();
 }
 
+static inline float HudEase(float t) {
+    if (t < lbl_805614BC) return lbl_805614BC;
+    if (t > lbl_805614AC) return lbl_805614AC;
+    if (t > lbl_805614A4) return t * (lbl_8056150C * t * t) + lbl_805614D0 * t * t;
+    return t * (lbl_8056150C * t * t) - lbl_805614D0 * t * t;
+}
+
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
