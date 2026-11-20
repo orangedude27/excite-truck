@@ -84,17 +84,17 @@ static inline void fn_801E1048_xi(const f32 *m, const f32 *src, f32 *dst) {
     f32 x, y, z;
     if (src == dst) {
         f32 a, b, c, d, e, f, nx, ny, nz;
-        y = src[1];
         a = m[3];
         b = m[4];
-        a = y * a;
-        b = y * b;
-        x = src[0];
+        y = src[1];
         c = m[0];
-        c = x * c;
+        a = y * a;
+        x = src[0];
+        b = y * b;
         d = m[1];
-        d = x * d;
         e = m[2];
+        c = x * c;
+        d = x * d;
         e = x * e;
         f = y * m[5];
         z = src[2];
