@@ -325,7 +325,7 @@ void fn_801381B4(void *arg0) {
             node = *(unsigned char **)(node + 0x14);
         } while (node[0x34] == 3);
     }
-    node = *(unsigned char **)(base + 0x24);
+    node = *(unsigned char **)(p - 0xC);
     while (node != 0) {
         fn_80138144(node);
         node = *(unsigned char **)(node + 4);
@@ -606,20 +606,20 @@ extern float lbl_805613A4;
 int fn_801388F4(void *arg0) {
     struct V { float x; float y; } v;
     void *p;
-    double neg;
     float t;
     float prod1, prod2, sum;
+    register int result;
     v = *(struct V *)((char *)arg0 + 8);
     p = *(void **)((char *)arg0 + 0x14);
-    neg = -(double)v.x;
-    t = (float)neg;
+    t = (float)(-(double)v.x);
     prod2 = t * *(float *)((char *)p + 0xC);
     prod1 = v.y * *(float *)((char *)p + 8);
     v.x = v.y;
-    v.y = (float)neg;
+    v.y = t;
     sum = prod1 + prod2;
-    if (sum < lbl_805613A4) return 1;
-    return 0;
+    result = 0;
+    if (sum < lbl_805613A4) result = 1;
+    return result;
 }
 
 /* Forwards an object and the three components of a vec3 (an IDEAL_EXT_POINT's
