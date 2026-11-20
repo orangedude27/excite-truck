@@ -462,7 +462,6 @@ void fn_801E0890(void *arg0) {
         fn_80131818(it);
     }
 }
-#pragma pop
 /* Return the larger of two ints; callers use it to clamp a value to a minimum. */
 int fn_801E0ED4(int minValue, int value) {
     return value > minValue ? value : minValue;
@@ -588,6 +587,7 @@ static inline void fn_801E1250_check(u8 *p, s32 arg0, s8 arg1) {
     if (arg0 == *(s32 *)(p + 0x24)) *(p + 0x28) = arg1;
 }
 
+struct Fn801E1250Rec { u8 p0[0xC]; s32 a; s8 b; u8 p1[0x13]; s32 c; s8 d; u8 p2[0x7]; };
 void fn_801E1250(s32 arg0, s8 arg1) {
     u8 *p = (u8 *)lbl_8055EA10;
     if (!p) return;
@@ -825,17 +825,16 @@ void fn_801E168C(void *arg0) {
 extern void *fn_8017960C(s32);
 extern s32 fn_801E85A4(void);
 extern f32 lbl_80562C78, lbl_80562C7C, lbl_80562C8C, lbl_80562CA0, lbl_80562CA4;
-#pragma push
-#pragma scheduling invalid_target
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801E1710(void *arg0) {
     register f32 decrement;
     register f32 reset;
     register f32 threshold;
     register f32 initialB;
     register f32 initialA;
-
-    register s32 c_neg1;
-    register u32 c_0;
+    register s32 a_neg1;
+    register u32 b_zero;
     register s32 c_neg100;
     register u32 c_ffff;
     register u32 c_ff7f;
@@ -851,8 +850,8 @@ void fn_801E1710(void *arg0) {
     decrement = lbl_80562CA4;
     i = 0;
     reset = lbl_80562C8C;
-    c_neg1 = -1;
-    c_0 = 0;
+    a_neg1 = -1;
+    b_zero = 0;
     c_ff7f = 0xFF7F0000;
     c_ffff = 0xFFFF0000;
     c_neg100 = -0x100;
@@ -860,14 +859,14 @@ void fn_801E1710(void *arg0) {
     for (; i < fn_801E85A4(); base += 4, row += 0x18, i++) {
         s32 value = *(s32 *)(base + 0x6C);
         if (value != *(s32 *)(row + 0x0C)) {
-            *(u8 *)(row + 0x10) = (u8)c_0;
-            *(s32 *)(row + 0x1C) = c_0;
-            *(s32 *)(row + 0x20) = c_0;
+            *(u8 *)(row + 0x10) = (u8)b_zero;
+            *(s32 *)(row + 0x1C) = b_zero;
+            *(s32 *)(row + 0x20) = b_zero;
             *(f32 *)(row + 0x14) = initialA;
             *(f32 *)(row + 0x18) = initialB;
             *(s32 *)(row + 0x0C) = value;
         }
-        if (*(s32 *)(row + 0x0C) != c_neg1) {
+        if (*(s32 *)(row + 0x0C) != a_neg1) {
             f32 current2;
             int cond;
             int gt;
@@ -887,18 +886,17 @@ void fn_801E1710(void *arg0) {
             *(f32 *)(row + 0x14) = current2;
             if (*(f32 *)(row + 0x18) > initialB) {
                 *(s32 *)(row + 0x1C) = c_neg100;
-                *(s32 *)(row + 0x20) = c_neg1;
+                *(s32 *)(row + 0x20) = a_neg1;
             } else if (*(u8 *)(row + 0x10) != 0) {
-                *(s32 *)(row + 0x20) = c_neg1;
+                *(s32 *)(row + 0x20) = a_neg1;
                 *(s32 *)(row + 0x1C) = c_ffff;
             } else {
                 *(s32 *)(row + 0x20) = c_ff7f + 0x7F7F;
-                *(s32 *)(row + 0x1C) = c_0;
+                *(s32 *)(row + 0x1C) = b_zero;
             }
         }
     }
 }
-#pragma pop
 /* No-op stub. */
 void fn_801E1868(void) {
 
