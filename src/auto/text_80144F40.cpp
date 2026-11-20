@@ -426,7 +426,10 @@ extern "C" void fn_80145538(TextSizeEntry80145538 *entry, void *propertySource) 
     entry->color = fn_801454E8(propertySource, lbl_80559DFC);     /* "color" */
 }
 
-void fn_801455B8(void *arg0, void *arg1) {
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma dont_inline on
+extern "C" void fn_801455B8(void *arg0, void *arg1) {
     class Obj {
     public:
         virtual void f0();
@@ -438,15 +441,17 @@ void fn_801455B8(void *arg0, void *arg1) {
         virtual void f6();
         virtual f32 f7(const char *);
     };
-    Obj *obj = (Obj *)arg1;
     char *base = lbl_8032CEC8;
+    Obj *obj = (Obj *)arg1;
     fn_80145368(arg0, arg1);
     *(s32 *)((u8 *)arg0 + 0x14) = fn_80144F40(obj->f3(lbl_80559E04), base + 0x10);
     *(f32 *)((u8 *)arg0 + 0x10) = obj->f7(lbl_80559E0C);
     *(s32 *)((u8 *)arg0 + 0x18) = fn_801454E8(arg1, lbl_80559DFC);
     *(s32 *)((u8 *)arg0 + 0x1C) = obj->f4(base + 0x5C, base + 0x70);
 }
-
+#pragma dont_inline reset
+#pragma scheduling on
+#pragma use_lmw_stmw reset
 extern "C" void fn_80145670(void *outEntry, void *propertySource) {
     /* One 0xC-byte entry of a level's "gart_set" table (fn_80146310 collects the
        items named "gart_set", fn_8014595C dumps each as "\t%s %s"). */
@@ -1753,8 +1758,8 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
     extern void fn_802C8E48(void);
     extern void fn_802C8D74(void);
     extern f32 fn_801452A0(s32, f32);
-    f32 tx;
     f32 angle;
+    f32 tx;
     if (arg0 != 0) {
         fn_802C8BD0(arg2);
         if (fn_802C8DBC(4) != 0) {
