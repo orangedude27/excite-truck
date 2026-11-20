@@ -2117,11 +2117,10 @@ extern "C" void *memset(void *, s32, s32);
 #pragma cplusplus off
 void *fn_8014E4BC(void *arg0) {
     u8 *base = (u8*)arg0;
-    s32 zero = 0;
     u8 *p;
     u8 *end;
-    *(u32*)(base + 8) = zero; *(u32*)(base + 0x10) = zero;
-    *(u32*)(base + 0x14) = zero; *(u32*)(base + 0x18) = zero;
+    *(u32*)(base + 8) = 0; *(u32*)(base + 0x10) = 0;
+    *(u32*)(base + 0x14) = 0; *(u32*)(base + 0x18) = 0;
     memset(base + 0x2C, 0x7A, 3); base[0x2F] = 0;
     memset(base + 0x40, 0x7A, 3); base[0x43] = 0;
     memset(base + 0x45, 0x7A, 3); base[0x48] = 0;
@@ -3171,10 +3170,13 @@ void fn_80151A40(void *arg0) {
     u32 global_value;
     f32 y_offset;
     s32 i;
-    if (check != 0 && check[1] != 0) {
-        global_value = lbl_8055E230;
-        i = 0;
+    if (check == 0 || check[1] == 0) return;
+    switch (check[1]) {
+    case 1:
+        break;
     }
+    global_value = lbl_8055E230;
+    i = 0;
     y_offset = lbl_805616FC;
     offset = 0;
     while (i < *(s32 *)((s32)arg0 + 0x224)) {
@@ -4277,25 +4279,29 @@ extern "C" void fn_80154754(u8 *self) {
     s32 i = 0;
     u8 *slot = self;
     f32 mat1[12], mat2[12], rot1[3], pos1[3], rot2[3], pos2[3];
+    s32 zero = 0;
+    s32 one = 1;
+    s32 minusOne = -1;
+    s32 minusTwo = -2;
     for (; i < *(s32 *)(self + 0xFE4); slot += 0xC0, i++) {
         void **lfo1, **lfo2;
         void *res;
         u8 *owner, *node, *next, *prev, *single;
         s32 tmp, kind;
         *(f32 *)(slot + 0xA48) = -1.0f;
-        *(s32 *)(slot + 0xA50) = 0;
-        *(s32 *)(slot + 0xA54) = 0;
-        *(s32 *)(slot + 0xA60) = -2;
-        *(s32 *)(slot + 0xA70) = 0;
-        *(s32 *)(slot + 0xA6C) = 0;
-        *(s32 *)(slot + 0xA74) = 0;
-        *(s32 *)(slot + 0xA80) = -1;
-        slot[0xA84] = 0;
+        *(s32 *)(slot + 0xA50) = zero;
+        *(s32 *)(slot + 0xA54) = zero;
+        *(s32 *)(slot + 0xA60) = minusTwo;
+        *(s32 *)(slot + 0xA70) = zero;
+        *(s32 *)(slot + 0xA6C) = zero;
+        *(s32 *)(slot + 0xA74) = zero;
+        *(s32 *)(slot + 0xA80) = minusOne;
+        slot[0xA84] = zero;
         *(f32 *)(slot + 0xA7C) = -1.0f;
-        *(s32 *)(slot + 0xA88) = 0;
+        *(s32 *)(slot + 0xA88) = zero;
         *(f32 *)(slot + 0x9FC) = 0.0f;
         *(f32 *)(slot + 0x9F8) = 0.0f;
-        slot[0xA0C] = 0;
+        slot[0xA0C] = zero;
         *(f32 *)(slot + 0xA10) = 0.0f;
         *(f32 *)(slot + 0xA20) = 0.0f;
         *(f32 *)(slot + 0xA24) = 0.0f;
@@ -4312,7 +4318,7 @@ extern "C" void fn_80154754(u8 *self) {
         if (res != 0) {
             *(s32 *)(slot + 0xA08) = *(s32 *)((u8 *)res + 4);
         } else {
-            *(s32 *)(slot + 0xA08) = 0;
+            *(s32 *)(slot + 0xA08) = zero;
         }
         *(f32 *)(slot + 0xA04) = 0.0f;
         *(f32 *)(slot + 0xA00) = 0.0f;
@@ -4320,9 +4326,9 @@ extern "C" void fn_80154754(u8 *self) {
             *(f32 *)(slot + 0xA00) = lbl_80559EBC;
         }
         *(f32 *)(slot + 0xA14) = 0.0f;
-        *(s32 *)(slot + 0xA18) = 1;
+        *(s32 *)(slot + 0xA18) = one;
         *(f32 *)(slot + 0xA3C) = 0.0f;
-        *(s32 *)(slot + 0xA1C) = 1;
+        *(s32 *)(slot + 0xA1C) = one;
         (*(VObj3_80154754 **)(slot + 0x9F4))->call();
         owner = *(u8 **)(slot + 0x9EC);
         node = *(u8 **)(owner + 0x124C);
@@ -4362,9 +4368,9 @@ extern "C" void fn_80154754(u8 *self) {
         if (*(void **)(owner + 0x125C)) {
             fn_80206750(*(void **)(owner + 0x125C), *(s32 *)(owner + 0x1268), kind);
         }
-        slot[0xA8C] = 0;
-        slot[0xA8D] = 1;
-        slot[0xA8E] = 0;
+        slot[0xA8C] = zero;
+        slot[0xA8D] = one;
+        slot[0xA8E] = zero;
         tmp = fn_80009C84();
         kind = 2;
         if (tmp) kind = 0;
@@ -4372,28 +4378,28 @@ extern "C" void fn_80154754(u8 *self) {
             fn_80206750(*(void **)(slot + 0xA90), *(s32 *)(slot + 0x9E4), kind);
         }
     }
-    i = 0;
+    i = zero;
     for (; i < *(s32 *)(self + 0x18); i++) {
         u8 *elem = (*(u8 ***)(self + 0x14))[i];
         *(f32 *)(elem + 0x34) = 0.0f;
-        elem[0xC4] = 0;
-        elem[0xC5] = 0;
-        elem[0xC6] = 0;
-        elem[0xC7] = 0;
-        elem[0xC8] = 0;
-        elem[0xC9] = 0;
-        elem[0xCA] = 0;
-        elem[0xCB] = 0;
-        *(s32 *)(elem + 0x14) = 0;
+        elem[0xC4] = zero;
+        elem[0xC5] = zero;
+        elem[0xC6] = zero;
+        elem[0xC7] = zero;
+        elem[0xC8] = zero;
+        elem[0xC9] = zero;
+        elem[0xCA] = zero;
+        elem[0xCB] = zero;
+        *(s32 *)(elem + 0x14) = zero;
         if (*(s32 *)(elem + 0x38) == 4) {
             *(f32 *)(elem + 0x18) = *(f32 *)(elem + 0x1C);
         }
     }
-    i = 0;
-    if (*(s32 *)(self + 0x330) > 0) {
+    i = zero;
+    if (*(s32 *)(self + 0x330) > zero) {
         for (; i < *(s32 *)(self + 0x330); i++) {
             u8 *entry = (*(u8 ***)(self + 0x32C))[i];
-            entry[4] = 1;
+            entry[4] = one;
             *(f32 *)(entry + 0x14) = -99999.0f;
             mat1[0] = 1.0f; mat1[1] = 0.0f; mat1[2] = 0.0f;
             mat1[3] = 0.0f; mat1[4] = 1.0f; mat1[5] = 0.0f;
@@ -4407,11 +4413,11 @@ extern "C" void fn_80154754(u8 *self) {
             (*(VObj10_80154754 **)entry)->call(mat1, pos1, rot1);
         }
     }
-    i = 0;
-    if (*(s32 *)(self + 0x3BC) > 0) {
+    i = zero;
+    if (*(s32 *)(self + 0x3BC) > zero) {
         for (; i < *(s32 *)(self + 0x3BC); i++) {
             u8 *entry = (*(u8 ***)(self + 0x3B8))[i];
-            entry[4] = 1;
+            entry[4] = one;
             *(f32 *)(entry + 0x14) = -99999.0f;
             mat2[0] = 1.0f; mat2[1] = 0.0f; mat2[2] = 0.0f;
             mat2[3] = 0.0f; mat2[4] = 1.0f; mat2[5] = 0.0f;
@@ -4426,51 +4432,51 @@ extern "C" void fn_80154754(u8 *self) {
         }
     }
     *(f32 *)(self + 0x8D4) = 0.0f;
-    self[0x8E4] = 0;
+    self[0x8E4] = zero;
     {
         u8 *p = *(u8 **)(self + 0x8E8);
         if (p) {
-            p[0x4A] = 1;
-            p[0x4C] = 0;
+            p[0x4A] = one;
+            p[0x4C] = zero;
         }
         p = *(u8 **)(self + 0x8EC);
         if (p) {
-            p[0x4A] = 1;
-            p[0x4C] = 0;
+            p[0x4A] = one;
+            p[0x4C] = zero;
         }
     }
-    self[0x8F0] = 0;
+    self[0x8F0] = zero;
     *(f32 *)(self + 0x8DC) = *(f32 *)(self + 0x8E0);
     {
         VLfo10_80154754 *lfo = *(VLfo10_80154754 **)((u8 *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
         *(f32 *)(self + 0x10) = lfo->eval(lbl_8032E05C, -1.0f);
     }
     {
-        u32 j = 0;
+        u32 j = zero;
         do {
             if (*(void **)(self + 0x45C)) {
                 u8 *sub;
-                *(s32 *)(self + 0x454) = 0;
+                *(s32 *)(self + 0x454) = zero;
                 *(f32 *)(self + 0x458) = -1.0f;
-                *(s32 *)(self + 0x474) = 0;
-                *(s32 *)(self + 0x478) = 0;
-                *(s32 *)(self + 0x47C) = 0;
-                self[0x460] = 0;
+                *(s32 *)(self + 0x474) = zero;
+                *(s32 *)(self + 0x478) = zero;
+                *(s32 *)(self + 0x47C) = zero;
+                self[0x460] = zero;
                 fn_802AE0E0(*(void **)(self + 0x45C));
                 sub = *(u8 **)(self + 0x464);
                 if (sub) {
-                    sub[0x4A] = 1;
-                    sub[0x4C] = 0;
+                    sub[0x4A] = one;
+                    sub[0x4C] = zero;
                 }
                 sub = *(u8 **)(self + 0x468);
                 if (sub) {
-                    sub[0x4A] = 1;
-                    sub[0x4C] = 0;
+                    sub[0x4A] = one;
+                    sub[0x4C] = zero;
                 }
                 sub = *(u8 **)(self + 0x46C);
                 if (sub) {
-                    sub[0x4A] = 1;
-                    sub[0x4C] = 0;
+                    sub[0x4A] = one;
+                    sub[0x4C] = zero;
                 }
             }
             j++;
@@ -4782,9 +4788,8 @@ extern "C" void fn_80155700(void *arg0, void *arg1, s32 index) {
     };
     register f32 *first, *second;
     u8 *self = (u8 *)arg0;
-    register u8 *player = (u8 *)fn_8017960C(index);
-    register u8 *slot;
-    u8 *entry, *manager, *player2;
+    u8 *player = (u8 *)fn_8017960C(index);
+    u8 *slot, *entry, *manager, *player2;
     VObj *obj;
     f32 mat1[12], mat2[12], rot1[3], pos1[3], rot2[3], pos2[3];
     Event80155700 event;
@@ -4879,6 +4884,13 @@ void fn_80155AEC(void) {
 
 }
 
+#pragma cplusplus on
+struct Iface80155AF0 {
+    virtual void *m8();
+    virtual s32 mC(void *);
+    virtual void *m10(void *);
+};
+#pragma cplusplus off
 #pragma scheduling invalid_target
 void fn_80155AF0(void *arg0, void *arg1) {
     register u8 *b358 = lbl_8032D358;
@@ -4891,7 +4903,7 @@ void fn_80155AF0(void *arg0, void *arg1) {
     s32 idx;
     void **base;
     vt = *(void **)arg1;
-    tmp = ((void *(*)(void *))*(void **)((u8 *)*(void **)arg1 + 8))(arg1);
+    tmp = ((void *(*)(void *))*(void **)((u8 *)vt + 8))(arg1);
     c = ((s32 (*)(void *, void *))*(void **)((u8 *)*(void **)tmp + 0xc))(tmp, (void *)lbl_80559FB8);
     if (c != 0) {
         alloc = (void *)fn_801284F8(0x1c, b358 + 0xdcc);
@@ -4912,7 +4924,7 @@ void fn_80155AF0(void *arg0, void *arg1) {
         return;
     }
     vt = *(void **)arg1;
-    tmp = ((void *(*)(void *))*(void **)((u8 *)*(void **)arg1 + 8))(arg1);
+    tmp = ((void *(*)(void *))*(void **)((u8 *)vt + 8))(arg1);
     c = ((s32 (*)(void *, void *))*(void **)((u8 *)*(void **)tmp + 0xc))(tmp, (void *)(b358 + 0xdd8));
     if (c != 0) {
         alloc = (void *)fn_801284F8(0x1c, b358 + 0xde8);
@@ -4932,7 +4944,6 @@ void fn_80155AF0(void *arg0, void *arg1) {
         base[idx] = alloc;
     }
 }
-#pragma scheduling on
 /* Constant predicate in the UI text-object subsystem: always returns 1 (true). */
 u32 fn_80155C88(void) { return 1; }
 
