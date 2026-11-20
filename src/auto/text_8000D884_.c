@@ -132,12 +132,15 @@ void fn_8000DA1C(const char *arg0) {
     base += (*lbl_8055D46C) * 0x18;
     dst = base + 8;
     n = 0x12;
-    while (--n > 0) {}
+    goto copy;
+check:
+    if (--n > 0) goto copy;
     dst[-1] = 0;
-    do {
-        c = *arg0++;
-        *dst++ = c;
-    } while ((signed char)c != 0);
+    return;
+copy:
+    c = *arg0++;
+    *dst++ = c;
+    if ((signed char)c != 0) goto check;
 }
 #pragma pop
 void fn_8000DA80(void) {
