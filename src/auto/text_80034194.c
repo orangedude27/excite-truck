@@ -600,7 +600,8 @@ extern char lbl_80301E30[];
 void __DSP_boot_task(void *arg0) {
     volatile u32 mail;
     u32 *task = (u32 *)arg0;
-    char *fmt = lbl_80301E30;
+    const char *fmt = lbl_80301E30;
+    struct Fmt0 { char s[0x20]; };
     while (DSPCheckMailFromDSP() == 0) {}
     mail = DSPReadMailFromDSP();
     DSPSendMailToDSP(0x80F3A001);
@@ -623,7 +624,7 @@ void __DSP_boot_task(void *arg0) {
     while (DSPCheckMailToDSP() != 0) {}
     DSPSendMailToDSP(*(u16 *)((u8 *)arg0 + 0x24));
     while (DSPCheckMailToDSP() != 0) {}
-    DBPrintf_800343C8(fmt, arg0);
+    DBPrintf_800343C8(((const struct Fmt0 *)fmt)[0].s, arg0);
     DBPrintf_800343C8(fmt + 0x20, task[3]);
     DBPrintf_800343C8(fmt + 0x50, task[5]);
     DBPrintf_800343C8(fmt + 0x80, task[4]);
@@ -949,10 +950,47 @@ static inline u32 entryToPath3(u32 entry, char *path, u32 maxlen) {
     loc = entryToPath2(entryParent(entry), path, maxlen);
     return appendPathPart(path, loc, maxlen, name);
 }
-typedef struct DVDCurName {
-    s32 cur;
+static inline void convertEntrynumPath(u32 entrynum, char *path, u32 maxlen) {
+    u32 loc;
+    u32 p1;
+    u32 p2;
     char *name1;
-} DVDCurName;
+    const char *name2;
+    const char *name3;
+
+    if (entrynum == 0) {
+        loc = 0;
+    } else {
+        name1 = (char *)entryName(entrynum);
+        p1 = entryParent(entrynum);
+        if (p1 == 0) {
+            loc = 0;
+        } else {
+            name2 = entryName(p1);
+            p2 = entryParent(p1);
+            if (p2 == 0) {
+                loc = 0;
+            } else {
+                name3 = entryName(p2);
+                loc = appendPathPart(path, DVDConvertEntrynumToPath(entryParent(p2), path, maxlen), maxlen, name3);
+            }
+            loc = appendPathPart(path, loc, maxlen, name2);
+        }
+        loc = appendPathPart(path, loc, maxlen, name1);
+    }
+    if (loc == maxlen) {
+        path[maxlen - 1] = '\0';
+    } else {
+        if (*(u32 *)(FstStart_8055D840 + entrynum * 12) & 0xFF000000) {
+            if (loc == maxlen - 1) {
+                path[loc] = '\0';
+                return;
+            }
+            path[loc++] = '/';
+        }
+        path[loc] = '\0';
+    }
+}
 #pragma push
 #pragma use_lmw_stmw off
 BOOL DVDGetCurrentDir(const char *path, void *info) {
@@ -1795,14 +1833,13 @@ extern void fn_80036D24(u32);
 extern void fn_800373E0(u32);
 extern int memcmp(const void *, const void *, u32);
 void fn_8003684C(void) {
-    u8 *idBase = lbl_80376A80;
-    u32 zero = 0;
     s32 enabled;
+    u8 *idBase = lbl_80376A80;
 #define LOG_ENTRY(a, b, c)                                                                      \
     {                                                                                           \
         u32 tick;                                                                               \
         enabled = OSDisableInterrupts();                                                        \
-        if ((u32)lbl_8055D848 >= 5U) lbl_8055D848 = 0;                                          \
+        if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;           \
         *(s32 *)((u8 *)__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = (a);      \
         *(s32 *)((u8 *)__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = (b);      \
         *(s32 *)((u8 *)__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = (c);      \
@@ -1813,13 +1850,13 @@ void fn_8003684C(void) {
     }
     switch (lbl_8055D8BC) {
     case 3:
-        lbl_8055D87C = zero;
+        lbl_8055D87C = 0;
         if (DVDCompareDiskID(idBase + 0x80,
                 *(void **)(executing_8055D8C8 + 0x24)) != 0) {
             memcpy((void *)IDShouldBe_8055D8C4, idBase + 0x80, 0x20);
             *(s32 *)(executing_8055D8C8 + 0xC) = 1;
             DCInvalidateRange(idBase, 0x20);
-            lbl_8055D860 = zero;
+            lbl_8055D860 = 0;
             fn_8003BCDC(0);
             LOG_ENTRY(0x21, 0x10000, 0x20);
             fn_8003AD88(idBase + 0xA0, 0x20, 0x10000, (u32)fn_80036B84);
@@ -1833,7 +1870,7 @@ void fn_8003684C(void) {
             LOG_ENTRY(0x10, 0, 0);
             fn_8003AF1C(0, 0, fn_800373E0);
         } else {
-            lbl_8055D860 = zero;
+            lbl_8055D860 = 0;
             fn_8003BCDC(0);
             LOG_ENTRY(0x21, 0x10000, 0x20);
             fn_8003AD88(idBase + 0xA0, 0x20, 0x10000, (u32)fn_80036B84);
