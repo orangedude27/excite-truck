@@ -3,8 +3,6 @@
 #include "revolution/BTE/stack/include/hcimsgs.h"
 #include "revolution/BTE/gki/platform/gki_int.h"
 
-#undef register
-
 extern s32 fn_8012C370(s32, s32, s32, s32, s32, s32);
 extern void fn_8012E96C(s32);
 extern void fn_8012C4D8(void *);
