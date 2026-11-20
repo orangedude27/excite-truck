@@ -1015,6 +1015,7 @@ extern "C" int fn_802996B0(void *arg0, int *out) {
  if(found)*out=best;
  return found;
 }
+#pragma pop
 #pragma opt_propagation reset
 
 extern "C" void *fn_802997F4(void *slots, int id) {
