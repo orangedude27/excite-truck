@@ -2122,6 +2122,9 @@ extern "C" void fn_801345D8(void *, s32, void *, ...);
 #pragma push
 #pragma optimize_for_size off
 #pragma scheduling invalid_target
+/* Handles "move up" (0x125) or "move down" (0x127) in the vehicle color selector:
+ * adjusts the current index, updates the vehicle slot's color index, refreshes the
+ * UI color element, and formats the color resource name. Returns 1 if handled. */
 extern "C" s32 fn_8025157C(u8 *arg0, s32 arg1) {
     s32 newIndex;
     switch (arg1) {
