@@ -14720,6 +14720,13 @@ static inline void fn_800BC538_setShortN(Fn800BC538Obj *obj, s32 n) {
         obj->shortVal[k] = *val++;
     }
 }
+static void fn_800BC538_copyShort(Fn800BC538Obj *obj, s16 *thr, u8 *val) {
+    s32 k;
+    for (k = 0; k < 12; k++) {
+        obj->shortThr[k] = *thr++;
+        obj->shortVal[k] = *val++;
+    }
+}
 #pragma push
 #pragma use_lmw_stmw on
  extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s16 *arg5, s16 *arg6, u8 *arg7, s16 arg_sp8) {
@@ -14765,17 +14772,17 @@ static inline void fn_800BC538_setShortN(Fn800BC538Obj *obj, s32 n) {
             s32 mode = obj->mode;
             obj->shortInit = 1;
             if (mode == 0 && obj->sub == 0) {
-                fn_800BC538_setShort(obj, lbl_8031BFA8[0].thr, lbl_8031BFA8[0].val);
+                fn_800BC538_setShortN(obj, 0);
             } else if (mode == 0 && obj->sub == 1) {
-                fn_800BC538_setShort(obj, lbl_8031BFA8[1].thr, lbl_8031BFA8[1].val);
+                fn_800BC538_setShortN(obj, 1);
             } else if (mode == 0 && obj->sub == 2) {
-                fn_800BC538_setShort(obj, lbl_8031BFA8[2].thr, lbl_8031BFA8[2].val);
+                fn_800BC538_setShortN(obj, 2);
             } else if (mode == 1 && obj->sub == 0) {
-                fn_800BC538_setShort(obj, lbl_8031BFA8[3].thr, lbl_8031BFA8[3].val);
+                fn_800BC538_setShortN(obj, 3);
             } else if (mode == 1 && obj->sub == 1) {
-                fn_800BC538_setShort(obj, lbl_8031BFA8[4].thr, lbl_8031BFA8[4].val);
+                fn_800BC538_setShortN(obj, 4);
             } else {
-                fn_800BC538_setShort(obj, lbl_8031BFA8[5].thr, lbl_8031BFA8[5].val);
+                fn_800BC538_setShortN(obj, 5);
             }
         }
         p = arg4;
@@ -14813,11 +14820,11 @@ static inline void fn_800BC538_setShortN(Fn800BC538Obj *obj, s32 n) {
                 obj->mixVal[k] = (&lbl_80559258)[k];
             }
             if (sub == 0) {
-                fn_800BC538_setShort(obj, lbl_8031BFA8[0].thr, lbl_8031BFA8[0].val);
+                fn_800BC538_setShortN(obj, 0);
             } else if (sub == 1) {
-                fn_800BC538_setShort(obj, lbl_8031BFA8[1].thr, lbl_8031BFA8[1].val);
+                fn_800BC538_setShortN(obj, 1);
             } else {
-                fn_800BC538_setShort(obj, lbl_8031BFA8[2].thr, lbl_8031BFA8[2].val);
+                fn_800BC538_setShortN(obj, 2);
             }
         } else {
             s16 sub = obj->sub;
@@ -14826,11 +14833,11 @@ static inline void fn_800BC538_setShortN(Fn800BC538Obj *obj, s32 n) {
                 obj->mixVal[k] = (&lbl_80559268)[k];
             }
             if (sub == 0) {
-                fn_800BC538_setShort(obj, lbl_8031BFA8[3].thr, lbl_8031BFA8[3].val);
+                fn_800BC538_setShortN(obj, 3);
             } else if (sub == 1) {
-                fn_800BC538_setShort(obj, lbl_8031BFA8[4].thr, lbl_8031BFA8[4].val);
+                fn_800BC538_setShortN(obj, 4);
             } else {
-                fn_800BC538_setShort(obj, lbl_8031BFA8[5].thr, lbl_8031BFA8[5].val);
+                fn_800BC538_setShortN(obj, 5);
             }
         }
     }
