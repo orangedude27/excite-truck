@@ -955,8 +955,8 @@ static inline void convertEntrynumPath(u32 entrynum, char *path, u32 maxlen) {
     u32 p1;
     u32 p2;
     char *name1;
-    const char *name2;
-    const char *name3;
+    char *name2;
+    char *name3;
 
     if (entrynum == 0) {
         loc = 0;
@@ -966,12 +966,12 @@ static inline void convertEntrynumPath(u32 entrynum, char *path, u32 maxlen) {
         if (p1 == 0) {
             loc = 0;
         } else {
-            name2 = entryName(p1);
+            name2 = (char *)entryName(p1);
             p2 = entryParent(p1);
             if (p2 == 0) {
                 loc = 0;
             } else {
-                name3 = entryName(p2);
+                name3 = (char *)entryName(p2);
                 loc = appendPathPart(path, DVDConvertEntrynumToPath(entryParent(p2), path, maxlen), maxlen, name3);
             }
             loc = appendPathPart(path, loc, maxlen, name2);
@@ -996,52 +996,12 @@ static inline void convertEntrynumPath(u32 entrynum, char *path, u32 maxlen) {
 BOOL DVDGetCurrentDir(const char *path, void *info) {
     char dir[128];
     s32 entry;
-    register s32 cur;
-    register char *name1;
-    register const char *name2;
-    register const char *name3;
-    u32 loc;
-    u32 p1;
-    u32 p2;
     u32 offset;
     u8 *fst;
 
     entry = DVDConvertPathToEntrynum(path);
     if (entry < 0) {
-        cur = lbl_8055D828;
-        if (cur == 0) {
-            loc = 0;
-        } else {
-            name1 = (char *)entryName(cur);
-            p1 = entryParent(cur);
-            if (p1 == 0) {
-                loc = 0;
-            } else {
-                name2 = entryName(p1);
-                p2 = entryParent(p1);
-                if (p2 == 0) {
-                    loc = 0;
-                } else {
-                    name3 = entryName(p2);
-                    loc = appendPathPart(dir, DVDConvertEntrynumToPath(entryParent(p2), dir, 0x80), 0x80, name3);
-                }
-                loc = appendPathPart(dir, loc, 0x80, name2);
-            }
-            loc = appendPathPart(dir, loc, 0x80, name1);
-        }
-        if (loc == 0x80) {
-            dir[0x7F] = '\0';
-        } else {
-            if (*(u32 *)(FstStart_8055D840 + cur * 12) & 0xFF000000) {
-                if (loc == 0x7F) {
-                    dir[loc] = '\0';
-                    goto report;
-                }
-                dir[loc++] = '/';
-            }
-            dir[loc] = '\0';
-        }
-report:
+        convertEntrynumPath(lbl_8055D828, dir, 0x80);
         OSReport(lbl_80302038, path, dir);
         return FALSE;
     }
