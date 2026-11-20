@@ -105,37 +105,33 @@ s32 fn_802E47F8(void) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_802E4800(u16 arg0) {
-    u16 *history;
-    volatile u16 *p;
-    s32 i;
+    volatile u16 *q;
+    u32 i;
     u16 a, b, c;
 
     if (fn_802ECC10() != 0) {
         return;
     }
     lbl_8055FF5C = fn_802E2C20();
-    history = lbl_804FC418;
-    p = &lbl_8055FF50;
     for (i = 0; i < 31; i++) {
-        history[i] = history[i + 1];
+        lbl_804FC418[i] = lbl_804FC418[i + 1];
     }
-    history[31] = arg0 & 0xFFF;
+    lbl_804FC418[31] = arg0 & 0xFFF;
 
-    for (i = 0; (unsigned short)i < 4; i++) {
-        if (*p == 0) {
-            ((volatile u16 *)&lbl_8055FF50)[i] = arg0;
+    for (i = 0; i < 4; i++) {
+        if ((&lbl_8055FF50)[i] == 0) {
+            (&lbl_8055FF50)[i] = arg0;
             return;
         }
-        p++;
     }
-    p = &lbl_8055FF50;
-    a = p[1];
-    b = p[2];
-    c = p[3];
-    p[0] = a;
-    p[1] = b;
-    p[2] = c;
-    p[3] = arg0;
+    q = &lbl_8055FF50;
+    a = q[1];
+    b = q[2];
+    c = q[3];
+    q[0] = a;
+    q[1] = b;
+    q[2] = c;
+    q[3] = arg0;
 }
 #pragma pop
 
