@@ -1465,9 +1465,6 @@ void fn_80032004(void) {
 extern u32 fn_8003010C(u32);
 extern void AIStartDMA(void);
 extern s32 lbl_8055D768;
-#pragma push
-#pragma unroll off
-#pragma ctrloop on
 void fn_800320E8(s32 arg0) {
     u8 *base;
     u8 *ring;
