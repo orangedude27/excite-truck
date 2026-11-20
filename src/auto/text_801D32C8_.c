@@ -349,6 +349,7 @@ struct Obj3910 {
     float unk50;
 };
 #pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_801D3910(void *arg0) {
     char *p;
     int i;
@@ -536,7 +537,7 @@ void fn_801D3CB8(void *arg0, char *arg1) {
     float delta;
     g.a = lbl_80562AAC;
     g.blend = lbl_8055E460;
-    delta = g.blend - g.a;
+    delta = lbl_8055E460 - g.a;
     if ((float)fabs((double)delta) <= *(float *)lbl_80558DC4) {
         *(struct E8 *)out = *(struct E8 *)((char *)arg0 + 0x70);
         w8 = *(unsigned int *)((char *)arg0 + 0x90);
