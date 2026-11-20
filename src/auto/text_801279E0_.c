@@ -12,3 +12,6 @@ void fn_801279E0(void) {
     lbl_8041DEE0.size = 0x10;
     lbl_8041DEE0.zero = 0;
 }
+
+#pragma section ".ctors$00"
+DECL_SECTION(".ctors$00") funcptr_t D_802ED120 = fn_801279E0;
