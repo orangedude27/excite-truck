@@ -90,30 +90,28 @@ static inline Block* Pool_expand(Block** list, unsigned int size) {
 }
 extern int fn_8002194C(void*, unsigned int, int*);
 int fn_80021D48(Block** arg0, int arg1, int* arg2) {
-    Block* node;
-    unsigned int size;
-    int result;
+    Block* bp;
+    int ptr;
     if (arg2) *arg2 = 0;
-    size = (arg1 + 15) & ~7;
-    if (size < 0x50) size = 0x50;
-    node = *arg0;
-    if (node == 0) node = Pool_expand(arg0, size);
-    if (node == 0) return 0;
-    for (;;) {
-        if (size <= node->max_size) {
-            result = fn_8002194C(node, size, arg2);
-            if (result != 0) {
-                *arg0 = node;
+    arg1 = (arg1 + 15) & ~7;
+    if ((unsigned int)arg1 < 0x50) arg1 = 0x50;
+    bp = *arg0 != 0 ? *arg0 : link_new_block(arg0, arg1);
+    if (bp == 0) return 0;
+    do {
+        if ((unsigned int)arg1 <= bp->max_size) {
+            ptr = fn_8002194C(bp, arg1, arg2);
+            if (ptr != 0) {
+                *arg0 = bp;
                 break;
             }
         }
-        node = node->next;
-        if (node == *arg0) {
-            node = Pool_expand(arg0, size);
-            if (node == 0) return 0;
-            result = fn_8002194C(node, size, arg2);
+        bp = bp->next;
+        if (bp == *arg0) {
+            bp = link_new_block(arg0, arg1);
+            if (bp == 0) return 0;
+            ptr = fn_8002194C(bp, arg1, arg2);
             break;
         }
-    }
-    return result + 8;
+    } while (1);
+    return ptr + 8;
 }
