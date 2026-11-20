@@ -1434,6 +1434,7 @@ extern "C" void fn_800E4364(void *arg0, int arg1) {
     OSRestoreInterrupts(interrupt);
 }
 #pragma pop
+#pragma dont_inline on
 extern "C" void __ct__Q46nw4hbm3snd6detail7AxVoiceFv(void *voice) {
     /* Initialize nw4hbm::snd::detail::AxVoice: clear fields and install the AxVoice vtable. */
     ((unsigned long *)voice)[0x00 / 4] = 0;
