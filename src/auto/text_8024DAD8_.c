@@ -38,7 +38,7 @@ static inline void CleanupEntries(void *table) {
         fn_80128668(table);
     }
 }
-extern double lbl_80563958;
+const double lbl_80563958 = 0x1.0000000080000p+52;
 extern unsigned char lbl_80498C48[];
 s32 fn_8001668C(s32, s32);
 s32 *fn_80016BC8(s32);
@@ -1244,6 +1244,7 @@ void *fn_8024FB64(void *this_, s32 shouldFree) {
 
 #pragma cplusplus on
 extern "C" void fn_8024FBD8(void *arg0, s32 arg1) {
+#pragma scheduling invalid_target
     class Obj {
     public:
         virtual void destroy(int);
@@ -1278,10 +1279,9 @@ extern "C" void fn_8024FBD8(void *arg0, s32 arg1) {
     extern s32 fn_80240928(void);
     class Counter { public: virtual void d(int); virtual void a(); virtual void b(); virtual int count(); };
     u8 stack[0x728];
-    void *object;
-    s32 count;
-    s32 i;
     u8 *base = lbl_80344170;
+    s32 i, count;
+    void *object;
     fn_8013C804();
     fn_8001880C();
     fn_802556BC(stack+0x320, 1);
@@ -1299,7 +1299,7 @@ extern "C" void fn_8024FBD8(void *arg0, s32 arg1) {
     *(void **)(stack+0x1a0) = stack+0x320;
     *(void **)(stack+0x1a4) = stack+0x444;
     *(s32 *)(stack+0x19c) = 0;
-    if (arg1) *(s32 *)(stack+0x19c) = arg1;
+    if (arg1 != 0) *(s32 *)(stack+0x19c) = arg1;
     *(volatile u8 *)(stack+0x1a8) = 0;
     *(volatile u8 *)(stack+0x1c8) = 0;
     *(volatile u8 *)(stack+0x208) = 0;
@@ -2651,15 +2651,14 @@ extern "C" void fn_80251D7C(void *arg0) {
     s32 idx;
     void *save31;
     void *objData;
-    register s32 copy_a;
-    register s32 copy_b;
+    s32 copy_a;
+    s32 copy_b;
     s32 loopCnt;
     u8 *entryPtr;
     u8 *dstPtr;
     u8 *copyDst;
     u8 *fillDst;
     u8 *tablePtr;
-    u8 *srcPtr;
     s32 n;
     u8 *srcA;
     u8 *dstA;
