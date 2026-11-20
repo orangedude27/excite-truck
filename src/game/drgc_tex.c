@@ -404,7 +404,6 @@ void *fn_802D7D98(void *arg0, void *arg1) {
     char *dst;
     unsigned char ch;
     int mult;
-    int shifted;
     u32 type;
     unsigned int size;
     unsigned int lod;
@@ -465,12 +464,11 @@ copied_name:
     if (format == 6) {
         mult = 4;
     }
-    mult = (width * height) * mult;
+    mult = mult * (width * height);
     *(int *)((char *)texture + 0xD4) = mult;
     DCFlushRange(*(void **)((char *)texture + 0xD0), mult);
     mult = *(int *)((char *)obj + 0x20);
-    shifted = (mult ^ 2) >> 1;
-    lod = (unsigned int)(shifted - ((mult ^ 2) & mult)) >> 31;
+    lod = (unsigned int)((((mult ^ 2) >> 1) - (mult & (mult ^ 2)))) >> 31;
     GXInitTexObj((char *)texture + 0x24, buf, (unsigned short)width, (unsigned short)height, format, 1, 1, lod);
     if (lod != 0) {
         GXInitTexObjLOD((char *)((unsigned int)texture + 0x24), 5, 1, lbl_80565018, (float)(*(int *)((char *)obj + 0x20) - 1), lbl_8056501C, 1, 1, 0);
@@ -662,8 +660,8 @@ void fn_802D81C4(void *arg0, int arg1) {
 extern char lbl_8034C5AC[];
 void fn_802D86BC(void *arg0, int arg1) {
     void **data = *(void ***)((char *)arg0 + 0x2c);
-    int width = *(int *)((char *)arg0 + 0x24);
-    int height = *(int *)((char *)arg0 + 0x28);
+    s32 width = *(s32 *)((char *)arg0 + 0x24);
+    s32 height = *(s32 *)((char *)arg0 + 0x28);
     unsigned char *image = (unsigned char *)data[1];
     unsigned char *palette = (unsigned char *)data[0];
     unsigned char *copy;
@@ -671,6 +669,7 @@ void fn_802D86BC(void *arg0, int arg1) {
     int n = arg1 != 0 ? 128 : 128;
     int p;
     int y, offset, x;
+    int iwidth = (int)width;
     for (p = 0; p < n; p++) {
         c = palette[0]; palette[0] = palette[3]; palette[3] = c;
         c = palette[1]; palette[1] = palette[2]; palette[2] = c;
@@ -682,8 +681,8 @@ void fn_802D86BC(void *arg0, int arg1) {
     copy = (unsigned char *)fn_8012850C((void *)(width * height), lbl_8034C5AC);
     memcpy(copy, image, width * height);
     for (y = 0, offset = 0; y < height; y++, offset += width) {
-        for (x = 0; x < width; x++) {
-            image[((y / 4) * (width / 8) + x / 8) * 32 + (y % 4) * 8 + x % 8] = copy[offset + x];
+        for (x = 0; x < iwidth; x++) {
+            image[((y / 4) * (iwidth / 8) + x / 8) * 32 + (y % 4) * 8 + x % 8] = copy[offset + x];
         }
     }
     fn_80128670(copy);
@@ -787,6 +786,7 @@ extern void *fn_802D8A84(void *, void *);
 extern void *fn_802D8C00(void *, void *);
 extern void fn_802D9340(void *);
 extern char lbl_8034C5C8[];
+extern void *fn_802D7D98(void *, void *);
 #pragma push
 #pragma scheduling on
 void *fn_802D8E9C(void *arg0, void *arg1) {
