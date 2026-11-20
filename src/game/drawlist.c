@@ -280,19 +280,26 @@ extern void fn_802C8638(unsigned int *);
 extern float lbl_80564EF8, lbl_80564F00;
 extern void PSVECNormalize(void *, void *);
 extern void PSVECCrossProduct(void *, void *, void *);
-void fn_802C8588(float *arg0, float *arg1, float *arg2) {
-    float dx = arg2[0] - arg1[0];
-    float up = lbl_80564F00;
-    float dy = arg2[1] - arg1[1];
-    float right = lbl_80564EF8;
-    float dz = arg2[2] - arg1[2];
+#pragma scheduling invalid_target
+void fn_802C8588(float *arg0, const float *arg1, const float *arg2) {
+    register float dz, dy, dx;
+    float z, y, x;
+    float right, up;
     float sp[3];
+    x = arg1[0];
+    dx = arg2[0] - x;
+    y = arg1[1];
+    dy = arg2[1] - y;
+    z = arg1[2];
+    dz = arg2[2] - z;
+    up = lbl_80564F00;
+    right = lbl_80564EF8;
     sp[0] = up;
     sp[1] = right;
     sp[2] = up;
-    arg0[9] = arg1[0];
-    arg0[10] = arg1[1];
-    arg0[11] = arg1[2];
+    arg0[9] = x;
+    arg0[10] = y;
+    arg0[11] = z;
     arg0[6] = dx;
     arg0[7] = dy;
     arg0[8] = dz;
@@ -597,12 +604,11 @@ void fn_802C8E48(void) {
 }
 
 #pragma scheduling on
-void fn_802C8E70(float *arg0, float *arg1) {
-#pragma optimization_level 3
+void fn_802C8E70(const float *arg0, float *arg1) {
     float *m = (float *)lbl_804C1410;
     float sy, sx, v1, v2, limit, scale;
     float rx, ry, rz;
-    float dz, dy, dx;
+    register float dz, dy, dx;
     float z, y, x;
 
     x = arg0[0]; y = arg0[1]; z = arg0[2];
@@ -622,7 +628,6 @@ void fn_802C8E70(float *arg0, float *arg1) {
     v1 = lbl_80564EF8 + sx; v2 = lbl_80564EF8 + lbl_8055FC6C * sy;
     arg1[0] = (float)(int)lbl_8055FC5C + (lbl_80564F18 * (float)(int)lbl_8055FC64) * v1;
     arg1[1] = (float)(int)lbl_8055FC60 + (lbl_80564F18 * (float)(int)lbl_8055FC68) * v2;
-#pragma optimization_level 4
 }
 /* Returns the current viewport aspect ratio (width / height), cached in lbl_8055FC6C
    by viewport setup and used to scale projected vertical coordinates. */
