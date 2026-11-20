@@ -530,7 +530,9 @@ extern f32 lbl_802F4DE0[];
 extern f32 lbl_802F4E10[];
 extern "C" f32 CalcPitchRatio__Q46nw4hbm3snd6detail4UtilFi(s32 pitch) {
     u32 divisor = 0xC00;
-    u32 count = (u32)(0xBFF - pitch) / divisor;
+    u32 *dp = &divisor;
+    u32 scaled = 0xBFF - pitch;
+    u32 count = scaled / *dp;
     f32 ratio = lbl_805610C8;
     s32 octave = 0;
 
@@ -548,7 +550,7 @@ extern "C" f32 CalcPitchRatio__Q46nw4hbm3snd6detail4UtilFi(s32 pitch) {
     }
 
     if (pitch >= 0xC00) {
-        count = (u32)pitch / divisor;
+        count = (u32)pitch / *dp;
         u32 chunks = count >> 3;
         s32 adjustment = count * -0xC00;
         if (chunks != 0) {
@@ -959,6 +961,8 @@ no:
 extern "C" void SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(void *, s32, const void *);
 extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *, s32, const void *, u32);
 
+#ifndef NW4HBM_SND_WAVEPLAYER_TYPES_H
+#define NW4HBM_SND_WAVEPLAYER_TYPES_H
 namespace nw4hbm {
 namespace snd {
 /* One block of wave samples queued on a WavePlayer.  The per-channel sample
@@ -1013,6 +1017,7 @@ public:
 };
 }  // namespace snd
 }  // namespace nw4hbm
+#endif
 /* Hands the voice the packet queued behind the one it is playing.  The voice
  * has played its way past the front packet, so that packet leaves the queue
  * and is reported to the callback, and every channel of the voice is moved on
@@ -1079,13 +1084,13 @@ extern u8 lbl_8032734C[], lbl_80327370[], lbl_8032746C[], lbl_80327490[];
 extern "C" void detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void *arg0)
 {
   extern u8 lbl_8041D4AC[];
-  void **end = (void **) (lbl_8041D4AC + 4);
-  void **node = (void **) (*end);
+  void **node = (void **) (*(void **) (lbl_8041D4AC + 4));
   void *entry;
   void *player;
   void **new_var;
   void *wave;
   int i;
+  void **end = (void **) (lbl_8041D4AC + 4);
   goto check_player;
   player_loop:
   entry = node;
@@ -1116,7 +1121,7 @@ extern "C" void detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void 
           {
             Panic__Q26nw4hbm2dbFPCciPCce((char *) lbl_80327490, 0x23d, (char *) lbl_8032746C);
           }
-          SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*((void **) (((u8 *) player) + 0x18)), i, *((void **) ((((u8 *) base) + (i * 4)) + 8)), 0);
+          SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*((void **) (((u8 *) player) + 0x18)), i, *((void **) ((((u8 *) base) + (i << 2)) + 8)), 0);
         }
 
       }
@@ -1218,11 +1223,11 @@ extern "C" void detail_StopAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void) {
     struct LinkListIter {
         void *node;
     };
-    LinkListIter begin;
+    register LinkListIter begin;
     begin.node = *(void **)&lbl_8041D4AC[0x04];
-    LinkListIter end;
+    register LinkListIter end;
     end.node = (void *)&lbl_8041D4AC[0x04];
-    LinkListIter it = begin;
+    register LinkListIter it = begin;
 
     while (it.node != end.node) {
         void *node = it.node;
