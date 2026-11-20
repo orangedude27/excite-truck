@@ -896,7 +896,7 @@ void fn_802CB228(int slotIndex) {
 }
 
 /* Return the larger of a texture slot's width and height (its longest side). */
-int fn_802CB3FC(int slotIndex) {
+unsigned short fn_802CB3FC(int slotIndex) {
     int *slot = (int *)(textureSlots + slotIndex * texSlotSize);
     unsigned short *dims = (unsigned short *)slot[0x2C / 4];
     if ((int)dims[1] > (int)dims[0])
