@@ -1621,7 +1621,7 @@ extern f32 lbl_8056025C, lbl_80560264, lbl_80560280, lbl_805602E0, lbl_805602E4;
 extern f32 lbl_805602E0;
 extern f32 lbl_805602E4;
  #pragma scheduling on
- #define FPRBIND(n, r) register float n __a##sm(r)
+ #define FPRBIND(n, r) register float n a##sm(r)
  void fn_80011630(s32 arg0, s32 arg1, s32 arg2,
 
                  register f32 farg0, register f32 farg1, register f32 farg2, register f32 farg3,
