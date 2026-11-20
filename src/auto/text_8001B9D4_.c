@@ -347,11 +347,11 @@ void fn_8001BD54(EntryRef *out, void *record) {
     fn_8001BBBC(out, *(s32 *)((u8 *)*(void **)((u8 *)record + 0x18) + *(s32 *)((u8 *)record + 0xC) * 0xC + 0xC));
 }
 #pragma scheduling invalid_target
-u32 fn_8001BD6C(void *arg0, void *arg1) {
-    u32 a0 = *(u32 *)((s8 *)arg0 + 0x18);
-    u32 a0c = *(u32 *)((s8 *)arg0 + 0xC);
-    u32 a18 = *(u32 *)((s8 *)arg1 + 0x18);
-    u32 a1c = *(u32 *)((s8 *)arg1 + 0xC);
+u32 fn_8001BD6C(const void *arg0, const void *arg1) {
+    u32 a0 = *(const u32 *)((const s8 *)arg0 + 0x18);
+    u32 a0c = *(const u32 *)((const s8 *)arg0 + 0xC);
+    u32 a18 = *(const u32 *)((const s8 *)arg1 + 0x18);
+    u32 a1c = *(const u32 *)((const s8 *)arg1 + 0xC);
     u32 r = fn_8001D2E4(a0, a0c, a18, a1c);
     return (r & 0x80000000) >> 31;
 }
@@ -681,67 +681,70 @@ extern const char lbl_802FD8C4[];
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void *fn_8001C540(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    u8 *name = (u8 *)arg1;
-    u8 *record;
-    u8 *freeEntry;
-    u8 *p;
-    u8 *out;
+    char *name = (char *)arg1;
+    char *record;
+    char *freeEntry;
+    char *p;
+    char *out;
     s32 i;
     s32 room;
-    s8 c;
+    char c;
     s32 *descriptor;
+
     if (arg0 < 0) {
-        record = lbl_8055D5CC + 0x36B10;
+        record = (char *)(lbl_8055D5CC + 0x36B10);
     } else {
-        record = lbl_8055D5CC + arg0 * 0xDAC4 + 0x6E04;
+        record = (char *)(lbl_8055D5CC + arg0 * 0xDAC4 + 0x6E04);
     }
     freeEntry = 0;
     i = 0;
     do {
         if (*(u8 *)(record + 0x70) == 0) {
             freeEntry = record;
-        } else if (*(s32 *)(record + 4) == arg2 && *(s32 *)record != 0 && stricmp((const char *)name, *(const char **)record) == 0) {
+        } else if (*(s32 *)(record + 4) == arg2 &&
+                   *(s32 *)record != 0 &&
+                   stricmp(name, *(const char **)record) == 0) {
             return record;
         }
         i++;
         record += 0x74;
     } while (i < 0xF0);
+
     if (arg3 == 0) {
         return 0;
     }
-    fn_802E30C8(lbl_802FD894, (const char *)name);
+    fn_802E30C8(lbl_802FD894, name);
     if (freeEntry == 0) {
-        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD8C4, (const char *)name);
+        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD8C4, name);
     }
     memset(freeEntry, 0, 0x74);
+
     descriptor = lbl_8055D5D0;
     *((u8 *)descriptor + 8) = 0;
-    p = *(u8 **)descriptor;
-    goto loop_top;
-loop_top:
-    if (stricmp((const char *)p, (const char *)name) == 0) {
-        goto loop_done;
-    }
-    while (*(s8 *)p != 0) {
-        p++;
-    }
-    p++;
-    if (*(s8 *)p == 0) {
-        room = descriptor[1] - (p - *(u8 **)descriptor) - 1;
-        if (room <= 0) {
-            p[-1] = 0;
-        } else {
-            out = p;
-            do {
-                c = *(s8 *)name++;
-                *(s8 *)out++ = c;
-            } while (c != 0);
+    p = *(char **)descriptor;
+    for (;;) {
+        if (stricmp(p, name) == 0) {
+            break;
         }
-        goto loop_done;
+        while (*p != 0) {
+            p++;
+        }
+        p++;
+        if (*p == 0) {
+            room = descriptor[1] - (p - *(char **)descriptor) - 1;
+            if (room <= 0) {
+                p[-1] = 0;
+            } else {
+                out = p;
+                do {
+                    c = *name++;
+                    *out++ = c;
+                } while (c != 0);
+            }
+            break;
+        }
     }
-    goto loop_top;
-loop_done:
-    *(u8 **)freeEntry = p;
+    *(char **)freeEntry = p;
     *(s32 *)(freeEntry + 4) = arg2;
     *(u8 *)(freeEntry + 0x70) = 1;
     return freeEntry;
