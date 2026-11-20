@@ -3,6 +3,8 @@
 #include "revolution/BTE/stack/include/hcimsgs.h"
 #include "revolution/BTE/gki/platform/gki_int.h"
 
+#undef register
+
 extern s32 fn_8012C370(s32, s32, s32, s32, s32, s32);
 extern void fn_8012E96C(s32);
 extern void fn_8012C4D8(void *);
@@ -72,12 +74,11 @@ s32 fn_802BE378(s32 cellSize) {
     return cellsPerRow * cellsPerRow;
 }
 
+#pragma scheduling invalid_target
 void fn_802BE38C(void) {
     void *buf;
+    u32 params[3];
     u32 name;
-    u32 size;
-    u32 length;
-    u8 flag;
     u32 *data;
     u32 index;
     u32 n;
@@ -88,13 +89,13 @@ void fn_802BE38C(void) {
     name = (u32)lbl_8034AC68;
     fn_8012E96C(name);
     lbl_8055FACC = 0;
-    buf = (void *)fn_8012C370(name, 0x46494E46, (s32)&size, (s32)&length, 0, (s32)&flag);
+    buf = (void *)fn_8012C370(name, 0x46494E46, (s32)&params[2], (s32)&params[1], 0, (s32)&params[0]);
     if (buf != NULL) {
-        if (size == 2) {
+        if (params[2] == 2) {
             data = (u32 *)buf;
-            if (flag != 0) {
+            if (*(u8 *)&params[0] != 0) {
                 p = (u8 *)buf;
-                for (i = 0; i < (length >> 2); i++) {
+                for (i = 0; i < (params[1] >> 2); i++) {
                     u8 t = p[0];
                     p[0] = p[3];
                     p[3] = t;
@@ -122,6 +123,7 @@ void fn_802BE38C(void) {
         fn_8012C4D8(buf);
     }
 }
+#pragma scheduling on
 extern void *fn_8012850C(s32, void *);
 extern s32 fn_802BE378(s32);
 extern void fn_802BE364(void *);
@@ -329,6 +331,8 @@ void fn_802BEB70(void)
   f64 new_var2;
   f32 offset;
   f32 scale;
+  f64 heightCast;
+  f64 roundedCast;
   if (lbl_8055FACC != 0)
   {
     return;
@@ -367,10 +371,12 @@ void fn_802BEB70(void)
     }
     new_var2 = lbl_80564D60;
     new_var = 14;
-    *((s32 *) (((char *) cell) + 8)) = ((*((s32 *) (((char *) cell) + 8))) & 0xFF803FFF) | (((s32) height) << new_var);
+    heightCast = height;
+    *((s32 *) (((char *) cell) + 8)) = ((*((s32 *) (((char *) cell) + 8))) & 0xFF803FFF) | (((s32) heightCast) << new_var);
     rounded = ((f32) ceil(new_var2)) - subtract_value;
     raw = *((s32 *) (((char *) cell) + 8));
-    *((s32 *) (((char *) cell) + 8)) = (raw & 0xFFFFC3FF) | (((s32) rounded) << 10);
+    roundedCast = rounded;
+    *((s32 *) (((char *) cell) + 8)) = (raw & 0xFFFFC3FF) | (((s32) roundedCast) << 10);
   }
 
   y = (s16) (y + step);
