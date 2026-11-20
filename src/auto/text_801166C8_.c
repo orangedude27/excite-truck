@@ -397,9 +397,7 @@ s32 fn_80116D30(void) {
     u64 delta;
     u32 quotient;
     u64 remainder;
-    s32 zero = 0;
-
-    if ((lbl_8055DEC4 | (lbl_8055DEC0 ^ (zero >> 31))) == 0) {
+    if ((lbl_8055DEC4 | (lbl_8055DEC0 ^ (0 >> 31))) == 0) {
         lbl_8055DEC4 = (u32)time;
         lbl_8055DEC0 = (s32)(time >> 32);
     }
@@ -2472,14 +2470,14 @@ void *fn_8011A168(void *table) {
 
 void fn_8011A1A0(u32 *data, u32 size) {
     union { u32 *p; u32 i; } u;
-    u32 count;
-    u32 groups;
+    int count;
+    int groups;
     register void *z;
     u.p = data;
-    count = (size + 3) >> 2;
+    count = ((u32)(size + 3)) >> 2;
     z = 0;
     if (count == 0) return;
-    groups = count >> 3;
+    groups = ((u32)count) >> 3;
     #pragma scheduling off
     while (groups--) {
         *(u32 *)u.i = __lwbrx(z, u.i); u.i += 4;
@@ -2491,7 +2489,7 @@ void fn_8011A1A0(u32 *data, u32 size) {
         *(u32 *)u.i = __lwbrx(z, u.i); u.i += 4;
         *(u32 *)u.i = __lwbrx(z, u.i); u.i += 4;
     }
-    count %= 8;
+    count &= 7;
     while (count--) {
         *(u32 *)u.i = __lwbrx(z, u.i); u.i += 4;
     }
@@ -2611,39 +2609,39 @@ void fn_8011A330(void *arg0) {
 u32 fn_8011A388(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
     extern u32 fn_8011A240(void *, u32, s32, u32);
     extern void fn_8011A330(void *);
+    register s32 a2 = arg2;
+    register u32 a3 = arg3;
     volatile u32 *offset = (volatile u32 *)((u8 *)arg0 + 0x90);
     volatile u32 *base = (volatile u32 *)((u8 *)arg0 + 0xB4);
     volatile u32 *capacityPtr = (volatile u32 *)((u8 *)arg0 + 0x40);
-    u32 result;
+    u32 capacity;
     u32 current;
     u32 end;
-    u32 newPosition;
-    u32 capacity;
     u32 remaining;
-    if (arg1 == -1) goto return_arg3;
-    if (*offset == (u32)arg1) goto return_arg3;
-    *offset = (u32)arg1;
-    current = *offset;
-    result = fn_8011A240((u8 *)arg0 + 0x54, current + *base, arg2, arg3);
-    if (result != arg3) {
-        *(s32 *)((u8 *)arg0 + 0x20) = 1;
-        fn_8011A330(arg0);
+    u32 newPosition;
+    u32 result = a3;
+    if (arg1 != -1 && *offset != (u32)arg1) {
+        *offset = (u32)arg1;
+        current = *offset;
+        result = fn_8011A240((u8 *)arg0 + 0x54, current + *base, a2, a3);
+        if (result != a3) {
+            *(s32 *)((u8 *)arg0 + 0x20) = 1;
+            fn_8011A330(arg0);
+        }
+        current = *offset;
+        end = *(u32 *)((u8 *)arg0 + 0xB8);
+        newPosition = current + result;
+        *offset = newPosition;
+        current = *offset;
+        capacity = *capacityPtr;
+        remaining = end - current;
+        *(u32 *)((u8 *)arg0 + 0x98) = current;
+        if (capacity <= remaining) {
+            *(u32 *)((u8 *)arg0 + 0x48) = *capacityPtr;
+        }
+        fn_8011A1A0((u32 *)a2, result);
     }
-    current = *offset;
-    end = *(u32 *)((u8 *)arg0 + 0xB8);
-    newPosition = current + result;
-    *offset = newPosition;
-    current = *offset;
-    capacity = *capacityPtr;
-    remaining = end - current;
-    *(u32 *)((u8 *)arg0 + 0x98) = current;
-    if (capacity <= remaining) {
-        *(u32 *)((u8 *)arg0 + 0x48) = *capacityPtr;
-    }
-    fn_8011A1A0((u32 *)arg2, result);
     return result;
-return_arg3:
-    return arg3;
 }
 
 #pragma unroll reset
@@ -2837,121 +2835,115 @@ extern u32 fn_8011A240(void *, u32, s32, u32);
 extern void fn_8011A45C(void *, s32, s32);
 extern void fn_8011A1A0(u32 *, u32);
 u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
-    u8 *obj;
-    u8 *buf;
-    u32 len;
-    u8 *buf0;
-    u32 total;
-    s32 seek;
+    DvdStream *stream = (DvdStream *)arg0;
+    u8 *buf = (u8 *)arg3;
+    u8 *buf0 = (u8 *)arg3;
+    u32 len = arg4;
+    u32 total = 0;
+    s32 seek = arg2;
     volatile u32 *rd;
     u32 t0;
     u32 t1;
     u32 chunk;
     u32 first;
-    obj = (u8 *)arg0;
-    buf = (u8 *)arg3;
-    len = arg4;
-    buf0 = buf;
-    total = 0;
-    seek = arg2;
-    if (*(s32 *)(obj + 0x20) != 0)
+    if (stream->error != 0)
         return 0;
     t0 = fn_80116D30();
-    if (seek != -1 && *(u32 *)(obj + 0x98) != (u32)seek) {
-        if ((u32)seek > *(u32 *)(obj + 0x98) && (u32)seek <= *(u32 *)(obj + 0x90)) {
+    if (seek != -1 && stream->consumerOffset != (u32)seek) {
+        if ((u32)seek > stream->consumerOffset && (u32)seek <= (u32)stream->readOffset) {
             BOOL en = OSDisableInterrupts();
-            u32 d = (u32)seek - *(u32 *)(obj + 0x98);
+            u32 d = (u32)seek - stream->consumerOffset;
             u32 p;
-            *(u32 *)(obj + 0xA0) += d;
-            p = *(u32 *)(obj + 0x9C) + d;
-            *(u32 *)(obj + 0x98) = seek;
-            *(u32 *)(obj + 0x4C) -= d;
-            *(u32 *)(obj + 0x9C) = p;
-            if (p > *(u32 *)(obj + 0xA8))
-                *(u32 *)(obj + 0x9C) = p - *(u32 *)(obj + 0x40);
+            stream->freeSpace += d;
+            p = stream->consumerPtr + d;
+            stream->consumerOffset = (u32)seek;
+            stream->fill -= d;
+            stream->consumerPtr = p;
+            if (p > stream->bufferEnd)
+                stream->consumerPtr = p - stream->capacity;
             OSRestoreInterrupts(en);
         } else {
             BOOL en;
             fn_8011A330(arg0);
             en = OSDisableInterrupts();
             {
-                u32 a4 = *(u32 *)(obj + 0xA4);
-                *(u32 *)(obj + 0x90) = seek;
-                *(u32 *)(obj + 0x98) = seek;
-                *(u32 *)(obj + 0xA0) = *(u32 *)(obj + 0x40);
-                *(u32 *)(obj + 0x4C) = 0;
-                *(u32 *)(obj + 0x9C) = a4;
-                *(u32 *)(obj + 0xAC) = a4;
+                u32 a4 = stream->bufferStart;
+                stream->readOffset = seek;
+                stream->consumerOffset = (u32)seek;
+                stream->freeSpace = stream->capacity;
+                stream->fill = 0;
+                stream->consumerPtr = a4;
+                stream->writePtr = a4;
             }
             OSRestoreInterrupts(en);
         }
     }
-    if (*(u32 *)(obj + 0xA4) == 0) {
+    if (stream->bufferStart == 0) {
         t1 = fn_80116D30();
-        total = fn_8011A240(obj + 0x54, *(u32 *)(obj + 0x90), (s32)buf, len);
+        total = fn_8011A240(&stream->fileInfo, (u32)stream->readOffset, (s32)buf, len);
         if (total < len) {
-            *(s32 *)(obj + 0x20) = 1;
+            stream->error = 1;
             fn_8011A330(arg0);
         }
-        rd = (volatile u32 *)(obj + 0x98);
-        *(u32 *)(obj + 0x90) += total;
+        rd = &stream->consumerOffset;
+        stream->readOffset += total;
         *rd += total;
-        *(u32 *)(obj + 0x28) += total;
-        if (*(s32 *)(obj + 0xBC) != 0)
+        stream->totalRead += total;
+        if (stream->rate != 0)
             fn_8011A45C(arg0, total, t1);
         {
             u32 now = fn_80116D30();
-            *(u32 *)(obj + 0x30) += now - t1;
-            *(u32 *)(obj + 0x34) += now - t0;
+            stream->readTime += now - t1;
+            stream->totalTime += now - t0;
         }
     } else {
-        rd = (volatile u32 *)(obj + 0x98);
-        while (len != 0 && *(s32 *)(obj + 0x20) == 0) {
+        rd = &stream->consumerOffset;
+        while (len != 0 && stream->error == 0) {
             fn_8011A6A0(arg0);
-            chunk = *(u32 *)(obj + 0x4C);
+            chunk = stream->fill;
             if (chunk != 0) {
                 if (chunk > len)
                     chunk = len;
                 len -= chunk;
                 total += chunk;
-                first = *(u32 *)(obj + 0xA8) - *(u32 *)(obj + 0x9C);
+                first = stream->bufferEnd - stream->consumerPtr;
                 *rd += chunk;
                 if (first <= chunk) {
-                    memcpy(buf, (void *)*(u32 *)(obj + 0x9C), first);
+                    memcpy(buf, (void *)stream->consumerPtr, first);
                     buf += first;
                     chunk -= first;
-                    *(u32 *)(obj + 0x9C) = *(u32 *)(obj + 0xA4);
+                    stream->consumerPtr = stream->bufferStart;
                     {
                         BOOL en = OSDisableInterrupts();
-                        *(u32 *)(obj + 0x4C) -= first;
-                        *(u32 *)(obj + 0xA0) += first;
+                        stream->fill -= first;
+                        stream->freeSpace += first;
                         OSRestoreInterrupts(en);
                     }
                 }
                 if (chunk != 0) {
-                    memcpy(buf, (void *)*(u32 *)(obj + 0x9C), chunk);
+                    memcpy(buf, (void *)stream->consumerPtr, chunk);
                     buf += chunk;
-                    *(u32 *)(obj + 0x9C) += chunk;
+                    stream->consumerPtr += chunk;
                     {
                         BOOL en = OSDisableInterrupts();
-                        *(u32 *)(obj + 0x4C) -= chunk;
-                        *(u32 *)(obj + 0xA0) += chunk;
+                        stream->fill -= chunk;
+                        stream->freeSpace += chunk;
                         OSRestoreInterrupts(en);
                     }
                 }
             }
         }
-        *(u32 *)(obj + 0x34) += fn_80116D30() - t0;
+        stream->totalTime += fn_80116D30() - t0;
     }
     {
-        u32 rem = *(u32 *)(obj + 0xB8) - *rd;
-        if (rem < *(u32 *)(obj + 0x40))
-            *(u32 *)(obj + 0x48) = rem;
+        u32 rem = (u32)stream->endOffset - *rd;
+        if (rem < stream->capacity)
+            stream->available = rem;
         else
-            *(u32 *)(obj + 0x48) = *(u32 *)(obj + 0x40);
+            stream->available = stream->capacity;
     }
-    if (*(volatile u32 *)(obj + 0x4C) + 0x8000 > *(volatile u32 *)(obj + 0x48))
-        *(u32 *)(obj + 0x48) = *(volatile u32 *)(obj + 0x4C);
+    if (stream->fill + 0x8000 > stream->available)
+        stream->available = stream->fill;
     fn_8011A1A0((u32 *)buf0, total);
     return total;
 }
@@ -4717,6 +4709,14 @@ void fn_8011D5F0(void* arg0, BitReader8011 *reader) {
     }
 }
 
+/* Decodes one block of a band of the compressed stream from the bit reader.  As
+ * in the sibling band decoders, nothing is done while the previous block is still
+ * published ([start, end)).  The block opens with its pair count (countBits wide);
+ * a count of zero only marks the band as empty.  Every value is then decoded from
+ * TWO back-to-back Huffman codes: each code indexes the band's lookup table, whose
+ * entry's low nibble picks a slot of its 16-slot symbol table and whose high nibble
+ * is the code width; the two 4-bit results are packed into one byte (first in the
+ * low nibble, second in the high). */
 void fn_8011D7F8(void *arg0, void *arg1)
 {
   u32 mask;
@@ -5518,8 +5518,8 @@ void fn_80120834(s32 n, s32 *info, f32 *table) {
                 *(f32 *)(dst + 4) = t1;
                 *(f32 *)(dst + 8) = t2;
                 *(f32 *)(dst + 12) = t3;
-                offset += 0x20;
-                dst += 0x10;
+                offset = offset + 0x20;
+                dst = dst + 0x10;
             }
         }
         i = stage;
@@ -6943,45 +6943,40 @@ void fn_80122FA4(s32 arg0, void *arg1, s32 arg2, void *arg3) {
 }
 
 void fn_801231B8(s32 n, void *data, s32 index, void *table) {
-    s32 half = n >> 1;
-    s32 size = n >> 2;
-    s32 step, i, di, dj;
-    f32 *p, *q, *a, *b;
+    s32 size, half;
+    s32 step, i, step8, di;
+    f32 *p;
+    half = n >> 1;
+    size = n >> 2;
     while (size > 0x80) {
-        a = (f32 *)((u8 *)table + (index - (size >> 1)) * 4);
-        b = (f32 *)((u8 *)table + (index - size) * 4);
         for (step = size; step < half; step *= 4) {
             di = step * 2;
-            dj = step * 4;
-            for (i = step - size, p = (f32 *)((u8 *)data + i * 4); i < half; i += di, p = (f32 *)((u8 *)p + di * 4)) {
-                fn_801233F8(size, p, a);
-                fn_801233F8(size, (f32 *)((u8 *)data + (half + i) * 4), a);
+            step8 = step * 8;
+            for (i = step - size, p = (f32 *)((u8 *)data + i * 4); i < half; i += di, p = (f32 *)((u8 *)p + step8)) {
+                fn_801233F8(size, p, (f32 *)((u8 *)table + (index - (size >> 1)) * 4));
+                fn_801233F8(size, (f32 *)((u8 *)data + (half + i) * 4), (f32 *)((u8 *)table + (index - (size >> 1)) * 4));
             }
-            for (i = dj - size, p = (f32 *)((u8 *)data + i * 4); i < half; i += dj, p = (f32 *)((u8 *)p + dj * 4)) {
-                fn_801237C4(size, p, b);
-                fn_801237C4(size, (f32 *)((u8 *)data + (half + i) * 4), b);
+            for (i = di - size, p = (f32 *)((u8 *)data + i * 4); i < half; i += di * 2, p = (f32 *)((u8 *)p + step * 16)) {
+                fn_801237C4(size, p, (f32 *)((u8 *)table + (index - size) * 4));
+                fn_801237C4(size, (f32 *)((u8 *)data + (half + i) * 4), (f32 *)((u8 *)table + (index - size) * 4));
             }
         }
         size >>= 2;
     }
-    a = (f32 *)((u8 *)table + (index - (size >> 1)) * 4);
-    b = (f32 *)((u8 *)table + (index - size) * 4);
     for (step = size; step < half; step *= 4) {
         di = step * 2;
-        dj = step * 4;
-        for (i = step - size, p = (f32 *)((u8 *)data + i * 4); i < half; i += di, p = (f32 *)((u8 *)p + di * 4)) {
-            fn_801233F8(size, p, a);
+        step8 = step * 8;
+        for (i = step - size, p = (f32 *)((u8 *)data + i * 4); i < half; i += di, p = (f32 *)((u8 *)p + step8)) {
+            fn_801233F8(size, p, (f32 *)((u8 *)table + (index - (size >> 1)) * 4));
             fn_80123CEC(size, p, index, table);
-            q = (f32 *)((u8 *)data + (half + i) * 4);
-            fn_801233F8(size, q, a);
-            fn_80123CEC(size, q, index, table);
+            fn_801233F8(size, (f32 *)((u8 *)data + (half + i) * 4), (f32 *)((u8 *)table + (index - (size >> 1)) * 4));
+            fn_80123CEC(size, (f32 *)((u8 *)data + (half + i) * 4), index, table);
         }
-        for (i = dj - size, p = (f32 *)((u8 *)data + i * 4); i < half; i += dj, p = (f32 *)((u8 *)p + dj * 4)) {
-            fn_801237C4(size, p, b);
+        for (i = di - size, p = (f32 *)((u8 *)data + i * 4); i < half; i += di * 2, p = (f32 *)((u8 *)p + step * 16)) {
+            fn_801237C4(size, p, (f32 *)((u8 *)table + (index - size) * 4));
             fn_80123DC0(size, p, index, table);
-            q = (f32 *)((u8 *)data + (half + i) * 4);
-            fn_801237C4(size, q, b);
-            fn_80123DC0(size, q, index, table);
+            fn_801237C4(size, (f32 *)((u8 *)data + (half + i) * 4), (f32 *)((u8 *)table + (index - size) * 4));
+            fn_80123DC0(size, (f32 *)((u8 *)data + (half + i) * 4), index, table);
         }
     }
 }
@@ -8366,8 +8361,7 @@ void fn_80124AD8(void *arg0, void *arg1) {
 }
 
 void fn_80124CE8(void *arg0, void *arg1) {
-    f32 v0, v1, v5, v4, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28;
-    f32 v29, v30, v31, v2, v3, v6, v9, v7, v10, v8, v11, v12, v13;
+    f32 v0, v1, v5, v4, v2, v3, v6, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29, v30, v31, v9, v7, v10, v8, v11, v12, v13;
     v1 = ((f32 *)arg0)[4];
     v0 = ((f32 *)arg0)[13];
     v5 = ((f32 *)arg0)[5];
@@ -8585,8 +8579,10 @@ void fn_801250CC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     register s32 j = 2;
     register s32 i = 0;
     register s32 step = (arg2 * 2) / half;
-    f32 *p = (f32 *)arg1 + 2;
-    f32 *q = (f32 *)arg3;
+    char *b = (char *)arg1;
+    f32 *w = (f32 *)arg3;
+    register f32 *p = (f32 *)(b + 8);
+    register f32 *q = w;
     f32 one = 0.5f;
     if (half > 2) {
         u32 k = n >> 1;
@@ -8596,27 +8592,27 @@ void fn_801250CC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
             i += step;
             off = (arg0 - j) * 4;
             x = p[0];
-            y = ((f32 *)arg3)[arg2 - i];
-            t = x - *(f32 *)((char *)arg1 + off);
+            y = w[arg2 - i];
+            t = x - *(f32 *)(b + off);
             z = one - y;
-            v = p[1] + *(f32 *)((char *)arg1 + off + 4);
+            v = p[1] + *(f32 *)(b + off + 4);
             q += step; c = *q;
             re = z*t-c*v; im = c*t+z*v;
             p[0] = x-re; p[1] -= im;
-            *(f32 *)((char *)arg1 + off) = *(f32 *)((char *)arg1 + off) + re;
-            *(f32 *)((char *)arg1 + off + 4) -= im;
+            *(f32 *)(b + off) = *(f32 *)(b + off) + re;
+            *(f32 *)(b + off + 4) -= im;
             j += 2; i += step;
             off = (arg0 - j) * 4;
             x = p[2];
-            y = ((f32 *)arg3)[arg2 - i];
-            t = x - *(f32 *)((char *)arg1 + off);
+            y = w[arg2 - i];
+            t = x - *(f32 *)(b + off);
             z = one - y;
-            v = p[3] + *(f32 *)((char *)arg1 + off + 4);
+            v = p[3] + *(f32 *)(b + off + 4);
             q += step; c = *q;
             re = z*t-c*v; im = c*t+z*v;
             p[2]=x-re; p[3]-=im;
-            *(f32 *)((char *)arg1 + off) = *(f32 *)((char *)arg1 + off) + re;
-            *(f32 *)((char *)arg1 + off + 4) -= im;
+            *(f32 *)(b + off) = *(f32 *)(b + off) + re;
+            *(f32 *)(b + off + 4) -= im;
             j+=2; p+=4;
         }
         n &= 1;
@@ -8627,15 +8623,15 @@ void fn_801250CC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
                 i += step;
                 off = (arg0 - j) * 4;
                 x = p[0];
-                y = ((f32 *)arg3)[arg2 - i];
-                t = x - *(f32 *)((char *)arg1 + off);
+                y = w[arg2 - i];
+                t = x - *(f32 *)(b + off);
                 z = one - y;
-                v = p[1] + *(f32 *)((char *)arg1 + off + 4);
+                v = p[1] + *(f32 *)(b + off + 4);
                 q += step; c = *q;
                 re=z*t-c*v; im=c*t+z*v;
                 p[0]=x-re; p[1]-=im;
-                *(f32 *)((char *)arg1 + off) = *(f32 *)((char *)arg1 + off) + re;
-                *(f32 *)((char *)arg1 + off + 4) -= im;
+                *(f32 *)(b + off) = *(f32 *)(b + off) + re;
+                *(f32 *)(b + off + 4) -= im;
                 j+=2; p+=2;
             } while (--n);
         }
@@ -8705,21 +8701,37 @@ void fn_801252D8(s32 n, f32 *a, s32 m, f32 *w) {
 }
 
 void fn_801254E4(s32 arg0, f32 *arg1, s32 arg2, f32 *arg3) {
-    f32 *tw = arg3;
-    f32 *out = arg1 + 1;
-    s32 n = arg0;
-    s32 i = 1;
-    s32 j = 0;
-    s32 step = arg2 / n;
-    s32 half = n >> 1;
-    u32 count = (u32)(half - 1);
+    f32 *tw;
+    f32 *out;
+    s32 i;
+    s32 j;
+    s32 step;
+    s32 half;
+    s32 n;
+    s32 total;
+    u32 count;
     u32 pairs;
-    f32 a, b, c, d, e, f;
+    f32 a;
+    f32 b;
+    f32 c;
+    f32 d;
+    f32 e;
+    f32 f;
+
+    tw = arg3;
+    out = arg1 + 1;
+    i = 1;
+    j = 0;
+    n = arg0;
+    total = arg2;
+    step = total / n;
+    half = n >> 1;
+    count = (u32)(half - 1);
     if (half <= 1) goto finish;
     pairs = count >> 1;
     for (; pairs != 0; pairs--) {
         j += step;
-        a = arg3[arg2 - j];
+        a = arg3[total - j];
         b = *(tw += step);
         e = b - a;
         f = b + a;
@@ -8730,7 +8742,7 @@ void fn_801254E4(s32 arg0, f32 *arg1, s32 arg2, f32 *arg3) {
         i++;
 
         j += step;
-        a = arg3[arg2 - j];
+        a = arg3[total - j];
         b = *(tw += step);
         e = b - a;
         f = b + a;
@@ -8743,7 +8755,7 @@ void fn_801254E4(s32 arg0, f32 *arg1, s32 arg2, f32 *arg3) {
     }
     if (count & 1) {
         j += step;
-        a = arg3[arg2 - j];
+        a = arg3[total - j];
         b = *(tw += step);
         e = b - a;
         f = b + a;
@@ -8764,49 +8776,84 @@ void fn_80125664(void *outp, void *stridep, void *inp, void *quantp) {
     s16 *in = inp;
     s32 *quant = quantp;
     s32 tmp[64];
-    register s32 *t = tmp;
     s32 i;
+    register s32 *t;
+    t = tmp;
     for (i = 0; i < 8; i++) {
         if ((in[56] | (in[48] | (in[24] | in[8])) | (in[40] | (in[32] | in[16]))) == 0) {
             s32 dc = (in[0] * quant[0]) >> 11;
-            in++; quant++;
+            in++;
+            quant++;
             t[0] = dc; t[8] = dc; t[16] = dc; t[24] = dc; t[32] = dc; t[40] = dc; t[48] = dc; t[56] = dc;
             t++;
         } else {
             s32 s25, s26, s26b, s7, s0, s23, s24, s12, s7b, s0b, s7c, s25b, s9, s10, s11, s23b, s9b, s8, s10b, s25c, s23c, s11b, s9c, s7d;
             s32 v24 = (in[0] * quant[0]) >> 11;
-            s25 = (in[16] * quant[16]) >> 11; s26 = (in[32] * quant[32]) >> 11; s0 = (in[48] * quant[48]) >> 11;
-            s25b = (in[8] * quant[8]) >> 11; s9 = (in[24] * quant[24]) >> 11; s10 = (in[40] * quant[40]) >> 11; s9b = (in[56] * quant[56]) >> 11;
-            in++; quant++;
-            s7 = v24 + s26; s26b = v24 - s26; s23 = s25 + s0; s24 = s7 + s23; s12 = s7 - s23;
-            s7b = (((s25 - s0) * 0xB50) >> 11) - s23; s0b = s26b + s7b; s7c = s26b - s7b;
-            s11 = s10 - s9; s23b = s10 + s9; s8 = s25b - s9b; s10b = s25b + s9b; s25c = s10b + s23b;
-            t[0] = s24 + s25c; s23c = ((s11 + s8) * 0xEC8) >> 11; t[56] = s24 - s25c;
+            s25 = (in[16] * quant[16]) >> 11;
+            s26 = (in[32] * quant[32]) >> 11;
+            s0 = (in[48] * quant[48]) >> 11;
+            s25b = (in[8] * quant[8]) >> 11;
+            s9 = (in[24] * quant[24]) >> 11;
+            s10 = (in[40] * quant[40]) >> 11;
+            s9b = (in[56] * quant[56]) >> 11;
+            in++;
+            quant++;
+            s7 = v24 + s26;
+            s26b = v24 - s26;
+            s23 = s25 + s0;
+            s24 = s7 + s23;
+            s12 = s7 - s23;
+            s7b = (((s25 - s0) * 0xB50) >> 11) - s23;
+            s0b = s26b + s7b;
+            s7c = s26b - s7b;
+            s11 = s10 - s9;
+            s23b = s10 + s9;
+            s8 = s25b - s9b;
+            s10b = s25b + s9b;
+            s25c = s10b + s23b;
+            t[0] = s24 + s25c;
+            s23c = ((s11 + s8) * 0xEC8) >> 11;
+            t[56] = s24 - s25c;
             s11b = (s23c + ((s11 * -0x14E8) >> 11)) - s25c;
-            t[8] = s0b + s11b; t[48] = s0b - s11b;
+            t[8] = s0b + s11b;
+            t[48] = s0b - s11b;
             s9c = (((s10b - s23b) * 0xB50) >> 11) - s11b;
-            t[16] = s7c + s9c; t[40] = s7c - s9c;
+            t[16] = s7c + s9c;
+            t[40] = s7c - s9c;
             s7d = (((s8 * 0x8A9) >> 11) - s23c) + s9c;
-            t[32] = s12 + s7d; t[24] = s12 - s7d;
+            t[32] = s12 + s7d;
+            t[24] = s12 - s7d;
             t++;
         }
     }
     t = tmp;
     for (i = 0; i < 8; i++) {
-        s32 r27 = t[2] + t[6]; s32 r26 = t[0] + t[4]; s32 r25 = t[5] + t[3]; s32 r24 = t[1] + t[7];
-        s32 r30 = t[5] - t[3]; s32 r6 = t[1] - t[7]; s32 r25b = t[0] - t[4];
-        s32 r29 = r24 + r25; s32 r11 = r26 + r27;
+        s32 r27 = t[2] + t[6];
+        s32 r26 = t[0] + t[4];
+        s32 r25 = t[5] + t[3];
+        s32 r24 = t[1] + t[7];
+        s32 r30 = t[5] - t[3];
+        s32 r6 = t[1] - t[7];
+        s32 r25b = t[0] - t[4];
+        s32 r29 = r24 + r25;
+        s32 r11 = r26 + r27;
         s32 r28 = (((t[2] - t[6]) * 0xB50) >> 11) - r27;
         s32 r7 = ((r30 + r6) * 0xEC8) >> 11;
-        s32 r24b = r25b + r28; s32 r9 = (r7 + ((r30 * -0x14E8) >> 11)) - r29;
-        s32 r0 = r26 - r27; s32 r25c = r25b - r28;
+        s32 r24b = r25b + r28;
+        s32 r9 = (r7 + ((r30 * -0x14E8) >> 11)) - r29;
+        s32 r0 = r26 - r27;
+        s32 r25c = r25b - r28;
         s32 r26b = (((r24 - r25) * 0xB50) >> 11) - r9;
         s32 r24c = (((r6 * 0x8A9) >> 11) - r7) + r26b;
-        out[0] = (r11 + r29 + 0x7F) >> 8; out[7] = ((r11 - r29) + 0x7F) >> 8;
-        out[1] = (r24b + r9 + 0x7F) >> 8; out[6] = ((r24b - r9) + 0x7F) >> 8;
+        out[0] = (r11 + r29 + 0x7F) >> 8;
+        out[7] = ((r11 - r29) + 0x7F) >> 8;
+        out[1] = (r24b + r9 + 0x7F) >> 8;
+        out[6] = ((r24b - r9) + 0x7F) >> 8;
         out[2] = (r25c + r26b + 0x7F) >> 8;
         t += 8;
-        out[5] = ((r25c - r26b) + 0x7F) >> 8; out[4] = (r0 + r24c + 0x7F) >> 8; out[3] = ((r0 - r24c) + 0x7F) >> 8;
+        out[5] = ((r25c - r26b) + 0x7F) >> 8;
+        out[4] = (r0 + r24c + 0x7F) >> 8;
+        out[3] = ((r0 - r24c) + 0x7F) >> 8;
         out += stride;
     }
 }
@@ -8949,13 +8996,13 @@ void fn_80125960(void *arg0, s32 arg1, void *arg2, void *arg3) {
         temp_r10_4 = temp_r9_6 - temp_r26_3;
         temp_r24_8 = (temp_r7_5 >> 11) - temp_r10_4;
         temp_r8_5 = ((temp_r5_2 * 0x8A9 >> 11) - temp_r6) + temp_r24_8;
-        temp_r12_4 = ((u8)((u32)(temp_r12_3 + temp_r10_4 + 0x7F) >> 8) & ~0xFF0000) | (((temp_r8_4 >> 8) << 16) & 0xFF0000);
+        temp_r12_4 = ((u8)((temp_r12_3 + temp_r10_4 + 0x7F) >> 8) & ~0xFF0000) | (((temp_r8_4 >> 8) << 16) & 0xFF0000);
         temp_r12_5 = temp_r12_4 | (temp_r12_4 << 8);
         temp_r23_10 = ((((temp_r12_3 - temp_r10_4) + 0x7F) << 8) & 0xFF0000 & ~0xFF) | ((temp_r11_6 >> 8) & 0xFF);
-        temp_r9_7 = ((u8)((u32)((temp_r23_9 - temp_r8_5) + 0x7F) >> 8) & ~0xFF0000) | ((((s32)(temp_r0_7 + temp_r24_8 + 0x7F) >> 8) << 16) & 0xFF0000);
+        temp_r9_7 = ((u8)((temp_r23_9 - temp_r8_5 + 0x7F) >> 8) & ~0xFF0000) | ((((temp_r0_7 + temp_r24_8 + 0x7F) >> 8) << 16) & 0xFF0000);
         M2C_FIELD(var_r3, s32 *, 0) = temp_r12_5;
         temp_r9_8 = temp_r9_7 | (temp_r9_7 << 8);
-        temp_r10_5 = (((temp_r23_9 + temp_r8_5 + 0x7F) << 8) & 0xFF0000 & ~0xFF) | (((u32)(temp_r0_7 - temp_r24_8 + 0x7F) >> 8) & 0xFF);
+        temp_r10_5 = (((temp_r23_9 + temp_r8_5 + 0x7F) << 8) & 0xFF0000 & ~0xFF) | (((temp_r0_7 - temp_r24_8 + 0x7F) >> 8) & 0xFF);
         M2C_FIELD(var_r3, s32 *, 4) = temp_r9_8;
         temp_r23_11 = temp_r23_10 | (temp_r23_10 << 8);
         temp_r10_6 = temp_r10_5 | (temp_r10_5 << 8);
