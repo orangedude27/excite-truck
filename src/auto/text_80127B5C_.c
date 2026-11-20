@@ -3,6 +3,13 @@
 
 extern int lbl_8041E098[];
 extern int lbl_8055DF70;
+
+#pragma cplusplus on
+struct BgTaskObj {
+    virtual void m0();
+    virtual void call();
+};
+#pragma cplusplus reset
 extern char lbl_80329FC0[];
 extern void fn_802E317C(const char *, ...);
 extern char lbl_80329FA0[];
@@ -10,53 +17,50 @@ extern char lbl_80329FA0[];
 #pragma use_lmw_stmw off
 void fn_80127B5C(int arg0) {
 #pragma scheduling invalid_target
-    char *base;
-    char *entry;
+    unsigned char *entry;
     int i;
     int j;
-    unsigned char *dest;
-    int saveArg = arg0;
 
     ((unsigned char *)lbl_8041E098)[0] = 1;
-    base = (char *)lbl_8041E098;
-    dest = (unsigned char *)base;
-    entry = base + 8;
-    for (i = 0; i < *(int *)(base + 4); i++, entry += 16) {
+    entry = (unsigned char *)lbl_8041E098 + 8;
+    for (i = 0; i < lbl_8041E098[1]; entry += 16, i++) {
         void (*func)(void) = *(void (**)(void))entry;
         if (func != 0) {
             func();
         } else {
             void *obj = *(void **)(entry + 4);
             if (obj != 0) {
-                ((void (*)(void *))(*(void ***)obj)[3])(obj);
+                void (*fn)(void *) = *(void (**)(void *))((char *)(*(void **)obj) + 0xC);
+                fn(obj);
             }
         }
     }
 
     ((unsigned char *)lbl_8041E098)[0] = 0;
+    entry = (unsigned char *)lbl_8041E098;
     j = 0;
-    while (j < *(int *)(base + 4)) {
-        if (dest[20] != 0) {
-            if (j >= 0 && j < *(int *)(base + 4)) {
-                if (*(unsigned char *)lbl_8041E098 != 0) {
-                    dest[20] = 1;
+    while (j < lbl_8041E098[1]) {
+        if (entry[20] != 0) {
+            if (j >= 0 && j < lbl_8041E098[1]) {
+                if (((unsigned char *)lbl_8041E098)[0] != 0) {
+                    entry[20] = 1;
                 } else {
-                    int last = *(int *)(base + 4) - 1;
-                    unsigned char *src = (unsigned char *)base + last * 16;
-                    *(int *)(base + 4) = last;
-                    *(int *)(dest + 8) = *(int *)(src + 8);
-                    *(int *)(dest + 12) = *(int *)(src + 12);
-                    *(int *)(dest + 16) = *(int *)(src + 16);
-                    dest[20] = src[20];
+                    int last = lbl_8041E098[1] - 1;
+                    unsigned char *src = (unsigned char *)lbl_8041E098 + last * 16;
+                    lbl_8041E098[1] = last;
+                    *(int *)(entry + 8) = *(int *)(src + 8);
+                    *(int *)(entry + 12) = *(int *)(src + 12);
+                    *(int *)(entry + 16) = *(int *)(src + 16);
+                    entry[20] = src[20];
                 }
             }
         } else {
-            dest += 16;
+            entry += 16;
             j++;
         }
     }
 
-    lbl_8055DF70 = saveArg;
+    lbl_8055DF70 = arg0;
 }
 #pragma use_lmw_stmw reset
 /* Start-up hook of the "bg" background-task manager (the module whose log
