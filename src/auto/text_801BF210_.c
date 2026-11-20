@@ -21,6 +21,7 @@ void fn_801BF210(void) {
 }
 
 #pragma scheduling invalid_target
+#pragma opt_common_subs off
 void *fn_801BF214(void) {
     extern void *fn_801284F8(int, void *);
     extern void fn_8017B0B0(void);
@@ -31,12 +32,16 @@ void *fn_801BF214(void) {
     extern int lbl_8055E7BC;
     void *p = fn_801284F8(0x278, &lbl_8055A948);
     if (p != 0) {
+        int index;
+        int *counter = &lbl_8055E7BC;
         fn_8017B0B0();
         *(char **)p = lbl_80336A90;
         *(int *)((char *)p + 0x1EC) = 0;
         *(int *)((char *)p + 0x1F0) = -1;
-        *(void **)(lbl_80437D48 + lbl_8055E7BC * 4) = p;
-        *(int *)((char *)p + 0x214) = fn_801C1BA4(4, 6, 2, lbl_80437D48, ++lbl_8055E7BC);
+        index = *counter;
+        *(void **)(lbl_80437D48 + index * 4) = p;
+        *counter = index + 1;
+        *(int *)((char *)p + 0x214) = fn_801C1BA4(4, 6, 2, lbl_80437D48, index + 1);
     }
     return p;
 }
@@ -115,12 +120,12 @@ int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int a
   }
   found = 0;
   {
-    void **ptr;
     int cnt;
+    void **ptr;
     int i;
     cnt = lbl_8055E7BC;
     ptr = (void **) lbl_80437D48;
-    for (i = 0; i < cnt; ptr++, i++)
+    for (i = 0; i < cnt; i++)
     {
       void *obj = *ptr;
       if ((*((int *) (((char *) obj) + 0x1EC))) == 0)
@@ -128,30 +133,30 @@ int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int a
         found = ((void **) lbl_80437D48)[i];
         break;
       }
+      ptr++;
     }
 
   }
   if (found == 0)
   {
-    float f1val;
-    float f0val;
+    float f1val = *((float *) (((char *) ((void **) lbl_80437D48)[0]) + 0x218));
     found = ((void **) lbl_80437D48)[0];
-    f1val = *((float *) (((char *) found) + 0x218));
     {
-      void **ptr;
       int cnt;
+      void **ptr;
       int j;
       cnt = lbl_8055E7BC;
       ptr = (void **) lbl_80437D48;
-      for (j = 0; j < cnt; ptr++, j++)
+      for (j = 0; j < cnt; j++)
       {
         void *obj = *ptr;
-        f0val = *((float *) (((char *) obj) + 0x218));
+        float f0val = *((float *) (((char *) obj) + 0x218));
         if (f0val <= f1val)
         {
           f1val = f0val;
           found = obj;
         }
+        ptr++;
       }
 
     }
@@ -205,21 +210,19 @@ int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int a
     new_var = (char *) found;
     fn_8017E388(new_var + 0x230, 1, 0);
     {
-      int a;
-      int b;
-      int c;
+      struct { int v; } as, bs, cs;
       float cond2;
       float cond1;
-      a = 1;
-      b = 4;
+      as.v = 1;
+      bs.v = 4;
       cond2 = frame.sp20[1] - frame.sp14[1];
       cond1 = frame.sp20[0] - frame.sp14[0];
-      c = 2;
+      cs.v = 2;
       if (cond2 > cond1)
       {
-        b = 1;
-        c = 2;
-        a = 4;
+        bs.v = 1;
+        cs.v = 2;
+        as.v = 4;
       }
       {
         float f30v = lbl_805628C4;
@@ -231,7 +234,7 @@ int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int a
           float var_f3;
           float var_f2;
           float var_f1;
-          if (idx & c)
+          if (idx & cs.v)
           {
             var_f3 = frame.sp14[2];
           }
@@ -239,7 +242,7 @@ int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int a
           {
             var_f3 = frame.sp20[2];
           }
-          if (idx & b)
+          if (idx & bs.v)
           {
             var_f2 = frame.sp14[1];
           }
@@ -247,7 +250,7 @@ int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int a
           {
             var_f2 = frame.sp20[1];
           }
-          if (idx & a)
+          if (idx & as.v)
           {
             var_f1 = frame.sp14[0];
           }
@@ -802,6 +805,9 @@ static inline void helper_801C02F4(void *self, int flag) {
     }
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 #pragma opt_propagation off
 void fn_801C02F4(void *arg0) {
     struct Mat43 {
@@ -863,6 +869,7 @@ void fn_801C02F4(void *arg0) {
         *(float *)((char *)self + 0x274) = f2;
     }
 }
+#pragma pop
 int fn_801C0440(void *sceneLight) {
     // Nonzero if this scene light is in use: +0x1EC holds its owner id (0 when free).
     return *(int *)((char *)sceneLight + 0x1EC) != 0;
