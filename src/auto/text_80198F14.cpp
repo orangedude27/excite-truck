@@ -493,13 +493,13 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
     void *temp_r31;
     void *temp_r30;
     void *temp_r29;
-    volatile f32 underflow;
+    f32 underflow;
     void *temp_r28;
     f32 temp_f0;
     f32 temp_f0_2;
     f32 temp_f0_3;
     f32 temp_f0_4;
-    volatile f32 temp_f0_5;
+    f32 temp_f0_5;
     f32 temp_f0_6;
     f32 temp_f0_7;
     f32 temp_f10;
@@ -510,7 +510,7 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
     f32 temp_f1_5;
     f32 temp_f1_6;
     f32 temp_f1_7;
-    volatile f32 temp_f27;
+    f32 temp_f27;
     f32 temp_f27_2;
     f32 temp_f27_3;
     f32 temp_f28;
@@ -538,10 +538,10 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
     f32 temp_f4_3;
     f32 temp_f4_4;
     f32 temp_f5;
-    volatile f32 temp_f5_2;
+    f32 temp_f5_2;
     f32 temp_f7;
     f32 temp_f7_2;
-    volatile f32 temp_f8;
+    f32 temp_f8;
     f32 temp_f8_2;
     f32 temp_f9;
     f32 temp_f9_2;
@@ -1028,12 +1028,12 @@ extern "C" s32 fn_8019AA34(void *obj, void *pos, void *other, void *otherPos, s3
     f32 dx = p->x - q->x;
     f32 dy = p->y - q->y;
     f32 dz = p->z - q->z;
-    f64 absdx = __fabs((f64)dx);
-    f32 adx = (f32)absdx;
-    f32 sum = radius + otherRadius;
     delta.x = dx;
     delta.z = dz;
     delta.y = dy;
+    f64 absdx = __fabs((f64)dx);
+    f32 adx = (f32)absdx;
+    f32 sum = radius + otherRadius;
     s32 result = 0;
     if (adx < sum && (f32)__fabs((f64)dz) < sum && (f32)__fabs((f64)dy) < sum) {
         f32 length = PSVECMag(&delta);
@@ -1041,9 +1041,10 @@ extern "C" s32 fn_8019AA34(void *obj, void *pos, void *other, void *otherPos, s3
             f32 depth = otherRadius + (-length + radius);
             if (depth > lbl_805622D0) {
                 f32 scale = lbl_805622E0 / length;
-                f32 nx = delta.x * scale;
-                f32 ny = delta.y * scale;
-                f32 nz = delta.z * scale;
+                f32 nz, ny, nx;
+                nx = delta.x * scale;
+                ny = delta.y * scale;
+                nz = delta.z * scale;
                 normal.x = nx;
                 normal.z = nz;
                 normal.y = ny * lbl_80562300;
@@ -4871,38 +4872,38 @@ extern "C" void *fn_801A324C(void *arg0, int arg1, void *arg2, f32 farg0, f32 fa
     unsigned int i;
     TagNode *child;
     TagNode *node;
-    Obj324C *self = (Obj324C *)arg0;
-    self->fc = arg1;
-    self->f4 = 0;
-    self->f8 = 0;
-    self->f10 = farg0;
-    self->f18 = 0x504F4C59;
-    self->f14 = farg1;
-    self->f20 = 100;
-    self->f1c = 0;
-    self->vtbl = lbl_80333778;
+    *(int *)((u8 *)arg0 + 0xC) = arg1;
+    *(int *)((u8 *)arg0 + 4) = 0;
+    *(int *)((u8 *)arg0 + 8) = 0;
+    u8 *self = (u8 *)arg0;
+    *(f32 *)(self + 0x10) = farg0;
+    *(int *)(self + 0x18) = 0x504F4C59;
+    *(f32 *)(self + 0x14) = farg1;
+    *(int *)(self + 0x20) = 100;
+    *(int *)(self + 0x1C) = 0;
+    *(void **)self = lbl_80333778;
     list = fn_80131808(arg2, lbl_80333778);
-    self->bc = 0;
-    *(int *)((u8 *)self + 0xDC) = 0;
+    *(int *)(self + 0xBC) = 0;
+    *(int *)(self + 0xDC) = 0;
     node = list->GetChild(lbl_8055A4C8);
     {
         const TagVec3 &v = node->GetVec3(lbl_8055A4D0);
-        self->f24 = v.x;
-        self->f28 = v.y;
-        self->f2c = v.z;
+        *(f32 *)(self + 0x24) = v.x;
+        *(f32 *)(self + 0x28) = v.y;
+        *(f32 *)(self + 0x2C) = v.z;
     }
     {
         const TagVec3 &v = node->GetVec3(lbl_8055A4D4);
-        self->f30 = v.x;
-        self->f34 = v.y;
-        self->f38 = v.z;
+        *(f32 *)(self + 0x30) = v.x;
+        *(f32 *)(self + 0x34) = v.y;
+        *(f32 *)(self + 0x38) = v.z;
     }
     for (i = 0; (child = list->GetNth(i)) != 0; i++) {
         if (strcmp(child->GetName(), lbl_8055A4D8) == 0) {
-            int idx = self->bc;
+            int idx = *(int *)(self + 0xBC);
             u8 *rec;
-            rec = (u8 *)self + idx * 0x10;
-            self->bc = idx + 1;
+            rec = self + idx * 0x10;
+            *(int *)(self + 0xBC) = idx + 1;
             {
                 const TagVec3 &v = child->GetVec3(lbl_8055A4E0);
                 *(f32 *)(rec + 0x3C) = v.x;
@@ -4911,10 +4912,10 @@ extern "C" void *fn_801A324C(void *arg0, int arg1, void *arg2, f32 farg0, f32 fa
             }
             *(f32 *)(rec + 0x48) = child->GetFloat(lbl_8055A4E4);
         } else if (strcmp(child->GetName(), lbl_8055A4E8) == 0) {
-            int idx = *(int *)((u8 *)self + 0xDC);
+            int idx = *(int *)(self + 0xDC);
             u8 *rec;
-            *(int *)((u8 *)self + 0xDC) = idx + 1;
-            rec = (u8 *)self + idx * 0x1C;
+            *(int *)(self + 0xDC) = idx + 1;
+            rec = self + idx * 0x1C;
             {
                 const TagVec3 &v = child->GetVec3(lbl_8055A4F0);
                 *(f32 *)(rec + 0xC0) = v.x;
