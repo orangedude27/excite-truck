@@ -394,7 +394,7 @@ void fn_802DBDD8(void) {
     sCachedVertexCount = 0;
 }
 
-#pragma scheduling on
+#pragma scheduling off
 void fn_802DBDE8(int arg0, void *arg1) {
     int count;
     void **entry;
