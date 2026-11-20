@@ -138,15 +138,16 @@ extern "C" void fn_8020449C(void) {
  #pragma use_lmw_stmw off
  #pragma scheduling invalid_target
  #pragma cplusplus on
- extern "C" int fn_802044E8(void) {
+extern "C" int fn_802044E8(void) {
  char *base = lbl_8033BB18;
  unsigned char input[0x64];
  float matrix[12];
  struct Text80204 label, value;
  int normal, selected;
- struct Text80204 *a, *b, *c;
+ struct Text80204 *b, *c;
  char *area, *entry;
  int count, result, start, end, i;
+ struct Text80204 *a;
  float step;
  fn_80230B5C(matrix);
  fn_802C8638(matrix);
@@ -160,12 +161,10 @@ extern "C" void fn_8020449C(void) {
    c = (struct Text80204 *)((Gui80204 *)lbl_8055ED44)->v1(lbl_8055B438);
    area = (char *)((Gui80204 *)lbl_8055ED44)->v3(lbl_8055B440);
    if (a && b && c && area) {
-    float tmp;
     normal = a->color; selected = b->color;
     fn_802043B0(&normal); fn_802043B0(&selected);
     step = b->y - a->y;
-    tmp = *(float *)(area+0x14)/step;
-    count = (int)tmp;
+    count = (int)(*(float *)(area+0x14)/step);
     label.unk_0x0=a->unk_0x0;
     { int t1=a->unk_0x4; int t2=*(int *)&a->y; label.unk_0x4=t1; *(int *)&label.y=t2; }
     label.unk_0xc=a->unk_0xc; label.unk_0x10=a->unk_0x10; label.unk_0x14=a->unk_0x14; label.color=a->color; label.unk_0x1c=a->unk_0x1c;
@@ -201,7 +200,10 @@ extern "C" void fn_8020449C(void) {
 #pragma use_lmw_stmw on
 #pragma processor gekko
 extern int __cntlzw(unsigned int);
-int fn_80204870(int arg0) {
+/* Handle one key for the tunable-parameter screen: arrows select the row and the
+ * left/right keys step the selected float parameter (clamped to its range) or
+ * flip its boolean, then refresh the timestamp; returns 1 when something changed. */
+int fn_80204870(int key) {
     struct Entry {
         int unused;
         int type;
@@ -213,17 +215,17 @@ int fn_80204870(int arg0) {
     int index;
     struct Entry *rec;
     if (fn_8020437C() != 0) {
-        if (arg0 == 0x127)
+        if (key == 0x127)
             goto edit_record;
-        if (arg0 >= 0x127)
+        if (key >= 0x127)
             goto above_127;
-        if (arg0 == 0x125)
+        if (key == 0x125)
             goto edit_record;
-        if (arg0 < 0x125)
+        if (key < 0x125)
             goto return_zero;
         goto decrement;
     above_127:
-        if (arg0 < 0x129)
+        if (key < 0x129)
             goto increment;
         goto return_zero;
     decrement:
@@ -247,7 +249,7 @@ int fn_80204870(int arg0) {
         rec = (struct Entry *)lbl_80488BD0 + index;
         switch (rec->type) {
         case 1:
-            if ((unsigned int)arg0 == 0x127u) {
+            if ((unsigned int)key == 0x127u) {
                 float candidate = *rec->value + rec->step;
                 *rec->value = (rec->hi < candidate) ? rec->hi : candidate;
             } else {
