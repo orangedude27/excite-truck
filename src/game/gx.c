@@ -1590,6 +1590,7 @@ void fn_802D09E8(void) {
     char *base = lbl_8034BD18;
     int temp_r0, div, rem, val;
     union { double d; unsigned int w[2]; } cvt;
+    float delta;
     if ((unsigned char)lbl_8055FD90 == 0) return;
     if ((long)lbl_8055D0B8 < 0) {
         lbl_8055FD90 = 0;
@@ -1633,8 +1634,9 @@ void fn_802D09E8(void) {
             val = fn_802E2C20();
             cvt.w[0] = 0x43300000;
             cvt.w[1] = (unsigned int)(val - lbl_8055FDC4) ^ 0x80000000U;
+            delta = (float)(cvt.d - lbl_80564FB0);
             fn_802E30C8(base + 0x468, lbl_804C9830, lbl_8055FDC4,
-                        lbl_80564F80 * (float)(cvt.d - lbl_80564FB0));
+                        lbl_80564F80 * delta);
         }
     }
 }
@@ -1672,7 +1674,7 @@ void fn_802D0BD8(void) {
 extern void GXSetColorUpdate(unsigned char);
 extern float GXGetYScaleFactor(unsigned short, unsigned short);
 extern unsigned int GXSetDispCopyYScale(float);
-extern void GXSetDispCopySrc(int, int, int, int);
+extern void GXSetDispCopySrc(unsigned short, unsigned short, unsigned short, unsigned short);
 extern void GXSetDispCopyDst(unsigned short, unsigned short);
 extern void GXSetCopyFilter(unsigned char, unsigned char *, unsigned char, unsigned char *);
 extern void GXCopyDisp(void *, int);
@@ -3468,23 +3470,33 @@ extern char lbl_8055D100;
 void fn_802D2D1C(void) {
     int *si = (int *)lbl_804C56C0;
     int *di = (int *)lbl_804CA2D8;
-    float *src = (float *)lbl_804C56C0;
-    float *dst = (float *)lbl_804CA2D8;
+    int w0 = si[0], w1 = si[1], w2 = si[2], w3 = si[3], w4 = si[4];
+    int w5 = si[5], w6 = si[6], w7 = si[7], w8 = si[8];
+    register float *src = (float *)lbl_804C56C0;
+    register float *dst = (float *)lbl_804CA2D8;
     float t;
-    di[1] = si[1]; di[2] = si[2]; di[3] = si[3];
-    di[5] = si[5]; di[6] = si[6]; di[7] = si[7];
-    di[0] = si[0]; di[4] = si[4]; di[8] = si[8];
+    di[1] = w1; di[2] = w2; di[3] = w3;
+    di[5] = w5; di[6] = w6; di[7] = w7;
+    di[0] = w0; di[4] = w4; di[8] = w8;
     t = dst[1]; dst[1] = dst[3]; dst[3] = t;
     t = dst[2]; dst[2] = dst[6]; dst[6] = t;
     t = dst[5]; dst[5] = dst[7]; dst[7] = t;
-    if (&dst[0x24] == &src[0x24]) {
-        dst[9] = src[11]*src[2] + (src[9]*src[0] + src[10]*src[1]);
-        dst[10] = src[11]*src[5] + (src[9]*src[3] + src[10]*src[4]);
-        dst[11] = src[11]*src[8] + (src[9]*src[6] + src[10]*src[7]);
+    if (&dst[9] == &src[9]) {
+        float x = src[9], y = src[10], z = src[11];
+        float m00 = src[0], m01 = src[1], m02 = src[2];
+        float m10 = src[3], m11 = src[4], m12 = src[5];
+        float m20 = src[6], m21 = src[7], m22 = src[8];
+        dst[9] = z * m02 + (x * m00 + y * m01);
+        dst[10] = z * m12 + (x * m10 + y * m11);
+        dst[11] = z * m22 + (x * m20 + y * m21);
     } else {
-        dst[9] = src[11]*src[2] + (src[9]*src[0] + src[10]*src[1]);
-        dst[10] = src[11]*src[5] + (src[9]*src[3] + src[10]*src[4]);
-        dst[11] = src[11]*src[8] + (src[9]*src[6] + src[10]*src[7]);
+        float x = src[9], y = src[10], z = src[11];
+        float m00 = src[0], m01 = src[1], m02 = src[2];
+        float m10 = src[3], m11 = src[4], m12 = src[5];
+        float m20 = src[6], m21 = src[7], m22 = src[8];
+        dst[9] = z * m02 + (x * m00 + y * m01);
+        dst[10] = z * m12 + (x * m10 + y * m11);
+        dst[11] = z * m22 + (x * m20 + y * m21);
     }
     dst[9] *= lbl_80564F90;
     dst[10] *= lbl_80564F90;
