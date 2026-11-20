@@ -56,6 +56,7 @@ extern double sin(double);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma dont_inline on
 void fn_80019BBC(void) {
     /* Initialize lbl_803582C0 with 20 (cos, sin, 0) samples around a circle and a final zero vector. */
     register float angleStep = 0.314159f;
