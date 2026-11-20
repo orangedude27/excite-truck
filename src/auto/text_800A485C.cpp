@@ -16172,8 +16172,7 @@ block_135:
                         M2C_FIELD(var_r12_7, s32 *, 0x900) = 0;
                         M2C_FIELD(var_r12_7, s32 *, 0x1200) = 0;
                         var_r12_7 += 4;
-                        var_ctr_7 -= 1;
-                    } while (var_ctr_7 != 0);
+                    }
                 }
             }
         } else {
