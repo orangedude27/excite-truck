@@ -1004,7 +1004,8 @@ extern char lbl_8034BB88[];
 extern char lbl_8034BB9C[];
 extern char lbl_8034BBA8[];
 extern char lbl_8055D098;
-#pragma use_lmw_stmw off
+#pragma opt_propagation off
+struct TotalHolderCB6B4 { unsigned int value; };
 void fn_802CB6B4(void) {
     register void *manager;
     register unsigned int total;
@@ -1052,7 +1053,7 @@ void fn_802CB6B4(void) {
     }
     *(void **)lbl_8055FCBC = 0;
 }
-#pragma use_lmw_stmw on
+#pragma opt_propagation reset
 
 extern void fn_8012C90C(int);
 extern void fn_802D915C(void *);
@@ -1765,17 +1766,8 @@ char fn_802CC744(void) {
 }
 
 #pragma peephole off
-int fn_802CC74C(void) {
-    int result = 0;
-    int *p = *(int **)&lbl_8055FCBC;
-    for (;;) {
-        if (p == 0) break;
-        if (p[1] == 0) break;
-        result = 1;
-        break;
-    }
-    return result;
-}
+int fn_802CC74C(void) { int result = 0; char *p = *(char **)lbl_8055FCBC; if (p != 0) { if (*(int *)(p + 4) != 0) result = 1; } return result; }
+#pragma peephole reset
 extern float lbl_80564F4C;
 extern float lbl_80564F50;
 #pragma push
