@@ -8597,7 +8597,7 @@ s32 fn_80078310(s32 callback)
 }
 
 extern char lbl_80315F24[];
-#pragma opt_lifetimes off
+#pragma opt_lifetimes reset
 void btm_qos_setup_complete(UINT8 status, UINT16 handle, FLOW_SPEC *p_flow) {
     tBTM_CMPL_CB *p_cb = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x618);
     volatile tBTM_QOS_SETUP_CMPL qossu;
@@ -8620,7 +8620,6 @@ void btm_qos_setup_complete(UINT8 status, UINT16 handle, FLOW_SPEC *p_flow) {
         (*p_cb)((void *)&qossu);
     }
 }
-#pragma opt_lifetimes reset
 static __inline u8 *btm_find_dev_by_addr_rssi_80068D68(BD_ADDR bd_addr) {
     u8 *p_dev_rec = lbl_803C0F78 + 0x34;
     u32 i;
@@ -18944,24 +18943,24 @@ void l2c_csm_closed(void *p_ccb, u16 event, void *p_msg) {
     u16 local_cid = *(u16 *)((u8 *)p_ccb + 0x14);
     if (lbl_803C4040[0] >= 4) fn_80070954(0x80003, p_str + 0x24, event);
     switch (event) {
-    case 0:
+    case 3:
         if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, p_str + 0x40, *(u16 *)((u8 *)p_ccb + 0x14));
         l2cu_release_ccb(p_ccb);
         disconnect_ind(local_cid, 0);
         break;
-    case 1: {
+    case 0: {
         void *id = *(void **)((u8 *)p_ccb + 0x10);
         *(u32 *)((u8 *)p_ccb + 4) = 1;
         ((Req5)btm_sec_l2cap_access_req)((u8 *)id + 0x2A, *(u16 *)((u8 *)(*(void **)((u8 *)p_ccb + 0x30)) + 2), *(u16 *)((u8 *)id + 0x28), 1, l2c_link_sec_comp);
         break;
     }
-    case 7: {
+    case 1: {
         if (lbl_803C4040[0] >= 3) fn_8007096C(0x80002, p_str + 0x84, *(u16 *)((u8 *)p_ccb + 0x14), *((u8 *)p_msg + 6));
         l2cu_release_ccb(p_ccb);
         connect_cfm(local_cid, *((u8 *)p_msg + 6));
         break;
     }
-    case 3: {
+    case 20: {
         void *id = *(void **)((u8 *)p_ccb + 0x10);
         u8 *addr = (u8 *)id + 0x2A;
         u16 psm = *(u16 *)((u8 *)id + 0x28);
@@ -18970,13 +18969,13 @@ void l2c_csm_closed(void *p_ccb, u16 event, void *p_msg) {
         if (r == 1) *(u32 *)((u8 *)p_ccb + 4) = 1;
         break;
     }
-    case 8: {
+    case 7: {
         l2cu_send_peer_connect_req(p_ccb);
         *(u32 *)((u8 *)p_ccb + 4) = 3;
         btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x3C);
         break;
     }
-    case 9: {
+    case 8: {
         if (lbl_803C4040[0] >= 3) ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x80002, p_str + 0x84, *(u16 *)((u8 *)p_ccb + 0x14), 0xEEEE);
         l2cu_release_ccb(p_ccb);
         connect_cfm(local_cid, 3);
@@ -18988,17 +18987,17 @@ void l2c_csm_closed(void *p_ccb, u16 event, void *p_msg) {
         ((Req5)btm_sec_l2cap_access_req)((u8 *)id + 0x2A, *(u16 *)((u8 *)(*(void **)((u8 *)p_ccb + 0x30)) + 2), *(u16 *)((u8 *)id + 0x28), 0, l2c_link_sec_comp);
         break;
     }
-    case 19:
-    case 20: {
+    case 30: {
         if (lbl_803C4040[0] >= 3) ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x80002, p_str + 0x84, *(u16 *)((u8 *)p_ccb + 0x14), 0xEEEE);
         l2cu_release_ccb(p_ccb);
         connect_cfm(local_cid, 0xEEEE);
         break;
     }
-    case 30:
+    case 19:
+    case 29:
         GKI_freebuf(p_msg);
         break;
-    default:
+    case 26:
         l2cu_release_ccb(p_ccb);
         break;
     }
