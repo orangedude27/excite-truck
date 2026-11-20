@@ -336,7 +336,7 @@ void fn_80193604(void *arg0, void *arg1, void *unused, int arg2, void *arg3) {
     extern float PSVECDotProduct(const void *, const void *);
     extern float PSVECMag(const void *);
     extern float lbl_80562140, lbl_80562144, lbl_80562148, lbl_8056215C;
-    extern float lbl_80562160, lbl_80562164, lbl_80562168, lbl_8056216C;
+    extern float lbl_80562160, lbl_80562164, lbl_8056216C;
     extern float lbl_80562170, lbl_80562174;
     struct Vec { float x, y, z; };
     char *other = (char *)arg3, *obj = (char *)arg0;
