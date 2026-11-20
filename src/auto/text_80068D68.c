@@ -5536,15 +5536,10 @@ void fn_80070FA4(void *dst_addr, const void *src_addr) {
     dst[5] = src[5];
 }
 
-s32 bdcmp(u8 *a, u8 *b) {
-    volatile u8 *p0, *p1;
+s32 bdcmp(u8 *arg0, u8 *arg1) {
     int i;
-    if (a[0] != b[0]) return -1;
-    if (a[1] != b[1]) return -1;
-    p0 = (volatile u8 *)(a + 2);
-    p1 = (volatile u8 *)(b + 2);
-    for (i = 0; i < 4; i++) {
-        if (p0[i] != p1[i]) return -1;
+    for (i = 0; i < 6; i++) {
+        if (arg0[i] != arg1[i]) return -1;
     }
     return 0;
 }
@@ -10213,26 +10208,23 @@ tBTM_STATUS BTM_CancelInquiry(void) {
 
 tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *results_cb, tBTM_CMPL_CB *complete_cb) {
     extern u8 lbl_803163EC[];
+    typedef struct { u8 b0,b1,b2,b3,b4,b5,b6,b7,b8,b9; } Bytes10;
     u8 *state = lbl_803C0F78;
     u8 *p = (u8 *)params;
-    u32 b, a, d, c, f, e;
     s32 mode, filter;
     u8 status;
+    u8 one = 1;
+    u8 zero = 0;
     if (state[0x27C0] >= 3)
         ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(0xD0002, lbl_803163EC, p[0], p[1], p[2], p[3]);
     if (state[0x1848] != 0 || state[0x1844] != 0) return 2;
     if (p[0] != 0 && p[0] != 1) return 5;
     if (fn_80079514() == 0) return 6;
-    a=p[0]; b=p[1]; state[0x1834]=a; state[0x1835]=b;
-    c=p[3]; d=p[2]; state[0x1836]=d; state[0x1837]=c;
-    e=p[5]; f=p[4]; state[0x1838]=f; state[0x1839]=e;
-    a=p[7]; b=p[6]; state[0x183A]=b; state[0x183B]=a;
-    c=p[8]; state[0x183C]=c;
-    c=p[9]; state[0x183D]=c;
+    *(Bytes10 *)&state[0x1834] = *(Bytes10 *)p;
     state[0x1847]=3;
     *(void **)(state+0x16B0)=complete_cb;
     *(void **)(state+0x16B4)=results_cb;
-    state[0x183F]=0;
+    state[0x183F]=zero;
     mode=p[0];
     state[0x1848]=((s32)~((mode-1)|(1-mode))>>31)+2;
     filter=p[3];
@@ -10242,14 +10234,14 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *result
         break;
     case 1:
     case 2:
-        state[0x1847]=1;
-        p[3]=0;
+        state[0x1847]=one;
+        p[3]=zero;
         break;
     default:
         return 5;
     }
     status=btm_set_inq_event_filter(p[3],p+4);
-    if (status!=1) state[0x1847]=0;
+    if (status != one) state[0x1847]=zero;
     return status;
 }
 
@@ -15503,16 +15495,13 @@ psm_found:
 
 void gap_data_ind(u16 cid, void *p_buf) {
     u8 *conn = lbl_803C3740 + 0xAC;
-    u8 i = 0;
+    u8 i;
 
-    while (i < 8) {
-        if (conn[0] == 0)
-            goto next;
-        if (*(u16 *)(conn + 6) != cid)
-            goto next;
-        goto found;
-    next:
-        i++;
+    for (i = 0; i < 8; i++) {
+        if (conn[0] != 0) {
+            if (*(u16 *)(conn + 6) == cid)
+                goto found;
+        }
         conn += 0x60;
     }
     conn = NULL;
@@ -19569,8 +19558,8 @@ void forward_peer_data(void *arg0, void *arg1) {
     extern void l2c_link_check_send_pkts(void *, u8, void *, u8);
     register u8 *ctx = (u8 *)arg0;
     register BT_HDR *data = (BT_HDR *)arg1;
-    register u8 *frame;
-    register u8 *out;
+    u8 *frame;
+    u8 *out;
     u16 count;
     u16 flags;
     void *lcb;
@@ -28672,32 +28661,33 @@ extern BOOL __AllocDelayLine(AXFX_REVERBHI_EXP_FREE_VIEW *);
 extern s32 __InitParams(void *);
 BOOL AXFXReverbHiExpInit(void *arg0) {
     BOOL mask;
+    AXFX_REVERBHI_EXP_VIEW *fx;
     f32 preMax;
-    void *fx = arg0;
+    fx = (AXFX_REVERBHI_EXP_VIEW *)arg0;
     mask = OSDisableInterrupts();
-    preMax = *(f32 *)((char *)fx + 0x114);
-    *(u32 *)((char *)fx + 0x10c) = 1;
-    if (preMax < lbl_80560D5C) {
+    preMax = fx->preDelayTimeMax;
+    fx->active = 1;
+    if (preMax < 0.0f) {
         BOOL m2 = OSDisableInterrupts();
-        *(u32 *)((char *)fx + 0x10c) |= 1;
+        fx->active |= 1;
         __FreeDelayLine(fx);
         OSRestoreInterrupts(m2);
         OSRestoreInterrupts(mask);
         return FALSE;
     }
-    *(u32 *)((char *)fx + 0x1c) = *(u32 *)(lbl_8031ABD8 + 0x5C);
-    *(u32 *)((char *)fx + 0x40) = (u32)(lbl_80560D58 * preMax);
-    *(u32 *)((char *)fx + 0x80) = *(u32 *)(lbl_8031AC98 + 0xC0);
-    *(u32 *)((char *)fx + 0x84) = *(u32 *)(lbl_8031AC98 + 0xC4);
-    *(u32 *)((char *)fx + 0x88) = *(u32 *)(lbl_8031AC98 + 0xC8);
-    *(u32 *)((char *)fx + 0xC0) = *(u32 *)(lbl_8031AC98 + 0xCC);
-    *(u32 *)((char *)fx + 0xC4) = *(u32 *)(lbl_8031AC98 + 0xD0);
-    *(u32 *)((char *)fx + 0xEC) = *(u32 *)(lbl_8031AC98 + 0xD4);
-    *(u32 *)((char *)fx + 0xF0) = *(u32 *)(lbl_8031AC98 + 0xD8);
-    *(u32 *)((char *)fx + 0xF4) = *(u32 *)(lbl_8031AC98 + 0xDC);
+    fx->earlyMaxLength = *(u32 *)(lbl_8031ABD8 + 0x5C);
+    fx->preDelayMaxLength = (u32)(32000.0f * preMax);
+    fx->combMaxLength[0] = *(u32 *)(lbl_8031AC98 + 0xC0);
+    fx->combMaxLength[1] = *(u32 *)(lbl_8031AC98 + 0xC4);
+    fx->combMaxLength[2] = *(u32 *)(lbl_8031AC98 + 0xC8);
+    fx->allpassMaxLength[0] = *(u32 *)(lbl_8031AC98 + 0xCC);
+    fx->allpassMaxLength[1] = *(u32 *)(lbl_8031AC98 + 0xD0);
+    fx->lastAllpassMaxLength[0] = *(u32 *)(lbl_8031AC98 + 0xD4);
+    fx->lastAllpassMaxLength[1] = *(u32 *)(lbl_8031AC98 + 0xD8);
+    fx->lastAllpassMaxLength[2] = *(u32 *)(lbl_8031AC98 + 0xDC);
     if (!__AllocDelayLine((AXFX_REVERBHI_EXP_FREE_VIEW *)fx)) {
         BOOL m2 = OSDisableInterrupts();
-        *(u32 *)((char *)fx + 0x10c) |= 1;
+        fx->active |= 1;
         __FreeDelayLine(fx);
         OSRestoreInterrupts(m2);
         OSRestoreInterrupts(mask);
@@ -28706,13 +28696,13 @@ BOOL AXFXReverbHiExpInit(void *arg0) {
     __BzeroDelayLines(fx);
     if (!__InitParams(fx)) {
         BOOL m2 = OSDisableInterrupts();
-        *(u32 *)((char *)fx + 0x10c) |= 1;
+        fx->active |= 1;
         __FreeDelayLine(fx);
         OSRestoreInterrupts(m2);
         OSRestoreInterrupts(mask);
         return FALSE;
     }
-    *(u32 *)((char *)fx + 0x10c) &= ~1U;
+    fx->active &= ~1;
     OSRestoreInterrupts(mask);
     return TRUE;
 }
