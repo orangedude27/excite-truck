@@ -197,7 +197,7 @@ void fn_8028A664(void) {
     extern void fn_8028ABE8(void *);
     extern void fn_8028B3CC(void);
     extern void fn_801EEFDC(s32, s32);
-    extern s32 fn_8028B93C(f32 *);
+    extern s32 fn_8028B93C(const f32 *);
     extern s32 fn_8028B500(void *);
     extern s32 fn_8028BA44(void *);
     extern s32 fn_8028BA9C(void *);
@@ -518,9 +518,17 @@ next:
 }
 #pragma cplusplus reset
 
-#pragma push
+#pragma cplusplus on
 #pragma use_lmw_stmw off
-void fn_8028ADF4(void *arg0, s32 arg1) {
+extern "C" void fn_8028ADF4(void *arg0, s32 arg1) {
+    class VCall {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void call(f32 *, f32 *, s16, s32);
+    };
     u8 *e;
     s32 i;
     u8 *m;
@@ -594,7 +602,7 @@ void fn_8028ADF4(void *arg0, s32 arg1) {
                     f22 = k27 * FLD(e, 0x24);
                     c1[0] += fn_80287BC8(-f22, f22);
                     c1[2] += fn_80287BC8(-f22, f22);
-                    ((void (*)(void *, f32 *, f32 *, s16, s32))(*(void ***)*(void **)t)[6])(*(void **)t, a1, c1, *(s16 *)(m + 0x30), i);
+                    ((VCall *)*(void **)t)->call(a1, c1, *(s16 *)(m + 0x30), i);
                 } else if (FLD(e, 0x24) > k28 && roll < *(s32 *)(t + 0xC)) {
                     f32 r;
                     a2.x = FLD(e, 0);
@@ -625,13 +633,13 @@ void fn_8028ADF4(void *arg0, s32 arg1) {
                     f22 = k27 * FLD(e, 0x24);
                     b2[0] += fn_80287BC8(-f22, f22);
                     b2[2] += fn_80287BC8(-f22, f22);
-                    ((void (*)(void *, f32 *, f32 *, s16, s32))(*(void ***)*(void **)t)[6])(*(void **)t, (f32 *)&a2, b2, *(s16 *)(m + 0x30), i);
+                    ((VCall *)*(void **)t)->call((f32 *)&a2, b2, *(s16 *)(m + 0x30), i);
                 }
             }
         }
     }
 }
-#pragma pop
+#pragma cplusplus reset
 
 #pragma push
 #pragma processor gekko
@@ -808,7 +816,7 @@ extern f32 lbl_80564328, lbl_805643A4, lbl_805643A8;
 extern void fn_8028BED4(void *, s32, void *, void *, f32);
 extern s32 lbl_8055F6F0, lbl_8055F6F4;
 #pragma scheduling on
-s32 fn_8028B93C(f32 *arg0) {
+s32 fn_8028B93C(const f32 *arg0) {
     f32 dir[3];
     f32 pos[3];
     f32 temp_y, temp_z, temp_x;
@@ -820,7 +828,7 @@ s32 fn_8028B93C(f32 *arg0) {
     dir[0] = x;
     dir[1] = y;
     dir[2] = z;
-    radius = lbl_805643A0 * PSVECMag(arg0);
+    radius = lbl_805643A0 * PSVECMag((f32 *)arg0);
     for (i = 0; i < 2; i++) {
         temp_z = fn_80287BC8(lbl_805643A4, lbl_805643A8) + arg0[5];
         temp_y = fn_80287BC8(lbl_805643A4, lbl_805643A8) + arg0[4];
@@ -1099,12 +1107,11 @@ void fn_8028BED4(void *arg0, s32 arg1, void *arg2, void *arg3, f32 farg0) {
     s32 count;
     s32 limit;
     s32 i;
+    s32 j;
     f32 now;
     f32 temp_y;
     f32 temp_z;
     f32 temp_x;
-    f32 src0;
-    f32 src1;
     f32 *dst;
     now = fn_801E7E18();
     count = ring->tail - ring->head;
@@ -1112,11 +1119,10 @@ void fn_8028BED4(void *arg0, s32 arg1, void *arg2, void *arg3, f32 farg0) {
     if (limit < count) count = limit;
     for (i = 0; i < count; i++) {
         dst = (f32 *)((u8 *)ring->data + (ring->head + i) * 0x1C);
-        src0 = src[0];
-        src1 = src[1];
-        dst[0] = src0;
-        dst[2] = src[2];
-        dst[1] = src1;
+        for (j = 0; j < 3; j++) {
+            f32 t = src[j];
+            dst[j] = t;
+        }
         temp_z = vel[2] + fn_80287BC8(-farg0, farg0);
         temp_y = vel[1] + fn_80287BC8(-farg0, farg0);
         temp_x = vel[0] + fn_80287BC8(-farg0, farg0);
@@ -1160,9 +1166,9 @@ void fn_8028BFEC(s32 arg0) {
             vy = (in->vy * f8) - f7;
             vz = in->vz * f8;
             temp[0] = vx;
-            temp[2] = vz;
             temp[1] = vy;
             out->x = in->x + vx * time;
+            temp[2] = vz;
             out->y = in->y + vy * time;
             out->z = in->z + vz * time;
             out->vx = vx;
@@ -1357,6 +1363,7 @@ void fn_8028C938(s32 arg0) {
     volatile f32 temp_z;
     volatile f32 temp_y;
     volatile f32 temp_x;
+
     elapsed = fn_801E7E18() - lbl_805643D0;
     step = fn_801E7E24();
     scale = lbl_805643B8 * step;
@@ -1369,14 +1376,14 @@ void fn_8028C938(s32 arg0) {
         in = (struct Entry *)((u32)list->data + (u32)offset);
         if (in->age > elapsed) {
             vx = in->vx * factor;
-            temp_x = vx;
             vy = (in->vy * factor) - delta;
             vz = in->vz * factor;
+            temp_x = vx;
+            temp_y = vy;
+            temp_z = vz;
             out->x = in->x + vx * step;
             out->y = in->y + vy * step;
             out->z = in->z + vz * step;
-            temp_z = vz;
-            temp_y = vy;
             out->vx = vx;
             out->vy = vy;
             out->vz = vz;
@@ -1565,9 +1572,9 @@ s32 fn_8028CD80(s32 arg0, s32 arg1, void *arg2, f32 *arg3, f32 farg0) {
         dst[3] = temp_x;
         dst[4] = temp_y;
         dst[5] = temp_z;
-        rand0 = fn_80287BC8(lbl_805643E0, lbl_805643E4);
-        rand1 = fn_80287BC8(lbl_805643E0, lbl_805643E4);
-        rand2 = fn_80287BC8(lbl_805643E0, lbl_805643E4);
+        rand0 = fn_80287BC8(-12.5664f, 12.5664f);
+        rand1 = fn_80287BC8(-12.5664f, 12.5664f);
+        rand2 = fn_80287BC8(-12.5664f, 12.5664f);
         dst[6] = rand2;
         i++;
         dst[7] = rand1;
