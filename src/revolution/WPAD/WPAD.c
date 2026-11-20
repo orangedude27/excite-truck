@@ -3858,6 +3858,30 @@ static inline void fn_8005F3E8_enqueue(WPADCB *cb, WPADCommand *cmd) {
     OSRestoreInterrupts(intr);
 }
 
+static inline void fn_8005F3E8_enqueue_val(WPADCB *cb, WPADCommand cmd) {
+    BOOL intr, intr2;
+    s8 count;
+    u8 back;
+    s32 t4;
+    intr = OSDisableInterrupts();
+    intr2 = OSDisableInterrupts();
+    count = (s8)(cb->stdCmdQueue.back - cb->stdCmdQueue.front);
+    if (count < 0) count += cb->stdCmdQueue.capacity;
+    OSRestoreInterrupts(intr2);
+    if ((u32)(cb->stdCmdQueue.capacity - 1) == (u32)count) {
+        OSRestoreInterrupts(intr);
+        return;
+    }
+    memset((u8 *)cb->stdCmdQueue.buffer + (s8)cb->stdCmdQueue.back * 0x30, 0, 0x30);
+    memcpy((u8 *)cb->stdCmdQueue.buffer + (s8)cb->stdCmdQueue.back * 0x30, &cmd, 0x30);
+    back = cb->stdCmdQueue.back;
+    t4 = cb->stdCmdQueue.capacity - 1;
+    count = (s8)back - t4;
+    count = (s32)~(count | (t4 - (s8)back)) >> 0x1F;
+    cb->stdCmdQueue.back = (u8)(((s8)back + 1) & ~count);
+    OSRestoreInterrupts(intr);
+}
+
 void fn_8005F3E8(s32 chan, s32 arg1) {
     WPADCB *cb;
     BOOL intr;
