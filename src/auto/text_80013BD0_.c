@@ -54,6 +54,9 @@ extern void fn_802C8D74(void);
 extern f32 lbl_805603E8, lbl_805603EC, lbl_805603F0, lbl_805603F4;
 typedef struct { s32 a; f32 x; f32 y; s32 d; f32 e; f32 f; s32 g; } Rec7;
 typedef struct { s32 a; f32 x; f32 y; s32 d; f32 e; s32 f; s32 g; s32 h; } Rec8;
+typedef struct { u8 *base; s32 n; char *second; char *first; void *self; s32 mode; } KeepEDC;
+#define VC5(ofs) ((void *(*)(void *, void *))(*(void ***)obj)[5])(obj, keep.base + (ofs))
+#define VC3(ofs) ((void *(*)(void *, void *))(*(void ***)obj)[3])(obj, keep.base + (ofs))
 extern f64 lbl_80560390;
 #define VCALL(slot, ofs) ((void *(*)(void *, void *))(*(void ***)obj)[slot])(obj, lbl_802FCB98 + (ofs))
 #define VC(slot, ofs) ((void *(*)(void *, void *))(*(void ***)obj)[slot])(obj, base + (ofs))
@@ -201,8 +204,8 @@ void fn_80013EAC(s32 screen, s32 count, s32 arg2) {
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 void fn_80013EDC(void *arg0, void *name, s32 mode, char *first, char *second, f32 farg0, f32 farg1, f32 farg2) {
-    register s32 m = mode;
     register void *s = arg0;
+    register s32 m = mode;
     Rec7 L;
     Rec8 R1, R2, R3, R4, R5, R6, R7;
     char b1[20], b2[20], b3[20];
@@ -1177,12 +1180,16 @@ void fn_80015770(void *arg0, f64 x, f64 y, f32 a, f32 b, f32 c) {
     f32 *q;
     s32 i;
     f32 z;
+    f32 ox, oy, oz;
     f32 k1, k2;
+    ox = x;
+    oy = y;
     vec[0] = lbl_80560360;
     vec[1] = lbl_80560360;
     vec[2] = c;
     fn_80015A20(mtx, vec);
     z = lbl_80560360;
+    oz = z;
     mtx[9] = x;
     mtx[10] = y;
     mtx[11] = z;
@@ -1212,9 +1219,9 @@ void fn_80015770(void *arg0, f64 x, f64 y, f32 a, f32 b, f32 c) {
             q[2] = q[1] * m2 + vy * m5 + vz * m8;
         }
         q += 3;
-        p[0] = p[0] + (f32)x;
-        p[1] = p[1] + (f32)y;
-        p[2] = p[2] + (f32)z;
+        p[0] = p[0] + ox;
+        p[1] = p[1] + oy;
+        p[2] = p[2] + oz;
         p += 3;
     }
     fn_802C8BD0(*(s32 *)((u8 *)arg0 + 0x44));
