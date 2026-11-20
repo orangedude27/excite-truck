@@ -5536,13 +5536,6 @@ void fn_80070FA4(void *dst_addr, const void *src_addr) {
     dst[5] = src[5];
 }
 
-static inline int bdcmp_tail(u8 *p, u8 *q) {
-    int i;
-    for (i = 0; i < 4; i++) {
-        if (p[i] != q[i]) return -1;
-    }
-    return 0;
-}
 s32 bdcmp(u8 *a, u8 *b) {
     volatile u8 *p0, *p1;
     int i;
@@ -10231,9 +10224,9 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *result
     if (p[0] != 0 && p[0] != 1) return 5;
     if (fn_80079514() == 0) return 6;
     a=p[0]; b=p[1]; state[0x1834]=a; state[0x1835]=b;
-    d=p[2]; c=p[3]; state[0x1836]=d; state[0x1837]=c;
-    f=p[4]; e=p[5]; state[0x1838]=f; state[0x1839]=e;
-    b=p[6]; a=p[7]; state[0x183A]=b; state[0x183B]=a;
+    c=p[3]; d=p[2]; state[0x1836]=d; state[0x1837]=c;
+    e=p[5]; f=p[4]; state[0x1838]=f; state[0x1839]=e;
+    a=p[7]; b=p[6]; state[0x183A]=b; state[0x183B]=a;
     c=p[8]; state[0x183C]=c;
     c=p[9]; state[0x183D]=c;
     state[0x1847]=3;
@@ -10243,19 +10236,18 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *result
     mode=p[0];
     state[0x1848]=((s32)~((mode-1)|(1-mode))>>31)+2;
     filter=p[3];
-    if (filter==0) goto mode_two;
-    if (filter<0) goto invalid_filter;
-    if (filter>=3) goto invalid_filter;
-    goto mode_one;
-invalid_filter:
-    return 5;
-mode_two:
-    state[0x1847]=2;
-    goto after_filter;
-mode_one:
-    state[0x1847]=1;
-    p[3]=0;
-after_filter:
+    switch (filter) {
+    case 0:
+        state[0x1847]=2;
+        break;
+    case 1:
+    case 2:
+        state[0x1847]=1;
+        p[3]=0;
+        break;
+    default:
+        return 5;
+    }
     status=btm_set_inq_event_filter(p[3],p+4);
     if (status!=1) state[0x1847]=0;
     return status;
