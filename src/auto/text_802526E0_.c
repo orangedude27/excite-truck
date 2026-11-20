@@ -7,7 +7,7 @@ extern f32 PSVECDotProduct(void *, void *);
 typedef struct { f32 x, y, z, w; } Vec4_80252;
 extern f32 lbl_805639C8, lbl_805639D0, lbl_805639D4, lbl_805639D8;
 extern f32 fn_80129DC4(s32, f32, f32);
-extern f64 cos(void);
+extern f64 cos(...);
 extern f64 sin(f32);
 extern void PSVECCrossProduct(void *, void *, void *);
 extern f32 fn_801DCF48(s32, u32, u32, u32, u32, u32, u32, u32, f32, f32);
@@ -36,7 +36,7 @@ void fn_802526E0(void *arg0) {
     volatile f32 spC;
     volatile f32 sp8;
     volatile f32 *out = (volatile f32 *)arg0;
-    f32 a = lbl_805639CC, b = lbl_805639D0;
+    f32 a = 0.0f, b = 6.28319f;
     f64 temp_f31;
     f32 temp_f30, temp_f29, temp_f4, temp_f4_2, temp_f5;
     f32 temp_f1, temp_f2, temp_f3, temp_f2_2, temp_f4_3, temp_f5_2, temp_f6;
@@ -81,15 +81,15 @@ void fn_802526E0(void *arg0) {
 #pragma processor 750
 void fn_8025280C(void *arg0,f32 amount) {
     Quaternion position, lateral, result, temp, lateralTemp;
-    Vec normal, forward, right, velocity, up;
+    Vec normal, forward, right, velocity;
     Vec2 direction, unit, perpendicular;
     f32 length, scale, height, a, b, a3, b3;
     f32 len[1];
     f32 *self=arg0;
-    position.x=self[0]; position.y=self[1]; position.z=self[2];
+    position.z=self[2]; position.y=self[1]; position.x=self[0];
     direction.x=position.x; direction.y=position.z;
-    if(direction.x*direction.x+direction.y*direction.y<lbl_805639D4) {
-        direction.x=lbl_805639D4; direction.y=lbl_805639CC;
+    if(direction.x*direction.x+direction.y*direction.y<1.0f) {
+        direction.x=1.0f; direction.y=0.0f;
     }
     len[0]=(f32)fn_8002F234(direction.x*direction.x+direction.y*direction.y);
     if (!((f32)__fabs(len[0])<=lbl_80558DC4[0])) {
@@ -101,7 +101,7 @@ void fn_8025280C(void *arg0,f32 amount) {
     self[0]=temp.x; self[1]=temp.y; self[2]=temp.z; self[3]=temp.w;
     unit.x=direction.x; unit.y=direction.y;
     len[0]=(f32)fn_8002F234(unit.x*unit.x+unit.y*unit.y);
-    scale=lbl_805639D4/len[0];
+    scale=1.0f/len[0];
     unit.x*=scale; unit.y*=scale;
     *(f64 *)&perpendicular=*(f64 *)&unit;
     perpendicular.x=-unit.y; perpendicular.y=unit.x;
@@ -115,11 +115,10 @@ void fn_8025280C(void *arg0,f32 amount) {
     self[20]=lateralTemp.x; self[21]=lateralTemp.y; self[22]=lateralTemp.z; self[23]=lateralTemp.w;
     forward.x=self[12]; forward.y=self[13]; forward.z=self[14];
     velocity.x=self[24]; velocity.y=self[25]; velocity.z=self[26];
-    up.x=self[8]; up.y=self[9]; up.z=self[10];
     right.x=self[4]; right.y=self[5]; right.z=self[6];
     velocity.y=lbl_805639DC*(forward.x*unit.x+forward.z*unit.y);
     height=position.y-((f32 (*)(void *, f32, f32))fn_801DCF48)(&normal,position.x,position.z);
-    height=lbl_805639CC>height?lbl_805639CC:height;
+    height=0.0f>height?0.0f:height;
     if(height>lbl_805639E0) {
         a=PSVECDotProduct(&normal,&forward);
         b=-PSVECDotProduct(&normal,&right);
@@ -334,34 +333,34 @@ typedef struct {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_80253104(s32 arg0, void *arg1) {
-    register s32 idx = arg0;
     f32 z, y, x;
     u32 args[12];
-    CamEntry80253104 *cam = (CamEntry80253104 *)lbl_80498D00;
+    CamEntry80253104 *cam;
     x = *(volatile f32 *)((u8 *)arg1 + 0x12C);
     y = *(volatile f32 *)((u8 *)arg1 + 0x130);
     z = *(volatile f32 *)((u8 *)arg1 + 0x134);
-    cam[idx].f34 = x;
-    cam[idx].f38 = y;
-    cam[idx].f3c = z;
-    fn_801BDA74(idx, arg1);
-    if (cam[idx].flag30 == 0) {
-        fn_80252B88(idx);
+    cam = (CamEntry80253104 *)lbl_80498D00;
+    cam[arg0].f34 = x;
+    cam[arg0].f38 = y;
+    cam[arg0].f3c = z;
+    fn_801BDA74(arg0, arg1);
+    if (cam[arg0].flag30 == 0) {
+        fn_80252B88(arg0);
     } else {
-        args[9] = cam[idx].w24;
-        args[11] = cam[idx].w2c;
-        args[0] = *(u32 *)&cam[idx].pad0[0x00];
-        args[1] = *(u32 *)&cam[idx].pad0[0x04];
-        args[2] = *(u32 *)&cam[idx].pad0[0x08];
-        args[3] = *(u32 *)&cam[idx].pad0[0x0C];
-        args[4] = *(u32 *)&cam[idx].pad0[0x10];
-        args[5] = *(u32 *)&cam[idx].pad0[0x14];
-        args[6] = *(u32 *)&cam[idx].pad0[0x18];
-        args[7] = *(u32 *)&cam[idx].pad0[0x1C];
-        args[8] = *(u32 *)&cam[idx].pad0[0x20];
-        args[10] = cam[idx].w28;
+        args[9] = cam[arg0].w24;
+        args[11] = cam[arg0].w2c;
+        args[0] = *(u32 *)&cam[arg0].pad0[0x00];
+        args[1] = *(u32 *)&cam[arg0].pad0[0x04];
+        args[2] = *(u32 *)&cam[arg0].pad0[0x08];
+        args[3] = *(u32 *)&cam[arg0].pad0[0x0C];
+        args[4] = *(u32 *)&cam[arg0].pad0[0x10];
+        args[5] = *(u32 *)&cam[arg0].pad0[0x14];
+        args[6] = *(u32 *)&cam[arg0].pad0[0x18];
+        args[7] = *(u32 *)&cam[arg0].pad0[0x1C];
+        args[8] = *(u32 *)&cam[arg0].pad0[0x20];
+        args[10] = cam[arg0].w28;
         *(f32 *)&args[10] = lbl_805639FC + fn_801DCF48(0, args[9], args[8], args[7], args[6], args[5], args[4], args[3], *(f32 *)&args[9], *(f32 *)&args[11]);
-        fn_801BE400(idx, args, lbl_805639E8);
+        fn_801BE400(arg0, args, lbl_805639E8);
     }
 }
 extern s8 lbl_8055F308;
