@@ -119,17 +119,19 @@ extern "C" void *fn_800FDE60(void) {
     extern u8 lbl_80326E20[];
     struct Manager {
         u8 pad[0x1C];
-        s32 unk_0x1C;
+        volatile s32 unk_0x1C;
     };
+    struct Word { u32 w; };
     u8 *base = lbl_804190A0;
     if ((s8)lbl_8055DE78 == 0) {
-        Manager *manager = (Manager *)(base + 0x2050);
+        volatile Manager *manager = (volatile Manager *)(base + 0x2050);
         manager->unk_0x1C = 0;
         fn_8002F53C((u8 *)manager + 0x20, (void *)fn_800FDFF8,
                     (void *)__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0, 0xC, 3);
         OSInitMutex((void *)manager);
+        struct Word *words = (struct Word *)lbl_804190A0;
         *(void **)((u8 *)manager + 0x18) =
-            MEMRecordStateForFrmHeap((void *)&lbl_804190A0[0], 0x2044, 0x40, 4, 0);
+            MEMRecordStateForFrmHeap((void *)&words[0], 0x2044, 0x40, 4, 0);
         if (MEMResizeForMBlockFrmHeap() < 0x80)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x37,
                                         (const char *)lbl_80326E20);
@@ -406,6 +408,7 @@ extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12Li
 extern "C" void *MEMAdjustFrmHeap(void *, void *);
 extern "C" void OSRestoreInterrupts(u32);
 extern u8 lbl_80326F38[], lbl_80326F14[], lbl_80326F68[], lbl_80326F44[], lbl_80326E08[], lbl_80326E70[];
+#pragma opt_common_subs off
 #pragma use_lmw_stmw off
 extern "C" void CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(void *arg0, u32 taskId) {
     typedef nw4hbm::snd::detail::TaskManager TaskManager;
@@ -416,9 +419,9 @@ extern "C" void CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(void *arg0,
         virtual void vf2();
     };
     TaskManager *mgr = (TaskManager *)arg0;
-    u32 level = OSDisableInterrupts();
-    s32 count = 0;
-    s32 offset = 0;
+    register u32 level = OSDisableInterrupts();
+    register s32 count = 0;
+    register s32 offset = 0;
     void *node;
     for (; count < 3; count++, offset += 0xC) {
         void *current;
@@ -528,11 +531,12 @@ extern "C" s32 fn_800FE814(s32 taskThread) {
 
 extern f32 lbl_802F4DE0[];
 extern f32 lbl_802F4E10[];
+#pragma ctrloop on
+#pragma unroll off
 extern "C" f32 CalcPitchRatio__Q46nw4hbm3snd6detail4UtilFi(s32 pitch) {
     u32 divisor = 0xC00;
     u32 *dp = &divisor;
-    u32 scaled = 0xBFF - pitch;
-    u32 count = scaled / *dp;
+    u32 count = (u32)(0xBFF - pitch) / *dp;
     f32 ratio = lbl_805610C8;
     s32 octave = 0;
 
@@ -540,11 +544,15 @@ extern "C" f32 CalcPitchRatio__Q46nw4hbm3snd6detail4UtilFi(s32 pitch) {
         u32 chunks = count >> 3;
         s32 adjustment = count * 0xC00;
         if (chunks != 0) {
-            do { octave -= 8; } while (--chunks != 0);
+#pragma ctrloop on
+#pragma unroll off
+            do { octave -= 8; chunks--; } while (chunks != 0);
         }
         count &= 7;
         if (count != 0) {
-            do { octave -= 1; } while (--count != 0);
+#pragma ctrloop on
+#pragma unroll off
+            do { octave -= 1; count--; } while (count != 0);
         }
         pitch += adjustment;
     }
@@ -554,11 +562,15 @@ extern "C" f32 CalcPitchRatio__Q46nw4hbm3snd6detail4UtilFi(s32 pitch) {
         u32 chunks = count >> 3;
         s32 adjustment = count * -0xC00;
         if (chunks != 0) {
-            do { octave += 8; } while (--chunks != 0);
+#pragma ctrloop on
+#pragma unroll off
+            do { octave += 8; chunks--; } while (chunks != 0);
         }
         count &= 7;
         if (count != 0) {
-            do { octave += 1; } while (--count != 0);
+#pragma ctrloop on
+#pragma unroll off
+            do { octave += 1; count--; } while (count != 0);
         }
         pitch += adjustment;
     }
@@ -568,14 +580,19 @@ extern "C" f32 CalcPitchRatio__Q46nw4hbm3snd6detail4UtilFi(s32 pitch) {
         u32 chunks = (u32)octave >> 3;
         s32 negate = -octave;
         if (chunks != 0) {
+#pragma ctrloop on
+#pragma unroll off
             do {
                 ratio *= factor; ratio *= factor; ratio *= factor; ratio *= factor;
                 ratio *= factor; ratio *= factor; ratio *= factor; ratio *= factor;
-            } while (--chunks != 0);
+                chunks--;
+            } while (chunks != 0);
         }
         count = (u32)octave & 7;
         if (count != 0) {
-            do { ratio *= factor; } while (--count != 0);
+#pragma ctrloop on
+#pragma unroll off
+            do { ratio *= factor; count--; } while (count != 0);
         }
         octave += negate;
     }
@@ -585,14 +602,19 @@ extern "C" f32 CalcPitchRatio__Q46nw4hbm3snd6detail4UtilFi(s32 pitch) {
         count = (u32)(-octave);
         u32 chunks = count >> 3;
         if (chunks != 0) {
+#pragma ctrloop on
+#pragma unroll off
             do {
                 ratio *= factor; ratio *= factor; ratio *= factor; ratio *= factor;
                 ratio *= factor; ratio *= factor; ratio *= factor; ratio *= factor;
-            } while (--chunks != 0);
+                chunks--;
+            } while (chunks != 0);
         }
         count &= 7;
         if (count != 0) {
-            do { ratio *= factor; } while (--count != 0);
+#pragma ctrloop on
+#pragma unroll off
+            do { ratio *= factor; count--; } while (count != 0);
         }
     }
 
@@ -602,8 +624,6 @@ extern "C" f32 CalcPitchRatio__Q46nw4hbm3snd6detail4UtilFi(s32 pitch) {
     if (fraction != 0) ratio *= lbl_802F4E10[fraction];
     return ratio;
 }
-
-#pragma scheduling on
 extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32 volumeDb) {
 #define kMinVolumeDb lbl_805610D8
 #define kDbScale lbl_805610DC
@@ -699,12 +719,12 @@ extern "C" u32 GetSampleByDspAddress__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hb
 #pragma scheduling invalid_target
 extern "C" s32 ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(void **self, u8 *out, const void *base) {
     struct Coef { u16 v[20]; };
+    register u8 *h = (u8 *)*self;
     u16 *d;
     u16 *s;
     u32 *dst;
     u32 *table;
     s32 i;
-    register u8 *h = (u8 *)*self;
     register u8 *h2;
     u32 fmt;
     u32 f;
@@ -1086,6 +1106,7 @@ extern "C" void detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void 
   void *player;
   void **new_var;
   void *wave;
+  void *list;
   int i;
   void **end = (void **) (lbl_8041D4AC + 4);
   goto check_player;
@@ -1103,12 +1124,13 @@ extern "C" void detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void 
   {
     if (IsNextWavePacket__Q36nw4hbm3snd10WavePlayerCFv(player))
     {
- UpdateWavePacket__Q36nw4hbm3snd10WavePlayerFv(player); }
+      UpdateWavePacket__Q36nw4hbm3snd10WavePlayerFv(player);
+    }
     if ((!(*(((u8 *) player) + 0x1e))) && ((*((u32 *) (((u8 *) player) + 4))) >= 2))
     {
       i = 0;
       wave = *((void **) (((u8 *) player) + 8));
-      void *list = *((void **) wave);
+      list = *((void **) wave);
       if ((*((s32 *) (((u8 *) player) + 0x10))) > 0)
       {
         void *base = ((u8 *) list) - 0x18;
@@ -1118,7 +1140,7 @@ extern "C" void detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void 
           {
             Panic__Q26nw4hbm2dbFPCciPCce((char *) lbl_80327490, 0x23d, (char *) lbl_8032746C);
           }
-          SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*((void **) (((u8 *) player) + 0x18)), i, *((void **) ((((u8 *) base) + (i << 2)) + 8)), 0);
+          SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*((void **) (((u8 *) player) + 0x18)), i, *((void **) ((((u8 *) base) + (i * 4)) + 8)), 0);
         }
 
       }
@@ -1217,28 +1239,22 @@ extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FF824(void
 }
 #pragma use_lmw_stmw off
 extern "C" void detail_StopAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void) {
-    struct LinkListIter {
-        void *node;
-    };
-    register LinkListIter begin;
-    begin.node = *(void **)&lbl_8041D4AC[0x04];
-    register LinkListIter end;
-    end.node = (void *)&lbl_8041D4AC[0x04];
-    register LinkListIter it = begin;
-
-    while (it.node != end.node) {
-        void *node = it.node;
-        it.node = *(void **)it.node;
-        if (node == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327370, 0x23D,
-                                         (const char *)lbl_8032734C);
-        }
-        Stop__Q36nw4hbm3snd10WavePlayerFv((u8 *)node - 0x94);
+    struct Iter { void* node; };
+    Iter begin;
+    begin.node = *(void**)&lbl_8041D4AC[0x04];
+    Iter it = begin;
+    struct EndWrap { void* e; } sentinel;
+    sentinel.e = (void*)&lbl_8041D4AC[0x04];
+    void*& end = sentinel.e;
+    while (it.node != end) {
+        void* node = it.node;
+        it.node = *(void**)it.node;
+        if (node == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327370, 0x23D, (const char*)lbl_8032734C);
+        Stop__Q36nw4hbm3snd10WavePlayerFv((u8*)node - 0x94);
     }
-    if (*(u32 *)lbl_8041D4AC != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327040, 0x319,
-                                     (const char *)lbl_80327304);
-    }
+    if (*(int*)&lbl_8041D4AC[0] != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327040, 0x319, (const char*)lbl_80327304);
 }
 #pragma use_lmw_stmw reset
 extern "C" s32 fn_80128668(void *);
