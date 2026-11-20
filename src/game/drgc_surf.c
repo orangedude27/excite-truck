@@ -63,7 +63,7 @@ extern u8 lbl_804D6C44[];
 extern f32 lbl_804C56F0[];
 extern f32 lbl_804CA308[];
 extern f32 lbl_80564FF0;
-extern f64 lbl_80564FF8;
+f64 lbl_80564FF8 = 4503599627370496.0;
 extern f64 lbl_80565000;
 extern u8 lbl_8055FD19;
 extern u32 lbl_804C5650[];
@@ -248,31 +248,31 @@ void fn_802D42E4(void *arg0) {
     }
     {
         f32 (*directions)[3] = (f32 (*)[3])lbl_804DB068;
-        register f32 factor = lbl_80564FF0;
+        f32 factor = lbl_80564FF0;
         register volatile f32 *out = base;
         for (i = 0; i < count; i++) {
             u8 a, b, c, d;
             f32 weight1, weight2;
-            f32 *direction;
+            f32 *dirA, *dirB;
             f32 x, y, z;
             a = src[0xE];
             b = src[0xC];
-            direction = (f32 *)((u8 *)directions + b * 12);
+            dirA = (f32 *)((u8 *)directions + b * 12);
             weight1 = factor * (f32)a;
             c = src[0xD];
             d = src[0xF];
             weight2 = factor * (f32)d;
-            x = *(f32 *)((u8 *)src + 0x0) + direction[0] * weight1;
+            x = *(f32 *)((u8 *)src + 0x0) + dirA[0] * weight1;
             out[0] = x;
-            y = *(f32 *)((u8 *)src + 0x4) + direction[1] * weight1;
+            y = *(f32 *)((u8 *)src + 0x4) + dirA[1] * weight1;
             out[1] = y;
-            z = *(f32 *)((u8 *)src + 0x8) + direction[2] * weight1;
+            z = *(f32 *)((u8 *)src + 0x8) + dirA[2] * weight1;
             out[2] = z;
-            direction = (f32 *)((u8 *)directions + c * 12);
+            dirB = (f32 *)((u8 *)directions + c * 12);
             src += 0x10;
-            out[0] = x + direction[0] * weight2;
-            out[1] = y + direction[1] * weight2;
-            out[2] = z + direction[2] * weight2;
+            out[0] = x + dirB[0] * weight2;
+            out[1] = y + dirB[1] * weight2;
+            out[2] = z + dirB[2] * weight2;
             out += 3;
         }
     }
@@ -771,7 +771,6 @@ void fn_802D56D4(void *arg0) {
     extern s32 fn_802CFF64(s32);
     extern f32 lbl_804DB068[];
     extern f32 lbl_80564FF0;
-    extern f64 lbl_80564FF8;
     register void *object = arg0;
     register volatile u8 *src = *(u8 **)((u8 *)object + 0x20);
     register s32 count = *(s32 *)((u8 *)object + 0x1C);
@@ -782,34 +781,32 @@ void fn_802D56D4(void *arg0) {
         return;
     }
     {
-        double bias = lbl_80564FF8;
+        register f32 (*directions)[3] = (f32 (*)[3])lbl_804DB068;
         f32 factor = lbl_80564FF0;
         register volatile f32 *out = base;
-        f32 (*dirs)[3] = (f32 (*)[3])lbl_804DB068;
         for (i = 0; i < count; i++) {
-            u8 a = src[0xE];
-            u8 b = src[0xC];
-            u8 c = src[0xD];
-            u8 d = src[0xF];
-            f32 *d1 = dirs[b];
-            f32 *d2 = dirs[c];
-            union { double dd; unsigned int ww[2]; } ca, cd;
+            u8 a, b, c, d;
             f32 weight1, weight2;
+            f32 *dirA, *dirB;
             f32 x, y, z;
-            ca.ww[0] = 0x43300000; ca.ww[1] = a;
-            cd.ww[0] = 0x43300000; cd.ww[1] = d;
-            weight1 = factor * (f32)(ca.dd - bias);
-            weight2 = factor * (f32)(cd.dd - bias);
-            x = *(f32 *)((u8 *)src + 0x0) + d1[0] * weight1;
+            a = src[0xE];
+            b = src[0xC];
+            dirA = (f32 *)((u8 *)directions + b * 12);
+            weight1 = factor * (f32)a;
+            c = src[0xD];
+            d = src[0xF];
+            weight2 = factor * (f32)d;
+            x = *(f32 *)((u8 *)src + 0x0) + dirA[0] * weight1;
             out[0] = x;
-            y = *(f32 *)((u8 *)src + 0x4) + d1[1] * weight1;
+            y = *(f32 *)((u8 *)src + 0x4) + dirA[1] * weight1;
             out[1] = y;
-            z = *(f32 *)((u8 *)src + 0x8) + d1[2] * weight1;
+            z = *(f32 *)((u8 *)src + 0x8) + dirA[2] * weight1;
             out[2] = z;
+            dirB = (f32 *)((u8 *)directions + c * 12);
             src += 0x10;
-            out[0] = x + d2[0] * weight2;
-            out[1] = y + d2[1] * weight2;
-            out[2] = z + d2[2] * weight2;
+            out[0] = x + dirB[0] * weight2;
+            out[1] = y + dirB[1] * weight2;
+            out[2] = z + dirB[2] * weight2;
             out += 3;
         }
     }
@@ -1276,20 +1273,18 @@ void fn_802D65F8(s32 arg0, s32 arg1) {
     u8 a,b,c,d,e,f,g,h;
     s32 i;
     u8 *entries;
-    s32 second;
     extern void fn_802D63FC(void *,s32);
     fn_802D63FC((void *)arg0,arg1);
     a=bytes[0x2C]; b=bytes[0x2F]; c=bytes[0x2D]; d=bytes[0x2E];
     e=bytes[0x30]; f=bytes[0x33]; g=bytes[0x31]; h=bytes[0x32];
     bytes[0x2C]=b; bytes[0x2F]=a; bytes[0x2D]=d; bytes[0x2E]=c;
     bytes[0x30]=f; bytes[0x33]=e; bytes[0x31]=h; bytes[0x32]=g;
-    second=arg1;
-    ((void (*)(s32 *, s32, u8, u8, u8, u8, u8, u8))fn_802D657C)((s32 *)((u8 *)bytes+0x30),second,f,d,b,a,e,c);
+    ((void (*)(s32 *, s32, u8, u8, u8, u8, u8, u8))fn_802D657C)((s32 *)((u8 *)bytes+0x30),arg1,f,d,b,a,e,c);
     if((s8)bytes[8]==0x1A) fn_802D6594((void *)bytes);
     if(bytes[8]==0x13) {
         entries=*(u8 **)(bytes+0x20);
         for(i=0;i<*(s32 *)(bytes+0x1C);i++) {
-            if((entries[0xC]!=0x4C && entries[0xC]!=0x4D) || entries[0xD]!=0) goto second_label;
+            if((entries[0xC]!=0x4C && entries[0xC]!=0x4D) || entries[0xD]!=0) goto second;
             entries+=0x10;
         }
         fn_802E317C(lbl_8034C3B4);
@@ -1306,7 +1301,7 @@ void fn_802D65F8(s32 arg0, s32 arg1) {
             }
         }
     }
-second_label:
+second:
     if(bytes[8]==0x19) {
         entries=*(u8 **)(bytes+0x20);
         for(i=0;i<*(s32 *)(bytes+0x1C);i++) {
