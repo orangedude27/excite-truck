@@ -905,7 +905,6 @@ void fn_802A01C8(void *arg0, Unk802A0794Params *params) {
 #pragma push
 #pragma cplusplus on
 #pragma processor 750
-#pragma scheduling invalid_target
 extern "C" void fn_802A02F4(void *arg0, Unk802A0794Params *params) {
     class TargetObj {
     public:
