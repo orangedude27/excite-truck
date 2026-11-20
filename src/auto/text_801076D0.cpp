@@ -307,10 +307,11 @@ void nw4hbm::ut::List_Append(nw4hbm::ut::List* list, void* item) {
     }
 }
 
+#pragma optimization_level 3
 void nw4hbm::ut::List_Remove(nw4hbm::ut::List* list, void* item) {
-    const char (*file)[0x100] = (const char (*)[0x100])lbl_80328828;
-    if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(&(*file)[0], 0xcb, &(*file)[0xc]);
-    if (item == 0) Panic__Q26nw4hbm2dbFPCciPCce(&(*file)[0], 0xcc, &(*file)[0x34]);
+    const char* const file = lbl_80328828;
+    if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xcb, file + 0xc);
+    if (item == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xcc, file + 0x34);
     unsigned short offset = *(unsigned short*)((char*)list + 0xa);
     char* link = (char*)item + offset;
     void* p = *(void**)link;
@@ -323,7 +324,6 @@ void nw4hbm::ut::List_Remove(nw4hbm::ut::List* list, void* item) {
     *(void**)(link + 4) = 0;
     *(unsigned short*)((char*)list + 8) -= 1;
 }
-
 /* Return the element after item in an intrusive list, or the head when item is null. */
 void* nw4hbm::ut::List_GetNext(const nw4hbm::ut::List* list, const void* item) {
     if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328828, 0xF5, lbl_80328834);
@@ -387,6 +387,8 @@ extern "C" void InitReaderFunc__Q36nw4hbm2ut4FontFQ36nw4hbm2ut12FontEncoding(voi
 #pragma push
 #pragma use_lmw_stmw off
 bool nw4hbm::ut::ResFont::SetResource(void* resource) {
+    struct Msgs { char file[0x10]; char m61[0x38]; char m62[0x38]; };
+    const Msgs* msgs = (const Msgs*)lbl_80328888;
     const char* file = lbl_80328888;
     u32 p = (u32)this;
     s32 v5 = 1, v6 = 1, v7 = 1, v8 = 1, v9 = 1, v10 = 1;
@@ -397,7 +399,7 @@ bool nw4hbm::ut::ResFont::SetResource(void* resource) {
     if ((v8 == 0) && ((p & 0xFF800000U) != 0xC1000000U)) v7 = 0;
     if ((v7 == 0) && ((p & 0xF8000000U) != 0xD0000000U)) v6 = 0;
     if ((v6 == 0) && ((p & 0xFFFFC000U) != 0xE0000000U)) v5 = 0;
-    if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)((unsigned int)file + 0), 0x61, file + 0x10, (void*)this);
+    if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x61, file + 0x10, this);
     u32 q = (u32)resource;
     s32 v4b = 1, v5b = 1, v6b = 1, v7b = 1, v8b = 1, v9b = 1;
     u32 t10 = q & 0xFF000000;
@@ -407,11 +409,11 @@ bool nw4hbm::ut::ResFont::SetResource(void* resource) {
     if ((v7b == 0) && ((q & 0xFF800000U) != 0xC1000000U)) v6b = 0;
     if ((v6b == 0) && ((q & 0xF8000000U) != 0xD0000000U)) v5b = 0;
     if ((v5b == 0) && ((q & 0xFFFFC000U) != 0xE0000000U)) v4b = 0;
-    if (v4b == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)((unsigned int)file + 0), 0x62, file + 0x48, (void*)resource);
-    if (q & 0x1F) Panic__Q26nw4hbm2dbFPCciPCce((const char*)((unsigned int)file + 0), 0x63, file + 0x80, (void*)resource);
+    if (v4b == 0) Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x62, file + 0x48, resource);
+    if (q & 0x1F) Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x63, file + 0x80, resource);
     s32 existing = *(s32*)((u8*)this + 0x10);
     void* info = 0;
-    if (existing != 0) { Warning__Q26nw4hbm2dbFPCciPCce((const char*)((unsigned int)file + 0), 0x6B, file + 0xCC); return false; }
+    if (existing != 0) { Warning__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x6B, file + 0xCC); return false; }
     if (*(u32*)resource == 0x52464E55) {
         u8* block = (u8*)resource + *(u16*)((u8*)resource + 0xC);
         s32 i = 0;
@@ -424,15 +426,15 @@ bool nw4hbm::ut::ResFont::SetResource(void* resource) {
             if ((d == 0) && ((r & 0xFF800000U) != 0xC1000000U)) c = 0;
             if ((c == 0) && ((r & 0xF8000000U) != 0xD0000000U)) b = 0;
             if ((b == 0) && ((r & 0xFFFFC000U) != 0xE0000000U)) a = 0;
-            if (a == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)((unsigned int)file + 0), 0x7C, file + 0xEC, (void*)block);
+            if (a == 0) Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x7C, file + 0xEC, block);
             if (*(u32*)block == 0x46494E46) { info = block + 8; break; }
             ++i; block += *(u32*)(block + 4);
         }
     } else {
         u16 version = *(u16*)((u8*)resource + 6);
         if (version == 0x104) {
-            if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(resource, 0x52464E54, 0x104, 2) == 0) { Warning__Q26nw4hbm2dbFPCciPCce((const char*)((unsigned int)file + 0), 0x96, file + 0x128); return false; }
-        } else if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(resource, 0x52464E54, 0x102, 2) == 0) { Warning__Q26nw4hbm2dbFPCciPCce((const char*)((unsigned int)file + 0), 0xA0, file + 0x128); return false; }
+            if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(resource, 0x52464E54, 0x104, 2) == 0) { Warning__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x96, file + 0x128); return false; }
+        } else if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(resource, 0x52464E54, 0x102, 2) == 0) { Warning__Q26nw4hbm2dbFPCciPCce(msgs->file, 0xA0, file + 0x128); return false; }
         info = Rebuild__Q36nw4hbm2ut7ResFontFPQ36nw4hbm2ut16BinaryFileHeader(resource);
     }
     if (info == 0) return false;
@@ -1631,7 +1633,7 @@ extern "C" s32 fn_8010C7EC(s32 object, s32 deleteFlag) {
     return object;
 }
 
-#pragma opt_propagation off
+#pragma optimization_level 2
 extern "C" s32 fn_8010C82C(s32 arg0, s32 arg1, void *arg2) {
  extern const char lbl_80329458[]; extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*,int,const char*,...);
  extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(s32), GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80105C2C(s32), GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(s32), GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(s32), fn_8010D9E4(s32);
@@ -1639,7 +1641,7 @@ extern "C" s32 fn_8010C82C(s32 arg0, s32 arg1, void *arg2) {
  extern void SetCursor__Q36nw4hbm2ut10CharWriterFff(s32,f32,f32); extern void SetCursorX__Q36nw4hbm2ut10CharWriterFf(s32,f32);
  const char* file = lbl_80329458;
  s32 p = (s32)arg2;
- if (arg1 >= 32) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x55, file + 0x18);
+ if (arg1 >= 32) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x55, file + 0x18);
  register u32 top = (u32)p & 0xFF000000U;
  {
   register int r4 = 1, r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1;
@@ -1649,7 +1651,7 @@ extern "C" s32 fn_8010C82C(s32 arg0, s32 arg1, void *arg2) {
   if (r7 == 0 && ((u32)p & 0xFF800000U) != 0xC1000000U) r6 = 0;
   if (r6 == 0 && ((u32)p & 0xF8000000U) != 0xD0000000U) r5 = 0;
   if (r5 == 0 && ((u32)p & 0xFFFFC000U) != 0xE0000000U) r4 = 0;
-  if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x56, file + 0x40, arg2);
+  if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x56, file + 0x40, arg2);
  }
  switch (arg1) {
  case 10: {
@@ -1662,7 +1664,7 @@ extern "C" s32 fn_8010C82C(s32 arg0, s32 arg1, void *arg2) {
       a == 0xC1000000U ||
       b == 0xD0000000U ||
       ((u32)p & 0xFFFFC000U) == 0xE0000000U) valid = 1;
-  if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xC3, file + 0x40, arg2);
+  if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xC3, file + 0x40, arg2);
   s32 obj = *(s32*)p; f32 y = *(f32*)(p+8);
   SetCursor__Q36nw4hbm2ut10CharWriterFff(obj, y, GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(obj) + fn_8010D9E4(obj)); return 3;
  }
@@ -1676,7 +1678,7 @@ extern "C" s32 fn_8010C82C(s32 arg0, s32 arg1, void *arg2) {
       a == 0xC1000000U ||
       b == 0xD0000000U ||
       ((u32)p & 0xFFFFC000U) == 0xE0000000U) valid = 1;
-  if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xD3, file + 0x40, arg2);
+  if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xD3, file + 0x40, arg2);
   s32 obj = *(s32*)p, font = GetFont__Q36nw4hbm2ut10CharWriterCFv_8010DB5C(obj);
   if (font > 0) {
    f32 fw = IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(obj) ? GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80105C2C(obj) : GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(obj);
@@ -1693,7 +1695,7 @@ extern "C" s32 fn_8010C82C(s32 arg0, s32 arg1, void *arg2) {
  default: return 0;
  }
 }
-#pragma opt_propagation reset
+#pragma optimization_level reset
 extern "C" s32 fn_8010CBAC(void *self, void *arg0, s32 arg1, void *arg2) {
  extern const char lbl_80329458[];
  extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*,int,const char*,...);
@@ -7653,21 +7655,21 @@ extern "C" f32 fn_80115848(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
          } else {
              var_r10 = 0;
          }
-         if ((var_r10 == 0) && ((u32) (((s32) arg0 & 0xF8000000) + 0x70000000) >= 1U)) {
-             var_r9 = 0;
-         }
-         if ((var_r9 == 0) && ((u32) (temp_r11 + 0x40000000) >= 1U)) {
-             var_r8 = 0;
-         }
-         if ((var_r8 == 0) && ((u32) (((s32) arg0 & 0xFF800000) + 0x3F000000) >= 1U)) {
-             var_r7 = 0;
-         }
-         if ((var_r7 == 0) && ((u32) (((s32) arg0 & 0xF8000000) + 0x30000000) >= 1U)) {
-             var_r6 = 0;
-         }
-         if ((var_r6 == 0) && ((u32) (((s32) arg0 & 0xFFFFC000) + 0x20000000) >= 1U)) {
-             var_r5 = 0;
-         }
+                 if ((var_r10 == 0) && ((u32) (((s32) arg0 & 0xF8000000) + 0x70000000) != 0U)) {
+            var_r9 = 0;
+        }
+        if ((var_r9 == 0) && ((u32) (temp_r11 + 0x40000000) != 0U)) {
+            var_r8 = 0;
+        }
+        if ((var_r8 == 0) && ((u32) (((s32) arg0 & 0xFF800000) + 0x3F000000) != 0U)) {
+            var_r7 = 0;
+        }
+        if ((var_r7 == 0) && ((u32) (((s32) arg0 & 0xF8000000) + 0x30000000) != 0U)) {
+            var_r6 = 0;
+        }
+        if ((var_r6 == 0) && ((u32) (((s32) arg0 & 0xFFFFC000) + 0x20000000) != 0U)) {
+            var_r5 = 0;
+        }
          if (var_r5 == 0) {
              Panic__Q26nw4hbm2dbFPCciPCce(base + 0x30, 0x224, base + 0x48, arg0);
          }
