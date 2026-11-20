@@ -360,12 +360,13 @@ void fn_802CECF4(unsigned int targetIndex) {
 #pragma push
 #pragma scheduling 750
 void fn_802CED50(int arg0, int arg1, int arg2, int arg3) {
+    #pragma scheduling on
     volatile unsigned char *state = lbl_804C5710;
     *(volatile int *)(state + 4) = arg0;
     *(volatile int *)(state + 8) = arg1;
     *(volatile int *)(state + 0xC) = arg2;
     *(volatile int *)(state + 0x10) = arg3;
-    *(volatile unsigned char *)lbl_804C5710 = 1;
+    state[0] = 1;
     state[1] = 1;
 }
 #pragma pop
@@ -1124,18 +1125,17 @@ void fn_802CFFAC(int arg0, int arg1, int arg2) {
     volatile unsigned char sp8;
     unsigned long packed;
     unsigned char b3;
-    register unsigned char *base = lbl_804C97B0;
 
     packed = fn_802CE9FC(arg0, arg1, arg2, 0);
     spB = (unsigned char)packed;
-    sp8 = (unsigned char)(packed >> 24);
-    sp9 = (unsigned char)(packed >> 16);
-    b3 = (unsigned char)(packed >> 8);
-    base[1] = sp8;
-    base[2] = sp9;
-    base[3] = b3;
-    base[4] = (unsigned char)packed;
-    base[0x1C] = 1;
+    sp8 = (unsigned char)((packed >> 24) & 0xFF);
+    sp9 = (unsigned char)((packed >> 16) & 0xFF);
+    b3 = (unsigned char)((packed >> 8) & 0xFF);
+    lbl_804C97B0[1] = sp8;
+    lbl_804C97B0[2] = sp9;
+    lbl_804C97B0[3] = b3;
+    lbl_804C97B0[4] = (unsigned char)packed;
+    lbl_804C97B0[0x1C] = 1;
     spA = b3;
 }
 void fn_802D0014(float startValue, float endValue, float delta) {
@@ -1252,16 +1252,16 @@ void fn_802D01E0(int viewportX, int viewportY, int viewportWidth, int viewportHe
 #pragma scheduling on
 void fn_802D02F8(int arg0, signed char arg1) {
     extern unsigned char lbl_804C9778[];
-    volatile unsigned char s0, s1, s2, s3;
+    volatile unsigned char s2, s3;
+    unsigned char s0, s1;
     unsigned int value;
-    unsigned char t;
     lbl_804C9778[0x2d] = arg1;
     lbl_804C9778[0x2c] = 1;
     value = ((unsigned int (*)(unsigned int))fn_802CEA1C)((unsigned int)arg0);
     lbl_804C9778[0x31] = value;
-    t = (unsigned char)(value >> 24); s3 = t;
-    t = (unsigned char)(value >> 16); s2 = t;
-    t = (unsigned char)(value >> 8); s1 = t;
+    s3 = (unsigned char)(value >> 24);
+    s2 = (unsigned char)(value >> 16);
+    s1 = (unsigned char)(value >> 8);
     lbl_804C9778[0x2e] = s3;
     lbl_804C9778[0x2f] = s2;
     lbl_804C9778[0x30] = s1;
@@ -1296,7 +1296,6 @@ extern void PSVECCrossProduct(float *, float *, float *);
 extern float PSVECMag();
 #pragma use_lmw_stmw off
 void fn_802D03F4(register float *arg0, float arg1) {
-    register float *b = arg0 + 6;
     unsigned long *src = (unsigned long *)arg0;
     unsigned long t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
     float sp[3];
@@ -1314,7 +1313,7 @@ void fn_802D03F4(register float *arg0, float arg1) {
     lbl_804C56C0[4] = t4; lbl_804C56C0[5] = t5; lbl_804C56C0[6] = t6; lbl_804C56C0[7] = t7;
     lbl_804C56C0[8] = t8; lbl_804C56C0[9] = t9; lbl_804C56C0[10] = t10; lbl_804C56C0[11] = t11;
     sp[0] = lbl_80564F88; sp[1] = lbl_80564F8C; sp[2] = lbl_80564F88;
-    PSVECCrossProduct(sp, b, lbl_804C56F0);
+    PSVECCrossProduct(sp, arg0 + 6, lbl_804C56F0);
     mag = PSVECMag(lbl_804C56F0);
     mag = mag > lbl_80564FC0 ? mag : lbl_80564FC0;
     scale = lbl_80564F8C / mag;
@@ -1334,24 +1333,26 @@ void fn_802D050C(void* stateBlock) {
     lbl_8055FD54 = stateBlock;
 }
 
+#pragma push
+#pragma opt_lifetimes on
 int fn_802D0514(void *source) {
     extern unsigned long lbl_8055FDAC;
     extern void *lbl_8055FDB0;
-    unsigned long tmp;
+    register unsigned int *src;
+    register unsigned char *dst;
+    register unsigned char *aux;
+    int index;
     int next;
-    unsigned int *src;
-    unsigned char *dst;
     unsigned int a;
     unsigned int b;
     unsigned int c;
-    unsigned char *aux;
-    tmp = lbl_8055FDAC;
-    if ((int)tmp >= 0x800) return 0;
+    index = (int)lbl_8055FDAC;
+    if (index >= 0x800) return 0;
     src = (unsigned int *)source;
-    dst = (unsigned char *)lbl_8055FDB0 + tmp * 0x4C;
+    dst = (unsigned char *)lbl_8055FDB0 + index * 0x4C;
     a = src[0];
     b = src[1];
-    next = (int)tmp + 1;
+    next = index + 1;
     lbl_8055FDAC = next;
     *(unsigned int *)(dst + 0) = a;
     c = src[2];
@@ -1375,8 +1376,7 @@ int fn_802D0514(void *source) {
     c = src[11];
     *(unsigned int *)(dst + 40) = b;
     *(unsigned int *)(dst + 44) = c;
-    tmp = (unsigned long)((unsigned char *)&lbl_804C97D0 - 1);
-    aux = (unsigned char *)tmp;
+    aux = (unsigned char *)&lbl_804C97D0 - 1;
     dst[0x30] = *++aux;
     dst[0x31] = aux[1];
     dst[0x32] = aux[2];
@@ -1392,11 +1392,10 @@ int fn_802D0514(void *source) {
     *(float *)(dst + 0x48) = *(float *)(aux + 24);
     return next;
 }
-
-#pragma use_lmw_stmw off
+#pragma pop
 void fn_802D0610(int arg0) {
-    int *rec32;
-    unsigned char *rec8;
+    register int *rec32;
+    register unsigned char *rec8;
     float tmp[12];
 
     if ((unsigned)arg0 == (unsigned)lbl_8055FD8C) {
@@ -1439,8 +1438,7 @@ void fn_802D0610(int arg0) {
     }
     lbl_8055FD8C = arg0;
 }
-
-#pragma opt_lifetimes on
+#pragma pop
 void fn_802D07E4(char* arg0, int arg1) {
     extern unsigned long lbl_8055D0B8;
     extern int lbl_8055D0BC;
@@ -1500,7 +1498,7 @@ extern float lbl_80564F80;
 extern char lbl_8034BD18[];
 extern int lbl_804C9760[];
 extern unsigned char lbl_804C9830[];
-void fn_802D0914(int, short, short);
+void fn_802D0914(int, int, int);
 void fn_802D09E4(void);
 int fn_802E2C20(void);
 void fn_802E30C8(const char *, ...);
@@ -1550,7 +1548,7 @@ void fn_802D0910(int, int, int, int, int, int) {
 }
 
 #pragma use_lmw_stmw on
-void fn_802D0914(int arg0, short arg1, short arg2) {
+void fn_802D0914(int arg0, int arg1, int arg2) {
     extern int fn_802E3A64(int, unsigned char *, int, int, int, int, int, int);
     unsigned char buffer[0x12];
     int first = arg0;
@@ -2071,8 +2069,7 @@ extern double lbl_80564FA0;
 void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float scale) {
     unsigned char rgba[4];
     float vec[3];
-    float x, y, k, z, mag;
-    float bx, by, bz;
+    float bx, by, bz, x, y, z, mag, k, nz, vz, vx, vy;
     rgba[1]=color[1]; rgba[0]=color[0]; rgba[2]=color[2]; rgba[3]=color[3];
     GXInitLightColor(light, rgba);
     x=a[0]+b[0];
@@ -2081,11 +2078,14 @@ void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float sc
     vec[0]=x; vec[1]=y; vec[2]=z;
     mag=PSVECMag(vec);
     mag = mag > lbl_80564F80 ? mag : lbl_80564F80;
-    bx=b[0]; by=b[1]; bz=-b[2];
     k=lbl_80564F90/mag;
-    z=vec[2]*k; x=vec[0]*k; y=vec[1]*k;
+    bx=b[0]; bz=-b[2];
+    vz=vec[2]; vx=vec[0]; vy=vec[1];
+    z=vz*k; x=vx*k; y=vy*k;
+    by=b[1];
+    nz=-z;
     vec[0]=x; vec[1]=y; vec[2]=z;
-    GXGetLightDir_Internal(light,bx,by,bz,x,y,-z);
+    GXGetLightDir_Internal(light,bx,by,bz,x,y,nz);
     {
         float v=scale*lbl_80564F94;
         GXInitLightAttn(light,lbl_80564F88,lbl_80564F88,lbl_80564F8C,v,lbl_80564F88,lbl_80564F8C-v);
@@ -2252,7 +2252,7 @@ extern float lbl_80564F90, lbl_80564FD8, lbl_80564F88;
 #pragma push
 #pragma dont_inline on
 void fn_802D1C04(void) {
-    unsigned char *base = (unsigned char *)lbl_804C5650;
+    register unsigned char *base = (unsigned char *)lbl_804C5650;
     if (*(unsigned char *)&lbl_8055FD70 != 0) {
         Xform_802D1C04 inv;
         Xform_802D1C04 comb;
@@ -2267,12 +2267,12 @@ void fn_802D1C04(void) {
         Mtx33_802D1C04 rot;
         float nrm[12];
         Mtx24_802D1C04 tex;
-        Xform_802D1C04 *src = (Xform_802D1C04 *)(base + 0x70);
+        register Xform_802D1C04 *src = (Xform_802D1C04 *)(base + 0x70);
         Xform_802D1C04 *b;
         float t;
         float k;
         inv.r = src->r;
-        *(volatile unsigned char *)&lbl_8055FD70 = 0;
+        lbl_8055FD70 = 0;
         t = inv.r.m[1]; inv.r.m[1] = inv.r.m[3]; inv.r.m[3] = t;
         t = inv.r.m[2]; inv.r.m[2] = inv.r.m[6]; inv.r.m[6] = t;
         t = inv.r.m[5]; inv.r.m[5] = inv.r.m[7]; inv.r.m[7] = t;
@@ -2371,6 +2371,10 @@ void fn_802D2218(void) {
         int height;
         unsigned char b2c, b2d, b2e, b2f, b30, b31;
     } GxState;
+    typedef struct GxWhole {
+        char pad0[0x4128];
+        GxState state;
+    } GxWhole;
     float sp90[12];
     float sp60[12];
     float sp20[16];
@@ -2400,13 +2404,15 @@ void fn_802D2218(void) {
     unsigned char temp_r6_2;
     unsigned char temp_r7_2;
     register unsigned char *base;
+    register GxWhole *whole;
     register GxState *state;
     unsigned char *temp_r3_2;
     unsigned char *temp_r3_3;
     unsigned char *temp_r4_2;
     unsigned char *temp_r7;
     base = (unsigned char *)lbl_804C5650;
-    state = (GxState *)(base + 0x4128);
+    whole = (GxWhole *)lbl_804C5650;
+    state = &whole->state;
     if ((state->b2d != 0) || (state->b2c != 0)) {
         fn_802D1678();
         sp90[0] = lbl_80564F8C;
@@ -2423,7 +2429,7 @@ void fn_802D2218(void) {
         sp90[11] = lbl_80564F88;
         fn_802D0DD4(sp60, sp90);
         GXLoadPosMtxImm(sp60, 0);
-        state = (GxState *)(base + 0x4128);
+        state = &whole->state;
         screenWidth = state->width;
         screenHeight = state->height;
         temp_f31 = lbl_80564F94 * (float)screenWidth;
@@ -2504,7 +2510,7 @@ void fn_802D2218(void) {
         GXSetTevOrder(0, 0, 0, 4);
         GXSetTevOp(0, 0);
         GXSetDstAlpha(1, lbl_8055FD60);
-        temp_r3_2 = base + 0x4128;
+        temp_r3_2 = (unsigned char *)state;
         temp_r3_2[0x2C] = 0;
         temp_r3_2[0x2D] = 0;
         fn_802CFF50();
@@ -2684,8 +2690,7 @@ void fn_802D2B0C(void) {
     int zero;
     int t4;
     unsigned char t8, t9, tA, tB, tC, tD;
-    unsigned char *src;
-    unsigned char *dst;
+    zero = 0;
     if (*(unsigned char *)&lbl_8055FDB4 == 0) {
         diff = memcmp(lbl_804C9930, lbl_804C5700, 0x10);
         if (((unsigned int)(unsigned int)(0 - diff | diff) >> 31) != 0) {
@@ -2740,25 +2745,22 @@ void fn_802D2B0C(void) {
             default:
                 break;
             }
-            zero = 0;
-            src = lbl_804C5700;
-            dst = lbl_804C9930;
-            t4 = *(int *)(src + 4);
-            t8 = src[8];
-            t9 = src[9];
-            tA = src[0xA];
-            tB = src[0xB];
-            tC = src[0xC];
-            tD = src[0xD];
-            src[0] = (unsigned char)zero;
+            t4 = *(int *)(lbl_804C5700 + 4);
+            t8 = lbl_804C5700[8];
+            t9 = lbl_804C5700[9];
+            tA = lbl_804C5700[0xA];
+            tB = lbl_804C5700[0xB];
+            tC = lbl_804C5700[0xC];
+            tD = lbl_804C5700[0xD];
+            lbl_804C5700[0] = (unsigned char)zero;
             lbl_804C9930[0] = (unsigned char)zero;
-            *(int *)(dst + 4) = t4;
-            dst[8] = t8;
-            dst[9] = t9;
-            dst[0xA] = tA;
-            dst[0xB] = tB;
-            dst[0xC] = tC;
-            dst[0xD] = tD;
+            *(int *)(lbl_804C9930 + 4) = t4;
+            lbl_804C9930[8] = t8;
+            lbl_804C9930[9] = t9;
+            lbl_804C9930[0xA] = tA;
+            lbl_804C9930[0xB] = tB;
+            lbl_804C9930[0xC] = tC;
+            lbl_804C9930[0xD] = tD;
         }
     }
     fn_802D1C04();
@@ -3354,7 +3356,7 @@ void fn_802D3D94(int texMtxIndex, void *mtx) {
     GXLoadTexMtxImm(mtx, texMtxIndex * 3 + 30, 1);
 }
 
-#pragma opt_propagation off
+#pragma opt_propagation on
 void fn_802D3DAC(void) {
     int id;
 
@@ -3366,7 +3368,6 @@ void fn_802D3DAC(void) {
     GXInitVtxDescList(id);
     GXDisableBreakPt();
 }
-#pragma opt_propagation reset
 void fn_802D3DF8(int texObjBase, signed char scaleExp, float scaleS, float scaleT) {
     /* Set indirect texture matrix 1 from scale factors and load tex object (+0x24) into map 2. */
     float indMtx[2][3];
@@ -3467,16 +3468,18 @@ extern char lbl_8055D100;
     extern int lbl_804C9760[];
 
 void fn_802D2D1C(void) {
-    int *si = (int *)lbl_804C56C0;
-    int *di = (int *)lbl_804CA2D8;
-    int w0 = si[0], w1 = si[1], w2 = si[2], w3 = si[3], w4 = si[4];
-    int w5 = si[5], w6 = si[6], w7 = si[7], w8 = si[8];
-    register float *src = (float *)lbl_804C56C0;
-    register float *dst = (float *)lbl_804CA2D8;
+    float *src = (float *)lbl_804C56C0;
+    float *dst = (float *)lbl_804CA2D8;
     float t;
-    di[1] = w1; di[2] = w2; di[3] = w3;
-    di[5] = w5; di[6] = w6; di[7] = w7;
-    di[0] = w0; di[4] = w4; di[8] = w8;
+    ((int *)dst)[1] = ((int *)src)[1];
+    ((int *)dst)[2] = ((int *)src)[2];
+    ((int *)dst)[3] = ((int *)src)[3];
+    ((int *)dst)[5] = ((int *)src)[5];
+    ((int *)dst)[6] = ((int *)src)[6];
+    ((int *)dst)[7] = ((int *)src)[7];
+    ((int *)dst)[0] = ((int *)src)[0];
+    ((int *)dst)[4] = ((int *)src)[4];
+    ((int *)dst)[8] = ((int *)src)[8];
     t = dst[1]; dst[1] = dst[3]; dst[3] = t;
     t = dst[2]; dst[2] = dst[6]; dst[6] = t;
     t = dst[5]; dst[5] = dst[7]; dst[7] = t;
