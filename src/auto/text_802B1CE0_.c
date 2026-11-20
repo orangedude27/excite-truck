@@ -597,14 +597,15 @@ void fn_802B28BC(int *entries, int count) {
 #undef RandomIntInRange
 }
 
+  #pragma cplusplus off
  #pragma push
  #pragma optimization_level 3
  #pragma opt_pointer_aliasing on
-void **fn_802B2934(void *arg0, void **arg1) {
+ void **fn_802B2934(void *arg0, void **arg1) {
     void *val = *arg1;
     int count = ((int *)arg0)[1];
     void **data = *(void ***)arg0;
-    int next = count + 1;
+    register int next = count + 1;
     ((int *)arg0)[1] = next;
     data[count] = val;
     return &data[count];
@@ -625,13 +626,14 @@ extern void fn_802E317C(const char *, ...);
 #pragma dont_inline on
 extern "C" void *fn_802B2958(void *arg0, void *arg1) {
     char *base = lbl_8034A288;
-    char *obj = (char *)arg0;
     char *p = (char *)fn_801284F8(12, base + 0x70);
-    const char *name;
     void *item, *child;
+    const char *name;
     int key, value, valid;
+    char *obj = (char *)arg0;
     float *entry;
-    float one, zero, radius, sn, c, angle;
+    register float radius, sn, angle, c;
+    double one, zero;
     unsigned int i;
     if (p != 0) {
         name = ((ParticleConfig *)arg1)->getText(lbl_8055CDE0);
@@ -678,15 +680,15 @@ extern "C" void *fn_802B2958(void *arg0, void *arg1) {
         sn = (float)sin(angle);
         radius = entry[9];
         entry[0] = c * radius;
-        entry[1] = zero * radius;
+        entry[1] = (float)zero * radius;
         entry[2] = -sn * radius;
         radius = entry[9];
-        entry[3] = zero * radius;
-        entry[4] = one * radius;
-        entry[5] = zero * radius;
+        entry[3] = (float)zero * radius;
+        entry[4] = (float)one * radius;
+        entry[5] = (float)zero * radius;
         radius = entry[9];
         entry[6] = sn * radius;
-        entry[7] = zero * radius;
+        entry[7] = (float)zero * radius;
         entry[8] = c * radius;
     }
     *(char *)(obj + 0x2A0) = 0;
