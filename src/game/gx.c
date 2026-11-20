@@ -557,7 +557,7 @@ void fn_802CF10C(void) {
     }
 }
 
-#pragma dont_inline fn_802CF5A8
+#pragma dont_inline reset
 
 void fn_802CF5A8(void) {
 #define sGxResetRegistered lbl_8055D0FF
@@ -603,8 +603,8 @@ void fn_802CF5FC(void) {
     /* No-op hook in the global teardown path (fn_802C2B18); nothing to release. */
 }
 
-#pragma push
-#pragma dont_inline on
+#pragma opt_lifetimes on
+#pragma dont_inline reset
 void fn_802CF600(void) {
     extern char lbl_8034BD18[], lbl_8055D104;
     extern int lbl_8055FD7C, lbl_8055FD48, lbl_8055FD4C, lbl_8055FD2C, lbl_8055FD6C, lbl_8055FD40;
@@ -625,6 +625,7 @@ void fn_802CF600(void) {
     extern int VIConfigure(void *), VISetBlack(int), VIFlush(void);
     extern void fn_802E30C8(const char *, ...);
     char *base = lbl_8034BD18;
+    int zero = 0;
     int negative;
     void *buffer;
     int size;
@@ -689,11 +690,11 @@ void fn_802CF600(void) {
     fn_80127468();
     fn_80127C90(fn_802D9A50, &lbl_8055D104);
     fn_802DB168();
-    lbl_8055FD48 = 0;
-    VISetBlack(0);
+    lbl_8055FD48 = zero;
+    VISetBlack(zero);
     VIFlush();
 }
-#pragma pop
+#pragma dont_inline on
 void fn_802CF830(void) {
 }
 
