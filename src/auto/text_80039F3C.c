@@ -1035,15 +1035,17 @@ int fn_8003B9CC(void *arg0, void *arg1)
 {
   const char *msg = lbl_80302848;
   unsigned char *base = lbl_8037B820;
+  int offset;
   int slot = lbl_8055D8E8;
-  int offset = slot * 0x20;
-  unsigned char *entry = base + offset;
+  unsigned char *entry;
   unsigned char *callbackEntry;
   unsigned int one = 1;
-  unsigned int flag = entry[8];
+  unsigned int flag;
   int next;
-  int index;
   int result;
+  offset = slot * 0x20;
+  entry = base + offset;
+  flag = entry[8];
   lbl_8055D8E0 = one;
   if ((((-flag) | flag) >> 31) == 1U)
   {
@@ -1069,15 +1071,9 @@ int fn_8003B9CC(void *arg0, void *arg1)
   {
     lbl_8055D8E8 = 0;
   }
-  callbackEntry = ((unsigned char *) lbl_8037B820) + (slot * 0x20);
-  index = lbl_8055D8E4 + 1;
-  lbl_8055D8E4 = index;
-  if (index >= 4)
-  {
-    index = 0;
-    lbl_8055D8E4 = 0;
-  }
-  lbl_8055D8FC[index * 0x20] = 0xAB;
+  callbackEntry = (unsigned char *)&((DVDLowContext *)lbl_8037B820)[slot];
+  nextCommandBuf();
+  lbl_8055D8FC[lbl_8055D8E4 * 0x20] = 0xAB;
   *((unsigned int *) ((lbl_8055D8FC + (lbl_8055D8E4 * 0x20)) + 4)) = (unsigned int) arg0;
   result = IOS_IoctlAsync(lbl_80558E18, 0xAB, lbl_8055D8FC + (lbl_8055D8E4 * 0x20), 0x20, 0, 0, (void (*)(int, void *)) doTransactionCallback, callbackEntry);
   if (result != 0)
