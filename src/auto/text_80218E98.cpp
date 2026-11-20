@@ -2266,48 +2266,40 @@ extern "C" void fn_8021BC20(void *arg0, void *arg1) {
     f32 sp14;
     f32 sp10;
     s32 sp8;
-    void *temp_r4_2;
-    s32 temp_r5;
-    s32 temp_r28;
-    s32 var_r27;
-    s32 var_r26;
-    s32 temp_r25;
-    s32 var_r29;
-    s32 temp_r30;
-    s32 bound;
-
-    temp_r4_2 = *(void **)((u8 *)arg0 + 0x254);
-    temp_r28 = *(s32 *)((u8 *)arg0 + 4);
-    temp_r5 = *(s32 *)((u8 *)temp_r4_2 + 0x10);
-    temp_r30 = *(s32 *)((u8 *)temp_r4_2 + 0x20);
-    var_r26 = temp_r30 * temp_r5;
-    var_r27 = *(s32 *)((u8 *)arg0 + 8);
-    bound = var_r26 + temp_r5;
-    if (*(s32 *)((u8 *)temp_r4_2 + 8) >= bound) {
-        return;
+    s32 end;
+    s32 width;
+    s32 x;
+    s32 i;
+    s32 n;
+    void *info = *(void **)((u8 *)arg0 + 0x254);
+    width = *(s32 *)((u8 *)arg0 + 4);
+    n = *(s32 *)((u8 *)info + 0x10);
+    i = *(s32 *)((u8 *)info + 0x20) * n;
+    x = *(s32 *)((u8 *)arg0 + 8);
+    end = i + n;
+    if (*(s32 *)((u8 *)info + 8) < end) {
+        end = *(s32 *)((u8 *)info + 8);
     }
-    var_r29 = *(s32 *)((u8 *)temp_r4_2 + 8);
-    temp_r30 = 0;
+    s32 zero = 0;
 
-    for (; var_r26 < var_r29;
-         var_r26++, var_r27 += *(s32 *)((u8 *)arg0 + 0x250)) {
-        sp18 = temp_r30;
-        temp_r25 = fn_8022D850(*(void **)((u8 *)arg0 + 0x254),
-            var_r26, *(s32 *)((u8 *)arg0 + 0x25C), &sp18);
+    for (; i < end; i++, x += *(s32 *)((u8 *)arg0 + 0x250)) {
+        sp18 = zero;
+        s32 obj = fn_8022D850(*(void **)((u8 *)arg0 + 0x254),
+            i, *(s32 *)((u8 *)arg0 + 0x25C), &sp18);
         if (sp18 > 2) {
             sp18 -= 3;
-            fn_80230C30(&sp14, &sp10, temp_r28 - 0x1C,
-                var_r27 + *(s32 *)((u8 *)arg0 + 0x260));
+            fn_80230C30(&sp14, &sp10, width - 0x1C,
+                x + *(s32 *)((u8 *)arg0 + 0x260));
             if (*(s32 *)((u8 *)arg0 + 0x258) != 0) {
                 fn_802C5320(*(s32 *)((u8 *)arg0 + 0x258),
                     sp18 % fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x258)),
                     sp14, sp10, lbl_805634A8, lbl_805634FC, lbl_805634FC);
             }
         }
-        sp8 = temp_r30;
+        sp8 = zero;
         ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, s32, f32))fn_8022BAD0)(
-            *(s32 *)((u8 *)arg0 + 0x244), temp_r28, var_r27,
-            0, 0, 0, temp_r25, sp18, sp8, 1.0f);
+            *(s32 *)((u8 *)arg0 + 0x244), width, x,
+            0, 0, 0, obj, sp18, sp8, 1.0f);
     }
 }
 #pragma scheduling on
@@ -5310,8 +5302,8 @@ extern "C" void fn_80221544(void *arg0, s32 arg1) {
         u8 pad0[4]; s32 x; s32 y; u8 padC[4]; s32 end;
         u8 pad14[0x230]; Child *child; s32 texture; s32 overlay; s32 state; s32 flag;
     };
-    s32 a1 = arg1;
     Object *self = (Object *)arg0;
+    s32 a1 = arg1;
     fn_802C3034(a1);
     if (self->flag == 0) {
         fn_80228E80(a1, self->texture, self->x, self->y,
@@ -7253,7 +7245,7 @@ extern "C" void *fn_80224D40(void *obj, s32 deleteFlags) {
     }
     return obj;
 }
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_80224DDC(void *arg0, f32 x, f32 y, f32 z) {
     f32 result[11];
     f32 scaled[3];
@@ -7273,6 +7265,7 @@ extern "C" void fn_80224DDC(void *arg0, f32 x, f32 y, f32 z) {
     ((void (*)(void *, void *, f32, f32))fn_80015A20)(pr, ps, sx, sy);
     fn_80015B20(handle, pr, handle);
 }
+#pragma scheduling invalid_target
 extern "C" f32 lbl_80563544;
 extern "C" void fn_80232C50(char *, s32, s32, s32, f32, f32, f32, f32, f32, f32);
 #pragma push
@@ -8128,7 +8121,7 @@ extern "C" void fn_80226F94(void *arg0) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_80227044(void *arg0, f32 x, f32 y, f32 z) {
     f32 result[11];
     f32 scaled[3];
@@ -8136,14 +8129,14 @@ extern "C" void fn_80227044(void *arg0, f32 x, f32 y, f32 z) {
     void *tmp = fn_8022EE9C();
     f32 k = lbl_805634F8;
     *(void **)((u8 *)arg0 + 0x25C) = tmp;
-    f32 sz = k * z;
-    f32 sy = k * y;
     f32 sx = k * x;
+    f32 sy = k * y;
+    f32 sz = k * z;
     scaled[0] = sx;
     scaled[1] = sy;
     scaled[2] = sz;
     void *handle = *(void **)((u8 *)arg0 + 0x25C);
-    ((void (*)(void *, void *, f32, f32))fn_80015A20)(&result[0], &scaled[0], sx, sy);
+    ((void (*)(void *, void *))fn_80015A20)(&result[0], &scaled[0]);
     fn_80015B20(handle, &result[0], handle);
 }
 #pragma pop
