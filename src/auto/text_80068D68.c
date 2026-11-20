@@ -1125,7 +1125,7 @@ static inline u8 hh_get_trans_status(s32 result) {
 extern void fn_8006E6E4(void *);
 extern void fn_80071450(void *);
   extern void fn_80070954(u32 code, void *msg, u16 param);
-  extern char lbl_803196B8[];
+  extern char lbl_803196B8[1];
 extern char lbl_803164F4[];
 extern char lbl_80319D48[];
 extern char lbl_80319EC0[];
@@ -8514,7 +8514,6 @@ void btm_acl_timeout(TIMER_LIST_ENT *p_tle) {
     }
 }
 
-#pragma push
 #pragma optimization_level 3
 UINT16 btm_get_max_packet_size(BD_ADDR addr) {
     u32 i;
@@ -8527,9 +8526,11 @@ UINT16 btm_get_max_packet_size(BD_ADDR addr) {
 loop:
     if (p[0x119] == 0)
         goto next;
-    if (memcmp(p + 8, addr, 6) != 0)
+    if (memcmp(p + 8, addr, 6) == 0) {
+        goto found;
+    } else {
         goto next;
-    goto found;
+    }
 next:
     i++;
     p += 0x11C;
@@ -8577,7 +8578,7 @@ found:
         pkt_size = 0x3F9;
     return pkt_size;
 }
-#pragma pop
+#pragma optimization_level 4
 /* Registers or clears the ACL-change callback in the BTM control block; returns 2 if a different callback is already set. */
 s32 fn_80078310(s32 callback)
 {
@@ -22863,7 +22864,7 @@ void RFCOMM_ConfigCnf_800910D4(u32 arg0, u8 *arg1) {
     u16 port_lcid;
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, trace_msg + (index >= 10 ? 0 : 0), arg0);
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, &trace_msg[index - index], arg0);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
