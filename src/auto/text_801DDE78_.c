@@ -241,7 +241,7 @@ extern char lbl_80339490[];
 typedef DbgRec *(*DbgGet)(void *, const char *);
 typedef void (*DbgVoid)(void *);
 #pragma push
-#pragma processor 603
+#pragma processor 750
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 extern "C" void fn_801DE154(void) {
@@ -254,7 +254,7 @@ extern "C" void fn_801DE154(void) {
         virtual void v4();
         virtual void v5();
     };
-    f32 pad[20];
+    f32 pad[16];
     DbgRec ra, rb, rc;
     f32 caB, caC;
     DbgRec lineA, lineC;
