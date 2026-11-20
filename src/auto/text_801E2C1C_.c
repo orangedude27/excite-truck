@@ -204,22 +204,26 @@ extern s32 fn_802C6FC0(char *, s32, s32);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_803398E4[];
 #pragma scheduling invalid_target
-void *fn_801E3004(s32 arg0, s32 arg1, s32 arg2)
+// Allocate a model-handle object from the joint pool and initialize it with an
+// identity matrix and an empty model handle (-1). When archiveCtx is not -1,
+// look up the archive item by name (which yields a resource path), copy the
+// item's data in, and load the model that the path points to.
+void *fn_801E3004(s32 archiveCtx, s32 itemName, s32 variant)
 {
   struct Pair
   {
     s32 x[2];
   };
   char path[0x28];
-  s32 *result;
-  s32 *source;
+  s32 *handle;
+  s32 *item;
   f32 *matrix;
   f32 other;
   f32 one;
-  result = (s32 *) fn_8012A2D8(lbl_8055EA50);
-  result[1] = 0;
-  result[0] = -1;
-  matrix = (f32 *) (result + 2);
+  handle = (s32 *) fn_8012A2D8(lbl_8055EA50);
+  handle[1] = 0;
+  handle[0] = -1;
+  matrix = (f32 *) (handle + 2);
   one = 1.0f;
   other = 0.0f;
   matrix[0] = one;
@@ -246,42 +250,41 @@ void *fn_801E3004(s32 arg0, s32 arg1, s32 arg2)
   matrix[21] = other;
   matrix[22] = other;
   matrix[23] = other;
-  if (arg0 == (-1))
+  if (archiveCtx == (-1))
   {
-    return result;
+    return handle;
   }
-  source = (s32 *) fn_801E2DEC(arg0, arg1, (s32) path);
-  if (source != 0)
+  item = (s32 *) fn_801E2DEC(archiveCtx, itemName, (s32) path);
+  if (item != 0)
   {
-    ((struct Pair *) (result + 14))[0] = ((struct Pair *) (source + 8))[0];
-    ((struct Pair *) (result + 14))[1] = ((struct Pair *) (source + 8))[1];
-    ((struct Pair *) (result + 14))[2] = ((struct Pair *) (source + 8))[2];
-    ((struct Pair *) (result + 14))[3] = ((struct Pair *) (source + 8))[3];
-    result[22] = source[16];
-    ((struct Pair *) (result + 23))[0] = ((struct Pair *) (source + 17))[0];
-    result[25] = source[19];
+    ((struct Pair *) (handle + 14))[0] = ((struct Pair *) (item + 8))[0];
+    ((struct Pair *) (handle + 14))[1] = ((struct Pair *) (item + 8))[1];
+    ((struct Pair *) (handle + 14))[2] = ((struct Pair *) (item + 8))[2];
+    ((struct Pair *) (handle + 14))[3] = ((struct Pair *) (item + 8))[3];
+    handle[22] = item[16];
+    ((struct Pair *) (handle + 23))[0] = ((struct Pair *) (item + 17))[0];
+    handle[25] = item[19];
     if ((path[0] != 0) && (strchr(path, '.') != 0))
     {
       if (fn_8012C33C(path) != 0)
       {
-        if (arg2 >= 0)
+        if (variant >= 0)
         {
-          result[0] = fn_802C6FC0(path, arg2, 0);
+          handle[0] = fn_802C6FC0(path, variant, 0);
         }
         else
         {
-          result[0] = fn_802C6FC0(path, 0, 0);
+          handle[0] = fn_802C6FC0(path, 0, 0);
         }
       }
       else
       {
-        fn_802E30C8(lbl_803398E4, arg1, path);
+        fn_802E30C8(lbl_803398E4, itemName, path);
       }
     }
   }
-  return result;
+  return handle;
 }
-#pragma scheduling on
 /* Allocates a child record from *record and stores a back-pointer to record at offset 4. */
 void fn_801E31D8(s32 *record) {
     *(s32 **)((u8 *)((void *(*)(s32))fn_801E3004)(*record) + 4) = record;
@@ -303,7 +306,10 @@ void fn_801E323C(s32 *handle) {
     fn_8012A364((s32)lbl_8055EA50, handle);
 }
 
-#pragma use_lmw_stmw off
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_801E3284(void *out, void *in, s32 arg2) {
     struct Pair { s32 x[2]; };
     struct Locals {
@@ -332,12 +338,12 @@ void fn_801E3284(void *out, void *in, s32 arg2) {
         register s32 a2;
         register s32 a1;
         register s32 a0;
-        a0=src[0]; a1=src[11]; a2=src[1]; a3=src[2];
-        a4=src[3]; a5=src[4]; a6=src[5]; a7=src[6];
-        a8=src[7]; a9=src[8]; a10=src[9]; a11=src[10];
-        local.sp68[0]=a0; local.sp68[1]=a2; local.sp68[2]=a3; local.sp68[3]=a4;
-        local.sp68[4]=a5; local.sp68[5]=a6; local.sp68[6]=a7; local.sp68[7]=a8;
-        local.sp68[8]=a9; local.sp68[9]=a10; local.sp68[10]=a11; local.sp68[11]=a1;
+        a0=src[0]; a1=src[1]; a2=src[2]; a3=src[3];
+        a4=src[4]; a5=src[5]; a6=src[6]; a7=src[7];
+        a8=src[8]; a9=src[9]; a10=src[10]; a11=src[11];
+        local.sp68[0]=a0; local.sp68[1]=a1; local.sp68[2]=a2; local.sp68[3]=a3;
+        local.sp68[4]=a4; local.sp68[5]=a5; local.sp68[6]=a6; local.sp68[7]=a7;
+        local.sp68[8]=a8; local.sp68[9]=a9; local.sp68[10]=a10; local.sp68[11]=a11;
     }
     fn_801BFD34(local.sp5c, (u8 *)in + 0x5C, local.sp68);
     fn_80015B20(local.sp38, (u8 *)in + 0x38, local.sp68);
@@ -351,7 +357,7 @@ void fn_801E3284(void *out, void *in, s32 arg2) {
     *(struct Pair *)((u8 *)out + 0x24) = *(struct Pair *)((u8 *)local.result.sp8 + 0x24);
     ((s32 *)out)[11] = local.result.sp8[11];
 }
-#pragma use_lmw_stmw reset
+#pragma pop
 void fn_801E33E4(void *outTransform, void *node) {
     /* Compute a node's world transform from the identity matrix (3x3 rotation + translation). */
     f32 identity[12];
