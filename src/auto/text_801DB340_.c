@@ -68,9 +68,6 @@ static inline void swap16(unsigned char *p) {
 }
 extern float fn_801DB514(float grid[4][4], void *, float, float);
 
-#define GND (*(volatile int *)&lbl_8055E990)
-#define GOX (*(volatile int *)&lbl_8055E99C)
-#define GOZ (*(volatile int *)&lbl_8055E9A0)
 static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *arg4) {
     int divX, divY, tileX, tileZ, remX, remZ;
     char *node;
