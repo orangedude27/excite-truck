@@ -5040,19 +5040,6 @@ extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
     return var_r31;
 }
 #pragma pop
-static inline s32 advance_and_probe(void *arg0) {
-    VFiPFEntIter *p = (VFiPFEntIter *)arg0;
-    s32 index = p->index;
-    u32 old = p->position;
-    p->position = (index + 1) << p->shift;
-    if (fn_800AB378(p, 0) != 0) {
-        p->position = old;
-        p->index = index;
-        return 1;
-    }
-    return 0;
-}
-
 extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *arg0) {
     u32 sp8;
     s32 index;
