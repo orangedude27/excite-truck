@@ -1378,6 +1378,7 @@ extern f32 lbl_80563E18;
 extern void fn_802E30C8(const char *, ...);
 #pragma push
 #pragma opt_propagation off
+#pragma dont_inline on
 void fn_8026DDD8(s32 arg0) {
     f32 *g;
     if (arg0 == 3 || (s32)lbl_8055F4E0 == arg0) {
