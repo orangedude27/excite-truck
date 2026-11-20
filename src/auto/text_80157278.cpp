@@ -1895,6 +1895,10 @@ extern "C" void fn_80159724(void) {
 
 #pragma processor 750
 #pragma scheduling reset
+/* Per-frame update of a Fn8015889C tracker: advances its progress counters by
+   the frame time while the input magnitude is small; when progress exceeds the
+   level, reads the current record's value, applies it, and resets.  Returns the
+   value read (zero while still accumulating). */
 extern "C" f32 fn_80159728(void* arg0, void *__restrict arg1) {
  Fn8015889C* self = (Fn8015889C*)arg0;
  u8* p = (u8*)arg0;
