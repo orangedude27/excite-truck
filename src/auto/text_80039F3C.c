@@ -185,9 +185,13 @@ void __DVDShowFatalMessage(void) {
 extern void __DVDShowFatalMessage(void);
 extern void (*lbl_8055D8D0)(int, int);
 int DVDSetAutoFatalMessaging(int enable) {
- int old; OSDisableInterrupts(); old=FatalFunc_8055D8D8 != 0;
- if(enable) FatalFunc_8055D8D8=__DVDShowFatalMessage; else FatalFunc_8055D8D8=0;
- OSRestoreInterrupts(); return old;
+    int old;
+    unsigned int level = OSDisableInterrupts();
+    old = FatalFunc_8055D8D8 != 0;
+    if (enable) FatalFunc_8055D8D8 = __DVDShowFatalMessage;
+    else FatalFunc_8055D8D8 = 0;
+    OSRestoreInterrupts(level);
+    return old;
 }
 
 void __DVDPrintFatalMessage(void) {
