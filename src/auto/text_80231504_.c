@@ -41,7 +41,7 @@ typedef struct {
     s32 count;
 } Fn80231D84_Table;
 extern s32 lbl_8055F050;
-extern u8 lbl_8055F074;
+extern s8 lbl_8055F074;
 extern f32 lbl_80563690;
 extern void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4);
 extern void fn_80231D84(char *, void *, f32, f32, f32, f32, f32, f32, f32);
