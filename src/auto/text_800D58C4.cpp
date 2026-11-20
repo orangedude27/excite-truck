@@ -979,7 +979,11 @@ extern "C" void fn_800D6EEC(void* arg0) {
 
 #pragma push
 #pragma opt_common_subs off
-extern "C" void *__dt__Q36nw4hbm3lyt6LayoutFv(void *self, s32 shouldDelete) {
+extern "C" void *__dt__Q36nw4hbm3lyt6LayoutFv(void *self, s32 deleteSelf) {
+    /* nw4hbm::lyt::Layout::~Layout(): swap in the dead vtable, destroy the group
+       container and (non-shared) resource, then walk the node list erasing and
+       freeing each layout node before tearing down the list; if the object is a
+       delete target, run the final deallocation step. */
     extern char lbl_8031F868[];
     extern const char lbl_8031F920[];
     extern const char lbl_8031F8FC[];
@@ -1027,7 +1031,7 @@ extern "C" void *__dt__Q36nw4hbm3lyt6LayoutFv(void *self, s32 shouldDelete) {
         }
         if (&layout->link != 0)
             __dt__Q46nw4hbm2ut6detail12LinkListImplFv(&layout->link, 0);
-        if (shouldDelete > 0)
+        if (deleteSelf > 0)
             ((void (*)(void *))fn_80128668)(self);
     }
     return self;
