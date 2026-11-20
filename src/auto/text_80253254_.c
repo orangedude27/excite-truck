@@ -116,6 +116,7 @@ void fn_802532BC(void *arg0) {
     {
         float zero = lbl_80563A04;
         float one = lbl_80563A14;
+        unsigned long len = 312;
 
         ((struct Struct_802532BC_Offset28 *)arg0)->val = -1;
 
@@ -123,86 +124,68 @@ void fn_802532BC(void *arg0) {
         *(float *)((char *)arg0 + 0x59C) = zero;
         *(float *)((char *)arg0 + 0x5A0) = zero;
         *(float *)((char *)arg0 + 0x5A4) = zero;
-
         *(float *)((char *)arg0 + 0x5A8) = one;
         *(float *)((char *)arg0 + 0x5AC) = zero;
         *(float *)((char *)arg0 + 0x5B0) = zero;
         *(float *)((char *)arg0 + 0x5B4) = zero;
-
         *(float *)((char *)arg0 + 0x5B8) = one;
         *(float *)((char *)arg0 + 0x5BC) = zero;
         *(float *)((char *)arg0 + 0x5C0) = zero;
         *(float *)((char *)arg0 + 0x5C4) = zero;
-
         *(float *)((char *)arg0 + 0x5D8) = one;
         *(float *)((char *)arg0 + 0x5DC) = zero;
         *(float *)((char *)arg0 + 0x5E0) = zero;
         *(float *)((char *)arg0 + 0x5E4) = zero;
-
         *(float *)((char *)arg0 + 0x5E8) = one;
         *(float *)((char *)arg0 + 0x5EC) = zero;
         *(float *)((char *)arg0 + 0x5F0) = zero;
         *(float *)((char *)arg0 + 0x5F4) = zero;
-
         *(float *)((char *)arg0 + 0x5F8) = one;
         *(float *)((char *)arg0 + 0x5FC) = zero;
         *(float *)((char *)arg0 + 0x600) = zero;
         *(float *)((char *)arg0 + 0x604) = zero;
-
         *(float *)((char *)arg0 + 0x608) = one;
         *(float *)((char *)arg0 + 0x60C) = zero;
         *(float *)((char *)arg0 + 0x610) = zero;
         *(float *)((char *)arg0 + 0x614) = zero;
-
         *(float *)((char *)arg0 + 0x618) = one;
         *(float *)((char *)arg0 + 0x61C) = zero;
         *(float *)((char *)arg0 + 0x620) = zero;
         *(float *)((char *)arg0 + 0x624) = zero;
-
         *(float *)((char *)arg0 + 0x628) = one;
         *(float *)((char *)arg0 + 0x62C) = zero;
         *(float *)((char *)arg0 + 0x630) = zero;
         *(float *)((char *)arg0 + 0x634) = zero;
-
         *(float *)((char *)arg0 + 0x638) = one;
         *(float *)((char *)arg0 + 0x63C) = zero;
         *(float *)((char *)arg0 + 0x640) = zero;
         *(float *)((char *)arg0 + 0x644) = zero;
-
         *(float *)((char *)arg0 + 0x648) = one;
         *(float *)((char *)arg0 + 0x64C) = zero;
         *(float *)((char *)arg0 + 0x650) = zero;
         *(float *)((char *)arg0 + 0x654) = zero;
-
         *(float *)((char *)arg0 + 0x658) = one;
         *(float *)((char *)arg0 + 0x65C) = zero;
         *(float *)((char *)arg0 + 0x660) = zero;
         *(float *)((char *)arg0 + 0x664) = zero;
-
         *(float *)((char *)arg0 + 0x668) = one;
         *(float *)((char *)arg0 + 0x66C) = zero;
         *(float *)((char *)arg0 + 0x670) = zero;
         *(float *)((char *)arg0 + 0x674) = zero;
-
         *(float *)((char *)arg0 + 0x678) = one;
         *(float *)((char *)arg0 + 0x67C) = zero;
         *(float *)((char *)arg0 + 0x680) = zero;
         *(float *)((char *)arg0 + 0x684) = zero;
-
         *(float *)((char *)arg0 + 0x688) = one;
         *(float *)((char *)arg0 + 0x68C) = zero;
         *(float *)((char *)arg0 + 0x690) = zero;
         *(float *)((char *)arg0 + 0x694) = zero;
-
         *(float *)((char *)arg0 + 0x420) = zero;
         *(float *)((char *)arg0 + 0x424) = zero;
         *(float *)((char *)arg0 + 0x428) = zero;
     }
 
-    {
-        int len = 0x138;
-        memset((char *)arg0 + 0x45C, 0, len);
-    }
+    memset((char *)arg0 + 0x45C, 0, 312);
 
     *(float *)((char *)arg0 + 0x594) = lbl_80563A04;
 }
@@ -635,6 +618,7 @@ void fn_80253CA4(void *arg0, void *arg1, float *arg2, void *arg3) {
     }
 }
 
+#pragma scheduling invalid_target
 void fn_8025419C(void *arg0) {
  extern float fn_8023659C(void); extern s32 fn_80147C50(s32,s32,float);
  extern void fn_8018BF44(s32 *); extern void fn_801F1394(s32,void *);
@@ -666,7 +650,6 @@ void fn_8025419C(void *arg0) {
  }while(var_r30<4);
  fn_802543FC(arg0);
 }
-
 extern void fn_802C7AE0(s32, void *, s32, float);
 #define kTransformParam lbl_80563A2C
 #pragma scheduling invalid_target
@@ -709,9 +692,10 @@ void fn_802543FC(void *arg0) {
     union { s32 i; float f; } c, b, a;
     s32 index;
     u8 *point;
-    float zero;
     float difference;
+    float zero;
     float scale;
+    float sa, sb, sc;
 
     if (*(s32 *)(base + 0x28) != -1) {
         v = fn_802C86DC();
@@ -723,10 +707,13 @@ void fn_802543FC(void *arg0) {
         *(float *)(point + 0x40) = b.f;
         *(float *)(point + 0x44) = c.f;
         scale = lbl_80563A10;
+        sa = a.f * scale;
+        sb = b.f * scale;
+        sc = c.f * scale;
         point = base + *(s32 *)(base + 0x30) * 12;
-        *(float *)(point + 0x3C) = a.f * scale;
-        *(float *)(point + 0x40) = b.f * scale;
-        *(float *)(point + 0x44) = c.f * scale;
+        *(float *)(point + 0x3C) = sa;
+        *(float *)(point + 0x40) = sb;
+        *(float *)(point + 0x44) = sc;
         p = *(void **)(base + 0x3FC);
         if (p != 0) {
             zero = lbl_80563A04;
@@ -1221,6 +1208,7 @@ void fn_8025539C(void *arg0, s32 arg1) {
     float value;
     register float *stats;
     register float *inputPtr;
+    register void **vtable;
     float output[3];
     struct Vec3 input, initial;
 
@@ -1239,7 +1227,8 @@ void fn_8025539C(void *arg0, s32 arg1) {
             ((int *)&input)[0] = ((int *)&initial)[0];
             ((int *)&input)[1] = ((int *)&initial)[1];
             ((int *)&input)[2] = ((int *)&initial)[2];
-            ((void (*)(float *, void *, const char *, float *, unsigned int, unsigned int))(*(void ***)result)[14])
+            vtable = *(void ***)result;
+            ((void (*)(float *, void *, const char *, float *, unsigned int, unsigned int))vtable[14])
                 (output, result, strings + 0x140, inputPtr,
                  *(unsigned int *)&initial.y, *(unsigned int *)&initial.x);
             *(float *)((char *)arg0 + 0xF0) = output[0];
@@ -1552,11 +1541,12 @@ void fn_80255A84(void *arg0) {
     }
     *(s32 *)((char *)arg0 + 4) = lbl_8055F340;
     {
-        float t3 = lbl_80563A70;
-        float t2 = lbl_80563A6C;
-        float t1 = lbl_80563A68;
+        float t3, t2, t1;
         lbl_8055F340++;
         lbl_80498E28[*(s32 *)((char *)arg0 + 4)] = arg0;
+        t1 = 0.197f;
+        t2 = 2.452f;
+        t3 = 0.059f;
         *(float *)((char *)arg0 + 0x9C) = t1;
         *(float *)((char *)arg0 + 0xA0) = t2;
         *(float *)((char *)arg0 + 0xA4) = t3;
