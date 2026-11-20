@@ -5197,6 +5197,8 @@ extern "C" s32 fn_800AC4AC(void *arg0, s32 arg1) {
         if (sp8 == 0x20) r = rv;
     }
     rv = r & ((-r | r) >> 31);
+    goto check;
+check:
     switch (rv) {
     case 0: goto zero;
     default: goto done;
@@ -7479,6 +7481,8 @@ extern "C" s32 fn_800AF8EC(void *fatCtx, s32 cluster, u32 entryValue, void *page
     if (readResult != 0) savedError = readResult;
     return savedError;
 }
+#pragma push
+#pragma opt_propagation on
 extern "C" s32 fn_800AFBA8(void *arg0, u16 arg1, u32 *result, void *page) {
     u8 *ctx=(u8*)arg0;
     u8 *pg=(u8*)page;
@@ -7486,9 +7490,7 @@ extern "C" s32 fn_800AFBA8(void *arg0, u16 arg1, u32 *result, void *page) {
     u32 copy;
     s32 status;
     u32 offset;
-    u32 a1c;
-    a1c = arg1;
-    offset=(u16)(a1c+((u32)a1c>>1));
+    offset=(u16)(arg1+((u32)arg1>>1));
     sector=(u16)(*(u32*)(ctx+0x28)+(offset>>*(u8*)(ctx+0x20)));
     copy=1;
     if(*(u16*)(ctx+0x18)&0x80) copy=*(u16*)(ctx+0x18)&7;
@@ -7532,7 +7534,7 @@ retry:
     if(arg1&1) *result>>=4; else *result&=0xfff;
     return 0;
 }
-
+#pragma pop
 extern "C" s32 fn_800AFE14(void *stream, s32 sampleIndex, s32 *outSample) {
     u16 sampleValue;
     u32 blockIndex;
@@ -7788,6 +7790,7 @@ extern "C" s32 fn_800B037C(void *volume, s32 cluster, s32 value) {
     return saved;
 }
 
+struct WordHolderB0488 { u32 word; };
 extern "C" s32 fn_800B0488(void *arg0, u32 arg1, u32 arg2, void *arg3, s32 arg4) {
     u8 *obj = (u8 *)arg0, *ctx = (u8 *)arg3;
     u32 bytes = arg1 << 2;
@@ -10974,13 +10977,13 @@ extern "C" s32 fn_800B5988(void *arg0) {
                 e[0x88 / 8].flag &= 1;
                 if (e[0x88 / 8].flag && key == e[0x88 / 8].key) hit = 1;
                 else {
-                    CacheEnt *g = e + 2;
-                    g[0x80 / 8].flag &= 1;
-                    if (g[0x80 / 8].flag && key == g[0x80 / 8].key) hit = 1;
+                    e += 2;
+                    e[0x80 / 8].flag &= 1;
+                    if (e[0x80 / 8].flag && key == e[0x80 / 8].key) hit = 1;
                     else {
-                        g[0x88 / 8].flag &= 1;
-                        if (g[0x88 / 8].flag && key == g[0x88 / 8].key) hit = 1;
-                        else hit = (g[0].flag & 0);
+                        e[0x88 / 8].flag &= 1;
+                        if (e[0x88 / 8].flag && key == e[0x88 / 8].key) hit = 1;
+                        else hit = 0;
                     }
                 }
             }
@@ -21152,7 +21155,8 @@ extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597DC[]; }
 extern "C" void fn_800D1EC4(const char *, ...);
 extern "C" s32 fn_800D3824(void);
 extern "C" s32 fn_800D40B4(s32, s32, s32, void *, void *);
-#pragma pool_strings off
+#pragma push
+#pragma opt_strength_reduction off
 extern "C" void fn_800D1F7C(s32 *arg0, s32 arg1) {
     u8 scratch[0x104];
     const Fn800D1F7CStringTable *messages =
@@ -21160,7 +21164,7 @@ extern "C" void fn_800D1F7C(s32 *arg0, s32 arg1) {
     u32 temp_r28;
     u32 var_r27;
     s32 var_r0;
-    fn_800D1EC4(messages->summary - 0x28);
+    fn_800D1EC4((const char *)((u32)messages + 0x0));
     fn_800D1EC4(messages->summary);
     var_r27 = 0;
 loop_1:
@@ -21194,7 +21198,7 @@ loop_1:
 done:
     return;
 }
-#pragma pool_strings reset
+#pragma pop
 extern "C" void fn_800591AC(s32);
 extern "C" void AIRegisterDMACallback_800591F0(void *);
 extern "C" s32 fn_800D3634(s32);
