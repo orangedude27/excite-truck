@@ -2406,6 +2406,12 @@ extern "C" void fn_80198EA0(s32);
 extern "C" f32 lbl_805617B4, lbl_805617B8, lbl_805617BC;
 #pragma scheduling on
 extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
+    /* Frame-driven player update.  When the player's "any slot active" flag
+     * (+0x2F0) is set, step each of the eight 0x10-byte slots through a
+     * 6-state machine (idle -> queued -> running -> armed -> playing -> done)
+     * keyed off the player's car, and count slot completions.  Then advance the
+     * shared progress counters and either finalize the bonus accumulator or
+     * park it for the next frame, returning the accumulated bonus value. */
     u8* p = (u8*)a;
     s32 end;
     if (p[0x2f0]) {
