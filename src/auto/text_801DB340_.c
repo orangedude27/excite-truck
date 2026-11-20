@@ -271,7 +271,7 @@ extern int fn_801DB348(int, int, float *, int *, void *);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-int fn_801DB74C(register int arg0, register int arg1, register float *arg2, register int *arg3, register void *arg4, register void *arg5, register float farg0, register float farg1) {
+int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *arg5, float farg0, float farg1) {
     float grid[4][4];
     float sp8;
     int i, j;
@@ -914,31 +914,35 @@ void fn_801DD808(void) {
 extern float lbl_80562B84;
 extern float fn_801DCF0C(void);
 #pragma scheduling invalid_target
-float fn_801DD88C(float arg0, float arg1) {
-    float temp[75];
+// Query the base ground height at (x, z) with every terrain weight temporarily
+// zeroed, then restore the weights. With the weights cleared, the height lookup
+// (fn_801DCF0C) returns the unmodified terrain height, which is what this
+// function hands back (in f1 from the call).
+float fn_801DD88C(float x, float z) {
+    float savedWeights[75];
     int i, j;
 
     for (i = 0; i < 72; i += 8) {
-        temp[i + 0] = lbl_804424B0[i + 0];
+        savedWeights[i + 0] = lbl_804424B0[i + 0];
         lbl_804424B0[i + 0] = 0.0f;
-        temp[i + 1] = lbl_804424B0[i + 1];
+        savedWeights[i + 1] = lbl_804424B0[i + 1];
         lbl_804424B0[i + 1] = 0.0f;
-        temp[i + 2] = lbl_804424B0[i + 2];
+        savedWeights[i + 2] = lbl_804424B0[i + 2];
         lbl_804424B0[i + 2] = 0.0f;
-        temp[i + 3] = lbl_804424B0[i + 3];
+        savedWeights[i + 3] = lbl_804424B0[i + 3];
         lbl_804424B0[i + 3] = 0.0f;
-        temp[i + 4] = lbl_804424B0[i + 4];
+        savedWeights[i + 4] = lbl_804424B0[i + 4];
         lbl_804424B0[i + 4] = 0.0f;
-        temp[i + 5] = lbl_804424B0[i + 5];
+        savedWeights[i + 5] = lbl_804424B0[i + 5];
         lbl_804424B0[i + 5] = 0.0f;
-        temp[i + 6] = lbl_804424B0[i + 6];
+        savedWeights[i + 6] = lbl_804424B0[i + 6];
         lbl_804424B0[i + 6] = 0.0f;
-        temp[i + 7] = lbl_804424B0[i + 7];
+        savedWeights[i + 7] = lbl_804424B0[i + 7];
         lbl_804424B0[i + 7] = 0.0f;
     }
     {
         float *p = lbl_804424B0 + i;
-        float *q = temp + i;
+        float *q = savedWeights + i;
         q[0] = p[0];
         p[0] = 0.0f;
         q[1] = p[1];
@@ -947,37 +951,37 @@ float fn_801DD88C(float arg0, float arg1) {
         p[2] = 0.0f;
     }
 
-    ((float (*)(float, float))fn_801DCF0C)(arg0, arg1);
+    ((float (*)(float, float))fn_801DCF0C)(x, z);
 
     for (j = 0; j < 72; j += 24) {
-        lbl_804424B0[j + 0] = temp[j + 0];
-        lbl_804424B0[j + 1] = temp[j + 1];
-        lbl_804424B0[j + 2] = temp[j + 2];
-        lbl_804424B0[j + 3] = temp[j + 3];
-        lbl_804424B0[j + 4] = temp[j + 4];
-        lbl_804424B0[j + 5] = temp[j + 5];
-        lbl_804424B0[j + 6] = temp[j + 6];
-        lbl_804424B0[j + 7] = temp[j + 7];
-        lbl_804424B0[j + 8] = temp[j + 8];
-        lbl_804424B0[j + 9] = temp[j + 9];
-        lbl_804424B0[j + 10] = temp[j + 10];
-        lbl_804424B0[j + 11] = temp[j + 11];
-        lbl_804424B0[j + 12] = temp[j + 12];
-        lbl_804424B0[j + 13] = temp[j + 13];
-        lbl_804424B0[j + 14] = temp[j + 14];
-        lbl_804424B0[j + 15] = temp[j + 15];
-        lbl_804424B0[j + 16] = temp[j + 16];
-        lbl_804424B0[j + 17] = temp[j + 17];
-        lbl_804424B0[j + 18] = temp[j + 18];
-        lbl_804424B0[j + 19] = temp[j + 19];
-        lbl_804424B0[j + 20] = temp[j + 20];
-        lbl_804424B0[j + 21] = temp[j + 21];
-        lbl_804424B0[j + 22] = temp[j + 22];
-        lbl_804424B0[j + 23] = temp[j + 23];
+        lbl_804424B0[j + 0] = savedWeights[j + 0];
+        lbl_804424B0[j + 1] = savedWeights[j + 1];
+        lbl_804424B0[j + 2] = savedWeights[j + 2];
+        lbl_804424B0[j + 3] = savedWeights[j + 3];
+        lbl_804424B0[j + 4] = savedWeights[j + 4];
+        lbl_804424B0[j + 5] = savedWeights[j + 5];
+        lbl_804424B0[j + 6] = savedWeights[j + 6];
+        lbl_804424B0[j + 7] = savedWeights[j + 7];
+        lbl_804424B0[j + 8] = savedWeights[j + 8];
+        lbl_804424B0[j + 9] = savedWeights[j + 9];
+        lbl_804424B0[j + 10] = savedWeights[j + 10];
+        lbl_804424B0[j + 11] = savedWeights[j + 11];
+        lbl_804424B0[j + 12] = savedWeights[j + 12];
+        lbl_804424B0[j + 13] = savedWeights[j + 13];
+        lbl_804424B0[j + 14] = savedWeights[j + 14];
+        lbl_804424B0[j + 15] = savedWeights[j + 15];
+        lbl_804424B0[j + 16] = savedWeights[j + 16];
+        lbl_804424B0[j + 17] = savedWeights[j + 17];
+        lbl_804424B0[j + 18] = savedWeights[j + 18];
+        lbl_804424B0[j + 19] = savedWeights[j + 19];
+        lbl_804424B0[j + 20] = savedWeights[j + 20];
+        lbl_804424B0[j + 21] = savedWeights[j + 21];
+        lbl_804424B0[j + 22] = savedWeights[j + 22];
+        lbl_804424B0[j + 23] = savedWeights[j + 23];
     }
     {
         float *p = lbl_804424B0 + j;
-        float *q = temp + j;
+        float *q = savedWeights + j;
         p[0] = q[0];
         p[1] = q[1];
         p[2] = q[2];
