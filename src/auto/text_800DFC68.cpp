@@ -548,49 +548,53 @@ extern "C" void DrawFrame__Q36nw4hbm3lyt6WindowFRCQ36nw4hbm4math4VEC2RCQ46nw4hbm
     DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(pos, size, 1, (f32(*)[])buf, (s32)sp108 & ((s32)(-m | m) >> 31), arg4);
 }
 
+#pragma push
+#pragma scheduling on
 extern "C" void DrawFrame4__Q36nw4hbm3lyt6WindowFRCQ36nw4hbm4math4VEC2PCQ46nw4hbm3lyt6Window5FrameRCQ36nw4hbm3lyt15WindowFrameSizeUc(void *arg0, f32 *arg1, void *arg2, void *arg3, u8 arg4) {
     struct MaterialVTable { virtual void fn0(); virtual s32 fn1(s32, u8); };
     const u8 *frameTable;
+    s32 magic2;
     s32 tmpA;
     s32 magic1;
-    s32 magic2;
     s32 sp108[4];
-    volatile f32 sizeY;
-    volatile f32 sizeX;
+    f32 spBuffer[8];
     volatile f32 posY;
     volatile f32 posX;
+    volatile f32 sizeY;
+    volatile f32 sizeX;
     volatile f32 tex1y;
     volatile f32 tex1x;
-    volatile f32 tex1cy;
-    volatile f32 tex1cx;
     volatile f32 tex2y;
     volatile f32 tex2x;
-    volatile f32 tex2cy;
-    volatile f32 tex2cx;
-    volatile f32 dup2y;
-    volatile f32 dup2x;
     volatile f32 tex3y;
     volatile f32 tex3x;
-    volatile f32 tex3cy;
-    volatile f32 tex3cx;
-    volatile f32 dup3y;
-    volatile f32 dup3x;
     volatile f32 tex4y;
     volatile f32 tex4x;
-    volatile f32 tex4cy;
-    volatile f32 tex4cx;
+    volatile f32 c1y;
+    volatile f32 c1x;
+    volatile f32 dup2y;
+    volatile f32 dup2x;
+    volatile f32 c2y;
+    volatile f32 c2x;
+    volatile f32 dup3y;
+    volatile f32 dup3x;
+    volatile f32 c3y;
+    volatile f32 c3x;
     volatile f32 dup4y;
     volatile f32 dup4x;
-    f32 spBuffer[8];
+    volatile f32 c4y;
+    volatile f32 c4x;
     s32 mod;
-    s32 m1; s32 m2; s32 m3; s32 m4;
-    u8 idx1; u8 idx2; u8 idx3; u8 idx4;
-    const u8 *e1; const u8 *e2; const u8 *e3; const u8 *e4;
-    frameTable = (const u8 *)lbl_80320BD8;
+    s32 m1, m2, m3, m4;
+    u8 idx1, idx2, idx3, idx4;
+    const u8 *e1, *e2, *e3, *e4;
+
     magic1 = 0x43300000; magic2 = 0x43300000;
     sp108[0] = -1; sp108[1] = -1; sp108[2] = -1; sp108[3] = -1;
     sizeX = lbl_80560EE8; sizeY = lbl_80560EE8;
+    frameTable = (const u8 *)lbl_80320BD8;
     mod = IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(0, arg4);
+
     m1 = ((MaterialVTable *)M2C_FIELD(arg2, void *, 4))->fn1(mod, arg4);
     posX = arg1[0]; posY = arg1[1];
     sizeX = M2C_FIELD(arg0, f32, 0x4C) - M2C_FIELD(arg3, f32, 4);
@@ -599,25 +603,27 @@ extern "C" void DrawFrame4__Q36nw4hbm3lyt6WindowFRCQ36nw4hbm4math4VEC2PCQ46nw4hb
     GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc((f32 *)&tex1x, M2C_FIELD(arg2, void *, 4), 0);
     if (idx1 >= 6U) Panic__Q26nw4hbm2dbFPCciPCce((const char *)(frameTable + 0x3C), 0x32, (const char *)(frameTable + 0xB8));
     e1 = frameTable + (idx1 * 10);
-    tex1cx = tex1x; tex1cy = tex1y;
+    c1x = tex1x; c1y = tex1y;
     {
-        u8 a0 = e1[9]; u8 a3 = e1[8];
-        u8 b8 = e1[a0]; u8 b10 = e1[a3];
-        f32 f6 = (f32)b8;
-        f32 f4 = sizeX / ((f32)(e1[a3 + 2] - b10) * ((f32 *)&tex1cx)[a3]);
-        tmpA = (s32)b10; tmpA = (s32)b8;
-        f32 f7 = (f32)b10;
-        spBuffer[a3] = f7; spBuffer[4 + a3] = f7;
-        spBuffer[a0] = f6; spBuffer[2 + a0] = f6;
-        f32 f2 = f7 + f4;
-        f32 f1b = f6;
-        spBuffer[2 + a3] = f2;
-        f32 f0 = f1b + (sizeY / ((f32)(e1[a0 + 4] - b8) * ((f32 *)&tex1cx)[a0]));
-        spBuffer[6 + a3] = f2; spBuffer[2 + a3 + 4] = f2;
-        spBuffer[4 + a0] = f0; spBuffer[6 + a0] = f0;
+        u8 p = e1[9]; u8 q = e1[8];
+        u8 ep = e1[p]; u8 eq = e1[q];
+        s32 w = M2C_FIELD(e1 + q, u8, 2) - eq;
+        s32 dp = M2C_FIELD(e1 + p, u8, 4) - ep;
+        f32 fw = (f32)w;
+        tmpA = (s32)eq; f32 vq = (f32)eq;
+        tmpA = (s32)ep; f32 vp = (f32)ep;
+        f32 f4 = sizeX / (fw * (&c1x)[q]);
+        f32 fd = sizeY / ((f32)dp * (&c1x)[p]);
+        f32 s1 = vp + f4;
+        f32 s2 = vp + fd;
+        (spBuffer + 0)[q] = vq; (spBuffer + 4)[q] = vq;
+        (spBuffer + 0)[p] = fw; (spBuffer + 2)[p] = fw;
+        (spBuffer + 2)[q] = s1; (spBuffer + 6)[q] = s1;
+        (spBuffer + 4)[p] = s2; (spBuffer + 6)[p] = s2;
         SetVertexFormat__Q34nw4r3lyt6detailFbUc(m1, 1);
-        DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc((f32 *)&posX, (f32 *)&sizeX, 1, (f32 (*)[])spBuffer, (s32)sp108 & ((s32)(-m1 | m1) >> 31), arg4);
+        DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc((f32 *)&posX, (f32 *)&sizeX, 1, (f32 (*)[])spBuffer, (s32)&sp108 & ((s32)(-m1 | m1) >> 31), arg4);
     }
+
     m2 = ((MaterialVTable *)M2C_FIELD(arg2, void *, 0xC))->fn1(mod, arg4);
     posX = arg1[0] + M2C_FIELD(arg0, f32, 0x4C) - M2C_FIELD(arg3, f32, 4);
     posY = arg1[1];
@@ -628,28 +634,27 @@ extern "C" void DrawFrame4__Q36nw4hbm3lyt6WindowFRCQ36nw4hbm4math4VEC2PCQ46nw4hb
     GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc((f32 *)&tex2x, M2C_FIELD(arg2, void *, 0xC), 0);
     if (idx2 >= 6U) Panic__Q26nw4hbm2dbFPCciPCce((const char *)(frameTable + 0x3C), 0x32, (const char *)(frameTable + 0xB8));
     e2 = frameTable + (idx2 * 10);
-    tex2cx = tex2x; tex2cy = tex2y;
+    c2x = tex2x; c2y = tex2y;
     {
-        u8 a0 = e2[9]; u8 a3 = e2[8];
-        const u8 *pa0 = e2 + a0;
-        u8 b7 = pa0[2];
-        u8 b11 = e2[a3 + 2];
-        u8 bv = e2[a3];
-        f32 f6 = (f32)b7;
-        f32 f4 = sizeX / ((f32)(bv - b11) * ((f32 *)&tex2cx)[a3]);
-        tmpA = (s32)b11; tmpA = (s32)b7;
-        f32 f7 = (f32)b11;
-        spBuffer[a3] = f7; spBuffer[4 + a3] = f7;
-        spBuffer[a0] = f6; spBuffer[2 + a0] = f6;
-        f32 f2 = f7 + f4;
-        f32 f1b = f6;
-        spBuffer[a3 + 2] = f2;
-        f32 f0 = f1b + (sizeY / ((f32)(pa0[6] - b7) * ((f32 *)&tex2cx)[a0]));
-        spBuffer[6 + a3] = f2; spBuffer[2 + a3 + 4] = f2;
-        spBuffer[4 + a0] = f0; spBuffer[6 + a0] = f0;
+        u8 p = e2[9]; u8 q = e2[8];
+        u8 a = M2C_FIELD(e2 + p, u8, 2);
+        u8 b = M2C_FIELD(e2 + q, u8, 2);
+        u8 eq = e2[q];
+        u8 c = M2C_FIELD(e2 + p, u8, 6);
+        f32 fa = (f32)a;
+        tmpA = (s32)b; f32 fb = (f32)b;
+        f32 f4 = sizeX / ((f32)(eq - b) * (&c2x)[q]);
+        f32 fd = sizeY / ((f32)(c - a) * (&c2x)[p]);
+        f32 s1 = fa + f4;
+        f32 s2 = fa + fd;
+        (spBuffer + 2)[q] = fb; (spBuffer + 6)[q] = fb;
+        (spBuffer + 0)[p] = fa; (spBuffer + 2)[p] = fa;
+        (spBuffer + 0)[q] = s1; (spBuffer + 4)[q] = s1;
+        (spBuffer + 4)[p] = s2; (spBuffer + 6)[p] = s2;
         SetVertexFormat__Q34nw4r3lyt6detailFbUc(m2, 1);
-        DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc((f32 *)&posX, (f32 *)&sizeX, 1, (f32 (*)[])spBuffer, (s32)sp108 & ((s32)(-m2 | m2) >> 31), arg4);
+        DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc((f32 *)&posX, (f32 *)&sizeX, 1, (f32 (*)[])spBuffer, (s32)&sp108 & ((s32)(-m2 | m2) >> 31), arg4);
     }
+
     m3 = ((MaterialVTable *)M2C_FIELD(arg2, void *, 0x1C))->fn1(mod, arg4);
     posX = arg1[0] + M2C_FIELD(arg3, f32, 0);
     posY = arg1[1] + M2C_FIELD(arg0, f32, 0x50) - M2C_FIELD(arg3, f32, 12);
@@ -660,27 +665,27 @@ extern "C" void DrawFrame4__Q36nw4hbm3lyt6WindowFRCQ36nw4hbm4math4VEC2PCQ46nw4hb
     GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc((f32 *)&tex3x, M2C_FIELD(arg2, void *, 0x1C), 0);
     if (idx3 >= 6U) Panic__Q26nw4hbm2dbFPCciPCce((const char *)(frameTable + 0x3C), 0x32, (const char *)(frameTable + 0xB8));
     e3 = frameTable + (idx3 * 10);
-    tex3cx = tex3x; tex3cy = tex3y;
+    c3x = tex3x; c3y = tex3y;
     {
-        u8 a0 = e3[9]; u8 a3 = e3[8];
-        const u8 *pa0 = e3 + a0; const u8 *pa3 = e3 + a3;
-        u8 b7 = pa0[6]; u8 b11 = pa3[6];
-        u8 b0 = pa3[4];
-        f32 f6 = (f32)b7;
-        f32 f4 = sizeX / ((f32)(b0 - b11) * ((f32 *)&tex3cx)[a3]);
-        tmpA = (s32)b11; tmpA = (s32)b7;
-        f32 f7 = (f32)b11;
-        spBuffer[a3 + 2] = f7; spBuffer[a3 + 6] = f7;
-        spBuffer[a0 + 4] = f6; spBuffer[a0 + 6] = f6;
-        f32 f2 = f7 + f4;
-        f32 f1b = f6;
-        spBuffer[a3 + 4] = f2;
-        f32 f0 = f1b + (sizeY / ((f32)(pa0[2] - b7) * ((f32 *)&tex3cx)[a0]));
-        spBuffer[a3] = f2;
-        spBuffer[a0 + 2] = f0; spBuffer[a0 + 0] = f0;
+        u8 p = e3[9]; u8 q = e3[8];
+        u8 e6 = M2C_FIELD(e3 + p, u8, 6);
+        u8 f6 = M2C_FIELD(e3 + q, u8, 6);
+        u8 g4 = M2C_FIELD(e3 + q, u8, 4);
+        u8 h2 = M2C_FIELD(e3 + p, u8, 2);
+        f32 fe6 = (f32)e6;
+        tmpA = (s32)f6; f32 ff6 = (f32)f6;
+        f32 f4 = sizeX / ((f32)(g4 - f6) * (&c3x)[q]);
+        f32 fd = sizeY / ((f32)(h2 - e6) * (&c3x)[p]);
+        f32 s1 = fe6 + f4;
+        f32 s2 = fe6 + fd;
+        (spBuffer + 0)[q] = s1; (spBuffer + 4)[q] = s1;
+        (spBuffer + 2)[q] = ff6; (spBuffer + 6)[q] = ff6;
+        (spBuffer + 0)[p] = s2; (spBuffer + 2)[p] = s2;
+        (spBuffer + 4)[p] = fe6; (spBuffer + 6)[p] = fe6;
         SetVertexFormat__Q34nw4r3lyt6detailFbUc(m3, 1);
-        DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc((f32 *)&posX, (f32 *)&sizeX, 1, (f32 (*)[])spBuffer, (s32)sp108 & ((s32)(-m3 | m3) >> 31), arg4);
+        DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc((f32 *)&posX, (f32 *)&sizeX, 1, (f32 (*)[])spBuffer, (s32)&sp108 & ((s32)(-m3 | m3) >> 31), arg4);
     }
+
     m4 = ((MaterialVTable *)M2C_FIELD(arg2, void *, 0x14))->fn1(mod, arg4);
     posX = arg1[0];
     posY = arg1[1] + M2C_FIELD(arg3, f32, 8);
@@ -691,29 +696,28 @@ extern "C" void DrawFrame4__Q36nw4hbm3lyt6WindowFRCQ36nw4hbm4math4VEC2PCQ46nw4hb
     GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc((f32 *)&tex4x, M2C_FIELD(arg2, void *, 0x14), 0);
     if (idx4 >= 6U) Panic__Q26nw4hbm2dbFPCciPCce((const char *)(frameTable + 0x3C), 0x32, (const char *)(frameTable + 0xB8));
     e4 = frameTable + (idx4 * 10);
-    tex4cx = tex4x; tex4cy = tex4y;
+    c4x = tex4x; c4y = tex4y;
     {
-        u8 a0 = e4[9]; u8 a3 = e4[8];
-        u8 b8 = M2C_FIELD((e4 + a0), u8, 4);
-        const u8 *pa3 = e4 + a3;
-        u8 b10 = M2C_FIELD(pa3, u8, 4);
-        f32 f6 = (f32)b8;
-        f32 f4 = sizeX / ((f32)(M2C_FIELD(pa3, u8, 6) - b10) * ((f32 *)&tex4cx)[a3]);
-        tmpA = (s32)b10; tmpA = (s32)b8;
-        f32 f7 = (f32)b10;
-        spBuffer[a3] = f7; spBuffer[a3 + 4] = f7;
-        spBuffer[a0 + 6] = f6; spBuffer[a0 + 4] = f6;
-        f32 f2 = f7 + f4;
-        f32 f1b = f6;
-        spBuffer[a3 + 6] = f2; spBuffer[a3 + 2] = f2;
-        f32 f0 = f1b + (sizeY / ((f32)(e4[a0] - b8) * ((f32 *)&tex4cx)[a0]));
-        spBuffer[a3 + 0] = f2;
-        spBuffer[a0 + 0] = f0; spBuffer[a0 + 2] = f0;
+        u8 p = e4[9]; u8 q = e4[8];
+        u8 ep = e4[p];
+        u8 ep4 = M2C_FIELD(e4 + p, u8, 4);
+        u8 eq4 = M2C_FIELD(e4 + q, u8, 4);
+        u8 eq6 = M2C_FIELD(e4 + q, u8, 6);
+        f32 fep4 = (f32)ep4;
+        tmpA = (s32)eq4; f32 feq4 = (f32)eq4;
+        f32 f4 = sizeX / ((f32)(eq6 - eq4) * (&c4x)[q]);
+        f32 fd = sizeY / ((f32)(ep - ep4) * (&c4x)[p]);
+        f32 s1 = feq4 + f4;
+        f32 s2 = fep4 + fd;
+        (spBuffer + 0)[q] = feq4; (spBuffer + 4)[q] = feq4;
+        (spBuffer + 2)[q] = s1; (spBuffer + 6)[q] = s1;
+        (spBuffer + 0)[p] = s2; (spBuffer + 2)[p] = s2;
+        (spBuffer + 4)[p] = fep4; (spBuffer + 6)[p] = fep4;
         SetVertexFormat__Q34nw4r3lyt6detailFbUc(m4, 1);
-        DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc((f32 *)&posX, (f32 *)&sizeX, 1, (f32 (*)[])spBuffer, (s32)sp108 & ((s32)(-m4 | m4) >> 31), arg4);
+        DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc((f32 *)&posX, (f32 *)&sizeX, 1, (f32 (*)[])spBuffer, (s32)&sp108 & ((s32)(-m4 | m4) >> 31), arg4);
     }
 }
-
+#pragma pop
 extern "C" s32 IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(void *, u8);
 extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f32 *, void *, u8);
 extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(s32, u8);
@@ -1317,44 +1321,36 @@ extern "C" void DrawFrame8__Q36nw4hbm3lyt6WindowFRCQ36nw4hbm4math4VEC2PCQ46nw4hb
 #pragma push
 #pragma processor 750
 extern "C" void GetFrameSize__Q36nw4hbm3lyt6WindowFUcPCQ46nw4hbm3lyt6Window5Frame(f64* out, void* self, u8 a, u32 b) {
-    f32 sp20;
-    f32 sp24;
-    f32 sp28;
-    f32 sp2C;
-    f32 sp18;
-    f32 sp1C;
-    f32 sp14;
-    f32 sp10;
-    f32 spC;
-    f32 sp8;
-    *(int*)&sp20 = 0;
-    *(int*)&sp24 = 0;
-    *(int*)&sp28 = 0;
-    *(int*)&sp2C = 0;
+    f32 outv[6];
+    f32 tmp[6];
+    *(int*)&outv[0] = 0;
+    *(int*)&outv[1] = 0;
+    *(int*)&outv[2] = 0;
+    *(int*)&outv[3] = 0;
     switch (a) {
     case 1:
-        GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(&sp18, (void*)(*(u32*)((u8*)b + 4)), 0);
-        sp20 = sp18;
-        sp28 = sp1C;
-        sp24 = sp18;
-        sp2C = sp1C;
+        GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(&tmp[4], (void*)(*(u32*)((u8*)b + 4)), 0);
+        outv[0] = tmp[4];
+        outv[2] = tmp[5];
+        outv[1] = tmp[4];
+        outv[3] = tmp[5];
         break;
     case 4:
     case 8:
-        GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(&sp10, (void*)(*(u32*)((u8*)b + 4)), 0);
-        sp20 = sp10;
-        sp28 = sp14;
-        GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(&sp8, (void*)(*(u32*)((u8*)b + 0x1C)), 0);
-        sp10 = sp8;
-        sp14 = spC;
-        sp24 = sp8;
-        sp2C = spC;
+        GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(&tmp[2], (void*)(*(u32*)((u8*)b + 4)), 0);
+        outv[0] = tmp[2];
+        outv[2] = tmp[3];
+        GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(&tmp[0], (void*)(*(u32*)((u8*)b + 0x1C)), 0);
+        tmp[2] = tmp[0];
+        tmp[3] = tmp[1];
+        outv[1] = tmp[0];
+        outv[3] = tmp[1];
         break;
     }
-    *(f32*)out = sp20;
-    *(f32*)((char*)out + 4) = sp24;
-    *(f32*)((char*)out + 8) = sp28;
-    *(f32*)((char*)out + 12) = sp2C;
+    *(u32*)out = *(u32*)&outv[0];
+    *(u32*)((char*)out + 4) = *(u32*)&outv[1];
+    *(u32*)((char*)out + 8) = *(u32*)&outv[2];
+    *(u32*)((char*)out + 12) = *(u32*)&outv[3];
 }
 #pragma pop
 /* nw4hbm::lyt::Window::GetFrameMaterial(u32) const: the material this window draws
