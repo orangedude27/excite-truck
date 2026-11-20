@@ -36,7 +36,7 @@ extern float lbl_80563340, lbl_80563344, lbl_80563348, lbl_8056334C, lbl_8056335
 extern void fn_80230B5C(void *);
 extern void fn_802C8638(void *);
 extern void fn_802C974C(float, float, float);
-extern void fn_800109E4(int, float, float, float, float, ...);
+extern void fn_800109E4(int, float, float, float, float);
 extern char *fn_80131234(const char *);
 extern void fn_801473F8(int, const char *, const char *, const char *, ...);
 extern void fn_801345D8(char *, int, const char *, ...);
