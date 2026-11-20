@@ -5813,21 +5813,25 @@ void fn_80064740(s32 chan, s32 result) {
 }
 
 #pragma push
-void getGameInfo(s32 chan, s32 param_2, s32 param_3) {
+/* Handle a Wii Remote game-info report (report ID 0x2A/0x62): checksum the 47 raw
+ * bytes against (sum + 0x55) and, if valid, copy the 0x38-byte payload into the
+ * control block and mark the result slot at (u8)resultSlot*4 + 0x38 with 0 on
+ * success or -4 (checksum failure).  No-op when sd is nonzero. */
+void getGameInfo(s32 chan, s32 sd, s32 resultSlot) {
     WPADCB* cb = lbl_8038F4F0[chan];
     u8* src = (u8*)cb->samplingBufSize;
     s32 i;
     u8 sum = 0;
 
-    if (param_2 == 0) {
+    if (sd == 0) {
         for (i = 0; i < 0x2F; i++) {
             sum += src[i];
         }
         if (src[0x2F] == (u8)(sum + 0x55)) {
             memcpy(cb, src, 0x38);
-            *(s32*)((u8*)cb + (u8)param_3 * 4 + 0x38) = 0;
+            *(s32*)((u8*)cb + (u8)resultSlot * 4 + 0x38) = 0;
         } else {
-            *(s32*)((u8*)cb + (u8)param_3 * 4 + 0x38) = -4;
+            *(s32*)((u8*)cb + (u8)resultSlot * 4 + 0x38) = -4;
         }
     }
 }
@@ -6870,108 +6874,10 @@ void fn_800678DC(s32 chan, u8 *data) {
     u8 *buf = (u8*)cb + ((u8*)cb)[0x806] * 0x60 + 0xA0;
     s32 i;
     s16 v;
-    u16 u;
+    s16 t9;
+    u8 nibble;
     BOOL enabled;
-
-    if (lbl_8055DC20[chan] == 0 && lbl_8055DC24[chan] == 0) {
-        for (i = 0; i < 0x60; i++) buf[i] = 0;
-    }
-
-    *(u16*)buf = ((u16)data[1] | ((u16)data[2] << 8)) & 0x9F1F;
-
-    if (cb->readFormat == 0 || cb->readFormat == 1 || cb->readFormat == 9) {
-        buf[0x29] = cb->readStatus;
-    } else if (cb->readStatus == 0) {
-        *(s8*)(buf + 0x29) = -4;
-    }
-    buf[0x28] = *(u8*)((u8*)cb + 0x801);
-    *(u32*)((u8*)cb + 0x788) = 0;
-
-    v = (s16)(((s16)(data[3] << 2) & ~3) | ((data[1] >> 6) & 3));
-    *(s16*)(buf + 2) = v - *(s16*)((u8*)cb + 0x7B4);
-
-    v = (s16)(((s16)(data[2] << 3) & ~0xFF) | ((data[1] << 1) & 0x300));
-    *(s16*)(buf + 6) |= v;
-
-    v = (s16)data[4];
-    *(s16*)(buf + 8) = v | (s16)((data[6] << 4) & 0x300);
-    v = (s16)data[5];
-    *(s16*)(buf + 0xA) = 0x2FF - (s16)(v | (s16)((data[6] << 2) & 0x300));
-    u = data[6] & 0xF;
-    *(u16*)(buf + 0xC) = (u8)(lbl_80560CD8 * (f32)(s16)(s8)(u8)u * (f32)(s16)(s8)(u8)u);
-    if (*(u16*)(buf + 0xC) == 0 || *(s16*)(buf + 8) == 0x3FF || *(s16*)(buf + 0xA) == 0x2FF) {
-        if (*(u8*)(buf + 0x34) == 0xF) {
-            *(s16*)(buf + 8) = 0;
-            *(s16*)(buf + 0xA) = 0x2FF;
-            *(u16*)(buf + 0xC) = 0;
-            *(s16*)(buf + 0x32) = 0;
-            *(u8*)(buf + 0x34) = 0;
-            buf[0xE] = 0;
-        }
-    }
-
-    v = (s16)data[0xD];
-    *(s16*)(buf + 0x10) = v | (s16)((data[0xF] << 4) & 0x300);
-    v = (s16)data[0xE];
-    *(s16*)(buf + 0x12) = 0x2FF - (s16)(v | (s16)((data[0xF] << 2) & 0x300));
-    u = data[0xF] & 0xF;
-    *(u16*)(buf + 0x14) = (u8)(lbl_80560CD8 * (f32)(s16)(s8)(u8)u * (f32)(s16)(s8)(u8)u);
-    v = (s16)data[0x14];
-    *(s16*)(buf + 0x3E) = v | (s16)((data[0x15] << 6) & 0xC00);
-    buf[0x40] = data[0xF] & 0xF;
-    if (*(u16*)(buf + 0x14) == 0 || *(s16*)(buf + 0x10) == 0x3FF || *(s16*)(buf + 0x12) == 0x2FF) {
-        if (*(u8*)(buf + 0x40) == 0xF) {
-            *(s16*)(buf + 0x10) = 0;
-            *(s16*)(buf + 0x12) = 0x2FF;
-            *(u16*)(buf + 0x14) = 0;
-            *(s16*)(buf + 0x3E) = 0;
-            *(u8*)(buf + 0x40) = 0;
-        }
-    }
-
-    v = (s16)(s8)data[7];
-    *(s16*)(buf + 0x2A) = (data[7] & 0xFF) & (v == -1 ? 0 : 0xFFFF);
-    v = (s16)(s8)data[8];
-    *(s16*)(buf + 0x2C) = (data[8] & 0xFF) & (v == -1 ? 0 : 0xFFFF);
-    v = (s16)(s8)data[9];
-    *(s16*)(buf + 0x2E) = (data[9] & 0xFF) & (v == -1 ? 0 : 0xFFFF);
-    *(s16*)(buf + 0x2A) = *(s16*)(buf + 0x2A) * 8;
-    *(s16*)(buf + 0x2C) = 0x2FF - (*(s16*)(buf + 0x2C) * 8);
-    *(s16*)(buf + 0x2E) = 0x2FF - (*(s16*)(buf + 0x2E) * 8);
-    *(s16*)(buf + 0x30) = (s16)(s8)data[0xA] * 8;
-
-    v = (s16)(s8)data[0x10];
-    *(s16*)(buf + 0x36) = (data[0x10] & 0xFF) & (v == -1 ? 0 : 0xFFFF);
-    v = (s16)(s8)data[0x11];
-    *(s16*)(buf + 0x38) = (data[0x11] & 0xFF) & (v == -1 ? 0 : 0xFFFF);
-    v = (s16)(s8)data[0x12];
-    *(s16*)(buf + 0x3A) = (data[0x12] & 0xFF) & (v == -1 ? 0 : 0xFFFF);
-    *(s16*)(buf + 0x36) = *(s16*)(buf + 0x36) * 8;
-    *(s16*)(buf + 0x38) = 0x2FF - (*(s16*)(buf + 0x38) * 8);
-    *(s16*)(buf + 0x3A) = 0x2FF - (*(s16*)(buf + 0x3A) * 8);
-    *(s16*)(buf + 0x3C) = (s16)(s8)data[0x13] * 8;
-    *(u16*)(buf + 0x32) = 0;
-
-    enabled = OSDisableInterrupts();
-    lbl_8055DC20[chan] = 1;
-    if (enabled != 0 && lbl_8055DC24[chan] != 0) {
-        *(s16*)(buf + 6) = *(s16*)(buf + 6) - *(s16*)((u8*)cb + 0x7B8);
-        ((u8*)cb)[0x806] = __cntlzw(((u8*)cb)[0x806]) >> 5;
-        lbl_8055DC24[chan] = 0;
-        lbl_8055DC20[chan] = 0;
-    }
-    OSRestoreInterrupts(enabled);
-}
-
-// fn_80067ECC: WPAD data processing
-void fn_80067ECC(s32 chan, u8 *data) {
-    WPADCB *cb = lbl_8038F4F0[(u8)chan];
-    u8 *base = (u8*)cb + ((u8*)cb)[0x806] * 0x60;
-    u8 *buf = base + 0xA0;
-    s32 i;
-    s16 v;
-    u16 u;
-    BOOL enabled;
+    f32 scale = lbl_80560CD8;
 
     if (lbl_8055DC20[chan] == 0 && lbl_8055DC24[chan] == 0) {
         for (i = 0; i < 0x60; i++) buf[i] = 0;
@@ -6989,85 +6895,235 @@ void fn_80067ECC(s32 chan, u8 *data) {
 
     {
         s16 a = (s16)(data[3] << 2);
-        s16 b;
+        s16 b = (s16)(((s16)data[1] >> 6) & 2);
         a = a & ~3;
-        b = (data[1] >> 6) & 3;
-        v = a | b;
+        v = (s16)((s16)(a | b) - *(s16*)((u8*)cb + 0x7B4));
     }
-    *(s16*)(buf + 4) = v - *(s16*)((u8*)cb + 0x7B6);
+    *(s16*)(buf + 2) = v;
 
-    v = (s16)(((s16)(data[2] << 3) & ~0xFF) | ((data[1] << 1) & 0x300));
+    v = (s16)(((s16)((s16)(data[2] << 3) & ~0xFF)) | ((data[1] << 1) & 0xC0));
+    *(s16*)(buf + 6) |= v;
+
+    v = (s16)data[4];
+    *(s16*)(buf + 8) = v | (s16)((data[6] << 4) & 0x300);
+    v = (s16)data[5];
+    *(s16*)(buf + 0xA) = 0x2FF - (s16)(v | (s16)((data[6] << 2) & 0x300));
+    *(s16*)(buf + 0x32) = (s16)(((s16)((data[0xB] << 8) & 0xFF00) | data[0xC]) << 6) & 0xFFC0;
+    buf[0x34] = data[6] & 0xF;
+    {
+        u8 b = data[7];
+        *(s16*)(buf + 0x2A) = b & (~((~(((s8)b + 1) | (-1 - (s8)b))) >> 31));
+    }
+    {
+        u8 b = data[8];
+        *(s16*)(buf + 0x2C) = b & (~((~(((s8)b + 1) | (-1 - (s8)b))) >> 31));
+    }
+    {
+        u8 b = data[9];
+        t9 = b & (~((~(((s8)b + 1) | (-1 - (s8)b))) >> 31));
+        *(s16*)(buf + 0x2E) = t9;
+    }
+    {
+        u8 b = data[0xA];
+        s16 tA = b & (~((~(((s8)b + 1) | (-1 - (s8)b))) >> 31));
+        *(s16*)(buf + 0x2A) = *(s16*)(buf + 0x2A) * 8;
+        *(s16*)(buf + 0x2C) = 0x2FF - (*(s16*)(buf + 0x2C) * 8);
+        *(s16*)(buf + 0x2E) = t9 * 8;
+        *(s16*)(buf + 0x30) = 0x2FF - ((s16)(tA * 8));
+    }
+    {
+        s8 s = (s8)buf[0x34];
+        *(s16*)(buf + 0xC) = (s16)(scale * ((f32)s * (f32)s));
+    }
+    if (*(u16*)(buf + 0xC) == 0 || *(s16*)(buf + 8) == 0x3FF || *(s16*)(buf + 0xA) == 0x2FF || (s32)buf[0x34] == 0xF) {
+        *(s16*)(buf + 8) = 0;
+        *(s16*)(buf + 0xA) = 0x2FF;
+        *(u16*)(buf + 0xC) = 0;
+        *(s16*)(buf + 0x32) = 0;
+        *(u8*)(buf + 0x34) = 0;
+        buf[0xE] = 0;
+    }
+
+    v = (s16)data[0xD];
+    *(s16*)(buf + 0x10) = v | (s16)((data[0xF] << 4) & 0x300);
+    v = (s16)data[0xE];
+    *(s16*)(buf + 0x12) = 0x2FF - (s16)(v | (s16)((data[0xF] << 2) & 0x300));
+    *(s16*)(buf + 0x3E) = (s16)(((s16)((data[0x14] << 8) & 0xFF00) | data[0x15]) << 6) & 0xFFC0;
+    nibble = data[0xF] & 0xF;
+    buf[0x40] = nibble;
+    {
+        u8 b = data[0x10];
+        s16 t = b & (~((~(((s8)b + 1) | (-1 - (s8)b))) >> 31));
+        *(s16*)(buf + 0x36) = t;
+    }
+    {
+        u8 b = data[0x11];
+        s16 t = b & (~((~(((s8)b + 1) | (-1 - (s8)b))) >> 31));
+        *(s16*)(buf + 0x38) = t;
+    }
+    {
+        u8 b = data[0x12];
+        s16 t = b & (~((~(((s8)b + 1) | (-1 - (s8)b))) >> 31));
+        *(s16*)(buf + 0x3A) = t;
+    }
+    {
+        u8 b = data[0x13];
+        s16 t = b & (~((~(((s8)b + 1) | (-1 - (s8)b))) >> 31));
+        *(s16*)(buf + 0x36) = *(s16*)(buf + 0x36) * 8;
+        *(s16*)(buf + 0x38) = 0x2FF - (*(s16*)(buf + 0x38) * 8);
+        *(s16*)(buf + 0x3A) = *(s16*)(buf + 0x3A) * 8;
+        *(s16*)(buf + 0x3C) = 0x2FF - ((s16)(t * 8));
+    }
+    {
+        s8 s = (s8)nibble;
+        *(s16*)(buf + 0x14) = (s16)(scale * ((f32)s * (f32)s));
+    }
+    if (*(u16*)(buf + 0x14) == 0 || *(s16*)(buf + 0x10) == 0x3FF || *(s16*)(buf + 0x12) == 0x2FF || (s32)(u8)buf[0x40] == 0xF) {
+        *(s16*)(buf + 0x10) = 0;
+        *(s16*)(buf + 0x12) = 0x2FF;
+        *(u16*)(buf + 0x14) = 0;
+        *(s16*)(buf + 0x3E) = 0;
+        *(u8*)(buf + 0x40) = 0;
+    }
+
+    *(s8*)(buf + 0x16) = 1;
+    enabled = OSDisableInterrupts();
+    lbl_8055DC20[chan] = 1;
+    if (lbl_8055DC20[chan] != 0 && lbl_8055DC24[chan] != 0) {
+        *(s16*)(buf + 6) = *(s16*)(buf + 6) - *(s16*)((u8*)cb + 0x7B8);
+        ((u8*)cb)[0x806] = (u8)(((u8*)cb)[0x806] == 0);
+        lbl_8055DC24[chan] = 0;
+        lbl_8055DC20[chan] = 0;
+    }
+    OSRestoreInterrupts(enabled);
+}
+
+// fn_80067ECC: WPAD data processing
+void fn_80067ECC(s32 chan, u8 *data) {
+    WPADCB *cb = lbl_8038F4F0[(u8)chan];
+    u8 *base = (u8*)cb + ((u8*)cb)[0x806] * 0x60;
+    u8 *buf = base + 0xA0;
+    s32 i;
+    s16 v;
+    s16 t9;
+    u8 nibble;
+    BOOL enabled;
+    f32 scale;
+
+    if (lbl_8055DC20[chan] == 0 && lbl_8055DC24[chan] == 0) {
+        for (i = 0; i < 0x60; i++) buf[i] = 0;
+    }
+
+    *(u16*)buf = ((u16)data[1] | ((u16)data[2] << 8)) & 0x9F1F;
+
+    if (cb->readFormat == 0 || cb->readFormat == 1 || cb->readFormat == 9) {
+        buf[0x29] = cb->readStatus;
+    } else if (cb->readStatus == 0) {
+        *(s8*)(buf + 0x29) = -4;
+    }
+    buf[0x28] = *(u8*)((u8*)cb + 0x801);
+    *(u32*)((u8*)cb + 0x788) = 0;
+
+    {
+        s16 a = (s16)(data[3] << 2);
+        s16 b = (s16)(((u8)data[1] >> 6) & 2);
+        a = a & ~3;
+        v = (s16)((s16)(a | b) - *(s16*)((u8*)cb + 0x7B6));
+    }
+    *(s16*)(buf + 4) = v;
+
+    v = (s16)(((data[2] >> 1) & 0x30) | ((data[1] >> 3) & 0xC));
     *(s16*)(buf + 6) |= v;
 
     v = (s16)data[4];
     *(s16*)(buf + 0x18) = v | (s16)((data[6] << 4) & 0x300);
     v = (s16)data[5];
     *(s16*)(buf + 0x1A) = 0x2FF - (s16)(v | (s16)((data[6] << 2) & 0x300));
-
-    v = (s16)data[0xB];
-    *(s16*)(buf + 0x4A) = v | (s16)((data[0xC] << 6) & 0xC00);
+    *(s16*)(buf + 0x4A) = (s16)(((s16)((data[0xB] << 8) & 0xFF00) | data[0xC]) << 6) & 0xFFC0;
     buf[0x4C] = data[6] & 0xF;
-
-    v = (s16)(s8)buf[0x4C];
-    *(s16*)(buf + 0x42) = (u16)buf[0x4C] & (v == -1 ? 0 : 0xFFFF);
-    v = (s16)(s8)data[8];
-    *(s16*)(buf + 0x44) = (u16)data[8] & (v == -1 ? 0 : 0xFFFF);
-    v = (s16)(s8)data[9];
-    *(s16*)(buf + 0x46) = (u16)data[9] & (v == -1 ? 0 : 0xFFFF);
-    *(s16*)(buf + 0x42) = *(s16*)(buf + 0x42) * 8;
-    *(s16*)(buf + 0x44) = 0x2FF - (*(s16*)(buf + 0x44) * 8);
-    *(s16*)(buf + 0x46) = 0x2FF - (*(s16*)(buf + 0x46) * 8);
-    *(s16*)(buf + 0x48) = (s16)(s8)data[0xA] * 8;
-
-    u = data[6] & 0xF;
-    *(u16*)(buf + 0x1C) = (u8)(lbl_80560CD8 * (f32)(s16)(s8)(u8)u * (f32)(s16)(s8)(u8)u);
-    if (*(u16*)(buf + 0x1C) == 0 || *(s16*)(buf + 0x18) == 0x3FF || *(s16*)(buf + 0x1A) == 0x2FF) {
-        if (*(u8*)(buf + 0x4C) == 0xF) {
-            *(s16*)(buf + 0x18) = 0;
-            *(s16*)(buf + 0x1A) = 0x2FF;
-            *(u16*)(buf + 0x1C) = 0;
-            *(s16*)(buf + 0x4A) = 0;
-            *(u8*)(buf + 0x4C) = 0;
-            buf[0x1E] = 2;
-        }
+    {
+        u8 b = data[7];
+        *(s16*)(buf + 0x42) = b & (~((~(((s8)b + 1) | (-1 - (s8)b))) >> 31));
     }
+    {
+        u8 b = data[8];
+        *(s16*)(buf + 0x44) = b & (~((~(((s8)b + 1) | (-1 - (s8)b))) >> 31));
+    }
+    {
+        u8 b = data[9];
+        t9 = b & (~((~(((s8)b + 1) | (-1 - (s8)b))) >> 31));
+        *(s16*)(buf + 0x46) = t9;
+    }
+    {
+        u8 b = data[0xA];
+        s16 tA = b & (~((~(((s8)b + 1) | (-1 - (s8)b))) >> 31));
+        *(s16*)(buf + 0x42) = *(s16*)(buf + 0x42) * 8;
+        *(s16*)(buf + 0x44) = 0x2FF - (*(s16*)(buf + 0x44) * 8);
+        *(s16*)(buf + 0x46) = t9 * 8;
+        *(s16*)(buf + 0x48) = 0x2FF - ((s16)(tA * 8));
+    }
+    {
+        s8 s = (s8)buf[0x4C];
+        scale = lbl_80560CD8;
+        *(s16*)(buf + 0x1C) = (s16)(scale * ((f32)s * (f32)s));
+    }
+    if (*(u16*)(buf + 0x1C) == 0 || *(s16*)(buf + 0x18) == 0x3FF || *(s16*)(buf + 0x1A) == 0x2FF || (s32)buf[0x4C] == 0xF) {
+        *(s16*)(buf + 0x18) = 0;
+        *(s16*)(buf + 0x1A) = 0x2FF;
+        *(u16*)(buf + 0x1C) = 0;
+        *(s16*)(buf + 0x4A) = 0;
+        *(u8*)(buf + 0x4C) = 0;
+    }
+    *(s8*)(buf + 0x1E) = 2;
 
     v = (s16)data[0xD];
     *(s16*)(buf + 0x20) = v | (s16)((data[0xF] << 4) & 0x300);
     v = (s16)data[0xE];
     *(s16*)(buf + 0x22) = 0x2FF - (s16)(v | (s16)((data[0xF] << 2) & 0x300));
-    u = data[0xF] & 0xF;
-    *(u16*)(buf + 0x24) = (u8)(lbl_80560CD8 * (f32)(s16)(s8)(u8)u * (f32)(s16)(s8)(u8)u);
-    v = (s16)data[0x14];
-    *(s16*)(buf + 0x56) = v | (s16)((data[0x15] << 6) & 0xC00);
-    buf[0x58] = data[0xF] & 0xF;
-    if (*(u16*)(buf + 0x24) == 0 || *(s16*)(buf + 0x20) == 0x3FF || *(s16*)(buf + 0x22) == 0x2FF) {
-        if (*(u8*)(buf + 0x58) == 0xF) {
-            *(s16*)(buf + 0x20) = 0;
-            *(s16*)(buf + 0x22) = 0x2FF;
-            *(u16*)(buf + 0x24) = 0;
-            *(s16*)(buf + 0x56) = 0;
-            *(u8*)(buf + 0x58) = 0;
-            buf[0x26] = 3;
-        }
+    *(s16*)(buf + 0x56) = (s16)(((s16)((data[0x14] << 8) & 0xFF00) | data[0x15]) << 6) & 0xFFC0;
+    nibble = data[0xF] & 0xF;
+    *(s8*)(buf + 0x58) = nibble;
+    {
+        u8 b = data[0x10];
+        s16 t = b & (~((~(((s8)b + 1) | (-1 - (s8)b))) >> 31));
+        *(s16*)(buf + 0x4E) = t;
     }
-
-    v = (s16)(s8)data[0x10];
-    *(s16*)(buf + 0x4E) = (u16)data[0x10] & (v == -1 ? 0 : 0xFFFF);
-    v = (s16)(s8)data[0x11];
-    *(s16*)(buf + 0x50) = (u16)data[0x11] & (v == -1 ? 0 : 0xFFFF);
-    v = (s16)(s8)data[0x12];
-    *(s16*)(buf + 0x52) = (u16)data[0x12] & (v == -1 ? 0 : 0xFFFF);
-    *(s16*)(buf + 0x4E) = *(s16*)(buf + 0x4E) * 8;
-    *(s16*)(buf + 0x50) = 0x2FF - (*(s16*)(buf + 0x50) * 8);
-    *(s16*)(buf + 0x52) = 0x2FF - (*(s16*)(buf + 0x52) * 8);
-    *(s16*)(buf + 0x54) = (s16)(s8)data[0x13] * 8;
+    {
+        u8 b = data[0x11];
+        s16 t = b & (~((~(((s8)b + 1) | (-1 - (s8)b))) >> 31));
+        *(s16*)(buf + 0x50) = t;
+    }
+    {
+        u8 b = data[0x12];
+        s16 t = b & (~((~(((s8)b + 1) | (-1 - (s8)b))) >> 31));
+        *(s16*)(buf + 0x52) = t;
+    }
+    {
+        u8 b = data[0x13];
+        s16 t = b & (~((~(((s8)b + 1) | (-1 - (s8)b))) >> 31));
+        *(s16*)(buf + 0x4E) = *(s16*)(buf + 0x4E) * 8;
+        *(s16*)(buf + 0x50) = 0x2FF - (*(s16*)(buf + 0x50) * 8);
+        *(s16*)(buf + 0x52) = *(s16*)(buf + 0x52) * 8;
+        *(s16*)(buf + 0x54) = 0x2FF - ((s16)(t * 8));
+    }
+    {
+        s8 s = (s8)nibble;
+        *(s16*)(buf + 0x24) = (s16)(scale * ((f32)s * (f32)s));
+    }
+    if (*(u16*)(buf + 0x24) == 0 || *(s16*)(buf + 0x20) == 0x3FF || *(s16*)(buf + 0x22) == 0x2FF || (s32)(u8)buf[0x58] == 0xF) {
+        *(s16*)(buf + 0x20) = 0;
+        *(s16*)(buf + 0x22) = 0x2FF;
+        *(u16*)(buf + 0x24) = 0;
+        *(s16*)(buf + 0x56) = 0;
+        *(u8*)(buf + 0x58) = 0;
+    }
+    *(s8*)(buf + 0x26) = 3;
 
     enabled = OSDisableInterrupts();
-    lbl_8055DC20[chan] = 1;
+    lbl_8055DC24[chan] = 1;
     if (lbl_8055DC20[chan] != 0 && lbl_8055DC24[chan] != 0) {
         *(s16*)(buf + 6) = *(s16*)(buf + 6) - *(s16*)((u8*)cb + 0x7B8);
-        ((u8*)cb)[0x806] = __cntlzw(((u8*)cb)[0x806]) >> 5;
+        ((u8*)cb)[0x806] = (u8)(((u8*)cb)[0x806] == 0);
         lbl_8055DC24[chan] = 0;
         lbl_8055DC20[chan] = 0;
     }
@@ -7086,11 +7142,10 @@ void fn_800684D0(s32 chan) {
     u8 tmp;
     u32 a, b;
     int i, ctr;
-    u8 *dst;
     u32 en;
     int off;
-    u32 t15, t6v, t12, t11, t10, t11_2, t11_3;
-    u32 t18_2, t15_2, t15_3, t14_3, t14_4, t15_4, t18_3, t25_2, t18_4;
+    u8 t15, t6v, t12, t11, t10, t11_2, t11_3;
+    u8 t18_2, t15_2, t15_3, t14_3, t14_4, t15_4, t18_3, t25_2, t18_4;
     u8 t8_7, t9_2, t6_2, t16, t27, t19, t23, t29, t28, t25, t3_2, t14_2, t15_5, t11_4;
     u8 t9_3, t8_8, t14_5, t27_2, t0, t25_4, t17_2, t16_4, t14_6, t12_2, t26, t18_5, t25_5, t10_2, t25_6, t29_2;
     u32 sh23, sh25;
@@ -7108,17 +7163,16 @@ void fn_800684D0(s32 chan) {
     for (ctr = 0; ctr < 2; ctr++) {
         int base = i;
         i += 5;
-        dst = &s[base];
         b = (tmp + b * lbl_8055DC2A) % 255;
-        dst[0] = lbl_803127C8[b];
+        s[base + 0] = lbl_803127C8[b];
         b = (tmp + b * lbl_8055DC2A) % 255;
-        dst[1] = lbl_803127C8[b];
+        s[base + 1] = lbl_803127C8[b];
         b = (tmp + b * lbl_8055DC2A) % 255;
-        dst[2] = lbl_803127C8[b];
+        s[base + 2] = lbl_803127C8[b];
         b = (tmp + b * lbl_8055DC2A) % 255;
-        dst[3] = lbl_803127C8[b];
+        s[base + 3] = lbl_803127C8[b];
         b = (tmp + b * lbl_8055DC2A) % 255;
-        dst[4] = lbl_803127C8[b];
+        s[base + 4] = lbl_803127C8[b];
     }
     lbl_8055DC2B = (u8)b;
     en = OSDisableInterrupts();
