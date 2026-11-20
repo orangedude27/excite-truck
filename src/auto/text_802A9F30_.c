@@ -272,43 +272,35 @@ void fn_802AA25C(void *arg0, void *arg1, float farg0) {
         float by = lbl_805649F0;
         float bz = *(float *)((char *)arg1 + 0xB4);
         float *m = (float *)arg1;
-        float x1, y1, z1;
-        float x2, y2, z2;
         sp80 = bx;
         sp84 = by;
         sp88 = bz;
         sp8C = *(float *)((char *)arg1 + 0x124);
         sp90 = by;
         sp94 = *(float *)((char *)arg1 + 0x12C);
-        x1 = sp80;
-        y1 = sp84;
-        z1 = sp88;
         if (&sp80 == &sp80) {
-            float rx = z1 * m[6] + (x1 * m[0] + y1 * m[3]);
-            float ry = z1 * m[7] + (x1 * m[1] + y1 * m[4]);
-            float rz = z1 * m[8] + (x1 * m[2] + y1 * m[5]);
+            float rx = sp88 * m[6] + (sp80 * m[0] + sp84 * m[3]);
+            float ry = sp88 * m[7] + (sp80 * m[1] + sp84 * m[4]);
+            float rz = sp88 * m[8] + (sp80 * m[2] + sp84 * m[5]);
             sp80 = rx;
             sp84 = ry;
             sp88 = rz;
         } else {
-            sp80 = m[6] * z1 + (m[0] * x1 + m[3] * y1);
-            sp84 = m[7] * z1 + (m[4] * sp80 + m[5] * y1);
-            sp88 = m[8] * z1 + (m[2] * sp80 + m[5] * sp84);
+            sp80 = m[6] * sp88 + (m[0] * sp80 + m[3] * sp84);
+            sp84 = m[7] * sp88 + (m[4] * sp80 + m[5] * sp84);
+            sp88 = m[8] * sp88 + (m[2] * sp80 + m[5] * sp84);
         }
-        x2 = sp8C;
-        y2 = sp90;
-        z2 = sp94;
         if (&sp8C == &sp8C) {
-            float rx = z2 * m[6] + (x2 * m[0] + y2 * m[3]);
-            float ry = z2 * m[7] + (x2 * m[1] + y2 * m[4]);
-            float rz = z2 * m[8] + (x2 * m[2] + y2 * m[5]);
+            float rx = sp94 * m[6] + (sp8C * m[0] + sp90 * m[3]);
+            float ry = sp94 * m[7] + (sp8C * m[1] + sp90 * m[4]);
+            float rz = sp94 * m[8] + (sp8C * m[2] + sp90 * m[5]);
             sp8C = rx;
             sp90 = ry;
             sp94 = rz;
         } else {
-            sp8C = m[6] * z2 + (m[0] * x2 + m[3] * y2);
-            sp90 = m[7] * z2 + (m[1] * sp8C + m[4] * y2);
-            sp94 = m[8] * z2 + (m[2] * sp8C + m[5] * sp90);
+            sp8C = m[6] * sp94 + (m[0] * sp8C + m[3] * sp90);
+            sp90 = m[7] * sp94 + (m[1] * sp8C + m[4] * sp90);
+            sp94 = m[8] * sp94 + (m[2] * sp8C + m[5] * sp90);
         }
         fn_802AA100(&v5C, (char *)arg1 + 0x40, arg1, (char *)arg1 + 0x18);
         if (PSVECDotProduct(&v5C, &v5C) > lbl_80564A28) {
@@ -458,11 +450,11 @@ void fn_802AA9D4(UnkAA9D4 *arg0, void *arg1, float delta) {
     float v, angle, scale;
 
     if (arg0->active) {
-        float max;
-        v = lbl_80564A08 * delta;
-        max = lbl_805649FC;
+        float stp;
+        v = arg0->amount;
+        stp = lbl_80564A08 * delta;
         arg0->active = 0;
-        arg0->amount = (v += arg0->amount) < max ? v : max;
+        arg0->amount = (v += stp) < 1.0f ? v : 1.0f;
     } else {
         v = arg0->amount - lbl_80564A08 * delta;
         arg0->amount = v > lbl_805649F0 ? v : lbl_805649F0;
@@ -550,6 +542,7 @@ void fn_802AAC80(void *arg0, void *arg1, float farg0) {
 }
 #pragma push
 #pragma processor 750
+#pragma scheduling invalid_target
 void fn_802AAD5C(int arg0, int arg1, int arg2) {
     extern void fn_802C8BD0(int);
     extern void fn_801E866C(int);
@@ -561,10 +554,9 @@ void fn_802AAD5C(int arg0, int arg1, int arg2) {
     extern const double lbl_80564A40;
     extern float lbl_8055CC6C, lbl_805649F0, lbl_805649F4, lbl_805649FC, lbl_80564A24, lbl_80564A30, lbl_80564A54;
     union { double value; unsigned int words[2]; } conv;
-    register float temp_f2;
     float *arg;
     volatile float sp10, spC, sp8;
-    float temp_f0, temp_f4;
+    float temp_f2, temp_f0, temp_f4;
     float temp_f31, temp_f30, temp_f29, temp_f28, temp_f27;
     double temp_f26;
     int i, n, alpha, color;
@@ -749,15 +741,14 @@ void fn_802AB21C(void) {
         InitStruct s2;
         InitStruct s1;
     } frame;
-    const StuntStrings *base;
+    const StuntStrings * const base = (const StuntStrings *)lbl_80349DC8;
     void *buffer;
     int *r29;
     register int two;
     register int five;
     float t13;
     float t31;
-    base = (const StuntStrings *)lbl_80349DC8;
-    buffer = fn_8012850C(0x850, (char *)base + 0);
+    buffer = fn_8012850C(0x850, (const char *)base);
     lbl_8055F928 = (int)fn_8002F37C(buffer, fn_802AB500, 0, 0x108, 8);
     r29 = (int *)fn_801284F8(8, base->name2);
     if (r29 != NULL) {
@@ -973,8 +964,7 @@ void fn_802AB6D4(void) {
     }
 }
 
-#pragma push
-#pragma processor 750
+#pragma opt_lifetimes off
 void fn_802AB770(int arg0) {
     extern int lbl_8055F928;
     extern unsigned char lbl_8055F92C, lbl_8055F92D;
@@ -991,7 +981,8 @@ void fn_802AB770(int arg0) {
     extern int fn_802C990C(int);
     extern void fn_802C2BB8(int *, int *, int *);
     extern void fn_802C2B78(float, float, float);
-    char *state;
+    char *state = (char *)(lbl_8055F928 + arg0 * 0x108);
+    int obj;
     unsigned char green;
     unsigned char red;
     unsigned char blue;
@@ -1003,8 +994,7 @@ void fn_802AB770(int arg0) {
     int angleBelowLimit;
     int angleWithinLimit;
     int active;
-    state = (char *)(lbl_8055F928 + arg0 * 0x108);
-    arg0 = fn_80287B24(arg0);
+    obj = fn_80287B24(arg0);
     delta = fn_801E7E24();
     if (!((float)__fabs(delta) <= *(float *)(void *)&lbl_80558DC4)) {
         red = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0x8C, 0xFF);
@@ -1012,7 +1002,7 @@ void fn_802AB770(int arg0) {
         blue = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0xF0, 0xFF);
         *(int *)(state + 0xE8) = (int)(0xFF000000u | ((unsigned int)blue << 16) | ((unsigned int)green << 8) | (unsigned int)red);
     }
-    angle = *(float *)((char *)arg0 + 0x4C);
+    angle = *(float *)((char *)obj + 0x4C);
     if (lbl_8055F92C != 0) angle = lbl_80564A98;
     if (*(float *)(state + 0xE4) > lbl_805649F4)
         *(float *)(state + 0xE4) = fn_80287BC8(lbl_80564A8C, lbl_80564A68);
@@ -1031,13 +1021,13 @@ void fn_802AB770(int arg0) {
     }
     result = lbl_805649F0;
     if (active != 0) result = lbl_80564AA8 * *(float *)(state + 0xE4) - wave;
-    arg0 = *(int *)(state + 0xE8);
+    obj = *(int *)(state + 0xE8);
     lbl_8055F92D = fn_802C2C00(1);
-    lbl_804BD7B0[0] = fn_802C990C(arg0);
+    lbl_804BD7B0[0] = fn_802C990C(obj);
     fn_802C2BB8(&lbl_804BD7B0[1], &lbl_804BD7B0[2], &lbl_804BD7B0[3]);
     fn_802C2B78(result, lbl_80564AAC + result, lbl_805649FC);
 }
-#pragma pop
+#pragma opt_lifetimes reset
 // Restore the draw state saved by fn_802AB770: model colour,
 // global scale parameters, and the global-scale-on flag.
 void fn_802AB994(void) {
@@ -1209,7 +1199,7 @@ void fn_802ABC80(void *arg0, void *arg1, float farg0, float farg1, float farg2) 
     pos.z+=((float*)((char*)arg0+0xC))[2]*scale;
     dir=*(Vec*)arg1;
     callpos=pos;
-    fn_8028E590(*(int *)*(void *volatile *)&lbl_8055F924,&callpos,&dir,lbl_805649FC);
+    fn_8028E590(*(int*)lbl_8055F924,&callpos,&dir,lbl_805649FC);
 }
 
 /* Draw the primary particle-emitter list (mode 0) via the particle draw routine. */
@@ -1217,10 +1207,12 @@ void fn_802ABE50(void) { fn_8028E240(0); }
 
 #pragma scheduling invalid_target
 void fn_802ABE58(volatile float *arg0, volatile float *arg1, int *arg2, float delta) {
+#pragma scheduling on
     unsigned char green;
     unsigned char red;
     unsigned char blue;
     float angle;
+    double dummy;
     float current;
     float magnitude;
     float wave;
@@ -1230,7 +1222,6 @@ void fn_802ABE58(volatile float *arg0, volatile float *arg1, int *arg2, float de
     int angleBelowLimit;
     int angleWithinLimit;
     int active;
-    int gate;
 
     red = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0x8C, 0xFF);
     green = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0xFA, 0xFF);
@@ -1238,7 +1229,8 @@ void fn_802ABE58(volatile float *arg0, volatile float *arg1, int *arg2, float de
     angle = lbl_80564A98;
     *arg2 = (int)(0xFF000000u | ((unsigned int)blue << 16) | ((unsigned int)green << 8) | (unsigned int)red);
 
-    gate = *(volatile unsigned char *)&lbl_8055F92C;
+    if (*(volatile unsigned char *)&lbl_8055F92C == 0)
+        dummy = angle;
     current = *arg0;
     if (current > lbl_805649F4)
         *arg0 = fn_80287BC8(lbl_80564A8C, lbl_80564A68);
@@ -1264,7 +1256,7 @@ void fn_802ABE58(volatile float *arg0, volatile float *arg1, int *arg2, float de
     if (active != 0)
         result = lbl_80564AA8 * *arg0 - wave;
     *arg1 = result;
-    (void)gate;
+    (void)dummy;
 }
 /* Begin a tinted draw of the vehicle: stash the state fn_802AC070 has to put
  * back, then tint the model with `tint` (0xRRGGBB) and switch the global scale
