@@ -4614,17 +4614,19 @@ extern "C" void fn_8021FC40(void *arg0, s32 arg1) {
     s32 temp_r30;
     s32 temp_r29;
     s32 var_r28;
+    f32 stepf;
 
     fn_802C3034(arg1);
     ((void (*)(void *, s32))fn_802192A0)(arg0, arg1);
 
-    temp_r29 = (s32)(((f32)(((VfObj *)arg0)->vf28() - 11) *
-        (**(f32 **)((u8 *)arg0 + 0x250) - *(f32 *)((u8 *)arg0 + 0x248))) /
+    stepf = (f32)(((VfObj *)arg0)->vf28() - 11);
+    temp_r29 = (s32)((stepf * (**(f32 **)((u8 *)arg0 + 0x250) - *(f32 *)((u8 *)arg0 + 0x248))) /
         (*(f32 *)((u8 *)arg0 + 0x24C) - *(f32 *)((u8 *)arg0 + 0x248)));
 
+    var_r28 = 0;
     temp_r5 = *(s32 **)((u8 *)arg0 + 0x274);
-    var_r28 = (temp_r5 != 0 && *temp_r5 == *(s32 *)((u8 *)arg0 + 0x278)) ? 1 : 0;
-    if (var_r28) {
+    if (temp_r5 != 0 && *temp_r5 == *(s32 *)((u8 *)arg0 + 0x278)) { var_r28 = 1; }
+    if (var_r28 != 0) {
         temp_r31 = *(s32 *)((u8 *)arg0 + 8);
         temp_r30 = *(s32 *)((u8 *)arg0 + 4);
         fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x25C),
@@ -5655,8 +5657,12 @@ extern "C" void fn_80222234(void *obj, s32 x, s32 y) {
     current = state[0x24C / 4];
     if (current < 0) return;
     left = state[1];
-    if (x < current * 50 + left) goto fail_x;
-    if (x > (current + 1) * 50 + left) goto fail_x;
+    s32 lo = current * 50;
+    lo += left;
+    if (x < lo) goto fail_x;
+    s32 hi = (current + 1) * 50;
+    hi += left;
+    if (x > hi) goto fail_x;
     s32 delta = y - top;
     items = *(s32 **)((u8 *)obj + 0x244);
     entry = *(s32 **)((u8 *)items + current * 0x24);
