@@ -39,16 +39,16 @@ static inline Block* link_new_block(Block** list, unsigned int size) {
     bp = (Block*)__sys_alloc(size);
     if (bp == 0) return 0;
     Block_construct(bp, size);
-    if (*list == 0) {
-        *list = bp;
-        bp->prev = bp;
-        bp->next = bp;
-    } else {
+    if (*list != 0) {
         bp->prev = (*list)->prev;
         bp->prev->next = bp;
         bp->next = *list;
         (*list)->prev = bp;
         *list = bp;
+    } else {
+        *list = bp;
+        bp->prev = bp;
+        bp->next = bp;
     }
     return bp;
 }
