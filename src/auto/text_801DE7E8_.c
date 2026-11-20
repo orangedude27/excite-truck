@@ -254,8 +254,8 @@ unsigned int fn_801DEB6C(const char *name) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
 #pragma cplusplus on
+#pragma scheduling invalid_target
 #pragma dont_inline on
 extern "C" void fn_801DEC18(void) {
     class Node {
@@ -277,17 +277,17 @@ extern "C" void fn_801DEC18(void) {
         virtual void m0();
         virtual Node *get(int);
     };
+    char *base = lbl_803394B0;
     float sp8;
     char *name;
-    unsigned int pbase = (unsigned int)lbl_803394B0;
     Handle *h;
     int n;
     Node *node;
     unsigned int j;
     void *obj;
 
-    fn_801332D0(fn_8000DA10() + 0xC, (int *)(pbase + 0xC0), &lbl_8055E9DC);
-    name = (char *)(pbase + 0xCC);
+    fn_801332D0(fn_8000DA10() + 0xC, (int *)(base + 0xC0), &lbl_8055E9DC);
+    name = base + 0xCC;
     h = (Handle *)fn_80131810(name);
     lbl_8055E9E4 = (int)h;
     if (h != 0) {
@@ -303,12 +303,12 @@ extern "C" void fn_801DEC18(void) {
             node = ((Handle *)lbl_8055E9E4)->get(n);
         }
     } else {
-        fn_802E30C8((char *)(pbase + 0xD8), name);
+        fn_802E30C8(base + 0xD8, name);
     }
     lbl_8055E9EC = fn_802090D4(lbl_8055AE20);
-    lbl_8055E9F0 = fn_80207848((char *)(pbase + 0xF8), 0);
+    lbl_8055E9F0 = fn_80207848(base + 0xF8, 0);
     sp8 = lbl_80562BF4;
-    fn_801331C4(4, (int *)(pbase + 0x4C), &sp8);
+    fn_801331C4(4, (int *)(base + 0x4C), &sp8);
     obj = lbl_8055E9F0;
     if (obj != 0) {
         float v = sp8;
@@ -319,7 +319,7 @@ extern "C" void fn_801DEC18(void) {
     }
     name = (char *)lbl_804874A8;
     for (j = 0; j < 4; j++) {
-        obj = fn_80207848((char *)(pbase + 0x104), 0);
+        obj = fn_80207848(base + 0x104, 0);
         *(void **)name = obj;
         if (obj != 0) {
             float v = sp8;
