@@ -614,6 +614,7 @@ extern s32 fn_802C9A60(void);
 extern s32 fn_802C9A68(void);
 extern f32 lbl_8055D020, lbl_80563610, lbl_80563614, lbl_8056365C;
 extern f32 lbl_80563670, lbl_80563674, lbl_80563678, lbl_8056367C;
+extern f32 lbl_80563670, lbl_80563674, lbl_80563610, lbl_80563678, lbl_8056367C, lbl_8056365C;
 void fn_80231094(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     #pragma scheduling invalid_target
     f32 f2, f0, f1, f3, f4;
@@ -714,6 +715,8 @@ void fn_80231380(void *arg0, s32 color, f32 x, f32 y, f32 z, f32 s, f32 t) {
     v->e = s; v->f = t;
 }
 
+#pragma push
+#pragma ctrloop on
 void *fn_8023139C(void *buf, int len, u32 val) {
     int temp = len - 1;
     int n = temp - (temp - 1) / 3;
@@ -769,4 +772,4 @@ void *fn_8023139C(void *buf, int len, u32 val) {
 
     return dst + 1;
 }
-
+#pragma pop
