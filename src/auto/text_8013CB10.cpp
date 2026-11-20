@@ -1603,7 +1603,7 @@ extern "C" void fn_8013EB30(void *arg0) {
                 }
                 a = *(Vec3 *)item;
                 b = *(Vec3 *)(item + 0xC);
-                y = a.f[1] < b.f[1] ? b.f[1] : a.f[1];
+                y = b.f[1] < a.f[1] ? a.f[1] : b.f[1];
                 y = lbl_80561508 + y;
                 b.f[1] = y;
                 a.f[1] = y;
@@ -1752,12 +1752,12 @@ extern "C" f32 fn_8013EFBC(f32 value) { return lbl_80561514 - value; }
 #pragma dont_inline reset
 
 #pragma scheduling invalid_target
-extern "C" unsigned int fn_8013EFC8(void *arg0) {
-    f32 magnitude = __fabsf(*(f32 *)((u8 *)arg0 + 0x250));
+extern "C" unsigned int fn_8013EFC8(const void *arg0) {
+    f32 magnitude = (f32)__fabs((f64)*(const f32 *)((const u8 *)arg0 + 0x250));
     if (magnitude <= *(f32 *)&lbl_80558DC4) {
-        if (*(u8 *)((u8 *)arg0 + 0x13C) != 0)
+        if (*(const u8 *)((const u8 *)arg0 + 0x13C) != 0)
             ((TObj4C *)arg0)->v4C();
-        s32 object = *(s32 *)((u8 *)arg0 + 0x140);
+        s32 object = *(const s32 *)((const u8 *)arg0 + 0x140);
         if (object != 0)
             ((void (*)(s32, s32))fn_802AE220)(object, 0);
     } else {
@@ -1765,7 +1765,7 @@ extern "C" unsigned int fn_8013EFC8(void *arg0) {
     }
     if (((TObj4C *)arg0)->v68())
         fn_8001DFCC();
-    return *(s32 *)((u8 *)arg0 + 0x134) != 4;
+    return *(const s32 *)((const u8 *)arg0 + 0x134) != 4;
 }
 #pragma scheduling on
 extern "C" s32 fn_8013F088(void *zoneMaster) {
@@ -1836,7 +1836,7 @@ extern "C" void fn_8013F0A0(void *arg0, void *arg1, void *arg2) {
         delta = fn_8001DAE8(dataObj + 0xC8) - *(f32 *)(dataObj + 0xCC);
         scale = lbl_805614A4;
         active = 0;
-        if (delta >= scale) {
+        if (lbl_805614A4 <= delta) {
             if (delta < *(f32 *)(dataObj + 0xC8)) active = 1;
         }
         if (active != 0) {
@@ -1906,6 +1906,7 @@ extern "C" s32 fn_8013F438(f32 x) {
 extern float lbl_805614A4, lbl_805614AC, lbl_805614F8, lbl_80561518, lbl_80561544, lbl_80561548;
 #pragma scheduling on
 extern "C" void fn_8013F498(void *arg0, void *arg1, f32 farg0) {
+#pragma scheduling invalid_target
     volatile f32 scratch[6];
     f32 var_f3 = lbl_805614AC;
     f32 var_f4;
@@ -4276,8 +4277,8 @@ extern "C" f32 lbl_805615B4;
 #pragma scheduling invalid_target
 extern "C" void fn_80143DC8(void *arg0) {
     union Word { s32 i; void *p; } stack[95];
-    register u8 *obj;
-    register char *base;
+    u8 *obj;
+    char *base;
     volatile s32 *var_r4;
     s32 temp_r0;
     s32 temp_r0_2;
