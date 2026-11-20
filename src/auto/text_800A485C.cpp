@@ -13,6 +13,18 @@ __declspec(section ".sdata") extern u8 lbl_80559200[];
 __declspec(section ".sdata") extern u8 lbl_80559204[];
 }
 extern "C" s32 fn_800B6200(void *, void *);
+static inline void copy_slot_data_800B6200(void *dst, const void *src) {
+    volatile s32 volatile_count = 72;
+    s32 n = volatile_count;
+    u32 *s = (u32 *)((u8 *)src - 4);
+    u32 *d = (u32 *)((u8 *)dst - 4);
+    while (n--) {
+        u32 a = s[1];
+        u32 b = *(s += 2);
+        d[1] = a;
+        *(d += 2) = b;
+    }
+}
 extern "C" void fn_800B3330(void *, s32, s32);
 extern "C" s32 fn_800AC708(void *, u8 *, u32, s32 *);
 extern "C" s32 fn_800AF4F0(void *, s32);
@@ -14995,17 +15007,16 @@ extern "C" s32 lbl_802F33E8[];
 #pragma use_lmw_stmw on
 extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
     s8 row, i;
-    s32 n = arg0 * 0x12;
-    s32 *a, *b, *c, *d;
-    s32 j;
+    s32 i2, n = arg0 * 0x12;
     if (arg3 & 7) {
         for (row = 0; row < arg2; ++row, arg4 = (s32 *)((u8 *)arg4 + 0x2400)) {
             for (i = 1; i < arg0; ++i) {
-                s16 k = (s16)(0x12 * i);
-                a = (s32 *)((u8 *)arg4 + 0x1b00 + k * 4);
-                b = a - 1;
-                c = lbl_802F33C8;
-                d = lbl_802F33E8;
+                s16 k = (s16)(0x10 * i + 2 * i);
+                s32 *a = (s32 *)((u8 *)arg4 + 0x1b00 + k * 4);
+                s32 *b = (s32 *)((u8 *)arg4 + 0x1b00 + (k - 1) * 4);
+                s32 *c = lbl_802F33C8;
+                s32 *d = lbl_802F33E8;
+                s32 j;
                 for (j = 0; j < 4; ++j) {
                     s32 si = d[0], x = a[0], co = c[0], y = b[0];
                     b[0] = (s32)(((s64)y * co) >> 24) - (s32)(((s64)x * si) >> 24);
@@ -15016,15 +15027,17 @@ extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
                     a += 2; b -= 2; c += 2; d += 2;
                 }
             }
-            if (arg1 < n)
-                for (s32 i2 = arg1; i2 < n; ++i2)
-                    *((s32 *)((u8 *)arg4 + 0x1b00) + i2) = 0;
+            if (arg1 < n) {
+                s32 *p = (s32 *)((u8 *)arg4 + 0x1b00);
+                for (i2 = arg1; i2 < n; ++i2) p[i2] = 0;
+            }
         }
     } else {
         for (row = 0; row < arg2; ++row, arg4 = (s32 *)((u8 *)arg4 + 0x2400)) {
-            a = (s32 *)((u8 *)arg4 + 0x1b48);
-            b = (s32 *)((u8 *)arg4 + 0x1b44);
-            c = lbl_802F33C8; d = lbl_802F33E8;
+            s32 *a = (s32 *)((u8 *)arg4 + 0x1b48);
+            s32 *b = (s32 *)((u8 *)arg4 + 0x1b44);
+            s32 *c = lbl_802F33C8, *d = lbl_802F33E8;
+            s32 j;
             for (j = 0; j < 4; ++j) {
                 s32 si = d[0], x = a[0], co = c[0], y = b[0];
                 b[0] = (s32)(((s64)y * co) >> 24) - (s32)(((s64)x * si) >> 24);
