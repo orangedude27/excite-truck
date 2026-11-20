@@ -2015,7 +2015,7 @@ extern "C" void fn_8013F580(void *arg0, void *arg1, void *arg2) {
 extern "C" s32 fn_8013F438(f32);
 extern "C" void fn_8013F498(void *, void *, f32);
 extern "C" f32 fn_8013EFBC(f32);
-extern "C" void fn_8000FF88(s32, s32, void *, f32, f32, f32, ...);
+extern "C" void fn_8000FF88(s32, s32, void *, f32, f32, f32);
 #pragma dont_inline fn_8013F438
 extern "C" void fn_8013F918(void *arg0, void *arg1, void *arg2) {
     u8 *a0 = (u8 *)arg0;
