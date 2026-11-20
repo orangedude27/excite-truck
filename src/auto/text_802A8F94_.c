@@ -34,11 +34,13 @@ extern f32 fn_801EA0E8(f32, f32);
 #pragma push
 #pragma processor 750
 void fn_802A8FEC(void *arg0, void *arg1) {
-    f32 y = ((f32 *)arg1)[1];
     f32 *dst = (f32 *)arg0;
-    f32 *src = (f32 *)arg1;
-    dst[1] = fn_801EA0E8(src[0], y);
-    dst[0] = src[0];
+    const f32 *src = (const f32 *)arg1;
+    f32 y = src[1];
+    f32 r = fn_801EA0E8(src[0], y);
+    f32 x2 = src[0];
+    dst[1] = r;
+    dst[0] = x2;
     dst[2] = y;
 }
 #pragma pop
@@ -72,7 +74,9 @@ void fn_802A9090(f32 *pos, f32 *dir) {
     f32 a[2];
     f32 b[2];
     f32 s, ns, f9, p0, p1, t0, t1;
-    *(struct V2 *)r = *(struct V2 *)dir;
+    f32 dx = dir[0], dy = dir[1];
+    r[0] = dx;
+    r[1] = dy;
     ns = -r[0];
     r[0] = r[1];
     r[1] = ns;
@@ -116,10 +120,10 @@ void fn_802A9090(f32 *pos, f32 *dir) {
     }
     m = g + 0x68 / 4;
     {
-        f32 dx = g[3] - g[0], dy = g[4] - g[1], dz = g[5] - g[2];
-        m[1] = dy;
+        f32 dx2 = g[3] - g[0], dy2 = g[4] - g[1], dz = g[5] - g[2];
+        m[1] = dy2;
         m[0x28 / 4] = f9;
-        m[0] = dx;
+        m[0] = dx2;
         m[2] = dz;
         m[1] = lbl_80564978;
         m[3] = lbl_80564978;
@@ -163,10 +167,10 @@ void fn_802A92CC(void) {
         value1 = lbl_8055F908[1];
         lbl_8055F900[0] = value0;
         lbl_8055F900[1] = value1;
-        i = 0;
         lbl_8055F900[0] = value1;
         lbl_8055F900[1] = -value0;
         entry = (s32 *)lbl_804BD740;
+        i = 0;
         do {
             if (fn_8012C33C(entry[0]) != 0)
                 entry[1] = fn_802C6FC0(entry[0], 0, 0);
@@ -215,16 +219,15 @@ extern f32 fn_801E7E24(void);
 extern void *fn_801E7E3C(void *);
 extern void fn_802C744C(s32, void *);
 void fn_802A9428(void) {
-    s32 selected;
-    s32 kind;
-    s32 index;
-    char *base;
+    char *base = lbl_804BD6F8;
     char *entries;
+    s32 index;
+    s32 kind;
     s32 value;
     s32 *entry;
     s32 *current;
+    s32 selected;
     f32 elapsed;
-    base = lbl_804BD6F8;
     entries = base + 0x98;
     if (lbl_8055F8F0 == 0)
         return;
@@ -261,19 +264,20 @@ void fn_802A9428(void) {
     }
 }
 
+#pragma scheduling invalid_target
 void fn_802A9574(void) {
-    Unk804BD790 *p = lbl_804BD790;
+    u32 base = (u32)lbl_804BD790;
     f32 f = lbl_80564978;
-    p[0].c = -1;
-    p[0].b = -1;
-    p[0].a = -1;
-    p[0].d = f;
-    p[1].c = -1;
-    p[1].b = -1;
-    p[1].a = -1;
-    p[1].d = f;
+    volatile s32 *p = (volatile s32 *)base;
+    p[2] = -1;
+    p[1] = -1;
+    p[0] = -1;
+    *(volatile f32 *)(p + 3) = f;
+    p[6] = -1;
+    p[5] = -1;
+    p[4] = -1;
+    *(volatile f32 *)(p + 7) = f;
 }
-
 void fn_802A95A8(void) {
     fn_802A9090();
 }
