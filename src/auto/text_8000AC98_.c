@@ -333,6 +333,7 @@ extern void fn_801AF92C(void *);
 extern void *fn_801EA9A0();
 extern int fn_802E30C8();
 extern unsigned char lbl_8055D3D5;
+extern int lbl_8055D3E8;
 extern char lbl_802FBF38[];
 #pragma scheduling invalid_target
 void fn_8000B150(void *arg0) {
