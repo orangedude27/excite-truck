@@ -1849,8 +1849,8 @@ extern float lbl_80563CBC, lbl_80563CA0, lbl_80563CC0, lbl_80563CC4, lbl_80563CC
 static inline float fn_802693F4_ease(float t) {
     if (t < lbl_80563C28) return lbl_80563C28;
     if (t > lbl_80563C2C) return lbl_80563C2C;
-    if (t > lbl_80563C20) return t*(lbl_80563C30*t*t) + lbl_80563C34*t*t;
-    return t*(lbl_80563C30*t*t) - lbl_80563C34*t*t;
+    if (t > 0.0f) return t * (-2.0f * t * t) + 3.0f * t * t;
+    return t * (-2.0f * t * t) - 3.0f * t * t;
 }
 void fn_802693F4(char *p, unsigned char *flag, int arg) {
     char *ent = *(char **)(p + 0x140);
