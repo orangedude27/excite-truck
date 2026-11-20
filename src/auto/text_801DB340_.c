@@ -83,7 +83,7 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
     if (x < 0 || y < 0) {
         return 0;
     }
-    if (*(int *)((char *)GND + 0x10) == 0) {
+    if (*(int *)((char *)lbl_8055E990 + 0x10) == 0) {
         return fn_801DB348(x, y, out_h, out_type, arg4);
     }
     divX = x / 32;
@@ -795,8 +795,9 @@ extern float lbl_80558DC4[];
 #pragma opt_propagation off
 void fn_801DD3BC(float *value, int flag, float x, float z) {
     float saved[75];
-    float before, base, delta, minimum;
+    float before, base, delta, minimum, t, t1;
     float zero, one;
+    float *p, *q;
     unsigned char *pair;
     unsigned char *slot;
     int i, count, smallest;
@@ -815,9 +816,18 @@ void fn_801DD3BC(float *value, int flag, float x, float z) {
       saved[i+6] = lbl_804424B0[i+6]; lbl_804424B0[i+6] = lbl_80562B84;
       saved[i+7] = lbl_804424B0[i+7]; lbl_804424B0[i+7] = lbl_80562B84;
     }
-    saved[72]=lbl_804424B0[72]; lbl_804424B0[72]=lbl_80562B84;
-    saved[73]=lbl_804424B0[73]; lbl_804424B0[73]=lbl_80562B84;
-    saved[74]=lbl_804424B0[74]; lbl_804424B0[74]=lbl_80562B84;
+    p = lbl_804424B0;
+    q = saved;
+    p += i;
+    q += i;
+    t = p[0];
+    p[0] = lbl_80562B84;
+    t1 = p[1];
+    q[0] = t;
+    p[1] = lbl_80562B84;
+    q[1] = t1;
+    q[2] = p[2];
+    p[2] = lbl_80562B84;
     base = ((float (*)(float,float))fn_801DCF0C)(x,z);
     if (flag == 0) before=base;
     *(float *)(slot+4)=base+(*value-before);
