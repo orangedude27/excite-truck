@@ -597,14 +597,10 @@ extern s32 DSPReadMailFromDSP(void);
 extern void DSPSendMailToDSP(u32);
 extern void DBPrintf_800343C8(const char *, ...);
 extern char lbl_80301E30[];
-#pragma push
-#pragma always_inline on
-static inline const char *FmtAt(const char *base, int off) { return base + off; }
-#pragma pop
 void __DSP_boot_task(void *arg0) {
     volatile u32 mail;
     u32 *task = (u32 *)arg0;
-    const char (*fmt)[0x20] = (const char (*)[0x20])lbl_80301E30;
+    const char *fmt = lbl_80301E30;
     while (DSPCheckMailFromDSP() == 0) {}
     mail = DSPReadMailFromDSP();
     DSPSendMailToDSP(0x80F3A001);
@@ -627,12 +623,12 @@ void __DSP_boot_task(void *arg0) {
     while (DSPCheckMailToDSP() != 0) {}
     DSPSendMailToDSP(*(u16 *)((u8 *)arg0 + 0x24));
     while (DSPCheckMailToDSP() != 0) {}
-    DBPrintf_800343C8(fmt[0], arg0);
-    DBPrintf_800343C8((const char *)fmt + 0x20, task[3]);
-    DBPrintf_800343C8((const char *)fmt + 0x50, task[5]);
-    DBPrintf_800343C8((const char *)fmt + 0x80, task[4]);
-    DBPrintf_800343C8((const char *)fmt + 0xB0, task[7]);
-    DBPrintf_800343C8((const char *)fmt + 0xE0, *(u16 *)((u8 *)arg0 + 0x24));
+    DBPrintf_800343C8(fmt + (mail & 0), arg0);
+    DBPrintf_800343C8(fmt + 0x20, task[3]);
+    DBPrintf_800343C8(fmt + 0x50, task[5]);
+    DBPrintf_800343C8(fmt + 0x80, task[4]);
+    DBPrintf_800343C8(fmt + 0xB0, task[7]);
+    DBPrintf_800343C8(fmt + 0xE0, *(u16 *)((u8 *)arg0 + 0x24));
 }
 
 void __DSP_insert_task(void *arg0) {
