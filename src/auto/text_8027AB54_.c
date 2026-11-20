@@ -10,7 +10,7 @@ extern void fn_8000D838(void *);
 extern void fn_801E952C(void *);
 extern void __register_global_object(void *, void *, void *);
 extern void fn_8027AA08(void);
-extern unsigned int lbl_804A21E8[];
+extern unsigned char lbl_804A21E8[];
 __declspec(section ".sdata") extern unsigned char lbl_8055F628[];
 extern int lbl_8055F630;
 #pragma push
