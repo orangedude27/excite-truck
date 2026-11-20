@@ -825,22 +825,21 @@ extern s32 lbl_8055F890;
 s32 fn_802A7680(s32);
 #pragma scheduling on
 s32 fn_802A5B8C(s32 arg0, s32 arg1) {
-    s32 v3, temp;
     s32 *p = (s32 *)arg0;
+    s32 temp;
     if (arg0 != 0) {
-        fn_802CAC54(p[4]);
-        v3 = p[3];
-        p[4] = -1;
-        fn_802CAC54(v3);
+        fn_802CAC54(*(s32 *)((u8 *)arg0 + 0x10));
+        *(s32 *)((u8 *)arg0 + 0x10) = -1;
+        fn_802CAC54(*(s32 *)((u8 *)arg0 + 0xc));
         temp = p[0];
-        p[3] = -1;
+        *(s32 *)((u8 *)arg0 + 0xc) = -1;
         if (temp != 0) fn_80128670(temp - 0x10);
         p[0] = 0;
         if (arg1 > 0) fn_80128668((void *)arg0);
     }
     return arg0;
 }
-#pragma opt_propagation off
+#pragma scheduling invalid_target
 void fn_802A5C1C(void *arg0) {
     f32 zero = 0.0f;
     f32 a = 1.0f;
@@ -878,7 +877,6 @@ extern void fn_802A6408(void *);
 extern void fn_802A6790(void *);
 #pragma scheduling invalid_target
 void fn_802A5CA4(void *arg0) {
-#pragma scheduling invalid_target
     struct Obj { u8 pad0[0x1C]; s32 model; u8 pad20[0x0C]; f32 pos[3]; f32 axis[3]; f32 scaled[3]; f32 base[3]; };
     struct Work { f32 input[3]; f32 cross[3]; f32 transformed[3]; s32 pad; s32 matrix[12]; } w;
     register f32 *m = (f32 *)w.matrix;
@@ -1149,7 +1147,7 @@ void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
 }
 
 #pragma scheduling push
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802A6758(void *arg0, f32 *arg1) {
     s32 i = *(s32 *)((u8 *)arg0 + 4);
@@ -1241,11 +1239,14 @@ void fn_802A6838(void *arg0) {
 }
 
 #pragma scheduling invalid_target
+extern s32 fn_8012850C(s32, void *);
+#pragma scheduling on
 s32 fn_802A6944(s32 arg0, s32 arg1, s32 arg2) {
     s32 *object = (s32 *)arg0;
+    s32 size = arg1 * 0xC;
 
     object[0] = fn_8002F37C(
-        fn_8012850C(arg1 * 0xC + 0x10, lbl_80349CAC),
+        fn_8012850C(size + 0x10, lbl_80349CAC),
         (void *)fn_8001BA68,
         0,
         0xC,
@@ -1302,28 +1303,28 @@ void fn_802A6A7C(void *arg0) {
     f32 *m = (f32 *)fn_801E8718(obj->model);
     f32 disp[3];
     f32 in[3];
-    f32 x;
     fn_802A6E34(obj);
-    x = lbl_80564858;
-    in[0] = x; in[1] = lbl_8056485C; in[2] = x;
-    if (obj->axis == &in[0]) {
-        f32 m1 = m[1];
-        f32 m0 = m[0];
-        f32 m3 = m[3];
-        f32 m4 = m[4];
-        f32 m6 = m[6];
-        f32 m7 = m[7];
-        f32 m2 = m[2];
-        f32 m5 = m[5];
-        f32 m8 = m[8];
-        f32 y = lbl_8056485C;
-        obj->axis[0] = (x * m2) + ((x * m0) + (y * m1));
-        obj->axis[1] = (x * m5) + ((x * m3) + (y * m4));
-        obj->axis[2] = (x * m8) + ((x * m6) + (y * m7));
-    } else {
-        obj->axis[0] = in[2] * m[2] + (in[0] * m[0] + in[1] * m[1]);
-        obj->axis[1] = in[2] * m[5] + (in[0] * m[3] + in[1] * m[4]);
-        obj->axis[2] = in[2] * m[8] + (in[0] * m[6] + in[1] * m[7]);
+    {
+        f32 y = lbl_8056485C, x = lbl_80564858;
+        in[0] = x; in[1] = y; in[2] = x;
+        if (obj->axis == &in[0]) {
+            f32 m1 = m[1];
+            f32 m0 = m[0];
+            f32 m3 = m[3];
+            f32 m4 = m[4];
+            f32 m6 = m[6];
+            f32 m7 = m[7];
+            f32 m2 = m[2];
+            f32 m5 = m[5];
+            f32 m8 = m[8];
+            obj->axis[0] = (x * m2) + ((x * m0) + (y * m1));
+            obj->axis[1] = (x * m5) + ((x * m3) + (y * m4));
+            obj->axis[2] = (x * m8) + ((x * m6) + (y * m7));
+        } else {
+            obj->axis[0] = in[2] * m[2] + (in[0] * m[0] + in[1] * m[1]);
+            obj->axis[1] = in[2] * m[5] + (in[0] * m[3] + in[1] * m[4]);
+            obj->axis[2] = in[2] * m[8] + (in[0] * m[6] + in[1] * m[7]);
+        }
     }
     if (fn_801E8758(obj->model) == 0) {
         f32 s;
@@ -1795,10 +1796,7 @@ extern void *fn_801E8718(s32);
 extern f32 lbl_805648CC;
 extern f32 lbl_805648D0;
 extern f32 lbl_805648D4;
-#pragma optimization_level 2
-#pragma processor 750
-#pragma dont_inline on
-#pragma use_lmw_stmw off
+#pragma optimization_level 3
 void fn_802A775C(void *arg0)
 {
   Obj802A775C *obj = (Obj802A775C *) arg0;
@@ -1858,15 +1856,9 @@ void fn_802A775C(void *arg0)
       f32 *pt = (f32 *) (((u8 *) obj->points) + offset);
       if (PSVECSquareDistance(pt, &obj->posX) < (obj->radius * obj->radius))
       {
-        f32 px = pt[0];
-        f32 sx = sp18[0];
-        f32 sz;
-        f32 sy = sp18[1];
-        f32 py = pt[1];
-        f32 pz = pt[2];
-        pt[0] = px + sx;
-        pt[1] = py + sy;
-        pt[2] = pz + sp18[2];
+        pt[0] = pt[0] + sp18[0];
+        pt[1] = pt[1] + sp18[1];
+        pt[2] = pt[2] + sp18[2];
       }
       else
       {
@@ -1908,7 +1900,6 @@ void fn_802A775C(void *arg0)
   fn_802C2B78(lbl_80564850, lbl_805648D4, f29);
   obj->unk3C = f29;
 }
-#pragma pop
 s32 fn_802A79CC(s32 arg0) {
     u8 *object = (u8 *)arg0;
     f32 pointScaleFactor;
