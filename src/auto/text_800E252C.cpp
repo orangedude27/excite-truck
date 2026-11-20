@@ -620,7 +620,7 @@ void *fn_800E279C(void *arg0)
     *((int *) (p + 0x6C50)) = 0;
     *((float *) (p + 0x6C54)) = 1.0f;
     *((float *) (p + 0x6C58)) = 1.0f;
-    *((int *) (p + 0x6C5C)) = 0;
+    *((int *) (p + 0x6C5C)) = 0x1B0 * 0;
     *((int *) (p + 0x6C60)) = 0;
     *((float *) (p + 0x6C6C)) = 1.0f;
     *((float *) (p + 0x6C70)) = 1.0f;
@@ -810,10 +810,16 @@ extern "C" void fn_800E2F84(void *self)
 }
 #pragma pop
 
-#pragma push
-#pragma small_data off
-#pragma pop
-#pragma push
+#pragma scheduling on
+struct Fn800E310CFields {
+    char pad0[0x6C34];
+    f32 zLo;  s32 zDen2;
+    s32 zDen; s32 zNum;
+    f32 xLo;  f32 xHi;
+    s32 xDen; s32 xNum;
+    f32 yLo;  f32 yHi;
+    s32 yDen; s32 yNum;
+};
 extern "C" f32 fn_800E310C(void *arg0) {
     int a = *(int *)((char *)arg0 + 0x6C50);
     int b = *(int *)((char *)arg0 + 0x6C4C);
@@ -840,9 +846,10 @@ extern "C" f32 fn_800E310C(void *arg0) {
     if (e >= f) z = *(float *)((char *)arg0 + 0x6C38);
     else z = *(float *)((char *)arg0 + 0x6C34) +
         (float)e * (*(float *)((char *)arg0 + 0x6C38) - *(float *)((char *)arg0 + 0x6C34)) / (float)f;
-    return result * z;
+    result *= z;
+    return result;
 }
-#pragma pop
+#pragma scheduling reset
 
 extern "C" int DVDGetDriveStatus(void);
 extern "C" void fn_80031C8C(unsigned short);
@@ -1196,15 +1203,16 @@ extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7
 extern "C" void fn_800E3DDC(void *arg0, void *arg1) {
     struct Mgr { char pad0[0x14]; char activeList[0xC]; char freeList[0x4]; char pad1[8]; void *head; char pad2[0x6c31 - 0x1c]; unsigned char flag; };
     Mgr *m = (Mgr *)arg0;
-    register void *it1;
-    register void *it2;
-    unsigned int outerLevel = OSDisableInterrupts();
-    unsigned int level = OSDisableInterrupts();
+    void *it1;
+    void *it2;
+    unsigned int outerLevel, level;
+    outerLevel = OSDisableInterrupts();
+    level = OSDisableInterrupts();
     if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
     void *link = (char *)arg1 + 0x1A8;
     Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(m->activeList, link);
-    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
     it1 = (char *)arg0 + 0x24;
+    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)arg0 + 0x20, &it1, link);
     OSRestoreInterrupts(level);
     level = OSDisableInterrupts();
