@@ -7577,13 +7577,13 @@ void BTA_HhGetAclQueueInfo(void) {
 }
 
 void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data) {
-    register char *state_name;
-    char *new_state_name;
     u8 callback_data[0x20];
     char *strings = lbl_80315700;
     UINT16 callback_event = 0;
     u8 action;
     u8 new_state;
+    register char *state_name;
+    char *new_state_name;
     u8 *table;
     u8 state;
     memset(callback_data, 0, 0x20);
@@ -7627,8 +7627,8 @@ void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data) {
                     fn_80070954(0x500, strings, *(u16 *)((u8 *)p_data + 6));
                 break;
             }
-            if ((UINT16)callback_event != 0)
-                ((void (*)(UINT16, void *, void *))*(u32 *)(lbl_803C0D48 + 0x224))((UINT16)callback_event, callback_data, lbl_803C0D48);
+            if (callback_event != 0)
+                ((void (*)(UINT16, void *, void *))*(u32 *)(lbl_803C0D48 + 0x224))(callback_event, callback_data, lbl_803C0D48);
         }
     } else {
         state = *((u8 *)p_cb + 0x1C);
@@ -16984,9 +16984,11 @@ void hidd_proc_repage_timeout(void)
     callback(2, cb[9], 0);
 }
 
+#pragma always_inline on
 static inline void hidd_mark_pm_set(void) {
     lbl_803C3AF0[0x78] = 0xFF;
 }
+#pragma always_inline reset
 #pragma opt_common_subs off
 BOOLEAN hidd_pm_set_now(void *arg0) {
     u8 mode = 0;
