@@ -1472,7 +1472,6 @@ void *fn_8025007C(s32 count) {
 #pragma pop
 void fn_80250108(void *arg0) {
     extern f32 fn_80214D48(void);
-    extern f32 lbl_80563960;
     extern const f32 lbl_80563964, lbl_80563968, lbl_8056396C, lbl_80563970;
     f32 limit, speed, subtract, threshold;
     f32 dt = fn_80214D48();
@@ -1482,9 +1481,9 @@ void fn_80250108(void *arg0) {
     f32 coef;
     i = 0;
     offset = 0;
-    coef = lbl_80563968;
-    limit = lbl_80563960;
     speed = lbl_8056396C;
+    limit = 0.0f;
+    coef = lbl_80563968;
     current = *(f32 *)((u8 *)arg0 + 0x28);
     *(f32 *)((u8 *)arg0 + 0x28) = current + coef * ((f32)*(s32 *)((u8 *)arg0 + 0x2C) - current);
     subtract = lbl_80563970;
@@ -2288,17 +2287,17 @@ extern "C" void fn_801345D8(void *, s32, void *, ...);
 #pragma optimize_for_size off
 #pragma scheduling invalid_target
 extern "C" s32 fn_8025157C(u8 *arg0, s32 arg1) {
+    s32 newIndex;
     switch (arg1) {
     case 0x125: {
         u8 ch;
         u8 *source;
         s32 count;
         u8 *dest;
-        s32 value, newIndex, index, context;
+        s32 value, index, context;
 
         if (*(s32 *)(arg0 + 0x2C) > 0) {
-            newIndex = *(s32 *)(arg0 + 0x2C) - 1;
-            *(s32 *)(arg0 + 0x2C) = newIndex;
+            newIndex = --*(s32 *)(arg0 + 0x2C);
 
             context = fn_8001668C((s32)(arg0 + 0x60), 0);
             if (lbl_80498C48[4] != 0)
@@ -2348,10 +2347,10 @@ extern "C" s32 fn_8025157C(u8 *arg0, s32 arg1) {
         copy_loop_1:
             ch = *source++;
             *dest++ = ch;
-            if ((signed char)ch != 0)
-                goto copy_count_1;
-            else
+            if ((signed char)ch == 0)
                 goto copy_done_1;
+            else
+                goto copy_count_1;
         copy_done_1:;
         }
 
@@ -2364,7 +2363,7 @@ extern "C" s32 fn_8025157C(u8 *arg0, s32 arg1) {
         u8 *source;
         s32 count;
         u8 *dest;
-        s32 value, newIndex, index, context;
+        s32 value, index, context;
 
         if (*(s32 *)(arg0 + 0x2C) < *(s32 *)(arg0 + 0x1C) - 1) {
             newIndex = *(s32 *)(arg0 + 0x2C) + 1;
@@ -2621,6 +2620,7 @@ void fn_80251D0C(void *__restrict object) {
 
 #pragma push
 #pragma cplusplus on
+#pragma opt_propagation off
 extern "C" void fn_80251D7C(void *arg0) {
     typedef signed char s8;
     class Selector {
