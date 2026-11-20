@@ -3211,6 +3211,7 @@ extern float lbl_805621A0, lbl_80562268, lbl_80562274;
 extern float lbl_805622A8, lbl_805622AC, lbl_805622B0, lbl_805622B4, lbl_805622B8, lbl_805622BC, lbl_805622C4, lbl_805622C8;
 extern void fn_8018AE08(void *);
 extern void fn_8018ADCC(void *, float);
+extern char lbl_80558DC4[];
 void fn_80198530(void *arg0) {
     char s[0x80];
     char *p = (char *)arg0;
