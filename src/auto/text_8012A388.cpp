@@ -1,4 +1,5 @@
 #include <types.h>
+struct WordCopy12 { u32 data[12]; };
 struct E7FC { char pad[0x28]; int v28; unsigned int v30; };
 
 /* Bits in a resource entry's flag word (struct ResEntry +0x34). */
@@ -1908,7 +1909,7 @@ extern "C" void fn_8012D1A8(s32 arg0) {
 #pragma push
 #pragma scheduling invalid_target
 
-#pragma use_lmw_stmw off
+#pragma scheduling on
 extern "C" void fn_8012D33C(u32 *arg0, u32 *arg1) {
     u32 v4 = arg1[4];
     u32 v3 = arg1[3];
