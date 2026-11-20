@@ -4941,6 +4941,7 @@ extern "C" void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm
 
 #pragma use_lmw_stmw off
 #pragma push
+#pragma opt_propagation off
 #pragma dont_inline off
 /* Inline LinkList<BasicSound, 0xC8> helpers (asserting GetFront / PopFront / PushBack). */
 static inline void *SndPrioListImplIter_Deref(void *node) {
