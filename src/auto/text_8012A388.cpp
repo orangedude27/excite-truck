@@ -1,5 +1,4 @@
 #include <types.h>
-extern "C" void *memcpy(void *, const void *, u32);
 struct E7FC { char pad[0x28]; int v28; unsigned int v30; };
 
 /* Bits in a resource entry's flag word (struct ResEntry +0x34). */
