@@ -1200,10 +1200,12 @@ void *fn_802D8C00(void *arg0, void *arg1) {
     p = *(unsigned char **)(*(unsigned char **)((char *)arg0 + 0x2C) + 8);
     DCFlushRange(p, (w * h) / 2);
     {
-        unsigned int fmt = *(unsigned int *)((char *)arg0 + 0x20);
-        int b = fmt ^ 2;
-        int a = b >> 1;
+        int b;
+        int a;
+        int fmt = *(int *)((char *)arg0 + 0x20);
         u32 lod;
+        b = fmt ^ 2;
+        a = b >> 1;
         b = b & fmt;
         lod = (u32)(a - b) >> 31;
         GXInitTexObj((char *)obj + 0x78, p, (unsigned short)w, (unsigned short)h, 0, 1, 1, lod);
@@ -1215,7 +1217,6 @@ void *fn_802D8C00(void *arg0, void *arg1) {
     fn_802D7780(obj, arg0);
     return obj;
 }
-#pragma opt_propagation reset
 
 #pragma push
 #pragma use_lmw_stmw off
