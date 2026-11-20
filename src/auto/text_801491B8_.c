@@ -4,6 +4,7 @@
 #include <stdarg.h>
 typedef int M2C_UNK;
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
+typedef struct { void *pad[6]; void (*call)(void *, f32); } Vtbl18_80149F2C;
 extern f32 lbl_80561654, lbl_80561658, lbl_8056165C, lbl_80561660, lbl_80561664;
 extern f32 lbl_80561668, lbl_8056166C, lbl_80561670, lbl_80561674, lbl_80561678, lbl_8056167C;
 extern f32 lbl_80561648, lbl_8056164C, lbl_80561650;
@@ -464,7 +465,7 @@ extern f64 sin(f64);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 f32 fn_801495D4(s32 arg0) {
-    f32 scale = lbl_80561638;
+    register f32 scale = lbl_80561638;
     f32 fraction = (f32)(lbl_8055E3C4 % arg0);
     f32 angle = (f32)arg0;
     f32 wave = scale * fraction;
@@ -1904,6 +1905,7 @@ extern "C" void *fn_8014DE50(void) {
         virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5();
         virtual s32 get(char *, s32);
     };
+    s32 vectorSize = 0x20;
     u8 *strings = lbl_8032D358;
     s32 raw = fn_801284F8(0xFE8, strings + 0x3D4);
     u8 *obj = (u8 *)raw;
@@ -1924,7 +1926,6 @@ extern "C" void *fn_8014DE50(void) {
         *(s32 *)(obj + 0x228) = 0x40;
         *(s32 *)(obj + 0x224) = 0;
         *(u8 * *)(obj + 0x32C) = obj + 0x338;
-        s32 vectorSize = 0x20;
         *(s32 *)(obj + 0x334) = vectorSize;
         *(s32 *)(obj + 0x330) = 0;
         *(u8 * *)(obj + 0x3B8) = obj + 0x3C4;
@@ -1932,7 +1933,7 @@ extern "C" void *fn_8014DE50(void) {
         *(s32 *)(obj + 0x3BC) = 0;
         ((void (*)(void *, void *, void *, s32, s32, s32, void *))fn_8002F53C)(obj + 0x454, initFn, cleanupFn, 0x240, 2, vectorSize, obj + 0x338);
         LfoObj *lfo = *(LfoObj **)((u8 *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
-        f32 value = lfo->eval((void *)(strings + 0x344), lbl_805616CC);
+        f64 value = lfo->eval((void *)(strings + 0x344), lbl_805616CC);
         *(f32 *)(obj + 0x8DC) = value;
         *(f32 *)(obj + 0x8E0) = (f32)value;
         *(f32 *)(obj + 0x8D8) = fn_80204CFC(strings + 0x3E0);
@@ -2757,14 +2758,15 @@ void fn_80150BDC(void *arg0) {
     f32 f28 = lbl_805616E0, f27 = lbl_80561638;
     s32 r30, r31, played;
     void *r25, *r23, *r26;
-    f32 f0, f1, f2, f25, f26;
-    s32 tmpv;
+    f32 f0, f1, f2, f26, f25;
+    s32 tmp;
 
     for (r30 = 0, r31 = 0; r30 < *(s32 *)(b + 0x18); r30++, r31 += 4) {
         r25 = *(void **)(*(char **)(b + 0x14) + r31);
         r23 = *(void **)((char *)r25 + 0xB8);
         if (r23 != 0) {
-            f26 = (f32)sin(f27 * (f32)fn_8002EFB4(lbl_80559EC8 * lbl_8055E3C8, lbl_805616A0)) * f28 + *(f32 *)((char *)r25 + 0xBC);
+            f2 = (f32)sin(f27 * (f32)fn_8002EFB4(lbl_80559EC8 * lbl_8055E3C8, lbl_805616A0));
+            f26 = *(f32 *)((char *)r25 + 0xBC) + f2 * f28;
             *(f32 *)((char *)r23 + 0x24) = *(f32 *)r25;
             *(f32 *)((char *)r23 + 0x28) = *(f32 *)((char *)r25 + 4);
             *(f32 *)((char *)r23 + 0x2C) = *(f32 *)((char *)r25 + 8);
@@ -2839,8 +2841,8 @@ void fn_80150BDC(void *arg0) {
                         *(s8 *)(r31p + 0x8F8) = 1;
                     }
                     if (fn_800167F4() == 1) { fn_8017960C(r29); fn_80167840(); }
-                    tmpv = fn_8016A30C(r29);
-                    if (tmpv > 0) fn_8014E61C(r29, 5, (f32)tmpv);
+                    tmp = fn_8016A30C(r29);
+                    if (tmp > 0) fn_8014E61C(r29, 5, (f32)tmp);
                 }
             } else if (*(s32 *)((char *)fn_8017960C(r29) + 0x1F0) == 0x50) {
                 char *r24 = b + 0x454, *r23p = b;
@@ -3585,37 +3587,8 @@ extern f32 lbl_8056163C, lbl_80561648, lbl_8056164C, lbl_805616B8;
 void fn_801533E8(void *arg0, f32 *arg1) {
     Matrix801533E8 values, mat;
     f32 bounds[6], center[3], out[3];
-    f32 x, y, z;
-    u32 w0;
-    u32 w1;
-    u32 w2;
-    u32 w3;
-    u32 w4;
-    u32 w5;
-    u32 w6;
-    u32 w7;
-    u32 w8;
-    u32 w9;
-    u32 w10;
-    u32 w11;
-    f32 t0;
-    f32 t1;
-    f32 t2;
-    f32 t3;
-    f32 t4;
-    f32 t5;
-    f32 t6;
-    f32 t7;
-    f32 t8;
-    f32 t9;
-    f32 t10;
-    f32 t11;
-    f32 t12;
-    f32 t13;
-    f32 t14;
-    f32 t15;
-    f32 t16;
-    f32 t17;
+    u32 w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11;
+    f32 t8, t9, t10, t17, t16, t15, t14, t13, t12, t11, t7, t6, t5, t4, t3, t2, t1, t0;
     fn_802C86DC();
     ((u32 *)values.m)[0] = ((u32 *)arg1)[0];
     w1 = ((u32 *)arg1)[1];
@@ -4508,12 +4481,12 @@ extern char *strncpy(char *,const char *,unsigned long);
 #pragma use_lmw_stmw off
 void fn_80154D30(char *p) {
     s32 iscar,found,off,j,i;
+    u8 *strings = lbl_8032D358;
     char *obj,*entry,*node,*prev,*sound,*name,*other;
     char shortname[8], path2[64], path[64];
     void **table;
     f64 value;
     f32 zero;
-    u8 *strings = lbl_8032D358;
     u8 *fallback, *sound1, *sound2;
     *(s32 *)(p+0xfe4)=lbl_8055E4D0;
     i=0;
@@ -4886,7 +4859,7 @@ void fn_80155AEC(void) {
 
 #pragma scheduling invalid_target
 void fn_80155AF0(void *arg0, void *arg1) {
-    register u8 *b358 = lbl_8032D358;
+    u8 *b358 = lbl_8032D358;
     void *vt;
     void *tmp;
     s32 c;
