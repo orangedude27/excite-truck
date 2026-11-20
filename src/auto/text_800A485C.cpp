@@ -309,6 +309,7 @@ static inline s32 fixedMul20(s32 lhs, s32 rhs) {
 static inline s32 fixedMulAdd20(s32 lhs, s32 rhs, s32 lhs2, s32 rhs2) {
     return fixedMul20(lhs, rhs) + fixedMul20(lhs2, rhs2);
 }
+struct KTable800C3088 { volatile s32 v[12]; };
 struct Fn800C0440Context { u8 pad[0xC]; volatile u32 bitIndex; volatile s32 limit; };
 extern "C" { DECL_SECTION(".sdata") extern s32 lbl_80559270[]; }
 extern "C" s32 fn_800A485C(s32);
@@ -1686,6 +1687,7 @@ extern "C" s32 fn_800A68F0(void *arg0, u32 arg1, s32 *arg2) {
     s32 sp18[4];
     s32 sp8[4];
     s16 i;
+    int j;
     s32 *a;
     s32 *b;
     u8 *p;
@@ -1706,10 +1708,11 @@ extern "C" s32 fn_800A68F0(void *arg0, u32 arg1, s32 *arg2) {
     a = sp8;
     b = sp18;
     i = 0;
+    j = 4;
     do {
         if ((u32)(*b + *a) > arg1 && i == 0) { *arg2 = 0; return 2; }
-        i++; a++; b++;
-    } while (i < 4);
+        i++; a++; b++; j--;
+    } while (j != 0);
     return 0;
 }
 
@@ -9494,8 +9497,8 @@ extern "C" s32 VFiPFPATH_cmpNameImpl(u8 *arg0, u8 *arg1, s32 *arg2) {
     while ((s8)*var_r27 != 0) {
         temp_r23 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r27);
         var_r31 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r26);
-        var_r30 = (u16)((temp_r23 == 1) ? fn_800A485C((s8)*var_r27) : fn_800A4C04(var_r27));
-        var_r29 = (u16)((var_r31 == 1) ? fn_800A485C((s8)*var_r26) : fn_800A4C04(var_r26));
+        var_r30 = (u16)((temp_r23 == 1) ? fn_800A485C((s8)*var_r27) : (u16)fn_800A4C04(var_r27));
+        var_r29 = (u16)((var_r31 == 1) ? fn_800A485C((s8)*var_r26) : (u16)fn_800A4C04(var_r26));
         if (temp_r23 == 2) {
             M2C_FIELD(table, s32 (**)(u8 *, u16 *), 0x48)(var_r27, &spA);
             if (spA >= 0xFF41U && spA <= 0xFF5AU) { var_r3_3 = 1U; spA -= 0x20; } else var_r3_3 = 0U;
@@ -9509,22 +9512,26 @@ extern "C" s32 VFiPFPATH_cmpNameImpl(u8 *arg0, u8 *arg1, s32 *arg2) {
             if (var_r3_6 == 1U) var_r29 = sp8;
         }
         var_r27 = &var_r27[temp_r23];
-        if (var_r30 == 0x3F) {
+        switch (var_r30) {
+        case 0x3F:
             if (var_r29 == 0) return 1;
             var_r26 = &var_r26[var_r31];
             continue;
+        case 0x2A:
+            break;
+        default:
+            goto loop_57;
         }
-        if (var_r30 != 0x2A) goto loop_57;
 loop_33:
         temp_r3_2 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r27);
-        var_r30 = (u16)((temp_r3_2 != 1) ? fn_800A4C04(var_r27) : fn_800A485C((s8)*var_r27));
+        var_r30 = (u16)((temp_r3_2 != 1) ? (u16)fn_800A4C04(var_r27) : fn_800A485C((s8)*var_r27));
         var_r27 = &var_r27[temp_r3_2];
-        if (var_r30 == 0x3F) {
+        if ((u16)var_r30 == 0x3FU) {
             if (var_r29 == 0) return 1;
             var_r26 = &var_r26[var_r31];
             temp_r3_3 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r26);
             var_r31 = temp_r3_3;
-            var_r29 = (u16)((temp_r3_3 == 1) ? fn_800A485C((s8)*var_r26) : fn_800A4C04(var_r26));
+            var_r29 = (u16)((temp_r3_3 == 1) ? fn_800A485C((s8)*var_r26) : (u16)fn_800A4C04(var_r26));
         }
         if (var_r30 == 0x3F || var_r30 == 0x2A) goto loop_33;
         if (var_r30 == 0) return 0;
@@ -9532,8 +9539,8 @@ loop_57:
         if (var_r29 == 0 && ((s8)*var_r26 == 0 || (s8)*var_r27 == 0)) *var_r28 = one;
         if (var_r29 != var_r30) return 1;
         var_r26 = &var_r26[var_r31];
-        if (var_r30 == 0x2A) goto loop_33;
-        if (var_r30 == 0x3F) continue;
+        if ((u16)var_r30 == 0x2AU) goto loop_33;
+        if ((u16)var_r30 == 0x3FU) continue;
         if (var_r29 == 0) continue;
         var_r26 = &var_r26[var_r31];
         if (var_r29 == var_r30) {
@@ -9543,7 +9550,7 @@ loop_57:
         }
         temp_r3_4 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r26);
         var_r31 = temp_r3_4;
-        var_r29 = (u16)((temp_r3_4 == 1) ? fn_800A485C((s8)*var_r26) : fn_800A4C04(var_r26));
+        var_r29 = (u16)((temp_r3_4 == 1) ? fn_800A485C((s8)*var_r26) : (u16)fn_800A4C04(var_r26));
         goto loop_57;
     }
     return (s8)*var_r26 != 0;
