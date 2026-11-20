@@ -7750,25 +7750,25 @@ char *bta_hh_evt_code(u32 event) {
 extern "C" u8 bta_hh_find_cb(u8 *bd_addr) {
     extern u8 lbl_803159E0[];
     extern u8 lbl_80565228;
-    struct { u8 *base; } devices;
     struct { u8 *base; } table;
+    struct { u8 *base; } devices;
     devices.base = lbl_803C0D48;
     u8 *&controls = devices.base;
     table.base = lbl_803159E0;
-    const u8 *&messages = (const u8 *&)table.base;
+    u8 *&messages = table.base;
     u8 i;
 
     for (i = 0; i < 0x10; i++) {
         if (bdcmp(bd_addr, controls + ((i & 0xFF) << 5) + 0x18) == 0 &&
             bdcmp(bd_addr, &lbl_80565228) != 0) {
             if (lbl_8055DC80 >= 5)
-                fn_8007096C(0x504, (void *)(messages + 0), i,
+                fn_8007096C(0x504, messages + 0, i,
                             *(controls + ((i & 0xFF) << 5) + 0x26));
             return i;
         }
         if (5 <= lbl_8055DC80)
             ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)
-                (0x504, (void *)(messages + 0x24),
+                (0x504, messages + 0x24,
                  *(controls + ((i & 0xFF) << 5) + 0x28),
                  i, *(controls + ((i & 0xFF) << 5) + 0x26),
                  *(controls + ((i & 0xFF) << 5) + 0x2C));
@@ -7781,7 +7781,7 @@ extern "C" u8 bta_hh_find_cb(u8 *bd_addr) {
         }
     }
     if (lbl_8055DC80 >= 5)
-        fn_8007096C(0x504, (void *)(messages + 0x58), i, 0x10);
+        fn_8007096C(0x504, messages + 0x58, i, 0x10);
     return i;
 }
 #pragma pop
@@ -8800,6 +8800,9 @@ tBTM_STATUS btm_remove_acl(BD_ADDR bd_addr) {
     return 0;
 }
 #pragma pop
+/* Switches all active ACL links to a SCO-compatible packet type (start=TRUE) or
+ * restores each link's saved packet type (start=FALSE). When restoring, a link in
+ * sniff mode is first taken out of sniff before the packet type is changed. */
 void btm_chg_all_acl_pkt_types(BOOLEAN start) {
     struct { u8 *log; u32 i; } ctx;
     u8 *p;
@@ -10722,16 +10725,14 @@ void btm_process_inq_results(UINT8 *p, UINT8 mode)
             !(*(UINT8 (**)(UINT8 *, UINT8 *))(base + 0x184c))(bda, dc)) continue;
         entry = base + 0x16e4;
         j = 0;
-    search_loop:
-        if (!entry[0x1a]) goto search_next;
-        if (memcmp(entry + 0xa, bda, 6) != 0) goto search_next;
-        goto found;
-    search_next:
-        j++;
-        entry += 0x1c;
-        if (j < 12) goto search_loop;
+        do {
+            if (entry[0x1a] && memcmp(entry + 0xa, bda, 6) == 0) {
+                goto found;
+            }
+            j++; entry += 0x1c;
+        } while (j < 12);
         entry = 0;
-    found:
+found:
         if (!entry) { entry = (UINT8 *)btm_inq_db_new(bda); is_new = 1; }
         else if (*(UINT32 *)(entry + 4) == *(UINT32 *)(base + 0x16c0)) is_new = 0;
         if (is_new == 1) {
@@ -10755,8 +10756,8 @@ void btm_process_inq_results(UINT8 *p, UINT8 mode)
 }
 
 void btm_process_inq_complete(UINT8 status, UINT8 unused) {
-    register u8 *cleanup_base;
-    register u32 zero;
+    u8 *cleanup_base;
+    void *zero;
     u8 *base;
     void (*callback)(void *);
     u8 result;
@@ -10771,18 +10772,18 @@ void btm_process_inq_complete(UINT8 status, UINT8 unused) {
         base[0x183E] = result;
         if ((base[0x1848] & 4) == 0) {
             cleanup_base = lbl_803C0F78;
-            zero = 0;
+            zero = NULL;
             buffer = *(void **)(cleanup_base + 0x16DC);
-            *(u32 *)(base + 0x16B4) = zero;
-            base[0x1848] = zero;
-            base[0x1847] = zero;
+            *(u32 *)(base + 0x16B4) = (u32)zero;
+            base[0x1848] = (u8)(u32)zero;
+            base[0x1847] = (u8)(u32)zero;
             *(void (**)(void *))(base + 0x16B0) = NULL;
             if (buffer != NULL) {
                 GKI_freebuf(buffer);
-                *(void **)(cleanup_base + 0x16DC) = (void *)zero;
+                *(void **)(cleanup_base + 0x16DC) = zero;
             }
-            *(u16 *)(cleanup_base + 0x16E0) = zero;
-            *(u16 *)(cleanup_base + 0x16E2) = zero;
+            *(u16 *)(cleanup_base + 0x16E0) = (u16)(u32)zero;
+            *(u16 *)(cleanup_base + 0x16E2) = (u16)(u32)zero;
             if (lbl_803C0F78[0x27C0] >= 5)
                 fn_8007096C(0xD0004, lbl_803164F4,
                             base[0x183E], base[0x183F]);
@@ -14757,9 +14758,10 @@ void *arg0;
     u16 count;
     u16 opcode;
     u16 offset;
-    u8 lowByte;
     u8 highByte;
+    u8 lowByte;
 
+    if (0) return 0;
     if (msg != 0 && *(u16 *)(lbl_803C0A50 + 0x6C) != 0) {
         GKI_enqueue((BUFFER_Q *)(lbl_803C0A50 + 0x64), msg);
         msg = 0;
@@ -15074,7 +15076,7 @@ void btu_hcif_command_status_evt(UINT8 *p, UINT16 len) {
     register void *buf;
     UINT16 opcode;
     UINT8 *cmd_base;
-    UINT16 queued_opcode;
+    register UINT16 queued_opcode;
 
     status = p[0];
     *(UINT16 *)(lbl_803C0A50 + 0x80) = p[1];
@@ -18479,10 +18481,7 @@ UINT16 L2CA_Register(UINT16 psm, tL2CAP_APPL_INFO *info) {
     u8 *messages = lbl_80317C20;
     void *entry;
 
-    if (lbl_803C4040[0] >= 3) {
-        u32 level = 0x80000 + 2;
-        fn_80070954(level, messages, psm);
-    }
+    if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, messages, psm);
     if (*(u32 *)((u8 *)info + 0x10) == 0 ||
         *(u32 *)((u8 *)info + 0xC) == 0 ||
         *(u32 *)((u8 *)info + 0x20) == 0 ||
@@ -23090,7 +23089,7 @@ void RFCOMM_CongestionStatusInd(UINT16 lcid, BOOLEAN is_congested) {
     index = lcid - 0x40;
     if (index >= 0xA) {
         if (lbl_803C4828[0x414] >= 1) {
-            firstOff = 0;
+            firstOff = (u32)(lcid - lcid);
             fn_80070954(0x90000, messages + firstOff, lcid);
         }
         p_mcb = 0;
