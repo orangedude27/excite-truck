@@ -1130,7 +1130,7 @@ typedef struct GPFifoCopy {
 } GPFifoCopy;
 #pragma push
 #pragma opt_pointer_aliasing on
-void GXSetGPFifo(unsigned int *__restrict fifo) {
+void GXSetGPFifo(unsigned int *fifo) {
     unsigned int a, b;
     unsigned int tmp;
     int intStatus;
@@ -1161,18 +1161,18 @@ void GXSetGPFifo(unsigned int *__restrict fifo) {
     b = fifo[1];
     ((unsigned int *)lbl_8037C0C0)[0] = a;
     ((unsigned int *)lbl_8037C0C0)[1] = b;
-    a = fifo[2];
-    b = fifo[3];
-    ((unsigned int *)lbl_8037C0C0)[2] = a;
-    ((unsigned int *)lbl_8037C0C0)[3] = b;
-    a = fifo[4];
-    b = fifo[5];
-    ((unsigned int *)lbl_8037C0C0)[4] = a;
-    ((unsigned int *)lbl_8037C0C0)[5] = b;
-    a = fifo[6];
-    b = fifo[7];
-    ((unsigned int *)lbl_8037C0C0)[6] = a;
-    ((unsigned int *)lbl_8037C0C0)[7] = b;
+    b = fifo[2];
+    a = fifo[3];
+    ((unsigned int *)lbl_8037C0C0)[2] = b;
+    ((unsigned int *)lbl_8037C0C0)[3] = a;
+    b = fifo[4];
+    a = fifo[5];
+    ((unsigned int *)lbl_8037C0C0)[4] = b;
+    ((unsigned int *)lbl_8037C0C0)[5] = a;
+    b = fifo[6];
+    a = fifo[7];
+    ((unsigned int *)lbl_8037C0C0)[6] = b;
+    ((unsigned int *)lbl_8037C0C0)[7] = a;
     ((unsigned int *)lbl_8037C0C0)[8] = fifo[8];
     lbl_8055D949 = 1;
     ((unsigned char *)lbl_8037C0C0)[0x22] = 1;
@@ -3116,7 +3116,7 @@ void GXBegin(unsigned char prim, unsigned char vtxfmt, unsigned short nverts)
   unsigned int *data = __GXData;
   unsigned int *dim;
   unsigned int new_var2[2];
-  unsigned int i;
+  unsigned int i = 0;
   unsigned short width;
   volatile unsigned short *new_var;
   if (data[0x5FC / 4] != 0)
@@ -3771,10 +3771,11 @@ typedef struct {
 } GXDispCopyData;
 #define GXDispRegs (*(GXDispCopyData *)__GXData)
 
+#pragma optimization_level 3
 void GXCopyDisp(unsigned int source, int clear) {
     volatile unsigned int *gx;
     volatile unsigned int *gx2;
-    register volatile unsigned int *reg;
+    volatile unsigned int *reg;
     unsigned int value;
     unsigned int zmode;
     unsigned int sourceValue;
@@ -3845,7 +3846,7 @@ void GXCopyDisp(unsigned int source, int clear) {
     }
     *(volatile unsigned short *)((volatile unsigned char *)gx2 + 2) = 0;
 }
-
+#pragma optimization_level reset
 /* The GX data block (__GXData) holds every BP register GX has set so that it can
  * re-send them; this build of GX keeps them 0x50 above the release SDK's
  * layout, and only the fields the texture copy needs are named here. */
@@ -4883,6 +4884,9 @@ void __SetSURegs(s32 arg0, s32 arg1) {
     *((unsigned short *)((char *)data + 2)) = 0;
 }
 
+/* Pushes dirty texture stage unit (SU) registers to the GPU: first the indirect
+ * texture stages (from the iref register), then the normal texture stages, skipping
+ * any coordinate already managed manually (tcsManEnab). */
 void __GXSetSUTexRegs(void) {
     unsigned int *gx = __GXData;
     unsigned int *g2;
