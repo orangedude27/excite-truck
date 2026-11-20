@@ -424,62 +424,70 @@ extern "C" void fn_801345D8(void *, int, const char *, ...);
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma cplusplus on
+/* Reads the wheel's optional level-of-detail model table from the resource found
+ * under the "detached wheel" key.  When that key has a value, up to eight models
+ * named "<value><lod>.mod" are loaded in order (the first missing one ends the
+ * table); each LOD's switch distance is read from the "lod%d" value and stored as
+ * its square.  value44 is the resource's "dist" and value48 the "range" value
+ * (default 500) squared.  Without the key, a single entry loads the "<value>.mod"
+ * model at distance zero.  The table is stored at WheelMod+0xEC. */
 extern "C" void fn_801F06DC(void *arg0, void *arg1) {
-    class Fn801F06DCResource {
+    class WheelLodResource {
     public:
-        virtual void pad0();
-        virtual int test(const char *);
-        virtual void *pad2();
-        virtual char *find(const char *);
-        virtual void *pad4();
-        virtual void pad5();
-        virtual void pad6();
-        virtual float getValue(const char *);
-        virtual float getValueWithDefault(const char *, float);
+        virtual void unused0();
+        virtual int has(const char *name);
+        virtual void unused2();
+        virtual char *find(const char *name);
+        virtual void unused4();
+        virtual void unused5();
+        virtual void unused6();
+        virtual float getValue(const char *name);
+        virtual float getValueWithDefault(const char *name, float def);
     };
-    struct Entry {
-        int handle;
-        float distSq;
+    /* One entry of the LOD model table at WheelMod+0xEC. */
+    struct WheelModLodEntry {
+        int model;      /* 0x00 the loaded "<value><lod>.mod" */
+        float distSq;   /* 0x04 squared distance at which this LOD takes over */
     };
-    struct Lod {
-        Entry entries[8];
-        int count;
-        float value44;
-        float value48;
+    struct WheelLodTable {
+        WheelModLodEntry lods[WHEELMOD_MAX_LODS];
+        int count;      /* 0x40 how many lods were found */
+        float dist;     /* 0x44 the resource's "dist" value */
+        float rangeSq;  /* 0x48 the resource's "range" value (default 500) squared */
     };
 
-    Lod *lod = (Lod *)arg0;
+    WheelLodTable *table = (WheelLodTable *)arg0;
     char *strings = lbl_8033A3F0;
-    char name[0x40];
-    char valueName[0x20];
+    char model[0x40];
+    char lodValue[0x20];
     float value;
     const char *key;
 
-    if (((Fn801F06DCResource *)arg1)->test(strings + 0x90)) {
-        char *id = ((Fn801F06DCResource *)arg1)->find(strings + 0x90);
-        for (lod->count = 0; lod->count < 8; lod->count++) {
-            fn_801345D8(name, 0x40, strings + 0x60, id, lod->count + 1);
-            fn_801345D8(valueName, 0x20, (char *)&lbl_8055B0C8, lod->count);
-            if (!fn_8012C33C(name)) break;
-            lod->entries[lod->count].handle = fn_802C6FC0(name, 0, 0);
-            value = ((Fn801F06DCResource *)arg1)->getValue(valueName);
-            lod->entries[lod->count].distSq = value * value;
+    if (((WheelLodResource *)arg1)->has(strings + 0x90)) {
+        char *valueName = ((WheelLodResource *)arg1)->find(strings + 0x90);
+        for (table->count = 0; table->count < WHEELMOD_MAX_LODS; table->count++) {
+            fn_801345D8(model, 0x40, strings + 0x60, valueName, table->count + 1);
+            fn_801345D8(lodValue, 0x20, (char *)&lbl_8055B0C8, table->count);
+            if (!fn_8012C33C(model)) break;
+            table->lods[table->count].model = fn_802C6FC0(model, 0, 0);
+            value = ((WheelLodResource *)arg1)->getValue(lodValue);
+            table->lods[table->count].distSq = value * value;
         }
-        lod->value44 = ((Fn801F06DCResource *)arg1)->getValue(strings + 0x9C);
-        value = ((Fn801F06DCResource *)arg1)->getValueWithDefault(strings + 0xA8, 500.0f);
-        lod->value48 = value * value;
+        table->dist = ((WheelLodResource *)arg1)->getValue(strings + 0x9C);
+        value = ((WheelLodResource *)arg1)->getValueWithDefault(strings + 0xA8, 500.0f);
+        table->rangeSq = value * value;
     } else {
-        int handle;
+        int model;
         float distSq;
         int count;
-        handle = fn_802C6FC0(((Fn801F06DCResource *)arg1)->find((char *)&lbl_8055B0F0), 0, 0);
+        model = fn_802C6FC0(((WheelLodResource *)arg1)->find((char *)&lbl_8055B0F0), 0, 0);
         distSq = 0.0f;
         count = 1;
-        lod->entries[0].handle = handle;
-        lod->entries[0].distSq = distSq;
-        lod->count = count;
+        table->lods[0].model = model;
+        table->lods[0].distSq = distSq;
+        table->count = count;
         key = (const char *)&lbl_8055B0F8;
-        lod->value44 = ((Fn801F06DCResource *)arg1)->getValue(key);
+        table->dist = ((WheelLodResource *)arg1)->getValue(key);
     }
 }
 #pragma pop
@@ -565,15 +573,13 @@ extern char lbl_8033A4D4[];
 extern float lbl_80562F2C;
 #pragma scheduling invalid_target
 int fn_801F0AA0(void) {
-    int *p;
     int off1, off2, count, i;
     float value;
-
+    int *p;
     lbl_8055EBEC = fn_8012850C(0x9C0, lbl_8033A4D4);
     lbl_8055EBF0 = 0;
     value = lbl_80562F2C;
     off1 = 0;
-
     for (i = 0; i < 4; i++) {
         count = i * 2;
         p = (int *)(lbl_8055EBEC + off1);
@@ -746,15 +752,16 @@ void fn_80015B20(void *, void *, void *);
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
 void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
-    int flags;
+    int flags = *(int *)((char *)arg1 + 0x60);
     float matrix[9], matrix2[9];
     union { Vec v; unsigned int w[3]; } point;
     Vec angles, angles2;
     float *m = (float *)arg2;
-    float x,y,z, a,b,c,d,e,f,g,h,i;
+    float x,y,z;
+    float d,e,a,b,c,f,g,h,i;
     unsigned int w8,w7,w6,w5,w4,w3,w2,w1,w0;
     int mode;
-    if (((flags = *(int *)((char *)arg1 + 0x60)) & 8) != 0) {
+    if (flags & 8) {
         *(int *)((char *)arg0 + 4) = 3;
         return;
     }
