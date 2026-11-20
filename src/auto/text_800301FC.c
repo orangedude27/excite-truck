@@ -144,7 +144,7 @@ void TRKPostEvent(s32 event) {
             DBGIF_CONTROL |= 0x40;
             OSRestoreInterrupts(irq);
         }
-        sEventCallback = (void *)zero;
+        sEventCallback = 0;
         sPendingEvent = event;
         __OSSetInterruptHandler(5, TRKGetNextEvent); /* the debug interface's */
         __OSUnmaskInterrupts(0x04000000);            /* == OS_INTR_MASK(5) */
@@ -536,17 +536,15 @@ void TRKGetInput(void) {
     extern s32 lbl_8055D6F8;
     extern s32 lbl_8055D6F4;
     extern s32 lbl_8055D6F0;
-    u8 *base;
     u32 *first;
     u32 *second;
     u32 *third;
     int i;
 
     lbl_8055D728 = 0;
-    base = lbl_8035BFA0;
-    first = (u32 *)base;
-    second = (u32 *)(base + 0xD80);
-    third = (u32 *)(base + 0x1B00);
+    first = (u32 *)lbl_8035BFA0;
+    second = (u32 *)(lbl_8035BFA0 + 0xD80);
+    third = (u32 *)(lbl_8035BFA0 + 0x1B00);
     lbl_8055D724 = 0;
     lbl_8055D720 = 0;
     lbl_8055D71C = 0;
@@ -587,7 +585,8 @@ void TRKGetInput(void) {
         second += 9;
         third[8] = 0;
         third += 9;
-    } while (--i != 0);
+        i--;
+    } while (i != 0);
 }
 
 /* Disable serial input by clearing the three AX aux input callbacks (A/B/C). */
