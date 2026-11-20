@@ -1172,7 +1172,7 @@ void fn_801ABFF8(void *self, int **event) {
 #pragma processor 750
 #pragma scheduling 750
 #pragma use_lmw_stmw off
-void fn_801AC0A0(void *arg0, float *arg1, float *arg2, int arg3, int arg4) {
+void fn_801AC0A0(void *arg0, float *__restrict arg1, float *__restrict arg2, int arg3, int arg4) {
  extern float lbl_805624E8;
  extern int lbl_803357F0[];
  extern void fn_8017D2C8(void *, void *, void *, int, int);
@@ -1185,10 +1185,9 @@ void fn_801AC0A0(void *arg0, float *arg1, float *arg2, int arg3, int arg4) {
  scale=lbl_805624E8 * value;
  squared=scale*scale;
  if(PSVECDotProduct((Vec *)arg1,(Vec *)arg1)>squared) {
- x=arg1[0];
- vptr = lbl_803357F0;
- y=arg1[1]; z=arg1[2];
+ x=arg1[0]; y=arg1[1]; z=arg1[2];
  x2=arg2[0]; y2=arg2[1]; z2=arg2[2];
+ vptr = lbl_803357F0;
  event.v=vptr;
  event.a[0]=x; event.a[1]=y; event.a[2]=z;
  event.b[0]=x2; event.b[1]=y2; event.b[2]=z2;
@@ -1593,8 +1592,8 @@ void fn_801ACF94(void) {
     void **obj;
     int i, j, zero, first, last, count, off;
     void *root;
-    Obj_801ACF94 *o;
-    Mesh_801ACF94 *a;
+    void *a;
+    void *o;
     float *base, *dst, *src;
     float fill, special, tail, x, y, z;
     root = (void *)lbl_8055E5F0;
@@ -1610,19 +1609,19 @@ void fn_801ACF94(void) {
         ((float *)sp8)[9] = fill; ((float *)sp8)[10] = fill;
         ((float *)sp8)[11] = tail; ((float *)sp8)[12] = fill;
         fn_801C2694(root, (int *)sp90, (float *)sp8,
-            (float *)(sp8 + 0x28), (float *)(sp8 + 0x1C),
-            (float *)(sp8 + 0x10), (float *)(sp8 + 4),
-            special, fill);
+                    (float *)(sp8 + 0x28), (float *)(sp8 + 0x1C),
+                    (float *)(sp8 + 0x10), (float *)(sp8 + 4),
+                    special, fill);
         obj = (void **)lbl_80435628;
         j = 0;
         zero = 0;
         while (j < lbl_8055E5EC) {
-            o = (Obj_801ACF94 *)*obj;
-            a = (Mesh_801ACF94 *)o->unk_0x23C;
+            o = *obj;
+            a = *(void **)((char *)o + 0x23C);
             if (a != 0) {
-                first = a->unk_0x254;
+                first = *(int *)((char *)a + 0x254);
                 base = (float *)(sp90);
-                last = o->unk_0x254;
+                last = *(int *)((char *)o + 0x254);
                 dst = (float *)sp3c;
                 off = first * 12;
                 *(int *)dst = zero;
@@ -1633,19 +1632,19 @@ void fn_801ACF94(void) {
                 i = 0;
                 while (i < *(int *)(sp3c + 8)) {
                     x = src[0];
-                    i = i + 1;
+                    i++;
                     y = src[1];
                     dst[3] = x;
                     z = src[2];
-                    src = src + 3;
+                    src += 3;
                     dst[4] = y;
                     dst[5] = z;
-                    dst = dst + 3;
+                    dst += 3;
                 }
                 fn_801796CC(6, sp3c, 0x54);
             }
-            obj = obj + 1;
-            j = j + 1;
+            obj++;
+            j++;
         }
     }
 }
@@ -1654,13 +1653,16 @@ void fn_801ACF94(void) {
 extern float lbl_8056250C;
 extern float lbl_80562514;
 #pragma scheduling off
+#pragma opt_propagation off
 void fn_801AD0E0(void *arg0, void *arg1, void *arg2, void *arg3, float farg0, float farg1) {
     float t, c, r, q, p, z, y, x, b;
+    int zero;
     t = lbl_80562514;
-    *(int *)((char *)arg0 + 0x0C) = 0;
+    zero = 0;
     b = lbl_8056247C;
     c = t * farg0;
     t = lbl_8056250C;
+    *(int *)((char *)arg0 + 0x0C) = zero;
     x = *(float *)((char *)arg1 + 0x00);
     t = t * c;
     y = *(float *)((char *)arg1 + 0x04);
@@ -1681,9 +1683,6 @@ void fn_801AD0E0(void *arg0, void *arg1, void *arg2, void *arg3, float farg0, fl
     *(float *)((char *)arg0 + 0x24) = farg1;
     *(float *)((char *)arg0 + 0x20) = t;
 }
-
-#pragma processor 750
-#pragma scheduling invalid_target
 void fn_801AD148(void *arg0, void *arg1, void *arg2, f32 farg0, f32 farg1) {
     Vec sp14;
     Vec sp8;
@@ -1723,6 +1722,7 @@ void fn_801AD28C(void *arg0, void *arg1, void *arg2, Vec *arg3, f32 farg1, f32 f
     Vec delta;
     f32 z, y, x;
     f32 distance;
+    f32 *out = (f32 *)((char *)arg0 + 0x28);
     fn_8017AB84(*(void **)((char *)arg0 + 0x34), &sp20, arg1);
     if (arg2 != 0) {
         fn_8017AB84(arg2, &sp14, arg3);
@@ -1738,9 +1738,9 @@ void fn_801AD28C(void *arg0, void *arg1, void *arg2, Vec *arg3, f32 farg1, f32 f
     delta.y = sp14.y - sp20.y;
     delta.z = sp14.z - sp20.z;
     distance = PSVECMag(&delta);
-    *(f32 *)((char *)arg0 + 0x28) = distance;
+    *out = distance;
     fn_801AD0E0(arg0, arg3, arg2, arg1, farg1, farg0);
-    *(f32 *)((char *)arg0 + 0x28) = distance;
+    *out = distance;
 }
 /* A spring between a point of a rigid body (+0x34) and a target point: a fixed
    world point (+0x00) when there is no second body (+0x0C == 0), or that body's
@@ -1906,13 +1906,10 @@ extern "C" void fn_801AD5F4(void *arg0, void *arg1) {
         virtual void v16(float *, float *, int, int, float, float, float, float, float, float);
     };
     register void *object = arg0;
-    register float scale = lbl_805624F4;
-    register float factor = lbl_8056249C;
+    register float scale = 5.0f;
+    register float factor = 0.8f;
     float sp14[3];
     float sp8[3];
-    register float temp_f6;
-    register float temp_f5;
-    register float temp_f4;
     register float temp_f2;
     register float temp_f1;
     register float temp_f0;
@@ -1920,18 +1917,15 @@ extern "C" void fn_801AD5F4(void *arg0, void *arg1) {
     sp14[0] = *(float *)((char *)object + 4) * scale;
     sp14[1] = *(float *)((char *)object + 8) * scale;
     sp14[2] = *(float *)((char *)object + 0xC) * scale;
-    temp_f6 = *(float *)((char *)object + 0x18);
-    temp_f2 = *(float *)((char *)arg1 + 0x68) - temp_f6;
-    temp_f5 = *(float *)((char *)object + 0x14);
-    temp_f1 = *(float *)((char *)arg1 + 0x64) - temp_f5;
-    temp_f4 = *(float *)((char *)object + 0x10);
-    temp_f0 = *(float *)((char *)arg1 + 0x60) - temp_f4;
+    temp_f2 = *(float *)((char *)arg1 + 0x68) - *(float *)((char *)object + 0x18);
+    temp_f1 = *(float *)((char *)arg1 + 0x64) - *(float *)((char *)object + 0x14);
+    temp_f0 = *(float *)((char *)arg1 + 0x60) - *(float *)((char *)object + 0x10);
     temp_f2 = factor * temp_f2;
     temp_f1 = factor * temp_f1;
     temp_f0 = factor * temp_f0;
-    temp_f2 = temp_f6 + temp_f2;
-    temp_f1 = temp_f5 + temp_f1;
-    temp_f0 = temp_f4 + temp_f0;
+    temp_f2 = *(float *)((char *)object + 0x18) + temp_f2;
+    temp_f1 = *(float *)((char *)object + 0x14) + temp_f1;
+    temp_f0 = *(float *)((char *)object + 0x10) + temp_f0;
     sp8[2] = temp_f2;
     sp8[0] = temp_f0;
     sp8[1] = temp_f1;
@@ -1939,7 +1933,9 @@ extern "C" void fn_801AD5F4(void *arg0, void *arg1) {
                        *(int *)((char *)object + 0x1C),
                        *(int *)((char *)object + 0x20),
                        temp_f1, temp_f2, factor,
-                       temp_f4, temp_f5, temp_f6);
+                       *(float *)((char *)object + 0x10),
+                       *(float *)((char *)object + 0x14),
+                       *(float *)((char *)object + 0x18));
 }
 #pragma scheduling on
 #pragma pop
@@ -1983,11 +1979,15 @@ void *fn_801AD6B0(void *self, int shouldDelete) {
 #pragma push
 #pragma opt_propagation off
 void fn_801AD750(void *arg0, void *arg1) {
+    void *notifier;
     fn_801A9AB0(arg0, arg1);
     *(int *)((char *)arg0 + 0x240) = *(int *)((char *)arg1 + 0x80);
     if (arg0 != 0) {
-        arg0 = (char *)arg0 + 0x23C;
-        fn_801D08C0(arg0);
+        notifier = arg0;
+        if (arg0 != 0) {
+            notifier = (unsigned char *)notifier + 0x23C;
+        }
+        fn_801D08C0(notifier);
         return;
     }
 }
