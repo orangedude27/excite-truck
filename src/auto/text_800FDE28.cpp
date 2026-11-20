@@ -961,8 +961,6 @@ no:
 extern "C" void SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(void *, s32, const void *);
 extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *, s32, const void *, u32);
 
-#ifndef NW4HBM_SND_WAVEPLAYER_TYPES_H
-#define NW4HBM_SND_WAVEPLAYER_TYPES_H
 namespace nw4hbm {
 namespace snd {
 /* One block of wave samples queued on a WavePlayer.  The per-channel sample
@@ -1017,7 +1015,6 @@ public:
 };
 }  // namespace snd
 }  // namespace nw4hbm
-#endif
 /* Hands the voice the packet queued behind the one it is playing.  The voice
  * has played its way past the front packet, so that packet leaves the queue
  * and is reported to the callback, and every channel of the voice is moved on
