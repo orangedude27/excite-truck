@@ -412,8 +412,10 @@ Obj_802470D4 *fn_802470D4(Obj_802470D4 *self, s32 deleteFlag) {
 #pragma push
 #pragma processor 750
 void fn_80247174(void) {
-    register float base = 1.0f;
+    extern double lbl_805638A0;
+    register double bias = lbl_805638A0;
     register float divisor = 49.0f;
+    register float base = 1.0f;
     s32 i = 0;
     do {
         fn_80246CAC(base - (float)i / divisor);
@@ -838,9 +840,9 @@ void fn_802478A4(void) {
     extern s32 lbl_802FA3F0[];
     extern s32 lbl_8055BAC0, lbl_8055BABC, lbl_8055B860;
     s32 data[40];
+    s32 b0 = lbl_804988F0[0];
     volatile s32 *q = (volatile s32 *)lbl_804988F0;
     volatile s32 *p = (volatile s32 *)lbl_802FA3F0;
-    s32 b0 = lbl_804988F0[0];
     s32 b1, b2, b3, b4;
     s32 a0, a2, a3, a4;
     s32 stringBase;
@@ -961,7 +963,7 @@ extern void fn_80247A0C(void);
 extern void fn_80247AAC(void);
 extern s32 lbl_802FA404[5];
 #pragma push
-#pragma use_lmw_stmw off
+#pragma use_lmw_stmw on
 void fn_80247AD0(void) {
     s32 args[5];
     s32 values[30];
@@ -1323,9 +1325,7 @@ extern s32 fn_8020A640(void);
 extern s32 lbl_802FA498[5];
 extern void fn_8020A600(void);
 #pragma push
-#pragma use_lmw_stmw off
-#pragma optimization_level 3
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80248668(s32 arg0) {
     s32 text[12];
     s32 item[10];
