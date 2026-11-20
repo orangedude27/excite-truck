@@ -619,19 +619,20 @@ static const u32 __OSExceptionLocations[15] = {
     0x0900, 0x0C00, 0x0D00, 0x0F00, 0x1300, 0x1400, 0x1700};
 #pragma use_lmw_stmw off
 void OSExceptionInit(void) {
-    void *vectorCode;
-    u32 *dst;
-    u32 vectorSize;
-    long j;
+    char *base;
     u8 i;
     register u32 *pInst;
     u32 inst;
+    void *vectorCode;
+    u32 vectorSize;
+    u32 *locations;
+    u32 *dst;
+    long j;
     register u32 *code;
-    char *base = lbl_80303E08;
-    u32 *locations = (u32 *)(base + 0x318);
     pInst = (u32 *)__OSEVSetNumber;
     inst = *pInst;
     vectorCode = (void *)__OSEVStart;
+    base = lbl_80303E08;
     vectorSize = (u32)__OSEVEnd - (u32)__OSEVStart;
     dst = (u32 *)0x80000060;
     if (*dst == 0) {
@@ -641,6 +642,7 @@ void OSExceptionInit(void) {
         __sync();
         ICInvalidateRange(dst, (u32)__OSDBINTEND - (u32)__OSDBINTSTART);
     }
+    locations = (u32 *)(base + 0x318);
     for (i = 0; i < 15; i++) {
         if (BI2DebugFlag_8055D9F4 != 0 && *BI2DebugFlag_8055D9F4 >= 2 && __DBIsExceptionMarked(i)) {
             DBPrintf(base + 0x370, (u8)i);
@@ -648,11 +650,11 @@ void OSExceptionInit(void) {
             *pInst = inst | i;
             if (__DBIsExceptionMarked(i)) {
                 DBPrintf(base + 0x3a0, (u8)i);
-                memcpy((void *)__DBVECTOR, (void *)__OSDBJUMPSTART, (u32)__OSDBJUMPEND - (u32)__OSDBINTEND);
+                memcpy((void *)__DBVECTOR, (void *)__OSDBINTEND, (u32)__OSDBJUMPEND - (u32)__OSDBINTEND);
             } else {
                 code = (u32 *)__DBVECTOR;
                 for (j = 0; j < (u32)__OSDBJUMPEND - (u32)__OSDBINTEND; j += 4, code++) {
-                    *code = (unsigned short)0x60000000;
+                    *code = 0x60000000;
                 }
             }
             dst = (u32 *)(0x80000000 + locations[i]);
