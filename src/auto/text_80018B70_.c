@@ -120,7 +120,6 @@ extern "C" void fn_80018BA4(void) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
-#pragma opt_common_subs off
 extern "C" void fn_80018CCC(void) {
     struct Manager { virtual void unused(); virtual void *get(int); };
     struct Item {
@@ -151,12 +150,12 @@ check_object:
         offset = 0;
         goto check_count;
 search:
-        if (stricmp(*(const char **)((char *)*(void **)&lbl_803580A4 + offset), name) != 0) {
-            offset += 0x10;
-            row++;
-            goto check_count;
-        }
+        if (stricmp(*(const char **)((char *)*(void **)&lbl_803580A4 + offset), name) != 0)
+            goto search_advance;
         goto found;
+search_advance:
+        offset += 0x10;
+        row++;
 check_count:
         if (row < *(volatile int *)((char *)&lbl_803580A4 + 4))
             goto search;
