@@ -698,9 +698,6 @@ void fn_8005E298(void) {
         var_r26 = 0;
         var_r28 = _wpdcb;
         var_r27 = lbl_8055DC00;
-        zero = 0;
-        sixteen = 0x10;
-        one = 1;
         do {
             var_r25 = 0;
             if ((u8) lbl_8055DBFD == 5) {
