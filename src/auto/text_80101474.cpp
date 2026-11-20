@@ -759,12 +759,22 @@ extern "C" void *GetFont__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
     return *(void **)((char *)arg0 + 0x48);
 }
 
+/* ut::Color -> GXColor conversion of the static fog colour (lbl_8055DE94..97). */
+static inline Color4 GetFogColor_80101474() {
+    Color4 c;
+    c.r = lbl_8055DE94;
+    c.g = lbl_8055DE95;
+    c.b = lbl_8055DE96;
+    c.a = lbl_8055DE97;
+    return c;
+}
+
 #pragma push
 #pragma opt_propagation off
 extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
-    const char *base = lbl_80328178;
-    void *arg0_ptr = arg0;
+    struct Strings { char file[0x14]; char ptrMsg[0x70]; char typeMsg[4]; };
     unsigned int arg0_int = (unsigned int)arg0;
+    const Strings *base = (const Strings *)lbl_80328178;
     unsigned char sp20[4], sp1C[4], sp18[4], sp14[4], sp10[4], spC[4], sp8[4];
     unsigned int temp_r30;
     unsigned int temp_r3;
@@ -805,7 +815,7 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
         var_r5 = 0;
     }
     if (var_r5 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0xAD, base + 0x14, arg0_int);
+        Panic__Q26nw4hbm2dbFPCciPCce(base->file, 0xAD, base->ptrMsg, arg0_int);
     }
     var_r5_2 = 0;
     if (temp_r30 == 0x80000000U ||
@@ -818,7 +828,7 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
         var_r5_2 = 1;
     }
     if (var_r5_2 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x12C, base + 0x14, arg0_int);
+        Panic__Q26nw4hbm2dbFPCciPCce(base->file, 0x12C, base->ptrMsg, arg0_int);
     }
     (*(int *)((signed char*)(&lbl_8041D4E0) + (0))) = 0xFF;
     (*(int *)((signed char*)(&lbl_8041D4E0) + (4))) = 0;
@@ -841,40 +851,40 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
         case 0:
         case 1:
             if ((signed char) lbl_8055DE90 == 0) {
-                    *(int *)&lbl_8055DE94 = 0;
-                    __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
-                    lbl_8055DE90 = 1;
-                }
-                sp18[0] = (unsigned char) lbl_8055DE94;
-                sp18[1] = lbl_8055DE95;
-                sp18[2] = lbl_8055DE96;
-                sp18[3] = lbl_8055DE97;
-                ((void (*)(int, void*, float, float, float, float))GXSetFog)(0, &sp18[0], lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
-                GXSetTevSwapModeTable(0, 0, 1, 2, 3);
-                GXSetZTexture(0, 0x11, 0);
-                GXSetNumChans(1);
-                GXSetChanCtrl(4, 0, 0, 1, 0, 0, 2);
-                GXSetChanCtrl(5, 0, 0, 0, 0, 0, 2);
-                GXSetNumTexGens(1);
-                GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
-                GXSetNumIndStages(0);
-                GXSetBlendMode(1, 4, 5, 0xF);
-                GXSetNumTevStages(1);
-                GXSetTevDirect(0);
-                GXSetTevSwapMode(0, 0, 0);
-                GXSetTevOrder(0, 0, 0, 4);
-                GXSetTevColorIn(0, 0xF, 0xF, 0xF, 0xA);
-                GXSetTevAlphaIn(0, 7, 4, 5, 7);
-                GXSetTevColorOp(0, 0, 0, 0, 1, 0);
-                GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
-                GXSetVtxAttrFmt(0, 9, 1, 4, 0);
-                GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
-                GXSetVtxAttrFmt(0, 0xD, 1, 2, 0xF);
-                GXClearVtxDesc();
-                GXSetVtxDesc(9, 1);
-                GXSetVtxDesc(0xB, 1);
-                GXSetVtxDesc(0xD, 1);
-                return;
+                *(int *)&lbl_8055DE94 = 0;
+                __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
+                lbl_8055DE90 = 1;
+            }
+            sp18[0] = (unsigned char) lbl_8055DE94;
+            sp18[1] = lbl_8055DE95;
+            sp18[2] = lbl_8055DE96;
+            sp18[3] = lbl_8055DE97;
+            ((void (*)(int, void*, float, float, float, float))GXSetFog)(0, &sp18[0], lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+            GXSetTevSwapModeTable(0, 0, 1, 2, 3);
+            GXSetZTexture(0, 0x11, 0);
+            GXSetNumChans(1);
+            GXSetChanCtrl(4, 0, 0, 1, 0, 0, 2);
+            GXSetChanCtrl(5, 0, 0, 0, 0, 0, 2);
+            GXSetNumTexGens(1);
+            GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
+            GXSetNumIndStages(0);
+            GXSetBlendMode(1, 4, 5, 0xF);
+            GXSetNumTevStages(1);
+            GXSetTevDirect(0);
+            GXSetTevSwapMode(0, 0, 0);
+            GXSetTevOrder(0, 0, 0, 4);
+            GXSetTevColorIn(0, 0xF, 0xF, 0xF, 0xA);
+            GXSetTevAlphaIn(0, 7, 4, 5, 7);
+            GXSetTevColorOp(0, 0, 0, 0, 1, 0);
+            GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
+            GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+            GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
+            GXSetVtxAttrFmt(0, 0xD, 1, 2, 0xF);
+            GXClearVtxDesc();
+            GXSetVtxDesc(9, 1);
+            GXSetVtxDesc(0xB, 1);
+            GXSetVtxDesc(0xD, 1);
+            return;
         case 2:
         case 3:
             if ((signed char) lbl_8055DE90 == 0) {
@@ -945,7 +955,7 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
             GXSetVtxDesc(0xD, 1);
             return;
         default:
-            Warning__Q26nw4hbm2dbFPCciPCce(base, 0xCF, base + 0x84, type);
+            Warning__Q26nw4hbm2dbFPCciPCce(base->file, 0xCF, base->typeMsg, type);
             if ((signed char) lbl_8055DE90 == 0) {
                 *(int *)&lbl_8055DE94 = 0;
                 __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
@@ -1012,9 +1022,6 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
     GXSetVtxDesc(0xB, 1);
     GXSetVtxDesc(0xD, 1);
 }
-#pragma push
-#pragma processor 750
-#pragma paired_single off
 /* Sets the CharWriter's color mapping (text/gradation colors) after validating the this pointer. */
 extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(void *charWriter, void *color1, void *color2) {
     int valid5 = 1;
