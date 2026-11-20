@@ -761,17 +761,21 @@ void fn_802D8DA0(void) {
 extern void fn_802D81C4(void *, int);
 extern void fn_802D86BC(void *, int);
 #pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
 void fn_802D8DCC(void *arg0, int arg1) {
  unsigned char *p = *(unsigned char **)((char *)arg0 + 0x2C);
  unsigned char t;
  unsigned int kind;
- int i;
- for (i = 0; i < 3; i++) {
-     t = p[i*4+0]; p[i*4+0] = p[i*4+3]; p[i*4+3] = t;
-     t = p[i*4+1]; p[i*4+1] = p[i*4+2]; p[i*4+2] = t;
-     if (*(int *)(p+i*4) != 0) *(unsigned char **)(p+i*4) = p + *(int *)(p+i*4);
- }
+ t=p[0]; p[0]=p[3]; p[3]=t;
+ t=p[1]; p[1]=p[2]; p[2]=t;
+ if (*(int *)(p+0) != 0) *(unsigned char **)(p+0) = p + *(int *)(p+0);
+ t=p[4]; p[4]=p[7]; p[7]=t;
+ t=p[5]; p[5]=p[6]; p[6]=t;
+ if (*(int *)(p+4) != 0) *(unsigned char **)(p+4) = p + *(int *)(p+4);
+ t=p[8]; p[8]=p[11]; p[11]=t;
+ t=p[9]; p[9]=p[10]; p[10]=t;
+ if (*(int *)(p+8) != 0) *(unsigned char **)(p+8) = p + *(int *)(p+8);
  kind=*(unsigned int *)arg0;
  if (kind == 0x40 || kind == 0) fn_802D81C4(arg0,arg1);
  else if (kind == 0x41 || kind == 1) fn_802D86BC(arg0,arg1);
