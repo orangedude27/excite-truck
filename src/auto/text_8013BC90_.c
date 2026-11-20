@@ -165,7 +165,7 @@ extern "C" void fn_8013BD5C(void *arg0, void *arg1) {
         v[3] = ((Getter *)p)->get(lbl_80559CF0, v[3]);
     }
 }
-#pragma peephole reset
+#pragma opt_peephole reset
 #pragma scheduling on
 #pragma cplusplus reset
 extern void fn_8013A2FC(void *, int);
