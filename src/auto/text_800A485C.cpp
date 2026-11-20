@@ -64,9 +64,6 @@ struct Fn800C6774Msgs {
     char msg4C[0x34];
     char msg80[1];
 };
-static inline const char *fn_800C6774_addr(const void *base, int off) {
-    return (const char *)base + off;
-}
 struct Fn800D3B40Str {
     char file[0x134];
     char msg134[0x30];
@@ -19162,8 +19159,7 @@ extern "C" void fn_800CEF60(void *, void *, s32);
 #pragma push
 #pragma opt_propagation off
 extern "C" void fn_800C6774(s32 arg0, void *arg1, u32 arg2) {
-    struct Lead0 { char zero[0]; char file[0x4C]; char msg4C[0x34]; char msg80[1]; };
-    const Lead0 *msgs = (const Lead0 *)lbl_8031D840;
+    const Fn800C6774Msgs *msgs = (const Fn800C6774Msgs *)lbl_8031D840;
     void *base;
     void *block;
 
