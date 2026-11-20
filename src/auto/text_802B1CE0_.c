@@ -597,8 +597,7 @@ void fn_802B28BC(int *entries, int count) {
 #undef RandomIntInRange
 }
 
-  #pragma cplusplus off
- #pragma push
+  #pragma push
  #pragma optimization_level 3
  #pragma opt_pointer_aliasing on
  void **fn_802B2934(void *arg0, void **arg1) {
