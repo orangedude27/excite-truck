@@ -142,7 +142,7 @@ void *fn_8020DE74(void *arg0) {
     if (child != 0) {
         *(void **)((u8 *)child + 0x10) = group;
         {
-            float desired = 2.0f;
+            float desired = lbl_8056336C;
             child = *(void * volatile *)((u8 *)obj + 8);
             if (desired != *(float *)((u8 *)child + 4)) {
             *(u8 *)((u8 *)child + 0x4e) = 1;
