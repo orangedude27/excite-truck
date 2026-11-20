@@ -657,7 +657,6 @@ extern "C" void fn_80145B50(void *arg0, s32 arg1) {
     out[2] = multiplier;
     out[0] = multiplier * value;
 }
-#pragma pop
 
 #pragma dont_inline on
 #pragma push
