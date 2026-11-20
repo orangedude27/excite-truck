@@ -351,13 +351,12 @@ void TRKAppendBuffer_ui32(void) {
 }
 
 void TRKAppendBuffer1_ui64(void) {
-    u32 zero = 0;
-    u32 *const a = lbl_8035BF20;
-    u32 *const b = (u32 *)lbl_8035BEA0;
+    u32 *a = lbl_8035BF20;
+    u32 *b = (u32 *)lbl_8035BEA0;
     int i;
-    lbl_8055D6E8 = zero;
+    lbl_8055D6E8 = 0;
     for (i = 0; i < 32; i++) {
-        a[i] = zero; b[i] = zero;
+        a[i] = 0; b[i] = 0;
     }
 }
 
@@ -539,6 +538,7 @@ void TRKProcessInput(void *buffer, s32 queueId) {
     OSRestoreInterrupts(interrupts);
 }
 
+#pragma unroll off
 void TRKGetInput(void) {
     extern u8 lbl_8035BFA0[];
     extern s32 lbl_8055D6F8;
@@ -853,21 +853,11 @@ void* fn_80031248(void) {
 
 #pragma dont_inline on
 void *gdev_cc_initialize(void) {
-    s32 old;
-    s32 next;
-    s32 newOff;
-    s32 oldOff;
-    void *newPtr;
-    void *oldPtr;
-    old = lbl_8055D748;
-    next = (old + 1) & 1;
-    newOff = next * 0x300;
-    lbl_8055D748 = next;
-    oldOff = old * 0x300;
-    newPtr = (u8 *)&lbl_8035E820 + newOff;
-    lbl_8055D744 = newPtr;
-    oldPtr = (u8 *)&lbl_8035E820 + oldOff;
-    return oldPtr;
+    s32 old = lbl_8055D748;
+    s32 next = (old + 1) & 1;
+    *(volatile s32 *)&lbl_8055D748 = next;
+    *(volatile void **)&lbl_8055D744 = (u8 *)&lbl_8035E820 + next * 0x300;
+    return (u8 *)&lbl_8035E820 + old * 0x300;
 }
 
 extern void DCFlushRange(void *, u32);
