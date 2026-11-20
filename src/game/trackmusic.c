@@ -811,6 +811,18 @@ void fn_80210514(int mode) {
     }
 }
 
+static inline long fn_80210570_check4(char *ptr, long val) {
+    if (val == 3) val = *(long *)(ptr + 0x000);
+    else if (*(long *)(ptr + 0x000) != val) return 2;
+    if (val == 3) val = *(long *)(ptr + 0x064);
+    else if (*(long *)(ptr + 0x064) != val) return 2;
+    if (val == 3) val = *(long *)(ptr + 0x0C8);
+    else if (*(long *)(ptr + 0x0C8) != val) return 2;
+    if (val == 3) val = *(long *)(ptr + 0x12C);
+    else if (*(long *)(ptr + 0x12C) != val) return 2;
+    return val;
+}
+
 #pragma push
 #pragma opt_strength_reduction off
 long fn_80210570(void) {
