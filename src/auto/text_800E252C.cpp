@@ -446,6 +446,7 @@ extern "C" void *fn_80128668(void *);
 extern "C" void *__register_global_object(void *, void *, void *);
 extern "C" void *fn_800E279C(void *);
 extern "C" unsigned char lbl_8055DE18;
+struct EmissionManagerAlloc { char pad0[0xC]; void *next; char pad1[0x6C2C-0x10]; void *callback; };
 #pragma push
 #pragma small_data off
 extern char lbl_80407F6C[];
@@ -812,8 +813,8 @@ extern "C" void fn_800E2F84(void *self)
 
 #pragma scheduling on
 extern "C" f32 fn_800E310C(void *arg0) {
-    int a = *(int *)((char *)arg0 + 0x6C50);
-    int b = *(int *)((char *)arg0 + 0x6C4C);
+    register int a = *(int *)((char *)arg0 + 0x6C50);
+    register int b = *(int *)((char *)arg0 + 0x6C4C);
     float x;
     if (a >= b) x = *(float *)((char *)arg0 + 0x6C48);
     else x = *(float *)((char *)arg0 + 0x6C44) +
@@ -1170,19 +1171,18 @@ acquire_setup:
 extern const char lbl_80321FE8[];
 #pragma use_lmw_stmw off
 extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(void *manager, void *voice) {
-    register void *v = voice;
-    if (v == 0) {
+    if (voice == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x21D, lbl_80321FE8);
     }
-    unsigned int firstState = OSDisableInterrupts();
-    unsigned int secondState = OSDisableInterrupts();
-    if (v == 0) {
+    int firstState = OSDisableInterrupts();
+    int secondState = OSDisableInterrupts();
+    if (voice == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
     }
-    void *link = (char *)v + 0x1A8;
+    void *link = (char *)voice + 0x1A8;
     Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((char *)manager + 0x14, link);
     void *iterator = (char *)manager + 0x24;
-    if (v == 0) {
+    if (voice == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
     }
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)manager + 0x20, &iterator, link);
