@@ -1713,7 +1713,8 @@ void fn_8016E118(void *obj)
     }
 }
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma scheduling off
 void fn_8016E15C(void *arg0) {
     f32 f = lbl_80561998;
     int off;
@@ -1724,11 +1725,13 @@ void fn_8016E15C(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0xC) = f;
     *(s32 *)((u8 *)arg0 + 0x10) = 0;
     while (i < *(int *)(*(char **)((u8 *)arg0 + 4) + 4)) {
-        *(unsigned char *)(*(char **)*(char **)((u8 *)arg0 + 4) + off + 0x30) = 0;
-        off += 0x38;
+        unsigned char *base = *(unsigned char **)*(char **)((u8 *)arg0 + 4);
         i++;
+        base[off + 0x30] = 0;
+        off += 0x38;
     }
 }
+#pragma pop
 /* Address of the index-th 0x14-byte element in the array whose base pointer is *basePtr. */
 s32 fn_8016E1A4(s32 *basePtr, s32 index) {
     return *basePtr + (index * 0x14);
@@ -1817,60 +1820,64 @@ static inline float HudEase(float t) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern "C" int fn_8016E328(void *arg0, int arg1) {
+/* Draws the timed results panels on the Crush-mode results overlay: the
+   "ring challenge master" and "player data" info boxes fade in and out on a
+   fixed timeline relative to the round's start.  Skipped entirely while a
+   challenge sub-task is still active. */
+extern "C" int fn_8016E328(void *master, int playerIndex) {
  struct Rect { int a; float b; int c,d; float e; int f,g,h; };
  struct Manager { virtual void *unused(); virtual void *get(const char *); };
  struct Frame { Rect rect2; char text2[24]; Rect rect1; char text1[20]; } frame;
  const char *base = lbl_803306D0;
- struct Manager *mgr; void *one, *two;
- float limit, a, time, b,c,d,e, t, blend;
- time = *(float *)((char *)fn_801E7E3C()+0x10);
- limit=lbl_805619A8; a=limit-lbl_805619AC; b=a-lbl_805619B0;
- c=b-lbl_805619B4; d=c-lbl_805619AC; e=d-lbl_805619B0;
- mgr=*(struct Manager **)((char *)arg0+0x98);
- one=mgr->get(base+0x458);
- mgr=*(struct Manager **)((char *)arg0+0x98);
- two=mgr->get(base+0x468);
- if (time < e) fn_8000FBE4();
+ struct Manager *scene; void *bgHandle, *fgHandle;
+ float tTotal, tFadeOut1, elapsed, tFadeIn1, tFadeOut2, tFadeIn2, tFadeStart, t, fade;
+ elapsed = *(float *)((char *)fn_801E7E3C()+0x10);
+ tTotal=lbl_805619A8; tFadeOut1=tTotal-lbl_805619AC; tFadeIn1=tFadeOut1-lbl_805619B0;
+ tFadeOut2=tFadeIn1-lbl_805619B4; tFadeIn2=tFadeOut2-lbl_805619AC; tFadeStart=tFadeIn2-lbl_805619B0;
+ scene=*(struct Manager **)((char *)master+0x98);
+ bgHandle=scene->get(base+0x458);
+ scene=*(struct Manager **)((char *)master+0x98);
+ fgHandle=scene->get(base+0x468);
+ if (elapsed < tFadeStart) fn_8000FBE4();
  if (!fn_80161C38()) {
-   if (time < limit) {
-     void *panel, *detail;
-     t=(time-a)/(b-a); blend=lbl_80561984;
-     blend = blend < t ? blend : t;
-     blend = blend > lbl_80561980 ? blend : lbl_80561980;
-     blend=lbl_80561980+blend*lbl_80561984;
-     mgr=*(struct Manager **)((char *)arg0+0x98);
-     panel=mgr->get(base+0x478);
-     mgr=*(struct Manager **)((char *)arg0+0x98);
-     detail=mgr->get(base+0x484);
-     fn_8001DF08(fn_801E866C(arg1),0);
-     if (one && two && panel && detail) {
-       fn_801479A8(one,two,fn_80131234(base+0x490),HudEase(blend));
+   if (elapsed < tTotal) {
+     void *panelHandle, *detailHandle;
+     t=(elapsed-tFadeOut1)/(tFadeIn1-tFadeOut1); fade=lbl_80561984;
+     fade = fade < t ? fade : t;
+     fade = fade > lbl_80561980 ? fade : lbl_80561980;
+     fade=lbl_80561980+fade*lbl_80561984;
+     scene=*(struct Manager **)((char *)master+0x98);
+     panelHandle=scene->get(base+0x478);
+     scene=*(struct Manager **)((char *)master+0x98);
+     detailHandle=scene->get(base+0x484);
+     fn_8001DF08(fn_801E866C(playerIndex),0);
+     if (bgHandle && fgHandle && panelHandle && detailHandle) {
+       fn_801479A8(bgHandle,fgHandle,fn_80131234(base+0x490),HudEase(fade));
        fn_80160A74(); ((void (*)(void *,int,int))fn_801308F4)(frame.text1,0x14,fn_80160998());
-       frame.rect1.a=*(int *)panel;
-       { int cword; int bword; bword=*(volatile int *)((char *)panel+4); cword=*(volatile int *)((char *)panel+8); *(int *)&frame.rect1.b=bword; frame.rect1.c=cword; } frame.rect1.d=*(int *)((char *)panel+12); frame.rect1.e=*(float *)((char *)panel+16); frame.rect1.f=*(int *)((char *)panel+20); frame.rect1.g=*(int *)((char *)panel+24); frame.rect1.h=*(int *)((char *)panel+28);
+       frame.rect1.a=*(int *)panelHandle;
+       { int cword; int bword; bword=*(volatile int *)((char *)panelHandle+4); cword=*(volatile int *)((char *)panelHandle+8); *(int *)&frame.rect1.b=bword; frame.rect1.c=cword; } frame.rect1.d=*(int *)((char *)panelHandle+12); frame.rect1.e=*(float *)((char *)panelHandle+16); frame.rect1.f=*(int *)((char *)panelHandle+20); frame.rect1.g=*(int *)((char *)panelHandle+24); frame.rect1.h=*(int *)((char *)panelHandle+28);
        frame.rect1.b-=lbl_80561988*fn_80147204(&frame.rect1,frame.text1);
-       fn_801479A8(&frame.rect1,detail,frame.text1,HudEase(blend));
+       fn_801479A8(&frame.rect1,detailHandle,frame.text1,HudEase(fade));
      }
    }
-   if (time < c) {
-     void *panel, *detail;
-     fn_8014784C(*(void **)((char *)arg0+0x98),base+0x4ac,base+0x4bc,0);
-     t=(time-d)/(e-d); blend=lbl_80561984;
-     blend = blend < t ? blend : t;
-     blend = blend > lbl_80561980 ? blend : lbl_80561980;
-     blend=lbl_80561980+blend*lbl_80561984;
-     mgr=*(struct Manager **)((char *)arg0+0x98);
-     panel=mgr->get(base+0x4d0);
-     mgr=*(struct Manager **)((char *)arg0+0x98);
-     detail=mgr->get(&lbl_8055A248);
-     if (one && two && panel && detail) {
-       fn_801479A8(one,two,fn_80131234(base+0x4dc),HudEase(blend));
-       fn_80130978(frame.text2,0x14,*(float *)((char *)arg0+0x38));
-       frame.rect2.a=*(int *)panel;
-       { int cword; int bword; bword=*(volatile int *)((char *)panel+4); cword=*(volatile int *)((char *)panel+8); *(int *)&frame.rect2.b=bword; frame.rect2.c=cword; } frame.rect2.d=*(int *)((char *)panel+12); frame.rect2.e=*(float *)((char *)panel+16); frame.rect2.f=*(int *)((char *)panel+20); frame.rect2.g=*(int *)((char *)panel+24); frame.rect2.h=*(int *)((char *)panel+28);
+   if (elapsed < tFadeOut2) {
+     void *panelHandle, *detailHandle;
+     fn_8014784C(*(void **)((char *)master+0x98),base+0x4ac,base+0x4bc,0);
+     t=(elapsed-tFadeIn2)/(tFadeStart-tFadeIn2); fade=lbl_80561984;
+     fade = fade < t ? fade : t;
+     fade = fade > lbl_80561980 ? fade : lbl_80561980;
+     fade=lbl_80561980+fade*lbl_80561984;
+     scene=*(struct Manager **)((char *)master+0x98);
+     panelHandle=scene->get(base+0x4d0);
+     scene=*(struct Manager **)((char *)master+0x98);
+     detailHandle=scene->get(&lbl_8055A248);
+     if (bgHandle && fgHandle && panelHandle && detailHandle) {
+       fn_801479A8(bgHandle,fgHandle,fn_80131234(base+0x4dc),HudEase(fade));
+       fn_80130978(frame.text2,0x14,*(float *)((char *)master+0x38));
+       frame.rect2.a=*(int *)panelHandle;
+       { int cword; int bword; bword=*(volatile int *)((char *)panelHandle+4); cword=*(volatile int *)((char *)panelHandle+8); *(int *)&frame.rect2.b=bword; frame.rect2.c=cword; } frame.rect2.d=*(int *)((char *)panelHandle+12); frame.rect2.e=*(float *)((char *)panelHandle+16); frame.rect2.f=*(int *)((char *)panelHandle+20); frame.rect2.g=*(int *)((char *)panelHandle+24); frame.rect2.h=*(int *)((char *)panelHandle+28);
        frame.rect2.b+=lbl_80561988*fn_80147204(&frame.rect2,frame.text2);
-       fn_801479A8(&frame.rect2,detail,frame.text2,HudEase(blend));
+       fn_801479A8(&frame.rect2,detailHandle,frame.text2,HudEase(fade));
      }
    }
  }
@@ -2651,7 +2658,18 @@ struct Frame_8016FFEC {
     float pts[6];
     char query[56];
 };
-s32 fn_8016FFEC(void *arg0, void *arg1, s32 arg2) {
+#pragma cplusplus on
+extern "C" double fn_8002F234(float, float, float, float, float);
+extern "C" void fn_801352B8(void *);
+extern "C" void fn_8013530C(void *, int, float, float, float);
+extern "C" void fn_801355C0(void *, void *, int, void *, int);
+extern "C" int fn_80135D60(void *, int);
+extern "C" void *fn_80156A40(void);
+extern "C" void fn_801B7C8C(void *, float *, float *);
+extern "C" char lbl_80330E04[];
+extern "C" float lbl_80561A10;
+#pragma cplusplus on
+extern "C" int fn_8016FFEC(void *arg0, void *arg1, int arg2) {
 struct Frame8016FFEC {
     float f8, fC, f10, f14, f18, f1C;
     float ret[2];
@@ -2663,20 +2681,28 @@ struct Frame8016FFEC {
     float pts[3][2];
     char query[56];
 };
-extern void fn_801345D8(void *, s32, const char *, ...);
-extern double fn_8002F234(float, float, float, float, float);
-extern void fn_801352B8(void *);
-extern void fn_8013530C(void *, int, float, float, float);
-extern void fn_801355C0(void *, void *, int, void *, int);
-extern int fn_80135D60(void *, int);
-extern void *fn_80156A40(void);
-extern void fn_801B7C8C(void *, float *, float *);
-extern char lbl_80330DF4[];
-extern char lbl_80330E04[];
-extern float lbl_80561980;
-extern float lbl_80561984;
-extern float lbl_80561988;
-extern float lbl_80561A10;
+struct Mgr {
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+    virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+    virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+    virtual void v20();
+    virtual void *make(void *);
+};
+struct Obj {
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual float getf(void *, float);
+    virtual void v9();
+    virtual int test(void *, int, float, float, float);
+    virtual void v11(); virtual void v12();
+    virtual unsigned long long get2(void *);
+};
+struct Helper {
+    virtual void h0();
+    virtual int h1(int);
+};
 struct Frame8016FFEC s;
 void *obj;
 int i;
@@ -2690,7 +2716,7 @@ void *manager;
 manager = *(void **)((char *)fn_8000AC38() + 0x20);
 if (manager != 0) {
 fn_801345D8(s.sp60, 0x10, lbl_80330DF4, arg2);
-obj = ((void *(*)(void *, void *))*(void **)((char *)*(void **)manager + 0x5C))(manager, s.sp60);
+obj = ((Mgr *)manager)->make(s.sp60);
 if (obj != 0) {
 p = (float *)s.pts;
 i = 0;
@@ -2700,7 +2726,7 @@ s.f30 = lbl_80561980;
 s.f34 = lbl_80561980;
 do {
 fn_801345D8(s.sp40, 0x10, lbl_8055A270, i);
-*(unsigned long long *)s.ret = ((unsigned long long (*)(void *, void *))*(void **)((char *)*(void **)obj + 0x3C))(obj, s.sp40);
+*(unsigned long long *)s.ret = ((Obj *)obj)->get2(s.sp40);
 {
 float a = s.ret[0];
 float b = s.ret[1];
@@ -2756,9 +2782,9 @@ inv = lbl_80561984 / sqf;
 nx = s.f30 * inv;
 s.f30 = nx;
 s.f34 = s.f34 * inv;
-if (((int (*)(void *, void *, int, float, float, float))*(void **)((char *)*(void **)obj + 0x30))(obj, lbl_80330E04, 1, nx, inv, sqf) != 0) {
+if (((Obj *)obj)->test(lbl_80330E04, 1, nx, inv, sqf) != 0) {
 fn_801352B8(s.query);
-fn_80135D60(s.query, ((int (*)(int))*(void **)((char *)*(void **)fn_80156A40() + 0xC))(0));
+fn_80135D60(s.query, ((Helper *)fn_80156A40())->h1(0));
 {
 *(void **)s.stk50 = 0;
 *(int *)(s.stk50 + 8) = 0x2710;
@@ -2789,7 +2815,7 @@ fn_8013530C(s.query, -1, nx, inv, sqf);
 }
 fn_801B7C8C(arg1, &s.f38, &s.f30);
 {
-float sc = lbl_80561A10 * ((float (*)(void *, void *, float))*(void **)((char *)*(void **)obj + 0x28))(obj, lbl_8055A278, lbl_80561980);
+float sc = lbl_80561A10 * ((Obj *)obj)->getf(lbl_8055A278, lbl_80561980);
 *(float *)((char *)arg1 + 0x30) = *(float *)((char *)arg1 + 0x18) * sc;
 *(float *)((char *)arg1 + 0x34) = *(float *)((char *)arg1 + 0x1C) * sc;
 *(float *)((char *)arg1 + 0x38) = *(float *)((char *)arg1 + 0x20) * sc;
@@ -2797,9 +2823,6 @@ float sc = lbl_80561A10 * ((float (*)(void *, void *, float))*(void **)((char *)
 return 1;
 }
 }
-#pragma pop
-
- #pragma cplusplus on
 extern "C" s32 fn_80009C84(void);
 extern "C" u8 *fn_80131234(const char *);
 extern "C" s32 fn_80141FA0(void);
