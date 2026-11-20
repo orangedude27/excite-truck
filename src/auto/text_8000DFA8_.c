@@ -2257,6 +2257,7 @@ void fn_8000DFD8(void *arg0, s32 arg1, f32 arg2, f32 arg3) {
 extern f32 lbl_80560250, lbl_80560254, lbl_80560258, lbl_8056025C, lbl_80560260, lbl_80560264, lbl_80560270;
 #pragma push
 #pragma scheduling on
+#pragma use_lmw_stmw off
 void fn_8000E15C(void *arg0, s32 arg1, f32 arg2, f32 arg3) {
     s32 count = *(s32 *)((char *)arg0 + 0x34);
     if (count > 0) {
