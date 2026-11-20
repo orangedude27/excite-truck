@@ -587,7 +587,6 @@ static inline void fn_801E1250_check(u8 *p, s32 arg0, s8 arg1) {
     if (arg0 == *(s32 *)(p + 0x24)) *(p + 0x28) = arg1;
 }
 
-struct Fn801E1250Rec { u8 p0[0xC]; s32 a; s8 b; u8 p1[0x13]; s32 c; s8 d; u8 p2[0x7]; };
 void fn_801E1250(s32 arg0, s8 arg1) {
     u8 *p = (u8 *)lbl_8055EA10;
     if (!p) return;
