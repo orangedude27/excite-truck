@@ -992,6 +992,8 @@ extern "C" void fn_80299628(void *arg0) {
 }
 
 #pragma opt_propagation off
+#pragma push
+#pragma opt_common_subs off
 extern "C" int fn_802996B0(void *arg0, int *out) {
  int state, best=-1, found=0, idx;
  state=*(int*)((char*)arg0+0x34);
@@ -1200,9 +1202,8 @@ void fn_80299A88(void *arg0, void *out, unsigned int unused, float scale) {
         cursor=(char*)out;
         for (; n<count; cursor+=0xc, n++) {
             float b=p[10], a=p[9], c=p[11];
-            float m;
-            m = frame.matrix.v[3] * scale;
-            a += m;
+            float product=frame.matrix.v[3]*scale;
+            a += product;
             *(float *)(cursor+4)=a;
             b += frame.matrix.v[4]*scale;
             *(float *)(cursor+8)=b;
