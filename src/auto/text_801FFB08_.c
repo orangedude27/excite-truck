@@ -62,6 +62,7 @@ char *fn_801FFB08(int arg0, int helperId) {
     return helperEntry + 0x24;
 }
 #pragma scheduling on
+#pragma pop
 /* No-op stub: called during scene initialization but does nothing (a single `blr`). */
 void fn_801FFB6C(void) {
 
