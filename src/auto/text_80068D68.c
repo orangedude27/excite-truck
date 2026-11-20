@@ -18917,6 +18917,13 @@ void fn_80089E40(void *ccb, u8 event, void *eventData) {
 }
 
 void l2c_csm_closed(void *p_ccb, u16 event, void *p_msg) {
+    /* L2CAP channel state machine, CLOSED state.  p_ccb is the channel control
+     * block; it dispatches the lower/upper-layer and security events on a
+     * closed channel: a lower-layer connect confirm (0) or the L2CA connect
+     * request (20) starts the security procedure, a disconnect indication (3)
+     * or connect confirm (1) tears the channel down and calls the RCB callback,
+     * and a security-completion event (7/8) sends the peer connect request and
+     * arms the timeout.  0xEEEE is the stack's "no result" status. */
     typedef u8 (*Req5)(u8 *, u16, u16, u8, void *);
     extern void l2c_link_sec_comp(BD_ADDR, void *, UINT8);
     char *p_str = (char *)jumptable_803183B0;
