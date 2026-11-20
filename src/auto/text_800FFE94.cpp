@@ -20,6 +20,11 @@ extern "C" int ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3s
 extern "C" char lbl_80327AF4[];
 extern "C" void fn_800EC890(void*);
 extern "C" float lbl_80561120;
+namespace nw4hbm { namespace snd { namespace detail {
+struct WaveData;
+struct WaveFileReader;
+struct WsdFileReader { int ReadWaveParam(int, WaveData*, const void*) const; };
+}}}
 extern "C" void fn_800FFE94(void* handle) {
     void* sound = *(void**)handle;
     /* Clear the sound's back-reference (if it still points here), then the handle. */
@@ -31,7 +36,8 @@ extern "C" void fn_800FFE94(void* handle) {
 
 extern "C" char lbl_803276F0[];
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
-#pragma opt_common_subs off
+#pragma push
+#pragma optimization_level 3
 extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(void *arg0, const void *arg1) {
     register void *self = arg0;
     register const unsigned char *file = (const unsigned char *)arg1;
@@ -42,20 +48,20 @@ extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(void *a
     *(unsigned int *)((char *)self + 4) = 0;
     *(unsigned int *)((char *)self + 8) = 0;
     if (file == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x59, strings + 0xB4);
+        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x59, strings + 0xB4);
     if (*(const unsigned int *)file != 0x52575344)
-        Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x37, strings + 0x10);
+        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x37, strings + 0x10);
     if (*(const unsigned int *)file != 0x52575344) {
         var_r0 = 0;
     } else {
         if (*(const unsigned short *)(file + 6) < 0x100)
-            Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x3F, strings + 0x5C);
+            Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x3F, strings + 0x5C);
         temp_r0 = *(const unsigned short *)(file + 6);
         if (temp_r0 < 0x100) {
             var_r0 = 0;
         } else {
             if (temp_r0 > 0x102)
-                Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x45, strings + 0x5C);
+                Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x45, strings + 0x5C);
             var_r0 = (*(const unsigned short *)(file + 6) <= 0x102);
         }
     }
@@ -64,16 +70,16 @@ extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(void *a
     *(const void **)self = (const void *)file;
     *(void **)((char *)self + 4) = (void *)(*(const unsigned int *)(file + 0x10) + (unsigned int)file);
     if (**(const unsigned int **)((char *)self + 4) != 0x44415441)
-        Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x62, strings + 0xE0);
+        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x62, strings + 0xE0);
     {
         register const unsigned char *stored = (const unsigned char *)*(volatile void **)self;
         *(void **)((char *)self + 8) = (void *)(*(const unsigned int *)(stored + 0x18) + (unsigned int)stored);
     }
     if (**(const unsigned int **)((char *)self + 8) != 0x57415645)
-        Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x66, strings + 0x138);
+        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x66, strings + 0x138);
     return self;
 }
-#pragma opt_common_subs reset
+#pragma pop
 extern "C" void* GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(unsigned char, unsigned int, const void*);
 extern "C" float lbl_80561118;
 extern "C" char lbl_803278D8[];
@@ -594,7 +600,7 @@ extern "C" void fn_80101130(void) {
         node = *(char **)node;
         if (entry == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327C7C, 0x23D, lbl_80327C58);
-        unsigned char *track = entry - 0x14;
+        unsigned char * const track = entry - 0x14;
         if (entry[9] == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x216, strings + 0x148);
         if (track[0x1F] == 0)
