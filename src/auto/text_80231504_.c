@@ -243,9 +243,9 @@ static inline s32 fn_80231AF0_escape(char *text, f32 w, f32 *adv) {
     return 0;
 }
  static inline s32 fn_80231D84_addEscape(f32 *adv, char *text, f32 x, f32 y, f32 z, f32 w, f32 half) {
-         register s32 i __asm("r23");
+         s32 i;
     s32 eo;
-    register s32 flag __asm("r24");
+    s32 flag;
     *adv = w;
     flag = lbl_8055F050;
     if (*text == '\\') {
