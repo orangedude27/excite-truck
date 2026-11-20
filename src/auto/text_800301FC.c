@@ -538,7 +538,7 @@ void TRKProcessInput(void *buffer, s32 queueId) {
     OSRestoreInterrupts(interrupts);
 }
 
-#pragma unroll 1
+#pragma optimization_level 2
 void TRKGetInput(void) {
     extern u8 lbl_8035BFA0[];
     extern s32 lbl_8055D6F8;
