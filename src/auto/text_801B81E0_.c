@@ -189,13 +189,14 @@ int fn_801B81E0(void *__restrict const arg0) {
 
 #pragma push
 #pragma cplusplus on
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma dont_inline on
 extern "C" void fn_801B826C(void *arg0) {
-    register int value = *(int *)((char *)arg0 + 0x3E8);
+    int value;
     void *object;
     void *manager;
 
+    value = *(int *)((char *)arg0 + 0x3E8);
     lbl_8055E74C = value;
     if (value & 0x200) {
         lbl_8055E744 = (void *)fn_801B81E0(arg0);
