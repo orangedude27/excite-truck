@@ -760,7 +760,7 @@ extern "C" void fn_80271624(int mode, void *arg1)
                 if (idx != *(int *)(o + 0x150)) {
                     Rec *rec;
                     *(int *)(o + 0x150) = idx;
-                    rec = (Rec *)((char *)tbl + 0x4b70) + idx;
+                    rec = &tbl->recs[idx];
                     changed = 1;
                     *(int *)(o + 0x148) = rec->choice[fn_80129D90(6, 0, rec->count)];
                 }
@@ -769,7 +769,7 @@ extern "C" void fn_80271624(int mode, void *arg1)
             idx = -1;
         }
         if (idx >= 0) {
-            e = (Ent *)((char *)tbl + 0x70) + *(int *)(o + 0x148);
+            e = &tbl->ents[*(int *)(o + 0x148)];
             if (e->active != 0) {
                 if (lbl_8055F564 != 0) {
                     Zone *z = &tbl->zones[idx];
@@ -994,75 +994,77 @@ extern "C" int strncmp(const char *, const char *, unsigned int);
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" void DBPrintf_80270B00(const char *, ...);
 extern "C" char lbl_80346B00[];
-extern "C" char lbl_8055C5A4[];
-extern "C" char lbl_8055C5AC[];
-extern "C" char lbl_8055C5B4[];
-extern "C" int fn_80272028(void *arg0, Parser72028 *arg1, int arg_sp0) {
-    char *path;
-    int hash;
-    char buffer[0x10];
-    register char *name;
-    register Parser72028 *parser;
-    register void *output;
-    int index;
-    int count;
-    unsigned char bit;
-    name = lbl_80346B00;
-    parser = arg1;
-    output = arg0;
-    fn_80272354(arg0);
-    if (parser->has(name + 0x424) == 0) {
-        DBPrintf_80270B00(name + 0x430, name + 0x424);
-        return 0;
-    }
-    *(float *)output = parser->getFloat(name + 0x424);
-    if (parser->has(name + 0x464) == 0) {
-        DBPrintf_80270B00(name + 0x430, name + 0x464);
-        return 0;
-    }
-    *(float *)((char *)output + 4) = parser->getFloat(name + 0x464);
-    if (parser->has(name + 0x470) == 0) {
-        DBPrintf_80270B00(name + 0x430, name + 0x470);
-        return 0;
-    }
-    *(float *)((char *)output + 8) = parser->getFloat(name + 0x470);
-    if (parser->has(lbl_8055C5A4) == 0) {
-        DBPrintf_80270B00(name + 0x430, lbl_8055C5A4);
-        return 0;
-    }
-    *(float *)((char *)output + 0xC) = parser->getFloat(lbl_8055C5A4);
-    *(int *)((char *)output + 0x5C) = parser->getOption(lbl_8055C5AC, 2);
-    index = 0;
-    for (;;) {
-        if (parser->enumerate(index, &path, &hash) == 0) {
-            break;
-        }
-        if (strncmp(path, lbl_8055C5B4, 5) == 0 && path[5] != '_') {
-            bit = fn_80008050(hash);
-            if ((int)bit < 0x20) {
-                *(int *)((char *)output + 0x10) |= 1 << bit;
-            } else {
-                *(int *)((char *)output + 0x14) |= 1 << (bit - 0x20);
-            }
-        }
-        index++;
-    }
-    if (parser->has(name + 0x47C) == 0) {
-        DBPrintf_80270B00(name + 0x430, name + 0x47C);
-        return 0;
-    }
-    count = parser->getCount(name + 0x47C);
-    *(int *)((char *)output + 0x58) = count;
-    for (index = 0; index < count; index++) {
-        sprintf(buffer, name + 0x48C, index);
-        if (parser->has(buffer) == 0) {
-            DBPrintf_80270B00(name + 0x430, buffer);
-            return 0;
-        }
-        *(int *)((char *)output + 0x18 + index * 4) = parser->getCount(buffer);
-    }
-    return 1;
-}
+ extern "C" char lbl_8055C5A4;
+ extern "C" char lbl_8055C5AC;
+ extern "C" char lbl_8055C5B4;
+ extern "C" int fn_80272028(void *arg0, Parser72028 *arg1, int arg_sp0) {
+     char *path;
+     int hash;
+     char buffer[0x10];
+     register char *name;
+     register Parser72028 *parser;
+     register void *output;
+     int index;
+     int count;
+     unsigned char bit;
+     name = lbl_80346B00;
+     parser = arg1;
+     output = arg0;
+     fn_80272354(arg0);
+     if (parser->has(name + 0x424) == 0) {
+         DBPrintf_80270B00(name + 0x430, name + 0x424);
+         return 0;
+     }
+     *(float *)output = parser->getFloat(name + 0x424);
+     if (parser->has(name + 0x464) == 0) {
+         DBPrintf_80270B00(name + 0x430, name + 0x464);
+         return 0;
+     }
+     *(float *)((char *)output + 4) = parser->getFloat(name + 0x464);
+     if (parser->has(name + 0x470) == 0) {
+         DBPrintf_80270B00(name + 0x430, name + 0x470);
+         return 0;
+     }
+     *(float *)((char *)output + 8) = parser->getFloat(name + 0x470);
+     if (parser->has(&lbl_8055C5A4) == 0) {
+         DBPrintf_80270B00(name + 0x430, &lbl_8055C5A4);
+         return 0;
+     }
+     *(float *)((char *)output + 0xC) = parser->getFloat(&lbl_8055C5A4);
+     *(int *)((char *)output + 0x5C) = parser->getOption(&lbl_8055C5AC, 2);
+     index = 0;
+     while (parser->enumerate(index, &path, &hash) != 0) {
+         if (strncmp(path, &lbl_8055C5B4, 5) == 0 && path[5] != '_') {
+             bit = fn_80008050(hash);
+             if ((int)bit < 0x20) {
+                 *(int *)((char *)output + 0x10) |= 1 << bit;
+             } else {
+                 *(int *)((char *)output + 0x14) |= 1 << (bit - 0x20);
+             }
+         }
+         index++;
+     }
+     if (parser->has(name + 0x47C) == 0) {
+         DBPrintf_80270B00(name + 0x430, name + 0x47C);
+         return 0;
+     }
+     count = parser->getCount(name + 0x47C);
+     *(int *)((char *)output + 0x58) = count;
+     index = 0;
+     for (;;) {
+         if (index >= *(int *)((char *)arg0 + 0x58)) {
+             return 1;
+         }
+         sprintf(buffer, name + 0x48C, index);
+         if (parser->has(buffer) == 0) {
+             DBPrintf_80270B00(name + 0x430, buffer);
+             return 0;
+         }
+         *(int *)((char *)output + 0x18) = parser->getCount(buffer);
+         output = (char *)output + 4;
+         index++;
+     }
+ }
 #pragma cplusplus reset
 
 extern int stricmp(const char *, const char *);
