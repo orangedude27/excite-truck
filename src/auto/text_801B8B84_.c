@@ -36,25 +36,30 @@ void fn_801B8BF4(void) {
     goto outer_check;
 outer_body: {
     struct Entry *e = (struct Entry *)lbl_8055E760;
-    int i;
-    int offw;
     if (now < e->time)
         return;
     e->callback(e->a, e->b, e->c);
     lbl_8055E764 = (void *)((int)lbl_8055E764 - 1);
-    i = 0;
-    offw = 0;
-    while (i < (int)lbl_8055E764) {
-        int *base = (int *)lbl_8055E760;
-        int *src = base + (i + 1) * 5;
-        int *dst = base + offw;
-        *dst++ = src[0];
-        dst[0] = src[1];
-        dst[1] = src[2];
-        dst[2] = src[3];
-        dst[3] = src[4];
-        i = i + 1;
-        offw = offw + 5;
+    {
+        struct Entry *entries;
+        int *src;
+        int off;
+        int i;
+        int *dst;
+        i = 0;
+        off = 0;
+        while (i < (int)lbl_8055E764) {
+            entries = (struct Entry *)lbl_8055E760;
+            src = (int *)&entries[i + 1];
+            dst = (int *)((char *)entries + off);
+            *dst++ = src[0];
+            dst[0] = src[1];
+            dst[1] = src[2];
+            dst[2] = src[3];
+            dst[3] = src[4];
+            i = i + 1;
+            off = off + 20;
+        }
     }
 }
 outer_check:
