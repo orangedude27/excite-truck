@@ -2952,7 +2952,6 @@ void fn_8018A654(void *arg0, void *arg1) {
         *(int *)((char *)arg0 + 0x26c8) = 0;
     }
 }
-#pragma pop
 
 /* Release texture-pattern/animation resources owned by this object, if present. */
 void fn_8018A6F4(void *object) {
