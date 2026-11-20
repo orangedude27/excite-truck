@@ -381,20 +381,18 @@ extern float lbl_80564064, lbl_80564068, lbl_8056406C;
   u32 fn_8027656C(void *, void *, u32);
   extern u8 lbl_8049FE98[];
 void fn_80276BE4(u32 *arg0, f32 *arg1) {
-    u32 a;
-    unsigned int b;
-    register u32 *src;
+    struct Pair2 { u32 x, y; };
+    unsigned char *dst = (unsigned char *)arg0;
     if (*(unsigned char *)&lbl_8049FD58 != 0) {
         fn_8027656C(lbl_8049FE98 + 4, lbl_8049FE98 + 0x34, 0);
     }
-    src = (u32 *)(lbl_8049FE98 + 4);
-    b = src[0]; a = src[1]; arg0[0] = b; arg0[1] = a;
-    a = src[2]; b = src[3]; arg0[2] = a; arg0[3] = b;
-    a = src[4]; b = src[5]; arg0[4] = a; arg0[5] = b;
-    a = src[6]; b = src[7]; arg0[6] = a; arg0[7] = b;
-    a = src[8]; arg0[8] = a;
-    b = src[9]; a = src[10]; arg0[9] = b; arg0[10] = (unsigned short)a;
-    b = src[11]; arg0[11] = b;
+    *(struct Pair2 *)(dst + 0x00) = *(struct Pair2 *)(lbl_8049FE98 + 0x04);
+    *(struct Pair2 *)(dst + 0x08) = *(struct Pair2 *)(lbl_8049FE98 + 0x0c);
+    *(struct Pair2 *)(dst + 0x10) = *(struct Pair2 *)(lbl_8049FE98 + 0x14);
+    *(struct Pair2 *)(dst + 0x18) = *(struct Pair2 *)(lbl_8049FE98 + 0x1c);
+    *(u32 *)(dst + 0x20) = *(u32 *)(lbl_8049FE98 + 0x24);
+    *(struct Pair2 *)(dst + 0x24) = *(struct Pair2 *)(lbl_8049FE98 + 0x28);
+    *(u32 *)(dst + 0x2c) = *(u32 *)(lbl_8049FE98 + 0x30);
     *arg1 = *(f32 *)(lbl_8049FE98 + 0x34);
 }
 
@@ -433,7 +431,7 @@ void fn_80276D3C(int unused, int mode) {
 }
 
 #pragma opt_propagation off
-void fn_80276DC8(signed long arg0) {
+void fn_80276DC8(int arg0) {
     struct TruckState *dst;
     struct TruckState *src;
     char *base;
@@ -806,7 +804,6 @@ int fn_80277960(void *name, void *outCamera, float *outParam) {
 }
 
 void fn_80277A14(void *arg0, int arg1) {
-#pragma scheduling off
     extern unsigned char lbl_804A0C60[];
     extern float lbl_804A15C0[];
     extern float lbl_80564048, lbl_8056404C, lbl_80564050, lbl_80564054, lbl_80564058, lbl_8056405C, lbl_80564060;
@@ -916,7 +913,6 @@ void fn_80277A14(void *arg0, int arg1) {
     }
     for (i = 0; i < 12; i++) *(int *)((char *)arg0 + 0x58 + i * 4) = *(int *)&spC0[i];
     *(float *)((char *)arg0 + 0xBC) = f29;
-#pragma scheduling on
 }
 
 #pragma cplusplus on
