@@ -9251,6 +9251,14 @@ void btm_dev_timeout(struct _tle *arg0) {
 }
 
 extern void l2cu_device_reset(void);
+/* Handles the HCI "Reset" command-complete.  If the application is waiting on its
+ * own post-reset callback (btm_cb + 0x620), it is invoked and nothing else is done.
+ * Otherwise the L2CAP connections are dropped, the inquiry and page scan parameters
+ * are restored to their HCI defaults, the device-control state is set to the
+ * after-reset state (2) with 4 retries, and the controller is driven on: with no
+ * retry budget left a fresh HCI_Reset is issued; with retries remaining the reset
+ * timer is armed and a vendor command is queued.  The pending reset event is then
+ * re-queued, the local device name is re-sent, and the pin type re-applied. */
 void btm_reset_complete(void) {
     extern u8 lbl_803C0F78[];
     extern char lbl_803160F0[];
@@ -9260,7 +9268,7 @@ void btm_reset_complete(void) {
     void *buf;
     u8 *p;
 
-    if (lbl_803C0F78[0x27C0] >= 4)
+    if (btm_cb_trace_level >= 4)
         fn_8007093C(0xD0003, lbl_803160F0);
 
     callback = *(void (**)(void *))(lbl_803C0F78 + 0x620);
@@ -9269,7 +9277,7 @@ void btm_reset_complete(void) {
         callback(0);
         return;
     }
-    if (lbl_803C0F78[0x64E] != 0)
+    if (btm_cb_dev_state != 0)
         return;
 
     l2cu_device_reset();
@@ -9281,7 +9289,7 @@ void btm_reset_complete(void) {
     *(u16 *)(lbl_803C0F78 + 0x16A6) = 0;
     lbl_803C0F78[0x64E] = 2;
     lbl_803C0F78[0x64F] = 4;
-    if (lbl_803C0F78[0x64F] == 0) {
+    if (btm_cb_dev_retry == 0) {
         lbl_803C0F78[0x64E] = 0;
         lbl_803C0F78[0x64F] = 4;
         btu_start_timer(0, 0, 0);
@@ -9295,7 +9303,7 @@ void btm_reset_complete(void) {
 
     memcpy(lbl_803C0F78 + 0x648, lbl_803C0F78 + 0x648, 3);
 
-    if (lbl_803C0F78[0x64E] != 0 && lbl_803C0F78[0x64E] != 1) {
+    if (btm_cb_dev_state != 0 && btm_cb_dev_state != 1) {
         buf = GKI_getpoolbuf(2);
         if (buf != 0)
             fn_80085524(buf, lbl_803C0F78 + 0x648);
