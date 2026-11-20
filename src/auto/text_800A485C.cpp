@@ -25604,7 +25604,7 @@ static inline s32 findPaneIndex_800A485C(s32 count, s32 *entry, s32 a, s32 b) {
     return -1;
 }
 
-static inline s32 findPaneIndexUnrolled_800A485C(s32 *entry, s32 count, s32 a, s32 b) {
+static inline s32 findPaneIndexUnrolled_800A485C(s32 count, s32 *entry, s32 a, s32 b) {
     s32 k;
     s32 j = 0;
     for (k = 0; k < count; entry += 4, j++, k++) {
