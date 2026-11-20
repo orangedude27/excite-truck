@@ -401,10 +401,12 @@ __declspec(section ".sdata") extern const char lbl_8055B298[];
 extern "C" s32 fn_801F7A88(void *, s32, void *, s32);
 extern "C" void fn_801F7A14(void *);
 #pragma scheduling invalid_target
-extern "C" s32 fn_801F7B10(u8 *dst, F7B10Obj *obj, s32 arg2) {
-    s32 i;
-    if (fn_801F7A88((void *)obj, arg2, (void *)dst, 0x30) != 0) {
-        volatile u8 *p = (volatile u8 *)dst;
+extern "C" s32 fn_801F7B10(void *arg0, void *arg1, s32 arg2) {
+    F7B10Obj *obj = (F7B10Obj *)arg1;
+    volatile u8 *dst = (volatile u8 *)arg0;
+    int i;
+    if (fn_801F7A88(obj, arg2, (void *)dst, 0x30) != 0) {
+        volatile u8 *p = dst;
         for (i = 0; i < 2; i++) {
             u8 t;
             t=p[0];p[0]=p[3];p[3]=t;t=p[1];p[1]=p[2];p[2]=t;
@@ -426,7 +428,7 @@ extern "C" s32 fn_801F7B10(u8 *dst, F7B10Obj *obj, s32 arg2) {
         const F7B10Vec &d = obj->getVec(lbl_8055B298);
         o[9] = d.x; o[10] = d.y; o[11] = d.z;
     }
-    fn_801F7A14((void *)dst);
+    fn_801F7A14(arg0);
 }
 #pragma scheduling on
 extern "C" s32 fn_80204BB4(void);
@@ -446,7 +448,7 @@ extern "C" void fn_801F7D10(void *arg0, void *arg1, void *arg2) {
         virtual void finish(const char *);
     };
     if (((VTable *)arg2)->check(lbl_8033AFB8) != 0) {
-        fn_801F7B10((u8 *)arg1, (F7B10Obj *)arg2, (s32)lbl_8033AFB8);
+        fn_801F7B10(arg1, arg2, (s32)lbl_8033AFB8);
         f32 scale = *(f32 *)((u8 *)arg0 + 0x28);
         *(f32 *)((u8 *)arg1 + 0x24) =
             *(f32 *)((u8 *)arg1 + 0x24) + *(f32 *)((u8 *)arg1 + 0x0C) * scale;
