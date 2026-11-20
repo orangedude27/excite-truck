@@ -7,7 +7,7 @@ extern f32 PSVECDotProduct(void *, void *);
 typedef struct { f32 x, y, z, w; } Vec4_80252;
 extern f32 lbl_805639C8, lbl_805639D0, lbl_805639D4, lbl_805639D8;
 extern f32 fn_80129DC4(s32, f32, f32);
-extern f64 cos(...);
+extern f64 cos(void);
 extern f64 sin(f32);
 extern void PSVECCrossProduct(void *, void *, void *);
 extern f32 fn_801DCF48(s32, u32, u32, u32, u32, u32, u32, u32, f32, f32);
