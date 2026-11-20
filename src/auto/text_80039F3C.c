@@ -29,8 +29,8 @@ extern void (*FatalFunc_8055D8D8)(void);
 extern unsigned char lbl_80560B08, lbl_80560B09, lbl_80560B0A, lbl_80560B0B;
 extern const char *lbl_802EE878[];
 extern char __ErrorInfo[];
-extern void OSDisableInterrupts(void);
-extern void OSRestoreInterrupts(void);
+extern unsigned int OSDisableInterrupts(void);
+extern void OSRestoreInterrupts();
 extern unsigned char SCGetLanguage(void);
 extern unsigned short OSSetFontEncode(unsigned short);
 extern void OSFatal(void *, void *, const char *);
@@ -837,35 +837,38 @@ int fn_8003B508(int arg0, int arg1, int arg2)
   const char *msg = lbl_80302848;
   unsigned char *base = lbl_8037B820;
   int slot = lbl_8055D8E8;
-  int offset = slot * 0x20;
   unsigned char *entry;
   unsigned char *callbackEntry;
   unsigned int one = 1;
-  unsigned int flag = (base + offset)[8];
+  unsigned int flag;
   int index;
   int result;
-  lbl_8055D8E0 = one;
-  if ((((-flag) | flag) >> 31) == 1U)
   {
-    OSReport(msg + 0x218, slot);
-    OSReport(msg + 0x250);
-    for (;;)
+    int offset = slot * 0x20;
+    flag = (base + offset)[8];
+    lbl_8055D8E0 = one;
+    if ((((-flag) | flag) >> 31) == 1U)
     {
-    }
+      OSReport(msg + 0x218, slot);
+      OSReport(msg + 0x250);
+      for (;;)
+      {
+      }
 
-  }
-  if (((*((unsigned int *) ((base + offset) + 0xC))) + 0x01150000U) != 0xDAEDU)
-  {
-    OSReport(msg + 0x280);
-    for (;;)
+    }
+    if (((*((unsigned int *) ((base + offset) + 0xC))) + 0x01150000U) != 0xDAEDU)
     {
-    }
+      OSReport(msg + 0x280);
+      for (;;)
+      {
+      }
 
+    }
+    ((unsigned int *) base)[slot * 8] = arg2;
+    index = slot + 1;
+    *((unsigned int *) ((base + offset) + 4)) = one;
+    (base + offset)[8] = one;
   }
-  ((unsigned int *) base)[slot * 8] = arg2;
-  index = slot + 1;
-  *((unsigned int *) ((base + offset) + 4)) = one;
-  (base + offset)[8] = one;
   lbl_8055D8E8 = index;
   if (index >= 4)
   {
@@ -1090,18 +1093,18 @@ int fn_8003BB48(void) {
 }
 
 #pragma scheduling reset
+#pragma opt_lifetimes off
 int fn_8003BB58(void *arg0) {
     const char *msg = lbl_80302848;
     int index = lbl_8055D8E4 + 1;
     DVDLowContext *ctx;
     DVDLowContext *base;
     unsigned int busy;
-    int slot;
+    unsigned int slot;
     unsigned char *callbackEntry;
     unsigned int one;
     int next;
     int result;
-
     lbl_8055D8E4 = index;
     if (index >= 4) {
         index = 0;
@@ -1114,7 +1117,7 @@ int fn_8003BB58(void *arg0) {
     slot = lbl_8055D8E8;
     ctx = &base[slot];
     busy = ctx->inUse;
-    if (((busy | (0U - busy)) >> 31) == 1) {
+    if ((((next = busy) | (0U - busy)) >> 31) == 1) {
         OSReport(msg + 0x218);
         OSReport(msg + 0x250);
         for (;;) {}
@@ -1145,7 +1148,7 @@ int fn_8003BB58(void *arg0) {
     }
     return 1;
 }
-#pragma scheduling reset
+#pragma opt_lifetimes reset
 /* Return the first word of the 32-byte DVD low-level ioctl result buffer (lbl_8037B8A0): the drive's current task-type/error status word. */
 void *fn_8003BCC0(void) { return *(void **)&lbl_8037B8A0; }
 
