@@ -78,11 +78,6 @@ extern "C" void *memset(void *, int, unsigned int);
 extern const char lbl_8033C7A0[];
 extern const char lbl_8055B648;
 extern float lbl_8056336C;
-#pragma push
-#pragma processor 750
-#pragma cplusplus reset
-#pragma use_lmw_stmw off
-#pragma optimize_for_size on
 void *fn_8020DE74(void *arg0) {
     char name[0x20];
     register const char *labels __asm("r31") = lbl_8033C7A0;
@@ -120,8 +115,8 @@ void *fn_8020DE74(void *arg0) {
     memset(obj->boosts, 0, 8);
     obj->lastBoost = 0;
 
+    initial = 1.0f;
     i = 0;
-    initial = lbl_80563368;
     offset = 0;
     do {
         fn_801345D8(name, 0x20, labels + 0x2c, i + 1);
@@ -143,12 +138,12 @@ void *fn_8020DE74(void *arg0) {
 
     if (is_race != 0) obj->boostManual = fn_802077A4(labels + 0x38, 5, left, right);
     else obj->boostManual = 0;
-    child = obj->backfire;
+    child = *(void * volatile *)((u8 *)obj + 8);
     if (child != 0) {
         *(void **)((u8 *)child + 0x10) = group;
         {
-            float desired = lbl_8056336C;
-            child = obj->backfire;
+            float desired = 2.0f;
+            child = *(void * volatile *)((u8 *)obj + 8);
             if (desired != *(float *)((u8 *)child + 4)) {
             *(u8 *)((u8 *)child + 0x4e) = 1;
             *(float *)((u8 *)child + 4) = desired;
@@ -214,7 +209,6 @@ void *fn_8020DE74(void *arg0) {
     }
     return obj;
 }
-#pragma pop
 // The "carsnd" object's deleting destructor: releases every sound
 // fn_8020DE74() created for the truck and, when deleteMemory is positive,
 // frees the object itself. The vtable goes back first, so a sound torn down
