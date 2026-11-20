@@ -154,19 +154,19 @@ int DVDCompareDiskID(const DVDDiskID *id1, const DVDDiskID *id2) {
 
     return 1;
 }
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 void __DVDShowFatalMessage(void) {
     unsigned char color[4];
-    register int zero = 0;
+    unsigned int zero;
     int foreground;
     int background;
     const char *message;
 
+    zero = 0;
     color[0] = lbl_80560B08;
     color[1] = lbl_80560B09;
     color[2] = lbl_80560B0A;
     color[3] = lbl_80560B0B;
-    background = zero;
     if (SCGetLanguage() == 0) {
         OSSetFontEncode(1);
     } else {
@@ -178,9 +178,10 @@ void __DVDShowFatalMessage(void) {
         message = lbl_802EE878[SCGetLanguage()];
     }
     foreground = *(int *)color;
+    background = zero;
     OSFatal(&foreground, &background, message);
 }
-#pragma scheduling on
+#pragma opt_propagation reset
 extern void __DVDShowFatalMessage(void);
 extern void (*lbl_8055D8D0)(int, int);
 int DVDSetAutoFatalMessaging(int enable) {
@@ -387,18 +388,34 @@ int DVDLowInit(void) {
         }
 
         if (!lbl_8055D8EC) {
+            unsigned int zero = 0;
             DVDLowContext *base = (DVDLowContext *)lbl_8037B820;
-            int i = 0;
-            do {
-                base[i].callback = (void *)0;
-                base[i].WORD_0x4 = 0u;
-                base[i].inUse = 0;
-                base[i].magic = 0xFEEBDAEDu;
-                base[i].id = i;
-                i++;
-            } while (i < 4);
-            lbl_8055D8E8 = 0;
-            lbl_8055D8EC = 1;
+            unsigned int magic = 0xFEEBDAED;
+            unsigned int one = 1;
+            unsigned int id = 2;
+            base[0].callback = (void *)zero;
+            base[0].WORD_0x4 = zero;
+            base[0].inUse = zero;
+            base[0].magic = magic;
+            base[0].id = zero;
+            base[1].callback = (void *)zero;
+            base[1].WORD_0x4 = zero;
+            base[1].inUse = zero;
+            base[1].magic = magic;
+            base[1].id = one;
+            base[2].callback = (void *)zero;
+            base[2].WORD_0x4 = zero;
+            base[2].inUse = zero;
+            base[2].magic = magic;
+            base[2].id = id;
+            id = 3;
+            base[3].callback = (void *)zero;
+            base[3].WORD_0x4 = zero;
+            base[3].inUse = zero;
+            base[3].magic = magic;
+            base[3].id = id;
+            lbl_8055D8E8 = zero;
+            lbl_8055D8EC = one;
         }
     }
 
@@ -567,9 +584,9 @@ int fn_8003AC24(void *arg0) {
     unsigned char *entry;
     unsigned char *callbackEntry;
     unsigned char busy;
+    unsigned int one;
     int next;
     int result;
-    unsigned int one = 1;
 
     lbl_8055D8E4 = index;
     if (index >= 4) {
@@ -577,6 +594,7 @@ int fn_8003AC24(void *arg0) {
         lbl_8055D8E4 = 0;
     }
     lbl_8055D8FC[index * 0x20] = 0x8C;
+    one = 1;
     lbl_8055D8E0 = one;
     base = lbl_8037B820;
     slot = lbl_8055D8E8;
@@ -611,23 +629,21 @@ int fn_8003AC24(void *arg0) {
 }
 #pragma scheduling reset
 
-int fn_8003AD88(void *arg0, int arg1, int arg2, unsigned int arg3) {
+int fn_8003AD88(void *arg0, int arg1, int arg2, void *arg3) {
     const char *msg = lbl_80302848;
     unsigned int one = 1;
     unsigned char *context;
     int result;
-    void *callback = (void *)arg3;
 
     lbl_8055D8E0 = one;
-    context = (unsigned char *)newContext(callback, one, msg);
+    context = (unsigned char *)newContext(arg3, one, msg);
     lbl_8055D8F4 = arg1;
     nextCommandBuf();
     *(unsigned char *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20) = 0x8D;
     *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 4) = arg1;
     *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 8) = arg2;
-    result = IOS_IoctlAsync(lbl_80558E18, 0x8D, lbl_8055D8FC + lbl_8055D8E4 * 0x20,
-                            0x20, arg0, arg1, (void (*)(int, void *))doTransactionCallback, context);
-    if (result != 0) {
+    if ((result = IOS_IoctlAsync(lbl_80558E18, 0x8D, lbl_8055D8FC + lbl_8055D8E4 * 0x20,
+                            0x20, arg0, arg1, (void (*)(int, void *))doTransactionCallback, context)) != 0) {
         OSReport(msg + 0x428, result);
         context[8] = 0;
         return 0;
@@ -939,10 +955,11 @@ int fn_8003B69C(int arg0, void *arg1)
   }
   return 1;
 }
+#pragma scheduling 750
 int fn_8003B81C(void *arg0, int arg1, int arg2, void (*arg3)(int, void *)) {
-    DVDLowContext *base;
-    int slot;
-    DVDLowContext *p;
+    register DVDLowContext *base;
+    register int slot;
+    register DVDLowContext *p;
     unsigned int flag;
     unsigned int one;
     DVDLowContext *entry;
@@ -1003,7 +1020,6 @@ int fn_8003B81C(void *arg0, int arg1, int arg2, void (*arg3)(int, void *)) {
     }
     return 1;
 }
-#pragma scheduling reset
 
 #pragma opt_propagation reset
 int fn_8003B9CC(void *arg0, void *arg1)
