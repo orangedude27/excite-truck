@@ -193,7 +193,7 @@ void fn_8021605C(void *rect, s32 canvasState) {
     fn_802C3424(left, top, left + *(s32 *)((u8 *)rect + 0xC), top + *(s32 *)((u8 *)rect + 0x10), lbl_8055FBDC);
 }
 
-extern s32 fn_8021832C(void);
+extern s32 fn_8021832C();
 extern void fn_80230B5C(void *);
 extern void fn_802C8638(void *);
 extern void fn_802C974C(f32, f32, f32);
@@ -217,7 +217,8 @@ s32 fn_802160AC(void)
   f32 a;
   f32 *new_var;
   f32 b;
-  if (lbl_8055EF88 != 0)
+  s32 flag = *(s32 *)&lbl_8055EF88;
+  if (flag != 0)
   {
     temp_r31 = fn_8021832C();
   }
@@ -232,9 +233,9 @@ s32 fn_802160AC(void)
   fn_802C974C(lbl_80563468, lbl_8056346C, lbl_80563470);
   fn_80230B5C(scratch);
   fn_802C8638(scratch);
-  a = (f32) lbl_8055EF80;
+  a = (f32)(lbl_8055EF80 ^ 0x80000000u);
   a -= lbl_80563474;
-  b = (f32) lbl_8055EF84;
+  b = (f32)(lbl_8055EF84 ^ 0x80000000u);
   new_var = &a;
   b = lbl_80563478 - b;
   if (temp_r31 != 0)
@@ -259,9 +260,10 @@ void fn_80216194(void) {
 
 #pragma dont_inline on
 s32 fn_802161CC(s32 arg0) {
+    u32 value;
     s32 i;
     for (i = 0; i < 16; i++) {
-        u32 value = *(lbl_804908C8 + i);
+        value = lbl_804908C8[i];
         if (value != 0 && (arg0 != 0 || value != (u32)lbl_8055EF88)) {
             fn_80218464();
         }
@@ -276,9 +278,9 @@ s32 fn_80216244(void) {
     s32 i, j;
     u32 *p;
     u8 *obj;
-    f32 x, y;
     f32 matrix[12];
     f32 vec[3], pos[3];
+    f32 x, y;
     f64 d;
     u32 raw;
     void (*callback)(void);
@@ -542,10 +544,9 @@ s32 fn_802168F0(void *arg0) {
     fn_80211F64();
     fn_80211F64();
     f2 = sp[0] > lbl_80563484 ? sp[0] : lbl_80563484;
-    f28 = lbl_80563468;
-    f29 = f28 / f2;
     f30 = lbl_80563468;
-    f28 = (f32)__fabs(sp[0]) <= lbl_80558DC4 ? f28 : lbl_80563458;
+    f29 = lbl_80563468 / f2;
+    f28 = (f32)__fabs(sp[0]) <= lbl_80558DC4 ? lbl_80563468 : lbl_80563458;
     flag = 0;
     lbl_8055EF94 = f28;
     f31 = lbl_80563488;
@@ -581,28 +582,28 @@ s32 fn_802168F0(void *arg0) {
     fn_8021747C(arg0, 0, sp, lbl_80563458);
     f2 = sp[1] > lbl_80563484 ? sp[1] : lbl_80563484;
     f30 = lbl_80563468;
-    f28 = f30 / f2;
+    f31 = f30 / f2;
     if ((f32)__fabs(sp[1]) <= lbl_80558DC4) f30 = lbl_80563458;
     lbl_8055EF94 = f30;
     if (*(u8 *)&lbl_8055EF99 == 0) fn_80214D50(4);
     else *(u8 *)&lbl_8055EF99 = 0;
-    f31 = lbl_80563458;
+    f28 = lbl_80563458;
     for (;;) {
-        gt = f31 > f30;
-        f30 = gt ? f31 : f30;
+        gt = f28 > f30;
+        f30 = gt ? f28 : f30;
         lbl_8055EF94 = f30;
         if (fn_8012742C() != 0) {
             lbl_8055EF74 = -1;
             break;
         }
-        if (sp[1] > f31) {
+        if (sp[1] > f28) {
             fn_80236674();
             if (lbl_8055EF88 != 0) fn_8021747C(lbl_8055EF88, 3, sp, f30);
         }
         fn_802161CC(1);
         fn_802166B8();
-        if (f31 == f30) break;
-        f30 -= f28 * fn_80214D48();
+        if (f28 == f30) break;
+        f30 -= f31 * fn_80214D48();
         fn_80211F64();
     }
     fn_80216194();
