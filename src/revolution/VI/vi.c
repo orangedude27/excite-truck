@@ -1217,15 +1217,9 @@ void VIConfigure(const GXRenderModeObj *rm)
     HorVer.PanPosX = 0;
     HorVer.PanPosY = 0;
     dispSizeY = HorVer.PanSizeY;
-    switch (HorVer.nonInter) {
-    case 2:
-    case 3:
-        break;
-    default:
-        if (HorVer.FBMode == VI_XFBMODE_SF) {
-            dispSizeY = (u16)(HorVer.PanSizeY * 2);
-        }
-        break;
+    if (HorVer.nonInter == 2 || HorVer.nonInter == 3) {
+    } else if (HorVer.FBMode == VI_XFBMODE_SF) {
+        dispSizeY = (u16)(HorVer.PanSizeY * 2);
     }
     HorVer.DispSizeY = dispSizeY;
     HorVer.threeD = (HorVer.nonInter == 3);
