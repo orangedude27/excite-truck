@@ -520,14 +520,18 @@ u32 fn_80116F8C(void *arg0) {
     s32 temp_r28;
     u32 temp_r0;
     u32 temp_r4;
-    register u32 temp_r6;
+    u32 num;
+    u32 den;
+    u32 temp_r6;
     u32 temp_r9;
     u32 *data = (u32 *)arg0;
     temp_r4 = data[0x4C / 4];
     temp_r0 = data[0x40 / 4];
     if (temp_r0 < temp_r4) {
         temp_r30 = temp_r4 - temp_r0;
-        temp_r29 = (u32)(temp_r30 * 0x3E8) / (u32)((data[0x78 / 4] * (data[0x70 / 4] * data[0x74 / 4])) >> 3);
+        num = temp_r30 * 0x3E8;
+        den = (data[0x78 / 4] * (data[0x70 / 4] * data[0x74 / 4])) >> 3;
+        temp_r29 = num / den;
         temp_r6 = data[0x38 / 4] - temp_r30;
         temp_r9 = data[0x2C / 4];
         data[0x38 / 4] = temp_r6;
@@ -3014,7 +3018,6 @@ void fn_8011AC10(void *arg0, s32 bufferStart, s32 bufferSize, s32 endOffset, s32
 }
 
 extern f32 lbl_80329D48[];
-extern f64 lbl_805611D8;
 extern void fn_8011A330(void *);
 /* Close a DVD stream: cancel any in-flight read, then DVDClose the file unless the caller supplied it (keepOpen). */
 void fn_8011AC84(void *arg0) {
@@ -3036,21 +3039,22 @@ s32 fn_8011ACC4(void* arg0, void* arg1, s32 arg2) {
     s32 entry;
     memset(arg0, 0, 0x144);
     if (arg2 & 0x800000) {
-        u32 v13 = *(u32*)((u8*)arg1 + 0x34);
-        u32 v12 = *(u32*)((u8*)arg1 + 0x30);
-        u32 size = *(u32*)((u8*)arg1 + 0x2C);
-        u32 v10 = *(u32*)((u8*)arg1 + 0x28);
-        u32 v9 = *(u32*)((u8*)arg1 + 0x24);
-        u32 v8 = *(u32*)((u8*)arg1 + 0x20);
-        u32 v7 = *(u32*)((u8*)arg1 + 0x1C);
-        u32 v6 = *(u32*)((u8*)arg1 + 0x18);
-        u32 v5 = *(u32*)((u8*)arg1 + 0x14);
-        u32 v4 = *(u32*)((u8*)arg1 + 0x10);
-        u32 v3 = *(u32*)((u8*)arg1 + 0x0C);
-        u32 v2 = *(u32*)((u8*)arg1 + 0x08);
-        u32 v1 = *(u32*)((u8*)arg1 + 0x04);
-        u32 v0 = *(u32*)((u8*)arg1 + 0x00);
-        u32 v14 = *(u32*)((u8*)arg1 + 0x38);
+        u32 *words = (u32 *)arg1;
+        u32 v13 = words[13];
+        u32 v12 = words[12];
+        u32 size = words[11];
+        u32 v10 = words[10];
+        u32 v9 = words[9];
+        u32 v8 = words[8];
+        u32 v7 = words[7];
+        u32 v6 = words[6];
+        u32 v5 = words[5];
+        u32 v4 = words[4];
+        u32 v3 = words[3];
+        u32 v2 = words[2];
+        u32 v1 = words[1];
+        u32 v0 = words[0];
+        u32 v14 = words[14];
         *(u32*)((u8*)arg0 + 0x54) = v0;
         *(u32*)((u8*)arg0 + 0x58) = v1;
         *(u32*)((u8*)arg0 + 0x5C) = v2;
@@ -3733,7 +3737,7 @@ void fn_8011C364(s32);
 #pragma opt_propagation off
 s32 fn_8011BF4C(s32 arg0, s32 arg1, s32 arg2) {
     s32 ret = 0;
-    s32 save;
+    register s32 save;
     if (arg0 != 0 && arg1 != 0 && *(s32 *)(arg1 + 0x18) != 0 && *(s32 *)(arg1 + 0x14) != 0) {
         save = OSDisableInterrupts();
         if (fn_8011BC4C((void *)arg0, (void *)arg1) != 0) {
@@ -4543,9 +4547,10 @@ void fn_8011D0E8(void *arg0, void *arg1, void *arg2) {
  M2C_FIELD(arg1,u32**,4)=p;M2C_FIELD(arg1,u32*,0)=bits;M2C_FIELD(arg1,u32*,8)=n;
 }
 
+#pragma push
+#pragma optimization_level 3
 void fn_8011D378(void *arg0, void *arg1, void *arg2) {
     u32 *src;
-    u8 *base;
     u32 value, remain, index, node, bit, mask;
     s32 count;
     u32 width;
@@ -4555,7 +4560,6 @@ void fn_8011D378(void *arg0, void *arg1, void *arg2) {
     index = *(u32 *)((u8 *)arg0 + 0x28);
     src = *(u32 **)((u8 *)arg1 + 4);
     value = *(u32 *)arg1;
-    base = (u8 *)arg2;
     if (remain < index) {
         u32 next = *src++;
         count = (value | (next << remain)) & (0xffffffffU >> (32 - index));
@@ -4579,18 +4583,18 @@ void fn_8011D378(void *arg0, void *arg1, void *arg2) {
         if (bit & 1) count = -20 - count;
         mask = 0xffffffffU >> (32 - width);
         do {
+            u32 n = *(u32 *)((u8 *)arg2 + node * 4 + 0x100);
             u32 tmp;
-            u32 n = *(u32 *)(base + node * 4 + 0x100);
             count--;
             if (remain >= n) {
-                u32 entry = (*(u8 **)(base + node * 4 + 0x140))[value & (0xffffffffU >> (32 - n))];
-                node = *(base + node * 16 + (entry & 15));
+                u32 entry = (*(u8 **)((u8 *)arg2 + node * 4 + 0x140))[value & (0xffffffffU >> (32 - n))];
+                node = *((u8 *)arg2 + node * 16 + (entry & 15));
                 entry >>= 4;
                 value >>= entry; remain -= entry;
             } else {
                 u32 next = *src;
-                u32 entry = (*(u8 **)(base + node * 4 + 0x140))[(value | (next << remain)) & (0xffffffffU >> (32 - n))];
-                node = *(base + node * 16 + (entry & 15));
+                u32 entry = (*(u8 **)((u8 *)arg2 + node * 4 + 0x140))[(value | (next << remain)) & (0xffffffffU >> (32 - n))];
+                node = *((u8 *)arg2 + node * 16 + (entry & 15));
                 entry >>= 4;
                 if (remain >= entry) { value >>= entry; remain -= entry; }
                 else { value = next >> (entry - remain); src++; remain = remain + 32 - entry; }
@@ -4619,7 +4623,7 @@ void fn_8011D378(void *arg0, void *arg1, void *arg2) {
     *(u32 **)((u8 *)arg1 + 4) = src;
     *(u32 *)arg1 = value; *(u32 *)((u8 *)arg1 + 8) = remain;
 }
-
+#pragma pop
 /* Decodes one block of a band of the compressed stream fn_8011C3A8 sets up, the
  * variant whose values come out of a Huffman lookup table.  Nothing is done
  * while the block of the previous call is still published ([start, end)).  The
