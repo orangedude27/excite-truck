@@ -6416,7 +6416,6 @@ extern u8 lbl_803C0D18[];
 extern tBTM_STATUS fn_8007A2C8(u16 *);
 extern void bta_dm_pm_set_mode(u8 *, u8);
 typedef struct { u8 f0, f1, f2; } PmCfgEntry;
-typedef struct { u8 i, j, k, spec_idx; } PmIdx;
 void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
     u8 version[10];
     u16 policy;
