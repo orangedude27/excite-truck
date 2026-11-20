@@ -976,20 +976,24 @@ extern "C" void fn_800D6EEC(void* arg0) {
 }
 #pragma scheduling on
 
+#pragma push
+#pragma opt_common_subs off
 extern "C" void *__dt__Q36nw4hbm3lyt6LayoutFv(void *self, s32 shouldDelete) {
     extern char lbl_8031F868[];
     extern const char lbl_8031F920[];
     extern const char lbl_8031F8FC[];
     extern const char lbl_8031F8F0[];
     extern const char lbl_8031F8CC[];
-    struct LayoutFields { u32 vtable; u32 link; };
+    struct LayoutFields { u32 vtable; GroupList link; };
     struct ResourceDispatch { virtual void Destroy(s32); };
     struct LayoutNodeDispatch { virtual void Destroy(s32); };
     struct LayoutObject : LayoutNodeDispatch, GroupListNode {};
     LayoutFields *layout = (LayoutFields *)self;
-    GroupListNode *node;
-    void *end;
-    u32 current;
+    struct { GroupListNode *v; } nodeH;
+    struct { GroupListNode *v; } endH;
+    GroupListNode *&node = nodeH.v;
+    GroupListNode *&end = endH.v;
+    GroupListNode *current;
     if (layout != 0) {
         void *container = *(void **)((u8 *)layout + 0x14);
         layout->vtable = (u32)lbl_8031F868;
@@ -1002,21 +1006,23 @@ extern "C" void *__dt__Q36nw4hbm3lyt6LayoutFv(void *self, s32 shouldDelete) {
             ((ResourceDispatch *)resource)->Destroy(-1);
             MEMFreeToAllocator(lbl_8055DDF0, *(void **)((u8 *)layout + 0x10));
         }
-        node = *(GroupListNode **)((u8 *)layout + 8);
-        end = (u8 *)layout + 8;
-        while ((void*)node != end) {
-            current = (u32)node;
+        nodeH.v = layout->link.first;
+        endH.v = (GroupListNode *)&layout->link.first;
+        while (node != end) {
+            current = node;
+            void *slot;
             node = node->next;
-            void *slot = (void*)current;
+            slot = current;
             Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(&layout->link, &slot);
             if (current == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F920, 0x23D, lbl_8031F8FC);
-            static_cast<LayoutObject &>(*(GroupListNode *)current).Destroy(-1);
+            static_cast<LayoutObject &>(*current).Destroy(-1);
             if (current == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F920, 0x23D, lbl_8031F8FC);
-            if ((current = current - 4) == 0)
+            char *p = (char *)current - 4;
+            if (p == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F8F0, 0x193, lbl_8031F8CC);
-            MEMFreeToAllocator(lbl_8055DDF0, (void*)current);
+            MEMFreeToAllocator(lbl_8055DDF0, p);
         }
         if (&layout->link != 0)
             __dt__Q46nw4hbm2ut6detail12LinkListImplFv(&layout->link, 0);
@@ -1025,6 +1031,7 @@ extern "C" void *__dt__Q36nw4hbm3lyt6LayoutFv(void *self, s32 shouldDelete) {
     }
     return self;
 }
+#pragma pop
 
 #pragma pop
 extern "C" void *BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(u32, const void *, const ResBlockSetTmp *);
