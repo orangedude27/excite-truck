@@ -703,23 +703,20 @@ success:
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_8023AFD0(void *arg0) {
-    s32 temp_r28;
-    s32 temp_r29;
-    s32 temp_r30;
-    s32 temp_r31;
-    s32 temp_r3;
-    s32 sp8;
-    float factor;
-    void *p = arg0;
-    temp_r28 = *(s32 *)((char *)p + 0x10);
-    temp_r29 = *(s32 *)((char *)p + 12);
-    temp_r30 = *(s32 *)((char *)p + 8);
-    temp_r31 = *(s32 *)((char *)p + 4);
-    temp_r3 = fn_80131234(&lbl_8034127C[0]);
-    sp8 = 0;
-    factor = lbl_80563730;
-    fn_8022BAD0(0xCB, temp_r31, temp_r30, 0, temp_r29, temp_r28, temp_r3, *(s32 *)((char *)p + 0x1C), sp8, factor);
+void fn_8023AFD0(void *widget) {
+    s32 param5;
+    s32 height;
+    s32 y;
+    s32 x;
+    s32 labelText;
+    void *p = widget;
+
+    param5 = *(s32 *)((char *)p + 0x10);
+    height = *(s32 *)((char *)p + 0xC);
+    y = *(s32 *)((char *)p + 8);
+    x = *(s32 *)((char *)p + 4);
+    labelText = fn_80131234(&lbl_8034127C[0]);
+    fn_8022BAD0(0xCB, x, y, 0, height, param5, labelText, *(s32 *)((char *)p + 0x1C), 0, 1.0f);
 }
 #pragma pop
 
