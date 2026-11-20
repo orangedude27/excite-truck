@@ -131,9 +131,13 @@ typedef struct { float a, b; int c, d; unsigned char e0, e1, e2, e3, e4, e5, e6,
 extern float lbl_80561F78, lbl_80561F7C, lbl_80561F80, lbl_80561F84;
 static inline float Chan_8018F2C0(unsigned char v) {
     const float zero = lbl_80561F74;
-    float t = (1.0f < (((float)v - zero) / 255.0f)) ? 1.0f : (((float)v - zero) / 255.0f);
+    const float one = lbl_80561F88;
+    const float div = lbl_80562038;
+    const float scale = lbl_80562040;
+    const float bias = lbl_8056203C;
+    float t = (one < (((float)v - zero) / div)) ? one : (((float)v - zero) / div);
     t = (t > zero) ? t : zero;
-    return -0.508f + t * 1.016f;
+    return bias + t * scale;
 }
 #pragma dont_inline on
 #pragma scheduling invalid_target
@@ -665,9 +669,9 @@ extern float lbl_80561FC8, lbl_80561FCC, lbl_80561FD8, lbl_80561FDC, lbl_80561FE
 extern float lbl_80561FD0, lbl_80561FD4, lbl_80558DC4;
 void fn_8018DA5C(char *arg0, char *arg1) {
     char *p = arg0; float *v = (float *)(arg0 + 0xd94); char *out = arg1; int n;
-    float inv=lbl_80561FCC;
+    float inv=0.2f;
     float rx, ry, rz;
-    float smooth=lbl_80561FC8;
+    float smooth=0.8f;
     for (n=0; n < M2C_FIELD(arg0,int*,0x5f8); n++) {
         rx = M2C_FIELD(p,float*,0xd94) * smooth;
         ry = M2C_FIELD(p,float*,0xd98) * smooth;
@@ -692,17 +696,17 @@ void fn_8018DA5C(char *arg0, char *arg1) {
             volatile float x,y,z;
             float dist,t;
             char *entry=M2C_FIELD(arg0,char**,0x26c)+n*0x34;
-            float ex=M2C_FIELD(entry,float*,0x20), ey=M2C_FIELD(entry,float*,0x24), ez=M2C_FIELD(entry,float*,0x28);
+            float ey=M2C_FIELD(entry,float*,0x24), ez=M2C_FIELD(entry,float*,0x28);
             dist=(float)fabs(ez);
             t=dist-0.7f;
             z=cached+(-0.5f)*ez*scale;
-            x=cached+scale*((-0.3f)*(ex*t));
+            x=cached+scale*((-0.3f)*(M2C_FIELD(entry,float*,0x20)*t));
             y=cached+scale*((-0.3f)*(ey*t));
             t=3.0f-dist;
-            t = t > cached ? t : cached;
-            y += mult*(ey*t);
-            t=3.0f-(float)fabs(ez);
-            t = t > cached ? t : cached;
+            if (t < cached) t = cached;
+            y += mult*(M2C_FIELD(entry,float*,0x24)*t);
+            t=3.0f-(float)fabs(M2C_FIELD(entry,float*,0x28));
+            if (t < cached) t = cached;
             x += bias*t;
             M2C_FIELD(out,float*,0x2e0)=x; M2C_FIELD(out,float*,0x2e4)=y; M2C_FIELD(out,float*,0x2e8)=z;
         }
