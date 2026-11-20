@@ -226,7 +226,7 @@ int fn_802CA3F4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
         dst[2] = flags;
     }
 }
-#pragma dont_inline fn_802CA4E0
+#pragma dont_inline on
 // Creates a texture from a descriptor and name, logging creation to the current scene when needed.
 int fn_802CA4E0(int textureDesc, int textureName, int mode, int param3, int param4) {
     char request[0x34];
@@ -235,6 +235,7 @@ int fn_802CA4E0(int textureDesc, int textureName, int mode, int param3, int para
     fn_802CA3F4(request, textureDesc, mode == 1 ? 3 : 1, param3, param4);
     return fn_802D8E9C(request, textureName);
 }
+#pragma dont_inline reset
 #pragma use_lmw_stmw on
 
 extern void fn_802D8DCC(void *, int);
