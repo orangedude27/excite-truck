@@ -8,20 +8,28 @@ extern void fn_802BB7CC(void);
 extern char lbl_8055FA60;
 extern int lbl_8055FA68;
 extern char lbl_804BFFE8[];
+struct Obj802BB734 { void *next; int zero; int size; };
+static inline void init802BB734(struct Obj802BB734 *o, int size, void (*dtor)(void), void *arg) {
+    o->size = size;
+    o->zero = 0;
+    __register_global_object(o, dtor, arg);
+}
+#pragma scheduling off
 void fn_802BB734(void) {
     struct Object { void *next; int zero; int size; };
     char *base = (char *)&lbl_804BFFE8;
     volatile struct Object *object;
     fn_8000D838(&lbl_8055FA60);
-    object = (volatile struct Object *)(base + 0xC);
+    object = (struct Object *)(base + 0xC);
     *(char **)(base + 0xC) = (char *)object + 0xC;
     object->size = 0x10;
     lbl_8055FA68 = 0xFFFF0000;
     object->zero = 0;
     __register_global_object((void *)object, fn_802BB824, base);
-    object = (volatile struct Object *)(base + 0x64);
+    object = (struct Object *)(base + 0x64);
     object->zero = 0;
     object->next = (char *)object + 0xC;
     object->size = 4;
     __register_global_object((void *)object, fn_802BB7CC, base + 0x58);
 }
+#pragma scheduling on
