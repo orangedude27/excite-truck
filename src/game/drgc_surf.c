@@ -65,6 +65,13 @@ extern f32 lbl_804CA308[];
 extern f32 lbl_80564FF0;
 extern f64 lbl_80564FF8;
 extern f64 lbl_80565000;
+
+static inline f32 fn_fast_s16f(s16 v) {
+    union { f64 d; u32 w[2]; } conv;
+    conv.w[0] = 0x43300000;
+    conv.w[1] = (u32)((s32)v ^ 0x8000);
+    return (f32)conv.d - (f32)lbl_80565000;
+}
 extern u8 lbl_8055FD19;
 extern u32 lbl_804C5650[];
 extern u32 lbl_8055FDE8;
@@ -934,22 +941,23 @@ void fn_802D5B8C(void *arg0) {
         u32 *srcColor = *(u32 **)((char *)arg0 + 0x24);
         f32 d0 = lbl_804C56C0[9] - lbl_804C5690[9];
         f32 d1 = lbl_804C56C0[10] - lbl_804C5690[10];
+        u32 *outC = colors;
+        f32 *srcUv = *(f32 **)((char *)arg0 + 0x28);
         f32 d2 = lbl_804C56C0[11] - lbl_804C5690[11];
         f32 vec[5];
-        f32 *srcUv = *(f32 **)((char *)arg0 + 0x28);
-        f32 offU, offV, scale, one;
-        u32 *outC = colors;
+        f64 uRaw = lbl_804DB068[3];
+        f64 vRaw = lbl_804DB068[4];
+        f32 offU = (f32)uRaw;
+        f32 offV = (f32)vRaw;
         f32 *outUv = uvs;
+        f32 scale = lbl_804DB068[5];
+        f32 one = lbl_8056500C;
         s32 i;
+        vec[0] = (f32)uRaw;
+        vec[1] = (f32)vRaw;
         vec[2] = d0 * lbl_804C5690[0] + d1 * lbl_804C5690[1] + d2 * lbl_804C5690[2];
         vec[3] = d0 * lbl_804C5690[3] + d1 * lbl_804C5690[4] + d2 * lbl_804C5690[5];
         vec[4] = d0 * lbl_804C5690[6] + d1 * lbl_804C5690[7] + d2 * lbl_804C5690[8];
-        vec[0] = lbl_804DB068[3];
-        vec[1] = lbl_804DB068[4];
-        offU = vec[0];
-        offV = vec[1];
-        scale = lbl_804DB068[5];
-        one = lbl_8056500C;
         for (i = 0; i < count; i++) {
             f32 factor = one - PSVECSquareDistance(pos, &vec[2]) * scale;
             u32 c = *srcColor;
