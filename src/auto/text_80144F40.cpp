@@ -646,8 +646,6 @@ extern "C" void fn_8001027C(s32, s32, void *, u32, f32, f32, f32);
 extern "C" f32 fn_801452A0(s32, f32);
 extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern "C" s32 lbl_80559E1C;
-#pragma push
-#pragma scheduling off
 extern "C" void fn_80145B50(void *arg0, s32 arg1) {
     f32 value = (f32)arg1;
     f32 multiplier = lbl_80561608;
