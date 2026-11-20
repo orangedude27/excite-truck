@@ -14,6 +14,7 @@ extern f32 lbl_805615CC;  // -2.0f
 extern double cos(double);
 extern double sin(double);
 extern float fn_80144514(float, float, float, float, float, float);
+typedef struct { f32 v; } FHold8014452C;
 #define D6(a, b, c, d, e, f) fn_80144514(a, b, c, d, e, f)
 static f32 *volatile g_alias_probe;
 #define M33CAT(a, b, ab)                                                   \
@@ -63,57 +64,61 @@ float fn_80144514(float ax, float bx, float ay, float by, float az, float bz) {
 #pragma push
 #pragma processor 750
 #pragma opt_propagation off
-void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az) {
-    f32 b[9];
-    f32 *bp = b;
-    f32 c, s;
-    c = cos(ax);
-    s = sin(ax);
-    {
-        f32 z = lbl_805615BC;
-        f32 o = lbl_805615B8;
-        m[0] = c;
-        m[1] = z;
-        m[3] = z;
-        m[2] = -s;
-        m[4] = o;
-        m[5] = z;
-        m[6] = s;
-        m[7] = z;
-        m[8] = c;
-    }
-    c = cos(ay);
-    s = sin(ay);
-    {
-        f32 z = lbl_805615BC;
-        f32 o = lbl_805615B8;
-        bp[1] = z;
-        bp[0] = o;
-        bp[2] = z;
-        bp[3] = z;
-        bp[4] = c;
-        bp[5] = s;
-        bp[6] = z;
-        bp[7] = -s;
-        bp[8] = c;
-    }
-    M33Cat(m, bp, m);
-    c = cos(az);
-    s = sin(az);
-    {
-        f32 z = lbl_805615BC;
-        f32 o = lbl_805615B8;
-        bp[0] = c;
-        bp[1] = s;
-        bp[2] = z;
-        bp[3] = -s;
-        bp[4] = c;
-        bp[5] = z;
-        bp[6] = z;
-        bp[7] = z;
-        bp[8] = o;
-    }
-    M33Cat(m, bp, m);
+void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az)
+{
+  f32 b[9];
+  f32 new_var;
+  f32 *bp = b;
+  f32 c;
+  int new_var2;
+  c = cos(ax);
+  {
+    f32 s = sin(ax);
+    f32 z = lbl_805615BC;
+    f32 o = lbl_805615B8;
+    m[0] = c;
+    m[1] = z;
+    new_var2 = 3;
+    m[new_var2] = z;
+    m[2] = -s;
+    m[4] = o;
+    m[5] = (m[7] = z);
+    m[6] = s;
+    m[8] = c;
+  }
+  c = cos(ay);
+  {
+    f32 s = sin(ay);
+    f32 z = lbl_805615BC;
+    f32 o = lbl_805615B8;
+    bp[1] = z;
+    bp[0] = o;
+    bp[2] = z;
+    bp[3] = z;
+    new_var = c;
+    bp[4] = new_var;
+    bp[5] = s;
+    bp[6] = z;
+    bp[7] = -s;
+    bp[8] = c;
+  }
+  M33Cat(m, bp, m);
+  c = cos(az);
+  {
+    f32 s = sin(az);
+    f32 z = lbl_805615BC;
+    f32 o = lbl_805615B8;
+    bp[0] = c;
+    bp[1] = s;
+    bp[2] = z;
+    bp[3] = -s;
+    bp[4] = c;
+    bp[5] = z;
+    bp[6] = z;
+    bp[7] = z;
+    bp[8] = lbl_805615B8;
+  }
+  M33Cat(m, bp, m);
 }
 #pragma opt_propagation reset
 #pragma pop
@@ -133,15 +138,32 @@ void GXInitLightAttnA_80144B44(void *attn, f32 aa, f32 ab, f32 ac) {
 
 #pragma push
 #pragma scheduling full
-void fn_80144B54(s32 *dst, s32 *src) {
-    s32 l, k, j, i, h, g, f, e, d, c, b, a;
-    volatile s32 *vs = src;
-    d = vs[3]; c = vs[2]; b = vs[1]; a = vs[0];
-    e = vs[4]; f = vs[5]; g = vs[6]; h = vs[7];
-    i = vs[8]; j = vs[9]; k = vs[10]; l = vs[11];
-    dst[0] = a; dst[1] = b; dst[2] = c; dst[3] = d;
-    dst[4] = e; dst[5] = f; dst[6] = g; dst[7] = h;
-    dst[8] = i; dst[9] = j; dst[10] = k; dst[11] = l;
+void fn_80144B54(void *dst, void *src) {
+    int l, k, j, i, h, g, f, e, d, c, b, a;
+    d = *(volatile int *)((char *)src + 0xC);
+    c = *(volatile int *)((char *)src + 0x8);
+    b = *(volatile int *)((char *)src + 0x4);
+    a = *(volatile int *)((char *)src + 0x0);
+    e = *(volatile int *)((char *)src + 0x10);
+    f = *(volatile int *)((char *)src + 0x14);
+    g = *(volatile int *)((char *)src + 0x18);
+    h = *(volatile int *)((char *)src + 0x1C);
+    i = *(volatile int *)((char *)src + 0x20);
+    j = *(volatile int *)((char *)src + 0x24);
+    k = *(volatile int *)((char *)src + 0x28);
+    l = *(volatile int *)((char *)src + 0x2C);
+    *(int *)((char *)dst + 0x0) = a;
+    *(int *)((char *)dst + 0x4) = b;
+    *(int *)((char *)dst + 0x8) = c;
+    *(int *)((char *)dst + 0xC) = d;
+    *(int *)((char *)dst + 0x10) = e;
+    *(int *)((char *)dst + 0x14) = f;
+    *(int *)((char *)dst + 0x18) = g;
+    *(int *)((char *)dst + 0x1C) = h;
+    *(int *)((char *)dst + 0x20) = i;
+    *(int *)((char *)dst + 0x24) = j;
+    *(int *)((char *)dst + 0x28) = k;
+    *(int *)((char *)dst + 0x2C) = l;
 }
 #pragma pop
 /* Odd smoothstep: clamps x to [-1,1] and returns sign(x) * (3x^2 - 2x^3), the
