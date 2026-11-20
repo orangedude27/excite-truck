@@ -10499,10 +10499,9 @@ extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559234[]; }
 extern "C" const u8 lbl_80560D98;
 extern "C" const u8 lbl_80560D99;
 #pragma scheduling 750
-extern "C" s16 fn_800B4D5C(void *arg0, u32 arg1, u32 arg2) {
+extern "C" s16 fn_800B4D5C(void *arg0, u32 p1, u32 arg2) {
 u8 prefix[2];
 s16 value;
-struct { u32 v; } w_p1; u32 &p1 = w_p1.v;
 struct { void *v; } w_p0; void *&p0 = w_p0.v;
 struct { s32 v; } w_sp; s32 &sp = w_sp.v;
 struct { s32 v; } w_off; s32 &off = w_off.v;
@@ -10510,16 +10509,15 @@ struct { s32 v; } w_res; s32 &res = w_res.v;
 struct { s32 v; } w_idx; s32 &idx = w_idx.v;
 struct { u32 v; } w_fnd; u32 &fnd = w_fnd.v;
 struct { u32 v; } w_p2; u32 &p2 = w_p2.v;
-w_p1.v = arg1;
-prefix[0] = lbl_80560D98;
 w_p0.v = arg0;
-prefix[1] = lbl_80560D99;
 sp = 0;
 off = 4;
 res = 0;
 idx = 2;
 fnd = 0;
 w_p2.v = arg2;
+prefix[0] = lbl_80560D98;
+prefix[1] = lbl_80560D99;
 if (VFiPFSTR_StrNCmp((s32)p0, (const void *)prefix, (s32)p1, 0, 2) == 0)
 goto begin;
 if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559228, (s32)p1, 0, 1) == 0) {
@@ -22543,26 +22541,24 @@ extern "C" void fn_800C776C(void *obj, s32 value) {
     ((u32 *)obj)[0x24 / 4] = (u32)value;
 }
 
-extern "C" void fn_800C7774(u8 *arg0)
+#pragma opt_lifetimes off
+extern "C" void fn_800C7774(u8 *self)
 {
-    char *start = *(char **)(*(u8 **)(arg0 + 4) + 0xC);
     const char *file = (const char *)lbl_8031D840;
-    char *p;
+    char *start = *(char **)(*(u8 **)(self + 4) + 0xC);
+    char *p = start;
     s32 len1 = 0;
     s32 len2;
     s32 count;
     s32 i;
     u8 *q;
     void *buf;
-    u8 *self;
 
-    p = start;
     while (*p != 0) {
         if (*p == ',') break;
         len1++;
         p++;
     }
-    self = arg0;
     buf = MEMAllocFromAllocator(lbl_80559708, len1 + 1);
     *(void **)(self + 0xA4) = buf;
     if (buf == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x318, file + 0xCE0);
@@ -22584,9 +22580,10 @@ extern "C" void fn_800C7774(u8 *arg0)
     (*(char **)(self + 0xA8))[len2] = 0;
     start += len2;
 
-    count = 0;
     q = self;
-    for (i = 0; start[i] != 0; i++) {
+    i = 0;
+    count = 0;
+    for (; start[i] != 0; i++) {
         if (start[i] == ',') {
             if (start[i + 1] == '1') *(s32 *)(q + 0x94) = 1;
             else *(s32 *)(q + 0x94) = 0;
@@ -22597,7 +22594,7 @@ extern "C" void fn_800C7774(u8 *arg0)
     *(s32 *)(self + 8) = count;
     *(s32 *)(self + 0xC) = count * 3;
 }
-
+#pragma opt_lifetimes reset
 extern "C" void fn_800C790C(void *arg0) {
     /* Parse a quoted UTF-16 string in place and store pointers to each quoted field
      * into a 7-column by 6-row table embedded in the context object. */
@@ -25617,6 +25614,7 @@ static inline s32 findPaneIndexUnrolled_800A485C(s32 count, s32 *entry, s32 a, s
     return -1;
 }
 
+#pragma scheduling on
 extern "C" void reset_btn__Q210homebutton10HomeButtonFv(void *arg0) {
     u8 *self=(u8*)arg0;
     void *pane;
@@ -25626,7 +25624,7 @@ extern "C" void reset_btn__Q210homebutton10HomeButtonFv(void *arg0) {
     u8 *cursor=self;
     s32 i=0, j;
     for(;i<*(s32*)(self+8);cursor+=4,i++) {
-        if(*(s32*)(cursor+0x1c)) {
+        if(*(s32*)(cursor+0x1c)!=0) {
             s32 *entry=lbl_802F4528;
             s32 count=*(s32*)(self+0xc);
             for(j=0;j<count;entry+=2,j++) {
@@ -25677,8 +25675,6 @@ found3:
         }
     }
 }
-
-#pragma pop
 s32 homebutton::HomeButton::getPaneNo(const char *name) {
     /* Returns the index of a named pane: first searches this instance's pane
        list (count at +8, names in lbl_8031D990), then the 10 global panes in
