@@ -1567,13 +1567,13 @@ extern "C" void fn_800F2EAC(void *self, void *arg) {
 }
 
 extern "C" void SetInfoChunk__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCvUl(void *self, const void *chunk, u32 size) {
-    typedef void (*PanicCall)(const char *, s32, const char *, ...);
-    const char *base = lbl_80324868;
+    struct Pool { char file[0x198]; char msg1[0x2C]; char msg2[0x40]; };
+    Pool *p = (Pool *)lbl_80324868;
     const u32 *data = (const u32 *)chunk;
     if (data == 0)
-        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base + 0, 0x78, base + 0x198);
+        Panic__Q26nw4hbm2dbFPCciPCce(p->file, 0x78, p->msg1);
     if (data[0] != 0x494E464FU)
-        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base + 0, 0x7B, base + 0x1C4);
+        Panic__Q26nw4hbm2dbFPCciPCce(p->file, 0x7B, p->msg2);
     *(const void **)((char *)self + 0x28) = (const u8 *)data + 8;
 }
 
@@ -4053,13 +4053,14 @@ extern "C" const char lbl_80325110[];
 #pragma push
 #pragma use_lmw_stmw off
 s32 nw4hbm::snd::SoundArchivePlayer::WsdCallback::GetWaveSoundData(nw4hbm::snd::detail::WaveSoundInfo *info, nw4hbm::snd::detail::WaveSoundNoteInfo *noteInfo, nw4hbm::snd::detail::WaveData *waveData, const void *file, int index, int noteIndex, u32 waveIndex) const {
-    struct BankReader { void *v[3]; } reader;
-    const void *waveAddress;
-    if ((*(void **)(*(u8 **)((u8 *)this + 4) + 0x10) == 0 ? 0 : fn_800F273C(*(void **)(*(u8 **)((u8 *)this + 4) + 0x10))) == 0)
+    struct BankReader { void *a; void *b; void *c; } reader;
+    u32 waveAddress;
+    const WsdCallback *self = this;
+    if ((*(void **)(*(u8 **)((u8 *)self + 4) + 0x10) == 0 ? 0 : fn_800F273C(*(void **)(*(u8 **)((u8 *)self + 4) + 0x10))) == 0)
         return 0;
-    if (*(u32 *)(*(u8 **)((u8 *)this + 4) + 0x10) == 0)
+    if (*(u32 *)(*(u8 **)((u8 *)self + 4) + 0x10) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x2AC, lbl_80325110);
-    waveAddress = (const void *)detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl_800F6490(*(void **)((u8 *)this + 4), waveIndex);
+    waveAddress = detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl_800F6490(*(void **)((u8 *)self + 4), waveIndex);
     if (waveAddress == 0)
         return 0;
     __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(&reader, file);
@@ -4067,7 +4068,7 @@ s32 nw4hbm::snd::SoundArchivePlayer::WsdCallback::GetWaveSoundData(nw4hbm::snd::
         return 0;
     if (ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail17WaveSoundNoteInfoii(&reader, noteInfo, index, noteIndex) == 0)
         return 0;
-    return ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3snd6detail8WaveDataPCv(&reader, *(s32 *)noteInfo, waveData, waveAddress);
+    return ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3snd6detail8WaveDataPCv(&reader, *(s32 *)noteInfo, waveData, (const void *)waveAddress);
 }
 
 extern "C" s32 fn_800F73E4(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4)
@@ -4363,6 +4364,7 @@ struct __StrmMutexRef;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling on
+struct StrmPanicMsgs { u8 fileName; u8 pad0[0x6BF]; u8 m762[0x48]; u8 pad1[0x30]; u8 m763[0x48]; u8 pad2[0x30]; u8 m764[0x48]; };
 extern "C" void *__ct__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFPvUlliUllbRQ56nw4hbm3snd6detail10StrmPlayer11LoadCommandRCQ36nw4hbm3snd12SoundArchiveUlUlR7OSMutex(void *self, void *arg1, unsigned long arg2, long arg3, int arg4, unsigned long arg5, long arg6, bool arg7, __StrmLoadCommandRef &arg8, const __StrmSoundArchiveRef &arg9, unsigned long arg10, unsigned long arg11, __StrmMutexRef &arg12) {
     register const char *base = lbl_80324E88;
 
@@ -7272,11 +7274,11 @@ extern "C" void SetVoiceType__Q46nw4hbm3snd6detail7AxVoiceFQ56nw4hbm3snd6detail7
 extern "C" void fn_800E5A8C(void *, s32, u32, const void *);
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void UpdatePlayingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
+extern "C" void UpdatePlayingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFv(void *__restrict arg0) {
     struct PBox { u8 *v; } pb;
     u8 *&p = pb.v;
-    u8 *self = (u8 *)arg0;
     const char *file = lbl_80326768;
+    u8 *self = (u8 *)arg0;
     s32 value;
     value = *(s32 *)(self + 0x80) + 1;
     *(s32 *)(self + 0x80) = value;
