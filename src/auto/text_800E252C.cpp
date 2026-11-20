@@ -1371,23 +1371,6 @@ extern "C" void Clear__Q46nw4hbm2ut6detail12LinkListImplFv(void *);
 extern "C" void AXRegisterAuxACallback(int, int);
 extern "C" void AXRegisterAuxBCallback(int, int);
 extern "C" void AXRegisterAuxCCallback(int, int);
-#pragma dont_inline off
-struct Dummy_800E4364 {
-    virtual void first();
-    virtual void second();
-    virtual void third();
-};
-extern const char lbl_80322064[];
-extern const char lbl_80322040[];
-static inline void WalkList_800E4364(void *list) {
-    void *node = *(void **)((char *)list + 4);
-    void *sentinel = (char *)list + 4;
-    while (node != sentinel) {
-        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322064, 0x23D, lbl_80322040);
-        ((Dummy_800E4364 *)((char *)node - 4))->third();
-        node = *(void **)node;
-    }
-}
 #pragma push
 #pragma optimization_level 3
 extern "C" void fn_800E4364(void *arg0, int arg1) {
