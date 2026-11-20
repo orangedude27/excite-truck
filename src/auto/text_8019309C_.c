@@ -3216,6 +3216,7 @@ extern float lbl_805622B4, lbl_805622C0, lbl_805622C4, lbl_805622C8;
 extern void PSVECCrossProduct(void *, void *, void *);
 extern float PSVECMag(const void *);
 extern void fn_801DCF48(float *, float, float);
+#define SUBPTR (*(char **)(p + 0x294))
 extern int fn_80167594(int), fn_801675E4(int), fn_80167634(int), fn_80167728(int);
 extern int fn_80167758(void), fn_80167768(float);
 void fn_80198530(void *arg0) {
@@ -3239,7 +3240,7 @@ void fn_80198530(void *arg0) {
         *(float *)&s[0x18] = f2;
         *(float *)&s[0x1c] = f4;
         if (c4) {
-            float t = ((float)fabs(*(float *)&s[0xc]) - f2) / lbl_80562274;
+            float t = ((float)__fabsf(*(float *)&s[0xc]) - f2) / lbl_80562274;
             if (f4 < t) f4 = t;
             if (f4 > f2) f4 = f2;
             f30 = lbl_80562140;
@@ -3280,7 +3281,7 @@ void fn_80198530(void *arg0) {
         if (f4_2 < t) f4_2 = t;
         if (f4_2 > lbl_80562144) f4_2 = lbl_80562144;
         f31 = lbl_80562144 + f4_2 * lbl_80562140;
-        if (fabs(v28) <= *(float *)lbl_80558DC4) *(float *)&s[0xc] = lbl_80562140;
+        if (__fabsf(v28) <= *(float *)lbl_80558DC4) *(float *)&s[0xc] = lbl_80562140;
     }
     {
         u8 c = *(u8 *)(p + 0x304);
@@ -3377,6 +3378,39 @@ void fn_80198530(void *arg0) {
     else *(int *)(sub + 0x24) = *(int *)(sub + 0x28);
     if (fn_80167634(*(int *)(p + 0x290)) != 0) *(float *)(sub + 0x5f0) = lbl_80562144;
     else *(float *)(sub + 0x5f0) = lbl_80562140;
+    if (*(float *)(p + 0x270) > lbl_805622C4) {
+        float v = lbl_805622C8;
+        float diff = *(float *)(p + 0x28) - *(float *)(p + 0x270);
+        if (v < diff) {} else v = diff;
+        if (v > lbl_80562144) {} else v = lbl_80562144;
+        if ((v > lbl_80562144) && (__fabsf(f30) < lbl_80562274) && (fn_80167728(*(int *)(p + 0x290)) != 0)) {
+            float *a5 = *(float **)(p + 0x1a0);
+            float mag;
+            fn_801DCF48((float *)&s[0x38], *(float *)(sub + 0x60), *(float *)(sub + 0x68));
+            *(float *)&s[0x2c] = a5[2];
+            *(float *)&s[0x30] = lbl_80562144;
+            *(float *)&s[0x34] = a5[3];
+            PSVECCrossProduct((float *)&s[0x38], (float *)&s[0x2c], (float *)&s[0x20]);
+            PSVECCrossProduct((float *)&s[0x20], (float *)&s[0x38], (float *)&s[0x2c]);
+            mag = PSVECMag((float *)&s[0x2c]);
+            {
+                float f2 = lbl_80562148;
+                float inv;
+                if (f2 < mag) {} else f2 = mag;
+                inv = lbl_80562140 / f2;
+                *(float *)&s[0x2c] = *(float *)&s[0x2c] * inv;
+                *(float *)&s[0x34] = *(float *)&s[0x34] * inv;
+                *(float *)&s[0x30] = *(float *)&s[0x30] * inv * lbl_80562194;
+                {
+                    float scale = (v * *(float *)(sub + 0xd4)) / lbl_805622BC;
+                    *(float *)&s[0x2c] = *(float *)&s[0x2c] * scale;
+                    *(float *)&s[0x30] = *(float *)&s[0x30] * scale;
+                    *(float *)&s[0x34] = *(float *)&s[0x34] * scale;
+                    fn_8017B3A8(sub, (float *)&s[0x2c], sub + 0x60, *(float *)&s[0x30]);
+                }
+            }
+        }
+    }
 }
 
 #pragma opt_common_subs off
