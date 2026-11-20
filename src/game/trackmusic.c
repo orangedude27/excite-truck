@@ -450,12 +450,6 @@ static inline long clampTrackDigit(long value, long limit) {
     if (value < limit) limit = value;
     return limit;
 }
-static inline long clampTrackSum(long pos, long delta, long limit) {
-    long value = pos + delta;
-    value &= ((-value & ~value) >> 31);
-    if (value < limit) limit = value;
-    return limit;
-}
 #pragma dont_inline on
 void fn_8020FDE4(long trackId, const char *name, register char *slotKey) {
     /* Initialize a track-music slot: store the track id, copy the display name, and copy the slot key (truncated to 0x20). */
