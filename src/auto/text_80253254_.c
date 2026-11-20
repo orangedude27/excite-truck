@@ -901,7 +901,7 @@ void fn_80254938(void *arg0v, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 farg0,
     u8 *temp_r27;
 
     var_f31 = farg1;
-    if (((s32)lbl_8055F330 == 0) && ((s32)M2C_FIELD(arg0, s32 *, 0x120) == 0)) {
+    if (((s32)lbl_8055F330 != 0) || ((s32)M2C_FIELD(arg0, s32 *, 0x120) == 0)) {
         var_f29 = lbl_80563A04;
         var_f26 = M2C_FIELD(arg0, f32 *, 0xEC);
         var_f25 = var_f29;
