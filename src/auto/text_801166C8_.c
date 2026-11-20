@@ -469,7 +469,6 @@ s32 fn_80116E54(s32 (*callback)(s32), s32 arg) {
     return lbl_8055DECC != 0;
 }
 
-#pragma unroll 1
 s8 *fn_80116EE4(s8 *arg0, s16 *arg1, u32 arg2) {
     s16 *var_r4 = arg1;
     s8 *var_r3 = arg0;
