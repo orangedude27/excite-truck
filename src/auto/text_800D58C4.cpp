@@ -3398,8 +3398,8 @@ extern "C" void AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane(void* arg0, 
 
 extern "C" void fn_800DB76C(f32 *out, void *self, f32 *arg2) {
     struct VR2 {
-        f32 x;
         f32 y;
+        f32 x;
     };
     f32 c = 0.0f;
     out[0] = c;
@@ -4013,6 +4013,12 @@ extern "C" void PSMTXConcat(const f32*, const f32*, f32*);
 extern "C" void PSMTXCopy(const f32*, f32*);
 extern "C" void GXLoadPosMtxImm(const f32*, u32);
 extern "C" void GXSetCurrentMtx(u32);
+namespace nw4r { namespace lyt {
+struct DrawInfo;
+struct Pane {
+    void LoadMtx(const DrawInfo& info);
+};
+}}
 #pragma push
 #pragma optimize_for_size on
 extern "C" void LoadMtx__Q34nw4r3lyt4PaneFRCQ34nw4r3lyt8DrawInfo(void* self_, void* info_) {
