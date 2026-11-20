@@ -497,7 +497,8 @@ extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32 angle) {
 }
 
 extern "C" f32 CosFIdx__Q24nw4r4mathFf(f32 angle) {
-    register f32 index = __fabsf(angle);
+    angle = __fabsf(angle);
+    f32 index = angle;
     while (index >= lbl_80560F00) index -= lbl_80560F00;
     u16 q = __OSf32tou16(index);
     f32 whole = __OSu16tof32(&q);
@@ -3980,29 +3981,20 @@ extern "C" void Stop__Q44nw4r3snd6detail10BasicSoundFi(void *self, int target) {
 extern "C" void Pause__Q46nw4hbm3snd6detail10BasicSoundFbi(void *self, bool pause, int frames) {
     PauseFields *s = (PauseFields *)self;
     PauseVt *player = ((PauseVt *)self)->vf22();
-    int n;
-    float v;
     if (pause) {
-        n = (int)((float)frames * PauseRamp(s));
+        int n = (int)((float)frames * PauseRamp(s));
         s->fading = 1;
         if (n <= 0) n = 1;
-        v = PauseRamp(s);
-        s->end = lbl_80560FB0;
-        s->start = v;
-        s->total = n;
-        s->elapsed = 0;
+        PauseSetRamp(s, 0.0f, n);
     } else {
+        int n;
         if ((s->paused != 0) != pause) {
             player->vf4(0);
         }
-        n = (int)((float)frames * (lbl_80560FB4 - PauseRamp(s)));
+        n = (int)((float)frames * (1.0f - PauseRamp(s)));
         s->fading = 1;
         if (n <= 0) n = 1;
-        v = PauseRamp(s);
-        s->end = lbl_80560FB4;
-        s->start = v;
-        s->total = n;
-        s->elapsed = 0;
+        PauseSetRamp(s, 1.0f, n);
     }
     s->paused = pause;
 }
