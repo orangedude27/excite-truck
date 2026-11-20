@@ -167,7 +167,6 @@ extern "C" int fn_80297D90(void *out, int value) {
     return 0;
 }
 
-#pragma scheduling invalid_target
 extern "C" void fn_80297DC8(void* arg0) {
     float f0=lbl_805645B4,f1=lbl_805645B0,f2=lbl_805645AC,f3=lbl_805645A8,f4=lbl_805645A4,f5=lbl_805645A0,f6=lbl_8056459C,f7=lbl_80564598,f8=lbl_80564594,f9=lbl_80564590;
     float tmpA[3], tmpB[3];
