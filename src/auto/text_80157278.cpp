@@ -2101,7 +2101,7 @@ skip_reset:
         f32 threshold, speed;
         speed = *(f32*)(player+0x258c);
         threshold = lbl_8056175C;
-        s32 flag = 1;
+        int flag = 1;
         *(s32*)(p+0x2cc) = 0;
         p[0x2d0] = 1;
         bool running = speed > threshold;
@@ -3265,9 +3265,8 @@ extern "C" f32 fn_8015C264(void *arg0, void *arg1) {
                 }
                 {
                     f32 f50;
-                    s32 base = *(s32*)((char*)arg0 + 0x26C);
                     f32 f250 = *(f32*)((char*)arg0 + 0x250);
-                    temp_r0 = base + var_r4;
+                    temp_r0 = *(s32*)((char*)arg0 + 0x26C) + var_r4;
                     f50 = lbl_80561750;
                     *(s32*)((char*)arg0 + 0x264) = temp_r0;
                     *(s32*)((char*)arg0 + 0x260) = temp_r0;
@@ -4078,7 +4077,7 @@ extern "C" void fn_8015DC98(Unk801577F0* arg0) {
 }
 #pragma pop
 extern "C" s32 lbl_8055A06C[1];
-static inline f32 fn8015DD9CSumFloat(Unk801577F0* arg0) {
+static inline f32 fn8015DD9CSumFloat(const Unk801577F0* arg0) {
  f32 total=lbl_80561754;
  for(s32 i=0;i<arg0->mCount;i++) total+=*(f32*)(arg0->mData+i*0x38+12);
  return total;
