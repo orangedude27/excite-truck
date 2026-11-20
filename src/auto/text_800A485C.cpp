@@ -13,11 +13,6 @@ __declspec(section ".sdata") extern u8 lbl_80559200[];
 __declspec(section ".sdata") extern u8 lbl_80559204[];
 }
 extern "C" s32 fn_800B6200(void *, void *);
-static inline void copy_slot_data_800B6200(void *dst, const void *src) {
-    u64 *d = (u64 *)dst;
-    u64 *s = (u64 *)src;
-    for (s32 i = 0; i < 72; i++) d[i] = s[i];
-}
 extern "C" void fn_800B3330(void *, s32, s32);
 extern "C" s32 fn_800AC708(void *, u8 *, u32, s32 *);
 extern "C" s32 fn_800AF4F0(void *, s32);
