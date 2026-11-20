@@ -1151,16 +1151,6 @@ struct SubIface8027C2B8 {
     virtual void f21();
     virtual void *fetchSub(long index);
 };
-#pragma dont_inline reset
-static inline char *getName8027C2B8(void *obj) {
-    return ((ItemIface8027C2B8 *)obj)->getName();
-}
-static inline void *fetchSub8027C2B8(void *obj, long index) {
-    return ((SubIface8027C2B8 *)obj)->fetchSub(index);
-}
-static inline void *fetch8027C2B8(void *obj, long index) {
-    return ((ListIface8027C2B8 *)obj)->fetch(index);
-}
 #pragma cplusplus reset
 struct Ctx8027C2B8 {
     void **tableArray;
