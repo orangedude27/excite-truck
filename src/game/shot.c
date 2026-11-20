@@ -104,34 +104,44 @@ s32 fn_802E47F8(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_802E4800(u16 arg0) {
+void fn_802E4800(u16 inputWord) {
+    // Record one input word into the screenshot key-history subsystem (skipped while the
+    // Wii Home menu is open): refresh the last-input timestamp, shift the 32-entry
+    // 12-bit input history and append the key code, then store the full word in the
+    // four-entry recent-key ring (first empty slot, else rotate the oldest out).
+#define s_keyHistory lbl_8055FF50
+#define inputHistoryBuffer lbl_804FC418
+#define lastInputTime lbl_8055FF5C
     volatile u16 *q;
     u32 i;
-    u16 a, b, c;
+    u16 next1, next2, next3;
 
     if (fn_802ECC10() != 0) {
         return;
     }
-    lbl_8055FF5C = fn_802E2C20();
+    lastInputTime = fn_802E2C20();
     for (i = 0; i < 31; i++) {
-        lbl_804FC418[i] = lbl_804FC418[i + 1];
+        inputHistoryBuffer[i] = inputHistoryBuffer[i + 1];
     }
-    lbl_804FC418[31] = arg0 & 0xFFF;
+    inputHistoryBuffer[31] = inputWord & 0xFFF;
 
     for (i = 0; i < 4; i++) {
-        if ((&lbl_8055FF50)[i] == 0) {
-            (&lbl_8055FF50)[i] = arg0;
+        if ((&s_keyHistory)[i] == 0) {
+            (&s_keyHistory)[i] = inputWord;
             return;
         }
     }
-    q = &lbl_8055FF50;
-    a = q[1];
-    b = q[2];
-    c = q[3];
-    q[0] = a;
-    q[1] = b;
-    q[2] = c;
-    q[3] = arg0;
+    q = &s_keyHistory;
+    next1 = q[1];
+    next2 = q[2];
+    next3 = q[3];
+    q[0] = next1;
+    q[1] = next2;
+    q[2] = next3;
+    q[3] = inputWord;
+#undef s_keyHistory
+#undef inputHistoryBuffer
+#undef lastInputTime
 }
 #pragma pop
 
