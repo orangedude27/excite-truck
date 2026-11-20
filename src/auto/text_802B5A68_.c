@@ -358,13 +358,13 @@ void fn_802B5EC4(void) {
     lbl_8055FA44 = (void*)fn_802B5D94();
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802B5EE8(void) {
     register s32 v = lbl_8055FA38 + 1;
     lbl_8055FA18 = lbl_80564C5C;
     v %= 4;
     lbl_8055FA38 = v;
-    *(volatile s32 *)((u8 *)&lbl_804BE7D8 + 4) = 0;
+    *(s32 *)((u8 *)&lbl_804BE7D8 + 4) = 0;
 }
 extern s32 lbl_8055FA38;
 extern float lbl_8055FA18;
