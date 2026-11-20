@@ -6,7 +6,7 @@ extern float fn_80144514(float, float, float, float, float, float);
 extern void fn_801BFD34(void *, void *, void *);
 extern void fn_80015B20(void *, void *, void *);
 extern void fn_802C7A38(s32, void *, s32);
-struct Rec14 { s32 v[14]; };
+struct Rec14 { s32 w0,w1,w2,w3,w4,w5,w6,w7,w8,w9,w10,w11,w12,w13; };
 struct Rec8 { s32 v[8][14]; };
 typedef union { struct Rec14 r; s32 w[14]; } U14;
 struct SrcHdr { s32 unk[2]; s32 count; s32 unk2; struct Rec14 data[1]; };
@@ -45,11 +45,11 @@ s32 fn_801E5990(void *header) {
 }
 
 #pragma scheduling on
-void fn_801E5998(struct SrcHdr *src, struct Rec14 *dst, s32 *outCount) {
-    s32 count = src->count;
+void fn_801E5998(void *src, void *dst, s32 *outCount) {
+    s32 count = ((s32 *)src)[2];
     s32 i;
     for (i = 0; i < count; i++) {
-        dst[i] = src->data[i];
+        ((struct Rec14 *)dst)[i] = *(struct Rec14 *)((u8 *)src + i * 0x38 + 0x10);
     }
     *outCount = count;
 }
@@ -76,12 +76,12 @@ s32 fn_801E5E24(s32 arg0, void *arg1, s32 arg2, void *arg3) {
     float tmpR[12];
     s32 i;
     s32 idx;
-    s32 *pBase = (s32 *)arg0;
-    float *curQ = (float *)arg1;
-    s32 count = arg2;
-    float *pOut = (float *)arg3;
-    float *curRec = (float *)(arg0 + 0x10);
-    float *curDst = bufB;
+    register s32 *pBase = (s32 *)arg0;
+    register float *curQ = (float *)arg1;
+    register s32 count = arg2;
+    register float *pOut = (float *)arg3;
+    register float *curRec = (float *)(arg0 + 0x10);
+    register float *curDst = bufB;
     for (i = 0; i < count; i++) {
         qx = curQ[4];
         qy = curQ[5];
@@ -177,6 +177,7 @@ extern void fn_801C7254(void *, s32, s32, s32, s32, s32, s32, s32);
 extern void fn_801E67B4(void *, void *, void *);
 extern void fn_802C7A38(s32, void *, s32);
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
     s32 sp68[0x180];
     s32 sp38[12];
@@ -192,7 +193,7 @@ void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
     register s32 *dst;
     register s32 *tail;
     s32 a10, a9, a8, a7, a6, a5, a4, a1, a0, a2, a3, a11;
-    s32 b0, b1, b2, b3, b4, b5, b6, b7, b8;
+    s32 b8, b7, b6, b5, b4, b3, b2, b1, b0;
 
     count = arg2;
     if (arg3 != 0) {
@@ -245,6 +246,7 @@ void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
     }
     fn_802C7A38(0, sp68, temp);
 }
+#pragma scheduling on
 /* Mtx3MultVec: transform the vector in by the 3x3 matrix m (three rows of three
    floats, out = in * m) and store the result in out.  When out and in are the
    same vector the source is read into registers first, so it is safe to
