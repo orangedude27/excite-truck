@@ -175,21 +175,9 @@ extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8E48(void);
 static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *dst, f32 x, f32 y, f32 z) {
     if (src == dst) {
-        f32 xy3 = y * matrix[3];
-        f32 xx0 = x * matrix[0];
-        f32 xx1 = x * matrix[1];
-        f32 yy4 = y * matrix[4];
-        f32 xx2 = x * matrix[2];
-        f32 yy5 = y * matrix[5];
-        f32 q0 = z * matrix[6];
-        f32 q1 = z * matrix[7];
-        f32 q2 = z * matrix[8];
-        f32 outX = (xx0 + xy3) + q0;
-        f32 outY = (xx1 + yy4) + q1;
-        f32 outZ = (xx2 + yy5) + q2;
-        dst[0] = outX;
-        dst[1] = outY;
-        dst[2] = outZ;
+        dst[0] = (z * matrix[6]) + ((x * matrix[0]) + (y * matrix[3]));
+        dst[1] = (z * matrix[7]) + ((x * matrix[1]) + (y * matrix[4]));
+        dst[2] = (z * matrix[8]) + ((x * matrix[2]) + (y * matrix[5]));
     } else {
         dst[0] = y * matrix[3] + x * matrix[0] + z * matrix[6];
         dst[1] = y * matrix[4] + x * matrix[1] + z * matrix[7];
@@ -1248,12 +1236,7 @@ void fn_80233354(u8 *text, u8 *ctx, s32 arg2, s32 flags, f32 x, f32 y, f32 sx, f
     y0 = y;
     strlen((char *)text);
     if ((s8)*text != 0) {
-        u8 c0 = *text;
-        s32 width;
-        if ((c0 & 0xF0) == 0xE0) width = 3;
-        else if ((c0 & 0xE0) == 0xC0) width = 2;
-        else width = 1;
-        charW = (f32)ctx[4] * sx + width * 0.0f;
+        charW = (f32)ctx[4] * sx;
         if (flags & 1) {
         } else if (flags & 2) {
             fn_8023293C((s32)ctx, (char *)text, lbl_80563684);
