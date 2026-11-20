@@ -20084,16 +20084,21 @@ extern "C" void fn_800D01AC(void *arg0, void *arg1) {
     };
     typedef void (*Method0)(void *);
     typedef void (*Method1)(void *, s32);
+    void *sent1 = (void *)&lbl_8055DE00;
+    void *sent2 = (void *)&lbl_8055DE10;
     u8 *node = *(u8 **)((u8 *)arg1 + 4);
     u8 *end = (u8 *)arg1 + 4;
+    u8 *self = (u8 *)arg0;
     void *object;
     void *entry;
     u8 *member;
     void *child;
-    for (; node != end; node = *(u8 **)node) {
-        if (*(void **)((u8 *)arg0 + 0x14) != 0) {
-            object = MEMAllocFromAllocator((MEMAllocator *)*(void **)((u8 *)arg0 + 0x14), (u32)0x30);
-            entry = MEMAllocFromAllocator((MEMAllocator *)*(void **)((u8 *)arg0 + 0x14), (u32)0x10);
+    s32 found;
+    void *p;
+    while (node != end) {
+        if (*(void **)(self + 0x14) != 0) {
+            object = MEMAllocFromAllocator((MEMAllocator *)*(void **)(self + 0x14), (u32)0x30);
+            entry = MEMAllocFromAllocator((MEMAllocator *)*(void **)(self + 0x14), (u32)0x10);
             if (object != 0) {
                 u32 objectIndex = lbl_8055DDA0;
                 *(void **)object = (void *)lbl_8031E878;
@@ -20144,10 +20149,7 @@ extern "C" void fn_800D01AC(void *arg0, void *arg1) {
                 *(void **)((u8 *)entry + 4) = object;
             }
         }
-        {
-            void *list = (u8 *)arg0 + 0x18;
-            List_Append__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(list, entry);
-        }
+        List_Append__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(self + 0x18, entry);
         lbl_8055DDA0 += 1;
         if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
@@ -20165,17 +20167,18 @@ extern "C" void fn_800D01AC(void *arg0, void *arg1) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
         }
         child = ((Dispatch *)member)->d1();
-        {
-            s32 found = 0;
-            for (; child != 0; child = *(void **)child) {
-                if (child == &lbl_8055DE00) {
-                    found = 1;
-                    break;
-                }
+        while (child != 0) {
+            if (child == sent1) {
+                found = 1;
+                goto check1;
             }
-            if (found != 0) {
-                ((Dispatch *)object)->d18(1);
-            }
+            child = *(void **)child;
+        }
+        found = 0;
+    check1:
+        p = found ? member : 0;
+        if (p != 0) {
+            ((Dispatch *)object)->d18(1);
         }
         if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
@@ -20185,23 +20188,25 @@ extern "C" void fn_800D01AC(void *arg0, void *arg1) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
         }
         child = ((void *(*)(void *))(*(void ***)member)[3])(member);
-        {
-            s32 found = 0;
-            for (; child != 0; child = *(void **)child) {
-                if (child == &lbl_8055DE10) {
-                    found = 1;
-                    break;
-                }
+        while (child != 0) {
+            if (child == sent2) {
+                found = 1;
+                goto check2;
             }
-            if (found != 0) {
-                ((Method1)(*(void ***)object)[20])(object, 1);
-            }
+            child = *(void **)child;
+        }
+        found = 0;
+    check2:
+        p = found ? member : 0;
+        if (p != 0) {
+            ((Method1)(*(void ***)object)[20])(object, 1);
         }
         ((Dispatch *)arg0)->d6(object);
         if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
         }
         ((Dispatch *)arg0)->d18((s32)(node + 0xC));
+        node = *(u8 **)node;
     }
 }
 #pragma opt_propagation reset
@@ -20850,8 +20855,9 @@ extern "C" void fn_800D16A8(s32 *indexPtr) {
     }
 }
 
+#pragma unroll off
 extern "C" void fn_800D16C4() {
-    if (lbl_8055DDB0 == 0) {
+    if (*(volatile u32*)&lbl_8055DDB0 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E960, 0x3F, lbl_8031E974);
     }
     register u8* p = (u8*)lbl_8055DDB0;
@@ -20864,16 +20870,16 @@ extern "C" void fn_800D16C4() {
             if (WPADCanSendStreamData(i) != 0) {
                 u16 buf[0x28];
                 u32 enc[5];
-                s32 count = 0x28;
+                u32 count = 0x28;
                 u32 avail = *(u32*)(p + 0x54) >> 1;
                 const s16* src = (const s16*)*(u32*)(p + 0x50);
                 s8 scale = (s8)p[0x5d];
                 u16* dst = buf;
                 if (avail <= (u32)0x28) {
-                    count = (s32)avail;
+                    count = avail;
                 }
                 if (count > 0) {
-                    s32 q = (s32)((u32)count >> 2);
+                    s32 q = (s32)(count >> 2);
                     if (q != 0) {
                         do {
                             dst[0] = (u16)((src[0] * scale) / 10);
@@ -20937,9 +20943,7 @@ extern "C" void fn_800D16C4() {
         p += 0x68;
     } while (i < 4);
 }
-
-#pragma push
-#pragma use_lmw_stmw off
+#pragma unroll reset
 /* Initialize a remote-speaker object: install vtable lbl_8031E9C0, publish it in
  * lbl_8055DDB0, optionally open an ARC handle, and initialize 4 alarm slots. */
 extern "C" void *fn_800D1948(void *arg0, s32 arg1) {
@@ -21338,14 +21342,15 @@ extern "C" s32 fn_800D2E14(void) {
 }
 
 void fn_800D2E3C(s32 x, s32 y, s32 width, s32 height) {
-    register s32 right, startX;
-    s32 bottom, startY, row, col;
-    s32 endX, endY, stride;
+    s32 right, bottom, startX, startY, row, col;
     u16 *dest;
+    u32 w, h;
+    s32 endX, endY, stride;
     if (lbl_80407BD8[0] == 0)
         return;
-    endX = *(u16 *)((u8 *)lbl_80407BD8 + 8);
-    if ((((u32)endX < 0x190) ? 1 : 2) == 2) {
+    w = *(u16 *)((u8 *)lbl_80407BD8 + 8);
+    endX = w;
+    if (((w < 0x190) ? 1 : 2) == 2) {
         x *= 2;
         width *= 2;
     }
@@ -21353,8 +21358,9 @@ void fn_800D2E3C(s32 x, s32 y, s32 width, s32 height) {
     startX = x & (((u32)x >> 31) - 1);
     if (right <= endX)
         endX = right;
-    endY = *(u16 *)((u8 *)lbl_80407BD8 + 0xA);
-    if ((((u32)endY < 0x12C) ? 1 : 2) == 2) {
+    h = *(u16 *)((u8 *)lbl_80407BD8 + 0xA);
+    endY = h;
+    if (((h < 0x12C) ? 1 : 2) == 2) {
         y *= 2;
         height *= 2;
     }
@@ -21504,7 +21510,7 @@ extern "C" u32 lbl_8031EC40[];
 extern "C" u8  lbl_802F4858[];
 extern "C" u8  lbl_802F4958[];
 #pragma push
-#pragma scheduling reset
+#pragma scheduling invalid_target
 extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
     u16 *dest;
     u32 *pal;
@@ -21543,7 +21549,7 @@ extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
             n = scaleX * 6;
             for (i = 0; i < 7; i++) {
                 u32 pat = *pal++ << off;
-                u32 cnt;
+                s32 cnt, j;
                 if (scaleX == 1) {
                     pat = (pat >> 1) & 0x7E000000;
                 } else {
@@ -21552,13 +21558,14 @@ extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
                          | (lbl_8031EC40[(pat >> 28) & 0xC] << 8)) << 19;
                 }
                 if (n > 0) {
-                    for (cnt = (u32)(n + 1) >> 1; cnt != 0; cnt--) {
+                    cnt = (s32)((u32)(n + 1) >> 1);
+                    for (j = 0; j < cnt; j++) {
                         u32 m27 = pat & 0x40000000;
-                        u32 m26 = pat & 0x20000000;
                         u16 p0, p1;
                         u16 a, b, c, d;
                         a = m27 ? ((u16 *)lbl_80407BE8)[4] : 0x40;
                         b = (pat & 0x80000000) ? ((u16 *)lbl_80407BE8)[5] : 0x20;
+                        u32 m26 = pat & 0x20000000;
                         c = m26 ? ((u16 *)lbl_80407BE8)[5] : 0x20;
                         d = m27 ? ((u16 *)lbl_80407BE8)[2] : 0;
                         p0 = (u16)(d | (a + (c + b)));
@@ -25959,66 +25966,59 @@ extern "C" s32 fn_800A485C(s32 c) {
 
 #pragma optimize_for_size on
 void VFipf_memcpy(void *dstArg, const void *srcArg, u32 size) {
-    u8 *out;
+    register u8 *out;
     const u8 *in = (const u8 *)srcArg;
     u32 blocks;
     u32 words;
-    u32 byteAdjustment;
+    s32 byteAdjustment;
     u32 value;
-    int i;
+    out = (u8 *)dstArg;
     if (((u32)dstArg & 3) != 0)
         goto copy_bytes;
-    out = (u8 *)dstArg;
     if (((u32)srcArg & 3) != 0)
         goto copy_bytes;
     words = size >> 2;
     if (size <= 3)
         goto copy_bytes;
     blocks = words >> 3;
-    byteAdjustment = -(words << 2);
-    if (blocks != 0) {
-        for (i = 0; i < (int)blocks; i++) {
-            value = *(u32 *)(in + 0x00); *(u32 *)(out + 0x00) = value;
-            value = *(u32 *)(in + 0x04); *(u32 *)(out + 0x04) = value;
-            value = *(u32 *)(in + 0x08); *(u32 *)(out + 0x08) = value;
-            value = *(u32 *)(in + 0x0C); *(u32 *)(out + 0x0C) = value;
-            value = *(u32 *)(in + 0x10); *(u32 *)(out + 0x10) = value;
-            value = *(u32 *)(in + 0x14); *(u32 *)(out + 0x14) = value;
-            value = *(u32 *)(in + 0x18); *(u32 *)(out + 0x18) = value;
-            value = *(u32 *)(in + 0x1C);
-            in += 0x20;
-            *(u32 *)(out + 0x1C) = value;
-            out += 0x20;
-        }
+    byteAdjustment = -(s32)(words << 2);
+    for (; blocks != 0; blocks--) {
+        value = *(u32 *)(in + 0x00); *(u32 *)(out + 0x00) = value;
+        value = *(u32 *)(in + 0x04); *(u32 *)(out + 0x04) = value;
+        value = *(u32 *)(in + 0x08); *(u32 *)(out + 0x08) = value;
+        value = *(u32 *)(in + 0x0C); *(u32 *)(out + 0x0C) = value;
+        value = *(u32 *)(in + 0x10); *(u32 *)(out + 0x10) = value;
+        value = *(u32 *)(in + 0x14); *(u32 *)(out + 0x14) = value;
+        value = *(u32 *)(in + 0x18); *(u32 *)(out + 0x18) = value;
+        value = *(u32 *)(in + 0x1C);
+        in += 0x20;
+        *(u32 *)(out + 0x1C) = value;
+        out += 0x20;
     }
     words &= 7;
-    if (words != 0) {
-        for (i = 0; i < (int)words; i++) {
-            value = *(u32 *)in;
-            in += 4;
-            *(u32 *)out = value;
-            out += 4;
-        }
+    for (; words != 0; words--) {
+        value = *(u32 *)in;
+        in += 4;
+        *(u32 *)out = value;
+        out += 4;
     }
     size += byteAdjustment;
     if (size == 0)
         return;
 copy_bytes:
     blocks = size >> 3;
-    if (blocks != 0) {
-        for (i = 0; i < (int)blocks; i++) {
-            out[0] = in[0]; out[1] = in[1];
-            out[2] = in[2]; out[3] = in[3];
-            out[4] = in[4]; out[5] = in[5];
-            out[6] = in[6]; out[7] = in[7];
-            in += 8;
-            out += 8;
-        }
+    for (; blocks != 0; blocks--) {
+        out[0] = in[0]; out[1] = in[1];
+        out[2] = in[2]; out[3] = in[3];
+        out[4] = in[4]; out[5] = in[5];
+        out[6] = in[6]; out[7] = in[7];
+        in += 8;
+        out += 8;
     }
     blocks = size & 7;
     if (blocks == 0)
         return;
-    for (i = 0; i < (int)blocks; i++) {
+    for (; blocks != 0; blocks--) {
         *out++ = *in++;
     }
 }
@@ -26407,9 +26407,10 @@ extern "C" void fn_800A52A0(void *volume, const void *name) {
 
 #pragma opt_propagation off
 extern "C" void fn_800A52DC(u32 arg0) {
-    u8 *ptr = (u8 *)lbl_803D2140 + 0xA0;
     s32 i;
+    u8 *ptr = (u8 *)lbl_803D2140 + 0xA0;
     for (i = 0; i < 13; i++, ptr += 0x3F90) {
+        if (i == 13) continue;
         if (*(u32 *)(ptr + 0x1FBC) == arg0) {
             u16 value = *(u16 *)(ptr + 0x1F8C);
             if (value & 8) {
@@ -26430,7 +26431,7 @@ extern "C" void fn_800A52DC(u32 arg0) {
 extern "C" void fn_800A535C(u32 arg0) {
     u8 *ptr = (u8 *)lbl_803D2140 + 0xA0;
     s32 i;
-    for (i = 0; i < 13; i++, ptr += 0x3F90) {
+    for (i = 0; i != 13; i++, ptr += 0x3F90) {
         if (*(u32 *)(ptr + 0x1FBC) == arg0) {
             *(u16 *)(ptr + 0x1F8C) |= 0x14;
         }
