@@ -10957,23 +10957,6 @@ tBTM_STATUS BTM_PmRegister(UINT8 mask, UINT8 *p_pm_id, tBTM_PM_STATUS_CBACK *p_c
 extern u8 lbl_80560D38;
 extern u8 lbl_80560D3C;
 extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
-#pragma push
-#pragma dont_inline off
-static __inline UINT8 btm_pm_find_acl_ind(BD_ADDR remote_bda) {
-    UINT8 xx;
-    UINT8 *scan;
-    xx = 0;
-    scan = lbl_803C0F78 + 0x34;
-    for (;;) {
-        if (scan[0x119] != 0 && memcmp(scan + 8, remote_bda, 6) == 0)
-            break;
-        xx++;
-        scan += 0x11C;
-        if (xx >= 4) break;
-    }
-    return xx;
-}
-#pragma pop
 tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_mode)
 {
     int ind;
