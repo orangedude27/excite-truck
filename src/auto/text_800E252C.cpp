@@ -481,16 +481,19 @@ typedef signed short s16;
 extern float lbl_80320E38[];
 #pragma pop
 extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32 angle) {
+    struct SinEntry { f32 s, c, sd, cd; };
     f32 index = __fabsf(angle);
     while (index >= 65536.0f) index -= 65536.0f;
     u16 q = __OSf32tou16(index);
     f32 whole = __OSu16tof32(&q);
-    u32 off = ((q * 0x10) & 0xFF0);
+    u32 idx = q & 0xFF;
+    u32 off = idx * 0x10;
+    struct SinEntry *tbl = (struct SinEntry *)lbl_80320E38;
+    f32 v0;
+    f32 v1;
     f32 frac = index - whole;
-    f32 *base = (f32 *)lbl_80320E38;
-    f32 *p = (f32 *)((char *)base + off);
-    f32 v1 = p[2];
-    f32 v0 = *(f32 *)((char *)base + off);
+    v1 = *(f32 *)((char *)lbl_80320E38 + off + 8);
+    v0 = tbl[idx].s;
     f32 value = v0 + frac * v1;
     if (angle < lbl_80560F04) value = -value;
     return value;
@@ -3748,7 +3751,7 @@ extern "C" void *fn_800E8690(void *arg0, void *arg1, int arg2) {
     body:
         if (arg2 <= data[i + 1]) {
             unsigned int off = (data[0] + 4) & ~3;
-            return (void *)(off + (unsigned int)(data + i * 8));
+            return (void *)((unsigned int)(data + i * 8) + off);
         }
         goto inc;
     case 3:
