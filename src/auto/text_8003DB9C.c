@@ -3620,25 +3620,31 @@ unsigned int GXSetDispCopyYScale(f32 vscale) {
 }
 
 void GXSetCopyClear(unsigned char *color, unsigned int depth) {
-    unsigned int first = 0;
-    unsigned int second = 0;
-    unsigned int third = 0;
     unsigned int *data;
-    first = __rlwimi(first, color[0], 0, 24, 31);
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    first = __rlwimi(first, color[3], 8, 16, 23);
-    first = __rlwimi(first, 0x4F, 24, 0, 7);
-    *(volatile unsigned int *)0xCC008000 = first;
-    second = __rlwimi(second, color[2], 0, 24, 31);
-    second = __rlwimi(second, color[1], 8, 16, 23);
-    data = __GXData;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    second = __rlwimi(second, 0x50, 24, 0, 7);
-    *(volatile unsigned int *)0xCC008000 = second;
-    third = __rlwimi(third, depth, 0, 8, 31);
-    third = __rlwimi(third, 0x51, 24, 0, 7);
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = third;
+    {
+        unsigned int first = 0;
+        first = __rlwimi(first, color[0], 0, 24, 31);
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        first = __rlwimi(first, color[3], 8, 16, 23);
+        first = __rlwimi(first, 0x4F, 24, 0, 7);
+        *(volatile unsigned int *)0xCC008000 = first;
+    }
+    {
+        unsigned int second = 0;
+        second = __rlwimi(second, color[2], 0, 24, 31);
+        second = __rlwimi(second, color[1], 8, 16, 23);
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        second = __rlwimi(second, 0x50, 24, 0, 7);
+        data = __GXData;
+        *(volatile unsigned int *)0xCC008000 = second;
+    }
+    {
+        unsigned int third = 0;
+        third = __rlwimi(third, depth, 0, 8, 31);
+        third = __rlwimi(third, 0x51, 24, 0, 7);
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = third;
+    }
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
@@ -4880,8 +4886,7 @@ void __SetSURegs(s32 arg0, s32 arg1) {
 void __GXSetSUTexRegs(void) {
     unsigned int *gx = __GXData;
     unsigned int *g2;
-    unsigned int *tr;
-    unsigned int count, i, limit, map, coord, word, off;
+    unsigned int count, j, i, limit, map, coord, word, off;
     if (gx[0x5E4 / 4] != 0xFF) {
         word = gx[0x254 / 4];
         count = (word >> 16) & 7;
@@ -4900,12 +4905,12 @@ void __GXSetSUTexRegs(void) {
             if ((gx[0x5E4 / 4] & (1 << coord)) == 0) __SetSURegs(map, coord);
         }
         g2 = GXD;
-        tr = (unsigned int *)((char *)g2 + 0x150);
-        for (i = 0; i < limit; i++) {
+        for (j = 0; j < limit; j++) {
+            i = j;
             off = (i & ~1) << 1;
             map = g2[0x5A4 / 4 + i] & ~0x100;
-            if (i & 1) coord = (*(unsigned int *)((char *)tr + off) >> 15) & 7;
-            else coord = (*(unsigned int *)((char *)tr + off) >> 3) & 7;
+            if (i & 1) coord = (*(unsigned int *)((char *)g2 + 0x150 + off) >> 15) & 7;
+            else coord = (*(unsigned int *)((char *)g2 + 0x150 + off) >> 3) & 7;
             if (map != 0xFF && (gx[0x5E4 / 4] & (1 << coord)) == 0 && (g2[0x5E8 / 4] & (1 << i)) != 0)
                 __SetSURegs(map, coord);
         }
@@ -5381,24 +5386,30 @@ void GXSetTevAlphaOp(s32 stage, s32 op, s32 bias, s32 scale, s32 clamp, s32 outR
 }
 
 void GXSetTevColor(s32 arg0, unsigned int *arg1) {
-    unsigned int value = *arg1;
-    s32 index = arg0 * 2;
     volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
     volatile unsigned int *fifo32 = (volatile unsigned int *)0xCC008000;
+    unsigned char cmd = 0x61;
+    s32 index;
+    unsigned int value;
+    s32 reg, reg2;
     unsigned int first, second;
-    first = (unsigned int)((index + 0xE0) << 24);
+    index = arg0 * 2;
+    value = *arg1;
+    reg = index + 0xE0;
+    first = (unsigned int)(reg << 24);
     first = __rlwimi(first, value, 8, 24, 31);
-    *fifo8 = 0x61;
+    *fifo8 = cmd;
     first = __rlwimi(first, value, 12, 12, 19);
-    second = (unsigned int)((index + 0xE1) << 24);
-    second = __rlwimi(second, value, 24, 24, 31);
+    reg2 = index + 0xE1;
     *fifo32 = first;
-    *fifo8 = 0x61;
+    second = (unsigned int)(reg2 << 24);
+    second = __rlwimi(second, value, 24, 24, 31);
+    *fifo8 = cmd;
     second = __rlwimi(second, value, 28, 12, 19);
     *fifo32 = second;
-    *fifo8 = 0x61;
+    *fifo8 = cmd;
     *fifo32 = second;
-    *fifo8 = 0x61;
+    *fifo8 = cmd;
     *fifo32 = second;
     *(unsigned short *)((char *)__GXData + 2) = 0;
 }
@@ -5422,16 +5433,16 @@ void GXSetTevColorS10(s32 tevReg, void *color) {
 }
 
 void GXSetTevKColor(s32 tevReg, unsigned int *color) {
-    volatile unsigned char *fifo = (volatile unsigned char *)0xCC008000;
     unsigned int index = tevReg << 1;
-    unsigned int value = *color;
+    unsigned int value = *(volatile unsigned int *)color;
     unsigned int first = __rlwimi(__rlwimi(__rlwimi((index + 0xE0) << 24, value, 8, 24, 31), value, 12, 12, 19), 8, 20, 8, 11);
     unsigned int second = __rlwimi(__rlwimi(__rlwimi((index + 0xE1) << 24, value, 24, 24, 31), value, 28, 12, 19), 8, 20, 8, 11);
-    *fifo = 0x61;
-    *(volatile unsigned int *)fifo = first;
-    *fifo = 0x61;
-    *(volatile unsigned int *)fifo = second;
-    *(unsigned short *)((char *)__GXData + 2) = 0;
+    unsigned int *data = __GXData;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = first;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = second;
+    *(unsigned short *)((char *)data + 2) = 0;
 }
 
 void GXSetTevKColorSel(s32 arg0, s32 arg1) {
