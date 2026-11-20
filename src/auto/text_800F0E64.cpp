@@ -117,7 +117,8 @@ extern "C" void fn_80028E2C(char *, const char *, s32);
 extern "C" const char lbl_80324828[];
 #pragma cplusplus on
 struct DummySoundArchiveLookup2 { virtual s32 f0(u32); virtual s32 f1(); };
-struct DummyAllocatable_LoadFile { virtual s32 f0(); virtual void *Alloc(s32 size); };
+struct SoundMemoryAllocatable { virtual s32 f0(); virtual void *Alloc(s32 size); };
+typedef SoundMemoryAllocatable DummyAllocatable_LoadFile;
 struct DummySoundArchiveLookup { virtual void f0(); virtual s32 f1(u32); virtual s32 f2(); };
 struct DummyCheckPlayable { virtual ~DummyCheckPlayable(); virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); };
 struct DummyStrmUpdate { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19(); virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23(); virtual void f24(); virtual void f25(); virtual void f26(); virtual void f27(); virtual void f28(); virtual void f29(); virtual void f30(); virtual void f31(); virtual void f32(); virtual void f33(s32); virtual void f34(); virtual void f35(s32); };
@@ -1394,19 +1395,18 @@ extern "C" s32 detail_OpenGroupStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void *
     if (path != 0) {
         meta14 = info.unkC;
         meta10 = info.unk8;
-        if (*path != '/') {
-            unsigned long pathLen = strlen(path);
-            unsigned long prefixLen = strlen((const char *)self + 8);
-            if (pathLen + prefixLen >= 0x100) {
-                Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
-                return 0;
-            }
-            char buf[0x100];
-            strncpy(buf, (const char *)self + 8, prefixLen + 1);
-            fn_80028E2C(buf, path, pathLen + 1);
-            path = buf;
+        if (*path == '/')
+            goto open_stream;
+        unsigned long pathLen = strlen(path);
+        unsigned long prefixLen = strlen((const char *)self + 8);
+        if (pathLen + prefixLen >= 0x100) {
+            Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
+            return 0;
         }
-        goto open_stream;
+        char buf[0x100];
+        strncpy(buf, (const char *)self + 8, prefixLen + 1);
+        fn_80028E2C(buf, path, pathLen + 1);
+        path = buf;
     open_stream:
         return ((Archive *)self)->f5(arg2, arg3, path, meta10, meta14);
     }
@@ -1524,18 +1524,17 @@ copy_if_valid:
 
 extern "C" const char lbl_80324868[];
 extern "C" void fn_800F2EAC(void *self, void *arg) {
-    struct FileMsgs { char file[0x104]; char msg1[0x34]; char msg2[]; };
     u8 *object = (u8 *)self;
-    const FileMsgs *base = (const FileMsgs *)lbl_80324868;
+    const char * const base = lbl_80324868;
     u8 *bytes = (u8 *)arg;
     u8 *table;
     u32 baseAddress;
     u8 *offsetPtr;
     u32 value;
     if (arg == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(base->file, 0x60, base->msg1);
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x60, base + 0x104);
     if ((*(u32 *)bytes - 0x53590000U) != 0x4d42U)
-        Panic__Q26nw4hbm2dbFPCciPCce(base->file, 0x63, base->msg2);
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x63, base + 0x138);
     table = bytes + 8;
     *(u8 **)(object + 0x2c) = table;
     u32 offset = *(u32 *)(bytes + 8);
@@ -8163,11 +8162,11 @@ extern "C" void ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(void* self) {
     OSRestoreInterrupts(irq);
     ((Manager*)*(void**)((u8*)self + 0x430))->m3(self, *(u32*)((u8*)self + 0x434));
     irq = OSDisableInterrupts();
-    s32 iterator;
-    s32 eraseValue;
     u32 head;
     head = p->activeHead;
     if (head == 0) goto done;
+    s32 iterator;
+    s32 eraseValue;
     goto check;
 loop:
     if (head == 0)
