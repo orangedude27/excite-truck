@@ -44,11 +44,6 @@ struct VObj_8017D6E0 {
 struct VT8017DCB4 { virtual void f0(); virtual void f1(); virtual void* f2(); virtual void f3(); virtual void* f4(); };
 #pragma cplusplus reset
 
-#pragma cplusplus on
-struct VT8017E3C4 { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void *f6(); };
-static inline void *vtcall8017E3C4(void *v) { return ((VT8017E3C4 *)v)->f6(); }
-#pragma cplusplus reset
-
 /* Scene object tag (object+0x10) of the AI trucks; see FOURCC_* in text_801D21C0_.c. */
 #define FOURCC_ACAR 0x41434152 /* 'ACAR' */
 
