@@ -1428,7 +1428,7 @@ void fn_801958D8(void *arg0) {
 void fn_801959AC(void *arg0) {
     extern double __fabs(double);
     extern char lbl_80558DC4[];
-    extern float lbl_80562140, lbl_80562144, lbl_805621DC, lbl_80562208;
+    extern float lbl_80562140, lbl_80562144, lbl_805621DC;
     extern char lbl_803332F8[];
     extern char lbl_8055A4B0;
     unsigned char *self = (unsigned char *)arg0;
