@@ -58,12 +58,9 @@ static inline void xf(f32 *out, f32 *in, u8 *m) {
         out[1] = o1;
         out[2] = o2;
          } else {
-         f32 t0 = in[1] * F(m, 0x48), t1 = in[1] * F(m, 0x4C), t2 = in[1] * F(m, 0x50);
-         f32 u0 = in[0] * F(m, 0x3C), u1 = in[0] * F(m, 0x40), u2 = in[0] * F(m, 0x44);
-         f32 w0 = in[2] * F(m, 0x54), w1 = in[2] * F(m, 0x58), w2 = in[2] * F(m, 0x5C);
-         out[0] = w0 + (u0 + t0);
-         out[1] = w1 + (u1 + t1);
-         out[2] = w2 + (u2 + t2);
+         out[0] = in[2] * F(m, 0x54) + (in[0] * F(m, 0x3C) + in[1] * F(m, 0x48));
+         out[1] = in[2] * F(m, 0x58) + (in[0] * F(m, 0x40) + in[1] * F(m, 0x4C));
+         out[2] = in[2] * F(m, 0x5C) + (in[0] * F(m, 0x44) + in[1] * F(m, 0x50));
      }
 }
 
