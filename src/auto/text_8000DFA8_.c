@@ -2233,7 +2233,7 @@ s32 fn_8000DFC0(s32 index) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_8000DFD8(void *arg0, s32 arg1, f32 arg2, f32 arg3) {
     s32 count = *(s32 *)((char *)arg0 + 0x34);
     if (count > 0 && *(s32 *)((char *)arg0 + 0x38) == 9) {
