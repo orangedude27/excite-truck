@@ -1594,11 +1594,13 @@ extern char lbl_8055D090;
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 void fn_802CC410(void *arg0) {
+    struct { int *v; } w_node;
     register int zero = 0;
-    register int value = -2;
     register int done = 2;
+    struct { int v; } w_value;
     register char *root = (char *)arg0;
-    register int *node;
+    #define node w_node.v
+    #define value w_value.v
     int temporary;
     int result;
 
@@ -1613,7 +1615,7 @@ outer:
                 *(int *)(value + 0x44) = node[2];
                 *(int *)(value + 0x40) = fn_802CB38C((void *)result,
                     (void *)node[3],
-                    (void *)*(int *)(lbl_8055FCB0 + node[1] * 0x4C + 0x34));
+                    (void *)*(int *)(lbl_8055FCB0 + 0x34 + node[1] * 0x4C));
                 node[3] = zero;
                 fn_8012C958(node[0]);
                 node[0] = zero;
@@ -1632,6 +1634,8 @@ outer:
         *(int *)(root + value * 0x14 + 0x40) = done;
         goto outer;
     }
+#undef node
+#undef value
 }
 #pragma scheduling on
 #pragma use_lmw_stmw on
@@ -1755,16 +1759,7 @@ char fn_802CC744(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-int fn_802CC74C(void) {
-    int ready = 0;
-    char *p = *(char **)lbl_8055FCBC;
-    if (p != 0) {
-        if (*(int *)(p + 4) != 0) {
-            ready = 1;
-        }
-    }
-    return ready;
-}
+int fn_802CC74C(void) { int result = 0; char *p = *(char **)lbl_8055FCBC; if (p != 0) { if (*(int *)(p + 4) != 0) result = 1; } return result; }
 #pragma pop
 extern float lbl_80564F4C;
 extern float lbl_80564F50;
