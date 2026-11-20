@@ -18,7 +18,6 @@ static inline void CornerV3Copy(CornerV3* d, const CornerV3* s) {
     ((u32*)d)[2] = ((const u32*)s)[2];
 }
 
-static inline void fn8019EDB8Swap4(u8 *p) { u8 a = p[0]; u8 b = p[1]; p[0] = p[3]; p[3] = a; p[1] = p[2]; p[2] = b; }
 static inline void fn801A1F98Transform(volatile f32 *dst, volatile f32 *src, f32 *matrix) {
     f32 x = src[0];
     f32 y = src[1];
