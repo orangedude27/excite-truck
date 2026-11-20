@@ -1810,7 +1810,7 @@ void fn_801961FC(void *driver) {
 }
 
 extern float lbl_80562140, lbl_80562144, lbl_80562168;
-extern float lbl_80562208, lbl_80562230, lbl_80562234, lbl_80562238;
+extern const float lbl_80562230, lbl_80562234, lbl_80562238;
 extern float __fabsf(float);
 #pragma opt_propagation off
 void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, float farg2) {
