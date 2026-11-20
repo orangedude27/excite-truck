@@ -52,42 +52,6 @@ static inline Block* link_new_block(Block** list, unsigned int size) {
     }
     return bp;
 }
-static inline Block* Pool_expand(Block** list, unsigned int size) {
-    unsigned int total = (size + 0x1f) & ~7;
-    Block* b;
-    char* sb;
-    char* end;
-    unsigned int flags, remain;
-    if (total < 0x10000) total = 0x10000;
-    b = (Block*)__sys_alloc(total);
-    if (b == 0) return 0;
-    flags = total | 3;
-    b->size_flags = flags;
-    *(unsigned int*)((char*)b + total - 8) = flags;
-    b->sb_link = (unsigned int)b | 1;
-    remain = total - 0x18;
-    b->sb_size = remain;
-    sb = (char*)b + 0x10;
-    *(unsigned int*)(total + (unsigned int)sb - 0x1c) = remain;
-    b->max_size = remain;
-    end = (char*)b + (b->size_flags & ~7);
-    *(unsigned int*)(end - 4) = 0;
-    Block_link(b, sb);
-    if (*list) {
-        Block* head = *list;
-        Block* first = head->prev;
-        b->prev = first;
-        first->next = b;
-        b->next = *list;
-        (*list)->prev = b;
-        *list = b;
-    } else {
-        *list = b;
-        b->prev = b;
-        b->next = b;
-    }
-    return b;
-}
 extern int fn_8002194C(void*, unsigned int, int*);
 int fn_80021D48(Block** arg0, int arg1, int* arg2) {
     Block* bp;
