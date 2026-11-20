@@ -1499,7 +1499,7 @@ clear:
 finish:
     return 0;
 }
-#pragma cplusplus reset
+#pragma cplusplus on
 extern unsigned char lbl_804B3068[];
 typedef unsigned int (*GetKeyFn)(void *);
 typedef char *(*GetTextFn)(void *);
