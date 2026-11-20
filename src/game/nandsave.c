@@ -639,23 +639,27 @@ extern char lbl_8034E130[];
 extern char lbl_8034E108[];
 #pragma scheduling invalid_target
 void fn_802E91D8(void *arg0, const char *arg1, int arg2, int arg3) {
-    const char *original = arg1;
-    const char *src = original;
-    char *dst = (char *)arg0 + 0xC;
-    int count = 0x100;
+    unsigned char c;
+    const char *original;
+    const char *src;
+    int count;
+    char *dst;
+    original = arg1;
     *(int *)((char *)arg0 + 8) = arg2;
+    src = original;
     *(int *)((char *)arg0 + 4) = arg3;
+    dst = (char *)arg0 + 0xC;
+    count = 0x100;
     goto copy;
 dec_count:
     count--;
     if (count > 0) goto copy;
     dst[-1] = 0;
     goto after_copy;
-copy: {
-        char c = *src++;
-        *dst++ = c;
-        if (c != 0) goto dec_count;
-    }
+copy:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c != 0) goto dec_count;
 after_copy:
     *(void **)((char *)arg0 + 0x198) = arg0;
     *(int *)((char *)arg0 + 0x258) = 0;
@@ -917,7 +921,7 @@ void fn_802E97B4(void) {
         }
         lbl_80560035 = 1;
         if (lbl_80507288 == 1) {
-            switch (*(volatile int *)((char *)&lbl_80507288 + 0x25C)) {
+            switch (*(int *)((char *)&lbl_80507288 + 0x25C)) {
             case 0:
                 break;
             case -9:
