@@ -638,12 +638,6 @@ float fn_802C8FEC(void) { return lbl_8055FC6C; }
 
 extern char lbl_80558DC4[];
 extern float lbl_8055FC38, lbl_8055FC3C;
-static inline float int_bits_to_float(int v) {
-    union { double d; unsigned int u[2]; } cvt;
-    cvt.u[0] = 0x43300000;
-    cvt.u[1] = (unsigned int)v ^ 0x80000000u;
-    return (float)(cvt.d - lbl_80564F10);
-}
 #pragma scheduling off
 int fn_802C8FF4(float *arg0, float arg1) {
     float x;
