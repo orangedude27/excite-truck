@@ -34,7 +34,7 @@ void *arg0;
 
     memset(arg0, 0, 0x2B4);
     value = lbl_805640F0;
-    *(s32 *)((char *)arg0 + 0x298) = 0;
+    *(s32 *)((char *)arg0 + 0x298) = (s32)(void *)0;
     *(f32 *)((char *)arg0 + 0x290) = value;
     p = (unsigned char *)arg0;
     offset = 0;
@@ -135,14 +135,11 @@ void fn_802797A8(s32 *arg0, s32 arg1) {
     lbl_8055F618 = fn_8012850C(arg1 * 0x2B8, lbl_80347818);
     i = 0;
     offset = 0;
-    while (i < lbl_8055F61C) {
+    for (; i < lbl_8055F61C; offset += 0x2B8, arg0++, i++) {
         entry = (char *)lbl_8055F618 + offset;
         memset(entry, 0, 0x2B8);
-        value = *(volatile s32 *)arg0;
-        i++;
-        offset += 0x2B8;
+        value = *arg0;
         *(s32 *)entry = value;
-        arg0++;
     }
     fn_8027974C();
 }
