@@ -171,15 +171,36 @@ extern "C" void fn_8026B260(void) {
 #pragma processor 750
 #pragma push
 #pragma opt_common_subs off
+static inline void fn_8026B3D4_findArea(unsigned char *e, float t, float x, float z) {
+    volatile float d[2];
+    float *tab = (float *)lbl_8049A028;
+    int found = 0;
+    int j = 0;
+    while (j < lbl_8055F4C8 && found == 0) {
+        float dz = z - tab[1];
+        float r = tab[2];
+        float dx = x - tab[0];
+        d[0] = dx;
+        d[1] = dz;
+        if (dx * dx + dz * dz < r * r) {
+            *(int *)(e + 0xC) = j;
+            found = 1;
+            *(float *)(e + 4) = t;
+        }
+        tab += 3;
+        j++;
+    }
+}
 void fn_8026B3D4(int arg0) {
     struct Ent { unsigned char on; unsigned char pad[3]; float t; float v; int idx; };
     float t = lbl_8055E3C8;
-    unsigned char *__restrict p = (unsigned char *)fn_8017960C();
+    unsigned char *p = (unsigned char *)fn_8017960C();
     if (fn_80178CA4() == 1 && *(int *)(p + 0x1F0) == 0x50) {
-        struct Ent *e = (struct Ent *)lbl_8049A0E8 + arg0;
+        int off = arg0 << 4;
+        struct Ent *e = (struct Ent *)((char *)lbl_8049A0E8 + off);
         if (e->on != 0) {
             if ((*(int *)(p + 0x2620) >= 2 && t - e->t > lbl_80563D68) ||
-                t - ((struct Ent *)lbl_8049A0E8)[arg0].t > lbl_80563D6C) {
+                t - ((struct Ent *)((char *)lbl_8049A0E8 + off))->t > lbl_80563D6C) {
                 unsigned char *o;
                 e->on = 0;
                 o = (unsigned char *)lbl_8055F4D0;
@@ -199,22 +220,22 @@ void fn_8026B3D4(int arg0) {
                 }
                 fn_802C2C68(0, 1);
                 fn_80176A00(2);
-                ((struct Ent *)lbl_8049A0E8)[arg0].v = lbl_80563D70;
+                ((struct Ent *)((char *)lbl_8049A0E8 + off))->v = lbl_80563D70;
             }
         } else {
             volatile float sp10[2];
             volatile float sp8[2];
-            float x = *(float *)(p + 0x60);
-            float z = *(float *)(p + 0x68);
+            double x = *(float *)(p + 0x60);
+            double z = *(float *)(p + 0x68);
             float *tab = (float *)lbl_8049A028;
             int found = 0;
             int j = 0;
-            sp10[0] = x;
-            sp10[1] = z;
+            sp10[0] = *(float *)(p + 0x60);
+            sp10[1] = *(float *)(p + 0x68);
             while (j < lbl_8055F4C8 && found == 0) {
-                float dz = z - tab[1];
+                float dz = (float)z - tab[1];
                 float r = tab[2];
-                float dx = x - tab[0];
+                float dx = (float)x - tab[0];
                 sp8[0] = dx;
                 sp8[1] = dz;
                 if (dx * dx + dz * dz < r * r) {
@@ -225,7 +246,7 @@ void fn_8026B3D4(int arg0) {
                 tab += 3;
                 j++;
             }
-            if (t - ((struct Ent *)lbl_8049A0E8)[arg0].t < lbl_80563D68 && *(int *)(p + 0x2620) == 0) {
+            if (t - ((struct Ent *)((char *)lbl_8049A0E8 + off))->t < lbl_80563D68 && *(int *)(p + 0x2620) == 0) {
                 if (*(float *)(p + 0x64) - fn_801E9FDC(p + 0x6C, *(float *)(p + 0x60), *(float *)(p + 0x68)) > lbl_80563D68) {
                     unsigned char *o;
                     e->on = 1;
@@ -241,7 +262,7 @@ void fn_8026B3D4(int arg0) {
                 fn_80206454();
                 fn_80176A00(1);
                 fn_8020C900(0);
-                ((struct Ent *)lbl_8049A0E8)[arg0].v = lbl_80563D74;
+                ((struct Ent *)((char *)lbl_8049A0E8 + off))->v = lbl_80563D74;
             }
         }
     }
