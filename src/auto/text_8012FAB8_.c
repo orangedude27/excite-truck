@@ -96,95 +96,91 @@ extern int stricmp(const char *, const char *);
 void fn_8012FAB8(void *arg0) {
     char *srcBase;
     char *dstBase;
-    char *dstA;
-    char *dstB;
     srcBase = lbl_80423040 + 0x10000;
     dstBase = lbl_8032B028;
-    dstA = dstBase + 0xA0;
-    dstB = dstBase + 0x124;
     {
         int *e = (int *)(srcBase - 0x3C18);
         if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
             fn_80131318(e);
         }
-        *(char **)dstA = (char *)e[1];
+        *(char **)(dstBase + 0xA0) = (char *)e[1];
     }
     {
         int *e = (int *)(srcBase - 0x3C0C);
         if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
             fn_80131318(e);
         }
-        *(char **)(dstA + 0x10) = (char *)e[1];
+        *(char **)(dstBase + 0xB0) = (char *)e[1];
     }
     {
         int *e = (int *)(srcBase - 0x3C00);
         if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
             fn_80131318(e);
         }
-        *(char **)(dstA + 0x20) = (char *)e[1];
+        *(char **)(dstBase + 0xC0) = (char *)e[1];
     }
     {
         int *e = (int *)(srcBase - 0x3BF4);
         if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
             fn_80131318(e);
         }
-        *(char **)(dstA + 0x30) = (char *)e[1];
+        *(char **)(dstBase + 0xD0) = (char *)e[1];
     }
     {
         int *e = (int *)(srcBase - 0x3BE8);
         if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
             fn_80131318(e);
         }
-        *(char **)(dstA + 0x40) = (char *)e[1];
+        *(char **)(dstBase + 0xE0) = (char *)e[1];
     }
     {
         int *e = (int *)(srcBase - 0x3BDC);
         if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
             fn_80131318(e);
         }
-        *(char **)(dstA + 0x50) = (char *)e[1];
+        *(char **)(dstBase + 0xF0) = (char *)e[1];
     }
     {
         int *e = (int *)(srcBase - 0x3BD0);
         if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
             fn_80131318(e);
         }
-        *(char **)dstB = (char *)e[1];
+        *(char **)(dstBase + 0x124) = (char *)e[1];
     }
     {
         int *e = (int *)(srcBase - 0x3BC4);
         if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
             fn_80131318(e);
         }
-        *(char **)(dstB + 0x10) = (char *)e[1];
+        *(char **)(dstBase + 0x134) = (char *)e[1];
     }
     {
         int *e = (int *)(srcBase - 0x3BB8);
         if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
             fn_80131318(e);
         }
-        *(char **)(dstB + 0x20) = (char *)e[1];
+        *(char **)(dstBase + 0x144) = (char *)e[1];
     }
     {
         int *e = (int *)(srcBase - 0x3BAC);
         if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
             fn_80131318(e);
         }
-        *(char **)(dstB + 0x30) = (char *)e[1];
+        *(char **)(dstBase + 0x154) = (char *)e[1];
     }
     {
         int *e = (int *)(srcBase - 0x3BA0);
         if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
             fn_80131318(e);
         }
-        *(char **)(dstB + 0x40) = (char *)e[1];
+        *(char **)(dstBase + 0x164) = (char *)e[1];
     }
     {
         int *e = (int *)(srcBase - 0x3B94);
         if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
             fn_80131318(e);
         }
-        *(char **)(dstB + 0x50) = (char *)e[1];
+        *(char **)(dstBase + 0x174) = (char *)e[1];
     }
     if (arg0 != 0) {
         Obj *child;
@@ -302,8 +298,7 @@ void fn_8013028C(void) {
 }
 
 int fn_801302E0(void *arg0) {
-    int *p = &lbl_804230D0;
-    char *base = (char *)p;
+    char *base = (char *)&lbl_804230D0;
     int offset, index;
     if (*(void **)(base + 4) != 0) {
         index = 0;
@@ -409,6 +404,8 @@ static inline void format_append(char *dstp, int sizep, char *str) {
 }
 
 extern char *strchr(const char *, int);
+#pragma opt_propagation off
+#pragma opt_common_subs off
 void fn_80130568(char *arg0) {
     char *base = arg0;
     if (*(char *)lbl_8055E050 != '.') {
@@ -418,8 +415,8 @@ void fn_80130568(char *arg0) {
         }
     }
 }
-
-#pragma scheduling invalid_target
+#pragma opt_common_subs reset
+#pragma opt_propagation reset
 void fn_801305C4(char *arg0, int arg1, Rec10 *arg2, int arg3, float farg0)
 {
   if (farg0 == 0)
@@ -448,10 +445,11 @@ void fn_801305C4(char *arg0, int arg1, Rec10 *arg2, int arg3, float farg0)
 }
 #pragma scheduling on
 
+#pragma opt_lifetimes off
 void fn_8013072C(char *arg0, int arg1, int arg2) {
     int sign = arg2 >> 31;
     int magnitude = (sign ^ arg2) - sign;
-    int negative = (unsigned int)arg2 >> 31;
+    unsigned int negative = (unsigned int)arg2 >> 31;
     register int digits;
     int groups;
     int high;
@@ -509,8 +507,7 @@ void fn_8013072C(char *arg0, int arg1, int arg2) {
     }
     *p = 1;
 }
-
-void fn_801305C4(char *arg0, int arg1, Rec10 *arg2, int arg3, float farg0);
+#pragma opt_lifetimes reset
 #pragma dont_inline on
 /* Format with the global locale record at lbl_8055E050+8 into dst (size bytes);
  * suffixKind picks the appended unit suffix and value is scaled by the record's factor. */
@@ -903,13 +900,15 @@ extern int strlen(const char *);
 extern int fn_8002B1D8(const char *, const char *, int);
 #pragma scheduling on
 void fn_80131368(char *arg0) {
-    char c = arg0[0];
-    int signedC = c;
     int flag = 0;
+    int c;
+    int signedC;
     int isNumber;
     int *p;
     unsigned int i;
 
+    c = *(unsigned char *)arg0;
+    signedC = (signed char)c;
     if (signedC < 0 || signedC >= 0x100)
         flag = 1;
     if (flag != 0)
