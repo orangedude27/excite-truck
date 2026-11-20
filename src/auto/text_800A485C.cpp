@@ -6955,11 +6955,12 @@ extern "C" s32 fn_800AFBA8(void *, u16, u32 *, void *);
 extern "C" s32 fn_800B00E8(void *, s32, u32 *, void *);
 extern "C" s32 fn_800B05C8(void *, s32, u32 *, void *);
 extern "C" s32 fn_800AEBA0(void *arg0, u32 arg1, u32 arg2, u32 *arg3, s32 arg_sp0) {
+    s32 tableType;
     u32 value;
     void *page;
     void *pageForRead;
     s32 pageIndex;
-    u32 *entry;
+    u8 *entry;
     void *object;
     u32 *output;
     u32 expected;
@@ -6967,11 +6968,12 @@ extern "C" s32 fn_800AEBA0(void *arg0, u32 arg1, u32 arg2, u32 *arg3, s32 arg_sp
     u32 maxValue;
     u32 bound;
     s32 result;
-    entry = &lbl_802EEF40[*(s32 *)((u8 *)arg0 + 0x1C) * 5];
+    tableType = *(s32 *)((u8 *)arg0 + 0x1C);
+    entry = (u8 *)lbl_802EEF40 + tableType * 0x14;
     expected = arg2;
     *arg3 = -1;
     output = arg3;
-    maxValue = entry[1];
+    maxValue = *(u32 *)(entry + 4);
     object = arg0;
     result = ((Fn800A8D08C4 *)(s32 (*)(s32, void **, s32 *, s32, s32 *))fn_800A8D08)(
         object, -1, &page, &pageIndex);
@@ -22154,32 +22156,22 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
     }
 }
 
-void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Pane *pane, bool bind) {
+void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Material *material) {
     register u8 *self = (u8 *)this;
-    register u8 *paneCopy = (u8 *)pane;
-    register u16 i = 0;
     register u8 *offsets = (u8 *)*(void **)(self + 0xC);
     offsets += *(s32 *)(offsets + 0x10);
-    while (i < *(u16 *)(*(u8 **)(self + 0xC) + 0xE)) {
+    register u16 i = 0;
+    register u8 *materialPtr = (u8 *)material;
+    while (i < *(u16 *)((u8 *)*(void **)(self + 0xC) + 0xE)) {
         u8 *entry = *(u8 **)(self + 0xC) + *(s32 *)(offsets + i * 4);
-        void *boundObject;
-        if (entry[0x15] == 0) {
-            boundObject = ((PaneAnimTransformDispatch *)paneCopy)->bindPane(entry, bind);
-            if (boundObject != 0) {
-                u8 *link = (u8 *)*(void **)(self + 0x18) + i * 0x10;
+        if (entry[0x15] == 1) {
+            if (((s32 (*)(void *, void *))fn_800D58F0)(materialPtr + 4, entry) != 0) {
+                u32 offset = i * 0x10;
+                u8 *link = (u8 *)*(void **)(self + 0x18) + offset;
                 *(void **)(link + 8) = self;
                 *(u16 *)(link + 0xC) = i;
-                AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(
-                    boundObject, (u8 *)*(void **)(self + 0x18) + i * 0x10);
-            }
-        } else {
-            boundObject = ((PaneAnimTransformDispatch *)paneCopy)->bindMaterial(entry, bind);
-            if (boundObject != 0) {
-                u8 *link = (u8 *)*(void **)(self + 0x18) + i * 0x10;
-                *(void **)(link + 8) = self;
-                *(u16 *)(link + 0xC) = i;
-                AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(
-                    boundObject, (u8 *)*(void **)(self + 0x18) + i * 0x10);
+                ((void (*)(void *, void *, u32))AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink)(
+                    materialPtr, (u8 *)*(void **)(self + 0x18) + offset, offset);
             }
         }
         i++;
@@ -23742,7 +23734,7 @@ extern "C" void fn_800CA064(void) {
         ((s32 (*)(void *))fn_800D1548)(*(void **)(base + index * 4 + 0x254)) == 0) {
         u32 ticks;
         u32 period;
-        base = (u8 *)((OSAlarm *)(base + 0x4D0) + index);
+        base += (u32)(index * 0x30) + 0x4D0;
         OSSetAlarmUserData((OSAlarm *)base, (void *)((index << 16) | (index + 2)));
         OSCancelAlarm((OSAlarm *)base);
         ticks = *(volatile u32 *)0x800000F8;
