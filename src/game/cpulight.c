@@ -394,7 +394,7 @@ void fn_802DBDD8(void) {
     sCachedVertexCount = 0;
 }
 
-#pragma scheduling off
+#pragma scheduling on
 void fn_802DBDE8(int arg0, void *arg1) {
     int count;
     void **entry;
@@ -409,7 +409,7 @@ void fn_802DBDE8(int arg0, void *arg1) {
     }
     count = 0;
     lbl_804DB468[arg0] = arg1;
-    entry = lbl_804DB468 + arg0;
+    entry = lbl_804DB468;
     lbl_8055FEA4 = count;
     while (count < 3 && entry[0] != 0) {
         count++;
@@ -421,9 +421,10 @@ void fn_802DBDE8(int arg0, void *arg1) {
 
 #pragma scheduling invalid_target
 void fn_802DBE4C(void) {
-    int one = 1;
+    int one;
     fn_802D0610(0);
     fn_802D68C4(0, 0, 0, 0);
+    one = 1;
     GXSetZMode(one, 3, one);
     GXSetNumChans(one);
     GXSetChanCtrl(4, 0, one, one, 0, 0, 2);
