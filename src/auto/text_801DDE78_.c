@@ -34,6 +34,7 @@ s32 fn_801DDE78(void);
 void fn_801DDED0(s32, f32*, s32, f32, f32, f32);
 s32 fn_802E2C20(void);
 typedef struct DbgRec { s32 a; s32 b; s32 c; s32 d; f32 e; s32 f; s32 g; s32 h; } DbgRec;
+typedef struct { s32 a; double bc; s32 d; f32 e; s32 f; s32 g; s32 h; } DbgRecP;
 typedef s32 (*UnkFunc2)(void*, s32);
 typedef struct UnkObj { UnkFunc2 *vtable; } UnkObj;
 #pragma dont_inline on
@@ -254,7 +255,7 @@ extern "C" void fn_801DE154(void) {
         virtual void v4();
         virtual void v5();
     };
-    f32 pad[16];
+    f32 pad[14];
     DbgRec ra, rb, rc;
     f32 caB, caC;
     DbgRec lineA, lineC;
@@ -265,7 +266,7 @@ extern "C" void fn_801DE154(void) {
     s32 xa, ya;
     f32 *value;
     DbgRec *p;
-    f32 off;
+    f32 off, thr, lim;
     fn_801DDF0C();
     fn_80230B5C(pad);
     fn_802C8638(pad);
@@ -292,6 +293,8 @@ extern "C" void fn_801DE154(void) {
         rc.g -= t << 24;
     }
     off = lbl_80562BC0;
+    thr = lbl_80562BC4;
+    lim = lbl_80562BDC;
     e = (u8 *)lbl_80486F30 - 0x1C;
     for (i = -1; i < lbl_8055E9C4; i++) {
         lineA.a = ra.a;
@@ -317,7 +320,7 @@ extern "C" void fn_801DE154(void) {
         if (i >= 0) {
             fn_80147230(&lineA, lbl_8055ADD8, *(s32 *)(e + 0x1C));
             x = *(f32 *)(e + 0x1C + 0xC) / *(f32 *)(e + 0x1C + 0x18);
-            if (x < lbl_80562BC4) {
+            if (x < thr) {
                 x -= off;
             } else {
                 x += off;
@@ -325,7 +328,7 @@ extern "C" void fn_801DE154(void) {
             xa = (s32)x;
             value = *(f32 **)(e + 0x1C + 8);
             y = *value / *(f32 *)(e + 0x1C + 0x18);
-            if (y < lbl_80562BC4) {
+            if (y < thr) {
                 y -= off;
             } else {
                 y += off;
@@ -338,7 +341,7 @@ extern "C" void fn_801DE154(void) {
             } else {
                 r7 = (s32)lbl_8055ADE4;
             }
-            r5 = (*(f32 *)(e + 0x1C + 0x18) > lbl_80562BDC) ? 0 : 2;
+            r5 = (*(f32 *)(e + 0x1C + 0x18) > lim) ? 0 : 2;
             fn_80147230(&lineC, lbl_80339484, r5, *(s32 *)(e + 0x1C + 4), r7, *value);
         } else {
             fn_80147230(&lineA, lbl_80339490);
