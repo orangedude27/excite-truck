@@ -6860,7 +6860,7 @@ void fn_800678D8(void) {
 }
 
 // fn_800678DC: WPAD data processing
-__declspec(section ".sdata") extern const f64 lbl_80560CE8;
+__declspec(section ".sdata") extern f64 lbl_80560CE8;
 __declspec(section ".sdata") extern f32 lbl_80560CD8;
 __declspec(section ".sdata") extern unsigned char lbl_8055DC20[];
 __declspec(section ".sdata") extern unsigned char lbl_8055DC24[];
