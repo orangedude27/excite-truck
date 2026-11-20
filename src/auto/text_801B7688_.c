@@ -55,7 +55,7 @@ double sin(double);
  #pragma scheduling invalid_target
  #pragma push
   #pragma processor 750
- void fn_801B7760(int arg0, int arg1, float farg0, float farg1) {
+void fn_801B7760(int arg0, int arg1, float farg0, float farg1) {
     struct Vector {
         float x, y, z, w;
         int pad;
@@ -185,15 +185,15 @@ extern "C" void fn_801B79D4(void *arg0, unsigned int arg1, int arg2) {
         float value;
     };
     unsigned int var28 = arg1;
-    int r30 = ((V1 *)fn_801B2ED0(var28))->v5();
+    unsigned r30 = ((V1 *)fn_801B2ED0(var28))->v5();
     float f31 = fn_80139048();
     f31 = lbl_8056270C + (fn_801B79AC() + f31);
-    if (arg2 != 0x53 && arg2 != 0x54) var28 = fn_801B3050(var28);
+    if (arg2 != 0x53 && arg2 != 0x54) var28 = fn_801B3050((unsigned)var28);
     float f30 = (var28 & 1) ? lbl_80562700 : -lbl_80562700;
     float f1 = -fn_801B79AC() * lbl_80562710;
     float f29 = lbl_80562714;
-    unsigned int sign = var28 >> 31;
-    int half = (int)(sign + var28) >> 1;
+    unsigned long sign = var28 >> 31;
+    register int half = (int)(sign + var28) >> 1;
     f31 = f1 - (float)half * f31;
     V2 *holder = (V2 *)((V2 *)fn_80156A40(f1))->w1(0);
     Node *head = *(Node **)((char *)holder + 0x1C);
@@ -204,7 +204,9 @@ extern "C" void fn_801B79D4(void *arg0, unsigned int arg1, int arg2) {
         cur = cur->next;
     } while (cur != head);
     f29 = best->value - f29;
-    if (((int *)((char *)__AXFXGetLfoSinTable_801769CC() + 0x10))[0] & 1) { } else f31 += f29;
+    if (((int *)((char *)__AXFXGetLfoSinTable_801769CC() + 0x10))[0] & 1) goto skip_add;
+    f31 += f29;
+skip_add:
     fn_801B78EC((int)arg0, r30, 0, f30, f31, lbl_80562708);
     if (*(int *)((char *)arg0 + 0x44) == 1) {
         float scale = fn_80134C1C();
@@ -213,7 +215,7 @@ extern "C" void fn_801B79D4(void *arg0, unsigned int arg1, int arg2) {
         *(float *)((char *)arg0 + 0x38) = *(float *)((char *)arg0 + 0x20) * scale;
     } else {
         float z = lbl_80562708;
-        *(float *)((char *)arg0 + 0x30) = z;
+        *(float *)((char *)arg0 + (int)0x30) = z;
         *(float *)((char *)arg0 + 0x34) = z;
         *(float *)((char *)arg0 + 0x38) = z;
     }
@@ -224,20 +226,18 @@ extern "C" void fn_801B79D4(void *arg0, unsigned int arg1, int arg2) {
 
 void PSVECCrossProduct(float *, float *, float *);
 void PSVECNormalize(float *, float *);
-#pragma processor 750
+#pragma processor gekko
 void fn_801B7BA8(float *arg0, float *arg1, float *arg2) {
     float a[3];
     float b[3];
     float c[3];
     float v, w, u, z, y, x;
-    const float *p1 = arg1;
-    const float *p2 = arg2;
 
-    x = p1[0];
-    y = p1[1];
-    z = p1[2];
-    u = p2[0];
-    v = p2[1];
+    x = arg1[0];
+    y = arg1[1];
+    z = arg1[2];
+    u = arg2[0];
+    v = arg2[1];
     w = lbl_80562708;
     a[0] = x;
     a[1] = y;
@@ -371,10 +371,27 @@ void fn_801B8054(int obj, int source, float offset, float interp) {
 }
 
 #pragma scheduling on
+struct VecInput801B8060 {
+    char pad0[0x18];
+    float x;
+    float pad1;
+    float y;
+    float xPos;
+    float pad2;
+    float yPos;
+};
 void fn_801B8060(int arg0, void *arg1) {
-    float x, y, sum, xPos, yPos, length, scale;
+#pragma scheduling invalid_target
     float position[2];
     float direction[2];
+    float x;
+    float y;
+    float sum;
+    float xPos;
+    float yPos;
+    float length;
+    float scale;
+
     x = *(float *)((char *)arg1 + 0x18);
     y = *(float *)((char *)arg1 + 0x20);
     sum = x * x + y * y;
@@ -384,7 +401,8 @@ void fn_801B8060(int arg0, void *arg1) {
     position[1] = yPos;
     direction[0] = x;
     direction[1] = y;
-    length = (float)((double (*)(float, float, float, float, float))fn_8002F234)(sum, y, x, yPos, xPos);
+    length = (float)((double (*)(float, float, float, float, float))fn_8002F234)(
+        sum, y, x, yPos, xPos);
     scale = (lbl_80562738 > length) ? lbl_80562738 : length;
     scale = lbl_80562704 / scale;
     direction[0] *= scale;
