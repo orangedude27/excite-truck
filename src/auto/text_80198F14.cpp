@@ -1119,7 +1119,7 @@ static inline f32 fn_8019AC44_max(f32 a, f32 b) {
 
 extern "C" void fn_8019AC44(void* arg0, void* arg1, void* arg2, f32 farg0) {
     Vec work[64]; s32 count, sp8; Vec p70,p64,delta,p4c,p40,p34,p28,p1c,p10;
-    f32 dot,mag,limit,scale,varf1,f31,dx,dy,dz,tx,ty,tz,ux,uy,uz,vx,vy,vz,py,px,pz; void* body=*(void**)((u8*)arg0+4);
+    f32 dot,mag,limit,scale,varf1,f31,dx,dy,dz,tx,ty,tz,ux,uy,uz,vx,vy,vz,px,py,pz; void* body=*(void**)((u8*)arg0+4);
     if (lbl_8055E5A0!=0) { count=0x40; fn_801CF080((s32)lbl_8055E5A0,arg1,work,&count,0,farg0); Vec *wp = work; for(s32 i=0;i<count;wp++,++i) fn_8019A820(arg0,arg1,(s32)wp,0x6e,0,farg0); }
     if (fn_801E9F08((u8*)body+0x6c,arg1,&p70,(s32)&p64,(s32)&sp8,farg0)!=0) {
         dx=((Vec*)arg1)->x-p70.x; dy=((Vec*)arg1)->y-p70.y; dz=((Vec*)arg1)->z-p70.z; delta.x=dx; delta.y=dy; delta.z=dz;
@@ -4773,43 +4773,42 @@ struct Obj324C {
 };
 #pragma use_lmw_stmw off
 extern "C" void *fn_801A324C(void *arg0, int arg1, void *arg2, f32 farg0, f32 farg1) {
-    register u8 *self;
-    TagList *list;
+    register TagList *list;
     unsigned int i;
     TagNode *child;
     TagNode *node;
-    *(int *)((u8 *)arg0 + 0xC) = arg1;
-    *(int *)((u8 *)arg0 + 4) = 0;
-    *(int *)((u8 *)arg0 + 8) = 0;
-    self = (u8 *)arg0;
-    *(f32 *)(self + 0x10) = farg0;
-    *(int *)(self + 0x18) = 0x504F4C59;
-    *(f32 *)(self + 0x14) = farg1;
-    *(int *)(self + 0x20) = 100;
-    *(int *)(self + 0x1C) = 0;
-    *(void **)self = lbl_80333778;
+    Obj324C *self = (Obj324C *)arg0;
+    self->fc = arg1;
+    self->f4 = 0;
+    self->f8 = 0;
+    self->f10 = farg0;
+    self->f18 = 0x504F4C59;
+    self->f14 = farg1;
+    self->f20 = 100;
+    self->f1c = 0;
+    self->vtbl = lbl_80333778;
     list = fn_80131808(arg2, lbl_80333778);
-    *(int *)(self + 0xBC) = 0;
-    *(int *)(self + 0xDC) = 0;
+    self->bc = 0;
+    *(int *)((u8 *)self + 0xDC) = 0;
     node = list->GetChild(lbl_8055A4C8);
     {
         const TagVec3 &v = node->GetVec3(lbl_8055A4D0);
-        *(f32 *)(self + 0x24) = v.x;
-        *(f32 *)(self + 0x28) = v.y;
-        *(f32 *)(self + 0x2C) = v.z;
+        self->f24 = v.x;
+        self->f28 = v.y;
+        self->f2c = v.z;
     }
     {
         const TagVec3 &v = node->GetVec3(lbl_8055A4D4);
-        *(f32 *)(self + 0x30) = v.x;
-        *(f32 *)(self + 0x34) = v.y;
-        *(f32 *)(self + 0x38) = v.z;
+        self->f30 = v.x;
+        self->f34 = v.y;
+        self->f38 = v.z;
     }
     for (i = 0; (child = list->GetNth(i)) != 0; i++) {
         if (strcmp(child->GetName(), lbl_8055A4D8) == 0) {
-            int idx = *(int *)(self + 0xBC);
+            int idx = self->bc;
             u8 *rec;
-            rec = self + idx * 0x10;
-            *(int *)(self + 0xBC) = idx + 1;
+            rec = (u8 *)self + idx * 0x10;
+            self->bc = idx + 1;
             {
                 const TagVec3 &v = child->GetVec3(lbl_8055A4E0);
                 *(f32 *)(rec + 0x3C) = v.x;
@@ -4818,10 +4817,10 @@ extern "C" void *fn_801A324C(void *arg0, int arg1, void *arg2, f32 farg0, f32 fa
             }
             *(f32 *)(rec + 0x48) = child->GetFloat(lbl_8055A4E4);
         } else if (strcmp(child->GetName(), lbl_8055A4E8) == 0) {
-            int idx = *(int *)(self + 0xDC);
+            int idx = *(int *)((u8 *)self + 0xDC);
             u8 *rec;
-            *(int *)(self + 0xDC) = idx + 1;
-            rec = self + idx * 0x1C;
+            *(int *)((u8 *)self + 0xDC) = idx + 1;
+            rec = (u8 *)self + idx * 0x1C;
             {
                 const TagVec3 &v = child->GetVec3(lbl_8055A4F0);
                 *(f32 *)(rec + 0xC0) = v.x;
@@ -5653,14 +5652,15 @@ extern "C" void fn_801A4A10(s32 instance, s32 position, s32 object, s32 extra) {
     }
 }
 #pragma scheduling on
+static inline void *fn_801A4A8C_id(void *p) { return p; }
 extern "C" void* fn_801A4A8C(void* arg0, s32 arg1, s32 arg2, void* arg3, u32* arg4, s32 arg5, s32 arg6) {
     struct VTable2C {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual void v8(); virtual void Call(void*, s32, s32);
     };
-    void* vtable = (void*)&lbl_803336F8[0];
-    s32 t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    void* vtable = lbl_803336F8;
+    register s32 t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
     t0 = *(volatile s32*)((char*)arg4 + 0x00);
     t1 = *(volatile s32*)((char*)arg4 + 0x04);
     t2 = *(volatile s32*)((char*)arg4 + 0x08);
