@@ -153,7 +153,6 @@ void *fn_8020F5F0(long trackIndex) {
 extern void *memset(void *, int, unsigned long);
 #pragma dont_inline on
 #pragma ctrloop on
-static const long trkmus_init_count = 2;
 long fn_8020F608(long arg0, long arg1) {
     char *ptr;
     long i;
