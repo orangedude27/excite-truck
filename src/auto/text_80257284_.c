@@ -50,7 +50,7 @@ public:
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_80257284(void) {
-    /* build probe */
+#pragma scheduling invalid_target
     typedef struct { int v[5]; } Header;
     typedef struct { int label; int type; int value; int flags; int id; } Entry;
     typedef struct { Header header; Entry entries[9]; int object[0x74]; } Frame;
@@ -83,17 +83,17 @@ void fn_80257284(void) {
     frame.entries[0].id = 0;
     frame.entries[1].type = 13;
     frame.entries[1].label = (int)&lbl_8055C1D8;
-    frame.entries[1].value = (int)p0;
+    frame.entries[1].value = (int)p7;
     frame.entries[1].flags = 0;
     frame.entries[1].id = 0;
     frame.entries[2].type = 13;
     frame.entries[2].label = (int)&lbl_8055C1E0;
-    frame.entries[2].value = (int)p7;
+    frame.entries[2].value = (int)p21;
     frame.entries[2].flags = 0;
     frame.entries[2].id = 0;
     frame.entries[3].type = 13;
     frame.entries[3].label = (int)&lbl_8055C1E8;
-    frame.entries[3].value = (int)p21;
+    frame.entries[3].value = (int)p99;
     frame.entries[3].flags = 0;
     frame.entries[3].id = 0;
     frame.entries[4].type = 13;
@@ -226,8 +226,10 @@ extern "C" void fn_80257558(void *arg0, void *arg1) {
         char name[8];
     } Entry;
     Selector *self = (Selector *)arg0;
-    register int outer, inner;
     int found;
+    int outer;
+    int inner;
+    int name;
     int index;
     Entry *entry;
     char *candidate;
@@ -245,19 +247,19 @@ extern "C" void fn_80257558(void *arg0, void *arg1) {
             inner++;
         }
         if (found != 0) {
-            inner = (int)fn_800081BC(&entry->name);
+            name = (int)fn_800081BC(&entry->name);
             found = 0;
             index = 0;
             while (found == 0 && index < self->count_24) {
                 candidate = (char *)fn_8022D850(&self->table_1c, index, 1, 0);
-                if (stricmp((char *)inner, candidate) == 0) {
+                if (stricmp((char *)name, candidate) == 0) {
                     found = 1;
                 }
                 index++;
             }
             if (found == 0) {
                 found = self->count_24;
-                fn_8022D894(&self->table_1c, found, 1, (void *)inner, 0);
+                fn_8022D894(&self->table_1c, found, 1, (void *)name, 0);
                 fn_8022D894(&self->table_1c, found, 0, fn_80008188(&entry->name), 0);
             }
         }
@@ -276,6 +278,8 @@ extern "C" void fn_802576EC(void *arg0) {
     int pos;
     char *key;
     int i;
+    int mode;
+    int zeroA = 0, zeroB = 0;
     char *name;
     MatchDispatch *obj;
 
@@ -309,13 +313,11 @@ extern "C" void fn_802576EC(void *arg0) {
         }
         *(unsigned char *)(self + 0x88) = 0;
     }
-    fn_8022D894(self + 0x1C, *(int *)(self + 0x4C), 0,
-                fn_8022D850(self + 0x1C, *(int *)(self + 0x4C), 0, 0),
-                *(int *)(self + 0x18) == 0 ? 1 : 2);
+    mode = *(int *)(self + 0x18) == 0 ? 1 : 2;
+    fn_8022D894(self + 0x1C, *(int *)(self + 0x4C), zeroA, fn_8022D850(self + 0x1C, *(int *)(self + 0x4C), zeroA, zeroB), mode);
     if (*(int *)(self + 0x5C) > 0) {
-        fn_8022D894(self + 0x54, *(int *)(self + 0x84), 0,
-                    fn_8022D850(self + 0x54, *(int *)(self + 0x84), 0, 0),
-                    *(int *)(self + 0x18) == 1 ? 1 : 2);
+        mode = *(int *)(self + 0x18) == 1 ? 1 : 2;
+        fn_8022D894(self + 0x54, *(int *)(self + 0x84), zeroA, fn_8022D850(self + 0x54, *(int *)(self + 0x84), zeroA, zeroB), mode);
     }
 }
 #pragma scheduling on
