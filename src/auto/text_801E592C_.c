@@ -6,7 +6,7 @@ extern float fn_80144514(float, float, float, float, float, float);
 extern void fn_801BFD34(void *, void *, void *);
 extern void fn_80015B20(void *, void *, void *);
 extern void fn_802C7A38(s32, void *, s32);
-struct Rec14 { s32 w0,w1,w2,w3,w4,w5,w6,w7,w8,w9,w10,w11,w12,w13; };
+struct Rec14 { s32 v[14]; };
 struct Rec8 { s32 v[8][14]; };
 typedef union { struct Rec14 r; s32 w[14]; } U14;
 struct SrcHdr { s32 unk[2]; s32 count; s32 unk2; struct Rec14 data[1]; };
