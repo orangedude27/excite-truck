@@ -36,11 +36,12 @@ void *fn_80171698(void) {
 
     obj = (volatile struct Object *)fn_801284F8(0xA1C, lbl_80330EC8);
     if (obj != 0) {
-        start = (u32)obj + 0x3C;
-        end = (u32)obj + 0xA14;
         obj->vtable = lbl_80330ED8;
         obj->vtable2 = lbl_80330ED8 + 0x10;
         obj->base = (char *)obj + 0x14;
+
+        start = (u32)obj + 0x3C;
+        end = (u32)obj + 0xA14;
         valid = start < end;
 
         obj->count = 0x40;
@@ -127,12 +128,13 @@ void *fn_801717B4(void *self, int shouldDelete) {
 }
 #pragma pop
 void fn_8017188C(char *arg0) {
+    const unsigned int color = 0x8000FF00;
     int offset = 0;
     int i = 0;
     while (i < *(int *)(arg0 + 0xC)) {
         unsigned char *entry = *(unsigned char **)(arg0 + 8) + offset;
         if (entry[0x25] && !entry[0x24] && *(int *)*(void **)(entry + 0x18) > 1)
-            ((void (*)(void *, void *, int, unsigned int))fn_80141558)(arg0 + 0xA14, entry, 2, 0x8000FF00);
+            ((void (*)(void *, void *, int, unsigned int))fn_80141558)(arg0 + 0xA14, entry, 2, color);
         offset += 0x28;
         i++;
     }
@@ -151,6 +153,7 @@ extern f32 lbl_80561A30;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma opt_common_subs off
 void fn_80171934(void *p) {
     s32 outerCount;
     u8 *item;
@@ -169,16 +172,12 @@ void fn_80171934(void *p) {
             if (item[0x24] == 0 && fn_801B2F54(outer) >= *(s32 *)(item + 0x20)) {
                 s32 selection = ((s32 (*)(s32))fn_8017960C)(outer);
                 if (((s32 (*)(s32, s32))fn_80139B5C)(selection, *(s32 *)(item + 0x18)) != 0) {
-                    f32 x;
-                    f32 y;
                     f32 vec[3];
                     vec[0] = *(f32 *)(item + 0) + *(f32 *)(item + 0xC);
-                    x = vec[0] * scale;
                     vec[1] = *(f32 *)(item + 4) + *(f32 *)(item + 0x10);
-                    y = vec[1] * scale;
                     vec[2] = *(f32 *)(item + 8) + *(f32 *)(item + 0x14);
-                    vec[1] = y;
-                    vec[0] = x;
+                    vec[0] *= scale;
+                    vec[1] *= scale;
                     vec[2] *= scale;
                     ((void (*)(s32, s32, s32, f32 *))fn_801D488C)(*(s32 *)(item + 0x1C), 1, 1, vec);
                     item[0x24] = 1;
@@ -307,10 +306,10 @@ extern "C" void fn_80171A80(void *arg0) {
             *(f32 **)(e + 0x18) = p;
             k = 2;
             *(char *)(e + 0x24) = 0;
-            v[3] = p[3] - p[7];
-            v[2] = p[2] - p[6];
-            v[1] = p[3] - p[5];
             v[0] = p[2] - p[4];
+            v[1] = p[3] - p[5];
+            v[2] = p[2] - p[6];
+            v[3] = p[3] - p[7];
             d1 = v[2] * v[2] + v[3] * v[3];
             d2 = v[0] * v[0] + v[1] * v[1];
             if (d2 > d1) {
