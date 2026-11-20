@@ -13,8 +13,8 @@ extern float fn_801EF190(int);
 extern void fn_802C7760(void *, float *, float *, float *, float *, float *, float *);
 extern float lbl_80562EE0;
 extern float lbl_80562EE4;
+extern char lbl_8033A380[];
 typedef struct { char s0[0x10], s10[0xC], s1C[0xC], s28[0xC], s34[0xC], s40[0xC], s4C[0xC], s58[0xC], s64[0xC]; } Lbl801EF;
-extern Lbl801EF lbl_8033A380;
 extern char lbl_8055B098[4];
 extern char lbl_8055B0A0[4];
 extern char lbl_8055B0A8[4];
@@ -38,24 +38,25 @@ float fn_801EF190(int boundsId) {
 }
 #pragma scheduling on
 void **fn_801EF1F0(void **arg0, void *arg1) {
-    *arg0 = fn_801284F8(0x4C, lbl_8033A380.s0);
+    Lbl801EF *L = (Lbl801EF *)lbl_8033A380;
+    *arg0 = fn_801284F8(0x4C, (const char *)&lbl_8033A380);
     *(void **)*arg0 = fn_802C6FC0(arg1, 0, 0);
     *((float *)*arg0 + 9) = -1.0f;
-    *((void **)*arg0 + 1) = fn_802C6FC0(lbl_8033A380.s10, 0, 0);
-    *((void **)*arg0 + 10) = fn_802C6FC0(lbl_8033A380.s1C, 0, 0);
-    *((void **)*arg0 + 2) = fn_801E3004(**(void ***)arg0, lbl_8033A380.s28, -1);
-    *((void **)*arg0 + 3) = fn_801E3004(**(void ***)arg0, lbl_8033A380.s34, -1);
+    *((void **)*arg0 + 1) = fn_802C6FC0(L->s10, 0, 0);
+    *((void **)*arg0 + 10) = fn_802C6FC0(L->s1C, 0, 0);
+    *((void **)*arg0 + 2) = fn_801E3004(**(void ***)arg0, L->s28, -1);
+    *((void **)*arg0 + 3) = fn_801E3004(**(void ***)arg0, L->s34, -1);
     *((void **)*arg0 + 6) = fn_801E31D8(*((void **)*arg0 + 3), lbl_8055B098, -1);
     *((void **)*arg0 + 4) = fn_801E31D8(*((void **)*arg0 + 3), lbl_8055B0A0, -1);
-    *((void **)*arg0 + 5) = fn_801E3004(**(void ***)arg0, lbl_8033A380.s40, -1);
+    *((void **)*arg0 + 5) = fn_801E3004(**(void ***)arg0, L->s40, -1);
     *((void **)*arg0 + 7) = fn_801E3004(**(void ***)arg0, lbl_8055B0A8, -1);
     *((float *)*arg0 + 8) = fn_801EF190(fn_801E3534(*((void **)*arg0 + 4)));
     *((float *)*arg0 + 18) = 1.0f;
-    *((void **)*arg0 + 11) = fn_801E3004(**(void ***)arg0, lbl_8033A380.s4C, -1);
-    *((void **)*arg0 + 12) = fn_801E3004(**(void ***)arg0, lbl_8033A380.s58, -1);
+    *((void **)*arg0 + 11) = fn_801E3004(**(void ***)arg0, L->s4C, -1);
+    *((void **)*arg0 + 12) = fn_801E3004(**(void ***)arg0, L->s58, -1);
     *((void **)*arg0 + 15) = fn_801E31D8(*((void **)*arg0 + 12), lbl_8055B098, -1);
     *((void **)*arg0 + 13) = fn_801E31D8(*((void **)*arg0 + 12), lbl_8055B0A0, -1);
-    *((void **)*arg0 + 14) = fn_801E3004(**(void ***)arg0, lbl_8033A380.s64, -1);
+    *((void **)*arg0 + 14) = fn_801E3004(**(void ***)arg0, L->s64, -1);
     *((void **)*arg0 + 16) = fn_801E3004(**(void ***)arg0, lbl_8055B0B0, -1);
     *((float *)*arg0 + 17) = fn_801EF190(fn_801E3534(*((void **)*arg0 + 13)));
     return arg0;
