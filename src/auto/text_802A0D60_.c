@@ -280,7 +280,6 @@ extern double lbl_80564710;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern double lbl_80564720;
 void fn_802A1290(void) {
     float sp18[2];
     float sp10[2];
