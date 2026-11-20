@@ -145,10 +145,10 @@ extern "C" void fn_802B1E28(void) {
     void *nodes;
     void *data;
     void *entry;
-    int i;
-    int offset;
     int count;
     int size;
+    int offset;
+    int i;
     int index;
     fn_802B8AE0(lbl_8034A288 + 0xC, &lbl_8055F9B4);
     fn_802B8AE0(lbl_8034A288 + 0x18, &lbl_8055F9B0);
@@ -378,7 +378,6 @@ extern "C" void fn_802B224C(void *arg0) {
     void *child;
     void *item;
     int count;
-    void **items;
     Obj *self = (Obj *)arg0;
 
     count = *(int *)((char *)&lbl_804BE1FC + 4);
@@ -404,10 +403,10 @@ extern "C" void fn_802B224C(void *arg0) {
         *(void **)((char *)object + 0x24) = self->v3((const char *)&lbl_8055CDD0);
     }
 
-    items = *(void ***)&lbl_804BE1FC;
-    count = *(int *)((char *)&lbl_804BE1FC + 4);
-    *(int *)((char *)&lbl_804BE1FC + 4) = count + 1;
-    items[count] = object;
+    void **tab = *(void ***)&lbl_804BE1FC;
+    int *cnt = (int *)((char *)&lbl_804BE1FC + 4);
+    int n = (*cnt)++;
+    tab[n] = object;
 }
 
 #pragma cplusplus off
@@ -523,6 +522,7 @@ void *memset(void *, int, unsigned int);
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802B257C(void *arg0) {
+    struct ArgLayout { char pad[8]; int shuffle[0x80]; int output[0x80]; };
     int total = 0;
     int i, idx;
     for (i = 0; i < *(int *)((char *)arg0 + 0x40C); i++) {
@@ -539,30 +539,36 @@ void fn_802B257C(void *arg0) {
             idx = (idx + 1) % *(int *)((char *)arg0 + 0x40C);
         }
     }
-    memset((char *)arg0 + 0x208, 0, 0x200);
+    memset(((struct ArgLayout *)arg0)->output, 0, 0x200);
     {
-        int remain = 0x80 - total;
-        int dbl = remain * 2;
+        int dbl;
         int pos = 0;
+        int bytePos = 0;
         int k;
+        i = 0x80 - total;
+        dbl = i * 2;
         for (k = 0; k < *(int *)((char *)arg0 + 0x40C); k++) {
             int *obj = (*(int ***)((char *)arg0 + 0x408))[k];
-            int lim = dbl / *(int *)((char *)arg0 + 0x40C);
-            if (lim > remain)
-                lim = remain;
+            int lim0 = dbl / *(int *)((char *)arg0 + 0x40C);
+            int lim = i;
+            if (lim0 < lim)
+                lim = lim0;
             if (lim > 0) {
-                int n = ((int *)((char *)arg0 + 8))[k & 0x7F] % lim;
+                int n = ((struct ArgLayout *)arg0)->shuffle[k & 0x7F] % lim;
                 int j;
                 for (j = 0; j < n; j++) {
-                    ((void **)((char *)arg0 + 0x208))[pos++] = 0;
+                    *(int *)((char *)arg0 + bytePos + 0x208) = 0;
+                    bytePos += 4;
+                    pos++;
                 }
-                remain -= n;
+                i -= n;
             }
             {
-                int c = *obj;
                 int j;
-                for (j = 0; j < c; j++) {
-                    ((void **)((char *)arg0 + 0x208))[pos++] = obj;
+                for (j = 0; j < *obj; j++) {
+                    *(int **)((char *)arg0 + bytePos + 0x208) = obj;
+                    bytePos += 4;
+                    pos++;
                 }
             }
         }
@@ -600,12 +606,11 @@ void fn_802B28BC(int *entries, int count) {
   #pragma push
  #pragma optimization_level 3
  #pragma opt_pointer_aliasing on
- void **fn_802B2934(void *arg0, void **arg1) {
+void **fn_802B2934(void *arg0, void **arg1) {
     void *val = *arg1;
     int count = ((int *)arg0)[1];
     void **data = *(void ***)arg0;
-    register int next = count + 1;
-    ((int *)arg0)[1] = next;
+    ((int *)arg0)[1] = count + 1;
     data[count] = val;
     return &data[count];
 }
