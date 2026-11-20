@@ -2051,10 +2051,10 @@ void fn_80069FE8(void)
             DBPrintf_8006CFA8((const char *)(strings + 0x338), *(u16 *)(version + 2) & 0xFFF);
 
             if ((*(u16 *)(version + 2) & 0xFFF) == 0xA7) {
+                tBTM_VSC_CMPL_CB *cb = (tBTM_VSC_CMPL_CB *)fn_8006AED4;
+                volatile u8 *addr = lbl_803135C0;
                 u32 first, second, byte;
-                volatile u8 *addr;
                 DBPrintf_8006CFA8((const char *)(strings + 0x360));
-                addr = lbl_803135C0;
                 first = addr[3];
                 second = addr[7];
                 byte = addr[2];
@@ -2071,7 +2071,7 @@ void fn_80069FE8(void)
                 second = (second << 8) + byte;
                 lbl_8055DC3C = first;
                 lbl_8055DC44 = second;
-                BTM_VendorSpecificCommand(0xFC4F, 1, &lbl_8055DC38, (tBTM_VSC_CMPL_CB *)fn_8006AED4);
+                BTM_VendorSpecificCommand(0xFC4F, 1, &lbl_8055DC38, cb);
             } else {
                 fn_8006B330();
             }
@@ -2777,6 +2777,7 @@ void fn_8006B330(void) {
 
 extern u8 BTA_DmAddDevice(u8 *, u8 *, u32, u8);
 extern void BTA_HhAddDev(const u8 *, u16, u8, u8, const void *);
+struct Fn8006B488Scratch { f64 argData; u8 pad[8]; u16 len; u16 pad2; u32 ptr; };
 void fn_8006B488(void) {
     u8 *base = lbl_803130C8;
     u8 *control = lbl_80392960;
@@ -2784,14 +2785,14 @@ void fn_8006B488(void) {
     u8 status;
     BOOL interrupt;
     u8 state;
+    volatile u16 sp10;
+    volatile u32 sp14;
     f64 argData;
-    u16 sp10;
-    u32 sp14;
     status = BTA_DmAddDevice(info + 0x40, info + 0x46, 0, 0);
     DBPrintf_8006CFA8((const char *)(base + 0x5D8), status);
     if (memcmp(info, base + 0x1A0, 0x10) == 0) {
-        sp14 = (u32)base;
         sp10 = 0xD9;
+        sp14 = (u32)base;
         DBPrintf_8006CFA8((const char *)(base + 0x5F0));
         argData = *(f64 *)&sp10;
         BTA_HhAddDev(info + 0x40, *(u16 *)(info + 0x5E), info[0x57], info[0x58], &argData);
@@ -8437,19 +8438,17 @@ void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) {
 
     entry = lbl_803C0F78 + 0x34;
     i = 0;
-loop1:
-    if (entry[0x119] != 0) {
-        if (memcmp(entry + 8, addr, 6) == 0)
-            goto found1;
-        goto next1;
+    for (;;) {
+        if (entry[0x119] != 0 && memcmp(entry + 8, addr, 6) == 0)
+            break;
+        i++;
+        entry += 0x11C;
+        if (i >= 4) {
+            entry = NULL;
+            break;
+        }
     }
-next1:
-    i++;
-    entry += 0x11C;
-    if (i < 4)
-        goto loop1;
-    entry = NULL;
-found1:
+
     buffer = lbl_803C0F78 + 0x624;
     if (entry == NULL)
         return;
@@ -8465,19 +8464,16 @@ found1:
         supervision_timeout = *(u16 *)(entry + 0x10E);
         other = lbl_803C0F78 + 0x34;
         j = 0;
-loop2:
-        if (other[0x119] != 0) {
-            if (memcmp(other + 8, entry + 8, 6) == 0)
-                goto found2;
-            goto next2;
+        for (;;) {
+            if (other[0x119] != 0 && memcmp(other + 8, entry + 8, 6) == 0)
+                break;
+            j++;
+            other += 0x11C;
+            if (j >= 4) {
+                other = NULL;
+                break;
+            }
         }
-next2:
-        j++;
-        other += 0x11C;
-        if (j < 4)
-            goto loop2;
-        other = NULL;
-found2:
         if (other != NULL) {
             *(u16 *)(other + 0x10E) = supervision_timeout;
             if (other[0x11A] == 0)
@@ -19760,7 +19756,7 @@ void l2c_link_sec_comp(BD_ADDR bd_addr, void *ref_data, UINT8 status)
     void *lcb;
     void *ccb;
     void *next;
-    s8 event;
+    u8 event;
     ci[6] = status;
     memcpy(ci, bd_addr, 6);
     lcb = l2cu_find_lcb_by_bd_addr(bd_addr);
@@ -29866,9 +29862,9 @@ extern s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks);
 void WUDVendorSpecificCallback(u8 len, u8 *pData) {
     typedef void (*WUDSyncCallback)(s32, s32);
     typedef void (*WUDClearCallback)(s32);
-    u8 event = pData[0];
-    u8 *state = lbl_80392960;
+    register u8 *state = lbl_80392960;
     u8 *strings = lbl_803130C8;
+    u8 event = pData[0];
     u32 enabled, busyEnabled;
     s32 busy, result, started, libStatus;
     WUDSyncCallback syncCallback;
