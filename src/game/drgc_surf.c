@@ -1120,7 +1120,7 @@ s32 fn_802D62E4(void *object) {
     return (s32)object;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802D62FC(void *__restrict arg0, s32 *arg1, s32 *arg2) {
     extern s32 lbl_8055FDF0;
     extern s32 lbl_8055FDF4;
