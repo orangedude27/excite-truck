@@ -451,6 +451,8 @@ void fn_80020430(void) {
 int fn_80020434(void* arg0, float* arg1) {
     float out1[2], out2[2];
     float mat[12];
+    register float z = 0.0f;
+    register float o = 1.0f;
     float var_f1;
     float var_f3;
     float var_f31;
@@ -468,18 +470,18 @@ int fn_80020434(void* arg0, float* arg1) {
     s32 temp_r0;
     void* temp_r28;
 
-    mat[0] = lbl_805604B8;
-    mat[1] = lbl_805604B4;
-    mat[2] = lbl_805604B4;
-    mat[3] = lbl_805604B4;
-    mat[4] = lbl_805604B8;
-    mat[5] = lbl_805604B4;
-    mat[6] = lbl_805604B4;
-    mat[7] = lbl_805604B4;
-    mat[8] = lbl_805604B8;
-    mat[9] = lbl_805604B4;
-    mat[10] = lbl_805604B4;
-    mat[11] = lbl_805604B4;
+    mat[0] = o;
+    mat[1] = z;
+    mat[2] = z;
+    mat[3] = z;
+    mat[4] = o;
+    mat[5] = z;
+    mat[6] = z;
+    mat[7] = z;
+    mat[8] = o;
+    mat[9] = z;
+    mat[10] = z;
+    mat[11] = z;
     fn_802A1120(out1, out2, lbl_805604B8);
     mat[9] = out1[0];
     mat[10] = lbl_805604B4;
@@ -582,6 +584,7 @@ extern float lbl_805604FC;
 extern int fn_802354A0(int, int, s32, f32, f32, f32, f32, f32);
 #pragma push
 #pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_80020860(int arg0) {
     f32 t4;
     f32 t5;
@@ -659,8 +662,9 @@ extern int lbl_80558DA0;
 #pragma processor 750
 #pragma ppc_psq_save off
 void fn_800209A0(int arg0, float arg1) {
-    int color;
+    int textId;
     int color2;
+    int color;
     int colorTable[3];
     float f5;
     float t0, t1;
@@ -672,10 +676,10 @@ void fn_800209A0(int arg0, float arg1) {
     float f24;
     int i;
     int svals[3];
-    int textId;
     void *res;
     char ch;
     char *base = lbl_802FE138;
+    float a1 = arg1;
 
     f5 = fn_802C9A58() != 0 ? lbl_80560500 : lbl_805604B4;
     t0 = (f32)lbl_8055CFF0;
@@ -711,20 +715,20 @@ void fn_800209A0(int arg0, float arg1) {
 
     if (lbl_8055D646 == 0 && lbl_8055D647 != 0) {
         g = lbl_805604D8;
-        if (arg1 >= lbl_805604D8) goto g1a;
+        if (a1 >= lbl_805604D8) goto g1a;
         goto g1done;
 g1a:
         g = lbl_805604B8;
-        if (arg1 <= lbl_805604B8) goto g1b;
+        if (a1 <= lbl_805604B8) goto g1b;
         goto g1done;
 g1b:
-        u = lbl_805604DC * arg1;
-        v = lbl_805604E0 * arg1;
-        u = u * arg1;
-        v = v * arg1;
-        u = arg1 * u;
+        u = lbl_805604DC * a1;
+        v = lbl_805604E0 * a1;
+        u = u * a1;
+        v = v * a1;
+        u = a1 * u;
         g = lbl_805604B4;
-        if (arg1 > lbl_805604B4) g = u + v; else g = u - v;
+        if (a1 > lbl_805604B4) g = u + v; else g = u - v;
 g1done:
         alpha = ((arg0 * 0xC0) / 255) << 24;
         alpha |= 0xFF0000 | 0xFFFF;
@@ -744,20 +748,20 @@ g1done:
 
     if (lbl_8055D646 == 0 && lbl_8055D647 == 0 && fn_800167F4() == 1) {
         g = lbl_805604D8;
-        if (arg1 >= lbl_805604D8) goto g2a;
+        if (a1 >= lbl_805604D8) goto g2a;
         goto g2done;
 g2a:
         g = lbl_805604B8;
-        if (arg1 <= lbl_805604B8) goto g2b;
+        if (a1 <= lbl_805604B8) goto g2b;
         goto g2done;
 g2b:
-        u = lbl_805604DC * arg1;
-        v = lbl_805604E0 * arg1;
-        u = u * arg1;
-        v = v * arg1;
-        u = arg1 * u;
+        u = lbl_805604DC * a1;
+        v = lbl_805604E0 * a1;
+        u = u * a1;
+        v = v * a1;
+        u = a1 * u;
         g = lbl_805604B4;
-        if (arg1 > lbl_805604B4) g = u + v; else g = u - v;
+        if (a1 > lbl_805604B4) g = u + v; else g = u - v;
 g2done:
         f24 = (f32)lbl_8055CFF4 * (lbl_8056051C * g) - lbl_8056053C;
         alpha = ((arg0 * 0xC0) / 255) << 24;
@@ -769,7 +773,7 @@ g2done:
         svals[2] = lbl_802ED850[2];
         for (i = 0; i < 3; i++) {
             char buf[0x40] = {0};
-            textId = 0;
+            textId = (int)&lbl_80558DA0;
             switch (svals[i]) {
             case 0:
                 textId = fn_8001BA6C(0x22205);
@@ -871,7 +875,7 @@ g2done:
                 } else {
                     fn_80232BA4((int)buf, lbl_8055D650, color, 0x12,
                                 lbl_805604C4 + ((f28 + f24) - f29),
-                                arg1 + f23, lbl_80560550, lbl_805604B4, arg1);
+                                a1 + f23, lbl_80560550, lbl_805604B4, a1);
                 }
             }
         }
@@ -991,7 +995,8 @@ int fn_800213DC(int keyCode) {
 void fn_80021464(KArg *a, int arg1) {
     KArg *p;
     int sp[6];
-    int n, rk, vhh, c;
+    int n, rk, vhh;
+    register int c;
     char *base = lbl_802FE138;
     lbl_8055D62C = 1;
     fn_8001FEE8();
