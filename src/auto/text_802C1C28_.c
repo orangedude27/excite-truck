@@ -26,8 +26,10 @@ void fn_802C1C30(void) {}
 
 #pragma push
 #pragma processor 750
+#pragma ppc_psq_save off
 #pragma use_lmw_stmw off
 void fn_802C1C34(void *arg0, void *obj, int slot) {
+#pragma scheduling invalid_target
     typedef struct { int v[9]; } Block9;
     typedef struct { float v[3]; } Vec3;
     float pos[3], mat[9], vel[3], scale[3];
@@ -268,7 +270,7 @@ void fn_802C21DC(int x, int y, unsigned int color) {
     int result;
     if (lbl_8055FB54 != 0) {
         lo = ((color & 0xFF) << 8) | (color & 0xFF);
-        hi = (((color >> 8) & 0xFF) << 24) | (((color >> 8) & 0xFF) << 16);
+        hi = ((color & 0xFF) << 24) | ((color & 0xFF) << 16);
         packed = lo | hi;
         sx = fn_802C2120(x);
         sy = fn_802C2120(y);
@@ -277,9 +279,8 @@ void fn_802C21DC(int x, int y, unsigned int color) {
         height = state[1];
         xCoord = sx;
         width = state[0];
-        height--;
         pixels = (unsigned int *)state[2];
-        height -= yCoord;
+        height = height - 1 - yCoord;
         index = height * width + xCoord;
         pixels[index] = packed;
         result = ((int (*)(int))fn_802CA294)((int)lbl_8055FB50);
