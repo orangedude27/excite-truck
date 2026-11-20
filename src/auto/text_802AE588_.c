@@ -1474,40 +1474,51 @@ s32 fn_802B02C8(void *arg0) {
     return 0;
 }
 #pragma scheduling on
+extern s32 fn_802B1C50(s32, s32, s32);
 s32 fn_802B03C0(void *arg0) {
-    f32 a;
-    f32 b;
-    f32 c;
-    f32 d;
-    f32 x;
-    f32 z;
+    f32 temp_f0;
+    f32 temp_f0_2;
+    f32 temp_f1;
+    f32 temp_f2;
+    s32 valid;
+    f32 fx;
+    f32 fz;
+    s32 sx;
+    s32 sz;
     s16 cx;
     s16 cz;
-    s32 v31;
-    u32 t4;
-    v31 = 0;
+    u32 flags;
+    s32 result;
+
+    result = 0;
     if ((fn_802AE7AC() != 0) && (lbl_8055F970 != 0)) {
-        int valid = 0;
-        d = lbl_80564B84 * lbl_80564AF0 * lbl_80564B6C;
-        a = *(f32 *)arg0;
-        c = -d;
-        if ((a > c) && (a < d)) {
-            b = *(f32 *)((char *)arg0 + 8);
-            if ((b > c) && (b < d))
+        valid = 0;
+        temp_f2 = lbl_80564B84;
+        temp_f0 = lbl_80564AF0;
+        temp_f2 *= temp_f0;
+        temp_f1 = lbl_80564B6C;
+        temp_f2 *= temp_f1;
+        temp_f1 = -temp_f2;
+        temp_f0 = *(f32 *)arg0;
+        if ((temp_f0 > temp_f1) && (temp_f0 < temp_f2)) {
+            temp_f0_2 = *(f32 *)((u8 *)arg0 + 8);
+            if ((temp_f0_2 > temp_f1) && (temp_f0_2 < temp_f2))
                 valid = 1;
         }
         if (valid != 0) {
-            z = *(f32 *)((char *)arg0 + 8);
-            x = *(f32 *)arg0;
-            cx = (s16)((s16)((s32)(x / lbl_80564AF0) & 0xFFFFFFF8) + 4);
-            cz = (s16)((s16)((s32)(z / lbl_80564AF0) & 0xFFFFFFF8) + 4);
-            t4 = *(u32 *)((char *)fn_802BE844(cx, cz, 4, z) + 8);
-            v31 = fn_802B1C50(*(void **)((char *)lbl_8055F970 + 4),
-                              (t4 >> 6) & 7,
-                              ((t4 >> 24) & 1) ^ 1);
+            fx = *(f32 *)arg0;
+            fz = *(f32 *)((u8 *)arg0 + 8);
+            sx = (s32)(fx / lbl_80564AF0);
+            sz = (s32)(fz / lbl_80564AF0);
+            cx = (s16)((s16)(sx & ~7) + 4);
+            cz = (s16)((s16)(sz & ~7) + 4);
+            flags = *(u32 *)((u8 *)fn_802BE844(cx, cz, 4) + 8);
+            result = fn_802B1C50(*(s32 *)((char *)lbl_8055F970 + 4),
+                                  (flags >> 6) & 7,
+                                  ((flags >> 24) & 1) ^ 1);
         }
     }
-    return v31;
+    return result;
 }
 #pragma dont_inline reset
 #pragma dont_inline off
