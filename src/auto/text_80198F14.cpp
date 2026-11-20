@@ -1703,13 +1703,13 @@ extern "C" s32 fn_8019D484(const Vec *p0, const Vec *v0, const Vec *p1, const Ve
          return 0;
  }
 
- s32 fn_8019D618(void* arg0, void* arg1, s32 clamp, void* arg3) {
+s32 fn_8019D618(void* arg0, void* arg1, s32 clamp, void* arg3) {
     f32* aMat = *(f32**)((u8*)arg0 + 0xC);
     f32* bMat = *(f32**)((u8*)arg1 + 0xC);
     Vec aPos, bPos, p, q, aAxis, bAxis, diff, cross, mid, da, db, normal, center, delta;
-    f32 den, t0, t1;
-    f32 h0 = *(f32*)((u8*)arg0 + 0x28);
-    f32 h1 = *(f32*)((u8*)arg1 + 0x28);
+    register f32 den, t0, t1, h0, h1, scale;
+    h0 = *(f32*)((u8*)arg0 + 0x28);
+    h1 = *(f32*)((u8*)arg1 + 0x28);
     aAxis.x = aMat[6]; aAxis.y = aMat[7]; aAxis.z = aMat[8];
     bAxis.x = bMat[6]; bAxis.y = bMat[7]; bAxis.z = bMat[8];
     aPos.x = aMat[9]; aPos.y = aMat[10]; aPos.z = aMat[11];
@@ -1746,7 +1746,6 @@ extern "C" s32 fn_8019D484(const Vec *p0, const Vec *v0, const Vec *p1, const Ve
     {
         f32 dist = PSVECMag(&delta);
         f32 depth;
-        f32 scale;
         if ((f32)__fabs((f64)dist) == lbl_80558DC4) return 0;
         depth = *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)arg1 + 0x24) - dist;
         if (depth < lbl_805622D0) return 0;
@@ -3007,17 +3006,21 @@ extern "C" void fn_801A0160(void* group) {
     }
 }
 
+typedef struct Arg0_801A01E0 {
+    char pad[0x178];
+    float value;
+} Arg0_801A01E0;
 extern "C" void fn_801A01E0(void* arg0, void* arg1, void* arg2) {
     volatile f32 inputA[2];
     volatile f32 inputB[4];
     volatile f32* first = (volatile f32*)arg1;
     volatile f32* second = (volatile f32*)arg2;
-    f32 value = *(f32*)((u8*)arg0 + 0x178);
-    f32 scaleA = value * lbl_805622DC;
-    f32 scaleB = value * lbl_805622E0;
+    register f32 value = *(f32*)((u8*)arg0 + 0x178);
     void* base = *(void**)((u8*)arg0 + 0xC);
     f32 x = *(f32*)((u8*)base + 0x24);
+    f32 scaleA = value * lbl_805622DC;
     f32 y = *(f32*)((u8*)base + 0x28);
+    f32 scaleB = value * lbl_805622E0;
     f32 z = *(f32*)((u8*)base + 0x2C);
     f32 x0 = x + scaleA;
     f32 y0 = y + scaleA;
@@ -3931,12 +3934,12 @@ extern "C" void fn_801A1B9C(void* arg0) {
     f32 f10 = *(volatile f32*)&local[2];
     *(volatile f32*)&local[12] = f8 + f14 * w;
     *(volatile f32*)&local[13] = fC + f18 * w;
-    f32 z = 0.0f;
     *(volatile f32*)&local[9] = f8 + f14 * neg_w;
-    *(volatile f32*)&local[14] = f10 + f14 * w;
-    *(volatile f32*)&local[10] = fC + f18 * neg_w;
     *(volatile f32*)&local[11] = f10 + f14 * neg_w;
+    *(volatile f32*)&local[10] = fC + f18 * neg_w;
+    *(volatile f32*)&local[14] = f10 + f14 * w;
     f32 f = *(f32*)((u8*)arg0 + 0x24);
+    f32 z = lbl_805622D0;
     *(volatile f32*)&local[6] = z;
     *(volatile f32*)&local[7] = z;
     *(volatile f32*)&local[8] = z;
