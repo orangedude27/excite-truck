@@ -27,6 +27,7 @@ extern s32 fn_80005580(s32);
 
 #pragma push
 #pragma processor 750
+#pragma scheduling invalid_target
 void fn_800053CC(void) {
     float buf[25];
     if (fn_801298E8(buf, 0) != 0) {
