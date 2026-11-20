@@ -709,6 +709,7 @@ int fn_80136068(void *arg0, void *arg1, int arg2) {
     unsigned int start;
     unsigned int end;
     int keep;
+    char *head;
     float length;
     float old48;
     float old40;
