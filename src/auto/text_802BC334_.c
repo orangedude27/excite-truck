@@ -750,11 +750,21 @@ int fn_802BD5A8(int value, int delta) { return value + delta; }
 #pragma push
 #pragma inline_depth(0)
 #pragma use_lmw_stmw off
+static inline void fn_802BD5B0_swap(unsigned char *entry, float zero) {
+    unsigned char t;
+    t = entry[4]; entry[4] = entry[5]; entry[5] = t;
+    t = entry[6]; entry[6] = entry[7]; entry[7] = t;
+    t = entry[8]; entry[8] = entry[9]; entry[9] = t;
+    t = entry[10]; entry[10] = entry[11]; entry[11] = t;
+    *(float *)(entry + 12) = zero;
+}
+
 void fn_802BD5B0(void *arg0, int arg1) {
     extern int fn_802BD694(int, int);
     extern float lbl_80564D30;
     unsigned char *p = arg0;
-    unsigned char *entry;
+    register unsigned char tmp;
+    register unsigned char *entry;
     int offset;
     unsigned int i;
     float zero;
@@ -767,7 +777,6 @@ void fn_802BD5B0(void *arg0, int arg1) {
     *(int *)(p + 4) = fn_802BD694(*(int *)(p + 4), arg1);
     i = 0; zero = -1.0f; offset = 0;
     while (i < *(unsigned int *)p) {
-        unsigned char tmp;
         entry = *(unsigned char **)(p + 4) + offset;
         tmp = entry[4]; entry[4] = entry[5]; entry[5] = tmp;
         tmp = entry[6]; entry[6] = entry[7]; entry[7] = tmp;
@@ -786,40 +795,89 @@ int fn_802BD694(int value, int delta) { return value + delta; }
 #pragma inline_depth(0)
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_802BD69C(void *arg0, int arg1) {
-    extern int fn_802BD80C(int, int);
-    unsigned char *p = arg0;
-    unsigned char *entry;
-    register int offset;
-    register unsigned int i;
-    unsigned char b7, b2, b3, b0, b1, b4, b5;
-    unsigned char tmp;
-    b4 = p[4]; b5 = p[5];
-    b7 = p[7];
-    p[4] = b7; b0 = p[0]; b3 = p[3]; p[7] = b4;
-    b1 = p[1]; b2 = p[2]; p[5] = p[6]; p[6] = b5;
-    p[0] = b3; p[3] = b0; p[1] = b2; p[2] = b1;
-    *(int *)(p + 4) = fn_802BD80C(*(int *)(p + 4), arg1);
-    i = 0; offset = 0;
-    while (i < *(unsigned int *)p) {
-        int j;
-        entry = *(unsigned char **)(p + 4) + offset + 0xC;
-        for (j = 0; j < 2; j++, entry += 0x18) {
-            tmp = entry[0]; entry[0] = entry[3]; entry[3] = tmp;
-            tmp = entry[1]; entry[1] = entry[2]; entry[2] = tmp;
-            tmp = entry[4]; entry[4] = entry[7]; entry[7] = tmp;
-            tmp = entry[5]; entry[5] = entry[6]; entry[6] = tmp;
-            tmp = entry[8]; entry[8] = entry[0xB]; entry[0xB] = tmp;
-            tmp = entry[9]; entry[9] = entry[0xA]; entry[0xA] = tmp;
-            tmp = entry[0xC]; entry[0xC] = entry[0xF]; entry[0xF] = tmp;
-            tmp = entry[0xD]; entry[0xD] = entry[0xE]; entry[0xE] = tmp;
-            tmp = entry[0x10]; entry[0x10] = entry[0x13]; entry[0x13] = tmp;
-            tmp = entry[0x11]; entry[0x11] = entry[0x12]; entry[0x12] = tmp;
-            tmp = entry[0x14]; entry[0x14] = entry[0x17]; entry[0x17] = tmp;
-            tmp = entry[0x15]; entry[0x15] = entry[0x16]; entry[0x16] = tmp;
-        }
-        offset += 0x44; i++;
+void fn_802BD69C(void *arg0, int arg1)
+{
+  extern int fn_802BD80C(int, int);
+  unsigned char *p = arg0;
+  unsigned char *entry;
+  int offset;
+  unsigned int i;
+  unsigned char b7;
+  unsigned char b2;
+  unsigned char b3;
+  unsigned char b0;
+  unsigned char b1;
+  unsigned char b4;
+  unsigned char b5;
+  unsigned char tmp;
+  b4 = p[4];
+  b5 = p[5];
+  b7 = p[7];
+  p[4] = b7;
+  b0 = p[0];
+  b3 = p[3];
+  p[7] = b4;
+  b1 = p[1];
+  b2 = p[2];
+  p[5] = p[6];
+  p[6] = b5;
+  p[0] = b3;
+  p[3] = b0;
+  p[1] = b2;
+  p[2] = b1;
+  *((int *) (p + 4)) = fn_802BD80C(*((int *) (p + 4)), arg1);
+  i = 0;
+  offset = 0;
+  while (i < (*((unsigned int *) p)))
+  {
+    int j;
+    entry = ((*((unsigned char **) (p + 4))) + offset) + 0xC;
+    for (j = 0; j < 2; j++, entry += 0x18)
+    {
+      tmp = entry[0];
+      entry[0] = entry[3];
+      entry[3] = tmp;
+      i = entry[1];
+      tmp = i;
+      entry[1] = entry[2];
+      entry[2] = tmp;
+      tmp = entry[4];
+      entry[4] = entry[7];
+      entry[7] = tmp;
+      tmp = entry[5];
+      entry[5] = entry[6];
+      entry[6] = tmp;
+      tmp = entry[8];
+      entry[8] = entry[0xB];
+      entry[0xB] = tmp;
+      tmp = entry[9];
+      entry[9] = entry[0xA];
+      entry[0xA] = tmp;
+      offset = 0xC;
+      tmp = entry[0xC];
+      entry[offset] = entry[0xF];
+      entry[0xF] = tmp;
+      tmp = entry[0xD];
+      entry[0xD] = entry[0xE];
+      entry[0xE] = tmp;
+      tmp = entry[0x10];
+      entry[0x10] = entry[0x13];
+      entry[0x13] = tmp;
+      tmp = entry[0x11];
+      entry[0x11] = entry[0x12];
+      entry[0x12] = tmp;
+      tmp = entry[0x14];
+      entry[0x14] = entry[0x17];
+      entry[0x17] = tmp;
+      tmp = entry[0x15];
+      entry[0x15] = entry[0x16];
+      entry[0x16] = tmp;
     }
+
+    offset += 0x44;
+    i++;
+  }
+
 }
 #pragma scheduling on
 #pragma pop
@@ -1281,11 +1339,10 @@ void *fn_802BE008(void *arg0) {
     int found;
     char *entry = *(char **)&lbl_804C00D4;
     int i;
-    char *item;
     for (i = 0; i < count; i++, entry += 0x60) {
         char *list = *(char **)(entry + 0x58);
         if (list != 0) {
-            item = *(char **)(list + 8);
+            char *item = *(char **)(list + 8);
             found = 0;
             if ((unsigned)arg0 >= (unsigned)*(int *)item && (unsigned)arg0 < (unsigned)*(int *)item + (unsigned)*(int *)(item + 4) * 0x10) {
                 found = 1;
