@@ -360,6 +360,8 @@ extern char lbl_8055C300[], lbl_8055C308[], lbl_8055C310[], lbl_8055C318[];
 extern char lbl_8055C320[], lbl_8055C328[], lbl_8055C330[], lbl_8055C338[];
 extern char lbl_8055C340[], lbl_8055C348[], lbl_8055C350[], lbl_8055C358[];
 extern char lbl_8055C360[], lbl_8055C368[], lbl_8055C370[], lbl_8055C378[];
+typedef unsigned char u8;
+typedef signed char s8;
 #define FS(t, o) (*(t *)((char *)frame + (o) - 8))
 typedef int (*fn9c8_t)(int, void *, void *, void *, void *, void *, void *, void *);
 #define EF9C8 ((fn9c8_t)fn_8001EF9C)
