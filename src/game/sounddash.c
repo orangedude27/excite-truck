@@ -45,12 +45,6 @@ void fn_8020BCE4(void) {
     }
 }
 #pragma pop
-static inline float clampUpper(float value, float limit) {
-    return value > limit ? limit : value;
-}
-static inline float clampLower(float value, float limit) {
-    return value < limit ? limit : value;
-}
 int fn_8020BDB8(int arg0) {
     int index;
     void *item;
@@ -75,7 +69,7 @@ int fn_8020BDB8(int arg0) {
         if (index < fn_8020A76C()) {
             item = fn_8020A774(index);
             value = *(float *)((char *)item + 0x20) - lbl_805632C8;
-            value = lbl_805632CC < value ? lbl_805632CC : value;
+            value = value > lbl_805632CC ? lbl_805632CC : value;
             *(float *)((char *)item + 0x20) = value;
             return 1;
         }
@@ -86,7 +80,7 @@ int fn_8020BDB8(int arg0) {
         if (index < fn_8020A76C()) {
             item = fn_8020A774(index);
             value = lbl_805632C8 + *(float *)((char *)item + 0x20);
-            value = lbl_805632D0 > value ? lbl_805632D0 : value;
+            value = value < lbl_805632D0 ? lbl_805632D0 : value;
             *(float *)((char *)item + 0x20) = value;
             return 1;
         }
