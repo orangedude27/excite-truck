@@ -1158,6 +1158,7 @@ void fn_802D62FC(void *arg0, s32 *arg1, s32 *arg2) {
     *arg1 = write->start;
     *arg2 = write->size;
 }
+#pragma scheduling on
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802D63FC(void *arg0, s32 arg1) {
