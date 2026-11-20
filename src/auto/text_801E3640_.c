@@ -41,7 +41,7 @@ extern int fn_802C7760(void *, float *, float *, float *, float *, float *, floa
 #pragma scheduling invalid_target
 extern float lbl_80562CF0;
 extern void PSVECCrossProduct(const float *, const float *, float *);
-#pragma opt_propagation off
+#pragma scheduling on
 void fn_801E3640(void *arg0, float *arg1) {
     float basis[3];
     float x = *(float *)arg0;
@@ -97,9 +97,9 @@ void fn_801E370C(float *arg0, int arg1, int arg2) {
                 out[1] = (in[0] * arg0[1] + in[1] * arg0[4]) + in[2] * arg0[7];
                 out[2] = (in[0] * arg0[2] + in[1] * arg0[5]) + in[2] * arg0[8];
             } else {
-                out[0] = (in[1] * arg0[3] + in[0] * arg0[0]) + in[2] * arg0[6];
-                out[1] = (in[1] * arg0[4] + in[0] * arg0[1]) + in[2] * arg0[7];
-                out[2] = (in[1] * arg0[5] + in[0] * arg0[2]) + in[2] * arg0[8];
+                out[0] = (in[0] * arg0[0] + in[1] * arg0[3]) + in[2] * arg0[6];
+                out[1] = (in[0] * arg0[1] + in[1] * arg0[4]) + in[2] * arg0[7];
+                out[2] = (in[0] * arg0[2] + in[1] * arg0[5]) + in[2] * arg0[8];
             }
             out[0] += arg0[9];
             out[1] += arg0[10];
@@ -115,29 +115,25 @@ void fn_801E370C(float *arg0, int arg1, int arg2) {
         out[0] += arg0[0] * lbl_80562D00;
         out[2] += arg0[2] * lbl_80562D00;
         fn_802C8E00(arg2, 0, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
-        out[1] += arg0[4] * lbl_80562D00;
-        out[0] += arg0[3] * lbl_80562D00;
-        out[2] += arg0[5] * lbl_80562D00;
+        out[0] += arg0[3] * lbl_80562D00 + arg0[0] * lbl_80562D04;
+        out[1] += arg0[4] * lbl_80562D00 + arg0[1] * lbl_80562D04;
+        out[2] += arg0[5] * lbl_80562D00 + arg0[2] * lbl_80562D04;
         fn_802C8E00(arg2, 1, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
-        out[0] += arg0[0] * lbl_80562D04 + arg0[6] * lbl_80562D00;
-        out[1] += arg0[1] * lbl_80562D04 + arg0[7] * lbl_80562D00;
-        out[2] += arg0[2] * lbl_80562D04 + arg0[8] * lbl_80562D00;
-        fn_802C8E00(arg2, 1, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
-        out[0] += arg0[0] * lbl_80562D00;
         out[1] += arg0[1] * lbl_80562D00;
+        out[0] += arg0[0] * lbl_80562D00;
         out[2] += arg0[2] * lbl_80562D00;
         fn_802C8E00(arg2, 1, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
-        out[0] += arg0[3] * lbl_80562D04;
-        out[1] += arg0[4] * lbl_80562D04;
-        out[2] += arg0[5] * lbl_80562D04;
+        out[0] += arg0[6] * lbl_80562D04;
+        out[1] += arg0[7] * lbl_80562D04;
+        out[2] += arg0[8] * lbl_80562D04;
         fn_802C8E00(arg1, 0, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
         out[0] += arg0[0] * lbl_80562D04;
         out[1] += arg0[1] * lbl_80562D04;
         out[2] += arg0[2] * lbl_80562D04;
         fn_802C8E00(arg1, 0, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
-        out[0] += arg0[6] * lbl_80562D04 + arg0[0] * lbl_80562D00 + arg0[3] * lbl_80562D00;
-        out[1] += arg0[7] * lbl_80562D04 + arg0[1] * lbl_80562D00 + arg0[4] * lbl_80562D00;
-        out[2] += arg0[8] * lbl_80562D04 + arg0[2] * lbl_80562D00 + arg0[5] * lbl_80562D00;
+        out[0] += arg0[3] * lbl_80562D04 + arg0[0] * lbl_80562D00;
+        out[1] += arg0[4] * lbl_80562D04 + arg0[1] * lbl_80562D00;
+        out[2] += arg0[5] * lbl_80562D04 + arg0[2] * lbl_80562D00;
         fn_802C8E00(arg1, 1, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
         out[0] += arg0[0] * lbl_80562D04;
         out[1] += arg0[1] * lbl_80562D04;
@@ -245,11 +241,9 @@ void fn_801E3CB4(void *arg0, void *arg1, int arg2, float farg0) {
         float ax = ((float *)arg0)[0];
         float ay = ((float *)arg0)[1];
         float az = ((float *)arg0)[2];
-        float u = lbl_80562D10 * i;
-        float v = lbl_80562D10 * i;
         p->id = arg2;
-        p->u = u;
-        p->v = v;
+        p->u = lbl_80562D10 * i;
+        p->v = lbl_80562D10 * i;
         p->x = p->x + ax;
         p->y = p->y + ay;
         p->z = p->z + az;
@@ -267,22 +261,22 @@ void fn_801E3CB4(void *arg0, void *arg1, int arg2, float farg0) {
     fn_802C9904();
 }
 #pragma scheduling reset
-void fn_801E3FC8(void *arg0, float farg0) {
+void fn_801E3FC8(void *__restrict arg0, float farg0) {
     f32 sp[12];
-    float zero;
-    float tx;
     float tz;
-    float s;
     float ty;
+    float tx;
+    float zero;
+    float s;
     int handle;
 
     zero = 0.0f;
-    sp[9] = zero;
+    *(volatile f32 *)&sp[9] = zero;
     tx = ((f32 *)arg0)[0];
     tz = ((f32 *)arg0)[2];
     s = farg0 / lbl_8055EA68;
     ty = ((f32 *)arg0)[1];
-    sp[10] = zero;
+    *(volatile f32 *)&sp[10] = zero;
     handle = lbl_8055EA64;
     sp[0] = s;
     sp[1] = zero;
@@ -301,23 +295,21 @@ void fn_801E3FC8(void *arg0, float farg0) {
 #pragma push
 #pragma processor 750
 int fn_801E4040(void *arg0, void *arg1, int arg2, int arg3, float farg0) {
-    float *a = (float *)arg0;
-    float *b = (float *)arg1;
-    float delta[3];
+    Vec3 *a = (Vec3 *)arg0;
+    Vec3 *b = (Vec3 *)arg1;
+    Vec3 delta;
     float matrix[4][3];
     float mag;
     float scale;
-    float tx;
-    float ty;
-    float tz;
+    float tx, ty, tz;
 
-    delta[0] = b[0] - a[0];
-    delta[1] = b[1] - a[1];
-    delta[2] = b[2] - a[2];
-    fn_801E3640(delta, &matrix[0][0]);
-    matrix[2][0] = delta[0] * lbl_80562D08;
-    matrix[2][1] = delta[1] * lbl_80562D08;
-    matrix[2][2] = delta[2] * lbl_80562D08;
+    delta.x = b->x - a->x;
+    delta.y = b->y - a->y;
+    delta.z = b->z - a->z;
+    fn_801E3640(&delta, &matrix[0][0]);
+    matrix[2][0] = delta.x * lbl_80562D08;
+    matrix[2][1] = delta.y * lbl_80562D08;
+    matrix[2][2] = delta.z * lbl_80562D08;
     mag = PSVECMag(&matrix[0][0]);
     if (!((float)__fabs((double)mag) <= lbl_80558DC4[0])) {
         scale = (farg0 * lbl_80562D08) / mag;
@@ -332,9 +324,9 @@ int fn_801E4040(void *arg0, void *arg1, int arg2, int arg3, float farg0) {
         matrix[1][1] *= scale;
         matrix[1][2] *= scale;
     }
-    tx = a[0] + matrix[2][0];
-    ty = a[1] + matrix[2][1];
-    tz = a[2] + matrix[2][2];
+    tx = a->x + matrix[2][0];
+    ty = a->y + matrix[2][1];
+    tz = a->z + matrix[2][2];
     matrix[3][0] = tx;
     matrix[3][1] = ty;
     matrix[3][2] = tz;
@@ -354,6 +346,7 @@ void fn_801E41D8(void *from, void *to, int color, float width) {
     fn_801E4040(from, to, color, color, width);
 }
 
+#pragma scheduling on
 void fn_801E41E0(void *arg0, int arg1, float farg0) {
     struct LocalData {
         unsigned short frame[3];
@@ -368,14 +361,14 @@ void fn_801E41E0(void *arg0, int arg1, float farg0) {
     f64 seedXY = *(volatile f64 *)&local.seed.x;
     s32 seedZ = *(volatile s32 *)&local.seed.z;
     float x, y, z;
-    float negScale;
     float sidePositive;
+    float negScale;
     float depthNegative;
     float sideNegative;
 
-    local.seed.id = arg1;
     local.seed.u = zero;
     local.seed.v = zero;
+    local.seed.id = arg1;
     *(volatile f64 *)&local.points[0].x = seedXY;
     *(volatile s32 *)&local.points[0].z = seedZ;
     local.points[0].id = arg1;
@@ -396,8 +389,8 @@ void fn_801E41E0(void *arg0, int arg1, float farg0) {
     local.frame[2] = lbl_80562D24;
 
     matrix = (float *)fn_802C86DC();
-    negScale = -farg0;
     sidePositive = lbl_80562D28 * farg0;
+    negScale = -farg0;
     depthNegative = lbl_80562D08 * negScale;
     sideNegative = lbl_80562D28 * negScale;
     x = base[0];
@@ -427,10 +420,6 @@ void fn_801E41E0(void *arg0, int arg1, float farg0) {
     fn_802C8D74();
     fn_802C9904();
 }
-
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
 void fn_801E43BC(void *arg0, float scale, float alpha) {
     typedef void (*LineCall)(void *, void *, int, float);
     float p[3];
@@ -482,8 +471,9 @@ void fn_801E43BC(void *arg0, float scale, float alpha) {
 #pragma scheduling on
 #pragma pop
 extern void fn_801E370C();
+#pragma processor 7400
+#pragma scheduling on
 void fn_801E44F4(void *arg0, void *arg1, float farg0, float farg1, float farg2) {
-    #pragma scheduling on
     float sp[12];
     float temp_f11, temp_f10, temp_f9, temp_f8, temp_f7;
     float temp_f6, temp_f2, temp_f1, temp_f0, temp_f5, temp_f4, temp_f3;
@@ -515,4 +505,3 @@ void fn_801E44F4(void *arg0, void *arg1, float farg0, float farg1, float farg2) 
     sp[8] = temp_f0;
     fn_801E370C(sp, (int)arg1, (int)arg1);
 }
-#pragma scheduling invalid_target
