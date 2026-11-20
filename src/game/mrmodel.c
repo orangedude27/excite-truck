@@ -242,6 +242,7 @@ inner_check:
     }
     *(volatile unsigned char *)&lbl_8055FC21 = 0;
 }
+#pragma pop
 #pragma use_lmw_stmw on
 #pragma dont_inline reset
 #pragma scheduling on
