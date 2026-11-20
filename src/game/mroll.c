@@ -17,7 +17,7 @@ extern void *fn_80016BC8(void *, s32);
 extern void *fn_80018A8C(void *, s32, s32 *, s32);
 extern s32 fn_80255918(void *, void *);
 extern char lbl_8034287C[];
-const double lbl_80563750 = 4503599629566976.0;
+extern double lbl_80563750;
 extern u8 lbl_8055F1FC;
 extern s32 lbl_8055F200;
 extern float lbl_80563758;
@@ -856,7 +856,7 @@ extern float fn_80235EF0(s32, s32);
 extern void fn_802353F4(s32, s32, float, float, float);
 extern void fn_8022BD40(int, void *, int, int, float, float, float, float, float, float, float, float);
 #pragma scheduling invalid_target
-void fn_80241820(void *__restrict arg0) {
+void fn_80241820(void *arg0) {
     char *self = (char *)arg0;
     float sx, sy;
     if (*(int *)(self + 0x28) != 0 && ((Fn241820Obj *)self)->vt->isActive(self) != 0) {
