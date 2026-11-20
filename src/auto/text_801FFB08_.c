@@ -51,6 +51,8 @@ static inline void xformv(float *v, float *m, float *out) {
 
 #pragma scheduling invalid_target
 /* Look up a drivmod helper entry and return a pointer to its data, or a fallback buffer on failure. */
+#pragma push
+#pragma dont_inline on
 char *fn_801FFB08(int arg0, int helperId) {
     char *helperEntry;
     if (fn_801E2CCC(arg0, helperId, &helperEntry) == 0) {
@@ -75,8 +77,8 @@ void fn_801FFB70(void) {
 #pragma use_lmw_stmw off
 void *fn_801FFB74(int arg0, int arg1, int arg2) {
     float *o;
-    float *sp8;
     int spC;
+    float *sp8;
     float out[464];
     float vE[3], vD[3], vA[3], vB[3], vC[3], vF[3], vG[3], vH[3];
     float v94[3], v7C[3];
@@ -88,19 +90,20 @@ void *fn_801FFB74(int arg0, int arg1, int arg2) {
     int i;
     int h;
     float a, b, c;
+    char *base = lbl_8033B938;
     lbl_8055ECA8 = arg0;
     if (fn_801E320C(arg1, &lbl_8055B3E0) == 0) {
-        fn_802E30C8(lbl_8033B938 + 0x24, arg0);
+        fn_802E30C8(base + 0x24, arg0);
         return 0;
     }
-    o = fn_801284F8(0xD0, lbl_8033B938 + 0x40);
+    o = fn_801284F8(0xD0, base + 0x40);
     memset(o, 0, 0xD0);
     *(char *)((char *)o + 4) = 1;
     ((int *)o)[7] = fn_801E3004(arg1, &lbl_8055B3E8, -1);
     ((int *)o)[8] = fn_801E31D8(((int *)o)[7], &lbl_8055B3F0, -1);
     ((int *)o)[9] = fn_801E31D8(((int *)o)[7], &lbl_8055B3F8, -1);
     ((int *)o)[10] = fn_801E3004(arg1, &lbl_8055B400, -1);
-    ((int *)o)[2] = fn_802C6FC0(lbl_8033B938 + 0x4C, 0, 0);
+    ((int *)o)[2] = fn_802C6FC0(base + 0x4C, 0, 0);
     ((int *)o)[3] = fn_801E592C();
     fn_801E3488(v94, ((int *)o)[8]);
     vE[0] = v94[0]; vE[1] = v94[1]; vE[2] = v94[2];
@@ -109,7 +112,7 @@ void *fn_801FFB74(int arg0, int arg1, int arg2) {
     spC = 0x20;
     fn_801E5998((void *)((int *)o)[3], out, &spC);
     if (fn_801E2CCC(arg1, &lbl_8055B3E0, &sp8) == 0) {
-        fn_802E317C(lbl_8033B938 + 0x5C, arg0);
+        fn_802E317C(base + 0x5C, arg0);
     }
     o[4] = sp8[9]; o[5] = sp8[10]; o[6] = sp8[11];
     o[12] = fn_8002EFB0(sp8[5], sp8[4]);
@@ -122,49 +125,75 @@ void *fn_801FFB74(int arg0, int arg1, int arg2) {
     vC[0] = out[121] + a; vC[1] = out[122] + b; vC[2] = out[123] + c;
     vD[0] = out[79] + a; vD[1] = out[80] + b; vD[2] = out[81] + c;
     vE[0] = out[135]; vE[1] = out[136]; vE[2] = out[137];
-    o[13] = lbl_80563058; o[14] = lbl_8056305C; o[15] = lbl_8056305C;
-    o[16] = lbl_8056305C; o[17] = lbl_80563058; o[18] = lbl_8056305C;
-    o[19] = lbl_8056305C; o[20] = lbl_8056305C; o[21] = lbl_80563058;
-    o[22] = lbl_8056305C; o[23] = lbl_8056305C;
-    vF[0] = vE[0] + lbl_80563050 * (vC[0] - vE[0]);
-    vF[1] = vE[1] + lbl_80563050 * (vC[1] - vE[1]);
-    vF[2] = vE[2] + lbl_80563050 * (vC[2] - vE[2]);
+    o[13] = 1.0f; o[14] = 0.0f; o[15] = 0.0f;
+    o[16] = 0.0f; o[17] = 1.0f; o[18] = 0.0f;
+    o[19] = 0.0f; o[20] = 0.0f; o[21] = 1.0f;
+    o[22] = 0.0f; o[23] = 0.0f;
+    vF[0] = vE[0] + 0.5f * (vC[0] - vE[0]);
+    vF[1] = vE[1] + 0.5f * (vC[1] - vE[1]);
+    vF[2] = vE[2] + 0.5f * (vC[2] - vE[2]);
     vE[0] = vF[0]; vE[1] = vF[1]; vE[2] = vF[2];
-    vG[0] = out[93] + lbl_80563050 * (vD[0] - out[93]);
-    vG[1] = out[94] + lbl_80563050 * (vD[1] - out[94]);
-    vG[2] = out[95] + lbl_80563050 * (vD[2] - out[95]);
-    vH[0] = vA[0] * lbl_80563050 + vB[0] * lbl_80563050;
-    vH[2] = vA[2] * lbl_80563050 + vB[2] * lbl_80563050;
-    vH[1] = vA[1] * lbl_80563050 + vB[1] * lbl_80563050 - lbl_80563054;
-    o[24] = lbl_8056305C;
+    vG[0] = out[93] + 0.5f * (vD[0] - out[93]);
+    vG[1] = out[94] + 0.5f * (vD[1] - out[94]);
+    vG[2] = out[95] + 0.5f * (vD[2] - out[95]);
+    vH[0] = vA[0] * 0.5f + vB[0] * 0.5f;
+    vH[2] = vA[2] * 0.5f + vB[2] * 0.5f;
+    vH[1] = vA[1] * 0.5f + vB[1] * 0.5f - 1.27f;
+    o[24] = 0.0f;
     xformv(o + 4, o + 13, sp10);
     o[22] += sp10[0];
     o[23] += sp10[1];
     o[24] += sp10[2];
-    for (i = 0; i < 12; i++) ((int *)o)[37 + i] = ((int *)o)[13 + i];
+    ((int *)o)[37] = ((int *)o)[13];
+    ((int *)o)[38] = ((int *)o)[14];
+    ((int *)o)[39] = ((int *)o)[15];
+    ((int *)o)[40] = ((int *)o)[16];
+    ((int *)o)[41] = ((int *)o)[17];
+    ((int *)o)[42] = ((int *)o)[18];
+    ((int *)o)[43] = ((int *)o)[19];
+    ((int *)o)[44] = ((int *)o)[20];
+    ((int *)o)[45] = ((int *)o)[21];
+    ((int *)o)[46] = ((int *)o)[22];
+    ((int *)o)[47] = ((int *)o)[23];
+    ((int *)o)[48] = ((int *)o)[24];
     fn_801E33E4(o + 25, ((int *)o)[7]);
-    for (i = 0; i < 3; i++) {
-        bufA[0].v[i] = vA[i]; bufA[1].v[i] = vC[i]; bufA[2].v[i] = vE[i];
-        bufA[3].v[i] = vB[i]; bufA[4].v[i] = vD[i]; bufA[5].v[i] = vG[i];
-        bufA[6].v[i] = vH[i];
-    }
-    for (i = 0; i < 7; i++) { bufA[i].pad[0] = lbl_80563058; bufA[i].pad[1] = lbl_80563058; }
+    bufA[0].v[0]=vA[0]; bufA[0].v[1]=vA[1]; bufA[0].v[2]=vA[2];
+    bufA[1].v[0]=vC[0]; bufA[1].v[1]=vC[1]; bufA[1].v[2]=vC[2];
+    bufA[2].v[0]=vE[0]; bufA[2].v[1]=vE[1]; bufA[2].v[2]=vE[2];
+    bufA[3].v[0]=vB[0]; bufA[3].v[1]=vB[1]; bufA[3].v[2]=vB[2];
+    bufA[4].v[0]=vD[0]; bufA[4].v[1]=vD[1]; bufA[4].v[2]=vD[2];
+    bufA[5].v[0]=vG[0]; bufA[5].v[1]=vG[1]; bufA[5].v[2]=vG[2];
+    bufA[6].v[0]=vH[0]; bufA[6].v[1]=vH[1]; bufA[6].v[2]=vH[2];
+    bufA[0].pad[0]=1.0f; bufA[0].pad[1]=1.0f;
+    bufA[1].pad[0]=1.0f; bufA[1].pad[1]=1.0f;
+    bufA[2].pad[0]=1.0f; bufA[2].pad[1]=1.0f;
+    bufA[3].pad[0]=1.0f; bufA[3].pad[1]=1.0f;
+    bufA[4].pad[0]=1.0f; bufA[4].pad[1]=1.0f;
+    bufA[5].pad[0]=1.0f; bufA[5].pad[1]=1.0f;
+    bufA[6].pad[0]=1.0f; bufA[6].pad[1]=1.0f;
     for (i = 0; i < 24; i++) bufB[i] = ((int *)lbl_802F9BC0)[i];
     tc = (int *)lbl_802F9C20;
-    for (i = 0; i < 15; i++) bufC_[i] = (int *)tc[i];
+    bufC_[0] = (int *)tc[0];
     bufC_[1] = (int *)(o + 37);
+    bufC_[2] = (int *)tc[2];
+    bufC_[3] = (int *)tc[3];
     bufC_[4] = (int *)(o + 25);
     bufC_[5] = (int *)v94;
+    bufC_[6] = (int *)tc[6];
     bufC_[7] = (int *)(o + 37);
+    bufC_[8] = (int *)tc[8];
+    bufC_[9] = (int *)tc[9];
     bufC_[10] = (int *)(o + 25);
     bufC_[11] = (int *)v7C;
+    bufC_[12] = (int *)tc[12];
     bufC_[13] = (int *)(o + 13);
+    bufC_[14] = (int *)tc[14];
     h = fn_801C1BA4(7, 6, 5);
     fn_801C1CBC(h, 7, bufA, 6, bufB, 5, bufC_);
     ((int *)o)[0] = h;
-    o[49] = lbl_8056305C;
-    o[51] = lbl_8056305C;
-    o[50] = lbl_8056305C;
+    o[49] = 0.0f;
+    o[51] = 0.0f;
+    o[50] = 0.0f;
     return o;
 }
 #pragma pop
@@ -190,55 +219,55 @@ extern char lbl_802F9C60[], lbl_802F9CC0[];
 #pragma push
 #pragma processor 750
 void *fn_802002D4(int arg0, int arg1, int arg2) {
+#pragma use_lmw_stmw off
     float *o;
     struct { int n; float r[3]; float P[3]; float Q[3]; } sp8;
-    float v60[3], v54[3], v48[3], v3C[3], v30[3];
+    float v30[3], v3C[3], v48[3], v54[3], v60[3];
+    struct { int a, b; } bufBPair[12], *srcPair = (void *)lbl_802F9C60;
     struct { float v[3]; float pad[2]; } bufA[7];
-    int bufB[24];
     int *bufC_[15];
-    float out198[0x40];
+    float out198[0x1b0];
     char *p;
+    char *base = lbl_8033B938;
     int *tc;
     int i;
     lbl_8055ECA8 = arg0;
     if (fn_801E320C(arg1, &lbl_8055B3E0)) return fn_801FFB74(arg0, arg1, arg2);
     if (!fn_801E320C(arg1, &lbl_8055B408)) return 0;
-    o = fn_801284F8(0xD0, lbl_8033B938 + 0x40);
+    o = fn_801284F8(0xD0, base + 0x40);
     memset(o, 0, 0xD0);
     ((int *)o)[7] = fn_801E3004(arg1, &lbl_8055B3E8, -1);
     ((int *)o)[8] = fn_801E31D8(arg1, &lbl_8055B3F0, -1);
     ((int *)o)[9] = fn_801E31D8(((int *)o)[7], &lbl_8055B3F8, -1);
     ((int *)o)[10] = fn_801E3004(arg1, &lbl_8055B400, -1);
-    ((int *)o)[2] = fn_802C6FC0(lbl_8033B938 + 0x4C, 0, 0);
+    ((int *)o)[2] = fn_802C6FC0(base + 0x4C, 0, 0);
     ((int *)o)[3] = fn_801E592C();
-    p = fn_801FFB08(arg1, (int)(lbl_8033B938 + 0x84));
+    p = fn_801FFB08(arg1, (int)(base + 0x84));
     v60[0] = ((float *)p)[0]; v60[1] = ((float *)p)[1]; v60[2] = ((float *)p)[2];
     fn_801E3488(v54, ((int *)o)[8]);
-    v48[0] = v54[0] * lbl_80563050 + v60[0] * lbl_80563050;
-    v48[2] = v54[2] * lbl_80563050 + v60[2] * lbl_80563050;
-    v48[1] = v54[1] * lbl_80563050 + v60[1] * lbl_80563050 - lbl_80563060;
-    p = fn_801FFB08(arg1, (int)(lbl_8033B938 + 0x90));
+    v48[0] = v54[0] * 0.5f + v60[0] * 0.5f;
+    v48[2] = v54[2] * 0.5f + v60[2] * 0.5f;
+    v48[1] = v54[1] * 0.5f + v60[1] * 0.5f - 0.2032f;
+    p = fn_801FFB08(arg1, (int)(base + 0x90));
     v3C[0] = ((float *)p)[0]; v3C[1] = ((float *)p)[1]; v3C[2] = ((float *)p)[2];
     fn_801E3488(v30, ((int *)o)[9]);
-    sp8.Q[0] = v30[0] * lbl_80563050 + v3C[0] * lbl_80563050;
-    sp8.Q[2] = v30[2] * lbl_80563050 + v3C[2] * lbl_80563050;
-    sp8.Q[1] = v30[1] * lbl_80563050 + v3C[1] * lbl_80563050 - lbl_80563060;
-    sp8.P[0] = v60[0] * lbl_80563050 + v3C[0] * lbl_80563050;
-    sp8.P[2] = v60[2] * lbl_80563050 + v3C[2] * lbl_80563050;
-    sp8.P[1] = v60[1] * lbl_80563050 + v3C[1] * lbl_80563050 - lbl_80563054;
+    sp8.Q[0] = v30[0] * 0.5f + v3C[0] * 0.5f;
+    sp8.Q[2] = v30[2] * 0.5f + v3C[2] * 0.5f;
+    sp8.Q[1] = v30[1] * 0.5f + v3C[1] * 0.5f - 0.2032f;
+    sp8.P[0] = v60[0] * 0.5f + v3C[0] * 0.5f;
+    sp8.P[2] = v60[2] * 0.5f + v3C[2] * 0.5f;
+    sp8.P[1] = v60[1] * 0.5f + v3C[1] * 0.5f - 1.27f;
     sp8.n = 0x20;
     fn_801E5998((void *)((int *)o)[3], out198, &sp8);
     o[4] = v3C[0] - out198[0x104 / 4];
     o[5] = v3C[1] - out198[0x108 / 4];
     o[6] = v3C[2] - out198[0x10C / 4];
-    o[5] = o[5] + lbl_80563064;
-    o[13] = lbl_80563058; o[14] = lbl_8056305C; o[15] = lbl_8056305C;
-    o[16] = lbl_8056305C; o[17] = lbl_80563058; o[18] = lbl_8056305C;
-    o[19] = lbl_8056305C; o[20] = lbl_8056305C; o[21] = lbl_80563058;
-    o[22] = lbl_8056305C; o[23] = lbl_8056305C; o[24] = lbl_8056305C;
-    sp8.r[0] = o[6] * o[19] + (o[4] * o[13] + o[5] * o[16]);
-    sp8.r[1] = o[6] * o[20] + (o[4] * o[14] + o[5] * o[17]);
-    sp8.r[2] = o[6] * o[21] + (o[4] * o[15] + o[5] * o[18]);
+    o[5] = o[5] + 0.0762f;
+    o[13] = 1.0f; o[14] = 0.0f; o[15] = 0.0f;
+    o[16] = 0.0f; o[17] = 1.0f; o[18] = 0.0f;
+    o[19] = 0.0f; o[20] = 0.0f; o[21] = 1.0f;
+    o[22] = 0.0f; o[23] = 0.0f; o[24] = 0.0f;
+    xformv(o + 4, o + 13, sp8.r);
     o[22] += sp8.r[0];
     o[23] += sp8.r[1];
     o[24] += sp8.r[2];
@@ -251,8 +280,8 @@ void *fn_802002D4(int arg0, int arg1, int arg2) {
     bufA[4].v[0] = sp8.Q[0]; bufA[4].v[1] = sp8.Q[1]; bufA[4].v[2] = sp8.Q[2];
     bufA[5].v[0] = v30[0]; bufA[5].v[1] = v30[1]; bufA[5].v[2] = v30[2];
     bufA[6].v[0] = sp8.P[0]; bufA[6].v[1] = sp8.P[1]; bufA[6].v[2] = sp8.P[2];
-    for (i = 0; i < 7; i++) { bufA[i].pad[0] = lbl_80563058; bufA[i].pad[1] = lbl_80563058; }
-    for (i = 0; i < 24; i++) bufB[i] = ((int *)lbl_802F9C60)[i];
+    for (i = 0; i < 7; i++) { bufA[i].pad[0] = 1.0f; bufA[i].pad[1] = 1.0f; }
+    for (i = 0; i < 12; i++) bufBPair[i] = srcPair[i];
     tc = (int *)lbl_802F9CC0;
     for (i = 0; i < 15; i++) bufC_[i] = (int *)tc[i];
     bufC_[1] = (int *)(o + 37);
@@ -261,11 +290,11 @@ void *fn_802002D4(int arg0, int arg1, int arg2) {
     bufC_[10] = (int *)(o + 25);
     bufC_[13] = (int *)(o + 13);
     i = fn_801C1BA4(7, 6, 5, o + 25, o + 37, (void *)tc[14], (void *)tc[12], (void *)tc[11]);
-    fn_801C1CBC(7, bufA, 6, bufB, 5, bufC_);
+    fn_801C1CBC(7, bufA, 6, bufBPair, 5, bufC_);
     ((int *)o)[0] = i;
-    o[49] = lbl_8056305C;
-    o[51] = lbl_8056305C;
-    o[50] = lbl_8056305C;
+    o[49] = 0.0f;
+    o[51] = 0.0f;
+    o[50] = 0.0f;
     return o;
 }
 #pragma pop
@@ -291,17 +320,19 @@ void fn_8020095C(int *object) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_802009CC(M802009CC *out, float *verts, int *tri, int count, unsigned char *arr, float *M) {
+void fn_802009CC(M802009CC *out, const float *verts, int *tri, int count, const unsigned char *arr, const float *M) {
     struct { float axis[3]; float d[3]; float w[3]; float p[3]; float R[9]; float res[9]; } s;
-    int i;
-    float kOne = lbl_80563058, kMagD = lbl_8056306C, kMagA = lbl_80563070, kZero = lbl_8056305C, kEps = lbl_80563068;
+    int i = 0;
     if (count <= 0) return;
-    for (i = 0; i < count; i++, tri += 3) {
-        int i0 = tri[0], i2 = tri[2];
-        float *vp = (float *)((unsigned char *)verts + tri[1] * 12);
+    {
+    int *tp = tri;
+    float kOne = lbl_80563058, kMagD = lbl_8056306C, kMagA = lbl_80563070, kZero = lbl_8056305C, kEps = lbl_80563068;
+    for (; i < count; i++, tp += 3) {
+        int i0 = tp[0], i2 = tp[2];
+        const float *vp = (const float *)((const unsigned char *)verts + tp[1] * 12);
         float vx = vp[0] - M[9], vy = vp[1] - M[10], vz = vp[2] - M[11];
         M802009CC *o = (M802009CC *)((unsigned char *)out + i0 * 0x30);
-        float *B = (float *)(arr + i0 * 0x38);
+        const float *B = (const float *)(arr + i0 * 0x38);
         float px, py, pz;
         px = vz * M[2] + (vx * M[0] + vy * M[1]);
         py = vz * M[5] + (vx * M[3] + vy * M[4]);
@@ -311,7 +342,7 @@ void fn_802009CC(M802009CC *out, float *verts, int *tri, int count, unsigned cha
         s.p[0] = px; s.p[1] = py; s.p[2] = pz;
         o->p[2] = pz;
         if (i2 >= 0) {
-            float *wp = (float *)((unsigned char *)verts + i2 * 12);
+            const float *wp = (const float *)((const unsigned char *)verts + i2 * 12);
             float wx = wp[0] - M[9], wy = wp[1] - M[10], wz = wp[2] - M[11];
             float mag;
             s.w[0] = wz * M[2] + (wx * M[0] + wy * M[1]);
@@ -384,14 +415,15 @@ void fn_802009CC(M802009CC *out, float *verts, int *tri, int count, unsigned cha
                 s.res[3] = kZero; s.res[4] = kOne; s.res[5] = kZero;
                 s.res[6] = kZero; s.res[7] = kZero; s.res[8] = kOne;
             }
-            ((V802009CC *)o)[0] = ((V802009CC *)s.res)[0];
-            ((V802009CC *)o)[1] = ((V802009CC *)s.res)[1];
-            ((V802009CC *)o)[2] = ((V802009CC *)s.res)[2];
+            ((V802009CC *)o)[0] = ((const V802009CC *)s.res)[0];
+            ((V802009CC *)o)[1] = ((const V802009CC *)s.res)[1];
+            ((V802009CC *)o)[2] = ((const V802009CC *)s.res)[2];
         } else {
-            ((V802009CC *)o)[0] = ((V802009CC *)B)[0];
-            ((V802009CC *)o)[1] = ((V802009CC *)B)[1];
-            ((V802009CC *)o)[2] = ((V802009CC *)B)[2];
+            ((V802009CC *)o)[0] = ((const V802009CC *)B)[0];
+            ((V802009CC *)o)[1] = ((const V802009CC *)B)[1];
+            ((V802009CC *)o)[2] = ((const V802009CC *)B)[2];
         }
+    }
     }
 }
 #pragma pop
