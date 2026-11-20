@@ -2491,9 +2491,9 @@ extern "C" void fn_8029BA94(void*, void*);
 extern "C" int fn_8029C024(int*);
 extern "C" int fn_8029C054(int*);
 extern "C" void* fn_802974CC(char*);
+struct Entry8029BE54 { unsigned int a; unsigned int b; unsigned int c; unsigned int key; unsigned char d; };
 extern "C" void fn_8029BE54(void*, void*);
-#pragma push
-#pragma processor 750
+#pragma scheduling invalid_target
 void fn_8029BE54(void* arg0, void* arg1) {
     register char* scan = (char*)arg0;
     register int count = *(int*)((char*)arg0 + 0xA4);
@@ -2502,15 +2502,13 @@ void fn_8029BE54(void* arg0, void* arg1) {
     for (; i < count; ++i) {
         key = *(volatile unsigned int*)((char*)arg1 + 0xC);
         if (key == *(unsigned int*)(scan + 0x10)) {
-            i *= 0x14;
             register unsigned int c;
             register unsigned int b;
             register unsigned int a;
             a = *(volatile unsigned int*)arg1;
             b = *(volatile unsigned int*)((char*)arg1 + 4);
             c = *(volatile unsigned int*)((char*)arg1 + 8);
-            char* dst = (char*)arg0;
-            dst += i;
+            char* dst = (char*)arg0 + i * 0x14;
             *(unsigned int*)(dst + 4) = a;
             register unsigned char d = *(volatile unsigned char*)((char*)arg1 + 0x10);
             *(unsigned int*)(dst + 8) = b;
@@ -2522,8 +2520,7 @@ void fn_8029BE54(void* arg0, void* arg1) {
         scan += 0x14;
     }
     key = count * 0x14;
-    char* dst = (char*)arg0;
-    dst += key;
+    char* dst = (char*)arg0 + key;
     register unsigned int a = *(volatile unsigned int*)arg1;
     register unsigned int b = *(volatile unsigned int*)((char*)arg1 + 4);
     register unsigned int c = *(volatile unsigned int*)((char*)arg1 + 8);
@@ -2536,7 +2533,6 @@ void fn_8029BE54(void* arg0, void* arg1) {
     *(unsigned char*)(dst + 0x14) = d;
     *(int*)((char*)arg0 + 0xA4) = *(int*)((char*)arg0 + 0xA4) + 1;
 }
-#pragma pop
 /* Build and create the "torch fire" effect (lbl_80349450), storing the result in out. */
 extern "C" void fn_8029BEF8(void *out) {
     unsigned char raw[0xA8];
