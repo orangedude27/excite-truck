@@ -309,7 +309,6 @@ static inline s32 fixedMul20(s32 lhs, s32 rhs) {
 static inline s32 fixedMulAdd20(s32 lhs, s32 rhs, s32 lhs2, s32 rhs2) {
     return fixedMul20(lhs, rhs) + fixedMul20(lhs2, rhs2);
 }
-struct KTable800C3088 { s32 v[12]; };
 struct Fn800C0440Context { u8 pad[0xC]; volatile u32 bitIndex; volatile s32 limit; };
 extern "C" { DECL_SECTION(".sdata") extern s32 lbl_80559270[]; }
 extern "C" s32 fn_800A485C(s32);
@@ -15054,7 +15053,6 @@ extern "C" s16 fn_800BDE18(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
     s32 piece;
     s16 result = 0;
     u8 *data = (u8 *)arg1 + (position >> 3);
-
     bitsInByte = 8 - (position & 7);
     while (remaining > 0) {
         if (bitsInByte == 0) {
