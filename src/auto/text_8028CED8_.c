@@ -113,8 +113,8 @@ void fn_8028CFB0(void) {
 #pragma pop
 extern int fn_802CAC28(int, int);
 extern int fn_802E317C(char *, ...);
+__declspec(section ".data") extern int lbl_80348C50;
 struct Tbl8028D084 { char f[0x30]; };
-__declspec(section ".data") extern struct Tbl8028D084 lbl_80348C50;
 extern char lbl_8055C8C8[];
 #pragma cplusplus on
 struct Obj8028D084 {
