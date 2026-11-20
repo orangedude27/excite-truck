@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+typedef struct { u32 v : 16; } S16Field_8011AE68;
 typedef struct { f32 x, y; } V2_80121848;
 extern void fn_8012440C(void *, void *);
 extern void fn_80124CE8(void *, void *);
@@ -8639,15 +8640,15 @@ void fn_801250CC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 #pragma pop
 void fn_801252D8(s32 n, f32 *a, s32 m, f32 *w) {
+    f32 one = 0.5f;
     s32 half = n >> 1;
     u32 count = ((u32)(half - 1)) >> 1;
     register s32 j = 2;
     register s32 i = 0;
     register s32 step = (m * 2) / half;
-    register f32 *p = a + 2;
-    register f32 *q = w;
     char *b = (char *)a;
-    f32 one = 0.5f;
+    f32 *p = a + 2;
+    f32 *q = w;
     if (half > 2) {
         u32 k = count >> 1;
         while (k--) {
