@@ -87,34 +87,37 @@ extern "C" char lbl_80327904[];
 extern "C" char lbl_80559918;
 extern "C" char lbl_80559920;
 #pragma use_lmw_stmw on
-extern "C" int ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail13WaveSoundInfoi(void* __restrict arg0, void* arg1, int arg2) {
-    register unsigned char* base = (unsigned char*)*(void**)((char*)arg0 + 4);
+extern "C" int ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail13WaveSoundInfoi(void* __restrict reader, void* outInfo, int soundIndex) {
+    /* Resolve the indexed WSD wave-sound entry's wave data and fill *outInfo
+       (10 bytes) from it: v1.02 copies all of it, v1.01 zero-fills the newer
+       fields, anything older gets the defaults (1.0f, 0x40). */
+    register unsigned char* base = (unsigned char*)*(void**)((char*)reader + 4);
     register unsigned char* data = base + 8;
-    unsigned char* entry = base + arg2 * 8;
-    unsigned char* ref;
+    unsigned char* soundEntry = base + soundIndex * 8;
+    unsigned char* soundRef;
     unsigned char* wave;
-    if (entry[0xD] != 0)
+    if (soundEntry[0xD] != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559918, 0x6F, lbl_803278D8);
-    ref = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[0xC], *(unsigned int*)(entry + 0x10), data);
-    data = (unsigned char*)*(void**)((char*)arg0 + 4) + 8;
-    if (ref[1] != 0)
+    soundRef = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(soundEntry[0xC], *(unsigned int*)(soundEntry + 0x10), data);
+    data = (unsigned char*)*(void**)((char*)reader + 4) + 8;
+    if (soundRef[1] != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559920, 0x6F, lbl_80327904);
-    wave = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0], *(unsigned int*)(ref + 4), data);
-    if (*(unsigned short*)((char*)*(void**)arg0 + 6) == 0x102) {
-        *(float*)arg1 = *(float*)wave;
-        ((unsigned char*)arg1)[4] = wave[4]; ((unsigned char*)arg1)[5] = wave[5];
-        ((unsigned char*)arg1)[6] = wave[6]; ((unsigned char*)arg1)[7] = wave[7];
-        ((unsigned char*)arg1)[8] = wave[8]; ((unsigned char*)arg1)[9] = wave[9];
-    } else if (*(unsigned short*)((char*)*(void**)arg0 + 6) == 0x101) {
-        *(float*)arg1 = *(float*)wave;
-        ((unsigned char*)arg1)[4] = wave[4]; ((unsigned char*)arg1)[5] = wave[5];
-        ((unsigned char*)arg1)[6] = 0; ((unsigned char*)arg1)[7] = 0;
-        ((unsigned char*)arg1)[8] = 0; ((unsigned char*)arg1)[9] = 0x7F;
+    wave = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(soundRef[0], *(unsigned int*)(soundRef + 4), data);
+    if (*(unsigned short*)((char*)*(void**)reader + 6) == 0x102) {
+        *(float*)outInfo = *(float*)wave;
+        ((unsigned char*)outInfo)[4] = wave[4]; ((unsigned char*)outInfo)[5] = wave[5];
+        ((unsigned char*)outInfo)[6] = wave[6]; ((unsigned char*)outInfo)[7] = wave[7];
+        ((unsigned char*)outInfo)[8] = wave[8]; ((unsigned char*)outInfo)[9] = wave[9];
+    } else if (*(unsigned short*)((char*)*(void**)reader + 6) == 0x101) {
+        *(float*)outInfo = *(float*)wave;
+        ((unsigned char*)outInfo)[4] = wave[4]; ((unsigned char*)outInfo)[5] = wave[5];
+        ((unsigned char*)outInfo)[6] = 0; ((unsigned char*)outInfo)[7] = 0;
+        ((unsigned char*)outInfo)[8] = 0; ((unsigned char*)outInfo)[9] = 0x7F;
     } else {
-        *(float*)arg1 = lbl_80561118;
-        ((unsigned char*)arg1)[4] = 0x40; ((unsigned char*)arg1)[5] = 0;
-        ((unsigned char*)arg1)[6] = 0; ((unsigned char*)arg1)[7] = 0;
-        ((unsigned char*)arg1)[8] = 0; ((unsigned char*)arg1)[9] = 0x7F;
+        *(float*)outInfo = lbl_80561118;
+        ((unsigned char*)outInfo)[4] = 0x40; ((unsigned char*)outInfo)[5] = 0;
+        ((unsigned char*)outInfo)[6] = 0; ((unsigned char*)outInfo)[7] = 0;
+        ((unsigned char*)outInfo)[8] = 0; ((unsigned char*)outInfo)[9] = 0x7F;
     }
     return 1;
 }
