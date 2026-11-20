@@ -371,17 +371,7 @@ void fn_801B8054(int obj, int source, float offset, float interp) {
 }
 
 #pragma scheduling on
-struct VecInput801B8060 {
-    char pad0[0x18];
-    float x;
-    float pad1;
-    float y;
-    float xPos;
-    float pad2;
-    float yPos;
-};
 void fn_801B8060(int arg0, void *arg1) {
-#pragma scheduling invalid_target
     float position[2];
     float direction[2];
     float x;
