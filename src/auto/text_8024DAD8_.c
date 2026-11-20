@@ -38,7 +38,7 @@ static inline void CleanupEntries(void *table) {
         fn_80128668(table);
     }
 }
-const double lbl_80563958 = 0x1.0000080000000p+52;
+extern double lbl_80563958;
 extern unsigned char lbl_80498C48[];
 s32 fn_8001668C(s32, s32);
 s32 *fn_80016BC8(s32);
