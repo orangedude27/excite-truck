@@ -4072,19 +4072,18 @@ extern "C" void fn_80143398(void *obj) {
 static inline float HudEase(float t) {
     if (t < lbl_805614BC) return lbl_805614BC;
     if (t > lbl_805614AC) return lbl_805614AC;
-    if (t > lbl_805614A4) return t * (lbl_8056150C * t * t) + lbl_805614D0 * t * t;
-    return t * (lbl_8056150C * t * t) - lbl_805614D0 * t * t;
+    if (t > lbl_805614A4) return t * (-2.0f * t * t) + 3.0f * t * t;
+    return t * (-2.0f * t * t) - 3.0f * t * t;
 }
 
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma dont_inline on
 extern "C" s32 fn_801436E0(void *arg0, s32 arg1) {
     void *style;
     u8 *self=(u8 *)arg0;
     char *base=(char *)lbl_8032C530;
-    f32 a,time,c,d,e,opacityScratch,end,b;
+    f32 end,a,b,time,c,d,e;
     time=*(f32 *)((u8 *)fn_801E7E3C()+0x10);
     end=lbl_80561588;
     a=end-lbl_805614C0;
@@ -4105,44 +4104,18 @@ extern "C" s32 fn_801436E0(void *arg0, s32 arg1) {
             void *target=(void *)((TObjC *)*(void **)(self+0x54))->vC((s32)(base+0x7d4));
             fn_8001DF08(fn_801E866C(arg1),0);
             if(one && two && style && target) {
-                if(value<lbl_805614BC) {
-    opacityScratch=lbl_805614BC;
-} else if(value>lbl_805614AC) {
-    opacityScratch=lbl_805614AC;
-} else {
-    {
-        if(value>lbl_805614A4)
-            opacityScratch=(lbl_8056150C*value*value)*value+(lbl_805614D0*value*value);
-        else
-            opacityScratch=(lbl_8056150C*value*value)*value-(lbl_805614D0*value*value);
-    }
-}
-                fn_801479A8(one,two,(const char *)fn_80131234(base+0x7e0),opacityScratch);
+                fn_801479A8(one,two,(const char *)fn_80131234(base+0x7e0),HudEase(value));
                 fn_80160A74();
                 char buf[0x14];
                 fn_801308F4(buf,0x14,fn_80160998());
                 Fn801436E0TextStyle local;
                 Fn801436E0TextStyle *src=(Fn801436E0TextStyle *)style;
                 local.a=src->a;
-                u32 bword=src->b, cword=src->c;
-                local.b=bword;local.c=cword;
+                { int cword; int bword; bword=*(volatile int *)((char *)src+4); cword=*(volatile int *)((char *)src+8); *(int *)&local.b=bword; local.c=cword; }
                 local.d=src->d;local.size=src->size;
                 local.f=src->f;local.g=src->g;local.h=src->h;
                 *(f32 *)&local.b-=lbl_80561498*fn_80147204(&local,buf);
-                f32 opacityScratch2;
-                if(value<lbl_805614BC) {
-    opacityScratch2=lbl_805614BC;
-} else if(value>lbl_805614AC) {
-    opacityScratch2=lbl_805614AC;
-} else {
-    {
-        if(value>lbl_805614A4)
-            opacityScratch2=(lbl_8056150C*value*value)*value+(lbl_805614D0*value*value);
-        else
-            opacityScratch2=(lbl_8056150C*value*value)*value-(lbl_805614D0*value*value);
-    }
-}
-                fn_801479A8(&local,target,buf,opacityScratch2);
+                fn_801479A8(&local,target,buf,HudEase(value));
             }
         }
         if(time<c) {
@@ -4154,19 +4127,7 @@ extern "C" s32 fn_801436E0(void *arg0, s32 arg1) {
             style=(void *)((TObjC *)*(void **)(self+0x54))->vC((s32)(base+0x7fc));
             void *target=(void *)((TObjC *)*(void **)(self+0x54))->vC((s32)(base+0x470));
             if(one && two && style && target) {
-                if(value<lbl_805614BC) {
-    opacityScratch=lbl_805614BC;
-} else if(value>lbl_805614AC) {
-    opacityScratch=lbl_805614AC;
-} else {
-    {
-        if(value>lbl_805614A4)
-            opacityScratch=(lbl_8056150C*value*value)*value+(lbl_805614D0*value*value);
-        else
-            opacityScratch=(lbl_8056150C*value*value)*value-(lbl_805614D0*value*value);
-    }
-}
-                fn_801479A8(one,two,(const char *)fn_80131234(base+0x808),opacityScratch);
+                fn_801479A8(one,two,(const char *)fn_80131234(base+0x808),HudEase(value));
                 int player=fn_801E866C(0);
                 f32 number=*(f32 *)(*(u8 **)(self+0xb8)+player*0x12c+0x108);
                 char buf[0x14];
@@ -4174,25 +4135,11 @@ extern "C" s32 fn_801436E0(void *arg0, s32 arg1) {
                 Fn801436E0TextStyle local;
                 Fn801436E0TextStyle *src=(Fn801436E0TextStyle *)style;
                 local.a=src->a;
-                u32 bword=src->b, cword=src->c;
-                local.b=bword;local.c=cword;
+                { int cword; int bword; bword=*(volatile int *)((char *)src+4); cword=*(volatile int *)((char *)src+8); *(int *)&local.b=bword; local.c=cword; }
                 local.d=src->d;local.size=src->size;
                 local.f=src->f;local.g=src->g;local.h=src->h;
                 *(f32 *)&local.b+=lbl_80561498*fn_80147204(&local,buf);
-                f32 opacityScratch2;
-                if(value<lbl_805614BC) {
-    opacityScratch2=lbl_805614BC;
-} else if(value>lbl_805614AC) {
-    opacityScratch2=lbl_805614AC;
-} else {
-    {
-        if(value>lbl_805614A4)
-            opacityScratch2=(lbl_8056150C*value*value)*value+(lbl_805614D0*value*value);
-        else
-            opacityScratch2=(lbl_8056150C*value*value)*value-(lbl_805614D0*value*value);
-    }
-}
-                fn_801479A8(&local,target,buf,opacityScratch2);
+                fn_801479A8(&local,target,buf,HudEase(value));
             }
         }
     }
