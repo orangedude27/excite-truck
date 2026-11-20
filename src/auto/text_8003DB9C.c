@@ -2145,8 +2145,10 @@ static inline void SETVAT_LIST(unsigned int *vatA, unsigned int *vatB, unsigned 
     }
 }
 
-void GXSetVtxAttrFmtv(s16 fmt, const GXVtxAttrFmtList *list) {
-    unsigned int *vatBase = (unsigned int *)((unsigned char *)__GXData + (fmt << 2));
+/* Fill the vertex attribute table (VAT A/B/C) words for one vertex format from a
+ * null-terminated attribute list, then mark the format dirty. */
+void GXSetVtxAttrFmtv(s16 vtxfmt, const GXVtxAttrFmtList *list) {
+    unsigned int *vatBase = (unsigned int *)((unsigned char *)__GXData + (vtxfmt << 2));
     unsigned int *vatA = &vatBase[0x1C / 4];
     unsigned int *vatB = &vatBase[0x3C / 4];
     unsigned int *vatC = &vatBase[0x5C / 4];
@@ -2159,6 +2161,7 @@ void GXSetVtxAttrFmtv(s16 fmt, const GXVtxAttrFmtList *list) {
         compType = list->compType;
         compCnt = list->compCnt;
 
+        // attr: 9=POS, 10/25=NRM/NBT, 11=CLR0, 12=CLR1, 13..20=TEX0..7
         switch (attr) {
         case 9:
             *vatA = __rlwimi(*vatA, compCnt, 0, 31, 31);
@@ -2227,8 +2230,8 @@ void GXSetVtxAttrFmtv(s16 fmt, const GXVtxAttrFmtList *list) {
         }
     }
 
-    __GXData[0x5FC / 4] |= 0x10;
-    *((unsigned char *)__GXData + 0x5FB) |= (unsigned char)(1 << (fmt & 0xFF));
+    __GXData[0x5FC / 4] |= GXD_VAT;
+    *((unsigned char *)__GXData + 0x5FB) |= (unsigned char)(1 << (vtxfmt & 0xFF));
 }
 // Push the vertex attribute table (VAT) to the command processor: every vertex
 // format whose bit is set in GXData's dirty byte gets its three VAT group
@@ -5401,26 +5404,21 @@ void GXSetTevColor(s32 arg0, unsigned int *arg1) {
 }
 
 void GXSetTevColorS10(s32 tevReg, void *color) {
-    unsigned int c0, c1, regRA, regBG;
-    s32 index;
-    c0 = ((unsigned int *)color)[0];
-    c1 = ((unsigned int *)color)[1];
-    index = tevReg << 1;
-    regRA = (unsigned int)((index + 0xE0) << 24);
-    regRA = __rlwimi(regRA, c0, 16, 21, 31);
-    regRA = __rlwimi(regRA, c1, 12, 9, 19);
-    regBG = (unsigned int)((index + 0xE1) << 24);
-    regBG = __rlwimi(regBG, c1, 16, 21, 31);
-    regBG = __rlwimi(regBG, c0, 12, 9, 19);
-    WGPIPE.c = 0x61;
-    WGPIPE.i = regRA;
-    WGPIPE.c = 0x61;
-    WGPIPE.i = regBG;
-    WGPIPE.c = 0x61;
-    WGPIPE.i = regBG;
-    WGPIPE.c = 0x61;
-    WGPIPE.i = regBG;
-    *(unsigned short *)((char *)__GXData + 2) = 0;
+    unsigned int c0 = ((unsigned int *)color)[0];
+    unsigned int c1 = ((unsigned int *)color)[1];
+    unsigned int *data = __GXData;
+    s32 index = tevReg << 1;
+    unsigned int regRA = __rlwimi(__rlwimi((index + 0xE0) << 24, c0, 16, 21, 31), c1, 12, 9, 19);
+    unsigned int regBG = __rlwimi(__rlwimi((index + 0xE1) << 24, c1, 16, 21, 31), c0, 12, 9, 19);
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = regRA;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = regBG;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = regBG;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = regBG;
+    *(unsigned short *)((char *)data + 2) = 0;
 }
 
 void GXSetTevKColor(s32 tevReg, unsigned int *color) {
@@ -6229,27 +6227,13 @@ void GXLoadTexMtxImm(const f32 *mtx, u32 id, s32 type) {
     *(volatile unsigned int *)0xCC008000 = ((num - 1) << 16) | addr;
 
     if (type == 0) {
-        f64 f5 = src[0];
-        f64 f4 = src[1];
-        f64 f3 = src[2];
-        f64 f2 = src[3];
-        f64 f1 = src[4];
-        f64 f0 = src[5];
-        fifo[0] = f5;
-        fifo[0] = f4;
-        fifo[0] = f3;
-        fifo[0] = f2;
-        fifo[0] = f1;
-        fifo[0] = f0;
+        f64 f5 = src[0], f4 = src[1], f3 = src[2];
+        f64 f2 = src[3], f1 = src[4], f0 = src[5];
+        fifo[0] = f5; fifo[0] = f4; fifo[0] = f3;
+        fifo[0] = f2; fifo[0] = f1; fifo[0] = f0;
     } else {
-        f64 f3 = src[0];
-        f64 f2 = src[1];
-        f64 f1 = src[2];
-        f64 f0 = src[3];
-        fifo[0] = f3;
-        fifo[0] = f2;
-        fifo[0] = f1;
-        fifo[0] = f0;
+        f64 f3 = src[0], f2 = src[1], f1 = src[2], f0 = src[3];
+        fifo[0] = f3; fifo[0] = f2; fifo[0] = f1; fifo[0] = f0;
     }
 }
 
