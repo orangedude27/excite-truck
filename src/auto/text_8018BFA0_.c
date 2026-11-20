@@ -114,16 +114,16 @@ extern float lbl_80562040;
 extern char lbl_80332758[];
      static inline void matVecAliasV_8018(Vec_8018 *dest, const float *m, const Vec_8018 *src) {
       if (dest == src) {
-                 float tx = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
-         float ty = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
-         float tz = src->z * m[8] + (src->x * m[2] + src->y * m[5]);
+                 float tx = src->y * m[3] + src->x * m[0] + src->z * m[6];
+         float ty = src->y * m[4] + src->x * m[1] + src->z * m[7];
+         float tz = src->y * m[5] + src->x * m[2] + src->z * m[8];
           dest->x = tx;
           dest->y = ty;
           dest->z = tz;
       } else {
-          dest->x = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
-          dest->y = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
-          dest->z = src->z * m[8] + (src->x * m[2] + src->y * m[5]);
+          dest->x = src->y * m[3] + src->x * m[0] + src->z * m[6];
+          dest->y = src->y * m[4] + src->x * m[1] + src->z * m[7];
+          dest->z = src->y * m[5] + src->x * m[2] + src->z * m[8];
       }
   }
 typedef struct { char b[0x290]; } Blob290_8018;
