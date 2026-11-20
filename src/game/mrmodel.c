@@ -1596,6 +1596,11 @@ s32 fn_802C7830(char *hexStr) {
 #pragma scheduling on
 void fn_802C7888(void *src, s32 count)
 {
+  /* Copy `count` 0x2C-byte model records from `src` into the model-entry pool
+   * lbl_804C13B4 (used-count at +0, capacity at +4, base at +8), taking the next
+   * free entry for each record.  Each record's +0x28 word is a back-pointer key
+   * that is reset to -1 on copy.  The bytes are moved one at a time so that the
+   * copy is safe even when the source overlaps the pool. */
   for (; count > 0; count--)
   {
     volatile u8 *source = (volatile u8 *) src;
