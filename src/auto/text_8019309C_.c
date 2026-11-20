@@ -389,7 +389,11 @@ void fn_80193604(void *arg0, void *arg1, void *unused, int arg2, void *arg3) {
         }
     }
     if (code == 0x3EA) *(float *)(obj + 0x2A0) += lbl_80562174;
-    if (__builtin_expect(code == 0x6D, 0)) *(u8 *)(obj + 0x2FE) = 0;
+    switch (code) {
+    case 0x6D:
+        *(u8 *)(obj + 0x2FE) = 0;
+        break;
+    }
 }
 #pragma pop
 /* Tail-call wrapper for fn_80193CE0. */
@@ -711,7 +715,7 @@ extern int fn_801B2F24(void);
 extern float lbl_80562198, lbl_805621B8, lbl_805621BC, lbl_805621C0, lbl_805621C4;
 static inline float Cross2D_80194324(float ax, float ay, float bx, float by) {
     float n = -ay;
-    return ax * bx + by * n;
+    return by * n + ax * bx;
 }
 #pragma cplusplus on
 extern "C" int fn_800216D0(void);
@@ -1363,8 +1367,8 @@ void fn_80195654(void *arg0, void *arg1) {
             float baseB = *(float *)((char *)second + 0x24);
             float deltaB = nextB - baseB;
             float scaleB = *(float *)((char *)arg0 + 0x170);
-            float valueA = baseA + scaleA * deltaA;
-            float valueB = baseB + scaleB * deltaB;
+            float valueA = scaleA * deltaA + baseA;
+            float valueB = scaleB * deltaB + baseB;
             float fraction = difference / threshold;
             interpolated = valueB + fraction * (valueA - valueB);
         }
@@ -3123,7 +3127,7 @@ void fn_801981A0(void *arg0, void *arg1) {
             *(int *)(o + 0x13C) = *(int *)(o + 0x138);
         }
         var_r4 = 1;
-        c = lbl_8055A48C;
+        c = -100000.0f;
         temp_f6 = c + (lbl_80562298 * *(float *)(o + 0x2EC) * c);
         if (*(u8 *)(o + 0xFC) != 0 && *(int *)(o + 0x114) == *(int *)(o + 0x138)) {
             var_r4 = 0;
@@ -3220,9 +3224,8 @@ extern void fn_801DCF48(float *, float, float);
 extern int fn_80167594(int), fn_801675E4(int), fn_80167634(int), fn_80167728(int);
 extern int fn_80167758(void), fn_80167768(float);
 void fn_80198530(void *arg0) {
-    char s[0x80];
+    char s[0x58];
     char *p = (char *)arg0;
-    char *sub = *(char **)(p + 0x294);
     float v28 = *(float *)(p + 0x28);
     float v24 = *(float *)(p + 0x24);
     int c4, c0;
@@ -3246,7 +3249,7 @@ void fn_80198530(void *arg0) {
             f30 = lbl_80562140;
             *(float *)&s[0x10] = f30 + f4 * lbl_805621A4;
             {
-                float t2 = (f3 + lbl_80562268 * *(float *)(sub + 0x128)) / *(float *)(p + 0x24c);
+                float t2 = (f3 + lbl_80562268 * *(float *)(SUBPTR + 0x128)) / *(float *)(p + 0x24c);
                 if (f30 < t2) f30 = t2;
                 if (f30 > lbl_805621A4) f30 = lbl_805621A4;
             }
@@ -3271,12 +3274,12 @@ void fn_80198530(void *arg0) {
     *(int *)&s[8] = 1;
     fn_80196250((float *)&s[0x10], (float *)&s[0xc], (int *)&s[8],
                 *(float *)(p + 0x28),
-                PSVECDotProduct(sub + 0x54, sub + 0x118),
+                PSVECDotProduct(SUBPTR + 0x54, SUBPTR + 0x118),
                 *(float *)(p + 0x2c));
     f31 = lbl_80562144;
     if ((*(int *)(p + 0x268) == 1) && (fn_801B3064() < *(float *)(p + 0x26c))) {
         float f4_2 = lbl_80562140;
-        float t = (PSVECDotProduct(sub + 0x54, sub + 0x118) - (lbl_80562230 + v28)) / ((lbl_805622A8 + v28) - (lbl_80562230 + v28));
+        float t = (PSVECDotProduct(SUBPTR + 0x54, SUBPTR + 0x118) - (lbl_80562230 + v28)) / ((lbl_805622A8 + v28) - (lbl_80562230 + v28));
         *(float *)&s[0xc] = lbl_80562144;
         if (f4_2 < t) f4_2 = t;
         if (f4_2 > lbl_80562144) f4_2 = lbl_80562144;
@@ -3318,66 +3321,66 @@ void fn_80198530(void *arg0) {
     }
     *(float *)(p + 0x2a8) = *(float *)(p + 0x2a8) * lbl_805622B0;
     if (*(float *)&s[0xc] > lbl_80562148) *(float *)&s[0x10] = lbl_80562144;
-    if (*(int *)(sub + 0x2620) == 0) f30 = f30 * lbl_8056227C;
+    if (*(int *)(SUBPTR + 0x2620) == 0) f30 = f30 * lbl_8056227C;
     fn_801941A8(arg0, f30);
     fn_80194170(arg0, *(float *)&s[0x10]);
     fn_801942B8(arg0, *(float *)&s[0xc]);
-    if (*(int *)&s[8] == 1) fn_8018AE08(sub);
-    else fn_8018ADD4(sub, *(int *)&s[8]);
-    fn_8018ADC4((int)sub, lbl_80562140);
+    if (*(int *)&s[8] == 1) fn_8018AE08(SUBPTR);
+    else fn_8018ADD4(SUBPTR, *(int *)&s[8]);
+    fn_8018ADC4((int)SUBPTR, lbl_80562140);
     if (*(int *)&s[8] == -1) {
-        if ((*(int *)(sub + 0x2620) >= 3) && (*(float *)(sub + 0x25d4) < lbl_805622B4)) {
+        if ((*(int *)(SUBPTR + 0x2620) >= 3) && (*(float *)(SUBPTR + 0x25d4) < lbl_805622B4)) {
             float f2_2 = lbl_80562140;
             float f1;
             if (f2_2 < *(float *)&s[0x10]) f2_2 = *(float *)&s[0x10];
             if (f2_2 > lbl_80562144) f2_2 = lbl_80562144;
             f1 = lbl_805622B8 * f2_2;
-            *(float *)&s[0x44] = *(float *)(sub + 0x54) * f1;
-            *(float *)&s[0x48] = *(float *)(sub + 0x58) * f1;
-            *(float *)&s[0x4c] = *(float *)(sub + 0x5c) * f1;
-            fn_8017B3A8(sub, (float *)&s[0x44], sub + 0x60, f1);
+            *(float *)&s[0x44] = *(float *)(SUBPTR + 0x54) * f1;
+            *(float *)&s[0x48] = *(float *)(SUBPTR + 0x58) * f1;
+            *(float *)&s[0x4c] = *(float *)(SUBPTR + 0x5c) * f1;
+            fn_8017B3A8(SUBPTR, (float *)&s[0x44], SUBPTR + 0x60, f1);
         }
     }
     if ((*(u32 *)(p + 0x2d0) & 0x140) == 0x140) {
         fn_801942F0(arg0, 0);
-        fn_8018ADCC(sub, lbl_80562140);
+        fn_8018ADCC(SUBPTR, lbl_80562140);
     } else {
-        fn_8018ADCC(sub, f31);
+        fn_8018ADCC(SUBPTR, f31);
     }
     {
         int v = 0;
-        if ((*(int *)(sub + 0x1f0) == 0x50) && ((*(float *)(p + 0x26c) - *(float *)(sub + 0x26d8)) < lbl_805621D4)) v = 1;
+        if ((*(int *)(SUBPTR + 0x1f0) == 0x50) && ((*(float *)(p + 0x26c) - *(float *)(SUBPTR + 0x26d8)) < lbl_805621D4)) v = 1;
         if (v != 0) *(u32 *)(p + 0x2d0) |= 0x800;
     }
     if (!(*(u32 *)(p + 0x2d0) & 0x800)) {
         float f29 = lbl_8056227C;
         int r28 = 0;
         int r4 = (((u32 *)__AXFXGetLfoSinTable_801769CC())[1] >> 19) & 1;
-        if ((*(float *)(p + 0x26c) > *(float *)(p + 0x200)) && (*(int *)(sub + 0x1f0) != 0x50)) r28 = 1;
+        if ((*(float *)(p + 0x26c) > *(float *)(p + 0x200)) && (*(int *)(SUBPTR + 0x1f0) != 0x50)) r28 = 1;
         if (r4 && ((*(float *)(p + 0x26c) - *(float *)(p + 0x1fc)) > f29)) {
             int r29 = fn_80167758();
             int r30 = 0;
             if ((fn_80167768(*(float *)(p + 0x240)) != 0) && ((r29 == 0) || ((*(float *)(p + 0x26c) - *(float *)(p + 0x204)) > lbl_805622BC))) r30 = 1;
             if (r30 != 0) {
-                if ((*(float *)(sub + 0x25a0) >= lbl_805622C0) && r28) {
+                if ((*(float *)(SUBPTR + 0x25a0) >= lbl_805622C0) && r28) {
                     *(u32 *)(p + 0x2d0) |= 0x400;
                     *(float *)(p + 0x1fc) = lbl_805621A0;
                 } else if (*(float *)(p + 0x1fc) < lbl_80562144) {
                     *(float *)(p + 0x1fc) = *(float *)(p + 0x26c);
                 }
             }
-            if (*(float *)(sub + 0x2588) > lbl_80562144) {
+            if (*(float *)(SUBPTR + 0x2588) > lbl_80562144) {
                 float t = *(float *)(p + 0x26c);
                 *(float *)(p + 0x1fc) = t;
                 *(float *)(p + 0x200) = t + fn_80193D20();
             }
         }
     }
-    fn_8018AE24((int)sub, (*(u32 *)(p + 0x2d0) >> 10) & 1);
-    if (fn_801675E4(*(int *)(p + 0x290)) != 0) *(int *)(sub + 0x24) = 0;
-    else *(int *)(sub + 0x24) = *(int *)(sub + 0x28);
-    if (fn_80167634(*(int *)(p + 0x290)) != 0) *(float *)(sub + 0x5f0) = lbl_80562144;
-    else *(float *)(sub + 0x5f0) = lbl_80562140;
+    fn_8018AE24((int)SUBPTR, (*(u32 *)(p + 0x2d0) >> 10) & 1);
+    if (fn_801675E4(*(int *)(p + 0x290)) != 0) *(int *)(SUBPTR + 0x24) = 0;
+    else *(int *)(SUBPTR + 0x24) = *(int *)(SUBPTR + 0x28);
+    if (fn_80167634(*(int *)(p + 0x290)) != 0) *(float *)(SUBPTR + 0x5f0) = lbl_80562144;
+    else *(float *)(SUBPTR + 0x5f0) = lbl_80562140;
     if (*(float *)(p + 0x270) > lbl_805622C4) {
         float v = lbl_805622C8;
         float diff = *(float *)(p + 0x28) - *(float *)(p + 0x270);
@@ -3386,7 +3389,7 @@ void fn_80198530(void *arg0) {
         if ((v > lbl_80562144) && (__fabsf(f30) < lbl_80562274) && (fn_80167728(*(int *)(p + 0x290)) != 0)) {
             float *a5 = *(float **)(p + 0x1a0);
             float mag;
-            fn_801DCF48((float *)&s[0x38], *(float *)(sub + 0x60), *(float *)(sub + 0x68));
+            fn_801DCF48((float *)&s[0x38], *(float *)(SUBPTR + 0x60), *(float *)(SUBPTR + 0x68));
             *(float *)&s[0x2c] = a5[2];
             *(float *)&s[0x30] = lbl_80562144;
             *(float *)&s[0x34] = a5[3];
@@ -3402,11 +3405,11 @@ void fn_80198530(void *arg0) {
                 *(float *)&s[0x34] = *(float *)&s[0x34] * inv;
                 *(float *)&s[0x30] = *(float *)&s[0x30] * inv * lbl_80562194;
                 {
-                    float scale = (v * *(float *)(sub + 0xd4)) / lbl_805622BC;
+                    float scale = (v * *(float *)(SUBPTR + 0xd4)) / lbl_805622BC;
                     *(float *)&s[0x2c] = *(float *)&s[0x2c] * scale;
                     *(float *)&s[0x30] = *(float *)&s[0x30] * scale;
                     *(float *)&s[0x34] = *(float *)&s[0x34] * scale;
-                    fn_8017B3A8(sub, (float *)&s[0x2c], sub + 0x60, *(float *)&s[0x30]);
+                    fn_8017B3A8(SUBPTR, (float *)&s[0x2c], SUBPTR + 0x60, *(float *)&s[0x30]);
                 }
             }
         }
