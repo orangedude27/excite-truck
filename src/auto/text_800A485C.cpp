@@ -8,9 +8,7 @@ static inline s32 fn_800C0E7C_fxmul(s32 a, s32 b) {
 static inline s32 fn_800BD710_scale(s32 v, s32 *tbl, s32 idx) {
     return fn_800C0E7C_fxmul(v, tbl[idx]);
 }
-static inline u32 fn_800A8730_end(u32 a, u32 b) {
-    return a + b;
-}
+
 __declspec(section ".sdata") extern u8 lbl_805591FC[];
 __declspec(section ".sdata") extern u8 lbl_80559200[];
 __declspec(section ".sdata") extern u8 lbl_80559204[];
@@ -2859,7 +2857,6 @@ extern "C" s32 fn_800A861C(void *volume, void *cache, s32 buffer, u32 sector) {
 
 extern "C" s32 fn_800A58E0(void *, s32, s32, s32, s32);
 extern "C" s32 fn_800A8730(void *arg0, u32 *arg1, void *arg2, u32 arg3, s32 arg4, s32 *arg5) {
-    struct EndAlias { u32 v; };
     void *var_r30;
     s32 var_r29;
     u32 request_length;
@@ -2956,14 +2953,11 @@ loop_2:
                     ((*(u32 *)((u8 *)var_r30 + 0x14) - 1) << *(u8 *)((u8 *)arg0 + 0x20));
             } else if ((temp_r7 > arg3) && (temp_r7 < temp_r31) &&
                        ((u32)(temp_r7 + *(u32 *)((u8 *)var_r30 + 0x14)) >= temp_r31)) {
-                u32 temp_r4_3;
-                struct EndAlias ea;
+                register u32 temp_r4_3 = arg4 + arg3;
                 temp_r5_4 = *(u8 *)((u8 *)arg0 + 0x20);
                 VFipf_memcpy(*(void **)((u8 *)var_r30 + 4),
                              (u8 *)arg2 + ((temp_r7 - arg3) << temp_r5_4),
                              (temp_r31 - temp_r7) << temp_r5_4);
-                ea.v = arg4 + arg3;
-                temp_r4_3 = ea.v;
                 temp_r4_4 = temp_r4_3 - *(u32 *)((u8 *)var_r30 + 0x18);
                 *arg5 += temp_r4_4;
                 var_r29 -= temp_r4_4;
