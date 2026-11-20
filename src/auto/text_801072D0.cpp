@@ -10,6 +10,12 @@ extern "C" char lbl_803285B8[];
 extern "C" char lbl_803285C8[];
 extern "C" char lbl_803285EC[];
 extern "C" char lbl_80328614[];
+struct InitRow { u32 a, b, c; };
+static inline void InitReaderCopyRow(InitRow *dst, InitRow *row) {
+    u32 x = row->a, y = row->b;
+    dst->a = x; dst->b = y;
+    dst->c = row->c;
+}
 
 namespace nw4hbm {
 namespace ut {
@@ -97,28 +103,32 @@ void nw4hbm::ut::Font::InitReaderFunc(nw4hbm::ut::FontEncoding encoding) {
     Row *dst = (Row *)((char *)this + 4);
     switch (encoding) {
     case 0: {
-        u32 first = *(u32 *)(format + 0x00);
-        u32 *p = (u32 *)(format + 0x00);
-        dst->a = first; dst->b = p[1]; dst->c = p[2];
+        u32 addr = (u32)(format + 0x00);
+        u32 x = *(u32 *)addr, y = *(u32 *)(addr + 4);
+        dst->a = x; dst->b = y;
+        dst->c = *(u32 *)(addr + 8);
         break;
     }
     case 1: {
-        u32 first = *(u32 *)(format + 0x0C);
-        u32 *p = (u32 *)(format + 0x0C);
-        dst->a = first; dst->b = p[1]; dst->c = p[2];
+        u32 addr = (u32)(format + 0x0C);
+        u32 x = *(u32 *)addr, y = *(u32 *)(addr + 4);
+        dst->a = x; dst->b = y;
+        dst->c = *(u32 *)(addr + 8);
         break;
     }
     case 2: {
-        u32 first = *(u32 *)(format + 0x18);
-        u32 *p = (u32 *)(format + 0x18);
-        dst->a = first; dst->b = p[1]; dst->c = p[2];
+        u32 addr = (u32)(format + 0x18);
+        u32 x = *(u32 *)addr, y = *(u32 *)(addr + 4);
+        dst->a = x; dst->b = y;
+        dst->c = *(u32 *)(addr + 8);
         break;
     }
     case 3:
     default: {
-        u32 first = *(u32 *)(format + 0x24);
-        u32 *p = (u32 *)(format + 0x24);
-        dst->a = first; dst->b = p[1]; dst->c = p[2];
+        u32 addr = (u32)(format + 0x24);
+        u32 x = *(u32 *)addr, y = *(u32 *)(addr + 4);
+        dst->a = x; dst->b = y;
+        dst->c = *(u32 *)(addr + 8);
         break;
     }
     }
