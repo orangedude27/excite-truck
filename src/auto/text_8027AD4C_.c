@@ -247,18 +247,8 @@ extern "C" long fn_8027AFA0(void *self, void *arg1, void *unused) {
                                 b[0x10] = s[0x10];
                                 b[0x11] = s[0x11];
                                 b[0x12] = s[0x12];
-                                {
-                                    long w18 = *(long *)(s + 0x18);
-                                    long w14 = *(long *)(s + 0x14);
-                                    *(long *)(b + 0x14) = w14;
-                                    *(long *)(b + 0x18) = w18;
-                                }
-                                {
-                                    long w20 = *(long *)(s + 0x20);
-                                    long w1c = *(long *)(s + 0x1C);
-                                    *(long *)(b + 0x1C) = w1c;
-                                    *(long *)(b + 0x20) = w20;
-                                }
+                                *(EntryWordPair *)(b + 0x14) = *(EntryWordPair *)(s + 0x14);
+                                *(EntryWordPair *)(b + 0x1C) = *(EntryWordPair *)(s + 0x1C);
                                 *(long *)(b + 0x24) = *(long *)(s + 0x24);
                                 *(long *)(b + 0x28) = *(long *)(s + 0x28);
                                 *(long *)(b + 0x2C) = *(long *)(s + 0x2C);
@@ -881,9 +871,11 @@ extern "C" void fn_8027BCD0(void *arg0, long arg1) {
                 long flag;
                 for (idx = 0, off = 0; idx < *(long *)((int)a0 + 4); off += 0x18, idx++) {
                     long elem = *(long *)(*(char **)a0 + off);
-                    if (elem != key)
-                        continue;
-                    goto found;
+                    if (elem != key) {
+                        idx = idx;
+                    } else {
+                        goto found;
+                    }
                 }
                 idx = -1;
             found:
@@ -1099,12 +1091,14 @@ long fn_8027C1C8(void *arg0, const char *arg1) {
     long offset = 0;
     while (index < table->count) {
         unsigned int equal = (unsigned int)__cntlzw((unsigned int)stricmp(arg1, *(char **)(table->entries + offset + 4))) >> 5;
-        if (!equal) {
+        switch (equal) {
+        case 0:
             offset += 0xC;
             index++;
-            continue;
+            break;
+        default:
+            goto found;
         }
-        goto found;
     }
     index = -1;
 found:
@@ -1487,24 +1481,24 @@ extern "C" void *fn_8001BB58(long, long, long, long);
 extern "C" long fn_8001D7EC(void);
 #pragma cplusplus on
 extern "C" long fn_8027CA1C(void *arg0) {
-    long v;
-    void *o;
-    int ctx;
+    long var_r31;
+    long temp_r30;
+    void *temp_r3;
     struct Iface {
         virtual void f0();
         virtual void f1();
         virtual void f2();
         virtual long f3(char *);
     };
-    ctx = fn_8027D1F4();
-    o = fn_8001BB58(fn_8000DA10(), *(long *)((char *)arg0 + 4), ctx, 0);
-    v = 0;
-    if (o != 0) {
+    temp_r30 = fn_8027D1F4();
+    temp_r3 = fn_8001BB58(fn_8000DA10(), *(long *)((char *)arg0 + 4), temp_r30, 0);
+    var_r31 = 0;
+    if (temp_r3 != 0) {
         ((struct Iface *)(*(void **)((char *)arg0 + 0x10)))->f3(lbl_80347BD0);
-        if (*(long *)((char *)o + 8) <= fn_8001D7EC())
-            v = 1;
+        if (*(long *)((char *)temp_r3 + 8) <= fn_8001D7EC())
+            var_r31 = 1;
     }
-    return v;
+    return var_r31;
 }
 #pragma cplusplus off
 /* Return 1 if the looked-up event entry exists and its field at +8 is zero, else 0. */
