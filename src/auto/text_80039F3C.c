@@ -274,8 +274,9 @@ static inline void nextCommandBuf(void) {
 static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const char *msg) {
     int id;
     unsigned int flag;
+    unsigned char *base = lbl_8037B820;
 
-    flag = ((DVDLowContext *)lbl_8037B820)[lbl_8055D8E8].inUse;
+    flag = ((DVDLowContext *)base)[lbl_8055D8E8].inUse;
     if (((-flag | flag) >> 31) == 1U) {
         OSReport(msg + 0x218, (int)lbl_8055D8E8);
         OSReport(msg + 0x250);
@@ -654,11 +655,12 @@ int fn_8003AD88(void *arg0, int arg1, int arg2, unsigned int arg3) {
 #pragma opt_propagation off
 int fn_8003AF1C(int arg0, int arg1, int arg2) {
     const char *msg = lbl_80302848;
+    unsigned int one = 1;
     unsigned char *context;
     int result;
 
-    lbl_8055D8E0 = 1;
-    context = (unsigned char *)newContext((void *)arg2, 1, msg);
+    lbl_8055D8E0 = one;
+    context = (unsigned char *)newContext((void *)arg2, one, msg);
     nextCommandBuf();
     *(unsigned char *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20) = 0xE3;
     *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 4) = arg0;
