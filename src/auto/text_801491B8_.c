@@ -3017,9 +3017,9 @@ extern "C" void fn_8015168C(s32 arg0, void *arg1) {
         virtual void m1();
         virtual void m2();
     };
+    struct Holder { u8 *p; } ownerHolder;
     u8 *entry;
-    u8 *head;
-    u8 *owner;
+    u8 **owner = &ownerHolder.p;
     u8 *cur;
     u8 *next;
     u8 *link;
@@ -3038,31 +3038,30 @@ extern "C" void fn_8015168C(s32 arg0, void *arg1) {
         *(volatile f32 *)(entry + 0x3C) = delta;
         *(f32 *)(entry + 0x1C) = factor * *(f32 *)(entry + 0x1C);
         *(s32 *)(entry + 0xA4) = zeroInt;
-        head = *(u8 **)(entry + 8);
-        cur = *(u8 **)(head + 0x124C);
+        *owner = *(u8 **)(entry + 8);
+        cur = *(u8 **)(*owner + 0x124C);
         next = cur != 0 ? *(u8 **)(cur + 0x11C) : 0;
-        owner = head;
         while (cur != 0) {
             if (*(u8 *)(cur + 4) != 0) {
                 link = *(u8 **)(cur + 0x120);
                 if (link != 0)
                     *(u8 **)(link + 0x11C) = *(u8 **)(cur + 0x11C);
                 else
-                    *(u8 **)(owner + 0x124C) = *(u8 **)(cur + 0x11C);
+                    *(u8 **)(*owner + 0x124C) = *(u8 **)(cur + 0x11C);
                 link = *(u8 **)(cur + 0x11C);
                 if (link != 0)
                     *(u8 **)(link + 0x120) = *(u8 **)(cur + 0x120);
                 else
-                    *(u8 **)(owner + 0x1250) = *(u8 **)(cur + 0x120);
+                    *(u8 **)(*owner + 0x1250) = *(u8 **)(cur + 0x120);
                 *(u8 **)(cur + 0x120) = 0;
                 *(u8 **)(cur + 0x11C) = 0;
-                *(u8 **)(cur + 0x120) = *(u8 **)(owner + 0x1248);
-                link = *(u8 **)(owner + 0x1248);
+                *(u8 **)(cur + 0x120) = *(u8 **)(*owner + 0x1248);
+                link = *(u8 **)(*owner + 0x1248);
                 if (link != 0)
                     *(u8 **)(link + 0x11C) = cur;
-                *(u8 **)(owner + 0x1248) = cur;
-                if (*(u8 **)(owner + 0x1244) == 0)
-                    *(u8 **)(owner + 0x1244) = cur;
+                *(u8 **)(*owner + 0x1248) = cur;
+                if (*(u8 **)(*owner + 0x1244) == 0)
+                    *(u8 **)(*owner + 0x1244) = cur;
             }
             cur = next;
             next = cur != 0 ? *(u8 **)(cur + 0x11C) : 0;
