@@ -1145,6 +1145,7 @@ extern "C" void fn_802BA348(void) {
     } s;
     void *first, *cur, *p, *off, *n, *entry, *buffer, *items;
     int i, k, total, obj, j;
+    int elapsed;
     s.name = lbl_8034A9D0;
     s.start = fn_802E2C20(lbl_8034A9D0);
     s.data = s.buf;
@@ -1175,9 +1176,11 @@ extern "C" void fn_802BA348(void) {
     }
     entry = fn_801284F8(0x10, lbl_8034A9E4);
     if (entry != 0) {
-        void *lbl = lbl_8034A9E4;
+#pragma scheduling 750
         int sz = total * 0x54;
-        buffer = ((void *(*)(int, void *))fn_8012850C)(0x10 + sz, lbl);
+        void *lb = lbl_8034A9E4;
+        buffer = ((void *(*)(int, void *))fn_8012850C)(sz + 0x10, lb);
+#pragma scheduling invalid_target
         items = fn_8002F37C(buffer, (void *)fn_802BA560, 0, 0x54, total);
         *(void **)entry = items;
         *(int *)((char *)entry + 8) = total;
@@ -1190,10 +1193,9 @@ extern "C" void fn_802BA348(void) {
     s.data = 0;
     s.count = 0;
     s.cap = 0;
-#pragma scheduling 750
-    if (((int (*)(void))fn_802E2C20)() - s.start > 0x1F4)
-        fn_802E30C8(lbl_8034A064, s.name);
-#pragma scheduling invalid_target
+    elapsed = ((int (*)(void))fn_802E2C20)() - s.start;
+    if (elapsed > 0x1F4)
+        fn_802E30C8(lbl_8034A064, s.name, elapsed);
 }
 #pragma scheduling 750
 
