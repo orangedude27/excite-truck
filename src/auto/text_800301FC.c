@@ -2,7 +2,7 @@
 extern u32 lbl_8055D6E8;
 extern s32 lbl_8055D6AC;
 extern s32 lbl_8055D6DC;
-extern void *lbl_8055D6E0;
+extern u32 lbl_8055D6E0;
 extern void TRKInitializeEventQueue(void);
 extern u32 lbl_80558DD8;
 extern u32 lbl_8035BF20[];
