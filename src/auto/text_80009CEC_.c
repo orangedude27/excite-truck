@@ -7,12 +7,6 @@ extern int lbl_8034F3B0[];
 extern int lbl_8055D360;
 extern int lbl_8055D368;
 
-static inline void initFields80009CEC(int *p) {
-    p[2] = 0;
-    p[1] = 123;
-    p[3] = 0;
-    p[4] = 0;
-}
 #pragma push
 #pragma scheduling invalid_target
 void fn_80009CEC(void) {
