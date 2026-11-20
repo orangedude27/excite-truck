@@ -1371,6 +1371,7 @@ extern "C" void Clear__Q46nw4hbm2ut6detail12LinkListImplFv(void *);
 extern "C" void AXRegisterAuxACallback(int, int);
 extern "C" void AXRegisterAuxBCallback(int, int);
 extern "C" void AXRegisterAuxCCallback(int, int);
+#pragma dont_inline off
 struct Dummy_800E4364 {
     virtual void first();
     virtual void second();
