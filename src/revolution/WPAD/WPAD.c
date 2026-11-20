@@ -556,18 +556,20 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
 }
 
 void fn_8005E09C(s32 port) {
-    register WPADCB **cbs asm("r30");
-    register s32 enabled asm("r25");
-    register s32 changed asm("r31");
+    s32 enabled;
+    s32 flag;
+    WPADCB *p;
     s32 idx;
     WPADCB *p2;
-    WPADCB *p;
-    s32 flag;
+    WPADCB **cbs;
+    s32 changed;
     s32 offset;
     s32 filterSame;
     s32 devHandle;
     s64 currentTime, lastTime;
     s32 timeDiff, timeout;
+    s32 irq;
+    u8 *rx;
 
     cbs = lbl_8038F4F0;
     idx = port * 4;
@@ -581,21 +583,23 @@ void fn_8005E09C(s32 port) {
     enabled = OSDisableInterrupts();
     offset = (u8)(p->rxBufSel == 0) * 0x60;
     changed = IsControllerDataChanged(p, (void*)((u8*)p + 0xA0 + offset), (void*)p->rxBufMain);
-    if (changed) {
+    if (changed != 0) {
         memcpy(p->rxBufMain, (void*)((u8*)p + 0xA0 + offset), 0x60);
-        if (*(s8*)((u8*)p + 0x69) != 0) {
-            memset(p->rxBufMain, 0, 0x60);
-        }
+    }
+    if (*(s8*)((u8*)p + 0x69) != 0) {
+        memset(p->rxBufMain, 0, 0x60);
     }
     OSRestoreInterrupts(enabled);
 
     p2 = lbl_8038F4F0[port];
-    enabled = OSDisableInterrupts();
+    irq = OSDisableInterrupts();
     offset = (u8)(p2->rxBufSel == 0) * 0x60;
+    rx = (u8*)p2 + offset;
     filterSame = 0;
-    if (*(u16*)((u8*)p2 + 0xA0 + offset) == 0x1C10) {
+    if (*(u16*)(rx + 0xA0) == 0x1C10) {
         filterSame = 1;
-    } else if (p2->readFormat - 6 <= 2 && *(u16*)((u8*)p2 + 0xCA + offset) == 0x1450) {
+    }
+    if (p2->readFormat - 6 <= 2 && *(u16*)(rx + 0xCA) == 0x1450) {
         filterSame = 1;
     }
     if (filterSame != 0) {
@@ -603,45 +607,39 @@ void fn_8005E09C(s32 port) {
     } else {
         *(u16*)((u8*)p2 + 0x852) = 0;
     }
-    OSRestoreInterrupts(enabled);
+    OSRestoreInterrupts(irq);
 
     if (*(u16*)((u8*)p2 + 0x852) > 600) {
-        p2 = lbl_8038F4F0[port];
-        enabled = OSDisableInterrupts();
-        *(u8*)((u8*)p2 + 0x851) = 0;
-        OSRestoreInterrupts(enabled);
+        WPADCB *p2b = lbl_8038F4F0[port];
+        irq = OSDisableInterrupts();
+        *(u8*)((u8*)p2b + 0x851) = 0;
+        OSRestoreInterrupts(irq);
     }
 
-    if (changed) {
+    if (changed != 0) {
         flag = 1;
         currentTime = __OSGetSystemTime();
         *(s64*)((u8*)p + 0x830) = currentTime;
-    } else {
-        enabled = OSDisableInterrupts();
-        if (lbl_8055DC1A != 0) {
-            currentTime = __OSGetSystemTime();
-            lastTime = *(s64*)((u8*)p + 0x830);
-            timeDiff = OS_TICKS_TO_SEC(currentTime - lastTime);
-            timeout = lbl_8055DC1A * 60;
-            if (timeDiff > timeout) {
-                devHandle = p->readStatus;
-                OSRestoreInterrupts(enabled);
-                if (devHandle != -1) {
-                    p = lbl_8038F4F0[port];
-                    enabled = OSDisableInterrupts();
-                    if (*(u8*)((u8*)p + 0x8C6) == 0) {
-                        *(u8*)((u8*)p + 0x8C6) = 1;
-                        OSRestoreInterrupts(enabled);
-                        BTA_HhClose(p->extDevHandle);
-                    } else {
-                        OSRestoreInterrupts(enabled);
-                    }
+    } else if (lbl_8055DC1A != 0) {
+        currentTime = __OSGetSystemTime();
+        lastTime = *(s64*)((u8*)p + 0x830);
+        timeDiff = OS_TICKS_TO_SEC(currentTime - lastTime);
+        timeout = lbl_8055DC1A * 60;
+        if (timeDiff > timeout) {
+            WPADCB *p3 = lbl_8038F4F0[port];
+            irq = OSDisableInterrupts();
+            devHandle = p3->readStatus;
+            OSRestoreInterrupts(irq);
+            if (devHandle != -1) {
+                irq = OSDisableInterrupts();
+                if (*(u8*)((u8*)p3 + 0x8C6) != 0) {
+                    OSRestoreInterrupts(irq);
+                } else {
+                    *(u8*)((u8*)p3 + 0x8C6) = 1;
+                    OSRestoreInterrupts(irq);
+                    BTA_HhClose(*(u8*)((u8*)p3 + 0x803));
                 }
-            } else {
-                OSRestoreInterrupts(enabled);
             }
-        } else {
-            OSRestoreInterrupts(enabled);
         }
     }
 
@@ -659,9 +657,9 @@ void fn_8005E298(void) {
     register u8 *var_r27 asm("r27");
     register s32 var_r26 asm("r26");
     register s32 var_r25 asm("r25");
-    register WPADCB *temp_r30 asm("r30");
     register s8 var_r29 asm("r29");
     register s8 var_r22 asm("r22");
+    register WPADCB *temp_r30 asm("r30");
     register s32 zero asm("r31") = 0;
     register s32 sixteen asm("r23") = 0x10;
     register s32 one asm("r24") = 1;
@@ -692,7 +690,6 @@ void fn_8005E298(void) {
     WPADCB *temp_r29;
     WPADCB *temp_r29_2;
     WPADCB *temp_r5_3;
-    u16 limit;
 
     if (fn_8006A940() == 3) {
         var_r26 = 0;
@@ -871,8 +868,7 @@ block_done:
         lbl_8055DBFA = (lbl_8055DBFA + 1) & ~((s32) ~((lbl_8055DBFA - 0xA) | (0xA - lbl_8055DBFA)) >> 0x1F);
         lbl_8055DBFC = (lbl_8055DBFC + 1) & ~((s32) ~((lbl_8055DBFC - 5) | (5 - lbl_8055DBFC)) >> 0x1F);
         lbl_8055DBFD = (lbl_8055DBFD + 1) & ~((s32) ~((lbl_8055DBFD - 5) | (5 - lbl_8055DBFD)) >> 0x1F);
-        limit = 0xEA60;
-        lbl_8055DBFE = (lbl_8055DBFE + 1) & ~((s32) ~((lbl_8055DBFE - limit) | (limit - lbl_8055DBFE)) >> 0x1F);
+        lbl_8055DBFE = (lbl_8055DBFE + 1) & ~((s32) ~((lbl_8055DBFE - 0xEA60) | (0xEA60 - lbl_8055DBFE)) >> 0x1F);
         if (((s32) lbl_8055DC11 != 0) && (SCCheckStatus() == 0) && (SCSetBtDeviceInfoArray(&_scArray) == 1)) {
             SCFlushAsync(0);
             lbl_8055DC11 = 0;
@@ -5585,8 +5581,6 @@ void WPADiClearQueue_80063BD4(WPADCommandQueue* pQueue) {
 
 void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
 {
-    WPADStatus* st = status;
-    u8* d = data;
     const char* messages = (const char*)lbl_80312338;
     u8* p = (u8*)lbl_8038F4F0[chan];
     u16 valueCC8 = lbl_80560CC8;
@@ -5603,22 +5597,22 @@ void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
     u32 sum;
     u8* src;
 
-    *(u16*)&st->obj[0].x = valueCC8;
-    *(u16*)&st->obj[0].y = valueCD0;
-    st->obj[0].size = *(u16*)(p + 0x804);
-    st->obj[0].traceId = 0;
-    *(u16*)&st->obj[1].x = valueCCA;
-    *(u16*)&st->obj[1].y = valueCD2;
-    st->obj[1].size = *(u16*)(p + 0x804);
-    st->obj[1].traceId = 1;
-    *(u16*)&st->obj[2].x = valueCCC;
-    *(u16*)&st->obj[2].y = valueCD4;
-    st->obj[2].size = *(u16*)(p + 0x804);
-    st->obj[2].traceId = 2;
-    *(u16*)&st->obj[3].x = valueCCE;
-    *(u16*)&st->obj[3].y = valueCD6;
-    st->obj[3].size = *(u16*)(p + 0x804);
-    st->obj[3].traceId = 3;
+    *(u16*)&status->obj[0].x = valueCC8;
+    *(u16*)&status->obj[0].y = valueCD0;
+    status->obj[0].size = *(u16*)(p + 0x804);
+    status->obj[0].traceId = 0;
+    *(u16*)&status->obj[1].x = valueCCA;
+    *(u16*)&status->obj[1].y = valueCD2;
+    status->obj[1].size = *(u16*)(p + 0x804);
+    status->obj[1].traceId = 1;
+    *(u16*)&status->obj[2].x = valueCCC;
+    *(u16*)&status->obj[2].y = valueCD4;
+    status->obj[2].size = *(u16*)(p + 0x804);
+    status->obj[2].traceId = 2;
+    *(u16*)&status->obj[3].x = valueCCE;
+    *(u16*)&status->obj[3].y = valueCD6;
+    status->obj[3].size = *(u16*)(p + 0x804);
+    status->obj[3].traceId = 3;
     *(s16*)(p + 0x7b4) = 0x212;
     *(s16*)(p + 0x7b6) = 0x212;
     *(s16*)(p + 0x7b8) = 0x212;
@@ -5637,23 +5631,23 @@ void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
                 }
                 if ((u8)(sum + 0x55) == config[offset + 10]) {
                     DBPrintf_80068D68(messages + 0x98);
-                    src = d + offset;
-                    st->obj[0].x = (s16)src[0] | ((src[2] & 48) << 4);
-                    st->obj[0].y = 0x2FF - (s16)((s16)src[1] | ((src[2] & 192) << 2));
-                    st->obj[0].size = *(u16*)(p + 0x804);
-                    st->obj[0].traceId = 0;
-                    st->obj[1].x = (s16)src[3] | ((src[2] & 3) << 8);
-                    st->obj[1].y = 0x2FF - (s16)((s16)src[4] | ((src[2] & 12) << 6));
-                    st->obj[1].size = *(u16*)(p + 0x804);
-                    st->obj[1].traceId = 1;
-                    st->obj[2].x = (s16)src[5] | ((src[7] & 48) << 4);
-                    st->obj[2].y = 0x2FF - (s16)((s16)src[6] | ((src[7] & 192) << 2));
-                    st->obj[2].size = *(u16*)(p + 0x804);
-                    st->obj[2].traceId = 2;
-                    st->obj[3].x = (s16)src[8] | ((src[7] & 12) << 8);
-                    st->obj[3].y = 0x2FF - (s16)((s16)src[9] | ((src[7] & 12) << 6));
-                    st->obj[3].size = *(u16*)(p + 0x804);
-                    st->obj[3].traceId = 3;
+                    src = data + offset;
+                    status->obj[0].x = (s16)src[0] | ((src[2] & 48) << 4);
+                    status->obj[0].y = 0x2FF - (s16)((s16)src[1] | ((src[2] & 192) << 2));
+                    status->obj[0].size = *(u16*)(p + 0x804);
+                    status->obj[0].traceId = 0;
+                    status->obj[1].x = (s16)src[3] | ((src[2] & 3) << 8);
+                    status->obj[1].y = 0x2FF - (s16)((s16)src[4] | ((src[2] & 12) << 6));
+                    status->obj[1].size = *(u16*)(p + 0x804);
+                    status->obj[1].traceId = 1;
+                    status->obj[2].x = (s16)src[5] | ((src[7] & 48) << 4);
+                    status->obj[2].y = 0x2FF - (s16)((s16)src[6] | ((src[7] & 192) << 2));
+                    status->obj[2].size = *(u16*)(p + 0x804);
+                    status->obj[2].traceId = 2;
+                    status->obj[3].x = (s16)src[8] | ((src[7] & 12) << 8);
+                    status->obj[3].y = 0x2FF - (s16)((s16)src[9] | ((src[7] & 12) << 6));
+                    status->obj[3].size = *(u16*)(p + 0x804);
+                    status->obj[3].traceId = 3;
                     break;
                 }
                 DBPrintf_80068D68(messages + 0xB0);
