@@ -102,6 +102,7 @@ class ResourceAccessor;
 class Layout {
 public:
     s32 Build(const void *, ResourceAccessor *);
+    void *CreateAnimTransform(const void *, ResourceAccessor *);
 };
 }}
 extern "C" const f32 lbl_80560EA8;
@@ -405,8 +406,8 @@ extern "C" void Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc(void* self, const 
     u8* p = (u8*)self;
     if (count > p[0])
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F5A8, 0xA1, lbl_8031F5E8);
-    if (p[1] < count)
-        p[1] = count;
+    u8 top = p[1];
+    p[1] = (top < count) ? count : top;
     s32 offset = 0;
     s32 n = count;
     if (n > 0) {
@@ -2422,16 +2423,16 @@ extern "C" void fn_800D9844(void* arg0, u32 arg1, s32 arg2) {
     if (arg1 != 0) {
         if (*(void**)(p + 0x58) == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x3B0, msg + 0x360);
-        u32 fmt = *(u32*)(p + 0x4C);
-        u32 pitch = (((fmt >> 18) & 3) + ((fmt >> 24) & 0xF)) * 0x14;
-        u32 x = ((fmt >> 5) & 4) + ((fmt >> 12) & 4);
-        u32 y = pitch + ((fmt >> 6) & 4);
-        u32 z = ((fmt >> 23) & 0x1E0) + ((fmt >> 18) & 0x3C);
-        u32 w = ((fmt >> 4) & 4) + x;
-        u32 v = z + y;
-        u32 u = ((fmt >> 3) & 4) + w;
-        u32 t = ((fmt >> 13) & 0x1C) + u;
-        TevStageDefault *stage = (TevStageDefault *)(*(u8**)(p + 0x58) + v + t);
+        register u32 fmt = *(u32*)(p + 0x4C);
+        register u32 pitch = (((fmt >> 18) & 3) + ((fmt >> 24) & 0xF)) * 0x14;
+        register u32 x = ((fmt >> 5) & 4) + ((fmt >> 12) & 4);
+        register u32 y = pitch + ((fmt >> 6) & 4);
+        register u32 w = ((fmt >> 4) & 4) + x;
+        register u32 z = ((fmt >> 23) & 0x1E0) + ((fmt >> 18) & 0x3C);
+        register u32 v = z + y;
+        register u32 u = ((fmt >> 3) & 4) + w;
+        register u32 t = ((fmt >> 13) & 0x1C) + u;
+        register TevStageDefault *stage = (TevStageDefault *)(*(u8**)(p + 0x58) + v + t);
         u32 count = (*(u32*)(p + 0x50) >> 9) & 0x1F;
         if (count < arg1) {
             TevStageDefault def;
@@ -2448,7 +2449,7 @@ extern "C" void fn_800D9844(void* arg0, u32 arg1, s32 arg2) {
 
 extern "C" void fn_800D9ACC(void* arg0, u32 arg1) {
     u8* p = (u8*)arg0;
-    const char *msg = lbl_8031F990;
+    register const char *msg = lbl_8031F990;
     if (arg1 > ((*(u32*)(p + 0x4C) >> 15) & 7))
         Panic__Q26nw4hbm2dbFPCciPCce(msg + 0, 0x3BE, msg + 0x3F8);
     if (arg1 != 0) {
