@@ -2777,7 +2777,6 @@ void fn_8006B330(void) {
 
 extern u8 BTA_DmAddDevice(u8 *, u8 *, u32, u8);
 extern void BTA_HhAddDev(const u8 *, u16, u8, u8, const void *);
-struct Fn8006B488Scratch { f64 argData; u16 len; u16 pad2; u32 ptr; };
 void fn_8006B488(void) {
     u8 *base = lbl_803130C8;
     u8 *control = lbl_80392960;
@@ -2785,9 +2784,9 @@ void fn_8006B488(void) {
     u8 status;
     BOOL interrupt;
     u8 state;
+    volatile f64 argData;
     volatile u16 sp10;
     volatile u32 sp14;
-    f64 argData;
     status = BTA_DmAddDevice(info + 0x40, info + 0x46, 0, 0);
     DBPrintf_8006CFA8((const char *)(base + 0x5D8), status);
     if (memcmp(info, base + 0x1A0, 0x10) == 0) {
@@ -2795,7 +2794,7 @@ void fn_8006B488(void) {
         sp14 = (u32)base;
         DBPrintf_8006CFA8((const char *)(base + 0x5F0));
         argData = *(f64 *)&sp10;
-        BTA_HhAddDev(info + 0x40, *(u16 *)(info + 0x5E), info[0x57], info[0x58], &argData);
+        BTA_HhAddDev(info + 0x40, *(u16 *)(info + 0x5E), info[0x57], info[0x58], (f64 *)&argData);
     }
     interrupt = OSDisableInterrupts();
     state = info[0x5B];
