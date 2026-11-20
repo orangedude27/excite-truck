@@ -72,6 +72,7 @@ void fn_801DF6FC(void) {
     int i, j, n;
     char *p, *q;
     float f, keep;
+    register int zero = 0;
     char *base = lbl_803395D8;
     obj = fn_801284F8(0x1B4, base);
     if (obj) {
@@ -88,9 +89,9 @@ void fn_801DF6FC(void) {
         for (i = 0; i < 3; i++) {
             ((int *)((char *)obj + 0xFC))[i] = fn_80207848(base + 0x60, 1);
         }
-        *(int *)((char *)obj + 0x108) = 0;
+        *(int *)((char *)obj + 0x108) = zero;
         *(int *)((char *)obj + 0x10C) = fn_80207848(base + 0x70, 1);
-        *(int *)((char *)obj + 0x1B0) = 0;
+        *(int *)((char *)obj + 0x1B0) = zero;
         iter = fn_80131808(base + 0x80);
         if (iter) {
             list = ((void *(*)(void *, void *))(*(void ***)iter)[2])(iter, base + 0x8C);
@@ -109,7 +110,7 @@ void fn_801DF6FC(void) {
                         *q++ = *p++;
                         if (q[-1] == 0) break;
                         if (--i <= 0) {
-                            q[-1] = 0;
+                            q[-1] = zero;
                             break;
                         }
                     }
@@ -120,29 +121,155 @@ void fn_801DF6FC(void) {
         }
     }
 }
-#pragma use_lmw_stmw on
+#pragma push
+#pragma processor 750
+__declspec(section ".sdata") extern char lbl_8055AE58[];
 int fn_801DF93C(int arg0) {
-    extern char lbl_8055AE58[];
-    extern int fn_8014AEC8(void);
-    extern int fn_80141F7C(void);
-    extern int fn_801E85A4(void);
+    extern float lbl_8055AE40, lbl_80562C20, lbl_80562C24, lbl_80562C28, lbl_80562C2C, lbl_80562C30, lbl_80562C34, lbl_80562C38;
+    extern float fn_8014AEC8(void *);
+    extern int fn_80141F7C(float);
+    extern void *fn_801E85A4(void);
     extern void fn_8014C72C(void *, void *);
-    void *mgr = lbl_8055EA04;
-    int subject;
-    (void)arg0;
-    subject = fn_801E866C(0);
-    fn_801DFF08();
-    fn_8014AEC8();
-    if (fn_80141F7C() != 0) {
+    extern float fn_8014C8F8(float, float, float);
+    extern float fn_80176A2C(void);
+    extern float fn_801E7E18(void);
+    extern float fn_801429D0(float, float);
+    extern int fn_80144C68(unsigned int, unsigned int, unsigned int, unsigned int);
+    extern void fn_80147C50(int, int, float);
+    extern void fn_801DFEB8(void *, void *, int, int);
+    extern void fn_801DFE50(void *, int, int);
+    extern void fn_801DFE44(int, int);
+    extern int fn_801DFF08(int);
+    extern float fn_8014C8B4(float, float, float, float, float);
+    extern void fn_8014C978(void *, void *);
+    extern void fn_8014C7B4(void *, void *);
+    extern float fn_80144BD8(float);
+    extern float fn_801DFE94();
+    extern long long fn_8014C770(const float *, const float *, float);
+    extern void fn_8014C75C(float *, const float *);
+    extern void fn_801479A8(void *, void *, void *, float, ...);
+    extern void *fn_80131234(void *);
+    extern void *__AXFXGetLfoSinTable_801769CC(void);
+
+    struct DrawMat {
+        char pad0[0x10];
+        float w;
+        char pad1[0xc];
+        float h;
+        char pad2[4];
+    } m;
+    struct Pt { float x, y; } pt;
+    long long pair;
+    char m2[0x28];
+    register void *mgr;
+    register int subject;
+    register char *base;
+    register char *entry;
+    float f31, f27, f30, opacity, now;
+    int c1, c2, c3;
+    void *obj1, *obj2, *obj3, *obj4, *obj5, *obj6;
+    float w, rem, ratio, r1, r2, ease, v, t, interp;
+
+    mgr = lbl_8055EA04;
+    base = lbl_803395D8;
+    subject = fn_801E866C(arg0);
+    if (fn_80141F7C(fn_8014AEC8((void *)fn_801DFF08(subject))) != 0)
         return 0;
-    }
-    if (fn_801E85A4() > 1) {
+    if ((int)fn_801E85A4() > 1) {
         fn_8014C72C(*(void **)((char *)mgr + 0xE4), lbl_8055AE58);
         return 1;
     }
+    entry = (char *)mgr + subject * 0x1C;
+    {
+        void *u = *(void **)((char *)mgr + 0xE4);
+        ((void (*)(void *))((*(void ***)u)[7]))(u);
+    }
+    opacity = fn_8014C8F8(*(float *)(entry + 4), lbl_80562C1C, lbl_80562C20);
+    f27 = lbl_8055AE40 / fn_80176A2C();
+    f30 = f27 / lbl_80562C24;
+    now = fn_801E7E18();
+    f31 = fn_801429D0(lbl_80562C1C, f27 - (now - *(float *)(entry + 8)));
+    if (f31 > f27 - f30 || *(unsigned char *)(entry + 0xC) == 0) {
+        c1 = fn_80144C68(0xFF, 0x1E, 0x64, 0xF0);
+        c2 = fn_80144C68(0xFF, 0xF0, 0x32, 0);
+        fn_80147C50(c1, c2, opacity);
+        fn_801DFEB8(*(void **)((char *)mgr + 0xE4), base + 0xAC, -1, *(int *)((char *)mgr + 0xF0));
+        fn_801DFEB8(*(void **)((char *)mgr + 0xE4), base + 0xB8, -1, *(int *)((char *)mgr + 0xF0));
+        {
+            void *u = *(void **)((char *)mgr + 0xE4);
+            obj1 = ((void *(*)(void *, void *))((*(void ***)u)[4]))(u, base + 0xC4);
+        }
+        {
+            void *u = *(void **)((char *)mgr + 0xE4);
+            obj2 = ((void *(*)(void *, void *))((*(void ***)u)[4]))(u, base + 0xD4);
+        }
+        if (obj1 != 0 && obj2 != 0) {
+            w = *(float *)((char *)obj1 + 0x10);
+            ratio = w / (w + *(float *)((char *)obj2 + 0x10));
+            r1 = fn_8014C8B4(lbl_80562C1C, ratio, lbl_80562C1C, lbl_80562C20, opacity);
+            r2 = fn_8014C8B4(ratio, lbl_80562C20, lbl_80562C1C, lbl_80562C20, opacity);
+            fn_8014C978(&m, obj1);
+            m.w *= r1;
+            m.h *= r1;
+            ((void (*)(void *, int, int, float))fn_801476D8)(&m, -1, *(int *)((char *)mgr + 0xF0), m.w);
+            fn_8014C7B4(&m, obj2);
+            m.w *= r2;
+            m.h *= r2;
+            ((void (*)(void *, int, int, float))fn_801476D8)(&m, -1, *(int *)((char *)mgr + 0xF0), m.w);
+        }
+        fn_80144C68((unsigned char)(int)(lbl_80562C28 * opacity), 0xFF, 0xFF, 0xFF);
+        if (*(unsigned char *)(entry + 0xC) == 0)
+            fn_8014C72C(*(void **)((char *)mgr + 0xE4), base + 0xE4);
+        if (fn_80141F7C(f31) != 0) {
+            rem = ((float (*)(float, float))fn_801DFE94)(lbl_80562C2C * fn_801E7E18() * fn_80176A2C(), lbl_80562C20);
+            if (rem < lbl_80562C30)
+                v = fn_8014C8B4(lbl_80562C1C, lbl_80562C30, lbl_80562C1C, lbl_80562C20, rem);
+            else
+                v = fn_8014C8B4(lbl_80562C30, lbl_80562C20, lbl_80562C20, lbl_80562C1C, rem);
+            c3 = fn_80144C68((unsigned char)(int)(lbl_80562C28 * v), 0xFF, 0xFF, 0xFF);
+            fn_801DFEB8(*(void **)((char *)mgr + 0xE4), base + 0xF0, c3, *(int *)((char *)mgr + 0xEC));
+            fn_801DFEB8(*(void **)((char *)mgr + 0xE4), base + 0xFC, c3, *(int *)((char *)mgr + 0xEC));
+            if (rem > lbl_80562C34 && rem < lbl_80562C38)
+                fn_801DFE50(*(void **)((char *)mgr + 0xE4), (int)(base + 0x10C), *(int *)((char *)mgr + 0xEC));
+            else
+                fn_801DFE50(*(void **)((char *)mgr + 0xE4), (int)(base + 0x118), *(int *)((char *)mgr + 0xEC));
+            ease = fn_80144BD8(v);
+            {
+                void *u = *(void **)((char *)mgr + 0xE4);
+                obj3 = ((void *(*)(void *, void *))((*(void ***)u)[4]))(u, base + 0x124);
+            }
+            {
+                void *u = *(void **)((char *)mgr + 0xE4);
+                obj4 = ((void *(*)(void *, void *))((*(void ***)u)[4]))(u, base + 0x130);
+            }
+            if (obj3 != 0 && obj4 != 0) {
+                fn_8014C978(m2, obj3);
+                pair = fn_8014C770((const float *)((char *)obj3 + 4), (const float *)((char *)obj4 + 4), ease);
+                fn_8014C75C(&pt.x, (const float *)&pair);
+                fn_801DFE44((int)m2, *(int *)((char *)mgr + 0xEC));
+            }
+            fn_8014C72C(*(void **)((char *)mgr + 0xE4), base + 0x13C);
+        }
+    }
+    if (fn_80141F7C(f31) == 0 && *(unsigned char *)(entry + 0xC) != 0) {
+        t = lbl_8055AE40 / fn_80176A2C();
+        interp = fn_8014C8B4(t - f30, t - t * lbl_80562C30, lbl_80562C1C, lbl_80562C20, f31);
+        ease = fn_80144BD8(interp);
+        {
+            void *u = *(void **)((char *)mgr + 0xE4);
+            obj5 = ((void *(*)(void *, void *))((*(void ***)u)[3]))(u, base + 0xE4);
+        }
+        {
+            void *u = *(void **)((char *)mgr + 0xE4);
+            obj6 = ((void *(*)(void *, void *))((*(void ***)u)[3]))(u, base + 0x148);
+        }
+        if (obj5 != 0 && obj6 != 0)
+            fn_801479A8(obj5, obj6, fn_80131234(base + 0x154), ease);
+    }
+    __AXFXGetLfoSinTable_801769CC();
     return 1;
 }
-
+#pragma pop
 void fn_801476D8(int, int);
 void fn_801DFE44(int object, int value) { ((void (*)(int, int, int))fn_801476D8)(object, -1, value); }
 
