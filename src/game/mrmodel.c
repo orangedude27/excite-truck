@@ -637,37 +637,46 @@ extern char jumptable_8034B1B8[];
 extern void fn_802C6068(void *);
 extern void fn_802C6074(s32 *);
 void fn_802C5F48(void) {
-    char *base = (char *)lbl_804C1338;
-    char *jumpTable = jumptable_8034B1B8;
-    char *entry;
-    void *memory;
+    struct SubList {
+        int count;
+        int capacity;
+        void *buf;
+    };
+    register struct SubList *e64;
+    register struct SubList *e70;
+    register struct SubList *e58;
+    register struct SubList *e7c;
+    register char *base = (char *)lbl_804C1338;
+    register char *jumpTable = jumptable_8034B1B8;
     int zero = 0;
+    void *memory;
 
-    entry = base + 0x64;
-    *(int *)(entry + 4) = 0x280;
+    e64 = (struct SubList *)(base + 0x64);
+    e70 = (struct SubList *)(base + 0x70);
+    e58 = (struct SubList *)(base + 0x58);
+    e7c = (struct SubList *)(base + 0x7C);
+
+    e64->capacity = 0x280;
     memory = fn_8012850C(0x2810, jumpTable + 0x44);
-    *(void **)(entry + 8) = fn_8002F37C(memory, (void (*)(void *))fn_802C6074, 0, 0x10, 0x280);
-    *(int *)(entry + 0) = zero;
+    e64->buf = fn_8002F37C(memory, (void (*)(void *))fn_802C6074, 0, 0x10, 0x280);
+    e64->count = zero;
 
-    entry = base;
-    *(int *)(entry + 4) = 0x800;
-    *(void **)(entry + 8) = fn_8012850C(0xA000, jumpTable + 0x58);
+    *(int *)(base + 4) = 0x800;
+    *(int *)base = zero;
+    *(void **)(base + 8) = fn_8012850C(0xA000, jumpTable + 0x58);
 
-    entry = base + 0x70;
-    *(int *)(entry + 4) = 0x400;
+    e70->capacity = 0x400;
     memory = fn_8012850C(0x4010, jumpTable + 0x70);
-    *(void **)(entry + 8) = fn_8002F37C(memory, (void (*)(void *))fn_802C6068, 0, 0x10, 0x400);
-    *(int *)(entry + 0) = zero;
+    e70->buf = fn_8002F37C(memory, (void (*)(void *))fn_802C6068, 0, 0x10, 0x400);
+    e70->count = zero;
 
-    entry = base + 0x58;
-    *(int *)(entry + 4) = 0x400;
-    *(void **)(entry + 8) = fn_8012850C(0x1000, jumpTable + 0x80);
-    *(int *)(entry + 0) = zero;
+    e58->capacity = 0x400;
+    e58->buf = fn_8012850C(0x1000, jumpTable + 0x80);
+    e58->count = zero;
 
-    entry = base + 0x7C;
-    *(int *)(entry + 4) = 0x80;
-    *(void **)(entry + 8) = fn_8012850C(0x1600, jumpTable + 0x90);
-    *(int *)(entry + 0) = zero;
+    e7c->capacity = 0x80;
+    e7c->buf = fn_8012850C(0x1600, jumpTable + 0x90);
+    e7c->count = zero;
     *(int *)(base + 0x88) = -1;
     lbl_8055D00C = 1;
 }
@@ -795,11 +804,19 @@ static inline void mr_swap4(unsigned char *q) {
     unsigned char t = (p)[o]; (p)[o] = (p)[(o)+3]; (p)[(o)+3] = t; \
     t = (p)[(o)+1]; (p)[(o)+1] = (p)[(o)+2]; (p)[(o)+2] = t; \
 } while (0)
+extern char lbl_8034B2BC[];
+extern void fn_802C6AB4(s32 *, s32);
+extern void fn_802C6ACC(s32 *, s32);
+extern void fn_802C6AE4(s32 *, s32);
+extern void fn_802C6B14(s32 *, s32);
+extern void fn_802C6B2C(s32 *, s32);
+#pragma opt_lifetimes off
 void fn_802C61BC(void *arg0, int arg1) {
     unsigned char *p = (unsigned char *)arg0;
     unsigned char *base;
     unsigned char t0, t2, t3, t5, t6, t8, t9, t10, t14, t15, t16, t17, t18, t19, t20, t21, t22, t23, t24, t25, t26, t27, t28;
-    int i, j;
+    unsigned char s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21;
+    int i, j, k, tag, ctr;
     int sp10, sp8, spC;
     (void)arg1;
     if (*(unsigned int *)p >= 0x3E80) return;
@@ -824,22 +841,109 @@ void fn_802C61BC(void *arg0, int arg1) {
     p[8] = p[0xB]; p[0xB] = t24; p[9] = p[0xA]; p[0xA] = t17;
     p[0xC] = p[0xF]; p[0xF] = t23; p[0xE] = t16;
     p[0x1B] = t22; p[0x19] = t3; p[0x1A] = t15;
-    SW4(p, 0x1C); SW4(p, 0x20); SW4(p, 0x24); SW4(p, 0x28);
-    SW4(p, 0x2C); SW4(p, 0x30); SW4(p, 0x34); SW4(p, 0x38);
-    SW4(p, 0x3C); SW4(p, 0x40); SW4(p, 0x44);
-    ((void (*)(void *))fn_802C6A84)(p + 4);
+    s1 = p[0x1C]; p[0x1C] = p[0x1F]; p[0x1F] = s1;
+    s2 = p[0x1D]; p[0x1D] = p[0x1E]; p[0x1E] = s2;
+    s3 = p[0x20]; p[0x20] = p[0x23]; p[0x23] = s3;
+    s4 = p[0x21]; p[0x21] = p[0x22]; p[0x22] = s4;
+    s5 = p[0x24]; p[0x24] = p[0x27]; p[0x27] = s5;
+    s6 = p[0x25]; p[0x25] = p[0x26]; p[0x26] = s6;
+    s7 = p[0x28]; p[0x28] = p[0x2B]; p[0x2B] = s7;
+    s8 = p[0x29]; p[0x29] = p[0x2A]; p[0x2A] = s8;
+    s9 = p[0x2C]; p[0x2C] = p[0x2F]; p[0x2F] = s9;
+    s10 = p[0x2D]; p[0x2D] = p[0x2E]; p[0x2E] = s10;
+    s11 = p[0x30]; p[0x30] = p[0x33]; p[0x33] = s11;
+    s12 = p[0x31]; p[0x31] = p[0x32]; p[0x32] = s12;
+    s13 = p[0x34]; p[0x34] = p[0x37]; p[0x37] = s13;
+    s14 = p[0x35]; p[0x35] = p[0x36]; p[0x36] = s14;
+    s15 = p[0x38]; p[0x38] = p[0x3B]; p[0x3B] = s15;
+    s16 = p[0x39]; p[0x39] = p[0x3A]; p[0x3A] = s16;
+    s17 = p[0x3C]; p[0x3C] = p[0x3F]; p[0x3F] = s17;
+    s18 = p[0x3D]; p[0x3D] = p[0x3E]; p[0x3E] = s18;
+    s19 = p[0x40]; p[0x40] = p[0x43]; p[0x43] = s19;
+    s20 = p[0x41]; p[0x41] = p[0x42]; p[0x42] = s20;
+    s21 = p[0x44]; p[0x44] = p[0x47]; p[0x47] = s21;
+    p[0x45] = p[0x46];
+    fn_802C6A84((s32 *)(p + 4), (s32)arg0);
     base = *(unsigned char **)(p + 4);
     for (i = 0; i < *(int *)p; i++) {
         unsigned char *e = base + i * 0x10;
-        for (j = 0; j < 0x10; j += 4) {
-            SW4(e, j);
-        }
+        SW4(e, 0); SW4(e, 4); SW4(e, 8); SW4(e, 0xC);
         fn_802C6A9C((s32 *)(e + 0xC), (s32)arg0);
-        fn_802D6B80((unsigned char *)*(void **)(e + 0xC), (s32)arg0, arg1);
+        fn_802D6B80(*(unsigned char **)(e + 0xC), (s32)arg0, arg1);
         fn_802C6AFC((s32 *)(e + 8), (s32)arg0);
     }
+    fn_802C6AB4((s32 *)(p + 0x14), (s32)arg0);
+    for (j = 0; j < *(int *)(p + 0x10); j++) {
+        unsigned char *r = (unsigned char *)(*(u32 *)(p + 0x14) + j * 4);
+        unsigned char *q;
+        SW4(r, 0);
+        fn_802C6ACC((s32 *)r, (s32)arg0);
+        q = *(unsigned char **)r;
+        SW4(q, 0); SW4(q, 4);
+        switch (*(s32 *)q) {
+        case 0x4D524A54: {
+            unsigned char *s;
+            SW4(q, 8);
+            s = q + 0x2C;
+            for (k = 0; k < *(int *)(q + 8); k++) {
+                ctr = 2;
+                do {
+                    SW4(s, 0); SW4(s, 4); SW4(s, 8);
+                    SW4(s, 0xC); SW4(s, 0x10); SW4(s, 0x14);
+                    s += 0x18;
+                } while (--ctr != 0);
+                s += 0x50;
+            }
+            break;
+        }
+        case 0x4D52424E: {
+            unsigned char *s;
+            SW4(q, 8);
+            s = q + 0x10;
+            for (k = 0; k < *(int *)(q + 8); k++) {
+                ctr = 2;
+                do {
+                    SW4(s, 0); SW4(s, 4); SW4(s, 8);
+                    SW4(s, 0xC); SW4(s, 0x10); SW4(s, 0x14);
+                    s += 0x18;
+                } while (--ctr != 0);
+                SW4(s, 0x18); SW4(s, 0x1C); SW4(s, 0x20); SW4(s, 0x24);
+                s += 0x38;
+            }
+            break;
+        }
+        case 0x5350484C: {
+            unsigned char *s = q + 8;
+            for (k = 0; k < *(int *)p; k++) {
+                SW4(s, 0); SW4(s, 4); SW4(s, 8); SW4(s, 0xC);
+                s += 0x10;
+            }
+            break;
+        }
+        default:
+            fn_802E317C(lbl_8034B2BC, (s32)arg0, arg1);
+            break;
+        }
+    }
+    fn_802C6AE4((s32 *)(p + 0xC), (s32)arg0);
+    for (j = 0; j < *(int *)(p + 8); j++) {
+        unsigned char *r = (unsigned char *)(*(u32 *)(p + 0xC) + j * 4);
+        unsigned char *q;
+        SW4(r, 0);
+        fn_802C6AFC((s32 *)r, (s32)arg0);
+        q = *(unsigned char **)r;
+        SW4(q, 0); SW4(q, 4);
+        fn_802C6B14((s32 *)(q + 4), (s32)arg0);
+        for (k = 0; k < *(int *)q; k++) {
+            unsigned char *r2 = (unsigned char *)(*(u32 *)(q + 4) + k * 4);
+            unsigned char *q2;
+            SW4(r2, 0);
+            fn_802C6B2C((s32 *)r2, (s32)arg0);
+            q2 = *(unsigned char **)r2;
+            SW4(q2, 0);
+        }
+    }
 }
-
 void fn_802C6A84(s32 *value, s32 delta) {
     /* Add delta to *value, leaving a zero (null) sentinel unchanged. */
     s32 cur = *value;
@@ -1550,10 +1654,10 @@ void fn_802C7888(void *src, s32 count)
     dest[13] = b;
     b = source[15];
     dest[14] = a;
-    word = (*(source + 0x10)) & 0xFFu;
+    *(u32 *)&word = *(volatile u32 *)(source + 0x10);
     dest[15] = b;
     b = source[0x14];
-    *((volatile u32 *) (dest + 0x10)) = word;
+    *((volatile u32 *) (dest + 0x10)) = *(u32 *)&word;
     a = source[0x15];
     dest[0x14] = b;
     b = source[0x16];
