@@ -918,7 +918,6 @@ static void calcFbbs(u32 bufAddr, u16 panPosX, u16 panPosY, u8 wordPerLine, VIXF
    writes the four base addresses into the shadow registers 14-21. */
 void fn_80059AD8(SomeVIStruct* HorVer, u32* tfbb, u32* bfbb, u32* rtfbb, u32* rbfbb) {
     u32 shifted;
-    u16 *reg;
 
     calcFbbs(HorVer->bufAddr, HorVer->PanPosX, HorVer->AdjustedPanPosY, HorVer->wordPerLine, HorVer->FBMode, HorVer->AdjustedDispPosY, tfbb, bfbb);
     if (HorVer->threeD) {
@@ -937,24 +936,22 @@ void fn_80059AD8(SomeVIStruct* HorVer, u32* tfbb, u32* bfbb, u32* rtfbb, u32* rb
         *rbfbb >>= 5;
     }
 
-    reg = shdwRegs;
-
-    reg[15] = (u16)*tfbb;
+    regs[15] = (u16)*tfbb & 0xFFFF;
     MARK_CHANGED(15);
-    reg[14] = (shifted << 12) | ((*tfbb >> 16) | (HorVer->xof << 8));
+    regs[14] = (shifted << 12) | ((*tfbb >> 16) | (HorVer->xof << 8));
     MARK_CHANGED(14);
-    reg[19] = (u16)*bfbb;
+    regs[19] = (u16)*bfbb & 0xFFFF;
     MARK_CHANGED(19);
-    reg[18] = *bfbb >> 16;
+    regs[18] = (*bfbb >> 16);
     MARK_CHANGED(18);
     if (HorVer->threeD) {
-        reg[17] = (u16)*rtfbb;
+        regs[17] = (u16)*rtfbb & 0xFFFF;
         MARK_CHANGED(17);
-        reg[16] = *rtfbb >> 16;
+        regs[16] = *rtfbb >> 16;
         MARK_CHANGED(16);
-        reg[21] = (u16)*rbfbb;
+        regs[21] = (u16)*rbfbb & 0xFFFF;
         MARK_CHANGED(21);
-        reg[20] = *rbfbb >> 16;
+        regs[20] = *rbfbb >> 16;
         MARK_CHANGED(20);
     }
 }
@@ -1220,9 +1217,15 @@ void VIConfigure(const GXRenderModeObj *rm)
     HorVer.PanPosX = 0;
     HorVer.PanPosY = 0;
     dispSizeY = HorVer.PanSizeY;
-    if (HorVer.nonInter == 2 || HorVer.nonInter == 3) {
-    } else if (HorVer.FBMode == VI_XFBMODE_SF) {
-        dispSizeY = (u16)(HorVer.PanSizeY * 2);
+    switch (HorVer.nonInter) {
+    case 2:
+    case 3:
+        break;
+    default:
+        if (HorVer.FBMode == VI_XFBMODE_SF) {
+            dispSizeY = (u16)(HorVer.PanSizeY * 2);
+        }
+        break;
     }
     HorVer.DispSizeY = dispSizeY;
     HorVer.threeD = (HorVer.nonInter == 3);
@@ -1302,9 +1305,11 @@ void VIFlush(void)
     BOOL interrupts;
     s32 regIndex;
     u64 mask;
+    u32 tmp;
 
     interrupts = OSDisableInterrupts();
-    lbl_8055DB70 |= lbl_8055DB60;
+    tmp = lbl_8055DB60 | lbl_8055DB70;
+    lbl_8055DB70 = tmp;
     lbl_8055DB60 = 0;
     shdwChanged |= changed;
     while (changed != 0) {
