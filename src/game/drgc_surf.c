@@ -404,7 +404,6 @@ void fn_802D479C(void *arg0) {
     u8 *vertex;
 
     if (base != 0) {
-        f32 factor = lbl_80564FF0;
         f32 *table = lbl_804CA308;
         out = base;
         vertex = src;
@@ -412,12 +411,12 @@ void fn_802D479C(void *arg0) {
             f32 a[3], b[3];
             f32 t0 = table[vertex[0x18]];
             f32 t1 = table[vertex[0x19]];
-            a[1] = factor * (f32)*(s16 *)(vertex + 0xE);
-            a[2] = factor * (f32)*(s16 *)(vertex + 0x10);
-            a[0] = factor * (f32)*(s16 *)(vertex + 0xC);
-            b[0] = factor * (f32)*(s16 *)(vertex + 0x12);
-            b[1] = factor * (f32)*(s16 *)(vertex + 0x14);
-            b[2] = factor * (f32)*(s16 *)(vertex + 0x16);
+            a[1] = 0.0039215686f * (f32)*(s16 *)(vertex + 0xE);
+            a[2] = 0.0039215686f * (f32)*(s16 *)(vertex + 0x10);
+            a[0] = 0.0039215686f * (f32)*(s16 *)(vertex + 0xC);
+            b[0] = 0.0039215686f * (f32)*(s16 *)(vertex + 0x12);
+            b[1] = 0.0039215686f * (f32)*(s16 *)(vertex + 0x14);
+            b[2] = 0.0039215686f * (f32)*(s16 *)(vertex + 0x16);
             out[0] = *(f32 *)(src + 0) + a[0] * t0;
             out[1] = *(f32 *)(src + 4) + a[1] * t0;
             out[2] = *(f32 *)(src + 8) + a[2] * t0;
@@ -578,32 +577,22 @@ void fn_802D4ECC(void *arg0) {
         f32 factor = lbl_80564FF0;
         register f32 *out = base;
         for (i = 0; i < count; i++) {
+            f32 wa = (f32)src[0xE], wb = (f32)src[0xF];
             f32 *first = (f32 *)((u8 *)lbl_804DB068 + src[0xC] * 12);
-            f32 weightA = factor * (f32)src[0xE];
+            f32 weightA = factor * wa;
             f32 y = *(f32 *)(src + 4) + first[1] * weightA;
-            f32 *second;
-            f32 weightB;
-            f32 x;
-            f32 z;
-            f32 y2;
-            f32 resultY;
-            f32 halfA;
-            f32 halfB;
-            u8 tableA;
-            u8 tableB;
-
-            second = (f32 *)((u8 *)lbl_804DB068 + src[0xD] * 12);
-            weightB = factor * (f32)src[0xF];
-            x = *(f32 *)(src + 0) + first[0] * weightA;
-            z = *(f32 *)(src + 8) + first[2] * weightA;
-            y2 = y + second[1] * weightB;
-            spc = y2;
-            halfA = (f32)*(s16 *)(src + 0x10);
-            tableA = src[0x14];
-            halfB = (f32)*(s16 *)(src + 0x12);
-            tableB = src[0x15];
-            resultY = y2 + factor * halfA * lbl_804CA308[tableA]
+            f32 *second = (f32 *)((u8 *)lbl_804DB068 + src[0xD] * 12);
+            f32 weightB = factor * wb;
+            f32 x = *(f32 *)(src + 0) + first[0] * weightA;
+            f32 z = *(f32 *)(src + 8) + first[2] * weightA;
+            f32 y2 = y + second[1] * weightB;
+            f32 halfA = (f32)*(s16 *)(src + 0x10);
+            f32 halfB = (f32)*(s16 *)(src + 0x12);
+            u8 tableA = src[0x14];
+            u8 tableB = src[0x15];
+            f32 resultY = y2 + factor * halfA * lbl_804CA308[tableA]
                           + factor * halfB * lbl_804CA308[tableB];
+            spc = y2;
             sp8 = x;
             sp10 = z;
             out[0] = x + second[0] * weightB;
@@ -841,18 +830,7 @@ extern f32 lbl_804C5690[9];
 #pragma use_lmw_stmw off
 void fn_802D5838(void *arg0)
 {
-  f32 *dst;
-  f32 *src;
-  f32 *norm;
-  s32 count;
-  f32 new_var;
-  f32 *base;
-  s32 i;
-  f32 *m;
-  f32 v[3];
-  f32 *L;
-  f32 thresh;
-  s32 cull;
+  f32 *dst; f32 *src; f32 *norm; s32 count; f32 new_var; f32 *base; s32 i; f32 *m; f32 v[3]; f32 *L; f32 thresh; s32 cull;
   count = *((s32 *) (((u8 *) arg0) + 0x1C));
   src = *((f32 **) (((u8 *) arg0) + 0x20));
   norm = *((f32 **) (((u8 *) arg0) + 0x24));
@@ -864,44 +842,28 @@ void fn_802D5838(void *arg0)
     if (v == m)
     {
       f32 l1 = L[1];
+      f32 a1 = m[1];
       f32 l4 = L[4];
+      f32 a0 = m[0];
       f32 l0 = L[0];
       f32 l3 = L[3];
+      f32 a2 = m[2];
+      f32 l2 = L[2];
+      f32 l5 = L[5];
       f32 l6 = L[6];
       f32 l7 = L[7];
-      f32 p1;
-      f32 p4 = m[1] * l4;
-      f32 p0 = m[0] * l0;
-      f32 p3 = m[0] * l3;
-      f32 p6 = m[0] * l6;
-      f32 p7 = m[1] * l7;
-      f32 o0 = (m[2] * L[2]) + (p0 + (m[1] * l1));
-      f32 o1 = (m[2] * L[5]) + (p3 + p4);
-      f32 o2 = (m[2] * L[8]) + (p6 + p7);
+      f32 l8 = L[8];
+      f32 o0 = (a2 * l2) + ((a0 * l0) + (a1 * l1));
+      f32 o1 = (a2 * l5) + ((a0 * l3) + (a1 * l4));
+      f32 o2 = (a2 * l8) + ((a0 * l6) + (a1 * l7));
       v[0] = o0;
       v[1] = o1;
       v[2] = o2;
     }
     else
     {
-      f32 l0;
-      f32 l1;
-      f32 l2;
-      f32 l3;
-      f32 l4;
-      f32 l5;
-      f32 l6;
-      f32 l7;
-      f32 l8;
-      l1 = L[1];
-      l0 = L[0];
-      l2 = L[2];
-      l4 = L[4];
-      l3 = L[3];
-      l5 = L[5];
-      l7 = L[7];
-      l6 = L[6];
-      l8 = L[8];
+      f32 l0, l1, l2, l3, l4, l5, l6, l7, l8;
+      l1 = L[1]; l0 = L[0]; l2 = L[2]; l4 = L[4]; l3 = L[3]; l5 = L[5]; l7 = L[7]; l6 = L[6]; l8 = L[8];
       v[0] = (m[2] * l2) + ((m[0] * l0) + (m[1] * l1));
       v[1] = (m[2] * l5) + ((m[0] * l3) + (m[1] * l4));
       new_var = m[1];
@@ -918,31 +880,15 @@ void fn_802D5838(void *arg0)
         dst[1] = src[1] + (v[1] * k);
         dst[2] = src[2] + (v[2] * k);
       }
-      else
-      {
-        dst[0] = src[0];
-        dst[1] = src[1];
-        dst[2] = src[2];
-      }
-      norm += 3;
-      src += 3;
-      dst += 3;
+      else { dst[0] = src[0]; dst[1] = src[1]; dst[2] = src[2]; }
+      norm += 3; src += 3; dst += 3;
     }
-
     GXSetArray(9, base, 12);
-    cull = 1;
-    if (lbl_8055FDE4)
-    {
-      cull = 2;
-    }
+    cull = 1; if (lbl_8055FDE4) cull = 2;
     GXSetCullMode(cull);
     GXSetBlendMode(1, 1, 1, 5);
     GXCallDisplayList(*((void **) (((u8 *) arg0) + 0x30)), *((u32 *) (((u8 *) arg0) + 0x2C)));
-    cull = 2;
-    if (lbl_8055FDE4)
-    {
-      cull = 1;
-    }
+    cull = 2; if (lbl_8055FDE4) cull = 1;
     GXSetCullMode(cull);
     GXSetBlendMode(3, 1, 1, 5);
     GXCallDisplayList(*((void **) (((u8 *) arg0) + 0x30)), *((u32 *) (((u8 *) arg0) + 0x2C)));
@@ -989,11 +935,11 @@ void fn_802D5B8C(void *arg0) {
     if (colors != 0 && uvs != 0) {
         f32 *pos = *(f32 **)((char *)arg0 + 0x20);
         u32 *srcColor = *(u32 **)((char *)arg0 + 0x24);
-        f32 *srcUv = *(f32 **)((char *)arg0 + 0x28);
         f32 d0 = lbl_804C56C0[9] - lbl_804C5690[9];
         f32 d1 = lbl_804C56C0[10] - lbl_804C5690[10];
         f32 d2 = lbl_804C56C0[11] - lbl_804C5690[11];
         f32 vec[5];
+        f32 *srcUv = *(f32 **)((char *)arg0 + 0x28);
         f32 offU, offV, scale, one;
         u32 *outC = colors;
         f32 *outUv = uvs;
@@ -1056,7 +1002,8 @@ void fn_802D5DE8(u32 flags) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802D5F88(s32 arg0) {
-    u32 normalized = *(u32 *)((u8 *)arg0 + 0xC) & 0xFFCFFFFF;
+    u32 flags = *(u32 *)((u8 *)arg0 + 0xC);
+    u32 normalized = flags & 0xFFCFFFFF;
     u8 mode = *(u8 *)((u8 *)arg0 + 9);
     if (normalized != lbl_8055FDE8) {
         GXCallDisplayList(*(void **)((u8 *)arg0 + 0x10), (u32)*(u8 *)((u8 *)arg0 + 0xB) << 5);
@@ -1173,7 +1120,7 @@ s32 fn_802D62E4(void *object) {
     return (s32)object;
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802D62FC(void *arg0, s32 *arg1, s32 *arg2) {
     extern s32 lbl_8055FDF0;
     extern s32 lbl_8055FDF4;
@@ -1181,10 +1128,10 @@ void fn_802D62FC(void *arg0, s32 *arg1, s32 *arg2) {
     extern void GXBeginDisplayList(void *, u32);
     extern u32 GXEndDisplayList(void);
     extern void fn_802D5DE8(u32);
-    s32 count = lbl_8055FDF0;
     register CacheEntry *scan = (CacheEntry *)lbl_804CA438;
-    u8 key = *(u8 *)((u8 *)arg0 + 9);
-    u32 id = *(u32 *)((u8 *)arg0 + 0xC);
+    register u8 key = *(u8 *)((u8 *)arg0 + 9);
+    register u32 id = *(u32 *)((u8 *)arg0 + 0xC);
+    s32 count = lbl_8055FDF0;
     s32 i;
     CacheEntry *write;
     s32 size;
@@ -1220,25 +1167,18 @@ void fn_802D63FC(void *arg0, s32 arg1) {
     register u8 *p20;
     s32 sp1C, sp18, sp14, sp10, spC;
     unsigned sp8;
-    u8 temp_r0, temp_r0_2, temp_r0_3, temp_r0_4, temp_r0_5;
-    u8 b2B, b26, b27, b22, b23, b1E, b1F;
-    u8 b1C, b20, b24, b28, b18, b0C, b10, b1D, b21, b25, b29, b19, b0D, b11, b1B;
-    temp_r0 = p[0x1A];
+    register u8 b2B, b26, b27, b22, b23, b1E, b1F, b1B, b11, b0D, b19, b29, b25, b21, b1D, b10, b0C, b18, b28, b24, b20, b1C;
     p20 = p + 0x20;
+    sp1C = p[0x1A];
     b19 = p[0x19];
-    sp1C = temp_r0;
-    temp_r0_2 = p[0x0F];
+    spC = p[0x0F];
     b0C = p[0x0C];
-    spC = temp_r0_2;
-    temp_r0_3 = p[0x0E];
+    sp10 = p[0x0E];
     b0D = p[0x0D];
-    sp10 = temp_r0_3;
-    temp_r0_4 = p[0x13];
+    sp14 = p[0x13];
     b10 = p[0x10];
-    sp14 = temp_r0_4;
-    temp_r0_5 = p[0x12];
+    sp18 = p[0x12];
     b11 = p[0x11];
-    sp18 = temp_r0_5;
     b1C = p[0x1C];
     b1F = p[0x1F];
     b1D = p[0x1D];
@@ -1481,15 +1421,17 @@ void fn_802D6B80(u8 *arg0, s32 arg1, s32 arg2) {
     if (result != 0) {
         ((void (*)(s32, s32, s32))fn_802D65F8)(result, arg1, arg2);
     } else {
+        u8 *p = buf.bytes;
         u8 x, y;
-        buf.word = *(u32 *)arg0;
+        u32 *src = (u32 *)arg0;
+        buf.word = *src;
         buf.bytes[4] = 0;
-        x = buf.bytes[0];
-        buf.bytes[0] = buf.bytes[3];
-        buf.bytes[3] = x;
-        y = buf.bytes[1];
-        buf.bytes[1] = buf.bytes[2];
-        buf.bytes[2] = y;
+        x = p[0];
+        p[0] = p[3];
+        p[3] = x;
+        y = p[1];
+        p[1] = p[2];
+        p[2] = y;
         fn_802E317C(lbl_8034C440, arg2, &buf);
     }
 }
