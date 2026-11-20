@@ -1,5 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+typedef int FN81138_RET;
 #pragma cplusplus on
 namespace ebi {
 namespace title {
@@ -1251,19 +1252,19 @@ extern "C" int fn_802808D0(void) {
     index = Finder::find(lbl_804B3048.items, lbl_804B3048.count, (void *)lbl_8055F688);
     if (index >= 0) {
         void *entry = lbl_804B3048.items[index];
-        int active = 0;
-        if (*(void **)((char *)entry + 0x60) != 0 &&
-            fn_80019714() == 0 &&
-            ((CheckObj *)*(void **)((char *)entry + 0x60))->f7()) {
-            active = 1;
+        bool active = false;
+        if (*(void **)((char *)entry + 0x60) != 0) {
+            if (fn_80019714() == 0 &&
+                ((CheckObj *)*(void **)((char *)entry + 0x60))->f7()) {
+                active = true;
+            }
         }
         if (active) {
-            void *key = (void *)lbl_8055F688;
             ((void (*)(char *, int, const char *, ...))fn_801345D8)(
                 buffer, 0x1E, lbl_80348480,
-                ((*(unsigned char *)((char *)key + 0x64) != 0)
+                ((*(unsigned char *)((char *)lbl_8055F688 + 0x64) != 0)
                     ? 5
-                    : Finder::find(lbl_804B3048.items, lbl_804B3048.count, key)) + 1);
+                    : Finder::find(lbl_804B3048.items, lbl_804B3048.count, (void *)lbl_8055F688)) + 1);
             fn_80236954(buffer);
             return 1;
         }
@@ -1381,10 +1382,10 @@ extern "C" int fn_80280C00(void) {
     Obj *obj;
     void *sel;
     void **p;
-    void **items;
     int index;
-    const char *src;
+    void **items;
     char *dst;
+    const char *src;
     int n;
     if (lbl_8055F688 == 0)
         goto finish;
@@ -1411,12 +1412,11 @@ extern "C" int fn_80280C00(void) {
     p = items;
     index = 0;
     while (index < lbl_804B3048.count) {
-        if (*p != sel) {
-            p++;
-            index++;
-            continue;
+        if (*p == sel) {
+            goto found;
         }
-        goto found;
+        p++;
+        index++;
     }
     index = -1;
 found:
@@ -1600,11 +1600,9 @@ copy_test:
         }
     }
     goto finish;
-#pragma scheduling on
 reset:
     *(volatile unsigned int *)&lbl_8055F688 = 0;
     goto finish;
-#pragma scheduling invalid_target
 finish:
     fn_80216D28();
     return 0;
