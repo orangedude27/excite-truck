@@ -3352,7 +3352,8 @@ extern "C" void VFiPFCACHE_FreeAllCaches(void *arg0) {
         VFPage *dataHead;
     };
     VFVol *volume = (VFVol *)arg0;
-    VFPage *head = volume->fatHead;
+    struct HHead { VFPage *p; } hh;
+    VFPage **phead = &hh.p;
     VFPage *page1;
     VFPage *page2;
 
@@ -3363,16 +3364,16 @@ extern "C" void VFiPFCACHE_FreeAllCaches(void *arg0) {
             page1->changedTo = 0;
             page1->first = -1;
             page1->owner = 0;
-            head = volume->fatHead;
-            if (page1 == head) {
+            *phead = volume->fatHead;
+            if (page1 == *phead) {
                 volume->fatHead = page1->next;
-            } else if (page1 != head->prev) {
+            } else if (page1 != (*phead)->prev) {
                 page1->prev->next = page1->next;
                 page1->next->prev = page1->prev;
-                head = volume->fatHead;
-                page1->next = head;
+                *phead = volume->fatHead;
+                page1->next = *phead;
                 page1->prev = volume->fatHead->prev;
-                head->prev = page1;
+                (*phead)->prev = page1;
                 page1->prev->next = page1;
             }
         }
@@ -3385,16 +3386,16 @@ extern "C" void VFiPFCACHE_FreeAllCaches(void *arg0) {
             page2->changedTo = 0;
             page2->first = -1;
             page2->owner = 0;
-            head = volume->dataHead;
-            if (page2 == head) {
+            *phead = volume->dataHead;
+            if (page2 == *phead) {
                 volume->dataHead = page2->next;
-            } else if (page2 != head->prev) {
+            } else if (page2 != (*phead)->prev) {
                 page2->prev->next = page2->next;
                 page2->next->prev = page2->prev;
-                head = volume->dataHead;
-                page2->next = head;
+                *phead = volume->dataHead;
+                page2->next = *phead;
                 page2->prev = volume->dataHead->prev;
-                head->prev = page2;
+                (*phead)->prev = page2;
                 page2->prev->next = page2;
             }
         }
@@ -11842,7 +11843,7 @@ extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32 arg0, u32 *arg1) {
     code = (hi << 8) + lo;
     if (code >= 0xff61 && code <= 0xff9f) {
         sjis = code - 0x10000;
-        out[0] = (u8)(sjis + 0x140);
+        out[0] = sjis + 0x140;
         out[1] = 0;
         return fn_800A4BE8(1, 2);
     }
