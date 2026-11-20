@@ -115,8 +115,8 @@ void fn_8013B950(void) {
             if (*(int *)((char *)((struct Dummy *)fn_801B2ED0(selected))->get() + 4) >
                 *(int *)((char *)bestItem + 4)) {
                 score = fn_801B2F90(selected, bestIndex);
-                *(float *)lbl_8042F8A8 = score;
                 rounded = score;
+                *(float *)lbl_8042F8A8 = score;
                 *(int *)((char *)lbl_8042F8A8 + 0xc) = bestIndex;
                 *((u8 *)lbl_8042F8A8 + 4) = (rounded < lbl_80561470);
             }
