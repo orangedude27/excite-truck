@@ -4273,12 +4273,14 @@ static inline BOOL fn_80060CC0_CanQueue(WPADCommandQueue* pQueue, s8 num) {
         queueSize = (pQueue)->back - (pQueue)->front; \
         if (queueSize < 0) queueSize += (pQueue)->capacity; \
         OSRestoreInterrupts(innerEnabled); \
-        if ((pQueue)->capacity - 1 != queueSize) { \
+        if ((pQueue)->capacity - 1 == queueSize) { \
+            OSRestoreInterrupts(queueEnabled); \
+        } else { \
             memset(&(pQueue)->buffer[(pQueue)->back], 0, sizeof(WPADCommand)); \
             memcpy(&(pQueue)->buffer[(pQueue)->back], &cmdCopy, sizeof(WPADCommand)); \
             (pQueue)->back = (pQueue)->back == (pQueue)->capacity - 1 ? 0 : (pQueue)->back + 1; \
+            OSRestoreInterrupts(queueEnabled); \
         } \
-        OSRestoreInterrupts(queueEnabled); \
     }
 
 #define WPADiSendEnableSpeakerInline(pQueue, enableValue, callbackValue) \
