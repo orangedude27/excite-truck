@@ -213,57 +213,65 @@ extern s32 lbl_8055D6D0, lbl_8055D6D4;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void TRKInitializeNub(void) {
-    s64 now = 0;
-    s32 state = 0;
-    s64 duration = 0;
-    s64 start = 0;
-    s64 elapsed;
-    s64 deadline = 0;
-    s64 limit;
-    u32 status;
-    u32 ctl;
+void TRKInitializeNub(void)
+{
+  s64 now = 0;
+  s32 state = 0;
+  s64 duration = 0;
+  s64 start = 0;
+  s64 elapsed;
+  s64 deadline = 0;
+  s64 limit;
+  goto continuation;
+  measure:
+  *((volatile u32 *) 0xCD006C00) = ((*((volatile u32 *) 0xCD006C00)) & (~0x20U)) | 0x20U;
+
+  *((volatile u32 *) 0xCD006C00) = (*((volatile u32 *) 0xCD006C00)) & (~2U);
+  *((volatile u32 *) 0xCD006C00) = ((*((volatile u32 *) 0xCD006C00)) & (~1U)) | 1U;
+  while (((*((volatile u32 *) 0xCD006C08)) & 0x7FFFFFFFU) == ((*((volatile u32 *) 0xCD006C08)) & 0x7FFFFFFFU))
+  {
+  }
+
+  start = (s64) OSGetTime();
+  *((volatile u32 *) 0xCD006C00) = ((*((volatile u32 *) 0xCD006C00)) & (~2U)) | 2U;
+  *((volatile u32 *) 0xCD006C00) = ((*((volatile u32 *) 0xCD006C00)) & (~1U)) | 1U;
+  while ((*((volatile u32 *) 0xCD006C08)) == ((*((volatile u32 *) 0xCD006C08)) & 0x7FFFFFFFU))
+  {
+  }
+
+  now = (s64) OSGetTime();
+  elapsed = now - start;
+  *((volatile u32 *) 0xCD006C00) = (*((volatile u32 *) 0xCD006C00)) & (~2U);
+  *((volatile u32 *) 0xCD006C00) = (*((volatile u32 *) 0xCD006C00)) & (~1U);
+  limit = (s64) ((*((u64 *) (&lbl_8055D6D0))) - (*((u64 *) (&lbl_8055D6B0))));
+  if (limit > elapsed)
+  {
+    duration = (s64) ((((u64) ((u32) lbl_8055D6C0)) << 32) | ((u32) lbl_8055D6C4));
+    state = 1;
     goto continuation;
-measure:
-    *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & ~0x20U) | 0x20U;
-    *(volatile u32 *)0xCD006C00 = *(volatile u32 *)0xCD006C00 & ~2U;
-    *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & ~1U) | 1U;
-    do {
-        status = *(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU;
-        ctl = *(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU;
-    } while (status == ctl);
-    start = (s64)OSGetTime();
-    *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & ~2U) | 2U;
-    *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & ~1U) | 1U;
-    do {
-        status = *(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU;
-        ctl = *(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU;
-    } while (status == ctl);
-    now = (s64)OSGetTime();
-    elapsed = now - start;
-    *(volatile u32 *)0xCD006C00 = *(volatile u32 *)0xCD006C00 & ~2U;
-    *(volatile u32 *)0xCD006C00 = *(volatile u32 *)0xCD006C00 & ~1U;
-    limit = (s64)(*(u64 *)&lbl_8055D6D0 - *(u64 *)&lbl_8055D6B0);
-    if (limit > elapsed) {
-        duration = (s64)(((u64)(u32)lbl_8055D6C0 << 32) | (u32)lbl_8055D6C4);
-        state = 1;
-        goto continuation;
-    }
-    if (elapsed >= (s64)(*(u64 *)&lbl_8055D6D0 + *(u64 *)&lbl_8055D6B0) &&
-        elapsed < (s64)(*(u64 *)&lbl_8055D6C8 - *(u64 *)&lbl_8055D6B0)) {
-        duration = (s64)(((u64)(u32)lbl_8055D6B8 << 32) | (u32)lbl_8055D6BC);
-        state = 1;
-        goto continuation;
-    }
-    state = 0;
-continuation:
-    if (state == 0) {
-        goto measure;
-    }
-    deadline = now + duration;
-    do {
-        now = (s64)OSGetTime();
-    } while (now < deadline);
+  }
+  if ((elapsed >= ((s64) ((*((u64 *) (&lbl_8055D6D0))) + (*((u64 *) (&lbl_8055D6B0)))))) && (elapsed < ((s64) ((*((u64 *) (&lbl_8055D6C8))) - (*((u64 *) (&lbl_8055D6B0)))))))
+  {
+    duration = (s64) ((((u64) ((u32) lbl_8055D6B8)) << 32) | ((u32) lbl_8055D6BC));
+    state = 1;
+    goto continuation;
+  }
+  state = 0;
+  if ((now && now) && now)
+  {
+  }
+  continuation:
+  if (state == 0)
+  {
+    goto measure;
+  }
+
+  deadline = now + duration;
+  do
+  {
+    now = (s64) OSGetTime();
+  }
+  while (now < deadline);
 }
 #pragma pop
 void TRKMessageSend(void) {
@@ -1246,6 +1254,7 @@ extern void InitMetroTRKCommTable(void);
 extern s32 fn_800328E8(void);
 extern void CircleBufferReadBytes(u32, u32, void *);
 extern void *__AXGetCurrentProfile(void);
+#pragma opt_propagation off
 void CircleBufferInitialize(u32 arg0) {
     u8 *base = (u8 *)lbl_8035EE20;
     u8 *dma;
@@ -1254,13 +1263,15 @@ void CircleBufferInitialize(u32 arg0) {
     s32 i;
     u8 *profile;
     void *ptrs[4];
+    u32 mail;
+    s32 startCheck;
     lbl_8035EE20[0] = OSGetTime();
     fn_80032EAC(arg0);
     __AXPrintStudio();
-    arg0 = (u32)gdev_cc_initialize();
+    mail = (u32)gdev_cc_initialize();
     DSPSendMailToDSP(0xBABE0080);
     while (DSPCheckMailToDSP() != 0) { }
-    DSPSendMailToDSP(arg0);
+    DSPSendMailToDSP(mail);
     while (DSPCheckMailToDSP() != 0) { }
     TRKReadBuffer1_ui64();
     lbl_8035EE20[1] = OSGetTime();
@@ -1276,7 +1287,8 @@ void CircleBufferInitialize(u32 arg0) {
     ptrs[3] = base + 0x40 + start * 2 + 0x438;
     ring = start + 0x12;
     if (ring >= lbl_8055D758) ring = 0;
-    if (lbl_8055D750 >= start && lbl_8055D750 < start + 0x12) lbl_8055D750 = ring;
+    startCheck = *(volatile s32 *)&lbl_8055D754;
+    if (lbl_8055D750 >= startCheck && lbl_8055D750 < startCheck + 0x12) lbl_8055D750 = ring;
     dma = base + 0x8E0;
     lbl_8055D754 = ring;
     CircleBufferReadBytes((u32)(base + 0x5E0), (u32)(dma + lbl_8055D788 * 0x180), ptrs);
@@ -1303,7 +1315,6 @@ void CircleBufferInitialize(u32 arg0) {
         }
     }
 }
-
 /* Initialize/tick the audio/DSP path: capture start time on first entry,
  * transition state (reset + CircleBufferInitialize or assert DSP task), and
  * advance the AI DMA buffer ring when enabled. */
@@ -1454,6 +1465,9 @@ void fn_80032004(void) {
 extern u32 fn_8003010C(u32);
 extern void AIStartDMA(void);
 extern s32 lbl_8055D768;
+#pragma push
+#pragma unroll off
+#pragma ctrloop on
 void fn_800320E8(s32 arg0) {
     u8 *base;
     u8 *ring;
@@ -1578,6 +1592,7 @@ s32 AXRmtGetSamplesLeft(void) {
 
 extern u8 lbl_8035EE60[];
 extern void DCInvalidateRange(void *, u32);
+#pragma opt_common_subs off
 s32 AXRmtGetSamples(s32 arg0, s16 *arg1, s32 arg2) {
     s32 count;
     s32 index;
@@ -1591,14 +1606,14 @@ s32 AXRmtGetSamples(s32 arg0, s16 *arg1, s32 arg2) {
     }
     index = *(volatile s32 *)&lbl_8055D750;
     for (i = count; i > 0; i--) {
-        *arg1++ = *(s16 *)(lbl_8035EE60 + arg0 * 0x168 + index * 2);
+        *arg1++ = ((s16 (*)[0xB4])lbl_8035EE60)[arg0][index];
         index++;
         if (index >= lbl_8055D758) index = 0;
     }
     DCInvalidateRange(lbl_8035EE60 + arg0 * 0x168, lbl_8055D758 << 1);
     return count;
 }
-
+#pragma opt_common_subs reset
 void AXRmtAdvancePtr(s32 samples) {
     /* Advance the remote audio read pointer, clamping to the available sample space in the ring buffer. */
     s32 available;
