@@ -82,8 +82,8 @@ int fn_802CCBC4(void *arg0, float *arg1, float arg2, float arg3) {
 }
 #pragma pop
 #pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
-#pragma opt_propagation off
 int fn_802CCD0C(const void *arg0, const void *arg1) {
     int x = fn_802CAFC8(*(const int *)((const char *)arg0 + 0x10));
     int y = fn_802CAFC8(*(const int *)((const char *)arg1 + 0x10));
