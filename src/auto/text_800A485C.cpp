@@ -8,6 +8,9 @@ static inline s32 fn_800C0E7C_fxmul(s32 a, s32 b) {
 static inline s32 fn_800BD710_scale(s32 v, s32 *tbl, s32 idx) {
     return fn_800C0E7C_fxmul(v, tbl[idx]);
 }
+static inline u32 fn_800A8730_end(u32 a, u32 b) {
+    return a + b;
+}
 __declspec(section ".sdata") extern u8 lbl_805591FC[];
 __declspec(section ".sdata") extern u8 lbl_80559200[];
 __declspec(section ".sdata") extern u8 lbl_80559204[];
@@ -1025,14 +1028,15 @@ extern "C" s32 fn_800A59FC(void *arg0) {
 extern "C" s32 fn_800A59FC(void *);
 extern "C" s32 fn_800A6A40(void *);
 #pragma use_lmw_stmw off
-extern "C" s32 fn_800A5AE4(void *arg0, void *arg1)
+extern "C" s32 fn_800A5AE4(register void *arg0, void *arg1)
 {
-  u16 var_r3_4;
-  u16 var_r3_6;
+  s32 var_r30 = 0;
   u16 temp;
   u16 var_r3;
   u16 var_r3_2;
   u16 var_r3_3;
+  u16 var_r3_4;
+  u16 var_r3_6;
   u32 var_r3_5;
   u16 var_r3_7;
   u16 var_r3_8;
@@ -1046,8 +1050,6 @@ extern "C" s32 fn_800A5AE4(void *arg0, void *arg1)
   void **new_var;
   u32 temp_r4_3;
   s32 temp_r0_6;
-  s32 var_r30;
-  var_r30 = 0;
   new_var = &arg1;
   if (fn_800A6A40(*new_var) == 0)
   {
@@ -1133,74 +1135,69 @@ extern "C" s32 fn_800A5AE4(void *arg0, void *arg1)
     switch (temp_r0_6)
     {
       case 0:
-
       case 1:
         if (var_r3_6 == 0)
-      {
-        var_r30 = 4;
-      }
+        {
+          var_r30 = 4;
+        }
         break;
-
       case 2:
         if ((var_r3_4 != 0) || (var_r3_6 != 0))
-      {
-        var_r30 = 4;
-      }
+        {
+          var_r30 = 4;
+        }
         if ((((u32) (*(&arg1))) + 0x2A) & 1)
-      {
-        raw = ((*((u8 *) (((u8 *) arg1) + 0x2A))) & 0xFF) | (((*((u8 *) (((u8 *) (*new_var)) + 43))) << 8) & 0xFF00);
-      }
-      else
-      {
-        temp = *((u16 *) (((u8 *) arg1) + 0x2A));
-        raw = ((temp >> 8) & 0xFF) | ((temp & 0xFF) << 8);
-      }
+        {
+          raw = ((*((u8 *) (((u8 *) arg1) + 0x2A))) & 0xFF) | (((*((u8 *) (((u8 *) (*new_var)) + 43))) << 8) & 0xFF00);
+        }
+        else
+        {
+          temp = *((u16 *) (((u8 *) arg1) + 0x2A));
+          raw = ((temp >> 8) & 0xFF) | ((temp & 0xFF) << 8);
+        }
         var_r3_7 = (u16) raw;
         if ((((u32) (*(&arg1))) + 0x28) & 1)
-      {
-        var_r3_8 = ((*((u8 *) (((u8 *) (*new_var)) + 0x28))) & 0xFF) | (((*((u8 *) (((u8 *) arg1) + 41))) << 8) & 0xFF00);
-      }
-      else
-      {
-        temp = *((u16 *) (((u8 *) (*new_var)) + 0x28));
-        var_r3_8 = ((temp >> 8) & 0xFF) | ((temp & 0xFF) << 8);
-      }
+        {
+          var_r3_8 = ((*((u8 *) (((u8 *) (*new_var)) + 0x28))) & 0xFF) | (((*((u8 *) (((u8 *) arg1) + 41))) << 8) & 0xFF00);
+        }
+        else
+        {
+          temp = *((u16 *) (((u8 *) (*new_var)) + 0x28));
+          var_r3_8 = ((temp >> 8) & 0xFF) | ((temp & 0xFF) << 8);
+        }
         *((u16 *) (((u8 *) arg0) + 0x18)) = var_r3_8;
         temp_r4_3 = *((u32 *) (((u8 *) arg1) + 0x2C));
         *((s32 *) (((u8 *) arg0) + 0x10)) = ((temp_r4_3 >> 24) & 0xFF) | ((temp_r4_3 >> 8) & 0xFF00) | ((temp_r4_3 << 8) & 0xFF0000) | (temp_r4_3 << 24);
         if ((((u32) arg1) + 0x30) & 1)
-      {
-        var_r3_9 = ((*((u8 *) (((u8 *) arg1) + 0x30))) & 0xFF) | (((*((u8 *) (((u8 *) (*new_var)) + 49))) << 8) & 0xFF00);
-      }
-      else
-      {
-        temp = *((u16 *) (((u8 *) (*new_var)) + 0x30));
-        var_r3_9 = ((temp >> 8) & 0xFF) | ((temp & 0xFF) << 8);
-      }
+        {
+          var_r3_9 = ((*((u8 *) (((u8 *) arg1) + 0x30))) & 0xFF) | (((*((u8 *) (((u8 *) (*new_var)) + 49))) << 8) & 0xFF00);
+        }
+        else
+        {
+          temp = *((u16 *) (((u8 *) (*new_var)) + 0x30));
+          var_r3_9 = ((temp >> 8) & 0xFF) | ((temp & 0xFF) << 8);
+        }
         *((u16 *) (((u8 *) arg0) + 0x14)) = var_r3_9;
         if ((((u32) (*(&arg1))) + 0x32) & 1)
-      {
-        var_r5 = ((*((u8 *) (((u8 *) arg1) + 0x32))) & 0xFF) | (((*((u8 *) (((u8 *) (*new_var)) + 51))) << 8) & 0xFF00);
-      }
-      else
-      {
-        temp = *((u16 *) (((u8 *) (*new_var)) + 0x32));
-        var_r5 = ((temp >> 8) & 0xFF) | ((temp & 0xFF) << 8);
-      }
+        {
+          var_r5 = ((*((u8 *) (((u8 *) arg1) + 0x32))) & 0xFF) | (((*((u8 *) (((u8 *) (*new_var)) + 51))) << 8) & 0xFF00);
+        }
+        else
+        {
+          temp = *((u16 *) (((u8 *) (*new_var)) + 0x32));
+          var_r5 = ((temp >> 8) & 0xFF) | ((temp & 0xFF) << 8);
+        }
         *((u16 *) (((u8 *) arg0) + 0x16)) = var_r5;
         *((s32 *) (((u8 *) arg0) + 0x2C)) = (*((s32 *) (((u8 *) arg0) + 0x30))) + (((*((s32 *) (((u8 *) arg0) + 0x10))) - 2) << (*((u8 *) (((u8 *) arg0) + 0x21))));
         if (var_r3_7 != 0)
-      {
-        var_r30 = 4;
-      }
+        {
+          var_r30 = 4;
+        }
         break;
-
       default:
         var_r30 = 4;
         break;
-
     }
-
     temp_r3 = *((u16 *) (((u8 *) arg0) + 0x18));
     if (temp_r3 & 0x80)
     {
@@ -2862,6 +2859,7 @@ extern "C" s32 fn_800A861C(void *volume, void *cache, s32 buffer, u32 sector) {
 
 extern "C" s32 fn_800A58E0(void *, s32, s32, s32, s32);
 extern "C" s32 fn_800A8730(void *arg0, u32 *arg1, void *arg2, u32 arg3, s32 arg4, s32 *arg5) {
+    struct EndAlias { u32 v; };
     void *var_r30;
     s32 var_r29;
     u32 request_length;
@@ -2959,14 +2957,13 @@ loop_2:
             } else if ((temp_r7 > arg3) && (temp_r7 < temp_r31) &&
                        ((u32)(temp_r7 + *(u32 *)((u8 *)var_r30 + 0x14)) >= temp_r31)) {
                 u32 temp_r4_3;
+                struct EndAlias ea;
                 temp_r5_4 = *(u8 *)((u8 *)arg0 + 0x20);
                 VFipf_memcpy(*(void **)((u8 *)var_r30 + 4),
                              (u8 *)arg2 + ((temp_r7 - arg3) << temp_r5_4),
                              (temp_r31 - temp_r7) << temp_r5_4);
-#pragma push
-#pragma opt_common_subs off
-                temp_r4_3 = arg4 + arg3;
-#pragma pop
+                ea.v = arg4 + arg3;
+                temp_r4_3 = ea.v;
                 temp_r4_4 = temp_r4_3 - *(u32 *)((u8 *)var_r30 + 0x18);
                 *arg5 += temp_r4_4;
                 var_r29 -= temp_r4_4;
@@ -22125,10 +22122,10 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
     void **textureResources;
 
     if (*(void **)(self + 0x14) != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x1A6, file + 0x14);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x1A6, file + 0x14);
     }
     if (*(void **)(self + 0x18) != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x1A7, file + 0x40);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x1A7, file + 0x40);
     }
 
     *(const void **)(self + 0xC) = resource;
