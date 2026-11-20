@@ -867,7 +867,6 @@ extern f32 lbl_805643A0;
 extern f32 lbl_80564394;
 extern s32 fn_80287B94(s32, s32, f32, f32, f32);
 extern s32 fn_8028CD80(s32, s32, void *, f32 *, f32);
-#pragma scheduling on
 s32 fn_8028BA9C(void *arg0) {
     register f32 c, b, a, scale;
     f32 values[3];
