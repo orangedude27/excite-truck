@@ -161,17 +161,6 @@ unsigned char fn_802C54CC(unsigned int value) { return (unsigned char)(value >> 
 #pragma scheduling invalid_target
 #pragma dont_inline on
 #pragma use_lmw_stmw off
-static inline void **mr_listAppend(int *list) {
-    int n = list[0];
-    if (n < list[1]) {
-        list[0] = n + 1;
-        return (void **)list[2] + n;
-    }
-    return 0;
-}
-#pragma push
-#pragma dont_inline off
-#pragma always_inline on
 void fn_802C54D4(void) {
     extern int lbl_804C1390[];
     extern int lbl_804C13A8[];
