@@ -1960,6 +1960,38 @@ extern "C" s32 fn_8019DDFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, void * __rest
 #pragma processor 750
 #pragma dont_inline off
 #pragma scheduling invalid_target
+#pragma always_inline on
+static inline f32 fn_8019DF88_impl(const void *arg0, const f32 *arg1, const void *arg2, const f32 *arg3, const f32 *arg4, f32 farg0, f32 farg1) {
+    Vec velocity, delta, normalCopy, normal, cross, rotated, result;
+    const f32 *m = (const f32 *)arg2;
+    const f32 *p = (const f32 *)arg0;
+    u32 ny = ((const u32 *)arg4)[1];
+    f32 dx = arg3[0] - p[0];
+    f32 dy = arg3[1] - p[1];
+    f32 dz = arg3[2] - p[2];
+    f32 vz = arg1[2], vy = arg1[1], vx = arg1[0];
+    u32 nz = ((const u32 *)arg4)[2], nx = ((const u32 *)arg4)[0];
+    velocity.x = vx; velocity.y = vy; velocity.z = vz;
+    delta.x = dx; delta.y = dy; delta.z = dz;
+    ((u32 *)&normalCopy)[0] = nx; ((u32 *)&normalCopy)[1] = ny; ((u32 *)&normalCopy)[2] = nz;
+    if (PSVECDotProduct(&velocity, (const Vec *)arg4) < lbl_805622D0) {
+        ((u32 *)&normal)[0] = ((u32 *)&normalCopy)[0];
+        ((u32 *)&normal)[1] = ((u32 *)&normalCopy)[1];
+        ((u32 *)&normal)[2] = ((u32 *)&normalCopy)[2];
+        PSVECNormalize(&normal, &normal);
+        PSVECCrossProduct(&delta, &normal, &cross);
+        Fn8019DF88MultVec(m, (const f32 *)&cross, (f32 *)&rotated);
+        PSVECCrossProduct(&rotated, &delta, &result);
+        f32 denominator = lbl_805622E0 / farg0 + PSVECDotProduct(&normal, &result);
+        if ((f32)__fabs((f64)denominator) > lbl_8056235C) {
+            f32 impulse = (-(lbl_805622E0 + farg1) * PSVECDotProduct(&velocity, &normal)) / denominator;
+            f32 ret = lbl_80562360 < impulse ? lbl_80562360 : impulse;
+            return ret;
+        }
+    }
+    return lbl_805622D0;
+}
+#pragma always_inline reset
 extern "C" f32 fn_8019DF88(void *arg0, f32 *arg1, void *arg2, f32 *arg3, f32 *arg4, f32 farg0, f32 farg1) {
     Vec velocity, delta, normalCopy, normal, cross, rotated, result;
     f32 *m = (f32 *)arg2;
