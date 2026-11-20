@@ -75,6 +75,7 @@ void fn_80019BBC(void) {
     ((float *)lbl_803582C0)[61] = 0.0f;
     ((float *)lbl_803582C0)[62] = 0.0f;
 }
+#pragma pop
 
 #pragma cplusplus on
 inline void *operator new(unsigned long size, char *name) { return fn_801284F8(size, name); }
@@ -664,11 +665,10 @@ struct EntryData {
 };
 #pragma processor gekko
 int fn_8001B308(void *arg0, int arg1, int arg2) {
-    unsigned char one = 1;
+    int group;
+    int status;
     unsigned char *base;
     int index;
-    int status;
-    int group;
 
     base = (unsigned char *)&lbl_803583C8;
     index = 0;
@@ -685,7 +685,7 @@ int fn_8001B308(void *arg0, int arg1, int arg2) {
                     *(float *)(base + 0xC) = second;
                 }
             }
-            base[0x10] = one;
+            base[0x10] = 1;
         } else {
             status = 0;
         }
@@ -704,7 +704,7 @@ int fn_8001B308(void *arg0, int arg1, int arg2) {
                     *(float *)(base + 0x20) = second;
                 }
             }
-            base[0x24] = one;
+            base[0x24] = 1;
         } else {
             status = 0;
         }
@@ -723,7 +723,7 @@ int fn_8001B308(void *arg0, int arg1, int arg2) {
                     *(float *)(base + 0x34) = second;
                 }
             }
-            base[0x38] = one;
+            base[0x38] = 1;
         } else {
             status = 0;
         }
@@ -742,7 +742,7 @@ int fn_8001B308(void *arg0, int arg1, int arg2) {
                     *(float *)(base + 0x48) = second;
                 }
             }
-            base[0x4C] = one;
+            base[0x4C] = 1;
         } else {
             status = 0;
         }
