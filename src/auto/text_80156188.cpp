@@ -720,24 +720,25 @@ extern s32 fn_80129D90(s32, s32, s32);
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" void fn_80156DCC(void *arg0, s32 arg1) {
-    s32 offset = arg1 * 8;
-    u8 *element = (u8 *)arg0 + offset;
+    struct S { u8 *element; u32 oldValue; u32 value; s32 offset; } s;
+    s.offset = arg1 * 8;
+    s.element = (u8 *)arg0 + s.offset;
     f32 base = lbl_8055E3C8;
-    u32 oldValue = *(u32 *)(element + 0xE8);
+    s.oldValue = *(u32 *)(s.element + 0xE8);
     s32 count = *(s32 *)((u8 *)arg0 + 8);
     s32 index = fn_80129D90(4, 0, count);
     u32 *table = *(u32 **)((u8 *)arg0 + 4);
-    u32 value = *(u32 *)((u8 *)table + index * 8);
-    if (value == oldValue) {
+    s.value = *(u32 *)((u8 *)table + index * 8);
+    if (s.value == s.oldValue) {
         s32 next = index + 1;
         s32 divisor = *(s32 *)((u8 *)arg0 + 8);
         index = next % divisor;
-        value = *(u32 *)((u8 *)table + index * 8);
+        s.value = *(u32 *)((u8 *)table + index * 8);
     }
     ((f32 *)arg0)[arg1 * 2 + 0x39] = base +
         ((f32 (*)(s32, f32, f32))fn_80129DC4)(
             4, *(f32 *)((u8 *)arg0 + 0xDC), *(f32 *)((u8 *)arg0 + 0xE0));
-    *(u32 *)(element + 0xE8) = value;
+    *(u32 *)(s.element + 0xE8) = s.value;
 }
 #pragma pop
 #pragma push
