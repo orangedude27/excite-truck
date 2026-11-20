@@ -16984,6 +16984,9 @@ void hidd_proc_repage_timeout(void)
     callback(2, cb[9], 0);
 }
 
+static inline void hidd_mark_pm_set(void) {
+    lbl_803C3AF0[0x78] = 0xFF;
+}
 #pragma opt_common_subs off
 BOOLEAN hidd_pm_set_now(void *arg0) {
     u8 mode = 0;
@@ -16995,10 +16998,9 @@ BOOLEAN hidd_pm_set_now(void *arg0) {
         state_mode = lbl_803C3AF0[0x6A];
         mode = ((u8 *)arg0)[8];
         if (mode == state_mode && mode != 0) {
-            u16 interval = *(u16 *)(lbl_803C3AF0 + 0x6C);
+            register u16 interval = *(u16 *)(lbl_803C3AF0 + 0x6C);
             if (interval >= *(u16 *)((u8 *)arg0 + 2) && interval <= *(u16 *)arg0) {
-                u8 *cb = lbl_803C3AF0;
-                cb[0x78] = 0xFF;
+                lbl_803C3AF0[0x78] = 0xFF;
                 return TRUE;
             }
         }
@@ -17488,8 +17490,8 @@ scan_done:
 u8 HID_HostRemoveDev(u32 dev_handle) {
     extern u8 hidh_conn_disconnect(u32);
     register u8 *devices = lbl_803C3C38;
-    register u8 *deviceEntry;
-    register u32 entryOffset;
+    u8 *deviceEntry;
+    u32 entryOffset;
     u8 disconnecting = 1;
     u8 cleared = 0;
     u8 isRegistered = devices[0x400];
