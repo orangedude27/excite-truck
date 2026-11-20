@@ -4021,28 +4021,28 @@ struct Pane {
 }}
 #pragma push
 #pragma optimize_for_size on
-extern "C" void LoadMtx__Q34nw4r3lyt4PaneFRCQ34nw4r3lyt8DrawInfo(void* self_, void* info_) {
-    unsigned char* ip = (unsigned char*)info_;
-    unsigned char* sp = (unsigned char*)self_;
-    float mtx[3][4];
+void nw4r::lyt::Pane::LoadMtx(const nw4r::lyt::DrawInfo& info_) {
+    const u8* ip = (const u8*)&info_;
+    u8* sp = (u8*)this;
+    float mtx[12];
     float* result;
     if ((ip[0x50] >> 7) & 1) {
-        PSMTXConcat((float*)(ip + 4), (float*)(sp + 0x84), (float*)mtx);
-        int flip = (*(float*)(ip + 0x40) - *(float*)(ip + 0x38)) < lbl_80560EA8;
+        PSMTXConcat((const f32*)(ip + 4), (const f32*)(sp + 0x84), mtx);
+        int flip = (*(const f32*)(ip + 0x40) - *(const f32*)(ip + 0x38)) < lbl_80560EA8;
         if (flip) {
-            mtx[0][1] = -mtx[0][1];
-            mtx[1][1] = -mtx[1][1];
-            mtx[2][1] = -mtx[2][1];
+            mtx[1] = -mtx[1];
+            mtx[5] = -mtx[5];
+            mtx[9] = -mtx[9];
         }
-        result = (float*)mtx;
+        result = mtx;
     } else {
-        int flip = (*(float*)(ip + 0x40) - *(float*)(ip + 0x38)) < lbl_80560EA8;
+        int flip = (*(const f32*)(ip + 0x40) - *(const f32*)(ip + 0x38)) < lbl_80560EA8;
         if (flip) {
-            PSMTXCopy((float*)(sp + 0x84), (float*)mtx);
-            mtx[0][1] = -mtx[0][1];
-            mtx[1][1] = -mtx[1][1];
-            mtx[2][1] = -mtx[2][1];
-            result = (float*)mtx;
+            PSMTXCopy((const f32*)(sp + 0x84), mtx);
+            mtx[1] = -mtx[1];
+            mtx[5] = -mtx[5];
+            mtx[9] = -mtx[9];
+            result = mtx;
         } else {
             result = (float*)(sp + 0x84);
         }
