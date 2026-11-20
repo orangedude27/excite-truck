@@ -155,6 +155,7 @@ int fn_801DB348(int arg0, int arg1, float *arg2, int *arg3, void *arg4) {
 }
 #pragma dont_inline reset
 #pragma auto_inline reset
+#pragma scheduling reset
 
 extern float lbl_80562B64;
 extern float lbl_80562B68;
