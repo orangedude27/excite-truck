@@ -115,13 +115,13 @@ void fn_801C1218(void *arg0) {
     register float factor0 = lbl_80562910;
     offset = 0;
     register float factor1 = lbl_80562914;
+    float scale;
     char *p0;
     char *p1;
     char *p2;
     float z;
     float y;
     float x;
-    float scale;
     unsigned int savedZ;
     unsigned int savedY;
     unsigned int savedX;
@@ -232,17 +232,24 @@ void fn_801C1364(int arg0) {
                 m = *(float **)(e + 4);
                 out = (float *)((char *)*(float **)(base + 0x24) + *(int *)e * 12);
                 if ((char *)out == e + 8) {
-                    y = *(float *)(e + 0xC); x = *(float *)(e + 8); z = *(float *)(e + 0x10);
-                    y0 = y * m[3]; y1 = y * m[4];
-                    x0 = x * m[0]; x1 = x * m[1]; x2 = x * m[2]; y2 = y * m[5];
-                    z0 = z * m[6]; z1 = z * m[7]; z2 = z * m[8];
+                    y = *(float *)(e + 0xC); x = *(float *)(e + 8);
+                    y0 = m[3] * y;
+                    x0 = m[0] * x;
+                    y1 = m[4] * y;
+                    x1 = m[1] * x;
+                    z = *(float *)(e + 0x10);
+                    z0 = m[6] * z;
+                    x2 = m[2] * x;
+                    y2 = m[5] * y;
+                    z1 = m[7] * z;
+                    z2 = m[8] * z;
                     out[0] = z0 + (x0 + y0);
                     out[1] = z1 + (x1 + y1);
                     out[2] = z2 + (x2 + y2);
                 } else {
-                    out[0] = *(float *)(e + 0x10) * m[6] + (*(float *)(e + 8) * m[0] + *(float *)(e + 0xC) * m[3]);
-                    out[1] = *(float *)(e + 0x10) * m[7] + (*(float *)(e + 8) * m[1] + *(float *)(e + 0xC) * m[4]);
-                    out[2] = *(float *)(e + 0x10) * m[8] + (*(float *)(e + 8) * m[2] + *(float *)(e + 0xC) * m[5]);
+                    out[0] = m[6] * *(float *)(e + 0x10) + (m[0] * *(float *)(e + 8) + m[3] * *(float *)(e + 0xC));
+                    out[1] = m[7] * *(float *)(e + 0x10) + (m[1] * *(float *)(e + 8) + m[4] * *(float *)(e + 0xC));
+                    out[2] = m[8] * *(float *)(e + 0x10) + (m[2] * *(float *)(e + 8) + m[5] * *(float *)(e + 0xC));
                 }
                 out[0] += m[9];
                 out[1] += m[10];
@@ -258,7 +265,7 @@ void fn_801C1364(int arg0) {
             float *p1, *p2;
             float *mat;
             float dot, mag, scale, ratio, fa, fb;
-            for (stride = 0, count = 0; count < *(int *)(base + 0x20); stride += 0x1C, count++) {
+            for (count = 0, stride = 0; count < *(int *)(base + 0x20); stride += 0x1C, count++) {
                 en = (char *)*(int **)(base + 0x50) + stride;
                 i1 = *(int *)en;
                 i2 = *(int *)(en + 4);
@@ -294,10 +301,8 @@ void fn_801C1364(int arg0) {
                 scaled[1] = frame[1] * dot;
                 scaled[2] = frame[2] * dot;
                 mag = PSVECMag(scaled);
-                scale = mag * (w1 + w2);
-                if (scale <= c91C) {
-                    scale = c91C;
-                }
+                scale = mag * (w2 + w1);
+                scale = (scale > c91C) ? scale : c91C;
                 ratio = *(float *)(en + 8) * mag / scale;
                 fa = w2 * ratio;
                 fb = -w1 * ratio;
@@ -314,10 +319,10 @@ void fn_801C1364(int arg0) {
             int count;
             int i1, i2;
             char *en;
-            float w1, w2;
+            float w2, w1;
             float *p1, *p2;
             float mag, scale, ratio, fa, fb;
-            for (stride = 0, count = 0; count < *(int *)(base + 0x18); stride += 0x14, count++) {
+            for (count = 0, stride = 0; count < *(int *)(base + 0x18); stride += 0x14, count++) {
                 en = (char *)*(int **)(base + 0x48) + stride;
                 i1 = *(int *)en;
                 i2 = *(int *)(en + 4);
@@ -336,9 +341,7 @@ void fn_801C1364(int arg0) {
                 diffB[2] = p2[2] - p1[2];
                 mag = PSVECMag(diffB);
                 scale = mag * (w2 + w1);
-                if (scale <= c91C) {
-                    scale = c91C;
-                }
+                scale = (scale > c91C) ? scale : c91C;
                 ratio = *(float *)(en + 0x10) * (mag - *(float *)(en + 8)) / scale;
                 if (*(unsigned char *)(en + 0xC) == 0 || ratio > c904) {
                     fa = w1 * ratio;
@@ -359,7 +362,7 @@ void fn_801C1364(int arg0) {
             float *p;
             float *q;
             float dot, dm;
-            for (stride = 0, count = 0, foff = 0; count < *(int *)(base + 0x14); stride += 0xC, count++, foff += 4) {
+            for (count = 0, stride = 0, foff = 0; count < *(int *)(base + 0x14); stride += 0xC, foff += 4, count++) {
                 p = (float *)((char *)*(float **)(base + 0x24) + stride);
                 q = (float *)((char *)*(float **)(base + 0x28) + stride);
                 d1[0] = p[0] - q[0];
@@ -368,7 +371,7 @@ void fn_801C1364(int arg0) {
                 d2[0] = p[0] - *(float *)(base + 0x58);
                 d2[1] = p[1] - *(float *)(base + 0x5C);
                 d2[2] = p[2] - *(float *)(base + 0x60);
-                dot = PSVECDotProduct(d2, (float *)(base + 0x64)) - ((float *)*(char **)(base + 0x30))[foff / 4];
+                dot = PSVECDotProduct(d2, (float *)(base + 0x64)) - *(float *)((char *)*(char **)(base + 0x30) + foff);
                 if (dot < c904) {
                     dot = -dot;
                     p[0] += *(float *)(base + 0x64) * dot;
@@ -381,7 +384,7 @@ void fn_801C1364(int arg0) {
                     if (PSVECDotProduct(d1, d1) > c920) {
                         float denom = (float)fn_8002F234();
                         float r = c924 / denom;
-                        if (r > c90C) {
+                        if (c90C < r) {
                             r = c90C;
                         }
                         p[0] += d1[0] * -r;
@@ -959,12 +962,15 @@ static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
         float p3 = m[1] * src->x;
         float p4 = m[2] * src->x;
         float p5 = m[5] * src->y;
+        float s0 = p2 + p0;
         float p6 = m[6] * src->z;
+        float s1 = p3 + p1;
         float p7 = m[7] * src->z;
+        float s2 = p4 + p5;
         float p8 = m[8] * src->z;
-        float x = p6 + (p2 + p0);
-        float y = p7 + (p3 + p1);
-        float z = p8 + (p4 + p5);
+        float x = p6 + s0;
+        float y = p7 + s1;
+        float z = p8 + s2;
         dst->x = x;
         dst->y = y;
         dst->z = z;
@@ -975,12 +981,15 @@ static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
         float p3 = m[1] * src->x;
         float p4 = m[2] * src->x;
         float p5 = m[5] * src->y;
+        float s0 = p2 + p0;
         float p6 = m[6] * src->z;
+        float s1 = p3 + p1;
         float p7 = m[7] * src->z;
+        float s2 = p4 + p5;
         float p8 = m[8] * src->z;
-        float x = p6 + (p2 + p0);
-        float y = p7 + (p3 + p1);
-        float z = p8 + (p4 + p5);
+        float x = p6 + s0;
+        float y = p7 + s1;
+        float z = p8 + s2;
         dst->x = x;
         dst->y = y;
         dst->z = z;
