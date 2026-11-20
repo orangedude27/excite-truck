@@ -3,10 +3,9 @@
 
 extern void fn_8000D838(void *);
 extern char lbl_8055FE08;
-__declspec(section ".sdata") extern short lbl_8055FE10;
-__declspec(section ".sdata") extern short lbl_8055FE12;
-__declspec(section ".sdata") extern short lbl_8055FE14;
-enum { K10 = 0x100, K14 = 0x401, K12 = 0x405 };
+extern short lbl_8055FE10;
+extern short lbl_8055FE12;
+extern short lbl_8055FE14;
 void fn_802D98BC(void) {
     fn_8000D838(&lbl_8055FE08);
     lbl_8055FE10 = 0x100;
