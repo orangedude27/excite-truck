@@ -767,9 +767,9 @@ extern float PSVECDotProduct(const Vec *, const Vec *);
 extern float __fabsf(float);
 extern float lbl_80564F20, lbl_8055FC50, lbl_8055FC54, lbl_8055FC58;
 #pragma scheduling invalid_target
-int fn_802C94A0(Vec *arg0, unsigned char *arg1, float *arg2, float tolerance) {
-    Vec *matrix;
-    float delta[3];
+int fn_802C94A0(const float *arg0, unsigned char *arg1, float *arg2, float tolerance) {
+    float *matrix;
+    Vec delta;
     float dx;
     float dy;
     float dz;
@@ -784,15 +784,15 @@ int fn_802C94A0(Vec *arg0, unsigned char *arg1, float *arg2, float tolerance) {
         *arg1 = 1;
     }
 
-    matrix = (Vec *)lbl_804C1410;
-    dx = arg0->x - matrix[3].x;
-    dy = arg0->y - matrix[3].y;
-    dz = *(float *)((char *)arg0 + 8) - matrix[3].z;
-    delta[0] = dx;
-    delta[1] = dy;
-    delta[2] = dz;
+    matrix = (float *)lbl_804C1410;
+    dx = arg0[0] - matrix[9];
+    dy = arg0[1] - matrix[10];
+    dz = arg0[2] - matrix[11];
+    delta.x = dx;
+    delta.y = dy;
+    delta.z = dz;
 
-    temp_f1_2 = PSVECDotProduct((Vec *)delta, &matrix[2]);
+    temp_f1_2 = PSVECDotProduct(&delta, (Vec *)(matrix + 6));
     if ((temp_f1_2 < lbl_8055FC38 - tolerance) || (temp_f1_2 > lbl_8055FC3C + tolerance)) {
         return 0;
     }
@@ -800,7 +800,7 @@ int fn_802C94A0(Vec *arg0, unsigned char *arg1, float *arg2, float tolerance) {
         return 0;
     }
 
-    temp_f1_3 = (float)__fabs((double)PSVECDotProduct((Vec *)delta, &matrix[0]));
+    temp_f1_3 = (float)__fabs((double)PSVECDotProduct(&delta, (Vec *)matrix));
     temp_f0 = temp_f1_2 * lbl_8055FC44;
     var_f2 = lbl_80564F00;
     var_f2 = (var_f2 > temp_f0) ? var_f2 : temp_f0;
@@ -808,7 +808,7 @@ int fn_802C94A0(Vec *arg0, unsigned char *arg1, float *arg2, float tolerance) {
         return 0;
     }
 
-    temp_f1_4 = (float)__fabs((double)PSVECDotProduct((Vec *)delta, (Vec *)((float *)lbl_804C1410 + 3)));
+    temp_f1_4 = (float)__fabs((double)PSVECDotProduct(&delta, (Vec *)((float *)lbl_804C1410 + 3)));
     temp_f0 = temp_f1_2 * lbl_8055FC50;
     var_f2_2 = lbl_80564F00;
     var_f2_2 = (var_f2_2 > temp_f0) ? var_f2_2 : temp_f0;
