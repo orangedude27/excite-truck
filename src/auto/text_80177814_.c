@@ -1046,9 +1046,11 @@ extern void fn_801FA978(void);
 extern void fn_8020C41C(void);
 extern void fn_80267420(void);
 extern void fn_8026B644(void);
+ #pragma always_inline on
  static inline void fn_80178DD4_setmix(int n, int *p) {
      fn_80129C80(n, *p, p[1]);
  }
+ #pragma always_inline reset
  #pragma push
  #pragma use_lmw_stmw off
  void fn_80178DD4(int arg0) {
