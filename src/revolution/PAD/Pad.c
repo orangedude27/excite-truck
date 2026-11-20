@@ -165,6 +165,16 @@ void fn_800563C8(s32 chan, u32 status) {
     }
 }
 
+#pragma optimization_level 3
+static void advanceChannel(u8* origin) {
+    lbl_80558F74 = __cntlzw(lbl_8055DB10);
+    if (lbl_80558F74 != 32) {
+        lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
+        memset(origin + lbl_80558F74 * 12, 0, 12);
+        SIGetTypeAsync(lbl_80558F74, fn_8005649C);
+    }
+}
+
 void fn_8005649C(s32 chan, u32 type) {
     u8* origin = lbl_8038F080;
     u32 chanBit;
@@ -234,7 +244,6 @@ void fn_8005649C(s32 chan, u32 type) {
         }
     }
 }
-
 BOOL fn_800567BC(u32 mask) {
     u32 disable;
     BOOL enabled = OSDisableInterrupts();
@@ -429,8 +438,6 @@ static inline s32 sqabs(s32 d) {
 }
 
 void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]) {
-    u8* origin = lbl_8038F080;
-
     status->button = (data[0] >> 16) & 0x3fff;
     status->stickX = data[0] >> 8;
     status->stickY = data[0];
@@ -473,8 +480,8 @@ void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]) {
         break;
     case 0x400:
         status->substickX = data[1] >> 24;
-        status->triggerLeft = 0;
         status->substickY = data[1] >> 16;
+        status->triggerLeft = 0;
         status->triggerRight = 0;
         status->analogA = data[1] >> 8;
         status->analogB = data[1];
@@ -486,7 +493,7 @@ void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]) {
     status->substickX -= 0x80;
     status->substickY -= 0x80;
 
-    if ((((u32*)(origin + 0x30))[chan] & 0xffff0000) + 0xF7000000 == 0 &&
+    if (((u32)(((u32*)(lbl_8038F080 + 0x30))[chan] & 0xffff0000)) == 0x09000000u &&
         ((status->button & 0x80) ^ 0x80) != 0) {
         lbl_8055DAFC |= 0x80000000 >> chan;
         status->stickX = 0;
@@ -500,8 +507,8 @@ void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]) {
 
     {
         s32 off = chan * 12;
-        u8* base = origin + off;
-        u8* prev = origin + 0x50;
+        u8* base = lbl_8038F080 + off;
+        u8* prev = lbl_8038F080 + 0x50;
         PADStatus* old = (PADStatus*)(prev + off);
         u8 org;
         u8 v;
@@ -525,8 +532,8 @@ void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]) {
             sqabs((s32)status->stickY * status->stickY - (s32)old->stickY * old->stickY) >= 9 ||
             sqabs((s32)status->substickX * status->substickX - (s32)old->substickX * old->substickX) >= 9 ||
             sqabs((s32)status->substickY * status->substickY - (s32)old->substickY * old->substickY) >= 9 ||
-            sqabs((s32)status->triggerLeft * status->triggerLeft - (s32)old->triggerLeft * old->triggerLeft) >= 9 ||
-            sqabs((s32)status->triggerRight * status->triggerRight - (s32)old->triggerRight * old->triggerRight) >= 9 ||
+            sqabs(status->triggerLeft * status->triggerLeft - old->triggerLeft * old->triggerLeft) >= 9 ||
+            sqabs(status->triggerRight * status->triggerRight - old->triggerRight * old->triggerRight) >= 9 ||
             status->button != old->button) {
             fn_8005B01C();
         }
