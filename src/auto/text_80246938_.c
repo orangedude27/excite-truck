@@ -963,7 +963,7 @@ extern void fn_80247A0C(void);
 extern void fn_80247AAC(void);
 extern s32 lbl_802FA404[5];
 #pragma push
-#pragma use_lmw_stmw on
+#pragma use_lmw_stmw off
 void fn_80247AD0(void) {
     s32 args[5];
     s32 values[30];
