@@ -2625,16 +2625,15 @@ typedef struct DvdStream {
 #pragma scheduling on
 #pragma dont_inline on
 void fn_8011A330(void *arg0) {
+    DvdStream *stream = (DvdStream *)arg0;
     s32 status;
-    s32 *p;
-    *(s32*)((u8*)arg0 + 0xC4) = 1;
-    DVDCancel((DVDCommandBlock*)((u8*)arg0 + 0x54));
+    *(volatile s32 *)&stream->cancelling = 1;
+    DVDCancel((DVDCommandBlock *)&stream->fileInfo);
     do {
         status = DVDGetDriveStatus();
     } while (status == 2 || status == 1);
-    p = (s32*)arg0;
-    p[0xC4/4] = 0;
-    p[0x24/4] = 0;
+    *(volatile s32 *)&stream->cancelling = 0;
+    *(volatile s32 *)&stream->reading = 0;
 }
 #pragma dont_inline reset
 
@@ -5185,37 +5184,37 @@ typedef struct { u32 old; u32 cur; } Idx8011FC2C;
 u32 fn_8011FC2C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
     extern s32 *fn_8011E0B4();
     u32 result;
-    register u32 cur;
-    register u32 old = *(u32 *)((u8 *)arg0 + 0x14);
+    Idx8011FC2C idx;
     u32 next;
     s32 *ptr;
     s32 *ret;
     s32 curOffset;
     s32 oldOffset;
-    s32 *curBase;
     s32 *oldBase;
-    next = old ^ 1;
+    s32 *curBase;
+    idx.old = *(u32 *)((u8 *)arg0 + 0x14);
+    next = idx.old ^ 1;
     if (*(s32 *)((u8 *)arg0 + next * 0x30 + 0x1C) != 0) {
         *(s32 *)((u8 *)arg0 + 0x14) = next;
     }
-    cur = *(u32 *)((u8 *)arg0 + 0x14);
+    idx.cur = *(u32 *)((u8 *)arg0 + 0x14);
     result = 0;
     ptr = arg3;
     if ((arg7 & 0x100000) != 0) {
         if ((arg6 & 0x100000) != 0) {
-            fn_8011E0B4(*(s32 *)((u8 *)arg0 + cur * 0x30 + 0x40),
-                        *(s32 *)((u8 *)arg0 + old * 0x30 + 0x40),
+            fn_8011E0B4(*(s32 *)((u8 *)arg0 + idx.cur * 0x30 + 0x40),
+                        *(s32 *)((u8 *)arg0 + idx.old * 0x30 + 0x40),
                         *(s32 *)((u8 *)arg0 + 4),
                         *(s32 *)((u8 *)arg0 + 8),
-                        *(s32 *)((u8 *)arg0 + old * 0x30 + 0x44),
+                        *(s32 *)((u8 *)arg0 + idx.old * 0x30 + 0x44),
                         arg3 + 1, arg4, arg1, arg2, 1, arg5, arg6, &result);
         }
         ptr = (s32 *)((u8 *)ptr + *ptr);
     }
     result = 0;
     if ((arg6 & 0x8000) == 0) ptr++;
-    curOffset = cur * 0x30;
-    oldOffset = old * 0x30;
+    curOffset = idx.cur * 0x30;
+    oldOffset = idx.old * 0x30;
     curBase = (s32 *)((u8 *)arg0 + curOffset);
     oldBase = (s32 *)((u8 *)arg0 + oldOffset);
     ret = fn_8011E0B4(curBase[7], oldBase[7],
@@ -5228,8 +5227,8 @@ u32 fn_8011FC2C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5, s
     }
     result >>= 2;
     if ((arg6 & 0x20000) == 0) {
-        curOffset = cur * 0x30;
-        oldOffset = old * 0x30;
+        curOffset = idx.cur * 0x30;
+        oldOffset = idx.old * 0x30;
         curBase = (s32 *)((u8 *)arg0 + curOffset);
         oldBase = (s32 *)((u8 *)arg0 + oldOffset);
         ret = fn_8011E0B4(curBase[10], oldBase[10],
@@ -5238,8 +5237,8 @@ u32 fn_8011FC2C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5, s
                           oldBase[11],
                           ret, arg4, arg1, arg2, 2, arg5, arg6, &result);
         result = 0;
-        curOffset = cur * 0x30;
-        oldOffset = old * 0x30;
+        curOffset = idx.cur * 0x30;
+        oldOffset = idx.old * 0x30;
         curBase = (s32 *)((u8 *)arg0 + curOffset);
         oldBase = (s32 *)((u8 *)arg0 + oldOffset);
         fn_8011E0B4(curBase[13], oldBase[13],
@@ -5771,7 +5770,7 @@ void fn_80120F84(s32 n, s32 ip_arg, void *a_arg) {
 void fn_80121400(s32 n, s32 *map, f32 *data) {
     s32 *ip = map;
     f32 *a = data;
-    int j, j1, j2, k, k1, l, m, m2;
+    int j, j1, j2, j3, k, k1, l, m, m2;
     float xr, xi, yr, yi;
     ip[0] = 0;
     l = n;
@@ -5809,15 +5808,15 @@ void fn_80121400(s32 n, s32 *map, f32 *data) {
                 a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
             }
             j1 = 2 * k + ip[k];
-            a[j1 + 1] = -a[j1 + 1];
             j2 = j1 + m2;
-            j1 = j2 + m2;
-            xr = a[j2]; xi = -a[j2 + 1];
-            yr = a[j1]; yi = -a[j1 + 1];
-            a[j2] = yr; a[j2 + 1] = yi;
-            a[j1] = xr; a[j1 + 1] = xi;
-            j1 += m2;
+            j3 = j2 + m2;
             a[j1 + 1] = -a[j1 + 1];
+            xr = a[j2]; xi = -a[j2 + 1];
+            yr = a[j3]; yi = -a[j3 + 1];
+            a[j2] = yr; a[j2 + 1] = yi;
+            a[j3] = xr; a[j3 + 1] = xi;
+            j3 += m2;
+            a[j3 + 1] = -a[j3 + 1];
         }
     } else {
         a[1] = -a[1];
@@ -5835,7 +5834,7 @@ void fn_80121400(s32 n, s32 *map, f32 *data) {
                 yr = a[k1]; yi = -a[k1 + 1];
                 a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
             }
-            j1 = 2 * k + ip[k + 1];
+            j1 = 2 * k + ip[k];
             a[j1 + 1] = -a[j1 + 1];
             a[j1 + m2 + 1] = -a[j1 + m2 + 1];
         }
