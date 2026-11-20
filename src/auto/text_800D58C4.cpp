@@ -10,7 +10,6 @@
 #include "revolution/GX/GXVert.h"
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
 struct GetVtxPosResult { f32 x; f32 y; };
-struct LRect { f32 x, y, w, h; };
 struct SelfVtable8020 {
     virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
     virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
