@@ -131,10 +131,12 @@ typedef struct { float a, b; int c, d; unsigned char e0, e1, e2, e3, e4, e5, e6,
 extern float lbl_80561F78, lbl_80561F7C, lbl_80561F80, lbl_80561F84;
 static inline float Chan_8018F2C0(unsigned char v) {
     const float zero = lbl_80561F74;
-    const float one = lbl_80561F88;
-    const float div = lbl_80562038;
-    const float scale = lbl_80562040;
-    const float bias = lbl_8056203C;
+    float t = (1.0f < (((float)v - zero) / 255.0f)) ? 1.0f : (((float)v - zero) / 255.0f);
+    t = (t > zero) ? t : zero;
+    return -0.508f + t * 1.016f;
+}
+
+static inline float Chan2_8018F2C0(unsigned char v, float zero, float one, float div, float scale, float bias) {
     float t = (one < (((float)v - zero) / div)) ? one : (((float)v - zero) / div);
     t = (t > zero) ? t : zero;
     return bias + t * scale;
