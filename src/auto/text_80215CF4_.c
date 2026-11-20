@@ -13,25 +13,24 @@ extern int lbl_8055B840, lbl_8055B848, lbl_8055B850, lbl_8055B858, lbl_8055EEF8;
 extern int lbl_8055EF00, lbl_8055EF04;
 DECL_SECTION(".sdata") extern char lbl_8055EF50[];
 extern float lbl_80563434, lbl_80563450, lbl_80563454;
+typedef struct Obj80215CF4 { char pad[0x400]; } Obj80215CF4;
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
 #pragma opt_common_subs off
 extern "C" void fn_80215CF4(void) {
-    register char *base asm("r30");
+    register char *base asm("r30") = lbl_80490510;
     register unsigned int zero asm("r31");
-
-    base = lbl_80490510;
     fn_8000D838(&lbl_8055EEF8);
     zero = 0;
     lbl_8055EF00 = 0xFFFF0000;
     {
-        unsigned int *p = (unsigned int *)base;
+        unsigned int *hp = (unsigned int *)base;
         ((volatile unsigned int *)base)[0] = zero;
-        p[1] = 0x7B;
-        p[2] = zero;
-        p[3] = zero;
-        p[4] = zero;
+        hp[1] = 0x7B;
+        hp[2] = zero;
+        hp[3] = zero;
+        hp[4] = zero;
     }
     lbl_8055EF04 = 0x7F000000;
     fn_801312EC(base + 0x108, &lbl_8055B840);
