@@ -41,7 +41,7 @@ extern float PSVECDotProduct(float *, float *);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-int fn_802CCBC4(void *arg0, float *arg1, float arg2, float arg3) {
+int fn_802CCBC4(void *__restrict arg0, float *arg1, float arg2, float arg3) {
     struct {
         double copies[2];
         unsigned int words[4];
@@ -84,7 +84,7 @@ int fn_802CCBC4(void *arg0, float *arg1, float arg2, float arg3) {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-int fn_802CCD0C(const void *arg0, const void *arg1) {
+int fn_802CCD0C(const void *__restrict arg0, const void *arg1) {
     int x = fn_802CAFC8(*(const int *)((const char *)arg0 + 0x10));
     int y = fn_802CAFC8(*(const int *)((const char *)arg1 + 0x10));
     if (x != y) {
