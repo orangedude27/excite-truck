@@ -3,12 +3,15 @@
 
 extern void fn_8000D838(void *);
 extern char lbl_8055FE08;
-extern short lbl_8055FE10;
-extern short lbl_8055FE12;
-extern short lbl_8055FE14;
+__declspec(section ".sdata") extern short lbl_8055FE10;
+__declspec(section ".sdata") extern short lbl_8055FE12;
+__declspec(section ".sdata") extern short lbl_8055FE14;
 void fn_802D98BC(void) {
     fn_8000D838(&lbl_8055FE08);
     lbl_8055FE10 = 0x100;
-    lbl_8055FE14 = 0x401;
-    lbl_8055FE12 = 0x405;
+    {
+        short *p = &lbl_8055FE14;
+        *p = 0x401;
+        *(p - 1) = 0x405;
+    }
 }
