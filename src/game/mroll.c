@@ -1416,7 +1416,6 @@ extern char lbl_80342840[];
 extern char lbl_8055BD60;
 #pragma push
 #pragma use_lmw_stmw off
-#pragma cplusplus on
 void fn_80242738(void *arg0, s32 arg1)
 {
   register unsigned refreshIndex;
