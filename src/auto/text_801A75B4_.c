@@ -334,6 +334,15 @@ static inline void copy_recs_801A7A5C(Rec_801A7A5C *src, Rec_801A7A5C *dst, char
         src++;
         dst++;
     }
+    {
+        Tail_801A7A5C *u = (Tail_801A7A5C *)(base + 0x320);
+        Tail_801A7A5C *vv = (Tail_801A7A5C *)(base + 0x32C);
+        vv->x = u->x;
+        vv->y = u->y;
+        vv->a = u->a;
+        vv->b = u->b;
+        vv->c = u->c;
+    }
 }
 void fn_801A7A5C(void) {
     int i, j;
