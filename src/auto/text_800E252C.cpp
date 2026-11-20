@@ -1085,7 +1085,8 @@ extern "C" void *fn_800E3954(char *self, int count, int columns, int priority, v
     void *node;
     void *voice;
     void *oldVoice;
-    unsigned int interruptState = OSDisableInterrupts();
+    unsigned int interruptState;
+    interruptState = OSDisableInterrupts();
 
     if (*(int *)((char *)self + 0x20) != 0) goto acquire_setup;
     stolen = 0;
@@ -1123,7 +1124,7 @@ acquire_setup:
         return 0;
     }
     *(unsigned int *)((char *)voice + 0x124) = (unsigned char)priority;
-    register long secondState = OSDisableInterrupts();
+    columns = (int)OSDisableInterrupts();
     if (!voice) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
     register void *link = (char *)voice + 0x1A8;
     void *sentinel = (char *)self + 0x18;
@@ -1137,7 +1138,7 @@ acquire_setup:
     if (voice == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
     void *iterator = node;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)self + 0x14, &iterator, link);
-    OSRestoreInterrupts(secondState);
+    OSRestoreInterrupts(columns);
     if (*((unsigned char *)self + 0x6C31) != 0) {
         node = *(void **)(self += 0x18);
         while (node != (void *)self) {
@@ -1166,7 +1167,7 @@ acquire_setup:
     OSRestoreInterrupts(interruptState);
     return voice;
 }
-
+#pragma pop
 extern const char lbl_80321FE8[];
 #pragma use_lmw_stmw off
 extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(void *manager, void *voice) {
@@ -1864,6 +1865,7 @@ struct AxVoice {
     /* 0x123 */ u8 updateFlags;       /* bits the AX update functions act on */
     /* 0x124 */ u8 pad_124[0x60];
     /* 0x184 */ f32 playbackRate;     /* how fast the wave is played, 1.0 = as recorded */
+    int IsPlayFinished() const;
 };
 
 /* Bits of AxVoice::updateFlags (+0x123).  Setters ask for one thing to be pushed
@@ -2427,7 +2429,7 @@ extern "C" void SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(AxVoice *voice
     OSRestoreInterrupts(level);
 }
 
-extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
+extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(register void *self) {
     unsigned int start, end, address, buffer;
     int fmt;
     unsigned int irq = OSDisableInterrupts();
@@ -2978,17 +2980,17 @@ extern "C" void fn_800E68EC(void *arg0, int arg1, int arg2, void *arg3, int arg4
 }
 
 extern "C" void fn_800E6A44(void *arg0, int arg1, int arg2, void *arg3) {
-    signed char *file = (signed char *)lbl_803221A8;
+    const char *file = lbl_803221A8;
     unsigned short mix[3];
     unsigned char *voice;
     int i;
 
     if (arg1 >= 2) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)file, 0x458, (const char *)file + 0x258);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x458, file + 0x258);
     }
     if (arg2 == 0) {
         if (arg3 == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char *)file, 0x45C, (const char *)file + 0x2A0);
+            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x45C, file + 0x2A0);
         }
         mix[0] = ((unsigned short *)arg3)[0];
         mix[1] = ((unsigned short *)arg3)[1];
