@@ -405,8 +405,12 @@ static inline void BootReadPart(void *buf, s32 len, s32 add) {
 }
 
 static inline void BootReadAbsC(BootCmdBlock *cb, void *buf, s32 len, s32 off) {
-    DVDReadAbsAsyncPrio(cb, buf, len, off, 0, 0);
-    while (DVDGetCommandBlockStatus(cb) != 0) {
+    BootCmdBlock *c = cb;
+    s32 l = len;
+    void *b = buf;
+    s32 o = off;
+    DVDReadAbsAsyncPrio(c, b, l, o, 0, 0);
+    while (DVDGetCommandBlockStatus(c) != 0) {
         if (DVDGetCommandBlockStatus(cb) > 2 || DVDGetCommandBlockStatus(cb) < 0) {
             __OSLaunchMenu();
         }
@@ -516,6 +520,7 @@ void fn_8004E538(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     s32 target;
     void *copy;
     s32 cmp;
+    BootCmdBlock cbBig, cbGetpart2, cbHdr, cbGetpart1, cbGetpartMinus1, cbLoop, cbGetpartFinal, cbFinalRead;
 
     OSDisableInterrupts();
     params = OSAllocFromMEM1ArenaLo(0x1C, 1);
@@ -540,15 +545,15 @@ void fn_8004E538(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     }
     fn_8004DDFC();
     hdr = OSAllocFromMEM1ArenaLo(0x20, 0x20);
-    off = BootGetPartOffset();
-    BootReadAbs(hdr, 0x20, off);
-    off = BootGetPartOffset();
-    BootReadAbs((void *)0x81200000, (hdr[5] + 0x1F) & ~0x1F, off + 8);
+    off = BootGetPartOffsetC(&cbGetpart1);
+    BootReadAbsC(&cbHdr, hdr, 0x20, off);
+    off = BootGetPartOffsetC(&cbGetpart2);
+    BootReadAbsC(&cbBig, (void *)0x81200000, (hdr[5] + 0x1F) & ~0x1F, off + 8);
     ICInvalidateRange((void *)0x81200000, (hdr[5] + 0x1F) & ~0x1F);
     cmp = strncmp((char *)hdr, lbl_803049E4, 10) > 0;
     if (cmp != 0) {
         if ((u32)(arg0 + 0x10000) == 0xFFFF) {
-            arg0 = ((u32)(hdr[5] + 0x20) >> 2) + BootGetPartOffset();
+            arg0 = ((u32)(hdr[5] + 0x20) >> 2) + BootGetPartOffsetC(&cbGetpartMinus1);
         }
         params[2] = arg0;
         ((void (*)(void *, void *, void *))hdr[4])(&sp8, &spC, &sp10);
@@ -558,7 +563,7 @@ void fn_8004E538(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
         sp8((void *)OSReport);
         OSSetArenaLo(copy);
         while (spC(&sp14, &sp18, &sp1C) != 0) {
-            BootReadAbs(sp14, sp18, sp1C >> __DVDLayoutFormat);
+            BootReadAbsC(&cbLoop, sp14, sp18, sp1C >> __DVDLayoutFormat);
         }
         target = sp10();
         copy = OSAllocFromMEM1ArenaLo(0x1C, 1);
@@ -572,8 +577,8 @@ void fn_8004E538(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     *(s32 *)0x812FDFF0 = arg2;
     *(s32 *)0x812FDFEC = arg3;
     *(u8 *)0x800030E2 = 1;
-    off = BootGetPartOffset();
-    BootReadAbs((void *)0x81330000, (hdr[6] + 0x1F) & ~0x1F, ((u32)(hdr[5] + 0x20) >> 2) + off);
+    off = BootGetPartOffsetC(&cbGetpartFinal);
+    BootReadAbsC(&cbFinalRead, (void *)0x81330000, (hdr[6] + 0x1F) & ~0x1F, ((u32)(hdr[5] + 0x20) >> 2) + off);
     ICInvalidateRange((void *)0x81330000, (hdr[6] + 0x1F) & ~0x1F);
     OSDisableInterrupts();
     ICFlashInvalidate();
