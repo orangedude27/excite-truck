@@ -2232,81 +2232,61 @@ struct ArchiveStream {
 
 #pragma push
 #pragma use_lmw_stmw off
+/* Load one group of the sound archive into memory obtained from `allocator':
+ * the group's data is read through a stream opened on it (in `blockSize'
+ * pieces when blockSize is non-zero) and returned; when the group also carries
+ * wave data that is read too and given back through `outWave'.  self is the
+ * loader: its mutex is held for the whole load, +0x18 is the archive, +0x1c a
+ * 0x200-byte stream setup area and +0x21C the stream being read, published
+ * there so Cancel() can stop it.  Returns 0 if the group cannot be loaded. */
 extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatablePPvUl(void *self, u32 groupId, void *allocator, void **outWave, u32 blockSize) {
-    class Stream {
-    public:
-        virtual void v0();
-        virtual void v1();
-        virtual void Close();
-        virtual s32 Read(void *, u32);
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual s32 IsOpen();
-        virtual void v10();
-        virtual void v11();
-        virtual void v12();
-        virtual void v13();
-        virtual u32 GetSize();
-        virtual void v15();
-        virtual void v16();
-        virtual void v17();
-        virtual s32 IsReady();
-    };
-    class Allocator {
-    public:
-        virtual void v0();
-        virtual void *Alloc(u32);
-    };
-    struct { u32 pad[5]; s32 hasWave; } info;
-    Stream *stream;
+    SndArchiveGroupInfo info;
+    ArchiveStream *groupStream;
     u32 remain;
     void *p;
     void *buf;
 
     if (allocator == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E40, 0x53, lbl_80324E5C);
+        Panic__Q26nw4hbm2dbFPCciPCce(kLoaderSourceFile, 0x53, kMsgNullAllocator);
     }
     OSLockMutex(self);
-    stream = (Stream *)detail_OpenGroupStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void **)((char *)self + 0x18), groupId, (char *)self + 0x1c, 0x200);
-    if (stream == 0) {
-        if (stream != 0)
-            stream->Close();
+    groupStream = (ArchiveStream *)detail_OpenGroupStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void **)((char *)self + 0x18), groupId, (char *)self + 0x1c, 0x200);
+    if (groupStream == 0) {
+        if (groupStream != 0)
+            groupStream->Close();
         OSUnlockMutex(self);
         return 0;
     }
-    if (stream->IsReady() == 0 || stream->IsOpen() == 0) {
-        if (stream != 0)
-            stream->Close();
+    if (groupStream->IsReady() == 0 || groupStream->IsOpen() == 0) {
+        if (groupStream != 0)
+            groupStream->Close();
         OSUnlockMutex(self);
         return 0;
     }
-    buf = ((Allocator *)allocator)->Alloc(stream->GetSize());
+    buf = ((SoundMemoryAllocatable *)allocator)->Alloc(groupStream->GetSize());
     if (buf == 0) {
-        if (stream != 0)
-            stream->Close();
+        if (groupStream != 0)
+            groupStream->Close();
         OSUnlockMutex(self);
         return 0;
     }
-    *(Stream **)((char *)self + 0x21c) = stream;
+    *(ArchiveStream **)((char *)self + 0x21c) = groupStream;
     if (blockSize == 0) {
-        if (stream->Read(buf, stream->GetSize()) == 0) {
+        if (groupStream->Read(buf, groupStream->GetSize()) == 0) {
             *(void **)((char *)self + 0x21c) = 0;
-            if (stream != 0)
-                stream->Close();
+            if (groupStream != 0)
+                groupStream->Close();
             OSUnlockMutex(self);
             return 0;
         }
     } else {
         p = buf;
-        remain = stream->GetSize();
+        remain = groupStream->GetSize();
         while (remain != 0) {
-            if (stream->Read(p, blockSize > remain ? remain : blockSize) == 0) {
+            if (groupStream->Read(p, blockSize > remain ? remain : blockSize) == 0) {
                 *(void **)((char *)self + 0x21c) = 0;
-                if (stream != 0)
-                    stream->Close();
+                if (groupStream != 0)
+                    groupStream->Close();
                 OSUnlockMutex(self);
                 return 0;
             }
@@ -2319,60 +2299,60 @@ extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hb
         }
     }
     *(void **)((char *)self + 0x21c) = 0;
-    if (fn_800F2824(*(void **)((char *)self + 0x18), groupId, &info) == 0) {
-        if (stream != 0)
-            stream->Close();
+    if (ReadGroupInfo__Q36nw4hbm3snd12SoundArchiveCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo(*(void **)((char *)self + 0x18), groupId, &info) == 0) {
+        if (groupStream != 0)
+            groupStream->Close();
         OSUnlockMutex(self);
         return 0;
     }
-    if (info.hasWave != 0) {
-        Stream *stream2 = (Stream *)detail_OpenGroupWaveDataStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi_800F2BEC(*(void **)((char *)self + 0x18), groupId, (void *)((u32)self + 0x1c), 0x200);
-        if (stream2 == 0) {
-            if (stream2 != 0)
-                stream2->Close();
-            if (stream != 0)
-                stream->Close();
+    if (info.waveDataSize != 0) {
+        ArchiveStream *waveStream = (ArchiveStream *)detail_OpenGroupWaveDataStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi_800F2BEC(*(void **)((char *)self + 0x18), groupId, (void *)((u32)self + 0x1c), 0x200);
+        if (waveStream == 0) {
+            if (waveStream != 0)
+                waveStream->Close();
+            if (groupStream != 0)
+                groupStream->Close();
             OSUnlockMutex(self);
             return 0;
         }
-        if (stream2->IsReady() == 0 || stream2->IsOpen() == 0) {
-            if (stream2 != 0)
-                stream2->Close();
-            if (stream != 0)
-                stream->Close();
+        if (waveStream->IsReady() == 0 || waveStream->IsOpen() == 0) {
+            if (waveStream != 0)
+                waveStream->Close();
+            if (groupStream != 0)
+                groupStream->Close();
             OSUnlockMutex(self);
             return 0;
         }
-        void *buf2 = ((Allocator *)allocator)->Alloc(stream2->GetSize());
-        if (buf2 == 0) {
-            if (stream2 != 0)
-                stream2->Close();
-            if (stream != 0)
-                stream->Close();
+        void *waveBuf = ((SoundMemoryAllocatable *)allocator)->Alloc(waveStream->GetSize());
+        if (waveBuf == 0) {
+            if (waveStream != 0)
+                waveStream->Close();
+            if (groupStream != 0)
+                groupStream->Close();
             OSUnlockMutex(self);
             return 0;
         }
-        *(Stream **)((char *)self + 0x21c) = stream2;
+        *(ArchiveStream **)((char *)self + 0x21c) = waveStream;
         if (blockSize == 0) {
-            if (stream2->Read(buf2, stream2->GetSize()) == 0) {
+            if (waveStream->Read(waveBuf, waveStream->GetSize()) == 0) {
                 *(void **)((char *)self + 0x21c) = 0;
-                if (stream2 != 0)
-                    stream2->Close();
-                if (stream != 0)
-                    stream->Close();
+                if (waveStream != 0)
+                    waveStream->Close();
+                if (groupStream != 0)
+                    groupStream->Close();
                 OSUnlockMutex(self);
                 return 0;
             }
         } else {
-            void *p = buf2;
-            u32 remain = stream2->GetSize();
+            void *p = waveBuf;
+            u32 remain = waveStream->GetSize();
             while (remain != 0) {
-                if (stream2->Read(p, blockSize > remain ? remain : blockSize) == 0) {
+                if (waveStream->Read(p, blockSize > remain ? remain : blockSize) == 0) {
                     *(void **)((char *)self + 0x21c) = 0;
-                    if (stream2 != 0)
-                        stream2->Close();
-                    if (stream != 0)
-                        stream->Close();
+                    if (waveStream != 0)
+                        waveStream->Close();
+                    if (groupStream != 0)
+                        groupStream->Close();
                     OSUnlockMutex(self);
                     return 0;
                 }
@@ -2386,15 +2366,15 @@ extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hb
         }
         *(void **)((char *)self + 0x21c) = 0;
         if (outWave != 0)
-            *outWave = buf2;
-        if (stream2 != 0)
-            stream2->Close();
+            *outWave = waveBuf;
+        if (waveStream != 0)
+            waveStream->Close();
     } else {
         if (outWave != 0)
             *outWave = 0;
     }
-    if (stream != 0)
-        stream->Close();
+    if (groupStream != 0)
+        groupStream->Close();
     OSUnlockMutex(self);
     return buf;
 }
