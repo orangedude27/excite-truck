@@ -188,6 +188,8 @@ void fn_80264098(void *item, int type) {
 
 #pragma cplusplus on
 extern void *operator new(unsigned long, void *);
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_802640A0(void *arg0) {
     struct CreditsMenuItem {
         void *name;
@@ -203,6 +205,7 @@ extern "C" void fn_802640A0(void *arg0) {
     item->a = 0;
     item->b = 0;
 }
+#pragma pop
 #pragma cplusplus reset
 
 #pragma push
@@ -461,13 +464,14 @@ void fn_80264618(void *obj) {
 void *fn_802646D0(void *arg0) {
     extern int lbl_802FA700[], lbl_80346364[], lbl_80346678[];
     extern char lbl_8055C490[4];
-    extern float lbl_80563BFC, lbl_80563C04;
+    extern float lbl_80563BFC, lbl_80563C00, lbl_80563C04, lbl_80563BF0;
     extern void *fn_8023512C(const char *);
     extern void *fn_8012850C(int, void *);
     struct Desc { int a[15]; };
     register int *vt = lbl_80346678;
     const struct Desc *src = (const struct Desc *)lbl_802FA700;
     char *p = (char *)arg0;
+    int zero = 0;
     int n;
     void *data;
     float f;
@@ -477,7 +481,7 @@ void *fn_802646D0(void *arg0) {
     d6 = src->a[6]; d7 = src->a[7]; d8 = src->a[8];
     d9 = src->a[9]; d10 = src->a[10]; d11 = src->a[11];
     d12 = src->a[12]; d13 = src->a[13]; d14 = src->a[14];
-    *(int *)(p+0x14) = 0;
+    *(int *)(p+0x14) = zero;
     *(int **)(p+0) = vt;
     *(int *)(p+0x18) = d0; *(int *)(p+0x1c) = d1; *(int *)(p+0x20) = d2;
     *(int *)(p+0x24) = d3; *(int *)(p+0x28) = d4; *(int *)(p+0x2c) = d5;
@@ -487,7 +491,7 @@ void *fn_802646D0(void *arg0) {
     *(void **)(p+0x54) = fn_8023512C((const char *)d0);
     n = src->a[9];
     data = fn_8012850C(n*32, lbl_8055C490);
-    *(void **)(p+0x58)=data; *(int *)(p+0x60)=n; *(int *)(p+0x5c)=0; *(void **)(p+0x64)=data;
+    *(void **)(p+0x58)=data; *(int *)(p+0x60)=n; *(int *)(p+0x5c)=zero; *(void **)(p+0x64)=data;
     f = *(float *)(p+0x44);
     f = f < lbl_80563BFC ? lbl_80563BFC : f;
     *(float *)(p+0x68)=lbl_80563C00/f;
@@ -496,7 +500,7 @@ void *fn_802646D0(void *arg0) {
     *(float *)(p+0x6c)=lbl_80563C04/f;
     f = *(float *)(p+0x48);
     f = f < lbl_80563BFC ? lbl_80563BFC : f;
-    *(int *)(p+0x5c)=0;
+    *(int *)(p+0x5c)=zero;
     *(float *)(p+0x74)=lbl_80563BF0;
     *(float *)(p+0x70)=lbl_80563C00/f;
     *(int *)(p+0x78) = lbl_80346364[0]; *(int *)(p+0x7c) = lbl_80346364[1];
@@ -510,7 +514,7 @@ void *fn_802646D0(void *arg0) {
     *(void **)(p+0xb4) = fn_8023512C((const char *)lbl_80346364[0]);
     n = lbl_80346364[9];
     data = fn_8012850C(n*32, lbl_8055C490);
-    *(void **)(p+0xb8)=data; *(int *)(p+0xc0)=n; *(int *)(p+0xbc)=0; *(void **)(p+0xc4)=data;
+    *(void **)(p+0xb8)=data; *(int *)(p+0xc0)=n; *(int *)(p+0xbc)=zero; *(void **)(p+0xc4)=data;
     f=*(float *)(p+0xa4);
     f = f < lbl_80563BFC ? lbl_80563BFC : f;
     *(float *)(p+0xc8)=lbl_80563C00/f;
@@ -519,7 +523,7 @@ void *fn_802646D0(void *arg0) {
     *(float *)(p+0xcc)=lbl_80563C04/f;
     f=*(float *)(p+0xa8);
     f = f < lbl_80563BFC ? lbl_80563BFC : f;
-    *(int *)(p+0xbc)=0;
+    *(int *)(p+0xbc)=zero;
     *(float *)(p+0xd4)=lbl_80563BF0;
     *(float *)(p+0xd0)=lbl_80563C00/f;
     lbl_8055F448=arg0;
