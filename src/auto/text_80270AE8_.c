@@ -345,10 +345,9 @@ int fn_80270EC4(void *arg0, int arg1) {
     extern int lbl_8055F554;
     extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
     struct SortEntry entries[64];
-    char *name = lbl_80346B00;
-    int flags = arg1;
-    int category, groupOffset, count, byteOffset, i;
-    register int one, zero;
+    register char *name = lbl_80346B00;
+    register int flags = arg1;
+    register int category, groupOffset, one, zero, count, byteOffset, i;
     fn_80270C04(arg0, flags);
     if ((flags & 0x100) != 0) {
         category = 0;
@@ -1082,18 +1081,16 @@ void fn_80272354(void *obj) {
     *(int *)((char *)obj + 0x5C) = 2;
 }
 
-#pragma scheduling invalid_target
-void fn_802723B4(void *arg0, void *arg1, float t) {
+#pragma processor 603
+void fn_802723B4(void *arg0, void *arg1, register float t) {
     struct Result { void *node; float fraction; s32 mode; } result;
     float *node;
-    float factor;
     fn_80136468((void **)&result, arg0, t);
     node = result.node;
-    factor = result.fraction;
-    ((float *)arg1)[0] = factor * (((float *)*(void **)((char *)node + 0x14))[0] - node[0]) + node[0];
-    ((float *)arg1)[1] = factor * (((float *)*(void **)((char *)node + 0x14))[1] - node[1]) + node[1];
+    t = result.fraction;
+    ((float *)arg1)[0] = t * (((float *)*(void **)((char *)node + 0x14))[0] - node[0]) + node[0];
+    ((float *)arg1)[1] = t * (((float *)*(void **)((char *)node + 0x14))[1] - node[1]) + node[1];
 }
-#pragma scheduling on
 extern float lbl_8055F560, lbl_80563F40, lbl_80563F48;
 extern void fn_80136468(void **, void *, float);
 #pragma ppc_psq_save off
@@ -1460,7 +1457,7 @@ extern "C" int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
     float height;
     int result;
 
-    *arg2 = lbl_80563F48;
+    *arg2 = 0.0f;
     if (*(int *)((char *)*(void **)arg0 + 0x58) == 0) return 0;
     if (arg3 != -1 && arg3 != *(int *)((char *)*(void **)arg0 + 0x5C)) return 0;
     result = 1;
@@ -1472,7 +1469,7 @@ extern "C" int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
         if (fn_80272C24(lbl_8055F568, *(float *)((char *)arg0 + 4), *(float *)((char *)arg0 + 8), height) != 0 ||
             (*(unsigned char *)((char *)arg0 + 0x14) != 0 &&
              fn_80272C24(lbl_8055F568, *(float *)((char *)arg0 + 0xC), *(float *)((char *)arg0 + 0x10), height) != 0)) {
-            *arg2 = lbl_80563F50;
+            *arg2 = 1.0f;
             return 1;
         }
         result = 0;
@@ -1480,8 +1477,8 @@ extern "C" int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
     {
         float value = PSQUATMultiply((char *)arg1 + 0x60, *(void **)arg0) -
                       *(float *)((char *)*(void **)arg0 + 0xC);
-        if (value <= lbl_80563F48) *arg2 = lbl_80563F50;
-        else *arg2 = lbl_80563F50 / (lbl_80563F50 + value);
+        if (value <= 0.0f) *arg2 = 1.0f;
+        else *arg2 = 1.0f / (1.0f + value);
     }
     return result;
 }
