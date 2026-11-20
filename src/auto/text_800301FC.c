@@ -1,4 +1,7 @@
 #include "types.h"
+struct Z9 { u32 a,b,c,d,e,f,g,h,i; };
+struct Z8 { u32 a,b,c,d,e,f,g,h; };
+struct Z10 { u32 a,b,c,d,e,f,g,h,i,j; };
 extern u32 lbl_8055D6E8;
 extern s32 lbl_8055D6AC;
 extern s32 lbl_8055D6DC;
