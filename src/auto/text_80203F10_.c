@@ -30,3 +30,6 @@ void fn_80203F10(void) {
     ((void (*)(void *, void *, void *))__register_global_object)(&lbl_8048897C, &fn_80203F88, &lbl_80488970);
 }
 #pragma pop
+#include <types.h>
+#include <macros.h>
+DECL_SECTION(".ctors") funcptr_t D_802ED364 = fn_80203F10;
