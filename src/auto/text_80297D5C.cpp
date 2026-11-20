@@ -167,6 +167,7 @@ extern "C" int fn_80297D90(void *out, int value) {
     return 0;
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_80297DC8(void* arg0) {
     float f0=lbl_805645B4,f1=lbl_805645B0,f2=lbl_805645AC,f3=lbl_805645A8,f4=lbl_805645A4,f5=lbl_805645A0,f6=lbl_8056459C,f7=lbl_80564598,f8=lbl_80564594,f9=lbl_80564590;
     float tmpA[3], tmpB[3];
@@ -410,7 +411,7 @@ extern int lbl_8055CA7C;
 #pragma processor 750
 extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, void* arg4, void* ctx) {
     float* out = (float*)arg1;
-    float* base = (float*)arg2;
+    volatile int* base = (volatile int*)arg2;
     float* d1 = (float*)arg3;
     float* d2 = (float*)arg4;
     float p0[3];
@@ -421,9 +422,9 @@ extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, voi
     float l2;
     float a0, a1, a2, b0, b1, b2;
 
-    ((int*)p0)[0] = ((int*)base)[0];
-    ((int*)p0)[1] = ((int*)base)[1];
-    ((int*)p0)[2] = ((int*)base)[2];
+    ((int*)p0)[0] = base[0];
+    ((int*)p0)[1] = base[1];
+    ((int*)p0)[2] = base[2];
     a1 = p0[1] + d1[1];
     a0 = p0[0] + d1[0];
     b0 = p0[0] + d2[0];
@@ -432,14 +433,12 @@ extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, voi
     b2 = p0[2] + d2[2];
     p1[0] = a0; p1[1] = a1; p1[2] = a2;
     p2[0] = b0; p2[1] = b1; p2[2] = b2;
-#pragma opt_common_subs off
     fn_801E9DD4(lbl_8055CA70, lbl_8055CA7C);
     if (fn_801E9E30(ctx, p0) == 0 || fn_801E9E30(ctx, p1) == 0 || fn_801E9E30(ctx, p2) == 0) {
         fn_801E9DD8();
         return 0;
     }
     fn_801E9DD8();
-#pragma opt_common_subs reset
     e1[0] = p1[0] - p0[0]; e1[1] = p1[1] - p0[1]; e1[2] = p1[2] - p0[2];
     e2[0] = p2[0] - p0[0]; e2[1] = p2[1] - p0[1]; e2[2] = p2[2] - p0[2];
     if ((float)fabs(PSVECDotProduct(e1, e1)) <= lbl_80558DC4 || (float)fabs(PSVECDotProduct(e2, e2)) <= lbl_80558DC4) {
@@ -1636,7 +1635,8 @@ extern "C" void fn_8029A904(void* arg0, int arg1, void* arg2, float farg0, float
     int i;
     unsigned j;
     float dt;
-    register float gravity, x, y, z;
+    register float gravity;
+    double x, y, z;
     float delta[3];
     float pos[3];
     entry = (unsigned char*)arg0 + arg1 * 0x2C;
@@ -1666,9 +1666,9 @@ extern "C" void fn_8029A904(void* arg0, int arg1, void* arg2, float farg0, float
                 z = delta[2];
                 point = (float*)entry;
                 for (j = 0; j < 2; j++, point += 3) {
-                    pos[0] = point[0] + x;
-                    pos[1] = point[1] + y;
-                    pos[2] = point[2] + z;
+                    pos[0] = point[0] + (float)x;
+                    pos[1] = point[1] + (float)y;
+                    pos[2] = point[2] + (float)z;
                     ((void (*)(void*, float*, float*))fn_8028E584)(*(void**)((char*)arg0 + 0x160), pos, velocity);
                 }
             }
