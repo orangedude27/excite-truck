@@ -656,6 +656,7 @@ void fn_802D81C4(void *arg0, int arg1) {
     }
     fn_80128670(tmp);
 }
+#pragma unroll reset
 extern char lbl_8034C5AC[];
 void fn_802D86BC(void *arg0, int arg1) {
     void **data = *(void ***)((char *)arg0 + 0x2c);
