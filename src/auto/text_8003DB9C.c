@@ -5245,7 +5245,6 @@ void __GXFlushTextureState(void) {
 #pragma dont_inline reset
 
 extern unsigned int lbl_80303C30[];
-#pragma opt_propagation off
 void GXSetTevOp(int stage, int mode) {
     unsigned int *base = lbl_80303C30;
     unsigned int *data;
