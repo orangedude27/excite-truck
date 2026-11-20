@@ -9246,6 +9246,21 @@ static inline u32 Fn800B25CCWide2(u16 *w) {
     }
     return r;
 }
+static inline u32 Fn800B25CCUpperWide(u16 c, u16 *out) {
+    if (c >= 0xFF41U && c <= 0xFF5AU) {
+        *out = c - 0x20;
+        return 1;
+    }
+    return 0;
+}
+static inline u32 Fn800B25CCUpperSjis(u16 *c, u16 *out) {
+    M2C_FIELD(&lbl_803D2140, s32 (**)(u8 *, u16 *, s32 *), 0x48)((u8 *)c, out, (s32 *)lbl_803D2140);
+    if (Fn800B25CCUpperWide(*out, out) == 1) {
+        M2C_FIELD(&lbl_803D2140, s32 (**)(u16 *, u16 *), 0x4C)(out, out);
+        return 1;
+    }
+    return 0;
+}
 #pragma push
 #pragma opt_propagation off
 u16 fn_800B25CC(void *arg0, s32 arg1) {
@@ -10894,6 +10909,7 @@ extern "C" s32 fn_800B5618(void *arg0, void *arg1, u32 arg2, u16 arg3, s32 arg4)
 }
 
 extern "C" s32 fn_800B5700(s32 arg0, void *arg1, s32 arg2, u16 arg3, u32 arg4, u32 *arg5, u32 arg6) {
+#pragma opt_lifetimes off
     void *page;
     u32 count;
     s32 result;
@@ -10903,7 +10919,7 @@ extern "C" s32 fn_800B5700(s32 arg0, void *arg1, s32 arg2, u16 arg3, u32 arg4, u
     if ((u32)arg2 >= M2C_FIELD(arg0, u32 *, 8) || arg3 >= (limit = M2C_FIELD(arg0, u16 *, 0)) || (arg3 + arg4) > limit) {
         if (arg3 != 0) return 10;
     }
-    if (arg3 != 0 || arg4 < (u32)M2C_FIELD(arg0, u16 *, 0)) {
+    if (arg3 != 0 || arg4 < M2C_FIELD(arg0, u16 *, 0)) {
         result = ((s32 (*)(void *, s32, s32, s32))fn_800A8F28)((void *)arg0, arg2, (s32)&page, arg6);
         if (result != 0) return result;
         VFipf_memcpy(M2C_FIELD(page, u8 **, 8) + arg3, arg1, arg4);
@@ -10939,6 +10955,7 @@ extern "C" s32 fn_800B5700(s32 arg0, void *arg1, s32 arg2, u16 arg3, u32 arg4, u
             *arg5 += toWrite << M2C_FIELD(arg0, u8 *, 0x20);
         }
     }
+#pragma opt_lifetimes reset
     return 0;
 }
 
@@ -13083,12 +13100,13 @@ extern "C" s32 fn_800B92A8(s32 fileId) {
 
 extern "C" u8 lbl_80405D58[];
 extern "C" s32 fn_800B9394(s32 arg0, void *arg1) {
-    u8 *out = (u8 *)arg1;
     u16 index;
     u8 *entry;
     u8 *found = 0;
+    u32 size;
     u32 sectors;
     u32 groups;
+    u8 *out = (u8 *)arg1;
 
     fn_800B8004(lbl_8055DD30);
     if (arg0 == 0 || arg1 == 0) {
@@ -13106,7 +13124,8 @@ extern "C" s32 fn_800B9394(s32 arg0, void *arg1) {
         fn_800B8048(lbl_8055DD30);
         return -0x14;
     }
-    sectors = *(u32 *)(found + 0x54) >> 9;
+    size = *(u32 *)(found + 0x54);
+    sectors = size >> 9;
     groups = sectors / 255;
     *(u8 *)(out + 7) = 0x3F;
     *(u8 *)(out + 6) = 0xFF;
@@ -13140,21 +13159,20 @@ extern "C" s32 fn_800B94EC(s32 arg0, s32 arg1) {
     u8 *entries;
     u32 initCount;
     u32 i;
-    struct InitControl { u32 a, b, c; };
-    volatile struct InitControl *control;
 
     if ((u32)fn_800A4A8C(arg0) >= 0x4C)
         return -0x14;
     if (lbl_8055DD28 == 0) {
+        s32 one = 1;
         fn_800A499C((const char *)(base + 0x40), 0, 0x1590);
-        control = (volatile struct InitControl *)(base + 0x15D0);
+        volatile u32 *control = (volatile u32 *)(base + 0x15D0);
         initCount = lbl_8055DD28 + 1;
-        control->a = 1;
-        lbl_8055DD28 = initCount;
-        control->b = 1;
-        control->c = (u32)(base + 0x15DC);
+        control[0] = (u32)one;
+        *(volatile u32 *)&lbl_8055DD28 = initCount;
+        control[1] = (u32)one;
+        control[2] = (u32)(base + 0x15DC);
         typedef s32 (*InitFn)(void *, s32, s32);
-        s32 result = ((InitFn)fn_800B7F28)((void *)control, 1, initCount);
+        s32 result = ((InitFn)fn_800B7F28)((void *)control, one, initCount);
         lbl_8055DD30 = result;
         if (result == 0)
             return -0x15;
@@ -13175,7 +13193,7 @@ loop_6:
     if (i < 0x17)
         goto loop_6;
 block_11:
-    return ((s32)~(((s32)(u16)i - 0x17) | (0x17 - (s32)(u16)i)) >> 31) & -0x16;
+    return -0x16 & ((s32)~(((s32)(u16)i - 0x17) | (0x17 - (s32)(u16)i)) >> 31);
 }
 
 /* One entry of the prfile2 file-state table: 0x17 slots of 0xF0 bytes at
@@ -13750,9 +13768,9 @@ extern "C" u8 fn_800BA974(s32 arg0, u8 *arg1, s32 arg2) {
     u8 count;
     u8 *out;
     u8 *record;
-    u32 j;
-    u8 *groupBase;
     u32 i;
+    u8 *groupBase;
+    u32 j;
 
     if (arg1 != 0) {
         if (arg2 == 0)
@@ -13763,11 +13781,11 @@ extern "C" u8 fn_800BA974(s32 arg0, u8 *arg1, s32 arg2) {
     groupBase = (u8 *)lbl_803D2140;
     out = arg1;
     count = 0;
-    for (j = 0; j < 0x1A; j++) {
+    for (i = 0; i < 0x1A; i++) {
         if (fn_800A71C4((u32 *)record) != 0 &&
             *(u32 *)(record + 4) == (u32)arg0) {
             u8 *group = groupBase + 0xA0;
-            for (i = 0; i < 13; i++, group += 0x3F90) {
+            for (j = 0; j < 13; j++, group += 0x3F90) {
                 if (*(u32 *)(group + 0x1FBC) == (u32)record) {
                     count++;
                     *out++ = *(u8 *)(group + 0x1F8E);
@@ -14018,10 +14036,10 @@ extern "C" s32 fn_800BA874(u32 *outSize, u16 *outBlockSize) {
     one = 1;
     word1 = info[2];
     factor = 1 << (((word0 >> 7) & 7) + 2);
-    exponent = (word1 >> 8) & 0xF;
     mantissa = ((word1 & 3) << 10) | (word0 >> 22);
+    exponent = (word1 >> 8) & 0xF;
+    size = (mantissa + 1) * factor;
     mantissa += 1;
-    size = mantissa * factor;
 
     scale = 9;
     if (9 <= exponent)
@@ -16831,15 +16849,15 @@ block_21:
 
 struct Fn800C0B68Context { u8 pad[0xC]; u32 bitIndex; s32 limit; };
 extern "C" s32 fn_800BDEB4(const u8 *, s32, u32 *);
-#pragma push
-#pragma use_lmw_stmw on
+#pragma unroll 1
 extern "C" void fn_800C0B68(Fn800C0B68Context *arg0, s32 arg1, s32 arg2, s16 *arg3, s32 arg4, s32 arg5, s16 *arg6) {
     s16 var_r0, var_r3, var_r4, var_r5;
     s32 temp_r3;
     u32 temp_r5, temp_r8, temp_r8_2, temp_r8_3, temp_r8_4;
     u32 temp_r0, var_ctr, var_ctr_2, var_r3_2;
-    s32 shift;
-    volatile s16 *var_r5_2, *var_r31 = arg3 + arg4;
+    s32 shift, j;
+    s16 *var_r5_2, *var_r31 = arg3 + arg4;
+    var_r4 = 0;
     goto block_25;
 loop_25:
     temp_r3 = fn_800BDEB4((const u8 *)arg2, 4, &arg0->bitIndex);
@@ -16855,15 +16873,17 @@ loop_25:
         if (arg5 == 1 && *arg6 == 0) *arg6 = (s16)arg4;
         temp_r3 = (s32)(arg1 + 3);
         var_r5_2 = arg3 + arg4;
-        var_r4 = 0;
         temp_r3 -= arg4;
         var_r3_2 = (u32)temp_r3 >> 2;
         if (arg4 < arg1) {
             temp_r0 = var_r3_2 >> 3U; var_ctr = temp_r0;
             if (temp_r0 != 0) {
                 do {
-                    var_r5_2[0] = var_r4; var_r5_2[1] = var_r4; var_r5_2[2] = var_r4; var_r5_2[3] = var_r4; var_r5_2[4] = var_r4; var_r5_2[5] = var_r4; var_r5_2[6] = var_r4; var_r5_2[7] = var_r4; var_r5_2[8] = var_r4; var_r5_2[9] = var_r4; var_r5_2[10] = var_r4; var_r5_2[11] = var_r4; var_r5_2[12] = var_r4; var_r5_2[13] = var_r4; var_r5_2[14] = var_r4; var_r5_2[15] = var_r4; var_r5_2[16] = var_r4; var_r5_2[17] = var_r4; var_r5_2[18] = var_r4; var_r5_2[19] = var_r4; var_r5_2[20] = var_r4; var_r5_2[21] = var_r4; var_r5_2[22] = var_r4; var_r5_2[23] = var_r4; var_r5_2[24] = var_r4; var_r5_2[25] = var_r4; var_r5_2[26] = var_r4; var_r5_2[27] = var_r4; var_r5_2[28] = var_r4; var_r5_2[29] = var_r4; var_r5_2[30] = var_r4; var_r5_2[31] = var_r4;
-                    var_r5_2 += 32; var_ctr -= 1;
+                    for (j = 0; j < 8; j++) {
+                        var_r5_2[0] = var_r4; var_r5_2[1] = var_r4; var_r5_2[2] = var_r4; var_r5_2[3] = var_r4;
+                        var_r5_2 += 4;
+                    }
+                    var_ctr -= 1;
                 } while (var_ctr != 0);
                 var_r3_2 &= 7;
                 if (var_r3_2 != 0) goto block_21;
@@ -16882,7 +16902,7 @@ block_25:
     var_r31 += 4; arg4 += 4;
     if (arg4 < arg1) goto loop_25;
 }
-#pragma pop
+#pragma unroll reset
 u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
     u32 bits = *arg2;
     u32 index = (bits >> 3) & 0x1FFF;
@@ -21781,7 +21801,7 @@ extern "C" s32 fn_800D3C44(register char *var_r24, void *arg1, register u32 var_
     char *temp_r23;
     char *temp_r3_4;
     char *temp_r3_5;
-    u8 c;
+    u8 c = 0;
 
     if (var_r26 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EC50, 0x25A, base + 0x1B4);
@@ -22260,7 +22280,8 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::P
                 u8 *item = record + *(s32 *)itemOffsets;
                 if (item[1] >= 0x11) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xED, file + 0x138);
                 if (item[2] != 2) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xEE, file + 0xB0);
-                ((PaneAnimationDispatch *)arg2)->setVertexColor(item[1], fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame) + half);
+                u8 value = (u8)(fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame) + half);
+                ((PaneAnimationDispatch *)arg2)->setVertexColor(item[1], value);
                 itemOffsets += 4;
                 itemIndex++;
             }
