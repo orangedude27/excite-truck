@@ -651,13 +651,11 @@ extern "C" s32 lbl_80559E1C;
 extern "C" void fn_80145B50(void *arg0, s32 arg1) {
     f32 value = (f32)arg1;
     f32 multiplier = lbl_80561608;
-    f32 *out = (f32 *)arg0;
-    out[1] = lbl_805615D4;
-    out[3] = multiplier;
-    out[2] = multiplier;
-    out[0] = multiplier * value;
+    *(f32 *)((u8 *)arg0 + 4) = lbl_805615D4;
+    *(f32 *)((u8 *)arg0 + 0xC) = multiplier;
+    *(f32 *)((u8 *)arg0 + 8) = multiplier;
+    *(f32 *)arg0 = multiplier * value;
 }
-#pragma pop
 
 #pragma dont_inline on
 #pragma push
