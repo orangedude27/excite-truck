@@ -433,10 +433,9 @@ void fn_8022DD9C(void *gauge, int *valuePtrOut, int *typeOut) {
 }
 
 void fn_8022DDB0(void *arg0) {
-    float c = lbl_805635D4;
     float *p = *(float **)((char *)arg0 + 0x18);
     float step = *(float *)((char *)arg0 + 0x14);
-    float v = step * (float)(int)(c + ((*p + step) / step));
+    float v = step * (float)(int)(0.5f + ((*p + step) / step));
     float low = *(float *)((char *)arg0 + 0x10);
     *p = (low < v) ? low : v;
 }
