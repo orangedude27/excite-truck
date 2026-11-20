@@ -128,9 +128,8 @@ extern "C" void fn_8026B260(void) {
     public:
         virtual const char *getName();
     };
-    struct Config { char path[0xC]; char pad[0x50]; };
     char name[12];
-    Config *base = (Config *)&lbl_80346988;
+    register unsigned int baseAddr = (unsigned int)lbl_80346988;
     register int iteratorOrZero = 0;
     void *obj;
     FileName *nameObj;
@@ -141,14 +140,14 @@ extern "C" void fn_8026B260(void) {
     lbl_8055F4C8 = iteratorOrZero;
     obj = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
     nameObj = *(FileName **)((char *)obj + 0x20);
-    dot = nameObj->getFileName(((Config *)&lbl_80346988)->path, 0);
+    dot = nameObj->getFileName((const char *)baseAddr, 0);
     if (dot != 0) {
         strncpy(name, dot, 11);
         dot = strchr(name, '.');
         if (dot) *dot = iteratorOrZero;
         fn_80028E00(name, (const char *)&lbl_8055C504);
         if (!fn_8012C33C(name)) {
-            fn_802E30C8((const char *)base + 0xC, name);
+            fn_802E30C8((const char *)(baseAddr + 0xC), name);
             return;
         }
         iteratorOrZero = (int)fn_80131808(name);
@@ -162,18 +161,20 @@ extern "C" void fn_8026B260(void) {
             }
         } while (entry);
         fn_80131818(it);
-        fn_802E30C8((const char *)base + 0x34, lbl_8055F4C8, name);
+        fn_802E30C8((const char *)(baseAddr + 0x34), lbl_8055F4C8, name);
         return;
     }
-    fn_802E30C8((const char *)base + 0x5C);
+    fn_802E30C8((const char *)(baseAddr + 0x5C));
 }
 
 #pragma cplusplus reset
 #pragma processor 750
+#pragma push
+#pragma opt_common_subs off
 void fn_8026B3D4(int arg0) {
     struct Ent { unsigned char on; unsigned char pad[3]; float t; float v; int idx; };
     float t = lbl_8055E3C8;
-    unsigned char *p = (unsigned char *)fn_8017960C();
+    unsigned char *__restrict p = (unsigned char *)fn_8017960C();
     if (fn_80178CA4() == 1 && *(int *)(p + 0x1F0) == 0x50) {
         struct Ent *e = (struct Ent *)lbl_8049A0E8 + arg0;
         if (e->on != 0) {
