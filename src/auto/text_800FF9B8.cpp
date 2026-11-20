@@ -71,7 +71,7 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ..
 extern "C" void Prepare__Q46nw4hbm3snd6detail9WsdPlayerFPCviiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(void *, const void *, long, int, const nw4hbm::snd::detail::WsdTrack::WsdCallback *, unsigned long);
 #pragma use_lmw_stmw off
 void nw4hbm::snd::detail::WaveSound::Prepare(const void *arg1, long arg2, int arg3, const nw4hbm::snd::detail::WsdTrack::WsdCallback *arg4, unsigned long arg5) {
-    register const char *base = lbl_80327500;
+    const char *base = lbl_80327500;
     if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327500, 0x43, base + 0x18);
     if (arg4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327500, 0x44, base + 0x48);
     if (*(int *)((char *)this + 0x10) == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327500, 0x45, base + 0x74);
@@ -154,38 +154,43 @@ extern "C" const char lbl_803257E0[];
 #pragma opt_propagation off
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail9WaveSoundFi_800FFD24(void* arg0, int arg1) {
     #pragma opt_common_subs off
-    #pragma opt_dead_assignments off
     void* node;
-    void* list;
     void* sentinel;
+    void* list;
     int priority;
     void* soundNode;
 
     SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(arg0, arg1);
-    priority = *(unsigned char*)((unsigned char*)arg0 + 0x74) + *(int*)((unsigned char*)arg0 + 0x40);
-    if (priority > 0x7F)
+    int rawSound = *(unsigned char*)((unsigned char*)arg0 + 0x74) + *(int*)((unsigned char*)arg0 + 0x40);
+    if (rawSound > 0x7F) {
         priority = 0x7F;
-    else
-        priority &= ~(priority >> 31);
+    } else {
+        priority = rawSound < 0 ? 0 : rawSound;
+    }
     list = *(void**)((unsigned char*)arg0 + 0x1b0);
     if (arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
     soundNode = (unsigned char*)arg0 + 0xb8;
     Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((unsigned char*)list + 4, soundNode);
-    node = *(void**)((unsigned char*)list + 8);
-    sentinel = (unsigned char*)list + 8;
-    while (node != sentinel) {
+    struct { u32 v; } nodeHolder;
+    struct { u32 v; } sentinelHolder;
+    nodeHolder.v = *(u32 *)((char *)list + 8);
+    sentinelHolder.v = (u32)((char *)list + 8);
+    u32 &nodeRef = nodeHolder.v;
+    u32 &sentinelRef = sentinelHolder.v;
+    while (nodeRef != sentinelRef) {
         int nodePriority;
-        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325804, 0x23d, lbl_803257E0);
-        nodePriority = *(unsigned char*)((unsigned char*)node - 0x44) + *(int*)((unsigned char*)node - 0x78);
-        if (nodePriority > 0x7F)
+        if (nodeRef == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325804, 0x23d, lbl_803257E0);
+        int raw = *(unsigned char*)(nodeRef - 0x44) + *(int*)(nodeRef - 0x78);
+        if (raw > 0x7F) {
             nodePriority = 0x7F;
-        else
-            nodePriority &= ~(nodePriority >> 31);
+        } else {
+            nodePriority = raw < 0 ? 0 : raw;
+        }
         if (priority < nodePriority) break;
-        node = *(void**)node;
+        nodeRef = *(u32 *)nodeRef;
     }
     if (arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
-    void* iterator = node;
+    void* iterator = (void*)nodeRef;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((unsigned char*)list + 4, &iterator, soundNode);
 }
 #pragma opt_propagation reset
