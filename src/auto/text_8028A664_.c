@@ -200,7 +200,7 @@ void fn_8028A664(void) {
     extern s32 fn_8028B93C(const f32 *);
     extern s32 fn_8028B500(void *);
     extern s32 fn_8028BA44(void *);
-    extern s32 fn_8028BA9C(const void *);
+    extern s32 fn_8028BA9C(void *);
     extern s32 fn_8028BB14(s32);
     void *handle;
     handle = fn_801284F8(0xDC, "short sparks\0\0\0");
