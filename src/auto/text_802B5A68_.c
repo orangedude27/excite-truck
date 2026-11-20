@@ -218,7 +218,7 @@ void fn_802B5CCC(void) {
 
     object = (u8 *)((void *(*)(void))fn_802B5B6C)();
     fn_802B321C(0, (void **)&sp8, *(s32 *)(object + 8), lbl_8055FA40);
-    *sp8 = !*sp8;
+    *(signed char *)sp8 = (unsigned int)__cntlzw(*sp8) >> 5;
     object = (u8 *)((void *(*)(void))fn_802B5B6C)();
     fn_802B32E0(*(s32 *)(object + 8));
     object = (u8 *)((void *(*)(void))fn_802B5B6C)();
