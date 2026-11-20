@@ -2376,6 +2376,22 @@ int fn_80176038(void) {
     return 0;
 }
 
+#pragma cplusplus on
+class Iface80176040 {
+public:
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5();
+    virtual int m20(int);
+    virtual void d7(); virtual void d8(); virtual void d9();
+    virtual void m30(int);
+};
+static inline int CallM20_80176040(void *obj, int arg) {
+    return ((Iface80176040 *)obj)->m20(arg);
+}
+static inline void CallM30_80176040(void *obj, int arg) {
+    ((Iface80176040 *)obj)->m30(arg);
+}
+#pragma cplusplus off
 void fn_80176040(char *self, int a, int b) {
     extern float fn_8001DAE8();
     extern void *fn_801B2EC0();
@@ -2383,10 +2399,10 @@ void fn_80176040(char *self, int a, int b) {
     extern void fn_8018F9B4(void *);
     extern float PSVECMag(float *);
     extern float lbl_80561AC0, lbl_80561A44, lbl_80561A54, lbl_80561AF0, lbl_80561AD0, lbl_80561A40, lbl_80561B10;
+    int c;
     Fn8017431CV3 sp20;
     float sp14[3];
     float sp8[3];
-    int c;
     int n;
     char *o;
     char *ent;
