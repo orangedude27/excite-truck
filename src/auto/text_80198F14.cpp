@@ -97,16 +97,16 @@ extern "C" f32 fn_8019DF88(void*, f32*, void*, f32*, f32*, f32, f32);
 #pragma always_inline on
 static inline void Fn8019DF88MultVec(const f32 *m, const f32 *src, f32 *dst) {
     if (dst == src) {
-        f32 p0 = m[3] * src[1], p1 = m[4] * src[1], p5 = m[5] * src[1];
-        f32 p2 = m[0] * src[0], p3 = m[1] * src[0], p4 = m[2] * src[0];
-        f32 p6 = m[6] * src[2], p7 = m[7] * src[2], p8 = m[8] * src[2];
-        f32 x = p6 + (p2 + p0), y = p7 + (p3 + p1), z = p8 + (p4 + p5);
+        register f32 p0 = m[3] * src[1], p1 = m[4] * src[1], p5 = m[5] * src[1];
+        register f32 p2 = m[0] * src[0], p3 = m[1] * src[0], p4 = m[2] * src[0];
+        register f32 p6 = m[6] * src[2], p7 = m[7] * src[2], p8 = m[8] * src[2];
+        register f32 x = p6 + (p2 + p0), y = p7 + (p3 + p1), z = p8 + (p4 + p5);
         dst[0] = x; dst[1] = y; dst[2] = z;
     } else {
-        f32 q0 = m[3] * src[1], q1 = m[4] * src[1], q5 = m[5] * src[1];
-        f32 q2 = m[0] * src[0], q3 = m[1] * src[0], q4 = m[2] * src[0];
-        f32 q6 = m[6] * src[2], q7 = m[7] * src[2], q8 = m[8] * src[2];
-        f32 x0 = q6 + (q2 + q0), y0 = q7 + (q3 + q1), z0 = q8 + (q4 + q5);
+        register f32 q0 = m[3] * src[1], q1 = m[4] * src[1], q5 = m[5] * src[1];
+        register f32 q2 = m[0] * src[0], q3 = m[1] * src[0], q4 = m[2] * src[0];
+        register f32 q6 = m[6] * src[2], q7 = m[7] * src[2], q8 = m[8] * src[2];
+        register f32 x0 = q6 + (q2 + q0), y0 = q7 + (q3 + q1), z0 = q8 + (q4 + q5);
         dst[0] = x0; dst[1] = y0; dst[2] = z0;
     }
 }
@@ -1841,20 +1841,20 @@ extern "C" s32 fn_8019DC04(void *arg0, void *arg1) {
         local[4] = v18;
         u32 v1C = words[8];
         local[5] = v1C;
-        u32 v8 = words[9];
-        u32 vC = words[10];
-        u32 v10 = words[11];
-        f32 neg_w = -w;
-        local[0] = v8;
-        local[1] = vC;
-        local[2] = v10;
         f32 f0 = *(volatile f32 *)&local[3];
         f32 f2 = *(volatile f32 *)&local[4];
         f32 f5 = *(volatile f32 *)&local[5];
+        u32 v8 = words[9];
+        u32 vC = words[10];
+        u32 v10 = words[11];
+        local[0] = v8;
+        local[1] = vC;
+        local[2] = v10;
         f32 f3 = *(volatile f32 *)&local[0];
         f32 f8 = *(volatile f32 *)&local[1];
         f32 f5trans = *(volatile f32 *)&local[2];
         f32 f = *(f32 *)((u8 *)object0 + 0x24);
+        f32 neg_w = -w;
         f32 f10 = f0 * w;
         f32 f7 = f2 * w;
         f32 f6 = f5 * w;
@@ -1961,6 +1961,7 @@ extern "C" s32 fn_8019DDFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, void * __rest
 #pragma dont_inline off
 #pragma scheduling invalid_target
 extern "C" f32 fn_8019DF88(void *arg0, f32 *arg1, void *arg2, f32 *arg3, f32 *arg4, f32 farg0, f32 farg1) {
+    #pragma scheduling on
     Vec velocity, delta, normalCopy, normal, cross, rotated, result;
     f32 *m = (f32 *)arg2;
     f32 *p = (f32 *)arg0;
@@ -2190,8 +2191,7 @@ dispatch:
     return fn_8019E500(arg0, arg1);
 main:
     Fn8019E874Xf b = *((Fn8019E874Obj*)arg1)->GetXf();
-    Fn8019E874Xf *src = *(Fn8019E874Xf**)((u8*)arg0 + 0xC);
-    Fn8019E874Xf a = *src;
+    Fn8019E874Xf a = **(Fn8019E874Xf**)((u8*)arg0 + 0xC);
     f32 dx = a.pos.x - b.pos.x;
     f32 dy = a.pos.y - b.pos.y;
     f32 dz = a.pos.z - b.pos.z;
@@ -2225,6 +2225,7 @@ extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     f32 temp_f3;
     f32 temp_f4;
     volatile f32 sp[9];
+    s32 res;
 
     temp_r3 = ((Fn8019EA7CDispatch*)arg1)->Get();
     temp_r5 = *(void**)((u8*)arg0 + 0xC);
@@ -2235,7 +2236,8 @@ extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     sp[6] = temp_f4;
     sp[1] = temp_f2;
     sp[5] = temp_f1 - *(f32*)((u8*)temp_r3 + 0x2C);
-    return fn_8019E874(arg0, (void**)arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4) != 0;
+    res = ((u16 (*)(void*, void**, void*, f32, f32, f32, f32))fn_8019E874)(arg0, (void**)arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4);
+    return res != 0;
 }
 #pragma use_lmw_stmw on
 extern "C" void fn_8019EB14(s32 baseRaw, s32 index) {
@@ -2283,10 +2285,10 @@ extern "C" void fn_8019EBE0(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f
     s32 v6 = e;
     s32 v7 = f;
     if (obj != 0) {
-        fn_8017B5D4(obj, v1, v2, v3, v4, v5, v6);
+        ((void (*)(s32, s32, s32, s32, s32, s32, s32))fn_8017B5D4)(obj, v1, v2, v3, v4, v5, v6);
     } else {
-        obj = *(s32 *)((u8 *)self + 8);
-        if (obj != 0) fn_801A4A10(obj, v4, v7, v3);
+        obj = *(s32 *)((u8 *)v1 + 8);
+        if (obj != 0) ((void (*)(s32, s32, s32, s32))fn_801A4A10)(obj, v4, v7, v3);
     }
 }
 #pragma scheduling reset
@@ -2688,17 +2690,19 @@ extern "C" void fn_8019F560(void) {
 extern "C" void *fn_8019F564(void *arg0,s32 arg1,void *arg2,s32 arg3,f32 a,f32 b,f32 c,f32 d,f32 e,f32 f) {
  extern char lbl_80333A58[];
  f32 z, z2, e8; f32 m = (e>f) ? e : f; if(d>m)m=d;
- z=lbl_805622D0;
- *(s32*)((u8*)arg0+0xC)=arg1;*(s32*)((u8*)arg0+4)=arg3;*(s32*)((u8*)arg0+8)=0;
- *(s32*)((u8*)arg0+0x18)=0x53504852;*(f32*)((u8*)arg0+0x10)=a;*(f32*)((u8*)arg0+0x14)=b;
- *(s32*)((u8*)arg0+0x20)=100;*(s32*)((u8*)arg0+0x1C)=0;*(void**)arg0=&lbl_80333B48;
- *(f32*)((u8*)arg0+0x24)=lbl_805622E8*m;
+ int zero = 0;
+ int tag = 0x53504852;
+ z=0.0f;
+ *(s32*)((u8*)arg0+0xC)=arg1;*(s32*)((u8*)arg0+4)=arg3;*(s32*)((u8*)arg0+8)=zero;
+ *(s32*)((u8*)arg0+0x18)=tag;*(f32*)((u8*)arg0+0x10)=a;*(f32*)((u8*)arg0+0x14)=b;
+ *(s32*)((u8*)arg0+0x20)=100;*(s32*)((u8*)arg0+0x1C)=zero;*(void**)arg0=&lbl_80333B48;
+ *(f32*)((u8*)arg0+0x24)=0.5f*m;
  *(f32*)((u8*)arg0+0x34)=z;*(f32*)((u8*)arg0+0x38)=z;*(f32*)((u8*)arg0+0x3C)=z;*(f32*)((u8*)arg0+0x40)=z;
- *(f32*)((u8*)arg0+0x44)=z;*(f32*)((u8*)arg0+0x48)=z;*(u8*)((u8*)arg0+0x4C)=0;*(f32*)((u8*)arg0+0x50)=z;
+ *(f32*)((u8*)arg0+0x44)=z;*(f32*)((u8*)arg0+0x48)=z;*(u8*)((u8*)arg0+0x4C)=zero;*(f32*)((u8*)arg0+0x50)=z;
  *(f32*)((u8*)arg0+0x28)=*(f32*)arg2;*(f32*)((u8*)arg0+0x2C)=*(f32*)((u8*)arg2+4);*(f32*)((u8*)arg0+0x30)=*(f32*)((u8*)arg2+8);
  if(arg3)fn_8019EECC((void*)arg3,(Vec*)((u8*)arg0+0x28));
- e8=*(volatile f32 *)&lbl_805622E8;
- z2=*(volatile f32 *)&lbl_805622D0;
+ e8=0.5f;
+ z2=0.0f;
  *(void**)arg0=&lbl_80333A58;*(f32*)((u8*)arg0+0x54)=c;
  *(f32*)((u8*)arg0+0x58)=e8*d;*(f32*)((u8*)arg0+0x5C)=e8*e;*(f32*)((u8*)arg0+0x60)=e8*f;
  *(f32*)((u8*)arg0+0x64)=z2;*(f32*)((u8*)arg0+0x68)=z2;*(f32*)((u8*)arg0+0x6C)=z2;*(f32*)((u8*)arg0+0x70)=z2;
@@ -3737,11 +3741,11 @@ extern "C" s32 fn_801A15CC(void* arg0, Vec* arg1, Vec* arg2, f32* arg3, Vec* arg
     t1 = extent;
     if (!(t0 > lbl_805622D0 && t0 < *arg3)) goto fail;
     Vec p, q;
-    f32 ax = arg1->x, ay = arg1->y, az = arg1->z;
     f32 bx = arg2->x, by = arg2->y, bz = arg2->z;
-    f32 px = bx * t0, py = by * t0, pz = bz * t0;
-    p.x = ax + px; p.y = ay + py; p.z = az + pz;
     f32 t = (f32)(f64)extent;
+    f32 px = bx * t0, py = by * t0, pz = bz * t0;
+    f32 ax = arg1->x, ay = arg1->y, az = arg1->z;
+    p.x = ax + px; p.y = ay + py; p.z = az + pz;
     q.x = center->x + axis->x * t;
     q.y = center->y + axis->y * t;
     q.z = center->z + axis->z * t;
@@ -3758,7 +3762,6 @@ extern "C" s32 fn_801A15CC(void* arg0, Vec* arg1, Vec* arg2, f32* arg3, Vec* arg
 fail:
     return 0;
 }
-#pragma use_lmw_stmw reset
 extern "C" void fn_801A17B8(void* arg0) {
     extern f32 lbl_8056234C;
     extern void fn_801E41D8(f32*, f32*, s32, void*, void*, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32);
@@ -4280,63 +4283,54 @@ extern "C" s32 fn_801A2434(s32 object, s32 shouldDestroy) {
     return object;
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_801A2474(void *arg0) {
     struct Object {
         char pad0[0xC];
-        u32 *matrix;
+        f32 *matrix;
         char pad10[0x28];
         Vec input;
         char pad14[0x24];
         volatile Vec output;
     };
     Object *self = (Object *)arg0;
-    register u32 *mw = self->matrix;
-    register f32 *m = (f32 *)mw;
-    u32 *cache = (u32 *)((char *)self + 0x44);
-    u32 m0 = mw[0], m1 = mw[1], m2, m3, m4, m5, m6, m7, m8;
-    cache[1] = m1; cache[0] = m0;
-    m2 = mw[2]; cache[2] = m2;
+    volatile u32 *cache = (volatile u32 *)((char *)self + 0x44);
+    u32 m0, m1, m3, m4, m6, m7;
+    f32 *m = self->matrix;
+    u32 *mw = (u32 *)m;
+    m0 = mw[0]; m1 = mw[1];
+    cache[0] = m0; cache[1] = m1;
+    cache[2] = mw[2];
     m3 = mw[3]; m4 = mw[4];
-    cache[4] = m4; cache[3] = m3;
-    m5 = mw[5]; cache[5] = m5;
+    cache[3] = m3; cache[4] = m4;
+    cache[5] = mw[5];
     m6 = mw[6]; m7 = mw[7];
-    cache[7] = m7; cache[6] = m6;
-    m8 = mw[8]; cache[8] = m8;
+    cache[6] = m6; cache[7] = m7;
+    cache[8] = mw[8];
     if (&self->output == (volatile Vec *)&self->input) {
-        register f32 y = self->input.y;
-        register f32 p03 = y * m[3];
-        register f32 p14 = y * m[4];
-        register f32 p25 = y * m[5];
-        register f32 x = self->input.x;
-        register f32 p00 = x * m[0];
-        register f32 p11 = x * m[1];
-        register f32 p22 = x * m[2];
-        register f32 z = self->input.z;
-        register f32 p06 = z * m[6];
-        register f32 p17 = z * m[7];
-        register f32 p28 = z * m[8];
-        self->output.x = p00 + p03 + p06;
-        self->output.y = p11 + p14 + p17;
-        self->output.z = p22 + p25 + p28;
+        float x, y, z;
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = m[3]; m11 = m[4]; m12 = m[5]; m00 = m[0]; m01 = m[1]; m02 = m[2]; m20 = m[6]; m21 = m[7]; m22 = m[8];
+        x = self->input.x; y = self->input.y; z = self->input.z;
+        self->output.x = z * m20 + (x * m00 + y * m10);
+        self->output.y = z * m21 + (x * m01 + y * m11);
+        self->output.z = z * m22 + (x * m02 + y * m12);
     } else {
-        register f32 p03 = self->input.y * m[3];
-        register f32 p00 = self->input.x * m[0];
-        register f32 p06 = self->input.z * m[6];
-        self->output.x = p00 + p03 + p06;
-        register f32 p14 = self->input.y * m[4];
-        register f32 p11 = self->input.x * m[1];
-        register f32 p17 = self->input.z * m[7];
-        self->output.y = p11 + p14 + p17;
-        register f32 p25 = self->input.y * m[5];
-        register f32 p22 = self->input.x * m[2];
-        register f32 p28 = self->input.z * m[8];
-        self->output.z = p22 + p25 + p28;
+        float x, y, z;
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = m[3]; m00 = m[0]; m20 = m[6];
+        x = self->input.x; y = self->input.y; z = self->input.z;
+        self->output.x = z * m20 + (x * m00 + y * m10);
+        m11 = m[4]; m01 = m[1]; m21 = m[7];
+        self->output.y = z * m21 + (x * m01 + y * m11);
+        m12 = m[5]; m02 = m[2]; m22 = m[8];
+        self->output.z = z * m22 + (x * m02 + y * m12);
     }
     self->output.x += m[9];
     self->output.y += m[10];
     self->output.z += m[11];
 }
-
+#pragma scheduling on
 extern "C" char lbl_80333818[];
 extern "C" void fn_801A2674(void*, s32, s32, f32);
 #pragma scheduling invalid_target
@@ -4661,7 +4655,7 @@ extern "C" void fn_801A2EC8(void) {
 
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_801A2ECC(void *arg0, void *arg1, void *arg2) {
     f32 corners[24];
     f32 tmp[3];
@@ -4670,7 +4664,7 @@ extern "C" void fn_801A2ECC(void *arg0, void *arg1, void *arg2) {
     f32 b = *(f32 *)((u8 *)arg0 + 0x28);
     f32 c = *(f32 *)((u8 *)arg0 + 0x24) + b;
     const f32 *m = *(const f32 **)((u8 *)arg0 + 0xC);
-    f32 *p;
+    f32 *p, *q;
     int i;
     corners[0] = -c; corners[1] = -c; corners[2] = -b;
     corners[3] = -c; corners[4] = -c; corners[5] = b;
@@ -4683,19 +4677,28 @@ extern "C" void fn_801A2ECC(void *arg0, void *arg1, void *arg2) {
     lo[0] = m[9]; lo[1] = m[10]; lo[2] = m[11];
     hi[0] = m[9]; hi[1] = m[10]; hi[2] = m[11];
     p = corners;
-    for (i = 0; i < 8; i++, p += 3) {
+    q = p;
+    for (i = 0; i < 8; i++, p += 3, q += 3) {
         m = *(const f32 **)((u8 *)arg0 + 0xC);
-        if (p == tmp) {
-            f32 y = p[1], x = p[0], z = p[2];
-            f32 rx = z * m[6] + (x * m[0] + y * m[3]);
-            f32 ry = z * m[7] + (x * m[1] + y * m[4]);
-            f32 rz = z * m[8] + (x * m[2] + y * m[5]);
-            tmp[0] = rx; tmp[1] = ry; tmp[2] = rz;
+        if (tmp == p) {
+            f32 y = q[1], x = q[0], z = q[2];
+            f32 p0 = y * m[3];
+            f32 p1 = y * m[4];
+            f32 p2 = y * m[5];
+            f32 p3 = x * m[0];
+            f32 p4 = x * m[1];
+            f32 p5 = x * m[2];
+            f32 p6 = z * m[6];
+            f32 p7 = z * m[7];
+            f32 p8 = z * m[8];
+            tmp[0] = p6 + (p3 + p0);
+            tmp[1] = p7 + (p4 + p1);
+            tmp[2] = p8 + (p5 + p2);
         } else {
-            f32 y = p[1], x = p[0], z = p[2];
-            tmp[0] = z * m[6] + (x * m[0] + y * m[3]);
-            tmp[1] = z * m[7] + (x * m[1] + y * m[4]);
-            tmp[2] = z * m[8] + (x * m[2] + y * m[5]);
+            f32 y = q[1], x = q[0], z = q[2];
+            tmp[0] = (x * m[0] + y * m[3]) + z * m[6];
+            tmp[1] = (x * m[1] + y * m[4]) + z * m[7];
+            tmp[2] = (x * m[2] + y * m[5]) + z * m[8];
         }
         tmp[0] = tmp[0] + m[9];
         tmp[1] = tmp[1] + m[10];
@@ -5011,6 +5014,8 @@ extern "C" f32 fn_801A3880(s32 self) {
 extern float lbl_805622D0, lbl_805622DC, lbl_805623C0;
 extern float PSVECDotProduct(float *, void *);
 extern int fn_8019A788(void *, int, void *, void *, int, int, float, float, float);
+#pragma fp_contract off
+#pragma scheduling on
 #pragma use_lmw_stmw off
 extern "C" void fn_801A38E4(int arg0, void *arg1) {
     u8 *base = (u8 *)arg1;
@@ -5027,8 +5032,8 @@ extern "C" void fn_801A38E4(int arg0, void *arg1) {
     switch (*(s32 *)(base + 0x18)) {
     case 0x464c5352: {
         f32 dot;
-        f32 a;
         f32 cur;
+        f32 a;
         f32 hi;
         axis[0] = lbl_805622D0;
         axis[1] = lbl_805622DC;
@@ -5053,14 +5058,14 @@ extern "C" void fn_801A38E4(int arg0, void *arg1) {
                     f32 *v = (f32 *)(node + 4);
                     if (q == v) {
                         f32 y = v[1], x = v[0], zz = v[2];
-                        f32 rx = zz * m[6] + (x * m[0] + y * m[3]);
-                        f32 ry = zz * m[7] + (x * m[1] + y * m[4]);
-                        f32 rz = zz * m[8] + (x * m[2] + y * m[5]);
+                        f32 rx = y * m[3] + (x * m[0] + zz * m[6]);
+                        f32 ry = y * m[4] + (x * m[1] + zz * m[7]);
+                        f32 rz = y * m[5] + (x * m[2] + zz * m[8]);
                         q[0] = rx; q[1] = ry; q[2] = rz;
                     } else {
-                        q[0] = (v[1] * m[3] + v[0] * m[0]) + v[2] * m[6];
-                        q[1] = (v[1] * m[4] + v[0] * m[1]) + v[2] * m[7];
-                        q[2] = (v[1] * m[5] + v[0] * m[2]) + v[2] * m[8];
+                        q[0] = (m[3] * v[1] + m[0] * v[0]) + m[6] * v[2];
+                        q[1] = (m[4] * v[1] + m[1] * v[0]) + m[7] * v[2];
+                        q[2] = (m[5] * v[1] + m[2] * v[0]) + m[8] * v[2];
                     }
                     q[0] = q[0] + *(f32 *)(owner + 0x60);
                     q[1] = q[1] + *(f32 *)(owner + 0x64);
@@ -5157,7 +5162,7 @@ extern "C" void *fn_801A3DAC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     void *object;
     Vec *vectors;
     volatile Vec maxSpill, minSpill;
-    f32 init = lbl_805622E0;
+    register f32 init = lbl_805622E0;
     register s32 offset;
     register s32 i;
     f32 var_f1;
@@ -5297,7 +5302,7 @@ extern "C" void fn_801A401C(void *arg0, void *arg1) {
 }
 
 #pragma scheduling reset
-extern "C" s32 fn_801A40F8(void *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 *arg4) {
+extern "C" s32 fn_801A40F8(void *arg0, f32 * __restrict arg1, f32 *arg2, s32 arg3, f32 *arg4) {
     f32 stack[9];
     f32 ix = arg1[0];
     f32 iy = arg1[1];
@@ -5324,19 +5329,19 @@ extern "C" s32 fn_801A40F8(void *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 *arg4
     stack[8] = (dz * m8) + ((dy * m7) + (dx * m6));
     f32 *m2p = (f32 *)*(void **)((u8 *)arg0 + 0xC);
     if (&stack[3] == arg2) {
+        f32 a1 = m2p[1];
         f32 y = arg2[1];
+        f32 a0 = m2p[0];
         f32 x = arg2[0];
+        f32 a4 = m2p[4];
+        f32 a3 = m2p[3];
+        f32 a7 = m2p[7];
         f32 z = arg2[2];
-        f32 a8, a7, a6, a5, a4, a3, a2, a1, a0;
-        a0 = m2p[0];
-        a1 = m2p[1];
+        f32 a6 = m2p[6];
+        f32 a2, a5;
         a2 = m2p[2];
-        a3 = m2p[3];
-        a4 = m2p[4];
         a5 = m2p[5];
-        a6 = m2p[6];
-        a7 = m2p[7];
-        a8 = m2p[8];
+        f32 a8 = m2p[8];
         stack[3] = (z * a2) + ((x * a0) + (y * a1));
         stack[4] = (z * a5) + ((x * a3) + (y * a4));
         stack[5] = (z * a8) + ((x * a6) + (y * a7));
@@ -5367,19 +5372,18 @@ extern "C" s32 fn_801A40F8(void *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 *arg4
     if (((Call)fn_801CF828)(*(s32 *)((u8 *)arg0 + 0x24), &stack[6], &stack[3], arg3, &stack[0]) != 0) {
         f32 *m3 = (f32 *)*(void **)((u8 *)arg0 + 0xC);
         if (arg4 == &stack[0]) {
+            f32 b3 = m3[3];
             f32 y = stack[1];
+            f32 b4 = m3[4];
+            f32 b5 = m3[5];
+            f32 b0 = m3[0];
             f32 x = stack[0];
+            f32 b1 = m3[1];
+            f32 b2 = m3[2];
+            f32 b6 = m3[6];
             f32 z = stack[2];
-            f32 b8, b7, b6, b5, b4, b3, b2, b1, b0;
-            b0 = m3[0];
-            b1 = m3[1];
-            b2 = m3[2];
-            b3 = m3[3];
-            b4 = m3[4];
-            b5 = m3[5];
-            b6 = m3[6];
-            b7 = m3[7];
-            b8 = m3[8];
+            f32 b7 = m3[7];
+            f32 b8 = m3[8];
             arg4[0] = (z * b6) + ((x * b0) + (y * b3));
             arg4[1] = (z * b7) + ((x * b1) + (y * b4));
             arg4[2] = (z * b8) + ((x * b2) + (y * b5));
