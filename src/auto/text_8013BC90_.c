@@ -112,6 +112,7 @@ __declspec(section ".sdata") extern const char lbl_80559CE8[];
 __declspec(section ".sdata") extern const char lbl_80559CF0[];
 #pragma cplusplus on
 #pragma scheduling invalid_target
+#pragma peephole off
 extern "C" void fn_8013BD5C(void *arg0, void *arg1) {
     class Selector {
     public:
@@ -150,21 +151,21 @@ extern "C" void fn_8013BD5C(void *arg0, void *arg1) {
         virtual void v7();
         virtual float get(const char *, float);
     };
-    typedef char NameRow[12];
-    NameRow *rows = (NameRow *)lbl_8032C3D8;
+    const char *names = lbl_8032C3D8;
     float *v = (float *)arg0;
     void *p;
 
     fn_8013BD30(arg0);
-    p = ((Selector *)arg1)->select(rows[0]);
+    p = ((Selector *)arg1)->select(names);
     if (p != 0) {
         v[0] = ((Getter *)p)->get(lbl_80559CE0, v[0]);
         v[1] = ((Getter *)p)->get(lbl_80559CE8, v[1]);
-        v[2] = ((Getter *)p)->get(rows[1], v[2]);
-        v[4] = ((Getter *)p)->get(rows[2], v[4]);
+        v[2] = ((Getter *)p)->get(names + 0xC, v[2]);
+        v[4] = ((Getter *)p)->get(names + 0x18, v[4]);
         v[3] = ((Getter *)p)->get(lbl_80559CF0, v[3]);
     }
 }
+#pragma peephole reset
 #pragma scheduling on
 #pragma cplusplus reset
 extern void fn_8013A2FC(void *, int);
@@ -272,6 +273,7 @@ extern const char lbl_8032C43C[];
 typedef struct CacheTableV { CacheEntry entry[8]; int count; } CacheTableV;
 #pragma cplusplus on
 #pragma scheduling invalid_target
+#pragma opt_common_subs off
 extern "C" void *fn_8013BFE8(char *arg0) {
     Key64 key;
     char buf[0x80];
@@ -381,8 +383,8 @@ copied:
     }
     return 0;
 }
-#pragma scheduling on
-#pragma cplusplus reset
+#pragma opt_common_subs on
+#pragma cplusplus off
 extern void fn_80128658(int);
 extern void fn_80128668(void *);
 extern void fn_8013A598(void *, int);
