@@ -16,7 +16,7 @@ struct DD70CVTab {
     virtual void v12(){} virtual void v13(){} virtual void v14(){} virtual void v15(){}
     virtual void v16(){} virtual void v17(){} virtual void v18(){} virtual void v19(){}
     virtual void v20(){} virtual void v21(){}
-    virtual void call(void *arg) {}
+    virtual void call() {}
 };
 
 extern "C" void lbl_80320548(void);
