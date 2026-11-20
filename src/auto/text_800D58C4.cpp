@@ -102,7 +102,6 @@ class ResourceAccessor;
 class Layout {
 public:
     s32 Build(const void *, ResourceAccessor *);
-    void *CreateAnimTransform(const void *, ResourceAccessor *);
 };
 }}
 extern "C" const f32 lbl_80560EA8;
