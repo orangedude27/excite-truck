@@ -27,6 +27,10 @@ enum IdealResExtType {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
+/* Reorders the bytes of one node of the 0x38-byte structure loaded by fn_801381B4:
+ * first the four bytes of each 32-bit word are reversed (0x00..0x2F), then the
+ * 0x10..0x33 region is byte-swapped with its mirrored counterpart in a fixed
+ * pattern (0x10<->0x29, 0x11<->0x2C, ... 0x28<->0x2B). */
 extern "C" void fn_80137D58(void *arg0, int arg_sp0) {
     volatile int sp18, sp14, sp10, spC, sp8;
     volatile unsigned char *p = (volatile unsigned char *)arg0;
@@ -274,7 +278,7 @@ void fn_801381B4(void *arg0) {
     unsigned char *r;
     unsigned char *node;
     unsigned char t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11;
-    int i, mode, found;
+    int i0, i1, mode, found;
     t0 = v[0]; t3 = v[3]; t1 = v[1]; t2 = v[2]; t4 = v[4]; t7 = v[7]; t5 = v[5]; t6 = v[6];
     v[0] = t3; v[3] = t0; v[1] = t2; v[2] = t1; v[4] = t7; v[7] = t4; v[5] = t6; v[6] = t5;
     t0 = v[8]; t1 = v[0xb]; v[8] = t1; v[0xb] = t0;
@@ -289,13 +293,13 @@ void fn_801381B4(void *arg0) {
     v[0x14] = t1; v[0x17] = t0; v[0x15] = t3; v[0x16] = t2;
     v[0x18] = t5; v[0x1b] = t4; v[0x19] = t7; v[0x1a] = t6;
     v[0x2c] = t9; v[0x2f] = t8; v[0x2d] = t11; v[0x2e] = t10;
-    for (i = 0; i < *(int *)(base + 0x2c); i++) {
+    for (i0 = 0; i0 < *(int *)(base + 0x2c); i0++) {
         t0 = p[0]; t1 = p[3]; p[0] = t1; p[3] = t0;
         t0 = p[1]; t1 = p[2]; p[1] = t1; p[2] = t0;
         p += 4;
     }
     r = base;
-    for (i = 0; i < *(int *)(base + 0x2c); i++) {
+    for (i1 = 0; i1 < *(int *)(base + 0x2c); i1++) {
         unsigned char *t = base + *(int *)(r + 0x30);
         r += 4;
         t0 = t[0]; t1 = t[3]; t[0] = t1; t[3] = t0;
