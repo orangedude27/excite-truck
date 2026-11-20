@@ -5012,15 +5012,16 @@ extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
     s32 temp_r4;
     u8 temp_r7;
     void *temp_r5;
-    u32 one;
     temp_r5 = *(void **)((u8 *)arg0 + 0x3C);
-    one = ((u32)temp_r5 & 0) + 1;
     temp_r30 = *(s32 *)arg0;
     *(void **)((u8 *)arg0 + 4) = temp_r5;
     temp_r7 = *(u8 *)((u8 *)temp_r5 + 0x20) - 5;
     *(s32 *)arg0 = arg1;
     *(u8 *)((u8 *)arg0 + 0x6C) = temp_r7;
-    *(u16 *)((u8 *)arg0 + 0x4A) = (one << temp_r7) - 1;
+    {
+        u32 one = 1;
+        *(u16 *)((u8 *)arg0 + 0x4A) = (one << temp_r7) - 1;
+    }
     *(s32 *)((u8 *)arg0 + 0x40) = -1;
     temp_r3 = ((s32 (*)(void *, s32))fn_800AB378)(arg0, 0);
     var_r31 = temp_r3;
@@ -12751,48 +12752,51 @@ extern "C" s32 fn_800B865C(u8 *buffer) {
     return 0;
 }
 
-extern "C" s32 fn_800B878C(void *arg0, u8 *buf, s32 *type, s32 size) {
-    u32 n = size ? (u32)size : *(u32 *)((u8 *)arg0 + 0x54) >> 9;
-    u32 clusters;
-    s32 kind, aligned;
-    if (n < 0xFF5) { kind=0; clusters=(((n<<2)-n)>>1); clusters=(clusters+0x1FF)>>9; }
-    else if (n < 0xFFF5) { kind=1; clusters=((n<<1)+0x1FF)>>9; }
-    else { kind=2; clusters=((n<<2)+0x1FF)>>9; }
-    fn_800A499C((const char *)buf,0,0x200);
-    buf[0]=0xEB;buf[2]=0x90;buf[0x1FE]=0x55;buf[0x1FF]=0xAA;
-    if ((u32)(buf+0x18)&1) {buf[0x18]=0x3F;buf[0x19]=0;} else *(u16*)(buf+0x18)=0x3F00;
-    if ((u32)(buf+0x1A)&1) {buf[0x1A]=0xFF;buf[0x1B]=0;} else *(u16*)(buf+0x1A)=0xFF00;
-    if ((u32)(buf+0xB)&1) {buf[0xB]=0;buf[0xC]=2;} else *(u16*)(buf+0xC)=2;
-    buf[0xD]=1;
-    if ((u32)(buf+0xE)&1) {buf[0xE]=1;buf[0xF]=0;} else *(u16*)(buf+0xE)=0x100;
-    aligned=(u32)(buf+0x11)&1;buf[0x10]=2;
-    if(aligned){buf[0x11]=0x80;buf[0x12]=0;}else *(u16*)(buf+0x12)=0x8000;
-    buf[0x15]=0xF0;
-    if(n<0x10000) {
-      if((u32)(buf+0x13)&1){buf[0x13]=n;buf[0x14]=n>>8;}else *(u16*)(buf+0x14)=(u16)(((n&0xFF)<<8)|((n>>8)&0xFF));
-      if((u32)(buf+0x20)&3){buf[0x20]=0;buf[0x21]=0;buf[0x22]=0;buf[0x23]=0;}else *(u32*)(buf+0x20)=0;
+/* Builds a FAT12/16/32 boot sector in a 0x200-byte buffer.
+ * Determines the FAT type from the data cluster count, computes the FAT size
+ * in sectors, and fills in all standard boot sector fields. Returns 0. */
+extern "C" s32 fn_800B878C(void *fileState, u8 *bootSector, s32 *fatType, s32 clusterCount) {
+    u32 dataSectors = clusterCount ? (u32)clusterCount : *(u32 *)((u8 *)fileState + 0x54) >> 9;
+    u32 fatSize;
+    s32 type, isAligned;
+    if (dataSectors < 0xFF5) { type=0; fatSize=(((dataSectors<<2)-dataSectors)>>1); fatSize=(fatSize+0x1FF)>>9; }
+    else if (dataSectors < 0xFFF5) { type=1; fatSize=((dataSectors<<1)+0x1FF)>>9; }
+    else { type=2; fatSize=((dataSectors<<2)+0x1FF)>>9; }
+    fn_800A499C((const char *)bootSector,0,0x200);
+    bootSector[0]=0xEB;bootSector[2]=0x90;bootSector[0x1FE]=0x55;bootSector[0x1FF]=0xAA;
+    if ((u32)(bootSector+0x18)&1) {bootSector[0x18]=0x3F;bootSector[0x19]=0;} else *(u16*)(bootSector+0x18)=0x3F00;
+    if ((u32)(bootSector+0x1A)&1) {bootSector[0x1A]=0xFF;bootSector[0x1B]=0;} else *(u16*)(bootSector+0x1A)=0xFF00;
+    if ((u32)(bootSector+0xB)&1) {bootSector[0xB]=0;bootSector[0xC]=2;} else *(u16*)(bootSector+0xC)=2;
+    bootSector[0xD]=1;
+    if ((u32)(bootSector+0xE)&1) {bootSector[0xE]=1;bootSector[0xF]=0;} else *(u16*)(bootSector+0xE)=0x100;
+    isAligned=(u32)(bootSector+0x11)&1;bootSector[0x10]=2;
+    if(isAligned){bootSector[0x11]=0x80;bootSector[0x12]=0;}else *(u16*)(bootSector+0x12)=0x8000;
+    bootSector[0x15]=0xF0;
+    if(dataSectors<0x10000) {
+      if((u32)(bootSector+0x13)&1){bootSector[0x13]=dataSectors;bootSector[0x14]=dataSectors>>8;}else *(u16*)(bootSector+0x14)=(u16)(((dataSectors&0xFF)<<8)|((dataSectors>>8)&0xFF));
+      if((u32)(bootSector+0x20)&3){bootSector[0x20]=0;bootSector[0x21]=0;bootSector[0x22]=0;bootSector[0x23]=0;}else *(u32*)(bootSector+0x20)=0;
     } else {
-      if((u32)(buf+0x13)&1){buf[0x13]=0;buf[0x14]=0;}else *(u16*)(buf+0x14)=0;
-      if((u32)(buf+0x20)&3){buf[0x20]=n;buf[0x21]=n>>8;buf[0x22]=n>>16;buf[0x23]=n>>24;}
-      else { u32 low = __rlwinm(n, 8, 8, 15); low = __rlwimi(low, n, 24, 0, 7); u32 high = __rlwinm(n, 24, 16, 23); high = __rlwimi(high, n, 8, 24, 31); *(u32*)(buf+0x20)=low|high; }
+      if((u32)(bootSector+0x13)&1){bootSector[0x13]=0;bootSector[0x14]=0;}else *(u16*)(bootSector+0x14)=0;
+      if((u32)(bootSector+0x20)&3){bootSector[0x20]=dataSectors;bootSector[0x21]=dataSectors>>8;bootSector[0x22]=dataSectors>>16;bootSector[0x23]=dataSectors>>24;}
+      else { u32 low = __rlwinm(dataSectors, 8, 8, 15); low = __rlwimi(low, dataSectors, 24, 0, 7); u32 high = __rlwinm(dataSectors, 24, 16, 23); high = __rlwimi(high, dataSectors, 8, 24, 31); *(u32*)(bootSector+0x20)=low|high; }
     }
-    if(kind==2){
-      if(aligned){buf[0x11]=0;buf[0x12]=0;}else *(u16*)(buf+0x12)=0;
-      if((u32)(buf+0x24)&3){buf[0x24]=clusters;buf[0x25]=clusters>>8;buf[0x26]=clusters>>16;buf[0x27]=clusters>>24;}
-      else { u32 low = __rlwinm(clusters, 8, 8, 15); low = __rlwimi(low, clusters, 24, 0, 7); u32 high = __rlwinm(clusters, 24, 16, 23); high = __rlwimi(high, clusters, 8, 24, 31); *(u32*)(buf+0x24)=low|high; }
-      if((u32)(buf+0x28)&1){buf[0x28]=0;buf[0x29]=0;}else *(u16*)(buf+0x28)=0;
-      if((u32)(buf+0x2A)&1){buf[0x2A]=0;buf[0x2B]=0;}else *(u16*)(buf+0x2A)=0;
-      if((u32)(buf+0x2C)&3){buf[0x2C]=2;buf[0x2D]=0;buf[0x2E]=0;buf[0x2F]=0;}else *(u32*)(buf+0x2C)=0x02000000;
-      if((u32)(buf+0x30)&1){buf[0x30]=1;buf[0x31]=0;}else *(u16*)(buf+0x30)=0x100;
-      buf[0x41]=0;buf[0x42]=0x29;
-      if((u32)(buf+0x43)&3){buf[0x43]=0x34;buf[0x44]=0x12;buf[0x45]=0;buf[0x46]=0;}else *(u32*)(buf+0x4C)=0x34120000;
+    if(type==2){
+      if(isAligned){bootSector[0x11]=0;bootSector[0x12]=0;}else *(u16*)(bootSector+0x12)=0;
+      if((u32)(bootSector+0x24)&3){bootSector[0x24]=fatSize;bootSector[0x25]=fatSize>>8;bootSector[0x26]=fatSize>>16;bootSector[0x27]=fatSize>>24;}
+      else { u32 low = __rlwinm(fatSize, 8, 8, 15); low = __rlwimi(low, fatSize, 24, 0, 7); u32 high = __rlwinm(fatSize, 24, 16, 23); high = __rlwimi(high, fatSize, 8, 24, 31); *(u32*)(bootSector+0x24)=low|high; }
+      if((u32)(bootSector+0x28)&1){bootSector[0x28]=0;bootSector[0x29]=0;}else *(u16*)(bootSector+0x28)=0;
+      if((u32)(bootSector+0x2A)&1){bootSector[0x2A]=0;bootSector[0x2B]=0;}else *(u16*)(bootSector+0x2A)=0;
+      if((u32)(bootSector+0x2C)&3){bootSector[0x2C]=2;bootSector[0x2D]=0;bootSector[0x2E]=0;bootSector[0x2F]=0;}else *(u32*)(bootSector+0x2C)=0x02000000;
+      if((u32)(bootSector+0x30)&1){bootSector[0x30]=1;bootSector[0x31]=0;}else *(u16*)(bootSector+0x30)=0x100;
+      bootSector[0x41]=0;bootSector[0x42]=0x29;
+      if((u32)(bootSector+0x43)&3){bootSector[0x43]=0x34;bootSector[0x44]=0x12;bootSector[0x45]=0;bootSector[0x46]=0;}else *(u32*)(bootSector+0x4C)=0x34120000;
     }else{
-      if(aligned){buf[0x11]=0x80;buf[0x12]=0;}else *(u16*)(buf+0x12)=0x8000;
-      if((u32)(buf+0x16)&1){buf[0x16]=clusters;buf[0x17]=clusters>>8;}else *(u16*)(buf+0x16)=(u16)(((clusters&0xFF)<<8)|((clusters>>8)&0xFF));
-      buf[0x25]=0;buf[0x26]=0x29;
-      if((u32)(buf+0x27)&3){buf[0x27]=0x34;buf[0x28]=0x12;buf[0x29]=0;buf[0x2A]=0;}else *(u32*)(buf+0x30)=0x34120000;
+      if(isAligned){bootSector[0x11]=0x80;bootSector[0x12]=0;}else *(u16*)(bootSector+0x12)=0x8000;
+      if((u32)(bootSector+0x16)&1){bootSector[0x16]=fatSize;bootSector[0x17]=fatSize>>8;}else *(u16*)(bootSector+0x16)=(u16)(((fatSize&0xFF)<<8)|((fatSize>>8)&0xFF));
+      bootSector[0x25]=0;bootSector[0x26]=0x29;
+      if((u32)(bootSector+0x27)&3){bootSector[0x27]=0x34;bootSector[0x28]=0x12;bootSector[0x29]=0;bootSector[0x2A]=0;}else *(u32*)(bootSector+0x30)=0x34120000;
     }
-    *type=kind;return 0;
+    *fatType=type;return 0;
 }
 
 #pragma push
