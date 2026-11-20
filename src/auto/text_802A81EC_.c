@@ -54,6 +54,7 @@ void fn_802A81EC(void) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void fn_802A81F0(void) {
     struct Mgr {
         virtual void m0(); virtual void *child(int);
@@ -217,7 +218,7 @@ void fn_802A86A4(void) {
     half = lbl_80564950;
     i = 0; offset = 0;
     while (i < lbl_804BD6C4[1]) {
-        entry = *(u8 **)((u32)lbl_804BD6C4[0] + offset);
+        entry = *(u8 **)(lbl_804BD6C4[0] + offset);
         memset(&sp, 0, 0);
         x = *(f32 *)(entry + 0x60);
         y = *(f32 *)(entry + 0x64);
@@ -381,7 +382,7 @@ void fn_802A8DE8(void) {
     register s32 i;
     register s32 *table;
     register s32 offset;
-    register u8 *vec;
+    register s32 vec;
     register void *entry;
     register s32 j;
 
@@ -393,9 +394,9 @@ void fn_802A8DE8(void) {
     while (i < table[1]) {
         entry = *(void **)((u32)lbl_804BD6C4[0] + offset);
         j = 0;
-        vec = (u8 *)0;
+        vec = 0;
         while (j < *(s32 *)((u8 *)entry + 0x70)) {
-            f32 *src = (f32 *)(*(u32 *)((u8 *)entry + 0x6C) + (u32)vec);
+            f32 *src = (f32 *)(*(u32 *)((u8 *)entry + 0x6C) + vec);
             vecData[3] = src[0];
             vecData[4] = src[1];
             vecData[5] = src[2];
@@ -413,7 +414,7 @@ void fn_802A8DE8(void) {
             crossIn[2] = fy;
             PSVECCrossProduct(crossIn, &vecData[0], crossOut);
             fn_802C744C(*(s32 *)(*(u32 *)((u8 *)entry + 0x28) + ((j % *(s32 *)((u8 *)entry + 0x2C)) * 4)), crossOut);
-            vec = (u8 *)((u32)vec + 0x28);
+            vec += 0x28;
             j++;
         }
         offset += 4;
