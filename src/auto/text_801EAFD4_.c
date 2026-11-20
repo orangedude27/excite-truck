@@ -125,10 +125,6 @@ extern void fn_802C61BC(void *, void *, u8, u8, u8, u8, u8, u8);
 extern char lbl_80339F6C[];
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-static inline void swap32bytes(u8 *p) {
-    u8 t0 = p[0]; p[0] = p[3]; p[3] = t0;
-    { u8 t1 = p[1]; p[1] = p[2]; p[2] = t1; }
-}
 void fn_801EB13C(void *arg0, s32 arg1) {
 #define SWAP32(p) { u8 t = (p)[0]; (p)[0] = (p)[3]; (p)[3] = t; } { u8 t = (p)[1]; (p)[1] = (p)[2]; (p)[2] = t; }
     u8 *v = (u8 *)arg0;
