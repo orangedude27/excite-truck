@@ -5284,7 +5284,6 @@ void GXSetTevOp(int stage, int mode) {
     tev[0x1C0 / 4] = value;
     *(unsigned short *)((char *)data + 2) = 0;
 }
-#pragma opt_propagation reset
 
 // GXData caches the BP's per-stage TEV combiner registers, one word per stage:
 // the colour combiner (BP register 0xC0 + stage) at 0x180 and the alpha
