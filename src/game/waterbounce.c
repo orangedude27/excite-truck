@@ -78,6 +78,7 @@ extern "C" void *memset(void *, int, unsigned int);
 extern const char lbl_8033C7A0[];
 extern const char lbl_8055B648;
 extern float lbl_8056336C;
+extern "C" void *fn_8020DE74(void *arg0);
 void *fn_8020DE74(void *arg0) {
     char name[0x20];
     register const char *labels __asm("r31") = lbl_8033C7A0;
