@@ -6,6 +6,7 @@ extern void fn_8001980C(void);
 extern void fn_800197B0(void);
 extern char lbl_80357E00[];
 __declspec(section ".sdata") extern char lbl_8055D580;
+union PU_8001971C { unsigned int i; char *p; };
 
 void fn_8001971C(void) {
     char *base = (char *)&lbl_80357E00;
