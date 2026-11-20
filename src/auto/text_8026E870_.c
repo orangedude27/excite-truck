@@ -252,10 +252,10 @@ extern f32 fn_8026EAEC(f32);
 extern int fn_801769F8(void);
 extern int fn_800216D0(void);
 extern void *fn_801B2ED0(s32);
-  #pragma push
- #pragma processor 750
- #pragma cplusplus on
-extern "C" f32 fn_8026EB4C(void *arg0) {
+#pragma push
+#pragma processor 750
+#pragma cplusplus on
+extern "C" f32 fn_8026EB4C(void *__restrict arg0) {
     class Obj {
     public:
         virtual void dummy0();
@@ -273,7 +273,7 @@ extern "C" f32 fn_8026EB4C(void *arg0) {
     int flag;
 
     char *sub = *(char **)((char *)arg0 + 0x140);
-    f1 = !(*(f32 *)(sub + 0x258C) > lbl_80563E5C) ? lbl_8055F534 : lbl_8055F530;
+    f1 = !(*(f32 *)(sub + 0x258C) > 0.001f) ? lbl_8055F534 : lbl_8055F530;
     f30 = fn_8026EAEC(f1);
 
     f2 = lbl_8055F528;
@@ -284,7 +284,7 @@ extern "C" f32 fn_8026EB4C(void *arg0) {
     sub = *(char **)((char *)arg0 + 0x140);
     flag = 0;
     c = 1;
-    int cond2 = *(f32 *)(sub + 0x258C) > lbl_80563E5C;
+    int cond2 = *(f32 *)(sub + 0x258C) > 0.001f;
     if (!cond2 && *(u8 *)(sub + 0x259C) == 0) {
         c = 0;
     }
@@ -336,6 +336,7 @@ f32 fn_8026ECE4(void *object, f32 *scalar) {
 #pragma processor reset
 extern f32 lbl_80563E7C;
 extern f32 lbl_80563E80;
+#pragma scheduling invalid_target
 void fn_8026ED64(s32 *arg0, Vec *arg1, Vec *arg2, f32 farg0) {
     f32 *entry = lbl_8049A218 + (*arg0 * 4);
     f32 curve;
@@ -351,8 +352,8 @@ void fn_8026ED64(s32 *arg0, Vec *arg1, Vec *arg2, f32 farg0) {
     f32 b;
 
     curve = entry[3];
-    if (curve < lbl_80563E6C)
-        curve = lbl_80563E6C;
+    if (curve < -1.0f)
+        curve = -1.0f;
     else if (curve > lbl_80563E30)
         curve = lbl_80563E30;
     else if (curve > lbl_80563E78) {
@@ -390,8 +391,8 @@ void fn_8026ED64(s32 *arg0, Vec *arg1, Vec *arg2, f32 farg0) {
     delta.y = dy;
     delta.z = dz;
 
-    if (curve2 < lbl_80563E6C)
-        curve2 = lbl_80563E6C;
+    if (curve2 < -1.0f)
+        curve2 = -1.0f;
     else if (curve2 > lbl_80563E30)
         curve2 = lbl_80563E30;
     else if (curve2 > lbl_80563E78) {
@@ -415,10 +416,6 @@ void fn_8026ED64(s32 *arg0, Vec *arg1, Vec *arg2, f32 farg0) {
     arg1->y = arg2->y + delta.y * blend;
     arg1->z = arg2->z + delta.z * blend;
 }
-
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
 void fn_8026EF48(void *arg0, void *arg1, void *arg2, f32 farg0) {
     f32 sp14;
     f32 sp10;
@@ -448,9 +445,9 @@ void fn_8026EF48(void *arg0, void *arg1, void *arg2, f32 farg0) {
     entry = lbl_8049A218 + (*(s32 *)arg0 * 4);
     if (fn_801769F8() == 0) {
         sp48 = *(Vec *)((char *)sub + 0x60);
+        flag = *(s32 *)((char *)sub + 0x2620) > 0;
         f30 = sp48.z;
         f31 = sp48.y;
-        flag = *(s32 *)((char *)sub + 0x2620) > 0;
         rec = (char *)sub + 0x6C;
         f29 = fn_801E9FDC(rec, lbl_80563E84 + sp48.x, lbl_80563E84 + f30);
         sp3C.x = lbl_80563E84 + sp48.x;
@@ -629,12 +626,8 @@ extern "C" void fn_8026F420(s32 arg0, s32 arg1, void *arg2) {
     }
     f2 = lbl_80563E30;
     f0 = lbl_80563EC8 * *(f32 *)((char *)arg2 + 0xC);
-    if (f2 >= f0) {
-        f2 = f0;
-    }
-    if (f2 <= lbl_80563E78) {
-        f2 = lbl_80563E78;
-    }
+    f2 = (f2 >= f0) ? f0 : f2;
+    f2 = (f2 <= lbl_80563E78) ? lbl_80563E78 : f2;
     f30 = lbl_80563E6C;
     if (f2 >= lbl_80563E6C) {
         f30 = lbl_80563E30;
@@ -873,9 +866,7 @@ void *arg2;
     f30 = lbl_80563EF0 + *(f32 *)((char *)*(void **)(r31 + 0x140) + 0x5B8);
     *(f32 *)(r31 + 0xBC) = fn_8026ECE4((void *)r31, &sp8);
 
-    sp6C.x = *(f32 *)(r31 + 0xE4);
-    sp6C.y = *(f32 *)(r31 + 0xE8);
-    sp6C.z = *(f32 *)(r31 + 0xEC);
+    sp6C = *(Vec *)(r31 + 0xE4);
     sp6C.y += lbl_80563EF4;
 
     if (r29 != r28) {
