@@ -2531,6 +2531,7 @@ extern "C" s32 fn_802154C0(s32 object, s32 deleteFlag) {
     return object;
 }
 
+/* Empty no-op: a default callback/virtual slot with no behaviour. */
 extern "C" void fn_80215500(void) {
 
 }
