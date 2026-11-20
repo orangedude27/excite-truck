@@ -24,6 +24,7 @@ extern float lbl_80565038;
 extern float lbl_8056503C;
 extern void *fn_802DA704(int, void *, int);
 extern void fn_802DAA18(void *);
+struct Blk8_802DA1F4 { int w[8]; };
 
 // One StackAlloc instance, "BoneHandleAlloc" (lbl_8055FE5C), over a 0x19000
 // byte arena named "StackAlloc::buf".  It bump-allocates records that queue a
@@ -803,8 +804,7 @@ void *fn_802DA918(float x, float y, float z) {
 }
 extern void *memset(void *, int, unsigned int);
 #pragma opt_propagation off
-#pragma scheduling invalid_target
-#pragma opt_propagation off
+#pragma scheduling on
 void fn_802DAA18(void *arg0) {
     extern void *lbl_8055FE60;
     extern char lbl_80346798[];
@@ -827,17 +827,17 @@ void fn_802DAA18(void *arg0) {
             memset(sp8, 0, 0x3C0);
             ctx->initialized = 0;
             var_r31 = (void *)1;
-            if (ctx->used + 0x3E0 > ctx->capacity) {
+            if (*(volatile int *)&ctx->used + 0x3E0 > *(volatile int *)&ctx->capacity) {
                 size = *(volatile int *)&ctx->capacity;
                 format = lbl_80346798;
                 name = ctx->name;
                 fn_802E317C(format, name, 0x3D8, size / 0x400);
                 var_r29 = 0;
             } else {
-                allocPtr = (int *)(ctx->buffer + ctx->used);
+                allocPtr = (int *)(*(volatile unsigned char **)&ctx->buffer + *(volatile int *)&ctx->used);
                 *allocPtr++ = (int)var_r31;
                 var_r29 = (struct StackAllocRecord *)allocPtr;
-                *(int *)(ctx->buffer + ctx->used + 0x3DC) = 0x3D8;
+                *(int *)(*(volatile unsigned char **)&ctx->buffer + *(volatile int *)&ctx->used + 0x3DC) = 0x3D8;
                 ctx->used += 0x3E0;
             }
             var_r29->kind = 7;
@@ -866,8 +866,6 @@ void fn_802DAA18(void *arg0) {
     }
     ctx->status = entry->status;
 }
-#pragma opt_propagation reset
-#pragma scheduling on
 void fn_802DABA4(float *arg0) {
     float a0 = arg0[0];
     float s1 = lbl_80565038;
