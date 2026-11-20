@@ -1416,8 +1416,7 @@ void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
         glyph = (*((u8 **) (((u8 *) font) + 0x10))) + glyphInfo[0];
         fn_80231380(out3, glyphInfo[1], farg2, farg3, farg4, *((f32 *) (glyph + 0x14)), *((f32 *) (glyph + 0x18)));
         indices = lbl_802F9FF0;
-        ((void (*)(void *, s32, u16 *, s32, s32, s32, s32, s32)) fn_802C8DB8)(out0, 4, indices.idx, 6,
-                    indices.idx[4], indices.idx[3], indices.idx[2], indices.idx[1]);
+        ((void (*)(void *, s32, u16 *, s32))fn_802C8DB8)(out0, 4, indices.idx, 6);
     }
 }
 #pragma pop
