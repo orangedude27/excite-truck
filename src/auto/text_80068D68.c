@@ -2652,8 +2652,7 @@ void fn_8006B044(tBTM_VSC_CMPL *arg0) {
     extern void fn_8006B26C(tBTM_VSC_CMPL *);
     u8 buf[0x100];
     u8 packet[0x100];
-    u8 *p;
-    s32 i;
+    register s32 i;
     s32 length;
     s32 count;
     s32 size;
@@ -2677,8 +2676,10 @@ void fn_8006B044(tBTM_VSC_CMPL *arg0) {
         length = (u32)length < 0xFB ? length : 0xFB;
         length = (u8)length;
         header = lbl_8055DC3C + lbl_8055DC40;
-        p = packet;
-        UINT32_TO_STREAM(p, header);
+        packet[0] = (u8)header;
+        packet[1] = (u8)(header >> 8);
+        packet[2] = (u8)(header >> 16);
+        packet[3] = (u8)(header >> 24);
         for (i = 0; i < length; i++)
             packet[i + 4] = lbl_803135C0[lbl_8055DC40 + i + 8];
         lbl_8055DC40 += length;
@@ -4686,7 +4687,8 @@ void uusb_issue_intr_read(void) {
     ((u8 *)&lbl_803BD1E0)[0x2B] = 1;
 }
 
-#pragma opt_lifetimes off
+#pragma push
+#pragma scheduling 750
 void uusb_WriteCtrlDataCB(s32 arg0, void *arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteCtrlMsgAsync(s32, s32, s32, s32, s32, u32, void *, void *, void *);
@@ -4694,7 +4696,6 @@ void uusb_WriteCtrlDataCB(s32 arg0, void *arg1) {
     register int status = arg0;
     register char *report = lbl_803142C8;
     u16 offset;
-    u32 controlHi;
 
     if (lbl_803BD1E0.at_0x28 != 0)
         OSReport(report + 0x460, status);
@@ -4710,8 +4711,7 @@ void uusb_WriteCtrlDataCB(s32 arg0, void *arg1) {
     }
 
     {
-        controlHi = (u32)&lbl_803BD1E0;
-        control = (u8 *)controlHi;
+        control = (u8 *)&lbl_803BD1E0;
         if (control[0x48] < 5 && *(u16 *)(control + 0x44) != 0) {
             arg1 = GKI_dequeue((BUFFER_Q *)(control + 0x3C));
             offset = *(u16 *)((u8 *)arg1 + 4);
@@ -4730,6 +4730,7 @@ void uusb_WriteCtrlDataCB(s32 arg0, void *arg1) {
         }
     }
 }
+#pragma pop
 void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
@@ -8059,6 +8060,7 @@ void btm_acl_device_down(void)
 #pragma dont_inline off
 tBTM_STATUS BTM_SwitchRole(BD_ADDR remote_bd_addr, UINT8 new_role, tBTM_CMPL_CB *p_cb) {
     u8 *entry; u8 power_mode; u8 status; tBTM_PM_PWR_MD spC;
+    /* Switch the Bluetooth ACL link role, powering down or encrypting as required. */
     if ((lbl_803C0F78[0x640] & 0x20) == 0) return 4;
     entry = btm_bda_to_acl_inl(remote_bd_addr);
     if (entry == 0) return 7;
@@ -8350,9 +8352,13 @@ BOOLEAN BTM_IsAclConnectionUp(BD_ADDR remote_bda) {
     entry = lbl_803C0F78 + 0x34;
 loop:
     if (entry[0x119] != 0) {
-        if (memcmp(entry + 8, remote_bda, 6) == 0)
+        if (memcmp(entry + 8, remote_bda, 6) != 0)
+            goto inc;
+        else
             goto found;
     }
+    goto inc;
+inc:
     i++;
     entry += 0x11C;
     if (i < 4)
@@ -16458,10 +16464,12 @@ BOOLEAN btsnd_hcic_set_event_filter(void *p_buf, UINT8 filt_type, UINT8 cond_typ
     UINT8 *dst;
     s32 len = cond_len;
     register int ijk;
+    int go;
     p->offset = 0;
     raw[8] = 5;
     raw[9] = 0xC;
-    if (filt_type != 0) {
+    go = filt_type != 0;
+    if (go) {
         p->len = cond_len + 5;
         raw[0xA] = cond_len + 2;
         raw[0xB] = filt_type;
@@ -24051,13 +24059,13 @@ void rfc_process_pn(void *arg0, s32 arg1, void *arg2) {
         }
     } else {
         mcb = port_find_mcb_dlci_port(arg0, dlci);
-        if (mcb != 0) {
-            flag = *(u8 *)((u8 *)mcb + 0x69);
-            if ((flag & 1) != 0) {
-                *(u8 *)((u8 *)mcb + 0x69) = flag & 0xFE;
-                rfc_port_timer_stop(mcb);
-                PORT_ParNegCnf(arg0, dlci, *(u16 *)((u8 *)arg2 + 0xE), *(u8 *)((u8 *)arg2 + 0xA), *(u8 *)((u8 *)arg2 + 0x11));
-            }
+        if (mcb == 0) return;
+        flag = *(u8 *)((u8 *)mcb + 0x69);
+        if ((flag & 1) == 0) {
+        } else {
+            *(u8 *)((u8 *)mcb + 0x69) = flag & 0xFE;
+            rfc_port_timer_stop(mcb);
+            PORT_ParNegCnf(arg0, dlci, *(u16 *)((u8 *)arg2 + 0xE), *(u8 *)((u8 *)arg2 + 0xA), *(u8 *)((u8 *)arg2 + 0x11));
         }
     }
 }
@@ -24866,15 +24874,16 @@ extern char lbl_80319DD8[];
 __declspec(section ".sdata") extern char lbl_80559090[];
 __declspec(section ".sdata") extern char lbl_80559098[];
 s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
+    struct BufView { u8 pad0[2]; u16 len; u16 offset; u16 pad6; u8 data[1]; };
+    struct BufView *buf = (struct BufView *)arg2;
+    union { u16 off; u8 *frame; } of;
     char *messages = lbl_80319DD8;
     s32 var_r8;
     s32 temp_r9;
     s32 temp_r10;
     s32 temp_r11;
     s32 temp_r8_3;
-    u8 *frame;
     u8 *temp_r7;
-    u8 *temp_r6;
     u16 temp_r8;
     u8 temp_r3;
     u8 temp_r3_2;
@@ -24892,11 +24901,11 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
     u8 fcs;
     u16 offset;
 
-    offset = (*(u16 *)((u8 *)(arg2) + 4));
-    temp_r6 = arg2 + offset;
-    temp_r7 = temp_r6 + 8;
-    frame = temp_r7;
-    temp_r8 = (*(u16 *)((u8 *)(arg2) + 2));
+    offset = buf->offset;
+    of.off = offset;
+    temp_r7 = buf->data + offset;
+    of.frame = temp_r7;
+    temp_r8 = buf->len;
     if (temp_r8 < 3U) {
         if ((u8) (*(u8 *)((u8 *)(&lbl_803C4828) + 0x414)) >= 1U) {
             fn_80070954(0x90000, &messages[0], temp_r8);
@@ -24915,8 +24924,8 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
     *(u8 *)((u8 *)(arg1) + 4) = (u8) ((s32) (*temp_r7 & 0x10) >> 4);
     b1 = temp_r7[1];
     temp_r7 += 2;
-    temp_r10 = b1 & 1;
     var_r8 = (s32) b1 >> 1;
+    temp_r10 = b1 & 1;
     if (temp_r10 == 0) {
         b0 = *temp_r7++;
         var_r8 = (s32) (u16) (var_r8 + (b0 << 7));
@@ -24942,7 +24951,7 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
     switch ((s32) temp_r9_2) {
     case 0x2F:
         temp_r6_3 = (*(u8 *)((u8 *)(arg0) + 0x6D));
-        if ((((s32) temp_r6_3 != 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) != 0)) || (((s32) temp_r6_3 == 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) == 0)) || ((s32) (*(u8 *)((u8 *)(arg1) + 4)) == 0) || ((u16) var_r8 != 0) || ((temp_r3 = (*(u8 *)((u8 *)(arg1) + 0)), (((s32) temp_r3 == 0) == 0)) && ((temp_r3 < 2U) || (temp_r3 > 0x3DU))) || (fn_80095084(3, frame, fcs) == 0)) {
+        if ((((s32) temp_r6_3 != 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) != 0)) || (((s32) temp_r6_3 == 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) == 0)) || ((s32) (*(u8 *)((u8 *)(arg1) + 4)) == 0) || ((u16) var_r8 != 0) || ((temp_r3 = (*(u8 *)((u8 *)(arg1) + 0)), (((s32) temp_r3 == 0) == 0)) && ((temp_r3 < 2U) || (temp_r3 > 0x3DU))) || (fn_80095084(3, of.frame, fcs) == 0)) {
             if ((u8) (*(u8 *)((u8 *)(&lbl_803C4828) + 0x414)) >= 1U) {
                 fn_8007093C(0x90000, messages + 0x24);
             }
@@ -24951,7 +24960,7 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
         return 0;
     case 0x63:
         temp_r6_4 = (*(u8 *)((u8 *)(arg0) + 0x6D));
-        if ((((s32) temp_r6_4 != 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) == 0)) || (((s32) temp_r6_4 == 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) != 0)) || ((s32) (*(u8 *)((u8 *)(arg1) + 4)) == 0) || ((u16) var_r8 != 0) || ((temp_r3_2 = (*(u8 *)((u8 *)(arg1) + 0)), (((s32) temp_r3_2 == 0) == 0)) && ((temp_r3_2 < 2U) || (temp_r3_2 > 0x3DU))) || (fn_80095084(3, frame, fcs) == 0)) {
+        if ((((s32) temp_r6_4 != 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) == 0)) || (((s32) temp_r6_4 == 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) != 0)) || ((s32) (*(u8 *)((u8 *)(arg1) + 4)) == 0) || ((u16) var_r8 != 0) || ((temp_r3_2 = (*(u8 *)((u8 *)(arg1) + 0)), (((s32) temp_r3_2 == 0) == 0)) && ((temp_r3_2 < 2U) || (temp_r3_2 > 0x3DU))) || (fn_80095084(3, of.frame, fcs) == 0)) {
             if ((u8) (*(u8 *)((u8 *)(&lbl_803C4828) + 0x414)) >= 1U) {
                 fn_8007093C(0x90000, lbl_80559090);
             }
@@ -24960,7 +24969,7 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
         return 1;
     case 0xF:
         temp_r6_5 = (*(u8 *)((u8 *)(arg0) + 0x6D));
-        if ((((s32) temp_r6_5 != 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) == 0)) || (((s32) temp_r6_5 == 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) != 0)) || ((u16) var_r8 != 0) || ((temp_r3_3 = (*(u8 *)((u8 *)(arg1) + 0)), (((s32) temp_r3_3 == 0) == 0)) && ((temp_r3_3 < 2U) || (temp_r3_3 > 0x3DU))) || (fn_80095084(3, frame, fcs) == 0)) {
+        if ((((s32) temp_r6_5 != 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) == 0)) || (((s32) temp_r6_5 == 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) != 0)) || ((u16) var_r8 != 0) || ((temp_r3_3 = (*(u8 *)((u8 *)(arg1) + 0)), (((s32) temp_r3_3 == 0) == 0)) && ((temp_r3_3 < 2U) || (temp_r3_3 > 0x3DU))) || (fn_80095084(3, of.frame, fcs) == 0)) {
             if ((u8) (*(u8 *)((u8 *)(&lbl_803C4828) + 0x414)) >= 1U) {
                 fn_8007093C(0x90000, lbl_80559098);
             }
@@ -24969,7 +24978,7 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
         return 2;
     case 0x43:
         temp_r6_6 = (*(u8 *)((u8 *)(arg0) + 0x6D));
-        if ((((s32) temp_r6_6 != 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) != 0)) || (((s32) temp_r6_6 == 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) == 0)) || ((s32) (*(u8 *)((u8 *)(arg1) + 4)) == 0) || ((u16) var_r8 != 0) || ((temp_r3_4 = (*(u8 *)((u8 *)(arg1) + 0)), (((s32) temp_r3_4 == 0) == 0)) && ((temp_r3_4 < 2U) || (temp_r3_4 > 0x3DU))) || (fn_80095084(3, frame, fcs) == 0)) {
+        if ((((s32) temp_r6_6 != 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) != 0)) || (((s32) temp_r6_6 == 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) == 0)) || ((s32) (*(u8 *)((u8 *)(arg1) + 4)) == 0) || ((u16) var_r8 != 0) || ((temp_r3_4 = (*(u8 *)((u8 *)(arg1) + 0)), (((s32) temp_r3_4 == 0) == 0)) && ((temp_r3_4 < 2U) || (temp_r3_4 > 0x3DU))) || (fn_80095084(3, of.frame, fcs) == 0)) {
             if ((u8) (*(u8 *)((u8 *)(&lbl_803C4828) + 0x414)) >= 1U) {
                 fn_8007093C(0x90000, messages + 0x30);
             }
@@ -24984,7 +24993,7 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
             }
             return 0x32;
         }
-        if (fn_80095084(2, frame, fcs) == 0) {
+        if (fn_80095084(2, of.frame, fcs) == 0) {
             if ((u8) (*(u8 *)((u8 *)(&lbl_803C4828) + 0x414)) >= 1U) {
                 fn_8007093C(0x90000, messages + 0x54);
             }
