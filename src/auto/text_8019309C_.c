@@ -1809,7 +1809,7 @@ void fn_801961FC(void *driver) {
     #undef ModeTimerPastIntro
 }
 
-extern float lbl_80562140, lbl_80562144, lbl_80562168;
+extern float lbl_80562140, lbl_80562144;
 extern const float lbl_80562230, lbl_80562234, lbl_80562238;
 extern float __fabsf(float);
 #pragma opt_propagation off
