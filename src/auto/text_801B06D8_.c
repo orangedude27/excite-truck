@@ -165,7 +165,7 @@ void fn_801B07B4(void *arg0, void *arg1) {
     void * volatile sp18;
     volatile s32 sp14, sp10, spC;
     volatile f32 sp8;
-    f32 x, scale, angle, finalPos, finalScale;
+    f32 x, scale, angle, finalScale, finalPos;
     void *first;
     s32 flag;
 
@@ -192,8 +192,8 @@ void fn_801B07B4(void *arg0, void *arg1) {
                         angle))
             *(f32 *)((u8 *)arg0 + 0x28) = lbl_805625D0 + *(f32 *)(void *)&sp8;
     }
-    finalPos = *(f32 *)((u8 *)arg0 + 0x28) + lbl_805625D4;
     finalScale = lbl_805625D8;
+    finalPos = *(f32 *)((u8 *)arg0 + 0x28) + lbl_805625D4;
     *(f32 *)((u8 *)arg0 + 0x34) = finalScale;
     *(f32 *)((u8 *)arg0 + 0x28) = finalPos;
 }
@@ -219,7 +219,7 @@ extern "C" void fn_801B08FC(void *arg0, void *arg1) {
     s32 t0;
     u8 *a;
     u8 *b;
-    s32 v1, v0;
+    s32 v1;
     u8 *stop;
     u8 *n;
     a = *(u8 **)((u8 *)self->get18() + 4);
@@ -230,9 +230,9 @@ extern "C" void fn_801B08FC(void *arg0, void *arg1) {
     cur = *(s32 *)((u8 *)self + 0x60);
     t0 = *(s32 *)(*(u8 **)((u8 *)self->get18() + 0x2c) + 0x18);
     t1 = *(s32 *)(*(u8 **)((u8 *)self->get18() + 0x2c) + 0x18);
-    v0 = fn_801B08E8(*(s32 *)(b + 0x10), *(s32 *)(a + 0x10), t0);
+    t0 = fn_801B08E8(*(s32 *)(b + 0x10), *(s32 *)(a + 0x10), t0);
     v1 = fn_801B08E8(*(s32 *)(a + 0x10), *(s32 *)(b + 0x10), t1);
-    if (((u32)(v1 << __cntlzw(v1 ^ v0)) >> 31) != 0) {
+    if (((u32)(v1 << __cntlzw(v1 ^ t0)) >> 31) != 0) {
         n = *(u8 **)(b + 0x14);
         stop = *(u8 **)(a + 0x14);
         for (; n != stop; n = *(u8 **)(n + 0x14)) {
@@ -259,8 +259,11 @@ extern "C" void fn_801B08FC(void *arg0, void *arg1) {
                         if (tbl[i].key > key)
                             break;
                     }
-                    memmove(&tbl[i + 1], &tbl[i], (cnt - i) * 8);
-                    tbl[i] = tmp;
+                    {
+                        Ent *p = &tbl[i];
+                        memmove(p + 1, p, (cnt - i) * 8);
+                        *p = tmp;
+                    }
                     lbl_80435BE8[0x10]++;
                 }
                 break;
@@ -504,15 +507,15 @@ extern "C" void fn_801B0F70(s32 arg0, s32 arg1) {
         u8 data[0x40];
         s16 marker;
     };
-    register s32 failed;
-    register s32 isResource;
-    register void *result;
-    register Item *item;
+    s32 failed;
+    s32 isResource;
+    void *result;
+    s32 itemAddr;
     State state;
     u32 scratch[3];
     Request request;
-    item = (Item *)((u8 *)lbl_8055E684 + (arg0 << 7));
-    result = item->getPayload((void *)arg1);
+    itemAddr = (s32)lbl_8055E684 + (arg0 << 7);
+    result = ((Item *)itemAddr)->getPayload((void *)arg1);
     isResource = *(u32 *)((u8 *)result + 0x10) == 0x50434152;
 
     state.head = 0;
@@ -521,14 +524,14 @@ extern "C" void fn_801B0F70(s32 arg0, s32 arg1) {
     if (isResource != 0) {
         fn_801B30D0(arg0);
         fn_801B30E0(arg0);
-        fn_801B0BB0(scratch, item->getState());
+        fn_801B0BB0(scratch, ((Item *)itemAddr)->getState());
         state.head = (void *)scratch[0];
         state.weight = *(f32 *)&scratch[1];
         state.limit = scratch[2];
     } else {
-        state.head = *(void **)((u8 *)item + 0x4C);
-        state.weight = *(f32 *)((u8 *)item + 0x50);
-        state.limit = *(s32 *)((u8 *)item + 0x54);
+        state.head = *(void **)((u8 *)itemAddr + 0x4C);
+        state.weight = *(f32 *)((u8 *)itemAddr + 0x50);
+        state.limit = *(s32 *)((u8 *)itemAddr + 0x54);
     }
     failed = 0;
     if (isResource == 0) {
@@ -558,7 +561,7 @@ extern "C" void fn_801B0F70(s32 arg0, s32 arg1) {
     }
     request.marker = -1;
     fn_801B07B4(&request, &state);
-    fn_801B08FC(item, &request);
+    fn_801B08FC((Item *)itemAddr, &request);
 }
 #pragma cplusplus reset
 #pragma pop
@@ -812,12 +815,13 @@ extern "C" void fn_801B15A8(s32 arg0, f32 farg0) {
         virtual void complete(s32, s32);
     };
     u8 *state = (u8 *)arg0;
+    s32 *totalPtr = (s32 *)(state + 0x14);
     register s32 copied;
     s32 one;
     s32 resource;
 
     if (*(state + 0x78) == 0 && *(state + 0x79) == 0) {
-        s32 count = *(s32 *)(state + 0x14);
+        s32 count = *totalPtr;
         if (count == *(s32 *)(state + 0x68)) {
             if (count > 0) {
                 register f32 threshold;
@@ -837,7 +841,7 @@ extern "C" void fn_801B15A8(s32 arg0, f32 farg0) {
                 ((Progress *)*(void **)(state + 0x5C))->update();
                 fn_8000D7F8(*(s32 *)(state + 0x60), delta);
 
-                count = *(s32 *)(state + 0x14) + 1;
+                count = *totalPtr + 1;
                 *(s32 *)(state + 0x14) = count;
                 if (count > *(s32 *)&lbl_8055E694) {
                     *(s32 *)&lbl_8055E694 = count;
@@ -845,7 +849,7 @@ extern "C" void fn_801B15A8(s32 arg0, f32 farg0) {
                         lbl_8055E698 = 1;
                 }
                 {
-                    copied = *(s32 *)(state + 0x14);
+                    copied = *totalPtr;
                     *(s32 *)(state + 0x68) = copied;
                     if (copied == (s32)lbl_8055E680 + 1) {
 
@@ -993,7 +997,7 @@ extern "C" void fn_801B196C(s32 arg0, s32 arg1) {
     Manager *manager;
     Object *object;
     f32 *data;
-    f32 scale;
+    register f32 scale;
     f32 bx54;
     f32 bx58;
     f32 bx5c;
@@ -1645,9 +1649,8 @@ check_second:
     }
 }
 
-#pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma cplusplus on
 extern "C" s32 fn_801B25B0(s32 *arg0, s32 *arg1) {
     struct First {
@@ -1660,9 +1663,12 @@ extern "C" s32 fn_801B25B0(s32 *arg0, s32 *arg1) {
         virtual void v1();
         virtual void *get();
     };
-    Second *obj1 = (Second *)((u8 *)lbl_8055E684 + (*arg1 << 7));
-    First *obj0 = (First *)((u8 *)lbl_8055E684 + (*arg0 << 7));
-    void *result0 = obj0->get(*arg1, lbl_8055E684);
+    register s32 index1 = *arg1;
+    register s32 index0 = *arg0;
+    void *base = lbl_8055E684;
+    First *obj0 = (First *)((u8 *)base + (index0 << 7));
+    Second *obj1 = (Second *)((u8 *)base + (index1 << 7));
+    void *result0 = obj0->get(index1, base);
     register f32 var_f31 = *(f32 *)((u8 *)result0 + 0x20);
     void *result1 = obj1->get();
     f32 var_f1 = *(f32 *)((u8 *)result1 + 0x20);
@@ -1673,7 +1679,6 @@ extern "C" s32 fn_801B25B0(s32 *arg0, s32 *arg1) {
     return var_f31 > var_f1;
 }
 #pragma cplusplus off
-#pragma pop
 extern void *__AXFXGetLfoSinTable_801769CC(void);
 extern int fn_80019B3C(void);
 extern f32 fn_8013B650(int);
@@ -1854,12 +1859,13 @@ void fn_801B2C6C(void) {
 
 }
 
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 s32 fn_801B2C70(void *arg0) {
     s32 x;
     unsigned int shifted;
     unsigned int y;
     s32 mask;
+    s32 zero;
     struct Entry {
         s32 unknown0;
         s32 value;
@@ -1868,7 +1874,6 @@ s32 fn_801B2C70(void *arg0) {
         u8 flag;
         u8 unknown11[3];
     } *entry;
-    s32 zero;
     s32 offset;
     s32 i;
     memset(arg0, 0, 0xB0);
@@ -1897,6 +1902,7 @@ s32 fn_801B2C70(void *arg0) {
     }
     return 1;
 }
+#pragma opt_propagation reset
 extern int fn_801E89EC();
 typedef struct { u32 a, b; } WordPair_801B2D28;
 #pragma cplusplus on
