@@ -758,6 +758,7 @@ static inline void fn_802BD5B0_swap(unsigned char *entry, float zero) {
     t = entry[10]; entry[10] = entry[11]; entry[11] = t;
     *(float *)(entry + 12) = zero;
 }
+#pragma inline fn_802BD5B0_swap
 
 void fn_802BD5B0(void *arg0, int arg1) {
     extern int fn_802BD694(int, int);
