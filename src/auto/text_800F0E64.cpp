@@ -5998,15 +5998,12 @@ extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3s
     if (*(u16 *)((u8 *)self + 0x24) == 0)
         return 0;
     while (*(s32 *)self >= *(u16 *)((u8 *)self + 0x24)) {
-        if (*(s32 *)((u8 *)self + 0xC) == 0) {
-            const char *const f = lbl_803263A8;
-            const char *const l = lbl_80326384;
-            Panic__Q26nw4hbm2dbFPCciPCce(f, 0x1F1, l);
-        }
-        u8 *sound = *(u8 **)((u8 *)self + 0x10);
-        if (sound == 0)
+        if (*(s32 *)((u8 *)self + 0xC) == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803263A8, 0x1F1, lbl_80326384);
+        u8 *first = *(u8 **)((u8 *)self + 0x10);
+        if (first == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
-        sound -= 0xC8;
+        u8 *sound = first - 0xC8;
         if (sound == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326378, 0x193, lbl_80326354);
         if (sound == 0)
@@ -6542,25 +6539,24 @@ extern "C" void *Alloc__Q44nw4r3snd6detail14StrmBufferPoolFv(void *arg0) {
         s32 used;
         u8 bits[32];
     };
+    struct ByteHolder { u8 b; } holder;
     register StrmBufferPoolView *pool = (StrmBufferPoolView *)arg0;
+    u8 &value = holder.b;
     u32 interruptState = OSDisableInterrupts();
     s32 capacity = pool->capacity;
     s32 used = pool->used;
-    u8 *slot;
-    u8 value;
     if (used >= capacity) {
         OSRestoreInterrupts(interruptState);
         return 0;
     }
     s32 numBytes = ((capacity + 7) & ~7) / 8;
     for (s32 i = 0; i < numBytes; ++i) {
-        slot = &pool->bits[i];
-        value = *slot;
+        value = pool->bits[i];
         if (value != 0xFF) {
             u8 mask = 1;
             for (s32 bit = 0; bit < 8; ++bit) {
                 if ((value & mask) == 0) {
-                    *slot |= mask;
+                    pool->bits[i] |= mask;
                     pool->used++;
                     u32 offset = pool->stride * (bit + (i << 3));
                     void *result = (void *)(offset + (u32)pool->buffer);
