@@ -12,6 +12,12 @@ extern "C" s32 fn_8019C854(void*, void*);
 struct CornerV3 {
     f32 x, y, z;
 };
+struct Input8019F1D4 {
+    u8 pad0[0x24];
+    f32 width;
+    u8 pad1[0x0C];
+    f32 pos[3];
+};
 static inline void CornerV3Copy(CornerV3* d, const CornerV3* s) {
     ((u32*)d)[0] = ((const u32*)s)[0];
     ((u32*)d)[1] = ((const u32*)s)[1];
@@ -1765,7 +1771,7 @@ extern "C" s32 fn_8019DAB0(void *arg0, void *arg1) {
         Vec minus;
         Vec plus;
     };
-    s32 check = (u8)fn_8019D618(arg0, arg1, 0, 0);
+    s32 check = (u16)fn_8019D618(arg0, arg1, 0, 0);
     u32 checkFlag = ((u32)-check | (u32)check) >> 31;
     if (checkFlag) return 1;
     void *shape = *(void **)((u8 *)arg0 + 0xC);
@@ -2532,17 +2538,16 @@ extern "C" void fn_8019F1B4(void *obj, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     fn_8019DDFC(arg1, arg2, arg3, arg4, (u8 *)obj + 0x34, obj, *(f32 *)((u8 *)obj + 0x24));
 }
 
-#pragma push
-#pragma scheduling invalid_target
-extern "C" void fn_8019F1D4(void* arg0, void* arg1, void* arg2) {
+#pragma scheduling on
+extern "C" void fn_8019F1D4(const void* arg0, void* arg1, void* arg2) {
     volatile f32 inputA[2];
     volatile f32 inputB[4];
-    f32 width = *(f32*)((u8*)arg0 + 0x24);
+    f32 width = *(const f32*)((const u8*)arg0 + 0x24);
     f32 scaleA = width * lbl_805622DC;
-    f32 left = *(f32*)((u8*)arg0 + 0x34);
-    f32 mid = *(f32*)((u8*)arg0 + 0x38);
+    f32 left = *(const f32*)((const u8*)arg0 + 0x34);
+    f32 mid = *(const f32*)((const u8*)arg0 + 0x38);
     f32 scaleB = width * lbl_805622E0;
-    f32 right = *(f32*)((u8*)arg0 + 0x3C);
+    f32 right = *(const f32*)((const u8*)arg0 + 0x3C);
     f32 x0 = left + scaleA;
     inputA[0] = width;
     f32 x1 = mid + scaleA;
@@ -2562,7 +2567,6 @@ extern "C" void fn_8019F1D4(void* arg0, void* arg1, void* arg2) {
     ((f32*)arg2)[1] = y1;
     ((f32*)arg2)[2] = y2;
 }
-#pragma pop
 extern "C" void fn_8019F248(void *shape) {
     extern f32 lbl_80562300;
     extern s32 lbl_8055E598;
@@ -3015,7 +3019,7 @@ extern "C" void fn_801A01E0(void* arg0, void* arg1, void* arg2) {
     volatile f32 inputB[4];
     volatile f32* first = (volatile f32*)arg1;
     volatile f32* second = (volatile f32*)arg2;
-    register f32 value = *(f32*)((u8*)arg0 + 0x178);
+    f32 value = ((const Arg0_801A01E0*)arg0)->value;
     void* base = *(void**)((u8*)arg0 + 0xC);
     f32 x = *(f32*)((u8*)base + 0x24);
     f32 scaleA = value * lbl_805622DC;
