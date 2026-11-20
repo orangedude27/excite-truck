@@ -139,7 +139,6 @@ void fn_801DB340(int userData) { fn_801DB13C(userData - 4); }
 int fn_801DB348(int arg0, int arg1, float *arg2, int *arg3, void *arg4) {
     int width, height;
     float *data;
-    int result;
     (void)arg4;
     if (arg3 != 0) {
         *arg3 = 0;
@@ -151,8 +150,7 @@ int fn_801DB348(int arg0, int arg1, float *arg2, int *arg3, void *arg4) {
     arg1 &= height - 1;
     arg1 *= width;
     *arg2 = data[arg0 + arg1];
-    result = 1;
-    return result;
+    return 1;
 }
 #pragma dont_inline reset
 #pragma auto_inline reset
