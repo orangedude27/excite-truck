@@ -10691,19 +10691,6 @@ void btm_event_filter_complete(UINT8 *p_param) {
     }
 }
 
-#pragma push
-#pragma dont_inline off
-#pragma dont_inline fn_8006E4F8
-static __inline UINT8 *find_inq_entry(UINT8 *base, UINT8 *bda) {
-    UINT8 *entry = base + 0x16e4;
-    UINT32 j;
-    for (j = 0; j < 12; j++, entry += 0x1c) {
-        if (!entry[0x1a]) continue;
-        if (memcmp(entry + 0xa, bda, 6) == 0)
-            return entry;
-    }
-    return 0;
-}
 void btm_process_inq_results(UINT8 *p, UINT8 mode)
 {
     UINT8 per, rep;
@@ -10733,7 +10720,18 @@ void btm_process_inq_results(UINT8 *p, UINT8 mode)
         if (btm_inq_find_bdaddr(bda)) continue;
         if (*(UINT8 (**)(UINT8 *, UINT8 *))(base + 0x184c) &&
             !(*(UINT8 (**)(UINT8 *, UINT8 *))(base + 0x184c))(bda, dc)) continue;
-        entry = find_inq_entry(base, bda);
+        entry = base + 0x16e4;
+        j = 0;
+    search_loop:
+        if (!entry[0x1a]) goto search_next;
+        if (memcmp(entry + 0xa, bda, 6) != 0) goto search_next;
+        goto found;
+    search_next:
+        j++;
+        entry += 0x1c;
+        if (j < 12) goto search_loop;
+        entry = 0;
+    found:
         if (!entry) { entry = (UINT8 *)btm_inq_db_new(bda); is_new = 1; }
         else if (*(UINT32 *)(entry + 4) == *(UINT32 *)(base + 0x16c0)) is_new = 0;
         if (is_new == 1) {
@@ -10755,7 +10753,6 @@ void btm_process_inq_results(UINT8 *p, UINT8 mode)
         }
     }
 }
-#pragma pop
 
 void btm_process_inq_complete(UINT8 status, UINT8 unused) {
     register u8 *cleanup_base;
