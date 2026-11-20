@@ -730,8 +730,8 @@ int fn_80136068(void *arg0, void *arg1, int arg2) {
         end = *(unsigned int *)((char *)*(void **)(self + 0x2C) + 0x18);
         start = (end + (start - base)) % end;
     }
+    head = *(char **)(self + 4);
     if (status == 0) {
-        char *head = *(char **)(self + 4);
         if (arg2 != 0) {
         char *walk = locals.node;
         float total = lbl_80561324 - locals.fraction;
