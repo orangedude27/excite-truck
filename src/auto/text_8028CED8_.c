@@ -601,6 +601,12 @@ clear1:
 #pragma pop
 
 extern int lbl_804B3490[];
+typedef struct {
+    int *items;
+    int index;
+    float f8;
+    unsigned char c;
+} SkidEntry;
 extern float lbl_80564414;
 extern float fn_801E7E18(void);
 extern void fn_8028D89C(void *, int, float);
@@ -616,7 +622,6 @@ void fn_8028DDF0(register void *arg0, register int arg1) {
         int a, b, c, d, e, f, g, h;
     } Output;
     Entry *entry = (Entry *)arg0;
-    register int invalid;
     register int *slot;
     register int i;
     register float threshold;
@@ -633,7 +638,6 @@ void fn_8028DDF0(register void *arg0, register int arg1) {
     result = fn_801E7E18();
     slot = lbl_804B3490;
     i = 0;
-    invalid = -1;
     while (i < arg1) {
         if (entry->f8 < threshold &&
             (void *)(unsigned long)entry->items[0x19] == (void *)slot[entry->index] &&
@@ -643,10 +647,10 @@ void fn_8028DDF0(register void *arg0, register int arg1) {
                 fn_8028D89C(entry, j, result);
         } else {
             int offset = entry->index << 5;
-            *(int *)((char *)(unsigned long)lbl_8055F720 + offset) = invalid;
-            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 8) = invalid;
-            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 0x10) = invalid;
-            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 0x18) = invalid;
+            *(int *)((char *)(unsigned long)lbl_8055F720 + offset) = -1;
+            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 8) = -1;
+            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 0x10) = -1;
+            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 0x18) = -1;
         }
         slot[entry->index] = entry->items[0x19];
         entry++;
