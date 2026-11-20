@@ -86,7 +86,42 @@ void fn_8023FE60(s32 playerIndex, s32 *outField2, s32 *outField3, s32 *outId) {
     fn_802E317C(lbl_803422C0, playerIndex, activeCount); /* bad index abort */
 }
 
+extern void fn_8001880C(void), fn_8013C804(void);
+extern void fn_802556BC(void *, s32);
+extern void *fn_802410F8(void *, s32, s32 *, s32);
+extern void *fn_80241024(void *);
+extern void *fn_80240BA4(void *, s32, void *, void *, void *, void *);
+extern void *fn_80240A1C(void *, int *, void *);
+extern void fn_802409AC(void *, s32);
+extern void fn_802409A4(void *, s32);
+extern char lbl_803425B8[];
+#define FR(t, o) (*(t *)((char *)frame + (o) - 8))
 s32 fn_8023FF1C(s32 arg0) {
+    unsigned int frame[0x3AC];
+    fn_8001880C();
+    fn_8013C804();
+    fn_802556BC(&FR(char, 0x370), 0);
+    fn_802410F8(&FR(char, 0x494), (s32)((char *)lbl_80498828 + 0xC),
+                (s32 *)&FR(char, 0x8E8), (s32)&FR(char, 0x370));
+    fn_80241024(&FR(char, 0x530));
+    fn_80240BA4(&FR(char, 0x81C), (s32)((char *)lbl_80498828 + 4),
+                (void *)((char *)lbl_80498828 + 8), &FR(char, 0x494),
+                &FR(char, 0x530), (void *)arg0);
+    fn_80240A1C(&FR(char, 0x88C), (int *)lbl_80498828, &FR(char, 0x370));
+    fn_802409AC(&FR(char, 0x88C), FR(s32, 0x81C));
+    fn_802409AC(&FR(char, 0x88C), FR(s32, 0x494));
+    fn_802409A4(&FR(char, 0x530), arg0);
+    fn_802556BC(&FR(char, 0x8EC), 0);
+    fn_802410F8(&FR(char, 0xA10), (s32)((char *)lbl_80498828 + 0x1C),
+                (s32 *)&FR(char, 0xE64), (s32)&FR(char, 0x8EC));
+    fn_80241024(&FR(char, 0xACC));
+    fn_80240BA4(&FR(char, 0xD98), (s32)((char *)lbl_80498828 + 0x14),
+                (void *)((char *)lbl_80498828 + 0x18), &FR(char, 0xA10),
+                &FR(char, 0xACC), (void *)arg0);
+    fn_80240A1C(&FR(char, 0xE08), (int *)((char *)lbl_80498828 + 0x10), &FR(char, 0x8EC));
+    fn_802409AC(&FR(char, 0xE08), FR(s32, 0xD98));
+    fn_802409AC(&FR(char, 0xE08), FR(s32, 0xA10));
+    fn_802409A4(&FR(char, 0xACC), arg0);
     return arg0;
 }
 
