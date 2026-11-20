@@ -1974,22 +1974,27 @@ void fn_80069EB4(u32 pAlarm, u32 pContext) {
 
 extern void WUDStoredLinkKeyCallback(void *);
 extern void *WUDiGetDevInfo(u8 *);
+#pragma opt_strength_reduction off
+#pragma opt_propagation off
 u8 WUDiClearUnregisteredDevice(void) {
-    s32 offset;
-    s32 index;
-    u8 *base;
     u8 *entry;
+    void *info;
+    s32 offset;
+    u8 *base = &lbl_80392960[0];
+    s32 index;
 
-    if (lbl_80392960[0xE] == 0) {
-        base = lbl_80392960;
+    if (base[0xE] == 0) {
         index = 0;
         offset = 0;
         while (index < 0x10) {
             s32 interrupt = OSDisableInterrupts();
-            if (index >= 0 && index < 10)
-                entry = base + offset + 0x64;
-            else
-                entry = base + (index - 10) * 0x60 + 0x424;
+            if (index >= 0 && index < 10) {
+                u8 *mid = base + offset;
+                entry = mid + 0x64;
+            } else {
+                u8 *mid = base + (index - 10) * 0x60;
+                entry = mid + 0x424;
+            }
             OSRestoreInterrupts(interrupt);
             if (entry[0x59] != 0) {
                 if (entry[0x5C] == 1) {
@@ -1999,7 +2004,7 @@ u8 WUDiClearUnregisteredDevice(void) {
                     return 2;
                 }
                 if (entry[0x5C] != 3) {
-                    void *info = WUDiGetDevInfo(entry + 0x40);
+                    info = WUDiGetDevInfo(entry + 0x40);
                     if (info != 0) {
                         interrupt = OSDisableInterrupts();
                         memset(info, 0, 0x60);
@@ -2014,7 +2019,8 @@ u8 WUDiClearUnregisteredDevice(void) {
     }
     return 2;
 }
-
+#pragma opt_propagation reset
+#pragma opt_strength_reduction reset
 void fn_80069FE8(void)
 {
     extern u8 lbl_8055DC38;
@@ -4371,6 +4377,7 @@ for (;;) {
 #pragma push
 #pragma use_lmw_stmw off
 void hcisu_h2_send_msg_now(u8 *queue, s32 arg1) {
+    struct Tail { u8 a; u8 b; };
     u16 event = *(u16 *)arg1;
     u8 *msg = (u8 *)arg1;
     u16 header_hi, header;
@@ -4400,15 +4407,14 @@ void hcisu_h2_send_msg_now(u8 *queue, s32 arg1) {
         *(u16 *)(msg + 2) = len - *(u16 *)(lbl_803C0A50 + 0x7C);
         base[8] = header;
         base[9] = header_hi;
-        data = base + 0xA;
+        data = (u8 *)((struct Tail *)(base + 0xA) + 1);
         if (*(u16 *)(msg + 2) > *(u16 *)(lbl_803C0A50 + 0x7E)) {
-            data[0] = *(u16 *)(lbl_803C0A50 + 0x7C);
-            data[1] = *(u16 *)(lbl_803C0A50 + 0x7C) >> 8;
+            ((struct Tail *)(data - 2))->a = *(u16 *)(lbl_803C0A50 + 0x7C);
+            ((struct Tail *)(data - 2))->b = *(u16 *)(lbl_803C0A50 + 0x7C) >> 8;
         } else {
-            data[0] = *(u16 *)(msg + 2) - 4;
-            data[1] = (*(u16 *)(msg + 2) - 4) >> 8;
+            ((struct Tail *)(data - 2))->a = *(u16 *)(msg + 2) - 4;
+            ((struct Tail *)(data - 2))->b = (*(u16 *)(msg + 2) - 4) >> 8;
         }
-        data += 2;
         if (*(u16 *)(msg + 6) != 0 && --*(u16 *)(msg + 6) == 0) {
             *(u16 *)msg = (short)0x1900;
             GKI_send_msg(((u8 *)&lbl_803BD1A0)[0x1F], 0, (BT_HDR *)msg);
@@ -4477,22 +4483,22 @@ int fn_8006F284(s32 length) {
 }
 
 void uusb_CloseDeviceCB(s8 arg0) {
-    register uusb_cb_t *control = &lbl_803BD1E0;
-    register u8 zero = 0;
-    ((u8 *)control)[0x10] = zero;
-    ((u8 *)control)[0x11] = zero;
-    ((u8 *)control)[0x12] = zero;
-    ((u8 *)control)[0x13] = zero;
+    register s32 zero = 0;
+
     *(s32 *)&lbl_803BD1E0 = zero;
+    ((u8 *)&lbl_803BD1E0)[0x10] = zero;
+    ((u8 *)&lbl_803BD1E0)[0x11] = zero;
+    ((u8 *)&lbl_803BD1E0)[0x12] = zero;
+    ((u8 *)&lbl_803BD1E0)[0x13] = zero;
     lbl_8055DC50 = zero;
     fn_8009B0E0();
     fn_8006EBAC();
-    ((u8 *)control)[0x28] = zero;
-    ((u8 *)control)[0x29] = 5;
+    ((u8 *)&lbl_803BD1E0)[0x28] = zero;
+    ((u8 *)&lbl_803BD1E0)[0x29] = 5;
     lbl_8055DC51 = zero;
     fn_8006EB88();
-    if (*(void (**)(s32, s8))((u8 *)control + 0x20) != 0)
-        (*(void (**)(s32, s8))((u8 *)control + 0x20))(4, arg0);
+    if (*(void (**)(s32, s8))((u8 *)&lbl_803BD1E0 + 0x20) != 0)
+        (*(void (**)(s32, s8))((u8 *)&lbl_803BD1E0 + 0x20))(4, arg0);
 }
 
 void uusb_ReadIntrDataCB(s32 length, BT_HDR *buf) {
@@ -17394,9 +17400,9 @@ clear_entry:
 u8 HID_HostAddDev(u8 *addr, u16 attr_mask, u8 *handle) {
     s32 index;
     u32 offset;
-    u8 *p;
     s32 ctr;
     u8 value;
+    register u8 *p;
 
     if (lbl_803C3C38[0x400] == 0)
         return 1;
