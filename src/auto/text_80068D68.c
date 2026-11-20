@@ -7379,6 +7379,9 @@ void bta_hh_write_dev_act(void *p_dev, void *p_msg) {
 #undef btaHhCback
 }
 
+/* BTA Headset (HH) HID device callback: maps HID host events to internal BTA_HH
+   state-machine events and posts them to the HH controller.  Also tracks
+   virtual-plug status on VC_UNPLUG and logs the event to the debug buffer. */
 void bta_hh_cback(u8 arg0, u8 arg1, u32 arg2, BT_HDR *arg3) {
     u16 sm_event = 0x1710;
     void *p504;
