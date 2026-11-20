@@ -1007,8 +1007,8 @@ extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
     void* p = *(void**)((u8*)arg0 + 0x2C);
     if (*(u8*)((u8*)arg0 + 0x24C) != 0) {
         s32 dx = *(s32*)((u8*)arg0 + 0x244) + arg1;
-        s32 old1 = *(s32*)((u8*)p + 0x454);
         s32 dy = *(s32*)((u8*)arg0 + 0x248) + arg2;
+        s32 old1 = *(s32*)((u8*)p + 0x454);
         s32 old2 = *(s32*)((u8*)p + 0x458);
         *(s32*)((u8*)p + 0x454) = old1 + dx;
         *(s32*)((u8*)p + 0x458) = old2 + dy;
@@ -1875,8 +1875,7 @@ extern float lbl_805634C4;
 extern "C" void fn_8021AFF4(void *arg0) {
     f32 denom = (f32)(*(s32 *)((u8 *)arg0 + 0x260) - 1);
     f32 half = lbl_805634C4;
-    f32 num = *(f32 *)((u8 *)arg0 + 0x25C) - *(f32 *)((u8 *)arg0 + 0x258);
-    f32 step = num / denom;
+    f32 step = (*(f32 *)((u8 *)arg0 + 0x25C) - *(f32 *)((u8 *)arg0 + 0x258)) / denom;
     *(f32 *)*(void **)((u8 *)arg0 + 0x254) += (f32)*(s32 *)((u8 *)arg0 + 0x264) * step;
     *(f32 *)*(void **)((u8 *)arg0 + 0x254) = step * (f32)(s32)((*(f32 *)*(void **)((u8 *)arg0 + 0x254) / step) + half);
     if (*(f32 *)*(void **)((u8 *)arg0 + 0x254) < *(f32 *)((u8 *)arg0 + 0x258)) {
@@ -5105,15 +5104,14 @@ extern "C" void fn_80220C54(void *arg0)
   {
     enabled = 1;
   }
-  s32 centerX = ((s32) (lbl_8055FB9C + (((u32) lbl_8055FB9C) >> 31))) >> 1;
-  s32 centerY = ((s32) (lbl_8055FBA0 + (((u32) lbl_8055FBA0) >> 31))) >> 1;
-  f32 x = (f32) ((*((s32 *) (((u8 *) self) + 4))) - centerX);
-  f32 y = (f32) (centerY - (*((s32 *) (((u8 *) self) + 8))));
-  f32 previous = (f32) fn_802C5220(*((s32 *) (((u8 *) self) + 0x248)));
-  f32 value = (float) ((f32) ((Vf78 *) self)->get());
-  fn_802C5320(*(((u8 *) self) + 0x248), enabled, x, y, lbl_805634A8, value, previous);
-  f32 following = (f32) fn_802C5220(*((s32 *) (((u8 *) self) + 0x24C)));
-  fn_802C5320(*((s32 *) (((u8 *) self) + 0x24C)), enabled, lbl_805634E0 + x, y - lbl_805634E0, lbl_805634A8, (f32) size, following);
+  f32 height, x, y;
+  x = (f32)((*(s32 *) (((u8 *) self) + 4)) - lbl_8055FB9C / 2);
+  y = (f32)(lbl_8055FBA0 / 2 - (*(s32 *) (((u8 *) self) + 8)));
+  height = (f32)fn_802C5220(*(s32 *) (((u8 *) self) + 0x248));
+  f32 width = (f32)((Vf78 *) self)->get();
+  fn_802C5320(*(s32 *) (((u8 *) self) + 0x248), enabled, x, y, lbl_805634A8, width, height);
+  f32 height2 = (f32)fn_802C5220(*(s32 *) (((u8 *) self) + 0x24C));
+  fn_802C5320(*(s32 *) (((u8 *) self) + 0x24C), enabled, lbl_805634E0 + x, y - lbl_805634E0, lbl_805634A8, (f32)size, height2);
 }
 #pragma pop
 
