@@ -1396,6 +1396,7 @@ extern "C" s32 fn_8019C854(void* arg0, void* arg1) {
     return 1;
 }
 
+#pragma scheduling invalid_target
 extern "C" s32 fn_8019CCCC(void* arg0, Vec* arg1, void* arg2, f32 farg0) {
     if (fn_8019B08C(arg0, arg1, arg2, farg0) != 0) {
         return 1;
@@ -1421,7 +1422,7 @@ extern "C" s32 fn_8019CCCC(void* arg0, Vec* arg1, void* arg2, f32 farg0) {
     neg.y = trans[1] + axis[1] * negDim;
     pos.z = trans[2] + axis[2] * dim;
     neg.z = trans[2] + axis[2] * negDim;
-    radius = *(f32*)((u8*)arg2 + 0x24);
+    radius = *(volatile f32*)((u8*)arg2 + 0x24);
     bool a = fn_8019AA34(arg0, arg1, arg2, &pos, 0, 0, farg0, radius) != 0;
     bool b = fn_8019AA34(arg0, arg1, arg2, &neg, 0, 0, farg0, radius) != 0;
     return (a | b) != 0;
