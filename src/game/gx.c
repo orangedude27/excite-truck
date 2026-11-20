@@ -557,7 +557,7 @@ void fn_802CF10C(void) {
     }
 }
 
-#pragma dont_inline reset
+#pragma dont_inline fn_802CF5A8
 
 void fn_802CF5A8(void) {
 #define sGxResetRegistered lbl_8055D0FF
@@ -625,7 +625,6 @@ void fn_802CF600(void) {
     extern int VIConfigure(void *), VISetBlack(int), VIFlush(void);
     extern void fn_802E30C8(const char *, ...);
     char *base = lbl_8034BD18;
-    int zero = 0;
     int negative;
     void *buffer;
     int size;
@@ -690,8 +689,8 @@ void fn_802CF600(void) {
     fn_80127468();
     fn_80127C90(fn_802D9A50, &lbl_8055D104);
     fn_802DB168();
-    lbl_8055FD48 = zero;
-    VISetBlack(zero);
+    lbl_8055FD48 = 0;
+    VISetBlack(0);
     VIFlush();
 }
 #pragma pop
