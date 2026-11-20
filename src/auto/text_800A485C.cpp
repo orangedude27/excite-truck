@@ -16479,8 +16479,7 @@ block_233:
                         M2C_FIELD(var_r12_12, s32 *, 0x900) = 0;
                         M2C_FIELD(var_r12_12, s32 *, 0x1200) = 0;
                         var_r12_12 += 4;
-                        var_ctr_12 -= 1;
-                    } while (var_ctr_12 != 0);
+                    }
                 }
             }
         }
