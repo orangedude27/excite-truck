@@ -666,6 +666,7 @@ extern "C" f32 lbl_80561740;
 extern "C" f32 lbl_80561744;
 #pragma push
 #pragma opt_lifetimes off
+#pragma opt_common_subs off
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" s32 fn_80156C84(void *arg0, s32 arg1) {
