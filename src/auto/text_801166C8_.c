@@ -53,7 +53,7 @@ void fn_801195D8();
 extern void* fn_802ECC74(void*);
 extern void *fn_8011FFC4(s32);
 extern f32 lbl_80329D48[];
-extern f64 lbl_805611D8;
+extern const f64 lbl_805611D8;
 extern void fn_8011A330(void *);
 void AXFXSetHooks_8011FFB8();
 void fn_80120084();
