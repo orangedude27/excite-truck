@@ -67,7 +67,7 @@ struct Vec_802924F4 {
 static inline void init_all_802924F4(float one, float offset) {
     struct Vec_802924F4 v;
     unsigned char *p = lbl_804B4030;
-    int i;
+    long i;
     for (i = 0; i < 6; i++, p += 0x34) {
         float x = fn_80129DC4(0, lbl_805644D0, lbl_805644D4);
         float y = (float)fn_8002F234((one - x * x) - offset);
@@ -284,6 +284,7 @@ extern "C" int fn_802928D4(int arg0, int arg1, int arg2, int arg3, int arg4, int
     };
     struct ChunkSys *sys = (struct ChunkSys *)lbl_80349170;
     void *ptr;
+    #pragma scheduling on
 
     switch (arg1) {
     case 1:
@@ -765,24 +766,30 @@ void fn_80293230(void *arg0, float *arg1, float *arg2, short arg3, signed char a
  * first name the resource system does not have, and leaving the slots no model
  * was found for at -1.  The car one takes no instance and remaps no texture;
  * fn_80293CD0 and fn_80294530 do the "ter" and "wood" ones. */
-int fn_80293374(void *object, void *modelBase) {
+int fn_80293374(void *arg0, void *arg1) {
     char name[0x20];
     int count;
-    ChunkSys *chunkSys = (ChunkSys *)object;
-    chunkSys->modelCount = 0;
+    *(s32 *)((u8 *)arg0 + 0x28) = 0;
     goto check;
 loop:
     ((void (*)(void *, int, const char *, ...))fn_801345D8)(
-        name, 0x20, lbl_80349250, (int)modelBase,
-        chunkSys->modelCount + 1);
+        name, 0x20, lbl_80349250, (int)arg1,
+        *(s32 *)((u8 *)arg0 + 0x28) + 1);
     if (fn_8012C33C(name) == 0) goto padding;
-    chunkSys->models[chunkSys->modelCount] = fn_802C6FC0(name, 0, 0);
-    chunkSys->modelCount++;
+    *(s32 *)((u8 *)arg0 + *(s32 *)((u8 *)arg0 + 0x28) * 4 + 8) =
+        fn_802C6FC0(name, 0, 0);
+    count = *(s32 *)((u8 *)arg0 + 0x28);
+    count++;
+    *(s32 *)((u8 *)arg0 + 0x28) = count;
 check:
-    if (chunkSys->modelCount < 8) goto loop;
+    if (*(s32 *)((u8 *)arg0 + 0x28) < 8) goto loop;
 padding:
-    for (count = chunkSys->modelCount; count < 8; count++)
-        ((s32 *)object)[count + 2] = -1;
+    {
+        s32 *arr = (s32 *)arg0;
+        count = *(s32 *)((u8 *)arg0 + 0x28);
+        for (; count < 8; count++)
+            arr[count + 2] = -1;
+    }
 }
 
 #pragma push
@@ -843,7 +850,6 @@ check_loop:
 }
 #pragma scheduling on
 void fn_802936C4(void *arg0) {
-#pragma use_lmw_stmw off
     struct Rec {
         unsigned int copy[9];
         float x, y, z;
@@ -874,26 +880,24 @@ void fn_802936C4(void *arg0) {
     extern void *lbl_8055C958;
     extern void *lbl_8055C964;
     extern unsigned char lbl_804B4030[];
+    float smallF;
+    float two;
+    float dt2;
+    float oneF;
+    float gravF;
+    float outer;
     float dt;
-    float scale;
     float scale2;
+    float ageDt;
+    float zeroF;
+    float scale;
     float gravTerm;
     float tmp_vx;
     float tmp_vy;
     float tmp_vz;
-    float tmp_nx;
-    float tmp_ny;
-    float tmp_nz;
     float tmp_vx2;
     float tmp_vy2;
     float tmp_vz2;
-    float outer;
-    float two;
-    float zeroF;
-    float oneF;
-    float gravF;
-    float smallF;
-    float dt2;
     struct Rec *cur;
     struct Rec *out;
     struct Tpl *src;
@@ -901,7 +905,6 @@ void fn_802936C4(void *arg0) {
     int kept;
     int mode;
     unsigned char type;
-    float ageDt;
     float tmp[13];
     short entry;
     int zeroI;
@@ -931,30 +934,23 @@ body:
         if (age >= outer) goto next;
 do_work:
         ageDt = age + dt;
-        gravTerm = (gravF * dt) * *(float *)((unsigned char *)arg0 + 4);
+        mode = cur->mode;
+        type = cur->type;
+        entry = cur->idx;
+        gravTerm = (dt * gravF) * *(float *)((unsigned char *)arg0 + 4);
         tmp_vx = cur->vx * scale;
         tmp_vy = cur->vy * scale;
         tmp_vz = cur->vz * scale;
-        tmp_vy = tmp_vy - gravTerm;
-        tmp_nx = cur->x + tmp_vx * dt;
-        tmp_ny = cur->y + tmp_vy * dt;
-        tmp_nz = cur->z + tmp_vz * dt;
-        mode = cur->mode;
-        type = cur->type;
         tmp[0] = tmp_vx;
         tmp[1] = tmp_vy;
         tmp[2] = tmp_vz;
-        tmp[3] = tmp_nx;
-        tmp[4] = tmp_ny;
-        tmp[5] = tmp_nz;
-        tmp_vx2 = cur->vx * scale;
-        tmp[6] = tmp_vx2;
-        tmp_vy2 = cur->vy * scale;
-        tmp_vy2 = tmp_vy2 - gravTerm;
-        tmp[7] = tmp_vy2;
-        tmp_vz2 = cur->vz * scale;
-        tmp[8] = tmp_vz2;
-        entry = cur->idx;
+        tmp_vy = tmp_vy - gravTerm;
+        tmp[6] = tmp_vx;
+        tmp[7] = tmp_vy;
+        tmp[8] = tmp_vz;
+        tmp[3] = cur->x;
+        tmp[4] = cur->y;
+        tmp[5] = cur->z;
         if (mode == 2) {
             tmp[9] = tmp[0] * dt;
             tmp[10] = tmp[6] * dt;
@@ -962,7 +958,7 @@ do_work:
             tmp[3] = tmp[3] + tmp[9];
             tmp[4] = tmp[4] + tmp[10];
             tmp[5] = tmp[5] + tmp[11];
-            tmp[10] = zeroF;
+            tmp[10] = oneF;
             tmp[11] = zeroF;
             zeroI = 0;
             if (fn_801E9E78(&entry, tmp + 3, tmp + 9, &zeroI, gravF * dt) != 0) {
@@ -1138,9 +1134,9 @@ void fn_80293BB4(void *arg0, float *arg1, float *arg2, short arg3) {
     int index;
     int offset;
     int flags, zero;
-    register u8 *record;
-    register u8 *object;
-    register u8 *tmpl;
+    u8 *record;
+    u8 *object;
+    u8 *tmpl;
     float x, y, z, a, b;
     unsigned int secondWord, firstWord;
     object = (u8 *)arg0;
@@ -1522,25 +1518,26 @@ check:
 }
 #pragma scheduling on
 extern int fn_80287B5C(int, void *, float, float, float);
-void fn_80294408(void *arg0, float *arg1, float *arg2) {
+void fn_80294408(void *arg0, const float *arg1, const float *arg2) {
     int count;
     int offset;
-    u8 *second;
-    u8 *record;
-    u8 *object;
-    float *first;
-    int index;
-    u8 *template;
+    register int index;
+    register u8 *object;
+    register float *first;
+    register const float *second;
+    register u8 *record;
+    register u8 *template;
     float x, y, z, a, b, c;
     unsigned int secondWord, firstWord;
-    second = (u8 *)arg2;
     object = (u8 *)arg0;
-    first = arg1;
+    first = (float *)arg1;
+    second = arg2;
     count = *(s32 *)(object + 0x222C);
-    if (count >= 0x80) goto done;
-    if (*(s32 *)(object + 0x28) != 0) goto body;
-    goto done;
-body:
+    if (count >= 0x80) return;
+    switch (*(s32 *)(object + 0x28)) {
+    case 0:
+        break;
+    default:
     record = object + count * 0x44;
     index = fn_80129D18(0, 6);
     offset = index * 0x34;
@@ -1550,10 +1547,10 @@ body:
     z = first[2];
     *(float *)(record + 0x54) = y;
     template = lbl_804B4030 + offset;
-    a = *(float *)second;
+    a = second[0];
     *(float *)(record + 0x58) = z;
     first = (float *)index;
-    b = *(float *)(second + 4);
+    b = second[1];
     firstWord = *(unsigned int *)(template + 0x10);
     secondWord = *(unsigned int *)(template + 0x14);
     *(unsigned int *)(record + 0x2C) = firstWord;
@@ -1571,15 +1568,15 @@ body:
     *(unsigned int *)(record + 0x4C) = *(unsigned int *)(template + 0x30);
     *(float *)(record + 0x5C) = a;
     *(float *)(record + 0x60) = b;
-    c = *(float *)(second + 8);
+    c = second[2];
     *(float *)(record + 0x64) = c;
     *(float *)(record + 0x68) = lbl_805644D8;
     *(unsigned char *)(record + 0x6C) = fn_80287B5C(*(int *)(object + 0x28), template, c, b, a);
     *(unsigned char *)(record + 0x6D) = (unsigned char)first;
     count = *(int *)(object + 0x222C);
     *(int *)(object + 0x222C) = count + 1;
-done:
-    ;
+        break;
+    }
 }
 #pragma scheduling on
 
