@@ -81,7 +81,6 @@ extern "C" u8 fn_8013BC70(float *);
 extern "C" void fn_8013B950(void);
 extern float lbl_80561470;
 #pragma scheduling invalid_target
-static inline float doubleToFloat_8013B950(double d) { return (float)d; }
 void fn_8013B950(void) {
     struct Dummy {
         virtual void v0() = 0;
