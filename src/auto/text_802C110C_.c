@@ -439,6 +439,10 @@ extern "C" void fn_802C173C(float time)
     char padding[0x18];
     struct Pose pose;
   };
+  // Tree-hit swing: store `time` as the hit time, then walk the 8 queued
+  // TreeHitRecords. While a hit is young (lower <= age < upper) it swings the
+  // tree about its hit axis by a damped, sine-shaped angle; once it ages out
+  // the cached pose is handed back to the tree (fn_802C1180).
   register f32 scaleBase;
   register f32 base;
   register f32 slope;
