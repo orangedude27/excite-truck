@@ -1948,10 +1948,10 @@ extern "C" s32 fn_80147C50(u32 arg0, u32 arg1, f32 arg2) {
 extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
 #pragma scheduling invalid_target
     union Pair { struct { f32 x; f32 y; } f; f64 raw; };
+    register f32 factor = (f32)arg3;
     u8 *dst = (u8 *)arg0;
     u8 *src = (u8 *)arg1;
     u8 *other = (u8 *)arg2;
-    f32 factor = (f32)arg3;
     f32 zSource = *(f32 *)(src + 0x10);
     f32 zOther = *(f32 *)(other + 0x10);
     f32 yOther = *(f32 *)(other + 8);
@@ -1986,19 +1986,20 @@ extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
     *(f32 *)(dst + 0x10) = z;
     d[6] = fn_80147C50(w18, other18, factor);
 }
-#pragma push
 #pragma scheduling on
 extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t) {
     struct State { u32 m0; f32 m4; f32 m8; u32 mC; f32 m10; f32 m14; f32 m18; f32 m1C; f32 m20; f32 m24; };
     union Pair { struct { f32 x; f32 y; } f; f64 raw; };
     volatile State *src = (volatile State *)srcArg;
     volatile State *end = (volatile State *)endArg;
+    register f32 out4, out8;
     f32 end4, src4, end8, src8, diff8, src18, diff4, src10, prod8, src1C;
-    f32 prod4, out8, src20, end20, out4, diff20, end18, end1C, diff18;
+    f32 prod4, src20, end20, diff20, end18, end1C, diff18;
     f32 end10, diff1C, src14, diff10, prod18, prod20, prod1C, prod10;
     f32 out20, end24, end14, src24, diff24, out18, diff14, out1C;
     f32 prod24, prod14, out10, out24, out14;
     u32 w4, w0, wC, w8;
+    register f64 pair;
 
     end8 = end->m8;
     src8 = src->m8;
@@ -2015,6 +2016,12 @@ extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t) {
     src20 = src->m20;
     end20 = end->m20;
     out4 = src4 + prod4;
+    {
+        Pair p;
+        p.f.x = out4;
+        p.f.y = out8;
+        pair = p.raw;
+    }
     diff20 = end20 - src20;
     end18 = end->m18;
     end1C = end->m1C;
@@ -2044,11 +2051,6 @@ extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t) {
     out10 = src10 + prod10;
     out24 = src24 + prod24;
     out14 = src14 + prod14;
-    Pair first;
-    Pair second;
-    first.f.x = out4;
-    first.f.y = out8;
-    second.raw = first.raw;
     volatile State *d = (volatile State *)dst;
     d->m18 = src18;
     d->m1C = src1C;
@@ -2057,8 +2059,12 @@ extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t) {
     *(volatile u32 *)((u8 *)dst + 8) = w8;
     *(volatile u32 *)((u8 *)dst + 0) = w0;
     *(volatile u32 *)((u8 *)dst + 0xC) = wC;
-    d->m4 = second.f.x;
-    d->m8 = second.f.y;
+    {
+        Pair p;
+        p.raw = pair;
+        d->m4 = p.f.x;
+        d->m8 = p.f.y;
+    }
     d->m18 = out18;
     d->m20 = out20;
     d->m1C = out1C;
@@ -2066,7 +2072,6 @@ extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t) {
     d->m10 = out10;
     d->m14 = out14;
 }
-#pragma pop
 
 #pragma dont_inline off
 extern "C" void fn_80147EE0(void *arg0, f32 scale) {
