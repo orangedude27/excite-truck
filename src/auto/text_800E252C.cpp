@@ -577,8 +577,8 @@ void *fn_800E279C(void *arg0)
   ((LLTmp *) (p + 0x14))->next = &((LLTmp *) (p + 0x14))->next;
   ((LLTmp *) (p + 0x14))->prev = &((LLTmp *) (p + 0x14))->next;
   ((LLTmp *) (p + 0x20))->a = 0;
-  ((LLTmp *) (p + 0x20))->prev = &((LLTmp *) (p + 0x20))->next;
   ((LLTmp *) (p + 0x20))->next = &((LLTmp *) (p + 0x20))->next;
+  ((LLTmp *) (p + 0x20))->prev = &((LLTmp *) (p + 0x20))->next;
   fn_8002F53C(p + 0x2C, &__ct__Q46nw4hbm3snd6detail7AxVoiceFv, &__dt__Q46nw4hbm3snd6detail7AxVoiceFv, 0x1B0, 0x40);
   p[0x6C30] = 0;
   p[0x6C31] = 1;
@@ -620,7 +620,7 @@ void *fn_800E279C(void *arg0)
     *((int *) (p + 0x6C50)) = 0;
     *((float *) (p + 0x6C54)) = 1.0f;
     *((float *) (p + 0x6C58)) = 1.0f;
-    *((int *) (p + 0x6C5C)) = 0x1B0 * 0;
+    *((int *) (p + 0x6C5C)) = 0;
     *((int *) (p + 0x6C60)) = 0;
     *((float *) (p + 0x6C6C)) = 1.0f;
     *((float *) (p + 0x6C70)) = 1.0f;
