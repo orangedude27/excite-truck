@@ -12,10 +12,13 @@ extern int memset(void *, int, unsigned int);
 /* fn_8012F7E0: the 6-bit value of a base64 character, building the reverse of
  * the alphabet above on the first call. */
 #pragma scheduling invalid_target
+#pragma dont_inline reset
+static inline unsigned char read_flag(const unsigned char *__restrict p) { return *p; }
 #pragma dont_inline on
 unsigned char fn_8012F7E0(signed char arg0) {
     int i;
-    if (lbl_805599E8 != 0) {
+    const unsigned char *__restrict pflag = &lbl_805599E8;
+    if (*pflag != 0) {
         lbl_805599E8 = 0;
         memset(lbl_80422F40, 0xFF, 0x100);
         for (i = 0; i < 64; i++) {
