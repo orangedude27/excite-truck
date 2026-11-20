@@ -15120,9 +15120,7 @@ extern "C" void fn_800C4CF4(void *, s32, s32, s32, s8, s32);
 #pragma use_lmw_stmw on
 extern "C" s32 fn_800BDF4C(BDF4CState *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 *arg5, s32 arg6) {
     struct LocalFrame { s16 spA0[12]; s16 spE0; s16 spE2; s32 spE4; s32 spE8; s8 spEC; s32 table; };
-    volatile LocalFrame space;
     s16 scratch2C[2], scratch78[4];
-    space.table = 0x802F0000;
     s16 *spCursor;
     s32 temp_r17;
     s32 var_r14;
@@ -15141,6 +15139,8 @@ extern "C" s32 fn_800BDF4C(BDF4CState *arg0, void *arg1, s32 arg2, s32 arg3, s32
     s32 temp_r7, temp_r6, temp_r3_8, zeroPass;
     u32 zeroCount;
     u8 *zeroBase, *zeroRow, *zeroGroup;
+    volatile LocalFrame space;
+    space.table = 0x802F0000;
     space.table += 0x3418;
     arg0->field278 = arg3;
     *&arg0->field8 = 0;
@@ -15967,9 +15967,8 @@ loop_74:
                 var_r11_3 = 0x240 - var_r21;
                 if (var_r21 < 0x240) {
                     temp_r0_6 = var_r11_3 >> 3U;
-                    var_ctr_3 = temp_r0_6;
                     if (temp_r0_6 != 0) {
-                        do {
+                        for (var_ctr_3 = 0; var_ctr_3 < temp_r0_6; var_ctr_3++) {
                             M2C_FIELD(var_r12_5, s32 *, 0x1B00) = 0;
                             M2C_FIELD(var_r12_5, s32 *, 0x1B04) = 0;
                             M2C_FIELD(var_r12_5, s32 *, 0x1B08) = 0;
@@ -24361,13 +24360,11 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
             s32 count = *(s32 *)(((u8 *)arg0) + 0x0C);
             s32 *entry = lbl_802F4528;
             for (i = 0; i < count; ++i, entry += 2) {
-                if (paneNo != entry[0])
-                    continue;
-                if (entry[1] == 0)
+                if (paneNo == entry[0] && entry[1] == 0)
                     goto found_entry;
             }
             i = -1;
-found_entry:
+ found_entry:
             void *pane = *(void **)(((u8 *)arg0) + 0x268 + i * 4);
             fn_800CF3EC(pane);
             *(s32 *)((u8 *)pane + 0x14) = 1;
@@ -24445,7 +24442,7 @@ found_entry:
                         ++index;
                     }
                     index = -1;
-found_case1_0:;
+ found_case1_0:;
                     s32 indexA = 0;
                     s32 indexB = 0;
                     s32 indexC = 0;
@@ -24460,7 +24457,7 @@ found_case1_0:;
                         ++indexA;
                     }
                     indexA = -1;
-found_case1_1:;
+ found_case1_1:;
                     entry = lbl_802F4588;
                     for (i = 0; i < 0x25; ++i, entry += 4) {
                         if (entry[0] == 5 && entry[1] == 3)
@@ -24471,7 +24468,7 @@ found_case1_1:;
                         ++indexB;
                     }
                     indexB = -1;
-found_case1_2:;
+ found_case1_2:;
                     entry = lbl_802F4588;
                     for (i = 0; i < 0x25; ++i, entry += 4) {
                         if (entry[0] == 4 && entry[1] == 0x13)
@@ -24482,7 +24479,7 @@ found_case1_2:;
                         ++indexC;
                     }
                     indexC = -1;
-found_case1_3:;
+ found_case1_3:;
                     entry = lbl_802F4588;
                     for (i = 0; i < 0x25; ++i, entry += 4) {
                         if (entry[0] == 5 && entry[1] == 0x14)
@@ -24493,7 +24490,7 @@ found_case1_3:;
                         ++indexD;
                     }
                     indexD = -1;
-found_case1_4:;
+ found_case1_4:;
                     if (*(s32 *)arg0 == 2 &&
                         *(s32 *)((u8 *)*(void **)(((u8 *)arg0) + 0x298 + indexA * 4) + 0x14) != 1 &&
                         *(s32 *)((u8 *)*(void **)(((u8 *)arg0) + 0x298 + indexB * 4) + 0x14) != 1 &&
@@ -24536,7 +24533,7 @@ found_case1_4:;
                         ++index;
                     }
                     index = -1;
-found_case1b_0:;
+ found_case1b_0:;
                     s32 indexA = 0;
                     s32 indexB = 0;
                     s32 indexC = 0;
@@ -24551,7 +24548,7 @@ found_case1b_0:;
                         ++indexA;
                     }
                     indexA = -1;
-found_case1b_1:;
+ found_case1b_1:;
                     entry = lbl_802F4588;
                     for (i = 0; i < 0x25; ++i, entry += 4) {
                         if (entry[0] == 5 && entry[1] == 3)
@@ -24562,7 +24559,7 @@ found_case1b_1:;
                         ++indexB;
                     }
                     indexB = -1;
-found_case1b_2:;
+ found_case1b_2:;
                     entry = lbl_802F4588;
                     for (i = 0; i < 0x25; ++i, entry += 4) {
                         if (entry[0] == 4 && entry[1] == 0x13)
@@ -24573,7 +24570,7 @@ found_case1b_2:;
                         ++indexC;
                     }
                     indexC = -1;
-found_case1b_3:;
+ found_case1b_3:;
                     entry = lbl_802F4588;
                     for (i = 0; i < 0x25; ++i, entry += 4) {
                         if (entry[0] == 5 && entry[1] == 0x14)
@@ -24584,7 +24581,7 @@ found_case1b_3:;
                         ++indexD;
                     }
                     indexD = -1;
-found_case1b_4:;
+ found_case1b_4:;
                     if (*(s32 *)arg0 == 2 &&
                         *(s32 *)((u8 *)*(void **)(((u8 *)arg0) + 0x298 + indexA * 4) + 0x14) != 1 &&
                         *(s32 *)((u8 *)*(void **)(((u8 *)arg0) + 0x298 + indexB * 4) + 0x14) != 1 &&
@@ -24630,7 +24627,7 @@ found_case1b_4:;
                         ++index;
                     }
                     index = -1;
-found_entry_1:;
+ found_entry_1:;
                     void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     if (*(s32 *)((u8 *)pane + 0x14) != 1) {
                         fn_800CF3EC(pane);
@@ -24673,7 +24670,7 @@ found_entry_1:;
                         ++index;
                     }
                     index = -1;
-found_entry_2:;
+ found_entry_2:;
                     void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     if (*(s32 *)((u8 *)pane + 0x14) != 1) {
                         fn_800CF3EC(pane);
@@ -24716,7 +24713,7 @@ found_entry_2:;
                         ++index;
                     }
                     index = -1;
-found_entry_3:;
+ found_entry_3:;
                     void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     if (*(s32 *)((u8 *)pane + 0x14) != 1) {
                         fn_800CF3EC(pane);
@@ -24759,7 +24756,7 @@ found_entry_3:;
                         ++index;
                     }
                     index = -1;
-found_entry_4:;
+ found_entry_4:;
                     void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     if (*(s32 *)((u8 *)pane + 0x14) != 1) {
                         fn_800CF3EC(pane);
@@ -24802,7 +24799,7 @@ found_entry_4:;
                         ++index;
                     }
                     index = -1;
-found_entry_5:;
+ found_entry_5:;
                     void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     fn_800CF3EC(pane);
                     *(s32 *)((u8 *)pane + 0x14) = 1;
@@ -24841,7 +24838,7 @@ found_entry_5:;
                         ++index;
                     }
                     index = -1;
-found_entry_6:;
+ found_entry_6:;
                     void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     fn_800CF3EC(pane);
                     *(s32 *)((u8 *)pane + 0x14) = 1;
@@ -24880,7 +24877,7 @@ found_entry_6:;
                         ++index;
                     }
                     index = -1;
-found_entry_7:;
+ found_entry_7:;
                     void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     fn_800CF3EC(pane);
                     *(s32 *)((u8 *)pane + 0x14) = 1;
@@ -24919,7 +24916,7 @@ found_entry_7:;
                         ++index;
                     }
                     index = -1;
-found_entry_8:;
+ found_entry_8:;
                     void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     fn_800CF3EC(pane);
                     *(s32 *)((u8 *)pane + 0x14) = 1;
