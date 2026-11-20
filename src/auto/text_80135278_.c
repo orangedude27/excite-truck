@@ -384,7 +384,7 @@ s32 fn_801357A4(Unk_80135278 *self, float *point) {
         y = self->unk_14*inv;
         self->unk_10=x; self->unk_14=y;
         self->unk_18=dx; self->unk_1c=dy;
-        self->unk_28 = (float)__fabs(dy*x + -dx*y) > lbl_80561334 + *(float *)((char *)self->unk_4+0x28)*lbl_80561338;
+        self->unk_28 = (float)__fabs(dy*x + -dx*y) > 4.575f + *(float *)((char *)self->unk_4+0x28)*0.5f;
         d=(x*dx+y*dy)/ *(float *)(node+0x18);
         if (t+d > lbl_80561324) {
             t=lbl_80561320;
@@ -706,10 +706,12 @@ int fn_80136068(void *arg0, void *arg1, int arg2) {
     int changed;
     int status;
     int base;
+    int base2;
     unsigned int start;
     unsigned int end;
     int keep;
     char *head;
+    float total;
     float length;
     float old48;
     float old40;
@@ -734,17 +736,18 @@ int fn_80136068(void *arg0, void *arg1, int arg2) {
     if (status == 0) {
         if (arg2 != 0) {
         char *walk = locals.node;
-        float total = lbl_80561324 - locals.fraction;
         unsigned int index;
+        total = lbl_80561324 - locals.fraction;
+        base2 = *(volatile int *)(self + 0x34);
         goto kpad_cond;
 kpad_body:
         total += lbl_80561324;
 kpad_cond:
         walk = *(char **)(walk + 0x14);
         index = *(unsigned int *)(walk + 0x10);
-        if (base != 0) {
+        if (base2 != 0) {
             unsigned int size = *(unsigned int *)((char *)*(void **)(self + 0x2C) + 0x18);
-            index = (size + (index - base)) % size;
+            index = (size + (index - base2)) % size;
         }
         if (index > start) goto kpad_body;
         walk = locals.node;
