@@ -405,9 +405,10 @@ static inline s32 fn_80019144_find_inl(const char *name) {
     return -1;
 }
 static inline char *fn_80019144_entry_inl(const char *name) {
-    s32 index = fn_80019144_find_inl(name);
-    char *entry = (char *)lbl_803580A4 + index * 0x10 + 4;
-    if (index < 0) return 0;
+    s32 index;
+    char *entry;
+    entry = (char *)(index = fn_80019144_find_inl(name), (char *)lbl_803580A4 + index * 0x10 + 4);
+    if (index < 0) entry = 0;
     return entry;
 }
 #pragma push
