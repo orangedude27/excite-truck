@@ -9269,6 +9269,9 @@ u16 fn_800B25CC(void *arg0, s32 arg1) {
     u8 work[0x14];
     s32 var_r0;
     u32 var_r3;
+    u32 var_r3_2;
+    u32 var_r3_3;
+    u32 var_r3_4;
     u8 *temp_r3;
     u8 *temp_r5;
     u8 temp_r4;
@@ -9326,11 +9329,31 @@ block_27:
     }
     (*(u16 *)(work + 4)) = var_r3;
     if (arg1 != 0) {
-        if (Fn800B25CCUpperWide((u16)var_r3, (u16 *)work) == 1) {
+        var_r3 = (u16)var_r3;
+        if ((var_r3 >= 0xFF41U) && (var_r3 <= 0xFF5AU)) {
+            var_r3_2 = 1U;
+            (*(u16 *)work) = var_r3 - 0x20;
+        } else {
+            var_r3_2 = 0U;
+        }
+        if (var_r3_2 == 1U) {
             (*(u16 *)(work + 4)) = (*(u16 *)work);
         }
     } else {
-        if (Fn800B25CCUpperSjis((u16 *)(work + 4), (u16 *)work) == 1) {
+        M2C_FIELD(&lbl_803D2140, s32 (**)(u8 *, u16 *, s32 *), 0x48)((u8 *) &(*(u16 *)(work + 4)), &(*(u16 *)work), (s32 *)lbl_803D2140);
+        if (((*(u16 *)work) >= 0xFF41U) && ((*(u16 *)work) <= 0xFF5AU)) {
+            var_r3_3 = 1U;
+            (*(u16 *)work) -= 0x20;
+        } else {
+            var_r3_3 = 0U;
+        }
+        if (var_r3_3 == 1U) {
+            M2C_FIELD(&lbl_803D2140, s32 (**)(u16 *, u16 *), 0x4C)(&(*(u16 *)work), &(*(u16 *)work));
+            var_r3_4 = 1U;
+        } else {
+            var_r3_4 = 0U;
+        }
+        if (var_r3_4 == 1U) {
             (*(u16 *)(work + 4)) = (*(u16 *)work);
         }
     }
@@ -20442,21 +20465,21 @@ void homebutton::Controller::wpadConnectCallback(long chan, long status) {
  void (*callback)(s32,s32);
  switch (status) {
  case 0:
-  if (*(u8*)((u8*)lbl_80407780[chan]+0x40) == 0) {
-   *(void**)((u8*)lbl_80407780[chan]+0x2C) = (void*)WPADSetSamplingCallback_800603D0((void*)wpadExtensionCallback__Q210homebutton10ControllerFll);
-   *((u8*)lbl_80407780[chan]+0x40) = 1;
+  if (*(u8*)((u8*)((void * volatile *)lbl_80407780)[chan]+0x40) == 0) {
+   *(void**)((u8*)((void * volatile *)lbl_80407780)[chan]+0x2C) = (void*)((s32 (*)(s32, void *))WPADSetSamplingCallback_800603D0)(chan, (void*)wpadExtensionCallback__Q210homebutton10ControllerFll);
+   *((u8*)((void * volatile *)lbl_80407780)[chan]+0x40) = 1;
   }
   fn_80060CC0((void*)chan,0,0);
   break;
  case -1:
-  WPADSetSamplingCallback_800603D0(*(void**)((u8*)lbl_80407780[chan]+0x2C));
-  *(s32*)((u8*)lbl_80407780[chan]+0x2C)=0;
-  *((u8*)lbl_80407780[chan]+0x40)=0;
-  *((u8*)lbl_80407780[chan]+0x42)=0;
-  *((u8*)lbl_80407780[chan]+0x43)=0;
+  ((s32 (*)(s32, void *))WPADSetSamplingCallback_800603D0)(chan, *(void**)((u8*)((void * volatile *)lbl_80407780)[chan]+0x2C));
+  *(s32*)((u8*)((void * volatile *)lbl_80407780)[chan]+0x2C)=0;
+  *((u8*)((void * volatile *)lbl_80407780)[chan]+0x40)=0;
+  *((u8*)((void * volatile *)lbl_80407780)[chan]+0x42)=0;
+  *((u8*)((void * volatile *)lbl_80407780)[chan]+0x43)=0;
   break;
  }
- callback=*(void (**)(s32,s32))((u8*)lbl_80407780[chan]+0x28);
+ callback=*(void (**)(s32,s32))((u8*)((void * volatile *)lbl_80407780)[chan]+0x28);
  if(callback) callback(chan,status);
 }
 
