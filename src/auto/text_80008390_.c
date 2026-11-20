@@ -157,13 +157,6 @@ static inline void IdList_Add(s32 *src) {
     lbl_8034F3D0.count = n + 1;
     data[n] = value;
 }
-static inline void IdList_Add2(IdList *list, s32 *src) {
-    s32 value = *src;
-    s32 *data = list->data;
-    s32 n = list->count;
-    list->count = n + 1;
-    data[n] = value;
-}
 #define ID_PUSH(v) { s32 n_ = ID_LIST->count; ID_LIST->count = n_ + 1; ID_LIST->data[n_] = (v); }
 #pragma scheduling invalid_target
 void fn_80008390(void) {
@@ -171,18 +164,18 @@ void fn_80008390(void) {
     s32 *p;
     s32 i;
     ID_LIST->count = 0;
-    if (fn_800167F4() > 1) IdList_Add(&lbl_805601B0);
+    if (fn_800167F4() > 1) IdList_Add2(ID_LIST, &lbl_805601B0);
     if (lbl_8055D370 == 0) {
         p = base;
-        IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3);
+        IdList_Add2(ID_LIST, p); IdList_Add2(ID_LIST, p + 1); IdList_Add2(ID_LIST, p + 2); IdList_Add2(ID_LIST, p + 3);
     } else {
         p = base + 4;
-        IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3); IdList_Add(p + 4);
+        IdList_Add2(ID_LIST, p); IdList_Add2(ID_LIST, p + 1); IdList_Add2(ID_LIST, p + 2); IdList_Add2(ID_LIST, p + 3); IdList_Add2(ID_LIST, p + 4);
     }
     for (i = 0; i < ID_LIST->count; i++) {
         if (ID_LIST->data[i] == 1) {
             p = base + 10;
-            IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3);
+            IdList_Add2(ID_LIST, p); IdList_Add2(ID_LIST, p + 1); IdList_Add2(ID_LIST, p + 2); IdList_Add2(ID_LIST, p + 3);
             break;
         }
     }
