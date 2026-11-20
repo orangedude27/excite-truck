@@ -1179,14 +1179,15 @@ set_height:
  if (frame.flag) *(short *)((char *)arg0+0x64)=*(short *)(p+0x1ec);
  else *(short *)((char *)arg0+0x64)=*(short *)(*(char **)(p+0x140)+0x6c);
  if (!fn_801769F8()) {
-   float *q=lbl_80499980; float dec=lbl_80563C7C, zero=0.0f;
-   i=0; do {
+   float *q=lbl_80499980; float dec=lbl_80563C7C, zero=lbl_80563C20;
+   int n = 2;
+   i = 0; do {
      t=q[0]-dec; if (zero>t) t=zero; q[0]=t;
      t=q[1]-dec; if (zero>t) t=zero; q[1]=t;
      t=q[2]-dec; if (zero>t) t=zero; q[2]=t;
      t=q[3]-dec; if (zero>t) t=zero; q[3]=t;
      q+=4; i+=3;
-   } while (i<6);
+   } while (--n != 0);
  }
  fn_80267130(arg0); ((void (*)(void *))fn_802671CC)(arg0);
 }
@@ -1740,10 +1741,7 @@ void fn_80268E00(void) {
 extern int fn_8026B0C0(int);
 extern float lbl_80563C40, lbl_80563CA0, lbl_80563CA4, lbl_80563CA8, lbl_80563CAC, lbl_80563CB0, lbl_80563CB4, lbl_80563CB8;
  extern float fn_80144514(float,float,float,float,float,float);
- #pragma inline_depth(3)
- #pragma always_inline on
- #pragma inline_max_size(2000)
- static __inline void fn_80268E94_multiply(float *out, const float *a, const float *b) {
+ static inline void fn_80268E94_multiply(float *out, const float *a, const float *b) {
  float t0,t1,t2,t3,t4,t5,t6,t7,t8;
  if (out == a || out == b) {
  t0 = fn_80144514(b[0], a[0], b[3], a[1], b[6], a[2]);
