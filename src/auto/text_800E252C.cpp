@@ -577,8 +577,8 @@ void *fn_800E279C(void *arg0)
   ((LLTmp *) (p + 0x14))->next = &((LLTmp *) (p + 0x14))->next;
   ((LLTmp *) (p + 0x14))->prev = &((LLTmp *) (p + 0x14))->next;
   ((LLTmp *) (p + 0x20))->a = 0;
-  ((LLTmp *) (p + 0x20))->next = &((LLTmp *) (p + 0x20))->next;
   ((LLTmp *) (p + 0x20))->prev = &((LLTmp *) (p + 0x20))->next;
+  ((LLTmp *) (p + 0x20))->next = &((LLTmp *) (p + 0x20))->next;
   fn_8002F53C(p + 0x2C, &__ct__Q46nw4hbm3snd6detail7AxVoiceFv, &__dt__Q46nw4hbm3snd6detail7AxVoiceFv, 0x1B0, 0x40);
   p[0x6C30] = 0;
   p[0x6C31] = 1;
@@ -715,14 +715,18 @@ extern "C" void fn_800E2E24(void *self)
     nw4hbm::ut::detail::LinkListImpl::Iterator iterator;
     int offset = 0;
     int i = 0;
+    int flag = 0;
     do
     {
       if (((base + (offset & 0xFFu)) + 0x2C) == 0)
       {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
       }
-      iterator.node = (nw4hbm::ut::detail::LinkListNode *) (base + 0x24);
-      ((nw4hbm::ut::detail::LinkListImpl *) (base + 0x20))->Insert(iterator, (nw4hbm::ut::detail::LinkListNode *) ((base + offset) + 0x1D4));
+      if (flag == 0)
+      {
+        iterator.node = (nw4hbm::ut::detail::LinkListNode *) (base + 0x24);
+        ((nw4hbm::ut::detail::LinkListImpl *) (base + 0x20))->Insert(iterator, (nw4hbm::ut::detail::LinkListNode *) ((base + offset) + 0x1D4));
+      }
       i++;
       offset = offset + 0x1B0;
     }
@@ -1043,9 +1047,6 @@ extern "C" void UnregisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3sn
 extern "C" void fn_80031C6C(int);
 #pragma use_lmw_stmw off
 extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10OutputMode(void *self, int mode) {
-    unsigned int interrupts;
-    void *node;
-    void *end;
     if (*(int *)self == mode) return;
     *(int *)self = mode;
     switch (mode) {
@@ -1054,9 +1055,9 @@ extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10Out
     case 2: fn_80031C6C(2); break;
     case 3: fn_80031C6C(0); break;
     }
-    interrupts = OSDisableInterrupts();
-    node = *(void **)((char *)self + 0x18);
-    end = (char *)self + 0x18;
+    unsigned int interrupts = OSDisableInterrupts();
+    void *end = (char *)self + 0x18;
+    void *node = *(void **)((char *)self + 0x18);
     while (node != end) {
         void *current = node;
         node = *(void **)node;
@@ -1668,25 +1669,26 @@ extern "C" int Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7
     int total;
     const char *fileName = lbl_803221A8;
     int buffers[8];
-    int valid, rows, ncols, made, result, remaining, i, j;
+    int rows, ncols, made, result, remaining, i, j;
     unsigned int bufferSize, nextSize;
     int *bufferOut, *bufferIn;
     char *voice, *row, *manager, *node, *sentinel;
-    valid = 0;
+    int valid1, valid2;
+    valid1 = 0;
     if (count >= 1) {
-        if (count <= 2) valid = 1;
+        if (count <= 2) valid1 = 1;
     }
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName + 0, 0x124, fileName + 0x10, count, 1, 2);
+    if (valid1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName + 0, 0x124, fileName + 0x10, count, 1, 2);
     if (count > 2) rows = 2;
     else {
         rows = 1;
         if (count >= 1) rows = count;
     }
-    valid = 0;
+    valid2 = 0;
     if (columns >= 1) {
-        if (columns <= 4) valid = 1;
+        if (columns <= 4) valid2 = 1;
     }
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName + 0, 0x127, fileName + 0x5C, columns, 1, 4);
+    if (valid2 == 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName + 0, 0x127, fileName + 0x5C, columns, 1, 4);
     if (columns > 4) ncols = 4;
     else {
         ncols = 1;
@@ -2555,7 +2557,7 @@ extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, 
     char *entry;
     int i;
     if (arg1 >= 2) {
-        Panic__Q26nw4hbm2dbFPCciPCce(*((const char (*)[0x290])f), 0x396, f + 0x258);
+        Panic__Q26nw4hbm2dbFPCciPCce(f, 0x396, f + 0x258);
     }
     if (arg2 != 0) {
         int fmt = *(int *)(self + 0x118);
@@ -2566,7 +2568,7 @@ extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, 
         case 0: start = ((unsigned int)arg5 % 14) + (off * 2) + (((unsigned int)arg5 / 14) * 16) + 2; break;
         case 25: start = off + arg5; break;
         case 10: start = (off >> 1) + arg5; break;
-        default: Panic__Q26nw4hbm2dbFPCciPCce(*((const char (*)[0x290])f), 0x561, f + 0x290); break;
+        default: Panic__Q26nw4hbm2dbFPCciPCce(f, 0x561, f + 0x290); break;
         }
     } else {
         unsigned int addr = (unsigned int)GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(Instance__15EmissionManagerFv());
@@ -2577,7 +2579,7 @@ extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, 
         case 0: start = addr * 2 + 2; break;
         case 25: start = addr; break;
         case 10: start = addr >> 1; break;
-        default: Panic__Q26nw4hbm2dbFPCciPCce(*((const char (*)[0x290])f), 0x561, f + 0x290); break;
+        default: Panic__Q26nw4hbm2dbFPCciPCce(f, 0x561, f + 0x290); break;
         }
     }
     {
@@ -2589,7 +2591,7 @@ extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, 
         case 0: cur = off * 2 + 2; break;
         case 25: cur = off; break;
         case 10: cur = off >> 1; break;
-        default: Panic__Q26nw4hbm2dbFPCciPCce(*((const char (*)[0x290])f), 0x561, f + 0x290); break;
+        default: Panic__Q26nw4hbm2dbFPCciPCce(f, 0x561, f + 0x290); break;
         }
     }
     {
@@ -2605,7 +2607,7 @@ extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, 
         }
         case 25: end = off2 + arg6 - 1; break;
         case 10: end = arg6 + (off2 >> 1) - 1; break;
-        default: Panic__Q26nw4hbm2dbFPCciPCce(*((const char (*)[0x290])f), 0x561, f + 0x290); break;
+        default: Panic__Q26nw4hbm2dbFPCciPCce(f, 0x561, f + 0x290); break;
         }
     }
     rec.flag = arg2;
@@ -4075,7 +4077,7 @@ extern "C" void Update__Q46nw4hbm3snd6detail10BasicSoundFv(void *self) {
     UpdPlayerVt *p = sv->s5C();
     int f30flag;
     float sends[4];
-    float f31, f30, f29, f28, f27, f26, f25, f24;
+    register float f31, f30, f29, f28, f27, f26, f25, f24;
     int voice, i, valid;
     char *pl;
     char *pl2;
@@ -4112,7 +4114,7 @@ extern "C" void Update__Q46nw4hbm3snd6detail10BasicSoundFv(void *self) {
     }
     if (UF(UpdCbA *, 0x1C) != 0) UF(UpdCbA *, 0x1C)->a08(UF(int, 0x24), self);
     if (UF(UpdCbB *, 0x18) != 0) UF(UpdCbB *, 0x18)->b08((char *)self + 0x28, UF(int, 0x78), self, UF(int, 0x24), -1);
-    f31 = lbl_80560FB4;
+    f31 = 1.0f;
     f31 *= UF(float, 0x8C);
     pl = UF(char *, 0x10);
     pl2 = UF(char *, 0x14);
@@ -4122,14 +4124,14 @@ extern "C" void Update__Q46nw4hbm3snd6detail10BasicSoundFv(void *self) {
     f31 *= UpdRamp((UpdRampFields *)((char *)self + 0x44));
     f31 *= UpdRamp((UpdRampFields *)((char *)self + 0x54));
     f31 *= UF(float, 0x28);
-    f28 = lbl_80560FB0;
+    f28 = 0.0f;
     voice = 1;
     f27 = f28;
-    f30 = lbl_80560FB4 * *(float *)(pl + 0x34);
+    f30 = 1.0f * *(float *)(pl + 0x34);
     f30 *= UF(float, 0xA4);
     f26 = f27;
     f25 = f26;
-    f24 = lbl_80560FB4;
+    f24 = 1.0f;
     f28 += UF(float, 0x90);
     f26 += UF(float, 0x30);
     f27 += UF(float, 0x94);
@@ -4137,7 +4139,7 @@ extern "C" void Update__Q46nw4hbm3snd6detail10BasicSoundFv(void *self) {
     f24 *= UF(float, 0x98);
     if (fn_800F87F0() != 0) voice = fn_800F87E8(UF(void *, 0x10));
     if (UF(unsigned char, 0x9C) != 0) voice = UF(int, 0xA0);
-    f29 = lbl_80560FB4;
+    f29 = 1.0f;
     for (i = 0; i < 4; i++) {
         sends[i] = f29;
         sends[i] *= GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800F87F8(UF(void *, 0x10), i);
@@ -4170,7 +4172,6 @@ extern "C" void Update__Q46nw4hbm3snd6detail10BasicSoundFv(void *self) {
         UF(unsigned char, 0x64) = 0;
     }
 }
-
 // Declared here because the file's other copies of these prototypes sit further
 // down; they have to be at file scope, where extern "C" is allowed.
 extern "C" void DetachSound__Q34nw4r3snd11SoundHandleFv(void *);
