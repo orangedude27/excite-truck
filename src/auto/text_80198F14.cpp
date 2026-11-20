@@ -4333,21 +4333,15 @@ extern "C" void fn_801A2474(void *arg0) {
 #pragma scheduling on
 extern "C" char lbl_80333818[];
 extern "C" void fn_801A2674(void*, s32, s32, f32);
-typedef struct {
-    s32 w0, w4, w8, wC;
-    f32 f10, f14;
-    s32 w18, w1C, w20;
-    s32 pad[3];
-    s32 w30;
-} Obj801A25F8;
 #pragma scheduling on
 extern "C" void* fn_801A25F8(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     f32 init = 1.0f;
     *(s32*)((u8*)arg0 + 0xC) = arg1;
+    s32 tag = 0x52414744;
     *(s32*)((u8*)arg0 + 0x30) = arg2;
     *(s32*)((u8*)arg0 + 4) = arg3;
     *(s32*)((u8*)arg0 + 8) = 0;
-    *(s32*)((u8*)arg0 + 0x18) = 0x52414744;
+    *(s32*)((u8*)arg0 + 0x18) = tag;
     *(f32*)((u8*)arg0 + 0x10) = init;
     *(f32*)((u8*)arg0 + 0x14) = init;
     *(s32*)((u8*)arg0 + 0x20) = 0x64;
