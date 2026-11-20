@@ -105,12 +105,9 @@ void fn_80236774(void) {
 }
 
 extern char *fn_80237C40(void);
-#pragma scheduling on
+#pragma scheduling priority
 void fn_80236780(void) {
     char *p;
-    unsigned char c7;
-    unsigned char zero = 0;
-    unsigned char one = 1;
     if (lbl_8055F0BC == 0) {
         p = fn_80237C40();
         lbl_8055F0BC = p;
@@ -120,11 +117,10 @@ void fn_80236780(void) {
         *(char **)(lbl_8055F0C0 + 0x24) = p;
         lbl_8055F0C0 = *(char **)(lbl_8055F0C0 + 0x24);
     }
-    c7 = lbl_8055F0C7;
-    lbl_8055F0C0[0x1F] = c7;
-    lbl_8055F0C0[0x20] = zero;
+    lbl_8055F0C0[0x1F] = lbl_8055F0C7;
+    lbl_8055F0C0[0x20] = 0;
     if ((unsigned char)lbl_8055F0C5 != 0 || (unsigned char)lbl_8055F0C6 == 0)
-        lbl_8055F0C0[0x21] = one;
+        lbl_8055F0C0[0x21] = 1;
     *(int *)(lbl_8055F0C0 + 0x28) = lbl_8055F0B0;
     *(int *)(lbl_8055F0C0 + 0x2C) = lbl_8055F0B4;
     *(int *)(lbl_8055F0C0 + 0x30) = lbl_8055F0B8;
@@ -764,7 +760,6 @@ static unsigned char pass_flag_37AA0(int dummy, unsigned char flag, char *base) 
 
 void fn_80237AA0(int arg0, float *arg1, float arg2)
 {
-    unsigned char var_r4;
     float var_f31 = arg2;
     float var_f1, var_f2;
     void *p;
@@ -786,13 +781,11 @@ void fn_80237AA0(int arg0, float *arg1, float arg2)
         if ((unsigned char)lbl_8055F0C0[0x20] != 0) arg1[1] = lbl_805636E0;
     } else {
         if (arg0 == 3) {
-            var_r4 = (unsigned char)lbl_8055F0C0[0x21];
-            if (var_r4 != 0) var_f31 = lbl_805636E4 - arg2;
+            if ((unsigned char)lbl_8055F0C0[0x21] != 0) var_f31 = lbl_805636E4 - arg2;
         } else {
-            var_r4 = (unsigned char)lbl_8055F0C0[0x21];
-            if (var_r4 == 0) var_f31 = lbl_805636E4 - arg2;
+            if ((unsigned char)lbl_8055F0C0[0x21] == 0) var_f31 = lbl_805636E4 - arg2;
         }
-        if ((unsigned int)(arg0 == 3) == var_r4) {
+        if ((unsigned int)(arg0 == 3) == (unsigned char)lbl_8055F0C0[0x21]) {
             p = *(void **)(lbl_8055F0C0 + 0x2C);
             if (p) call_set_37AA0(p, var_f31);
         } else {
