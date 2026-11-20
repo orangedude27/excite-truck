@@ -212,14 +212,20 @@ int fn_802574E0(int self, int deletingFlag) {
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_80257558(void *arg0, void *arg1) {
+    /* Fill the profile table (+0x1C) of the settings selector.  It walks every
+     * registered event record; for each record that carries a contest object
+     * matching the "name" key it takes the record's profile name and appends a
+     * row to the table (key column then name column) if that name is not
+     * already there.  Finally the first name is selected and the table is
+     * marked as built. */
     typedef struct {
         char pad0[0x18];
-        int field_18;
+        int selectedIndex;
         char table_1c[8];
-        int count_24;
+        int rowCount;
         char pad28[0x24];
-        int field_4c;
-        char field_50;
+        int modified;
+        char built;
     } Selector;
     typedef struct {
         char pad[8];
@@ -234,7 +240,7 @@ extern "C" void fn_80257558(void *arg0, void *arg1) {
     Entry *entry;
     char *candidate;
 
-    self->field_18 = 0;
+    self->selectedIndex = 0;
     outer = 0;
     while (outer < fn_80012818()) {
         entry = (Entry *)fn_80012820(outer);
@@ -250,7 +256,7 @@ extern "C" void fn_80257558(void *arg0, void *arg1) {
             name = (int)fn_800081BC(&entry->name);
             found = 0;
             index = 0;
-            while (found == 0 && index < self->count_24) {
+            while (found == 0 && index < self->rowCount) {
                 candidate = (char *)fn_8022D850(&self->table_1c, index, 1, 0);
                 if (stricmp((char *)name, candidate) == 0) {
                     found = 1;
@@ -258,17 +264,17 @@ extern "C" void fn_80257558(void *arg0, void *arg1) {
                 index++;
             }
             if (found == 0) {
-                found = self->count_24;
+                found = self->rowCount;
                 fn_8022D894(&self->table_1c, found, 1, (void *)name, 0);
                 fn_8022D894(&self->table_1c, found, 0, fn_80008188(&entry->name), 0);
             }
         }
         outer++;
     }
-    self->field_4c = 0;
-    fn_8022D894(&self->table_1c, self->field_4c, 0,
+    self->modified = 0;
+    fn_8022D894(&self->table_1c, self->modified, 0,
                 fn_8022D850(&self->table_1c, 0, 0, 0), 1);
-    self->field_50 = 1;
+    self->built = 1;
 }
 
 #pragma scheduling invalid_target
