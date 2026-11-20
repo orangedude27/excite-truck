@@ -1419,6 +1419,7 @@ s32 fn_80069178(void) {
     register u8 count;
     register s32 index;
     register s32 idx;
+    register u32 offset;
 
     status = SCCheckStatus();
     if (((u32)((1 - status) | (status - 1)) >> 31) == 0) {
@@ -1449,8 +1450,9 @@ s32 fn_80069178(void) {
 
         if (record[0x59] != 0) {
             if (record[0x5B] == 0 || record[0x5B] == 2 || record[0x5B] == 4) {
-                memcpy(lbl_80393058 + (u8)count * 0x46 + 1, record + 0x40, 6);
-                memcpy(lbl_80393058 + (u8)count * 0x46 + 7, record, 0x40);
+                offset = (u32)(u8)count * 0x46u;
+                memcpy((u8 *)((u32)lbl_80393058 + offset + 1), record + 0x40, 6);
+                memcpy((u8 *)((u32)lbl_80393058 + offset + 7), record, 0x40);
                 count++;
             }
         }
@@ -1479,7 +1481,7 @@ s32 fn_800692D0(void) {
             interruptState = OSDisableInterrupts();
             if (i < 0) goto high_record;
             if (i >= 0xA) goto high_record;
-            record = (u8 *)((u32)base + ((u32)offset * 1u) + 0x64);
+            record = (u8 *)((u32)base + (u32)offset + 0x64);
             goto selected_record;
         high_record:
             record = (u8 *)((u32)base + ((u32)(i - 0xA) * 0x60u) + 0x424);
@@ -2106,8 +2108,6 @@ u8 fn_8006A1DC(void) {
     u8 *addr;
     s32 i;
     u8 *dev;
-    char *fmt;
-    u8 b0, b1, b2, b3, b4, b5;
     u8 one = 1;
     u8 zero = 0;
     u8 two = 2;
@@ -2130,14 +2130,7 @@ u8 fn_8006A1DC(void) {
             dev[0x57] = two;
             *(u16 *)(dev + 0x5E) = value - 0x7F8C;
             dev[0x58] = three;
-            b0 = dev[0x40];
-            fmt = strings + 0x1CC;
-            b1 = dev[0x41];
-            b2 = dev[0x42];
-            b3 = dev[0x43];
-            b4 = dev[0x44];
-            b5 = dev[0x45];
-            DBPrintf_8006CFA8(fmt, b0, b1, b2, b3, b4, b5);
+            DBPrintf_8006CFA8(strings + 0x1CC, dev[0x40], dev[0x41], dev[0x42], dev[0x43], dev[0x44], dev[0x45]);
             DBPrintf_8006CFA8(strings + 0x390, dev);
         }
         entry += 0x46;
@@ -2146,7 +2139,6 @@ u8 fn_8006A1DC(void) {
     }
     return 3;
 }
-#pragma use_lmw_stmw reset
 /* Advance the WUD/Bluetooth initialization state machine stored in lbl_80392960.
  * State 1 waits for SC to be ready, state 2 runs the next init step, and
  * state 3 cancels the pending alarm, marks init active, and enables Bluetooth. */
@@ -4552,10 +4544,10 @@ void uusb_ReadIntrDataCB(s32 length, BT_HDR *buf) {
 extern char lbl_80558FF8[];
 extern char lbl_80559000[];
 void uusb_ReadBulkDataCB(s32 length, BT_HDR *buf) {
-    s32 size, i;
+    register s32 size, i;
     u8 *p;
     BT_HDR *copy;
-    char *report=lbl_803142C8;
+    register char *report=lbl_803142C8;
     uusb_cb_t *control=&lbl_803BD1E0;
     if(control->state!=2) {
         if(control->at_0x28) OSReport(report+0x15c);
@@ -7303,9 +7295,11 @@ void bta_hh_get_acl_q_info(void) {
             ccb = (u8 *)l2cu_find_ccb_by_cid(0,
                 *(u16 *)(config + entry[0x26] * 0x34 + 0x16));
             if (ccb != 0 && (p = *(u8 **)(ccb + 0x10)) != 0 && p[0] != 0) {
+#pragma scheduling off
                 *(u16 *)(row + 8) = *(u16 *)(p + 0x4C);
                 *(u16 *)(row + 0xA) = *(u16 *)(p + 0x38);
                 count++;
+#pragma scheduling on
             }
         }
     }
@@ -7837,17 +7831,14 @@ void bta_hh_add_device_to_list(void *devCb, s8 handle, s16 attrMask, void *desc,
 
 BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
     UINT8 max_devt = lbl_80559030[0];
-    UINT32 cod = (sub_class >> 2) & 0x3F;
-    UINT8 *cfg = lbl_80559030;
-    UINT8 xx = 0;
-    UINT8 *p_list;
-    while (xx < max_devt) {
-        p_list = *(UINT8 **)(cfg + 4);
+    UINT8 cod = (sub_class >> 2) & 0x3F;
+    UINT8 xx;
+    for (xx = 0; xx < max_devt; xx++) {
+        UINT8 *p_list = *(UINT8 **)(lbl_80559030 + 4);
         if (cod == p_list[xx * 2]) {
             ((UINT8 *)p_cb)[0x15] = p_list[xx * 2 + 1];
             return TRUE;
         }
-        xx++;
     }
     return FALSE;
 }
@@ -8393,13 +8384,9 @@ u16 BTM_GetHCIConnHandle(u8 *arg0) {
     var_r31 = 0;
     var_r30 = lbl_803C0F78 + 0x34;
 loop:
-    if (var_r30[0x119] != 0) {
-        if (memcmp(var_r30 + 8, arg0, 6) == 0) {
-            goto found;
-        }
-        goto next;
+    if (var_r30[0x119] != 0 && memcmp(var_r30 + 8, arg0, 6) == 0) {
+        goto found;
     }
-next:
     var_r31++;
     var_r30 += 0x11C;
     if (var_r31 < 4) {
@@ -28497,6 +28484,7 @@ s32 __CtrlMsgInt(s32 fd, s32 reqType, s32 req, s32 value, s32 index, u32 length,
     char *e;
     char *f;
     char *msg;
+
     if ((buffer == 0 && length != 0) || ((u32)buffer & 0x1F)) {
         fd = -4;
         USB_ERR(base + 0x328);
@@ -28516,16 +28504,18 @@ s32 __CtrlMsgInt(s32 fd, s32 reqType, s32 req, s32 value, s32 index, u32 length,
     if (e == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x20, e);
     f = iosAllocAligned(lbl_805590A0, 0x20, 0x20);
     if (f == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x20, f);
+
     if (a == 0 || b == 0 || c == 0 || d == 0 || e == 0 || f == 0 || blk == 0) {
         USB_ERR(base + 0x344);
         fd = -0x16;
         goto free_all;
     }
+
     *(u8 *)a = reqType;
     *(u8 *)b = req;
-    __sthbrx(value, d, 0);
-    __sthbrx(index, e, 0);
-    __sthbrx(length, f, 0);
+    __sthbrx((u32)value, d, 0);
+    __sthbrx((u32)index, e, 0);
+    __sthbrx((u32)length, f, 0);
     *(u8 *)c = 0;
     *(void **)(blk + 0) = a;
     *(s32 *)(blk + 4) = 1;
@@ -28548,10 +28538,12 @@ s32 __CtrlMsgInt(s32 fd, s32 reqType, s32 req, s32 value, s32 index, u32 length,
     DCFlushRange(e, 0x20);
     DCFlushRange(f, 0x20);
     DCFlushRange(blk, 0xE0);
+
     if (async == 0) {
         fd = IOS_Ioctlv(fd, 0, 6, 1, blk);
         goto free_all;
     }
+
     msg = iosAllocAligned(lbl_805590A0, 0x80, 0x20);
     if (msg == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x80, msg);
     if (msg == 0) {
@@ -28559,6 +28551,7 @@ s32 __CtrlMsgInt(s32 fd, s32 reqType, s32 req, s32 value, s32 index, u32 length,
         fd = -0x16;
         goto free_all;
     }
+
     *(s32 *)(msg + 0) = (s32)callback;
     *(s32 *)(msg + 4) = (s32)callbackArg;
     USB_LOG(base + 0x38C, (s32)callback, (s32)callbackArg);
@@ -28579,6 +28572,7 @@ s32 __CtrlMsgInt(s32 fd, s32 reqType, s32 req, s32 value, s32 index, u32 length,
         fr = iosFree(lbl_805590A0, msg);
         if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, msg, fr);
     }
+
 free_all:
     if (a != 0) {
         fr = iosFree(lbl_805590A0, a);
@@ -28615,6 +28609,7 @@ done:
 #pragma use_lmw_stmw off
 /* Starts an asynchronous USB control write: flushes the data buffer and issues the internal control message. */
 s32 IUSB_WriteCtrlMsgAsync(s32 fd, s32 requestType, s32 request, s32 value, s32 index, u32 length, void* data, void* callback, void* callbackArg) {
+    extern s32 __CtrlMsgInt(s32, s32, s32, s32, s32, u32, void *, void *, void *, u8);
     DCFlushRange(data, length);
     return __CtrlMsgInt(fd, requestType, request, value, index, length, data, callback, callbackArg, 1);
 }
