@@ -24053,7 +24053,6 @@ extern "C" void fn_800D1204(void *, f32);
 extern "C" void fn_800D120C(void *, void *, s32);
 #pragma push
 #pragma dont_inline on
-#pragma inline_level 0
 extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
     class VirtualHandler {
     public:
@@ -24090,10 +24089,10 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                 (*(VirtualHandler **)((u8 *)arg0 + 0x1f8))->vf9(arg1, 0, 0, 0, 0, 0.0f, -180.0f);
                 *(s32 *)((u8 *)arg0 + 0x14) = 2;
                 void *c3c8 = *(void **)((u8 *)arg0 + 0x3c8);
-                ((void (*)(void *))fn_800CF3EC)(c3c8);
+                fn_800CF3EC(c3c8);
                 *(s32 *)((u8 *)c3c8 + 0x14) = 1;
                 void *c3ec = *(void **)((u8 *)arg0 + 0x3ec);
-                ((void (*)(void *))fn_800CF3EC)(c3ec);
+                fn_800CF3EC(c3ec);
                 *(s32 *)((u8 *)c3ec + 0x14) = 1;
                 *(s32 *)((u8 *)arg0 + 0x10) = 0xa;
                 *(s32 *)arg0 = 0;
@@ -24125,7 +24124,7 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                 *(s32 *)((u8 *)arg0 + 0xac) = 0;
                 *(s32 *)((u8 *)arg0 + 0x14) = 4;
                 void *c3d0 = *(void **)((u8 *)arg0 + 0x3d0);
-                ((void (*)(void *))fn_800CF3EC)(c3d0);
+                fn_800CF3EC(c3d0);
                 *(s32 *)((u8 *)c3d0 + 0x14) = 1;
                 *(s32 *)((u8 *)arg0 + 0x10) = 0xe;
                 {
@@ -24164,7 +24163,7 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                         if (p[0] == *(s32 *)((u8 *)arg0 + 0x80) + 0x15 && p[1] == 9) { idx2 = i; break; }
                     }
                     void *p2 = *(void **)((u8 *)arg0 + 0x298 + idx2 * 4);
-                    ((void (*)(void *))fn_800CF3EC)(p2);
+                    fn_800CF3EC(p2);
                     *(s32 *)((u8 *)p2 + 0x14) = 1;
 
                     s32 idx3 = -1;
@@ -24173,7 +24172,7 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                         if (p[0] == 0xb && p[1] == 5) { idx3 = i; break; }
                     }
                     void *p3 = *(void **)((u8 *)arg0 + 0x298 + idx3 * 4);
-                    ((void (*)(void *))fn_800CF3EC)(p3);
+                    fn_800CF3EC(p3);
                     *(s32 *)((u8 *)p3 + 0x14) = 1;
 
                     if (*(s32 *)((u8 *)arg0 + 0x80) == 0) {
@@ -24252,7 +24251,7 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                         if (p[0] == *(s32 *)((u8 *)arg0 + 0x80) + 0x15 && p[1] == 0xa) { idx2 = i; break; }
                     }
                     void *p2 = *(void **)((u8 *)arg0 + 0x298 + idx2 * 4);
-                    ((void (*)(void *))fn_800CF3EC)(p2);
+                    fn_800CF3EC(p2);
                     *(s32 *)((u8 *)p2 + 0x14) = 1;
 
                     *(s32 *)((u8 *)arg0 + 0x80) = *(s32 *)((u8 *)arg0 + 0x80) + 1;
@@ -24263,7 +24262,7 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                         if (p[0] == 0xc && p[1] == 5) { idx3 = i; break; }
                     }
                     void *p3 = *(void **)((u8 *)arg0 + 0x298 + idx3 * 4);
-                    ((void (*)(void *))fn_800CF3EC)(p3);
+                    fn_800CF3EC(p3);
                     *(s32 *)((u8 *)p3 + 0x14) = 1;
 
                     if (*(s32 *)((u8 *)arg0 + 0x80) == 10) {
