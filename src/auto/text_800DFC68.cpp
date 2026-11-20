@@ -95,15 +95,6 @@ extern "C" void Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc(void *, void *, u8
 extern "C" void *MEMAllocFromAllocator(int, int);
 extern "C" void *__ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(void *, void *, void *);
 extern "C" const char lbl_80320C24[];
-typedef struct WindowResData {
-    u32 w0;
-    u32 w1;
-    u32 w2;
-    u32 w3;
-    u16 matIdx;
-    u8 n;
-} WindowResData;
-
 extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hbm3lyt11ResBlockSet(u8 *self, u8 *res, u8 *set) {
     u8 *arr;
     u8 n;
