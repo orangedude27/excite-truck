@@ -97,10 +97,10 @@ extern "C" f32 fn_8019DF88(void*, f32*, void*, f32*, f32*, f32, f32);
 #pragma always_inline on
 static inline void Fn8019DF88MultVec(const f32 *m, const f32 *src, f32 *dst) {
     if (dst == src) {
-        register f32 p0 = m[3] * src[1], p1 = m[4] * src[1], p5 = m[5] * src[1];
-        register f32 p2 = m[0] * src[0], p3 = m[1] * src[0], p4 = m[2] * src[0];
-        register f32 p6 = m[6] * src[2], p7 = m[7] * src[2], p8 = m[8] * src[2];
-        register f32 x = p6 + (p2 + p0), y = p7 + (p3 + p1), z = p8 + (p4 + p5);
+        f32 p0 = m[3] * src[1], p1 = m[4] * src[1], p5 = m[5] * src[1];
+        f32 p2 = m[0] * src[0], p3 = m[1] * src[0], p4 = m[2] * src[0];
+        f32 p6 = m[6] * src[2], p7 = m[7] * src[2], p8 = m[8] * src[2];
+        f32 x = p6 + (p2 + p0), y = p7 + (p3 + p1), z = p8 + (p4 + p5);
         dst[0] = x; dst[1] = y; dst[2] = z;
     } else {
         register f32 q0 = m[3] * src[1], q1 = m[4] * src[1], q5 = m[5] * src[1];
@@ -1961,7 +1961,6 @@ extern "C" s32 fn_8019DDFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, void * __rest
 #pragma dont_inline off
 #pragma scheduling invalid_target
 extern "C" f32 fn_8019DF88(void *arg0, f32 *arg1, void *arg2, f32 *arg3, f32 *arg4, f32 farg0, f32 farg1) {
-    #pragma scheduling on
     Vec velocity, delta, normalCopy, normal, cross, rotated, result;
     f32 *m = (f32 *)arg2;
     f32 *p = (f32 *)arg0;
