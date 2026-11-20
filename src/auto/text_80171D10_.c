@@ -119,7 +119,7 @@ typedef struct CrushMaster {
 extern double fn_8002F234(float), cos(double), sin(double);
 extern float fn_80129DC4(int,float,float);
 extern unsigned long long fn_80171FF0(void *,int,float,float);
-extern int fn_80171EF8();
+extern int fn_80171EF8(const void *,const void *);
 extern float lbl_80558DC4[];
 #pragma push
 #pragma small_data off
@@ -229,23 +229,22 @@ int fn_80171EC0(int carIndex) {
 extern float lbl_80561A3C, lbl_80561A40;
 #pragma processor 750
 #pragma use_lmw_stmw off
-int fn_80171EF8(void *arg0, void *arg1) {
-#pragma scheduling invalid_target
+int fn_80171EF8(const void *arg0, const void *arg1) {
     struct Frame {
         float coords[2];
         volatile float savedY;
         volatile float savedX;
         double point;
     } f;
-    float dy;
     float dx;
+    float dy;
     float sum;
     float distance;
     float limit;
     float step;
     float t;
-    dy = ((const float *)arg0)[1] - ((const float *)arg1)[1];
     dx = ((const float *)arg0)[0] - ((const float *)arg1)[0];
+    dy = ((const float *)arg0)[1] - ((const float *)arg1)[1];
     sum = dy * dy + dx * dx;
     f.savedX = dx;
     f.savedY = dy;
