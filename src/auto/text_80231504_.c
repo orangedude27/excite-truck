@@ -41,7 +41,7 @@ typedef struct {
     s32 count;
 } Fn80231D84_Table;
 extern s32 lbl_8055F050;
-extern s8 lbl_8055F074;
+extern u8 lbl_8055F074;
 extern f32 lbl_80563690;
 extern void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4);
 extern void fn_80231D84(char *, void *, f32, f32, f32, f32, f32, f32, f32);
@@ -404,7 +404,7 @@ f32 outX, outY, outZ;
 #pragma use_lmw_stmw off
 #pragma small_data off
 #pragma scheduling invalid_target
-void fn_80231780(void *arg0) {
+void fn_80231780(void * __restrict arg0) {
     f32 f25, f26, f27, f28, f29, f30, f31;
     volatile f32 sp10, spC, sp8;
     f32 x, y, z;
@@ -440,7 +440,7 @@ loop_body:
         spC = y;
         sp10 = z;
         if (arg0 != 0) {
-            transform_vec_values((f32 *)arg0, (const f32 *)&sp8, (f32 *)&sp8, x + 0.0f, y + 0.0f, z + 0.0f);
+            transform_vec_values((f32 *)arg0, (const f32 *)&sp8, (f32 *)&sp8, x, y, z);
         }
         {
             f32 rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
@@ -1811,8 +1811,8 @@ extern void fn_802C8BD0(s32);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802346C8(void) {
-f32 f30 = lbl_80563688;
-f32 f31 = lbl_8056368C;
+register f32 f30 = lbl_80563688;
+register f32 f31 = lbl_8056368C;
 f32 f28;
 f32 f27;
 f32 f26;
