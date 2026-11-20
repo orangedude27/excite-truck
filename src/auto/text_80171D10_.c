@@ -1818,6 +1818,7 @@ void fn_80174918(void *arg0, int arg1) {
     extern char lbl_8055A2E4[];
     extern const char lbl_8055A2EC[];
     extern float lbl_80561AD8, lbl_80561AC8, lbl_80561A74, lbl_80561A54, lbl_80561A44, lbl_80561A40, lbl_80561A50, lbl_80561A3C, lbl_80561ADC;
+    char *base = lbl_80330F48;
     int idx = fn_801E866C(arg1);
     int flag = 1;
     int k;
@@ -1839,43 +1840,66 @@ void fn_80174918(void *arg0, int arg1) {
                 fn_80139318(*(void **)((unsigned char *)arg0 + 0x1A8), *(int *)((unsigned char *)arg0 + 0x198), idx, lbl_80561AD8);
         }
         obj = *(void **)((unsigned char *)arg0 + 0x1A8);
-        v1 = ((void *(*)(void *, void *, void *))(*(void ***)obj)[5])(obj, lbl_80330F48 + 0x4C4, (unsigned char *)arg0 + idx * 0x1C);
+        v1 = ((void *(*)(void *, void *, void *))(*(void ***)obj)[5])(obj, base + 0x4C4, (unsigned char *)arg0 + idx * 0x1C);
         obj = *(void **)((unsigned char *)arg0 + 0x1A8);
-        v2 = ((void *(*)(void *, void *))(*(void ***)obj)[5])(obj, lbl_80330F48 + 0x4D4);
+        v2 = ((void *(*)(void *, void *))(*(void ***)obj)[5])(obj, base + 0x4D4);
         if (v2 == 0)
             v2 = v1;
         obj = *(void **)((unsigned char *)arg0 + 0x1A8);
-        v3 = ((void *(*)(void *, void *))(*(void ***)obj)[3])(obj, lbl_80330F48 + 0x4E4);
+        v3 = ((void *(*)(void *, void *))(*(void ***)obj)[3])(obj, base + 0x4E4);
         count = *(int *)((unsigned char *)arg0 + 0x170) - 1;
-        for (k = 0; k < count; k++) {
-            unsigned char *e = (unsigned char *)arg0 + idx * 0x1C + 0x90 + k;
-            int r26 = (int)(((*(int *)(e + 8) ^ k) >> 1) - ((*(int *)(e + 8) ^ k) & *(int *)(e + 8)));
-            float sp10[12];
-            sp10[0] = *(float *)v1;
-            sp10[1] = *(float *)((unsigned char *)v1 + 4);
-            sp10[2] = *(float *)((unsigned char *)v1 + 8);
-            sp10[3] = *(float *)((unsigned char *)v1 + 12);
-            sp10[4] = *(float *)((unsigned char *)v1 + 16);
-            sp10[5] = *(float *)((unsigned char *)v1 + 20);
-            sp10[6] = *(float *)((unsigned char *)v1 + 24);
-            sp10[2] += (float)k * *(float *)((unsigned char *)v2 + 20);
-            if (r26 == 0)
-                *(int *)&sp10[6] = 0x66FFFFFF;
-            fn_80147940(*(void **)((unsigned char *)arg0 + 0x1A8), sp10, lbl_80330F48 + 0x4F4, 0, 0);
-            if (*(unsigned char *)(e + 0x10) != 0) {
-                fn_80147940(*(void **)((unsigned char *)arg0 + 0x1A8), sp10, lbl_80330F48 + 0x4F4, 0, sp10[4] + lbl_80561AC8);
-            }
-            if (r26 != 0 && *(int *)((unsigned char *)lbl_8043038C + 0x14) * (*(unsigned char *)(e + 0x10) + 1) != 0) {
-                float a[12];
-                for (i = 0; i < 7; i++)
-                    a[i] = *(float *)((unsigned char *)v3 + i * 4);
-                a[1] = sp10[4] + sp10[5] * lbl_80561A54;
-                a[2] = sp10[5] + sp10[6] * lbl_80561A54;
-                fn_80147230(a, (const char *)&lbl_8055A2A0, a[1], a[4], a[1]);
+        {
+            float c28 = lbl_80561AC8, c29 = lbl_80561A74, c30 = lbl_80561A54;
+            int sp10, sp1c, sp28;
+            float sp14, sp18, sp20, sp24;
+            float sp8, spC;
+            int sp30, sp3c, sp44, sp48, sp4c;
+            float sp34, sp38, sp40;
+            for (k = 0; k < count; k++) {
+                unsigned char *e = (unsigned char *)arg0 + idx * 0x1C + 0x90 + k;
+                int e8 = *(int *)(e + 8);
+                int xx = e8 ^ k;
+                unsigned int r26 = (unsigned int)((xx >> 1) - (xx & e8)) >> 31;
+                sp10 = *(int *)v1;
+                sp14 = *(float *)((unsigned char *)v1 + 4);
+                sp18 = *(float *)((unsigned char *)v1 + 8);
+                sp1c = *(int *)((unsigned char *)v1 + 12);
+                sp20 = *(float *)((unsigned char *)v1 + 16);
+                sp24 = *(float *)((unsigned char *)v1 + 20);
+                sp28 = *(int *)((unsigned char *)v1 + 24);
+                sp18 += (float)k * *(float *)((unsigned char *)v2 + 20);
+                if (r26 == 0)
+                    sp28 = 0x66FFFFFF;
+                fn_80147940(*(void **)((unsigned char *)arg0 + 0x1A8), &sp10, base + 0x4F4, 0, 0);
+                if (*(unsigned char *)(e + 0x10) != 0) {
+                    float t = sp14 + c28;
+                    sp8 = sp14;
+                    spC = sp18;
+                    sp14 = t;
+                    sp18 = spC + c29;
+                    fn_80147940(*(void **)((unsigned char *)arg0 + 0x1A8), &sp10, base + 0x4F4, 0, t);
+                    sp14 = sp8;
+                    sp18 = spC;
+                }
+                if (r26 != 0 && *(int *)((unsigned char *)lbl_8043038C + 0x14) * (*(unsigned char *)(e + 0x10) + 1) != 0) {
+                    float t;
+                    sp30 = *(int *)v3;
+                    sp34 = *(float *)((unsigned char *)v3 + 4);
+                    sp38 = *(float *)((unsigned char *)v3 + 8);
+                    sp3c = *(int *)((unsigned char *)v3 + 12);
+                    sp40 = *(float *)((unsigned char *)v3 + 16);
+                    sp44 = *(int *)((unsigned char *)v3 + 20);
+                    sp48 = *(int *)((unsigned char *)v3 + 24);
+                    sp4c = *(int *)((unsigned char *)v3 + 28);
+                    t = sp14 + sp20 * c30;
+                    sp34 = t;
+                    sp38 = sp18 + sp24 * c30;
+                    fn_80147230(&sp30, (const char *)&lbl_8055A2A0, t, sp40, sp14);
+                }
             }
         }
         {
-            char tmpBuf[0x80];
+            char tmpBuf[0x20];
             if (*(unsigned char *)((unsigned char *)lbl_8043038C + 0x18) != 0) {
                 x = *(float *)((unsigned char *)arg0 + 0x19C) - fn_801E7E18();
                 if (lbl_80561A44 > x)
@@ -1903,7 +1927,7 @@ void fn_80174918(void *arg0, int arg1) {
             }
             if (i > 0) {
                 fn_801475D0(*(void **)((unsigned char *)arg0 + 0x1A8), lbl_8055A2E4, (void *)lbl_8055A2EC, tmpBuf);
-                fn_8014784C(*(void **)((unsigned char *)arg0 + 0x1A8), lbl_80330F48 + 0x500, lbl_80330F48 + 0x510, 0);
+                fn_8014784C(*(void **)((unsigned char *)arg0 + 0x1A8), base + 0x500, base + 0x510, 0);
             }
         }
         {
@@ -1926,7 +1950,7 @@ void fn_80174918(void *arg0, int arg1) {
                     } else {
                         val = y * (lbl_80561ADC * y * y) - (lbl_80561A3C * y * y);
                     }
-                    fn_80175080(*(void ***)((unsigned char *)arg0 + 0x1A8), (int)(lbl_80330F48 + strOffs[i * 2]), (int)(lbl_80330F48 + strOffs[i * 2 + 1]), 0, (double)val);
+                    fn_80175080(*(void ***)((unsigned char *)arg0 + 0x1A8), (int)(base + strOffs[i * 2]), (int)(base + strOffs[i * 2 + 1]), 0, (double)val);
                 }
             }
         }
@@ -2548,7 +2572,7 @@ extern "C" void fn_80173058(unsigned char *self) {
     labelsBox.p = lbl_80330F48;
     const char *&labels = labelsBox.p;
     char key[0x20];
-    float initial = *(volatile float *)&lbl_80561A50;
+    register float initial;
     ConfigPair73058 pair;
     Config73058 *config, *root;
     char *name;
@@ -2559,6 +2583,7 @@ extern "C" void fn_80173058(unsigned char *self) {
     *(int *)(self + 0x1A8) = fn_80145E70(labels + 0x1FC);
     *(int *)(self + 0x170) = fn_801EA994();
     record = self;
+    initial = -1.0f;
     entry = self + 0x90;
     for (i = 0; i < *(int *)(self + 0x170); record += 0x1C, entry += 0x1C, ++i) {
         record[0x91] = fn_80171EC0(i);
@@ -2573,7 +2598,7 @@ extern "C" void fn_80173058(unsigned char *self) {
     root = *(Config73058 **)((unsigned char *)fn_8000AC38() + 0x20);
     config = root->section( name);
     *(float *)(self + 0x1A4) = config->number( lbl_8055A2B0, lbl_80561A94);
-    lbl_8043038C[0] = lbl_80561A98 * config->number( labels + 0x218, lbl_80561A9C);
+    lbl_8043038C[0] = lbl_80561A98 * config->number( labels + 0x218, 160.0f);
     lbl_8043038C[1] = lbl_80561A98 * config->number( labels + 0x224, lbl_80561AA0);
     lbl_8043038C[2] = config->number( labels + 0x230, lbl_80561AA4);
     lbl_8043038C[3] = config->number( labels + 0x240, lbl_80561AA8);
