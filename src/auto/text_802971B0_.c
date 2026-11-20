@@ -264,17 +264,17 @@ extern "C" void *fn_802974CC(void *arg0) {
 #pragma dont_inline reset
 #pragma scheduling on
 
-void *fn_80297654(void *arg0, s32 arg1) {
-    struct Obj { void (**vtable)(void *, s32); };
-    void *object;
-    volatile struct Obj *obj;
+#pragma push
+#pragma cplusplus on
+extern "C" void *fn_80297654(void *arg0, s32 arg1) {
+    struct VTable_80297654 {
+        virtual void destroy(s32);
+    };
     if (arg0 != 0) {
-        object = *(void **)((char *)arg0 + 0x10);
+        void *object = *(void **)((char *)arg0 + 0x10);
         if (object != 0) {
-            if (*(void **)((char *)arg0 + 0x10) != 0) {
-                obj = (volatile struct Obj *)object;
-                obj->vtable[2](object, 1);
-            }
+            if (object != 0)
+                ((VTable_80297654 *)object)->destroy(1);
             *(void **)((char *)arg0 + 0x10) = 0;
         }
         if (arg1 > 0)
@@ -282,7 +282,7 @@ void *fn_80297654(void *arg0, s32 arg1) {
     }
     return arg0;
 }
-
+#pragma pop
 /* Initialize one entry of the array: clear its held object pointer at +0x10 to null. */
 void fn_802976D0(void *entry) {
     *(s32 *)((u8 *)entry + 0x10) = 0;
