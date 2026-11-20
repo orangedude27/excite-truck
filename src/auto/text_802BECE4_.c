@@ -135,13 +135,6 @@ extern "C" void fn_802BEDFC(void) {
 #pragma scheduling on
 #pragma cplusplus reset
 
-static inline float clampMin(float limit, float value) {
-    return limit < value ? value : limit;
-}
-static inline float clampMax(float x) {
-    return x > lbl_80564D90 ? x : lbl_80564D90;
-}
-
 #pragma dont_inline on
 float fn_802BEFB4(void) {
     float value;
