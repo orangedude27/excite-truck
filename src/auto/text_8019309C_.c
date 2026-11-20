@@ -3212,7 +3212,7 @@ extern float lbl_805622A8, lbl_805622AC, lbl_805622B0, lbl_805622B4, lbl_805622B
 extern void fn_8018AE08(void *);
 extern void fn_8018ADCC(void *, float);
 extern char lbl_80558DC4[];
-extern float lbl_805622B4;
+extern float lbl_805622B4, lbl_805622C0;
 extern int fn_80167594(int), fn_801675E4(int), fn_80167634(int), fn_80167728(int);
 extern int fn_80167758(void), fn_80167768(float);
 void fn_80198530(void *arg0) {
