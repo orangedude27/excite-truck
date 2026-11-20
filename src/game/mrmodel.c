@@ -143,7 +143,7 @@ void fn_802C543C(void) {
 #pragma dont_inline off
 
 #pragma scheduling on
-int fn_802C544C(void **a, void **b) {
+int fn_802C544C(void **a, void **__restrict b) {
     void *right = *b;
     void *left = *a;
     short x = *(short *)((char *)right + 6);
@@ -470,7 +470,7 @@ void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
                 next = *(volatile int *)&lbl_804C13A8[0];
                 base = *(struct Entry * volatile *)&lbl_804C13A8[2];
                 lbl_804C13A8[0] = next + 1;
-                freeEntry = (struct Entry *)((unsigned char *)base + (next << 4));
+                freeEntry = base + next;
             } else {
                 freeEntry = 0;
             }
@@ -490,7 +490,6 @@ void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
     match->refs++;
     return match;
 }
-#pragma scheduling on
 extern void fn_802CAC54(int);
 extern s8 lbl_8055FC21;
 /* Release a reference to a model texture entry: decrement its refcount and mark the model cache dirty when it reaches zero. */
@@ -793,22 +792,41 @@ static inline void mr_swap4(unsigned char *q) {
 void fn_802C61BC(void *arg0, int arg1) {
     unsigned char *p = (unsigned char *)arg0;
     unsigned char *base;
-    unsigned char t;
+    unsigned char t0, t2, t3, t5, t6, t8, t9, t10, t14, t15, t16, t17, t18, t19, t20, t21, t22, t23, t24, t25, t26, t27, t28;
     int i, j;
+    int sp10, sp8, spC;
     (void)arg1;
     if (*(unsigned int *)p >= 0x3E80) return;
     if (*(unsigned int *)(p + 0x10) < 0x3E80) return;
-    for (i = 0; i < 0x48; i += 4) {
-        t = p[i]; p[i] = p[i+3]; p[i+3] = t;
-        t = p[i+1]; p[i+1] = p[i+2]; p[i+2] = t;
-    }
+    t0 = p[0xE]; t16 = p[0xD]; sp10 = t0;
+    t2 = p[0x1B]; t22 = p[0x18]; sp8 = t2;
+    t3 = p[0x1A]; t15 = p[0x19]; spC = t3;
+    t28 = p[0];
+    p[0xD] = t0;
+    t21 = p[1];
+    p[0x18] = t2;
+    t27 = p[4]; t20 = p[5]; t10 = p[6];
+    t26 = p[0x10]; t9 = p[0x13]; t19 = p[0x11]; t8 = p[0x12];
+    t25 = p[0x14]; t18 = p[0x15];
+    t24 = p[8]; t17 = p[9]; t23 = p[0xC]; t14 = p[0xF];
+    p[0] = p[3]; p[3] = t28;
+    p[1] = p[2]; p[2] = t21;
+    p[4] = p[7]; p[7] = t27;
+    p[5] = t10; p[6] = t20;
+    p[0x10] = t9; p[0x13] = t26; p[0x11] = t8; p[0x12] = t19;
+    p[0x14] = p[0x17]; p[0x17] = t25; p[0x15] = p[0x16]; p[0x16] = t18;
+    p[8] = p[0xB]; p[0xB] = t24; p[9] = p[0xA]; p[0xA] = t17;
+    p[0xC] = p[0xF]; p[0xF] = t23; p[0xE] = t16;
+    p[0x1B] = t22; p[0x19] = t3; p[0x1A] = t15;
+    SW4(p, 0x1C); SW4(p, 0x20); SW4(p, 0x24); SW4(p, 0x28);
+    SW4(p, 0x2C); SW4(p, 0x30); SW4(p, 0x34); SW4(p, 0x38);
+    SW4(p, 0x3C); SW4(p, 0x40); SW4(p, 0x44);
     ((void (*)(void *))fn_802C6A84)(p + 4);
     base = *(unsigned char **)(p + 4);
     for (i = 0; i < *(int *)p; i++) {
         unsigned char *e = base + i * 0x10;
         for (j = 0; j < 0x10; j += 4) {
-            t = e[j]; e[j] = e[j+3]; e[j+3] = t;
-            t = e[j+1]; e[j+1] = e[j+2]; e[j+2] = t;
+            SW4(e, j);
         }
         fn_802C6A9C((s32 *)(e + 0xC), (s32)arg0);
         fn_802D6B80((unsigned char *)*(void **)(e + 0xC), (s32)arg0, arg1);
@@ -1008,8 +1026,8 @@ int fn_802C6DC4(int arg0, int arg1, int arg2, int arg3) {
     int count = lbl_804C139C[0];
     char *scan = (char *)(unsigned long)lbl_804C139C[2];
     char *found = 0;
-    char *empty = 0;
     int i;
+    char *empty = 0;
 
     for (i = 0; i < count; i++) {
         if (*(int *)scan > 0) {
@@ -1633,7 +1651,7 @@ void fn_802C7AD4(void) {
 void fn_802D754C(void);
 void fn_802C7ADC(void) { fn_802D754C(); }
 
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
     int i;
     struct {
@@ -1716,11 +1734,7 @@ void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
         }
     }
 }
-
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
-#pragma dont_inline fn_802C53C4
+#pragma opt_propagation reset
 extern signed char lbl_8055FC20;
 extern int fn_802C9C58(int);
 extern void *fn_802C86DC(void);
