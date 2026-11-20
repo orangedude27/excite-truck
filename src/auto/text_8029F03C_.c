@@ -865,6 +865,7 @@ extern float fn_80287BC8(float, float);
 #pragma push
 #pragma processor 750
 #pragma cplusplus off
+#pragma scheduling invalid_target
 void fn_802A01C8(void *arg0, Unk802A0794Params *params) {
     struct Result {
         int count;
@@ -920,6 +921,7 @@ extern "C" void fn_802A02F4(void *arg0, Unk802A0794Params *params) {
     float a0, a1, a2;
     float b0, b1, b2;
     int i;
+    TargetObj *obj;
 
     fn_802A0098(&out, arg0, params);
     out.data[4] += *(float *)((char *)arg0 + 0x74);
@@ -939,7 +941,7 @@ extern "C" void fn_802A02F4(void *arg0, Unk802A0794Params *params) {
         b[2] = b2;
         b[0] = b0;
 
-        TargetObj *obj = *(TargetObj **)((char *)arg0 + 0x70);
+        obj = *(TargetObj **)((char *)arg0 + 0x70);
         obj->call(a, b, params->unk_0x18, -1);
     }
 }
