@@ -16738,6 +16738,7 @@ void btsnd_hcic_write_cur_iac_lap(u8 *p_buf, u8 num_cur_iac, u8 *cur_iac_lap) {
     }
     btu_hcif_send_cmd(p_buf);
 }
+#pragma unroll 8
 
 s32 btsnd_hcic_inq_cancel_8008576C(void) {
     /* Allocate and send an HCI command buffer (opcode 0x1001, no parameters); returns 1 on success, 0 on allocation failure. */
