@@ -115,7 +115,7 @@ void *fn_8020DE74(void *arg0) {
     memset(obj->boosts, 0, 8);
     obj->lastBoost = 0;
 
-    initial = 1.0f;
+    initial = lbl_80563368;
     i = 0;
     offset = 0;
     do {
