@@ -885,8 +885,8 @@ int fn_801F1494(int arg0, void *arg1, short arg2) {
     float speed = ((float (*)(int, int))fn_801E88F0)(-1, base);
     float squared = speed * speed;
     float value = ((float (*)(void *))fn_802C88E8)((char *)arg0 + 0x3C);
-    int index;
     char *cursor;
+    int index;
     int vx, vy, vz;
     Vec vec;
     value = value * squared;
@@ -1070,8 +1070,8 @@ int fn_801F18F0(void *arg0) {
         fn_802E317C(lbl_8033A578,
                     *(int *)((char *)arg0 + 8),
                     *(int *)((char *)arg0 + 0xC));
-        lbl_80488798[index] = 0;
     }
+    lbl_80488798[index] = 0;
 }
 #pragma pop
 int fn_801F196C(int index, int base) {
