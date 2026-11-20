@@ -15,23 +15,26 @@ extern char lbl_8032BECC[];
 extern int lbl_80559C04;
 extern int lbl_80559C08;
 extern int lbl_80559C10;
+#pragma push
+#pragma scheduling invalid_target
 char *fn_80137950(int arg0) {
+    int code;
     switch (arg0) {
-    case 3:
-        return (char *)&lbl_80559C04;
-    case 1:
-        return lbl_8032BEC0;
-    case 2:
-        return (char *)&lbl_80559C08;
-    case 0:
-        return (char *)&lbl_80559C10;
-    default: {
-        void (*report)(const char *, ...) = fn_802E317C;
-        report(lbl_8032BECC, arg0);
-        return 0;
-    }
+        case 3:
+            return (char *)&lbl_80559C04;
+        case 1:
+            return lbl_8032BEC0;
+        case 2:
+            return (char *)&lbl_80559C08;
+        case 0:
+            return (char *)&lbl_80559C10;
+        default:
+            code = arg0;
+            fn_802E317C(lbl_8032BECC, code);
+            return (char *)0;
     }
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
