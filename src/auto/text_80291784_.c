@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #pragma dont_inline fn_802920D0
 
+union FV { float f[3]; double d[3]; };
+
 #pragma cplusplus on
 struct QueryObject_80292114 {
     virtual int f0(int *);
@@ -120,7 +122,7 @@ extern "C" int fn_802917C0(void *arg0, void *arg1, void *arg2) {
     register int zero = 0;
     register float initial = lbl_80564484;
     register float scale = lbl_8056449C;
-    register float result2;
+    float result2;
     register float best = lbl_80564484;
     register float result1;
     register float result3;
@@ -137,7 +139,7 @@ loop:
     entry->x = initial; entry->y = initial; entry->z = initial;
     entry->id = fn_802CAC28(query_object->getSetting((char *)&lbl_8055C930), 0);
     entry->unk10 = 0; entry->flags = 0;
-    entry->color = ((int)(scale * result2) << 24) | 0x00FFFFFF;
+    entry->color = ((int)(result2 * scale) << 24) | 0x00FFFFFF;
     entry->value1 = query_object->getFloat((char *)&lbl_8055C938, result1);
     entry->value2 = query_object->getFloat((char *)&lbl_8055C940, result3);
     if (best > entry->value1) best = entry->value1;
@@ -225,7 +227,7 @@ void fn_80291B14(void *worldPos, float depth)
   }
 #pragma scheduling on
 #pragma opt_common_subs off
-void fn_80291B9C(void *arg0, float *arg1, float arg2) {
+void fn_80291B9C(void *arg0, float *__restrict arg1, float arg2) {
     float c, b, a;
     char *entry;
     int i;
@@ -334,8 +336,8 @@ void fn_80291E64(void *arg0) {
     char *ctx;
     float o[3];
     float d[3];
-    float s[3];
-    float e[3];
+    double s[3];
+    double e[3];
     float v[3];
     float *p;
     float t, w, negd, one, zero, step, scale, k;
@@ -362,9 +364,9 @@ void fn_80291E64(void *arg0) {
     e[0] = s[0] + d[0] * w;
     e[1] = s[1] + d[1] * w;
     e[2] = s[2] + d[2] * w;
-    sx = e[0] - s[0];
-    sy = e[1] - s[1];
-    sz = e[2] - s[2];
+    sx = (float)e[0] - (float)s[0];
+    sy = (float)e[1] - (float)s[1];
+    sz = (float)e[2] - (float)s[2];
     ent = ctx;
     for (i = 0; i < *(int *)(ctx + 0x120); ent += 0x24, i++) {
         scale = (float)i * step + *(float *)(ent + 0x20) * k;
@@ -372,9 +374,9 @@ void fn_80291E64(void *arg0) {
             scale = one;
         if (scale < zero)
             scale = zero;
-        v[0] = s[0] + scale * sx;
-        v[1] = s[1] + scale * sy;
-        v[2] = s[2] + scale * sz;
+        v[0] = (float)s[0] + scale * sx;
+        v[1] = (float)s[1] + scale * sy;
+        v[2] = (float)s[2] + scale * sz;
         fn_802C8E70(v, ent);
         if (*(unsigned char *)(ent + 0x14) != 0 && fn_802C8FF4(ent, lbl_80564484) != 0) {
             fn_802C8C04(*(int *)(ent + 0xC));
