@@ -1544,6 +1544,9 @@ void fn_800320E8(s32 arg0) {
     AIStartDMA();
 #pragma opt_common_subs reset
 }
+#pragma unroll reset
+#pragma ctrloop reset
+#pragma pop
 
 #pragma scheduling reset
 /* Stops the audio output path, with interrupts kept off throughout: drops the AI
