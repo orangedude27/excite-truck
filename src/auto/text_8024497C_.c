@@ -16,7 +16,6 @@ extern int fn_802146BC(void *, int, int, int);
 extern int sprintf(char *, const char *, ...);
 extern void fn_802E30C8(const char *, ...);
 typedef struct { int label, type, value, flags, id; } Ent2449;
-typedef struct { int w[5]; } Hdr2449;
 typedef struct {
     int one;
     int hdr[5];
