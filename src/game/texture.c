@@ -896,7 +896,7 @@ void fn_802CB228(int slotIndex) {
 }
 
 /* Return the larger of a texture slot's width and height (its longest side). */
-unsigned short fn_802CB3FC(int slotIndex) {
+int fn_802CB3FC(int slotIndex) {
     int *slot = (int *)(textureSlots + slotIndex * texSlotSize);
     unsigned short *dims = (unsigned short *)slot[0x2C / 4];
     if ((int)dims[1] > (int)dims[0])
@@ -1062,15 +1062,11 @@ extern char lbl_8034B9F4;
 #pragma small_data on
 DECL_SECTION(".sdata") extern char lbl_8055FCBC[];
 #pragma push
-#pragma small_data on
-#pragma push
-#pragma small_data on
-#pragma small_data off
-#pragma pop
+#pragma scheduling invalid_target
 void fn_802CB82C(int arg0) {
     char *temp_r31;
     char *temp_r29;
-    char *temp_r30;
+    register char *temp_r30;
     int temp_r0;
     char *pool, *node, *other, *joined;
     char **link, **mergeLink, **scanLink;
@@ -1196,6 +1192,7 @@ void fn_802CB82C(int arg0) {
     }
     *(int *)(temp_r31 + 0x40) = 0;
 }
+#pragma pop
  void fn_802CBBE8();
  extern char lbl_8034BA04[];
 /* Remove arg2 from the list rooted at arg1, then push arg2 onto the front of *arg0. */
@@ -1651,7 +1648,7 @@ outer:
 #pragma use_lmw_stmw on
 #pragma dont_inline reset
 extern double lbl_80564F38;
-#pragma fp_contract off
+#pragma fp_contract on
 void fn_802CC518(int arg0, float arg1) {
     union {
         double value;
@@ -1668,7 +1665,6 @@ void fn_802CC518(int arg0, float arg1) {
     result = (lbl_80564F30 * arg1) / (float)(number - magic);
     lbl_8055FCC4 = result;
 }
-#pragma dont_inline on
 /* Clamps a texture slot's keep-alive weight (+0x38) to a scaled minimum,
  * ignoring invalid indices, when the texture system is disabled, or unused slots. */
 void fn_802CC550(int textureIndex, float minWeight, float scale) {
@@ -1772,8 +1768,11 @@ char fn_802CC744(void) {
 int fn_802CC74C(void) {
     int result = 0;
     int *p = *(int **)&lbl_8055FCBC;
-    if (p != 0) {
-        if (*(int *)((char *)p + 4) != 0) result = 1;
+    for (;;) {
+        if (p == 0) break;
+        if (p[1] == 0) break;
+        result = 1;
+        break;
     }
     return result;
 }
