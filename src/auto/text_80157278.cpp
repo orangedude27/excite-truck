@@ -793,7 +793,6 @@ extern "C" void* fn_8015783C(void* arg0, s32 arg1, s32 arg2) {
         s32 field274;
         void* field278;
     };
-    extern f32 lbl_80561758;
     register u8* ptr = (u8*)arg0 + 0x14;
     *(void**)((u8*)arg0 + 8) = ptr;
     *(void**)arg0 = &lbl_8032F2BC;
@@ -804,11 +803,11 @@ extern "C" void* fn_8015783C(void* arg0, s32 arg1, s32 arg2) {
         ptr += 0x38;
     } while (ptr < (u8*)arg0 + 0x244);
 
-    f32 val = lbl_80561758;
+    f32 val = 2.0f;
     u32 zero = 0;
     *(s32*)((u8*)arg0 + 0xC) = zero;
-    *(s32*)((u8*)arg0 + 4) = (unsigned short)arg2;
-    ((Tail*)arg0)->field244 = arg1;
+    *(s32*)((u8*)arg0 + 4) = arg2;
+    ((Tail*)arg0)->field26C = arg1;
     ((Tail*)arg0)->field258 = zero;
     ((Tail*)arg0)->field250 = val;
     ((Tail*)arg0)->field268 = zero;
@@ -2395,9 +2394,6 @@ extern "C" f32 fn_801DDC8C(void*, f32, f32);
 extern "C" void fn_801E9DC4(void*);
 extern "C" void fn_80198EA0(s32);
 extern "C" f32 lbl_805617B4, lbl_805617B8, lbl_805617BC;
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
 #pragma scheduling on
 extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
     u8* p = (u8*)a;
@@ -2405,12 +2401,12 @@ extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
     if (p[0x2f0]) {
         s32 active = fn_801D48FC(*(s32*)(p+0x26c));
         p[0x2f0] = active;
-        f32 zero = lbl_80561754, step = lbl_8056177C, full = lbl_80561750;
+        f32 step = lbl_8056177C, zero = 0.0f, full = 1.0f;
         f32 margin = lbl_805617B4, minimum = lbl_805617B8;
         register s32 owner;
         register u8* slot = p;
-        register s32 i = 0;
-        for (; i < 8; i++, slot += 0x10) {
+        register s32 i;
+        for (i = 0; i < 8; i++, slot += 0x10) {
             owner = *(s32*)(p+0x26c);
             s32 enabled;
             *(s32*)(slot+0x274) = *(s32*)(slot+0x270);
@@ -2488,7 +2484,6 @@ extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
     }
     return result;
 }
-#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
