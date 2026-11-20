@@ -9254,8 +9254,9 @@ static inline u32 Fn800B25CCUpperWide(u16 c, u16 *out) {
     return 0;
 }
 static inline u32 Fn800B25CCToSjis(u16 *c) {
+    u32 r = 1;
     M2C_FIELD(&lbl_803D2140, s32 (**)(u16 *, u16 *), 0x4C)(c, c);
-    return 1;
+    return r;
 }
 static inline u32 Fn800B25CCUpperSjis(u16 *c, u16 *out) {
     M2C_FIELD(&lbl_803D2140, s32 (**)(u8 *, u16 *, s32 *), 0x48)((u8 *)c, out, (s32 *)lbl_803D2140);
@@ -9264,7 +9265,7 @@ static inline u32 Fn800B25CCUpperSjis(u16 *c, u16 *out) {
     }
     return 0;
 }
-#pragma opt_propagation on
+#pragma opt_lifetimes off
 u16 fn_800B25CC(void *arg0, s32 arg1) {
     u8 work[0x14];
     s32 var_r0;
@@ -9330,12 +9331,14 @@ block_27:
             (*(u16 *)(work + 4)) = (*(u16 *)work);
         }
     } else {
-        if (Fn800B25CCUpperSjis((u16 *)(work + 4), (u16 *)work) == 1) {
+        var_r3 = Fn800B25CCUpperSjis((u16 *)(work + 4), (u16 *)work);
+        if (var_r3 == 1) {
             (*(u16 *)(work + 4)) = (*(u16 *)work);
         }
     }
     return (*(u16 *)(work + 4));
 }
+#pragma opt_lifetimes reset
 extern "C" u32 VFiPFPATH_DoMatchFileNameWithPattern(u16 arg0, s32 *arg1, u16 arg2, s32 *arg3, s32 arg4) {
     struct St { u8 *buf; u32 end; u32 wide; u16 idx; };
     u16 c0 = arg0;
