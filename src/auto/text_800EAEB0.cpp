@@ -373,11 +373,6 @@ extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv
             mPointer = mPointer->next;
             return it;
         }
-        Callback* operator->() const {
-            if (!mPointer)
-                Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B44, 0x23D, (const char*)lbl_80322B20);
-            return (Callback*)mPointer;
-        }
         bool operator!=(const Iterator& o) const { return mPointer != o.mPointer; }
     };
     struct List {
@@ -386,17 +381,18 @@ extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv
         Iterator GetBeginIter() { return Iterator(node.next); }
         Iterator GetEndIter() { return Iterator(&node); }
     };
-    void* start = object;
-    void* end = (u8*)start + size;
-    unsigned long outerLevel = OSDisableInterrupts();
-    {
-        Iterator it = ((List*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv())->GetBeginIter();
-        while (it != ((List*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv())->GetEndIter()) {
-            Callback* cur = (it++).operator->();
-            cur->dispose(start, end);
-        }
+    struct KeepAlive { void* start; void* end; unsigned long outer; void* head; } keep;
+    keep.start = object;
+    keep.end = (u8*)object + size;
+    keep.outer = OSDisableInterrupts();
+    for (Iterator it = ((List*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv())->GetBeginIter();
+         (keep.head = (void*)((List*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv())->GetEndIter().mPointer, it.mPointer != keep.head);) {
+        Iterator cur = it++;
+        if (!cur.mPointer)
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B44, 0x23D, (const char*)lbl_80322B20);
+        ((Callback*)cur.mPointer)->dispose(keep.start, keep.end);
     }
-    OSRestoreInterrupts(outerLevel);
+    OSRestoreInterrupts(keep.outer);
 }
 #pragma pop
 
@@ -2487,69 +2483,75 @@ extern "C" int Setup__Q46nw4hbm3snd6detail9SeqPlayerFPQ46nw4hbm3snd6detail17SeqT
         virtual void *AllocTrack(void *);
         virtual void FreeTrack(void *);
     };
-    void *player = self;
-    const char *file = (const char *)lbl_80323B28;
-    u32 level = OSDisableInterrupts();
-    if (*(u8 *)((u8 *)player + 0x15) != 0) {
-        u32 temp = OSDisableInterrupts();
+    struct Regs {
+        u32 level;
+        u32 ok;
+        const char *file;
         s32 state;
+        u8 *entry;
+    } r;
+    void *player = self;
+    r.file = (const char *)lbl_80323B28;
+    r.level = OSDisableInterrupts();
+    if (*(u8 *)((u8 *)player + 0x15) != 0) {
+        r.ok = OSDisableInterrupts();
         if (*(u8 *)((u8 *)player + 0x17) != 0) {
             if (player == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324054, 0x233, (const char *)lbl_80324030);
             Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((void *)lbl_80412A6C, (u8 *)player + 0x100);
         }
         if (*(u8 *)((u8 *)player + 0x15) != 0) {
-            state = (s32)player;
-            if (player != 0) state += 8;
+            r.state = (s32)player;
+            if (player != 0) r.state += 8;
             void *manager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
-            UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, (void *)state);
+            UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, (void *)r.state);
         }
-        OSRestoreInterrupts(temp);
-        u8 *entry = (u8 *)player;
-        state = 0;
-        temp = 0;
+        OSRestoreInterrupts(r.ok);
+        r.entry = (u8 *)player;
+        r.state = 0;
+        r.ok = 0;
         s32 valid;
         void *seq;
         do {
             valid = 0;
-            if (state >= 0 && state < 16) valid = 1;
+            if (r.state >= 0 && r.state < 16) valid = 1;
             if (valid == 0)
-                Panic__Q26nw4hbm2dbFPCciPCce(file, 0x2FD, file + 0x14, state, 0, 16);
-            seq = state > 15 ? (void *)temp : *(void **)(entry + 0x9C);
+                Panic__Q26nw4hbm2dbFPCciPCce(r.file, 0x2FD, r.file + 0x14, r.state, 0, 16);
+            seq = r.state > 15 ? (void *)r.ok : *(void **)(r.entry + 0x9C);
             if (seq != 0) {
                 Close__Q46nw4hbm3snd6detail8SeqTrackFv(seq);
                 void *manager = *(void **)((u8 *)player + 0x98);
-                ((Allocator *)manager)->FreeTrack(*(void **)(entry + 0x9C));
-                *(void **)(entry + 0x9C) = (void *)temp;
+                ((Allocator *)manager)->FreeTrack(*(void **)(r.entry + 0x9C));
+                *(void **)(r.entry + 0x9C) = (void *)r.ok;
             }
-            ++state;
-            entry += 4;
-        } while (state < 16);
+            ++r.state;
+            r.entry += 4;
+        } while (r.state < 16);
         *(u8 *)((u8 *)player + 0x15) = 0;
     }
     InitParam__Q46nw4hbm3snd6detail9SeqPlayerFiPQ46nw4hbm3snd6detail14NoteOnCallback(player, param, callback);
     {
-        u32 bits = mask;
-        s32 ok = 1;
-        u8 *entry = (u8 *)player;
         s32 idx = 0;
-        while (bits != 0) {
-            if (bits & 1) {
+        r.entry = (u8 *)mask;
+        r.ok = 1;
+        r.state = (s32)player;
+        while ((u32)r.entry != 0) {
+            if ((u32)r.entry & 1) {
                 void *track = ((Allocator *)allocator)->AllocTrack(player);
                 if (track == 0) {
-                    ok = 0;
+                    r.ok = 0;
                     break;
                 }
                 if (idx <= 15) {
-                    *(void **)(entry + 0x9C) = track;
+                    *(void **)((u8 *)r.state + 0x9C) = track;
                     SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi_800F0E9C(track, idx);
                 }
             }
-            bits >>= 1;
-            entry += 4;
+            r.entry = (u8 *)((u32)r.entry >> 1);
+            r.state = (s32)((u8 *)r.state + 4);
             idx++;
         }
-        if (ok == 0) {
+        if (r.ok == 0) {
             idx = 0;
             while (mask != 0) {
                 if (mask & 1) {
@@ -2560,20 +2562,20 @@ extern "C" int Setup__Q46nw4hbm3snd6detail9SeqPlayerFPQ46nw4hbm3snd6detail17SeqT
                 player = (u8 *)player + 4;
                 idx++;
             }
-            Warning__Q26nw4hbm2dbFPCciPCce(file, 0xC6, file + 0x54);
-            OSRestoreInterrupts(level);
+            Warning__Q26nw4hbm2dbFPCciPCce(r.file, 0xC6, r.file + 0x54);
+            OSRestoreInterrupts(r.level);
             return 1;
         }
     }
     {
-        s32 reg = (s32)player;
-        if (player != 0) reg += 8;
+        r.state = (s32)player;
+        if (player != 0) r.state += 8;
         void *manager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
-        RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, (void *)reg);
+        RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, (void *)r.state);
     }
     *(void **)((u8 *)player + 0x98) = allocator;
     *(u8 *)((u8 *)player + 0x15) = 1;
-    OSRestoreInterrupts(level);
+    OSRestoreInterrupts(r.level);
     return 0;
 }
 #pragma pop
@@ -3344,8 +3346,6 @@ extern "C" void fn_800F0360(void *self) {
         virtual void unused1();
         virtual void RemoveTrack(void *);
     };
-    struct { s32 v; } tickHolder;
-    s32 &ticks = tickHolder.v;
     register void *player = self;
     register const char *file = (const char *)lbl_80323B28;
     register s32 i;
@@ -3356,7 +3356,7 @@ extern "C" void fn_800F0360(void *self) {
     if (*(u8 *)((u8 *)player + 0x15) != 0 && *(u8 *)((u8 *)player + 0x17) != 0) {
         if (*(u8 *)((u8 *)player + 0x18) == 0 && *(u8 *)((u8 *)player + 0x19) == 0 &&
             (*(u8 *)((u8 *)player + 0x14) != 0 || *((u8 *)Instance__15EmissionManagerFv() + 0x6C32) == 0)) {
-            ticks = 0;
+            register s32 ticks = 0;
             while (*(u16 *)((u8 *)player + 0x88) >= 0x1A0) {
                 ticks++;
                 *(u16 *)((u8 *)player + 0x88) -= 0x1A0;
