@@ -1342,7 +1342,7 @@ extern s32 lbl_8055A0BC;
 extern s32 lbl_8055A0C0;
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling normal
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_80161F10(s32 arg0, s32 arg1) {
@@ -1783,7 +1783,7 @@ void *fn_80162938(void *arg0, s32 arg1) {
         *((void **)arg0 + 0x56C / 4) = (void *)(lbl_8032F858 + 0x68);
         if ((u32)arg0 + 0x56C != 0) {
             if ((u32)arg0 + 0x56C != 0) {
-                fn_8015857C((char *)arg0 + 0x56C);
+                fn_8015857C((u32)((char *)arg0 + 0x56C));
             }
         }
         if ((u32)arg0 + 0x570 != 0) {
@@ -2611,7 +2611,7 @@ extern "C" void fn_80163F7C(void *arg0) {
         first = second > first ? second : first;
         second = work.bounds[1] - work.bounds[0];
         first = second > first ? second : first;
-        *(f32 *)(self + 0xCC) = first * lbl_8056185C;
+        *(f32 *)(self + 0xCC) = first * 0.5f;
     }
     *(void **)(self + 0xD0) = fn_802CAC28(base + 0x5C0, 0);
     *(s32 *)(self + 0xDC) = fn_80207848(base + 0x5D0, 1);
@@ -2635,16 +2635,16 @@ extern "C" void fn_80163F7C(void *arg0) {
             ((Dummy_80163F7C_VT3 *)obj)->f21((const char *)lbl_8055A10C, entryIndex, *(void **)(self + 0xE0));
             table = (f32 *)fn_801399FC();
             *(f32 **)(out + 0x34) = table;
-            register volatile f32 *points;
             register s32 bestIndex;
             register s32 i;
             register s32 count;
+            register volatile f32 *points;
             points = (f32 *)((u8 *)table + 8);
+            count = *(s32 *)table;
             {
-                f32 best = lbl_80561864;
+                f32 best = -999.0f;
                 f32 dx, dy, score;
                 bestIndex = -1;
-                count = *(s32 *)table;
                 for (i = 1; i <= count; i++) {
                         register s32 n = *(volatile s32 *)table;
                         s32 next = i % n;
@@ -2665,27 +2665,27 @@ extern "C" void fn_80163F7C(void *arg0) {
                 x0 = points[i * 2];
                 y0 = points[i * 2 + 1];
                 *(f32 *)(out + 0x0C) = x0;
-                *(f32 *)(out + 0x10) = lbl_80561848;
+                *(f32 *)(out + 0x10) = 0.0f;
                 *(f32 *)(out + 0x14) = y0;
                 i = bestIndex % count2;
                 x1 = points[i * 2];
                 y1 = points[i * 2 + 1];
                 *(f32 *)(out + 0x18) = x1;
-                *(f32 *)(out + 0x1C) = lbl_80561848;
+                *(f32 *)(out + 0x1C) = 0.0f;
                 *(f32 *)(out + 0x20) = y1;
-                *(f32 *)(out + 0x24) = (x0 + x1) * lbl_8056185C;
-                *(f32 *)(out + 0x28) = (y0 + y1) * lbl_8056185C;
+                *(f32 *)(out + 0x24) = (x0 + x1) * 0.5f;
+                *(f32 *)(out + 0x28) = (y0 + y1) * 0.5f;
                 i = (bestIndex + 1) % count2;
                 work.vectors[0] = points[i * 2] - x1;
-                work.vectors[1] = lbl_80561848;
+                work.vectors[1] = 0.0f;
                 work.vectors[2] = points[i * 2 + 1] - y1;
                 work.vectors[3] = x0 - x1;
-                work.vectors[4] = lbl_80561848;
+                work.vectors[4] = 0.0f;
                 work.vectors[5] = y0 - y1;
                 PSVECNormalize(&work.vectors[0], &work.vectors[0]);
                 PSVECNormalize(&work.vectors[3], &work.vectors[3]);
                 PSVECCrossProduct(&work.vectors[0], &work.vectors[3], &work.vectors[6]);
-                if (work.vectors[7] > lbl_80561848) {
+                if (work.vectors[7] > 0.0f) {
                     *(f32 *)(out + 0x2C) = x0 - *(f32 *)(out + 0x24);
                     *(f32 *)(out + 0x30) = y0 - *(f32 *)(out + 0x28);
                 } else {
@@ -3464,8 +3464,8 @@ extern "C" s32 fn_8016524C(void *a){
        c2=*(R7*)r27; FY(c2)+=dy; FX(c2)+=dx;
        fn_80147940(lbl_8055E2E0,&c2,t+0x6D8,2);
       }else{
-       s32 cur=fn_80160CE4(); c3=*(R7*)r27; FY(c3)+=dy; FX(c3)+=dx;
-       if((s64)cur!=(s64)(u32)i)c3.c=0x55FFFFFF;
+       s64 cur=fn_80160CE4(); c3=*(R7*)r27; FY(c3)+=dy; FX(c3)+=dx;
+       if(cur!=(s64)(u32)i)c3.c=0x55FFFFFF;
        fn_80147940(lbl_8055E2E0,&c3,t+0x6D8,3);
       }
      }
