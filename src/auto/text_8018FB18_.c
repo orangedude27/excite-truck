@@ -329,14 +329,12 @@ int fn_8018FF84(int object, int deleteFlag) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
-    /* Bind a replacement ("repl_di") element node to the entry at arg0: takes the
-     * element kind (arg1+0x260 & 3) and element index (arg1+0x1EC), allocates and
-     * initializes the 0x24-byte node (vtable lbl_80332F40, kind, the per-kind
-     * values cached in the lbl_804349B0 table, the arg1+0x1EC lookup via
-     * fn_801B2EC0, and the two child callbacks at +0x8/+0xC), stores the
-     * zero/positive flags of arg2+0x5C on the entry, publishes the node at
-     * entry+4 and in the group object (entry+0xC, +0x38), fires both child
-     * callbacks, and sets the lbl_8055E528 flag when fn_80019B78() reports one. */
+    // RealName: ReplayDriverCtor. Builds the 0x24-byte replay driver wrapper in
+    // arg0: allocates the inner "repl_di" (replay driver interface) object, which
+    // wraps the per-mode DriverInterface (fn_8018108C) and the "replaypkt" buffer
+    // (lbl_804349B0[mode]) and caches four of the driver's flags; then records the
+    // racer slot (fn_801B2EC0(car+0x1EC)), the owner car and the mode word
+    // (car+0x260 & 3). arg2+0x5C supplies a sign/zero pair stored at +0x25/+0x26.
     class ResultMethods {
     public:
         virtual u8 f0();
