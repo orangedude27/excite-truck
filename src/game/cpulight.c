@@ -1,4 +1,4 @@
-// cpulight — cpu lighting ("I only cpu-light from 8888 textures").
+// cpulight - cpu lighting ("I only cpu-light from 8888 textures").
 // Recovered TU window 0x802DB2D4..0x802DD430+thunk (see docs/attribution_analysis.md).
 // Static-init thunk fn_802DD430 (+ .ctors slot 0x802ED5DC) remains in
 // auto/text_802DD430_.c pending a promotion pass.
@@ -118,27 +118,27 @@ void fn_802DB3FC(void) {
 #pragma push
 #pragma scheduling on
 void fn_802DB4E4(void) {
-    volatile int m[16];
-    m[8] = 0;
-    m[14] = 0;
-    m[0] = 0;
-    m[6] = 0;
-    m[9] = 0;
-    m[10] = 0;
-    m[11] = 0;
-    m[12] = 0;
-    m[13] = 0;
-    m[15] = 0;
-    *(volatile float *)&m[8] = *(float *)(lbl_804DB068 + 0xc);
-    *(volatile float *)&m[14] = *(float *)(lbl_804DB068 + 0x10);
-    m[1] = 0;
-    m[2] = 0;
-    m[3] = 0;
-    m[4] = 0;
-    m[5] = 0;
-    m[7] = 0;
-    *(volatile float *)&m[0] = *(float *)(lbl_804DB068 + 0x18);
-    *(volatile float *)&m[6] = *(float *)(lbl_804DB068 + 0x1c);
+    volatile float m[16];
+    *(volatile int *)&m[8] = 0;
+    *(volatile int *)&m[14] = 0;
+    *(volatile int *)&m[0] = 0;
+    *(volatile int *)&m[6] = 0;
+    *(volatile int *)&m[9] = 0;
+    *(volatile int *)&m[10] = 0;
+    *(volatile int *)&m[11] = 0;
+    *(volatile int *)&m[12] = 0;
+    *(volatile int *)&m[13] = 0;
+    *(volatile int *)&m[15] = 0;
+    m[8] = *(float *)(lbl_804DB068 + 0xc);
+    m[14] = *(float *)(lbl_804DB068 + 0x10);
+    *(volatile int *)&m[1] = 0;
+    *(volatile int *)&m[2] = 0;
+    *(volatile int *)&m[3] = 0;
+    *(volatile int *)&m[4] = 0;
+    *(volatile int *)&m[5] = 0;
+    *(volatile int *)&m[7] = 0;
+    m[0] = *(float *)(lbl_804DB068 + 0x18);
+    m[6] = *(float *)(lbl_804DB068 + 0x1c);
     GXLoadTexMtxImm((float *)&m[8], 0x1e, 1);
     GXLoadTexMtxImm((float *)m, 0x21, 1);
 }
@@ -421,14 +421,13 @@ void fn_802DBDE8(int arg0, void *arg1) {
 
 #pragma scheduling invalid_target
 void fn_802DBE4C(void) {
-    struct Flag { unsigned char value; } flag;
+    int one = 1;
     fn_802D0610(0);
     fn_802D68C4(0, 0, 0, 0);
-    flag.value = 1;
-    GXSetZMode(1, 3, 1);
-    GXSetNumChans(1);
-    GXSetChanCtrl(4, 0, 1, 1, 0, 0, 2);
-    lbl_8055FEB8 = flag.value;
+    GXSetZMode(one, 3, one);
+    GXSetNumChans(one);
+    GXSetChanCtrl(4, 0, one, one, 0, 0, 2);
+    lbl_8055FEB8 = one;
 }
 #pragma scheduling on
 
@@ -739,10 +738,9 @@ extern int __cntlzw(unsigned int);
 extern "C" void fn_802DC71C(int arg0, int arg1) {
     extern void GXLoadTexObj(void *, int);
     int useAlt;
-    register void **base;
-    register void *tex1;
-    int texFlag;
-    void *info;
+    void **base;
+    void *tex1;
+    unsigned char *info;
     int wrapS;
     fn_802DBD88();
     lbl_8055FEB4 = 0;
@@ -751,9 +749,8 @@ extern "C" void fn_802DC71C(int arg0, int arg1) {
     base = lbl_804DB468;
     tex1 = base[1];
     useAlt = *((unsigned char *)tex1 + 0xCC);
-    info = ((void *(*)(int))fn_802DC628)(arg0);
-    texFlag = *((unsigned char *)info + 8);
-    *(bool *)&lbl_8055FEBB = (texFlag == 0x1D);
+    info = ((unsigned char *(*)(int))fn_802DC628)(arg0);
+    *(bool *)&lbl_8055FEBB = (info[8] == 0x1D);
     wrapS = GXGetTexObjWrapS((unsigned char *)base[0] + 0x24);
     *(bool *)&lbl_8055FEB9 = (wrapS == 0x200);
     GXLoadTexObj((unsigned char *)base[0] + 0x24, 0);
@@ -864,7 +861,7 @@ extern float lbl_80565040, lbl_80565044, lbl_80565048, lbl_8056504C;
 #pragma push
 #pragma small_data off
 extern unsigned char lbl_804DB480[];
-#pragma scheduling invalid_target
+#pragma optimization_level 3
 void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
     unsigned char *g;
     void *data;
@@ -873,8 +870,8 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
     void *input;
     void *state;
     int byteOffset;
-    int n;
     int i;
+    int n;
     float *coords;
     unsigned int *colors;
     float matrix[3][4];
@@ -1043,6 +1040,7 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
         }
     }
 }
+#pragma optimization_level 4
 /* Set up the CPU-light indirect-texture (bump-map) pass: optionally bind the pass texture to texcoord slot 1, derive a base-2 indirect-matrix scale from the light level (farg0) and load it into indirect matrix 1, then configure the indirect TEV and vertex state. A texture-slot value of -2 skips that binding; arg0 is unused. */
 void fn_802DCFCC(int arg0, int indTexSlot, int texSlot1, float lightLevel, float texScale) {
     float logDiff;
