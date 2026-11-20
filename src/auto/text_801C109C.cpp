@@ -758,7 +758,6 @@ check:
         goto loop;
 }
 #pragma scheduling on
-extern float lbl_80562930;
 extern "C" void fn_801C2694(void *arg0, float *arg1, int *arg2, float *arg3, float *arg4, float *arg5) {
     float scaled[3];
     float b2 = arg4[2];
