@@ -427,73 +427,108 @@ static inline s32 sqabs(s32 d) {
 }
 
 void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]) {
-    u8* origin = (u8*)lbl_8038F080;
-    u8 temp;
+    u8* origin = lbl_8038F080;
 
-    status->button = (u16)(data[0] >> 16);
-    status->stickX = (s8)(data[0] >> 8);
-    status->stickY = (s8)data[0];
+    status->button = (data[0] >> 16) & 0x3fff;
+    status->stickX = data[0] >> 8;
+    status->stickY = data[0];
 
     switch (lbl_80558F7C & 0x700) {
-    case 0:
-    case 0x300:
-        status->substickX = (s8)(data[1] >> 24);
-        status->substickY = (s8)(data[1] >> 16);
-        status->triggerLeft = (u8)(data[1] >> 8);
-        status->triggerRight = (u8)data[1];
-        status->analogA = 0;
-        status->analogB = 0;
-        break;
-    case 0x100:
-    case 0x200:
-    case 0x400:
-    case 0x700:
-        status->substickX = (s8)(data[1] >> 24);
-        status->substickY = (s8)(data[1] >> 16);
-        status->triggerLeft = (u8)(data[1] >> 8);
-        status->triggerRight = (u8)data[1];
-        status->analogA = 0;
-        status->analogB = 0;
-        break;
+    case 0x000:
     case 0x500:
     case 0x600:
-        status->substickX = (s8)(data[1] >> 24);
-        status->substickY = (s8)(data[1] >> 16);
-        status->triggerLeft = (u8)(data[1] >> 8);
-        status->triggerRight = (u8)data[1];
+    case 0x700:
+        status->substickX = data[1] >> 24;
+        status->substickY = data[1] >> 16;
+        status->triggerLeft = (data[1] >> 8) & 0xf0;
+        status->triggerRight = (data[1] >> 4) & 0xf0;
+        status->analogA = data[1] & 0xf0;
+        status->analogB = data[1] * 0x10;
+        break;
+    case 0x100:
+        status->substickX = (data[1] >> 24) & 0xf0;
+        status->substickY = (data[1] >> 20) & 0xf0;
+        status->triggerLeft = data[1] >> 16;
+        status->triggerRight = data[1] >> 8;
+        status->analogA = data[1] & 0xf0;
+        status->analogB = data[1] * 0x10;
+        break;
+    case 0x200:
+        status->substickX = (data[1] >> 24) & 0xf0;
+        status->substickY = (data[1] >> 20) & 0xf0;
+        status->triggerLeft = (data[1] >> 16) & 0xf0;
+        status->triggerRight = (data[1] >> 12) & 0xf0;
+        status->analogA = data[1] >> 8;
+        status->analogB = data[1];
+        break;
+    case 0x300:
+        status->substickX = data[1] >> 24;
+        status->substickY = data[1] >> 16;
+        status->triggerLeft = data[1] >> 8;
+        status->triggerRight = data[1];
         status->analogA = 0;
         status->analogB = 0;
+        break;
+    case 0x400:
+        status->substickX = data[1] >> 24;
+        status->triggerLeft = 0;
+        status->substickY = data[1] >> 16;
+        status->triggerRight = 0;
+        status->analogA = data[1] >> 8;
+        status->analogB = data[1];
         break;
     }
 
-    status->stickX = ClampS8(status->stickX, *(s8*)(origin + chan * 12 + 2));
-    status->stickY = ClampS8(status->stickY, *(s8*)(origin + chan * 12 + 3));
-    status->substickX = ClampS8(status->substickX, *(s8*)(origin + chan * 12 + 4));
-    status->substickY = ClampS8(status->substickY, *(s8*)(origin + chan * 12 + 5));
-    status->triggerLeft = ClampU8(status->triggerLeft, *(origin + chan * 12 + 6));
-    status->triggerRight = ClampU8(status->triggerRight, *(origin + chan * 12 + 7));
-    status->analogA = ClampU8(status->analogA, *(origin + chan * 12 + 8));
-    status->analogB = ClampU8(status->analogB, *(origin + chan * 12 + 9));
+    status->stickX -= 0x80;
+    status->stickY -= 0x80;
+    status->substickX -= 0x80;
+    status->substickY -= 0x80;
 
-    temp = (u8)(data[0] >> 16);
-    status->err = (s8)temp;
-    if (status->err == 0) {
-        s32 diff_x;
-        s32 diff_y;
-        if (lbl_80558F78 & (0x80000000 >> chan)) {
-            diff_x = abs_diff_sqr(status->stickX, -60);
-            diff_y = abs_diff_sqr(status->stickY, 0x40);
-            if (diff_x + diff_y < 25) {
-                status->err = -1;
-                return;
-            }
-            diff_x = abs_diff_sqr(status->stickX, 0x40);
-            diff_y = abs_diff_sqr(status->stickY, 0x40);
-            if (diff_x + diff_y < 25) {
-                status->err = -1;
-                return;
-            }
+    if ((((u32*)(origin + 0x30))[chan] & 0xffff0000) + 0xF7000000 == 0 &&
+        ((status->button & 0x80) ^ 0x80) != 0) {
+        lbl_8055DAFC |= 0x80000000 >> chan;
+        status->stickX = 0;
+        status->stickY = 0;
+        status->substickX = 0;
+        status->substickY = 0;
+        return;
+    }
+
+    lbl_8055DAFC &= ~(0x80000000 >> chan);
+
+    {
+        s32 off = chan * 12;
+        u8* base = origin + off;
+        u8* prev = origin + 0x50;
+        PADStatus* old = (PADStatus*)(prev + off);
+        u8 org;
+        u8 v;
+
+        status->stickX = ClampS8(status->stickX, base[2]);
+        status->stickY = ClampS8(status->stickY, base[3]);
+        status->substickX = ClampS8(status->substickX, base[4]);
+        status->substickY = ClampS8(status->substickY, base[5]);
+
+        org = base[6];
+        v = status->triggerLeft;
+        if (v < org) v = org;
+        status->triggerLeft = v - org;
+
+        org = base[7];
+        v = status->triggerRight;
+        if (v < org) v = org;
+        status->triggerRight = v - org;
+
+        if (sqabs((s32)status->stickX * status->stickX - (s32)old->stickX * old->stickX) >= 9 ||
+            sqabs((s32)status->stickY * status->stickY - (s32)old->stickY * old->stickY) >= 9 ||
+            sqabs((s32)status->substickX * status->substickX - (s32)old->substickX * old->substickX) >= 9 ||
+            sqabs((s32)status->substickY * status->substickY - (s32)old->substickY * old->substickY) >= 9 ||
+            sqabs((s32)status->triggerLeft * status->triggerLeft - (s32)old->triggerLeft * old->triggerLeft) >= 9 ||
+            sqabs((s32)status->triggerRight * status->triggerRight - (s32)old->triggerRight * old->triggerRight) >= 9 ||
+            status->button != old->button) {
+            fn_8005B01C();
         }
+        memcpy(prev + off, status, 0xc);
     }
 }
 
