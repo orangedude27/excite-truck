@@ -7,12 +7,6 @@ struct Entry_801A75B4 { const char *name; char pad[20]; };
 typedef struct F801A9050Zero {
     int words[8];
 } F801A9050Zero;
-static F801A9050Zero fn_801A9050_zero(void) {
-    F801A9050Zero z;
-    z.words[0] = 0; z.words[1] = 0; z.words[2] = 0; z.words[3] = 0;
-    z.words[4] = 0; z.words[5] = 0; z.words[6] = 0; z.words[7] = 0;
-    return z;
-}
 extern float fn_801A7F98();
 extern float lbl_80562458;
 extern const float lbl_80562468;
