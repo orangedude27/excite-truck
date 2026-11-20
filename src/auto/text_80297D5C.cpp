@@ -307,10 +307,12 @@ extern "C" void* fn_802981EC(unsigned int transform, float scale) {
 
 extern "C" void fn_802981F8(void* self) {
     #pragma scheduling invalid_target
+    float z = 0.0f;
+    float o = 1.0f;
     volatile float sp[3];
-    sp[0] = 0.0f;
-    sp[1] = 1.0f;
-    sp[2] = 0.0f;
+    sp[0] = z;
+    sp[1] = o;
+    sp[2] = z;
     fn_8028E584(lbl_8055F7E0, self, (float *)sp, 0.0f);
     fn_80288A40(self, (float *)sp);
 }
@@ -624,8 +626,8 @@ extern "C" void fn_80298BBC(void *arg0) {
     int offset;
     int i;
     now = fn_801E7E18();
-    threshold = lbl_8056459C;
-    reset = lbl_805645B8;
+    threshold = 0.0f;
+    reset = -1.0f;
     i = 0;
     offset = 0;
     goto test;
@@ -941,31 +943,24 @@ extern "C" void fn_80299504(void* manager) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_80299544(void* arg0) {
+    float f2;
     float dt = fn_801E7E24();
-    float f2 = lbl_805645E0;
     float f4 = lbl_8056459C;
     float f5 = lbl_80564590;
     float f6 = lbl_80564594;
+    f2 = lbl_805645E0;
     char* p = (char*)arg0;
     for (int i = 0; i < 4; i++, p += 0x40) {
         int state = *(int*)(p + 0x34);
         if (state == 1) {
             float val = *(float*)(p + 0x3C) + dt * f6;
-            if (f5 < val) {
-                val = f5;
-            }
-            if (val < f4) {
-                val = f4;
-            }
+            val = (f5 < val) ? f5 : val;
+            val = (val > f4) ? val : f4;
             *(float*)(p + 0x3C) = val;
         } else if (state == 2) {
-            float val = *(float*)(p + 0x3C) + (-dt * f6);
-            if (f5 < val) {
-                val = f5;
-            }
-            if (val < f4) {
-                val = f4;
-            }
+            double val = *(float*)(p + 0x3C) + (-dt * f6);
+            val = (f5 < val) ? f5 : val;
+            val = (val > f4) ? val : f4;
             *(float*)(p + 0x3C) = val;
             if ((int)(f2 * (float)val) < 1) {
                 *(int*)(p + 0x34) = 0;
@@ -1009,7 +1004,7 @@ extern "C" int fn_802996B0(void *arg0, int *out) {
  state=*(int*)((char*)arg0+0xF4);
  idx=3;
  if(state==0){*out=idx;return 1;}
- if(state==2 && (!found || *(float*)((char*)arg0+0xF8)<*(float*)((char*)arg0+(best<<6)+0x38))){best=3;found=1;}
+ if(state==2 && (!found || *(float*)((char*)arg0+0xF8)<*(float*)((char*)arg0+(best<<6)+0x38))){best=idx;found=1;}
  if(found)*out=best;
  return found;
 }
@@ -1527,9 +1522,9 @@ extern "C" void *fn_8029A6F4(void *arg0) {
     memset(local.config, 0, 0x8C);
 
     float value90 = lbl_80564590;
-    int one = 1;
+    unsigned int one = 1;
     float value9C = lbl_8056459C;
-    int size = 0x1F4;
+    unsigned int size = 0x1F4;
     float valueB8 = lbl_805645B8;
     float value98 = lbl_80564598;
     int two = 2;
@@ -1572,9 +1567,9 @@ extern "C" void *fn_8029A6F4(void *arg0) {
     local.config[0x89] = (unsigned char)one;
 
     *(void **)((char *)arg0 + 0x160) =
-        ((void *(*)(void *, const char *, int, int, int, int,
+        ((void *(*)(void *, const char *, int,
                     float, float, float, float, float))fn_8028E2F8)(
-            local.config, lbl_803494FC, lbl_8055CA8C, two, size, one,
+            local.config, lbl_803494FC, lbl_8055CA8C,
             valueC0, valueB8, value9C, value90, value98);
     fn_801EEFDC((void *)fn_8029C054, 0xE);
     fn_801EEFDC((void *)fn_8029C024, 0xD);
@@ -2247,7 +2242,7 @@ extern "C" void fn_8029B824(void *arg0) {
                 scale = *(float *)(entry + 0x30);
                 az = *(float *)(item + 0x14) * scale;
                 x = *(float *)(item + 0x24) + *(float *)(item + 0x0C) * scale;
-                z = *(float *)(item + 0x2C) + az;
+                z = *(volatile float *)(item + 0x2C) + az;
                 y = *(float *)(item + 0x28) + *(float *)(item + 0x10) * scale;
                 scratch[6] = x;
                 scratch[1] = y;
@@ -2501,13 +2496,15 @@ void fn_8029BE54(void* arg0, void* arg1) {
     for (; i < count; ++i) {
         key = *(volatile unsigned int*)((char*)arg1 + 0xC);
         if (key == *(unsigned int*)(scan + 0x10)) {
+            i *= 0x14;
             register unsigned int c;
             register unsigned int b;
             register unsigned int a;
             a = *(volatile unsigned int*)arg1;
             b = *(volatile unsigned int*)((char*)arg1 + 4);
             c = *(volatile unsigned int*)((char*)arg1 + 8);
-            char* dst = (char*)arg0 + i * 0x14;
+            char* dst = (char*)arg0;
+            dst += i;
             *(unsigned int*)(dst + 4) = a;
             register unsigned char d = *(volatile unsigned char*)((char*)arg1 + 0x10);
             *(unsigned int*)(dst + 8) = b;
@@ -2519,7 +2516,8 @@ void fn_8029BE54(void* arg0, void* arg1) {
         scan += 0x14;
     }
     key = count * 0x14;
-    char* dst = (char*)arg0 + key;
+    char* dst = (char*)arg0;
+    dst += key;
     register unsigned int a = *(volatile unsigned int*)arg1;
     register unsigned int b = *(volatile unsigned int*)((char*)arg1 + 4);
     register unsigned int c = *(volatile unsigned int*)((char*)arg1 + 8);
@@ -2678,7 +2676,7 @@ extern "C" void* fn_801E87A8(void);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern "C" void* fn_802988A4(void* arg0) {
+extern "C" void* fn_802988A4(void* __restrict arg0) {
     struct Local {
         volatile float sp8;
         volatile float spC;
