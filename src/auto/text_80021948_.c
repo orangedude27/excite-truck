@@ -18,16 +18,13 @@ struct SubBlock {
     SubBlock *next;
 };
 
-static inline unsigned int *fn_8002194C_head(unsigned char *tail) {
-    return *(unsigned int **)(tail - 4);
-}
-
 /* No-op default constructor registered by fn_800218FC for the 8-element array of 0x70-byte records at lbl_8035B758; leaves each element untouched. */
 void fn_80021948(void) {
     /* Empty default callback registered as the handler in the 8-slot, 0x70-byte
        task table set up by fn_800218FC; reserved, with no work in this build. */
 }
 
+#pragma opt_common_subs off
 void *fn_8002194C(void *arg0, unsigned int size, unsigned int *outMax) {
     unsigned int *heap = (unsigned int *)arg0;
     unsigned int *blk;
@@ -37,10 +34,8 @@ void *fn_8002194C(void *arg0, unsigned int size, unsigned int *outMax) {
     unsigned int w0, t, rem;
     int hasNext, nextBit;
     unsigned char *end;
-    unsigned char *tail;
 
-    tail = (unsigned char *)heap + (heap[3] & ~7);
-    head = *(unsigned int **)(tail - 4);
+    head = *(unsigned int **)((unsigned char *)heap + (heap[3] & ~7) - 4);
     if (head == 0) {
         heap[2] = 0;
         return 0;
@@ -108,4 +103,3 @@ void *fn_8002194C(void *arg0, unsigned int size, unsigned int *outMax) {
     if (outMax != 0) *outMax = (blk[0] & ~7) - 8;
     return blk;
 }
-
