@@ -288,21 +288,24 @@ s32 fn_8016A30C(void)
 #pragma processor 750
 void fn_8016A438(void) {
     Blk8016A438 blk;
-    s32 i;
-    char *rec;
-    char *ent;
-    s32 j;
+    register s32 j;
+    register char *ent;
+    register char *rec;
+    register s32 offset;
+    register s32 index;
     f32 c78;
     f32 c74 = lbl_80561974;
     f32 c70 = lbl_80561970;
     f32 c60 = lbl_80561960;
-    f32 now;
+    f32 now = c74;
     f32 t;
     f32 scale;
     f32 c7c = lbl_8056197C;
     c78 = lbl_80561978;
-    for (i = 0; i < lbl_80430340.unk_0x4; i++) {
-        ent = lbl_80430340.unk_0x0 + i * 0x2C;
+    index = 0;
+    offset = 0;
+    while (index < lbl_80430340.unk_0x4) {
+        ent = lbl_80430340.unk_0x0 + offset;
         j = *(s32 *)(ent + 0x24);
         while (j-- > 0) {
             rec = *(char **)lbl_80430318 + (*(s32 *)(ent + 0x20) + j) * 0x48;
@@ -339,9 +342,11 @@ void fn_8016A438(void) {
                 fn_802C9904();
             }
         }
+        offset += 0x2c;
+        index++;
     }
 }
-#pragma pop
+#pragma cplusplus off
 
 void fn_8016B634(s32 arg0);
 
@@ -470,7 +475,8 @@ extern "C" s32 fn_8016A8F8(void* alarm) {
     lbl_804302F0.data = lbl_804302F0.ptr10;
     lbl_804302F0.limit = lbl_804302F0.cap;
     lbl_804302F0.count = 0;
-    for (var24 = 1; lbl_804302F0.count + 1 <= lbl_804302F0.limit && var24 < 0x64; var24++) {
+    var24 = 1;
+    while (lbl_804302F0.count + 1 <= lbl_804302F0.limit && var24 < 0x64) {
         cur = ((volatile Ctr804302F0 *)&lbl_804302F0)->count;
         entry = &lbl_804302F0.data[cur];
         lbl_804302F0.count = cur + 1;
@@ -511,6 +517,7 @@ extern "C" s32 fn_8016A8F8(void* alarm) {
                 }
             }
         }
+        var24++;
     }
 }
 #pragma cplusplus off
@@ -534,8 +541,8 @@ void* fn_8016AC24(void* self, s32 shouldDelete) {
 s32 fn_8016AC90(s32 unused) {
     typedef struct AEntry { u8 flag; u8 pad1[3]; void *ptr4; void *ptr8; float data[11]; u8 b3c; u8 b3d; u8 pad3e[2]; float f40; float f44; } AEntry;
     typedef struct BEntry { u8 flag; char name[31]; s32 first; s32 count; u8 last; } BEntry;
-    Ctr804302F0 *aMgr;
-    Ctr804302F0 *bMgr;
+    register Ctr804302F0 *aMgr;
+    register Ctr804302F0 *bMgr;
     void *obj;
     void *cfg;
     void *iter;
