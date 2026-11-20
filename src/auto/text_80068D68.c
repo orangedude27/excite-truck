@@ -2649,8 +2649,7 @@ void fn_8006B044(tBTM_VSC_CMPL *arg0) {
     extern void fn_8006B26C(tBTM_VSC_CMPL *);
     u8 buf[0x100];
     u8 packet[0x100];
-    register s32 i;
-    s32 length;
+    struct { s32 length; s32 i; } L;
     s32 count;
     s32 size;
     u32 header;
@@ -2669,18 +2668,18 @@ void fn_8006B044(tBTM_VSC_CMPL *arg0) {
             BTM_VendorSpecificCommand(0xFC4F, (u8)(size + 1), buf, (tBTM_VSC_CMPL_CB *)fn_8006B26C);
             return;
         }
-        length = lbl_8055DC44 - lbl_8055DC40;
-        length = (u32)length < 0xFB ? length : 0xFB;
-        length = (u8)length;
+        L.length = lbl_8055DC44 - lbl_8055DC40;
+        L.length = (u32)L.length < 0xFB ? L.length : 0xFB;
+        L.length = (u8)L.length;
         header = lbl_8055DC3C + lbl_8055DC40;
         packet[0] = (u8)header;
         packet[1] = (u8)(header >> 8);
         packet[2] = (u8)(header >> 16);
         packet[3] = (u8)(header >> 24);
-        for (i = 0; i < length; i++)
-            packet[i + 4] = lbl_803135C0[lbl_8055DC40 + i + 8];
-        lbl_8055DC40 += length;
-        BTM_VendorSpecificCommand(0xFC4C, (u8)(length + 4), packet, (tBTM_VSC_CMPL_CB *)fn_8006B044);
+        for (L.i = 0; L.i < L.length; L.i++)
+            packet[L.i + 4] = lbl_803135C0[lbl_8055DC40 + L.i + 8];
+        lbl_8055DC40 += L.length;
+        BTM_VendorSpecificCommand(0xFC4C, (u8)(L.length + 4), packet, (tBTM_VSC_CMPL_CB *)fn_8006B044);
         return;
     }
     fn_8006B330();
@@ -4914,11 +4913,11 @@ u16 UUSB_Write(s32 arg0, u8 *arg1, u16 arg2, BT_HDR *arg3) {
     extern s32 IUSB_WriteCtrlMsgAsync(s32, s32, s32, s32, s32, u32, void *, void *, void *);
     extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
     s32 ret = 0;
-    char *report = lbl_803142C8;
     uusb_cb_t *cb;
     u16 i;
     BT_HDR *buf;
     u8 *data;
+    char *report = lbl_803142C8;
     if (((u8 *)&lbl_803BD1E0)[0x29] != 2) {
         if (lbl_803BD1E0.at_0x28) OSReport(report + 0x8d0);
         return 0;
@@ -16432,12 +16431,10 @@ BOOLEAN btsnd_hcic_set_event_filter(void *p_buf, UINT8 filt_type, UINT8 cond_typ
     UINT8 *dst;
     s32 len = cond_len;
     register int ijk;
-    int go;
     p->offset = 0;
     raw[8] = 5;
     raw[9] = 0xC;
-    go = filt_type != 0;
-    if (go) {
+    if (filt_type != 0) {
         p->len = cond_len + 5;
         raw[0xA] = cond_len + 2;
         raw[0xB] = filt_type;
@@ -17541,15 +17538,17 @@ u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param,
 #pragma pop
 u8 HID_HostCloseDev(u8 dev_handle) {
     extern u8 hidh_conn_disconnect(u32);
-    tHID_HOST_DEV_VIEW *device;
-    register tHID_HOST_DEV_VIEW *devices = (tHID_HOST_DEV_VIEW *)lbl_803C3C38;
+    struct HBase { tHID_HOST_DEV_VIEW *p; } hb;
+    tHID_HOST_DEV_VIEW **pdevices = &hb.p;
+    register tHID_HOST_DEV_VIEW *device;
     if (lbl_803C3C38[0x400] == 0)
         return 1;
-    if (dev_handle > 0x10 || (device = &devices[dev_handle])->in_use == 0)
+    *pdevices = (tHID_HOST_DEV_VIEW *)lbl_803C3C38;
+    if (dev_handle > 0x10 || (device = &(*pdevices)[dev_handle])->in_use == 0)
         return 5;
     device->conn_tries = 1;
     fn_80070F90(device->timer_entry);
-    if (devices[dev_handle].state != 1)
+    if ((*pdevices)[dev_handle].state != 1)
         return 4;
     device->conn_tries = 1;
     return hidh_conn_disconnect(dev_handle);
@@ -19907,10 +19906,10 @@ s32 l2c_link_send_to_lower(void *p_lcb, void *p_buf) {
 
 extern char lbl_80318BE8[];
 void l2c_link_check_send_pkts(void *arg0, u8 arg1, void *arg2, u8 arg3) {
-    register u8 *p_ccb;
-    register char *p_trace = lbl_80318BE8;
     u8 *p_lcb = (u8 *)arg0;
     u8 *p_buf = (u8 *)arg2;
+    register char *p_trace = lbl_80318BE8;
+    register u8 *p_ccb;
     u8 mode;
     tBTM_PM_PWR_MD pm;
 
@@ -22836,7 +22835,7 @@ void RFCOMM_ConfigInd(u32 arg0, u8 *arg1) {
     u16 port_lcid;
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, trace_msg + 0 * index, arg0);
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, &trace_msg[index - index], arg0);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
@@ -24037,8 +24036,7 @@ void rfc_process_pn(void *arg0, s32 arg1, void *arg2) {
         mcb = port_find_mcb_dlci_port(arg0, dlci);
         if (mcb == 0) return;
         flag = *(u8 *)((u8 *)mcb + 0x69);
-        if ((flag & 1) == 0) {
-        } else {
+        if ((flag & 1) != 0) {
             *(u8 *)((u8 *)mcb + 0x69) = flag & 0xFE;
             rfc_port_timer_stop(mcb);
             PORT_ParNegCnf(arg0, dlci, *(u16 *)((u8 *)arg2 + 0xE), *(u8 *)((u8 *)arg2 + 0xA), *(u8 *)((u8 *)arg2 + 0x11));
@@ -24900,8 +24898,8 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
     *(u8 *)((u8 *)(arg1) + 4) = (u8) ((s32) (*temp_r7 & 0x10) >> 4);
     b1 = temp_r7[1];
     temp_r7 += 2;
-    var_r8 = (s32) b1 >> 1;
     temp_r10 = b1 & 1;
+    var_r8 = (s32) b1 >> 1;
     if (temp_r10 == 0) {
         b0 = *temp_r7++;
         var_r8 = (s32) (u16) (var_r8 + (b0 << 7));
