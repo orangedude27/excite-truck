@@ -871,8 +871,7 @@ void fn_8022BB60(float *arg0, float *arg1, float farg0, float farg1) {
 }
 #pragma pop
 extern double lbl_805635A0;
-#pragma opt_propagation off
-#pragma opt_dead_assignments off
+#pragma scheduling on
 unsigned int fn_8022BC30(unsigned int arg0, unsigned int arg1, float farg0) {
     float e = (float)(unsigned char)arg1;
     float a = (float)(unsigned char)arg0;
