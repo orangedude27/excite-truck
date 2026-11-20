@@ -24,7 +24,6 @@ extern float lbl_80565038;
 extern float lbl_8056503C;
 extern void *fn_802DA704(int, void *, int);
 extern void fn_802DAA18(void *);
-struct Blk8_802DA1F4 { int w[8]; };
 
 // One StackAlloc instance, "BoneHandleAlloc" (lbl_8055FE5C), over a 0x19000
 // byte arena named "StackAlloc::buf".  It bump-allocates records that queue a
