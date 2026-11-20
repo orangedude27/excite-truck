@@ -13,18 +13,6 @@ __declspec(section ".sdata") extern u8 lbl_80559200[];
 __declspec(section ".sdata") extern u8 lbl_80559204[];
 }
 extern "C" s32 fn_800B6200(void *, void *);
-static inline void copy_slot_data_800B6200(void *dst, const void *src) {
-    volatile s32 volatile_count = 72;
-    s32 n = volatile_count;
-    u32 *s = (u32 *)((u8 *)src - 4);
-    u32 *d = (u32 *)((u8 *)dst - 4);
-    while (n--) {
-        u32 a = s[1];
-        u32 b = *(s += 2);
-        d[1] = a;
-        *(d += 2) = b;
-    }
-}
 extern "C" void fn_800B3330(void *, s32, s32);
 extern "C" s32 fn_800AC708(void *, u8 *, u32, s32 *);
 extern "C" s32 fn_800AF4F0(void *, s32);
