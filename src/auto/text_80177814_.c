@@ -1046,9 +1046,12 @@ extern void fn_801FA978(void);
 extern void fn_8020C41C(void);
 extern void fn_80267420(void);
 extern void fn_8026B644(void);
-#pragma push
-#pragma use_lmw_stmw off
-void fn_80178DD4(int arg0) {
+ static inline void fn_80178DD4_setmix(int n, int *p) {
+     fn_80129C80(n, *p, p[1]);
+ }
+ #pragma push
+ #pragma use_lmw_stmw off
+ void fn_80178DD4(int arg0) {
     register char *table = jumptable_803318F8;
     register char *base = (char *)lbl_80430590;
     register int var_r28;
@@ -1056,6 +1059,7 @@ void fn_80178DD4(int arg0) {
     register int var_r26;
     register int var_r31;
     register int version;
+    int mix;
     int value;
     void *object;
 
@@ -1068,16 +1072,24 @@ void fn_80178DD4(int arg0) {
     if (value != 0) value = fn_80135DC4(value, 0, 0);
     lbl_8055E414 = (void *)value;
     memset(base + 0x32F0, 0, 0x840);
-    fn_80129C80(4, lbl_8055E418, *(int *)((char *)&lbl_8055E418 + 4));
-    fn_80129C80(3, lbl_8055E420, *(int *)((char *)&lbl_8055E420 + 4));
-    fn_80129C80(5, lbl_8055E428, *(int *)((char *)&lbl_8055E428 + 4));
+    mix = (int)&lbl_8055E418;
+    fn_80129C80(4, lbl_8055E418, *(int *)(mix + 4));
+    mix = (int)&lbl_8055E420;
+    fn_80129C80(3, lbl_8055E420, *(int *)(mix + 4));
+    mix = (int)&lbl_8055E428;
+    fn_80129C80(5, lbl_8055E428, *(int *)(mix + 4));
 
     var_r28 = (int)base;
     var_r27 = (int)(base + 0x10);
-    for (var_r26 = 0; var_r26 < 4; ++var_r26, var_r28 += 4, var_r27 += 8) {
-        *(int *)var_r28 = -1;
+    var_r26 = 0;
+    var_r31 = -1;
+    do {
+        *(int *)var_r28 = var_r31;
         memset((void *)var_r27, 0, 8);
-    }
+        var_r26 += 1;
+        var_r28 += 4;
+        var_r27 += 8;
+    } while (var_r26 < 4);
 
     lbl_8055E430 = (void *)fn_80137C74();
     var_r31 = 0;
@@ -1090,6 +1102,7 @@ void fn_80178DD4(int arg0) {
     fn_801D21C0(); __AXDSPInitCallback_801D32D0(); fn_801D9284();
     fn_801D4734(); fn_801CB2D8(); fn_801DEC18(); fn_80127464();
     fn_801E0710(); fn_801B8318(); fn_801FA978();
+
     lbl_8055E434 = (void **)fn_8012850C(0x800, table + 0x230);
     fn_801E2188();
     *(int *)(base + 0x2A0) = var_r31;
@@ -1117,7 +1130,7 @@ void fn_80178DD4(int arg0) {
 
     fn_80127464(); fn_8012F418((void *)var_r26); fn_801B52CC();
     fn_801E21BC(); fn_80127464(); fn_8017D2CC(0x200);
-    lbl_8055E448 = 0;
+    lbl_8055E448 = var_r31;
     value = 1;
     version = (int)lbl_8055E430;
     if (version > 1) value = version;
@@ -1133,9 +1146,12 @@ void fn_80178DD4(int arg0) {
         fn_801E1D38(field, 1);
     }
     fn_801D47F4(); fn_801B5364(9, (void *)fn_80178C4C);
-    fn_80129C80(4, lbl_8055E418, *(int *)((char *)&lbl_8055E418 + 4));
-    fn_80129C80(3, lbl_8055E420, *(int *)((char *)&lbl_8055E420 + 4));
-    fn_80129C80(5, lbl_8055E428, *(int *)((char *)&lbl_8055E428 + 4));
+    mix = (int)&lbl_8055E418;
+    fn_80129C80(4, lbl_8055E418, *(int *)(mix + 4));
+    mix = (int)&lbl_8055E420;
+    fn_80129C80(3, lbl_8055E420, *(int *)(mix + 4));
+    mix = (int)&lbl_8055E428;
+    fn_80129C80(5, lbl_8055E428, *(int *)(mix + 4));
     fn_80127464(); fn_80179320();
 }
 #pragma pop
@@ -1307,8 +1323,8 @@ void* fn_80179318(void) {
 void fn_80179320(void) {
     extern float lbl_8055E460;
     float initial = 1.0f;
-    register char *base = (char *)lbl_80430590;
     register int offset;
+    register char *base = (char *)lbl_80430590;
     register int i;
     void *object;
     int old;
@@ -1619,7 +1635,7 @@ void *fn_80179824(void) {
         scale = lbl_80561B60;
         center = lbl_8055E3C8;
         diff = top - bottom;
-        *(float *)p = center + scale * diff;
+        *(float *)p = scale * diff + center;
     }
     for (k = 0; k < lbl_8055E438; k++) {
         void **o = ((void ***)lbl_8055E434)[k];
