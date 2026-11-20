@@ -880,7 +880,7 @@ void fn_80275410(void *arg0) {
 }
 #pragma pop
 
-extern float lbl_80564030, lbl_80563FDC, lbl_80563FD8, lbl_80564024, lbl_80564020, lbl_80563FAC, lbl_80563FB0;
+extern float lbl_80564030, lbl_80563FDC, lbl_80563FD8, lbl_80564024, lbl_80564020, lbl_80563FAC;
 extern float lbl_802FA7C0[];
 extern double sin(double), cos(double);
 #pragma push
