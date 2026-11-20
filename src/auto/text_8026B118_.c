@@ -129,7 +129,7 @@ extern "C" void fn_8026B260(void) {
         virtual const char *getName();
     };
     char name[12];
-    register unsigned int baseAddr = (unsigned int)lbl_80346988;
+    char *base = (char *)lbl_80346988;
     register int iteratorOrZero = 0;
     void *obj;
     FileName *nameObj;
@@ -140,14 +140,14 @@ extern "C" void fn_8026B260(void) {
     lbl_8055F4C8 = iteratorOrZero;
     obj = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
     nameObj = *(FileName **)((char *)obj + 0x20);
-    dot = nameObj->getFileName((const char *)baseAddr, 0);
+    dot = nameObj->getFileName((const char *)lbl_80346988 + 0, 0);
     if (dot != 0) {
         strncpy(name, dot, 11);
         dot = strchr(name, '.');
         if (dot) *dot = iteratorOrZero;
         fn_80028E00(name, (const char *)&lbl_8055C504);
         if (!fn_8012C33C(name)) {
-            fn_802E30C8((const char *)(baseAddr + 0xC), name);
+            fn_802E30C8(base + 0xC, name);
             return;
         }
         iteratorOrZero = (int)fn_80131808(name);
@@ -161,10 +161,10 @@ extern "C" void fn_8026B260(void) {
             }
         } while (entry);
         fn_80131818(it);
-        fn_802E30C8((const char *)(baseAddr + 0x34), lbl_8055F4C8, name);
+        fn_802E30C8(base + 0x34, lbl_8055F4C8, name);
         return;
     }
-    fn_802E30C8((const char *)(baseAddr + 0x5C));
+    fn_802E30C8(base + 0x5C);
 }
 
 #pragma cplusplus reset
@@ -172,6 +172,15 @@ extern "C" void fn_8026B260(void) {
 #pragma push
 #pragma opt_common_subs off
 void fn_8026B3D4(int arg0) {
+    /* JumpCam per-slot update.  When the JumpCam mode is active (fn_80178CA4()==1)
+     * and the local player is in JumpCam state (truck +0x1F0 == 0x50), refresh
+     * this slot's state from the shared per-player table lbl_8049A0E8 (eight
+     * 16-byte entries).  If the slot is already on, either turn it off when the
+     * truck has changed state enough or the slot's timer has expired, or refresh
+     * its sound/visual state; if it is off, look up the player's current position
+     * in the circle table lbl_8049A028 to record which circle they are in, and
+     * turn the slot on when the player is in a valid circle and close enough to
+     * the centre to trigger the "whosh" sound. */
     struct Ent { unsigned char on; unsigned char pad[3]; float t; float v; int idx; };
     float t = lbl_8055E3C8;
     unsigned char *p = (unsigned char *)fn_8017960C();
