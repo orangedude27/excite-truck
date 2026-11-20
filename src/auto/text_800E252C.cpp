@@ -813,11 +813,11 @@ extern "C" void fn_800E2F84(void *self)
 #pragma scheduling on
 struct Fn800E310CFields {
     char pad0[0x6C34];
-    f32 zLo;  s32 zDen2;
+    f32 zLo; f32 zHi;
     s32 zDen; s32 zNum;
-    f32 xLo;  f32 xHi;
+    f32 xLo; f32 xHi;
     s32 xDen; s32 xNum;
-    f32 yLo;  f32 yHi;
+    f32 yLo; f32 yHi;
     s32 yDen; s32 yNum;
 };
 extern "C" f32 fn_800E310C(void *arg0) {
