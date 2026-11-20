@@ -79,6 +79,11 @@ extern const char lbl_8033C7A0[];
 extern const char lbl_8055B648;
 extern float lbl_8056336C;
 extern "C" void *fn_8020DE74(void *arg0);
+#pragma push
+#pragma processor 750
+#pragma cplusplus reset
+#pragma use_lmw_stmw off
+#pragma optimize_for_size on
 void *fn_8020DE74(void *arg0) {
     char name[0x20];
     register const char *labels __asm("r31") = lbl_8033C7A0;
@@ -210,6 +215,7 @@ void *fn_8020DE74(void *arg0) {
     }
     return obj;
 }
+#pragma pop
 // The "carsnd" object's deleting destructor: releases every sound
 // fn_8020DE74() created for the truck and, when deleteMemory is positive,
 // frees the object itself. The vtable goes back first, so a sound torn down
@@ -637,18 +643,15 @@ void fn_8020F240(void *arg0) {
 }
 #pragma scheduling off
 void fn_8020F284(void *arg0, float farg0) {
+#pragma scheduling invalid_target
     float var_f2;
     float temp_f0;
     float temp_f1;
-    float sub;
-    float div;
     void *temp_r4;
     temp_r4 = *(void **)((char *)arg0 + 0x1C);
     if (temp_r4 != 0) {
-        div = lbl_805633F4;
-        sub = farg0 - lbl_805633DC;
         var_f2 = lbl_80563368;
-        temp_f0 = sub / div;
+        temp_f0 = (farg0 - lbl_805633DC) / lbl_805633F4;
         var_f2 = (var_f2 < temp_f0) ? var_f2 : temp_f0;
         var_f2 = (var_f2 > lbl_80563370) ? var_f2 : lbl_80563370;
         temp_f1 = lbl_805633F8 + var_f2 * lbl_805633FC;
