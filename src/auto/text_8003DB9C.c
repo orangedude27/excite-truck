@@ -382,31 +382,31 @@ void __GXInitRevisionBits(void) {
     unsigned int code;
 
     for (i = 0; i < 2; i++) {
-        code = 0x80 | n++;
         p[7] |= 0x40000000;
         p[15] |= 0x80000000;
         *b = 8;
+        code = 0x80 | n++;
         *b = (unsigned char)code;
 
-        code = 0x80 | n++;
         *w = p[15];
         p[8] |= 0x40000000;
         p[16] |= 0x80000000;
         *b = 8;
+        code = 0x80 | n++;
         *b = (unsigned char)code;
 
-        code = 0x80 | n++;
         *w = p[16];
         p[9] |= 0x40000000;
         p[17] |= 0x80000000;
         *b = 8;
+        code = 0x80 | n++;
         *b = (unsigned char)code;
 
-        code = 0x80 | n++;
         *w = p[17];
         p[10] |= 0x40000000;
         p[18] |= 0x80000000;
         *b = 8;
+        code = 0x80 | n++;
         *b = (unsigned char)code;
         *w = p[18];
         p += 4;
@@ -4910,10 +4910,12 @@ void __GXSetSUTexRegs(void) {
 }
 
 #pragma optimization_level 4
-void __GXSetTmemConfig(s32 arg0) {
+/* Configures the GPU's TMEM (texture memory) layout by writing a sequence of
+   GX FIFO commands.  mode selects the tile size: 0 = 16x16, 1 = 16x32, 2 = 16x64. */
+void __GXSetTmemConfig(s32 mode) {
     volatile u8 *fifo8 = (volatile u8 *)0xCC008000;
     volatile u32 *fifo32 = (volatile u32 *)0xCC008000;
-    switch (arg0) {
+    switch (mode) {
     case 2:
     *fifo8 = 0x61;
     *fifo32 = 0x8C0D8000;
