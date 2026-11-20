@@ -329,6 +329,7 @@ void fn_802CD33C(void *list, int entryIndex, int clearFlag) {
 }
 
 #pragma push
+#pragma processor 750
 #pragma use_lmw_stmw off
 void fn_802CD37C(void *arg0, void *arg1, float *arg2, int arg3, float farg0, float farg1) {
     float f[0x5A];
