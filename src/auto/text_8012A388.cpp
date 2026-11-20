@@ -1,4 +1,5 @@
 #include <types.h>
+extern "C" void *memcpy(void *, const void *, u32);
 struct E7FC { char pad[0x28]; int v28; unsigned int v30; };
 
 /* Bits in a resource entry's flag word (struct ResEntry +0x34). */
@@ -1599,7 +1600,7 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
             *(s32 *)(self + 0xC0) = value;
             if (value > *(s32 *)(self + 0xC0))
                 goto parse_next;
-            handle = ((s32 (*)(s32, void *))fn_802E748C)(temp, *(void **)(self + 0xC8));
+            handle = ((s32 (*)(s32, void *, s32))fn_802E748C)(temp, *(void **)(self + 0xC8), value);
             *(s32 *)(self + 0xB4) = handle;
             if (handle != -1) {
                 *(s32 *)(self + 0xB8) = 2;
