@@ -353,6 +353,7 @@ extern void fn_8001EFB0(void *);
 extern int fn_80131234(void *);
 extern void fn_80236910(void *);
 extern char lbl_80345038[];
+extern char lbl_8055C294[];
 extern char lbl_8055C29C[], lbl_8055C2A4[], lbl_8055C2AC[], lbl_8055C2B8[];
 extern char lbl_8055C2C0[], lbl_8055C2C8[], lbl_8055C2D0[], lbl_8055C2D8[];
 extern char lbl_8055C2E0[], lbl_8055C2E8[], lbl_8055C2F0[], lbl_8055C2F8[];
