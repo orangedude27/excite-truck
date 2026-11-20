@@ -1042,6 +1042,7 @@ extern "C" void fn_80194C4C(char *arg0, float *arg1) {
     float value;
     int i;
 
+    /* Advance the controller-tracked animation value and frame, dispatching callbacks. */
     ((void (*)(void *, float *))fn_80194FD0)(arg0, arg1);
     work = *(void **)(arg0 + 0x288);
     value = *(float *)((char *)work + 0x34);
