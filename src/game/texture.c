@@ -702,8 +702,11 @@ extern int lbl_8055D078;
 #pragma scheduling invalid_target
 #pragma dont_inline fn_802CB38C
 int fn_802CB38C(void *arg0, void *arg1, void *arg2) {
-    fn_802CA57C(arg0, (int)&lbl_8055D078, 0, (int)arg2);
-    return fn_802CA4E0((int)arg0, lbl_8055D058, 0, (int)arg1, (int)arg2);
+    register int a = (int)arg0;
+    register int c = (int)arg2;
+    register int b = (int)arg1;
+    ((int (*)(int, int, int, int))fn_802CA57C)(a, (int)&lbl_8055D078, 0, c);
+    return fn_802CA4E0(a, lbl_8055D058, 0, b, c);
 }
 #pragma scheduling on
 void fn_802CB3F4(void) {
