@@ -67,7 +67,7 @@ struct Vec_802924F4 {
 static inline void init_all_802924F4(float one, float offset) {
     struct Vec_802924F4 v;
     unsigned char *p = lbl_804B4030;
-    long i;
+    int i;
     for (i = 0; i < 6; i++, p += 0x34) {
         float x = fn_80129DC4(0, lbl_805644D0, lbl_805644D4);
         float y = (float)fn_8002F234((one - x * x) - offset);
