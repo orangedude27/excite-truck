@@ -3,7 +3,7 @@
 
 extern char lbl_80342ED8[];
 extern char lbl_80342E38[];
-extern int lbl_802FA338[];
+extern char lbl_802FA338[];
 extern char lbl_80498878[];
 extern char lbl_8055BE20, lbl_8055B860, lbl_8055BAB8;
 extern void fn_80236914(void);
