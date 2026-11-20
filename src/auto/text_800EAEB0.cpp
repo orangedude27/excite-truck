@@ -1303,10 +1303,10 @@ extern "C" s32 detail_GetWaveDataFileAddress__Q36nw4hbm3snd18MemorySoundArchiveC
 
 extern "C" void *OpenStream__Q34nw4r3snd18MemorySoundArchiveCFPviUlUl(void *this_, void *stream, u32 bufferSize, s32 offset, u32 length) {
     u32 base = *(u32 *)((u8 *)this_ + 0x108);
-    void *ret = stream;
     if (base == 0) return 0;
     if (bufferSize < 0x20) return 0;
-    if (!stream) return ret;
+    u32 p = (u32)stream;
+    if (p == 0) return (void *)p;
     *(u8 *)((u8 *)stream + 4) = 0;
     *(u32 *)((u8 *)stream + 0xC) = 0;
     *(u32 *)((u8 *)stream + 0x10) = 0;
@@ -1314,7 +1314,7 @@ extern "C" void *OpenStream__Q34nw4r3snd18MemorySoundArchiveCFPviUlUl(void *this
     *(u32 *)((u8 *)stream + 0x14) = offset + base;
     *(u32 *)((u8 *)stream + 0x18) = length;
     *(u32 *)((u8 *)stream + 0x1C) = 0;
-    return ret;
+    return (void *)p;
 }
 
 extern u8 lbl_803230E8[];
@@ -1647,8 +1647,11 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
             v = ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_BYTE);
             if (enabled) {
                 s32 w = (u8)v;
-                if ((s32)cmd < 0xc5 && (s32)cmd >= 0xc3)
-                    w = (s8)(u8)v;
+                if ((s32)cmd < 0xc5) {
+                    if ((s32)cmd >= 0xc3) {
+                        w = (s8)(u8)v;
+                    }
+                }
                 CommandProc(track, cmd, w, 0);
             }
             break;
