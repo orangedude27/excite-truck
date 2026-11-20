@@ -14711,25 +14711,9 @@ static inline void fn_800BC538_setShortT(Fn800BC538Obj *obj, Fn800BC538Tbl *t) {
         obj->shortVal[k] = val[k];
     }
 }
-static inline void fn_800BC538_setShortN(Fn800BC538Obj *obj, s32 n) {
-    s16 *thr = lbl_8031BFA8[n].thr;
-    u8 *val = lbl_8031BFA8[n].val;
-    s32 k;
-    for (k = 0; k < 12; k++) {
-        obj->shortThr[k] = *thr++;
-        obj->shortVal[k] = *val++;
-    }
-}
-static void fn_800BC538_copyShort(Fn800BC538Obj *obj, s16 *thr, u8 *val) {
-    s32 k;
-    for (k = 0; k < 12; k++) {
-        obj->shortThr[k] = *thr++;
-        obj->shortVal[k] = *val++;
-    }
-}
 #pragma push
 #pragma use_lmw_stmw on
- extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s16 *arg5, s16 *arg6, u8 *arg7, s16 arg_sp8) {
+extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s16 *arg5, s16 *arg6, u8 *arg7, s16 arg_sp8) {
     Fn800BC538Obj *obj = (Fn800BC538Obj *)arg0;
     u8 *p;
     u8 *a;
@@ -14772,17 +14756,17 @@ static void fn_800BC538_copyShort(Fn800BC538Obj *obj, s16 *thr, u8 *val) {
             s32 mode = obj->mode;
             obj->shortInit = 1;
             if (mode == 0 && obj->sub == 0) {
-                fn_800BC538_setShortN(obj, 0);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[0].thr, lbl_8031BFA8[0].val);
             } else if (mode == 0 && obj->sub == 1) {
-                fn_800BC538_setShortN(obj, 1);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[1].thr, lbl_8031BFA8[1].val);
             } else if (mode == 0 && obj->sub == 2) {
-                fn_800BC538_setShortN(obj, 2);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[2].thr, lbl_8031BFA8[2].val);
             } else if (mode == 1 && obj->sub == 0) {
-                fn_800BC538_setShortN(obj, 3);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[3].thr, lbl_8031BFA8[3].val);
             } else if (mode == 1 && obj->sub == 1) {
-                fn_800BC538_setShortN(obj, 4);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[4].thr, lbl_8031BFA8[4].val);
             } else {
-                fn_800BC538_setShortN(obj, 5);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[5].thr, lbl_8031BFA8[5].val);
             }
         }
         p = arg4;
@@ -14820,11 +14804,11 @@ static void fn_800BC538_copyShort(Fn800BC538Obj *obj, s16 *thr, u8 *val) {
                 obj->mixVal[k] = (&lbl_80559258)[k];
             }
             if (sub == 0) {
-                fn_800BC538_setShortN(obj, 0);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[0].thr, lbl_8031BFA8[0].val);
             } else if (sub == 1) {
-                fn_800BC538_setShortN(obj, 1);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[1].thr, lbl_8031BFA8[1].val);
             } else {
-                fn_800BC538_setShortN(obj, 2);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[2].thr, lbl_8031BFA8[2].val);
             }
         } else {
             s16 sub = obj->sub;
@@ -14833,11 +14817,11 @@ static void fn_800BC538_copyShort(Fn800BC538Obj *obj, s16 *thr, u8 *val) {
                 obj->mixVal[k] = (&lbl_80559268)[k];
             }
             if (sub == 0) {
-                fn_800BC538_setShortN(obj, 3);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[3].thr, lbl_8031BFA8[3].val);
             } else if (sub == 1) {
-                fn_800BC538_setShortN(obj, 4);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[4].thr, lbl_8031BFA8[4].val);
             } else {
-                fn_800BC538_setShortN(obj, 5);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[5].thr, lbl_8031BFA8[5].val);
             }
         }
     }
