@@ -287,6 +287,7 @@ extern void fn_8028D58C(void *);
 #pragma scheduling invalid_target
 void fn_8028D4FC(void) {
     typedef struct { unsigned char pad[0x14]; int *items; int total; } Entry;
+    typedef struct { int flag; float value; } Record;
     Entry *e = (Entry *)&lbl_804B3400;
     int off;
     int i, j;
@@ -306,12 +307,15 @@ void fn_8028D4FC(void) {
     }
     {
         float f = lbl_805643F0;
-        int k = 0;
-        int o = 0;
+        int o;
+        int k;
+        k = 0;
+        o = 0;
         while (k < *(volatile int *)&lbl_8055F724) {
-            int *b = (int *)*(volatile int *)&lbl_8055F720;
-            *(int *)((char *)b + o) = -1;
-            *(float *)((char *)b + o + 4) = f;
+            Record *b = (Record *)*(volatile int *)&lbl_8055F720;
+            Record *r = (Record *)((char *)b + o);
+            r->flag = -1;
+            r->value = f;
             k++;
             o += 8;
         }
@@ -327,6 +331,7 @@ void fn_8028D58C(void *arg0)
   unsigned char *current;
   unsigned char *dst;
   int normalized;
+  int *pcount;
   count = *((unsigned int *) (((char *) arg0) + 4));
   startIndex = (((int) count) - (*((int *) (((char *) arg0) + 8)))) + 2;
   startIndex = startIndex > 0 ? startIndex : 0;
@@ -366,8 +371,9 @@ void fn_8028D58C(void *arg0)
     }
   }
 
-  *((int *) (((char *) arg0) + 4)) = dst - (*((unsigned char * volatile *) arg0));
-  *((int *) (((char *) arg0) + 4)) = (*((int *) (((char *) arg0) + 4))) / 0x28;
+  pcount = (int *)(((char *)arg0) + 4);
+  *pcount = dst - (*((unsigned char * volatile *) arg0));
+  *pcount = (*pcount) / 0x28;
 }
 
 #pragma push
