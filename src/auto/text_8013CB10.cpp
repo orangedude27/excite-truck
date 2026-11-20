@@ -2330,22 +2330,24 @@ extern f32 fn_8013CB3C(void);
 #pragma optimize level=4
 #pragma scheduling invalid_target
 #pragma opt_propagation off
-extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
+extern "C" void fn_80140728(void *obj, void *index, void *item) {
+    /* Per-frame update of one queued string item: when its time window has
+     * elapsed, hand its string states to the draw list. */
     struct VString { virtual void d0(); virtual void d1(); virtual u8 *get(const char *); };
     u8 *base = lbl_8032C530;
-    f32 temp_f1 = fn_8001DAE8((u8 *)arg2 + 0xD8) - *(f32 *)((u8 *)arg2 + 0xDC);
+    f32 temp_f1 = fn_8001DAE8((u8 *)item + 0xD8) - *(f32 *)((u8 *)item + 0xDC);
     unsigned var_r0 = 0;
     void *temp_r29;
     register void *temp_r28;
     void *temp_r3;
-    if ((temp_f1 >= lbl_805614A4) && (temp_f1 < *(f32 *)((u8 *)arg2 + 0xD8))) {
+    if ((temp_f1 >= lbl_805614A4) && (temp_f1 < *(f32 *)((u8 *)item + 0xD8))) {
         var_r0 = 1;
     }
     if (var_r0) {
-        fn_8001DAF0((f32 *)((u8 *)arg2 + 0xD8));
-        temp_r28 = ((VString *)*(void **)((u8 *)arg0 + 0x54))->get((const char *)(base + 0x3B0));
-        temp_r29 = ((VString *)*(void **)((u8 *)arg0 + 0x54))->get((const char *)(base + 0x448));
-        temp_r3 = ((VString *)*(void **)((u8 *)arg0 + 0x54))->get((const char *)(base + 0x3A0));
+        fn_8001DAF0((f32 *)((u8 *)item + 0xD8));
+        temp_r28 = ((VString *)*(void **)((u8 *)obj + 0x54))->get((const char *)(base + 0x3B0));
+        temp_r29 = ((VString *)*(void **)((u8 *)obj + 0x54))->get((const char *)(base + 0x448));
+        temp_r3 = ((VString *)*(void **)((u8 *)obj + 0x54))->get((const char *)(base + 0x3A0));
         if ((temp_r28 != NULL) && (temp_r29 != NULL) && (temp_r3 != NULL)) {
             u8 sp58[0x28];
             u8 sp30[0x28];
@@ -2389,35 +2391,33 @@ extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
             *(f32 *)(sp8 + 0x24) = *(f32 *)((u8 *)temp_r3 + 0x24);
             fn_8013CB90(sp30);
             fn_8013CB90(sp58);
-            if (*(s32 *)((u8 *)arg2 + 0x60) > 0) {
-                f32 delta = fn_8013CB3C() - *(f32 *)((u8 *)arg2 + 0xDC);
-                f32 x = *(f32 *)((u8 *)arg2 + 0xD8);
+            if (*(s32 *)((u8 *)item + 0x60) > 0) {
+                f32 delta = fn_8013CB3C() - *(f32 *)((u8 *)item + 0xDC);
+                f32 x = *(f32 *)((u8 *)item + 0xD8);
                 f32 scaled = x * lbl_80561498;
                 f32 ratio = ((delta - lbl_805614A4)) / (scaled - lbl_805614A4);
                 f32 v = lbl_805614AC;
                 v = (v < ratio) ? v : ratio;
                 v = (v > lbl_805614A4) ? v : lbl_805614A4;
-                fn_80147BD0((s32)sp58, (s32)sp8, -1, 0xFFFFFF, *(s32 *)((u8 *)arg0 + 0xAC), lbl_805614A4 + (v * lbl_805614AC));
-                delta = fn_8013CB3C() - *(f32 *)((u8 *)arg2 + 0xDC);
-                x = *(f32 *)((u8 *)arg2 + 0xD8);
+                fn_80147BD0((s32)sp58, (s32)sp8, -1, 0xFFFFFF, *(s32 *)((u8 *)obj + 0xAC), lbl_805614A4 + (v * lbl_805614AC));
+                delta = fn_8013CB3C() - *(f32 *)((u8 *)item + 0xDC);
+                x = *(f32 *)((u8 *)item + 0xD8);
                 scaled = x * lbl_80561498;
                 ratio = (delta - scaled) / (x - scaled);
                 v = lbl_805614AC;
                 v = (v < ratio) ? v : ratio;
                 v = (v > lbl_805614A4) ? v : lbl_805614A4;
-                fn_80147BD0((s32)sp30, (s32)sp8, -1, 0xFFFFFF, *(s32 *)((u8 *)arg0 + 0xAC), lbl_805614A4 + (v * lbl_805614AC));
+                fn_80147BD0((s32)sp30, (s32)sp8, -1, 0xFFFFFF, *(s32 *)((u8 *)obj + 0xAC), lbl_805614A4 + (v * lbl_805614AC));
             } else {
-                f32 ratio = lbl_805614C4 * fn_8001DAF0((f32 *)((u8 *)arg2 + 0xD8));
+                f32 ratio = lbl_805614C4 * fn_8001DAF0((f32 *)((u8 *)item + 0xD8));
                 f32 v = lbl_805614AC;
                 v = (v < ratio) ? v : ratio;
                 v = (v > lbl_805614A4) ? v : lbl_805614A4;
-                fn_80147BD0((s32)sp30, (s32)sp8, -1, 0xFFFFFF, *(s32 *)((u8 *)arg0 + 0xAC), v);
+                fn_80147BD0((s32)sp30, (s32)sp8, -1, 0xFFFFFF, *(s32 *)((u8 *)obj + 0xAC), v);
             }
         }
     }
 }
-  #pragma opt_propagation reset
-  #pragma pop
 extern "C" void fn_8013FAC4(void *, int, void *);
 #pragma scheduling on
 extern "C" void fn_80140A6C(void *arg0, int arg1) {
