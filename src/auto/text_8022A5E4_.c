@@ -109,7 +109,8 @@ void fn_8022A5E4(void) {
     extern unsigned char lbl_80497D68[];
     extern void *memset(void *, int, unsigned int);
     extern void fn_8022C520(void);
-    struct Record74 *out, *src;
+    struct Record74 *out;
+    unsigned char *base;
     unsigned char b0;
     volatile unsigned int s1C, s18, s14, s10, sC, s30, s2C, s28, s24, s20;
     unsigned int v4, v8, vC, v10, v14, v18, v1C, v20, v24, v28, v2C, v30;
@@ -119,19 +120,29 @@ void fn_8022A5E4(void) {
     int i;
 
     memset(lbl_80497D68, 0, 0x74);
-    src = (struct Record74 *)lbl_80497D68;
-    b0 = lbl_80497D68[0];
-    sC = src->wC; s10 = src->w10; s14 = src->w14; s18 = src->w18; s1C = src->w1C;
-    s20 = src->w20; s24 = src->w24; s28 = src->w28; s2C = src->w2C; s30 = src->w30;
+    base = lbl_80497D68;
+    b0 = base[0];
+    sC = *(unsigned int *)(base + 0xC); s10 = *(unsigned int *)(base + 0x10);
+    s14 = *(unsigned int *)(base + 0x14); s18 = *(unsigned int *)(base + 0x18);
+    s1C = *(unsigned int *)(base + 0x1C); s20 = *(unsigned int *)(base + 0x20);
+    s24 = *(unsigned int *)(base + 0x24); s28 = *(unsigned int *)(base + 0x28);
+    s2C = *(unsigned int *)(base + 0x2C); s30 = *(unsigned int *)(base + 0x30);
+    *(unsigned int *)(base + 0x38) = 9;
+    vC = *(unsigned int *)(base + 0xC); v10 = *(unsigned int *)(base + 0x10);
+    v14 = *(unsigned int *)(base + 0x14); v18 = *(unsigned int *)(base + 0x18);
+    v1C = *(unsigned int *)(base + 0x1C); v20 = *(unsigned int *)(base + 0x20);
+    v24 = *(unsigned int *)(base + 0x24); v28 = *(unsigned int *)(base + 0x28);
+    v2C = *(unsigned int *)(base + 0x2C); v30 = *(unsigned int *)(base + 0x30);
+    v4 = *(unsigned int *)(base + 4); v8 = *(unsigned int *)(base + 8);
+    v3C = *(unsigned int *)(base + 0x3C); v40 = *(unsigned int *)(base + 0x40);
+    v44 = *(unsigned int *)(base + 0x44); v48 = *(unsigned int *)(base + 0x48);
+    v4C = *(unsigned int *)(base + 0x4C); v50 = *(unsigned int *)(base + 0x50);
+    v54 = *(unsigned int *)(base + 0x54); v58 = *(unsigned int *)(base + 0x58);
+    v64 = *(unsigned int *)(base + 0x64); v68 = *(unsigned int *)(base + 0x68);
+    v6C = *(unsigned int *)(base + 0x6C); v70 = *(unsigned int *)(base + 0x70);
+    v34 = *(float *)(base + 0x34); v5C = *(float *)(base + 0x5C);
+    v60 = *(float *)(base + 0x60);
     out = (struct Record74 *)lbl_80490968;
-    vC = src->wC; v10 = src->w10; v14 = src->w14; v18 = src->w18; v1C = src->w1C;
-    v20 = src->w20; v24 = src->w24; v28 = src->w28; v2C = src->w2C; v30 = src->w30;
-    v4 = src->w4; v8 = src->w8;
-    v3C = src->w3C; v40 = src->w40; v44 = src->w44; v48 = src->w48;
-    v4C = src->w4C; v50 = src->w50; v54 = src->w54; v58 = src->w58;
-    v64 = src->w64; v68 = src->w68; v6C = src->w6C; v70 = src->w70;
-    v60 = src->f60; v5C = src->f5C; v34 = src->f34;
-    src->w38 = 9;
     for (i = 0; i < 0x80; i++) {
         out[0].b0 = b0;
         out[0].w4 = v4; out[0].w8 = v8; out[0].wC = vC; out[0].w10 = v10;
@@ -937,6 +948,7 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
     int v3;
     int lenarg;
     int tret;
+    int arg2copy;
     void *base;
     char *i19;
     char *found;
@@ -947,12 +959,13 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
     f28v = farg1;
     i20 = i20_;
     i19 = (char *)i19arg;
+    arg2copy = arg2_;
     base = fn_8022CA2C();
-    i30 = arg2_ * 4;
+    i30 = arg2copy * 4;
     sp8 = 0xFF;
     entry = (char *)base + i30;
     sp30 = lbl_8056358C;
-    i26 = arg2_ & 1;
+    i26 = arg2copy & 1;
     sp2C = *(int *)(entry + 0xC);
     if (i26 != 0) {
         first = *(int *)((char *)base + 0x40);
@@ -981,11 +994,11 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
     }
     if (*(int *)((char *)base + 0x68) != 0) {
         ((void (*)(float *, float *, float, float))fn_8022BB60)(&sp28, &sp24, f0v, f28v);
-        fn_802C5310(*(int *)((char *)base + 0x68), arg2_ % fn_802C51AC(*(int *)((char *)base + 0x68)), sp28, sp24, lbl_8056358C);
+        fn_802C5310(*(int *)((char *)base + 0x68), arg2copy % fn_802C51AC(*(int *)((char *)base + 0x68)), sp28, sp24, lbl_8056358C);
     } else if (*(int *)((char *)base + 0x6C) != 0) {
         ((void (*)(float *, float *, float, float))fn_8022BB60)(&sp20, &sp1C, f0v, f28v);
         fl = *(int *)((char *)base + 0x38);
-        i30 = arg2_ % fn_80235FD8(*(int *)((char *)base + 0x6C));
+        i30 = arg2copy % fn_80235FD8(*(int *)((char *)base + 0x6C));
         if (fl & 0x10) {
             sp1C += fn_80235F64(*(int *)((char *)base + 0x6C), i30) * lbl_80563598;
         } else if (fl & 0x40) {
@@ -1006,7 +1019,7 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
             mask = (sp8 << 24) | 0xFFFF;
             fn_802354A0(*(int *)((char *)base + 0x6C), i30, mask, sp20 - (f3v * f29v), sp1C + (f3v * f30v), lbl_8056358C, t0 * f29v, t0 * f30v);
         }
-        if (arg2_ == 1) {
+        if (arg2copy == 1) {
             i18 = *(int *)((char *)base + 0x54);
             if (i18 >= 0) {
                 f30v = fn_80235F64(*(int *)((char *)base + 0x6C), i30);
@@ -1014,7 +1027,7 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
                 fn_802354A0(*(int *)((char *)base + 0x6C), i18, -1, sp20 + fn_80235EF0(*(int *)((char *)base + 0x6C), i30), sp1C, lbl_8056358C, f29v, f30v);
             }
         }
-        if ((*(int *)((char *)base + 0x70) != 0) && (arg2_ == 1)) {
+        if ((*(int *)((char *)base + 0x70) != 0) && (arg2copy == 1)) {
             i18 = *(int *)((char *)base + 0x58);
             f29v = fn_80235F64(*(int *)((char *)base + 0x70), i18);
             fn_802354A0(*(int *)((char *)base + 0x70), i18, -1, sp20 + *(float *)((char *)base + 0x5C), sp1C + *(float *)((char *)base + 0x60), lbl_8056358C, fn_80235EF0(*(int *)((char *)base + 0x70), *(int *)((char *)base + 0x58)), f29v);
@@ -1400,6 +1413,10 @@ __declspec(section ".sdata") extern char lbl_8055B950[];
 extern char lbl_8033FBE8[], lbl_8055B930[], lbl_8055B938[], lbl_8055B940[], lbl_8055B948[], lbl_8055B950[];
 #pragma cplusplus on
 void fn_8022CDE4(int *d, void *o) {
+    /* Reads a record of seven int attributes out of an XML node into d[0..6]:
+     * four numeric attributes (d[0..3]) via fn_8022CD0C, a named enum attribute
+     * mapped by name (d[4]), and a "%d %d" pair (d[5..6]).  Attribute keys come
+     * from the string table lbl_8033FBE8. */
     class Xml {
     public:
         virtual void v0();
