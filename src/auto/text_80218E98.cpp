@@ -2267,7 +2267,6 @@ extern "C" void fn_8021BC20(void *arg0, void *arg1) {
     f32 sp10;
     s32 sp8;
     void *temp_r4_2;
-    s32 temp_r4;
     s32 temp_r5;
     s32 temp_r28;
     s32 var_r27;
@@ -2275,19 +2274,19 @@ extern "C" void fn_8021BC20(void *arg0, void *arg1) {
     s32 temp_r25;
     s32 var_r29;
     s32 temp_r30;
+    s32 bound;
 
     temp_r4_2 = *(void **)((u8 *)arg0 + 0x254);
     temp_r28 = *(s32 *)((u8 *)arg0 + 4);
     temp_r5 = *(s32 *)((u8 *)temp_r4_2 + 0x10);
     temp_r30 = *(s32 *)((u8 *)temp_r4_2 + 0x20);
-    temp_r4 = *(s32 *)((u8 *)temp_r4_2 + 8);
     var_r26 = temp_r30 * temp_r5;
     var_r27 = *(s32 *)((u8 *)arg0 + 8);
-    var_r29 = var_r26 + temp_r5;
-    if (temp_r4 >= var_r29) {
+    bound = var_r26 + temp_r5;
+    if (*(s32 *)((u8 *)temp_r4_2 + 8) >= bound) {
         return;
     }
-    var_r29 = temp_r4;
+    var_r29 = *(s32 *)((u8 *)temp_r4_2 + 8);
     temp_r30 = 0;
 
     for (; var_r26 < var_r29;
@@ -2308,7 +2307,7 @@ extern "C" void fn_8021BC20(void *arg0, void *arg1) {
         sp8 = temp_r30;
         ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, s32, f32))fn_8022BAD0)(
             *(s32 *)((u8 *)arg0 + 0x244), temp_r28, var_r27,
-            0, 0, 0, temp_r25, sp18, sp8, lbl_805634A4);
+            0, 0, 0, temp_r25, sp18, sp8, 1.0f);
     }
 }
 #pragma scheduling on
@@ -2888,47 +2887,21 @@ extern "C" void *fn_8021CAD4(void *self, s32 deletingFlag) {
     return self;
 }
 
-#pragma scheduling on
-extern "C" void fn_8021CB4C(void *arg0, s32 arg1) {
+#pragma scheduling invalid_target
+extern "C" void fn_8021CB4C(void *__restrict arg0, s32 arg1) {
     struct First {
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void call();
+        virtual void v0(); virtual void v1(); virtual void v2();
+        virtual void v3(); virtual void v4(); virtual void v5();
+        virtual void v6(); virtual void call();
     };
     struct Second {
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual void v9();
-        virtual void v10();
-        virtual void v11();
-        virtual void v12();
-        virtual void v13();
-        virtual void v14();
-        virtual void v15();
-        virtual void v16();
-        virtual void v17();
-        virtual void v18();
-        virtual void v19();
-        virtual void v20();
-        virtual void v21();
-        virtual void v22();
-        virtual void v23();
-        virtual void v24();
-        virtual void v25();
-        virtual void v26();
-        virtual void v27();
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
         virtual s32 get();
     };
     volatile s32 spC;
@@ -2936,12 +2909,13 @@ extern "C" void fn_8021CB4C(void *arg0, s32 arg1) {
     register s32 result;
     register s32 start;
     First *first;
+
     fn_802C3034(arg1);
-    first = *(First **)((unsigned char *)arg0 + 0x248);
+    first = *(First **)((u8 *)arg0 + 0x248);
     first->call();
     result = ((Second *)arg0)->get();
+    start = *(s32 *)((u8 *)arg0 + 0x254);
     sp8 = 0x43300000;
-    start = *(s32 *)((unsigned char *)arg0 + 0x254);
     spC = (result - start) ^ 0x80000000;
 }
 /* Draw a slider/tab widget: draw its track at the widget's screen-centred
@@ -4443,34 +4417,35 @@ extern "C" char lbl_8033D9BC[];
 #pragma push
 #pragma scheduling on
 extern "C" void *fn_8021F678(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, f32 farg0, f32 farg1) {
-    s32 *words = (s32 *)arg0;
+    s32 size;
     s32 end;
     s32 count;
     s32 len;
     fn_80218F34(arg0, arg1, arg2, arg1 + arg3, arg2 + arg4, 0);
-    *(void **)arg0 = lbl_8033E878;
-    words[0x250 / 4] = arg5;
+    *(s32 *)((u8 *)arg0 + 0x250) = arg5;
+    size = ((arg6 >> 31) ^ arg6) - (arg6 >> 31);
     *(f32 *)((u8 *)arg0 + 0x248) = farg0;
     *(f32 *)((u8 *)arg0 + 0x24C) = farg1;
+    *(void **)arg0 = lbl_8033E878;
     *(u8 *)((u8 *)arg0 + 0x244) = 0;
-    words[0x254 / 4] = ((arg6 >> 31) ^ arg6) - (arg6 >> 31);
+    *(s32 *)((u8 *)arg0 + 0x254) = size;
     *(u8 *)((u8 *)arg0 + 0x258) = (u32)arg6 >> 31;
-    words[0x25C / 4] = ((s32 (*)(void *))fn_802C5130)(lbl_8033D9B0);
-    words[0x260 / 4] = ((s32 (*)(void *))fn_802C5130)(lbl_8033D9BC);
-    words[0x264 / 4] = words[1];
-    words[0x268 / 4] = words[2];
-    words[0x26C / 4] = ((Vf78 *)arg0)->get();
-    len = words[2];
-    end = words[4];
-    words[0x270 / 4] = end - len;
-    count = ((s32 (*)(s32))fn_802C5220)(words[0x25C / 4]);
-    len = words[2];
-    end = words[4];
+    *(s32 *)((u8 *)arg0 + 0x25C) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D9B0);
+    *(s32 *)((u8 *)arg0 + 0x260) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D9BC);
+    *(s32 *)((u8 *)arg0 + 0x264) = *(s32 *)((u8 *)arg0 + 4);
+    *(s32 *)((u8 *)arg0 + 0x268) = *(s32 *)((u8 *)arg0 + 8);
+    *(s32 *)((u8 *)arg0 + 0x26C) = ((Vf78 *)arg0)->get();
+    len = *(s32 *)((u8 *)arg0 + 8);
+    end = *(s32 *)((u8 *)arg0 + 0x10);
+    *(s32 *)((u8 *)arg0 + 0x270) = end - len;
+    count = ((s32 (*)(s32))fn_802C5220)(*(s32 *)((u8 *)arg0 + 0x25C));
+    len = *(s32 *)((u8 *)arg0 + 8);
+    end = *(s32 *)((u8 *)arg0 + 0x10);
     if (end - len > count) count = end - len;
     ((void (*)(void *, s32, s32))fn_80219284)(arg0, ((Vf78 *)arg0)->get() - 1, count);
     ((void (*)(void *, s32, void *, s32))fn_80219440)(arg0, 0, (void *)arg5, 4);
-    words[0x274 / 4] = 0;
-    words[0x278 / 4] = fn_80228F40(arg1, arg2);
+    *(s32 *)((u8 *)arg0 + 0x274) = 0;
+    *(s32 *)((u8 *)arg0 + 0x278) = fn_80228F40(arg1, arg2);
     return arg0;
 }
 #pragma pop
@@ -5328,6 +5303,7 @@ extern "C" s32 lbl_8055FBE0;
 extern "C" s32 lbl_8055FBFC;
 #pragma push
 #pragma processor 750
+#pragma opt_propagation off
 extern "C" void fn_80221544(void *arg0, s32 arg1) {
     struct Child { s32 base; s32 length; s32 offset; };
     struct Object {
@@ -6305,17 +6281,17 @@ extern "C" void fn_80223280(void *arg0, s32 arg1) {
     s32 temp_r29;
     char *temp_r30_2;
     u32 scratch[4];
-    register f32 temp_f31;
-    register f32 temp_f30;
-    register f32 temp_f29;
-    register f32 temp_f28;
-    register f32 temp_f27;
-    register f32 temp_f2;
-    register f32 temp_f1;
-    register f32 temp_f30_2;
-    register f32 temp_f6;
-    register f32 temp_f28_2;
-    register f32 temp_f27_2;
+    f32 temp_f31;
+    f32 temp_f30;
+    f32 temp_f29;
+    f32 temp_f28;
+    f32 temp_f27;
+    f32 temp_f2;
+    f32 temp_f1;
+    f32 temp_f30_2;
+    f32 temp_f6;
+    f32 temp_f28_2;
+    f32 temp_f27_2;
     temp_f30 = *(f32 *)((u8 *)arg0 + 0x408);
     temp_f29 = temp_f30;
     var_r28 = 0;
@@ -6326,19 +6302,22 @@ extern "C" void fn_80223280(void *arg0, s32 arg1) {
     scratch[2] = 0x43300000;
     goto loop_test;
 loop_body:
+        {
+        char *item = (char *)arg0 + var_r28 * 4;
         if (var_r28 == **(s32 **)((u8 *)arg0 + 0x2CC)) {
             temp_f29 = temp_f30;
-            temp_f30 += *(f32 *)((u8 *)arg0 + 0x400) + (*(f32 *)((u8 *)arg0 + var_r28 * 4 + 0x2F4) * temp_f28);
+            temp_f30 += *(f32 *)((u8 *)arg0 + 0x400) + (*(f32 *)(item + 0x2F4) * temp_f28);
             if (var_r28 + 1 < temp_r4) {
-                temp_f30 += *(f32 *)((u8 *)arg0 + var_r28 * 4 + 0x2F8) * temp_f28;
+                temp_f30 += *(f32 *)(item + 0x2F8) * temp_f28;
             }
         } else {
-            fn_80232BA4((char *)*(s32 *)((u8 *)arg0 + var_r28 * 4 + 0x244), *(s32 *)((u8 *)arg0 + 0x3FC), 0xFF000000, 0xC, temp_f27 + temp_f30, temp_f31 - temp_f27, *(f32 *)((u8 *)arg0 + 0x404), lbl_805634A8, lbl_805634A4);
-            fn_80232BA4((char *)*(s32 *)((u8 *)arg0 + var_r28 * 4 + 0x244), *(s32 *)((u8 *)arg0 + 0x3FC), fn_802236C8(arg0, var_r28), 0xC, temp_f30, temp_f31, *(f32 *)((u8 *)arg0 + 0x404), lbl_805634A8, lbl_805634A4);
-            temp_f30 += *(f32 *)((u8 *)arg0 + 0x400) + (*(f32 *)((u8 *)arg0 + var_r28 * 4 + 0x2F4) * temp_f28);
+            fn_80232BA4((char *)*(s32 **)(item + 0x244), *(s32 *)((u8 *)arg0 + 0x3FC), 0xFF000000, 0xC, temp_f27 + temp_f30, temp_f31 - temp_f27, *(f32 *)((u8 *)arg0 + 0x404), lbl_805634A8, lbl_805634A4);
+            fn_80232BA4((char *)*(s32 **)(item + 0x244), *(s32 *)((u8 *)arg0 + 0x3FC), fn_802236C8(arg0, var_r28), 0xC, temp_f30, temp_f31, *(f32 *)((u8 *)arg0 + 0x404), lbl_805634A8, lbl_805634A4);
+            temp_f30 += *(f32 *)((u8 *)arg0 + 0x400) + (*(f32 *)(item + 0x2F4) * temp_f28);
             if (var_r28 + 1 < *(s32 *)((u8 *)arg0 + 0x2C8)) {
-                temp_f30 += *(f32 *)((u8 *)arg0 + var_r28 * 4 + 0x2F8) * temp_f28;
+                temp_f30 += *(f32 *)(item + 0x2F8) * temp_f28;
             }
+        }
         }
         var_r28++;
 loop_test:
@@ -7205,7 +7184,6 @@ extern "C" s32 fn_80224B0C(void *widget, s32 action) {
 #pragma opt_propagation off
 extern "C" void *fn_80224B54(void *arg0, void *arg1, void *arg2) {
     s32 first;
-    void *p1 = arg1;
     void *p2 = arg2;
     volatile u8 *self = (volatile u8 *)arg0;
     f32 sp10;
@@ -7225,8 +7203,8 @@ extern "C" void *fn_80224B54(void *arg0, void *arg1, void *arg2) {
         sprintf((char *)(self + 0x259), lbl_8033DAD8, fn_80129D90(1, 0x42, 0x45), first);
         break;
     }
-    if (p1 != 0) {
-        *(s32 *)(self + 0x244) = (s32)p1;
+    if (arg1 != 0) {
+        *(s32 *)(self + 0x244) = (s32)arg1;
     } else {
         *(s32 *)(self + 0x244) = fn_80131234((u8 *)p2 + 0x20);
     }
@@ -7403,9 +7381,8 @@ extern "C" u8 lbl_8033E140[];
                                         * deleting destructor is slot 0x8 */
 extern f32 lbl_80563544;
 extern f32 lbl_805634E0;
-#pragma push
-#pragma scheduling invalid_target
-extern "C" void *fn_8022553C(void *arg0, void *arg1, void *arg2) {
+#pragma scheduling on
+extern "C" void *fn_8022553C(register void *arg0, void *arg1, register void *arg2) {
 register u8 *obj = (u8 *)arg0;
 register u8 *ctx = (u8 *)arg2;
 s32 count;
@@ -7428,14 +7405,14 @@ count = *(s32 *)(ctx + 0x9C);
 count = count < 3 ? count : 3;
 *(s32 *)(obj + 0x24C) = count;
 temp_f4 = (f32)lbl_8055FB9C;
-temp_f3 = temp_f4 / lbl_80563544;
-*(f32 *)(obj + 0x254) = (f32)*(s32 *)(obj + 4) + temp_f3;
+temp_f3 = temp_f4 / -2.0f;
+*(f32 *)(obj + 0x254) = temp_f3 + (f32)*(s32 *)(obj + 4);
 temp_f2 = (f32)lbl_8055FBA0;
-temp_f1 = temp_f2 * lbl_805634C4;
+temp_f1 = temp_f2 * 0.5f;
 *(f32 *)(obj + 0x258) = temp_f1 - (f32)*(s32 *)(obj + 8);
-*(f32 *)(obj + 0x25C) = (f32)fn_80232B70(*(s32 *)(obj + 0x248)) + lbl_805634E0;
+*(f32 *)(obj + 0x25C) = (f32)fn_80232B70(*(s32 *)(obj + 0x248)) + 5.0f;
 value = *(f32 *)(obj + 0x25C) * (f32)*(s32 *)(*(s32 *)(obj + 0x244) + 8);
-half = lbl_805634C4 * value;
+half = 0.5f * value;
 *(f32 *)(obj + 0x260) = value;
 *(f32 *)(obj + 0x264) = *(f32 *)(obj + 0x258) + half;
 *(f32 *)(obj + 0x268) = *(f32 *)(obj + 0x258) - half;
@@ -7472,14 +7449,12 @@ offset += 0xC;
 }
 *(s32 *)(obj + 0x274) = 0;
 *(f32 *)(obj + 0x250) = fn_8023659C();
-*(f32 *)(obj + 0x26C) = lbl_805634A8;
+*(f32 *)(obj + 0x26C) = 0.0f;
 *(f32 *)(obj + 0x270) = fn_8023659C();
 *(s32 *)(obj + 0x27C) = 0;
 *(s32 *)(obj + 0x280) = fn_80228F40(*(s32 *)(obj + 4), *(s32 *)(obj + 8));
 return arg0;
 }
-#pragma scheduling on
-#pragma pop
 /* The row table the scrolling list walks (built elsewhere; fn_8022553C reads its
  * counts and fn_802263CC asks it before accepting a message). */
 typedef struct ScrollRowTable {
