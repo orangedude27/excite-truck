@@ -9259,13 +9259,10 @@ static inline u32 Fn800B25CCToSjis(u16 *c) {
 }
 static inline u32 Fn800B25CCUpperSjis(u16 *c, u16 *out) {
     M2C_FIELD(&lbl_803D2140, s32 (**)(u8 *, u16 *, s32 *), 0x48)((u8 *)c, out, (s32 *)lbl_803D2140);
-    u32 r = Fn800B25CCUpperWide(*out, out);
-    if (r == 1) {
-        M2C_FIELD(&lbl_803D2140, s32 (**)(u16 *, u16 *), 0x4C)(out, out);
-    } else {
-        r = 0;
+    if (Fn800B25CCUpperWide(*out, out) == 1) {
+        return Fn800B25CCToSjis(out);
     }
-    return r;
+    return 0;
 }
 #pragma opt_propagation on
 u16 fn_800B25CC(void *arg0, s32 arg1) {
