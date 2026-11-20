@@ -135,6 +135,10 @@ extern "C" void fn_802BEDFC(void) {
 #pragma scheduling on
 #pragma cplusplus reset
 
+static inline float clampMax(float x, float hi) {
+    return x > hi ? x : hi;
+}
+
 #pragma dont_inline on
 float fn_802BEFB4(void) {
     float value;
@@ -1079,7 +1083,7 @@ extern int fn_802DCFCC(int, int, int, int, float, float);
 extern void fn_802DD27C(void *, int, void *, int), fn_802DD228(void);
 extern void fn_802C03F0(void *arg0) {
     float s[0x83];
-    float f0, f1, f2, f14, f15, f16;
+    float f0, f1, f2, f14;
     double d200;
     void **vo;
     int r27, r28, r26, r29;
@@ -1089,6 +1093,10 @@ extern void fn_802C03F0(void *arg0) {
     float t4_3, t3_3, t2_3, t1_5, t0, t0_2, t0_3, t0_4;
     int r0;
     unsigned char *r25;
+    int vr, i;
+    float f8, f7, f5_4, f6_4, f3_4, f4_4, f2_4, f8_3;
+    unsigned short idx[6];
+    float *q;
     fn_802C8B08(&s[84]);
     f14 = s[94] - lbl_8055FAF4;
     fn_802C98DC(&s[5], &s[3], &s[4], &s[2], s[94]);
@@ -1100,9 +1108,9 @@ extern void fn_802C03F0(void *arg0) {
     verts = (unsigned char *)(int)fn_802DD42C(0x6000, f1);
     (void)fn_802C9C50();
     (void)fn_802C9C40();
-    f15 = fn_802C9C38();
+    (void)fn_802C9C38();
     vo = *(void ***)((char *)arg0 + 0x2C58);
-    f16 = fn_802C9C48();
+    (void)fn_802C9C48();
     f14 = ((float (*)(void *))((void **)vo[0])[6])(vo);
     f0 = lbl_80564E00 / (f14 * lbl_80564DF4);
     s[60] = s[90]; s[61] = s[91]; s[62] = s[92];
@@ -1124,8 +1132,8 @@ extern void fn_802C03F0(void *arg0) {
     s[60] = f0;
     s[17] = lbl_80564D90;
     PSVECCrossProduct(&s[60], &s[15], &s[57]);
-    t23 = lbl_80564DAC * (lbl_80564E00 - f16);
-    t25 = lbl_80564DAC * (lbl_80564E14 - f15);
+    t23 = lbl_80564DAC * lbl_80564E00;
+    t25 = lbl_80564DAC * lbl_80564E14;
     d200 = (double)(f2 - s[127]);
     r27 = 0;
     r28 = 0;
@@ -1183,13 +1191,85 @@ extern void fn_802C03F0(void *arg0) {
             r26++;
             t0_2 = ((s[42] - r29) + t23) / lbl_80564E00;
             t0_3 = lbl_80564DAC + ((t0_2 - lbl_80564DAC) * f0);
-            t0_4 = lbl_80564DAC + (lbl_80564E18 * (((((s[43] - f15) + t25) / lbl_80564E14) - lbl_80564DAC) * f0));
+            t0_4 = lbl_80564DAC + (lbl_80564E18 * (((((s[43]) + t25) / lbl_80564E14) - lbl_80564DAC) * f0));
             *(float *)(r25 + 0x10) = t0_3;
             *(float *)(r25 + 0x14) = t0_4;
         } while (r26 < 0x10);
         r27++;
         r28 += 0x10;
     } while (r27 < 0x40);
+    s[39] = s[93];
+    s[7] = lbl_80564D90;
+    s[11] = s[95];
+    fn_802DBE4C(s[93], s[95], lbl_80564D90);
+    for (i = 0; i < 8; i++) s[64 + i] = (float)lbl_802FAC30[i];
+    s[67] = (float)fn_8002EFB4(lbl_80564DD8 * fn_801E7E18(lbl_802FAC30[6], lbl_802FAC30[5], lbl_802FAC30[4], lbl_802FAC30[3], lbl_802FAC30[2], lbl_802FAC30[1], lbl_802FAC30[0]), lbl_80564DE0);
+    ((void (*)(int, void *))fn_802D3D94)(2, &s[64]);
+    f1 = lbl_80564E1C * s[94];
+    if (f1 > lbl_80564D80) {} else f1 = lbl_80564D80;
+    r25 = (unsigned char *)(int)fn_80147C50(0, lbl_8055FAEC, lbl_80564D80 / f1);
+    vo = *(void ***)((char *)arg0 + 0x2C58);
+    ((void (*)(void **))((void **)vo[0])[4])(vo);
+    fn_802C8BD0(-1);
+    vo = *(void ***)((char *)arg0 + 0x2C58);
+    vr = ((int (*)(void **))((void **)vo[0])[4])(vo);
+    fn_802DCFCC(vr, *(int *)((char *)arg0 + 0x2C54), *(int *)((char *)arg0 + 0x2C50), (int)r25, lbl_8055CF74, lbl_80564D80 / (lbl_80564E20 * lbl_80564D78));
+    fn_802DD27C(verts, 0x400, (char *)arg0 + 4, 0x1626);
+    fn_802DD228();
+    fn_802C8D74();
+    fn_802DBECC();
+    fn_802C8B08(&s[72]);
+    ((void (*)(float *, float *, float *, float *))fn_802C98DC)(&s[0], &s[1], &s[0], &s[0]);
+    f8 = lbl_80564D7C;
+    s[1] = s[1] + f8;
+    s[36] = s[81] + (s[78] * s[1]);
+    s[37] = s[82] + (s[79] * s[1]);
+    s[38] = s[83] + (s[80] * s[1]);
+    if (f8 > s[76]) {} else f8 = s[76];
+    s[31] = s[79];
+    f8_3 = (lbl_8055FAF4 - s[37]) / f8;
+    f7 = s[75] * f8_3;
+    f5_4 = s[76] * f8_3;
+    f6_4 = s[36] + f7;
+    f3_4 = s[77] * f8_3;
+    s[30] = s[75];
+    f4_4 = s[37] + f5_4;
+    f2_4 = s[38] + f3_4;
+    s[33] = f6_4;
+    s[34] = f4_4;
+    s[35] = f2_4;
+    s[32] = s[80];
+    s[31] = lbl_80564D90;
+    s[12] = lbl_80564D90;
+    s[13] = lbl_80564D80;
+    s[14] = lbl_80564D90;
+    PSVECCrossProduct(&s[12], &s[30], &s[27]);
+    {
+        int ctr = 4;
+        for (i = 0; i < 6; i++) idx[i] = ((unsigned short *)lbl_802FAC50)[i];
+        s[24] = s[33] + (s[27] * lbl_80564E24);
+        s[25] = s[34] + (s[28] * lbl_80564E24);
+        s[26] = s[35] + (s[29] * lbl_80564E24);
+        s[23] = s[35] + (s[29] * lbl_80564E28);
+        s[21] = s[33] + (s[27] * lbl_80564E28);
+        s[22] = s[34] + (s[28] * lbl_80564E28);
+        q = &s[96];
+        do {
+            float *a = (i & 1) ? &s[21] : &s[24];
+            float u = (i & 2) ? lbl_80564E24 : lbl_80564D90;
+            q[0] = a[0] + (s[75] * u);
+            q[4] = a[4] + (s[76] * u);
+            q[8] = a[8] + (s[77] * u);
+            q[0x14] = lbl_80564D90;
+            q[0x10] = lbl_80564D90;
+            *(int *)&q[0xC] = lbl_8055FAF0;
+            i++;
+            q += 6;
+        } while (--ctr != 0);
+    }
+    fn_802C8BD0(-1);
+    fn_802C8DB8(&s[96], 4, idx, 6);
+    fn_802C8D74();
 }
 
 #pragma pop
