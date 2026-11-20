@@ -94,7 +94,7 @@ extern u8 lbl_8033B588[];
 extern const float lbl_80562FF0;
 extern "C" void *fn_802C6FC0(void *, int, int);
 extern "C" void *fn_802C9A40(void);
-extern "C" void fn_8029798C(void *, void *, int);
+extern "C" void fn_8029798C(void *, void *, u32, f32, f32);
 extern "C" void fn_80297988(void *);
 extern "C" void fn_802981EC(void *);
 extern "C" void fn_801F4DD4(void *, void *);
