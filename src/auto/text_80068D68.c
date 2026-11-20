@@ -2209,6 +2209,14 @@ typedef struct {
     u16 shorts2[16];
 } WUDCtrlClearView;
 
+typedef struct {
+    u8 pad0[0xCC8];
+    u32 words[16];
+    u8 pad1[0x1018];
+    u16 shorts1[16];
+    u16 shorts2[16];
+} WUDInitClearView;
+
 s32 fn_8006A460(s32 arg0) {
     register u8 *var_r6;
     u32 temp_r10;
@@ -4251,7 +4259,7 @@ s32 hcisu_h2_receive_msg(u16 arg0, u8 *arg1) {
     register u8 *var_r22;
     register u8 var_r17;
     register u16 var_r18;
-    register u8 *buf;
+    u8 *buf;
     register u16 offset;
     register u16 remaining;
     register u16 len;
@@ -6782,24 +6790,28 @@ void bta_hh_api_disable(void) {
     }
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void bta_hh_disc_cmpl(void) {
-    UINT8 status = 0;
-    UINT8 i;
-    void (*cb)(int, void *);
+    s8 status = 0;
+    u8 *base;
+    u32 i;
+    volatile s8 *__restrict pstatus = &status;
 
-    if (HID_HostDeregister() == HID_SUCCESS)
+    if (HID_HostDeregister() == 0) {
         return;
-    status = 6;
+    }
+    *pstatus = 6;
     i = 0;
-    for (; i < 0x10; i++)
-        fn_800716F0(lbl_803C0D48 + i * 0x20 + 0x14);
-    fn_800716F0(lbl_803C0D48 + 0x228);
-    cb = *(void (**)(int, void *))(lbl_803C0D48 + 0x224);
-    (*cb)(1, (void *)&status);
-    memset(lbl_803C0D48, 0, 0x230);
+    base = lbl_803C0D48;
+    do {
+        fn_800716F0(base + ((u32)(u8)i << 5) + 0x14);
+        i++;
+    } while (i < 16);
+    base = lbl_803C0D48;
+    fn_800716F0(base + 0x228);
+    (*(void (**)(u32, void *))(base + 0x224))(1, &status);
+    memset(base, 0, 0x230);
 }
-#pragma scheduling reset
 extern u8 bta_hh_tod_spt(void *, u8);
 /* SDP callback for HID host: on success, ensures device type is supported, adds the
  * host device if needed, updates device list, then frees discovery DB and notifies
@@ -12268,9 +12280,9 @@ void bta_dm_inq_cmpl(void *p_data) {
 }
 
 void bta_dm_rmt_name(s32 arg0) {
-#pragma optimization_level 3
     extern void bta_dm_remname_cback(u8 *);
     BtaDmSearch info;
+    u8 *scb = bta_dm_search_cb;
     tBTM_INQ_INFO *p_inq_info;
     u8 *peer_addr;
     void *p_msg;
@@ -12286,7 +12298,7 @@ void bta_dm_rmt_name(s32 arg0) {
             DM_SCB_P_SEARCH_CBACK(BTA_DM_DISC_RES_EVT, &info);
         } else {
             if (BTM_CB_PAGE_TIMEOUT < 0x7530)
-                bta_sys_start_timer((s32)DM_SCB_SDP_DB_TIMER, BTA_DM_REMT_NAME_TOUT_EVT, BTM_CB_PAGE_TIMEOUT + 0x64);
+                bta_sys_start_timer((s32)(scb + 0x58), BTA_DM_REMT_NAME_TOUT_EVT, BTM_CB_PAGE_TIMEOUT + 0x64);
             if (BTM_ReadRemoteDeviceName(INQ_INFO_BD_ADDR(DM_SCB_P_INQ_INFO), (tBTM_CMPL_CB *)bta_dm_remname_cback) != 1) {
                 bta_sys_stop_timer((s32)DM_SCB_SDP_DB_TIMER);
                 peer_addr = INQ_INFO_BD_ADDR(DM_SCB_P_INQ_INFO);
@@ -12314,7 +12326,6 @@ void bta_dm_rmt_name(s32 arg0) {
         }
     }
     DM_SCB_P_SEARCH_CBACK(2, (void *)(arg0 + 8));
-#pragma optimization_level 4
 }
 
 /* Handle a remote name discovery request by posting a "name done/none" result and reporting it to the search callback. */
@@ -15331,32 +15342,28 @@ void gap_connect_ind(BD_ADDR addr, UINT16 cid, UINT16 psm, UINT8 status) {
 
 #pragma optimization_level 4
 void gap_connect_cfm(u32 cid, s32 result) {
-    u8 *conn = lbl_803C3740 + 0xAC;
+    u8 *entry = lbl_803C3740 + 0xAC;
     u8 i;
     u16 psm;
-    for (i = 0; i < 8; i++, conn += 0x60) {
-        if (conn[0] != 0) {
-            if (*(u16 *)(conn + 6) == cid)
-                goto found;
-            else
-                continue;
-        }
+    for (i = 0; i < 8; i++, entry += 0x60) {
+        if (entry[0] != 0 && *(u16 *)(entry + 6) == cid)
+            goto found;
     }
-    conn = 0;
+    entry = 0;
 found:
-    if (conn == 0)
+    if (entry == 0)
         return;
-    if (result == 0 && conn[0] == 2) {
-        conn[0] = 3;
-        L2CA_ConfigReq((u16)cid, (tL2CAP_CFG_INFO *)(conn + 0x24));
+    if (result == 0 && entry[0] == 2) {
+        entry[0] = 3;
+        ((void (*)(u32, tL2CAP_CFG_INFO *))L2CA_ConfigReq)(cid, (tL2CAP_CFG_INFO *)(entry + 0x24));
         return;
     }
-    if (*(void **)(conn + 0x20) != 0)
-        ((void (*)(u16, u16))*(void **)(conn + 0x20))(*(u16 *)(conn + 4), 0x101);
-    psm = *(u16 *)(conn + 0x10);
-    while (*(u32 *)(conn + 0x14) != 0)
-        GKI_freebuf(GKI_dequeue((BUFFER_Q *)(conn + 0x14)));
-    conn[0] = 0;
+    if (*(void **)(entry + 0x20) != 0)
+        ((void (*)(u16, u16))*(void **)(entry + 0x20))(*(u16 *)(entry + 4), 0x101);
+    psm = *(u16 *)(entry + 0x10);
+    while (*(u32 *)(entry + 0x14) != 0)
+        GKI_freebuf(GKI_dequeue((BUFFER_Q *)(entry + 0x14)));
+    entry[0] = 0;
     {
         u8 *p = lbl_803C3740 + 0xAC;
         for (i = 0; i < 8; i++, p += 0x60) {
@@ -27555,13 +27562,13 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
             return;
         }
         req_offset = (UINT16)(((UINT16)p_req[1] << 8) + p_req[2]);
-        if (req_offset != ((tCCB_CONT_VIEW *)p_ccb)->cont_off) {
+        if (req_offset != *(volatile UINT16 *)((UINT8 *)p_ccb + 0x476)) {
             sdpu_build_n_send_error(p_ccb, trans_num, 5, NULL);
             return;
         }
     } else {
         p_rsp = (UINT8 *)p_ccb + 0x29;
-        ((tCCB_CONT_VIEW *)p_ccb)->cont_off = 0;
+        *(volatile UINT16 *)((UINT8 *)p_ccb + 0x476) = 0;
         p_rec = sdp_db_service_search(NULL, &uid_seq);
         while (p_rec != NULL) {
             attr_seq = attr_seq_sav;
@@ -27605,7 +27612,7 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
             *((UINT8 *)p_ccb + 0x27) = adjusted >> 8;
             *((UINT8 *)p_ccb + 0x28) = adjusted;
         } else {
-            ((tCCB_CONT_VIEW *)p_ccb)->cont_off = 1;
+            *(volatile UINT16 *)((UINT8 *)p_ccb + 0x476) = 1;
             *((UINT8 *)p_ccb + 0x27) = 0x35;
             *((UINT8 *)p_ccb + 0x28) = len_to_send - 3;
             p_ccb->list_len = len_to_send - 1;
@@ -27631,14 +27638,14 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
     p_rsp_param_len[2] = len_to_send >> 8;
     p_rsp_param_len[3] = len_to_send;
     p_rsp = p_rsp_param_len + 4;
-    memcpy(p_rsp, (UINT8 *)p_ccb + ((tCCB_CONT_VIEW *)p_ccb)->cont_off + 0x26, len_to_send);
+    memcpy(p_rsp, (UINT8 *)p_ccb + *(volatile UINT16 *)((UINT8 *)p_ccb + 0x476) + 0x26, len_to_send);
     p_rsp += len_to_send;
     p_ccb->list_len -= len_to_send;
-    ((tCCB_CONT_VIEW *)p_ccb)->cont_off += len_to_send;
+    *(volatile UINT16 *)((UINT8 *)p_ccb + 0x476) += len_to_send;
     if (p_ccb->list_len != 0) {
         p_rsp[0] = 2;
-        p_rsp[1] = ((tCCB_CONT_VIEW *)p_ccb)->cont_off >> 8;
-        p_rsp[2] = ((tCCB_CONT_VIEW *)p_ccb)->cont_off;
+        p_rsp[1] = *(volatile UINT16 *)((UINT8 *)p_ccb + 0x476) >> 8;
+        p_rsp[2] = *(volatile UINT16 *)((UINT8 *)p_ccb + 0x476);
         p_rsp += 3;
     } else {
         p_rsp[0] = 0;
