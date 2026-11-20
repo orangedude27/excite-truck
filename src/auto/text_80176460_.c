@@ -797,23 +797,25 @@ void fn_80176BA8(void) {
 #pragma processor 750
 void fn_80176BAC(void) {
     f32 now = lbl_8055E3C8;
-    f32 upper = lbl_80561B38;
-    f32 delta = now - lbl_8055E3FC;
     f32 lower;
+    f32 delta = now - lbl_8055E3FC;
+    f32 upper = lbl_80561B38;
     f32 value = upper < delta ? delta : upper;
-
     lower = lbl_80561B3C;
     value = value > lower ? value : lower;
     fn_8017ED00(value);
     lbl_8055E3FC = now;
 }
 #pragma pop
+#pragma push
+#pragma scheduling full
 s32 *fn_80176C0C(register s32 *arg0, s32 *arg1) {
-    s32 length = *arg1++;
-    *arg0 = length;
-    memcpy(arg0 + 1, arg1, length);
+    s32 length = arg1[0];
+    arg0[0] = length;
+    memcpy(arg0 + 1, arg1 + 1, length);
     return arg0;
 }
+#pragma pop
 #pragma scheduling on
 #pragma dont_inline on
 /* Promotes the pending PhysicsCommand (sPendingCommand / lbl_804303D4) into the active command slot (lbl_804303C8), resets the pending command to PHYS_MODE_NONE, runs physics world reset (fn_80179320), and advances the physics state machine (lbl_8055E3F4) to state 3. */
