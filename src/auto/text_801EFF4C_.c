@@ -453,7 +453,6 @@ extern "C" void fn_801F06DC(void *arg0, void *arg1) {
     char name[0x40];
     char valueName[0x20];
     float value;
-    float def;
     const char *key;
 
     if (((Fn801F06DCResource *)arg1)->test(strings + 0x90)) {
@@ -467,15 +466,14 @@ extern "C" void fn_801F06DC(void *arg0, void *arg1) {
             lod->entries[lod->count].distSq = value * value;
         }
         lod->value44 = ((Fn801F06DCResource *)arg1)->getValue(strings + 0x9C);
-        def = lbl_80562F28;
-        value = ((Fn801F06DCResource *)arg1)->getValueWithDefault(strings + 0xA8, def);
+        value = ((Fn801F06DCResource *)arg1)->getValueWithDefault(strings + 0xA8, 500.0f);
         lod->value48 = value * value;
     } else {
         int handle;
         float distSq;
         int count;
         handle = fn_802C6FC0(((Fn801F06DCResource *)arg1)->find((char *)&lbl_8055B0F0), 0, 0);
-        distSq = lbl_80562F1C;
+        distSq = 0.0f;
         count = 1;
         lod->entries[0].handle = handle;
         lod->entries[0].distSq = distSq;
@@ -851,15 +849,16 @@ void fn_801F13F4(int *arg0, float arg1, float arg2) {
     char *entry;
     int count;
     if (arg1 > *(float *)(base + 0x48)) return;
-    if (*(unsigned int *)(arg0 + 1) == 3) return;
-    count = *(int *)(base + 0x40) - 1;
-    entry = base + count * 8;
-    while (count >= 0 && arg1 < *(float *)(entry + 4)) {
-        entry -= 8;
-        count--;
+    if (*(unsigned int *)(arg0 + 1) != 3) {
+        count = *(int *)(base + 0x40) - 1;
+        entry = base + count * 8;
+        while (count >= 0 && arg1 < *(float *)(entry + 4)) {
+            entry -= 8;
+            count--;
+        }
+        if (count < 0) return;
+        fn_802C7AE0(*(int *)(base + count * 8), (char *)arg0 + 0x18, -1, *(float *)(base + 0x44) + arg2);
     }
-    if (count < 0) return;
-    fn_802C7AE0(*(int *)(base + count * 8), (char *)arg0 + 0x18, -1, *(float *)(base + 0x44) + arg2);
 }
 #pragma pop
 void fn_801F1474(int *objectHandle, void *param) {
@@ -879,9 +878,9 @@ int fn_801F1494(int arg0, void *arg1, short arg2) {
     float speed = ((float (*)(int, int))fn_801E88F0)(-1, base);
     float squared = speed * speed;
     float value = ((float (*)(void *))fn_802C88E8)((char *)arg0 + 0x3C);
-    char *cursor;
     int index;
-    register int vx, vy, vz;
+    char *cursor;
+    int vx, vy, vz;
     Vec vec;
     value = value * squared;
     index = *(int *)(table + 0x40) - 1;
