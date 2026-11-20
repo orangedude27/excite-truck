@@ -76,6 +76,7 @@ void fn_80019BBC(void) {
     ((float *)lbl_803582C0)[61] = 0.0f;
     ((float *)lbl_803582C0)[62] = 0.0f;
 }
+#pragma dont_inline reset
 
 #pragma cplusplus on
 inline void *operator new(unsigned long size, char *name) { return fn_801284F8(size, name); }
