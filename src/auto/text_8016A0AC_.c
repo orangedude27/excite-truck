@@ -297,7 +297,7 @@ void fn_8016A438(void) {
     f32 c74 = lbl_80561974;
     f32 c70 = lbl_80561970;
     f32 c60 = lbl_80561960;
-    f32 now = c74;
+    f32 now;
     f32 t;
     f32 scale;
     f32 c7c = lbl_8056197C;
