@@ -278,6 +278,8 @@ void* fn_8018FD88(void* arg0, s32 arg1, s32 arg2) {
     return arg0;
 }
 #pragma scheduling on
+extern void fn_801B6654();
+extern int fn_80128668();
 
 void *fn_8018FE8C(void *arg0, s32 arg1) {
     s32 temp_r0;
@@ -1729,8 +1731,7 @@ extern "C" void fn_801916F4(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 0x30) != 0) {
         *(s32 *)((u8 *)arg0 + 0x30) = 4;
         f32 value = lbl_8056208C;
-        s32 invalid = -1;
-        *(s32 *)((u8 *)arg0 + 0x0C) = invalid;
+        *(volatile s32 *)((u8 *)arg0 + 0x0C) = -1;
         *(f32 *)((u8 *)arg0 + 0x40) = value;
     }
 #pragma opt_propagation reset
