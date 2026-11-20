@@ -1717,11 +1717,6 @@ void fn_802B7D1C(void) {
 }
 
 #pragma cplusplus on
-static inline void MenuListInit(s32 *list, s32 *buf, s32 cap) {
-    list[1] = 0;
-    list[2] = cap;
-    list[0] = (s32)buf;
-}
 extern "C" void fn_802B7D4C(void) {
     class Dummy {
     public:
