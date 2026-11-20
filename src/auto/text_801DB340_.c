@@ -344,12 +344,10 @@ void fn_801DC32C(void *base) {
         swap32(node + 4);
         for (j = 0; j < 32; j++) {
             q = node + 8;
-#pragma opt_unroll_loops on
             for (k = 0; k < 32; k++) {
                 swap16(q + j * 2);
                 q += 0x40;
             }
-#pragma opt_unroll_loops off
         }
         swap32(node + 0x808);
         swap32(node + 0x80C);
@@ -908,7 +906,7 @@ void fn_801DD808(void) {
 extern float lbl_80562B84;
 extern float fn_801DCF0C(void);
 #pragma scheduling invalid_target
-void fn_801DD88C(void) {
+float fn_801DD88C(float arg0, float arg1) {
     float temp[75];
     int i, j;
 
@@ -941,7 +939,7 @@ void fn_801DD88C(void) {
         p[2] = 0.0f;
     }
 
-    fn_801DCF0C();
+    ((float (*)(float, float))fn_801DCF0C)(arg0, arg1);
 
     for (j = 0; j < 72; j += 24) {
         lbl_804424B0[j + 0] = temp[j + 0];
