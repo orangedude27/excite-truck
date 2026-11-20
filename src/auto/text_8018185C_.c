@@ -288,6 +288,14 @@ float fn_80181A14(void *truck) {
 #undef dirtyParams
 }
 
+typedef struct {
+    char pad0[0x20];
+    float normal[8];
+    char pad1[8];
+    float dirty[8];
+    float alt[14];
+} TuningParams_80181A48;
+
 float fn_80181A48(void *arg0) {
     volatile float *p = lbl_804348E8;
     float f;
@@ -352,7 +360,6 @@ static inline void init_tuning_blocks_80181AFC(float *p, float *q, float *r) {
 #pragma processor 750
 #pragma opt_propagation off
 void fn_80181AFC(void) {
-typedef struct { float f[16]; } Block20;
 register char *base = (char *)lbl_804348E8;
 register char *names = lbl_803322B0;
 char *temp_r31;
@@ -363,34 +370,12 @@ float var_f1_3;
 int temp_r3;
 char *temp_r31_2;
 char *temp_r3_2;
-register float *temp_r4;
-register Block20 *temp_r5;
 
 register int initialize = lbl_8055A3B5;
 if (initialize != 0) {
-temp_r5 = (Block20 *)((char *)base + 0x20);
-temp_r4 = (float *)((char *)base + 0x48);
-(*(float *)((char *)(base) + (0x20))) = (float) lbl_80561CD4;
-#pragma push
-#pragma peephole off
-temp_r5->f[1] = (float) lbl_80561CD8;
-temp_r5->f[2] = (float) lbl_80561CDC;
-temp_r5->f[3] = (float) lbl_80561CD0;
-temp_r5->f[6] = (float) lbl_80561CD8;
-temp_r5->f[7] = (float) lbl_80561CE0;
-temp_r5->f[8] = (float) lbl_80561CE4;
-temp_r5->f[4] = (float) lbl_80561CE8;
-temp_r5->f[5] = (float) lbl_80561CE8;
-(*(float *)((char *)(base) + (0x48))) = (float) lbl_80561CEC;
-temp_r4[1] = (float) lbl_80561CD0;
-temp_r4[2] = (float) lbl_80561CD8;
-temp_r4[3] = (float) lbl_80561CD0;
-temp_r4[6] = (float) lbl_80561CF0;
-temp_r4[7] = (float) lbl_80561CE0;
-temp_r4[4] = (float) lbl_80561CE8;
-#pragma pop
-(*(float *)((char *)(&lbl_8055E4E8) + (0))) = (float) lbl_80561CF4;
-(*(float *)((char *)(&lbl_8055E4E8) + (4))) = (float) lbl_80561CD8;
+init_tuning_blocks_80181AFC((float *)((char *)base + 0x20),
+                            (float *)((char *)base + 0x48),
+                            &lbl_8055E4E8);
 }
 fn_802049DC((int)(void *)(names), (int)(void *)(&lbl_8055E4F0), lbl_80561CAC, lbl_80561CF8, lbl_80561CFC);
 fn_802049DC((int)(void *)(names + 0x18), (int)(void *)(&lbl_8055A3A4), lbl_80561D00, lbl_80561CD0, lbl_80561D00);
