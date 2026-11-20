@@ -2051,11 +2051,23 @@ volatile f32 vector[3];
 f32 rot[3];
 volatile f32 pad[3];
 f32 transformed[3];
+f32 transformed2[3];
 f32 vector2[3];
 volatile f32 *input;
 f32 *output;
 s32 i, made;
 f32 t2, t0, t5, t3, t6;
+struct Transform1 {
+    inline void run(f32 *o, f32 *v, f32 a, f32 b) const {
+        if (o == v) {
+            f32 f5 = b*lbl_805634A8; f32 f3 = a*lbl_805634A8; f32 f6 = v[2]*lbl_805634A8;
+            o[0] = f6+((a*lbl_805634A4)+f5); o[1] = f6+(f3+(b*lbl_805634A4)); o[2] = (v[2]*lbl_805634A4)+(f3+f5);
+        } else {
+            f32 f5 = b*lbl_805634A8; f32 f3 = a*lbl_805634A8; f32 f6 = v[2]*lbl_805634A8;
+            o[0] = f6+((a*lbl_805634A4)+f5); o[1] = f6+(f3+(b*lbl_805634A4)); o[2] = (v[2]*lbl_805634A4)+(f3+f5);
+        }
+    }
+};
 fn_8021B2B0(arg0, *(s32 *)((u8 *)arg1 + 8), *(s32 *)((u8 *)arg1 + 0xC),
 (const char *)arg2, 8, arg3, *(s32 *)((u8 *)arg1 + 0x10));
 *(void **)arg0 = (void *)&lbl_8033F180;
@@ -2088,17 +2100,8 @@ vector[1]=t0;
 vector[2]=0.0f;
 pad[0]=0.0f; pad[1]=0.0f; pad[2]=0.0f;
 input=vector; output=transformed;
-if (output == input) {
-t5=t0*lbl_805634A8; t3=t2*lbl_805634A8; t6=vector[2]*lbl_805634A8;
-output[0]=t6+((t2*lbl_805634A4)+t5);
-output[1]=t6+(t3+(t0*lbl_805634A4));
-output[2]=(vector[2]*lbl_805634A4)+(t3+t5);
-} else {
-t5=t0*lbl_805634A8; t3=t2*lbl_805634A8; t6=vector[2]*lbl_805634A8;
-output[0]=t6+((t2*lbl_805634A4)+t5);
-output[1]=t6+(t3+(t0*lbl_805634A4));
-output[2]=(vector[2]*lbl_805634A4)+(t3+t5);
-}
+Transform1 tx1;
+tx1.run(output, (f32 *)input, t0, t2);
 matrix[9]=matrix[9]+transformed[0]; matrix[10]=matrix[10]+transformed[1]; matrix[11]=matrix[11]+transformed[2];
 memcpy(vector2+2,(u8 *)arg1+0xA4,4);
 memcpy(vector2+1,(u8 *)arg1+0xA8,4);
@@ -2114,10 +2117,10 @@ fn_80015B20(matrix,(void *)matrix2,matrix);
 t2=-vector[0]; t0=-vector[1];
 vector[0]=t2; vector[1]=t0;
 t5=(f32)t0; t3=(f32)t2;
-transformed[0]=matrix[0]*t3+matrix[3]*t5+matrix[6]*vector[2];
-transformed[1]=matrix[1]*t3+matrix[4]*t5+matrix[7]*vector[2];
-transformed[2]=matrix[2]*t3+matrix[5]*t5+matrix[8]*vector[2];
-matrix[9]+=transformed[0]; matrix[10]+=transformed[1]; matrix[11]+=transformed[2];
+transformed2[0]=(vector[2]*matrix[6])+((t3*matrix[0])+(t5*matrix[2]));
+transformed2[1]=(vector[2]*matrix[7])+((t3*matrix[1])+(t5*matrix[3]));
+transformed2[2]=(vector[2]*matrix[8])+((t3*matrix[2])+(t5*matrix[4]));
+matrix[9]+=transformed2[0]; matrix[10]+=transformed2[1]; matrix[11]+=transformed2[2];
 *(s32 *)((u8 *)arg0+0x370)=((s32 (*)(f32 *,f32))fn_8022EDE4)(matrix,lbl_805634A4);
 }
 return arg0;
@@ -3832,6 +3835,12 @@ extern "C" void fn_8021E7D4(void *);
 #pragma optimization_level 4
 // Match jump table dispatch structure from target
 extern "C" s32 fn_8021E620(void *arg0, s32 arg1) {
+    /* Key handler of the option list fn_8021E0C0 builds (vtable lbl_8033EA90):
+     * steps the selection (*indexPtr, +0x25C) and the visible window in
+     * valueRange (+0x248: {base, rowsVisible, firstRowShown}) on its page keys,
+     * re-clamps the window with fn_8021E7D4, and returns 1 when the key was
+     * used (0x121/0x122 = one line back/forward, 0x123/0x124 = one page
+     * forward/back, 0x125 = first entry, 0x126 = last entry). */
     switch (arg1) {
     case 0x121: {
         if (**(s32 **)((u8 *)arg0 + 0x25C) > 0)
@@ -3840,10 +3849,10 @@ extern "C" s32 fn_8021E620(void *arg0, s32 arg1) {
         return 1;
     }
     case 0x122: {
-        s32 *p = *(s32 **)((u8 *)arg0 + 0x25C);
-        s32 v = *p + 1;
+        s32 *indexPtr = *(s32 **)((u8 *)arg0 + 0x25C);
+        s32 v = *indexPtr + 1;
         if (v < *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x244) + 8))
-            *p = v;
+            *indexPtr = v;
         fn_8021E7D4(arg0);
         return 1;
     }
