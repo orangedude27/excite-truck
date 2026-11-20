@@ -2438,7 +2438,7 @@ extern "C" long ReadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPvll(void *
 extern "C" void DCStoreRange(void *, u32);
 extern "C" void *LoadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatable(void *self, unsigned int fileId, void *allocator) {
     typedef s32 (*ReadFileInfoFn)(void *, unsigned int, long *);
-    DummyAllocatable_LoadFile *alloc = (DummyAllocatable_LoadFile *)allocator;
+    SoundMemoryAllocatable *alloc = (SoundMemoryAllocatable *)allocator;
     long fileInfo[4];
 
     /* Load a sound archive file into memory allocated via the provided allocator. */
