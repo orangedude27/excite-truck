@@ -782,7 +782,6 @@ void fn_802D8DCC(void *arg0, int arg1) {
 }
 #pragma pop
 extern void *fn_802D7B5C(void *, void *);
-extern void *fn_802D7D98(void *, void *);
 extern void *fn_802D7FA0(void *, void *);
 extern void *fn_802D8A84(void *, void *);
 extern void *fn_802D8C00(void *, void *);
