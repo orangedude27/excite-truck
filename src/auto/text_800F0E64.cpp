@@ -516,7 +516,9 @@ extern "C" const char lbl_803243F0[];
 #pragma use_lmw_stmw off
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void* arg0, int arg1) {
     UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(arg0);
-    register u32 irq = OSDisableInterrupts();
+    struct { u32 irq; } irqHolder;
+    u32 &level = irqHolder.irq;
+    level = OSDisableInterrupts();
     fn_800E402C(Instance__15EmissionManagerFv());
     void* channel = *(void**)((u8*)arg0 + 0xB8);
     while (channel != 0) {
@@ -538,7 +540,7 @@ extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void* arg0, i
         channel = *(void**)((u8*)channel + 0xE4);
     }
     fn_800E4064(Instance__15EmissionManagerFv());
-    OSRestoreInterrupts(irq);
+    OSRestoreInterrupts(level);
 }
 #pragma pop
 extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFb(void *arg0, u8 arg1) {
@@ -6442,7 +6444,7 @@ extern "C" const char lbl_803264AC[];
 extern "C" const char lbl_803264D0[];
 extern "C" void fn_800FA7E0(void *self) {
     unsigned long message;
-    void *state;
+    unsigned long state;
     u8 *p = (u8 *)self;
     for (;;) {
         OSReceiveMessage(p + 0x2338, &message, 1);
@@ -6470,10 +6472,10 @@ extern "C" void fn_800FA7E0(void *self) {
             }
             UpdateAllChannel__Q46nw4hbm3snd6detail7ChannelFv();
             fn_800FEB9C();
-            state = (void *)OSDisableInterrupts();
+            state = OSDisableInterrupts();
             Instance__15EmissionManagerFv();
             UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv();
-            OSRestoreInterrupts((u32)state);
+            OSRestoreInterrupts(state);
             *(u32 *)(p + 0x2390) = OSGetTick() - tick;
             {
                 LinkListIter begin;
