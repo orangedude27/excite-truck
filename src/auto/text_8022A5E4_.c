@@ -396,7 +396,7 @@ void fn_8022AC1C(int unused0, char *unused1, int screenX, int screenY, int *outL
 #pragma use_lmw_stmw off
 void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *outMaxX, float *outMaxY, float x0, float y0) {
     int n;
-    float wid, hgt, one, dl;
+    float wid, hgt, one;
     char *p = fn_8022CA2C(unused);
     float minX = x0, minY = y0, maxX = x0, maxY = y0;
     int h = *(int *)(p + 0x64);
@@ -422,7 +422,7 @@ void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *o
         maxY = (y0 > t) ? maxY : t;
     }
     if (str != 0) {
-        float w = lbl_8056358C, ax, ay, dw;
+        float w = lbl_8056358C, ax, ay, dl, dw;
         int i, g;
         n = fn_8022AB94(str, 10) + 1;
         if (*(int *)(p + 4) != 0) {
@@ -573,6 +573,10 @@ void fn_8022B390(const char *unusedLabel, const char *text, int maxChars, int *o
 
 #pragma push
 #pragma processor 750
+/* Computes the X offset for drawing text with the given style and string.
+ * Measures the text width (using the font or bitmap font), applies the style's
+ * horizontal alignment (left/right/center) within the canvas width, and returns
+ * the pixel offset. If no string is given, returns the canvas width directly. */
 int fn_8022B498(int unused, const char *arg1)
 {
     struct Holder { int m; } h;
