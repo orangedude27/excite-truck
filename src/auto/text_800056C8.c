@@ -658,18 +658,20 @@ extern "C" void fn_80006110(void *arg0) {
     extern void fn_8001071C(void *, s32);
     extern u8 lbl_802FB69C[];
     f32 threshold;
-    s32 flag;
+    bool flag;
     s32 *settings;
     s32 index;
     f32 f2;
-    threshold = lbl_8056011C;
+    threshold = 0.0f;
     settings = (s32 *)lbl_8055D350;
     index = settings[7];
     f2 = *(f32 *)((s8 *)arg0 + index * 4 + 4);
     flag = f2 >= threshold && (*(f32 *)(settings + 4) - f2) > threshold;
     if (!flag) {
         if (fn_80005564() == 0) {
-            void *obj = *(void **)((s32 *)lbl_8034EEB8 + ((s32 *)lbl_8055D350)[7] * 4 + 7);
+            void **entries = (void **)lbl_8034EEB8;
+            s32 i2 = ((s32 *)lbl_8055D350)[7];
+            void *obj = entries[i2 * 4 + 7];
             ((VTable *)obj)->v7();
         }
     } else {
@@ -1807,10 +1809,10 @@ extern s32 fn_801CB8FC(void);
 #pragma scheduling on
 void fn_800077E4(void *arg0) {
     void *base = lbl_8055D350;
-    f32 *p = (f32 *)arg0 + ((s32 *)base)[7];
-    p[1] = ((f32 *)base)[4];
+    void *p = (u8 *)arg0 + ((s32 *)base)[7] * 4;
+    *(f32 *)((u8 *)p + 4) = ((f32 *)base)[4];
     if (fn_8000561C(p, base)) {
-        ((f32 *)arg0)[6] = ((f32 *)lbl_8055D350)[4];
+        *(f32 *)((u8 *)arg0 + 0x18) = ((f32 *)lbl_8055D350)[4];
         fn_80276DC8(((s32 *)lbl_8055D350)[7]);
     }
 }
