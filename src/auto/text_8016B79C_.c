@@ -1811,8 +1811,8 @@ extern "C" void fn_801479A8(void *, void *, void *, ...);
 static inline float HudEase(float t) {
     if (t < lbl_805619A4) return lbl_805619A4;
     if (t > lbl_80561984) return lbl_80561984;
-    if (t > lbl_80561980) return t * (t * (lbl_805619B8 * t)) + t * (lbl_805619BC * t);
-    return t * (t * (lbl_805619B8 * t)) - t * (lbl_805619BC * t);
+    if (t > lbl_80561980) return t * (-2.0f * t * t) + 3.0f * t * t;
+    return t * (-2.0f * t * t) - 3.0f * t * t;
 }
 #pragma push
 #pragma processor 750
