@@ -7790,7 +7790,6 @@ extern "C" s32 fn_800B037C(void *volume, s32 cluster, s32 value) {
     return saved;
 }
 
-struct WordHolderB0488 { u32 word; };
 extern "C" s32 fn_800B0488(void *arg0, u32 arg1, u32 arg2, void *arg3, s32 arg4) {
     u8 *obj = (u8 *)arg0, *ctx = (u8 *)arg3;
     u32 bytes = arg1 << 2;
@@ -7810,8 +7809,8 @@ extern "C" s32 fn_800B0488(void *arg0, u32 arg1, u32 arg2, void *arg3, s32 arg4)
         if (result) return result;
         *(u32 *)(ctx + 0x18) = block;
     }
-    register u8 *buffer = (u8 *)*(u32 *)(ctx + 8);
-    register u32 data = *(u32 *)(buffer + offset);
+    u8 *buffer = (u8 *)*(u32 *)(ctx + 8);
+    u32 data = *(u32 *)(buffer + offset);
     u32 upper = __rlwinm(data, 8, 8, 15);
     u32 lower = __rlwinm(data, 24, 16, 23);
     upper = __rlwimi(upper, data, 24, 0, 7);
