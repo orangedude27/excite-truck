@@ -118,7 +118,8 @@ struct PlayerRecord {
 
 extern int lbl_8034F5B8[];
 extern int lbl_8034F5D8[];
-extern int lbl_8055D3D8, lbl_8055D3DC, lbl_8055D3E8;
+extern int lbl_8055D3D8, lbl_8055D3DC;
+extern volatile int lbl_8055D3E8;
 extern unsigned char lbl_8055D3D4, lbl_8055D3D5;
 extern int lbl_8055D3E0;
 #define ALLOWED_VALUES lbl_8034F5D8 /* ring buffer of legal values for this setting */
