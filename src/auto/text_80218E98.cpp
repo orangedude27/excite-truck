@@ -8340,76 +8340,78 @@ extern "C" void fn_80227880(s32 unused, f32 x, f32 y, f32 width, f32 height) {
 extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 #pragma scheduling invalid_target
 #pragma processor 750
-extern "C" void fn_802278F0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
-    if (arg0) {
+extern "C" void fn_802278F0(s32 imageSet, f32 x, f32 y, f32 width, f32 height) {
+    /* Draw the image set's frames across the given region, positioning each
+     * frame by its own extent and stopping at the region's end. */
+    if (imageSet) {
         {
             f32 pos = lbl_805634A8;
-            s32 i = 8;
-            while (pos < farg2) {
-                f32 w = fn_80235EF0(arg0, i);
-                if (w - 1.0f < farg2 - pos) {
-                    fn_802353F4(arg0, i, farg0 + pos, farg1, lbl_805634A8);
+            s32 frame = 8;
+            while (pos < width) {
+                f32 frameWidth = fn_80235EF0(imageSet, frame);
+                if (frameWidth - 1.0f < width - pos) {
+                    fn_802353F4(imageSet, frame, x + pos, y, lbl_805634A8);
                 } else {
-                    fn_802354A0(arg0, i, -1, farg0 + pos, farg1, lbl_805634A8, farg2 - pos, fn_80235F64(arg0, i));
+                    fn_802354A0(imageSet, frame, -1, x + pos, y, lbl_805634A8, width - pos, fn_80235F64(imageSet, frame));
                 }
-                pos += w - 1.0f;
-                if (++i >= 10)
-                    i = 8;
+                pos += frameWidth - 1.0f;
+                if (++frame >= 10)
+                    frame = 8;
             }
         }
         {
             f32 pos = lbl_805634A8;
-            s32 i = 10;
-            f32 h = fn_80235F64(arg0, 10);
-            f32 y = h + (farg1 - farg3);
-            while (pos < farg2) {
-                f32 w = fn_80235EF0(arg0, i);
-                if (w - 1.0f < farg2 - pos) {
-                    fn_802353F4(arg0, i, farg0 + pos, y, lbl_805634A8);
+            s32 frame = 10;
+            f32 frameHeight = fn_80235F64(imageSet, 10);
+            f32 yPos = frameHeight + (y - height);
+            while (pos < width) {
+                f32 frameWidth = fn_80235EF0(imageSet, frame);
+                if (frameWidth - 1.0f < width - pos) {
+                    fn_802353F4(imageSet, frame, x + pos, yPos, lbl_805634A8);
                 } else {
-                    fn_802354A0(arg0, i, -1, farg0 + pos, y, lbl_805634A8, farg2 - pos, h);
+                    fn_802354A0(imageSet, frame, -1, x + pos, yPos, lbl_805634A8, width - pos, frameHeight);
                 }
-                pos += w - 1.0f;
-                if (++i >= 12)
-                    i = 10;
+                pos += frameWidth - 1.0f;
+                if (++frame >= 12)
+                    frame = 10;
             }
         }
         {
             f32 pos = lbl_805634A8;
-            s32 i = 4;
-            while (pos < farg3) {
-                f32 h = fn_80235F64(arg0, i);
-                if (h - 1.0f < farg3 - pos) {
-                    fn_802353F4(arg0, i, farg0, farg1 - pos, lbl_805634A8);
+            s32 frame = 4;
+            while (pos < height) {
+                f32 frameHeight = fn_80235F64(imageSet, frame);
+                if (frameHeight - 1.0f < height - pos) {
+                    fn_802353F4(imageSet, frame, x, y - pos, lbl_805634A8);
                 } else {
-                    fn_802354A0(arg0, i, -1, farg0, farg1 - pos, lbl_805634A8, fn_80235EF0(arg0, i), farg3 - pos);
+                    fn_802354A0(imageSet, frame, -1, x, y - pos, lbl_805634A8, fn_80235EF0(imageSet, frame), height - pos);
                 }
-                pos += h - 1.0f;
-                if (++i >= 6)
-                    i = 4;
+                pos += frameHeight - 1.0f;
+                if (++frame >= 6)
+                    frame = 4;
             }
         }
         {
             f32 pos = lbl_805634A8;
-            s32 i = 4;
-            f32 x = (farg0 + farg2) - fn_80235EF0(arg0, 4);
-            while (pos < farg3) {
-                f32 h = fn_80235F64(arg0, i);
-                if (h - 1.0f < farg3 - pos) {
-                    fn_802353F4(arg0, i, x, farg1 - pos, lbl_805634A8);
+            s32 frame = 4;
+            f32 xPos = (x + width) - fn_80235EF0(imageSet, 4);
+            while (pos < height) {
+                f32 frameHeight = fn_80235F64(imageSet, frame);
+                if (frameHeight - 1.0f < height - pos) {
+                    fn_802353F4(imageSet, frame, xPos, y - pos, lbl_805634A8);
                 } else {
-                    fn_802354A0(arg0, i, -1, x, farg1 - pos, lbl_805634A8, fn_80235EF0(arg0, i), farg3 - pos);
+                    fn_802354A0(imageSet, frame, -1, xPos, y - pos, lbl_805634A8, fn_80235EF0(imageSet, frame), height - pos);
                 }
-                pos += h - 1.0f;
-                if (++i >= 8)
-                    i = 6;
+                pos += frameHeight - 1.0f;
+                if (++frame >= 8)
+                    frame = 6;
             }
         }
-        fn_802353F4(arg0, 0, farg0 - lbl_805634EC, lbl_805634EC + farg1, lbl_805634A8);
-        fn_802353F4(arg0, 1, (lbl_805634EC + (farg0 + farg2)) - fn_80235EF0(arg0, 1), lbl_805634EC + farg1, lbl_805634A8);
-        fn_802353F4(arg0, 2, farg0 - lbl_805634EC, ((farg1 - farg3) - lbl_805634EC) + fn_80235F64(arg0, 2), lbl_805634A8);
-        farg1 = ((farg1 - farg3) - lbl_805634EC) + fn_80235F64(arg0, 3);
-        fn_802353F4(arg0, 3, (lbl_805634EC + (farg0 + farg2)) - fn_80235EF0(arg0, 3), farg1, lbl_805634A8);
+        fn_802353F4(imageSet, 0, x - lbl_805634EC, lbl_805634EC + y, lbl_805634A8);
+        fn_802353F4(imageSet, 1, (lbl_805634EC + (x + width)) - fn_80235EF0(imageSet, 1), lbl_805634EC + y, lbl_805634A8);
+        fn_802353F4(imageSet, 2, x - lbl_805634EC, ((y - height) - lbl_805634EC) + fn_80235F64(imageSet, 2), lbl_805634A8);
+        y = ((y - height) - lbl_805634EC) + fn_80235F64(imageSet, 3);
+        fn_802353F4(imageSet, 3, (lbl_805634EC + (x + width)) - fn_80235EF0(imageSet, 3), y, lbl_805634A8);
     }
 }
 
