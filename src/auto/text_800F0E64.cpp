@@ -4966,9 +4966,12 @@ static inline u8 *SndPrioList_GetFront(u8 *list) {
 struct SndPrioListIter {
     void *node;
 };
+static inline void SndPrioList_Erase(u8 *list, s32 it) {
+    s32 pos = it;
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(list, &pos);
+}
 static inline void SndPrioList_PopFront(u8 *list) {
-    s32 it = *(s32 *)(list + 4);
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(list, &it);
+    SndPrioList_Erase(list, *(s32 *)(list + 4));
 }
 static inline void SndPrioList_Insert(u8 *list, SndPrioListIter it, u8 *obj) {
     if (obj == 0) {
