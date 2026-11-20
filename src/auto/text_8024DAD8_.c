@@ -2620,7 +2620,6 @@ void fn_80251D0C(void *__restrict object) {
 
 #pragma push
 #pragma cplusplus on
-#pragma opt_propagation off
 extern "C" void fn_80251D7C(void *arg0) {
     typedef signed char s8;
     class Selector {
