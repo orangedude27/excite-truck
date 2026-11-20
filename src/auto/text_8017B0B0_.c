@@ -819,6 +819,7 @@ void fn_8017C7C8(void *arg0, void *arg1, void *arg2) {
     void *var_r29;
     void **var_r0;
     void **var_r3;
+    void **loop_obj;
     temp_r6 = *(int *)((char *)arg0 + 0x24);
     if (temp_r6 > 0) {
         var_r0 = *(void ***)((char *)arg0 + 0x14);
