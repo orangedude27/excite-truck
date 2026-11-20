@@ -5052,13 +5052,10 @@ extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *arg0) {
     index = iter->index;
     old = iter->position;
     iter->position = (index + 1) << iter->shift;
-    {
-        VFiPFEntIter *callArg = iter;
-        if (fn_800AB378(callArg, 0) != 0) {
-            iter->position = old;
-            iter->index = index;
-            return 1;
-        }
+    if (fn_800AB378(iter, 0) != 0) {
+        iter->position = old;
+        iter->index = index;
+        return 1;
     }
     if (iter->sector == 0xFFFFFFFFu)
         goto short_one;
@@ -17086,24 +17083,15 @@ extern "C" void fn_800C1984(s32 *arg0, s32 *arg1) {
     s32 *scale = lbl_802F4060;
     s32 *filteredOut = filtered;
     for (s32 i = 0; i < 9; i++) {
-        s32 c;
-        s32 left;
-        s32 k;
-        s32 right;
-        s32 reverseIndex;
-        s32 reverseK;
-        s32 forward;
-        s32 reverse;
-        s32 delta;
-        left = *input++;
-        k = *coeff++;
-        c = *scale++;
-        reverseIndex = 0x11 - i;
-        right = arg0[reverseIndex];
-        reverseK = lbl_802F4018[reverseIndex];
-        forward = fixedMul20(left, k);
-        reverse = fixedMul20(right, reverseK);
-        delta = forward - reverse;
+        register s32 left = *input++;
+        register s32 k = *coeff++;
+        register s32 c = *scale++;
+        s32 reverseIndex = 0x11 - i;
+        s32 right = arg0[reverseIndex];
+        s32 reverseK = lbl_802F4018[reverseIndex];
+        s32 forward = fixedMul20(left, k);
+        s32 reverse = fixedMul20(right, reverseK);
+        s32 delta = forward - reverse;
         *combinedOut++ = forward + reverse;
         *filteredOut++ = fixedMul20(c, delta);
     }
@@ -19169,7 +19157,7 @@ extern "C" void *fn_800ECAEC(void *);
 extern "C" s32 fn_800ECB90(void *, s32);
 extern "C" void fn_800CEF60(void *, void *, s32);
 #pragma push
-#pragma opt_propagation off
+#pragma opt_propagation on
 extern "C" void fn_800C6774(s32 arg0, void *arg1, u32 arg2) {
     const Fn800C6774Msgs *msgs = (const Fn800C6774Msgs *)lbl_8031D840;
     void *base;
@@ -19191,10 +19179,10 @@ extern "C" void fn_800C6774(s32 arg0, void *arg1, u32 arg2) {
         *(void **)((u8 *)base + 0x5C8) = block;
     }
     if (*(void * volatile *)((u8 *)base + 0x5C8) == NULL) {
-        Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, (s32)0xEFC, msgs->msg4C);
+        Panic__Q26nw4hbm2dbFPCciPCce(&msgs->file[0], (s32)0xEFC, &msgs->msg4C[0]);
     }
     if (fn_800ECB90(*(void * volatile *)((u8 *)base + 0x5C8), arg0) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, (s32)0xF01, msgs->msg80);
+        Panic__Q26nw4hbm2dbFPCciPCce(&msgs->file[0], (s32)0xF01, &msgs->msg80[0]);
     }
     fn_800CEF60(base, *(void * volatile *)((u8 *)base + 0x5C8), 0);
 }
@@ -21461,10 +21449,10 @@ extern "C" void fn_800D337C(s32,s32,s32);
 extern "C" const char *fn_800D3260(s32 arg0, s32 arg1, const char *arg2, s32 arg3) {
     s32 count = 0;
     s32 ch;
-    const char *base = (const char *)lbl_8031EBA0;
-    if (!arg2) Panic__Q26nw4hbm2dbFPCciPCce(base + 0, 0x2E9, (const char *)((u32)base + 0x54));
-    if (arg3 <= 0) Panic__Q26nw4hbm2dbFPCciPCce(base + 0, 0x2EA, (const char *)((u32)base + 0x7C));
-    base = (const char *)lbl_802F47D8;
+    u32 base = (u32)lbl_8031EBA0;
+    if (!arg2) Panic__Q26nw4hbm2dbFPCciPCce((const char *)(base + 0), 0x2E9, (const char *)(base + 0x54));
+    if (arg3 <= 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)(base + 0), 0x2EA, (const char *)(base + 0x7C));
+    base = (u32)lbl_802F47D8;
     goto cond;
 top:
     if (ch == 10 || ch == 0) return arg2;
@@ -21750,8 +21738,8 @@ extern "C" u32 fn_800D3A30(const char *arg0) {
     u8 c;
     u32 digit;
 
-    if (p == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)((unsigned int)base + 0), 0x1E6, base + 0x164);
-    if (lbl_8055DDD8 == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)((unsigned int)base + 0), 0x1E7, base + 0x134);
+    if (p == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x1E6, base + 0x164);
+    if (lbl_8055DDD8 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x1E7, base + 0x134);
     for (;;) {
         c = lbl_8055DDD8(p);
         if (c >= '0' && c <= '9') digit = c - '0';
