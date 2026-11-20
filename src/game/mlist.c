@@ -102,6 +102,7 @@ int fn_802CCD0C(void *arg0, void *arg1) {
     }
     return stricmp((char *)arg0, (char *)arg1);
 }
+#pragma pop
 
 #pragma cplusplus on
 // One element of the draw-entry pointer array at mlist+0x90. The virtual method
