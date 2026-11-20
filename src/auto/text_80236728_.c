@@ -758,34 +758,43 @@ typedef struct SObj { SVT *vt; } SObj;
 #pragma processor 750
 static unsigned char pass_flag_37AA0(int dummy, unsigned char flag, char *base) { return flag; }
 
-void fn_80237AA0(int arg0, float *arg1, float arg2)
+#pragma push
+#pragma processor 750
+void fn_80237AA0(int channel, float *valuesOut, float valueIn)
 {
-    float var_f31 = arg2;
+    /* uiAnime script callback (fn_80236914, registered with 2 args): with no
+     * channel it reads the two animated values of the current uiAnime node
+     * (the managers at +0x28/+0x2C) into valuesOut -- swapping them when the
+     * node's +0x21 direction flag is clear, and zeroing either when its +0x1F/+0x20
+     * flag is set -- otherwise it writes valueIn (complemented to 1.0f when the
+     * channel/direction pair calls for it) to the matching manager and always
+     * to the third manager at +0x30. */
+    float var_f31 = valueIn;
     float var_f1, var_f2;
     void *p;
-    if (arg0 == 0) {
+    if (channel == 0) {
         p = *(void **)(lbl_8055F0C0 + 0x28);
         if (p) var_f1 = call_get_37AA0(p);
         else var_f1 = lbl_805636E0;
-        arg1[0] = var_f1;
+        valuesOut[0] = var_f1;
         p = *(void **)(lbl_8055F0C0 + 0x2C);
         if (p) var_f2 = call_get_37AA0(p);
         else var_f2 = lbl_805636E0;
-        arg1[1] = var_f2;
+        valuesOut[1] = var_f2;
         if ((unsigned char)lbl_8055F0C0[0x21] == 0) {
             double tmp = var_f2;
-            arg1[1] = arg1[0];
-            arg1[0] = tmp;
+            valuesOut[1] = valuesOut[0];
+            valuesOut[0] = tmp;
         }
-        if ((unsigned char)lbl_8055F0C0[0x1F] != 0) arg1[0] = lbl_805636E0;
-        if ((unsigned char)lbl_8055F0C0[0x20] != 0) arg1[1] = lbl_805636E0;
+        if ((unsigned char)lbl_8055F0C0[0x1F] != 0) valuesOut[0] = lbl_805636E0;
+        if ((unsigned char)lbl_8055F0C0[0x20] != 0) valuesOut[1] = lbl_805636E0;
     } else {
-        if (arg0 == 3) {
-            if ((unsigned char)lbl_8055F0C0[0x21] != 0) var_f31 = lbl_805636E4 - arg2;
+        if (channel == 3) {
+            if ((unsigned char)lbl_8055F0C0[0x21] != 0) var_f31 = lbl_805636E4 - valueIn;
         } else {
-            if ((unsigned char)lbl_8055F0C0[0x21] == 0) var_f31 = lbl_805636E4 - arg2;
+            if ((unsigned char)lbl_8055F0C0[0x21] == 0) var_f31 = lbl_805636E4 - valueIn;
         }
-        if ((unsigned int)(arg0 == 3) == (unsigned char)lbl_8055F0C0[0x21]) {
+        if ((unsigned int)(channel == 3) == (unsigned char)lbl_8055F0C0[0x21]) {
             p = *(void **)(lbl_8055F0C0 + 0x2C);
             if (p) call_set_37AA0(p, var_f31);
         } else {
