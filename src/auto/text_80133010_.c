@@ -428,17 +428,18 @@ int fn_801338D8(const char *arg0) {
     char *p = fn_801337E4((char *)arg0);
     unsigned char b = *p;
     int isnum = 0;
-    int c = (signed char)b;
+    register int c = (signed char)b;
     int table;
     if (c >= 0) {
         if (c < 0x100) {
-            table = *(int *)(lbl_802FE850 + 0x38);
-            isnum = (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 8) ? 1 : 0;
+            table = *(int *)((char *)&lbl_802FE850 + 0x38);
+            isnum = *(unsigned short *)(*(int *)(table + 8) + c * 2) & 8;
         } else
             isnum = 1;
     }
     if (isnum == 0) {
-        if ((signed char)b == '-') return atoi(p);
+        if ((signed char)b == '-')
+            return atoi(p);
         return fn_80133844(p);
     }
     return atoi(p);
@@ -450,12 +451,13 @@ extern double atof(const char *);
 #pragma dont_inline on
 float fn_80133960(const char *arg0) {
     char *p = fn_801337E4((char *)arg0);
-    register int c = (signed char)*p;
+    unsigned char c = *p;
     register int value = 0;
+    register int ch = (int)(signed char)c;
 
-    if (c < 0)
+    if (ch < 0)
         goto set_invalid;
-    if (c < 0x100)
+    if (ch < 0x100)
         goto check_invalid;
 set_invalid:
     value = 1;
@@ -470,10 +472,10 @@ check_invalid:
 lookup:
     {
         int table = *(int *)((char *)&lbl_802FE850 + 0x38);
-        value = *(unsigned short *)(*(int *)(table + 8) + c * 2) & 8;
+        value = *(unsigned short *)(*(int *)(table + 8) + ch * 2) & 8;
     }
 test_char:
-    if (value || (unsigned char)(*p - 0x2d) <= 1)
+    if (value || (unsigned char)(c - 0x2d) <= 1)
         return (float)atof(p);
     return (float)(unsigned int)fn_80133844(p);
 }
@@ -686,7 +688,7 @@ check:
             fn_802E30C8(lbl_8032BA90, (char *)arg2, slot + 0x24);
         {
             register int zero = 0;
-            register float initial = lbl_805612D0;
+            register float initial = 0.0f;
             slot[0x14] = zero;
             slot[8] = zero;
             *(int *)(slot + 0xC) = zero;
@@ -698,16 +700,12 @@ check:
     }
     return 0;
 }
-#pragma pop
+#pragma peephole on
 int fn_80133F3C(int arg0) {
-    register int offset;
-    register int i;
-    register int *p;
-
-    offset = 0;
-    i = 0;
+    int i = 0;
+    int *p;
+    int offset;
     goto check;
-
 loop:
     offset = i * 0x38;
     if (arg0 == *(int *)((char *)p + offset + 0xC)) {
@@ -719,13 +717,10 @@ loop:
         i--;
     }
     i++;
-
 check:
     p = (int *)lbl_8055E07C;
     if (i < p[1]) goto loop;
 }
-#pragma dont_inline reset
-
 extern char lbl_8042F558[], lbl_8032BAC8[];
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
