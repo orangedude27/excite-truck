@@ -850,6 +850,7 @@ extern "C" int DVDGetDriveStatus(void);
 extern "C" void fn_80031C8C(unsigned short);
 extern "C" void fn_80031C94(unsigned short);
 extern "C" void fn_80031C9C(unsigned short);
+#pragma always_inline on
 static inline void SetSoundFlagAll_800E3228(void *list, unsigned char flag) {
     unsigned int interruptState = OSDisableInterrupts();
     unsigned char *it = *(unsigned char **)list;
