@@ -161,6 +161,17 @@ unsigned char fn_802C54CC(unsigned int value) { return (unsigned char)(value >> 
 #pragma scheduling invalid_target
 #pragma dont_inline on
 #pragma use_lmw_stmw off
+static inline void **mr_listAppend(int *list) {
+    int n = list[0];
+    if (n < list[1]) {
+        list[0] = n + 1;
+        return (void **)list[2] + n;
+    }
+    return 0;
+}
+#pragma push
+#pragma dont_inline off
+#pragma always_inline on
 void fn_802C54D4(void) {
     extern int lbl_804C1390[];
     extern int lbl_804C13A8[];
@@ -729,10 +740,14 @@ struct MasterList {
     (list)->buf = 0; \
     (list)->capacity = 0; \
 } while (0)
-#pragma scheduling on
+#pragma opt_propagation off
 void fn_802C6080(void) {
-    struct SubList { int count; int capacity; void *buf; };
-    register struct SubList *e64;
+    struct SubList {
+        int count;
+        int capacity;
+        void *buf;
+    };
+    register struct SubList *e;
     register struct SubList *e58;
     register struct SubList *e7c;
     register char *base;
@@ -740,21 +755,26 @@ void fn_802C6080(void) {
     register int i;
     int zero;
     void *ptr;
+
     base = (char *)lbl_804C1338;
-    e64 = (struct SubList *)(base + 0x64);
-    for (i = 0, offset = 0; i < e64->count; i++, offset += 0x10) {
-        if (*(int *)((char *)e64->buf + offset) > 0) {
+    e = (struct SubList *)(base + 0x64);
+    for (i = 0, offset = 0; i < *(int *)(base + 0x64); i++, offset += 0x10) {
+        if (*(int *)((char *)e->buf + offset) > 0) {
             ((void (*)(const char *, ...))fn_802E30C8)(lbl_8034B258, i);
             ((void (*)(const char *, ...))fn_802E30C8)(lbl_8034B294, ((int (*)(int))fn_802C7A10)(i));
         }
     }
+
     e7c = (struct SubList *)(base + 0x7C);
     fn_80128670(e7c->buf);
     ptr = *(void **)(base + 0x70 + 8);
     e7c->buf = 0;
     e7c->capacity = 0;
     *(int *)(base + 0x7C) = 0;
-    if (ptr != 0) fn_80128670((char *)ptr - 0x10);
+    if (ptr != 0) {
+        fn_80128670((char *)ptr - 0x10);
+    }
+
     e58 = (struct SubList *)(base + 0x58);
     zero = 0;
     ptr = e58->buf;
@@ -762,21 +782,26 @@ void fn_802C6080(void) {
     *(void **)(base + 0x70 + 8) = (void *)zero;
     *(int *)(base + 0x70 + 4) = zero;
     fn_80128670(ptr);
-    ptr = ((struct SubList *)(base + 0))->buf;
+
+    e = (struct SubList *)base;
     e58->buf = (void *)zero;
+    ptr = e->buf;
     e58->capacity = zero;
     *(int *)(base + 0x58) = zero;
     fn_80128670(ptr);
-    ((struct SubList *)(base + 0))->buf = (void *)zero;
-    ptr = e64->buf;
-    ((struct SubList *)(base + 0))->capacity = zero;
-    *(int *)base = zero;
-    if (ptr != 0) fn_80128670((char *)ptr - 0x10);
-    e64->count = 0;
-    e64->buf = 0;
-    e64->capacity = 0;
-}
 
+    e->buf = (void *)zero;
+    ptr = *(void **)(base + 0x64 + 8);
+    e->capacity = zero;
+    *(int *)base = zero;
+    if (ptr != 0) {
+        fn_80128670((char *)ptr - 0x10);
+    }
+
+    *(int *)(base + 0x64) = 0;
+    *(void **)(base + 0x64 + 8) = 0;
+    *(int *)(base + 0x64 + 4) = 0;
+}
 extern void fn_802C6A84(s32 *value, s32 delta);
 extern void fn_802C6A9C(s32 *value, s32 delta);
 extern void fn_802C6AFC(s32 *value, s32 delta);
@@ -1152,7 +1177,7 @@ void fn_802C7040(int instanceId) {
     }
 }
 
-#pragma scheduling invalid_target
+#pragma opt_propagation reset
 void fn_802C70AC(int arg0, void *arg1, int arg2, int arg3) {
     extern int fn_802D0514(void *);
     struct LocalResult {
@@ -1179,29 +1204,40 @@ void fn_802C70AC(int arg0, void *arg1, int arg2, int arg3) {
     out = local.vector;
     input = (const float *)arg1;
     if (out == rot) {
-        float a = input[3], b = input[4];
-        float d = input[0], e = input[1], f = input[2];
-        float c = input[5];
-        float g = input[6], h = input[7], i = input[8];
-        float y0 = rot[1] * a;
-        float y1 = rot[1] * b;
-        float x0 = rot[0] * d;
-        float x1 = rot[0] * e;
-        float x2 = rot[0] * f;
-        float y2 = rot[1] * c;
-        float z0 = rot[2] * g;
-        float z1 = rot[2] * h;
-        float z2 = rot[2] * i;
-        out[0] = (x0 + y0) + z0;
-        out[1] = (x1 + y1) + z1;
-        out[2] = (x2 + y2) + z2;
+        float x, y, z;
+        float m0, m3, m6, m1, m4, m7, m2, m5, m8;
+        m3 = input[3];
+        m4 = input[4];
+        m5 = input[5];
+        m0 = input[0];
+        m1 = input[1];
+        m2 = input[2];
+        m6 = input[6];
+        m7 = input[7];
+        m8 = input[8];
+        x = rot[0];
+        y = rot[1];
+        z = rot[2];
+        out[0] = z * m6 + (x * m0 + y * m3);
+        out[1] = z * m7 + (x * m1 + y * m4);
+        out[2] = z * m8 + (x * m2 + y * m5);
     } else {
-        float a0 = input[3], a1 = input[0], a2 = input[6];
-        float b0 = input[4], b1 = input[1], b2 = input[7];
-        float c0 = input[5], c1 = input[2], c2 = input[8];
-        out[0] = (rot[1] * a0 + rot[0] * a1) + rot[2] * a2;
-        out[1] = (rot[1] * b0 + rot[0] * b1) + rot[2] * b2;
-        out[2] = (rot[1] * c0 + rot[0] * c1) + rot[2] * c2;
+        float m10, m20, m00, m11, m01, m21, m12, m02, m22;
+        float y;
+        m10 = input[3];
+        m00 = input[0];
+        m20 = input[6];
+        m11 = input[4];
+        m01 = input[1];
+        m21 = input[7];
+        m12 = input[5];
+        m02 = input[2];
+        m22 = input[8];
+        out[0] = rot[2] * m20 + (rot[0] * m00 + rot[1] * m10);
+        y = rot[1];
+        out[1] = rot[2] * m21 + (rot[0] * m01 + y * m11);
+        y = rot[1];
+        out[2] = rot[2] * m22 + (rot[0] * m02 + y * m12);
     }
     {
         float tx = out[0] + input[9];
