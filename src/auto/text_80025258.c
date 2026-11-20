@@ -44,23 +44,27 @@ static inline int msl_isdigit(int c) {
 
 #pragma push
 #pragma processor 750
+/**
+ * @brief MSL printf's format-specifier parser: consume the conversion
+ *        specifier at the head of a format string and fill in the print_format.
+ */
 const char* parse_format_80025258(const char* format_string, va_list* arg, print_format* format) {
-    print_format f;
+    print_format fmt;
     const char* s = format_string;
     int c;
     int flag_found;
 
-    f.justification_options = right_justification;
-    f.sign_options = only_minus;
-    f.precision_specified = 0;
-    f.alternate_form = 0;
-    f.argument_options = normal_argument;
-    f.field_width = 0;
-    f.precision = 0;
+    fmt.justification_options = right_justification;
+    fmt.sign_options = only_minus;
+    fmt.precision_specified = 0;
+    fmt.alternate_form = 0;
+    fmt.argument_options = normal_argument;
+    fmt.field_width = 0;
+    fmt.precision = 0;
 
     if ((c = *++s) == '%') {
-        f.conversion_char = c;
-        *format = f;
+        fmt.conversion_char = c;
+        *format = fmt;
         return s + 1;
     }
 
@@ -69,22 +73,22 @@ const char* parse_format_80025258(const char* format_string, va_list* arg, print
 
         switch (c) {
         case '-':
-            f.justification_options = left_justification;
+            fmt.justification_options = left_justification;
             break;
         case '+':
-            f.sign_options = sign_always;
+            fmt.sign_options = sign_always;
             break;
         case ' ':
-            if (f.sign_options != sign_always) {
-                f.sign_options = space_holder;
+            if (fmt.sign_options != sign_always) {
+                fmt.sign_options = space_holder;
             }
             break;
         case '#':
-            f.alternate_form = 1;
+            fmt.alternate_form = 1;
             break;
         case '0':
-            if (f.justification_options != left_justification) {
-                f.justification_options = zero_fill;
+            if (fmt.justification_options != left_justification) {
+                fmt.justification_options = zero_fill;
             }
             break;
         default:
@@ -100,37 +104,37 @@ const char* parse_format_80025258(const char* format_string, va_list* arg, print
     }
 
     if (c == '*') {
-        if ((f.field_width = va_arg(*arg, int)) < 0) {
-            f.justification_options = left_justification;
-            f.field_width = -f.field_width;
+        if ((fmt.field_width = va_arg(*arg, int)) < 0) {
+            fmt.justification_options = left_justification;
+            fmt.field_width = -fmt.field_width;
         }
 
         c = *++s;
     } else {
         while (msl_isdigit(c)) {
-            f.field_width = f.field_width * 10 + c - '0';
+            fmt.field_width = fmt.field_width * 10 + c - '0';
             c = *++s;
         }
     }
 
-    if (f.field_width > 509) {
-        f.conversion_char = 0xFF;
-        *format = f;
+    if (fmt.field_width > 509) {
+        fmt.conversion_char = 0xFF;
+        *format = fmt;
         return s + 1;
     }
 
     if (c == '.') {
-        f.precision_specified = 1;
+        fmt.precision_specified = 1;
 
         if ((c = *++s) == '*') {
-            if ((f.precision = va_arg(*arg, int)) < 0) {
-                f.precision_specified = 0;
+            if ((fmt.precision = va_arg(*arg, int)) < 0) {
+                fmt.precision_specified = 0;
             }
 
             c = *++s;
         } else {
             while (msl_isdigit(c)) {
-                f.precision = f.precision * 10 + c - '0';
+                fmt.precision = fmt.precision * 10 + c - '0';
                 c = *++s;
             }
         }
@@ -140,34 +144,34 @@ const char* parse_format_80025258(const char* format_string, va_list* arg, print
 
     switch (c) {
     case 'h':
-        f.argument_options = short_argument;
+        fmt.argument_options = short_argument;
 
         if (s[1] == 'h') {
-            f.argument_options = char_argument;
+            fmt.argument_options = char_argument;
             c = *++s;
         }
 
         break;
     case 'l':
-        f.argument_options = long_argument;
+        fmt.argument_options = long_argument;
 
         if (s[1] == 'l') {
-            f.argument_options = long_long_argument;
+            fmt.argument_options = long_long_argument;
             c = *++s;
         }
 
         break;
     case 'L':
-        f.argument_options = long_double_argument;
+        fmt.argument_options = long_double_argument;
         break;
     case 'j':
-        f.argument_options = intmax_argument;
+        fmt.argument_options = intmax_argument;
         break;
     case 't':
-        f.argument_options = ptrdiff_argument;
+        fmt.argument_options = ptrdiff_argument;
         break;
     case 'z':
-        f.argument_options = size_t_argument;
+        fmt.argument_options = size_t_argument;
         break;
     default:
         flag_found = 0;
@@ -178,7 +182,7 @@ const char* parse_format_80025258(const char* format_string, va_list* arg, print
         c = *++s;
     }
 
-    f.conversion_char = c;
+    fmt.conversion_char = c;
 
     switch (c) {
     case 'd':
@@ -187,111 +191,111 @@ const char* parse_format_80025258(const char* format_string, va_list* arg, print
     case 'o':
     case 'x':
     case 'X':
-        if (f.argument_options == long_double_argument) {
-            f.conversion_char = 0xFF;
+        if (fmt.argument_options == long_double_argument) {
+            fmt.conversion_char = 0xFF;
             break;
         }
 
-        if (!f.precision_specified) {
-            f.precision = 1;
-        } else if (f.justification_options == zero_fill) {
-            f.justification_options = right_justification;
+        if (!fmt.precision_specified) {
+            fmt.precision = 1;
+        } else if (fmt.justification_options == zero_fill) {
+            fmt.justification_options = right_justification;
         }
 
         break;
 
     case 'f':
     case 'F':
-        if (f.argument_options == short_argument || f.argument_options == intmax_argument ||
-            f.argument_options == size_t_argument || f.argument_options == ptrdiff_argument ||
-            f.argument_options == long_long_argument) {
-            f.conversion_char = 0xFF;
+        if (fmt.argument_options == short_argument || fmt.argument_options == intmax_argument ||
+            fmt.argument_options == size_t_argument || fmt.argument_options == ptrdiff_argument ||
+            fmt.argument_options == long_long_argument) {
+            fmt.conversion_char = 0xFF;
             break;
         }
 
-        if (!f.precision_specified) {
-            f.precision = 6;
+        if (!fmt.precision_specified) {
+            fmt.precision = 6;
         }
 
         break;
 
     case 'a':
     case 'A':
-        if (!f.precision_specified) {
-            f.precision = 0xD;
+        if (!fmt.precision_specified) {
+            fmt.precision = 0xD;
         }
 
-        if (f.argument_options == short_argument || f.argument_options == intmax_argument ||
-            f.argument_options == size_t_argument || f.argument_options == ptrdiff_argument ||
-            f.argument_options == long_long_argument || f.argument_options == char_argument) {
-            f.conversion_char = 0xFF;
+        if (fmt.argument_options == short_argument || fmt.argument_options == intmax_argument ||
+            fmt.argument_options == size_t_argument || fmt.argument_options == ptrdiff_argument ||
+            fmt.argument_options == long_long_argument || fmt.argument_options == char_argument) {
+            fmt.conversion_char = 0xFF;
         }
 
         break;
 
     case 'g':
     case 'G':
-        if (!f.precision) {
-            f.precision = 1;
+        if (!fmt.precision) {
+            fmt.precision = 1;
         }
 
     case 'e':
     case 'E':
-        if (f.argument_options == short_argument || f.argument_options == intmax_argument ||
-            f.argument_options == size_t_argument || f.argument_options == ptrdiff_argument ||
-            f.argument_options == long_long_argument || f.argument_options == char_argument) {
-            f.conversion_char = 0xFF;
+        if (fmt.argument_options == short_argument || fmt.argument_options == intmax_argument ||
+            fmt.argument_options == size_t_argument || fmt.argument_options == ptrdiff_argument ||
+            fmt.argument_options == long_long_argument || fmt.argument_options == char_argument) {
+            fmt.conversion_char = 0xFF;
             break;
         }
 
-        if (!f.precision_specified) {
-            f.precision = 6;
+        if (!fmt.precision_specified) {
+            fmt.precision = 6;
         }
 
         break;
 
     case 'p':
-        f.conversion_char = 'x';
-        f.alternate_form = 1;
-        f.argument_options = long_argument;
-        f.precision = 8;
+        fmt.conversion_char = 'x';
+        fmt.alternate_form = 1;
+        fmt.argument_options = long_argument;
+        fmt.precision = 8;
         break;
 
     case 'c':
-        if (f.argument_options == long_argument) {
-            f.argument_options = wchar_argument;
+        if (fmt.argument_options == long_argument) {
+            fmt.argument_options = wchar_argument;
         } else {
-            if (f.precision_specified || f.argument_options != normal_argument) {
-                f.conversion_char = 0xFF;
+            if (fmt.precision_specified || fmt.argument_options != normal_argument) {
+                fmt.conversion_char = 0xFF;
             }
         }
 
         break;
 
     case 's':
-        if (f.argument_options == long_argument) {
-            f.argument_options = wchar_argument;
+        if (fmt.argument_options == long_argument) {
+            fmt.argument_options = wchar_argument;
         } else {
-            if (f.argument_options != normal_argument) {
-                f.conversion_char = 0xFF;
+            if (fmt.argument_options != normal_argument) {
+                fmt.conversion_char = 0xFF;
             }
         }
 
         break;
 
     case 'n':
-        if (f.argument_options == long_double_argument) {
-            f.conversion_char = 0xFF;
+        if (fmt.argument_options == long_double_argument) {
+            fmt.conversion_char = 0xFF;
         }
 
         break;
 
     default:
-        f.conversion_char = 0xFF;
+        fmt.conversion_char = 0xFF;
         break;
     }
 
-    *format = f;
+    *format = fmt;
     return s + 1;
 }
 #pragma pop
