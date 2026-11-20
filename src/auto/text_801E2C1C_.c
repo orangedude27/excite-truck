@@ -220,7 +220,9 @@ void *fn_801E3004(s32 arg0, s32 arg1, s32 arg2)
   result[1] = 0;
   result[0] = -1;
   matrix = (f32 *) (result + 2);
-  one = lbl_80562CE8;
+  one = 1.0f;
+  other = 0.0f;
+  matrix[0] = one;
   matrix[1] = other;
   matrix[2] = other;
   matrix[3] = other;
@@ -260,7 +262,6 @@ void *fn_801E3004(s32 arg0, s32 arg1, s32 arg2)
     result[25] = source[19];
     if ((path[0] != 0) && (strchr(path, '.') != 0))
     {
-      other = lbl_80562CEC;
       if (fn_8012C33C(path) != 0)
       {
         if (arg2 >= 0)
@@ -279,7 +280,6 @@ void *fn_801E3004(s32 arg0, s32 arg1, s32 arg2)
     }
   }
   return result;
-  matrix[0] = one;
 }
 #pragma scheduling on
 /* Allocates a child record from *record and stores a back-pointer to record at offset 4. */
