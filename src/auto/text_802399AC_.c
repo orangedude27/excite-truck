@@ -192,21 +192,17 @@ s32 fn_80239DE4(void) {
 }
 #pragma pop
 #pragma dont_inline on
-s32 fn_80239E5C(void *arg0, s32 arg1) {
+s32 fn_80239E5C(void *__restrict arg0, s32 arg1) {
     s32 *p = (s32 *)arg0;
+    s32 fmt;
     fn_80209030(*(float *)((char *)arg0 + 0x14));
     fn_8020A5F8(*(float *)((char *)arg0 + 0x10));
-    if (arg1 != 0) {
-        ((s32 (*)(s32, ...))fn_802E30C8)((s32)&lbl_8055BB00, p[0]);
-    } else if (p[0] != p[1]) {
-        ((s32 (*)(s32, ...))fn_802E30C8)((s32)&lbl_8055BB00, p[0]);
-    } else {
-        goto second;
+    if (arg1 != 0 || p[0] != p[1]) {
+        fmt = (s32)&lbl_8055BB00;
+        fn_802E30C8(fmt, p[0]);
+        fn_802C82C4(p[0]);
     }
-    fn_802C82C4(p[0]);
-second:
-    if (arg1 != 0) fn_802090BC(p[2]);
-    else if (p[2] != p[3]) fn_802090BC(p[2]);
+    if (arg1 != 0 || p[2] != p[3]) fn_802090BC(p[2]);
 }
 #pragma dont_inline reset
 
@@ -706,7 +702,7 @@ success:
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_8023AFD0(void *arg0) {
     s32 temp_r28;
     s32 temp_r29;
