@@ -16245,8 +16245,7 @@ loop_163:
             var_r11_5 = arg3;
             temp_r20_3 = table + 0x518 + (temp_r0_2 * 0x46);
             temp_r14_8 = table + 0x5A4 + (temp_r0_2 * 0x23);
-            var_ctr_10 = 0x24;
-            do {
+            for (var_ctr_10 = 0; var_ctr_10 < 0x24; var_ctr_10++) {
                 temp_r19_6 = *var_r17_6;
                 var_r0_4 = temp_r19_6;
                 if ((temp_r15 > 0x33U) || (temp_r19_6 == 0)) {
