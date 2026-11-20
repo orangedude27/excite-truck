@@ -3,6 +3,7 @@
  * v10/vC are the scene object it holds at +0x54 looking something up by name
  * (+0x10 gives the object it finds, +0x0C the same kind of lookup, unused). */
 struct V9_8013FAC4 { virtual void d0(); virtual void d1(); virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3(); virtual void m4(); virtual void *v9(int); };
+struct ZoneV9_80141574 { virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual s32 v9(); };
 struct V10_8013FAC4 { virtual void d0(); virtual void d1(); virtual void *v10(void *); };
 struct VC_8013FAC4 { virtual void d0(); virtual void vC(void *); };
 extern "C" void *memset(void *, s32, u32);
@@ -1111,37 +1112,38 @@ extern "C" s32 fn_8013DE7C(TObj60 *container, const char *name) {
 #pragma push
 #pragma processor 750
 extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
+    struct V2 { f32 x, y; };
     f32 *from = (f32 *)arg1;
     f32 *to = (f32 *)arg2;
     f32 *out = (f32 *)arg0;
-    f32 s[2], e[2], d[2], c[2], o[2];
+    V2 s, e, d, c, o;
     u32 i = 0;
     f32 unit = 0.0f;
     f32 one = 1.0f;
     do {
-        s[0] = from[0];
-        s[1] = from[2];
-        e[0] = to[0];
-        e[1] = to[2];
-        d[0] = e[0] - s[0];
-        d[1] = e[1] - s[1];
-        f32 length = (f32)fn_8002F234(d[0] * d[0] + d[1] * d[1]);
+        s.x = from[0];
+        s.y = from[2];
+        e.x = to[0];
+        e.y = to[2];
+        d.x = e.x - s.x;
+        d.y = e.y - s.y;
+        f32 length = (f32)fn_8002F234(d.x * d.x + d.y * d.y);
         i++;
         f32 scale = one / length;
-        c[0] = out[0];
-        o[0] = c[0] - s[0];
-        d[0] = d[0] * scale;
-        d[1] = d[1] * scale;
-        c[1] = out[2];
-        o[1] = c[1] - s[1];
+        c.x = out[0];
+        o.x = c.x - s.x;
+        d.x *= scale;
+        d.y *= scale;
+        c.y = out[2];
+        o.y = c.y - s.y;
         from += 3;
         to += 3;
-        f32 p = d[0] * o[0] + d[1] * o[1];
-        c[0] = s[0] + d[0] * p;
-        c[1] = s[1] + d[1] * p;
-        out[0] = c[0];
+        f32 p = d.x * o.x + d.y * o.y;
+        c.x = s.x + d.x * p;
+        c.y = s.y + d.y * p;
+        out[0] = c.x;
         out[1] = unit;
-        out[2] = c[1];
+        out[2] = c.y;
         out += 3;
     } while (i < 2);
 }
@@ -2835,7 +2837,6 @@ extern "C" void fn_80141574(char *arg0) {
         f32 f31 = lbl_805614A4;
         f32 f30;
         f32 f29 = lbl_8056158C;
-        s32 one = 1;
         cfg = lbl_8042FB3C;
         tab = lbl_802F93B0;
         for (i = 0; i < *(s32 *)(self + 0xBC); i++) {
@@ -2874,8 +2875,7 @@ extern "C" void fn_80141574(char *arg0) {
                             switch (fn_8013CBC0(e, i)) {
                             case 1: {
                                 fn_801429F0(e);
-                                fn_801429E0(*(f32 *)(e + 0x108), lbl_805614FC);
-                                *(f32 *)(e + 0x108) = fn_801429D0(*(f32 *)(e + 0x108) - *(f32 *)(cfg + 0x34), *(f32 *)(e + 0x108));
+                                *(f32 *)(e + 0x108) = fn_801429D0(fn_801429E0(*(f32 *)(e + 0x108), lbl_805614FC), *(f32 *)(e + 0x108) - *(f32 *)(cfg + 0x34));
                                 *(void **)(e + 0x104) = fn_80142C28(self, *(void **)(e + 0x104));
                                 s32 c = *(s32 *)(e + 0xC);
                                 *(s32 *)(e + 0xC) = c + 1;
@@ -2890,15 +2890,8 @@ extern "C" void fn_80141574(char *arg0) {
                                 break;
                             }
                             case 2: {
-                                if (*(s32 *)(e + 0xE8) == *(s32 *)(e + 0x100)) {
-                                    s32 a = fn_801427DC(self, *(s32 *)(self + 0x68));
-                                    if (fn_80142870(self, e) == a)
-                                        *(s32 *)(e + 0x100) = *(s32 *)(e + 0x100) + 1;
-                                    else {
-                                        if (*(s32 *)(e + 0x100) > 0)
-                                            fn_80142948(e + 0xD0);
-                                        *(s32 *)(e + 0x100) = 0;
-                                    }
+                                if (*(s32 *)(e + 0xE8) == *(s32 *)(e + 0x100) && fn_80142870(self, e) == fn_801427DC(self, *(s32 *)(self + 0x68))) {
+                                    *(s32 *)(e + 0x100) = *(s32 *)(e + 0x100) + 1;
                                 } else {
                                     if (*(s32 *)(e + 0x100) > 0)
                                         fn_80142948(e + 0xD0);
@@ -2969,7 +2962,7 @@ extern "C" void fn_80141574(char *arg0) {
                             fn_80141DAC((char *)(self + 0x134));
                         else
                             fn_80141CC0((char *)(self + 0x134));
-                        *(s32 *)(e + 0x11C) = one;
+                        *(s32 *)(e + 0x11C) = 1;
                         *(f32 *)(e + 0x120) = f30;
                         s32 v = (s32)fn_80141C9C(*(f32 *)(e + 0x108));
                         *(s32 *)(e + 0x114) = v;
@@ -3389,7 +3382,7 @@ extern "C" void fn_801421D8(void *arg0, void *arg1) {
     row = fn_801421C0(a);
     if (lbl_8055E1BC) {
         f32 x = *(f32 *)(b + 0x94);
-        f32 f = x + *(f32 *)(row + 8) / lbl_8056149C;
+        f32 f = *(f32 *)(row + 8) / lbl_8056149C + x;
         f = f < lbl_805614AC ? f : lbl_805614AC;
         f = f > lbl_805614A4 ? f : lbl_805614A4;
         f64 r = f;
@@ -3397,9 +3390,9 @@ extern "C" void fn_801421D8(void *arg0, void *arg1) {
         if (x < (f32)r) {
             *(f32 *)(b + 0xEC) = (f32)r - x;
         } else {
-            long close = (f32)__fabs(r) <= *(f32*)&lbl_80558DC4;
+            long close = *(f32*)&lbl_80558DC4 >= (f32)__fabs(r);
             if (close != 0) {
-                if (!((f32)__fabs((f64)x) <= *(f32*)&lbl_80558DC4)) {
+                if (!(*(f32*)&lbl_80558DC4 >= (f32)__fabs((f64)x))) {
                     if (*(s32 *)(b + 0xE4) > 0) {
                         *(s32 *)(b + 0xF4) = *(s32 *)(b + 0xE4);
                         *(f32 *)(b + 0xF0) = fn_8013CB3C();
@@ -3418,7 +3411,7 @@ extern "C" void fn_801421D8(void *arg0, void *arg1) {
     ++*(s32 *)(b + *(s32 *)(b + 0x54) * 4 + 0xC);
 }
   extern "C" f32 __fabsf(f32);
-#pragma dont_inline on
+#pragma scheduling invalid_target
 extern "C" void fn_80142650(void *arg0) {
     u8 *base = (u8 *)arg0;
     s32 tmp5 = *(s32 *)(base + 0xE4) + 1;
@@ -3431,13 +3424,14 @@ extern "C" void fn_80142650(void *arg0) {
     if (*(u8 *)(base + 0xF8) != 0) {
         *(u8 *)(base + 0xF8) = 0;
         if (lbl_8055E1BC != 0) {
-            f64 r;
-            f32 x = *(f32 *)(base + 0x94);
-            f32 f = x + lbl_8056149C / lbl_8056149C;
+            struct Float1 { f32 v; } sx;
+            sx.v = *(f32 *)(base + 0x94);
+            f32 x = sx.v;
             f32 progress = lbl_805614AC;
+            f32 f = x + lbl_8056149C / lbl_8056149C;
             progress = progress < f ? progress : f;
             progress = progress > lbl_805614A4 ? progress : lbl_805614A4;
-            r = progress;
+            f64 r = progress;
             *(f32 *)(base + 0x94) = progress;
             if (x < (f32)r) {
                 *(f32 *)(base + 0xEC) = (f32)r - x;
@@ -3450,11 +3444,9 @@ extern "C" void fn_80142650(void *arg0) {
                             *(f32 *)(base + 0xF0) = fn_8013CB3C();
                             *(s32 *)(base + 0xE4) = 0;
                         }
-                        if (*(s32 *)(base + 0x100) > 0) {
-                            f32 d4 = fn_8001DAE8(base + 0xD0);
-                            *(f32 *)(base + 0xD4) = d4;
-                            *(s32 *)(base + 0x100) = 0;
-                        }
+                        if (*(s32 *)(base + 0x100) > 0)
+                            *(f32 *)(base + 0xD4) = fn_8001DAE8(base + 0xD0);
+                        *(s32 *)(base + 0x100) = 0;
                         *(f32 *)(base + 0xAC) = fn_8001DAE8(base + 0xA8);
                         if (!lbl_8055E1BC)
                             base[0xF8] = 1;
@@ -3733,7 +3725,7 @@ extern "C" void fn_80142D4C(void *arg0) {
         for (; itemIndex < *(s32 *)group; itemOffset += 0x24, itemIndex++) {
             u8 *item = *(u8 **)(group + 4) + itemOffset;
             {
-                s32 vertex;
+                u32 vertex;
                 u8 *point;
                 vertex = 0;
                 point = item;
@@ -3777,18 +3769,21 @@ extern "C" void fn_80142D4C(void *arg0) {
 
     }
 
-    *(s32 *)(self + 0x68) = 0;
-    *(f32 *)(self + 0x70) = lbl_80561594;
-    *(f32 *)(self + 0x78) = lbl_80561594;
-    *(f32 *)(self + 0x80) = lbl_80561594;
-    *(f32 *)(self + 0x88) = lbl_80561594;
-    *(f32 *)(self + 0x90) = lbl_80561594;
+    {
+        register f32 missing = -999.0f;
+        *(s32 *)(self + 0x68) = 0;
+        *(f32 *)(self + 0x70) = missing;
+        *(f32 *)(self + 0x78) = missing;
+        *(f32 *)(self + 0x80) = missing;
+        *(f32 *)(self + 0x88) = missing;
+        *(f32 *)(self + 0x90) = missing;
+    }
     *(s32 *)(self + 0x288) = fn_8013D18C(0);
     {
-        register f32 negative = lbl_805614AC;
-        register f32 defaultValue = lbl_80561598;
-        register f32 one = lbl_805614A4;
-        register f32 zero = lbl_80561594;
+        register f32 negative = 1.0f;
+        register f32 defaultValue = -999.9f;
+        register f32 one = 0.0f;
+        register f32 zero = -999.0f;
         s32 index = 0;
         s32 offset = 0;
         for (; index < *(s32 *)(self + 0xBC); offset += 0x12C, index++) {
@@ -3846,7 +3841,7 @@ extern "C" void fn_80142D4C(void *arg0) {
     {
         s32 handle = *(s32 *)(self + 0x140);
         s32 zero = 0;
-        f32 reset = lbl_805614BC;
+        f32 reset = -1.0f;
         *(s32 *)(self + 0xC8) = zero;
         *(s32 *)(self + 0xCC) = zero;
         *(s32 *)(self + 0x134) = zero;
@@ -3905,7 +3900,7 @@ extern "C" void fn_80142D4C(void *arg0) {
     }
     {
         u8 *resource = *(u8 **)(self + 0x254);
-        *(f32 *)(self + 0x250) = lbl_8056159C;
+        *(f32 *)(self + 0x250) = 1.5f;
         if (resource != 0) {
             resource[0x4A] = 1;
             resource[0x4C] = 0;
