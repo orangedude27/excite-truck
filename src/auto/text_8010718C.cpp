@@ -112,17 +112,23 @@ public:
     virtual void v20();
     virtual s32 v21(CancelCallback callback, void* user);
     s32 CancelAsync(CancelCallback callback, void* user);
+typedef struct { char file[0x38]; char cancel[0x28]; char async[0x28]; } Msgs8010718C;
 };
 }
 }
 
+#pragma push
+#pragma opt_propagation off
 s32 nw4hbm::ut::FileStream::CancelAsync(CancelCallback callback, void* user) {
-    const char* base = (const char*)lbl_80328458;
+    register u8* base = lbl_80328458;
     if (v21(callback, user) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(base + 0, 0x4E, base + 0x38);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)(base + 0), 0x4E,
+                                     (const char*)(base + 0x38));
     }
     if (v10() == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(base + 0, 0x4F, base + 0x60);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)(base + 0), 0x4F,
+                                     (const char*)(base + 0x60));
     }
     return 1;
 }
+#pragma pop
