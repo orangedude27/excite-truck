@@ -614,6 +614,7 @@ void *fn_802D7FA0(void *arg0, void *arg1)
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+#pragma unroll off
 void fn_802D81C4(void *arg0, int arg1) {
     unsigned char *s2 = *(unsigned char **)((char *)arg0 + 0x2C);
     unsigned char *p = *(unsigned char **)(s2 + 4);
@@ -632,17 +633,16 @@ void fn_802D81C4(void *arg0, int arg1) {
         }
     }
     q = *(unsigned char **)s2;
-    for (i = 0; i < 0x10; i++) {
-        unsigned char t0;
-        unsigned char t1;
-        t0 = q[0];
-        q[0] = q[3];
-        q[3] = t0;
-        t1 = q[1];
-        q[1] = q[2];
-        q[2] = t1;
-        q += 4;
+#pragma unroll off
+    for (i = 0; i < 4; i++) {
+        unsigned char t;
+        t = q[0]; q[0] = q[3]; q[3] = t;
+        t = q[1]; q[1] = q[2]; q[2] = t;
+        t = q[4]; q[4] = q[7]; q[7] = t;
+        t = q[5]; q[5] = q[6]; q[6] = t;
+        q += 0x10;
     }
+#pragma unroll reset
     halfw = width / 2;
     fn_801282EC(0x20);
     size = halfw * height;
