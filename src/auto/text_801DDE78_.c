@@ -34,7 +34,6 @@ s32 fn_801DDE78(void);
 void fn_801DDED0(s32, f32*, s32, f32, f32, f32);
 s32 fn_802E2C20(void);
 typedef struct DbgRec { s32 a; s32 b; s32 c; s32 d; f32 e; s32 f; s32 g; s32 h; } DbgRec;
-typedef union { DbgRec r; struct { s32 a; double bc; s32 d; f32 e; s32 f; s32 g; s32 h; } d; } DbgRecU;
 typedef s32 (*UnkFunc2)(void*, s32);
 typedef struct UnkObj { UnkFunc2 *vtable; } UnkObj;
 #pragma dont_inline on
