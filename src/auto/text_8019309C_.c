@@ -3207,6 +3207,7 @@ void fn_80198488(void *arg0) {
     }
 }
 
+extern float lbl_805621A0, lbl_80562268, lbl_80562274;
 void fn_80198530(void *arg0) {
     char s[0x80];
     float *o = (float *)arg0;
