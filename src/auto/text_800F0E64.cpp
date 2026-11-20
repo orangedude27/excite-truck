@@ -4963,13 +4963,14 @@ static inline u8 *SndPrioList_GetFront(u8 *list) {
     }
     return SndPrioListIter_Deref(*(void **)(list + 4));
 }
-static inline void SndPrioList_PopFront(u8 *list) {
-    s32 it = *(s32 *)(list + 4);
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(list, &it);
-}
 struct SndPrioListIter {
     void *node;
 };
+static inline void SndPrioList_PopFront(u8 *list) {
+    SndPrioListIter it;
+    it.node = *(void **)(list + 4);
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(list, (s32 *)&it.node);
+}
 static inline void SndPrioList_Insert(u8 *list, SndPrioListIter it, u8 *obj) {
     if (obj == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326288, 0x233, (const char *)lbl_80326264);
