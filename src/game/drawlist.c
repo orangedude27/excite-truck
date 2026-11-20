@@ -308,6 +308,7 @@ void fn_802C8638(unsigned int *arg0) {
     register unsigned int v2 = arg0[2];
     register unsigned int v1 = arg0[1];
     register unsigned int v0 = arg0[0];
+    register unsigned int v11 = arg0[11];
     unsigned int v4 = arg0[4];
     unsigned int v5 = arg0[5];
     unsigned int v6 = arg0[6];
@@ -315,7 +316,6 @@ void fn_802C8638(unsigned int *arg0) {
     unsigned int v8 = arg0[8];
     unsigned int v9 = arg0[9];
     unsigned int v10 = arg0[10];
-    unsigned int v11 = arg0[11];
     volatile unsigned int *dst = (volatile unsigned int *)lbl_804C1410;
     dst[0] = v0; dst[1] = v1; dst[2] = v2; dst[3] = v3;
     dst[4] = v4; dst[5] = v5; dst[6] = v6; dst[7] = v7;
@@ -416,7 +416,7 @@ void fn_802C88E8(unsigned int point) {
 extern void *lbl_8055FC5C, *lbl_8055FC60, *lbl_8055FC64, *lbl_8055FC68;
 extern double lbl_80564F10;
 extern float lbl_80564F18, lbl_80564F1C;
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802C88FC(float *arg0) {
     float value, fill, scale, divisor;
     float x, y, z;
@@ -442,8 +442,6 @@ void fn_802C88FC(float *arg0) {
     arg0[10] = (float)(unsigned int)lbl_8055FC60 + scale * (float)(unsigned int)lbl_8055FC68;
     arg0[9] = (float)(unsigned int)lbl_8055FC5C + scale * (float)(unsigned int)lbl_8055FC64;
 }
-
-#pragma scheduling reset
 void fn_802C89E8(unsigned int *arg0, unsigned int arg1, unsigned int arg2, unsigned int arg3, unsigned int arg4, unsigned int arg5, unsigned int arg6, unsigned int arg7) {
     float var_f2;
     float var_f4;
@@ -606,8 +604,9 @@ void fn_802C8E48(void) {
     sRenderMode = 2;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802C8E70(float *arg0, float *arg1) {
+#pragma optimization_level 3
     float *m = (float *)lbl_804C1410;
     float sy, sx, v1, v2, limit, scale;
     float rx, ry, rz;
@@ -631,6 +630,7 @@ void fn_802C8E70(float *arg0, float *arg1) {
     v1 = lbl_80564EF8 + sx; v2 = lbl_80564EF8 + lbl_8055FC6C * sy;
     arg1[0] = (float)(int)lbl_8055FC5C + (lbl_80564F18 * (float)(int)lbl_8055FC64) * v1;
     arg1[1] = (float)(int)lbl_8055FC60 + (lbl_80564F18 * (float)(int)lbl_8055FC68) * v2;
+#pragma optimization_level 4
 }
 /* Returns the current viewport aspect ratio (width / height), cached in lbl_8055FC6C
    by viewport setup and used to scale projected vertical coordinates. */
@@ -638,6 +638,12 @@ float fn_802C8FEC(void) { return lbl_8055FC6C; }
 
 extern char lbl_80558DC4[];
 extern float lbl_8055FC38, lbl_8055FC3C;
+static inline float int_bits_to_float(int v) {
+    union { double d; unsigned int u[2]; } cvt;
+    cvt.u[0] = 0x43300000;
+    cvt.u[1] = (unsigned int)v ^ 0x80000000u;
+    return (float)(cvt.d - lbl_80564F10);
+}
 #pragma scheduling off
 int fn_802C8FF4(float *arg0, float arg1) {
     float x;
@@ -791,7 +797,7 @@ int fn_802C94A0(Vec *arg0, unsigned char *arg1, float *arg2, float tolerance) {
     matrix = (Vec *)lbl_804C1410;
     dx = arg0->x - matrix[3].x;
     dy = arg0->y - matrix[3].y;
-    dz = arg0->z - matrix[3].z;
+    dz = *(float *)((char *)arg0 + 8) - matrix[3].z;
     delta[0] = dx;
     delta[1] = dy;
     delta[2] = dz;
