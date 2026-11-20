@@ -358,7 +358,7 @@ void fn_802B5EC4(void) {
     lbl_8055FA44 = (void*)fn_802B5D94();
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802B5EE8(void) {
     register s32 v = lbl_8055FA38 + 1;
     lbl_8055FA18 = lbl_80564C5C;
@@ -1727,12 +1727,14 @@ extern "C" void fn_802B7D4C(void) {
     };
     s32 workspace[51];
     s32 selected[3];
-    void *state;
+    u8 *state;
     MenuRenderCopy first, second;
     char name[32];
     MenuRenderCopy line, line2;
     register char *base = lbl_8034A598;
     void *object;
+    void *(*lookup)(void *, const char *);
+    void *(*get)(void *, const char *);
     const char *status;
     f32 step;
     s32 offset, i;
@@ -1748,9 +1750,9 @@ extern "C" void fn_802B7D4C(void) {
     state = 0;
     workspace[2] = 16;
     workspace[0] = (s32)&workspace[3];
-    fn_802B321C((s32)workspace, &state, *(s32 *)((u8 *)object + 8), lbl_8055FA40);
+    fn_802B321C((s32)workspace, (void **)&state, *(s32 *)((u8 *)object + 8), lbl_8055FA40);
     status = base + 0x338;
-    if (*(u8 *)state != 0) status = lbl_8055CEB8;
+    if (*state != 0) status = lbl_8055CEB8;
 
     fn_802B6568(((Dummy *)lbl_8055FA48)->call(base + 0x118), lbl_8055CE70, status);
 
