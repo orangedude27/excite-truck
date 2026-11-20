@@ -19,18 +19,14 @@ extern int lbl_8055ECF8;
 #pragma push
 #pragma scheduling invalid_target
 void fn_80203F10(void) {
-    int a;
-    int b;
     fn_8000D838(&lbl_8055ECE8);
     lbl_8055ECF0 = 0x100;
     lbl_8055ECF2 = 0x405;
     lbl_8055ECF4 = 0x401;
-    b = 0xFFFF0000;
-    lbl_8055ECF8 = b;
+    lbl_8055ECF8 = (int)0xFFFF0000;
     *(void **)&lbl_8048897C = (char *)&lbl_8048897C + 12;
-    a = 0x40;
-    lbl_8048897C[2] = a;
+    lbl_8048897C[2] = 0x40;
     lbl_8048897C[1] = 0;
-    __register_global_object(&lbl_8048897C, &fn_80203F88, &lbl_80488970, a, b);
+    ((void (*)(void *, void *, void *))__register_global_object)(&lbl_8048897C, &fn_80203F88, &lbl_80488970);
 }
 #pragma pop
