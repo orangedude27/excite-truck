@@ -4,14 +4,6 @@ extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
 extern "C" const char lbl_80320BD8[];
 extern "C" f32 lbl_80560EE8;
-extern "C" f64 lbl_80560EF0;
-extern "C" f64 lbl_80560EF8;
-static inline f32 cvtByteU32(s32 v) {
-    union { f64 d; u32 w[2]; } u;
-    u.w[1] = 0x43300000;
-    u.w[0] = (u32)v ^ 0x80000000;
-    return (f32)(u.d - lbl_80560EF0);
-}
 extern "C" s32 IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(void *, u8);
 extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(s32, u8);
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(f32 *, f32 *, u8, f32 (*)[], s32, u8);
