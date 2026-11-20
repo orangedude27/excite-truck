@@ -251,7 +251,10 @@ static inline void fn_80266388_multiply(float *out, const float *a, const float 
   out[8] = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
  }
  }
- static inline void fn_80268E94_multiply_top(float *out, const float *a, const float *b) {
+ #pragma inline on
+#pragma inline_max_size(10000)
+#pragma inline_depth(10)
+static inline void fn_80268E94_multiply_top(float *out, const float *a, const float *b) {
  float t0,t1,t2,t3,t4,t5,t6,t7,t8;
  if (out == a || out == b) {
  t0 = fn_80144514(b[0], a[0], b[3], a[1], b[6], a[2]);
