@@ -323,61 +323,63 @@ extern const char lbl_80558F04[6];
 
 #pragma pool_strings off
 void ReportOSInfo_8004AA40(void) {
+    extern char lbl_80303E08[];
+    char *base;
     u32 type;
     u32 tdev;
     u32 version;
     u32 builddate;
 
-    OSReport("\nRevolution OS\n");
-    OSReport("Kernel built : %s %s\n\0\0", "Sep 21 2006", "14:32:13\0\0\0");
-
-    OSReport("Console Type : ");
+    base = lbl_80303E08;
+    OSReport(base + 0x48);
+    OSReport(base + 0x58, base + 0x70, base + 0x7C);
+    OSReport(base + 0x88);
     type = OSGetConsoleType();
     switch (type & OS_CONSOLE_MASK) {
     case OS_CONSOLE_MASK_RVL:
         switch (type) {
         case OS_CONSOLE_RVL_PP_1:
-            OSReport("Pre-production board 1\n");
+            OSReport(base + 0x98);
             break;
         case OS_CONSOLE_RVL_PP_2_1:
-            OSReport("Pre-production board 2-1\n\0\0");
+            OSReport(base + 0xB0);
             break;
         case OS_CONSOLE_RVL_PP_2_2:
-            OSReport("Pre-production board 2-2\n\0\0");
+            OSReport(base + 0xCC);
             break;
         default:
-            OSReport("Retail %d\n\0", type);
+            OSReport(base + 0xE8, type);
             break;
         }
         break;
     case OS_CONSOLE_MASK_EMU:
         switch (type) {
         case OS_CONSOLE_NDEV_2_1:
-            OSReport("NDEV 2.1\n\0\0");
+            OSReport(base + 0xF4);
             break;
         case OS_CONSOLE_NDEV_2_0:
-            OSReport("NDEV 2.0\n\0\0");
+            OSReport(base + 0x100);
             break;
         case OS_CONSOLE_NDEV_1_2:
-            OSReport("NDEV 1.2\n\0\0");
+            OSReport(base + 0x10C);
             break;
         case OS_CONSOLE_NDEV_1_1:
-            OSReport("NDEV 1.1\n\0\0");
+            OSReport(base + 0x118);
             break;
         case OS_CONSOLE_NDEV_1_0:
-            OSReport("NDEV 1.0\n\0\0");
+            OSReport(base + 0x124);
             break;
         case OS_CONSOLE_RVL_EMU:
-            OSReport("Revolution Emulator\n\0\0\0");
+            OSReport(base + 0x130);
             break;
         default:
-            OSReport("Emulation platform (%08x)\n\0", type);
+            OSReport(base + 0x148, type);
             break;
         }
         break;
     case OS_CONSOLE_MASK_TDEV:
         tdev = type & 0x0FFFFFFF;
-        OSReport("TDEV-based emulation HW%d\n\0", tdev - 3);
+        OSReport(base + 0x164, tdev - 3);
         break;
     default:
         OSReport(lbl_80558F04, type);
@@ -386,7 +388,7 @@ void ReportOSInfo_8004AA40(void) {
 
     version = *(u32 *)0xC0003140;
     builddate = *(u32 *)0xC0003144;
-    OSReport("Firmware     : %d.%d.%d \0\0\0", (version >> 16) & 0xFF, (version >> 8) & 0xFF, version & 0xFF);
+    OSReport(base + 0x180, (version >> 16) & 0xFF, (version >> 8) & 0xFF, version & 0xFF);
     {
         u32 day_hi = (builddate >> 12) & 0xF;
         u32 year_lo = builddate & 0xFF;
@@ -395,12 +397,12 @@ void ReportOSInfo_8004AA40(void) {
         u16 year = year_lo + 2000;
         u8 day = day_lo + day_hi_10;
         u8 mon = (builddate >> 16) & 0xFF;
-        OSReport("(%d/%d/%d)\n", mon, day, year);
+        OSReport(base + 0x19C, mon, day, year);
     }
 
-    OSReport("Memory %d MB\n\0\0", (OSGetConsoleSimulatedMem1Size() + OSGetConsoleSimulatedMem2Size()) >> 20);
-    OSReport("MEM1 Arena : 0x%x - 0x%x\n\0\0", OSGetMEM1ArenaLo(), OSGetMEM1ArenaHi());
-    OSReport("MEM2 Arena : 0x%x - 0x%x\n", OSGetMEM2ArenaLo(), OSGetMEM2ArenaHi());
+    OSReport(base + 0x1A8, (OSGetConsoleSimulatedMem1Size() + OSGetConsoleSimulatedMem2Size()) >> 20);
+    OSReport(base + 0x1B8, OSGetMEM1ArenaLo(), OSGetMEM1ArenaHi());
+    OSReport(base + 0x1D4, OSGetMEM2ArenaLo(), OSGetMEM2ArenaHi());
 }
 #pragma pool_strings on
 extern BOOL AreWeInitialized_8055D9CC;
@@ -618,38 +620,42 @@ static const u32 __OSExceptionLocations[15] = {
     0x0100, 0x0200, 0x0300, 0x0400, 0x0500, 0x0600, 0x0700, 0x0800,
     0x0900, 0x0C00, 0x0D00, 0x0F00, 0x1300, 0x1400, 0x1700};
 #pragma use_lmw_stmw off
+// Install the OS exception vectors and the debugger (TRK) integrator hook.
+// Patches the "set exception number" instruction per vector, points each of the
+// 15 exception slots at the debugger or a nop-filled stub, and seeds the
+// exception handler table with OSDefaultExceptionHandler.
 void OSExceptionInit(void) {
-    char *base;
+    char *msgBase;
     u8 i;
     register u32 *pInst;
     u32 inst;
     void *vectorCode;
     u32 vectorSize;
-    u32 *locations;
+    u32 *exceptionLocations;
     u32 *dst;
     long j;
     register u32 *code;
     pInst = (u32 *)__OSEVSetNumber;
     inst = *pInst;
     vectorCode = (void *)__OSEVStart;
-    base = lbl_80303E08;
+    msgBase = lbl_80303E08;
     vectorSize = (u32)__OSEVEnd - (u32)__OSEVStart;
     dst = (u32 *)0x80000060;
     if (*dst == 0) {
-        DBPrintf(base + 0x354);
+        DBPrintf(msgBase + 0x354);
         memcpy(dst, (void *)__OSDBINTSTART, (u32)__OSDBINTEND - (u32)__OSDBINTSTART);
         DCFlushRangeNoSync(dst, (u32)__OSDBINTEND - (u32)__OSDBINTSTART);
         __sync();
         ICInvalidateRange(dst, (u32)__OSDBINTEND - (u32)__OSDBINTSTART);
     }
-    locations = (u32 *)(base + 0x318);
+    exceptionLocations = (u32 *)(msgBase + 0x318);
     for (i = 0; i < 15; i++) {
         if (BI2DebugFlag_8055D9F4 != 0 && *BI2DebugFlag_8055D9F4 >= 2 && __DBIsExceptionMarked(i)) {
-            DBPrintf(base + 0x370, (u8)i);
+            DBPrintf(msgBase + 0x370, (u8)i);
         } else {
             *pInst = inst | i;
             if (__DBIsExceptionMarked(i)) {
-                DBPrintf(base + 0x3a0, (u8)i);
+                DBPrintf(msgBase + 0x3a0, (u8)i);
                 memcpy((void *)__DBVECTOR, (void *)__OSDBINTEND, (u32)__OSDBJUMPEND - (u32)__OSDBINTEND);
             } else {
                 code = (u32 *)__DBVECTOR;
@@ -657,7 +663,7 @@ void OSExceptionInit(void) {
                     *code = 0x60000000;
                 }
             }
-            dst = (u32 *)(0x80000000 + locations[i]);
+            dst = (u32 *)(0x80000000 + exceptionLocations[i]);
             memcpy(dst, vectorCode, vectorSize);
             DCFlushRangeNoSync(dst, vectorSize);
             __sync();
@@ -669,7 +675,7 @@ void OSExceptionInit(void) {
         OSExceptionTable_8055D9D0[i] = (void *)OSDefaultExceptionHandler;
     }
     *pInst = inst;
-    DBPrintf(base + 0x3d0);
+    DBPrintf(msgBase + 0x3d0);
 }
 void __OSDBIntegrator(void) {
     register volatile unsigned int *base = (volatile unsigned int *)0x40;
