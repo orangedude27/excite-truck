@@ -3268,7 +3268,7 @@ loop_80:
 #pragma cplusplus off
 
 extern f64 fn_8002F234(f32, f32, f32, f32, f32);
-typedef struct { f32 f24, f2C, f34; } ItemFloats80170D;
+typedef struct { f32 f24, pad0, pad1, f2C, pad2, pad3, f34; } ItemFloats80170D;
 #pragma use_lmw_stmw off
 void fn_80170DA8(void *arg0, void *arg1) {
     f32 distance;
