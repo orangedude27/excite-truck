@@ -81,17 +81,19 @@ static inline void mtx33_mult_vec(const float *m, const float *v, float *d) {
 #define AO(T, o) (*(T *)((char *)arg0 + (o)))
 void fn_80253254(void) {}
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80253258(void) {
     extern void PSVECNormalize(float *, float *);
     extern void fn_802C9A1C(float *);
     float v[6];
+    float scale;
     v[0] = 0.0f;
     v[1] = 250.0f;
+    scale = -1.0f;
     v[2] = -150.0f;
-    v[3] = v[0] * -1.0f;
-    v[4] = v[1] * -1.0f;
-    v[5] = v[2] * -1.0f;
+    v[3] = v[0] * scale;
+    v[4] = v[1] * scale;
+    v[5] = v[2] * scale;
     PSVECNormalize(&v[3], &v[3]);
     fn_802C9A1C(&v[3]);
 }
@@ -516,6 +518,8 @@ void fn_80253C48(void *arg0) {
     }
 }
 
+#pragma ppc_psq_save off
+#pragma paired off
 void fn_80253CA4(void *arg0, void *arg1, float *arg2, void *arg3) {
 #pragma use_lmw_stmw off
     extern float lbl_80563A04, lbl_80563A10, lbl_80563A14, lbl_80563A1C;
@@ -526,8 +530,8 @@ void fn_80253CA4(void *arg0, void *arg1, float *arg2, void *arg3) {
     u8 *sca = base;
     u8 *vecp = base;
     u8 *outp = base;
-    float res[3];
     float t1[3];
+    float res[3];
     int ibuf[12];
     float *buf = (float *)ibuf;
     int rot1[9];
@@ -617,8 +621,6 @@ void fn_80253CA4(void *arg0, void *arg1, float *arg2, void *arg3) {
         outp += 0x30;
     }
 }
-
-#pragma scheduling invalid_target
 void fn_8025419C(void *arg0) {
  extern float fn_8023659C(void); extern s32 fn_80147C50(s32,s32,float);
  extern void fn_8018BF44(s32 *); extern void fn_801F1394(s32,void *);
@@ -798,29 +800,28 @@ void fn_802545C4(void *arg0, s32 arg1, s32 arg2) {
         float sp20[3];
         float sp2c[3];
     } stack;
-    register struct View545C4 *v = (struct View545C4 *)arg0;
-    register struct Info545C4 *inf = (struct Info545C4 *)arg2;
-    register s32 idx = arg1;
+    struct View545C4 *v = (struct View545C4 *)arg0;
+    struct Info545C4 *inf = (struct Info545C4 *)arg2;
     memset(v, 0, 0x78);
     v->flag30 = 1;
     if (inf->flag0 != 0) {
         v->v40 = inf->f58C;
-        if (idx != -1)
+        if (arg1 != -1)
             v->v40 = v->v40 - lbl_80563A30;
         v->v44 = inf->f58C;
-        if (idx != -1)
+        if (arg1 != -1)
             v->v44 = v->v44 - lbl_80563A30;
         v->v48 = inf->f58C;
-        if (idx != -1)
+        if (arg1 != -1)
             v->v48 = v->v48 - lbl_80563A30;
         v->v4C = inf->f58C;
-        if (idx != -1)
+        if (arg1 != -1)
             v->v4C = v->v4C - lbl_80563A30;
     }
-    if (idx != -1) {
-        fn_80254568(stack.sp2c, idx, lbl_8055C178);
-        fn_80254568(stack.sp20, idx, lbl_8055C180);
-        fn_80254568(stack.sp14, idx, lbl_8055C188);
+    if (arg1 != -1) {
+        fn_80254568(stack.sp2c, arg1, lbl_8055C178);
+        fn_80254568(stack.sp20, arg1, lbl_8055C180);
+        fn_80254568(stack.sp14, arg1, lbl_8055C188);
         stack.sp8[0] = stack.sp20[0] + lbl_80563A18 * (stack.sp2c[0] - stack.sp20[0]);
         stack.sp8[1] = stack.sp20[1] + lbl_80563A18 * (stack.sp2c[1] - stack.sp20[1]);
         stack.sp8[2] = stack.sp20[2] + lbl_80563A18 * (stack.sp2c[2] - stack.sp20[2]);
@@ -900,7 +901,7 @@ void fn_80254938(void *arg0v, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 farg0,
     u8 *temp_r27;
 
     var_f31 = farg1;
-    if (((s32)lbl_8055F330 != 0) || ((s32)M2C_FIELD(arg0, s32 *, 0x120) == 0)) {
+    if (((s32)lbl_8055F330 == 0) && ((s32)M2C_FIELD(arg0, s32 *, 0x120) == 0)) {
         var_f29 = lbl_80563A04;
         var_f26 = M2C_FIELD(arg0, f32 *, 0xEC);
         var_f25 = var_f29;
@@ -1779,12 +1780,20 @@ void fn_802566A4(void *arg0) {
     extern unsigned int lbl_802FA5B8[9];
     struct Vec3 { float v[3]; };
     struct Frame {
-        float u[3]; float v[3]; float w[3]; float fallback[3]; float output[3];
+        float u[3];
+        float v[3];
+        float w[3];
+        float fallback[3];
+        float output[3];
         unsigned int pad;
-        union { unsigned int word[12]; float value[12]; } basis;
+        union {
+            unsigned int word[12];
+            float value[12];
+        } basis;
         unsigned int config[9];
     } frame;
-    float zero = 0.0f, one = 1.0f;
+    float zero = 0.0f;
+    float one = 1.0f;
     int i = 0;
     void *ctx = arg0;
     float *out = frame.output;
@@ -1806,31 +1815,56 @@ void fn_802566A4(void *arg0) {
         m10 = matrix[10]; m11 = matrix[11]; frame.basis.word[5] = m5;
         frame.basis.word[9] = m9; frame.basis.word[10] = m10;
         frame.basis.word[11] = m11;
-        frame.u[0] = frame.basis.value[0]; frame.u[1] = zero;
-        frame.u[2] = frame.basis.value[2];
-        frame.w[0] = frame.basis.value[6]; frame.w[1] = zero;
-        frame.w[2] = frame.basis.value[8];
+        frame.basis.value[4] = one;
+        frame.basis.value[1] = zero;
+        frame.basis.value[7] = zero;
+        {
+            float b2 = frame.basis.value[2];
+            float b0 = frame.basis.value[0];
+            float b8 = frame.basis.value[8];
+            float b6 = frame.basis.value[6];
+            frame.u[0] = b0;
+            frame.u[1] = zero;
+            frame.u[2] = b2;
+            frame.w[0] = b6;
+            frame.w[1] = zero;
+            frame.w[2] = b8;
+        }
         PSVECCrossProduct(frame.w, frame.u, frame.v);
-        PSVECNormalize(frame.u, frame.u); PSVECNormalize(frame.v, frame.v);
+        PSVECNormalize(frame.u, frame.u);
+        PSVECNormalize(frame.v, frame.v);
         PSVECCrossProduct(frame.u, frame.v, frame.w);
-        frame.basis.value[0] = frame.u[0]; frame.basis.value[1] = frame.u[1];
-        frame.basis.value[2] = frame.u[2]; frame.basis.value[3] = frame.v[0];
-        frame.basis.value[4] = frame.v[1]; frame.basis.value[5] = frame.v[2];
-        frame.basis.value[6] = frame.w[0]; frame.basis.value[7] = frame.w[1];
+        frame.basis.value[0] = frame.u[0];
+        frame.basis.value[1] = frame.u[1];
+        frame.basis.value[2] = frame.u[2];
+        frame.basis.value[3] = frame.v[0];
+        frame.basis.value[4] = frame.v[1];
+        frame.basis.value[5] = frame.v[2];
+        frame.basis.value[6] = frame.w[0];
+        frame.basis.value[7] = frame.w[1];
         frame.basis.value[8] = frame.w[2];
         {
             float *input;
-            if (i > 0) input = ((struct Vec3 *)frame.config)[i - 1].v;
-            else {
-                frame.fallback[0] = zero; frame.fallback[1] = one;
-                frame.fallback[2] = zero; input = frame.fallback;
+            if (i > 0) {
+                input = ((struct Vec3 *)frame.config)[i - 1].v;
+            } else {
+                frame.fallback[0] = zero;
+                frame.fallback[1] = one;
+                frame.fallback[2] = zero;
+                input = frame.fallback;
             }
             if (out == input) {
-                float x = input[0], y = input[1], z = input[2];
-                float a0 = frame.basis.value[0], a3 = frame.basis.value[3];
-                float a6 = frame.basis.value[6], a1 = frame.basis.value[1];
-                float a4 = frame.basis.value[4], a7 = frame.basis.value[7];
-                float a2 = frame.basis.value[2], a5 = frame.basis.value[5];
+                float x = input[0];
+                float y = input[1];
+                float z = input[2];
+                float a0 = frame.basis.value[0];
+                float a3 = frame.basis.value[3];
+                float a6 = frame.basis.value[6];
+                float a1 = frame.basis.value[1];
+                float a4 = frame.basis.value[4];
+                float a7 = frame.basis.value[7];
+                float a2 = frame.basis.value[2];
+                float a5 = frame.basis.value[5];
                 float a8 = frame.basis.value[8];
                 out[0] = (x * a0 + y * a3) + z * a6;
                 out[1] = (x * a1 + y * a4) + z * a7;
@@ -1850,7 +1884,9 @@ void fn_802566A4(void *arg0) {
         fn_802C9A1C(out);
         if (fn_802C9C8C(0x14000000) != 0) {
             unsigned char *flag = *(unsigned char **)((char *)ctx + 8);
-            if (*flag != 0) fn_80254354(flag);
+            if (*flag != 0) {
+                fn_80254354(flag);
+            }
             fn_802C9CE0();
         }
         i++;
