@@ -15,4 +15,4 @@ void fn_801279E0(void) {
 }
 
 #pragma section ".ctors$00"
-DECL_SECTION(".ctors$00") funcptr_t D_802ED120 = fn_801279E0;
+DECL_SECTION(".ctors") funcptr_t D_802ED120 = fn_801279E0;
