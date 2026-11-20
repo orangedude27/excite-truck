@@ -37,47 +37,20 @@ void fn_802090BC(void);
 extern s32 lbl_8055F144, lbl_8055F148, lbl_8055F14C, lbl_8055F150, lbl_8055F154;
 extern char lbl_8055BB48[];
 __declspec(section ".sdata") extern char lbl_8055BB48[];
-static inline s32 fn_8023C308_step(s32 cur, s32 down) {
-    s32 val;
-    if (down) {
-        val = cur - 5;
-        val = val & ~(val >> 31);
-    } else {
-        s32 tmp = cur + 5;
-        if (tmp > 0x46)
-            val = 0x46;
-        else
-            val = tmp;
-    }
-    return val;
-}
 #pragma scheduling invalid_target
 s32 fn_8023C308(s32 arg0) {
-    s32 val, cur, diff, mode;
+    s32 cur, diff, mode;
     if (arg0) {
         mode = (u32)(fn_80214D04() - 2) == 0;
         cur = lbl_8055F154;
-        if (mode) {
-            val = cur - 5;
-            val = val & ~(val >> 31);
-        } else {
-            s32 tmp = cur + 5;
-            if (tmp > 0x46)
-                val = 0x46;
-            else
-                val = tmp;
-        }
-        diff = val - cur;
+        diff = fn_8023C308_step(cur, mode) - cur;
         lbl_8055F154 += diff;
         if (diff) fn_80214BE4(7, 0);
     }
-    {
-        s32 cfg = lbl_8055F148;
-        if (cfg != lbl_8055F150) {
-            lbl_8055F150 = cfg;
-            ((void (*)(void *, ...))fn_802E30C8)(lbl_8055BB48);
-            fn_802C82C4(lbl_8055F148);
-        }
+    if (lbl_8055F148 != lbl_8055F150) {
+        lbl_8055F150 = lbl_8055F148;
+        ((void (*)(void *, ...))fn_802E30C8)(lbl_8055BB48);
+        fn_802C82C4(lbl_8055F148);
     }
     if (lbl_8055F144 != lbl_8055F14C) {
         lbl_8055F14C = lbl_8055F144;
