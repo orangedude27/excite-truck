@@ -180,18 +180,22 @@ extern "C" int ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46n
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-extern "C" int ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3snd6detail8WaveDataPCv(void* arg0, unsigned int arg1, void* arg2, const void* arg3) {
+int nw4hbm::snd::detail::WsdFileReader::ReadWaveParam(int index, nw4hbm::snd::detail::WaveData* data, const void* arg) const {
+    void* arg3 = (void*)arg;
+    void* arg2 = (void*)data;
+    void* this_ = (void*)this;
+    unsigned int arg1 = (unsigned int)index;
     struct Hdr { char pad[6]; unsigned short ver; };
-    const struct Hdr* h = (const struct Hdr*)*(void**)arg0;
+    const struct Hdr* h = (const struct Hdr*)*(void**)this_;
     unsigned char sp8[8];
     char* base;
     void* entry;
     if (h->ver == 0x100) {
-        base = (char*)*(void**)((char*)arg0 + 8);
+        base = (char*)*(void**)((char*)this_ + 8);
         unsigned int off = *(unsigned int*)(base + arg1 * 4 + 8);
         entry = (void*)((unsigned int)off + (unsigned int)base);
     } else {
-        base = (char*)*(void**)((char*)arg0 + 8);
+        base = (char*)*(void**)((char*)this_ + 8);
         if (arg1 >= *(unsigned int*)(base + 8))
             return 0;
         unsigned int off = *(unsigned int*)(base + arg1 * 4 + 0xC);
