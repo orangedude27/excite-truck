@@ -5652,7 +5652,6 @@ extern "C" void fn_801A4A10(s32 instance, s32 position, s32 object, s32 extra) {
     }
 }
 #pragma scheduling on
-static inline void *fn_801A4A8C_id(void *p) { return p; }
 extern "C" void* fn_801A4A8C(void* arg0, s32 arg1, s32 arg2, void* arg3, u32* arg4, s32 arg5, s32 arg6) {
     struct VTable2C {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
