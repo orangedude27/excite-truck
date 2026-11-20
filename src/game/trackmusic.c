@@ -450,6 +450,12 @@ static inline long clampTrackDigit(long value, long limit) {
     if (value < limit) limit = value;
     return limit;
 }
+static inline long clampTrackSum(long pos, long delta, long limit) {
+    long value = pos + delta;
+    value &= ((-value & ~value) >> 31);
+    if (value < limit) limit = value;
+    return limit;
+}
 #pragma dont_inline on
 void fn_8020FDE4(long trackId, const char *name, register char *slotKey) {
     /* Initialize a track-music slot: store the track id, copy the display name, and copy the slot key (truncated to 0x20). */
@@ -489,33 +495,32 @@ void fn_8020FE90(void) {
     lbl_8055B658 = resolvedTrack;
 }
 
+#pragma push
+#pragma dont_inline off
 long fn_8020FEF0(long arg0) {
+    long delta = arg0;
+    long sum;
     long state = lbl_8055EEE0;
-    int sum;
     long count;
     long pos;
     long max;
 
     if (state == -2 && lbl_8055EEBC > 0) {
-        if (arg0 == 1) {
+        if (delta == 1) {
             lbl_8055EEE0 = -1;
             fn_8020FE90();
         }
         return;
     } else if (state == -1) {
-        if (arg0 == -1) {
+        if (delta == -1) {
             lbl_8055EEE0 = -2;
             fn_8020FE90();
         }
         return;
     } else {
         pos = lbl_8055EEE4;
-        max = lbl_8055EEE8 - 1;
-        sum = pos + arg0;
-        sum &= ((-sum & ~sum) >> 31);
-        if (sum < max) {
-            max = sum;
-        }
+        sum = pos + delta;
+        max = clampTrackDigit(sum, lbl_8055EEE8 - 1);
         lbl_8055EEE4 = max;
         count = lbl_8055EEBC;
         if (pos == max) {
@@ -531,8 +536,7 @@ long fn_8020FEF0(long arg0) {
         }
     }
 }
-
-#pragma dont_inline reset
+#pragma pop
 
 #pragma scheduling on
 extern long lbl_8055EEBC;
