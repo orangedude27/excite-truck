@@ -5998,7 +5998,7 @@ extern "C" void *fn_80222BDC(void *arg0, void *arg1, s32 arg2) {
     }
     *(s32 *)((u8 *)arg0 + 0x24C) = *(s32 *)((u8 *)arg1 + 0xA0);
     f32 val = *(u32 *)((u8 *)arg1 + 0x9C);
-    *(f32 *)((u8 *)arg0 + 0x254) = lbl_8056351C;
+    *(f32 *)((u8 *)arg0 + 0x254) = 0.2094f;
     *(f32 *)((u8 *)arg0 + 0x250) = val;
     return arg0;
 }
