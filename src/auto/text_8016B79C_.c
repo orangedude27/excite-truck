@@ -1811,8 +1811,8 @@ extern "C" void fn_801479A8(void *, void *, void *, ...);
 static inline float HudEase(float t) {
     if (t < lbl_805619A4) return lbl_805619A4;
     if (t > lbl_80561984) return lbl_80561984;
-    if (t > lbl_80561980) return t * (lbl_805619B8 * t * t) + lbl_805619BC * t * t;
-    return t * (lbl_805619B8 * t * t) - lbl_805619BC * t * t;
+    if (t > lbl_80561980) return t * (t * (lbl_805619B8 * t)) + t * (lbl_805619BC * t);
+    return t * (t * (lbl_805619B8 * t)) - t * (lbl_805619BC * t);
 }
 #pragma push
 #pragma processor 750
@@ -1823,7 +1823,7 @@ extern "C" int fn_8016E328(void *arg0, int arg1) {
  struct Frame { Rect rect2; char text2[24]; Rect rect1; char text1[20]; } frame;
  const char *base = lbl_803306D0;
  struct Manager *mgr; void *one, *two;
- float limit, a, time, b,c,d,e, t, blend, value;
+ float limit, a, time, b,c,d,e, t, blend;
  time = *(float *)((char *)fn_801E7E3C()+0x10);
  limit=lbl_805619A8; a=limit-lbl_805619AC; b=a-lbl_805619B0;
  c=b-lbl_805619B4; d=c-lbl_805619AC; e=d-lbl_805619B0;
@@ -1845,20 +1845,12 @@ extern "C" int fn_8016E328(void *arg0, int arg1) {
      detail=mgr->get(base+0x484);
      fn_8001DF08(fn_801E866C(arg1),0);
      if (one && two && panel && detail) {
-       value = blend < lbl_805619A4 ? lbl_805619A4 :
-               blend > lbl_80561984 ? lbl_80561984 :
-               blend > lbl_80561980 ? (blend*(lbl_805619B8*blend*blend))+(lbl_805619BC*blend*blend)
-                                    : (blend*(lbl_805619B8*blend*blend))-(lbl_805619BC*blend*blend);
-       fn_801479A8(one,two,fn_80131234(base+0x490),value);
+       fn_801479A8(one,two,fn_80131234(base+0x490),HudEase(blend));
        fn_80160A74(); ((void (*)(void *,int,int))fn_801308F4)(frame.text1,0x14,fn_80160998());
        frame.rect1.a=*(int *)panel;
        { int bword=*(int *)((char *)panel+4), cword=*(int *)((char *)panel+8); *(int *)&frame.rect1.b=bword; frame.rect1.c=cword; } frame.rect1.d=*(int *)((char *)panel+12); frame.rect1.e=*(float *)((char *)panel+16); frame.rect1.f=*(int *)((char *)panel+20); frame.rect1.g=*(int *)((char *)panel+24); frame.rect1.h=*(int *)((char *)panel+28);
        frame.rect1.b-=lbl_80561988*fn_80147204(&frame.rect1,frame.text1);
-       value = blend < lbl_805619A4 ? lbl_805619A4 :
-               blend > lbl_80561984 ? lbl_80561984 :
-               blend > lbl_80561980 ? (blend*(lbl_805619B8*blend*blend))+(lbl_805619BC*blend*blend)
-                                    : (blend*(lbl_805619B8*blend*blend))-(lbl_805619BC*blend*blend);
-       fn_801479A8(&frame.rect1,detail,frame.text1,value);
+       fn_801479A8(&frame.rect1,detail,frame.text1,HudEase(blend));
      }
    }
    if (time < c) {
@@ -1873,20 +1865,12 @@ extern "C" int fn_8016E328(void *arg0, int arg1) {
      mgr=*(struct Manager **)((char *)arg0+0x98);
      detail=mgr->get(&lbl_8055A248);
      if (one && two && panel && detail) {
-       value = blend < lbl_805619A4 ? lbl_805619A4 :
-               blend > lbl_80561984 ? lbl_80561984 :
-               blend > lbl_80561980 ? (blend*(lbl_805619B8*blend*blend))+(lbl_805619BC*blend*blend)
-                                    : (blend*(lbl_805619B8*blend*blend))-(lbl_805619BC*blend*blend);
-       fn_801479A8(one,two,fn_80131234(base+0x4dc),value);
+       fn_801479A8(one,two,fn_80131234(base+0x4dc),HudEase(blend));
        fn_80130978(frame.text2,0x14,*(float *)((char *)arg0+0x38));
        frame.rect2.a=*(int *)panel;
        { int bword=*(int *)((char *)panel+4), cword=*(int *)((char *)panel+8); *(int *)&frame.rect2.b=bword; frame.rect2.c=cword; } frame.rect2.d=*(int *)((char *)panel+12); frame.rect2.e=*(float *)((char *)panel+16); frame.rect2.f=*(int *)((char *)panel+20); frame.rect2.g=*(int *)((char *)panel+24); frame.rect2.h=*(int *)((char *)panel+28);
        frame.rect2.b+=lbl_80561988*fn_80147204(&frame.rect2,frame.text2);
-       value = blend < lbl_805619A4 ? lbl_805619A4 :
-               blend > lbl_80561984 ? lbl_80561984 :
-               blend > lbl_80561980 ? (blend*(lbl_805619B8*blend*blend))+(lbl_805619BC*blend*blend)
-                                    : (blend*(lbl_805619B8*blend*blend))-(lbl_805619BC*blend*blend);
-       fn_801479A8(&frame.rect2,detail,frame.text2,value);
+       fn_801479A8(&frame.rect2,detail,frame.text2,HudEase(blend));
      }
    }
  }
