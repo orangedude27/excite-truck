@@ -25596,7 +25596,7 @@ extern "C" void fn_800CD38C(const char *selfArg, const char *paneName) {
     }
 }
 
-static inline s32 findPaneIndex_800A485C(s32 count, s32 *entry, s32 a, s32 b) {
+static inline s32 findPaneIndex_800A485C(s32 *entry, s32 count, s32 a, s32 b) {
     s32 k;
     for (k = 0; k < count; entry += 2, k++)
         if (a == entry[0] && b == entry[1])
@@ -25620,6 +25620,9 @@ static inline s32 findPaneIndexUnrolled_800A485C(s32 count, s32 *entry, s32 a, s
 extern "C" void reset_btn__Q210homebutton10HomeButtonFv(void *arg0) {
     u8 *self=(u8*)arg0;
     void *pane;
+    void *pane2;
+    void *pane4;
+    void *pane5;
     u8 *cursor=self;
     s32 i=0, j;
     for(;i<*(s32*)(self+8);cursor+=4,i++) {
@@ -25639,9 +25642,9 @@ found:
         }
     }
     if(*(s32*)(self+0x1c+*(s32*)(self+8)*4)) {
-        pane=*(void**)(self+0x3f0);
-        fn_800CF3EC(pane);
-        *(s32*)((u8*)pane+0x14)=1;
+        pane2=*(void**)(self+0x3f0);
+        fn_800CF3EC(pane2);
+        *(s32*)((u8*)pane2+0x14)=1;
         *(s32*)(self+0x1c+(*(s32*)(self+8)+1)*4)=0;
     }
     if(*(s32*)(self+0x1c+(*(s32*)(self+8)+1)*4)) {
@@ -25654,9 +25657,9 @@ found:
 }
                 j=-1;
 found20:
-                pane=*(void**)(self+0x298+j*4);
-                fn_800CF3EC(pane);
-                *(s32*)((u8*)pane+0x14)=1;
+                pane4=*(void**)(self+0x298+j*4);
+                fn_800CF3EC(pane4);
+                *(s32*)((u8*)pane4+0x14)=1;
                 *(s32*)(self+0x1c+*(s32*)(self+8)*4)=0;
             }
         } else {
@@ -25667,9 +25670,9 @@ found20:
 }
             j=-1;
 found3:
-            pane=*(void**)(self+0x298+j*4);
-            fn_800CF3EC(pane);
-            *(s32*)((u8*)pane+0x14)=1;
+            pane5=*(void**)(self+0x298+j*4);
+            fn_800CF3EC(pane5);
+            *(s32*)((u8*)pane5+0x14)=1;
             *(s32*)(self+0x1c+*(s32*)(self+8)*4)=0;
         }
     }
