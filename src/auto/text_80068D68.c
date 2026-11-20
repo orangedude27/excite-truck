@@ -28668,6 +28668,11 @@ extern void __BzeroDelayLines(void *);
 extern BOOL __AllocDelayLine(AXFX_REVERBHI_EXP_FREE_VIEW *);
 extern s32 __InitParams(void *);
 BOOL AXFXReverbHiExpInit(void *arg0) {
+    /* Bring the exponential reverb into service with interrupts masked: raise the
+     * active flag, refuse a negative pre-delay time, size every delay line from
+     * the early-mode table (lbl_8031ABD8) and the comb/all-pass table
+     * (lbl_8031AC98), allocate and zero the lines and initialize the filter
+     * parameters -- on any failure shut the effect down and report FALSE. */
     BOOL mask;
     AXFX_REVERBHI_EXP_VIEW *fx;
     f32 preMax;
