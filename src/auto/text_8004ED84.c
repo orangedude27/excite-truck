@@ -243,9 +243,15 @@ void ConfigureVideo(short width, short height) {
 
 #pragma push
 #pragma use_lmw_stmw off
+// OSFatal: tear the game down before showing the fatal-error screen.
+// Disables interrupts/scheduler, stops audio and video, then runs the
+// shutdown callbacks for up to a second. It releases the EXI channels,
+// re-points the MEM1 arena at the top of the boot image, stashes the
+// text/background colours and message in the shared FatalParam block, and
+// switches to the Halt fiber (which draws the message and halts the CPU).
 void OSFatal(GXColor textColor, GXColor bgColor, const char *msg) {
-    int start;
-    unsigned long long t0;
+    int retraceCount;
+    unsigned long long startTime;
     OSDisableInterrupts();
     OSDisableScheduler();
     OSClearContext(lbl_8038E060);
@@ -258,14 +264,14 @@ void OSFatal(GXColor textColor, GXColor bgColor, const char *msg) {
     fn_800591AC(0);
     AIRegisterDMACallback_800591F0(0);
     OSEnableInterrupts();
-    start = fn_8005AC08();
-    while (fn_8005AC08() - start < 1) {
+    retraceCount = fn_8005AC08();
+    while (fn_8005AC08() - retraceCount < 1) {
     }
-    t0 = OSGetTime();
+    startTime = OSGetTime();
     do {
         if (__OSCallShutdownFunctions(0, 0) != 0)
             break;
-    } while ((long long)(OSGetTime() - t0) < (long long)((*(unsigned int *)0x800000F8 / 4 / 1000) * 1000));
+    } while ((long long)(OSGetTime() - startTime) < (long long)((*(unsigned int *)0x800000F8 / 4 / 1000) * 1000));
     OSDisableInterrupts();
     __OSCallShutdownFunctions(1, 0);
     EXISetExiCallback(0, 0);
@@ -598,14 +604,20 @@ extern u16 lbl_80560CBC;
 extern u16 lbl_80560CBE;
 #pragma use_lmw_stmw off
 int ReadFont(int dst, int encode, int font) {
-    u32 size;
     u8* tex;
     u32 code;
+    u32 size;
     s32 sheet;
     s32 numRestTex;
     s32 row;
     s32 col;
     u8* tmp;
+    int i;
+    int k;
+    int m;
+    int n;
+    int o;
+    int p;
     OSFontHeader* f = (OSFontHeader*)font;
 
     if ((u32)encode == 1) {
