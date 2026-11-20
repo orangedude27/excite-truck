@@ -1455,17 +1455,18 @@ extern "C" f32 lbl_80560E88;
 extern "C" f32 lbl_80560E94;
 extern "C" f32 lbl_80560E98;
 #pragma push
-#pragma scheduling invalid_target
 extern "C" void fn_800D7D5C(void* arg0, f32* m) {
     s8 scale=0;
     f32 a=m[0], b=m[1], c=m[2], d=m[3], e=m[4], f=m[5];
     f32 aa=__fabsf(a), bb=__fabsf(b), cc=__fabsf(c), dd=__fabsf(d), ee=__fabsf(e), ff=__fabsf(f);
-    if (!(aa >= 1.0f || bb >= 1.0f || cc >= 1.0f || dd >= 1.0f || ee >= 1.0f || ff >= 1.0f)) {
-        while (scale < 0x2E && !(aa >= 1.0f || bb >= 1.0f || cc >= 1.0f || dd >= 1.0f || ee >= 1.0f || ff >= 1.0f)) {
+    if (aa >= 1.0f || bb >= 1.0f || cc >= 1.0f || dd >= 1.0f || ee >= 1.0f || ff >= 1.0f) {
+        for (;;) {
+            if (scale >= 0x2E) break;
             aa *= 0.5f; a *= 0.5f; b *= 0.5f;
             c *= 0.5f; d *= 0.5f; e *= 0.5f; f *= 0.5f;
             bb *= 0.5f; cc *= 0.5f; dd *= 0.5f; ee *= 0.5f; ff *= 0.5f;
             scale++;
+            if (!(aa >= 1.0f || bb >= 1.0f || cc >= 1.0f || dd >= 1.0f || ee >= 1.0f || ff >= 1.0f)) break;
         }
     } else if (aa < 0.5f && bb < 0.5f && cc < 0.5f && dd < 0.5f && ee < 0.5f && ff < 0.5f) {
         do {
@@ -1474,10 +1475,8 @@ extern "C" void fn_800D7D5C(void* arg0, f32* m) {
             bb *= 2.0f; cc *= 2.0f; dd *= 2.0f; ee *= 2.0f; ff *= 2.0f;
         } while (aa < 0.5f && bb < 0.5f && cc < 0.5f && dd < 0.5f && ee < 0.5f && ff < 0.5f && scale > -0x11);
     }
-    if (scale <= -0x11) {
-        f32 mtx[6] = {a, b, c, d, e, f};
-        ((void (*)(void *, f32 *, s8))GXSetIndTexMtx)(arg0, mtx, scale);
-    }
+    f32 mtx[6] = {a, b, c, d, e, f};
+    ((void (*)(void *, f32 *, s8))GXSetIndTexMtx)(arg0, mtx, scale);
 }
 #pragma pop
 
@@ -1584,6 +1583,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
     u8* self = (u8*)this_;
     const u8* src;
     u8* dst;
+    int i;
     s32 texBase;
     s32 off;
     void* texCoordAry;
@@ -1617,7 +1617,6 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
     u8* tevCur;
     void* colorDst;
     int j;
-    int i;
 
     *(void**)self = lbl_8031FF08;
     fn_800D7F78(self + 0x18);
@@ -2065,13 +2064,14 @@ extern "C" s32 fn_800D8A04(s32 base, s32 offset) {
 
 #pragma scheduling on
 extern "C" void Init__Q34nw4r3lyt8MaterialFv(void *arg0) {
-    volatile short *defaults = (volatile short *)&lbl_80565230;
-    int v50 = *(int *)((char *)arg0 + 0x50);
-    int v4c = *(int *)((char *)arg0 + 0x4c);
-    short c0 = defaults[0];
-    short c1 = defaults[1];
-    short c2 = defaults[2];
-    short c3 = defaults[3];
+    struct InitDefaults4 { short a, b, c, d; };
+    volatile InitDefaults4 *defaults = (volatile InitDefaults4 *)&lbl_80565230;
+    unsigned int v50 = *(unsigned int *)((char *)arg0 + 0x50);
+    unsigned int v4c = *(unsigned int *)((char *)arg0 + 0x4c);
+    short c0 = defaults->a;
+    short c1 = defaults->b;
+    short c2 = defaults->c;
+    short c3 = defaults->d;
     v4c &= 0x1f;
     v50 &= 0x1f;
     *(short *)((char *)arg0 + 0x24) = c0;
@@ -2086,10 +2086,10 @@ extern "C" void Init__Q34nw4r3lyt8MaterialFv(void *arg0) {
     *(short *)((char *)arg0 + 0x36) = 0xff;
     *(short *)((char *)arg0 + 0x38) = 0xff;
     *(short *)((char *)arg0 + 0x3a) = 0xff;
-    *(int *)((char *)arg0 + 0x4c) = v4c;
-    *(int *)((char *)arg0 + 0x50) = v50;
+    *(unsigned int *)((char *)arg0 + 0x4c) = v4c;
+    *(unsigned int *)((char *)arg0 + 0x50) = v50;
     *(unsigned char *)((char *)arg0 + 0x54) = 0;
-    *(int *)((char *)arg0 + 0x58) = 0;
+    *(unsigned int *)((char *)arg0 + 0x58) = 0;
 }
 extern "C" void fn_8002F634(void *, void *, s32, s32);
 extern "C" void fn_800D2DD4(void);
@@ -2268,20 +2268,17 @@ extern "C" s32 fn_800D93BC(void *arg0) {
 
 #pragma scheduling off
 extern "C" s32 fn_800D93F4(void *arg0) {
-    volatile u32 *pCap = (volatile u32 *)((u8 *)arg0 + 0x4C);
-    u32 x = *pCap;
+    u32 x = *(u32 *)((u8 *)arg0 + 0x4C);
     s32 y = *(s32 *)((u8 *)arg0 + 0x58);
     u32 a = (x >> 0xC) & 4;
     u32 b = (x >> 5) & 4;
     u32 c = (x >> 6) & 4;
-    u32 flags = (a + b) + c;
+    u32 flags = a + b + c;
     u32 srt = ((x >> 0x18) & 0xF) * 0x14;
     u32 gen = (x >> 0x12) & 0x3C;
     u32 tex = (x >> 0x17) & 0x1E0;
     u32 gt = gen + tex;
-    u32 tail = (u32)y + flags;
-    u32 head = srt + gt;
-    return (s32)(tail + head);
+    return (s32)((y + flags) + (srt + gt));
 }
 #pragma scheduling on
 
@@ -2314,8 +2311,10 @@ extern "C" s32 fn_800D947C(void* arg0) {
 }
 
 extern "C" s32 GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(void *arg0) {
-    register u32 x = *(u32*)((u8*)arg0 + 0x4C);
-    register s32 base = *(s32*)((u8*)arg0 + 0x58);
+    struct MatBits { u8 pad[0x4C]; u32 x; u8 pad2[8]; s32 base; };
+    struct MatBits *m = (struct MatBits *)arg0;
+    register u32 x = m->x;
+    register s32 base = m->base;
     register s32 high = (x >> 24) & 0xF;
     register s32 low1 = (x >> 4) & 4;
     register s32 scaled = high * 0x14;
@@ -2347,8 +2346,8 @@ extern "C" s32 fn_800D9524(void* arg0) {
     u32 c = (x >> 6) & 4;
     u32 d = (x >> 5) & 4;
     u32 e = (x >> 12) & 4;
-    u32 g = (x >> 18) & 0x3C;
     u32 f = (x >> 23) & 0x1E0;
+    u32 g = (x >> 18) & 0x3C;
     u32 h = (x >> 4) & 4;
     u32 i = (x >> 3) & 4;
     u32 j = (x >> 13) & 0x1C;
@@ -2537,22 +2536,24 @@ extern "C" void SetTexture__Q36nw4hbm3lyt8MaterialFUcRC9_GXTexObj(void* self, u8
 }
 
 extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *arg0, s32 arg1, s16 arg2) {
+    s32 byte;
+    s32 value;
+    u8 *base;
     u32 flags;
     u32 info;
     u32 index;
     u32 component;
-    u8 *base;
     if (arg1 < 0x10) {
         if (arg1 < 4) {
             if (arg1 < 0) return;
             flags = *(u32 *)((u8 *)arg0 + 0x50);
             if (((flags >> 7) & 1) < 1) return;
             info = *(u32 *)((u8 *)arg0 + 0x4C);
-            base = (u8 *)*(s32 *)((u8 *)arg0 + 0x58) + ((info >> 18) & 0x3C) + ((info >> 23) & 0x1E0)
-                + ((info >> 6) & 4) + ((info >> 24) & 0xF) * 0x14;
-            s32 value = arg2 & ~(arg2 >> 31);
-            s32 byte = 0xFF;
-            if (value <= 0xFF) byte = value;
+            base = (u8 *)((((info >> 24) & 0xF) * 0x14) + ((info >> 6) & 4)
+                + (*(s32 *)((u8 *)arg0 + 0x58) + (((info >> 18) & 0x3C) + ((info >> 23) & 0x1E0))));
+            value = arg2 & ~(arg2 >> 31);
+            byte = 0xFF;
+            if ((s16)value <= 0xFF) byte = value;
             byte &= 0xFF;
             switch (arg1 & 3) {
             case 0: base[0] = byte; return;
@@ -2560,7 +2561,6 @@ extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *arg0, s32 arg1
             case 2: base[2] = byte; return;
             case 3: base[3] = byte; return;
             }
-            return;
         }
         arg1 -= 4;
         component = arg1 & 3;
@@ -2571,14 +2571,13 @@ extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *arg0, s32 arg1
         case 2: *(s16 *)((u8 *)arg0 + index * 8 + 0x28) = arg2; return;
         case 3: *(s16 *)((u8 *)arg0 + index * 8 + 0x2A) = arg2; return;
         }
+    } else if (arg1 >= 0x20) {
         return;
-    }
-    if (arg1 >= 0x20) return;
-    {
+    } else {
         s32 adjusted = arg1 - 0x10;
-        s32 value = arg2 & ~(arg2 >> 31);
-        s32 byte = 0xFF;
-        if (value <= 0xFF) byte = value;
+        value = arg2 & ~(arg2 >> 31);
+        byte = 0xFF;
+        if ((s16)value <= 0xFF) byte = value;
         index = (u32)adjusted >> 2;
         component = adjusted & 3;
         switch (component) {
