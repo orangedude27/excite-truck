@@ -160,6 +160,22 @@ extern float lbl_80564F90;
 typedef struct { float m[9]; } Mtx33_802D1C04;
 typedef struct { Mtx33_802D1C04 r; Vec_802D1C04 t; } Xform_802D1C04;
 typedef struct { float m[2][4]; } Mtx24_802D1C04;
+static inline void initBasis_802D3420(float *m) {
+    register float zero = 0.0f;
+    register float one = 1.0f;
+    m[1] = zero;
+    m[0] = one;
+    m[2] = zero;
+    m[3] = zero;
+    m[4] = one;
+    m[5] = zero;
+    m[6] = zero;
+    m[7] = zero;
+    m[8] = one;
+    m[9] = zero;
+    m[10] = zero;
+    m[11] = zero;
+}
 static inline void mtx33Transpose_802D1C04(float *m) {
     float t;
     t = m[1]; m[1] = m[3]; m[3] = t;
@@ -3067,7 +3083,7 @@ void fn_802D3420(void) {
     ident[2][1] = zero;
     ident[2][2] = zero;
     ident[2][3] = zero;
-    fn_802D0DD4(mtx, ident);
+    fn_802D0DD4(&mtx[0][0], ident);
     GXLoadPosMtxImm(mtx, 0);
     C_MTXOrtho(proj, lbl_80564F88, lbl_80564FBC, lbl_80564F88, lbl_80564FE0, lbl_80564F8C, lbl_80564FCC);
     GXSetProjection(proj, 1);
