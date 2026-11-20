@@ -272,9 +272,9 @@ static inline void nextCommandBuf(void) {
 }
 
 static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const char *msg) {
+    unsigned char *base = lbl_8037B820;
     int id;
     unsigned int flag;
-    unsigned char *base = lbl_8037B820;
 
     flag = ((DVDLowContext *)base)[lbl_8055D8E8].inUse;
     if (((-flag | flag) >> 31) == 1U) {
