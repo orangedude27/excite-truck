@@ -729,8 +729,6 @@ void fn_802CE2C0(int *, int);
 void fn_802CE2D8(int *, int);
 void fn_802CE2F0(int *, int);
 #pragma scheduling on
-#pragma push
-#pragma opt_common_subs off
 void fn_802CDDC8(void *arg0, int arg1) {
     volatile unsigned char *base = (volatile unsigned char *)arg0;
     volatile unsigned char *rec;
