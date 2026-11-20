@@ -40,11 +40,11 @@ void fn_801EAB2C(void * __restrict arg0) {
     float a;
     void *vptr = &lbl_80339E60;
     float *p = (float *)arg0;
-    a = lbl_80562E60;
-    b = lbl_80562E64;
-    p[1] = a;
-    *(int *)arg0 = (int)vptr;
+    a = 1.0f;
+    b = 0.0f;
     *(float volatile *)((char *)arg0 + 4) = a;
+    *(int *)arg0 = (int)vptr;
+    p[1] = a;
     p[2] = b;
     p[3] = b;
     p[4] = b;
