@@ -1226,19 +1226,24 @@ void GXSetGPFifo(unsigned int *__restrict fifo) {
 }
 #pragma pop
 void __GXSaveFifo(void) {
-    register u8 hasCPUFifo;
     int level;
+    GXFifoObjInternal *fifo;
+    unsigned int *pi;
+    u8 hasCPUFifo;
+    u16 *cp;
     level = OSDisableInterrupts();
     hasCPUFifo = lbl_8055D948;
     if (hasCPUFifo) {
-        GXFifoObjInternal *fifo = (GXFifoObjInternal *)lbl_8037C0E4;
-        u32 reg = __piReg[5];
+        u32 reg;
+        pi = __piReg;
+        fifo = (GXFifoObjInternal *)lbl_8037C0E4;
+        reg = pi[5];
         fifo->wrap = (u8)((reg >> 29) & 1);
         fifo->wrPtr = (void *)((reg & 0x1FFFFFE0) + 0x80000000);
     }
     if (*(u8 *)&lbl_8055D949 != 0) {
-        GXFifoObjInternal *fifo = (GXFifoObjInternal *)lbl_8037C0C0;
-        u16 *cp = (u16 *)__cpReg;
+        cp = (u16 *)__cpReg;
+        fifo = (GXFifoObjInternal *)lbl_8037C0C0;
         fifo->rdPtr = (void *)((((u32)cp[0x3A / 2] << 16) | cp[0x38 / 2]) + 0x80000000);
         fifo->count = ((u32)cp[0x32 / 2] << 16) | cp[0x30 / 2];
     }
@@ -1480,10 +1485,11 @@ void __GXFifoInit(void) {
 
 void __GXCleanGPFifo(void) {
     int zero;
-    unsigned int *gd;
+    register unsigned int *gd;
     unsigned int *fifo;
     int intStatus;
     unsigned int tmp;
+    unsigned int *gx4;
     if ((unsigned char)lbl_8055D949 == 0) {
         return;
     }
@@ -1526,8 +1532,9 @@ void __GXCleanGPFifo(void) {
     gd[2] = tmp;
     __cpReg[1] = (unsigned short)tmp;
     lbl_8055D950 = 0;
-    tmp = __GXData[4] | 3u;
-    __GXData[4] = tmp;
+    gx4 = *(unsigned int * volatile *)&__GXData;
+    tmp = gx4[4] | 3u;
+    gx4[4] = tmp;
     __cpReg[2] = (unsigned short)tmp;
     tmp = gd[2] | 1u;
     gd[2] = tmp;
@@ -4825,8 +4832,9 @@ void *GXSetTlutRegionCallback(void *callback) {
 }
 
 void __SetSURegs(s32 arg0, s32 arg1) {
-    unsigned int *tex = __GXData + arg0;
-    unsigned int *su = __GXData + arg1;
+    unsigned int *su;
+    unsigned int *tex;
+    unsigned int *data;
     unsigned int value;
     unsigned int v1;
     unsigned int v2;
@@ -4834,6 +4842,9 @@ void __SetSURegs(s32 arg0, s32 arg1) {
     unsigned int su2;
     unsigned int mode;
     union { unsigned int v; struct { unsigned int lo : 16; unsigned int hi : 16; } f; } u;
+    data = __GXData;
+    tex = (unsigned int *)((char *)data + arg0 * 4);
+    su = (unsigned int *)((char *)data + arg1 * 4);
     value = tex[0x564 / 4];
     v1 = value & 0x3FF;
     v2 = (value >> 10) & 0x3FF;
@@ -4856,7 +4867,7 @@ void __SetSURegs(s32 arg0, s32 arg1) {
     *(volatile unsigned int *)0xCC008000 = su[0x108 / 4];
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = su[0x128 / 4];
-    *((unsigned short *)((char *)__GXData + 2)) = 0;
+    *((unsigned short *)((char *)data + 2)) = 0;
 }
 
 void __GXSetSUTexRegs(void) {
@@ -4898,11 +4909,8 @@ void __GXSetSUTexRegs(void) {
 void __GXSetTmemConfig(s32 arg0) {
     volatile u8 *fifo8 = (volatile u8 *)0xCC008000;
     volatile u32 *fifo32 = (volatile u32 *)0xCC008000;
-    if (arg0 == 1) goto case1;
-    if (arg0 >= 1) goto compare3;
-    goto default_case;
-compare3:
-    if (arg0 >= 3) goto default_case;
+    switch (arg0) {
+    case 2:
     *fifo8 = 0x61;
     *fifo32 = 0x8C0D8000;
     *fifo8 = 0x61;
@@ -4935,8 +4943,8 @@ compare3:
     *fifo32 = 0xAF0DB800;
     *fifo8 = 0x61;
     *fifo32 = 0xB30DDC00;
-    goto done;
-case1:
+    break;
+    case 1:
     *fifo8 = 0x61;
     *fifo32 = 0x8C0D8000;
     *fifo8 = 0x61;
@@ -4969,8 +4977,9 @@ case1:
     *fifo32 = 0xAF0DB800;
     *fifo8 = 0x61;
     *fifo32 = 0xB30DF800;
-    goto done;
-default_case:
+    break;
+    case 0:
+    default:
     *fifo8 = 0x61;
     *fifo32 = 0x8C0D8000;
     *fifo8 = 0x61;
@@ -5003,8 +5012,8 @@ default_case:
     *fifo32 = 0xAF0D9C00;
     *fifo8 = 0x61;
     *fifo32 = 0xB30DDC00;
-done:
-    ;
+    break;
+    }
 }
 #pragma optimization_level reset
 /* Configures indirect texturing for a TEV stage by writing its indirect control register. */
@@ -5482,6 +5491,11 @@ void GXSetTevSwapMode(s32 stage, s32 rasSel, s32 texSel) {
 }
 
 void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 texSel2) {
+    u32 offset1;
+    u32 offset0;
+    u32 index2;
+    unsigned int *table;
+    unsigned int *data;
     union {
         u32 value;
         struct {
@@ -5490,13 +5504,6 @@ void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 t
             unsigned int rasSel : 2;
         } fields;
     } word;
-    volatile unsigned char *fifo = (volatile unsigned char *)0xCC008000;
-    u32 cmd = 0x61;
-    u32 offset0;
-    u32 index2;
-    u32 offset1;
-    unsigned int *table;
-    unsigned int *data;
 
     offset0 = (u32)index << 3;
     index2 = (u32)index << 1;
@@ -5509,8 +5516,8 @@ void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 t
     word.fields.texSel = texSel;
     *(u32 *)((char *)table + offset0) = word.value;
 
-    *(volatile unsigned char *)fifo = cmd;
-    *(volatile unsigned int *)fifo = *(u32 *)((char *)table + offset0);
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = *(u32 *)((char *)table + offset0);
 
     offset1 <<= 2;
     word.value = *(u32 *)((char *)table + offset1);
@@ -5518,8 +5525,8 @@ void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 t
     word.fields.texSel = texSel2;
     *(u32 *)((char *)table + offset1) = word.value;
 
-    *(volatile unsigned char *)fifo = cmd;
-    *(volatile unsigned int *)fifo = *(u32 *)((char *)table + offset1);
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = *(u32 *)((char *)table + offset1);
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
@@ -5680,7 +5687,7 @@ void GXSetFog(int type, GXColor color, f32 start, f32 end, f32 near, f32 far) {
 
     u32 fogColorReg = 0;
     register u32 fogParamReg0 = 0;
-    register u32 fogParamReg1 = 0;
+    u32 fogParamReg1 = 0;
     register u32 fogParamReg2 = 0;
     u32 fogParamReg3 = 0;
 
@@ -5748,11 +5755,19 @@ void GXSetFog(int type, GXColor color, f32 start, f32 end, f32 near, f32 far) {
     GX_BP_SET_OPCODE(fogColorReg, GX_BP_REG_FOGCOLOR);
     GX_BP_SET_FOGCOLOR_RGB(fogColorReg, *(u32*)&color >> 8);
 
-    GX_BP_LOAD_REG(fogParamReg0);
-    GX_BP_LOAD_REG(fogParamReg1);
-    GX_BP_LOAD_REG(fogParamReg2);
-    GX_BP_LOAD_REG(fogParamReg3);
-    GX_BP_LOAD_REG(fogColorReg);
+    {
+        u32 cmd = GX_FIFO_CMD_LOAD_BP_REG;
+        WGPIPE.c = cmd;
+        WGPIPE.i = fogParamReg0;
+        WGPIPE.c = cmd;
+        WGPIPE.i = fogParamReg1;
+        WGPIPE.c = cmd;
+        WGPIPE.i = fogParamReg2;
+        WGPIPE.c = cmd;
+        WGPIPE.i = fogParamReg3;
+        WGPIPE.c = cmd;
+        WGPIPE.i = fogColorReg;
+    }
 
     *(volatile u16 *)((u8 *)__GXData + 2) = 0;
 }
