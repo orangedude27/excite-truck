@@ -172,9 +172,9 @@ extern "C" void fn_8026B260(void) {
 #pragma push
 #pragma opt_common_subs off
 #pragma dont_inline off
-static inline void fn_8026B3D4_findArea(e, t, x, z, d)
-    unsigned char *e; float t; float x; float z; volatile float *d;
-{
+static inline void fn_8026B3D4_findArea(unsigned char *e, float t, double x0, double z0, volatile float *d) {
+    float x = x0;
+    float z = z0;
     float *tab = (float *)lbl_8049A028;
     int found = 0;
     int j = 0;
