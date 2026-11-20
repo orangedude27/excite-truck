@@ -1440,8 +1440,7 @@ void fn_802D0610(int arg0) {
     lbl_8055FD8C = arg0;
 }
 
-#pragma push
-#pragma optimize_for_size on
+#pragma opt_lifetimes on
 void fn_802D07E4(char* arg0, int arg1) {
     extern unsigned long lbl_8055D0B8;
     extern int lbl_8055D0BC;
@@ -1481,11 +1480,12 @@ copy:
     }
 done:
     if (arg1 != 0) {
-        fn_802E30C8(lbl_8034C108, lbl_8055D0BC * lbl_804C9760[2], lbl_8055D0C0 * lbl_804C9760[3], lbl_804C9760, lbl_8055D0BC);
+        int *base = lbl_804C9760;
+        int v = lbl_8055D0BC;
+        fn_802E30C8(lbl_8034C108, v * base[2], lbl_8055D0C0 * base[3], base, v);
         lbl_8055D0B8 = 0;
     }
 }
-#pragma pop
 extern unsigned char lbl_8055FD78;
 extern int GXSetCullMode(int);
 extern void GXLoadTexMtxImm(void *, unsigned int, unsigned char);
@@ -2660,6 +2660,12 @@ static inline void SetAppliedFlags_802D2B0C(unsigned char f8, unsigned char f9, 
     lbl_804C9930[0xC] = fC;
     lbl_804C9930[0xD] = fD;
 }
+typedef struct {
+    unsigned char b0;
+    unsigned char pad[3];
+    unsigned int t4;
+    unsigned char b8, b9, bA, bB, bC, bD;
+} CopyBlock802D2B0C;
 void fn_802D2B0C(void) {
     extern unsigned char lbl_804C9930[];
     extern unsigned short lbl_8055FD0C;
@@ -2963,6 +2969,7 @@ void* fn_802D3138(void) {
 #pragma scheduling on
 #pragma dont_inline on
 void fn_802D3144(void) {
+#pragma scheduling on
     if (lbl_8055FD86 == lbl_8055FD08) {
         GXSetBlendMode(0, 0, 0, 5);
     } else {
@@ -3052,24 +3059,23 @@ extern float lbl_80564FE0, lbl_80564FE4;
 void fn_802D3420(void) {
     register float zero = 0.0f;
     register float one = 1.0f;
-    float ident[3][4], mtx[3][4], proj[4][4];
+    struct { float m[3][4]; } ident;
+    float mtx[3][4], proj[4][4];
     float width, height;
     volatile float *fifo = (volatile float *)0xCC008000;
-    float *m = mtx[0];
-    float *p = ident[0];
-    p[1] = zero;
-    p[0] = one;
-    p[2] = zero;
-    p[3] = zero;
-    p[4] = one;
-    p[5] = zero;
-    p[6] = zero;
-    p[7] = zero;
-    p[8] = one;
-    p[9] = zero;
-    p[10] = zero;
-    p[11] = zero;
-    fn_802D0DD4(m, p);
+    ident.m[0][1] = zero;
+    ident.m[0][0] = one;
+    ident.m[0][2] = zero;
+    ident.m[0][3] = zero;
+    ident.m[1][0] = one;
+    ident.m[1][1] = zero;
+    ident.m[1][2] = zero;
+    ident.m[1][3] = zero;
+    ident.m[2][0] = one;
+    ident.m[2][1] = zero;
+    ident.m[2][2] = zero;
+    ident.m[2][3] = zero;
+    fn_802D0DD4(mtx, &ident);
     GXLoadPosMtxImm(mtx, 0);
     C_MTXOrtho(proj, lbl_80564F88, lbl_80564FBC, lbl_80564F88, lbl_80564FE0, lbl_80564F8C, lbl_80564FCC);
     GXSetProjection(proj, 1);
@@ -3090,6 +3096,7 @@ void fn_802D3420(void) {
     lbl_804C9778[0] = 1;
     lbl_8055FD70 = 1;
 }
+#pragma scheduling on
 void fn_802D362C(s32 arg0) {
     unsigned char color[4];
     unsigned int packed;
@@ -3120,8 +3127,7 @@ void fn_802D362C(s32 arg0) {
     GXSetTevColor(1, color);
     fn_802D3420();
 }
-
-#pragma pop
+#pragma scheduling reset
 
 // Depth queries, pool at 0x804C9984 (lbl_804C9984). fn_802D39A4 takes a free
 // query, fn_802D3A5C projects a world point into it (pixel x/y + its 24-bit
