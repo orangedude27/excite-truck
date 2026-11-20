@@ -3744,17 +3744,16 @@ extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hb
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" BOOL fn_800F6C7C(void *arg0, u32 arg1, void *arg2, u32 arg3) {
-    const char *fileName = lbl_80324E88;
+    char *fileName = (char *)lbl_80324E88;
     void *waveDataAddress;
     u8 loader[0x220];
     u32 *table;
-    u32 loaded = 0;
 
     if (*(void * volatile *)((u8 *)arg0 + 0x10) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(&fileName[0], 0x518, fileName + 0x2A0);
+        Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x518, fileName + 0x2A0);
     }
     if (arg3 & 0x1F) {
-        Panic__Q26nw4hbm2dbFPCciPCce(&fileName[0], 0x519, fileName + 0x4D4, arg3);
+        Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x519, fileName + 0x4D4, arg3);
     }
     if ((*(void * volatile *)((u8 *)arg0 + 0x10) == 0 ? 0 : fn_800F273C(*(void * volatile *)((u8 *)arg0 + 0x10))) == 0) {
         return 0;
@@ -3764,9 +3763,10 @@ extern "C" BOOL fn_800F6C7C(void *arg0, u32 arg1, void *arg2, u32 arg3) {
     }
 
     table = *(u32 **)((u8 *)arg0 + 0x14);
+    u32 loaded = 0;
     if (table == 0) {
         if (table == 0)
-            Warning__Q26nw4hbm2dbFPCciPCce(&fileName[0], 0x333, fileName + 0x2D0);
+            Warning__Q26nw4hbm2dbFPCciPCce(fileName, 0x333, fileName + 0x2D0);
     } else if (arg1 >= table[0]) {
         loaded = 0;
     } else {
@@ -3790,10 +3790,10 @@ extern "C" BOOL fn_800F6C7C(void *arg0, u32 arg1, void *arg2, u32 arg3) {
     table = *(u32 **)((u8 *)arg0 + 0x14);
     if (table == 0) {
         if (table == 0)
-            Warning__Q26nw4hbm2dbFPCciPCce(&fileName[0], 0x34D, fileName + 0x388);
+            Warning__Q26nw4hbm2dbFPCciPCce(fileName, 0x34D, fileName + 0x388);
     } else {
         if (arg1 >= table[0]) {
-            Panic__Q26nw4hbm2dbFPCciPCce(&fileName[0], 0x351, fileName + 0x3E0, arg1, 0);
+            Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x351, fileName + 0x3E0, arg1, 0);
         }
         table = *(u32 **)((u8 *)arg0 + 0x14);
         *(u32 *)((u8 *)table + arg1 * 8 + 4) = arg3;
@@ -3803,10 +3803,10 @@ extern "C" BOOL fn_800F6C7C(void *arg0, u32 arg1, void *arg2, u32 arg3) {
     table = *(u32 **)((u8 *)arg0 + 0x14);
     if (table == 0) {
         if (table == 0)
-            Warning__Q26nw4hbm2dbFPCciPCce(&fileName[0], 0x380, fileName + 0x420);
+            Warning__Q26nw4hbm2dbFPCciPCce(fileName, 0x380, fileName + 0x420);
     } else {
         if (arg1 >= table[0]) {
-            Panic__Q26nw4hbm2dbFPCciPCce(&fileName[0], 0x384, fileName + 0x3E0, arg1, 0);
+            Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x384, fileName + 0x3E0, arg1, 0);
         }
         table = *(u32 **)((u8 *)arg0 + 0x14);
         *(u32 *)((u8 *)table + arg1 * 8 + 8) = arg3;
@@ -3890,11 +3890,10 @@ extern "C" void *fn_800FE648(void);
 extern "C" void fn_800FE804(void *arg0);
 extern "C" const char lbl_80324E88[];
 extern "C" s32 fn_800F6F6C(void *arg0, s32 arg1, s32 arg2, void *arg3) {
-    const char *panicBase = lbl_80324E88;
     struct Scratch { s32 bankInfo[4]; s32 seqInfo[4]; } scratch;
+    u32 panicBase = (u32)lbl_80324E88;
     void *soundArchive = *(void **)((u8 *)arg0 + 4);
     void *archive2;
-    void *bankFileReader;
     void *manager;
     void *task;
     s32 value;
@@ -3905,34 +3904,34 @@ extern "C" s32 fn_800F6F6C(void *arg0, s32 arg1, s32 arg2, void *arg3) {
         has = fn_800F273C(*(void **)((u8 *)soundArchive + 0x10));
     }
     if (has == 0) return 1;
-    archive2 = *(void **)((u8 *)arg0 + 4);
+    archive2 = *(void * volatile *)((u8 *)arg0 + 4);
     if (*(s32 *)((u8 *)archive2 + 0x10) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(panicBase, 0x2AC, panicBase + 0x288);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)panicBase, 0x2AC, (const char *)(panicBase + 0x288));
     }
-    bankFileReader = *(void **)((u8 *)archive2 + 0x10);
+    archive2 = *(void **)((u8 *)archive2 + 0x10);
     value = *(s32 *)((u8 *)arg3 + 0x78);
-    if (((s32 (*)(void *, s32, s32 *))fn_800F27EC)(bankFileReader, value, scratch.seqInfo) == 0) {
+    if (((s32 (*)(void *, s32, s32 *))fn_800F27EC)(archive2, value, scratch.seqInfo) == 0) {
         return 1;
     }
-    if (((s32 (*)(void *, s32, s32 *))fn_800F27F4)(bankFileReader, value, scratch.bankInfo) == 0) {
+    if (((s32 (*)(void *, s32, s32 *))fn_800F27F4)(archive2, value, scratch.bankInfo) == 0) {
         return 1;
     }
     value = *(s32 *)((u8 *)arg3 + 4);
     if (value == 0) return 1;
     manager = fn_800FDE60();
     if (fn_800FE0DC(manager) >= 0x30) {
-        Panic__Q26nw4hbm2dbFPCciPCce(panicBase, 0x5A5, panicBase + 0x528);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)panicBase, 0x5A5, (const char *)(panicBase + 0x528));
     }
     task = Alloc__Q46nw4hbm3snd6detail11TaskManagerFv(fn_800FDE60());
     if (task == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(panicBase, 0x5A7, panicBase + 0x590);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)panicBase, 0x5A7, (const char *)(panicBase + 0x590));
     }
     if (task != 0) {
         *(s32 *)((u8 *)task + 4) = 0;
         *(s32 *)((u8 *)task + 8) = 0;
         *(void **)((u8 *)task + 0xC) = arg3;
         *(void **)task = (void *)lbl_80325698;
-        *(void **)((u8 *)task + 0x14) = bankFileReader;
+        *(void **)((u8 *)task + 0x14) = archive2;
         *(s32 *)((u8 *)task + 0x18) = scratch.seqInfo[0];
         *(s32 *)((u8 *)task + 0x1C) = scratch.bankInfo[0];
         *(s32 *)((u8 *)task + 0x20) = value;
@@ -4943,6 +4942,32 @@ extern "C" void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm
 #pragma use_lmw_stmw off
 #pragma push
 #pragma opt_propagation off
+/* Inline LinkList<BasicSound, 0xC8> helpers (asserting GetFront / PopFront / PushBack). */
+static inline u8 *SndPrioList_GetFront(u8 *list) {
+    if (*(s32 *)list == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803263A8, 0x1F1, lbl_80326384);
+    }
+    void *node = *(void **)(list + 4);
+    if (node == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
+    }
+    u8 *obj = (u8 *)node - 0xC8;
+    if (obj == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326378, 0x193, lbl_80326354);
+    }
+    return obj;
+}
+static inline void SndPrioList_PopFront(u8 *list) {
+    s32 it = *(s32 *)(list + 4);
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(list, &it);
+}
+static inline void SndPrioList_PushBack(u8 *list, u8 *obj) {
+    if (obj == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326288, 0x233, (const char *)lbl_80326264);
+    }
+    void *it = list + 4;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(list, &it, obj + 0xC8);
+}
 extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0) {
     extern void* fn_8002F53C(void*, void (*)(void*), void* (*)(void*, int), s32, s32);
     extern void* fn_8002F634(void*, void* (*)(void*, int), s32, s32);
@@ -7402,7 +7427,7 @@ extern "C" void UpdateLoadingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFQ66nw4
     s32 var_r10;
     if (*(unsigned char*)((unsigned char*)arg0 + 0x53) == 0) {
         unsigned long irq = OSDisableInterrupts();
-        if (*(s32*)((unsigned char*)arg0 + 0x94) == 0) {
+        if (*(void **)((unsigned char*)arg0 + 0x94) == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C1C, 0x1F1, lbl_80326BF8);
         }
         s32 tmp28 = *(s32*)((unsigned char*)arg0 + 0x98);
