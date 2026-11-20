@@ -1761,29 +1761,6 @@ extern float PSQUATMultiply(void *, void *);
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma dont_inline fn_802C53C4
-static void fn_802C7D54_xform(float *out, const float *input, const float *rot) {
-    if (out == rot) {
-        float y0 = input[3] * rot[1];
-        float y1 = input[4] * rot[1];
-        float x0 = input[0] * rot[0];
-        float x1 = input[1] * rot[0];
-        float x2 = input[2] * rot[0];
-        float y2 = input[5] * rot[1];
-        float z0 = input[6] * rot[2];
-        float z1 = input[7] * rot[2];
-        float z2 = input[8] * rot[2];
-        out[0] = (x0 + y0) + z0;
-        out[1] = (x1 + y1) + z1;
-        out[2] = (x2 + y2) + z2;
-    } else {
-        out[0] = (input[3] * rot[1] + input[0] * rot[0]) + input[6] * rot[2];
-        out[1] = (input[4] * rot[1] + input[1] * rot[0]) + input[7] * rot[2];
-        out[2] = (input[5] * rot[1] + input[2] * rot[0]) + input[8] * rot[2];
-    }
-    out[0] += input[9];
-    out[1] += input[10];
-    out[2] += input[11];
-}
 void fn_802C7D54(int arg0, const float *arg1, int arg2, float fa, float fb, float fc) {
     struct ModelInstance *instance;
     unsigned char entryStatus;
