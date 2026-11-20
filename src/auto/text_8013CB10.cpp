@@ -1943,7 +1943,7 @@ extern "C" void fn_8013F498(void *arg0, void *arg1, f32 farg0) {
     *(f32 *)((u8 *)arg1 + 4) = out3;
 }
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling off
 extern "C" void fn_8013F580(void *arg0, void *arg1, void *arg2) {
     struct Lookup {
         virtual void dummy();
@@ -2001,7 +2001,7 @@ extern "C" void fn_8013F580(void *arg0, void *arg1, void *arg2) {
                 opacity = lbl_805614A4 + ratio * lbl_805614AC;
                 item = (*(Lookup **)(self + 0x54))->find(labels + 0x3FC);
                 if (item) {
-                    register s32 nextIndex = *(s32 *)(self + 0x68) + 1;
+                    s32 nextIndex = *(s32 *)(self + 0x68) + 1;
                     text2 = *(TextStyle *)item;
                     text2.size *= lbl_80561550;
                     text2.color = 0xFFFFFF;
