@@ -751,24 +751,25 @@ extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, s32);
 // Iterate by reference into single-member structs (see fn_800DB098): MWCC keeps
 // the node/end pair in the top callee-saved registers this way.
 #pragma push
-#pragma use_lmw_stmw off
-#pragma opt_lifetimes off
+#pragma opt_common_subs off
 extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, s32 arg1) {
     extern const char lbl_8031E764[];
     extern const char lbl_8031E740[];
     extern const char lbl_8031F718[];
     extern const char lbl_8031F6F4[];
-    void* slot;
-    void* end;
-    GroupListNode* node;
-    GroupListNode* current;
     GroupLayout* group = (GroupLayout*)arg0;
+    struct { GroupListNode *v; } nodeH;
+    struct { GroupListNode *v; } endH;
+    GroupListNode *&node = nodeH.v;
+    GroupListNode *&end = endH.v;
+    GroupListNode* current;
     if (group != 0) {
-        node = group->children.first;
-        end = &group->children.first;
+        nodeH.v = group->children.first;
+        endH.v = (GroupListNode*)&group->children.first;
         group->vtable = lbl_8031F628;
         while (node != end) {
             current = node;
+            void* slot;
             node = node->next;
             slot = current;
             Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(&group->children, &slot);
@@ -1133,7 +1134,7 @@ s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *
 }
 #pragma pop
 struct LLHead { char pad[4]; void *list; void *term; };
-extern "C" void *CreateAnimTransform__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16ResourceAccessor(void *self, const void *resource, void *accessor) {
+extern "C" void *CreateAnimTransform__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16ResourceAccessor(void * __restrict self, const void *resource, void *accessor) {
     extern const char lbl_8031F8C0[];
     extern const char lbl_8031F89C[];
     const char *msg=lbl_8031F728;
