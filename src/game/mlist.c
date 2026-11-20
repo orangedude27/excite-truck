@@ -324,37 +324,45 @@ void fn_802CD33C(void *list, int entryIndex, int clearFlag) {
     }
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 void fn_802CD37C(void *arg0, void *arg1, float *arg2, int arg3, float farg0, float farg1) {
-    float matrix[12];
-    int v;
-    int i;
+    float f[0x5A];
+    int v, i;
     float *p;
     int *q;
+    float *r;
+    unsigned char sp9;
+    unsigned char sp8;
+    int ctr, k, n;
+    void **entries;
+    int *out;
+    int idx;
     fn_801293C8(lbl_8034BBE0);
     lbl_8055FCD8 = arg0;
-    matrix[0] = lbl_80564F58; matrix[1] = lbl_80564F5C; matrix[2] = lbl_80564F5C; matrix[3] = lbl_80564F5C;
-    matrix[4] = lbl_80564F58; matrix[5] = lbl_80564F5C; matrix[6] = lbl_80564F5C; matrix[7] = lbl_80564F5C;
-    matrix[8] = lbl_80564F58; matrix[9] = lbl_80564F5C; matrix[10] = lbl_80564F5C; matrix[11] = lbl_80564F5C;
-    v = ((int (*)(void *, float))fn_802D0514)(matrix, lbl_80564F58);
-    *(int *)((char *)lbl_8055DFC4 + 0x64) = v;
+    f[78] = lbl_80564F58; f[79] = lbl_80564F5C; f[80] = lbl_80564F5C; f[81] = lbl_80564F5C;
+    f[82] = lbl_80564F58; f[83] = lbl_80564F5C; f[84] = lbl_80564F5C; f[85] = lbl_80564F5C;
+    f[86] = lbl_80564F58; f[87] = lbl_80564F5C; f[88] = lbl_80564F5C; f[89] = lbl_80564F5C;
+    v = ((int (*)(void *, float))fn_802D0514)(&f[78], lbl_80564F58);
+    *(int *)(gDrawContext + 0x64) = v;
     p = arg2;
-    q = (int *)lbl_8055DFC4;
+    q = (int *)gDrawContext;
     i = 0;
     while (i < arg3) {
-        *(int *)((char *)q + 0x68) = ((int (*)(void *, float))fn_802D0514)(p, lbl_80564F58);
+        *(q + 0x1A) = ((int (*)(void *, float))fn_802D0514)(p, 0.0f);
         p += 0x30 / 4;
         q += 1;
         i++;
     }
     if (arg3 < 0x100) {
         int rem = 0x100 - arg3;
-        int ctr;
-        int *dst = (int *)((char *)lbl_8055DFC4 + arg3 * 4);
+        int *dst = (int *)(gDrawContext + arg3 * 4);
         if (rem > 8) {
             ctr = (0xFF - arg3) >> 3;
             if (arg3 < 0xF8) {
                 do {
-                    *(dst + 0x19) = v; dst[0x1A] = v; dst[0x1B] = v; dst[0x1C] = v; dst[0x1D] = v; dst[0x1E] = v; dst[0x1F] = v; dst[0x20] = v;
+                    dst[0x19] = v; dst[0x1A] = v; dst[0x1B] = v; dst[0x1C] = v;
+                    dst[0x1D] = v; dst[0x1E] = v; dst[0x1F] = v; dst[0x20] = v;
                     dst += 8;
                     ctr--;
                 } while (ctr != 0);
@@ -362,14 +370,127 @@ void fn_802CD37C(void *arg0, void *arg1, float *arg2, int arg3, float farg0, flo
         }
         ctr = 0x100 - arg3;
         if (arg3 < 0x100) {
-            do { *(dst + 0x19) = v; dst++; ctr--; } while (ctr != 0);
+            do { dst[0x19] = v; dst++; ctr--; } while (ctr != 0);
         }
     }
-    matrix[0] = farg0; matrix[1] = farg1;
+    f[6] = *(int *)((char *)arg0 + 0x10);
+    entries = *(void ***)((char *)arg0 + 0x14);
+    r = (float *)fn_802C86DC(f[6]);
+    {
+        float *g = (float *)(lbl_804C1480 + 0x4190);
+        for (k = 0; k < 12; k++) { g[k] = r[k]; f[66 + k] = r[k]; }
+    }
+    {
+        float x = f[75], y = f[63], z = f[77];
+        f[63] = z * f[68] + (x * f[66] + y * f[67]);
+        f[64] = z * f[71] + (x * f[69] + y * f[70]);
+        f[65] = z * f[74] + (x * f[72] + y * f[73]);
+    }
+    f[63] *= lbl_80564F60; f[64] *= lbl_80564F60; f[65] *= lbl_80564F60;
+    fn_802C98DC(&lbl_8055FCD4, &lbl_8055D0A0, &lbl_8055D0A4, &f[1], f[64], f[63], lbl_80564F60);
+    {
+        float t8 = (lbl_8055D0A4 + lbl_8055D0A0) / (lbl_8055D0A4 - lbl_8055D0A0);
+        float t42 = lbl_80564F58 / lbl_8055FCD4;
+        float t52 = lbl_8055D0A4 * (lbl_80564F58 - t8);
+        f[42] = lbl_80564F5C; f[43] = lbl_80564F5C;
+        f[52] = t8; f[46] = lbl_80564F5C; f[47] = lbl_80564F5C;
+        f[50] = t42; f[51] = t42;
+        f[44] = lbl_80564F58 / f[1];
+        f[48] = t52;
+        *(double *)&f[26] = f[42]; *(double *)&f[28] = f[44];
+        *(double *)&f[30] = f[46]; *(double *)&f[32] = f[48];
+        *(double *)&f[34] = f[50]; *(double *)&f[36] = f[52];
+        ((void (*)(float *, double *, double *, double *, float, float, float, float, float, float, float, float))fn_802CCBC0)(&f[57], (double *)&f[34], (double *)&f[30], (double *)&f[26], f[50], f[48], f[46], f[44], t52, lbl_8055D0A4, f[1], t8);
+    }
+    *gDrawContext = 0x81;
+    out = (int *)(gDrawContext + 1);
+    n = 0;
+    idx = 1;
+    {
+        void *e = entries[0];
+        while (n < f[6]) {
+            float a = ((float *)e)[0], b = ((float *)e)[1], c = ((float *)e)[2], dd = ((float *)e)[3];
+            f[22] = a; f[23] = b; f[24] = c; f[25] = dd;
+            f[11] = f[22]; f[12] = f[23]; f[13] = f[24];
+            if (fn_802C94A0(&f[11], &sp9, &lbl_8055FCE0, c, b, a, dd, f[23], f[22]) != 0) {
+                int res = sp9 ? 0x81 : 1;
+                lbl_8055FCDC = res;
+                *out = res;
+            } else {
+                lbl_8055FCDC = 0;
+                *out = 0;
+            }
+            e = (char *)e + 0x10;
+            n++;
+            idx++;
+            out++;
+        }
+    }
+    out = (int *)(gDrawContext + idx);
+    n = 0;
+    {
+        void *e2 = *(void **)((char *)arg0 + 0x1C);
+        int cnt2 = *(int *)((char *)arg0 + 0x18);
+        f[38] = f[75]; f[39] = f[63]; f[40] = f[77]; f[41] = lbl_80564F5C;
+        while (n < cnt2) {
+            int res;
+            if (*(signed char *)(gDrawContext + *(unsigned short *)((char *)e2 + 0xC)) != 0) {
+                float pair[2]; pair[0] = f[38]; pair[1] = f[40];
+                res = fn_802CCBC4(e2, pair, farg0, farg1);
+            } else {
+                res = 0;
+            }
+            *out = res;
+            e2 = (char *)e2 + 0x20;
+            n++;
+            idx++;
+            out++;
+        }
+    }
+    out = (int *)(gDrawContext + idx);
+    {
+        void *e3 = *(void **)((char *)arg0 + 0x24);
+        int cnt3 = *(int *)((char *)arg0 + 0x20);
+        int off = idx * 4;
+        n = 0;
+        while (n < cnt3) {
+            float a, b, c, dd;
+            int res;
+            if (*(unsigned short *)((char *)e3 + 0x12) == (*(unsigned char *)(gDrawContext + *(unsigned short *)((char *)e3 + 0x10)) & 0x7F)) {
+                a = ((float *)e3)[0]; b = ((float *)e3)[1]; c = ((float *)e3)[2]; dd = ((float *)e3)[3];
+                f[10] = a; f[11] = b; f[12] = c;
+                if (fn_802C94A0(&f[10], &sp8, &lbl_8055FCE0, c, b, a, dd, b, a) != 0) {
+                    res = sp8 ? 0x81 : 1;
+                    lbl_8055FCDC = res;
+                } else {
+                    res = 0;
+                    lbl_8055FCDC = 0;
+                }
+                *(float *)(lbl_804C1480 + 0x4000 + off) = lbl_8055FCE0;
+                off += 4;
+                *out = res;
+                out++;
+            } else {
+                *out = 0;
+                off += 4;
+                out++;
+            }
+            e3 = (char *)e3 + 0x20;
+            n++;
+        }
+    }
+    {
+        int j = 0, cnt4 = *(int *)((char *)arg0 + 0x88);
+        while (j < cnt4) {
+            void **cb = *(void ***)((char *)arg0 + 0x90) + j;
+            ((void (*)(void **, void *))((void **)*cb)[3])(*cb, arg0);
+            j++;
+        }
+    }
     fn_801293DC(lbl_804C1480);
     __AXDSPInitCallback_801293D0();
 }
-
+#pragma pop
 void fn_802CDAA8(void) {
     /* Clear the current mlist context pointer once the scene's draw list has been submitted. */
     #define s_currentMlist lbl_8055FCD8
@@ -473,7 +594,7 @@ void fn_802CDB5C(int arg0) {
         int context34;
         int context28;
         int context2C;
-        struct Item cur;
+        volatile struct Item cur;
         int pad;
         int config38;
         int config3C;
@@ -496,7 +617,6 @@ void fn_802CDB5C(int arg0) {
     struct Item *item;
     int cursor;
     int callbackCount;
-    int callbackEnd;
     int i;
     float *fxTable;
     char *config;
@@ -560,7 +680,7 @@ void fn_802CDB5C(int arg0) {
         callbackCount = 0;
         for (i = 0; i < itemCount; i++) {
             work.cur = *item++;
-            if (work.cur.type != (table[work.cur.id] & 0x7F))
+            if ((table[work.cur.id] & 0x7F) != work.cur.type)
                 continue;
             if (started == 0) {
                 started = 1;
@@ -593,9 +713,10 @@ void fn_802CDB5C(int arg0) {
     }
     fn_802DB2A0();
     __AXDSPInitCallback_801293D0();
-    callbackEnd = work.config44;
-    for (callbackCount = work.config40; callbackCount < callbackEnd; callbackCount++) {
-        object = (*(void ***)(context + 0x90))[callbackCount];
+    i = work.config40;
+    callbackCount = work.config44;
+    for (; i < callbackCount; i++) {
+        object = (*(void ***)(context + 0x90))[i];
         MlistCallV3(object, context);
     }
 }
@@ -608,6 +729,8 @@ void fn_802CE2C0(int *, int);
 void fn_802CE2D8(int *, int);
 void fn_802CE2F0(int *, int);
 #pragma scheduling on
+#pragma push
+#pragma opt_common_subs off
 void fn_802CDDC8(void *arg0, int arg1) {
     volatile unsigned char *base = (volatile unsigned char *)arg0;
     volatile unsigned char *rec;
