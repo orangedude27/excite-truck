@@ -280,7 +280,7 @@ extern double lbl_80564710;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+extern double lbl_80564720;
 void fn_802A1290(void) {
     float sp18[2];
     float sp10[2];
@@ -318,7 +318,7 @@ void fn_802A1290(void) {
                 sp18[1] = y;
                 t = ((float)fn_8002F234(sp10[0] * sp10[0] + sp10[1] * sp10[1]) - b) / d;
                 if (hi < t) t = hi;
-                t = (t <= lo) ? lo : t;
+                if (t <= lo) t = lo;
                 fn_802A0D60((s32)sp8, sp18, lbl_8055F858, lbl_8055F860, (i + j) & 1, lbl_80564708, hi + t * scale);
             }
         }
