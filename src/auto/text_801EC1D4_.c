@@ -1134,7 +1134,7 @@ extern char *strchr(const char *, int);
 extern int fn_802C6FC0(void *, int, int);
 extern int fn_802C7830(void);
 extern int fn_801284F8(int, void *);
-extern char lbl_802F9AE0[], lbl_8055B018[], lbl_8055B020[], lbl_8055B028[], lbl_8055B030[], lbl_8055B038[], lbl_8055B040[], lbl_8055B048[], lbl_8055B050[], lbl_8055B058[], lbl_8055B060[], lbl_8055B068[];
+extern char lbl_802F9AE0[]; __declspec(section ".sdata") extern char lbl_8055B018[], lbl_8055B020[], lbl_8055B028[], lbl_8055B030[], lbl_8055B038[], lbl_8055B040[], lbl_8055B048[], lbl_8055B050[], lbl_8055B058[], lbl_8055B060[], lbl_8055B068[];
 void fn_801EE0E0(void *arg0, char *arg1, int arg2, int arg3, char *arg4) {
 #define V1(o,sl,t,a) (((t)(*(void ***)(o))[(sl)/4])(o,a))
 #define V2(o,sl,t,a,b) (((t)(*(void ***)(o))[(sl)/4])(o,a,b))
