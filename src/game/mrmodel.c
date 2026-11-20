@@ -171,9 +171,10 @@ void fn_802C54D4(void) {
     int sourceIndex;
     int itemIndex;
     int count;
-    int oldCount;
     int itemOffset;
     void *table;
+    int *list;
+    void *entry;
 
     if (*(volatile unsigned char *)&lbl_8055FC21 == 0)
         return;
@@ -181,15 +182,11 @@ void fn_802C54D4(void) {
     for (sourceIndex = 0, sourceOffset = 0;
          sourceIndex < *(volatile int *)lbl_804C13A8;
          sourceOffset += 0x10, sourceIndex++) {
-        void *base = (void *)(unsigned long)*(volatile int *)((char *)lbl_804C13A8 + 8);
-        void *entry = (char *)base + sourceOffset;
+        entry = (char *)(void *)(unsigned long)*(volatile int *)((char *)lbl_804C13A8 + 8) + sourceOffset;
         if (*(unsigned short *)((char *)entry + 4) != 0) {
             void **slot;
-            oldCount = lbl_804C1390[0];
-            if (oldCount < lbl_804C1390[1]) {
-                count = oldCount + 1;
-                lbl_804C1390[0] = count;
-                slot = (void **)((char *)(void *)lbl_804C1390[2] + (oldCount << 2));
+            if (lbl_804C1390[0] < lbl_804C1390[1]) {
+                slot = (void **)(void *)lbl_804C1390[2] + lbl_804C1390[0]++;
             } else {
                 slot = 0;
             }
@@ -198,28 +195,23 @@ void fn_802C54D4(void) {
         }
     }
 
+    list = lbl_804C1390;
     count = lbl_804C1390[0];
-    qsort((void *)(void *)lbl_804C1390[2], count, 4, (int (*)(void *, void *))fn_802C544C);
+    qsort((void *)list[2], count, 4, (int (*)(void *, void *))fn_802C544C);
     level = 1;
     table = fn_802C54B4(level);
-    *(void **)table = (void *)lbl_804C1390[2];
+    *(void **)table = (void *)list[2];
     for (itemIndex = 0, itemOffset = 0;
          itemIndex < lbl_804C1390[0];
-         itemIndex++, itemOffset += 4) {
-        void *entry = *(void **)((char *)(void *)lbl_804C1390[2] + itemOffset);
-        goto inner_check;
-inner_loop:
-        level++;
-        count = (int)((char *)(void *)lbl_804C1390[2] + itemOffset -
-                      (char *)*(void **)table) / 4;
-        *(int *)((char *)table + 4) = count;
-        table = fn_802C54B4(level);
-        *(void **)table = (char *)(void *)lbl_804C1390[2] + itemOffset;
-inner_check:
-        if (level < ((int (*)(unsigned int))fn_802C54CC)(
-                        *(short *)((char *)entry + 6))) {
-            if (level <= 9)
-                goto inner_loop;
+         itemOffset += 4, itemIndex++) {
+        entry = *(void **)((char *)(void *)list[2] + itemOffset);
+        while (level < ((int (*)(unsigned int))fn_802C54CC)(*(short *)((char *)entry + 6)) && level <= 9) {
+            level++;
+            count = (int)((char *)(void *)list[2] + itemOffset -
+                          (char *)*(void **)table) / 4;
+            *(int *)((char *)table + 4) = count;
+            table = fn_802C54B4(level);
+            *(void **)table = (char *)(void *)list[2] + itemOffset;
         }
     }
     count = (int)((char *)(void *)lbl_804C1390[2] +
@@ -1360,6 +1352,7 @@ void fn_802C7458(int instanceId, int groupMask) {
 
 #pragma scheduling on
 void fn_802C74D8(int arg0, void *arg1, int arg2) {
+#pragma scheduling invalid_target
     int i;
     struct LocalResult {
         unsigned char status;
@@ -1768,7 +1761,30 @@ extern float PSQUATMultiply(void *, void *);
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma dont_inline fn_802C53C4
-void fn_802C7D54(int arg0, float *arg1, int arg2, float fa, float fb, float fc) {
+static void fn_802C7D54_xform(float *out, const float *input, const float *rot) {
+    if (out == rot) {
+        float y0 = input[3] * rot[1];
+        float y1 = input[4] * rot[1];
+        float x0 = input[0] * rot[0];
+        float x1 = input[1] * rot[0];
+        float x2 = input[2] * rot[0];
+        float y2 = input[5] * rot[1];
+        float z0 = input[6] * rot[2];
+        float z1 = input[7] * rot[2];
+        float z2 = input[8] * rot[2];
+        out[0] = (x0 + y0) + z0;
+        out[1] = (x1 + y1) + z1;
+        out[2] = (x2 + y2) + z2;
+    } else {
+        out[0] = (input[3] * rot[1] + input[0] * rot[0]) + input[6] * rot[2];
+        out[1] = (input[4] * rot[1] + input[1] * rot[0]) + input[7] * rot[2];
+        out[2] = (input[5] * rot[1] + input[2] * rot[0]) + input[8] * rot[2];
+    }
+    out[0] += input[9];
+    out[1] += input[10];
+    out[2] += input[11];
+}
+void fn_802C7D54(int arg0, const float *arg1, int arg2, float fa, float fb, float fc) {
     struct ModelInstance *instance;
     unsigned char entryStatus;
     int j;
@@ -1789,9 +1805,9 @@ void fn_802C7D54(int arg0, float *arg1, int arg2, float fa, float fb, float fc) 
     void *instance2;
     void *r21;
     int r20;
-    float *rot;
+    const float *rot;
     float *out;
-    float *input;
+    const float *input;
     float savedScalar;
     int savedCull;
     int savedMask;
@@ -1802,10 +1818,9 @@ void fn_802C7D54(int arg0, float *arg1, int arg2, float fa, float fb, float fc) 
     lbl_8055D008 = 8;
     instance2 = fn_802C5390(arg0);
     instance = (struct ModelInstance *)instance2;
-    rot = (float *)((char *)*(void **)((char *)instance2 + 4) + 0x20);
+    rot = (const float *)((char *)*(void **)((char *)instance2 + 4) + 0x20);
     out = local.vec1;
-    input = (float *)arg1;
-    groupOut = local.vec2;
+    input = arg1;
     if (out == rot) {
         float y0 = input[3] * rot[1];
         float y1 = input[4] * rot[1];
@@ -1832,98 +1847,96 @@ void fn_802C7D54(int arg0, float *arg1, int arg2, float fa, float fb, float fc) 
         out[1] = ty;
         out[2] = tz;
     }
-    if (fn_802C94A0(out, &local.status, &local.scalar, rot[-1]) == 0) {
-        lbl_8055D008 = savedMask;
-        fn_802C9C58(savedCull);
-        return;
-    }
-    r20 = fn_802D0514(arg1);
-    if ((unsigned char)lbl_8055FC20 == 0) {
-        fn_802C543C();
-    }
-    groups = instance->groups;
-    nodeSlotOffset = instance->nodeSlot << 2;
-    for (i = 0, offset = 0; i < groups->count; offset += 0x10, i++) {
-        int bitIndex;
-        int ok;
-        char *posBase;
-        entry = (struct GroupEntry *)(groups->items + offset);
-        bitIndex = entry->bitIndex;
-        if (lbl_8055D008 & (1 << bitIndex)) {
-            entryStatus = local.status;
-            posBase = instance->groupPositions;
-            if (posBase == 0) {
-                ok = 1;
-            } else {
-                float *grot = (float *)(posBase + offset);
-                if (groupOut == grot) {
-                    float y0 = input[3] * grot[1];
-                    float y1 = input[4] * grot[1];
-                    float x0 = input[0] * grot[0];
-                    float x1 = input[1] * grot[0];
-                    float x2 = input[2] * grot[0];
-                    float y2 = input[5] * grot[1];
-                    float z0 = input[6] * grot[2];
-                    float z1 = input[7] * grot[2];
-                    float z2 = input[8] * grot[2];
-                    groupOut[0] = (x0 + y0) + z0;
-                    groupOut[1] = (x1 + y1) + z1;
-                    groupOut[2] = (x2 + y2) + z2;
+    if (fn_802C94A0(out, &local.status, &local.scalar, rot[-1]) != 0) {
+        r20 = fn_802D0514((void *)arg1);
+        if ((unsigned char)lbl_8055FC20 == 0) {
+            fn_802C543C();
+        }
+        groups = instance->groups;
+        nodeSlotOffset = instance->nodeSlot << 2;
+        groupOut = local.vec2;
+        for (i = 0, offset = 0; i < groups->count; offset += 0x10, i++) {
+            int bitIndex;
+            int ok;
+            char *posBase;
+            entry = (struct GroupEntry *)(groups->items + offset);
+            bitIndex = entry->bitIndex;
+            if (lbl_8055D008 & (1 << bitIndex)) {
+                entryStatus = local.status;
+                posBase = instance->groupPositions;
+                if (posBase == 0) {
+                    ok = 1;
                 } else {
-                    groupOut[0] = (input[3] * grot[1] + input[0] * grot[0]) + input[6] * grot[2];
-                    groupOut[1] = (input[4] * grot[1] + input[1] * grot[0]) + input[7] * grot[2];
-                    groupOut[2] = (input[5] * grot[1] + input[2] * grot[0]) + input[8] * grot[2];
-                }
-                {
-                    float tx = groupOut[0] + input[9];
-                    float ty = groupOut[1] + input[10];
-                    float tz = groupOut[2] + input[11];
-                    groupOut[0] = tx;
-                    groupOut[1] = ty;
-                    groupOut[2] = tz;
-                }
-                {
-                    float dist = PSQUATMultiply(groupOut, (char *)fn_802C86DC() + 0x24);
-                    float tol = *(float *)(posBase + offset + 12);
-                    ok = (dist - tol) < fc;
-                }
-            }
-            if (ok == 0)
-                continue;
-            savedScalar = local.scalar;
-            inner_info = entry->elements;
-            for (j = 0, inner_offset = 0; j < inner_info->count; inner_offset += 4, j++) {
-                int valid = 0;
-                struct ModelElement *elem = (struct ModelElement *)*(void **)(inner_info->items + inner_offset);
-                unsigned int type = elem->type;
-                if (type < 13) {
-                    int skip;
-                    valid = 1;
-                    switch (type) {
-                    case 4:
-                    case 6:
-                    case 9:
-                    case 11:
-                        skip = 1;
-                        break;
-                    default:
-                        skip = 0;
-                        break;
+                    const float *grot = (const float *)(posBase + offset);
+                    if (groupOut == grot) {
+                        float y0 = input[3] * grot[1];
+                        float y1 = input[4] * grot[1];
+                        float x0 = input[0] * grot[0];
+                        float x1 = input[1] * grot[0];
+                        float x2 = input[2] * grot[0];
+                        float y2 = input[5] * grot[1];
+                        float z0 = input[6] * grot[2];
+                        float z1 = input[7] * grot[2];
+                        float z2 = input[8] * grot[2];
+                        groupOut[0] = (x0 + y0) + z0;
+                        groupOut[1] = (x1 + y1) + z1;
+                        groupOut[2] = (x2 + y2) + z2;
+                    } else {
+                        groupOut[0] = (input[3] * grot[1] + input[0] * grot[0]) + input[6] * grot[2];
+                        groupOut[1] = (input[4] * grot[1] + input[1] * grot[0]) + input[7] * grot[2];
+                        groupOut[2] = (input[5] * grot[1] + input[2] * grot[0]) + input[8] * grot[2];
                     }
-                    if (skip) valid = 0;
+                    {
+                        float tx = groupOut[0] + input[9];
+                        float ty = groupOut[1] + input[10];
+                        float tz = groupOut[2] + input[11];
+                        groupOut[0] = tx;
+                        groupOut[1] = ty;
+                        groupOut[2] = tz;
+                    }
+                    {
+                        float dist = PSQUATMultiply(groupOut, (char *)fn_802C86DC() + 0x24);
+                        float tol = *(const float *)(posBase + offset + 12);
+                        ok = (dist - tol) < fc;
+                    }
                 }
-                if (valid) {
-                    void *node = *(void **)(nodeSlotOffset + (int)elem + 0x14);
-                    void *r4;
-                    fn_802C53C4(entry, node, r20, (int)r21, entryStatus);
-                    r4 = ((void *(*)(void *))fn_802C57B0)((void *)entry->id);
-                    fn_802CC550(*(int *)node, r4, savedScalar, *(float *)((char *)r4 + 0x18));
+                if (ok == 0)
+                    continue;
+                savedScalar = local.scalar;
+                inner_info = entry->elements;
+                for (j = 0, inner_offset = 0; j < inner_info->count; inner_offset += 4, j++) {
+                    int valid = 0;
+                    struct ModelElement *elem = (struct ModelElement *)*(void **)(inner_info->items + inner_offset);
+                    unsigned int type = elem->type;
+                    if (type < 13) {
+                        int skip;
+                        valid = 1;
+                        switch (type) {
+                        case 4:
+                        case 6:
+                        case 9:
+                        case 11:
+                            skip = 1;
+                            break;
+                        default:
+                            skip = 0;
+                            break;
+                        }
+                        if (skip) valid = 0;
+                    }
+                    if (valid) {
+                        void *node = *(void **)(nodeSlotOffset + (int)elem + 0x14);
+                        void *r4;
+                        fn_802C53C4(entry, node, r20, (int)r21, entryStatus);
+                        r4 = ((void *(*)(void *))fn_802C57B0)((void *)entry->id);
+                        fn_802CC550(*(int *)node, r4, savedScalar, *(float *)((char *)r4 + 0x18));
+                    }
                 }
             }
         }
-    }
-    if ((unsigned char)lbl_8055FC20 == 0) {
-        fn_802C5720(-1);
+        if ((unsigned char)lbl_8055FC20 == 0) {
+            fn_802C5720(-1);
+        }
     }
     lbl_8055D008 = savedMask;
     fn_802C9C58(savedCull);
