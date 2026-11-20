@@ -112,7 +112,6 @@ __declspec(section ".sdata") extern const char lbl_80559CE8[];
 __declspec(section ".sdata") extern const char lbl_80559CF0[];
 #pragma cplusplus on
 #pragma scheduling invalid_target
-#pragma opt_peephole off
 extern "C" void fn_8013BD5C(void *arg0, void *arg1) {
     class Selector {
     public:
