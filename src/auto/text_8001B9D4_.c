@@ -543,7 +543,7 @@ s32 fn_8001C200(const char *nameA, const char *nameB) {
 #undef sWildcardName
 }
 #pragma dont_inline on
-s32 fn_8001C27C(void *arg0, u32 arg1, const char *arg2) {
+s32 fn_8001C27C(void *__restrict arg0, u32 arg1, const char *arg2) {
     s32 result = 0;
     u32 key = *(u32 *)arg0;
     if (key == arg1 && fn_8001C200(*(const char **)((u8 *)arg0 + 4), arg2) != 0) {
@@ -586,7 +586,7 @@ extern const char lbl_802FD750[];
 #pragma scheduling on
 s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
     char *p;
-    char *out;
+    register char *out;
     s32 room;
     char c;
     s32 *descriptor;
@@ -614,16 +614,15 @@ s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
     while (*p != 0 && p - *(char **)descriptor < descriptor[1]) {
         if (stricmp(p, input) == 0) {
             break;
-        } else {
-            while (*p != 0) {
-                p++;
-            }
+        }
+        while (*p != 0) {
             p++;
         }
+        p++;
     }
     out = p;
     room = descriptor[1] - (p - *(char **)descriptor) - 1;
-    if (room <= 0) {
+    if (room <= 1) {
         out[-1] = 0;
     } else {
         do {
@@ -754,8 +753,8 @@ void fn_8001C714(void) {
     fn_80131234(*(s32 *)((u8 *)((StatTypeGetter)fn_8001C4E0)() + 8));
 }
 
-#pragma push
 #pragma processor 750
+#pragma scheduling invalid_target
 s32 fn_8001C73C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     extern char lbl_802FD6D8[];
     extern char lbl_80558CA4;
@@ -775,7 +774,8 @@ s32 fn_8001C73C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 a2 = arg2;
     s32 a1 = arg1;
     s32 sp8 = arg1;
-    switch (arg0 & 0x300) {
+    s32 outer = arg0 & 0x300;
+    switch (outer) {
     case 0x100: {
         f32 f = *(f32 *)&sp8;
         switch (arg0 & 0x1FC00) {
@@ -828,7 +828,6 @@ s32 fn_8001C73C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
     return a2;
 }
-#pragma pop
 extern const char lbl_802FD9E8[];
 /* Look up a record/stat entry by index in lbl_802ED7B8 (3-word entries, id in low byte), returning the entry's first word or 0 and reporting invalid indices. */
 int fn_8001C960(u32 index) {
@@ -1123,7 +1122,7 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
         s32 value0;
         s32 value1;
         f32 scale;
-        s32 encoded;
+        unsigned encoded;
     };
     char *cursor;
     void *record;
@@ -1150,14 +1149,10 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
             cursor = *(char **)pool;
             while (*(s8 *)cursor != 0 &&
                    cursor - *(char **)pool < *(s32 *)((u8 *)pool + 4)) {
-                switch (stricmp(cursor, arg3)) {
-                case 0:
-                    goto name_ready;
-                default:
-                    goto skip_name;
-                }
+                if (stricmp(cursor, arg3) == 0) goto name_ready;
+                goto skip_name;
             skip_name:
-                while (*(s8 *)cursor != 0) cursor++;
+                while (*(s8 *)cursor != 0) cursor += 1;
                 cursor++;
             }
             dest = cursor;
@@ -1195,17 +1190,17 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
             memmove(dest + 0x14, dest, (maxCount - count) * 0x14);
             *(char **)dest = saved.name;
             *(s32 *)(base + 0xC) = saved.value0;
-            *(s32 *)(base + 0x10) = saved.value1;
+            *(s32 *)((short)base + 0x10) = saved.value1;
             *(f32 *)(base + 0x14) = saved.scale;
             *(s32 *)(base + 0x18) = saved.encoded;
             oldCount = *(s32 *)((u8 *)record + 0x6C);
             *(s32 *)((u8 *)record + 0x6C) = oldCount + 1;
             return 1;
         }
+        return 0;
     }
     return 0;
 }
-#pragma processor reset
 u32 fn_8001D220(u32 entryIndex, u32 valueIndex, u32 flag) {
     /* Pack an EntryRef (entry index, value index, flag) into the low three bytes
        of one word; fn_8001D234 decodes it. */
