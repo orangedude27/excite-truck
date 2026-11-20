@@ -8147,61 +8147,53 @@ process:
 extern void *fn_8007A3A4(void);
 #pragma push
 #pragma dont_inline off
+/* Send an HCI "Write Policy Set" for an ACL link, first clearing any requested
+ * link modes (master/slave switch, hold, sniff, park) the local controller does
+ * not support, per its local feature set. */
 tBTM_STATUS BTM_SetLinkPolicy(BD_ADDR remote_bda, UINT16 *settings)
 {
     u8 *strings = lbl_80315CA0;
     u8 *features;
     u32 value;
-    u8 *entry;
-    u16 policy;
+    u8 *acl;
 
-    features = (u8 *)fn_8007A3A4();
-    policy = *settings;
-    if (policy != 0) {
-        if ((policy & 1) && !(features[0] & 0x20)) {
-            value = (u32)policy & 0xFFFE;
+    features = (u8 *)BTM_ReadLocalFeatures();
+    if (*settings != HCI_DISABLE_ALL_LM_MODES) {
+        if ((*settings & HCI_ENABLE_MASTER_SLAVE_SWITCH) && !(HCI_SWITCH_SUPPORTED(features))) {
+            value = (u32)*settings & (u32)(~HCI_ENABLE_MASTER_SLAVE_SWITCH);
             *settings = value;
-            if (lbl_803C0F78[0x27C0] >= 3) {
-                fn_80070954(0xD0002, strings + 0xBC, value);
+            if (btm_cb_trace_level >= BTM_TRACE_LEVEL_API) {
+                fn_80070954(TRACE_LAYER_BTM | TRACE_TYPE_API, strings + 0xBC, value); /* switch not supported */
             }
         }
-
-        policy = *settings;
-        if ((policy & 2) && !(features[0] & 0x40)) {
-            value = (u32)policy & 0xFFFFFFFD;
+        if ((*settings & HCI_ENABLE_HOLD_MODE) && !(HCI_HOLD_MODE_SUPPORTED(features))) {
+            value = (u32)*settings & (u32)(~HCI_ENABLE_HOLD_MODE);
             *settings = value;
-            if (lbl_803C0F78[0x27C0] >= 3) {
-                fn_80070954(0xD0002, strings + 0xF8, value);
+            if (btm_cb_trace_level >= BTM_TRACE_LEVEL_API) {
+                fn_80070954(TRACE_LAYER_BTM | TRACE_TYPE_API, strings + 0xF8, value); /* hold not supported */
             }
         }
-
-        policy = *settings;
-        if ((policy & 4) && !(features[0] & 0x80)) {
-            value = (u32)policy & 0xFFFFFFFB;
+        if ((*settings & HCI_ENABLE_SNIFF_MODE) && !(HCI_SNIFF_MODE_SUPPORTED(features))) {
+            value = (u32)*settings & (u32)(~HCI_ENABLE_SNIFF_MODE);
             *settings = value;
-            if (lbl_803C0F78[0x27C0] >= 3) {
-                fn_80070954(0xD0002, strings + 0x130, value);
+            if (btm_cb_trace_level >= BTM_TRACE_LEVEL_API) {
+                fn_80070954(TRACE_LAYER_BTM | TRACE_TYPE_API, strings + 0x130, value); /* sniff not supported */
             }
         }
-
-        policy = *settings;
-        if ((policy & 8) && !(features[1] & 1)) {
-            value = (u32)policy & 0xFFFFFFF7;
+        if ((*settings & HCI_ENABLE_PARK_MODE) && !(HCI_PARK_MODE_SUPPORTED(features))) {
+            value = (u32)*settings & (u32)(~HCI_ENABLE_PARK_MODE);
             *settings = value;
-            if (lbl_803C0F78[0x27C0] >= 3) {
-                fn_80070954(0xD0002, strings + 0x170, value);
+            if (btm_cb_trace_level >= BTM_TRACE_LEVEL_API) {
+                fn_80070954(TRACE_LAYER_BTM | TRACE_TYPE_API, strings + 0x170, value); /* park not supported */
             }
         }
     }
 
-    entry = btm_bda_to_acl_inl(remote_bda);
-    if (entry != NULL) {
-        if (btsnd_hcic_write_policy_set(*(u16 *)entry, *settings) != 0) {
-            return 1;
-        }
-        return 3;
+    acl = btm_bda_to_acl_inl(remote_bda);
+    if (acl != NULL) {
+        return btsnd_hcic_write_policy_set(*(u16 *)acl, *settings) ? BTM_CMD_STARTED : BTM_NO_RESOURCES;
     }
-    return 7;
+    return BTM_UNKNOWN_ADDR;
 }
 #pragma pop
 /* Set btm_cb's default ACL link policy mask (btm_def_link_policy at +0x4C4). */
