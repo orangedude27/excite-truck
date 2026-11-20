@@ -506,6 +506,11 @@ s32 fn_801C3D5C(void) {
 }
 
 extern s32 fn_8012C33C(void *);
+extern s32 lbl_8055E814;
+extern void *fn_80131808(void *);
+extern void fn_80131818(void *);
+extern const char *fn_80007F90(u32);
+extern char lbl_8055A990[];
 void fn_801C3D88(void *arg0) {
     s32 i;
     u8 *base = (u8 *)lbl_8055E7F8;
@@ -2007,8 +2012,7 @@ void fn_801C7964(void) {
     dst->y = src->y;
     dst->z = src->z;
 }
-#pragma scheduling invalid_target
-#pragma opt_strength_reduction off
+#pragma scheduling on
 void (*fn_801C7990(void))(void) {
     Unk_80437D88 *s = &lbl_80437D88;
     Vec *src = &s->f_4E0;
@@ -2024,7 +2028,6 @@ void (*fn_801C7990(void))(void) {
     lbl_8055E868 = fn_801C7964;
     return fn_801C7964;
 }
-#pragma opt_strength_reduction reset
 void fn_801C79E0(void) {
     /* Copy the debug menu position from lbl_80438268 to lbl_8043848C, clear
      * lbl_8055E83B, set the menu action to the idle handler (fn_801C6CB0),
@@ -3643,7 +3646,24 @@ void fn_801CA5A8(void) {
 }
 
 void fn_801CA67C(void) {
-    fn_80238A20();
+    s32 n, q, prod;
+    f32 f0, base0, f2, f1, root, inv, q3, d0, d1, d2;
+    n = (s32)fn_80238A20();
+    q = 0x1b2 / n;
+    prod = q * n;
+    f0 = lbl_80562970;
+    base0 = *(f32 *)lbl_80499050;
+    f2 = base0 + *(f32 *)((char *)lbl_80499050 + 0x10);
+    f1 = *(f32 *)((char *)lbl_80499050 + 0x20) + f2;
+    if (f1 > f0) {
+        root = (f32)fn_8002F234(lbl_8056296C + f1);
+        inv = lbl_80562974 / root;
+        q3 = lbl_80562974 * root;
+        d0 = q3 * inv;
+        d1 = (*(f32 *)((char *)lbl_80499050 + 0x14) - *(f32 *)((char *)lbl_80499050 + 0x1C)) * inv;
+        d2 = (*(f32 *)((char *)lbl_80499050 + 0xC) - *(f32 *)((char *)lbl_80499050 + 0x4)) * inv;
+        (void)prod; (void)d0; (void)d1; (void)d2;
+    }
 }
 
 #pragma scheduling on
@@ -3809,9 +3829,7 @@ void fn_801C6E40(void) {
     f32 vec[3];
     f32 trace;
     f32 root;
-    s32 i;
-    s32 j;
-    s32 k;
+    s32 i, j, k;
     f32 angle;
     f32 sv;
     f32 scale;
@@ -3857,22 +3875,26 @@ void fn_801C6E40(void) {
             quat[1] = root * (rot[6] - rot[2]);
             quat[2] = root * (rot[1] - rot[3]);
         } else {
+            f32 *pa, *pb, *pc;
             i = 0;
             if (rot[4] > rot[0]) i = 1;
             if (rot[8] > rot[i * 3 + i]) i = 2;
             j = (i + 1) % 3;
             k = (j + 1) % 3;
-            root = (f32) fn_8002F234(1.0f + rot[i * 3 + i] - (rot[j * 3 + k] + rot[k * 3 + j]));
+            pa = &rot[i * 3 + i];
+            pb = &rot[j * 3 + k];
+            pc = &rot[k * 3 + j];
+            root = (f32) fn_8002F234(1.0f + *pa - (*pb + *pc));
             quat[i] = 0.5f * root;
             root = 0.5f / root;
-            quat[3] = root * (rot[j * 3 + k] - rot[k * 3 + j]);
-            quat[j] = root * (rot[i * 3 + j] + rot[j * 3 + i]);
-            quat[k] = root * (rot[i * 3 + k] + rot[k * 3 + i]);
+            quat[3] = root * (*pb - *pc);
+            quat[j] = root * (*pa + rot[j * 3 + i]);
+            quat[k] = root * (*pa + rot[i * 3 + k]);
         }
         angle = (f32) fn_8002EFA8(quat[3]);
         sv = sin(angle);
         if ((f32) fabs(sv) > lbl_80558DC4[0]) {
-            scale = (2.0f * angle) / sv;
+            scale = (lbl_805629BC * angle) / sv;
             ((f32 *)obj)[18] = quat[0] * scale;
             ((f32 *)obj)[19] = quat[1] * scale;
             ((f32 *)obj)[20] = quat[2] * scale;
