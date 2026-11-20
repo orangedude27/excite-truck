@@ -14711,14 +14711,22 @@ static inline void fn_800BC538_setShortT(Fn800BC538Obj *obj, Fn800BC538Tbl *t) {
         obj->shortVal[k] = val[k];
     }
 }
+static inline void fn_800BC538_setShortN(Fn800BC538Obj *obj, s32 n) {
+    s16 *thr = lbl_8031BFA8[n].thr;
+    u8 *val = lbl_8031BFA8[n].val;
+    s32 k;
+    for (k = 0; k < 12; k++) {
+        obj->shortThr[k] = *thr++;
+        obj->shortVal[k] = *val++;
+    }
+}
 #pragma push
 #pragma use_lmw_stmw on
-extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s16 *arg5, s16 *arg6, u8 *arg7, s16 arg_sp8) {
+ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s16 *arg5, s16 *arg6, u8 *arg7, s16 arg_sp8) {
     Fn800BC538Obj *obj = (Fn800BC538Obj *)arg0;
     u8 *p;
     u8 *a;
     u8 *b;
-    u8 *band;
     s32 i, j, k;
     s32 lim;
     s32 sel;
@@ -14730,13 +14738,11 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s1
                 obj->longThr[k + 1] = ((s16 *)arg2)[k];
             obj->longThr[0] = 0;
         }
-        p = arg4;
-        band = arg1;
         b = arg4 + 0x3F00;
         a = arg4 + 0x1B00;
         for (i = 0; i < obj->longCount; i++) {
-            if (*(s32 *)(p + 0x1B00) == 0) {
-                *(s32 *)(p + 0x3F00) = 0;
+            if (*(s32 *)(arg4 + 0x1B00) == 0) {
+                *(s32 *)(arg4 + 0x3F00) = 0;
             } else {
                 for (k = 20; k >= 0; k--) {
                     if (arg_sp8 > obj->longThr[k]) {
@@ -14745,12 +14751,12 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s1
                     }
                 }
                 if (i >= lim)
-                    fn_800BD710(arg0, *(s16 *)(arg7 + 2), arg5[*band + 21], a, b);
+                    fn_800BD710(arg0, *(s16 *)(arg7 + 2), arg5[*arg1 + 21], a, b);
             }
-            p += 4;
+            arg4 += 4;
             b += 4;
             a += 4;
-            band++;
+            arg1++;
         }
         return;
     }
@@ -14759,17 +14765,17 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s1
             s32 mode = obj->mode;
             obj->shortInit = 1;
             if (mode == 0 && obj->sub == 0) {
-                fn_800BC538_setShortT(obj, &((Fn800BC538Tbl *)&lbl_8031BFA8)[0]);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[0].thr, lbl_8031BFA8[0].val);
             } else if (mode == 0 && obj->sub == 1) {
-                fn_800BC538_setShortT(obj, &((Fn800BC538Tbl *)&lbl_8031BFA8)[1]);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[1].thr, lbl_8031BFA8[1].val);
             } else if (mode == 0 && obj->sub == 2) {
-                fn_800BC538_setShortT(obj, &((Fn800BC538Tbl *)&lbl_8031BFA8)[2]);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[2].thr, lbl_8031BFA8[2].val);
             } else if (mode == 1 && obj->sub == 0) {
-                fn_800BC538_setShortT(obj, &((Fn800BC538Tbl *)&lbl_8031BFA8)[3]);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[3].thr, lbl_8031BFA8[3].val);
             } else if (mode == 1 && obj->sub == 1) {
-                fn_800BC538_setShortT(obj, &((Fn800BC538Tbl *)&lbl_8031BFA8)[4]);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[4].thr, lbl_8031BFA8[4].val);
             } else {
-                fn_800BC538_setShortT(obj, &((Fn800BC538Tbl *)&lbl_8031BFA8)[5]);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[5].thr, lbl_8031BFA8[5].val);
             }
         }
         p = arg4;
@@ -14791,7 +14797,7 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s1
                         }
                     }
                     for (j = 0; j < 3; j++)
-                        fn_800BD710(arg0, *(s16 *)(arg7 + 2), *(s16 *)((u8 *)arg6 + sel * 6 + 0x48 + j * 2), arg4 + j * 0x900 + i * 4, arg4 + 0x2400 + j * 0x900 + i * 4);
+                        fn_800BD710(arg0, *(s16 *)(arg7 + 2), (arg6 + sel * 3)[0x24 + j], arg4 + j * 0x900 + i * 4, arg4 + 0x2400 + j * 0x900 + i * 4);
                 }
             }
             p += 4;
@@ -14807,11 +14813,11 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s1
                 obj->mixVal[k] = (&lbl_80559258)[k];
             }
             if (sub == 0) {
-                fn_800BC538_setShortT(obj, &((Fn800BC538Tbl *)&lbl_8031BFA8)[0]);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[0].thr, lbl_8031BFA8[0].val);
             } else if (sub == 1) {
-                fn_800BC538_setShortT(obj, &((Fn800BC538Tbl *)&lbl_8031BFA8)[1]);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[1].thr, lbl_8031BFA8[1].val);
             } else {
-                fn_800BC538_setShortT(obj, &((Fn800BC538Tbl *)&lbl_8031BFA8)[2]);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[2].thr, lbl_8031BFA8[2].val);
             }
         } else {
             s16 sub = obj->sub;
@@ -14820,11 +14826,11 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s1
                 obj->mixVal[k] = (&lbl_80559268)[k];
             }
             if (sub == 0) {
-                fn_800BC538_setShortT(obj, &((Fn800BC538Tbl *)&lbl_8031BFA8)[3]);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[3].thr, lbl_8031BFA8[3].val);
             } else if (sub == 1) {
-                fn_800BC538_setShortT(obj, &((Fn800BC538Tbl *)&lbl_8031BFA8)[4]);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[4].thr, lbl_8031BFA8[4].val);
             } else {
-                fn_800BC538_setShortT(obj, &((Fn800BC538Tbl *)&lbl_8031BFA8)[5]);
+                fn_800BC538_setShort(obj, lbl_8031BFA8[5].thr, lbl_8031BFA8[5].val);
             }
         }
     }
@@ -14864,7 +14870,7 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s1
                 }
             }
             for (j = 0; j < 3; j++)
-                fn_800BD710(arg0, *(s16 *)(arg7 + 2), *(s16 *)((u8 *)arg6 + sel * 6 + 0x48 + j * 2), arg4 + j * 0x900 + i * 4, arg4 + 0x2400 + j * 0x900 + i * 4);
+                fn_800BD710(arg0, *(s16 *)(arg7 + 2), (arg6 + sel * 3)[0x24 + j], arg4 + j * 0x900 + i * 4, arg4 + 0x2400 + j * 0x900 + i * 4);
         }
     }
 }
