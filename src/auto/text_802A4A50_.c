@@ -1200,7 +1200,6 @@ void fn_802A6838(void *arg0) {
     float divisor;
     float dt;
     float speed;
-    float rx = lbl_80564858;
     float scale;
     float one;
     float curve;
@@ -1209,6 +1208,7 @@ void fn_802A6838(void *arg0) {
     double absY;
     float ax;
     float ay;
+    float rx;
     float ry;
     float end;
     float start;
@@ -1581,6 +1581,7 @@ extern f32 lbl_80564850, lbl_80564858, lbl_8056485C, lbl_805648C4;
 f32 fn_802C9A50(void);
 void fn_802A70E4(void *, f32 *);
 #pragma scheduling invalid_target
+#pragma optimization_level 2
 void fn_802A71C4(void *arg0)
 {
   volatile u8 *p = (volatile u8 *) arg0;
@@ -1682,9 +1683,7 @@ extern s32 fn_801EA140(void *);
 #pragma processor 750
 #pragma cplusplus on
 extern "C" s32 fn_802A7370(s32 arg0, void *arg1) {
-    struct Vec3 {
-        float x, y, z;
-    };
+    struct Vec3 { float x, y, z; };
     struct Dummy {
         virtual const char *v0();
         virtual void v1();
@@ -1725,21 +1724,15 @@ extern "C" s32 fn_802A7370(s32 arg0, void *arg1) {
     {
         s32 h = fn_802CAC28(obj->v3(&lbl_8055CC18), 0);
         register f32 num = lbl_80564850;
-        *(f32 *)(arg0 + 0x30) = (f32)fn_8002F208(num / (*(s32 *)(arg0 + 0x2C) = h, *(f32 *)(arg0 + 8)));
+        *(f32 *)(arg0 + 0x30) = (f32)fn_8002F208((*(s32 *)(arg0 + 0x2C) = h, num) / *(f32 *)(arg0 + 8));
     }
     {
         const Vec3 &c = obj->get(&lbl_8055CC20);
         s32 t0, t1, t2;
         u8 r, g, b;
-        t0 = (s32)c.z;
-        t0 = t0 > 0 ? t0 : 0;
-        r = t0 < 0xFF ? t0 : 0xFF;
-        t1 = (s32)c.y;
-        t1 = t1 > 0 ? t1 : 0;
-        g = t1 < 0xFF ? t1 : 0xFF;
-        t2 = (s32)c.x;
-        t2 = t2 > 0 ? t2 : 0;
-        b = t2 < 0xFF ? t2 : 0xFF;
+        t0 = (s32)c.z; t0 = t0 > 0 ? t0 : 0; r = t0 < 0xFF ? t0 : 0xFF;
+        t1 = (s32)c.y; t1 = t1 > 0 ? t1 : 0; g = t1 < 0xFF ? t1 : 0xFF;
+        t2 = (s32)c.x; t2 = t2 > 0 ? t2 : 0; b = t2 < 0xFF ? t2 : 0xFF;
         *(s32 *)(arg0 + 0x34) = r | ((g << 8) | ((b << 16) | 0xFF000000));
     }
     *(f32 *)(arg0 + 0x38) = obj->v7(&lbl_8055CC28);
