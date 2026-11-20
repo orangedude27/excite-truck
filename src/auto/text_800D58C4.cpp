@@ -1455,28 +1455,31 @@ extern "C" f32 lbl_80560E88;
 extern "C" f32 lbl_80560E94;
 extern "C" f32 lbl_80560E98;
 #pragma push
-extern "C" void fn_800D7D5C(void* arg0, const f32* m) {
-    s8 scale=0;
-    f32 a=m[0], b=m[1], c=m[2], d=m[3], e=m[4], f=m[5];
-    f32 aa=__fabsf(a), bb=__fabsf(b), cc=__fabsf(c), dd=__fabsf(d), ee=__fabsf(e), ff=__fabsf(f);
-    if (aa >= 1.0f || bb >= 1.0f || cc >= 1.0f || dd >= 1.0f || ee >= 1.0f || ff >= 1.0f) {
+/* Set an indirect (bump-mapping) texture matrix: first scale the six elements so every
+ * |component| falls in [0.5, 1.0), tracking the power-of-two applied as a signed exponent,
+ * then forward the matrix and exponent to GXSetIndTexMtx for the given matrix id. */
+extern "C" void fn_800D7D5C(void* mtxId, const f32* srcMtx) {
+    s8 scaleExp=0;
+    f32 m0=srcMtx[0], m1=srcMtx[1], m2=srcMtx[2], m3=srcMtx[3], m4=srcMtx[4], m5=srcMtx[5];
+    f32 a0=__fabsf(m0), a1=__fabsf(m1), a2=__fabsf(m2), a3=__fabsf(m3), a4=__fabsf(m4), a5=__fabsf(m5);
+    if (a0 >= 1.0f || a1 >= 1.0f || a2 >= 1.0f || a3 >= 1.0f || a4 >= 1.0f || a5 >= 1.0f) {
         for (;;) {
-            if (scale >= 0x2E) break;
-            aa *= 0.5f; a *= 0.5f; b *= 0.5f;
-            c *= 0.5f; d *= 0.5f; e *= 0.5f; f *= 0.5f;
-            bb *= 0.5f; cc *= 0.5f; dd *= 0.5f; ee *= 0.5f; ff *= 0.5f;
-            scale++;
-            if (!(aa >= 1.0f || bb >= 1.0f || cc >= 1.0f || dd >= 1.0f || ee >= 1.0f || ff >= 1.0f)) break;
+            if (scaleExp >= 0x2E) break;
+            a0 *= 0.5f; m0 *= 0.5f; m1 *= 0.5f;
+            m2 *= 0.5f; m3 *= 0.5f; m4 *= 0.5f; m5 *= 0.5f;
+            a1 *= 0.5f; a2 *= 0.5f; a3 *= 0.5f; a4 *= 0.5f; a5 *= 0.5f;
+            scaleExp++;
+            if (!(a0 >= 1.0f || a1 >= 1.0f || a2 >= 1.0f || a3 >= 1.0f || a4 >= 1.0f || a5 >= 1.0f)) break;
         }
-    } else if (aa < 0.5f && bb < 0.5f && cc < 0.5f && dd < 0.5f && ee < 0.5f && ff < 0.5f) {
+    } else if (a0 < 0.5f && a1 < 0.5f && a2 < 0.5f && a3 < 0.5f && a4 < 0.5f && a5 < 0.5f) {
         do {
-            aa *= 2.0f; scale--; a *= 2.0f; b *= 2.0f;
-            c *= 2.0f; d *= 2.0f; e *= 2.0f; f *= 2.0f;
-            bb *= 2.0f; cc *= 2.0f; dd *= 2.0f; ee *= 2.0f; ff *= 2.0f;
-        } while (aa < 0.5f && bb < 0.5f && cc < 0.5f && dd < 0.5f && ee < 0.5f && ff < 0.5f && scale > -0x11);
+            a0 *= 2.0f; scaleExp--; m0 *= 2.0f; m1 *= 2.0f;
+            m2 *= 2.0f; m3 *= 2.0f; m4 *= 2.0f; m5 *= 2.0f;
+            a1 *= 2.0f; a2 *= 2.0f; a3 *= 2.0f; a4 *= 2.0f; a5 *= 2.0f;
+        } while (a0 < 0.5f && a1 < 0.5f && a2 < 0.5f && a3 < 0.5f && a4 < 0.5f && a5 < 0.5f && scaleExp > -0x11);
     }
-    f32 mtx[6] = {a, b, c, d, e, f};
-    ((void (*)(void *, f32 *, s8))GXSetIndTexMtx)(arg0, mtx, scale);
+    f32 mtx[6] = {m0, m1, m2, m3, m4, m5};
+    ((void (*)(void *, f32 *, s8))GXSetIndTexMtx)(mtxId, mtx, scaleExp);
 }
 #pragma pop
 
