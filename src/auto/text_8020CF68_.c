@@ -54,7 +54,7 @@ extern float lbl_8055EE84, lbl_8055EE88, lbl_8055EE8C, lbl_8055EE90, lbl_8055EE9
 extern float lbl_8056331C, lbl_80563320;
 extern float lbl_8056332C;
 __declspec(section ".data") extern float lbl_80558DC4;
-extern double lbl_80563360;
+__declspec(section ".sdata") extern double lbl_80563360;
 extern int fn_802E2C20(void);
 extern void fn_80012158(void);
 extern void fn_8020CF6C(int);
@@ -311,11 +311,12 @@ extern "C" void fn_8020D2D4(void)
     char buf110[32];
     char bufF0[32];
     char bufD0[32];
+    Item8020D2D4 spB0, sp94, sp78;
     char buf58[32];
-    Item8020D2D4 spB0, sp94, sp78, sp38, sp1C;
+    Item8020D2D4 sp38, sp1C;
     unsigned char sp8;
     float spC;
-    float f21, f22, f23, f24, f25, f26, f27, f28, f29, f30, f31;
+    float f31, f30, f29, f28, f27, f26, f25, f24, f23, f22, f21;
     unsigned int i;
     char *fmt = lbl_8033C690;
 
@@ -327,6 +328,7 @@ extern "C" void fn_8020D2D4(void)
     fn_800109E4(0x7F000000, lbl_80563330, lbl_80563334, lbl_80563338, lbl_8056333C);
     if (lbl_8055EEA0 != 0)
         fn_801473F8(lbl_8055EEA0, lbl_8055B630, lbl_8055B638, fn_80131234(fmt + 0x68));
+    Names8020D2D4 names = lbl_802F9E58;
     if (lbl_8055EEA0 != 0) {
         f24 = lbl_80563320;
         f25 = lbl_8056331C;
@@ -345,7 +347,7 @@ extern "C" void fn_8020D2D4(void)
                 int z;
                 for (z = 0; z < 8; z++) ((unsigned int*)buf110)[z] = 0;
             }
-            name = fn_80131234(lbl_802F9E58.s[i]);
+            name = fn_80131234(names.s[i]);
             switch (i) {
             case 0:
                 fn_801345D8(buf110, 0x20, fmt + 0x78, name, (int)(f23 + f22 * lbl_8055EE8C));
@@ -409,11 +411,11 @@ extern "C" void fn_8020D2D4(void)
                 unsigned int c30, c24;
                 switch (i) {
                 case 0:
-                    if ((float)fabs(lbl_8055EE8C) <= lbl_80558DC4) a = 0;
+                    if ((float)__fabs((double)lbl_8055EE8C) <= lbl_80558DC4) a = 0;
                     if (f25 == lbl_8055EE8C) b = 0;
                     break;
                 case 1:
-                    if ((float)fabs(lbl_8055EE90) <= lbl_80558DC4) a = 0;
+                    if ((float)__fabs((double)lbl_8055EE90) <= lbl_80558DC4) a = 0;
                     if (f25 == lbl_8055EE90) b = 0;
                     break;
                 case 2:
@@ -426,13 +428,13 @@ extern "C" void fn_8020D2D4(void)
                 if (a == 0) {
                     float f = ((f21 - lbl_8055EE98) - f24) / f26;
                     if (f25 < f) f = f25;
-                    if (!(f > f24)) f = f24;
+                    if (f <= f24) f = f24;
                     c30 = ((int)(f28 + f * f27) << 24) | 0xFFFFFF;
                 }
                 if (b == 0) {
                     float f = ((f21 - lbl_8055EE9C) - f24) / f26;
                     if (f25 < f) f = f25;
-                    if (!(f > f24)) f = f24;
+                    if (f <= f24) f = f24;
                     c24 = ((int)(f28 + f * f27) << 24) | 0xFFFFFF;
                 }
                 fn_801345D8(buf58, 0x20, fmt + 0xAC, bufD0);
@@ -446,7 +448,7 @@ extern "C" void fn_8020D2D4(void)
                         f = ((f21 - lbl_8055EE98) - f29) / f30;
                         sp38.color = it->color;
                         if (f25 < f) f = f25;
-                        if (!(f > f24)) f = f24;
+                        if (f <= f24) f = f24;
                         sp38.color = c30;
                         sp38.h.b = sp38.h.b - (f24 + f * f31);
                         fn_80147940(lbl_8055EEA0, &sp38, fmt + 0xBC, 1);
@@ -463,7 +465,7 @@ extern "C" void fn_8020D2D4(void)
                         f = ((f21 - lbl_8055EE9C) - f29) / f30;
                         sp1C.color = it->color;
                         if (f25 < f) f = f25;
-                        if (!(f > f24)) f = f24;
+                        if (f <= f24) f = f24;
                         sp1C.color = c24;
                         sp1C.h.b = sp1C.h.b + (f24 + f * f31);
                         fn_80147940(lbl_8055EEA0, &sp1C, fmt + 0xE0, 1);
