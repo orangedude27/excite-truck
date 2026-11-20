@@ -104,12 +104,16 @@ void *fn_802EC598(void) {
 
 #pragma scheduling invalid_target
 void fn_802EC614(void) {
-    // Fix note: initialize the controller flags and configuration, then allocate and register the menu resources in target order.
-    char *base = lbl_8034E9E0;
-    register s32 zero = 0;
+    char *const base = lbl_8034E9E0;
+    s32 zero = 0;
     s32 *config;
     char *info;
     void *buffer;
+    char *p100 = base + 0x100;
+    char *p110 = base + 0x110;
+    char *p11C = base + 0x11C;
+    char *p128 = base + 0x128;
+    char *p134 = base + 0x134;
 
     lbl_805600E9 = zero;
     lbl_805600EA = zero;
@@ -137,9 +141,9 @@ void fn_802EC614(void) {
     *(s32 *)(info + 0x24) = 0x80000;
     *(s32 *)(info + 0x1C) = SCGetLanguage();
     *(s32 *)(info + 0x00) = fn_802EC4E8((s32)fn_802EC598());
-    *(s32 *)(info + 0x04) = fn_802EC4E8((s32)(base + 0x100));
-    *(s32 *)(info + 0x08) = fn_802EC4E8((s32)(base + 0x110));
-    *(s32 *)(info + 0x0C) = fn_802EC4E8((s32)(base + 0x11C));
+    *(s32 *)(info + 0x04) = fn_802EC4E8((s32)p100);
+    *(s32 *)(info + 0x08) = fn_802EC4E8((s32)p110);
+    *(s32 *)(info + 0x0C) = fn_802EC4E8((s32)p11C);
     *(s32 *)(info + 0x14) = zero;
     *(s32 *)(info + 0x18) = zero;
     *(s32 *)(info + 0x20) = zero;
@@ -149,10 +153,10 @@ void fn_802EC614(void) {
     fn_801282EC(0x20);
     fn_801282F4();
 
-    buffer = (void *)fn_8012850C(0x19000, base + 0x128);
+    buffer = (void *)fn_8012850C(0x19000, p128);
     lbl_805600E0 = (s32)buffer;
     memset(buffer, zero, 0x19000);
-    lbl_805600E4 = fn_802EC4E8((s32)(base + 0x134));
+    lbl_805600E4 = fn_802EC4E8((s32)p134);
     fn_800C64F4(info);
     lbl_805600EC = 1;
 }
