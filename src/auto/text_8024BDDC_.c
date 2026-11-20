@@ -5,6 +5,8 @@
 #pragma paired_single off
 typedef struct { float x, y, z; int color; float u, v; } Vtx;
 typedef struct { float x, y, z; } Vec3;
+typedef union { double d; float f[2]; } VtxXY;
+typedef struct { VtxXY xy; float z; int color; float u, v; } VtxU;
 extern void fn_80129AFC(void);
 extern void fn_802C2B48(void);
 extern void fn_802C8530(void);
@@ -81,8 +83,9 @@ void fn_8024BE04(void) {
     unsigned short idx[6];
     float one, zero, z;
     int h, i;
-    fn_802E30C8(lbl_80343E90);
-    h = fn_802CAC28(lbl_80343E90 + 0xC, 0);
+    char *base = lbl_80343E90;
+    fn_802E30C8(base);
+    h = fn_802CAC28(base + 0xC, 0);
     zero = lbl_8056390C;
     one = lbl_80563908;
     z = zero - lbl_80563910;
@@ -115,11 +118,11 @@ void fn_8024BE04(void) {
         fn_802C8D74();
         fn_802C855C();
         fn_802C2B48();
-        if ((i & 0x3f) == 0) fn_802E30C8(lbl_80343E90 + 0x18, i);
+        if ((i & 0x3f) == 0) fn_802E30C8(base + 0x18, i);
         fn_80129AFC();
         if (fn_802E47B8() != 0 && fn_802E46F0() == 0x1b) break;
     }
     fn_802CAC54(h);
-    fn_802E30C8(lbl_80343E90 + 0x24);
+    fn_802E30C8(base + 0x24);
 }
 #pragma pop
