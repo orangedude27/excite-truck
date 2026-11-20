@@ -4336,9 +4336,20 @@ static inline BOOL fn_80060CC0_CanQueue(WPADCommandQueue* pQueue, s8 num) {
 
 #define WPADiPushCommandInlineResult(pQueue, localCommand, resultValue) \
     { \
+        WPADCommand cmdCopy; \
+        f64* cmdSrc; \
+        f64* cmdDst; \
         BOOL queueEnabled; \
         BOOL innerEnabled; \
         s8 queueSize; \
+        cmdSrc = (f64*)&(localCommand); \
+        cmdDst = (f64*)&cmdCopy; \
+        cmdDst[0] = cmdSrc[0]; \
+        cmdDst[1] = cmdSrc[1]; \
+        cmdDst[2] = cmdSrc[2]; \
+        cmdDst[3] = cmdSrc[3]; \
+        cmdDst[4] = cmdSrc[4]; \
+        cmdDst[5] = cmdSrc[5]; \
         queueEnabled = OSDisableInterrupts(); \
         innerEnabled = OSDisableInterrupts(); \
         queueSize = (pQueue)->back - (pQueue)->front; \
@@ -4349,7 +4360,7 @@ static inline BOOL fn_80060CC0_CanQueue(WPADCommandQueue* pQueue, s8 num) {
             (resultValue) = FALSE; \
         } else { \
             memset(&(pQueue)->buffer[(pQueue)->back], 0, sizeof(WPADCommand)); \
-            memcpy(&(pQueue)->buffer[(pQueue)->back], &(localCommand), sizeof(WPADCommand)); \
+            memcpy(&(pQueue)->buffer[(pQueue)->back], &cmdCopy, sizeof(WPADCommand)); \
             (pQueue)->back = (pQueue)->back == (pQueue)->capacity - 1 ? 0 : (pQueue)->back + 1; \
             OSRestoreInterrupts(queueEnabled); \
             (resultValue) = TRUE; \
