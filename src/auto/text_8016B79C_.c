@@ -1848,7 +1848,7 @@ extern "C" int fn_8016E328(void *arg0, int arg1) {
        fn_801479A8(one,two,fn_80131234(base+0x490),HudEase(blend));
        fn_80160A74(); ((void (*)(void *,int,int))fn_801308F4)(frame.text1,0x14,fn_80160998());
        frame.rect1.a=*(int *)panel;
-       { int bword=*(int *)((char *)panel+4), cword=*(int *)((char *)panel+8); *(int *)&frame.rect1.b=bword; frame.rect1.c=cword; } frame.rect1.d=*(int *)((char *)panel+12); frame.rect1.e=*(float *)((char *)panel+16); frame.rect1.f=*(int *)((char *)panel+20); frame.rect1.g=*(int *)((char *)panel+24); frame.rect1.h=*(int *)((char *)panel+28);
+       { int cword; int bword; bword=*(volatile int *)((char *)panel+4); cword=*(volatile int *)((char *)panel+8); *(int *)&frame.rect1.b=bword; frame.rect1.c=cword; } frame.rect1.d=*(int *)((char *)panel+12); frame.rect1.e=*(float *)((char *)panel+16); frame.rect1.f=*(int *)((char *)panel+20); frame.rect1.g=*(int *)((char *)panel+24); frame.rect1.h=*(int *)((char *)panel+28);
        frame.rect1.b-=lbl_80561988*fn_80147204(&frame.rect1,frame.text1);
        fn_801479A8(&frame.rect1,detail,frame.text1,HudEase(blend));
      }
@@ -1868,7 +1868,7 @@ extern "C" int fn_8016E328(void *arg0, int arg1) {
        fn_801479A8(one,two,fn_80131234(base+0x4dc),HudEase(blend));
        fn_80130978(frame.text2,0x14,*(float *)((char *)arg0+0x38));
        frame.rect2.a=*(int *)panel;
-       { int bword=*(int *)((char *)panel+4), cword=*(int *)((char *)panel+8); *(int *)&frame.rect2.b=bword; frame.rect2.c=cword; } frame.rect2.d=*(int *)((char *)panel+12); frame.rect2.e=*(float *)((char *)panel+16); frame.rect2.f=*(int *)((char *)panel+20); frame.rect2.g=*(int *)((char *)panel+24); frame.rect2.h=*(int *)((char *)panel+28);
+       { int cword; int bword; bword=*(volatile int *)((char *)panel+4); cword=*(volatile int *)((char *)panel+8); *(int *)&frame.rect2.b=bword; frame.rect2.c=cword; } frame.rect2.d=*(int *)((char *)panel+12); frame.rect2.e=*(float *)((char *)panel+16); frame.rect2.f=*(int *)((char *)panel+20); frame.rect2.g=*(int *)((char *)panel+24); frame.rect2.h=*(int *)((char *)panel+28);
        frame.rect2.b+=lbl_80561988*fn_80147204(&frame.rect2,frame.text2);
        fn_801479A8(&frame.rect2,detail,frame.text2,HudEase(blend));
      }
