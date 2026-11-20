@@ -508,6 +508,7 @@ void fn_8013072C(char *arg0, int arg1, int arg2) {
     *p = 1;
 }
 #pragma opt_lifetimes reset
+void fn_801305C4(char *arg0, int arg1, Rec10 *arg2, int arg3, float farg0);
 #pragma dont_inline on
 /* Format with the global locale record at lbl_8055E050+8 into dst (size bytes);
  * suffixKind picks the appended unit suffix and value is scaled by the record's factor. */
