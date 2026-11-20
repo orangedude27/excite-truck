@@ -5,7 +5,7 @@
 #include <string.h>
 
 extern void *lbl_8055DDF0;
-extern void *MEMAllocFromAllocator(void *, u32);
+extern "C" void *MEMAllocFromAllocator(void *, u32);
 extern "C" void MEMFreeToAllocator(void *, void *);
 extern "C" u16 fn_8002AEE8(const u16 *);
 
