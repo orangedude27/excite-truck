@@ -78,7 +78,7 @@ void fn_802B0690(int *handleSlot) {
 }
 
 #pragma cplusplus on
-#pragma scheduling 750
+#pragma scheduling invalid_target
 extern "C" void fn_802B06D4(void) {
     class Obj {
     public:
@@ -94,10 +94,9 @@ extern "C" void fn_802B06D4(void) {
         virtual void v9();
         virtual void call(void *, int);
     };
-    Obj *obj = (Obj *)fn_802B59CC();
-    obj->call(lbl_8034A078, 0);
+    ((Obj *)fn_802B59CC())->call(lbl_8034A078, 0);
 }
-#pragma scheduling reset
+#pragma scheduling on
 #pragma cplusplus off
 extern void *fn_801284F8(int, void *);
 extern void *fn_8012850C(int, void *);
@@ -111,14 +110,16 @@ extern int lbl_8055CD88;
 void fn_802B0710(void) {
     void *obj;
     int *fields;
+    int n = 0x54;
     register int i;
     register int offset;
+    int *entry;
     obj = fn_801284F8(0x14, lbl_8034A0A8);
     if (obj != 0) {
         fields = (int *)fn_8002F37C(fn_8012850C(0x550, &lbl_8055CD88),
-            fn_802B0860, fn_802B0808, 0x10, 0x54);
+            fn_802B0860, fn_802B0808, 0x10, n);
         ((int **)obj)[1] = fields;
-        ((int *)obj)[3] = 0x54;
+        ((int *)obj)[3] = n;
         ((int *)obj)[2] = 0;
         ((int **)obj)[4] = fields;
         ((void **)obj)[0] = fn_8012850C(((int *)obj)[3] << 10, lbl_8034A27C);
@@ -128,7 +129,7 @@ void fn_802B0710(void) {
             int idx = ((int *)obj)[2];
             char *base = (char *)((void **)obj)[0];
             int *flds = (int *)((void **)obj)[1];
-            int *entry = flds + idx * 4;
+            entry = flds + idx * 4;
             ((int *)obj)[2] = idx + 1;
             flds[idx * 4] = (int)(base + offset);
             offset += 0x400;
@@ -759,7 +760,6 @@ void fn_802B1758(void *arg0) {
     float y;
     float x;
     unsigned short values[14];
-    unsigned short *p;
 
     node = *(void **)((char *)arg0 + 0x934);
     if (node != 0 && *(int *)((char *)arg0 + 4) != -2) {
@@ -843,21 +843,23 @@ void fn_802B1758(void *arg0) {
                 point += 3;
             }
 
-            p = (unsigned short *)lbl_802FAAB0;
-            values[0] = *p++;
-            values[1] = *p++;
-            values[2] = *p++;
-            values[3] = *p++;
-            values[4] = *p++;
-            values[5] = *p++;
-            values[6] = *p++;
-            values[7] = *p++;
-            values[8] = *p++;
-            values[9] = *p++;
-            values[10] = *p++;
-            values[11] = *p++;
-            values[12] = *p++;
-            values[13] = *p++;
+            {
+                unsigned short *p = (unsigned short *)lbl_802FAAB0;
+                values[0] = *p++;
+                values[1] = *p++;
+                values[2] = *p++;
+                values[3] = *p++;
+                values[4] = *p++;
+                values[5] = *p++;
+                values[6] = *p++;
+                values[7] = *p++;
+                values[8] = *p++;
+                values[9] = *p++;
+                values[10] = *p++;
+                values[11] = *p++;
+                values[12] = *p++;
+                values[13] = *p++;
+            }
             fn_802DC464(lbl_804BE190, 8, values, 0xE);
             fn_802DC440();
             fn_802C8D74();
