@@ -525,9 +525,6 @@ extern "C" void fn_801D3BF0(void *arg0) {
 #pragma pop
 extern float lbl_8055E460;
 extern char lbl_80558DC4[];
-static float fn_801D3CB8_delta(float a, float blend) {
-    return blend - a;
-}
 #pragma processor 750
 #pragma scheduling on
 void fn_801D3CB8(void *arg0, char *arg1) {
