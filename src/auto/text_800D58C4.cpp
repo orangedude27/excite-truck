@@ -104,7 +104,7 @@ public:
     s32 Build(const void *, ResourceAccessor *);
 };
 }}
-extern "C" f32 lbl_80560EA8;
+extern "C" const f32 lbl_80560EA8;
 #pragma dont_inline InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl
 extern "C" char lbl_8032012C[];
 extern "C" void GXGetTexObjWidth(void*, int, ...);
