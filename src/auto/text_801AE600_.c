@@ -859,7 +859,7 @@ void fn_801AF92C(void *output) {
 done:
     ;
 }
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma dont_inline reset
 #pragma use_lmw_stmw reset
 #pragma small_data on
