@@ -144,7 +144,7 @@ void TRKPostEvent(s32 event) {
             DBGIF_CONTROL |= 0x40;
             OSRestoreInterrupts(irq);
         }
-        sEventCallback = 0;
+        sEventCallback = (void *)zero;
         sPendingEvent = event;
         __OSSetInterruptHandler(5, TRKGetNextEvent); /* the debug interface's */
         __OSUnmaskInterrupts(0x04000000);            /* == OS_INTR_MASK(5) */
