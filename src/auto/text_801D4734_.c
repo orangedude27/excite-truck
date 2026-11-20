@@ -463,7 +463,6 @@ extern "C" int fn_801D4CF8(void *arg0, void *arg1) {
     };
     extern char lbl_8055AC80;
     extern char lbl_8055AC88;
-    extern float lbl_80562B00;
     extern void *fn_801D7334(void *);
     extern void fn_802E30C8(const char *, const char *);
     extern int stricmp(const char *, const char *);
@@ -511,7 +510,7 @@ loop_test:
     node = obj->child(i);
     if (node != 0) goto loop_body;
     out->b20 = obj->flag(base + 0xC8, 0);
-    out->f1c = obj->value(*(volatile float *)&lbl_80562B00, base + 0xD4);
+    out->f1c = obj->value(10.0f, base + 0xD4);
     out->b21 = obj->flag(base + 0xE0, 1);
     out->b22 = obj->flag(base + 0xF0, 1);
     out->i24 = obj->getInt(base + 0xFC, -1);
