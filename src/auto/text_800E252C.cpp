@@ -518,9 +518,8 @@ extern float lbl_80321E48[];
 extern "C" float Atan2FIdx__Q24nw4r4mathFff(float y, float x) {
     if (0.0f == x && 0.0f == y) return 0.0f;
     float f3;
-    float f4;
+    float f4 = lbl_80560F04;
     int mode;
-    f4 = lbl_80560F04;
     if (x >= lbl_80560F04) {
         if (y >= lbl_80560F04) {
             if (x >= y) { f3 = x; mode = 0; }
@@ -851,17 +850,30 @@ extern "C" int DVDGetDriveStatus(void);
 extern "C" void fn_80031C8C(unsigned short);
 extern "C" void fn_80031C94(unsigned short);
 extern "C" void fn_80031C9C(unsigned short);
+static inline void SetSoundFlagAll_800E3228(void *list, unsigned char flag) {
+    unsigned int interruptState = OSDisableInterrupts();
+    unsigned char *it = *(unsigned char **)list;
+    while (it != (unsigned char *)list) {
+        unsigned char *node = it;
+        it = *(unsigned char **)it;
+        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+        if (*(unsigned char *)(node - 0x8C) != 0) {
+            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+            *(unsigned char *)(node - 0x85) |= flag;
+        }
+    }
+    OSRestoreInterrupts(interruptState);
+}
 extern "C" void fn_800E3228(void *arg0) {
     int status = DVDGetDriveStatus();
     if (status == 0) {
         if (*((unsigned char *)arg0 + 0x6C33) != 0) {
-            unsigned char *node, *current, *sentinel;
+            unsigned char *node, *current;
             unsigned int interruptState;
             *((unsigned char *)arg0 + 0x6C33) = 0;
             interruptState = OSDisableInterrupts();
             current = *(unsigned char **)((unsigned char *)arg0 + 0x18);
-            sentinel = (unsigned char *)arg0 + 0x18;
-            while (current != sentinel) {
+            while (current != (unsigned char *)arg0 + 0x18) {
                 node = current;
                 current = *(unsigned char **)node;
                 if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
@@ -873,13 +885,12 @@ extern "C" void fn_800E3228(void *arg0) {
             OSRestoreInterrupts(interruptState);
         }
     } else if (status != 1 && *((unsigned char *)arg0 + 0x6C33) == 0) {
-        unsigned char *node, *current, *sentinel;
+        unsigned char *node, *current;
         unsigned int interruptState;
         *((unsigned char *)arg0 + 0x6C33) = 1;
         interruptState = OSDisableInterrupts();
         current = *(unsigned char **)((unsigned char *)arg0 + 0x18);
-        sentinel = (unsigned char *)arg0 + 0x18;
-        while (current != sentinel) {
+        while (current != (unsigned char *)arg0 + 0x18) {
             node = current;
             current = *(unsigned char **)node;
             if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
@@ -3629,35 +3640,30 @@ void *nw4hbm::snd::detail::Bank::NoteOn(const nw4hbm::snd::detail::NoteOnInfo &n
 
 extern const char lbl_803224F0[];
 extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *self, const void *bank) {
-    register void *me;
-    register const void *bk;
-    register const char *messages;
-    me = self;
-    bk = bank;
-    messages = lbl_803224F0;
-    *(void **)me = 0;
-    *(void **)((char *)me + 4) = 0;
-    *(void **)((char *)me + 8) = 0;
-    if (bk == 0) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x58, messages + 0xB8);
-    unsigned int magic = *(unsigned int *)bk;
+    register const char *messages = lbl_803224F0;
+    *(void **)self = 0;
+    *(void **)((char *)self + 4) = 0;
+    *(void **)((char *)self + 8) = 0;
+    if (bank == 0) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x58, messages + 0xB8);
+    unsigned int magic = *(unsigned int *)bank;
     if (magic != 0x52424E4B) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x36, messages + 0x14);
-    magic = *(unsigned int *)bk;
-    if (magic != 0x52424E4B) return me;
-    unsigned short version = *(unsigned short *)((char *)bk + 6);
+    magic = *(unsigned int *)bank;
+    if (magic != 0x52424E4B) return self;
+    unsigned short version = *(unsigned short *)((char *)bank + 6);
     if (version < 0x100) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x3E, messages + 0x60);
-    version = *(unsigned short *)((char *)bk + 6);
-    if (version < 0x100) return me;
+    version = *(unsigned short *)((char *)bank + 6);
+    if (version < 0x100) return self;
     if (version > 0x101) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x44, messages + 0x60);
-    version = *(unsigned short *)((char *)bk + 6);
-    if (version < 0x100 || version > 0x101) return me;
-    *(const void **)me = bk;
-    const char *data = (const char *)bk + *(unsigned int *)((char *)bk + 0x10);
-    *(const char **)((char *)me + 4) = data;
+    version = *(unsigned short *)((char *)bank + 6);
+    if (!(version == 0x100 || version == 0x101)) return self;
+    *(const void **)self = bank;
+    const char *data = (const char *)bank + *(unsigned int *)((char *)bank + 0x10);
+    *(const char **)((char *)self + 4) = data;
     if (*(unsigned int *)data != 0x44415441) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x61, messages + 0xE4);
-    const char *wave = (const char *)bk + *(unsigned int *)((char *)bk + 0x18);
-    *(const char **)((char *)me + 8) = wave;
+    const char *wave = (const char *)bank + *(unsigned int *)((char *)bank + 0x18);
+    *(const char **)((char *)self + 8) = wave;
     if (*(unsigned int *)wave != 0x57415645) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x65, messages + 0x13C);
-    return me;
+    return self;
 }
 
 extern "C" int ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8InstInfoiii(void *arg0, void *arg1, int arg2, int arg3, int arg4) {
