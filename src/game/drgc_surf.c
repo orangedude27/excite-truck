@@ -63,7 +63,7 @@ extern u8 lbl_804D6C44[];
 extern f32 lbl_804C56F0[];
 extern f32 lbl_804CA308[];
 extern f32 lbl_80564FF0;
-f64 lbl_80564FF8 = 4503599627370496.0;
+extern f64 lbl_80564FF8;
 extern f64 lbl_80565000;
 extern u8 lbl_8055FD19;
 extern u32 lbl_804C5650[];
@@ -781,7 +781,7 @@ void fn_802D56D4(void *arg0) {
         return;
     }
     {
-        register f32 (*directions)[3] = (f32 (*)[3])lbl_804DB068;
+        f32 (*directions)[3] = (f32 (*)[3])lbl_804DB068;
         f32 factor = lbl_80564FF0;
         register volatile f32 *out = base;
         for (i = 0; i < count; i++) {
