@@ -153,6 +153,7 @@ void *fn_8020F5F0(long trackIndex) {
 extern void *memset(void *, int, unsigned long);
 #pragma dont_inline on
 #pragma ctrloop on
+static const long trkmus_init_count = 2;
 long fn_8020F608(long arg0, long arg1) {
     char *ptr;
     long i;
@@ -194,7 +195,6 @@ loop:
     *(long *)(ptr + 0xC1C) = arg0;
     ptr += 0xC80;
     if (--i != 0) goto loop;
-    return 0;
 }
 #pragma ctrloop reset
 #pragma dont_inline reset
@@ -229,16 +229,14 @@ long fn_8020F6FC(void) {
 
 #pragma scheduling invalid_target
 void fn_8020F730(void) {
-    register long count = lbl_804900AC.m_count;
-    register long i;
+    long count = lbl_804900AC.m_count;
+    long i;
     lbl_804902C4.m_count = 0;
     if (count != 0) {
-        i = 0;
-        while (i < count) {
+        for (i = 0; i < count; i++) {
             long index = lbl_804902C4.m_count;
             lbl_804902C4.m_count = index + 1;
             lbl_804902C4.m_entries[index] = i;
-            i++;
         }
         for (i = 0; i < lbl_804902C4.m_count; i++) {
             long index = fn_80129D18(6);
