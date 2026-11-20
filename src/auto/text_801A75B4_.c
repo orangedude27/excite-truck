@@ -162,15 +162,14 @@ void fn_801A7628(void) {
     gInputBindingCount = NUM_INPUT_BINDINGS;
 #undef gBindings
 }
-#pragma pop
+#pragma push
+#pragma scheduling invalid_target
 void fn_801A7844(int arg0) {
     char *entry;
     int i;
     int sp10;
     int spC;
     unsigned int sp8;
-    int a;
-    int b;
 
     if (arg0 != 0) {
         entry = (char *)lbl_80435050;
@@ -183,14 +182,13 @@ void fn_801A7844(int arg0) {
         } while (i < 4);
     }
     fn_80127A84(&sp10, &spC, &sp8);
-    a = (int)lbl_8055CFF0 / 2;
-    b = (int)lbl_8055CFF4 / 2;
+    *(float *)&lbl_80435370[0] = (float)(sp10 - (int)lbl_8055CFF0 / 2) / (float)((int)lbl_8055CFF0 / 2);
+    *(float *)&lbl_80435370[4] = (float)(spC - (int)lbl_8055CFF4 / 2) / (float)((int)lbl_8055CFF4 / 2);
     lbl_80435370[8] = sp8 & 1;
     lbl_80435370[9] = (sp8 >> 1) & 1;
     lbl_80435370[10] = (sp8 >> 2) & 1;
-    *(float *)&lbl_80435370[0] = (float)(sp10 - a) / (float)a;
-    *(float *)&lbl_80435370[4] = (float)(spC - b) / (float)b;
 }
+#pragma pop
 extern void fn_801334F4(int, int, int *, int);
 #pragma push
 #pragma scheduling invalid_target
