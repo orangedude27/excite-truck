@@ -2953,7 +2953,7 @@ loop_2:
                     ((*(u32 *)((u8 *)var_r30 + 0x14) - 1) << *(u8 *)((u8 *)arg0 + 0x20));
             } else if ((temp_r7 > arg3) && (temp_r7 < temp_r31) &&
                        ((u32)(temp_r7 + *(u32 *)((u8 *)var_r30 + 0x14)) >= temp_r31)) {
-                register u32 temp_r4_3 = arg4 + arg3;
+                u32 temp_r4_3 = arg4 + arg3;
                 temp_r5_4 = *(u8 *)((u8 *)arg0 + 0x20);
                 VFipf_memcpy(*(void **)((u8 *)var_r30 + 4),
                              (u8 *)arg2 + ((temp_r7 - arg3) << temp_r5_4),
@@ -5040,38 +5040,52 @@ extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
     return var_r31;
 }
 #pragma pop
+static inline s32 advance_and_probe(void *arg0) {
+    VFiPFEntIter *p = (VFiPFEntIter *)arg0;
+    s32 index = p->index;
+    u32 old = p->position;
+    p->position = (index + 1) << p->shift;
+    if (fn_800AB378(p, 0) != 0) {
+        p->position = old;
+        p->index = index;
+        return 1;
+    }
+    return 0;
+}
+
 extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *arg0) {
     u32 sp8;
     s32 index;
     u32 old;
     s32 result;
     s32 status;
-    if (((VFiPFEntIter *)arg0)->sector == 0xFFFFFFFFu || ((VFiPFEntIter *)arg0)->entry[0] == 0 || ((VFiPFEntIter *)arg0)->position < 0xF423Fu)
+    VFiPFEntIter *iter = (VFiPFEntIter *)arg0;
+    if (iter->sector == 0xFFFFFFFFu || iter->entry[0] == 0 || iter->position < 0xF423Fu)
         goto return_zero;
-    index = ((VFiPFEntIter *)arg0)->index;
-    old = ((VFiPFEntIter *)arg0)->position;
-    ((VFiPFEntIter *)arg0)->position = (index + 1) << ((VFiPFEntIter *)arg0)->shift;
+    index = iter->index;
+    old = iter->position;
+    iter->position = (index + 1) << iter->shift;
     {
-        VFiPFEntIter *iter = (VFiPFEntIter *)arg0;
-        if (fn_800AB378(iter, 0) != 0) {
+        VFiPFEntIter *callArg = iter;
+        if (fn_800AB378(callArg, 0) != 0) {
             iter->position = old;
             iter->index = index;
             return 1;
         }
-        if (iter->sector == 0xFFFFFFFFu)
-            goto short_one;
-        if (iter->sector != 0xFFFFFFFFu)
-            goto read_entry;
-        status = 0x10;
-        goto finish_status;
-read_entry:
-        result = fn_800B5324(iter->volume, iter->entry, iter->sector, iter->sectorOff, 0x20, &sp8, 0);
-        status = 0x11;
-        if (sp8 == 0x20)
-            status = result;
-finish_status:
-        return status != 0;
     }
+    if (iter->sector == 0xFFFFFFFFu)
+        goto short_one;
+    if (iter->sector != 0xFFFFFFFFu)
+        goto read_entry;
+    status = 0x10;
+    goto finish_status;
+read_entry:
+    result = fn_800B5324(iter->volume, iter->entry, iter->sector, iter->sectorOff, 0x20, &sp8, 0);
+    status = 0x11;
+    if (sp8 == 0x20)
+        status = result;
+finish_status:
+    return status != 0;
 short_one:
     return 1;
 return_zero:
@@ -10637,6 +10651,7 @@ extern "C" s32 fn_800B5070(s32 path, s32 *outValue) {
 #pragma pop
 extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *arg0, s32 arg1) {
     s8 *p = arg0 + 7;
+    s8 b;
     u32 digits = 7;
     u32 divisor = 10;
     u32 place = 1;
@@ -10645,7 +10660,9 @@ extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *arg0, s32 arg1) {
         if (rem != 0) {
             arg1 -= rem;
             rem /= place;
-            *p += (s8)rem;
+            b = *p;
+            b += (s8)rem;
+            *p = b;
         }
         divisor *= 10;
         digits--;
@@ -27299,15 +27316,15 @@ extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *arg0, u32 firstIndex, void *tem
     s8 shortName[16];
     char local0[16];
     struct Iter iter;
-    void *context = *(void **)((u8 *)arg0 + 0x34);
+    register void *context;
     u32 tilde, end, digits, i, index;
     s8 ch, terminal;
     s32 state;
     u32 mask;
-    u32 *dst;
+    u32 *dst = iter.sub;
     u32 a, b;
 
-    dst = iter.sub;
+    context = *(void **)((u8 *)arg0 + 0x34);
     fn_800A499C((const char *)bitmap, 0, *(u32 *)((u8 *)context + 0x1F74) * 4);
     b = ((u32 *)arg0)[0]; a = ((u32 *)arg0)[1]; dst[0] = b; dst[1] = a;
     a = ((u32 *)arg0)[2]; b = ((u32 *)arg0)[3]; dst[2] = a; dst[3] = b;
