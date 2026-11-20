@@ -711,11 +711,11 @@ void fn_80274EA8(void *object) {
 }
 
 static inline void helper_80274F74(void *arg0, void *arg1) {
-    float y;
-    float z;
     float magnitude;
     float scale;
     float cosine;
+    float y;
+    float z;
     float sine;
     float x;
 
@@ -773,9 +773,8 @@ static inline void helper_80274F74(void *arg0, void *arg1) {
 
 #pragma scheduling invalid_target
 void fn_80274F74(void *arg0, void *arg1, float angle) {
-    float a = angle;
     helper_80274F74(arg0, arg1);
-    *(float *)((char *)arg0 + 0xBC) = a;
+    *(float *)((char *)arg0 + 0xBC) = angle;
 }
 
 extern float PSVECDotProduct(float *, float *);
