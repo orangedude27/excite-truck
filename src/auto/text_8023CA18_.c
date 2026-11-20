@@ -39,7 +39,6 @@ extern void fn_80209030(f32);
 extern void fn_80209090(s32);
 #pragma push
 #pragma scheduling invalid_target
-#pragma peephole off
 void fn_8023CA54(void) {
     struct Hdr { s32 f0; char pad[12]; };
     s32 zero = 0;
