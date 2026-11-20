@@ -66,7 +66,7 @@ extern s32 lbl_8055EF74;
 extern s32 fn_80217270(s32);
 extern s32 fn_802E317C(const char *, ...);
 extern char lbl_8033D7EC[];
-extern s32 fn_80218464(void);
+extern void fn_80218464();
 extern u32 lbl_8055EF98;
 extern char lbl_8055EF99;
 __declspec(section ".data") extern f32 lbl_80558DC4;
@@ -217,8 +217,7 @@ s32 fn_802160AC(void)
   f32 a;
   f32 *new_var;
   f32 b;
-  s32 flag = *(s32 *)&lbl_8055EF88;
-  if (flag != 0)
+  if (lbl_8055EF88 != 0)
   {
     temp_r31 = fn_8021832C();
   }
