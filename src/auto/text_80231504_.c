@@ -569,8 +569,8 @@ have:
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_80231D84(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 sy, f32 sp) {
-    f32 adv;
     f32 half;
+    f32 adv;
     strlen(text);
     half = lbl_80563688;
     while (*text != 0) {
@@ -936,6 +936,7 @@ void fn_80232930(void) {
 }
 
 f32 fn_8023293C(s32 font, char *text, f32 extra) {
+    register f32 scale = extra;
     register f32 height;
     register f32 width;
     f64 escapeWidth;
@@ -977,8 +978,8 @@ char_body:
                 entry = *(u8 **)lbl_80497F14 + (u32)tokenIndex * 0x1C;
                 if (*(s32 *)(entry + 0xC) != 0) {
                     escapeScale /= fn_80235F64(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10));
-                    escapeWidth = *(f32 *)(entry + 4) * (*(f32 *)(entry + 0x18) * escapeScale)
-                                + *(f32 *)(entry + 4) * (escapeScale * fn_80235EF0(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10)));
+                    escapeWidth = *(f32 *)(entry + 4) * (escapeScale * fn_80235EF0(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10)))
+                                + *(f32 *)(entry + 4) * (*(f32 *)(entry + 0x18) * escapeScale);
                 } else {
                     escapeWidth = escapeScale * *(f32 *)(entry + 4);
                 }
@@ -1017,7 +1018,7 @@ match:
 char_test:
     if ((s8)*(volatile u8 *)(text + index) != 0) goto char_body;
 
-    height *= extra;
+    height *= scale;
     return (width + height) * *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
 }
 /* Return a font's height byte (stored at offset 4), used as the glyph size for text layout and scaling. */
@@ -1097,50 +1098,48 @@ void fn_80232D3C(u8 *text, s32 font, s32 color, s32 x, s32 flags, f32 y, f32 sca
 }
 #pragma push
 #pragma opt_common_subs off
+#pragma scheduling on
 void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 scale, f32 spacing, f32 extra) {
+    u8 *pText = text;
+    s32 nFont = font;
     s32 sp10;
     f32 spC;
     f32 sp8;
-    s32 firstValue;
     s32 curColor;
+    u32 code;
+    u8 first;
+    u8 *end;
     u8 *start;
+    s32 offset;
     s32 textOffset;
     s32 passes;
     s32 curFont;
-    u8 *end;
     sp8 = x;
     spC = y;
     sp10 = color;
-
     fn_80231714(&sp10);
-    if ((s8)*text != 0) {
+    if ((s8)*pText != 0) {
         f32 rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x34);
-        f32 f0 = (f32)*(u8 *)(font + 4) * scale;
+        f32 f0 = (f32)*(u8 *)(nFont + 4) * scale;
         f32 fontHeight = f0 * rate;
-        fn_80233BF0(text, (u8 *)font, &sp8, &spC, flags, scale, extra);
+        fn_80233BF0(pText, (u8 *)nFont, &sp8, &spC, flags, scale, extra);
         {
             f32 startX = sp8;
-
-            strlen((const char *)text);
-            passes = (*(void **)(font + 8) != NULL) + 1;
+            strlen((const char *)pText);
+            passes = (*(void **)(nFont + 8) != NULL) + 1;
             while (passes > 0) {
                 curColor = sp10;
                 sp8 = startX;
-                curFont = font;
+                curFont = nFont;
                 textOffset = 0;
                 if (passes == 2) {
-                    curFont = *(s32 *)(font + 8);
+                    curFont = *(s32 *)(nFont + 8);
                     curColor = fn_80231718(curColor);
                 }
                 fn_80233E80((s32 *)curFont, curColor);
-                while ((s8)text[textOffset] != 0) {
-                    u8 first;
-                    u32 code;
-                    s32 offset;
-
-                    firstValue = text[textOffset];
-                    first = (u8)firstValue;
-                    start = text + textOffset;
+                while ((s8)pText[textOffset] != 0) {
+                    first = pText[textOffset];
+                    start = pText + textOffset;
                     if ((first & 0xF0) == 0xE0) {
                         code = ((first & 0x0F) << 12) | ((start[1] & 0x3F) << 6) | (start[2] & 0x3F);
                         end = start + 3;
@@ -1155,8 +1154,8 @@ void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 sca
                     offset = code * 0x1C;
                     sp8 += scale * *(f32 *)(*(u8 **)(curFont + 0x10) + offset) * extra;
                     fn_80233AA4((void *)curFont, code, sp8, spC - fontHeight, sp8 + scale * *(f32 *)(*(u8 **)(curFont + 0x10) + offset + 4), spC, spacing);
-                    textOffset += end - start;
                     sp8 += scale * *(f32 *)(*(u8 **)(curFont + 0x10) + offset + 4);
+                    textOffset += end - start;
                     sp8 += extra * (scale * *(f32 *)(*(u8 **)(curFont + 0x10) + offset + 8));
                 }
                 fn_80233EBC();
@@ -1391,45 +1390,34 @@ void fn_802339A8(f32 x, s32 font, f32 y, s32 color, f32 spacing, f32 scale, s32 
 
 extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8DB8(void *, s32, u16 *, s32, s32, s32, s32, s32);
-extern u16 lbl_802F9FF0[];
+typedef struct IndexList_802F9FF0 { u16 idx[6]; } IndexList_802F9FF0;
+extern IndexList_802F9FF0 lbl_802F9FF0;
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
-    struct Frame {
-        u16 indices[6];
-        u8 pad[4];
-        f32 output[4][6];
-    } frame;
-    u8 *entry;
-    s32 offset;
-    s32 mode;
-
+    register void *font = arg0;
+    s32 glyphInfo[2];
+    u8 out3[0x18];
+    u8 out2[0x18];
+    u8 out1[0x18];
+    u8 out0[0x18];
+    IndexList_802F9FF0 indices;
+    u8 *glyph;
     if (arg1 != 0x20) {
-        offset = arg1 * 0x1C;
-        entry = *(u8 **)((u8 *)arg0 + 0x10) + offset;
-        mode = lbl_8055F050;
-
-        fn_80231380(frame.output[0], mode, farg0, farg1, farg4,
-                    *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x10));
-        entry = *(u8 **)((u8 *)arg0 + 0x10) + offset;
-        fn_80231380(frame.output[1], mode, farg2, farg1, farg4,
-                    *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x10));
-        entry = *(u8 **)((u8 *)arg0 + 0x10) + offset;
-        fn_80231380(frame.output[2], mode, farg0, farg3, farg4,
-                    *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x18));
-        entry = *(u8 **)((u8 *)arg0 + 0x10) + offset;
-        fn_80231380(frame.output[3], mode, farg2, farg3, farg4,
-                    *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x18));
-
-        frame.indices[0] = lbl_802F9FF0[0];
-        frame.indices[1] = lbl_802F9FF0[1];
-        frame.indices[2] = lbl_802F9FF0[2];
-        frame.indices[3] = lbl_802F9FF0[3];
-        frame.indices[4] = lbl_802F9FF0[4];
-        frame.indices[5] = lbl_802F9FF0[5];
-        fn_802C8DB8(frame.output[0], 4, frame.indices, 6,
-                    lbl_802F9FF0[4], lbl_802F9FF0[3], lbl_802F9FF0[2], lbl_802F9FF0[1]);
+        glyphInfo[0] = arg1 * 0x1C;
+        glyph = (*((u8 **) (((u8 *) font) + 0x10))) + glyphInfo[0];
+        glyphInfo[1] = lbl_8055F050;
+        fn_80231380(out0, glyphInfo[1], farg0, farg1, farg4, *((f32 *) (glyph + 0xC)), *((f32 *) (glyph + 0x10)));
+        glyph = (*((u8 **) (((u8 *) font) + 0x10))) + glyphInfo[0];
+        fn_80231380(out1, glyphInfo[1], farg2, farg1, farg4, *((f32 *) (glyph + 0x14)), *((f32 *) (glyph + 0x10)));
+        glyph = (*((u8 **) (((u8 *) font) + 0x10))) + glyphInfo[0];
+        fn_80231380(out2, glyphInfo[1], farg0, farg3, farg4, *((f32 *) (glyph + 0xC)), *((f32 *) (glyph + 0x18)));
+        glyph = (*((u8 **) (((u8 *) font) + 0x10))) + glyphInfo[0];
+        fn_80231380(out3, glyphInfo[1], farg2, farg3, farg4, *((f32 *) (glyph + 0x14)), *((f32 *) (glyph + 0x18)));
+        indices = lbl_802F9FF0;
+        ((void (*)(void *, s32, u16 *, s32, s32, s32, s32, s32)) fn_802C8DB8)(out0, 4, indices.idx, 6,
+                    indices.idx[4], indices.idx[3], indices.idx[2], indices.idx[1]);
     }
 }
 #pragma pop
@@ -1587,8 +1575,8 @@ char_body:
                 entry = *(u8 **)lbl_80497F14 + (u32)tokenIndex * 0x1C;
                 if (*(s32 *)(entry + 0xC) != 0) {
                     escapeScale /= fn_80235F64(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10));
-                    escapeWidth = *(f32 *)(entry + 4) * (*(f32 *)(entry + 0x18) * escapeScale)
-                                + *(f32 *)(entry + 4) * (escapeScale * fn_80235EF0(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10)));
+                    escapeWidth = *(f32 *)(entry + 4) * (escapeScale * fn_80235EF0(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10)))
+                                + *(f32 *)(entry + 4) * (*(f32 *)(entry + 0x18) * escapeScale);
                 } else {
                     escapeWidth = escapeScale * *(f32 *)(entry + 4);
                 }
@@ -1596,12 +1584,9 @@ char_body:
                 goto match;
             }
         }
-        consumed = 0;
-match: ;
-    } else {
-        consumed = 0;
     }
-
+    consumed = 0;
+match:
     if (consumed != 0) {
         index += consumed;
         width += (f32)escapeWidth;
