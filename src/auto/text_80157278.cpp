@@ -2401,12 +2401,13 @@ extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
     if (p[0x2f0]) {
         s32 active = fn_801D48FC(*(s32*)(p+0x26c));
         p[0x2f0] = active;
-        f32 step = lbl_8056177C, zero = 0.0f, full = 1.0f;
+        f32 zero = lbl_80561754, step = 0.016683351f, full = 1.0f;
         f32 margin = lbl_805617B4, minimum = lbl_805617B8;
         register s32 owner;
         register u8* slot = p;
         register s32 i;
-        for (i = 0; i < 8; i++, slot += 0x10) {
+        i = 0;
+        for (; i < 8; i++, slot += 0x10) {
             owner = *(s32*)(p+0x26c);
             s32 enabled;
             *(s32*)(slot+0x274) = *(s32*)(slot+0x270);
