@@ -101,7 +101,7 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
         if (tile == 0xFFFF) {
             node = 0;
         } else {
-            node = *(char **)((char *)GND + 0x18) + tile * 0x894;
+            node = *(char **)((char *)lbl_8055E990 + 0x18) + tile * 0x894;
         }
     }
     if (node == 0) {
