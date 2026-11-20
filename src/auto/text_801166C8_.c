@@ -469,6 +469,7 @@ s32 fn_80116E54(s32 (*callback)(s32), s32 arg) {
     return lbl_8055DECC != 0;
 }
 
+#pragma unroll off
 s8 *fn_80116EE4(s8 *arg0, s16 *arg1, u32 arg2) {
     s16 *var_r4 = arg1;
     s8 *var_r3 = arg0;
@@ -4439,8 +4440,8 @@ void fn_8011CE18(void *arg0, void *arg1) {
                 if (bitCount >= available) {
                     code = value & mask;
                     s = lookup[code];
-                    code = s & 15;
                     len = s >> 4;
+                    code = s & 15;
                     sym = table[code];
                     value >>= len;
                     bitCount -= len;
@@ -4448,8 +4449,8 @@ void fn_8011CE18(void *arg0, void *arg1) {
                     u32 next = *bits;
                     code = (value | (next << bitCount)) & mask;
                     s = lookup[code];
-                    code = s & 15;
                     len = s >> 4;
+                    code = s & 15;
                     sym = table[code];
                     if (bitCount >= len) { value >>= len; bitCount -= len; }
                     else { value = next >> (len - bitCount); bits++; bitCount = bitCount + 32 - len; }
@@ -4501,12 +4502,12 @@ void fn_8011CE18(void *arg0, void *arg1) {
 
 void fn_8011D0E8(void *arg0, void *arg1, void *arg2) {
  u32 *p;
+ register u32 *ent;
  u32 bits, n, width, tree, rem, sign, mask, code;
  s32 out;
  u32 w2;
  u8 *dst, *table, *lut;
  u32 v, c;
- register u32 *ent;
  if(M2C_FIELD(arg0,u32*,0)!=M2C_FIELD(arg0,u32*,4)) return;
  n=M2C_FIELD(arg1,u32*,8); width=M2C_FIELD(arg0,u32*,0x28); p=M2C_FIELD(arg1,u32**,4); bits=M2C_FIELD(arg1,u32*,0);
  if(n<width){u32 x=*p++; out=(bits|(x<<n))&(-1U>>(32-width)); bits=x>>(width-n); n=n+32-width;} else {out=bits&(-1U>>(32-width)); bits>>=width; n-=width;}
