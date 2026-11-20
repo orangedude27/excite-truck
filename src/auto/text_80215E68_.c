@@ -194,6 +194,11 @@ void fn_8021605C(void *rect, s32 canvasState) {
 }
 
 extern s32 fn_8021832C();
+
+static inline void *GetCurrentObj(void)
+{
+    return lbl_8055EF88;
+}
 extern void fn_80230B5C(void *);
 extern void fn_802C8638(void *);
 extern void fn_802C974C(f32, f32, f32);
