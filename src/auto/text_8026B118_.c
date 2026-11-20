@@ -225,22 +225,25 @@ void fn_8026B3D4(int arg0) {
                 ((struct Ent *)((char *)lbl_8049A0E8 + off))->v = lbl_80563D70;
             }
         } else {
-            volatile float sp10[2];
-            volatile float sp8[2];
-            double x = *(float *)(p + 0x60);
-            double z = *(float *)(p + 0x68);
+            float pos[2];
+            float d[2];
             float *tab = (float *)lbl_8049A028;
             int found = 0;
             int j = 0;
-            sp10[0] = *(float *)(p + 0x60);
-            sp10[1] = *(float *)(p + 0x68);
+            pos[0] = *(float *)(p + 0x60);
+            pos[1] = *(float *)(p + 0x68);
             while (j < lbl_8055F4C8 && found == 0) {
-                float dz = (float)z - tab[1];
-                float r = tab[2];
-                float dx = (float)x - tab[0];
-                sp8[0] = dx;
-                sp8[1] = dz;
-                if (dx * dx + dz * dz < r * r) {
+                float dx;
+                float dz;
+                float r;
+                float r2;
+                dz = pos[1] - tab[1];
+                r = tab[2];
+                dx = pos[0] - tab[0];
+                d[0] = dx;
+                d[1] = dz;
+                r2 = r * r;
+                if (d[0] * d[0] + d[1] * d[1] < r2) {
                     e->idx = j;
                     found = 1;
                     e->t = t;
