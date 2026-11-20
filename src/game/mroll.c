@@ -1604,6 +1604,7 @@ void fn_80242738(void *arg0, s32 arg1)
   }
   *((u8 *) (((u8 *) arg0) + 0x58)) = (u8) mode;
 }
+#pragma cplusplus reset
 #pragma pop
 extern s32 lbl_8055F1F8;
 extern s32 fn_802E8504(s32);
