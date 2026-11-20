@@ -2197,6 +2197,9 @@ extern "C" const char lbl_80324E40[];
 extern "C" const char lbl_80324E5C[];
 #define kLoaderSourceFile lbl_80324E40 /* "snd_SoundArchiveLoader.cpp" */
 #define kMsgNullAllocator lbl_80324E5C  /* "NW4HBM:Pointer must not be NULL (allocater)" */
+/* SoundArchive::ReadGroupInfo(u32 group, GroupInfo*): the archive-level wrapper
+   around the file reader's method, currently unnamed as fn_800F2824. */
+#define ReadGroupInfo__Q36nw4hbm3snd12SoundArchiveCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo fn_800F2824
 
 // The stream a SoundArchive opens for the loader: detail::OpenFileStream,
 // OpenGroupStream and OpenGroupWaveDataStream all return one.  The two leading
