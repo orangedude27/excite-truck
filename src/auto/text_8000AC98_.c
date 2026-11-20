@@ -1039,6 +1039,12 @@ extern void *memcpy(void *, const void *, unsigned int);
 extern void fn_8000BF20(void *, int);
 #pragma scheduling invalid_target
 void fn_8000C0E8(void *arg0) {
+    /* Copies a game context buffer (32-byte header, a run of 0x78-byte records,
+     * and the 4-word tail) into a local buffer, resets the record count to 1 and
+     * sets the "last" flag, then runs the frame-sequence engine (fn_8000BF20)
+     * on the local copy.  Records whose +0x20 tag equals 0x50 are re-copied at
+     * the local header's offsets while the rest of the buffer is carried over
+     * verbatim by the initial bulk copy. */
     struct Header { unsigned char h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12, h13, h14, h15, h16, h17, h18, h19, h20, h21, h22, h23, h24, h25, h26, h27, h28, h29, h30, h31; };
     struct Payload { unsigned int words[0xF0]; int count; };
     struct Tail { int a, b, c, d; };
