@@ -440,7 +440,8 @@ void __GXSetIndirectMask(s32);
 void __GXSetTmemConfig(s32);
 void __GXInitGX(void);
 void OSRegisterVersion(s32);
-#pragma unroll off
+#pragma push
+#pragma opt_common_subs off
 void *GXInit(void *arg0, unsigned int arg1) {
     static int shutdownFuncRegistered = 0;
     unsigned int hid;
@@ -617,7 +618,7 @@ void *GXInit(void *arg0, unsigned int arg1) {
         return &FifoObj_8037BA40;
     }
 }
-#pragma unroll reset
+#pragma pop
 int VIGetTvFormat(void);
 extern unsigned char lbl_803034A0[];
 extern unsigned char lbl_803038D8[];
@@ -1817,6 +1818,7 @@ void __GXSetVCD(void) {
     unsigned int compCount;
     unsigned int vatPart;
     unsigned int vatCount;
+    register unsigned int cRaw, sRaw;
     unsigned int masked;
     unsigned int sizeCount;
     unsigned int sizePart;
@@ -1836,9 +1838,11 @@ void __GXSetVCD(void) {
         unsigned int flag = *((unsigned char *)data + 0x524);
         count = (unsigned int)(-(int)flag | (int)flag) >> 31;
     }
-    compCount = (data[0x14 / 4] >> 13) & 0xF;
+    cRaw = data[0x14 / 4];
+    sRaw = data[0x18 / 4];
+    compCount = (cRaw >> 13) & 0xF;
     vatPart = __cntlzw(compCount);
-    masked = data[0x18 / 4] & 0xFFFF;
+    masked = sRaw & 0xFFFF;
     *fifo8 = 0x10;
     vatPart = 0x21u - vatPart;
     sizeCount = __cntlzw(masked);
@@ -5040,9 +5044,9 @@ void GXSetTevIndirect(s32 tevStage, s32 indStage, s32 format, s32 biasSel, s32 m
 void GXSetIndTexMtx(s32 type, f32 *matrix, s32 scale) {
     register s32 index3;
     register s32 scaleField;
-    register u32 third;
-    register u32 second;
     register u32 first;
+    register u32 second;
+    register u32 third;
     volatile u8 *fifo8 = (volatile u8 *)0xCC010000;
     volatile u32 *fifo32 = (volatile u32 *)0xCC010000;
     switch (type) {
@@ -5266,9 +5270,9 @@ void GXSetTevOp(int stage, int mode) {
         color += mode;
         alpha += mode;
     }
-    inputValue = *color;
     data = __GXData;
     tev = data + stage;
+    inputValue = *color;
     oldValue = tev[0x180 / 4];
     *(volatile unsigned char *)0xCC008000 = 0x61;
     value = oldValue & 0xFF000000;
@@ -5981,14 +5985,22 @@ void GXSetDstAlpha(s32 enable, s32 alpha) {
 }
 
 void GXSetFieldMask(s32 even, s32 odd) {
-    unsigned int *data = __GXData;
-    unsigned int value = 0;
+    union {
+        u32 value;
+        struct {
+            unsigned int type : 8;
+            unsigned int reserved : 22;
+            unsigned int even : 1;
+            unsigned int odd : 1;
+        } bits;
+    } reg;
+    reg.value = 0;
+    reg.bits.odd = odd;
+    reg.bits.even = even;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    value = __rlwimi(value, odd, 0, 31, 31);
-    value = __rlwimi(value, even, 1, 30, 30);
-    value = __rlwimi(value, 0x44, 24, 0, 7);
-    *(volatile unsigned int *)0xCC008000 = value;
-    *(volatile unsigned short *)((char *)data + 2) = 0;
+    reg.bits.type = 0x44;
+    *(volatile unsigned int *)0xCC008000 = reg.value;
+    ((GXDrawData *)__GXData)->lastWriteWasXF = FALSE;
 }
 
 void GXSetFieldMode(s32 mode, s32 field) {
