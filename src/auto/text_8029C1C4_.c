@@ -85,15 +85,16 @@ void fn_8029C22C(void) {
     fn_8029C3EC();
 }
 
+#pragma scheduling on
 void fn_8029C25C(void) {
-    int *p;
-    int i;
     float v = fn_801E7E24();
     if (!((float)__fabs((double)v) <= lbl_80558DC4)) {
-        p = (int *)&lbl_804B5010;
-        for (i = 0; i < lbl_8055F7F0; i++) {
+        int *p = &lbl_804B5010[0];
+        int i = (int)(p - p);
+        while (i < lbl_8055F7F0) {
             fn_8029D574(*p);
             p++;
+            i++;
         }
     }
 }
@@ -516,18 +517,14 @@ extern "C" void fn_8029CBA0(void) {
     }
     if (fn_802BF4F0() != 0 || lbl_8055F7F0 > 0 || lbl_8055F7F4 > 0) {
         register float zero, high, scale, low, far;
-        register int two;
-        int size;
         fn_8028E61C((int *)&scratch[6]);
         zero = 1.0f;
-        two = 2;
         high = 0.75f;
-        size = 0x200;
         scale = 0.5f;
         low = 0.25f;
         far = -1.0f;
-        scratch[6].i = two;
-        scratch[7].i = size;
+        scratch[6].i = 2;
+        scratch[7].i = 0x200;
         scratch[8].f = high;
         scratch[9].f = high;
         scratch[3].f = zero;
@@ -555,7 +552,8 @@ extern "C" void fn_8029CBA0(void) {
         scratch[33].f = zero;
         scratch[31].f = zero;
         scratch[37].f = zero;
-        lbl_8055F7F8 = fn_8028E2F8((void *)&scratch[6], &lbl_8055CAD8, var_r31,
+        void *label = &lbl_8055CAD8;
+        lbl_8055F7F8 = fn_8028E2F8((void *)&scratch[6], label, var_r31,
             low, scale, zero, high);
         return;
     }
@@ -860,7 +858,7 @@ int fn_8029D4CC(void *arg0) {
     temp_f31 = temp_f31 * temp_f31;
     temp_f2 = fn_802C88E8((char *)object + 0x54);
     temp_f2 = temp_f2 * temp_f31;
-    temp_f0 = lbl_80564648;
+    temp_f0 = 250.0f;
     temp_f1 = *(float *)((char *)object + 0x60);
     result = 0;
     temp_f0 = temp_f0 + temp_f1;
@@ -911,11 +909,12 @@ void fn_8029D644(void *arg0) {
     char *source;
     char *other;
     int offset;
-    int i;
     int count;
     char *buffers[2];
     char **bufferTable;
     int mode;
+    GridRecord_8029D644 *row;
+    int i;
 
     count = (*(int *)((char *)arg0 + 0x10) - 1) * (*(int *)((char *)arg0 + 0xC) * 2);
     {
@@ -939,8 +938,8 @@ void fn_8029D644(void *arg0) {
             other = bufferTable[1 - (mode & 1)];
             for (i = 0, offset = 0; i < *(int *)((char *)arg0 + 0xC); offset += 0x18, i++) {
                 fn_8029DB78(arg0, (void *)((unsigned long)source + offset), i, mode);
+                row = (GridRecord_8029D644 *)(other + offset);
                 {
-                    GridRecord_8029D644 *row = (GridRecord_8029D644 *)(other + offset);
                     float f1 = *(float *)(other + offset);
                     unsigned int flag = (unsigned int)(i > 0);
                     float f5 = row->f14;
@@ -950,8 +949,8 @@ void fn_8029D644(void *arg0) {
                     int field = row->fieldC;
                     fn_802C8E00(field, flag, f1, f2, f3, f4, f5);
                 }
+                row = (GridRecord_8029D644 *)(source + offset);
                 {
-                    GridRecord_8029D644 *row = (GridRecord_8029D644 *)(source + offset);
                     float f1 = row->f0;
                     unsigned int flag = (unsigned int)(i > 0);
                     float f5 = row->f14;
@@ -1133,8 +1132,8 @@ void fn_8029DDB8(void *arg0)
 {
   short *new_var2;
   unsigned char *base = (unsigned char *) arg0;
-  register int rowPlus;
-  register int rowMinus;
+  int rowPlus;
+  int rowMinus;
   short *cell;
   short *src;
   short *dst;
