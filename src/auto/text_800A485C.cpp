@@ -1003,9 +1003,9 @@ extern "C" s32 fn_800A59FC(void *arg0) {
         state->shift1++;
     }
     s32 x = ((state->value0 + (state->value4 << 5)) - 1) >> state->shift0;
+    s32 base = (u16)x + state->value2;
     state->result24 = (s16)x;
     s32 scaled = state->value7 * state->valueC;
-    s32 base = (u16)x + state->value2;
     s32 total = scaled + base;
     state->result30 = total;
     u32 quotient = ((u32)state->value8 - total) >> state->shift1;
@@ -14899,11 +14899,9 @@ extern "C" void fn_800BD710(void *arg0, s16 arg1, s16 arg2, void *arg3, void *ar
     s32 *out0 = (s32 *)arg3;
     s32 *out1 = (s32 *)arg4;
     if (obj->mode == 0) {
-        register s32 *tbl1 = (s32 *)(t + 0x20);
-        register s32 *tbl0 = (s32 *)t;
         s32 v = *out0;
-        *out1 = (s32)(((s64)v * tbl1[arg2]) >> 20);
-        *out0 = (s32)(((s64)*out0 * tbl0[arg2]) >> 20);
+        *out1 = fn_800BD710_scale(v, (s32 *)(t + 0x20), arg2);
+        *out0 = fn_800BD710_scale(*out0, (s32 *)t, arg2);
         return;
     }
     if (obj->inited == 0) {
@@ -16909,16 +16907,17 @@ u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
     u32 bits = *arg2;
     u32 index = (bits >> 3) & 0x1FFF;
     s32 shift = 0x18 - (bits & 7);
-    volatile u8 *bytes = (volatile u8 *)arg0;
-    u8 a, b, c;
     *arg2 = bits + arg1;
-#pragma opt_propagation off
+    register volatile u8 *bytes = (volatile u8 *)arg0;
+    u8 a;
+    u8 b;
+    u8 c;
     if (index < 0x1FFE) {
         u32 next = index + 1;
         a = bytes[index];
         b = bytes[next];
         next++;
-        c = bytes[next + 0];
+        c = bytes[next];
     } else {
         u32 next = index + 1;
         a = bytes[index];
@@ -16928,7 +16927,6 @@ u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
         next &= 0x1FFF;
         c = bytes[next];
     }
-#pragma opt_propagation reset
     u32 value = ((u32)a << 16) | ((u32)b << 8) | c;
     return (value & lbl_802F3F54[shift]) >> (shift - arg1);
 }
@@ -17225,6 +17223,7 @@ extern "C" void fn_800C1C1C(void *arg0, s32 *out) {
 
 #pragma push
 #pragma use_lmw_stmw on
+#pragma scheduling 750
 extern "C" void fn_800C1E88(const s32 *a, const s32 *b, s32 *out) {
     s32 a0 = a[0];
     s32 a1 = a[1];
@@ -17494,24 +17493,46 @@ extern "C" void fn_800C280C(s32 *a0, s32 *a1, s32 *o2, s32 *o3) {
 }
 
 extern "C" void fn_800C2A88(volatile s32 *a, volatile s32 *b, volatile s32 *c, volatile s32 *d) {
-    s32 n0 = -a[0]; c[0] = b[0]; d[0] = n0 + b[17];
-    s32 n1 = -a[1]; c[64] = b[1]; d[-64] = n1 + b[16];
-    s32 n2 = -a[2]; c[128] = b[2]; d[-128] = n2 + b[15];
-    s32 n3 = -a[3]; c[192] = b[3]; d[-192] = n3 + b[14];
-    s32 n4 = -a[4]; c[256] = b[4]; d[-256] = n4 + b[13];
-    s32 n5 = -a[5]; c[320] = b[5]; d[-320] = n5 + b[12];
+    register s32 n0 = -a[0]; c[0] = b[0]; d[0] = n0 + b[17];
+    register s32 n1 = -a[1]; c[64] = b[1]; d[-64] = n1 + b[16];
+    register s32 n2 = -a[2]; c[128] = b[2]; d[-128] = n2 + b[15];
+    register s32 n3 = -a[3]; c[192] = b[3]; d[-192] = n3 + b[14];
+    register s32 n4 = -a[4]; c[256] = b[4]; d[-256] = n4 + b[13];
+    register s32 n5 = -a[5]; c[320] = b[5]; d[-320] = n5 + b[12];
     volatile const s32 *k = lbl_8031D700;
-    s32 value, c0, c1, result, rev;
-    s64 p;
-    c0 = *k++; value = a[6]; c1 = *k++;
-    p = (s64)value * c0; result = (s32)(p >> 20); c[384] = b[6] + result;
-    p = (s64)value * c1; rev = (s32)(p >> 20); d[-384] = b[11] + rev;
-    value = a[7]; c0 = *k++; c1 = *k++;
-    p = (s64)value * c0; result = (s32)(p >> 20); c[448] = b[7] + result;
-    p = (s64)value * c1; rev = (s32)(p >> 20); d[-448] = b[10] + rev;
-    value = a[8]; c0 = *k++; c1 = *k++;
-    p = (s64)value * c0; result = (s32)(p >> 20); c[512] = b[8] + result;
-    p = (s64)value * c1; rev = (s32)(p >> 20); d[-512] = b[9] + rev;
+    s32 value, coefficient0, coefficient1;
+    s32 result, reverse;
+    s64 product;
+
+    coefficient0 = *k++;
+    value = a[6];
+    coefficient1 = *k++;
+    product = (s64)value * coefficient0;
+    result = (s32)(product >> 20);
+    c[384] = b[6] + result;
+    product = (s64)value * coefficient1;
+    reverse = (s32)(product >> 20);
+    d[-384] = b[11] + reverse;
+
+    value = a[7];
+    coefficient0 = *k++;
+    coefficient1 = *k++;
+    product = (s64)value * coefficient0;
+    result = (s32)(product >> 20);
+    c[448] = b[7] + result;
+    product = (s64)value * coefficient1;
+    reverse = (s32)(product >> 20);
+    d[-448] = b[10] + reverse;
+
+    value = a[8];
+    coefficient0 = *k++;
+    coefficient1 = *k++;
+    product = (s64)value * coefficient0;
+    result = (s32)(product >> 20);
+    c[512] = b[8] + result;
+    product = (s64)value * coefficient1;
+    reverse = (s32)(product >> 20);
+    d[-512] = b[9] + reverse;
 }
 
 extern "C" s32 lbl_8031D718[];
@@ -18691,206 +18712,215 @@ extern "C" void fn_800C56A4(void *arg0, void *arg1, s32 arg2) {
 
 #pragma optimize_for_size on
 void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
-    s32 *p5; s32 *p7; s32 a; s32 b; s32 tmp; s32 flag; s32 done; u32 k; u32 r;
+    register s32 *p7, *p5;
+    register s32 a, b, done, flag, tmp;
+    u32 k;
+
     if ((arg2 & 7) != 0) {
-        p7 = (s32 *)((u8 *)arg3 + 0x3F00); p5 = (s32 *)((u8 *)arg3 + 0x1B00); done = 0;
+        p7 = (s32 *)((u8 *)arg3 + 0x3F00);
+        p5 = (s32 *)((u8 *)arg3 + 0x1B00);
+        done = 0;
         if (arg0 <= 0) return;
         tmp = arg0 - 8;
         if (arg0 > 8) {
-            flag = 0; if (arg0 >= 8 && arg0 <= 0x7FFFFFFE) flag = 1;
+            flag = 0;
+            if (arg0 >= 0 && arg0 <= 0x7FFFFFFE) flag = 1;
             if (flag != 0) {
-                k = (u32)(tmp + 7) >> 3;
-                if (tmp > 0) {
-                    do {
-                        a = p5[0]; done += 8; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
-                        a = p5[1]; b = p7[1]; p5[1] = a + b; p7[1] = a - b;
-                        a = p5[2]; b = p7[2]; p5[2] = a + b; p7[2] = a - b;
-                        a = p5[3]; b = p7[3]; p5[3] = a + b; p7[3] = a - b;
-                        a = p5[4]; b = p7[4]; p5[4] = a + b; p7[4] = a - b;
-                        a = p5[5]; b = p7[5]; p5[5] = a + b; p7[5] = a - b;
-                        a = p5[6]; b = p7[6]; p5[6] = a + b; p7[6] = a - b;
-                        a = p5[7]; b = p7[7]; p5[7] = a + b; p5 += 8; p7[7] = a - b; p7 += 8;
-                    } while (--k != 0);
+                for (; done < tmp; done += 8) {
+                    a = p5[0]; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
+                    a = p5[1]; b = p7[1]; p5[1] = a + b; p7[1] = a - b;
+                    a = p5[2]; b = p7[2]; p5[2] = a + b; p7[2] = a - b;
+                    a = p5[3]; b = p7[3]; p5[3] = a + b; p7[3] = a - b;
+                    a = p5[4]; b = p7[4]; p5[4] = a + b; p7[4] = a - b;
+                    a = p5[5]; b = p7[5]; p5[5] = a + b; p7[5] = a - b;
+                    a = p5[6]; b = p7[6]; p5[6] = a + b; p7[6] = a - b;
+                    a = p5[7]; b = p7[7]; p5[7] = a + b; p7[7] = a - b;
+                    p5 += 8; p7 += 8;
                 }
             }
         }
-        r = (u32)(arg0 - done);
-        if (done < arg0) {
-            do { a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1; } while (--r != 0);
+        for (; done < arg0; done += 1) {
+            a = *p5; b = *p7; *p5 = a + b; *p7 = a - b;
+            p5 += 1; p7 += 1;
         }
         return;
     }
+
     if ((arg2 & 8) != 0) {
-        p7 = (s32 *)((u8 *)arg3 + 0x3F00); p5 = (s32 *)((u8 *)arg3 + 0x1B00); k = 6;
-        do {
-            a = p5[0]; done = 0; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
+        p7 = (s32 *)((u8 *)arg3 + 0x3F00);
+        p5 = (s32 *)((u8 *)arg3 + 0x1B00);
+        for (k = 0; k < 6; k++) {
+            a = p5[0]; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
             a = p5[1]; b = p7[1]; p5[1] = a + b; p7[1] = a - b;
             a = p5[2]; b = p7[2]; p5[2] = a + b; p7[2] = a - b;
             a = p5[3]; b = p7[3]; p5[3] = a + b; p7[3] = a - b;
             a = p5[4]; b = p7[4]; p5[4] = a + b; p7[4] = a - b;
-            a = p5[5]; b = p7[5]; p5[5] = a + b; p5 += 6; p7[5] = a - b; p7 += 6;
-        } while (--k != 0);
-        r = (u32)(arg1 - done);
-        if (done < arg1) {
-            do { a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1; } while (--r != 0);
+            a = p5[5]; b = p7[5]; p5[5] = a + b; p7[5] = a - b;
+            p5 += 6; p7 += 6;
         }
-        p7 = (s32 *)((u8 *)arg3 + 0x2430); p5 = (s32 *)((u8 *)arg3 + 0x30); done = 0;
+        p7 = (s32 *)((u8 *)arg3 + 0x2430);
+        p5 = (s32 *)((u8 *)arg3 + 0x30);
+        done = 0;
         if (arg1 > 0) {
             tmp = arg1 - 8;
             if (arg1 > 8) {
-                flag = 0; if (arg1 >= 8 && arg1 <= 0x7FFFFFFE) flag = 1;
+                flag = 0;
+                if (arg1 >= 0 && arg1 <= 0x7FFFFFFE) flag = 1;
                 if (flag != 0) {
-                    k = (u32)(tmp + 7) >> 3;
-                    if (tmp > 0) {
-                        do {
-                            a = p5[0]; done += 8; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
-                            a = p5[1]; b = p7[1]; p5[1] = a + b; p7[1] = a - b;
-                            a = p5[2]; b = p7[2]; p5[2] = a + b; p7[2] = a - b;
-                            a = p5[3]; b = p7[3]; p5[3] = a + b; p7[3] = a - b;
-                            a = p5[4]; b = p7[4]; p5[4] = a + b; p7[4] = a - b;
-                            a = p5[5]; b = p7[5]; p5[5] = a + b; p7[5] = a - b;
-                            a = p5[6]; b = p7[6]; p5[6] = a + b; p7[6] = a - b;
-                            a = p5[7]; b = p7[7]; p5[7] = a + b; p5 += 8; p7[7] = a - b; p7 += 8;
-                        } while (--k != 0);
+                    for (; done < tmp; done += 8) {
+                        a = p5[0]; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
+                        a = p5[1]; b = p7[1]; p5[1] = a + b; p7[1] = a - b;
+                        a = p5[2]; b = p7[2]; p5[2] = a + b; p7[2] = a - b;
+                        a = p5[3]; b = p7[3]; p5[3] = a + b; p7[3] = a - b;
+                        a = p5[4]; b = p7[4]; p5[4] = a + b; p7[4] = a - b;
+                        a = p5[5]; b = p7[5]; p5[5] = a + b; p7[5] = a - b;
+                        a = p5[6]; b = p7[6]; p5[6] = a + b; p7[6] = a - b;
+                        a = p5[7]; b = p7[7]; p5[7] = a + b; p7[7] = a - b;
+                        p5 += 8; p7 += 8;
                     }
                 }
             }
-            r = (u32)(arg1 - done);
-            if (done < arg1) {
-                do { a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1; } while (--r != 0);
-            }
         }
-        p7 = (s32 *)((u8 *)arg3 + 0x2D30); p5 = (s32 *)((u8 *)arg3 + 0x930); done = 0;
+        for (; done < arg1; done += 1) {
+            a = *p5; b = *p7; *p5 = a + b; *p7 = a - b;
+            p5 += 1; p7 += 1;
+        }
+        p7 = (s32 *)((u8 *)arg3 + 0x2D30);
+        p5 = (s32 *)((u8 *)arg3 + 0x930);
+        done = 0;
         if (arg1 > 0) {
             tmp = arg1 - 8;
             if (arg1 > 8) {
-                flag = 0; if (arg1 >= 8 && arg1 <= 0x7FFFFFFE) flag = 1;
+                flag = 0;
+                if (arg1 >= 0 && arg1 <= 0x7FFFFFFE) flag = 1;
                 if (flag != 0) {
-                    k = (u32)(tmp + 7) >> 3;
-                    if (tmp > 0) {
-                        do {
-                            a = p5[0]; done += 8; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
-                            a = p5[1]; b = p7[1]; p5[1] = a + b; p7[1] = a - b;
-                            a = p5[2]; b = p7[2]; p5[2] = a + b; p7[2] = a - b;
-                            a = p5[3]; b = p7[3]; p5[3] = a + b; p7[3] = a - b;
-                            a = p5[4]; b = p7[4]; p5[4] = a + b; p7[4] = a - b;
-                            a = p5[5]; b = p7[5]; p5[5] = a + b; p7[5] = a - b;
-                            a = p5[6]; b = p7[6]; p5[6] = a + b; p7[6] = a - b;
-                            a = p5[7]; b = p7[7]; p5[7] = a + b; p5 += 8; p7[7] = a - b; p7 += 8;
-                        } while (--k != 0);
+                    for (; done < tmp; done += 8) {
+                        a = p5[0]; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
+                        a = p5[1]; b = p7[1]; p5[1] = a + b; p7[1] = a - b;
+                        a = p5[2]; b = p7[2]; p5[2] = a + b; p7[2] = a - b;
+                        a = p5[3]; b = p7[3]; p5[3] = a + b; p7[3] = a - b;
+                        a = p5[4]; b = p7[4]; p5[4] = a + b; p7[4] = a - b;
+                        a = p5[5]; b = p7[5]; p5[5] = a + b; p7[5] = a - b;
+                        a = p5[6]; b = p7[6]; p5[6] = a + b; p7[6] = a - b;
+                        a = p5[7]; b = p7[7]; p5[7] = a + b; p7[7] = a - b;
+                        p5 += 8; p7 += 8;
                     }
                 }
             }
-            r = (u32)(arg1 - done);
-            if (done < arg1) {
-                do { a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1; } while (--r != 0);
-            }
         }
-        p7 = (s32 *)((u8 *)arg3 + 0x3630); p5 = (s32 *)((u8 *)arg3 + 0x1230); done = 0;
-        if (arg1 > 0) {
-            tmp = arg1 - 8;
-            if (arg1 > 8) {
-                flag = 0; if (arg1 >= 8 && arg1 <= 0x7FFFFFFE) flag = 1;
-                if (flag != 0) {
-                    k = (u32)(tmp + 7) >> 3;
-                    if (tmp > 0) {
-                        do {
-                            a = p5[0]; done += 8; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
-                            a = p5[1]; b = p7[1]; p5[1] = a + b; p7[1] = a - b;
-                            a = p5[2]; b = p7[2]; p5[2] = a + b; p7[2] = a - b;
-                            a = p5[3]; b = p7[3]; p5[3] = a + b; p7[3] = a - b;
-                            a = p5[4]; b = p7[4]; p5[4] = a + b; p7[4] = a - b;
-                            a = p5[5]; b = p7[5]; p5[5] = a + b; p7[5] = a - b;
-                            a = p5[6]; b = p7[6]; p5[6] = a + b; p7[6] = a - b;
-                            a = p5[7]; b = p7[7]; p5[7] = a + b; p5 += 8; p7[7] = a - b; p7 += 8;
-                        } while (--k != 0);
-                    }
+        for (; done < arg1; done += 1) {
+            a = *p5; b = *p7; *p5 = a + b; *p7 = a - b;
+            p5 += 1; p7 += 1;
+        }
+        p7 = (s32 *)((u8 *)arg3 + 0x3630);
+        p5 = (s32 *)((u8 *)arg3 + 0x1230);
+        done = 0;
+        if (arg1 <= 0) return;
+        tmp = arg1 - 8;
+        if (arg1 > 8) {
+            flag = 0;
+            if (arg1 >= 0 && arg1 <= 0x7FFFFFFE) flag = 1;
+            if (flag != 0) {
+                for (; done < tmp; done += 8) {
+                    a = p5[0]; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
+                    a = p5[1]; b = p7[1]; p5[1] = a + b; p7[1] = a - b;
+                    a = p5[2]; b = p7[2]; p5[2] = a + b; p7[2] = a - b;
+                    a = p5[3]; b = p7[3]; p5[3] = a + b; p7[3] = a - b;
+                    a = p5[4]; b = p7[4]; p5[4] = a + b; p7[4] = a - b;
+                    a = p5[5]; b = p7[5]; p5[5] = a + b; p7[5] = a - b;
+                    a = p5[6]; b = p7[6]; p5[6] = a + b; p7[6] = a - b;
+                    a = p5[7]; b = p7[7]; p5[7] = a + b; p7[7] = a - b;
+                    p5 += 8; p7 += 8;
                 }
             }
-            r = (u32)(arg1 - done);
-            if (done < arg1) {
-                do { a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1; } while (--r != 0);
-            }
         }
+        for (; done < arg1; done += 1) {
+            a = *p5; b = *p7; *p5 = a + b; *p7 = a - b;
+            p5 += 1; p7 += 1;
+        }
+        return;
     }
+
     if ((arg2 & 0x10) == 0) return;
-    p7 = (s32 *)((u8 *)arg3 + 0x2400); p5 = (s32 *)arg3; done = 0;
+    p7 = (s32 *)((u8 *)arg3 + 0x2400);
+    p5 = (s32 *)arg3;
+    done = 0;
     if (arg1 > 0) {
         tmp = arg1 - 8;
         if (arg1 > 8) {
-            flag = 0; if (arg1 >= 8 && arg1 <= 0x7FFFFFFE) flag = 1;
+            flag = 0;
+            if (arg1 >= 0 && arg1 <= 0x7FFFFFFE) flag = 1;
             if (flag != 0) {
-                k = (u32)(tmp + 7) >> 3;
-                if (tmp > 0) {
-                    do {
-                        a = p5[0]; done += 8; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
-                        a = p5[1]; b = p7[1]; p5[1] = a + b; p7[1] = a - b;
-                        a = p5[2]; b = p7[2]; p5[2] = a + b; p7[2] = a - b;
-                        a = p5[3]; b = p7[3]; p5[3] = a + b; p7[3] = a - b;
-                        a = p5[4]; b = p7[4]; p5[4] = a + b; p7[4] = a - b;
-                        a = p5[5]; b = p7[5]; p5[5] = a + b; p7[5] = a - b;
-                        a = p5[6]; b = p7[6]; p5[6] = a + b; p7[6] = a - b;
-                        a = p5[7]; b = p7[7]; p5[7] = a + b; p5 += 8; p7[7] = a - b; p7 += 8;
-                    } while (--k != 0);
+                for (; done < tmp; done += 8) {
+                    a = p5[0]; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
+                    a = p5[1]; b = p7[1]; p5[1] = a + b; p7[1] = a - b;
+                    a = p5[2]; b = p7[2]; p5[2] = a + b; p7[2] = a - b;
+                    a = p5[3]; b = p7[3]; p5[3] = a + b; p7[3] = a - b;
+                    a = p5[4]; b = p7[4]; p5[4] = a + b; p7[4] = a - b;
+                    a = p5[5]; b = p7[5]; p5[5] = a + b; p7[5] = a - b;
+                    a = p5[6]; b = p7[6]; p5[6] = a + b; p7[6] = a - b;
+                    a = p5[7]; b = p7[7]; p5[7] = a + b; p7[7] = a - b;
+                    p5 += 8; p7 += 8;
                 }
             }
-        }
-        r = (u32)(arg1 - done);
-        if (done < arg1) {
-            do { a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1; } while (--r != 0);
         }
     }
-    p7 = (s32 *)((u8 *)arg3 + 0x2D00); p5 = (s32 *)((u8 *)arg3 + 0x900); done = 0;
+    for (; done < arg1; done += 1) {
+        a = *p5; b = *p7; *p5 = a + b; *p7 = a - b;
+        p5 += 1; p7 += 1;
+    }
+    p7 = (s32 *)((u8 *)arg3 + 0x2D00);
+    p5 = (s32 *)((u8 *)arg3 + 0x900);
+    done = 0;
     if (arg1 > 0) {
         tmp = arg1 - 8;
         if (arg1 > 8) {
-            flag = 0; if (arg1 >= 8 && arg1 <= 0x7FFFFFFE) flag = 1;
+            flag = 0;
+            if (arg1 >= 0 && arg1 <= 0x7FFFFFFE) flag = 1;
             if (flag != 0) {
-                k = (u32)(tmp + 7) >> 3;
-                if (tmp > 0) {
-                    do {
-                        a = p5[0]; done += 8; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
-                        a = p5[1]; b = p7[1]; p5[1] = a + b; p7[1] = a - b;
-                        a = p5[2]; b = p7[2]; p5[2] = a + b; p7[2] = a - b;
-                        a = p5[3]; b = p7[3]; p5[3] = a + b; p7[3] = a - b;
-                        a = p5[4]; b = p7[4]; p5[4] = a + b; p7[4] = a - b;
-                        a = p5[5]; b = p7[5]; p5[5] = a + b; p7[5] = a - b;
-                        a = p5[6]; b = p7[6]; p5[6] = a + b; p7[6] = a - b;
-                        a = p5[7]; b = p7[7]; p5[7] = a + b; p5 += 8; p7[7] = a - b; p7 += 8;
-                    } while (--k != 0);
+                for (; done < tmp; done += 8) {
+                    a = p5[0]; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
+                    a = p5[1]; b = p7[1]; p5[1] = a + b; p7[1] = a - b;
+                    a = p5[2]; b = p7[2]; p5[2] = a + b; p7[2] = a - b;
+                    a = p5[3]; b = p7[3]; p5[3] = a + b; p7[3] = a - b;
+                    a = p5[4]; b = p7[4]; p5[4] = a + b; p7[4] = a - b;
+                    a = p5[5]; b = p7[5]; p5[5] = a + b; p7[5] = a - b;
+                    a = p5[6]; b = p7[6]; p5[6] = a + b; p7[6] = a - b;
+                    a = p5[7]; b = p7[7]; p5[7] = a + b; p7[7] = a - b;
+                    p5 += 8; p7 += 8;
                 }
             }
-        }
-        r = (u32)(arg1 - done);
-        if (done < arg1) {
-            do { a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1; } while (--r != 0);
         }
     }
-    p7 = (s32 *)((u8 *)arg3 + 0x3600); p5 = (s32 *)((u8 *)arg3 + 0x1200); done = 0;
-    if (arg1 > 0) {
-        tmp = arg1 - 8;
-        if (arg1 > 8) {
-            flag = 0; if (arg1 >= 8 && arg1 <= 0x7FFFFFFE) flag = 1;
-            if (flag != 0) {
-                k = (u32)(tmp + 7) >> 3;
-                if (tmp > 0) {
-                    do {
-                        a = p5[0]; done += 8; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
-                        a = p5[1]; b = p7[1]; p5[1] = a + b; p7[1] = a - b;
-                        a = p5[2]; b = p7[2]; p5[2] = a + b; p7[2] = a - b;
-                        a = p5[3]; b = p7[3]; p5[3] = a + b; p7[3] = a - b;
-                        a = p5[4]; b = p7[4]; p5[4] = a + b; p7[4] = a - b;
-                        a = p5[5]; b = p7[5]; p5[5] = a + b; p7[5] = a - b;
-                        a = p5[6]; b = p7[6]; p5[6] = a + b; p7[6] = a - b;
-                        a = p5[7]; b = p7[7]; p5[7] = a + b; p5 += 8; p7[7] = a - b; p7 += 8;
-                    } while (--k != 0);
-                }
+    for (; done < arg1; done += 1) {
+        a = *p5; b = *p7; *p5 = a + b; *p7 = a - b;
+        p5 += 1; p7 += 1;
+    }
+    p7 = (s32 *)((u8 *)arg3 + 0x3600);
+    p5 = (s32 *)((u8 *)arg3 + 0x1200);
+    done = 0;
+    if (arg1 <= 0) return;
+    tmp = arg1 - 8;
+    if (arg1 > 8) {
+        flag = 0;
+        if (arg1 >= 0 && arg1 <= 0x7FFFFFFE) flag = 1;
+        if (flag != 0) {
+            for (; done < tmp; done += 8) {
+                a = p5[0]; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
+                a = p5[1]; b = p7[1]; p5[1] = a + b; p7[1] = a - b;
+                a = p5[2]; b = p7[2]; p5[2] = a + b; p7[2] = a - b;
+                a = p5[3]; b = p7[3]; p5[3] = a + b; p7[3] = a - b;
+                a = p5[4]; b = p7[4]; p5[4] = a + b; p7[4] = a - b;
+                a = p5[5]; b = p7[5]; p5[5] = a + b; p7[5] = a - b;
+                a = p5[6]; b = p7[6]; p5[6] = a + b; p7[6] = a - b;
+                a = p5[7]; b = p7[7]; p5[7] = a + b; p7[7] = a - b;
+                p5 += 8; p7 += 8;
             }
         }
-        r = (u32)(arg1 - done);
-        if (done < arg1) {
-            do { a = *p5; b = *p7; *p5 = a + b; p5 += 1; *p7 = a - b; p7 += 1; } while (--r != 0);
-        }
+    }
+    for (; done < arg1; done += 1) {
+        a = *p5; b = *p7; *p5 = a + b; *p7 = a - b;
+        p5 += 1; p7 += 1;
     }
 }
 #pragma optimize_for_size reset
@@ -20082,20 +20112,20 @@ extern "C" void fn_800D01AC(void *arg0, void *arg1) {
         virtual void d23();
         virtual void d24();
     };
-    typedef void (*Method0)(void *);
-    typedef void (*Method1)(void *, s32);
+    struct LNode { LNode *next; LNode *prev; };
+    struct LList { s32 count; LNode node; };
     void *sent1 = (void *)&lbl_8055DE00;
     void *sent2 = (void *)&lbl_8055DE10;
-    u8 *node = *(u8 **)((u8 *)arg1 + 4);
-    u8 *end = (u8 *)arg1 + 4;
-    u8 *self = (u8 *)arg0;
+    LList *list = (LList *)arg1;
     void *object;
+    u8 *self = (u8 *)arg0;
+    u8 *node = (u8 *)list->node.next;
     void *entry;
     u8 *member;
     void *child;
     s32 found;
     void *p;
-    while (node != end) {
+    while (node != (u8 *)&list->node) {
         if (*(void **)(self + 0x14) != 0) {
             object = MEMAllocFromAllocator((MEMAllocator *)*(void **)(self + 0x14), (u32)0x30);
             entry = MEMAllocFromAllocator((MEMAllocator *)*(void **)(self + 0x14), (u32)0x10);
@@ -20132,7 +20162,7 @@ extern "C" void fn_800D01AC(void *arg0, void *arg1) {
                 *(u32 *)((u8 *)object + 0x20) = objectIndex;
                 *((u8 *)object + 0x24) = 0;
                 *(u32 *)((u8 *)object + 0x28) = 0;
-                ((Method0)((void **)lbl_8031E878)[3])(object);
+                ((Dispatch *)object)->d1();
                 *(void **)object = (void *)lbl_8031E780;
                 *(u32 *)((u8 *)object + 0x2C) = 0;
             }
@@ -20187,7 +20217,7 @@ extern "C" void fn_800D01AC(void *arg0, void *arg1) {
         if (member == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
         }
-        child = ((void *(*)(void *))(*(void ***)member)[3])(member);
+        child = ((Dispatch *)member)->d1();
         while (child != 0) {
             if (child == sent2) {
                 found = 1;
@@ -20199,13 +20229,13 @@ extern "C" void fn_800D01AC(void *arg0, void *arg1) {
     check2:
         p = found ? member : 0;
         if (p != 0) {
-            ((Method1)(*(void ***)object)[20])(object, 1);
+            ((Dispatch *)object)->d18(1);
         }
-        ((Dispatch *)arg0)->d6(object);
+        ((Dispatch *)self)->d6(object);
         if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
         }
-        ((Dispatch *)arg0)->d18((s32)(node + 0xC));
+        ((Dispatch *)self)->d18((s32)(node + 0xC));
         node = *(u8 **)node;
     }
 }
@@ -20536,9 +20566,9 @@ extern "C" void soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext
 }
 
 extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
-    s32 zero = 0;
     u8 *base = lbl_80407600;
     s32 temp_r30;
+    s32 zero = 0;
 
     *(s32 *)((u8 *)arg0 + 0x20) = zero;
     *(s32 *)arg0 = arg1;
@@ -20550,11 +20580,12 @@ extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
     *((u8 *)arg0 + 0x40) = zero;
     *((u8 *)arg0 + 0x41) = zero;
     if (arg1 < 4) {
+        void **slots = (void **)(base + 0x180);
         temp_r30 = arg1 * 0x30;
         lbl_8055DDA8[arg1] = zero;
         OSCreateAlarm((OSAlarm *)(base + temp_r30));
         OSCreateAlarm((OSAlarm *)(base + 0xC0 + temp_r30));
-        *(void **)(base + 0x180 + arg1 * 4) = arg0;
+        slots[arg1] = arg0;
     }
     return arg0;
 }
@@ -21539,13 +21570,12 @@ extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
 
     dest = (u16 *)(lbl_80407BD8[0] + scaleY * arg1 * (u16)*(u16 *)((u8 *)lbl_80407BD8 + 0xC) * 2 + arg0 * scaleX * 2);
 
-    if (arg1 >= 0) {
-        if (arg0 < 0)
+    if (arg1 < 0)
+        return;
+    if (arg0 >= 0) {
+        if ((s32)width <= scaleX * (arg0 + 6))
             return;
-        if ((s32)width > scaleX * (arg0 + 6)) {
-            if ((s32)height <= scaleY * (arg1 + 7))
-                return;
-
+        if ((s32)height > scaleY * (arg1 + 7)) {
             n = scaleX * 6;
             for (i = 0; i < 7; i++) {
                 u32 pat = *pal++ << off;
@@ -21588,7 +21618,11 @@ extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
                 }
                 dest += *(u16 *)((u8 *)lbl_80407BD8 + 0xC) * scaleY - n;
             }
+        } else {
+            return;
         }
+    } else {
+        return;
     }
 }
 #pragma pop
@@ -24019,6 +24053,7 @@ extern "C" void fn_800D1204(void *, f32);
 extern "C" void fn_800D120C(void *, void *, s32);
 #pragma push
 #pragma dont_inline on
+#pragma inline_level 0
 extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
     class VirtualHandler {
     public:
@@ -26024,25 +26059,30 @@ copy_bytes:
 }
 #pragma optimize_for_size reset
 
+#pragma optimize_for_size on
 extern "C" int fn_800A499C(const char *dstArg, int fill, int count) {
-    u8 *dst = (u8 *)dstArg;
-    u32 size = (u32)count;
-    int words;
-    int blocks;
+    s32 words;
     u32 pattern;
-    int adjust;
+    u8 *dst;
+    u32 size;
+    s32 blocks;
+    s32 adjust;
+    int i;
+
+    dst = (u8 *)dstArg;
+    size = (u32)count;
     while (((u32)dst & 3) != 0) {
         *dst++ = (u8)fill;
         size--;
     }
-    pattern = (u32)fill | ((u32)fill << 8) | ((u32)fill << 16) | ((u32)fill << 24);
-    words = (int)(size >> 2);
+    pattern = ((u32)fill | ((u32)fill << 8)) | (((u32)fill << 24) | ((u32)fill << 16));
+    words = size >> 2;
     if (size <= 3)
         goto tail;
-    blocks = (int)(words >> 3);
-    adjust = -((words << 2));
+    blocks = ((u32)words) >> 3;
+    adjust = -(((u32)words) << 2);
     if (blocks != 0) {
-        do {
+        for (i = blocks; i != 0; i--) {
             ((u32 *)dst)[0] = pattern;
             ((u32 *)dst)[1] = pattern;
             ((u32 *)dst)[2] = pattern;
@@ -26052,22 +26092,22 @@ extern "C" int fn_800A499C(const char *dstArg, int fill, int count) {
             ((u32 *)dst)[6] = pattern;
             ((u32 *)dst)[7] = pattern;
             dst += 32;
-        } while (--blocks);
+        }
     }
     words &= 7;
     if (words != 0) {
-        do {
+        for (i = words; i != 0; i--) {
             *(u32 *)dst = pattern;
             dst += 4;
-        } while (--words);
+        }
     }
     size += (u32)adjust;
     if (size == 0)
         return (int)dstArg;
 tail:
-    blocks = (int)(size >> 3);
+    blocks = size >> 3;
     if (blocks != 0) {
-        do {
+        for (i = blocks; i != 0; i--) {
             dst[0] = (u8)fill;
             dst[1] = (u8)fill;
             dst[2] = (u8)fill;
@@ -26077,19 +26117,17 @@ tail:
             dst[6] = (u8)fill;
             dst[7] = (u8)fill;
             dst += 8;
-        } while (--blocks);
+        }
     }
-    blocks = (int)(size & 7);
-    if (blocks == 0)
+    size &= 7;
+    if (size == 0)
         return (int)dstArg;
-    do {
+    for (i = size; i != 0; i--) {
         *dst++ = (u8)fill;
-    } while (--blocks);
+    }
     return (int)dstArg;
 }
-
-#pragma push
-#pragma dont_inline on
+#pragma optimize_for_size reset
 extern "C" s32 fn_800A4A8C(s32 str) {
     /* strlen: return the number of bytes before the NUL terminator of str. */
     s8 *start = (s8 *)str;
@@ -26727,15 +26765,17 @@ extern "C" void fn_800D272C(void *arg0, void *arg1) {
     u16 temp_r10, temp_r10_2, temp_r11_2, temp_r7, temp_r7_5, temp_r7_6, temp_r9, temp_r9_2, temp_r9_4, temp_r9_5;
     u32 temp_r7_2, var_ctr;
     u8 *var_r12, *var_r29, *var_r31, *var_r8;
+    const char *panicFile;
     u8 temp_r11, temp_r7_3, temp_r7_4, temp_r9_3;
 
     var_r31 = (u8 *)arg1;
     var_r29 = (u8 *)lbl_8031EA80;
+    panicFile = lbl_8031EA80;
     if (arg0 == NULL) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)var_r29, 0x2EB, (const char *)(var_r29 + 0x10));
+        Panic__Q26nw4hbm2dbFPCciPCce(panicFile, 0x2EB, panicFile + 0x10);
     }
     if (var_r31 == NULL) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)var_r29, 0x2EC, (const char *)(var_r29 + 0xF8));
+        Panic__Q26nw4hbm2dbFPCciPCce(panicFile, 0x2EC, panicFile + 0xF8);
     }
     var_r4 = 2;
     var_r5 = 0x20;
