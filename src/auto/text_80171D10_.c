@@ -119,7 +119,7 @@ typedef struct CrushMaster {
 extern double fn_8002F234(float), cos(double), sin(double);
 extern float fn_80129DC4(int,float,float);
 extern unsigned long long fn_80171FF0(void *,int,float,float);
-extern int fn_80171EF8(void *,void *);
+extern int fn_80171EF8();
 extern float lbl_80558DC4[];
 #pragma push
 #pragma small_data off
@@ -230,6 +230,7 @@ extern float lbl_80561A3C, lbl_80561A40;
 #pragma processor 750
 #pragma use_lmw_stmw off
 int fn_80171EF8(void *arg0, void *arg1) {
+#pragma scheduling invalid_target
     struct Frame {
         float coords[2];
         volatile float savedY;
@@ -243,8 +244,8 @@ int fn_80171EF8(void *arg0, void *arg1) {
     float limit;
     float step;
     float t;
-    dy = ((float *)arg0)[1] - ((float *)arg1)[1];
-    dx = ((float *)arg0)[0] - ((float *)arg1)[0];
+    dy = ((const float *)arg0)[1] - ((const float *)arg1)[1];
+    dx = ((const float *)arg0)[0] - ((const float *)arg1)[0];
     sum = dy * dy + dx * dx;
     f.savedX = dx;
     f.savedY = dy;
@@ -253,10 +254,10 @@ int fn_80171EF8(void *arg0, void *arg1) {
     limit = lbl_80561A40 - step;
     t = step;
     while (t < limit) {
-        float y1 = ((float *)arg1)[1];
-        float y0 = ((float *)arg0)[1];
-        float x1 = ((float *)arg1)[0];
-        float x0 = ((float *)arg0)[0];
+        float y1 = ((const float *)arg1)[1];
+        float y0 = ((const float *)arg0)[1];
+        float x1 = ((const float *)arg1)[0];
+        float x0 = ((const float *)arg0)[0];
         f.coords[0] = x0 + (x1 - x0) * t;
         f.coords[1] = y0 + (y1 - y0) * t;
         f.point = *(double *)f.coords;
