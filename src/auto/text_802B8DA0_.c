@@ -1176,11 +1176,7 @@ extern "C" void fn_802BA348(void) {
     }
     entry = fn_801284F8(0x10, lbl_8034A9E4);
     if (entry != 0) {
-#pragma scheduling 750
-        int sz = total * 0x54;
-        void *lb = lbl_8034A9E4;
-        buffer = ((void *(*)(int, void *))fn_8012850C)(sz + 0x10, lb);
-#pragma scheduling invalid_target
+        buffer = ((void *(*)(int, void *))fn_8012850C)(total * 0x54 + 0x10, lbl_8034A9E4);
         items = fn_8002F37C(buffer, (void *)fn_802BA560, 0, 0x54, total);
         *(void **)entry = items;
         *(int *)((char *)entry + 8) = total;
