@@ -280,7 +280,6 @@ extern void fn_802C8638(unsigned int *);
 extern float lbl_80564EF8, lbl_80564F00;
 extern void PSVECNormalize(void *, void *);
 extern void PSVECCrossProduct(void *, void *, void *);
-#pragma scheduling invalid_target
 void fn_802C8588(float *arg0, const float *arg1, const float *arg2) {
     register float dz, dy, dx;
     float z, y, x;
