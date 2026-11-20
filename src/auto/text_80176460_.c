@@ -807,7 +807,7 @@ void fn_80176BAC(void) {
     lbl_8055E3FC = now;
 }
 #pragma pop
-s32 *fn_80176C0C(register s32 *arg0, s32 *arg1) {
+s32 *fn_80176C0C(register s32 *arg0, const s32 *arg1) {
     s32 length = arg1[0];
     arg0[0] = length;
     memcpy(arg0 + 1, arg1 + 1, length);
