@@ -1674,7 +1674,7 @@ void fn_802D0BD8(void) {
 extern void GXSetColorUpdate(unsigned char);
 extern float GXGetYScaleFactor(unsigned short, unsigned short);
 extern unsigned int GXSetDispCopyYScale(float);
-extern void GXSetDispCopySrc(unsigned short, unsigned short, unsigned short, unsigned short);
+extern void GXSetDispCopySrc(int, int, int, int);
 extern void GXSetDispCopyDst(unsigned short, unsigned short);
 extern void GXSetCopyFilter(unsigned char, unsigned char *, unsigned char, unsigned char *);
 extern void GXCopyDisp(void *, int);
@@ -1688,7 +1688,7 @@ void fn_802D0C98(void) {
     extern int lbl_804C9760[];
     unsigned short temp_r31;
     int temp_r30 = 0;
-    float yScale;
+    unsigned char *display;
 
     lbl_8055FD4C = temp_r30;
     GXSetZMode(1, 3, 1);
@@ -1698,11 +1698,11 @@ void fn_802D0C98(void) {
     lbl_8055FD74 |= 1;
     GXSetZMode(1, 7, 1);
     lbl_8055FD74 = (lbl_8055FD74 | 2) & ~4U;
-    yScale = GXGetYScaleFactor(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 6),
-                               *(unsigned short *)((unsigned char *)lbl_8055FD64 + 8));
-    temp_r31 = (unsigned short)GXSetDispCopyYScale(yScale);
-    GXSetDispCopySrc(0, 0, *(unsigned short *)((unsigned char *)lbl_8055FD64 + 4),
-                     *(unsigned short *)((unsigned char *)lbl_8055FD64 + 6));
+    temp_r31 = (unsigned short)GXSetDispCopyYScale(
+        GXGetYScaleFactor(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 6),
+                          *(unsigned short *)((unsigned char *)lbl_8055FD64 + 8)));
+    display = (unsigned char *)lbl_8055FD64;
+    GXSetDispCopySrc(0, 0, *(unsigned short *)(display + 4), *(unsigned short *)(display + 6));
     GXSetDispCopyDst(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 4), temp_r31);
     GXSetCopyFilter(*((unsigned char *)lbl_8055FD64 + 0x19),
                     (unsigned char *)lbl_8055FD64 + 0x1A, 1,
