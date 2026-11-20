@@ -95,7 +95,7 @@ void fn_80273B48(void) {
 void fn_80273B4C(void *arg0) {
     extern void fn_80015A20(void *, float *, float, float);
     extern void fn_80015B20(void *, void *, void *);
-    extern float lbl_80563FA8, lbl_80563FAC, lbl_80563FB0, lbl_80563FB4;
+    extern float lbl_80563FA8, lbl_80563FAC, lbl_80563FB4;
     void *linkedObj = *(void **)((char *)arg0 + 0x140);
     char rotationMatrix[0x24];
     float angles[3];
@@ -285,7 +285,7 @@ void fn_80274268(void *arg0) {
         unsigned char pad2[0x18];
         struct MtxWords srcMtx;
     };
-    float x, y, z;
+    float y, z, x;
     struct { Vec result; Vec offset; } work;
     char *state = *(char **)((char *)arg0 + 0x140);
     if (*(unsigned char *)(state + 0x260C) != 0) {
@@ -293,9 +293,9 @@ void fn_80274268(void *arg0) {
         return;
     }
     ((struct TransformObj *)arg0)->mtx = ((struct TransformObj *)arg0)->srcMtx;
-    x = 0.0f;
     y = 0.8f;
     z = -0.1f + (*(float *)(state + 0x2458) - 1.397f);
+    x = 0.0f;
     work.offset.x = x;
     work.offset.y = y;
     work.offset.z = z;
