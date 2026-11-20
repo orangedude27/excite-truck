@@ -2247,21 +2247,17 @@ s32 fn_8006A460(s32 arg0) {
     register u32 one = 1;
     u64 now;
     u32 scale;
+    WUDInitClearView *clear;
 
     if ((ready = lbl_8055DC30, base = lbl_80392960, setup = base, ready != 0)) {
         return 0;
     }
     old_state = OSDisableInterrupts();
-    words = (u32 *)(base + 0xCC8);
-    shorts1 = (u16 *)(base + 0x1D20);
-    shorts2 = (u16 *)(base + 0x1D40);
+    clear = (WUDInitClearView *)base;
     for (i = 0; i < 16; i++) {
-        *words = init_zero;
-        *shorts1 = init_zero;
-        *shorts2 = init_zero;
-        words++;
-        shorts1++;
-        shorts2++;
+        clear->words[i] = 0;
+        clear->shorts1[i] = 0;
+        clear->shorts2[i] = 0;
     }
 
     *(u8 **)(setup + 0x18) = setup + 0x58;
@@ -9273,7 +9269,6 @@ void btm_reset_complete(void) {
     void (*callback)(void *);
     void *buf;
     u8 *p;
-    u32 two;
 
     if (lbl_803C0F78[0x27C0] >= 4)
         fn_8007093C(0xD0003, lbl_803160F0);
@@ -9294,10 +9289,9 @@ void btm_reset_complete(void) {
     *(u16 *)(lbl_803C0F78 + 0x169C) = 0x12;
     *(u16 *)(lbl_803C0F78 + 0x169E) = 0x800;
     *(u16 *)(lbl_803C0F78 + 0x16A6) = 0;
-    two = 2;
+    lbl_803C0F78[0x64E] = 2;
     lbl_803C0F78[0x64F] = 4;
-    lbl_803C0F78[0x64E] = two;
-    if (lbl_803C0F78[0x64E] == 0) {
+    if (lbl_803C0F78[0x64F] == 0) {
         lbl_803C0F78[0x64E] = 0;
         lbl_803C0F78[0x64F] = 4;
         btu_start_timer(0, 0, 0);
@@ -10021,7 +10015,8 @@ after_scan:
     b0 = *(volatile u8 *)(classInfo + 0);
     modeBit = discoverMode & 1;
     b1 = *(volatile u8 *)(classInfo + 1);
-    cls = (u16)(((b0 << 8) & 0xFF00) + (b1 & 0xE0));
+    cls = (u16)(b0 * 0x100 & 0xFF00);
+    cls = (u16)(cls + (b1 & 0xE0));
     if ((modeBit ^ ((cls >> 5) & 1)) != 0) {
         b2 = *(volatile u8 *)(classInfo + 2);
         newCls = (u16)(cls & ~0x20);
@@ -12281,8 +12276,8 @@ void bta_dm_inq_cmpl(void *p_data) {
 
 void bta_dm_rmt_name(s32 arg0) {
     extern void bta_dm_remname_cback(u8 *);
+    void *scb = bta_dm_search_cb;
     BtaDmSearch info;
-    u8 *scb = bta_dm_search_cb;
     tBTM_INQ_INFO *p_inq_info;
     u8 *peer_addr;
     void *p_msg;
@@ -12298,7 +12293,7 @@ void bta_dm_rmt_name(s32 arg0) {
             DM_SCB_P_SEARCH_CBACK(BTA_DM_DISC_RES_EVT, &info);
         } else {
             if (BTM_CB_PAGE_TIMEOUT < 0x7530)
-                bta_sys_start_timer((s32)(scb + 0x58), BTA_DM_REMT_NAME_TOUT_EVT, BTM_CB_PAGE_TIMEOUT + 0x64);
+                bta_sys_start_timer((s32)((u8 *)scb + 0x58), BTA_DM_REMT_NAME_TOUT_EVT, BTM_CB_PAGE_TIMEOUT + 0x64);
             if (BTM_ReadRemoteDeviceName(INQ_INFO_BD_ADDR(DM_SCB_P_INQ_INFO), (tBTM_CMPL_CB *)bta_dm_remname_cback) != 1) {
                 bta_sys_stop_timer((s32)DM_SCB_SDP_DB_TIMER);
                 peer_addr = INQ_INFO_BD_ADDR(DM_SCB_P_INQ_INFO);
@@ -12313,10 +12308,9 @@ void bta_dm_rmt_name(s32 arg0) {
             search_complete = 0;
             break;
         }
-        DM_SCB_P_INQ_INFO = BTM_InqDbNext(*(tBTM_INQ_INFO **)(bta_dm_search_cb + 4));
     check_entry:
-        p_inq_info = (tBTM_INQ_INFO *)*(u8 **)(bta_dm_search_cb + 4);
-    } while (p_inq_info != 0);
+        p_inq_info = (tBTM_INQ_INFO *)*(u8 **)((u8 *)scb + 4);
+    } while ((DM_SCB_P_INQ_INFO = BTM_InqDbNext(*(tBTM_INQ_INFO **)((u8 *)scb + 4))) != 0);
 
     if (search_complete) {
         p_msg = GKI_getbuf(BTA_DM_MSG_SIZE);
@@ -13249,12 +13243,12 @@ tBTM_STATUS btm_sec_l2cap_access_req(BD_ADDR bd_addr, UINT16 psm, UINT16 handle,
                                        tBTM_SEC_CALLBACK *p_callback,
                                        void *p_ref_data) {
     tBTM_SEC_DEV_REC *p_dev_rec;
+    UINT32 i;
+    UINT32 j;
     u8 *p_serv;
     u8 *p_next;
     u8 *dev;
     u8 *messages = (u8 *)lbl_80316870;
-    UINT32 i;
-    UINT32 j;
     UINT8 sec_flags;
     UINT8 found_current;
     UINT8 rc;
@@ -27523,9 +27517,9 @@ build_response:
 static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
                                                UINT16 param_len, UINT8 *p_req,
                                                UINT8 *p_req_end) {
-    UINT16 max_list_len;
+    UINT16 xx, max_list_len;
     UINT16 len_to_send, req_offset;
-    UINT16 rsp_param_len, xx;
+    UINT16 rsp_param_len;
     tSDP_UUID_SEQ uid_seq;
     tSDP_ATTR_SEQ attr_seq, attr_seq_sav;
     UINT8 *p_rsp;
@@ -27562,13 +27556,13 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
             return;
         }
         req_offset = (UINT16)(((UINT16)p_req[1] << 8) + p_req[2]);
-        if (req_offset != *(volatile UINT16 *)((UINT8 *)p_ccb + 0x476)) {
+        if (req_offset != ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset) {
             sdpu_build_n_send_error(p_ccb, trans_num, 5, NULL);
             return;
         }
     } else {
         p_rsp = (UINT8 *)p_ccb + 0x29;
-        *(volatile UINT16 *)((UINT8 *)p_ccb + 0x476) = 0;
+        *(UINT16 *)((UINT8 *)p_ccb + 0x476) = 0;
         p_rec = sdp_db_service_search(NULL, &uid_seq);
         while (p_rec != NULL) {
             attr_seq = attr_seq_sav;
@@ -27581,7 +27575,7 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
                 p_attr = fn_80096904(p_rec, start, end);
                 if (p_attr != NULL) {
                     if ((UINT32)p_attr->len >
-                        (UINT32)((UINT16)(0x3E8 - (UINT16)(p_rsp - ((UINT8 *)p_ccb + 0x26))) - 6)) {
+                        (UINT32)((UINT16)(0x3E8 - (UINT16)(p_rsp - (UINT8 *)p_ccb - 0x26)) - 6)) {
                         maxxed_out = TRUE;
                         break;
                     }
@@ -27594,7 +27588,7 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
             }
             if (maxxed_out)
                 break;
-            seq_len = (UINT16)(p_rsp - p_seq_start) - 3;
+            seq_len = (UINT16)((p_rsp - p_seq_start) - 3);
             if (seq_len != 0) {
                 p_seq_start[0] = 0x36;
                 p_seq_start[1] = seq_len >> 8;
@@ -27612,7 +27606,7 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
             *((UINT8 *)p_ccb + 0x27) = adjusted >> 8;
             *((UINT8 *)p_ccb + 0x28) = adjusted;
         } else {
-            *(volatile UINT16 *)((UINT8 *)p_ccb + 0x476) = 1;
+            ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset = 1;
             *((UINT8 *)p_ccb + 0x27) = 0x35;
             *((UINT8 *)p_ccb + 0x28) = len_to_send - 3;
             p_ccb->list_len = len_to_send - 1;
@@ -27638,14 +27632,14 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
     p_rsp_param_len[2] = len_to_send >> 8;
     p_rsp_param_len[3] = len_to_send;
     p_rsp = p_rsp_param_len + 4;
-    memcpy(p_rsp, (UINT8 *)p_ccb + *(volatile UINT16 *)((UINT8 *)p_ccb + 0x476) + 0x26, len_to_send);
+    memcpy(p_rsp, (UINT8 *)p_ccb + *(UINT16 *)(0x476 + (UINT8 *)p_ccb) + 0x26, len_to_send);
     p_rsp += len_to_send;
     p_ccb->list_len -= len_to_send;
     *(volatile UINT16 *)((UINT8 *)p_ccb + 0x476) += len_to_send;
     if (p_ccb->list_len != 0) {
         p_rsp[0] = 2;
-        p_rsp[1] = *(volatile UINT16 *)((UINT8 *)p_ccb + 0x476) >> 8;
-        p_rsp[2] = *(volatile UINT16 *)((UINT8 *)p_ccb + 0x476);
+        p_rsp[1] = ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset >> 8;
+        p_rsp[2] = ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset;
         p_rsp += 3;
     } else {
         p_rsp[0] = 0;
