@@ -21,7 +21,6 @@ void fn_801BF210(void) {
 }
 
 #pragma scheduling invalid_target
-#pragma opt_common_subs off
 void *fn_801BF214(void) {
     extern void *fn_801284F8(int, void *);
     extern void fn_8017B0B0(void);
@@ -33,15 +32,15 @@ void *fn_801BF214(void) {
     void *p = fn_801284F8(0x278, &lbl_8055A948);
     if (p != 0) {
         int index;
-        int *counter = &lbl_8055E7BC;
         fn_8017B0B0();
         *(char **)p = lbl_80336A90;
         *(int *)((char *)p + 0x1EC) = 0;
         *(int *)((char *)p + 0x1F0) = -1;
-        index = *counter;
+        index = lbl_8055E7BC;
         *(void **)(lbl_80437D48 + index * 4) = p;
-        *counter = index + 1;
-        *(int *)((char *)p + 0x214) = fn_801C1BA4(4, 6, 2, lbl_80437D48, index + 1);
+        index++;
+        lbl_8055E7BC = index;
+        *(int *)((char *)p + 0x214) = fn_801C1BA4(4, 6, 2, lbl_80437D48, index);
     }
     return p;
 }
