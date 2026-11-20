@@ -1165,7 +1165,7 @@ extern "C" void *fn_80158054(void *arg0, s32 arg1, s32 arg2, void *arg3)
 }
 #pragma pop
 extern "C" f32 lbl_8056176C;
-#pragma small_data off
+#pragma scheduling on
 extern "C" void* fn_8015812C(void* arg0, s32 arg1, s32 arg2, void* arg3) {
     struct Tail {
         u8 pad244[0x244];
@@ -1185,7 +1185,7 @@ extern "C" void* fn_8015812C(void* arg0, s32 arg1, s32 arg2, void* arg3) {
     };
     u8 *end = (u8 *)arg0 + 0x244;
     u8 *ptr = (u8 *)arg0 + 0x14;
-    void *zero = 0;
+    s32 zero = 0;
     *(void **)((u8 *)arg0 + 8) = ptr;
     *(void **)arg0 = &lbl_8032F2BC;
     *(s32 *)((u8 *)arg0 + 0x10) = 10;
@@ -1194,27 +1194,26 @@ extern "C" void* fn_8015812C(void* arg0, s32 arg1, s32 arg2, void* arg3) {
         memset(ptr, 0, 4);
         ptr += 0x38;
     } while (ptr < end);
-    ((Tail *)arg0)->field248 = (s32)zero;
-    *(s32 *)((u8 *)arg0 + 0x0C) = (s32)zero;
+    ((Tail *)arg0)->field248 = zero;
+    *(s32 *)((u8 *)arg0 + 0x0C) = zero;
     *(s32 *)((u8 *)arg0 + 4) = arg2;
     ((Tail *)arg0)->field244 = arg1;
     ((Tail *)arg0)->field268 = 0x40902;
     ((Tail *)arg0)->field24C = 15.0f;
     ((Tail *)arg0)->field250 = 1.0f;
     ((Tail *)arg0)->field254 = 305.0f;
-    ((Tail *)arg0)->field248 = (s32)zero;
-    ((Tail *)arg0)->field26C = (s32)zero;
+    ((Tail *)arg0)->field248 = zero;
+    ((Tail *)arg0)->field26C = zero;
     *(void **)arg0 = &lbl_8032F0E8;
-    ((Tail *)arg0)->field278 = (s32)zero;
+    ((Tail *)arg0)->field278 = zero;
     if (ptr != end) {
-        u8 *zeroPtr = (u8 *)zero;
-        zeroPtr[0x4D] = 1;
-        *(f32 *)(zeroPtr + 8) = 305.0f;
+        *(u8 *)0x4D = 1;
+        *(f32 *)8 = 305.0f;
         ((Tail *)arg0)->field26C = 0;
     }
     return arg0;
 }
-#pragma small_data on
+#pragma scheduling invalid_target
 extern "C" void* fn_80158218(void* self, s32 shouldDelete) {
     // Destroy/clear an embedded object: zero its pointer/count fields, then optionally free it.
     if (self != 0) {
@@ -1793,9 +1792,10 @@ extern "C" s32 fn_80158F98(void *arg0, f32 *arg1) {
     extern f32 lbl_80561754;
     if (*(u8 *)((u8 *)arg0 + 0x273) != 0) {
         if (arg1 != 0) {
-            f32 field = *(f32 *)((u8 *)arg0 + 0x274);
-            f32 value0 = (f32)((Dummy *)arg0)->getB();
-            f32 value1 = (f32)((Dummy *)arg0)->getA();
+            f32 value0, field, value1;
+            field = *(f32 *)((u8 *)arg0 + 0x274);
+            value0 = (f32)((Dummy *)arg0)->getB();
+            value1 = (f32)((Dummy *)arg0)->getA();
             f32 ratio = (field - value1) / (value0 - value1);
             ratio = (lbl_80561750 > ratio) ? lbl_80561750 : ratio;
             ratio = (ratio > lbl_80561754) ? lbl_80561754 : ratio;
@@ -2326,16 +2326,19 @@ extern "C" void fn_8015A5E0(void *arg0, void *arg1, s32 arg2, u32 arg3) {
         if (p == 0 || *(f32 *)(q + 0x4) < *(f32 *)(p + 0x4)) {
             p = q;
         }
-        if (p == 0 || *(f32 *)(q + 0x10) < *(f32 *)(p + 0x4)) {
-            p = q + 0xc;
+        q += 0xc;
+        if (p == 0 || *(f32 *)(q + 0x4) < *(f32 *)(p + 0x4)) {
+            p = q;
         }
-        if (p == 0 || *(f32 *)(q + 0x1c) < *(f32 *)(p + 0x4)) {
-            p = q + 0x18;
+        q += 0xc;
+        if (p == 0 || *(f32 *)(q + 0x4) < *(f32 *)(p + 0x4)) {
+            p = q;
         }
-        if (p == 0 || *(f32 *)(q + 0x28) < *(f32 *)(p + 0x4)) {
-            p = q + 0x24;
+        q += 0xc;
+        if (p == 0 || *(f32 *)(q + 0x4) < *(f32 *)(p + 0x4)) {
+            p = q;
         }
-        q += 0x30;
+        q += 0xc;
     }
     *(f32 *)(p + 0x4) = now;
     p[8] = found;
@@ -3484,9 +3487,6 @@ extern "C" void* fn_8015CBBC(void* self, s32 shouldDelete) {
 // Trivial callback stub in this player's vtable group; always returns 1 (true).
 extern "C" u32 fn_8015CC28(void) { return 1; }
 
-#pragma push
-#pragma processor 750
-#pragma scheduling on
 extern "C" s32 fn_8015CC30(void* arg0) {
     f32 x = *(f32*)((char*)arg0 + 0x250);
     f32 rounded;
@@ -3494,7 +3494,6 @@ extern "C" s32 fn_8015CC30(void* arg0) {
     else rounded = lbl_80561760 + x;
     return (s32)rounded;
 }
-#pragma pop
 /* Set the gain applied to a record's value (field at +0x250) on this record player. */
 extern "C" void fn_8015CC6C(void* player, f32 gain) {
     *(f32*)((char*)player + 0x250) = gain;
