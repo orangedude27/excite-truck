@@ -42,26 +42,23 @@ struct Root {
     struct Container c;
 };
 
-struct Bank {
-    char data[0x108];
-};
-
 extern struct Root lbl_804872B0;
 extern unsigned char lbl_8055AE2C;
 extern unsigned char lbl_8055E9D0;
 extern int lbl_8055E9D8;
 
 #pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_801DF3BC(void) {
-    struct Root *g = &lbl_804872B0;
+    register char *base asm("r31") = (char *)&lbl_804872B0;
     struct Container *c;
     struct Elem *p;
 
     fn_8000D838(&lbl_8055E9D0);
     lbl_8055E9D8 = 0x7F000000;
-    fn_8002F53C(&g->pad[0], &fn_801DF6D0, 0, 0x1C, 9);
+    fn_8002F53C(base, &fn_801DF6D0, 0, 0x1C, 9);
 
-    c = &g->c;
+    c = (struct Container *)(base + 0x108);
     c->elems = c->buf;
     c->count = 0;
     c->capacity = 8;
@@ -78,5 +75,5 @@ void fn_801DF3BC(void) {
         p++;
     } while (p < c->buf + 8);
 
-    __register_global_object(&g->c, (void *)&fn_801DF678, &g->mid[0]);
+    __register_global_object(base + 0x108, (void *)&fn_801DF678, base + 0xFC);
 }
