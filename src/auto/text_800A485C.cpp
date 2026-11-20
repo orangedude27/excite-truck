@@ -12,10 +12,6 @@ __declspec(section ".sdata") extern u8 lbl_805591FC[];
 __declspec(section ".sdata") extern u8 lbl_80559200[];
 __declspec(section ".sdata") extern u8 lbl_80559204[];
 }
-extern "C" s16 fn_800BDE18(s32, s32, s32, s32 *);
-static inline u32 fn_800BDE18_32(s32 a, s32 b, s32 c, s32 *d) {
-    return (u32)((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(a, b, c, d);
-}
 extern "C" s32 fn_800B6200(void *, void *);
 extern "C" void fn_800B3330(void *, s32, s32);
 extern "C" s32 fn_800AC708(void *, u8 *, u32, s32 *);
@@ -15015,9 +15011,7 @@ extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
 }
 #pragma pop
 extern "C" s16 fn_800BDD7C(s32 arg0, s32 arg1, s32 *arg2) {
-    s32 *p = arg2;
-    u32 mode = 0xC;
-    u32 value = ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, mode, p);
+    register u32 value = ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 0xC, arg2);
     while ((value & 0xFFFFU) != 0xFFFU) {
         value = (value * 2) & 0xFFFEU;
         value |= ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 1, arg2);
@@ -16843,10 +16837,9 @@ extern "C" void fn_800C0B68(Fn800C0B68Context *arg0, s32 arg1, s32 arg2, s16 *ar
     s16 var_r0, var_r3, var_r4, var_r5;
     s32 temp_r3;
     u32 temp_r5, temp_r8, temp_r8_2, temp_r8_3, temp_r8_4;
-    u32 temp_r0, var_r3_2;
-    s32 var_ctr, var_ctr_2;
+    u32 temp_r0, var_ctr, var_ctr_2, var_r3_2;
     s32 shift;
-    s16 *var_r5_2, *var_r31 = arg3 + arg4;
+    volatile s16 *var_r5_2, *var_r31 = arg3 + arg4;
     goto block_25;
 loop_25:
     temp_r3 = fn_800BDEB4((const u8 *)arg2, 4, &arg0->bitIndex);
@@ -16866,7 +16859,7 @@ loop_25:
         temp_r3 -= arg4;
         var_r3_2 = (u32)temp_r3 >> 2;
         if (arg4 < arg1) {
-            temp_r0 = var_r3_2 >> 3U; var_ctr = (s32)temp_r0;
+            temp_r0 = var_r3_2 >> 3U; var_ctr = temp_r0;
             if (temp_r0 != 0) {
                 do {
                     var_r5_2[0] = var_r4; var_r5_2[1] = var_r4; var_r5_2[2] = var_r4; var_r5_2[3] = var_r4; var_r5_2[4] = var_r4; var_r5_2[5] = var_r4; var_r5_2[6] = var_r4; var_r5_2[7] = var_r4; var_r5_2[8] = var_r4; var_r5_2[9] = var_r4; var_r5_2[10] = var_r4; var_r5_2[11] = var_r4; var_r5_2[12] = var_r4; var_r5_2[13] = var_r4; var_r5_2[14] = var_r4; var_r5_2[15] = var_r4; var_r5_2[16] = var_r4; var_r5_2[17] = var_r4; var_r5_2[18] = var_r4; var_r5_2[19] = var_r4; var_r5_2[20] = var_r4; var_r5_2[21] = var_r4; var_r5_2[22] = var_r4; var_r5_2[23] = var_r4; var_r5_2[24] = var_r4; var_r5_2[25] = var_r4; var_r5_2[26] = var_r4; var_r5_2[27] = var_r4; var_r5_2[28] = var_r4; var_r5_2[29] = var_r4; var_r5_2[30] = var_r4; var_r5_2[31] = var_r4;
@@ -16876,7 +16869,7 @@ loop_25:
                 if (var_r3_2 != 0) goto block_21;
             } else {
 block_21:
-                var_ctr_2 = (s32)var_r3_2;
+                var_ctr_2 = var_r3_2;
                 do {
                     var_r5_2[0] = var_r4; var_r5_2[1] = var_r4; var_r5_2[2] = var_r4; var_r5_2[3] = var_r4;
                     var_r5_2 += 4; var_ctr_2 -= 1;
