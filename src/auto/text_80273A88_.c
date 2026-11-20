@@ -682,7 +682,7 @@ void fn_802749FC(void *arg0, void *arg1) {
     (*(float *)((char *)arg0 + 0x78)) = local.sp24[2];
 }
 #pragma pop
-extern float lbl_80563FA8, lbl_80563FB0;
+extern float lbl_80563FA8;
 void fn_80274E94(void *object) {
     /* Update the object's camera/orientation state with inactive (-1.0f) inputs and 0.0f scale. */
     fn_80274730(object, lbl_80563FA8, lbl_80563FA8, lbl_80563FA8, lbl_80563FB0);
