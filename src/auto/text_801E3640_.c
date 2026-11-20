@@ -9,7 +9,8 @@ extern float lbl_80558DC4[];
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern float lbl_80562CF4, lbl_80562CF8, lbl_80562CFC, lbl_80562D00, lbl_80562D04, lbl_80562D28;
+__declspec(section ".sdata2") extern float lbl_80562CF4;
+extern float lbl_80562CF8, lbl_80562CFC, lbl_80562D00, lbl_80562D04, lbl_80562D28;
 extern int fn_802C8DBC(int);
 extern void fn_802C8BD0(int);
 extern void fn_802C8D74(void);
@@ -295,21 +296,23 @@ void fn_801E3FC8(void *__restrict arg0, float farg0) {
 #pragma push
 #pragma processor 750
 int fn_801E4040(void *arg0, void *arg1, int arg2, int arg3, float farg0) {
-    Vec3 *a = (Vec3 *)arg0;
-    Vec3 *b = (Vec3 *)arg1;
-    Vec3 delta;
+    float *a = (float *)arg0;
+    float *b = (float *)arg1;
+    float delta[3];
     float matrix[4][3];
     float mag;
     float scale;
-    float tx, ty, tz;
+    float tx;
+    float ty;
+    float tz;
 
-    delta.x = b->x - a->x;
-    delta.y = b->y - a->y;
-    delta.z = b->z - a->z;
-    fn_801E3640(&delta, &matrix[0][0]);
-    matrix[2][0] = delta.x * lbl_80562D08;
-    matrix[2][1] = delta.y * lbl_80562D08;
-    matrix[2][2] = delta.z * lbl_80562D08;
+    delta[0] = b[0] - a[0];
+    delta[1] = b[1] - a[1];
+    delta[2] = b[2] - a[2];
+    fn_801E3640(delta, &matrix[0][0]);
+    matrix[2][0] = delta[0] * lbl_80562D08;
+    matrix[2][1] = delta[1] * lbl_80562D08;
+    matrix[2][2] = delta[2] * lbl_80562D08;
     mag = PSVECMag(&matrix[0][0]);
     if (!((float)__fabs((double)mag) <= lbl_80558DC4[0])) {
         scale = (farg0 * lbl_80562D08) / mag;
@@ -324,9 +327,9 @@ int fn_801E4040(void *arg0, void *arg1, int arg2, int arg3, float farg0) {
         matrix[1][1] *= scale;
         matrix[1][2] *= scale;
     }
-    tx = a->x + matrix[2][0];
-    ty = a->y + matrix[2][1];
-    tz = a->z + matrix[2][2];
+    tx = a[0] + matrix[2][0];
+    ty = a[1] + matrix[2][1];
+    tz = a[2] + matrix[2][2];
     matrix[3][0] = tx;
     matrix[3][1] = ty;
     matrix[3][2] = tz;
@@ -357,12 +360,12 @@ void fn_801E41E0(void *arg0, int arg1, float farg0) {
     volatile struct LocalData local;
     float *base = (float *)arg0;
     float *matrix;
-    float zero = lbl_80562CF4;
     f64 seedXY = *(volatile f64 *)&local.seed.x;
     s32 seedZ = *(volatile s32 *)&local.seed.z;
+    float negScale;
+    float zero = lbl_80562CF4;
     float x, y, z;
     float sidePositive;
-    float negScale;
     float depthNegative;
     float sideNegative;
 
