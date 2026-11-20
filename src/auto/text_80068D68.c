@@ -7407,9 +7407,11 @@ void bta_hh_cback(u8 arg0, u8 arg1, u32 arg2, BT_HDR *arg3) {
     case 6:
     case 7:
     case 8:
-        for (xx = 0; xx < 18; xx++) {
-            u8 *e = lbl_803C0D48 + (xx << 5);
-            if (arg0 == e[0x26]) { e[0x27] = 1; break; }
+        for (xx = 0; xx < 16; xx++) {
+            if (arg0 == lbl_803C0D48[(xx << 5) + 0x26]) {
+                lbl_803C0D48[(xx << 5) + 0x27] = 1;
+                break;
+            }
         }
         break;
     default: break;
