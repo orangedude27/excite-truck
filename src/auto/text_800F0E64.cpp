@@ -5352,16 +5352,6 @@ struct LinkListIter {
     bool operator!=(const LinkListIter &other) const { return node != other.node; }
     LinkListIter &operator++() { node = *(void **)node; return *this; }
 };
-static inline LinkListIter DummyWorkerList_Begin(void *p) {
-    LinkListIter it;
-    it.node = *(void **)((u8 *)p + 0x2388);
-    return it;
-}
-static inline LinkListIter DummyWorkerList_End(void *p) {
-    LinkListIter it;
-    it.node = (u8 *)p + 0x2388;
-    return it;
-}
 /* End of the SoundInstanceManager's priority list (list at +0x4, its node at +0x8). */
 static inline LinkListIter SoundInstanceManager_GetPriorityListEnd(void *pool) {
     LinkListIter iter;
