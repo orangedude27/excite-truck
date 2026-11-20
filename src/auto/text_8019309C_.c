@@ -25,6 +25,7 @@ typedef struct { void *a; float b; int c; } Samp80194FD0;
 extern void *fn_8017960C();
 extern int fn_80137788(void *, int, float *);
 extern float lbl_805621C0, lbl_805621F0, lbl_805621F4, lbl_805621F8, lbl_805621FC, lbl_80562200, lbl_80562160, lbl_8056216C;
+extern float lbl_8056214C, lbl_80562150, lbl_80562154, lbl_80562158;
 extern unsigned int lbl_8055D430;
 extern int lbl_8055E0D0;
 typedef float (*Fn931AC)(void *, void *, void *, float, float, float, float);
@@ -1752,10 +1753,7 @@ void fn_80195F6C(void *arg0, void *arg1) {
     Trio sp24;
     Trio sp18;
     double u1, u2;
-    float f2;
-    float scale;
-    float keep;
-    float m, t;
+    float m, t, f2, scale, keep;
     int flag;
     char *obj;
 
@@ -1791,10 +1789,7 @@ void fn_80195F6C(void *arg0, void *arg1) {
         *(float *)(self + 0x27C) = *(float *)(obj + 0x44);
         *(unsigned char *)(self + 0x2FE) = 0;
         m = lbl_8055A48C;
-        switch (m > t) {
-        case 0: m = t; break;
-        default: break;
-        }
+        m = (m > t) ? m : t;
         sp18.p = 0;
         sp18.i = 0x2710;
         sp18.f = lbl_80562144;
