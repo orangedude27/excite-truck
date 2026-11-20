@@ -54,9 +54,7 @@ extern void fn_802C8D74(void);
 extern f32 lbl_805603E8, lbl_805603EC, lbl_805603F0, lbl_805603F4;
 typedef struct { s32 a; f32 x; f32 y; s32 d; f32 e; f32 f; s32 g; } Rec7;
 typedef struct { s32 a; f32 x; f32 y; s32 d; f32 e; s32 f; s32 g; s32 h; } Rec8;
-typedef struct { u8 *base; s32 n; char *second; char *first; void *self; s32 mode; } KeepEDC;
-#define VC5(ofs) ((void *(*)(void *, void *))(*(void ***)obj)[5])(obj, keep.base + (ofs))
-#define VC3(ofs) ((void *(*)(void *, void *))(*(void ***)obj)[3])(obj, keep.base + (ofs))
+typedef struct { s32 n; char *second; char *first; void *self; s32 mode; } KeepEDC;
 extern f64 lbl_80560390;
 #define VCALL(slot, ofs) ((void *(*)(void *, void *))(*(void ***)obj)[slot])(obj, lbl_802FCB98 + (ofs))
 #define VC(slot, ofs) ((void *(*)(void *, void *))(*(void ***)obj)[slot])(obj, base + (ofs))
