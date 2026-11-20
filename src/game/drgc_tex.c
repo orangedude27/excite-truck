@@ -230,16 +230,10 @@ int fn_802D76DC(int format) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_802D7780(void *arg0, void *arg1) {
-    struct FilterBits {
-        u32 reserved : 30;
-        u32 wrapT : 1;
-        u32 wrapS : 1;
-    };
     u32 filter = *(u32 *)((u8 *)arg1 + 0x10);
     u32 opts = *(u32 *)((u8 *)arg1 + 0x18);
-    struct FilterBits *bits = (struct FilterBits *)&filter;
-    int wrapS = bits->wrapS;
-    int wrapT = bits->wrapT != 0;
+    int wrapS = filter & 1;
+    int wrapT = (filter & 2) != 0;
     u32 firstMode;
     u32 transfer;
     u32 id;
@@ -294,20 +288,21 @@ void fn_802D78D4(void *arg0, void *arg1, unsigned int arg2, unsigned int arg3) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void *fn_802D7B5C(void *arg0, void *arg1) {
-    void *obj = arg0;
     char *name = (char *)arg1;
+    int palBytes;
+    int entries;
+    void *obj = arg0;
     void *texture;
     int isCi4;
     int width;
     int height;
     char *texData;
-    int entries;
-    int palBytes;
     int count;
     char *dst;
     unsigned char ch;
     int size;
     unsigned int type;
+    int fmt;
     type = *(unsigned int *)obj;
     isCi4 = 1;
     if (type != 0 && type != 0x40) {
@@ -362,15 +357,34 @@ copied_name:
     GXInitTlutObj((char *)texture + 0xB8, *(void **)((char *)texture + 0xC4), 0, (unsigned short)entries);
     width = *(int *)((char *)obj + 0x24);
     height = *(int *)((char *)obj + 0x28);
-    GXGetTexBufferSize((unsigned short)width, (unsigned short)height, isCi4 == 0 ? 9 : 8, 0, 1);
+    if (isCi4 == 0) {
+        fmt = 9;
+    } else {
+        fmt = 8;
+    }
+    GXGetTexBufferSize((unsigned short)width, (unsigned short)height, fmt, 0, 1);
     texData = *(char **)((char *)obj + 0x2C);
     dst = *(char **)(texData + 4);
     *(char **)((char *)texture + 0xD0) = dst;
     size = (width * height) / ((isCi4 != 0) + 1);
     *(int *)((char *)texture + 0xD4) = size;
     DCFlushRange(dst, size);
-    GXInitTexObjCI((char *)texture + 0x24, *(void **)(texData + 4), (unsigned short)width, (unsigned short)height, isCi4 == 0 ? 9 : 8, 1, 1, 0, 0);
-    GXInitTexObjCI((char *)texture + 0x78, *(void **)(texData + 4), (unsigned short)width, (unsigned short)height, isCi4 == 0 ? 9 : 8, 1, 1, 0, 1);
+    if (isCi4 == 0) {
+        fmt = 9;
+    } else {
+        fmt = 8;
+    }
+    GXInitTexObjCI((char *)texture + 0x24, *(void **)(texData + 4),
+                   (unsigned short)width, (unsigned short)height,
+                   fmt, 1, 1, 0, 0);
+    if (isCi4 == 0) {
+        fmt = 9;
+    } else {
+        fmt = 8;
+    }
+    GXInitTexObjCI((char *)texture + 0x78, *(void **)(texData + 4),
+                   (unsigned short)width, (unsigned short)height,
+                   fmt, 1, 1, 0, 1);
     GXInvalidateTexAll();
     fn_802D7780(texture, obj);
     return texture;
@@ -601,6 +615,8 @@ void *fn_802D7FA0(void *arg0, void *arg1)
 
 #pragma pop
 
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_802D81C4(void *arg0, int arg1) {
     unsigned char *s2 = *(unsigned char **)((char *)arg0 + 0x2C);
     unsigned char *p = *(unsigned char **)(s2 + 4);
@@ -643,10 +659,6 @@ void fn_802D81C4(void *arg0, int arg1) {
     }
     fn_80128670(tmp);
 }
-
-#pragma push
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 extern char lbl_8034C5AC[];
 void fn_802D86BC(void *arg0, int arg1) {
     void **data = *(void ***)((char *)arg0 + 0x2c);
@@ -749,25 +761,20 @@ void fn_802D8DA0(void) {
 extern void fn_802D81C4(void *, int);
 extern void fn_802D86BC(void *, int);
 #pragma push
-#pragma processor 750
 #pragma scheduling invalid_target
 void fn_802D8DCC(void *arg0, int arg1) {
  unsigned char *p = *(unsigned char **)((char *)arg0 + 0x2C);
  unsigned char t;
  unsigned int kind;
- int hold = arg1;
- t=p[0]; p[0]=p[3]; p[3]=t;
- t=p[1]; p[1]=p[2]; p[2]=t;
- if (*(int *)(p+0) != 0) *(unsigned char **)(p+0) = p + *(int *)(p+0);
- t=p[4]; p[4]=p[7]; p[7]=t;
- t=p[5]; p[5]=p[6]; p[6]=t;
- if (*(int *)(p+4) != 0) *(unsigned char **)(p+4) = p + *(int *)(p+4);
- t=p[8]; p[8]=p[11]; p[11]=t;
- t=p[9]; p[9]=p[10]; p[10]=t;
- if (*(int *)(p+8) != 0) *(unsigned char **)(p+8) = p + *(int *)(p+8);
+ int i;
+ for (i = 0; i < 3; i++) {
+     t = p[i*4+0]; p[i*4+0] = p[i*4+3]; p[i*4+3] = t;
+     t = p[i*4+1]; p[i*4+1] = p[i*4+2]; p[i*4+2] = t;
+     if (*(int *)(p+i*4) != 0) *(unsigned char **)(p+i*4) = p + *(int *)(p+i*4);
+ }
  kind=*(unsigned int *)arg0;
- if (kind == 0x40 || kind == 0) fn_802D81C4(arg0,hold);
- else if (kind == 0x41 || kind == 1) fn_802D86BC(arg0,hold);
+ if (kind == 0x40 || kind == 0) fn_802D81C4(arg0,arg1);
+ else if (kind == 0x41 || kind == 1) fn_802D86BC(arg0,arg1);
 }
 #pragma pop
 extern void *fn_802D7B5C(void *, void *);
@@ -780,8 +787,8 @@ extern char lbl_8034C5C8[];
 #pragma push
 #pragma scheduling on
 void *fn_802D8E9C(void *arg0, void *arg1) {
-    register void *obj = 0;
-    int kind = *(int *)arg0;
+    void *obj = 0;
+    int kind = *(volatile int *)arg0;
     void *name = arg1;
     if (kind == 0x17) goto use_a84;
     if (kind >= 0x17) goto high_range;
@@ -1040,21 +1047,11 @@ void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
     struct TexWrap { u8 pad[0x24]; u8 tex; } *t0 = arg0;
     struct TexWrap *t1 = arg1;
     struct TexWrap *t2 = arg2;
-    unsigned int *dst;
-    unsigned int *src1;
-    unsigned int *src2;
-    int wrapS;
-    int wrapT;
-    int count;
-    unsigned int blend;
-    unsigned int inv;
-    int i;
-    unsigned int a;
-    unsigned int b;
-    unsigned int c0;
-    unsigned int c1;
-    unsigned int c2;
-    unsigned int c3;
+    unsigned int *dst, *src1, *src2;
+    int wrapS, wrapT, count, i;
+    unsigned int blend, inv;
+    unsigned int a, b;
+    unsigned int c3, c2, c1, c0;
     wrapS = GXGetTexObjWrapS(&t0->tex);
     wrapT = GXGetTexObjWrapT(&t0->tex);
     count = (wrapT * wrapS * 16) / 32;
@@ -1075,8 +1072,8 @@ void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
         a >>= 8;
         b >>= 8;
         c2 = (a & 255) * inv + (b & 255) * blend;
-        c3 = (a >> 8) * inv + (b >> 8) * blend;
-        *dst = (c0 >> 8) | (c1 & 0xFFFFFF00) | ((c2 << 8) & 0xFFFF0000) | ((c3 << 16) & 0xFF000000);
+        c3 = ((a >> 8) & 255) * inv + ((b >> 8) & 255) * blend;
+        *dst = ((c3 << 16) & 0xFF000000) | ((c2 << 8) & 0xFFFF0000) | (c1 & 0xFFFFFF00) | (c0 >> 8);
         dst++;
     }
 }
