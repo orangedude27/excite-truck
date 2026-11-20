@@ -711,7 +711,8 @@ int fn_8027F958(int *selection, void *collection) {
     extern unsigned char lbl_8055F6A0;
     extern float lbl_805641F8, lbl_805641FC, lbl_80564200;
     extern int fn_80131234(int);
-    extern int fn_802808D0(void), fn_80280A38(void), fn_80280C00(void), fn_80280F7C(void), fn_80281138(void);
+    extern int fn_802808D0(void), fn_80280A38(void), fn_80280C00(void), fn_80280F7C(void);
+ extern FN81138_RET fn_80281138(void);
     extern int fn_80280DC8(void), fn_80280898(void);
     typedef void *(*GetItem)(void *, int);
     typedef int (*GetInt)(void *);
