@@ -269,8 +269,8 @@ extern void fn_80138434();
 #pragma scheduling invalid_target
 void fn_801381B4(void *arg0) {
     volatile unsigned char *v = (volatile unsigned char *)arg0;
+    unsigned char *p = (unsigned char *)arg0 + 0x30;
     unsigned char *base = (unsigned char *)arg0;
-    unsigned char *p = base + 0x30;
     unsigned char *r;
     unsigned char *node;
     unsigned char t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11;
