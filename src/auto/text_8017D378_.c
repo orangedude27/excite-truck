@@ -23,7 +23,6 @@ extern void fn_80179F94(void *, void *);
 extern void fn_801D0C58(void *, int, int);
 extern int fn_802077A4(void *, int, void *, void *);
 extern float lbl_80561BE0;
-__declspec(section ".sdata") extern double lbl_80561BE8;
 extern float lbl_80561C04;
 extern float lbl_80561C08;
 extern char lbl_80331DB4[];
@@ -89,7 +88,6 @@ void fn_8017D380(float *arg0, int arg1) {
     extern void *fn_80178C9C(void);
     extern float lbl_80561BE0;
     extern float lbl_80561BE4;
-    extern double lbl_80561BE8;
     void *root = fn_80178C9C();
     int scaled = arg1 * 2;
     void *sub = *(void **)((char *)root + 0x2C);
