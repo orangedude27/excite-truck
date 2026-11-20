@@ -865,8 +865,9 @@ void fn_8017C7C8(void *arg0, void *arg1, void *arg2) {
             *(float *)((char *)temp_r8 + 8) = *(float *)((char *)temp_r8 + 8) * temp_f1;
             *(float *)((char *)temp_r8 + 0xC) = *(float *)((char *)temp_r8 + 0xC) * temp_f1;
             *(float *)((char *)temp_r8 + 0x10) = *(float *)((char *)temp_r8 + 0x10) * temp_f1;
-            if (*(void ***)temp_r8 != 0) {
-                (*(void (**)(void *, void *, void *, int, int, int))((char *)(*(void ***)temp_r8) + 0x24))(temp_r8, (char *)temp_r8 + 8, (char *)temp_r8 + 0x14, *(int *)((char *)temp_r8 + 0x20), *(int *)((char *)temp_r8 + 0x24), *(int *)((char *)temp_r8 + 4));
+            loop_obj = *(void ***)temp_r8;
+            if (loop_obj != 0) {
+                (*(void (**)(void *, void *, void *, int, int, int))((char *)(*loop_obj) + 0x24))(loop_obj, (char *)temp_r8 + 8, (char *)temp_r8 + 0x14, *(int *)((char *)temp_r8 + 0x20), *(int *)((char *)temp_r8 + 0x24), *(int *)((char *)temp_r8 + 4));
             } else {
                 (*(void (**)(void *, void *, void *, int, int, int))((char *)(*(void **)arg0) + 0x4C))(arg0, (char *)temp_r8 + 8, (char *)temp_r8 + 0x14, *(int *)((char *)temp_r8 + 0x20), *(int *)((char *)temp_r8 + 0x24), *(int *)((char *)temp_r8 + 4));
             }
