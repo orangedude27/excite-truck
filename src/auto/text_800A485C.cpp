@@ -247,7 +247,7 @@ struct VFiPFEntIter {
 extern "C" u8 lbl_80407C00[];
 extern "C" u8 lbl_80407E00[];
 extern "C" { DECL_SECTION(".sdata") extern s32 lbl_805597E8; }
-extern "C" { DECL_SECTION(".sdata") extern volatile u32 lbl_8055DDD0; }
+extern "C" { DECL_SECTION(".sdata") extern u32 lbl_8055DDD0; }
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(void *, void *);
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(void *a, void *b);
 class PaneAnimTransformDispatch {
@@ -3916,9 +3916,9 @@ extern "C" void fn_800AA4EC(u8 *p_ent, u8 *p_buf) {
 }
 #pragma pop
 extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
-    register u32 word;
-    register u16 h1A;
-    register u16 h14;
+    u32 word;
+    u32 h1A;
+    u32 h14;
     p_ent[0x21C] = p_buf[0xB];
     p_ent[0x21B] = p_buf[0xC];
     p_ent[0x21D] = p_buf[0xD];
@@ -17783,11 +17783,12 @@ extern "C" void fn_800C3574(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4
 #pragma use_lmw_stmw on
 extern "C" void fn_800C3960(s32 *tbl, s32 *coef, u32 idx, s16 *out, u32 mask, s32 flag) {
     u32 i = idx;
-    s32 zero = 0;
+    s64 sumA = 0, sumB = 0;
+    s32 a, b;
     s32 c0 = coef[0], c1 = coef[1], d0 = coef[0x11], c2 = coef[2];
     s32 c3 = coef[3], d1 = coef[0x13], c4 = coef[4];
-    s32 *tbl2 = tbl + 0x10;
     s32 a0 = tbl[i & mask];
+    s32 *tbl2 = tbl + 0x10;
     s32 a1 = tbl[(i + 0x060) & mask];
     s32 b0 = tbl2[(i + 0x060) & mask];
     s32 a2 = tbl[(i + 0x080) & mask];
@@ -17811,8 +17812,6 @@ extern "C" void fn_800C3960(s32 *tbl, s32 *coef, u32 idx, s16 *out, u32 mask, s3
     s32 b7 = tbl2[(i + 0x3e0) & mask];
     s32 c14 = coef[14], c15 = coef[15], d7 = coef[0x1F];
 
-    s64 sumA = zero, sumB = zero;
-    s32 a, b;
     sumA += (s64)a0 * c0;
     sumA += (s64)a1 * c1;  sumB += (s64)b0 * d0;
     sumA += (s64)a2 * c2;
@@ -19354,10 +19353,11 @@ extern "C" void *fn_800D6EEC(void *);
 extern "C" char lbl_805597B8[];
 void fn_800C6CE8(void *arg0) {
     char *p = (char *)arg0;
-    void *acc;
-    void *container;
-    void *r;
-    int i;
+    register u8 *strings = lbl_8031D840;
+    register char *pane;
+    register void *acc, *container;
+    register void *r;
+    register int i;
 
     p[0x8b] = 0;
     p[0x8c] = 0;
@@ -19365,30 +19365,24 @@ void fn_800C6CE8(void *arg0) {
     fn_800C7774((unsigned char *)arg0);
     fn_800C790C(arg0);
     acc = MEMAllocFromAllocator(lbl_80559708, 0xb0);
-    if (acc != 0) {
-        acc = __ct__Q36nw4hbm3lyt19ArcResourceAccessorFv(acc);
-    }
+    if (acc != 0) acc = __ct__Q36nw4hbm3lyt19ArcResourceAccessorFv(acc);
     *(void **)(p + 0x1f4) = acc;
-    if (acc == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8031D840, 0x24c, (const char *)(lbl_8031D840 + 0xb70));
-    }
-    fn_800D53FC(acc, *(void **)(p + 4), (const char *)lbl_805597B8);
+    if (acc == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)strings, 0x24c, (const char *)(strings + 0xb70));
+    fn_800D53FC(acc, *(void **)(p + 4), lbl_805597B8);
     if (*(int *)(*(char **)(p + 4) + 0x20) == 0) {
+        pane = p + 0x1e4;
         for (i = 0; i < 4; i++) {
-            void *pane = MEMAllocFromAllocator(lbl_80559708, 0x24);
-            if (pane != 0) {
-                pane = fn_800D6EEC(pane);
-            }
-            *(void **)(p + 0x1e4 + i * 4) = pane;
-            if (pane == 0) {
-                Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8031D840, 0x258, (const char *)(lbl_8031D840 + 0xb98));
-            }
+            void *q = MEMAllocFromAllocator(lbl_80559708, 0x24);
+            if (q != 0) q = fn_800D6EEC(q);
+            *(void **)pane = q;
+            pane += 4;
+            if (q == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce((const char *)strings, 0x258, (const char *)(strings + 0xb98));
         }
     }
     container = MEMAllocFromAllocator(lbl_80559708, 0x24);
-    if (container != 0) {
-        container = fn_800D6EEC(container);
-    }
+    if (container != 0) container = fn_800D6EEC(container);
     *(void **)(p + 0x1e0) = container;
     r = ((void *(*)(void *, void *, void *, void *))(((void ***)acc)[0][3]))(acc, 0, p + 0xa4, 0);
     ((void *(*)(void *, void *, void *, void *))(((void ***)container)[0][3]))(container, r, acc, 0);
