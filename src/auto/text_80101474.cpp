@@ -385,6 +385,11 @@ extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(void *, const void *, int);
 #pragma optimization_level 3
 int nw4hbm::snd::detail::WsdTrack::Parse(const nw4hbm::snd::detail::WsdTrack::WsdCallback *callback, unsigned long arg2, bool arg3) {
+    /* Fire the first note on a WSD track: ask the callback for the wave data,
+       allocate a channel (pitch = track base + player detune, up to 2 voices),
+       set the ADSR envelope from the fetched envelope bytes, start the wave and
+       link the channel into the track's active list.  Subsequent calls just
+       check that a live channel still exists. */
     unsigned char sp8[0x10];
     unsigned char sp18[0x90];
     if (*(void **)((char *)this + 0x2C) == 0)
@@ -1302,9 +1307,12 @@ extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(void *arg0) {
 }
 
 extern const char lbl_80328178[0x400];
+#pragma push
+#pragma opt_propagation off
 void nw4hbm::ut::CharWriter::SetFontSize(float farg0, float farg1) {
     float x = farg0, y = farg1;
     const char *base = lbl_80328178;
+    const int fileOff = 0;
     register unsigned int top = (unsigned int)this & 0xFF000000U;
     register int r5, r6, r7, r8, r9, r10;
     r5 = 1; r6 = 1; r7 = 1; r8 = 1; r9 = 1; r10 = 1;
@@ -1315,7 +1323,7 @@ void nw4hbm::ut::CharWriter::SetFontSize(float farg0, float farg1) {
     if (r8 == 0 && ((unsigned int)this & 0xFF800000U) != 0xC1000000U) r7 = 0;
     if (r7 == 0 && ((unsigned int)this & 0xF8000000U) != 0xD0000000U) r6 = 0;
     if (r6 == 0 && ((unsigned int)this & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
-    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x22F, base + 0x14, this);
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[fileOff], 0x22F, base + 0x14, this);
 
     {
     register int r4 = 1, r5b = 1;
@@ -1329,16 +1337,16 @@ void nw4hbm::ut::CharWriter::SetFontSize(float farg0, float farg1) {
     if (r8b == 0 && (fontAddress & 0xFF800000U) != 0xC1000000U) r7b = 0;
     if (r7b == 0 && (fontAddress & 0xF8000000U) != 0xD0000000U) r5b = 0;
     if (r5b == 0 && (fontAddress & 0xFFFFC000U) != 0xE0000000U) r4 = 0;
-    if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x230, base + 0xF4);
+    if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[fileOff], 0x230, base + 0xF4);
 
     }
     if (((FontForWidth *)*(void **)((char *)this + 0x48))->v1() < 1) {
         int width = ((FontForWidth *)*(void **)((char *)this + 0x48))->v1();
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x231, base + 0x12C, width, 1);
+        Panic__Q26nw4hbm2dbFPCciPCce(&base[fileOff], 0x231, base + 0x12C, width, 1);
     }
     if (((FontForWidth *)*(void **)((char *)this + 0x48))->v2() < 1) {
         int height = ((FontForWidth *)*(void **)((char *)this + 0x48))->v2();
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x232, base + 0x180, height, 1);
+        Panic__Q26nw4hbm2dbFPCciPCce(&base[fileOff], 0x232, base + 0x180, height, 1);
     }
     y /= (float)((FontForWidth *)*(void **)((char *)this + 0x48))->v2();
     x /= (float)((FontForWidth *)*(void **)((char *)this + 0x48))->v1();
@@ -1351,13 +1359,11 @@ void nw4hbm::ut::CharWriter::SetFontSize(float farg0, float farg1) {
         ((unsigned int)this & 0xFF800000U) == 0xC1000000U ||
         ((unsigned int)this & 0xF8000000U) == 0xD0000000U ||
         ((unsigned int)this & 0xFFFFC000U) == 0xE0000000U) r5 = 1;
-    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x1E7, base + 0x14, this);
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[fileOff], 0x1E7, base + 0x14, this);
     *(float *)((char *)this + 0x24) = x;
     *(float *)((char *)this + 0x28) = y;
 }
-
-#pragma push
-#pragma opt_propagation off
+#pragma pop
 extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
     struct FontVTable {
         virtual void f0();
