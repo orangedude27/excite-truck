@@ -240,8 +240,8 @@ void fn_8022A8E4(int arg0) {
     extern void fn_80235380(void *);
     unsigned long offset;
     register unsigned char *entry;
-    register const unsigned int *source;
     register unsigned int *destination;
+    register const unsigned int *source;
     register unsigned int b, a;
     float f0, f1;
 
@@ -254,9 +254,9 @@ void fn_8022A8E4(int arg0) {
     if (*(void **)(entry + 0x6c) != 0) fn_80235380(*(void **)(entry + 0x6c));
     if (*(void **)(entry + 0x70) != 0) fn_80235380(*(void **)(entry + 0x70));
 
+    destination = (unsigned int *)((unsigned char *)lbl_80490968 + arg0 * 0x74);
     entry[0] = *(unsigned char *)lbl_80497D68;
     source = (const unsigned int *)lbl_80497D68;
-    destination = (unsigned int *)((unsigned char *)lbl_80490968 + arg0 * 0x74);
     a = source[1];
     b = source[2];
     destination[1] = a; a = source[3];
@@ -1398,22 +1398,30 @@ __declspec(section ".sdata") extern char lbl_8055B940[];
 __declspec(section ".sdata") extern char lbl_8055B948[];
 __declspec(section ".sdata") extern char lbl_8055B950[];
 extern char lbl_8033FBE8[], lbl_8055B930[], lbl_8055B938[], lbl_8055B940[], lbl_8055B948[], lbl_8055B950[];
-#pragma optimization_level 2
+#pragma cplusplus on
 void fn_8022CDE4(int *d, void *o) {
+    class Xml {
+    public:
+        virtual void v0();
+        virtual int has(const char *);
+        virtual void v2();
+        virtual char *get(const char *);
+    };
     register const char *base = lbl_8033FBE8;
     register char *s;
+    Xml *xo = (Xml *)o;
     if (!o)
         return;
-    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x498) != 0)
-        d[0] = fn_8022CD0C(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x498));
-    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x4A4) != 0)
-        d[1] = fn_8022CD0C(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x4A4));
-    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x4BC) != 0)
-        d[2] = fn_8022CD0C(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x4BC));
-    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x4C8) != 0)
-        d[3] = fn_8022CD0C(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x4C8));
-    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x4E0) != 0) {
-        s = ((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x4E0);
+    if (xo->has(base + 0x498))
+        d[0] = fn_8022CD0C(xo->get(base + 0x498));
+    if (xo->has(base + 0x4A4))
+        d[1] = fn_8022CD0C(xo->get(base + 0x4A4));
+    if (xo->has(base + 0x4BC))
+        d[2] = fn_8022CD0C(xo->get(base + 0x4BC));
+    if (xo->has(base + 0x4C8))
+        d[3] = fn_8022CD0C(xo->get(base + 0x4C8));
+    if (xo->has(base + 0x4E0)) {
+        s = xo->get(base + 0x4E0);
         if (stricmp(s, lbl_8055B930) == 0)
             d[4] = 0;
         else if (stricmp(s, lbl_8055B938) == 0)
@@ -1429,7 +1437,7 @@ void fn_8022CDE4(int *d, void *o) {
         else
             d[4] = fn_8022CD0C(s);
     }
-    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, lbl_8055B948) != 0)
-        sscanf(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, lbl_8055B948), lbl_8055B950, &d[5], &d[6]);
+    if (xo->has(lbl_8055B948))
+        sscanf(xo->get(lbl_8055B948), lbl_8055B950, &d[5], &d[6]);
 }
-#pragma optimization_level reset
+#pragma cplusplus off
