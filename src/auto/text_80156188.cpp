@@ -666,16 +666,13 @@ extern "C" f32 lbl_80561740;
 extern "C" f32 lbl_80561744;
 #pragma push
 #pragma opt_lifetimes off
-#pragma opt_common_subs off
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" s32 fn_80156C84(void *arg0, s32 arg1) {
-    struct { s32 v; } offH; s32 &off = offH.v;
+    s32 off = arg1 * 8;
     f32 f31 = lbl_8055E3C8;
     u8 *element = (u8 *)arg0 + off;
     void *self = arg0;
-    off = arg1 * 8;
-    element = (u8 *)arg0 + off;
 
     if (f31 >= *(f32 *)(element + 0xE4)) {
         void *r29 = fn_8017960C(arg1);
@@ -706,7 +703,7 @@ extern "C" s32 fn_80156C84(void *arg0, s32 arg1) {
             *(f32 *)(element + 0xE4) = f31 +
                 ((f32 (*)(s32, f32, f32))fn_80129DC4)(
                     4, *(f32 *)((u8 *)self + 0xDC), *(f32 *)((u8 *)self + 0xE0));
-            ((s32 *)self)[arg1 * 2 + 0x3A] = i;
+            *(s32 *)((u8 *)self + off + 0xE8) = i;
         } else {
             *(f32 *)(element + 0xE4) += lbl_80561740;
         }
@@ -715,7 +712,7 @@ extern "C" s32 fn_80156C84(void *arg0, s32 arg1) {
     if (fn_801B306C() > lbl_80561744) {
         return *(s32 *)((u8 *)self + 0xE8);
     }
-    return ((s32 *)self)[arg1 * 2 + 0x3A];
+    return *(s32 *)((u8 *)self + off + 0xE8);
 }
 #pragma pop
 extern s32 fn_80129D90(s32, s32, s32);
