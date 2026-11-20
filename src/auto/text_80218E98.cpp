@@ -4440,10 +4440,13 @@ enum {
 
 extern "C" char lbl_8033D9B0[];
 extern "C" char lbl_8033D9BC[];
+#pragma push
+#pragma always_inline on
 static inline s32 AbsIface8021F678(s32 x) {
     s32 sign = x >> 31;
     return (x ^ sign) - sign;
 }
+#pragma pop
 #pragma push
 #pragma scheduling on
 extern "C" void *fn_8021F678(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, f32 farg0, f32 farg1) {
