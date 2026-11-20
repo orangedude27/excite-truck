@@ -26,6 +26,7 @@ extern int fn_8028D17C(void);
 extern void fn_8028D2B4(void);
 extern void fn_8028DDF0(void *, int);
 extern void fn_80287B38(void *);
+typedef struct { unsigned char data[0x28]; } Rec28;
 void fn_8028CED8(void) {
     /* RealName: SkidSystem_Init (guess). If skid data is ready, allocate/init buffers, register the update callback, and mark active. */
 #define sSkidSystemActive lbl_8055F714
@@ -135,7 +136,7 @@ extern "C" void fn_8028D084(void *arg0, void *arg1) {
     char *base = (char *)&lbl_80348C50;
     int value;
     *(int *)arg0 = fn_802CAC28(((Obj8028D084 *)arg1)->f5(lbl_8055C8C8), 0);
-    *(float *)((char *)arg0 + 4) = ((Obj8028D084 *)arg1)->f9((char *)&lbl_80348C50);
+    *(float *)((char *)arg0 + 4) = ((Obj8028D084 *)arg1)->f9(&((struct Tbl8028D084 *)base)->f[0]);
     *(float *)((char *)arg0 + 8) = ((Obj8028D084 *)arg1)->f9(base + 0xC);
     *(float *)((char *)arg0 + 0xC) = ((Obj8028D084 *)arg1)->f9(base + 0x18);
     value = ((Obj8028D084 *)arg1)->f7(base + 0x24);
@@ -451,8 +452,8 @@ void fn_8028D89C(void *arg0, int arg1, float arg2) {
 #pragma fp_contract off
     void *base;
     int idx, kind, flag;
-    unsigned char *entry;
     unsigned char *g;
+    unsigned char *entry;
     unsigned char *itemC;
     unsigned char *item;
     unsigned char *next;
