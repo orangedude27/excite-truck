@@ -783,7 +783,7 @@ extern "C" void* __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, s32 deleteFlag, 
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling off
 #pragma use_lmw_stmw off
 extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
     typedef void (*Callback)(s32, void *, void *, u32);
@@ -800,7 +800,7 @@ extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
         Callback callback;
         u32 callbackArg;
     };
-    u32 level = OSDisableInterrupts();
+    register u32 level = OSDisableInterrupts();
     if (((WavePlayer *)arg0)->inList != 0) {
         if (arg0 == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803274C0, 0x233,
@@ -809,16 +809,16 @@ extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
             lbl_8041D4AC, (u8 *)arg0 + 0x94);
         ((WavePlayer *)arg0)->inList = 0;
     }
-    u32 voiceLevel = OSDisableInterrupts();
+    register u32 voiceLevel = OSDisableInterrupts();
     if (((WavePlayer *)arg0)->voice != 0)
         Stop__Q46nw4hbm3snd6detail7AxVoiceFv(((WavePlayer *)arg0)->voice);
     ((WavePlayer *)arg0)->stopped = 0;
     OSRestoreInterrupts(voiceLevel);
 
-    void *sentinel = (u8 *)arg0 + 8;
-    void *node = ((WavePlayer *)arg0)->waves.next;
+    register void *sentinel = (u8 *)arg0 + 8;
+    register void *node = ((WavePlayer *)arg0)->waves.next;
     while (node != sentinel) {
-        void *entry = node;
+        register void *entry = node;
         node = *(void **)node;
         if (entry == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327490, 0x23D,
@@ -836,7 +836,7 @@ extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
                 Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327460, 0x193,
                                              (const char *)lbl_8032743C);
             ((WavePlayer *)arg0)->callback(1, arg0, userData,
-                                             ((WavePlayer *)arg0)->callbackArg);
+                                           ((WavePlayer *)arg0)->callbackArg);
         }
     }
     if (*(volatile u32 *)((volatile u8 *)arg0 + 4) != 0)
