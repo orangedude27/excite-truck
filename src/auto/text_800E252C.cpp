@@ -851,16 +851,18 @@ extern "C" void fn_80031C8C(unsigned short);
 extern "C" void fn_80031C94(unsigned short);
 extern "C" void fn_80031C9C(unsigned short);
 #pragma always_inline on
+static inline unsigned char *GetSoundFromNode_800E3228(unsigned char *node) {
+    if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+    return node - 0x8C;
+}
 static inline void SetSoundFlagAll_800E3228(void *list, unsigned char flag) {
     unsigned int interruptState = OSDisableInterrupts();
     unsigned char *it = *(unsigned char **)list;
     while (it != (unsigned char *)list) {
         unsigned char *node = it;
         it = *(unsigned char **)it;
-        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
-        if (*(unsigned char *)(node - 0x8C) != 0) {
-            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
-            *(unsigned char *)(node - 0x85) |= flag;
+        if (*GetSoundFromNode_800E3228(node) != 0) {
+            GetSoundFromNode_800E3228(node)[7] |= flag;
         }
     }
     OSRestoreInterrupts(interruptState);
