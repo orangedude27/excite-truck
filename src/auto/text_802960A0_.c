@@ -577,6 +577,7 @@ ret0:
 
 #pragma push
 #pragma cplusplus on
+#pragma unroll 1
 extern "C" float fn_802970C8(void *arg0) {
     int count = *(int *)((char *)arg0 + 0x2C);
     int processed = 0;
