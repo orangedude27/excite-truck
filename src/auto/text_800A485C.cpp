@@ -12667,6 +12667,7 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
     u32 end;
     u32 result;
     u32 shifted;
+    s32 ret;
     while ((shift = (shift >> 1) & 0x7FFF) != 0) countA++;
     countB = 0;
     shift = 1;
@@ -12721,13 +12722,15 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
     result = end - start;
     *arg1 = result;
     shifted = result >> countB;
-    if (shifted < 0xFF5) {
-        return 0;
-    } else if (shifted < 0xFFF5) {
-        return 1;
-    } else {
-        return 2;
-    }
+    if (shifted < 0xFF5) return 0;
+    ret = 2;
+    do {
+        if (shifted < 0xFFF5) {
+            ret = 1;
+            break;
+        }
+    } while (0);
+    return ret;
 }
 
 extern "C" s32 fn_800B865C(u8 *buffer) {
@@ -18431,12 +18434,12 @@ void fn_800C4CF4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s8 arg4, s32 arg5) {
     {
       ((void (*)(s32, s32, s32, s32)) fn_800C34B4)(arg1, arg3 + var_r16, *((s16 *) (((u8 *) arg0) + 0x27C)), 1);
     }
-    ++var_r22;
+    var_r28 += 0x100;
     var_r27 += 0x40;
     var_r17 += 0x80;
-    var_r26 += 0x20;
     var_r16 += 0x40;
-    var_r28 += 0x100;
+    ++var_r22;
+    var_r26 += 0x20;
   }
   while (var_r22 < 0x12);
 }
