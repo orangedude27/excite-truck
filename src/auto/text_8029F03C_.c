@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-struct Fn8029Pair { float x, y; } __attribute__((aligned(8)));
+union Fn8029Pair { double d; struct { float x, y; }; };
 struct Fn8029Vec { float x, y, z; };
 extern float lbl_805646B8;
 extern float lbl_805646BC;
@@ -836,11 +836,14 @@ typedef struct Result_802A0098 {
 } Result_802A0098;
 extern "C" float PSVECMag(const void *);
 extern float lbl_805646BC;
-#pragma optimization_level 2
+#pragma opt_lifetimes off
 extern "C" void fn_802A0098(Result_802A0098 *out, const float *arg0, const Unk802A0794Params *arg1) {
-    float span = arg0[1] * PSVECMag(&arg1->values[3]);
-    float width = (lbl_805646BC < span) ? lbl_805646BC : span;
-
+    float width;
+    {
+        float span = arg0[1] * PSVECMag(&arg1->values[3]);
+        width = lbl_805646BC;
+        width = (width < span) ? width : span;
+    }
     out->count = (int)(arg0[2] + arg0[3] * width);
     out->data[0] = arg1->values[0] + arg0[12];
     out->data[1] = arg1->values[1] + arg0[13];
@@ -853,7 +856,7 @@ extern "C" void fn_802A0098(Result_802A0098 *out, const float *arg0, const Unk80
     out->data[8] = arg0[8] + arg0[10] * width;
     out->data[9] = arg0[9] + arg0[11] * width;
 }
-#pragma optimization_level reset
+#pragma opt_lifetimes reset
 extern "C" float fn_80287BC8(float, float);
 extern void fn_802A0098(void *, void *, Unk802A0794Params *);
 extern int fn_8028E584(int, float *, float *);
