@@ -1996,13 +1996,7 @@ extern "C" f32 fn_8010DC74(void *writer, const char *fmt, ...) {
     return fw;
 }
 
-extern "C" s32 fn_8010E3BC(s32 p0, s32 p1, s32 p2, s32 p3) {
-    struct ArgPack { s32 a3, a2, a1, a0; } argpack;
-    argpack.a3 = p3; argpack.a2 = p2; argpack.a1 = p1; argpack.a0 = p0;
-    s32 &arg0 = argpack.a0;
-    s32 &arg1 = argpack.a1;
-    s32 &arg2 = argpack.a2;
-    s32 &arg3 = argpack.a3;
+extern "C" s32 fn_8010E3BC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 extern void GetCharStrmReader__Q36nw4hbm2ut4FontCFv(void*,s32);
 extern s32 GetFont__Q36nw4hbm2ut10CharWriterCFv(s32);
 extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv(s32),GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(s32),GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(s32),GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80105C2C(s32);
