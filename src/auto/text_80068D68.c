@@ -6424,10 +6424,9 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
     u8 *connEntry;
     u8 i;
     u8 j;
-    u8 k;
+    u32 k;
     u8 spec_idx;
     u8 *cfgEnt;
-    u8 m;
     if (fn_8007A2C8((u16 *)version) == 0 && *(u16 *)(version + 6) == 15 && version[0] < 3) {
         if (status == 4) {
             policy = *(u16 *)(lbl_802EE8F0 + 4) & 11;
@@ -6445,7 +6444,7 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
     if (i > *(volatile u8 *)(cfg + 1))
         return;
     for (k = 0; k < 3; k++) {
-        connEntry = lbl_803C0C14 + (k << 5);
+        connEntry = lbl_803C0C14 + ((u8)k << 5);
         if (connEntry[182] != 0 && bdcmp(connEntry + 176, peer_addr) == 0) {
             fn_8007148C((s32)(connEntry + 152));
             connEntry[182] = 0;
@@ -6481,15 +6480,14 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
         fn_80070FA4(entry + 1, peer_addr);
         lbl_803C0D18[0]++;
     }
-    for (m = 0; m < lbl_803C0C14[77]; m++) {
-        if (bdcmp(lbl_803C0C14 + m * 11, peer_addr) == 0) {
-            (lbl_803C0C14 + m * 11)[9] = 0;
-            (lbl_803C0C14 + m * 11)[10] = 0;
+    for (i = 0; i < lbl_803C0C14[77]; i++) {
+        if (bdcmp(lbl_803C0C14 + i * 11, peer_addr) == 0) {
+            (lbl_803C0C14 + i * 11)[9] = 0;
+            (lbl_803C0C14 + i * 11)[10] = 0;
             break;
         }
     }
-    entry = lbl_803C0D18 + j * 9;
-    entry[9] = status;
+    (lbl_803C0D18 + j * 9)[9] = status;
     bta_dm_pm_set_mode(peer_addr, 0);
 }
 
@@ -22390,25 +22388,26 @@ u32 port_rfc_send_tx_data(void *port) {
     u32 events = 0;
     void *packet;
 
-    if (*(s32 *)(p + 0x28) == 0)
-        goto flow;
+    if (*(s32 *)(p + 0x28) != 0) {
+        do {
+            for (;;) {
+                packet = GKI_dequeue((BUFFER_Q *)(p + 0x18));
+                if (packet != 0) {
+                    if (lbl_803C4828[0x414] >= 4)
+                        fn_8007093C(0x90003, lbl_803194FC);
 
-    for (;;) {
-        packet = GKI_dequeue((BUFFER_Q *)(p + 0x18));
-        if (packet != 0) {
-            if (lbl_803C4828[0x414] >= 4)
-                fn_8007093C(0x90003, lbl_803194FC);
-
-            *(s32 *)(p + 0x28) -= *(u16 *)((u8 *)packet + 2);
-            fn_800939CC(*(void **)(p + 0x6c), p[0xd], packet);
-            events |= 0x4000;
-            if (*(s32 *)(p + 0x28) != 0)
-                continue;
-            events |= 4;
-            goto flow;
-        }
-        events |= 4;
-        goto flow;
+                    *(s32 *)(p + 0x28) -= *(u16 *)((u8 *)packet + 2);
+                    fn_800939CC(*(void **)(p + 0x6c), p[0xd], packet);
+                    events |= 0x4000;
+                    if (*(s32 *)(p + 0x28) != 0)
+                        continue;
+                    events |= 4;
+                    goto flow;
+                }
+                events |= 4;
+                break;
+            }
+        } while (0);
     }
 
 flow:
@@ -25818,11 +25817,29 @@ UINT16 SDP_GetLocalDiRecord(tSDP_DI_GET_RECORD *p_device_info, UINT32 *p_handle)
         attr = fn_80096904(record, 0x204, 0x204);
         if (attr != NULL) p_device_info->rec.primary_record = **(u8 **)((u8 *)attr + 4);
         attr = fn_80096904(record, 0xB, 0xB);
-        if (attr != NULL) { len = *(u32 *)attr; len = (len >= 0x50) ? 0x50 : len; s = *(u8 **)((u8 *)attr + 4); for (i = 0; i < (s32)len; i++) ((u8 *)p_device_info)[0xb + i] = *s++; }
+        if (attr != NULL) {
+            register int ijk;
+            len = *(u32 *)attr;
+            len = (len >= 0x50) ? 0x50 : len;
+            s = *(u8 **)((u8 *)attr + 4);
+            for (ijk = 0; ijk < (int)len; ijk++) ((u8 *)((u8 *)p_device_info + 0xb))[ijk] = *s++;
+        }
         attr = fn_80096904(record, 0x101, 0x101);
-        if (attr != NULL) { len = *(u32 *)attr; len = (0x50 <= len) ? 0x50 : len; s = *(u8 **)((u8 *)attr + 4); for (i = 0; i < (s32)len; i++) ((u8 *)p_device_info)[0x5b + i] = *s++; }
+        if (attr != NULL) {
+            register int ijk;
+            len = *(u32 *)attr;
+            len = (0x50 <= len) ? 0x50 : len;
+            s = *(u8 **)((u8 *)attr + 4);
+            for (ijk = 0; ijk < (int)len; ijk++) ((u8 *)((u8 *)p_device_info + 0x5b))[ijk] = *s++;
+        }
         attr = fn_80096904(record, 0xA, 0xA);
-        if (attr != NULL) { len = *(u32 *)attr; len = (len >= 0x50) ? 0x50 : len; s = *(u8 **)((u8 *)attr + 4); for (i = 0; i < (s32)len; i++) ((u8 *)p_device_info)[0xab + i] = *s++; }
+        if (attr != NULL) {
+            register int ijk;
+            len = *(u32 *)attr;
+            len = (len >= 0x50) ? 0x50 : len;
+            s = *(u8 **)((u8 *)attr + 4);
+            for (ijk = 0; ijk < (int)len; ijk++) ((u8 *)((u8 *)p_device_info + 0xab))[ijk] = *s++;
+        }
     } else *p_handle = 0;
     return result;
 }
