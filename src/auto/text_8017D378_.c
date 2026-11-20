@@ -23,6 +23,7 @@ extern void fn_80179F94(void *, void *);
 extern void fn_801D0C58(void *, int, int);
 extern int fn_802077A4(void *, int, void *, void *);
 extern float lbl_80561BE0;
+__declspec(section ".sdata") extern double lbl_80561BE8;
 extern float lbl_80561C04;
 extern float lbl_80561C08;
 extern char lbl_80331DB4[];
@@ -89,10 +90,10 @@ void fn_8017D380(float *arg0, int arg1) {
     extern float lbl_80561BE0;
     extern float lbl_80561BE4;
     extern double lbl_80561BE8;
-    register void *root = fn_80178C9C();
-    register void *sub = *(void **)((char *)root + 0x2C);
-    register int scaled = arg1 * 2;
-    register float *values = *(float **)((char *)sub + 0x1C);
+    void *root = fn_80178C9C();
+    int scaled = arg1 * 2;
+    void *sub = *(void **)((char *)root + 0x2C);
+    volatile float *values = *(volatile float **)((char *)sub + 0x1C);
 
     arg0[0] = values[0];
     arg0[1] = lbl_80561BE0;
@@ -701,31 +702,25 @@ void fn_8017E388(void *out) {
 
 #pragma processor 750
 #pragma paired_single off
-void fn_8017E3C4(a, b, c)
-short *a;
-void *b;
-void *c;
-{
+void fn_8017E3C4(void *arg0, void *arg1, short *arg2) {
     extern void *__AXFXGetLfoSinTable_801769CC(void);
     extern void *fn_801B2EC0(int);
     extern int fn_801E9E30(void *, void *);
     extern void fn_801E9DC4(void *, float, float, float, float, float);
     extern float lbl_80561C30, lbl_80561C34, lbl_80561C38, lbl_80561C3C, lbl_80561C40;
-    void *body = (void *)a;
-    short *gid = (short *)c;
     float sp3C[3];
     struct KeyCtx { float *q; float t; int unk; } kc;
     float query[3], jr[3], bd[2], bd2[2];
-    float a2, e, jitter;
+    float a, e, jitter;
     float amp10;
     double r1;
     void *veh;
     void **ftbl;
     char *p;
     float t;
-    float *out = (float *)b;
+    float *out = (float *)arg1;
     if (*(int *)((char *)__AXFXGetLfoSinTable_801769CC() + 4) & 0x10000) {
-        float *q = (float *)fn_8017960C(*(int *)((char *)body + 0x1F8));
+        float *q = (float *)fn_8017960C(*(int *)((char *)arg0 + 0x1F8));
         sp3C[0] = q[24] + q[70] * lbl_80561C30;
         sp3C[1] = q[25] + q[71] * lbl_80561C30;
         sp3C[2] = q[26] + q[72] * lbl_80561C30;
@@ -739,11 +734,11 @@ void *c;
             float orig2 = sp3C[2];
             sp3C[0] += jr[0]; sp3C[1] += jr[1]; sp3C[2] += jr[2];
             out[0] = sp3C[0]; out[1] = sp3C[2];
-            fn_801E9DC4(gid, jr[0], orig2, sp3C[1], sp3C[0], jr[1]);
+            fn_801E9DC4(arg2, jr[0], orig2, sp3C[1], sp3C[0], jr[1]);
         }
         return;
     }
-    veh = fn_801B2EC0(*(int *)((char *)body + 0x1F8));
+    veh = fn_801B2EC0(*(int *)((char *)arg0 + 0x1F8));
     ftbl = *(void ***)veh;
     p = (char *)((void *(*)(void))ftbl[6])();
     t = fn_80129DC4(4, lbl_80561C38, lbl_80561C3C);
@@ -751,12 +746,12 @@ void *c;
     kc.t = *(float *)(p + 8);
     kc.unk = *(int *)(p + 0xc);
     while (t > kc.q[6]) { t -= kc.q[6]; kc.q = *(float **)((char *)kc.q + 0x14); }
-    a2 = kc.q[10] + kc.t * ((*(float **)((char *)kc.q + 0x14))[10] - kc.q[10]);
-    jitter = fn_80129DC4(4, -a2 * lbl_80561C40, a2 * lbl_80561C40);
+    a = kc.q[10] + kc.t * ((*(float **)((char *)kc.q + 0x14))[10] - kc.q[10]);
+    jitter = fn_80129DC4(4, -a * lbl_80561C40, a * lbl_80561C40);
     out[0] = kc.q[0] + kc.t * ((*(float **)((char *)kc.q + 0x14))[0] - kc.q[0]);
     out[1] = kc.q[1] + kc.t * ((*(float **)((char *)kc.q + 0x14))[1] - kc.q[1]);
-    bd[0] = kc.q[2] + kc.t * ((*(float **)((char *)kc.q + 0x14))[2] - kc.q[2]);
     bd[1] = kc.q[3] + kc.t * ((*(float **)((char *)kc.q + 0x14))[3] - kc.q[3]);
+    bd[0] = kc.q[2] + kc.t * ((*(float **)((char *)kc.q + 0x14))[2] - kc.q[2]);
     e = lbl_80561BF4 / (float)((double (*)(void *, void *, float, float, float, float, float))fn_8002F234)(*(float **)((char *)kc.q + 0x14), kc.q, bd[0] * bd[0] + bd[1] * bd[1], bd[1], bd[0], kc.q[3], (*(float **)((char *)kc.q + 0x14))[3]);
     {
         float z = bd[0];
@@ -766,13 +761,13 @@ void *c;
     out[0] += bd[0] * jitter;
     out[1] += bd[1] * jitter;
     query[0] = out[0]; query[1] = lbl_80561BE0; query[2] = out[1];
-    fn_801E9DC4(gid, out[1], bd[1] * jitter, out[0], bd[0] * jitter, bd[1]);
-    if (fn_801E9E30(gid, query) == 0) {
+    fn_801E9DC4(arg2, out[1], bd[1] * jitter, out[0], bd[0] * jitter, bd[1]);
+    if (fn_801E9E30(arg2, query) == 0) {
         float z0 = lbl_80561BE0;
         out[0] = kc.q[0] + kc.t * ((*(float **)((char *)kc.q + 0x14))[0] - kc.q[0]);
         out[1] = kc.q[1] + kc.t * ((*(float **)((char *)kc.q + 0x14))[1] - kc.q[1]);
-        bd2[0] = kc.q[2] + kc.t * ((*(float **)((char *)kc.q + 0x14))[2] - kc.q[2]);
         bd2[1] = kc.q[3] + kc.t * ((*(float **)((char *)kc.q + 0x14))[3] - kc.q[3]);
+        bd2[0] = kc.q[2] + kc.t * ((*(float **)((char *)kc.q + 0x14))[2] - kc.q[2]);
         e = lbl_80561BF4 / (float)((double (*)(void *, void *, float, float, float, float, float))fn_8002F234)(*(float **)((char *)kc.q + 0x14), kc.q, bd2[0] * bd2[0] + bd2[1] * bd2[1], bd2[1], bd2[0], kc.q[3], (*(float **)((char *)kc.q + 0x14))[3]);
         {
             float z2 = bd2[0];
@@ -781,7 +776,7 @@ void *c;
         }
         out[0] += bd2[0] * z0;
         out[1] += bd2[1] * z0;
-        fn_801E9DC4(gid, out[1], bd2[1] * z0, out[0], bd2[0] * z0, bd2[1]);
+        fn_801E9DC4(arg2, out[1], bd2[1] * z0, out[0], bd2[0] * z0, bd2[1]);
     }
 }
 void fn_8017E764(void *arg0, int arg1) {
