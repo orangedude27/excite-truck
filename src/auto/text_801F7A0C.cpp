@@ -448,7 +448,7 @@ extern "C" void fn_801F7D10(void *arg0, void *arg1, void *arg2) {
         virtual void finish(const char *);
     };
     if (((VTable *)arg2)->check(lbl_8033AFB8) != 0) {
-        fn_801F7B10(arg1, arg2, (s32)lbl_8033AFB8);
+        fn_801F7B10((u8 *)arg1, (F7B10Obj *)arg2, (s32)lbl_8033AFB8);
         f32 scale = *(f32 *)((u8 *)arg0 + 0x28);
         *(f32 *)((u8 *)arg1 + 0x24) =
             *(f32 *)((u8 *)arg1 + 0x24) + *(f32 *)((u8 *)arg1 + 0x0C) * scale;
