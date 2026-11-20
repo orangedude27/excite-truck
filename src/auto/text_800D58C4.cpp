@@ -10,6 +10,7 @@
 #include "revolution/GX/GXVert.h"
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
 struct GetVtxPosResult { f32 x; f32 y; };
+struct LRect { f32 x, y, w, h; };
 struct SelfVtable8020 {
     virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
     virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
@@ -559,6 +560,8 @@ extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4Si
 }
 
 extern "C" void GXSetTevOp(u8, u8);
+#pragma push
+#pragma processor 750
 extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color(void *arg0, void *arg1, void *arg2)
 {
   GXClearVtxDesc();
@@ -590,14 +593,15 @@ extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3
   GXSetLineWidth((u8) 6, (u32) 0);
   GXBegin((GXPrimitive) 0xB0, (GXVtxFmt) 0, (u16) 5);
   volatile f32 *fifo = (volatile f32 *) 0xCC008000;
-  f32 w = *((f32 *) arg1);
-  f32 x0 = *((f32 *) arg0);
+  f32 x0, w, y0, x1, h, y1;
+  x0 = *((f32 *) arg0);
+  w = *((f32 *) arg1);
   *fifo = x0;
-  f32 y0 = *((f32 *) (((u8 *) arg0) + 4));
-  f32 x1 = (0, x0 + w);
-  f32 h = *((f32 *) (((u8 *) arg1) + 4));
+  y0 = *((f32 *) (((u8 *) arg0) + 4));
+  x1 = (0, x0 + w);
+  h = *((f32 *) (((u8 *) arg1) + 4));
   *fifo = y0;
-  f32 y1 = y0 + h;
+  y1 = y0 + h;
   *fifo = x1;
   *fifo = y0;
   *fifo = x1;
@@ -607,10 +611,7 @@ extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3
   *fifo = x0;
   *fifo = y0;
 }
-
-#pragma use_lmw_stmw off
-#pragma scheduling on
-#pragma dont_inline InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl
+#pragma pop
 extern "C" void TPLBind(void*);
 extern "C" void *TPLGet(void*, u32);
 extern "C" void GXInitTexObj(void*, void*, u16, u16, u32, u32, u32, u32);
@@ -1025,12 +1026,13 @@ extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3l
 #pragma dont_inline on
 s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *arg2) {
     const char *msg = lbl_8031F728;
-    ResBlockSetTmp blockSet;
-    s32 count;
-    s32 depth;
+    void *pane, *currentParent, *lastPane;
     s32 groupCreated;
-    void *currentParent, *lastPane, *pane, *container, *rootPane, *groupResult;
+    s32 depth;
     const u8 *block;
+    s32 count;
+    ResBlockSetTmp blockSet;
+    void *container, *rootPane, *groupResult;
     u16 size;
     u32 tag;
     if (lbl_8055DDF0 == 0)
@@ -1047,11 +1049,11 @@ s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *
     blockSet.b = 0;
     blockSet.c = 0;
     blockSet.d = (u32)arg2;
-    count = 0;
-    depth = 0;
-    groupCreated = 0;
     currentParent = 0;
     lastPane = 0;
+    groupCreated = 0;
+    depth = 0;
+    count = 0;
     block = (const u8 *)arg1 + *(const u16 *)((const u8 *)arg1 + 0xC);
     while (count < *(const u16 *)((const u8 *)arg1 + 0xE)) {
         tag = *(const u32 *)block;
@@ -1299,8 +1301,8 @@ extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
     StateNode_800D6CA0 *sentinel = (StateNode_800D6CA0 *)&lbl_8055DE08;
     u8 *self = *(u8 **)((u8 *)arg0 + 0x10);
     struct { StateNode_800D6CA0 *node; } cur1;
-    struct { StateNode_800D6CA0 *end; } end1s;
     struct { StateNode_800D6CA0 *node; } cur2;
+    struct { StateNode_800D6CA0 *end; } end1s;
     struct { StateNode_800D6CA0 *end; } end2s;
     struct { StateNode_800D6CA0 *node; } cur3;
     struct { u8 *ptr; } pp1;
@@ -1566,7 +1568,6 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
     u8* self = (u8*)this_;
     const u8* src;
     u8* dst;
-    int i;
     s32 texBase;
     s32 off;
     void* texCoordAry;
@@ -1600,6 +1601,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
     u8* tevCur;
     void* colorDst;
     int j;
+    int i;
 
     *(void**)self = lbl_8031FF08;
     fn_800D7F78(self + 0x18);
@@ -3281,9 +3283,8 @@ extern "C" s32 fn_800DB398(s32 object, s32 deleteFlag) {
 
 void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *src) {
     u32 zero = 0;
-    void *vtable = lbl_8032012C;
     void *list14 = (u8 *)dst + 0x14;
-    f32 defaultValue = 0.0f;
+    f32 defaultValue = lbl_80560EA8;
     void *list20 = (u8 *)dst + 0x20;
     *(volatile u32 *)((u8 *)dst + 0x14) = zero;
     *(volatile u32 *)((u8 *)dst + 0x18) = zero;
@@ -3291,7 +3292,7 @@ void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *s
     *(volatile u32 *)((u8 *)dst + 0x24) = zero;
     *(volatile u32 *)((u8 *)dst + 4) = zero;
     *(volatile u32 *)((u8 *)dst + 8) = zero;
-    *(void **)dst = vtable;
+    *(void **)dst = lbl_8032012C;
     *(u32 *)((u8 *)dst + 0x10) = zero;
     *(void **)((u8 *)dst + 0x14) = list14;
     *(void **)((u8 *)dst + 0x18) = list14;
@@ -3379,7 +3380,7 @@ extern "C" const char lbl_8031FF90[];
 extern "C" const char lbl_80320250[];
 extern "C" const char lbl_8032022C[];
 extern "C" void AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane(void* arg0, void* arg1) {
-    struct PaneMsgBlock { char file[0x10]; char msg1[0x2C]; char msg2[0x2C]; };
+    struct PaneMsgBlock { char file[0x10]; char msg1[0x2C]; char msg2[]; };
     register void* iterator = (u8*)arg0 + 0x14;
     register const PaneMsgBlock* messages = (const PaneMsgBlock*)&lbl_8031FF90[0];
     register void* child = arg1;
