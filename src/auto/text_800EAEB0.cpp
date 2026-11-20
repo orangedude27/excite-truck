@@ -1072,19 +1072,22 @@ extern "C" u32 fn_800EC56C(void *__restrict soundHeapRef) {
     return (allocSize - 0x20) & ~31;
 }
 
+#pragma opt_common_subs off
 extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, void* buffer, u32 size, u32 blockSize) {
     extern u8 lbl_80323058[], lbl_80323070[];
     void** head = (void**)headArg;
-    u32 start, stride, i, irq, previous, node;
+    u32 previous;
+    u32 start, stride, i, irq;
+    u32 addr = (u32)buffer;
     if (buffer == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323058, 0x26, (const char*)lbl_80323070);
     irq = OSDisableInterrupts();
-    start = ((u32)buffer + 3) & ~3;
+    start = (addr + 3) & ~3;
     i = 0;
     stride = (blockSize + 3) & ~3;
-    blockSize = (size - (start - (u32)buffer)) / stride;
+    blockSize = (size - (start - addr)) / stride;
     if (blockSize != 0) {
+        u32 node = start;
         previous = (u32)*head;
-        node = start;
         for (; i < blockSize; i++) {
             *(u32*)node = previous;
             *head = (void*)node;
@@ -1094,7 +1097,7 @@ extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, 
     }
     OSRestoreInterrupts(irq);
 }
-
+#pragma opt_common_subs reset
 void nw4hbm::snd::detail::PoolImpl::DestroyImpl(void* buffer, unsigned long size) {
     /* Remove any free-list nodes whose addresses fall within [buffer, buffer + size). */
     if (buffer == 0) {
@@ -1182,39 +1185,42 @@ extern const s8 lbl_802F4D90[];
 extern const char lbl_803230A0[], lbl_803230AC[];
 extern const f32 lbl_80561030, lbl_80561034, lbl_80561038;
 extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
-extern "C" f32 GetValue__Q46nw4hbm3snd6detail3LfoCFv(void *__restrict arg0) {
+extern "C" f32 GetValue__Q46nw4hbm3snd6detail3LfoCFv(void *__restrict lfo) {
+    /* Sample the sound LFO: if the current level is zero or the delay counter is
+     * still counting, yield 0; otherwise turn the fractional phase into a 0-127
+     * quarter-wave index, fold it through the 32-entry sine table (mirroring the
+     * sign in the upper half-waves) and scale by the current level. */
     f32 zero = 0.0f;
-    f32 current = *(f32 *)arg0;
-    s32 index;
+    f32 currentLevel = *(f32 *)lfo;
+    s32 tableIndex;
     s32 valid;
     s8 tableValue;
     f32 angle;
     f32 value;
-    f32 currentLevel;
     u8 level;
 
-    if (zero == current) return zero;
-    if (*(u32 *)((u8 *)arg0 + 0x10) < *(u32 *)((u8 *)arg0 + 8)) return zero;
+    if (zero == currentLevel) return zero;
+    if (*(u32 *)((u8 *)lfo + 0x10) < *(u32 *)((u8 *)lfo + 8)) return zero;
 
     valid = 0;
-    angle = lbl_80561030 * (lbl_80561034 * *(f32 *)((u8 *)arg0 + 0x14));
-    index = (s32)angle;
-    if (index >= 0 && index < 0x80) valid = 1;
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803230A0, 0x7b, lbl_803230AC, index, 0, 0x80);
+    angle = lbl_80561030 * (lbl_80561034 * *(f32 *)((u8 *)lfo + 0x14));
+    tableIndex = (s32)angle;
+    if (tableIndex >= 0 && tableIndex < 0x80) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803230A0, 0x7b, lbl_803230AC, tableIndex, 0, 0x80);
 
-    if (index < 0x20) tableValue = lbl_802F4D90[index];
-    else if (index < 0x40) {
-        s32 off = (s32)((u32)index - 0x20u);
+    if (tableIndex < 0x20) tableValue = lbl_802F4D90[tableIndex];
+    else if (tableIndex < 0x40) {
+        s32 off = (s32)((u32)tableIndex - 0x20u);
         tableValue = lbl_802F4D90[(s32)(0x20u - (u32)off)];
-    } else if (index < 0x60) tableValue = -lbl_802F4D90[(u32)index - 0x40u];
+    } else if (tableIndex < 0x60) tableValue = -lbl_802F4D90[(u32)tableIndex - 0x40u];
     else {
-        register s32 off = index - 0x60;
+        register s32 off = tableIndex - 0x60;
         tableValue = -lbl_802F4D90[0x20 - off];
     }
 
     value = (f32)tableValue / lbl_80561038;
-    level = *(u8 *)((u8 *)arg0 + 0xC);
-    currentLevel = *(f32 *)arg0;
+    level = *(u8 *)((u8 *)lfo + 0xC);
+    currentLevel = *(f32 *)lfo;
     value *= currentLevel;
     value *= (f32)level;
     return value;
@@ -1931,27 +1937,9 @@ s32 nw4hbm::snd::detail::MmlParser::ReadArg(const u8 **pp, SeqPlayer *player, Se
     register SeqPlayer *rplayer = player;
     register SeqTrack *rtrack = track;
     register const char *rbase = (const char*)::lbl_80323268;
+    register s32 rcount;
     s32 res;
     switch (type) {
-    case (SeqArgType)2: {
-        s32 count;
-        res = 0;
-        count = 0;
-        for (;;) {
-            const u8 *p;
-            u8 b;
-            if (count >= 4) {
-                Panic__Q26nw4hbm2dbFPCciPCce(rbase, 0x326, rbase + 0x4C4);
-            }
-            p = *rpp;
-            res <<= 7;
-            *rpp = p + 1;
-            b = *p;
-            res |= (b & 0x7F);
-            if ((b & 0x80) == 0) goto done;
-            count++;
-        }
-    }
     case (SeqArgType)0: {
         const u8 *p = *rpp;
         *rpp = p + 1;
@@ -1960,19 +1948,42 @@ s32 nw4hbm::snd::detail::MmlParser::ReadArg(const u8 **pp, SeqPlayer *player, Se
     }
     case (SeqArgType)1: {
         const u8 *p = *rpp;
-        *rpp = p + 1;
+        const u8 *q = p + 1;
+        *rpp = q;
         u8 b0 = *p;
-        *rpp = p + 2;
-        u8 b1 = *(p + 1);
+        *rpp = q + 1;
+        u8 b1 = *q;
         res = (b0 << 8) | b1;
         break;
+    }
+    case (SeqArgType)2: {
+        rcount = 0;
+        res = 0;
+        for (;;) {
+            const u8 *p;
+            u8 b;
+            if (rcount >= 4) {
+                Panic__Q26nw4hbm2dbFPCciPCce(rbase, 0x326, rbase + 0x4C4);
+            }
+            p = *rpp;
+            res <<= 7;
+            *rpp = p + 1;
+            b = *p;
+            res |= (b & 0x7F);
+            if ((b & 0x80) == 0) goto done;
+            rcount++;
+        }
     }
     case (SeqArgType)4: {
         const u8 *p = *rpp;
         *rpp = p + 1;
-        u8 v = *p;
+        s32 v = *p;
         s16 *ptr;
-        if (v > 0x30) {
+        s32 ok = 0;
+        if (v >= 0 && v <= 0x30) {
+            ok = 1;
+        }
+        if (ok == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(rbase, 0x370, rbase + 0xC8, v, 0, 0x30);
         }
         if (v < 0x20) {
@@ -1982,23 +1993,29 @@ s32 nw4hbm::snd::detail::MmlParser::ReadArg(const u8 **pp, SeqPlayer *player, Se
         } else {
             ptr = 0;
         }
-        if (ptr == 0) return 0;
-        res = *ptr;
+        if (ptr != 0) res = *ptr;
         break;
     }
     case (SeqArgType)3: {
-        const u8 *p = *rpp;
-        *rpp = p + 1;
-        u8 b0 = *p;
-        *rpp = p + 2;
-        u8 b1 = *(p + 1);
+        union PU { u32 i; const u8 *p; };
+        PU pu0, pu1, pu2, pu3, pu4;
+        pu0.i = (u32)*rpp;
+        pu1.i = pu0.i + 1;
+        *rpp = pu1.p;
+        u8 b0 = *pu0.p;
+        pu2.i = pu1.i + 1;
+        *rpp = pu2.p;
+        u8 b1 = *pu1.p;
         s16 first = (s16)((b0 << 8) | b1);
-        *rpp = p + 3;
-        u8 b2 = *(p + 2);
-        *rpp = p + 4;
-        u8 b3 = *(p + 3);
-        s16 second = (s16)((b2 << 8) | b3);
+        pu3.i = pu2.i + 1;
+        *rpp = pu3.p;
+        u8 b2 = *pu2.p;
+        pu4.i = pu3.i + 1;
+        *rpp = pu4.p;
+        u8 b3 = *pu3.p;
+        u32 secondRaw = (b2 << 8) | b3;
         u32 rnd = fn_800FEB9C();
+        s16 second = (s16)secondRaw;
         u32 low = rnd & 0xFFFF;
         s32 diff = (s32)second - (s32)first;
         s32 range = diff + 1;
@@ -2006,9 +2023,6 @@ s32 nw4hbm::snd::detail::MmlParser::ReadArg(const u8 **pp, SeqPlayer *player, Se
         res = (s32)first + scaled;
         break;
     }
-    default:
-        res = 0;
-        break;
     }
 done:
     return res;
