@@ -4514,7 +4514,6 @@ void fn_8011D0E8(void *arg0, void *arg1, void *arg2) {
 
 #pragma push
 #pragma optimization_level 3
-struct GroupNode8011 { u32 width; u8 pad_04[0x3C]; u8 *table; };
 void fn_8011D378(void *arg0, void *arg1, void *arg2) {
     u32 *src;
     u32 value, remain, index, node, bit, mask;
