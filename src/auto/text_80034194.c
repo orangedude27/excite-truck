@@ -2187,18 +2187,22 @@ void fn_800375A8(u32 arg0) {
     register u32 value = arg0;
     s32 interrupts;
     interrupts = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 == 0u) {
+    if (*(volatile u32 *)&lbl_8055D848 == 0) {
         *(u32 *)(__ErrorInfo + 0x78) = value;
     } else {
-        *(u32 *)(__ErrorInfo + 0x28 + (*(volatile u32 *)&lbl_8055D848 - 1u) * 0x14u) = value;
+        *(u32 *)(__ErrorInfo + 0x28 + (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = value;
     }
     OSRestoreInterrupts(interrupts);
-    if (value == 0x10u) {
+    if (value == 0x10) {
         fn_8003A1A0(0x1234568, fn_80035C78);
-    } else if (value == 0x20u) {
+    } else if (value == 0x20) {
         fn_8003A1A0(0x1234569, fn_80035C78);
-    } else if ((value & 1u) != 0u) {
+    } else if (value & 1) {
         u32 layout;
+        register u32 shiftedSize;
+        register u32 formattedSize;
+        register u32 rawSize;
+        register u32 discOffset;
         lbl_8055D860 = 0;
         lbl_8055D8CC = (s32)fn_8003588C;
         if (*(u32 *)((u8 *)bootInfo_8055D8C0 + 0x3C) < *(u32 *)(lbl_80376A80 + 8)) {
@@ -2206,14 +2210,13 @@ void fn_800375A8(u32 arg0) {
         }
         fn_8003BCDC(0);
         layout = *(volatile u32 *)&__DVDLayoutFormat;
-        ((void (*)(s32, u32, u32, u32, u32))fn_800356F4)(
-            1,
-            *(u32 *)(lbl_80376A80 + 4) >> layout,
-            ((*(u32 *)(lbl_80376A80 + 8) << (~*(volatile u32 *)&__DVDLayoutFormat & 2u)) + 0x1Fu) & ~0x1Fu,
-            layout,
-            *(u32 *)(lbl_80376A80 + 4));
+        shiftedSize = *(u32 *)(lbl_80376A80 + 8) << (~*(volatile u32 *)&__DVDLayoutFormat & 2);
+        rawSize = *(u32 *)(lbl_80376A80 + 4);
+        discOffset = rawSize >> layout;
+        formattedSize = (shiftedSize + 0x1F) & ~0x1F;
+        ((void (*)(s32, s32, s32, u32, u32))fn_800356F4)(1, discOffset, formattedSize, layout, rawSize);
         fn_8003B81C(*(void **)((u8 *)bootInfo_8055D8C0 + 0x38),
-                    ((*(u32 *)(lbl_80376A80 + 8) << (~*(volatile u32 *)&__DVDLayoutFormat & 2u)) + 0x1Fu) & ~0x1Fu,
+                    ((*(u32 *)(lbl_80376A80 + 8) << (~*(volatile u32 *)&__DVDLayoutFormat & 2)) + 0x1F) & ~0x1F,
                     *(u32 *)(lbl_80376A80 + 4) >> *(volatile u32 *)&__DVDLayoutFormat,
                     (s32)fn_80035A04);
     } else {
@@ -3130,19 +3133,18 @@ s32 fn_800393C4(s32 value) {
     return old;
 }
 
-#pragma push
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_800393D4(void) {
     s32 enabled = OSDisableInterrupts();
-    s32 zero = 0;
+    s32 zero = enabled ^ enabled;
     *(volatile s32 *)&lbl_8055D84C = zero;
     if (PausingFlag_8055D850 != 0) {
-        PausingFlag_8055D850 = 0;
+        PausingFlag_8055D850 = zero;
         fn_80038040();
     }
     OSRestoreInterrupts(enabled);
 }
-#pragma pop
+#pragma opt_propagation reset
 // The DVDCommandBlock, DVDResult and DVDAsyncState types, and the state-static
 // names below, are defined at the top of this file.
 
@@ -3397,7 +3399,6 @@ u32 __DVDGetCoverStatus(void) {
     u64 now;
     u32 hi;
     u32 lo;
-    u64 start;
     lbl_8055D88C = 0;
     fn_8003BB58((void (*)(void))fn_8003998C);
     while (*(volatile u32 *)&lbl_8055D88C == 0) {
@@ -3409,9 +3410,7 @@ u32 __DVDGetCoverStatus(void) {
     now = __OSGetSystemTime();
     hi = lbl_8055D8A0;
     lo = lbl_8055D8A4;
-    start = (u64)hi << 32;
-    start |= lo;
-    if ((s64)now - (s64)start < (s64)(((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100)) {
+    if ((s64)now - (s64)(((u64)hi << 32) | lo) < (s64)(((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100)) {
         return 0;
     }
     status &= 1;
