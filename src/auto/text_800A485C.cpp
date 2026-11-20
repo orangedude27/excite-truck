@@ -10890,53 +10890,49 @@ extern "C" s32 fn_800B5618(void *arg0, void *arg1, u32 arg2, u16 arg3, s32 arg4)
 }
 
 extern "C" s32 fn_800B5700(s32 arg0, void *arg1, s32 arg2, u16 arg3, u32 arg4, u32 *arg5, u32 arg6) {
-#pragma opt_lifetimes off
-    void *page;
+    VFiPFCACHEPage *page;
     u32 count;
     s32 result;
-    u16 limit;
+    u32 left;
+    u32 n;
+    VFiPFVolume *volume = VF_VOLUME((void *)arg0);
+
     *arg5 = 0;
-    if (!(M2C_FIELD(arg0, u16 *, 0x1F8C) & 1) || fn_800A53B4((void *)arg0) == 0 || (M2C_FIELD(arg0, u16 *, 0x1F8C) & 2)) return 9;
-    if ((u32)arg2 >= M2C_FIELD(arg0, u32 *, 8) || arg3 >= (limit = M2C_FIELD(arg0, u16 *, 0)) || (arg3 + arg4) > limit) {
-        if (arg3 != 0) return 10;
-    }
-    if (arg3 != 0 || arg4 < M2C_FIELD(arg0, u16 *, 0)) {
+    if (!(volume->flags & VF_VOL_IN_USE) || !fn_800A53B4((void *)arg0) || (M2C_FIELD(arg0, u16 *, 0x1F8C) & 2)) return 9;
+    if (((u32)arg2 >= volume->totalSectors || arg3 >= volume->bytesPerSector || arg3 + arg4 > volume->bytesPerSector) && arg3 != 0) return 10;
+    if (arg3 != 0 || arg4 < volume->bytesPerSector) {
         result = ((s32 (*)(void *, s32, s32, s32))fn_800A8F28)((void *)arg0, arg2, (s32)&page, arg6);
-        if (result != 0) return result;
-        VFipf_memcpy(M2C_FIELD(page, u8 **, 8) + arg3, arg1, arg4);
+        if (result) return result;
+        VFipf_memcpy(page->data + arg3, arg1, arg4);
         result = fn_800A900C((void *)arg0, (s32)page, arg6);
-        if (result != 0) return result;
+        if (result) return result;
         *arg5 = arg4;
-    } else if ((arg4 & (limit - 1)) == 0) {
-        result = VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded_800A9098((void *)arg0, arg1, arg2, arg4 >> M2C_FIELD(arg0, u8 *, 0x20), (s32)&count);
-        if (result != 0) return result;
-        *arg5 = count << M2C_FIELD(arg0, u8 *, 0x20);
-        if (count != (arg4 >> M2C_FIELD(arg0, u8 *, 0x20))) return 17;
-    } else {
-        u32 toWrite;
-        u32 remainder;
-        if (arg3 != 0) return 10;
-        toWrite = arg4 >> M2C_FIELD(arg0, u8 *, 0x20);
-        remainder = (arg2 + toWrite) % M2C_FIELD(arg0, u32 *, 0x1640);
-        if (toWrite > remainder) {
-            u32 partial = toWrite - remainder;
-            result = VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded_800A9098((void *)arg0, arg1, arg2, partial, (s32)&count);
-            if (result != 0) return result;
-            *arg5 = count << M2C_FIELD(arg0, u8 *, 0x20);
-            if (count != partial) return 17;
-            arg2 += partial;
-            toWrite -= partial;
+    } else if (arg3 == 0 && !(arg4 & (volume->bytesPerSector - 1))) {
+        result = VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded_800A9098((void *)arg0, arg1, arg2, arg4 >> volume->sectorShift, (s32)&count);
+        if (result) return result;
+        *arg5 = count << volume->sectorShift;
+        if (count != arg4 >> volume->sectorShift) return 17;
+    } else if (arg3 == 0) {
+        left = arg4 >> volume->sectorShift;
+        u32 remainder = (arg2 + left) % volume->sectorsPerCluster;
+        if (left > remainder) {
+            n = left - remainder;
+            result = VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded_800A9098((void *)arg0, arg1, arg2, n, (s32)&count);
+            if (result) return result;
+            *arg5 = count << volume->sectorShift;
+            if (count != n) return 17;
+            arg2 += n;
+            left -= n;
         }
-        if (toWrite != 0) {
+        if (left != 0) {
             result = ((s32 (*)(void *, s32, s32, s32))fn_800A8F28)((void *)arg0, arg2, (s32)&page, arg6);
-            if (result != 0) return result;
-            VFipf_memcpy(M2C_FIELD(page, u8 **, 8), (u8 *)arg1 + *arg5, toWrite << M2C_FIELD(arg0, u8 *, 0x20));
+            if (result) return result;
+            VFipf_memcpy(page->data, (u8 *)arg1 + *arg5, left << volume->sectorShift);
             result = fn_800A900C((void *)arg0, (s32)page, arg6);
-            if (result != 0) return result;
-            *arg5 += toWrite << M2C_FIELD(arg0, u8 *, 0x20);
+            if (result) return result;
+            *arg5 += left << volume->sectorShift;
         }
-    }
-#pragma opt_lifetimes reset
+    } else return 10;
     return 0;
 }
 
@@ -14715,12 +14711,12 @@ static inline void fn_800BC538_setShortT(Fn800BC538Obj *obj, Fn800BC538Tbl *t) {
 #pragma use_lmw_stmw on
 extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s16 *arg5, s16 *arg6, u8 *arg7, s16 arg_sp8) {
     Fn800BC538Obj *obj = (Fn800BC538Obj *)arg0;
+    s32 sel;
+    s32 lim;
+    s32 i, j, k;
     u8 *p;
     u8 *a;
     u8 *b;
-    s32 i, j, k;
-    s32 lim;
-    s32 sel;
 
     if (arg3 & 7) {
         if (obj->longInit == 0) {
@@ -14729,6 +14725,7 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s1
                 obj->longThr[k + 1] = ((s16 *)arg2)[k];
             obj->longThr[0] = 0;
         }
+        p = arg1;
         b = arg4 + 0x3F00;
         a = arg4 + 0x1B00;
         for (i = 0; i < obj->longCount; i++) {
@@ -14742,12 +14739,12 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s1
                     }
                 }
                 if (i >= lim)
-                    fn_800BD710(arg0, *(s16 *)(arg7 + 2), arg5[*arg1 + 21], a, b);
+                    fn_800BD710(arg0, *(s16 *)(arg7 + 2), arg5[*p + 21], a, b);
             }
             arg4 += 4;
             b += 4;
             a += 4;
-            arg1++;
+            p++;
         }
         return;
     }
@@ -17785,90 +17782,53 @@ extern "C" void fn_800C3574(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4
 }
 #pragma use_lmw_stmw on
 extern "C" void fn_800C3960(s32 *tbl, s32 *coef, u32 idx, s16 *out, u32 mask, s32 flag) {
-    s32 *tbl2 = tbl + 0x10;
-    s64 sumA = 0;
-    s64 sumB = 0;
-    s32 a, b;
     u32 i = idx;
-    {
-        s32 s = tbl[i & mask];
-        sumA += (s64)s * coef[0];
-    }
-    {
-        s32 s = tbl[(i + 0x60) & mask];
-        sumA += (s64)s * coef[1];
-        sumB += (s64)tbl2[(i + 0x60) & mask] * coef[0x11];
-    }
-    i += 0x80;
-    {
-        s32 s = tbl[i & mask];
-        sumA += (s64)s * coef[2];
-    }
-    {
-        s32 s = tbl[(i + 0x60) & mask];
-        sumA += (s64)s * coef[3];
-        sumB += (s64)tbl2[(i + 0x60) & mask] * coef[0x13];
-    }
-    i += 0x80;
-    {
-        s32 s = tbl[i & mask];
-        sumA += (s64)s * coef[4];
-    }
-    {
-        s32 s = tbl[(i + 0x60) & mask];
-        sumA += (s64)s * coef[5];
-        sumB += (s64)tbl2[(i + 0x60) & mask] * coef[0x15];
-    }
-    i += 0x80;
-    {
-        s32 s = tbl[i & mask];
-        sumA += (s64)s * coef[6];
-    }
-    {
-        s32 s = tbl[(i + 0x60) & mask];
-        sumA += (s64)s * coef[7];
-        sumB += (s64)tbl2[(i + 0x60) & mask] * coef[0x17];
-    }
-    i += 0x80;
-    {
-        s32 s = tbl[i & mask];
-        sumA += (s64)s * coef[8];
-    }
-    {
-        s32 s = tbl[(i + 0x60) & mask];
-        sumA += (s64)s * coef[9];
-        sumB += (s64)tbl2[(i + 0x60) & mask] * coef[0x19];
-    }
-    i += 0x80;
-    {
-        s32 s = tbl[i & mask];
-        sumA += (s64)s * coef[10];
-    }
-    {
-        s32 s = tbl[(i + 0x60) & mask];
-        sumA += (s64)s * coef[11];
-        sumB += (s64)tbl2[(i + 0x60) & mask] * coef[0x1B];
-    }
-    i += 0x80;
-    {
-        s32 s = tbl[i & mask];
-        sumA += (s64)s * coef[12];
-    }
-    {
-        s32 s = tbl[(i + 0x60) & mask];
-        sumA += (s64)s * coef[13];
-        sumB += (s64)tbl2[(i + 0x60) & mask] * coef[0x1D];
-    }
-    i += 0x80;
-    {
-        s32 s = tbl[i & mask];
-        sumA += (s64)s * coef[14];
-    }
-    {
-        s32 s = tbl[(i + 0x60) & mask];
-        sumA += (s64)s * coef[15];
-        sumB += (s64)tbl2[(i + 0x60) & mask] * coef[0x1F];
-    }
+    s32 zero = 0;
+    s32 c0 = coef[0], c1 = coef[1], d0 = coef[0x11], c2 = coef[2];
+    s32 c3 = coef[3], d1 = coef[0x13], c4 = coef[4];
+    s32 *tbl2 = tbl + 0x10;
+    s32 a0 = tbl[i & mask];
+    s32 a1 = tbl[(i + 0x060) & mask];
+    s32 b0 = tbl2[(i + 0x060) & mask];
+    s32 a2 = tbl[(i + 0x080) & mask];
+    s32 a3 = tbl[(i + 0x0e0) & mask];
+    s32 b1 = tbl2[(i + 0x0e0) & mask];
+    s32 c5 = coef[5], a4 = tbl[(i + 0x100) & mask];
+    s32 a5 = tbl[(i + 0x160) & mask];
+    s32 b2 = tbl2[(i + 0x160) & mask];
+    s32 d2 = coef[0x15], a6 = tbl[(i + 0x180) & mask];
+    s32 c6 = coef[6], a7 = tbl[(i + 0x1e0) & mask];
+    s32 b3 = tbl2[(i + 0x1e0) & mask];
+    s32 c7 = coef[7], c8 = coef[8], d3 = coef[0x17];
+    s32 a8 = tbl[(i + 0x200) & mask], a9 = tbl[(i + 0x260) & mask];
+    s32 b4 = tbl2[(i + 0x260) & mask], a10 = tbl[(i + 0x280) & mask];
+    s32 c9 = coef[9], c10 = coef[10], d4 = coef[0x19];
+    s32 a11 = tbl[(i + 0x2e0) & mask], b5 = tbl2[(i + 0x2e0) & mask];
+    s32 c11 = coef[11], d5 = coef[0x1B], c12 = coef[12];
+    s32 a12 = tbl[(i + 0x300) & mask], a13 = tbl[(i + 0x360) & mask];
+    s32 c13 = coef[13], b6 = tbl2[(i + 0x360) & mask], d6 = coef[0x1D];
+    s32 a14 = tbl[(i + 0x380) & mask], a15 = tbl[(i + 0x3e0) & mask];
+    s32 b7 = tbl2[(i + 0x3e0) & mask];
+    s32 c14 = coef[14], c15 = coef[15], d7 = coef[0x1F];
+
+    s64 sumA = zero, sumB = zero;
+    s32 a, b;
+    sumA += (s64)a0 * c0;
+    sumA += (s64)a1 * c1;  sumB += (s64)b0 * d0;
+    sumA += (s64)a2 * c2;
+    sumA += (s64)a3 * c3;  sumB += (s64)b1 * d1;
+    sumA += (s64)a4 * c4;
+    sumA += (s64)a5 * c5;  sumB += (s64)b2 * d2;
+    sumA += (s64)a6 * c6;
+    sumA += (s64)a7 * c7;  sumB += (s64)b3 * d3;
+    sumA += (s64)a8 * c8;
+    sumA += (s64)a9 * c9;  sumB += (s64)b4 * d4;
+    sumA += (s64)a10 * c10;
+    sumA += (s64)a11 * c11;  sumB += (s64)b5 * d5;
+    sumA += (s64)a12 * c12;
+    sumA += (s64)a13 * c13;  sumB += (s64)b6 * d6;
+    sumA += (s64)a14 * c14;
+    sumA += (s64)a15 * c15;  sumB += (s64)b7 * d7;
     a = (s32)(sumA >> 25);
     b = (s32)(sumB >> 25);
     if ((a >> 31) != (a >> 15)) a = (a >> 31) ^ 0x7FFF;
