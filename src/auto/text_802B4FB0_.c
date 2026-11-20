@@ -44,6 +44,7 @@ extern char lbl_8034A4E0[];
 
 #pragma dont_inline on
 #pragma scheduling invalid_target
+#pragma scheduling on
 int fn_802B5070(void *p, int arg1) {
     int result = 0;
     int kind = *(unsigned char *)((char *)p + 2);
