@@ -1021,17 +1021,32 @@ extern float lbl_8055A48C, lbl_80562140, lbl_80562144, lbl_80562160;
 extern float lbl_80562174, lbl_80562184, lbl_805621D8, lbl_805621DC;
 extern double lbl_805621C8;
 extern float lbl_805621E0, lbl_805621E4, lbl_805621E8, lbl_805621EC;
-#pragma dont_inline on
-void fn_80194C4C(void *arg0, float *arg1) {
+#pragma cplusplus on
+extern "C" void fn_80194C4C(char *arg0, float *arg1) {
+    class OtherObj {
+    public:
+        virtual void d0(); virtual void d1();
+        virtual void *getState();
+        virtual void d3(); virtual void d4(); virtual void d5();
+        virtual void *getTrack();
+    };
+    class ControllerObj {
+    public:
+        virtual void c0(); virtual void c1(); virtual void c2(); virtual void c3();
+        virtual void c4(); virtual void c5(); virtual void c6(); virtual void c7();
+        virtual void c8();
+        virtual void call(float *, float *, int *);
+    };
     void *work;
+    void *owner;
     float value;
     int i;
 
     ((void (*)(void *, float *))fn_80194FD0)(arg0, arg1);
-    work = *(void **)((char *)arg0 + 0x288);
+    work = *(void **)(arg0 + 0x288);
     value = *(float *)((char *)work + 0x34);
-    arg1[0] += *(float *)((char *)arg0 + 0x58) * value;
-    arg1[1] += *(float *)((char *)arg0 + 0x5C) * value;
+    arg1[0] += *(float *)(arg0 + 0x58) * value;
+    arg1[1] += *(float *)(arg0 + 0x5C) * value;
     value = fn_80134C1C();
 
     if (fn_801769A8() & 0x400) {
@@ -1049,14 +1064,12 @@ void fn_80194C4C(void *arg0, float *arg1) {
         i = 0;
         while (i < fn_801B2F24()) {
             void *other = fn_801B2EC0(i);
-            if (i != *(int *)((char *)arg0 + 0x290)) {
-                void *state = ((void *(*)(void *))(*(void ***)other)[4])(other);
+            if (i != *(int *)(arg0 + 0x290)) {
+                void *state = ((OtherObj *)other)->getState();
                 if (*(int *)((char *)state + 0x30) == 0) {
-                    void *owner = *(void **)((char *)arg0 + 0x294);
-                    void *track =
-                        ((void *(*)(void *))(*(void ***)other)[8])(other);
-                    void *ownerAgain =
-                        *(void * volatile *)((char *)arg0 + 0x294);
+                    owner = *(void **)(arg0 + 0x294);
+                    void *track = ((OtherObj *)other)->getTrack();
+                    void *ownerAgain = *(void * volatile *)(arg0 + 0x294);
                     float (*distance)(void *, float *, float *) =
                         (float (*)(void *, float *, float *))fn_80194F70;
                     arg1[2] += distance((char *)ownerAgain + 0x54,
@@ -1071,7 +1084,7 @@ void fn_80194C4C(void *arg0, float *arg1) {
         float threshold = lbl_805621DC + (lbl_8055A48C + fn_80139048());
         float dot = PSQUATMultiply(
             (char *)*(void **)((char *)work + 0x30) + 0x60,
-            (char *)*(void **)((char *)arg0 + 0x294) + 0x60);
+            (char *)*(void **)(arg0 + 0x294) + 0x60);
         if (dot > threshold) {
             float ratio = (dot - threshold) /
                           (lbl_80562174 * threshold - threshold);
@@ -1094,26 +1107,25 @@ void fn_80194C4C(void *arg0, float *arg1) {
     }
 
     {
-        int index = *(int *)((char *)arg0 + 0x290);
+        int index = *(int *)(arg0 + 0x290);
         float frame = arg1[2] + fn_80194B60(
             lbl_805621E0, lbl_805621E4, lbl_80562184,
-            *(float *)((char *)arg0 + 0x26C) +
+            *(float *)(arg0 + 0x26C) +
                 lbl_805621E8 * (float)index);
         arg1[3] = lbl_805621EC;
         arg1[2] = frame;
     }
-    if (*(int *)((char *)*(void **)((char *)arg0 + 0x294) + 0x2610) == 0) {
+    if (*(int *)((char *)*(void **)(arg0 + 0x294) + 0x2610) == 0) {
         arg1[2] = lbl_80562144;
-        *(int *)((char *)arg0 + 0x2D0) |= 0x10;
+        *(int *)(arg0 + 0x2D0) |= 0x10;
     }
     {
-        void *controller = *(void **)((char *)arg0 + 0x28C);
-        ((void (*)(void *, float *, float *, int *))(*(void ***)controller)[11])(
-            controller, arg1, arg1 + 2, (int *)((char *)arg0 + 0x2D0));
+        void *controller = *(void **)(arg0 + 0x28C);
+        ((ControllerObj *)controller)->call(arg1, arg1 + 2, (int *)(arg0 + 0x2D0));
     }
-    *(int *)((char *)arg0 + 0x2D0) |= 0x826;
+    *(int *)(arg0 + 0x2D0) |= 0x826;
 }
-#pragma dont_inline reset
+#pragma cplusplus reset
 extern float lbl_8055A488, lbl_8056215C;
 extern float PSVECDotProduct(const void *, const void *);
 extern void fn_8013B744(int);
@@ -1814,47 +1826,60 @@ extern float lbl_80562140, lbl_80562144;
 extern const float lbl_80562230, lbl_80562234, lbl_80562238;
 extern float __fabsf(float);
 #pragma opt_propagation off
-void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, float farg2) {
-    float temp_f5;
-    double mag0;
-    float abs0;
-    float sp8;
-    float spC;
-    float value1;
-    float value0;
-    float out1;
-    float out0;
-    int var_r0;
-    temp_f5 = farg0 - farg1;
-    temp_f5 += 1.33333f;
-    temp_f5 /= farg2;
-    mag0 = __fabs((double)farg0);
-    abs0 = (float)mag0;
-    if (abs0 < 0.1f) {
-        *arg1 = 1.0f;
-        *arg0 = 0.0f;
-        *arg2 = 0;
-        return;
-    }
-    if ((float)__fabs((double)farg1) < 0.444444f)
-        goto direct_case;
-    spC = farg1;
-    sp8 = temp_f5;
-    if ((int)(*(unsigned int *)&spC & 0x80000000U) != (int)(*(unsigned int *)&sp8 & 0x80000000U))
-        goto different_sign;
-direct_case:
-    *arg0 = (float)__fabs((double)temp_f5) / 4.905f;
-    *arg1 = 0.0f;
-    goto finish;
-different_sign:
+void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, float farg2)
+{
+  float temp_f5;
+  double mag0;
+  float abs0;
+  float sp8;
+  float spC;
+  float value1;
+  float value0;
+  float out1;
+  float out0;
+  int var_r0;
+  temp_f5 = farg0 - farg1;
+  temp_f5 += 1.33333f;
+  temp_f5 /= farg2;
+  mag0 = __fabs((double) farg0);
+  abs0 = (float) mag0;
+  if (abs0 < 0.1f)
+  {
+    *arg1 = 1.0f;
     *arg0 = 0.0f;
-    *arg1 = (float)__fabs((double)temp_f5) / 11.772f;
-finish:
-    if (farg0 > 0.0f)
-        var_r0 = 1;
-    else
-        var_r0 = -1;
-    *arg2 = var_r0;
+    *arg2 = 0;
+    return;
+  }
+  if (((float) __fabs((double) farg1)) < 0.444444f)
+  {
+    goto direct_case;
+  }
+  spC = farg1;
+  sp8 = temp_f5;
+  if (((int) ((*((unsigned int *) (&spC))) & 0x80000000U)) != ((int) ((*((unsigned int *) (&sp8))) & 0x80000000U)))
+  {
+    goto different_sign;
+  }
+  direct_case:
+  *arg0 = ((float) __fabs((double) temp_f5)) / 4.905f;
+
+  *arg1 = 0.0f;
+  goto finish;
+  different_sign:
+  *arg0 = 0.0f;
+
+  *arg1 = ((0, (float) __fabs((double) temp_f5))) / 11.772f;
+  finish:
+  if (farg0 > 0.0f)
+  {
+    var_r0 = 1;
+  }
+  else
+  {
+    var_r0 = -1;
+  }
+
+  *arg2 = var_r0;
 }
 #pragma opt_propagation reset
   extern float fn_801671FC(int);
