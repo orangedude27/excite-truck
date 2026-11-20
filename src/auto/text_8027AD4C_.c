@@ -871,17 +871,15 @@ extern "C" void fn_8027BCD0(void *arg0, long arg1) {
                 long flag;
                 for (idx = 0, off = 0; idx < *(long *)((int)a0 + 4); off += 0x18, idx++) {
                     long elem = *(long *)(*(char **)a0 + off);
-                    if (elem != key) {
-                        idx = idx;
-                    } else {
-                        goto found;
-                    }
+                    if (elem != key)
+                        continue;
+                    goto found;
                 }
                 idx = -1;
             found:
                 if (idx == -1) {
-                    long cnt = *(long *)(a0 + 4);
-                    long baseAddr = *(long *)a0;
+                    register long cnt = *(long *)(a0 + 4);
+                    register long baseAddr = *(long *)a0;
                     rec = (char *)(baseAddr + cnt * 0x18);
                     *(long *)(a0 + 4) = cnt + 1;
                     *(long *)(rec + 0) = obj->m6();
@@ -1153,6 +1151,15 @@ struct SubIface8027C2B8 {
     virtual void f21();
     virtual void *fetchSub(long index);
 };
+static inline char *getName8027C2B8(void *obj) {
+    return ((ItemIface8027C2B8 *)obj)->getName();
+}
+static inline void *fetchSub8027C2B8(void *obj, long index) {
+    return ((SubIface8027C2B8 *)obj)->fetchSub(index);
+}
+static inline void *fetch8027C2B8(void *obj, long index) {
+    return ((ListIface8027C2B8 *)obj)->fetch(index);
+}
 #pragma cplusplus reset
 struct Ctx8027C2B8 {
     void **tableArray;
