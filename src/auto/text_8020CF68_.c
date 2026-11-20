@@ -104,9 +104,10 @@ void fn_8020CF6C(int arg0) {
             goto case_zero;
         return;
     }
-    if (arg0 == 0x4)
+    if (arg0 == 4)
         goto case_four;
     return;
+
 case_zero: {
         float value = lbl_80563318;
         value += lbl_8055EE8C;
@@ -117,6 +118,7 @@ case_zero: {
         fn_8020C908(lbl_8055EE8C);
         return;
     }
+
 case_one: {
         float value = lbl_80563318 + lbl_8055EE90;
         if (value < lbl_8056331C)
@@ -125,6 +127,7 @@ case_one: {
             lbl_8055EE90 = value;
         return;
     }
+
 case_four:
     fn_8000C6E4();
     return;
@@ -144,6 +147,7 @@ extern float lbl_80563320;
 extern char lbl_8033C690[], lbl_8033C6A0[];
 extern void fn_8000C6E4(void);
 void fn_8020CFEC(int arg0) {
+    float value;
     if (arg0 == 1)
         goto case_one;
     if (arg0 >= 1)
@@ -155,24 +159,22 @@ check_four:
     if (arg0 == 4)
         goto call_four;
     return;
-case_zero: {
-        float value = lbl_8055EE8C;
-        value -= lbl_80563318;
-        if (value > lbl_80563320)
-            lbl_8055EE8C = lbl_80563320;
-        else
-            lbl_8055EE8C = value;
-        fn_8020C908(lbl_8055EE8C);
-        return;
-    }
-case_one: {
-        float value = lbl_8055EE90 - lbl_80563318;
-        if (value > lbl_80563320)
-            lbl_8055EE90 = lbl_80563320;
-        else
-            lbl_8055EE90 = value;
-        return;
-    }
+case_zero:
+    value = lbl_8055EE8C;
+    value -= lbl_80563318;
+    if (value > lbl_80563320)
+        lbl_8055EE8C = lbl_80563320;
+    else
+        lbl_8055EE8C = value;
+    fn_8020C908(lbl_8055EE8C);
+    return;
+case_one:
+    value = lbl_8055EE90 - lbl_80563318;
+    if (value > lbl_80563320)
+        lbl_8055EE90 = lbl_80563320;
+    else
+        lbl_8055EE90 = value;
+    return;
 call_four:
     fn_8000C730();
 }
@@ -189,9 +191,8 @@ void fn_8020D06C(void) {
 
 void fn_8020D0CC(int arg0) {
     int n = lbl_8055EE78;
-    int m = arg0 + n;
-    int k = m + 3;
-    int r = k % 3;
+    int r;
+    r = (n + arg0 + 3) % 3;
     lbl_8055EE78 = r;
     if (r == 2 && (((int (*)(void))fn_8020CF68)() == 0)) {
         lbl_8055EE78 = (arg0 + lbl_8055EE78 + 3) % 3;
@@ -503,13 +504,11 @@ void fn_8020DABC(void) {
 #undef musicVolume
 #undef sfxVolume
 }
-#pragma push
-#pragma processor 750
+#pragma scheduling invalid_target
 int fn_8020DB0C(int arg0) {
     int var_r31 = 1;
-    int param = arg0;
 
-    switch (param) {
+    switch (arg0) {
     case 0x126:
         fn_8020D0CC(-1);
         break;
@@ -569,14 +568,14 @@ int fn_8020DB0C(int arg0) {
     case 0x58:
     case 0xD:
         if (lbl_8055EE7C != 0 && lbl_8055EE78 == 2) {
-            ((void (*)(int, int))lbl_8055EE7C)(lbl_8055EE78, param);
+            ((void (*)(int, int))lbl_8055EE7C)(lbl_8055EE78, arg0);
             fn_8020D06C();
             break;
         }
         return 0;
     case 0x53:
         if (lbl_8055EE7C != 0) {
-            ((void (*)(int, int))lbl_8055EE7C)(lbl_8055EE78, param);
+            ((void (*)(int, int))lbl_8055EE7C)(lbl_8055EE78, arg0);
             fn_8020D06C();
         }
         break;
@@ -592,7 +591,6 @@ int fn_8020DB0C(int arg0) {
     }
     return 1;
 }
-#pragma pop
 extern void *lbl_8055EE7C;
 extern void *lbl_8055EE80;
 void AXFXSetHooks_8020DE10(void *callback, void *drawCallback) {
