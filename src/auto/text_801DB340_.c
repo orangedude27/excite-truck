@@ -135,6 +135,7 @@ void fn_801DB340(int userData) { fn_801DB13C(userData - 4); }
 
 #pragma auto_inline off
 #pragma dont_inline on
+#pragma scheduling invalid_target
 int fn_801DB348(int arg0, int arg1, float *arg2, int *arg3, void *arg4) {
     int width, height;
     float *data;
