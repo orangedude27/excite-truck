@@ -3873,7 +3873,7 @@ void fn_8005F3E8(s32 chan, s32 arg1) {
     OSRestoreInterrupts(intr);
     r31 = (arg1 == 0) ? 0x14 : 0x2a;
     v = (arg1 == 0) ? 0x176c : 0;
-    DBPrintf_80068D68(lbl_80312164, (v != 0) ? lbl_80558FE4 : lbl_8031219C);
+    DBPrintf_80068D68(lbl_80312164, (cb->UNK_0x820 != 0) ? lbl_80558FE4 : lbl_8031219C);
     fn_80063564(&cb->stdCmdQueue, 0, 0);
 
     memset(&cmd, 0, 0x30);
@@ -4254,6 +4254,7 @@ static inline BOOL fn_80060CC0_CanQueue(WPADCommandQueue* pQueue, s8 num) {
 
 #define WPADiPushCommandInline(pQueue, localCommand) \
     { \
+        WPADCommand cmdCopy = (localCommand); \
         BOOL queueEnabled; \
         BOOL innerEnabled; \
         s8 queueSize; \
@@ -4264,7 +4265,7 @@ static inline BOOL fn_80060CC0_CanQueue(WPADCommandQueue* pQueue, s8 num) {
         OSRestoreInterrupts(innerEnabled); \
         if ((pQueue)->capacity - 1 != queueSize) { \
             memset(&(pQueue)->buffer[(pQueue)->back], 0, sizeof(WPADCommand)); \
-            memcpy(&(pQueue)->buffer[(pQueue)->back], &(localCommand), sizeof(WPADCommand)); \
+            memcpy(&(pQueue)->buffer[(pQueue)->back], &cmdCopy, sizeof(WPADCommand)); \
             (pQueue)->back = (pQueue)->back == (pQueue)->capacity - 1 ? 0 : (pQueue)->back + 1; \
         } \
         OSRestoreInterrupts(queueEnabled); \
@@ -5901,7 +5902,8 @@ void fn_80064B1C(s32 chan, void* data) {
     buf = p + 0xA0 + p[0x806] * 0x60;
     for (i = 0; i < 96; i++) buf[i] = 0;
     oldReport = *(s32*)(p + 0x780);
-    *(u16*)buf = (u16)((((u8*)report)[1] | (((u8*)report)[2] << 8)) & 0x9f1f);
+    i = ((u8*)report)[2];
+    *(u16*)buf = (u16)((((u8*)report)[1] | (i << 8)) & 0x9f1f);
     signBit = ((u32)((u8*)report)[1] & 0x80) << 17;
     *(s32*)(p + 0x788) = signBit >> 7;
     *(s32*)(p + 0x778) = (((u8*)report)[3] >> 3) & 1;
@@ -5938,9 +5940,8 @@ void fn_80064B1C(s32 chan, void* data) {
             DBPrintf_80068D68(strBase + 0x354);
         }
     } else {
-        register s32 zero asm("r3") = 0;
-        p[0x801] = zero;
-        p[0x802] = zero;
+        p[0x801] = 0;
+        p[0x802] = 0;
         if (oldReport != 0) {
             WPADiClearQueue_80063BD4((WPADCommandQueue*)(p + 0x5ec));
             fn_80063564((WPADCommandQueue*)(p + 0x160), *(s32*)(p + 0x7f8), (void*)0);
@@ -5950,7 +5951,7 @@ void fn_80064B1C(s32 chan, void* data) {
             DBPrintf_80068D68(strBase + 0x36c);
             if (*(void**)(p + 0x790) != ((void*)0)) {
                 memcpy(*(void**)(p + 0x790), p + 0x778, 0x18);
-                *(void**)(p + 0x790) = (void *)zero;
+                *(void**)(p + 0x790) = ((void*)0);
             }
             if (*(void**)(p + 0x7dc) != ((void*)0) && p[0x800]) {
                 ((WPADCallback)*(void**)(p + 0x7dc))(channel, 0);
@@ -7299,7 +7300,7 @@ void __a1_22_ack(u8 chan, u8* pReport)
     DBPrintf_80068D68(strBase + 0x3E0);
     pCB = lbl_8038F4F0[(u8)chan];
     pBuf = (volatile u8*)pCB->rxBufs[*(u8*)((u8*)pCB + 0x806)];
-    for (offset = 0; offset < 0x60; offset++) {
+    for (offset = 0; offset < 96; offset++) {
         pBuf[offset] = 0;
     }
     *(u16*)pBuf = ((u16)pReport[1] | ((u16)pReport[2] << 8)) & 0x9F1F;
@@ -7315,10 +7316,11 @@ void __a1_22_ack(u8 chan, u8* pReport)
     if (*(u8*)((u8*)pCB + 0x8C7) == type) {
         WPADCallback callback = pCB->readCB;
         if (callback) {
-            u8 *cbA = (u8*)pCB;
+            register u32 z1 = 0;
+            register u32 z2 = 0;
             callback(chan, status);
-            *(WPADCallback*)(cbA + 0x7DC) = 0;
-            *(s32*)(cbA + 0x7FC) = (s32)ext - (s32)ext;
+            pCB->readCB = (WPADCallback)z1;
+            *(u32*)((u8*)pCB + 0x7FC) = z2;
         }
     } else {
         DBPrintf_80068D68(strBase + 0x44C);
