@@ -108,7 +108,7 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
     next = *(int *)(node + 0x890);
     if (next >= 0) {
         for (;;) {
-            layer = *(char **)((char *)*(volatile int *)&lbl_8055E990 + 0x20) + next * 0x810;
+            layer = *(char **)((char *)lbl_8055E990 + 0x20) + next * 0x810;
             h += lbl_804424B0[*(int *)(layer + 0x808)] * (*(float *)(layer + 0) + *(float *)(layer + 4) * (float)*(unsigned short *)(layer + (remX * 64 + remZ * 2) + 8));
             next = *(int *)(layer + 0x80C);
             if (next < 0) break;
