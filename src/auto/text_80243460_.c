@@ -71,14 +71,14 @@ void fn_80243470(void* child) {
 
 #pragma dont_inline on
 s32 fn_80243478(s32 arg0) {
+    #pragma scheduling invalid_target
     s32 (*entry)[3] = lbl_803428B0[arg0];
     s32 count = 0;
-    s32 i = 0;
-    while (i < 16) {
+    s32 i;
+    for (i = 0; i < 16; i++) {
         if ((*entry)[0] == 0) break;
         count++;
         entry++;
-        i++;
     }
     return count;
 }
@@ -288,7 +288,7 @@ void fn_80243A38(void *arg0) {
         fn_802E30C8(globalBase + 0x3D8);
     fn_80243938(*(char **)((u8 *)arg0 + 0x18), *(char **)((u8 *)arg0 + 0x1C));
 
-    base = (s32 *)&globalBase[0];
+    base = (s32 *)globalBase;
     group = 0;
     do {
         entry = base;
@@ -385,9 +385,9 @@ void fn_80243C1C(void *arg0) {
     s32 var0;
     s32 col;
     char *buf;
-    float cA4 = lbl_805637A4, cA8 = lbl_805637A8, c98 = lbl_80563798, cAC = lbl_805637AC;
-    float cB0 = lbl_805637B0, cB8 = lbl_805637B8, cB4 = lbl_805637B4, cBC = lbl_805637BC;
     double cE8 = lbl_805637E8;
+    float cA4 = 0.0f, cA8 = 32.0f, c98 = 38.0f, cAC = 1.0f;
+    float cB0 = 2.0f, cB8 = 0.5f, cB4 = -3.0f, cBC = 19.0f;
     fn_80230C30(&sp1C, &sp18, *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8));
     var_r21 = 0;
     do {
