@@ -243,6 +243,7 @@ typedef void (*DbgVoid)(void *);
 #pragma push
 #pragma processor 603
 #pragma cplusplus on
+#pragma use_lmw_stmw off
 extern "C" void fn_801DE154(void) {
     class Gui {
     public:
