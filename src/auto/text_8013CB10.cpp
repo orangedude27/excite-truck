@@ -1943,7 +1943,6 @@ extern "C" void fn_8013F498(void *arg0, void *arg1, f32 farg0) {
     *(f32 *)((u8 *)arg1 + 4) = out3;
 }
 #pragma use_lmw_stmw off
-#pragma scheduling off
 extern "C" void fn_8013F580(void *arg0, void *arg1, void *arg2) {
     struct Lookup {
         virtual void dummy();
