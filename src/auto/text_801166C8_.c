@@ -511,6 +511,7 @@ tail:
     }
     return var_r3;
 }
+#pragma unroll reset
 
 #pragma push
 #pragma use_lmw_stmw off
