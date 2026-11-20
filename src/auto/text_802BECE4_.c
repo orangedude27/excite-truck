@@ -109,14 +109,12 @@ extern "C" void fn_802BEDFC(void) {
     Resource *resource;
     Resource *style;
     u32 baseE000 = 0xE0000000u;
-    u32 hi1 = baseE000 + 0x5030;
-    u32 hi2 = baseE000 + 0x1040;
-    lbl_8055FAE4 = hi1;
+    lbl_8055FAE8 = 0xE0FFFFFF;
+    lbl_8055FAE4 = baseE000 + 0x5030;
     lbl_8055FAEC = 0x202040;
     lbl_8055FAE0 = 0.7f;
-    lbl_8055FAE8 = 0xE0FFFFFF;
-    lbl_8055FAF0 = hi2;
-    resource = (Resource *)fn_80131808(strings + 0x2C, 0xE0FFFFFF, 0xE0000000);
+    lbl_8055FAF0 = baseE000 + 0x1040;
+    resource = (Resource *)(((void *(*)(char *, u32, u32))fn_80131808)(strings + 0x2C, 0xE0FFFFFF, baseE000));
     if (resource != 0) {
         if (resource->hasStyle(strings + 0x38) != 0)
             style = (Resource *)resource->getStyle(strings + 0x38);
@@ -249,8 +247,7 @@ void fn_802BF160(void) {
         f0 = point[2];
         f1 = f1 + f0;
         f27 = (float)fn_8002EFB4((double)f1, lbl_80564DA0);
-        f1 = f27;
-        f2 = (float)cos((double)f1);
+        f2 = (float)cos((double)f27);
         f0 = point[0];
         f1 = f31 - f0;
         f0 = f2 - f30;
@@ -410,7 +407,7 @@ extern "C" void fn_802BF600(void *arg0, void *dst, void *src) {
     int t28 = *(int *)((char *)src + 0x28);
     float f10, f4, scale, f1c, f28;
     float s4, s10, s1c, s28;
-    int i2c, i24, i20, i18, i14, ic, i8, i0;
+    int i0, i8, ic, i14, i18, i20, i24, i2c;
     scale = lbl_80564DA8;
     *(int *)((char *)dst + 4) = t4;
     *(int *)((char *)dst + 0x10) = t10;
@@ -836,11 +833,10 @@ void fn_802BFE48(void *arg0, void *arg1, float arg2) {
         float rot[9];
         struct Idx { unsigned short a[6]; } idx;
         float vec[3];
-        float x, y;
+        float x = lbl_80564DCC * arg2;
+        float y = lbl_80564DD0 * arg2;
         float *mat = matbuf;
-        int i;
-        x = lbl_80564DCC * arg2;
-        y = lbl_80564DD0 * arg2;
+        register int i;
         idx = *(const struct Idx *)lbl_802FAC20;
         for (i = 0; i < 4; i++) {
             v[i].x = (i & 1) ? x : -x;
@@ -911,10 +907,10 @@ void *fn_802C0138(void *arg0) {
     register char *resourceA = lbl_8034ACA0 + 0x134;
     void *vtable = lbl_8034AE08;
     float initial = lbl_80564DF0;
-    int innerBase;
-    register int row;
-    int rowBase;
     short *out;
+    register int row;
+    register int rowBase;
+    int innerBase;
 
     *(unsigned char *)((char *)arg0 + 0x2C5C) = 0;
     *(void **)arg0 = vtable;
@@ -1068,6 +1064,10 @@ extern float fn_802C9C40(void);
 extern float fn_802C9C38(void);
 extern float fn_802C9C48(void);
 extern void fn_802BED90(float *);
+extern int fn_80147C50(int, int, float);
+extern void fn_802C8E70(void *, float *, float, float, float, float);
+extern void PSVECCrossProduct(float *, float *, float *);
+extern float lbl_80564E0C, lbl_80564E10, lbl_80564E14, lbl_80564E18;
 extern void fn_802C03F0(void *arg0) {
     float s[0x83];
     float f0, f1, f2, f14;
