@@ -255,7 +255,6 @@ unsigned int fn_801DEB6C(const char *name) {
 
 #pragma push
 #pragma cplusplus on
-#pragma scheduling invalid_target
 #pragma dont_inline on
 extern "C" void fn_801DEC18(void) {
     class Node {
