@@ -783,7 +783,8 @@ extern "C" void* __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, s32 deleteFlag, 
 }
 
 #pragma push
-#pragma scheduling on
+#pragma processor 750
+#pragma scheduling 750
 #pragma use_lmw_stmw off
 extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
     typedef void (*Callback)(s32, void *, void *, u32);
