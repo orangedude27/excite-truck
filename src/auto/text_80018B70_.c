@@ -471,11 +471,11 @@ int fn_80019258(const char *name, int *outValue0, int *outValue1, int unused) {
 extern s32 fn_8001EFC0(s32, s32);
 extern void *lbl_802FD2A0;
 __declspec(section ".data") extern void *lbl_803580A4;
-static inline s32 fn_8001931C_find_inl(const char *name) {
+static inline s32 fn_8001931C_find_inl(char *base, const char *name) {
     s32 offset;
     s32 i;
-    for (i = 0, offset = 0; i < *(volatile s32 *)((char *)&lbl_803580A4 + 4); offset += 0x10, i++) {
-        if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) == 0)
+    for (i = 0, offset = 0; i < *(volatile s32 *)(base + 4); offset += 0x10, i++) {
+        if (stricmp(*(const char **)(*(char **)base + offset), name) == 0)
             return i;
     }
     return -1;
@@ -484,19 +484,12 @@ static inline s32 fn_8001931C_find_inl(const char *name) {
 #pragma small_data off
 #pragma scheduling invalid_target
 void fn_8001931C(s32 name) {
-    register s32 name_r = name;
     register char *strings = (char *)&lbl_802FD2A0;
-    register s32 i;
-    register s32 offset;
+    register s32 name_r = name;
     char *p;
+    s32 i;
 
-    for (i = 0, offset = 0; i < *(s32 *)((char *)&lbl_803580A4 + 4); offset += 0x10, i++) {
-        if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), (const char *)name_r) != 0)
-            continue;
-        goto found;
-    }
-    i = -1;
-found:
+    i = fn_8001931C_find_inl((char *)&lbl_803580A4, (const char *)name_r);
     p = (char *)lbl_803580A4 + i * 0x10 + 4;
     if (i < 0)
         p = 0;
