@@ -939,6 +939,8 @@ skip16:
     fn_801E86E8(p14, 0);
     fn_8026DDD8(var18);
     if (lbl_8055D374 != 0) {
+        void (**vt)(void *, int) = (void (**)(void *, int))*(void ***)lbl_8055D374;
+        vt[2](lbl_8055D374, 1);
         lbl_8055D374 = 0;
     }
     lbl_8055D36D = 0;
