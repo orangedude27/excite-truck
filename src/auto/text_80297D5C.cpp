@@ -2491,7 +2491,6 @@ extern "C" void fn_8029BA94(void*, void*);
 extern "C" int fn_8029C024(int*);
 extern "C" int fn_8029C054(int*);
 extern "C" void* fn_802974CC(char*);
-struct Entry8029BE54 { unsigned int a; unsigned int b; unsigned int c; unsigned int key; unsigned char d; };
 extern "C" void fn_8029BE54(void*, void*);
 #pragma scheduling invalid_target
 void fn_8029BE54(void* arg0, void* arg1) {
