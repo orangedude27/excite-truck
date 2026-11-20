@@ -94,7 +94,7 @@ void fn_802924F4(void) {
     long i;
 
     for (i = 0; i < 6; i++, p += 0x34) {
-        register float x = fn_80129DC4(0, lbl_805644D0, lbl_805644D4);
+        float x = fn_80129DC4(0, lbl_805644D0, lbl_805644D4);
         float y = (float)fn_8002F234((one - x * x) - offset);
         float z = (float)fn_8002F234((one - x * x) - offset);
         float w = fn_80129DC4(0, -z, y);
@@ -378,22 +378,17 @@ extern float lbl_805644D8, lbl_805644E8;
 extern double fabs(double);
 extern double __fabs(double);
 #pragma scheduling invalid_target
-int fn_80292BA8(float *arg0, float *arg1, float *arg2, float *arg3) {
+int fn_80292BA8(float *arg0, float *arg1, float *__restrict arg2, float *arg3) {
     float delta[3];
     float y = arg2[1];
     float x = arg2[0];
-    float t0 = arg0[0] - x;
     float z = arg2[2];
-    float t1;
-    float t2;
     double absd;
     register float firstDot, secondDot;
     register float ay, az, nx, s1, k, abs2, s2;
-    delta[0] = t0;
-    t1 = arg0[1] - y;
-    delta[1] = t1;
-    t2 = arg0[2] - z;
-    delta[2] = t2;
+    delta[0] = arg0[0] - x;
+    delta[1] = arg0[1] - y;
+    delta[2] = arg0[2] - z;
     firstDot = PSVECDotProduct(delta, arg3);
     if (firstDot < lbl_805644D8) {
         secondDot = PSVECDotProduct(arg1, arg3);
@@ -837,7 +832,7 @@ body:
     tmp = (s32)(scale * (float)(u8)(color >> 16));
     if (tmp <= 0xFF) comp = tmp;
     blue = ((comp & 0xFF) << 16) | 0xFF000000;
-    *(unsigned int *)(out + 0x2FB0) = (unsigned int)((blue | green) | red);
+    *(unsigned int *)(out + 0x2FB0) = (unsigned int)(blue | green | red);
     *(unsigned int *)(out + 0x2FB4) = color;
     table++;
     count++;
@@ -1127,17 +1122,18 @@ check:
     if (i < *(s32 *)((u8 *)arg0 + 0x4C2C)) goto body;
 }
 
+typedef struct { unsigned int first, second; } Pair_80293BB4;
 #pragma optimize_for_size on
 #pragma use_lmw_stmw off
-void fn_80293BB4(void *arg0, float *arg1, float *arg2, short arg3) {
+void fn_80293BB4(void *arg0, const float *arg1, const float *arg2, short arg3) {
     int count;
     int index;
     int offset;
     int flags, zero;
-    u8 *record;
     u8 *object;
+    u8 *record;
     u8 *tmpl;
-    float x, y, z, a, b;
+    float x, y, z, c, b, a;
     unsigned int secondWord, firstWord;
     object = (u8 *)arg0;
     count = *(s32 *)(object + 0x4C2C);
@@ -1147,14 +1143,15 @@ void fn_80293BB4(void *arg0, float *arg1, float *arg2, short arg3) {
     offset = index * 0x34;
     x = arg1[0];
     y = arg1[1];
-    *(float *)(record + 0x50) = x;
     z = arg1[2];
+    *(float *)(record + 0x50) = x;
     *(float *)(record + 0x54) = y;
     tmpl = (u8 *)lbl_804B4030 + offset;
+    c = arg2[2];
+    b = arg2[1];
     a = arg2[0];
     *(float *)(record + 0x58) = z;
-    arg1 = (float *)index;
-    b = arg2[1];
+    arg1 = (const float *)index;
     firstWord = *(unsigned int *)(tmpl + 0x10);
     flags = 2;
     secondWord = *(unsigned int *)(tmpl + 0x14);
@@ -1162,20 +1159,20 @@ void fn_80293BB4(void *arg0, float *arg1, float *arg2, short arg3) {
     *(unsigned int *)(record + 0x2C) = firstWord;
     *(unsigned int *)(record + 0x30) = secondWord;
     *(unsigned int *)(record + 0x34) = *(unsigned int *)(tmpl + 0x18);
-    firstWord = *(unsigned int *)(tmpl + 0x1C);
-    secondWord = *(unsigned int *)(tmpl + 0x20);
-    *(unsigned int *)(record + 0x38) = firstWord;
-    *(unsigned int *)(record + 0x3C) = secondWord;
+    firstWord = *(unsigned int *)(tmpl + 0x20);
+    secondWord = *(unsigned int *)(tmpl + 0x1C);
+    *(unsigned int *)(record + 0x38) = secondWord;
+    *(unsigned int *)(record + 0x3C) = firstWord;
     *(unsigned int *)(record + 0x40) = *(unsigned int *)(tmpl + 0x24);
-    firstWord = *(unsigned int *)(tmpl + 0x28);
-    secondWord = *(unsigned int *)(tmpl + 0x2C);
-    *(unsigned int *)(record + 0x44) = firstWord;
-    *(unsigned int *)(record + 0x48) = secondWord;
+    firstWord = *(unsigned int *)(tmpl + 0x2C);
+    secondWord = *(unsigned int *)(tmpl + 0x28);
+    *(unsigned int *)(record + 0x44) = secondWord;
+    *(unsigned int *)(record + 0x48) = firstWord;
     *(unsigned int *)(record + 0x4C) = *(unsigned int *)(tmpl + 0x30);
     *(float *)(record + 0x5C) = a;
     *(float *)(record + 0x60) = b;
-    *(float *)(record + 0x64) = arg2[2];
-    *(float *)(record + 0x68) = lbl_805644D8;
+    *(float *)(record + 0x64) = c;
+    *(float *)(record + 0x68) = 0.0f;
     *(short *)(record + 0x6C) = arg3;
     *(unsigned int *)(record + 0x70) = flags;
     *(u8 *)(record + 0x74) = fn_80129D18(zero, *(s32 *)(object + 0x28));
@@ -1534,10 +1531,9 @@ void fn_80294408(void *arg0, const float *arg1, const float *arg2) {
     second = arg2;
     count = *(s32 *)(object + 0x222C);
     if (count >= 0x80) return;
-    switch (*(s32 *)(object + 0x28)) {
-    case 0:
-        break;
-    default:
+    if (*(s32 *)(object + 0x28) != 0) goto insert;
+    goto done;
+insert:
     record = object + count * 0x44;
     index = fn_80129D18(0, 6);
     offset = index * 0x34;
@@ -1575,8 +1571,8 @@ void fn_80294408(void *arg0, const float *arg1, const float *arg2) {
     *(unsigned char *)(record + 0x6D) = (unsigned char)first;
     count = *(int *)(object + 0x222C);
     *(int *)(object + 0x222C) = count + 1;
-        break;
-    }
+done:
+    ;
 }
 #pragma scheduling on
 
