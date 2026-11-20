@@ -4980,6 +4980,10 @@ static inline void SndPrioList_Insert(u8 *list, SndPrioListIter it, u8 *obj) {
     SndPrioListIter pos = it;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(list, &pos.node, obj + 0xC8);
 }
+static inline s32 SndPrio_CalcPlayerPriority(u8 *sound) {
+    s32 prio = *(u8 *)(sound + 0x74) + *(s32 *)(sound + 0x40);
+    return prio > 0x7F ? 0x7F : (prio < 0 ? 0 : prio);
+}
 static inline void SndPrioList_PushBack(u8 *list, u8 *obj) {
     SndPrioListIter end;
     end.node = list + 4;
