@@ -114,17 +114,18 @@ extern char lbl_8055D500;
 extern int lbl_8055D514;
 #pragma scheduling invalid_target
 void fn_80012794(void) {
-    void **p;
-    void **base = (void **)&lbl_8035183C[0];
+    struct Ctx12794 { void *items[32]; int count; };
+    struct Ctx12794 *base;
+    struct Ctx12794 *p = (struct Ctx12794 *)&lbl_8035183C;
     int i = 0;
-    p = base;
+    base = p;
     lbl_80558AD8 = 0x134;
-    while (i < *(int *)((char *)base + 0x80)) {
-        fn_80131818(*p);
-        p++;
+    while (i < base->count) {
+        fn_80131818((void *)p->items[0]);
+        p = (struct Ctx12794 *)((char *)p + 4);
         i++;
     }
-    *(int *)((char *)base + 0x80) = 0;
+    base->count = 0;
     lbl_8055D500 = 0;
     lbl_8055D514 = 0;
 }
@@ -306,6 +307,7 @@ extern char lbl_80558B60[4];
 #define H2(o, k) ((int (*)(void *, char *))*(void **)((char *)*(void **)(o) + 0xC))((o), (k))
 #define H3(o, k, v) ((int (*)(void *, char *, int))*(void **)((char *)*(void **)(o) + 0xC))((o), (k), (v))
 void fn_80012B50(void *arg0, int arg1, void *arg2, void *arg3) {
+#pragma scheduling invalid_target
     register char *base = lbl_802FC610;
     void *a3 = arg3;
     int a1 = arg1;
@@ -320,9 +322,7 @@ void fn_80012B50(void *arg0, int arg1, void *arg2, void *arg3) {
     char *s;
     char *d;
     int n;
-    void *list;
     int idx;
-    int childVal;
     char *entry;
     int temp;
     int cnt;
@@ -344,20 +344,18 @@ void fn_80012B50(void *arg0, int arg1, void *arg2, void *arg3) {
     s = ((char *(*)(void *, char *))*(void **)((char *)*(void **)a2 + 0x14))(a2, lbl_80558B0C);
     d = obj + 8;
     n = 0x20;
-    for (;;) {
-        c = *s++;
-        *d++ = c;
-        if ((signed char)c != 0) {
-            if (--n <= 0) {
-                *(--d) = 0;
-                break;
-            }
-        } else {
-            break;
-        }
-    }
+    goto copy_body;
+copy_dec:
+    if (--n > 0) goto copy_body;
+    *(--d) = 0;
+    goto copy_done;
+copy_body:
+    c = *s++;
+    *d++ = c;
+    if ((signed char)c != 0) goto copy_dec;
+copy_done:
     if (fn_800080E8(obj + 8) == -1) {
-        fn_802E317C(base + 0x168, a3, obj + 0x28);
+        fn_802E317C(base + 0x168, a3, obj + 8);
     }
     *(int *)(obj + 0x6C) = 1;
     *(int *)(obj + 0x68) = 1;
@@ -399,14 +397,15 @@ void fn_80012B50(void *arg0, int arg1, void *arg2, void *arg3) {
     fn_800135AC(base + 0x250, a2, obj + 0x28);
     fn_800135AC(base + 0x25C, a2, obj + 0x28);
     fn_800135AC(lbl_80558B38, a2, obj + 0x28);
-    if (((int (*)(void *, char *))*(void **)((char *)*(void **)a2 + 0xC))(a2, base + 0x268) != 0 || ((int (*)(void *, char *))*(void **)((char *)*(void **)a2 + 0xC))(a2, base + 0x278) != 0) {
+    if ((H2(a2, base + 0x268) != 0 || H2(a2, base + 0x278) != 0) &&
+        (H2(a2, base + 0x268) == 0 || H2(a2, base + 0x278) == 0)) {
         fn_802E317C(base + 0x284, obj + 0x28);
     }
     cnt = ((int (*)(void *, char *, int))*(void **)((char *)*(void **)a2 + 0x20))(a2, base + 0x2C8, 0);
     idx = 0;
     {
-        void *ch = ((void *(*)(void *, int))*(void **)((char *)*(void **)a2 + 0x60))(a2, idx);
-        while (ch != 0) {
+        void *ch;
+        while ((ch = ((void *(*)(void *, int))*(void **)((char *)*(void **)a2 + 0x60))(a2, idx)) != 0) {
             ((void (*)(void *))*(void **)((char *)*(void **)ch + 8))(ch);
             if (stricmp(((char *(*)(void *, char *))*(void **)((char *)*(void **)ch + 0xC))(ch, lbl_80558B40), 0) == 0) {
                 if (lbl_8055D508 >= 0xFA) {
@@ -431,14 +430,13 @@ void fn_80012B50(void *arg0, int arg1, void *arg2, void *arg3) {
                 }
                 sprintf(buf10, lbl_80558B48, obj + 0x28, fn_80007FF0(*(int *)(entry + 8)));
                 *(int *)(entry + 0xC) = ((int (*)(void *, char *, int))*(void **)((char *)*(void **)ch + 0x20))(ch, lbl_80558B24, 0);
-                childVal = ((int (*)(void *, char *, int))*(void **)((char *)*(void **)ch + 0x20))(ch, base + 0x25C, 8);
-                *(int *)(entry + 0x10) = childVal;
-                if (childVal > 8) {
-                    fn_802E317C(base + 0x3B0, buf10, childVal, 8);
+                *(int *)(entry + 0x10) = ((int (*)(void *, char *, int))*(void **)((char *)*(void **)ch + 0x20))(ch, base + 0x25C, 8);
+                if (*(int *)(entry + 0x10) > 8) {
+                    fn_802E317C(base + 0x3B0, buf10, *(int *)(entry + 0x10), 8);
                 }
                 temp = ((int (*)(void *, char *, int))*(void **)((char *)*(void **)ch + 0x20))(ch, base + 0x2C8, -1);
                 *(int *)(entry + 0x14) = temp;
-                if (temp == -1) {
+                if ((unsigned int)(temp + 0x10000) == 0xffffU) {
                     int t2 = ((int (*)(void *, char *, int))*(void **)((char *)*(void **)ch + 0x20))(ch, base + 0x250, 0);
                     if (t2 == 0) {
                         *(int *)(entry + 0x14) = 0;
@@ -454,17 +452,17 @@ void fn_80012B50(void *arg0, int arg1, void *arg2, void *arg3) {
                 fn_800135AC(lbl_80558B04, ch, buf10);
                 fn_800135AC(lbl_80558B58, ch, buf10);
                 fn_800135AC(lbl_80558B60, ch, buf10);
-                if (((int (*)(void *, char *, int))*(void **)((char *)*(void **)ch + 0xC))(ch, base + 0x268, 0) != 0 || ((int (*)(void *, char *, int))*(void **)((char *)*(void **)ch + 0xC))(ch, base + 0x278, 0) != 0) {
+                if ((H3(ch, base + 0x268, 0) != 0 || H3(ch, base + 0x278, 0) != 0) &&
+                    (H3(ch, base + 0x268, 0) == 0 || H3(ch, base + 0x278, 0) == 0)) {
                     fn_802E317C(base + 0x3E8, buf10);
                 }
-                if ((*(int *)(entry + 8) & 0x400) != 0 && childVal * 2 > 8) {
-                    fn_802E317C(base + 0x428, buf10, childVal, 8);
+                if ((*(int *)(entry + 8) & 0x400) != 0 && *(int *)(entry + 0x10) * 2 > 8) {
+                    fn_802E317C(base + 0x428, buf10, *(int *)(entry + 0x10), 8);
                 }
                 lbl_8055D508++;
                 *(int *)(obj + 0x70) += 1;
             }
             idx++;
-            ch = ((void *(*)(void *, int))*(void **)((char *)*(void **)a2 + 0x60))(a2, idx);
         }
     }
     if (*(int *)(obj + 0x70) <= 0) {
