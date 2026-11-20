@@ -707,7 +707,7 @@ extern "C" void fn_802A2120(void* arg0, void* arg1, s32 arg2) {
 #pragma use_lmw_stmw off
     unsigned char* p;
     f32 vec[4];
-    f32 var_f1;
+    register f32 var_f1;
     f32 f31;
     f32 fa, fb, r;
     f32 x, y, z;
@@ -716,9 +716,7 @@ extern "C" void fn_802A2120(void* arg0, void* arg1, s32 arg2) {
 
     p = *(unsigned char**)arg1 + arg2 * 0x3c;
     if (*(f32*)((char*)arg1 + 8) > lbl_80564754) goto end;
-    if (*(f32*)(p + 0x94) * *(f32*)(p + 0x94) < lbl_80564758) {
-        goto end;
-    } else {
+    if (*(f32*)(p + 0x94) * *(f32*)(p + 0x94) < lbl_80564758) goto end;
     flag = 1;
     if (arg2 != 2 && arg2 != 3) flag = 0;
     var_f1 = lbl_8056475C;
@@ -730,32 +728,35 @@ extern "C" void fn_802A2120(void* arg0, void* arg1, s32 arg2) {
     y = lbl_80564764 + *(f32*)(p + 0x74);
     vec[0] = x; vec[1] = y; vec[2] = z;
     MtxMultVecLocal(*(unsigned char**)arg1, vec, vec);
-    vec[0] += *(f32*)(*(unsigned char**)arg1 + 0x24);
-    vec[1] += *(f32*)(*(unsigned char**)arg1 + 0x28);
-    vec[2] += *(f32*)(*(unsigned char**)arg1 + 0x2c);
+    {
+        unsigned char* base = *(unsigned char**)arg1;
+        vec[0] += *(f32*)(base + 0x24);
+        vec[1] += *(f32*)(base + 0x28);
+        vec[2] += *(f32*)(base + 0x2c);
+        fb = *(f32*)(base + 0x14c);
+        fa = *(f32*)(base + 0x110);
+        fa = (fa > fb) ? fa : fb;
+        r = (fa - lbl_80564744) / lbl_80564768;
+        r = (lbl_80564730 < r) ? lbl_80564730 : r;
+        r = (r > lbl_80564744) ? r : lbl_80564744;
+        f31 = lbl_80564740 + r * lbl_80564738;
 
-    fb = *(f32*)(*(unsigned char**)arg1 + 0x14c);
-    fa = *(f32*)(*(unsigned char**)arg1 + 0x110);
-    fa = (fa > fb) ? fa : fb;
-    r = (fa - lbl_80564744) / lbl_80564768;
-    r = (lbl_80564730 < r) ? lbl_80564730 : r;
-    r = (r > lbl_80564744) ? r : lbl_80564744;
-    f31 = lbl_80564740 + r * lbl_80564738;
-
-    if (*(f32*)((char*)arg1 + 8) < lbl_8056476C) {
-        fn_8028E58C((void*)*(s32*)((char*)arg0 + 4), (void*)vec, (void*)(*(unsigned char**)arg1 + 0x34), f31);
-        if (flag != 0) {
-            fn_8028E58C((void*)*(s32*)((char*)arg0 + 8), (void*)vec, (void*)(*(unsigned char**)arg1 + 0x34), f31);
+        if (*(f32*)((char*)arg1 + 8) < lbl_8056476C) {
+            fn_8028E58C((void*)*(s32*)((char*)arg0 + 4), (void*)vec, (void*)(base + 0x34), f31);
+            if (flag != 0) {
+                fn_8028E58C((void*)*(s32*)((char*)arg0 + 8), (void*)vec, (void*)(*(unsigned char**)arg1 + 0x34), f31);
+            }
         }
     }
     if (flag != 0) {
         if (*(f32*)(p + 0x94) * *(f32*)(p + 0x94) > lbl_80564770) {
-            take = *(f32*)((char*)arg0 + (*(s32*)((char*)arg1 + 4) << 4) + (arg2 - 2) * 4 + 0x14) > (lbl_80564730 - lbl_80558DC4);
+            f32 lim = lbl_80564730 - lbl_80558DC4;
+            unsigned char* addr = (unsigned char*)arg0 + (*(s32*)((char*)arg1 + 4) << 4) + (arg2 - 2) * 4 + 0x14;
+            take = *(f32*)addr > lim;
             if (take) {
                 fn_802A4538((void*)*(s32*)((char*)arg0 + 0x10), (void*)vec, (void*)(*(unsigned char**)arg1 + 0x34), f31);
             }
         }
-    }
     }
 end: ;
 }
@@ -763,14 +764,13 @@ end: ;
 extern "C" float fn_801E7E18(void);
 extern "C" void fn_802A2434(void *arg0, void *arg1) {
     extern float lbl_80564774, lbl_80564778;
-    double now = ((double (*)(void))fn_801E7E18)();
-    int count = (int)(lbl_80564774 * *(float *)((char *)arg1 + 0x24));
-    int idx;
-    float old;
-    if (count >= 4) count = 4;
-    idx = *(int *)((char *)arg1 + 0x28);
+    float now = fn_801E7E18();
+    int count = 4;
+    int c = (int)(lbl_80564774 * *(float *)((char *)arg1 + 0x24));
+    if (c < count) count = c;
+    int idx = *(int *)((char *)arg1 + 0x28);
     if (idx < 0 || count <= 0) return;
-    old = *(float *)((char *)arg0 + idx * 0x10 + 0x1C);
+    float old = *(float *)((char *)arg0 + idx * 0x10 + 0x1C);
     if (lbl_80564778 + old >= now) return;
     ((void (*)(void))fn_80287B24)();
 }
@@ -989,9 +989,9 @@ extern "C" void fn_802A2E08(void *arg0, s32 arg1) {
     params.s = cde;
     void *obj = fn_801284F8(0x68, (void *)lbl_80349A34);
     if (obj != 0) {
-        *(s32 *)((u8 *)arg0 + 0x10) =
-            ((s32 (*)(void *, Params *, s32))fn_802A42C8)(obj, &params, arg1);
+        obj = ((void *(*)(void *, Params *, s32))fn_802A42C8)(obj, &params, arg1);
     }
+    *(void **)((u8 *)arg0 + 0x10) = obj;
 }
 
 #pragma push
@@ -1297,15 +1297,15 @@ extern "C" void* __dt__14CollisionSpaceFv_802A366C(void* object, s32 deleting) {
 extern "C" f32 lbl_80564730, lbl_80564744, lbl_8056475C, lbl_8056476C, lbl_805647C4, lbl_805647DC, lbl_80564818, lbl_8056481C;
 extern "C" void fn_8028E590(int, f32*, f32*, f32);
 extern "C" void fn_802A36D0(void *arg0, void *arg1, s32 arg2) {
-    f32 limit = lbl_8056476C;
     f32 v = *(f32*)((char*)arg1 + 8);
-    s32 offset = arg2 * 0x3C;
-    register unsigned char *base = *(unsigned char**)arg1;
-    unsigned char *p = base + offset;
+    f32 limit = lbl_8056476C;
+    unsigned char *base = *(unsigned char**)arg1;
+    unsigned char *base2 = *(unsigned char**)arg1;
+    unsigned char *p = base + arg2 * 0x3C;
     if (v > limit) goto done;
     if (*(f32*)(p + 0x98) >= lbl_805647DC) goto body;
     if (*(f32*)(p + 0x94) >= lbl_80564818) goto body;
-    goto done;
+    else goto done;
 body:
     {
         f32 sp[6];
@@ -1318,7 +1318,6 @@ body:
         sp[1] = *(f32 *)(base + 0x38) * lbl_805647C4;
         sp[2] = *(f32 *)(base + 0x3C) * lbl_805647C4;
         {
-            unsigned char *base2 = *(unsigned char **)arg1;
             f32 t3 = t7 * *(f32 *)(base2 + 0x50);
             f32 t2 = lbl_8056481C * t3;
             sp[0] += *(f32 *)(base2 + 0) * t2;
@@ -1608,102 +1607,94 @@ extern "C" void fn_802A41D8(void *owner, s32 textureResource) {
     (void)mode; (void)size;
 }
 
-#pragma push
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 extern "C" void *fn_802A42C8(void *arg0, void *arg1, s32 arg2) {
-    struct Params {
-        s32 count;
-        f32 p4, p8, pC, p10, p14, p18, p1C, p20, p24, p28;
-        f32 p2C, p30, p34, p38, p3C, p40, p44, p48, p4C;
-    };
-    register s32 count = ((volatile struct Params *)arg1)->count;
-    register volatile struct Params *params = (volatile struct Params *)arg1;
+    register s32 count = *(s32 *)arg1;
+    register char *params = (char *)arg1;
     register char *object = (char *)arg0;
     register s32 extra = arg2;
     void *entries = fn_8012850C((count << 5) + 0x10, lbl_80349A98);
     entries = fn_8002F37C(entries, fn_802A44B4, 0, 0x20, count);
 
-    register f32 p30 = params->p30;
+    register f32 p30 = *(f32 *)(params + 0x30);
     s32 copyCount = count;
-    register f32 p34 = params->p34;
+    register f32 p34 = *(f32 *)(params + 0x34);
     s32 zero = 0;
-    register f32 p3C = params->p3C;
-    register f32 limit = lbl_80564730;
+    register f32 p3C = *(f32 *)(params + 0x3c);
+    register f32 limit = *(volatile f32 *)&lbl_80564730;
     register f32 slope44 = p34 - p30;
-    register f32 p38 = params->p38;
-    register f32 p40 = params->p40;
+    register f32 p38 = *(f32 *)(params + 0x38);
+    register f32 p40 = *(f32 *)(params + 0x40);
     register f32 remaining = limit - p3C;
     p34 = p38 - p34;
-    register f32 p44 = params->p44;
-    register f32 p4 = params->p4;
-    register f32 p4C = params->p4C;
-    register f32 p48 = params->p48;
-    register f32 scale = lbl_80564838;
+    register f32 p44 = *(f32 *)(params + 0x44);
+    register f32 p4 = *(f32 *)(params + 0x4);
+    register f32 p48 = *(f32 *)(params + 0x48);
+    register f32 scale = *(volatile f32 *)&lbl_80564838;
+    register f32 p4C = *(f32 *)(params + 0x4c);
     slope44 /= p3C;
-    register f32 p8 = params->p8;
-    register f32 pC = params->pC;
-    register f32 p10 = params->p10;
-    register f32 p14 = params->p14;
+    register f32 p8 = *(f32 *)(params + 0x8);
+    register f32 pC = *(f32 *)(params + 0xc);
+    register f32 p10 = *(f32 *)(params + 0x10);
+    register f32 p14 = *(f32 *)(params + 0x14);
     p34 /= remaining;
     register f32 slope54 = p44 - p40;
-    register f32 p18 = params->p18;
+    register f32 p18 = *(f32 *)(params + 0x18);
     register f32 ratio = limit / p4;
-    register f32 p1C = params->p1C;
-    register f32 p20 = params->p20;
-    register f32 p24 = params->p24;
-    register f32 p28 = params->p28;
+    register f32 p1C = *(f32 *)(params + 0x1c);
+    register f32 p20 = *(f32 *)(params + 0x20);
+    register f32 p24 = *(f32 *)(params + 0x24);
+    register f32 p28 = *(f32 *)(params + 0x28);
     slope54 /= p4C;
-    register f32 p2C = params->p2C;
+    register f32 p2C = *(f32 *)(params + 0x2c);
     scale *= p2C;
     register f32 difference = p48 - p44;
     register f32 slope58 = difference / (limit - p4C);
 
-    *(void **)((char *)object + 0x00) = entries;
-    *(s32 *)((char *)object + 0x08) = copyCount;
-    *(f32 *)((char *)object + 0x0c) = p4;
-    *(f32 *)((char *)object + 0x10) = ratio;
-    *(f32 *)((char *)object + 0x14) = p8;
-    *(f32 *)((char *)object + 0x1c) = pC;
-    *(f32 *)((char *)object + 0x20) = p10;
-    *(f32 *)((char *)object + 0x24) = p14;
-    *(f32 *)((char *)object + 0x28) = p18;
-    *(f32 *)((char *)object + 0x2c) = p1C;
-    *(f32 *)((char *)object + 0x30) = p20;
-    *(f32 *)((char *)object + 0x34) = p24;
-    *(f32 *)((char *)object + 0x38) = scale;
-    *(f32 *)((char *)object + 0x3c) = p28;
-    *(f32 *)((char *)object + 0x40) = p30;
-    *(f32 *)((char *)object + 0x44) = slope44;
-    *(f32 *)((char *)object + 0x48) = p34;
-    *(f32 *)((char *)object + 0x4c) = p3C;
-    *(f32 *)((char *)object + 0x50) = p40;
-    *(f32 *)((char *)object + 0x54) = slope54;
-    *(f32 *)((char *)object + 0x58) = slope58;
-    *(f32 *)((char *)object + 0x5c) = p4C;
-    *(void **)((char *)object + 0x60) =
+    *(void **)(object + 0x00) = entries;
+    *(s32 *)(object + 0x08) = copyCount;
+    *(f32 *)(object + 0x0c) = p4;
+    *(f32 *)(object + 0x10) = ratio;
+    *(f32 *)(object + 0x14) = p8;
+    *(f32 *)(object + 0x1c) = pC;
+    *(f32 *)(object + 0x20) = p10;
+    *(f32 *)(object + 0x24) = p14;
+    *(f32 *)(object + 0x28) = p18;
+    *(f32 *)(object + 0x2c) = p1C;
+    *(f32 *)(object + 0x30) = p20;
+    *(f32 *)(object + 0x34) = p24;
+    *(f32 *)(object + 0x38) = scale;
+    *(f32 *)(object + 0x3c) = p28;
+    *(f32 *)(object + 0x40) = p30;
+    *(f32 *)(object + 0x44) = slope44;
+    *(f32 *)(object + 0x48) = p34;
+    *(f32 *)(object + 0x4c) = p3C;
+    *(f32 *)(object + 0x50) = p40;
+    *(f32 *)(object + 0x54) = slope54;
+    *(f32 *)(object + 0x58) = slope58;
+    *(f32 *)(object + 0x5c) = p4C;
+    *(void **)(object + 0x60) =
         ((void *(*)(void *, s32))fn_802CAC28)((void *)extra, zero);
 
-    f32 upper = lbl_80564734 - *(f32 *)((char *)object + 0x4c);
+    f32 upper = lbl_80564734 - *(f32 *)(object + 0x4c);
     f32 clampUpper = lbl_80564744;
-    if (clampUpper <= upper)
-        clampUpper = upper;
-    else
+    if (clampUpper > upper)
         clampUpper = lbl_80564744;
-    f32 clampLower = *(f32 *)((char *)object + 0x4c);
-    if (clampLower >= lbl_80564734)
-        clampLower = clampLower;
+    else
+        clampUpper = upper;
+    f32 clampLower = *(f32 *)(object + 0x4c);
+    if (clampLower < lbl_80564734)
+        clampLower = *(f32 *)(object + 0x4c);
     else
         clampLower = lbl_80564734;
-    f32 product = *(f32 *)((char *)object + 0x44) * clampLower;
-    f32 base = *(f32 *)((char *)object + 0x40) + product;
-    *(f32 *)((char *)object + 0x64) = (f32)fn_8002F208(
-        lbl_805647AC / (base + *(f32 *)((char *)object + 0x48) * clampUpper),
+    f32 product = *(f32 *)(object + 0x44) * clampLower;
+    f32 base = *(f32 *)(object + 0x40) + product;
+    *(f32 *)(object + 0x64) = (f32)fn_8002F208(
+        lbl_805647AC / (base + *(f32 *)(object + 0x48) * clampUpper),
         base, product);
     fn_802A4524(object);
     return object;
 }
-#pragma pop
-  
   extern "C" void fn_802A44B4(void) {
 }
 
