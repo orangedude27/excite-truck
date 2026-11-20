@@ -769,7 +769,7 @@ extern "C" void fn_80271624(int mode, void *arg1)
             idx = -1;
         }
         if (idx >= 0) {
-            e = &tbl->ents[*(int *)(o + 0x148)];
+            e = (Ent *)((char *)tbl + 0x70) + *(int *)(o + 0x148);
             if (e->active != 0) {
                 if (lbl_8055F564 != 0) {
                     Zone *z = &tbl->zones[idx];
