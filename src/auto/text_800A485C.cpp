@@ -10894,48 +10894,62 @@ extern "C" s32 fn_800B5618(void *arg0, void *arg1, u32 arg2, u16 arg3, s32 arg4)
     return result & ((-result | result) >> 31);
 }
 
-extern "C" s32 fn_800B5700(s32 arg0, void *arg1, s32 arg2, u16 arg3, u32 arg4, u32 *arg5, u32 arg6) {
+/* Write a volume's data area from a buffer through its sector cache.
+ *
+ * The drive must hold a writable device with media in it (VF_VOL_IN_USE and
+ * fn_800A53B4's VF_VOL_MEDIA_PRESENT, and not VF_VOL_WRITE_PROTECTED) and the
+ * range must stay on the volume, else 9 or 10 is returned.  A part-sector
+ * request - an offset inside the sector, or less than a whole sector - is
+ * written into one page of the data cache; a request that starts on a sector
+ * boundary and is a whole number of sectors goes to the cache's multi-sector
+ * write; a run that is not a whole number of sectors writes the whole sectors
+ * first, up to the next cluster boundary, and writes what is left out of a
+ * single page.  The bytes written are returned in writeOut; a multi-sector
+ * write that got fewer sectors than asked for is 17.  claimPage is passed on
+ * to the page write, which marks the page as held by the file when it is set.
+ */
+extern "C" s32 fn_800B5700(s32 vol, void *src, s32 sector, u16 offset, u32 length, u32 *writeOut, u32 claimPage) {
     VFiPFCACHEPage *page;
     u32 count;
     s32 result;
     u32 left;
     u32 n;
-    VFiPFVolume *volume = VF_VOLUME((void *)arg0);
+    VFiPFVolume *volume = VF_VOLUME((void *)vol);
 
-    *arg5 = 0;
-    if (!(volume->flags & VF_VOL_IN_USE) || !fn_800A53B4((void *)arg0) || (M2C_FIELD(arg0, u16 *, 0x1F8C) & 2)) return 9;
-    if (((u32)arg2 >= volume->totalSectors || arg3 >= volume->bytesPerSector || arg3 + arg4 > volume->bytesPerSector) && arg3 != 0) return 10;
-    if (arg3 != 0 || arg4 < volume->bytesPerSector) {
-        result = ((s32 (*)(void *, s32, s32, s32))fn_800A8F28)((void *)arg0, arg2, (s32)&page, arg6);
+    *writeOut = 0;
+    if (!(volume->flags & VF_VOL_IN_USE) || !fn_800A53B4((void *)vol) || (M2C_FIELD(vol, u16 *, 0x1F8C) & 2)) return 9;
+    if (((u32)sector >= volume->totalSectors || offset >= volume->bytesPerSector || offset + length > volume->bytesPerSector) && offset != 0) return 10;
+    if (offset != 0 || length < volume->bytesPerSector) {
+        result = ((s32 (*)(void *, s32, s32, s32))fn_800A8F28)((void *)vol, sector, (s32)&page, claimPage);
         if (result) return result;
-        VFipf_memcpy(page->data + arg3, arg1, arg4);
-        result = fn_800A900C((void *)arg0, (s32)page, arg6);
+        VFipf_memcpy(page->data + offset, src, length);
+        result = fn_800A900C((void *)vol, (s32)page, claimPage);
         if (result) return result;
-        *arg5 = arg4;
-    } else if (arg3 == 0 && !(arg4 & (volume->bytesPerSector - 1))) {
-        result = VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded_800A9098((void *)arg0, arg1, arg2, arg4 >> volume->sectorShift, (s32)&count);
+        *writeOut = length;
+    } else if (offset == 0 && !(length & (volume->bytesPerSector - 1))) {
+        result = VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded_800A9098((void *)vol, src, sector, length >> volume->sectorShift, (s32)&count);
         if (result) return result;
-        *arg5 = count << volume->sectorShift;
-        if (count != arg4 >> volume->sectorShift) return 17;
-    } else if (arg3 == 0) {
-        left = arg4 >> volume->sectorShift;
-        u32 remainder = (arg2 + left) % volume->sectorsPerCluster;
+        *writeOut = count << volume->sectorShift;
+        if (count != length >> volume->sectorShift) return 17;
+    } else if (offset == 0) {
+        left = length >> volume->sectorShift;
+        u32 remainder = (sector + left) % volume->sectorsPerCluster;
         if (left > remainder) {
             n = left - remainder;
-            result = VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded_800A9098((void *)arg0, arg1, arg2, n, (s32)&count);
+            result = VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded_800A9098((void *)vol, src, sector, n, (s32)&count);
             if (result) return result;
-            *arg5 = count << volume->sectorShift;
+            *writeOut = count << volume->sectorShift;
             if (count != n) return 17;
-            arg2 += n;
+            sector += n;
             left -= n;
         }
         if (left != 0) {
-            result = ((s32 (*)(void *, s32, s32, s32))fn_800A8F28)((void *)arg0, arg2, (s32)&page, arg6);
+            result = ((s32 (*)(void *, s32, s32, s32))fn_800A8F28)((void *)vol, sector, (s32)&page, claimPage);
             if (result) return result;
-            VFipf_memcpy(page->data, (u8 *)arg1 + *arg5, left << volume->sectorShift);
-            result = fn_800A900C((void *)arg0, (s32)page, arg6);
+            VFipf_memcpy(page->data, (u8 *)src + *writeOut, left << volume->sectorShift);
+            result = fn_800A900C((void *)vol, (s32)page, claimPage);
             if (result) return result;
-            *arg5 += left << volume->sectorShift;
+            *writeOut += left << volume->sectorShift;
         }
     } else return 10;
     return 0;
@@ -11361,16 +11375,19 @@ extern "C" s32 fn_800B63FC(void) {
     }
     if (i == 4) {
         s32 k = key;
-        CacheKey *e = (CacheKey *)lbl_803D2140;
-        e[0x11].flag &= 1;
-        if (e[0x11].flag && k == e[0x11].key) found = 1;
+        s32 *e = lbl_803D2140;
+        s32 f0 = e[0x22] & 1;
+        e[0x22] = f0;
+        if (f0 && k == e[0x23]) found = 1;
         else {
-            e += 2;
-            e[0x10].flag &= 1;
-            if (e[0x10].flag && k == e[0x10].key) found = 1;
+            volatile s32 *v = e + 4;
+            s32 f1 = v[0x20] & 1;
+            v[0x20] = f1;
+            if (f1 && k == v[0x21]) found = 1;
             else {
-                e[0x11].flag &= 1;
-                if (e[0x11].flag && k == e[0x11].key) found = 1;
+                s32 f2 = v[0x22] & 1;
+                v[0x22] = f2;
+                if (f2 && k == v[0x23]) found = 1;
                 else found = 0;
             }
         }
