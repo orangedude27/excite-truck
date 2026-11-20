@@ -525,13 +525,21 @@ extern "C" void fn_801D3BF0(void *arg0) {
 #pragma pop
 extern float lbl_8055E460;
 extern char lbl_80558DC4[];
+static float fn_801D3CB8_delta(float a, float blend) {
+    return blend - a;
+}
+#pragma processor 750
+#pragma scheduling on
 void fn_801D3CB8(void *arg0, char *arg1) {
     struct E8 { float f[8]; };
-    float blend = lbl_8055E460;
+    struct F2 { float a, blend; } g;
     int off = *(int *)((char *)arg0 + 8);
-    float delta = lbl_80562AAC - blend;
     char *out = arg1 + off;
     unsigned int w8, w9a, w9b, w11;
+    float delta;
+    g.a = lbl_80562AAC;
+    g.blend = lbl_8055E460;
+    delta = g.blend - g.a;
     if ((float)fabs((double)delta) <= *(float *)lbl_80558DC4) {
         *(struct E8 *)out = *(struct E8 *)((char *)arg0 + 0x70);
         w8 = *(unsigned int *)((char *)arg0 + 0x90);
@@ -550,12 +558,12 @@ void fn_801D3CB8(void *arg0, char *arg1) {
         b = (float *)((char *)arg0 + 0xA0);
         a = (float *)((char *)arg0 + 0x70);
         for (i = 0; i < 2; i++) {
-            p[0] = b[0] + blend * (a[0] - b[0]);
-            p[1] = b[1] + blend * (a[1] - b[1]);
-            p[2] = b[2] + blend * (a[2] - b[2]);
-            p[3] = b[3] + blend * (a[3] - b[3]);
-            p[4] = b[4] + blend * (a[4] - b[4]);
-            p[5] = b[5] + blend * (a[5] - b[5]);
+            p[0] = b[0] + g.blend * (a[0] - b[0]);
+            p[1] = b[1] + g.blend * (a[1] - b[1]);
+            p[2] = b[2] + g.blend * (a[2] - b[2]);
+            p[3] = b[3] + g.blend * (a[3] - b[3]);
+            p[4] = b[4] + g.blend * (a[4] - b[4]);
+            p[5] = b[5] + g.blend * (a[5] - b[5]);
             a += 6;
             b += 6;
             p += 6;
@@ -575,9 +583,6 @@ void fn_801D3CB8(void *arg0, char *arg1) {
     *(int *)(out + 0x38) = *(int *)((char *)arg0 + 0x1F0);
     *(int *)(out + 0x3C) = 0;
 }
-
-#pragma paired reset
-#pragma paired_single reset
 struct Vec3 {
     float x, y, z;
 };
@@ -591,7 +596,7 @@ extern void fn_8017B2D0(void *, float, float, float, float);
 extern void fn_801D4294(void *, void *);
 extern void fn_8017D2C8();
 extern void fn_801796CC();
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
     float tmp[8];
 
@@ -627,11 +632,10 @@ void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
         }
     }
 }
-#pragma scheduling on
 void fn_801D3FA4(void *arg0, int arg1, int arg2, void *arg3, void *arg4, void *arg5, int arg6) {
     float fa, fb, fc;
     int temp_r21, temp_r22, temp_r23, temp_r24, temp_r25, temp_r26, temp_r27;
-    int temp_r12, temp_r11, temp_r7, temp_r6, temp_r4, temp_r4_2, temp_r5, temp_r6_2;
+    int temp_r12, temp_r7, temp_r11, temp_r6, temp_r4, temp_r4_2, temp_r5, temp_r6_2;
     int r0, zero, t0, t1, t2, t3;
 
     temp_r11 = ((int *)arg3)[0];
@@ -799,22 +803,23 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
         unsigned char *p;
         float posx;
         float posy;
+        int z = 0;
         *(unsigned int *)(self + 0x23C) = 0x53504852;
         *(float *)(self + 0x240) = size;
         resource = *(void **)(self + 0x244);
         if (resource == 0) break;
         p = (unsigned char *)resource;
-        posx = *(float *)(src + 0x14);
         *(void **)(p + 0x0C) = self + 0x3C;
+        posx = *(float *)(src + 0x14);
+        *(unsigned int *)(p + 0x08) = z;
+        *(void **)p = (void *)&lbl_80333B48;
         posy = *(float *)(src + 0x18);
         *(void **)(p + 0x04) = self;
-        *(unsigned int *)(p + 0x08) = 0;
+        *(unsigned int *)(p + 0x20) = 0x64;
+        *(unsigned int *)(p + 0x1C) = z;
         *(unsigned int *)(p + 0x18) = 0x53504852;
         *(float *)(p + 0x10) = posx;
         *(float *)(p + 0x14) = posy;
-        *(unsigned int *)(p + 0x20) = 0x64;
-        *(unsigned int *)(p + 0x1C) = 0;
-        *(void **)p = (void *)&lbl_80333B48;
         *(volatile float *)(p + 0x28) = sp8;
         *(volatile float *)(p + 0x2C) = spc;
         *(volatile float *)(p + 0x30) = sp10;
@@ -825,7 +830,7 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
         *(float *)(p + 0x40) = zero;
         *(float *)(p + 0x44) = zero;
         *(float *)(p + 0x48) = zero;
-        *(unsigned char *)(p + 0x4C) = 0;
+        *(unsigned char *)(p + 0x4C) = z;
         *(float *)(p + 0x50) = zero;
         *(volatile float *)(p + 0x28) = sp8;
         *(volatile float *)(p + 0x2C) = spc;
@@ -838,6 +843,7 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
         float y = *(float *)(src + 0x2C);
         float xx = x * x;
         float yy = y * y;
+        int z = 0;
         *(unsigned int *)(self + 0x23C) = 0x54554245;
         *(float *)(self + 0x240) = (float)fn_8002F234(yy + xx);
         resource = *(void **)(self + 0x244);
@@ -850,14 +856,14 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
             *(void **)(p + 0x0C) = subObj;
             posy = *(float *)(src + 0x18);
             *(void **)(p + 0x04) = self;
-            *(unsigned int *)(p + 0x08) = 0;
+            *(unsigned int *)(p + 0x08) = z;
             *(unsigned int *)(p + 0x18) = 0x54554245;
             f = lbl_80562AC4 * *(float *)(src + 0x30);
             h = *(float *)(src + 0x2C);
             *(float *)(p + 0x10) = posx;
             *(float *)(p + 0x14) = posy;
             *(unsigned int *)(p + 0x20) = 0x64;
-            *(unsigned int *)(p + 0x1C) = 0;
+            *(unsigned int *)(p + 0x1C) = z;
             *(float *)(p + 0x24) = h;
             *(float *)(p + 0x28) = f - h;
             *(void **)p = lbl_80333918;
@@ -869,6 +875,7 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
         float y = *(float *)(src + 0x2C);
         float xx = x * x;
         float yy = y * y;
+        int z = 0;
         *(unsigned int *)(self + 0x23C) = 0x54554245;
         *(float *)(self + 0x240) = (float)fn_8002F234(yy + xx);
         resource = *(void **)(self + 0x244);
@@ -878,19 +885,19 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
             float posx, posy, h, f;
             void *vtable;
             subObj = self + 0x3C;
-            posx = *(float *)(src + 0x14);
             *(void **)(p + 0x0C) = subObj;
+            posx = *(float *)(src + 0x14);
+            vtable = lbl_80333918;
+            *(unsigned int *)(p + 0x08) = z;
             posy = *(float *)(src + 0x18);
             *(void **)(p + 0x04) = self;
-            *(unsigned int *)(p + 0x08) = 0;
-            vtable = lbl_80333918;
             *(unsigned int *)(p + 0x18) = 0x54554245;
             h = *(float *)(src + 0x2C);
+            *(unsigned int *)(p + 0x20) = 0x64;
             f = *(float *)(src + 0x30);
+            *(unsigned int *)(p + 0x1C) = z;
             *(float *)(p + 0x10) = posx;
             *(float *)(p + 0x14) = posy;
-            *(unsigned int *)(p + 0x20) = 0x64;
-            *(unsigned int *)(p + 0x1C) = 0;
             *(float *)(p + 0x24) = h;
             *(float *)(p + 0x28) = f;
             *(void **)p = vtable;
