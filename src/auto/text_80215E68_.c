@@ -257,13 +257,12 @@ void fn_80216194(void) {
 }
 
 #pragma dont_inline on
-s32 fn_802161CC(s32 arg0) {
-    u32 value;
+void fn_802161CC(s32 arg0) {
     s32 i;
     for (i = 0; i < 16; i++) {
-        value = lbl_804908C8[i];
-        if (value != 0 && (arg0 != 0 || value != (u32)lbl_8055EF88)) {
-            fn_80218464();
+        void *value = ((void **)lbl_804908C8)[i];
+        if (value != 0 && (arg0 != 0 || value != lbl_8055EF88)) {
+            fn_80218464(value);
         }
     }
 }
