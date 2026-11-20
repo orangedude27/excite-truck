@@ -171,28 +171,6 @@ extern "C" void fn_8026B260(void) {
 #pragma processor 750
 #pragma push
 #pragma opt_common_subs off
-#pragma dont_inline off
-static inline void fn_8026B3D4_findArea(unsigned char *e, float t, double x0, double z0, volatile float *d) {
-    float x = x0;
-    float z = z0;
-    float *tab = (float *)lbl_8049A028;
-    int found = 0;
-    int j = 0;
-    while (j < lbl_8055F4C8 && found == 0) {
-        float dz = z - tab[1];
-        float r = tab[2];
-        float dx = x - tab[0];
-        d[0] = dx;
-        d[1] = dz;
-        if (dx * dx + dz * dz < r * r) {
-            *(int *)(e + 0xC) = j;
-            found = 1;
-            *(float *)(e + 4) = t;
-        }
-        tab += 3;
-        j++;
-    }
-}
 void fn_8026B3D4(int arg0) {
     struct Ent { unsigned char on; unsigned char pad[3]; float t; float v; int idx; };
     float t = lbl_8055E3C8;
