@@ -782,6 +782,9 @@ void fn_80247768(void) {
 extern void *lbl_8055BEB0;
 extern s32 lbl_8055BEB8;
 extern s32 lbl_8055F26C;
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_8024778C(void) {
     s32 i;
     s32 current;
@@ -813,12 +816,15 @@ void fn_8024778C(void) {
         }
         break;
     }
-    for (i = 0; i < 3; i++) {
+    i = 0;
+    do {
         if (fn_8027B94C(i) == 0) {
             fn_80214A9C(i + 0xB);
         }
-    }
+        i += 1;
+    } while (i < 3);
 }
+#pragma pop
 extern void* lbl_8055BEB0;
 extern s32 lbl_8055BEB4;
 #define gSelectedMenuIndex lbl_8055BEB0 /* active UI window's menu index; mirrors fn_80247768 */
@@ -913,7 +919,7 @@ void fn_80247A0C(void) {
     s32 var_r31;
     s32 a;
     s32 b;
-    a = *(volatile s32 *)&lbl_8055BEBC;
+    a = lbl_8055BEBC;
     b = lbl_8055BEA8;
     if (a != b) {
         lbl_8055BEBC = b;
@@ -986,11 +992,11 @@ extern char lbl_803435A0[], lbl_802FA418[], lbl_8055BEC4, lbl_8055BEA0, lbl_8055
 int fn_80247C18() {
  struct Entry { s32 id; unsigned char enabled; char pad[3]; };
  struct Frame { s32 args[5]; s32 title; s32 pad[4]; s32 zero; struct Entry *entries; s32 count; s32 capacity; struct Entry data[10]; s32 items[75]; } frame;
- char *base = lbl_80343270; s32 a; s32 *table; s32 b, missing, v, result, flag; struct Entry *entry;
+ char *base = lbl_80343270; s32 a; s32 *table; s32 v;
  lbl_8055F26C = 0;
  a = fn_80161D50();
- b = fn_80161D14();
- { s32 d = b ^ a; s32 half = d >> 1; s32 masked = d & b; s32 diff = half - masked; if ((unsigned long)diff >> 31) {
+ { s32 b = fn_80161D14();
+   s32 d = b ^ a; s32 half = d >> 1; s32 masked = d & b; s32 diff = half - masked; if ((unsigned long)diff >> 31) {
    lbl_8055F26C = 1;
    if (fn_8027DE68(0)) {
      lbl_8055F26C = 2;
@@ -1004,14 +1010,18 @@ int fn_80247C18() {
  table = lbl_802FA3B4 + lbl_8055F26C * 3;
  frame.zero = 0; frame.count = 0; frame.title = (s32)lbl_803435A0;
  frame.entries = frame.data; frame.capacity = 10;
- b = fn_8027DE68(2); missing = (b == 0);
- flag = 0; if (missing && lbl_8055F26C >= 2) flag = 1; entry = &frame.entries[frame.count++]; entry->id = 11; entry->enabled = flag;
- flag = 0; if (missing && lbl_8055F26C >= 3) flag = 1; entry = &frame.entries[frame.count++]; entry->id = 12; entry->enabled = flag;
- entry = &frame.entries[frame.count++]; entry->id = 13; entry->enabled = (int)b;
- b = fn_8027B9EC(1);
- flag = 0; if (b == 0 && lbl_8055BEA8 >= 5) flag = 1; entry = &frame.entries[frame.count++]; entry->id = 14; entry->enabled = flag;
- entry = &frame.entries[frame.count++]; entry->id = 15; entry->enabled = b;
- entry = &frame.entries[frame.count++]; entry->id = 16; entry->enabled = 0;
+ {
+   s32 b = fn_8027DE68(2);
+   s32 missing = (b == 0);
+   struct Entry *entry;
+   s32 flag = 0; if (missing && lbl_8055F26C >= 2) flag = 1; entry = &frame.entries[frame.count++]; entry->id = 11; entry->enabled = flag;
+   flag = 0; if (missing && lbl_8055F26C >= 3) flag = 1; entry = &frame.entries[frame.count++]; entry->id = 12; entry->enabled = flag;
+   entry = &frame.entries[frame.count++]; entry->id = 13; entry->enabled = (int)b;
+   b = fn_8027B9EC(1);
+   flag = 0; if (b == 0 && lbl_8055BEA8 >= 5) flag = 1; entry = &frame.entries[frame.count++]; entry->id = 14; entry->enabled = flag;
+   entry = &frame.entries[frame.count++]; entry->id = 15; entry->enabled = b;
+   entry = &frame.entries[frame.count++]; entry->id = 16; entry->enabled = 0;
+ }
  v = fn_8000DA10();
  if (lbl_8055BEC0 < 0 || lbl_8055BEC0 != v) lbl_8055BEAC = (void *)table[0];
  lbl_8055BEC0 = v;
@@ -1173,9 +1183,6 @@ extern char lbl_80343590[];
 extern s32 lbl_802FA478[5];
 extern float lbl_8055BEF4;
 extern void fn_80232B80(s32);
-#pragma push
-#pragma use_lmw_stmw off
-#pragma optimization_level 4
 #pragma scheduling invalid_target
 void fn_802483E0(void)
 {
@@ -1205,10 +1212,10 @@ void fn_802483E0(void)
     s32 item[20];
     struct Object object;
   } frame;
-  register s32 *textPtr = frame.text;
-  register s32 zero = 0;
-  register s32 one;
-  register struct Object *objectPtr;
+  s32 *textPtr = frame.text;
+  s32 zero = 0;
+  s32 one;
+  struct Object *objectPtr;
   textPtr[5] = zero;
   textPtr[0] = (s32) lbl_803436C0;
   textPtr[8] = 0x1388;
@@ -1269,7 +1276,6 @@ void fn_802483E0(void)
   frame.object.unk20 = 0;
   frame.object.unk44 = 0;
 }
-#pragma pop
 
 #pragma scheduling invalid_target
 /* Destructor-like helper: reset key fields and optionally free the object. */
@@ -1454,7 +1460,7 @@ void fn_80248A68(void *arg0) {
 void fn_80248A74(void *arg0) {
     float *fp = (float *)((char *)arg0 + 0x1C);
     s32 rate;
-    if (*fp > lbl_805638C8) rate = 0xC8;
+    if (*fp > 370.0f) rate = 0xC8;
     else rate = 0x32;
     *fp = *fp + (float)rate * fn_80214D48();
 }
