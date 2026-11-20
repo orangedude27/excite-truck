@@ -3,18 +3,6 @@
 
 extern int lbl_8041E098[];
 extern int lbl_8055DF70;
-
-#pragma cplusplus on
-struct BgTaskObj {
-    virtual void m0();
-    virtual void call();
-};
-extern "C" {
-static inline void bgTaskCall(void *obj) {
-    ((BgTaskObj *)obj)->call();
-}
-}
-#pragma cplusplus reset
 extern char lbl_80329FC0[];
 extern void fn_802E317C(const char *, ...);
 extern char lbl_80329FA0[];
@@ -22,6 +10,7 @@ extern char lbl_80329FA0[];
 #pragma use_lmw_stmw off
 void fn_80127B5C(int arg0) {
 #pragma scheduling invalid_target
+    int last;
     unsigned char *entry;
     int i;
     int j;
@@ -50,8 +39,9 @@ void fn_80127B5C(int arg0) {
                 if (((unsigned char *)lbl_8041E098)[0] != 0) {
                     entry[20] = 1;
                 } else {
-                    int last = lbl_8041E098[1] - 1;
-                    unsigned char *src = (unsigned char *)lbl_8041E098 + last * 16;
+                    unsigned char *src;
+                    last = lbl_8041E098[1] - 1;
+                    src = (unsigned char *)lbl_8041E098 + last * 16;
                     lbl_8041E098[1] = last;
                     *(int *)(entry + 8) = *(int *)(src + 8);
                     *(int *)(entry + 12) = *(int *)(src + 12);
