@@ -1196,6 +1196,3 @@ void fn_801F1B1C(void *arg0, void *arg1) {
     else
         *(volatile int *)((char *)arg0 + 0x80) = 0;
 }
-static inline int fn_801F0DC0_flag(void) {
-    return (unsigned int)__cntlzw(1) >> 5;
-}
