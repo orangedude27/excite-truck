@@ -60,7 +60,8 @@ float fn_802E7824(float arg0, float arg1) {
     } else {
         float v = t * (arg0 + arg1);
         if (c < v) { c = c; } else { c = v; }
-        if (c <= lbl_8056516C) { c = lbl_8056516C; }
+        if (c > lbl_8056516C) { c = c; } else { c = lbl_8056516C; }
+        c = c;
         return c;
     }
 }
@@ -335,6 +336,7 @@ void fn_802E7DDC(void *arg0, void *arg1) {
     Input *in = (Input *)arg1;
     float temp_f0, temp_f0_2, var_f1, var_f31, var_f4;
     float ax, ay, vectorX, vectorY, vectorZ;
+    float coef, lower;
     double temp_f1;
     int var_r5;
 
@@ -355,13 +357,17 @@ void fn_802E7DDC(void *arg0, void *arg1) {
     out->heading = var_f31;
     if (var_f31 > lbl_80565180) var_f31 -= lbl_80565184;
     else if (var_f31 < lbl_80565188) var_f31 += lbl_80565184;
-    var_f1 = lbl_80565160;
-    temp_f0 = lbl_8056518C * in->acc.z;
-    var_f1 = (temp_f0 < var_f1) ? temp_f0 : var_f1;
+    lower = lbl_80565160;
+    coef = lbl_8056518C;
+    temp_f0 = coef * in->acc.z;
+    var_f1 = lower;
+    var_f1 = (var_f1 > temp_f0) ? var_f1 : temp_f0;
     var_f1 = (var_f1 > lbl_8056517C) ? var_f1 : lbl_8056517C;
     var_f1 = fn_802E78A4(var_f1);
     var_f4 = lbl_80565160;
-    temp_f0_2 = lbl_80565190 * ((lbl_80565194 * var_f31) / lbl_80565180);
+    temp_f0_2 = lbl_80565194 * var_f31;
+    out->angle = var_f1;
+    temp_f0_2 = lbl_80565190 * (temp_f0_2 / lbl_80565180);
     var_f4 = (temp_f0_2 < var_f4) ? temp_f0_2 : var_f4;
     var_f4 = (var_f4 > lbl_8056517C) ? var_f4 : lbl_8056517C;
     vectorX = lbl_80565198 * -in->acc.z;
@@ -376,7 +382,6 @@ void fn_802E7DDC(void *arg0, void *arg1) {
     out->buttons[3] = (temp_r31 >> 12) & 1;
     out->buttons[5] = (temp_r31 >> 15) & 1;
     out->flags |= 0x20;
-    out->angle = var_f1;
     out->x = vectorX;
     out->y = vectorY;
     out->z = vectorZ;
