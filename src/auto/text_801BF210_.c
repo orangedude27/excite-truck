@@ -1120,6 +1120,7 @@ void fn_801C0E60(float *out, float *lhs, float *rhs) {
 
 #pragma push
 #pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_801C0E94(void *arg0, int arg1) {
     extern float lbl_805628BC, lbl_8055E460;
     extern char lbl_80558DC4[];
@@ -1159,12 +1160,12 @@ void fn_801C0E94(void *arg0, int arg1) {
         for (i = 0; i < 2; i++) {
             float a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5];
             float b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3], b4 = b[4], b5 = b[5];
-            temp[i * 6 + 0] = b0 + top * (a0 - b0);
-            temp[i * 6 + 1] = b1 + top * (a1 - b1);
-            temp[i * 6 + 2] = b2 + top * (a2 - b2);
-            temp[i * 6 + 3] = b3 + top * (a3 - b3);
-            temp[i * 6 + 4] = b4 + top * (a4 - b4);
-            temp[i * 6 + 5] = b5 + top * (a5 - b5);
+            temp[i * 6 + 0] = b0 + lbl_8055E460 * (a0 - b0);
+            temp[i * 6 + 1] = b1 + lbl_8055E460 * (a1 - b1);
+            temp[i * 6 + 2] = b2 + lbl_8055E460 * (a2 - b2);
+            temp[i * 6 + 3] = b3 + lbl_8055E460 * (a3 - b3);
+            temp[i * 6 + 4] = b4 + lbl_8055E460 * (a4 - b4);
+            temp[i * 6 + 5] = b5 + lbl_8055E460 * (a5 - b5);
             a += 6;
             b += 6;
         }
