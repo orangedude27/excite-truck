@@ -100,37 +100,25 @@ void fn_8023B8AC(s32 context) {
 
 #pragma scheduling invalid_target
 void fn_8023B904(void *arg0, void *dest, s32 flag) {
-    struct Buffer {
+    struct Local8023B904 {
         u8 *data;
-        s32 field0;
-        s32 field1;
-        s32 field2;
-        u8 bytes[4];
-        s32 tail[40];
+        s32 a, b, c;
+        u8 d, e, f, g;
+        Tail8023C210 t;
     } local;
-    s32 *source;
-    s32 *target;
-    s32 count;
-
+    Src8023C210 *out;
     if (flag == 0) {
         local.data = lbl_803413A8;
         ((void (*)(void *, void *))fn_8000BF20)(arg0, &local);
         if (dest != 0) {
-            *(s32 *)dest = local.field0;
-            *(s32 *)((u8 *)dest + 4) = local.field1;
-            *(s32 *)((u8 *)dest + 8) = local.field2;
-            ((u8 *)dest)[0xC] = local.bytes[0];
-            ((u8 *)dest)[0xD] = local.bytes[1];
-            ((u8 *)dest)[0xE] = local.bytes[2];
-            target = (s32 *)((u8 *)dest + 0xC);
-            source = (s32 *)local.bytes;
-            count = 0x14;
-            do {
-                target[1] = source[1];
-                target[2] = source[2];
-                source += 2;
-                target += 2;
-            } while (--count != 0);
+            out = (Src8023C210 *)dest;
+            out->a = local.a;
+            out->b = local.b;
+            out->c = local.c;
+            out->d = local.d;
+            out->e = local.e;
+            out->f = local.f;
+            out->t = local.t;
         }
     } else {
         fn_8000C0E8();
