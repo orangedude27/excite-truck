@@ -1650,7 +1650,7 @@ outer:
 #pragma scheduling on
 #pragma use_lmw_stmw on
 #pragma dont_inline reset
-static const double lbl_80564F38 = 4503599627370496.0;
+extern double lbl_80564F38;
 #pragma fp_contract off
 void fn_802CC518(int arg0, float arg1) {
     union {
