@@ -919,7 +919,6 @@ extern "C" void* fn_801FE188(void* obj) {
 }
 
 #pragma push
-#pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma scheduling on
 extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
