@@ -65,11 +65,16 @@ void fn_80039F68(int result) {
 }
 
 void fn_80039FC4(int arg0) {
- char *base = lbl_8037B640;
- if (arg0 == 0) {
-  if (NANDWriteAsync(base, base+0x160, 0x80, fn_80039F68, base+0x90) != 0 &&
-      NANDCloseAsync(base, fn_80039F3C, base+0x90) != 0 && lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
- } else if (lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
+    struct NandErrorData {
+        char info[0x90];
+        char cmd[0xD0];
+        char data[0x80];
+    };
+    struct NandErrorData *base = (struct NandErrorData *)lbl_8037B640;
+    if (arg0 == 0) {
+        if (NANDWriteAsync(&base->info, &base->data, 0x80, fn_80039F68, &base->cmd) != 0 &&
+            NANDCloseAsync(&base->info, fn_80039F3C, &base->cmd) != 0 && lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
+    } else if (lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
 }
 
 /* NAND async step: open/create /shared2/test/dvderror.dat, or report failure via the registered callback. */
@@ -293,6 +298,36 @@ static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const
     ((DVDLowContext *)lbl_8037B820)[lbl_8055D8E8].inUse = arg2;
 
     id = lbl_8055D8E8;
+    if ((int)++lbl_8055D8E8 >= 4) {
+        lbl_8055D8E8 = 0;
+    }
+
+    return &((DVDLowContext *)lbl_8037B820)[id];
+}
+
+static inline DVDLowContext *newContextSlot(void *callback, unsigned int arg2, const char *msg) {
+    unsigned char *base = lbl_8037B820;
+    int slot = lbl_8055D8E8;
+    int offset = slot * 0x20;
+    int id;
+    unsigned int flag;
+
+    flag = *(unsigned char *)(base + offset + 8);
+    if (((-flag | flag) >> 31) == 1U) {
+        OSReport(msg + 0x218, slot);
+        OSReport(msg + 0x250);
+        for (;;) {}
+    }
+    if (((DVDLowContext *)lbl_8037B820)[slot].magic != 0xFEEBDAED) {
+        OSReport(msg + 0x280);
+        for (;;) {}
+    }
+
+    ((DVDLowContext *)lbl_8037B820)[slot].callback = callback;
+    ((DVDLowContext *)lbl_8037B820)[slot].WORD_0x4 = arg2;
+    ((DVDLowContext *)lbl_8037B820)[slot].inUse = arg2;
+
+    id = slot;
     if ((int)++lbl_8055D8E8 >= 4) {
         lbl_8055D8E8 = 0;
     }
@@ -607,40 +642,17 @@ int fn_8003AC24(void *arg0) {
 #pragma scheduling reset
 
 int fn_8003AD88(void *arg0, int arg1, int arg2, unsigned int arg3) {
-    unsigned int one = 1;
     const char *msg = lbl_80302848;
-    int slot = lbl_8055D8E8;
-    unsigned char *entry = (unsigned char *)&((DVDLowContext *)lbl_8037B820)[slot];
-    unsigned int flag = entry[8];
-    int index;
+    unsigned int one = 1;
     unsigned char *context;
     int result;
+    void *callback = (void *)arg3;
 
     lbl_8055D8E0 = one;
-    if (((-flag | flag) >> 31) == 1U) {
-        OSReport(msg + 0x218, slot);
-        OSReport(msg + 0x250);
-        for (;;) {}
-    }
-    if ((*(unsigned int *)(entry + 0xC) + 0x01150000U) != 0xDAEDU) {
-        OSReport(msg + 0x280);
-        for (;;) {}
-    }
-
-    ((unsigned int *)lbl_8037B820)[slot * 8] = arg3;
-    index = slot + 1;
-    *(unsigned int *)(entry + 4) = one;
-    entry[8] = one;
-    lbl_8055D8E8 = index;
-    if (index >= 4) lbl_8055D8E8 = 0;
-
-    index = lbl_8055D8E4 + 1;
+    context = (unsigned char *)newContext(callback, one, msg);
     lbl_8055D8F4 = arg1;
-    lbl_8055D8E4 = index;
-    context = lbl_8037B820 + slot * 0x20;
-    if (index >= 4) { index = 0; lbl_8055D8E4 = 0; }
-
-    *(unsigned char *)(lbl_8055D8FC + index * 0x20) = 0x8D;
+    nextCommandBuf();
+    *(unsigned char *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20) = 0x8D;
     *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 4) = arg1;
     *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 8) = arg2;
     result = IOS_IoctlAsync(lbl_80558E18, 0x8D, lbl_8055D8FC + lbl_8055D8E4 * 0x20,
@@ -678,7 +690,6 @@ int fn_8003AF1C(int arg0, int arg1, int arg2) {
 }
 #pragma opt_propagation off
 int fn_8003B0B0(void *arg0, void *arg1) {
-    #pragma scheduling 750
     const char *msg = lbl_80302848;
     int slot = lbl_8055D8E8;
     unsigned char *base = lbl_8037B820;
@@ -735,8 +746,8 @@ int fn_8003B218(void *arg0) {
     unsigned char *entry;
     int index;
     int result;
-    offset = slot << 5;
     lbl_8055D8E0 = one;
+    offset = slot << 5;
     p = base + offset;
     flag = p[8];
     if (((flag | (0U - flag)) >> 31) == 1U) {
@@ -780,12 +791,13 @@ int fn_8003B380(int value) {
 }
 
 #pragma scheduling on
+#pragma opt_propagation off
 int fn_8003B38C(void *arg0) {
     unsigned char *p;
     unsigned char *base = lbl_8037B820;
     const char *msg = lbl_80302848;
-    unsigned int flag;
     int offset;
+    unsigned int flag;
     int slot = lbl_8055D8E8;
     unsigned int one = 1;
     unsigned char *entry;
