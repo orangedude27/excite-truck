@@ -865,7 +865,6 @@ extern float fn_80287BC8(float, float);
 #pragma push
 #pragma processor 750
 #pragma cplusplus off
-#pragma scheduling invalid_target
 void fn_802A01C8(void *arg0, Unk802A0794Params *params) {
     struct Result {
         int count;
@@ -875,7 +874,7 @@ void fn_802A01C8(void *arg0, Unk802A0794Params *params) {
     float b[3];
     float a0, a1, a2;
     float b0, b1, b2;
-    int flag;
+    unsigned char flag;
     int i;
 
     fn_802A0098(&out, arg0, params);
