@@ -242,6 +242,7 @@ BOOL fn_8026BFF0(s32 mode) {
     /* Return TRUE for view modes 3 and 4, FALSE for any other mode id. */
     switch (mode) { case 3: case 4: return TRUE; default: return FALSE; }
 }
+#pragma pop
 
 extern s32 fn_802D3EBC(void);
 extern s32 __AXGetStackHead_80137CFC(s32);
