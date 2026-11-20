@@ -242,10 +242,10 @@ static inline s32 fn_80231AF0_escape(char *text, f32 w, f32 *adv) {
     }
     return 0;
 }
-static inline s32 fn_80231D84_addEscape(f32 *adv, char *text, f32 x, f32 y, f32 z, f32 w, f32 half) {
-    s32 i;
-    s32 eo;
-    s32 flag;
+ static inline s32 fn_80231D84_addEscape(f32 *adv, char *text, f32 x, f32 y, f32 z, f32 w, f32 half) {
+     register s32 i asm("r23");
+     s32 eo;
+     register s32 flag asm("r24");
     *adv = w;
     flag = lbl_8055F050;
     if (*text == '\\') {
@@ -627,11 +627,7 @@ extern void fn_80233DD8(s32 *, s32);
 extern void fn_80233E34(s32 *, s32, s32);
 extern void fn_80233EBC(void);
 extern void fn_80233EC0(void *, s32, f32, f32, f32, f32, f32, f32);
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
-#pragma dont_inline on
+#pragma opt_peephole off
 void fn_80232040(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
                  f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5) {
     s32 sp14;
@@ -643,7 +639,7 @@ void fn_80232040(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     register s32 var_r31;
     register s32 temp_r30;
     register u8 *var_r29;
-    s32 var_r5;
+    register s32 var_r5;
     f32 tmpRate;
     sp8 = (s32)arg0;
     spC = farg0;
@@ -685,8 +681,6 @@ void fn_80232040(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         var_r31 -= 1;
     }
 }
-#pragma dont_inline off
-#pragma pop
 
 void fn_802321D8(void) {
     /* (Re)initialize the gText font-tracker cache: warn if a cache is already
