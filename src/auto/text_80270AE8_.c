@@ -1112,11 +1112,11 @@ float fn_80272428(void *arg0, void *arg1, float a, float b, float radius)
   struct Result resultA;
   struct Result resultB;
   volatile struct Point pointA;
-  volatile struct Point deltaA;
   volatile struct Point pointB;
+  volatile struct Point deltaA;
   volatile struct Point deltaB;
   void *new_var[2];
-  float fraction;
+  register float fraction;
   float x;
   float y;
   float dx;
@@ -1536,19 +1536,19 @@ extern "C" int fn_80272DCC(void *arg0, Parser2 *arg1) {
         *(unsigned char *)(o + 0x1D) = flags;
         switch (*(int *)(o + 0x58)) {
         case 13:
-            *(unsigned char *)(o + 0x1D) = flags | 2;
+            *(unsigned char *)(o + 0x1D) = (unsigned char)flags | 2;
             *(int *)(o + 0x58) = 1;
             break;
         case 14:
             *(int *)(o + 0x58) = 2;
-            *(unsigned char *)(o + 0x1D) = flags | 2;
+            *(unsigned char *)(o + 0x1D) = (unsigned char)flags | 2;
             break;
         case 15:
-            *(unsigned char *)(o + 0x1D) = flags | 2;
+            *(unsigned char *)(o + 0x1D) = (unsigned char)flags | 2;
             *(int *)(o + 0x58) = 3;
             break;
         case 12:
-            *(unsigned char *)(o + 0x1D) = flags | 4;
+            *(unsigned char *)(o + 0x1D) = (unsigned char)flags | 4;
             *(int *)(o + 0x58) = 0;
             break;
         }
