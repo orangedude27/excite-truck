@@ -16984,11 +16984,6 @@ void hidd_proc_repage_timeout(void)
     callback(2, cb[9], 0);
 }
 
-#pragma always_inline on
-static inline void hidd_mark_pm_set(void) {
-    lbl_803C3AF0[0x78] = 0xFF;
-}
-#pragma always_inline reset
 #pragma opt_common_subs off
 BOOLEAN hidd_pm_set_now(void *arg0) {
     u8 mode = 0;
@@ -17000,9 +16995,9 @@ BOOLEAN hidd_pm_set_now(void *arg0) {
         state_mode = lbl_803C3AF0[0x6A];
         mode = ((u8 *)arg0)[8];
         if (mode == state_mode && mode != 0) {
-            register u16 interval = *(u16 *)(lbl_803C3AF0 + 0x6C);
+            u16 interval = *(u16 *)(lbl_803C3AF0 + 0x6C);
             if (interval >= *(u16 *)((u8 *)arg0 + 2) && interval <= *(u16 *)arg0) {
-                lbl_803C3AF0[0x78] = 0xFF;
+                *(volatile u8 *)(lbl_803C3AF0 + 0x78) = 0xFF;
                 return TRUE;
             }
         }
