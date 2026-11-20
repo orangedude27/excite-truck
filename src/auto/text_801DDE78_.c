@@ -242,7 +242,7 @@ extern char lbl_80339490[];
 typedef DbgRec *(*DbgGet)(void *, const char *);
 typedef void (*DbgVoid)(void *);
 #pragma push
-#pragma processor gekko
+#pragma processor 603
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 extern "C" void fn_801DE154(void) {
