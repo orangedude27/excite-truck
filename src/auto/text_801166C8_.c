@@ -1,7 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
-typedef struct { u32 v : 16; } S16Field_8011AE68;
 typedef struct { f32 x, y; } V2_80121848;
 extern void fn_8012440C(void *, void *);
 extern void fn_80124CE8(void *, void *);
