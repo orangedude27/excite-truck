@@ -748,8 +748,6 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail9FrameHeapFv(void *self, s32 flag) {
         if (heap == 0) goto done;
         if (heap == 0) goto done;
         if (state->count != 0) {
-            struct { void *p; } listBox;
-            void *&list = listBox.p;
             struct { FrameHeapDestroyListView *p; } headBox;
             FrameHeapDestroyListView *&head = headBox.p;
             head = &state->list;
@@ -759,6 +757,8 @@ loop_body:
                 Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1FB, (const char *)lbl_80322FF8);
             }
             {
+                struct { void *p; } listBox;
+                void *&list = listBox.p;
                 list = head->tail;
                 if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
                 if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
@@ -3454,24 +3454,22 @@ extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
         virtual void Dummy1();
         virtual void Stop();
     };
-    void* pList = (void*)&lbl_80412A6C[0x04];
-    void* pHead = *(void**)pList;
-    void* pPlayer;
-
-    while (pHead != pList) {
-        pPlayer = pHead;
-        pHead = *(void**)pPlayer;
-        if (pPlayer == NULL) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324024, 0x23D,
-                                         (const char*)lbl_80324000);
-        }
-        ((PlayerVTable*)((u8*)pPlayer - 0x100))->Stop();
+    struct LinkListIter { void *node; };
+    LinkListIter begin;
+    begin.node = *(void**)&lbl_80412A6C[0x04];
+    LinkListIter it = begin;
+    struct EndWrap { void* e; } sentinel;
+    sentinel.e = (void*)&lbl_80412A6C[0x04];
+    void*& end = sentinel.e;
+    while (it.node != end) {
+        void* node = it.node;
+        it.node = *(void**)it.node;
+        if (node == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324024, 0x23D, (const char*)lbl_80324000);
+        ((PlayerVTable*)((u8*)node - 0x100))->Stop();
     }
-
-    if (*(s32*)&lbl_80412A6C[0] != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x3D7,
-                                     (const char*)lbl_80323E64);
-    }
+    if (*(s32*)&lbl_80412A6C[0] != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x3D7, (const char*)lbl_80323E64);
 }
 #pragma pop
 /* Forward an event to the virtual callback stored at +0x94 on this player,
