@@ -53,27 +53,32 @@ static inline Block* link_new_block(Block** list, unsigned int size) {
     return bp;
 }
 extern int fn_8002194C(void*, unsigned int, int*);
-int fn_80021D48(Block** arg0, int arg1, int* arg2) {
-    Block* bp;
+// mem_alloc: allocate `size` bytes from the circular list of Blocks in *list.
+// Rounds the size up to 8 (minimum 0x50), walks the list for a block with enough
+// free space (Block_alloc), and links in a fresh block if none fits.
+// Returns the data pointer (8 bytes past the subblock header), or 0 on failure;
+// *outMax receives the largest size the chosen block could serve.
+int fn_80021D48(Block** list, int size, int* outMax) {
+    Block* block;
     int ptr;
-    if (arg2) *arg2 = 0;
-    arg1 = (arg1 + 15) & ~7;
-    if ((unsigned int)arg1 < 0x50) arg1 = 0x50;
-    bp = *arg0 != 0 ? *arg0 : link_new_block(arg0, arg1);
-    if (bp == 0) return 0;
+    if (outMax) *outMax = 0;
+    size = (size + 15) & ~7;
+    if ((unsigned int)size < 0x50) size = 0x50;
+    block = *list != 0 ? *list : link_new_block(list, size);
+    if (block == 0) return 0;
     do {
-        if ((unsigned int)arg1 <= bp->max_size) {
-            ptr = fn_8002194C(bp, arg1, arg2);
+        if ((unsigned int)size <= block->max_size) {
+            ptr = fn_8002194C(block, size, outMax);
             if (ptr != 0) {
-                *arg0 = bp;
+                *list = block;
                 break;
             }
         }
-        bp = bp->next;
-        if (bp == *arg0) {
-            bp = link_new_block(arg0, arg1);
-            if (bp == 0) return 0;
-            ptr = fn_8002194C(bp, arg1, arg2);
+        block = block->next;
+        if (block == *list) {
+            block = link_new_block(list, size);
+            if (block == 0) return 0;
+            ptr = fn_8002194C(block, size, outMax);
             break;
         }
     } while (1);
