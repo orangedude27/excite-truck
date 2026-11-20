@@ -4990,8 +4990,8 @@ extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0
     extern void* fn_8002F634(void*, void* (*)(void*, int), s32, s32);
     extern void fn_800F8520(void*);
     extern void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540(void*, int);
-    u8 arr[0x600];
     u8* self = (u8*)arg0;
+    u8 arr[0x600];
     fn_8002F53C(arr, fn_800F8520, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540, 0xC, 0x80);
     while (*(s32*)(self + 0xC) != 0) {
         u8* elt = SndPrioList_GetFront(self + 0xC);
@@ -5352,6 +5352,16 @@ struct LinkListIter {
     bool operator!=(const LinkListIter &other) const { return node != other.node; }
     LinkListIter &operator++() { node = *(void **)node; return *this; }
 };
+static inline LinkListIter DummyWorkerList_Begin(void *p) {
+    LinkListIter it;
+    it.node = *(void **)((u8 *)p + 0x2388);
+    return it;
+}
+static inline LinkListIter DummyWorkerList_End(void *p) {
+    LinkListIter it;
+    it.node = (u8 *)p + 0x2388;
+    return it;
+}
 /* End of the SoundInstanceManager's priority list (list at +0x4, its node at +0x8). */
 static inline LinkListIter SoundInstanceManager_GetPriorityListEnd(void *pool) {
     LinkListIter iter;
@@ -6442,7 +6452,7 @@ extern "C" const char lbl_803264AC[];
 extern "C" const char lbl_803264D0[];
 extern "C" void fn_800FA7E0(void *self) {
     unsigned long message;
-    unsigned long state;
+    void *state;
     u8 *p = (u8 *)self;
     for (;;) {
         OSReceiveMessage(p + 0x2338, &message, 1);
@@ -6470,10 +6480,10 @@ extern "C" void fn_800FA7E0(void *self) {
             }
             UpdateAllChannel__Q46nw4hbm3snd6detail7ChannelFv();
             fn_800FEB9C();
-            state = OSDisableInterrupts();
+            state = (void *)OSDisableInterrupts();
             Instance__15EmissionManagerFv();
             UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv();
-            OSRestoreInterrupts(state);
+            OSRestoreInterrupts((u32)state);
             *(u32 *)(p + 0x2390) = OSGetTick() - tick;
             {
                 LinkListIter begin;
