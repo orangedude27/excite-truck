@@ -113,8 +113,8 @@ void fn_8028CFB0(void) {
 #pragma pop
 extern int fn_802CAC28(int, int);
 extern int fn_802E317C(char *, ...);
-__declspec(section ".data") extern int lbl_80348C50;
 struct Tbl8028D084 { char f[0x30]; };
+__declspec(section ".data") extern struct Tbl8028D084 lbl_80348C50;
 extern char lbl_8055C8C8[];
 #pragma cplusplus on
 struct Obj8028D084 {
@@ -307,14 +307,11 @@ void fn_8028D4FC(void) {
     {
         float f = lbl_805643F0;
         int k = 0;
-        int *p;
         int o = 0;
-        int *b;
         while (k < *(volatile int *)&lbl_8055F724) {
-            b = (int *)*(volatile int *)&lbl_8055F720;
+            int *b = (int *)*(volatile int *)&lbl_8055F720;
             *(int *)((char *)b + o) = -1;
-            p = (int *)((char *)b + o);
-            *(float *)((char *)p + 4) = f;
+            *(float *)((char *)b + o + 4) = f;
             k++;
             o += 8;
         }
@@ -602,14 +599,18 @@ extern float lbl_80564414;
 extern float fn_801E7E18(void);
 extern void fn_8028D89C(void *, int, float);
 #pragma cplusplus on
-extern "C" void fn_8028DDF0(register void *arg0, register int arg1) {
+void fn_8028DDF0(register void *arg0, register int arg1) {
     typedef struct {
         int *items;
         int index;
         float f8;
         unsigned char c;
     } Entry;
+    typedef struct {
+        int a, b, c, d, e, f, g, h;
+    } Output;
     Entry *entry = (Entry *)arg0;
+    register int invalid;
     register int *slot;
     register int i;
     register float threshold;
@@ -625,7 +626,9 @@ extern "C" void fn_8028DDF0(register void *arg0, register int arg1) {
     threshold = lbl_80564414;
     result = fn_801E7E18();
     slot = lbl_804B3490;
-    for (i = 0; i < arg1; i++, entry++) {
+    i = 0;
+    invalid = -1;
+    while (i < arg1) {
         if (entry->f8 < threshold &&
             (void *)(unsigned long)entry->items[0x19] == (void *)slot[entry->index] &&
             entry->c != 0) {
@@ -634,11 +637,13 @@ extern "C" void fn_8028DDF0(register void *arg0, register int arg1) {
                 fn_8028D89C(entry, j, result);
         } else {
             int offset = entry->index << 5;
-            *(int *)((char *)(unsigned long)lbl_8055F720 + offset) = -1;
-            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 8) = -1;
-            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 0x10) = -1;
-            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 0x18) = -1;
+            *(int *)((char *)(unsigned long)lbl_8055F720 + offset) = invalid;
+            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 8) = invalid;
+            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 0x10) = invalid;
+            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 0x18) = invalid;
         }
         slot[entry->index] = entry->items[0x19];
+        entry++;
+        i++;
     }
 }
