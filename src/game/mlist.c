@@ -83,24 +83,25 @@ int fn_802CCBC4(void *arg0, float *arg1, float arg2, float arg3) {
 #pragma pop
 #pragma push
 #pragma scheduling invalid_target
-int fn_802CCD0C(void *arg0, void *arg1) {
-    int x = fn_802CAFC8(*(int *)((char *)arg0 + 0x10));
-    int y = fn_802CAFC8(*(int *)((char *)arg1 + 0x10));
+#pragma opt_propagation off
+int fn_802CCD0C(const void *arg0, const void *arg1) {
+    int x = fn_802CAFC8(*(const int *)((const char *)arg0 + 0x10));
+    int y = fn_802CAFC8(*(const int *)((const char *)arg1 + 0x10));
     if (x != y) {
         return x - y;
     }
-    x = fn_802CAFF0(*(int *)((char *)arg0 + 0x10));
-    y = fn_802CAFF0(*(int *)((char *)arg1 + 0x10));
+    x = fn_802CAFF0(*(const int *)((const char *)arg0 + 0x10));
+    y = fn_802CAFF0(*(const int *)((const char *)arg1 + 0x10));
     if (x != y) {
         return x - y;
     }
-    if (*(int *)((char *)arg0 + 0x10) == -1) {
+    if (*(const int *)((const char *)arg0 + 0x10) == -1) {
         return 1;
     }
-    if (*(int *)((char *)arg1 + 0x10) == -1) {
+    if (*(const int *)((const char *)arg1 + 0x10) == -1) {
         return -1;
     }
-    return stricmp((char *)arg0, (char *)arg1);
+    return stricmp((const char *)arg0, (const char *)arg1);
 }
 #pragma pop
 
