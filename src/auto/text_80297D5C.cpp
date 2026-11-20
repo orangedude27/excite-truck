@@ -992,8 +992,6 @@ extern "C" void fn_80299628(void *arg0) {
 }
 
 #pragma opt_propagation off
-#pragma push
-#pragma opt_lifetimes off
 extern "C" int fn_802996B0(void *arg0, int *out) {
  int state, best=-1, found=0, idx;
  state=*(int*)((char*)arg0+0x34);
@@ -1015,7 +1013,6 @@ extern "C" int fn_802996B0(void *arg0, int *out) {
  if(found)*out=best;
  return found;
 }
-#pragma pop
 #pragma opt_propagation reset
 
 extern "C" void *fn_802997F4(void *slots, int id) {
