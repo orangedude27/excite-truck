@@ -68,6 +68,9 @@ static inline void swap16(unsigned char *p) {
 }
 extern float fn_801DB514(float grid[4][4], void *, float, float);
 
+#define GND (*(volatile int *)&lbl_8055E990)
+#define GOX (*(volatile int *)&lbl_8055E99C)
+#define GOZ (*(volatile int *)&lbl_8055E9A0)
 static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *arg4) {
     int divX, divY, tileX, tileZ, remX, remZ;
     char *node;
@@ -80,15 +83,15 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
     if (x < 0 || y < 0) {
         return 0;
     }
-    if (*(int *)((char *)lbl_8055E990 + 0x10) == 0) {
+    if (*(int *)((char *)GND + 0x10) == 0) {
         return fn_801DB348(x, y, out_h, out_type, arg4);
     }
     divX = x / 32;
     divY = y / 32;
-    tileX = divX - lbl_8055E99C;
+    tileX = divX - GOX;
     remX = x - divX * 32;
     remZ = y - divY * 32;
-    tileZ = divY - lbl_8055E9A0;
+    tileZ = divY - GOZ;
     if (tileX < 0 || tileZ < 0) {
         node = 0;
     } else if (tileX >= 0x60 || tileZ >= 0x60) {
@@ -98,7 +101,7 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
         if (tile == 0xFFFF) {
             node = 0;
         } else {
-            node = *(char **)((char *)lbl_8055E990 + 0x18) + tile * 0x894;
+            node = *(char **)((char *)GND + 0x18) + tile * 0x894;
         }
     }
     if (node == 0) {
@@ -108,13 +111,13 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
     next = *(int *)(node + 0x890);
     if (next >= 0) {
         for (;;) {
-            layer = *(char **)((char *)lbl_8055E990 + 0x20) + next * 0x810;
+            layer = *(char **)((char *)GND + 0x20) + next * 0x810;
             h += lbl_804424B0[*(int *)(layer + 0x808)] * (*(float *)(layer + 0) + *(float *)(layer + 4) * (float)*(unsigned short *)(layer + (remX * 64 + remZ * 2) + 8));
             next = *(int *)(layer + 0x80C);
             if (next < 0) break;
         }
     }
-    type_p = *(unsigned char **)((char *)lbl_8055E990 + 0x30) + *(int *)(node + 0x810 + remZ * 4);
+    type_p = *(unsigned char **)((char *)GND + 0x30) + *(int *)(node + 0x810 + remZ * 4);
     sum = 0;
     while (sum + type_p[1] <= remX) {
         sum += type_p[1];
@@ -267,10 +270,11 @@ float fn_801DB514(float grid[4][4], void *out, float t, float u) {
     ((float *)out)[2] = normal[2];
     return height;
 }
+extern int fn_801DB348(int, int, float *, int *, void *);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *arg5, float farg0, float farg1) {
+int fn_801DB74C(register int arg0, register int arg1, register float *arg2, register int *arg3, register void *arg4, register void *arg5, register float farg0, register float farg1) {
     float grid[4][4];
     float sp8;
     int i, j;
@@ -791,7 +795,7 @@ extern float lbl_80558DC4[];
 #pragma opt_propagation off
 void fn_801DD3BC(float *value, int flag, float x, float z) {
     float saved[75];
-    float before, base, delta, minimum, epsilon;
+    float before, base, delta, minimum;
     float zero, one;
     unsigned char *pair;
     unsigned char *slot;
@@ -820,12 +824,11 @@ void fn_801DD3BC(float *value, int flag, float x, float z) {
     *(int *)(slot+8)=0; *(float *)(slot+12)=lbl_80562B84;
     *(int *)(slot+16)=0; *(float *)(slot+20)=lbl_80562B84;
     *(int *)(slot+24)=0; *(float *)(slot+28)=lbl_80562B84;
-    epsilon=lbl_80558DC4[0];
     count=0; pair=slot; zero=lbl_80562B84; one=lbl_80562B70;
     for(i=0;i<75;i++) {
         lbl_804424B0[i]=one;
         delta=((float (*)(float,float))fn_801DCF0C)(x,z)-base;
-        if (!((float)fabs(delta) <= epsilon)) {
+        if (!((float)fabs(delta) <= lbl_80558DC4[0])) {
             if (count<3) {
                 *(int *)(pair+8)=i;
                 *(float *)(pair+12)=delta;
@@ -872,9 +875,9 @@ void fn_801DD3BC(float *value, int flag, float x, float z) {
     lbl_804424B0[72]=saved[72]; lbl_804424B0[73]=saved[73]; lbl_804424B0[74]=saved[74];
     {
         int any=0;
-        if (!((float)fabs(*(float *)(slot+12)) <= epsilon)) any=1;
-        if (!((float)fabs(*(float *)(slot+20)) <= epsilon)) any=1;
-        if (!((float)fabs(*(float *)(slot+28)) <= epsilon)) any=1;
+        if (!((float)fabs(*(float *)(slot+12)) <= lbl_80558DC4[0])) any=1;
+        if (!((float)fabs(*(float *)(slot+20)) <= lbl_80558DC4[0])) any=1;
+        if (!((float)fabs(*(float *)(slot+28)) <= lbl_80558DC4[0])) any=1;
         if (!any) lbl_8055E9A8=(void *)((int)lbl_8055E9A8-1);
     }
 }
