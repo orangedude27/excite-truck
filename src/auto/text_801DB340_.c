@@ -117,7 +117,7 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
             if (next < 0) break;
         }
     }
-    type_p = *(unsigned char **)((char *)GND + 0x30) + *(int *)(node + 0x810 + remZ * 4);
+    type_p = *(unsigned char **)((char *)lbl_8055E990 + 0x30) + *(int *)(node + 0x810 + remZ * 4);
     sum = 0;
     while (sum + type_p[1] <= remX) {
         sum += type_p[1];
