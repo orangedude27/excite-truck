@@ -255,7 +255,16 @@ extern void *fn_801B2ED0(s32);
 #pragma push
 #pragma processor 750
 #pragma cplusplus on
-extern "C" f32 fn_8026EB4C(void *__restrict arg0) {
+extern "C" f32 fn_8026EB4C(void *__restrict camera) {
+    /* Pick the camera pitch to use now: when the attached object's sub-object
+     * angle (sub+0x258C) is insignificant use the stored angle A (lbl_8055F534),
+     * otherwise angle B (lbl_8055F530), and map it through fn_8026EAEC.  Also map
+     * the interpolated angle lbl_8055F528 + t*(lbl_8055F52C-lbl_8055F528) at
+     * camera+0x13C.  A sub-object angle beyond half (0.5) sets an "elevated"
+     * flag that biases the result back toward the stored value
+     * (0.05/0.02-blended with the target at camera+0x194) or falls through to
+     * the element-lookup path; state changes, mode flags or a missing element
+     * take the plain stored value instead. */
     class Obj {
     public:
         virtual void dummy0();
@@ -272,16 +281,16 @@ extern "C" f32 fn_8026EB4C(void *__restrict arg0) {
     int c;
     int flag;
 
-    char *sub = *(char **)((char *)arg0 + 0x140);
+    char *sub = *(char **)((char *)camera + 0x140);
     f1 = !(*(f32 *)(sub + 0x258C) > 0.001f) ? lbl_8055F534 : lbl_8055F530;
     f30 = fn_8026EAEC(f1);
 
     f2 = lbl_8055F528;
     diff = lbl_8055F52C - f2;
-    t = *(f32 *)((char *)arg0 + 0x13C);
+    t = *(f32 *)((char *)camera + 0x13C);
     temp_f31 = fn_8026EAEC(f2 + t * diff);
 
-    sub = *(char **)((char *)arg0 + 0x140);
+    sub = *(char **)((char *)camera + 0x140);
     flag = 0;
     c = 1;
     int cond2 = *(f32 *)(sub + 0x258C) > 0.001f;
@@ -295,21 +304,21 @@ extern "C" f32 fn_8026EB4C(void *__restrict arg0) {
         }
     }
 
-    if (*(s32 *)((char *)arg0 + 4) != *(s32 *)((char *)arg0 + 0x10)) {
+    if (*(s32 *)((char *)camera + 4) != *(s32 *)((char *)camera + 0x10)) {
         f30 = flag ? f30 : temp_f31;
-    } else if (fn_801769F8() != 0 || fn_800216D0() != 0 || *(s32 *)(*(char **)((char *)arg0 + 0x140) + 0x2620) < 1) {
-        f30 = *(f32 *)((char *)arg0 + 0x194);
+    } else if (fn_801769F8() != 0 || fn_800216D0() != 0 || *(s32 *)(*(char **)((char *)camera + 0x140) + 0x2620) < 1) {
+        f30 = *(f32 *)((char *)camera + 0x194);
     } else {
         if (flag) {
-            void *obj = fn_801B2ED0(*(s32 *)(*(char **)((char *)arg0 + 0x140) + 0x1EC));
+            void *obj = fn_801B2ED0(*(s32 *)(*(char **)((char *)camera + 0x140) + 0x1EC));
             void *res = ((Obj *)obj)->getMethod();
             if (*(s32 *)((char *)res + 0x24) != 1) {
-                f2 = *(f32 *)((char *)arg0 + 0x194);
+                f2 = *(f32 *)((char *)camera + 0x194);
                 f30 = f2 + lbl_80563E60 * (f30 - f2);
                 goto end;
             }
         }
-        f2 = *(f32 *)((char *)arg0 + 0x194);
+        f2 = *(f32 *)((char *)camera + 0x194);
         f30 = f2 + lbl_80563E64 * (temp_f31 - f2);
     }
 
@@ -416,6 +425,8 @@ void fn_8026ED64(s32 *arg0, Vec *arg1, Vec *arg2, f32 farg0) {
     arg1->y = arg2->y + delta.y * blend;
     arg1->z = arg2->z + delta.z * blend;
 }
+#pragma push
+#pragma use_lmw_stmw off
 void fn_8026EF48(void *arg0, void *arg1, void *arg2, f32 farg0) {
     f32 sp14;
     f32 sp10;
@@ -503,7 +514,7 @@ void fn_8026EF48(void *arg0, void *arg1, void *arg2, f32 farg0) {
             f4 = f4 > f0 ? f4 : f0;
         }
         entry[1] = f4;
-        if ((f32)(fn_8026A520(*(s32 *)((char *)sub + 0x1EC)) == lbl_80563E78) == lbl_80563E78) {
+        if ((f32)(unsigned int)(fn_8026A520(*(s32 *)((char *)sub + 0x1EC)) > lbl_80563E78) != lbl_80563E78) {
             f1 = lbl_80563E9C + entry[3];
             f1 = f1 > lbl_80563E30 ? f1 : lbl_80563E30;
             entry[3] = f1;
@@ -560,8 +571,8 @@ extern "C" void fn_8026F420(s32 arg0, s32 arg1, void *arg2) {
     f32 f29;
     f32 f28;
     f32 f27;
-    f32 f1;
     f32 f2;
+    f32 f1;
     f32 f0;
     f32 f6;
     f32 f5;
@@ -835,8 +846,8 @@ void *arg2;
     s32 cond29;
     void *sub;
     void *lfo;
-    s32 r28, r29, r30, r31;
     unsigned int bit;
+    s32 r28, r29, r30, r31;
 
     r28 = arg0;
     r29 = arg1;
@@ -1131,21 +1142,21 @@ extern f32 lbl_80563F28;
 void fn_802704E4(Car *car) {
     Vec sp48;
     Vec sp3C;
-    Vec sp30;
-    Vec sp24;
-    Vec sp18;
+    register unsigned cond;
+    f32 f7;
     Vec spC;
+    Vec sp18;
     f32 sp8;
-    f32 f31;
+    Vec sp30;
     f32 f30;
     f32 f29;
-    f32 f2;
-    f32 f1;
     f32 f0;
-    f32 f7;
+    f32 f1;
+    f32 f2;
+    Vec sp24;
     f32 f6;
-    int cond;
-    int cond29;
+    f32 f31;
+    s32 cond29;
     cond = fn_80178CA4() > 1;
     f0 = lbl_80563E30 - car->unk13C * lbl_80563ED0;
     f1 = *(f32 *)((char *)car->sub + 0x5B4);
@@ -1156,8 +1167,8 @@ void fn_802704E4(Car *car) {
     if (car->state != 9) {
         *(s32 *)&car->v114.x = *(s32 *)&car->vE4.x;
         *(s32 *)&car->v114.y = *(s32 *)&car->vE4.y;
-        *(s32 *)&car->v114.z = *(s32 *)&car->vE4.z;
         f7 = car->v114.x + car->vD8.x * lbl_80563E44;
+        *(s32 *)&car->v114.z = *(s32 *)&car->vE4.z;
         f6 = car->v114.y + car->vD8.y * lbl_80563E44;
         f2 = car->v114.z + car->vD8.z * lbl_80563E44;
         car->mF0[0] = car->mC0[0];
@@ -1180,7 +1191,7 @@ void fn_802704E4(Car *car) {
     f1 = cond ? lbl_80563F24 : lbl_80563E58;
     sp48.y += f1 * f0;
     if ((f32)__fabs(f31 - car->unk19C) <= lbl_80558DC4[0]) {
-        cond29 = *(f32 *)((char *)car->sub + 0x25D8) < lbl_80563F28;
+        register cond29 = *(f32 *)((char *)car->sub + 0x25D8) < lbl_80563F28;
         cond = !((f32)__fabs(f31) <= lbl_80558DC4[0]);
         sp3C.x = sp48.x - car->v114.x;
         sp3C.y = sp48.y - car->v114.y;
@@ -1204,7 +1215,7 @@ void fn_802704E4(Car *car) {
         f30 = f1 + lbl_80563F0C * (car->unk198 - f1);
         car->unk198 = f30;
         sp30 = car->vD8;
-        if (cond != 0) {
+        if (cond) {
             sp30.x *= lbl_80563E6C;
             sp30.y *= lbl_80563E6C;
             sp30.z *= lbl_80563E6C;
@@ -1232,8 +1243,8 @@ void fn_802704E4(Car *car) {
         f0 = car->v108.x * f2;
         f1 = car->v108.y * f2;
         f2 = car->v108.z * f2;
-        car->v108.x = f0;
         car->v108.y = f1;
+        car->v108.x = f0;
         car->v108.z = f2;
     }
     f2 = lbl_80563F18 * *(f32 *)((char *)car->sub + 0x5E4);
