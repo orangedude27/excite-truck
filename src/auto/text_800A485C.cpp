@@ -16186,33 +16186,22 @@ block_135:
                 do {
                     var_r14_5 = arg4;
                     var_r17_4 = 0;
-                    var_ctr_8 = 3;
-loop_141:
-                    if (var_r16_3 >= (s16) M2C_FIELD(var_r14_5, s16 *, 0)) {
+                    for (var_ctr_8 = 0; var_ctr_8 < 3; var_ctr_8++) {
+                        if (var_r16_3 < (s16) M2C_FIELD(var_r14_5, s16 *, 0)) break;
                         var_r17_4 += 1;
-                        if (var_r16_3 >= (s16) M2C_FIELD(var_r14_5, s16 *, 2)) {
-                            var_r17_4 += 1;
-                            if (var_r16_3 >= (s16) M2C_FIELD(var_r14_5, s16 *, 4)) {
-                                var_r17_4 += 1;
-                                if (var_r16_3 >= (s16) M2C_FIELD(var_r14_5, s16 *, 6)) {
-                                    var_r17_4 += 1;
-                                    if (var_r16_3 >= (s16) M2C_FIELD(var_r14_5, s16 *, 8)) {
-                                        var_r17_4 += 1;
-                                        if (var_r16_3 >= (s16) M2C_FIELD(var_r14_5, s16 *, 0xA)) {
-                                            var_r17_4 += 1;
-                                            if (var_r16_3 >= (s16) M2C_FIELD(var_r14_5, s16 *, 0xC)) {
-                                                var_r14_5 += 0xE;
-                                                var_r17_4 += 1;
-                                                var_ctr_8 -= 1;
-                                                if (var_ctr_8 != 0) {
-                                                    goto loop_141;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        if (var_r16_3 < (s16) M2C_FIELD(var_r14_5, s16 *, 2)) break;
+                        var_r17_4 += 1;
+                        if (var_r16_3 < (s16) M2C_FIELD(var_r14_5, s16 *, 4)) break;
+                        var_r17_4 += 1;
+                        if (var_r16_3 < (s16) M2C_FIELD(var_r14_5, s16 *, 6)) break;
+                        var_r17_4 += 1;
+                        if (var_r16_3 < (s16) M2C_FIELD(var_r14_5, s16 *, 8)) break;
+                        var_r17_4 += 1;
+                        if (var_r16_3 < (s16) M2C_FIELD(var_r14_5, s16 *, 0xA)) break;
+                        var_r17_4 += 1;
+                        if (var_r16_3 < (s16) M2C_FIELD(var_r14_5, s16 *, 0xC)) break;
+                        var_r14_5 += 0xE;
+                        var_r17_4 += 1;
                     }
                     var_r16_3 += 1;
                     *var_r12_8 = var_r17_4;
