@@ -270,7 +270,6 @@ void fn_8019321C(void *arg0, void *arg1, const void *arg2) {
 }
 #pragma processor reset
 extern float lbl_80562140, lbl_80562148;
-#pragma dont_inline on
 void fn_8019330C(void *arg0, void *arg1, const void *arg2) {
     float stack[8];
     float x = *(const float *)((const char *)arg2 + 0x18);
@@ -305,7 +304,7 @@ void fn_8019330C(void *arg0, void *arg1, const void *arg2) {
     stack[0] = dx;
     stack[1] = dy;
 }
-#pragma dont_inline reset
+#pragma processor reset
 
 #pragma scheduling off
 /* Projects the 2D point (used as both input and output) into the local frame of the object's vehicle at +0x294 (+0x70). */
