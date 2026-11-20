@@ -1237,12 +1237,13 @@ void *fn_8027C41C(void *arg0, long arg1) {
     *(void **)(base - 0x4FF8) = temp_r6;
     *(long *)(base - 0x4FF0) = 2;
     *(long *)(base - 0x4FF4) = 0;
-    fn_8027C2B8(arg0, 0, &lbl_80347B4C, temp_r6, temp_r7, 0);
+    fn_8027C2B8(arg0, 0, &lbl_80347B4C, temp_r6, temp_r7);
     fn_8027C2B8(arg0, 1, &lbl_80347B5C);
     return arg0;
 }
 
-#pragma use_lmw_stmw off
+#pragma push
+#pragma scheduling priority
 long fn_8027C4B4(long arg0, long arg1) {
     long offset;
     long i;
@@ -1283,6 +1284,7 @@ long fn_8027C4B4(long arg0, long arg1) {
     }
     return arg0;
 }
+#pragma pop
 /* Acquire the shared EventPathOracle (contest/event path table), creating and
  * initializing it on first use and tracking active users with a refcount. */
 void fn_8027C59C(long context) {
@@ -1395,12 +1397,10 @@ fetch:
 #pragma push
 #pragma scheduling invalid_target
 long fn_8027C850(void *arg0) {
-    void *oracle;
     char *name;
     long index;
-    oracle = (void *)lbl_8055F654;
     name = *(char *volatile *)((char *)arg0 + 4);
-    index = fn_8027C1C8(oracle, name);
+    index = fn_8027C1C8((void *)*(volatile long *)&lbl_8055F654, name);
     if (index == 0)
         return 1;
     return fn_8027C788(fn_8027C26C((void *)lbl_8055F654,
