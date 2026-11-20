@@ -308,7 +308,6 @@ void fn_802C8638(unsigned int *arg0) {
     register unsigned int v2 = arg0[2];
     register unsigned int v1 = arg0[1];
     register unsigned int v0 = arg0[0];
-    register unsigned int v11 = arg0[11];
     unsigned int v4 = arg0[4];
     unsigned int v5 = arg0[5];
     unsigned int v6 = arg0[6];
@@ -316,6 +315,7 @@ void fn_802C8638(unsigned int *arg0) {
     unsigned int v8 = arg0[8];
     unsigned int v9 = arg0[9];
     unsigned int v10 = arg0[10];
+    unsigned int v11 = arg0[11];
     volatile unsigned int *dst = (volatile unsigned int *)lbl_804C1410;
     dst[0] = v0; dst[1] = v1; dst[2] = v2; dst[3] = v3;
     dst[4] = v4; dst[5] = v5; dst[6] = v6; dst[7] = v7;
@@ -451,17 +451,10 @@ void fn_802C89E8(unsigned int *arg0, unsigned int arg1, unsigned int arg2, unsig
     int y;
     int width;
     int x;
-
     var_f2 = (lbl_80564F18 * (float)(int)lbl_8055FC64) / lbl_8055FC44;
-    if ((unsigned char)lbl_8055FC74 == 0) {
-        var_f2 *= lbl_80564EF8 / lbl_8055D020;
-    }
-    if ((unsigned char)lbl_8055FC74 != 0) {
-        var_f4 = lbl_80564EF8;
-    } else {
-        var_f4 = lbl_80564EF8 / lbl_8055D020;
-    }
-
+    if ((unsigned char)lbl_8055FC74 == 0) var_f2 *= lbl_80564EF8 / lbl_8055D020;
+    if ((unsigned char)lbl_8055FC74 != 0) var_f4 = lbl_80564EF8;
+    else var_f4 = lbl_80564EF8 / lbl_8055D020;
     fill = lbl_80564F00;
     var_f2 = -var_f2;
     ((float *)arg0)[0] = var_f4;
@@ -473,7 +466,6 @@ void fn_802C89E8(unsigned int *arg0, unsigned int arg1, unsigned int arg2, unsig
     ((float *)arg0)[6] = fill;
     ((float *)arg0)[7] = fill;
     ((float *)arg0)[8] = lbl_80564EF8;
-
     height = (int)lbl_8055FC68;
     y = (int)lbl_8055FC60;
     width = (int)lbl_8055FC64;
