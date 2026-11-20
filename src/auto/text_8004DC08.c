@@ -411,7 +411,7 @@ static inline void BootReadAbsC(BootCmdBlock *cb, void *buf, s32 len, s32 off) {
     s32 o = off;
     DVDReadAbsAsyncPrio(c, b, l, o, 0, 0);
     while (DVDGetCommandBlockStatus(c) != 0) {
-        if (DVDGetCommandBlockStatus(cb) > 2 || DVDGetCommandBlockStatus(cb) < 0) {
+        if (DVDGetCommandBlockStatus(c) > 2 || DVDGetCommandBlockStatus(c) < 0) {
             __OSLaunchMenu();
         }
     }
