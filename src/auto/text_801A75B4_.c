@@ -227,7 +227,7 @@ void fn_801A7A08(const char *keySpec, int valueId, int groupId) {
 }
 #pragma pop
 extern float lbl_80562458;
-static inline void copy_recs_801A7A5C(Rec_801A7A5C *src, Rec_801A7A5C *dst) {
+static inline void copy_recs_801A7A5C(Rec_801A7A5C *src, Rec_801A7A5C *dst, char *base) {
     int i;
     float fa, fb;
     unsigned char ba, bb;
