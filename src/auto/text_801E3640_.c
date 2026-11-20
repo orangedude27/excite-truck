@@ -9,8 +9,7 @@ extern float lbl_80558DC4[];
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-__declspec(section ".sdata2") extern float lbl_80562CF4;
-extern float lbl_80562CF8, lbl_80562CFC, lbl_80562D00, lbl_80562D04, lbl_80562D28;
+extern float lbl_80562CF4, lbl_80562CF8, lbl_80562CFC, lbl_80562D00, lbl_80562D04, lbl_80562D28;
 extern int fn_802C8DBC(int);
 extern void fn_802C8BD0(int);
 extern void fn_802C8D74(void);
@@ -362,10 +361,10 @@ void fn_801E41E0(void *arg0, int arg1, float farg0) {
     float *matrix;
     f64 seedXY = *(volatile f64 *)&local.seed.x;
     s32 seedZ = *(volatile s32 *)&local.seed.z;
-    float negScale;
-    float zero = lbl_80562CF4;
+    register float zero = lbl_80562CF4;
     float x, y, z;
     float sidePositive;
+    float negScale;
     float depthNegative;
     float sideNegative;
 
