@@ -787,6 +787,8 @@ extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, s32 arg1) {
     return arg0;
 }
 #pragma pop
+#pragma push
+#pragma opt_common_subs off
 extern "C" void* __dt__Q36nw4hbm3lyt14GroupContainerFv(void* arg0, s32 arg1) {
     extern const char lbl_8031F6B8[];
     extern const char lbl_8031F694[];
@@ -794,15 +796,21 @@ extern "C" void* __dt__Q36nw4hbm3lyt14GroupContainerFv(void* arg0, s32 arg1) {
     extern const char lbl_8031F664[];
     struct GroupContainerDispatch { virtual void Destroy(s32); };
     struct GroupContainerObject : GroupContainerDispatch, GroupListNode {};
+    GroupList* list = (GroupList*)arg0;
+    struct { GroupListNode *v; } nodeH;
+    struct { GroupListNode *v; } endH;
+    GroupListNode *&node = nodeH.v;
+    GroupListNode *&end = endH.v;
+    GroupListNode* current;
     if (arg0 != 0) {
-        GroupListNode* node = *(GroupListNode**)((char*)arg0 + 4);
-        void* end = (char*)arg0 + 4;
+        nodeH.v = list->first;
+        endH.v = (GroupListNode*)&list->first;
         while (node != end) {
-            GroupListNode* current = node;
+            current = node;
             void* slot;
             node = node->next;
             slot = current;
-            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(arg0, &slot);
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(list, &slot);
             if (current == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
             if (*(u8*)((char*)current + 0x24) == 0) {
@@ -817,13 +825,14 @@ extern "C" void* __dt__Q36nw4hbm3lyt14GroupContainerFv(void* arg0, s32 arg1) {
                 MEMFreeToAllocator(lbl_8055DDF0, p);
             }
         }
-        if (arg0 != 0)
-            __dt__Q46nw4hbm2ut6detail12LinkListImplFv(arg0, 0);
+        if (list != 0)
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv(list, 0);
         if (arg1 > 0)
             ((s32 (*)(void*))fn_80128668)(arg0);
     }
     return arg0;
 }
+#pragma pop
 
 extern "C" void AppendGroup__Q36nw4hbm3lyt14GroupContainerFPQ36nw4hbm3lyt5Group(void* groupContainer, void* group) {
     // nw4hbm::lyt::GroupContainer::AppendGroup(Group*): append a Group to this
