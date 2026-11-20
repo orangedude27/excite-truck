@@ -993,7 +993,7 @@ extern "C" void fn_80299628(void *arg0) {
 
 #pragma opt_propagation off
 #pragma push
-#pragma opt_common_subs off
+#pragma opt_lifetimes off
 extern "C" int fn_802996B0(void *arg0, int *out) {
  int state, best=-1, found=0, idx;
  state=*(int*)((char*)arg0+0x34);
