@@ -107,7 +107,7 @@ void fn_80208A78(void) {
 #pragma pop
 
 void fn_80208AC8(int arg0, int arg1) {
-    float value = lbl_80563230;
+    float value = 1.0f;
     switch (arg1) {
     case 3:
         fn_801331C4(arg0 + 12, lbl_8033BF08, &value);
