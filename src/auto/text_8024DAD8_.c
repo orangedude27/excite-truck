@@ -2727,6 +2727,10 @@ copy7_end: ;
 }
 #pragma pop
 
+static inline f32 fn_80252238_fabs(f32 x) {
+    extern double __fabs(double);
+    return (f32)__fabs((double)x);
+}
 #pragma scheduling on
 s32 fn_80252238(void *arg0, s32 arg1) {
     extern double __fabs(double);
