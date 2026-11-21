@@ -305,11 +305,13 @@ void nw4hbm::ut::List_Append(nw4hbm::ut::List* list, void* item) {
     }
 }
 
-#pragma optimization_level 3
+#pragma push
+#pragma opt_propagation off
 void nw4hbm::ut::List_Remove(nw4hbm::ut::List* list, void* item) {
-    const char* const file = lbl_80328828;
-    if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xcb, file + 0xc);
-    if (item == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xcc, file + 0x34);
+    const char* file = lbl_80328828;
+    int zero = 0;
+    if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + zero, 0xcb, file + 0xc);
+    if (item == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + zero, 0xcc, file + 0x34);
     unsigned short offset = *(unsigned short*)((char*)list + 0xa);
     char* link = (char*)item + offset;
     void* p = *(void**)link;
@@ -322,6 +324,7 @@ void nw4hbm::ut::List_Remove(nw4hbm::ut::List* list, void* item) {
     *(void**)(link + 4) = 0;
     *(unsigned short*)((char*)list + 8) -= 1;
 }
+#pragma pop
 /* Return the element after item in an intrusive list, or the head when item is null. */
 void* nw4hbm::ut::List_GetNext(const nw4hbm::ut::List* list, const void* item) {
     if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328828, 0xF5, lbl_80328834);
@@ -385,9 +388,7 @@ extern "C" void InitReaderFunc__Q36nw4hbm2ut4FontFQ36nw4hbm2ut12FontEncoding(voi
 #pragma push
 #pragma use_lmw_stmw off
 bool nw4hbm::ut::ResFont::SetResource(void* resource) {
-    struct Msgs { char file[0x10]; char m61[0x38]; char m62[0x38]; };
-    const Msgs* msgs = (const Msgs*)lbl_80328888;
-    const char* file = lbl_80328888;
+    const char (*file)[] = (const char (*)[])lbl_80328888;
     u32 p = (u32)this;
     s32 v5 = 1, v6 = 1, v7 = 1, v8 = 1, v9 = 1, v10 = 1;
     u32 t11 = p & 0xFF000000;
@@ -397,7 +398,8 @@ bool nw4hbm::ut::ResFont::SetResource(void* resource) {
     if ((v8 == 0) && ((p & 0xFF800000U) != 0xC1000000U)) v7 = 0;
     if ((v7 == 0) && ((p & 0xF8000000U) != 0xD0000000U)) v6 = 0;
     if ((v6 == 0) && ((p & 0xFFFFC000U) != 0xE0000000U)) v5 = 0;
-    if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x61, file + 0x10, this);
+    if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(*file, 0x61, *file + 0x10, this);
+
     u32 q = (u32)resource;
     s32 v4b = 1, v5b = 1, v6b = 1, v7b = 1, v8b = 1, v9b = 1;
     u32 t10 = q & 0xFF000000;
@@ -407,11 +409,12 @@ bool nw4hbm::ut::ResFont::SetResource(void* resource) {
     if ((v7b == 0) && ((q & 0xFF800000U) != 0xC1000000U)) v6b = 0;
     if ((v6b == 0) && ((q & 0xF8000000U) != 0xD0000000U)) v5b = 0;
     if ((v5b == 0) && ((q & 0xFFFFC000U) != 0xE0000000U)) v4b = 0;
-    if (v4b == 0) Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x62, file + 0x48, resource);
-    if (q & 0x1F) Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x63, file + 0x80, resource);
+    if (v4b == 0) Panic__Q26nw4hbm2dbFPCciPCce(*file, 0x62, *file + 0x48, resource);
+    if (q & 0x1F) Panic__Q26nw4hbm2dbFPCciPCce(*file, 0x63, *file + 0x80, resource);
+
     s32 existing = *(s32*)((u8*)this + 0x10);
     void* info = 0;
-    if (existing != 0) { Warning__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x6B, file + 0xCC); return false; }
+    if (existing != 0) { Warning__Q26nw4hbm2dbFPCciPCce(*file, 0x6B, *file + 0xCC); return false; }
     if (*(u32*)resource == 0x52464E55) {
         u8* block = (u8*)resource + *(u16*)((u8*)resource + 0xC);
         s32 i = 0;
@@ -424,15 +427,15 @@ bool nw4hbm::ut::ResFont::SetResource(void* resource) {
             if ((d == 0) && ((r & 0xFF800000U) != 0xC1000000U)) c = 0;
             if ((c == 0) && ((r & 0xF8000000U) != 0xD0000000U)) b = 0;
             if ((b == 0) && ((r & 0xFFFFC000U) != 0xE0000000U)) a = 0;
-            if (a == 0) Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x7C, file + 0xEC, block);
+            if (a == 0) Panic__Q26nw4hbm2dbFPCciPCce(*file, 0x7C, *file + 0xEC, block);
             if (*(u32*)block == 0x46494E46) { info = block + 8; break; }
             ++i; block += *(u32*)(block + 4);
         }
     } else {
         u16 version = *(u16*)((u8*)resource + 6);
         if (version == 0x104) {
-            if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(resource, 0x52464E54, 0x104, 2) == 0) { Warning__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x96, file + 0x128); return false; }
-        } else if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(resource, 0x52464E54, 0x102, 2) == 0) { Warning__Q26nw4hbm2dbFPCciPCce(msgs->file, 0xA0, file + 0x128); return false; }
+            if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(resource, 0x52464E54, 0x104, 2) == 0) { Warning__Q26nw4hbm2dbFPCciPCce(*file, 0x96, *file + 0x128); return false; }
+        } else if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(resource, 0x52464E54, 0x102, 2) == 0) { Warning__Q26nw4hbm2dbFPCciPCce(*file, 0xA0, *file + 0x128); return false; }
         info = Rebuild__Q36nw4hbm2ut7ResFontFPQ36nw4hbm2ut16BinaryFileHeader(resource);
     }
     if (info == 0) return false;
@@ -1636,7 +1639,7 @@ extern "C" s32 fn_8010C82C(s32 arg0, s32 arg1, void *arg2) {
  extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(s32), GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80105C2C(s32), GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(s32), GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(s32), fn_8010D9E4(s32);
  extern s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_8010DB5C(s32), IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(s32);
  extern void SetCursor__Q36nw4hbm2ut10CharWriterFff(s32,f32,f32); extern void SetCursorX__Q36nw4hbm2ut10CharWriterFf(s32,f32);
- const char* file = lbl_80329458;
+ const char * const file = lbl_80329458;
  s32 p = (s32)arg2;
  if (arg1 >= 32) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x55, file + 0x18);
  register u32 top = (u32)p & 0xFF000000U;
@@ -4159,7 +4162,7 @@ class Processor { public: virtual void d0(); virtual void d1(); virtual s32 rect
     s32 temp_r21;
     s32 temp_r22;
     s32 temp_r23;
-    char *base = (char *)lbl_80329530;
+    const char* base = lbl_80329530;
 
     temp_r24 = arg0 & 0xFF000000;
     var_r5 = 1;
@@ -5499,19 +5502,13 @@ extern "C" f32 fn_80110D68(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
         copyA[0x1E] = (*(u8 *)((u8*)(arg0) + (0x1E)));
         copyA[0x1F] = (*(u8 *)((u8*)(arg0) + (0x1F)));
         (*(s32*)(copyA+0x20)) = (*(s32 *)((u8*)(arg0) + (0x20)));
-        u32 copyA_24 = (*(s32 *)((u8*)(arg0) + (0x24)));
-        u32 copyA_28 = (*(s32 *)((u8*)(arg0) + (0x28)));
-        (*(s32*)(copyA+0x24)) = copyA_24;
-        (*(s32*)(copyA+0x28)) = copyA_28;
-        s32 copyA_2C = (*(s32 *)((u8*)(arg0) + (0x2C)));
-        s32 copyA_30 = (*(s32 *)((u8*)(arg0) + (0x30)));
-        (*(s32*)(copyA+0x2C)) = copyA_2C;
-        (*(s32*)(copyA+0x30)) = copyA_30;
+        (*(s32*)(copyA+0x24)) = (*(s32 *)((u8*)(arg0) + (0x24)));
+        (*(s32*)(copyA+0x28)) = (*(s32 *)((u8*)(arg0) + (0x28)));
+        (*(s32*)(copyA+0x2C)) = (*(s32 *)((u8*)(arg0) + (0x2C)));
+        (*(s32*)(copyA+0x30)) = (*(s32 *)((u8*)(arg0) + (0x30)));
         (*(s32*)(copyA+0x34)) = (*(s32 *)((u8*)(arg0) + (0x34)));
-        s32 copyA_38 = (*(s32 *)((u8*)(arg0) + (0x38)));
-        s32 copyA_3C = (*(s32 *)((u8*)(arg0) + (0x3C)));
-        (*(s32*)(copyA+0x38)) = copyA_38;
-        (*(s32*)(copyA+0x3C)) = copyA_3C;
+        (*(s32*)(copyA+0x38)) = (*(s32 *)((u8*)(arg0) + (0x38)));
+        (*(s32*)(copyA+0x3C)) = (*(s32 *)((u8*)(arg0) + (0x3C)));
         copyA[0x40] = (*(u8 *)((u8*)(arg0) + (0x40)));
         copyA[0x41] = (*(u8 *)((u8*)(arg0) + (0x41)));
         copyA[0x42] = (*(u8 *)((u8*)(arg0) + (0x42)));
@@ -7634,7 +7631,7 @@ extern "C" f32 fn_80115848(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
      u32 temp_r0_2;
      u32 temp_r0_3;
      u32 temp_r0_4;
-
+ 
      var_f31 = lbl_80561178;
      temp_r0 = (*(s32 *)((u8*)(arg0) + (0x58))) & 0x333;
      var_f2 = var_f31;
