@@ -160,12 +160,12 @@ extern "C" void fn_801D4734(void) {
     extern void fn_801D5520(char *);
     extern void *fn_8001285C(void *);
     extern void **__AXFXGetLfoSinTable_801769CC(void);
-    char *base = &lbl_80338460;
+    char *const base = &lbl_80338460;
     void *obj;
     void *manager;
     Mgr *m;
     lbl_8055E954 = 1;
-    obj = fn_802077A4((void *)((unsigned int)base), 5, lbl_804422F0 + 8, lbl_804422F0 + 0x14);
+    obj = fn_802077A4(base + 0, 5, lbl_804422F0 + 8, lbl_804422F0 + 0x14);
     *(void **)lbl_804422F0 = obj;
     if (obj != 0) {
         *(float *)((char *)obj + 0x6C) = lbl_80562AD8;
@@ -1746,14 +1746,17 @@ int fn_801D6630(int object, int deleteFlag) {
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma cplusplus on
+/* Read an effect's parameters from a config/param object and fill a 0x34-byte
+ * record: length and delay converted from seconds to frames at 59.94 fps, the
+ * "loc" and "v" vectors, the effect id, and the run_solo flag. */
 extern "C" int fn_801D6678(void *out, void *object) {
-    extern char lbl_80338798[];
-    extern char lbl_803387B8[];
-    extern char lbl_8055ACB0;
-    extern char lbl_8055ACB8;
-    extern char lbl_8055ACD0;
-    extern char lbl_8055ACD4;
-    extern float lbl_80562B0C;
+    extern char lbl_80338798[];  /* "run_solo" */
+    extern char lbl_803387B8[];  /* "effect_id" */
+    extern char lbl_8055ACB0;    /* "length" */
+    extern char lbl_8055ACB8;    /* "delay" */
+    extern char lbl_8055ACD0;    /* "loc" */
+    extern char lbl_8055ACD4;    /* "v" */
+    extern float lbl_80562B0C;   /* 59.94 frames per second */
     struct Vec3 {
         float x;
         float y;
@@ -1774,25 +1777,25 @@ extern "C" int fn_801D6678(void *out, void *object) {
         virtual Vec3 vector(char *);
     };
     Dummy *obj = (Dummy *)object;
-    float first;
-    float second;
-    float scale;
-    first = obj->value(&lbl_8055ACB0, 0.0f);
-    second = obj->value(&lbl_8055ACB8, 0.0f);
-    scale = lbl_80562B0C;
-    *(int *)((char *)out + 8) = (int)(scale * first);
-    *(int *)((char *)out + 0xC) = (int)(scale * second);
+    float lengthSeconds;
+    float delaySeconds;
+    float framesPerSecond;
+    lengthSeconds = obj->value(&lbl_8055ACB0, 0.0f);
+    delaySeconds = obj->value(&lbl_8055ACB8, 0.0f);
+    framesPerSecond = lbl_80562B0C;
+    *(int *)((char *)out + 8) = (int)(framesPerSecond * lengthSeconds);
+    *(int *)((char *)out + 0xC) = (int)(framesPerSecond * delaySeconds);
     {
-        const Vec3 &v14 = obj->vector(&lbl_8055ACD0);
-        *(float *)((char *)out + 0x14) = v14.x;
-        *(float *)((char *)out + 0x18) = v14.y;
-        *(float *)((char *)out + 0x1C) = v14.z;
+        const Vec3 &location = obj->vector(&lbl_8055ACD0);
+        *(float *)((char *)out + 0x14) = location.x;
+        *(float *)((char *)out + 0x18) = location.y;
+        *(float *)((char *)out + 0x1C) = location.z;
     }
     {
-        const Vec3 &v8 = obj->vector(&lbl_8055ACD4);
-        *(float *)((char *)out + 0x20) = v8.x;
-        *(float *)((char *)out + 0x24) = v8.y;
-        *(float *)((char *)out + 0x28) = v8.z;
+        const Vec3 &velocity = obj->vector(&lbl_8055ACD4);
+        *(float *)((char *)out + 0x20) = velocity.x;
+        *(float *)((char *)out + 0x24) = velocity.y;
+        *(float *)((char *)out + 0x28) = velocity.z;
     }
     *(int *)((char *)out + 0x2C) = obj->id(lbl_803387B8);
     *(unsigned char *)((char *)out + 0x30) = obj->flag(lbl_80338798, 0);
@@ -1904,7 +1907,7 @@ extern "C" int fn_801D6948(void *out, void *object) {
         float y;
         float z;
         Vec3() {}
-        Vec3(float a, float b, float c) { x = a; y = b; z = c; }
+        Vec3(float a, float b, float c) : x(a), y(b), z(c) {}
     };
     struct Dummy {
         virtual void v0();
