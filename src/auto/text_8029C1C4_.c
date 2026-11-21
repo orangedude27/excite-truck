@@ -1394,6 +1394,7 @@ void fn_8029E49C(int unused, void *arg1, int arg2) {
         fn_8028E590(lbl_8055F7F8, &s.sp14, &s.sp8, -var_f31 * fn_80287BC8(lbl_80564628, lbl_80564674));
     }
 }
+#pragma pop
 
 #pragma opt_propagation off
 void *fn_8029E754(void *arg0, void *arg1, int arg2) {
