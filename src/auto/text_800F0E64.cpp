@@ -7553,26 +7553,39 @@ extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC490(void
 #pragma small_data off
 #pragma use_lmw_stmw off
 #pragma cplusplus on
+/* Stop every StrmPlayer in the global sPlayerList, then assert the list is empty.
+ * Each list node sits at +0x08 inside its player, so the player is eight bytes
+ * before the node; the list's own node ends the walk. */
 extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC508(void) {
-    LinkListIter begin;
-    begin.node = *(void**)&lbl_8041506C[0x04];
+    #define strmPlayerList lbl_8041506C      /* nw4hbm::ut::LinkList sPlayerList */
+    #define linkListH lbl_80326B8C           /* "LinkList.h" */
+    #define nullPointerMsg lbl_80326B68      /* "NW4HBM:Pointer must not be NULL (p)" */
+    #define strmPlayerCpp lbl_80326768       /* "snd_StrmPlayer.cpp" */
+    #define listNotEmptyMsg lbl_8032687C     /* "NW4HBM:Failed assertion sPlayerList.IsEmpty()" */
+    LinkListIter begin;                          /* LinkList::GetBeginIter() */
+    begin.node = *(void**)&strmPlayerList[0x04]; /* the list's first node */
     LinkListIter it = begin;
+    /* Holding the end node through a reference keeps the list base out of a
+     * callee-saved register across the loop. */
     struct EndWrap { void* e; } sentinel;
-    sentinel.e = (void*)&lbl_8041506C[0x04];
+    sentinel.e = (void*)&strmPlayerList[0x04];
     void*& end = sentinel.e;
     while (it.node != end) {
         void* node = it.node;
-        it.node = *(void**)it.node;
-        if (node == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326B8C, 0x23D,
-                                         (const char*)lbl_80326B68);
-        }
-        ((DummyStrmUpdate*)((char*)node - 0x08))->f2();
+        it.node = *(void**)it.node;              /* ++it */
+        if (node == 0)                           /* *it */
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)linkListH, 0x23D,
+                                         (const char*)nullPointerMsg);
+        ((DummyStrmUpdate*)((char*)node - 0x08))->f2(); /* StrmPlayer::Stop */
     }
-    if (*(u32*)lbl_8041506C != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326768, 0x2EE,
-                                     (const char*)lbl_8032687C);
-    }
+    if (*(u32*)strmPlayerList != 0)              /* !sPlayerList.IsEmpty() */
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)strmPlayerCpp, 0x2EE,
+                                     (const char*)listNotEmptyMsg);
+    #undef strmPlayerList
+    #undef linkListH
+    #undef nullPointerMsg
+    #undef strmPlayerCpp
+    #undef listNotEmptyMsg
 }
 #pragma cplusplus reset
 #pragma pop
