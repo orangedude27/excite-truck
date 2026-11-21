@@ -21,7 +21,6 @@ void *fn_8012A13C(void *self, int name, int count, int blockSize) {
 }
 extern s32 fn_801284E8(s32, s32);
 extern void fn_8012A218(void *);
-extern char lbl_8032A5D8[];
 s32 fn_8012A17C(void *thisPool, s32 name, s32 count, s32 blockSize, s32 userBuffer) {
     #pragma scheduling invalid_target
     u8 *base = (u8 *)thisPool;
