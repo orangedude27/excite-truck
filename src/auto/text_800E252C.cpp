@@ -503,9 +503,8 @@ extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32 angle) {
 }
 
 extern "C" f32 CosFIdx__Q24nw4r4mathFf(f32 angle) {
-    angle = __fabsf(angle);
-    f32 index = angle;
-    while (index >= lbl_80560F00) index -= lbl_80560F00;
+    f32 index = __fabsf(angle);
+    while (index >= 65536.0f) index -= 65536.0f;
     u16 q = __OSf32tou16(index);
     f32 whole = __OSu16tof32(&q);
     f32 *entry = (f32 *)((char *)lbl_80320E38 + ((q * 0x10) & 0xFF0));
@@ -1334,41 +1333,38 @@ extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *manager)
 }
 #pragma use_lmw_stmw reset
 extern "C" void fn_800E41EC(void) {
-    if ((s8)lbl_8055DE18 == 0) {
+    if ((signed char)lbl_8055DE18 == 0) {
         fn_800E279C(&lbl_80407F6C);
         __register_global_object(&lbl_80407F6C, (void *)fn_800E2D74, &lbl_80407F60);
         lbl_8055DE18 = 1;
     }
-
-    void **sentinel = (void **)((char *)&lbl_80407F6C + 0xC);
-    void *node = *sentinel;
+    void *node = *(void **)(lbl_80407F6C + 0xC);
+    char *base = lbl_80407F6C;
     do {
         void *current = node;
-        node = *(void **)node;
+        node = *(void **)current;
         if (current == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322034, 0x23D, lbl_80322010);
         (*(void (**)())((char *)current + 8))();
-
-        if ((s8)lbl_8055DE18 == 0) {
+        if ((signed char)lbl_8055DE18 == 0) {
             fn_800E279C(&lbl_80407F6C);
             __register_global_object(&lbl_80407F6C, (void *)fn_800E2D74, &lbl_80407F60);
             lbl_8055DE18 = 1;
         }
-    } while (node != sentinel);
-
-    if ((s8)lbl_8055DE18 == 0) {
-        fn_800E279C(&lbl_80407F6C);
-        __register_global_object(&lbl_80407F6C, (void *)fn_800E2D74, &lbl_80407F60);
+    } while (node != (void *)(base + 0xC));
+    if ((signed char)lbl_8055DE18 == 0) {
+        fn_800E279C(base);
+        __register_global_object(base, (void *)fn_800E2D74, &lbl_80407F60);
         lbl_8055DE18 = 1;
     }
-
     if (*(void **)((char *)&lbl_80407F6C + 0x6C2C) != 0) {
-        if ((s8)lbl_8055DE18 == 0) {
+        if ((signed char)lbl_8055DE18 == 0) {
             fn_800E279C(&lbl_80407F6C);
             __register_global_object(&lbl_80407F6C, (void *)fn_800E2D74, &lbl_80407F60);
             lbl_8055DE18 = 1;
         }
-        (*(void (**)(void *))(*(void **)((char *)&lbl_80407F6C + 0x6C2C)))(&lbl_80407F6C);
+        void (*cb)(void *) = (void (*)(void *))*(void **)((char *)&lbl_80407F6C + 0x6C2C);
+        cb(&lbl_80407F6C);
     }
 }
 #pragma pop
