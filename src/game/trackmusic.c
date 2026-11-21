@@ -777,35 +777,6 @@ void fn_80210514(int mode) {
 
 #pragma push
 #pragma opt_strength_reduction off
-static inline long fn_80210570_check(char *ptr, long *valPtr) {
-    long val = *valPtr;
-    if (val == 3) {
-        val = *(long *)(ptr + 0x000);
-    } else if (*(long *)(ptr + 0x000) != val) {
-        *valPtr = val;
-        return 2;
-    }
-    if (val == 3) {
-        val = *(long *)(ptr + 0x064);
-    } else if (*(long *)(ptr + 0x064) != val) {
-        *valPtr = val;
-        return 2;
-    }
-    if (val == 3) {
-        val = *(long *)(ptr + 0x0C8);
-    } else if (*(long *)(ptr + 0x0C8) != val) {
-        *valPtr = val;
-        return 2;
-    }
-    if (val == 3) {
-        val = *(long *)(ptr + 0x12C);
-    } else if (*(long *)(ptr + 0x12C) != val) {
-        *valPtr = val;
-        return 2;
-    }
-    *valPtr = val;
-    return 0;
-}
 long fn_80210570(void) {
     long val = 3;
     char *ptr = (char *)fn_8020F5F0(fn_8000DA10());
