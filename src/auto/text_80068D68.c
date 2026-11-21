@@ -2642,43 +2642,53 @@ void fn_8006AED4(s32 arg0) {
     BTM_VendorSpecificCommand(0xFC4C, (u8)(L.length + 4), packet, fn_8006B044);
 }
 void fn_8006B044(tBTM_VSC_CMPL *arg0) {
-    extern u8 lbl_8055DC39;
-    extern u8 lbl_8055DC3A;
-    extern u8 lbl_80313600[];
+    /* Continuation callback for the 0xFC4C patch-download VSC: send the next chunk
+     * of download data, and once it is all sent start the 0xFC4F install-patch VSC
+     * (whose chunks are sent by fn_8006B26C). */
+    #define PatchSentCount   lbl_8055DC39
+    #define PatchTotalCount  lbl_8055DC3A
+    #define PatchData        lbl_80313600
+    #define DownloadOffset   lbl_8055DC40
+    #define DownloadTotal    lbl_8055DC44
+    #define DownloadHeader   lbl_8055DC3C
+    #define DownloadData     lbl_803135C0
+    extern u8 PatchSentCount;
+    extern u8 PatchTotalCount;
+    extern u8 PatchData[];
     extern void fn_8006B26C(tBTM_VSC_CMPL *);
-    u8 buf[0x100];
-    u8 packet[0x100];
-    struct { s32 length; s32 i; } L;
-    s32 count;
-    s32 size;
-    u32 header;
+    u8 patchPacket[0x100];
+    u8 downloadPacket[0x100];
+    struct { s32 length; s32 i; } chunk;
+    s32 patchCount;
+    s32 patchBytes;
+    u32 headerValue;
 
     if (arg0 != 0) {
-        if (lbl_8055DC44 == lbl_8055DC40) {
-            lbl_8055DC39 = 0;
-            count = lbl_80313600[0];
-            lbl_8055DC3A = count;
-            count = count < 0x13 ? count : 0x13;
-            buf[0] = count;
-            count = (u8)count;
-            size = count * 0xD;
-            memcpy(buf + 1, lbl_80313600 + 1, size);
-            lbl_8055DC39 += count;
-            BTM_VendorSpecificCommand(0xFC4F, (u8)(size + 1), buf, (tBTM_VSC_CMPL_CB *)fn_8006B26C);
+        if (DownloadTotal == DownloadOffset) {
+            PatchSentCount = 0;
+            patchCount = PatchData[0];
+            PatchTotalCount = patchCount;
+            patchCount = patchCount < 0x13 ? patchCount : 0x13;
+            patchPacket[0] = patchCount;
+            patchCount = (u8)patchCount;
+            patchBytes = patchCount * 0xD;
+            memcpy(patchPacket + 1, PatchData + 1, patchBytes);
+            PatchSentCount += patchCount;
+            BTM_VendorSpecificCommand(0xFC4F, (u8)(patchBytes + 1), patchPacket, (tBTM_VSC_CMPL_CB *)fn_8006B26C);
             return;
         }
-        L.length = lbl_8055DC44 - lbl_8055DC40;
-        L.length = (u32)L.length < 0xFB ? L.length : 0xFB;
-        L.length = (u8)L.length;
-        header = lbl_8055DC3C + lbl_8055DC40;
-        packet[0] = (u8)header;
-        packet[1] = (u8)(header >> 8);
-        packet[2] = (u8)(header >> 16);
-        packet[3] = (u8)(header >> 24);
-        for (L.i = 0; L.i < L.length; L.i++)
-            packet[L.i + 4] = lbl_803135C0[lbl_8055DC40 + L.i + 8];
-        lbl_8055DC40 += L.length;
-        BTM_VendorSpecificCommand(0xFC4C, (u8)(L.length + 4), packet, (tBTM_VSC_CMPL_CB *)fn_8006B044);
+        chunk.length = DownloadTotal - DownloadOffset;
+        chunk.length = (u32)chunk.length < 0xFB ? chunk.length : 0xFB;
+        chunk.length = (u8)chunk.length;
+        headerValue = DownloadHeader + DownloadOffset;
+        downloadPacket[0] = (u8)headerValue;
+        downloadPacket[1] = (u8)(headerValue >> 8);
+        downloadPacket[2] = (u8)(headerValue >> 16);
+        downloadPacket[3] = (u8)(headerValue >> 24);
+        for (chunk.i = 0; chunk.i < chunk.length; chunk.i++)
+            downloadPacket[chunk.i + 4] = DownloadData[DownloadOffset + chunk.i + 8];
+        DownloadOffset += chunk.length;
+        BTM_VendorSpecificCommand(0xFC4C, (u8)(chunk.length + 4), downloadPacket, (tBTM_VSC_CMPL_CB *)fn_8006B044);
         return;
     }
     fn_8006B330();
@@ -4547,10 +4557,10 @@ void uusb_ReadIntrDataCB(s32 length, BT_HDR *buf) {
 extern char lbl_80558FF8[];
 extern char lbl_80559000[];
 void uusb_ReadBulkDataCB(s32 length, BT_HDR *buf) {
-    register s32 size, i;
+    s32 size, i;
     u8 *p;
     BT_HDR *copy;
-    register char *report=lbl_803142C8;
+    char *report=lbl_803142C8;
     uusb_cb_t *control=&lbl_803BD1E0;
     if(control->state!=2) {
         if(control->at_0x28) OSReport(report+0x15c);
@@ -7037,7 +7047,9 @@ void bta_hh_handsk_act(u8 *p_cb, s32 *p_data) {
         case 1: case 2: case 3: case 4:
             status = (u8)result; break;
         case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 12: case 13: case 14: case 15:
-        default: status = 5; break;
+            result = result;
+        default:
+            status = 5; break;
         }
         hs_data[0] = status;
         (*(cback_t *)(lbl_803C0D48 + 0x224))(*(u16 *)(p_cb + 0x10), hs_data);
@@ -7051,7 +7063,9 @@ void bta_hh_handsk_act(u8 *p_cb, s32 *p_data) {
         case 1: case 2: case 3: case 4:
             status = (u8)result; break;
         case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 12: case 13: case 14: case 15:
-        default: status = 5; break;
+            result = result;
+        default:
+            status = 5; break;
         }
         cback_data[0] = status;
         (*(cback_t *)(lbl_803C0D48 + 0x224))(*(u16 *)(p_cb + 0x10), cback_data);
@@ -7581,10 +7595,10 @@ void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data) {
     UINT16 callback_event = 0;
     u8 action;
     u8 new_state;
-    register char *state_name;
-    char *new_state_name;
     u8 *table;
     u8 state;
+    register char *state_name;
+    char *new_state_name;
     memset(callback_data, 0, 0x20);
     if (p_cb == NULL) {
         if (*(u32 *)(lbl_803C0D48 + 0x224) != 0) {
@@ -7623,7 +7637,7 @@ void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data) {
                 break;
             default:
                 if (lbl_8055DC80 >= 1)
-                    fn_80070954(0x500, strings, *(u16 *)((u8 *)p_data + 6));
+                    fn_80070954(0x500, &strings[0], *(u16 *)((u8 *)p_data + 6));
                 break;
             }
             if (callback_event != 0)
@@ -10946,7 +10960,7 @@ tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_
 {
     int ind;
     int acl_ind;
-    UINT8 feature_offset, feature_mask;
+    UINT8 feature_mask, feature_offset;
     UINT8 *p_cb;
     UINT8 *p_features;
     tBTM_PM_MODE mode;
@@ -16960,7 +16974,7 @@ BOOLEAN hidd_pm_set_now(void *arg0) {
         if (mode == state_mode && mode != 0) {
             u16 interval = *(u16 *)(lbl_803C3AF0 + 0x6C);
             if (interval >= *(u16 *)((u8 *)arg0 + 2) && interval <= *(u16 *)arg0) {
-                *(volatile u8 *)(lbl_803C3AF0 + 0x78) = 0xFF;
+                *(volatile u8 *)((unsigned int)lbl_803C3AF0 + 0x78) = 0xFF;
                 return TRUE;
             }
         }
@@ -17449,7 +17463,7 @@ scan_done:
 #pragma use_lmw_stmw off
 u8 HID_HostRemoveDev(u32 dev_handle) {
     extern u8 hidh_conn_disconnect(u32);
-    register u8 *devices = lbl_803C3C38;
+    u8 *const devices = lbl_803C3C38;
     u8 *deviceEntry;
     u32 entryOffset;
     u8 disconnecting = 1;
