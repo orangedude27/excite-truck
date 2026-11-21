@@ -197,10 +197,11 @@ s32 fn_801B3398(void* src) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_801B3448(void) {
-    void *p = (void *)fn_801284F8(0x5C0, &lbl_80335D3C);
-    if (p == NULL) return;
-    p = fn_801B3B70(p);
-    lbl_8055E6C0 = (s32)p;
+    void *check = (void *)fn_801284F8(0x5C0, &lbl_80335D3C);
+    if (check != 0) {
+        check = fn_801B3B70(check);
+        lbl_8055E6C0 = (s32)check;
+    }
     fn_801B5364(1, fn_801B3390);
     fn_801B5364(0xF, fn_801B3398);
 }
@@ -534,9 +535,9 @@ void fn_801B3FD8(void* arg0) {
     struct OutRec { s32 a; f32 c; };
     Out801B3FD8* out = (Out801B3FD8*)arg0;
     Ent801B3FD8* tbl = (Ent801B3FD8*)lbl_802F9630;
-    Ent801B3FD8* base = (Ent801B3FD8*)lbl_802F9630;
-    s32 g, start = 0;
+    s32 g;
     u32 pos = 0;
+    s32 start;
     for (g = 0; g < 6; g++, out++) {
         s32 n, i;
         start = pos;
@@ -547,8 +548,9 @@ void fn_801B3FD8(void* arg0) {
         out->n = n;
         out->z = 0;
         for (i = 0; i < n; i++) {
-            ((struct OutRec*)out->p)[i].a = base[start + i].a;
-            ((struct OutRec*)out->p)[i].c = base[start + i].c;
+            struct OutRec* d = &((struct OutRec*)out->p)[i];
+            d->a = ((const Ent801B3FD8*)lbl_802F9630)[start + i].a;
+            d->c = ((const Ent801B3FD8*)lbl_802F9630)[start + i].c;
         }
     }
 }
@@ -558,33 +560,26 @@ extern s32 fn_801B4428(u32 *, u32 *);
 extern void *fn_801B447C(void *, void *, s32);
 extern void qsort(void *, u32, u32, s32 (*)(u32 *, u32 *));
 void fn_801B4204(void *arg0) {
-    s32 i;
-    s32 *src;
-    u8 *dst;
-    s32 a;
-    s32 b;
-    s32 key;
-    s32 n;
-
-    src = lbl_802F96CC;
-    dst = (u8 *)arg0 + 0x48;
+    s32 *src = lbl_802F96CC;
+    s32 *dst = (s32 *)((char *)arg0 + 0x48);
+    s32 i, a, b, key, n;
     for (i = 0; i < 0x2B; i++) {
         a = src[1];
         b = src[2];
         if (a < 0 || b < 0) {
             key = -1;
         } else if (a >= b) {
-            key = (a & 0xFFFF) | (b & 0xFFFF0000);
+            key = (a & 0xFFFF) | ((b & 0xFFFF) << 16);
         } else {
-            key = (b & 0xFFFF) | (a & 0xFFFF0000);
+            key = (b & 0xFFFF) | ((a & 0xFFFF) << 16);
         }
         n = src[0];
-        *(s32 *)(dst + 0) = key;
-        *(s32 *)(dst + 4) = (s32)arg0 + n * 0xC;
-        *(s32 *)(dst + 8) = 0;
-        *(s32 *)(dst + 0xC) = 0;
+        dst[0] = key;
+        dst[1] = (s32)arg0 + n * 0xC;
+        dst[2] = 0;
+        dst[3] = 0;
         src += 3;
-        dst += 0x10;
+        dst += 4;
     }
     qsort((u8 *)arg0 + 0x48, 0x2B, 0x10, fn_801B4428);
     *(void **)((u8 *)arg0 + 0x2F8) = fn_801B447C(arg0, (u8 *)arg0 + 0x48, 0x2B);
@@ -644,13 +639,17 @@ s32 fn_801B4428(u32 * __restrict nodeA, u32 * __restrict nodeB) {
 }
 #pragma dont_inline on
 void* fn_801B447C(void* arg0, void* arg1, s32 arg2) {
+    s32 off;
     s32 half;
     s32 right;
     if (arg2 == 1) return arg1;
     half = ((s32)((u32)arg2 >> 31) + arg2) >> 1;
     if (half > 0) *(void**)((u8*)arg1 + half * 16 + 8) = fn_801B447C(arg0, arg1, half);
     right = arg2 - half - 1;
-    if (right > 0) *(void**)((u8*)arg1 + half * 16 + 12) = fn_801B447C(arg0, (u8*)arg1 + half * 16 + 16, right);
+    if (right > 0) {
+        off = half * 16;
+        *(void**)((u8*)arg1 + off + 12) = fn_801B447C(arg0, (u8*)arg1 + 16 + off, right);
+    }
     return (u8*)arg1 + half * 16;
 }
 void *fn_801B4528(void *tree, u32 *node, u32 key) {
