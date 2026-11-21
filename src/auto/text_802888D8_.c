@@ -708,8 +708,10 @@ void *__dt__Q210JASDrumSet5TPercFv_802894F4(void *self, int shouldDelete) {
     return self;
 }
 
-int fn_80289554(int arg0) {
-    return fn_8028967C(arg0);
+int fn_80289554(int table) {
+    /* Reset the 0xA0-byte emitter/percussion table at `table` by forwarding to
+     * the implementation in fn_8028967C. */
+    return fn_8028967C(table);
 }
 
 extern float lbl_80564284, lbl_8056428C, lbl_805642B0, lbl_805642C0, lbl_805642F0;
