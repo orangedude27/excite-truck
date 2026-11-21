@@ -559,6 +559,7 @@ void fn_802DC138(int positionArray, int vertexCount, unsigned short *__restrict 
 /* Forwarder: resets the CPU-light GX vertex-array cache and binds the default texture (same as fn_802DC130). */
 void fn_802DC278(void) { fn_802DBD88(); }
 
+/* Forwarder: invalidates the cached GX position array/vertex count so the next setup reconfigures it (same as fn_802DC134). */
 void fn_802DC27C(void) { fn_802DBDD8(); }
 
 #pragma push
