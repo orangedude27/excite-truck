@@ -1797,6 +1797,7 @@ void fn_802C7AD4(void) {
 }
 #pragma dont_inline reset
 void fn_802D754C(void);
+/* Tail-call alias: forwards the game-mode flag bit (in r3) to fn_802D754C, which stores it to a global. */
 void fn_802C7ADC(void) { fn_802D754C(); }
 
 #pragma opt_propagation off
