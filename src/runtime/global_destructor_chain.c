@@ -1,6 +1,7 @@
 #include <runtime/global_destructor_chain.h>
 
-typedef void (*DtorFunction)(void* obj, s16 method);
+/* Destructor callback; mode -1 requests complete destruction of all bases. */
+typedef void (*DtorFunction)(void* obj, s16 mode);
 
 typedef struct DtorLink {
     struct DtorLink* next; // at 0x0
