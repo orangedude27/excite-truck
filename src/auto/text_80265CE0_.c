@@ -24,7 +24,10 @@ void fn_80265D38(void) {}
  * text_801A520C_ (just after the vtable is reinstalled); this build leaves it empty. */
 void fn_80265D3C(void) {}
 
-void fn_80265D40(void) {}
+/* No-op hook called at the end of the camera/vehicle state reset (fn_801A65FC)
+ * with the object, its tracked-object slot (+0x1EC) and a scalar value (1.0);
+ * this build leaves it empty. */
+void fn_80265D40(void *object, int objectSlot, float scalarValue) {}
 
 void fn_80265D44(void) {}
 
