@@ -575,14 +575,19 @@ extern "C" void fn_801A6C14(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-float fn_801A70EC(int arg0, const void *arg1, void *arg2, int arg3) {
-    float ratio;
-    float denominator;
-    denominator = fn_801A63C4(*(int *)((char *)arg2 + 4), *(const int *)((const char *)arg1 + 4));
-    ratio = fn_801A63C4(arg3, *(const int *)((const char *)arg1 + 4));
-    ratio /= denominator;
-    fn_8012F57C(arg0, (char *)arg1 + 0x2A, (char *)arg2 + 0x2A, ratio);
-    return ratio;
+/* Spherical interpolation of a move's rotation quaternion at the current time.
+ * fromKey/toKey are animation keyframe records: +4 is the tick stamp and +0x2A
+ * the four-float quaternion. fn_801A63C4 converts tick gaps to time, so the
+ * ratio here is (elapsed from the earlier key) / (span between the two keys);
+ * that 0..1 factor feeds fn_8012F57C's quaternion slerp into outQuat. */
+float fn_801A70EC(int outQuat, const void *fromKey, void *toKey, int nowTick) {
+    float blend;
+    float span;
+    span = fn_801A63C4(*(int *)((char *)toKey + 4), *(const int *)((const char *)fromKey + 4));
+    blend = fn_801A63C4(nowTick, *(const int *)((const char *)fromKey + 4));
+    blend /= span;
+    fn_8012F57C(outQuat, (char *)fromKey + 0x2A, (char *)toKey + 0x2A, blend);
+    return blend;
 }
 #pragma pop
 
