@@ -556,6 +556,7 @@ void fn_802DC138(int positionArray, int vertexCount, unsigned short *__restrict 
     }
 }
 
+/* Forwarder: resets the CPU-light GX vertex-array cache and binds the default texture (same as fn_802DC130). */
 void fn_802DC278(void) { fn_802DBD88(); }
 
 void fn_802DC27C(void) { fn_802DBDD8(); }
@@ -738,10 +739,11 @@ extern int __cntlzw(unsigned int);
 #pragma cplusplus on
 extern "C" void fn_802DC71C(int arg0, int arg1) {
     extern void GXLoadTexObj(void *, int);
-    int useAlt;
+    register int useAlt;
     void **base;
     void *tex1;
-    unsigned char *info;
+    int texFlag;
+    void *info;
     int wrapS;
     fn_802DBD88();
     lbl_8055FEB4 = 0;
@@ -750,8 +752,9 @@ extern "C" void fn_802DC71C(int arg0, int arg1) {
     base = lbl_804DB468;
     tex1 = base[1];
     useAlt = *((unsigned char *)tex1 + 0xCC);
-    info = ((unsigned char *(*)(int))fn_802DC628)(arg0);
-    *(bool *)&lbl_8055FEBB = (info[8] == 0x1D);
+    info = ((void *(*)(int))fn_802DC628)(arg0);
+    texFlag = *((unsigned char *)info + 8);
+    *(bool *)&lbl_8055FEBB = (texFlag == 0x1D);
     wrapS = GXGetTexObjWrapS((unsigned char *)base[0] + 0x24);
     *(bool *)&lbl_8055FEB9 = (wrapS == 0x200);
     GXLoadTexObj((unsigned char *)base[0] + 0x24, 0);
@@ -782,8 +785,8 @@ extern "C" void fn_802DC71C(int arg0, int arg1) {
 #pragma push
 #pragma processor 750
 void fn_802DC8B4(void) {
-    int byteOffset;
     unsigned int *colorOut;
+    int byteOffset;
     float *coordOut;
     void *data;
     unsigned char *g;
