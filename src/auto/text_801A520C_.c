@@ -338,87 +338,119 @@ extern double __fabs(double);
 extern "C" void fn_8017B3A8(void *, float *, float *);
 extern "C" float fn_801A5A7C(void *, float *, float *);
 #pragma opt_dead_assignments off
-extern "C" void fn_801A56A0(void *arg0, void *arg1, float *arg2) {
+extern "C" void fn_801A56A0(void *contactPtr, void *carPtr, float *pointVelocity) {
+    /* Apply one frame of a spring-wall contact impulse.  contactPtr is one of the
+       car's eight WallContact slots (filled by fn_801A5AD0), carPtr is the car and
+       pointVelocity its velocity at the contact point; the slot's wall normal
+       drives a separation/restitution impulse added to pointVelocity and sent as
+       a force at a point to fn_8017B3A8.  The contact timer is advanced and the
+       slot freed once the eased-in speed passes its target. */
     typedef struct { float v[3]; } Vec3;
-    float v[3], point[3], scaled[3], impulse[3], contact[3];
+#define kZero            0.0f
+#define kOne             1.0f
+#define kFrameTime       lbl_805623D0      /* one frame, shared constant */
+#define kSecondsPerFrame 0.016683366f      /* the same constant as a literal */
+#define kHalf            0.5f
+#define kRestitution     6.6666665f
+#define kMaxVertForce    0.44444445f
+#define kVertScale       0.1f
+#define kMaxForce        17.777779f
+#define kForceScale      0.8f
+#define kReleaseDelay    0.2f
+#define kHalfPi          1.5707964f
+#define kEpsilon         (*(float *)lbl_80558DC4)
+    float relVel[3], futurePoint[3], force[3], impulse[3], forcePoint[3];
     Vec3 direction;
-    float dot, ratio, movement, other, push, limit, f, scale, mass;
+    float normalSpeed, blend, movement, temp, push, limit, bounce, impulseScale, mass;
     double absPush;
-    float pd;
-    int active, outside;
-    char *a = (char *)arg0;
-    char *b = (char *)arg1;
-    if (*(void **)(a + 0x20) != 0) {
-        v[0] = arg2[0] + *(float *)(b + 0x118);
-        v[1] = arg2[1] + *(float *)(b + 0x11c);
-        v[2] = arg2[2] + *(float *)(b + 0x120);
-        dot = PSVECDotProduct(v, (float *)arg0);
-        ratio = *(float *)(a + 0x18) / *(float *)(a + 0x1c);
-        ratio = 1.0f < ratio ? 1.0f : ratio;
-        ratio = ratio > 0.0f ? ratio : 0.0f;
-        movement = *(float *)(a + 0xc) + ratio * (*(float *)(a + 0x10) - *(float *)(a + 0xc));
-        point[0] = *(float *)(b + 0x60) + v[0] * lbl_805623D0;
-        point[1] = *(float *)(b + 0x64) + v[1] * lbl_805623D0;
-        point[2] = *(float *)(b + 0x68) + v[2] * lbl_805623D0;
-        other = fn_801A5A7C(arg0, point, (float *)((char *)*(void **)((char *)*(void **)(a + 0x20) + 0xc) + 0x24));
-        pd = *(float *)(a + 0x14);
-        outside = 0;
-        if (0.0f < pd) {
-            outside = 1;
+    float planeOffset;
+    int engaged, outsidePlane;
+    char *slot = (char *)contactPtr;
+    char *car = (char *)carPtr;
+    if (*(void **)(slot + 0x20) != 0) {
+        relVel[0] = pointVelocity[0] + *(float *)(car + 0x118);
+        relVel[1] = pointVelocity[1] + *(float *)(car + 0x11c);
+        relVel[2] = pointVelocity[2] + *(float *)(car + 0x120);
+        normalSpeed = PSVECDotProduct(relVel, (float *)contactPtr);
+        blend = *(float *)(slot + 0x18) / *(float *)(slot + 0x1c);
+        blend = kOne < blend ? kOne : blend;
+        blend = blend > kZero ? blend : kZero;
+        movement = *(float *)(slot + 0xc) + blend * (*(float *)(slot + 0x10) - *(float *)(slot + 0xc));
+        futurePoint[0] = *(float *)(car + 0x60) + relVel[0] * kFrameTime;
+        futurePoint[1] = *(float *)(car + 0x64) + relVel[1] * kFrameTime;
+        futurePoint[2] = *(float *)(car + 0x68) + relVel[2] * kFrameTime;
+        temp = fn_801A5A7C(contactPtr, futurePoint, (float *)((char *)*(void **)((char *)*(void **)(slot + 0x20) + 0xc) + 0x24));
+        planeOffset = *(float *)(slot + 0x14);
+        outsidePlane = 0;
+        if (kZero < planeOffset) {
+            outsidePlane = 1;
         }
-        active = *(float *)(a + 0x18) < *(float *)(a + 0x1c);
-        if (active) {
-            push = movement - dot;
-            push = 0.0f > push ? 0.0f : push;
-            f = 0.0f;
-            if (dot < 0.0f) {
-                ratio = (other - 0.5f) / -0.5f;
-                ratio = 1.0f < ratio ? 1.0f : ratio;
-                ratio = ratio > 0.0f ? ratio : 0.0f;
-                push = 0.0f;
-                f = push + ratio * ((6.6666665f + -dot) - push);
+        engaged = *(float *)(slot + 0x18) < *(float *)(slot + 0x1c);
+        if (engaged) {
+            push = movement - normalSpeed;
+            push = kZero > push ? kZero : push;
+            bounce = kZero;
+            if (normalSpeed < kZero) {
+                blend = (temp - kHalf) / -kHalf;
+                blend = kOne < blend ? kOne : blend;
+                blend = blend > kZero ? blend : kZero;
+                push = kZero;
+                bounce = push + blend * ((kRestitution + -normalSpeed) - push);
             }
-            scale = f + push;
-            impulse[0] = *(float *)(a + 0) * scale;
-            impulse[1] = *(float *)(a + 4) * scale;
-            impulse[2] = *(float *)(a + 8) * scale;
-            arg2[0] += impulse[0]; arg2[1] += impulse[1]; arg2[2] += impulse[2];
-            ratio = *(float *)(b + 0xd4) / 0.016683366f;
-            scaled[0] = impulse[0] * ratio; scaled[1] = impulse[1] * ratio; scaled[2] = impulse[2] * ratio;
-            limit = 0.44444445f;
-            if (v[1] > limit && *(int *)(b + 0x2620) == 0) {
-                other = 0.1f * v[1];
-                mass = *(float *)(b + 0xd4);
-                limit = limit < other ? limit : other;
-                scaled[1] = -limit * (mass / lbl_805623D0);
+            impulseScale = bounce + push;
+            impulse[0] = *(float *)(slot + 0) * impulseScale;
+            impulse[1] = *(float *)(slot + 4) * impulseScale;
+            impulse[2] = *(float *)(slot + 8) * impulseScale;
+            pointVelocity[0] += impulse[0]; pointVelocity[1] += impulse[1]; pointVelocity[2] += impulse[2];
+            blend = *(float *)(car + 0xd4) / kSecondsPerFrame;
+            force[0] = impulse[0] * blend; force[1] = impulse[1] * blend; force[2] = impulse[2] * blend;
+            limit = kMaxVertForce;
+            if (relVel[1] > limit && *(int *)(car + 0x2620) == 0) {
+                temp = kVertScale * relVel[1];
+                mass = *(float *)(car + 0xd4);
+                limit = limit < temp ? limit : temp;
+                force[1] = -limit * (mass / kFrameTime);
             }
-            push += f;
+            push += bounce;
             absPush = __fabs(push);
-            other = (float)absPush;
-            direction = *(Vec3 *)(b + 0x54);
-            direction.v[1] = 0.0f;
-            if (!(other <= *(float *)lbl_80558DC4) && PSVECDotProduct(direction.v, (float *)arg0) < 0.0f && (float)__fabs(*(float *)(b + 0x128)) < 1.5707964f) {
-                ratio = 17.777779f / push;
-                ratio = 1.0f < ratio ? 1.0f : ratio;
-                ratio = 0.8f * ratio;
-                contact[0] = *(float *)(b + 0x60) + direction.v[0] * ratio;
-                contact[1] = *(float *)(b + 0x64) + direction.v[1] * ratio;
-                contact[2] = *(float *)(b + 0x68) + direction.v[2] * ratio;
+            temp = (float)absPush;
+            direction = *(Vec3 *)(car + 0x54);
+            direction.v[1] = kZero;
+            if (!(temp <= kEpsilon) && PSVECDotProduct(direction.v, (float *)contactPtr) < kZero && (float)__fabs(*(float *)(car + 0x128)) < kHalfPi) {
+                blend = kMaxForce / push;
+                blend = kOne < blend ? kOne : blend;
+                blend = kForceScale * blend;
+                forcePoint[0] = *(float *)(car + 0x60) + direction.v[0] * blend;
+                forcePoint[1] = *(float *)(car + 0x64) + direction.v[1] * blend;
+                forcePoint[2] = *(float *)(car + 0x68) + direction.v[2] * blend;
             } else {
-                contact[0] = *(float *)(b + 0x60);
-                contact[1] = *(float *)(b + 0x64);
-                contact[2] = *(float *)(b + 0x68);
+                forcePoint[0] = *(float *)(car + 0x60);
+                forcePoint[1] = *(float *)(car + 0x64);
+                forcePoint[2] = *(float *)(car + 0x68);
             }
-            fn_8017B3A8(arg1, scaled, contact);
-            *(float *)(b + 0x26b4) = 0.0f;
-            *(float *)(b + 0x26b8) = 0.0f;
-            *(float *)(b + 0x26bc) = 0.0f;
+            fn_8017B3A8(carPtr, force, forcePoint);
+            *(float *)(car + 0x26b4) = kZero;
+            *(float *)(car + 0x26b8) = kZero;
+            *(float *)(car + 0x26bc) = kZero;
         }
-        movement = *(float *)(a + 0x18) + lbl_805623D0;
-        *(float *)(a + 0x18) = movement;
-        if (movement > 0.2f + *(float *)(a + 0x1c) && !active)
-            *(void **)(a + 0x20) = 0;
+        movement = *(float *)(slot + 0x18) + kFrameTime;
+        *(float *)(slot + 0x18) = movement;
+        if (movement > kReleaseDelay + *(float *)(slot + 0x1c) && !engaged)
+            *(void **)(slot + 0x20) = 0;
     }
+#undef kZero
+#undef kOne
+#undef kFrameTime
+#undef kSecondsPerFrame
+#undef kHalf
+#undef kRestitution
+#undef kMaxVertForce
+#undef kVertScale
+#undef kMaxForce
+#undef kForceScale
+#undef kReleaseDelay
+#undef kHalfPi
+#undef kEpsilon
 }
 #pragma opt_dead_assignments reset
 #pragma pop
