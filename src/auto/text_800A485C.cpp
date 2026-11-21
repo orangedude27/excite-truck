@@ -15103,9 +15103,10 @@ extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
         }
     }
 }
-#pragma pop
+#pragma push
+#pragma scheduling 750
 extern "C" s16 fn_800BDD7C(s32 arg0, s32 arg1, s32 *arg2) {
-    register u32 value = ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 0xC, arg2);
+    u32 value = ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 0xC, arg2);
     while ((value & 0xFFFFU) != 0xFFFU) {
         value = (value * 2) & 0xFFFEU;
         value |= ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 1, arg2);
@@ -15114,7 +15115,7 @@ extern "C" s16 fn_800BDD7C(s32 arg0, s32 arg1, s32 *arg2) {
     }
     return 1;
 }
-
+#pragma pop
 extern "C" s16 fn_800BDE18(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
     register s32 remaining = arg2;
     s32 take;
@@ -19514,6 +19515,9 @@ void fn_800CF284(void) {
 
 }
 
+/* No-op virtual stub: an empty method slot in the homebutton vtables (e.g.
+ * lbl_8031E700), grouped with the other empty stubs fn_800CF280/fn_800CF284/
+ * fn_800CF28C/fn_800CF290.  Calling it does nothing. */
 extern "C" void fn_800CF288(void) {
 
 }
