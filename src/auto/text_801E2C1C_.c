@@ -406,11 +406,11 @@ void fn_801E3488(void *outTranslation, void *node) {
 
 #pragma push
 #pragma processor 750
-void fn_801E34E4(s32 *arg0, s32 arg1) {
+void fn_801E34E4(const s32 *arg0, s32 arg1) {
     s32 sp8[12];
 
     if (*arg0 != -1) {
-        fn_801E3284(&sp8[0], arg0, arg1);
+        fn_801E3284(&sp8[0], (s32 *)arg0, arg1);
         fn_802C744C(*arg0, &sp8[0]);
     }
 }
