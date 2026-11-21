@@ -1354,9 +1354,11 @@ void fn_80015E30(void *outMatrix, f32 angle) {
     *(f32 *)((u8 *)outMatrix + 0x20) = cosine;
 }
 #pragma scheduling on
-void fn_80015EB0(void *arg0, f32 angle) {
+/* Build the Y-axis (yaw) step matrix used by fn_80015A20: a column-major 3x3
+ * rotation [c 0 s; 0 1 0; -s 0 c] with c = cos(angle), s = sin(angle). */
+void fn_80015EB0(void *outMatrix, f32 angle) {
     f32 one;
-    f32 neg;
+    f32 negSine;
     f32 zero;
     f32 sine;
     f32 cosine;
@@ -1364,16 +1366,16 @@ void fn_80015EB0(void *arg0, f32 angle) {
     sine = (f32)sin(angle);
     zero = 0.0f;
     one = 1.0f;
-    *(f32 *)((u8 *)arg0 + 0) = cosine;
-    neg = -sine;
-    *(f32 *)((u8 *)arg0 + 4) = zero;
-    *(f32 *)((u8 *)arg0 + 8) = neg;
-    *(f32 *)((u8 *)arg0 + 0xC) = zero;
-    *(f32 *)((u8 *)arg0 + 0x10) = one;
-    *(f32 *)((u8 *)arg0 + 0x14) = zero;
-    *(f32 *)((u8 *)arg0 + 0x18) = sine;
-    *(f32 *)((u8 *)arg0 + 0x1C) = zero;
-    *(f32 *)((u8 *)arg0 + 0x20) = cosine;
+    *(f32 *)((u8 *)outMatrix + 0) = cosine;
+    negSine = -sine;
+    *(f32 *)((u8 *)outMatrix + 4) = zero;
+    *(f32 *)((u8 *)outMatrix + 8) = negSine;
+    *(f32 *)((u8 *)outMatrix + 0xC) = zero;
+    *(f32 *)((u8 *)outMatrix + 0x10) = one;
+    *(f32 *)((u8 *)outMatrix + 0x14) = zero;
+    *(f32 *)((u8 *)outMatrix + 0x18) = sine;
+    *(f32 *)((u8 *)outMatrix + 0x1C) = zero;
+    *(f32 *)((u8 *)outMatrix + 0x20) = cosine;
 }
 extern f32 lbl_805603F8,lbl_805603FC,lbl_80560408,lbl_8056040C,lbl_80560410,lbl_80560414;
 extern void fn_801478E0(void*,void*,s32,s32);
