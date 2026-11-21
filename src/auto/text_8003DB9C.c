@@ -2943,7 +2943,9 @@ extern void OSWakeupThread(void *);
 extern void OSSleepThread(void *);
 extern void OSInitThreadQueue(void *);
 extern void (*lbl_8055D978_callback)(unsigned short);
-#pragma cplusplus on
+#pragma cplusplus reset
+#pragma push
+#pragma use_lmw_stmw on
 #pragma scheduling 750
 void GXInitSpecularDir(unsigned int arg0, void *ctx) {
     extern unsigned int lbl_8055D978;
@@ -2962,6 +2964,7 @@ void GXInitSpecularDir(unsigned int arg0, void *ctx) {
     __peReg[5] |= 4;
 }
 #pragma scheduling reset
+#pragma pop
 #pragma cplusplus reset
 /* Atomically sets and returns the previous value of the light-object index global. */
 unsigned int GXLoadLightObjIndx(unsigned int lightObjIndex) {
@@ -6078,12 +6081,15 @@ extern void GXSetCPUFifo(void *);
 extern char lbl_8037C108[];
 #pragma optimize_for_size off
 u32 GXEndDisplayList(void) {
-    void *fifo = lbl_8037C108;
+    union { unsigned int u; void *p; } fc;
+    void *fifo;
     u8 wrap;
     void *data;
     void *data2;
     int interruptState;
     unsigned int saved;
+    fc.u = (unsigned int)lbl_8037C108;
+    fifo = fc.p;
     GXGetCPUFifo((u8 *)fifo + 0);
     wrap = GXGetFifoWrap((u8 *)fifo + 0);
     GXSetCPUFifo((u8 *)fifo + 0x680);
