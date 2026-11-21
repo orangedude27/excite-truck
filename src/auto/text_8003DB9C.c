@@ -5527,12 +5527,19 @@ void GXSetTevSwapMode(s32 stage, s32 rasSel, s32 texSel) {
 }
 
 void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 texSel2) {
+    union {
+        u32 value;
+        struct {
+            unsigned int unused : 28;
+            unsigned int texSel : 2;
+            unsigned int rasSel : 2;
+        } fields;
+    } word;
     u32 offset1;
     u32 offset0;
     u32 index2;
     unsigned int *table;
     unsigned int *data;
-    u32 value;
 
     offset0 = (u32)index << 3;
     index2 = (u32)index << 1;
@@ -5540,22 +5547,22 @@ void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 t
     data = __GXData;
     table = (unsigned int *)((char *)data + 0x200);
 
-    value = *(u32 *)((char *)table + offset0);
-    value = __rlwimi(value, rasSel, 0, 30, 31);
-    value = __rlwimi(value, texSel, 2, 28, 29);
-    *(u32 *)((char *)table + offset0) = value;
+    word.value = *(u32 *)((char *)table + offset0);
+    word.fields.rasSel = rasSel;
+    word.fields.texSel = texSel;
+    *(u32 *)((char *)table + offset0) = word.value;
 
-    GXCopyWGFifo.u8 = 0x61;
-    GXCopyWGFifo.u32 = *(u32 *)((char *)table + offset0);
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = *(u32 *)((char *)table + offset0);
 
     offset1 <<= 2;
-    value = *(u32 *)((char *)table + offset1);
-    value = __rlwimi(value, rasSel2, 0, 30, 31);
-    value = __rlwimi(value, texSel2, 2, 28, 29);
-    *(u32 *)((char *)table + offset1) = value;
+    word.value = *(u32 *)((char *)table + offset1);
+    word.fields.rasSel = rasSel2;
+    word.fields.texSel = texSel2;
+    *(u32 *)((char *)table + offset1) = word.value;
 
-    GXCopyWGFifo.u8 = 0x61;
-    GXCopyWGFifo.u32 = *(u32 *)((char *)table + offset1);
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = *(u32 *)((char *)table + offset1);
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
@@ -6008,6 +6015,9 @@ void GXSetDstAlpha(s32 enable, s32 alpha) {
     gxdraw->lastWriteWasXF = FALSE;
 }
 
+/* Set the BP field-mask register (0x44): pack the even/odd field enables into its
+   low bits, push the word through the write-gather FIFO, and mark GXData's last
+   FIFO write as a BP load. */
 void GXSetFieldMask(s32 even, s32 odd) {
     union {
         u32 value;
@@ -6018,13 +6028,15 @@ void GXSetFieldMask(s32 even, s32 odd) {
             unsigned int odd : 1;
         } bits;
     } reg;
+#define GX_BP_REG_FIELD_MASK 0x44
     reg.value = 0;
     reg.bits.odd = odd;
     reg.bits.even = even;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    reg.bits.type = 0x44;
+    *(volatile unsigned char *)0xCC008000 = GX_FIFO_CMD_LOAD_BP_REG;
+    reg.bits.type = GX_BP_REG_FIELD_MASK;
     *(volatile unsigned int *)0xCC008000 = reg.value;
     ((GXDrawData *)__GXData)->lastWriteWasXF = FALSE;
+#undef GX_BP_REG_FIELD_MASK
 }
 
 void GXSetFieldMode(s32 mode, s32 field) {
