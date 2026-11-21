@@ -15988,7 +15988,8 @@ block_79:
                         for (var_ctr_4 = var_r11_3; var_ctr_4 != 0; var_ctr_4--) {
                             M2C_FIELD(var_r12_5, s32 *, 0x1B00) = 0;
                             var_r12_5 += 4;
-                        }
+                            var_ctr_4 -= 1;
+                        } while (var_ctr_4 != 0);
                     }
                 }
             }
