@@ -1364,6 +1364,12 @@ done:
 #pragma pop
 extern float lbl_805645C8;
 extern float lbl_805645E8;
+/* dst = src * scale, three components. */
+static inline void ScaleVec3(const float *src, float *dst, float scale) {
+    dst[0] = src[0] * scale;
+    dst[1] = src[1] * scale;
+    dst[2] = src[2] * scale;
+}
 #pragma scheduling invalid_target
 extern "C" void fn_8029A318(float *a, float *b, float *c, float *d, float x, float y, float z) {
     if ((unsigned char *)b == (unsigned char *)a + 0x30) {
@@ -1387,19 +1393,15 @@ extern "C" void fn_8029A318(float *a, float *b, float *c, float *d, float x, flo
         m12 = a[5]; m02 = a[2]; m22 = a[8];
         b[2] = a[14] * m22 + (a[12] * m02 + a[13] * m12);
     }
-    {
-        const float cScale = 0.4f;
-        const float dScale = 0.75f;
-        b[0] += a[9];
-        b[1] += a[10];
-        b[2] += a[11];
-        c[0] = a[0] * cScale;
-        c[1] = a[1] * cScale;
-        c[2] = a[2] * cScale;
-        d[0] = a[6] * dScale;
-        d[1] = a[7] * dScale;
-        d[2] = a[8] * dScale;
-    }
+    b[0] += a[9];
+    b[1] += a[10];
+    b[2] += a[11];
+    c[0] = a[0] * 0.4f;
+    c[1] = a[1] * 0.4f;
+    c[2] = a[2] * 0.4f;
+    d[0] = a[6] * 0.75f;
+    d[1] = a[7] * 0.75f;
+    d[2] = a[8] * 0.75f;
 }
 #pragma scheduling on
 extern "C" int fn_801EE0C8(int);   /* render object -> its model (field +0x48) */
@@ -1520,18 +1522,19 @@ extern "C" void *fn_8029A6F4(void *arg0) {
     memset(local.config, 0, 0x8C);
 
     float value90 = lbl_80564590;
-    unsigned int one = 1;
+    int one = 1;
     float value9C = lbl_8056459C;
-    unsigned int size = 0x1F4;
+    int size = 0x1F4;
     float valueB8 = lbl_805645B8;
     float value98 = lbl_80564598;
     int two = 2;
     float valueC0 = lbl_805645C0;
     int forty = 0x40;
     float value6460C = lbl_8056460C;
+    int *cfg = (int *)local.config;
 
-    *(int *)local.config = one;
-    *(int *)(local.config + 0x04) = size;
+    cfg[0] = one;
+    cfg[1] = size;
     *(float *)(local.config + 0x08) = value98;
     *(float *)(local.config + 0x0C) = value90;
     local.extra[3] = value9C;
@@ -1548,7 +1551,7 @@ extern "C" void *fn_8029A6F4(void *arg0) {
     *(float *)(local.config + 0x24) = value90;
     *(float *)(local.config + 0x30) = valueB8;
     *(float *)(local.config + 0x34) = valueC0;
-    *(int *)(local.config + 0x44) = two;
+    cfg[0x11] = two;
     *(float *)(local.config + 0x50) = value90;
     *(float *)(local.config + 0x54) = value90;
     *(float *)(local.config + 0x58) = valueB8;
@@ -1560,7 +1563,7 @@ extern "C" void *fn_8029A6F4(void *arg0) {
     *(float *)(local.config + 0x6C) = value90;
     *(float *)(local.config + 0x64) = value90;
     *(float *)(local.config + 0x80) = value6460C;
-    *(int *)(local.config + 0x84) = forty;
+    cfg[0x21] = forty;
     local.config[0x88] = (unsigned char)one;
     local.config[0x89] = (unsigned char)one;
 
@@ -2025,8 +2028,8 @@ extern "C" void fn_8029B274(void *arg0, float *c, unsigned char arg2, void *arg3
     py = cy + a->y * neg;
     q.x = px;
     q.y = py;
-    h1 = 2.0f * f;
-    h2 = -2.0f * f;
+    h1 = lbl_8056460C * f;
+    h2 = lbl_805645D8 * f;
     pz = cz + a->z * neg;
     q.x = px + b->x * f;
     q.y = py + b->y * f;
@@ -2330,14 +2333,13 @@ extern "C" void fn_8029BA94(void *__restrict arg0, void *__restrict arg1) {
         int unused;
         int value;
     };
-    static const u32 kCase = 1;
     int count;
     int index;
     char *record;
     int size;
     void *info;
     int value;
-    u32 flag;
+    unsigned short flag;
 
     if (((const Args *)arg1)->index < 0)
         return;
@@ -2346,9 +2348,9 @@ extern "C" void fn_8029BA94(void *__restrict arg0, void *__restrict arg1) {
     if (index >= count)
         return;
     record = (char *)arg0 + index * 0x14;
-    flag = *(u32 *)(record + 4) & 0xF;
+    flag = (unsigned short)(*(u32 *)(record + 4) & 0xF);
     switch (flag) {
-    case kCase:
+    case 1:
         info = fn_80288208(index);
         index = ((const Args *)arg1)->index;
         value = ((const Args *)arg1)->value;
@@ -2502,8 +2504,7 @@ void fn_8029BE54(void* arg0, void* arg1) {
             a = *(volatile unsigned int*)arg1;
             b = *(volatile unsigned int*)((char*)arg1 + 4);
             c = *(volatile unsigned int*)((char*)arg1 + 8);
-            char* dst = (char*)arg0;
-            dst += i;
+            register char* dst = (char*)arg0 + i;
             *(unsigned int*)(dst + 4) = a;
             register unsigned char d = *(volatile unsigned char*)((char*)arg1 + 0x10);
             *(unsigned int*)(dst + 8) = b;
@@ -2515,8 +2516,7 @@ void fn_8029BE54(void* arg0, void* arg1) {
         scan += 0x14;
     }
     key = count * 0x14;
-    char* dst = (char*)arg0;
-    dst += key;
+    register char* dst = (char*)arg0 + key;
     register unsigned int a = *(volatile unsigned int*)arg1;
     register unsigned int b = *(volatile unsigned int*)((char*)arg1 + 4);
     register unsigned int c = *(volatile unsigned int*)((char*)arg1 + 8);
