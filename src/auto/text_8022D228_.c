@@ -198,7 +198,7 @@ void fn_8022D894(void *arg0, int arg1, int arg2, const char *arg3, signed char a
     *ptr = 0;
     *(int *)((char *)arg0 + 0x24) += 1;
 }
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8022D924(volatile int *p, int arg1) {
     int cnt = p[0x24 / 4];
     int v = p[0x2C / 4];
@@ -219,7 +219,6 @@ divide:
     p[0x24 / 4] = p[0x24 / 4] + 1;
     goto store;
 }
-#pragma scheduling on
 /* Indexed accessor: returns the address of the index-th entry in a 40-byte-record array. */
 int fn_8022D97C(int *basePtr, int index) {
     return *basePtr + index * 0x28;
@@ -466,17 +465,16 @@ int fn_8022DE88(void *object) {
 extern double __fabs(double);
 #pragma push
 #pragma optimization_level 1
-int fn_8022DEC4(void *arg0) {
-    float *valuePtr = *(float **)((char *)arg0 + 0x18);
-    float current = *(float *)((char *)arg0 + 0xC);
-    float value = *valuePtr;
-    float diff = current - value;
-    float mag = __fabs(diff);
-    if (mag <= lbl_80558DC4[0]) {
-        return 0;
-    } else {
-        return 1;
-    }
+int fn_8022DEC4(void *object) {
+#define gZeroEpsilon lbl_80558DC4
+    float current = *(float *)((char *)object + 0xC);
+    float *value_ptr = *(float **)((char *)object + 0x18);
+    float value = *value_ptr;
+    float mag = (float)__fabs(current - value);
+    if (mag <= *(float *)(void *)&gZeroEpsilon) return 0;
+    if (mag > *(float *)(void *)&gZeroEpsilon) return 1;
+    return 1;
+#undef gZeroEpsilon
 }
 #pragma pop
 /* Return an int gauge's value pointer (the word at +0x04) in *valuePtrOut and write the type code 4 to *typeOut. */
