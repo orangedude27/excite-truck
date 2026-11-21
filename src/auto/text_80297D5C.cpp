@@ -305,6 +305,7 @@ extern "C" void* fn_802981EC(unsigned int transform, float scale) {
     return (void*)fn_80299A04(lbl_8055F7CC, transform, scale);
 }
 
+#define gTorchFireEffect lbl_8055F7E0
 extern "C" void fn_802981F8(void* self) {
     #pragma scheduling invalid_target
     float z = 0.0f;
@@ -313,9 +314,10 @@ extern "C" void fn_802981F8(void* self) {
     sp[0] = z;
     sp[1] = o;
     sp[2] = z;
-    fn_8028E584(lbl_8055F7E0, self, (float *)sp, 0.0f);
+    fn_8028E584(gTorchFireEffect, self, (float *)sp, 0.0f);
     fn_80288A40(self, (float *)sp);
 }
+#undef gTorchFireEffect
 
 /* Destructor for J2DAnmTexPatternTIMGPointer: releases the owned resource at +0xB0
  * and, if shouldDelete is positive, frees this object. Returns this. */
