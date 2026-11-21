@@ -195,8 +195,9 @@ extern "C" void fn_80297E90(void) {
     lbl_8055F7E0 = fn_8028E2F8(effectInitData, lbl_80349450, lbl_8055CA80);
 }
 
-    extern "C" void fn_80297ED4(void) {
-    }
+extern "C" void fn_80297ED4(void) {
+    /* Empty placeholder in the subsystem init sequence (fn_80287780); no work to do. */
+}
 
 #pragma dont_inline on
 /* Initialize race visual/effect subsystems and register the per-frame callback. */
@@ -629,8 +630,8 @@ extern "C" void fn_80298BBC(void *arg0) {
     int offset;
     int i;
     now = fn_801E7E18();
-    threshold = 0.0f;
-    reset = -1.0f;
+    threshold = lbl_8056459C;
+    reset = lbl_805645B8;
     i = 0;
     offset = 0;
     goto test;
@@ -945,31 +946,39 @@ extern "C" void fn_80299504(void* manager) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_80299544(void* arg0) {
-    float f2;
-    float dt = fn_801E7E24();
-    float f4 = lbl_8056459C;
-    float f5 = lbl_80564590;
-    float f6 = lbl_80564594;
-    f2 = lbl_805645E0;
-    char* p = (char*)arg0;
-    for (int i = 0; i < 4; i++, p += 0x40) {
-        int state = *(int*)(p + 0x34);
-        if (state == 1) {
-            float val = *(float*)(p + 0x3C) + dt * f6;
-            val = (f5 < val) ? f5 : val;
-            val = (val > f4) ? val : f4;
-            *(float*)(p + 0x3C) = val;
-        } else if (state == 2) {
-            double val = *(float*)(p + 0x3C) + (-dt * f6);
-            val = (f5 < val) ? f5 : val;
-            val = (val > f4) ? val : f4;
-            *(float*)(p + 0x3C) = val;
-            if ((int)(f2 * (float)val) < 1) {
-                *(int*)(p + 0x34) = 0;
-            }
-        }
+extern "C" void fn_80299544(void *arg0)
+{
+  float dt = fn_801E7E24();
+  float f2, f4, f5, f6;
+  char *p = (char *) arg0;
+  f5 = lbl_80564590;
+  f4 = lbl_8056459C;
+  f6 = lbl_80564594;
+  f2 = lbl_805645E0;
+  for (int i = 0; i < 4; i++, p += 0x40)
+  {
+    int state = *((int *) (p + 0x34));
+    if (state == 1)
+    {
+      float val = (*((float *) (p + 0x3C))) + (dt * f6);
+      val = (f5 < val) ? (f5) : (val);
+      val = (val > f4) ? (val) : (f4);
+      *((float *) (p + 0x3C)) = val;
     }
+    else
+      if (state == 2)
+    {
+      double val = (*((float *) (p + 0x3C))) + ((-dt) * f6);
+      val = (f5 < val) ? (f5) : (val);
+      val = (val > f4) ? (val) : (f4);
+      *((float *) (p + 0x3C)) = val;
+      float rounded = (float)val;
+      if (((int) (f2 * rounded)) < 1)
+      {
+        *((int *) (p + 0x34)) = 0;
+      }
+    }
+  }
 }
 #pragma scheduling on
 extern "C" void fn_80299628(void *arg0) {
