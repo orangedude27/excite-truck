@@ -3021,7 +3021,7 @@ extern "C" void fn_80215CD0(void) {
 }
 
 extern "C" void fn_80215CD4(void) {
-
+    /* Empty no-op: an unoverridden default vtable method with no behaviour. */
 }
 
 /* Base default for vtable slot 0x48 of the timed UI-group controller class
