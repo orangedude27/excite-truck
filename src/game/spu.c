@@ -601,6 +601,9 @@ void fn_802E56F0(void) {
 void fn_802E5824(void) {
 }
 
+/* Empty SPU voice-layer routine at slot +0x44 of the voice device backend's
+ * vtable. The "Voice Mixer" device forwards to it from fn_8020B344, but this
+ * build does nothing here (the "Null Mixer" device's slot is empty too). */
 void fn_802E5828(void) {
 }
 
