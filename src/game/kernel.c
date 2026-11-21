@@ -577,6 +577,9 @@ void fn_802E2A1C(void) {
  * fn_802E2A58. */
 void fn_802E2A54(void) {}
 
+/* Empty placeholder in the kernel shutdown sequence (fn_802E2B34): the paired
+ * subsystem needs no teardown in this build. Its startup counterpart is
+ * fn_802E2A54. */
 void fn_802E2A58(void) {}
 
 extern void OSInit(void);
