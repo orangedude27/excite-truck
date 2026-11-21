@@ -9243,98 +9243,103 @@ static inline u16 Fn800B25CCUpperSjis(u16 *c, u16 *out) {
     return 0;
 }
 #pragma opt_lifetimes off
-u16 fn_800B25CC(void *arg0, s32 arg1) {
-    u8 work[0x14];
-    s32 var_r0;
-    u32 var_r3;
-    u32 var_r3_2;
-    u32 var_r3_3;
-    u8 *temp_r3;
-    u8 *temp_r5;
-    u8 temp_r4;
+/* Read the next character of a VFiPF path cursor as a u16 code.  The cursor is
+ * either a CP932 byte stream (+0xC == 1) or a UTF-16 stream, and wantUnicode
+ * says whether the result should be Unicode (otherwise OEM/CP932).  Invalid
+ * name characters become '_', and ASCII and fullwidth lowercase letters are
+ * upper-cased; a zero code ends the path. */
+extern "C" u16 fn_800B25CC(void *path, s32 wantUnicode) {
+    u8 scratch[0x14];
+    s32 lowerAscii;
+    u32 code;
+    u32 lowerFull;
+    u32 convertedLower;
+    u8 *readPtr;
+    u8 *src;
+    u8 c0;
 
-    if ((u32) M2C_FIELD(arg0, u32 *, 0xC) == 1U) {
-        temp_r5 = M2C_FIELD(arg0, u8 **, 0);
-        M2C_FIELD(arg0, u8 **, 0) = (u8 *) (temp_r5 + 1);
-        temp_r4 = *temp_r5;
-        work[8] = temp_r4;
-        work[9] = 0;
-        if (((s8) temp_r4 == 0) || ((u8 *)M2C_FIELD(arg0, u32 *, 4) < M2C_FIELD(arg0, u8 **, 0))) {
+    if ((u32) M2C_FIELD(path, u32 *, 0xC) == 1U) {
+        src = M2C_FIELD(path, u8 **, 0);
+        M2C_FIELD(path, u8 **, 0) = (u8 *) (src + 1);
+        c0 = *src;
+        scratch[8] = c0;
+        scratch[9] = 0;
+        if (((s8) c0 == 0) || ((u8 *)M2C_FIELD(path, u32 *, 4) < M2C_FIELD(path, u8 **, 0))) {
             return 0U;
         }
-        if (M2C_FIELD(&lbl_803D2140, s32 (**)(s8, s32), 0x54)((s8) temp_r4, 1) != 0) {
-            temp_r3 = M2C_FIELD(arg0, u8 **, 0);
-            work[9] = *temp_r3++;
-            M2C_FIELD(arg0, u8 **, 0) = temp_r3;
-            (*(u16 *)(work + 4)) = (work[8] << 8) + work[9];
-        } else if ((M2C_FIELD(&lbl_803D2140, s32 *, 0x38) & 0x10000) || (work[8] >= 0x80U) || ((work[8] >= 0x20U) && (((u8 *)lbl_802EEEE0)[work[8] - 0x20] & 2))) {
-            (*(u16 *)(work + 4)) = (u16) (s8) work[8];
+        if (M2C_FIELD(&lbl_803D2140, s32 (**)(s8, s32), 0x54)((s8) c0, 1) != 0) {
+            readPtr = M2C_FIELD(path, u8 **, 0);
+            scratch[9] = *readPtr++;
+            M2C_FIELD(path, u8 **, 0) = readPtr;
+            (*(u16 *)(scratch + 4)) = (scratch[8] << 8) + scratch[9];
+        } else if ((M2C_FIELD(&lbl_803D2140, s32 *, 0x38) & 0x10000) || (scratch[8] >= 0x80U) || ((scratch[8] >= 0x20U) && (((u8 *)lbl_802EEEE0)[scratch[8] - 0x20] & 2))) {
+            (*(u16 *)(scratch + 4)) = (u16) (s8) scratch[8];
         } else {
-            (*(u16 *)(work + 4)) = 0x5F;
+            (*(u16 *)(scratch + 4)) = 0x5F;
         }
-        if (arg1 != 0) {
-            M2C_FIELD(&lbl_803D2140, s32 (**)(u8 *, u16 *, s32 *), 0x48)((u8 *)&work[8], &(*(u16 *)(work + 4)), (s32 *)lbl_803D2140);
+        if (wantUnicode != 0) {
+            M2C_FIELD(&lbl_803D2140, s32 (**)(u8 *, u16 *, s32 *), 0x48)((u8 *)&scratch[8], &(*(u16 *)(scratch + 4)), (s32 *)lbl_803D2140);
         }
         goto block_27;
     }
-    work[8] = (u8) (u16) *M2C_FIELD(arg0, u16 **, 0);
-    work[9] = (u8) ((s32) (u16) *M2C_FIELD(arg0, u16 **, 0) >> 8);
-    M2C_FIELD(arg0, u16 **, 0) = M2C_FIELD(arg0, u16 **, 0) + 1;
-    work[10] = 0;
-    if ((((s8) work[8] == 0) && ((s8) work[9] == 0)) || ((u8 *)M2C_FIELD(arg0, u32 *, 4) < M2C_FIELD(arg0, u8 **, 0))) {
+    scratch[8] = (u8) (u16) *M2C_FIELD(path, u16 **, 0);
+    scratch[9] = (u8) ((s32) (u16) *M2C_FIELD(path, u16 **, 0) >> 8);
+    M2C_FIELD(path, u16 **, 0) = M2C_FIELD(path, u16 **, 0) + 1;
+    scratch[10] = 0;
+    if ((((s8) scratch[8] == 0) && ((s8) scratch[9] == 0)) || ((u8 *)M2C_FIELD(path, u32 *, 4) < M2C_FIELD(path, u8 **, 0))) {
         return 0U;
     }
-    (*(u16 *)(work + 4)) = (work[9] << 8) + work[8];
-    if (arg1 == 0) {
-        M2C_FIELD(&lbl_803D2140, s32 (**)(u16 *, u16 *), 0x4C)(&(*(u16 *)(work + 4)), &(*(u16 *)(work + 2)));
-        if (M2C_FIELD(&lbl_803D2140, s32 (**)(s8, s32), 0x54)((s8) ((s32) (*(u16 *)(work + 2)) >> 8), 1) != 0) {
-            (*(u16 *)(work + 4)) = (*(u16 *)(work + 2));
-        } else if ((M2C_FIELD(&lbl_803D2140, s32 *, 0x38) & 0x10000) || (work[8] >= 0x80U) || ((work[8] >= 0x20U) && (((u8 *)lbl_802EEEE0)[work[8] - 0x20] & 2))) {
-            (*(u16 *)(work + 4)) = (u16) (s8) work[8];
+    (*(u16 *)(scratch + 4)) = (scratch[9] << 8) + scratch[8];
+    if (wantUnicode == 0) {
+        M2C_FIELD(&lbl_803D2140, s32 (**)(u16 *, u16 *), 0x4C)(&(*(u16 *)(scratch + 4)), &(*(u16 *)(scratch + 2)));
+        if (M2C_FIELD(&lbl_803D2140, s32 (**)(s8, s32), 0x54)((s8) ((s32) (*(u16 *)(scratch + 2)) >> 8), 1) != 0) {
+            (*(u16 *)(scratch + 4)) = (*(u16 *)(scratch + 2));
+        } else if ((M2C_FIELD(&lbl_803D2140, s32 *, 0x38) & 0x10000) || (scratch[8] >= 0x80U) || ((scratch[8] >= 0x20U) && (((u8 *)lbl_802EEEE0)[scratch[8] - 0x20] & 2))) {
+            (*(u16 *)(scratch + 4)) = (u16) (s8) scratch[8];
         } else {
-            (*(u16 *)(work + 4)) = 0x5F;
+            (*(u16 *)(scratch + 4)) = 0x5F;
         }
     }
 block_27:
-    var_r3 = (*(u16 *)(work + 4));
-    var_r0 = 0;
-    if ((var_r3 >= 0x61U) && (var_r3 <= 0x7AU)) {
-        var_r0 = 1;
+    code = (*(u16 *)(scratch + 4));
+    lowerAscii = 0;
+    if ((code >= 0x61U) && (code <= 0x7AU)) {
+        lowerAscii = 1;
     }
-    if (var_r0 != 0) {
-        var_r3 -= 0x20;
+    if (lowerAscii != 0) {
+        code -= 0x20;
     }
-    (*(u16 *)(work + 4)) = var_r3;
-    if (arg1 != 0) {
-        var_r3 = (u16)var_r3;
-        if ((var_r3 >= 0xFF41U) && (var_r3 <= 0xFF5AU)) {
-            var_r3_2 = 1U;
-            (*(u16 *)work) = var_r3 - 0x20;
+    (*(u16 *)(scratch + 4)) = code;
+    if (wantUnicode != 0) {
+        code = (u16)code;
+        if ((code >= 0xFF41U) && (code <= 0xFF5AU)) {
+            lowerFull = 1U;
+            (*(u16 *)scratch) = code - 0x20;
         } else {
-            var_r3_2 = 0U;
+            lowerFull = 0U;
         }
-        if (var_r3_2 == 1U) {
-            (*(u16 *)(work + 4)) = (*(u16 *)work);
+        if (lowerFull == 1U) {
+            (*(u16 *)(scratch + 4)) = (*(u16 *)scratch);
         }
     } else {
-        M2C_FIELD(&lbl_803D2140, s32 (**)(u8 *, u16 *, s32 *), 0x48)((u8 *) &(*(u16 *)(work + 4)), &(*(u16 *)work), (s32 *)lbl_803D2140);
-        if (((*(u16 *)work) >= 0xFF41U) && ((*(u16 *)work) <= 0xFF5AU)) {
-            var_r3_3 = 1U;
-            (*(u16 *)work) -= 0x20;
+        M2C_FIELD(&lbl_803D2140, s32 (**)(u8 *, u16 *, s32 *), 0x48)((u8 *) &(*(u16 *)(scratch + 4)), &(*(u16 *)scratch), (s32 *)lbl_803D2140);
+        if (((*(u16 *)scratch) >= 0xFF41U) && ((*(u16 *)scratch) <= 0xFF5AU)) {
+            convertedLower = 1U;
+            (*(u16 *)scratch) -= 0x20;
         } else {
-            var_r3_3 = 0U;
+            convertedLower = 0U;
         }
-        if (var_r3_3 == 1U) {
-            M2C_FIELD(&lbl_803D2140, s32 (**)(u16 *, u16 *), 0x4C)(&(*(u16 *)work), &(*(u16 *)work));
-            var_r3_3 = 1U;
+        if (convertedLower == 1U) {
+            M2C_FIELD(&lbl_803D2140, s32 (**)(u16 *, u16 *), 0x4C)(&(*(u16 *)scratch), &(*(u16 *)scratch));
+            convertedLower = 1U;
         } else {
-            var_r3_3 = 0U;
+            convertedLower = 0U;
         }
-        if (var_r3_3 == 1U) {
-            (*(u16 *)(work + 4)) = (*(u16 *)work);
+        if (convertedLower == 1U) {
+            (*(u16 *)(scratch + 4)) = (*(u16 *)scratch);
         }
     }
-    return (*(u16 *)(work + 4));
+    return (*(u16 *)(scratch + 4));
 }
 #pragma opt_lifetimes reset
 extern "C" u32 VFiPFPATH_DoMatchFileNameWithPattern(u16 arg0, s32 *arg1, u16 arg2, s32 *arg3, s32 arg4) {
