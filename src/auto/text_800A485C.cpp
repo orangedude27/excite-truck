@@ -11791,7 +11791,7 @@ extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32 arg0, u16 *arg1) {
     if (c >= 0xa1 && c <= 0xdf) {
         s32 v = c + 0x10000;
         *arg1 = v - 0x140;
-        return fn_800A4BE8(1, 2);
+        return ((s32 (*)(s32, s32, s32))fn_800A4BE8)(1, 2, c);
     }
     if (c == 0x80 || c == 0x85 || c == 0x86 || c == 0xa0 || c == 0xeb || c == 0xec ||
         (c >= 0xef && c <= 0xf9) || (c >= 0xfd && c == 0xff)) {
