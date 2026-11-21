@@ -1,11 +1,19 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern void *lbl_8055E764;
+/* Alarm-event queue: a tagged 0x500-byte buffer of AlarmEvent records, a pending
+ * count, and the DSP frame counter used as the current time. */
+extern void *lbl_8055E760; /* alarm-event queue allocation */
+extern void *lbl_8055E764; /* number of pending events */
+extern int lbl_80336990[]; /* "alarm_event" allocation tag */
+extern int lbl_8055E3C4; /* current DSP frame count */
+#define s_alarmEventTag lbl_80336990
+#define s_alarmEventQueue lbl_8055E760
+#define s_alarmEventCount lbl_8055E764
+#define s_frameCount lbl_8055E3C4
+
 void fn_80128670(int);
 int fn_8012850C(int, int *);
-extern void *lbl_8055E760;
-extern int lbl_80336990[];
 #pragma scheduling invalid_target
 /* Initialize the alarm-event queue: allocate the 0x500-byte buffer tagged
    "alarm_event" and reset the pending-event count to zero. */
