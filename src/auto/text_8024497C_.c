@@ -43,41 +43,40 @@ void fn_802449A0(void) {
 #pragma scheduling invalid_target
     Frame2449 f;
     int i;
-    int zero = 0;
     char *base = lbl_80342E38;
-    int five = 5;
     f.p98 = lbl_80342ED8;
-    f.spAC = zero;
+    f.spAC = 0;
     f.sp148 = fn_80232578(base + 0xC);
     f.sp14C = fn_802C5130(base + 0x18);
     f.spB0 = fn_80019088();
-    f.spB4 = zero;
+    f.spB4 = 0;
     sprintf(f.buf, base + 0x28, fn_80019888());
-    f.sp13C = zero;
-    f.sp138 = zero;
+    f.sp13C = 0;
+    f.sp138 = 0;
     fn_802E30C8(base + 0x48, f.spB0);
-    for (i = zero; i < f.spB0; i++) {
+    for (i = 0; i < f.spB0; i++) {
         int *t = fn_80019054(i);
         fn_802E30C8(base + 0x68, i, t[0], t[1], t[2]);
     }
     {
         int *tbl = (int *)lbl_802FA338;
+        int z = 0;
         f.one = 1;
         f.e[0].label = (int)(base + 0x80);
         f.e[0].type = 2;
         f.e[0].value = (int)&f.one;
-        f.e[0].flags = zero;
-        f.e[0].id = zero;
+        f.e[0].flags = z;
+        f.e[0].id = z;
         f.e[1].label = (int)&lbl_8055BE20;
         f.e[1].type = 3;
         f.e[1].value = (int)f.buf;
         f.e[1].flags = 0x80;
-        f.e[1].id = zero;
+        f.e[1].id = z;
         f.e[2].label = (int)(base + 0x90);
-        f.e[2].type = five;
+        f.e[2].type = 5;
         f.e[2].value = (int)&f.p98;
-        f.e[2].flags = zero;
-        f.e[2].id = zero;
+        f.e[2].flags = z;
+        f.e[2].id = z;
         f.e[3].label = (int)&lbl_8055B860;
         f.e[3].type = 6;
         f.e[3].value = (int)fn_8024497C;
@@ -87,7 +86,7 @@ void fn_802449A0(void) {
         f.e[4].type = 8;
         f.e[4].value = (int)fn_80236914;
         f.e[4].flags = 2;
-        f.e[4].id = zero;
+        f.e[4].id = z;
         f.e[5].label = ((int *)lbl_80498878)[0];
         f.e[5].type = ((int *)lbl_80498878)[1];
         f.e[5].value = ((int *)lbl_80498878)[2];
@@ -102,9 +101,9 @@ void fn_802449A0(void) {
     }
     f.p98 = lbl_80342ED8;
     fn_802328D4(f.sp148, lbl_80342ED8);
-    f.sp148 = zero;
+    f.sp148 = 0;
     fn_802C519C(f.sp14C);
-    f.sp14C = zero;
+    f.sp14C = 0;
 }
 /* Destructor-like cleanup: reset vtable/handlers, release owned subobjects at
  * +0xB0 and +0xB4, and free the object when freeFlag > 0. Returns the object. */
@@ -126,6 +125,9 @@ s32 fn_802E2C20(void);
 extern char lbl_80342ED8[];
 void fn_80244C50(void) { fn_8013C804(); }
 
+/* Callback that tears down the car-class search manager used for car-name
+ * lookups, delegating to fn_8013C8B8 (clear class cache, release the loaded
+ * manager and null its global).  Pairs with fn_80244C50, which loads it. */
 void fn_80244C54(void) { fn_8013C8B8(); }
 
 /* Handle a seek/index command: record the current kernel timer tick into the state's
