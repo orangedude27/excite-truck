@@ -39,7 +39,8 @@ void AIStartDMA(void) {
     DSP_HW_REGS[DSP_AI_DMA_CSR] |= DSP_AI_DMA_CSR_PLAY;
 }
 
-/* Stop AI (audio) DMA playback by clearing the PLAY bit in the AI DMA control/status register. */
+/* Stop AI (audio) DMA playback by clearing the PLAY bit in the AI DMA
+   control/status register. */
 void AIStopDMA(void) {
     DSP_HW_REGS[DSP_AI_DMA_CSR] &= ~DSP_AI_DMA_CSR_PLAY;
 }
