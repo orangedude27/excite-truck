@@ -142,20 +142,21 @@ void fn_801DB340(int userData) { fn_801DB13C(userData - 4); }
 #pragma auto_inline off
 #pragma dont_inline on
 #pragma scheduling invalid_target
-int fn_801DB348(int arg0, int arg1, float *arg2, int *arg3, void *arg4) {
+/* Sample the flat heightmap at grid cell (x, y) with power-of-two wrapping: write the height to *outHeight and 0 to *outType, returning 1. */
+int fn_801DB348(int x, int y, float *outHeight, int *outType, void *unused) {
     int width, height;
     float *data;
-    (void)arg4;
-    if (arg3 != 0) {
-        *arg3 = 0;
+    (void)unused;
+    if (outType != 0) {
+        *outType = 0;
     }
     width = lbl_80446F08[0];
     height = lbl_80446F08[1];
     data = (float *)lbl_80446F08[2];
-    arg0 &= width - 1;
-    arg1 &= height - 1;
-    arg1 *= width;
-    *arg2 = data[arg0 + arg1];
+    x &= width - 1;
+    y &= height - 1;
+    y *= width;
+    *outHeight = data[x + y];
     return 1;
 }
 #pragma dont_inline reset
