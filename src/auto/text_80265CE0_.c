@@ -30,7 +30,10 @@ void fn_80265D4C(void) {}
 
 void fn_80265D50(void) {}
 
-void fn_80265D54(void) {}
+/* No-op MP-client stub taking a mode/flags argument (called with 2 from the
+   game-loop restart menu in fn_8000B42C); this build has no MP client. */
+void fn_80265D54(int mode) {
+}
 
 /* Stub getter, always 0: the third memory figure of the debug "info" blocks,
  * filled in next to the two heap "bytes used" counters read by fn_80128314
