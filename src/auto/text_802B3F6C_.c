@@ -357,11 +357,12 @@ void fn_802B40F8(void) {
 #pragma pop
 int fn_80129D90(int, int, int);
 #pragma push
-#pragma scheduling 750
+#pragma scheduling on
 int fn_802B475C(void* arg0) {
-    int count = *(volatile int*)((char*)arg0 + 4);
+    register void *p = arg0;
+    int count = *(int*)((char*)p + 4);
     int index = fn_80129D90(0, 0, count);
-    return ((int*)*(void**)arg0)[index];
+    return ((int*)*(void**)p)[index];
 }
 #pragma pop
 extern void fn_802B4BD8(void);
@@ -386,14 +387,17 @@ void *fn_802B47A0(void *arg0, int *arg1, void *arg2, int arg3, int **arg4) {
     float quad[4];
     float st[2];
     int *out = (int *)arg0;
-    int a, cnt, n, lane, tries, k;
-    int t1;
+    int a, b, cnt, n, lane, tries, k;
+    int t1, q1, q2;
     float f28, f27, f29, f30, f25, f26;
     float *tab = lbl_802FAAD0;
     int (**vt)(void *, void *) = *(int (***)(void *, void *))arg2;
     a = vt[7](arg2, lbl_8034A4A0);
     t1 = arg3 * a;
-    cnt = fn_80129D90(0, (arg3 * t1) / 10, (arg3 * (arg3 * (*(int (***)(void *, void *))arg2)[7](arg2, lbl_8034A4AC))) / 10 + 1);
+    q1 = (arg3 * t1) / 10;
+    b = vt[7](arg2, lbl_8034A4AC);
+    q2 = (arg3 * (arg3 * b)) / 10 + 1;
+    cnt = fn_80129D90(0, q1, q2);
     fn_8012850C(cnt * 0x24 + 0x10, lbl_8055CE08);
     out[0] = (int)fn_8002F37C(fn_802B4BD8, 0, 0x24, cnt);
     out[3] = out[0];
@@ -466,6 +470,8 @@ int fn_802B4BC0(int base, int x, int y) {
     return base + (((x & 0x1F) + ((y << 5) & 0x3E0)) << 3);
 }
 
+/* No-op element constructor for the grid record arrays allocated with
+ * fn_8002F37C (0x24-byte records); the records need no initialization. */
 void fn_802B4BD8(void) {}
 
 extern int lbl_8055F9D0[];
@@ -671,11 +677,14 @@ void *fn_802B4F10(void *out, int x, int y, int a, int b) {
     int result = 0;
     int r = fn_802B40B0(a, b);
     if (r != 0) {
-        int idx = (((x & 0x1F) + ((y << 5) & 0x3E0)) << 3);
-        int *p = (int *)(r + idx);
+        int idx;
+        int *p, *q;
+        idx = (((x & 0x1F) + ((y << 5) & 0x3E0)) << 3);
+        p = (int *)(r + idx);
         *(int *)out = p[1];
-        result = p[0];
-        if (((int *)p[0])[1] > 0) return (void *)result;
+        q = (int *)p[0];
+        result = (int)q;
+        if (q[1] > 0) return (void *)result;
         result = 0;
     }
     return (void *)result;
