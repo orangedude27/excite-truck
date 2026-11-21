@@ -202,28 +202,51 @@ void __DVDPrintFatalMessage(void) {
 }
 
 #pragma scheduling 750
-int doTransactionCallback(int arg0, void *arg1) {
-    int result = arg0;
-    if (*(unsigned int *)((char *)arg1 + 0xC) != 0xFEEBDAED) {
-        OSReport(lbl_80302848);
-        *(unsigned int *)((char *)arg1 + 0xC) = 0xFEEBDAED;
+int doTransactionCallback(int intType, void *context) {
+#define requestInProgress  lbl_8055D8E0
+#define callbackInProgress lbl_8055D8E1
+#define breakRequested     lbl_8055D900
+#define readLength         lbl_8055D8F4
+#define DVD_LOW_CTX_MAGIC  0xFEEBDAED
+#define kMangledContextMsg lbl_80302848
+    /* DVD low-level transaction-completion callback: validate the context's
+       magic, clear the request flag, apply break / transfer-complete flags,
+       call the context's callback and mark the context free. */
+    struct DvdLowContext {
+        int (*callback)(int);
+        unsigned int WORD_0x4;
+        unsigned char inUse;
+        unsigned char pad[3];
+        unsigned int magic;
+    };
+    struct DvdLowContext *ctx = context;
+    int result = intType;
+    if (ctx->magic != DVD_LOW_CTX_MAGIC) {
+        OSReport(kMangledContextMsg);
+        ctx->magic = DVD_LOW_CTX_MAGIC;
     } else {
-        lbl_8055D8E0 = 0;
-        if (*(unsigned int *)arg1 != 0) {
-            lbl_8055D8E1 = 1;
-            if (lbl_8055D900 == 1) {
-                lbl_8055D900 = 0;
+        requestInProgress = 0;
+        if (ctx->callback != 0) {
+            callbackInProgress = 1;
+            if (breakRequested == 1) {
+                breakRequested = 0;
                 result |= 8;
             }
             if (result & 1) {
-                lbl_8055D8F4 = 0;
+                readLength = 0;
             }
-            ((int (*)(int))*(unsigned int *)arg1)(result);
-            lbl_8055D8E1 = 0;
+            ctx->callback(result);
+            callbackInProgress = 0;
         }
     }
-    *(unsigned char *)((char *)arg1 + 8) = 0;
+    ctx->inUse = 0;
     return 0;
+#undef requestInProgress
+#undef callbackInProgress
+#undef breakRequested
+#undef readLength
+#undef DVD_LOW_CTX_MAGIC
+#undef kMangledContextMsg
 }
 /* DVD low-level cover-register callback: validates the context, updates flags, and invokes the registered callback. */
 int doPrepareCoverRegisterCallback(int result, void *context) {
