@@ -571,6 +571,8 @@ extern "C" void fn_801D4FA0(void *arg0) {
 #pragma pop
 #pragma cplusplus reset
 
+/* Intentional no-op (compiles to a bare 'blr'): a do-nothing default hook in
+ * the action-sequence unit, like its neighbour fn_801D4F9C. */
 void fn_801D5010(void) {
 }
 
