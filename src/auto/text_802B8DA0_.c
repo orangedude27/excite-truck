@@ -1132,7 +1132,7 @@ extern "C" void fn_802BA560(void *);
 extern "C" char lbl_8034A9D0[];
 extern "C" char lbl_8034A9E4[];
 #pragma processor 750
-#pragma scheduling 604
+#pragma scheduling invalid_target
 extern "C" void fn_802BA348(void) {
     struct Dummy { virtual void v0(); virtual void *v1(int); };
     struct {
