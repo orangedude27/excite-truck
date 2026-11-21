@@ -102,9 +102,9 @@ s32 NANDClose(NANDFileInfo* info) {
     return nandConvertErrorCode(result);
 }
 
+/* Close an open NAND file asynchronously, reporting the result via callback. */
 s32 NANDCloseAsync(NANDFileInfo* info, NANDAsyncCallback callback,
                    NANDCommandBlock* block) {
-    /* Close an open NAND file asynchronously, reporting the result via callback. */
     if (!nandIsInitialized()) {
         return NAND_RESULT_FATAL_ERROR;
     }
