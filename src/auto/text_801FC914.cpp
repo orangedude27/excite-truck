@@ -921,6 +921,12 @@ extern "C" void* fn_801FE188(void* obj) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling on
+static inline void swap_bytes_1d8(unsigned char *q, int i, int j) {
+    unsigned char x = q[i];
+    q[i] = q[j];
+    q[j] = x;
+}
+
 extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
     register unsigned char (*q)[0x18] = (unsigned char (*)[0x18])(p + 0x3C);
     register unsigned char a=p[0x2C];
@@ -1086,10 +1092,8 @@ static inline void SwapEndianRecords(unsigned char *b, int count) {
 #pragma use_lmw_stmw off
 #pragma scheduling on
 extern "C" void fn_801FE568(void* arg0, unsigned char* p) {
+    unsigned char *records = p + 0x3c;
     unsigned char a0,a1,a2,a3,a4,a5,a6,a7,a8,a9;
-    unsigned char t;
-    unsigned char *ptr;
-    int i;
 
     a0 = p[0x2c]; p[0x2c] = p[0x3b]; p[0x3b] = a0;
     a1 = p[0x2d]; p[0x2d] = p[0x3a]; p[0x3a] = a1;
@@ -1100,20 +1104,7 @@ extern "C" void fn_801FE568(void* arg0, unsigned char* p) {
     a6 = p[0x32]; p[0x32] = p[0x35]; p[0x35] = a6;
     a7 = p[0x33]; p[0x33] = p[0x34]; p[0x34] = a7;
 
-    for (i = 0, ptr = p + 0x3c; i < 0x48; i++, ptr += 0x18) {
-        t = ptr[0]; ptr[0] = ptr[3]; ptr[3] = t;
-        t = ptr[1]; ptr[1] = ptr[2]; ptr[2] = t;
-        t = ptr[4]; ptr[4] = ptr[7]; ptr[7] = t;
-        t = ptr[5]; ptr[5] = ptr[6]; ptr[6] = t;
-        t = ptr[8]; ptr[8] = ptr[0xb]; ptr[0xb] = t;
-        t = ptr[9]; ptr[9] = ptr[0xa]; ptr[0xa] = t;
-        t = ptr[0xc]; ptr[0xc] = ptr[0xf]; ptr[0xf] = t;
-        t = ptr[0xd]; ptr[0xd] = ptr[0xe]; ptr[0xe] = t;
-        t = ptr[0x10]; ptr[0x10] = ptr[0x13]; ptr[0x13] = t;
-        t = ptr[0x11]; ptr[0x11] = ptr[0x12]; ptr[0x12] = t;
-        t = ptr[0x14]; ptr[0x14] = ptr[0x17]; ptr[0x17] = t;
-        t = ptr[0x15]; ptr[0x15] = ptr[0x16]; ptr[0x16] = t;
-    }
+    SwapEndianRecords(records, 0x48);
 
     a8 = p[0x6fc]; p[0x6fc] = p[0x6ff]; p[0x6ff] = a8;
     a9 = p[0x6fd]; p[0x6fd] = p[0x6fe]; p[0x6fe] = a9;
