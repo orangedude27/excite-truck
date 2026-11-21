@@ -127,6 +127,8 @@ s32 fn_802E7730(void) {
 void fn_802E7738(void) {
 }
 
+/* Empty vtable method (slot +0x14) of the "null" stream-bank manager
+   (lbl_8034D860); the do-nothing fallback has no work to perform. */
 void fn_802E773C(void) {
 }
 
