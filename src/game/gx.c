@@ -2977,8 +2977,10 @@ void* fn_802D3130(void) {
     return fn_802D3104();
 }
 
-void fn_802D3134(void) {
-    fn_802D3104();
+void *fn_802D3134(void) {
+    /* Tail-call: load the default indirect-texture matrix (fn_802D3104) and return
+       the bump-map GXTexObj at +0x24 of the global GX state block (GX_TEXMAP5). */
+    return fn_802D3104();
 }
 
 extern void *lbl_8055FD58;
