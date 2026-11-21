@@ -21,7 +21,8 @@ void *fn_801D0FA4(void *object) {
     return object;
 }
 
-/* Effect object scalar-deleting destructor: pop from active list, reset vtable, destroy base, conditionally free. */
+/* Effect object scalar-deleting destructor: pop from the active list, reset the
+   vtable, destroy the base, and conditionally free the object. */
 void *fn_801D1008(void *object, s32 shouldDelete) {
     if (object != 0) {
         s32 count = lbl_8055E8FC - 1;
