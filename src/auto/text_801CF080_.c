@@ -353,85 +353,51 @@ static inline void Mesh_SwapVec(volatile Vec *v) {
 }
 
 #pragma push
+#pragma scheduling off
 void fn_801CFA48(void *arg0) {
- typedef struct { unsigned char *ptr1; int count1; unsigned char *ptr2; int count2; unsigned char *ptr3; int count3; } tFA48View;
- volatile tFA48View *p=(volatile tFA48View *)arg0;
- volatile unsigned char *b=(volatile unsigned char *)arg0;
- unsigned char temp2,temp;
- volatile unsigned char *base,*item;
- int offset,i1,i2,i3,count1,count2;
- temp=b[0]; item=(volatile unsigned char *)arg0+0x18; temp2=b[3]; i1=0; offset=0; b[0]=temp2; b[3]=temp;
-        temp=b[1]; temp2=b[2]; b[1]=temp2; b[2]=temp;
-        temp=b[4]; temp2=b[7]; b[4]=temp2; b[7]=temp;
-        temp=b[5]; temp2=b[6]; b[5]=temp2; b[6]=temp;
-        temp=b[8]; temp2=b[11]; b[8]=temp2; b[11]=temp;
-        temp=b[9]; temp2=b[10]; b[9]=temp2; b[10]=temp;
-        temp=b[12]; temp2=b[15]; b[12]=temp2; b[15]=temp;
-        temp=b[13]; temp2=b[14]; b[13]=temp2; b[14]=temp;
-        temp=b[16]; temp2=b[19]; b[16]=temp2; b[19]=temp;
-        temp=b[17]; temp2=b[18]; b[17]=temp2; b[18]=temp;
-        temp=b[20]; temp2=b[23]; b[20]=temp2; b[23]=temp;
-        temp=b[21]; temp2=b[22]; b[21]=temp2; b[22]=temp;
- count1=p->count1; count2=p->count2; count1*=0x18; p->ptr1=(unsigned char *)item; item+=count1; p->ptr2=(unsigned char *)item; count2*=0xC; item+=count2; p->ptr3=(unsigned char *)item;
- goto check1;
-loop1:
- base=p->ptr1; i1++; item=base+offset; temp=base[offset]; temp2=item[3]; offset+=0x18; item[0]=temp2; item[3]=temp;
-        temp=item[1]; temp2=item[2]; item[1]=temp2; item[2]=temp;
-        temp=item[4]; temp2=item[7]; item[4]=temp2; item[7]=temp;
-        temp=item[5]; temp2=item[6]; item[5]=temp2; item[6]=temp;
-        temp=item[8]; temp2=item[11]; item[8]=temp2; item[11]=temp;
-        temp=item[9]; temp2=item[10]; item[9]=temp2; item[10]=temp;
-        temp=item[12]; temp2=item[15]; item[12]=temp2; item[15]=temp;
-        temp=item[13]; temp2=item[14]; item[13]=temp2; item[14]=temp;
-        temp=item[16]; temp2=item[19]; item[16]=temp2; item[19]=temp;
-        temp=item[17]; temp2=item[18]; item[17]=temp2; item[18]=temp;
-        temp=item[20]; temp2=item[23]; item[20]=temp2; item[23]=temp;
-        temp=item[21]; temp2=item[22]; item[21]=temp2; item[22]=temp;
-check1:
- if(i1<p->count1) goto loop1;
- i2=0; offset=0; goto check2;
-loop2:
- base=p->ptr2; i2++; item=base+offset; temp=base[offset]; temp2=item[3]; offset+=0xC; item[0]=temp2; item[3]=temp;
-        temp=item[1]; temp2=item[2]; item[1]=temp2; item[2]=temp;
-        temp=item[4]; temp2=item[7]; item[4]=temp2; item[7]=temp;
-        temp=item[5]; temp2=item[6]; item[5]=temp2; item[6]=temp;
-        temp=item[8]; temp2=item[11]; item[8]=temp2; item[11]=temp;
-        temp=item[9]; temp2=item[10]; item[9]=temp2; item[10]=temp;
-check2:
- if(i2<p->count2) goto loop2;
- i3=0; offset=0; goto check3;
-loop3:
- base=p->ptr3; item=base+offset; temp=base[offset]; temp2=item[1]; item[0]=temp2; item[1]=temp; temp=item[2]; temp2=item[3]; item[2]=temp2; item[3]=temp;
-        temp=item[24]; temp2=item[27]; item[24]=temp2; item[27]=temp;
-        temp=item[25]; temp2=item[26]; item[25]=temp2; item[26]=temp;
-        temp=item[28]; temp2=item[31]; item[28]=temp2; item[31]=temp;
-        temp=item[29]; temp2=item[30]; item[29]=temp2; item[30]=temp;
-        temp=item[32]; temp2=item[35]; item[32]=temp2; item[35]=temp;
-        temp=item[33]; temp2=item[34]; item[33]=temp2; item[34]=temp;
-        temp=item[4]; temp2=item[5]; item[4]=temp2; item[5]=temp;
-        temp=item[36]; temp2=item[39]; item[36]=temp2; item[39]=temp;
-        temp=item[37]; temp2=item[38]; item[37]=temp2; item[38]=temp;
-        temp=item[40]; temp2=item[43]; item[40]=temp2; item[43]=temp;
-        temp=item[41]; temp2=item[42]; item[41]=temp2; item[42]=temp;
-        temp=item[44]; temp2=item[47]; item[44]=temp2; item[47]=temp;
-        temp=item[45]; temp2=item[46]; item[45]=temp2; item[46]=temp;
-        temp=item[6]; temp2=item[7]; item[6]=temp2; item[7]=temp;
-        temp=item[48]; temp2=item[51]; item[48]=temp2; item[51]=temp;
-        temp=item[49]; temp2=item[50]; item[49]=temp2; item[50]=temp;
-        temp=item[52]; temp2=item[55]; item[52]=temp2; item[55]=temp;
-        temp=item[53]; temp2=item[54]; item[53]=temp2; item[54]=temp;
-        temp=item[56]; temp2=item[59]; item[56]=temp2; item[59]=temp;
-        temp=item[57]; temp2=item[58]; item[57]=temp2; item[58]=temp;
- temp=item[8]; offset+=0x3C; i3++; temp2=item[0xB]; item[8]=temp2; item[0xB]=temp;
-        temp=item[9]; temp2=item[10]; item[9]=temp2; item[10]=temp;
-        temp=item[12]; temp2=item[15]; item[12]=temp2; item[15]=temp;
-        temp=item[13]; temp2=item[14]; item[13]=temp2; item[14]=temp;
-        temp=item[16]; temp2=item[19]; item[16]=temp2; item[19]=temp;
-        temp=item[17]; temp2=item[18]; item[17]=temp2; item[18]=temp;
-        temp=item[20]; temp2=item[23]; item[20]=temp2; item[23]=temp;
-        temp=item[21]; temp2=item[22]; item[21]=temp2; item[22]=temp;
-check3:
-   if(i3<p->count3) goto loop3;
+    volatile Mesh *mesh = (volatile Mesh *)arg0;
+    u8 *p;
+    s32 i;
+
+    Mesh_Swap32(&mesh->nodes);
+    Mesh_Swap32(&mesh->nodeCount);
+    Mesh_Swap32(&mesh->verts);
+    Mesh_Swap32(&mesh->vertCount);
+    Mesh_Swap32(&mesh->tris);
+    Mesh_Swap32(&mesh->triCount);
+    p = (u8 *)arg0 + sizeof(Mesh);
+    {
+        s32 nodeCount = mesh->nodeCount;
+        s32 vertCount = mesh->vertCount;
+        mesh->nodes = (MeshNode *)p;
+        p += nodeCount * sizeof(MeshNode);
+        mesh->verts = (Vec *)p;
+        p += vertCount * sizeof(Vec);
+        mesh->tris = (MeshTri *)p;
+    }
+
+    for (i = 0; i < mesh->nodeCount; i++) {
+        volatile MeshNode *node = &mesh->nodes[i];
+        Mesh_SwapVec(&node->center);
+        Mesh_Swap32(&node->radius);
+        Mesh_Swap32(&node->triStart);
+        Mesh_Swap32(&node->triEnd);
+    }
+    for (i = 0; i < mesh->vertCount; i++) {
+        Mesh_SwapVec(&mesh->verts[i]);
+    }
+    for (i = 0; i < mesh->triCount; i++) {
+        volatile MeshTri *tri = &mesh->tris[i];
+        Mesh_Swap16(&tri->edgeFlags);
+        Mesh_Swap16(&tri->vidx[0]);
+        Mesh_SwapVec(&tri->edgeNormal[0]);
+        Mesh_Swap16(&tri->vidx[1]);
+        Mesh_SwapVec(&tri->edgeNormal[1]);
+        Mesh_Swap16(&tri->vidx[2]);
+        Mesh_SwapVec(&tri->edgeNormal[2]);
+        Mesh_SwapVec(&tri->normal);
+        Mesh_Swap32(&tri->planeDist);
+    }
 }
 #pragma pop
 
