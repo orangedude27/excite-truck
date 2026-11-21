@@ -646,7 +646,6 @@ extern float __fabsf(float);
 extern double __fabs(double);
 #pragma push
 #pragma processor 750
-static inline int Fn801F602C_Min8(int c) { int r = 8; if (8 > c) r = c; return r; }
 void fn_801F602C(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     float var_f31, var_f30, temp_f1, temp_f1_2;
     float temp_f0, temp_f0_2, temp_f0_3, temp_f0_4;
