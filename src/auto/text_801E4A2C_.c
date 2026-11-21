@@ -39,10 +39,10 @@ s32 fn_801E4A6C(s32 *fontTable, const u8 *text) {
     }
     return fn_802C4FF8((const char *)text);
 }
-/* RealName: Font_MeasureStringN
- * Returns the total width of up to count characters from text. If fontTable
+/* Returns the total width of up to count characters from text. If fontTable
  * is non-null, sums per-character widths from the 16-bit table at
- * fontTable[byte + 0x102]; if null, falls back to canvas string width. */
+ * fontTable[byte + 0x102]; if null, falls back to canvas string width.
+ * (Original name Font_MeasureStringN.) */
 s32 fn_801E4AB0(s32 *fontTable, const u8 *text, s32 count) {
     if (fontTable != 0) {
         s32 sum = 0;
