@@ -833,7 +833,7 @@ void fn_8025A204(void) {
     int count;
     char *dst;
     char * volatile text;
-    register int zero = 0;
+    int zero = 0;
     ((void (*)(void))fn_80259148)();
     base = lbl_80563AE4;
     lbl_80498EAC[0] = base;
@@ -859,7 +859,7 @@ void fn_8025A204(void) {
             firstResult = fn_8001EFA0(state.object, state.next);
             secondResult = fn_8001EFA0(state.object, state.selected);
         }
-        state.difference = Fn8025A204_Ne(firstResult, secondResult);
+        state.difference = (firstResult != secondResult);
         state.number = (float)(int)state.selected;
         current = (int)(state.number + lbl_80558DC4);
         fn_80130FCC(state.shortText, 0x14, current);
@@ -2065,55 +2065,58 @@ done:
 }
 
 #pragma scheduling invalid_target
+/* Refresh an achievement row's display label once the row is live and
+ * unfinished: cache its rank and achievement id, copy the resource name into
+ * the child label, format its "Level %d" tag and mark the child active. */
 void fn_8025BED0(void *arg0) {
     typedef void (*Fmt)(char *, int, const char *, ...);
-    void *data = *(void **)((char *)arg0 + 0x1C);
-    if (*(unsigned char *)((char *)data + 0xC5) == 0)
+    AchievementRow *row = *(AchievementRow **)((char *)arg0 + 0x1C);
+    if (row->flagC5 == 0)
         return;
-    if (*(unsigned char *)((char *)data + 0x58) != 0)
+    if (row->done != 0)
         return;
-    *(int *)((char *)arg0 + 0x24) = *(int *)((char *)data + 0xC8);
-    *(int *)((char *)arg0 + 0x20) = *(int *)((char *)data + 0x18);
+    *(int *)((char *)arg0 + 0x24) = row->rank;
+    *(int *)((char *)arg0 + 0x20) = row->achievement;
     {
         void *self = arg0;
         void *request = self;
-        void *obj;
+        void *child;
         int level;
         int textId;
-        unsigned char c;
-        int count;
+        unsigned char ch;
+        int remaining;
         unsigned char *dst;
         unsigned char *src;
 
         level = *(int *)((char *)self + 0x24);
         textId = *(int *)((char *)self + 0x20);
-        obj = *(void **)((char *)request + 0x18);
-        *(int *)((char *)obj + 0x4C) = level;
+        child = *(void **)((char *)request + 0x18);
+        *(int *)((char *)child + 0x4C) = level;
         src = fn_8001EFAC(textId, level);
         if (src == 0)
             goto else_copy;
-        dst = (unsigned char *)obj + 4;
-        count = 0x32;
+        dst = (unsigned char *)child + 4;
+        remaining = 0x32;
         goto copy;
     next:
-        count--;
-        if (count > 0)
+        remaining--;
+        if (remaining > 0)
             goto copy;
         dst[-1] = 0;
         goto done;
     copy:
-        c = *src++;
-        *dst++ = c;
-        if ((signed char)c == 0)
+        ch = *src++;
+        *dst++ = ch;
+        if ((signed char)ch == 0)
             goto done;
         goto next;
     else_copy:
-        *((unsigned char *)obj + 4) = 0;
+        *((unsigned char *)child + 4) = 0;
     done:
         if (level > 0)
-            ((Fmt)fn_801345D8)((char *)obj + 0x36, 0x14, lbl_80344F08, level);
+            ((Fmt)fn_801345D8)((char *)child + 0x36, 0x14, lbl_80344F08, level);
         else
-            *((unsigned char *)obj + 0x36) = 0;
+            *((unsigned char *)child + 0x36) = 0;
     }
     *(unsigned char *)((char *)*(void **)((char *)arg0 + 0x18) + 0x4A) = 1;
 }
