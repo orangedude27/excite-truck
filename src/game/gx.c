@@ -753,7 +753,8 @@ void fn_802CF850(void) {
     extern void fn_802D0188(unsigned char, unsigned char, unsigned char);
     extern void fn_802D0160(unsigned char, unsigned char, unsigned char);
     extern void fn_802D007C(float);
-    extern void fn_802D01B0(float *, float);
+    #define FN_802D01B0_VEC float
+extern void fn_802D01B0(FN_802D01B0_VEC *, float);
     extern void fn_802D01E0(int, int, int, int);
     extern void fn_802D0368(float, float, float, float);
     extern void fn_802D03F4(float *, float);
@@ -1204,12 +1205,11 @@ void fn_802D007C(float arg0) {
 void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
     volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
-    int one = 1;
     p[7] = 0xFF;
     p[4] = a;
     p[5] = b;
     p[6] = c;
-    p[0x5C] = one;
+    p[0x5C] = 1;
 }
 #pragma scheduling invalid_target
 void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
