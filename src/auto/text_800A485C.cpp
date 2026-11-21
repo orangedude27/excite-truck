@@ -16147,7 +16147,7 @@ loop_130:
             if ((s32) temp_r18 < 0xC0) {
                 temp_r0_10 = var_r11_4 >> 3U;
                 if (temp_r0_10 != 0) {
-                    for (var_ctr_6 = 0; var_ctr_6 < temp_r0_10; var_ctr_6++) {
+                    for (var_ctr_6 = temp_r0_10; var_ctr_6 != 0; var_ctr_6--) {
                         M2C_FIELD(var_r12_7, s32 *, 0) = 0;
                         M2C_FIELD(var_r12_7, s32 *, 0x900) = 0;
                         M2C_FIELD(var_r12_7, s32 *, 0x1200) = 0;
