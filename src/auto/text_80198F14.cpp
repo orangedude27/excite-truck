@@ -2422,60 +2422,58 @@ extern "C" void fn_8019ECC4(void* shape, s32 owner, s32 swapBytes) {
  
  
  #pragma scheduling invalid_target
- extern "C" void* fn_8019EDB8(void* arg0, void* arg1, s32 arg2) {
-    void *self = arg0;
+extern "C" void* fn_8019EDB8(void* arg0, void* arg1, s32 arg2) {
+    volatile u8 *p = (volatile u8*)arg0;
     s32 copyFlag = arg2;
-    void *result;
     u8 second, first, opposite, other;
-    ((void(*)(void*,s32,s32))fn_8019ECC4)(arg0, (s32)arg1, arg2);
-    *(void**)self = &lbl_80333B48;
+    ((void(*)(void*,s32,s32))fn_8019ECC4)((void*)p, (s32)arg1, copyFlag);
+    *(void**)p = &lbl_80333B48;
     if (copyFlag != 0) {
-        first = *(volatile u8*)((u8*)self + 0x24);
-        opposite = *(volatile u8*)((u8*)self + 0x27);
-        second = *(volatile u8*)((u8*)self + 0x25);
-        other = *(volatile u8*)((u8*)self + 0x26);
-        *(volatile u8*)((u8*)self + 0x24) = opposite;
-        *(volatile u8*)((u8*)self + 0x27) = first;
-        *(volatile u8*)((u8*)self + 0x25) = other;
-        *(volatile u8*)((u8*)self + 0x26) = second;
-        opposite = *(volatile u8*)((u8*)self + 0x28);
-        other = *(volatile u8*)((u8*)self + 0x2b);
-        *(volatile u8*)((u8*)self + 0x28) = other;
-        *(volatile u8*)((u8*)self + 0x2b) = opposite;
-        opposite = *(volatile u8*)((u8*)self + 0x29);
-        other = *(volatile u8*)((u8*)self + 0x2a);
-        *(volatile u8*)((u8*)self + 0x29) = other;
-        *(volatile u8*)((u8*)self + 0x2a) = opposite;
-        opposite = *(volatile u8*)((u8*)self + 0x2c);
-        other = *(volatile u8*)((u8*)self + 0x2f);
-        *(volatile u8*)((u8*)self + 0x2c) = other;
-        *(volatile u8*)((u8*)self + 0x2f) = opposite;
-        opposite = *(volatile u8*)((u8*)self + 0x2d);
-        other = *(volatile u8*)((u8*)self + 0x2e);
-        *(volatile u8*)((u8*)self + 0x2d) = other;
-        *(volatile u8*)((u8*)self + 0x2e) = opposite;
-        opposite = *(volatile u8*)((u8*)self + 0x30);
-        other = *(volatile u8*)((u8*)self + 0x33);
-        *(volatile u8*)((u8*)self + 0x30) = other;
-        *(volatile u8*)((u8*)self + 0x33) = opposite;
-        opposite = *(volatile u8*)((u8*)self + 0x31);
-        other = *(volatile u8*)((u8*)self + 0x32);
-        *(volatile u8*)((u8*)self + 0x31) = other;
-        *(volatile u8*)((u8*)self + 0x32) = opposite;
-        if (*(volatile s32*)((u8*)self + 0x20) == 0x3eb)
-            *(f32*)((u8*)self + 0x24) += lbl_80562370;
+        first = p[0x24];
+        opposite = p[0x27];
+        second = p[0x25];
+        other = p[0x26];
+        p[0x24] = opposite;
+        p[0x27] = first;
+        p[0x25] = other;
+        p[0x26] = second;
+        opposite = p[0x28];
+        other = p[0x2b];
+        p[0x28] = other;
+        p[0x2b] = opposite;
+        opposite = p[0x29];
+        other = p[0x2a];
+        p[0x29] = other;
+        p[0x2a] = opposite;
+        opposite = p[0x2c];
+        other = p[0x2f];
+        p[0x2c] = other;
+        p[0x2f] = opposite;
+        opposite = p[0x2d];
+        other = p[0x2e];
+        p[0x2d] = other;
+        p[0x2e] = opposite;
+        opposite = p[0x30];
+        other = p[0x33];
+        p[0x30] = other;
+        p[0x33] = opposite;
+        opposite = p[0x31];
+        other = p[0x32];
+        p[0x31] = other;
+        p[0x32] = opposite;
+        if (*(volatile s32*)(p + 0x20) == 0x3eb)
+            *(f32*)(p + 0x24) += lbl_80562370;
     }
     f32 zero = lbl_805622D0;
-    result = self;
-    *(volatile u8*)((u8*)self + 0x4c) = 0;
-    *(f32*)((u8*)self + 0x34) = zero;
-    *(f32*)((u8*)self + 0x38) = zero;
-    *(f32*)((u8*)self + 0x3c) = zero;
-    *(f32*)((u8*)self + 0x40) = zero;
-    *(f32*)((u8*)self + 0x44) = zero;
-    *(f32*)((u8*)self + 0x48) = zero;
-    *(f32*)((u8*)self + 0x50) = zero;
-    return result;
+    p[0x4c] = 0;
+    *(f32*)(p + 0x34) = zero;
+    *(f32*)(p + 0x38) = zero;
+    *(f32*)(p + 0x3c) = zero;
+    *(f32*)(p + 0x40) = zero;
+    *(f32*)(p + 0x44) = zero;
+    *(f32*)(p + 0x48) = zero;
+    *(f32*)(p + 0x50) = zero;
+    return (void*)p;
 }
 #pragma scheduling on
 /* Add the translation vector held in source (+0x30) into the destination Vec,
@@ -3191,9 +3189,9 @@ static inline void fn801A0464RotateVec(Vec *dst, const Vec &src, const f32 *m) {
     f32 y = src.y;
     f32 z = src.z;
     if (dst == &src) {
-        f32 rx = (x * m[0] + y * m[3]) + z * m[6];
-        f32 ry = (x * m[1] + y * m[4]) + z * m[7];
-        f32 rz = (x * m[2] + y * m[5]) + z * m[8];
+        f32 rx = (y * m[1] + x * m[0]) + z * m[2];
+        f32 ry = (y * m[4] + x * m[3]) + z * m[5];
+        f32 rz = (y * m[7] + x * m[6]) + z * m[8];
         dst->x = rx;
         dst->y = ry;
         dst->z = rz;
