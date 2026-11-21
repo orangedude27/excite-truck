@@ -41,8 +41,10 @@ void *fn_80204B18(int typeIndex) {
     return sTypeEntries + typeIndex * TYPE_ENTRY_SIZE;
 }
 
-int fn_80204BB4(const char *arg0) {
-    return fn_80204B2C(arg0);
+/* Name-to-index lookup thunk: forward a difficulty name (e.g. "easy") to
+ * fn_80204B2C, which matches it against the difficulty table. */
+int fn_80204BB4(const char *name) {
+    return fn_80204B2C(name);
 }
 
 #pragma cplusplus on
