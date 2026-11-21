@@ -7,7 +7,7 @@ extern unsigned char lbl_8034925C[];
 extern void fn_80294530(void *, int, int, int);
 extern char lbl_8055C988;
 extern float lbl_805644D4;
-extern int fn_80293374(void *, void *);
+extern void fn_80293374(void *, void *);
 extern void *fn_802935A0(void *);
 extern int fn_8012C33C(void *);
 extern void fn_801345D8(void *, int, const char *, int, int);
@@ -159,8 +159,7 @@ extern "C" void fn_80292698(void) {
     i = 0;
     for (; i < 6; ++i, p += 0x34) {
         float axis[3];
-        float magnitude;
-        float x, y, z, s, c, t, tx, ty, xx, yy, zz;
+        float z, y, x, s, c, t, tx, ty, xx, yy, zz, magnitude;
         float scale = angle * *(float *)(p + 0xC);
         axis[0] = *(float *)(p + 0x0) * scale;
         axis[1] = *(float *)(p + 0x4) * scale;
@@ -168,9 +167,9 @@ extern "C" void fn_80292698(void) {
         magnitude = PSVECMag(axis);
         if (magnitude > 0.0001f) {
             float inverse = 1.0f / magnitude;
-            x = inverse * axis[0];
-            y = inverse * axis[1];
             z = inverse * axis[2];
+            y = inverse * axis[1];
+            x = inverse * axis[0];
             s = (float)sin(magnitude);
             c = (float)cos(magnitude);
             xx = x * x;
@@ -382,13 +381,19 @@ int fn_80292BA8(float *arg0, float *arg1, float *__restrict arg2, float *arg3) {
     float delta[3];
     float y = arg2[1];
     float x = arg2[0];
+    float a0 = arg0[0];
+    float t0 = a0 - x;
     float z = arg2[2];
+    float t1;
+    float t2;
     double absd;
     register float firstDot, secondDot;
     register float ay, az, nx, s1, k, abs2, s2;
-    delta[0] = arg0[0] - x;
-    delta[1] = arg0[1] - y;
-    delta[2] = arg0[2] - z;
+    delta[0] = t0;
+    t1 = arg0[1] - y;
+    delta[1] = t1;
+    t2 = arg0[2] - z;
+    delta[2] = t2;
     firstDot = PSVECDotProduct(delta, arg3);
     if (firstDot < lbl_805644D8) {
         secondDot = PSVECDotProduct(arg1, arg3);
@@ -636,7 +641,7 @@ extern int fn_802C9994(int);
 extern int fn_802C744C(void*, void*);
 extern int fn_80128668(void*);
 extern void fn_80293530(void*);
-extern int fn_80293374(void*, void*);
+extern void fn_80293374(void*, void*);
 extern char lbl_80349250[];
 extern void* fn_802935A0(void*);
 extern float lbl_805644D4;
@@ -761,7 +766,7 @@ void fn_80293230(void *arg0, float *arg1, float *arg2, short arg3, signed char a
  * first name the resource system does not have, and leaving the slots no model
  * was found for at -1.  The car one takes no instance and remaps no texture;
  * fn_80293CD0 and fn_80294530 do the "ter" and "wood" ones. */
-int fn_80293374(void *arg0, void *arg1) {
+void fn_80293374(void *arg0, void *arg1) {
     char name[0x20];
     int count;
     *(s32 *)((u8 *)arg0 + 0x28) = 0;
@@ -858,10 +863,7 @@ void fn_802936C4(void *arg0) {
         unsigned char b4a;
         unsigned char pad1;
     };
-    struct Tpl {
-        unsigned int pad[4];
-        unsigned int copy[9];
-    };
+    struct Tpl { unsigned int copy[9]; };
     extern void fn_801E9DD4(void *, void *, float, float);
     extern void fn_801E9DD8(void);
     extern int fn_80292BA8(float *, float *, float *, float *);
@@ -887,12 +889,6 @@ void fn_802936C4(void *arg0) {
     float zeroF;
     float scale;
     float gravTerm;
-    float tmp_vx;
-    float tmp_vy;
-    float tmp_vz;
-    float tmp_vx2;
-    float tmp_vy2;
-    float tmp_vz2;
     struct Rec *cur;
     struct Rec *out;
     struct Tpl *src;
@@ -901,6 +897,7 @@ void fn_802936C4(void *arg0) {
     int mode;
     unsigned char type;
     float tmp[13];
+    float par[3];
     short entry;
     int zeroI;
     int r0;
@@ -932,20 +929,20 @@ do_work:
         mode = cur->mode;
         type = cur->type;
         entry = cur->idx;
-        gravTerm = (dt * gravF) * *(float *)((unsigned char *)arg0 + 4);
-        tmp_vx = cur->vx * scale;
-        tmp_vy = cur->vy * scale;
-        tmp_vz = cur->vz * scale;
-        tmp[0] = tmp_vx;
-        tmp[1] = tmp_vy;
-        tmp[2] = tmp_vz;
-        tmp_vy = tmp_vy - gravTerm;
-        tmp[6] = tmp_vx;
-        tmp[7] = tmp_vy;
-        tmp[8] = tmp_vz;
-        tmp[3] = cur->x;
-        tmp[4] = cur->y;
-        tmp[5] = cur->z;
+        gravTerm = (gravF * dt) * *(float *)((unsigned char *)arg0 + 4);
+        tmp[0] = cur->vx * scale;
+        tmp[1] = cur->vy * scale;
+        tmp[2] = cur->vz * scale;
+        tmp[1] = tmp[1] - gravTerm;
+        tmp[6] = tmp[0];
+        tmp[7] = tmp[1];
+        tmp[8] = tmp[2];
+        ((unsigned int *)tmp)[3] = ((unsigned int *)cur)[9];
+        ((unsigned int *)tmp)[4] = ((unsigned int *)cur)[10];
+        ((unsigned int *)tmp)[5] = ((unsigned int *)cur)[11];
+        par[0] = zeroF;
+        par[1] = oneF;
+        par[2] = zeroF;
         if (mode == 2) {
             tmp[9] = tmp[0] * dt;
             tmp[10] = tmp[6] * dt;
@@ -953,11 +950,9 @@ do_work:
             tmp[3] = tmp[3] + tmp[9];
             tmp[4] = tmp[4] + tmp[10];
             tmp[5] = tmp[5] + tmp[11];
-            tmp[10] = oneF;
-            tmp[11] = zeroF;
             zeroI = 0;
-            if (fn_801E9E78(&entry, tmp + 3, tmp + 9, &zeroI, gravF * dt) != 0) {
-                if (fn_80292BA8(tmp + 3, tmp + 6, tmp, tmp + 9) != 0) {
+            if (fn_801E9E78(&entry, tmp + 3, par, &zeroI, gravF * dt) != 0) {
+                if (fn_80292BA8(tmp + 3, tmp + 6, (float *)((unsigned int *)cur), par) != 0) {
                     type = (unsigned char)((int (*)(int))fn_80287B5C)(6);
                     if (tmp[7] < dt2) {
                         ageDt = zeroF;
@@ -989,7 +984,7 @@ write_out:
         if (mode == 2) r0 = 1;
         if (mode == 3) r0 = 1;
         if (r0 != 0)
-            src = (struct Tpl *)(lbl_804B4030 + type * 0x34);
+            src = (struct Tpl *)((unsigned char *)lbl_804B4030 + type * 0x34 + 0x10);
         else
             src = (struct Tpl *)cur;
         kept++;
@@ -1239,20 +1234,17 @@ void fn_80293F20(void *arg0) {
         float vx, vy, vz;
         float age;
         short idx;
-        short pad42;
+        unsigned char pad0[2];
         int mode;
         unsigned char b48;
         unsigned char type;
-        unsigned char pad4A[2];
+        unsigned char b4a;
+        unsigned char pad1;
     };
-    struct Tpl {
-        unsigned int pad[4];
-        unsigned int copy[9];
-    };
+    struct Tpl { unsigned int copy[9]; };
     extern void fn_801E9DD4(void *, void *, float, float);
     extern void fn_801E9DD8(void);
     extern int fn_80292BA8(float *, float *, float *, float *);
-    extern int fn_801E9E78();
     extern float lbl_805644D4;
     extern float lbl_805644D8;
     extern float lbl_805644F8;
@@ -1263,24 +1255,18 @@ void fn_80293F20(void *arg0) {
     extern void *lbl_8055C958;
     extern void *lbl_8055C964;
     extern unsigned char lbl_804B4030[];
-    float dt;
-    float scale;
-    float tmp_vx;
-    float tmp_vy;
-    float tmp_vz;
-    float tmp_nx;
-    float tmp_ny;
-    float tmp_nz;
-    float tmp_vx2;
-    float tmp_vy2;
-    float tmp_vz2;
-    float outer;
+    float smallF;
     float two;
-    float zeroF;
+    float dt2;
     float oneF;
     float gravF;
-    float smallF;
-    float dt2;
+    float outer;
+    float dt;
+    float scale2;
+    float ageDt;
+    float zeroF;
+    float scale;
+    float gravTerm;
     struct Rec *cur;
     struct Rec *out;
     struct Tpl *src;
@@ -1288,15 +1274,16 @@ void fn_80293F20(void *arg0) {
     int kept;
     int mode;
     unsigned char type;
-    float ageDt;
     float tmp[13];
+    float par[3];
     short entry;
     int zeroI;
     int r0;
     dt = fn_801E7E24(arg0);
     scale = lbl_805644F8 * dt;
+    scale2 = lbl_805644D4 - scale;
     fn_801E9DD4(lbl_8055C958, lbl_8055C964, scale, lbl_805644F8);
-    scale = lbl_805644D4 - scale;
+    scale = scale2;
     zeroF = lbl_805644D8;
     oneF = lbl_805644D4;
     gravF = lbl_80564500;
@@ -1317,29 +1304,23 @@ body:
         if (age >= outer) goto next;
 do_work:
         ageDt = age + dt;
-        tmp_vx = cur->vx * scale;
-        tmp_vy = cur->vy * scale;
-        tmp_vz = cur->vz * scale;
-        tmp_vy = tmp_vy - (gravF * dt) * *(float *)((unsigned char *)arg0 + 4);
-        tmp_nx = cur->x + tmp_vx * dt;
-        tmp_ny = cur->y + tmp_vy * dt;
-        tmp_nz = cur->z + tmp_vz * dt;
         mode = cur->mode;
         type = cur->type;
-        tmp[0] = tmp_vx;
-        tmp[1] = tmp_vy;
-        tmp[2] = tmp_vz;
-        tmp[3] = tmp_nx;
-        tmp[4] = tmp_ny;
-        tmp[5] = tmp_nz;
-        tmp_vx2 = cur->vx * scale;
-        tmp[6] = tmp_vx2;
-        tmp_vy2 = cur->vy * scale;
-        tmp_vy2 = tmp_vy2 - (gravF * dt) * *(float *)((unsigned char *)arg0 + 4);
-        tmp[7] = tmp_vy2;
-        tmp_vz2 = cur->vz * scale;
-        tmp[8] = tmp_vz2;
         entry = cur->idx;
+        gravTerm = (gravF * dt) * *(float *)((unsigned char *)arg0 + 4);
+        tmp[0] = cur->vx * scale;
+        tmp[1] = cur->vy * scale;
+        tmp[2] = cur->vz * scale;
+        tmp[1] = tmp[1] - gravTerm;
+        tmp[6] = tmp[0];
+        tmp[7] = tmp[1];
+        tmp[8] = tmp[2];
+        ((unsigned int *)tmp)[3] = ((unsigned int *)cur)[9];
+        ((unsigned int *)tmp)[4] = ((unsigned int *)cur)[10];
+        ((unsigned int *)tmp)[5] = ((unsigned int *)cur)[11];
+        par[0] = zeroF;
+        par[1] = oneF;
+        par[2] = zeroF;
         if (mode == 2) {
             tmp[9] = tmp[0] * dt;
             tmp[10] = tmp[6] * dt;
@@ -1347,11 +1328,9 @@ do_work:
             tmp[3] = tmp[3] + tmp[9];
             tmp[4] = tmp[4] + tmp[10];
             tmp[5] = tmp[5] + tmp[11];
-            tmp[10] = zeroF;
-            tmp[11] = zeroF;
             zeroI = 0;
-            if (((int (*)(short *, float *, float *, int *, float, float, float, float, float, float, float))fn_801E9E78)(&entry, tmp + 3, tmp + 9, &zeroI, tmp[4], tmp[3], tmp[11], tmp[10], tmp[9], tmp[7], tmp[6]) != 0) {
-                if (fn_80292BA8(tmp + 3, tmp + 6, tmp, tmp + 9) != 0) {
+            if (fn_801E9E78(&entry, tmp + 3, par, &zeroI, gravF * dt) != 0) {
+                if (fn_80292BA8(tmp + 3, tmp + 6, (float *)((unsigned int *)cur), par) != 0) {
                     type = (unsigned char)((int (*)(int))fn_80287B5C)(6);
                     if (tmp[7] < dt2) {
                         ageDt = zeroF;
@@ -1383,7 +1362,7 @@ write_out:
         if (mode == 2) r0 = 1;
         if (mode == 3) r0 = 1;
         if (r0 != 0)
-            src = (struct Tpl *)(lbl_804B4030 + type * 0x34);
+            src = (struct Tpl *)((unsigned char *)lbl_804B4030 + type * 0x34 + 0x10);
         else
             src = (struct Tpl *)cur;
         kept++;
