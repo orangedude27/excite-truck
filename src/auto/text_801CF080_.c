@@ -353,10 +353,13 @@ static inline void Mesh_SwapVec(volatile Vec *v) {
 }
 
 #pragma push
+#pragma processor 750
+#pragma scheduling 750
 void fn_801CFA48(void *arg0) {
     volatile Mesh *mesh = (volatile Mesh *)arg0;
-    u8 *p;
-    s32 i;
+    MeshNode *nodes;
+    Vec *verts;
+    s32 i, j, k;
 
     Mesh_Swap32(&mesh->nodes);
     Mesh_Swap32(&mesh->nodeCount);
@@ -364,15 +367,14 @@ void fn_801CFA48(void *arg0) {
     Mesh_Swap32(&mesh->vertCount);
     Mesh_Swap32(&mesh->tris);
     Mesh_Swap32(&mesh->triCount);
-    p = (u8 *)arg0 + sizeof(Mesh);
+    nodes = (MeshNode *)((u8 *)arg0 + sizeof(Mesh));
     {
         s32 nodeCount = mesh->nodeCount;
         s32 vertCount = mesh->vertCount;
-        mesh->nodes = (MeshNode *)p;
-        p += nodeCount * sizeof(MeshNode);
-        mesh->verts = (Vec *)p;
-        p += vertCount * sizeof(Vec);
-        mesh->tris = (MeshTri *)p;
+        mesh->nodes = nodes;
+        verts = (Vec *)(nodes + nodeCount);
+        mesh->verts = verts;
+        mesh->tris = (MeshTri *)(verts + vertCount);
     }
 
     for (i = 0; i < mesh->nodeCount; i++) {
@@ -382,11 +384,11 @@ void fn_801CFA48(void *arg0) {
         Mesh_Swap32(&node->triStart);
         Mesh_Swap32(&node->triEnd);
     }
-    for (i = 0; i < mesh->vertCount; i++) {
-        Mesh_SwapVec(&mesh->verts[i]);
+    for (j = 0; j < mesh->vertCount; j++) {
+        Mesh_SwapVec(&mesh->verts[j]);
     }
-    for (i = 0; i < mesh->triCount; i++) {
-        volatile MeshTri *tri = &mesh->tris[i];
+    for (k = 0; k < mesh->triCount; k++) {
+        volatile MeshTri *tri = &mesh->tris[k];
         Mesh_Swap16(&tri->edgeFlags);
         Mesh_Swap16(&tri->vidx[0]);
         Mesh_SwapVec(&tri->edgeNormal[0]);
