@@ -7,6 +7,8 @@
 void fn_80296058(void) {
 }
 
+/* No-op subsystem init hook, called from fn_80287780's setup sequence
+ * alongside the other subsystem initializers; does nothing in this build. */
 void fn_8029605C(void) {
 }
 
