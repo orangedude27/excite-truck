@@ -514,7 +514,6 @@ extern void fn_802C4610();
 extern void fn_802C4388();
 extern void fn_802C4108(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C4610(s32,s32,s32,s32,s32,s32,s32,s32);
-extern void fn_802C4388(s32,s32,s32,s32,s32,s32,s32,s32);
 /* Dispatches a canvas copy/blit based on destination/source mode bytes (5/6 special-cased), tracing when unsupported. */
 void fn_802C3850(s32 dstCanvas, s32 srcX, s32 srcY, s32 srcX2, s32 srcY2, s32 srcCanvas, s32 dstX, s32 dstY) {
     u8 dstMode = *(u8 *)dstCanvas;
