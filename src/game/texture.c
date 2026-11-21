@@ -716,7 +716,10 @@ int fn_802CB38C(void *loadedBlock, void *createParam, void *relocateBase) {
 }
 #pragma scheduling on
 void fn_802CB3F4(void) {
-    fn_802D8FB4();
+#define releaseTexture fn_802D8FB4
+    /* Tail-forward the caller's texture handle to the texture-object releaser. */
+    releaseTexture();
+#undef releaseTexture
 }
 
 void fn_802CB3F8(void) {
@@ -1728,30 +1731,30 @@ void fn_802CC60C(void) {
     int offset = 0;
     int i;
     int counter;
-    int zero = 0;
     int next;
     void *root;
 
     for (i = 0; i < 0x40; i++) {
         *(float *)((char *)lbl_8055FCB0 + offset + 0x38) = f;
-        *(int *)((char *)lbl_8055FCB0 + offset + 0x48) = zero;
+        *(int *)((char *)lbl_8055FCB0 + offset + 0x48) = 0;
         *(float *)((char *)lbl_8055FCB0 + offset + 0x84) = f;
-        *(int *)((char *)lbl_8055FCB0 + offset + 0x94) = zero;
+        *(int *)((char *)lbl_8055FCB0 + offset + 0x94) = 0;
         *(float *)((char *)lbl_8055FCB0 + offset + 0xD0) = f;
-        *(int *)((char *)lbl_8055FCB0 + offset + 0xE0) = zero;
+        *(int *)((char *)lbl_8055FCB0 + offset + 0xE0) = 0;
         *(float *)((char *)lbl_8055FCB0 + offset + 0x11C) = f;
-        *(int *)((char *)lbl_8055FCB0 + offset + 0x12C) = zero;
+        *(int *)((char *)lbl_8055FCB0 + offset + 0x12C) = 0;
         *(float *)((char *)lbl_8055FCB0 + offset + 0x168) = f;
-        *(int *)((char *)lbl_8055FCB0 + offset + 0x178) = zero;
+        *(int *)((char *)lbl_8055FCB0 + offset + 0x178) = 0;
         *(float *)((char *)lbl_8055FCB0 + offset + 0x1B4) = f;
-        *(int *)((char *)lbl_8055FCB0 + offset + 0x1C4) = zero;
+        *(int *)((char *)lbl_8055FCB0 + offset + 0x1C4) = 0;
         *(float *)((char *)lbl_8055FCB0 + offset + 0x200) = f;
-        *(int *)((char *)lbl_8055FCB0 + offset + 0x210) = zero;
+        *(int *)((char *)lbl_8055FCB0 + offset + 0x210) = 0;
         *(float *)((char *)lbl_8055FCB0 + offset + 0x24C) = f;
-        *(int *)((char *)lbl_8055FCB0 + offset + 0x25C) = zero;
+        *(int *)((char *)lbl_8055FCB0 + offset + 0x25C) = 0;
         offset += 0x260;
     }
 
+#pragma scheduling off
     root = *(void **)lbl_8055FCBC;
     *(int *)((char *)root + 0x2844) = 0;
     counter = lbl_8055FCC0;
@@ -1761,6 +1764,7 @@ void fn_802CC60C(void) {
     lbl_8055FCC0 = next;
     if ((unsigned char)counter == 0)
         *(int *)((char *)root + 0x1C) = fn_802E2C20();
+#pragma scheduling on
 }
 
 /* Set the texture-system flag (lbl_8055D07D): zero disables per-entry texture
