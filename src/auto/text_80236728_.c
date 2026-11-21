@@ -222,9 +222,10 @@ void fn_80236910(char *fileName) {
     fn_80236960(fileName);
 }
 
-void fn_80236914(int arg0, float *arg1, float arg2) {
+void fn_80236914(int channel, float *valuesOut, float valueIn) {
     extern void fn_80237AA0(int, float *, float);
-    fn_80237AA0(arg0, arg1, arg2);
+    /* uiAnime script callback: forward all three args to the animation-value get/set handler. */
+    fn_80237AA0(channel, valuesOut, valueIn);
 }
 
 void fn_80236918(void* alarm) {
