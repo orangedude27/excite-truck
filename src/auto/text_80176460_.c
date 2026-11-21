@@ -797,21 +797,25 @@ void fn_80176BA8(void) {
 #pragma processor 750
 void fn_80176BAC(void) {
     f32 now = lbl_8055E3C8;
-    f32 lower;
-    f32 delta = now - lbl_8055E3FC;
+    f32 prev = lbl_8055E3FC;
     f32 upper = lbl_80561B38;
-    f32 value = upper < delta ? delta : upper;
+    f32 lower;
+    f32 value;
+    prev = now - prev;
+    value = upper < prev ? prev : upper;
     lower = lbl_80561B3C;
-    value = value > lower ? value : lower;
+    value = lower < value ? lower : value;
     fn_8017ED00(value);
     lbl_8055E3FC = now;
 }
 #pragma pop
-s32 *fn_80176C0C(register s32 *arg0, const s32 *arg1) {
-    s32 length = arg1[0];
-    arg0[0] = length;
-    memcpy(arg0 + 1, arg1 + 1, length);
-    return arg0;
+s32 *fn_80176C0C(register s32 *dst, const s32 *src) {
+    /* Copy a length-prefixed byte vector: src[0] holds the payload's byte count and
+       the bytes follow it; write the same header and payload to dst and return it. */
+    s32 byteCount = src[0];
+    dst[0] = byteCount;
+    memcpy(dst + 1, src + 1, byteCount);
+    return dst;
 }
 #pragma scheduling on
 #pragma dont_inline on
