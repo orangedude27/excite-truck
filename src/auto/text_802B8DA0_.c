@@ -621,64 +621,89 @@ void fn_802B9960(void) {
 }
 
 #pragma scheduling invalid_target
-void fn_802B9964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    typedef struct Node {
-        s32 *data;
-        volatile s32 used;
-        s32 capacity;
-        struct Node *next;
-    } Node;
-    typedef struct Pool {
-        void *unused;
-        Node *nodes;
-        volatile s32 used;
-        s32 capacity;
-    } Pool;
-    Pool *pool;
-    s32 denom, y, rows, x, index, item, used;
-    s32 size;
-    Node **cell;
-    s32 *slot;
-    Node *node, *new_node, *tail;
+void fn_802B9964(void *arg0, s32 arg1, s32 arg2, s32 arg3)
+{
+  typedef struct Node
+  {
     s32 *data;
-    size = *(s16 *)arg0;
-    pool = *(Pool **)((char *)arg0 + 0xC);
-    denom = size * 2;
-    y = (arg3 - size + 0x200) / denom;
-    rows = 0x400 / denom;
-    x = (arg2 - size + 0x200) / denom;
-    index = x + y * rows;
-    cell = (Node **)((char *)*(void **)((char *)arg0 + 4) + index * 8);
-    node = cell[1];
-    slot = 0;
-    data = tail->data;
-    if (node == 0 || node->used + 1 > node->capacity) {
-        node = 0;
-        if (pool->used + 1 <= pool->capacity) {
-            new_node = &pool->nodes[pool->used++];
-            node = new_node;
-            node->used = 0;
-            node->next = 0;
-        }
-        if (node != 0) {
-            if (cell[0] == 0) cell[0] = node;
-            if (cell[1] != 0) cell[1]->next = node;
-            cell[1] = node;
-            node->next = 0;
-            tail = cell[1];
-            item = tail->used;
-            data = tail->data;
-            tail->used = item + 1;
-            slot = data + item;
-        }
-    } else {
-        tail = node;
-        item = tail->used;
-        data = tail->data;
-        tail->used = item + 1;
-        slot = data + item;
+    volatile s32 used;
+    s32 capacity;
+    struct Node *next;
+  } Node;
+  typedef struct Pool
+  {
+    void *unused;
+    Node *nodes;
+    volatile s32 used;
+    s32 capacity;
+  } Pool;
+  Pool *pool;
+  s32 denom;
+  s32 y;
+  s32 rows;
+  s32 x;
+  s32 index;
+  s32 item;
+  s32 used;
+  s32 size;
+  Node **cell;
+  Node *node;
+  Node *new_node;
+  Node *tail;
+  s32 *data;
+  s32 *slot;
+  size = *((s16 *) arg0);
+  pool = *((Pool **) (((char *) arg0) + 0xC));
+  denom = size * 2;
+  y = ((arg3 - size) + 0x200) / denom;
+  rows = 0x400 / denom;
+  x = ((arg2 - size) + 0x200) / denom;
+  index = x + (y * rows);
+  cell = (Node **) (((char *) (*((void **) (((char *) arg0) + 4)))) + (index * 8));
+  node = cell[1];
+  slot = 0;
+  data = tail->data;
+  if ((node == 0) || ((node->used + 1) > node->capacity))
+  {
+    node = 0;
+    if ((pool->used + 1) <= pool->capacity)
+    {
+      new_node = &pool->nodes[pool->used++];
+      node = new_node;
+      node->used = 0;
+      node->next = 0;
     }
-    if (slot != 0) *slot = arg1;
+    if (node != 0)
+    {
+      if (cell[0] == 0)
+      {
+        cell[0] = node;
+      }
+      if (cell[1] != 0)
+      {
+        cell[1]->next = node;
+      }
+      cell[1] = node;
+      node->next = 0;
+      tail = cell[1];
+      item = tail->used;
+      data = tail->data;
+      tail->used = item + 1;
+      slot = data + item;
+    }
+  }
+  else
+  {
+    tail = node;
+    item = tail->used;
+    data = tail->data;
+    tail->used = item + 1;
+    slot = data + item;
+  }
+  if (slot != 0)
+  {
+    *slot = arg1;
+  }
 }
 extern double ceil(double);
 // Returns ceil(value): the smallest integer greater than or equal to value.
@@ -694,6 +719,9 @@ void fn_802B9AA4(void *node, float *min, float *max) {
     max[1] = *(float *)((char *)node + 0x20);
 }
 
+// No-op identity callback: invoked through its `void *(*)(void *)` cast at the
+// call site, it leaves the node pointer in r3 untouched, so the bounds reader
+// receives the very same node that was passed in.
 void fn_802B9AC8(void) {
 }
 
@@ -1176,8 +1204,7 @@ extern "C" void fn_802BA348(void) {
     }
     entry = fn_801284F8(0x10, lbl_8034A9E4);
     if (entry != 0) {
-        int sz = total * 0x54;
-        buffer = ((void *(*)(int, void *))fn_8012850C)(sz + 0x10, lbl_8034A9E4);
+        buffer = ((void *(*)(int, void *))fn_8012850C)(total * 0x54 + 0x10, lbl_8034A9E4);
         items = fn_8002F37C(buffer, (void *)fn_802BA560, 0, 0x54, total);
         *(void **)entry = items;
         *(int *)((char *)entry + 8) = total;
@@ -1659,13 +1686,14 @@ void fn_802BAFF8(void ***arg0, int *arg1) {
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802BB0FC(int a, int b) {
+    int i, off;
     RenderNode *node;
     RenderBatch *batch;
     RenderEntry *entry;
+    int j, v;
     u16 **items;
     RenderMatrix matrix;
-    int i, off, j, v;
-    for (i = 0, off = 0; i < *(s32 *)(lbl_804BFFF4 + 4); i++, off += 4) {
+    for (off = 0, i = 0; i < *(s32 *)(lbl_804BFFF4 + 4); i++, off += 4) {
         entry = *(RenderEntry **)(*(char **)lbl_804BFFF4 + off);
         if (entry->kind != 999) continue;
         node = entry->nodes;
@@ -1726,74 +1754,75 @@ clear_nodes:
     }
 }
 #pragma push
-#pragma scheduling invalid_target
-#pragma use_lmw_stmw off
+#pragma scheduling on
 void fn_802BB3B8(int a, int b) {
-    s32 i, off;
-    void *entry;
-    void *node;
-    void *batch;
-    s32 j, v;
+    /* Traverse pending render batches, draw them, and clear their lists. */
+    register int i;
+    register int off;
+    RenderEntry *entry;
+    RenderNode *node;
+    RenderBatch *batch;
+    int j, v;
     u16 **items;
-    RenderMatrix matrix; s32 zero = 0;
+    RenderMatrix matrix; int zero = 0;
     for (i = 0, off = 0; i < *(s32 *)(lbl_804BFFF4 + 4); i++, off += 4) {
-        entry = *(void **)(*(char **)lbl_804BFFF4 + off);
-        if (*(s32 *)((char *)entry + 8) == 999) continue;
-        node = *(void **)((char *)entry + 0xC);
+        entry = *(RenderEntry **)(*(char **)lbl_804BFFF4 + off);
+        if (entry->kind == 999) continue;
+        node = entry->nodes;
         if (!node) continue;
-        if (*(s32 *)((char *)entry + 4) == -2) goto clear_nodes;
-        switch (*(s32 *)((char *)node + 8)) { case 0: case 1: {
+        if (entry->state == -2) goto clear_nodes;
+        switch (node->type) { case 0: case 1: {
             fn_802C8BD0(); fn_802DC130();
-            node = *(void **)((char *)entry + 0xC);
+            node = entry->nodes;
             while (node) {
-                if (*(void **)node) {
-                    if (*(u8 *)((char *)node + 0xC)) {
+                if (node->batches) {
+                    if (node->enabled) {
                         ((void (*)(int,void *))fn_802D3D94)(0, (char *)node + 0x24);
-                        batch = *(void **)node;
+                        batch = node->batches;
                         do {
-                            for (j = 0; j < *(s32 *)((char *)batch + 4); j++) {
-                                items = *(u16 ***)((char *)batch + 0);
+                            for (j = 0; j < batch->count; j++) {
+                                items = batch->items;
                                 fn_802DC138(a,b,items[j],*items[j]+1);
                                 v = *items[j] - 1;
                                 lbl_8055FA6C += v & ~(v >> 31);
                             }
-                            batch = *(void **)((char *)batch + 0xC);
+                            batch = batch->next;
                         } while (batch);
                     }
-                    *(s32 *)((char *)node + 4) = zero; *(void **)node = (void *)zero;
+                    node->count = zero; node->batches = (RenderBatch *)zero;
                 }
-                node = *(void **)((char *)node + 0x10);
+                node = node->next;
             }
             fn_802DC134(); fn_802C8D74();
         break; } case 2: {
             fn_802C28C0(); fn_802C8BD0(); fn_802DC278();
-            fn_802CADD0(*(s32 *)((char *)entry + 4),1);
+            fn_802CADD0(entry->state,1);
             fn_802CADD0(((int (*)(void))fn_802C21B8)(),2);
             matrix = *(RenderMatrix *)lbl_802FAB40;
             ((void (*)(int,void *))fn_802D3D94)(2,&matrix);
-            node = *(void **)((char *)entry + 0xC);
+            node = entry->nodes;
             while (node) {
-                if (*(void **)node) {
+                if (node->batches) {
                     ((void (*)(int,void *))fn_802D3D94)(0,(char *)node + 0x34);
-                    batch = *(void **)node;
+                    batch = node->batches;
                     do {
-                        for (j = 0; j < *(s32 *)((char *)batch + 4); j++) {
-                            items = *(u16 ***)((char *)batch + 0);
+                        for (j = 0; j < batch->count; j++) {
+                            items = batch->items;
                             fn_802DC280(a,b,items[j],*items[j]+1);
                             v = *items[j] - 1;
                             lbl_8055FA6C += v & ~(v >> 31);
                         }
-                        batch = *(void **)((char *)batch + 0xC);
+                        batch = batch->next;
                     } while (batch);
-                    *(s32 *)((char *)node + 4) = zero; *(void **)node = (void *)zero;
+                    node->count = zero; node->batches = (RenderBatch *)zero;
                 }
-                node = *(void **)((char *)node + 0x10);
+                node = node->next;
             }
             fn_802CADD0(-1,1); fn_802CADD0(-1,2); fn_802DC27C(); fn_802C8D74();
         break; } }
         continue;
 clear_nodes:
-        while (node) { *(s32 *)((char *)node + 4) = zero; *(void **)node = (void *)zero; node = *(void **)((char *)node + 0x10); }
+        while (node) { node->count = zero; node->batches = (RenderBatch *)zero; node = node->next; }
     }
 }
 #pragma pop
