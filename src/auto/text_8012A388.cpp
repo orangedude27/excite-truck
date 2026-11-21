@@ -3382,52 +3382,55 @@ extern "C" void *fn_8012C58C(void *arg0) {
 extern "C" const char lbl_8032ABF8[];
 extern "C" const char lbl_8032AC08[];
 #pragma scheduling reset
-extern "C" s32 fn_8012C5B8(s32 arg0, s32 arg1, s32 arg2) {
+/* Open an async resource stream: find path's entry with the requested type tag,
+ * write its id to *outId and return an "AsyncResource" request holding the entry
+ * and its manager; on a tag mismatch log "ResourceGetStream" and return 0. */
+extern "C" s32 fn_8012C5B8(s32 path, s32 typeTag, s32 outId) {
     long index;
     long result = 0;
-    s32 *manager;
-    s32 *entry;
+    struct ResManager *manager;
+    struct ResEntry *entry;
 
-    manager = ((s32 *(*)(s32, s32 *, s32))fn_8012B534)(arg0, &index, 1);
+    manager = (struct ResManager *)((struct ResManager *(*)(s32, s32 *, s32))fn_8012B534)(path, &index, 1);
     if (manager != 0) {
-        entry = (s32 *)((char *)*(void **)((char *)manager + 0x60) + index * 0x44);
-        if (*(u32 *)((char *)entry + 0x20) == (u32)arg1) {
-            *(s32 *)arg2 = *(s32 *)((char *)entry + 0x24);
+        entry = (struct ResEntry *)(manager->entries + index * 0x44);
+        if (entry->dataTag == (u32)typeTag) {
+            *(s32 *)outId = entry->id;
             register void *allocation = fn_8012A570(0x18, (void *)lbl_8032ABF8);
             volatile s32 *fields = (volatile s32 *)allocation;
             if (allocation != 0) {
-                fields[3] = -1;
-                fields[4] = 0;
-                fields[1] = 0;
-                fields[2] = 0;
-                fields[5] = 0;
-                fields[0] = 0x19AFEE2A;
+                fields[ASYNC_REQ_HANDLE] = -1;
+                fields[ASYNC_REQ_DATA] = 0;
+                fields[ASYNC_REQ_ENTRY] = 0;
+                fields[ASYNC_REQ_MANAGER] = 0;
+                fields[ASYNC_REQ_UNUSED] = 0;
+                fields[ASYNC_REQ_MAGIC] = ASYNC_RESOURCE_MAGIC;
             }
-            fields[1] = (s32)entry;
+            fields[ASYNC_REQ_ENTRY] = (s32)entry;
             result = (s32)allocation;
-            fields[2] = (s32)manager;
+            fields[ASYNC_REQ_MANAGER] = (s32)manager;
         } else {
-            u8 queryText[5];
-            u8 entryText[5];
+            u8 wantedTagText[5];
+            u8 entryTagText[5];
             u8 swap0;
             u8 swap1;
-            *(u32 *)queryText = (u32)arg1;
-            swap0 = queryText[0];
-            queryText[0] = queryText[3];
-            queryText[3] = swap0;
-            swap1 = queryText[1];
-            queryText[1] = queryText[2];
-            queryText[2] = swap1;
-            queryText[4] = 0;
-            *(u32 *)entryText = *(u32 *)((char *)entry + 0x20);
-            swap0 = entryText[0];
-            entryText[0] = entryText[3];
-            entryText[3] = swap0;
-            swap1 = entryText[1];
-            entryText[1] = entryText[2];
-            entryText[2] = swap1;
-            entryText[4] = 0;
-            fn_802E30C8(lbl_8032AC08, queryText, entryText);
+            *(u32 *)wantedTagText = (u32)typeTag;
+            swap0 = wantedTagText[0];
+            wantedTagText[0] = wantedTagText[3];
+            wantedTagText[3] = swap0;
+            swap1 = wantedTagText[1];
+            wantedTagText[1] = wantedTagText[2];
+            wantedTagText[2] = swap1;
+            wantedTagText[4] = 0;
+            *(u32 *)entryTagText = entry->dataTag;
+            swap0 = entryTagText[0];
+            entryTagText[0] = entryTagText[3];
+            entryTagText[3] = swap0;
+            swap1 = entryTagText[1];
+            entryTagText[1] = entryTagText[2];
+            entryTagText[2] = swap1;
+            entryTagText[4] = 0;
+            fn_802E30C8(lbl_8032AC08, wantedTagText, entryTagText);
         }
     }
     return result;
