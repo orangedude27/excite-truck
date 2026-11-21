@@ -42,7 +42,7 @@ void C_MTXPerspective(Mtx44 mtx, f32 fovy, f32 aspect, f32 n, f32 f) {
     f32 invrange;
 
     rad = 0.5f * fovy;
-    rad = 0.017453292f * rad;
+    rad = DEG_TO_RAD * rad;
     cot = 1.0f / (f32)fn_8002EF30((double)rad);
 
     mtx[0][0] = cot / aspect;
