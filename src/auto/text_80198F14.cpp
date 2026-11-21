@@ -17,8 +17,6 @@ static inline void CornerV3Copy(CornerV3* d, const CornerV3* s) {
     ((u32*)d)[1] = ((const u32*)s)[1];
     ((u32*)d)[2] = ((const u32*)s)[2];
 }
-static inline f32 Fn801A1F98Min(f32 m, f32 p) { return (m < p) ? p : m; }
-static inline f32 Fn801A1F98Max(f32 m, f32 p) { return (m > p) ? p : m; }
 
 static inline void fn801A1F98Transform(volatile f32 *dst, volatile f32 *src, f32 *matrix) {
     f32 x = src[0];
