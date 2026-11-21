@@ -318,7 +318,8 @@ extern "C" f32 lbl_80561498;
 extern "C" f32 lbl_805614A4;
 extern "C" f32 lbl_805614AC;
 extern "C" f32 lbl_80558DC4[];
-extern "C" u8 lbl_8055E1BC;
+extern "C" u8 lbl_8055E1BC; /* sudden-death mode is active */
+extern "C" char lbl_8032CA64[]; /* "sudden_death" object name */
 extern "C" f32 fn_8001DAE8(void *);
 extern "C" f32 fn_8013CB3C(void);
 extern "C" s32 fn_80176A1C(void);
@@ -1699,11 +1700,13 @@ extern "C" void fn_8013ED74(void *arg0) {
     if (list.count > 0) {
         f32 v = fn_801E7E24();
         if (!((f32)__fabs((f64)v) <= *(f32 *)&lbl_80558DC4)) {
+            u32 pp;
             s32 off;
             k = 0;
             off = 0;
             for (; k < list.count; off += 8, k++) {
                 it = *(u8 **)((u8 *)list.data + off);
+                pp = *(u32 *)((u8 *)list.data + off);
                 if (it[0x1E] == 0) {
                     w = 0;
                     do {
