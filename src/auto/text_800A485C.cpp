@@ -932,6 +932,7 @@ extern "C" void *fn_800B65A0(s8);
 extern "C" s32 lbl_80559208;
 
 extern "C" void fn_800A5954(void) {
+    /* Wrapper: fn_800A6048 zeroes the 0xA2C-byte archive work buffer at lbl_803D1640. */
     fn_800A6048();
 }
 
@@ -13237,16 +13238,15 @@ extern "C" s32 fn_800B94EC(s32 arg0, s32 arg1) {
     if ((u32)fn_800A4A8C(arg0) >= 0x4C)
         return -0x14;
     if (lbl_8055DD28 == 0) {
-        s32 one = 1;
         fn_800A499C((const char *)(base + 0x40), 0, 0x1590);
         volatile u32 *control = (volatile u32 *)(base + 0x15D0);
         initCount = lbl_8055DD28 + 1;
-        control[0] = (u32)one;
+        control[0] = 1;
         *(volatile u32 *)&lbl_8055DD28 = initCount;
-        control[1] = (u32)one;
+        control[1] = 1;
         control[2] = (u32)(base + 0x15DC);
         typedef s32 (*InitFn)(void *, s32, s32);
-        s32 result = ((InitFn)fn_800B7F28)((void *)control, one, initCount);
+        s32 result = ((InitFn)fn_800B7F28)((void *)control, 1, initCount);
         lbl_8055DD30 = result;
         if (result == 0)
             return -0x15;
@@ -13255,7 +13255,8 @@ extern "C" s32 fn_800B94EC(s32 arg0, s32 arg1) {
     entries = base + 0x40;
     i = 0;
 loop_6:
-    u8 *entry = entries + (u32)(u16)i * 0xF0;
+    u16 idx = (u16)i;
+    u8 *entry = entries + (u32)idx * 0xF0;
     if (fn_800A4AD0(entry + 4, (u8 *)arg0) == 0)
         return 0;
     if (*(s32 *)entry == 0) {
