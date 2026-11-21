@@ -1,5 +1,10 @@
 #include <revolution/EXI.h>
 
+/* EXI command that reads a device's 32-bit ID during Barnacle probing. */
+#define BARNACLE_ID_CMD 0x20011300
+/* Sentinel written to the enable flags when a Barnacle is active. */
+#define UART_ENABLED_MAGIC 0xA5FF005A
+
 static BOOL Enabled = FALSE;
 static BOOL BarnacleEnabled = FALSE;
 static u32 Dev = EXI_DEV_EXT;
