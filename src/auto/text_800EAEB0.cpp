@@ -1942,7 +1942,7 @@ s32 nw4hbm::snd::detail::MmlParser::ReadArg(const u8 **pp, SeqPlayer *player, Se
     register SeqPlayer *rplayer = player;
     register SeqTrack *rtrack = track;
     register const char *rbase = (const char*)::lbl_80323268;
-    register s32 rcount;
+    s32 rcount;
     s32 res;
     switch (type) {
     case (SeqArgType)0: {
@@ -1962,8 +1962,8 @@ s32 nw4hbm::snd::detail::MmlParser::ReadArg(const u8 **pp, SeqPlayer *player, Se
         break;
     }
     case (SeqArgType)2: {
-        rcount = 0;
         res = 0;
+        rcount = 0;
         for (;;) {
             const u8 *p;
             u8 b;
@@ -2585,6 +2585,7 @@ extern "C" int Setup__Q46nw4hbm3snd6detail9SeqPlayerFPQ46nw4hbm3snd6detail17SeqT
 
 extern "C" u64 OSGetTime(void);
 extern "C" void OSSetPeriodicAlarm(void*, u32, u32, u32, u32, u32, void*);
+struct RemoteSpkView { u8 pad[8]; u32 alarm; };
 extern "C" void fn_800EE568(void*);
 extern "C" void fn_800EEBA8(void*, u64, u64);
 /* Cancel the OS alarm at offset 8 if active, then clear the active flag. */
