@@ -1062,11 +1062,31 @@ extern "C" void fn_801FE550(void *path) {
     *(char **)path = lbl_8033B760;
     *(int *)((char *)path + 0x94) = 0;
 }
+// Byte-swaps each 4-byte word of `count` 0x18-byte records (archive endian fixups).
+static inline void SwapEndianRecords(unsigned char *b, int count) {
+    unsigned char t;
+    for (int i = 0; i < count; i++) {
+        t = b[0]; b[0] = b[3]; b[3] = t;
+        t = b[1]; b[1] = b[2]; b[2] = t;
+        t = b[4]; b[4] = b[7]; b[7] = t;
+        t = b[5]; b[5] = b[6]; b[6] = t;
+        t = b[8]; b[8] = b[0xb]; b[0xb] = t;
+        t = b[9]; b[9] = b[0xa]; b[0xa] = t;
+        t = b[0xc]; b[0xc] = b[0xf]; b[0xf] = t;
+        t = b[0xd]; b[0xd] = b[0xe]; b[0xe] = t;
+        t = b[0x10]; b[0x10] = b[0x13]; b[0x13] = t;
+        t = b[0x11]; b[0x11] = b[0x12]; b[0x12] = t;
+        t = b[0x14]; b[0x14] = b[0x17]; b[0x17] = t;
+        t = b[0x15]; b[0x15] = b[0x16]; b[0x16] = t;
+        b += 0x18;
+    }
+}
+
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling on
 extern "C" void fn_801FE568(void* arg0, unsigned char* p) {
-    unsigned char a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15;
+    unsigned char a0,a1,a2,a3,a4,a5,a6,a7,a8,a9;
     unsigned char t;
     unsigned char *ptr;
     int i;
@@ -1080,8 +1100,7 @@ extern "C" void fn_801FE568(void* arg0, unsigned char* p) {
     a6 = p[0x32]; p[0x32] = p[0x35]; p[0x35] = a6;
     a7 = p[0x33]; p[0x33] = p[0x34]; p[0x34] = a7;
 
-    ptr = p + 0x3c;
-    for (i = 0; i < 0x48; i++) {
+    for (i = 0, ptr = p + 0x3c; i < 0x48; i++, ptr += 0x18) {
         t = ptr[0]; ptr[0] = ptr[3]; ptr[3] = t;
         t = ptr[1]; ptr[1] = ptr[2]; ptr[2] = t;
         t = ptr[4]; ptr[4] = ptr[7]; ptr[7] = t;
@@ -1094,7 +1113,6 @@ extern "C" void fn_801FE568(void* arg0, unsigned char* p) {
         t = ptr[0x11]; ptr[0x11] = ptr[0x12]; ptr[0x12] = t;
         t = ptr[0x14]; ptr[0x14] = ptr[0x17]; ptr[0x17] = t;
         t = ptr[0x15]; ptr[0x15] = ptr[0x16]; ptr[0x16] = t;
-        ptr += 0x18;
     }
 
     a8 = p[0x6fc]; p[0x6fc] = p[0x6ff]; p[0x6ff] = a8;
