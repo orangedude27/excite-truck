@@ -1744,17 +1744,34 @@ extern void fn_80130980(void *, int, int, float);
 extern void fn_801475D0(void *, ...);
 #pragma cplusplus on
 #pragma processor 750
+/* Timer display check: when f11() drops below the threshold and f8() has not shown
+ * the panel yet, show the "timer_title"/"timer_art" elements and report the elapsed
+ * time (arg0+0x84 minus arg0+0x98) through the "timer"/"%s" debug message. */
 extern "C" s32 fn_80162800(void *arg0) {
-    s32 sp8[3];
-    Dummy_80162800 *obj = (Dummy_80162800 *)arg0;
-    f32 limit = lbl_8055E3C8;
-    if (limit > obj->f11()) {
-        if (obj->f8() == 0) {
-            fn_801476D8((s32)((Dummy_80162800 *)lbl_8055E2E0)->f2(lbl_8032FA38), -1, lbl_8055E2F8);
-            ((Dummy_80162800 *)lbl_8055E2E0)->f1(lbl_8032FA44);
+    struct TimerDisplay {
+        virtual void v0();
+        virtual void showTitle(void *title);
+        virtual void *getArt(void *name);
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual s32 isShown();
+        virtual void v9();
+        virtual void v10();
+        virtual f32 getValue();
+    };
+    s32 timeBuf[3];
+    TimerDisplay *obj = (TimerDisplay *)arg0;
+    f32 threshold = lbl_8055E3C8;
+    if (threshold > obj->getValue()) {
+        if (obj->isShown() == 0) {
+            fn_801476D8((s32)((TimerDisplay *)lbl_8055E2E0)->getArt(lbl_8032FA38), -1, lbl_8055E2F8);
+            ((TimerDisplay *)lbl_8055E2E0)->showTitle(lbl_8032FA44);
             fn_801476C4();
-            fn_80130980(&sp8, 0x14, 3, *(f32 *)((char *)arg0 + 0x84) - *(f32 *)((char *)arg0 + 0x98));
-            fn_801475D0(lbl_8055E2E0, &lbl_8055A0EC, &lbl_8055A0DC, &sp8);
+            fn_80130980(&timeBuf, 0x14, 3, *(f32 *)((char *)arg0 + 0x84) - *(f32 *)((char *)arg0 + 0x98));
+            fn_801475D0(lbl_8055E2E0, &lbl_8055A0EC, &lbl_8055A0DC, &timeBuf);
         }
     }
     return 0;
