@@ -3511,9 +3511,10 @@ extern "C" void fn_800F0728(void *player, s32 arg1, s32 arg2) {
     callback->invoke(player, arg1, arg2);
 }
 
+/* Intentional no-op (compiles to a bare return): a do-nothing default/virtual hook in the sound library. */
 extern "C" void fn_800F0750(void) {
-          return;
-  }
+    return;
+}
 
   extern "C" s16* GetVariablePtr__Q46nw4hbm3snd6detail8SeqTrackFi(void* this_, s32 index);
 
