@@ -109,7 +109,6 @@ float fn_80291784(float deltaX, float deltaY, float deltaZ, float deltaW) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling 604
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 extern "C" int fn_802917C0(void *arg0, void *arg1, void *arg2) {
