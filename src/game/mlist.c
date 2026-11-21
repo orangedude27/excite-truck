@@ -34,6 +34,7 @@ struct Dummy {
     virtual void method2(int);
 };
 #pragma cplusplus reset
+/* Intentionally empty no-op; placeholder diagnostic hook in the mlist draw path (invoked through a 12-argument function-pointer cast). */
 void fn_802CCBC0(void) {}
 
 extern void *memcpy(void *, const void *, unsigned int);
