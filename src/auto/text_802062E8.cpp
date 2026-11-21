@@ -173,6 +173,9 @@ extern "C" void fn_8020646C(long slot, long value) {
     lbl_804891E8[slot] = value;
 }
 
+/* No-op virtual callback stub in the audio mixer's default (null) sound device:
+ * the voice-mixer backend's matching slot (fn_8020B2D0) is empty too, so neither
+ * sound device implements this method in this build.  Compiles to a bare 'blr'. */
 extern "C" void fn_80206480(void) {
 }
 
