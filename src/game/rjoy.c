@@ -5,6 +5,14 @@
 extern void fn_802E6B44(int, int);
 extern int lbl_80507268[];
 extern unsigned char lbl_80505978[];
+/* rjoy globals, named in comments because this project cannot rename game symbols:
+ * lbl_80507268 - WPAD sampling callbacks saved per controller channel on init
+ *                (restored on shutdown), chained to by our own callback.
+ * lbl_80505978 - Wiimote/controller state table, 0x638 bytes per controller. */
+#define gPrevSamplingCallbacks lbl_80507268
+#define gWiimoteStateTable     lbl_80505978
+#define WPAD_ERR_NONE          0
+#define WPAD_ERR_NO_CONTROLLER (-1)
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern float lbl_80565160, lbl_80565164, lbl_80565168, lbl_8056516C;
@@ -98,8 +106,8 @@ void fn_802E7920(int arg0) {
     extern int fn_802E2C20(void);
     extern unsigned char lbl_80505978[];
     extern unsigned char lbl_80560008;
-    int player = arg0;
     unsigned char *p;
+    int player = arg0;
     int time;
     int motor;
     int value;
