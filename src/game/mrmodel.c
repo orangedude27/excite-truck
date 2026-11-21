@@ -1247,8 +1247,10 @@ void fn_802C6FC0(void *modelPath, int variantIdx, int flags) {
     mrModelCreateInstance((int)modelPath, mrModelLoadResource((int)modelPath), variantIdx, flags);
 }
 
-void fn_802C703C(int arg0) {
-    fn_802C6C38(arg0);
+/* Thunk: release the model instance with the given id by forwarding to
+ * fn_802C6C38, which drops its refcount and frees its display nodes at zero. */
+void fn_802C703C(int modelId) {
+    fn_802C6C38(modelId);
 }
 
 int fn_802C90E0(void);
