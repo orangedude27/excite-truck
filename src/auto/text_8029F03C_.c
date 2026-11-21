@@ -485,6 +485,8 @@ extern "C" void fn_8029F658(void *arg0) {
     int rPart;
     int gPart;
     int bPart;
+    int hi;
+    int lo;
 
     table = lbl_80349810;
     record = lbl_804B5070 + lbl_8055F81C * 0x78;
@@ -544,9 +546,11 @@ done:
     v2 = obj->getVec(&table[0x68], defaultVec2);
     v2copy = v2;
     rPart = (int)(lbl_805646C0 * v2copy.x);
-    gPart = (int)(lbl_805646C0 * v2copy.y);
     bPart = (int)(lbl_805646C0 * v2copy.z);
-    packed = 0xFF000000 | ((rPart & 0xFF) << 16) | ((gPart & 0xFF) << 8) | (bPart & 0xFF);
+    gPart = (int)(lbl_805646C0 * v2copy.y);
+    hi = 0xFF000000 | ((rPart & 0xFF) << 16);
+    lo = ((gPart & 0xFF) << 8) | (bPart & 0xFF);
+    packed = lo | hi;
     *(int *)(record + 0x4C) = packed;
     *(int *)(record + 0x50) = obj->getProp(lbl_8055CB38, 1);
     v3 = obj->getVec(lbl_8055CB40, defaultVec);
@@ -868,6 +872,8 @@ extern float fn_80287BC8(float, float);
 #pragma push
 #pragma processor 750
 #pragma cplusplus off
+#pragma push
+#pragma scheduling invalid_target
 void fn_802A01C8(void *arg0, Unk802A0794Params *params) {
     struct Result {
         int count;
@@ -892,7 +898,7 @@ void fn_802A01C8(void *arg0, Unk802A0794Params *params) {
         b2 = out.data[5] + fn_80287BC8(-out.data[8], out.data[8]);
         b1 = out.data[4] + fn_80287BC8(-out.data[9], out.data[9]);
         b0 = out.data[3] + fn_80287BC8(-out.data[8], out.data[8]);
-        b[1] = b1;
+        *(volatile float *)&b[1] = b1;
         flag = *(unsigned char *)((char *)arg0 + 0x68);
         b[2] = b2;
         b[0] = b0;
@@ -917,24 +923,25 @@ extern "C" void fn_802A02F4(void *arg0, Unk802A0794Params *params) {
         virtual void v3() = 0;
         virtual void call(float *, float *, short, int) = 0;
     };
+    struct Arg0 { char pad[0x70]; TargetObj *obj; float f74; };
+    Arg0 *a0 = (Arg0 *)arg0;
     Result_802A0098 out;
     float a[3];
     float b[3];
-    float a0, a1, a2;
+    float a0_, a1, a2;
     float b0, b1, b2;
     int i;
-    TargetObj *obj;
 
     fn_802A0098(&out, arg0, params);
-    out.data[4] += *(float *)((char *)arg0 + 0x74);
+    out.data[4] += a0->f74;
 
     for (i = 0; i < out.count; i++) {
         a2 = out.data[2] + fn_80287BC8(-out.data[6], out.data[6]);
         a1 = out.data[1] + fn_80287BC8(-out.data[7], out.data[7]);
-        a0 = out.data[0] + fn_80287BC8(-out.data[6], out.data[6]);
+        a0_ = out.data[0] + fn_80287BC8(-out.data[6], out.data[6]);
         a[1] = a1;
         a[2] = a2;
-        a[0] = a0;
+        a[0] = a0_;
 
         b2 = out.data[5] + fn_80287BC8(-out.data[8], out.data[8]);
         b1 = out.data[4] + fn_80287BC8(-out.data[9], out.data[9]);
@@ -943,8 +950,7 @@ extern "C" void fn_802A02F4(void *arg0, Unk802A0794Params *params) {
         b[2] = b2;
         b[0] = b0;
 
-        obj = *(TargetObj **)((char *)arg0 + 0x70);
-        obj->call(a, b, params->unk_0x18, -1);
+        a0->obj->call(a, b, params->unk_0x18, -1);
     }
 }
 #pragma pop
