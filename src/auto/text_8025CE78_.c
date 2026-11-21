@@ -40,6 +40,7 @@ extern int fn_80128670(void *);
 extern char lbl_80498ED0[];
 extern char lbl_802FA678[];
 extern char lbl_8055B860[];
+extern char lbl_803456B8[];
 #define DS(off) desc[(((off) - 0xB8) >> 2)]
 #define APPEND(v) { int *_d=(int*)(long)lbl_8055F3C4; int _i=_d[7]; _d[7]=_i+1; ((int*)_d[6])[_i]=(v); }
 void fn_8025CE78(void) {
