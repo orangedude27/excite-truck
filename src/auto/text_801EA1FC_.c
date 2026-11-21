@@ -71,7 +71,7 @@ void fn_801EA318(void) {
 
 extern s32 fn_80012954(s32);
 extern void fn_8026A54C(f32);
-extern f32 lbl_80562E50, lbl_80562E54;
+extern f32 lbl_80562E54;
 #pragma push
 #pragma processor 750
 #pragma scheduling on
