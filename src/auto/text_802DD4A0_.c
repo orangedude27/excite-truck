@@ -131,7 +131,7 @@ void fn_802DD738(int index, float value) {
 void fn_802DD750(void) {
 }
 
-extern double lbl_805650A0;
+extern const double lbl_805650A0;
 extern float lbl_80565094, lbl_80565098;
 void fn_802DE788(void);
 void fn_802DD898(void *, float, float);
