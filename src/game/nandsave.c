@@ -642,35 +642,40 @@ extern char lbl_8034E108[];
 #define sWriteStartFmt  lbl_8034E130
 
 #pragma scheduling invalid_target
-void fn_802E91D8(void *arg0, const char *arg1, int arg2, int arg3) {
-    unsigned char c;
-    const char *original;
+void fn_802E91D8(void *ctx, const char *path, int buffer, int length) {
+    unsigned char ch;
+    const char *startPath;
     const char *src;
     int count;
     char *dst;
-    original = arg1;
-    *(int *)((char *)arg0 + 8) = arg2;
-    src = original;
-    *(int *)((char *)arg0 + 4) = arg3;
-    dst = (char *)arg0 + 0xC;
+
+    /* Prepare an async NAND write in ctx: record the source buffer address and
+     * byte count, copy the NAND path into the context's filename field, point
+     * the async callback context back at this block, clear its completion flags
+     * and set the state to CREATE (2) before logging the start of the write. */
+    startPath = path;
+    *(int *)((char *)ctx + 8) = buffer;
+    src = startPath;
+    *(int *)((char *)ctx + 4) = length;
+    dst = (char *)ctx + 0xC;
     count = 0x100;
     goto copy;
-dec_count:
+decrement:
     count--;
     if (count > 0) goto copy;
     dst[-1] = 0;
-    goto after_copy;
+    goto done;
 copy:
-    c = *src++;
-    *dst++ = c;
-    if ((signed char)c != 0) goto dec_count;
-after_copy:
-    *(void **)((char *)arg0 + 0x198) = arg0;
-    *(int *)((char *)arg0 + 0x258) = 0;
-    *(char *)((char *)arg0 + 0x250) = 0;
-    *(int *)((char *)arg0 + 0x254) = 0;
-    *(int *)arg0 = 2;
-    fn_802E30C8(lbl_8034E130, arg3, original);
+    ch = *src++;
+    *dst++ = ch;
+    if ((signed char)ch != 0) goto decrement;
+done:
+    *(void **)((char *)ctx + 0x198) = ctx;
+    *(int *)((char *)ctx + 0x258) = 0;
+    *(char *)((char *)ctx + 0x250) = 0;
+    *(int *)((char *)ctx + 0x254) = 0;
+    *(int *)ctx = 2;
+    nandLogPrintf(sWriteStartFmt, length, startPath);
 }
 #pragma scheduling on
 extern void fn_802E95CC(int, void **);
