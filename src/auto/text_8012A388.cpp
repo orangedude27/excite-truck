@@ -1112,31 +1112,34 @@ extern "C" s32 strstr(const char *, const char *);
 static inline s32 res_entry_use_count(s32 a, s32 b, struct ResEntry *entry) { return entry->useCount; }
 static inline u32 res_entry_flags(s32 a, s32 b, struct ResEntry *entry) { return entry->flags; }
 
-extern "C" void fn_8012BA1C(void *arg0) {
-    const char *strings = lbl_8032A630;
-    s32 offset, i;
-    s32 j, offset2;
+extern "C" void fn_8012BA1C(void *resource) {
+    /* Log usage warnings for a resource archive: entries with a positive use
+     * count, and, for ".trk" archives other than the named exception, entries
+     * whose flags report them as non-resident. */
+    const char *messages = lbl_8032A630;
+    s32 entryOffset, entryIndex;
+    s32 secondIndex, secondOffset;
     u8 *entry;
-    s32 value;
+    s32 useCount;
 
-    i = 0;
-    offset = 0;
-    while (i < *(s32 *)((char *)arg0 + 0x88)) {
-        entry = *(u8 **)((char *)arg0 + 0x60) + offset;
-        value = *(s32 *)(entry + 0x38);
-        if (value > 0) fn_802E30C8(strings + 0x470, arg0, (const char *)entry, value);
-        offset += 0x44;
-        i++;
+    entryIndex = 0;
+    entryOffset = 0;
+    while (entryIndex < *(s32 *)((char *)resource + 0x88)) {
+        entry = *(u8 **)((char *)resource + 0x60) + entryOffset;
+        useCount = *(s32 *)(entry + 0x38);
+        if (useCount > 0) fn_802E30C8(messages + 0x470, resource, (const char *)entry, useCount);
+        entryOffset += 0x44;
+        entryIndex++;
     }
-    if (strstr((const char *)arg0, &lbl_805599A4[0]) != 0 &&
-        stricmp((const char *)arg0, strings + 0x4A0) != 0) {
-        j = 0;
-        offset2 = 0;
-        while (j < *(s32 *)((char *)arg0 + 0x88)) {
-            entry = *(u8 **)((char *)arg0 + 0x60) + offset2;
-            if ((*(u32 *)(entry + 0x34) & 0xA) == 8) fn_802E30C8(strings + 0x4AC, arg0, (const char *)entry);
-            offset2 += 0x44;
-            j++;
+    if (strstr((const char *)resource, &lbl_805599A4[0]) != 0 &&
+        stricmp((const char *)resource, messages + 0x4A0) != 0) {
+        secondIndex = 0;
+        secondOffset = 0;
+        while (secondIndex < *(s32 *)((char *)resource + 0x88)) {
+            entry = *(u8 **)((char *)resource + 0x60) + secondOffset;
+            if ((*(u32 *)(entry + 0x34) & 0xA) == 8) fn_802E30C8(messages + 0x4AC, resource, (const char *)entry);
+            secondOffset += 0x44;
+            secondIndex++;
         }
     }
 }
