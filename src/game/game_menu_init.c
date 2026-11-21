@@ -181,11 +181,12 @@ struct GameVirtualObject {
     GameVirtualTable* vtable;
 };
 
+#pragma scheduling invalid_target
 void fn_800049C0(void) DECOMP_DONT_INLINE {
     struct NameTable { const char* names[10]; };
     struct { u32 date[6]; struct NameTable table; } local;
     int lang_result;
-    u32 a, b, c, d, e, f, g, h;
+    u16 a, b, c, d;
 
     local.table = *(const struct NameTable*)lbl_802ED680;
     fn_802E2CFC(&local);
@@ -195,21 +196,16 @@ void fn_800049C0(void) DECOMP_DONT_INLINE {
     c = *(u16*)((u8*)&local.date[1] + 2);
     d = *(u16*)((u8*)&local.date[2] + 2);
 
-    e = a * 43200;
-    f = c * 3600;
-    g = b * 60;
-    h = d << 8;
-
     fn_80129C80(6,
-        h & (d ^ f),
-        (d << 8) & (g ^ e));
+        (b << 8) & (d ^ (c * 3600)),
+        (d << 8) & ((b * 60) ^ (a * 43200)));
 
     lang_result = fn_80129D18(6, 10);
     if (fn_80278A1C(lbl_802FAF24) != 0) {
         fn_80278A1C(local.table.names[lang_result]);
     }
 }
-
+#pragma scheduling on
 /* Handle one init-table entry: when it is the special "winky" id (lbl_8055890C),
  * run the language-dependent init fn_80130390. */
 void fn_80004AB8(u32 entry) DECOMP_DONT_INLINE {
@@ -368,8 +364,8 @@ int fn_80005158(const char *name) {
     first = lbl_8034EC58[0];
     if (first == '$') goto dollar;
     if (first != '@') goto generic;
-    result = fn_80004F00(&count, &found, &lbl_8034EC58[1]);
-    if (!result) MenuLog(data + 0x150, &lbl_8034EC58[1]);
+    result = fn_80004F00(&count, &found, lbl_8034EC58 + 1);
+    if (!result) MenuLog(data + 0x150, lbl_8034EC58 + 1);
     goto after_lookup;
 dollar:
     if (first == '\0') goto generic;
@@ -481,6 +477,7 @@ extern "C" u32 fn_80004FCC(GameVirtualObject* object, u32 argument, u32 fallback
     return result;
 }
 #pragma cplusplus reset
+#pragma scheduling invalid_target
 void fn_80005364(void) {
     u32 var1, var2, var3, var4, var5;
     fn_8000D838(&lbl_8055D320);
