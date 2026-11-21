@@ -821,14 +821,17 @@ len_cond:
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-int fn_801363A0(void *arg0, void *__restrict arg1) {
-    volatile void *temp_r6 = *(void **)arg1;
-    int temp_r31 = *(int *)((char *)temp_r6 + 0x10);
-    int var = *(int *)((char *)*(void **)((char *)temp_r6 + 0x14) + 0x10);
-    if (var == 0) {
-        var = *(int *)((char *)*(void **)((char *)arg0 + 0x2C) + 0x18);
+int fn_801363A0(void *follower, void *__restrict sample) {
+    /* Interpolate the integer value of the path node at sample's position toward
+     * the next node's value (PathSample/PathNode), using the follower's default
+     * end value when the next node has none. */
+    volatile void *node = *(void **)sample;
+    int startValue = *(int *)((char *)node + 0x10);
+    int endValue = *(int *)((char *)*(void **)((char *)node + 0x14) + 0x10);
+    if (endValue == 0) {
+        endValue = *(int *)((char *)*(void **)((char *)follower + 0x2C) + 0x18);
     }
-    return temp_r31 + (unsigned int)(*(float *)((char *)arg1 + 4) * (float)(var - temp_r31));
+    return startValue + (unsigned int)(*(float *)((char *)sample + 4) * (float)(endValue - startValue));
 }
 #pragma pop
 extern float lbl_80561358;
