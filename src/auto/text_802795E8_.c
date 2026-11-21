@@ -141,7 +141,7 @@ void fn_802797A8(s32 *vehicleIds, s32 vehicleCount) {
         entry = (char *)lbl_8055F618 + entryOffset;
         memset(entry, 0, 0x2B8);
         vehicleId = *vehicleIds;
-        *(s32 *)entry = vehicleId;
+        ((CarStateEntry *)entry)->vehicleId = vehicleId;
     }
     fn_8027974C();
 }
