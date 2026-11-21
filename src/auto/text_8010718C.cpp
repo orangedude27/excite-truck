@@ -112,9 +112,9 @@ public:
     virtual void v18();
     virtual void v19();
     virtual void v20();
-        virtual s32 v21(CancelCallback callback, void* user);
+    virtual s32 v21(CancelCallback callback, void* user);
     s32 CancelAsync(CancelCallback callback, void* user);
-  };
+};
 
 }
 }
