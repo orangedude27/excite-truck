@@ -85,6 +85,8 @@ static inline void Mtx3MultVec(f32 *m, f32 *v, f32 *out) {
 }
 
 typedef struct Words12 { u32 w[12]; } Words12;
+/* No-op constructor callback for the array-registration helper fn_8002F53C:
+ * the elements at lbl_8049A028 need no per-element initialization. */
 void fn_8026B840(void) {}
 
 #pragma dont_inline on
@@ -1285,20 +1287,16 @@ void fn_8026DAA8(void *arg0) {
             f32 up[3];
             s32 id = fn_8026A344(0);
             u32 *source = (u32 *)((u8 *)fn_8017960C(lbl_8055F4F0) + 0x3C);
-            f32 *other = (f32 *)((u8 *)fn_8017960C(id) + 0x60);
+            u8 *otherRaw = (u8 *)fn_8017960C(id);
+            f32 *other = (f32 *)(otherRaw + 0x60);
             f32 *target = (f32 *)&local[9];
 
-            local[0] = source[0];
-            local[1] = source[1];
-            local[2] = source[2];
-            local[3] = source[3];
-            local[4] = source[4];
-            local[5] = source[5];
-            local[6] = source[6];
-            local[7] = source[7];
+            *(Block2 *)&local[0] = *(Block2 *)&source[0];
+            *(Block2 *)&local[2] = *(Block2 *)&source[2];
+            *(Block2 *)&local[4] = *(Block2 *)&source[4];
+            *(Block2 *)&local[6] = *(Block2 *)&source[6];
             local[8] = source[8];
-            local[9] = source[9];
-            local[10] = source[10];
+            *(Block2 *)&local[9] = *(Block2 *)&source[9];
             local[11] = source[11];
 
             target[0] += ((f32 *)lbl_80499050)[9];
@@ -1311,18 +1309,20 @@ void fn_8026DAA8(void *arg0) {
             fn_8026E688((f32 *)((u8 *)self + 0x58), target, other, up);
         } else {
             f32 *matrix = (f32 *)((u8 *)self + 0x58);
-            matrix[0] = lbl_80563D94;
-            matrix[1] = lbl_80563D78;
-            matrix[2] = lbl_80563D78;
-            matrix[3] = lbl_80563D78;
-            matrix[4] = lbl_80563D94;
-            matrix[5] = lbl_80563D78;
-            matrix[6] = lbl_80563D78;
-            matrix[7] = lbl_80563D78;
-            matrix[8] = lbl_80563D94;
-            matrix[9] = lbl_80563D78;
-            matrix[10] = lbl_80563D78;
-            matrix[11] = lbl_80563D78;
+            f32 a = lbl_80563D78;
+            f32 b = lbl_80563D94;
+            matrix[1] = a;
+            matrix[0] = b;
+            matrix[2] = a;
+            matrix[3] = a;
+            matrix[4] = b;
+            matrix[5] = a;
+            matrix[6] = a;
+            matrix[7] = a;
+            matrix[8] = b;
+            matrix[9] = a;
+            matrix[10] = a;
+            matrix[11] = a;
         }
         break;
     case 4: {
@@ -1333,41 +1333,31 @@ void fn_8026DAA8(void *arg0) {
         break;
     }
     default: {
-        u32 *q = lbl_80499050 - 1;
+        u32 *q = lbl_80499050;
         u32 *matrix = (u32 *)((u8 *)self + 0x58);
-        matrix[0] = *++q;
-        matrix[1] = *++q;
-        matrix[2] = *++q;
-        matrix[3] = *++q;
-        matrix[4] = *++q;
-        matrix[5] = *++q;
-        matrix[6] = *++q;
-        matrix[7] = *++q;
-        matrix[8] = *++q;
-        matrix[9] = *++q;
-        matrix[10] = *++q;
-        matrix[11] = *++q;
+        *(Block2 *)&matrix[0] = *(Block2 *)&q[0];
+        *(Block2 *)&matrix[2] = *(Block2 *)&q[2];
+        *(Block2 *)&matrix[4] = *(Block2 *)&q[4];
+        *(Block2 *)&matrix[6] = *(Block2 *)&q[6];
+        matrix[8] = q[8];
+        *(Block2 *)&matrix[9] = *(Block2 *)&q[9];
+        matrix[11] = q[11];
         break;
     }
     }
 
-    *(f32 *)((u8 *)self + 0xBC) = lbl_8055F47C;
-    *(f32 *)((u8 *)self + 0x120) = lbl_80563D78;
-    *(f32 *)((u8 *)self + 0x124) = lbl_80563D78;
-    *(f32 *)((u8 *)self + 0x128) = lbl_80563D78;
+    {
+        f32 z = lbl_80563D78;
+        *(f32 *)((u8 *)self + 0xBC) = lbl_8055F47C;
+        *(f32 *)((u8 *)self + 0x120) = z;
+        *(f32 *)((u8 *)self + 0x124) = z;
+        *(f32 *)((u8 *)self + 0x128) = z;
+    }
 
-    lbl_8049A1C0[0] = *(u32 *)((u8 *)self + 0x58);
-    lbl_8049A1C0[1] = *(u32 *)((u8 *)self + 0x5C);
-    lbl_8049A1C0[2] = *(u32 *)((u8 *)self + 0x60);
-    lbl_8049A1C0[3] = *(u32 *)((u8 *)self + 0x64);
-    lbl_8049A1C0[4] = *(u32 *)((u8 *)self + 0x68);
-    lbl_8049A1C0[5] = *(u32 *)((u8 *)self + 0x6C);
-    lbl_8049A1C0[6] = *(u32 *)((u8 *)self + 0x70);
-    lbl_8049A1C0[7] = *(u32 *)((u8 *)self + 0x74);
-    lbl_8049A1C0[8] = *(u32 *)((u8 *)self + 0x78);
-    lbl_8049A1C0[9] = *(u32 *)((u8 *)self + 0x7C);
-    lbl_8049A1C0[10] = *(u32 *)((u8 *)self + 0x80);
-    lbl_8049A1C0[11] = *(u32 *)((u8 *)self + 0x84);
+    *(Block8 *)lbl_8049A1C0 = *(Block8 *)((u8 *)self + 0x58);
+    *(u32 *)((u8 *)lbl_8049A1C0 + 0x20) = *(u32 *)((u8 *)self + 0x78);
+    *(Block2 *)((u8 *)lbl_8049A1C0 + 0x24) = *(Block2 *)((u8 *)self + 0x7C);
+    *(u32 *)((u8 *)lbl_8049A1C0 + 0x2C) = *(u32 *)((u8 *)self + 0x84);
 }
 /* Get the current camera-mode selector (lbl_8055F4E0), which the camera update switches on. */
 void* fn_8026DDD0(void) {
