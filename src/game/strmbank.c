@@ -7,7 +7,7 @@
 // Recovered TU window 0x802E7578..0x802E7768 (see docs/attribution_analysis.md).
 // Static-init thunk fn_802E7768 (+ .ctors slot 0x802ED610) remains in
 // auto/text_802E7768_.c pending a promotion pass.
-typedef signed long s32;
+#include <types.h>
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
