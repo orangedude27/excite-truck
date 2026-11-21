@@ -1796,8 +1796,9 @@ void fn_802C7AD4(void) {
     fn_802C7A94(9);
 }
 #pragma dont_inline reset
-void fn_802D754C(void);
-void fn_802C7ADC(void) { fn_802D754C(); }
+void fn_802D754C(unsigned char value);
+/* Tail-call alias: forwards the game-mode flag bit to fn_802D754C. */
+void fn_802C7ADC(unsigned char value) { fn_802D754C(value); }
 
 #pragma opt_propagation off
 void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
