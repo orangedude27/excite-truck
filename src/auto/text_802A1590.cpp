@@ -509,8 +509,7 @@ extern "C" int lbl_803499E8[];
 extern "C" int lbl_803499F4[];
 extern "C" s32 lbl_8055D430;
 extern "C" f32 lbl_80564738, lbl_8056473C;
-#pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_802A1CC4(void) {
     u8 config[0x90];
     void *name = lbl_803499E8;
@@ -547,7 +546,6 @@ extern "C" void fn_802A1CC4(void) {
         lbl_8055F870 = 0;
     }
 }
-#pragma pop
 /* Destroy the effect emitter cached in lbl_8055F870 (created earlier by
  * fn_8028E2F8) if one is live, then clear the global so it is not freed twice. */
 extern "C" void fn_802A1DC0(void) {
@@ -707,7 +705,7 @@ extern "C" void fn_802A2120(void* arg0, void* arg1, s32 arg2) {
 #pragma use_lmw_stmw off
     unsigned char* p;
     f32 vec[4];
-    register f32 var_f1;
+    f32 var_f1;
     f32 f31;
     f32 fa, fb, r;
     f32 x, y, z;
@@ -717,6 +715,8 @@ extern "C" void fn_802A2120(void* arg0, void* arg1, s32 arg2) {
     p = *(unsigned char**)arg1 + arg2 * 0x3c;
     if (*(f32*)((char*)arg1 + 8) > lbl_80564754) goto end;
     if (*(f32*)(p + 0x94) * *(f32*)(p + 0x94) < lbl_80564758) goto end;
+    else goto body;
+body:
     flag = 1;
     if (arg2 != 2 && arg2 != 3) flag = 0;
     var_f1 = lbl_8056475C;
@@ -764,7 +764,7 @@ end: ;
 extern "C" float fn_801E7E18(void);
 extern "C" void fn_802A2434(void *arg0, void *arg1) {
     extern float lbl_80564774, lbl_80564778;
-    float now = fn_801E7E18();
+    double now = ((double (*)(void))fn_801E7E18)();
     int count = 4;
     int c = (int)(lbl_80564774 * *(float *)((char *)arg1 + 0x24));
     if (c < count) count = c;
@@ -783,13 +783,11 @@ extern "C" f32 lbl_80564744;
 extern "C" int lbl_80349AB0[];
 extern "C" void fn_8028E584(void*, void*);
 extern "C" s32 fn_80287B14(void*);
-#pragma push
-#pragma processor 750
+#pragma scheduling invalid_target
 extern "C" void fn_802A2A38(void* arg0, void* arg1) {
-    struct Arg1 { char pad[0x28]; s32 index; };
-    s32 index = ((struct Arg1*)arg1)->index;
     f32 max = 1.0f;
-    f32* value = (f32*)((char*)arg0 + (index << 4) + 0x20);
+    u32 index = *(u32*)((char*)arg1 + 0x28);
+    f32* value = (f32*)((char*)arg0 + index * 0x10 + 0x20);
     f32 limit = max - lbl_80558DC4;
     f32 v = *value;
     int shouldCall = v > limit;
@@ -797,8 +795,8 @@ extern "C" void fn_802A2A38(void* arg0, void* arg1) {
         ((void (*)(void*, void*, void*))fn_8028E584)(
             *(void**)((char*)arg0 + 0xC), arg1, (char*)arg1 + 0xC);
     }
-    index = ((struct Arg1*)arg1)->index;
-    value = (f32*)((char*)arg0 + (index << 4) + 0x20);
+    index = *(u32*)((char*)arg1 + 0x28);
+    value = (f32*)((char*)arg0 + index * 0x10 + 0x20);
     f32 limit2 = 1.0f - lbl_80558DC4;
     f32 v2 = *value;
     if (v2 > limit2) {
@@ -806,7 +804,6 @@ extern "C" void fn_802A2A38(void* arg0, void* arg1) {
     }
     *value += 0.1f;
 }
-#pragma pop
 extern "C" void fn_802A2AE8(void* arg0, s32 arg1) {
     /* Builds effect/config params in a stack buffer (0xA8 bytes), initializes via fn_8028E61C,
        fills many fields from lbl_805647xx float constants, then creates/stores an effect object
@@ -936,60 +933,69 @@ extern "C" void *fn_8012850C(u32, void *);
 extern "C" void *fn_8002F37C(void *, void (*)(void), s32, s32, s32);
 extern "C" void *fn_802CAC28(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32);
 extern "C" f64 fn_8002F208(f32, f32, f32);
+/* Build the "large dust" effect slot of a terrain-object instance: pack the
+ * effect's curve tuning constants into a parameter block, allocate a 0x68
+ * object under the "large dust" tag, let fn_802A42C8 turn the block into a
+ * ramp, and store the result in the instance at +0x10. */
 extern "C" void fn_802A2E08(void *arg0, s32 arg1) {
-    struct Params {
-        s32 size;
-        f32 a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s;
+    struct DustCurve {
+        s32 pointCount;
+        f32 base, weight;
+        f32 w0, w1, w2;
+        f32 rate0, rate1, rate2;
+        f32 far, near, zero0;
+        f32 lo, mid, hi;
+        f32 fade, band, peak, zero1, tail;
     } params;
-    register float q;
-    register float o;
-    register float n;
-    register float m;
-    register float l;
-    register float i;
-    register float k;
-    register float j;
-    register float gp;
-    register float fh;
-    register float cde;
-    register float b;
-    register float a;
-    cde = 0.3f;
-    fh = 1.0f;
-    gp = 0.25f;
-    k = 0.0f;
-    a = *(volatile float *)&lbl_805647C0;
-    b = *(volatile float *)&lbl_805647C4;
-    j = *(volatile float *)&lbl_805647CC;
-    i = *(volatile float *)&lbl_805647AC;
-    l = *(volatile float *)&lbl_80564734;
-    m = *(volatile float *)&lbl_805647D0;
-    n = *(volatile float *)&lbl_805647D4;
-    o = *(volatile float *)&lbl_80564780;
-    q = *(volatile float *)&lbl_805647D8;
-    params.size = 0x834;
-    params.a = a;
-    params.b = b;
-    params.c = cde;
-    params.d = cde;
-    params.e = cde;
-    params.f = fh;
-    params.g = gp;
-    params.h = fh;
-    params.j = j;
-    params.k = k;
-    params.i = i;
-    params.l = l;
-    params.m = m;
-    params.n = n;
-    params.o = o;
-    params.p = gp;
-    params.q = q;
-    params.r = k;
-    params.s = cde;
+    register float peak;
+    register float fade;
+    register float hi;
+    register float mid;
+    register float lo;
+    register float far;
+    register float zero;
+    register float near;
+    register float quarter;
+    register float one;
+    register float third;
+    register float weight;
+    register float base;
+    third = 0.3f;
+    one = 1.0f;
+    quarter = 0.25f;
+    zero = 0.0f;
+    base = *(volatile float *)&lbl_805647C0;
+    weight = *(volatile float *)&lbl_805647C4;
+    near = *(volatile float *)&lbl_805647CC;
+    far = *(volatile float *)&lbl_805647AC;
+    lo = *(volatile float *)&lbl_80564734;
+    mid = *(volatile float *)&lbl_805647D0;
+    hi = *(volatile float *)&lbl_805647D4;
+    fade = *(volatile float *)&lbl_80564780;
+    peak = *(volatile float *)&lbl_805647D8;
+    params.pointCount = 0x834;
+    params.base = base;
+    params.weight = weight;
+    params.w0 = third;
+    params.w1 = third;
+    params.w2 = third;
+    params.rate0 = one;
+    params.rate1 = quarter;
+    params.rate2 = one;
+    params.near = near;
+    params.zero0 = zero;
+    params.far = far;
+    params.lo = lo;
+    params.mid = mid;
+    params.hi = hi;
+    params.fade = fade;
+    params.band = quarter;
+    params.peak = peak;
+    params.zero1 = zero;
+    params.tail = third;
     void *obj = fn_801284F8(0x68, (void *)lbl_80349A34);
     if (obj != 0) {
-        obj = ((void *(*)(void *, Params *, s32))fn_802A42C8)(obj, &params, arg1);
+        obj = ((void *(*)(void *, DustCurve *, s32))fn_802A42C8)(obj, &params, arg1);
     }
     *(void **)((u8 *)arg0 + 0x10) = obj;
 }
@@ -1019,6 +1025,9 @@ extern "C" void* __dt__8JUTVideoFv(void* thisPtr, s32 shouldDelete) {
 }
 
 extern "C" f32 lbl_805647E0, lbl_805647E4;
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 extern "C" void fn_802A2FCC(void *arg0, void *arg1, s32 arg2) {
     struct Vec { u32 x; f32 y; u32 z; } vec;
     unsigned char *base = *(unsigned char **)arg1;
@@ -1027,11 +1036,11 @@ extern "C" void fn_802A2FCC(void *arg0, void *arg1, s32 arg2) {
     f32 factor, adjustment;
     f32 *third;
     u32 vy, vx;
-    if (*(f32 *)((char *)arg1 + 8) > lbl_8056476C)
+    if (*(f32 *)((char *)arg1 + 8) > 2500.0f)
         return;
-    if (*(f32 *)(entry + 0x98) < lbl_805647DC)
+    if (*(f32 *)(entry + 0x98) < 5.0f)
         return;
-    lt = *(f32 *)(entry + 0x70) < lbl_80564744;
+    lt = *(f32 *)(entry + 0x70) < 0.0f;
     vy = *(u32 *)(entry + 0x80);
     vx = *(u32 *)(entry + 0x7C);
     vec.x = vx;
@@ -1047,7 +1056,7 @@ extern "C" void fn_802A2FCC(void *arg0, void *arg1, s32 arg2) {
     else
         fn_8028E590(*(s32 *)((char *)arg0 + 4), (f32 *)&vec, third, adjustment);
 }
-
+#pragma pop
 // Effect creation descriptor for the effect builder fn_8028E2F8.  fn_8028E61C
 // clears the 0x8C bytes that start at `mode`, and fn_8028FD00 copies them into
 // the new effect object verbatim (there at 0x00-0x89, i.e. 0x18 lower than
@@ -1202,7 +1211,7 @@ extern "C" void fn_802A33D4(void* arg0, void* arg1, s32 arg2) {
     s32 a[3];
     f32 p[3];
     f32 angle;
-    limit = lbl_8056476C;
+    limit = 2500.0f;
     value = *(f32*)((char*)arg1 + 8);
     offset = arg2 * 0x3C;
     base = *(unsigned char**)arg1;
@@ -1296,16 +1305,16 @@ extern "C" void* __dt__14CollisionSpaceFv_802A366C(void* object, s32 deleting) {
 
 extern "C" f32 lbl_80564730, lbl_80564744, lbl_8056475C, lbl_8056476C, lbl_805647C4, lbl_805647DC, lbl_80564818, lbl_8056481C;
 extern "C" void fn_8028E590(int, f32*, f32*, f32);
-extern "C" void fn_802A36D0(void *arg0, void *arg1, s32 arg2) {
-    f32 v = *(f32*)((char*)arg1 + 8);
+extern "C" void fn_802A36D0(void *arg0, const void *arg1, s32 arg2) {
+    f32 v = *(const f32 *)((const char *)arg1 + 8);
     f32 limit = lbl_8056476C;
-    unsigned char *base = *(unsigned char**)arg1;
-    unsigned char *base2 = *(unsigned char**)arg1;
+    unsigned char *base = *(unsigned char **)arg1;
+    unsigned char *base2 = *(unsigned char **)arg1;
     unsigned char *p = base + arg2 * 0x3C;
     if (v > limit) goto done;
-    if (*(f32*)(p + 0x98) >= lbl_805647DC) goto body;
-    if (*(f32*)(p + 0x94) >= lbl_80564818) goto body;
-    else goto done;
+    if (!(*(f32*)(p + 0x98) < lbl_805647DC)) goto body;
+    if (!(*(f32*)(p + 0x94) < lbl_80564818)) goto body;
+    goto done;
 body:
     {
         f32 sp[6];
@@ -1406,8 +1415,9 @@ extern "C" void fn_802A3990(void *arg0, void *arg1, int arg2) {
     f32 s, t, k;
     unsigned char *obj = *(unsigned char **)arg1;
     unsigned char *p = obj + arg2 * 0x3C;
-    if (!(*(f32 *)((char *)arg1 + 8) > lbl_8056476C)) {
-      if (!(*(f32 *)(p + 0x94) * *(f32 *)(p + 0x94) < lbl_80564758)) {
+    if (*(f32 *)((char *)arg1 + 8) > lbl_8056476C) return;
+    if (*(f32 *)(p + 0x94) * *(f32 *)(p + 0x94) < lbl_80564758) return;
+    {
         f32 sx, sz;
         if (*(f32 *)(p + 0x70) > lbl_80564744) sx = lbl_80564730; else sx = lbl_8056475C;
         if (*(f32 *)(p + 0x94) > lbl_80564744) sz = lbl_80564730; else sz = lbl_8056475C;
@@ -1430,7 +1440,6 @@ extern "C" void fn_802A3990(void *arg0, void *arg1, int arg2) {
         w[1] += *(f32 *)(obj + 0x10) * k;
         w[2] += *(f32 *)(obj + 0x14) * k;
         fn_8028E590(*(int *)((char *)arg0 + 4), v, w, -sx * fn_80287BC8(lbl_80564744, lbl_8056477C));
-      }
     }
 }
 extern "C" s32 fn_8028E2F8(void*, void*, s32, s32);
@@ -1609,6 +1618,7 @@ extern "C" void fn_802A41D8(void *owner, s32 textureResource) {
 
 #pragma use_lmw_stmw off
 extern "C" void *fn_802A42C8(void *arg0, void *arg1, s32 arg2) {
+    #pragma scheduling on
     register s32 count = *(s32 *)arg1;
     register char *params = (char *)arg1;
     register char *object = (char *)arg0;
@@ -1616,19 +1626,20 @@ extern "C" void *fn_802A42C8(void *arg0, void *arg1, s32 arg2) {
     void *entries = fn_8012850C((count << 5) + 0x10, lbl_80349A98);
     entries = fn_8002F37C(entries, fn_802A44B4, 0, 0x20, count);
 
+    register f32 p4 = *(f32 *)(params + 0x4);
+    register f32 limit = *(volatile f32 *)&lbl_80564730;
+    register f32 ratio = limit / p4;
     register f32 p30 = *(f32 *)(params + 0x30);
     s32 copyCount = count;
     register f32 p34 = *(f32 *)(params + 0x34);
     s32 zero = 0;
     register f32 p3C = *(f32 *)(params + 0x3c);
-    register f32 limit = *(volatile f32 *)&lbl_80564730;
     register f32 slope44 = p34 - p30;
     register f32 p38 = *(f32 *)(params + 0x38);
     register f32 p40 = *(f32 *)(params + 0x40);
     register f32 remaining = limit - p3C;
     p34 = p38 - p34;
     register f32 p44 = *(f32 *)(params + 0x44);
-    register f32 p4 = *(f32 *)(params + 0x4);
     register f32 p48 = *(f32 *)(params + 0x48);
     register f32 scale = *(volatile f32 *)&lbl_80564838;
     register f32 p4C = *(f32 *)(params + 0x4c);
@@ -1640,7 +1651,6 @@ extern "C" void *fn_802A42C8(void *arg0, void *arg1, s32 arg2) {
     p34 /= remaining;
     register f32 slope54 = p44 - p40;
     register f32 p18 = *(f32 *)(params + 0x18);
-    register f32 ratio = limit / p4;
     register f32 p1C = *(f32 *)(params + 0x1c);
     register f32 p20 = *(f32 *)(params + 0x20);
     register f32 p24 = *(f32 *)(params + 0x24);
