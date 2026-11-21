@@ -1123,7 +1123,11 @@ void fn_802704D4(void *mode, void *camera) {
     ((void (*)(void *, s32, void *))fn_802704D0)(mode, *(s32 *)((u8 *)camera + 4), camera);
 }
 
-void fn_802704E0(void) { ((f32 (*)())fn_8026EA8C)(); }
+/* Tail-call thunk: forwards its arguments unchanged to fn_8026EA8C, the camera
+ * type-id factor lookup, giving callers a separate entry point to that routine. */
+f32 fn_802704E0(s32 typeId, void *sub, f32 value) {
+    return fn_8026EA8C(typeId, sub, value);
+}
 
 #pragma push
 #pragma processor 750
