@@ -455,8 +455,10 @@ void fn_8028E58C(void *emitter, int posA, float *basePos, float angle) {
 }
 
 extern void fn_8028FC40(void *, int, float *, float);
-void fn_8028E590(void *arg0, int arg1, float *arg2, float farg0) {
-    fn_8028FC40(arg0, arg1, arg2, farg0);
+/* Forwarder: emit a particle from the emitter when its index range and probability
+   allow it, applying the given angle offset (fn_8028FC40). */
+void fn_8028E590(void *emitter, int param, float *basePos, float angleOffset) {
+    fn_8028FC40(emitter, param, basePos, angleOffset);
 }
 
 #pragma push
