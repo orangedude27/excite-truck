@@ -219,8 +219,7 @@ void fn_802B1FC0(void *node) {
 #pragma dont_inline on
 #pragma opt_common_subs off
 void fn_802B1FD4(void) {
-    int i;
-    void *table;
+    #pragma scheduling invalid_target
     void *r27;
     int j;
     void *r25;
@@ -229,6 +228,8 @@ void fn_802B1FD4(void) {
     int off_i;
     int off_j;
     int off_k;
+    int i;
+    void *table;
 
     fn_802B2104(&lbl_8055F9BC);
     table = &lbl_804BE1FC;
@@ -612,12 +613,12 @@ void fn_802B28BC(int *entries, int count) {
   #pragma optimization_level 3
   #pragma opt_pointer_aliasing on
 void **fn_802B2934(void *arg0, void **arg1) {
-    void *val = *arg1;
+    unsigned int valBits = *(unsigned int *)arg1;
     int count = ((int *)arg0)[1];
     void **data = *(void ***)arg0;
     int next = count + 1;
     ((int *)arg0)[1] = next;
-    data[count] = val;
+    data[count] = (void *)valBits;
     return &data[count];
 }
  #pragma pop
