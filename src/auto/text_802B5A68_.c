@@ -620,10 +620,10 @@ next:
     }
 #undef sControlTable
 }
-extern f32 fn_800108C8(f32, s32);
-extern f32 fn_8001090C(f32);
-extern float lbl_80564C74;
-extern float lbl_80564C78;
+extern f32 fn_800108C8(f32, s32); /* measured text width, scaled by the UI font + text scale */
+extern f32 fn_8001090C(f32);      /* a value scaled by the UI font's vertical metric */
+extern float lbl_80564C74;        /* 0.0f: horizontal offset for left-aligned text */
+extern float lbl_80564C78;        /* 0.5f: half-width factor for centered text */
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
