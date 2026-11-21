@@ -14,6 +14,7 @@ extern s32 fn_8012850C(s32 size, s32 *tag);       /* new[]    */
 extern char lbl_8032AFC4[]; /* "MemStreamPtr" */
 extern char lbl_8032AFB8[]; /* "MemStream"    */
 extern char lbl_8032AFD4[]; /* "MemStream"    */
+
 /* A byte buffer of the given size allocated off the heap (heap tag
    "MemStream"); it is the storage a MemStreamPtr cursor reads and writes. */
 typedef struct MemStream {
