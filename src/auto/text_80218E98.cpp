@@ -4709,9 +4709,9 @@ extern "C" void fn_802200AC(void *arg0) {
     f32 sp8 = lbl_805634A4;
     fn_80230C30(&sp14, &sp10, *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8));
     f32 step = (f32)((VfObj *)arg0)->vf28();
-    register f32 range = (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
+    f32 range = (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
     f32 progress = scale * (f32)fn_802C51C0(*(s32 *)((u8 *)arg0 + 0x254));
-    register f32 height = (f32)fn_802C5220(*(s32 *)((u8 *)arg0 + 0x254));
+    f32 height = (f32)fn_802C5220(*(s32 *)((u8 *)arg0 + 0x254));
     s32 enabled = 0;
     s32 *mode = *(s32 **)((u8 *)arg0 + 0x258);
     if (mode != 0 && *mode == *(s32 *)((u8 *)arg0 + 0x25C))
@@ -5507,9 +5507,10 @@ extern "C" void fn_80221EA0(void *panel, s32 fieldId, void *value, s32 size) {
 #pragma dont_inline reset
 extern "C" s32 fn_80221EA8(void *arg0) {
     extern char lbl_8033DA2C[];
-    const u32 value = *(u32*)((u8*)*(void**)((u8*)arg0 + 0x14) + 0x238);
+    u32 value = *(u32*)((u8*)*(void**)((u8*)arg0 + 0x14) + 0x238);
+    u32 one = 1;
     for (s32 i = 0; i < 32; i++) {
-        if (value == (1u << i)) {
+        if (value == (one << i)) {
             return i;
         }
     }
@@ -9409,6 +9410,7 @@ extern "C" int fn_802298DC(void *widget) {
 }
 
 extern "C" void fn_802298F8(void) {
+    /* Empty no-op: a default widget vtable method with no behaviour. */
 }
 
 extern "C" void fn_802298FC(void) {
