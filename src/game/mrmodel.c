@@ -1803,7 +1803,6 @@ void fn_802D754C(void);
 void fn_802C7ADC(void) { fn_802D754C(); }
 
 #pragma opt_propagation off
-#pragma scheduling invalid_target
 void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
     int i;
     struct {
