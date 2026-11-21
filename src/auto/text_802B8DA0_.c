@@ -618,6 +618,7 @@ short fn_802B9954(void *roadObject) {
 }
 
 void fn_802B9960(void) {
+    /* No-op overridable hook: returns without touching any register. */
 }
 
 #pragma scheduling invalid_target
