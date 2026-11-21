@@ -190,7 +190,7 @@ void fn_80264098(void *item, int type) {
 extern void *operator new(unsigned long, void *);
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void fn_802640A0(void *arg0) {
+void fn_802640A0(void *arg0) {
     struct CreditsMenuItem {
         void *name;
         int type;
@@ -323,22 +323,25 @@ void fn_80264444(void *arg0) {
 #undef getCreditsTimer
 }
 
+/* Credits-page item that references the "QuitHotkey" handler object: allocates and
+ * initializes it, registers it in the global credits item list, then stores it in the item. */
 void fn_80264484(void *arg0) {
     extern void *fn_801284F8(unsigned int, void *);
     extern char lbl_803464A8[];
     extern char lbl_803464F8[];
     extern unsigned char lbl_80498F78[];
-    void *result;
+    void *quitHotkey;
+    CreditsItem *item = (CreditsItem *)arg0;
 
-    result = fn_801284F8(0x18, lbl_803464A8);
-    if (result != 0) {
-        *(int *)((char *)result + 0x14) = 0;
-        *(void **)result = lbl_803464F8;
+    quitHotkey = fn_801284F8(0x18, lbl_803464A8);
+    if (quitHotkey != 0) {
+        *(int *)((char *)quitHotkey + 0x14) = 0;
+        *(void **)quitHotkey = lbl_803464F8;
     }
-    ADD_CREDITS_ITEM(result);
-    *(int *)arg0 = 0;
-    fn_80264098(arg0, 5);
-    *(void **)((char *)arg0 + 8) = result;
+    ADD_CREDITS_ITEM(quitHotkey);
+    item->vtable = 0;
+    fn_80264098(item, CREDITS_ITEM_REF);
+    item->object = quitHotkey;
 }
 
 #pragma scheduling invalid_target
@@ -1166,31 +1169,31 @@ extern void fn_80265904(void);
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80265940(void) {
-      int data[24];
-      int *v;
-      v = lbl_802FA73C;
-      data[15] = lbl_80498F58[0];
-      data[16] = lbl_80498F58[1];
-      data[17] = lbl_80498F58[2];
-      data[18] = lbl_80498F58[3];
-      data[19] = lbl_80498F58[4];
-      data[0] = v[0];
-      data[1] = (int)&data[5];
-      data[2] = v[2];
-      data[3] = v[3];
-      data[4] = v[4];
-      data[7] = (int)fn_802658FC;
-      data[12] = (int)fn_80265904;
-      data[5] = (int)lbl_8055BAC0;
-      data[10] = (int)lbl_8055BAB8;
-      data[13] = 2;
-      data[6] = 8;
-      data[11] = 8;
-      data[8] = 0;
-      data[9] = 0;
-      data[14] = 0;
-      fn_802146BC(data, -999, -999, 1, v[4], v[3], v[2], v[0]);
-  }
+    int data[20];
+    int *v = lbl_802FA73C;
+    int eight = 8;
+    data[7] = (int)fn_802658FC;
+    data[5] = (int)lbl_8055BAC0;
+    data[6] = eight;
+    data[8] = 0;
+    data[9] = 0;
+    data[11] = eight;
+    data[10] = (int)lbl_8055BAB8;
+    data[12] = (int)fn_80265904;
+    data[13] = 2;
+    data[14] = 0;
+    data[15] = lbl_80498F58[0];
+    data[16] = lbl_80498F58[1];
+    data[17] = lbl_80498F58[2];
+    data[18] = lbl_80498F58[3];
+    data[19] = lbl_80498F58[4];
+    data[0] = v[0];
+    data[2] = v[2];
+    data[3] = v[3];
+    data[4] = v[4];
+    data[1] = (int)&data[5];
+    fn_802146BC(data, -999, -999, 1, v[4], v[3], v[2], v[0]);
+}
 #pragma pop
 extern void fn_80236954(void *);
 extern int fn_8023695C(void *);
