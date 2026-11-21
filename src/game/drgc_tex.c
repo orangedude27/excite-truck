@@ -633,7 +633,6 @@ void fn_802D81C4(void *arg0, int arg1) {
         }
     }
     q = *(unsigned char **)s2;
-#pragma unroll off
     for (i = 0; i < 4; i++) {
         unsigned char t;
         t = q[0]; q[0] = q[3]; q[3] = t;
@@ -642,7 +641,6 @@ void fn_802D81C4(void *arg0, int arg1) {
         t = q[5]; q[5] = q[6]; q[6] = t;
         q += 0x10;
     }
-#pragma unroll reset
     halfw = width / 2;
     fn_801282EC(0x20);
     size = halfw * height;
@@ -787,9 +785,9 @@ extern char lbl_8034C5C8[];
 extern void *fn_802D7D98(void *, void *);
 #pragma push
 #pragma scheduling on
-void *fn_802D8E9C(void *arg0, void *arg1) {
+void *fn_802D8E9C(const void *arg0, void *arg1) {
     void *obj = 0;
-    int kind = *(volatile int *)arg0;
+    int kind = *(const int *)arg0;
     void *name = arg1;
     if (kind == 0x17) goto use_a84;
     if (kind >= 0x17) goto high_range;
@@ -815,19 +813,19 @@ high_tail:
     if (kind < 0x47) goto use_fa0;
     if (kind >= 0x4C) goto report_error;
 use_fa0:
-    obj = fn_802D7FA0(arg0, name);
+    obj = fn_802D7FA0((void *)arg0, name);
     goto finish;
 use_b5c:
-    obj = fn_802D7B5C(arg0, name);
+    obj = fn_802D7B5C((void *)arg0, name);
     goto finish;
 use_a84:
-    obj = fn_802D8A84(arg0, name);
+    obj = fn_802D8A84((void *)arg0, name);
     goto finish;
 use_c00:
-    obj = fn_802D8C00(arg0, name);
+    obj = fn_802D8C00((void *)arg0, name);
     goto finish;
 use_d98:
-    obj = fn_802D7D98(arg0, name);
+    obj = fn_802D7D98((void *)arg0, name);
     goto finish;
 report_error:
     fn_802E317C(lbl_8034C5C8, kind, name);
@@ -1013,14 +1011,17 @@ extern void fn_802CFF50(void);
 #pragma opt_propagation off
 void fn_802D9418(void) {
     void *obj;
-    unsigned int s, zero, t;
+    unsigned int zero;
     fn_802D2614();
     obj = (char *)lbl_8055FE24 + 0x24;
-    s = GXGetTexObjWrapS(obj) & 0xFFFF;
-    t = GXGetTexObjWrapT(obj) & 0xFFFF;
-    zero = 0;
-    GXSetTexCopySrc(zero, zero, s, t);
-    GXSetTexCopyDst(s, t, GXGetTexObjMipMap(obj), zero);
+    {
+        unsigned int s, t;
+        s = GXGetTexObjWrapS(obj) & 0xFFFF;
+        t = GXGetTexObjWrapT(obj) & 0xFFFF;
+        zero = 0;
+        GXSetTexCopySrc(0, 0, s, t);
+        GXSetTexCopyDst(s, t, GXGetTexObjMipMap(obj), 0);
+    }
     GXSetZMode(1, 7, 1);
     GXSetColorUpdate(1);
     GXCopyTex(GXGetTexObjFmt(obj), 1);
@@ -1189,10 +1190,11 @@ void *fn_802D8C00(void *arg0, void *arg1) {
     int w;
     int h;
     unsigned char *p;
+    struct ObjTag { u8 pad[0xCC]; volatile u8 flag; };
     obj = fn_802D8A84(arg0, arg1);
     w = *(int *)((char *)arg0 + 0x24);
     h = *(int *)((char *)arg0 + 0x28);
-    *(volatile unsigned char *)((char *)obj + 0xCC) = 1;
+    ((struct ObjTag *)obj)->flag = 1;
     GXGetTexBufferSize((unsigned short)w, (unsigned short)h, 0xE, 0, 1);
     p = *(unsigned char **)(*(unsigned char **)((char *)arg0 + 0x2C) + 8);
     DCFlushRange(p, (w * h) / 2);
