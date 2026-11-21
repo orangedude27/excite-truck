@@ -1401,11 +1401,15 @@ extern "C" void fn_8024BB98(void *arg0) {
 
 extern char lbl_80343E60[];
 #pragma cplusplus on
+/* Fill this object's contest id (+0x34) and copy the selected contest's
+ * "friendly_name" into its +0x38 string buffer (bounded to 100 bytes).
+ * Leaves the id at -1 and an empty string when no selector is present. */
 extern "C" void fn_8024BBF4(void *self) {
     class Base {
     public:
         char pad[0xC];
     };
+    /* contest selector: vtable+0x38 = getSelection(&eventId, &contestIndex) */
     class Selector : public Base {
     public:
         virtual void v0();
@@ -1422,6 +1426,7 @@ extern "C" void fn_8024BBF4(void *self) {
         virtual void v11();
         virtual void getSelection(s32 *eventId, s32 *contestIndex);
     };
+    /* contest record's parameter block: vtable+0x14 = get(name) -> string value */
     class Params {
     public:
         virtual void v0();
@@ -1440,7 +1445,7 @@ extern "C" void fn_8024BBF4(void *self) {
         void *contest = (void *)fn_80012870(eventId, contestIndex);
         *(s32 *)((char *)self + 0x34) = *(s32 *)contest;
         Params *params = *(Params **)((char *)contest + 0x20);
-        src = (unsigned char *)params->get(lbl_80343E60);
+        src = (unsigned char *)params->get(lbl_80343E60); /* "friendly_name" */
         remaining = 0x64;
         dst = (unsigned char *)self + 0x38;
         goto copy;
