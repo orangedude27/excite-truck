@@ -520,6 +520,7 @@ s32 fn_80156A40(void) {
     return (s32)lbl_8055E27C;
 }
 
+/* Empty no-op hook in the PSSystem code region; returns immediately without doing anything. */
 extern "C" void fn_80156A48(void) {
 }
 
