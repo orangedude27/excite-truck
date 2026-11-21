@@ -2,7 +2,7 @@
 
 static void nandOpenCallback(s32 result, void* arg);
 
-// Open a NAND file at the given path with the requested access mode, synchronously or asynchronously.
+/* Open a NAND file at the given path with the requested access mode, synchronously or asynchronously. */
 static s32 nandOpen(const char* path, u8 accessMode, NANDCommandBlock* block,
                     BOOL isAsync, BOOL isPrivileged) {
     IPCOpenMode ipcMode;
