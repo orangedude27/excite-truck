@@ -596,10 +596,10 @@ extern "C" s32 fn_802C9C38(void);
 extern "C" s32 fn_802C9C48(void);
 extern "C" f32 fn_80145A08(f32, f32, f32, f32, f32);
 struct FloatPair80145A24 { f32 first; f32 second; };
-extern "C" f32 lbl_805615F4;
-extern "C" f32 lbl_805615F8;
-extern "C" f32 lbl_805615FC;
-extern "C" f64 lbl_80561600;
+extern "C" f32 lbl_805615F4; /* 640.0f, screen width */
+extern "C" f32 lbl_805615F8; /* 0.75f */
+extern "C" f32 lbl_805615FC; /* 480.0f, screen height */
+extern "C" f64 lbl_80561600; /* int-to-float conversion bias */
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
