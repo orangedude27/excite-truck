@@ -605,7 +605,7 @@ int fn_801784AC(void *start, void *end, void *outHit, int flags, void *outValue,
     return fn_801E2640(start, end, outHit, flags, outValue, outObject, &lbl_804340C0[0], lbl_8055E468, filter);
 }
 
-extern const float lbl_80561B64;
+extern float lbl_80561B64;
 #pragma scheduling invalid_target
 s32 fn_801784DC(const Vec *arg0, f32 *arg1, Vec *arg2, s32 *arg3, s32 arg4) {
     Vec start;
