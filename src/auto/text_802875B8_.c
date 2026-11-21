@@ -58,6 +58,7 @@ extern void fn_802887EC(void);
 extern f32 lbl_80564268;
 extern f32 lbl_80564248;
 extern f32 lbl_80564250;
+#define RNG_SCALE lbl_80564250 /* 0x1FFFF: normalises a 17-bit RNG sample to [0,1] */
 extern double lbl_80564258;
 extern u8 lbl_804B3150[12];
 extern s32 lbl_804B31E0[];
