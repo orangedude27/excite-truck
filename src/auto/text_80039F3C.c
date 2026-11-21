@@ -347,35 +347,6 @@ static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const
     return &((DVDLowContext *)lbl_8037B820)[id];
 }
 
-/* Same as newContext, but with the context array base passed in by the caller so the
- * inlined body shares the caller's copy of the base pointer. */
-static inline DVDLowContext *newContextBase(unsigned char *base, void *callback, unsigned int arg2, const char *msg) {
-    DVDLowContext *ctxBase = (DVDLowContext *)base;
-    unsigned char *entry = (unsigned char *)ctxBase + lbl_8055D8E8 * 0x20;
-    int id;
-
-    if (((-(unsigned int)entry[8] | (unsigned int)entry[8]) >> 31) == 1U) {
-        OSReport(msg + 0x218, (int)lbl_8055D8E8);
-        OSReport(msg + 0x250);
-        for (;;) {}
-    }
-    if ((*(unsigned int *)(entry + 0xC) + 0x01150000U) != 0xDAEDU) {
-        OSReport(msg + 0x280);
-        for (;;) {}
-    }
-
-    ((unsigned int *)ctxBase)[lbl_8055D8E8 * 8] = (unsigned int)callback;
-    *(unsigned int *)(entry + 4) = arg2;
-    entry[8] = arg2;
-
-    id = lbl_8055D8E8;
-    if ((int)++lbl_8055D8E8 >= 4) {
-        lbl_8055D8E8 = 0;
-    }
-
-    return &ctxBase[id];
-}
-
 #pragma scheduling 750
 static inline void *ddrAllocAligned32(unsigned int size, const char *msg) {
     unsigned char *lo = (unsigned char *)IPCGetBufferLo();
