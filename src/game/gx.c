@@ -2720,10 +2720,10 @@ void fn_802D2B0C(void) {
     extern void fn_802DF684(void);
     extern void fn_802D1C04(void);
     int diff;
-    int zero;
     int t4;
     unsigned char t8, t9, tA, tB, tC, tD;
-    zero = 0;
+    unsigned char *src;
+    unsigned char *dst;
     if (*(unsigned char *)&lbl_8055FDB4 == 0) {
         diff = memcmp(lbl_804C9930, lbl_804C5700, 0x10);
         if (((unsigned int)(unsigned int)(0 - diff | diff) >> 31) != 0) {
@@ -2778,22 +2778,24 @@ void fn_802D2B0C(void) {
             default:
                 break;
             }
-            t4 = *(int *)(lbl_804C5700 + 4);
-            t8 = lbl_804C5700[8];
-            t9 = lbl_804C5700[9];
-            tA = lbl_804C5700[0xA];
-            tB = lbl_804C5700[0xB];
-            tC = lbl_804C5700[0xC];
-            tD = lbl_804C5700[0xD];
-            lbl_804C5700[0] = (unsigned char)zero;
-            lbl_804C9930[0] = (unsigned char)zero;
-            *(int *)(lbl_804C9930 + 4) = t4;
-            lbl_804C9930[8] = t8;
-            lbl_804C9930[9] = t9;
-            lbl_804C9930[0xA] = tA;
-            lbl_804C9930[0xB] = tB;
-            lbl_804C9930[0xC] = tC;
-            lbl_804C9930[0xD] = tD;
+            src = lbl_804C5700;
+            dst = lbl_804C9930;
+            t4 = *(int *)(src + 4);
+            t8 = src[8];
+            t9 = src[9];
+            tA = src[0xA];
+            tB = src[0xB];
+            tC = src[0xC];
+            tD = src[0xD];
+            *src = 0;
+            *dst = 0;
+            *(int *)(dst + 4) = t4;
+            dst[8] = t8;
+            dst[9] = t9;
+            dst[0xA] = tA;
+            dst[0xB] = tB;
+            dst[0xC] = tC;
+            dst[0xD] = tD;
         }
     }
     fn_802D1C04();
@@ -2982,6 +2984,8 @@ void* fn_802D3104(void) {
 }
 #pragma dont_inline off
 
+/* Tail-call: load the default indirect-texture matrix (fn_802D3104) and return
+ * the indirect-texture GXTexObj at +0x24 of the global GX state block. */
 void* fn_802D312C(void) {
     return fn_802D3104();
 }
@@ -3008,8 +3012,9 @@ void* fn_802D3138(void) {
 #pragma scheduling on
 #pragma dont_inline on
 void fn_802D3144(void) {
-#pragma scheduling on
-    if (lbl_8055FD86 == lbl_8055FD08) {
+    unsigned short ref = lbl_8055FD08;
+    unsigned short cur = lbl_8055FD86;
+    if (cur == ref) {
         GXSetBlendMode(0, 0, 0, 5);
     } else {
         int lowMapped;
