@@ -257,14 +257,6 @@ void fn_802C21C0(void) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802C21DC(int worldX, int worldY, unsigned int value) {
-#define roadOpacityTexHandle lbl_8055FB50
-#define roadOpacityTexture   lbl_8055FB54
-#define getTexObject         fn_802CA294
-#define writeTexelNibble     fn_802D9628
-    /* Plot one pixel of the road-opacity image: replicate value's low byte into a
-     * packed RGBA word, store it in the texture buffer, then pack its low nibble
-     * into the matching texel of the uploaded texture. */
-    typedef struct { int width; int height; unsigned int *pixels; } RoadOpacityTex;
     unsigned int byteLow; unsigned int byteHigh; unsigned int packedColor;
     short texX;
     short texY;
@@ -273,30 +265,26 @@ void fn_802C21DC(int worldX, int worldY, unsigned int value) {
     short texXCoord;
     int height;
     int width;
-    RoadOpacityTex *texture;
+    int *textureInfo;
     int pixelIndex;
     int texObject;
-    if (roadOpacityTexture != 0) {
+    if (lbl_8055FB54 != 0) {
         byteLow = ((value & 0xFF) << 8) | (value & 0xFF);
         byteHigh = ((value & 0xFF) << 24) | ((value & 0xFF) << 16);
         packedColor = byteLow | byteHigh;
         texX = fn_802C2120(worldX);
         texY = fn_802C2120(worldY);
-        texture = (RoadOpacityTex *)roadOpacityTexture;
+        textureInfo = (int *)lbl_8055FB54;
         texYCoord = texY;
-        height = texture->height;
+        height = textureInfo[1];
         texXCoord = texX;
-        width = texture->width;
-        pixels = (unsigned int *)texture->pixels;
+        width = textureInfo[0];
+        pixels = (unsigned int *)textureInfo[2];
         height = height - 1 - texYCoord;
         pixelIndex = height * width + texXCoord;
         pixels[pixelIndex] = packedColor;
-        texObject = ((int (*)(int))getTexObject)((int)roadOpacityTexHandle);
-        ((void (*)(void *, int, int, unsigned int))writeTexelNibble)((void *)texObject, texX, texY, packedColor);
+        texObject = ((int (*)(int))fn_802CA294)((int)lbl_8055FB50);
+        ((void (*)(void *, int, int, unsigned int))fn_802D9628)((void *)texObject, texX, texY, packedColor);
     }
-#undef writeTexelNibble
-#undef getTexObject
-#undef roadOpacityTexture
-#undef roadOpacityTexHandle
 }
 #pragma pop
