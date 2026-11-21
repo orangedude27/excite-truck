@@ -604,25 +604,28 @@ extern "C" f64 lbl_80561600; /* int-to-float conversion bias */
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma dont_inline on
-extern "C" FloatPair80145A24 fn_80145A24(void *arg0) {
-    struct FWrap { f32 v; } corrW;
-    f32 out0 = fn_80145A08(lbl_805615D4, (f32)(s32)fn_802C9C48(),
-                           lbl_805615D4, lbl_805615F4,
-                           (f32)*(s32 *)((u8 *)arg0 + 4));
-    f32 scaled = lbl_805615F8 * (f32)(s32)fn_802C9C48();
-    corrW.v = scaled * lbl_805615D0;
-    s32 conv = (s32)fn_802C9C38();
-    s32 sh = ((u32)conv >> 31);
-    s32 half = (s32)(sh + conv) >> 1;
-    f32 base = (f32)half - corrW.v;
-    f32 out1 = fn_80145A08(base,
-                           base + lbl_805615F8 * (f32)(s32)fn_802C9C48(),
-                           lbl_805615D4, lbl_805615FC,
-                           (f32)*(s32 *)((u8 *)arg0 + 8));
-    FloatPair80145A24 result;
-    result.first = out0;
-    result.second = out1;
-    return result;
+/* Compute a screen-space coordinate pair from two raw sample fields: interpolate
+ * the x field to the screen width and the y field (offset by a time-based range)
+ * to the screen height. */
+extern "C" FloatPair80145A24 fn_80145A24(void *sample) {
+    struct FWrap { f32 v; } correction;
+    f32 screenX = fn_80145A08(lbl_805615D4, (f32)(s32)fn_802C9C48(),
+                              lbl_805615D4, lbl_805615F4,
+                              (f32)*(s32 *)((u8 *)sample + 4));
+    f32 span = lbl_805615F8 * (f32)(s32)fn_802C9C48();
+    correction.v = span * lbl_805615D0;
+    s32 rawMid = (s32)fn_802C9C38();
+    s32 signBit = ((u32)rawMid >> 31);
+    s32 mid = (s32)(signBit + rawMid) >> 1;
+    f32 rangeStart = (f32)mid - correction.v;
+    f32 screenY = fn_80145A08(rangeStart,
+                              rangeStart + lbl_805615F8 * (f32)(s32)fn_802C9C48(),
+                              lbl_805615D4, lbl_805615FC,
+                              (f32)*(s32 *)((u8 *)sample + 8));
+    FloatPair80145A24 coords;
+    coords.first = screenX;
+    coords.second = screenY;
+    return coords;
 }
 #pragma scheduling on
 #pragma pop
