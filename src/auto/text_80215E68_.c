@@ -412,7 +412,7 @@ void fn_80216710(void) {
     lbl_8055EF90 = 0;
 }
 void fn_8021676C(void) {
-
+    /* Intentional no-op: empty callback/placeholder, touches no state. */
 }
 
 extern char lbl_8033D7A4[];
