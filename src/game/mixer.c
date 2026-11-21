@@ -312,13 +312,19 @@ float fn_80209028(void) {
 }
 
 #pragma cplusplus on
+#define gEffectsVolume lbl_8055B4D0
+#define MIN_EFFECTS_VOLUME lbl_80563234
+#define CONFIG_KEY_EFFECTS_VOLUME lbl_8033BEF8
 void fn_80209030(float arg0) {
     float value = 1.0f < arg0 ? 1.0f : arg0;
-    value = value > lbl_80563234 ? value : lbl_80563234;
-    lbl_8055B4D0 = value;
-    fn_8013323C(4, lbl_8033BEF8, (float)(double)value);
+    value = value > MIN_EFFECTS_VOLUME ? value : MIN_EFFECTS_VOLUME;
+    gEffectsVolume = value;
+    fn_8013323C(4, CONFIG_KEY_EFFECTS_VOLUME, (float)(double)value);
     ((void (*)(void))fn_80208A50)();
 }
+#undef CONFIG_KEY_EFFECTS_VOLUME
+#undef MIN_EFFECTS_VOLUME
+#undef gEffectsVolume
 #pragma cplusplus reset
 /* Set the sound-quality setting (config "quality"): accept values 0..2, reset to low otherwise. */
 void fn_80209090(int quality) {
