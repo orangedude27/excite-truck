@@ -1723,17 +1723,20 @@ fallback:
 }
 #pragma scheduling on
 #pragma pop
-extern "C" void *fn_8021AC24(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    u8 *base = (u8 *)arg0;
-    s32 a = fn_802C5220(arg3);
-    s32 b = fn_802C51C0(arg3);
-    fn_80218F34(arg0, arg1, arg2, arg1 + b, arg2 + a, 0);
+extern "C" void *fn_8021AC24(void *widget, s32 x, s32 y, s32 imageId, s32 unused) {
+    /* Construct an animated image widget: size its rectangle from the image,
+     * install the widget vtable, remember the image at +0x250, and reset the
+     * animation clock (+0x244 running, +0x248 time, +0x24C step). */
+    u8 *base = (u8 *)widget;
+    s32 height = fn_802C5220(imageId);
+    s32 width = fn_802C51C0(imageId);
+    fn_80218F34(widget, x, y, x + width, y + height, 0);
     *(void **)base = lbl_8033F6E0;
-    *(s32 *)(base + 0x250) = arg3;
+    *(s32 *)(base + 0x250) = imageId;
     *(u8 *)(base + 0x244) = 0;
     *(f32 *)(base + 0x248) = 0.0f;
     *(f32 *)(base + 0x24C) = 0.3f;
-    return arg0;
+    return widget;
 }
 
 extern "C" void fn_8021ACC0(void *widget, s32 value) {
