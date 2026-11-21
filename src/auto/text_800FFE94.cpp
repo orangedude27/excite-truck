@@ -23,6 +23,11 @@ extern "C" float lbl_80561120;
 namespace nw4hbm { namespace snd { namespace detail {
 struct WaveData;
 struct WaveFileReader;
+// The header of a WSD sound file: "WSD" magic, then the format version at +0x06.
+struct WsdFileHeader {
+    char pad[6];
+    unsigned short version;
+};
 struct WsdFileReader { int ReadWaveParam(int, WaveData*, const void*) const; };
 }}}
 extern "C" void fn_800FFE94(void* handle) {
