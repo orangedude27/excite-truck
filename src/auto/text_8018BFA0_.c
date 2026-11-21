@@ -47,6 +47,20 @@ static inline void matVecAlias_8018(Vec_8018 *dest, const float *m, const Vec_80
         dest->z = m[2] * src->x + m[5] * src->y + m[8] * src->z;
     }
 }
+static inline void matVecAliasF_8018(float *d, const float *m, const float *v) {
+    if (d == v) {
+        float tx = v[1] * m[3] + v[0] * m[0] + v[2] * m[6];
+        float ty = v[1] * m[4] + v[0] * m[1] + v[2] * m[7];
+        float tz = v[1] * m[5] + v[0] * m[2] + v[2] * m[8];
+        d[0] = tx;
+        d[1] = ty;
+        d[2] = tz;
+    } else {
+        d[0] = v[1] * m[3] + v[0] * m[0] + v[2] * m[6];
+        d[1] = v[1] * m[4] + v[0] * m[1] + v[2] * m[7];
+        d[2] = v[1] * m[5] + v[0] * m[2] + v[2] * m[8];
+    }
+}
 static inline void matVecAliasY_8018(Vec_8018 *dest, const float *m, const Vec_8018 *src) {
     if (dest == src) {
         float tx = src->y * m[3] + src->x * m[0] + src->z * m[6];
