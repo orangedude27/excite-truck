@@ -28,7 +28,7 @@ extern u16 lbl_80558EB0;
 #define kp_acc_horizon_pw lbl_80558EA4     /* f32 0.05: acc horizon filter power */
 #define kp_ah_circle_pw lbl_80558EAC       /* f32 0.06: horizon circle smoothing factor */
 #define kp_ah_circle_r2 lbl_8055D994       /* .sbss f32: squared "inside circle" radius */
-#define kp_ah_circle_ct lbl_80558EB0       /* u16 100: frames the horizon may sit in the circle */
+#define kp_ah_circle_ct_init lbl_80558EB0  /* u16 100: frames the horizon may sit in the circle */
 #define kp_rm_acc_max lbl_80558EEC         /* f32 3.4: core accelerometer clamp */
 #define kp_fs_acc_max lbl_80558EF0         /* f32 2.1: FS accelerometer clamp */
 
