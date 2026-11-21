@@ -26477,24 +26477,26 @@ extern "C" void fn_800A53E8(void *volume) { *(u16 *)((u8 *)volume + 0x1F8C) = (u
 
 #pragma push
 #pragma dont_inline on
-extern "C" s32 fn_800A53F8(void *arg0) {
-    void *cbs[2];
-    s32 result;
-    s32 value;
+extern "C" s32 fn_800A53F8(void *volume) {
+    /* Install the device's two callbacks, prepare the device, and on a retriable
+       device error cache it and ask the caller to retry. */
+    void *callbacks[2];
+    s32 status;
+    s32 deviceError;
 
-    cbs[0] = (void *)fn_800A535C;
-    cbs[1] = (void *)fn_800A52DC;
+    callbacks[0] = (void *)fn_800A535C;
+    callbacks[1] = (void *)fn_800A52DC;
 
-    if (((s32 (*)(void *, void **))fn_800A7688)(*(void **)((u8 *)arg0 + 0x1FBC), cbs) != 0)
+    if (((s32 (*)(void *, void **))fn_800A7688)(*(void **)((u8 *)volume + 0x1FBC), callbacks) != 0)
         return -1;
 
-    result = fn_800A7214(*(void **)((u8 *)arg0 + 0x1FBC));
-    if (result != 0) {
-        fn_800A76A0(*(void **)((u8 *)arg0 + 0x1FBC));
-        if (result == 0x15) {
-            value = fn_800A71D8(*(void **)((u8 *)arg0 + 0x1FBC));
-            *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
-            *(s32 *)((u8 *)arg0 + 0x1F84) = value;
+    status = fn_800A7214(*(void **)((u8 *)volume + 0x1FBC));
+    if (status != 0) {
+        fn_800A76A0(*(void **)((u8 *)volume + 0x1FBC));
+        if (status == 0x15) {
+            deviceError = fn_800A71D8(*(void **)((u8 *)volume + 0x1FBC));
+            *(s32 *)((u8 *)lbl_803D2140 + 0x44) = deviceError;
+            *(s32 *)((u8 *)volume + 0x1F84) = deviceError;
             return 0x1000;
         }
         return -1;
