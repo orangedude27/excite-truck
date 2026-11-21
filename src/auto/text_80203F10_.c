@@ -19,6 +19,10 @@ extern int lbl_8055ECF8;
 #pragma push
 #pragma scheduling invalid_target
 void fn_80203F10(void) {
+    /* Static initializer (constructor) for the terrain/environment module:
+     * register a static destructor for lbl_8055ECE8, initialize the imap resource
+     * list lbl_8048897C (self pointer +12, count 0, capacity 0x40) and register
+     * its teardown destructor fn_80203F88. */
     fn_8000D838(&lbl_8055ECE8);
     lbl_8055ECF0 = 0x100;
     lbl_8055ECF2 = 0x405;
