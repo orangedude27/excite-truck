@@ -1176,18 +1176,16 @@ extern "C" void fn_8027C2B8(void *arg0, long arg1, void *arg2) {
     void **outerArray;
     int outerCount;
     int outerIndex;
-    char *outerBase;
     int innerIndex;
     int itemCount;
     void **tableArray;
     outerList = fn_80131808(arg2);
     if (outerList == 0)
         return;
-    outerCount = *(int *)((char *)ctx + 0xB00C);
+    outerCount = ctx->outerCount;
     outerIndex = 0;
-    outerArray = *(void ***)((char *)ctx + 0xB008);
-    outerBase = (char *)ctx + 0x10000;
-    *(int *)(outerBase - 0x4FF4) = outerCount + 1;
+    outerArray = ctx->outerArray;
+    ctx->outerCount = outerCount + 1;
     outerArray[outerCount] = outerList;
     goto fetch_outer;
 outer_loop:
@@ -1223,23 +1221,26 @@ fetch_outer:
 #pragma cplusplus reset
 extern void fn_8027C2B8();
 #pragma scheduling on
-void *fn_8027C41C(void *arg0, long arg1) {
-    char *base = (char *)arg0 + 0x10000;
-    char *temp_r7 = base - 0x50E8;
-    char *temp_r6 = base - 0x4FEC;
-    *(long *)(base - 0x4FE4) = arg1;
-    *(void **)arg0 = (char *)arg0 + 0xC;
-    *(long *)((char *)arg0 + 8) = 0x8C0;
-    *(long *)(base - 0x50EC) = 0x14;
-    *(long *)((char *)arg0 + 4) = 0;
-    *(void **)(base - 0x50F4) = temp_r7;
-    *(long *)(base - 0x50F0) = 0;
-    *(void **)(base - 0x4FF8) = temp_r6;
-    *(long *)(base - 0x4FF0) = 2;
-    *(long *)(base - 0x4FF4) = 0;
-    fn_8027C2B8(arg0, 0, &lbl_80347B4C, temp_r6, temp_r7);
-    fn_8027C2B8(arg0, 1, &lbl_80347B5C);
-    return arg0;
+void *fn_8027C41C(void *registry, long context) {
+    /* Initialize a career/challenge event registry: set up its self-pointer,
+     * capacities, inner and outer arrays/counters, then register the
+     * "ep_career.val" and "ep_chal.val" data sets. */
+    char *end = (char *)registry + 0x10000;
+    char *innerArray = end - 0x50E8;
+    char *outerArray = end - 0x4FEC;
+    *(long *)(end - 0x4FE4) = context;
+    *(void **)registry = (char *)registry + 0xC;
+    *(long *)((char *)registry + 8) = 0x8C0;
+    *(long *)(end - 0x50EC) = 0x14;
+    *(long *)((char *)registry + 4) = 0;
+    *(void **)(end - 0x50F4) = innerArray;
+    *(long *)(end - 0x50F0) = 0;
+    *(void **)(end - 0x4FF8) = outerArray;
+    *(long *)(end - 0x4FF0) = 2;
+    *(long *)(end - 0x4FF4) = 0;
+    fn_8027C2B8(registry, 0, &lbl_80347B4C, outerArray, innerArray);
+    fn_8027C2B8(registry, 1, &lbl_80347B5C);
+    return registry;
 }
 
 #pragma push
