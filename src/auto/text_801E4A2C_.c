@@ -86,16 +86,12 @@ s32 fn_801E4B48(s32 *fontObject) {
     return baseline;
 }
 #pragma dont_inline on
-/* RealName: BitmapFont_GetLineHeight (sum of ascent/baseline metric and glyph advance width). */
+/* Returns the full line height of a bitmap font: baseline offset plus the
+ * glyph/advance width (original name BitmapFont_GetLineHeight). */
 s32 fn_801E4BA8(s32 *fontObject) {
-    /* Returns the font's full line height by combining its baseline metric and glyph width. */
-#define GetFontBaselineMetric fn_801E4B48
-#define GetGlyphAdvanceWidth  fn_801E4B00
-    s32 baselineMetric = GetFontBaselineMetric(fontObject);
-    s32 lineHeight = GetGlyphAdvanceWidth(fontObject);
-    lineHeight += baselineMetric;
-#undef GetFontBaselineMetric
-#undef GetGlyphAdvanceWidth
+    s32 baseline = fn_801E4B48(fontObject);
+    s32 lineHeight = fn_801E4B00(fontObject);
+    lineHeight += baseline;
     return lineHeight;
 }
 extern s32 fn_802C4C90(s32, s32, s32, s32, s32);
