@@ -340,10 +340,10 @@ u32 fn_80116BD4(s32 arg0, s32 arg1, s32 arg2) {
     temp_r9_2 = temp_r9 << temp_r4_2;
     temp_r8 = temp_r3 + temp_r0;
     temp_r5 = temp_r10 >> 16;
-    temp_r7 = (temp_r9_2 >> 16) & 0xFFFF;
-    var_r4 = (u32)temp_r8 / temp_r5;
     temp_r6 = temp_r10 & 0xFFFF;
-    var_r7 = temp_r7 | ((((u32)temp_r8 - var_r4 * temp_r5) & 0xFFFF) << 16);
+    var_r4 = (u32)temp_r8 / temp_r5;
+    temp_r0_2 = var_r4 * temp_r5;
+    var_r7 = ((temp_r9_2 >> 16) & 0xFFFF) | ((((u32)temp_r8 - temp_r0_2) & 0xFFFF) << 16);
     temp_r0 = var_r4 * temp_r6;
     if (var_r7 < temp_r0) {
         var_r7 += temp_r10;
@@ -483,14 +483,14 @@ s8 *fn_80116EE4(s8 *arg0, s16 *arg1, u32 arg2) {
 #pragma push
 #pragma use_lmw_stmw off
 extern void memset(void *, int, unsigned int);
+#pragma push
+#pragma use_lmw_stmw off
 u32 fn_80116F8C(void *arg0) {
     s32 temp_r30;
     u32 temp_r29;
     s32 temp_r28;
     u32 temp_r0;
     u32 temp_r4;
-    u32 num;
-    u32 den;
     u32 temp_r6;
     u32 temp_r9;
     u32 *data = (u32 *)arg0;
@@ -498,9 +498,7 @@ u32 fn_80116F8C(void *arg0) {
     temp_r0 = data[0x40 / 4];
     if (temp_r0 < temp_r4) {
         temp_r30 = temp_r4 - temp_r0;
-        num = temp_r30 * 0x3E8;
-        den = (data[0x78 / 4] * (data[0x70 / 4] * data[0x74 / 4])) >> 3;
-        temp_r29 = num / den;
+        temp_r29 = (u32)(temp_r30 * 0x3E8) / (u32)((data[0x78 / 4] * (data[0x70 / 4] * data[0x74 / 4])) >> 3);
         temp_r6 = data[0x38 / 4] - temp_r30;
         temp_r9 = data[0x2C / 4];
         data[0x38 / 4] = temp_r6;
@@ -517,7 +515,7 @@ u32 fn_80116F8C(void *arg0) {
     }
     return 0;
 }
-
+#pragma pop
 // Refills the output buffer of every active stream in the manager. Runs only
 // when the stream table is initialized (last entry has a handler) and the
 // manager lock (+0x340) can be acquired. For each stream it asks the stream
@@ -1264,7 +1262,7 @@ signed long fn_801186B8(void* arg0) {
     signed long tmp2;
     signed long needClose = 0;
     if (m == 0) return 0;
-    if (*(signed long*)(m + 0x2D4) == *(signed long*)(m + 0xC)) return 0;
+    if (*(unsigned long*)(m + 0x2D4) == *(unsigned long*)(m + 0xC)) return 0;
     if (*(signed long*)(m + 0x2DC) != 0) {
         *(signed long*)(m + 0x2DC) = 0;
         if (*(signed long*)(m + 0x288) != 0) {
@@ -1283,20 +1281,20 @@ signed long fn_801186B8(void* arg0) {
     *(signed long*)(m + 0x2F8) = 0;
     *(signed long*)(m + 0x11C) = 1;
     {
-        signed long prev = *(signed long*)(m + 0x2B0);
         signed long curTick = fn_80116D30();
+        signed long prev = *(signed long*)(m + 0x2B0);
+        unsigned char* list;
         *(signed long*)(m + 0x260) = curTick;
         tmp = prev - 1;
         *(signed long*)(m + 0x2B0) = tmp;
         if (tmp < 0) *(signed long*)(m + 0x2B0) = *(signed long*)(m + 0x2AC) - 1;
-        tmp = *(signed long*)(m + 0x2B0);
-        *(signed long*)(*(signed long*)(m + 0x2B4) + tmp * 4) = *(signed long*)(m + 0x260);
-        *(signed long*)(*(signed long*)(m + 0x2BC) + tmp * 4) = *(signed long*)(m + 0x294);
-        *(signed long*)(*(signed long*)(m + 0x2B8) + tmp * 4) = *(signed long*)(m + 0x298);
-        *(signed long*)(*(signed long*)(m + 0x2C0) + tmp * 4) = *(signed long*)(m + 0x29C);
-        *(signed long*)(*(signed long*)(m + 0x2C4) + tmp * 4) = *(signed long*)(m + 0x124);
-        *(signed long*)(*(signed long*)(m + 0x2C8) + tmp * 4) = *(signed long*)(m + 0x128);
-        *(signed long*)(*(signed long*)(m + 0x2CC) + tmp * 4) = *(signed long*)(m + 0x12C);
+        *(signed long*)(*(signed long*)(m + 0x2B4) + *(signed long*)(m + 0x2B0) * 4) = *(signed long*)(m + 0x260);
+        *(signed long*)(*(signed long*)(m + 0x2BC) + *(signed long*)(m + 0x2B0) * 4) = *(signed long*)(m + 0x294);
+        *(signed long*)(*(signed long*)(m + 0x2B8) + *(signed long*)(m + 0x2B0) * 4) = *(signed long*)(m + 0x298);
+        *(signed long*)(*(signed long*)(m + 0x2C0) + *(signed long*)(m + 0x2B0) * 4) = *(signed long*)(m + 0x29C);
+        *(signed long*)(*(signed long*)(m + 0x2C4) + *(signed long*)(m + 0x2B0) * 4) = *(signed long*)(m + 0x124);
+        *(signed long*)(*(signed long*)(m + 0x2C8) + *(signed long*)(m + 0x2B0) * 4) = *(signed long*)(m + 0x128);
+        *(signed long*)(*(signed long*)(m + 0x2CC) + *(signed long*)(m + 0x2B0) * 4) = *(signed long*)(m + 0x12C);
         if (*(signed long*)(m + 0x25C) == 0) {
             signed long d = fn_80116BD4(0x3E8, *(signed long*)(m + 0x2A8), *(signed long*)(m + 0x2A4));
             *(signed long*)(*(signed long*)(m + 0x2B4) + prev * 4) = *(signed long*)(m + 0x260) - d;
@@ -1310,8 +1308,8 @@ signed long fn_801186B8(void* arg0) {
         if (*(signed long*)(m + 0x110) != 0) *(signed long*)(m + 0x1C) = 1;
         if (*(signed long*)(m + 0x1C) != 0) return 1;
         {
-            unsigned char* list = *(unsigned char**)(m + 0xE4);
             signed long n = 0;
+            list = *(unsigned char**)(m + 0xE4);
             for (n = 0; n < *(signed long*)(m + 0xD0); n++) {
                 signed long found = -1;
                 signed long j;
@@ -1328,12 +1326,46 @@ signed long fn_801186B8(void* arg0) {
                 else found = -1;
                 if (found != -1 && first != 0) {
                     signed long streamOff = found * 0x17C;
-                    unsigned char* e;
+                    void* dst = p + 4;
+                    signed long amount = *(signed long*)p;
                     if (needClose == 0) { needClose = 1; fn_8011C274(lbl_8055DED4, m + 0x340); }
-                    e = (unsigned char*)(streamOff + *(signed long*)(m + 0x2F0));
-                    {
-                        fn_8011B94C((void*)(*(signed long*)(e + 0x3C)), (signed long*)0, (signed long*)0, 0, (signed long*)0, 0, (unsigned long*)0, 0, 0.0f, 0);
-                        (void)p;
+                    while (amount != 0) {
+                        signed long spC;
+                        signed long sp8;
+                        signed long irq;
+                        signed long space = *(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x28) - *(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x40);
+                        signed long size;
+                        signed long over;
+                        signed long rem;
+                        ((void (*)(void*, signed long*, signed long*, signed long, signed long*, signed long))fn_8011B94C)((void*)*(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x3C), &spC, &sp8, (signed long)dst, (signed long*)&dst, *(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x40));
+                        size = sp8;
+                        if ((unsigned long)size > (unsigned long)amount) { size = amount; sp8 = amount; }
+                        amount -= size;
+                        if ((unsigned long)size > (unsigned long)space) {
+                            over = size - space;
+                            *(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x38) = *(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x38) + over;
+                            irq = OSDisableInterrupts();
+                            *(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x40) = *(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x40) - over;
+                            OSRestoreInterrupts(irq);
+                            if ((unsigned long)*(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x38) >= (unsigned long)*(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x30))
+                                *(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x38) = *(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x38) - *(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x28);
+                        }
+                        irq = OSDisableInterrupts();
+                        *(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x40) = *(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x40) + sp8;
+                        OSRestoreInterrupts(irq);
+                        rem = *(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x30) - *(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x34);
+                        if ((unsigned long)rem < (unsigned long)sp8) {
+                            if (rem != 0) {
+                                memcpy((void*)*(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x34), (void*)spC, rem);
+                                sp8 -= rem;
+                                spC += rem;
+                            }
+                            memcpy((void*)*(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x2C), (void*)spC, sp8);
+                            *(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x34) = *(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x2C) + sp8;
+                        } else {
+                            memcpy((void*)*(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x34), (void*)spC, sp8);
+                            *(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x34) = *(signed long*)(*(signed long*)(m + 0x2F0) + streamOff + 0x34) + sp8;
+                        }
                     }
                 }
                 list = list + 4 + first;
@@ -1353,7 +1385,7 @@ signed long fn_801186B8(void* arg0) {
                         f(m + 0xF0);
                     }
                 }
-                *(signed long*)(m + 0x2E0) = fn_8011FC2C((void*)(*(signed long*)(m + 0xB8)), *(signed long*)(m + 0xBC), *(signed long*)(m + 0xC0), (signed long*)0, 0, 0, 0, 0);
+                *(signed long*)(m + 0x2E0) = fn_8011FC2C((void*)(*(signed long*)(m + 0xB8)), *(signed long*)(m + 0xBC), *(signed long*)(m + 0xC0), (signed long*)list, *(signed long*)(*(signed long*)(m + 0xEC) + (*(signed long*)(m + 0xC) - 1) * 4) & 1, (signed long)(m + 0x300), *(signed long*)(m + 0x20), *(signed long*)(m + 0x24));
             }
             if (*(signed long*)(m + 0x2E8) != 0) fn_80117074(m);
             tmp2 = *(signed long*)(m + 0x258);
@@ -1374,6 +1406,7 @@ signed long fn_801186B8(void* arg0) {
     }
     return 0;
 }
+#pragma use_lmw_stmw on
 #undef lbl_8041D608
 
 /* Accumulate an elapsed-time interval for an object: when a start tick at +0x264
@@ -3278,7 +3311,7 @@ s32 fn_8011B2AC(s32 size, u32 channels, s32 flags, s32 arg3, s32 arg4, s32 outpu
     s32 mode;
     u32 i, j, index;
     f32 *p;
-    u32 zero = 0;
+    register u32 zero = 0;
     mode = flags & 1;
     bits.start = input;
     bits.next = input;
@@ -3290,7 +3323,7 @@ s32 fn_8011B2AC(s32 size, u32 channels, s32 flags, s32 arg3, s32 arg4, s32 outpu
             bits.count += 30;
             bits.next++;
         } else {
-            bits.value >>= 2;
+            bits.value = 0;
             bits.count -= 2;
         }
     }
@@ -4512,8 +4545,7 @@ void fn_8011D0E8(void *arg0, void *arg1, void *arg2) {
  M2C_FIELD(arg1,u32**,4)=p;M2C_FIELD(arg1,u32*,0)=bits;M2C_FIELD(arg1,u32*,8)=n;
 }
 
-#pragma push
-#pragma optimization_level 3
+#pragma opt_propagation off
 void fn_8011D378(void *arg0, void *arg1, void *arg2) {
     u32 *src;
     u32 value, remain, index, node, bit, mask;
@@ -4536,7 +4568,6 @@ void fn_8011D378(void *arg0, void *arg1, void *arg2) {
         remain -= index;
     }
     if (count != 0) {
-        register u8 *tree;
         out = *(u8 **)((u8 *)arg0 + 0x2c);
         width = *(u32 *)((u8 *)arg0 + 0x20);
         table = (u8 *)arg0 + 0x10;
@@ -4549,18 +4580,17 @@ void fn_8011D378(void *arg0, void *arg1, void *arg2) {
         if (bit & 1) count = -20 - count;
         mask = 0xffffffffU >> (32 - width);
         do {
-            u32 n, tmp;
-            tree = (u8 *)arg2 + node * 4;
-            n = *(u32 *)(tree + 0x100);
+            u32 n = *(u32 *)((u8 *)arg2 + node * 4 + 0x100);
+            u32 tmp;
             count--;
             if (remain >= n) {
-                u32 entry = (*(u8 **)(tree + 0x140))[value & (0xffffffffU >> (32 - n))];
+                u32 entry = (*(u8 **)((u8 *)arg2 + node * 4 + 0x140))[value & (0xffffffffU >> (32 - n))];
                 node = *((u8 *)arg2 + node * 16 + (entry & 15));
                 entry >>= 4;
                 value >>= entry; remain -= entry;
             } else {
                 u32 next = *src;
-                u32 entry = (*(u8 **)(tree + 0x140))[(value | (next << remain)) & (0xffffffffU >> (32 - n))];
+                u32 entry = (*(u8 **)((u8 *)arg2 + node * 4 + 0x140))[(value | (next << remain)) & (0xffffffffU >> (32 - n))];
                 node = *((u8 *)arg2 + node * 16 + (entry & 15));
                 entry >>= 4;
                 if (remain >= entry) { value >>= entry; remain -= entry; }
@@ -4590,7 +4620,7 @@ void fn_8011D378(void *arg0, void *arg1, void *arg2) {
     *(u32 **)((u8 *)arg1 + 4) = src;
     *(u32 *)arg1 = value; *(u32 *)((u8 *)arg1 + 8) = remain;
 }
-#pragma pop
+#pragma opt_propagation reset
 /* Decodes one block of a band of the compressed stream fn_8011C3A8 sets up, the
  * variant whose values come out of a Huffman lookup table.  Nothing is done
  * while the block of the previous call is still published ([start, end)).  The
@@ -6903,42 +6933,53 @@ void fn_80122FA4(s32 arg0, void *arg1, s32 arg2, void *arg3) {
     s32 n = arg0 >> 2;
     f32 *a = (f32 *)arg1;
     f32 *w = (f32 *)arg3;
-    s32 m, k, step;
-    f32 *pa, *pb;
+    s32 k, m;
+    f32 *pa;
+    s32 step;
     while (n > 0x80) {
+        f32 *pb;
+        m = n;
         pa = w + (arg2 - (n >> 1));
         pb = w + (arg2 - n);
-        for (m = n; m < arg0; m *= 4) {
+        for (; m < arg0; m *= 4) {
             step = m * 4;
             for (k = m - n; k < arg0; k += step) {
+                s32 m2 = m * 2;
+                s32 j = k + m2;
                 fn_801233F8(n, (volatile f32 *)(a + k), pa);
                 fn_801237C4(n, a + (m + k), pb);
-                fn_801233F8(n, (volatile f32 *)(a + (k + m * 2)), pa);
+                fn_801233F8(n, (volatile f32 *)(a + j), pa);
             }
         }
         fn_801233F8(n, (volatile f32 *)(a + (arg0 - n)), pa);
         n >>= 2;
     }
-    pa = w + (arg2 - (n >> 1));
-    pb = w + (arg2 - n);
-    for (m = n; m < arg0; m *= 4) {
-        step = m * 4;
-        for (k = m - n; k < arg0; k += step) {
-            f32 *q;
-            fn_801233F8(n, (volatile f32 *)(a + k), pa);
-            fn_80123CEC(n, a + k, arg2, w);
-            q = a + (m + k);
-            fn_801237C4(n, q, pb);
-            fn_80123DC0(n, q, arg2, w);
-            q = a + (k + m * 2);
+    {
+        f32 *pb;
+        m = n;
+        pa = w + (arg2 - (n >> 1));
+        pb = w + (arg2 - n);
+        for (; m < arg0; m *= 4) {
+            step = m * 4;
+            for (k = m - n; k < arg0; k += step) {
+                s32 m2 = m * 2;
+                s32 j = k + m2;
+                f32 *q;
+                fn_801233F8(n, (volatile f32 *)(a + k), pa);
+                fn_80123CEC(n, a + k, arg2, w);
+                q = a + (m + k);
+                fn_801237C4(n, q, pb);
+                fn_80123DC0(n, q, arg2, w);
+                q = a + j;
+                fn_801233F8(n, (volatile f32 *)q, pa);
+                fn_80123CEC(n, q, arg2, w);
+            }
+        }
+        {
+            f32 *q = a + (arg0 - n);
             fn_801233F8(n, (volatile f32 *)q, pa);
             fn_80123CEC(n, q, arg2, w);
         }
-    }
-    {
-        f32 *q = a + (arg0 - n);
-        fn_801233F8(n, (volatile f32 *)q, pa);
-        fn_80123CEC(n, q, arg2, w);
     }
 }
 
