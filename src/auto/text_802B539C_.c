@@ -93,12 +93,8 @@ extern "C" int fn_802B54CC(void *arg0) {
 extern "C" void fn_802B561C(void (*)(void *), void *);
 extern "C" int fn_802B5448(void *);
 extern "C" int fn_802B5488(void *);
-extern void fn_80131810(int);
 extern const char lbl_8055CE18[];
 extern const char lbl_8034A53C[];
-extern void fn_802E317C(const char *, ...);
-extern "C" void fn_80131810(int);
-extern "C" void fn_802E317C(const char *, ...);
 __declspec(section ".sdata") extern const char lbl_8055CE18[];
 #pragma cplusplus on
 #pragma use_lmw_stmw off
