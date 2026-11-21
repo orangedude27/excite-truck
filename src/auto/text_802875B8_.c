@@ -552,9 +552,9 @@ extern "C" void fn_80287E80(void **objectPtr, s32 nameSource) {
 #pragma pop
 
 #pragma cplusplus on
-extern "C" Vec3i_80287F90 fn_80287ED0(void **__restrict arg1, s32 arg2, const char *arg3) {
-    struct Ifc {
-        virtual void *f0(s32);
+extern "C" Vec3i_80287F90 fn_80287ED0(void **__restrict objectPtr, s32 featureId, const char *name) {
+    struct ModelInterface {
+        virtual void *getFeature(s32);
         virtual void f1();
         virtual void f2();
         virtual void f3();
@@ -565,14 +565,19 @@ extern "C" Vec3i_80287F90 fn_80287ED0(void **__restrict arg1, s32 arg2, const ch
         virtual void f8();
         virtual void f9();
         virtual void f10();
-        virtual Vec3i_80287F90 f11(const char *);
+        virtual Vec3i_80287F90 getNamedVector(const char *);
     };
-    Ifc *obj = *(Ifc **)arg1;
-    if (obj == 0 || obj->f0(arg2) == 0) {
-        fn_802E317C(lbl_80348A4C, arg2);
+#define kUnsupportedModel lbl_80348A4C /* "efx: this model doesn't support '%s'" */
+    /* RealName: GetModelEffectVector. Fetch the requested feature of a model
+       interface and return that feature's named vector; panic if the model
+       does not support the feature. */
+    ModelInterface *model = *(ModelInterface **)objectPtr;
+    if (model == 0 || model->getFeature(featureId) == 0) {
+        fn_802E317C(kUnsupportedModel, featureId);
     }
-    obj = *(Ifc **)arg1;
-    return ((Ifc *)obj->f0(arg2))->f11(arg3);
+    model = *(ModelInterface **)objectPtr;
+    return ((ModelInterface *)model->getFeature(featureId))->getNamedVector(name);
+#undef kUnsupportedModel
 }
 #pragma use_lmw_stmw off
 #pragma cplusplus on
