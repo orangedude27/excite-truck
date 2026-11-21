@@ -19,11 +19,11 @@ typedef enum {
     NAND_LIB_INITIALIZED
 } NANDLibState;
 
-static void nandGetTypeCallback(s32 result, void* arg);
+static void nandGetTypeCallback(s32 ipcResult, void* arg);
 static s32 nandOnShutdown(const char* path, NANDCommandBlock* block, BOOL async, BOOL priv);
 static void nandReadDirCallback(s32 result, void* arg);
 static s32 _ES_InitLib(s32* fd);
-static s32 _ES_GetDataDir(s32* fd, u64 tid, char* dirOut) DECOMP_DONT_INLINE;
+static s32 _ES_GetDataDir(s32* esFd, u64 titleId, char* dataDirOut) DECOMP_DONT_INLINE;
 static s32 _ES_GetTitleId(s32* fd, u64* tidOut);
 static s32 _ES_CloseLib(s32* fd);
 
