@@ -118,13 +118,13 @@ void fn_801C1218(void *arg0) {
     register float factor0 = lbl_80562910;
     offset = 0;
     register float factor1 = lbl_80562914;
-    float scale;
     char *p0;
     char *p1;
     char *p2;
     float z;
     float y;
     float x;
+    float scale;
     unsigned int savedZ;
     unsigned int savedY;
     unsigned int savedX;
@@ -202,7 +202,7 @@ extern "C" float lbl_80562904, lbl_8056290C, lbl_80562918, lbl_8056291C, lbl_805
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling 603
 void fn_801C1364(int arg0) {
     char *base = (char *)arg0;
     int iter;
