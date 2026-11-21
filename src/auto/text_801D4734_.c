@@ -256,6 +256,8 @@ void fn_801D4904(void) {
     fn_801D5A24();
 }
 
+/* Action-sequence test wrapper: forwards to fn_801D5A2C, which looks the
+ * sequence up in the registered list and runs its test. */
 void fn_801D4908(void) {
     fn_801D5A2C();
 }
