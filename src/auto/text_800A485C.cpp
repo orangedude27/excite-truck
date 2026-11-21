@@ -3599,8 +3599,11 @@ process:
     if ((local.value8 - 0xF0000) == 0x423F) {
         return 3;
     }
-    if (local.value8 < 0xF423F) {
-        goto retry;
+    {
+        u32 limit = 0xF423F;
+        if (local.value8 < (s32)limit) {
+            goto retry;
+        }
     }
 
     fn_800A4AAC((char *)(object + 0x22D), (char *)(local.parsed + 0x20E));
@@ -3916,10 +3919,11 @@ extern "C" u8 VFiPFENT_CalcCheckSum(u8 *p_ent) {
 
 #pragma push
 #pragma scheduling on
-extern "C" void fn_800AA4EC(u8 *p_ent, const u8 *p_buf) {
-    fn_800B3BEC(p_ent + 0x20E, (u8 *)p_buf, p_buf[0xB]);
-    if ((s8)p_ent[0x20E] == 5) {
-        ((s8 *)p_ent)[0x20E] = -0x1B;
+/* Format the 8.3 name at entry+0x20E from buffer (flags at buffer[0xB]); translate a leading name byte of 5 to -27. */
+extern "C" void fn_800AA4EC(u8 *p_entry, const u8 *p_buffer) {
+    fn_800B3BEC(p_entry + 0x20E, (u8 *)p_buffer, p_buffer[0xB]);
+    if ((s8)p_entry[0x20E] == 5) {
+        ((s8 *)p_entry)[0x20E] = -0x1B;
     }
 }
 #pragma pop
@@ -22712,6 +22716,7 @@ extern "C" void fn_800C7998(void *arg0) {
     u8 *data = lbl_8031D840;
     u8 *home = (u8 *)arg0;
     s32 zero = 0;
+    s32 one = 1;
     s32 var_r30;
     u8 *child;
     s32 childCount;
@@ -22724,11 +22729,11 @@ extern "C" void fn_800C7998(void *arg0) {
     u8 flags;
 
     if (home[0x8B] != 0) return;
-    home[0x8C] = 0;
-    home[0x8B] = 1;
-    home[0x8D] = 0;
-    home[0x8F] = 0;
-    if (*(s32 *)(home + 0xAC) != 3) home[0x8E] = 0;
+    home[0x8C] = zero;
+    home[0x8B] = one;
+    home[0x8D] = zero;
+    home[0x8F] = zero;
+    if (*(s32 *)(home + 0xAC) != 3) home[0x8E] = zero;
     GXSetCullMode(0);
     *(s32 *)(home + 0x1C) = zero;
     *(s32 *)(home + 0x20) = zero;
@@ -22746,7 +22751,7 @@ extern "C" void fn_800C7998(void *arg0) {
     *(s32 *)(home + 0x50) = zero;
     *(s32 *)(home + 0x10) = zero;
     *(s32 *)home = zero;
-    home[0x88] = 0;
+    home[0x88] = zero;
     updateTrigPane__Q210homebutton10HomeButtonFv(arg0);
 
     soundControl = *(HomeButtonDispatch **)(home + 0x1F8);
