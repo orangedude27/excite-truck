@@ -221,6 +221,8 @@ extern "C" void fn_801D483C(void) {
 }
 #pragma cplusplus reset
 
+/* Return the action sequence whose name matches, by forwarding (as a tail call)
+ * to the global action-sequence list lookup fn_801D5860; 0 if none is found. */
 void *fn_801D4888(const char *name) {
     return fn_801D5860(name);
 }
