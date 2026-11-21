@@ -11,8 +11,6 @@
 #include <string.h>
 #include <wchar.h>
 
-#define NAND_BANNER_MAGIC 'WIBN'
-
 typedef enum {
     NAND_LIB_UNINITIALIZED,
     NAND_LIB_INITIALIZING,
