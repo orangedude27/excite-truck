@@ -15,7 +15,7 @@ int fn_80128668(void *);
 #pragma scheduling invalid_target
 /* Construct a fixed-size block pool: install its vtable and initialize it with no caller-supplied buffer. */
 void *fn_8012A13C(void *self, int name, int count, int blockSize) {
-    *(int **)self = (int *)lbl_8032A620;
+    *(int **)self = (int *)sPoolVtable;
     fn_8012A17C(self, name, count, blockSize, 0);
     return self;
 }
