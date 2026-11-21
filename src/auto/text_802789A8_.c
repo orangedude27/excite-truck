@@ -1,5 +1,5 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
+/* Empty subsystem hooks from code that had no original source file: two no-op
+ * slots in the main game/menu init sequence and one in its shutdown sequence. */
 
 /* No-op subsystem init hook: called once in the main game/menu init sequence
  * (fn_80004B5C); this build leaves it empty. */
