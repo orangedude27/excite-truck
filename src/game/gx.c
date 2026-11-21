@@ -735,6 +735,14 @@ extern float lbl_80564F98;
 extern float lbl_80564F9C;
 #pragma dont_inline fn_802CF5D4
 #pragma dont_inline fn_802CF104
+/* Fills a 3x4 matrix with the unit diagonal (one on the diagonal, zero
+ * everywhere else); the caller's two constant floats are the only values. */
+static inline void mtxIdentity_802CF850(register float *m, register float one, register float zero) {
+    m[0] = one; m[1] = zero; m[2] = zero; m[3] = zero;
+    m[4] = one; m[5] = zero; m[6] = zero; m[7] = zero;
+    m[8] = one; m[9] = zero; m[10] = zero; m[11] = zero;
+}
+
 void fn_802CF850(void) {
     extern int lbl_804C5650[];
     extern void *lbl_8055FD64;
