@@ -617,7 +617,7 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
 #pragma dont_inline on
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_80149CEC(void *arg0, void *arg1) {
+extern "C" void fn_80149CEC(void *arg0, const void *arg1) {
     struct Dummy {
         virtual void f0();
         virtual void f1();
@@ -625,13 +625,14 @@ extern "C" void fn_80149CEC(void *arg0, void *arg1) {
     };
     void *r3;
     s32 val;
-    *(f32 *)((u8 *)arg0 + 0x28) = *(const f32 *)(*(u8 * const *)((const u8 *)arg1 + 0x68) + 0x8D4);
-    r3 = *(void **)((u8 *)fn_8017960C(*(s32 *)arg1) + 0x270);
+    void *r5 = *(void * const *)((const u8 *)arg1 + 0x68);
+    *(f32 *)((u8 *)arg0 + 0x28) = *(const f32 *)((const u8 *)r5 + 0x8D4);
+    r3 = *(void **)((u8 *)fn_8017960C(*(s32 *)((const u8 *)arg1)) + 0x270);
     r3 = ((Dummy *)r3)->f2();
     val = *(s32 *)((u8 *)r3 + 4);
     *(s32 *)((u8 *)arg0 + 4) = val;
     *(s32 *)((u8 *)arg0 + 0x10) = val - 1;
-    fn_80149D64(arg0, arg1, val);
+    fn_80149D64(arg0, (void *)arg1, val);
 }
 #pragma pop
 #pragma dont_inline reset
