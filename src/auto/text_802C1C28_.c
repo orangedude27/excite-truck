@@ -104,7 +104,9 @@ void fn_802C1F80(int arg0) {}
 /* No-op finalizer: accepts an allocation-header pointer and intentionally does nothing (placeholder cleanup callback). */
 void fn_802C1F84(int header) {}
 
-void fn_802C1F88(int arg0) {}
+/* No-op finalizer: accepts an allocation-header pointer (passed on by the
+ * fn_802C2064 release callback) and intentionally does nothing. */
+void fn_802C1F88(int header) {}
 
 extern int lbl_8055FB28;
 extern char lbl_8055CFC0[];
