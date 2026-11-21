@@ -87,7 +87,8 @@ void fn_802E98D0(void) {
 }
 #pragma scheduling on
 
-/* Empty slot of the config module (kept for the original's code layout). */
+/* Config subsystem shutdown hook: a no-op, since the config module holds no
+ * resources to release (called from the kernel teardown sequence fn_802E2B34). */
 void fn_802E99A8(void) {
 }
 
