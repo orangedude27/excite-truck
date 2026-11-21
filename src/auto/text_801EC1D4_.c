@@ -973,12 +973,10 @@ extern void fn_801EABA8(void *, void *);
 extern void fn_801F0F78(long, long, void *, float);
 extern float lbl_80562E90;
 extern float __fabsf(float);
-#pragma push
-#pragma scheduling invalid_target
-#pragma use_lmw_stmw off
-void fn_801EDD7C(void *arg0, long arg1) {
 #pragma opt_common_subs off
+#pragma opt_loop_invariants off
 #pragma scheduling invalid_target
+void fn_801EDD7C(void *arg0, long arg1) {
     void *object = arg0;
     long offset;
     char *entry;
@@ -1033,15 +1031,16 @@ void fn_801EDD7C(void *arg0, long arg1) {
     offset = 0;
     do {
         fn_801F0F78(*(long *)(entry + 0x4D4),
-                    offset + *(long *)((char *)object + 0x3C) + 0x7C,
-                    entry + 4,
+                    (long)(*(char **)((char *)object + 0x3C) + offset + 0x7C),
+                    (char *)object + 4,
                     *(float *)((char *)object + 0x4D0));
         arg1++;
         offset += 0x6C;
         entry += 4;
     } while (arg1 < 4);
 }
-#pragma pop
+#pragma opt_loop_invariants reset
+#pragma scheduling on
 
 extern float lbl_80562E88, lbl_80562E90, lbl_80562E9C, lbl_80562EC8;
 float fn_802C88E8(void*);
@@ -1069,10 +1068,10 @@ void fn_801EDF18(void* arg0) {
     temp_f31 = factor * temp_f31;
     index = *(long*)((char*)arg0 + 0x480) - 1;
     while (index >= 0 && temp_f31 < (*(float*)((char*)arg0 + index * 8 + 0x404) * *(float*)((char*)arg0 + index * 8 + 0x404))) index--;
-    if (index < 0) goto done;
+    if (index < 0) return;
     if (*(long*)((char*)arg0 + 0x40) != fn_801E866C(-1)) goto process;
     if (fn_801E89A4(-1) != 0) goto process;
-    goto done;
+    return;
 process:
     firstValue = *(volatile long*)((char*)arg0 + 0x28);
     secondValue = *(volatile long*)((char*)arg0 + 0x2C);
@@ -1104,8 +1103,6 @@ process:
         i++;
         arg0 = (char*)arg0 + 4;
     } while (i < 4);
-done:
-    ;
 }
 #pragma pop
 
@@ -1159,6 +1156,7 @@ void fn_801EE0E0(void *arg0, char *arg1, int arg2, int arg3, char *arg4) {
     void **p29, **p3_6, **p15, **p3_10;
     void *found, *node, *obj, *tmp;
     char *cp;
+    float *out;
     char *base = lbl_8033A060;
     idx = arg3;
     fn_801345D8(nameBuf, 0x100, base + 0x64, arg1);
@@ -1197,8 +1195,9 @@ loop8:
         }
         cp = strchr((char *)text, 'y');
         h = *(int *)((char *)arg0 + 0x148) * 8;
-        *(float *)(*(int *)((char *)arg0 + 0x170) + h) = val;
-        *((char *)(*(int *)((char *)arg0 + 0x170) + h) + 4) = (cp != 0);
+        out = (float *)(*(int *)((char *)arg0 + 0x170) + h);
+        *out = val;
+        *((char *)out + 4) = (cp != 0);
         *(int *)((char *)arg0 + 0x148) = *(int *)((char *)arg0 + 0x148) + 1;
         goto loop8;
     }
