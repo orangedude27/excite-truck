@@ -44,7 +44,8 @@ float fn_801A6370(float pos, float vel, float accel, float dt) {
 #pragma dont_inline reset
 
 float fn_801A6390(int arg0, int arg1) {
-    return (float)(arg0 - arg1) * lbl_8056241C;
+    int delta = arg0 - arg1;
+    return lbl_8056241C * (float)delta;
 }
 
 #pragma dont_inline on
@@ -156,8 +157,8 @@ void fn_801A6524(void *object) {
     fn_801A6558(object);
 }
 
-#pragma opt_propagation off
 void fn_801A6558(void *arg0) {
+    #pragma scheduling invalid_target
     float zero;
     float one;
     void *tmp;
@@ -242,8 +243,9 @@ void *fn_801A669C(void *object, int shouldFree) {
 #pragma dont_inline on
 #pragma scheduling reset
 int fn_801A6724(void *arg0) {
+    int flag = *(int *)((char *)arg0 + 0x2704);
     int ret;
-    if (*(int *)((char *)arg0 + 0x2704) > 0) {
+    if (flag > 0) {
         float v = fn_801A6390(lbl_8055E3C4, *(int *)(*(char **)((char *)arg0 + 0x2700) + 4));
         ret = (v > lbl_80562434);
     } else {
@@ -445,7 +447,7 @@ extern "C" void fn_801A6C14(void *arg0) {
     float temp_f2, temp_f2_2, temp_f3, temp_f3_2, temp_f4, temp_f4_2, temp_f5, temp_f5_2;
     float temp_f6, temp_f6_2, temp_f7, temp_f7_2, temp_f8, temp_f9, temp_f9_2;
     void *temp_r3, *temp_r4, *temp_r4_2, *temp_r4_3, *temp_r4_4, *temp_r4_5;
-    zero = lbl_80562430; one = lbl_8056242C; matrix = data.matrix; data.tag = -1;
+    one = 1.0f; zero = 0.0f; matrix = data.matrix; data.tag = -1;
     temp_r4 = M2C_FIELD(arg0, void **, 0x2700);
     temp_f8 = M2C_FIELD(temp_r4, float *, 0x2A); temp_f2 = M2C_FIELD(temp_r4, float *, 0x2E);
     temp_f1 = M2C_FIELD(temp_r4, float *, 0x32); temp_f3 = temp_f8 + temp_f8;
