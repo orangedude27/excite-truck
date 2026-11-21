@@ -1732,7 +1732,7 @@ void *fn_801916AC(void *obj, int doDestroy) {
 }
 
 #pragma cplusplus on
-#pragma scheduling 604
+#pragma scheduling on
 extern "C" void fn_801916F4(void *arg0) {
 #pragma opt_propagation off
     struct Obj {
