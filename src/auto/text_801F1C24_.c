@@ -926,20 +926,22 @@ void fn_801F2E88(void *arg0, void *arg1) {
     unsigned short indices[6];
     float vec[3];
     float scale2 = lbl_80562F58, scale3 = lbl_80562F5C, scale0 = lbl_80562F50, scale1 = lbl_80562F54;
+    register void *pos;
     void *p = arg1;
     while (p != 0) {
         void *camera = fn_802C86DC();
-        register void *pos;
         int frame;
-        float v1,v,u1,u;
+        float v1,v,u1,u,fu,fv;
         fn_8001BA68(vec);
         pos = (char *)p + 0x20;
         fn_801C0E60(vec,pos,(char *)camera + 0x24);
         fn_801F3198(vec);
         frame = (int)(scale0 * (-((float (*)(float,float))fn_801F3174)(vec[0],vec[2]) / scale1));
         if (frame < 0) frame += 32;
-        u = scale2 * (float)(frame % 8);
-        v = scale3 * (float)(frame / 8);
+        fu = (float)(frame % 8);
+        fv = (float)(frame / 8);
+        u = scale2 * fu;
+        v = scale3 * fv;
         u1 = scale2 + u;
         v1 = scale3 + v;
         fn_801F3158((float *)base,GXInitLightAttnA_80144B44(t0,lbl_80562F40,lbl_80562F40,lbl_80562F40));
@@ -1172,7 +1174,7 @@ void fn_801F34C4(void *dest, int sourceIndex) {
 #pragma push
 #pragma processor 750
 void fn_801F3514(void *arg0) {
-    extern float lbl_80562F74, lbl_80562F78, lbl_80562F7C, lbl_80562F80, lbl_80562F84, lbl_80562F88, lbl_80562F8C, lbl_80562F64, lbl_8055EC04, lbl_80562F48, lbl_80562F40, lbl_80562F44;
+    extern float lbl_80562F74, lbl_80562F78, lbl_80562F7C, lbl_80562F80, lbl_80562F84, lbl_80562F88, lbl_80562F8C, lbl_80562F64, lbl_8055EC04, lbl_80562F48;
     extern char lbl_8033ABC4[], lbl_8033ABF0[], lbl_8033AC18[];
     extern int *fn_801E1F44(void);
     extern int fn_802C9994();
@@ -1211,7 +1213,7 @@ void fn_801F3514(void *arg0) {
     v[2] = *(float *)(p + 0xC) * lbl_80562F48;
     PSVECNormalize(v, v);
     sq = v[2] * v[2];
-    f30 = (float)fn_8002F234(sq + v[0] * v[0]);
+    f30 = (float)fn_8002F234(v[0] * v[0] + sq);
     f31 = -v[1];
     if ((float)atan(f31 / f30) < lbl_8055EC04) {
         fn_802E30C8(lbl_8033AC18, (lbl_80562F84 * (float)atan(f31 / f30)) / lbl_80562F88, (lbl_80562F84 * lbl_8055EC04) / lbl_80562F88);
@@ -1351,7 +1353,7 @@ void fn_801F398C(void *unused, int arg1) {
 void fn_801F3A30(void *arg0, int arg1) {
     extern int *fn_801F1CE8(int);
     extern float lbl_80562F90;
-    unsigned int byte;
+    unsigned char byte;
     float value;
     byte = (unsigned char)*fn_801F1CE8(arg1);
     value = (float)byte;
@@ -2037,47 +2039,48 @@ void fn_801F49F4(void) {
 
 }
 
-void fn_801F49F8(void *arg0, int arg1) {
-    void *selected[0x30];
+void fn_801F49F8(void *table, int drawContext) {
+    /* Collect records whose id passes the draw-context flag test, then for each selected item draw its model with an alpha clamped to [0,1] when its metric exceeds the threshold. */
+    void *selectedItems[0x30];
     void *item;
     void **cursor;
-    char *entry;
-    char *next;
-    int j;
-    int count;
-    int i;
-    float minimum;
-    float maximum;
+    char *record;
+    char *itemData;
+    int selectedIndex;
+    int selectedCount;
+    int recordIndex;
+    float minAlpha;
+    float maxAlpha;
     float value;
-    entry = (char *)arg0;
-    next = (char *)arg0 + 4;
-    count = 0;
-    i = 0;
-    while (i < *(int *)((char *)arg0 + 0x544)) {
-        if (fn_802CDB20(arg1, *(int *)((char *)entry + 0x1C)) != 0) {
-            selected[count++] = next;
+    record = (char *)table;
+    itemData = (char *)table + 4;
+    selectedCount = 0;
+    recordIndex = 0;
+    while (recordIndex < *(int *)((char *)table + 0x544)) {
+        if (fn_802CDB20(drawContext, *(int *)((char *)record + 0x1C)) != 0) {
+            selectedItems[selectedCount++] = itemData;
         }
-        entry += 0x1C;
-        next += 0x1C;
-        i++;
+        record += 0x1C;
+        itemData += 0x1C;
+        recordIndex++;
     }
-    maximum = lbl_80562F44;
-    cursor = selected;
-    minimum = lbl_80562F40;
-    j = 0;
-    while (j < count) {
+    maxAlpha = lbl_80562F44;
+    cursor = selectedItems;
+    minAlpha = lbl_80562F40;
+    selectedIndex = 0;
+    while (selectedIndex < selectedCount) {
         item = *cursor;
         value = fn_802C88D4(item);
         if (value > *(float *)((char *)item + 0x14)) {
             value = *(float *)((char *)item + 0x10) * (value - *(float *)((char *)item + 0x14));
-            value = (maximum < value) ? maximum : value;
-            value = (value > minimum) ? value : minimum;
+            value = (maxAlpha < value) ? maxAlpha : value;
+            value = (value > minAlpha) ? value : minAlpha;
             fn_802C9900(value);
             fn_802C7040(*(int *)((char *)item + 0xC));
             fn_802C9904();
         }
         cursor++;
-        j++;
+        selectedIndex++;
     }
 }
 
