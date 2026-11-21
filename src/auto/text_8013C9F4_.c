@@ -42,7 +42,7 @@ s32 fn_8013CA40(s32 object, s32 deleteFlag) {
 }
 
 /* Default/stub method: reports zero (false / no result) for a vtable-dispatched query. */
-long fn_8013CA80(void) {
+s32 fn_8013CA80(void) {
     return 0;
 }
 
