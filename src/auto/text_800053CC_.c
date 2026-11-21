@@ -12,6 +12,9 @@ extern void fn_80010B80(s32, f32, f32, f32, f32);
 extern f32 lbl_80560110;
 extern f32 lbl_80560114;
 extern f32 lbl_80560118;
+#define kMarkSize lbl_80560110
+#define kMarkScaleX lbl_80560114
+#define kMarkScaleY lbl_80560118
 extern u32 lbl_8034EEB8[];
 extern f32 lbl_8056011C;
 extern u8 lbl_8034EC78[];
