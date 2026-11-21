@@ -65,6 +65,7 @@ typedef struct PathSample {
     /* 0x04 */ float fraction;
     /* 0x08 */ s32 tag;
 } PathSample;
+#define PATH_SAMPLE_NOT_FOUND 0x2710
 
 // The path follower object (Unk_80135278) as the samplers see it: its vtable
 // and then the sample it has reached.
