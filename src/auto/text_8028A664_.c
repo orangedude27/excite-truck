@@ -31,8 +31,8 @@ static inline void XfmV3(f32 *m, struct V3 *src, struct V3 *dst) {
         dst->z = z * m[8] + (x * m[2] + y * m[5]);
     } else {
         dst->x = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
-        dst->y = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
-        dst->z = src->z * m[8] + (src->x * m[2] + src->y * m[5]);
+        dst->y = src->z * m[7] + (dst->x * m[1] + src->y * m[4]);
+        dst->z = src->z * m[8] + (dst->x * m[2] + dst->y * m[5]);
     }
 }
 static inline void XfmVec(f32 *m, f32 *src, f32 *dst) {
