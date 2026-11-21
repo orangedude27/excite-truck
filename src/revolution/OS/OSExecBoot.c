@@ -1,6 +1,6 @@
 #include <revolution/OS.h>
 
-extern void __OSBootDol(u32 doloffset, u32 restartCode, const char** argv);
+extern void __OSBootDol(u32 dolOffset, u32 restartCode, const char** argv);
 
 /* Saved MEM1 region bounds, recorded at boot from the exec params. */
 static u32 SavedRegionEnd;
