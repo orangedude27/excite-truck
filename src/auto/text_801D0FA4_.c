@@ -60,7 +60,8 @@ extern "C" void fn_801D108C(void *context) {
 #undef gListenerCount
 }
 #pragma cplusplus on
-/* Notify every registered listener in lbl_80438858 (in reverse registration order) via virtual slot +0x20 that the race/level context is being torn down. */
+/* Notify every registered listener in lbl_80438858 (in reverse registration
+   order) via virtual slot +0x20 that the race/level context is being torn down. */
 extern "C" void fn_801D1100(void *context) {
 #define gListenerCount lbl_8055E8FC
 #define gListenerTable lbl_80438858
