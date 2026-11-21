@@ -9,12 +9,6 @@ public:
      virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
      virtual void f4(); virtual void f5(); virtual int f6(int);
  };
- struct Obj80176040 {
-     virtual void s0(); virtual void s1(); virtual void s2(); virtual void s3();
-     virtual void s4(); virtual void s5(); virtual int m20(int);
-     virtual void s7(); virtual void s8(); virtual void s9();
-     virtual void m30(int);
- };
  #pragma cplusplus reset
 /* A colour as the CPU keeps it: 0xAARRGGBB.  The FIFO writer (fn_802D68C4)
    rotates it left 8 to put GX's R,G,B,A byte order on the bus. */
