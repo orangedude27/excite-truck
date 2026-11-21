@@ -23,7 +23,7 @@ extern int lbl_8055F638;
 extern char lbl_804A3EE0[];
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
-void fn_8027AA50(int arg0) {
+void fn_8027AA50(int unused) {
     /* Scans entries for close scores and notifies for pairs whose score distance exceeds a threshold. */
     char *currentEntry;
     char *candidateEntry;
