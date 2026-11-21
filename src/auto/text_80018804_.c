@@ -10,7 +10,7 @@ typedef struct {
 } StaticDtorRecord;
 
 extern StaticDtorRecord lbl_8055D558; /* this module's record, in .sbss */
-void fn_8000D838(void *);
+void fn_8000D838(void *record);
 void fn_80018804(void);
 
 DECL_SECTION(".ctors") funcptr_t D_802ED0A8 = fn_80018804;
