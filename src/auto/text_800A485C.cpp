@@ -9165,54 +9165,61 @@ extern "C" void *fn_800B224C(void *fileObj, void *info) {
 /* ":" at the front of a path introduces its drive/volume prefix. */
 #define PF_COLON lbl_80559208
 #pragma optimization_level 3
-extern "C" s32 fn_800B23F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    union Tok { s32 w[4]; f64 d[2]; };
-    Tok cur;
-    Tok prev;
-    s32 var;
-    s32 userData;
-    s32 r;
-    userData = fn_800A4D44((void *)arg0);
-    NANDSetUserData((void *)arg1, userData);
-    NANDSetUserData((void *)arg2, userData);
-    ((s32 *)arg1)[0] = 0;
-    if (arg2 != 0) {
-        ((s32 *)arg2)[0] = 0;
+/*
+ * Split a VFiPF NAND path into two outputs: outDir receives the byte range
+ * [path start, end of the last valid token), and outName (when non-null) gets
+ * that last token's 16-byte string cursor.  Both outputs are stamped with the
+ * path's character code first.  Returns 0 on success, 2 for a malformed token,
+ * or the tokenizer's error code.
+ */
+extern "C" s32 fn_800B23F8(s32 path, s32 outDir, s32 outName, s32 allowWildcards) {
+    union Tok { s32 words[4]; f64 dbl[2]; };
+    Tok token;
+    Tok lastToken;
+    s32 rangeEnd;
+    s32 charCode;
+    s32 result;
+    charCode = fn_800A4D44((void *)path);
+    NANDSetUserData((void *)outDir, charCode);
+    NANDSetUserData((void *)outName, charCode);
+    ((s32 *)outDir)[0] = 0;
+    if (outName != 0) {
+        ((s32 *)outName)[0] = 0;
     }
-    if (VFiPFSTR_StrNCmp(arg0, &lbl_80559208, 1, 1, 1) == 0) {
-        ((void (*)(void *, s32))VFiPFSTR_MoveStrPos)((void *)arg0, 2);
+    if (VFiPFSTR_StrNCmp(path, &PF_COLON, 1, 1, 1) == 0) {
+        ((void (*)(void *, s32))VFiPFSTR_MoveStrPos)((void *)path, 2);
     }
-    var = ((s32 *)arg0)[0];
-    cur.w[0] = var;
-    cur.w[1] = var;
-    cur.w[3] = userData;
-    r = VFiPFPATH_GetNextTokenOfPath(&cur, arg3);
-    if (r != 0) return r;
-    if (cur.w[0] == 0 || (u16)fn_800A4F08(&cur) == 0) return 2;
-    if (((u32 *)arg0)[1] < (u32)cur.w[1]) return 2;
-    prev.d[0] = cur.d[0];
-    prev.d[1] = cur.d[1];
+    rangeEnd = ((s32 *)path)[0];
+    token.words[0] = rangeEnd;
+    token.words[1] = rangeEnd;
+    token.words[3] = charCode;
+    result = VFiPFPATH_GetNextTokenOfPath(&token, allowWildcards);
+    if (result != 0) return result;
+    if (token.words[0] == 0 || (u16)fn_800A4F08(&token) == 0) return 2;
+    if (((u32 *)path)[1] < (u32)token.words[1]) return 2;
+    lastToken.dbl[0] = token.dbl[0];
+    lastToken.dbl[1] = token.dbl[1];
     for (;;) {
-        if (VFiPFSTR_StrNCmp((s32)&cur, lbl_8055920C, 2, 0, 1) == 0) {
-            var = prev.w[1];
+        if (VFiPFSTR_StrNCmp((s32)&token, lbl_8055920C, 2, 0, 1) == 0) {
+            rangeEnd = lastToken.words[1];
             break;
         }
-        r = VFiPFPATH_GetNextTokenOfPath(&cur, arg3);
-        if (r != 0) return r;
-        if ((u16)fn_800A4F08(&cur) == 0) return 2;
-        if (((u32 *)arg0)[1] >= (u32)cur.w[1] && cur.w[0] != 0) {
-            var = prev.w[1];
-            prev.d[0] = cur.d[0];
-            prev.d[1] = cur.d[1];
+        result = VFiPFPATH_GetNextTokenOfPath(&token, allowWildcards);
+        if (result != 0) return result;
+        if ((u16)fn_800A4F08(&token) == 0) return 2;
+        if (((u32 *)path)[1] >= (u32)token.words[1] && token.words[0] != 0) {
+            rangeEnd = lastToken.words[1];
+            lastToken.dbl[0] = token.dbl[0];
+            lastToken.dbl[1] = token.dbl[1];
             continue;
         }
         break;
     }
-    ((s32 *)arg1)[0] = ((s32 *)arg0)[0];
-    ((s32 *)arg1)[1] = var;
-    if (arg2 != 0) {
-        volatile s32 *src = (volatile s32 *)&prev;
-        volatile s32 *dst = (volatile s32 *)arg2;
+    ((s32 *)outDir)[0] = ((s32 *)path)[0];
+    ((s32 *)outDir)[1] = rangeEnd;
+    if (outName != 0) {
+        volatile s32 *src = (volatile s32 *)&lastToken;
+        volatile s32 *dst = (volatile s32 *)outName;
         s32 d, c, b, a;
         a = src[0];
         b = src[1];
