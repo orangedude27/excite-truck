@@ -509,100 +509,110 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
 #undef WPAD_ANALOG_CHANGED
 }
 #pragma pop
-void fn_8005E09C(s32 port) {
-    s32 enabled;
-    s32 flag;
-    WPADCB *p;
-    s32 idx;
-    WPADCB *p2;
-    WPADCB **cbs;
-    s32 changed;
-    s32 offset;
-    s32 filterSame;
-    s32 devHandle;
-    s64 currentTime, lastTime;
-    s32 timeDiff, timeout;
-    s32 irq;
-    u8 *rx;
-
-    cbs = lbl_8038F4F0;
-    idx = port * 4;
-    flag = 0;
-    p = lbl_8038F4F0[port];
-
-    if (p->readStatus == -1) {
-        goto _end;
-    }
-
-    enabled = OSDisableInterrupts();
-    offset = (u8)(p->rxBufSel == 0) * 0x60;
-    changed = IsControllerDataChanged(p, (void*)((u8*)p + 0xA0 + offset), (void*)p->rxBufMain);
-    if (changed != 0) {
-        memcpy(p->rxBufMain, (void*)((u8*)p + 0xA0 + offset), 0x60);
-    }
-    if (*(s8*)((u8*)p + 0x69) != 0) {
-        memset(p->rxBufMain, 0, 0x60);
-    }
-    OSRestoreInterrupts(enabled);
-
+void fn_8005E09C(s32 port)
+{
+  u8 *new_var;
+  s32 enabled;
+  s32 flag;
+  WPADCB *p;
+  s32 idx;
+  WPADCB *p2;
+  WPADCB **cbs;
+  s32 changed;
+  s32 offset;
+  s32 devHandle;
+  s64 currentTime;
+  s64 lastTime;
+  s32 timeDiff;
+  s32 timeout;
+  s32 irq;
+  u8 *rx;
+  cbs = lbl_8038F4F0;
+  idx = port * 4;
+  flag = 0;
+  p = lbl_8038F4F0[port];
+  if (p->readStatus == (-1))
+  {
+    goto _end;
+  }
+  enabled = OSDisableInterrupts();
+  offset = ((u8) (p->rxBufSel == 0)) * 0x60;
+  changed = IsControllerDataChanged(p, (void *) ((((u8 *) p) + 0xA0) + offset), (void *) p->rxBufMain);
+  if (changed != 0)
+  {
+    memcpy(p->rxBufMain, (void *) ((((u8 *) p) + 0xA0) + offset), 0x60);
+  }
+  if ((*((s8 *) (((u8 *) p) + 0x69))) != 0)
+  {
+    memset(p->rxBufMain, 0, 0x60);
+  }
+  OSRestoreInterrupts(enabled);
+  p2 = lbl_8038F4F0[port];
+  enabled = 0;
+  irq = OSDisableInterrupts();
+  offset = ((u8) (p2->rxBufSel == 0)) * 0x60;
+  new_var = (u8 *) p2;
+  rx = new_var + offset;
+  if ((*((u16 *) (rx + 0xA0))) == 0x1C10)
+  {
+    enabled = 1;
+  }
+  if (((p2->readFormat - 6) <= 2) && ((*((u16 *) (rx + 0xCA))) == 0x1450))
+  {
+    enabled = 1;
+  }
+  *((u16 *) (new_var + 0x852)) = enabled ? (*((u16 *) (new_var + 0x852)) + 1) : 0;
+  OSRestoreInterrupts(irq);
+  if ((*((u16 *) (new_var + 0x852))) > 600)
+  {
     p2 = lbl_8038F4F0[port];
     irq = OSDisableInterrupts();
-    offset = (u8)(p2->rxBufSel == 0) * 0x60;
-    rx = (u8*)p2 + offset;
-    filterSame = 0;
-    if (*(u16*)(rx + 0xA0) == 0x1C10) {
-        filterSame = 1;
-    }
-    if (p2->readFormat - 6 <= 2 && *(u16*)(rx + 0xCA) == 0x1450) {
-        filterSame = 1;
-    }
-    if (filterSame != 0) {
-        *(u16*)((u8*)p2 + 0x852) += 1;
-    } else {
-        *(u16*)((u8*)p2 + 0x852) = 0;
-    }
+    *((u8 *) (((u8 *) p2) + 0x851)) = 0;
     OSRestoreInterrupts(irq);
-
-    if (*(u16*)((u8*)p2 + 0x852) > 600) {
-        WPADCB *p2b = lbl_8038F4F0[port];
+  }
+  if (changed != 0)
+  {
+    flag = 1;
+    currentTime = __OSGetSystemTime();
+    *((s64 *) (((u8 *) p) + 0x830)) = currentTime;
+  }
+  else
+    if (lbl_8055DC1A != 0)
+  {
+    currentTime = __OSGetSystemTime();
+    lastTime = *((s64 *) (((u8 *) p) + 0x830));
+    timeDiff = OS_TICKS_TO_SEC(currentTime - lastTime);
+    timeout = lbl_8055DC1A * 60;
+    if (timeDiff > timeout)
+    {
+      p = lbl_8038F4F0[port];
+      irq = OSDisableInterrupts();
+      devHandle = p->readStatus;
+      OSRestoreInterrupts(irq);
+      if (devHandle != (-1))
+      {
         irq = OSDisableInterrupts();
-        *(u8*)((u8*)p2b + 0x851) = 0;
-        OSRestoreInterrupts(irq);
-    }
-
-    if (changed != 0) {
-        flag = 1;
-        currentTime = __OSGetSystemTime();
-        *(s64*)((u8*)p + 0x830) = currentTime;
-    } else if (lbl_8055DC1A != 0) {
-        currentTime = __OSGetSystemTime();
-        lastTime = *(s64*)((u8*)p + 0x830);
-        timeDiff = OS_TICKS_TO_SEC(currentTime - lastTime);
-        timeout = lbl_8055DC1A * 60;
-        if (timeDiff > timeout) {
-            WPADCB *p3 = lbl_8038F4F0[port];
-            irq = OSDisableInterrupts();
-            devHandle = p3->readStatus;
-            OSRestoreInterrupts(irq);
-            if (devHandle != -1) {
-                irq = OSDisableInterrupts();
-                if (*(u8*)((u8*)p3 + 0x8C6) != 0) {
-                    OSRestoreInterrupts(irq);
-                } else {
-                    *(u8*)((u8*)p3 + 0x8C6) = 1;
-                    OSRestoreInterrupts(irq);
-                    BTA_HhClose(*(u8*)((u8*)p3 + 0x803));
-                }
-            }
+        if ((*((u8 *) (((u8 *) p) + 0x8C6))) != 0)
+        {
+          OSRestoreInterrupts(irq);
         }
+        else
+        {
+          *((u8 *) (((u8 *) p) + 0x8C6)) = 1;
+          OSRestoreInterrupts(irq);
+          BTA_HhClose(*((u8 *) (((u8 *) p) + 0x803)));
+        }
+      }
     }
+  }
+  if (flag != 0)
+  {
+    fn_8005B00C();
+  }
+  _end:
+  ;
 
-    if (flag != 0) {
-        fn_8005B00C();
-    }
-
-_end:
-    ;
+  ;
 }
 
 void fn_8005E298(void) {
@@ -3589,7 +3599,8 @@ void fn_8005EE6C(void) { WUDStartFastSyncSimple(); }
    was active (the home-button sync-check alarm callback reads that result). */
 void fn_8005EE70(void) { fn_8006AC4C(); }
 
-// fn_8005EE74: tail call to WUDSetSyncSimpleCallback
+/* WPAD-internal wrapper: tail-calls WUDSetSyncSimpleCallback to install the simple-sync
+ * callback (the previous callback, returned in r3, still reaches the caller). */
 void fn_8005EE74(WUDSyncDeviceCallback pCallback) { WUDSetSyncSimpleCallback(pCallback); }
 
 /* Get the HID device handle for the specified channel (interrupt-protected). */
@@ -5946,18 +5957,18 @@ void fn_80064B1C(s32 chan, void* data) {
 // fn_80064F64: WPAD data processing
 void fn_80064F64(s32 chan, void* data) {
     const char* strBase = (const char*)lbl_80312338;
-    register WPADCB* pCB asm("r29");
-    register volatile u8* pBuf asm("r27");
-    register u32 offset asm("r5");
-    register u8 type asm("r4");
-    register u8 ext asm("r3");
-    register s32 enabled asm("r28");
-    register u16 rptLen asm("r31");
-    register s32 sd asm("r23");
-    register s32 cb_8B8 asm("r26");
-    register WPADCallback callback asm("r12");
+    WPADCB* pCB;
+    volatile u8* pBuf;
+    u32 offset;
+    u8 type;
+    u8 ext;
+    s32 enabled;
+    u16 rptLen;
+    s32 sd;
+    s32 cb_8B8;
+    WPADCallback callback;
     u8* p;
-    s32 dataLen;
+    u8 dataLen;
     s16 pos;
 
     enabled = OSDisableInterrupts();
