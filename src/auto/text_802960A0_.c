@@ -502,6 +502,8 @@ extern "C" void *fn_80296B10(char *arg0, void *arg1) {
 #pragma pop
 void fn_80296D24(void) {}
 
+/* FlipBook_release: drop one reference to a FlipBook by tail-calling the
+ * refcount-decrement/destroy routine fn_8029690C with the object still in r3. */
 void fn_80296D28(void) { fn_8029690C(); }
 
 extern void fn_802960A0(float *, unsigned int, int, float, double, double, double, double);
