@@ -149,7 +149,6 @@ void read_kpad_acc(KPADInsideStatus* kp, KPADUnifiedWpadStatus* uwp, u32 dev_typ
     f32 acc_scale_fs_x;
     f32 acc_scale_fs_y;
     f32 acc_scale_fs_z;
-    f32 v1, v2, v3;
 
     acc_scale_x = kp_core_scale_default;
     acc_scale_y = kp_core_scale_default;
