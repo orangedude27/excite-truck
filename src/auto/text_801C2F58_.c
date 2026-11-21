@@ -131,7 +131,7 @@ extern f32 lbl_8055E834;
 extern f32 lbl_8055F47C;
 extern s32 lbl_80499050[];
 extern s32 lbl_80438220[];
-extern s32 lbl_80437E24[];
+static s32 lbl_80437E24[3];
 extern void *fn_801C3C80(void);
 extern void qsort(void *base, size_t count, size_t size, int (*compare)(const void *, const void *));
 extern s32 fn_801C3B7C(const void *, const void *);
