@@ -4922,60 +4922,65 @@ void fn_80155AEC(void) {
 
 #pragma cplusplus on
 extern "C" void fn_80155AF0(void *arg0, void *arg1) {
+    /* Register an object as a target entry in one of the manager's two arrays:
+     * objects whose subtype is named "points" are appended to the first array
+     * (count at +0x330, list at +0x32c), others to the second (+0x3bc/+0x3b8).
+     * Each 0x1c-byte entry stores the source object, a copy of its world
+     * position and a type-specific vtable installed before and after the copy. */
     class VSub {
     public:
         virtual void v0();
-        virtual s32 v3(void *);
+        virtual s32 matchesName(void *);
     };
     class VArg1 {
     public:
-        virtual VSub *v2();
+        virtual VSub *getSubObject();
         virtual void v3();
-        virtual f32 *v4(void *);
+        virtual f32 *getPosition(void *);
     };
-    u8 *b358 = lbl_8032D358;
-    VSub *sub;
-    f32 *fp;
-    void *alloc;
-    s32 c;
-    s32 idx;
-    void **base;
-    sub = ((VArg1 *)arg1)->v2();
-    c = sub->v3((void *)lbl_80559FB8);
-    if (c != 0) {
-        alloc = (void *)fn_801284F8(0x1c, b358 + 0xdcc);
-        if (alloc != 0) {
-            *(void **)((u8 *)alloc + 0x18) = lbl_8032E1E4;
-            *(void **)alloc = arg1;
-            fp = ((VArg1 *)arg1)->v4((void *)lbl_8032E1E4);
-            *(float *)((u8 *)alloc + 8) = fp[0];
-            *(float *)((u8 *)alloc + 0xc) = fp[1];
-            *(float *)((u8 *)alloc + 0x10) = fp[2];
-            *(void **)((u8 *)alloc + 0x18) = lbl_8032E1D8;
+    u8 *stringTable = lbl_8032D358;
+    VSub *subObject;
+    f32 *position;
+    void *entry;
+    s32 matches;
+    s32 count;
+    void **array;
+    subObject = ((VArg1 *)arg1)->getSubObject();
+    matches = subObject->matchesName((void *)lbl_80559FB8);
+    if (matches != 0) {
+        entry = (void *)fn_801284F8(0x1c, stringTable + 0xdcc);
+        if (entry != 0) {
+            *(void **)((u8 *)entry + 0x18) = lbl_8032E1E4;
+            *(void **)entry = arg1;
+            position = ((VArg1 *)arg1)->getPosition((void *)lbl_8032E1E4);
+            *(float *)((u8 *)entry + 8) = position[0];
+            *(float *)((u8 *)entry + 0xc) = position[1];
+            *(float *)((u8 *)entry + 0x10) = position[2];
+            *(void **)((u8 *)entry + 0x18) = lbl_8032E1D8;
         }
-        idx = *(s32 *)((u8 *)arg0 + 0x330);
-        base = *(void ***)((u8 *)arg0 + 0x32c);
-        *(s32 *)((u8 *)arg0 + 0x330) = idx + 1;
-        base[idx] = alloc;
+        count = *(s32 *)((u8 *)arg0 + 0x330);
+        array = *(void ***)((u8 *)arg0 + 0x32c);
+        *(s32 *)((u8 *)arg0 + 0x330) = count + 1;
+        array[count] = entry;
         return;
     }
-    sub = ((VArg1 *)arg1)->v2();
-    c = sub->v3((void *)(b358 + 0xdd8));
-    if (c != 0) {
-        alloc = (void *)fn_801284F8(0x1c, b358 + 0xde8);
-        if (alloc != 0) {
-            *(void **)((u8 *)alloc + 0x18) = lbl_8032E1E4;
-            *(void **)alloc = arg1;
-            fp = ((VArg1 *)arg1)->v4((void *)lbl_8032E1E4);
-            *(float *)((u8 *)alloc + 8) = fp[0];
-            *(float *)((u8 *)alloc + 0xc) = fp[1];
-            *(float *)((u8 *)alloc + 0x10) = fp[2];
-            *(void **)((u8 *)alloc + 0x18) = lbl_8032E1CC;
+    subObject = ((VArg1 *)arg1)->getSubObject();
+    matches = subObject->matchesName((void *)(stringTable + 0xdd8));
+    if (matches != 0) {
+        entry = (void *)fn_801284F8(0x1c, stringTable + 0xde8);
+        if (entry != 0) {
+            *(void **)((u8 *)entry + 0x18) = lbl_8032E1E4;
+            *(void **)entry = arg1;
+            position = ((VArg1 *)arg1)->getPosition((void *)lbl_8032E1E4);
+            *(float *)((u8 *)entry + 8) = position[0];
+            *(float *)((u8 *)entry + 0xc) = position[1];
+            *(float *)((u8 *)entry + 0x10) = position[2];
+            *(void **)((u8 *)entry + 0x18) = lbl_8032E1CC;
         }
-        idx = *(s32 *)((u8 *)arg0 + 0x3bc);
-        base = *(void ***)((u8 *)arg0 + 0x3b8);
-        *(s32 *)((u8 *)arg0 + 0x3bc) = idx + 1;
-        base[idx] = alloc;
+        count = *(s32 *)((u8 *)arg0 + 0x3bc);
+        array = *(void ***)((u8 *)arg0 + 0x3b8);
+        *(s32 *)((u8 *)arg0 + 0x3bc) = count + 1;
+        array[count] = entry;
     }
 }
 #pragma cplusplus off
