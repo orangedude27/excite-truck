@@ -27,7 +27,15 @@ typedef struct KPADInsideStatus {
     s16 valid_objs; /* 0x110 DPD objects usable in this sample */
     u16 repeat_count; /* 0x112 how long the buttons have been held */
     s16 active_chan; /* 0x114 channel WPAD samples for; <0 = none */
-    u8 _pad116[0x3EC - 0x116];
+    u8 _pad116[0x3DC - 0x116];
+    /* 0x3DC */ u16 btn_repeat_time;
+    /* 0x3DE */ u16 btn_repeat_next;
+    /* 0x3E0 */ u16 btn_repeat_delay;
+    /* 0x3E2 */ u16 btn_repeat_pulse;
+    /* 0x3E4 */ u16 btn_cl_repeat_time;
+    /* 0x3E6 */ u16 btn_cl_repeat_next;
+    /* 0x3E8 */ u16 btn_cl_repeat_delay;
+    /* 0x3EA */ u16 btn_cl_repeat_pulse;
     BOOL is_dpd_enabled; /* 0x3EC */
     BOOL sampling_pending; /* 0x3F0 */
     BOOL sampling_restart; /* 0x3F4 */
