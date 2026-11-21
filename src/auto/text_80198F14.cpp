@@ -4180,7 +4180,6 @@ extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max)
   f32 *dst = point;
   f32 *cur = corners;
   f32 *src = corners;
-  f32 *mx = max;
   int i = 0;
   for (; i < 8; i++)
   {
@@ -4224,33 +4223,33 @@ extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max)
     point[2] += matrix[11];
     {
       f32 p = point[0]; f32 m = min[0];
-      f32 r = (m < p) ? (p) : (m);
-      min[0] = r;
+      m = (m < p) ? (p) : (m);
+      min[0] = m;
     }
     {
       f32 p = point[1]; f32 m = min[1];
-      f32 r = (m < p) ? (p) : (m);
-      min[1] = r;
+      m = (m < p) ? (p) : (m);
+      min[1] = m;
     }
     {
       f32 p = point[2]; f32 m = min[2];
-      f32 r = (m < p) ? (p) : (m);
-      min[2] = r;
+      m = (m < p) ? (p) : (m);
+      min[2] = m;
     }
     {
-      f32 p = point[0]; f32 m = mx[0];
-      f32 r = (m > p) ? (p) : (m);
-      mx[0] = r;
+      f32 p = point[0]; f32 m = max[0];
+      m = (m > p) ? (p) : (m);
+      max[0] = m;
     }
     {
-      f32 p = point[1]; f32 m = mx[1];
-      f32 r = (m > p) ? (p) : (m);
-      mx[1] = r;
+      f32 p = point[1]; f32 m = max[1];
+      m = (m > p) ? (p) : (m);
+      max[1] = m;
     }
     {
-      f32 p = point[2]; f32 m = mx[2];
-      f32 r = (m > p) ? (p) : (m);
-      mx[2] = r;
+      f32 p = point[2]; f32 m = max[2];
+      m = (m > p) ? (p) : (m);
+      max[2] = m;
     }
     cur += 3;
     src += 3;
@@ -4347,9 +4346,10 @@ extern "C" s32 fn_801A2434(s32 object, s32 shouldDestroy) {
 }
 
 #pragma dont_inline off
-extern "C" void fn_801A2474(void *arg0) {
+/* Transform input by the cached matrix (3x3 linear part plus translation) into output; preload all coefficients when input and output alias. */
+extern "C" void fn_801A2474(void *obj) {
     struct Row { f32 v[3]; };
-    struct Object {
+    struct MatrixVecTransform {
         char pad0[0xC];
         f32 *matrix;
         char pad10[0x28];
@@ -4357,7 +4357,7 @@ extern "C" void fn_801A2474(void *arg0) {
         Row cache[3];
         volatile Vec output;
     };
-    Object *self = (Object *)arg0;
+    MatrixVecTransform *self = (MatrixVecTransform *)obj;
     f32 *m = self->matrix;
     self->cache[0] = ((Row *)m)[0];
     self->cache[1] = ((Row *)m)[1];
