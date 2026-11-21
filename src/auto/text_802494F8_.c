@@ -81,11 +81,16 @@ void fn_80249584(void) {}
 void fn_80249588(void) {}
 
 #pragma scheduling on
-int fn_8024958C(int *arg0) {
+/* Sound-entry filter callback: only for the "excite" contest (key[2]), look
+ * the id in key[0] up in the sound table and return that entry's +0x14 flag
+ * byte; 0 is returned when the key is for another contest or has no entry. */
+int fn_8024958C(int *key) {
+    #define EXCITE_EVENT_ID 0x180302
     #pragma scheduling invalid_target
-    int result = arg0[2] == 0x180302;
-    if (result) result = find_sound_entry_first(arg0) != -1;
-    if (result) result = *(unsigned char *)(*(char **)lbl_8055F28C + find_sound_entry_inline(arg0) * 0x18 + 0x14);
+    int result = key[2] == EXCITE_EVENT_ID;
+    if (result) result = find_sound_entry_first(key) != -1;
+    if (result) result = *(unsigned char *)(*(char **)lbl_8055F28C + find_sound_entry_inline(key) * 0x18 + 0x14);
+    #undef EXCITE_EVENT_ID
     return result;
 }
 /* "Accept all" filter callback used as the sound-entry filter when no filtering is
@@ -155,7 +160,6 @@ void fn_80249744(void) {
 #pragma push
 #pragma dont_inline on
 s32 fn_8024974C(s32 arg0, s32 arg1, s32 arg2, int arg3) {
-#pragma use_lmw_stmw off
     extern void *fn_801284F8(int, void *);
     extern char lbl_8055BF38[];
     extern s32 lbl_8055BF10, lbl_8055BF14;
@@ -172,9 +176,9 @@ s32 fn_8024974C(s32 arg0, s32 arg1, s32 arg2, int arg3) {
         *(void **)block = (char *)block + 0xC;
         *(int *)((char *)block + 8) = 0x80;
         *(int *)((char *)block + 4) = 0;
-        lbl_8055F28C = block;
-        fn_8027BCD0(block);
     }
+    lbl_8055F28C = block;
+    fn_8027BCD0(block);
     *(int *)arg0 = -1;
     *(int *)arg1 = 5;
     *(int *)arg2 = 0;
@@ -284,8 +288,8 @@ void fn_8024A304(void *arg0, void **arg1, int arg2, int arg3) {
     extern unsigned char lbl_8055F290;
     int zero = 0;
     register void *object;
-    register void **list;
     register int index;
+    void **list;
     (void)arg3;
     *(int *)((char *)arg0 + 0x1C) = arg2;
     object = arg0;
@@ -304,14 +308,19 @@ outer_body:
         if (stricmp((char *)fn_800081BC(
                         *(void **)((char *)*(void **)*list + offset)),
                     *(char **)((char *)object + 0x1C)) == 0) {
-            record = *(void **)(*(char **)(*(void **)list) + offset + 4);
-            *(int *)((char *)object +
-                     *(int *)((char *)object + 0x14) * 0xC + 0x20) =
-                *(int *)((char *)record + 4);
+            void *header = *list;
+            int itemCount = *(int *)((char *)object + 0x14);
+            char *array = *(char **)header;
+            char *entry = array + offset;
+            record = *(void **)(entry + 4);
+            {
+                char *item = (char *)object + itemCount * 0xC;
+                *(int *)(item + 0x20) = *(int *)((char *)record + 4);
+            }
             archiveCount = *(int *)((char *)fn_80012820(
                              *(int *)((char *)record + 4)) + 0x70);
             archiveIndex = 0;
-            while (archiveIndex < archiveCount) {
+            while (archiveCount > archiveIndex) {
                 if (record != (void *)fn_80012870(
                         *(int *)((char *)record + 4), archiveIndex)) {
                     archiveIndex++;
@@ -332,8 +341,8 @@ archive_done:
                 while (tableIndex < tableCount) {
                     if (*(int *)(*(char **)table + tableOffset) !=
                         *(int *)record) {
-                        tableIndex++;
                         tableOffset += 0x18;
+                        tableIndex += 1;
                     } else {
                         goto table_found;
                     }
@@ -342,7 +351,7 @@ archive_done:
 table_found:
                 if (lbl_8055F290 != 0 && tableIndex >= 0) {
                     *(int *)((char *)object +
-                             *(int *)((char *)object + 0x14) * 0xC + 0x28) =
+                             *(int *)((char *)object + 0x14) * (unsigned short)0xC + 0x28) =
                         *(int *)(*(char **)table + tableIndex * 0x18 + 4);
                 } else {
                     int key = fn_80012910(*(int *)record);
@@ -360,7 +369,7 @@ table_found:
                 *(int *)((char *)object + 0x14) + 1;
         }
         offset += 8;
-        index += 1;
+        ++index;
 outer_check:
         if (index < *(int *)((char *)*list + 4))
             goto outer_body;
@@ -392,6 +401,7 @@ extern s32 lbl_8055BF10;
 extern s32 lbl_8055BF14;
 #pragma push
 #pragma scheduling invalid_target
+#pragma processor 750
 s32 fn_8024A4CC(s32 *arg0, s32 *arg1, s32 *arg2) {
     extern void *fn_8001285C(s32);
     struct Buffer {
@@ -497,11 +507,13 @@ s32 fn_8024A6EC(s32* arg0, void* arg1) {
     extern s32 fn_802146BC(s32*, s32, s32, s32, s32, s32, s32, s32);
     extern char lbl_80343998[];
     extern s32 lbl_802FA4E8[];
+    extern s32 lbl_80498998[];
     extern int lbl_8055BF68, lbl_8055BF70, lbl_8055BF78, lbl_8055BF80;
     extern int lbl_8055BF88, lbl_8055BF90, lbl_8055BF98, lbl_8055BFA0;
     extern int lbl_8055BFA8, lbl_8055BFB0, lbl_8055BFB8;
+    extern int lbl_8055B860;
     char work[0x2B0];
-    s32 cfg[0xA0];
+    s32 cfg[0xB0];
     char* base = lbl_80343998;
     s32 zero = 0;
     s32 three = 3;
@@ -509,38 +521,41 @@ s32 fn_8024A6EC(s32* arg0, void* arg1) {
     if (fn_802411D4() == 0) return 0;
     fn_8024B3E8(work + 0x18, (void*)arg1, 0);
     fn_8024B544(work + 0x18, (char*)*arg0);
-    cfg[8] = (s32)(work + 0x18); cfg[9] = 5; cfg[10] = 0; cfg[11] = (s32)&lbl_8055BF68; cfg[12] = 0;
-    cfg[15] = fn_8024B5D4(work + 0x18, 0); cfg[14] = three; cfg[13] = (s32)(base + 0x118);
-    cfg[16] = zero; cfg[17] = 0; cfg[19] = 0; cfg[18] = (s32)(base + 0x118); cfg[20] = 0; cfg[21] = 1; cfg[22] = 0;
-    cfg[25] = fn_8024B5D4(work + 0x18, 1); cfg[24] = three; cfg[23] = (s32)(base + 0x124);
-    cfg[26] = 0; cfg[27] = 0; cfg[29] = 0; cfg[28] = (s32)(base + 0x124); cfg[30] = 0; cfg[31] = 2; cfg[32] = 0;
-    cfg[35] = fn_8024B5D4(work + 0x18, 2); cfg[34] = three; cfg[33] = (s32)(base + 0x130);
-    cfg[36] = 0; cfg[37] = 0; cfg[39] = 0; cfg[38] = (s32)(base + 0x130); cfg[40] = 0; cfg[41] = three; cfg[42] = 0;
-    cfg[45] = fn_8024B5D4(work + 0x18, 3); cfg[44] = three; cfg[43] = (s32)(base + 0x13C);
-    cfg[46] = 0; cfg[47] = 0; cfg[49] = 0; cfg[48] = (s32)(base + 0x13C); cfg[50] = 0; cfg[51] = 4; cfg[52] = 0;
-    cfg[55] = fn_8024B5D4(work + 0x18, 4); cfg[54] = three; cfg[53] = (s32)(base + 0x148);
-    cfg[56] = 0; cfg[57] = 0; cfg[59] = 0; cfg[58] = (s32)(base + 0x148); cfg[60] = 0; cfg[61] = 5; cfg[62] = 0;
-    cfg[65] = fn_8024B5D4(work + 0x18, 5); cfg[64] = three; cfg[63] = (s32)(base + 0x154);
-    cfg[66] = 0; cfg[67] = 0; cfg[69] = 0; cfg[68] = (s32)(base + 0x154); cfg[70] = 0; cfg[71] = 6; cfg[72] = 0;
-    cfg[75] = fn_8024B5D4(work + 0x18, 6); cfg[74] = three; cfg[73] = (s32)(base + 0x160);
-    cfg[76] = 0; cfg[77] = 0; cfg[79] = 0; cfg[78] = (s32)(base + 0x160); cfg[80] = 0; cfg[81] = 7; cfg[82] = 0;
-    cfg[85] = fn_8024B608((s32)(work + 0x18), 0); cfg[84] = three; cfg[83] = (s32)&lbl_8055BF70; cfg[86] = 0; cfg[87] = 0;
-    cfg[90] = fn_8024B5F8((s32)(work + 0x18), 0); cfg[89] = three; cfg[88] = (s32)(base + 0x16C); cfg[91] = 0; cfg[92] = 0;
-    cfg[95] = fn_8024B618((s32)(work + 0x18), 0); cfg[94] = 2; cfg[93] = (s32)&lbl_8055BF78; cfg[96] = 0; cfg[97] = 0;
-    cfg[100] = fn_8024B608((s32)(work + 0x18), 1); cfg[99] = three; cfg[98] = (s32)&lbl_8055BF80; cfg[101] = 0; cfg[102] = 0;
-    cfg[105] = fn_8024B5F8((s32)(work + 0x18), 1); cfg[104] = three; cfg[103] = (s32)(base + 0x178); cfg[106] = 0; cfg[107] = 0;
-    cfg[110] = fn_8024B618((s32)(work + 0x18), 1); cfg[109] = 2; cfg[108] = (s32)&lbl_8055BF88; cfg[111] = 0; cfg[112] = 0;
-    cfg[115] = fn_8024B608((s32)(work + 0x18), 2); cfg[114] = three; cfg[113] = (s32)&lbl_8055BF90; cfg[116] = 0; cfg[117] = 0;
-    cfg[120] = fn_8024B5F8((s32)(work + 0x18), 2); cfg[119] = three; cfg[118] = (s32)(base + 0x184); cfg[121] = 0; cfg[122] = 0;
-    cfg[125] = fn_8024B618((s32)(work + 0x18), 2); cfg[124] = 2; cfg[123] = (s32)&lbl_8055BF98; cfg[126] = 0; cfg[127] = 0;
-    cfg[130] = fn_8024B608((s32)(work + 0x18), 3); cfg[129] = three; cfg[128] = (s32)&lbl_8055BFA0; cfg[131] = 0; cfg[132] = 0;
-    cfg[135] = fn_8024B5F8((s32)(work + 0x18), 3); cfg[134] = three; cfg[133] = (s32)(base + 0x190); cfg[136] = 0; cfg[137] = 0;
-    cfg[140] = fn_8024B618((s32)(work + 0x18), 3); cfg[139] = 2; cfg[138] = (s32)&lbl_8055BFA8; cfg[141] = 0; cfg[142] = 0;
-    cfg[145] = fn_8024B608((s32)(work + 0x18), 4); cfg[144] = three; cfg[143] = (s32)&lbl_8055BFB0; cfg[146] = 0; cfg[147] = 0;
-    cfg[150] = fn_8024B5F8((s32)(work + 0x18), 4); cfg[149] = three; cfg[148] = (s32)(base + 0x19C); cfg[151] = 0; cfg[152] = 0;
-    cfg[155] = fn_8024B618((s32)(work + 0x18), 4);
-    cfg[2] = lbl_802FA4E8[0]; cfg[3] = lbl_802FA4E8[2]; cfg[4] = lbl_802FA4E8[3]; cfg[5] = lbl_802FA4E8[4];
-    cfg[6] = (s32)&cfg[8]; cfg[0] = 0; cfg[1] = 0;
+    cfg[8] = (s32)(work + 0x18); cfg[6] = (s32)&lbl_8055BF68; cfg[7] = 5; cfg[9] = 0; cfg[10] = 0;
+    cfg[13] = fn_8024B5D4(work + 0x18, 0); cfg[12] = three; cfg[11] = (s32)(base + 0x118);
+    cfg[14] = zero; cfg[15] = 0; cfg[17] = 0; cfg[16] = (s32)(base + 0x118); cfg[18] = 0; cfg[19] = 1; cfg[20] = 0;
+    cfg[23] = fn_8024B5D4(work + 0x18, 1); cfg[22] = three; cfg[21] = (s32)(base + 0x124);
+    cfg[24] = 0; cfg[25] = 0; cfg[27] = 0; cfg[26] = (s32)(base + 0x124); cfg[28] = 0; cfg[29] = 2; cfg[30] = 0;
+    cfg[33] = fn_8024B5D4(work + 0x18, 2); cfg[32] = three; cfg[31] = (s32)(base + 0x130);
+    cfg[34] = 0; cfg[35] = 0; cfg[37] = 0; cfg[36] = (s32)(base + 0x130); cfg[38] = 0; cfg[39] = three; cfg[40] = 0;
+    cfg[43] = fn_8024B5D4(work + 0x18, 3); cfg[42] = three; cfg[41] = (s32)(base + 0x13C);
+    cfg[44] = 0; cfg[45] = 0; cfg[47] = 0; cfg[46] = (s32)(base + 0x13C); cfg[48] = 0; cfg[49] = 4; cfg[50] = 0;
+    cfg[53] = fn_8024B5D4(work + 0x18, 4); cfg[52] = three; cfg[51] = (s32)(base + 0x148);
+    cfg[54] = 0; cfg[55] = 0; cfg[57] = 0; cfg[56] = (s32)(base + 0x148); cfg[58] = 0; cfg[59] = 5; cfg[60] = 0;
+    cfg[63] = fn_8024B5D4(work + 0x18, 5); cfg[62] = three; cfg[61] = (s32)(base + 0x154);
+    cfg[64] = 0; cfg[65] = 0; cfg[67] = 0; cfg[66] = (s32)(base + 0x154); cfg[68] = 0; cfg[69] = 6; cfg[70] = 0;
+    cfg[73] = fn_8024B5D4(work + 0x18, 6); cfg[72] = three; cfg[71] = (s32)(base + 0x160);
+    cfg[74] = 0; cfg[75] = 0; cfg[77] = 0; cfg[76] = (s32)(base + 0x160); cfg[78] = 0; cfg[79] = 7; cfg[80] = 0;
+    cfg[83] = fn_8024B608((s32)(work + 0x18), 0); cfg[82] = three; cfg[81] = (s32)&lbl_8055BF70; cfg[84] = 0; cfg[85] = 0;
+    cfg[88] = fn_8024B5F8((s32)(work + 0x18), 0); cfg[87] = three; cfg[86] = (s32)(base + 0x16C); cfg[89] = 0; cfg[90] = 0;
+    cfg[93] = fn_8024B618((s32)(work + 0x18), 0); cfg[92] = 2; cfg[91] = (s32)&lbl_8055BF78; cfg[94] = 0; cfg[95] = 0;
+    cfg[98] = fn_8024B608((s32)(work + 0x18), 1); cfg[97] = three; cfg[96] = (s32)&lbl_8055BF80; cfg[99] = 0; cfg[100] = 0;
+    cfg[103] = fn_8024B5F8((s32)(work + 0x18), 1); cfg[102] = three; cfg[101] = (s32)(base + 0x178); cfg[104] = 0; cfg[105] = 0;
+    cfg[108] = fn_8024B618((s32)(work + 0x18), 1); cfg[107] = 2; cfg[106] = (s32)&lbl_8055BF88; cfg[109] = 0; cfg[110] = 0;
+    cfg[113] = fn_8024B608((s32)(work + 0x18), 2); cfg[112] = three; cfg[111] = (s32)&lbl_8055BF90; cfg[114] = 0; cfg[115] = 0;
+    cfg[118] = fn_8024B5F8((s32)(work + 0x18), 2); cfg[117] = three; cfg[116] = (s32)(base + 0x184); cfg[119] = 0; cfg[120] = 0;
+    cfg[123] = fn_8024B618((s32)(work + 0x18), 2); cfg[122] = 2; cfg[121] = (s32)&lbl_8055BF98; cfg[124] = 0; cfg[125] = 0;
+    cfg[128] = fn_8024B608((s32)(work + 0x18), 3); cfg[127] = three; cfg[126] = (s32)&lbl_8055BFA0; cfg[129] = 0; cfg[130] = 0;
+    cfg[133] = fn_8024B5F8((s32)(work + 0x18), 3); cfg[132] = three; cfg[131] = (s32)(base + 0x190); cfg[134] = 0; cfg[135] = 0;
+    cfg[138] = fn_8024B618((s32)(work + 0x18), 3); cfg[137] = 2; cfg[136] = (s32)&lbl_8055BFA8; cfg[139] = 0; cfg[140] = 0;
+    cfg[143] = fn_8024B608((s32)(work + 0x18), 4); cfg[142] = three; cfg[141] = (s32)&lbl_8055BFB0; cfg[144] = 0; cfg[145] = 0;
+    cfg[148] = fn_8024B5F8((s32)(work + 0x18), 4); cfg[147] = three; cfg[146] = (s32)(base + 0x19C); cfg[149] = 0; cfg[150] = 0;
+    cfg[153] = fn_8024B618((s32)(work + 0x18), 4);
+    cfg[151] = (s32)&lbl_8055BFB8; cfg[152] = 2; cfg[154] = 0; cfg[155] = 0; cfg[156] = (s32)&lbl_8055B860;
+    cfg[157] = 0; cfg[158] = 0; cfg[159] = -1; cfg[160] = 0x1b;
+    cfg[161] = lbl_80498998[0]; cfg[162] = lbl_80498998[1]; cfg[163] = lbl_80498998[2];
+    cfg[164] = lbl_80498998[3]; cfg[165] = lbl_80498998[4];
+    cfg[0] = lbl_802FA4E8[0]; cfg[1] = (s32)&cfg[6]; cfg[2] = lbl_802FA4E8[2]; cfg[3] = lbl_802FA4E8[3]; cfg[4] = lbl_802FA4E8[4];
     r = fn_802146BC(cfg, -0x3E7, -0x3E7, 1, lbl_802FA4E8[4], lbl_802FA4E8[3], lbl_802FA4E8[2], lbl_802FA4E8[0]);
     if (r != -1) {
         *arg0 = fn_8024B5D4(work + 0x18, r - 1);
@@ -600,6 +615,7 @@ s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
     work = (char *)storage + 0x18;
     configStackPointer = (s32 *)storage;
 
+#pragma opt_propagation off
     configStackPointer[49] = zero;
     configStackPointer[46] = (s32)&lbl_8055BF68;
     configStackPointer[48] = (s32)work;
@@ -696,6 +712,7 @@ s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
     configStackPointer[2] = lbl_802FA4FC[2];
     configStackPointer[3] = lbl_802FA4FC[3];
     configStackPointer[4] = lbl_802FA4FC[4];
+#pragma opt_propagation reset
 
     result = fn_802146BC(configStackPointer, -0x3E7, -0x3E7, 1,
                          lbl_802FA4FC[4], lbl_802FA4FC[3],
@@ -768,7 +785,7 @@ static inline s32 findEntry8024B070(s32 **arg1, s32 *arg0, s32 n) {
     return -1;
 }
 
-#pragma scheduling 603
+#pragma scheduling invalid_target
 u8 fn_8024B070(s32 *arg0, s32 **arg1) {
     s32 sp8;
     s32 i = findEntry8024B070(arg1, arg0, *(s32 *)((u8 *)arg1 + 4));
@@ -806,7 +823,10 @@ extern s32 fn_8024B178(s32);
 s32 fn_8024B178(s32 arg0) {
     class Obj {
     public:
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual char *get(const char *);
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual char *get(const char *);
     };
     void *manager;
     void *object;
@@ -814,6 +834,7 @@ s32 fn_8024B178(s32 arg0) {
     char *prefix;
     s32 comparison;
     char *buffer;
+    char *suffix;
 
     manager = ((void *(*)(s32))fn_8001285C)(arg0);
     object = *(void **)((char *)manager + 0x20);
@@ -823,10 +844,10 @@ s32 fn_8024B178(s32 arg0) {
     if (comparison != 0)
         goto mismatch;
     result += strlen(prefix);
+    suffix = result;
     buffer = lbl_804989AC;
     ((void (*)(void *, int, const char *, ...))fn_801345D8)(
-        buffer, 0x21, (const char *)&lbl_8055BFD0, result);
-    result = result;
+        buffer, 0x21, (const char *)&lbl_8055BFD0, suffix);
     return (s32)buffer;
 mismatch:
     return comparison;
@@ -866,6 +887,8 @@ void *arg0;
     unsigned int entry;
     unsigned int record;
     u8 **strings;
+    entry = 0;
+    record = 0;
     selected = fn_80214D04();
     *(s32 *)((u8 *)arg0 + 0x280) = selected;
     strings = *(u8 ***)((u8 *)arg0 + 0x18);
@@ -890,10 +913,7 @@ loop_body:
             s32 remaining = 0x32;
             char *dst = (char *)record;
             while ((s8)(*dst++ = *src++) != 0) {
-                if (--remaining <= 0) {
-                    dst[-1] = zero;
-                    break;
-                }
+                if (--remaining <= 0) { dst[-1] = zero; break; }
             }
         }
         if (*(u8 *)(entry + 0x14) != 0) {
@@ -901,10 +921,7 @@ loop_body:
             s32 remaining = 0x32;
             char *dst = (char *)(record + 0x32);
             while ((s8)(*dst++ = *src++) != 0) {
-                if (--remaining <= 0) {
-                    dst[-1] = zero;
-                    break;
-                }
+                if (--remaining <= 0) { dst[-1] = zero; break; }
             }
             *(s32 *)(record + 0x64) = one;
         } else {
@@ -912,10 +929,7 @@ loop_body:
             s32 remaining = 0x32;
             char *dst = (char *)(record + 0x32);
             while ((s8)(*dst++ = *src++) != 0) {
-                if (--remaining <= 0) {
-                    dst[-1] = zero;
-                    break;
-                }
+                if (--remaining <= 0) { dst[-1] = zero; break; }
             }
             *(s32 *)(record + 0x64) = zero;
         }
@@ -924,9 +938,7 @@ loop_body:
     i++;
 check_loop:
     list = *(void **)((u8 *)arg0 + 0x74);
-    if (i < *(s32 *)((u8 *)list + 4)) {
-        goto loop_body;
-    }
+    if (i < *(s32 *)((u8 *)list + 4)) goto loop_body;
 }
 #pragma pop
 extern void fn_80265DCC(void *, int, int, void *);
