@@ -424,8 +424,6 @@ void fn_8001F578(void) {
 #undef sActiveAchievementsBlock
 #undef sPendingAchievementsBlock
 }
-#pragma push
-#pragma processor 603
 #pragma scheduling on
 extern void *memcpy(void *, const void *, unsigned long);
 #pragma opt_propagation off
