@@ -168,7 +168,10 @@ extern "C" float fn_801B79AC(void);
 extern "C" float fn_80134C1C(void);
 extern "C" void fn_801B78EC(int, int, int, float, float, float);
 extern "C" void *__AXFXGetLfoSinTable_801769CC(void);
-extern "C" void fn_801B79D4(void *arg0, unsigned int arg1, int arg2) {
+/* Set up an audio placement for start modes 1/2: derive the interpolation and
+   offset from the slot index and active league, apply them through fn_801B78EC,
+   then set the placement's three output coefficients. */
+extern "C" void fn_801B79D4(void *placement, unsigned int slot, int startType) {
     struct V1 {
         virtual void v0(); virtual void v1(); virtual void v2();
         virtual void v3(); virtual void v4(); virtual int v5();
@@ -184,40 +187,40 @@ extern "C" void fn_801B79D4(void *arg0, unsigned int arg1, int arg2) {
         char pad2[4];
         float value;
     };
-    unsigned int var28 = arg1;
-    unsigned r30 = ((V1 *)fn_801B2ED0(var28))->v5();
-    float f31 = fn_80139048();
-    float t1 = fn_801B79AC();
-    f31 = lbl_8056270C + (t1 + f31);
-    if (arg2 != 0x53 && arg2 != 0x54) var28 = fn_801B3050((unsigned)var28);
-    float f30 = (var28 & 1) ? lbl_80562700 : -lbl_80562700;
-    float t2 = -fn_801B79AC();
-    float f1 = t2 * lbl_80562710;
-    float off = lbl_80562714;
-    unsigned long sign = var28 >> 31;
-    register int half = (int)(sign + var28) >> 1;
-    f31 = f1 - (float)half * f31;
-    V2 *holder = (V2 *)((V2 *)fn_80156A40(f1))->w1(0);
-    Node *head = *(Node **)((char *)holder + 0x1C);
-    Node *cur = head;
+    unsigned int index = slot;
+    unsigned source = ((V1 *)fn_801B2ED0(index))->v5();
+    float interp = fn_80139048();
+    float carLength = fn_801B79AC();
+    interp = lbl_8056270C + (carLength + interp);
+    if (startType != 0x53 && startType != 0x54) index = fn_801B3050((unsigned)index);
+    float side = (index & 1) ? lbl_80562700 : -lbl_80562700;
+    float negLength = -fn_801B79AC();
+    float phase = negLength * lbl_80562710;
+    float baseOffset = lbl_80562714;
+    unsigned long sign = index >> 31;
+    register int half = (int)(sign + index) >> 1;
+    interp = phase - (float)half * interp;
+    V2 *listHolder = (V2 *)((V2 *)fn_80156A40(phase))->w1(0);
+    Node *head = *(Node **)((char *)listHolder + 0x1C);
+    Node *node = head;
     Node *best = head;
     do {
-        if (cur->key > best->key) best = cur;
-        cur = cur->next;
-    } while (cur != head);
-    float d = best->value - off;
-    f31 = ((int *)((char *)__AXFXGetLfoSinTable_801769CC() + 0x10))[0] & 1 ? f31 : d + f31;
-    fn_801B78EC((int)arg0, r30, 0, f30, f31, lbl_80562708);
-    if (*(int *)((char *)arg0 + 0x44) == 1) {
+        if (node->key > best->key) best = node;
+        node = node->next;
+    } while (node != head);
+    float delta = best->value - baseOffset;
+    interp = ((int *)((char *)__AXFXGetLfoSinTable_801769CC() + 0x10))[0] & 1 ? interp : delta + interp;
+    fn_801B78EC((int)placement, source, 0, side, interp, lbl_80562708);
+    if (*(int *)((char *)placement + 0x44) == 1) {
         float scale = fn_80134C1C();
-        *(float *)((char *)arg0 + 0x30) = *(float *)((char *)arg0 + 0x18) * scale;
-        *(float *)((char *)arg0 + 0x34) = *(float *)((char *)arg0 + 0x1C) * scale;
-        *(float *)((char *)arg0 + 0x38) = *(float *)((char *)arg0 + 0x20) * scale;
+        *(float *)((char *)placement + 0x30) = *(float *)((char *)placement + 0x18) * scale;
+        *(float *)((char *)placement + 0x34) = *(float *)((char *)placement + 0x1C) * scale;
+        *(float *)((char *)placement + 0x38) = *(float *)((char *)placement + 0x20) * scale;
     } else {
-        float z = lbl_80562708;
-        *(float *)((char *)arg0 + (int)0x30) = z;
-        *(float *)((char *)arg0 + 0x34) = z;
-        *(float *)((char *)arg0 + 0x38) = z;
+        float fixedValue = lbl_80562708;
+        *(float *)((char *)placement + (int)0x30) = fixedValue;
+        *(float *)((char *)placement + 0x34) = fixedValue;
+        *(float *)((char *)placement + 0x38) = fixedValue;
     }
 }
 #pragma cplusplus reset
