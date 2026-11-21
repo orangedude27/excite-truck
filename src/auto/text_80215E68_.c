@@ -167,15 +167,13 @@ u8 fn_80215FF4(u8 *pValue) {
     return *pValue;
 }
 
-#pragma push
-#pragma scheduling on
-#pragma peephole off
-s32 fn_80215FFC(void *arg0) {
+#pragma scheduling invalid_target
+s32 fn_80215FFC(const void *arg0) {
     s32 result = 0;
-    if (*(u8 *)arg0 != 0 && *(s32 *)((u8 *)arg0 + 4) == fn_802E4A10()) result = 1;
+    if (*(const u8 *)arg0 != 0 && *(const s32 *)((const u8 *)arg0 + 4) == fn_802E4A10()) result = 1;
     return result;
 }
-#pragma pop
+#pragma scheduling on
 /* Query stub in the option UI: always answers 1 (true) in this build. */
 u32 fn_80216054(void) {
     return 1;
@@ -270,6 +268,7 @@ void fn_802161CC(s32 arg0) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma dont_inline reset
 s32 fn_80216244(void) {
     s32 i, j;
@@ -516,7 +515,7 @@ s32 fn_802168F0(void *arg0) {
     f32 sp[2];
     s32 sp8;
     void *prev;
-    f32 f29, f30, f31, f28, f2;
+    f32 f28, f29, f30, f31, f2;
     s32 flag;
     s32 gt;
     s32 old = lbl_8055EF78;
@@ -541,9 +540,10 @@ s32 fn_802168F0(void *arg0) {
     fn_80211F64();
     fn_80211F64();
     f2 = sp[0] > lbl_80563484 ? sp[0] : lbl_80563484;
+    f28 = lbl_80563468;
+    f29 = f28 / f2;
     f30 = lbl_80563468;
-    f29 = lbl_80563468 / f2;
-    f28 = (f32)__fabs(sp[0]) <= lbl_80558DC4 ? lbl_80563468 : lbl_80563458;
+    f28 = (f32)__fabs(sp[0]) <= lbl_80558DC4 ? f28 : lbl_80563458;
     flag = 0;
     lbl_8055EF94 = f28;
     f31 = lbl_80563488;
