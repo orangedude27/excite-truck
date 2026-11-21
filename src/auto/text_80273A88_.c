@@ -783,7 +783,6 @@ void fn_80274F74(void *arg0, void *arg1, float angle) {
     helper_80274F74(arg0, arg1);
     *(float *)((char *)arg0 + 0xBC) = angle;
 }
-
 extern float PSVECDotProduct(float *, float *);
 extern void fn_8026E850(float *, float *, void *, float *);
 #pragma processor 7400
