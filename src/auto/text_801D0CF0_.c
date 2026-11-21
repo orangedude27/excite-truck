@@ -33,11 +33,11 @@ extern "C" void fn_801D0CFC(void) {
     int i;
     Manager *manager;
 
-    for (i = lbl_8055E8E8 - 1; i >= 0; i--) {
-        manager = (Manager *)lbl_80438818[i];
+    for (i = gManagerCount - 1; i >= 0; i--) {
+        manager = (Manager *)gManagerList[i];
         delete manager;
     }
-    lbl_8055E8E8 = 0;
+    gManagerCount = 0;
 }
 #pragma cplusplus off
 void *__dt__Q34nw4r2ef6EffectFv_801D0D7C(void *arg0, int arg1) {
