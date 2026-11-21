@@ -331,23 +331,15 @@ void TRKReadBuffer1_ui64(void) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 void TRKAppendBuffer_ui32(void) {
     u32 *a = lbl_8035BF20;
     u32 *b = (u32 *)lbl_8035BEA0;
-    s32 i = 2;
+    int i;
     lbl_8055D6E8 = 0;
-    do {
-        a[0] = 0; b[0] = 0; a[1] = 0; b[1] = 0;
-        a[2] = 0; b[2] = 0; a[3] = 0; b[3] = 0;
-        a[4] = 0; b[4] = 0; a[5] = 0; b[5] = 0;
-        a[6] = 0; b[6] = 0; a[7] = 0; b[7] = 0;
-        a[8] = 0; b[8] = 0; a[9] = 0; b[9] = 0;
-        a[10] = 0; b[10] = 0; a[11] = 0; b[11] = 0;
-        a[12] = 0; b[12] = 0; a[13] = 0; b[13] = 0;
-        a[14] = 0; a[15] = 0; b[14] = 0; b[15] = 0;
-        a += 16; b += 16;
-    } while (--i);
+    for (i = 0; i < 32; i++) {
+        a[i] = 0; b[i] = 0;
+    }
 }
 
 void TRKAppendBuffer1_ui64(void) {
@@ -1430,22 +1422,22 @@ void fn_80032004(void) {
         void (*unk30)(void);
         void (*unk34)(void);
     } *task = (void *)lbl_8035FB80;
-    u32 zero = 0;
-    task->unk4 = zero;
-    lbl_8055D770 = zero;
-    task->unkC = lbl_802FFD60;
+    register void **resource = (void **)lbl_802FFD60;
+    task->unk4 = 0;
+    lbl_8055D770 = 0;
+    task->unkC = resource;
     task->unk10 = lbl_80558DE4;
-    task->unk14 = zero;
+    task->unk14 = 0;
     task->unk18 = lbl_8035FBD0;
     task->unk1C = 0x2000;
-    task->unk20 = zero;
+    task->unk20 = 0;
     task->unk24 = lbl_80558DE0;
     task->unk26 = lbl_80558DE2;
     task->unk28 = __AXDSPInitCallback_80031F90;
     task->unk2C = fn_80031F9C;
     task->unk30 = __AXDSPDoneCallback;
     task->unk34 = fn_80032000;
-    lbl_8055D76C = zero;
+    lbl_8055D76C = 0;
     OSInitThreadQueue(&lbl_8055D760);
     if (DSPReset() == 0) DSPInit();
     DSPAssertInt(lbl_8035FB80);
