@@ -37,6 +37,8 @@ extern "C" char lbl_80336AF0[];
 extern "C" float lbl_80562908;
 extern "C" int fn_801C109C(int arg0, int arg1, int arg2, int arg3, int arg4) {
     int *base = (int *)arg0;
+    register float a, b, c, d;
+#pragma scheduling off
     int size1 = arg2 * 0x14;
     base[2] = arg2;
     base[1] = arg1;
@@ -47,11 +49,12 @@ extern "C" int fn_801C109C(int arg0, int arg1, int arg2, int arg3, int arg4) {
     int size4 = arg1 * 0x30;
     int total = size3 + size4;
     int size = size2 + size1;
+#pragma scheduling on
     int memory = fn_8012850C(total + size, lbl_80336AF0);
     int step12 = arg1 * 0xC;
     base[0] = memory;
     base[9] = memory;
-    register int p asm("r4") = memory + step12;
+    int p = memory + step12;
     base[10] = p;
     p += step12;
     base[11] = p;
@@ -69,10 +72,10 @@ extern "C" int fn_801C109C(int arg0, int arg1, int arg2, int arg3, int arg4) {
     p += size2;
     if (arg4 > 0) base[20] = p;
     else base[20] = 0;
-    register float a = lbl_8056290C;
-    register float b = lbl_80562908;
-    register float c = lbl_80562904;
-    register float d = lbl_80562900;
+    c = lbl_80562904;
+    d = lbl_80562900;
+    b = lbl_80562908;
+    a = lbl_8056290C;
     base[5] = 0;
     base[6] = 0;
     base[7] = 0;
@@ -428,6 +431,8 @@ extern "C" void fn_801C1B60(int state) {
 extern "C" void fn_801C1B9C(void) {
 }
 
+/* No-op teardown hook: called by the global shutdown sequence (fn_801791A8)
+ * among the subsystem shutdown routines, but its body is empty. */
 extern "C" void fn_801C1BA0(void) {
 }
 
@@ -773,9 +778,9 @@ extern "C" void fn_801C2694(void *arg0, float *arg1, int *arg2, float *arg3, flo
     int i2;
     int off2;
 
-    scaled[0] = v0 * 0.0110053914f;
-    scaled[1] = v1 * 0.0110053914f;
-    scaled[2] = v2 * 0.0110053914f;
+    scaled[0] = 0.0110053914f * v0;
+    scaled[1] = 0.0110053914f * v1;
+    scaled[2] = 0.0110053914f * v2;
     *(float *)((char *)arg0 + 0x58) = a0;
     *(float *)((char *)arg0 + 0x5C) = a1;
     *(float *)((char *)arg0 + 0x60) = a2;
@@ -828,8 +833,8 @@ extern "C" void fn_801C27D8(void *arg0, float *arg1, float *arg2, float *arg3) {
     float b1 = arg2[1];
     float b2 = arg2[2];
     int i = 0;
-    int off = 0;
     float *p;
+    int off = 0;
     *(float *)((char *)arg0 + 0x58) = a0;
     *(float *)((char *)arg0 + 0x5C) = a1;
     *(float *)((char *)arg0 + 0x60) = a2;
