@@ -2901,7 +2901,7 @@ extern "C" void *fn_8021CAD4(void *self, s32 deletingFlag) {
     return self;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_8021CB4C(void *__restrict arg0, s32 arg1) {
     struct First {
         virtual void v0(); virtual void v1(); virtual void v2();
@@ -7977,66 +7977,42 @@ extern "C" void fn_80226B6C(void *arg0) {
     f32 now = fn_8023659C();
     f32 scale;
     volatile f32 *matrix = (volatile f32 *)*(void **)(p + 0x248);
-    f32 zero;
-    f32 one;
-    f32 x;
-    f32 delta;
-    f32 factor;
-    f32 y;
-    f32 delta2;
-
+    f32 zero, one, x, delta, factor, y, delta2;
     one = lbl_805634A4;
     zero = lbl_805634A8;
     matrix[0] = one;
     scale = now / lbl_805634E4;
-    matrix[1] = zero;
-    matrix[2] = zero;
-    matrix[3] = zero;
-    matrix[4] = one;
-    matrix[5] = zero;
-    matrix[6] = zero;
-    matrix[7] = zero;
-    matrix[8] = one;
-    matrix[9] = zero;
-    matrix[10] = zero;
-    matrix[11] = zero;
-
-    *(u32 *)(scratch + 0x74) =
-        *(u32 *)(p + 0x25c) ^ 0x80000000;
+    matrix[1] = zero; matrix[2] = zero; matrix[3] = zero; matrix[4] = one;
+    matrix[5] = zero; matrix[6] = zero; matrix[7] = zero; matrix[8] = one;
+    matrix[9] = zero; matrix[10] = zero; matrix[11] = zero;
+    *(u32 *)(scratch + 0x74) = *(u32 *)(p + 0x25c) ^ 0x80000000;
     *(u32 *)(scratch + 0x70) = 0x43300000;
     *(f32 *)(scratch + 0x00) = zero;
     *(f32 *)(scratch + 0x04) = zero;
-    *(f32 *)(scratch + 0x08) =
-        scale * (f32)(*(f64 *)(scratch + 0x70) - lbl_805634B8);
-
+    *(f32 *)(scratch + 0x08) = scale * (f32)(*(f64 *)(scratch + 0x70) - lbl_805634B8);
     {
         void *obj = *(void **)(p + 0x248);
         ((void (*)(void *, void *))fn_80015A20)(scratch + 0x0c, scratch);
         fn_80015B20(obj, scratch + 0x0c, obj);
     }
-
     delta = *(f32 *)(p + 0x258);
     factor = lbl_805634C4;
     x = *(f32 *)(p + 0x24c);
     delta *= factor;
     x += delta;
     *(f32 *)((u8 *)*(void **)(p + 0x248) + 0x24) = x;
-
     delta2 = *(f32 *)(p + 0x254);
     y = *(f32 *)(p + 0x250);
     delta2 *= factor;
     y -= delta2;
     *(f32 *)((u8 *)*(void **)(p + 0x248) + 0x28) = y;
-
     if (*(s32 *)(p + 0x244) != 0) {
         s32 value = fn_8022EDC4();
-        fn_8022EEF8(scratch + 0x30,
-                    (s32)*(void **)(p + 0x248), value);
+        fn_8022EEF8(scratch + 0x30, (s32)*(void **)(p + 0x248), value);
         fn_8022ED00(scratch + 0x30);
         f32 a = *(f32 *)(p + 0x258);
         f32 b = *(f32 *)(p + 0x254);
-        fn_802C5320(*(s32 *)(p + 0x244), 0, -a * lbl_805634C4,
-                    b * lbl_805634C4, lbl_805634A8, a, b);
+        fn_802C5320(*(s32 *)(p + 0x244), 0, -a * lbl_805634C4, b * lbl_805634C4, lbl_805634A8, a, b);
         fn_8022EDB8();
     }
 }
