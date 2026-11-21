@@ -154,39 +154,40 @@ extern f32 lbl_80561A30;
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
-void fn_80171934(void *p) {
-    s32 outerCount;
-    u8 *item;
-    s32 off;
-    s32 outer;
-    s32 inner;
+void fn_80171934(void *triggerMaster) {
+    /* For every deity slot, fire each pending trigger whose threshold that deity clears: spawn its effect at the trigger's scaled position and mark it fired. */
+    s32 deityCount;
+    u8 *trigger;
+    s32 offset;
+    s32 deity;
+    s32 triggerIndex;
     f32 scale;
-    outerCount = fn_801B2F24();
+    deityCount = fn_801B2F24();
     scale = lbl_80561A30;
-    outer = 0;
-    while (outer < outerCount) {
-        inner = 0;
-        off = 0;
-        while (inner < *(s32 *)((u8 *)p + 0xC)) {
-            item = *(u8 **)((u8 *)p + 8) + off;
-            if (item[0x24] == 0 && fn_801B2F54(outer) >= *(s32 *)(item + 0x20)) {
-                s32 selection = ((s32 (*)(s32))fn_8017960C)(outer);
-                if (((s32 (*)(s32, s32))fn_80139B5C)(selection, *(s32 *)(item + 0x18)) != 0) {
-                    f32 vec[3];
-                    vec[0] = *(f32 *)(item + 0) + *(f32 *)(item + 0xC);
-                    vec[1] = *(f32 *)(item + 4) + *(f32 *)(item + 0x10);
-                    vec[2] = *(f32 *)(item + 8) + *(f32 *)(item + 0x14);
-                    vec[0] *= scale;
-                    vec[1] *= scale;
-                    vec[2] *= scale;
-                    ((void (*)(s32, s32, s32, f32 *))fn_801D488C)(*(s32 *)(item + 0x1C), 1, 1, vec);
-                    item[0x24] = 1;
+    deity = 0;
+    while (deity < deityCount) {
+        triggerIndex = 0;
+        offset = 0;
+        while (triggerIndex < *(s32 *)((u8 *)triggerMaster + 0xC)) {
+            trigger = *(u8 **)((u8 *)triggerMaster + 8) + offset;
+            if (trigger[0x24] == 0 && fn_801B2F54(deity) >= *(s32 *)(trigger + 0x20)) {
+                s32 selected = ((s32 (*)(s32))fn_8017960C)(deity);
+                if (((s32 (*)(s32, s32))fn_80139B5C)(selected, *(s32 *)(trigger + 0x18)) != 0) {
+                    f32 pos[3];
+                    pos[0] = *(f32 *)(trigger + 0) + *(f32 *)(trigger + 0xC);
+                    pos[1] = *(f32 *)(trigger + 4) + *(f32 *)(trigger + 0x10);
+                    pos[2] = *(f32 *)(trigger + 8) + *(f32 *)(trigger + 0x14);
+                    pos[0] *= scale;
+                    pos[1] *= scale;
+                    pos[2] *= scale;
+                    ((void (*)(s32, s32, s32, f32 *))fn_801D488C)(*(s32 *)(trigger + 0x1C), 1, 1, pos);
+                    trigger[0x24] = 1;
                 }
             }
-            off += 0x28;
-            inner++;
+            offset += 0x28;
+            triggerIndex++;
         }
-        outer++;
+        deity++;
     }
 }
 #pragma pop
