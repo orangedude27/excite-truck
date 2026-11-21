@@ -2430,43 +2430,47 @@ extern "C" void SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(AxVoice *voice
     OSRestoreInterrupts(level);
 }
 
+/* AxVoice::IsPlayFinished(): true when the voice's DSP play position has
+ * reached the silence (zero) buffer's end region for its sample format.  The
+ * play position and the buffer end are read under an interrupt lock; the two
+ * single-field structs keep those values in callee-saved registers. */
 extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
-    struct IrqWrap { unsigned int i; } iw;
-    struct StartWrap { unsigned int s; } sw;
-    struct EndWrap { unsigned int e; } ew;
-    unsigned int address, buffer;
-    int fmt;
-    iw.i = OSDisableInterrupts();
-    if (*(int *)((char *)self + 0x2c) == 0) { OSRestoreInterrupts(iw.i); return 0; }
-    unsigned int level = OSDisableInterrupts();
-    address = *(unsigned int *)((char *)self + 0xc) + 0x138;
-    if (address == 0) { OSRestoreInterrupts(level); sw.s = 0; }
+    struct IrqWrap { unsigned int i; } irqState;
+    struct StartWrap { unsigned int s; } playPos;
+    struct EndWrap { unsigned int e; } zeroEnd;
+    unsigned int posLimit, zeroBuffer;
+    int format;
+    irqState.i = OSDisableInterrupts();
+    if (*(int *)((char *)self + 0x2c) == 0) { OSRestoreInterrupts(irqState.i); return 0; }
+    unsigned int innerLevel = OSDisableInterrupts();
+    posLimit = *(unsigned int *)((char *)self + 0xc) + 0x138;
+    if (posLimit == 0) { OSRestoreInterrupts(innerLevel); playPos.s = 0; }
     else {
-        unsigned short hi = *(unsigned short *)(address + 0x84);
-        unsigned short lo = *(unsigned short *)(address + 0x86);
-        sw.s = ((unsigned int)hi << 16) + lo;
-        OSRestoreInterrupts(level);
+        unsigned short posHi = *(unsigned short *)(posLimit + 0x84);
+        unsigned short posLo = *(unsigned short *)(posLimit + 0x86);
+        playPos.s = ((unsigned int)posHi << 16) + posLo;
+        OSRestoreInterrupts(innerLevel);
     }
-    void *mgr = Instance__15EmissionManagerFv();
-    buffer = (unsigned int)GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(mgr);
-    fmt = *(int *)((char *)self + 0x118);
-    if (buffer != 0) buffer += 0x80000000;
-    ew.e = 0;
-    switch (fmt) {
-    case 0: ew.e = buffer * 2 + 2; break;
-    case 25: ew.e = buffer; break;
-    case 10: ew.e = buffer >> 1; break;
+    void *manager = Instance__15EmissionManagerFv();
+    zeroBuffer = (unsigned int)GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(manager);
+    format = *(int *)((char *)self + 0x118);
+    if (zeroBuffer != 0) zeroBuffer += 0x80000000;
+    zeroEnd.e = 0;
+    switch (format) {
+    case 0: zeroEnd.e = zeroBuffer * 2 + 2; break;
+    case 25: zeroEnd.e = zeroBuffer; break;
+    case 10: zeroEnd.e = zeroBuffer >> 1; break;
     default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438); break;
     }
-    address = ew.e;
+    posLimit = zeroEnd.e;
     switch (*(int *)((char *)self + 0x118)) {
-    case 0: address = ew.e + 0x200; break;
-    case 25: address = ew.e + 0x100; break;
-    case 10: address = ew.e + 0x80; break;
+    case 0: posLimit = zeroEnd.e + 0x200; break;
+    case 25: posLimit = zeroEnd.e + 0x100; break;
+    case 10: posLimit = zeroEnd.e + 0x80; break;
     default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x362, lbl_80322438); break;
     }
-    if (ew.e <= sw.s && sw.s < address) { OSRestoreInterrupts(iw.i); return 1; }
-    OSRestoreInterrupts(iw.i);
+    if (zeroEnd.e <= playPos.s && playPos.s < posLimit) { OSRestoreInterrupts(irqState.i); return 1; }
+    OSRestoreInterrupts(irqState.i);
     return 0;
 }
 
