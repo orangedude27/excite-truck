@@ -154,10 +154,6 @@ extern void fn_802C0D70(float *);
 extern void fn_802C9A1C(float *);
 extern void fn_802C0F4C(void);
 extern void fn_802C6B44(void);
-extern char lbl_8055FB14[4];
-extern char lbl_8055CF98[4];
-extern float lbl_804C0800[3];
-extern float lbl_80564E38;
 extern float lbl_80564E48;
 #pragma push
 #pragma opt_propagation off
