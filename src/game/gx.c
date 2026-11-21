@@ -1221,7 +1221,7 @@ void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
     p[0x5C] = 1;
     lbl_804C97D0 = a;
 }
-void fn_802D01B0(float *p, float v) {
+void fn_802D01B0(FN_802D01B0_VEC *p, float v) {
     extern char lbl_804C97D0;
     float z, y, x;
     float *out;
