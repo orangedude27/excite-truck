@@ -1018,6 +1018,8 @@ void fn_8028F5A0(int arg0, int arg1) {
 }
 
 #pragma pop
+/* Empty stub called at the start of the effect subsystem's list/cache reset
+ * (fn_8028E0F0); there is nothing for it to clear, so it does nothing. */
 void fn_8028F5A4(void) {
 }
 
