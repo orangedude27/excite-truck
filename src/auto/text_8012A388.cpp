@@ -189,7 +189,7 @@ extern "C" void fn_8012A46C(void *, const char *) {
 #pragma use_lmw_stmw off
 extern "C" s32 fn_8012A470(void *arg0, s32 arg1, void *arg2, void *arg3) {
 #pragma scheduling invalid_target
-    const char *strings = lbl_8032A630;
+    register const char *strings = lbl_8032A630;
     register char *buffer;
     s32 result;
 
@@ -510,6 +510,7 @@ extern "C" s32 fn_8012ACA0(void *arg0, void *arg1, s32 arg2) {
     char sp10[128];
     s32 spC;
     u8 sp8;
+    register u8 *temp_r3_3;
     register const char *messages = (const char *)lbl_8032A630;
     char *var_r4;
     s32 var_r5;
@@ -523,7 +524,6 @@ extern "C" s32 fn_8012ACA0(void *arg0, void *arg1, s32 arg2) {
     u8 temp_r4, temp_r4_2, temp_r4_3, temp_r4_4, temp_r4_5;
     u8 temp_r4_6, temp_r4_7, temp_r4_8, temp_r4_9, temp_r4_10;
     u32 temp_r4_11;
-    u8 *temp_r3_3;
     u8 *temp_r26, *var_r25_2, *var_r31;
     char *dot;
     if (lbl_8055DFFC == 0) fn_802E317C(messages + 0x1D0, arg0);
@@ -1314,7 +1314,9 @@ extern "C" u8 lbl_805599D8;
 #pragma scheduling on
 extern "C" void fn_8012BF28(void) {
     s32 paths[3], header[5], inner, size;
-    s32 *pathPtr, *table;
+    s32 *table;
+    register s32 handle;
+    register s32 *pathPtr;
     u32 i;
     char filename[128], name[128];
     char *src_a1;
@@ -1336,6 +1338,7 @@ extern "C" void fn_8012BF28(void) {
     do {
         s32 opened = fn_802E3BB4(*pathPtr, filename, 0x80);
         if ((u32)(opened + 0x10000) != 0xFFFF) {
+            handle = opened;
             do {
                 *fn_80029004(filename, '.') = 0;
                 dst_s1 = filename; rem_s1 = 0x80; goto scan_test_1;
@@ -1403,8 +1406,8 @@ suffix_done_2:
                 } else fn_802E30C8(lbl_8032AEB4, filename);
 read_rest:
                 ;
-            } while (fn_802E3C24(opened, filename, 0x80) != 0);
-            fn_802E3CA4(opened);
+            } while (fn_802E3C24(handle, filename, 0x80) != 0);
+            fn_802E3CA4(handle);
         }
         ++pathPtr; ++i;
     } while (i < 3);
@@ -3378,18 +3381,18 @@ extern "C" s32 fn_8012C5B8(s32 arg0, s32 arg1, s32 arg2) {
         if (*(u32 *)((char *)entry + 0x20) == (u32)arg1) {
             *(s32 *)arg2 = *(s32 *)((char *)entry + 0x24);
             register void *allocation = fn_8012A570(0x18, (void *)lbl_8032ABF8);
+            volatile s32 *fields = (volatile s32 *)allocation;
             if (allocation != 0) {
-                volatile s32 *fields = (volatile s32 *)allocation;
                 fields[3] = -1;
                 fields[4] = 0;
                 fields[1] = 0;
                 fields[2] = 0;
                 fields[5] = 0;
                 fields[0] = 0x19AFEE2A;
-                fields[1] = (s32)entry;
-                result = (s32)allocation;
-                fields[2] = (s32)manager;
             }
+            fields[1] = (s32)entry;
+            result = (s32)allocation;
+            fields[2] = (s32)manager;
         } else {
             u8 queryText[5];
             u8 entryText[5];
