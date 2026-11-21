@@ -301,9 +301,11 @@ extern "C" void fn_8027D77C(void *__restrict arg0) {
     ((Obj *)handler)->v3((int)&lbl_8055C784);
 }
 #pragma scheduling invalid_target
-extern "C" void fn_8027D7B8(const void *arg0) {
-    int v = *(const int *)((const char *)arg0 + 0xC);
-    fn_80007F90(*(int *)((char *)fn_8001285C(v) + 8));
+extern "C" void fn_8027D7B8(const void *selection) {
+    /* UI callback: read the contest id from selection+0xC, look up its 0x28-byte
+     * contest entry, and pass the entry's event id (entry+8) to the event-name lookup. */
+    int contestId = *(const int *)((const char *)selection + 0xC);
+    fn_80007F90(*(int *)((char *)fn_8001285C(contestId) + 8));
 }
 
 #pragma push
