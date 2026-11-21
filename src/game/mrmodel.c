@@ -1543,7 +1543,11 @@ void fn_802C74D8(int arg0, void *arg1, int arg2) {
         }
     }
 }
-void fn_802C7730(void) { fn_802DABA4(); }
+ extern void fn_802DABA4(const float *);
+ /* Tail-call wrapper that forwards the caller's six-float model transform to
+  * fn_802DABA4, which scales it into a 12-float array and queues it as a draw
+  * record. */
+ void fn_802C7730(const float *transform) { fn_802DABA4(transform); }
 
 /* Queue the caller's 12-float model transform as a draw record, then apply it
  * as the current GX state: fn_802D0514 returns the new record's handle and
