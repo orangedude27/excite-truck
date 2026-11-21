@@ -1750,6 +1750,9 @@ void fn_802C7A3C(void) { fn_802DA918(); }
 extern void fn_802DA80C(void);
 extern void fn_802DA918(void);
 extern void fn_802DA550(void);
+/* Tail-call thunk: branches straight to fn_802DA550, the stack-allocator helper
+ * callers know as NewPartKey, which allocates a part-name key record. All six
+ * arguments pass through unchanged; callers declare this with the same signature. */
 void fn_802C7A40(void) { fn_802DA550(); }
 
 extern s8 lbl_8055FC20;
