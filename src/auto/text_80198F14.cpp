@@ -2951,7 +2951,9 @@ extern "C" void fn_8019F780(void *arg0) {
 }
 #pragma pop
 
-extern "C" void fn_8019FF88(void* arg0) {
+extern "C" void fn_8019FF88(void* owner) {
+    /* Tail-call thunk that forwards the owner to fn_8019EBC0, which invokes the
+       v16 hook on the sub-object held at +4. */
     ((void (*)(void))fn_8019EBC0)();
 }
 
