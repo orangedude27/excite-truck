@@ -5097,35 +5097,35 @@ return_zero:
 }
 
 extern "C" s32 VFiPFENT_ITER_Advance(void *arg0, s32 arg1) {
-    void *iter = arg0;
     s32 result;
     s32 error;
     u32 length;
     u32 next;
-    u32 index = *(u32 *)iter;
+    u32 index = *(u32 *)arg0;
+    u8 *iter = (u8 *)(u32)arg0;
     next = index + 1;
 
     if (index != next)
         goto normal;
-    if (*(u32 *)((u8 *)iter + 0x44) + 0x10000 != 0xFFFF)
+    if (*(u32 *)(iter + 0x44) + 0x10000 != 0xFFFF)
         goto normal;
     if (arg1 != 0)
         goto zero;
-    *(u32 *)iter = next;
-    result = ((s32 (*)(void *, s32))fn_800AB378)(arg0, arg1);
+    *(u32 *)arg0 = next;
+    result = ((s32 (*)(void *, s32))fn_800AB378)(iter, arg1);
     if (result != 0) {
         *(u32 *)iter = index;
-        ((s32 (*)(void *, s32))fn_800AB378)(arg0, 0);
+        ((s32 (*)(void *, s32))fn_800AB378)(iter, 0);
         goto done;
     }
 normal:
-    if (*(u32 *)((u8 *)iter + 0x44) + 0x10000 == 0xFFFF) {
+    if (*(u32 *)(iter + 0x44) + 0x10000 == 0xFFFF) {
         error = 0x10;
     } else {
-        result = fn_800B5324(*(void **)((u8 *)iter + 4),
-                             (u8 *)iter + 0x4C,
-                             *(u32 *)((u8 *)iter + 0x44),
-                             *(u16 *)((u8 *)iter + 0x48),
+        result = fn_800B5324(*(void **)(iter + 4),
+                             iter + 0x4C,
+                             *(u32 *)(iter + 0x44),
+                             *(u16 *)(iter + 0x48),
                              0x20,
                              &length,
                              0);
@@ -9162,6 +9162,8 @@ extern "C" void *fn_800B224C(void *fileObj, void *info) {
     return 0;
 }
 
+/* ":" at the front of a path introduces its drive/volume prefix. */
+#define PF_COLON lbl_80559208
 #pragma optimization_level 3
 extern "C" s32 fn_800B23F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     union Tok { s32 w[4]; f64 d[2]; };
@@ -18723,10 +18725,9 @@ extern "C" void fn_800C56A4(void *arg0, void *arg1, s32 arg2) {
 
 #pragma optimize_for_size on
 void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
-    register s32 *p7, *p5;
-    register s32 a, b, done, flag, tmp;
+    s32 *p7, *p5, a, b, done, flag, tmp;
+    s32 limit = 0x7FFFFFFE;
     u32 k;
-
     if ((arg2 & 7) != 0) {
         p7 = (s32 *)((u8 *)arg3 + 0x3F00);
         p5 = (s32 *)((u8 *)arg3 + 0x1B00);
@@ -18735,7 +18736,7 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
         tmp = arg0 - 8;
         if (arg0 > 8) {
             flag = 0;
-            if (arg0 >= 0 && arg0 <= 0x7FFFFFFE) flag = 1;
+            if (arg0 >= 0 && arg0 <= limit) flag = 1;
             if (flag != 0) {
                 for (; done < tmp; done += 8) {
                     a = p5[0]; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
@@ -18756,7 +18757,6 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
         }
         return;
     }
-
     if ((arg2 & 8) != 0) {
         p7 = (s32 *)((u8 *)arg3 + 0x3F00);
         p5 = (s32 *)((u8 *)arg3 + 0x1B00);
@@ -18776,7 +18776,7 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
             tmp = arg1 - 8;
             if (arg1 > 8) {
                 flag = 0;
-                if (arg1 >= 0 && arg1 <= 0x7FFFFFFE) flag = 1;
+                if (arg1 >= 0 && arg1 <= limit) flag = 1;
                 if (flag != 0) {
                     for (; done < tmp; done += 8) {
                         a = p5[0]; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
@@ -18803,7 +18803,7 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
             tmp = arg1 - 8;
             if (arg1 > 8) {
                 flag = 0;
-                if (arg1 >= 0 && arg1 <= 0x7FFFFFFE) flag = 1;
+                if (arg1 >= 0 && arg1 <= limit) flag = 1;
                 if (flag != 0) {
                     for (; done < tmp; done += 8) {
                         a = p5[0]; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
@@ -18830,7 +18830,7 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
         tmp = arg1 - 8;
         if (arg1 > 8) {
             flag = 0;
-            if (arg1 >= 0 && arg1 <= 0x7FFFFFFE) flag = 1;
+            if (arg1 >= 0 && arg1 <= limit) flag = 1;
             if (flag != 0) {
                 for (; done < tmp; done += 8) {
                     a = p5[0]; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
@@ -18851,7 +18851,6 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
         }
         return;
     }
-
     if ((arg2 & 0x10) == 0) return;
     p7 = (s32 *)((u8 *)arg3 + 0x2400);
     p5 = (s32 *)arg3;
@@ -18860,7 +18859,7 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
         tmp = arg1 - 8;
         if (arg1 > 8) {
             flag = 0;
-            if (arg1 >= 0 && arg1 <= 0x7FFFFFFE) flag = 1;
+            if (arg1 >= 0 && arg1 <= limit) flag = 1;
             if (flag != 0) {
                 for (; done < tmp; done += 8) {
                     a = p5[0]; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
@@ -18887,7 +18886,7 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
         tmp = arg1 - 8;
         if (arg1 > 8) {
             flag = 0;
-            if (arg1 >= 0 && arg1 <= 0x7FFFFFFE) flag = 1;
+            if (arg1 >= 0 && arg1 <= limit) flag = 1;
             if (flag != 0) {
                 for (; done < tmp; done += 8) {
                     a = p5[0]; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
@@ -18914,7 +18913,7 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
     tmp = arg1 - 8;
     if (arg1 > 8) {
         flag = 0;
-        if (arg1 >= 0 && arg1 <= 0x7FFFFFFE) flag = 1;
+        if (arg1 >= 0 && arg1 <= limit) flag = 1;
         if (flag != 0) {
             for (; done < tmp; done += 8) {
                 a = p5[0]; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
