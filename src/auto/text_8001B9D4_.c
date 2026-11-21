@@ -347,13 +347,16 @@ void fn_8001BD54(EntryRef *out, void *record) {
     fn_8001BBBC(out, *(s32 *)((u8 *)*(void **)((u8 *)record + 0x18) + *(s32 *)((u8 *)record + 0xC) * 0xC + 0xC));
 }
 #pragma scheduling invalid_target
-u32 fn_8001BD6C(const void *arg0, const void *arg1) {
-    u32 a0 = *(const u32 *)((const s8 *)arg0 + 0x18);
-    u32 a0c = *(const u32 *)((const s8 *)arg0 + 0xC);
-    u32 a18 = *(const u32 *)((const s8 *)arg1 + 0x18);
-    u32 a1c = *(const u32 *)((const s8 *)arg1 + 0xC);
-    u32 r = fn_8001D2E4(a0, a0c, a18, a1c);
-    return (r & 0x80000000) >> 31;
+u32 fn_8001BD6C(const void *recordA, const void *recordB) {
+    /* "Sorts before" predicate for ranking records: each points at a backing-data
+       table (+0x18) and an entry index (+0xC); compare those entries and return 1
+       only when the first sorts before the second (comparator result is negative). */
+    u32 dataA = *(const u32 *)((const s8 *)recordA + 0x18);
+    u32 indexA = *(const u32 *)((const s8 *)recordA + 0xC);
+    u32 dataB = *(const u32 *)((const s8 *)recordB + 0x18);
+    u32 indexB = *(const u32 *)((const s8 *)recordB + 0xC);
+    u32 cmp = fn_8001D2E4(dataA, indexA, dataB, indexB);
+    return (cmp & 0x80000000) >> 31;
 }
 #pragma scheduling on
 extern void *fn_800167CC(s32);
