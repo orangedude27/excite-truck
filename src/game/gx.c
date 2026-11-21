@@ -1496,7 +1496,10 @@ copy:
     }
 done:
     if (arg1 != 0) {
-        fn_802E30C8(lbl_8034C108, lbl_8055D0BC * lbl_804C9760[2], lbl_8055D0C0 * lbl_804C9760[3], lbl_804C9760, lbl_8055D0BC);
+        register const char *fmt = lbl_8034C108;
+        register int *base = lbl_804C9760;
+        register int v = lbl_8055D0BC;
+        fn_802E30C8(fmt, v * base[2], lbl_8055D0C0 * base[3], base, v);
         lbl_8055D0B8 = 0;
     }
 }
@@ -3297,6 +3300,8 @@ int fn_802D3A5C(void *arg0, const float *arg1) {
         return value >= 0.00784314f;
     }
 }
+/* Empty no-op: called during mode/fade transitions with a state value from
+ * lbl_804B4010+0x10, but this build performs no action here. */
 void fn_802D3BB0(void) {}
 
 extern float lbl_80564F88, lbl_80564F8C;
