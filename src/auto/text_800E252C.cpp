@@ -2428,6 +2428,7 @@ extern "C" int GetCurrentPlayingDspAddress__Q46nw4hbm3snd6detail7AxVoiceCFv(void
     return address;
 }
 
+/* Voice-mix alias: forwards its four arguments unchanged to fn_800E6A44 via a tail call. */
 extern "C" void fn_800E5A8C(void *arg0, int arg1, int arg2, void *arg3) {
     fn_800E6A44(arg0, arg1, arg2, arg3);
 }
