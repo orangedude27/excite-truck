@@ -1405,8 +1405,10 @@ void fn_802D6B54(void *alarm) {
 
 
 extern s32 lbl_8055FD1C;
-void fn_802D6B78(void *arg0) {
-    fn_802D5FE4(arg0);
+/* Default (non-CPU-lighting) surface redraw callback: forwards the surface
+ * descriptor to fn_802D5FE4, which dispatches drawing by its vertex format. */
+void fn_802D6B78(void *surface) {
+    fn_802D5FE4(surface);
 }
 
 /* CPU-lighting callback thunk: forwards to fn_802D6170 to rebuild and draw
