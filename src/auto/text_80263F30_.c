@@ -596,7 +596,7 @@ void* fn_80264A54(void) {
 #pragma push
 #pragma processor 750
 #pragma cplusplus on
-void fn_80264A5C(float farg0, float farg1) {
+extern "C" void fn_80264A5C(float farg0, float farg1) {
     extern float lbl_80558DC4[];
     extern float lbl_80563BF0;
     extern float lbl_80563C08;
@@ -631,10 +631,7 @@ void fn_80264A5C(float farg0, float farg1) {
     int temp_r5_2;
     int temp_r6;
     int temp_r6_2;
-    void *temp_r31;
-    void *temp_r31_2;
-    void *temp_r30;
-    void *temp_r30_2;
+    struct { void *elem; void *mgr; } p;
     if (!((float)__fabs((double)fn_80214D48()) <= lbl_80558DC4[0])) {
         fn_80230C30(&spC, &sp8, (int)farg0, (int)farg1);
         temp_f4 = spC + (farg0 - (float)(int)farg0);
@@ -642,55 +639,55 @@ void fn_80264A5C(float farg0, float farg1) {
         spC = temp_f4;
         sp8 = temp_f3;
         sp18 = temp_f4;
-        temp_r31 = lbl_8055F448;
+        p.mgr = lbl_8055F448;
         temp_f0 = 1.0f;
-        temp_f0 = *(float *)((char *)temp_r31 + 0x74) + *(float *)((char *)temp_r31 + 0x40);
+        temp_f0 = *(float *)((char *)p.mgr + 0x74) + *(float *)((char *)p.mgr + 0x40);
         sp1C = temp_f3;
-        *(float *)((char *)temp_r31 + 0x74) = temp_f0;
-        if (temp_f0 > 1.0f && *(int *)((char *)temp_r31 + 0x5C) + 1 <= *(int *)((char *)temp_r31 + 0x60)) {
-            *(float *)((char *)temp_r31 + 0x74) = *(float *)((char *)temp_r31 + 0x74) - 1.0f;
-            temp_r5 = *(int *)((char *)temp_r31 + 0x5C);
-            temp_r6 = *(int *)((char *)temp_r31 + 0x58);
+        *(float *)((char *)p.mgr + 0x74) = temp_f0;
+        if (temp_f0 > 1.0f && *(int *)((char *)p.mgr + 0x5C) + 1 <= *(int *)((char *)p.mgr + 0x60)) {
+            *(float *)((char *)p.mgr + 0x74) = *(float *)((char *)p.mgr + 0x74) - 1.0f;
+            temp_r5 = *(int *)((char *)p.mgr + 0x5C);
+            temp_r6 = *(int *)((char *)p.mgr + 0x58);
             temp_r4 = temp_r5 + 1;
-            *(int *)((char *)temp_r31 + 0x5C) = temp_r4;
+            *(int *)((char *)p.mgr + 0x5C) = temp_r4;
             temp_r0 = temp_r5 << 5;
-            temp_r30 = (void *)((char *)temp_r6 + temp_r0);
+            p.elem = (void *)((char *)temp_r6 + temp_r0);
             *(float *)((char *)temp_r6 + temp_r0) = temp_f4;
-            *(float *)((char *)temp_r30 + 4) = temp_f3;
-            temp_f30 = fn_80129DC4(6, *(float *)((char *)temp_r31 + 0x1C), *(float *)((char *)temp_r31 + 0x20));
-            temp_f31 = fn_80129DC4(6, *(float *)((char *)temp_r31 + 0x24), *(float *)((char *)temp_r31 + 0x28));
-            *(float *)((char *)temp_r30 + 8) = temp_f31 * (float)cos((double)temp_f30);
-            *(float *)((char *)temp_r30 + 0xC) = temp_f31 * (float)sin((double)temp_f30);
-            *(float *)((char *)temp_r30 + 0x10) = fn_80129DC4(6, 0.0f, 6.283185f);
-            *(float *)((char *)temp_r30 + 0x14) = fn_80129DC4(6, *(float *)((char *)temp_r31 + 0x34), *(float *)((char *)temp_r31 + 0x38));
-            *(float *)((char *)temp_r30 + 0x18) = *(float *)((char *)temp_r31 + 0x44);
-            *(int *)((char *)temp_r30 + 0x1C) = fn_80129D18(6, fn_80235FD8(*(int *)((char *)temp_r31 + 0x54)));
+            *(float *)((char *)p.elem + 4) = temp_f3;
+            temp_f30 = fn_80129DC4(6, *(float *)((char *)p.mgr + 0x1C), *(float *)((char *)p.mgr + 0x20));
+            temp_f31 = fn_80129DC4(6, *(float *)((char *)p.mgr + 0x24), *(float *)((char *)p.mgr + 0x28));
+            *(float *)((char *)p.elem + 8) = temp_f31 * (float)cos((double)temp_f30);
+            *(float *)((char *)p.elem + 0xC) = temp_f31 * (float)sin((double)temp_f30);
+            *(float *)((char *)p.elem + 0x10) = fn_80129DC4(6, 0.0f, 6.283185f);
+            *(float *)((char *)p.elem + 0x14) = fn_80129DC4(6, *(float *)((char *)p.mgr + 0x34), *(float *)((char *)p.mgr + 0x38));
+            *(float *)((char *)p.elem + 0x18) = *(float *)((char *)p.mgr + 0x44);
+            *(int *)((char *)p.elem + 0x1C) = fn_80129D18(6, fn_80235FD8(*(int *)((char *)p.mgr + 0x54)));
         }
-        temp_r31_2 = lbl_8055F448;
+        p.mgr = lbl_8055F448;
         temp_f4 = spC;
-        temp_f0_2 = *(float *)((char *)temp_r31_2 + 0xD4) + *(float *)((char *)temp_r31_2 + 0xA0);
+        temp_f0_2 = *(float *)((char *)p.mgr + 0xD4) + *(float *)((char *)p.mgr + 0xA0);
         temp_f2 = lbl_80563C0C + sp8;
         sp10 = temp_f4;
-        *(float *)((char *)temp_r31_2 + 0xD4) = temp_f0_2;
+        *(float *)((char *)p.mgr + 0xD4) = temp_f0_2;
         sp14 = temp_f2;
-        if (temp_f0_2 > 1.0f && *(int *)((char *)temp_r31_2 + 0xBC) + 1 <= *(int *)((char *)temp_r31_2 + 0xC0)) {
-            *(float *)((char *)temp_r31_2 + 0xD4) = *(float *)((char *)temp_r31_2 + 0xD4) - 1.0f;
-            temp_r5_2 = *(int *)((char *)temp_r31_2 + 0xBC);
-            temp_r6_2 = *(int *)((char *)temp_r31_2 + 0xB8);
+        if (temp_f0_2 > 1.0f && *(int *)((char *)p.mgr + 0xBC) + 1 <= *(int *)((char *)p.mgr + 0xC0)) {
+            *(float *)((char *)p.mgr + 0xD4) = *(float *)((char *)p.mgr + 0xD4) - 1.0f;
+            temp_r5_2 = *(int *)((char *)p.mgr + 0xBC);
+            temp_r6_2 = *(int *)((char *)p.mgr + 0xB8);
             temp_r4_2 = temp_r5_2 + 1;
-            *(int *)((char *)temp_r31_2 + 0xBC) = temp_r4_2;
+            *(int *)((char *)p.mgr + 0xBC) = temp_r4_2;
             temp_r0_2 = temp_r5_2 << 5;
-            temp_r30_2 = (void *)((char *)temp_r6_2 + temp_r0_2);
+            p.elem = (void *)((char *)temp_r6_2 + temp_r0_2);
             *(float *)((char *)temp_r6_2 + temp_r0_2) = temp_f4;
-            *(float *)((char *)temp_r30_2 + 4) = temp_f2;
-            temp_f30_2 = fn_80129DC4(6, *(float *)((char *)temp_r31_2 + 0x7C), *(float *)((char *)temp_r31_2 + 0x80));
-            temp_f31_2 = fn_80129DC4(6, *(float *)((char *)temp_r31_2 + 0x84), *(float *)((char *)temp_r31_2 + 0x88));
-            *(float *)((char *)temp_r30_2 + 8) = temp_f31_2 * (float)cos((double)temp_f30_2);
-            *(float *)((char *)temp_r30_2 + 0xC) = temp_f31_2 * (float)sin((double)temp_f30_2);
-            *(float *)((char *)temp_r30_2 + 0x10) = fn_80129DC4(6, 0.0f, 6.283185f);
-            *(float *)((char *)temp_r30_2 + 0x14) = fn_80129DC4(6, *(float *)((char *)temp_r31_2 + 0x94), *(float *)((char *)temp_r31_2 + 0x98));
-            *(float *)((char *)temp_r30_2 + 0x18) = *(float *)((char *)temp_r31_2 + 0xA4);
-            *(int *)((char *)temp_r30_2 + 0x1C) = fn_80129D18(6, fn_80235FD8(*(int *)((char *)temp_r31_2 + 0xB4)));
+            *(float *)((char *)p.elem + 4) = temp_f2;
+            temp_f30_2 = fn_80129DC4(6, *(float *)((char *)p.mgr + 0x7C), *(float *)((char *)p.mgr + 0x80));
+            temp_f31_2 = fn_80129DC4(6, *(float *)((char *)p.mgr + 0x84), *(float *)((char *)p.mgr + 0x88));
+            *(float *)((char *)p.elem + 8) = temp_f31_2 * (float)cos((double)temp_f30_2);
+            *(float *)((char *)p.elem + 0xC) = temp_f31_2 * (float)sin((double)temp_f30_2);
+            *(float *)((char *)p.elem + 0x10) = fn_80129DC4(6, 0.0f, 6.283185f);
+            *(float *)((char *)p.elem + 0x14) = fn_80129DC4(6, *(float *)((char *)p.mgr + 0x94), *(float *)((char *)p.mgr + 0x98));
+            *(float *)((char *)p.elem + 0x18) = *(float *)((char *)p.mgr + 0xA4);
+            *(int *)((char *)p.elem + 0x1C) = fn_80129D18(6, fn_80235FD8(*(int *)((char *)p.mgr + 0xB4)));
         }
     }
 }
@@ -792,7 +789,7 @@ extern "C" void fn_80264FD4(void *obj) {
 #pragma use_lmw_stmw off
 extern "C" void fn_80264FE4(void *arg0) {
     char *p = (char *)arg0;
-    float base, limit, value, intensity, zero;
+    float base, intensity, value, limit, zero;
     int id, offset;
     char *item;
     int i, alpha, a;
@@ -819,10 +816,10 @@ extern "C" void fn_80264FE4(void *arg0) {
         offset += 0x20;
         i++;
     }
-    limit = lbl_80563C00;
+    offset = 0;
     zero = lbl_80563BF0;
     i = 0;
-    offset = 0;
+    limit = lbl_80563C00;
     while (i < *(int *)(p + 0x5C)) {
         item = *(char **)(p + 0x58) + offset;
         value = *(float *)(p + 0x70) * (*(float *)(p + 0x44) - *(float *)(item + 0x18));
@@ -1083,28 +1080,32 @@ extern "C" int fn_802656C8(void *arg0) {
         virtual void f58(); virtual void f5C();
         virtual void *getItem(int);
     };
+    union IntConv { unsigned int u; int i; } nc;
     extern unsigned char lbl_80498F78[];
     int sp[5];
-    register int count = 0;
-    register int i = 0;
+    int count = 0;
+    int i = 0;
     int j, k;
     int result;
     void *item;
     void *list;
+    int n;
 
-    for (i = 0; (item = ((ValList *)arg0)->getItem(i)) != 0; i++) {
+    while ((item = ((ValList *)arg0)->getItem(i)) != 0) {
         if (stricmp(((ValEntry *)item)->getName(), lbl_8055C498) == 0) {
             count++;
         }
+        i++;
     }
-    i = count + 5;
+    nc.u = (unsigned int)(count + 5);
+    n = nc.i;
     list = ((void *(*)(void *, void *, int, int, int))fn_8002F37C)(
-        fn_8012850C(i * 0x14 + 0x10, lbl_803464B4), fn_802640A0, 0, 0x14, i);
+        fn_8012850C(n * 0x14 + 0x10, lbl_803464B4), fn_802640A0, 0, 0x14, n);
     count = 0;
     k = 0;
-    while ((i = (int)((ValList *)arg0)->getItem(k)) != 0) {
-        if (stricmp(((ValEntry *)i)->getName(), lbl_8055C498) == 0) {
-            fn_802640C4((char *)list + count++ * 0x14, (void *)i);
+    while ((item = ((ValList *)arg0)->getItem(k)) != 0) {
+        if (stricmp(((ValEntry *)item)->getName(), lbl_8055C498) == 0) {
+            fn_802640C4((char *)list + count++ * 0x14, item);
         }
         k++;
     }
