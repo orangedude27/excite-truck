@@ -109,6 +109,7 @@ float fn_80291784(float deltaX, float deltaY, float deltaZ, float deltaW) {
 
 #pragma push
 #pragma processor 750
+#pragma scheduling 603
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 extern "C" int fn_802917C0(void *arg0, void *arg1, void *arg2) {
@@ -118,12 +119,15 @@ extern "C" int fn_802917C0(void *arg0, void *arg1, void *arg2) {
     register Entry *entry;
     register Manager_802917C0 *manager = (Manager_802917C0 *)arg1;
     register int zero = 0;
-    register float initial = lbl_80564484;
-    register float scale = lbl_8056449C;
-    float result2;
-    register float best = lbl_80564484;
+    register float initial;
+    register float result2;
+    register float scale;
+    register float best;
     register float result1;
     register float result3;
+    best = lbl_80564484;
+    initial = best;
+    scale = lbl_8056449C;
     *(int *)((char *)base + 0x120) = zero;
     goto check_count;
 loop:
