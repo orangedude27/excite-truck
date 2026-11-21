@@ -263,6 +263,9 @@ extern "C" void fn_802A1794(void) {
     } while (index < 8);
 }
 
+/* No-op method stub among the dispatch helpers that fan virtual calls out over
+ * the global 8-entry handler table lbl_804BCF88; this one does nothing, so it
+ * compiles to a bare 'blr'. */
 extern "C" void fn_802A17F8(void) {
 }
 
