@@ -1481,26 +1481,31 @@ extern "C" long fn_8000DA10(void);
 extern "C" void *fn_8001BB58(long, long, long, long);
 extern "C" long fn_8001D7EC(void);
 #pragma cplusplus on
-extern "C" long fn_8027CA1C(void *arg0) {
+extern "C" long fn_8027CA1C(void *contestEvent) {
+    /* Challenge-mode event-path goal check: returns 1 when the contest's saved grade
+     * (record +8) is at least as good as the grade named by the goal object's
+     * "passing_grade" attribute, otherwise 0. */
     struct Iface {
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
-        virtual long f3(char *);
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual long getString(char *attrName);
     };
     struct FlagHolder { long value; } flagHolder;
-    long &flag = flagHolder.value;
-    long value;
-    void *result;
-    value = fn_8027D1F4();
-    result = fn_8001BB58(fn_8000DA10(), *(long *)((char *)arg0 + 4), value, 0);
-    flag = 0;
-    if (result != 0) {
-        ((struct Iface *)(*(void **)((char *)arg0 + 0x10)))->f3(lbl_80347BD0);
-        if (*(long *)((char *)result + 8) <= fn_8001D7EC())
-            flag = 1;
+    long &gradeMet = flagHolder.value;
+    long contextValue;
+    void *contestRecord;
+
+    contextValue = fn_8027D1F4();
+    contestRecord = fn_8001BB58(fn_8000DA10(), *(long *)((char *)contestEvent + 4),
+                                contextValue, 0);
+    gradeMet = 0;
+    if (contestRecord != 0) {
+        ((struct Iface *)(*(void **)((char *)contestEvent + 0x10)))->getString(lbl_80347BD0);
+        if (*(long *)((char *)contestRecord + 8) <= fn_8001D7EC())
+            gradeMet = 1;
     }
-    return flag;
+    return gradeMet;
 }
 #pragma cplusplus off
 /* Return 1 if the looked-up event entry exists and its field at +8 is zero, else 0. */
