@@ -1269,9 +1269,11 @@ extern void fn_80015B20(void *, void *, void *);
 extern f64 cos(void);
 extern f64 sin(f32);
 #pragma scheduling on
-void fn_80015AA0(void *arg0, f32 angle) {
+/* Build the Z-axis (roll) step matrix used by fn_80015A20: a column-major 3x3
+ * rotation [c -s 0; s c 0; 0 0 1] with c = cos(angle), s = sin(angle). */
+void fn_80015AA0(void *outMatrix, f32 angle) {
     f32 one;
-    f32 neg;
+    f32 negSine;
     f32 zero;
     f32 sine;
     f32 cosine;
@@ -1279,16 +1281,16 @@ void fn_80015AA0(void *arg0, f32 angle) {
     sine = (f32)sin(angle);
     zero = 0.0f;
     one = 1.0f;
-    *(f32 *)((u8 *)arg0 + 0) = cosine;
-    neg = -sine;
-    *(f32 *)((u8 *)arg0 + 4) = sine;
-    *(f32 *)((u8 *)arg0 + 8) = zero;
-    *(f32 *)((u8 *)arg0 + 0xC) = neg;
-    *(f32 *)((u8 *)arg0 + 0x10) = cosine;
-    *(f32 *)((u8 *)arg0 + 0x14) = zero;
-    *(f32 *)((u8 *)arg0 + 0x18) = zero;
-    *(f32 *)((u8 *)arg0 + 0x1C) = zero;
-    *(f32 *)((u8 *)arg0 + 0x20) = one;
+    *(f32 *)((u8 *)outMatrix + 0) = cosine;
+    negSine = -sine;
+    *(f32 *)((u8 *)outMatrix + 4) = sine;
+    *(f32 *)((u8 *)outMatrix + 8) = zero;
+    *(f32 *)((u8 *)outMatrix + 0xC) = negSine;
+    *(f32 *)((u8 *)outMatrix + 0x10) = cosine;
+    *(f32 *)((u8 *)outMatrix + 0x14) = zero;
+    *(f32 *)((u8 *)outMatrix + 0x18) = zero;
+    *(f32 *)((u8 *)outMatrix + 0x1C) = zero;
+    *(f32 *)((u8 *)outMatrix + 0x20) = one;
 }
 void fn_80015B20(void *arg0, void *arg1, void *arg2) {
     f32 *out = (f32 *)arg0;
