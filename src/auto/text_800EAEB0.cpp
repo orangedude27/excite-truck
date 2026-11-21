@@ -1310,20 +1310,22 @@ extern "C" s32 detail_GetWaveDataFileAddress__Q36nw4hbm3snd18MemorySoundArchiveC
     return (info.v[5] + *(u32 *)((u8 *)archive + 0x108)) + info.v[12];
 }
 
-extern "C" void *OpenStream__Q34nw4r3snd18MemorySoundArchiveCFPviUlUl(void *this_, void *stream, u32 bufferSize, s32 offset, u32 length) {
-    u32 base = *(u32 *)((u8 *)this_ + 0x108);
-    if (base == 0) return 0;
+extern "C" void *OpenStream__Q34nw4r3snd18MemorySoundArchiveCFPviUlUl(void *archive, void *stream, u32 bufferSize, s32 fileOffset, u32 fileLength) {
+    /* Initialize a caller-supplied memory-backed sound stream: install the MemoryFileStream vtable
+     * and point it at the archive data beginning at fileOffset, or fail on an unloaded/too-small buffer. */
+    u32 dataBase = *(u32 *)((u8 *)archive + 0x108);
+    if (dataBase == 0) return 0;
     if (bufferSize < 0x20) return 0;
-    u32 p = (u32)stream;
-    if (p == 0) return (void *)p;
+    u32 streamAddr = (u32)stream;
+    if (streamAddr == 0) return (void *)streamAddr;
     *(u8 *)((u8 *)stream + 4) = 0;
     *(u32 *)((u8 *)stream + 0xC) = 0;
     *(u32 *)((u8 *)stream + 0x10) = 0;
-    *(u8 **)stream = lbl_803231D8;
-    *(u32 *)((u8 *)stream + 0x14) = offset + base;
-    *(u32 *)((u8 *)stream + 0x18) = length;
+    *(u8 **)stream = sMemoryFileStreamVtable;
+    *(u32 *)((u8 *)stream + 0x14) = fileOffset + dataBase;
+    *(u32 *)((u8 *)stream + 0x18) = fileLength;
     *(u32 *)((u8 *)stream + 0x1C) = 0;
-    return (void *)p;
+    return (void *)streamAddr;
 }
 
 extern u8 lbl_803230E8[];
