@@ -1067,7 +1067,12 @@ __declspec(section ".sdata") extern char lbl_8055C4A0[];
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" int fn_802656C8(void *arg0) {
+/* Builds and shows the credits page UI dialog: counts the "item" entries in the
+ * given value list, allocates a "credits_page_items" list, fills it with one 0x14-byte
+ * descriptor per item plus four fixed descriptors, loads the "a_credits.val" layout,
+ * runs the dialog, then frees the list and destroys every registered credits object.
+ * Returns 1 unless the dialog result is -1 (cancelled). */
+extern "C" int fn_802656C8(void *valueList) {
     struct ValEntry { virtual const char *getName(); };
     struct Deletable { virtual void destroy(int); };
     struct ValList {
@@ -1080,57 +1085,57 @@ extern "C" int fn_802656C8(void *arg0) {
         virtual void f58(); virtual void f5C();
         virtual void *getItem(int);
     };
-    union IntConv { unsigned int u; int i; } nc;
+    union IntConv { unsigned int u; int i; } conv;
     extern unsigned char lbl_80498F78[];
-    int sp[5];
-    int count = 0;
-    int i = 0;
+    int dialogParams[5];
+    int itemCount = 0;
+    int index = 0;
     int j, k;
-    int result;
-    void *item;
-    void *list;
-    int n;
+    int dialogResult;
+    void *valueEntry;
+    void *items;
+    int capacity;
 
-    while ((item = ((ValList *)arg0)->getItem(i)) != 0) {
-        if (stricmp(((ValEntry *)item)->getName(), lbl_8055C498) == 0) {
-            count++;
+    while ((valueEntry = ((ValList *)valueList)->getItem(index)) != 0) {
+        if (stricmp(((ValEntry *)valueEntry)->getName(), lbl_8055C498) == 0) {
+            itemCount++;
         }
-        i++;
+        index++;
     }
-    nc.u = (unsigned int)(count + 5);
-    n = nc.i;
-    list = ((void *(*)(void *, void *, int, int, int))fn_8002F37C)(
-        fn_8012850C(n * 0x14 + 0x10, lbl_803464B4), fn_802640A0, 0, 0x14, n);
-    count = 0;
+    conv.u = (unsigned int)(itemCount + 5);
+    capacity = conv.i;
+    items = ((void *(*)(void *, void *, int, int, int))fn_8002F37C)(
+        fn_8012850C(capacity * 0x14 + 0x10, lbl_803464B4), fn_802640A0, 0, 0x14, capacity);
+    itemCount = 0;
     k = 0;
-    while ((item = ((ValList *)arg0)->getItem(k)) != 0) {
-        if (stricmp(((ValEntry *)item)->getName(), lbl_8055C498) == 0) {
-            fn_802640C4((char *)list + count++ * 0x14, item);
+    while ((valueEntry = ((ValList *)valueList)->getItem(k)) != 0) {
+        if (stricmp(((ValEntry *)valueEntry)->getName(), lbl_8055C498) == 0) {
+            fn_802640C4((char *)items + itemCount++ * 0x14, valueEntry);
         }
         k++;
     }
-    fn_802643B8((char *)list + count++ * 0x14);
-    fn_80264404((char *)list + count++ * 0x14);
-    fn_80264444((char *)list + count++ * 0x14);
-    fn_80264484((char *)list + count * 0x14);
-    sp[0] = 0; sp[1] = 0; sp[2] = 0; sp[3] = 0; sp[4] = 0;
-    sp[0] = ((ValList *)arg0)->find(lbl_8055C4A0);
-    sp[1] = (int)list;
+    fn_802643B8((char *)items + itemCount++ * 0x14);
+    fn_80264404((char *)items + itemCount++ * 0x14);
+    fn_80264444((char *)items + itemCount++ * 0x14);
+    fn_80264484((char *)items + itemCount * 0x14);
+    dialogParams[0] = 0; dialogParams[1] = 0; dialogParams[2] = 0; dialogParams[3] = 0; dialogParams[4] = 0;
+    dialogParams[0] = ((ValList *)valueList)->find(lbl_8055C4A0);
+    dialogParams[1] = (int)items;
     fn_80236910(lbl_803464C8);
-    result = ((int (*)(int *, int, int, int))fn_802146BC)(sp, -999, -999, 1);
-    if (list != 0) {
-        fn_80128670((char *)list - 0x10);
+    dialogResult = ((int (*)(int *, int, int, int))fn_802146BC)(dialogParams, -999, -999, 1);
+    if (items != 0) {
+        fn_80128670((char *)items - 0x10);
     }
     j = 0;
     while (j < *(int *)(lbl_80498F78 + 4)) {
-        void *p = (*(void ***)lbl_80498F78)[j];
-        if (p != 0) {
-            ((Deletable *)p)->destroy(1);
+        void *obj = (*(void ***)lbl_80498F78)[j];
+        if (obj != 0) {
+            ((Deletable *)obj)->destroy(1);
         }
         j++;
     }
     *(int *)(lbl_80498F78 + 4) = 0;
-    return (unsigned)((-1 - result) | (result + 1)) >> 31;
+    return (unsigned)((-1 - dialogResult) | (dialogResult + 1)) >> 31;
 }
 #pragma cplusplus off
 #pragma pop
