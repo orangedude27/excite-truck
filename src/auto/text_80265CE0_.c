@@ -26,6 +26,8 @@ void fn_80265D44(void) {}
 
 void fn_80265D48(void) {}
 
+/* No-op per-frame loop-end subsystem hook: paired with fn_80265D48 at the
+ * start of each main-loop iteration (fn_80004E20); this build leaves it empty. */
 void fn_80265D4C(void) {}
 
 /* No-op MP-client stub: called from the restart menu's "stop" path (fn_8000B42C)
