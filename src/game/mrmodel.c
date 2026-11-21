@@ -1802,7 +1802,6 @@ void fn_802D754C(void);
 /* Tail-call alias: forwards the game-mode flag bit (in r3) to fn_802D754C, which stores it to a global. */
 void fn_802C7ADC(void) { fn_802D754C(); }
 
-#pragma opt_propagation off
 void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
     int i;
     struct {
@@ -1812,12 +1811,12 @@ void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
     void *manager;
     void *entry;
     float *rot;
-    float *input;
+    const float *input;
 
     manager = fn_802C5390(arg0);
     local.status = 1;
     rot = (float *)((char *)*(void **)((char *)manager + 4) + 0x20);
-    input = (float *)arg1;
+    input = (const float *)arg1;
     if (local.vector == rot) {
         float x, y, z;
         float m0, m3, m6, m1, m4, m7, m2, m5, m8;
@@ -1857,7 +1856,7 @@ void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
     {
         float tx = local.vector[0] + input[9];
         float ty = local.vector[1] + input[10];
-        float tz = local.vector[2] + input[11];
+        float tz = input[11] + local.vector[2];
         local.vector[0] = tx;
         local.vector[1] = ty;
         local.vector[2] = tz;
