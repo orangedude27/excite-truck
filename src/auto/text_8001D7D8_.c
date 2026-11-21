@@ -9,6 +9,7 @@ int __AXGetStackHead(int index) {
 
 int strcmp(const char *, const char *);
 int fn_8001D7EC(char *name) {
+#pragma scheduling invalid_target
     extern char *lbl_802ED818[];
     char **table = lbl_802ED818;
     int i = 0;
@@ -45,7 +46,7 @@ void fn_8001D8B4(int *arg0, void *arg1, int arg2) {
     extern char lbl_802FDB44[];
     extern char lbl_802FDB54[];
     struct Obj *obj = (struct Obj *)arg1;
-    register int i;
+    int i;
     char *name;
 
     arg0[5] = -1;
