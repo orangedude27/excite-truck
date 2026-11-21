@@ -18,8 +18,8 @@ int fn_8012850C(int, int *);
 /* Initialize the alarm-event queue: allocate the 0x500-byte buffer tagged
    "alarm_event" and reset the pending-event count to zero. */
 void fn_801B8B84(void) {
-    lbl_8055E760 = (void *)fn_8012850C(0x500, lbl_80336990);
-    lbl_8055E764 = 0;
+    s_alarmEventQueue = (void *)fn_8012850C(0x500, s_alarmEventTag);
+    s_alarmEventCount = 0;
 }
 #pragma scheduling on
 /* Tear down the alarm-event queue: free the ring-buffer allocation held in lbl_8055E760, then clear the pointer. */
