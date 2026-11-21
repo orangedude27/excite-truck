@@ -517,8 +517,9 @@ void fn_801308E4(void *dst, int size, int suffixKind, float value) {
 }
 #pragma dont_inline reset
 
-void fn_801308F4(char *dst, int count, int value) {
-    fn_8013072C(dst, count, value);
+/* Format an integer as comma-grouped decimal text into dst for on-screen display (size is the buffer capacity, ignored by the formatter). */
+void fn_801308F4(char *dst, int size, int value) {
+    fn_8013072C(dst, size, value);
 }
 
 /* Write a score into a text buffer of `size` bytes.  A score under 1000 is
