@@ -1802,6 +1802,7 @@ void fn_802D754C(void);
 /* Tail-call alias: forwards the game-mode flag bit (in r3) to fn_802D754C, which stores it to a global. */
 void fn_802C7ADC(void) { fn_802D754C(); }
 
+#pragma opt_propagation off
 void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
     int i;
     struct {
