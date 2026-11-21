@@ -504,24 +504,24 @@ void fn_80287CE8(int effectSlot, void *carName, int effectId, int flags) {
 void fn_80287D70(void *arg0, int arg1, int arg2) {
     char name[0x20];
     const char *format = lbl_80348A40;
-    const char **formatp = &format;
 
     if ((arg2 & 0x100000) != 0) {
-        *formatp = lbl_80348A30;
+        format = lbl_80348A30;
         *(volatile int *)((char *)arg0 + 0x24) = 0;
-    } else {
-        do {
-            sprintf(name, *formatp, arg2 + 1);
-            if (((int (*)(int, char *, int *))fn_801E2CCC)(
-                    arg1, name,
-                    (int *)((char *)arg0 +
-                            (*(volatile int *)((char *)arg0 + 0x24) << 2) + 4)) == 0) {
-                return;
-            }
-            ++*(volatile int *)((char *)arg0 + 0x24);
-            arg2 = *(volatile int *)((char *)arg0 + 0x24);
-        } while (arg2 < 8);
+        return;
     }
+
+    do {
+        sprintf(name, format, arg2 + 1);
+        if (((int (*)(int, char *, int *))fn_801E2CCC)(
+                arg1, name,
+                (int *)((char *)arg0 +
+                        (*(volatile int *)((char *)arg0 + 0x24) << 2) + 4)) == 0) {
+            return;
+        }
+        ++*(volatile int *)((char *)arg0 + 0x24);
+        arg2 = *(volatile int *)((char *)arg0 + 0x24);
+    } while (arg2 < 8);
 }
 #pragma scheduling on
 
@@ -552,7 +552,7 @@ extern "C" void fn_80287E80(void **objectPtr, s32 nameSource) {
 #pragma pop
 
 #pragma cplusplus on
-extern "C" void fn_80287ED0(void *arg0, void **arg1, s32 arg2, s32 arg3) {
+extern "C" Vec3i_80287F90 fn_80287ED0(void **__restrict arg1, s32 arg2, const char *arg3) {
     struct Ifc {
         virtual void *f0(s32);
         virtual void f1();
@@ -565,19 +565,18 @@ extern "C" void fn_80287ED0(void *arg0, void **arg1, s32 arg2, s32 arg3) {
         virtual void f8();
         virtual void f9();
         virtual void f10();
-        virtual void f11(void *, s32);
+        virtual Vec3i_80287F90 f11(const char *);
     };
     Ifc *obj = *(Ifc **)arg1;
     if (obj == 0 || obj->f0(arg2) == 0) {
         fn_802E317C(lbl_80348A4C, arg2);
     }
     obj = *(Ifc **)arg1;
-    obj = (Ifc *)obj->f0(arg2);
-    ((Ifc *)arg0)->f11(obj, arg3);
+    return ((Ifc *)obj->f0(arg2))->f11(arg3);
 }
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_80287F90(void *arg0, void **arg1, s32 arg2, s32 arg3, s32 *src) {
+extern "C" Vec3i_80287F90 fn_80287F90(void **arg1, s32 arg2, s32 arg3, s32 *src) {
     struct Ifc {
         virtual void *f0(s32);
         virtual void f1();
@@ -591,7 +590,21 @@ extern "C" void fn_80287F90(void *arg0, void **arg1, s32 arg2, s32 arg3, s32 *sr
         virtual void f9();
         virtual void f10();
         virtual void f11();
-        virtual void f12(void *, s32, void *);
+    };
+    struct Ifc2 {
+        virtual void d0();
+        virtual void d1();
+        virtual void d2();
+        virtual void d3();
+        virtual void d4();
+        virtual void d5();
+        virtual void d6();
+        virtual void d7();
+        virtual void d8();
+        virtual void d9();
+        virtual void d10();
+        virtual void d11();
+        virtual Vec3i_80287F90 f12(s32, s32 *);
     };
     s32 sp8[3];
     s32 a;
@@ -608,8 +621,7 @@ extern "C" void fn_80287F90(void *arg0, void **arg1, s32 arg2, s32 arg3, s32 *sr
     obj = *(Ifc **)arg1;
     sp8[1] = b;
     sp8[2] = c;
-    obj = (Ifc *)obj->f0(arg2);
-    ((Ifc *)arg0)->f12(obj, arg3, sp8);
+    return ((Ifc2 *)obj->f0(arg2))->f12(arg3, sp8);
 }
 #pragma cplusplus off
 #pragma use_lmw_stmw reset
