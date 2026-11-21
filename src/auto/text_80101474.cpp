@@ -1192,79 +1192,83 @@ void nw4hbm::ut::CharWriter::SetGradationMode(GradationMode mode)
 }
 
 void nw4hbm::ut::CharWriter::SetTextColor(nw4hbm::ut::Color color) {
+    /* Validate this, store the new text color at +0x18, then rebuild the main text
+     * color (+0x8) and the three gradation colors (+0xC, +0x10, +0x14) from the two
+     * CharWriter colors according to the gradation mode at +0x20, scaling every
+     * gradation alpha by the byte at +0x42. */
     unsigned int address = (unsigned int)this;
     unsigned int top = address & 0xFF000000U;
-    int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
+    int validE000 = 1, validD000 = 1, validC100 = 1, validC000 = 1, valid9000 = 1, valid8000 = 1;
     unsigned char *self = (unsigned char *)this;
-    unsigned char *source1, *source2, *source3;
-    unsigned int temp_r30;
-    unsigned int temp_r3;
-    unsigned int temp_r4;
-    int var_r5_2;
-    unsigned char ca, cb, cg, cr;
+    unsigned char *gradSrc1, *gradSrc2, *gradSrc3;
+    unsigned int regionHigh;
+    unsigned int masked9000;
+    unsigned int masked8100;
+    int validRegion;
+    unsigned char a, b, g, r;
     if (top != 0x80000000U && (address & 0xFF800000U) != 0x81000000U)
-        r10 = 0;
-    if (r10 == 0 && (address & 0xF8000000U) != 0x90000000U)
-        r9 = 0;
-    if (r9 == 0 && top != 0xC0000000U)
-        r8 = 0;
-    if (r8 == 0 && (address & 0xFF800000U) != 0xC1000000U)
-        r7 = 0;
-    if (r7 == 0 && (address & 0xF8000000U) != 0xD0000000U)
-        r6 = 0;
-    if (r6 == 0 && (address & 0xFFFFC000U) != 0xE0000000U)
-        r5 = 0;
-    if (r5 == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x185, lbl_8032818C, this);
-    cr = color.r;
-    cg = color.g;
-    cb = color.b;
-    ca = color.a;
-    self[0x18] = cr;
-    self[0x19] = cg;
-    self[0x1A] = cb;
-    self[0x1B] = ca;
-    temp_r30 = top;
-    var_r5_2 = 0;
-    if (temp_r30 == 0x80000000U ||
-        (temp_r4 = address & 0xFF800000U) == 0x81000000U ||
-        (temp_r3 = address & 0xF8000000U) == 0x90000000U ||
-        temp_r30 == 0xC0000000U ||
-        temp_r4 == 0xC1000000U ||
-        temp_r3 == 0xD0000000U ||
+        valid8000 = 0;
+    if (valid8000 == 0 && (address & 0xF8000000U) != 0x90000000U)
+        valid9000 = 0;
+    if (valid9000 == 0 && top != 0xC0000000U)
+        validC000 = 0;
+    if (validC000 == 0 && (address & 0xFF800000U) != 0xC1000000U)
+        validC100 = 0;
+    if (validC100 == 0 && (address & 0xF8000000U) != 0xD0000000U)
+        validD000 = 0;
+    if (validD000 == 0 && (address & 0xFFFFC000U) != 0xE0000000U)
+        validE000 = 0;
+    if (validE000 == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(UT_CHARWRITER_CPP, 0x185, UT_PTR_ERROR_MSG, this);
+    r = color.r;
+    g = color.g;
+    b = color.b;
+    a = color.a;
+    self[0x18] = r;
+    self[0x19] = g;
+    self[0x1A] = b;
+    self[0x1B] = a;
+    regionHigh = top;
+    validRegion = 0;
+    if (regionHigh == 0x80000000U ||
+        (masked8100 = address & 0xFF800000U) == 0x81000000U ||
+        (masked9000 = address & 0xF8000000U) == 0x90000000U ||
+        regionHigh == 0xC0000000U ||
+        masked8100 == 0xC1000000U ||
+        masked9000 == 0xD0000000U ||
         (address & 0xFFFFC000U) == 0xE0000000U) {
-        var_r5_2 = 1;
+        validRegion = 1;
     }
-    if (var_r5_2 == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x4DA, lbl_8032818C, this);
+    if (validRegion == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(UT_CHARWRITER_CPP, 0x4DA, UT_PTR_ERROR_MSG, this);
     self[8] = self[0x18];
     self[9] = self[0x19];
     self[0xA] = self[0x1A];
     self[0xB] = self[0x1B];
     if (*(int *)(self + 0x20) != 1)
-        source1 = self + 0x18;
+        gradSrc1 = self + 0x18;
     else
-        source1 = self + 0x1C;
-    self[0xC] = source1[0];
-    self[0xD] = source1[1];
-    self[0xE] = source1[2];
-    self[0xF] = source1[3];
+        gradSrc1 = self + 0x1C;
+    self[0xC] = gradSrc1[0];
+    self[0xD] = gradSrc1[1];
+    self[0xE] = gradSrc1[2];
+    self[0xF] = gradSrc1[3];
     if (*(int *)(self + 0x20) != 2)
-        source2 = self + 0x18;
+        gradSrc2 = self + 0x18;
     else
-        source2 = self + 0x1C;
-    self[0x10] = source2[0];
-    self[0x11] = source2[1];
-    self[0x12] = source2[2];
-    self[0x13] = source2[3];
+        gradSrc2 = self + 0x1C;
+    self[0x10] = gradSrc2[0];
+    self[0x11] = gradSrc2[1];
+    self[0x12] = gradSrc2[2];
+    self[0x13] = gradSrc2[3];
     if (*(int *)(self + 0x20) == 0)
-        source3 = self + 0x18;
+        gradSrc3 = self + 0x18;
     else
-        source3 = self + 0x1C;
-    self[0x14] = source3[0];
-    self[0x15] = source3[1];
-    self[0x16] = source3[2];
-    self[0x17] = source3[3];
+        gradSrc3 = self + 0x1C;
+    self[0x14] = gradSrc3[0];
+    self[0x15] = gradSrc3[1];
+    self[0x16] = gradSrc3[2];
+    self[0x17] = gradSrc3[3];
     self[0xB] = (self[0xB] * self[0x42]) / 255;
     self[0xF] = (self[0xF] * self[0x42]) / 255;
     self[0x13] = (self[0x13] * self[0x42]) / 255;
@@ -1531,7 +1535,6 @@ float nw4hbm::ut::CharWriter::Print(unsigned short character) {
     unsigned int thisVal = (unsigned int)this;
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
     unsigned int top = thisVal & 0xFF000000U;
-    unsigned int fontAddress;
     unsigned char glyph[0x18];
     float advance;
     float xOffset;
@@ -1542,9 +1545,10 @@ float nw4hbm::ut::CharWriter::Print(unsigned short character) {
     if (r7 == 0 && (thisVal & 0xF8000000U) != 0xD0000000U) r6 = 0;
     if (r6 == 0 && (thisVal & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
     if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(UT_CHARWRITER_CPP, 0x328, base + 0x14, this);
-    fontAddress = *(unsigned int *)((unsigned char *)this + 0x48);
     {
-        int r4 = 1, r5b = 1, r7b = 1, r8b = 1, r9b = 1, r10b = 1;
+        int r4 = 1, r5b = 1;
+        unsigned int fontAddress = *(unsigned int *)((unsigned char *)this + 0x48);
+        int r7b = 1, r8b = 1, r9b = 1, r10b = 1;
         unsigned int top2 = fontAddress & 0xFF000000U;
         if (top2 != 0x80000000U && (fontAddress & 0xFF800000U) != 0x81000000U) r10b = 0;
         if (r10b == 0 && (fontAddress & 0xF8000000U) != 0x90000000U) r9b = 0;
