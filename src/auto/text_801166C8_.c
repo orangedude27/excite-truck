@@ -2639,14 +2639,17 @@ typedef struct DvdStream {
 
 #pragma scheduling on
 #pragma dont_inline on
-void fn_8011A330(void *arg0) {
-    DvdStream *stream = (DvdStream *)arg0;
-    s32 status;
+void fn_8011A330(void *dvdStream) {
+    /* DvdStream_Cancel: abort a stream's in-flight DVD read.  Flag the read callback to
+       ignore the result, DVDCancel the transfer, wait out the BUSY/WAITING drive states,
+       then clear the cancelling and reading flags. */
+    DvdStream *stream = (DvdStream *)dvdStream;
+    s32 driveState;
     *(volatile s32 *)&stream->cancelling = 1;
     DVDCancel((DVDCommandBlock *)&stream->fileInfo);
     do {
-        status = DVDGetDriveStatus();
-    } while (status == 2 || status == 1);
+        driveState = DVDGetDriveStatus();
+    } while (driveState == DVD_STATE_WAITING || driveState == DVD_STATE_BUSY);
     *(volatile s32 *)&stream->cancelling = 0;
     *(volatile s32 *)&stream->reading = 0;
 }
