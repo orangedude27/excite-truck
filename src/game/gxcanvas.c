@@ -98,10 +98,10 @@ void fn_802C2CDC(void *canvas, s32 width, s32 height) {
 }
 
 void fn_802C2CE8(void *arg0, s32 arg1, s32 arg2, s8 arg3) {
-    u8 c82 = 0x82;
-    s32 prod = arg1 * arg2;
+    s32 prod;
     *(s8 *)arg0 = arg3;
-    ((u8 *)arg0)[1] = c82;
+    ((u8 *)arg0)[1] = 0x82;
+    prod = arg1 * arg2;
     *(void **)((u8 *)arg0 + 4) = fn_801284E8(&lbl_8055D000, prod * ((arg3 == 5) ? 4 : 2));
     *(s32 *)((u8 *)arg0 + 8) = arg1;
     *(s32 *)((u8 *)arg0 + 0xC) = arg2;
@@ -172,6 +172,8 @@ void *fn_802C2DD4(s32 resourceId) {
 }
 #pragma scheduling on
 void fn_802C2FC4(void) {
+    /* Drop one reference on a resource handle: tail-call the shared
+       resource-manager release (fn_8012C4D8), leaving the handle in r3. */
     ((void (*)(void))fn_8012C4D8)();
 }
 
@@ -180,10 +182,8 @@ void fn_802C2FC4(void) {
 void fn_802C2FC8(void *arg0, u32 arg1, u32 arg2, s32 arg3, s32 arg4) {
     s32 var_r0;
     s32 var_r10;
-    u32 sign1;
     var_r10 = *(s32 *)((u8 *)arg0 + 8);
-    sign1 = arg1 >> 31;
-    *(s32 *)((u8 *)arg0 + 0x14) = (s32)(arg1 & (sign1 - 1));
+    *(s32 *)((u8 *)arg0 + 0x14) = (s32)(arg1 & ((arg1 >> 31) - 1));
     *(s32 *)((u8 *)arg0 + 0x18) = (s32)(arg2 & ((arg2 >> 31) - 1));
     if (arg3 < var_r10) {
         var_r10 = arg3;
@@ -385,15 +385,13 @@ void fn_802C3424(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
 void fn_802C3478(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     u32 pixel;
     s32 width, height, skip, n;
-    s32 mode;
     u16 *p;
     if (x1 == x0 || y1 == y0) return;
     if (!fn_802C307C((void *)lbl_8055FC00, &x0, &y0, &x1, &y1)) return;
-    mode = *(u8 *)lbl_8055FC00;
+    pixel = color >> 16;
     width = x1 - x0;
     height = y1 - y0;
-    pixel = color >> 16;
-    if (mode == 3) pixel = (u16)color;
+    if (*(u8 *)lbl_8055FC00 == 3) pixel = (u16)color;
     p = (u16 *)fn_802C3044((void *)lbl_8055FC00, x0, y0);
     skip = (*(s32 *)((u8 *)lbl_8055FC00 + 0x10) - width * 2) / 2;
     do {
@@ -912,7 +910,7 @@ void fn_802C4108(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     s32 sp1C, sp18, sp14, sp10, spC, sp8;
     s32 skipSrc, skipDst, i, a, ia;
     u16 *src, *dst;
-    u32 s, d, b, g, r;
+    u32 d, s, b, g, r;
     s32 st0, st1;
     sp8 = arg1;
     spC = arg2;
@@ -940,9 +938,9 @@ void fn_802C4108(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
                     a = (s32)((s >> 8) & 0xF0) >> 4;
                     ia = 15 - a;
                     b = (ia * ((d << 3) & 0xF8) + a * ((s << 4) & 0xF0)) / 15;
-                    r = (ia * ((d >> 7) & 0xF8) + a * ((s >> 4) & 0xF0)) / 15;
-                    g = (ia * ((d >> 2) & 0xF8) + a * (s & 0xF0)) / 15;
-                    *dst = (((s32)(b & 0xFF) >> 3) | (((g >> 3) << 5) & 0x3E0)) | (((s32)(r & 0xFF) >> 3) << 10);
+                    r = (ia * ((d >> 2) & 0xF8) + a * (s & 0xF0)) / 15;
+                    g = (ia * ((d >> 7) & 0xF8) + a * ((s >> 4) & 0xF0)) / 15;
+                    *dst = ((s32)(b & 0xFF) >> 3) | ((((g >> 3) << 5) & 0x3E0) | (((s32)(r & 0xFF) >> 3) << 10));
                     dst++;
                 } while (i > 0);
                 src += skipSrc;
@@ -962,9 +960,9 @@ void fn_802C4108(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
                     a = (s32)((s >> 8) & 0xF0) >> 4;
                     ia = 15 - a;
                     b = (ia * ((d << 3) & 0xF8) + a * ((s << 4) & 0xF0)) / 15;
-                    r = (ia * ((d >> 8) & 0xF8) + a * ((s >> 4) & 0xF0)) / 15;
-                    g = (ia * ((d >> 3) & 0xFC) + a * (s & 0xF0)) / 15;
-                    *dst = ((s32)(b & 0xFF) >> 3) | ((g << 3) & 0x7E0) | ((r << 8) & 0xF800);
+                    r = (ia * ((d >> 3) & 0xFC) + a * (s & 0xF0)) / 15;
+                    g = (ia * ((d >> 8) & 0xF8) + a * ((s >> 4) & 0xF0)) / 15;
+                    *dst = ((s32)(b & 0xFF) >> 3) | (((g << 3) & 0x7E0) | ((r << 8) & 0xF800));
                     dst++;
                 } while (i > 0);
                 src += skipSrc;
@@ -979,48 +977,51 @@ void fn_802C4108(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
 
 #pragma scheduling invalid_target
 void fn_802C4388(s32 src, s32 x, s32 y, s32 x2, s32 y2, s32 dst, s32 dx, s32 dy) {
-    /* Blend source pixels into the two supported 16-bit destination formats. */
     s32 w, h, ty, tx, sy, sx;
     s32 srcskip, dstskip, n;
     u32 *sp;
     u16 *dp;
     sx = x; sy = y; tx = dx; ty = dy; w = x2 - x; h = y2 - y;
-    if (!fn_802C3170((void *)dst, &tx, &ty, &sx, &sy, &w, &h)) return;
-    sp = (u32 *)fn_802C3060((void *)src, sx, sy);
-    dp = (u16 *)fn_802C3044((void *)dst, tx, ty);
-    srcskip = (*(s32 *)((u8 *)src + 0x10) - w * 4) / 4;
-    dstskip = (*(s32 *)((u8 *)dst + 0x10) - w * 2) / 2;
-    if (*(s8 *)dst == 3) {
-        do {
-            n = w;
+    if (fn_802C3170((void *)dst, &tx, &ty, &sx, &sy, &w, &h) != 0) {
+        sp = (u32 *)fn_802C3060((void *)src, sx, sy);
+        dp = (u16 *)fn_802C3044((void *)dst, tx, ty);
+        srcskip = (*(s32 *)((u8 *)src + 0x10) - w * 4) / 4;
+        dstskip = (*(s32 *)((u8 *)dst + 0x10) - w * 2) / 2;
+        if (*(s8 *)dst == 3) {
             do {
-                u32 pixel = *sp++;
-                u16 old = *dp;
-                u32 a = pixel >> 24, inv = 255 - a;
-                s32 b = (u8)((inv * ((old << 3) & 0xf8) + a * (u8)pixel) / 255);
-                s32 g = (u8)((inv * ((old >> 2) & 0xf8) + a * (u8)(pixel >> 8)) / 255);
-                s32 r = (u8)((inv * ((old >> 7) & 0xf8) + a * (u8)(pixel >> 16)) / 255);
-                *dp++ = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
-            } while (--n > 0);
-            sp += srcskip;
-            dp += dstskip;
-        } while (--h > 0);
-    } else if (*(s8 *)dst == 4) {
-        do {
-            n = w;
+                n = w;
+                do {
+                    u32 pixel = *sp++;
+                    u16 old = *dp;
+                    u32 a = pixel >> 24, inv = 255 - a;
+                    s32 b = (u8)((inv * ((old << 3) & 0xf8) + a * (u8)pixel) / 255);
+                    s32 g = (u8)((inv * ((old >> 2) & 0xf8) + a * (u8)(pixel >> 8)) / 255);
+                    s32 r = (u8)((inv * ((old >> 7) & 0xf8) + a * (u8)(pixel >> 16)) / 255);
+                    *dp++ = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
+                } while (--n > 0);
+                sp += srcskip;
+                dp += dstskip;
+            } while (--h > 0);
+            return;
+        } else if (*(s8 *)dst == 4) {
             do {
-                u16 old = *dp;
-                u32 pixel = *sp++;
-                u32 a = pixel >> 24, inv = 255 - a;
-                u32 b = (inv * (u8)(((old << 3) & 0xf8) + 1) + a * (u8)pixel) * 0x10101;
-                u32 g = (inv * (u8)(((old >> 3) & 0xfc) + 1) + a * (u8)(pixel >> 8)) * 0x10101;
-                u32 r = (inv * (u8)(((old >> 8) & 0xf8) + 1) + a * (u8)(pixel >> 16)) * 0x10101;
-                *dp++ = (b >> 27) | ((g >> 21) & 0x7e0) | ((r >> 16) & 0xf800);
-            } while (--n > 0);
-            sp += srcskip;
-            dp += dstskip;
-        } while (--h > 0);
-    } else fn_802E317C(lbl_8034B124);
+                n = w;
+                do {
+                    u16 old = *dp;
+                    u32 pixel = *sp++;
+                    u32 a = pixel >> 24, inv = 255 - a;
+                    u32 b = (inv * (u8)(((old << 3) & 0xf8) + 1) + a * (u8)pixel) * 0x10101;
+                    u32 g = (inv * (u8)(((old >> 3) & 0xfc) + 1) + a * (u8)(pixel >> 8)) * 0x10101;
+                    u32 r = (inv * (u8)(((old >> 8) & 0xf8) + 1) + a * (u8)(pixel >> 16)) * 0x10101;
+                    *dp++ = ((r >> 16) & 0xf800) | ((g >> 21) & 0x7e0) | (b >> 27);
+                } while (--n > 0);
+                sp += srcskip;
+                dp += dstskip;
+            } while (--h > 0);
+            return;
+        }
+        fn_802E317C(lbl_8034B124);
+    }
 }
 #pragma scheduling on
 void fn_802C4610(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
