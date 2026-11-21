@@ -122,10 +122,12 @@ void fn_801AE628(int arg0) {
         int indices[8];
         int max_val;
     } data;
+    register int j;
     register int offset;
     register int i;
     register char *entry;
     register int k;
+    char *e2;
     data.max_val = -1;
     data.count = 0;
     for (i = 0, offset = 0; i < lbl_80435780[0x3C0 / 4]; offset += 0x1C, i++) {
@@ -140,22 +142,17 @@ void fn_801AE628(int arg0) {
             }
         }
     }
-    {
-        char *e2;
-        int off;
-        int j;
-        for (j = 0, off = 0; j < lbl_80435780[0x3C0 / 4]; off += 0x1C, j++) {
-            e2 = (char *)*lbl_8055E624 + off;
-            if (fn_801AE620(e2) != 0) {
-                *(short *)(e2 + 0x10) = fn_801AE610(arg0, *(short *)(e2 + 0xC));
-                *(short *)(e2 + 0x12) = 0;
-                if (*(short *)(e2 + 0x14) != 0) {
+    for (j = 0, i = 0; j < lbl_80435780[0x3C0 / 4]; i += 0x1C, j++) {
+        e2 = (char *)*lbl_8055E624 + i;
+        if (fn_801AE620(e2) != 0) {
+            *(short *)(e2 + 0x10) = fn_801AE610(arg0, *(short *)(e2 + 0xC));
+            *(short *)(e2 + 0x12) = 0;
+            if (*(short *)(e2 + 0x14) != 0) {
+                *(short *)(e2 + 0x12) += 5;
+            }
+            for (k = 0; k < data.count; k++) {
+                if (j == data.indices[k]) {
                     *(short *)(e2 + 0x12) += 5;
-                }
-                for (k = 0; k < data.count; k++) {
-                    if (j == data.indices[k]) {
-                        *(short *)(e2 + 0x12) += 5;
-                    }
                 }
             }
         }
