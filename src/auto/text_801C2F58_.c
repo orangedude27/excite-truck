@@ -581,7 +581,7 @@ extern void fn_801C98F0(void);
 
 #pragma scheduling on
 #define UNK_80437D88_DEFINED
-extern struct Unk_80437D88 {
+static struct Unk_80437D88 {
     char x00[0x9C];
     s32 x9C;
     s32 xA0;
