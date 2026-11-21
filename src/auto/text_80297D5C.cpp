@@ -306,16 +306,18 @@ extern "C" void* fn_802981EC(unsigned int transform, float scale) {
 }
 
 #define gTorchFireEffect lbl_8055F7E0
-extern "C" void fn_802981F8(void* self) {
+extern "C" void fn_802981F8(void* emitter) {
+    /* Spawn a torch-fire effect at emitter using the up-vector {0,1,0} as its base
+     * position, then pass the same vector to the secondary effect emitter. */
     #pragma scheduling invalid_target
-    float z = 0.0f;
-    float o = 1.0f;
-    volatile float sp[3];
-    sp[0] = z;
-    sp[1] = o;
-    sp[2] = z;
-    fn_8028E584(gTorchFireEffect, self, (float *)sp, 0.0f);
-    fn_80288A40(self, (float *)sp);
+    float zero = 0.0f;
+    float one = 1.0f;
+    volatile float basePos[3];
+    basePos[0] = zero;
+    basePos[1] = one;
+    basePos[2] = zero;
+    fn_8028E584(gTorchFireEffect, emitter, (float *)basePos, 0.0f);
+    fn_80288A40(emitter, (float *)basePos);
 }
 #undef gTorchFireEffect
 
