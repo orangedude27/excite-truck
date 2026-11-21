@@ -250,9 +250,10 @@ extern "C" void GetVtxColor__Q36nw4hbm3lyt7PictureCFUl(Color* out, const void* t
 /* Sets one of the picture's four vertex colors, asserting the index is in range. */
 extern "C" void SetVtxColor__Q36nw4hbm3lyt7PictureFUlQ36nw4hbm2ut5Color(
     void* this_, u32 idx, const Color* color) {
-    if (idx >= 4) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80320320, 0x106,
-                                     (const char*)lbl_803203D8);
+    /* Sets one of the picture's four vertex colors, asserting the index is in range. */
+    if (idx >= VERTEXCOLOR_NUM) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)sAssertFile_picture, 0x106,
+                                     (const char*)sAssertIdxVtxColorMax);
     }
 
     ((u8*)this_)[(idx * 4) + 0xD4 + 0] = color->b0;
