@@ -266,21 +266,23 @@ extern "C" void *fn_802974CC(void *arg0) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void *fn_80297654(void *arg0, s32 arg1) {
-    struct VTable_80297654 {
+/* Deleting destructor for a flip-book entry: destroy its owned flip-book object
+ * via virtual destroy(1), clear the pointer, and optionally free the entry. */
+extern "C" void *fn_80297654(void *entry, s32 shouldDelete) {
+    struct FlipBookVTable {
         virtual void destroy(s32);
     };
-    if (arg0 != 0) {
-        void *object = *(void **)((char *)arg0 + 0x10);
-        if (object != 0) {
-            if (object != 0)
-                ((VTable_80297654 *)object)->destroy(1);
-            *(void **)((char *)arg0 + 0x10) = 0;
+    if (entry != 0) {
+        void *flipBook = *(void **)((char *)entry + 0x10);
+        if (flipBook != 0) {
+            if (flipBook != 0)
+                ((FlipBookVTable *)flipBook)->destroy(1);
+            *(void **)((char *)entry + 0x10) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldDelete > 0)
+            fn_80128668(entry);
     }
-    return arg0;
+    return entry;
 }
 #pragma pop
 /* Initialize one entry of the array: clear its held object pointer at +0x10 to null. */
