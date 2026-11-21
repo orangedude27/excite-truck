@@ -43,8 +43,10 @@ s32 fn_802E98C8(void);
 __declspec(section ".sdata") extern char lbl_8055D1A0[];
 __declspec(section ".sdata") extern char lbl_8055D1A8[];
 s32 fn_802E321C(const char *arg0) {
-    const char *prefix = lbl_8055D1A0;
-    return strncmp(arg0, prefix, strlen(prefix)) == 0;
+    s32 prefix = (s32)lbl_8055D1A0;
+    s32 prefixLen = strlen((char *)prefix);
+    s32 result = strncmp(arg0, (char *)prefix, prefixLen);
+    return (unsigned int)__cntlzw(result) >> 5;
 }
 
 /* Returns 1 when the path begins with the SD-card prefix "sd:"
