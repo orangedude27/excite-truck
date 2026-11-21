@@ -42,5 +42,7 @@ void fn_802DB2C0(void) {}
  * this build discards it. */
 void fn_802DB2C4(void) {}
 
+/* No-op blit hook: fn_802C40B8 calls this instead of drawing when the global
+ * canvas's "no draw" flag (bit 2) is set; this build does nothing. */
 void fn_802DB2C8(void) {}
 
