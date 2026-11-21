@@ -180,7 +180,7 @@ void *fn_80216D40(void *arg0, char *arg1, int arg2, int arg3, int arg4, int arg5
         *(int *)(obj + 0x498) = -1;
     }
     {
-        struct Rec80216 *rec = (struct Rec80216 *)fn_8022EE9C(zero);
+        struct Rec80216 *rec = (struct Rec80216 *)fn_8022EE9C(0);
         char *dest = obj;
         int slot = 0;
         int iter;
@@ -192,8 +192,8 @@ void *fn_80216D40(void *arg0, char *arg1, int arg2, int arg3, int arg4, int arg5
             d = (int *)(dest + 0x6DC); CPYREC80216(d, s, sf);
             d = (int *)(dest + 0x718); CPYREC80216(d, s, sf);
             d = (int *)(dest + 0x754); CPYREC80216(d, s, sf);
-            slot += 6;
             d = (int *)(dest + 0x790); CPYREC80216(d, s, sf);
+            slot += 6;
             dest += 0x168;
         }
         {
@@ -740,62 +740,70 @@ void *fn_80217BD8(void *arg0, int key, int value) {
 #pragma scheduling on
 #pragma push
 #pragma processor 750
+/* RealName: UiMenuGroup_SelectNextEntry. Step the menu group's selection (its entry
+   list's selected key, +0x498) one place forward through the sorted entry list at +0x4A0.
+   An entry can be selected while its widget is shown (`shown`, or its off-timer has not run
+   down yet) and is offered only while `enabled`. The first pass walks the list from the first
+   entry forward, noting the index of the selected entry and how many entries are offered;
+   the second walks forward from it, wrapping round, to the next offered entry. That entry
+   becomes the selection only when it really lies after the old one, or when more than three
+   entries are offered (so a nearly-empty list keeps its selection across a wrap). */
 void fn_80217C4C(void *arg0) {
     char *base = (char *)arg0;
-    char *entry;
+    char *cursor;
     int count;
     float threshold;
     int eligible;
-    char *item;
-    int last;
-    int matches;
+    struct UiWidget *widget;
+    int selectedIndex;
+    int selectableCount;
     int i;
     count = *(int *)(base + 0x494);
     if (1 > count) return;
     threshold = lbl_80563490;
-    entry = base;
-    last = -1;
-    matches = 0;
+    cursor = base;
+    selectedIndex = -1;
+    selectableCount = 0;
     i = 0;
-    for (; i < count; entry += 8, i++) {
-        float value;
-        if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) last = i;
-        item = *(char **)(entry + 0x4A4);
+    for (; i < count; cursor += 8, i++) {
+        float entryTimer;
+        if (*(int *)(base + 0x498) == *(int *)(cursor + 0x4A0)) selectedIndex = i;
+        widget = *(struct UiWidget **)(cursor + 0x4A4);
         eligible = 0;
-        if (*(unsigned char *)(item + 0x1A) != 0) goto first_yes;
-        value = *(float *)(item + 0x20);
-        if (value >= threshold) goto first_yes;
+        if (widget->shown != 0) goto first_yes;
+        entryTimer = widget->offTimer;
+        if (entryTimer >= threshold) goto first_yes;
         goto first_check;
     first_yes:
         eligible = 1;
     first_check:
-        if (eligible != 0 && *(unsigned char *)(item + 0x1B) != 0) matches += 1;
+        if (eligible != 0 && widget->enabled != 0) selectableCount += 1;
     }
     {
-        int found = -1;
+        int nextIndex = -1;
         int step;
         threshold = lbl_80563490;
         for (step = 1; step < count; step++) {
-            int idx = (last + step) % count;
-            char *current = base + idx * 8;
-            char *item2;
-            float value;
-            item2 = *(char **)(current + 0x4A4);
+            int scanIndex = (selectedIndex + step) % count;
+            char *scan = base + scanIndex * 8;
+            struct UiWidget *candidate;
+            float candidateTimer;
+            candidate = *(struct UiWidget **)(scan + 0x4A4);
             eligible = 0;
-            if (*(unsigned char *)(item2 + 0x1A) != 0) goto second_yes;
-            value = *(float *)(item2 + 0x20);
-            if (value >= threshold) goto second_yes;
+            if (candidate->shown != 0) goto second_yes;
+            candidateTimer = candidate->offTimer;
+            if (candidateTimer >= threshold) goto second_yes;
             goto second_check;
         second_yes:
             eligible = 1;
         second_check:
-            if (eligible != 0 && *(unsigned char *)(item2 + 0x1B) != 0) {
-                found = idx;
+            if (eligible != 0 && candidate->enabled != 0) {
+                nextIndex = scanIndex;
                 break;
             }
         }
-        if (found >= 0 && (found > last || matches > 3)) {
-            *(int *)(base + 0x498) = *(int *)(base + found * 8 + 0x4A0);
+        if (nextIndex >= 0 && (nextIndex > selectedIndex || selectableCount > 3)) {
+            *(int *)(base + 0x498) = *(int *)(base + nextIndex * 8 + 0x4A0);
         }
     }
 }
@@ -895,9 +903,9 @@ int fn_80217EC0(void *arg0, int arg1, int arg2) {
     register int best;
     register int deltaX;
     register int deltaY;
-    int *item;
     char *scan;
     int keyIndex;
+    char *item;
     int direction;
     int value;
     int score;
@@ -913,27 +921,27 @@ int fn_80217EC0(void *arg0, int arg1, int arg2) {
             last = keyIndex;
     }
     threshold = lbl_80563490;
-    item = *(int **)((char *)arg0 + last * 8 + 0x4A4);
+    item = *(char **)((char *)arg0 + last * 8 + 0x4A4);
     best = 100000;
     bestIndex = last;
-    currentX = item[1];
+    currentX = *(int *)(item + 4);
     entry = (char *)arg0;
-    currentY = item[2];
+    currentY = *(int *)(item + 8);
     candidateIndex = 0;
     goto loop_test;
 loop:
     if (candidateIndex != last) {
-        item = *(int **)(entry + 0x4A4);
+        item = *(char **)(entry + 0x4A4);
         eligible = 0;
-        if (*(unsigned char *)((char *)item + 0x1A) != 0) goto eligible_yes;
-        if (*(float *)((char *)item + 0x20) >= threshold) goto eligible_yes;
+        if (*(unsigned char *)(item + 0x1A) != 0) goto eligible_yes;
+        if (*(float *)(item + 0x20) >= threshold) goto eligible_yes;
         goto eligible_check;
 eligible_yes:
         eligible = 1;
 eligible_check:
-        if (eligible != 0 && *(unsigned char *)((char *)item + 0x1B) != 0) {
-            deltaX = currentX - item[1];
-            deltaY = currentY - item[2];
+        if (eligible != 0 && *(unsigned char *)(item + 0x1B) != 0) {
+            deltaX = currentX - *(int *)(item + 4);
+            deltaY = currentY - *(int *)(item + 8);
             if (arg1 != 0) {
                 direction = arg2 != 0 ? -1 : 1;
                 if (deltaX * direction <= 10) goto next_candidate;
@@ -1454,14 +1462,13 @@ extern "C" void fn_80218B88(void *container, int index, int arg2, int arg3, int 
         }
     }
 }
-#pragma cplusplus off
-#pragma pop
+#pragma opt_lifetimes off
 void fn_80218C14(void *arg0, int arg1, void *arg2) {
     const unsigned int *src = (const unsigned int *)arg2;
-    unsigned int a;
-    unsigned int b;
+    register unsigned int a;
+    register unsigned int b;
     unsigned int *dst = (unsigned int *)((char *)arg0 + arg1 * 0x3C + 0x6A0);
-    unsigned int c;
+    register unsigned int c;
     float z;
     float y;
     float x;
@@ -1498,7 +1505,7 @@ void fn_80218C14(void *arg0, int arg1, void *arg2) {
     ((float *)dst)[13] = y;
     ((float *)dst)[14] = z;
 }
-#pragma cplusplus on
+#pragma opt_lifetimes reset
 /* Registers a child object in the parent's list and activates it if needed. */
 extern "C" void fn_80218C98(void *parent, void **child, int arg2) {
     class Obj {
