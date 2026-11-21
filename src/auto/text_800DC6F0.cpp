@@ -263,12 +263,12 @@ extern "C" void SetVtxColor__Q36nw4hbm3lyt7PictureFUlQ36nw4hbm2ut5Color(
 }
 
 extern "C" u8 GetVtxColorElement__Q36nw4hbm3lyt7PictureCFUl(void* this_,
-                                                            u32 idx) {
-    /* Return one byte of the picture's four vertex colors (16-byte animation-target view at +0xD4),
-       asserting the index is in range. */
-    if (idx >= 0x10) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803204F8, 0xC7,
-                                     (const char*)lbl_803204BC);
+                                                             u32 idx) {
+    /* Return one byte of the picture's four vertex colors (the 16-byte
+     * animation-target view at +0xD4), asserting the index is in range. */
+    if (idx >= ANIMTARGET_VERTEXCOLOR_MAX) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)sAssertFile_animTarget, 0xC7,
+                                     (const char*)sAssertIdxAnimTargetByte);
     }
 
     u32 hi = idx & ~3;
