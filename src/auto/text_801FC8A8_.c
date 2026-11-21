@@ -9,11 +9,12 @@ extern void fn_801EB9FC(void *);
 extern const float lbl_80563028;
 extern char lbl_8033B5C8[];
 #pragma scheduling on
+/* Initialize the track.grf resource by setting its default EB scale to 2.0 and loading "track.grf". */
 void fn_801FC8A8(void) {
-    /* Initialize the track.grf resource by setting its default EB scale to 2.0 and loading "track.grf". */
     fn_801EBEF4(lbl_80563028);
     fn_801EB9FC(lbl_8033B5C8);
 }
+
 void fn_801FC8D8(void) {
     /* Shut the "track.grf" EB resource down: tail-call the shared EB teardown
      * (fn_801EBBB4), which releases the two resource handles lbl_8055AFBC and
