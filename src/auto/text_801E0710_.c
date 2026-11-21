@@ -545,7 +545,6 @@ void fn_801E1038(void **object) {
     #undef sInitialTable
 }
 
-#pragma scheduling 603
 #pragma opt_propagation off
 s32 fn_801E1048(void) {
     Vec_801E1048 v;
