@@ -70,6 +70,8 @@ void fn_80243470(void* child) {
 }
 
 #pragma dont_inline on
+/* MenuTable entry count: number of used entries in a menu-table group, i.e.
+ * the entries up to (but not including) the first one with a null label. */
 s32 fn_80243478(s32 group) {
     #pragma scheduling invalid_target
     MenuTableEntry *entry = MENU_TABLE[group];
