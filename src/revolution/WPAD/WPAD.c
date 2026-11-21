@@ -2406,7 +2406,7 @@ static BOOL IsBusyStream(s32 chan) {
     BOOL enabled;
     union { u32 u; WPADCB* p; } pc;
     WPADCB* p;
-    union { u32 u; u8 b; } rq;
+    WPADCB** table;
     u8 radioQuality;
     u32 devType;
     u8 bufferStatus;
@@ -2416,12 +2416,11 @@ static BOOL IsBusyStream(s32 chan) {
     s8 queueSize;
     u8 linkNumber;
 
-    pc.u = (u32)lbl_8038F4F0[chan];
+    table = lbl_8038F4F0;
+    pc.u = (u32)table[chan];
     p = pc.p;
     enabled = OSDisableInterrupts();
-    rq.u = 0;
-    rq.b = ((u8*)p)[0x80C];
-    radioQuality = rq.b;
+    radioQuality = ((u8*)p)[0x80C];
     devType = p->UNK_0x801;
     bufferStatus = WUDGetBufferStatus();
     {
@@ -2433,7 +2432,7 @@ static BOOL IsBusyStream(s32 chan) {
         OSRestoreInterrupts(enabled2);
     }
     {
-        WPADCB* p2 = lbl_8038F4F0[chan];
+        WPADCB* p2 = table[chan];
         BOOL enabled2;
         s32 status;
         s8 handle;
@@ -2448,7 +2447,7 @@ static BOOL IsBusyStream(s32 chan) {
         }
     }
     {
-        WPADCB* p2 = lbl_8038F4F0[chan];
+        WPADCB* p2 = table[chan];
         BOOL enabled2;
         s32 status;
         s8 handle;
@@ -3883,7 +3882,7 @@ s32 fn_8005FBCC(u8 devHandle) {
     int i;
     pAddr = _WUDGetDevAddr(devHandle);
     for (i = 0; i < WPAD_MAX_CONTROLLERS; i++) {
-        if (memcmp(lbl_80393058 + 0x2BD + i * 0x46, pAddr, 6) != 0) {
+        if (memcmp(lbl_80393058 + (i + 10) * 0x46 + 1, pAddr, 6) != 0) {
             continue;
         }
         if (lbl_8055DC08[i]) {
