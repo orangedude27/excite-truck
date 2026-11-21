@@ -707,6 +707,8 @@ void fn_802379EC(void *arg0) {
     entry->keys = 0;
 }
 
+/* No-op element-initializer callback passed to fn_8002F37C when it allocates
+   arrays of 0x14-byte key records; the caller fills the elements itself. */
 void fn_80237A04(void) {
 }
 
