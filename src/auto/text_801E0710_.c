@@ -81,30 +81,18 @@ static inline void fn_801E1048_xh(const f32 *m, const f32 *src, f32 *dst) {
 }
 
 static inline void fn_801E1048_xi(const f32 *m, const f32 *src, f32 *dst) {
-    f32 x, y, z;
     if (src == dst) {
-        f32 a, b, c, d, e, f, nx, ny, nz;
-        a = m[3];
-        b = m[4];
-        y = src[1];
-        c = m[0];
-        a = y * a;
-        x = src[0];
-        b = y * b;
-        d = m[1];
-        e = m[2];
-        c = x * c;
-        d = x * d;
-        e = x * e;
-        f = y * m[5];
-        z = src[2];
-        nx = z * m[6] + (c + a);
-        ny = z * m[7] + (d + b);
-        nz = z * m[8] + (e + f);
-        dst[0] = nx;
-        dst[1] = ny;
-        dst[2] = nz;
+        f32 x, y, z;
+        f32 m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = m[3]; m11 = m[4]; m12 = m[5];
+        m00 = m[0]; m01 = m[1]; m02 = m[2];
+        m20 = m[6]; m21 = m[7]; m22 = m[8];
+        x = src[0]; y = src[1]; z = src[2];
+        dst[0] = z * m20 + (x * m00 + y * m10);
+        dst[1] = z * m21 + (x * m01 + y * m11);
+        dst[2] = z * m22 + (x * m02 + y * m12);
     } else {
+        f32 x, y, z;
         x = src[0];
         y = src[1];
         z = src[2];
@@ -681,11 +669,11 @@ void fn_801E1384(s32 arg0, s32 arg1) {
                 char *b = (char *)*(volatile s32 *)((char *)desc + 4);
                 *(volatile s32 *)(b + ((y + color * h) * 0x18) + 0xC) = left;
                 record = b + ((y + color * h2) * 0x18);
-                vval = *(f32 *)(record + 0x14);
-                uval = *(f32 *)(record + 0x10);
-                xval = *(f32 *)(record + 0);
-                yval = *(f32 *)(record + 4);
-                zval = *(f32 *)(record + 8);
+                vval = ((Cell_801E0890 *)record)->v;
+                uval = ((Cell_801E0890 *)record)->u;
+                xval = ((Cell_801E0890 *)record)->x;
+                yval = ((Cell_801E0890 *)record)->y;
+                zval = ((Cell_801E0890 *)record)->z;
                 fn_802C8E00(*(s32 *)(record + 0xC), 1, xval, yval, zval, uval, vval);
                 height = *(volatile s32 *)((char *)desc + 0xC);
                 base = (char *)*(volatile s32 *)((char *)desc + 4);
@@ -784,14 +772,13 @@ void fn_801E1688(void) {
     /* Empty stub (returns immediately). */
 }
 
-#pragma push
-#pragma scheduling invalid_target
+#pragma scheduling safe_target
 void fn_801E168C(void *arg0) {
     f32 y;
     f32 x = lbl_80562C78;
     s32 zero = 0;
     s32 minus = -1;
-    y = *(volatile f32 *)&lbl_80562C7C;
+    y = lbl_80562C7C;
     *(s32 *)((u8 *)arg0 + 0x6C) = minus;
     *(s32 *)((u8 *)arg0 + 0x0C) = minus;
     *(u8 *)((u8 *)arg0 + 0x10) = zero;
@@ -821,7 +808,6 @@ void fn_801E168C(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0x5C) = x;
     *(f32 *)((u8 *)arg0 + 0x60) = y;
 }
-#pragma pop
 
 extern void *fn_8017960C(s32);
 extern s32 fn_801E85A4(void);
