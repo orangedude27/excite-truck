@@ -14,30 +14,21 @@ extern void fn_801D0B34(void);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
-#pragma cplusplus on
-struct RegObjC {
-    u32 data;
-    u32 count;
-    u32 capacity;
-    inline void init();
-};
-inline void RegObjC::init() {
-    data = (u32)((u8 *)this + 0xC);
-    capacity = 0x10;
-    count = 0;
-}
-extern "C" void fn_801D0AA0(void) {
+void fn_801D0AA0(void) {
     u8* base = lbl_804386A8;
-    RegObjC *o;
+    register u32* o;
     fn_8000D838(&lbl_8055E8C8);
-    o = (RegObjC*)(base + 0x0C);
-    o->init();
+    o = (u32*)(base + 0x0C);
+    o[0] = (u32)(o + 3);
+    o[2] = 0x10;
+    o[1] = 0;
     __register_global_object(o, (void*)fn_801D0B8C, (void*)((u8*)o - 0x0C));
-    o = (RegObjC*)(base + 0x64);
-    o->init();
+    o = (u32*)(base + 0x64);
+    o[2] = 0x10;
+    o[0] = (u32)(o + 3);
+    o[1] = 0;
     __register_global_object(o, (void*)fn_801D0B34, base + 0x58);
 }
-#pragma cplusplus reset
 #pragma opt_dead_assignments reset
 #pragma opt_propagation reset
 #pragma scheduling on
