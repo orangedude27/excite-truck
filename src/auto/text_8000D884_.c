@@ -36,18 +36,18 @@ static inline void copyName(char *dst, const char *src) {
 }
 
 void fn_8000D884(int arg0, int arg1, int arg2, int arg3, int arg4) {
-    int *entry;
+    char *base;
     int count;
-    int newCount;
+    int *entry;
+    base = (char *)lbl_8034F650;
     count = lbl_8055D464;
-    entry = (int *)(lbl_8034F650 + count * 0x18);
+    entry = (int *)(base + count * 0x18);
     *entry = arg0;
-    newCount = count + 1;
     entry[1] = arg1;
     entry[2] = arg2;
     entry[3] = arg3;
     entry[4] = arg4;
-    lbl_8055D464 = newCount;
+    lbl_8055D464 = count + 1;
     entry[5] = lbl_80558A88;
     lbl_80558A88 += arg3 * 4;
 }
@@ -121,26 +121,29 @@ int fn_8000DA10(void) {
 
 #pragma push
 #pragma optimization_level 2
-void fn_8000DA1C(const char *arg0) {
-    register int n;
-    register char *dst;
-    register char *base;
-    register unsigned char c;
-    base = (char *)lbl_8055D46C;
-    *(int *)(base + *lbl_8055D46C * 0x18 + 4) = 2;
-    base = (char *)lbl_8055D46C;
-    base += (*lbl_8055D46C) * 0x18;
-    dst = base + 8;
-    n = 0x12;
+void fn_8000DA1C(const char *name) {
+    /* Mark the current IdentInfo slot in use (status 2) and copy a name into its 0x12-byte name field. */
+    #define gIdentInfoSlots lbl_8055D46C
+    register int remaining;
+    register char *nameDst;
+    register char *slot;
+    register unsigned char ch;
+    slot = (char *)gIdentInfoSlots;
+    *(int *)(slot + *gIdentInfoSlots * 0x18 + 4) = 2;
+    slot = (char *)gIdentInfoSlots;
+    slot += (*gIdentInfoSlots) * 0x18;
+    nameDst = slot + 8;
+    remaining = 0x12;
     goto copy;
 check:
-    if (--n > 0) goto copy;
-    dst[-1] = 0;
+    if (--remaining > 0) goto copy;
+    nameDst[-1] = 0;
     return;
 copy:
-    c = *arg0++;
-    *dst++ = c;
-    if ((signed char)c != 0) goto check;
+    ch = *name++;
+    *nameDst++ = ch;
+    if ((signed char)ch != 0) goto check;
+    #undef gIdentInfoSlots
 }
 #pragma pop
 void fn_8000DA80(void) {
@@ -284,19 +287,20 @@ extern void fn_801345D8(char *, int, const char *, ...);
 #pragma optimization_level 2
 #pragma scheduling invalid_target
 void fn_8000DD98(void) {
-    register int zero = 0;
-    register int minusOne;
-    register const char *format;
-    register int index;
     register int stringOffset;
     register int fieldOffset;
-    register int outer;
-    register int offset;
+    register int index;
+    register int minusOne;
+    register int zero;
+    register const char *format;
+    int outer;
+    int offset;
     int remaining;
     char *src;
     char *dst;
     char c;
 
+    zero = 0;
     *lbl_8055D46C = zero;
     offset = 0;
     outer = 2;
@@ -339,12 +343,12 @@ done1:
         offset += 0x18;
     } while (--outer != 0);
 
-    zero = 0;
-    minusOne = -1;
-    format = lbl_802FC298;
     index = 0;
     stringOffset = 0;
     fieldOffset = 0;
+    format = lbl_802FC298;
+    zero = 0;
+    minusOne = -1;
     do {
         dst = (char *)lbl_8055D46C + stringOffset + 0x64;
         fn_801345D8(dst, 0x12, format, index + 1);
