@@ -236,6 +236,8 @@ void fn_801D488C(int handle, int state, int updatePosition, float *position) {
     }
 }
 #pragma pop
+/* Forwards to the action-sequence reset-time lookup (called with no sequence,
+ * so it just returns the default value) and discards the result. */
 void fn_801D48F4(void) {
     fn_801D58DC();
 }
