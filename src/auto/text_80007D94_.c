@@ -25,15 +25,8 @@ typedef struct {
     const char *displayName;
 } EventNameEntry;
 
-#define Unk8034EF38 RaceEventTable
-#define Unk802FB70C EventNameEntry
-#define unk_0x1E4 config
-#define unk_0x0 eventId
-#define unk_0x4 name
-#define unk_0x8 displayName
-
-extern Unk8034EF38 lbl_8034EF38;
-extern Unk802FB70C lbl_802FB70C[];
+extern RaceEventTable lbl_8034EF38;   /* global race-event table */
+extern EventNameEntry lbl_802FB70C[]; /* event-id/name table */
 extern const char lbl_802FB77C[];
 extern const char lbl_80558998[1];
 extern const char lbl_805589A0[1];
