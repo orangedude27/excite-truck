@@ -180,6 +180,8 @@ extern "C" void fn_801D4734(void) {
 }
 #pragma pop
 
+/* Thunk: forwards to fn_801D57F0, which invokes fn_801D4FA0 on every action
+ * sequence registered in the global list at lbl_804423A4. */
 void fn_801D47F4(void) {
     fn_801D57F0();
 }
