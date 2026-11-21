@@ -2664,13 +2664,14 @@ extern float fn_801973FC(float *, float *, void *);
 typedef struct { float x, y; } Vec2_801973FC;
 extern float lbl_80562160, lbl_8056222C, lbl_80562268, lbl_8056226C;
 #pragma processor 750
-void fn_8019724C(void *arg0, float *arg1) {
+/* Steer the output 2D vector from the object's XY direction when its speed exceeds the entry threshold: normalize, project, blend and set state flags. */
+void fn_8019724C(void *state, float *out) {
     float projected[2];
     float direction[2];
     float norm;
-    float length;
+    float minLength;
     float scale;
-    float current;
+    float clamped;
     float upper;
     float lower;
     float diff;
@@ -2679,45 +2680,45 @@ void fn_8019724C(void *arg0, float *arg1) {
     int index;
     void *obj;
 
-    if (*(float *)((char *)arg0 + 0x270) > 40.0f / 9.0f) {
-        index = fn_801671AC(*(int *)((char *)arg0 + 0x290));
-        obj = *(void **)((char *)arg0 + 0x294);
+    if (*(float *)((char *)state + 0x270) > 40.0f / 9.0f) {
+        index = fn_801671AC(*(int *)((char *)state + 0x290));
+        obj = *(void **)((char *)state + 0x294);
         direction[0] = *(float *)((char *)obj + 0x70);
         direction[1] = *(float *)((char *)obj + 0x78);
         norm = (float)fn_8002F234(direction[0] * direction[0] + direction[1] * direction[1]);
-        length = lbl_80562148;
-        if (length > norm) {
-            length = lbl_80562148;
+        minLength = lbl_80562148;
+        if (minLength > norm) {
+            minLength = lbl_80562148;
         } else {
-            length = norm;
+            minLength = norm;
         }
-        scale = lbl_80562140 / length;
+        scale = lbl_80562140 / minLength;
         direction[0] = direction[0] * scale;
         direction[1] = direction[1] * scale;
-        if (((int (*)(void *, float *, int, int))fn_8015FBCC)(*(void **)((char *)arg0 + 0x294), projected, 0, index)) {
-            current = *(float *)((char *)arg0 + 0x26C);
-            upper = lbl_8056226C + *(float *)((char *)arg0 + 0x1F8);
-            lower = current - lbl_80562268;
-            current = current < upper ? current : upper;
-            current = current > lower ? current : lower;
-            *(float *)((char *)arg0 + 0x1F8) = current;
-            *(float *)((char *)arg0 + 0x20C) = fn_801973FC(direction, projected, arg1);
+        if (((int (*)(void *, float *, int, int))fn_8015FBCC)(*(void **)((char *)state + 0x294), projected, 0, index)) {
+            clamped = *(float *)((char *)state + 0x26C);
+            upper = lbl_8056226C + *(float *)((char *)state + 0x1F8);
+            lower = clamped - lbl_80562268;
+            clamped = clamped < upper ? clamped : upper;
+            clamped = clamped > lower ? clamped : lower;
+            *(float *)((char *)state + 0x1F8) = clamped;
+            *(float *)((char *)state + 0x20C) = fn_801973FC(direction, projected, out);
             {
                 const float flagThreshold = 40.0f;
-                arg1[0] = projected[0];
-                arg1[1] = projected[1];
-                if (*(float *)((char *)arg0 + 0x270) > flagThreshold) {
-                    *(int *)((char *)arg0 + 0x2D0) |= 0x40;
+                out[0] = projected[0];
+                out[1] = projected[1];
+                if (*(float *)((char *)state + 0x270) > flagThreshold) {
+                    *(int *)((char *)state + 0x2D0) |= 0x40;
                 }
-                *(int *)((char *)arg0 + 0x2D0) |= 0x800;
+                *(int *)((char *)state + 0x2D0) |= 0x800;
             }
         } else {
-            diff = *(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x1F8);
+            diff = *(float *)((char *)state + 0x26C) - *(float *)((char *)state + 0x1F8);
             if (diff < lbl_80562268) {
                 weight = lbl_80562140 - diff / lbl_80562268;
-                factor = *(float *)((char *)arg0 + 0x20C) * weight;
-                arg1[0] = arg1[0] + direction[0] * factor;
-                arg1[1] = arg1[1] + direction[1] * factor;
+                factor = *(float *)((char *)state + 0x20C) * weight;
+                out[0] = out[0] + direction[0] * factor;
+                out[1] = out[1] + direction[1] * factor;
             }
         }
     }
