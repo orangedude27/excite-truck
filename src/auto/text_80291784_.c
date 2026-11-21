@@ -109,6 +109,7 @@ float fn_80291784(float deltaX, float deltaY, float deltaZ, float deltaW) {
 
 #pragma push
 #pragma processor 750
+#pragma scheduling 604
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 extern "C" int fn_802917C0(void *arg0, void *arg1, void *arg2) {
@@ -491,8 +492,12 @@ check:
 void fn_8029227C(void) {
     int old;
     if (lbl_8055F75C == 0) goto done;
-    while (lbl_8055C920) goto body;
-    goto done;
+    switch (lbl_8055C920) {
+    case 0:
+        goto done;
+    default:
+        goto body;
+    }
 body:
     old = fn_802C2C00(0);
     if (*((unsigned char *)(lbl_804B4010 + 0x14))) fn_802D3BB0(*((int *)(lbl_804B4010 + 0x10)));
