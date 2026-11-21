@@ -3628,7 +3628,7 @@ int fn_801D8618(void) {
 }
 
 void fn_801D8620(void) {
-
+    /* No-op: returns immediately without doing anything. */
 }
 
 #pragma cplusplus on
