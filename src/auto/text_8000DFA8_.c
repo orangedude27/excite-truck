@@ -576,15 +576,12 @@ void fn_8000F884(void) {
     } else {
         lbl_8055D4D8 = lbl_805602F4;
     }
-    {
-        s32 (*rec)[3] = (s32 (*)[3])tab;
-        if (count == 1) {
-            (*rec)[1] = 0;
-            (*rec)[2] = 4;
-        } else {
-            (*rec)[1] = 3;
-            (*rec)[2] = 7;
-        }
+    if (count == 1) {
+        tab[1] = 0;
+        tab[2] = 4;
+    } else {
+        tab[1] = 3;
+        tab[2] = 7;
     }
     lbl_80558A98 = -1;
 }
@@ -1113,6 +1110,8 @@ void fn_80010B74(void) {
     fn_802C8BD0(-1);
 }
 
+/* Tail-call wrapper for DrawList_RestoreNormalMode (fn_802C8D74): restores the
+ * normal GX render mode after a batched quad flush (fn_80010BEC). */
 void fn_80010B7C(void) {
     fn_802C8D74();
 }
