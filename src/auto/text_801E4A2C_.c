@@ -100,8 +100,12 @@ s32 fn_801E4BA8(s32 *fontObject) {
 extern s32 fn_802C4C90(s32, s32, s32, s32, s32);
 extern void fn_802C4F58(s32, s32, const char *, s32);
 extern int vsprintf(char *, const char *, va_list);
+/* Default text colours from the UI palette (see fn_802C5028): an offset black
+ * shadow and the near-white foreground used when no bitmap font is supplied. */
 extern s32 lbl_8055FBC0;
+#define COLOR_TEXT_SHADOW lbl_8055FBC0
 extern s32 lbl_8055FBFC;
+#define COLOR_TEXT        lbl_8055FBFC
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
