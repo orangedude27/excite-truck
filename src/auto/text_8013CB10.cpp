@@ -4604,6 +4604,8 @@ extern "C" s32 fn_801442EC(void) { return 0; }
 // Trivial stub in this vtable's callback group; always returns 0 (false).
 extern "C" s32 fn_801442F4(void) { return 0; }
 
+/* No-op virtual callback stub of the zone system: an empty slot (between
+ * fn_801442D8 and fn_80144300) in the ZoneMaster vtable lbl_8032CAF0 group; does nothing. */
 extern "C" void fn_801442FC(void) {
 }
 
