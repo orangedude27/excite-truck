@@ -450,6 +450,8 @@ extern "C" void fn_802E4688(void *file, int delta) {
     ((Dummy_802E4688 *)file)->m6(offset + delta);
 }
 #pragma cplusplus off
+/* FileDisk::flush (vtable slot 0x28) - a DVD file node is read-only and buffered
+ * by the DVD services, so there is nothing for it to flush. */
 void fn_802E46A0(void) {
 }
 
