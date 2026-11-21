@@ -592,15 +592,14 @@ extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3
   GXSetLineWidth((u8) 6, (u32) 0);
   GXBegin((GXPrimitive) 0xB0, (GXVtxFmt) 0, (u16) 5);
   volatile f32 *fifo = (volatile f32 *) 0xCC008000;
-  f32 x0, w, y0, x1, h, y1;
-  x0 = *((f32 *) arg0);
-  w = *((f32 *) arg1);
+  f32 x0 = *((f32 *) arg0);
+  f32 w = *((f32 *) arg1);
   *fifo = x0;
-  y0 = *((f32 *) (((u8 *) arg0) + 4));
-  x1 = (0, x0 + w);
-  h = *((f32 *) (((u8 *) arg1) + 4));
+  f32 y0 = *((f32 *) (((u8 *) arg0) + 4));
+  f32 h = *((f32 *) (((u8 *) arg1) + 4));
+  f32 y1 = y0 + h;
+  register f32 x1 = (0, x0 + w);
   *fifo = y0;
-  y1 = y0 + h;
   *fifo = x1;
   *fifo = y0;
   *fifo = x1;
@@ -789,48 +788,51 @@ extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, s32 arg1) {
 #pragma pop
 #pragma push
 #pragma opt_common_subs off
-extern "C" void* __dt__Q36nw4hbm3lyt14GroupContainerFv(void* arg0, s32 arg1) {
+/* nw4hbm::lyt::GroupContainer destructor: unlink and Destroy each group in the list
+ * (freeing each unowned group's allocation 4 bytes before the object), destruct the
+ * base LinkListImpl, and free the container itself when deleteMode > 0. */
+extern "C" void* __dt__Q36nw4hbm3lyt14GroupContainerFv(void* self, s32 deleteMode) {
     extern const char lbl_8031F6B8[];
     extern const char lbl_8031F694[];
     extern const char lbl_8031F688[];
     extern const char lbl_8031F664[];
-    struct GroupContainerDispatch { virtual void Destroy(s32); };
-    struct GroupContainerObject : GroupContainerDispatch, GroupListNode {};
-    GroupList* list = (GroupList*)arg0;
-    struct { GroupListNode *v; } nodeH;
-    struct { GroupListNode *v; } endH;
-    GroupListNode *&node = nodeH.v;
-    GroupListNode *&end = endH.v;
-    GroupListNode* current;
-    if (arg0 != 0) {
-        nodeH.v = list->first;
-        endH.v = (GroupListNode*)&list->first;
-        while (node != end) {
-            current = node;
+    struct GroupDispatch { virtual void Destroy(s32); };
+    struct GroupObject : GroupDispatch, GroupListNode {};
+    GroupList* container = (GroupList*)self;
+    struct { GroupListNode *v; } cursorH;
+    struct { GroupListNode *v; } sentinelH;
+    GroupListNode *&cursor = cursorH.v;
+    GroupListNode *&sentinel = sentinelH.v;
+    GroupListNode* group;
+    if (self != 0) {
+        cursorH.v = container->first;
+        sentinelH.v = (GroupListNode*)&container->first;
+        while (cursor != sentinel) {
+            group = cursor;
             void* slot;
-            node = node->next;
-            slot = current;
-            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(list, &slot);
-            if (current == 0)
+            cursor = cursor->next;
+            slot = group;
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(container, &slot);
+            if (group == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
-            if (*(u8*)((char*)current + 0x24) == 0) {
-                if (current == 0)
+            if (*(u8*)((char*)group + 0x24) == 0) {
+                if (group == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
-                static_cast<GroupContainerObject&>(*current).Destroy(-1);
-                if (current == 0)
+                static_cast<GroupObject&>(*group).Destroy(-1);
+                if (group == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
-                char* p = (char*)current - 4;
-                if (p == 0)
+                char* block = (char*)group - 4;
+                if (block == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F688, 0x193, lbl_8031F664);
-                MEMFreeToAllocator(lbl_8055DDF0, p);
+                MEMFreeToAllocator(lbl_8055DDF0, block);
             }
         }
-        if (list != 0)
-            __dt__Q46nw4hbm2ut6detail12LinkListImplFv(list, 0);
-        if (arg1 > 0)
-            ((s32 (*)(void*))fn_80128668)(arg0);
+        if (container != 0)
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv(container, 0);
+        if (deleteMode > 0)
+            ((s32 (*)(void*))fn_80128668)(self);
     }
-    return arg0;
+    return self;
 }
 #pragma pop
 
@@ -1045,6 +1047,8 @@ extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3l
 #pragma push
 #pragma dont_inline on
 s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *arg2) {
+    union Msg { const char *p; char a[1]; };
+    const Msg *msgU = (const Msg *)&lbl_8031F728;
     const char *msg = lbl_8031F728;
     void *pane, *currentParent, *lastPane;
     s32 groupCreated;
@@ -1056,14 +1060,14 @@ s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *
     u16 size;
     u32 tag;
     if (lbl_8055DDF0 == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(msg, 0xAB, msg + 0x10);
+        Panic__Q26nw4hbm2dbFPCciPCce(msgU->a, 0xAB, msg + 0x10);
     if (arg1 == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(msg, 0xAC, msg + 0x40);
+        Panic__Q26nw4hbm2dbFPCciPCce(msgU->a, 0xAC, msg + 0x40);
     if (fn_800D5944((void *)arg1, 0x524C5954) == 0)
         return 0;
     size = *(const u16 *)((const u8 *)arg1 + 6);
     if (size != 8)
-        Panic__Q26nw4hbm2dbFPCciPCce(msg, 0xBB, msg + 0x6C,
+        Panic__Q26nw4hbm2dbFPCciPCce(msgU->a, 0xBB, msg + 0x6C,
             (u8)(size >> 8), (u8)size, 0, 8);
     blockSet.a = 0;
     blockSet.b = 0;
@@ -1103,7 +1107,7 @@ s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *
             break;
         case 0x70617331:
             if (lastPane == 0)
-                Panic__Q26nw4hbm2dbFPCciPCce(msg, 0xF9, msg + 0x9C);
+                Panic__Q26nw4hbm2dbFPCciPCce(msgU->a, 0xF9, msg + 0x9C);
             currentParent = lastPane;
             break;
         case 0x70616531:
@@ -1123,7 +1127,7 @@ s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *
                         *(void **)((u8 *)container + 8) = (u8 *)container + 4;
                     }
                 } else {
-                    Warning__Q26nw4hbm2dbFPCciPCce(msg, 0x2F, msg + 0xC8);
+                    Warning__Q26nw4hbm2dbFPCciPCce(msgU->a, 0x2F, msg + 0xC8);
                     container = 0;
                 }
                 *(void **)((u8 *)this + 0x14) = container;
@@ -2255,10 +2259,10 @@ extern "C" s32 fn_800D938C(void* arg0) {
     u32 bits = *(u32*)((u8*)arg0 + 0x4C);
     s32 base = *(s32*)((u8*)arg0 + 0x58);
     u32 high = (bits >> 0x18) & 0xF;
-    u32 mid = (bits >> 0x12) & 0x3C;
     u32 scaled = high * 0x14;
-    u32 top = (bits >> 0x17) & 0x1E0;
+    u32 mid = (bits >> 0x12) & 0x3C;
     u32 low = (bits >> 0x06) & 4;
+    u32 top = (bits >> 0x17) & 0x1E0;
     s32 past = base + (mid + top);
     return past + (scaled + low);
 }
@@ -2373,7 +2377,7 @@ extern "C" char* fn_800D9584(char* material, const char* resourceName) {
 extern "C" void SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(void *arg0, u8 arg1) {
     extern const char lbl_8031F990[];
     extern void memset(void *, int, unsigned int);
-    const char *data = lbl_8031F990;
+    const char * const data = lbl_8031F990;
     u32 capacity = *(u32 *)((u8 *)arg0 + 0x4C) >> 28;
     if ((u32)arg1 > capacity)
         Panic__Q26nw4hbm2dbFPCciPCce(data, 0x38B, data + 0x330);
@@ -2406,8 +2410,9 @@ extern "C" void SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(void *self, unsigne
     if (count != 0) {
         if (p[0x58 / 4] == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(msg + 0, 0x39f, msg + 0x360);
+        u8 *texBuf = (u8 *)p[0x58 / 4];
         u32 raw = p[0x4C / 4];
-        u8 *base = (u8 *)p[0x58 / 4] + ((raw >> 24) & 15) * 20 + ((raw >> 23) & 0x1E0);
+        u8 *base = texBuf + ((raw >> 24) & 15) * 20 + ((raw >> 23) & 0x1E0);
         u32 old = (p[0x50 / 4] >> 20) & 15;
         for (; old < count; old++) {
             u8 *t = base + old * 4;
@@ -3260,12 +3265,12 @@ extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f
     }
 
     if ((void *)texObj == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x3DC, file + 0x42C);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)file + 0), 0x3DC, file + 0x42C);
     }
 
     count = *(u32 *)((u8 *)material + 0x50) >> 28;
     if (index >= count) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x3DD, file + 0x458);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)file + 0), 0x3DD, file + 0x458);
     }
 
     u32 *base = (u32 *)*(void **)((u8 *)material + 0x58);
@@ -3409,16 +3414,15 @@ extern "C" const char lbl_8031FF90[];
 extern "C" const char lbl_80320250[];
 extern "C" const char lbl_8032022C[];
 extern "C" void AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane(void* arg0, void* arg1) {
-    struct PaneMsgBlock { char file[0x10]; char msg1[0x2C]; char msg2[]; };
     register void* iterator = (u8*)arg0 + 0x14;
-    register const PaneMsgBlock* messages = (const PaneMsgBlock*)&lbl_8031FF90[0];
+    register const char (*messages)[0x10] = (const char (*)[0x10])&lbl_8031FF90[0];
     register void* child = arg1;
     register void* parent = arg0;
     void* slot;
     if (child == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(messages->file, 0xFD, messages->msg1);
+        Panic__Q26nw4hbm2dbFPCciPCce(messages[0], 0xFD, (const char*)messages + 0x10);
     if (*(void**)((u8*)child + 0xC) != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(messages->file, 0xFE, messages->msg2);
+        Panic__Q26nw4hbm2dbFPCciPCce(messages[0], 0xFE, (const char*)messages + 0x3C);
     if (child == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320250, 0x233, lbl_8032022C);
     slot = iterator;
