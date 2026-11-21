@@ -57,7 +57,7 @@ void fn_802A0D60(s32 arg0, float *arg1, float *arg2, float *arg3, s32 arg4, floa
             u32 lo, hi;
             lo = __rlwinm(n, 0, 24, 31);
             lo = __rlwimi(lo, n, 8, 16, 23);
-            hi = (n & 0xFF) << 16;
+            hi = __rlwinm(n, 24, 8, 15);
             hi = __rlwimi(hi, c, 24, 0, 7);
             color = lo | hi;
         }
@@ -131,9 +131,12 @@ void *fn_802A1040(void *arg0, void *arg1, void *arg2) {
         float first;
         float threshold;
         float next;
-        first = fn_802A0F7C((char *)arg0 + 8, entry, arg0);
+        union PtrU { u32 i; void *p; } up;
+        up.i = (u32)arg0 + 8;
+        first = fn_802A0F7C(up.p, entry, arg0);
         threshold = lbl_805646F0;
-        next = fn_802A0F7C((void *)((u32)arg0 + 8), *(void **)((char *)entry + 0x14), arg0);
+        up.i = (u32)arg0 + 8;
+        next = fn_802A0F7C(up.p, *(void **)((char *)entry + 0x14), arg0);
         if (threshold <= first) {
             if (next > threshold)
                 break;
@@ -172,7 +175,10 @@ void fn_802A1548(void) {
 #undef sDecalDrawList
 }
 
-void fn_802A1584(void) { fn_802A9428(); }
+void fn_802A1584(void) {
+    /* Tail-call wrapper: run the per-frame entry/timing update in fn_802A9428. */
+    fn_802A9428();
+}
 #pragma scheduling on
 extern void *fn_80156A40(void);
 extern void fn_801352B8(void *);
