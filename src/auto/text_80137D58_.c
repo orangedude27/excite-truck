@@ -278,7 +278,7 @@ void fn_801381B4(void *arg0) {
     unsigned char *r;
     unsigned char *node;
     unsigned char t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11;
-    int i0, i1, mode, found;
+    int i0 = 0, i1, mode, found;
     t0 = v[0]; t3 = v[3]; t1 = v[1]; t2 = v[2]; t4 = v[4]; t7 = v[7]; t5 = v[5]; t6 = v[6];
     v[0] = t3; v[3] = t0; v[1] = t2; v[2] = t1; v[4] = t7; v[7] = t4; v[5] = t6; v[6] = t5;
     t0 = v[8]; t1 = v[0xb]; v[8] = t1; v[0xb] = t0;
@@ -293,7 +293,7 @@ void fn_801381B4(void *arg0) {
     v[0x14] = t1; v[0x17] = t0; v[0x15] = t3; v[0x16] = t2;
     v[0x18] = t5; v[0x1b] = t4; v[0x19] = t7; v[0x1a] = t6;
     v[0x2c] = t9; v[0x2f] = t8; v[0x2d] = t11; v[0x2e] = t10;
-    for (i0 = 0; i0 < *(int *)(base + 0x2c); i0++) {
+    for (; i0 < *(int *)(base + 0x2c); i0++) {
         t0 = p[0]; t1 = p[3]; p[0] = t1; p[3] = t0;
         t0 = p[1]; t1 = p[2]; p[1] = t1; p[2] = t0;
         p += 4;
@@ -324,10 +324,10 @@ void fn_801381B4(void *arg0) {
     }
     node = *(unsigned char **)(base + 0x20);
     if (node != 0) {
-        do {
+        while (node[0x34] == 3) {
             fn_80137D58(node, (int)base);
             node = *(unsigned char **)(node + 0x14);
-        } while (node[0x34] == 3);
+        }
     }
     node = *(unsigned char **)(p - 0xC);
     while (node != 0) {
@@ -351,6 +351,9 @@ struct LineNode {
     float metric;              /* +0x2C */
 };
 
+/* No-op endian-swap wrapper: called on the ideal-line pointer fields at +0x1C
+ * and +0x20 during resource byte-swapping, it only tail-calls the empty
+ * fn_80137F2C, leaving the pointer unchanged. */
 void fn_80138434(void) {
     fn_80137F2C();
 }
