@@ -245,7 +245,9 @@ extern int fn_80237EFC();
  * the trail activate/deactivate/status hooks), empty in this build. */
 void fn_80236950(void) { fn_80237A9C(); }
 
-void fn_80236954(char *arg0, void *arg1) { fn_80237DA0(arg0, arg1); }
+/* Thunk for the trail/anim "activate by name" hook: forwards the name to
+ * fn_80237DA0, which selects the named entry and clears the others in its group. */
+void fn_80236954(char *name, void *unused) { fn_80237DA0(name, unused); }
 
 extern void fn_80237E7C(char *, int);
 void fn_80236958(char *arg0, int unused) { fn_80237E7C(arg0, unused); }
