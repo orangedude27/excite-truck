@@ -193,6 +193,7 @@ s32 fn_802BE7C4(s32 x, s32 y, s32 cellSize) {
     return x + y * cellsPerRow;
 }
 #pragma scheduling on
+/* Intentionally empty no-op; placeholder post-processing hook after the terrain-cell height pass. */
 void fn_802BE7F4(void) {}
 
 #pragma scheduling invalid_target
