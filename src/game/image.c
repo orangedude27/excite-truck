@@ -66,8 +66,8 @@ int fn_802C5220(void* arg0) {
     f32 result;
     if (arg0 != 0) {
         value = ((f32 (*)(void*, int))fn_80235F64)(arg0, 0);
-        if (value < lbl_80564EEC) result = value - lbl_80564EE8;
-        else result = lbl_80564EE8 + value;
+        if (value < ZERO_F) result = value - ROUND_HALF;
+        else result = ROUND_HALF + value;
         return (int)result;
     }
     return 1;
