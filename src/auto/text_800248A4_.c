@@ -28,11 +28,14 @@ int fn_800248A4(unsigned char *str1, unsigned char *str2, int n)
     return 0;
 }
 
+/* errno, set to 0x28 on an invalid stream argument. */
 extern int lbl_8055D680;
+
+/* Return the current file position for a stream, accounting for buffer/undo
+ * state and newlines in text mode. */
 int _ftell(file)
 void *file;
 {
-    /* Return the current file position for a stream, accounting for buffer/undo state and newlines in text mode; sets errno on invalid stream. */
     unsigned int ioState;
     int wideCharAdjust, bufferUsed, position, charsToScan;
     unsigned char *bufferPtr;
