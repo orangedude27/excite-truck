@@ -36,6 +36,8 @@ void fn_802DB2BC(void) {}
 
 void fn_802DB2C0(void) {}
 
+/* No-op trace hook: texture.c forwards a texture slot's +0x28 handle here;
+ * this build discards it. */
 void fn_802DB2C4(void) {}
 
 void fn_802DB2C8(void) {}
