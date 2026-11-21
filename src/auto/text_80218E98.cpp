@@ -6462,6 +6462,8 @@ extern "C" void fn_80223728(void *menu) {
     *(f32 *)((u8 *)menu + 0x414) = lbl_805634A4;
 }
 
+/* No-op hook: the text/menu widget code forwards its object here after
+ * resetting the tracked values at +0x408..+0x41C; this build ignores it. */
 extern "C" void fn_8022375C(void) {
 }
 
