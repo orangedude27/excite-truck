@@ -115,18 +115,20 @@ extern char lbl_8055D500;
 extern int lbl_8055D514;
 #pragma scheduling invalid_target
 void fn_80012794(void) {
-    struct Ctx12794 { void *items[32]; int count; };
-    struct Ctx12794 *base;
-    struct Ctx12794 *p = (struct Ctx12794 *)&lbl_8035183C;
-    int i = 0;
-    base = p;
+    /* Release every registered resource handle (fn_80131818 drops one reference
+     * each), then empty the table, switch the game mode to 0x134 and clear the
+     * resource-ready and selected-object flags. */
+    HandleTable *table;
+    HandleTable *slot = (HandleTable *)&lbl_8035183C;
+    int index = 0;
+    table = slot;
     lbl_80558AD8 = 0x134;
-    while (i < base->count) {
-        fn_80131818((void *)p->items[0]);
-        p = (struct Ctx12794 *)((char *)p + 4);
-        i++;
+    while (index < table->count) {
+        fn_80131818((void *)slot->handles[0]);
+        slot = (HandleTable *)((char *)slot + 4);
+        index++;
     }
-    base->count = 0;
+    table->count = 0;
     lbl_8055D500 = 0;
     lbl_8055D514 = 0;
 }
