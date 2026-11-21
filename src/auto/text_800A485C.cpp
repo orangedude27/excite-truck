@@ -16522,7 +16522,8 @@ loop_228:
                     }
                 } else {
 block_233:
-                    for (var_ctr_12 = var_r11_7; var_ctr_12 != 0; var_ctr_12--) {
+                    var_ctr_12 = var_r11_7;
+                    do {
                         M2C_FIELD(var_r12_12, s32 *, 0) = 0;
                         M2C_FIELD(var_r12_12, s32 *, 0x900) = 0;
                         M2C_FIELD(var_r12_12, s32 *, 0x1200) = 0;
