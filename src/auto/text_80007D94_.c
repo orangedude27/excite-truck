@@ -188,13 +188,12 @@ const char* fn_80007FF0(u32 eventType) {
 }
 
 #pragma scheduling invalid_target
-/* Look up the event id (unk_0x0) for an event identifier string by scanning lbl_802FB70C
- * entries and comparing each entry's name (unk_0x4) to eventName. Returns 0 if not found. */
+/* Find the event id for an identifier string, scanning the event-name table. */
 u32 fn_80008050(const char* eventName) {
     register u32 eventId;
-    register Unk802FB70C* entry;
-    for (entry = lbl_802FB70C; (eventId = entry->unk_0x0) != 0; ++entry) {
-        if (strcmp(entry->unk_0x4, eventName) == 0) return eventId;
+    register EventNameEntry *entry;
+    for (entry = lbl_802FB70C; (eventId = entry->eventId) != 0; ++entry) {
+        if (strcmp(entry->name, eventName) == 0) return eventId;
     }
     fn_802E30C8(lbl_802FB7A4, eventName);
     return 0;
