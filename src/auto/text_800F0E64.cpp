@@ -4893,38 +4893,41 @@ void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10B
 
 #pragma push
 #pragma opt_common_subs off
-extern "C" void detail_InsertPriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *self, void *sound) {
-    struct { u32 v; } nodeHolder;
-    struct { u32 v; } headHolder;
-    nodeHolder.v = *(u32 *)((char *)self + 0x10);
-    headHolder.v = (u32)self + 0x10;
-    u32 &node = nodeHolder.v;
-    u32 &head = headHolder.v;
-    while (node != head) {
-        if (node == 0)
+/* Insert a sound into the player's priority-sorted list: walk from the head
+ * until a sound with a higher priority (clamped to 0..0x7F) is found, then
+ * insert just before it. */
+extern "C" void detail_InsertPriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *player, void *sound) {
+    struct { u32 v; } cursorHolder;
+    struct { u32 v; } sentinelHolder;
+    cursorHolder.v = *(u32 *)((char *)player + 0x10);
+    sentinelHolder.v = (u32)player + 0x10;
+    u32 &cursor = cursorHolder.v;
+    u32 &listEnd = sentinelHolder.v;
+    while (cursor != listEnd) {
+        if (cursor == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326348, 0x23D, (const char *)lbl_80326324);
-        int raw = *(unsigned char *)(node - 0x54) + *(int *)(node - 0x88);
-        int priority;
-        if (raw > 127) {
-            priority = 127;
+        int rawNodePriority = *(unsigned char *)(cursor - 0x54) + *(int *)(cursor - 0x88);
+        int nodePriority;
+        if (rawNodePriority > 127) {
+            nodePriority = 127;
         } else {
-            priority = raw < 0 ? 0 : raw;
+            nodePriority = rawNodePriority < 0 ? 0 : rawNodePriority;
         }
-        int rawSound = *(unsigned char *)((char *)sound + 0x74) + *(int *)((char *)sound + 0x40);
+        int rawPriority = *(unsigned char *)((char *)sound + 0x74) + *(int *)((char *)sound + 0x40);
         int soundPriority;
-        if (rawSound > 127) {
+        if (rawPriority > 127) {
             soundPriority = 127;
         } else {
-            soundPriority = rawSound < 0 ? 0 : rawSound;
+            soundPriority = rawPriority < 0 ? 0 : rawPriority;
         }
-        if (soundPriority < priority)
+        if (soundPriority < nodePriority)
             break;
-        node = *(u32 *)node;
+        cursor = *(u32 *)cursor;
     }
     if (sound == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326288, 0x233, (const char *)lbl_80326264);
-    void *iterator = (void *)node;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)self + 0xC, &iterator, (char *)sound + 0xC8);
+    void *insertPos = (void *)cursor;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)player + 0xC, &insertPos, (char *)sound + 0xC8);
 }
 #pragma pop
 extern "C" void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *soundPlayer, void *basicSound) {
