@@ -643,7 +643,10 @@ void fn_800060E0(u8 isMode2, u8 isMode1) {
 #pragma push
 #pragma processor 750
 #pragma cplusplus on
-extern "C" void fn_80006110(void *arg0) {
+/* Per-player car-impaired check: if the player's value is inside the session's
+ * [0, window) range, query the arena master and stamp the player's status,
+ * showing "Your car is impaired."; otherwise drive the overlay's v7 method. */
+extern "C" void fn_80006110(void *playerData) {
     class VTable {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -658,44 +661,44 @@ extern "C" void fn_80006110(void *arg0) {
     };
     extern void fn_8001071C(void *, s32);
     extern u8 lbl_802FB69C[];
-    f32 threshold;
-    bool flag;
-    s32 *settings;
-    s32 index;
-    f32 f2;
-    threshold = 0.0f;
-    settings = (s32 *)lbl_8055D350;
-    index = settings[7];
-    f2 = *(f32 *)((s8 *)arg0 + index * 4 + 4);
-    flag = f2 >= threshold && (*(f32 *)(settings + 4) - f2) > threshold;
-    if (!flag) {
+    f32 zero;
+    bool inWindow;
+    s32 *gameState;
+    s32 playerIndex;
+    f32 playerValue;
+    zero = 0.0f;
+    gameState = (s32 *)lbl_8055D350;
+    playerIndex = gameState[7];
+    playerValue = *(f32 *)((s8 *)playerData + playerIndex * 4 + 4);
+    inWindow = playerValue >= zero && (*(f32 *)(gameState + 4) - playerValue) > zero;
+    if (!inWindow) {
         if (fn_80005564() == 0) {
-            void **entries = (void **)lbl_8034EEB8;
-            s32 i2 = ((s32 *)lbl_8055D350)[7];
-            void *obj = entries[i2 * 4 + 7];
-            ((VTable *)obj)->v7();
+            void **arenaObjects = (void **)lbl_8034EEB8;
+            s32 playerIdx = ((s32 *)lbl_8055D350)[7];
+            void *overlay = arenaObjects[playerIdx * 4 + 7];
+            ((VTable *)overlay)->v7();
         }
     } else {
         if (fn_80005564() != 0) {
-            VTable *obj = (VTable *)fn_801B83A0();
-            s32 result = obj->v23();
-            if (result != 0) {
-                VTable *obj2 = (VTable *)fn_801B83A0();
-                result = obj2->v21(((s32 *)lbl_8055D350)[7]);
-                s32 normalized = (result == 0);
-                *(s8 *)((s8 *)arg0 + 0x14) = normalized;
+            VTable *master = (VTable *)fn_801B83A0();
+            s32 queryResult = master->v23();
+            if (queryResult != 0) {
+                VTable *master2 = (VTable *)fn_801B83A0();
+                queryResult = master2->v21(((s32 *)lbl_8055D350)[7]);
+                s32 denied = (queryResult == 0);
+                *(s8 *)((s8 *)playerData + 0x14) = denied;
                 return;
             }
         }
-        *(u8 *)((u8 *)arg0 + 0x14) = 1;
-        s32 *settings3 = (s32 *)lbl_8055D350;
-        void *object = *(void **)((u8 *)settings3 + 0x30);
-        s32 index3 = settings3[7];
-        u8 *p = 0;
-        if (*(u8 *)((u8 *)object + 0x28) != 0)
-            p = lbl_802FB69C;
-        if (p != 0)
-            fn_8001071C(p, index3);
+        *(u8 *)((u8 *)playerData + 0x14) = 1;
+        s32 *gameState2 = (s32 *)lbl_8055D350;
+        void *hudObject = *(void **)((u8 *)gameState2 + 0x30);
+        s32 playerIdx2 = gameState2[7];
+        u8 *message = 0;
+        if (*(u8 *)((u8 *)hudObject + 0x28) != 0)
+            message = lbl_802FB69C;
+        if (message != 0)
+            fn_8001071C(message, playerIdx2);
     }
 }
 #pragma cplusplus reset
