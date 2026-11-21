@@ -947,6 +947,8 @@ void *fn_8028BB68(void *emitter, s32 count, f32 life) {
 }
 #pragma cplusplus off
 void fn_8028BC18(void) {
+    /* Per-element constructor used by fn_8028BB68 when it builds a spark pool;
+     * sparks need no per-object construction, so this does nothing. */
 }
 
 /* Destructor for the 0x1C-byte texture/pool object: releases its texture handle,
