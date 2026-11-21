@@ -3416,6 +3416,7 @@ extern f64 lbl_805611F0;
 extern f32 lbl_805611F8;
 extern f64 lbl_80561200;
 void *fn_8011B584(u32 arg0, s32 arg1, s32 arg2, s32 arg_sp0) {
+#pragma opt_propagation off
     u32 *sp18;
     u32 *sp14;
     u32 *sp10;
@@ -3656,48 +3657,53 @@ void fn_8011BCAC(void **head, void *node) {
     *(void **)((u8 *)cur + 4) = node;
 }
 
-void fn_8011BD20(s32 arg0) {
-    struct Node {
-        struct Node *next;
-        struct Node *orderedNext;
+/* Periodic tick driver for the work-manager object: bump the tick counter at
+ * +0x34, and while the manager's state at +0x0 is 1, run every enabled listener
+ * in the +0x30 list.  Listeners that return nonzero are collected into a pending
+ * list sorted by their result, and their finish callbacks are then invoked in
+ * that order with the new tick count.  A mid-pass state change aborts the run. */
+void fn_8011BD20(s32 manager) {
+    struct TickListener {
+        struct TickListener *next;
+        struct TickListener *orderedNext;
         s32 result;
         s32 enabled;
         s32 unk_0x10;
-        s32 (*run)(struct Node *, s32);
-        void (*finish)(struct Node *, s32);
+        s32 (*run)(struct TickListener *, s32);
+        void (*finish)(struct TickListener *, s32);
     };
-    struct Node *node;
-    struct Node *pending;
-    volatile s32 *count;
+    struct TickListener *listener;
+    struct TickListener *pending;
+    volatile s32 *tickCount;
     volatile s32 *state;
-    s32 newCount;
+    s32 nextTickCount;
     s32 stateValue;
 
-    count = (volatile s32 *)(arg0 + 0x34);
-    state = (volatile s32 *)arg0;
-    newCount = *count;
+    tickCount = (volatile s32 *)(manager + 0x34);
+    state = (volatile s32 *)manager;
+    nextTickCount = *tickCount;
     stateValue = *state;
-    newCount = newCount + 1;
-    *count = newCount;
+    nextTickCount = nextTickCount + 1;
+    *tickCount = nextTickCount;
     if (stateValue == 1) {
-        node = *(struct Node **)(arg0 + 0x30);
+        listener = *(struct TickListener **)(manager + 0x30);
         pending = 0;
-        while (node != 0) {
-            if (*(s32 *)arg0 != 1) {
+        while (listener != 0) {
+            if (*(s32 *)manager != 1) {
                 return;
             }
-            if (node->enabled == 1) {
-                node->result = node->run(node, *count);
-                if (node->result != 0) {
-                    fn_8011BCAC((void **)&pending, node);
+            if (listener->enabled == 1) {
+                listener->result = listener->run(listener, *tickCount);
+                if (listener->result != 0) {
+                    fn_8011BCAC((void **)&pending, listener);
                 }
             }
-            node = node->next;
+            listener = listener->next;
         }
-        node = pending;
-        while (node != 0) {
-            node->finish(node, *count);
-            node = node->orderedNext;
+        listener = pending;
+        while (listener != 0) {
+            listener->finish(listener, *tickCount);
+            listener = listener->orderedNext;
         }
     }
 }
