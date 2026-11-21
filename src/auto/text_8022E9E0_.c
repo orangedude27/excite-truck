@@ -103,6 +103,7 @@ extern "C" void fn_8022EA58(void *context) {
     }
 }
 #pragma cplusplus reset
+#pragma push
 #pragma scheduling invalid_target
 int fn_8022EAB8(int unused0, void *unused1) {
     void *value;
