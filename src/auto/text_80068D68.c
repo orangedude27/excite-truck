@@ -4655,7 +4655,7 @@ void uusb_issue_intr_read(void) {
     s32 status;
 
     for (;;) {
-        buf = GKI_getpoolbuf(lbl_803BD1E0.pool_id);
+        buf = GKI_getpoolbuf(lbl_803BD1E0.intr_pool_id);
         if (buf != 0) {
             break;
         }
@@ -4669,7 +4669,7 @@ void uusb_issue_intr_read(void) {
     *(u16 *)(buf + 2) = 0;
     *(u16 *)(buf + 4) = dataBuf - (buf + 8);
 
-    status = IUSB_ReadIntrMsgAsync(lbl_803BD1E0.fd, lbl_803BD1E0.endpoint,
+    status = IUSB_ReadIntrMsgAsync(lbl_803BD1E0.fd, lbl_803BD1E0.intr_endpoint,
                                    fn_8006D8D0((u32)buf) - 0x28 - *(u16 *)(buf + 4),
                                    dataBuf, (void (*)(void))uusb_ReadIntrDataCB, buf);
     if (status != 0) {
