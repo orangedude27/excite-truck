@@ -172,7 +172,7 @@ extern "C" void fn_80278A28(void* elem) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* file2, s32 name) {
     LayoutStrings* base = (LayoutStrings*)lbl_80347690;
