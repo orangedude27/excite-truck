@@ -793,25 +793,27 @@ extern "C" int lbl_80349AB0[];
 extern "C" void fn_8028E584(void*, void*);
 extern "C" s32 fn_80287B14(void*);
 #pragma scheduling invalid_target
-extern "C" void fn_802A2A38(void* arg0, const void* arg1) {
-    f32 max = 1.0f;
-    s32 index = *(const s32*)((const char*)arg1 + 0x28);
-    f32* value = (f32*)((char*)arg0 + (index << 4) + 0x20);
-    f32 limit = max - lbl_80558DC4;
-    f32 v = *value;
-    int shouldCall = v > limit;
-    if (shouldCall) {
+extern "C" void fn_802A2A38(void* particleSystem, const void* emitter) {
+    /* Advance an emitter's looping 0..1 phase, firing the emission callback and
+     * wrapping the phase when it reaches the end of the cycle. */
+    f32 wrapPoint = 1.0f;
+    s32 trackIndex = *(const s32*)((const char*)emitter + 0x28);
+    f32* phase = (f32*)((char*)particleSystem + (trackIndex << 4) + 0x20);
+    f32 wrapThreshold = wrapPoint - lbl_80558DC4;
+    f32 currentPhase = *phase;
+    int shouldEmit = currentPhase > wrapThreshold;
+    if (shouldEmit) {
         ((void (*)(void*, void*, void*))fn_8028E584)(
-            *(void**)((char*)arg0 + 0xC), (void*)arg1, (char*)arg1 + 0xC);
+            *(void**)((char*)particleSystem + 0xC), (void*)emitter, (char*)emitter + 0xC);
     }
-    index = *(const s32*)((const char*)arg1 + 0x28);
-    value = (f32*)((char*)arg0 + (index << 4) + 0x20);
-    f32 limit2 = 1.0f - lbl_80558DC4;
-    f32 v2 = *value;
-    if (v2 > limit2) {
-        *value = v2 - 1.0f;
+    trackIndex = *(const s32*)((const char*)emitter + 0x28);
+    phase = (f32*)((char*)particleSystem + (trackIndex << 4) + 0x20);
+    f32 wrapThreshold2 = 1.0f - lbl_80558DC4;
+    f32 phase2 = *phase;
+    if (phase2 > wrapThreshold2) {
+        *phase = phase2 - 1.0f;
     }
-    *value += 0.1f;
+    *phase += 0.1f;
 }
 extern "C" void fn_802A2AE8(void* arg0, s32 arg1) {
     /* Builds effect/config params in a stack buffer (0xA8 bytes), initializes via fn_8028E61C,
