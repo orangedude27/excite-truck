@@ -32,10 +32,10 @@ typedef struct MemStreamPtr {
    buffer size at +4 and allocate the backing buffer (tagged "MemStream") at +0.
    Returns NULL on allocation failure. */
 void *fn_8012F31C(s32 bufferSize) {
-    void *stream = fn_801284F8(8, lbl_8032AFB8);
+    MemStream *stream = fn_801284F8(8, lbl_8032AFB8);
     if (stream != 0) {
-        ((s32 *)stream)[1] = bufferSize;
-        ((s32 *)stream)[0] = fn_8012850C(bufferSize, (s32 *)lbl_8032AFD4);
+        stream->size = bufferSize;
+        stream->buffer = (u8 *)fn_8012850C(bufferSize, (s32 *)lbl_8032AFD4);
     }
     return stream;
 }
