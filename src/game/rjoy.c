@@ -56,22 +56,32 @@ void *fn_802E77C0(int statusCode) {
 
   #pragma push
  #pragma scheduling invalid_target
-float fn_802E7824(float arg0, float arg1) {
-    float c = lbl_80565164;
-    float t = lbl_80565160 / (lbl_80565160 - arg1);
-    if (arg0 >= c) {
-        float r = lbl_80565168;
-        float v = t * (arg0 - arg1);
-        if (r < v) { r = r; } else { r = v; }
-        if (r > lbl_80565164) { r = r; } else { r = lbl_80565164; }
-        return r;
+/* Dead-zone response: rescale an axis value past its dead zone into +/-1.5,
+ * saturating a non-negative value to [0.0, 1.5] and a negative one to [-1.5, 0.0]. */
+float fn_802E7824(float value, float deadZone) {
+#define RJOY_ZERO       lbl_80565164 /* 0.0f: clamp midpoint and input threshold */
+#define RJOY_ONE        lbl_80565160 /* 1.0f: scale numerator */
+#define RJOY_MAX        lbl_80565168 /* 1.5f: positive output ceiling */
+#define RJOY_MIN        lbl_8056516C /* -1.5f: negative output floor */
+    float threshold = RJOY_ZERO;
+    float scale = RJOY_ONE / (RJOY_ONE - deadZone);
+    if (value >= threshold) {
+        float result = RJOY_MAX;
+        float scaled = scale * (value - deadZone);
+        if (result < scaled) { result = result; } else { result = scaled; }
+        if (result > RJOY_ZERO) { result = result; } else { result = RJOY_ZERO; }
+        return result;
     } else {
-        float v = t * (arg0 + arg1);
-        if (c < v) { c = c; } else { c = v; }
-        if (c > lbl_8056516C) { c = c; } else { c = lbl_8056516C; }
-        c = c;
-        return c;
+        float scaled = scale * (value + deadZone);
+        if (threshold < scaled) { threshold = threshold; } else { threshold = scaled; }
+        if (threshold > RJOY_MIN) { threshold = threshold; } else { threshold = RJOY_MIN; }
+        threshold = threshold;
+        return threshold;
     }
+#undef RJOY_MIN
+#undef RJOY_MAX
+#undef RJOY_ONE
+#undef RJOY_ZERO
 }
 #pragma pop
 
