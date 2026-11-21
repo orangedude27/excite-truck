@@ -20,6 +20,8 @@ void *fn_80265CE0(void *object, int shouldDelete) {
  * subobject pointer; this build leaves it empty. */
 void fn_80265D38(void) {}
 
+/* No-op teardown hook called with the object from its destructor in
+ * text_801A520C_ (just after the vtable is reinstalled); this build leaves it empty. */
 void fn_80265D3C(void) {}
 
 void fn_80265D40(void) {}
