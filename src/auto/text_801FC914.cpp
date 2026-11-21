@@ -302,8 +302,11 @@ extern "C" void fn_801FCB40(void* arg0, float farg0) {
     pos.x = q[0] + dir.x * s;
     pos.y = q[1] + dir.y * s;
     pos.z = q[2] + dir.z * s;
+    
     Vec d;
-    d.x = q1[0] - pos.x; d.y = q1[1] - pos.y; d.z = q1[2] - pos.z;
+    d.x = q1[0] - pos.x;
+    d.y = q1[1] - pos.y;
+    d.z = q1[2] - pos.z;
     if (PSVECDotProduct(&dir, &d) <= lbl_80563034) {
         count = *(int*)(a + 0x3C) + 1;
         *(int*)(a + 0x3C) = count;
@@ -317,7 +320,9 @@ extern "C" void fn_801FCB40(void* arg0, float farg0) {
         item = base + (count << 5);
         q0 = q1;
         q1 = (float*)(item + 0x30);
-        dir.x = q1[0] - q0[0]; dir.y = q1[1] - q0[1]; dir.z = q1[2] - q0[2];
+        dir.x = q1[0] - q0[0];
+        dir.y = q1[1] - q0[1];
+        dir.z = q1[2] - q0[2];
         mag = PSVECMag(&dir);
         inv = lbl_80563030 / mag;
         float k = inv * PSVECMag(&d);
@@ -331,7 +336,9 @@ extern "C" void fn_801FCB40(void* arg0, float farg0) {
         item = *(char**)(a + 4) + (count << 5);
         float* q2 = (float*)(item + 0x10);
         Vec v;
-        v.x = q2[0] - q1[0]; v.y = q2[1] - q1[1]; v.z = q2[2] - q1[2];
+        v.x = q2[0] - q1[0];
+        v.y = q2[1] - q1[1];
+        v.z = q2[2] - q1[2];
         float t = inv * ((float (*)(const void *, const void *))PSQUATMultiply)(a + 0x30, q0);
         float* p = (float*)(a + 0xC);
         Vec up;
@@ -346,12 +353,16 @@ extern "C" void fn_801FCB40(void* arg0, float farg0) {
         float ny = dir.y + t * (v.y - dir.y);
         float nx = dir.x + t * (v.x - dir.x);
         Vec n;
-        n.x = nx; n.y = ny; n.z = nz;
+        n.x = nx;
+        n.y = ny;
+        n.z = nz;
         *(Vec*)(a + 0x24) = n;
         PSVECNormalize((Vec*)(a + 0x24), (Vec*)(a + 0x24));
     } else {
         float* p = (float*)(a + 0xC);
-        p[0] = q0[3]; p[1] = q0[4]; p[2] = q0[5];
+        p[0] = q0[3];
+        p[1] = q0[4];
+        p[2] = q0[5];
         *(float*)(a + 0x24) = dir.x * inv;
         *(float*)(a + 0x28) = dir.y * inv;
         *(float*)(a + 0x2C) = dir.z * inv;
@@ -1425,7 +1436,7 @@ extern "C" void fn_801FEFB4(void* object) {
 /* No-op virtual method (vtable lbl_8033B730, slot 0x1C) of the drone-holder class
  * that owns the DroneManager entry point fn_801FEEC0; the sibling class at
  * vtable lbl_8033B700 leaves its slot 0x1C (fn_801FF110) empty as well. */
-extern "C" void fn_801FEFBC(void) {
+extern "C" void fn_801FEFBC(void *self) {
 
 }
 
