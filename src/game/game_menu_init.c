@@ -477,7 +477,6 @@ extern "C" u32 fn_80004FCC(GameVirtualObject* object, u32 argument, u32 fallback
     return result;
 }
 #pragma cplusplus reset
-#pragma opt_propagation off
 void fn_80005364(void) {
     u32 var1, var2, var3, var4, var5;
     fn_8000D838(&lbl_8055D320);
