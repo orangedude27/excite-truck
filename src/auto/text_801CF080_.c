@@ -346,7 +346,7 @@ static inline void Mesh_Swap16(volatile void *p) {
     t = b[0]; b[0] = b[1]; b[1] = t;
 }
 
-static inline void Mesh_SwapVec(Vec *v) {
+static inline void Mesh_SwapVec(volatile Vec *v) {
     Mesh_Swap32(&v->x);
     Mesh_Swap32(&v->y);
     Mesh_Swap32(&v->z);
