@@ -658,16 +658,16 @@ void fn_802D81C4(void *arg0, int arg1) {
 #pragma unroll reset
 extern char lbl_8034C5AC[];
 void fn_802D86BC(void *arg0, int arg1) {
-    void **data = *(void ***)((char *)arg0 + 0x2c);
     int width = *(int *)((char *)arg0 + 0x24);
     int height = *(int *)((char *)arg0 + 0x28);
+    void **data = *(void ***)((char *)arg0 + 0x2c);
     unsigned char *image = (unsigned char *)data[1];
     unsigned char *palette = (unsigned char *)data[0];
     unsigned char *copy;
     unsigned char c;
-    int n = arg1 != 0 ? 128 : 128;
+    int n = 128;
     int p;
-    int x, y, offset;
+    int x, y;
     for (p = 0; p < n; p++) {
         c = palette[0]; palette[0] = palette[3]; palette[3] = c;
         c = palette[1]; palette[1] = palette[2]; palette[2] = c;
@@ -678,9 +678,9 @@ void fn_802D86BC(void *arg0, int arg1) {
     fn_801282EC(0x20);
     copy = (unsigned char *)fn_8012850C((void *)(width * height), lbl_8034C5AC);
     memcpy(copy, image, width * height);
-    for (y = 0, offset = 0; y < height; y++, offset += width) {
+    for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
-            image[((y / 4) * (width / 8) + x / 8) * 32 + (y % 4) * 8 + x % 8] = copy[offset + x];
+            image[((y / 4) * (width / 8) + x / 8) * 32 + (y % 4) * 8 + x % 8] = copy[y * width + x];
         }
     }
     fn_80128670(copy);
@@ -1083,6 +1083,8 @@ void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
 }
 #pragma pop
 
+#pragma push
+#pragma scheduling on
 #pragma opt_common_subs off
 void fn_802D9628(register void *arg0, register int arg1, register int arg2, register int arg3) {
     #pragma opt_common_subs off
