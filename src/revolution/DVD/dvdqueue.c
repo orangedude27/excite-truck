@@ -13,9 +13,8 @@ typedef struct DVDWaitingQueue {
 
 static DVDWaitingQueue WaitingQueue[DVD_PRIO_MAX];
 
-
+/* Reset each priority's waiting-queue head to an empty, self-linked list. */
 void __DVDClearWaitingQueue(void) {
-    /* Reset each priority's waiting-queue head to an empty, self-linked list. */
     u32 prio;
 
     for (prio = 0; prio < DVD_PRIO_MAX; prio++) {
