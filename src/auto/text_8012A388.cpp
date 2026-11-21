@@ -426,34 +426,39 @@ extern int __cntlzw(unsigned int);
 #pragma push
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
-extern "C" s32 fn_8012AA60(void *arg0, s32 arg1, s32 arg2) {
-    void *p;
-    s32 count;
-    void *base;
-    s32 expected;
-    s32 flag;
-    s32 i;
+/* Validate a sound resource's table of contents: CRC the entry array and
+ * compare it with the stored checksum, then for each 0x44-byte entry byte-swap
+ * it in place and check that its data lies within avail and that its own CRC
+ * passes.  A bad table checksum is reported and the function returns 0; a fully
+ * valid table returns 1. */
+extern "C" s32 fn_8012AA60(void *resource, s32 avail, s32 unusedOffset) {
+    void *entry;
+    s32 entryCount;
+    void *tableBase;
+    s32 expectedCrc;
+    s32 valid;
+    s32 entryIndex;
 
-    count = *(s32 *)((char *)arg0 + 0x88);
-    p = *(void **)((char *)arg0 + 0x60);
-    expected = *(s32 *)((char *)arg0 + 0x94);
-    base = p;
-    flag = (u32)__cntlzw((u32)(fn_80132E7C(p, count * 0x44) - expected)) >> 5;
-    if (flag != 0) {
-        for (i = 0; i < count; i++) {
-            fn_8012A388(p);
-            if (*(s32 *)((char *)p + 0x2C) + *(s32 *)((char *)p + 0x28) <= arg1) {
-                if (fn_8012A470(arg0, i, p, base) == 0) {
-                    flag = 0;
+    entryCount = *(s32 *)((char *)resource + 0x88);
+    entry = *(void **)((char *)resource + 0x60);
+    expectedCrc = *(s32 *)((char *)resource + 0x94);
+    tableBase = entry;
+    valid = (u32)__cntlzw((u32)(fn_80132E7C(entry, entryCount * 0x44) - expectedCrc)) >> 5;
+    if (valid != 0) {
+        for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+            fn_8012A388(entry);
+            if (*(s32 *)((char *)entry + 0x2C) + *(s32 *)((char *)entry + 0x28) <= avail) {
+                if (fn_8012A470(resource, entryIndex, entry, tableBase) == 0) {
+                    valid = 0;
                     break;
                 }
             }
-            p = (char *)p + 0x44;
+            entry = (char *)entry + 0x44;
         }
     } else {
-        fn_802E30C8(lbl_8032A7E8, arg0);
+        fn_802E30C8(lbl_8032A7E8, resource);
     }
-    return flag;
+    return valid;
 }
 #pragma pop
 /* Read a 0x34-byte RST0 header from fileHandle into headerBuffer, byte-swap
