@@ -409,6 +409,7 @@ static inline u8 *btm_bda_to_acl_inl(u8 *bda) {
     return 0;
 }
 extern uusb_cb_t lbl_803BD1E0;
+#define gUusbControl lbl_803BD1E0
 extern char lbl_803142C8[];
 extern char lbl_803BE240[];
 __declspec(section ".sdata") extern char lbl_80558FF8[];
