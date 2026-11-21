@@ -15,7 +15,7 @@ extern int fn_802E4A1C(unsigned char);
 extern float lbl_80562470;
 extern char lbl_8055A850;
 extern void *fn_801A9234(const char *);
-extern int lbl_80435050[];
+extern int lbl_80435050[]; /* 4 controller configs of 0x64 bytes, reset by the caller's flag */
 typedef struct Rec_801A7A5C { float f[8]; unsigned char b[0x20]; int w[8]; unsigned char c; } Rec_801A7A5C;
 #define CB4_801A7A5C(n) dst->b[n] = src->b[n]; dst->b[n+1] = src->b[n+1]; dst->b[n+2] = src->b[n+2]; dst->b[n+3] = src->b[n+3];
 typedef struct Rec2_801A7A5C {
@@ -641,10 +641,10 @@ float fn_801A85E8(void *arg0) {
         float value1;
         unsigned char flags[3];
     };
-    struct Row *output;
-    struct Config *config;
-    char *base;
-    struct Row *row;
+    register struct Row *output;
+    register struct Config *config;
+    register char *base;
+    register struct Row *row;
     struct Row *source;
     volatile char *sourceBase;
     struct Config *active;
@@ -666,7 +666,7 @@ float fn_801A85E8(void *arg0) {
     output = (struct Row *)((char *)lbl_80435050 + index * 0x64);
     sourceBase = (volatile char *)base + 0x190;
     source = (struct Row *)(sourceBase + index * 0x64);
-    row->floats[0] = *(volatile float *)((char *)base + 0x190 + index * 0x64);
+    row->floats[0] = *(volatile float *)(sourceBase + index * 0x64);
     copyF0 = source->floats[1];
     copyF1 = source->floats[2];
     output->floats[1] = copyF0;
@@ -1195,8 +1195,8 @@ int fn_801A902C(void) {
 void fn_801A9050(void *arg0, int arg1) {
     volatile int zeros[8];
     const char **table = (const char **)lbl_802F9588;
-    int zero = 0;
-    int index = arg1 * 8;
+    register int zero = 0;
+    register int index = arg1 * 8;
     const char *name = *(const char **)((char *)table + index);
     zeros[0] = zero; zeros[1] = zero; zeros[2] = zero; zeros[3] = zero;
     zeros[4] = zero; zeros[5] = zero; zeros[6] = zero; zeros[7] = zero;
