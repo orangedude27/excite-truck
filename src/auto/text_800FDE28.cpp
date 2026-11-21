@@ -653,19 +653,30 @@ extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32 volumeDb) {
 #pragma push
 #pragma scheduling invalid_target
 extern "C" f32 CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
-    f32 v;
-    f32 t;
+#define kPanMin lbl_805610E0
+#define kPanBias lbl_805610C8
+#define kHalf lbl_805610D0
+#define kTableScale lbl_805610E4
+#define gPanRatioTable lbl_802F6124
+    f32 clampedPan;
+    f32 shiftedPan;
 
+    /* Clamp the pan to [-1, 1] and look up its left/right gain ratio in the pan table. */
     if (pan > 1.0f) {
-        v = 1.0f;
-    } else if (pan < lbl_805610E0) {
-        v = lbl_805610E0;
+        clampedPan = 1.0f;
+    } else if (pan < kPanMin) {
+        clampedPan = kPanMin;
     } else {
-        v = pan;
+        clampedPan = pan;
     }
 
-    t = lbl_805610C8 + v;
-    return lbl_802F6124[(s32)(lbl_805610D0 + lbl_805610E4 * (t * lbl_805610D0))];
+    shiftedPan = kPanBias + clampedPan;
+    return gPanRatioTable[(s32)(kHalf + kTableScale * (shiftedPan * kHalf))];
+#undef gPanRatioTable
+#undef kTableScale
+#undef kHalf
+#undef kPanBias
+#undef kPanMin
 }
 #pragma pop
 extern "C" f32 CalcSurroundPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
