@@ -13040,90 +13040,95 @@ extern "C" s32 fn_800B8FE4(s32 buffer, s32 path, s32 length, s32 offset, s32 *ou
 #define SLOT_FLAGS    0xe4
 #define SLOT_BUSY     2
 #define SLOT_HANDLE   0x58
-extern "C" s32 fn_800B90A8(s32 arg0)
+/* NAND prfile2: under the slot-table semaphore, clear the error and busy flag
+ * of the slot for fileId, then reset its NAND handle (get length, close, reopen
+ * for write, seek to end). On a NAND error, store it in the slot's error field.
+ * Returns 0 on success, -20 for a bad handle / missing slot, -22 if no slot.
+ * (lbl_/fn_ names kept: rename_symbol unavailable for game symbols.) */
+extern "C" s32 fn_800B90A8(s32 fileId)
 {
   s32 result;
-  s32 tmp;
+  s32 nandResult;
   u32 length;
   u16 i;
   u32 off;
-  u32 id;
-  u8 *entry;
-  entry = 0;
-  fn_800B8004(lbl_8055DD30);
-  if (arg0 == 0)
+  u32 slotId;
+  u8 *slot;
+  slot = 0;
+  VFSemaphoreWait(NandSemaphore);
+  if (fileId == 0)
   {
-    fn_800B8048(lbl_8055DD30);
+    VFSemaphoreSignal(NandSemaphore);
     return -20;
   }
-  for (i = 0; i < 0x17; i++)
+  for (i = 0; i < SLOT_COUNT; i++)
   {
-    off = i * 0xf0;
-    id = *((u32 *) (((u8 *) lbl_80405D58) + off));
-    if (id == ((u32) arg0))
+    off = i * SLOT_STRIDE;
+    slotId = *((u32 *) (((u8 *) NandSlots) + off));
+    if (slotId == ((u32) fileId))
     {
-      *((u32 *) ((((u8 *) lbl_80405D58) + off) + 0xec)) = 0;
+      *((u32 *) ((((u8 *) NandSlots) + off) + SLOT_ERROR)) = 0;
       break;
     }
   }
 
-  result = (i == 0x17) ? (-0x16) : (0);
+  result = (i == SLOT_COUNT) ? (-0x16) : (0);
   if (result == 0)
   {
-    for (i = 0; i < 0x17; i++)
+    for (i = 0; i < SLOT_COUNT; i++)
     {
-      NandFileSlot *slot = &((NandFileSlot *) lbl_80405D58)[i];
-      if (slot->id == ((u32) arg0))
+      NandFileSlot *fileSlot = &((NandFileSlot *) NandSlots)[i];
+      if (fileSlot->id == ((u32) fileId))
       {
-        entry = (u8 *) slot;
+        slot = (u8 *) fileSlot;
         break;
       }
     }
 
-    if ((i == 0x17) ? (-0x16) : (0))
+    if ((i == SLOT_COUNT) ? (-0x16) : (0))
     {
-      fn_800B8048(lbl_8055DD30);
+      VFSemaphoreSignal(NandSemaphore);
       return -20;
     }
-    *((u32 *) (entry + 0xE4)) &= ~2;
-    tmp = NANDGetLengthAsync(entry + 0x58, &length);
-    if (tmp != 0)
+    *((u32 *) (slot + SLOT_FLAGS)) &= ~SLOT_BUSY;
+    nandResult = NANDGetLengthAsync(slot + SLOT_HANDLE, &length);
+    if (nandResult != 0)
     {
-      result = tmp;
+      result = nandResult;
       goto check;
     }
-    tmp = NANDClose(entry + 0x58);
-    if (tmp < 0)
+    nandResult = NANDClose(slot + SLOT_HANDLE);
+    if (nandResult < 0)
     {
-      result = tmp;
+      result = nandResult;
       goto check;
     }
-    tmp = NANDOpen(entry + 4, entry + 0x58, 3);
-    if (tmp < 0)
+    nandResult = NANDOpen(slot + 4, slot + SLOT_HANDLE, 3);
+    if (nandResult < 0)
     {
-      result = tmp;
+      result = nandResult;
       goto check;
     }
-    tmp = NANDSeek(entry + 0x58, length, 0);
-    result = tmp & (tmp >> 31);
+    nandResult = NANDSeek(slot + SLOT_HANDLE, length, 0);
+    result = nandResult & (nandResult >> 31);
   check:
     if (result < 0)
     {
-      for (i = 0; i < 0x17; i++)
+      for (i = 0; i < SLOT_COUNT; i++)
       {
-        off = i * 0xf0;
-        id = *((u32 *) (((u8 *) lbl_80405D58) + off));
-        if (id == ((u32) arg0))
+        off = i * SLOT_STRIDE;
+        slotId = *((u32 *) (((u8 *) NandSlots) + off));
+        if (slotId == ((u32) fileId))
         {
-          *((u32 *) ((((u8 *) lbl_80405D58) + off) + 0xec)) = result;
+          *((u32 *) ((((u8 *) NandSlots) + off) + SLOT_ERROR)) = result;
           break;
         }
       }
-      fn_800B8048(lbl_8055DD30);
+      VFSemaphoreSignal(NandSemaphore);
       return result;
     }
   }
-  fn_800B8048(lbl_8055DD30);
+  VFSemaphoreSignal(NandSemaphore);
   return result;
 }
 #undef NandSlots
