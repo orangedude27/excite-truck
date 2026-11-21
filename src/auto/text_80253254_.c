@@ -2208,5 +2208,8 @@ void fn_802571F8(void *obj) { *(u8 *)((u8 *)obj + 0x18) = 1; }
 /* Clear the boolean flag at offset 0x18 of the object to false (pairs with fn_802571F8). */
 void fn_80257204(void *obj) { *(u8 *)((u8 *)obj + 0x18) = 0; }
 
+/* No-op default callback, paired with the boolean-flag getter/setters at
+ * 0x802571F0 (reports false), 0x802571F8 (set true) and 0x80257204 (set false);
+ * intentionally does nothing in this build. */
 void fn_80257210(void) {}
 
