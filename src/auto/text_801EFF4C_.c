@@ -639,10 +639,10 @@ void fn_802C6CF8(int);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 int fn_801F0CC4(int unused) {
+    int *entry;
     int i, j, k;
     int offset;
     int base;
-    int *entry;
     i = 0;
     offset = 0;
     while (i < lbl_8055EBF0) {
@@ -1082,26 +1082,29 @@ int fn_801F196C(int index, int base) {
 extern char lbl_8033A5B0[];
 #pragma push
 #pragma scheduling invalid_target
-int fn_801F1978(int arg) {
-    int result = -1;
-    int value = arg & ~0x10;
-    switch (value) {
+/* RealName: WheelMod_StateToModelMask. Convert a wheel's draw state into the mask
+   passed to the model manager: strip the 0x10 fast-remap flag, then map states
+   0/1/2 to 0x101/0x102/0x200; an unknown state is reported and yields -1. */
+int fn_801F1978(int wheelState) {
+    int modelMask = -1;
+    int state = wheelState & ~0x10;
+    switch (state) {
     case 0:
-        result = 1;
-        result |= 0x100;
+        modelMask = 1;
+        modelMask |= 0x100;
         break;
     case 1:
-        result = 2;
-        result |= 0x100;
+        modelMask = 2;
+        modelMask |= 0x100;
         break;
     case 2:
-        result = 0x200;
+        modelMask = 0x200;
         break;
     default:
-        fn_802E317C(lbl_8033A5B0, value);
+        fn_802E317C(lbl_8033A5B0, state);
         break;
     }
-    return result;
+    return modelMask;
 }
 #pragma pop
 short fn_801EAC3C(void);
@@ -1161,7 +1164,7 @@ void fn_801F1B1C(void *arg0, void *arg1) {
     short v16;
     int v12, v11, v10, v9, v8, v7, v6;
     register int v1, v2, v3, v4, v5;
-    fn_801EABA8();
+    ((void (*)(void *, void *))fn_801EABA8)(arg0, arg1);
     flag = *(volatile unsigned char *)((char *)arg1 + 0x40);
     v1 = *(volatile int *)((char *)arg1 + 0x00);
     v2 = *(volatile int *)((char *)arg1 + 0x04);
