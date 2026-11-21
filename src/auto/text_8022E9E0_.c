@@ -103,9 +103,12 @@ extern "C" void fn_8022EA58(void *context) {
     }
 }
 #pragma cplusplus reset
-int fn_8022EAB8(void) {
+#pragma scheduling invalid_target
+int fn_8022EAB8(int unused0, void *unused1) {
     void *value;
     int ret;
+    (void)unused0;
+    (void)unused1;
     if (lbl_8055EFFC == 0) {
         value = fn_801284F8(0x20, lbl_80340290);
         if (value != 0) {
