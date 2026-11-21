@@ -14,6 +14,8 @@ int fn_802E7774(int (*callback)(void)) {
     return 0;
 }
 
+/* No-op subsystem startup hook, paired with the shutdown hook fn_802E77AC.
+ * Called just after LCEnable during kernel boot; intentionally empty here. */
 void fn_802E77A8(void) {
 }
 
