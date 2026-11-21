@@ -123,6 +123,10 @@ void fn_800125D4(const char *message) {
 }
 
 extern void fn_800123EC(float);
+/* Tail-call thunk: forwards the per-frame fade fraction (arriving in f1) straight to
+ * the fade renderer (fn_800123EC), which clamps 255*opacity into an alpha and draws a
+ * screen-filling quad. The void-function cast avoids argument setup so the call emits
+ * a bare tail branch instead of a call/return pair. */
 void fn_80012624(void) {
     ((void(*)(void))fn_800123EC)();
 }
