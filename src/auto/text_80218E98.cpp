@@ -5821,13 +5821,15 @@ extern "C" void fn_802225E8(void *obj, s32 gridX, s32 gridY) {
                 *(s32 *)((u8 *)obj + 8));
 }
 
-extern "C" void fn_8022264C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6) {
-    f32 scale = 1.0f;
-    *arg3 = arg1;
-    *arg4 = arg2;
-    s32 value = (s32)fn_8023293C(*(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8), scale);
-    *arg5 = arg1 + value;
-    *arg6 = arg1 + fn_80232B70(*(s32 *)((u8 *)arg0 + 4));
+extern "C" void fn_8022264C(void *item, s32 gridX, s32 gridY, s32 *outLeft, s32 *outTop, s32 *outRight, s32 *outBottom) {
+    /* gText item measure method: report the item's screen bounds from its grid
+     * position, the measured text width and the font's size. */
+    f32 textScale = 1.0f;
+    *outLeft = gridX;
+    *outTop = gridY;
+    s32 textWidth = (s32)fn_8023293C(*(s32 *)((u8 *)item + 4), *(s32 *)((u8 *)item + 8), textScale);
+    *outRight = gridX + textWidth;
+    *outBottom = gridX + fn_80232B70(*(s32 *)((u8 *)item + 4));
 }
 #pragma scheduling on
 extern "C" void *fn_802226D4(void *self, s32 resourceId) {
