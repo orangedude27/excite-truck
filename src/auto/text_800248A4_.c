@@ -4,10 +4,10 @@
 /* Global locale state: +0x38 holds the active locale, whose +0x10 is the
  * character collation table used by the comparison below. */
 extern unsigned char lbl_802FE850[];
+/* Locale-aware strncmp: compare up to n bytes of two strings through the active
+ * locale's collation table, returning -1, 0, or 1. */
 int fn_800248A4(unsigned char *str1, unsigned char *str2, int n)
 {
-    /* Locale-aware strncmp: compare up to n bytes of two strings through the active
-       locale's collation table, returning -1, 0, or 1. */
     register int locale;
     register int c1;
     register int c2;
