@@ -382,6 +382,9 @@ extern void fn_802BB674(int, int);
 extern void fn_802C10CC(int);
 extern int lbl_8055F974;
 extern int lbl_8055F978;
+/* Tail-call wrapper for fn_802BDC3C: runs the EB ("Simple Model") resource
+ * fallback used by fn_801EC11C when the resource context was never loaded,
+ * loading the "TLST" data and building the per-entry state. */
 void fn_802AEAA8(void) { fn_802BDC3C(); }
 
 #pragma dont_inline fn_802AEAAC
