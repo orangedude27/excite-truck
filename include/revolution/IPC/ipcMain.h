@@ -20,7 +20,7 @@ u32 IPCReadReg(s32 index);
 void IPCWriteReg(s32 index, u32 value);
 void* IPCGetBufferHi(void);
 void* IPCGetBufferLo(void);
-void IPCSetBufferLo(void* lo);
+void IPCSetBufferLo(void* bufferLo);
 
 #ifdef __cplusplus
 }
