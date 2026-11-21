@@ -30,6 +30,12 @@ typedef struct {
     u32 count;
 } FanHeader;
 
+typedef struct {
+    u8 flag;
+    u32 length;
+    u32 size;
+} FanFileOut;
+
 extern void *fn_8012850C(s32, void *);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -74,13 +80,13 @@ s32 fn_802BE378(s32 cellSize) {
 
 #pragma scheduling invalid_target
 void fn_802BE38C(void) {
+    u8 *p;
     void *buf;
     u32 params[3];
     u32 name;
     u32 *data;
     u32 index;
     u32 n;
-    u8 *p;
     u32 i;
     s32 j;
 
@@ -190,14 +196,15 @@ void fn_802BE7F4(void) {}
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802BE7F8(void) {
+    s32 *p;
     fn_802BE694();
     lbl_804C07E4.ptr = &lbl_8055FAC8;
-    lbl_804C07E4.flags = 0x200;
-    lbl_804C07E4.flags |= 0x84;
-    lbl_804C07E4.value = 0;
-    lbl_804C07E4.flags |= 0x800000;
+    p = (s32 *)&lbl_804C07E4;
+    p[2] = 0x200;
+    p[2] |= 0x84;
+    p[1] = 0;
+    p[2] |= 0x800000;
 }
-#pragma scheduling on
 void fn_802BE840(void) { fn_802BE72C(); }
 
 /* Returns a pointer to the cell entry for (x, y) in the grid for the given cell size, or a fallback entry if out of range. */
@@ -329,8 +336,6 @@ void fn_802BEB70(void)
   f64 new_var2;
   f32 offset;
   f32 scale;
-  f64 heightCast;
-  f64 roundedCast;
   if (lbl_8055FACC != 0)
   {
     return;
@@ -369,12 +374,10 @@ void fn_802BEB70(void)
     }
     new_var2 = lbl_80564D60;
     new_var = 14;
-    heightCast = height;
-    *((s32 *) (((char *) cell) + 8)) = ((*((s32 *) (((char *) cell) + 8))) & 0xFF803FFF) | (((s32) heightCast) << new_var);
+    *((s32 *) (((char *) cell) + 8)) = ((*((s32 *) (((char *) cell) + 8))) & 0xFF803FFF) | (((s32) height) << new_var);
     rounded = ((f32) ceil(new_var2)) - subtract_value;
     raw = *((s32 *) (((char *) cell) + 8));
-    roundedCast = rounded;
-    *((s32 *) (((char *) cell) + 8)) = (raw & 0xFFFFC3FF) | (((s32) roundedCast) << 10);
+    *((s32 *) (((char *) cell) + 8)) = (raw & 0xFFFFC3FF) | (((s32) rounded) << 10);
   }
 
   y = (s16) (y + step);
