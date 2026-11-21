@@ -326,9 +326,9 @@ outer_body:
                 if (record != (void *)fn_80012870(
                         *(int *)((char *)record + 4), archiveIndex)) {
                     archiveIndex++;
-                } else {
-                    goto archive_done;
+                    continue;
                 }
+                goto archive_done;
             }
             archiveIndex = -1;
 archive_done:
@@ -820,7 +820,7 @@ extern char lbl_804989AC[];
 #pragma dont_inline fn_8024B178
 extern s32 fn_8024B178(s32);
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma cplusplus on
 s32 fn_8024B178(s32 arg0) {
     class Obj {
@@ -854,7 +854,6 @@ s32 fn_8024B178(s32 arg0) {
 mismatch:
     return comparison;
 }
-#pragma cplusplus off
 #pragma pop
 /* RealName: CompareArchiveEntryByName (qsort comparator: flagged entries first, then case-insensitive name) */
 int fn_8024B214(char *arg0, char *arg1) {
@@ -1234,8 +1233,9 @@ void fn_8024B8DC(void *arg0) {
     }
 }
 
-void fn_8024B970(void *arg0) {
-    fn_8024B6AC(arg0);
+/* Tail-call the selected-entry cache refresh, forwarding the sound-list object pointer unchanged. */
+void fn_8024B970(void *soundList) {
+    fn_8024B6AC(soundList);
 }
 
 s32 fn_8024B974(void *selector) {
