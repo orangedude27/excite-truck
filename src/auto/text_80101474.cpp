@@ -865,7 +865,8 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
     }
     temp_r3_2 = (SetupGXFontType *)(*(void ***)((signed char*)(arg0) + (0x48)));
     if (temp_r3_2 != 0) {
-        switch (temp_r3_2->GetType()) {
+        type = temp_r3_2->GetType();
+        switch (type) {
         case 0:
         case 1:
             if ((signed char) lbl_8055DE90 == 0) {
