@@ -493,13 +493,13 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
     void *temp_r31;
     void *temp_r30;
     void *temp_r29;
-    f32 underflow;
+    volatile f32 underflow;
     void *temp_r28;
     f32 temp_f0;
     f32 temp_f0_2;
     f32 temp_f0_3;
     f32 temp_f0_4;
-    f32 temp_f0_5;
+    volatile f32 temp_f0_5;
     f32 temp_f0_6;
     f32 temp_f0_7;
     f32 temp_f10;
@@ -510,7 +510,7 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
     f32 temp_f1_5;
     f32 temp_f1_6;
     f32 temp_f1_7;
-    f32 temp_f27;
+    volatile f32 temp_f27;
     f32 temp_f27_2;
     f32 temp_f27_3;
     f32 temp_f28;
@@ -538,10 +538,10 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
     f32 temp_f4_3;
     f32 temp_f4_4;
     f32 temp_f5;
-    f32 temp_f5_2;
+    volatile f32 temp_f5_2;
     f32 temp_f7;
     f32 temp_f7_2;
-    f32 temp_f8;
+    volatile f32 temp_f8;
     f32 temp_f8_2;
     f32 temp_f9;
     f32 temp_f9_2;
