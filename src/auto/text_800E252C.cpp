@@ -1309,22 +1309,25 @@ extern "C" void fn_800E4064(void *manager) {
     OSRestoreInterrupts(level);
 }
 #pragma use_lmw_stmw off
-extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
-    struct { unsigned int irq; } irqHolder;
-    unsigned int &level = irqHolder.irq;
-    struct { void *head; } cursor;
-    void *&iterator = cursor.head;
-    struct { void *end; } sentinelHolder;
-    void *&end = sentinelHolder.end;
+/* Advance every voice on this AxManager's voice list once with interrupts off:
+ * each LinkList node sits 0x1A8 into an AxVoice, the list sentinel is at +0x18
+ * of the manager, and fn_800E4764 applies one voice's pending AX updates. */
+extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *manager) {
+    struct { unsigned int irq; } irqState;
+    unsigned int &level = irqState.irq;
+    struct { void *node; } cursor;
+    void *&link = cursor.node;
+    struct { void *sentinel; } sentinelHolder;
+    void *&end = sentinelHolder.sentinel;
     level = OSDisableInterrupts();
-    iterator = *(void **)((char *)this_ + 0x18);
-    end = (char *)this_ + 0x18;
-    while (iterator != end) {
-        void *node = iterator;
-        iterator = *(void **)iterator;
-        if (node == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
-        fn_800E4764((char *)node - 0x1A8);
+    link = *(void **)((char *)manager + 0x18);
+    end = (char *)manager + 0x18;
+    while (link != end) {
+        void *voiceNode = link;
+        link = *(void **)link;
+        if (voiceNode == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803220C4, 0x23D, (const char *)lbl_803220A0);
+        fn_800E4764((char *)voiceNode - 0x1A8);
     }
     OSRestoreInterrupts(level);
 }
