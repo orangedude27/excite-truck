@@ -311,24 +311,20 @@ typedef void *(*F2)(void *, void *);
 #pragma cplusplus on
 struct F52Obj {
     virtual void s0();
-    virtual void s1();
-    virtual void s2();
     virtual int vC();
     virtual void s4();
     virtual void *v14(int);
 };
-#pragma cplusplus off
-#pragma push
+#pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-int fn_801F52BC(void *arg0, int arg1, int arg2, int arg3) {
+extern "C" int fn_801F52BC(void *arg0, int arg1, int arg2, int arg3) {
     int result = 0;
-    if (((int (*)(void *))(*(void ***)arg0)[3])(arg0) != 0) {
-        result = ((int (*)(int, int, int))fn_8012F9E8)(arg2, arg3, ((int (*)(void *, int))(*(void ***)arg0)[5])(arg0, arg1));
+    if (((F52Obj *)arg0)->vC()) {
+        result = ((int (*)(int, int, int))fn_8012F9E8)(arg2, arg3, (int)((F52Obj *)arg0)->v14(arg1));
     }
     return result;
 }
-
 #pragma cplusplus on
 #pragma scheduling on
 extern "C" void fn_801F5344(void *out, void *arg1, void *arg2) {
