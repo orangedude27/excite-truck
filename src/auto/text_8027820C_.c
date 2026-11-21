@@ -152,12 +152,12 @@ extern double lbl_805640B0;
 #pragma scheduling invalid_target
 extern char lbl_8055C660;
 void fn_80278360(void *arg0) {
-    unsigned char state;
+    register unsigned char state;
+    register int now;
     int count;
     int *base;
     volatile int *dst;
     volatile int *src;
-    int now;
     int age;
     int old;
     int first;
@@ -196,8 +196,7 @@ record:
     now = *(volatile int *)&lbl_8055E3C4;
     first = src[0x16];
     second = src[0x17];
-    count = count + 1;
-    *(volatile int *)&lbl_8055F5B4 = count;
+    *(volatile int *)&lbl_8055F5B4 = count + 1;
     dst = (volatile int *)((char *)base + offset);
     value = src[0x18];
     dst[13] = now;
@@ -280,7 +279,8 @@ void fn_8027847C(void *arg0) {
         }
         if (*(unsigned char *)&lbl_8055F5BA && lbl_8055E3C4!=lbl_8055F5C4) {
             lbl_8055F5C4=lbl_8055E3C4;
-            if ((frame=lbl_8055E3C4-lbl_8055F5C0)>=0 && frame<=lbl_8055F5BC-lbl_8055F5C0 && lbl_8055F5C0<=lbl_8055F5BC && frame%2==0) {
+            frame=lbl_8055E3C4-lbl_8055F5C0;
+            if (frame>=0 && frame<=lbl_8055F5BC-lbl_8055F5C0 && lbl_8055F5C0<=lbl_8055F5BC && frame%2==0) {
                 fn_802E30C8(base+0xa8,frame);
                 fn_801345D8(buffer,256,base+0xd0,lbl_804A15D0,frame/2);
                 fn_802D08B4(2,2,1);
@@ -385,23 +385,28 @@ void fn_8027889C(float arg0) {
 extern float lbl_805640B8, lbl_805640BC;
 #pragma processor 750
 #pragma scheduling off
-void fn_802788E0(float farg0) {
-    float q = farg0 / lbl_805640B8;
-    float v;
-    if (q < lbl_805640A8)
-        v = q - lbl_805640BC;
-    else
-        v = lbl_805640BC + q;
-    lbl_8055F5BC = (int)v;
+void fn_802788E0(float arg0) {
+    float t;
+    float result;
+    t = arg0 / 0.016683366149663925f;
+    if (t < 0.0f) {
+        result = t - 0.5f;
+    } else {
+        result = 0.5f + t;
+    }
+    lbl_8055F5BC = (int)result;
 }
 #pragma push
 #pragma scheduling invalid_target
-int fn_80278924(float *arg0, float *arg1) {
-    int result = 0;
-    *arg0 = 0.016683366149663925f * (float)lbl_8055F5C0;
-    *arg1 = 0.016683366149663925f * (float)lbl_8055F5BC;
-    if (lbl_8055F5C0 >= 0 && lbl_8055F5BC >= lbl_8055F5C0) result = 1;
-    return result;
+/* Convert the playback range ticks (sPlayStartTick at lbl_8055F5C0 and
+   sPlayEndTick at lbl_8055F5BC) to seconds at ~60 ticks per second, and return
+   1 only for a valid range (start >= 0 and end >= start). */
+int fn_80278924(float *outStartSeconds, float *outEndSeconds) {
+    int valid = 0;
+    *outStartSeconds = 0.016683366149663925f * (float)lbl_8055F5C0;
+    *outEndSeconds = 0.016683366149663925f * (float)lbl_8055F5BC;
+    if (lbl_8055F5C0 >= 0 && lbl_8055F5BC >= lbl_8055F5C0) valid = 1;
+    return valid;
 }
 #pragma pop
 void fn_8027888C(char playFlag) {
