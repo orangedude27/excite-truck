@@ -3017,7 +3017,7 @@ extern "C" void fn_80215CCC(void *timer) {
 }
 
 extern "C" void fn_80215CD0(void) {
-
+    /* Empty no-op: an unoverridden default vtable method with no behaviour. */
 }
 
 extern "C" void fn_80215CD4(void) {
