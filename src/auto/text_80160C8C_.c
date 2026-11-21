@@ -457,14 +457,14 @@ extern "C" void fn_80160CF4(void) {
         virtual Node *child(s32);
     };
     struct Root { s32 pad[8]; Node *node; };
-    Root *root;
-    Node *n, *c;
-    s32 idx;
+    register Root *root;
+    register Node *n, *c;
+    register s32 idx;
     f32 f31;
     s32 i;
     void *obj;
     s32 lst;
-    char *text;
+    register char *text;
     text = (char *)lbl_8032F588;
     root = (Root *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
     lbl_8055E300 = 0;
@@ -1347,10 +1347,10 @@ extern s32 lbl_8055A0C0;
 #pragma cplusplus on
 extern "C" void fn_80161F10(s32 arg0, s32 arg1) {
     s32 pad[0x2e];
-    const char *label1;
-    const char *label2;
-    register void *obj;
+    register const char *label1;
+    register const char *label2;
     register s32 value;
+    void *obj;
     s32 *manager;
     s32 *item;
     s32 selection;
@@ -1881,7 +1881,7 @@ extern "C" void fn_80162A14(void *arg0) {
     clearOffset = 0;
     while (clearIndex < *(s32 *)(self + 0x574)) {
         clearIndex++;
-        *((u8 *)*(void **)(self + 0x570) + clearOffset + 8) = 0;
+        *(*(u8 **)(self + 0x570) + 8 + clearOffset) = 0;
         clearOffset += 0xC;
     }
     resetValue = 0.0f;
@@ -2287,10 +2287,9 @@ extern "C" void fn_801636E0(void *arg0) {
     extern s32 fn_8016D294(s32, s32, s32);
     s32 i;
     u32 j;
+    u32 firstOffset;
     char *obj2;
     s32 secondOffset;
-    s32 *entry;
-    s32 firstOffset;
     float resetValue;
     char *self;
 
@@ -2303,7 +2302,7 @@ extern "C" void fn_801636E0(void *arg0) {
     *(float *)((char *)arg0 + 0xC) = resetValue;
     while (i < *(s32 *)(self + 0x38)) {
         void *obj = *(void **)(self + 4);
-        entry = (s32 *)(*(char **)(self + 0x34) + firstOffset);
+        s32 *entry = (s32 *)(*(char **)(self + 0x34) + firstOffset);
         void *result = ((Dummy *)obj)->f4(&lbl_8055A0E0, &lbl_8055A0E8);
         fn_801DF380(result, entry[0], (void (*)())fn_80161438, entry[1]);
         firstOffset += 8;
@@ -2635,8 +2634,8 @@ extern "C" void fn_80163F7C(void *arg0) {
             ((Dummy_80163F7C_VT3 *)obj)->f21((const char *)lbl_8055A10C, entryIndex, *(void **)(self + 0xE0));
             table = (f32 *)fn_801399FC();
             *(f32 **)(out + 0x34) = table;
-            register s32 bestIndex;
             register s32 i;
+            register s32 bestIndex;
             register s32 count;
             register volatile f32 *points;
             points = (f32 *)((u8 *)table + 8);
@@ -3008,6 +3007,7 @@ extern char lbl_8055A120;
 extern char lbl_8055A128;
 extern float lbl_80561840;
 extern float lbl_8056186C;
+#pragma opt_common_subs off
 s32 fn_801648AC(void *arg0, void *arg1, s32 arg2) {
     struct State { void *node; float frac; s32 id; };
     char obj[0x40];
@@ -3073,8 +3073,10 @@ s32 fn_801648AC(void *arg0, void *arg1, s32 arg2) {
             if (e1.x * e1.x + e1.y * e1.y > bestLen) {
                 best = 1;
             }
+#pragma opt_common_subs off
             mid.x = pts[best].x + lbl_8056185C * (pts[(best + 1) % 3].x - pts[best].x);
             mid.y = pts[best].y + lbl_8056185C * (pts[(best + 1) % 3].y - pts[best].y);
+#pragma opt_common_subs reset
             *(double *)&copy = *(double *)&mid;
             pos.x = copy.x;
             pos.y = copy.y;
@@ -3115,7 +3117,7 @@ s32 fn_801648AC(void *arg0, void *arg1, s32 arg2) {
     }
     return 0;
 }
-
+#pragma opt_common_subs reset
 extern f32 lbl_80561870;
 extern f32 fn_80164CD4(void);
 /* Returns the fixed constant 5.0f held in the read-only global lbl_80561870. */
@@ -3272,7 +3274,7 @@ void fn_80164D64(void *menu, s32 unused) {
 #undef FLOAT_ONE
 #undef FLOAT_ZERO
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_80164F50(void *arg0) {
     extern void fn_801796BC(unsigned char);
     extern s32 fn_80131234(void *);
@@ -3282,9 +3284,7 @@ void fn_80164F50(void *arg0) {
     extern u8 lbl_8055E2DC;
     extern u8 lbl_8032F588[];
     extern u8 lbl_8042FDEC[];
-    extern f32 lbl_80561840;
     extern f32 lbl_80561848;
-    extern f32 lbl_80561888;
     void *self = arg0;
     f32 out[2];
     f32 in[2];
@@ -3297,7 +3297,6 @@ void fn_80164F50(void *arg0) {
     f32 f0;
     f32 *outPtr;
     f32 *inPtr;
-    s32 zero = 0;
 
     fn_801796BC(1);
     value = fn_80160CE4();
@@ -3307,14 +3306,14 @@ void fn_80164F50(void *arg0) {
     if (*(s32 *)((u8 *)self + 8) >= *(s32 *)(lbl_8042FDEC + 4)) {
         *(s32 *)((u8 *)self + 8) = *(s32 *)(lbl_8042FDEC + 4);
     }
-    *(u8 *)((u8 *)self + 4) = zero;
-    f2 = lbl_80561888;
+    *(u8 *)((u8 *)self + 4) = 0;
+    f2 = 9999.0f;
     outPtr = out;
-    f1 = lbl_80561840;
+    f1 = 1.0f;
     inPtr = in;
-    *(u8 *)((u8 *)self + 6) = zero;
+    *(u8 *)((u8 *)self + 6) = 0;
     f0 = lbl_80561848;
-    *(u8 *)((u8 *)self + 5) = zero;
+    *(u8 *)((u8 *)self + 5) = 0;
     outPtr[0] = f2;
     outPtr[1] = f2;
     inPtr[0] = f1;
@@ -3325,7 +3324,6 @@ void fn_80164F50(void *arg0) {
     second = fn_80131234(base + 0x63C);
     fn_801DF380((void *)second, first, (void (*)())fn_80161438, 0);
 }
-#pragma scheduling on
 extern void fn_801796BC(unsigned char);
 typedef struct Work_80164D64 {
     f32 vectorA[3];
