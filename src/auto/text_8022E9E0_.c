@@ -173,7 +173,6 @@ void *fn_8022EC7C(void) {
     return node;
 }
 
-extern s32 lbl_8055B980;
 void *fn_8022ECC0(s32 value) {
     /* Allocate a cnode for the UI context list, storing value with a null next link. */
     void *node = ((void *(*)(s32, void *))fn_8022E9E0)(8, &lbl_8055B980);
