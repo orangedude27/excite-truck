@@ -1,6 +1,13 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 #pragma ppc_psq_save off
 extern void fn_802354A0(int, int, int, float, float, float, float, float);
+extern float lbl_80558DC4, lbl_805636B0;
+static int isClose_802354A0(float a, float b) {
+    double d = __fabs((double)a - (double)b);
+    if ((float)d <= lbl_80558DC4)
+        return 1;
+    return 0;
+}
 extern const char lbl_80340808[];
 extern const char lbl_80340834[];
 extern float lbl_805636B8;
@@ -436,6 +443,7 @@ void fn_802354A0(int arg0, int arg1, int arg2, float x, float y, float z, float 
 
 #pragma push
 #pragma processor 750
+#pragma opt_propagation off
 void fn_80235758(int arg0, int arg1, int arg2, float x, float y, float dx, float dy, float u0, float v0, float u1, float v1) {
     Idx_80235CBC ids;
     Vtx_80235CBC t3, t2, t1, t0;
@@ -447,7 +455,7 @@ void fn_80235758(int arg0, int arg1, int arg2, float x, float y, float dx, float
     int handle;
     void *obj;
     int index;
-    float s;
+    int skip;
 
     if (arg1 < 0)
         return;
@@ -459,23 +467,23 @@ void fn_80235758(int arg0, int arg1, int arg2, float x, float y, float dx, float
     }
 
     {
-        register float hi, lo, a;
+        float hi, lo, a3, a2, a1, a0;
         hi = *((float *)node + 3); lo = *((float *)node + 1);
-        a = lbl_805636B0 < v1 ? lbl_805636B0 : v1;
-        a = a > lbl_805636B8 ? a : lbl_805636B8;
-        n3 = lo + a * (hi - lo);
+        if (lbl_805636B0 < v1) a3 = lbl_805636B0; else a3 = v1;
+        a3 = (a3 > lbl_805636B8) ? a3 : lbl_805636B8;
+        n3 = lo + a3 * (hi - lo);
         hi = *((float *)node + 2); lo = *(float *)node;
-        a = lbl_805636B0 < u1 ? lbl_805636B0 : u1;
-        a = a > lbl_805636B8 ? a : lbl_805636B8;
-        n2 = lo + a * (hi - lo);
+        if (lbl_805636B0 < u1) a2 = lbl_805636B0; else a2 = u1;
+        a2 = (a2 > lbl_805636B8) ? a2 : lbl_805636B8;
+        n2 = lo + a2 * (hi - lo);
         hi = *((float *)node + 3); lo = *((float *)node + 1);
-        a = lbl_805636B0 < v0 ? lbl_805636B0 : v0;
-        a = a > lbl_805636B8 ? a : lbl_805636B8;
-        n1 = lo + a * (hi - lo);
-        hi = *((float *)node + 2); lo = *(float *)node;
-        a = lbl_805636B0 < u0 ? lbl_805636B0 : u0;
-        a = a > lbl_805636B8 ? a : lbl_805636B8;
-        n0 = lo + a * (hi - lo);
+        if (lbl_805636B0 < v0) a1 = lbl_805636B0; else a1 = v0;
+        a1 = (a1 > lbl_805636B8) ? a1 : lbl_805636B8;
+        n1 = lo + a1 * (hi - lo);
+        lo = *(float *)node; hi = *((float *)node + 2);
+        if (lbl_805636B0 < u0) a0 = lbl_805636B0; else a0 = u0;
+        a0 = (a0 > lbl_805636B8) ? a0 : lbl_805636B8;
+        n0 = lo + a0 * (hi - lo);
     }
     sy = dy; sx = dx;
 
@@ -484,8 +492,13 @@ void fn_80235758(int arg0, int arg1, int arg2, float x, float y, float dx, float
     fn_802C8B98(handle, (int)obj);
     index = fn_80230B9C(arg2);
 
-    s = *(float *)((char *)obj + 0x38);
-    if (!((float)__fabs(s - lbl_805636B0) <= lbl_80558DC4)) {
+    skip = 0;
+    if (!((float)__fabs(*(float *)((char *)obj + 0x38) - lbl_805636B0) <= lbl_80558DC4))
+        goto have_skip;
+    skip = 1;
+have_skip:
+    if (!skip) {
+        float s = *(float *)((char *)obj + 0x38);
         sx = dx * s;
         sy = dy * s;
         x += lbl_805636B4 * (dx * (lbl_805636B0 - s));
@@ -755,80 +768,72 @@ extern float lbl_805636C0;
 extern float lbl_805636C8;
 extern void* fn_802CC5B8(int);
 extern float fn_802C9A4C(float);
-#pragma push
-#pragma processor 750
-void fn_802361E8(void *obj, int key, int idx, float a, float b, float c, float d, float e) {
+#pragma opt_propagation off
+void fn_802361E8(void *obj, int key, int a, int b, int c, int d) {
+#pragma use_lmw_stmw off
     Idx_80235CBC ids;
     Vtx_80235CBC t3, t2, t1, t0;
     struct Frame { Vtx_80235CBC v[4]; } __attribute__((aligned(16))) frame;
     int handle;
-    void *nodePtr;
-    int count;
+    int textOffset;
     int i;
     void *entry;
     void *transform;
     int renderIdx;
-    float sx, sy, n0, n1, n2, n3;
-    float s;
+    float sx, sy, dx, dy, n0, n1;
     float scale;
-    int ia, ib, ic, id;
+    int is_close;
+
     handle = *(int *)((char *)obj + 0x10);
-    count = *(int *)((char *)obj + 0xC);
     i = 0;
-    entry = *(void **)((char *)obj + 4);
-    while (i < count) {
+    textOffset = 0;
+    while (i < *(volatile int *)((char *)obj + 0xC)) {
+        entry = (char *)*(void **)((char *)obj + 4) + textOffset;
         if (*(int *)((char *)entry + 0x28) == key) {
-            *((int **)&nodePtr) = (int *)fn_802CC5B8(*(int *)((char *)entry + 0x24));
-            handle = *((int *)nodePtr + 0);
+            fn_802CC5B8(*(int *)((char *)entry + 0x24));
+            handle = *(int *)((char *)entry + 0x24);
             break;
         }
         i++;
-        entry = (char *)entry + 0x2C;
+        textOffset += 0x2C;
     }
     if (handle == -2) return;
     scale = fn_802C9A4C(lbl_805636C8);
-    if (*(unsigned char *)((char *)obj + 0x14) != 0) {
-        n2 = lbl_805636B8;
-        n3 = lbl_805636B0;
-    } else {
-        n2 = lbl_805636B0;
-        n3 = lbl_805636B8;
-    }
-    ia = *(int *)&a ^ 0x80000000;
-    ix: ib = *(int *)&b ^ 0x80000000;
-    ic = *(int *)&c ^ 0x80000000;
-    id = *(int *)&d ^ 0x80000000;
-    sx = *(float *)&ia;
-    n0 = *(float *)&ib;
-    sy = *(float *)&ic;
-    n1 = *(float *)&id;
-    (void)idx;
+    if (*(volatile unsigned char *)((char *)obj + 0x14) != 0) n0 = lbl_805636B8; else n0 = lbl_805636B0;
+    if (*(volatile unsigned char *)((char *)obj + 0x14) != 0) n1 = lbl_805636B0; else n1 = lbl_805636B8;
+    dy = (float)d;
+    dx = (float)c;
+    sy = (float)b;
+    sx = (float)a;
     transform = fn_8022EDC4();
     fn_802C8B98(handle, (int)transform);
     renderIdx = fn_80230B9C(-1);
-    s = *(float *)((char *)transform + 0x38);
-    {
-        float diff = s - lbl_805636B0;
-        float adiff = (float)__fabs(diff);
-        if (!(adiff <= lbl_80558DC4)) {
-            sx = c * s * 0;
-            sy = d * s * 0;
-        }
+    is_close = 0;
+    if ((float)__fabs(*(float *)((char *)transform + 0x38) - lbl_805636B0) <= lbl_80558DC4) {
+        is_close = 1;
     }
-    t0 = fn_80230A68(renderIdx, sx, sy, a, n0, n1);
+    if (is_close == 0) {
+        float one = lbl_805636B0;
+        float s = *(float *)((char *)transform + 0x38);
+        sx += lbl_805636B4 * (dx * (one - s));
+        sy -= lbl_805636B4 * (dy * (one - s));
+        dx *= s;
+        dy *= s;
+    }
+    t0 = fn_80230A68(renderIdx, sx, sy, lbl_805636B8, n1, lbl_805636B8);
     frame.v[0].a = t0.a; frame.v[0].b = t0.b; frame.v[0].c = t0.c; frame.v[0].d = t0.d; frame.v[0].e = t0.e;
-    t1 = fn_80230A68(renderIdx, sx + sy, sy, a, n2, n1);
+    t1 = fn_80230A68(renderIdx, sx + dx, sy, lbl_805636B8, n0, lbl_805636B8);
     frame.v[1].a = t1.a; frame.v[1].b = t1.b; frame.v[1].c = t1.c; frame.v[1].d = t1.d; frame.v[1].e = t1.e;
-    t2 = fn_80230A68(renderIdx, sx, sy - n0, a, n0, n3);
+    t2 = fn_80230A68(renderIdx, sx, sy - dy, lbl_805636B8, n1, lbl_805636B0);
     frame.v[2].a = t2.a; frame.v[2].b = t2.b; frame.v[2].c = t2.c; frame.v[2].d = t2.d; frame.v[2].e = t2.e;
-    t3 = fn_80230A68(renderIdx, sx + sy, sy - n0, a, n2, n3);
+    t3 = fn_80230A68(renderIdx, sx + dx, sy - dy, lbl_805636B8, n0, lbl_805636B0);
     frame.v[3].a = t3.a; frame.v[3].b = t3.b; frame.v[3].c = t3.c; frame.v[3].d = t3.d; frame.v[3].e = t3.e;
     ids = *(Idx_80235CBC *)lbl_802FA008;
     fn_802C8DB8(frame.v, 4, ids.i, 6);
     fn_802C8D74();
     fn_802C9A4C(scale);
 }
-#pragma pop
+#pragma opt_propagation reset
 
 #pragma scheduling on
 extern void fn_802354A0(int, int, int, float, float, float, float, float);
