@@ -13519,8 +13519,10 @@ extern "C" u8 lbl_80407320[];
 extern "C" s32 fn_800BBCF4(void);
 extern "C" void fn_800BBCB4(void *);
 extern "C" s32 fn_800BB3F4(s32);
+#pragma push
+#pragma opt_propagation off
 extern "C" s32 fn_800B9DCC(u32 arg0) {
-    static u32 zero = 0;
+    u32 zero = 0;
     void *sp8;
     s32 r;
     s32 ret;
@@ -13575,7 +13577,7 @@ extern "C" s32 fn_800B9DCC(u32 arg0) {
     }
     return ret;
 }
-
+#pragma pop
 /* Initialize/query an IOS device state with retries and a sequence of control
  * commands, returning 0 on success or a status/error code on failure. */
 extern "C" s32 fn_800B9FCC(s32 shouldInit) {
@@ -15558,6 +15560,7 @@ void fn_800BF048(void *arg0, u8 *arg1, u8 *arg2, u8 *arg3, u8 *arg4, u8 *arg5, s
     s16 temp_r24;
     s16 temp_r26_5;
     s16 temp_r26_6;
+    s32 var_r0;
     s16 var_r0_2;
     s16 var_r0_4;
     s16 var_r0_5;
@@ -15633,7 +15636,7 @@ void fn_800BF048(void *arg0, u8 *arg1, u8 *arg2, u8 *arg3, u8 *arg4, u8 *arg5, s
     s32 var_r12_3;
     s32 var_r12_4;
     s32 var_r16_3;
-    register s32 var_r17;
+    s32 var_r17;
     s32 var_r17_3;
     s32 var_r17_5;
     s32 var_r18;
@@ -15642,7 +15645,6 @@ void fn_800BF048(void *arg0, u8 *arg1, u8 *arg2, u8 *arg3, u8 *arg4, u8 *arg5, s
     s32 var_r18_5;
     s32 var_r21;
     s32 var_r21_3;
-    s32 var_r0;
     s8 *var_r12_9;
     u16 temp_r0_15;
     u16 temp_r0_9;
@@ -15702,7 +15704,7 @@ void fn_800BF048(void *arg0, u8 *arg1, u8 *arg2, u8 *arg3, u8 *arg4, u8 *arg5, s
     u8 *var_r11_5;
     u8 *var_r11_6;
     u8 *var_r12_11;
-    register u8 *var_r12_2;
+    u8 *var_r12_2;
     u8 *var_r12_6;
     u8 *var_r12_8;
     u8 *var_r21_2;
@@ -15711,7 +15713,7 @@ void fn_800BF048(void *arg0, u8 *arg1, u8 *arg2, u8 *arg3, u8 *arg4, u8 *arg5, s
     u8 temp_r15;
     u8 temp_r16;
     u8 temp_r22;
-    register s32 var_r16;
+    s32 var_r16;
     s32 var_r17_4;
     u8 *temp_r14_8;
     u8 *temp_r20_3;
@@ -15726,7 +15728,7 @@ void fn_800BF048(void *arg0, u8 *arg1, u8 *arg2, u8 *arg3, u8 *arg4, u8 *arg5, s
     u8 *var_r12_5;
     u8 *var_r12_7;
     u8 *var_r14;
-    register u8 *var_r14_2;
+    u8 *var_r14_2;
     u8 *var_r14_3;
     u8 *var_r14_5;
     u8 *var_r14_6;
@@ -15734,7 +15736,8 @@ void fn_800BF048(void *arg0, u8 *arg1, u8 *arg2, u8 *arg3, u8 *arg4, u8 *arg5, s
     u8 *var_r17_2;
     u8 *var_r18_4;
 
-    register u8 *table = lbl_802F34E8;
+    u8 *table;
+    table = lbl_802F34E8;
     var_r9 = arg6;
     var_r10 = arg7;
     if ((s32) M2C_FIELD(arg0, s32 *, 0x9D8) == 0) {
@@ -24995,8 +24998,8 @@ extern "C" void fn_800CD38C(const char *selfArg, const char *paneName) {
     f32 f;
     u32 bits;
     void *obj;
-    register u8 *self;
     register s32 pane;
+    register u8 *self;
     self = (u8 *)selfArg;
     pane = ((homebutton::HomeButton *)selfArg)->getPaneNo(paneName);
     if (*(s32 *)(self + 0x10) == 2 && pane != -1) {
