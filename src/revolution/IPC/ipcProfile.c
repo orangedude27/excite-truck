@@ -16,8 +16,8 @@ extern s32 IpcNumUnIssuedReqs;
 static void AddReqInfo(IPCRequestEx* req, s32 fd);
 static void DelReqInfo(IPCRequestEx* req, s32 fd);
 
+/* Reset IPC profiling counters and clear tracked request slots. */
 void IPCiProfInit(void) {
-    /* Reset IPC profiling counters and clear tracked request slots. */
     int i;
 
     IpcNumPendingReqs = 0;
