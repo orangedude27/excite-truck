@@ -114,7 +114,7 @@ void fn_8028CFB0(void) {
 extern int fn_802CAC28(int, int);
 extern int fn_802E317C(char *, ...);
 __declspec(section ".data") extern int lbl_80348C50;
-struct Tbl8028D084 { char f[0x30]; };
+struct Tbl8028D084 { char f0[12]; char f1[12]; char f2[12]; char f3[12]; char fmt[0x20]; };
 extern char lbl_8055C8C8[];
 #pragma cplusplus on
 struct Obj8028D084 {
@@ -132,16 +132,16 @@ struct Obj8028D084 {
 #pragma cplusplus on
 extern "C" void fn_8028D084(void *arg0, void *arg1) {
     extern char lbl_8055C8C8[8];
-    char *base = (char *)&lbl_80348C50;
+    int *base = &lbl_80348C50;
     int value;
     *(int *)arg0 = fn_802CAC28(((Obj8028D084 *)arg1)->f5(lbl_8055C8C8), 0);
-    *(float *)((char *)arg0 + 4) = ((Obj8028D084 *)arg1)->f9(&((struct Tbl8028D084 *)base)->f[0]);
-    *(float *)((char *)arg0 + 8) = ((Obj8028D084 *)arg1)->f9(base + 0xC);
-    *(float *)((char *)arg0 + 0xC) = ((Obj8028D084 *)arg1)->f9(base + 0x18);
-    value = ((Obj8028D084 *)arg1)->f7(base + 0x24);
+    *(float *)((char *)arg0 + 4) = ((Obj8028D084 *)arg1)->f9((char *)(base + 0));
+    *(float *)((char *)arg0 + 8) = ((Obj8028D084 *)arg1)->f9((char *)(base + 3));
+    *(float *)((char *)arg0 + 0xC) = ((Obj8028D084 *)arg1)->f9((char *)(base + 6));
+    value = ((Obj8028D084 *)arg1)->f7((char *)(base + 9));
     *(int *)((char *)arg0 + 0x10) = value;
     if (value < 8 || value > 0x24)
-        fn_802E317C(base + 0x30, value);
+        fn_802E317C((char *)(base + 12), value);
 }
 extern char lbl_804B3470[];
 extern char lbl_80348CA0[];
