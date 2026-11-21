@@ -1612,16 +1612,24 @@ void fn_801D628C(void *object) {
 
 #pragma push
 #pragma scheduling invalid_target
-void *fn_801D62A8(void *arg0, int arg1) {
-    s32 temp_r5;
-    if (arg0 != 0) {
-        temp_r5 = *(s32 *)((char *)arg0 + 0x14);
-        *(char **)arg0 = lbl_80338C78;
-        *(s32 *)((char *)arg0 + 4) = 0;
-        if (temp_r5 != 0) fn_80128658(temp_r5);
-        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+void *fn_801D62A8(void *object, int shouldDelete) {
+#define VTable_80338C78 lbl_80338C78
+#define FreeBlock       fn_80128658
+#define FreeObject      fn_80128668
+    /* CameraShake_ASE destructor: restore the vtable, clear the field at +4,
+     * free the owned block at +0x14 and optionally delete the object. */
+    s32 ownedBlock;
+    if (object != 0) {
+        ownedBlock = *(s32 *)((char *)object + 0x14);
+        *(char **)object = VTable_80338C78;
+        *(s32 *)((char *)object + 4) = 0;
+        if (ownedBlock != 0) FreeBlock(ownedBlock);
+        if (shouldDelete > 0) ((void (*)(void *))FreeObject)(object);
     }
-    return arg0;
+    return object;
+#undef VTable_80338C78
+#undef FreeBlock
+#undef FreeObject
 }
 #pragma pop
 #pragma cplusplus on
