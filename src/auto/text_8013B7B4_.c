@@ -29,7 +29,8 @@ extern char lbl_80559CD8;
 #pragma use_lmw_stmw off
 #pragma readonly_strings off
 #pragma pool_strings off
-extern "C" void fn_8013B7B4(float *arg0, int value) {
+/* Fill a 3x4 catch-up-assist parameter table from catchup.val: one row each for Easy, Medium and Hard. */
+extern "C" void fn_8013B7B4(float *catchupParams, int carCount) {
     struct List {
         virtual void v0() = 0;
         virtual void *getAt(int) = 0;
@@ -47,31 +48,31 @@ extern "C" void fn_8013B7B4(float *arg0, int value) {
         virtual void v6() = 0;
         virtual float getFloat(const char *) = 0;
     };
-    const char **namep;
-    float *out;
-    void *list;
-    void *item;
-    int i;
-    const char *name;
-    unsigned int j;
-    list = fn_80131808((void *)"catchup.val");
-    if (list == 0) goto error;
-    i = 0;
-    while ((item = ((List *)list)->getAt(i)) != 0) {
-        name = ((Item *)item)->getName();
-        const char *names[3] = { "Easy", "Medium", "Hard" };
-        out = arg0;
-        for (j = 0, namep = names; j < 3; j++, namep++, out += 4) {
-            if (stricmp(*namep, name) == 0) {
-                out[0] = ((DataItem *)item)->getFloat("begin_t");
-                out[1] = ((DataItem *)item)->getFloat("effect_t");
-                out[2] = ((DataItem *)item)->getFloat("speed_factor");
-                out[3] = (float)value * ((DataItem *)item)->getFloat("compare_car_pct");
+    const char **diffName;
+    float *dest;
+    void *catchupList;
+    void *entry;
+    int entryIndex;
+    const char *sectionName;
+    unsigned int diffIndex;
+    catchupList = fn_80131808((void *)"catchup.val");
+    if (catchupList == 0) goto error;
+    entryIndex = 0;
+    while ((entry = ((List *)catchupList)->getAt(entryIndex)) != 0) {
+        sectionName = ((Item *)entry)->getName();
+        const char *difficultyNames[3] = { "Easy", "Medium", "Hard" };
+        dest = catchupParams;
+        for (diffIndex = 0, diffName = difficultyNames; diffIndex < 3; diffIndex++, diffName++, dest += 4) {
+            if (stricmp(*diffName, sectionName) == 0) {
+                dest[0] = ((DataItem *)entry)->getFloat("begin_t");
+                dest[1] = ((DataItem *)entry)->getFloat("effect_t");
+                dest[2] = ((DataItem *)entry)->getFloat("speed_factor");
+                dest[3] = (float)carCount * ((DataItem *)entry)->getFloat("compare_car_pct");
             }
         }
-        i++;
+        entryIndex++;
     }
-    fn_80131818(list);
+    fn_80131818(catchupList);
     return;
 error:
     ((void (*)(const char *, ...))fn_802E317C)("no catchup.val?");
