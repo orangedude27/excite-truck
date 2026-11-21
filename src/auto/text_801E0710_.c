@@ -97,7 +97,7 @@ static inline void fn_801E1048_xi(const f32 *m, const f32 *src, f32 *dst) {
         c = x * c;
         d = x * d;
         e = x * e;
-        f = y * m[5];
+        f = y * m5;
         z = src[2];
         nx = z * m[6] + (c + a);
         ny = z * m[7] + (d + b);
