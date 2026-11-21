@@ -345,9 +345,10 @@ int fn_80270EC4(void *arg0, int arg1) {
     extern int lbl_8055F554;
     extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
     struct SortEntry entries[64];
+    register int one, zero;
     register char *name = lbl_80346B00;
     register int flags = arg1;
-    register int category, groupOffset, one, zero, count, byteOffset, i;
+    register int category, groupOffset, count, byteOffset, i;
     fn_80270C04(arg0, flags);
     if ((flags & 0x100) != 0) {
         category = 0;
@@ -997,74 +998,85 @@ extern "C" char lbl_80346B00[];
  extern "C" char lbl_8055C5A4;
  extern "C" char lbl_8055C5AC;
  extern "C" char lbl_8055C5B4;
- extern "C" int fn_80272028(void *arg0, Parser72028 *arg1, int arg_sp0) {
-     char *path;
-     int hash;
-     char buffer[0x10];
-     register char *name;
-     register Parser72028 *parser;
-     register void *output;
-     int index;
-     int count;
-     unsigned char bit;
-     name = lbl_80346B00;
-     parser = arg1;
-     output = arg0;
-     fn_80272354(arg0);
-     if (parser->has(name + 0x424) == 0) {
-         DBPrintf_80270B00(name + 0x430, name + 0x424);
-         return 0;
-     }
-     *(float *)output = parser->getFloat(name + 0x424);
-     if (parser->has(name + 0x464) == 0) {
-         DBPrintf_80270B00(name + 0x430, name + 0x464);
-         return 0;
-     }
-     *(float *)((char *)output + 4) = parser->getFloat(name + 0x464);
-     if (parser->has(name + 0x470) == 0) {
-         DBPrintf_80270B00(name + 0x430, name + 0x470);
-         return 0;
-     }
-     *(float *)((char *)output + 8) = parser->getFloat(name + 0x470);
-     if (parser->has(&lbl_8055C5A4) == 0) {
-         DBPrintf_80270B00(name + 0x430, &lbl_8055C5A4);
-         return 0;
-     }
-     *(float *)((char *)output + 0xC) = parser->getFloat(&lbl_8055C5A4);
-     *(int *)((char *)output + 0x5C) = parser->getOption(&lbl_8055C5AC, 2);
-     index = 0;
-     while (parser->enumerate(index, &path, &hash) != 0) {
-         if (strncmp(path, &lbl_8055C5B4, 5) == 0 && path[5] != '_') {
-             bit = fn_80008050(hash);
-             if ((int)bit < 0x20) {
-                 *(int *)((char *)output + 0x10) |= 1 << bit;
-             } else {
-                 *(int *)((char *)output + 0x14) |= 1 << (bit - 0x20);
-             }
-         }
-         index++;
-     }
-     if (parser->has(name + 0x47C) == 0) {
-         DBPrintf_80270B00(name + 0x430, name + 0x47C);
-         return 0;
-     }
-     count = parser->getCount(name + 0x47C);
-     *(int *)((char *)output + 0x58) = count;
-     index = 0;
-     for (;;) {
-         if (index >= *(int *)((char *)arg0 + 0x58)) {
-             return 1;
-         }
-         sprintf(buffer, name + 0x48C, index);
-         if (parser->has(buffer) == 0) {
-             DBPrintf_80270B00(name + 0x430, buffer);
-             return 0;
-         }
-         *(int *)((char *)output + 0x18) = parser->getCount(buffer);
-         output = (char *)output + 4;
-         index++;
-     }
- }
+extern "C" int fn_80272028(void *arg0, Parser72028 *arg1, int arg_sp0)
+{
+  char *path;
+  int hash;
+  char buffer[0x10];
+  char * const name = lbl_80346B00;
+  register Parser72028 *parser;
+  register void *output;
+  char *p;
+  int index;
+  int j;
+  unsigned char bit;
+  output = arg0;
+  parser = arg1;
+  fn_80272354(arg0);
+  if (parser->has(name + 0x424) == 0)
+  {
+    DBPrintf_80270B00(name + 0x430, name + 0x424);
+    return 0;
+  }
+  *((float *) output) = parser->getFloat(name + 0x424);
+  if (parser->has(name + 0x464) == 0)
+  {
+    DBPrintf_80270B00(name + 0x430, name + 0x464);
+    return 0;
+  }
+  *((float *) (((char *) output) + 4)) = parser->getFloat(name + 0x464);
+  if (parser->has(name + 0x470) == 0)
+  {
+    DBPrintf_80270B00(name + 0x430, name + 0x470);
+    return 0;
+  }
+  *((float *) (((char *) output) + 8)) = parser->getFloat(name + 0x470);
+  if (parser->has(&lbl_8055C5A4) == 0)
+  {
+    DBPrintf_80270B00(name + 0x430, &lbl_8055C5A4);
+    return 0;
+  }
+  *((float *) (((char *) output) + 0xC)) = parser->getFloat(&lbl_8055C5A4);
+  *((int *) (((char *) output) + 0x5C)) = parser->getOption(&lbl_8055C5AC, 2);
+  index = 0;
+  while (parser->enumerate(index, &path, &hash) != 0)
+  {
+    register char *s = path;
+    if ((strncmp(s, &lbl_8055C5B4, 5) == 0) && (s[5] != '_'))
+    {
+      bit = fn_80008050(hash);
+      if (((int) bit) < 0x20)
+      {
+        *((int *) (((char *) output) + 0x10)) |= 1 << bit;
+      }
+      else
+      {
+        *((int *) (((char *) output) + 0x14)) |= 1 << (bit - 0x20);
+      }
+    }
+    index++;
+  }
+  if (parser->has(name + 0x47C) == 0)
+  {
+    DBPrintf_80270B00(name + 0x430, name + 0x47C);
+    return 0;
+  }
+  *((int *) (((char *) output) + 0x58)) = parser->getCount(name + 0x47C);
+  p = (char *) arg0;
+  for (j = 0; j < (*((int *) (((char *) arg0) + 0x58))); j++)
+  {
+    sprintf(buffer, name + 0x48C, j);
+    if (parser->has(buffer) == 0)
+    {
+      DBPrintf_80270B00(name + 0x430, buffer);
+      if (((!name) && (!name)) && (!name)) {}
+      return 0;
+    }
+    *((int *) (p + 0x18)) = parser->getCount(buffer);
+    p += 4;
+  }
+  return 1;
+}
 #pragma cplusplus reset
 
 extern int stricmp(const char *, const char *);
@@ -1087,15 +1099,19 @@ void fn_80272354(void *obj) {
     *(int *)((char *)obj + 0x5C) = 2;
 }
 
-#pragma processor 603
-void fn_802723B4(void *arg0, void *arg1, register float t) {
-    struct Result { void *node; float fraction; s32 mode; } result;
-    float *node;
-    fn_80136468((void **)&result, arg0, t);
-    node = result.node;
-    t = result.fraction;
-    ((float *)arg1)[0] = t * (((float *)*(void **)((char *)node + 0x14))[0] - node[0]) + node[0];
-    ((float *)arg1)[1] = t * (((float *)*(void **)((char *)node + 0x14))[1] - node[1]) + node[1];
+#pragma processor 750
+void fn_802723B4(void *arg0, void *arg1) {
+    void *slot;
+    void *object;
+    float factor;
+    float base;
+    ((void (*)(void **, void *))fn_80136468)(&slot, arg0);
+    object = slot;
+    factor = *(float *)((char *)&slot + 4);
+    base = *(float *)object;
+    *(float *)arg1 = base + (*(float *)*(void **)((char *)object + 0x14) - base) * factor;
+    base = *(float *)((char *)object + 4);
+    *(float *)((char *)arg1 + 4) = base + (*(float *)((char *)*(void **)((char *)object + 0x14) + 4) - base) * factor;
 }
 extern float lbl_8055F560, lbl_80563F40, lbl_80563F48;
 extern void fn_80136468(void **, void *, float);
@@ -1452,41 +1468,46 @@ extern int fn_80272C24(float, float, float, float);
 #pragma push
 #pragma processor 750
 #pragma scheduling on
-extern "C" int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
-    struct Manager {
-        virtual void v0() = 0;
-        virtual void v1() = 0;
-        virtual void v2() = 0;
-        virtual void v3() = 0;
+/* Score the camera region held in 'regionSlot' for 'subject': reject disabled or
+   wrong-group regions; with camera debug on, accept at once when the camera ray-hit
+   value lies in either of the slot's period-wrapped ranges. Otherwise score by the
+   distance from the region's point past its radius, 1.0 inside and 1/(1+dist) beyond.
+   Writes the score to *outScore and returns nonzero when the region is accepted. */
+extern "C" int fn_80272C74(void *regionSlot, void *subject, float *outScore, int group) {
+    struct CameraManager {
+        virtual void slot0() = 0;
+        virtual void slot1() = 0;
+        virtual void slot2() = 0;
+        virtual void slot3() = 0;
         virtual void *getCamera() = 0;
     };
-    float height;
-    int result;
+    float cameraHeight;
+    int accepted;
 
-    *arg2 = 0.0f;
-    if (*(int *)((char *)*(void **)arg0 + 0x58) == 0) return 0;
-    if (arg3 != -1 && arg3 != *(int *)((char *)*(void **)arg0 + 0x5C)) return 0;
-    result = 1;
+    *outScore = 0.0f;
+    if (*(int *)((char *)*(void **)regionSlot + 0x58) == 0) return 0;
+    if (group != -1 && group != *(int *)((char *)*(void **)regionSlot + 0x5C)) return 0;
+    accepted = 1;
     if (lbl_8055F564 != 0) {
-        void *manager = *(void **)((char *)arg1 + 0x270);
-        void *camera = ((Manager *)manager)->getCamera();
+        void *manager = *(void **)((char *)subject + 0x270);
+        void *camera = ((CameraManager *)manager)->getCamera();
         camera = *(void **)((char *)camera + 0x2C);
-        height = *(float *)((char *)camera + 8);
-        if (fn_80272C24(lbl_8055F568, *(float *)((char *)arg0 + 4), *(float *)((char *)arg0 + 8), height) != 0 ||
-            (*(unsigned char *)((char *)arg0 + 0x14) != 0 &&
-             fn_80272C24(lbl_8055F568, *(float *)((char *)arg0 + 0xC), *(float *)((char *)arg0 + 0x10), height) != 0)) {
-            *arg2 = 1.0f;
+        cameraHeight = *(float *)((char *)camera + 8);
+        if (fn_80272C24(lbl_8055F568, *(float *)((char *)regionSlot + 4), *(float *)((char *)regionSlot + 8), cameraHeight) != 0 ||
+            (*(unsigned char *)((char *)regionSlot + 0x14) != 0 &&
+             fn_80272C24(lbl_8055F568, *(float *)((char *)regionSlot + 0xC), *(float *)((char *)regionSlot + 0x10), cameraHeight) != 0)) {
+            *outScore = 1.0f;
             return 1;
         }
-        result = 0;
+        accepted = 0;
     }
     {
-        float value = PSQUATMultiply((char *)arg1 + 0x60, *(void **)arg0) -
-                      *(float *)((char *)*(void **)arg0 + 0xC);
-        if (value <= 0.0f) *arg2 = 1.0f;
-        else *arg2 = 1.0f / (1.0f + value);
+        float distancePastRadius = PSQUATMultiply((char *)subject + 0x60, *(void **)regionSlot) -
+                                   *(float *)((char *)*(void **)regionSlot + 0xC);
+        if (distancePastRadius <= 0.0f) *outScore = 1.0f;
+        else *outScore = 1.0f / (1.0f + distancePastRadius);
     }
-    return result;
+    return accepted;
 }
 
 #pragma cplusplus on
