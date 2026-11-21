@@ -3065,6 +3065,6 @@ extern "C" s32 fn_80215CEC(void) {
 }
 
 extern "C" void fn_80215CC4(void) {
-
+    /* Empty no-op: a default widget-wrapper vtable method with no behaviour. */
 }
 
