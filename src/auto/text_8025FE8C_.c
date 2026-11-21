@@ -1636,6 +1636,8 @@ extern "C" void fn_802621F0(void *arg0) { struct Dummy { virtual void m0() = 0; 
 void fn_80262574(void) {
 }
 
+/* No-op handler stub, paired with fn_80262574 and the zero-returning
+ * fn_8026257C; this build supplies no behaviour for it. */
 void fn_80262578(void) {
 }
 
