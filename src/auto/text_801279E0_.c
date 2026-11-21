@@ -10,8 +10,9 @@ extern int lbl_8055DF10;
 extern struct State lbl_8041DEE0;
 void fn_801279E0(void) {
     #pragma scheduling invalid_target
-    /* Static constructor: register a static-destructor record for lbl_8055DF10 and
-       bring up the profiler index list as an empty header with room for 16 words. */
+    /* RealName: ProfilerListInit. Static constructor: register a static-destructor
+       record for lbl_8055DF10 and bring up the profiler index list as an empty
+       header with room for 16 words. */
     fn_8000D838(&lbl_8055DF10);
     lbl_8041DEE0.data = (char *)&lbl_8041DEE0 + 0xC;
     lbl_8041DEE0.capacity = 0x10;
