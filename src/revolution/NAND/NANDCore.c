@@ -1,10 +1,6 @@
 /*
- * NANDCore recovered source.
- *
- * Function semantics are largely reconstructed, but full promotion is deferred:
- * remaining issues are pooled data/source-shape and linker placement rather than
- * missing behavior. Keep changes source-focused unless a dedicated promotion pass
- * maps all data providers and checks the final DOL hash.
+ * NAND core library: initialization, path handling and current-directory
+ * management for the RVL SDK's NAND interface.
  */
 
 #include <revolution/ESP.h>
