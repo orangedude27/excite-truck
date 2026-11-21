@@ -90,14 +90,17 @@ extern "C" void* __ct__Q36nw4hbm3lyt7PictureFPCQ46nw4hbm3lyt3res7PictureRCQ36nw4
     extern u8 lbl_80320320[];
     extern u8 lbl_80320330[];
     extern u32 lbl_8055DDF0;
+    /* Initialize the Pane base, install the Picture vtable, reserve/copy texcoords
+     * and vertex colors from the resource, then attach a Material (panicking if
+     * the block set has no material table). */
     u8* self = (u8*)this_;
     const u8* picture = (const u8*)res;
     u8 count;
     void* material;
 
     __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(this_, res);
-    *(void**)self = lbl_80320408;
-    fn_8002F53C(self + 0xD4, fn_800D7F6C, fn_800D2DD4, 4, 4);
+    *(void**)self = sPictureVTable;
+    fn_8002F53C(self + 0xD4, fn_800D7F6C, sTexCoordDtor, 4, 4);
     fn_800D5978(self + 0xE4);
     count = 8;
     if (picture[0x5E] <= 8) count = picture[0x5E];
@@ -109,10 +112,10 @@ extern "C" void* __ct__Q36nw4hbm3lyt7PictureFPCQ46nw4hbm3lyt3res7PictureRCQ36nw4
     if (count != 0 && self[0xE4] != 0) {
         Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc(self + 0xE4, picture + 0x60, count);
     }
-    material = MEMAllocFromAllocator((void*)lbl_8055DDF0, 0x5C);
+    material = MEMAllocFromAllocator((void*)sLayoutAllocator, 0x5C);
     if (material != 0) {
         if (*(const u32*)((const u8*)blockSet + 8) == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80320320, 0x95, (const char*)lbl_80320330);
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)sAssertFile_picture, 0x95, (const char*)sMsgNullPointer);
         }
         u32 index = *(const volatile u16*)(picture + 0x5C);
         const u8* table = *(const u8**)((const u8*)blockSet + 8);
