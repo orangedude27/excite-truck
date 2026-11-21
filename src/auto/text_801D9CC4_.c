@@ -23,10 +23,11 @@ void *fn_801D9CC4(void *arg0)
   u8 flag = 0;
   volatile u8 *base;
   int i;
-  register int j;
-  register u32 off;
+  int j;
+  u32 off;
   volatile u8 *e;
-  register volatile u8 *r;
+  volatile u8 *r;
+  register u8 t;
   base = (volatile u8 *) fn_8012C370(arg0, 0x50507468, &type, 0, 0, &flag);
   if (base == 0)
   {
@@ -40,25 +41,24 @@ void *fn_801D9CC4(void *arg0)
   }
   if (flag != 0)
   {
-    SWAP4(base, 0);
+    SWAP4T(base, 0, t);
     e = base + 4;
     for (i = 0; i < *((s32 *) base); i++, e += 0x18)
     {
-      SWAP4(e, 0x10);
-      SWAP4(e, 0x14);
+      SWAP4T(e, 0x10, t);
+      SWAP4T(e, 0x14, t);
       *((u32 *) (e + 0x14)) = ((u32) base) + (*((u32 *) (e + 0x14)));
-      off = 0;
-      for (j = 0; j < (*((s32 *) (e + 0x10))); j++, off += 0x20)
+      for (j = 0, off = 0; j < (*((s32 *) (e + 0x10))); j++, off += 0x20)
       {
         r = ((volatile u8 *) (*((u32 *) (e + 0x14)))) + off;
-        SWAP4(r, 0);
-        SWAP4(r, 4);
-        SWAP4(r, 8);
-        SWAP4(r, 0xC);
-        SWAP4(r, 0x10);
-        SWAP4(r, 0x14);
-        SWAP4(r, 0x18);
-        SWAP4(r, 0x1C);
+        SWAP4T(r, 0, t);
+        SWAP4T(r, 4, t);
+        SWAP4T(r, 8, t);
+        SWAP4T(r, 0xC, t);
+        SWAP4T(r, 0x10, t);
+        SWAP4T(r, 0x14, t);
+        SWAP4T(r, 0x18, t);
+        SWAP4T(r, 0x1C, t);
       }
     }
   }
@@ -177,27 +177,29 @@ void fn_801DA0EC(void *arg0, float farg0) {
     zero = lbl_80562B38;
     old = vs->cur;
     vs->cur = old + farg0;
-    if (farg0 >= zero) {
-        do {
-            ++vs->idx;
-            o = (void *)vs->obj;
-            idx = vs->idx;
-            if (idx + 1 >= *(int *)((char *)o + 0x10)) {
-                return;
-            }
-            values = *(float **)((char *)o + 0x14);
-        } while (*(float *)((char *)arg0 + 0xC) > values[idx * 8 + 8]);
-    } else {
-        do {
-            --vs->idx;
-            idx = vs->idx;
-            if (idx <= 0) {
-                return;
-            }
-            o = (void *)vs->obj;
-            values = *(float **)((char *)o + 0x14);
-        } while (values[idx * 8] > *(float *)((char *)arg0 + 0xC));
-    }
+    if (farg0 >= zero) goto forward;
+    goto backward;
+forward:
+    do {
+        ++vs->idx;
+        o = (void *)vs->obj;
+        idx = vs->idx;
+        if (idx + 1 >= *(int *)((char *)o + 0x10)) {
+            return;
+        }
+        values = *(float **)((char *)o + 0x14);
+    } while (*(float *)((char *)arg0 + 0xC) > values[idx * 8 + 8]);
+    return;
+backward:
+    do {
+        --vs->idx;
+        idx = vs->idx;
+        if (idx <= 0) {
+            return;
+        }
+        o = (void *)vs->obj;
+        values = *(float **)((char *)o + 0x14);
+    } while (values[idx * 8] > *(float *)((char *)arg0 + 0xC));
 }
 #pragma scheduling on
 #pragma pop
@@ -220,38 +222,40 @@ void fn_801DA198(void *pathCursor, float value) {
     }
 }
 
-int fn_801DA1F8(void *arg0, void **arg1, void **arg2, float *arg3) {
-    register int index;
-    register void *obj;
-    register int max;
-    register float *values;
-    register float *next;
-    register float *current;
-    register float value;
-    register float difference;
-    register float numerator;
+int fn_801DA1F8(void *pathCursor, void **outCurrent, void **outNext, float *outT) {
+    /* Find the two 0x20-byte path keyframes surrounding the cursor's time and
+     * return them with the interpolation factor, clamped to the last segment. */
+    register int segment;
+    register void *curve;
+    register int maxSegment;
+    register float *keyframes;
+    register float *nextKeyframe;
+    register float *currentKeyframe;
+    register float time;
+    register float timeSpan;
+    register float elapsed;
 
-    obj = *(void **)((char *)arg0 + 4);
-    if (obj != 0) {
-        max = *(int *)((char *)obj + 0x10) - 2;
-        index = *(int *)((char *)arg0 + 8);
-        if (max >= index) {
+    curve = *(void **)((char *)pathCursor + 4);
+    if (curve != 0) {
+        maxSegment = *(int *)((char *)curve + 0x10) - 2;
+        segment = *(int *)((char *)pathCursor + 8);
+        if (maxSegment >= segment) {
         } else {
-            index = max;
+            segment = maxSegment;
         }
 
-        values = *(float **)((char *)obj + 0x14);
-        next = values + (index + 1) * 8;
-        current = values + index * 8;
-        value = *(float *)((char *)arg0 + 0xC);
-        value = (value < *next) ? value : *next;
-        difference = *next - *current;
-        difference = (difference > lbl_80562B3C) ? difference : lbl_80562B3C;
-        numerator = value - *current;
+        keyframes = *(float **)((char *)curve + 0x14);
+        nextKeyframe = keyframes + (segment + 1) * 8;
+        currentKeyframe = keyframes + segment * 8;
+        time = *(float *)((char *)pathCursor + 0xC);
+        time = (time < *nextKeyframe) ? time : *nextKeyframe;
+        timeSpan = *nextKeyframe - *currentKeyframe;
+        timeSpan = (timeSpan > lbl_80562B3C) ? timeSpan : lbl_80562B3C;
+        elapsed = time - *currentKeyframe;
 
-        *(float **)arg1 = current;
-        *(float **)arg2 = next;
-        *arg3 = numerator / difference;
+        *(float **)outCurrent = currentKeyframe;
+        *(float **)outNext = nextKeyframe;
+        *outT = elapsed / timeSpan;
         return 1;
     }
     return 0;
@@ -267,7 +271,7 @@ extern float __fabsf(float);
 #pragma processor 750
 #pragma scheduling invalid_target
 int fn_801DA294(void *arg0, void *arg1, void *arg2, void *arg3) {
-    float *a = 0, *b = 0;
+    const float *a = 0, *b = 0;
     float t = 0.0f;
     float tr[3], ax[3], qb[4], qa[4], dl[3], q[4];
     float inv, sc, len, w, omt;
