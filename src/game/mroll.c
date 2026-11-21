@@ -687,7 +687,9 @@ extern char lbl_803425A8[];
 extern char lbl_8034288C[];
 s32 fn_8023512C(char *, s32, char *, s32);
 s32 fn_80232578(char *, char *, s32);
-void fn_80241224(void) {}
+/* Unused no-op stub in the mroll (player-info/roll) module; this build leaves it empty. */
+void fn_80241224(void) {
+}
 
 /* Unused no-op stub in the mroll (player-info/roll) module; this build leaves it empty. */
 void fn_80241228(void) {
@@ -1460,7 +1462,7 @@ extern char lbl_8055BD60;
 #pragma use_lmw_stmw off
 void fn_80242738(void *arg0, s32 arg1)
 {
-  register unsigned refreshIndex;
+  unsigned refreshIndex;
   s32 outer;
   s32 i;
   s32 n;
