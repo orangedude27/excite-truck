@@ -1120,17 +1120,21 @@ s32 fn_802D62E4(void *object) {
 }
 
 #pragma scheduling on
-void fn_802D62FC(void *__restrict arg0, s32 *arg1, s32 *arg2) {
+/* Look up (or build) the cached vertex-format display list for this surface:
+ * the cache is keyed by the descriptor's format byte and flag word.  A hit
+ * returns the stored list offset and size; a miss records a new GX display
+ * list into the shared buffer and appends it to the cache. */
+void fn_802D62FC(void *__restrict surface, s32 *outOffset, s32 *outSize) {
     extern s32 lbl_8055FDF0;
     extern s32 lbl_8055FDF4;
     extern s32 lbl_8055FDF8;
     extern void GXBeginDisplayList(void *, u32);
     extern u32 GXEndDisplayList(void);
     extern void fn_802D5DE8(u32);
-    register u8 *src = (u8 *)arg0;
+    register u8 *desc = (u8 *)surface;
     register CacheEntry *scan = (CacheEntry *)lbl_804CA438;
-    register u8 key = src[9];
-    register u32 id = *(u32 *)(src + 0xC);
+    register u8 key = desc[9];
+    register u32 id = *(u32 *)(desc + 0xC);
     s32 count = lbl_8055FDF0;
     s32 i;
     CacheEntry *write;
@@ -1138,8 +1142,8 @@ void fn_802D62FC(void *__restrict arg0, s32 *arg1, s32 *arg2) {
 
     for (i = 0; i < count; i++, scan++) {
         if (scan->id == id && scan->key == key) {
-            *arg1 = scan->start;
-            *arg2 = scan->size;
+            *outOffset = scan->start;
+            *outSize = scan->size;
             return;
         }
     }
@@ -1155,8 +1159,8 @@ void fn_802D62FC(void *__restrict arg0, s32 *arg1, s32 *arg2) {
     write->start = lbl_8055FDF8;
     write->size = size;
     lbl_8055FDF8 += size;
-    *arg1 = write->start;
-    *arg2 = write->size;
+    *outOffset = write->start;
+    *outSize = write->size;
 }
 #pragma push
 #pragma use_lmw_stmw off
