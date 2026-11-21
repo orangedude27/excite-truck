@@ -4,13 +4,17 @@
 // auto/text_802E3214_.c pending a promotion pass.
 #include <stdarg.h>
 
-extern int fn_802E367C(int);
+extern int fn_802E367C(int);            /* opens the log file, returns its handle */
 extern void fn_802E30C8(const char *, ...);
 extern void *__AXGetStudio_8000D82C(void);
 extern char lbl_8034CEF8[];
+#define sSeparator     lbl_8034CEF8 /* "================================" */
 extern int lbl_8055D178;
+#define sLogFileHandle lbl_8055D178
 extern int lbl_8055D180;
+#define sLogFileName   lbl_8055D180 /* "log.log" */
 extern char lbl_8055D188;
+#define sFmtPercentS   lbl_8055D188 /* "%s" */
 
 #pragma dont_inline on
 /* Formatted-message sink for the abnormal-end logger: `prefix` is 0 for a plain
