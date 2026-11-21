@@ -1483,47 +1483,51 @@ s32 fn_802B02C8(void *arg0) {
 }
 #pragma scheduling on
 extern s32 fn_802B1C50(s32, s32, s32);
-s32 fn_802B03C0(void *arg0) {
-    f32 temp_f0;
-    f32 temp_f0_2;
-    f32 temp_f1;
-    f32 temp_f2;
-    s32 valid;
-    f32 fx;
-    f32 fz;
-    s32 sx;
-    s32 sz;
-    s16 cx;
-    s16 cz;
-    u32 flags;
+s32 fn_802B03C0(void *position) {
+    /* Look up the surface/material id at a world position: require the field to be
+     * ready and the x/z coords inside the 1024-unit play area, snap them to the
+     * 8-cell grid, then read the map tile flags and use them to index the active
+     * material set's (lbl_8055F970) surface-row table. */
+    f32 scratch;
+    f32 z;
+    f32 negBound;
+    f32 bound;
+    s32 inRange;
+    f32 x;
+    f32 zCoord;
+    s32 cellX;
+    s32 cellZ;
+    s16 blockX;
+    s16 blockZ;
+    u32 tileFlags;
     s32 result;
 
     result = 0;
     if ((fn_802AE7AC() != 0) && (lbl_8055F970 != 0)) {
-        valid = 0;
-        temp_f2 = lbl_80564B84;
-        temp_f0 = lbl_80564AF0;
-        temp_f2 *= temp_f0;
-        temp_f1 = lbl_80564B6C;
-        temp_f2 *= temp_f1;
-        temp_f1 = -temp_f2;
-        temp_f0 = *(f32 *)arg0;
-        if ((temp_f0 > temp_f1) && (temp_f0 < temp_f2)) {
-            temp_f0_2 = *(f32 *)((u8 *)arg0 + 8);
-            if ((temp_f0_2 > temp_f1) && (temp_f0_2 < temp_f2))
-                valid = 1;
+        inRange = 0;
+        bound = lbl_80564B84;
+        scratch = lbl_80564AF0;
+        bound *= scratch;
+        negBound = lbl_80564B6C;
+        bound *= negBound;
+        negBound = -bound;
+        scratch = *(f32 *)position;
+        if ((scratch > negBound) && (scratch < bound)) {
+            z = *(f32 *)((u8 *)position + 8);
+            if ((z > negBound) && (z < bound))
+                inRange = 1;
         }
-        if (valid != 0) {
-            fx = *(f32 *)arg0;
-            fz = *(f32 *)((u8 *)arg0 + 8);
-            sx = (s32)(fx / lbl_80564AF0);
-            sz = (s32)(fz / lbl_80564AF0);
-            cx = (s16)((s16)(sx & ~7) + 4);
-            cz = (s16)((s16)(sz & ~7) + 4);
-            flags = *(u32 *)((u8 *)fn_802BE844(cx, cz, 4) + 8);
+        if (inRange != 0) {
+            x = *(f32 *)position;
+            zCoord = *(f32 *)((u8 *)position + 8);
+            cellX = (s32)(x / lbl_80564AF0);
+            cellZ = (s32)(zCoord / lbl_80564AF0);
+            blockX = (s16)((s16)(cellX & ~7) + 4);
+            blockZ = (s16)((s16)(cellZ & ~7) + 4);
+            tileFlags = *(u32 *)((u8 *)fn_802BE844(blockX, blockZ, 4) + 8);
             result = fn_802B1C50(*(s32 *)((char *)lbl_8055F970 + 4),
-                                  (flags >> 6) & 7,
-                                  ((flags >> 24) & 1) ^ 1);
+                                  (tileFlags >> 6) & 7,
+                                  ((tileFlags >> 24) & 1) ^ 1);
         }
     }
     return result;
