@@ -492,7 +492,7 @@ void fn_80005364(void) {
     lbl_8034EC40[2] = var3;
     lbl_8034EC40[3] = var3;
     lbl_8034EC40[4] = var3;
-    lbl_8055D32C = var5;
+    *(u32 *)&lbl_8055D32C = var5;
 }
 
 #pragma push
