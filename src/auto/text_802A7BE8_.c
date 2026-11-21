@@ -81,44 +81,45 @@ extern float lbl_80564908;
 extern float lbl_8056490C;
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_802A7CA8(void *unused, float farg0, int arg1)
+/* Project the tracked object to screen space and draw a distance-faded, scaled marker. */
+void fn_802A7CA8(void *unused, float distance, int arg1)
 {
   unsigned int position[3];
   float screen[3];
-  unsigned int xbits;
+  unsigned int xBits;
   void *object;
-  float inverse;
-  float *new_var;
+  float scratch;
+  float *scratchPtr;
   float opacity;
   float sizeFactor;
   float size;
-  unsigned int mask;
+  unsigned int colorMask;
   object = *((void **) (((char *) fn_801EA9A0()) + 8));
-  xbits = *((unsigned int *) (((char *) object) + 0x24));
+  xBits = *((unsigned int *) (((char *) object) + 0x24));
   position[1] = *((unsigned int *) (((char *) object) + 0x28));
-  inverse = *((float *) (&position[1]));
-  position[0] = xbits;
-  inverse = (*(new_var = &inverse)) + lbl_805648F0;
+  scratch = *((float *) (&position[1]));
+  position[0] = xBits;
+  scratch = (*(scratchPtr = &scratch)) + lbl_805648F0;
   position[2] = *((unsigned int *) (((char *) object) + 0x2C));
-  *((float *) (&position[1])) = *new_var;
+  *((float *) (&position[1])) = *scratchPtr;
   fn_802C8E70((float *) position, screen);
-  inverse = (farg0 - lbl_805648F4) / lbl_805648F8;
+  scratch = (distance - lbl_805648F4) / lbl_805648F8;
   opacity = lbl_805648F4;
-  opacity = (opacity < (*new_var)) ? (opacity) : (inverse);
+  opacity = (opacity < (*scratchPtr)) ? (opacity) : (scratch);
   if (1)
   {
     opacity = (opacity > lbl_805648FC) ? (opacity) : (lbl_805648FC);
     opacity = lbl_805648F4 + (opacity * lbl_805648F8);
-    mask = (((unsigned int) ((int) (lbl_80564900 * opacity))) << 24) | 0x00FFFFFF;
-    inverse = (farg0 - lbl_805648F4) / lbl_805648F8;
+    colorMask = (((unsigned int) ((int) (lbl_80564900 * opacity))) << 24) | 0x00FFFFFF;
+    scratch = (distance - lbl_805648F4) / lbl_805648F8;
     sizeFactor = lbl_805648F4;
-    sizeFactor = (sizeFactor < inverse) ? (sizeFactor) : (inverse);
+    sizeFactor = (sizeFactor < scratch) ? (sizeFactor) : (scratch);
   }
   sizeFactor = (sizeFactor > lbl_805648FC) ? (sizeFactor) : (lbl_805648FC);
   size = lbl_80564904 + (sizeFactor * lbl_80564908);
   if (fn_802C8FF4(screen, lbl_805648FC))
   {
-    ((void (*)(void *, int, unsigned int, float, float, float, float, float)) fn_80235CBC)((void *) lbl_8055F8C0, arg1, mask, screen[0] - (lbl_8056490C * size), screen[1] - (lbl_8056490C * size), lbl_805648FC, size, size);
+    ((void (*)(void *, int, unsigned int, float, float, float, float, float)) fn_80235CBC)((void *) lbl_8055F8C0, arg1, colorMask, screen[0] - (lbl_8056490C * size), screen[1] - (lbl_8056490C * size), lbl_805648FC, size, size);
   }
 }
 extern void fn_801E85B4(void);
