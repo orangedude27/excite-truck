@@ -13527,61 +13527,63 @@ extern "C" void fn_800BBCB4(void *);
 extern "C" s32 fn_800BB3F4(s32);
 #pragma push
 #pragma opt_propagation off
-extern "C" s32 fn_800B9DCC(u32 arg0) {
+/* Lazily open the storage device and register an interrupt callback for the
+   given device id: zero id -> 1, a conflicting id -> 0xB, setup failure -> 0x15. */
+extern "C" s32 fn_800B9DCC(u32 deviceId) {
     u32 zero = 0;
-    void *sp8;
-    s32 r;
-    s32 ret;
-    const char *str = lbl_8031B2B0;
-    if (arg0 == zero) {
-        ret = 1;
+    void *device;
+    s32 status;
+    s32 result;
+    const char *errors = lbl_8031B2B0;
+    if (deviceId == zero) {
+        result = 1;
     } else if (*(volatile u32 *)lbl_80407300 & 1) {
-        OSReport(str + 0x7C);
-        if (arg0 != *(volatile u32 *)(lbl_80407300 + 0xC)) {
-            ret = 0xB;
+        OSReport(errors + 0x7C);
+        if (deviceId != *(volatile u32 *)(lbl_80407300 + 0xC)) {
+            result = 0xB;
         } else {
-            ret = 0;
+            result = 0;
         }
     } else {
         if (!(*(volatile u32 *)lbl_80407300 & 4)) {
             *(s32 *)(lbl_80407300 + 4) = 0x200;
             fn_800A499C((const char *)lbl_80407320, 0, 0x28);
             if (fn_800BBCF4() != 0) {
-                OSReport(str + 0xBC);
+                OSReport(errors + 0xBC);
                 return 0x15;
             }
             if (fn_800BB3F4(0) == 0) *(s32 *)(lbl_80407300 + 0x10) = 1;
-            sp8 = lbl_80407320;
-            r = fn_800BBB58(0, &sp8);
-            if (r != 0) {
-                OSReport(str + 0xF4, r);
+            device = lbl_80407320;
+            status = fn_800BBB58(0, &device);
+            if (status != 0) {
+                OSReport(errors + 0xF4, status);
                 return 0x15;
             }
             if (*(s32 *)(lbl_80407300 + 0x10) != 0) {
                 lbl_8055DD60 = 2;
-                r = fn_800BC474((s32 *)sp8, (s32)fn_800B9CC4, &lbl_8055DD60);
-                if (r != 0) {
-                    OSReport(str + 0x130, r);
-                    fn_800BBCB4(sp8);
+                status = fn_800BC474((s32 *)device, (s32)fn_800B9CC4, &lbl_8055DD60);
+                if (status != 0) {
+                    OSReport(errors + 0x130, status);
+                    fn_800BBCB4(device);
                     return 0x15;
                 }
             } else {
                 lbl_8055DD60 = 1;
-                r = fn_800BC474((s32 *)sp8, (s32)fn_800B9BB4, &lbl_8055DD60);
-                if (r != 0) {
-                    OSReport(str + 0x130, r);
-                    fn_800BBCB4(sp8);
+                status = fn_800BC474((s32 *)device, (s32)fn_800B9BB4, &lbl_8055DD60);
+                if (status != 0) {
+                    OSReport(errors + 0x130, status);
+                    fn_800BBCB4(device);
                     return 0x15;
                 }
             }
-            *(void * volatile *)(lbl_80407300 + 8) = sp8;
+            *(void * volatile *)(lbl_80407300 + 8) = device;
             *(volatile u32 *)lbl_80407300 |= 4;
         }
-        *(volatile u32 *)(lbl_80407300 + 0xC) = arg0;
+        *(volatile u32 *)(lbl_80407300 + 0xC) = deviceId;
         *(volatile u32 *)lbl_80407300 |= 1;
-        ret = 0;
+        result = 0;
     }
-    return ret;
+    return result;
 }
 #pragma pop
 /* Initialize/query an IOS device state with retries and a sequence of control
