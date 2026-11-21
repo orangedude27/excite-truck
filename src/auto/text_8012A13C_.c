@@ -43,7 +43,7 @@ s32 fn_8012A17C(void *thisPool, s32 name, s32 count, s32 blockSize, s32 userBuff
         fn_8012A218(base);
         return;
     }
-    fn_802E317C((int *)&lbl_8032A5D8);
+    fn_802E317C((int *)&sPanicPoolAlloc);
 }
 
 #pragma push
