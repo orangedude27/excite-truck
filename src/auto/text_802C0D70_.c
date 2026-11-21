@@ -132,7 +132,6 @@ void fn_802C1018(void) {
 }
 #pragma pop
 
-extern void fn_802C6CF8(int);
 extern float *fn_802C86DC(float);
 extern void fn_802C744C(int, float *);
 extern void fn_802A4E08(void);
