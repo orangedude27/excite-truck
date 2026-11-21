@@ -2432,7 +2432,7 @@ extern "C" void SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(AxVoice *voice
 
 /* AxVoice::IsPlayFinished(): true when the voice's DSP play position has
  * reached the silence (zero) buffer's end region for its sample format.  The
- * play position and the buffer end are read under an interrupt lock; the two
+ * play position and buffer end are read under an interrupt lock; the three
  * single-field structs keep those values in callee-saved registers. */
 extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
     struct IrqWrap { unsigned int i; } irqState;
