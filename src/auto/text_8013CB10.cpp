@@ -1755,30 +1755,40 @@ extern "C" f32 fn_8013EFBC(f32 value) { return lbl_80561514 - value; }
 #pragma dont_inline reset
 
 #pragma scheduling invalid_target
-extern "C" unsigned int fn_8013EFC8(const void *arg0, int index) {
-    class Query {
+extern "C" unsigned int fn_8013EFC8(const void *zoneMaster, int index) {
+    class ZoneQuery {
     public:
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
         virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
         virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
         virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
-        virtual void d16(); virtual void callback(int);
+        virtual void d16(); virtual void notify(int);
         virtual void d18(); virtual void d19(); virtual void d20(); virtual void d21();
-        virtual void d22(); virtual void d23(); virtual int query();
+        virtual void d22(); virtual void d23(); virtual int needsContinue();
     };
-    f32 magnitude = (f32)__fabs((f64)*(const f32 *)((const u8 *)arg0 + 0x250));
-    if (magnitude <= *(f32 *)&lbl_80558DC4) {
-        if (*(const u8 *)((const u8 *)arg0 + 0x13C) != 0)
-            ((Query *)arg0)->callback(index);
-        s32 object = *(const s32 *)((const u8 *)arg0 + 0x140);
-        if (object != 0)
-            ((void (*)(s32, s32))fn_802AE220)(object, 0);
+#define kFloatEps        lbl_80558DC4
+#define StopEffects      fn_802AE220
+#define ShowContinueMenu fn_8001DFCC
+    /* RealName: CheckZoneMasterMotion. When the master's motion (+0x250) is
+       near zero, optionally notify it and stop its effects; otherwise just
+       notify it. Show the continue overlay if queried, and report whether its
+       event-state field (+0x134) is anything but 4. */
+    f32 magnitude = (f32)__fabs((f64)*(const f32 *)((const u8 *)zoneMaster + 0x250));
+    if (magnitude <= *(f32 *)&kFloatEps) {
+        if (*(const u8 *)((const u8 *)zoneMaster + 0x13C) != 0)
+            ((ZoneQuery *)zoneMaster)->notify(index);
+        s32 effectHandle = *(const s32 *)((const u8 *)zoneMaster + 0x140);
+        if (effectHandle != 0)
+            ((void (*)(s32, s32))StopEffects)(effectHandle, 0);
     } else {
-        ((Query *)arg0)->callback(index);
+        ((ZoneQuery *)zoneMaster)->notify(index);
     }
-    if (((Query *)arg0)->query())
-        fn_8001DFCC();
-    return *(const s32 *)((const u8 *)arg0 + 0x134) != 4;
+    if (((ZoneQuery *)zoneMaster)->needsContinue())
+        ShowContinueMenu();
+    return *(const s32 *)((const u8 *)zoneMaster + 0x134) != 4;
+#undef kFloatEps
+#undef StopEffects
+#undef ShowContinueMenu
 }
 #pragma scheduling on
 extern "C" s32 fn_8013F088(void *zoneMaster) {
