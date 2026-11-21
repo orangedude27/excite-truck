@@ -37,7 +37,7 @@ void *fn_801D1008(void *object, s32 shouldDelete) {
 }
 
 #pragma cplusplus on
-/* Notify every registered listener in the table (in registration order) via virtual slot +0x14 that the race/level context is starting. */
+/* Notify every registered listener in the table (in registration order) via virtual slot +0x1C that the race/level context is starting. */
 extern "C" void fn_801D108C(void *context) {
 #define gListenerCount lbl_8055E8FC
 #define gListenerTable lbl_80438858
