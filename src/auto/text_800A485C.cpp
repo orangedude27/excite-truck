@@ -9249,7 +9249,6 @@ u16 fn_800B25CC(void *arg0, s32 arg1) {
     u32 var_r3;
     u32 var_r3_2;
     u32 var_r3_3;
-    u32 var_r3_4;
     u8 *temp_r3;
     u8 *temp_r5;
     u8 temp_r4;
@@ -9327,11 +9326,11 @@ block_27:
         }
         if (var_r3_3 == 1U) {
             M2C_FIELD(&lbl_803D2140, s32 (**)(u16 *, u16 *), 0x4C)(&(*(u16 *)work), &(*(u16 *)work));
-            var_r3_4 = 1U;
+            var_r3_3 = 1U;
         } else {
-            var_r3_4 = 0U;
+            var_r3_3 = 0U;
         }
-        if (var_r3_4 == 1U) {
+        if (var_r3_3 == 1U) {
             (*(u16 *)(work + 4)) = (*(u16 *)work);
         }
     }
@@ -16977,11 +16976,10 @@ static inline void fn_800C0E7C_rotate(s32 *p, s32 *out, s32 *rotation = lbl_8031
 #pragma push
 #pragma use_lmw_stmw on
 extern "C" u32 fn_800C0E7C(TransformState800C *self, s32 (*a90)[36], s32 (*a48)[18], s32 *a4, s32 *flags, s32 *base) {
-    const TransformState800C *context = self;
     s32 *a4b = a4 + 0x440;
     s32 m2[12], m1[12], m0[12];
     s16 ch;
-    for (ch = 0; ch < context->channels; flags++, a90 += 32, base += 0x900, ch++, a4b += 0x20, a4 += 0x20, a48 += 32) {
+    for (ch = 0; ch < self->channels; flags++, a90 += 32, base += 0x900, ch++, a4b += 0x20, a4 += 0x20, a48 += 32) {
         s16 i;
         s32 (*p90)[36];
         s32 (*p48)[18];
@@ -16992,7 +16990,7 @@ extern "C" u32 fn_800C0E7C(TransformState800C *self, s32 (*a90)[36], s32 (*a48)[
         if (*flags & 7) {
             if (*flags & 1) {
                 p90 = a90; p4b = a4b; p4 = a4; p48 = a48;
-                for (i = 0; i < context->rows; p90++, p4b++, p4++, p48++, i++) {
+                for (i = 0; i < self->rows; p90++, p4b++, p4++, p48++, i++) {
                     fn_800C18A0(&base[i * 16 + i * 2] + 0x6C0, *p90);
                     if (!(i & 1))
                         fn_800C2590(*p90, *p48, p4, p4b);
@@ -17002,7 +17000,7 @@ extern "C" u32 fn_800C0E7C(TransformState800C *self, s32 (*a90)[36], s32 (*a48)[
                 }
             } else {
                 p90 = a90; p4b = a4b; p4 = a4; p48 = a48;
-                for (i = 0; i < context->rows; i++, p90++, p4b++, p4++, p48++) {
+                for (i = 0; i < self->rows; i++, p90++, p4b++, p4++, p48++) {
                     fn_800C18A0(&base[i * 16 + i * 2] + 0x6C0, *p90);
                     if (*flags & 2) {
                         if (!(i & 1))
@@ -17025,10 +17023,10 @@ extern "C" u32 fn_800C0E7C(TransformState800C *self, s32 (*a90)[36], s32 (*a48)[
                 fn_800C18A0(&base[j * 16 + j * 2] + 0x6C0, a90[j]);
                 fn_800C21D8(a90[j], &a90[j][17]);
             }
-            z = a90[context->rows - 1];
+            z = a90[self->rows - 1];
             for (j = 0; j < 36; j++)
                 z[j] = 0;
-            for (i = 2; i < context->rows - 1; i++) {
+            for (i = 2; i < self->rows - 1; i++) {
                 s32 *row = &base[i * 4 + i * 2];
                 fn_800C0E7C_rotate(row, m0);
                 s32 *row1 = row + 0x240;
@@ -17038,7 +17036,7 @@ extern "C" u32 fn_800C0E7C(TransformState800C *self, s32 (*a90)[36], s32 (*a48)[
                 fn_800C3088(a90[i], m0, m1, m2);
             }
             p48 = a48; p90 = a90; p4 = a4;
-            for (i = 0; i < context->rows; p4++, p90++, i++, p48++) {
+            for (i = 0; i < self->rows; p4++, p90++, i++, p48++) {
                 if (!(i & 1))
                     fn_800C1F6C((u32 *)p4, (u32 *)*p90, (u32 *)*p48);
                 else
@@ -17047,10 +17045,10 @@ extern "C" u32 fn_800C0E7C(TransformState800C *self, s32 (*a90)[36], s32 (*a48)[
                     (*p48)[j] = (*p90)[18 + j];
             }
         } else if (*flags & 0x10) {
-            z = a90[context->rows - 1];
+            z = a90[self->rows - 1];
             for (j = 0; j < 36; j++)
                 z[j] = 0;
-            for (i = 0; i < context->rows - 1; i++) {
+            for (i = 0; i < self->rows - 1; i++) {
                 s32 *row = &base[i * 4 + i * 2];
                 fn_800C0E7C_rotate(row, m0);
                 s32 *row1 = row + 0x240;
@@ -17060,7 +17058,7 @@ extern "C" u32 fn_800C0E7C(TransformState800C *self, s32 (*a90)[36], s32 (*a48)[
                 fn_800C3088(a90[i], m0, m1, m2);
             }
             p48 = a48; p90 = a90; p4 = a4;
-            for (i = 0; i < context->rows; p4++, p90++, i++, p48++) {
+            for (i = 0; i < self->rows; p4++, p90++, i++, p48++) {
                 if (!(i & 1))
                     fn_800C1F6C((u32 *)p4, (u32 *)*p90, (u32 *)*p48);
                 else
