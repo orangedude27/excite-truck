@@ -144,6 +144,8 @@ s32 fn_802ECEEC(void) {
     return (s32)(bits >> 31);
 }
 
+/* Tail-call forward to fn_802ECE48: enqueue movieName as the head of the
+   single-movie list, passing its success/failure result straight back. */
 void fn_802ECF00(char *movieName) {
     fn_802ECE48(movieName);
 }
