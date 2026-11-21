@@ -500,6 +500,9 @@ extern "C" void *fn_80296B10(char *arg0, void *arg1) {
     return result;
 }
 #pragma pop
+/* No-op element constructor for the 0x30-byte open-entry records that
+ * fn_8002F37C allocates at result+0x24 in fn_80296B10; the records are filled
+ * in afterwards by fn_802964EC, so each element needs no setup here. */
 void fn_80296D24(void) {}
 
 /* FlipBook_release: drop one reference to a FlipBook by tail-calling the
