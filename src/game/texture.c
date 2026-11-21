@@ -937,7 +937,7 @@ void fn_802CB424(void) {
     if (m != 0) {
         int v;
         int *p;
-        unsigned int count;
+        int count;
         zero = 0;
         m->heap = 0;
         m->sub = 0;
@@ -986,20 +986,16 @@ void fn_802CB424(void) {
         count = 0x40;
         p = (int *)m;
         v = 0;
-#pragma ctrloop on
         do {
             int k;
             for (k = 0; k < 8; k++)
                 p[0xF + k * 5] = v++;
             p += 40;
         } while (--count != 0);
-#pragma ctrloop reset
         m->f2848 = 0;
     }
     *(void **)lbl_8055FCBC = m;
 }
-#pragma ctrloop reset
-#pragma unroll reset
 extern char lbl_8034BAEC[];
 extern char lbl_8034BB1C[];
 extern char lbl_8034BB5C[];
@@ -1605,49 +1601,53 @@ extern char lbl_8055D090;
 #pragma scheduling invalid_target
 #pragma dont_inline on
 #pragma use_lmw_stmw off
-void fn_802CC410(void *arg0) {
-    struct { int *v; } w_node;
+void fn_802CC410(void *texMgr) {
+    struct { int *v; } w_req;
     register int zero = 0;
     register int done = 2;
-    struct { int v; } w_value;
-    register char *root = (char *)arg0;
-    #define node w_node.v
-    #define value w_value.v
-    int temporary;
-    int result;
+    struct { int v; } w_entry;
+    register char *mgr = (char *)texMgr;
+    #define req w_req.v
+    #define entry w_entry.v
+    int loadedSize;
+    int loaded;
 
+    /* Process the manager's pending texture requests: for a request whose async
+     * resource is loaded, fill its 0x4C-byte record in lbl_8055FCB0, tag it
+     * "LOADED", accumulate its size into +0x18, and mark its status slot at
+     * +0x40 done; then restart from the list head until none is ready. */
 outer:
-    node = *(int **)root;
-    value = -2;
-    while (node != 0) {
-        if (node[4] == -1) {
-            result = fn_8012C7FC((void *)node[0], &temporary);
-            if (result != 0) {
-                value = lbl_8055FCB0 + node[1] * 0x4C;
-                *(int *)(value + 0x44) = node[2];
-                *(int *)(value + 0x40) = fn_802CB38C((void *)result,
-                    (void *)node[3],
-                    (void *)*(int *)(lbl_8055FCB0 + 0x34 + node[1] * 0x4C));
-                node[3] = zero;
-                fn_8012C958(node[0]);
-                node[0] = zero;
-                node[2] = zero;
-                fn_802CBB9C((int **)(root + 4), (int)root, node);
+    req = *(int **)mgr;
+    entry = -2;
+    while (req != 0) {
+        if (req[4] == -1) {
+            loaded = fn_8012C7FC((void *)req[0], &loadedSize);
+            if (loaded != 0) {
+                entry = lbl_8055FCB0 + req[1] * 0x4C;
+                *(int *)(entry + 0x44) = req[2];
+                *(int *)(entry + 0x40) = fn_802CB38C((void *)loaded,
+                    (void *)req[3],
+                    (void *)*(int *)(lbl_8055FCB0 + 0x34 + req[1] * 0x4C));
+                req[3] = zero;
+                fn_8012C958(req[0]);
+                req[0] = zero;
+                req[2] = zero;
+                fn_802CBB9C((int **)(mgr + 4), (int)mgr, req);
                 ((void (*)(void *, const char *))fn_802CB3F8)(
-                    (void *)(value + 4), &lbl_8055D090);
-                *(int *)(root + 0x18) += *(int *)(value + 0x3C);
-                value = node[1];
+                    (void *)(entry + 4), &lbl_8055D090);
+                *(int *)(mgr + 0x18) += *(int *)(entry + 0x3C);
+                entry = req[1];
                 break;
             }
         }
-        node = *(int **)((char *)node + 0x14);
+        req = *(int **)((char *)req + 0x14);
     }
-    if (value != -2) {
-        *(int *)(root + value * 0x14 + 0x40) = done;
+    if (entry != -2) {
+        *(int *)(mgr + entry * 0x14 + 0x40) = done;
         goto outer;
     }
-#undef node
-#undef value
+#undef req
+#undef entry
 }
 #pragma scheduling on
 #pragma use_lmw_stmw on
