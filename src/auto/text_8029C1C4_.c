@@ -1345,6 +1345,8 @@ extern float lbl_80564660;
 extern float lbl_80564664;
 extern float lbl_80564668;
 extern float lbl_80564674;
+#pragma push
+#pragma scheduling on
 void fn_8029E49C(int unused, void *arg1, int arg2) {
     struct Locals { float sp8, spC, sp10, sp14, sp18, sp1C; } s;
     float *f = (float *)arg1;
