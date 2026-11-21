@@ -303,13 +303,15 @@ int fn_802C1500(int arg0, int arg1) {
         char padding[0x58];
     };
     int index = lbl_8055FB2C;
+    struct Entry *table = (struct Entry *)lbl_804C0810;
+    int off = arg1 * 0x60;
     lbl_8055FB2C = index + 1;
     ((int *)lbl_8055FB30)[index] = arg0;
-    if (((struct Entry *)lbl_804C0810)[arg1].first < 0) {
-        ((struct Entry *)lbl_804C0810)[arg1].first = index;
-        ((struct Entry *)lbl_804C0810)[arg1].second = index;
+    if (((struct Entry *)((char *)table + off))->first < 0) {
+        ((struct Entry *)((char *)table + off))->first = index;
+        ((struct Entry *)((char *)table + off))->second = index;
     } else {
-        ((struct Entry *)lbl_804C0810)[arg1].second = index;
+        ((struct Entry *)((char *)table + off))->second = index;
     }
     return lbl_8055CFA0 + index;
 }
@@ -351,7 +353,6 @@ extern "C" void fn_802C1550(void) {
         virtual void u20();
         virtual Dispatch *find(const char *);
     };
-    Dispatch *obj = 0;
     register char *entry = lbl_804C0810;
     int outer = 0;
     register unsigned long zero = 0;
@@ -367,7 +368,7 @@ extern "C" void fn_802C1550(void) {
         char *index;
         char *name;
         entry[0x28] = ((Dispatch *)*(void **)(entry + (int)0x30))->hasFlag(lbl_8034AED0 + 0x54, zero) == zero;
-        if ((obj = ((Dispatch *)*(void **)(entry + 0x30))->find(lbl_8034AED0 + 0x60)) != 0) {
+        if (Dispatch *obj = ((Dispatch *)*(void **)(entry + 0x30))->find(lbl_8034AED0 + 0x60)) {
             *(f32 *)(entry + 0x2c) = obj->getValue(lbl_8034AED0 + 0x6c);
             index = obj->getResource(lbl_8055CFA4);
             count = obj->getCount(lbl_8055CFAC);
