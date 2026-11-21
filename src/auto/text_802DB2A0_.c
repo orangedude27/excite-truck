@@ -23,6 +23,7 @@ s32 fn_802DB2A8(s32 slotCount) {
 void fn_802DB2B0(s32 slotCount) {
 }
 
+/* No-op model-manager hook forwarded by fn_802C8230; this build leaves it empty. */
 void fn_802DB2B4(void) {}
 
 /* No-op model-config hook: fn_802C8234 forwards the water amplitude value
