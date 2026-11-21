@@ -28,11 +28,17 @@ struct PathPoolTable {
 struct PathSpawnEntry {
     void *source;          // +0x00: object to place the prop at (position +0x10, quaternion +0x1C)
     char poolName[0x10];   // +0x04: pool the prop is taken from, matched with stricmp
-    unsigned short mode;   // +0x14: 0 = spawn every frame, 1 = spawn on a timer
+    unsigned short mode;   // +0x14: PathSpawnMode, how often the prop spawns
     unsigned short endBehavior;  // +0x16: PathEndBehavior, what a drone does at the last node
     float minDelay;        // +0x18: timer range, low end
     float maxDelay;        // +0x1C: timer range, high end
     float nextSpawn;       // +0x20: time the next prop is due
+};
+
+// PathSpawnEntry::mode: how often an entry spawns its prop.
+enum PathSpawnMode {
+    PATH_SPAWN_CONTINUOUS = 0, // spawn every frame
+    PATH_SPAWN_TIMED = 1       // spawn when a countdown timer expires
 };
 
 // PathSpawnEntry::endBehavior: what a drone does when it runs off the end of
@@ -424,70 +430,59 @@ extern "C" void fn_801FD024(void* arg0, void* arg1) {
     char* dst = (char*)arg0;
     float initial = lbl_80563034;
     *(void**)(dst + 4) = arg1;
-    void* src = *(void**)arg1;
+    char* src = *(char**)arg1;
     *(int*)(dst + 0x3C) = 0;
-    register float z, y, x2, yy, xx, one, w, x, yz, xw, z2, y2;
-    one = lbl_80563030;
+    float one = lbl_80563030;
     *(float*)(dst + 0x40) = initial;
-    *(float*)(dst + 0x44) = *(float*)((char*)src + 0x1C);
-    *(float*)(dst + 0x48) = *(float*)((char*)src + 0x20);
-    *(float*)(dst + 0x4C) = *(float*)((char*)src + 0x24);
-    *(float*)(dst + 0x50) = *(float*)((char*)src + 0x28);
-    *(float*)(dst + 0x54) = *(float*)((char*)src + 0x40);
-    *(float*)(dst + 0x58) = *(float*)((char*)src + 0x44);
-    *(float*)(dst + 0x5C) = *(float*)((char*)src + 0x48);
-    *(float*)(dst + 0x60) = *(float*)((char*)src + 0x4C);
-    float w0 = *(float*)((char*)src + 0x2C);
+    *(float*)(dst + 0x44) = *(float*)(src + 0x1C);
+    *(float*)(dst + 0x48) = *(float*)(src + 0x20);
+    *(float*)(dst + 0x4C) = *(float*)(src + 0x24);
+    *(float*)(dst + 0x50) = *(float*)(src + 0x28);
+    *(float*)(dst + 0x54) = *(float*)(src + 0x40);
+    *(float*)(dst + 0x58) = *(float*)(src + 0x44);
+    *(float*)(dst + 0x5C) = *(float*)(src + 0x48);
+    *(float*)(dst + 0x60) = *(float*)(src + 0x4C);
+    float w0 = *(float*)(src + 0x2C);
     *(float*)(dst + 0x64) = w0;
-    *(float*)(dst + 0x68) = *(float*)((char*)src + 0x50);
+    *(float*)(dst + 0x68) = *(float*)(src + 0x50);
     *(float*)(dst + 0x6C) = w0;
-    *(float*)(dst + 0x30) = *(float*)((char*)src + 0x10);
-    *(float*)(dst + 0x34) = *(float*)((char*)src + 0x14);
-    *(float*)(dst + 0x38) = *(float*)((char*)src + 0x18);
-    volatile float* quat = (volatile float*)((char*)src + 0x1C);
-    x = quat[0];
-    y = quat[1];
-    z = quat[2];
-    x2 = x + x;
-    y2 = y + y;
-    w = quat[3];
-    z2 = z + z;
-    xx = x * x2;
-    yy = y * y2;
-    z = z * z2;
-    xw = w * x2;
-    yz = y * z2;
-    float sum0 = yy + z;
-    float sum1 = xx + z;
-    float sum2 = xx + yy;
-    float m00 = one - sum0;
-    float m11 = one - sum1;
-    float m22 = one - sum2;
-    float m12 = yz - xw;
-    *(float*)(dst + 0xC) = m00;
-    float m21 = yz + xw;
-    float yw = w * y2;
-    float xz = x * z2;
-    float zw = w * z2;
-    float xy = x * y2;
-    float m24 = xz + yw;
-    float m14 = xz - yw;
-    float m18 = xy - zw;
-    float m10 = xy + zw;
-    *(float*)(dst + 0x28) = m12;
-    *(float*)(dst + 0x24) = m24;
-    *(float*)(dst + 0x18) = m18;
-    *(float*)(dst + 0x10) = m10;
-    *(float*)(dst + 0x14) = m14;
-    *(float*)(dst + 0x1C) = m11;
-    *(float*)(dst + 0x20) = m21;
-    *(float*)(dst + 0x2C) = m22;
+    *(float*)(dst + 0x30) = *(float*)(src + 0x10);
+    *(float*)(dst + 0x34) = *(float*)(src + 0x14);
+    *(float*)(dst + 0x38) = *(float*)(src + 0x18);
+    volatile float* q = (volatile float*)(src + 0x1C);
+    float x = q[0];
+    float y = q[1];
+    float z = q[2];
+    float xs = x + x;
+    float ys = y + y;
+    float w = q[3];
+    float zs = z + z;
+    float xx = x * xs;
+    float yy = y * ys;
+    float zz = z * zs;
+    float wx = w * xs;
+    float yz = y * zs;
+    float* m = (float*)(dst + 0xC);
+    m[0] = one - (yy + zz);
+    m[4] = one - (xx + zz);
+    m[8] = one - (xx + yy);
+    m[7] = yz - wx;
+    m[5] = yz + wx;
+    float wy = w * ys;
+    float xz = x * zs;
+    float wz = w * zs;
+    float xy = x * ys;
+    m[6] = xz + wy;
+    m[2] = xz - wy;
+    m[3] = xy - wz;
+    m[1] = xy + wz;
 }
 
-#pragma processor 750
+#pragma scheduling invalid_target
 extern "C" void fn_801FD144(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, float farg0) {
     Vec dA;
     Vec dB;
+    float s[3];
     Vec *a = (Vec *)arg3;
     Vec *b = (Vec *)arg2;
     if (arg1 != 0) {
@@ -522,17 +517,13 @@ extern "C" void fn_801FD144(void *arg0, void *arg1, void *arg2, void *arg3, void
     float bx = b->x, by = b->y, bz = b->z;
     float dax = dA.x, day = dA.y, daz = dA.z;
     float dbx = dB.x, dby = dB.y, dbz = dB.z;
-    float ax = a->x, ay = a->y, az = a->z;
     float h11 = c44t3 + h01helper;
-    float sx = (bx*h00 + dax*h10) + dbx*h01;
-    float sy = (by*h00 + day*h10) + dby*h01;
-    float sz = (bz*h00 + daz*h10) + dbz*h01;
-    float px = sx + ax*h11;
-    float py = sy + ay*h11;
-    float pz = sz + az*h11;
-    ((float *)arg0)[12] = px;
-    ((float *)arg0)[13] = py;
-    ((float *)arg0)[14] = pz;
+    s[0] = (bx*h00 + dax*h10) + dbx*h01;
+    s[1] = (by*h00 + day*h10) + dby*h01;
+    s[2] = (bz*h00 + daz*h10) + dbz*h01;
+    ((float *)arg0)[12] = s[0] + a->x*h11;
+    ((float *)arg0)[13] = s[1] + a->y*h11;
+    ((float *)arg0)[14] = s[2] + a->z*h11;
 }
 extern "C" double cos(double);
 extern "C" double sin(double);
@@ -600,47 +591,45 @@ extern "C" void fn_801FD320(void* arg0, float t) {
     float q[4];
     fn_8012F57C(q, (char*)arg0 + 0x44, (char*)arg0 + 0x54, t);
     volatile float* pq = q;
-    register float x, y, z, w;
+    register float z, y, x2, yy, xx, one, w, x, z2, y2, yz, xw;
+    one = lbl_80563030;
     x = pq[0];
     y = pq[1];
     z = pq[2];
-    register float z2, y2, x2;
     x2 = x + x;
     y2 = y + y;
     w = pq[3];
     z2 = z + z;
-    register float zz, yy, xx;
     xx = x * x2;
     yy = y * y2;
-    zz = z * z2;
-    float wx = w * x2;
-    float yz = y * z2;
-    float sum0 = yy + zz;
-    float sum1 = xx + zz;
+    z = z * z2;
+    xw = w * x2;
+    yz = y * z2;
+    float sum0 = yy + z;
+    float sum1 = xx + z;
     float sum2 = xx + yy;
-    float one = lbl_80563030;
-    float r0 = one - sum0;
-    float r1 = one - sum1;
-    float r2 = one - sum2;
-    float m28 = yz - wx;
-    *(float*)((char*)arg0 + 0xC) = r0;
-    float m20 = yz + wx;
-    float wy = w * y2;
+    float m00 = one - sum0;
+    float m11 = one - sum1;
+    float m22 = one - sum2;
+    float m12 = yz - xw;
+    *(float*)((char*)arg0 + 0xC) = m00;
+    float m21 = yz + xw;
+    float yw = w * y2;
     float xz = x * z2;
-    float wz = w * z2;
-    *(float*)((char*)arg0 + 0x1C) = r1;
+    float zw = w * z2;
     float xy = x * y2;
-    float m24 = xz + wy;
-    float m14 = xz - wy;
-    float m18 = xy - wz;
-    float m10 = xy + wz;
-    *(float*)((char*)arg0 + 0x28) = m28;
+    float m24 = xz + yw;
+    float m14 = xz - yw;
+    float m18 = xy - zw;
+    float m10 = xy + zw;
+    *(float*)((char*)arg0 + 0x28) = m12;
     *(float*)((char*)arg0 + 0x24) = m24;
     *(float*)((char*)arg0 + 0x18) = m18;
     *(float*)((char*)arg0 + 0x10) = m10;
     *(float*)((char*)arg0 + 0x14) = m14;
-    *(float*)((char*)arg0 + 0x20) = m20;
-    *(float*)((char*)arg0 + 0x2C) = r2;
+    *(float*)((char*)arg0 + 0x20) = m21;
+    *(float*)((char*)arg0 + 0x2C) = m22;
+    *(float*)((char*)arg0 + 0x1C) = m11;
 }
 
 #pragma push
@@ -657,7 +646,7 @@ extern "C" void fn_801FD3F0(void* arg0, float farg0) {
     char* node = base + 0x10;
     float length = *(float*)(node + 0x20);
     register float step = length * pos;
-    float one = 1.0f;
+    register float one = 1.0f;
     if (step < one) {
         *(float*)(obj + 0x40) = pos;
     } else {
@@ -922,7 +911,7 @@ extern "C" void* fn_801FE188(void* obj) {
 #pragma use_lmw_stmw off
 #pragma scheduling on
 extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
-    register unsigned char* q = p + 0x3C;
+    register unsigned char (*q)[0x18] = (unsigned char (*)[0x18])(p + 0x3C);
     register unsigned char a=p[0x2C];
     register unsigned char x0=p[0x3B];
     register unsigned char b=p[0x2D];
@@ -943,14 +932,14 @@ extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
     p[0x2E]=x2; p[0x39]=c; p[0x2F]=x3; p[0x38]=d;
     p[0x32]=x6; p[0x35]=g; p[0x33]=x7; p[0x34]=h;
     p[0x30]=x4; p[0x37]=e; p[0x31]=x5; p[0x36]=f;
-    for (int i=0; i<32; i++, q+=0x18) {
+    for (int i=0; i<32; i++, q++) {
       unsigned char x;
-      x=q[0];q[0]=q[3];q[3]=x; x=q[1];q[1]=q[2];q[2]=x;
-      x=q[4];q[4]=q[7];q[7]=x; x=q[5];q[5]=q[6];q[6]=x;
-      x=q[8];q[8]=q[11];q[11]=x; x=q[9];q[9]=q[10];q[10]=x;
-      x=q[12];q[12]=q[15];q[15]=x; x=q[13];q[13]=q[14];q[14]=x;
-      x=q[16];q[16]=q[19];q[19]=x; x=q[17];q[17]=q[18];q[18]=x;
-      x=q[20];q[20]=q[23];q[23]=x; x=q[21];q[21]=q[22];q[22]=x;
+      x=(*q)[0];(*q)[0]=(*q)[3];(*q)[3]=x; x=(*q)[1];(*q)[1]=(*q)[2];(*q)[2]=x;
+      x=(*q)[4];(*q)[4]=(*q)[7];(*q)[7]=x; x=(*q)[5];(*q)[5]=(*q)[6];(*q)[6]=x;
+      x=(*q)[8];(*q)[8]=(*q)[11];(*q)[11]=x; x=(*q)[9];(*q)[9]=(*q)[10];(*q)[10]=x;
+      x=(*q)[12];(*q)[12]=(*q)[15];(*q)[15]=x; x=(*q)[13];(*q)[13]=(*q)[14];(*q)[14]=x;
+      x=(*q)[16];(*q)[16]=(*q)[19];(*q)[19]=x; x=(*q)[17];(*q)[17]=(*q)[18];(*q)[18]=x;
+      x=(*q)[20];(*q)[20]=(*q)[23];(*q)[23]=x; x=(*q)[21];(*q)[21]=(*q)[22];(*q)[22]=x;
     }
     volatile unsigned char *v = p;
     unsigned char i0=v[0x33C], i1=v[0x33F];
