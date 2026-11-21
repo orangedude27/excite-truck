@@ -9414,6 +9414,8 @@ extern "C" void fn_802298F8(void) {
 }
 
 extern "C" void fn_802298FC(void) {
+    /* Empty no-op: another default callback with no behaviour, paired with the
+     * no-op at fn_802298F8. */
 }
 
 /* Invokes the object's virtual Call callback with both arguments zeroed. */
