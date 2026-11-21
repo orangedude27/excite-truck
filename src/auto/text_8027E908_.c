@@ -3886,21 +3886,19 @@ extern "C" void fn_8028679C(void *plane) {
     ((ebi::title::TPlaneObj*)plane)->m_sub->v7();
 }
 #pragma cplusplus off
+/* Title plane value: return a value spec's scaled int clamped to its max, or the sub-object's v8(). */
 int fn_802867B0(void *__restrict arg0) {
-    register void *p = *(void **)((char *)arg0 + 0x20);
-    if (p != 0) {
-        int value = (int)((float)*(int *)p + *(float *)((char *)p + 0x10));
-        int limit = *(int *)((char *)p + 4);
-        if (value < limit)
-            return value;
-        return limit;
+    register void *valueSpec = *(void **)((char *)arg0 + 0x20);
+    if (valueSpec != 0) {
+        int scaledValue = (int)((float)*(int *)valueSpec + *(float *)((char *)valueSpec + 0x10));
+        int maxValue = *(int *)((char *)valueSpec + 4);
+        if (scaledValue < maxValue)
+            return scaledValue;
+        return maxValue;
     }
-    {
-    void *q = *(void **)((char *)arg0 + 0x1c);
 #pragma cplusplus on
-    return ((struct Fn867B0Iface *)q)->v8();
+    return ((ebi::title::TPlaneObj*)arg0)->m_sub->v8();
 #pragma cplusplus reset
-    }
 }
 
 /* Refresh this object: query its value (vtable slot 8) and apply it back (vtable slot 10). */
