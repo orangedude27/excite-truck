@@ -13039,6 +13039,7 @@ extern "C" s32 fn_800B90A8(s32 arg0)
   u32 length;
   u16 i;
   u32 off;
+  u32 id;
   u8 *entry;
   entry = 0;
   fn_800B8004(lbl_8055DD30);
@@ -13050,7 +13051,8 @@ extern "C" s32 fn_800B90A8(s32 arg0)
   for (i = 0; i < 0x17; i++)
   {
     off = i * 0xf0;
-    if ((*((u32 *) (((u8 *) lbl_80405D58) + off))) == ((u32) arg0))
+    id = *((u32 *) (((u8 *) lbl_80405D58) + off));
+    if (id == ((u32) arg0))
     {
       *((u32 *) ((((u8 *) lbl_80405D58) + off) + 0xec)) = 0;
       break;
@@ -13080,36 +13082,37 @@ extern "C" s32 fn_800B90A8(s32 arg0)
     if (tmp != 0)
     {
       result = tmp;
-      goto fail;
+      goto check;
     }
     tmp = NANDClose(entry + 0x58);
     if (tmp < 0)
     {
       result = tmp;
-      goto fail;
+      goto check;
     }
     tmp = NANDOpen(entry + 4, entry + 0x58, 3);
     if (tmp < 0)
     {
       result = tmp;
-      goto fail;
+      goto check;
     }
     tmp = NANDSeek(entry + 0x58, length, 0);
     result = tmp & (tmp >> 31);
-    if ((result + 1) <= 0)
+  check:
+    if (result < 0)
     {
-      fail:
       for (i = 0; i < 0x17; i++)
       {
         off = i * 0xf0;
-        if ((*((u32 *) (((u8 *) lbl_80405D58) + off))) == ((u32) arg0))
+        id = *((u32 *) (((u8 *) lbl_80405D58) + off));
+        if (id == ((u32) arg0))
         {
           *((u32 *) ((((u8 *) lbl_80405D58) + off) + 0xec)) = result;
           break;
         }
       }
-
-
+      fn_800B8048(lbl_8055DD30);
+      return result;
     }
   }
   fn_800B8048(lbl_8055DD30);
@@ -16912,7 +16915,7 @@ extern "C" void fn_800C0B68(Fn800C0B68Context *arg0, s32 arg1, s32 arg2, s16 *ar
     s32 temp_r3;
     u32 temp_r5, temp_r8, temp_r8_2, temp_r8_3, temp_r8_4;
     u32 temp_r0, var_ctr, var_ctr_2, var_r3_2;
-    s32 shift, j;
+    s32 shift;
     s16 *var_r5_2, *var_r31 = arg3 + arg4;
     var_r4 = 0;
     goto block_25;
@@ -16936,11 +16939,8 @@ loop_25:
             temp_r0 = var_r3_2 >> 3U; var_ctr = temp_r0;
             if (temp_r0 != 0) {
                 do {
-                    for (j = 0; j < 8; j++) {
-                        var_r5_2[0] = var_r4; var_r5_2[1] = var_r4; var_r5_2[2] = var_r4; var_r5_2[3] = var_r4;
-                        var_r5_2 += 4;
-                    }
-                    var_ctr -= 1;
+                    var_r5_2[0] = var_r4; var_r5_2[1] = var_r4; var_r5_2[2] = var_r4; var_r5_2[3] = var_r4; var_r5_2[4] = var_r4; var_r5_2[5] = var_r4; var_r5_2[6] = var_r4; var_r5_2[7] = var_r4; var_r5_2[8] = var_r4; var_r5_2[9] = var_r4; var_r5_2[10] = var_r4; var_r5_2[11] = var_r4; var_r5_2[12] = var_r4; var_r5_2[13] = var_r4; var_r5_2[14] = var_r4; var_r5_2[15] = var_r4; var_r5_2[16] = var_r4; var_r5_2[17] = var_r4; var_r5_2[18] = var_r4; var_r5_2[19] = var_r4; var_r5_2[20] = var_r4; var_r5_2[21] = var_r4; var_r5_2[22] = var_r4; var_r5_2[23] = var_r4; var_r5_2[24] = var_r4; var_r5_2[25] = var_r4; var_r5_2[26] = var_r4; var_r5_2[27] = var_r4; var_r5_2[28] = var_r4; var_r5_2[29] = var_r4; var_r5_2[30] = var_r4; var_r5_2[31] = var_r4;
+                    var_r5_2 += 32; var_ctr -= 1;
                 } while (var_ctr != 0);
                 var_r3_2 &= 7;
                 if (var_r3_2 != 0) goto block_21;
@@ -25709,7 +25709,7 @@ extern "C" void reset_btn__Q210homebutton10HomeButtonFv(void *arg0) {
     u8 *cursor=self;
     s32 i=0, j;
     for(;i<*(s32*)(self+8);cursor+=4,i++) {
-        if(*(s32*)(cursor+0x1c)!=0) {
+        if(*(s32*)(cursor+0x1c)) {
             s32 *entry=lbl_802F4528;
             s32 count=*(s32*)(self+0xc);
             for(j=0;j<count;entry+=2,j++) {
