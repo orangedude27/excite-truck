@@ -92,7 +92,7 @@ void nandGetHeadToken(char* head, char* rest, const char* path) {
 }
 
 /* Converts a relative NAND path to an absolute path. */
-void nandConvertPath(char *absPath, const char *dirPath, const char *relPath) {
+void nandConvertPath(char* absPath, const char* dirPath, const char* relPath) {
     char head[128];
     char rest[128];
     char notail[128];
