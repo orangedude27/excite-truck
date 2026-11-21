@@ -4087,6 +4087,8 @@ void fn_801D8C1C(void *lightning, float value) {
     }
 }
 #pragma scheduling on
+/* No-op method of the LightningASE effect system (whose name accessor is
+ * fn_801D8C98); its body is empty. */
 void fn_801D8C94(void) {
 }
 
