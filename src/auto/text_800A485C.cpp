@@ -9996,10 +9996,10 @@ static inline s32 CopyBaseName(u8 *out, const u8 *in) {
     return last;
 }
 extern "C" RET_fn_800B3BEC fn_800B3BEC(u8 *__restrict out, u8 *__restrict in, u8 flags) {
-    u8 c;
     s32 last = -1;
     s32 ext;
     s32 i;
+    u8 c;
     for (i = 0; i < 8; i++) {
         c = in[i];
         out[i] = c;
@@ -10007,13 +10007,13 @@ extern "C" RET_fn_800B3BEC fn_800B3BEC(u8 *__restrict out, u8 *__restrict in, u8
     }
     out += last + 1;
     ext = 7;
-    if ((u32)in[8] == ' ') goto extDone;
-    ext = 8;
-    if ((u32)in[9] == ' ') goto extDone;
-    ext = 9;
-    if ((u32)in[10] == ' ') goto extDone;
-    ext = 10;
-extDone:
+    if ((u32)in[8] != ' ') {
+        ext = 8;
+        if ((u32)*(volatile u8*)&in[9] != ' ') {
+            ext = 9;
+            if ((u32)*(volatile u8*)&in[10] != ' ') ext = 10;
+        }
+    }
     if (ext > 7) {
         if ((flags & 8) == 0) {
             *out++ = '.';
@@ -12257,6 +12257,8 @@ extern "C" FN786C_RET fn_800B786C(void *file) {
     return 0;
 }
 
+/* No-op success hook: called by the VFiP init wrapper (fn_800B76A8) after
+ * DSP-table setup succeeds, but nothing needs doing here. */
 void fn_800B78EC(void) {
 
 }
