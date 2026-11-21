@@ -469,6 +469,7 @@ void fn_802168CC(void) {
 }
 
 void fn_802168D0(void) {
+    /* Callback trampoline: forward to the sound-manager notification handler. */
     fn_80218968();
 }
 
