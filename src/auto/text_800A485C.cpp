@@ -9209,7 +9209,17 @@ extern "C" s32 fn_800B23F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     ((s32 *)arg1)[0] = ((s32 *)arg0)[0];
     ((s32 *)arg1)[1] = var;
     if (arg2 != 0) {
-        *(Tok *)arg2 = prev;
+        volatile s32 *src = (volatile s32 *)&prev;
+        volatile s32 *dst = (volatile s32 *)arg2;
+        s32 d, c, b, a;
+        a = src[0];
+        b = src[1];
+        c = src[2];
+        d = src[3];
+        dst[0] = a;
+        dst[1] = b;
+        dst[2] = c;
+        dst[3] = d;
     }
     return 0;
 }
@@ -9349,13 +9359,13 @@ block_27:
     return (*(u16 *)(scratch + 4));
 }
 #pragma opt_lifetimes reset
-extern "C" u32 VFiPFPATH_DoMatchFileNameWithPattern(u16 arg0, s32 *arg1, u16 arg2, s32 *arg3, s32 arg4) {
+extern "C" u32 VFiPFPATH_DoMatchFileNameWithPattern(register u16 arg0, register s32 *arg1, register u16 arg2, register s32 *arg3, register s32 arg4) {
     struct St { u8 *buf; u32 end; u32 wide; u16 idx; };
-    u16 c0 = arg0;
-    St *pat = (St *)arg1;
-    u16 tok = arg2;
-    St *file = (St *)arg3;
-    s32 flag = arg4;
+    register u16 tok = arg2;
+    register u16 c0 = arg0;
+    register St *pat = (St *)arg1;
+    register St *file = (St *)arg3;
+    register s32 flag = arg4;
     u16 fwA;
     u16 fwB;
 loop_top:
@@ -18563,14 +18573,23 @@ extern "C" s32 fn_800C4E5C(s32 arg0, void *arg1) {
 extern "C" void fn_800C51BC(s32 *arg0, s32 *arg1, s32 *arg2) {
     s32 i;
     for (i = 0; i < 4; i++) {
-        register s32 b0 = arg1[0]; register s32 a0 = arg0[0];
-        arg0[0] = b0 + a0; arg1[0] = (s32)(((s64)(a0 - b0) * arg2[0]) >> 24);
-        register s32 b1 = arg1[1]; register s32 a1 = arg0[1];
-        arg0[1] = b1 + a1; arg1[1] = (s32)(((s64)(a1 - b1) * arg2[1]) >> 24);
-        register s32 b2 = arg1[2]; register s32 a2 = arg0[2];
-        arg0[2] = b2 + a2; arg1[2] = (s32)(((s64)(a2 - b2) * arg2[2]) >> 24);
-        register s32 b3 = arg1[3]; register s32 a3 = arg0[3];
-        arg0[3] = b3 + a3; arg1[3] = (s32)(((s64)(a3 - b3) * arg2[3]) >> 24);
+        s64 p0, p1, p2, p3;
+        s32 b0 = arg1[0]; s32 a0 = arg0[0];
+        arg0[0] = b0 + a0;
+        p0 = (s64)(a0 - b0) * arg2[0];
+        arg1[0] = (s32)(p0 >> 24);
+        s32 b1 = arg1[1]; s32 a1 = arg0[1];
+        arg0[1] = b1 + a1;
+        p1 = (s64)(a1 - b1) * arg2[1];
+        arg1[1] = (s32)(p1 >> 24);
+        s32 b2 = arg1[2]; s32 a2 = arg0[2];
+        arg0[2] = b2 + a2;
+        p2 = (s64)(a2 - b2) * arg2[2];
+        arg1[2] = (s32)(p2 >> 24);
+        s32 b3 = arg1[3]; s32 a3 = arg0[3];
+        arg0[3] = b3 + a3;
+        p3 = (s64)(a3 - b3) * arg2[3];
+        arg1[3] = (s32)(p3 >> 24);
         arg0 += 4;
         arg1 += 4;
         arg2 += 4;
