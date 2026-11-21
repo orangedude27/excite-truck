@@ -9996,10 +9996,10 @@ static inline s32 CopyBaseName(u8 *out, const u8 *in) {
     return last;
 }
 extern "C" RET_fn_800B3BEC fn_800B3BEC(u8 *__restrict out, u8 *__restrict in, u8 flags) {
+    u8 c;
     s32 last = -1;
     s32 ext;
     s32 i;
-    u8 c;
     for (i = 0; i < 8; i++) {
         c = in[i];
         out[i] = c;
@@ -10007,13 +10007,13 @@ extern "C" RET_fn_800B3BEC fn_800B3BEC(u8 *__restrict out, u8 *__restrict in, u8
     }
     out += last + 1;
     ext = 7;
-    if ((u32)in[8] != ' ') {
-        ext = 8;
-        if ((u32)*(volatile u8*)&in[9] != ' ') {
-            ext = 9;
-            if ((u32)*(volatile u8*)&in[10] != ' ') ext = 10;
-        }
-    }
+    if ((u32)in[8] == ' ') goto extDone;
+    ext = 8;
+    if ((u32)in[9] == ' ') goto extDone;
+    ext = 9;
+    if ((u32)in[10] == ' ') goto extDone;
+    ext = 10;
+extDone:
     if (ext > 7) {
         if ((flags & 8) == 0) {
             *out++ = '.';
@@ -13032,6 +13032,14 @@ extern "C" s32 fn_800B8FE4(s32 buffer, s32 path, s32 length, s32 offset, s32 *ou
 }
 
 #pragma opt_common_subs off
+#define NandSlots     lbl_80405D58
+#define NandSemaphore lbl_8055DD30
+#define SLOT_STRIDE   0xf0
+#define SLOT_COUNT    0x17
+#define SLOT_ERROR    0xec
+#define SLOT_FLAGS    0xe4
+#define SLOT_BUSY     2
+#define SLOT_HANDLE   0x58
 extern "C" s32 fn_800B90A8(s32 arg0)
 {
   s32 result;
