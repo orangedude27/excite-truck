@@ -53,20 +53,20 @@ extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(void *a
     *(unsigned int *)((char *)self + 4) = 0;
     *(unsigned int *)((char *)self + 8) = 0;
     if (file == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x59, strings + 0xB4);
+        Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x59, strings + 0xB4);
     if (*(const unsigned int *)file != 0x52575344)
-        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x37, strings + 0x10);
+        Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x37, strings + 0x10);
     if (*(const unsigned int *)file != 0x52575344) {
         var_r0 = 0;
     } else {
         if (*(const unsigned short *)(file + 6) < 0x100)
-            Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x3F, strings + 0x5C);
+            Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x3F, strings + 0x5C);
         temp_r0 = *(const unsigned short *)(file + 6);
         if (temp_r0 < 0x100) {
             var_r0 = 0;
         } else {
             if (temp_r0 > 0x102)
-                Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x45, strings + 0x5C);
+                Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x45, strings + 0x5C);
             var_r0 = (*(const unsigned short *)(file + 6) <= 0x102);
         }
     }
@@ -75,13 +75,13 @@ extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(void *a
     *(const void **)self = (const void *)file;
     *(void **)((char *)self + 4) = (void *)(*(const unsigned int *)(file + 0x10) + (unsigned int)file);
     if (**(const unsigned int **)((char *)self + 4) != 0x44415441)
-        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x62, strings + 0xE0);
+        Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x62, strings + 0xE0);
     {
         register const unsigned char *stored = (const unsigned char *)*(volatile void **)self;
         *(void **)((char *)self + 8) = (void *)(*(const unsigned int *)(stored + 0x18) + (unsigned int)stored);
     }
     if (**(const unsigned int **)((char *)self + 8) != 0x57415645)
-        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x66, strings + 0x138);
+        Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x66, strings + 0x138);
     return self;
 }
 #pragma pop
@@ -707,6 +707,8 @@ extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_80101300(void) 
     #undef listNotEmptyMsg
 }
 #pragma pop
+/* No-op virtual method in the sound player subsystem. Reached through a
+ * this-adjusting thunk (fn_801014CC); it has an empty body and just returns. */
 extern "C" void fn_801013B0(void) {
     return;
 }
