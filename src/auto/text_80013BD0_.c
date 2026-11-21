@@ -201,7 +201,7 @@ void fn_80013EAC(s32 screen, s32 count, s32 arg2) {
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 void fn_80013EDC(void *arg0, void *name, s32 mode, char *first, char *second, f32 farg0, f32 farg1, f32 farg2) {
-    struct Pair { void *self; s32 mode; } pr;
+    struct Pair { s32 mode; void *self; } pr;
     Rec7 L;
     Rec7 *p;
     Rec8 R1, R2, R3, R4, R5, R6, R7;
@@ -1242,16 +1242,19 @@ void fn_80015EB0(void *, f32);
 #pragma use_lmw_stmw off
 #pragma optimize_for_size off
 #pragma scheduling on
-void fn_80015A20(void *arg0, const Vec3_80015A20 *arg1) {
-    f32 matrix[9];
-    f32 angle1 = arg1->y;
-    f32 angle0 = arg1->x;
-    f32 angle2 = arg1->z;
-    fn_80015EB0(arg0, angle1);
-    fn_80015E30(matrix, angle0);
-    fn_80015B20(arg0, matrix, arg0);
-    fn_80015AA0(matrix, angle2);
-    fn_80015B20(arg0, matrix, arg0);
+/* Build a 3x3 rotation matrix in outMatrix from the Euler angles in angles:
+   start with the Y rotation, then multiply in an X rotation and a Z rotation,
+   each built into a scratch matrix and applied with fn_80015B20. */
+void fn_80015A20(void *outMatrix, const Vec3_80015A20 *angles) {
+    f32 stepMatrix[9];
+    f32 yaw = angles->y;
+    f32 pitch = angles->x;
+    f32 roll = angles->z;
+    fn_80015EB0(outMatrix, yaw);
+    fn_80015E30(stepMatrix, pitch);
+    fn_80015B20(outMatrix, stepMatrix, outMatrix);
+    fn_80015AA0(stepMatrix, roll);
+    fn_80015B20(outMatrix, stepMatrix, outMatrix);
 }
 extern void fn_801476C4(void);
 extern u8 lbl_80558BBC[];
