@@ -75,12 +75,6 @@ extern "C" void fn_802E765C(s32 bankHandle, s32 bankId, s32 flags) {
     ((StrmBankManager*)lbl_8055FFF0)->unloadBankEx(handle, id, flagBits);
 }
 #pragma cplusplus reset
-extern s32 fn_80128668(void);             /* free */
-extern s32 OSGetConsoleType(void);
-extern s32 fn_801284F8(s32, void *);      /* allocate from a named heap */
-extern char lbl_8034D828[];               /* "StrmBank: creating 'null' manager" */
-extern char lbl_8034D84C[];               /* "NullStrmBank" */
-extern char lbl_8034D860[];               /* null manager vtable */
 #pragma cplusplus on
 /* Set the stream-bank manager's mix level. */
 extern "C" void fn_802E7684(s32 level) {
