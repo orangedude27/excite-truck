@@ -5,8 +5,9 @@
 
 #define IPC_REQUEST_MAX 32
 
-// These BSS/SBSS symbols are owned by auto-unit objects in the original build.
-// They're marked scope:global in symbols.txt so extern resolves correctly.
+/* Request-tracking state living in the build's BSS/SBSS: a free-slot table of
+ * (request pointer, file descriptor) pairs plus the counts of pending and
+ * not-yet-issued requests. */
 extern s32 IpcFdArray[IPC_REQUEST_MAX];
 extern IPCRequestEx* IpcReqPtrArray[IPC_REQUEST_MAX];
 extern s32 IpcNumPendingReqs;
