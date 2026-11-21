@@ -7,8 +7,8 @@
 extern char lbl_8032BFA0[];
 extern char lbl_8032BFAC[];
 extern float lbl_805613E4;
-extern const float lbl_805613E8;
-extern const float lbl_805613EC;
+extern float lbl_805613E8;
+extern float lbl_805613EC;
 extern void fn_80148134(float *, float *, int, float, float);
 extern void fn_802C8E00(int, int, float, float, float, float, float);
 typedef struct VT390 { int pad[4]; char *(*fn)(void *, void *); } VT390;
@@ -31,8 +31,8 @@ extern "C" void fn_801390B0(void *arg0, float *arg1, float *arg2, int arg3, floa
     char *tbl = lbl_8032BFAC;
     if (arg3 != 0) tbl = lbl_8032BFA0;
     obj = ((Obj390 *)arg0)->v2(tbl);
-    f3 = (farg0 * *(float *)(obj + 0x14)) * lbl_805613E8;
-    f4 = (farg0 * *(float *)(obj + 0x10)) * lbl_805613E8;
+    f3 = farg0 * *(float *)(obj + 0x14) * lbl_805613E8;
+    f4 = farg0 * *(float *)(obj + 0x10) * lbl_805613E8;
     d[2] = arg2[0] * f3;
     d[3] = arg2[1] * f3;
     d[0] = arg2[1] * f4;
