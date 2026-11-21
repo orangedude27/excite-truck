@@ -10,17 +10,27 @@
 #include <types.h>
 #include <macros.h>
 
+/* Parsed "excite_beta_race" config: 0xC-byte records, the entry count at +0x1E0
+   and the owning config object at +0x1E4. */
 typedef struct {
-    u8 unk_0x0[0x1E0];
+    u8 entries[0x1E0];
     u32 count;
-    void* unk_0x1E4;
-} Unk8034EF38;
+    void *config;
+} RaceEventTable;
 
+/* One row of the static event-id table: id, internal name, display name. */
 typedef struct {
-    u32 unk_0x0;
-    const char* unk_0x4;
-    const char* unk_0x8;
-} Unk802FB70C;
+    u32 eventId;
+    const char *name;
+    const char *displayName;
+} EventNameEntry;
+
+#define Unk8034EF38 RaceEventTable
+#define Unk802FB70C EventNameEntry
+#define unk_0x1E4 config
+#define unk_0x0 eventId
+#define unk_0x4 name
+#define unk_0x8 displayName
 
 extern Unk8034EF38 lbl_8034EF38;
 extern Unk802FB70C lbl_802FB70C[];
