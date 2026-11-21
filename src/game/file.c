@@ -417,7 +417,6 @@ extern "C" s32 fn_802E3A64(s32 fileHandle, s32 buffer, s32 size) {
     s32 bytesWritten = ((Obj *)entry)->v1(buffer, size);
     return size == bytesWritten;
 }
-extern int vsprintf(char *, const char *, va_list);
 extern "C" int vsprintf(char *, const char *, va_list);
 #pragma scheduling invalid_target
 extern "C" void fn_802E3AD0(s32 arg0, const char *fmt, ...) {
