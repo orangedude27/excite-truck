@@ -189,12 +189,13 @@ void OSShutdownSystem(void) {
 }
 
 extern u8 OSGetAppType(void);
-extern void fn_8004E3F0(void);
-extern void fn_80052390(u32, u32);
-extern u32 lbl_8055DA78[2];
+extern void fn_8004E3F0(void); /* relaunch the current title through ES */
+extern void fn_80052390(u32, u32); /* boot a DOL image: (dolOffset, restartCode) */
+extern u32 lbl_8055DA78[2]; /* restart code for fn_80052390 (zero in this build) */
 
-void fn_800527CC(u32 param_1) {
-    /* Reset the console: stop play record/state, shut down devices, then hot-reset or boot depending on app type. */
+/* Hot-reset the console: stop recording, then relaunch the title, boot a DOL
+   with dolOffset, or plain-reset depending on the running app's type. */
+void fn_800527CC(u32 dolOffset) {
     u8 flag;
 
     flag = OSGetAppType();
@@ -210,7 +211,7 @@ void fn_800527CC(u32 param_1) {
         OSDisableScheduler();
         __OSShutdownDevices(4);
         OSEnableScheduler();
-        fn_80052390(param_1, lbl_8055DA78[0]);
+        fn_80052390(dolOffset, lbl_8055DA78[0]);
     }
 
     OSDisableScheduler();
