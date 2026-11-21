@@ -330,14 +330,16 @@ static inline MEMiExpHeapMBlock *InsertAfterMBlock_(MEMiExpHeapMBlockList *list,
 
 void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk, void *mem, u32 size, u16 direction) {
     MEMiExpHeapMBlock *usedStart;
-    u8 *after = (u8 *)(size + (u32)mem);
+    u8 *after = (u8 *)((u32)mem + size);
+    u8 *end;
     MEMiExpHeapMBlock *newBlk = (MEMiExpHeapMBlock *)((u8 *)mem - sizeof(MEMiExpHeapMBlock));
     MEMiExpHeapMBlock *prev = blk->prev;
     u8 *start = (u8 *)blk - blk->align;
     MEMiExpHeapMBlock *next = blk->next;
-    u8 *end = (u8 *)blk + blk->size + sizeof(MEMiExpHeapMBlock);
     MEMiExpHeapMBlock *fb;
 
+    size = blk->size;
+    end = (u8 *)blk + size + sizeof(MEMiExpHeapMBlock);
     usedStart = newBlk;
     if (prev != 0) {
         prev->next = next;
@@ -400,19 +402,23 @@ static inline u32 GetOffsetFromPtr_(void* start, void* end) {
     return (u32)end - (u32)start;
 }
 
-void* AllocFromHead_(MEMiHeapHead* heap, u32 size, int align) {
+void* AllocFromHead_(MEMiHeapHead* heap, u32 size, s32 align) {
     extern void* AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead*, MEMiExpHeapMBlock*, void*, u32, u16);
-    MEMiExpHeapHead* exp = (MEMiExpHeapHead*)(heap + 1);
-    BOOL isFastAlloc = exp->allocMode == MEM_EXP_HEAP_ALLOC_FAST;
-    MEMiExpHeapMBlock* it = 0;
-    MEMiExpHeapMBlock* bestBlk = 0;
-    unsigned int bestBlkSize = 0xFFFFFFFF;
-    void* bestBlkMemPtr = 0;
+    BOOL isFastAlloc;
+    MEMiExpHeapMBlock* it;
+    MEMiExpHeapHead* exp;
+    MEMiExpHeapMBlock* bestBlk;
+    u32 bestBlkSize;
+    void* bestBlkMemPtr;
+    exp = (MEMiExpHeapHead*)(heap + 1);
+    isFastAlloc = exp->allocMode == MEM_EXP_HEAP_ALLOC_FAST;
+    bestBlk = 0;
+    bestBlkSize = 0xFFFFFFFF;
+    bestBlkMemPtr = 0;
     for (it = exp->freeMBlocks.head; it != 0; it = it->next) {
-        void* const start = it + 1;
-        void* const end = (void*)(((unsigned int)start + (align - 1)) & ~(align - 1));
-        const unsigned int offset = (unsigned int)end - (unsigned int)start;
-        if (it->size >= size + offset && bestBlkSize > it->size) {
+        void* start = it + 1;
+        void* end = (void*)((align + (u32)start - 1) & ~(align - 1));
+        if (it->size >= size + ((u32)end - (u32)start) && bestBlkSize > it->size) {
             bestBlk = it;
             bestBlkSize = it->size;
             bestBlkMemPtr = end;
@@ -909,6 +915,8 @@ static void* AllocatorAllocForFrmHeap_(MEMAllocator* allocator, u32 size) {
     return MEMAllocFromFrmHeapEx(allocator->heap, size, allocator->heapParam1);
 }
 
+/* Allocator free callback for a frame heap: frame heaps cannot free individual
+ * blocks, so this intentionally does nothing. */
 static void AllocatorFreeForFrmHeap_(MEMAllocator* allocator, void* block) {
 #pragma unused(allocator)
 #pragma unused(block)
