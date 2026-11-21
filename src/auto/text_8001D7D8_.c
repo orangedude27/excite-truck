@@ -7,8 +7,7 @@ int __AXGetStackHead(int index) {
     return lbl_802ED82C[index];
 }
 
-#pragma cplusplus on
-extern "C" int strcmp(const char *, const char *);
+int strcmp(const char *, const char *);
 int fn_8001D7EC(char *name) {
     extern char *lbl_802ED818[];
     char **table = lbl_802ED818;
