@@ -84,8 +84,6 @@ extern void *fn_80131808(const char *);
 extern void fn_80131818(void *);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_8055A0A8;
-typedef int (*Fn80160850Call)(void *, void *);
-typedef int (*Fn80160850NamedCall)(void *, const char *);
 #pragma cplusplus on
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
