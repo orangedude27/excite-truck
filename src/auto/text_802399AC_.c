@@ -726,7 +726,9 @@ void fn_8023AFD0(void *widget) {
 
 void fn_8023B04C(void) {}
 
-void fn_8023B050(void) {}
+void fn_8023B050(void) {
+    /* No-op hook slot: returns immediately without touching any register. */
+}
 
 #pragma push
 #pragma cplusplus on
