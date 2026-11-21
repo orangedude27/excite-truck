@@ -1962,6 +1962,8 @@ int fn_802916F8(void *object) {
 
 #pragma dont_inline on
 void fn_80291700(void) { fn_802916E8(); }
+/* Derived virtual override that simply forwards to the no-op base method
+   fn_802916EC (a tail call in the generated code). */
 void fn_80291704(void) { fn_802916EC(); }
 
 /* Set the object's boolean flag at offset 0x11C to true (paired with the clear fn_80291714 and getter fn_80291720). */
