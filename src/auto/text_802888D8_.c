@@ -1418,6 +1418,8 @@ int fn_8028A1A4(int smokeMan) {
 #undef kAttrArm
 #undef kAttrDir
 
+/* Empty element constructor for the array of 0x68-byte "smoke car tab" rows
+ * built by fn_8028A1A4_newArray (fn_8002F37C); the rows need no setup. */
 void fn_8028A32C(void) {}
 
 extern float lbl_805642B4;
