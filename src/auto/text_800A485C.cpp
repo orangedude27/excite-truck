@@ -122,9 +122,6 @@ extern "C" void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
 extern "C" s32 fn_800A7C20(void *, void **, u32, void **, s32 *);
 extern "C" s32 fn_800A586C(void *, s32, s32, s32, s32);
 extern "C" s32 fn_800A7B34(void *, void *);
-static inline s32 Fn800A7B34Inline(void *volume, void *block) {
-    return ((s32 (*)(void *, void *))fn_800A7B34)(volume, block);
-}
 extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
  register u32 attr;
  register u8 *it=(u8 *)iterator;
@@ -3296,20 +3293,20 @@ extern "C" s32 fn_800A9104(void *volume) {
     return result & ((s32)(-result | result) >> 31);
 }
 
-extern "C" s32 fn_800A9138(u32 arg0, u32 arg1) {
+extern "C" s32 fn_800A9138(void *arg0, u32 arg1) {
     s32 result = 0;
     void *head;
     void *node;
-    if (*(u32 *)(arg0 + 0x1624) & 7) {
-        head = *(void **)(arg0 + 0x1634);
+    if (*(u32 *)((u8 *)arg0 + 0x1624) & 7) {
+        head = *(void **)((u8 *)arg0 + 0x1634);
         if (*(u32 *)((u8 *)head + 0x1C) != 0 && *(u32 *)((u8 *)head + 0x1C) == arg1) {
-            result = ((s32 (*)(u32, void *))fn_800A7B34)(arg0, head);
+            result = ((s32 (*)(void *, void *))fn_800A7B34)(arg0, head);
             if (result != 0) return result;
         }
         node = *(void **)((u8 *)head + 0x20);
         while (node != head) {
             if (*(u32 *)((u8 *)node + 0x1C) != 0 && *(u32 *)((u8 *)node + 0x1C) == arg1) {
-                result = ((s32 (*)(u32, void *))fn_800A7B34)(arg0, node);
+                result = ((s32 (*)(void *, void *))fn_800A7B34)(arg0, node);
                 if (result != 0) return result;
             }
             node = *(void **)((u8 *)node + 0x20);
