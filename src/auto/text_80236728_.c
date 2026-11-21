@@ -275,7 +275,8 @@ void fn_802369A8(char *dst, int size, int index) {
 #pragma scheduling invalid_target
 extern void *memset(void *, int, unsigned long);
 extern char *strcpy(char *, const char *);
-  #pragma scheduling invalid_target
+      #pragma scheduling invalid_target
+#pragma processor 750
 void fn_80236A5C(void *arg0, int arg1) {
     extern char lbl_80498664[];
     extern char lbl_8055BA18[], lbl_8055BA1C[], lbl_8055BA24[], lbl_8055BA2C[];
