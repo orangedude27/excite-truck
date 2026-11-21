@@ -638,19 +638,20 @@ s32 fn_801B4428(u32 * __restrict nodeA, u32 * __restrict nodeB) {
     return 0;
 }
 #pragma dont_inline on
-void* fn_801B447C(void* arg0, void* arg1, s32 arg2) {
-    s32 off;
-    s32 half;
-    s32 right;
-    if (arg2 == 1) return arg1;
-    half = ((s32)((u32)arg2 >> 31) + arg2) >> 1;
-    if (half > 0) *(void**)((u8*)arg1 + half * 16 + 8) = fn_801B447C(arg0, arg1, half);
-    right = arg2 - half - 1;
-    if (right > 0) {
-        off = half * 16;
-        *(void**)((u8*)arg1 + off + 12) = fn_801B447C(arg0, (u8*)arg1 + 16 + off, right);
+/* Build a balanced binary search tree from a sorted array of 16-byte collision-pair nodes: the middle node becomes the root, its +8/+0xC words link the left/right subtrees; returns the subtree root. */
+void* fn_801B447C(void* context, void* nodes, s32 count) {
+    s32 midOffset;
+    s32 mid;
+    s32 rightCount;
+    if (count == 1) return nodes;
+    mid = ((s32)((u32)count >> 31) + count) >> 1;
+    if (mid > 0) *(void**)((u8*)nodes + mid * 16 + 8) = fn_801B447C(context, nodes, mid);
+    rightCount = count - mid - 1;
+    if (rightCount > 0) {
+        midOffset = mid * 16;
+        *(void**)((u8*)nodes + midOffset + 12) = fn_801B447C(context, (u8*)nodes + 16 + midOffset, rightCount);
     }
-    return (u8*)arg1 + half * 16;
+    return (u8*)nodes + mid * 16;
 }
 void *fn_801B4528(void *tree, u32 *node, u32 key) {
     /* Search a balanced binary tree node for the given key; return the node or NULL. */
