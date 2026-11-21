@@ -104,8 +104,10 @@ void fn_80297988(void) {
     fn_80297A08();
 }
 
-void fn_8029798C(void *unused, void *arg1, int arg2, float farg0, float farg1) {
-    fn_80297C3C(unused, arg1, arg2, farg0, farg1);
+/* Thin wrapper that forwards a static-shadow registration to fn_80297C3C:
+ * the model instance, its 3x3 matrix, group mask, fade and cull radius. */
+void fn_8029798C(void *modelSource, void *sourceMatrix, int groupMask, float fade, float cullRange) {
+    fn_80297C3C(modelSource, sourceMatrix, groupMask, fade, cullRange);
 }
 
 /* Set the static-shadow module's shadow-volume handle (0x50000000 sentinel at init, 0 to clear). */
