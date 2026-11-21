@@ -566,7 +566,11 @@ void fn_802C8D74(void) {
 #pragma dont_inline reset
 
 void fn_802C8DB8(void) {
-    fn_802D68C4();
+#define drawIndexedTriangles fn_802D68C4
+    /* Tail-forward the caller's vertex/index arguments (still in registers) to the
+     * immediate-mode indexed triangle drawer. */
+    drawIndexedTriangles();
+#undef drawIndexedTriangles
 }
 
 /* If fn_801E4F20() reports active, sets the drawlist active flag (lbl_8055FC8F),
