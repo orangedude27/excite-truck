@@ -43,6 +43,19 @@ struct ResManager {
     char padA0[0x8];
     /* 0xA8 */ struct ResManager *next;
 };
+
+/* The 0x18-byte async read request popped from the "AsyncResource" pool
+ * (lbl_8032ABF8) and returned by fn_8012C5B8. The code accesses it as a flat
+ * volatile s32 array; this enum names the slots it writes. */
+enum AsyncRequestField {
+    ASYNC_REQ_MAGIC = 0,   /* 0x00: signature stamp */
+    ASYNC_REQ_ENTRY = 1,   /* 0x04: struct ResEntry being streamed */
+    ASYNC_REQ_MANAGER = 2, /* 0x08: owning struct ResManager */
+    ASYNC_REQ_HANDLE = 3,  /* 0x0C: async read handle, -1 while idle */
+    ASYNC_REQ_DATA = 4,    /* 0x10: loaded data pointer */
+    ASYNC_REQ_UNUSED = 5   /* 0x14 */
+};
+#define ASYNC_RESOURCE_MAGIC 0x19AFEE2A
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" s32 lbl_80559984;
 extern "C" char lbl_805599AC[];
