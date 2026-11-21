@@ -360,7 +360,6 @@ void fn_802CECF4(unsigned int targetIndex) {
 #pragma push
 #pragma scheduling 750
 void fn_802CED50(int arg0, int arg1, int arg2, int arg3) {
-    #pragma scheduling on
     volatile unsigned char *state = lbl_804C5710;
     *(volatile int *)(state + 4) = arg0;
     *(volatile int *)(state + 8) = arg1;
@@ -1011,15 +1010,14 @@ int fn_802CFDE0(void) {
     extern char lbl_8034C058[];
     extern void fn_802ECA48(void);
     extern int fn_802E2C20(void);
-    int tmp;
+    int sum;
+    int hw;
     int end;
     int start;
     fn_802ECA48();
-    tmp = (int)lbl_8055FD94;
-    tmp += lbl_8055FD9C;
-    if (tmp > (int)lbl_8055FD98) {
-        lbl_8055FD98 = (unsigned int)tmp;
-    }
+    sum = (int)lbl_8055FD94 + (int)lbl_8055FD9C;
+    hw = (int)lbl_8055FD98;
+    lbl_8055FD98 = sum > hw ? (unsigned int)sum : (unsigned int)hw;
     fn_802D6C78();
     GXGetVtxDesc();
     GXMiscInit(2);
@@ -1030,8 +1028,8 @@ int fn_802CFDE0(void) {
         DCFlushRange((void *)(lbl_8055FDA0 + start), (unsigned long)(end - start));
     } else {
         DCFlushRange((void *)(lbl_8055FDA0 + start), (unsigned long)(0x177000 - start));
+        DCFlushRange((void *)lbl_8055FDA0, (unsigned long)lbl_8055FDA8);
     }
-    DCFlushRange((void *)lbl_8055FDA0, (unsigned long)lbl_8055FDA8);
     lbl_8055FD38 = 0;
     lbl_8055FD34 = 1;
     while (*(volatile unsigned char *)&lbl_8055FD3C == 0) {
@@ -1207,8 +1205,6 @@ void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
     p[0x5C] = 1;
     lbl_804C97D0 = a;
 }
-#pragma push
-#pragma opt_lifetimes on
 void fn_802D01B0(float *p, float v) {
     extern char lbl_804C97D0;
     float z, y, x;
@@ -1589,7 +1585,6 @@ void fn_802D09E8(void) {
     char *base = lbl_8034BD18;
     int temp_r0, div, rem, val;
     union { double d; unsigned int w[2]; } cvt;
-    float delta;
     if ((unsigned char)lbl_8055FD90 == 0) return;
     if ((long)lbl_8055D0B8 < 0) {
         lbl_8055FD90 = 0;
@@ -1632,10 +1627,9 @@ void fn_802D09E8(void) {
             lbl_8055D10C = -1;
             val = fn_802E2C20();
             cvt.w[0] = 0x43300000;
-            cvt.w[1] = (unsigned int)(val - lbl_8055FDC4) ^ 0x80000000U;
-            delta = (float)(cvt.d - lbl_80564FB0);
+            cvt.w[1] = (val - lbl_8055FDC4) ^ 0x80000000U;
             fn_802E30C8(base + 0x468, lbl_804C9830, lbl_8055FDC4,
-                        lbl_80564F80 * delta);
+                        lbl_80564F80 * (cvt.d - lbl_80564FB0));
         }
     }
 }
