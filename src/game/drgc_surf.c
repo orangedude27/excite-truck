@@ -1465,6 +1465,9 @@ void fn_802D6C44(void) {
        the caller only needs to walk the groups, so this does nothing. */
 }
 
+/* No-op per-group hook passed to fn_802C5DF0 by mrModelRegisterTextures
+ * (fn_802C6FA8) while it walks a model's group list: the traversal itself is
+ * all the caller needs, so this does nothing. */
 void fn_802D6C48(void) {
 }
 
