@@ -17,15 +17,16 @@ extern char lbl_80339B70[];
 extern char lbl_80339B80[];
 void *fn_801E76A8(void *arg0, int arg1) {
     #pragma scheduling invalid_target
-    char *tmp = lbl_80339B70;
-    *(void **)arg0 = fn_8012850C(arg1 * 0x18, tmp);
-    tmp = (char *)(arg1 - 2);
+    int rem;
+    int size;
+    *(void **)arg0 = fn_8012850C(arg1 * 0x18, lbl_80339B70);
+    rem = arg1 - 2;
     *(int *)((char *)arg0 + 8) = arg1;
-    arg1 = ((int)tmp * 4) - (int)tmp;
+    size = (rem * 4) - rem;
     *(int *)((char *)arg0 + 4) = 0;
-    *(void **)((char *)arg0 + 0xC) = fn_8012850C(arg1 * 2, lbl_80339B80);
+    *(void **)((char *)arg0 + 0xC) = fn_8012850C(size * 2, lbl_80339B80);
     *(int *)((char *)arg0 + 0x10) = 0;
-    *(int *)((char *)arg0 + 0x14) = arg1;
+    *(int *)((char *)arg0 + 0x14) = size;
     return arg0;
 }
 
@@ -40,6 +41,8 @@ void *__dt__12PhysicsWorldFv_801E7730(void *object, int shouldDelete) {
     return object;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_801E7790(void *buf, int id, int emit, float x, float y, float z, float u, float v) {
     S76 *b = (S76 *)buf;
     float *dst;
@@ -62,7 +65,7 @@ void fn_801E7790(void *buf, int id, int emit, float x, float y, float z, float u
     ((short *)b->d)[ic + 2] = (short)(b->b - 1);
     b->e = ic + 3;
 }
-
+#pragma pop
 /* GenericDrawList draw: unpacks the descriptor (vertices, vertexCount, cap, indices, indexCount) and forwards it to the immediate-mode triangle renderer. */
 void fn_801E7828(drawList)
     void *drawList;
