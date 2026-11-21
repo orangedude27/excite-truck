@@ -442,7 +442,7 @@ extern char lbl_8055CDD8;
 extern void *fn_801284F8(int, const char *);
 extern void fn_802B2504(int *, int);
 extern void *fn_802B2958(void *, void *);
-extern void **fn_802B2934(void *, void **);
+extern void **fn_802B2934(void *, void **__restrict);
 extern void fn_802B257C(void *);
 #pragma push
 #pragma cplusplus on
@@ -464,10 +464,10 @@ extern "C" void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
     void *item;
     void *alloc;
     void *sp8;
-    int i = 16;
+    unsigned int i;
     char *p = (char *)arg0;
     *(int *)((char *)arg0 + 0x40C) = 0;
-    *(int *)((char *)arg0 + 0x410) = i;
+    *(int *)((char *)arg0 + 0x410) = 16;
     *(void **)((char *)arg0 + 0x408) = (char *)arg0 + 0x414;
     *(char *)((char *)arg0 + 4) = 0;
     *(char *)((char *)arg0 + 5) = 0;
@@ -775,8 +775,8 @@ int fn_802B2E08(int arg0) {
     unsigned char *data, *record;
     unsigned short selector;
 
-    conversion = lbl_80564C28;
     base = (char *)arg0;
+    conversion = lbl_80564C28;
     scaleX = lbl_80564C0C;
     index = 0;
     scaleY = lbl_80564C10;
