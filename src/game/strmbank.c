@@ -90,67 +90,58 @@ s32 fn_802E769C(void) {
     }
 }
 #pragma scheduling on
+/* Deleting destructor: free the object when deleteFlag > 0, then return it. */
 s32 fn_802E76F0(s32 object, s32 deleteFlag) {
-    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
     if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
     return object;
 }
 
-/* Vtable method (slot +0x0C) of the "null" stream-bank manager. This do-nothing
- * fallback has no real bank to query, so its status query always reports success (true). */
+/* Null manager's loadBank slot (+0x0C): no bank to load, so report success. */
 s32 fn_802E7730(void) {
     return 1;
 }
 
-/* Empty stub: vtable slot +0x10 of the "null" stream-bank manager, a do-nothing
-   fallback with no bank behind it (see fn_802E7730). */
+/* Null manager's unloadBank slot (+0x10): nothing to unload. */
 void fn_802E7738(void) {
 }
 
-/* Empty vtable method (slot +0x14) of the "null" stream-bank manager
-   (lbl_8034D860); the do-nothing fallback has no work to perform. */
+/* Null manager's unloadBankEx slot (+0x14): nothing to unload. */
 void fn_802E773C(void) {
 }
 
-/* Empty stub: vtable slot +0x18 of the "null" stream-bank manager, a do-nothing
-   fallback with no bank behind it (see fn_802E7730). */
+/* Null manager's method18 slot (+0x18): do nothing. */
 void fn_802E7740(void) {
 }
 
-/* Empty stub: vtable slot +0x1C of the "null" stream-bank manager, a do-nothing
-   fallback with no bank behind it (see fn_802E7730). */
+/* Null manager's method1C slot (+0x1C): do nothing. */
 void fn_802E7744(void) {
 }
 
-/* Empty vtable method (slot +0x20) of the "null" stream-bank manager
-   (lbl_8034D860); the do-nothing fallback has no work to perform. */
+/* Null manager's setLevel slot (+0x20): nothing to mix. */
 void fn_802E7748(void) {
 }
 
-/* Null stream-bank vtable method (+0x24): a do-nothing query that reports 0 (false). */
+/* Null manager's query slot (+0x24): no bank, so report 0. */
 s32 fn_802E774C(void) {
     return 0;
 }
 
-/* Vtable method (slot +0x28) of the "null" stream-bank manager. The do-nothing
- * fallback has no value to report, so this query answers 0 (none/failure). */
+/* Null manager's query slot (+0x28): no value to report, so answer 0. */
 s32 fn_802E7754(void) {
     return 0;
 }
 
-/* Empty vtable method (slot +0x2C) of the "null" stream-bank manager
- * (lbl_8034D860); the do-nothing fallback has no work to perform. */
+/* Null manager's slot (+0x2C): do nothing. */
 void fn_802E775C(void) {
 }
 
+/* Null manager's slot (+0x30): do nothing. */
 void fn_802E7760(void) {
-    /* Null stream-bank vtable method: a do-nothing slot with no state to change. */
 }
 
-/* Empty vtable method (slot +0x34) of the "null" stream-bank manager
-   (lbl_8034D860); the do-nothing fallback has no work to perform. */
+/* Null manager's slot (+0x34): do nothing. */
 void fn_802E7764(void) {
 }
 
