@@ -2004,12 +2004,11 @@ extern f32 lbl_8056179C;
 #pragma push
 #pragma processor 750
 extern "C" f32 fn_80159C34(Fn80159C34Obj* arg0, void* arg1) {
- s32 n; f32 value = arg0->m254 - 0.016683306f, result = 0.0f; s32 done; s32 tmp2620; s32 cond;
+ s32 n; f32 value = arg0->m254 - 0.016683306f, result = 0.0f; s32 done; s32 tmp2620;
  value = (result > value) ? result : value;
- tmp2620 = *(s32*)((u8*)arg1 + 0x2620);
+ tmp2620 = *(volatile s32*)((u8*)arg1 + 0x2620);
  *(f32*)((u8*)arg0 + 0x254) = value;
- cond = (tmp2620 == 0);
- if (cond && ((Unk801577F0*)arg0)->v35() == 0) {
+ if (tmp2620 == 0 && ((Unk801577F0*)arg0)->v35() == 0) {
   f32 v2 = arg0->m254;
   v2 = (v2 > lbl_8056179C) ? v2 : lbl_8056179C;
   arg0->m254 = v2;
@@ -2786,24 +2785,32 @@ extern "C" f32 fn_8015B404(void* arg0) {
     *(f32*)(base + 0x290) = zero;
     *(f32*)(base + 0x28C) = zero;
     for (i = 0; i < 8; i++, p += 8) {
-        if (isSlotActive_8015B404(p)) {
+        s32 active = *(f32*)(p + 0x24C) > lbl_80558DC4[0];
+        if (active) {
             f32 a = *(f32*)(p + 0x250);
             f32 b = *(f32*)(base + 0x28C);
             b = (b > a) ? b : a;
             *(f32*)(base + 0x28C) = b;
-            if (isSlotActive_8015B404(p)) {
+            s32 still = *(f32*)(p + 0x24C) > lbl_80558DC4[0];
+            if (still) {
                 f32 t = *(volatile f32*)(p + 0x24C);
                 *(f32*)(p + 0x24C) = t - one;
             }
-            BOOL flag = isSlotMoving_8015B404(i);
-            if (flag || !isSlotActive_8015B404(p)) {
-                f32 d;
-                f32 c;
+            u8* o = (u8*)fn_8017960C(i);
+            s32 flag;
+            s32 more;
+            if (o != 0) {
+                flag = !((f32)__fabs(*(f32*)(o + 0x2690)) <= lbl_80558DC4[0]);
+            } else {
+                flag = 0;
+            }
+            if (flag != 0 || (more = *(f32*)(p + 0x24C) > lbl_80558DC4[0]) == 0) {
                 *(f32*)(p + 0x24C) = zero;
-                *(u8*)(base + 0x294) = (u8)flag;
-                d = *(f32*)(p + 0x250);
-                c = *(f32*)(base + 0x290);
-                *(f32*)(base + 0x290) = (c > d) ? c : d;
+                *(u8*)(base + 0x294) = flag;
+                f32 d = *(f32*)(p + 0x250);
+                f32 c = *(f32*)(base + 0x290);
+                c = (c > d) ? c : d;
+                *(f32*)(base + 0x290) = c;
             }
         }
     }
@@ -3581,15 +3588,15 @@ extern "C" s32 fn_80009C84(void);
 extern "C" void fn_80206750(void*, s32, s32);
 extern "C" void fn_8015CF00(Unk801577F0* arg0) {
     f32 entryValue = 0.0f;
-    s32 r6 = 0;
-    s32 r7 = 0;
-    s32 r5 = 0;
-    for (; r6 < arg0->mCount; r6++) {
-        *(s32*)(arg0->mData + r7) = r5;
-        *(s32*)(arg0->mData + r7 + 4) = r5;
-        *(s32*)(arg0->mData + r7 + 8) = r5;
-        *(f32*)(arg0->mData + r7 + 0xC) = entryValue;
-        r7 += 0x38;
+    s32 entryIndex = 0;
+    s32 entryOffset = 0;
+    s32 zeroWord = 0;
+    for (; entryIndex < arg0->mCount; entryIndex++) {
+        *(s32*)(arg0->mData + entryOffset) = zeroWord;
+        *(s32*)(arg0->mData + entryOffset + 4) = zeroWord;
+        *(s32*)(arg0->mData + entryOffset + 8) = zeroWord;
+        *(f32*)(arg0->mData + entryOffset + 0xC) = entryValue;
+        entryOffset += 0x38;
     }
     f32 resetValue = 0.0f;
     entryValue = 1.0f;
