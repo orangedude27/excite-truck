@@ -3,27 +3,32 @@
 
 typedef signed long s32;
 typedef unsigned char u8;
-typedef s32 (*UnkFn_80245080)(void);
 
-struct Unk_80245080_Sub {
+/* Vtable of the active save interface: the callback at +0xC accepts an object for saving. */
+typedef struct SaveInterfaceVTable {
     u8 pad[0xC];
-    UnkFn_80245080 unk_0C;
-};
+    s32 (*acceptObject)(s32);
+} SaveInterfaceVTable;
 
-struct Unk_80245080 {
+/* Active save/dialog interface: vtable at +0x20, occupied-slot count at +0x24. */
+typedef struct SaveInterface {
     u8 pad[0x20];
-    struct Unk_80245080_Sub* unk_20;
-    s32 unk_24;
-};
+    SaveInterfaceVTable* vtable;
+    s32 slotCount;
+} SaveInterface;
 
-extern volatile struct Unk_80245080* lbl_8055F244;
+extern volatile SaveInterface* lbl_8055F244;
 extern s32 lbl_804988B0[];
+#define gActiveSaveInterface lbl_8055F244
+#define gNandSaveInterfaceObj lbl_804988B0
 #ifndef NULL
 #define NULL ((void*)0)
 #endif
 
 s32 fn_802E8D7C(s32);
 void fn_80236900(void);
+#define setNandSaveInterface fn_802E8D7C
+#define refreshSaveInterface fn_80236900
 
 #pragma optimization_level 1
 s32 fn_80245080(s32 object) {
@@ -33,7 +38,7 @@ s32 fn_80245080(s32 object) {
     s32 (*callback)();
     s32 accepted;
     accepted = 0;
-    vtable = *(void **)((char *)lbl_8055F244 + 0x20);
+    vtable = *(void **)((char *)gActiveSaveInterface + 0x20);
     callback = *(s32 (**)())((char *)vtable + 0xC);
     if (callback != 0 && ((s32 (*)(s32))callback)(object) == 1) accepted = 1;
     return accepted;
@@ -44,13 +49,13 @@ s32 fn_802450D4(s32 status) {
     s32 slotCount;
     s32 iface;
 #pragma unused(status)
-    fn_80236900();
-    iface = (s32)lbl_8055F244;
-    slotCount = ((struct Unk_80245080 *)iface)->unk_24;
+    refreshSaveInterface();
+    iface = (s32)gActiveSaveInterface;
+    slotCount = ((SaveInterface *)iface)->slotCount;
     if (slotCount > 7) {
         return 1;
     }
-    ((struct Unk_80245080 *)iface)->unk_24 = slotCount + 1;
+    ((SaveInterface *)iface)->slotCount = slotCount + 1;
     return 0;
 }
 void fn_80245118(void) {
