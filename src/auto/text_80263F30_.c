@@ -190,7 +190,7 @@ void fn_80264098(void *item, int type) {
 extern void *operator new(unsigned long, void *);
 #pragma push
 #pragma scheduling invalid_target
-void fn_802640A0(void *arg0) {
+extern "C" void fn_802640A0(void *arg0) {
     struct CreditsMenuItem {
         void *name;
         int type;
