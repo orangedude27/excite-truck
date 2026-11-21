@@ -244,6 +244,8 @@ static inline bool HasState_800D6CA0(StateNode_800D6CA0 *t, StateNode_800D6CA0 *
 extern "C" const char lbl_8031E908[];
 extern "C" const char lbl_8031E92C[];
 extern "C" s32 lbl_8055DE08;
+/* ut::RuntimeTypeInfo accessor: the DynamicCast target type info (inlined at every call site). */
+static inline StateNode_800D6CA0 *TypeInfo_800D77DC() { return (StateNode_800D6CA0 *)&lbl_8055DE08; }
 struct PaneAnimLink {
     PaneAnimLink* next;
     void* unk4;
