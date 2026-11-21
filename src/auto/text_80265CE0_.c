@@ -34,6 +34,9 @@ void fn_80265D40(void *object, int objectSlot, float scalarValue) {}
  * is released; this build leaves it empty. */
 void fn_80265D44(void) {}
 
+/* No-op per-frame loop-start subsystem hook: called first in the main-loop
+ * iteration fn_80004E20, paired with fn_80265D4C at its end; this build leaves
+ * it empty. */
 void fn_80265D48(void) {}
 
 /* No-op per-frame loop-end subsystem hook: paired with fn_80265D48 at the
