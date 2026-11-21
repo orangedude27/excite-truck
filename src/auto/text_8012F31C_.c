@@ -84,8 +84,8 @@ void fn_8012F458(MemStreamPtr *stream, s32 word) {
 }
 
 /* Copies size bytes from src into the stream's buffer at the cursor's
-   position and advances the cursor past them (proposed name:
-   MemStreamPtr_Write, the block-write twin of fn_8012F458's word write). */
+   position and advances the cursor past them (the block-write twin of the
+   word write above). */
 void fn_8012F4AC(MemStreamPtr *cursor, const void *src, s32 size) {
     memcpy(cursor->stream->buffer + cursor->pos, src, size);
     cursor->pos += size;
