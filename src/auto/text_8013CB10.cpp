@@ -3250,38 +3250,42 @@ extern "C" f32 fn_8001DAE8(void *);
 extern "C" f32 fn_8013CB3C(void);
 extern "C" void fn_8001DAE8_2(void *, f32);
 #pragma scheduling on
-extern "C" s32 fn_80141FA8(void *arg0, f32 arg1) {
+extern "C" s32 fn_80141FA8(void *entity, f32 delta) {
+    /* SuddenDeath_AdjustLevel: while sudden-death mode is active, nudge the
+     * entity's 0..1 level (+0x94) by delta/5. An increase is recorded at +0xEC;
+     * when the level decays back to zero from a nonzero value, flush the pending
+     * event counters and return 0. */
     s32 result = 1;
     if (lbl_8055E1BC != 0) {
-        u8 *p = (u8 *)arg0;
-        f32 old = *(f32 *)(p + 0x94);
-        f32 var = lbl_805614AC;
-        var = (var < (old + arg1 / lbl_8056149C)) ? var : (old + arg1 / lbl_8056149C);
-        var = (var > lbl_805614A4) ? var : lbl_805614A4;
-        *(f32 *)(p + 0x94) = var;
-        if (old < (f32)(f64)var) {
-            *(f32 *)(p + 0xEC) = (f32)(f64)var - old;
+        u8 *data = (u8 *)entity;
+        f32 oldValue = *(f32 *)(data + 0x94);
+        f32 newValue = lbl_805614AC;
+        newValue = (newValue < (oldValue + delta / lbl_8056149C)) ? newValue : (oldValue + delta / lbl_8056149C);
+        newValue = (newValue > lbl_805614A4) ? newValue : lbl_805614A4;
+        *(f32 *)(data + 0x94) = newValue;
+        if (oldValue < (f32)(f64)newValue) {
+            *(f32 *)(data + 0xEC) = (f32)(f64)newValue - oldValue;
             goto done;
         }
-        var = (f32)__fabs((f64)(f32)(f64)var);
+        newValue = (f32)__fabs((f64)(f32)(f64)newValue);
         {
-            s32 close = var <= *(f32 *)&lbl_80558DC4;
-            if (close == 0) goto done;
+            s32 nearZero = newValue <= *(f32 *)&lbl_80558DC4;
+            if (nearZero == 0) goto done;
         }
-        old = (f32)__fabs((f64)old);
-        if (old <= *(f32 *)&lbl_80558DC4) goto done;
+        oldValue = (f32)__fabs((f64)oldValue);
+        if (oldValue <= *(f32 *)&lbl_80558DC4) goto done;
         {
-            s32 n = *(volatile s32 *)(p + 0xE4);
-            if (n > 0) {
-                *(s32 *)(p + 0xF4) = n;
-                *(f32 *)(p + 0xF0) = fn_8013CB3C();
-                *(volatile s32 *)(p + 0xE4) = 0;
+            s32 count = *(volatile s32 *)(data + 0xE4);
+            if (count > 0) {
+                *(s32 *)(data + 0xF4) = count;
+                *(f32 *)(data + 0xF0) = fn_8013CB3C();
+                *(volatile s32 *)(data + 0xE4) = 0;
             }
-            n = *(volatile s32 *)(p + 0x100);
-            if (n > 0) *(f32 *)(p + 0xD4) = fn_8001DAE8(p + 0xD0);
-            *(volatile s32 *)(p + 0x100) = 0;
-            *(f32 *)(p + 0xAC) = fn_8001DAE8(p + 0xA8);
-            if (lbl_8055E1BC == 0) *(u8 *)(p + 0xF8) = 1;
+            count = *(volatile s32 *)(data + 0x100);
+            if (count > 0) *(f32 *)(data + 0xD4) = fn_8001DAE8(data + 0xD0);
+            *(volatile s32 *)(data + 0x100) = 0;
+            *(f32 *)(data + 0xAC) = fn_8001DAE8(data + 0xA8);
+            if (lbl_8055E1BC == 0) *(u8 *)(data + 0xF8) = 1;
             result = 0;
         }
     }
