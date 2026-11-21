@@ -1204,12 +1204,13 @@ set_height:
  else *(short *)((char *)arg0+0x64)=*(short *)(*(char **)(p+0x140)+0x6c);
  if (!fn_801769F8()) {
    float *q=lbl_80499980; float dec=lbl_80563C7C, zero=lbl_80563C20;
+   float d;
    int n = 2;
    i = 0; do {
-     t=q[0]-dec; if (zero>t) t=zero; q[0]=t;
-     t=q[1]-dec; if (zero>t) t=zero; q[1]=t;
-     t=q[2]-dec; if (zero>t) t=zero; q[2]=t;
-     t=q[3]-dec; if (zero>t) t=zero; q[3]=t;
+     d=q[0]-dec; if (zero>d) d=zero; q[0]=d;
+     d=q[1]-dec; if (zero>d) d=zero; q[1]=d;
+     d=q[2]-dec; if (zero>d) d=zero; q[2]=d;
+     d=q[3]-dec; if (zero>d) d=zero; q[3]=d;
      q+=4; i+=3;
    } while (--n != 0);
  }
@@ -2311,6 +2312,9 @@ extern float lbl_8055F484;
 extern float lbl_80563C6C;
 extern float lbl_80499980[8];
 extern float lbl_80563C20;
+/* Tail-call thunk: forwards the caller's arguments (camera record, one-shot
+ * reset flag, camera index) unchanged to fn_802693F4, the per-frame camera
+ * transform update and mode dispatcher. */
 void fn_8026A51C(void) {
     ((void (*)(void))fn_802693F4)();
 }
