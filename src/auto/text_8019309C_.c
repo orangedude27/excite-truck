@@ -1751,16 +1751,6 @@ struct Self_80195D80 {
     int f2c8;
     float f2cc;
 };
-struct V3_80195D80 { float x, y, z; };
-static inline void rayPoint_80195D80(V3_80195D80 *out, const V3_80195D80 *org, const V3_80195D80 *dir, float t) {
-    V3_80195D80 d;
-    d.x = dir->x * t;
-    d.y = dir->y * t;
-    d.z = dir->z * t;
-    out->x = org->x + d.x;
-    out->y = org->y + d.y;
-    out->z = org->z + d.z;
-}
 #pragma opt_lifetimes off
 extern "C" void fn_80195D80(void *arg0, float arg1) {
     Self_80195D80 *self = (Self_80195D80 *)arg0;
