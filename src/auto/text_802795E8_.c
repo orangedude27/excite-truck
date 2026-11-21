@@ -125,21 +125,23 @@ check:
 #pragma push
 #pragma scheduling invalid_target
 #pragma inline_depth(0)
-void fn_802797A8(s32 *arg0, s32 arg1) {
-    s32 offset;
-    s32 i;
+void fn_802797A8(s32 *vehicleIds, s32 vehicleCount) {
+    /* Allocate and clear the carstate table: one 0x2B8 byte entry per vehicle,
+     * tagged with its vehicle number, then initialize each entry's state block. */
+    s32 entryOffset;
+    s32 index;
     char *entry;
-    s32 value;
+    s32 vehicleId;
 
-    lbl_8055F61C = arg1;
-    lbl_8055F618 = fn_8012850C(arg1 * 0x2B8, lbl_80347818);
-    i = 0;
-    offset = 0;
-    for (; i < lbl_8055F61C; offset += 0x2B8, arg0++, i++) {
-        entry = (char *)lbl_8055F618 + offset;
+    lbl_8055F61C = vehicleCount;
+    lbl_8055F618 = fn_8012850C(vehicleCount * 0x2B8, lbl_80347818);
+    index = 0;
+    entryOffset = 0;
+    for (; index < lbl_8055F61C; entryOffset += 0x2B8, vehicleIds++, index++) {
+        entry = (char *)lbl_8055F618 + entryOffset;
         memset(entry, 0, 0x2B8);
-        value = *arg0;
-        *(s32 *)entry = value;
+        vehicleId = *vehicleIds;
+        *(s32 *)entry = vehicleId;
     }
     fn_8027974C();
 }
