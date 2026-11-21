@@ -9,6 +9,8 @@ void fn_800126B4(void* unused, void* source) {
 }
 
 extern void fn_801EA4B8(void);
+/* Thunk that releases the current carstate ("cs_block") allocation: forwards to
+ * fn_801EA4B8, which frees the block held in lbl_8055F618 and clears the pointer. */
 void fn_800126C0(void) {
     fn_801EA4B8();
 }
