@@ -167,9 +167,9 @@ void fn_80007F68(void) {
 #pragma scheduling invalid_target
 const char* fn_80007F90(u32 eventId) {
     /* Look up the name string for an event ID in the event table, or return "?" if not found. */
-    Unk802FB70C* entry = lbl_802FB70C;
-    while (entry->unk_0x0) {
-        if (entry->unk_0x0 == eventId) return entry->unk_0x4;
+    EventNameEntry *entry = lbl_802FB70C;
+    while (entry->eventId) {
+        if (entry->eventId == eventId) return entry->name;
         entry++;
     }
     fn_802E317C(lbl_802FB77C, eventId);
