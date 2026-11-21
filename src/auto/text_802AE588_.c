@@ -1306,6 +1306,8 @@ void fn_802B009C(void *arg0, int arg1, int arg2, int arg3) {
     out[2] = z;
     out[1] = fn_801DCF48(arg1, x, z);
 }
+/* No-op hook: callers pass the address of a Vec-like slot to be initialized
+ * (five 12-byte slots at the call site), but this build leaves them untouched. */
 void fn_802B0114(void) {
 }
 
