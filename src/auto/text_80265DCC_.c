@@ -3,6 +3,7 @@
 
 extern void qsort(void *, unsigned long, unsigned long, int (*)(const void *, const void *));
 #pragma opt_tail_call on
+/* Library wrapper: forward the array, element count/size and comparator straight to qsort. */
 void fn_80265DCC(void *base, unsigned long num, unsigned long size, int (*compar)(const void *, const void *)) {
     qsort(base, num, size, compar);
 }
