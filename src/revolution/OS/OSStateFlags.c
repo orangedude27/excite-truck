@@ -6,6 +6,7 @@
 
 static OSStateFlags StateFlags ALIGN(32);
 
+/* Sum every word of the saved state except the checksum field itself. */
 static u32 CheckSum(const OSStateFlags* state) {
     int i;
     const u32* ptr = (const u32*)&state->BYTE_0x4;
