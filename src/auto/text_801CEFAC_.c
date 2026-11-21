@@ -35,6 +35,8 @@ void fn_801CEFD4(int enabled) {
 
 extern char lbl_8033807C[];
 extern char lbl_80338060[];
+#define sLogReplayStart  lbl_80338060 /* "CSReplayStartReplayPlayback" */
+#define sLogReplayEnd    lbl_8033807C /* "CSReplayEndReplayPlayback" */
 extern void fn_802E30C8(char *, ...);
 #pragma scheduling invalid_target
 /* Log that cutscene replay playback has started and set the in-playback flag. */
