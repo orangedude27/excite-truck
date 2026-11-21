@@ -943,6 +943,7 @@ extern "C" void *fn_801460F8(void *collection, const char *wantedName, s32 unuse
 #pragma dont_inline reset
 #pragma pop
 
+/* Empty destructor callback passed to the array allocator fn_8002F37C by fn_801460F8 for its 0x20-byte result-table entries; the elements need no cleanup, so this does nothing (compiles to a bare 'blr'). */
 extern "C" void fn_80146200(void) {
 
 }
