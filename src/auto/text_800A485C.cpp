@@ -22420,16 +22420,18 @@ extern u8 lbl_8031F43C[]; /* nw4hbm::lyt::ArcResourceAccessor vtable */
 #pragma push
 #pragma small_data off
 #pragma pop
-extern "C" void* __ct__Q36nw4hbm3lyt19ArcResourceAccessorFv(void *this_) {
-    fn_800DCE50(this_);
-    ((u32*)this_)[0x28 >> 2] = 0;
-    ((u32*)this_)[0x2C >> 2] = 0;
-    ((u32*)this_)[0x00 >> 2] = (u32)&lbl_8031F43C;
-    ((u32*)this_)[0x20 >> 2] = 0;
-    ((u32*)this_)[0x24 >> 2] = 0;
-    ((u32*)this_)[0x28 >> 2] = (u32)&((u8*)this_)[0x28];
-    ((u32*)this_)[0x2C >> 2] = (u32)&((u8*)this_)[0x28];
-    return this_;
+extern "C" void* __ct__Q36nw4hbm3lyt19ArcResourceAccessorFv(void *accessor) {
+    /* Construct an ArcResourceAccessor: install the derived vtable and set up the
+     * empty resource list, whose +0x28 sentinel node initially points to itself. */
+    fn_800DCE50(accessor);
+    ((u32*)accessor)[0x28 >> 2] = 0;
+    ((u32*)accessor)[0x2C >> 2] = 0;
+    ((u32*)accessor)[0x00 >> 2] = (u32)&sArcResourceAccessorVtable;
+    ((u32*)accessor)[0x20 >> 2] = 0;
+    ((u32*)accessor)[0x24 >> 2] = 0;
+    ((u32*)accessor)[0x28 >> 2] = (u32)&((u8*)accessor)[0x28];
+    ((u32*)accessor)[0x2C >> 2] = (u32)&((u8*)accessor)[0x28];
+    return accessor;
 }
 extern "C" const char lbl_8031F2C8[];
 #pragma push
