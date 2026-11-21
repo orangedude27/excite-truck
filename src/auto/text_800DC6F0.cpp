@@ -185,7 +185,7 @@ extern "C" void Append__Q36nw4hbm3lyt7PictureFRC9_GXTexObj(void *picture, const 
     /* Append a texture to the picture's material and ensure tex coord/size state. */
     if (texIndex >= (matCounts >> 28) || texIndex >= ((matCounts >> 20) & 15)) {
         Warning__Q26nw4hbm2dbFPCciPCce(
-            (const char *)lbl_80320320, 0xC0, (const char *)lbl_8032036C,
+            (const char *)sAssertFile_picture, 0xC0, (const char *)sMsgTexNumTooLarge,
             texIndex, matCounts >> 28, (*(volatile u32 *)((u8 *)material + 0x4C) >> 20) & 15);
         return;
     }
@@ -205,7 +205,7 @@ extern "C" void Append__Q36nw4hbm3lyt7PictureFRC9_GXTexObj(void *picture, const 
     packed = *(u32 *)coords;
     if (texIndex >= ((*(u32 *)((u8 *)material + 0x50) >> 20) & 15)) {
         Panic__Q26nw4hbm2dbFPCciPCce(
-            (const char *)lbl_80320538, 0xB4, (const char *)lbl_80320504);
+            (const char *)sAssertFile_material, 0xB4, (const char *)sAssertTexCoordGen);
     }
     {
         u8 *tc = (u8 *)fn_800D9344(material) + (u8)texIndex * 4;
@@ -218,11 +218,11 @@ extern "C" void Append__Q36nw4hbm3lyt7PictureFRC9_GXTexObj(void *picture, const 
         self + 0xE4,
         (u8)(*(u32 *)((u8 *)*(void **)(self + 0x28) + 0x50) >> 28));
 
-    defaults[0] = lbl_80560EC8;
-    defaults[1] = lbl_80560EC8;
+    defaults[0] = sZeroFloat;
+    defaults[1] = sZeroFloat;
     int init = 0;
-    if (*(f32 *)(self + 0x4C) == lbl_80560EC8 &&
-        *(f32 *)(self + 0x50) == lbl_80560EC8) {
+    if (*(f32 *)(self + 0x4C) == sZeroFloat &&
+        *(f32 *)(self + 0x50) == sZeroFloat) {
         init = 1;
     }
     if (init != 0 &&
