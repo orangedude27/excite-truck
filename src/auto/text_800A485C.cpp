@@ -2164,12 +2164,12 @@ extern "C" void fn_800A76B4(void *arg0, s32 arg1) {
     u16 index;
 
     for (index = 0; index < 0x1A; index++) {
-        u8 *entry = (u8 *)lbl_803D1640 + index * 0x28;
-        u32 flagsAddr = (u32)(entry + 0x61C);
-        s32 flags = *(s32 *)flagsAddr;
+        const u8 *entry = (const u8 *)lbl_803D1640 + index * 0x28;
+        s32 flags = *(const s32 *)(entry + 0x61C);
 
-        if ((flags & 1) != 0 && *(void **)(entry + 0x620) == arg0) {
-            *(s32 *)flagsAddr = flags | 2;
+        if ((flags & 1) != 0 && *(void * const *)(entry + 0x620) == arg0) {
+            s32 *flagPtr = (s32 *)(entry + 0x61C);
+            *flagPtr = flags | 2;
             if (arg1 == 0 && *(void (**)(void))(entry + 0x640) != 0) {
                 (*(void (**)(void))(entry + 0x640))();
             } else if (*(void (**)(void))(entry + 0x63C) != 0) {
@@ -2704,63 +2704,66 @@ extern "C" s32 fn_800A8050(void *volume, s32 listAddr, s32 sector, s32 outPageAd
 extern "C" s32 fn_800A586C(void *, s32, s32, s32, s32);
 #pragma opt_propagation off
 extern "C" s32 VFiPFCACHE_DoReadNumSector(void *object, s32 list, s32 dest, u32 start, s32 amount, s32 output) {
- u8 *volume=(u8 *)object;
- u32 end2;
- u8 *page;
- u32 remaining;
- register u32 pos;
- u32 length;
- u8 shift;
- s32 result;
- struct { u32 count; u32 end; } C;
- u32 *read=(u32 *)output;
- *read=0;
- result=fn_800A586C(object,dest,start,amount,output);
- if (result) return result;
- C.count=*read; page=0; remaining=C.count; C.end=start+C.count;
- do {
-  if (!page) page=*(u8 **)list;
-  else { page=*(u8 **)(page+0x20); if (page==*(u8 **)list) { page=0; goto next; } }
-  goto scan;
+    /* Read `amount` sectors starting at `start` into `dest`: fn_800A586C does the
+     * underlying read, then each cached page overlapping the range is copied in
+     * with VFipf_memcpy; report VF_ERR_SHORT_TRANSFER if it came up short. */
+    u8 *volume = (u8 *)object;
+    u32 readEnd;
+    u8 *page;
+    u32 remaining;
+    register u32 pageFirst;
+    u32 runSectors;
+    u8 sectorShift;
+    s32 status;
+    struct { u32 count; u32 end; } readInfo;
+    u32 *read = (u32 *)output;
+    *read = 0;
+    status = fn_800A586C(object, dest, start, amount, output);
+    if (status) return status;
+    readInfo.count = *read; page = 0; remaining = readInfo.count; readInfo.end = start + readInfo.count;
+    do {
+        if (!page) page = *(u8 **)list;
+        else { page = *(u8 **)(page + 0x20); if (page == *(u8 **)list) { page = 0; goto next; } }
+        goto scan;
 valid:
-  if (*(u32 *)(page+0x18)!=0xffffffff) {
-   *(u32 *)(page+8)=*(u32 *)(page+4); goto next;
-  }
-  page=*(u8 **)(page+0x20);
+        if (VF_PAGE_FIRST(page) != 0xffffffff) {
+            VF_PAGE_DATA(page) = VF_PAGE_BUFFER(page); goto next;
+        }
+        page = *(u8 **)(page + 0x20);
 scan:
-  if (*(u16 *)page&1) goto valid;
-  page=0;
+        if (VF_PAGE_FLAGS(page) & VF_PAGE_IN_USE) goto valid;
+        page = 0;
 next:
-  if (page) {
-   pos=*(u32 *)(page+0x18);
-   if (pos!=0xffffffff) {
-    if (pos<=start && pos+*(u32 *)(page+0x14)>=C.end) {
-     shift=volume[0x20];
-     VFipf_memcpy((void *)dest,*(u8 **)(page+4)+((start-pos)<<shift),C.count<<shift);
-     remaining-=C.count;
-    } else if (pos>=start && pos+*(u32 *)(page+0x14)<=C.end) {
-     length=*(u32 *)(page+0x14);
-     shift=volume[0x20];
-     VFipf_memcpy((u8 *)dest+((pos-start)<<shift),*(u8 **)(page+4),length<<shift);
-     remaining-=*(u32 *)(page+0x14);
-    } else if (pos>start && pos<C.end && pos+*(u32 *)(page+0x14)>=C.end) {
-     union { u32 u; } e2;
-     e2.u = C.count;
-     end2=e2.u+start;
-     shift=volume[0x20];
-     VFipf_memcpy((u8 *)dest+((pos-start)<<shift),*(u8 **)(page+4),(end2-pos)<<shift);
-     remaining-=end2-*(u32 *)(page+0x18);
-    } else if (pos<start && pos+*(u32 *)(page+0x14)>start && pos+*(u32 *)(page+0x14)<=C.end) {
-     length=*(u32 *)(page+0x14);
-     shift=volume[0x20];
-     VFipf_memcpy((void *)dest,*(u8 **)(page+4)+((start-pos)<<shift),(length-(start-pos))<<shift);
-     remaining-=*(u32 *)(page+0x14)-(start-*(u32 *)(page+0x18));
-    }
-   }
-  }
- } while (page && remaining);
- if (*read!=(u32)amount && *(u32 *)(volume+8)!=start+*read) return 0x11;
- return 0;
+        if (page) {
+            pageFirst = VF_PAGE_FIRST(page);
+            if (pageFirst != 0xffffffff) {
+                if (pageFirst <= start && pageFirst + VF_PAGE_SECTORS(page) >= readInfo.end) {
+                    sectorShift = VF_VOL_SECTOR_SHIFT(volume);
+                    VFipf_memcpy((void *)dest, VF_PAGE_BUFFER(page) + ((start - pageFirst) << sectorShift), readInfo.count << sectorShift);
+                    remaining -= readInfo.count;
+                } else if (pageFirst >= start && pageFirst + VF_PAGE_SECTORS(page) <= readInfo.end) {
+                    runSectors = VF_PAGE_SECTORS(page);
+                    sectorShift = VF_VOL_SECTOR_SHIFT(volume);
+                    VFipf_memcpy((u8 *)dest + ((pageFirst - start) << sectorShift), VF_PAGE_BUFFER(page), runSectors << sectorShift);
+                    remaining -= VF_PAGE_SECTORS(page);
+                } else if (pageFirst > start && pageFirst < readInfo.end && pageFirst + VF_PAGE_SECTORS(page) >= readInfo.end) {
+                    union { u32 u; } countPun;
+                    countPun.u = readInfo.count;
+                    readEnd = countPun.u + start;
+                    sectorShift = VF_VOL_SECTOR_SHIFT(volume);
+                    VFipf_memcpy((u8 *)dest + ((pageFirst - start) << sectorShift), VF_PAGE_BUFFER(page), (readEnd - pageFirst) << sectorShift);
+                    remaining -= readEnd - VF_PAGE_FIRST(page);
+                } else if (pageFirst < start && pageFirst + VF_PAGE_SECTORS(page) > start && pageFirst + VF_PAGE_SECTORS(page) <= readInfo.end) {
+                    runSectors = VF_PAGE_SECTORS(page);
+                    sectorShift = VF_VOL_SECTOR_SHIFT(volume);
+                    VFipf_memcpy((void *)dest, VF_PAGE_BUFFER(page) + ((start - pageFirst) << sectorShift), (runSectors - (start - pageFirst)) << sectorShift);
+                    remaining -= VF_PAGE_SECTORS(page) - (start - VF_PAGE_FIRST(page));
+                }
+            }
+        }
+    } while (page && remaining);
+    if (*read != (u32)amount && VF_VOL_TOTAL_SECTORS(volume) != start + *read) return VF_ERR_SHORT_TRANSFER;
+    return 0;
 }
 
 #pragma pop
