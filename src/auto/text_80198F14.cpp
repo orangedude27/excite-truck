@@ -4706,6 +4706,8 @@ static inline void MtxMulVecRevInl(const f32 *m, const f32 *src, f32 *dst) {
     }
 }
 #pragma always_inline reset
+/* No-op stub in the shape/collision-node code: empty body, no calls and no state
+ * touched, reachable only through a function pointer (e.g. a default virtual). */
 extern "C" void fn_801A2EC8(void) {
 
 }
@@ -5788,8 +5790,8 @@ extern "C" void* fn_801A4A8C(void* arg0, s32 arg1, s32 arg2, void* arg3, u32* ar
 #pragma dont_inline off
 #pragma use_lmw_stmw off
 extern "C" void* fn_801A4B5C(void* arg0, s32 arg1, void* arg2) {
+    register u8* q = (u8*)arg0 + 4;
     u8* p = (u8*)arg0;
-    u8* q = p + 4;
     s32 magic;
     *(void**)arg0 = lbl_803336F8;
     if (arg1) {
