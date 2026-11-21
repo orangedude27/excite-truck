@@ -99,6 +99,8 @@ int fn_802E4D60(void *vmem, int offset) {
 void fn_802E4D6C(void) {
 }
 
+/* Empty stub: vtable slot 0x18 of the VirtualMemory object (lbl_8034D1D0),
+   paired with the slot-0x14 stub fn_802E4D6C. */
 void fn_802E4D70(void) {
 }
 
