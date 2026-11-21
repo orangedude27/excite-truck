@@ -23,16 +23,6 @@ extern s32 lbl_8055FF1C;
 extern char lbl_8034CFB4[];
 extern char lbl_8034D000[];
 extern s32 fn_802E33D8(s32, const char *, s32);
-#pragma cplusplus on
-class Dummy_802E367C {
-public:
-    virtual void f0();
-    virtual void f1();
-    virtual void f2();
-    virtual s32 f3(s32);
-    virtual s32 f4(s32, s32);
-};
-#pragma cplusplus off
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
