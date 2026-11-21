@@ -465,6 +465,8 @@ extern "C" s32 fn_802A1C30(void* arg0) {
     return 0x30;
 }
 
+/* No-op virtual slot +0x24 of the effect-group vtable lbl_80349B50
+ * (installed on trail smoke effect groups): this method does nothing. */
 extern "C" void fn_802A1CBC(void) {}
 
 extern "C" void fn_802A1CC0(void) {
