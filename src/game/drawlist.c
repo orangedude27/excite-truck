@@ -1377,7 +1377,9 @@ void fn_802CA09C(void) {
     ((int (*)(void))fn_802C9E94)();
 }
 
-void fn_802CA0A0(void *arg0) { fn_802CA008(arg0); }
+/* Tail-call thunk: forward `owner` to fn_802CA008, which advances its embedded
+   timer at +4 by the delta at +0x10 and notifies the owner at +0 on expiry. */
+void fn_802CA0A0(void *owner) { fn_802CA008(owner); }
 
 extern char lbl_8055FC94;
 extern char lbl_8055D030[];
