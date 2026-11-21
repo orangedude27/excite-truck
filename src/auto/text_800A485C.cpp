@@ -14744,7 +14744,7 @@ extern "C" u8 lbl_80559250;
 extern "C" u8 lbl_80559258;
 extern "C" u8 lbl_80559260;
 extern "C" u8 lbl_80559268;
-static inline void fn_800BC538_setShort(Fn800BC538Obj *obj, volatile s16 *thr, volatile u8 *val) {
+static inline void fn_800BC538_setShort(Fn800BC538Obj *obj, s16 *thr, u8 *val) {
     s32 k;
     for (k = 0; k < 12; k++) {
         obj->shortThr[k] = *thr++;
