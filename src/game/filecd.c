@@ -102,12 +102,14 @@ unsigned int *fn_802E3EB0(void) {
 #undef fileCdBlock
 }
 
-// ... and giving it back is nothing at all.
+/* FileCd_free: no-op deallocator for the one static FileCd block handed out by
+ * FileCd_alloc (fn_802E3EB0); the block is static and never actually returned. */
 void fn_802E3EB8(void) {}
 
 #define FileCd_alloc fn_802E3EB0 /* the one static FileCd block */
 #define FileCd_free fn_802E3EB8  /* which is never returned to it */
 
+#pragma processor 750
 #pragma scheduling invalid_target
 void *fn_802E3EBC(void) {
     unsigned char *p;
@@ -365,7 +367,7 @@ extern void* memcpy(void*, const void*, unsigned int);
 int fn_802E4440(void *arg0, void *arg1, int arg2) {
     struct DVDFile { char pad[4]; char info[1]; int cursor[0x21]; } *file;
     int pos, aligned, offset, size;
-    int result, count, st, n;
+    int result, count, st, n, status;
     if (arg2 == 0) return 0;
     file = (struct DVDFile *)arg0;
     pos = *(int *)((char *)arg0 + 0x88);
@@ -389,8 +391,10 @@ int fn_802E4440(void *arg0, void *arg1, int arg2) {
             }
         }
         if (result >= 0) break;
-        if ((count = DVDGetDriveStatus()) == 0) break;
-        OSReport(lbl_8034D164, count);
+        status = DVDGetDriveStatus();
+        count = status;
+        if (status == 0) break;
+        OSReport(lbl_8034D164, status);
         VIFlush();
         VIWaitForRetrace();
     }
