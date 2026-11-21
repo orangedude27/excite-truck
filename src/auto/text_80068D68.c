@@ -9338,31 +9338,35 @@ void fn_8008C04C(s16);
 s32 btsnd_hcic_inq_cancel_8008576C(void);
 s32 btsnd_hcic_inq_cancel_80085850(void);
 #pragma scheduling on
-void btm_read_hci_buf_size_complete(UINT8 *p, UINT16 evt_len) {
-    UINT8 status = p[0];
+/* Completion of the HCI Read_Buffer_Size command: on success record the
+ * controller's ACL data length (+4) and packet count in btu_cb, set the host
+ * buffer size, then advance the device-init state/retry counters and either
+ * restart the timer and reset the controller, or cancel inquiries and reset PM. */
+void btm_read_hci_buf_size_complete(UINT8 *params, UINT16 evt_len) {
+    UINT8 status = params[0];
 
     if (status == 0) {
-        UINT16 high;
-        UINT16 low;
-        UINT16 size;
-        UINT16 packet_size;
-        UINT16 num;
-        UINT8 num_hi;
-        UINT8 num_lo;
+        UINT16 lenHigh;
+        UINT16 lenLow;
+        UINT16 aclDataLen;
+        UINT16 packetSize;
+        UINT16 aclNumPackets;
+        UINT8 numHigh;
+        UINT8 numLow;
         UINT8 *base;
 
-        high = p[2];
+        lenHigh = params[2];
         base = lbl_803C0A50;
-        low = p[1];
-        size = low + (high << 8);
-        *(UINT16 *)(base + 0x7C) = size;
-        size = (UINT16)size;
-        packet_size = size + 4;
-        num_hi = p[5];
-        num_lo = p[4];
-        num = num_lo + (num_hi << 8);
-        *(UINT16 *)(base + 0x7E) = packet_size;
-        ((void (*)(UINT16))fn_8008C04C)(num);
+        lenLow = params[1];
+        aclDataLen = lenLow + (lenHigh << 8);
+        *(UINT16 *)(base + 0x7C) = aclDataLen;
+        aclDataLen = (UINT16)aclDataLen;
+        packetSize = aclDataLen + 4;
+        numHigh = params[5];
+        numLow = params[4];
+        aclNumPackets = numLow + (numHigh << 8);
+        *(UINT16 *)(base + 0x7E) = packetSize;
+        ((void (*)(UINT16))fn_8008C04C)(aclNumPackets);
         btsnd_hcic_set_host_buf_size(0x69B, 0x1E, 0x14, 0xA);
     }
     btm_cb_dev_state = 3;
@@ -9954,6 +9958,7 @@ tBTM_STATUS BTM_SetDiscoverability(UINT16 inq_mode, UINT16 window, UINT16 interv
     u16 newCls;
     u8 b1m;
     u8 b2m;
+    u16 lo;
 
     if (discoverMode != 0 && (u32)discoverMode != 1U && (u32)discoverMode != 2U)
         return 5;
@@ -10012,8 +10017,10 @@ after_scan:
     b0 = *(volatile u8 *)(classInfo + 0);
     modeBit = discoverMode & 1;
     b1 = *(volatile u8 *)(classInfo + 1);
-    cls = (u16)(b0 * 0x100 & 0xFF00);
-    cls = (u16)(cls + (b1 & 0xE0));
+#pragma opt_propagation off
+    lo = (u16)(b1 & 0xE0);
+    cls = (u16)(((b0 << 8) & 0xFF00) + lo);
+#pragma opt_propagation reset
     if ((modeBit ^ ((cls >> 5) & 1)) != 0) {
         b2 = *(volatile u8 *)(classInfo + 2);
         newCls = (u16)(cls & ~0x20);
@@ -14555,7 +14562,8 @@ extern BOOLEAN l2c_link_hci_disc_comp(UINT16, UINT8);
 
 #pragma cplusplus on
 extern "C" void btu_hcif_process_event(BT_HDR *p_msg) {
-#pragma opt_propagation off
+    register UINT16 disc_handle;
+    register UINT16 clk_handle;
     UINT8 *p = (UINT8 *)(p_msg + 1) + p_msg->offset;
     UINT8 hci_evt_code, hci_evt_len;
 
@@ -14583,17 +14591,16 @@ extern "C" void btu_hcif_process_event(BT_HDR *p_msg) {
         break;
     case 0x05: {
         UINT8 status;
-        UINT16 handle;
         struct { UINT8 value; } reasonLocal;
         UINT8 &reason = reasonLocal.value;
         UINT8 *d = p + 2;
         STREAM_TO_UINT8(status, d);
-        STREAM_TO_UINT16(handle, d);
-        handle = HCID_GET_HANDLE(handle);
+        STREAM_TO_UINT16(disc_handle, d);
+        disc_handle = HCID_GET_HANDLE(disc_handle);
         STREAM_TO_UINT8(reason, d);
-        if (!l2c_link_hci_disc_comp(handle, reason))
-            btm_sco_removed(handle, reason);
-        btm_sec_disconnected(handle, reason);
+        if (!l2c_link_hci_disc_comp(disc_handle, reason))
+            btm_sco_removed(disc_handle, reason);
+        btm_sec_disconnected(disc_handle, reason);
         break;
     }
     case 0x06: {
@@ -14715,15 +14722,13 @@ extern "C" void btu_hcif_process_event(BT_HDR *p_msg) {
         break;
     case 0x1C:
         if (p[2] == 0) {
-            struct { UINT16 value; } handleLocal;
-            UINT16 &handle = handleLocal.value;
             UINT16 clock_offset;
             UINT8 *d = p + 3;
-            STREAM_TO_UINT16(handle, d);
-            handle = HCID_GET_HANDLE(handle);
+            STREAM_TO_UINT16(clk_handle, d);
+            clk_handle = HCID_GET_HANDLE(clk_handle);
             STREAM_TO_UINT16(clock_offset, d);
-            btm_process_clk_off_comp_evt(handle, clock_offset);
-            btm_sec_update_clock_offset(handle, clock_offset);
+            btm_process_clk_off_comp_evt(clk_handle, clock_offset);
+            btm_sec_update_clock_offset(clk_handle, clock_offset);
         }
         break;
     case 0x1E: {
@@ -14757,7 +14762,6 @@ extern "C" void btu_hcif_process_event(BT_HDR *p_msg) {
         ((void (*)(UINT8 *))btm_vendor_specific_evt)(p + 2);
         break;
     }
-#pragma opt_propagation reset
 }
 #pragma cplusplus reset
 int btu_hcif_send_cmd(arg0)
@@ -15469,8 +15473,8 @@ void gap_disconnect_ind(u16 cid, BOOLEAN ack_needed)
     for (group = 0; group < 2; group++) {
         for (slot = 0; slot < 4; slot++, entry += 0x60) {
             if (entry[0] == 0) goto next_slot;
-            if (*(u16 *)(entry + 6) == cid) goto found;
-            goto next_slot;
+            if (*(u16 *)(entry + 6) != cid) goto next_slot;
+            goto found;
         next_slot:
             i++;
         }
@@ -15492,8 +15496,8 @@ found:
     for (group = 0; group < 2; group++) {
         for (slot = 0; slot < 4; slot++, p += 0x60) {
             if (p[slot * 0x60] == 0) goto next_psm;
-            if (*(u16 *)(p + slot * 0x60 + 0x10) == psm) goto psm_found;
-            goto next_psm;
+            if (*(u16 *)(p + slot * 0x60 + 0x10) != psm) goto next_psm;
+            goto psm_found;
         next_psm:
             i++;
         }
