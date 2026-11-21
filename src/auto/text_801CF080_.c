@@ -432,8 +432,10 @@ loop3:
         temp=item[20]; temp2=item[23]; item[20]=temp2; item[23]=temp;
         temp=item[21]; temp2=item[22]; item[21]=temp2; item[22]=temp;
 check3:
- if(i3<p->count3) goto loop3;
+   if(i3<p->count3) goto loop3;
 }
+#pragma pop
+
 
 extern s32 fn_8012C370(s32, s32 *, s32, s32, u8 *);
 extern void fn_801CFA48(void *);
