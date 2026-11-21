@@ -16,8 +16,23 @@ extern void fn_80238A74(int, int, const char *, int);
 extern void fn_80238B44(int, int, int, int, int);
 extern void fn_802E6B38(int, char *);
 extern char lbl_8055B5C8;
-extern int sprintf(char *, const char *, ...);
-#pragma scheduling invalid_target
+  extern int sprintf(char *, const char *, ...);
+
+  typedef struct {
+      char name[0x20];
+      float volume;
+  } VoiceSndEntry;
+
+  enum SoundDashCommand {
+      SOUND_DASH_CMD_DUMP = 0x53,
+      SOUND_DASH_CMD_TOGGLE_MODE = 0x6D,
+      SOUND_DASH_CMD_VOL_DOWN = 0x125,
+      SOUND_DASH_CMD_PREV = 0x126,
+      SOUND_DASH_CMD_VOL_UP = 0x127,
+      SOUND_DASH_CMD_NEXT = 0x128
+  };
+
+  #pragma scheduling invalid_target
 extern char lbl_8033C530[];
 extern int fn_802E3D68(const char *);
 extern void fn_802E3AD0(int, const char *, ...);
