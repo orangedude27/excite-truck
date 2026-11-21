@@ -255,84 +255,88 @@ void fn_802799EC(void *arg0, float amount) {
 }
 #pragma push
 #pragma optimize_for_size on
-void fn_80279B28(unsigned char *arg0, unsigned char *arg1) {
-    unsigned char second = arg0[5];
-    unsigned char first;
-    unsigned char *source;
-    unsigned char *target;
+/* CarStateCopyOut(): copy a carstate entry's state block into a packed car-state
+ * buffer (the inverse of CarStateCopyIn / fn_80279C00). The state starts four
+ * bytes into the entry (past its vehicleId), so bytes/floats/words are read 4
+ * bytes further into the entry than they are written to the buffer. */
+void fn_80279B28(unsigned char *entry, unsigned char *buffer) {
+    unsigned char secondByte = entry[5];
+    unsigned char firstByte;
+    unsigned char *readPtr;
+    unsigned char *writePtr;
     int i;
 
-    target = arg1 - 1;
-    source = arg0 + 3;
+    writePtr = buffer - 1;
+    readPtr = entry + 3;
     for (i = 0; i < 0x148; i++) {
-        first = source[1];
-        second = *(source += 2);
-        target[1] = first;
-        *(target += 2) = second;
+        firstByte = readPtr[1];
+        secondByte = *(readPtr += 2);
+        writePtr[1] = firstByte;
+        *(writePtr += 2) = secondByte;
     }
 
-    *(f32 *)(arg1 + 0x290) = *(f32 *)(arg0 + 0x294);
-    *(f32 *)(arg1 + 0x294) = *(f32 *)(arg0 + 0x298);
-    *(s32 *)(arg1 + 0x298) = *(s32 *)(arg0 + 0x29C);
-    *(s32 *)(arg1 + 0x29C) = *(s32 *)(arg0 + 0x2A0);
+    *(f32 *)(buffer + 0x290) = *(f32 *)(entry + 0x294);
+    *(f32 *)(buffer + 0x294) = *(f32 *)(entry + 0x298);
+    *(s32 *)(buffer + 0x298) = *(s32 *)(entry + 0x29C);
+    *(s32 *)(buffer + 0x29C) = *(s32 *)(entry + 0x2A0);
     {
-        volatile unsigned char *p = arg0;
+        volatile unsigned char *p = entry;
         unsigned char even = p[0x2A4];
         unsigned char odd = p[0x2A5];
-        arg1[0x2A0] = even;
-        arg1[0x2A1] = odd;
+        buffer[0x2A0] = even;
+        buffer[0x2A1] = odd;
     }
     {
-        volatile unsigned char *p = arg0;
+        volatile unsigned char *p = entry;
         unsigned char even = p[0x2A6];
         unsigned char odd = p[0x2A7];
-        arg1[0x2A2] = even;
-        arg1[0x2A3] = odd;
+        buffer[0x2A2] = even;
+        buffer[0x2A3] = odd;
     }
     {
-        volatile unsigned char *p = arg0;
+        volatile unsigned char *p = entry;
         unsigned char even = p[0x2A8];
         unsigned char odd = p[0x2A9];
-        arg1[0x2A4] = even;
-        arg1[0x2A5] = odd;
+        buffer[0x2A4] = even;
+        buffer[0x2A5] = odd;
     }
     {
-        volatile unsigned char *p = arg0;
+        volatile unsigned char *p = entry;
         unsigned char even = p[0x2AA];
         unsigned char odd = p[0x2AB];
-        arg1[0x2A6] = even;
-        arg1[0x2A7] = odd;
+        buffer[0x2A6] = even;
+        buffer[0x2A7] = odd;
     }
     {
-        volatile unsigned char *p = arg0;
+        volatile unsigned char *p = entry;
         unsigned char even = p[0x2AC];
         unsigned char odd = p[0x2AD];
-        arg1[0x2A8] = even;
-        arg1[0x2A9] = odd;
+        buffer[0x2A8] = even;
+        buffer[0x2A9] = odd;
     }
     {
-        volatile unsigned char *p = arg0;
+        volatile unsigned char *p = entry;
         unsigned char even = p[0x2AE];
         unsigned char odd = p[0x2AF];
-        arg1[0x2AA] = even;
-        arg1[0x2AB] = odd;
+        buffer[0x2AA] = even;
+        buffer[0x2AB] = odd;
     }
     {
-        volatile unsigned char *p = arg0;
+        volatile unsigned char *p = entry;
         unsigned char even = p[0x2B0];
         unsigned char odd = p[0x2B1];
-        arg1[0x2AC] = even;
-        arg1[0x2AD] = odd;
+        buffer[0x2AC] = even;
+        buffer[0x2AD] = odd;
     }
     {
-        volatile unsigned char *p = arg0;
+        volatile unsigned char *p = entry;
         unsigned char even = p[0x2B2];
         unsigned char odd = p[0x2B3];
-        arg1[0x2AE] = even;
-        arg1[0x2AF] = odd;
+        buffer[0x2AE] = even;
+        buffer[0x2AF] = odd;
     }
-    arg1[0x2B0] = arg0[0x2B4];
-    arg1[0x2B1] = arg0[0x2B5];
+    buffer[0x2B0] = entry[0x2B4];
+    buffer[0x2B1] = entry[0x2B5];
 }
 #pragma opt_unroll_loops off
 /* CarStateCopyIn(): copy a packed car-state buffer into a carstate entry's state
