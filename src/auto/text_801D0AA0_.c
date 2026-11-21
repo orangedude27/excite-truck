@@ -14,21 +14,19 @@ extern void fn_801D0B34(void);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
-static inline void initFields(u32 *o) {
-    o[2] = 0x10;
-    o[1] = 0;
-}
 void fn_801D0AA0(void) {
     u8* base = lbl_804386A8;
     register u32* o;
     fn_8000D838(&lbl_8055E8C8);
     o = (u32*)(base + 0x0C);
     o[0] = (u32)(o + 3);
-    initFields(o);
+    o[2] = 0x10;
+    o[1] = 0;
     __register_global_object(o, (void*)fn_801D0B8C, (void*)((u8*)o - 0x0C));
     o = (u32*)(base + 0x64);
-    initFields(o);
+    o[2] = 0x10;
     o[0] = (u32)(o + 3);
+    o[1] = 0;
     __register_global_object(o, (void*)fn_801D0B34, base + 0x58);
 }
 #pragma opt_dead_assignments reset
