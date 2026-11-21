@@ -97,7 +97,6 @@ void __OSUnlockAllMutex(OSThread* thread) {
         OSWakeupThread(&mutex->queue);
     }
 }
-;
 
 /* Non-blocking version of OSLockMutex(): takes the mutex when it is free (or already owned by the
  * current thread) and links it onto that thread's owned-mutex queue, but returns FALSE instead of
