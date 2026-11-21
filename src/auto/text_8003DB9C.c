@@ -5526,10 +5526,6 @@ void GXSetTevSwapMode(s32 stage, s32 rasSel, s32 texSel) {
     *(unsigned short *)((unsigned char *)base + 2) = 0;
 }
 
-static inline void gxFifoWrite61(u32 value) {
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = value;
-}
 void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 texSel2) {
     u32 offset1;
     u32 offset0;
