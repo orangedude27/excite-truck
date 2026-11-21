@@ -83,7 +83,7 @@ static double zero;
 
 
 extern double lbl_80560AE0;
-extern double lbl_80560AD0;
+extern const double lbl_80560AD0;
 extern double lbl_80560A98;
 extern double __kernel_tan(int, double, double);
 extern int __ieee754_rem_pio2(double, double *);
@@ -96,21 +96,16 @@ extern int __ieee754_rem_pio2(double, double *);
 extern unsigned char lbl_802FE850[];
 extern double lbl_805609D8, lbl_805609E0, lbl_805609E8, lbl_805609F0, lbl_805609F8, lbl_80560A00, lbl_80560A08;
 void fn_8002B0D8(unsigned char *s) {
-    unsigned char *p = s;
-    unsigned char *base = lbl_802FE850;
     int c;
     unsigned skip;
+    unsigned char *p = s;
+    unsigned char *base = lbl_802FE850;
     goto check;
 loop:
     c = (signed char)*p;
     skip = 0;
     if (c < 0 || c >= 256) skip = 1;
-    if (skip == 0) goto lookup;
-    goto next;
-lookup:
-    c = *(unsigned char *)(*(unsigned int *)(*(unsigned int *)(base + 0x38) + 0x10) + c);
-    *p = (unsigned char)c;
-next:
+    *p = skip ? c : *(unsigned char *)(*(unsigned int *)(*(unsigned int *)(base + 0x38) + 0x10) + c);
     p++;
 check:
     c = (signed char)*p;
@@ -251,8 +246,8 @@ double x;
     } else {
         w = s;
         __LO(w) = 0;
-        r = p / q;
         c = (t - w * w) / (s + w);
+        r = p / q;
         p = (lbl_80560700 * s) * r - (lbl_80560690 - lbl_80560700 * c);
         q = lbl_80560708 - lbl_80560700 * w;
         t = lbl_80560708 - (p - q);
@@ -670,7 +665,7 @@ double x, y;
                 } else if (yisint == 1)
                     z = -z;
             }
-            return z;
+            return *(double *)&z;
         }
     }
 
@@ -1204,7 +1199,7 @@ double atan(double x) {
     };
     double w, s1, s2, z, t;
     int ix, hx, id;
-    struct AtanTable *tab = (struct AtanTable *)lbl_802EE748;
+    register struct AtanTable *tab = (struct AtanTable *)lbl_802EE748;
     hx = __HI(x);
     ix = hx & 0x7fffffff;
     if (ix >= 0x44100000) {
@@ -1402,9 +1397,10 @@ double frexp(double x, int *eptr) {
             return x;
         if (absHigh < 0x00100000) {
             double scale = lbl_80560A98;
-            int bias = -54;
-            *(volatile int *)eptr = bias;
-            u.d = x * scale;
+            double y;
+            *(volatile int *)eptr = -54;
+            y = x * scale;
+            u.d = y;
             highWord = u.i[0];
             absHigh = highWord & 0x7fffffff;
         }
@@ -1494,7 +1490,7 @@ double fn_8002EF30(double x) {
     int hx;
     double y[2];
     hx = *(int *)&x & 0x7fffffff;
-    if (hx <= 0x3fe921fb) return __kernel_tan(1, x, lbl_80560AD0);
+    if (hx <= 0x3fe921fb) return __kernel_tan(1, x, 0.0);
     if (hx >= 0x7ff00000) return x - x;
     hx = __ieee754_rem_pio2(x, y);
     return __kernel_tan(1 - ((hx & 1) << 1), y[0], y[1]);
