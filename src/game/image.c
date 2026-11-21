@@ -51,8 +51,8 @@ int fn_802C51C0(void* arg0) {
     f32 rounded;
     if (arg0 != 0) {
         value = ((f32 (*)(void*, int))fn_80235EF0)(arg0, 0);
-        if (value < lbl_80564EEC) rounded = value - lbl_80564EE8;
-        else rounded = lbl_80564EE8 + value;
+        if (value < ZERO_F) rounded = value - ROUND_HALF;
+        else rounded = ROUND_HALF + value;
         return (int)rounded;
     }
     return 1;
