@@ -947,13 +947,13 @@ extern "C" void fn_800EC1A4(void *arg0) {
         char funcClear[0x24];
         char funcAlloc[0x40];
     };
-    const struct AssertFileStrings *file = (const struct AssertFileStrings *)lbl_80322D60;
+    register const struct AssertFileStrings *file = (const struct AssertFileStrings *)lbl_80322D60;
     FrameHeapDestroyView *state = (FrameHeapDestroyView *)arg0;
-    struct { FrameHeapDestroyListView *p; } headBox;
-    FrameHeapDestroyListView *&head = headBox.p;
     if (state->heap == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(&file->file[0], 0x87, &file->funcClear[0]);
     }
+    struct { FrameHeapDestroyListView *p; } headBox;
+    FrameHeapDestroyListView *&head = headBox.p;
     if (state->count == 0) goto skip_loop;
     head = &state->list;
     goto loop_test;
@@ -1293,7 +1293,8 @@ s32 nw4hbm::snd::MemorySoundArchive::detail_GetFileAddress(u32 soundId) const {
     return (fileInfo.v[3] + *(u32 *)((u8 *)this + 0x108)) + fileInfo.v[10];
 }
 
-extern u8 lbl_803231D8[];
+extern u8 lbl_803231D8[]; /* nw4r::snd::MemorySoundArchive::MemoryFileStream vtable */
+#define sMemoryFileStreamVtable lbl_803231D8
 extern "C" s32 fn_800F283C(void *, u32, s32, s32 *);
 extern "C" s32 fn_800F2824(void *, s32, void *);
 extern "C" s32 fn_800F282C(void *, s32, s32, void *);
