@@ -1,5 +1,8 @@
 #include <revolution/IPC.h>
 
+/* IPC request profiling: track queued and in-flight requests by file
+ * descriptor so the SDK can account for each one from queue through reply. */
+
 #define IPC_REQUEST_MAX 32
 
 // These BSS/SBSS symbols are owned by auto-unit objects in the original build.
