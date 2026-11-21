@@ -1386,7 +1386,7 @@ extern "C" s32 fn_80250204(void *arg0, s32 arg1, M2C_UNK arg_sp0) {
     s32 *temp_r4_2;
     s32 *temp_r4_3;
     s32 temp_r22;
-    register s32 temp_r27;
+    s32 temp_r27;
     s32 temp_r27_2;
     s32 temp_r27_3;
     s32 var_r0;
@@ -1473,7 +1473,7 @@ extern "C" s32 fn_80250204(void *arg0, s32 arg1, M2C_UNK arg_sp0) {
     u8 *temp_r28;
     u8 *temp_r28_2;
     u8 *temp_r29;
-    u8 *temp_r30;
+    register u8 *temp_r30;
     u8 *temp_r30_2;
     u8 *temp_r30_3;
     u8 *temp_r3_16;
