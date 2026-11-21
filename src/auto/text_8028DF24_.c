@@ -6,16 +6,7 @@ extern double fn_8002F208(double);
 extern int lbl_8055F708;
 extern double lbl_80564418;
 extern float lbl_8055F710;
-extern void fn_8000D838(void *);
-extern double fn_8002F208(double);
-extern int lbl_8055F708;
-extern double lbl_80564418;
-extern float lbl_8055F710;
-#pragma processor 750
-#pragma scheduling 750
 void fn_8028DF24(void) {
-    float f;
     fn_8000D838(&lbl_8055F708);
-    f = fn_8002F208(lbl_80564418);
-    *(float *)&lbl_8055F710 = f;
+    lbl_8055F710 = (float)fn_8002F208(lbl_80564418);
 }
