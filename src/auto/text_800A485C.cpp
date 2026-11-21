@@ -5,7 +5,6 @@ __declspec(section ".sdata") extern u8 lbl_805591F8[];
  static inline s32 fn_800C0E7C_fxmul(s32 a, s32 b) {
      return (s32)(((s64)a * b) >> 20);
  }
- static inline void StoreFlags(s32 *p, s32 v) { *p = v; }
 static inline s32 fn_800BD710_scale(s32 v, s32 *tbl, s32 idx) {
     return fn_800C0E7C_fxmul(v, tbl[idx]);
 }
