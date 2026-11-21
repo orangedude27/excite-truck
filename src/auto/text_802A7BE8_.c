@@ -63,13 +63,7 @@ void fn_802A7C68(void) {
     #undef dbgDrawCarMarkers
 }
 
-extern float lbl_8042F8A8[];
-extern float lbl_8042F8B8[];
-extern int lbl_8055E170;
-extern float lbl_80561474, lbl_80561478, lbl_8056147C;
 extern void *fn_801EA9A0(void);
-extern void fn_8013B7B4(void*, int);
-extern void fn_8013B6C0(int*, float*, int);
 extern void fn_802C8E70(float *, float *);
 extern int fn_802C8FF4(float *, float);
 extern void fn_80235CBC(void *, int, float, float, float, float, float);
