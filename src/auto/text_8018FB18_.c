@@ -284,7 +284,12 @@ extern int fn_80128668();
 #pragma push
 #pragma cplusplus on
 #pragma dont_inline on
-extern "C" void *fn_8018FE8C(void *arg0, s32 arg1) {
+extern "C" void *fn_8018FE8C(void *self, s32 deleteFlag) {
+    /* RealName: Hybrid_scalarDeletingDestructor. Tears down a Hybrid (the 0x3C-byte
+       object built by fn_8018FD88): reset its vtable, ping the optional stub hook,
+       destroy the three owned subobjects and clear their slots, then decrement the
+       live-object count (releasing all replay buffers when it reaches zero), freeing
+       this object now when deleteFlag > 0. */
     struct V {
         virtual void v0(int); virtual void v1(int); virtual void v2(int); virtual void v3(int);
         virtual void v4(int); virtual void v5(int); virtual void v6(int); virtual void v7(int);
@@ -295,26 +300,26 @@ extern "C" void *fn_8018FE8C(void *arg0, s32 arg1) {
         virtual void v24(int); virtual void v25(int); virtual void v26(int); virtual void v27(int);
         virtual void v28(int); virtual void v29(int); virtual void v30(int);
     };
-    s32 temp_r0;
-    V *obj;
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_80333018;
+    s32 remaining;
+    V *child;
+    if (self != 0) {
+        *(void **)self = lbl_80333018;
         if (fn_801B6668() != 0) fn_801B6654();
-        obj = *(V **)((char *)arg0 + 4);
-        if (obj != 0) obj->v30(1);
-        obj = *(V **)((char *)arg0 + 8);
-        *(void **)((char *)arg0 + 4) = 0;
-        if (obj != 0) obj->v0(1);
-        obj = *(V **)((char *)arg0 + 0xC);
-        *(void **)((char *)arg0 + 8) = 0;
-        if (obj != 0) obj->v0(1);
-        *(void **)((char *)arg0 + 0xC) = 0;
-        temp_r0 = lbl_8055E518 - 1;
-        lbl_8055E518 = temp_r0;
-        if (temp_r0 == 0) fn_8018FCC4();
-        if (arg1 > 0) fn_80128668(arg0);
+        child = *(V **)((char *)self + 4);
+        if (child != 0) child->v30(1);
+        child = *(V **)((char *)self + 8);
+        *(void **)((char *)self + 4) = 0;
+        if (child != 0) child->v0(1);
+        child = *(V **)((char *)self + 0xC);
+        *(void **)((char *)self + 8) = 0;
+        if (child != 0) child->v0(1);
+        *(void **)((char *)self + 0xC) = 0;
+        remaining = lbl_8055E518 - 1;
+        lbl_8055E518 = remaining;
+        if (remaining == 0) fn_8018FCC4();
+        if (deleteFlag > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 #pragma pop
 int fn_8018FF84(int object, int deleteFlag) {
@@ -1801,6 +1806,7 @@ int fn_80191758(void *car) {
 
 #pragma cplusplus on
 extern "C" void fn_80191860(void *arg0, void *arg1) {
+#pragma scheduling invalid_target
     class ObjA {
     public:
         virtual void f0();
@@ -1968,7 +1974,7 @@ extern f32 lbl_80562128, lbl_8056212C, lbl_80562130, lbl_80562134;
 extern f32 lbl_80558DC4, lbl_80562098, lbl_805620A8, lbl_805620BC, lbl_805620C0;
 extern f32 __fabsf(f32);
 #pragma scheduling invalid_target
-void fn_80191AB4(u8 *arg0) {
+void fn_80191AB4(void *arg0) {
     f32 sp88;
     f32 sp84;
     f32 sp80;
