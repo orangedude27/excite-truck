@@ -538,8 +538,10 @@ extern "C" void fn_80206A5C(void* arg0) {
     }
 }
 
-/* Sound module: empty entry point, the first of the three no-op stubs next to
- * fn_80206B0C (see its comment). */
+/* Sound module: empty entry point, the first of three adjacent no-op stubs
+ * (with fn_80206B0C and fn_80206B10) between the Sound3D mix-value flush
+ * fn_80206A5C and the base Sound3D::update fn_80206B14.  Calling it does
+ * nothing and no decompiled code or sound vtable references it. */
 extern "C" void fn_80206B08(void) {
 	return;
 }
