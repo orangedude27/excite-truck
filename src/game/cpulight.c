@@ -1176,5 +1176,9 @@ void fn_802DD27C(LightVtx *__restrict vertices, s32 vertexCount,
     }
 }
 #pragma pop
+/* Bump-allocates the CPU-light renderer's vertex buffer out of the GX dynamic
+ * display-list buffer: the caller passes the byte size (0x6000) in r3, which
+ * this thunk forwards to the display-list allocator, whose returned base it
+ * passes back as the vertex array. */
 void fn_802DD42C(void) { fn_802CFF64(); }
 
