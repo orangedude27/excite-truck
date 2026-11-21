@@ -70,19 +70,20 @@ s32 fn_801E4B00(s32 *fontObject) {
     return fn_802C501C();
 }
 #pragma scheduling on
-// Returns the object's line-height metric minus the secondary value from fn_802C4F2C, or 0 if null.
-s32 fn_801E4B48(s32 *arg0) {
-    s32 spC;
-    s32 sp8;
-    s32 result;
-    if (arg0 != 0) {
-        sp8 = 0;
-        fn_802C4F2C(*arg0, &spC, &sp8);
-        result = fn_802C4EFC(*arg0) - sp8;
+/* Returns the baseline offset of a bitmap font: its image height minus the
+ * glyph advance reported by fn_802C4F2C, or 0 when no font is supplied. */
+s32 fn_801E4B48(s32 *fontObject) {
+    s32 scratch;
+    s32 advance;
+    s32 baseline;
+    if (fontObject != 0) {
+        advance = 0;
+        fn_802C4F2C(*fontObject, &scratch, &advance);
+        baseline = fn_802C4EFC(*fontObject) - advance;
     } else {
-        result = 0;
+        baseline = 0;
     }
-    return result;
+    return baseline;
 }
 #pragma dont_inline on
 /* RealName: BitmapFont_GetLineHeight (sum of ascent/baseline metric and glyph advance width). */
