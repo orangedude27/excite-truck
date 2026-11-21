@@ -1015,7 +1015,9 @@ int fn_8028F534(int bitValue) {
     fn_802E317C(lbl_80348F9C, bitValue);
     return 0;
 }
-void fn_8028F5A0(int arg0, int arg1) {
+/* No-op post-creation hook: called with the caller's name/argument and the
+ * newly created partman object, but its body is empty. */
+void fn_8028F5A0(int nameOrArg, int object) {
 }
 
 #pragma pop
