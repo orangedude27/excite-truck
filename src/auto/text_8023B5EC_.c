@@ -64,8 +64,10 @@ void fn_8023B670(void) {
     fn_80012778();
 }
 #pragma pop
+/* Main-mode dispatcher: reset the mode, prepare the menus and controls, then
+   run either the E3 demo or the regular demo depending on the build, and finally
+   tear the mode down. */
 void fn_8023B6B0(void) {
-    /* Shut down the current mode/session, then run the appropriate exit path and finalize teardown. */
     fn_80129AEC(0);
     fn_802E47E8();
     fn_80127A24();
