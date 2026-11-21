@@ -341,7 +341,7 @@ static inline void Mesh_Swap32(void *p) {
 }
 
 static inline void Mesh_Swap16(void *p) {
-    volatile u8 *b = (volatile u8 *)p;
+    u8 *b = (u8 *)p;
     u8 t;
     t = b[0]; b[0] = b[1]; b[1] = t;
 }
