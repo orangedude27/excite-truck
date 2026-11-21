@@ -688,7 +688,10 @@ void fn_802E8528(int controllerIndex, float level, float unused) {
 #pragma pop
 void fn_802E85A8(void) {}
 
-void fn_802E85AC(void) {}
+/* No-op rjoy stub: would apply rumble/audio parameters (controller id, two
+ * scaled levels and a base level) sent from fn_8017F628; this build leaves it empty. */
+void fn_802E85AC(int controllerId, float levelA, float levelB, float baseLevel) {
+}
 
 /* rjoy stub: reports a fixed controller-type id of 3 regardless of input.
  * Callers compare it against 4 to detect a type-4 controller, which never matches here. */
