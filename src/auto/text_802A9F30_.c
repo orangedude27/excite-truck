@@ -941,7 +941,9 @@ check:
         goto loop;
 }
 #pragma pop
-void fn_802AB6D0(void) {}
+void fn_802AB6D0(void) {
+    /* Intentionally empty reset callback in the stunt-car effect system: does no work. */
+}
 
 #pragma push
 #pragma use_lmw_stmw off
