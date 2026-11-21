@@ -108,6 +108,7 @@ extern char *fn_80237C40(void);
 #pragma scheduling priority
 void fn_80236780(void) {
     char *p;
+    signed char flag;
     if (lbl_8055F0BC == 0) {
         p = fn_80237C40();
         lbl_8055F0BC = p;
@@ -117,10 +118,12 @@ void fn_80236780(void) {
         *(char **)(lbl_8055F0C0 + 0x24) = p;
         lbl_8055F0C0 = *(char **)(lbl_8055F0C0 + 0x24);
     }
+    flag = 0;
     lbl_8055F0C0[0x1F] = lbl_8055F0C7;
     lbl_8055F0C0[0x20] = 0;
     if ((unsigned char)lbl_8055F0C5 != 0 || (unsigned char)lbl_8055F0C6 == 0)
-        lbl_8055F0C0[0x21] = 1;
+        flag = 1;
+    lbl_8055F0C0[0x21] = flag;
     *(int *)(lbl_8055F0C0 + 0x28) = lbl_8055F0B0;
     *(int *)(lbl_8055F0C0 + 0x2C) = lbl_8055F0B4;
     *(int *)(lbl_8055F0C0 + 0x30) = lbl_8055F0B8;
