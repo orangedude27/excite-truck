@@ -11,6 +11,8 @@ extern char lbl_8034D204[];
 extern char lbl_8034D1F0[];
 // split_file divides it into the game's real files (file_status shows its range).
 
+/* No-op stub: called with a flag at the start of the per-tick system/physics
+   update (fn_80176CC8); the argument is ignored and the body does nothing. */
 void fn_802E4C14(void) {
 }
 
