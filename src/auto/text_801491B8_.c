@@ -3236,11 +3236,11 @@ void fn_80151A40(void *arg0) {
 
 #pragma cplusplus off
 #pragma pop
-extern s32 fn_80141F7C(f32);
-extern void fn_80149650(void);
-extern void fn_80151C98(void *, s32);
-extern s32 fn_801537CC(s32, s32, f32);
-extern void *fn_801538E4(void *);
+extern s32 fn_80141F7C(f32); /* true when a float is effectively zero */
+extern void fn_80149650(void); /* frame-driven sine oscillation, period 0x40 (result in f1) */
+extern void fn_80151C98(void *, s32); /* apply a packed appearance value to an entry */
+extern s32 fn_801537CC(s32, s32, f32); /* blend two packed RGBA colors by factor t */
+extern void *fn_801538E4(void *); /* address an entry's 0x14-byte colour record */
 extern void fn_80167844(void);
 extern void fn_8016A438(void);
 extern s32 fn_801E85B4(void);
