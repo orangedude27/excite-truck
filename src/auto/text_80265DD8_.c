@@ -2287,8 +2287,10 @@ void fn_8026A394(void *subject) {
 }
 #pragma pop
     extern void fn_80269BB0(int, unsigned int, int *, float *);
-    void fn_8026A49C(int a, unsigned int b, int *c, float *d) {
-      fn_80269BB0(a, b, c, d);
+void fn_8026A49C(int index, unsigned int selector, int *outMatrix, float *outScalar) {
+    /* Tail-call the shared routine that copies record `index` from the transform
+       table, applies the `selector` operation, and returns a 3x4 matrix + scalar. */
+    fn_80269BB0(index, selector, outMatrix, outScalar);
 }
 
 #pragma scheduling on
