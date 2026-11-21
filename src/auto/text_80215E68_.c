@@ -167,13 +167,15 @@ u8 fn_80215FF4(u8 *pValue) {
     return *pValue;
 }
 
+#define getCurrentInputNibble fn_802E4A10
 #pragma scheduling invalid_target
 s32 fn_80215FFC(const void *arg0) {
     s32 result = 0;
-    if (*(const u8 *)arg0 != 0 && *(const s32 *)((const u8 *)arg0 + 4) == fn_802E4A10()) result = 1;
+    if (*(const u8 *)arg0 != 0 && *(const s32 *)((const u8 *)arg0 + 4) == getCurrentInputNibble()) result = 1;
     return result;
 }
 #pragma scheduling on
+#undef getCurrentInputNibble
 /* Query stub in the option UI: always answers 1 (true) in this build. */
 u32 fn_80216054(void) {
     return 1;
