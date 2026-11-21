@@ -156,8 +156,8 @@ extern const char lbl_802FB0A8[];
 extern const char lbl_802FB0B8[];
 extern u32 lbl_8034EC40[];
 extern u32 lbl_8055D320;
-extern u32 lbl_8055D328;
-extern u32 lbl_8055D32C;
+extern u8 lbl_8055D328[4];
+extern u8 lbl_8055D32C[4];
 extern void fn_8000D838(u32*);
 
 extern u8* fn_80012820(int);
