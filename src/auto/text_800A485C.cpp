@@ -17969,7 +17969,7 @@ extern "C" s32 fn_800C3CDC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 #pragma pop
 extern "C" void fn_800C3D9C(void) {
-    /* Arena reset wrapper: tail-call the cursor setter with the caller's new cursor address already in r3. */
+    /* Arena reset: tail-call the cursor setter with the caller's new address in r3. */
     fn_800C4BD0();
 }
 
