@@ -335,9 +335,10 @@ void fn_80279B28(unsigned char *arg0, unsigned char *arg1) {
     arg1[0x2B1] = arg0[0x2B5];
 }
 #pragma opt_unroll_loops off
-/* Copy a packed car-state buffer into a carstate entry's state block. The state
- * starts four bytes into the entry (past its vehicleId), so every byte/float/word
- * is written 4 bytes further into the entry than it is read from the buffer. */
+/* CarStateCopyIn(): copy a packed car-state buffer into a carstate entry's state
+ * block (the inverse of fn_80279B28). The state starts four bytes into the entry
+ * (past its vehicleId), so every byte/float/word is written 4 bytes further into
+ * the entry than it is read from the buffer. */
 void fn_80279C00(unsigned char *entry, unsigned char *buffer) {
     unsigned char secondByte, firstByte;
     unsigned char *readPtr, *writePtr;
