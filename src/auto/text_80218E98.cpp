@@ -1001,20 +1001,19 @@ extern "C" void fn_80219510(void *widget, s32 offsetX, s32 offsetY) {
     *(s32 *)((u8 *)widget + 0x248) = scrollY;
 }
 
-#pragma push
-#pragma optimization_level 2
+#pragma scheduling invalid_target
 extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
     void* p = *(void**)((u8*)arg0 + 0x2C);
     if (*(u8*)((u8*)arg0 + 0x24C) != 0) {
-        register s32 dx = *(s32*)((u8*)arg0 + 0x244) + arg1;
-        register s32 dy = *(s32*)((u8*)arg0 + 0x248) + arg2;
-        register s32 old1 = *(s32*)((u8*)p + 0x454);
-        register s32 old2 = *(s32*)((u8*)p + 0x458);
+        s32 dx = *(s32*)((u8*)arg0 + 0x244) + arg1;
+        s32 old1 = *(s32*)((u8*)p + 0x454);
+        s32 dy = *(s32*)((u8*)arg0 + 0x248) + arg2;
+        s32 old2 = *(s32*)((u8*)p + 0x458);
         *(s32*)((u8*)p + 0x454) = old1 + dx;
         *(s32*)((u8*)p + 0x458) = old2 + dy;
     }
 }
-#pragma pop
+#pragma scheduling on
 extern "C" void *fn_80219568(void *obj, s32 x, s32 y, s32 arg3, s32 arg4, s32 width, s32 height, s32 arg7) {
     /* Initialize a menu text widget: set up base bounds, vtable, and fields at 0x244-0x250. */
     fn_80218F34(obj, x, y, x + width, y + height, arg3);
@@ -4607,7 +4606,7 @@ extern "C" void fn_8021FC40(void *arg0, s32 arg1) {
     var_r28 = 0;
     temp_r5 = *(s32 **)((u8 *)arg0 + 0x274);
     if (temp_r5 != 0 && *temp_r5 == *(s32 *)((u8 *)arg0 + 0x278)) { var_r28 = 1; }
-    if (var_r28 != 0) {
+    if (var_r28) {
         temp_r31 = *(s32 *)((u8 *)arg0 + 8);
         temp_r30 = *(s32 *)((u8 *)arg0 + 4);
         fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x25C),
@@ -8929,6 +8928,8 @@ extern "C" void fn_80228DAC(void *widget) {
     iface->vf7();
 }
 
+/* Default no-op virtual in the TruckIface widget dispatch table (compiles to a
+   bare return), alongside the vf6()/vf7() forwarding methods. */
 extern "C" void fn_80228DC0(void) { }
 
 extern "C" void fn_80228DC4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
