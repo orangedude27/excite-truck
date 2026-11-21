@@ -1148,7 +1148,10 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
 }
 #pragma cplusplus on
 void fn_8022C520(void) {
-    struct EntryIface {
+    /* Load UI text style overrides from the style config: for each "style" node,
+     * fill a 0x58-byte descriptor from the lbl_802F9F58 defaults plus the node's
+     * properties and install it in the 0x100-entry style table via fn_8022A858. */
+    struct ConfigNode {
         virtual char *getName();
         virtual int has(const char *);
         virtual void *u2();
@@ -1163,95 +1166,107 @@ void fn_8022C520(void) {
         virtual void *u17(); virtual void *u18(); virtual void *u19(); virtual void *u20();
         virtual void *getPtr(const char *);
     };
-    struct ListIface {
+    struct ConfigNodeList {
         virtual void *l0();
         virtual void *fetch(int);
     };
-    Cfg58 tmpl;
-    Cfg58 work;
-    void* list;
-    EntryIface* entry;
+    #define StyleTag     lbl_8055B8C4 /* "style" */
+    #define AlignLeft    lbl_8055B8CC /* "left" */
+    #define AlignRight   lbl_8055B8D4 /* "right" */
+    #define AlignCenter  lbl_8055B8DC /* "center" */
+    #define AlignTop     lbl_8055B8E4 /* "top" */
+    #define AlignMiddle  lbl_8055B8E8 /* "middle" */
+    #define AlignBottom  lbl_8055B8F0 /* "bottom" */
+    #define ShadowOff    lbl_8055B8F8 /* "off" */
+    #define ShadowOn     lbl_8055B8FC /* "on" */
+    #define StampProp    lbl_8055B900 /* "stamp" */
+    #define ExtArtProp   lbl_8055B908 /* "ext_art" */
+    #define ButtonProp   lbl_8055B910 /* "button" */
+    Cfg58 styleTemplate;
+    Cfg58 styleDesc;
+    void* nodeList;
+    ConfigNode* node;
     int i;
-    int value;
-    unsigned flag1;
-    int flag2;
-    char* base;
+    int styleIndex;
+    unsigned hAlign;
+    int vAlign;
+    char* strBase;
 
-    base = lbl_8033FBE8;
-    tmpl = *(Cfg58*)&lbl_802F9F58;
-    tmpl.w[3] = 0xffd6003c;
-    tmpl.w[4] = 0xffd6003c;
-    tmpl.w[5] = 0xff2dc82d;
-    tmpl.w[6] = 0xff2dc82d;
-    tmpl.w[10] = 0xff2d2dc8;
-    tmpl.w[11] = 0xff2d2dc8;
-    tmpl.w[12] = 0xffd6003c;
-    tmpl.w[13] = 0xffd6003c;
-    list = fn_80131810(base + 0x64, 0xff2dc82d, 0xffd6003c);
-    if (list) {
-        for (i = 0; (entry = (EntryIface*)((ListIface*)list)->fetch(i)) != 0; i++) {
-            if (stricmp(entry->getName(), lbl_8055B8C4) != 0) {
+    strBase = lbl_8033FBE8;
+    styleTemplate = *(Cfg58*)&lbl_802F9F58;
+    styleTemplate.w[3] = 0xffd6003c;
+    styleTemplate.w[4] = 0xffd6003c;
+    styleTemplate.w[5] = 0xff2dc82d;
+    styleTemplate.w[6] = 0xff2dc82d;
+    styleTemplate.w[10] = 0xff2d2dc8;
+    styleTemplate.w[11] = 0xff2d2dc8;
+    styleTemplate.w[12] = 0xffd6003c;
+    styleTemplate.w[13] = 0xffd6003c;
+    nodeList = fn_80131810(strBase + 0x64, 0xff2dc82d, 0xffd6003c);
+    if (nodeList) {
+        for (i = 0; (node = (ConfigNode*)((ConfigNodeList*)nodeList)->fetch(i)) != 0; i++) {
+            if (stricmp(node->getName(), StyleTag) != 0) {
                 continue;
             }
-            if (entry->has(base + 0x70) != 0) {
-                value = entry->getInt(base + 0x70);
+            if (node->has(strBase + 0x70) != 0) {
+                styleIndex = node->getInt(strBase + 0x70);
             } else {
-                if (entry->has(base + 0x7c) == 0) {
-                    fn_802E30C8(base + 0x88);
+                if (node->has(strBase + 0x7c) == 0) {
+                    fn_802E30C8(strBase + 0x88);
                     continue;
                 } else {
-                    char *s = entry->getStr(base + 0x7c);
-                    value = fn_8022CC8C(s);
+                    char *s = node->getStr(strBase + 0x7c);
+                    styleIndex = fn_8022CC8C(s);
                 }
             }
-            if (value < 0 || value >= 0x100) {
-                fn_802E30C8(base + 0xb4, entry->getIntDef(base + 0x7c, (int)(base + 0xe4)));
+            if (styleIndex < 0 || styleIndex >= 0x100) {
+                fn_802E30C8(strBase + 0xb4, node->getIntDef(strBase + 0x7c, (int)(strBase + 0xe4)));
                 continue;
             }
-            work = tmpl;
-            work.w[0] = entry->getIntDef(base + 0xf0, work.w[0]);
-            *(float*)&work.w[1] = entry->getFloat(base + 0xfc, *(float*)&work.w[1]);
-            flag1 = 1;
-            if (entry->has(base + 0x108) != 0) {
-                char *s = entry->getStr(base + 0x108);
-                if (stricmp(s, lbl_8055B8CC) == 0) {
-                    flag1 = 1;
-                } else if (stricmp(s, lbl_8055B8D4) == 0) {
-                    flag1 = 2;
-                } else if (stricmp(s, lbl_8055B8DC) == 0) {
-                    flag1 = 4;
+            styleDesc = styleTemplate;
+            styleDesc.w[0] = node->getIntDef(strBase + 0xf0, styleDesc.w[0]);
+            *(float*)&styleDesc.w[1] = node->getFloat(strBase + 0xfc, *(float*)&styleDesc.w[1]);
+            hAlign = 1;
+            if (node->has(strBase + 0x108) != 0) {
+                char *s = node->getStr(strBase + 0x108);
+                if (stricmp(s, AlignLeft) == 0) {
+                    hAlign = 1;
+                } else if (stricmp(s, AlignRight) == 0) {
+                    hAlign = 2;
+                } else if (stricmp(s, AlignCenter) == 0) {
+                    hAlign = 4;
                 } else {
-                    fn_802E30C8(base + 0x120, s);
+                    fn_802E30C8(strBase + 0x120, s);
                 }
             }
-            flag2 = 8;
-            if (entry->has(base + 0x154) != 0) {
-                char *s = entry->getStr(base + 0x154);
-                if (stricmp(s, lbl_8055B8E4) == 0) {
-                    flag2 = 8;
-                } else if (stricmp(s, lbl_8055B8E8) == 0) {
-                    flag2 = 0x10;
-                } else if (stricmp(s, base + 0x168) == 0) {
-                    flag2 = 0x20;
-                } else if (stricmp(s, lbl_8055B8F0) == 0) {
-                    flag2 = 0x40;
+            vAlign = 8;
+            if (node->has(strBase + 0x154) != 0) {
+                char *s = node->getStr(strBase + 0x154);
+                if (stricmp(s, AlignTop) == 0) {
+                    vAlign = 8;
+                } else if (stricmp(s, AlignMiddle) == 0) {
+                    vAlign = 0x10;
+                } else if (stricmp(s, strBase + 0x168) == 0) {
+                    vAlign = 0x20;
+                } else if (stricmp(s, AlignBottom) == 0) {
+                    vAlign = 0x40;
                 } else {
-                    fn_802E30C8(base + 0x174, s);
+                    fn_802E30C8(strBase + 0x174, s);
                 }
             }
-            work.w[2] = flag1 | flag2;
-            fn_8022CDE4((int*)&work.w[3], entry->getPtr(lbl_8055B8F8));
-            fn_8022CDE4((int*)&work.w[10], entry->getPtr(lbl_8055B8FC));
-            if (entry->has(lbl_8055B900) != 0) {
-                work.w[17] = (int)entry->getStr(lbl_8055B900);
+            styleDesc.w[2] = hAlign | vAlign;
+            fn_8022CDE4((int*)&styleDesc.w[3], node->getPtr(ShadowOff));
+            fn_8022CDE4((int*)&styleDesc.w[10], node->getPtr(ShadowOn));
+            if (node->has(StampProp) != 0) {
+                styleDesc.w[17] = (int)node->getStr(StampProp);
             }
-            work.w[21] = entry->get8(lbl_8055B908, work.w[21]);
-            work.w[18] = entry->get8(lbl_8055B910, work.w[18]);
-            *(float*)&work.w[19] = entry->getFloat(base + 0x1a8, *(float*)&work.w[19]);
-            *(float*)&work.w[20] = entry->getFloat(base + 0x1b4, *(float*)&work.w[20]);
-            ((void (*)(int, void*))fn_8022A858)(value, &work);
+            styleDesc.w[21] = node->get8(ExtArtProp, styleDesc.w[21]);
+            styleDesc.w[18] = node->get8(ButtonProp, styleDesc.w[18]);
+            *(float*)&styleDesc.w[19] = node->getFloat(strBase + 0x1a8, *(float*)&styleDesc.w[19]);
+            *(float*)&styleDesc.w[20] = node->getFloat(strBase + 0x1b4, *(float*)&styleDesc.w[20]);
+            ((void (*)(int, void*))fn_8022A858)(styleIndex, &styleDesc);
         }
-        fn_80131818(list);
+        fn_80131818(nodeList);
     }
 }
 #pragma cplusplus reset
