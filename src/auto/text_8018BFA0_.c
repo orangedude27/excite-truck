@@ -373,6 +373,7 @@ extern void *fn_8001285C(int);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling 603
 void fn_8018C5A0(char *arg0, char *arg1) {
     char *base = lbl_80332758;
     char *p19;
@@ -423,12 +424,13 @@ void fn_8018C5A0(char *arg0, char *arg1) {
     }
     if (M2C_FIELD(arg0, int *, 0x1F0) == 0x50) {
         void *o = M2C_FIELD(fn_8001285C(*(int *)__AXFXGetLfoSinTable_801769CC()), void **, 0x20);
-        float t = (*(float (**)(void *, void *, float))(*(char **)o + 0x28))(o, base + 0x680, lbl_80561F88);
+        float (*fp)(void *, void *, float) = *(float (**)(void *, void *, float))(*(char **)o + 0x28);
+        float t = fp(o, base + 0x680, lbl_80561F88);
         M2C_FIELD(arg0, float *, 0x5F4) = M2C_FIELD(arg0, float *, 0x5F4) * t;
     }
     M2C_FIELD(arg0, float *, 0x5F4) = M2C_FIELD(arg0, float *, 0x5F4) * lbl_80561F8C;
     if (M2C_FIELD(arg0, int *, 0x328) != 0) {
-        fn_80279B28(arg0 + 0x1E44);
+        fn_80279B28(M2C_FIELD(arg0, int *, 0x328), arg0 + 0x1E44);
     } else {
         fn_80279CD8(arg0 + 0x1E44);
     }
