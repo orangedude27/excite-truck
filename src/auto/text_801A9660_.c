@@ -1668,39 +1668,41 @@ typedef struct Spring {
 
 extern float lbl_8056250C;
 extern float lbl_80562514;
+extern float lbl_8056247C;
 #pragma scheduling off
 #pragma opt_propagation off
-void fn_801AD0E0(void *arg0, void *arg1, void *arg2, void *arg3, float farg0, float farg1) {
-    float t, c, r, q, p, z, y, x, b;
-    int zero;
-    t = lbl_80562514;
-    zero = 0;
-    b = lbl_8056247C;
-    c = t * farg0;
-    t = lbl_8056250C;
-    *(int *)((char *)arg0 + 0x0C) = zero;
-    x = *(float *)((char *)arg1 + 0x00);
-    t = t * c;
-    y = *(float *)((char *)arg1 + 0x04);
-    z = *(float *)((char *)arg1 + 0x08);
-    p = *(float *)((char *)arg3 + 0x00);
-    q = *(float *)((char *)arg3 + 0x04);
-    r = *(float *)((char *)arg3 + 0x08);
-    *(float *)((char *)arg0 + 0x28) = b;
-    *(float *)((char *)arg0 + 0x2C) = b;
-    *(float *)((char *)arg0 + 0x00) = x;
-    *(float *)((char *)arg0 + 0x04) = y;
-    *(float *)((char *)arg0 + 0x08) = z;
-    *(int *)((char *)arg0 + 0x0C) = (int)arg2;
-    *(float *)((char *)arg0 + 0x10) = p;
-    *(float *)((char *)arg0 + 0x14) = q;
-    *(float *)((char *)arg0 + 0x18) = r;
-    *(float *)((char *)arg0 + 0x1C) = farg0;
-    *(float *)((char *)arg0 + 0x24) = farg1;
-    *(float *)((char *)arg0 + 0x20) = t;
+/* Initialize a spring: store the world target and the local anchor, the second
+   body (or zero for a fixed point), strength and range; derive damping as a
+   fixed fraction of strength; zero the rest length and stretch. */
+void fn_801AD0E0(void *spring, void *target, void *other, void *anchor, float strength, float range) {
+    float damping, scaledStrength, anchorZ, anchorY, anchorX, targetZ, targetY, targetX, zeroFloat;
+    int zeroInt;
+    damping = lbl_80562514;
+    zeroInt = 0;
+    zeroFloat = lbl_8056247C;
+    scaledStrength = damping * strength;
+    damping = lbl_8056250C;
+    *(int *)&((Spring *)spring)->other = zeroInt;
+    targetX = ((Vec *)target)->x;
+    damping = damping * scaledStrength;
+    targetY = ((Vec *)target)->y;
+    targetZ = ((Vec *)target)->z;
+    anchorX = ((Vec *)anchor)->x;
+    anchorY = ((Vec *)anchor)->y;
+    anchorZ = ((Vec *)anchor)->z;
+    ((Spring *)spring)->restLength = zeroFloat;
+    ((Spring *)spring)->stretch = zeroFloat;
+    ((Spring *)spring)->target.x = targetX;
+    ((Spring *)spring)->target.y = targetY;
+    ((Spring *)spring)->target.z = targetZ;
+    *(int *)&((Spring *)spring)->other = (int)other;
+    ((Spring *)spring)->anchor.x = anchorX;
+    ((Spring *)spring)->anchor.y = anchorY;
+    ((Spring *)spring)->anchor.z = anchorZ;
+    ((Spring *)spring)->strength = strength;
+    ((Spring *)spring)->range = range;
+    ((Spring *)spring)->damping = damping;
 }
-#pragma processor 750
-#pragma scheduling invalid_target
 void fn_801AD148(void *arg0, void *arg1, void *arg2, f32 farg0, f32 farg1) {
     Vec sp14;
     Vec sp8;
