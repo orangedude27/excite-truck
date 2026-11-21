@@ -14,7 +14,6 @@ void fn_8000D838(void *node) {
 }
 #pragma pop
 void fn_8000D878(void) {
-    /* No-op callback called during scene setup alongside fn_8000D838's
-       static-destructor registration; does nothing in this build. */
+    /* Empty callback called during scene setup alongside static-destructor registration. */
     return;
 }
