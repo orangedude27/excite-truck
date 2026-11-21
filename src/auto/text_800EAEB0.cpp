@@ -334,8 +334,7 @@ extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(voi
                 Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B44, 0x23D, (const char*)lbl_80322B20);
             return (Callback*)mPointer;
         }
-        bool operator==(const Iterator& o) const { return mPointer == o.mPointer; }
-        bool operator!=(const Iterator& o) const { return !(*this == o); }
+        bool operator!=(const Iterator& o) const { return mPointer != o.mPointer; }
     };
     struct List {
         u32 count;
@@ -343,8 +342,8 @@ extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(voi
         Iterator GetBeginIter() { return Iterator(node.next); }
         Iterator GetEndIter() { return Iterator(&node); }
     };
-    void* start = object;
-    void* end = (u8*)start + size;
+    u8* start = (u8*)object;
+    u8* end = start + size;
     unsigned long outerLevel = OSDisableInterrupts();
     for (Iterator it = ((List*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv())->GetBeginIter();
          it != ((List*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv())->GetEndIter();) {
@@ -3448,6 +3447,8 @@ extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma opt_lifetimes off
+/* Stop every SeqPlayer in the global sPlayerList, then assert the list is empty.
+ * Each list node sits at +0x100 inside its player object. */
 extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
     class PlayerVTable {
     public:
@@ -3455,22 +3456,34 @@ extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
         virtual void Dummy1();
         virtual void Stop();
     };
+    #define seqPlayerList lbl_80412A6C      /* nw4hbm::ut::LinkList sPlayerList */
+    #define linkListH lbl_80324024          /* "LinkList.h" */
+    #define nullPointerMsg lbl_80324000     /* "NW4HBM:Pointer must not be NULL (p)" */
+    #define seqPlayerCpp lbl_80323B28       /* "snd_SeqPlayer.cpp" */
+    #define listNotEmptyMsg lbl_80323E64    /* "NW4HBM:Failed assertion sPlayerList.IsEmpty()" */
     struct LinkListIter { void *node; };
-    LinkListIter begin;
-    begin.node = *(void**)&lbl_80412A6C[0x04];
+    LinkListIter begin;                          /* LinkList::GetBeginIter() */
+    begin.node = *(void**)&seqPlayerList[0x04];  /* the list's first node */
     LinkListIter it = begin;
+    /* The list's own node at +0x04 ends the walk. Keeping it through a reference
+     * avoids tying the list base to a callee-saved register across the loop. */
     struct EndWrap { void* e; } sentinel;
-    sentinel.e = (void*)&lbl_80412A6C[0x04];
+    sentinel.e = (void*)&seqPlayerList[0x04];
     void*& end = sentinel.e;
     while (it.node != end) {
         void* node = it.node;
-        it.node = *(void**)it.node;
-        if (node == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324024, 0x23D, (const char*)lbl_80324000);
-        ((PlayerVTable*)((u8*)node - 0x100))->Stop();
+        it.node = *(void**)it.node;              /* ++it */
+        if (node == 0)                           /* *it */
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)linkListH, 0x23D, (const char*)nullPointerMsg);
+        ((PlayerVTable*)((u8*)node - 0x100))->Stop(); /* player at +0x100 */
     }
-    if (*(s32*)&lbl_80412A6C[0] != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x3D7, (const char*)lbl_80323E64);
+    if (*(s32*)&seqPlayerList[0] != 0)           /* !sPlayerList.IsEmpty() */
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)seqPlayerCpp, 0x3D7, (const char*)listNotEmptyMsg);
+    #undef seqPlayerList
+    #undef linkListH
+    #undef nullPointerMsg
+    #undef seqPlayerCpp
+    #undef listNotEmptyMsg
 }
 #pragma pop
 /* Forward an event to the virtual callback stored at +0x94 on this player,
