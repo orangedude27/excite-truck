@@ -78,6 +78,9 @@ int fn_8000ACDC(int arg0) {
 }
 
 void fn_8000AD20(void) {
+    /* No-op callback stub: an empty default slot in this module's run of stubs
+       (fn_8000AC98, fn_8000AC9C, fn_8000ACA4, fn_8000ACAC, fn_8000AD20);
+       does nothing in this build. */
 }
 
 /* No-argument stub predicate that always reports false (0) in this build. */
