@@ -98,6 +98,10 @@ void fn_802A09B0(void) {
 }
 
 void fn_802A0AF8(void) {
+    /* Empty per-element initializer callback passed to fn_8002F37C when
+       fn_802A09B0 allocates the 64-element array of 0x54-byte chain-link
+       records (lbl_8055F834).  Invoked once per element, it does nothing;
+       compiles to a bare 'blr'. */
 }
 
 /* Chain-link fence module shutdown (suggested name ChainLink_Shutdown;
