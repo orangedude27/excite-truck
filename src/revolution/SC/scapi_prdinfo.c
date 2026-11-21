@@ -11,9 +11,11 @@ typedef struct SCRegion {
     char name[4]; // at 0x1
 } SCRegion;
 
-char lbl_805591E8[] = "AREA";
+/* Key looked up in the SC product info to find the console's product area. */
+char AreaKey[] = "AREA";
 
-u8 lbl_8031B120[72] = {
+/* Product-area code to three-letter name mapping, terminated by an area of -1. */
+u8 RegionTable[72] = {
     SC_AREA_JPN, 'J', 'P', 'N', 0,
     SC_AREA_USA, 'U', 'S', 'A', 0,
     SC_AREA_EUR, 'E', 'U', 'R', 0,
@@ -81,14 +83,14 @@ static BOOL __SCF1(const char* type, char* buf, u32 sz) {
 }
 
 static inline BOOL SCGetProductAreaString(char* buf, u32 sz) {
-    return __SCF1(lbl_805591E8, buf, sz);
+    return __SCF1(AreaKey, buf, sz);
 }
 
 /* Resolve the console's product area code by looking up the "AREA" string in the SC region table. */
 s8 SCGetProductArea(void) {
     s8 area;
     char name[4];
-    SCRegion* region = (SCRegion*)lbl_8031B120;
+    SCRegion* region = (SCRegion*)RegionTable;
 
     if (SCGetProductAreaString(name, sizeof(name))) {
         for (; (area = region->area) != -1; region++) {
