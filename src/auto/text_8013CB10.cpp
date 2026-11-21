@@ -4605,6 +4605,7 @@ extern "C" s32 fn_801442F4(void) { return 0; }
 extern "C" void fn_801442FC(void) {
 }
 
+/* No-op virtual callback stub of the zone system: one of the empty slots (fn_801442D4/fn_801442D8/fn_801442FC/fn_80144300) in the ZoneMaster vtable lbl_8032CAF0 group; does nothing, compiles to a bare 'blr'. */
 extern "C" void fn_80144300(void) {
 }
 
