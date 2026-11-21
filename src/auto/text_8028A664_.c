@@ -1165,9 +1165,9 @@ void fn_8028BFEC(s32 arg0) {
             vy = (in->vy * f8) - f7;
             vz = in->vz * f8;
             temp[0] = vx;
+            temp[2] = vz;
             temp[1] = vy;
             out->x = in->x + vx * time;
-            temp[2] = vz;
             out->y = in->y + vy * time;
             out->z = in->z + vz * time;
             out->vx = vx;
@@ -1186,15 +1186,14 @@ void fn_8028C11C(void *arg0, s32 *arg1, s32 *arg2) {
         f32 a0, a1, a2;
         f32 d0, d1, d2;
         f32 v0, v1, v2;
+        f32 pad28;
         f32 o[12];
         f32 m[9];
-        f32 pad84;
         f64 col;
     } s;
     f32 *a1 = (f32 *)arg1;
     f32 *a2 = (f32 *)arg2;
     f32 t, now, scale;
-    f32 r0, r1, r2, r3, r4, r5, r6, r7, r8;
     f32 ageFactor, dot, factor;
     f32 k0, k1, one, thresh;
     s32 color;
@@ -1223,15 +1222,15 @@ void fn_8028C11C(void *arg0, s32 *arg1, s32 *arg2) {
         s.m[5] = fn_80144514(s.m[2], a1[3], s.m[5], a1[4], s.m[8], a1[5]);
         s.m[8] = fn_80144514(s.m[2], a1[6], s.m[5], a1[7], s.m[8], a1[8]);
     } else {
-        r0 = fn_80144514(s.m[0], a1[0], s.m[3], a1[1], s.m[6], a1[2]);
-        r1 = fn_80144514(s.m[0], a1[3], s.m[3], a1[4], s.m[6], a1[5]);
-        r2 = fn_80144514(s.m[0], a1[6], s.m[3], a1[7], s.m[6], a1[8]);
-        r3 = fn_80144514(s.m[1], a1[0], s.m[4], a1[1], s.m[7], a1[2]);
-        r4 = fn_80144514(s.m[1], a1[3], s.m[4], a1[4], s.m[7], a1[5]);
-        r5 = fn_80144514(s.m[1], a1[6], s.m[4], a1[7], s.m[7], a1[8]);
-        r6 = fn_80144514(s.m[2], a1[0], s.m[5], a1[1], s.m[8], a1[2]);
-        r7 = fn_80144514(s.m[2], a1[3], s.m[5], a1[4], s.m[8], a1[5]);
-        r8 = fn_80144514(s.m[2], a1[6], s.m[5], a1[7], s.m[8], a1[8]);
+        f32 r0 = fn_80144514(s.m[0], a1[0], s.m[3], a1[1], s.m[6], a1[2]);
+        f32 r1 = fn_80144514(s.m[0], a1[3], s.m[3], a1[4], s.m[6], a1[5]);
+        f32 r2 = fn_80144514(s.m[0], a1[6], s.m[3], a1[7], s.m[6], a1[8]);
+        f32 r3 = fn_80144514(s.m[1], a1[0], s.m[4], a1[1], s.m[7], a1[2]);
+        f32 r4 = fn_80144514(s.m[1], a1[3], s.m[4], a1[4], s.m[7], a1[5]);
+        f32 r5 = fn_80144514(s.m[1], a1[6], s.m[4], a1[7], s.m[7], a1[8]);
+        f32 r6 = fn_80144514(s.m[2], a1[0], s.m[5], a1[1], s.m[8], a1[2]);
+        f32 r7 = fn_80144514(s.m[2], a1[3], s.m[5], a1[4], s.m[8], a1[5]);
+        f32 r8 = fn_80144514(s.m[2], a1[6], s.m[5], a1[7], s.m[8], a1[8]);
         s.m[0] = r0; s.m[3] = r1; s.m[6] = r2;
         s.m[1] = r3; s.m[4] = r4; s.m[7] = r5;
         s.m[2] = r6; s.m[5] = r7; s.m[8] = r8;
@@ -1264,10 +1263,7 @@ void fn_8028C11C(void *arg0, s32 *arg1, s32 *arg2) {
         s.a1 = s.d1 - ent[1];
         s.a2 = s.d2 - ent[2];
         dot = PSVECDotProduct(a1 + 3, &s.a0);
-        if (dot > thresh)
-            factor = lbl_8056432C;
-        else
-            factor = lbl_80564340;
+        factor = (dot > thresh) ? lbl_8056432C : lbl_80564340;
         s.o[0] = ent[0] + a1[3] * factor * k0 + a1[0] * k0;
         s.o[1] = ent[1] + a1[4] * factor * k0 + a1[1] * k0;
         s.o[2] = ent[2] + a1[5] * factor * k0 + a1[2] * k0;
@@ -1306,6 +1302,8 @@ void *fn_8028C824(void *arg0, s32 arg1) {
     ((f32 *)arg0)[4] = (f32)fn_8002F208(lbl_805643C8);
     return arg0;
 }
+/* No-op constructor callback passed to the array builder fn_8002F37C when it allocates
+ * the glass-shard array (0x28-byte entries): shards need no per-element initialization. */
 void fn_8028C8BC(void) {}
 
 extern void fn_802CAC54(s32);
@@ -1534,53 +1532,63 @@ extern f32 lbl_805643E4;
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling on
-s32 fn_8028CD80(s32 arg0, s32 arg1, void *arg2, f32 *arg3, f32 farg0) {
-    struct Ring { void *data; s32 head; s32 tail; } *ring = (struct Ring *)arg0;
-    f32 *src = (f32 *)arg2;
-    f32 *vel = arg3;
-    register s32 count;
-    register s32 limit;
-    register s32 i;
-    f32 now;
-    f32 src0;
-    f32 src1;
-    f32 src2;
-    f32 temp_y;
-    f32 temp_z;
-    f32 temp_x;
-    f32 rand0;
-    f32 rand1;
-    f32 rand2;
-    f32 *dst;
+s32 fn_8028CD80(s32 arg0, s32 arg1, void *arg2, f32 *arg3, f32 farg0)
+{
+  struct Ring
+  {
+    void *data;
+    s32 head;
+    s32 tail;
+  } *ring = (struct Ring *) arg0;
+  f32 *src = (f32 *) arg2;
+  f32 *vel = arg3;
+  register s32 count;
+  register s32 limit;
+  register s32 i;
+  f32 now;
+  f32 src0;
+  f32 src1;
+  f32 src2;
+  f32 temp_y;
+  f32 temp_z;
+  f32 temp_x;
+  f32 rand0;
+  f32 rand1;
+  f32 rand2;
+  f32 *dst;
+  now = fn_801E7E18();
+  count = ring->tail - ring->head;
+  limit = arg1 & (((-arg1) & (~arg1)) >> 31);
+  if (limit < count)
+  {
+    count = limit;
+  }
+  for (i = 0; i < count;)
+  {
+    dst = (f32 *) (((u8 *) ring->data) + (((ring->head & 0xFFFF) + i) * 0x28));
+    src0 = src[0];
+    src1 = src[1];
+    dst[0] = src0;
+    src2 = src[2];
+    dst[1] = src1;
+    dst[2] = src2;
+    temp_z = vel[2] + fn_80287BC8(-farg0, farg0);
+    temp_y = vel[1] + fn_80287BC8(-farg0, farg0);
+    temp_x = vel[0] + fn_80287BC8(-farg0, farg0);
+    dst[3] = temp_x;
+    dst[4] = temp_y;
+    dst[5] = temp_z;
+    rand0 = fn_80287BC8(-12.5664f, 12.5664f);
+    rand1 = fn_80287BC8(-12.5664f, 12.5664f);
+    rand2 = fn_80287BC8(-12.5664f, 12.5664f);
+    dst[6] = rand2;
+    i++;
+    dst[7] = rand1;
+    dst[8] = rand0;
+    dst[9] = now;
+  }
 
-    now = fn_801E7E18();
-    count = ring->tail - ring->head;
-    limit = arg1 & ((-arg1 & ~arg1) >> 31);
-    if (limit < count) count = limit;
-    for (i = 0; i < count;) {
-        dst = (f32 *)((u8 *)ring->data + (ring->head + i) * 0x28);
-        src0 = src[0];
-        src1 = src[1];
-        dst[0] = src0;
-        src2 = src[2];
-        dst[1] = src1;
-        dst[2] = src2;
-        temp_z = vel[2] + fn_80287BC8(-farg0, farg0);
-        temp_y = vel[1] + fn_80287BC8(-farg0, farg0);
-        temp_x = vel[0] + fn_80287BC8(-farg0, farg0);
-        dst[3] = temp_x;
-        dst[4] = temp_y;
-        dst[5] = temp_z;
-        rand0 = fn_80287BC8(-12.5664f, 12.5664f);
-        rand1 = fn_80287BC8(-12.5664f, 12.5664f);
-        rand2 = fn_80287BC8(-12.5664f, 12.5664f);
-        dst[6] = rand2;
-        i++;
-        dst[7] = rand1;
-        dst[8] = rand0;
-        dst[9] = now;
-    }
-    ring->head += count;
+  ring->head += count;
 }
 #pragma pop
 
