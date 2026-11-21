@@ -44,7 +44,7 @@ ok:
 BOOL __OSReadStateFlags(OSStateFlags* outState) {
     NANDFileInfo file;
 
-    if (NANDOpen("/title/00000001/00000002/data/state.dat", &file,
+    if (NANDOpen(STATE_FILE_PATH, &file,
                  NAND_ACCESS_READ) == NAND_RESULT_OK) {
 
         s32 bytesRead = NANDRead(&file, &StateFlags, sizeof(OSStateFlags));
