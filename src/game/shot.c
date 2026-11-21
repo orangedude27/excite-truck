@@ -183,9 +183,13 @@ u8 fn_802E4A1C(s32 keyCode) {
 }
 
 void fn_802E4A2C(void) {
-    if ((s32)lbl_8055D1C0 >= 0) {
-        u32 buf[64] = {0};
+    /* When a saved state exists, zero a 64-word stack scratch area (the clearing
+       itself is the only effect of this routine). */
+#define gSavedStatePtr lbl_8055D1C0
+    if ((s32)gSavedStatePtr >= 0) {
+        u32 scratch[64] = {0};
     }
+#undef gSavedStatePtr
 }
 
 extern unsigned char lbl_8055FF58;
