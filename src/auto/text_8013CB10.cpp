@@ -1300,8 +1300,9 @@ extern "C" void fn_8013E2AC(void *destPtr, void *srcPtr) {
 #pragma dont_inline off
 extern "C" f64 fn_8002F234(f32);
 #pragma scheduling on
-extern "C" f32 fn_8013E300(void * __restrict arg0) {
-    const f32 *p = (const f32 *)arg0;
+extern "C" f32 fn_8013E300(void * __restrict vec) {
+    /* Return the length of the 2D vector {x, y} at vec (sqrt of x*x + y*y). */
+    const f32 *p = (const f32 *)vec;
     f32 y = p[1];
     f32 x = p[0];
     return (f32)fn_8002F234(x * x + y * y);
