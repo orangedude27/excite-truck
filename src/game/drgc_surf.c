@@ -1409,8 +1409,10 @@ void fn_802D6B78(void *arg0) {
     fn_802D5FE4(arg0);
 }
 
-void fn_802D6B7C(void *arg0) {
-    fn_802D6170(arg0);
+/* CPU-lighting callback thunk: forwards to fn_802D6170 to rebuild and draw
+ * this light-map surface's display list. */
+void fn_802D6B7C(void *surface) {
+    fn_802D6170(surface);
 }
 
 extern void fn_802D65F8(s32, s32);
