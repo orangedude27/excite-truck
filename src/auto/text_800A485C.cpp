@@ -13126,6 +13126,14 @@ extern "C" s32 fn_800B90A8(s32 arg0)
   fn_800B8048(lbl_8055DD30);
   return result;
 }
+#undef NandSlots
+#undef NandSemaphore
+#undef SLOT_STRIDE
+#undef SLOT_COUNT
+#undef SLOT_ERROR
+#undef SLOT_FLAGS
+#undef SLOT_BUSY
+#undef SLOT_HANDLE
 #pragma opt_common_subs reset
 extern "C" s32 NANDClose(void *);
 /* Close a NAND file slot by handle ID, clearing its slot state on success. */
