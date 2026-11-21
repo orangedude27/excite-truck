@@ -1366,7 +1366,8 @@ void fn_802E6B38(void* index, signed char* text) {
 }
 
 #pragma dont_inline on
-void fn_802E6B44(int arg0, int arg1) {
-    fn_802E5264(arg0, arg1);
+/* Tail-call the WPAD speaker connect/disconnect callback, forwarding the channel and connect status. */
+void fn_802E6B44(int chan, int status) {
+    fn_802E5264(chan, status);
 }
 #pragma dont_inline reset
