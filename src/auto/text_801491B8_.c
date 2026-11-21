@@ -5016,88 +5016,92 @@ void fn_80155E64(void *object, signed char value) {
     *((signed char *)object + 5) = value;
 }
 
-void *fn_80155E6C(void *arg0)
+/* Recycle a betarace owner's active head node: unlink it from the active list,
+ * push it onto the owner's free list (making it the first node when that list
+ * was empty), reset its state fields to their defaults and return it.  Returns
+ * 0 when the owner has no active node. */
+void *fn_80155E6C(void *owner)
 {
-  typedef struct Node Node;
-  struct Node
-  {
-    unsigned char pad[0x11C];
-    Node *prev;
-    Node *next;
-  };
-  typedef struct
-  {
-    unsigned char pad[0x1244];
-    Node *head;
-    Node *tail;
-    Node *first;
-    Node *list;
-  } Owner;
-  extern float lbl_8055E3C8;
-  Owner *owner = (Owner *) arg0;
-  Node *node = owner->head;
-  Node *next;
-  Node *prev;
-  Node *tail;
-  if (node != 0)
-  {
-    next = node->next;
-    if (next != 0)
+    typedef struct Node Node;
+    struct Node
     {
-      next->prev = node->prev;
-    }
-    else
+        unsigned char pad[0x11C];
+        Node *prev;
+        Node *next;
+    };
+    typedef struct
     {
-      owner->head = node->prev;
-    }
-    prev = node->prev;
-    if (prev != 0)
+        unsigned char pad[0x1244];
+        Node *head;
+        Node *tail;
+        Node *first;
+        Node *list;
+    } Owner;
+    extern float lbl_8055E3C8;
+    Owner *ownerRec = (Owner *) owner;
+    Node *node = ownerRec->head;
+    Node *nextNode;
+    Node *prevNode;
+    Node *freeTail;
+    if (node != 0)
     {
-      prev->next = node->next;
+        nextNode = node->next;
+        if (nextNode != 0)
+        {
+            nextNode->prev = node->prev;
+        }
+        else
+        {
+            ownerRec->head = node->prev;
+        }
+        prevNode = node->prev;
+        if (prevNode != 0)
+        {
+            prevNode->next = node->next;
+        }
+        else
+        {
+            ownerRec->tail = node->next;
+        }
+        node->next = 0;
+        node->prev = 0;
+        node->next = ownerRec->list;
+        freeTail = ownerRec->list;
+        if (freeTail != 0)
+        {
+            freeTail->prev = node;
+        }
+        ownerRec->list = node;
+        if (ownerRec->first == 0)
+        {
+            ownerRec->first = node;
+        }
+        {
+            int usedFlag = 1;
+            float zeroF;
+            float oneF;
+            int zeroI;
+            int minusOne;
+            *(((unsigned char *) node) + 4) = usedFlag;
+            zeroF = 0.0f;
+            oneF = lbl_8055E3C8;
+            zeroI = 0;
+            minusOne = -1;
+            *((float *) (((unsigned char *) node) + 0x10)) = oneF;
+            *((float *) (((unsigned char *) node) + 0xC)) = zeroF;
+            *((float *) (((unsigned char *) node) + 8)) = zeroF;
+            *(((unsigned char *) node) + 0x14) = zeroI;
+            *(((unsigned char *) node) + 0x64) = zeroI;
+            *(((unsigned char *) node) + 0xB4) = zeroI;
+            *(((unsigned char *) node) + 5) = zeroI;
+            *((int *) (((unsigned char *) node) + 0x10C)) = minusOne;
+            *((float *) (((unsigned char *) node) + 0x104)) = zeroF;
+            *((int *) (((unsigned char *) node) + 0x108)) = zeroI;
+            *((int *) (((unsigned char *) node) + 0x114)) = usedFlag;
+        }
+        return node;
     }
-    else
-    {
-      owner->tail = node->next;
-    }
-    node->next = 0;
-    node->prev = 0;
-    node->next = owner->list;
-    tail = owner->list;
-    if (tail != 0)
-    {
-      tail->prev = node;
-    }
-    owner->list = node;
-    if (owner->first == 0)
-    {
-      owner->first = node;
-    }
-    {
-      int one = 1;
-      float zero;
-      float onef;
-      int zeroi;
-      int neg1;
-      *(((unsigned char *) node) + 4) = one;
-      zero = 0.0f;
-      onef = lbl_8055E3C8;
-      zeroi = 0;
-      neg1 = -1;
-      *((float *) (((unsigned char *) node) + 0x10)) = onef;
-      *((float *) (((unsigned char *) node) + 0xC)) = zero;
-      *((float *) (((unsigned char *) node) + 8)) = zero;
-      *(((unsigned char *) node) + 0x14) = zeroi;
-      *(((unsigned char *) node) + 0x64) = zeroi;
-      *(((unsigned char *) node) + 0xB4) = zeroi;
-      *(((unsigned char *) node) + 5) = zeroi;
-      *((int *) (((unsigned char *) node) + 0x10C)) = neg1;
-      *((float *) (((unsigned char *) node) + 0x104)) = zero;
-      *((int *) (((unsigned char *) node) + 0x108)) = zeroi;
-      *((int *) (((unsigned char *) node) + 0x114)) = one;
-    }
-    return node;
-  }
-  return 0;
+    return 0;
 }
 
 /* Format a string into the buffer at dst + 4 using printf-style arguments. */
