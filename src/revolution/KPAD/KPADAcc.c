@@ -135,9 +135,9 @@ static f32 clamp_acc(f32 acc, f32 clamp) {
 
 void read_kpad_acc(KPADInsideStatus* kp, KPADUnifiedWpadStatus* uwp, u32 dev_type, s32 chan) {
     /* Read the unified controller's accelerometer into the KPAD status. Calibrates per-axis
-       g-scales from the controller's reported 1G vector (lbl_80560BE4 == 1.0), falls back to
-       defaults 0.01 (core, lbl_80560C04) / 0.005 (FS, lbl_80560C08), clamps hard_acc to
-       3.4 (lbl_80558EEC) or 2.1 (lbl_80558EF0), then filters acc, its speed/value, the
+       g-scales from the controller's reported 1G vector (kp_one_g == 1.0), falls back to
+       kp_core_scale_default (0.01) / kp_fs_scale_default (0.005), clamps hard_acc to
+       kp_rm_acc_max (3.4) or kp_fs_acc_max (2.1), then filters acc, its speed/value, the
        vertical and horizon vectors, and the FS extension accelerometer. */
     KPADStatus* sp = &kp->status;
     Vec vec;
@@ -151,38 +151,38 @@ void read_kpad_acc(KPADInsideStatus* kp, KPADUnifiedWpadStatus* uwp, u32 dev_typ
     f32 acc_scale_fs_z;
     f32 v1, v2, v3;
 
-    acc_scale_x = lbl_80560C04;
-    acc_scale_y = lbl_80560C04;
-    acc_scale_z = lbl_80560C04;
-    acc_scale_fs_x = lbl_80560C08;
-    acc_scale_fs_y = lbl_80560C08;
-    acc_scale_fs_z = lbl_80560C08;
+    acc_scale_x = kp_core_scale_default;
+    acc_scale_y = kp_core_scale_default;
+    acc_scale_z = kp_core_scale_default;
+    acc_scale_fs_x = kp_fs_scale_default;
+    acc_scale_fs_y = kp_fs_scale_default;
+    acc_scale_fs_z = kp_fs_scale_default;
 
     probe_res = WPADProbe(chan, &probe_dev_type);
     if (probe_res == WPAD_ERR_OK) {
         WPADAccGravityUnit core1G;
 
-        ((u16*)&core1G)[0] = lbl_80560BF4;
-        ((u16*)&core1G)[1] = lbl_80560BF6;
-        ((u16*)&core1G)[2] = lbl_80560BF8;
+        ((u16*)&core1G)[0] = kp_core_gravity_x;
+        ((u16*)&core1G)[1] = kp_core_gravity_y;
+        ((u16*)&core1G)[2] = kp_core_gravity_z;
         WPADGetAccGravityUnit(chan, WPAD_DEV_CORE, &core1G);
         if (core1G.x * core1G.y * core1G.z != 0) {
-            acc_scale_x = lbl_80560BE4 / core1G.x;
-            acc_scale_y = lbl_80560BE4 / core1G.y;
-            acc_scale_z = lbl_80560BE4 / core1G.z;
+            acc_scale_x = kp_one_g / core1G.x;
+            acc_scale_y = kp_one_g / core1G.y;
+            acc_scale_z = kp_one_g / core1G.z;
         }
 
         if (dev_type == WPAD_DEV_FS) {
             WPADAccGravityUnit fs1G;
 
-            ((u16*)&fs1G)[0] = lbl_80560BFC;
-            ((u16*)&fs1G)[1] = lbl_80560BFE;
-            ((u16*)&fs1G)[2] = lbl_80560C00;
+            ((u16*)&fs1G)[0] = kp_fs_gravity_x;
+            ((u16*)&fs1G)[1] = kp_fs_gravity_y;
+            ((u16*)&fs1G)[2] = kp_fs_gravity_z;
             WPADGetAccGravityUnit(chan, WPAD_DEV_FS, &fs1G);
             if (fs1G.x * fs1G.y * fs1G.z != 0) {
-                acc_scale_fs_x = lbl_80560BE4 / fs1G.x;
-                acc_scale_fs_y = lbl_80560BE4 / fs1G.y;
-                acc_scale_fs_z = lbl_80560BE4 / fs1G.z;
+                acc_scale_fs_x = kp_one_g / fs1G.x;
+                acc_scale_fs_y = kp_one_g / fs1G.y;
+                acc_scale_fs_z = kp_one_g / fs1G.z;
             }
         }
     }
@@ -199,9 +199,9 @@ void read_kpad_acc(KPADInsideStatus* kp, KPADUnifiedWpadStatus* uwp, u32 dev_typ
                 return;
             }
         } else {
-            kp->hard_acc.x = clamp_acc((f32)(s32)-uwp->u.core.accX * acc_scale_x, lbl_80558EEC);
-            kp->hard_acc.y = clamp_acc((f32)(s32)-uwp->u.core.accZ * acc_scale_z, lbl_80558EEC);
-            kp->hard_acc.z = clamp_acc((f32)(s32)uwp->u.core.accY * acc_scale_y, lbl_80558EEC);
+            kp->hard_acc.x = clamp_acc((f32)(s32)-uwp->u.core.accX * acc_scale_x, kp_rm_acc_max);
+            kp->hard_acc.y = clamp_acc((f32)(s32)-uwp->u.core.accZ * acc_scale_z, kp_rm_acc_max);
+            kp->hard_acc.z = clamp_acc((f32)(s32)uwp->u.core.accY * acc_scale_y, kp_rm_acc_max);
         }
     } else {
         if (probe_res != WPAD_ERR_OK) {
@@ -211,9 +211,9 @@ void read_kpad_acc(KPADInsideStatus* kp, KPADUnifiedWpadStatus* uwp, u32 dev_typ
                 return;
             }
         } else {
-            kp->hard_acc.x = clamp_acc(-uwp->u.core.accX * acc_scale_x, lbl_80558EEC);
-            kp->hard_acc.y = clamp_acc(-uwp->u.core.accZ * acc_scale_z, lbl_80558EEC);
-            kp->hard_acc.z = clamp_acc(uwp->u.core.accY * acc_scale_y, lbl_80558EEC);
+            kp->hard_acc.x = clamp_acc(-uwp->u.core.accX * acc_scale_x, kp_rm_acc_max);
+            kp->hard_acc.y = clamp_acc(-uwp->u.core.accZ * acc_scale_z, kp_rm_acc_max);
+            kp->hard_acc.z = clamp_acc(uwp->u.core.accY * acc_scale_y, kp_rm_acc_max);
         }
     }
 
@@ -222,23 +222,23 @@ void read_kpad_acc(KPADInsideStatus* kp, KPADUnifiedWpadStatus* uwp, u32 dev_typ
     calc_acc_horizon(kp, &sp->acc.x, kp->hard_acc.x);
     calc_acc_horizon(kp, &sp->acc.y, kp->hard_acc.y);
     calc_acc_horizon(kp, &sp->acc.z, kp->hard_acc.z);
-    sp->acc_value = fn_8002F234(sp->acc.x * sp->acc.x + sp->acc.y * sp->acc.y + sp->acc.z * sp->acc.z);
+    sp->acc_value = kp_sqrt(sp->acc.x * sp->acc.x + sp->acc.y * sp->acc.y + sp->acc.z * sp->acc.z);
 
     vec.x -= sp->acc.x;
     vec.y -= sp->acc.y;
     vec.z -= sp->acc.z;
-    sp->acc_speed = fn_8002F234(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+    sp->acc_speed = kp_sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
     calc_acc_vertical(kp);
     read_kpad_acc_head(kp);
 
     if (dev_type == WPAD_DEV_FS) {
         vec = sp->ex_status.fs.acc;
 
-        calc_acc_horizon(kp, &sp->ex_status.fs.acc.x, clamp_acc(-uwp->u.fs.fsAccX * acc_scale_fs_x, lbl_80558EF0));
-        calc_acc_horizon(kp, &sp->ex_status.fs.acc.y, clamp_acc(-uwp->u.fs.fsAccZ * acc_scale_fs_z, lbl_80558EF0));
-        calc_acc_horizon(kp, &sp->ex_status.fs.acc.z, clamp_acc(uwp->u.fs.fsAccY * acc_scale_fs_y, lbl_80558EF0));
+        calc_acc_horizon(kp, &sp->ex_status.fs.acc.x, clamp_acc(-uwp->u.fs.fsAccX * acc_scale_fs_x, kp_fs_acc_max));
+        calc_acc_horizon(kp, &sp->ex_status.fs.acc.y, clamp_acc(-uwp->u.fs.fsAccZ * acc_scale_fs_z, kp_fs_acc_max));
+        calc_acc_horizon(kp, &sp->ex_status.fs.acc.z, clamp_acc(uwp->u.fs.fsAccY * acc_scale_fs_y, kp_fs_acc_max));
 
-        sp->ex_status.fs.acc_value = fn_8002F234(sp->ex_status.fs.acc.x * sp->ex_status.fs.acc.x +
+        sp->ex_status.fs.acc_value = kp_sqrt(sp->ex_status.fs.acc.x * sp->ex_status.fs.acc.x +
                                           sp->ex_status.fs.acc.y * sp->ex_status.fs.acc.y +
                                           sp->ex_status.fs.acc.z * sp->ex_status.fs.acc.z);
 
@@ -246,6 +246,6 @@ void read_kpad_acc(KPADInsideStatus* kp, KPADUnifiedWpadStatus* uwp, u32 dev_typ
         vec.y -= sp->ex_status.fs.acc.y;
         vec.z -= sp->ex_status.fs.acc.z;
 
-        sp->ex_status.fs.acc_speed = fn_8002F234(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+        sp->ex_status.fs.acc_speed = kp_sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
     }
 }
