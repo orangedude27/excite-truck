@@ -272,8 +272,10 @@ extern "C" void *fn_80211604(void *object, s32 shouldDelete) {
     return object;
 }
 
-extern "C" s32 fn_8021165C(s32 arg0, s32 arg1) {
-    return fn_80215270(arg0, arg1);
+/* Tail-call forwarder to fn_80215270: reads a value out of gWidgetControlTable
+ * (lbl_80490528) by column and row. */
+extern "C" s32 fn_8021165C(s32 column, s32 row) {
+    return fn_80215270(column, row);
 }
 
 extern s32 lbl_8055EF1C;
