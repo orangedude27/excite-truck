@@ -70,13 +70,13 @@ void fn_80243470(void* child) {
 }
 
 #pragma dont_inline on
-s32 fn_80243478(s32 arg0) {
+s32 fn_80243478(s32 group) {
     #pragma scheduling invalid_target
-    s32 (*entry)[3] = lbl_803428B0[arg0];
+    MenuTableEntry *entry = MENU_TABLE[group];
     s32 count = 0;
     s32 i;
     for (i = 0; i < 16; i++) {
-        if ((*entry)[0] == 0) break;
+        if (entry->label == 0) break;
         count++;
         entry++;
     }
