@@ -345,13 +345,16 @@ void fn_802B21D4(void **arg0) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 #pragma opt_common_subs off
-extern "C" void fn_802B224C(void *arg0) {
+extern "C" void fn_802B224C(void *model) {
+    /* RealName: MatList_BuildFromModel
+     * Builds a named list of the materials (mat1, mat2, ...) exposed by the model
+     * object and registers the list in the global material-list table. */
     class Obj {
     public:
         virtual void v0();
         virtual void v1();
         virtual void v2();
-        virtual void *v3(const char *);
+        virtual void *getName(const char *);
         virtual void v4();
         virtual void v5();
         virtual void v6();
@@ -369,44 +372,44 @@ extern "C" void fn_802B224C(void *arg0) {
         virtual void v18();
         virtual void v19();
         virtual void v20();
-        virtual int v21(const char *);
+        virtual int findMaterial(const char *);
     };
 
-    char name[16];
-    void *object;
-    int index;
-    void *child;
-    void *item;
-    int count;
-    Obj *self = (Obj *)arg0;
+    char matName[16];
+    void *materials;
+    int matIndex;
+    void *material;
+    void *materialSlot;
+    int listCount;
+    Obj *modelObj = (Obj *)model;
 
-    count = *(int *)((char *)&lbl_804BE1FC + 4);
-    if (count + 1 > *(int *)((char *)&lbl_804BE1FC + 8))
+    listCount = *(int *)((char *)&lbl_804BE1FC + 4);
+    if (listCount + 1 > *(int *)((char *)&lbl_804BE1FC + 8))
         return;
 
-    object = fn_801284F8(0x28, lbl_8034A2C4);
-    if (object != 0) {
-        fn_802B2C7C(object);
-        index = 1;
+    materials = fn_801284F8(0x28, lbl_8034A2C4);
+    if (materials != 0) {
+        fn_802B2C7C(materials);
+        matIndex = 1;
         do {
-            fn_801345D8(name, 0x10, (const char *)&lbl_8055CDC8, index);
-            if (((int (*)(void *, void *))fn_802B2C44)(self, name) == 0)
+            fn_801345D8(matName, 0x10, (const char *)&lbl_8055CDC8, matIndex);
+            if (((int (*)(void *, void *))fn_802B2C44)(modelObj, matName) == 0)
                 break;
-            child = fn_801284F8(0x454, lbl_8034A2D8);
-            if (child != 0) {
-                child = fn_802B23A8(child, (void *)self->v21(name), (void *)(index - 1));
+            material = fn_801284F8(0x454, lbl_8034A2D8);
+            if (material != 0) {
+                material = fn_802B23A8(material, (void *)modelObj->findMaterial(matName), (void *)(matIndex - 1));
             }
-            item = child;
-            fn_802B2384(object, &item);
-            index++;
+            materialSlot = material;
+            fn_802B2384(materials, &materialSlot);
+            matIndex++;
         } while (1);
-        *(void **)((char *)object + 0x24) = self->v3((const char *)&lbl_8055CDD0);
+        *(void **)((char *)materials + 0x24) = modelObj->getName((const char *)&lbl_8055CDD0);
     }
 
-    void **tab = *(void ***)&lbl_804BE1FC;
-    int *cnt = (int *)((char *)&lbl_804BE1FC + 4);
-    int n = (*cnt)++;
-    tab[n] = object;
+    void **listTable = *(void ***)&lbl_804BE1FC;
+    int *listCountPtr = (int *)((char *)&lbl_804BE1FC + 4);
+    int listIndex = (*listCountPtr)++;
+    listTable[listIndex] = materials;
 }
 
 #pragma cplusplus off
