@@ -179,6 +179,21 @@ static inline void matVecMixQ_8018(const float *v, const float *m, Vec_8018 *des
     }
 }
 
+static inline void matVecMixW_8018(const Vec_8018 *v, const float *m, Vec_8018 *dest) {
+    if (dest == v) {
+        float tx = v->y * m[3] + v->x * m[0] + v->z * m[6];
+        float ty = v->y * m[4] + v->x * m[1] + v->z * m[7];
+        float tz = v->y * m[5] + v->x * m[2] + v->z * m[8];
+        dest->x = tx;
+        dest->y = ty;
+        dest->z = tz;
+    } else {
+        dest->x = v->y * m[3] + v->x * m[0] + v->z * m[6];
+        dest->y = v->y * m[4] + v->x * m[1] + v->z * m[7];
+        dest->z = v->y * m[5] + v->x * m[2] + v->z * m[8];
+    }
+}
+
 #pragma push
 #pragma processor 750
 extern float fn_80144514(float, float, float, float, float, float);
@@ -211,11 +226,11 @@ void fn_8018BFA0(void *out0, float *a, int *b0, int arg3, float arg4, float arg5
         out[5] = fn_80144514(a[2], b[3], a[5], b[4], a[8], b[5]);
         out[8] = fn_80144514(a[2], b[6], a[5], b[7], a[8], b[8]);
     }
-    matVecMixY_8018((Vec_8018 *)scratch, a, b + 9);
+    matVecMixQ_8018(b + 9, a, (Vec_8018 *)scratch);
     out[9] = a[9] + scratch[0];
     out[10] = a[10] + scratch[1];
     out[11] = a[11] + scratch[2];
-    matVecMixY_8018((Vec_8018 *)scratch, out, b + 9);
+    matVecMixQ_8018(b + 9, out, (Vec_8018 *)scratch);
     out[9] -= scratch[0];
     out[10] -= scratch[1];
     out[11] -= scratch[2];
