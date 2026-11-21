@@ -21,6 +21,7 @@ int fn_80296068(void) {
     return 0;
 }
 
+/* No-op placeholder hook alongside the other subsystem stubs in this group; does nothing in this build. */
 void fn_80296070(void) {
 
 }
