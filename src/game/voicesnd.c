@@ -53,6 +53,7 @@ extern void *memset(void *, int, unsigned int);
   extern float lbl_805632B0, lbl_805632B4, lbl_8055B598;
 
   extern void *lbl_8055EE04;
+#define gVoiceMixerInstance lbl_8055EE04
 extern char lbl_8033C37C[];
 extern void *lbl_8055EE08;
 extern unsigned char lbl_8033C520[];
