@@ -156,7 +156,7 @@ void __OSInitAudioSystem(void) {
         ;
     }
 
-    // ?????
+    // Read the CPU mailbox low word to acknowledge the delivered message.
     DSP_HW_REGS[DSP_CPUMBOX_L];
 
     DSP_HW_REGS[DSP_CSR] |= DSP_CSR_HALT;
