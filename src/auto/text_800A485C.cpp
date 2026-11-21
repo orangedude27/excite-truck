@@ -3337,7 +3337,10 @@ extern "C" s32 VFiPFCACHE_FlushAllCaches(void *volume) {
     return result & ((s32)(-result | result) >> 31);
 }
 
-extern "C" void VFiPFCACHE_FreeAllCaches(void *arg0) {
+/* Free all cached pages of a virtual-file volume: repeatedly take the head of the
+ * FAT-page and data-page circular lists while it is still marked in use, clear its
+ * state, and unlink/reinsert it just before the head so it becomes the free tail. */
+extern "C" void VFiPFCACHE_FreeAllCaches(void *volumeArg) {
     struct VFPage {
         volatile u16 flags;
         u16 unk2;
@@ -3356,52 +3359,52 @@ extern "C" void VFiPFCACHE_FreeAllCaches(void *arg0) {
         VFPage *fatHead;
         VFPage *dataHead;
     };
-    VFVol *volume = (VFVol *)arg0;
-    struct HHead { VFPage *p; } hh;
-    VFPage **phead = &hh.p;
-    VFPage *page1;
-    VFPage *page2;
+    VFVol *volume = (VFVol *)volumeArg;
+    struct HHead { VFPage *p; } headHolder;
+    VFPage **headSlot = &headHolder.p;
+    VFPage *fatPage;
+    VFPage *dataPage;
 
-    while (page1 = volume->fatHead, page1->flags & 1) {
-        if (page1 != 0) {
-            page1->flags &= ~3;
-            page1->changedFrom = 0;
-            page1->changedTo = 0;
-            page1->first = -1;
-            page1->owner = 0;
-            *phead = volume->fatHead;
-            if (page1 == *phead) {
-                volume->fatHead = page1->next;
-            } else if (page1 != (*phead)->prev) {
-                page1->prev->next = page1->next;
-                page1->next->prev = page1->prev;
-                *phead = volume->fatHead;
-                page1->next = *phead;
-                page1->prev = volume->fatHead->prev;
-                (*phead)->prev = page1;
-                page1->prev->next = page1;
+    while (fatPage = volume->fatHead, fatPage->flags & 1) {
+        if (fatPage != 0) {
+            fatPage->flags &= ~3;
+            fatPage->changedFrom = 0;
+            fatPage->changedTo = 0;
+            fatPage->first = -1;
+            fatPage->owner = 0;
+            *headSlot = volume->fatHead;
+            if (fatPage == *headSlot) {
+                volume->fatHead = fatPage->next;
+            } else if (fatPage != (*headSlot)->prev) {
+                fatPage->prev->next = fatPage->next;
+                fatPage->next->prev = fatPage->prev;
+                *headSlot = volume->fatHead;
+                fatPage->next = *headSlot;
+                fatPage->prev = volume->fatHead->prev;
+                (*headSlot)->prev = fatPage;
+                fatPage->prev->next = fatPage;
             }
         }
     }
 
-    while (page2 = volume->dataHead, page2->flags & 1) {
-        if (page2 != 0) {
-            page2->flags &= ~3;
-            page2->changedFrom = 0;
-            page2->changedTo = 0;
-            page2->first = -1;
-            page2->owner = 0;
-            *phead = volume->dataHead;
-            if (page2 == *phead) {
-                volume->dataHead = page2->next;
-            } else if (page2 != (*phead)->prev) {
-                page2->prev->next = page2->next;
-                page2->next->prev = page2->prev;
-                *phead = volume->dataHead;
-                page2->next = *phead;
-                page2->prev = volume->dataHead->prev;
-                (*phead)->prev = page2;
-                page2->prev->next = page2;
+    while (dataPage = volume->dataHead, dataPage->flags & 1) {
+        if (dataPage != 0) {
+            dataPage->flags &= ~3;
+            dataPage->changedFrom = 0;
+            dataPage->changedTo = 0;
+            dataPage->first = -1;
+            dataPage->owner = 0;
+            *headSlot = volume->dataHead;
+            if (dataPage == *headSlot) {
+                volume->dataHead = dataPage->next;
+            } else if (dataPage != (*headSlot)->prev) {
+                dataPage->prev->next = dataPage->next;
+                dataPage->next->prev = dataPage->prev;
+                *headSlot = volume->dataHead;
+                dataPage->next = *headSlot;
+                dataPage->prev = volume->dataHead->prev;
+                (*headSlot)->prev = dataPage;
+                dataPage->prev->next = dataPage;
             }
         }
     }
