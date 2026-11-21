@@ -107,8 +107,8 @@ typedef struct Camera {
     int w1D8[5];                  /* 0x1D8 */
     short h1EC;                   /* 0x1EC */
     short pad1EE;                 /* 0x1EE */
-    float f1F0[2];                /* 0x1F0 */
-    int w1F8[12];                 /* 0x1F8 */
+    float f1F0[2];                /* 0x1F0: crash-sound ramp bottom (+0) and limit (+4) */
+    int w1F8[12];                 /* 0x1F8: transform snapshot taken on subject reset */
 } Camera;                        /* 0x228 bytes */
 
 #define CAMERA_COUNT      4
