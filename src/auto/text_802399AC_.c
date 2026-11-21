@@ -553,7 +553,9 @@ void *fn_8023AB78(register void *arg0, register s32 arg1, register s32 arg2, ...
 #pragma pop
 
 #pragma small_data on
-void fn_8023ACCC(void) {}
+void fn_8023ACCC(void) {
+    /* Intentionally empty callback in the UI selector code: does no work. */
+}
 
 /* Step the selector's current index back by one with wraparound and flag it changed. */
 void fn_8023ACD0(void *selector) {
