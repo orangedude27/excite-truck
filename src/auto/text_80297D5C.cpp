@@ -2365,12 +2365,16 @@ extern "C" void fn_8029BA94(void *__restrict arg0, void *__restrict arg1) {
     }
 }
 #pragma scheduling invalid_target
-extern "C" void fn_8029BBD4(void *__restrict arg0, void *__restrict arg1, int arg2) {
-    void *base = arg0;
-    char *record = (char *)base + (int)arg1 * 0x14;
-    int index = (int)arg1;
+/* Advance one 0x14-byte behaviour record in 'mgr' (record 'recordIndex'). 'update' == 0
+   resets the record's state and clears its item pointer; otherwise a state-3 record becomes 1
+   and a state-2 record waits out its cooldown before picking a pseudo-random item from the
+   table for this index. Always notifies the owner through fn_8029B044 with the record's item. */
+extern "C" void fn_8029BBD4(void *__restrict mgr, void *__restrict recordIndex, int update) {
+    void *base = mgr;
+    char *record = (char *)base + (int)recordIndex * 0x14;
+    int idx = (int)recordIndex;
     unsigned int state;
-    if (arg2 == 0) {
+    if (update == 0) {
         if (*(int *)(record + 4) != 0) *(int *)(record + 4) = 3;
         *(int *)(record + 0x14) = 0;
         goto done;
@@ -2394,7 +2398,7 @@ extern "C" void fn_8029BBD4(void *__restrict arg0, void *__restrict arg1, int ar
     }
     if ((*(unsigned int *)(record + 4) & 0x10) != 0) goto done;
     if (fn_80287B5C(0x28) != 0) goto done;
-    void *info = fn_80288208(index);
+    void *info = fn_80288208(idx);
     int size = *(int *)((char *)info + 0x24);
     int sequence = *(int *)(record + 0x10) + 1;
     sequence %= 8;
@@ -2403,7 +2407,7 @@ extern "C" void fn_8029BBD4(void *__restrict arg0, void *__restrict arg1, int ar
     int value = seed % size;
     *(void **)(record + 0x14) = fn_80288060(info, value);
 done:
-    fn_8029B044(*(void **)base, index, *(void **)(record + 0x14));
+    fn_8029B044(*(void **)base, idx, *(void **)(record + 0x14));
 }
 
 #pragma scheduling on
