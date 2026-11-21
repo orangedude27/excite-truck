@@ -3066,6 +3066,7 @@ extern "C" void fn_8021CF9C(void *arg0) {
 void fn_8021CF9C(void);
 void fn_8021AC24(void *, int, int, int);
 extern "C" void fn_8021CF9C(void);
+/* Tail-call alias for fn_8021CF9C (numeric text-readout widget update); callers pass the widget pointer through. */
 extern "C" void fn_8021D040(void) { fn_8021CF9C(); }
 
 /* Initializes a multi-choice list UI object: sets base fields/vtable, copies the packed
