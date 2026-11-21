@@ -172,7 +172,7 @@ extern "C" void fn_80278A28(void* elem) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma cplusplus on
 extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* file2, s32 name) {
     LayoutStrings* base = (LayoutStrings*)lbl_80347690;
@@ -234,7 +234,7 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
 
                 elem->b30 = res->getByte(base->is_welded, 0);
                 elem->f2C = res->getFloat(base->weakness);
-                f32 def = lbl_805640D0;
+                f32 def = 0.2032f;
                 elem->f28 = res->getFloatDefault(base->dmg_dist, def);
             } else {
                 fn_802E30C8(base->warn_bad_bone, name, i);
@@ -265,7 +265,7 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
                 entry->id2 = child->getInt(lbl_8055C68C);
                 entry->f8 = child->getFloat(lbl_8055C690);
                 entry->fC = child->getFloat(lbl_8055C698);
-                entry->f10 = child->getFloatDefault(lbl_8055C6A0, lbl_805640C4);
+                entry->f10 = child->getFloatDefault(lbl_8055C6A0, 0.0f);
                 if (entry->id1 < 1 || entry->id1 >= 0xA2) {
                     fn_802E317C(base->link_out_of_range, entry->id1);
                 }
@@ -285,9 +285,9 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
             memset(entry20F4, 0, sizeof(Entry20F4));
             if (wres != NULL) {
                 entry20F4->id = wres->getInt(lbl_8055C6A8);
-                entry20F4->f4 = wres->getFloatDefault(lbl_8055C6B0, lbl_805640C4);
-                entry20F4->f8 = wres->getFloatDefault(lbl_8055C6B8, lbl_805640C4);
-                entry20F4->fC = wres->getFloatDefault(lbl_8055C6C0, lbl_805640C4);
+                entry20F4->f4 = wres->getFloatDefault(lbl_8055C6B0, 0.0f);
+                entry20F4->f8 = wres->getFloatDefault(lbl_8055C6B8, 0.0f);
+                entry20F4->fC = wres->getFloatDefault(lbl_8055C6C0, 0.0f);
             }
         }
         return;
