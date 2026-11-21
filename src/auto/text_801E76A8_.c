@@ -13,8 +13,10 @@ void fn_801E7828();
 void fn_801E7790(void *, int, int, float, float, float, float, float);
 #pragma dont_inline on
 extern void *fn_8012850C(int, void *);
-extern char lbl_80339B70[];
-extern char lbl_80339B80[];
+extern char lbl_80339B70[]; /* "DrawList verts" */
+extern char lbl_80339B80[]; /* "DrawList idxs" */
+#define sDrawListVertsTag lbl_80339B70
+#define sDrawListIdxsTag lbl_80339B80
 void *fn_801E76A8(void *arg0, int arg1) {
     #pragma scheduling invalid_target
     int rem;
