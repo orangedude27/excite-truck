@@ -280,6 +280,10 @@ void fn_802C5720(int groupId) {
 }
 #pragma dont_inline reset
 
+/* No-op default lookup hook for model-element display data, called through a
+ * (void *(*)(void *)) cast with a group entry's id at the fn_802C57B4 /
+ * fn_802C58FC submit paths. It returns without touching any register, so the id
+ * passes straight through as the data pointer handed to fn_802CC550. */
 void fn_802C57B0(void) { }
 
 #pragma push
@@ -439,8 +443,8 @@ void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
     s32 count = lbl_804C13A8[0];
     struct Entry *match = 0;
     struct Entry *freeEntry = 0;
-    int one = 1;
-    int zero = 0;
+    u8 one = 1;
+    u8 zero = 0;
     struct Entry *base;
     s32 next;
     s32 i;
