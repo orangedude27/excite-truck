@@ -74,21 +74,21 @@ static void calc_acc_vertical(KPADInsideStatus* kp) {
     dirX = (projX - kp->acc_horizon.x) * mag + kp->acc_horizon.x;
     dirY = (projY - kp->acc_horizon.y) * mag + kp->acc_horizon.y;
 
-    mag = (f32)fn_8002F234(dirX * dirX + dirY * dirY);
+    mag = (f32)kp_sqrt(dirX * dirX + dirY * dirY);
     if (mag == 0.0f) return;
 
     kp->acc_horizon.x = dirX / mag;
     kp->acc_horizon.y = dirY / mag;
 
-    kp->ah_circle_pos.x += (kp->acc_horizon.x - kp->ah_circle_pos.x) * lbl_80558EAC;
-    kp->ah_circle_pos.y += (kp->acc_horizon.y - kp->ah_circle_pos.y) * lbl_80558EAC;
+    kp->ah_circle_pos.x += (kp->acc_horizon.x - kp->ah_circle_pos.x) * kp_ah_circle_pw;
+    kp->ah_circle_pos.y += (kp->acc_horizon.y - kp->ah_circle_pos.y) * kp_ah_circle_pw;
 
     projX = kp->acc_horizon.x - kp->ah_circle_pos.x;
     projY = kp->acc_horizon.y - kp->ah_circle_pos.y;
 
-    if (projX * projX + projY * projY <= lbl_8055D994) {
+    if (projX * projX + projY * projY <= kp_ah_circle_r2) {
         if (kp->ah_circle_ct) --kp->ah_circle_ct;
-    } else kp->ah_circle_ct = lbl_80558EB0;
+    } else kp->ah_circle_ct = kp_ah_circle_ct_init;
 }
 
 static void read_kpad_acc_head(KPADInsideStatus* kp) {
