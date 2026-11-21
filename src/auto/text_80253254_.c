@@ -79,6 +79,9 @@ static inline void mtx33_mult_vec(const float *m, const float *v, float *d) {
 }
 
 #define AO(T, o) (*(T *)((char *)arg0 + (o)))
+/* No-op element-constructor callback for fn_8002F53C: fn_80253210 passes it
+ * when constructing the two 0x78-byte objects of the array at lbl_80498D00,
+ * which need no per-element initialization. */
 void fn_80253254(void) {}
 
 #pragma scheduling on
@@ -1212,7 +1215,6 @@ void fn_8025539C(void *arg0, s32 arg1) {
     float value;
     register float *stats;
     register float *inputPtr;
-    register void **vtable;
     float output[3];
     struct Vec3 input, initial;
 
@@ -1231,8 +1233,7 @@ void fn_8025539C(void *arg0, s32 arg1) {
             ((int *)&input)[0] = ((int *)&initial)[0];
             ((int *)&input)[1] = ((int *)&initial)[1];
             ((int *)&input)[2] = ((int *)&initial)[2];
-            vtable = *(void ***)result;
-            ((void (*)(float *, void *, const char *, float *, unsigned int, unsigned int))vtable[14])
+            ((void (*)(float *, void *, const char *, float *, unsigned int, unsigned int))(*(void ***)result)[14])
                 (output, result, strings + 0x140, inputPtr,
                  *(unsigned int *)&initial.y, *(unsigned int *)&initial.x);
             *(float *)((char *)arg0 + 0xF0) = output[0];
