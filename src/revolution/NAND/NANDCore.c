@@ -43,7 +43,7 @@ static char s_homeDir[64] ALIGN(32);
    remaining directory path into newp, i.e. dirname(). The root "/" is copied as-is;
    a path with no '/' leaves newp untouched. */
 void nandRemoveTailToken(char* newp, const char* oldp) {
-    int i;
+    s32 i;
 
     if (oldp[0] == '/' && oldp[1] == '\0') {
         newp[0] = '/';
