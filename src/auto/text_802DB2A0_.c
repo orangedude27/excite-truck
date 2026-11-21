@@ -30,6 +30,8 @@ void fn_802DB2B4(void) {}
  * here, but this build leaves the setter empty. */
 void fn_802DB2B8(void) {}
 
+/* No-op status-hook: mrmodel forwards each torn-down node's status byte
+ * (and a final 1 after a full refresh); this build ignores it. */
 void fn_802DB2BC(void) {}
 
 void fn_802DB2C0(void) {}
