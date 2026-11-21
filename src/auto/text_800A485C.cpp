@@ -2,9 +2,10 @@
 extern "C" {
 __declspec(section ".sdata") extern u8 lbl_805591F8[];
 /* 12.20 fixed-point multiply. */
-static inline s32 fn_800C0E7C_fxmul(s32 a, s32 b) {
-    return (s32)(((s64)a * b) >> 20);
-}
+ static inline s32 fn_800C0E7C_fxmul(s32 a, s32 b) {
+     return (s32)(((s64)a * b) >> 20);
+ }
+ static inline void StoreFlags(s32 *p, s32 v) { *p = v; }
 static inline s32 fn_800BD710_scale(s32 v, s32 *tbl, s32 idx) {
     return fn_800C0E7C_fxmul(v, tbl[idx]);
 }
@@ -2165,10 +2166,11 @@ extern "C" void fn_800A76B4(void *arg0, s32 arg1) {
 
     for (index = 0; index < 0x1A; index++) {
         u8 *entry = (u8 *)lbl_803D1640 + index * 0x28;
-        s32 flags = *(s32 *)(0x61C + entry);
+        u32 flagsAddr = (u32)(entry + 0x61C);
+        s32 flags = *(s32 *)flagsAddr;
 
         if ((flags & 1) != 0 && *(void **)(entry + 0x620) == arg0) {
-            *(s32 *)(0x61C + entry) = flags | 2;
+            *(s32 *)flagsAddr = flags | 2;
             if (arg1 == 0 && *(void (**)(void))(entry + 0x640) != 0) {
                 (*(void (**)(void))(entry + 0x640))();
             } else if (*(void (**)(void))(entry + 0x63C) != 0) {
@@ -11299,10 +11301,11 @@ block_25:
         return result;
     }
     flags = *(u16 *)((u8 *)arg0 + 0x1F8C);
-    if (flags & 8) goto compute;
-    return 9;
-compute:
-    return -((flags >> 1) & 1) & 0xB;
+    struct FlagBits { unsigned short low : 3; unsigned short bit3 : 1; unsigned short high : 12; };
+    switch (((struct FlagBits *)&flags)->bit3) {
+    case 0: return 9;
+    default: return -((flags >> 1) & 1) & 0xB;
+    }
 }
 
 struct CacheKey { u32 flag; s32 key; };
@@ -14417,11 +14420,10 @@ return result;
 }
 
 extern "C" s32 fn_800BBB58(s32 arg0, void **arg1) {
-    s32 returnValue = 0;
-    void **out = arg1;
     const char *pathTable;
     const char *messages = lbl_8031B838;
     s32 handle;
+    s32 returnValue = 0;
 
     if (lbl_80559248 < 0) {
         returnValue = (s32)0xC1000000;
@@ -14431,7 +14433,8 @@ extern "C" s32 fn_800BBB58(s32 arg0, void **arg1) {
             return -4;
         }
 
-        if (*arg1 == 0) {
+        if ((u32)*arg1 > 0) {
+        } else {
             OSReport(messages + 0x4BC);
             return -4;
         }
@@ -14451,15 +14454,15 @@ extern "C" s32 fn_800BBB58(s32 arg0, void **arg1) {
             }
         }
 
-        *(s32 *)*out = handle;
-        if (*(s32 *)*out < 0) {
+        *(s32 *)*arg1 = handle;
+        if (*(s32 *)*arg1 < 0) {
             returnValue = -1;
             OSReport(messages + 0x4E0);
         }
 
-        *(s32 *)((u8 *)*out + 0x24) = 0;
-        *(s32 *)((u8 *)*out + 0x18) = 0x4000;
-        *(s32 *)((u8 *)*out + 0x20) = 0;
+        *(s32 *)((u8 *)*arg1 + 0x24) = 0;
+        *(s32 *)((u8 *)*arg1 + 0x18) = 0x4000;
+        *(s32 *)((u8 *)*arg1 + 0x20) = 0;
     }
     return returnValue;
 }
