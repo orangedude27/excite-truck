@@ -20467,25 +20467,28 @@ extern "C" s32 fn_800D0BD0(void) { return 0; }
 extern "C" void wpadExtensionCallback__Q210homebutton10ControllerFll(s32, s32);
 extern "C" s32 WPADSetSamplingCallback_800603D0(void *);
 void homebutton::Controller::wpadConnectCallback(long chan, long status) {
- void (*callback)(s32,s32);
- switch (status) {
- case 0:
-  if (*(u8*)((u8*)((void * volatile *)lbl_80407780)[chan]+0x40) == 0) {
-   *(void**)((u8*)((void * volatile *)lbl_80407780)[chan]+0x2C) = (void*)((s32 (*)(s32, void *))WPADSetSamplingCallback_800603D0)(chan, (void*)wpadExtensionCallback__Q210homebutton10ControllerFll);
-   *((u8*)((void * volatile *)lbl_80407780)[chan]+0x40) = 1;
-  }
-  fn_80060CC0((void*)chan,0,0);
-  break;
- case -1:
-  ((s32 (*)(s32, void *))WPADSetSamplingCallback_800603D0)(chan, *(void**)((u8*)((void * volatile *)lbl_80407780)[chan]+0x2C));
-  *(s32*)((u8*)((void * volatile *)lbl_80407780)[chan]+0x2C)=0;
-  *((u8*)((void * volatile *)lbl_80407780)[chan]+0x40)=0;
-  *((u8*)((void * volatile *)lbl_80407780)[chan]+0x42)=0;
-  *((u8*)((void * volatile *)lbl_80407780)[chan]+0x43)=0;
-  break;
- }
- callback=*(void (**)(s32,s32))((u8*)((void * volatile *)lbl_80407780)[chan]+0x28);
- if(callback) callback(chan,status);
+    /* Handle a WPAD remote connecting (status 0) or disconnecting (-1): install or restore the extension sampling callback, update the connected and tone flags, then forward the event to the user callback. */
+    void (*callback)(s32, s32);
+    switch (status) {
+    case 0:
+        if (((homebutton::Controller *)((void * volatile *)lbl_80407780)[chan])->pad40 == 0) {
+            ((homebutton::Controller *)((void * volatile *)lbl_80407780)[chan])->m_prevExtensionCb =
+                (void *)((s32 (*)(s32, void *))WPADSetSamplingCallback_800603D0)(chan, (void *)wpadExtensionCallback__Q210homebutton10ControllerFll);
+            ((homebutton::Controller *)((void * volatile *)lbl_80407780)[chan])->pad40 = 1;
+        }
+        fn_80060CC0((void *)chan, 0, 0);
+        break;
+    case -1:
+        ((s32 (*)(s32, void *))WPADSetSamplingCallback_800603D0)(chan,
+            ((homebutton::Controller *)((void * volatile *)lbl_80407780)[chan])->m_prevExtensionCb);
+        ((homebutton::Controller *)((void * volatile *)lbl_80407780)[chan])->m_prevExtensionCb = 0;
+        ((homebutton::Controller *)((void * volatile *)lbl_80407780)[chan])->pad40 = 0;
+        ((homebutton::Controller *)((void * volatile *)lbl_80407780)[chan])->m_soundActive = 0;
+        ((homebutton::Controller *)((void * volatile *)lbl_80407780)[chan])->m_stopTiming = 0;
+        break;
+    }
+    callback = (void (*)(s32, s32))((homebutton::Controller *)((void * volatile *)lbl_80407780)[chan])->m_prevConnectCb;
+    if (callback) callback(chan, status);
 }
 
 extern "C" u8 lbl_804076C0[];
