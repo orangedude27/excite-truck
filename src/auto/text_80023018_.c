@@ -7,23 +7,23 @@ int __equals_dec(const decimal *lhs, const decimal *rhs) {
     const decimal *x = lhs;
     const decimal *y = rhs;
     unsigned char c;
-    int nx;
-    int ny;
+    int lhs_len;
+    int rhs_len;
     int i;
-    int n;
+    int min_len;
 
     c = x->sig.text[0];
     if (c == 0) return y->sig.text[0] == 0;
     if (y->sig.text[0] == 0) return c == 0;
     if (x->exp == y->exp) {
-        nx = x->sig.length;
-        ny = y->sig.length;
-        n = nx;
-        if (nx > ny) n = ny;
-        for (i = 0; i < n; i++) {
+        lhs_len = x->sig.length;
+        rhs_len = y->sig.length;
+        min_len = lhs_len;
+        if (lhs_len > rhs_len) min_len = rhs_len;
+        for (i = 0; i < min_len; i++) {
             if (x->sig.text[i] != y->sig.text[i]) return 0;
         }
-        if (n == nx) x = y;
+        if (min_len == lhs_len) x = y;
         for (; i < x->sig.length; i++) {
             if (x->sig.text[i] != 0) return 0;
         }
