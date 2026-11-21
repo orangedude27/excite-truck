@@ -1803,6 +1803,7 @@ void fn_802D754C(void);
 void fn_802C7ADC(void) { fn_802D754C(); }
 
 #pragma opt_propagation off
+#pragma scheduling invalid_target
 void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
     int i;
     struct {
@@ -1811,56 +1812,53 @@ void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
     } local;
     void *manager;
     void *entry;
-    float *input;
     float *rot;
+    float *input;
 
     manager = fn_802C5390(arg0);
     local.status = 1;
     rot = (float *)((char *)*(void **)((char *)manager + 4) + 0x20);
     input = (float *)arg1;
     if (local.vector == rot) {
-        float y0 = input[3];
-        float y1 = input[4];
-        float y2 = input[5];
-        float x0 = input[0];
-        float x1 = input[1];
-        float x2 = input[2];
-        float z0 = input[6];
-        float z1 = input[7];
-        float z2 = input[8];
-
-        float my0 = rot[1] * y0;
-        float my1 = rot[1] * y1;
-        float mx0 = rot[0] * x0;
-        float mx1 = rot[0] * x1;
-        float mx2 = rot[0] * x2;
-        float my2 = rot[1] * y2;
-        float mz0 = rot[2] * z0;
-        float mz1 = rot[2] * z1;
-        float mz2 = rot[2] * z2;
-
-        local.vector[0] = mz0 + (mx0 + my0);
-        local.vector[1] = mz1 + (mx1 + my1);
-        local.vector[2] = mz2 + (mx2 + my2);
+        float x, y, z;
+        float m0, m3, m6, m1, m4, m7, m2, m5, m8;
+        m3 = input[3];
+        m4 = input[4];
+        m5 = input[5];
+        m0 = input[0];
+        m1 = input[1];
+        m2 = input[2];
+        m6 = input[6];
+        m7 = input[7];
+        m8 = input[8];
+        x = rot[0];
+        y = rot[1];
+        z = rot[2];
+        local.vector[0] = z * m6 + (x * m0 + y * m3);
+        local.vector[1] = z * m7 + (x * m1 + y * m4);
+        local.vector[2] = z * m8 + (x * m2 + y * m5);
     } else {
-        float y0 = input[3];
-        float x0 = input[0];
-        float z0 = input[6];
-        float y1 = input[4];
-        float x1 = input[1];
-        float z1 = input[7];
-        float y2 = input[5];
-        float x2 = input[2];
-        float z2 = input[8];
-
-        local.vector[0] = rot[2] * z0 + (rot[0] * x0 + rot[1] * y0);
-        local.vector[1] = rot[2] * z1 + (rot[1] * y1 + rot[0] * x1);
-        local.vector[2] = rot[2] * z2 + (rot[1] * y2 + rot[0] * x2);
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        float y;
+        m10 = input[3];
+        m00 = input[0];
+        m20 = input[6];
+        m11 = input[4];
+        m01 = input[1];
+        m21 = input[7];
+        m12 = input[5];
+        m02 = input[2];
+        m22 = input[8];
+        local.vector[0] = rot[2] * m20 + (rot[0] * m00 + rot[1] * m10);
+        y = rot[1];
+        local.vector[1] = rot[2] * m21 + (rot[0] * m01 + y * m11);
+        y = rot[1];
+        local.vector[2] = rot[2] * m22 + (rot[0] * m02 + y * m12);
     }
     {
         float tx = local.vector[0] + input[9];
         float ty = local.vector[1] + input[10];
-        float tz = input[11] + local.vector[2];
+        float tz = local.vector[2] + input[11];
         local.vector[0] = tx;
         local.vector[1] = ty;
         local.vector[2] = tz;
