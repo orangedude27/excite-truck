@@ -1645,6 +1645,8 @@ void fn_802733C8(void) {
     sLastCamType = CAM_TYPE_COUNT;
 }
 #pragma dont_inline reset
+/* Empty no-op called from the sound-system shutdown fn_8026785C, just after the
+   keyframe list is freed; this build has no camera/event state to tear down here. */
 void fn_802733F0(void) {
 }
 
