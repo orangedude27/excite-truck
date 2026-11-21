@@ -37,7 +37,8 @@ void fn_801EEFDC(int handler, unsigned int eventType) {
 void fn_802E317C(const char *, ...);
 extern char lbl_8033A328[];
 #pragma scheduling invalid_target
-/* Removes a handler from the event registry (18 event types x 4 slots); reports an error if not found. */
+/* Removes a handler from the event registry (18 event types x 4 slots);
+   reports an error if not found. */
 void fn_801EF024(unsigned int handler) {
     unsigned int *row = (unsigned int *)lbl_80488678;
     unsigned int *slot;
