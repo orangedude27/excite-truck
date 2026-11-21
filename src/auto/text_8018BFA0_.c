@@ -412,8 +412,8 @@ void fn_8018C5A0(char *arg0, char *arg1) {
     }
     M2C_FIELD(arg0, int *, 0x5F8) = *M2C_FIELD(arg0, int **, 0x26C);
     {
-        float r = lbl_80561F7C / (lbl_80561F80 * M2C_FIELD(arg1, float *, 8));
         float a = M2C_FIELD(arg0, float *, 0x314);
+        float r = lbl_80561F7C / (lbl_80561F80 * M2C_FIELD(arg1, float *, 8));
         M2C_FIELD(arg0, float *, 0x5F4) = r;
         if (a >= lbl_80561F84) {
             M2C_FIELD(arg0, float *, 0x5F4) = r * a;
@@ -422,7 +422,7 @@ void fn_8018C5A0(char *arg0, char *arg1) {
         }
     }
     if (M2C_FIELD(arg0, int *, 0x1F0) == 0x50) {
-        void *o = M2C_FIELD(fn_8001285C(*(int *)__AXFXGetLfoSinTable_801769CC(0)), void **, 0x20);
+        void *o = M2C_FIELD(fn_8001285C(*(int *)__AXFXGetLfoSinTable_801769CC()), void **, 0x20);
         float t = (*(float (**)(void *, void *, float))(*(char **)o + 0x28))(o, base + 0x680, lbl_80561F88);
         M2C_FIELD(arg0, float *, 0x5F4) = M2C_FIELD(arg0, float *, 0x5F4) * t;
     }
