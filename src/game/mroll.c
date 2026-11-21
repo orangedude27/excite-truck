@@ -659,7 +659,9 @@ void fn_802411C8(void) { fn_8023FE20(); }
 
 #pragma dont_inline on
 extern s32 fn_8023FE34(void);
-void fn_802411CC(void) { fn_8023FE34(); }
+/* MRoll: non-inlined wrapper that tail-calls the active-driver-slot counter
+ * (fn_8023FE34); the returned count drives the caller's per-driver refresh loop. */
+s32 fn_802411CC(void) { fn_8023FE34(); }
 #pragma dont_inline reset
 
 extern void fn_8023FE60();
