@@ -37,8 +37,8 @@ extern char lbl_8032BB24[]; /* "loadpool: canceling stream..." */
 #define gLoadPoolErrorMsgs lbl_8032BB18
 #define sLoadPoolCancelStreamMsg lbl_8032BB24
 
-s32 fn_8012850C(s32, void *);
-s32 fn_8012C7FC(void *, s32 *);
+s32 fn_8012850C(s32, void *); /* allocate a tagged block (heap op 0) */
+s32 fn_8012C7FC(void *, s32 *); /* poll a stream load for completion */
 void fn_8012C958(void *); /* finalize/reset stream/load object */
 void fn_8012C90C(void *); /* cancel/stop active stream/load object */
 void fn_80128670(void *); /* free block (heap op 0) */
