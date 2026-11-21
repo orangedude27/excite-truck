@@ -54,9 +54,9 @@ void *fn_8013420C(void *self, s32 count, s32 stride) {
 
     base[1] = count;
     base[2] = stride;
-    base[0] = fn_8012850C(count * stride, (void *)&lbl_80559BD0);
+    base[0] = fn_8012850C(count * stride, (void *)&gLoadPoolBufferTag);
     count = base[1];
-    base[3] = fn_8012850C(count * 0x18, lbl_8032BB18);
+    base[3] = fn_8012850C(count * 0x18, gLoadPoolErrorMsgs);
     for (index = 0, byteOffset = 0; index < base[1]; byteOffset += 0x18, index++) {
         s32 *entry = (s32 *)((char *)base[3] + byteOffset);
         entry[1] = base[0] + index * base[2];
