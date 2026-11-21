@@ -1577,6 +1577,7 @@ void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
 #pragma pop
 
 #pragma use_lmw_stmw off
+#pragma cplusplus on
 void fn_801F76F8(void *arg0, unsigned char *p) {
     register unsigned char *q = p + 0x3c;
     unsigned int b0, b1, b2, b3, b4, b5, b6, b7;
@@ -1606,6 +1607,7 @@ void fn_801F76F8(void *arg0, unsigned char *p) {
     p[0x86]=(unsigned char)b2; p[0x8d]=(unsigned char)a2; p[0x87]=(unsigned char)b3; p[0x8c]=(unsigned char)a3;
     p[0x88]=(unsigned char)b4; p[0x8b]=(unsigned char)a4; p[0x89]=(unsigned char)b7; p[0x8a]=(unsigned char)a5;
 }
+#pragma cplusplus reset
 #pragma use_lmw_stmw on
 /* No-op stub. */
 void fn_801F78D8(void) {
