@@ -125,6 +125,9 @@ void *fn_8022E0EC(const char *name) {
     return layout;
 }
 #pragma scheduling on
+/* Release one reference to a resource handle: the handle arrives in r3 and is
+ * forwarded unchanged to fn_8012C4D8, which drops the reference without a
+ * release callback. */
 void fn_8022E4BC(void) {
     fn_8012C4D8();
 }
@@ -148,26 +151,25 @@ extern float lbl_805635DC;
 #pragma use_lmw_stmw off
 void *fn_8022E4C0(void *arg0) {
     unsigned char *base;
-    unsigned char *entry;
-    unsigned char *cur;
-    unsigned char *next;
     char *strings;
-    int zeros[2];
+    unsigned char *cur;
+    unsigned char *entry;
+    unsigned char *next;
+    register int zero;
     int index;
     int type;
     int y;
     int dy;
     int add_default;
     register float scale;
-
     strings = lbl_803401F8;
     base = fn_801284F8(0x68, &lbl_8055B960);
     memset(base, 0, 0x68);
     *(unsigned char **)(base + 0x64) =
         fn_8012850C(0x13400, strings + 0x60);
     memset(*(void **)(base + 0x64), 0, 0x13400);
-    zeros[0] = 0; zeros[1] = 1;
-    entry = *(unsigned char **)(base + 0x64) + zeros[0] * 0x134;
+    zero = 0;
+    entry = *(unsigned char **)(base + 0x64) + zero * 0x134;
     *(int *)(entry + 0x00) = 0x21;
     *(int *)(entry + 0x04) = 6;
     *(int *)(entry + 0x08) = 0;
@@ -175,7 +177,8 @@ void *fn_8022E4C0(void *arg0) {
     *(int *)(entry + 0x14) = 0x280;
     *(int *)(entry + 0x18) = 0x1e0;
     strcpy((char *)(entry + 0x40), strings + 0x6c);
-    entry = *(unsigned char **)(base + 0x64) + zeros[1] * 0x134;
+    zero = 1;
+    entry = *(unsigned char **)(base + 0x64) + zero * 0x134;
     *(int *)(entry + 0x00) = 0x1c;
     strcpy((char *)(entry + 0x40), *(char **)arg0);
     *(int *)(entry + 0x08) = 0x140;
