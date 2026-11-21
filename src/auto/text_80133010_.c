@@ -195,9 +195,9 @@ __declspec(section ".sdata") extern const char lbl_80559B5C[];
 int fn_8013323C(int section, int key, float value) {
     extern float lbl_805612D0;
     extern int sprintf(char *, const char *, ...);
-    int intValue;
     char *entryData;
     char *result;
+    int intValue;
     fn_80133E10((void **)&entryData, section, key);
     intValue = (int)value;
     *(float *)(entryData + 0x10) = value;
@@ -349,9 +349,13 @@ void fn_801336E0(int arg0, int arg1) {
     }
     entry[1] = 0;
 }
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
+#pragma scheduling on
 int fn_80133780(void *arg0, void *arg1) {
-    int result = *(int *)((char *)arg0 + 4) - *(int *)((char *)arg1 + 4);
+    int b = *(int *)((char *)arg1 + 4);
+    int a = *(int *)((char *)arg0 + 4);
+    int result = a - b;
     switch (result) {
     case 0:
         result = fn_8002B1D8((char *)arg0 + 0x24, (char *)arg1 + 0x24, 0x13);
@@ -361,6 +365,7 @@ int fn_80133780(void *arg0, void *arg1) {
     }
     return result;
 }
+#pragma pop
 extern void qsort(void *, int, int, int (*)(void *, void *));
 int fn_80133780(void *, void *);
 #pragma scheduling invalid_target
@@ -428,21 +433,28 @@ int fn_801338D8(const char *arg0) {
     char *p = fn_801337E4((char *)arg0);
     unsigned char b = *p;
     int isnum = 0;
-    register int c = (signed char)b;
-    int table;
-    if (c >= 0) {
-        if (c < 0x100) {
-            table = *(int *)((char *)&lbl_802FE850 + 0x38);
-            isnum = *(unsigned short *)(*(int *)(table + 8) + c * 2) & 8;
-        } else
-            isnum = 1;
+    int isDigit;
+    int c = (signed char)b;
+    int ctypeTable;
+
+    if (c < 0) goto set_invalid;
+    if (c < 0x100) goto check_invalid;
+set_invalid:
+    isnum = 1;
+check_invalid:
+    if (isnum != 0)
+        isDigit = 0;
+    else {
+        ctypeTable = *(int *)((char *)&lbl_802FE850 + 0x38);
+        isDigit = *(unsigned short *)(*(int *)(ctypeTable + 8) + c * 2) & 8;
     }
-    if (isnum == 0) {
+    if (isDigit == 0) {
         if ((signed char)b == '-')
             return atoi(p);
-        return fn_80133844(p);
+    } else {
+        return atoi(p);
     }
-    return atoi(p);
+    return fn_80133844(p);
 }
 
 extern int fn_802E30C8(const char *, ...);
@@ -452,8 +464,8 @@ extern double atof(const char *);
 float fn_80133960(const char *arg0) {
     char *p = fn_801337E4((char *)arg0);
     unsigned char c = *p;
-    register int value = 0;
-    register int ch = (int)(signed char)c;
+    int value = 0;
+    int ch = (signed char)c;
 
     if (ch < 0)
         goto set_invalid;
@@ -649,62 +661,65 @@ int fn_80133BA0(int path, int ignoreVersion, int wantSection) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-int fn_80133E10(void **arg0, int arg1, int arg2) {
-    register int count;
-    register int offset;
-    register int *table;
-    register char *entry;
-    register char *slot;
-    register int old_count;
+int fn_80133E10(void **outEntry, int section, int key) {
+    /* Options_FindOrAdd: find the option with this section and key in the options
+     * table (lbl_8055E07C). Returns 1 with its OptionEntry in *outEntry, or appends
+     * a new zero-initialized entry and returns 0 when it is missing. */
+    register int entryOffset;
+    register int entryIndex;
+    register int *options;
+    register char *candidate;
+    register char *newEntry;
+    register int usedCount;
 
-    offset = 0;
-    count = 0;
+    entryIndex = 0;
+    entryOffset = 0;
     goto check;
 
 loop:
-    entry = (char *)table + count;
-    if (arg1 == *(int *)(entry + 0xC) &&
-        fn_8002B1D8((void *)arg2, entry + 0x2C, 0x13) == 0) {
-        *arg0 = (void *)((char *)lbl_8055E07C + offset * 0x38 + 8);
+    candidate = (char *)options + entryOffset;
+    if (section == *(int *)(candidate + 0xC) &&
+        fn_8002B1D8((void *)key, candidate + 0x2C, 0x13) == 0) {
+        *outEntry = (void *)((char *)lbl_8055E07C + entryIndex * 0x38 + 8);
         return 1;
     }
-    count += 0x38;
-    offset++;
+    entryOffset += 0x38;
+    entryIndex++;
 
 check:
-    table = (int *)lbl_8055E07C;
-    if (offset < table[1])
+    options = (int *)lbl_8055E07C;
+    if (entryIndex < options[1])
         goto loop;
 
-    old_count = table[1];
-    if (old_count < 0x1F4) {
-        entry = (char *)table + old_count * 0x38;
-        table[1] = old_count + 1;
-        slot = entry + 8;
-        *(int *)(entry + 0xC) = arg1;
-        strncpy(slot + 0x24, (char *)arg2, 0x14);
-        slot[0x37] = 0;
-        if (strlen((char *)arg2) >= 0x14)
-            fn_802E30C8(lbl_8032BA90, (char *)arg2, slot + 0x24);
+    usedCount = options[1];
+    if (usedCount < 0x1F4) {
+        candidate = (char *)options + usedCount * 0x38;
+        options[1] = usedCount + 1;
+        newEntry = candidate + 8;
+        *(int *)(candidate + 0xC) = section;
+        strncpy(newEntry + 0x24, (char *)key, 0x14);
+        newEntry[0x37] = 0;
+        if (strlen((char *)key) >= 0x14)
+            fn_802E30C8(lbl_8032BA90, (char *)key, newEntry + 0x24);
         {
             register int zero = 0;
             register float initial = 0.0f;
-            slot[0x14] = zero;
-            slot[8] = zero;
-            *(int *)(slot + 0xC) = zero;
-            *(float *)(slot + 0x10) = initial;
+            newEntry[0x14] = zero;
+            newEntry[8] = zero;
+            *(int *)(newEntry + 0xC) = zero;
+            *(float *)(newEntry + 0x10) = initial;
         }
-        *arg0 = slot;
+        *outEntry = newEntry;
     } else {
-        *arg0 = (char *)table + 8;
+        *outEntry = (char *)options + 8;
     }
     return 0;
 }
 #pragma peephole on
 int fn_80133F3C(int arg0) {
     int i = 0;
+    unsigned int offset;
     int *p;
-    int offset;
     goto check;
 loop:
     offset = i * 0x38;
