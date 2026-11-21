@@ -506,13 +506,6 @@ float fn_801385F0(float position, float period, float center, float radius) {
 
 extern float lbl_805613B0, lbl_805613B4;
 extern double fn_8002F234(double);
-struct Vec2f_801386D0 { float x, y; };
-static inline struct Vec2f_801386D0 Vec2fPerp_801386D0(struct Vec2f_801386D0 v) {
-  struct Vec2f_801386D0 r;
-  r.x = v.y;
-  r.y = -v.x;
-  return r;
-}
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
@@ -523,8 +516,7 @@ int fn_801386D0(void *arg0, float farg0, float farg1, float farg2)
   {
     float x;
     float y;
-  } p;
-  struct Vec2 new_var[2];
+  } new_var[3];
   char *ctx = (char *) arg0;
   char *n;
   int hit = 0;
@@ -551,19 +543,16 @@ int fn_801386D0(void *arg0, float farg0, float farg1, float farg2)
       float v = fn_801385F0(*((float *) (n + 0x1C)), f24, farg1, farg2);
       if (v > 0.0f)
       {
-        p.y = 0.5f * ((*((float *) (n + 0xC))) - (*((float *) (a + 0xC)))) + (*((float *) (a + 0xC)));
-        p.x = 0.5f * ((*((float *) (n + 8))) - (*((float *) (a + 8)))) + (*((float *) (a + 8)));
+        new_var[1].y = ((*((float *) (n + 0xC))) - (*((float *) (a + 0xC)))) * 0.5f + (*((float *) (a + 0xC)));
+        new_var[1].x = ((*((float *) (n + 8))) - (*((float *) (a + 8)))) * 0.5f + (*((float *) (a + 8)));
         *((float *) (n + 0x2C)) += v * step;
+        *((double *) (&new_var[2])) = *((double *) (&new_var[1]));
         {
-          double dd = *((double *) (&p));
-          *((double *) (&new_var[1])) = dd;
-        }
-        {
-          float oldx = new_var[1].x;
-          new_var[1].x = new_var[1].y;
-          new_var[1].y = -oldx;
-          *((float *) n) += new_var[1].x * (v * step);
-          *((float *) (n + 4)) += new_var[1].y * (v * step);
+          float oldx = new_var[2].x;
+          new_var[2].x = new_var[2].y;
+          new_var[2].y = -oldx;
+          *((float *) n) += new_var[2].x * (v * step);
+          *((float *) (n + 4)) += new_var[2].y * (v * step);
         }
       }
       b = *((char **) (ctx + 0x1C));
