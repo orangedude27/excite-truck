@@ -48,9 +48,9 @@ void fn_801CEFE8(void) {
 void fn_801CF01C(void) {
     /* Log that cutscene replay playback ended and clear the in-playback flag. */
     char *message;
-    message = lbl_8033807C;
+    message = sLogReplayEnd;
     fn_802E30C8(message);
-    lbl_8055E8A0 = 0;
+    sReplayPlayback = 0;
 }
 
 #pragma scheduling on
