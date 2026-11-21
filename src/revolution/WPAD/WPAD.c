@@ -3877,30 +3877,39 @@ void fn_8005F3E8(s32 chan, s32 arg1) {
     fn_8005F3E8_enqueue(cb, &cmd);
 }
 
+/* Assign a WPAD channel to a newly connected controller. Reuse the channel whose saved
+   Bluetooth address matches this device if it is still free; otherwise claim the first
+   free channel, record the address there and flag the BT info for saving. */
 s32 fn_8005FBCC(u8 devHandle) {
-    BD_ADDR_PTR pAddr;
-    int i;
-    pAddr = _WUDGetDevAddr(devHandle);
-    for (i = 0; i < WPAD_MAX_CONTROLLERS; i++) {
-        if (memcmp(lbl_80393058 + (i + 10) * 0x46 + 1, pAddr, 6) != 0) {
+#define chanInUse    lbl_8055DC08
+#define btInfoArray  lbl_80393058
+#define btInfoDirty  lbl_8055DC11
+    BD_ADDR_PTR devAddr;
+    int chan;
+    devAddr = _WUDGetDevAddr(devHandle);
+    for (chan = 0; chan < WPAD_MAX_CONTROLLERS; chan++) {
+        if (memcmp(btInfoArray + (chan + 10) * 0x46 + 1, devAddr, 6) != 0) {
             continue;
         }
-        if (lbl_8055DC08[i]) {
+        if (chanInUse[chan]) {
             continue;
         }
-        lbl_8055DC08[i] = TRUE;
-        return i;
+        chanInUse[chan] = TRUE;
+        return chan;
     }
-    for (i = 0; i < WPAD_MAX_CONTROLLERS; i++) {
-        if (lbl_8055DC08[i]) {
+    for (chan = 0; chan < WPAD_MAX_CONTROLLERS; chan++) {
+        if (chanInUse[chan]) {
             continue;
         }
-        lbl_8055DC08[i] = TRUE;
-        memcpy(lbl_80393058 + (i + 10) * 0x46 + 1, pAddr, 6);
-        lbl_8055DC11 = TRUE;
-        return i;
+        chanInUse[chan] = TRUE;
+        memcpy(btInfoArray + (chan + 10) * 0x46 + 1, devAddr, 6);
+        btInfoDirty = TRUE;
+        return chan;
     }
     return WPAD_CHAN_INVALID;
+#undef chanInUse
+#undef btInfoArray
+#undef btInfoDirty
 }
 /* HID connect/disconnect callback: on connect, claim a channel for the Wii
  * Remote, reset its control block and queue the extension/firmware probe
