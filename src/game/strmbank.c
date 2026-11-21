@@ -77,27 +77,17 @@ extern "C" void fn_802E7684(s32 level) {
     ((StrmBankManager *)lbl_8055FFF0)->setLevel(level);
 }
 #pragma cplusplus reset
-/* Builds the 'null' stream-bank manager the game falls back on: a bare object --
- * 4 bytes holding the vtable of the do-nothing StrmBank implementation at
- * lbl_8034D860 (+0x08 the deleting destructor fn_802E76F0, +0x0C fn_802E7730,
- * which answers 1, and +0x10..+0x2C the empty methods this file's wrappers call
- * through lbl_8055FFF0).  fn_802E7578 stores what this returns there; the console
- * type read first is left unused and the allocation's pointer is the value the
- * caller takes back in r3. */
+/* Allocate the do-nothing "null" manager the game falls back on: a single pointer
+   to lbl_8034D860, its vtable. fn_802E7578 installs the returned object globally;
+   the console-type query first is unused. */
 s32 fn_802E769C(void) {
-#define STR_CREATING_NULL lbl_8034D828 /* "StrmBank: creating 'null' manager" */
-#define HEAP_NULL_STRMBANK lbl_8034D84C /* "NullStrmBank" */
-#define VTBL_NULL_STRMBANK lbl_8034D860
     void **manager;
     OSGetConsoleType();
-    fn_802E30C8(STR_CREATING_NULL);
-    manager = (void **)fn_801284F8(4, HEAP_NULL_STRMBANK);
+    fn_802E30C8(lbl_8034D828);
+    manager = (void **)fn_801284F8(4, lbl_8034D84C);
     if (manager != 0) {
-        *manager = (void *)VTBL_NULL_STRMBANK;
+        *manager = (void *)lbl_8034D860;
     }
-#undef STR_CREATING_NULL
-#undef HEAP_NULL_STRMBANK
-#undef VTBL_NULL_STRMBANK
 }
 #pragma scheduling on
 s32 fn_802E76F0(s32 object, s32 deleteFlag) {
