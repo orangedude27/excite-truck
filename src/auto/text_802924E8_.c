@@ -802,12 +802,6 @@ void fn_80293530(void* arg0) {
     }
 }
 
-static inline u8 scaleChannel_802935A0(float scale, u8 value) {
-    s32 comp = 0xFF;
-    s32 tmp = (s32)(scale * (float)value);
-    if (tmp <= 0xFF) comp = tmp;
-    return comp;
-}
 #pragma scheduling invalid_target
 void *fn_802935A0(void *arg0) {
     register u8 *out = (u8 *)arg0;
