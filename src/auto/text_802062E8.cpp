@@ -224,6 +224,9 @@ extern "C" void fn_80206518(void) {
     ((Obj80206518 *)fn_80208D4C())->f12();
 }
 
+/* No-op virtual callback in the audio mixer's device callback group (class
+ * Obj80206518), alongside fn_802064CC/fn_80206514.  Calling it does nothing;
+ * compiles to a bare 'blr'. */
 extern "C" void fn_8020654C(void) {
 }
 
