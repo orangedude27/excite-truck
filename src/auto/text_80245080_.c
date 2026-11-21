@@ -26,15 +26,17 @@ s32 fn_802E8D7C(s32);
 void fn_80236900(void);
 
 #pragma optimization_level 1
-s32 fn_80245080(s32 arg0) {
-    void *sub;
-    s32 (*fn)();
-    s32 ret;
-    ret = 0;
-    sub = *(void **)((char *)lbl_8055F244 + 0x20);
-    fn = *(s32 (**)())((char *)sub + 0xC);
-    if (fn != 0 && ((s32 (*)(s32))fn)(arg0) == 1) ret = 1;
-    return ret;
+s32 fn_80245080(s32 object) {
+    /* Ask the active save/dialog interface, via its vtable callback, about this object;
+       return 1 only if the callback reports 1. */
+    void *vtable;
+    s32 (*callback)();
+    s32 accepted;
+    accepted = 0;
+    vtable = *(void **)((char *)lbl_8055F244 + 0x20);
+    callback = *(s32 (**)())((char *)vtable + 0xC);
+    if (callback != 0 && ((s32 (*)(s32))callback)(object) == 1) accepted = 1;
+    return accepted;
 }
 #pragma scheduling off
 s32 fn_802450D4(s32 status) {
