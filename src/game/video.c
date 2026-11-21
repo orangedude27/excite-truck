@@ -660,6 +660,8 @@ void fn_802E0B68(void) {
 #pragma pop
 #pragma dont_inline on
 void *fn_802E0BA4(void) {
+    /* No-op free hook used during BinkMovie teardown; it returns nothing and
+     * leaves the movie pointer untouched (the heap block is freed separately). */
 }
 
 /* Allocate the BinkMovie object (0x228 bytes, tagged with the "BinkMovie" name
@@ -693,11 +695,10 @@ extern char lbl_8034BB28[];
 #pragma optimization_level 3
 #pragma scheduling invalid_target
 void *fn_802E0C04(u32 size) {
-    int align;
-    volatile int *head;
-    void **link;
-    int best;
     int needed;
+    int *head;
+    char *link;
+    int best;
     void *freeNode;
     void **bestLink;
     void *split;
@@ -705,51 +706,52 @@ void *fn_802E0C04(u32 size) {
     void *result;
     void *node;
     int freeSize;
-    void *next;
-    char *p;
-    int align2;
+    int align, align2;
+
     best = 0x7FFFFFFF;
     bestLink = 0;
     result = 0;
-    head = (volatile int *)lbl_8055FEE8;
-    align = head[1];
-    link = (void **)&head[2];
-    needed = size + align;
-    needed &= ~align;
-    while ((node = *link) != 0) {
+    head = (int *)lbl_8055FEE8;
+    needed = *(volatile int *)((char *)head + 4);
+    link = (char *)head + 8;
+    {
+        int r0 = size + needed;
+        needed = r0 & ~needed;
+    }
+    while ((node = *(void **)link) != 0) {
         freeSize = *(int *)((char *)node + 4);
         if (freeSize >= needed && best > freeSize) {
-            bestLink = link;
+            bestLink = (void **)link;
             best = freeSize;
         }
-        link = (void **)((char *)node + 8);
+        link = (char *)node + 8;
     }
     if (bestLink != 0) {
         freeNode = *bestLink;
         split = 0;
-        align = head[1];
+        align = *(volatile int *)((char *)head + 4);
         freeSize = *(int *)((char *)freeNode + 4);
-        next = *(void **)((char *)freeNode + 8);
+        best = *(int *)((char *)freeNode + 8);
         left = freeSize - needed;
         if (left > ((align + 0x10) & ~align) + 0x20) {
-            p = (char *)freeNode + align + needed;
-            *(int *)(p + 1) = 0xABCFEED0;
-            split = p + 1;
-            *(int *)(p + 9) = 0;
-            align2 = head[1];
-            *(int *)(p + 5) = left - ((align2 + 0x10) & ~align2);
-            *(volatile int **)(p + 0xD) = head;
+            link = (char *)freeNode + align + needed;
+            *(int *)(link + 1) = 0xABCFEED0;
+            split = link + 1;
+            *(int *)(link + 9) = 0;
+            align2 = *(volatile int *)((char *)head + 4);
+            *(int *)(link + 5) = left - ((align2 + 0x10) & ~align2);
+            *(int **)(link + 0xD) = head;
             *(int *)((char *)freeNode + 4) = needed;
         }
         if (split != 0) {
-            *(void **)((char *)split + 8) = next;
-            *bestLink = split;
+            *(int *)((char *)split + 8) = best;
+            *bestLink = (void *)split;
         } else {
-            *bestLink = next;
+            *bestLink = (void *)best;
         }
-        *(void **)((char *)freeNode + 8) = (void *)head[3];
-        head[3] = (int)freeNode;
-        result = (char *)freeNode + head[1] + 1;
+        *(void **)((char *)freeNode + 8) = (void *)*(volatile int *)((char *)head + 0xC);
+        *(volatile int *)((char *)head + 0xC) = (int)freeNode;
+        result = (char *)freeNode + *(volatile int *)((char *)head + 4) + 1;
     }
     if (result == 0 && *(volatile u8 *)head != 0) {
         fn_802E317C(lbl_8034BB28);
@@ -758,57 +760,72 @@ void *fn_802E0C04(u32 size) {
 }
 #pragma pop
 
-void fn_802E0D44(u32 size) {
-    u32 align0 = *(u32 *)((u8 *)lbl_8055FEE8 + 4);
-    u8 *head = (u8 *)lbl_8055FEE8;
-    u8 **link = (u8 **)(head + 12);
-    u8 *block = (u8 *)(size - (align0 + 1));
-    u8 *node;
-    while ((node = *link) != 0) {
-        if (node == block) {
-            *link = *(u8 **)(block + 8);
-            break;
-        }
-        link = (u8 **)(node + 8);
-    }
-    *(u8 **)(block + 8) = *(u8 **)(head + 8);
-    *(u8 **)(head + 8) = block;
+void fn_802E0D44(u32 size)
+{
+  u8 *node;
+  int new_var;
+  u8 **link;
+  u8 *block;
+  u8 *head;
+  u8 **anchor;
+  u8 **scan;
+  u32 align;
+  head = (u8 *) lbl_8055FEE8;
+  align = *((u32 *) (head + 4));
+  new_var = 4;
+  link = (u8 **) (head + 12);
+  block = (u8 *) (size - (align + 1));
+  while ((node = *link) != 0)
+  {
+    if (node == block)
     {
-        u8 **anchor = (u8 **)(head + 8);
-        u32 changed;
-        do {
-            u8 **scan = (u8 **)(head + 8);
-            u32 didMerge = 0;
-            while (*scan != 0) {
-                u8 *current = *scan;
-                u8 *other = *anchor;
-                u32 adjacent = 1;
-                u32 align = *(u32 *)(head + 4);
-                if (other + align + *(u32 *)(other + 4) + 1 != current &&
-                    current + align + *(u32 *)(current + 4) + 1 != other) {
-                    adjacent = 0;
-                }
-                if (adjacent != 0) {
-                    u8 **selected = anchor;
-                    if (current + align + *(u32 *)(current + 4) + 1 == other) {
-                        selected = scan;
-                        scan = anchor;
-                    }
-                    {
-                        u8 *kept = *selected;
-                        u8 *removed = *scan;
-                        anchor = selected;
-                        didMerge = 1;
-                        *(u32 *)(kept + 4) = *(u32 *)(kept + 4) + *(u32 *)(removed + 4) + ((align + 16) & ~align);
-                        *scan = *(u8 **)(removed + 8);
-                    }
-                } else {
-                    scan = (u8 **)(current + 8);
-                }
-            }
-            changed = didMerge;
-        } while (changed != 0);
+      *link = *((u8 **) (block + 8));
+      break;
     }
+    link = (u8 **) (node + 8);
+  }
+
+  *((u8 **) (block + 8)) = *((u8 **) (head + 8));
+  *((u8 **) (head + 8)) = block;
+  anchor = (u8 **) (head + 8);
+  do
+  {
+    u8 *current;
+    scan = (u8 **) (head + 8);
+    align = 0;
+    while ((current = *scan) != 0)
+    {
+      u8 *other = *anchor;
+      u32 adjacent = 1;
+      u32 a = *((u32 *) (head + 4));
+      if (((((other + a) + (*((u32 *) (other + 4)))) + 1) != current) && ((((current + a) + (*((u32 *) (current + 4)))) + 1) != other))
+      {
+        adjacent = 0;
+      }
+      if (adjacent != 0)
+      {
+        u8 **selected = anchor;
+        if ((((current + a) + (*((u32 *) (current + 4)))) + 1) == other)
+        {
+          selected = scan;
+          scan = anchor;
+        }
+        {
+          u8 *kept = *selected;
+          anchor = selected;
+          align = 1;
+          *((u32 *) (kept + 4)) = ((*((u32 *) (kept + new_var))) + (*((u32 *) ((*scan) + 4)))) + ((a + 16) & (~a));
+          *scan = *((u8 **) ((*scan) + 8));
+        }
+      }
+      else
+      {
+        scan = (u8 **) (current + 8);
+      }
+    }
+
+  }
+  while (align != 0);
 }
 
 /* RealName: Video_FreeBinkIfLoaded (tentative). If the Bink handle at object+4 is set, cleans up associated subobject at +0x50 via fn_802E1728, frees the Bink via fn_80118DC0 (BinkClose), and clears the handle. */
@@ -1029,7 +1046,7 @@ extern const u16 lbl_802FAE28[];
 extern const u8 lbl_805650C8, lbl_805650C9, lbl_805650CA, lbl_805650CB;
 extern const f32 lbl_805650CC, lbl_805650D0, lbl_805650D4, lbl_805650D8, lbl_805650DC, lbl_805650E0;
 extern const u16 lbl_80565238, lbl_8056523A, lbl_8056523C, lbl_8056523E;
-#pragma processor 750
+#pragma processor 7400
 void fn_802E13D8(f32 p0, f32 p1, f32 p2, f32 p3, void *arg0) {
     register f32 v31 = p0;
     register f32 v28 = p1;
@@ -1104,7 +1121,7 @@ void fn_802E13D8(f32 p0, f32 p1, f32 p2, f32 p3, void *arg0) {
             var_r3 += 0x30;
         }
         {
-            volatile const u16 *indexPtr = lbl_802FAE28;
+            register volatile const u16 *indexPtr = lbl_802FAE28;
             sp20[0] = *indexPtr++;
             sp20[1] = *indexPtr++;
             sp20[2] = *indexPtr++;
@@ -1148,7 +1165,6 @@ void fn_802E13D8(f32 p0, f32 p1, f32 p2, f32 p3, void *arg0) {
         fn_802E2C20();
     }
 }
-#pragma processor reset
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80119214(void *, void *);
 extern void fn_80116E54(void *, void *);
