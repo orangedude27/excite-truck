@@ -1046,7 +1046,10 @@ int fn_802C6C20(int resource) {
 }
 #pragma dont_inline reset
 
-void fn_802C6C30(void) {}
+/* Empty model-system hook, invoked once from the world/race init sequence
+ * (fn_801E7984) alongside the other subsystem resets. This build needs no model
+ * state set up here, so it does nothing. */
+void fn_802C6C30(void) { }
 
 /* Public accessor used across the game: hand an instance id to fn_802C53A8 and
  * return the model instance's group list (the +0x4 field of its 0x10-byte record)
