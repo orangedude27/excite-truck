@@ -105,6 +105,20 @@ static inline void matVecMix_8018(Vec_8018 *dest, const float *m, const float *v
         dest->z = m[2] * v[0] + m[5] * v[1] + m[8] * v[2];
     }
 }
+static inline void matVecMixS_8018(Vec_8018 *dest, const float *m, const float *v) {
+    if ((float *)dest == v) {
+        float tx = v[0] * m[0] + v[1] * m[3] + v[2] * m[6];
+        float ty = v[0] * m[1] + v[1] * m[4] + v[2] * m[7];
+        float tz = v[0] * m[2] + v[1] * m[5] + v[2] * m[8];
+        dest->x = tx;
+        dest->y = ty;
+        dest->z = tz;
+    } else {
+        dest->x = v[0] * m[0] + v[1] * m[3] + v[2] * m[6];
+        dest->y = v[0] * m[1] + v[1] * m[4] + v[2] * m[7];
+        dest->z = v[0] * m[2] + v[1] * m[5] + v[2] * m[8];
+    }
+}
 static inline void matVecMixY_8018(Vec_8018 *dest, const float *m, const float *v) {
     if ((float *)dest == v) {
         float tx = m[3] * v[1] + m[0] * v[0] + m[6] * v[2];
@@ -130,7 +144,7 @@ void fn_8018BFA0(void *out0, float *a, int *b0, int arg3, float arg4, float arg5
     float *out = (float *)out0;
     float *b = (float *)b0;
     float x0, x1, x2, x3, x4, x5, x6, x7, x8;
-    Vec_8018 scratch;
+    float scratch[3];
     if (out == b || out == a) {
         x0 = fn_80144514(a[0], b[0], a[3], b[1], a[6], b[2]);
         x1 = fn_80144514(a[0], b[3], a[3], b[4], a[6], b[5]);
@@ -153,14 +167,14 @@ void fn_8018BFA0(void *out0, float *a, int *b0, int arg3, float arg4, float arg5
         out[5] = fn_80144514(a[2], b[3], a[5], b[4], a[8], b[5]);
         out[8] = fn_80144514(a[2], b[6], a[5], b[7], a[8], b[8]);
     }
-    matVecAlias_8018(&scratch, a, (Vec_8018 *)(b + 9));
-    out[9] = a[9] + scratch.x;
-    out[10] = a[10] + scratch.y;
-    out[11] = a[11] + scratch.z;
-    matVecAlias_8018(&scratch, out, (Vec_8018 *)(b + 9));
-    out[9] -= scratch.x;
-    out[10] -= scratch.y;
-    out[11] -= scratch.z;
+    matVecMixY_8018((Vec_8018 *)scratch, a, b + 9);
+    out[9] = a[9] + scratch[0];
+    out[10] = a[10] + scratch[1];
+    out[11] = a[11] + scratch[2];
+    matVecMixY_8018((Vec_8018 *)scratch, out, b + 9);
+    out[9] -= scratch[0];
+    out[10] -= scratch[1];
+    out[11] -= scratch[2];
 }
 #pragma pop
 
