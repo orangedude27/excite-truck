@@ -218,59 +218,62 @@ void fn_802B1FC0(void *node) {
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma opt_common_subs off
+/* Tears down the global material registry lbl_804BE1FC: for each material set,
+ * material and owned item it releases the resource and frees the object, clears
+ * the parent's array/count/capacity fields, then empties the registry count. */
 void fn_802B1FD4(void) {
     #pragma scheduling invalid_target
-    void *r27;
-    int j;
-    void *r25;
-    int k;
-    void *r23;
-    int off_i;
-    int off_j;
-    int off_k;
-    int i;
-    void *table;
+    void *materialSet;
+    int matIndex;
+    void *material;
+    int itemIndex;
+    void *item;
+    int setOffset;
+    int matOffset;
+    int itemOffset;
+    int setIndex;
+    void *materialSets;
 
     fn_802B2104(&lbl_8055F9BC);
-    table = &lbl_804BE1FC;
-    i = 0;
-    off_i = 0;
-    for (; i < *(int *)((char *)table + 4); off_i += 4, i++) {
-        r27 = *(void **)(*(char **)&lbl_804BE1FC + off_i);
-        if (r27 != 0) {
-            for (j = 0, off_j = 0; j < *(int *)((char *)r27 + 4); off_j += 4, j++) {
-                r25 = *(void **)(*(char **)r27 + off_j);
-                if (r25 != 0) {
-                    for (k = 0, off_k = 0; k < *(int *)((char *)r25 + 0x40c); off_k += 4, k++) {
-                        r23 = *(void **)(*(char **)((char *)r25 + 0x408) + off_k);
-                        if (r23 != 0) {
-                            fn_802B21D4((void **)((char *)r23 + 0xc));
-                            fn_80128668(r23);
+    materialSets = &lbl_804BE1FC;
+    setIndex = 0;
+    setOffset = 0;
+    for (; setIndex < *(int *)((char *)materialSets + 4); setOffset += 4, setIndex++) {
+        materialSet = *(void **)(*(char **)&lbl_804BE1FC + setOffset);
+        if (materialSet != 0) {
+            for (matIndex = 0, matOffset = 0; matIndex < *(int *)((char *)materialSet + 4); matOffset += 4, matIndex++) {
+                material = *(void **)(*(char **)materialSet + matOffset);
+                if (material != 0) {
+                    for (itemIndex = 0, itemOffset = 0; itemIndex < *(int *)((char *)material + 0x40c); itemOffset += 4, itemIndex++) {
+                        item = *(void **)(*(char **)((char *)material + 0x408) + itemOffset);
+                        if (item != 0) {
+                            fn_802B21D4((void **)((char *)item + 0xc));
+                            fn_80128668(item);
                         }
                     }
-                    *(int *)((char *)r25 + 0x40c) = 0;
-                    if ((char *)r25 + 0x408 != 0) {
-                        if ((char *)r25 + 0x408 != 0) {
-                            *(int *)((char *)r25 + 0x408) = 0;
-                            *(int *)((char *)r25 + 0x40c) = 0;
-                            *(int *)((char *)r25 + 0x410) = 0;
+                    *(int *)((char *)material + 0x40c) = 0;
+                    if ((char *)material + 0x408 != 0) {
+                        if ((char *)material + 0x408 != 0) {
+                            *(int *)((char *)material + 0x408) = 0;
+                            *(int *)((char *)material + 0x40c) = 0;
+                            *(int *)((char *)material + 0x410) = 0;
                         }
                     }
-                    fn_80128668(r25);
+                    fn_80128668(material);
                 }
             }
-            *(int *)((char *)r27 + 4) = 0;
-            if (r27 != 0) {
-                if (r27 != 0) {
-                    *(int *)r27 = 0;
-                    *((int *)r27 + 1) = 0;
-                    *((int *)r27 + 2) = 0;
+            *(int *)((char *)materialSet + 4) = 0;
+            if (materialSet != 0) {
+                if (materialSet != 0) {
+                    *(int *)materialSet = 0;
+                    *((int *)materialSet + 1) = 0;
+                    *((int *)materialSet + 2) = 0;
                 }
             }
-            fn_80128668(r27);
+            fn_80128668(materialSet);
         }
     }
-    *(int *)((char *)table + 4) = 0;
+    *(int *)((char *)materialSets + 4) = 0;
 }
 #pragma pop
 
