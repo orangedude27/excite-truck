@@ -119,8 +119,10 @@ extern float lbl_80562838, lbl_8056283C, lbl_8056284C, lbl_80562850, lbl_8056285
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling 603
 void fn_801BD808(void) {
     int idx = lbl_8055E78C;
+    int next = idx + 1;
     float *o30;
     float *o29;
     void *o28;
@@ -129,7 +131,7 @@ void fn_801BD808(void) {
     float z, s, c;
     float z2, one;
     o30 = (float *)(lbl_8055E794 + idx * 0xB0);
-    lbl_8055E78C = idx + 1;
+    lbl_8055E78C = next;
     o29 = (float *)(lbl_8055E798 + idx * 0x1F0);
     o28 = (void *)(lbl_8055E79C + idx * 0x190);
     o27 = (void *)(lbl_8055E7A4 + idx * 0x14);
@@ -331,13 +333,13 @@ extern signed char lbl_8055E7A8;
 void fn_801BE168(int index, float (*m)[3], float *a, float *b) {
     extern int lbl_8055E794;
     struct V4 { float x, y, z, w; };
-    float m00 = m[0][0], m11 = m[1][1], m22 = m[2][2];
     float t, out[4], q, inv;
     struct V4 pos, quat, la, lb;
     int j, k, i;
     float *o, *dst;
-    t = m00 + m11 + m22;
+    float m00 = m[0][0], m11 = m[1][1], m22 = m[2][2];
     dst = (float *)(lbl_8055E794 + index * 0xB0);
+    t = m00 + m11 + m22;
     pos.x = m[3][0]; pos.y = m[3][1]; pos.z = m[3][2];
     dst[0] = pos.x; dst[1] = pos.y; dst[2] = pos.z; dst[3] = pos.w;
     if (t > lbl_80562838) {
@@ -370,40 +372,126 @@ extern float lbl_805628A4;
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_801BE400(int index, float *m, float scale) {
-    float out[4], t, q, inv;
-    float *dst = (float *)(lbl_8055E794 + index * 0xB0);
-    void *p4 = (void *)(lbl_8055E7A4 + index * 0x14);
+    float s[0x70];
     float z = lbl_80562838;
-    int i, j, k;
-
-    t = m[0] + m[4] + m[8];
-    dst[0] = m[9];
-    dst[1] = m[10];
-    dst[2] = m[11];
+    float *dst = (float *)(lbl_8055E794 + index * 0xB0);
+    float *p2 = (float *)(lbl_8055E798 + index * 0x1F0);
+    float *p3 = (float *)(lbl_8055E79C + index * 0x190);
+    void *p4 = (void *)(lbl_8055E7A4 + index * 0x14);
+    float t, q, inv, f5, f4_2, f3_2, f7_3, f8_3, f9;
+    int i, j, k, ctr;
+    float *vout, *vin;
+    float m0, m1, m2, m3, m4, m5, m6, m7, m8;
+    t = m[8] + (m[0] + m[4]);
+    dst[0] = m[9]; dst[1] = m[10]; dst[2] = m[11];
+    s[90] = m[9]; s[91] = m[10]; s[92] = m[11];
+    dst[3] = s[93];
     if (t > z) {
-        q = fn_8002F234(lbl_8056283C + t);
+        q = (float)fn_8002F234(lbl_8056283C + t);
         inv = lbl_80562854 / q;
-        out[3] = lbl_80562854 * q;
-        out[0] = inv * (m[5] - m[7]);
-        out[1] = inv * (m[6] - m[2]);
-        out[2] = inv * (m[1] - m[3]);
+        s[111] = lbl_80562854 * q;
+        s[108] = inv * (m[5] - m[7]);
+        s[109] = inv * (m[6] - m[2]);
+        s[110] = inv * (m[1] - m[3]);
     } else {
+        float *pi, *pj, *pk, fsum;
         i = 0;
         if (m[4] > m[0]) i = 1;
         if (m[8] > m[i * 4]) i = 2;
         j = (i + 1) % 3;
         k = (j + 1) % 3;
-        q = fn_8002F234(lbl_8056283C + (m[i * 4] - (m[j * 4] + m[k * 4])));
+        pi = m + i * 3; pj = m + j * 3; pk = m + k * 3;
+        fsum = pj[j] + pk[k];
+        q = (float)fn_8002F234(lbl_8056283C + (pi[i] - fsum));
         inv = lbl_80562854 / q;
-        out[i] = lbl_80562854 * q;
-        out[3] = inv * (m[j * 3 + k] - m[k * 3 + j]);
-        out[j] = inv * (m[i * 3 + j] + m[j * 3 + i]);
-        out[k] = inv * (m[i * 3 + k] + m[k * 3 + i]);
+        s[108 + i] = lbl_80562854 * q;
+        s[111] = inv * (pj[k] - pk[j]);
+        s[108 + j] = inv * (pi[j] + pj[i]);
+        s[108 + k] = inv * (pi[k] + pk[i]);
     }
-    dst[16] = -out[0];
-    dst[17] = -out[1];
-    dst[18] = -out[2];
-    dst[19] = out[3];
+    f7_3 = -s[108]; m6 = m[6]; f8_3 = -s[109]; f9 = -s[110]; m7 = m[7]; m8 = m[8];
+    dst[0x10] = f7_3; dst[0x11] = f8_3;
+    f5 = m6 * scale; m0 = m[0];
+    dst[0x12] = f9;
+    f4_2 = m7 * scale; m1 = m[1];
+    dst[0x13] = s[111];
+    f3_2 = m8 * scale; m2 = m[2];
+    dst[0x04] = m0; m3 = m[3];
+    dst[0x05] = m1; dst[0x06] = m2; m4 = m[4];
+    dst[0x07] = s[25]; m5 = m[5];
+    dst[0x08] = m3; dst[0x09] = m4; dst[0x0A] = m5;
+    dst[0x0B] = s[21];
+    dst[0x0C] = m6; dst[0x0D] = m7; dst[0x0E] = m8; dst[0x0F] = s[17];
+    dst[0x28] = z; dst[0x29] = z; dst[0x2A] = z; dst[0x2B] = s[85];
+    dst[0x24] = z; dst[0x25] = z; dst[0x26] = z;
+    s[86] = f7_3; s[87] = f8_3; s[88] = f9; s[89] = s[111];
+    s[22] = m0; s[23] = m1; s[24] = m2;
+    s[18] = m3; s[19] = m4; s[20] = m5;
+    s[14] = m6; s[15] = m7; s[16] = m8;
+    s[82] = z; s[83] = z; s[84] = z;
+    s[78] = z; s[79] = z; s[80] = z;
+    dst[0x27] = s[81];
+    s[104] = f5; s[105] = f4_2; s[106] = f3_2;
+    dst[0x14] = f5; dst[0x15] = f4_2; dst[0x16] = f3_2; dst[0x17] = s[13];
+    dst[0x18] = z; dst[0x19] = z; dst[0x1A] = z; dst[0x1B] = s[77];
+    s[70] = p3[0x1C];
+    p2[0] = z; p2[1] = z; p2[2] = z; p2[3] = z;
+    s[73] = p3[0x1F];
+    p2[8] = z; p2[9] = z; p2[10] = z; p2[11] = z;
+    s[1] = s[73];
+    s[71] = p3[0x1D]; s[72] = p3[0x1E];
+    s[0] = s[1];
+    p2[4] = z; p2[5] = z;
+    s[10] = f5; s[11] = f4_2; s[12] = f3_2;
+    s[74] = z; s[75] = z; s[76] = z;
+    s[6] = s[70]; s[7] = s[71]; s[8] = s[72];
+    s[100] = s[70]; s[101] = s[71]; s[102] = s[72]; s[103] = s[0];
+    s[66] = z; s[67] = z; s[68] = z; s[69] = z;
+    s[62] = z; s[63] = z; s[64] = z; s[65] = z;
+    s[58] = z; s[59] = z; s[60] = z; s[61] = z;
+    p2[6] = z; p2[7] = z;
+    p2[0x0C] = scale / s[70];
+    s[54] = p2[0x0C];
+    p2[0x0D] = scale / s[71];
+    s[55] = p2[0x0D];
+    s[50] = z; s[51] = z; s[52] = z; s[53] = z;
+    p2[0x0E] = scale / s[72];
+    s[56] = p2[0x0E];
+    p2[0x0F] = scale / s[0];
+    p2[0x20] = z; p2[0x21] = z; p2[0x22] = z; p2[0x23] = z;
+    p2[0x64] = z; p2[0x65] = z; p2[0x66] = z; p2[0x67] = z;
+    p2[0x68] = z; p2[0x69] = z; p2[0x6A] = z; p2[0x6B] = z;
+    s[57] = p2[0x0F];
+    s[46] = z; s[47] = z; s[48] = z; s[49] = z;
+    s[42] = z; s[43] = z; s[44] = z; s[45] = z;
+    ctr = 4;
+    do {
+        p2[0x44] = z; p2[0x45] = lbl_8056283C; p2[0x46] = z; p2[0x47] = lbl_805628A4;
+        p2[0x54] = z; p2[0x55] = lbl_805628A4; p2[0x56] = z; p2[0x57] = s[37];
+        p2[0x34] = z; p2[0x35] = z; p2[0x36] = z; p2[0x37] = s[33];
+        p2[0x24] = z; p2[0x25] = z; p2[0x26] = z; p2[0x27] = z;
+        s[38] = z; s[39] = lbl_8056283C; s[40] = z; s[41] = lbl_805628A4;
+        s[34] = z; s[35] = lbl_805628A4; s[36] = z;
+        s[30] = z; s[31] = z; s[32] = z;
+        s[26] = z; s[27] = z; s[28] = z; s[29] = z;
+        s[97] = p3[0]; s[98] = p3[1]; s[99] = p3[2];
+        vout = &s[94]; vin = &s[97];
+        if (vout == vin) {
+            s[94] = s[99] * m6 + (s[97] * m0 + s[98] * m3);
+            s[95] = s[99] * m7 + (s[97] * m1 + s[98] * m4);
+            s[96] = s[99] * m8 + (s[97] * m2 + s[98] * m5);
+        } else {
+            s[94] = s[99] * m6 + (s[97] * m0 + s[98] * m3);
+            s[95] = s[99] * m7 + (s[97] * m1 + s[98] * m4);
+            s[96] = s[99] * m8 + (s[97] * m2 + s[98] * m5);
+        }
+        p3 += 4;
+        s[94] = s[94] + m[9]; s[95] = s[95] + m[10]; s[96] = s[96] + m[11];
+        p2[0x10] = s[94]; p2[0x11] = s[95]; p2[0x12] = s[96]; p2[0x13] = s[5];
+        p2 += 4;
+        s[2] = s[94]; s[3] = s[95]; s[4] = s[96];
+        ctr -= 1;
+    } while (ctr != 0);
     memset(p4, 0, 0x14);
     fn_801E9DC4(p4);
     lbl_8055E7A8 = 1;
@@ -444,36 +532,35 @@ void fn_801BEB30(int slot, int *outRecord) {
 extern float lbl_80562838, lbl_8056283C, lbl_805628A8, lbl_805628AC, lbl_805628B0;
 extern float PSVECDotProduct(const void *, const void *);
 extern void PSVECNormalize(const void *, void *);
+#pragma paired off
+#pragma paired_single off
 void fn_801BEB44(int i, int j, float *target, float *velocity) {
-#pragma use_lmw_stmw on
     unsigned char *base = (unsigned char *)lbl_8055E798 + i * 0x1F0;
     int off = j * 16;
     unsigned char *p = base + off;
     Vec801BD a, b, n, diff, tmp, lerp, dead1, dead2, dead3;
-    Vec801BD *tg = (Vec801BD *)target;
-    Vec801BD *vel = (Vec801BD *)velocity;
     float d0, d1, t;
     Vec801BD_Copy(&a, (Vec801BD *)(p + 0x40));
     Vec801BD_Copy(&b, (Vec801BD *)(p + 0x150));
     diff.x = a.x - b.x; diff.y = a.y - b.y; diff.z = a.z - b.z;
     Vec801BD_Copy(&n, (Vec801BD *)(p + 0x110));
     d0 = PSVECDotProduct(&diff, &n);
-    tmp.x = a.x - tg->x; tmp.y = a.y - tg->y; tmp.z = a.z - tg->z;
-    d1 = PSVECDotProduct(&tmp, vel) - d0;
+    tmp.x = a.x - target[0]; tmp.y = a.y - target[1]; tmp.z = a.z - target[2];
+    d1 = PSVECDotProduct(&tmp, velocity) - d0;
     if (d1 > lbl_805628A8) return;
-    if (PSVECDotProduct(vel, &n) < lbl_805628AC) return;
+    if (PSVECDotProduct(velocity, &n) < lbl_805628AC) return;
     t = lbl_805628B0 * (lbl_805628A8 + d1);
     t = (lbl_8056283C < t) ? lbl_8056283C : t;
     t = (t > lbl_80562838) ? t : lbl_80562838;
-    lerp.x = vel->x + t * (n.x - vel->x);
-    lerp.y = vel->y + t * (n.y - vel->y);
-    lerp.z = vel->z + t * (n.z - vel->z);
+    lerp.x = velocity[0] + t * (n.x - velocity[0]);
+    lerp.y = velocity[1] + t * (n.y - velocity[1]);
+    lerp.z = velocity[2] + t * (n.z - velocity[2]);
     Vec801BD_Copy(&n, &lerp);
     PSVECNormalize(&n, &n);
     Vec801BD_Copy(&dead1, &b);
-    lerp.x = tg->x + t * (b.x - tg->x);
-    lerp.y = tg->y + t * (b.y - tg->y);
-    lerp.z = tg->z + t * (b.z - tg->z);
+    lerp.x = target[0] + t * (b.x - target[0]);
+    lerp.y = target[1] + t * (b.y - target[1]);
+    lerp.z = target[2] + t * (b.z - target[2]);
     Vec801BD_Copy(&dead2, &lerp);
     Vec801BD_Copy(&dead3, &b);
     p = base + off;
@@ -482,7 +569,6 @@ void fn_801BEB44(int i, int j, float *target, float *velocity) {
     Vec801BD_Copy((Vec801BD *)(p + 0x110), &n);
     *(float *)(p + 0x11C) = *(float *)(p + 0x14);
 }
-
 extern float lbl_80562838;
 extern float lbl_8056283C;
 extern float lbl_805628A4;
