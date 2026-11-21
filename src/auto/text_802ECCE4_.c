@@ -114,8 +114,6 @@ s32 fn_802ECE48(char *movieName) {
 }
 #pragma dont_inline reset
 
-#pragma dont_inline reset
-
 #pragma dont_inline on
 /* Retire the current single movie: tail-call fn_802ECDF4 to pop the list head,
  * returning nonzero when a movie was removed. */
