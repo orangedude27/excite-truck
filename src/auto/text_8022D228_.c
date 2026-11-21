@@ -432,12 +432,14 @@ void fn_8022DD9C(void *gauge, int *valuePtrOut, int *typeOut) {
     *typeOut = 4;
 }
 
-void fn_8022DDB0(void *arg0) {
-    float *p = *(float **)((char *)arg0 + 0x18);
-    float step = *(float *)((char *)arg0 + 0x14);
-    float v = step * (float)(int)(0.5f + ((*p + step) / step));
-    float low = *(float *)((char *)arg0 + 0x10);
-    *p = (low < v) ? low : v;
+void fn_8022DDB0(void *gauge) {
+    /* Snap a float gauge's value up to a multiple of its step (rounding via
+     * 0.5), then clamp it so it does not exceed the gauge's maximum at +0x10. */
+    float *value = *(float **)((char *)gauge + 0x18);
+    float step = *(float *)((char *)gauge + 0x14);
+    float snapped = step * (float)(int)(0.5f + ((*value + step) / step));
+    float maxValue = *(float *)((char *)gauge + 0x10);
+    *value = (maxValue < snapped) ? maxValue : snapped;
 }
 #pragma push
 #pragma opt_propagation off
