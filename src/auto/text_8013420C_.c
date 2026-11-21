@@ -169,7 +169,7 @@ s32 fn_80134424(LoadPool *pool, s32 path, s32 dataTag, s32 outSize, s32 callback
 #pragma scheduling invalid_target
 /* Releases a load-pool slot by clearing its state, unless the slot is still
  * loading (state 1). Returns 1 on success, 0 if the load is in progress. */
-s32 fn_801345A4(Container *pool, s32 index) {
+s32 fn_801345A4(LoadPool *pool, s32 index) {
     if (pool->entries[index].state == 1) return 0;
     pool->entries[index].state = 0;
     return 1;
