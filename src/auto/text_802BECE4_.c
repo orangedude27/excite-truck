@@ -247,7 +247,8 @@ void fn_802BF160(void) {
         f0 = point[2];
         f1 = f1 + f0;
         f27 = (float)fn_8002EFB4((double)f1, lbl_80564DA0);
-        f2 = (float)cos((double)f27);
+        f1 = f27;
+        f2 = (float)cos((double)f1);
         f0 = point[0];
         f1 = f31 - f0;
         f0 = f2 - f30;
@@ -869,6 +870,8 @@ void fn_802C0054(void *dst, const void *src) {
 }
 
 void fn_802C00A0(void) {
+    /* Empty no-op: called as a hook to adjust the sun's view FOV (passed as a
+     * float*), but this build leaves the value untouched. */
 }
 
 extern void *fn_801284F8(int, const char *);
