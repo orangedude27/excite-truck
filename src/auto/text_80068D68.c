@@ -4496,23 +4496,25 @@ int fn_8006F284(s32 length) {
     return 0;
 }
 
-void uusb_CloseDeviceCB(s8 arg0) {
+void uusb_CloseDeviceCB(s8 status) {
+    /* Reset the UUSB control block and transport flags after a device close, then
+       notify the registered upper-layer callback with event 4 and the close status. */
     register s32 zero = 0;
 
-    *(s32 *)&lbl_803BD1E0 = zero;
-    ((u8 *)&lbl_803BD1E0)[0x10] = zero;
-    ((u8 *)&lbl_803BD1E0)[0x11] = zero;
-    ((u8 *)&lbl_803BD1E0)[0x12] = zero;
-    ((u8 *)&lbl_803BD1E0)[0x13] = zero;
-    lbl_8055DC50 = zero;
+    *(s32 *)&gUusbControl = zero;
+    ((u8 *)&gUusbControl)[0x10] = zero;
+    ((u8 *)&gUusbControl)[0x11] = zero;
+    ((u8 *)&gUusbControl)[0x12] = zero;
+    ((u8 *)&gUusbControl)[0x13] = zero;
+    gUusbDeviceOpen = zero;
     fn_8009B0E0();
     fn_8006EBAC();
-    ((u8 *)&lbl_803BD1E0)[0x28] = zero;
-    ((u8 *)&lbl_803BD1E0)[0x29] = 5;
-    lbl_8055DC51 = zero;
+    ((u8 *)&gUusbControl)[0x28] = zero;
+    ((u8 *)&gUusbControl)[0x29] = 5;
+    gUusbInitialized = zero;
     fn_8006EB88();
-    if (*(void (**)(s32, s8))((u8 *)&lbl_803BD1E0 + 0x20) != 0)
-        (*(void (**)(s32, s8))((u8 *)&lbl_803BD1E0 + 0x20))(4, arg0);
+    if (*(void (**)(s32, s8))((u8 *)&gUusbControl + 0x20) != 0)
+        (*(void (**)(s32, s8))((u8 *)&gUusbControl + 0x20))(4, status);
 }
 
 void uusb_ReadIntrDataCB(s32 length, BT_HDR *buf) {
