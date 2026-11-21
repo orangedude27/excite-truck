@@ -750,7 +750,7 @@ extern float lbl_80564070, lbl_80564074;
 extern int sprintf(char*, const char*, ...);
 extern char *strcpy(char*, const char*);
 #pragma push
-#pragma scheduling 604
+#pragma scheduling 603
 void fn_80277828(void) {
     register struct CameraEntry *entry;
     register int i;
