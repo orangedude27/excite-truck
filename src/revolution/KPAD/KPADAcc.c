@@ -1,15 +1,36 @@
 #include "src/review_kpad.h"
 #include "src/review___kpad.h"
 
-extern f64 fn_8002F234(f32);
+extern f64 fn_8002F234(f32); /* MSL sqrt(): the game's shared double-precision square root */
 extern void reset_kpad(KPADInsideStatus*);
+
 extern u16 lbl_80560BF4, lbl_80560BF6, lbl_80560BF8;
 extern u16 lbl_80560BFC, lbl_80560BFE, lbl_80560C00;
-/* Reuse REXE01 shared 1.0f/2.0f constants to avoid local pool growth. */
-extern f32 lbl_80560C04, lbl_80560C08, lbl_80560BD8, lbl_80560BE4, lbl_80560BF0;
+/* Reuse REXE01's shared constants (1.0f, 2.0f, 0.01f, 0.005f, ...) to avoid growing the literal pool. */
+extern f32 lbl_80560C04, lbl_80560C08, lbl_80560BE4, lbl_80560BF0;
 extern f32 lbl_80558EEC, lbl_80558EF0;
 extern f32 lbl_80558EA4, lbl_80558EAC, lbl_8055D994;
 extern u16 lbl_80558EB0;
+
+#define kp_sqrt fn_8002F234
+
+#define kp_core_gravity_x lbl_80560BF4 /* s16 256: default core 1G unit (1G == 256) */
+#define kp_core_gravity_y lbl_80560BF6
+#define kp_core_gravity_z lbl_80560BF8
+#define kp_fs_gravity_x lbl_80560BFC /* s16 256: default FS 1G unit */
+#define kp_fs_gravity_y lbl_80560BFE
+#define kp_fs_gravity_z lbl_80560C00
+
+#define kp_one_g lbl_80560BE4              /* f32 1.0: 1G scale numerator / full deflection */
+#define kp_two_g lbl_80560BF0              /* f32 2.0: accelerometer magnitude cutoff */
+#define kp_core_scale_default lbl_80560C04 /* f32 0.01: default core g-scale */
+#define kp_fs_scale_default lbl_80560C08   /* f32 0.005: default FS g-scale */
+#define kp_acc_horizon_pw lbl_80558EA4     /* f32 0.05: acc horizon filter power */
+#define kp_ah_circle_pw lbl_80558EAC       /* f32 0.06: horizon circle smoothing factor */
+#define kp_ah_circle_r2 lbl_8055D994       /* .sbss f32: squared "inside circle" radius */
+#define kp_ah_circle_ct lbl_80558EB0       /* u16 100: frames the horizon may sit in the circle */
+#define kp_rm_acc_max lbl_80558EEC         /* f32 3.4: core accelerometer clamp */
+#define kp_fs_acc_max lbl_80558EF0         /* f32 2.1: FS accelerometer clamp */
 
 static void calc_acc_horizon(KPADInsideStatus* kp, f32* acc, f32 acc2) {
     f32 f1, f2;
