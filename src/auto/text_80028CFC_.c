@@ -1,5 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+//
+// The game's MSL-style byte-string library: strcpy/strncpy/strcat/strncat,
+// strcmp/strncmp, and the search helpers strchr/strrchr/strstr.
 
 unsigned char *strcpy(unsigned char *dst, const unsigned char *src) {
     unsigned char *p = dst;
