@@ -24,10 +24,10 @@ void fn_802E3028(const char *fmt, va_list args, int prefix) {}
 #pragma scheduling invalid_target
 int fn_802E302C(void) {
     /* Opens the log file, writes a separator banner, the studio name, and another separator. */
-    lbl_8055D178 = fn_802E367C((int)&lbl_8055D180);
-    fn_802E30C8(lbl_8034CEF8);
-    fn_802E30C8(&lbl_8055D188, __AXGetStudio_8000D82C());
-    fn_802E30C8(lbl_8034CEF8);
+    sLogFileHandle = fn_802E367C((int)&sLogFileName);
+    fn_802E30C8(sSeparator);
+    fn_802E30C8(&sFmtPercentS, __AXGetStudio_8000D82C());
+    fn_802E30C8(sSeparator);
     return 1;
 }
 #pragma scheduling on
