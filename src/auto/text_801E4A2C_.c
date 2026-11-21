@@ -15,8 +15,8 @@ extern s32 lbl_8055AEF0;
 #define STR_PERCENT_S lbl_8055AEF0
 extern char *strncpy(char *, const char *, unsigned long);
 void fn_801E4A2C(s32 *fontObject) {
-    /* RealName: BitmapFont_Destroy -- destroy a bitmap font: release the STMP
-     * stamp resource held at +0x0, then free the font object itself. */
+    /* Destroy a bitmap font: release the STMP stamp resource held at +0x0,
+     * then free the font object itself (original name BitmapFont_Destroy). */
     if (fontObject != 0) {
         fn_802C4C80(*fontObject);
         fn_80128668(fontObject);
