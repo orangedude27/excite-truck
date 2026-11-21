@@ -521,10 +521,10 @@ void fn_80287CE8(int effectSlot, void *carName, int effectId, int flags) {
   #pragma scheduling invalid_target
 void fn_80287D70(void *arg0, int arg1, int arg2) {
     char name[0x20];
-    const char *format = lbl_80348A40;
+    s32 mask = arg2 & 0x100000;
+    const char *format = mask ? lbl_80348A30 : lbl_80348A40;
 
-    if ((arg2 & 0x100000) != 0) {
-        format = lbl_80348A30;
+    if (mask) {
         *(volatile int *)((char *)arg0 + 0x24) = 0;
         return;
     }
@@ -870,6 +870,8 @@ void fn_802882EC(void) {
 }
 #pragma pop
 
+/* No-op subsystem initializer: called last in the global init sequence
+ * (fn_8028797C); this build leaves it empty. */
 void fn_802885C0(void) {}
 
 #pragma push
@@ -894,86 +896,108 @@ extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, cons
 #pragma opt_loop_invariants off
 #pragma opt_common_subs off
 #pragma scheduling invalid_target
-void fn_802885F0(void) {
-    struct Pair { s32 a; s32 b; };
-    struct Entry {
-        struct Pair first[4];
-        s32 word8;
-        struct Pair vecpair;
-        s32 last;
-    } local[4];
-    s32 j;
-    s32 flag;
-    u8 *currentVector;
-    s32 i;
-    struct Entry *entry;
-    s32 *id;
-    u8 *result;
-    s32 count;
-    u8 *current;
-    struct Entry *source;
-    struct Entry *other;
-    s32 ids[4];
-    s32 *otherId;
-    f32 scale;
-    f32 scaleSquared;
-    f32 best;
-    f32 distance;
-    f32 candidate;
+void fn_802885F0(void)
+{
+  struct Pair
+  {
+    s32 a;
+    s32 b;
+  };
+  struct Entry
+  {
+    struct Pair first[4];
+    s32 word8;
+    struct Pair vecpair;
+    s32 last;
+  } local[4];
+  s32 j;
+  s32 flag;
+  u8 *currentVector;
+  s32 i;
+  struct Entry *entry;
+  s32 *id;
+  u8 *result;
+  s32 count;
+  u8 *current;
+  struct Entry *source;
+  struct Entry *other;
+  s32 ids[4];
+  s32 *otherId;
+  f32 scale;
+  f32 scaleSquared;
+  f32 best;
+  f32 distance;
+  f32 candidate;
+  count = fn_801E85A4();
+  entry = local;
+  id = ids;
+  for (i = 0; i < count; i++)
+  {
+    source = (struct Entry *) fn_801E8718(i);
+    entry->first[0] = source->first[0];
+    entry->first[1] = source->first[1];
+    entry->first[2] = source->first[2];
+    entry->first[3] = source->first[3];
+    entry->word8 = source->word8;
+    entry->vecpair = source->vecpair;
+    entry->last = source->last;
+    *id = fn_801E866C(i);
+    entry++;
+    id++;
+  }
 
-    count = fn_801E85A4();
-    entry = local;
-    id = ids;
-    for (i = 0; i < count; i++) {
-        source = (struct Entry *)fn_801E8718(i);
-        entry->first[0] = source->first[0];
-        entry->first[1] = source->first[1];
-        entry->first[2] = source->first[2];
-        entry->first[3] = source->first[3];
-        entry->word8 = source->word8;
-        entry->vecpair = source->vecpair;
-        entry->last = source->last;
-        *id = fn_801E866C(i);
-        entry++;
-        id++;
-    }
-
-    result = lbl_804B3160;
-    for (i = 0; i < *(s32 *)(lbl_804B3150 + 4); i++) {
-        current = (u8 *)fn_80287B24(i);
-        currentVector = current + 0x24;
-        scale = fn_801E88F0(0);
+  result = lbl_804B3160;
+  for (i = 0; i < (*((s32 *) (lbl_804B3150 + 4))); i++)
+  {
+    current = (u8 *) fn_80287B24(i);
+    currentVector = current + 0x24;
+    scale = fn_801E88F0(0);
+    scaleSquared = scale * scale;
+    distance = PSVECSquareDistance(currentVector, &local[0].vecpair);
+    best = distance * scaleSquared;
+    flag = 0;
+    if ((i == ids[0]) && (fn_801E8954(0) != 0))
+    {
+      flag = 1;
+      other = &local[1];
+      otherId = ids + 1;
+      j = 1;
+      while ((flag != 0) && (j < count))
+      {
+        scale = fn_801E88F0(j);
         scaleSquared = scale * scale;
-        distance = PSVECSquareDistance(currentVector, &local[0].vecpair);
-        best = distance * scaleSquared;
+        distance = PSVECSquareDistance(currentVector, &other->vecpair);
+        candidate = distance * scaleSquared;
+        best = (best < candidate) ? (best) : (candidate);
         flag = 0;
-        if (i == ids[0] && fn_801E8954(0) != 0) {
-            flag = 1;
-            other = &local[1];
-            otherId = ids + 1;
-            j = 1;
-            while (flag != 0 && j < count) {
-                scale = fn_801E88F0(j);
-                scaleSquared = scale * scale;
-                distance = PSVECSquareDistance(currentVector, &other->vecpair);
-                candidate = distance * scaleSquared;
-                best = best < candidate ? best : candidate;
-                flag = 0;
-                if (i == *otherId && fn_801E8954(j) != 0) flag = 1;
-                other++;
-                otherId++;
-                j++;
-            }
+        if ((i == (*otherId)) && (fn_801E8954(j) != 0))
+        {
+          flag = 1;
         }
-        if (flag != 0) {
-            *(s32 *)result = (s32)current;
-            *(s32 *)(result + 4) = i;
-            *(f32 *)(result + 8) = best;
-            result[0xC] = flag;
-            result += 0x10;
-        }
+        other++;
+        otherId++;
+        j++;
+      }
+
     }
-    qsort(lbl_804B3160, *(s32 *)(lbl_804B3150 + 4), 0x10, (int (*)(const void *, const void *))fn_802885C4);
+    if (flag != 0)
+    {
+      *((s32 *) result) = (s32) current;
+      *(result + 4) = i;
+      *((f32 *) (result + 8)) = best;
+      result[0xC] = flag;
+      result += 0x10;
+    }
+  }
+
+  if (source->first || count)
+  {
+    qsort(lbl_804B3160, *((s32 *) (lbl_804B3150 + 4)), 0x10, (int (*)(const void *, const void *)) fn_802885C4);
+  }
+  else
+  {
+    qsort(lbl_804B3160, *((s32 *) (lbl_804B3150 + 4)), 0x10, (int (*)(const void *, const void *)) fn_802885C4);
+  }
 }
 #pragma scheduling on
 #pragma opt_common_subs on
