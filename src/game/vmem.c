@@ -96,6 +96,8 @@ int fn_802E4D60(void *vmem, int offset) {
     return *(int *)((char *)vmem + 4) + offset;
 }
 
+/* Empty stub: vtable slot 0x14 of the VirtualMemory object (lbl_8034D1D0),
+   paired with the slot-0x18 stub fn_802E4D70. Does nothing. */
 void fn_802E4D6C(void) {
 }
 
