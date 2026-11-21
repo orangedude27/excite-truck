@@ -35,6 +35,9 @@ extern char lbl_804A15D0[];
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8055F5B8;
+/* No-op element constructor: fn_8002F53C calls it once per element while
+ * fn_80278168 builds the 0x48-byte record array at lbl_8049FD58+0x188; the
+ * elements need no per-element initialization. */
 void fn_8027820C(void) {}
 
 void fn_80278210(void) {}
