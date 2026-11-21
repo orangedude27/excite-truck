@@ -32,7 +32,7 @@ extern void *fn_801792F8(void);
   
   extern s32 fn_80128668(void);
   extern f32 lbl_805612F4;
-  extern f32 lbl_80561318;
+extern const f32 lbl_80561318;
   extern const char lbl_8032BD98[];
   extern s32 fn_802E317C(const char *, ...);
   
@@ -750,10 +750,9 @@ extern void fn_8018ADA4(void *, f32);
 #pragma peephole off
 #pragma scheduling invalid_target
 void fn_801351CC(void *arg0) {
-    f32 first = *(volatile f32 *)&lbl_80561318;
-    fn_8018ADBC(*(void **)((u8 *)arg0 + 8), first);
-    fn_8018ADB4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
-    fn_8018ADA4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
+    fn_8018ADBC(*(void **)((u8 *)arg0 + 8), 1.0f);
+    fn_8018ADB4(*(void **)((u8 *)arg0 + 8), 0.0f);
+    fn_8018ADA4(*(void **)((u8 *)arg0 + 8), 0.0f);
 }
 #pragma pop
 /* ParkDriver AIDriver virtual slot 8 (vtable offset 0x28) default implementation: a no-op, the
