@@ -3417,27 +3417,36 @@ void fn_80198530(void *arg0) {
 }
 
 #pragma opt_common_subs off
-void *fn_80198DD0(void *arg0, int arg1) {
-    int i;
-    void **items;
-    int n;
-    int cnt;
-    if (arg0 != 0) {
-        *(void **)arg0 = &lbl_80333390;
-        items = (void **)lbl_804349E0;
-        i = 0;
-        n = *(int *)((char *)lbl_804349E0 + 0x20);
-        for (; n > 0; n--, items++, i++) {
-            if (*items == arg0) {
-                cnt = *(int *)((char *)lbl_804349E0 + 0x20) - 1;
-                *(int *)((char *)lbl_804349E0 + 0x20) = cnt;
-                ((void **)lbl_804349E0)[i] = ((void **)lbl_804349E0)[cnt];
+/* Controller deleting destructor: restore the Controller vtable, unregister the
+ * object from the global controller list (moving the last entry into its slot),
+ * and free it when `deleteFlag` asks for deletion. */
+void *fn_80198DD0(void *controller, int deleteFlag) {
+    #define controllerVtable lbl_80333390  /* Controller vtable (slot 0 = this destructor) */
+    #define controllerList lbl_804349E0    /* Controllers { entries[8]; count; } */
+    #define MemFreeObject fn_80128668
+    int slot;
+    void **entry;
+    int remaining;
+    int lastSlot;
+    if (controller != 0) {
+        *(void **)controller = &controllerVtable;
+        entry = (void **)controllerList;
+        slot = 0;
+        remaining = *(int *)((char *)controllerList + 0x20);
+        for (; remaining > 0; remaining--, entry++, slot++) {
+            if (*entry == controller) {
+                lastSlot = *(int *)((char *)controllerList + 0x20) - 1;
+                *(int *)((char *)controllerList + 0x20) = lastSlot;
+                ((void **)controllerList)[slot] = ((void **)controllerList)[lastSlot];
                 break;
             }
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (deleteFlag > 0) MemFreeObject(controller);
     }
-    return arg0;
+    #undef controllerVtable
+    #undef controllerList
+    #undef MemFreeObject
+    return controller;
 }
 #pragma opt_common_subs reset
 /* If the racer registered at slotIndex is active, apply a random directional impulse to it. */
