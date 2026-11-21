@@ -2032,10 +2032,10 @@ done:
 #pragma scheduling on
 #pragma cplusplus on
 extern "C" s32 fn_80162FE8(const void *subTask) {
-    /* A cleared challenge draws results once its finish-delay timer passes:
-     * isCompleted() (vtable+0x28) is the cleared flag, +0x5B4 counts up each
-     * frame and is compared with the +0x5B8 delay threshold; otherwise the
-     * state flag at +8 decides. */
+    /* A finished challenge draws its results once the finish-delay timer passes.
+     * isCompleted() (vtable+0x28) reports the challenge is cleared; +0x5B4 then
+     * counts up each frame and is compared to the +0x5B8 delay threshold.  If it
+     * is not cleared yet the state flag at +8 decides instead. */
     class ChallengeSubTask {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
