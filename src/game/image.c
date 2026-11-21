@@ -21,10 +21,10 @@ extern unsigned char lbl_8055FC14;
 int fn_802C5130(char* imageName) {
     /* Get an image handle, but reject names longer than 15 characters (once). */
     if (strlen(imageName) > 15) {
-        if (lbl_8055FC14 == 0) {
+        if (WARNED_LONG_NAME == 0) {
             fn_802E30C8(lbl_8034B178, imageName);
         }
-        lbl_8055FC14 = 1;
+        WARNED_LONG_NAME = 1;
         return 0;
     }
     return fn_8023512C(imageName);
