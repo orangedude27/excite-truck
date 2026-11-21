@@ -467,11 +467,14 @@ s32 fn_80116E54(s32 (*callback)(s32), s32 arg) {
     return lbl_8055DECC != 0;
 }
 
-s8 *fn_80116EE4(s8 *arg0, s16 *arg1, u32 arg2) {
+/* Convert 16-bit PCM samples to 8-bit by keeping each sample's high byte.
+ * `byteCount` is the source size in bytes (two per sample); returns the
+ * advanced destination pointer. */
+s8 *fn_80116EE4(s8 *out, s16 *in, u32 byteCount) {
     s32 i;
-    u32 n = arg2 >> 1U;
-    s16 *src = arg1;
-    s8 *dst = arg0;
+    u32 n = byteCount >> 1U;
+    s16 *src = in;
+    s8 *dst = out;
     for (i = n; i != 0; i--) {
         *dst = (s8)(*src >> 8);
         src++;
@@ -1257,10 +1260,18 @@ extern void memset(void*, int, unsigned int);
 extern signed long lbl_8055DED4;
 #pragma use_lmw_stmw on
 signed long fn_801186B8(void* arg0) {
-    unsigned char* m = (unsigned char*)arg0;
+    signed long streamOff;
+    signed long n;
+    unsigned char* list;
+    signed long needClose;
+    signed long first;
+    signed long amount;
+    unsigned char* m;
     signed long tmp;
     signed long tmp2;
-    signed long needClose = 0;
+    signed long curTick;
+    m = (unsigned char*)arg0;
+    needClose = 0;
     if (m == 0) return 0;
     if (*(unsigned long*)(m + 0x2D4) == *(unsigned long*)(m + 0xC)) return 0;
     if (*(signed long*)(m + 0x2DC) != 0) {
@@ -1281,11 +1292,10 @@ signed long fn_801186B8(void* arg0) {
     *(signed long*)(m + 0x2F8) = 0;
     *(signed long*)(m + 0x11C) = 1;
     {
-        signed long curTick = fn_80116D30();
-        signed long prev = *(signed long*)(m + 0x2B0);
-        unsigned char* list;
+        curTick = fn_80116D30();
+        n = *(signed long*)(m + 0x2B0);
         *(signed long*)(m + 0x260) = curTick;
-        tmp = prev - 1;
+        tmp = n - 1;
         *(signed long*)(m + 0x2B0) = tmp;
         if (tmp < 0) *(signed long*)(m + 0x2B0) = *(signed long*)(m + 0x2AC) - 1;
         *(signed long*)(*(signed long*)(m + 0x2B4) + *(signed long*)(m + 0x2B0) * 4) = *(signed long*)(m + 0x260);
@@ -1297,7 +1307,7 @@ signed long fn_801186B8(void* arg0) {
         *(signed long*)(*(signed long*)(m + 0x2CC) + *(signed long*)(m + 0x2B0) * 4) = *(signed long*)(m + 0x12C);
         if (*(signed long*)(m + 0x25C) == 0) {
             signed long d = fn_80116BD4(0x3E8, *(signed long*)(m + 0x2A8), *(signed long*)(m + 0x2A4));
-            *(signed long*)(*(signed long*)(m + 0x2B4) + prev * 4) = *(signed long*)(m + 0x260) - d;
+            *(signed long*)(*(signed long*)(m + 0x2B4) + n * 4) = *(signed long*)(m + 0x260) - d;
             *(signed long*)(m + 0x12C) = 0;
             *(signed long*)(m + 0x25C) = *(signed long*)(m + 0x260);
             *(signed long*)(m + 0x128) = 0;
@@ -1308,7 +1318,6 @@ signed long fn_801186B8(void* arg0) {
         if (*(signed long*)(m + 0x110) != 0) *(signed long*)(m + 0x1C) = 1;
         if (*(signed long*)(m + 0x1C) != 0) return 1;
         {
-            signed long n = 0;
             list = *(unsigned char**)(m + 0xE4);
             for (n = 0; n < *(signed long*)(m + 0xD0); n++) {
                 signed long found = -1;
@@ -1316,7 +1325,7 @@ signed long fn_801186B8(void* arg0) {
                 signed long c = *(signed long*)(m + 0x2E8);
                 signed long w = 0;
                 unsigned char* p = list + 4;
-                signed long first = *(signed long*)list;
+                first = *(signed long*)list;
                 for (j = 0; j < c; j++) {
                     signed long vv = *(signed long*)(*(signed long*)(m + 0x244) + w);
                     if (vv == n) break;
@@ -1325,9 +1334,9 @@ signed long fn_801186B8(void* arg0) {
                 if (j < c) found = j;
                 else found = -1;
                 if (found != -1 && first != 0) {
-                    signed long streamOff = found * 0x17C;
                     void* dst = p + 4;
-                    signed long amount = *(signed long*)p;
+                    streamOff = found * 0x17C;
+                    amount = *(signed long*)p;
                     if (needClose == 0) { needClose = 1; fn_8011C274(lbl_8055DED4, m + 0x340); }
                     while (amount != 0) {
                         signed long spC;
@@ -1373,7 +1382,8 @@ signed long fn_801186B8(void* arg0) {
             if (needClose != 0) fn_8011C2EC(lbl_8055DED4, m + 0x340);
         }
         {
-            signed long t = fn_80116D30();
+            signed long t;
+            t = fn_80116D30();
             if (*(signed long*)(m + 0x28C) != 0 && *(signed long*)(m + 0xB8) != 0) {
                 if (*(signed long*)(m + 0x2F4) == 0) memset((void*)(*(signed long*)(m + 0xBC)), 0, *(unsigned long*)(m + 0xC4));
                 if (*(signed long*)(m + 0xE8) == 0 && *(signed long*)(m + 0x114) == 0) {
@@ -1393,8 +1403,10 @@ signed long fn_801186B8(void* arg0) {
             *(signed long*)(m + 0x258) = tmp2 + 1;
             fn_80117330(m);
             {
-                signed long t2 = fn_80116D30();
-                signed long c = *(signed long*)(m + 0xC);
+                signed long t2;
+                signed long c;
+                t2 = fn_80116D30();
+                c = *(signed long*)(m + 0xC);
                 *(signed long*)(m + 0x264) = t2;
                 *(signed long*)(m + 0x298) = *(signed long*)(m + 0x298) + (t - *(signed long*)(m + 0x260));
                 *(signed long*)(m + 0x294) = *(signed long*)(m + 0x294) + (t2 - t);
@@ -2395,6 +2407,7 @@ s32 fn_80119DD0(void *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5) 
     u32 count, rate, frames, i, loopSample, loopBuffer;
     u32 *buffer;
     struct { s16 config[7]; u8 pad[2]; u8 work[0x28]; volatile u8 reserve[8]; } scratch;
+
     if (!lbl_8055DEE0) return 0;
     memset(arg0, 0, 0x17C);
     *(u32 *)(ctx + 0x5C) = 0;
@@ -2411,7 +2424,7 @@ s32 fn_80119DD0(void *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5) 
         }
     }
     *(volatile u32 *)(ctx + 0xD0) = 0x21C;
-    count = *(u32 *)(ctx + 0x78) * (*(u32 *)(ctx + 0x70) * 2);
+    count = (*(u32 *)(ctx + 0x70) * 2) * *(u32 *)(ctx + 0x78);
     *(volatile u32 *)(ctx + 0xA0) = sampleRate;
     *(volatile u32 *)(ctx + 0x68) = 0;
     frames = ((count * 0x258) / 1000 + 0x3FF) & ~0x3FF;
@@ -3164,7 +3177,7 @@ void fn_8011AF94(f32 *arg0, s32 arg1, void *arg2, f32 *arg3, s32 arg4) {
     u32 var_r4_3;
     u32 var_r3;
 
-    var_f29 = lbl_805611E0;
+    var_f29 = 0.0f;
     var_f28 = var_f29;
     var_r26 = ((BitReader8011 *)arg2)->next;
     var_r25 = ((BitReader8011 *)arg2)->value;
@@ -3183,7 +3196,7 @@ init_test:
     var_r0 = (u32)*var_r5 << 1;
     if (var_r0 < 2U) goto init_body;
 
-    temp_f31 = lbl_805611E0;
+    temp_f31 = 0.0f;
     var_r27 = (f32 *)((u8 *)arg0 + 8);
     var_r3 = 2U;
     goto outer_test;
@@ -5815,12 +5828,12 @@ void fn_80121400(s32 n, s32 *map, f32 *data) {
             j1 = 2 * k + ip[k];
             j2 = j1 + m2;
             j3 = j2 + m2;
+            j3 += m2;
             a[j1 + 1] = -a[j1 + 1];
             xr = a[j2]; xi = -a[j2 + 1];
-            yr = a[j3]; yi = -a[j3 + 1];
+            yr = a[j3 - m2]; yi = -a[j3 - m2 + 1];
             a[j2] = yr; a[j2 + 1] = yi;
-            a[j3] = xr; a[j3 + 1] = xi;
-            j3 += m2;
+            a[j3 - m2] = xr; a[j3 - m2 + 1] = xi;
             a[j3 + 1] = -a[j3 + 1];
         }
     } else {
