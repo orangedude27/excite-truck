@@ -101,7 +101,7 @@ int *fn_8012A2D8(void *arg0) {
     int *temp_r3;
     if (temp_r31 == 0) {
         if (*((u8 *)arg0 + 4) != 0) {
-            fn_802E317C((int *)&lbl_8032A5FC, *(int *)((char *)arg0 + 8));
+            fn_802E317C((int *)&sPanicPoolEmpty, *(int *)((char *)arg0 + 8));
         } else {
             return 0;
         }
