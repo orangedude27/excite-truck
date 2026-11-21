@@ -6283,8 +6283,11 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
     void *page;
     u32 maxCluster;
     u32 cluster;
+    s32 index;
     s32 result;
     s32 savedResult;
+    void *buffer;
+    u8 *bufferData;
 
     typeEntry = lbl_802EEF40 + *(s32 *)((u8 *)context + 0x1C) * 5;
     *arg3 = -1;
@@ -6348,7 +6351,7 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
     arg2 = (u32)page;
     arg0 = *(void **)((u8 *)arg2 + 0x18);
     savedResult = 0;
-    for (cluster = 0; (u16)cluster < *(u8 *)((u8 *)context + 0x22); cluster++) {
+    for (index = 0; (u16)index < *(u8 *)((u8 *)context + 0x22); index++) {
         result = fn_800B5618(context, *(void **)((u8 *)arg2 + 8),
                              (u32)arg0, 0, *(u16 *)context);
         if (result != 0 && savedResult == 0) savedResult = result;
@@ -21002,8 +21005,10 @@ extern "C" void *fn_800D19F8(void *self, s32 shouldDelete) {
     return self;
 }
 
-extern "C" void Start__Q210homebutton9RemoteSpkFv(void *this_ptr) {
-    register u8 *self = (u8 *)this_ptr;
+/* Start the remote-speaker updater: once the speaker object is initialized, create its
+ * periodic alarm and schedule the ~150 Hz stream callback fn_800D16C4. */
+extern "C" void Start__Q210homebutton9RemoteSpkFv(void *remoteSpk) {
+    register u8 *self = (u8 *)remoteSpk;
     if (self[0x1EC] != 0) {
         OSCreateAlarm((OSAlarm *)(self + 0x1A0));
         OSSetPeriodicAlarm((OSAlarm *)(self + 0x1A0), OSGetTime(), OS_NSEC_TO_TICKS(6666667),
