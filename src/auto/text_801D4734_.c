@@ -4011,6 +4011,7 @@ void fn_801D8B54(void) {
 }
 
 void fn_801D8B58(void) {
+    /* No-op: returns immediately without doing anything. */
 }
 
 void fn_801D8B5C(void) {
