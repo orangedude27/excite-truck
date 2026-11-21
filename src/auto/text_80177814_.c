@@ -608,26 +608,28 @@ int fn_801784AC(void *start, void *end, void *outHit, int flags, void *outValue,
 
 extern float lbl_80561B64;
 #pragma scheduling invalid_target
-s32 fn_801784DC(const Vec *arg0, f32 *arg1, Vec *arg2, s32 *arg3, s32 arg4) {
-    Vec start;
-    Vec hit;
-    Vec normal;
-    s32 value;
-    s32 other;
-    f32 sy = arg0->y - 1000.0f;
-    f32 sz = arg0->z;
-    start.z = sz;
-    start.x = arg0->x;
-    start.y = sy;
-    if (((s32 (*)(Vec *, Vec *, Vec *, Vec *, s32 *, s32 *, s32))fn_801784AC)((Vec *)arg0, &start, &hit, &normal, &value, &other, arg4)) {
-        *arg1 = hit.y;
-        if ((u32)arg2 != 0) {
-            arg2->x = normal.x;
-            arg2->y = normal.y;
-            arg2->z = normal.z;
+s32 fn_801784DC(const Vec *position, f32 *outHeight, Vec *outNormal, s32 *outValue, s32 filter) {
+    /* Cast a ray straight down from a world position to the ground 1000 units below;
+       on a hit, return the ground height and optionally the surface normal and value. */
+    Vec rayEnd;
+    Vec hitPos;
+    Vec hitNormal;
+    s32 surfaceValue;
+    s32 hitObject;
+    f32 endY = position->y - 1000.0f;
+    f32 endZ = position->z;
+    rayEnd.z = endZ;
+    rayEnd.x = position->x;
+    rayEnd.y = endY;
+    if (((s32 (*)(Vec *, Vec *, Vec *, Vec *, s32 *, s32 *, s32))fn_801784AC)((Vec *)position, &rayEnd, &hitPos, &hitNormal, &surfaceValue, &hitObject, filter)) {
+        *outHeight = hitPos.y;
+        if ((u32)outNormal != 0) {
+            outNormal->x = hitNormal.x;
+            outNormal->y = hitNormal.y;
+            outNormal->z = hitNormal.z;
         }
-        if (arg3 != 0) {
-            *arg3 = value;
+        if (outValue != 0) {
+            *outValue = surfaceValue;
         }
         return 1;
     }
