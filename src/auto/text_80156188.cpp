@@ -590,6 +590,7 @@ extern "C" void fn_80156B48(void) {
 extern "C" void fn_80156B4C(void) {
 }
 
+/* No-op virtual method in the PSSystem::SeqHeap vtable family; its empty body simply returns. */
 extern "C" void fn_80156B50(void) {
 }
 
