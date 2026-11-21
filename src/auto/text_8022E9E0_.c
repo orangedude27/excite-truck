@@ -1,28 +1,30 @@
 #include <types.h>
 
-extern s32 lbl_8055EFF4;
-extern void **lbl_8055EFF8;
-extern s32 lbl_8055EFFC;
-extern void **lbl_8055F000;
-extern char lbl_80340280[];
-extern char lbl_80340290[];
-extern void *fn_801284F8(u32, void *);
-extern void *fn_8012A13C(void *, void *, u32, u32);
-extern void *fn_8012A2D8(void **);
-extern void fn_8012A364(void **, void *);
+extern s32 lbl_8055EFF4;  /* cnodes handed out */
+extern void **lbl_8055EFF8; /* the "cnode::pool" ObjectPool */
+extern s32 lbl_8055EFFC;  /* UIContexts handed out */
+extern void **lbl_8055F000; /* the "UIContext::pool" ObjectPool */
+extern s32 lbl_8055F004;  /* head/tail record of the UI-context list */
+extern s32 lbl_8055B980;  /* "cnode" heap tag */
+extern char lbl_80340280[]; /* "cnode::pool" */
+extern char lbl_80340290[]; /* "UIContext::pool" */
+extern char lbl_803402A0[]; /* "UIContextBegin called twice! UIC" */
+extern char lbl_803402F4[]; /* "UIContextTracker" */
+extern char lbl_80340308[]; /* "UIcontext: Some contexts not pop..." */
+extern char lbl_80340344[]; /* "UIContext" */
+extern f32 lbl_805635E0;  /* 1.0f */
+extern f32 lbl_805635E4;
+extern void *fn_801284F8(u32, void *); /* named-heap allocation */
+extern void *fn_8012A13C(void *, void *, u32, u32); /* build an ObjectPool */
+extern void *fn_8012A2D8(void **);     /* pop an element from a pool */
+extern void fn_8012A364(void **, void *); /* push an element back onto a pool */
 extern void fn_8012A570(u32, void *);
 extern void fn_8012A5E8(void *);
-extern s32 lbl_8055F004;
-extern char lbl_803402A0[];
-extern char lbl_80340344[];
-extern char lbl_803402F4[];
-extern char lbl_80340308[];
 extern void fn_802E317C(const char *);
 extern void fn_802E30C8(char *);
 extern void fn_8022ED50(s32);
-extern f32 lbl_805635E0;
-extern f32 lbl_805635E4;
-extern void fn_80128668(void *);
+extern f32 fn_80144514(f32, f32, f32, f32, f32, f32); /* matrix multiply-accumulate */
+extern void fn_80128668(void *);  /* free */
 extern void *fn_8022EC7C(void);
 extern void *fn_8022ECC0(s32);
 
