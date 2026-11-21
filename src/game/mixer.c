@@ -106,22 +106,25 @@ void fn_80208A78(void) {
 
 #pragma pop
 
-void fn_80208AC8(int arg0, int arg1) {
-    float value = 1.0f;
-    switch (arg1) {
+/* Identity-event callback: keeps the player-specific "player_sfx_vol" setting in sync
+ * with the global "effects_volume".  Event 0 resets effects volume to the default,
+ * event 3 loads the player's value into effects, events 1/2 copy effects back to the player. */
+void fn_80208AC8(int playerSlot, int event) {
+    float volume = 1.0f;
+    switch (event) {
     case 3:
-        fn_801331C4(arg0 + 12, lbl_8033BF08, &value);
-        fn_8013323C(4, lbl_8033BEF8, value);
-        fn_80209030(value);
+        fn_801331C4(playerSlot + 12, lbl_8033BF08, &volume);
+        fn_8013323C(4, lbl_8033BEF8, volume);
+        fn_80209030(volume);
         break;
     case 1:
     case 2:
-        fn_801331C4(4, lbl_8033BEF8, &value);
-        fn_8013323C(arg0 + 12, lbl_8033BF08, value);
+        fn_801331C4(4, lbl_8033BEF8, &volume);
+        fn_8013323C(playerSlot + 12, lbl_8033BF08, volume);
         break;
     case 0:
-        fn_8013323C(4, lbl_8033BEF8, value);
-        fn_80209030(value);
+        fn_8013323C(4, lbl_8033BEF8, volume);
+        fn_80209030(volume);
         break;
     }
 }
