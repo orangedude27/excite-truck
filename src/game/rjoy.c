@@ -686,7 +686,10 @@ void fn_802E8528(int controllerIndex, float level, float unused) {
 #undef gWiimoteStateTable
 }
 #pragma pop
-void fn_802E85A8(void) {}
+/* No-op rjoy stub: would apply the second set of rumble/audio parameters
+ * (controller id, two scaled levels and a base level) sent from fn_8017F628;
+ * this build leaves it empty. */
+void fn_802E85A8(int controllerId, float levelA, float levelB, float baseLevel) {}
 
 /* No-op rjoy stub: would apply rumble/audio parameters (controller id, two
  * scaled levels and a base level) sent from fn_8017F628; this build leaves it empty. */
