@@ -1602,6 +1602,8 @@ void fn_802D0914(int arg0, short arg1, short arg2) {
     buffer[15] = arg2;
     fn_802E3A64(first, buffer, 0x12, b13, b11, b9, 0x18, 2);
 }
+/* No-op hook in the tiled movie renderer (fn_802D09E8): called when its tile
+   counter has been reset to -1 (movie playback stopped); nothing to clean up. */
 void fn_802D09E4(void) {
 }
 
