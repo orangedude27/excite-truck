@@ -1945,6 +1945,8 @@ int fn_802916DC(void) { return 0; }
  * before the object is optionally freed. */
 void fn_802916E4(void) {}
 
+/* No-op virtual method in the nw4r::ef dispatch table (compiles to a bare
+   return); fn_80291700 is the thin derived override that forwards to it. */
 void fn_802916E8(void) {}
 
 void fn_802916EC(void) {}
