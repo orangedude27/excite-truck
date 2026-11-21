@@ -171,7 +171,7 @@ if ((u32)sp8 == (u32)((char *)arg4 + 0x34)) {
 float x0 = arg0[0], x1 = arg0[1], x2 = arg0[2];
 float x3 = arg0[3], x4 = arg0[4], x5 = arg0[5];
 float x6 = arg0[6], x7 = arg0[7], x8 = arg0[8];
-register float a = arg4[13], b = arg4[14], c = arg4[15];
+float a = arg4[13], b = arg4[14], c = arg4[15];
 sp8[0] = a * x0 + b * x3 + c * x6;
 sp8[1] = a * x1 + b * x4 + c * x7;
 sp8[2] = a * x2 + b * x5 + c * x8;
@@ -261,7 +261,7 @@ arg0[8] *= scale;
 #pragma cplusplus on
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern "C" void *fn_802BC9B0(void *arg0, int arg1, float scale) {
+extern "C" void *fn_802BC9B0(const void *arg0, int arg1, float scale) {
     class Dummy {
     public:
         virtual void m0() = 0;
@@ -284,8 +284,11 @@ extern "C" void *fn_802BC9B0(void *arg0, int arg1, float scale) {
     extern float lbl_80564D20;
     extern int lbl_8034AB54[], lbl_80333918[];
     float value = 50000.0f;
-    float b = *(float *)((char *)arg0 + 0x1C) * scale;
-    float a = *(float *)((char *)arg0 + 0x18) * scale;
+    float aInput, bInput;
+    bInput = *(const float *)((const char *)arg0 + 0x1C);
+    aInput = *(const float *)((const char *)arg0 + 0x18);
+    float b = bInput * scale;
+    float a = aInput * scale;
     char *obj = (char *)fn_801284F8(0x2C, (int)&lbl_8034AB54);
     if (obj != 0) {
         *(int *)(obj + 0xC) = 0;
@@ -704,57 +707,67 @@ void fn_802BD414(int arg0, volatile int *arg1)
     }
 }
 #pragma scheduling on
+#pragma peephole off
 void fn_802BD478(int arg0, volatile int *arg1)
 {
   volatile int *result = (volatile int *) fn_801284F8(0xC, arg0);
   if (result != 0)
   {
-    int first = arg1[0];
-    result[0] = arg1[1];
+    int first = (int)arg1[0];
+    result[0] = (int)arg1[1];
     result[2] = first;
     result[1] = 0;
-    result[1] = result[1] + arg1[0];
+    result[1] = (int)(result[1] + arg1[0]);
   }
-  return;
 }
-void fn_802BD4DC(void *arg0, int arg1) {
+#pragma peephole reset
+#pragma scheduling reset
+void fn_802BD4DC(void *data, int dataBase) {
     extern void fn_802BD69C(void *, int);
     extern void fn_802BD5B0(void *, int);
-    unsigned char *p = arg0;
+#define SwapTreeFrameList fn_802BD69C
+#define SwapTreeNearList  fn_802BD5B0
+#define RelocateOffset    fn_802BD5A8
+    /* Byte-swap the loaded "treelist.trl" TLST block in place and relocate its
+       offsets: convert the header and each tree entry's frame list (+0x20) and
+       near lists (+0x28/+0x30) from big-endian, then add `dataBase` to every
+       stored offset to turn it into a real pointer. */
+    unsigned char *bytes = data;
+    struct TreeList *list = data;
     char *entry;
     int offset;
-    unsigned int i;
+    unsigned int index;
     unsigned char b7, b2, b3, b0, b1, b4, b5;
-    b4 = p[4]; b5 = p[5];
-    b7 = p[7];
-    p[4] = b7; b0 = p[0]; b3 = p[3]; p[7] = b4;
-    b1 = p[1]; b2 = p[2]; p[5] = p[6]; p[6] = b5;
-    p[0] = b3; p[3] = b0; p[1] = b2; p[2] = b1;
-    *(int *)(p + 4) = fn_802BD5A8(*(int *)(p + 4), arg1);
-    i = 0;
+    b4 = bytes[4]; b5 = bytes[5];
+    b7 = bytes[7];
+    bytes[4] = b7; b0 = bytes[0]; b3 = bytes[3]; bytes[7] = b4;
+    b1 = bytes[1]; b2 = bytes[2]; bytes[5] = bytes[6]; bytes[6] = b5;
+    bytes[0] = b3; bytes[3] = b0; bytes[1] = b2; bytes[2] = b1;
+    *(int *)(bytes + 4) = RelocateOffset(*(int *)(bytes + 4), dataBase);
+    index = 0;
     offset = 0;
-    while (i < *(unsigned int *)p) {
-        entry = *(char **)(p + 4) + offset;
-        fn_802BD69C(entry + 0x20, arg1);
-        fn_802BD5B0(entry + 0x28, arg1);
-        fn_802BD5B0(entry + 0x30, arg1);
-        offset += 0x38;
-        i++;
+    while (index < list->entryCount) {
+        entry = list->entries + offset;
+        SwapTreeFrameList(entry + 0x20, dataBase);
+        SwapTreeNearList(entry + 0x28, dataBase);
+        SwapTreeNearList(entry + 0x30, dataBase);
+        offset += TREE_ENTRY_SIZE;
+        index++;
     }
+#undef SwapTreeFrameList
+#undef SwapTreeNearList
+#undef RelocateOffset
 }
 #pragma pop
 
 /* Return the sum of two integers (used to advance a stored value by a delta). */
 int fn_802BD5A8(int value, int delta) { return value + delta; }
 
-#pragma push
-#pragma inline_depth(0)
-#pragma use_lmw_stmw off
-void fn_802BD5B0(void *arg0, int arg1) {
+#pragma cplusplus on
+extern "C" void fn_802BD5B0(void *arg0, int arg1) {
     extern int fn_802BD694(int, int);
     extern float lbl_80564D30;
-    unsigned char *p = arg0;
-    register unsigned char tmp;
+    unsigned char *p = (unsigned char *)arg0;
     register unsigned char *entry;
     int offset;
     unsigned int i;
@@ -768,6 +781,7 @@ void fn_802BD5B0(void *arg0, int arg1) {
     *(int *)(p + 4) = fn_802BD694(*(int *)(p + 4), arg1);
     i = 0; zero = -1.0f; offset = 0;
     while (i < *(unsigned int *)p) {
+        unsigned char tmp;
         entry = *(unsigned char **)(p + 4) + offset;
         tmp = entry[4]; entry[4] = entry[5]; entry[5] = tmp;
         tmp = entry[6]; entry[6] = entry[7]; entry[7] = tmp;
@@ -777,7 +791,7 @@ void fn_802BD5B0(void *arg0, int arg1) {
         offset += 0x10; i++;
     }
 }
-#pragma pop
+#pragma cplusplus reset
 
 /* Return the sum of two integers (used to advance a stored value by a delta). */
 int fn_802BD694(int value, int delta) { return value + delta; }
@@ -1354,9 +1368,7 @@ extern float lbl_80564D10, lbl_80564D2C;
 #pragma use_lmw_stmw off
 void fn_802BE07C(void *arg0, float (*arg1)(int, int, int, short, float, float, float)) {
     float worldZ, worldX, scale, weight;
-    register float normZ;
-    register float normX;
-    int coordX, coordZ, baseX, baseZ;
+    int baseX, baseZ;
     int zCell, xCell, zOffset, xOffset;
     void *cell, *node, *obj, *map, *mesh;
     short ix, iz;
@@ -1365,13 +1377,9 @@ void fn_802BE07C(void *arg0, float (*arg1)(int, int, int, short, float, float, f
     scale = lbl_80564D10;
     xOffset = -0x80;
     worldZ = *(volatile float *)((char *)arg0 + 8);
-    normX = worldX / scale;
+    baseX = (short)(((short)(int)(worldX / scale)) / 0x80 * 0x80 + 0x40);
     weight = lbl_80564D2C;
-    normZ = worldZ / scale;
-    coordZ = (short)(int)normZ;
-    coordX = (short)(int)normX;
-    baseZ = (short)((coordZ / 0x80) * 0x80 + 0x40);
-    baseX = (short)((coordX / 0x80) * 0x80 + 0x40);
+    baseZ = (short)(((short)(int)(worldZ / scale)) / 0x80 * 0x80 + 0x40);
     for (xCell = baseX - 0x80; xOffset <= 0x80; xOffset += 0x80, xCell += 0x80) {
         for (zOffset = -0x80, zCell = baseZ - 0x80; zOffset <= 0x80; zOffset += 0x80, zCell += 0x80) {
             cell = fn_802BE844((short)xCell, (short)zCell, 0x40);
@@ -1385,7 +1393,7 @@ void fn_802BE07C(void *arg0, float (*arg1)(int, int, int, short, float, float, f
                     iz = *(short *)((char *)node + 8);
                     dx = *(float *)((char *)mesh + 0x30) - *(float *)((char *)mesh + 0x2C);
                     dz = *(float *)((char *)mesh + 0x38) - *(float *)((char *)mesh + 0x34);
-                    arg1(*(int *)((char *)obj + 0x20), *(int *)*(void **)map + ix * 0x44 + 0x30, 0x44, iz, dx * weight, dz, dx);
+                    arg1(*(int *)((char *)obj + 0x20), ix * 0x44 + *(int *)*(void **)map + 0x30, 0x44, iz, dx * weight, dz, dx);
                 }
                 node = *(void **)node;
             }
