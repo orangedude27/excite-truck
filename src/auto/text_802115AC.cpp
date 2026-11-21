@@ -301,8 +301,8 @@ extern "C" void fn_80211690(s32 arg0) {
     char buf38[0x20];
     char buf18[0x20];
     s32 sp8;
-    s32 notZero;
     s32 isZero;
+    s32 notZero;
     s32 i, j;
     Ent18 *e;
     const char *r25;
@@ -402,7 +402,7 @@ extern "C" void fn_80211690(s32 arg0) {
         e[0].name = base + 0x228; e[0].f = lbl_80563438; memset(e[0].v, 0, 0x10);
         e[2].name = s;            e[2].f = lbl_80563438; memset(e[2].v, 0, 0x10);
         e[3].name = s;            e[3].f = lbl_80563438; memset(e[3].v, 0, 0x10);
-        e[1].name = s;            e[1].f = lbl_8056343C; memset(e[1].v, 0, 0x10);
+        e[1].name = s;            e[1].f = lbl_80563438; memset(e[1].v, 0, 0x10);
         e[4].name = base + 0x248; e[4].f = lbl_80563438; memset(e[4].v, 0, 0x10);
         e[5].name = 0;            e[5].f = lbl_80563438; memset(e[5].v, 0, 0x10);
         e[6].name = base + 0x258; e[6].f = lbl_80563438; memset(e[6].v, 0, 0x10);
@@ -422,14 +422,13 @@ extern "C" void fn_80211690(s32 arg0) {
         const char *src = lbl_8055B6B0;
         char *dst = (char *)lbl_8033CAE8;
         s32 n = 0x64;
-        char c;
-        do {
-            c = *src++;
+        while (1) {
+            char c = *src++;
             *dst++ = c;
-            if (c == 0)
-                break;
-        } while (--n > 0);
-        dst[-1] = 0;
+            if (c != 0) {
+                if (--n <= 0) { dst[-1] = 0; break; }
+            } else break;
+        }
     }
     r25 = lbl_8055B718;
     if (isZero != 0) r25 = base + 0x280;
@@ -666,21 +665,20 @@ extern "C" int stricmp(const char *, const char *);
 #pragma small_data on
 #pragma small_data off
 extern "C" void *fn_8021227C(void *arg0, char *arg1, s32 arg2) {
-    register s32 id = arg2;
-    register char *name = arg1;
-    register void *entry = arg0;
     char buf[0x100];
-    if (name[0] == '#') {
-        name = name + 1;
-    }
-    sprintf(buf, lbl_8055B750, name);
+    char *tmp = arg1;
+    if (tmp[0] == '#')
+        tmp = tmp + 1;
+    sprintf(buf, lbl_8055B750, tmp);
+    register void *entry = arg0;
+    register char *name = tmp;
+    register s32 id = arg2;
     while (*(s32 *)((char *)entry + 4) != 0x7B) {
         if (*(s32 *)((char *)entry + 4) == id &&
             *(char **)entry != 0 &&
             (stricmp(*(char **)entry, name) == 0 ||
-             stricmp(*(char **)entry, buf) == 0)) {
+             stricmp(*(char **)entry, buf) == 0))
             return entry;
-        }
         entry = (char *)entry + 0x14;
     }
     return 0;
@@ -1477,21 +1475,20 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
 #pragma dont_inline on
 #pragma small_data on
 void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    void *head = *(void **)((u8 *)arg1 + 4);
+    register void *head = *(void **)((u8 *)arg1 + 4);
     register u8 *base = lbl_8033CAE8;
-    void *node;
+    register void *node;
+    register s32 v28;
+    register s32 v27;
     void *top;
     u8 *it;
-    s32 v28;
-    s32 v27;
     s32 flag28;
     void *out;
     if (*(void **)arg1 != NULL) {
         if (fn_80211678((u8 *)*(void **)arg1) != 0) {
-            node = fn_8022E4C0(arg1);
-        } else {
-            node = fn_8022E0EC(*(void **)arg1);
+            fn_8022E4C0(arg1);
         }
+        node = fn_8022E0EC(*(void **)arg1);
         *(void **)((u8 *)arg1 + 0xC) = node;
         lbl_8055EF44 = *(void **)arg1;
     }
@@ -1539,17 +1536,19 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
     }
     *arg0 = out;
     {
-        u8 *p = *(u8 **)((u8 *)node + 0x64);
-        while (*(s32 *)p != 0)
-            p = p + 0x134;
+        union PU { u32 i; u8 *p; } pu;
+        pu.i = (u32)*(u8 **)((u8 *)node + 0x64);
+        while (*(s32 *)pu.p != 0)
+            pu.i += 0x134;
     }
     if ((s8)((u8 *)node)[0x24] != 0) {
         top = fn_8022E0EC((const void *)(base + 0x6d0));
         *(void **)((u8 *)arg1 + 0x10) = top;
         {
-            u8 *p = *(u8 **)((u8 *)top + 0x64);
-            while (*(s32 *)p != 0)
-                p = p + 0x134;
+            union PU { u32 i; u8 *p; } pu;
+            pu.i = (u32)*(u8 **)((u8 *)top + 0x64);
+            while (*(s32 *)pu.p != 0)
+                pu.i += 0x134;
         }
     }
     {
@@ -1583,18 +1582,20 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
     }
     if ((s8)((u8 *)node)[0x24] != 0) {
         void *top2 = *(void **)((u8 *)arg1 + 0x10);
-        it = *(u8 **)((u8 *)top2 + 0x64);
+        union PU { u32 i; u8 *p; } pu;
+        pu.i = (u32)*(u8 **)((u8 *)top2 + 0x64);
         do {
-            fn_802123B8(out, it, head);
-            it = it + 0x134;
-        } while (*(s32 *)it != 0);
+            fn_802123B8(out, pu.p, head);
+            pu.i += 0x134;
+        } while (*(s32 *)pu.p != 0);
     }
     {
-        u8 *it2 = *(u8 **)((u8 *)node + 0x64);
+        union PU { u32 i; u8 *p; } pu;
+        pu.i = (u32)*(u8 **)((u8 *)node + 0x64);
         do {
-            fn_802123B8(out, it2, head);
-            it2 = it2 + 0x134;
-        } while (*(s32 *)it2 != 0);
+            fn_802123B8(out, pu.p, head);
+            pu.i += 0x134;
+        } while (*(s32 *)pu.p != 0);
     }
     {
         u8 *q = (u8 *)head;
@@ -1606,32 +1607,13 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
         do {
             s32 type = *(s32 *)(q + 4);
             switch (type) {
-            case 5: {
-                if (*(void **)q != NULL) {
-                    *(s32 *)&lbl_8055EF38 = z;
-                    void *rec = fn_801284F8(0x248, lbl_8055B7C8);
-                    if (rec != NULL) {
-                        void *in8 = *(void **)(q + 8);
-                        fn_80218F34(rec, 0, 0, 0, 0, 0);
-                        *(void **)rec = lbl480b;
-                        *(void **)((u8 *)rec + 0x244) = in8;
-                        *(void **)((u8 *)in8 + 0x14) = rec;
-                        *(s32 *)((u8 *)in8 + 4) = z;
-                        *(s32 *)((u8 *)in8 + 8) = z;
-                        *(s32 *)((u8 *)in8 + 0xC) = z;
-                        *(s32 *)((u8 *)in8 + 0x10) = z;
-                        fn_802168EC(out, rec, -1);
-                    }
-                    *(s32 *)&lbl_8055EF38 = ng;
-                }
-                break;
-            }
             case 6: {
+                *(s32 *)&lbl_8055EF38 = z;
                 void *rec = fn_801284F8(0x250, lbl_8055B7FC);
                 if (rec != NULL) {
                     void *a8 = *(void **)(q + 8);
                     s32 aC = *(s32 *)(q + 0xC);
-                    u16 a10 = *(u16 *)(q + 0x10);
+                    u16 a10 = (u16)*(s32 *)(q + 0x10);
                     fn_80218F34(rec, 0, 0, 0, 0, 0);
                     *(void **)rec = lbl590;
                     *(s32 *)((u8 *)rec + 0x24C) = aC;
@@ -1639,6 +1621,7 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
                     *(u16 *)((u8 *)rec + 0x244) = a10;
                     fn_802168EC(out, rec, -1);
                 }
+                *(s32 *)&lbl_8055EF38 = ng;
                 break;
             }
             case 8: {
@@ -1660,6 +1643,26 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
                 default:
                     fn_802E317C((const char *)(base + 0x6e0));
                     break;
+                }
+                break;
+            }
+            case 5: {
+                if (*(void **)q == NULL) {
+                    *(s32 *)&lbl_8055EF38 = z;
+                    void *rec = fn_801284F8(0x248, lbl_8055B7C8);
+                    if (rec != NULL) {
+                        void *in8 = *(void **)(q + 8);
+                        fn_80218F34(rec, 0, 0, 0, 0, 0);
+                        *(void **)rec = lbl480b;
+                        *(void **)((u8 *)rec + 0x244) = in8;
+                        *(void **)((u8 *)in8 + 0x14) = rec;
+                        *(s32 *)((u8 *)in8 + 4) = z;
+                        *(s32 *)((u8 *)in8 + 8) = z;
+                        *(s32 *)((u8 *)in8 + 0xC) = z;
+                        *(s32 *)((u8 *)in8 + 0x10) = z;
+                        fn_802168EC(out, rec, -1);
+                    }
+                    *(s32 *)&lbl_8055EF38 = ng;
                 }
                 break;
             }
@@ -1764,26 +1767,27 @@ extern "C" u8 lbl_8055B860;
 #pragma scheduling invalid_target
 extern "C" s32 fn_8021481C(void *arg0) {
     struct MapS { s32 a; s32 pad; s32 b; s32 c; s32 d; };
-    u8 *base = lbl_8033CAE8;
     s32 *values;
     struct MapS *map;
     s32 args[20];
+    u8 *base = lbl_8033CAE8;
     if (fn_802ECEEC() == 0) {
+        s32 m0, m2, m3, m4;
         fn_802E30C8((const char *)(base + 0x72C), arg0);
-        args[5] = (s32)(base + 0x750);
         args[6] = 3;
-        values = lbl_80490510;
+        args[5] = (s32)(base + 0x750);
         map = (struct MapS *)lbl_802F9EA4;
-        args[0] = map->a;
+        values = lbl_80490510;
+        m0 = map->a;
+        m2 = map->b;
+        m3 = map->c;
+        m4 = map->d;
         args[1] = 0;
-        args[2] = map->b;
-        args[3] = map->c;
-        args[4] = map->d;
         args[7] = (s32)arg0;
         args[8] = 0;
         args[9] = 0;
-        args[10] = (s32)&lbl_8055B860;
         args[11] = 6;
+        args[10] = (s32)&lbl_8055B860;
         args[12] = 0;
         args[13] = -2;
         args[14] = 0xD;
@@ -1792,8 +1796,12 @@ extern "C" s32 fn_8021481C(void *arg0) {
         args[17] = values[2];
         args[18] = values[3];
         args[19] = values[4];
+        args[0] = m0;
+        args[2] = m2;
+        args[3] = m3;
+        args[4] = m4;
         args[1] = (s32)&args[5];
-        fn_802146BC(args, -0x3E7, -0x3E7, 1, map->d, map->c, map->b, map->a);
+        fn_802146BC(args, -0x3E7, -0x3E7, 1, m4, m3, m2, m0);
         fn_802E30C8((const char *)(base + 0x760), arg0);
     }
 }
@@ -2049,7 +2057,8 @@ extern "C" s32 fn_80214E10(s32 arg0, s32 arg1, s32 arg2) {
     s32 state, zero;
     s32 context0, context2, context3, context4;
     s32 value0, value1, value2, value3, value4;
-    s32 labelD3F8, labelD404, labelB820, labelB824, labelB830, labelB860;
+    s32 labelD3F8, labelD404, labelB820, labelB824, labelB830;
+    register s32 labelB860;
 
     stack[0] = 2;
     labelD3F8 = (s32)lbl_8033D3F8;
@@ -2065,10 +2074,10 @@ extern "C" s32 fn_80214E10(s32 arg0, s32 arg1, s32 arg2) {
     value3 = values[3];
     value4 = values[4];
     ctx = lbl_802F9EB8;
-    context0 = *ctx;
-    context2 = ctx[2];
-    context3 = ctx[3];
-    context4 = ctx[4];
+    context0 = *ctx++;
+    context2 = ctx[1];
+    context3 = ctx[2];
+    context4 = ctx[3];
     zero = 0;
     labelD404 = (s32)lbl_8033D404;
     labelB820 = (s32)&lbl_8055B820;
@@ -2157,20 +2166,36 @@ extern "C" char lbl_8055B838;
 extern "C" char lbl_8055B83C;
 #pragma optimization off
 extern "C" s32 fn_80214FE0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    typedef struct { s32 f0, f1, f2, f3, f4; } Ctx802;
     s32 stack[47];
-    s32 *ctx, *values;
-    s32 state, result, zero;
+    s32 *values;
+    Ctx802 *ctx;
+    s32 state, result;
     s32 ctx0, ctx2, ctx3, ctx4;
     s32 value0, value1, value2, value3, value4;
-    s32 label0, labelA, labelB, labelC, labelD, labelE;
+    register s32 labelE, labelD, labelC, labelB;
+    register s32 zero, four, three, minusTwo, minusThree, six, addr860, maxByte;
+    s32 label0, labelA;
 
     state = fn_802168E4();
     if (state != 0) {
         fn_80214A9C(0x1F);
     }
+    labelE = (s32)&lbl_8055B83C;
+    labelD = (s32)&lbl_8055B838;
+    labelC = (s32)&lbl_8055B830;
+    labelB = (s32)&lbl_8055B824;
+    zero = 0;
+    four = 4;
+    three = 3;
+    minusTwo = -2;
+    minusThree = -3;
+    six = 6;
+    addr860 = (s32)&lbl_8055B860;
+    maxByte = 0x1B;
     *(u8 *)((u8 *)stack + 0x2C) = (u8)arg3;
-    ctx = lbl_802F9ECC;
-    ctx2 = ctx[2];
+    ctx = (Ctx802 *)lbl_802F9ECC;
+    ctx2 = ctx->f2;
     stack[2] = ctx2;
     values = lbl_80490510;
     value0 = values[0];
@@ -2180,11 +2205,6 @@ extern "C" s32 fn_80214FE0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     value4 = values[4];
     label0 = (s32)lbl_8033D420;
     labelA = (s32)&lbl_8055B6A8;
-    labelB = (s32)&lbl_8055B824;
-    labelC = (s32)&lbl_8055B830;
-    labelD = (s32)&lbl_8055B838;
-    labelE = (s32)&lbl_8055B83C;
-    zero = 0;
 
     stack[5] = label0;
     stack[13] = 5;
@@ -2193,39 +2213,39 @@ extern "C" s32 fn_80214FE0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     stack[10] = zero;
     stack[15] = zero;
     stack[16] = zero;
-    stack[18] = 3;
+    stack[18] = three;
     stack[17] = labelB;
     stack[19] = arg0;
-    stack[20] = 4;
+    stack[20] = four;
     stack[21] = zero;
-    stack[23] = 3;
+    stack[23] = three;
     stack[22] = labelC;
     stack[24] = arg1;
-    stack[25] = 4;
+    stack[25] = four;
     stack[26] = zero;
     stack[28] = zero;
     stack[27] = labelD;
     stack[29] = zero;
-    stack[30] = -2;
+    stack[30] = minusTwo;
     stack[31] = zero;
     stack[33] = zero;
     stack[32] = labelE;
     stack[34] = zero;
-    stack[35] = -3;
+    stack[35] = minusThree;
     stack[36] = zero;
-    stack[38] = 6;
-    stack[37] = (s32)&lbl_8055B860;
+    stack[38] = six;
+    stack[37] = addr860;
     stack[39] = zero;
-    stack[40] = -3;
-    stack[41] = 0x1B;
+    stack[40] = minusThree;
+    stack[41] = maxByte;
     stack[42] = value0;
     stack[43] = value1;
     stack[44] = value2;
     stack[45] = value3;
     stack[46] = value4;
-    ctx0 = ctx[0];
-    ctx3 = ctx[3];
-    ctx4 = ctx[4];
+    ctx0 = ctx->f0;
+    ctx3 = ctx->f3;
+    ctx4 = ctx->f4;
     stack[0] = ctx0;
     stack[3] = ctx3;
     stack[4] = ctx4;
@@ -2537,10 +2557,11 @@ extern "C" void fn_80215500(void) {
 
 }
 
-#pragma scheduling off
+#pragma scheduling invalid_target
 extern "C" void fn_80215504(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
-    f32 rate = lbl_80563450;
-    fn_8022BAD0(*(s32 *)((u8 *)arg0 + 8), arg1, arg2, 0, arg4, arg5, *(s32 *)((u8 *)arg0 + 4), arg6, 0, rate);
+    f32 rate = 1.0f;
+    fn_8022BAD0(*(s32 *)((u8 *)arg0 + 8), arg1, arg2, 0, arg4, arg5,
+                *(s32 *)((u8 *)arg0 + 4), arg6, 0, rate);
 }
 #pragma scheduling on
 extern "C" void fn_80215544(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
