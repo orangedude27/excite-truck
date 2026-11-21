@@ -122,21 +122,25 @@ extern f32 lbl_80562E30;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-s32 fn_801E9F08(void *arg0, void *arg1, void *arg2, s32 arg3, s32 arg4, f32 farg0) {
-    f32 data[4];
-    f32 temp2, temp1, temp0;
-    volatile f32 *src = (volatile f32 *)arg1;
-    temp0 = src[0];
-    temp1 = src[1];
-    temp2 = src[2];
-    data[0] = temp0;
-    data[2] = temp2;
-    data[1] = temp1 - (lbl_80562E30 + farg0);
-    if (fn_801E9C84(data, arg1, arg2, arg3, (s32)arg0, 0, farg0) != 0) {
-        data[0] = *(f32 *)arg2;
-        data[1] = *((f32 *)arg2 + 1);
-        data[2] = *((f32 *)arg2 + 2);
-        if (fn_801E9C84(data, arg1, arg2, arg3, (s32)arg0, arg4, farg0) != 0) {
+/* Two-stage contact probe: first test a shifted copy of the input position, then,
+ * if that hits, test again from the resulting contact point. Returns 1 only when
+ * both probes succeed, filling contactPoint and normalOut; handle identifies the
+ * object for the second probe. */
+s32 fn_801E9F08(void *context, void *position, void *contactPoint, s32 normalOut, s32 handle, f32 threshold) {
+    f32 candidate[4];
+    f32 candZ, candY, candX;
+    volatile f32 *positionFloats = (volatile f32 *)position;
+    candX = positionFloats[0];
+    candY = positionFloats[1];
+    candZ = positionFloats[2];
+    candidate[0] = candX;
+    candidate[2] = candZ;
+    candidate[1] = candY - (lbl_80562E30 + threshold);
+    if (fn_801E9C84(candidate, position, contactPoint, normalOut, (s32)context, 0, threshold) != 0) {
+        candidate[0] = *(f32 *)contactPoint;
+        candidate[1] = *((f32 *)contactPoint + 1);
+        candidate[2] = *((f32 *)contactPoint + 2);
+        if (fn_801E9C84(candidate, position, contactPoint, normalOut, (s32)context, handle, threshold) != 0) {
             return 1;
         }
     }
