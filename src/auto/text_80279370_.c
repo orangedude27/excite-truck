@@ -1,7 +1,10 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
+/* Alarm default-table setup from code that had no original source file: four
+ * 0xA0-byte records holding per-alarm defaults are initialized here. */
 
+/* Table of four 0xA0-byte alarm-default records. */
 extern unsigned char lbl_804A16E8[];
+
+/* Default float values stored into every record, in order. */
 extern float lbl_805640D8;
 extern float lbl_805640DC;
 extern float lbl_805640E0;
