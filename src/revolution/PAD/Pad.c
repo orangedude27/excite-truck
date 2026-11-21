@@ -78,7 +78,17 @@ u32 lbl_8055DB10;
 u32 lbl_8055DB14;
 u32 lbl_8055DB18[2];
 
-#define PAD_ORIGIN(chan) ((PADStatus*)(lbl_8038F080 + (chan) * sizeof(PADStatus)))
+#define PAD_ORIGIN(chan) ((PADStatus*)(lbl_8038F080 + (chan) * 12))
+
+/* PAD per-channel state block: origin status, SI type and previous status. */
+typedef struct PADBlock {
+    u8 origin[0x30];                  /* 0x00: PADStatus origin[4], 12-byte stride */
+    u32 type[PAD_MAX_CONTROLLER];     /* 0x30 */
+    u32 unk_0x40[PAD_MAX_CONTROLLER]; /* 0x40 */
+    u8 prev[0x30];                    /* 0x50: PADStatus prev[4], 12-byte stride */
+} PADBlock;
+
+#define PAD_BLOCK ((PADBlock*)(void*)lbl_8038F080)
 
 
 void UpdateOrigin(s32 chan) {
@@ -270,8 +280,8 @@ BOOL fn_800568C4(u32 chanMask) {
 
 #pragma opt_propagation off
 BOOL fn_800569D0(void) {
-    u32 id;
     s64 time;
+    u32 id;
     if (lbl_8055DB18[0]) {
         return TRUE;
     }
@@ -310,7 +320,6 @@ BOOL fn_800569D0(void) {
     OSRegisterShutdownFunction(&lbl_803115D8);
     return fn_800567BC(0xF0000000);
 }
-#pragma opt_propagation reset
 void SPEC0_MakeStatus(s32 chan, PADStatus *status, u32 data[2])
 {
   (void) chan;
