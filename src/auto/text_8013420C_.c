@@ -28,9 +28,13 @@ typedef struct LoadPool {
 typedef LoadPoolEntry Entry;
 typedef LoadPool Container;
 
-extern void *lbl_80559BD0;
-extern char lbl_8032BB18[];
+/* String constants used by the load pool: the "loadbuf" allocation tag and the
+ * "loadlost..." family of diagnostic messages (selected by offsets from the base). */
+extern void *lbl_80559BD0; /* "loadbuf" */
+extern char lbl_8032BB18[]; /* "loadlost" - base of the diagnostic message table */
 extern char lbl_8032BB24[]; /* "loadpool: canceling stream..." */
+#define gLoadPoolBufferTag lbl_80559BD0
+#define gLoadPoolErrorMsgs lbl_8032BB18
 #define sLoadPoolCancelStreamMsg lbl_8032BB24
 
 s32 fn_8012850C(s32, void *);
