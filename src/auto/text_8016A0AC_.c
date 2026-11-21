@@ -346,7 +346,6 @@ void fn_8016A438(void) {
         index++;
     }
 }
-#pragma pop
 
 void fn_8016B634(s32 arg0);
 
@@ -450,13 +449,13 @@ s32 fn_8016A878(const char* name) {
 
 #pragma cplusplus on
 extern "C" s32 fn_8016A8F8(void* alarm) {
+    s32 cur;
     void* obj;
     Entry28* entry;
     volatile Ctr804302F0* vc;
     u8* d;
     u8* s;
     s32 sj;
-    s32 cur;
     s32 i;
     s32 n;
     s32 var24;
