@@ -11035,48 +11035,49 @@ done:
     if (r != 0) *(u16 *)((u8 *)arg0 + 0x1F8C) &= ~8;
     return r;
 }
-extern "C" s32 fn_800B5B94(void *arg0, s32 arg1) {
-    s32 err = 0;
-    s32 tmp;
-    s32 res;
+extern "C" s32 fn_800B5B94(void *volume, s32 force) {
+    /* Unmount a mounted VFiPF volume: finalize files/dirs, flush and free the caches, unmount it, then drop the device hooks and the mount count. Returns 0 on success, otherwise an error. */
+    s32 error = 0;
+    s32 flushResult;
+    s32 unmountResult;
 
-    if (!(*(u16 *)((u8 *)arg0 + 0x1F8C) & 8)) {
+    if (!(VF_VOLUME(volume)->flags & VF_VOL_MOUNTED)) {
         return 9;
     }
 
-    VFiPFFILE_FinalizeAllFiles((u8 *)arg0);
-    VFiPFDIR_FinalizeAllDirs((u8 *)arg0);
-    tmp = VFiPFCACHE_FlushAllCaches(arg0);
-    if (tmp != 0) {
-        err = tmp;
+    VFiPFFILE_FinalizeAllFiles((u8 *)volume);
+    VFiPFDIR_FinalizeAllDirs((u8 *)volume);
+    flushResult = VFiPFCACHE_FlushAllCaches(volume);
+    if (flushResult != 0) {
+        error = flushResult;
     }
-    if (tmp == 0 || (arg1 & 1)) {
-        VFiPFCACHE_FreeAllCaches(arg0);
-        res = fn_800A5788(arg0, arg1);
-        switch (res) {
+    if (flushResult == 0 || (force & 1)) {
+        VFiPFCACHE_FreeAllCaches(volume);
+        unmountResult = fn_800A5788(volume, force);
+        switch (unmountResult) {
         case 0:
-            if (*(u16 *)((u8 *)arg0 + 0x1F8C) & 8) {
-                *(s32 *)((u8 *)arg0 + 0x1654) = 0;
-                *(s32 *)((u8 *)arg0 + 0x189C) = 0;
-                *(s32 *)((u8 *)arg0 + 0x1AE4) = 0;
-                *(s32 *)((u8 *)arg0 + 0x1D2C) = 0;
+            if (VF_VOLUME(volume)->flags & VF_VOL_MOUNTED) {
+                VF_VOLUME(volume)->cache[0].flag = 0;
+                VF_VOLUME(volume)->cache[1].flag = 0;
+                VF_VOLUME(volume)->cache[2].flag = 0;
+                VF_VOLUME(volume)->cache[3].flag = 0;
             }
-            *(u16 *)((u8 *)arg0 + 0x1F8C) &= ~8;
-            res = 0;
+            VF_VOLUME(volume)->flags &= ~VF_VOL_MOUNTED;
+            unmountResult = 0;
             break;
         default:
             break;
         }
-        if (res != 0 && err == 0) {
-            err = res;
+        if (unmountResult != 0 && error == 0) {
+            error = unmountResult;
         }
     }
-    if (err == 0 || (arg1 & 1)) {
-        fn_800A53CC(arg0);
-        fn_800A53E8(arg0);
-        lbl_803D2140[13]--;
+    if (error == 0 || (force & 1)) {
+        fn_800A53CC(volume);
+        fn_800A53E8(volume);
+        VF_MOUNT_COUNT--;
     }
-    return err;
+    return error;
 }
 
 #pragma opt_strength_reduction reset
