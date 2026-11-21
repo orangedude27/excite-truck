@@ -91,7 +91,6 @@ void *fn_8012A260(void *this_, s32 flag) {
         if (flag > 0) freePool(this_);
     }
 
-#undef poolVtable
 #undef freeBuffer
 #undef freePool
     return this_;
