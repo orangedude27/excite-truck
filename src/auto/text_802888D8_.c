@@ -151,6 +151,8 @@ void fn_80288A58(int effectArg, int paramArg) {
     fn_8028E584(*(int *)lbl_8055F6E0, effectArg, paramArg);
 }
 
+/* No-op physics helper: called with an object and an output vector pointer, would
+   extract a position/vector into the caller's floats but does nothing in this build. */
 void fn_80288A70(void) {}
 
 extern float fn_801E7E24(void);
