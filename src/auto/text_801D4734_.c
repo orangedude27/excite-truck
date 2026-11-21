@@ -3864,6 +3864,9 @@ extern "C" void fn_801D88BC(void *surfaceChange) {
 
 #pragma cplusplus reset
 
+/* No-op action-group operation: the fn_801D9108 callback wrapper calls this
+ * with the group pointer (userData backed up by 4), but the game left this
+ * operation slot empty, so it returns immediately without doing anything. */
 void fn_801D8938(void) {
 
 }
