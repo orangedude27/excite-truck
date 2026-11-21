@@ -54,13 +54,13 @@ void fn_801CF01C(void) {
 }
 
 #pragma scheduling on
-/* Return nonzero while replay mode is active (lbl_8055AB50 flag set). */
+/* Return nonzero while replay mode is active (replay-mode flag set). */
 int fn_801CF050(void) {
-    return *(unsigned char *)&lbl_8055AB50 != 0;
+    return *(unsigned char *)&sReplayMode != 0;
 }
 
-/* Return nonzero while cutscene replay playback is in progress (in-playback flag). */
+/* Return nonzero while cutscene replay playback is in progress. */
 int fn_801CF064(void) {
-    return *(unsigned char *)&lbl_8055E8A0 != 0;
+    return *(unsigned char *)&sReplayPlayback != 0;
 }
 
