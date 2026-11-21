@@ -475,21 +475,24 @@ void fn_801E43BC(void *arg0, float scale, float alpha) {
 extern void fn_801E370C();
 #pragma processor 7400
 #pragma scheduling on
-void fn_801E44F4(const void *arg0, void *arg1, float farg0, float farg1, float farg2) {
-    const float *src = (const float *)arg0;
-    float sp[12];
+/* Scale the three basis columns of a 3x4 transform (three axis vectors followed
+ * by a translation) by xScale/yScale/zScale, keep the translation, and pass the
+ * result to the debug line drawer fn_801E370C with the packed colour `color`. */
+void fn_801E44F4(const void *mat, void *color, float xScale, float yScale, float zScale) {
+    const float *m = (const float *)mat;
+    float scaled[12];
 
-    sp[9] = src[0x09];
-    sp[10] = src[0x0A];
-    sp[11] = src[0x0B];
-    sp[0] = src[0x00] * farg0;
-    sp[1] = src[0x01] * farg0;
-    sp[2] = src[0x02] * farg0;
-    sp[3] = src[0x03] * farg1;
-    sp[4] = src[0x04] * farg1;
-    sp[5] = src[0x05] * farg1;
-    sp[6] = src[0x06] * farg2;
-    sp[7] = src[0x07] * farg2;
-    sp[8] = src[0x08] * farg2;
-    fn_801E370C(sp, (int)arg1, (int)arg1);
+    scaled[9] = m[0x09];
+    scaled[10] = m[0x0A];
+    scaled[11] = m[0x0B];
+    scaled[0] = m[0x00] * xScale;
+    scaled[1] = m[0x01] * xScale;
+    scaled[2] = m[0x02] * xScale;
+    scaled[3] = m[0x03] * yScale;
+    scaled[4] = m[0x04] * yScale;
+    scaled[5] = m[0x05] * yScale;
+    scaled[6] = m[0x06] * zScale;
+    scaled[7] = m[0x07] * zScale;
+    scaled[8] = m[0x08] * zScale;
+    fn_801E370C(scaled, (int)color, (int)color);
 }
