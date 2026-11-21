@@ -7,14 +7,16 @@ extern void *memset(void *, int, unsigned int);
 extern void deallocate_from_fixed_pools(void ***, unsigned char *, unsigned int);
 extern void Block_link(void *, void *);
 extern void __sys_free(void *);
+#pragma scheduling 603
 void free(void *arg0) {
+    unsigned char *__restrict pflag = &lbl_8055D678;
     void ***pool;
     unsigned int size;
     unsigned int block;
     unsigned int flags;
     unsigned char *sb;
     unsigned char *next;
-    if (lbl_8055D678 == 0) {
+    if (*pflag == 0) {
         memset(lbl_8035BB58, 0, 0x34);
         lbl_8055D678 = 1;
     }
