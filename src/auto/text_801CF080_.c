@@ -332,11 +332,31 @@ s32 fn_801CF828(Mesh *mesh, Vec *origin, Vec *dir, f32 *ioDist, Vec *normalOut) 
     return hit;
 }
 #pragma pop
+/* In-place byte swaps used to convert the big-endian mesh file. */
+static inline void Mesh_Swap32(void *p) {
+    u8 *b = (u8 *)p;
+    u8 t;
+    t = b[0]; b[0] = b[3]; b[3] = t;
+    t = b[1]; b[1] = b[2]; b[2] = t;
+}
+
+static inline void Mesh_Swap16(void *p) {
+    u8 *b = (u8 *)p;
+    u8 t;
+    t = b[0]; b[0] = b[1]; b[1] = t;
+}
+
+static inline void Mesh_SwapVec(Vec *v) {
+    Mesh_Swap32(&v->x);
+    Mesh_Swap32(&v->y);
+    Mesh_Swap32(&v->z);
+}
+
 void fn_801CFA48(void *arg0) {
  typedef struct { unsigned char *ptr1; int count1; unsigned char *ptr2; int count2; unsigned char *ptr3; int count3; } tFA48View;
  volatile tFA48View *p=(volatile tFA48View *)arg0;
  volatile unsigned char *b=(volatile unsigned char *)arg0;
- unsigned char temp,temp2;
+ unsigned char temp2,temp;
  volatile unsigned char *base,*item;
  int offset,i1,i2,i3,count1,count2;
  temp=b[0]; item=(volatile unsigned char *)arg0+0x18; temp2=b[3]; i1=0; offset=0; b[0]=temp2; b[3]=temp;
@@ -495,7 +515,7 @@ void fn_801CFF18(void *arg0, float *arg1)
   tx = ((float *) m)[9];
   ty = ((float *) m)[10];
   tz = ((float *) m)[11];
-  threshold = lbl_80562A38;
+  threshold = 0.0f;
   for (i = 0, offset = 0; i < (*((int *) (((char *) arg0) + 0x14))); offset += 0x3C, i++)
   {
     char *index = ((char *) (*((void **) (((char *) arg0) + 0x10)))) + offset;
@@ -509,18 +529,18 @@ void fn_801CFF18(void *arg0, float *arg1)
       float *matrix = (float *) m;
       if (dst == src)
       {
-        float m10 = matrix[3];
-        float y = src[1];
-        float m00 = matrix[0];
-        float x = src[0];
-        float m11 = matrix[4];
-        float m20 = matrix[6];
-        float z = src[2];
-        float m01 = matrix[1];
-        float m21 = matrix[7];
-        float m02;
-        float m12 = matrix[5];
-        float m22 = matrix[8];
+        float m10, x, m00, y, m11, m20, z, m01, m21, m02, m12, m22;
+        m10 = matrix[3];
+        y = src[1];
+        m00 = matrix[0];
+        x = src[0];
+        m11 = matrix[4];
+        m20 = matrix[6];
+        z = src[2];
+        m01 = matrix[1];
+        m21 = matrix[7];
+        m12 = matrix[5];
+        m22 = matrix[8];
         dst[0] = (z * m20) + ((x * m00) + (y * m10));
         dst[1] = (z * m21) + ((x * m01) + (y * m11));
         m02 = matrix[2];
@@ -528,14 +548,15 @@ void fn_801CFF18(void *arg0, float *arg1)
       }
       else
       {
-        float m10 = matrix[3];
-        float y = src[1];
-        float m00 = matrix[0];
-        float x = src[0];
-        float m20 = matrix[6];
-        float z = src[2];
+        float y, x, m00, m10, m20, z;
+        m10 = matrix[3];
+        y = src[1];
+        m00 = matrix[0];
+        x = src[0];
+        m20 = matrix[6];
+        z = src[2];
         new_var = matrix[8];
-        dst[0] = ((m10 * y) + (m00 * x)) + (m20 * z);
+        dst[0] = (z * m20) + ((x * m00) + (y * m10));
         dst[1] = ((matrix[4] * src[1]) + (matrix[1] * src[0])) + (matrix[7] * src[2]);
         dst[2] = ((matrix[5] * src[1]) + (matrix[2] * src[0])) + (new_var * src[2]);
       }
