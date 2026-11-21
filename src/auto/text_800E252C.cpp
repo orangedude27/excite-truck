@@ -815,32 +815,32 @@ extern "C" void fn_800E2F84(void *self)
 
 #pragma scheduling on
 /* Returns the EmissionManager's engine gain: the product of three time-based fades, each interpolating from a start to an end factor over a frame count. */
-extern "C" f32 fn_800E310C(const void *arg0) {
-    int b = *(int *)((const char *)arg0 + 0x6C4C);
-    int a = *(int *)((const char *)arg0 + 0x6C50);
+extern "C" f32 fn_800E310C(const void *emitter) {
+    int b = *(int *)((const char *)emitter + 0x6C4C);
+    int a = *(int *)((const char *)emitter + 0x6C50);
     float x;
-    if (a >= b) x = *(float *)((const char *)arg0 + 0x6C48);
-    else x = *(float *)((const char *)arg0 + 0x6C44) +
-        (float)a * (*(float *)((const char *)arg0 + 0x6C48) - *(float *)((const char *)arg0 + 0x6C44)) / (float)b;
+    if (a >= b) x = *(float *)((const char *)emitter + 0x6C48);
+    else x = *(float *)((const char *)emitter + 0x6C44) +
+        (float)a * (*(float *)((const char *)emitter + 0x6C48) - *(float *)((const char *)emitter + 0x6C44)) / (float)b;
 
     int c;
     int d;
-    d = *(int *)((const char *)arg0 + 0x6C5C);
-    c = *(int *)((const char *)arg0 + 0x6C60);
+    d = *(int *)((const char *)emitter + 0x6C5C);
+    c = *(int *)((const char *)emitter + 0x6C60);
     float y;
-    if (c >= d) y = *(float *)((const char *)arg0 + 0x6C58);
-    else y = *(float *)((const char *)arg0 + 0x6C54) +
-        (float)c * (*(float *)((const char *)arg0 + 0x6C58) - *(float *)((const char *)arg0 + 0x6C54)) / (float)d;
+    if (c >= d) y = *(float *)((const char *)emitter + 0x6C58);
+    else y = *(float *)((const char *)emitter + 0x6C54) +
+        (float)c * (*(float *)((const char *)emitter + 0x6C58) - *(float *)((const char *)emitter + 0x6C54)) / (float)d;
     float result = x * y;
 
     int e;
     int f;
-    f = *(int *)((const char *)arg0 + 0x6C3C);
-    e = *(int *)((const char *)arg0 + 0x6C40);
+    f = *(int *)((const char *)emitter + 0x6C3C);
+    e = *(int *)((const char *)emitter + 0x6C40);
     float z;
-    if (e >= f) z = *(float *)((const char *)arg0 + 0x6C38);
-    else z = *(float *)((const char *)arg0 + 0x6C34) +
-        (float)e * (*(float *)((const char *)arg0 + 0x6C38) - *(float *)((const char *)arg0 + 0x6C34)) / (float)f;
+    if (e >= f) z = *(float *)((const char *)emitter + 0x6C38);
+    else z = *(float *)((const char *)emitter + 0x6C34) +
+        (float)e * (*(float *)((const char *)emitter + 0x6C38) - *(float *)((const char *)emitter + 0x6C34)) / (float)f;
     result *= z;
     return result;
 }
