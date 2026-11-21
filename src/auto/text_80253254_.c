@@ -437,10 +437,11 @@ void fn_80253890(void *arg0, void *arg1) {
         virtual void v34();
         virtual Vec3 getVec(const char *, const Vec3 &);
     };
-    char *const labels = lbl_803447C0;
+    char *labels;
     char cfgPath[0x100];
     Res *manager;
     Res *res;
+    labels = lbl_803447C0;
     if (*(int *)((char *)arg0 + 0x28) != -1) return;
     fn_801345D8(cfgPath, 0x100, labels + 0x50, arg1);
     manager = (Res *)fn_80131810(cfgPath);
@@ -620,6 +621,7 @@ void fn_80253CA4(void *arg0, void *arg1, float *arg2, void *arg3) {
         outp += 0x30;
     }
 }
+#pragma opt_lifetimes off
 void fn_8025419C(void *arg0) {
  extern float fn_8023659C(void); extern s32 fn_80147C50(s32,s32,float);
  extern void fn_8018BF44(s32 *); extern void fn_801F1394(s32,void *);
@@ -627,10 +629,11 @@ void fn_8025419C(void *arg0) {
  extern void *memset(void *,int,unsigned long); extern void fn_802543FC(void *);
  extern float lbl_80563A04,lbl_80563A10,lbl_80563A14,lbl_80563A20,lbl_80563A24,lbl_80563A28;
  unsigned char sp10[0x3C0]; s32 spC,sp8; register float var_f4;
- float temp_f0,temp_f2,var_f1; s32 var_r31,var_r30,temp_r6,var_r0;
+ float temp_f0,temp_f2,var_f1,tmp; s32 var_r31,var_r30,temp_r6,var_r0;
  memset(sp10,0,0x3C0); temp_f0=fn_8023659C(); var_f4=lbl_80563A14;
  temp_f0=((temp_f0-*(float *)((u8 *)arg0+4))-lbl_80563A04)/lbl_80563A20;
- if(var_f4<temp_f0)var_f4=temp_f0; if(var_f4>lbl_80563A04)var_f4=lbl_80563A04;
+ tmp = (var_f4<temp_f0)?temp_f0:var_f4; var_f4=tmp;
+ tmp = (var_f4>lbl_80563A04)?lbl_80563A04:var_f4; var_f4=tmp;
  var_f1=lbl_80563A10; temp_f2=lbl_80563A04+(var_f4*lbl_80563A14);
  if(!(temp_f2<var_f1)){} else if(temp_f2>lbl_80563A14)var_f1=lbl_80563A14;
  else if(temp_f2>lbl_80563A04) {
@@ -651,6 +654,7 @@ void fn_8025419C(void *arg0) {
  }while(var_r30<4);
  fn_802543FC(arg0);
 }
+#pragma opt_lifetimes reset
 extern void fn_802C7AE0(s32, void *, s32, float);
 #define kTransformParam lbl_80563A2C
 #pragma scheduling invalid_target
@@ -1508,6 +1512,7 @@ void fn_80255928(void *arg0, char *arg1) {
 #pragma scheduling on
 #pragma use_lmw_stmw reset
 
+/* Unused no-op stub in this car-UI (CarUISM) module; this build leaves it empty. */
 void fn_80255A7C(void) {
 }
 
