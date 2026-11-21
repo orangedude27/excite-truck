@@ -28,6 +28,7 @@ extern void fn_802D3DF8(int, int, float, float);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 typedef struct { unsigned char r, g, b, a; } fn_802DCAE4_GXColor;
+typedef struct { unsigned int w[12]; float a; } fn_802DCAE4_Record;
 extern void GXSetTevKColor(int, fn_802DCAE4_GXColor);
 
 extern unsigned char lbl_8055FEC0;
@@ -891,32 +892,34 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
     float alpha;
     int count;
     unsigned int first;
-    unsigned char *dest;
+    unsigned int *dstWords;
+    unsigned int *srcWords;
 
     input = arg1;
     state = arg0;
     alpha = farg0;
     if (lbl_8055FEBB != 0) {
         g = lbl_804DB480;
-        first = *(unsigned int *)input;
-        dest = *(void **)g;
+        srcWords = (unsigned int *)input;
+        first = srcWords[0];
+        dstWords = *(unsigned int **)g;
         count = *(int *)(g + 4);
         *(void **)(g + 0x214) = state;
-        dest += count * 0x34;
+        dstWords += count * 0xD;
         *(int *)(g + 4) = count + 1;
-        *(unsigned int *)dest = first;
-        *(unsigned int *)(dest + 0x04) = *(unsigned int *)((unsigned char *)input + 0x04);
-        *(unsigned int *)(dest + 0x08) = *(unsigned int *)((unsigned char *)input + 0x08);
-        *(unsigned int *)(dest + 0x0C) = *(unsigned int *)((unsigned char *)input + 0x0C);
-        *(unsigned int *)(dest + 0x10) = *(unsigned int *)((unsigned char *)input + 0x10);
-        *(unsigned int *)(dest + 0x14) = *(unsigned int *)((unsigned char *)input + 0x14);
-        *(unsigned int *)(dest + 0x18) = *(unsigned int *)((unsigned char *)input + 0x18);
-        *(unsigned int *)(dest + 0x1C) = *(unsigned int *)((unsigned char *)input + 0x1C);
-        *(unsigned int *)(dest + 0x20) = *(unsigned int *)((unsigned char *)input + 0x20);
-        *(unsigned int *)(dest + 0x24) = *(unsigned int *)((unsigned char *)input + 0x24);
-        *(unsigned int *)(dest + 0x28) = *(unsigned int *)((unsigned char *)input + 0x28);
-        *(unsigned int *)(dest + 0x2C) = *(unsigned int *)((unsigned char *)input + 0x2C);
-        *(float *)(dest + 0x30) = alpha;
+        dstWords[0] = first;
+        dstWords[1] = srcWords[1];
+        dstWords[2] = srcWords[2];
+        dstWords[3] = srcWords[3];
+        dstWords[4] = srcWords[4];
+        dstWords[5] = srcWords[5];
+        dstWords[6] = srcWords[6];
+        dstWords[7] = srcWords[7];
+        dstWords[8] = srcWords[8];
+        dstWords[9] = srcWords[9];
+        dstWords[10] = srcWords[10];
+        dstWords[11] = srcWords[11];
+        *(float *)(dstWords + 12) = alpha;
         if (*(int *)(lbl_804DB480 + 4) + 1 > *(int *)(lbl_804DB480 + 8)) {
             colors = (unsigned int *)fn_802CFF64(0x28);
             coords = (float *)fn_802CFF64(0x50);
