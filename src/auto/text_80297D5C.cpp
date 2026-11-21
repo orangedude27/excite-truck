@@ -2360,7 +2360,7 @@ extern "C" void fn_8029BA94(void *__restrict arg0, void *__restrict arg1) {
     }
 }
 #pragma scheduling invalid_target
-extern "C" void fn_8029BBD4(void *arg0, void *arg1, int arg2) {
+extern "C" void fn_8029BBD4(void *__restrict arg0, void *__restrict arg1, int arg2) {
     void *base = arg0;
     char *record = (char *)base + (int)arg1 * 0x14;
     int index = (int)arg1;
@@ -2390,11 +2390,10 @@ extern "C" void fn_8029BBD4(void *arg0, void *arg1, int arg2) {
     if ((*(unsigned int *)(record + 4) & 0x10) != 0) goto done;
     if (fn_80287B5C(0x28) != 0) goto done;
     void *info = fn_80288208(index);
-    volatile int *table = (volatile int *)lbl_802FA9F0;
-    int size = *(volatile int *)((char *)info + 0x24);
+    int size = *(int *)((char *)info + 0x24);
     int sequence = *(int *)(record + 0x10) + 1;
     sequence %= 8;
-    int seed = table[sequence];
+    int seed = ((int *)lbl_802FA9F0)[sequence];
     *(int *)(record + 0x10) = sequence;
     int value = seed % size;
     *(void **)(record + 0x14) = fn_80288060(info, value);
