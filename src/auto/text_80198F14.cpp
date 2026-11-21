@@ -5985,6 +5985,9 @@ extern "C" u8 fn_801A5184(void *object) { return *((u8*)object + 0x40); }
 
 extern "C" void fn_801A4868(void*, u8);
 
+/* Zero-argument forwarder to the instance-state change function fn_801A4868.
+ * The original calls it through a void(*)() cast, so the instance/state
+ * arguments are whatever the caller left in the argument registers. */
 extern "C" void fn_801A518C(void) {
     ((void (*)(void))fn_801A4868)();
 }
