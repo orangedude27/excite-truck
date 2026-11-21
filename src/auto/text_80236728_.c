@@ -107,32 +107,52 @@ void fn_80236774(void) {
 extern char *fn_80237C40(void);
 #pragma scheduling priority
 void fn_80236780(void) {
-    char *p;
-    signed char flag;
-    if (lbl_8055F0BC == 0) {
-        p = fn_80237C40();
-        lbl_8055F0BC = p;
-        lbl_8055F0C0 = p;
+#define sUiAnimeHead        lbl_8055F0BC
+#define sUiAnimeTail        lbl_8055F0C0
+#define sUiAnimeManager0    lbl_8055F0B0
+#define sUiAnimeManager1    lbl_8055F0B4
+#define sUiAnimeManager2    lbl_8055F0B8
+#define sUiAnimeForceActive lbl_8055F0C5
+#define sUiAnimeMode        lbl_8055F0C6
+#define sUiAnimeClearVal0   lbl_8055F0C7
+    char *newNode;
+    signed char directionFlag;
+
+    /* Append a fresh AnimeSetStack node to the uiAnime queue: link it at the
+     * tail, snapshot the pending animation managers and flags into it, then
+     * reset those pending globals for the next node. */
+    if (sUiAnimeHead == 0) {
+        newNode = fn_80237C40();
+        sUiAnimeHead = newNode;
+        sUiAnimeTail = newNode;
     } else {
-        p = fn_80237C40();
-        *(char **)(lbl_8055F0C0 + 0x24) = p;
-        lbl_8055F0C0 = *(char **)(lbl_8055F0C0 + 0x24);
+        newNode = fn_80237C40();
+        *(char **)(sUiAnimeTail + 0x24) = newNode;
+        sUiAnimeTail = *(char **)(sUiAnimeTail + 0x24);
     }
-    flag = 0;
-    lbl_8055F0C0[0x1F] = lbl_8055F0C7;
-    lbl_8055F0C0[0x20] = 0;
-    if ((unsigned char)lbl_8055F0C5 != 0 || (unsigned char)lbl_8055F0C6 == 0)
-        flag = 1;
-    lbl_8055F0C0[0x21] = flag;
-    *(int *)(lbl_8055F0C0 + 0x28) = lbl_8055F0B0;
-    *(int *)(lbl_8055F0C0 + 0x2C) = lbl_8055F0B4;
-    *(int *)(lbl_8055F0C0 + 0x30) = lbl_8055F0B8;
-    lbl_8055F0C5 = 0;
-    lbl_8055F0C6 = 0;
-    lbl_8055F0C7 = 0;
-    lbl_8055F0B0 = 0;
-    lbl_8055F0B4 = 0;
-    lbl_8055F0B8 = 0;
+    directionFlag = 0;
+    sUiAnimeTail[0x1F] = sUiAnimeClearVal0;
+    sUiAnimeTail[0x20] = 0;
+    if ((unsigned char)sUiAnimeForceActive != 0 || (unsigned char)sUiAnimeMode == 0)
+        directionFlag = 1;
+    sUiAnimeTail[0x21] = directionFlag;
+    *(int *)(sUiAnimeTail + 0x28) = sUiAnimeManager0;
+    *(int *)(sUiAnimeTail + 0x2C) = sUiAnimeManager1;
+    *(int *)(sUiAnimeTail + 0x30) = sUiAnimeManager2;
+    sUiAnimeForceActive = 0;
+    sUiAnimeMode = 0;
+    sUiAnimeClearVal0 = 0;
+    sUiAnimeManager0 = 0;
+    sUiAnimeManager1 = 0;
+    sUiAnimeManager2 = 0;
+#undef sUiAnimeClearVal0
+#undef sUiAnimeMode
+#undef sUiAnimeForceActive
+#undef sUiAnimeManager2
+#undef sUiAnimeManager1
+#undef sUiAnimeManager0
+#undef sUiAnimeTail
+#undef sUiAnimeHead
 }
 extern void fn_80237D00(void *);
 void fn_80236848(void) {
