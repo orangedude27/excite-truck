@@ -59,11 +59,11 @@ s32 fn_802450D4(s32 status) {
     return 0;
 }
 void fn_80245118(void) {
-    /* Install the buffer at lbl_804988B0 as the active NAND-save interface object (fn_802E8D7C sets gNandSaveInterface). */
-    fn_802E8D7C((s32)&lbl_804988B0);
+    /* Install the NAND-save interface object as the active save interface. */
+    setNandSaveInterface((s32)&gNandSaveInterfaceObj);
 }
 
 void fn_80245124(void) {
-    /* Uninstall the active NAND-save interface: fn_802E8D7C sets gNandSaveInterface, and NULL clears it. */
-    fn_802E8D7C(0);
+    /* Uninstall the active save interface (NULL clears it). */
+    setNandSaveInterface(0);
 }
