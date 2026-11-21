@@ -775,7 +775,11 @@ extern "C" s32 fn_80157278(s32);
 #pragma small_data off
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-extern "C" void* fn_8015783C(void* arg0, s32 arg1, s32 arg2) {
+extern "C" void* fn_8015783C(void* self, s32 config, s32 courseIndex) {
+    /* Constructor for the 10-record ring tracker (0x27C bytes, built as ringTracker in
+     * fn_801577F0's owner): install the base vtable, zero the 0x38-byte record array,
+     * then store the config/course values and the final vtable.  A "ringhit.sfx"
+     * sound is created for the course unless it is flagged as the player's own car. */
     struct Tail {
         u8 pad[0x244];
         s32 field26C;
@@ -793,35 +797,35 @@ extern "C" void* fn_8015783C(void* arg0, s32 arg1, s32 arg2) {
         s32 field274;
         void* field278;
     };
-    register u8* ptr = (u8*)arg0 + 0x14;
-    *(void**)((u8*)arg0 + 8) = ptr;
-    *(void**)arg0 = &lbl_8032F2BC;
-    *(s32*)((u8*)arg0 + 0x10) = 10;
-    *(s32*)((u8*)arg0 + 0xC) = 0;
+    register u8* record = (u8*)self + 0x14;
+    *(void**)((u8*)self + 8) = record;
+    *(void**)self = &lbl_8032F2BC;
+    *(s32*)((u8*)self + 0x10) = 10;
+    *(s32*)((u8*)self + 0xC) = 0;
     do {
-        memset(ptr, 0, 4);
-        ptr += 0x38;
-    } while (ptr < (u8*)arg0 + 0x244);
+        memset(record, 0, 4);
+        record += 0x38;
+    } while (record < (u8*)self + 0x244);
 
-    f32 val = 2.0f;
+    f32 gain = 2.0f;
     u32 zero = 0;
-    *(s32*)((u8*)arg0 + 0xC) = zero;
-    *(s32*)((u8*)arg0 + 4) = arg2;
-    ((Tail*)arg0)->field26C = arg1;
-    ((Tail*)arg0)->field258 = zero;
-    ((Tail*)arg0)->field250 = val;
-    ((Tail*)arg0)->field268 = zero;
-    ((Tail*)arg0)->field248 = zero;
-    *(void**)arg0 = &lbl_8032EB58;
-    ((Tail*)arg0)->field274 = arg2;
+    *(s32*)((u8*)self + 0xC) = zero;
+    *(s32*)((u8*)self + 4) = courseIndex;
+    ((Tail*)self)->field26C = config;
+    ((Tail*)self)->field258 = zero;
+    ((Tail*)self)->field250 = gain;
+    ((Tail*)self)->field268 = zero;
+    ((Tail*)self)->field248 = zero;
+    *(void**)self = &lbl_8032EB58;
+    ((Tail*)self)->field274 = courseIndex;
 
-    bool ok = !fn_80157278(arg2);
-    if (ok) {
-        ((Tail*)arg0)->field278 = fn_802076A0(lbl_8032EAF0, 1, arg2, 2);
+    bool createSound = !fn_80157278(courseIndex);
+    if (createSound) {
+        ((Tail*)self)->field278 = fn_802076A0(lbl_8032EAF0, 1, courseIndex, 2);
     } else {
-        ((Tail*)arg0)->field278 = (void*)zero;
+        ((Tail*)self)->field278 = (void*)zero;
     }
-    return arg0;
+    return self;
 }
 #pragma scheduling on
 #pragma use_lmw_stmw reset
