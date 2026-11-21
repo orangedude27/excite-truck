@@ -1113,38 +1113,38 @@ extern "C" s32 fn_8013DE7C(TObj60 *container, const char *name) {
 #pragma push
 #pragma processor 750
 extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
-    struct V2 { f32 x, y; };
     f32 *from = (f32 *)arg1;
     f32 *to = (f32 *)arg2;
     f32 *out = (f32 *)arg0;
-    V2 s, e, d, c, o;
+    f32 s[2], e[2], d[2], c[2], o[2];
     u32 i = 0;
     f32 unit = 0.0f;
     f32 one = 1.0f;
+    register f32 scale;
     do {
-        s.x = from[0];
-        s.y = from[2];
-        e.x = to[0];
-        e.y = to[2];
-        d.x = e.x - s.x;
-        d.y = e.y - s.y;
-        f32 length = (f32)fn_8002F234(d.x * d.x + d.y * d.y);
+        s[0] = from[0];
+        s[1] = from[2];
+        e[0] = to[0];
+        e[1] = to[2];
+        d[0] = e[0] - s[0];
+        d[1] = e[1] - s[1];
+        f32 length = (f32)fn_8002F234(d[0] * d[0] + d[1] * d[1]);
         i++;
-        f32 scale = one / length;
-        c.x = out[0];
-        o.x = c.x - s.x;
-        d.x *= scale;
-        d.y *= scale;
-        c.y = out[2];
-        o.y = c.y - s.y;
+        scale = one / length;
+        c[0] = out[0];
+        o[0] = c[0] - s[0];
+        d[0] = d[0] * scale;
+        d[1] = d[1] * scale;
+        c[1] = out[2];
+        o[1] = c[1] - s[1];
         from += 3;
         to += 3;
-        f32 p = d.x * o.x + d.y * o.y;
-        c.x = s.x + d.x * p;
-        c.y = s.y + d.y * p;
-        out[0] = c.x;
+        f32 p = d[0] * o[0] + d[1] * o[1];
+        c[0] = s[0] + d[0] * p;
+        c[1] = s[1] + d[1] * p;
+        out[0] = c[0];
         out[1] = unit;
-        out[2] = c.y;
+        out[2] = c[1];
         out += 3;
     } while (i < 2);
 }
@@ -2758,6 +2758,10 @@ extern "C" void fn_80141454(void) {
 
 }
 
+/* Zone system's teardown pair to fn_80141454: called with no arguments from the
+ * game/menu shutdown sequence (fn_80004CB4) right after fn_801AED58.  The body
+ * is empty -- the zone system is really torn down elsewhere -- so this compiles
+ * to a bare 'blr'. */
 extern "C" void fn_80141458(void) {
 
 }
@@ -3432,10 +3436,11 @@ extern "C" void fn_801421D8(void *arg0, void *arg1) {
     *(f32 *)(b + 0xCC) = fn_8001DAE8(b + 0xC8);
     *(s32 *)(b + 0x10C) += *(s32 *)(b + 0x80);
     *(f32 *)(b + 0x9C) = fn_8001DAE8(b + 0x98);
+    s32 progressFlag = lbl_8055E1BC;
     row = fn_801421C0(a);
-    if (lbl_8055E1BC) {
+    if (progressFlag) {
         f32 x = *(f32 *)(b + 0x94);
-        f32 f = *(f32 *)(row + 8) / lbl_8056149C + x;
+        f32 f = x + *(f32 *)(row + 8) / lbl_8056149C;
         f = f < lbl_805614AC ? f : lbl_805614AC;
         f = f > lbl_805614A4 ? f : lbl_805614A4;
         f64 r = f;
