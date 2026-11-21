@@ -36,15 +36,15 @@ void fn_802E7578(void) {
 
 /* Interface of the global stream-bank manager; slots line up with lbl_8034D860. */
 #pragma cplusplus on
-  struct StrmBankManager {
-      virtual ~StrmBankManager();
-             virtual void loadBank(s32 bankName);
-             virtual void unloadBank(s32 bankId);
-              virtual void unloadBankEx(s32 handle, s32 bankId, s32 flags);
-      virtual void method18(s32, s32, s32);
-      virtual void method1C(s32);
-      virtual void setLevel(s32 level);
-  };
+struct StrmBankManager {
+    virtual ~StrmBankManager();
+    virtual void loadBank(s32 bankName);
+    virtual void unloadBank(s32 bankId);
+    virtual void unloadBankEx(s32 handle, s32 bankId, s32 flags);
+    virtual void method18(s32, s32, s32);
+    virtual void method1C(s32);
+    virtual void setLevel(s32 level);
+};
 #pragma cplusplus on
 /* Destroy and clear the global stream-bank manager. */
 extern "C" void fn_802E759C(void) {
