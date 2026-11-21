@@ -91,7 +91,7 @@ void fn_801EF0AC(unsigned char *script) {
         for (slotIdx = 0; slotIdx < 4; slotIdx++, slot++) {
             if (*slot != 0) {
                 memcpy(payloadCopy, payload, 0x400);
-                consumed = ((int (*)(char *))*slot)(payloadCopy);
+                consumed = ((EventHandler)*slot)(payloadCopy);
             }
         }
         if (consumed != -1) {
