@@ -1837,35 +1837,37 @@ extern "C" void fn_801590A8(void* self) {
 
 #pragma push
 #pragma processor 750
-extern "C" u8 fn_80159124(void* arg0, void* arg1) {
-    if (*(s32*)((u8*)arg1 + 0x2620) == 0) {
+extern "C" u8 fn_80159124(void* arg0, const void* arg1) {
+    if (*(const s32*)((const u8*)arg1 + 0x2620) == 0) {
         *(f32*)((u8*)arg0 + 0x270) = *(f32*)((u8*)arg0 + 0x270) + lbl_8056177C;
     } else {
         *(f32*)((u8*)arg0 + 0x270) = lbl_80561754;
     }
     u8* self = (u8*)arg0;
-    u8* other = (u8*)arg1;
+    const u8* other = (const u8*)arg1;
     f32 limit;
     f32 result;
     u8 prev;
     result = lbl_80561754;
     prev = *(u8*)(self + 0x274);
-    limit = *(f32*)(other + 0x25D4);
+    limit = *(const f32*)(other + 0x25D4);
     s32 flag;
-    if ((f32)__fabs(*(f32*)(other + 0x2690)) <= lbl_80558DC4[0] && limit > lbl_80561788 && *(f32*)(self + 0x270) < lbl_80561760) {
-        f64 dtmp = __fabs((f64)PSVECDotProduct(other + 0x118, other + 0x3C));
+    if ((f32)__fabs(*(const f32*)(other + 0x2690)) <= lbl_80558DC4[0] && limit > lbl_80561788 && *(f32*)(self + 0x270) < lbl_80561760) {
+        f64 dtmp = __fabs((f64)PSVECDotProduct((void*)(other + 0x118), (void*)(other + 0x3C)));
         f32 d = (f32)dtmp;
-        f32 k = prev != 0 ? lbl_8056178C : lbl_80561790;
+        f32 k;
+        if (prev != 0) k = lbl_8056178C; else k = lbl_80561790;
         flag = d > limit * k;
     } else {
         flag = 0;
     }
     *(u8*)(self + 0x274) = flag;
     if ((u8)flag != 0) {
-        limit = *(f32*)(other + 0x25D4);
-        f64 dtmp = __fabs((f64)PSVECDotProduct(other + 0x118, other + 0x3C));
+        limit = *(const f32*)(other + 0x25D4);
+        f64 dtmp = __fabs((f64)PSVECDotProduct((void*)(other + 0x118), (void*)(other + 0x3C)));
         f32 d = (f32)dtmp;
-        f32 k = prev != 0 ? lbl_8056178C : lbl_80561790;
+        f32 k;
+        if (prev != 0) k = lbl_8056178C; else k = lbl_80561790;
         f32 a = lbl_80561750 - lbl_80561794 * *(f32*)(self + 0x270);
         a = (a > lbl_80561754) ? a : lbl_80561754;
         f32 b = lbl_80561750;
@@ -2574,7 +2576,7 @@ extern "C" void* fn_8015ADAC(void* arg0, s32 arg1) {
 
 extern f32 lbl_805617A8;
 #pragma scheduling on
-extern "C" f32 fn_8015AE18(void *a, void *arg1) {
+extern "C" f32 fn_8015AE18(void *a, const void *arg1) {
     u8 *p = (u8 *)a;
     Fn8015889C *self = (Fn8015889C *)a;
     f32 result;
@@ -2585,7 +2587,7 @@ extern "C" f32 fn_8015AE18(void *a, void *arg1) {
     s32 zero = 0;
     s32 i;
     f32 t;
-    s32 reward = *(s32 *)((u8 *)arg1 + 0x2620);
+    s32 reward = *(const s32 *)((const u8 *)arg1 + 0x2620);
     if (reward > 0) {
         *(f32 *)(p + 0x270) = *(f32 *)(p + 0x270) + lbl_8056177C;
     } else {
@@ -2613,7 +2615,7 @@ extern "C" f32 fn_8015AE18(void *a, void *arg1) {
         *(s32 *)(p + 0x274) = 1;
     }
     if (*(f32 *)(p + 0x270) > lbl_805617A8) {
-        register s32 n = *(s32 *)(p + 0x278);
+        register s32 n = *(const s32 *)((const u8 *)p + 0x278);
         *(s32 *)(p + 0x274) = zero;
         if (n > 0) {
             fn_801CB6E4((void *)0x50204, *(s32 *)(p + 4));
@@ -2623,7 +2625,7 @@ extern "C" f32 fn_8015AE18(void *a, void *arg1) {
     t = *(f32 *)(p + 0x254) - lbl_8056177C;
     *(u8 *)(p + 0x26c) = 0;
     *(f32 *)(p + 0x254) = fn_801429D0(lbl_80561754, t);
-    if (fn_8015A404(arg1) == 0 && self->v37() == 0) {
+    if (fn_8015A404((void *)arg1) == 0 && self->v37() == 0) {
         *(f32 *)(p + 0x254) = fn_801429D0(*(f32 *)(p + 0x254), lbl_8056179C);
     }
     result = lbl_80561754;
@@ -2634,7 +2636,7 @@ extern "C" f32 fn_8015AE18(void *a, void *arg1) {
         if (cur == nlast) end = 1;
     }
     if (fn_80141F7C(*(f32 *)(p + 0x254)) || end) {
-        if (*(s32 *)(p + 0x264) > 0) result = ((f32 (*)(void *, void *))fn_8015A368)(a, arg1);
+        if (*(s32 *)(p + 0x264) > 0) result = ((f32 (*)(void *, void *))fn_8015A368)(a, (void *)arg1);
         if (!end) fn_8015A318((Unk8015A368C *)a);
     } else if (*(s32 *)(p + 0x264) > 0) {
         self->v34();
