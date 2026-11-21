@@ -26,23 +26,26 @@ s32 fn_802E8D7C(s32);
 void fn_80236900(void);
 
 #pragma optimization_level 1
-s32 fn_80245080(void) {
-    s32 fn = *(volatile s32 *)((u8 *)lbl_8055F244->unk_20 + 12);
-    s32 ret = 0;
-    if (fn != 0 && ((UnkFn_80245080)fn)() == 1) ret = 1;
+s32 fn_80245080(s32 arg0) {
+    void *sub;
+    s32 (*fn)();
+    s32 ret;
+    ret = 0;
+    sub = *(void **)((char *)lbl_8055F244 + 0x20);
+    fn = *(s32 (**)())((char *)sub + 0xC);
+    if (fn != 0 && ((s32 (*)(s32))fn)(arg0) == 1) ret = 1;
     return ret;
 }
-#pragma optimization_level reset
+#pragma scheduling off
 s32 fn_802450D4(s32 status) {
-    volatile struct Unk_80245080 *p;
-    s32 counter;
+    struct Unk_80245080 *p;
     fn_80236900();
-    p = lbl_8055F244;
-    if ((counter = p->unk_24) > 7) return 1;
-    p->unk_24 = counter + 1;
+    if ((status = (p = (struct Unk_80245080 *)lbl_8055F244)->unk_24) > 7) {
+        return 1;
+    }
+    p->unk_24 = status + 1;
     return 0;
 }
-#pragma scheduling on
 void fn_80245118(void) {
     /* Install the buffer at lbl_804988B0 as the active NAND-save interface object (fn_802E8D7C sets gNandSaveInterface). */
     fn_802E8D7C((s32)&lbl_804988B0);
