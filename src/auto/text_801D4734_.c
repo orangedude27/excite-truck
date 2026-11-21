@@ -246,8 +246,10 @@ void fn_801D48F8(void) {
     fn_801D592C();
 }
 
-void fn_801D48FC(int arg0) {
-    fn_801D5A14(arg0);
+/* Passes the action-sequence handle through to fn_801D5A14, which switches the
+ * registered sequence's state to PLAYING (2). */
+void fn_801D48FC(int sequence) {
+    fn_801D5A14(sequence);
 }
 
 void fn_801D4900(int arg0) {
