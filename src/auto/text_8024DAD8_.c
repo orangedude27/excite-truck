@@ -2278,7 +2278,6 @@ extern "C" s32 fn_8025157C(u8 *arg0, s32 arg1) {
 #pragma pop
 extern "C" void fn_80251934(void *arg0) {
     extern f32 fn_80214D48(void);
-    extern f32 lbl_80563960;
     extern const f32 lbl_80563964, lbl_80563968, lbl_8056396C, lbl_80563970;
     extern double __fabs(double);
     extern void fn_80214A9C(s32, f32);
@@ -2322,40 +2321,29 @@ extern "C" void fn_80251934(void *arg0) {
     }
 
     {
-        f32 limit;
-        f32 speed;
-        f32 subtract;
-        f32 threshold;
         f32 dt = fn_80214D48();
         register u8 *item;
         register s32 j;
         register s32 offset;
         f32 current;
-        f32 scale;
-        f32 diff;
 
         j = 0;
         offset = 0;
-        limit = lbl_80563960;
         current = *(f32 *)((u8 *)arg0 + 0x28);
-        diff = (f32)*(s32 *)((u8 *)arg0 + 0x2C) - current;
-        scale = lbl_80563968;
-        *(f32 *)((u8 *)arg0 + 0x28) = current + scale * diff;
-        speed = lbl_8056396C;
-        subtract = lbl_80563970;
-        threshold = lbl_80563964;
+        *(f32 *)((u8 *)arg0 + 0x28) =
+            current + lbl_80563968 * ((f32)*(s32 *)((u8 *)arg0 + 0x2C) - current);
         for (; j < *(s32 *)((u8 *)arg0 + 0x1C); offset += 12, j++) {
             item = *(u8 **)((u8 *)arg0 + 0x18) + offset;
             if (*(s32 *)(item + 4) != *(s32 *)item) {
-                *(f32 *)(item + 8) += speed * dt;
-                if (*(f32 *)(item + 8) >= threshold) {
+                *(f32 *)(item + 8) += lbl_8056396C * dt;
+                if (*(f32 *)(item + 8) >= lbl_80563964) {
                     *(s32 *)item = *(s32 *)(item + 4);
-                    *(f32 *)(item + 8) -= subtract;
+                    *(f32 *)(item + 8) -= lbl_80563970;
                 }
             } else {
-                f32 value = *(f32 *)(item + 8) + speed * dt;
-                if (limit < value)
-                    value = limit;
+                f32 value = *(f32 *)(item + 8) + lbl_8056396C * dt;
+                if (0.0f < value)
+                    value = 0.0f;
                 *(f32 *)(item + 8) = value;
             }
         }
