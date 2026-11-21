@@ -2,8 +2,10 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern unsigned char lbl_802FE850[];
-int fn_800248A4(unsigned char *a, unsigned char *b, int n)
+int fn_800248A4(unsigned char *str1, unsigned char *str2, int n)
 {
+    /* Locale-aware strncmp: compare up to n bytes of two strings through the active
+       locale's collation table, returning -1, 0, or 1. */
     register int locale;
     register int c1;
     register int c2;
@@ -11,10 +13,10 @@ int fn_800248A4(unsigned char *a, unsigned char *b, int n)
     register unsigned char skip;
     locale = *(int *)(lbl_802FE850 + 0x38);
     while (n > 0) {
-        skip = (c1 = (signed char)*a, a++, c1 < 0 || c1 >= 256);
+        skip = (c1 = (signed char)*str1, str1++, c1 < 0 || c1 >= 256);
         c1 = (skip != 0) ? c1 : (unsigned char)*(unsigned char *)(*(int *)(locale + 0x10) + c1);
         sc1 = (signed char)c1;
-        skip = (c2 = (signed char)*b, b++, c2 < 0 || c2 >= 256);
+        skip = (c2 = (signed char)*str2, str2++, c2 < 0 || c2 >= 256);
         c2 = (skip != 0) ? c2 : (unsigned char)*(unsigned char *)(*(int *)(locale + 0x10) + c2);
         if (sc1 < (signed char)c2) return -1;
         if (sc1 > (signed char)c2) return 1;
