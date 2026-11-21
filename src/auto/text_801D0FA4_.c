@@ -84,6 +84,4 @@ extern "C" void fn_801D1100(void *context) {
 }
 #pragma cplusplus off
 
-#pragma cplusplus off
-
 #pragma scheduling on
