@@ -637,6 +637,10 @@ extern int fn_802ECC10(void);
 extern int fn_802E888C(int);
 extern char lbl_8034E130[];
 extern char lbl_8034E108[];
+
+#define nandLogPrintf   fn_802E30C8
+#define sWriteStartFmt  lbl_8034E130
+
 #pragma scheduling invalid_target
 void fn_802E91D8(void *arg0, const char *arg1, int arg2, int arg3) {
     unsigned char c;
