@@ -1610,10 +1610,20 @@ void fn_801D628C(void *object) {
     *(int *)((char *)object + 0x14) = 0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void *fn_801D62A8(void *arg0, int arg1) {
+    s32 temp_r5;
+    if (arg0 != 0) {
+        temp_r5 = *(s32 *)((char *)arg0 + 0x14);
+        *(char **)arg0 = lbl_80338C78;
+        *(s32 *)((char *)arg0 + 4) = 0;
+        if (temp_r5 != 0) fn_80128658(temp_r5);
+        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+    }
     return arg0;
 }
-
+#pragma pop
 #pragma cplusplus on
 struct Dummy6320 {
     virtual void v0();
@@ -3059,7 +3069,7 @@ extern "C" void *fn_801D7EC0(void *arg0, s32 arg1) {
         child = *(void **)((u8 *)arg0 + 0x2C);
         *(void **)arg0 = (void *)lbl_80338CB0;
         *(s32 *)((u8 *)arg0 + 0x40) = 0;
-        if (child != 0) {
+        if (*(void **)((u8 *)arg0 + 0x2C) != 0) {
             if (child != 0)
                 ((Entry_801D7EC0 *)child)->destroy(1);
         }
