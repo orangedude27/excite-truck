@@ -1498,10 +1498,11 @@ extern "C" void Init__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCv(void *sel
     const FileMsgs *base = (const FileMsgs *)lbl_80324868;
     u32 version;
     u32 valid;
+    s32 off = 0;
     if (src == 0)
-        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base->file, 0x32, base->msg1);
+        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base->file + off, 0x32, base->msg1);
     if (*(const u32 *)src - 0x52530000U != 0x4152U)
-        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base->file, 0x48, base->msg2);
+        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base->file + off, 0x48, base->msg2);
     if (*(const u32 *)src - 0x52530000U == 0x4152U)
         goto valid_magic;
     valid = 0;
@@ -1509,7 +1510,7 @@ extern "C" void Init__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCv(void *sel
 valid_magic:
     version = *(const u16 *)(src + 6);
     if (version < 0x100)
-        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base->file, 0x50, base->msg3);
+        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base->file + off, 0x50, base->msg3);
     version = *(const u16 *)(src + 6);
     if (version >= 0x100)
         goto valid_version_min;
@@ -1517,7 +1518,7 @@ valid_magic:
     goto copy_if_valid;
 valid_version_min:
     if (version > 0x101)
-        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base->file, 0x56, base->msg3);
+        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base->file + off, 0x56, base->msg3);
     version = *(const u16 *)(src + 6);
     valid = (version <= 0x101);
 copy_if_valid:
@@ -6279,33 +6280,36 @@ extern "C" s32 fn_800FA4C4(void *threadObj, s32 priority) {
     }
     return created != 0;
 }
+/* Stop the singleton sound thread: lazily finish constructing it and queue its
+ * destructor on first use, post the stop message, join the thread, and clear
+ * its running flag. */
 s32 nw4hbm::snd::detail::SoundThread::Shutdown() {
-    u8 *thread = (u8 *)this;
-    void *object;
+    u8 *threadObj = (u8 *)this;
+    void *listNode;
 
-    if (*(u8 *)(thread + 0x2394) == 0)
+    if (*(u8 *)(threadObj + 0x2394) == 0)
         return 0;
 
     if ((s8)lbl_8055DE68 == 0) {
-        object = (void *)&lbl_80412CC8[0x2388];
+        listNode = (void *)&lbl_80412CC8[0x2388];
         *(volatile u32 *)&lbl_80412CC8[0x2388] = 0;
         *(volatile u32 *)&lbl_80412CC8[0x238c] = 0;
         *(u32 *)&lbl_80412CC8[0x2378] = 0;
         *(u32 *)&lbl_80412CC8[0x237c] = 0;
         *(u32 *)&lbl_80412CC8[0x2384] = 0;
-        *(void **)&lbl_80412CC8[0x2388] = object;
-        *(void **)&lbl_80412CC8[0x238c] = object;
+        *(void **)&lbl_80412CC8[0x2388] = listNode;
+        *(void **)&lbl_80412CC8[0x238c] = listNode;
         *(u8 *)&lbl_80412CC8[0x2394] = 0;
         __register_global_object((void *)lbl_80412CC8, (void *)&__dt__10TitleSceneFv,
-                                 (void *)&lbl_80412CB8, object);
+                                 (void *)&lbl_80412CB8, listNode);
         lbl_8055DE68 = 1;
     }
 
     if (OSSendMessage((u8 *)lbl_80412CC8 + 0x2338, (void *)2, 0) == 0)
         return 0;
-    if (OSJoinThread((void *)thread, 0) == 0)
+    if (OSJoinThread((void *)threadObj, 0) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326450, 0x70, lbl_80326488);
-    *(u8 *)(thread + 0x2394) = 0;
+    *(u8 *)(threadObj + 0x2394) = 0;
     return 1;
 }
 
@@ -8146,19 +8150,17 @@ extern "C" void ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(void* self) {
     u32 head;
     head = p->activeHead;
     if (head == 0) goto done;
-    s32 iterator;
-    s32 eraseValue;
     goto check;
 loop:
     if (head == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C1C, 0x1F1, lbl_80326BF8);
-    iterator = p->iterator;
+    s32 iterator = p->iterator;
     if (iterator == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326BBC, 0x23D, lbl_80326B98);
     s32 count = iterator - 0x14;
     if (count == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326BEC, 0x193, lbl_80326BC8);
-    eraseValue = p->iterator;
+    s32 eraseValue = p->iterator;
     Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(&p->activeHead, &eraseValue);
     if (count == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C7C, 0x233, lbl_80326C58);
