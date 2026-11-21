@@ -1077,6 +1077,8 @@ extern "C" void *fn_802998F4(void *container, int freeStorage) {
     return container;
 }
 #pragma scheduling on
+/* No-op per-frame handler for the global subsystem at lbl_8055F7CC, called
+   by fn_802980A0 alongside the other subsystem updates. */
 extern "C" void fn_80299988(void) {
 }
 
