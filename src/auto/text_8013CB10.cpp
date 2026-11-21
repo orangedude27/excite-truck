@@ -4024,6 +4024,8 @@ extern "C" s32 fn_8014320C(void) {
 
 extern "C" void fn_8013D288(void);
 
+/* Forward to the "zstm" class registrar (fn_8013D288), which installs the
+ * class's vtable in its registry slot; kept as a separate entry point. */
 extern "C" void fn_80143214(void) {
     fn_8013D288();
 }
