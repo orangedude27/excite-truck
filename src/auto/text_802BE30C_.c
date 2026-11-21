@@ -208,6 +208,7 @@ void fn_802BE7F8(void) {
     p[1] = 0;
     p[2] |= 0x800000;
 }
+/* Thin shutdown wrapper for fn_802BE72C: frees every allocated FanInfo cell grid. */
 void fn_802BE840(void) { fn_802BE72C(); }
 
 /* Returns a pointer to the cell entry for (x, y) in the grid for the given cell size, or a fallback entry if out of range. */
