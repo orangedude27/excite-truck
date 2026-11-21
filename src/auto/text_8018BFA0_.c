@@ -250,8 +250,7 @@ static inline void matVecMixW_8018(const Vec_8018 *v, const float *m, Vec_8018 *
 #pragma push
 #pragma processor 750
 extern float fn_80144514(float, float, float, float, float, float);
-#pragma push
-#pragma processor 750
+#pragma scheduling 603
 void fn_8018BFA0(void *out0, float *a, int *b0, int arg3, float arg4, float arg5) {
     float *out = (float *)out0;
     float *b = (float *)b0;
@@ -288,7 +287,7 @@ void fn_8018BFA0(void *out0, float *a, int *b0, int arg3, float arg4, float arg5
     out[10] -= scratch[1];
     out[11] -= scratch[2];
 }
-#pragma pop
+#pragma scheduling reset
 
 /* Empty stub (no operation). */
 void fn_8018C50C(void) {
