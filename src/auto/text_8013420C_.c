@@ -108,10 +108,10 @@ void fn_8013436C(LoadPool *pool, s32 unused) {
     }
 }
 #pragma use_lmw_stmw reset
-s32 fn_8012C5B8(s32, s32, s32);
-s32 fn_8012C6F0(void *);
-void fn_8012C720(void *, s32, s32, s32);
-void fn_802E317C(const char *, ...);
+s32 fn_8012C5B8(s32, s32, s32); /* open a resource stream (path, tag, size) */
+s32 fn_8012C6F0(void *); /* query a stream's resource size */
+void fn_8012C720(void *, s32, s32, s32); /* start a stream transfer */
+void fn_802E317C(const char *, ...); /* formatted log/warning */
 #pragma use_lmw_stmw off
 /* Reserve a load-pool slot for a resource stream: refuse if three loads are
  * already active, otherwise claim the first free entry, open the resource with
