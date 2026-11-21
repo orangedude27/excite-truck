@@ -10,4 +10,6 @@ void __AXDSPInitCallback(void) {
 }
 
 void fn_8000D7E4(void) {
+    /* No-op stub: empty callback in the scene/menu shutdown chain; does nothing
+       in this build (compiles to a bare 'blr'). */
 }
