@@ -191,21 +191,27 @@ void fn_8028E070(float time) {
 #pragma small_data off
 __declspec(section ".data") extern int lbl_804B34B0;
 #pragma scheduling invalid_target
+/* End a particle update pass: advance every effect in the primary emitter list by
+ * the frame time, then disallow further particle adds. */
 void fn_8028E080(void) {
-    struct Table { int entries[64]; int count; } *list;
+#define gParticleTime lbl_8055F738
+#define gAllowParticleAdd lbl_8055F73C
+    EfList *list;
     int *emitter;
     int i;
     emitter = (int *)&lbl_804B34B0;
-    list = (struct Table *)emitter;
-    lbl_8055F73C = 0;
+    list = (EfList *)emitter;
+    gAllowParticleAdd = 0;
     i = 0;
     goto test;
 body:
-    fn_8028F8E0(*emitter, lbl_8055F738);
+    fn_8028F8E0(*emitter, gParticleTime);
     emitter++;
     i++;
 test:
     if (i < list->count) goto body;
+#undef gAllowParticleAdd
+#undef gParticleTime
 }
 #pragma scheduling on
 void fn_8028DF58(void) {
