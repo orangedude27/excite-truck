@@ -27,39 +27,46 @@ extern char lbl_80559CD8;
 #pragma paired_single off
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma readonly_strings off
+#pragma pool_strings off
 extern "C" void fn_8013B7B4(float *arg0, int value) {
-    struct List { virtual void v0() = 0; virtual void *getAt(int) = 0; };
-    struct Item { virtual const char *getName() = 0; };
-    struct DataItem {
-        virtual void v0() = 0; virtual void v1() = 0; virtual void v2() = 0;
-        virtual void v3() = 0; virtual void v4() = 0; virtual void v5() = 0;
-        virtual void v6() = 0; virtual float getFloat(const char *) = 0;
+    struct List {
+        virtual void v0() = 0;
+        virtual void *getAt(int) = 0;
     };
-    const char **table;
-    char *keys = lbl_8032C390;
-    void *(*getList)(void *) = fn_80131808;
+    struct Item {
+        virtual const char *getName() = 0;
+    };
+    struct DataItem {
+        virtual void v0() = 0;
+        virtual void v1() = 0;
+        virtual void v2() = 0;
+        virtual void v3() = 0;
+        virtual void v4() = 0;
+        virtual void v5() = 0;
+        virtual void v6() = 0;
+        virtual float getFloat(const char *) = 0;
+    };
     const char **namep;
     float *out;
     void *list;
     void *item;
     int i;
     const char *name;
-    const char *names[3];
     unsigned int j;
-    list = getList(keys);
+    list = fn_80131808((void *)"catchup.val");
     if (list == 0) goto error;
-    table = lbl_802F9388;
     i = 0;
     while ((item = ((List *)list)->getAt(i)) != 0) {
         name = ((Item *)item)->getName();
-        names[0] = table[0]; names[1] = table[1]; names[2] = table[2];
+        const char *names[3] = { "Easy", "Medium", "Hard" };
         out = arg0;
         for (j = 0, namep = names; j < 3; j++, namep++, out += 4) {
             if (stricmp(*namep, name) == 0) {
-                out[0] = ((DataItem *)item)->getFloat((const char *)&lbl_80559CD8);
-                out[1] = ((DataItem *)item)->getFloat(keys + 0xC);
-                out[2] = ((DataItem *)item)->getFloat(keys + 0x18);
-                out[3] = (float)value * ((DataItem *)item)->getFloat(keys + 0x28);
+                out[0] = ((DataItem *)item)->getFloat("begin_t");
+                out[1] = ((DataItem *)item)->getFloat("effect_t");
+                out[2] = ((DataItem *)item)->getFloat("speed_factor");
+                out[3] = (float)value * ((DataItem *)item)->getFloat("compare_car_pct");
             }
         }
         i++;
@@ -67,7 +74,7 @@ extern "C" void fn_8013B7B4(float *arg0, int value) {
     fn_80131818(list);
     return;
 error:
-    ((void (*)(const char *, ...))fn_802E317C)(keys + 0x38);
+    ((void (*)(const char *, ...))fn_802E317C)("no catchup.val?");
 }
 #pragma pop
 
@@ -148,7 +155,7 @@ void fn_8013BAE4(int arg0) {
     float sp10[12];
     int spC;
     float sp8;
-    volatile float *p;
+    float *q;
     float t0, t1, t2, t3;
     float vf;
     double v;
@@ -159,15 +166,15 @@ void fn_8013BAE4(int arg0) {
     fn_8013B7B4(sp10, arg0);
     index = *(int*)((char*)fn_801E87A8() + 0xC);
     fn_8013B6C0(&spC, &sp8, index);
-    p = (volatile float *)(sp10 + spC * 4);
-    t0 = p[0];
-    *(volatile float*)&lbl_8042F8B8[0] = t0 + sp8 * (p[4] - t0);
-    t1 = p[1];
-    *(volatile float*)&lbl_8042F8B8[1] = t1 + sp8 * (p[5] - t1);
-    t2 = p[2];
-    *(volatile float*)&lbl_8042F8B8[2] = t2 + sp8 * (p[6] - t2);
-    t3 = p[3];
-    v = t3 + sp8 * (p[7] - t3);
+    q = sp10 + spC * 4;
+    t0 = *(volatile float *)(q + 0);
+    *(volatile float*)&lbl_8042F8B8[0] = t0 + sp8 * (*(volatile float *)(q + 4) - t0);
+    t1 = *(volatile float *)(q + 1);
+    *(volatile float*)&lbl_8042F8B8[1] = t1 + sp8 * (*(volatile float *)(q + 5) - t1);
+    t2 = *(volatile float *)(q + 2);
+    *(volatile float*)&lbl_8042F8B8[2] = t2 + sp8 * (*(volatile float *)(q + 6) - t2);
+    t3 = *(volatile float *)(q + 3);
+    v = t3 + sp8 * (*(volatile float *)(q + 7) - t3);
     vf = (float)v;
     *(volatile float*)&lbl_8042F8B8[3] = (float)v;
     if (vf < lbl_80561478) v = vf - lbl_8056147C;
