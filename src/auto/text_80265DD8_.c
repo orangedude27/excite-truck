@@ -2194,91 +2194,94 @@ char fn_8026A38C(void) {
 extern float lbl_80563CBC, lbl_80563C2C, lbl_80563C20, lbl_8055E3C8;
 #pragma push
 #pragma scheduling on
-void fn_8026A394(void *arg0) {
- int i = 0;
- while (i < 4) {
-  char *p = (char *)fn_80267EE4(i);
-  if (*(void **)(p + 0x140) == arg0) {
-   char *q;
-   volatile unsigned int *src;
-   volatile unsigned int *dst;
-   unsigned int one;
-   float factor;
-   float scale;
-   register float threshold;
-   float zero;
-   float copy;
-   unsigned int value1;
-   unsigned int value0;
-   unsigned int value3;
-   unsigned int value2;
-   unsigned int value5;
-   unsigned int value4;
-   unsigned int value7;
-   unsigned int value6;
-   unsigned int value8;
-   unsigned int value10;
-   unsigned int value9;
-   unsigned int value11;
-   one = 1;
-   factor = 0.03f;
-   *(volatile unsigned char *)(p + 0x139) = one;
-   threshold = 1.0f;
-   *(volatile unsigned char *)(p + 0x138) = one;
-   q = *(char * volatile *)(p + 0x140);
-   scale = *(float *)(q + 0x25d4);
-   factor = factor * scale;
-   threshold = threshold < factor ? threshold : factor;
-   *(float *)(p + 0x13c) = threshold;
-   zero = lbl_80563C20;
-   *(float *)(p + 0x154) = zero;
-   *(float *)(p + 0x158) = zero;
-   src = (volatile unsigned int *)(p + 0x58);
-   dst = (volatile unsigned int *)(p + 0x1f8);
-   value0 = src[0];
-   value1 = src[1];
-   dst[0] = value0;
-   dst[1] = value1;
-   src = (volatile unsigned int *)(p + 0x60);
-   dst = (volatile unsigned int *)(p + 0x200);
-   value2 = src[0];
-   value3 = src[1];
-   dst[0] = value2;
-   dst[1] = value3;
-   src = (volatile unsigned int *)(p + 0x68);
-   dst = (volatile unsigned int *)(p + 0x208);
-   value4 = src[0];
-   value5 = src[1];
-   dst[0] = value4;
-   dst[1] = value5;
-   src = (volatile unsigned int *)(p + 0x70);
-   dst = (volatile unsigned int *)(p + 0x210);
-   value6 = src[0];
-   value7 = src[1];
-   dst[0] = value6;
-   dst[1] = value7;
-   src = (volatile unsigned int *)(p + 0x78);
-   dst = (volatile unsigned int *)(p + 0x218);
-   value8 = src[0];
-   dst[0] = value8;
-   src = (volatile unsigned int *)(p + 0x7c);
-   dst = (volatile unsigned int *)(p + 0x21c);
-   value9 = src[0];
-   value10 = src[1];
-   dst[0] = value9;
-   dst[1] = value10;
-   src = (volatile unsigned int *)(p + 0x84);
-   dst = (volatile unsigned int *)(p + 0x224);
-   value11 = src[0];
-   dst[0] = value11;
-   copy = *(float *)(p + 0xbc);
-   *(float *)(p + 0x1f4) = copy;
-   copy = lbl_8055E3C8;
-   *(float *)(p + 0x1f0) = copy;
-   return;
-  }
-  i++;
- }
+/* After a truck respawns, snap the state of the camera following it: arm the
+ * one-shot reset flags, clamp the speed-based shake to the truck's current
+ * speed, clear the crash-sound level and snapshot the transform and FOV. */
+void fn_8026A394(void *subject) {
+    int camIndex = 0;
+    while (camIndex < CAMERA_COUNT) {
+        Camera *cam = (Camera *)fn_80267EE4(camIndex);
+        if (cam->subjectObject == subject) {
+            char *followed;
+            volatile unsigned int *src;
+            volatile unsigned int *dst;
+            unsigned int one;
+            float speedFactor;
+            float speed;
+            register float shake;
+            float zero;
+            float copy;
+            unsigned int word1;
+            unsigned int word0;
+            unsigned int word3;
+            unsigned int word2;
+            unsigned int word5;
+            unsigned int word4;
+            unsigned int word7;
+            unsigned int word6;
+            unsigned int word8;
+            unsigned int word10;
+            unsigned int word9;
+            unsigned int word11;
+            one = 1;
+            speedFactor = 0.03f;
+            *(volatile unsigned char *)&cam->b139 = one;
+            shake = 1.0f;
+            *(volatile unsigned char *)&cam->reset = one;
+            followed = *(char * volatile *)&cam->subjectObject;
+            speed = *(float *)(followed + 0x25d4);
+            speedFactor = speedFactor * speed;
+            shake = shake < speedFactor ? shake : speedFactor;
+            cam->f13C = shake;
+            zero = lbl_80563C20;
+            cam->volume = zero;
+            cam->startTime = zero;
+            src = (volatile unsigned int *)((char *)cam + 0x58);
+            dst = (volatile unsigned int *)((char *)cam + 0x1f8);
+            word0 = src[0];
+            word1 = src[1];
+            dst[0] = word0;
+            dst[1] = word1;
+            src = (volatile unsigned int *)((char *)cam + 0x60);
+            dst = (volatile unsigned int *)((char *)cam + 0x200);
+            word2 = src[0];
+            word3 = src[1];
+            dst[0] = word2;
+            dst[1] = word3;
+            src = (volatile unsigned int *)((char *)cam + 0x68);
+            dst = (volatile unsigned int *)((char *)cam + 0x208);
+            word4 = src[0];
+            word5 = src[1];
+            dst[0] = word4;
+            dst[1] = word5;
+            src = (volatile unsigned int *)((char *)cam + 0x70);
+            dst = (volatile unsigned int *)((char *)cam + 0x210);
+            word6 = src[0];
+            word7 = src[1];
+            dst[0] = word6;
+            dst[1] = word7;
+            src = (volatile unsigned int *)((char *)cam + 0x78);
+            dst = (volatile unsigned int *)((char *)cam + 0x218);
+            word8 = src[0];
+            dst[0] = word8;
+            src = (volatile unsigned int *)((char *)cam + 0x7c);
+            dst = (volatile unsigned int *)((char *)cam + 0x21c);
+            word9 = src[0];
+            word10 = src[1];
+            dst[0] = word9;
+            dst[1] = word10;
+            src = (volatile unsigned int *)((char *)cam + 0x84);
+            dst = (volatile unsigned int *)((char *)cam + 0x224);
+            word11 = src[0];
+            dst[0] = word11;
+            copy = cam->fov;
+            cam->f1F0[1] = copy;
+            copy = lbl_8055E3C8;
+            cam->f1F0[0] = copy;
+            return;
+        }
+        camIndex++;
+    }
 }
 #pragma pop
     extern void fn_80269BB0(int, unsigned int, int *, float *);
