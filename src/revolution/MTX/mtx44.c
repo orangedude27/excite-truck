@@ -4,6 +4,9 @@
 // MSL tan() lives in an unnamed MSL translation unit (auto_03_8002B0D8_text).
 extern double fn_8002EF30(double x);
 
+#define DEG_TO_RAD 0.017453292f
+
+/* Builds a perspective projection matrix from frustum top/bottom/left/right/near/far bounds. */
 void C_MTXFrustum(Mtx44 mtx, f32 t, f32 b, f32 l, f32 r, f32 n, f32 f) {
     f32 invrange;
 
