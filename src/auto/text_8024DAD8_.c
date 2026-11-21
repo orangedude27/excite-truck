@@ -57,6 +57,7 @@ extern void fn_80255918(void *, s32);
 extern void fn_8024739C(void);
 #pragma push
 #pragma use_lmw_stmw off
+/* No-op hook wrapper: forwards to the stub fn_8024739C (which just returns 0); emitted as a tail call. */
 void fn_8024DAD8(void) {
     fn_8024739C();
 }
