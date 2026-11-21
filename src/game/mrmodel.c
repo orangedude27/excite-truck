@@ -2067,7 +2067,9 @@ void fn_802C8230(void) {
 }
 
 extern void fn_802DB2B8(void);
-void fn_802C8234(void) { fn_802DB2B8(); }
+/* mrmodel: forward the water-amplitude config value to the model-config setter
+ * (fn_802DB2B8, a no-op in this build). */
+void fn_802C8234(float amplitude) { fn_802DB2B8(); }
 
 extern int lbl_8055D008;
 extern int fn_8012C4E4(void *, void *, int);
