@@ -435,7 +435,7 @@ s32 NANDGetCurrentDir(char* out) {
     return NAND_RESULT_OK;
 }
 
-static s32 NANDGetHomeDir(char* out) {
+s32 NANDGetHomeDir(char* out) {
     if (!nandIsInitialized()) {
         return NAND_RESULT_FATAL_ERROR;
     }
