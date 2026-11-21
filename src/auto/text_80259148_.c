@@ -1416,6 +1416,8 @@ void fn_8025B0E8(void *dst, const void *src) {
 }
 
 void fn_8025B134(void) {
+    /* Empty callback: does no work and leaves its incoming pointer in r3, so when called
+     * as (void* (*)(void*)) it effectively returns the argument unchanged (identity source for a copy). */
 }
 
 void fn_8025B138(void *arg0) {
