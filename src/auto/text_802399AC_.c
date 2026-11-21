@@ -866,6 +866,7 @@ void fn_8023B1A0(void *widget) {
 }
 #pragma pop
 
+/* Empty no-op callback in the UI options code; performs no action when invoked. */
 void fn_8023B21C(void) {
 }
 
