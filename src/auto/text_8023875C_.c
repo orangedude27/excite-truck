@@ -176,5 +176,3 @@ void fn_80238B44(int x0, int y0, int x1, int y1, int screen) {
     fn_802C8D74();
 }
 #pragma use_lmw_stmw on
-
-#include <stdarg.h>
