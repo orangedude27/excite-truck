@@ -169,10 +169,12 @@ u8 fn_80215FF4(u8 *pValue) {
 
 #define getCurrentInputNibble fn_802E4A10
 #pragma scheduling invalid_target
-s32 fn_80215FFC(const void *arg0) {
-    s32 result = 0;
-    if (*(const u8 *)arg0 != 0 && *(const s32 *)((const u8 *)arg0 + 4) == getCurrentInputNibble()) result = 1;
-    return result;
+s32 fn_80215FFC(const void *entry) {
+    /* True when the option entry is active (byte +0) and its input-type id (s32 +4)
+     * equals the high nibble of the current input word. */
+    s32 matches = 0;
+    if (*(const u8 *)entry != 0 && *(const s32 *)((const u8 *)entry + 4) == getCurrentInputNibble()) matches = 1;
+    return matches;
 }
 #pragma scheduling on
 #undef getCurrentInputNibble
