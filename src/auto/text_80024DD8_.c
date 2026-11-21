@@ -27,10 +27,10 @@ void *__memrchr(const unsigned char *src, int val, unsigned int count) {
 }
 
 /* Compare two byte buffers lexicographically; returns 0, <0, or >0. */
-int memcmp(const unsigned char *arg0, const unsigned char *arg1, unsigned int arg2) {
-    const unsigned char *p = arg0 - 1;
-    const unsigned char *q = arg1 - 1;
-    unsigned int n = arg2 + 1;
+int memcmp(const unsigned char *a, const unsigned char *b, unsigned int count) {
+    const unsigned char *p = a - 1;
+    const unsigned char *q = b - 1;
+    unsigned int n = count + 1;
     while (--n != 0) {
         if (*++p != *++q) {
             if (*p < *q) return -1;
