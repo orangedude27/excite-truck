@@ -866,8 +866,9 @@ int fn_80131264(void *key) {
     return fn_801302E0(key);
 }
 
-void fn_80131268(void *arg0) {
-    fn_80131234(arg0);
+/* Tail-call wrapper: resolve a message key to its localized text via fn_80131234. */
+void fn_80131268(void *key) {
+    fn_80131234(key);
 }
 
 extern int lbl_8055E044;
