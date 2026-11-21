@@ -13,6 +13,7 @@ extern void fn_80148134(float *, float *, int, float, float);
 extern void fn_802C8E00(int, int, float, float, float, float, float);
 typedef struct VT390 { int pad[4]; char *(*fn)(void *, void *); } VT390;
 typedef struct Obj390 { VT390 *vt; } Obj390;
+static inline float ScaleF390(float v, float s) { return v * s; }
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
@@ -27,7 +28,7 @@ extern "C" void fn_801390B0(void *arg0, float *arg1, float *arg2, int arg3, floa
     float pos[2];
     char *obj;
     int color;
-    float f1, f2, f3, f4;
+    float f4, f3, f1, f2;
     char *tbl = lbl_8032BFAC;
     if (arg3 != 0) tbl = lbl_8032BFA0;
     obj = ((Obj390 *)arg0)->v2(tbl);
