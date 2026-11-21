@@ -129,6 +129,10 @@ void fn_802DD738(int index, float value) {
 }
 
 void fn_802DD750(void) {
+    /* Empty no-op in the split-screen view-region / texture-copy cache group,
+       sitting between fn_802DD738 (cache write) and fn_802DD754.  When reached
+       through the fn_802C2C68 tail-call wrapper the caller's arguments are
+       ignored and nothing changes; compiles to a bare 'blr'. */
 }
 
 extern double lbl_805650A0;
@@ -139,7 +143,7 @@ void fn_802DEA6C();
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma opt_common_subs off
 void fn_802DD754(void)
 {
   float *entry;
