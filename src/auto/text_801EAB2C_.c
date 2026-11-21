@@ -37,15 +37,17 @@ extern short lbl_80562E28;
 extern u8 lbl_80339E60[];
 #define kBaseVTable lbl_80339E60
 #define kField38Init lbl_80562E28 /* -2 */
-void fn_801EAB2C(void * __restrict arg0) {
+void fn_801EAB2C(void * __restrict object) {
+    /* Initialize a base sound object: install the base vtable, set the embedded
+     * transform to the identity-like pattern [1,0,0,0]*3, and default +0x38 to -2. */
     float b;
     float a;
-    void *vptr = &lbl_80339E60;
-    float *p = (float *)arg0;
+    void *vptr = &kBaseVTable;
+    float *p = (float *)object;
     a = 1.0f;
     b = 0.0f;
-    *(float volatile *)((char *)arg0 + 4) = a;
-    *(int *)arg0 = (int)vptr;
+    *(float volatile *)((char *)object + 4) = a;
+    *(int *)object = (int)vptr;
     p[1] = a;
     p[2] = b;
     p[3] = b;
@@ -58,7 +60,7 @@ void fn_801EAB2C(void * __restrict arg0) {
     p[10] = b;
     p[11] = b;
     p[12] = b;
-    *(short *)((char *)arg0 + 0x38) = lbl_80562E28;
+    *(short *)((char *)object + 0x38) = kField38Init;
 }
 
 /* Trampoline during SeqHeap setup: forward (id, object+0x34, object) to fn_80176948. */
