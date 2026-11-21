@@ -3308,46 +3308,50 @@ extern "C" s32 fn_800DB398(s32 object, s32 deleteFlag) {
     return object;
 }
 
-void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *src) {
+void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *pane, const void *resource) {
+    /* Construct an nw4hbm::lyt::Pane in place from a res::Pane resource: install
+     * the base Pane vtable, clear the flags, make both LinkLists empty (self-
+     * pointing sentinel nodes at +0x14 and +0x20), default the size fields to
+     * zero, then copy the names and the transform/size floats out of the resource. */
     u32 zero = 0;
-    void *list14 = (u8 *)dst + 0x14;
-    f32 defaultValue = lbl_80560EA8;
-    void *list20 = (u8 *)dst + 0x20;
-    *(volatile u32 *)((u8 *)dst + 0x14) = zero;
-    *(volatile u32 *)((u8 *)dst + 0x18) = zero;
-    *(volatile u32 *)((u8 *)dst + 0x20) = zero;
-    *(volatile u32 *)((u8 *)dst + 0x24) = zero;
-    *(volatile u32 *)((u8 *)dst + 4) = zero;
-    *(volatile u32 *)((u8 *)dst + 8) = zero;
-    *(volatile u32 *)dst = (u32)lbl_8032012C;
-    *(u32 *)((u8 *)dst + 0x10) = zero;
-    *(void **)((u8 *)dst + 0x14) = list14;
-    *(void **)((u8 *)dst + 0x18) = list14;
-    *(u32 *)((u8 *)dst + 0x1C) = zero;
-    *(void **)((u8 *)dst + 0x20) = list20;
-    *(void **)((u8 *)dst + 0x24) = list20;
-    *(f32 *)((u8 *)dst + 0x4C) = defaultValue;
-    *(f32 *)((u8 *)dst + 0x50) = defaultValue;
-    *(u32 *)((u8 *)dst + 0xC) = zero;
-    *(u32 *)((u8 *)dst + 0x28) = zero;
-    *((u8 *)dst + 0xD0) = (u8)zero;
-    *((u8 *)dst + 0xCC) = *((const u8 *)src + 9);
-    strncpy((char *)dst + 0xB4, (const char *)src + 0xC, 0x10);
-    strncpy((char *)dst + 0xC4, (const char *)src + 0x1C, 8);
-    *(f32 *)((u8 *)dst + 0x2C) = *(const f32 *)((const u8 *)src + 0x24);
-    *(f32 *)((u8 *)dst + 0x30) = *(const f32 *)((const u8 *)src + 0x28);
-    *(f32 *)((u8 *)dst + 0x34) = *(const f32 *)((const u8 *)src + 0x2C);
-    *(f32 *)((u8 *)dst + 0x38) = *(const f32 *)((const u8 *)src + 0x30);
-    *(f32 *)((u8 *)dst + 0x3C) = *(const f32 *)((const u8 *)src + 0x34);
-    *(f32 *)((u8 *)dst + 0x40) = *(const f32 *)((const u8 *)src + 0x38);
-    *(f32 *)((u8 *)dst + 0x44) = *(const f32 *)((const u8 *)src + 0x3C);
-    *(f32 *)((u8 *)dst + 0x48) = *(const f32 *)((const u8 *)src + 0x40);
-    *(f32 *)((u8 *)dst + 0x4C) = *(const f32 *)((const u8 *)src + 0x44);
-    *(f32 *)((u8 *)dst + 0x50) = *(const f32 *)((const u8 *)src + 0x48);
-    *((u8 *)dst + 0xCD) = *((const u8 *)src + 0xA);
-    *((u8 *)dst + 0xCE) = *((const u8 *)src + 0xA);
-    *((u8 *)dst + 0xCF) = *((const u8 *)src + 8);
-    return dst;
+    void *childListSentinel = (u8 *)pane + 0x14;
+    f32 defaultSize = lbl_80560EA8;
+    void *secondListSentinel = (u8 *)pane + 0x20;
+    *(volatile u32 *)((u8 *)pane + 0x14) = zero;
+    *(volatile u32 *)((u8 *)pane + 0x18) = zero;
+    *(volatile u32 *)((u8 *)pane + 0x20) = zero;
+    *(volatile u32 *)((u8 *)pane + 0x24) = zero;
+    *(volatile u32 *)((u8 *)pane + 4) = zero;
+    *(volatile u32 *)((u8 *)pane + 8) = zero;
+    *(volatile u32 *)pane = (u32)lbl_8032012C;
+    *(u32 *)((u8 *)pane + 0x10) = zero;
+    *(void **)((u8 *)pane + 0x14) = childListSentinel;
+    *(void **)((u8 *)pane + 0x18) = childListSentinel;
+    *(u32 *)((u8 *)pane + 0x1C) = zero;
+    *(void **)((u8 *)pane + 0x20) = secondListSentinel;
+    *(void **)((u8 *)pane + 0x24) = secondListSentinel;
+    *(f32 *)((u8 *)pane + 0x4C) = defaultSize;
+    *(f32 *)((u8 *)pane + 0x50) = defaultSize;
+    *(u32 *)((u8 *)pane + 0xC) = zero;
+    *(u32 *)((u8 *)pane + 0x28) = zero;
+    *((u8 *)pane + 0xD0) = (u8)zero;
+    *((u8 *)pane + 0xCC) = *((const u8 *)resource + 9);
+    strncpy((char *)pane + 0xB4, (const char *)resource + 0xC, 0x10);
+    strncpy((char *)pane + 0xC4, (const char *)resource + 0x1C, 8);
+    *(f32 *)((u8 *)pane + 0x2C) = *(const f32 *)((const u8 *)resource + 0x24);
+    *(f32 *)((u8 *)pane + 0x30) = *(const f32 *)((const u8 *)resource + 0x28);
+    *(f32 *)((u8 *)pane + 0x34) = *(const f32 *)((const u8 *)resource + 0x2C);
+    *(f32 *)((u8 *)pane + 0x38) = *(const f32 *)((const u8 *)resource + 0x30);
+    *(f32 *)((u8 *)pane + 0x3C) = *(const f32 *)((const u8 *)resource + 0x34);
+    *(f32 *)((u8 *)pane + 0x40) = *(const f32 *)((const u8 *)resource + 0x38);
+    *(f32 *)((u8 *)pane + 0x44) = *(const f32 *)((const u8 *)resource + 0x3C);
+    *(f32 *)((u8 *)pane + 0x48) = *(const f32 *)((const u8 *)resource + 0x40);
+    *(f32 *)((u8 *)pane + 0x4C) = *(const f32 *)((const u8 *)resource + 0x44);
+    *(f32 *)((u8 *)pane + 0x50) = *(const f32 *)((const u8 *)resource + 0x48);
+    *((u8 *)pane + 0xCD) = *((const u8 *)resource + 0xA);
+    *((u8 *)pane + 0xCE) = *((const u8 *)resource + 0xA);
+    *((u8 *)pane + 0xCF) = *((const u8 *)resource + 8);
+    return pane;
 }
 
 extern "C" const char lbl_8031E908[];
