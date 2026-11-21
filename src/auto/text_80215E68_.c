@@ -493,6 +493,8 @@ void fn_802168DC(void) {
     fn_80218ADC();
 }
 
+/* UIWindow_DispatchToGroup: forward to the window method that calls a virtual
+ * handler on each child widget belonging to the given group. */
 void fn_802168E0(void) {
     fn_80218B88();
 }
