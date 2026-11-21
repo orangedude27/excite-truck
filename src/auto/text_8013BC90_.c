@@ -155,7 +155,7 @@ extern "C" void fn_8013BD5C(void *arg0, void *arg1) {
     void *p;
 
     fn_8013BD30(arg0);
-    p = ((Selector *)arg1)->select(names);
+    p = ((Selector *)arg1)->select(lbl_8032C3D8);
     if (p != 0) {
         v[0] = ((Getter *)p)->get(lbl_80559CE0, v[0]);
         v[1] = ((Getter *)p)->get(lbl_80559CE8, v[1]);
@@ -212,6 +212,7 @@ copied:
 }
 #pragma cplusplus reset
 
+/* Tail-call wrapper: fill the line parameters pointed to by the incoming r3 (line->params) with their defaults, via fn_8013BD30. */
 void fn_8013BF3C(void) {
     ((void (*)(void))fn_8013BD30)();
 }
