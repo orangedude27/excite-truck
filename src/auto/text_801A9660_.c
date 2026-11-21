@@ -1385,8 +1385,7 @@ extern void fn_801A2674(void *, int, int, float);
 extern void fn_801C1CBC(int, int, void *, int, void *, int, void *);
 extern float lbl_805624AC, lbl_805624F0, lbl_805624F4, lbl_805624F8;
 #pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
+#pragma opt_lifetimes on
 void fn_801AC544(void *arg0) {
     struct Point { float x,y,z,a,b; };
     struct Link { int a,b; float distance, value; };
@@ -1648,6 +1647,23 @@ void fn_801ACF94(void) {
         }
     }
 }
+/* A spring between a point of a rigid body (+0x34) and a target point: a fixed
+   world point (+0x00) when there is no second body (+0x0C == 0), or that body's
+   world position of +0x00.  fn_801AD0E0/fn_801AD148/fn_801AD28C set one up and
+   fn_801AD394 measures it and feeds the force it produces into the bodies. */
+typedef struct Spring {
+    Vec target;                 /* +0x00: point to pull the anchor towards */
+    void *other;                /* +0x0C: the body +0x00 is a point of, 0 for a fixed point */
+    Vec anchor;                 /* +0x10: point on `body`, in its own frame */
+    float strength;             /* +0x1C: force per unit of stretch */
+    float damping;              /* +0x20: force per unit of closing speed */
+    float range;                /* +0x24: how far past the rest length the spring still acts */
+    float restLength;           /* +0x28 */
+    float stretch;              /* +0x2C: out: how far past the rest length it is */
+    float flatDistance;         /* +0x30: out: the target-anchor distance ignoring height */
+    void *body;                 /* +0x34 */
+} Spring;
+
 #pragma scheduling 750
 
 extern float lbl_8056250C;
@@ -1742,22 +1758,6 @@ void fn_801AD28C(void *arg0, void *arg1, void *arg2, Vec *arg3, f32 farg1, f32 f
     fn_801AD0E0(arg0, arg3, arg2, arg1, farg1, farg0);
     *out = distance;
 }
-/* A spring between a point of a rigid body (+0x34) and a target point: a fixed
-   world point (+0x00) when there is no second body (+0x0C == 0), or that body's
-   world position of +0x00.  fn_801AD0E0/fn_801AD148/fn_801AD28C set one up and
-   fn_801AD394 measures it and feeds the force it produces into the bodies. */
-typedef struct Spring {
-    Vec target;                 /* +0x00: point to pull the anchor towards */
-    void *other;                /* +0x0C: the body +0x00 is a point of, 0 for a fixed point */
-    Vec anchor;                 /* +0x10: point on `body`, in its own frame */
-    float strength;             /* +0x1C: force per unit of stretch */
-    float damping;              /* +0x20: force per unit of closing speed */
-    float range;                /* +0x24: how far past the rest length the spring still acts */
-    float restLength;           /* +0x28 */
-    float stretch;              /* +0x2C: out: how far past the rest length it is */
-    float flatDistance;         /* +0x30: out: the target-anchor distance ignoring height */
-    void *body;                 /* +0x34 */
-} Spring;
 
 /* Measure a spring and apply it.  Both ends are brought into the world: the
    anchor (+0x10) through the body at +0x34, the target (+0x00) through the
@@ -1905,7 +1905,6 @@ extern "C" void fn_801AD5F4(void *arg0, void *arg1) {
         virtual void v15();
         virtual void v16(float *, float *, int, int, float, float, float, float, float, float);
     };
-    register void *object = arg0;
     register float scale = 5.0f;
     register float factor = 0.8f;
     float sp14[3];
@@ -1914,28 +1913,28 @@ extern "C" void fn_801AD5F4(void *arg0, void *arg1) {
     register float temp_f1;
     register float temp_f0;
 
-    sp14[0] = *(float *)((char *)object + 4) * scale;
-    sp14[1] = *(float *)((char *)object + 8) * scale;
-    sp14[2] = *(float *)((char *)object + 0xC) * scale;
-    temp_f2 = *(float *)((char *)arg1 + 0x68) - *(float *)((char *)object + 0x18);
-    temp_f1 = *(float *)((char *)arg1 + 0x64) - *(float *)((char *)object + 0x14);
-    temp_f0 = *(float *)((char *)arg1 + 0x60) - *(float *)((char *)object + 0x10);
+    sp14[0] = *(float *)((char *)arg0 + 4) * scale;
+    sp14[1] = *(float *)((char *)arg0 + 8) * scale;
+    sp14[2] = *(float *)((char *)arg0 + 0xC) * scale;
+    temp_f2 = *(float *)((char *)arg1 + 0x68) - *(float *)((char *)arg0 + 0x18);
+    temp_f1 = *(float *)((char *)arg1 + 0x64) - *(float *)((char *)arg0 + 0x14);
+    temp_f0 = *(float *)((char *)arg1 + 0x60) - *(float *)((char *)arg0 + 0x10);
     temp_f2 = factor * temp_f2;
     temp_f1 = factor * temp_f1;
     temp_f0 = factor * temp_f0;
-    temp_f2 = *(float *)((char *)object + 0x18) + temp_f2;
-    temp_f1 = *(float *)((char *)object + 0x14) + temp_f1;
-    temp_f0 = *(float *)((char *)object + 0x10) + temp_f0;
+    temp_f2 = *(float *)((char *)arg0 + 0x18) + temp_f2;
+    temp_f1 = *(float *)((char *)arg0 + 0x14) + temp_f1;
+    temp_f0 = *(float *)((char *)arg0 + 0x10) + temp_f0;
     sp8[2] = temp_f2;
     sp8[0] = temp_f0;
     sp8[1] = temp_f1;
     ((Obj *)arg1)->v16(sp14, sp8,
-                       *(int *)((char *)object + 0x1C),
-                       *(int *)((char *)object + 0x20),
+                       *(int *)((char *)arg0 + 0x1C),
+                       *(int *)((char *)arg0 + 0x20),
                        temp_f1, temp_f2, factor,
-                       *(float *)((char *)object + 0x10),
-                       *(float *)((char *)object + 0x14),
-                       *(float *)((char *)object + 0x18));
+                       *(float *)((char *)arg0 + 0x10),
+                       *(float *)((char *)arg0 + 0x14),
+                       *(float *)((char *)arg0 + 0x18));
 }
 #pragma scheduling on
 #pragma pop
