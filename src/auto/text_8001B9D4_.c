@@ -505,30 +505,35 @@ void fn_8001C0E8(void) {
 
 extern const char lbl_802FD718[];
 #pragma dont_inline on
-s32 fn_8001C0EC(void *arg0, s32 arg1) {
-    s32 value;
-    s32 mode;
-    if (fn_8001BCF0(arg0) == 0) {
-        if (((s32 (*)(void *))fn_8001BD30)(arg0) == 0)
-            goto return_one;
+s32 fn_8001C0EC(void *stat, s32 threshold) {
+    /* Evaluate an integer statistic against a threshold: read the stat's current
+     * value (from its override getter when configured), then compare it less-than
+     * or greater-than according to the compare-type bits (0x40000 / 0x20000) of
+     * the stat record. An unknown compare type is logged and falls through to
+     * less-than; an unconfigured stat simply returns 1. */
+    s32 limit;
+    s32 compareType;
+    if (fn_8001BCF0(stat) == 0) {
+        if (((s32 (*)(void *))fn_8001BD30)(stat) == 0)
+            goto return_true;
     }
-    if (fn_8001BCF0(arg0) != 0) {
-        value = ((s32 (*)(void *))fn_8001C0C4)(arg0);
+    if (fn_8001BCF0(stat) != 0) {
+        limit = ((s32 (*)(void *))fn_8001C0C4)(stat);
     } else {
-        value = ((s32 (*)(void *))fn_8001C0A0)(arg0);
+        limit = ((s32 (*)(void *))fn_8001C0A0)(stat);
     }
-    mode = fn_8001BD28(arg0) & 0x60000;
-    switch (mode) {
-    case 0x40000: goto compare_a;
-    case 0x20000: goto compare_b;
+    compareType = fn_8001BD28(stat) & 0x60000;
+    switch (compareType) {
+    case 0x40000: goto compare_greater;
+    case 0x20000: goto compare_less;
     default: break;
     }
-    ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD718, fn_8001BD28(arg0), fn_8001BD28(arg0) & 0x60000);
-compare_a:
-    return value < arg1;
-compare_b:
-    return arg1 < value;
-return_one:
+    ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD718, fn_8001BD28(stat), fn_8001BD28(stat) & 0x60000);
+compare_greater:
+    return limit < threshold;
+compare_less:
+    return threshold < limit;
+return_true:
     return 1;
 }
 #pragma dont_inline reset
@@ -1146,17 +1151,18 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
     if (temp != 0) {
         record = fn_8001C540(arg0, temp, arg2, 1);
         count = fn_8001CED4(record, arg1, arg4, arg6);
-        if (count < 5) {
+        if (5 > count) {
             pool = lbl_8055D5D0;
             *(u8 *)((u8 *)pool + 8) = 0;
             cursor = *(char **)pool;
             while (*(s8 *)cursor != 0 &&
                    cursor - *(char **)pool < *(s32 *)((u8 *)pool + 4)) {
-                if (stricmp(cursor, arg3) == 0) goto name_ready;
-                goto skip_name;
-            skip_name:
-                while (*(s8 *)cursor != 0) cursor += 1;
-                cursor++;
+                if (stricmp(cursor, arg3) != 0) {
+                    while (*(s8 *)cursor != 0) cursor += 1;
+                    cursor++;
+                    continue;
+                }
+                goto name_ready;
             }
             dest = cursor;
             remaining = *(s32 *)((u8 *)pool + 4) -
