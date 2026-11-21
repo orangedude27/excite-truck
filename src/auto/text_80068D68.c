@@ -4645,9 +4645,8 @@ void uusb_issue_bulk_read(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
-/* Submit an asynchronous USB interrupt read: grab a GKI buffer, build the event
- * header pointing at a 32-byte-aligned payload area, start the transfer, and
- * release the buffer on failure. */
+/* Submit an async USB interrupt read with a 32-byte-aligned payload; release
+ * the GKI buffer if the transfer could not be started. */
 void uusb_issue_intr_read(void) {
     extern char lbl_803142C8[];
     extern u16 fn_8006D8D0(u32);
