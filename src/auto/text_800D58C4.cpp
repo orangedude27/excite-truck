@@ -1505,6 +1505,7 @@ extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBloc
         return 0;
     }
 }
+#pragma scheduling reset
 
 #pragma push
 #pragma scheduling invalid_target
