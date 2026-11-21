@@ -1,5 +1,6 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
+/* Low-level memory and string primitives from the MSL runtime: byte scanning
+ * and comparison, plus the aligned/unaligned forward and reverse block copiers
+ * used by memcpy and memmove. */
 
 /* Scan the first count bytes of src for byte ch; return a pointer to the first
  * match, or NULL if none is found. */
