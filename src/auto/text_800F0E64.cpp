@@ -8099,26 +8099,28 @@ extern "C" s32 AllocChannels__Q46nw4hbm3snd6detail10StrmPlayerFii(void *player, 
 
 #pragma use_lmw_stmw off
 #pragma dont_inline on
+/* Release this StrmPlayer's per-channel stream buffers and its AxVoice, then clear
+ * the channel count, all under one interrupt lock. */
 void FreeChannels__Q46nw4hbm3snd6detail10StrmPlayerFv(void *self) {
     struct { u32 irq; } irqHolder;
     irqHolder.irq = OSDisableInterrupts();
     u32 &irq = irqHolder.irq;
     s32 zero = 0;
-    u8 *player = (u8 *)self;
-    s32 index = 0;
+    u8 *channel = (u8 *)self;
+    s32 channelIndex = 0;
 
-    while (index < *(s32 *)((u8 *)self + 0x4A0)) {
-        void *buffer = *(void **)(player + 0x4A8);
-        if (buffer != 0) {
-            Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(*(void **)((u8 *)self + 0x42C), buffer);
-            *(s32 *)(player + 0x4A8) = zero;
-            *(s32 *)(player + 0x4AC) = zero;
+    while (channelIndex < STRM_CHANNEL_COUNT(self)) {
+        void *streamBuffer = *(void **)(channel + 0x4A8);
+        if (streamBuffer != 0) {
+            Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(*(void **)((u8 *)self + 0x42C), streamBuffer);
+            *(s32 *)(channel + 0x4A8) = zero;
+            *(s32 *)(channel + 0x4AC) = zero;
         }
-        player += 0x38;
-        index += 1;
+        channel += STRM_CHANNEL_SIZE;
+        channelIndex += 1;
     }
 
-    *(s32 *)((u8 *)self + 0x4A0) = zero;
+    STRM_CHANNEL_COUNT(self) = zero;
     if (*(void **)((u8 *)self + 0x438) != 0) {
         Free__Q46nw4hbm3snd6detail7AxVoiceFv(*(void **)((u8 *)self + 0x438));
         *(s32 *)((u8 *)self + 0x438) = zero;
