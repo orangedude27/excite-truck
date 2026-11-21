@@ -817,7 +817,6 @@ int fn_8025A1C4(int object, int deleteFlag) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-static inline int Fn8025A204_Ne(int a, int b) { return a != b; }
 void fn_8025A204(void) {
     extern unsigned char *fn_8001EFAC(int, int);
     struct State {
@@ -860,7 +859,7 @@ void fn_8025A204(void) {
             firstResult = fn_8001EFA0(state.object, state.next);
             secondResult = fn_8001EFA0(state.object, state.selected);
         }
-        state.difference = (firstResult != secondResult);
+        state.difference = Fn8025A204_Ne(firstResult, secondResult);
         state.number = (float)(int)state.selected;
         current = (int)(state.number + lbl_80558DC4);
         fn_80130FCC(state.shortText, 0x14, current);
@@ -869,9 +868,9 @@ void fn_8025A204(void) {
             changed = zero;
         current = fn_8001EFA0(state.object, current);
         state.saved = current;
-        current = fn_8001EFA4(state.object, current + 1);
-        if (current >= 0) {
-            fn_80130FCC(state.spareText, 0x14, current);
+        result = fn_8001EFA4(state.object, current + 1);
+        if (result >= 0) {
+            fn_80130FCC(state.spareText, 0x14, result);
         } else {
             src = (char *)lbl_8055C380;
             count = 0x14;
