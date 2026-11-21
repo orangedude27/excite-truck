@@ -335,82 +335,85 @@ void fn_80279B28(unsigned char *arg0, unsigned char *arg1) {
     arg1[0x2B1] = arg0[0x2B5];
 }
 #pragma opt_unroll_loops off
-void fn_80279C00(unsigned char *dst, unsigned char *src) {
-    unsigned char second, first;
-    unsigned char *source, *target;
+/* Copy a packed car-state buffer into a carstate entry's state block. The state
+ * starts four bytes into the entry (past its vehicleId), so every byte/float/word
+ * is written 4 bytes further into the entry than it is read from the buffer. */
+void fn_80279C00(unsigned char *entry, unsigned char *buffer) {
+    unsigned char secondByte, firstByte;
+    unsigned char *readPtr, *writePtr;
     int i;
-    target = dst + 3;
-    source = src - 1;
+    writePtr = entry + 3;
+    readPtr = buffer - 1;
 
     for (i = 0; i < 0x148; i++) {
-        first = source[1];
-        second = *(source += 2);
-        target[1] = first;
-        *(target += 2) = second;
+        firstByte = readPtr[1];
+        secondByte = *(readPtr += 2);
+        writePtr[1] = firstByte;
+        *(writePtr += 2) = secondByte;
     }
 
-    *(f32 *)(dst + 0x294) = *(f32 *)(src + 0x290);
-    *(f32 *)(dst + 0x298) = *(f32 *)(src + 0x294);
-    *(s32 *)(dst + 0x29C) = *(s32 *)(src + 0x298);
-    *(s32 *)(dst + 0x2A0) = *(s32 *)(src + 0x29C);
+    *(f32 *)(entry + 0x294) = *(f32 *)(buffer + 0x290);
+    *(f32 *)(entry + 0x298) = *(f32 *)(buffer + 0x294);
+    *(s32 *)(entry + 0x29C) = *(s32 *)(buffer + 0x298);
+    *(s32 *)(entry + 0x2A0) = *(s32 *)(buffer + 0x29C);
     {
-        volatile unsigned char *p = src;
+        volatile unsigned char *p = buffer;
         unsigned char even = p[0x2A0];
         unsigned char odd = p[0x2A1];
-        dst[0x2A4] = even;
-        dst[0x2A5] = odd;
+        entry[0x2A4] = even;
+        entry[0x2A5] = odd;
     }
     {
-        volatile unsigned char *p = src;
+        volatile unsigned char *p = buffer;
         unsigned char even = p[0x2A2];
         unsigned char odd = p[0x2A3];
-        dst[0x2A6] = even;
-        dst[0x2A7] = odd;
+        entry[0x2A6] = even;
+        entry[0x2A7] = odd;
     }
     {
-        volatile unsigned char *p = src;
+        volatile unsigned char *p = buffer;
         unsigned char even = p[0x2A4];
         unsigned char odd = p[0x2A5];
-        dst[0x2A8] = even;
-        dst[0x2A9] = odd;
+        entry[0x2A8] = even;
+        entry[0x2A9] = odd;
     }
     {
-        volatile unsigned char *p = src;
+        volatile unsigned char *p = buffer;
         unsigned char even = p[0x2A6];
         unsigned char odd = p[0x2A7];
-        dst[0x2AA] = even;
-        dst[0x2AB] = odd;
+        entry[0x2AA] = even;
+        entry[0x2AB] = odd;
     }
     {
-        volatile unsigned char *p = src;
+        volatile unsigned char *p = buffer;
         unsigned char even = p[0x2A8];
         unsigned char odd = p[0x2A9];
-        dst[0x2AC] = even;
-        dst[0x2AD] = odd;
+        entry[0x2AC] = even;
+        entry[0x2AD] = odd;
     }
     {
-        volatile unsigned char *p = src;
+        volatile unsigned char *p = buffer;
         unsigned char even = p[0x2AA];
         unsigned char odd = p[0x2AB];
-        dst[0x2AE] = even;
-        dst[0x2AF] = odd;
+        entry[0x2AE] = even;
+        entry[0x2AF] = odd;
     }
     {
-        volatile unsigned char *p = src;
+        volatile unsigned char *p = buffer;
         unsigned char even = p[0x2AC];
         unsigned char odd = p[0x2AD];
-        dst[0x2B0] = even;
-        dst[0x2B1] = odd;
+        entry[0x2B0] = even;
+        entry[0x2B1] = odd;
     }
     {
-        volatile unsigned char *p = src;
+        volatile unsigned char *p = buffer;
         unsigned char even = p[0x2AE];
         unsigned char odd = p[0x2AF];
-        dst[0x2B2] = even;
-        dst[0x2B3] = odd;
+        entry[0x2B2] = even;
+        entry[0x2B3] = odd;
     }
-    dst[0x2B4] = src[0x2B0];
-    dst[0x2B5] = src[0x2B1];
+    entry[0x2B4] = buffer[0x2B0];
+    entry[0x2B5] = buffer[0x2B1];
 }
 void fn_80279CD8(void) { fn_802795E8(); }
 
