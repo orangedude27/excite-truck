@@ -78,7 +78,7 @@ extern f32 lbl_80562E50, lbl_80562E54;
 #pragma processor 750
 #pragma scheduling on
 void fn_801EA31C(s32 *arg0) {
-    f32 initial = lbl_80562E50;
+    f32 initial = 2250.0f;
     f32 f1, f2, f3;
     s32 result;
     *(f32 *)lbl_8055EB60 = initial;
