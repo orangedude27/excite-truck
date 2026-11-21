@@ -7,81 +7,74 @@ typedef signed long s32;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern void* lbl_8055FFF0;
-extern s32 fn_802E30C8(const char*, ...);
-extern char lbl_8034D808[];
-extern char lbl_8034D818[];
+extern void *lbl_8055FFF0;                 /* global stream-bank manager */
+extern s32 fn_802E30C8(const char *, ...); /* debug/log print */
+extern char lbl_8034D808[];                /* "+StrmUnloadBank" */
+extern char lbl_8034D818[];                /* "-StrmUnloadBank" */
+
+/* C++ virtual-delete lowering needs this pragma block to match CodeWarrior. */
 #pragma cplusplus on
-struct Dummy { virtual ~Dummy(); };
+struct StrmBankObject { virtual ~StrmBankObject(); };
 #pragma cplusplus reset
 
-// fn_802E759C matches via C++ virtual-delete lowering in a C++ pragma block.
 s32 fn_802E769C(void);
+
 /* Install the freshly created "null" stream-bank manager as the global manager. */
 void fn_802E7578(void) {
-#define gStrmBankMgr lbl_8055FFF0
-    gStrmBankMgr = (void*)fn_802E769C();
-#undef gStrmBankMgr
+    lbl_8055FFF0 = (void *)fn_802E769C();
 }
 
+/* Interface of the global stream-bank manager; slots line up with lbl_8034D860. */
 #pragma cplusplus on
-  struct Dummy_8055FFF0 {
-      virtual ~Dummy_8055FFF0();
-             virtual void f4(s32);
-             virtual void f8(s32);
-              virtual void f12(s32, s32, s32);
-      virtual void f16(s32, s32, s32);
-      virtual void f20(s32);
-      virtual void f24(s32);
+  struct StrmBankManager {
+      virtual ~StrmBankManager();
+             virtual void loadBank(s32 bankName);
+             virtual void unloadBank(s32 bankId);
+              virtual void unloadBankEx(s32 handle, s32 bankId, s32 flags);
+      virtual void method18(s32, s32, s32);
+      virtual void method1C(s32);
+      virtual void setLevel(s32 level);
   };
 #pragma cplusplus on
+/* Destroy and clear the global stream-bank manager. */
 extern "C" void fn_802E759C(void) {
-    /* Destroy and clear the global stream bank manager object (gStrmBankMgr). */
-#define gStrmBankMgr lbl_8055FFF0
-    if (gStrmBankMgr) {
-        delete (Dummy*)gStrmBankMgr;
-        gStrmBankMgr = 0;
+    if (lbl_8055FFF0) {
+        delete (StrmBankObject *)lbl_8055FFF0;
+        lbl_8055FFF0 = 0;
     }
-#undef gStrmBankMgr
 }
+/* Load a bank by its "<id>.bnk" filename; the bank handle comes back in r3. */
 extern "C" void fn_802E75E4(s32 bankName) {
-    /* Loads a stream bank by its "<id>.bnk" filename through the global stream-bank
-       manager's virtual load-bank method (vtable slot +0xC); the resulting bank
-       handle is returned in r3. */
-    ((Dummy_8055FFF0*)lbl_8055FFF0)->f4(bankName);
+    ((StrmBankManager*)lbl_8055FFF0)->loadBank(bankName);
 }
 
 #pragma scheduling invalid_target
-/* Logs before/after unloading a stream bank via the global stream bank object. */
+/* Log before and after unloading a stream bank. */
 extern "C" void fn_802E75FC(s32 bankId) {
     fn_802E30C8(lbl_8034D808);
-    ((Dummy_8055FFF0 *)lbl_8055FFF0)->f8(bankId);
+    ((StrmBankManager *)lbl_8055FFF0)->unloadBank(bankId);
     fn_802E30C8(lbl_8034D818);
 }
 
 #pragma cplusplus reset
-#define gStrmBankMgr lbl_8055FFF0
-#define unloadBank f12
-/* Forwards a stream-bank unload request to the global stream-bank manager's virtual
-   unload-bank method, passing the loaded bank handle, the bank id and the flags. */
+/* Forward an unload request with the bank handle, bank id and flags. */
 extern "C" void fn_802E765C(s32 bankHandle, s32 bankId, s32 flags) {
     s32 handle = bankHandle;
     s32 id = bankId;
     s32 flagBits = flags;
-    ((Dummy_8055FFF0*)gStrmBankMgr)->unloadBank(handle, id, flagBits);
+    ((StrmBankManager*)lbl_8055FFF0)->unloadBankEx(handle, id, flagBits);
 }
 #pragma cplusplus reset
-extern s32 fn_80128668(void);
+extern s32 fn_80128668(void);             /* free */
 extern s32 OSGetConsoleType(void);
-extern s32 fn_802E30C8(const char*, ...);
-extern s32 fn_801284F8(s32, void*);
-extern char lbl_8034D828[];
-extern char lbl_8034D84C[];
-extern char lbl_8034D860[];
+extern s32 fn_801284F8(s32, void *);      /* allocate from a named heap */
+extern char lbl_8034D828[];               /* "StrmBank: creating 'null' manager" */
+extern char lbl_8034D84C[];               /* "NullStrmBank" */
+extern char lbl_8034D860[];               /* null manager vtable */
 #pragma cplusplus on
+/* Set the stream-bank manager's mix level. */
 extern "C" void fn_802E7684(s32 level) {
-    /* Set the stream-bank manager's mix level via virtual slot +0x20. */
-    ((Dummy_8055FFF0*)lbl_8055FFF0)->f24(level);
+    ((StrmBankManager *)lbl_8055FFF0)->setLevel(level);
 }
 #pragma cplusplus reset
 /* Builds the 'null' stream-bank manager the game falls back on: a bare object --
