@@ -6,7 +6,9 @@ extern void __OSBootDol(u32 dolOffset, u32 restartCode, const char** argv);
 static u32 SavedRegionEnd;
 static u32 SavedRegionStart;
 
-/* Disable interrupts, set the MEM1 arena bounds, and boot a DOL image. */
+/* Disable interrupts, pin the MEM1 arena to the reserved 0x81280000-0x812F0000
+ * range, and hand a DOL at dolOffset (a disc offset, ORed with 0x80000000) and
+ * restartCode to __OSBootDol. argvDummy supplies an empty argv list. */
 void fn_80052390(u32 dolOffset, u32 restartCode) {
     u32 argvDummy;
 
