@@ -80,27 +80,39 @@ static inline void fn_801E1048_xh(const f32 *m, const f32 *src, f32 *dst) {
     }
 }
 
-static inline void fn_801E1048_xi(const f32 *m, f32 *srcf, f32 *dstf) {
-    Vec_801E1048 *src = (Vec_801E1048 *)srcf;
-    Vec_801E1048 *dst = (Vec_801E1048 *)dstf;
+static inline void fn_801E1048_xi(const f32 *m, const f32 *src, f32 *dst) {
+    f32 x, y, z;
     if (src == dst) {
-        f32 x, y, z;
-        f32 m00, m10, m20, m01, m11, m21, m02, m12, m22;
-        m10 = m[3]; m11 = m[4]; m12 = m[5];
-        m00 = m[0]; m01 = m[1]; m02 = m[2];
-        m20 = m[6]; m21 = m[7]; m22 = m[8];
-        x = src->x; y = src->y; z = src->z;
-        dst->x = z * m20 + (x * m00 + y * m10);
-        dst->y = z * m21 + (x * m01 + y * m11);
-        dst->z = z * m22 + (x * m02 + y * m12);
+        f32 a, b, c, d, e, f, nx, ny, nz;
+        a = m[3];
+        b = m[4];
+        y = src[1];
+        c = m[0];
+        a = y * a;
+        x = src[0];
+        b = y * b;
+        d = m[1];
+        e = m[2];
+        c = x * c;
+        d = x * d;
+        e = x * e;
+        f = y * m[5];
+        z = src[2];
+        nx = z * m[6] + (c + a);
+        ny = z * m[7] + (d + b);
+        nz = z * m[8] + (e + f);
+        dst[0] = nx;
+        dst[1] = ny;
+        dst[2] = nz;
     } else {
-        f32 m00, m10, m20, m01, m11, m21, m02, m12, m22;
-        m10 = m[3]; m00 = m[0]; m20 = m[6];
-        dst->x = src->z * m20 + (src->x * m00 + src->y * m10);
-        m11 = m[4]; m01 = m[1]; m21 = m[7];
-        dst->y = src->z * m21 + (src->x * m01 + src->y * m11);
-        m12 = m[5]; m02 = m[2]; m22 = m[8];
-        dst->z = src->z * m22 + (src->x * m02 + src->y * m12);
+        x = src[0];
+        y = src[1];
+        z = src[2];
+        x = z * m[6] + (x * m[0] + y * m[3]);
+        dst[0] = x;
+        y = z * m[7] + (x * m[1] + y * m[4]);
+        dst[1] = y;
+        dst[2] = z * m[8] + (x * m[2] + y * m[5]);
     }
 }
 
