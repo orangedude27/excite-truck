@@ -965,6 +965,7 @@ void fn_802E9874(void) {}
 /* No-op NAND-save hook: game-menu init passes this a callback pointer (fn_8023F4B8), but this build discards it. */
 void fn_802E9878(void) {}
 
+/* No-op NAND-save hook: game-menu init passes this a callback pointer (fn_8023F694), but this build discards it. */
 void fn_802E987C(void) {}
 
 void fn_802E9880(void) {}
