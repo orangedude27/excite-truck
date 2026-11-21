@@ -242,6 +242,8 @@ void fn_801D48F4(void) {
     fn_801D58DC();
 }
 
+/* Forwards to the action-sequence lookup fn_801D592C (called with no sequence,
+ * so it just returns the default value) and discards the result. */
 void fn_801D48F8(void) {
     fn_801D592C();
 }
@@ -2324,7 +2326,7 @@ extern "C" int fn_801D707C(void *arg0, void *arg1) {
     extern float lbl_80562ADC;
     extern float lbl_80562AEC;
     extern int fn_80207848(char *, int);
-    extern void fn_802E30C8(char *);
+    extern void fn_802E30C8(const char *, ...);
     Dummy *obj;
     char *src;
     int remaining;
@@ -2333,7 +2335,7 @@ extern "C" int fn_801D707C(void *arg0, void *arg1) {
 
     obj = (Dummy *)arg1;
     if (obj->check(&lbl_8055AC80) == 0) {
-        ((void (*)(const char *, ...))fn_802E30C8)(lbl_80338888);
+        fn_802E30C8(lbl_80338888);
         return 0;
     }
     src = obj->get(&lbl_8055AC80);
