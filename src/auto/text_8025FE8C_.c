@@ -1580,6 +1580,8 @@ void fn_8026213C(void *object) {
     *(s32 *)((u8 *)object + 4) = 0;
 }
 #pragma scheduling on
+/* No-op virtual stub in this build, next to fn_8026215C and the default
+ * getter fn_80262160; no implementation is needed here. */
 void fn_80262158(void) {
 }
 
