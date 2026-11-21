@@ -90,10 +90,6 @@ void *fn_8013C800(int classType) {
     return fn_8013C7D0(classType);
 }
 
-extern int fn_80131808(int);
-extern void fn_802E317C(int, ...);
-extern char lbl_8032C4C0[];
-extern char lbl_8032C4D0[];
 #pragma cplusplus on
 extern "C" int fn_80131808(int);
 extern "C" void fn_802E317C(int, ...);
