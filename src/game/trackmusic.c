@@ -373,20 +373,14 @@ null_result:
 
 extern int fn_8020FB80(void *);
 #pragma scheduling invalid_target
-long fn_8020FC6C(void) {
-    extern int fn_8020FB80(void *);
-    extern void *fn_8020FC04(void);
-    extern long fn_8020F3B4();
-    long count = lbl_804900AC.m_count;
+void fn_8020FC6C(int dummy) {
     void *p;
-    if (count == 0) {
-        return ((long (*)(long))fn_8020F3B4)(0);
-    }
-    p = fn_8020FC04();
-    if (p != 0) {
-        return ((int (*)(void *))fn_8020FB80)(p);
+    if (lbl_804900AC.m_count == 0) {
+        ((long (*)(long))fn_8020F3B4)(0);
+    } else if ((p = fn_8020FC04()) != 0) {
+        fn_8020FB80(p);
     } else {
-        return ((long (*)(long))fn_8020F3B4)(0);
+        ((long (*)(long))fn_8020F3B4)(0);
     }
 }
 
@@ -783,6 +777,35 @@ void fn_80210514(int mode) {
 
 #pragma push
 #pragma opt_strength_reduction off
+static long fn_80210570_check(char *ptr, long *valPtr) {
+    long val = *valPtr;
+    if (val == 3) {
+        val = *(long *)(ptr + 0x000);
+    } else if (*(long *)(ptr + 0x000) != val) {
+        *valPtr = val;
+        return 2;
+    }
+    if (val == 3) {
+        val = *(long *)(ptr + 0x064);
+    } else if (*(long *)(ptr + 0x064) != val) {
+        *valPtr = val;
+        return 2;
+    }
+    if (val == 3) {
+        val = *(long *)(ptr + 0x0C8);
+    } else if (*(long *)(ptr + 0x0C8) != val) {
+        *valPtr = val;
+        return 2;
+    }
+    if (val == 3) {
+        val = *(long *)(ptr + 0x12C);
+    } else if (*(long *)(ptr + 0x12C) != val) {
+        *valPtr = val;
+        return 2;
+    }
+    *valPtr = val;
+    return 0;
+}
 long fn_80210570(void) {
     long val = 3;
     char *ptr = (char *)fn_8020F5F0(fn_8000DA10());
