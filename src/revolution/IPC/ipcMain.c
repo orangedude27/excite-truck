@@ -1,6 +1,9 @@
 #include <revolution/IPC.h>
 #include <revolution/OS.h>
 
+/* Cached IPC buffer bounds: the full region OS reports (IPCBuffer*) and the
+ * portion currently handed out (IPCCurrentBuffer*); reserving memory advances
+ * the low bound of the current region. */
 static u8 Initialized = FALSE;
 static void* IPCCurrentBufferLo = NULL;
 static void* IPCCurrentBufferHi = NULL;
