@@ -118,18 +118,18 @@ void fn_802E317C(const char *, ...); /* formatted log/warning */
  * fn_8012C5B8, set its callback/user data, validate the requested byte count
  * against the pool's slot stride and the resource size, and start the transfer.
  * Returns the slot index, or -1 if none is available. */
-s32 fn_80134424(Container *pool, s32 path, s32 dataTag, s32 outSize, s32 callback, s32 userData, s32 sourceOffset, s32 byteCount, s32 arg8) {
+s32 fn_80134424(LoadPool *pool, s32 path, s32 dataTag, s32 outSize, s32 callback, s32 userData, s32 sourceOffset, s32 byteCount, s32 arg8) {
     struct Params {
         s32 sourceOffset;
         s32 userData;
         s32 callback;
         s32 path;
-        Container *pool;
+        LoadPool *pool;
         char *msgBase;
     } p;
     s32 slot;
     s32 activeCount;
-    Entry *entry;
+    LoadPoolEntry *entry;
     s32 dataSize;
 
     p.pool = pool;
