@@ -147,6 +147,8 @@ void fn_802ECF00(char *movieName) {
 }
 
 #pragma dont_inline on
+/* Pop the head of the single-movie list via fn_802ECDF4, returning nonzero if a
+ * movie was removed. The dont_inline pragma keeps this a real tail-call wrapper. */
 s32 fn_802ECF04(void) {
     return fn_802ECDF4();
 }
