@@ -2,6 +2,10 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "revolution/MTX/vec.h"
 
+static inline float dot3_inline(float ax, float bx, float ay, float by, float az, float bz) {
+    return (az * bz) + ((ax * bx) + (ay * by));
+}
+
 extern void *fn_80131808(void *);
 extern void fn_80131818(void *);
 extern void *fn_8012850C(s32, const char *);
