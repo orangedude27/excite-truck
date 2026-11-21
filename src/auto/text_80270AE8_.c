@@ -240,20 +240,21 @@ int fn_80270D1C(int sourceType) {
 }
 
 #pragma peephole on
-int fn_80270D4C(void *arg0, const void *arg1) {
-    float *right;
-    float *left;
-    if (*((const unsigned char *)arg1 + 4) != 0) {
-        right = (float *)(*(char * const *)((const char *)arg1) + 0xC);
+int fn_80270D4C(void *leftEntry, const void *rightEntry) {
+    /* qsort comparator: order sort entries by the float in each record selected by the entry's "special" flag at +4. */
+    float *rightValue;
+    float *leftValue;
+    if (*((const unsigned char *)rightEntry + 4) != 0) {
+        rightValue = (float *)(*(char * const *)((const char *)rightEntry) + 0xC);
     } else {
-        right = (float *)(*(char * const *)((const char *)arg1) + 4);
+        rightValue = (float *)(*(char * const *)((const char *)rightEntry) + 4);
     }
-    if (*((unsigned char *)arg0 + 4) != 0) {
-        left = (float *)(*(char **)arg0 + 0xC);
+    if (*((unsigned char *)leftEntry + 4) != 0) {
+        leftValue = (float *)(*(char **)leftEntry + 0xC);
     } else {
-        left = (float *)(*(char **)arg0 + 4);
+        leftValue = (float *)(*(char **)leftEntry + 4);
     }
-    return (int)(*left - *right);
+    return (int)(*leftValue - *rightValue);
 }
 extern float lbl_80563F40;
 #pragma scheduling invalid_target
