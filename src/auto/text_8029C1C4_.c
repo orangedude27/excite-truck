@@ -86,14 +86,14 @@ void fn_8029C22C(void) {
 }
 
 void fn_8029C25C(void) {
+    int *p;
+    int i;
     float v = fn_801E7E24();
     if (!((float)__fabs((double)v) <= lbl_80558DC4)) {
-        int *p = &lbl_804B5010[0];
-        int i = 0;
-        while (i < lbl_8055F7F0) {
+        p = (int *)&lbl_804B5010;
+        for (i = 0; i < lbl_8055F7F0; i++) {
             fn_8029D574(*p);
             p++;
-            i++;
         }
     }
 }
@@ -1738,6 +1738,8 @@ int fn_8029EF38(void *effect) {
 void fn_8029EF40(void) {
     fn_8029EF28();
 }
+/* Thunk in the nw4r::ef::Effect vtable (slot lbl_80349780+0x1C): forwards to the
+ * empty virtual hook fn_8029EF2C, a no-op in this build. */
 void fn_8029EF44(void) {
     fn_8029EF2C();
 }
