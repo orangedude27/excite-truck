@@ -3,8 +3,9 @@
 
 typedef signed long s32;
 
+/* Default stub accessor: always reports zero. */
 s32 fn_801AE59C(void) {
-    return 0; // Default stub accessor: always reports zero.
+    return 0;
 }
 
 /* No-op stub: does nothing and leaves its s32 return value unset. */
