@@ -723,7 +723,7 @@ extern char lbl_80343F38[], lbl_80343F20[];
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_8024D248(void *arg0) {
-    extern float lbl_80563948, lbl_80563944, lbl_8056394C;
+    extern float lbl_8056394C;
     extern char lbl_8055C094;
     extern char lbl_80343F38[], lbl_80343F20[];
     extern int fn_80232B70(int);
@@ -734,20 +734,21 @@ void fn_8024D248(void *arg0) {
     float f0;
     float f2;
     float f_den;
+    register float quarter = 0.25f;
     int den_int;
     int toggle;
     int count;
     char *dst;
     const char *src;
 
-    f31 = (float)*(int *)((char *)arg0 + 0xC) / lbl_80563948;
-    f30 = (float)*(int *)((char *)arg0 + 0x10) * lbl_80563944;
+    f31 = (float)*(int *)((char *)arg0 + 0xC) / 10.0f;
+    f30 = (float)*(int *)((char *)arg0 + 0x10) * quarter;
 
     f31 = (f31 - lbl_8056394C) /
           (*(float *)((char *)arg0 + 0x84) *
            ((float (*)(int, const char *, float, float))fn_8023293C)(
                *(int *)((char *)arg0 + 0x78), &lbl_8055C094,
-               *(float *)((char *)arg0 + 0x88), lbl_80563944));
+               *(float *)((char *)arg0 + 0x88), quarter));
 
     den_int = fn_80232B70(*(int *)((char *)arg0 + 0x78));
     f2 = f30 - lbl_8056394C;
