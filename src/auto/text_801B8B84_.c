@@ -36,9 +36,6 @@ void __AXDSPInitCallback_801B8BE8(void) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_801B8BF4(void) {
-#define s_alarmEventQueue lbl_8055E760
-#define s_alarmEventCount lbl_8055E764
-#define s_frameCount      lbl_8055E3C4
     /* RealName: DispatchAlarmEvents. Run alarm events whose scheduled time has
        arrived: invoke the head's callback, remove it and slide the rest of the
        queue down, stopping as soon as the head is not yet due. */
