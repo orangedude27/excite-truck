@@ -3,7 +3,6 @@
 // Static-init thunk fn_802E7768 (+ .ctors slot 0x802ED610) remains in
 // auto/text_802E7768_.c pending a promotion pass.
 typedef signed long s32;
-typedef s32 (*UnkFunc)(s32);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
