@@ -21,8 +21,6 @@ typedef enum {
     SC_AREA_SAF,
 } SCProductArea;
 
-BOOL __SCF1(const char* type, char* buf, u32 sz);
-BOOL SCGetProductAreaString(char* buf, u32 sz);
 s8 SCGetProductArea(void);
 
 #ifdef __cplusplus
