@@ -1308,9 +1308,8 @@ extern "C" void fn_80146824(void *arg0) {
         proxy->data = parent;
         owner->proxy = proxy;
     }
-    Record *r1 = (Record *)size30;
     for (s32 i = 0; i < owner->block2C->count; i++) {
-        r1 = (Record *)((Data *)owner->proxy->data)->records +
+        Record *r1 = (Record *)((Data *)owner->proxy->data)->records +
             ((Data *)owner->proxy->data)->count++;
         fn_80145B50(r1, 0);
         r1->value = owner->block2C->base + i * 0x28;
@@ -1355,14 +1354,14 @@ extern "C" void fn_80146824(void *arg0) {
         r->value = owner->block34->base + i * 0x1C;
         r->label = lbl_8055E220;
     }
-    char *label = (char *)arg0 + 0x40;
-    s32 zero = 0;
     register f32 third;
     register f32 second;
     register f32 first;
+    char *label = (char *)arg0 + 0x40;
+    s32 zero = 0;
     first = lbl_805615D4;
-    Record *records;
-    Data *queue = owner->proxy->data;
+    register Record *records;
+    register Data *queue = owner->proxy->data;
     records = queue->records;
     second = lbl_8056160C;
     s32 count = queue->count;
@@ -1417,10 +1416,8 @@ extern "C" __declspec(section ".sdata") char lbl_80559E58[];
 extern "C" __declspec(section ".sdata") char lbl_80559E60[];
 extern "C" __declspec(section ".data") void *lbl_8032D1D8;
 extern "C" __declspec(section ".sdata") char lbl_80559DFC[];
-#pragma push
-#pragma scheduling invalid_target
-#pragma small_data on
-#pragma use_lmw_stmw off
+#pragma opt_deadstores off
+#pragma opt_common_subs off
 extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
     class Collection {
     public:
@@ -1460,6 +1457,7 @@ extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
         void *end;
     };
     extern s32 fn_801454E8(void *, const char *);
+    s32 dummy;
     s32 i;
     u32 count;
     Result *result;
@@ -1473,6 +1471,7 @@ extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
         object->list0 = 0;
         object->list1 = 0;
         object->list2 = 0;
+        dummy = 0;
 
         {
             count = 0;
@@ -1582,7 +1581,8 @@ extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
     }
     return object;
 }
-#pragma pop
+#pragma opt_deadstores reset
+#pragma opt_common_subs reset
 extern "C" void fn_8002F6AC(s32, void *);
 extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *, s32);
 extern "C" s32 fn_80147070(s32 object, s32 deleteFlag) {
@@ -1999,7 +1999,7 @@ extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t) {
     f32 out20, end24, end14, src24, diff24, out18, diff14, out1C;
     f32 prod24, prod14, out10, out24, out14;
     u32 w4, w0, wC, w8;
-    register f64 pair;
+    f64 pair;
 
     end8 = end->m8;
     src8 = src->m8;
@@ -2413,6 +2413,12 @@ extern "C" s32 fn_80127A50(void *);
 extern "C" void fn_80010B80(s32, f32, f32, f32, f32);
 extern "C" f32 lbl_80558DC4;
 extern "C" f32 __fabsf(f32);
+extern "C" f32 lbl_80561614;
+extern "C" f32 lbl_8056161C;
+extern "C" f32 lbl_80561618;
+extern "C" f32 lbl_80561620;
+extern "C" f32 lbl_80561624;
+extern "C" char lbl_8032D2B0[];
 extern "C" void fn_8014862C(void *arg0) {
     struct Table { void *data; s32 count; s32 cap; void *end; };
     struct Cur { void *cur; void *sel; u8 flag; u8 p1[7]; f32 x10; f32 y14; struct Table *tab; };
@@ -2425,7 +2431,8 @@ extern "C" void fn_8014862C(void *arg0) {
     while (fn_80127A50(arg0) != 0) {
         struct Cur *cur = obj->cur;
         u8 sbuf[0x40]; FloatPair80145A24 pp = fn_80145A24((void *)sbuf);
-        f32 px = pp.first; f32 py = pp.second;
+        f64 pair = *(f64 *)&pp;
+        f32 px = ((f32 *)&pair)[0]; f32 py = ((f32 *)&pair)[1];
         if (cur->cur != 0) {
             if ((((s32 *)sbuf)[9] & 1) != 0) {
                 f32 dx = px - cur->x10;
@@ -2479,6 +2486,8 @@ extern "C" void fn_8014862C(void *arg0) {
     {
         struct Cur *cur = obj->cur;
         struct Table *t = cur->tab;
+        f32 z = lbl_80561608;
+        (void)z;
         for (s32 i = 0; i < t->count; i++) {
             u8 *e = (u8 *)t->data + i * 0x18;
             void *o10 = *(void **)(e + 0x10);
@@ -2491,6 +2500,50 @@ extern "C" void fn_8014862C(void *arg0) {
                 f32 y2 = fn_801452B4(*(f32 *)(e + 4));
                 f32 x2 = fn_801451DC(4, *(f32 *)(e + 0));
                 fn_80010B80(1, y2, x2, *(f32 *)(e + 8), *(f32 *)(e + 0xC));
+            }
+        }
+    }
+    {
+        struct Cur *cur = obj->cur;
+        struct Table *t = obj->t2c;
+        f32 z = lbl_80561610;
+        (void)z;
+        for (s32 i = 0; i < t->count; i++) {
+            u8 *e = (u8 *)t->data + i * 0x28;
+            s32 flag = 1;
+            u8 *sel = (u8 *)cur->sel;
+            if (sel != 0 && *(void **)(sel + 0x10) == e) flag = 0;
+            s32 color = flag ? 0x70ffffff : 0xc0ffffff;
+            f32 y = fn_801452B4(*(f32 *)(e + 8));
+            f32 x = fn_801451DC(4, *(f32 *)(e + 4));
+            fn_80010B80(color, y, x, *(f32 *)(e + 0x10), *(f32 *)(e + 0x14));
+            void *cc = cur->cur;
+            if (cc != 0 && *(void **)((u8 *)cc + 0x10) == e) {
+                f32 y2 = fn_801452B4(*(f32 *)(e + 8) - z);
+                f32 x2 = fn_801451DC(4, *(f32 *)(e + 4));
+                ((void (*)(s32, s32, s32, ...))fn_8000FF88)(-1, 9, (s32)&lbl_8032D2B0, lbl_80561614, y2, x2, *(f32 *)(e + 4), *(f32 *)(e + 8), *(f32 *)(e + 0x10), *(f32 *)(e + 0x14));
+            }
+        }
+    }
+    {
+        struct Cur *cur = obj->cur;
+        struct Table *t = obj->t34;
+        f32 z = lbl_80561610;
+        (void)z;
+        for (s32 i = 0; i < t->count; i++) {
+            u8 *e = (u8 *)t->data + i * 0x1C;
+            s32 flag = 1;
+            u8 *sel = (u8 *)cur->sel;
+            if (sel != 0 && *(void **)(sel + 0x10) == e) flag = 0;
+            s32 color = flag ? ((*(u32 *)(e + 0x18) & 0x00FFFFFF) | 0x70000000) : 0xc0ffffff;
+            f32 y = fn_801452B4(*(f32 *)(e + 8));
+            f32 x = fn_801451DC(4, *(f32 *)(e + 4));
+            fn_80010B80(color, y, x, *(f32 *)(e + 0x10), *(f32 *)(e + 0x14));
+            void *cc = cur->cur;
+            if (cc != 0 && *(void **)((u8 *)cc + 0x10) == e) {
+                f32 y2 = fn_801452B4(*(f32 *)(e + 8) - z);
+                f32 x2 = fn_801451DC(4, *(f32 *)(e + 4));
+                ((void (*)(s32, s32, s32, ...))fn_8000FF88)(-1, 9, (s32)&lbl_8032D2B0, lbl_80561614, y2, x2, *(f32 *)(e + 4), *(f32 *)(e + 8), *(f32 *)(e + 0x10), *(f32 *)(e + 0x14));
             }
         }
     }
@@ -2590,8 +2643,12 @@ extern "C" void deleteThreads__6SystemFv(void *system) {
 #pragma push
 #pragma scheduling on
 #pragma dont_inline on
-extern "C" void fn_80148FA4(void *object, void *unused) {
-    struct VTable {
+/* Refresh a UI screen's contents: when it has a handler at +8, walk its three element
+   lists — 0xC-byte art records resolved through the handler and forwarded to fn_80148070,
+   12-byte records via fn_8014784C, and 8-byte text records via fn_801473F8 with the "%s"
+   format — updating each element in turn. The second parameter is required but ignored. */
+extern "C" void fn_80148FA4(void *uiScreen, void *unused) {
+    struct Handler {
         virtual void v0();
         virtual void v1();
         virtual void v2();
@@ -2602,31 +2659,31 @@ extern "C" void fn_80148FA4(void *object, void *unused) {
     struct E8 { u32 a; u32 b; };
     struct L12 { E12 *data; s32 count; };
     struct L8 { E8 *data; s32 count; };
-    u8 *self = (u8 *)object;
+    u8 *screen = (u8 *)uiScreen;
     s32 i;
     s32 firstOffset;
     u8 *entry;
     s32 firstIndex;
     #pragma unused(unused)
-    if (*(VTable **)(self + 8) != 0) {
+    if (*(Handler **)(screen + 8) != 0) {
         firstIndex = 0;
         firstOffset = 0;
-        while (firstIndex < *(s32 *)(*(u8 **)(self + 0x14) + 4)) {
-            entry = *(u8 **)(*(u8 **)(self + 0x14)) + firstOffset;
-            void *result = (*(VTable **)(self + 8))->v4(*(u32 *)(entry + 4));
-            s32 found = (*(VTable **)(self + 8))->v3(*(u32 *)entry);
+        while (firstIndex < *(s32 *)(*(u8 **)(screen + 0x14) + 4)) {
+            entry = *(u8 **)(*(u8 **)(screen + 0x14)) + firstOffset;
+            void *result = (*(Handler **)(screen + 8))->v4(*(u32 *)(entry + 4));
+            s32 found = (*(Handler **)(screen + 8))->v3(*(u32 *)entry);
             if (found != 0 && result != 0)
                 fn_80148070((void *)found, *(s32 *)(entry + 8), (s32)result);
             firstOffset += 0xC;
             firstIndex++;
         }
-        for (i = 0; i < (*(L12 **)(self + 0x10))->count; i++) {
-            E12 *e = &(*(L12 **)(self + 0x10))->data[i];
-            fn_8014784C(*(VTable **)(self + 8), e->a, e->b, e->c);
+        for (i = 0; i < (*(L12 **)(screen + 0x10))->count; i++) {
+            E12 *e = &(*(L12 **)(screen + 0x10))->data[i];
+            fn_8014784C(*(Handler **)(screen + 8), e->a, e->b, e->c);
         }
-        for (i = 0; i < (*(L8 **)(self + 0xC))->count; i++) {
-            E8 *e = &(*(L8 **)(self + 0xC))->data[i];
-            fn_801473F8(*(VTable **)(self + 8), e->a, (const char *)&lbl_80559E1C, e->b);
+        for (i = 0; i < (*(L8 **)(screen + 0xC))->count; i++) {
+            E8 *e = &(*(L8 **)(screen + 0xC))->data[i];
+            fn_801473F8(*(Handler **)(screen + 8), e->a, (const char *)&lbl_80559E1C, e->b);
         }
     }
 }
