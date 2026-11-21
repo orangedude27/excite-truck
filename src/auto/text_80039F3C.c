@@ -668,21 +668,25 @@ int fn_8003AC24(void *arg0) {
 }
 #pragma scheduling reset
 
-int fn_8003AD88(void *arg0, int arg1, int arg2, void *arg3) {
+/* DVDLow async raw-DI command 0x8D: build a 0x20-byte command block (command byte,
+ * length and input) in the next command-buffer slot and submit it through
+ * IOS_IoctlAsync using buffer/length as the transfer. Frees the claimed context
+ * if dispatch fails; returns 0 on failure, else 1. */
+int fn_8003AD88(void *buffer, int length, int input, void *callback) {
     const char *msg = lbl_80302848;
     unsigned int one = 1;
     unsigned char *context;
     int result;
 
     lbl_8055D8E0 = one;
-    context = (unsigned char *)newContext(arg3, one, msg);
-    lbl_8055D8F4 = arg1;
+    context = (unsigned char *)newContext(callback, one, msg);
+    lbl_8055D8F4 = length;
     nextCommandBuf();
     *(unsigned char *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20) = 0x8D;
-    *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 4) = arg1;
-    *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 8) = arg2;
+    *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 4) = length;
+    *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 8) = input;
     if ((result = IOS_IoctlAsync(lbl_80558E18, 0x8D, lbl_8055D8FC + lbl_8055D8E4 * 0x20,
-                            0x20, arg0, arg1, (void (*)(int, void *))doTransactionCallback, context)) != 0) {
+                              0x20, buffer, length, (void (*)(int, void *))doTransactionCallback, context)) != 0) {
         OSReport(msg + 0x428, result);
         context[8] = 0;
         return 0;
