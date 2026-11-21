@@ -13,6 +13,9 @@ extern int fn_802E30C8(const char*, ...);
 extern unsigned int strlen(const char*);
 extern char lbl_8034B178[];
 extern unsigned char lbl_8055FC14;
+#define ROUND_HALF      lbl_80564EE8   /* 0.5f: rounding bias for image dimensions */
+#define ZERO_F          lbl_80564EEC   /* 0.0f */
+#define WARNED_LONG_NAME lbl_8055FC14  /* set once an overlong image name is reported */
 #pragma push
 #pragma scheduling invalid_target
 int fn_802C5130(char* imageName) {
