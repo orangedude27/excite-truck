@@ -15092,36 +15092,39 @@ extern "C" s16 fn_800BDE18(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
 
 extern "C" u8 lbl_802F3408[];
 extern "C" s32 fn_800BDEB4(const u8 *data, s32 bitCount, u32 *bitOffset) {
-    register s32 remaining = bitCount;
+    /* Read bitCount bits MSB-first from data at *bitOffset (a byte index wrapped
+     * to 8 KiB), advance the offset, and return the bits packed into a u16.
+     * lbl_802F3408[n] is the low-n-bits mask (0x00, 0x01, 0x03, ... 0xFF). */
+    register s32 bitsLeft = bitCount;
     register s32 take;
-    register u16 result = 0;
+    register u16 value = 0;
     register s32 byteIndex;
     register s32 bitsInByte;
     register u32 position;
     register s32 piece;
 
-    if (remaining == 0)
+    if (bitsLeft == 0)
         return 0;
     position = *bitOffset;
     byteIndex = (position >> 3) & 0x1FFF;
     bitsInByte = 8 - (position & 7);
-    *bitOffset = position + remaining;
-    while (remaining > 0) {
+    *bitOffset = position + bitsLeft;
+    while (bitsLeft > 0) {
         if (bitsInByte == 0) {
             byteIndex += 1;
             byteIndex &= 0x1FFF;
             bitsInByte = 8;
         }
         take = bitsInByte;
-        if ((u32)remaining < (u32)bitsInByte)
-            take = remaining;
+        if ((u32)bitsLeft < (u32)bitsInByte)
+            take = bitsLeft;
         piece = data[byteIndex] & lbl_802F3408[bitsInByte];
         piece >>= bitsInByte - take;
-        result = (u16)(result | (piece << (remaining - take)));
+        value = (u16)(value | (piece << (bitsLeft - take)));
         bitsInByte -= take;
-        remaining -= take;
+        bitsLeft -= take;
     }
-    return result;
+    return value;
 }
 
 extern "C" void *lbl_8055DD88;
