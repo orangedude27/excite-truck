@@ -1107,8 +1107,10 @@ extern void fn_80278288(void);
 extern void fn_802733F0(void);
 extern void fn_80209110(void *);
 extern float lbl_8055E3C8;
-void *fn_802678E4(int arg0) {
-    return fn_80267EE4(arg0);
+/* Thunk: return the camera/state record at the given index from the sCameras
+ * table by forwarding to fn_80267EE4. */
+void *fn_802678E4(int index) {
+    return fn_80267EE4(index);
 }
 
 extern void fn_80267EE0(void);
@@ -1808,7 +1810,7 @@ extern float lbl_80563C40, lbl_80563CA0, lbl_80563CA4, lbl_80563CA8, lbl_80563CA
 #pragma processor 750
 void fn_80268E94(void *arg0, int arg1) {
  float *matrix; float v[3], rot[9];
- float strength, elapsed, weight, phase, mag, x,y,z, sn,cs,one;
+ register float strength, elapsed, weight, phase, mag, x,y,z, sn,cs,one;
  int valid, mode;
  if (fn_8026B0C0(arg1) == 0 && fn_801769F8() == 0) {
  mode = *(int *)((char *)arg0+0x10); valid = 0;
@@ -1833,7 +1835,7 @@ void fn_80268E94(void *arg0, int arg1) {
  v[0] = strength * (fn_80129DC4(0,lbl_80563CB0,lbl_80563CB4) + sn*lbl_80563CB8);
  mag = PSVECMag(&v[0]);
  if (mag > lbl_80563C40) {
-   float scale = lbl_80563C2C / mag;
+   register float scale = lbl_80563C2C / mag;
    x=scale*v[0]; y=scale*v[1]; z=scale*v[2];
    sn=sin(mag); cs=cos(mag); one=lbl_80563C2C-cs;
    rot[0]=cs+one*(x*x); rot[1]=y*(one*x)+sn*z; rot[2]=z*(one*x)-sn*y;
@@ -1844,8 +1846,34 @@ void fn_80268E94(void *arg0, int arg1) {
    rot[3]=lbl_80563C20; rot[4]=lbl_80563C2C; rot[5]=lbl_80563C20;
    rot[6]=lbl_80563C20; rot[7]=lbl_80563C20; rot[8]=lbl_80563C2C;
  }
- matrix=(float *)((char *)arg0+0x58);
- fn_80268E94_multiply(matrix, matrix, rot);
+ {
+   float *out = (float *)((char *)arg0+0x58);
+   float *a = (float *)((char *)arg0+0x58);
+   float *b = rot;
+   register float t0,t1,t2,t3,t4,t5,t6,t7,t8;
+   if (out == a || out == b) {
+     t0 = fn_80144514(b[0], a[0], b[3], a[1], b[6], a[2]);
+     t3 = fn_80144514(b[0], a[3], b[3], a[4], b[6], a[5]);
+     t6 = fn_80144514(b[0], a[6], b[3], a[7], b[6], a[8]);
+     t1 = fn_80144514(b[1], a[0], b[4], a[1], b[7], a[2]);
+     t4 = fn_80144514(b[1], a[3], b[4], a[4], b[7], a[5]);
+     t7 = fn_80144514(b[1], a[6], b[4], a[7], b[7], a[8]);
+     t2 = fn_80144514(b[2], a[0], b[5], a[1], b[8], a[2]);
+     t5 = fn_80144514(b[2], a[3], b[5], a[4], b[8], a[5]);
+     t8 = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
+     out[0]=t0; out[3]=t3; out[6]=t6; out[1]=t1; out[4]=t4; out[7]=t7; out[2]=t2; out[5]=t5; out[8]=t8;
+   } else {
+     out[0] = fn_80144514(b[0], a[0], b[3], a[1], b[6], a[2]);
+     out[3] = fn_80144514(b[0], a[3], b[3], a[4], b[6], a[5]);
+     out[6] = fn_80144514(b[0], a[6], b[3], a[7], b[6], a[8]);
+     out[1] = fn_80144514(b[1], a[0], b[4], a[1], b[7], a[2]);
+     out[4] = fn_80144514(b[1], a[3], b[4], a[4], b[7], a[5]);
+     out[7] = fn_80144514(b[1], a[6], b[4], a[7], b[7], a[8]);
+     out[2] = fn_80144514(b[2], a[0], b[5], a[1], b[8], a[2]);
+     out[5] = fn_80144514(b[2], a[3], b[5], a[4], b[8], a[5]);
+     out[8] = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
+   }
+ }
  } } } }
 }
 
@@ -1873,6 +1901,7 @@ extern void fn_80277A14(void *, int);
 extern void fn_802E317C(char *, ...);
 extern int fn_80268BA4(int);
 extern float lbl_80563CBC, lbl_80563CA0, lbl_80563CC0, lbl_80563CC4, lbl_80563CC8, lbl_80563CCC, lbl_80563CD0, lbl_80563CD4, lbl_80563CD8, lbl_80563CDC, lbl_80563CE0, lbl_80563CE4, lbl_80563CE8, lbl_80563CEC, lbl_80563CF0, lbl_8055C4B0, lbl_80563CA4;
+#pragma scheduling invalid_target
 void fn_802693F4(char *p, unsigned char *flag, int arg) {
     char *ent = *(char **)(p + 0x140);
     float v[3];
@@ -2023,7 +2052,6 @@ void fn_802693F4(char *p, unsigned char *flag, int arg) {
         *(float *)(p + 0x154) = lbl_80563C20;
     }
 }
-
 void fn_80269BB0(int idx, unsigned int sel, int *out, float *outf) {
 #pragma use_lmw_stmw off
     Rec2_80269BB0 r;
