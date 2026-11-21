@@ -549,31 +549,14 @@ void fn_802EAA08(void) {
 #pragma scheduling on
 #pragma pop
 /* MP3 header field checks fn_802EAA58 inlines. */
-static inline int Mp3IsValidChannels(int channels) {
-    int ok = 1;
-    if (channels != 1 && channels != 2) ok = 0;
-    return ok;
+static inline int Mp3IsValidChannels(int *info) {
+    return info[2] == 1 || info[2] == 2;
 }
-static inline int Mp3IsValidRate(int rate) {
-    int ok = 0;
-    if (rate >= 8000 && rate <= 60000) ok = 1;
-    return ok;
+static inline int Mp3IsValidRate(int *info) {
+    return info[1] >= 8000 && info[1] <= 60000;
 }
-static inline int Mp3IsValidSize(unsigned int size) {
-    int ok = 0;
-    if (size != 0 && size <= 0x1200) ok = 1;
-    return ok;
-}
-static inline int Mp3IsValidHeader(int *info) {
-    int ok = 0;
-    int valid = 0;
-    if (Mp3IsValidChannels(info[2])) {
-        if (Mp3IsValidRate(info[1])) valid = 1;
-    }
-    if (valid) {
-        if (Mp3IsValidSize(info[4])) ok = 1;
-    }
-    return ok;
+static inline int Mp3IsValidSize(int *info) {
+    return info[4] != 0 && (unsigned int)info[4] <= 0x1200;
 }
 int fn_802EAA58(int *arg0, int arg1) {
     int sizeOk;
