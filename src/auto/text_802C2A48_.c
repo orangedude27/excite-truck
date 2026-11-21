@@ -167,6 +167,8 @@ void fn_802C2C60(void) { fn_802DD63C(); }
    table at lbl_804DB6A0. */
 void fn_802C2C64(void) { fn_802DD738(); }
 
+/* No-op tail-call wrapper: forwards to the empty fn_802DD750, so the arguments
+   callers pass are ignored and nothing is changed. */
 void fn_802C2C68(void) { fn_802DD750(); }
 
 void fn_802C2C6C(void) { fn_802DE774(); }
