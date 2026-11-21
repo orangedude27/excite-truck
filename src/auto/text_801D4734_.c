@@ -258,8 +258,10 @@ void fn_801D48FC(int sequence) {
     fn_801D5A14(sequence);
 }
 
-void fn_801D4900(int arg0) {
-    fn_801D5A1C(arg0);
+/* Passes the action-sequence handle through to fn_801D5A1C, which switches the
+ * registered sequence's state to READY (1). */
+void fn_801D4900(int sequence) {
+    fn_801D5A1C(sequence);
 }
 
 /* Tail-call predicate: forwards to fn_801D5A24, which tests whether the
