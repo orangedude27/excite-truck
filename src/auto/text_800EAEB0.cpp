@@ -2585,7 +2585,6 @@ extern "C" int Setup__Q46nw4hbm3snd6detail9SeqPlayerFPQ46nw4hbm3snd6detail17SeqT
 
 extern "C" u64 OSGetTime(void);
 extern "C" void OSSetPeriodicAlarm(void*, u32, u32, u32, u32, u32, void*);
-struct RemoteSpkView { u8 pad[8]; u32 alarm; };
 extern "C" void fn_800EE568(void*);
 extern "C" void fn_800EEBA8(void*, u64, u64);
 /* Cancel the OS alarm at offset 8 if active, then clear the active flag. */
