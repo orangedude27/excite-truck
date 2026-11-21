@@ -13854,9 +13854,9 @@ extern "C" u8 fn_800BA974(s32 arg0, u8 *arg1, s32 arg2) {
             return 0;
     }
 
+    out = arg1;
     record = (u8 *)lbl_803D1640 + 0x61C;
     groupBase = (u8 *)lbl_803D2140;
-    out = arg1;
     count = 0;
     for (i = 0; i < 0x1A; i++) {
         if (fn_800A71C4((u32 *)record) != 0 &&
@@ -14113,10 +14113,10 @@ extern "C" s32 fn_800BA874(u32 *outSize, u16 *outBlockSize) {
     one = 1;
     word1 = info[2];
     factor = 1 << (((word0 >> 7) & 7) + 2);
-    mantissa = ((word1 & 3) << 10) | (word0 >> 22);
     exponent = (word1 >> 8) & 0xF;
-    size = (mantissa + 1) * factor;
+    mantissa = ((word1 & 3) << 10) | (word0 >> 22);
     mantissa += 1;
+    size = mantissa * factor;
 
     scale = 9;
     if (9 <= exponent)
@@ -19505,6 +19505,9 @@ extern "C" void fn_800C775C(void *obj, s32 value) {
     (*(u32 *)((u8 *)obj + 4)) = value;
 }
 
+/* No-op virtual stub: an empty method slot in the homebutton vtables (e.g.
+ * lbl_8031E700 at +0x34), grouped with the other empty stubs fn_800CF284/
+ * fn_800CF288/fn_800CF28C/fn_800CF290.  Calling it does nothing. */
 extern "C" void fn_800CF280(void) {
 
 }
@@ -21896,7 +21899,7 @@ extern "C" s32 fn_800D3C44(register char *var_r24, void *arg1, register u32 var_
     char *temp_r23;
     char *temp_r3_4;
     char *temp_r3_5;
-    u8 c = 0;
+    u8 c;
 
     if (var_r26 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EC50, 0x25A, base + 0x1B4);
