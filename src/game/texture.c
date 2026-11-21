@@ -701,12 +701,18 @@ extern int lbl_8055D058;
 extern int lbl_8055D078;
 #pragma scheduling invalid_target
 #pragma dont_inline fn_802CB38C
-int fn_802CB38C(void *arg0, void *arg1, void *arg2) {
-    register int a = (int)arg0;
-    register int c = (int)arg2;
-    register int b = (int)arg1;
-    ((int (*)(int, int, int, int))fn_802CA57C)(a, (int)&lbl_8055D078, 0, c);
-    return fn_802CA4E0(a, lbl_8055D058, 0, b, c);
+int fn_802CB38C(void *loadedBlock, void *createParam, void *relocateBase) {
+    /* Load a mipmapped texture: byte-swap/relocate the loaded descriptor under the "mip0" label, then create the texture with the default name. */
+    #define mipLabel       lbl_8055D078
+    #define defaultTexName lbl_8055D058
+    register int block = (int)loadedBlock;
+    register int base = (int)relocateBase;
+    register int param = (int)createParam;
+    ((int (*)(int, int, int, int))fn_802CA57C)(block, (int)&mipLabel, 0, base);
+    return fn_802CA4E0(block, defaultTexName, 0, param, base);
+
+    #undef defaultTexName
+    #undef mipLabel
 }
 #pragma scheduling on
 void fn_802CB3F4(void) {
@@ -1771,7 +1777,7 @@ char fn_802CC744(void) {
 
 #pragma peephole off
 int fn_802CC74C(void) { int result = 0; char *p = *(char **)lbl_8055FCBC; if (p != 0) { if (*(int *)(p + 4) != 0) result = 1; } return result; }
-#pragma peephole reset
+#pragma peephole on
 extern float lbl_80564F4C;
 extern float lbl_80564F50;
 #pragma push
