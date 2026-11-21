@@ -22202,24 +22202,26 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
 }
 
 void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Material *material) {
-    register u8 *self = (u8 *)this;
-    register u8 *offsets = (u8 *)*(void **)(self + 0xC);
-    offsets += *(s32 *)(offsets + 0x10);
-    register u16 i = 0;
-    register u8 *materialPtr = (u8 *)material;
-    while (i < *(u16 *)((u8 *)*(void **)(self + 0xC) + 0xE)) {
-        u8 *entry = *(u8 **)(self + 0xC) + *(s32 *)(offsets + i * 4);
-        if (entry[0x15] == 1) {
-            if (((s32 (*)(void *, void *))fn_800D58F0)(materialPtr + 4, entry) != 0) {
-                u32 offset = i * 0x10;
-                u8 *link = (u8 *)*(void **)(self + 0x18) + offset;
-                *(void **)(link + 8) = self;
-                *(u16 *)(link + 0xC) = i;
+    /* Bind every animation whose target is this material: for each matching entry,
+       fill an AnimationLink and register it with the material. */
+    register u8 *animTransform = (u8 *)this;
+    register u8 *entryOffsets = (u8 *)*(void **)(animTransform + 0xC);
+    entryOffsets += *(s32 *)(entryOffsets + 0x10);
+    register u16 entryIndex = 0;
+    register u8 *materialBytes = (u8 *)material;
+    while (entryIndex < *(u16 *)((u8 *)*(void **)(animTransform + 0xC) + 0xE)) {
+        u8 *target = *(u8 **)(animTransform + 0xC) + *(s32 *)(entryOffsets + entryIndex * 4);
+        if (target[0x15] == 1) {
+            if (((s32 (*)(void *, void *))fn_800D58F0)(materialBytes + 4, target) != 0) {
+                u32 linkByteOffset = entryIndex * 0x10;
+                u8 *animLink = (u8 *)*(void **)(animTransform + 0x18) + linkByteOffset;
+                *(void **)(animLink + 8) = animTransform;
+                *(u16 *)(animLink + 0xC) = entryIndex;
                 ((void (*)(void *, void *, u32))AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink)(
-                    materialPtr, (u8 *)*(void **)(self + 0x18) + offset, offset);
+                    materialBytes, (u8 *)*(void **)(animTransform + 0x18) + linkByteOffset, linkByteOffset);
             }
         }
-        i++;
+        entryIndex++;
     }
 }
 
@@ -23743,7 +23745,7 @@ void homebutton::HomeButton::calc_battery(int n) {
     u8 *self = (u8 *)this;
     void *obj;
     s32 *ids = (s32 *)((u8 *)lbl_8031E370 + n * 16);
-    u8 *rec = self + n * 0x18;
+    u8 *rec = (u8 *)this + n * 0x18;
     s32 i, index;
     for (i = 0; i < 4; i++) {
         u8 *pane;
@@ -27096,37 +27098,47 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const c
 
 void nw4hbm::db::Warning(const char* file, int line, const char* msg, ...) {
     const char* str = lbl_8031E9D0;
-    if (!lbl_8055DDC0) {
+
+    if (lbl_8055DDC0 == 0) {
         OSCreateAlarm(&lbl_80407790);
         lbl_8055DDC0 = 1;
     }
+
     va_list vlist;
     va_start(vlist, msg);
+
     void* console = lbl_8055DDBC;
-    if (console) {
+    if (console != NULL) {
         Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(console, str + 0xA0, file, line);
         Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct((void*)3, lbl_8055DDBC, msg, vlist);
         Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(lbl_8055DDBC, lbl_805597DC);
+
         msg = (const char*)lbl_8055DDBC;
-        if (!msg)
+        if (msg == NULL) {
             Panic__Q26nw4hbm2dbFPCciPCce(str + 0x70, 0x1B2, str + 0x7C);
+        }
         u16 viewLines = *(u16*)((u8*)msg + 0x20);
         s32 lines = Console_GetTotalLines((detail::ConsoleHead*)msg) - viewLines;
-        if (lines < 0)
+        if (lines < 0) {
             lines = 0;
-        if (!msg)
+        }
+        if (msg == NULL) {
             Panic__Q26nw4hbm2dbFPCciPCce(str + 0x70, 0x22D, str + 0x7C);
+        }
         *(s32*)((u8*)msg + 0x18) = lines;
+
         msg = (const char*)lbl_8055DDBC;
-        if (!msg)
+        if (msg == NULL) {
             Panic__Q26nw4hbm2dbFPCciPCce(str + 0x70, 0x1F1, str + 0x7C);
-        ((u8*)msg)[0x22] = 1;
+        }
+        *(u8*)((u8*)msg + 0x22) = 1;
     } else {
         OSReport(str + 0xA0, file, line);
         __VprintfThunk(msg, vlist);
         OSReport(lbl_805597DC);
     }
-    if (lbl_8055DDB8) {
+
+    if (lbl_8055DDB8 != 0) {
         OSAlarm* alarm = &lbl_80407790;
         OSCancelAlarm(alarm);
         OSSetAlarm(alarm, (u64)lbl_8055DDB8, (OSAlarmHandler)fn_800D2480);
