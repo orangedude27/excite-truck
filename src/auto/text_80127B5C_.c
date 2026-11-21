@@ -7,13 +7,20 @@ extern char lbl_80329FC0[];
 extern void fn_802E317C(const char *, ...);
 extern char lbl_80329FA0[];
 
+#pragma cplusplus on
+struct B5Obj {
+    virtual void slot0();
+    virtual void call();
+};
+#pragma cplusplus off
+
 #pragma use_lmw_stmw off
 void fn_80127B5C(int arg0) {
 #pragma scheduling invalid_target
-    int last;
     unsigned char *entry;
     int i;
     int j;
+    int count;
 
     ((unsigned char *)lbl_8041E098)[0] = 1;
     entry = (unsigned char *)lbl_8041E098 + 8;
@@ -33,16 +40,15 @@ void fn_80127B5C(int arg0) {
     ((unsigned char *)lbl_8041E098)[0] = 0;
     entry = (unsigned char *)lbl_8041E098;
     j = 0;
-    while (j < lbl_8041E098[1]) {
+    while (j < (count = *(volatile int *)&lbl_8041E098[1])) {
         if (entry[20] != 0) {
-            if (j >= 0 && j < lbl_8041E098[1]) {
+            if (j >= 0 && j < count) {
                 if (((unsigned char *)lbl_8041E098)[0] != 0) {
                     entry[20] = 1;
                 } else {
-                    unsigned char *src;
-                    last = lbl_8041E098[1] - 1;
-                    src = (unsigned char *)lbl_8041E098 + last * 16;
-                    lbl_8041E098[1] = last;
+                    int last = *(volatile int *)&lbl_8041E098[1] - 1;
+                    unsigned char *src = (unsigned char *)lbl_8041E098 + last * 16;
+                    *(volatile int *)&lbl_8041E098[1] = last;
                     *(int *)(entry + 8) = *(int *)(src + 8);
                     *(int *)(entry + 12) = *(int *)(src + 12);
                     *(int *)(entry + 16) = *(int *)(src + 16);
