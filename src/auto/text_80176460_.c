@@ -1099,8 +1099,9 @@ void fn_801777CC(u32 listener) {
 }
 
 extern char lbl_8033189C[];
-void fn_801777D0(u32 arg0) {
-    fn_80177720(arg0);
+void fn_801777D0(u32 listener) {
+    /* Unregister a physics state listener (tail-call into the removal routine). */
+    fn_80177720(listener);
 }
 
 
