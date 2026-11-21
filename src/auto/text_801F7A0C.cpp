@@ -3332,7 +3332,7 @@ extern "C" f32 fn_801FC664(void) {
 }
 
 extern "C" void fn_801FC66C(void) {
-
+    /* Empty stub: no operation in this build. */
 }
 
 /* Empty stub. */
