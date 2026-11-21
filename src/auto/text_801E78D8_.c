@@ -422,21 +422,21 @@ void fn_801E7E48(void) {
     extern double lbl_80562DC8;
     extern float lbl_8055EB28;
     char *obj;
-    long t0, t1;
+    long long t0, t1;
     float f, g, h;
     long i, j;
     char *dst;
     char *src;
     float scale;
     unsigned long idx;
-    t0 = (long)(((long long (*)())fn_802E2C9C)());
+    t0 = ((long long (*)())fn_802E2C9C)();
     obj = (char *)fn_80176A70();
     f = *(float *)obj - lbl_8055EB18;
     g = lbl_80562DB4;
-    if (f > g) g = f;
+    if (g < f) g = f;
     if (g > lbl_80562DB8) g = lbl_80562DB8;
     h = (float)(double)g;
-    h = (h <= lbl_80562DBC) ? h : lbl_80562DBC;
+    if (h > lbl_80562DBC) h = lbl_80562DBC;
     lbl_8055EB14 = h;
     lbl_8055EB18 = *(float *)obj;
     lbl_8055EB04 = (float *)obj;
@@ -502,8 +502,8 @@ void fn_801E7E48(void) {
     fn_80202924();
     fn_80134994();
     fn_8000D7FC();
-    t1 = (long)(((long long (*)())fn_802E2C9C)());
-    lbl_8055EB28 = (float)(t1 - t0) / lbl_80562DA8;
+    t1 = ((long long (*)())fn_802E2C9C)();
+    lbl_8055EB28 = (float)(long)(t1 - t0) / lbl_80562DA8;
 }
 /* No-op stub. */
 void fn_801E8144(void) {
@@ -1374,38 +1374,42 @@ void fn_801E95DC(void) {
     extern void *lbl_80488648[];
     extern double lbl_80562E10;
     extern float lbl_80562E18;
-    float matrix[12];
-    double x, y, tmp;
+    /* When the active handle is valid, build an identity transform matrix, patch
+     * one element from the current player's entry, derive X/Y offsets from the
+     * animation time and a scale, select a draw mode from the camera flags, and
+     * submit everything to fn_802C7D54. */
+    float transformMtx[12];
+    double offsetX, offsetY, baseY;
     float time;
     long flags;
-    unsigned long index;
+    unsigned long entryIndex;
     char *entry;
-    long mode;
+    long drawMode;
     if (lbl_8055AF10 != -1) {
-        matrix[1] = lbl_80562DBC;
-        matrix[0] = lbl_80562DD4;
-        matrix[2] = lbl_80562DBC;
-        matrix[3] = lbl_80562DBC;
-        matrix[4] = lbl_80562DD4;
-        matrix[5] = lbl_80562DBC;
-        matrix[6] = lbl_80562DBC;
-        matrix[7] = lbl_80562DBC;
-        matrix[8] = lbl_80562DD4;
-        matrix[9] = lbl_80562DBC;
-        matrix[10] = lbl_80562DBC;
-        matrix[11] = lbl_80562DBC;
+        transformMtx[1] = lbl_80562DBC;
+        transformMtx[0] = lbl_80562DD4;
+        transformMtx[2] = lbl_80562DBC;
+        transformMtx[3] = lbl_80562DBC;
+        transformMtx[4] = lbl_80562DD4;
+        transformMtx[5] = lbl_80562DBC;
+        transformMtx[6] = lbl_80562DBC;
+        transformMtx[7] = lbl_80562DBC;
+        transformMtx[8] = lbl_80562DD4;
+        transformMtx[9] = lbl_80562DBC;
+        transformMtx[10] = lbl_80562DBC;
+        transformMtx[11] = lbl_80562DBC;
         time = ((float (*)(float))fn_801E7E18)(lbl_80562DD4);
-        x = lbl_80562DD4 - (float)fn_8002EFB4(time, lbl_80562E10);
-        tmp = lbl_80562DBC;
-        index = fn_801E866C((long)lbl_8055AF0C);
-        if (index < 8) entry = lbl_80488648[index];
+        offsetX = lbl_80562DD4 - (float)fn_8002EFB4(time, lbl_80562E10);
+        baseY = lbl_80562DBC;
+        entryIndex = fn_801E866C((long)lbl_8055AF0C);
+        if (entryIndex < 8) entry = lbl_80488648[entryIndex];
         else entry = 0;
-        matrix[10] = *(float *)(entry + 0x2c);
-        y = (float)tmp - matrix[10] / fn_80203FE0();
+        transformMtx[10] = *(float *)(entry + 0x2c);
+        offsetY = (float)baseY - transformMtx[10] / fn_80203FE0();
         flags = *(long *)((char *)fn_801E87A8() + 0x10);
-        mode = 2;
-        if (flags & 2) mode = 1;
-        fn_802C7D54(lbl_8055AF10, matrix, mode, x, y, lbl_80562E18);
+        drawMode = 2;
+        if (flags & 2) drawMode = 1;
+        fn_802C7D54(lbl_8055AF10, transformMtx, drawMode, offsetX, offsetY, lbl_80562E18);
     }
 }
 #pragma pop
@@ -1448,11 +1452,11 @@ void fn_801E96D8(long arg0) {
     long zero, hundred, magic;
     long tailres;
     void *temp_r3_4;
-    register void **temp_r3_3;
-    register void **var_r22;
-    register void *temp;
-    register void *r31base;
-    register char *sbase;
+    void **temp_r3_3;
+    void **var_r22;
+    void *temp;
+    void *r31base;
+    char *sbase;
     temp = (void *)fn_8001285C(*(long *)(arg0 + 0x3E4));
     sbase = lbl_80339BA0;
     if ((((long (*)(void *, void *, long))(*(void ***)(*(void **)((char *)temp + 0x20)))[6])((*(void **)((char *)temp + 0x20)), sbase + 0x1DC, 0)) != 0) {
