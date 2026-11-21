@@ -385,7 +385,7 @@ extern "C" void fn_801A56A0(void *arg0, void *arg1, float *arg2) {
             direction[1] = *(float *)(b + 0x58);
             direction[2] = *(float *)(b + 0x5c);
             direction[1] = lbl_805623C8;
-            if ((float)__fabs(scale) > lbl_80558DC4 && PSVECDotProduct(direction, (float *)arg0) < lbl_805623C8 && (float)__fabs(*(float *)(b + 0x128)) < lbl_805623E8) {
+            if ((float)__fabs(scale) > *(float *)&lbl_80558DC4 && PSVECDotProduct(direction, (float *)arg0) < lbl_805623C8 && (float)__fabs(*(float *)(b + 0x128)) < lbl_805623E8) {
                 ratio = lbl_805623EC / scale;
                 ratio = lbl_805623CC < ratio ? lbl_805623CC : ratio;
                 ratio *= lbl_805623F0;
@@ -538,18 +538,18 @@ extern "C" void fn_801A5AD0(void *contactPtr, unsigned int wallKey, void *carPtr
 #undef kFrameLag
 #undef kFlip
 }
-#pragma pop
+#pragma opt_dead_assignments off
 extern "C" void fn_801A5C4C(void *arg0, unsigned int key) {
     float values[3];
     int count;
+    int i;
     int val;
-    struct { int i; } counter;
     void *slot = (char *)arg0 + 0x2724;
     void *candidate = 0;
     void *other = 0;
     void *record = arg0;
 
-    for (count = 4, counter.i = 0; count > 0; count--, counter.i++) {
+    for (count = 4, i = 0; count > 0; count--, i++) {
         val = *(int *)((char *)record + 0x2744);
         if (val != 0 && (unsigned int)val != key)
             other = slot;
@@ -570,6 +570,7 @@ extern "C" void fn_801A5C4C(void *arg0, unsigned int key) {
         record = (char *)record + 0x48;
         slot = (char *)slot + 0x24;
     }
+    i = i;
 
     if (candidate != 0) {
         fn_801A5AD0(candidate, key, arg0, other);
@@ -592,7 +593,7 @@ extern "C" void fn_801A5C4C(void *arg0, unsigned int key) {
         obj->f12(values, values, 0x3EA, 0);
     }
 }
-#pragma cplusplus on
+#pragma opt_dead_assignments reset
 /* Forward action (vslot 12) to the subobject at +0x270C; on mode 0x6D reset the local timer/state fields. */
 extern "C" void fn_801A5D80(void *self, int arg1, int arg2, int mode, int arg4) {
     class Obj {
@@ -837,7 +838,7 @@ extern "C" void fn_801A61B0(void *arg0, void *arg1, float arg2)
   int active;
   int counter;
   float limit;
-  float bound;
+  register float bound;
   float ratio;
   float value;
   float tmp;
