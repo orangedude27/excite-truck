@@ -1401,7 +1401,6 @@ extern "C" void fn_802ADE60(s32, s32);
 extern "C" void *fn_8016D658(void *arg0, s32 arg1) {
  class VObj { public: virtual void destroy(int); };
  struct List { void *vtable; VObj **items; s32 count; };
- struct Z3 { u32 a, b, c; };
  VObj *old; VObj *p; s32 offset, i;
  if (arg0 != 0) {
   old = *(VObj **)((u8 *)arg0 + 0xA4); *(char **)arg0 = lbl_80330990;
@@ -1424,7 +1423,6 @@ p = *(VObj **)((u8 *)arg0 + 0xD4); if (p != 0) { if (p != 0) p->destroy(1); *(VO
 p = *(VObj **)((u8 *)arg0 + 0xD8); if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)((u8 *)arg0 + 0xD8) = 0; }
   }
   if ((u8 *)arg0 + 0x30 != 0) {
-   Z3 zero; zero.a = 0; zero.b = 0; zero.c = 0;
    *(char **)((u8 *)arg0 + 0x34) = lbl_80330A90;
    fn_80235380(*(void **)((u8 *)arg0 + 0x50), lbl_80330A90);
    p = *(VObj **)((u8 *)arg0 + 0x7C); if (p != 0) { if (p != 0) p->destroy(1); }
@@ -1435,9 +1433,9 @@ p = *(VObj **)((u8 *)arg0 + 0x8C); if (p != 0) { if (p != 0) p->destroy(1); }
 p = *(VObj **)((u8 *)arg0 + 0x90); if (p != 0) { if (p != 0) p->destroy(1); }
 p = *(VObj **)((u8 *)arg0 + 0x94); if (p != 0) { if (p != 0) p->destroy(1); }
    p = *(VObj **)((u8 *)arg0 + 0x48);
-   if (p != 0) { ((s32 (*)(s32, void *))fn_8002F6AC)(*(s32 *)((u8 *)p + 0xC), fn_8016C168); if (p != 0) { *(Z3 *)p = zero; fn_80128668(p); } }
+   if (p != 0) { ((s32 (*)(s32, void *))fn_8002F6AC)(*(s32 *)((u8 *)p + 0xC), fn_8016C168); if (p != 0) { *(s32 *)p = 0; *(s32 *)((u8 *)p + 4) = 0; *(s32 *)((u8 *)p + 8) = 0; fn_80128668(p); } }
    p = *(VObj **)((u8 *)arg0 + 0x4C);
-   if (p != 0) { fn_80128670(*(s32 *)((u8 *)p + 0xC)); if (p != 0) { *(Z3 *)p = zero; fn_80128668(p); } }
+   if (p != 0) { fn_80128670(*(s32 *)((u8 *)p + 0xC)); if (p != 0) { *(s32 *)p = 0; *(s32 *)((u8 *)p + 4) = 0; *(s32 *)((u8 *)p + 8) = 0; fn_80128668(p); } }
    if ((u8 *)arg0 + 0x44 != 0) fn_80131818(*(s32 *)((u8 *)arg0 + 0x44));
    fn_802C2930((u8 *)arg0 + 0x30, 0);
   }
@@ -2537,7 +2535,7 @@ extern "C" void fn_8016FE2C(void *arg0, s32 arg1) {
     struct { void *p; } selfH; void *&self = selfH.p;
     struct { s32 v; } iH; s32 &i = iH.v;
     struct { s32 v; } jH; s32 &j = jH.v;
-    struct { s32 v; } suboffH; s32 &suboff = suboffH.v;
+    struct { u32 v; } suboffH; u32 &suboff = suboffH.v;
     struct { u8 *p; } entryH; u8 *&entry = entryH.p;
     struct { long v; } offsetH; long &offset = offsetH.v;
     f32 v;
@@ -2605,8 +2603,8 @@ second_check:
         }
     }
 outer_inc:
-    ++i;
     offset += (unsigned)0x14;
+    ++i;
 outer_check:
     if (i < *(s32 *)((u8 *)self + 0x6C)) {
         goto outer_body;
@@ -3270,33 +3268,25 @@ loop_80:
 extern f64 fn_8002F234(f32, f32, f32, f32, f32);
 #pragma use_lmw_stmw off
 void fn_80170DA8(void *arg0, void *arg1) {
-    f32 distance;
-    f32 threshold;
     u8 *base;
     u8 *item;
     s32 index;
     s32 next;
-    volatile f32 sp1C, sp18, sp14, sp10, spC, sp8;
-    f32 x;
-    f32 y;
-    f32 dx;
-    f32 dy;
+    struct { f32 x, z; } q, p, d;
+    f32 distance;
+    f32 threshold;
     index = *(s32 *)((u8 *)arg0 + 0x10);
     next = index + 1;
     if (next < *(s32 *)(*(u8 **)((u8 *)arg0 + 4) + 4)) {
         base = *(u8 **)*(void **)((u8 *)arg0 + 4);
         item = base + (index + 1) * 0x38;
-        x = *(f32 *)((u8 *)arg1 + 0x60);
-        y = *(f32 *)((u8 *)arg1 + 0x68);
-        dx = *(f32 *)(item + 0x24) - x;
-        sp18 = *(f32 *)(item + 0x24);
-        dy = *(f32 *)(item + 0x2C) - y;
-        sp1C = *(f32 *)(item + 0x2C);
-        sp10 = x;
-        sp14 = y;
-        sp8 = dx;
-        spC = dy;
-        distance = (f32)fn_8002F234(dx * dx + dy * dy, y, x, dx, dy);
+        q.x = *(f32 *)(item + 0x24);
+        q.z = *(f32 *)(item + 0x2C);
+        p.x = *(f32 *)((u8 *)arg1 + 0x60);
+        p.z = *(f32 *)((u8 *)arg1 + 0x68);
+        d.x = q.x - p.x;
+        d.z = q.z - p.z;
+        distance = (f32)fn_8002F234(d.x * d.x + d.z * d.z, p.z, p.x, d.x, d.z);
         threshold = *(f32 *)(item + 0x34);
         if (distance < threshold) {
             *(u8 *)(base + index * 0x38 + 0x30) = 0;
