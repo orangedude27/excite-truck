@@ -6,6 +6,8 @@ extern int fn_801E4F20(int);
 /* Tail-call fn_801E4F20 with the index converted to a word byte offset (index * 4); the callee ignores the argument. */
 void fn_802CE860(int index) { fn_801E4F20(index * 4); }
 
+/* Finish the particle system's dynamic mesh pass: flush the accumulated
+ * vertex/index buffers and drop the mesh mode back to idle via endMeshPass. */
 void fn_802CE868(void) { fn_801E4FF4(); }
 
 extern void *fn_802C86DC(void);
@@ -16,35 +18,35 @@ extern float lbl_802FAC60[];
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_802CE86C(void *arg0, int arg1, float scale, float x0, float y0, float z0) {
+void fn_802CE86C(void *arg0, int arg1, float scale, double x0, double y0, double z0) {
     struct SignTable { float v[3]; };
     struct Locals { volatile float output[3]; float signs[3]; volatile float homes[3]; };
     struct Locals local;
-    float *a;
-    float *b;
+    float coeff0;
+    float zero;
+    float coeff1;
     float xBase;
     float yBase;
     float zBase;
     float x;
     float y;
-    float coeff0;
-    float zero;
-    float coeff1;
+    float *a;
+    float *b;
     int i;
     a = (float *)fn_802C86DC();
     b = (float *)fn_802C86DC();
     *(struct SignTable *)local.signs = *(struct SignTable *)lbl_802FAC60;
-    xBase = (float)(double)x0;
-    yBase = (float)(double)y0;
-    zBase = (float)(double)z0;
-    local.homes[0] = x0;
-    local.homes[1] = y0;
-    local.homes[2] = z0;
-    x = local.signs[arg1 & 1];
-    y = local.signs[arg1 & 2];
     coeff0 = lbl_80564F78;
     zero = lbl_80564F70;
     coeff1 = lbl_80564F7C;
+    local.homes[0] = x0;
+    local.homes[1] = y0;
+    local.homes[2] = z0;
+    xBase = (float)x0;
+    yBase = (float)y0;
+    zBase = (float)z0;
+    x = local.signs[arg1 & 1];
+    y = local.signs[arg1 & 2];
     for (i = 0; i < 4; i++) {
         float f4;
         float f5;
