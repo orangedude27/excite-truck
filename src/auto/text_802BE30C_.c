@@ -80,13 +80,13 @@ s32 fn_802BE378(s32 cellSize) {
 
 #pragma scheduling invalid_target
 void fn_802BE38C(void) {
-    u8 *p;
     void *buf;
     u32 params[3];
     u32 name;
     u32 *data;
     u32 index;
     u32 n;
+    u8 *p;
     u32 i;
     s32 j;
 
@@ -122,7 +122,7 @@ void fn_802BE38C(void) {
             }
             lbl_8055FACC = 1;
         } else {
-            fn_802E317C(lbl_8034AC74);
+            fn_802E317C(lbl_8034AC74, params[2]);
         }
         fn_8012C4D8(buf);
     }
