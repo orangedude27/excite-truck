@@ -219,8 +219,8 @@ extern "C" void fn_801D483C(void) {
 }
 #pragma cplusplus reset
 
-void fn_801D4888(void) {
-    fn_801D5860();
+void *fn_801D4888(const char *name) {
+    return fn_801D5860(name);
 }
 
 void fn_801D5454(void *, void *);
