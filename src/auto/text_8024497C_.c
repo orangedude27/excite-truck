@@ -123,6 +123,8 @@ void fn_8013C804(void);
 void fn_8013C8B8(void);
 s32 fn_802E2C20(void);
 extern char lbl_80342ED8[];
+/* Unlockable-list window thunk: load the car classes from "carclass.val" into
+ * the class registry so car rows can resolve their display names. */
 void fn_80244C50(void) { fn_8013C804(); }
 
 /* Callback that tears down the car-class search manager used for car-name
