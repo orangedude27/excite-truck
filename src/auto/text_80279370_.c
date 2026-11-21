@@ -2,7 +2,6 @@
  * 0xA0-byte records holding per-alarm defaults are initialized here. */
 
 /* Table of four 0xA0-byte alarm-default records. */
-/* Table of four 0xA0-byte alarm-default records. */
 extern unsigned char lbl_804A16E8[];
 
 /* Default float values stored into every record, in order. */
