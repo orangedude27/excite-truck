@@ -366,7 +366,7 @@ int fn_8018C514(void *arg0, void *arg1) {
 
 extern void *memset(void *, int, unsigned long);
 extern int fn_801E2CCC(int, void *, void *);
-extern void fn_80279B28(void *);
+extern void fn_80279B28();
 extern void fn_80279CD8(void *);
 extern void fn_802E317C(void *, ...);
 extern void *fn_8001285C(int);
