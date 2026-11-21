@@ -38,20 +38,22 @@ void *fn_801D1008(void *object, s32 shouldDelete) {
 }
 
 #pragma cplusplus on
+class Listener {
+public:
+    virtual void onInit(void *);
+    virtual void onReset(void *);
+    virtual void onUpdate(void *);
+    virtual void onExit(void *);
+    virtual void onSlot4(void *);
+    virtual void onContextStart(void *);
+    virtual void onContextEnd(void *);
+};
+
 /* Notify every registered listener in the table (in registration order) via
    virtual slot +0x1C that the race/level context is starting. */
 extern "C" void fn_801D108C(void *context) {
 #define gListenerCount lbl_8055E8FC
 #define gListenerTable lbl_80438858
-    class Listener {
-    public:
-        virtual void onInit(void *);
-        virtual void onReset(void *);
-        virtual void onUpdate(void *);
-        virtual void onExit(void *);
-        virtual void onSlot4(void *);
-        virtual void onContextStart(void *);
-    };
     s32 i;
     for (i = 0; i < gListenerCount; i++) {
         ((Listener *)gListenerTable[i])->onContextStart(context);
@@ -59,22 +61,12 @@ extern "C" void fn_801D108C(void *context) {
 #undef gListenerTable
 #undef gListenerCount
 }
-#pragma cplusplus on
+
 /* Notify every registered listener in lbl_80438858 (in reverse registration
    order) via virtual slot +0x20 that the race/level context is being torn down. */
 extern "C" void fn_801D1100(void *context) {
 #define gListenerCount lbl_8055E8FC
 #define gListenerTable lbl_80438858
-    class Listener {
-    public:
-        virtual void onInit(void *);
-        virtual void onReset(void *);
-        virtual void onUpdate(void *);
-        virtual void onExit(void *);
-        virtual void onSlot4(void *);
-        virtual void onContextStart(void *);
-        virtual void onContextEnd(void *);
-    };
     s32 i;
     for (i = gListenerCount - 1; i >= 0; i--) {
         ((Listener *)gListenerTable[i])->onContextEnd(context);
