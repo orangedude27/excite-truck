@@ -1,13 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 #pragma ppc_psq_save off
 extern void fn_802354A0(int, int, int, float, float, float, float, float);
-extern float lbl_80558DC4, lbl_805636B0;
-static int isClose_802354A0(float a, float b) {
-    double d = __fabs((double)a - (double)b);
-    if ((float)d <= lbl_80558DC4)
-        return 1;
-    return 0;
-}
 extern const char lbl_80340808[];
 extern const char lbl_80340834[];
 extern float lbl_805636B8;
