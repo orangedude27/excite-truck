@@ -574,7 +574,7 @@ extern "C" const char lbl_80328030[];
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" unsigned char ReadNextCharCP1252__Q36nw4hbm2ut14CharStrmReaderFv(void *arg0) {
-    const char *file = lbl_80328030;
+    const CharStrmReaderMsgs *msgs = (const CharStrmReaderMsgs *)lbl_80328030;
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
     unsigned int top = (unsigned int)arg0 & 0xFF000000U;
     if (top != 0x80000000U && ((unsigned int)arg0 & 0xFF800000U) != 0x81000000U) r10 = 0;
@@ -583,7 +583,7 @@ extern "C" unsigned char ReadNextCharCP1252__Q36nw4hbm2ut14CharStrmReaderFv(void
     if (r8 == 0 && ((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U) r7 = 0;
     if (r7 == 0 && ((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U) r6 = 0;
     if (r6 == 0 && ((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
-    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x9B, file + 0x18, arg0);
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x9B, msgs->msgThis, arg0);
     int f4 = 1, f5 = 1;
     unsigned int value = *(unsigned int *)arg0;
     int f6 = 1, f7 = 1, f8 = 1, f9 = 1;
@@ -594,7 +594,7 @@ extern "C" unsigned char ReadNextCharCP1252__Q36nw4hbm2ut14CharStrmReaderFv(void
     if (f7 == 0 && (value & 0xFF800000U) != 0xC1000000U) f6 = 0;
     if (f6 == 0 && (value & 0xF8000000U) != 0xD0000000U) f5 = 0;
     if (f5 == 0 && (value & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
-    if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x9C, file + 0x50);
+    if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x9C, msgs->msgStrm);
     volatile unsigned int *vp = (volatile unsigned int *)arg0;
     unsigned int v1 = *vp;
     unsigned int v2 = *vp;
@@ -617,7 +617,7 @@ extern "C" unsigned short ReadNextCharSJIS__Q36nw4hbm2ut14CharStrmReaderFv(void 
     if (r8 == 0 && ((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U) r7 = 0;
     if (r7 == 0 && ((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U) r6 = 0;
     if (r6 == 0 && ((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
-    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0xB4, &file[0x18], arg0);
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)((unsigned long)file), 0xB4, &file[0x18], arg0);
 
     int f4 = 1, f5 = 1;
     unsigned int value = *(unsigned int *)arg0;
@@ -629,7 +629,7 @@ extern "C" unsigned short ReadNextCharSJIS__Q36nw4hbm2ut14CharStrmReaderFv(void 
     if (f8 == 0 && (value & 0xFF800000U) != 0xC1000000U) f7 = 0;
     if (f7 == 0 && (value & 0xF8000000U) != 0xD0000000U) f5 = 0;
     if (f5 == 0 && (value & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
-    if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0xB5, file + 0x50);
+    if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)((unsigned long)file), 0xB5, file + 0x50);
 
     const unsigned char *s = *(const unsigned char **)arg0;
     unsigned char c = *s;
@@ -719,7 +719,6 @@ extern "C" s32 fn_801033F0(s32 object, s32 deleteFlag) {
 
 extern "C" void SetFont__Q36nw4hbm2ut10CharWriterFRCQ36nw4hbm2ut4Font(void *arg0, void *arg1) {
 #pragma opt_propagation off
-#pragma opt_peephole off
     const char *base = lbl_80328178;
     void *font = arg1;
     void *writer = arg0;
@@ -1265,15 +1264,11 @@ void nw4hbm::ut::CharWriter::SetTextColor(nw4hbm::ut::Color color) {
     self[0x14] = source3[0];
     self[0x15] = source3[1];
     self[0x16] = source3[2];
-    unsigned char bv = self[0xB];
-    unsigned char fv = self[0xF];
-    unsigned char v13 = self[0x13];
-    unsigned char v17 = source3[3];
-    int alpha = *(volatile unsigned char *)(self + 0x42);
-    self[0xB] = (bv * alpha) / 255;
-    self[0xF] = (fv * alpha) / 255;
-    self[0x13] = (v13 * alpha) / 255;
-    self[0x17] = (v17 * alpha) / 255;
+    self[0x17] = source3[3];
+    self[0xB] = (self[0xB] * self[0x42]) / 255;
+    self[0xF] = (self[0xF] * self[0x42]) / 255;
+    self[0x13] = (self[0x13] * self[0x42]) / 255;
+    self[0x17] = (self[0x17] * self[0x42]) / 255;
 }
 
 /* Returns this CharWriter's horizontal scale, panicking if the pointer is not in a valid address range. */
@@ -1371,13 +1366,18 @@ void nw4hbm::ut::CharWriter::SetFontSize(float farg0, float farg1) {
     *(float *)((char *)this + 0x24) = x;
     *(float *)((char *)this + 0x28) = y;
 }
-#pragma pop
+#pragma opt_peephole off
 extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
     struct FontVTable {
         virtual void f0();
         virtual int GetWidth() const;
     };
-    const char *base = lbl_80328178;
+    struct Strings {
+        char file[0x14];
+        char msg1[0xE0];
+        char msg2[0x100];
+    };
+    const Strings *base = (const Strings *)lbl_80328178;
     void *self = arg0;
 
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
@@ -1390,7 +1390,7 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
     if (r6 == 0 && ((unsigned int)self & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
     if (r5 == 0) {
         void *s = self;
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x259, base + 0x14, s);
+        Panic__Q26nw4hbm2dbFPCciPCce(base->file, 0x259, base->msg1, s);
     }
 
     {
@@ -1404,15 +1404,14 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
         if (f8 == 0 && ((unsigned int)font & 0xFF800000U) != 0xC1000000U) f7 = 0;
         if (f7 == 0 && ((unsigned int)font & 0xF8000000U) != 0xD0000000U) f5 = 0;
         if (f5 == 0 && ((unsigned int)font & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
-        if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x25A, base + 0xF4);
+        if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base->file, 0x25A, base->msg2);
     }
 
     const FontVTable *f = *(const FontVTable **)((char *)self + 0x48);
     int width = f->GetWidth();
     return *(float *)((char *)self + 0x24) * (float)width;
 }
-#pragma push
-#pragma opt_common_subs off
+#pragma opt_peephole off
 extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801056A4(void *arg0) {
     struct FontVTable {
         virtual void f0();
@@ -1432,7 +1431,7 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801056A4(void *arg0) 
     if (r6 == 0 && ((unsigned int)self & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
     if (r5 == 0) {
         void *s = self;
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x26A, base + 0x14, s);
+        Panic__Q26nw4hbm2dbFPCciPCce(base + 0x0, 0x26A, base + 0x14, s);
     }
 
     {
@@ -1446,14 +1445,14 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801056A4(void *arg0) 
         if (f8 == 0 && ((unsigned int)font & 0xFF800000U) != 0xC1000000U) f7 = 0;
         if (f7 == 0 && ((unsigned int)font & 0xF8000000U) != 0xD0000000U) f5 = 0;
         if (f5 == 0 && ((unsigned int)font & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
-        if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x26B, base + 0xF4);
+        if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base + 0x0, 0x26B, base + 0xF4);
     }
 
     const FontVTable *f = *(const FontVTable **)((char *)self + 0x48);
     int width = f->GetWidth();
     return *(float *)((char *)self + 0x28) * (float)width;
 }
-#pragma pop
+#pragma opt_peephole reset
 extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801058DC(void *arg0) {
     struct FontVTable {
         virtual void f0();
@@ -1461,7 +1460,7 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801058DC(void *arg0) 
         virtual void f2();
         virtual int GetWidth() const;
     };
-    const char *base = lbl_80328178;
+    const char (*base)[0x104] = (const char (*)[0x104])lbl_80328178;
     void *self = arg0;
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
     unsigned int top = (unsigned int)self & 0xFF000000U;
@@ -1473,7 +1472,7 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801058DC(void *arg0) 
     if (r6 == 0 && ((unsigned int)self & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
     if (r5 == 0) {
         void *tmp = self;
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x27B, base + 0x14, tmp);
+        Panic__Q26nw4hbm2dbFPCciPCce((*base) + 0, 0x27B, (*base) + 0x14, tmp);
     }
     {
         int f4 = 1, f5 = 1;
@@ -1486,7 +1485,7 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801058DC(void *arg0) 
         if (f8 == 0 && ((unsigned int)font & 0xFF800000U) != 0xC1000000U) f7 = 0;
         if (f7 == 0 && ((unsigned int)font & 0xF8000000U) != 0xD0000000U) f5 = 0;
         if (f5 == 0 && ((unsigned int)font & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
-        if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x27C, base + 0xF4);
+        if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce((*base) + 0, 0x27C, (*base) + 0xF4);
     }
     const FontVTable *f = *(const FontVTable **)((char *)self + 0x48);
     int width = f->GetWidth();
@@ -1738,17 +1737,18 @@ extern "C" void SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5C
     unsigned char f1, f2, f3;
     unsigned char *p0 = (unsigned char *)arg0;
     unsigned char *p1 = (unsigned char *)arg1;
-    int fogType;
     if ((signed char)lbl_8055DE90 == 0) {
         *(int *)&lbl_8055DE94 = 0;
         __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
         lbl_8055DE90 = 1;
     }
-    fogType = lbl_8055DE94;
-    f3=lbl_8055DE97; f2=lbl_8055DE96; f1=lbl_8055DE95;
-    sp8[0]=fogType; sp8[1]=f1; sp8[2]=f2; sp8[3]=f3;
-    fogType = 0;
-    GXSetFog(fogType, sp8, f2, f1, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+    {
+        int fogType = lbl_8055DE94;
+        f3=lbl_8055DE97; f2=lbl_8055DE96; f1=lbl_8055DE95;
+        sp8[0]=fogType; sp8[1]=f1; sp8[2]=f2; sp8[3]=f3;
+        fogType = 0;
+        GXSetFog(fogType, sp8, f2, f1, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+    }
     GXSetTevSwapModeTable(0,0,1,2,3); GXSetZTexture(0,0x11,0); GXSetNumChans(1);
     GXSetChanCtrl(4,0,0,1,0,0,2); GXSetChanCtrl(5,0,0,0,0,0,2);
     GXSetNumTexGens(1); GXSetTexCoordGen2(0,1,4,0x3c,0,0x7d); GXSetNumIndStages(0);
