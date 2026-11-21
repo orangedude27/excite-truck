@@ -112,10 +112,10 @@ public:
     virtual void v18();
     virtual void v19();
     virtual void v20();
-    virtual s32 v21(CancelCallback callback, void* user);
+        virtual s32 v21(CancelCallback callback, void* user);
     s32 CancelAsync(CancelCallback callback, void* user);
-typedef struct { char file[0x38]; char cancel[0x28]; char async[0x28]; } Msgs8010718C;
-};
+  };
+
 }
 }
 
