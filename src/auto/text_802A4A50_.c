@@ -466,7 +466,8 @@ int sprintf(char *, const char *, ...);
 #pragma scheduling on
 #pragma cplusplus on
 extern "C" void fn_802A50F8(void) {
-    struct Init { s32 a, b; f32 c[32]; };
+    struct Init { s32 a, b; f32 c[28]; };
+    struct Frame { u8 pad[0x18]; struct Init init; u8 unkTail[0x10]; };
     struct Lookup {
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
         virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
@@ -476,41 +477,37 @@ extern "C" void fn_802A50F8(void) {
         virtual void f20();
         virtual void *get(const char *);
     };
-    char name[32];
-    struct Init init;
+    struct Frame frame;
+    char name[4];
     u8 *base;
     u8 *entry;
     s32 i;
     void *section;
     void *track;
-    f32 one, half, zero, scale;
+    struct Init *initPtr;
     base = lbl_80349BF0;
-    fn_8028E61C(&init);
-    zero = lbl_8056485C;
-    half = lbl_8056486C;
-    one = lbl_80564870;
-    scale = lbl_80564868;
-    register s32 sz = 0x100;
-    init.a = 0;
-    init.b = sz;
-    init.c[0] = scale;
-    init.c[1] = zero;
-    init.c[2] = half;
-    init.c[3] = half;
-    init.c[4] = half;
-    init.c[5] = zero;
-    init.c[6] = zero;
-    init.c[7] = zero;
-    init.c[10] = zero;
-    ((s32 *)&init)[17] = 5;
-    init.c[19] = one;
-    init.c[18] = one;
-    init.c[21] = zero;
-    init.c[20] = lbl_80564874;
-    init.c[27] = zero;
-    init.c[25] = zero;
-    init.c[23] = zero;
-    lbl_8055F894 = fn_8028E2F8(&init, base + 0x80, base + 0x1c, one, half, zero, scale);
+    fn_8028E61C(&frame.init);
+    frame.init.a = 0;
+    frame.init.b = 0x100;
+    frame.init.c[0] = lbl_80564868;
+    frame.init.c[1] = lbl_8056485C;
+    frame.init.c[2] = lbl_8056486C;
+    frame.init.c[3] = lbl_8056486C;
+    frame.init.c[4] = lbl_8056486C;
+    frame.init.c[5] = lbl_8056485C;
+    frame.init.c[6] = lbl_8056485C;
+    frame.init.c[7] = lbl_8056485C;
+    frame.init.c[10] = lbl_8056485C;
+    ((s32 *)&frame.init)[17] = 5;
+    frame.init.c[19] = lbl_80564870;
+    frame.init.c[18] = lbl_80564870;
+    frame.init.c[21] = lbl_8056485C;
+    frame.init.c[20] = lbl_80564874;
+    frame.init.c[27] = lbl_8056485C;
+    frame.init.c[25] = lbl_8056485C;
+    frame.init.c[23] = lbl_8056485C;
+    initPtr = &frame.init;
+    lbl_8055F894 = fn_8028E2F8(initPtr, base + 0x80, base + 0x1c, lbl_80564870, lbl_8056486C, lbl_8056485C, lbl_80564868);
     entry = lbl_804BCFB8;
     for (i = 0; i < fn_80287B14(); entry += 0xC4, ++i) {
         track = fn_80288208(i);
@@ -840,6 +837,8 @@ s32 fn_802A5B8C(s32 arg0, s32 arg1) {
     return arg0;
 }
 #pragma scheduling invalid_target
+static inline f32 fn_802A5C1C_zero(void) { return 0.0f; }
+
 void fn_802A5C1C(void *arg0) {
     f32 zero = 0.0f;
     f32 a = 1.0f;
@@ -1111,10 +1110,10 @@ void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
     scale = ((f32 (*)(void))fn_802A4AD4)();
     fn_801E8C84(v);
     {
-        f32 t = lbl_80564898 * scale;
+        f32 t = 0.1f * scale;
         v[0] = v[0] * t;
         v[2] = v[2] * t;
-        v[1] = v[1] * t - lbl_805648AC * scale;
+        v[1] = v[1] * t - 1.2f * scale;
     }
     Mtx33MultVec_802A6470(arg1, v, v);
     v[0] += arg2[0] * lbl_805648B0;
@@ -1159,7 +1158,7 @@ void fn_802A6758(void *arg0, f32 *arg1) {
     y = arg1[1];
     z = arg1[2];
     base[i * 3] = x;
-    base += i * 3;
+    base = base + i * 3;
     base[1] = y;
     base[2] = z;
     *(s32 *)((u8 *)arg0 + 4) += 1;
@@ -1683,7 +1682,9 @@ extern s32 fn_801EA140(void *);
 #pragma processor 750
 #pragma cplusplus on
 extern "C" s32 fn_802A7370(s32 arg0, void *arg1) {
-    struct Vec3 { float x, y, z; };
+    struct Vec3 {
+        float x, y, z;
+    };
     struct Dummy {
         virtual const char *v0();
         virtual void v1();
@@ -1723,16 +1724,23 @@ extern "C" s32 fn_802A7370(s32 arg0, void *arg1) {
     }
     {
         s32 h = fn_802CAC28(obj->v3(&lbl_8055CC18), 0);
-        register f32 num = lbl_80564850;
-        *(f32 *)(arg0 + 0x30) = (f32)fn_8002F208((*(s32 *)(arg0 + 0x2C) = h, num) / *(f32 *)(arg0 + 8));
+        f32 inv = lbl_80564850 / *(f32 *)(arg0 + 8);
+        *(s32 *)(arg0 + 0x2C) = h;
+        *(f32 *)(arg0 + 0x30) = (f32)fn_8002F208(inv);
     }
     {
         const Vec3 &c = obj->get(&lbl_8055CC20);
         s32 t0, t1, t2;
         u8 r, g, b;
-        t0 = (s32)c.z; t0 = t0 > 0 ? t0 : 0; r = t0 < 0xFF ? t0 : 0xFF;
-        t1 = (s32)c.y; t1 = t1 > 0 ? t1 : 0; g = t1 < 0xFF ? t1 : 0xFF;
-        t2 = (s32)c.x; t2 = t2 > 0 ? t2 : 0; b = t2 < 0xFF ? t2 : 0xFF;
+        t0 = (s32)c.z;
+        t0 = t0 > 0 ? t0 : 0;
+        r = t0 < 0xFF ? t0 : 0xFF;
+        t1 = (s32)c.y;
+        t1 = t1 > 0 ? t1 : 0;
+        g = t1 < 0xFF ? t1 : 0xFF;
+        t2 = (s32)c.x;
+        t2 = t2 > 0 ? t2 : 0;
+        b = t2 < 0xFF ? t2 : 0xFF;
         *(s32 *)(arg0 + 0x34) = r | ((g << 8) | ((b << 16) | 0xFF000000));
     }
     *(f32 *)(arg0 + 0x38) = obj->v7(&lbl_8055CC28);
@@ -1796,7 +1804,7 @@ extern void *fn_801E8718(s32);
 extern f32 lbl_805648CC;
 extern f32 lbl_805648D0;
 extern f32 lbl_805648D4;
-#pragma optimization_level 3
+#pragma optimization_level 4
 void fn_802A775C(void *arg0)
 {
   Obj802A775C *obj = (Obj802A775C *) arg0;
@@ -1806,20 +1814,20 @@ void fn_802A775C(void *arg0)
   Vec2_802A775C sp8;
   f32 sp18[3];
   float new_var;
-  f32 f29;
   f32 distSq;
   f32 one;
   Obj802A775C *new_var2;
   void *cam;
+  f32 f29;
   cam = ((u8 *) fn_801E8718(0)) + 0x24;
   distSq = PSVECSquareDistance(cam, &obj->posX);
   if (distSq > (obj->radius * obj->radius))
   {
-    f32 t = fn_802A4AD4();
-    f32 x = obj->dirX;
-    f32 z = obj->dirZ;
-    f32 y = obj->dirY;
-    f32 xx = x * x;
+    f32 t;
+    f32 xx;
+    f32 z;
+    f32 y;
+    f32 x;
     f32 tx;
     f32 ty;
     f32 zz;
@@ -1827,8 +1835,15 @@ void fn_802A775C(void *arg0)
     f32 sum;
     f32 len;
     f32 inv;
+    f32 negRadius;
+    f32 ratio;
     f32 x_tmp;
     f32 z_tmp;
+    t = fn_802A4AD4();
+    x = obj->dirX;
+    z = obj->dirZ;
+    y = obj->dirY;
+    xx = x * x;
     sp10.x = x;
     tx = x * t;
     ty = y * t;
@@ -1841,7 +1856,9 @@ void fn_802A775C(void *arg0)
     sp18[2] = tz;
     len = (f32) fn_8002F234(sum);
     one = lbl_8056485C;
-    inv = (-obj->radius) * (one / len);
+    negRadius = -obj->radius;
+    ratio = one / len;
+    inv = negRadius * ratio;
     i = 0;
     sp10.x *= inv;
     offset = 0;
@@ -1862,22 +1879,32 @@ void fn_802A775C(void *arg0)
       }
       else
       {
-        f32 r = fn_80287BC8(lbl_805648CC, lbl_805648D0);
-        f32 sp8_z = sp8.z;
-        f32 ptz = obj->posZ + (sp8_z * r);
-        f32 rr = r * r;
-        f32 f28 = (one * 1.0f) - rr;
+        f32 posX;
+        f32 sr;
+        f32 posY;
+        f32 r;
+        f32 sp8_z;
+        f32 ptz;
+        f32 rr;
+        f32 f28;
         f32 ry;
         f32 ptx;
         f32 pty;
-        ptz += sp10.z * f28;
+        r = fn_80287BC8(lbl_805648CC, lbl_805648D0);
+        sp8_z = sp8.z;
+        rr = r * r;
+        f28 = (one * 1.0f) - rr;
+        ptz = obj->posZ + (sp8_z * r) + (sp10.z * f28);
         if (1)
         {
         }
         ry = fn_80287BC8(lbl_80564858, obj->unk1C);
-        rr = (y = obj->posX) + (sp8.x * r);
+        sr = sp8.x * r;
+        posX = obj->posX;
+        rr = posX + sr;
         ;
-        pty = obj->posY + ry;
+        posY = obj->posY;
+        pty = posY + ry;
         pt[0] = rr + (sp10.x * f28);
         pt[1] = pty;
         pt[2] = ptz;
