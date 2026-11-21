@@ -2236,7 +2236,7 @@ extern "C" s32 fn_8019E834(s32 object, s32 shouldDestroy) {
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling reset
 extern "C" s32 fn_8019E874(void* arg0, void** arg1, void* arg2, f32 f1, f32 f2, f32 f3, f32 f4) {
     s32 kind = *(s32*)((u8*)arg0 + 0x20);
     Vec p;
