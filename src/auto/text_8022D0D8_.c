@@ -8,7 +8,6 @@ void fn_8022D0D8(void* list) {
 }
 
 extern unsigned int strlen(const char *);
-extern unsigned int strlen(const char *);
 #pragma push
 #pragma scheduling invalid_target
 void fn_8022D0E8(unsigned char *buffer, int capacity, unsigned char *suffix) {
