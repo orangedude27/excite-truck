@@ -272,9 +272,9 @@ void fn_8022F548(void *dstArg) {
     *(float *)((char *)dstArg + 0xB0) = value;
 }
 
-extern char lbl_803403DC[];
+extern char lbl_803403DC[]; /* "gBack: Texture %s not found for background." */
 extern char lbl_8055B98C;
-extern float lbl_805635E8, lbl_805635EC, lbl_805635F0, lbl_805635F4, lbl_805635F8;
+extern float lbl_805635E8, lbl_805635EC, lbl_805635F0, lbl_805635F4, lbl_805635F8; /* 30, 0.18, 4.5, 0.0015, 0.035: default overlay layout */
 extern int fn_8012C33C(void *);
 extern int fn_802CAC28(void *, int);
 void fn_8022FF90(void *);
@@ -554,14 +554,16 @@ void fn_8022FD9C(OverlayQuad *quad, float dt) {
 #pragma push
 #pragma processor 750
 void fn_8022FF10(void *arg0, void *arg1) {
-    float matrix[9];
-    float angle0 = ((float *)arg1)[0];
-    float angle2 = ((float *)arg1)[2];
-    fn_80015EB0(arg0, ((float *)arg1)[1]);
-    fn_80015E30(matrix, angle0);
-    fn_80015B20(arg0, arg0, matrix);
-    fn_80015AA0(matrix, angle2);
-    fn_80015B20(arg0, arg0, matrix);
+    float *e = (float *)arg1;
+    int temp[12];
+    float angle = e[1];
+    float temp_f31 = e[0];
+    float temp_f30 = e[2];
+    fn_80015EB0(arg0, angle);
+    fn_80015E30(temp, temp_f31);
+    fn_80015B20(arg0, arg0, temp);
+    fn_80015AA0(temp, temp_f30);
+    fn_80015B20(arg0, arg0, temp);
 }
 #pragma pop
 void fn_8022FF90(void *quad) {
