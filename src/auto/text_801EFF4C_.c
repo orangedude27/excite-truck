@@ -1082,9 +1082,9 @@ int fn_801F196C(int index, int base) {
 extern char lbl_8033A5B0[];
 #pragma push
 #pragma scheduling invalid_target
-/* RealName: WheelMod_StateToModelMask. Convert a wheel draw state into the model-manager
-   mask: strip the 0x10 fast-remap flag, then map states 0/1/2 to 0x101/0x102/0x200;
-   an unknown state is reported and yields -1. */
+/* RealName: WheelMod_StateToModelMask. Convert a wheel's draw state into the mask
+   passed to the model manager: strip the 0x10 fast-remap flag, then map states
+   0/1/2 to 0x101/0x102/0x200; an unknown state is reported and yields -1. */
 int fn_801F1978(int wheelState) {
     int modelMask = -1;
     int state = wheelState & ~0x10;
