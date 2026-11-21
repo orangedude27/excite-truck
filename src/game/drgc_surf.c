@@ -534,12 +534,9 @@ void fn_802D4C44(void *arg0) {
             f32 *first = (f32 *)((u8 *)lbl_804DB068 + src[0xC] * 12);
             f32 *second = (f32 *)((u8 *)lbl_804DB068 + src[0xD] * 12);
             f32 *t0p, *t1p;
-            r[0] = *(f32 *)(src + 0) + first[0] * wA;
-            r[1] = *(f32 *)(src + 4) + first[1] * wA;
-            r[2] = *(f32 *)(src + 8) + first[2] * wA;
-            r[0] = r[0] + second[0] * wB;
-            r[1] = r[1] + second[1] * wB;
-            r[2] = r[2] + second[2] * wB;
+            r[0] = *(f32 *)(src + 0) + first[0] * wA + second[0] * wB;
+            r[1] = *(f32 *)(src + 4) + first[1] * wA + second[1] * wB;
+            r[2] = *(f32 *)(src + 8) + first[2] * wA + second[2] * wB;
             d0[0] = factor * (f32)*(s16 *)(src + 0x10);
             d0[1] = factor * (f32)*(s16 *)(src + 0x12);
             d0[2] = factor * (f32)*(s16 *)(src + 0x14);
@@ -1427,15 +1424,14 @@ void fn_802D6B80(u8 *arg0, s32 arg1, s32 arg2) {
     } else {
         u8 *p = buf.bytes;
         u8 x, y;
-        u32 *src = (u32 *)arg0;
-        buf.word = *src;
-        buf.bytes[4] = 0;
+        buf.word = *(u32 *)arg0;
         x = p[0];
         p[0] = p[3];
         p[3] = x;
         y = p[1];
         p[1] = p[2];
         p[2] = y;
+        buf.bytes[4] = 0;
         fn_802E317C(lbl_8034C440, arg2, &buf);
     }
 }
