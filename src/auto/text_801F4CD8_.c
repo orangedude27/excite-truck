@@ -480,10 +480,10 @@ void fn_801F5664(void *arg0, int arg1) {
     case 2:
         var_r31 = 4;
         break;
-    case 3:
-        break;
     case 5:
         var_r31 = temp_r0_6;
+        break;
+    case 3:
         break;
     default:
         fn_802E317C(lbl_8033ADA4, arg1);
@@ -646,6 +646,7 @@ extern float __fabsf(float);
 extern double __fabs(double);
 #pragma push
 #pragma processor 750
+static inline int Fn801F602C_Min8(int c) { int r = 8; if (8 > c) r = c; return r; }
 void fn_801F602C(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     float var_f31, var_f30, temp_f1, temp_f1_2;
     float temp_f0, temp_f0_2, temp_f0_3, temp_f0_4;
@@ -653,7 +654,7 @@ void fn_801F602C(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     float var_f0, var_f0_2, var_f0_3, var_f0_4;
     int temp_r0, temp_r0_2, temp_r0_3, temp_r0_4;
     float var_f29, var_f28, var_f27, var_f26, temp_f0_5, var_f1_5;
-    int var_r0, var_r0_2, var_r0_3, var_r0_4, var_r3, var_r3_2, var_r3_3, var_r3_4;
+    int var_r3, var_r3_2, var_r3_3, var_r3_4, var_r0, var_r0_2, var_r0_3, var_r0_4;
     var_f31 = PSQUATMultiply((void *)(arg1 + 0x30), (void *)(arg1 + 0x48));
     temp_f1 = PSQUATMultiply((void *)arg1, (void *)(arg1 + 0x18));
     if (temp_f1 > var_f31) var_f31 = temp_f1;
@@ -917,28 +918,28 @@ extern float lbl_80562FE4;
 #pragma processor 750
 void fn_801F6778(float *out, int count, float *angles, float offset, float scale) {
     float buf[4];
-    float m, d0, d1, d2, a0, a1, a2;
+    float d1, m, d0, d2, a1, a0, a2;
     float f4, f31, f30, f29, f28, f27, f26, f6;
     int i;
     buf[0] = lbl_80562FE4;
     fn_801E8CB8(&buf[1], &buf[0]);
-    m = buf[0];
-    d0 = buf[1];
     d1 = buf[2];
+    m = buf[0];
+    f6 = m * scale;
+    d0 = buf[1];
     d2 = buf[3];
     a0 = angles[0];
-    a1 = angles[1];
-    a2 = angles[2];
-    i = 0;
-    f6 = m * scale;
     f4 = d1 * f6;
+    a2 = angles[2];
     f31 = d0 * f6;
+    a1 = angles[1];
     f29 = d2 * f6;
     f30 = f4 - offset;
     buf[0] = f6;
     f28 = a0 * f6;
     f27 = a1 * f6;
     f26 = a2 * f6;
+    i = 0;
     while (i < count) {
         out[0] = f31 + fn_80287BC8(-f28, f28);
         out[1] = f30 + fn_80287BC8(-f27, f27);
@@ -973,7 +974,7 @@ void fn_801F6880(void *arg0) {
         temp_r3 = *(int *)((char *)arg0 + 4);
         temp_r3_2 = (void *)(temp_r3 + temp_r4);
         temp_r5 = (void *)(temp_r0_2 + temp_r4);
-        fn_802C8E00(*(int *)((char *)temp_r5 + 8), var_r30 > 0, temp_r5, *(float *)(temp_r3 + temp_r4), *(float *)((char *)temp_r3_2 + 4), *(float *)((char *)temp_r3_2 + 8), *(float *)(temp_r4 + temp_r0_2), *(float *)((char *)temp_r5 + 4));
+        fn_802C8E00(*(int *)((char *)temp_r5 + 8), var_r30 > 0, temp_r5, *(float *)temp_r3_2, *(float *)((char *)temp_r3_2 + 4), *(float *)((char *)temp_r3_2 + 8), *(float *)temp_r5, *(float *)((char *)temp_r5 + 4));
         temp_r5_2 = (var_r30 + var_r31 * *(int *)((char *)arg0 + 0x2C)) * 0xC;
         temp_r3_3 = (void *)(*(int *)((char *)arg0 + 0xC) + temp_r5_2);
         temp_r5_3 = (void *)(*(int *)((char *)arg0 + 4) + temp_r5_2);
@@ -1515,9 +1516,9 @@ void fn_801F7400(void *out, void *base, void *obj) {
             obj, (int)lbl_8033AD7C, (char *)out + 0x60, 4,
             c1C, a10, recordA, b1C,
             sumX, sum2, sum1, sum0, t5, t6, t7, t8) == 0)
-        dstF[24] = *(volatile float *)&lbl_80562FB8;
+        dstF[24] = lbl_80562FB8;
     if (((int (*)(void *, int, void *, int))fn_801F52BC)(obj, (int)lbl_8033AD88, (char *)out + 0x64, 4) == 0)
-        dstF[25] = *(volatile float *)&lbl_80562FB8;
+        dstF[25] = lbl_80562FB8;
 }
 #pragma pop
 extern void *fn_802C9C24(void *);
@@ -1570,9 +1571,9 @@ void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
 
 #pragma use_lmw_stmw off
 void fn_801F76F8(void *arg0, unsigned char *p) {
-    unsigned char *q = p + 0x3c;
-    register unsigned int b7, b6, b5, b4, b3, b2, b1, b0;
-    unsigned int a7, a6, a5, a4, a3, a2, a1, a0;
+    register unsigned char *q = p + 0x3c;
+    unsigned int b0, b1, b2, b3, b4, b5, b6, b7;
+    unsigned int a0, a1, a2, a3, a4, a5, a6, a7;
     int i;
     unsigned char c0, d0, c1, d1, c2, d2;
     a0=p[0x2c]; b0=p[0x3b]; a1=p[0x2d]; b1=p[0x3a];
