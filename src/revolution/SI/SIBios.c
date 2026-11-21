@@ -47,7 +47,6 @@ static SICallback TypeCallback[SI_MAX_CHAN][SI_MAX_TYPE];
 const char* __SIVersion = lbl_803115E8;
 
 /* .sbss */
-u32 lbl_8055DB20;
 u32 lbl_8055DB2C;
 
 static void GetTypeCallback(s32 chan, u32 status);
