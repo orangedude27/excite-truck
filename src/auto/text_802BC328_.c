@@ -3,4 +3,7 @@
 
 void fn_802BC328(void)
 {
+    /* Empty no-op callback slot (used as a function pointer, not called
+       directly); does nothing in this build. */
+    return;
 }
