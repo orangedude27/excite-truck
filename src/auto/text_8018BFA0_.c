@@ -47,6 +47,20 @@ static inline void matVecAlias_8018(Vec_8018 *dest, const float *m, const Vec_80
         dest->z = m[2] * src->x + m[5] * src->y + m[8] * src->z;
     }
 }
+static inline void matVecAliasY_8018(Vec_8018 *dest, const float *m, const Vec_8018 *src) {
+    if (dest == src) {
+        float tx = src->y * m[3] + src->x * m[0] + src->z * m[6];
+        float ty = src->y * m[4] + src->x * m[1] + src->z * m[7];
+        float tz = src->y * m[5] + src->x * m[2] + src->z * m[8];
+        dest->x = tx;
+        dest->y = ty;
+        dest->z = tz;
+    } else {
+        dest->x = src->y * m[3] + src->x * m[0] + src->z * m[6];
+        dest->y = src->y * m[4] + src->x * m[1] + src->z * m[7];
+        dest->z = src->y * m[5] + src->x * m[2] + src->z * m[8];
+    }
+}
 
 
 #pragma push
@@ -753,148 +767,155 @@ extern float lbl_80561FEC, lbl_80561FF0, lbl_80561FF4;
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_8018DE94(void *arg0, int arg1, float *arg2, int arg3, int arg4) {
-    char *base = (char *)arg0;
-    char *record = *(char **)(base + 0x26C) + arg1 * 0x34;
-    register float factor;
-    register float speed;
-    float gain;
-    float damping;
-    float scaled[3];
-    int normal[3];
-    float center[3];
-    float sum[3];
-    float delta[3];
-    float next[3];
-    float basis[3];
-    float *velocity;
-    char *velBase;
-    float dot;
-    float clampLo;
-    float clampHi;
-    float tmp0;
-    float tmp1;
-    float tmp2;
-    int id;
-    int other;
-    int selected;
-    int offset;
-    int i;
-    char *link;
-    char *manager;
-    char *otherRecord;
-    float *otherVelocity;
-
-    gain = lbl_80561FF0 * *(float *)(record + 0x30);
-    factor = lbl_80561FEC * gain;
-    speed = PSVECMag(arg2);
-    scaled[1] = arg2[1] * factor;
-    scaled[0] = arg2[0] * factor;
-    scaled[2] = arg2[2] * factor;
-    scaled[1] = scaled[1] < lbl_80561F74 ? lbl_80561F74 : scaled[1];
-    damping = lbl_80561FC0;
-    velBase = base + *(int *)(record + 4) * 0xC;
-    *(float *)(velBase + 0x5FC) = *(float *)(velBase + 0x5FC) + scaled[0] * damping;
-    velocity = (float *)(velBase + 0x5FC);
-    velocity[1] = velocity[1] + scaled[1] * damping;
-    velocity[2] = velocity[2] + scaled[2] * damping;
-    dot = PSVECDotProduct((int *)velocity, (float *)(record + 0x20));
-    if (dot > lbl_80561F74) {
-        normal[0] = *(int *)(record + 0x20);
-        normal[1] = *(int *)(record + 0x24);
-        normal[2] = *(int *)(record + 0x28);
-        PSVECNormalize((float *)normal, (float *)normal);
-        dot = -PSVECDotProduct((int *)velocity, (float *)normal);
-        velocity[0] = velocity[0] + ((float *)normal)[0] * dot;
-        velocity[1] = velocity[1] + ((float *)normal)[1] * dot;
-        velocity[2] = velocity[2] + ((float *)normal)[2] * dot;
-    }
-    clampHi = *(float *)(record + 8);
-    clampLo = *(float *)(record + 0x14);
-    velocity[0] = velocity[0] < clampLo ? clampLo : (velocity[0] > clampHi ? clampHi : velocity[0]);
-    clampHi = *(float *)(record + 0xC);
-    clampLo = *(float *)(record + 0x18);
-    velocity[1] = velocity[1] < clampLo ? clampLo : (velocity[1] > clampHi ? clampHi : velocity[1]);
-    clampHi = *(float *)(record + 0x10);
-    clampLo = *(float *)(record + 0x1C);
-    velocity[2] = velocity[2] < clampLo ? clampLo : (velocity[2] > clampHi ? clampHi : velocity[2]);
-    if (arg4 <= 2) {
-        register float limit;
-        register float unit;
-        register float zero;
-        float distance;
-        float scale;
-        center[0] = *(float *)(record + 0x20) + *(float *)(base + arg1 * 0xC + 0x5FC);
-        center[1] = *(float *)(record + 0x24) + *(float *)(base + arg1 * 0xC + 0x600);
-        center[2] = *(float *)(record + 0x28) + *(float *)(base + arg1 * 0xC + 0x604);
-        limit = lbl_80561FF4;
-        unit = lbl_80561F88;
-        zero = lbl_80561F74;
-        i = 0;
-        offset = 0;
-        while (i < *(int *)(*(char **)(base + 0x26C) + 0x20F0)) {
-            manager = *(char **)(base + 0x26C);
-            link = *(char **)(manager + 0x20EC) + offset;
-            id = *(int *)link;
-            other = *(int *)(link + 4);
-            if ((id == arg1 && other != arg3) || (other == arg1 && id != arg3)) {
-                selected = (id == arg1) ? other : id;
-                otherRecord = manager + selected * 0x34;
-                otherVelocity = (float *)(base + selected * 0xC + 0x5FC);
-                sum[0] = *(float *)(otherRecord + 0x20) + otherVelocity[0];
-                sum[1] = *(float *)(otherRecord + 0x24) + otherVelocity[1];
-                sum[2] = *(float *)(otherRecord + 0x28) + otherVelocity[2];
-                delta[0] = sum[0] - center[0];
-                delta[1] = sum[1] - center[1];
-                delta[2] = sum[2] - center[2];
-                distance = PSVECMag(delta);
-                if (distance > limit) {
-                    scale = unit / distance;
-                    delta[0] = delta[0] * scale;
-                    delta[1] = delta[1] * scale;
-                    delta[2] = delta[2] * scale;
-                    dot = -PSVECDotProduct((int *)delta, arg2);
-                    tmp0 = arg2[0] + delta[0] * dot;
-                    tmp1 = arg2[1] + delta[1] * dot;
-                    tmp2 = arg2[2] + delta[2] * dot;
-                    next[0] = tmp0;
-                    next[1] = tmp1;
-                    next[2] = tmp2;
-                    tmp0 = next[0] * *(float *)(link + 0xC);
-                    tmp1 = next[1] * *(float *)(link + 0xC);
-                    tmp2 = next[2] * *(float *)(link + 0xC);
-                    next[0] = tmp0;
-                    next[1] = tmp1;
-                    next[2] = tmp2;
-                    dot = PSVECDotProduct((int *)arg2, delta);
-                    scale = dot * *(float *)(link + 8);
-                    tmp0 = next[0] + delta[0] * scale;
-                    tmp1 = next[1] + delta[1] * scale;
-                    tmp2 = next[2] + delta[2] * scale;
-                    next[0] = tmp0;
-                    next[1] = tmp1;
-                    next[2] = tmp2;
-                    scale = speed * *(float *)(link + 0x10);
-                    basis[0] = zero;
-                    basis[1] = unit;
-                    basis[2] = zero;
-                    next[0] = next[0] + basis[0] * scale;
-                    next[1] = next[1] + basis[1] * scale;
-                    next[2] = next[2] + basis[2] * scale;
-                } else {
-                    tmp0 = arg2[0] * *(float *)(link + 8);
-                    tmp1 = arg2[1] * *(float *)(link + 8);
-                    tmp2 = arg2[2] * *(float *)(link + 8);
-                    next[0] = tmp0;
-                    next[1] = tmp1;
-                    next[2] = tmp2;
-                }
-                fn_8018DE94(arg0, selected, next, arg1, arg4 + 1);
-            }
-            offset += 0x14;
-            i++;
+void fn_8018DE94(void *arg0, int arg1, float *arg2, int arg3, int arg4)
+{
+  char *base = (char *) arg0;
+  char *record = (*((char **) (base + 0x26C))) + (arg1 * 0x34);
+  float damping;
+  register float factor;
+  register float speed;
+  float gain;
+  float scaled[3];
+  Vec_8018 normal;
+  float center[3];
+  float sum[3];
+  float delta[3];
+  float next[3];
+  float basis[3];
+  float *velocity;
+  float *new_var;
+  float dot;
+  float tmp0;
+  float tmp1;
+  float tmp2;
+  int id;
+  int selected;
+  int offset;
+  int i;
+  char *link;
+  char *manager;
+  char *otherRecord;
+  float *otherVelocity;
+  gain = lbl_80561FF0 * (*((float *) (record + 0x30)));
+  factor = lbl_80561FEC * gain;
+  speed = PSVECMag(arg2);
+  scaled[1] = arg2[1] * factor;
+  scaled[0] = arg2[0] * factor;
+  scaled[2] = arg2[2] * factor;
+  scaled[1] = (scaled[1] < 0.0f) ? scaled[1] : 0.0f;
+  damping = lbl_80561FC0;
+  velocity = (float *) ((Vec_8018 *) (base + 0x5FC) + *((int *) (record + 4)));
+  velocity[0] = velocity[0] + (scaled[0] * damping);
+  velocity[1] = velocity[1] + (scaled[1] * damping);
+  velocity[2] = velocity[2] + (scaled[2] * damping);
+  dot = PSVECDotProduct((int *) velocity, (float *) (record + 0x20));
+  if (dot > 0.0f)
+  {
+    normal = *(Vec_8018 *) (record + 0x20);
+    PSVECNormalize(&normal.x, &normal.x);
+    dot = -PSVECDotProduct((int *) velocity, &normal.x);
+    velocity[0] = velocity[0] + (normal.x * dot);
+    velocity[1] = velocity[1] + (normal.y * dot);
+    velocity[2] = velocity[2] + (normal.z * dot);
+  }
+  {
+    float lo;
+    float hi;
+    hi = *((float *) (record + 0x14));
+    lo = *((float *) (record + 8));
+    hi = (hi < velocity[0]) ? hi : velocity[0];
+    velocity[0] = (hi > lo) ? hi : lo;
+  }
+  {
+    float lo;
+    float hi;
+    hi = *((float *) (record + 0x18));
+    lo = *((float *) (record + 0xC));
+    hi = (hi < velocity[1]) ? hi : velocity[1];
+    velocity[1] = (hi > lo) ? hi : lo;
+  }
+  {
+    float lo;
+    float hi;
+    hi = *((float *) (record + 0x1C));
+    lo = *((float *) (record + 0x10));
+    hi = (hi < velocity[2]) ? hi : velocity[2];
+    velocity[2] = (hi > lo) ? hi : lo;
+  }
+  if (arg4 <= 2)
+  {
+    float distance;
+    float scale;
+    center[0] = (*((float *) (record + 0x20))) + (*((float *) ((base + (arg1 * 0xC)) + 0x5FC)));
+    center[1] = (*((float *) (record + 0x24))) + (*((float *) ((base + (arg1 * 0xC)) + 0x600)));
+    center[2] = (*((float *) (record + 0x28))) + (*((float *) ((base + (arg1 * 0xC)) + 0x604)));
+    i = 0;
+    offset = 0;
+    while (i < (*((int *) ((*((char **) (base + 0x26C))) + 0x20F0))))
+    {
+      manager = *((char **) (base + 0x26C));
+      link = (*((char **) (manager + 0x20EC))) + offset;
+      id = *((int *) link);
+      new_var = &(*((float *) (link + 8)));
+      if (((id == arg1) && (*((int *) (link + 4)) != arg3)) || ((*((int *) (link + 4)) == arg1) && (id != arg3)))
+      {
+        selected = (id == arg1) ? (*((int *) (link + 4))) : (id);
+        otherRecord = manager + (selected * 0x34);
+        otherVelocity = (float *) ((base + ((selected * 0xC) ^ 0)) + 0x5FC);
+        sum[0] = (*((float *) (otherRecord + 0x20))) + otherVelocity[0];
+        sum[1] = (*((float *) (otherRecord + 0x24))) + otherVelocity[1];
+        sum[2] = (*((float *) (otherRecord + 0x28))) + otherVelocity[2];
+        delta[0] = sum[0] - center[0];
+        delta[1] = sum[1] - center[1];
+        delta[2] = sum[2] - center[2];
+        distance = PSVECMag(delta);
+        if (distance > 0.01f)
+        {
+          scale = 1.0f / distance;
+          delta[0] = delta[0] * scale;
+          delta[1] = delta[1] * scale;
+          delta[2] = delta[2] * scale;
+          dot = -PSVECDotProduct((int *) delta, arg2);
+          tmp0 = arg2[0] + (delta[0] * dot);
+          tmp1 = arg2[1] + (delta[1] * dot);
+          tmp2 = arg2[2] + (delta[2] * dot);
+          next[0] = tmp0;
+          next[1] = tmp1;
+          next[2] = tmp2;
+          scale = *((float *) (link + 0xC));
+          next[0] = next[0] * scale;
+          next[1] = next[1] * scale;
+          next[2] = next[2] * scale;
+          dot = PSVECDotProduct((int *) arg2, delta);
+          scale = (*new_var) * dot;
+          next[0] = next[0] + (delta[0] * scale);
+          next[1] = next[1] + (delta[1] * scale);
+          next[2] = next[2] + (delta[2] * scale);
+          scale = speed * (*((float *) (link + 0x10)));
+          basis[0] = 0.0f;
+          basis[1] = 1.0f;
+          basis[2] = 0.0f;
+          next[0] = next[0] + (basis[0] * scale);
+          next[1] = next[1] + (basis[1] * scale);
+          next[2] = next[2] + (basis[2] * scale);
         }
+        else
+        {
+          scale = *new_var;
+          tmp0 = arg2[0] * scale;
+          tmp1 = arg2[1] * scale;
+          tmp2 = arg2[2] * scale;
+          next[0] = tmp0;
+          next[1] = tmp1;
+          next[2] = tmp2;
+        }
+        fn_8018DE94(arg0, selected, next, arg1, arg4 + 1);
+      }
+      offset += 0x14;
+      i++;
     }
+
+  }
 }
 #pragma pop
 #pragma cplusplus on
@@ -1704,71 +1725,71 @@ extern float lbl_8056203C;
 extern float lbl_80562040;
 #pragma scheduling invalid_target
 void fn_8018F538(unsigned char *arg0, unsigned char *arg1) {
-    float bias;
-    float scale;
-    float upper;
-    float divisor;
-    float origin;
-    float lower;
+    struct P { unsigned char *src; unsigned char *dst; int i; } p;
+    register float bias;
+    register float scale;
+    register float upper;
+    register float divisor;
+    register float origin;
+    register float lower;
     float v;
-    unsigned char *src = arg0;
     float first;
-    unsigned char *dst;
     float second;
     int word;
-    int i;
 
-    lower = lbl_80561F88;
-    dst = arg1 + 0;
-    first = *(float *)(src + 0x2690);
-    upper = lbl_80561F74;
-    i = 0;
-    *(float *)(dst + 0x290) = first;
-    origin = lbl_8056203C;
-    second = *(float *)(src + 0x2698);
-    divisor = lbl_80562040;
-    *(float *)(dst + 0x294) = second;
-    scale = lbl_80562038;
-    word = *(volatile int *)(src + 0x268C);
-    bias = lbl_80561F8C;
-    *(int *)(dst + 0x298) = word;
+    p.src = arg0;
+    lower = *(volatile float *)&lbl_80561F88;
+    p.dst = arg1;
+    first = *(float *)(p.src + 0x2690);
+    upper = *(volatile float *)&lbl_80561F74;
+    p.i = 0;
+    *(float *)(p.dst + 0x290) = first;
+    origin = *(volatile float *)&lbl_8056203C;
+    second = *(float *)(p.src + 0x2698);
+    divisor = *(volatile float *)&lbl_80562040;
+    *(float *)(p.dst + 0x294) = second;
+    scale = *(volatile float *)&lbl_80562038;
+    word = *(volatile int *)(p.src + 0x268C);
+    bias = *(volatile float *)&lbl_80561F8C;
+    *(int *)(p.dst + 0x298) = word;
 
-    while (i < *(int *)(arg0 + 0x5F8)) {
-        v = (*(float *)(src + 0x5FC) - origin) / divisor;
+    while (p.i < *(int *)(arg0 + 0x5F8)) {
+        v = (*(float *)(p.src + 0x5FC) - origin) / divisor;
         v = (lower < v) ? lower : v;
         v = (v > upper) ? v : upper;
-        dst[0] = (unsigned char)(int)(bias + (upper + v * scale));
-        v = (*(float *)(src + 0x600) - origin) / divisor;
+        p.dst[0] = (unsigned char)(int)(bias + (upper + v * scale));
+        v = (*(float *)(p.src + 0x600) - origin) / divisor;
         v = (lower < v) ? lower : v;
         v = (v > upper) ? v : upper;
-        dst[1] = (unsigned char)(int)(bias + (upper + v * scale));
-        v = (*(float *)(src + 0x604) - origin) / divisor;
+        p.dst[1] = (unsigned char)(int)(bias + (upper + v * scale));
+        v = (*(float *)(p.src + 0x604) - origin) / divisor;
         v = (lower < v) ? lower : v;
         v = (v > upper) ? v : upper;
-        dst[2] = (unsigned char)(int)(bias + (upper + v * scale));
-        src += 0xC;
-        dst += 4;
-        i++;
+        p.dst[2] = (unsigned char)(int)(bias + (upper + v * scale));
+        p.src += 0xC;
+        p.dst += 4;
+        p.i++;
     }
 
-    *(unsigned char *)(arg1 + 0x2A0) = *(int *)(arg0 + 0x15A8);
-    *(unsigned char *)(arg1 + 0x2A1) = *(int *)(arg0 + 0x1628);
-    *(unsigned char *)(arg1 + 0x2A2) = *(int *)(arg0 + 0x16A8);
-    *(unsigned char *)(arg1 + 0x2A3) = *(int *)(arg0 + 0x1728);
-    *(unsigned char *)(arg1 + 0x2A4) = *(int *)(arg0 + 0x17A8);
-    *(unsigned char *)(arg1 + 0x2A5) = *(int *)(arg0 + 0x1828);
-    *(unsigned char *)(arg1 + 0x2A6) = *(int *)(arg0 + 0x18A8);
-    *(unsigned char *)(arg1 + 0x2A7) = *(int *)(arg0 + 0x1928);
-    *(unsigned char *)(arg1 + 0x2A8) = *(int *)(arg0 + 0x19A8);
-    *(unsigned char *)(arg1 + 0x2A9) = *(int *)(arg0 + 0x1A28);
-    *(unsigned char *)(arg1 + 0x2AA) = *(int *)(arg0 + 0x1AA8);
-    *(unsigned char *)(arg1 + 0x2AB) = *(int *)(arg0 + 0x1B28);
-    *(unsigned char *)(arg1 + 0x2AC) = *(int *)(arg0 + 0x1BA8);
-    *(unsigned char *)(arg1 + 0x2AD) = *(int *)(arg0 + 0x1C28);
-    *(unsigned char *)(arg1 + 0x2AE) = *(int *)(arg0 + 0x1CA8);
-    *(unsigned char *)(arg1 + 0x2AF) = *(int *)(arg0 + 0x1D28);
-    *(unsigned char *)(arg1 + 0x2B0) = *(int *)(arg0 + 0x1DA8);
-    *(int *)(arg1 + 0x29C) = *(int *)(arg0 + 0x1E3C);
+    p.dst = arg1;
+    *(unsigned char *)(p.dst + 0x2A0) = *(int *)(arg0 + 0x15A8);
+    *(unsigned char *)(p.dst + 0x2A1) = *(int *)(arg0 + 0x1628);
+    *(unsigned char *)(p.dst + 0x2A2) = *(int *)(arg0 + 0x16A8);
+    *(unsigned char *)(p.dst + 0x2A3) = *(int *)(arg0 + 0x1728);
+    *(unsigned char *)(p.dst + 0x2A4) = *(int *)(arg0 + 0x17A8);
+    *(unsigned char *)(p.dst + 0x2A5) = *(int *)(arg0 + 0x1828);
+    *(unsigned char *)(p.dst + 0x2A6) = *(int *)(arg0 + 0x18A8);
+    *(unsigned char *)(p.dst + 0x2A7) = *(int *)(arg0 + 0x1928);
+    *(unsigned char *)(p.dst + 0x2A8) = *(int *)(arg0 + 0x19A8);
+    *(unsigned char *)(p.dst + 0x2A9) = *(int *)(arg0 + 0x1A28);
+    *(unsigned char *)(p.dst + 0x2AA) = *(int *)(arg0 + 0x1AA8);
+    *(unsigned char *)(p.dst + 0x2AB) = *(int *)(arg0 + 0x1B28);
+    *(unsigned char *)(p.dst + 0x2AC) = *(int *)(arg0 + 0x1BA8);
+    *(unsigned char *)(p.dst + 0x2AD) = *(int *)(arg0 + 0x1C28);
+    *(unsigned char *)(p.dst + 0x2AE) = *(int *)(arg0 + 0x1CA8);
+    *(unsigned char *)(p.dst + 0x2AF) = *(int *)(arg0 + 0x1D28);
+    *(unsigned char *)(p.dst + 0x2B0) = *(int *)(arg0 + 0x1DA8);
+    *(int *)(p.dst + 0x29C) = *(int *)(arg0 + 0x1E3C);
 }
 #pragma scheduling on
 void fn_8018F6F8(void *arg0) {
@@ -1830,9 +1851,7 @@ void fn_8018F76C(void *arg0, int arg1) {
     f.pos[1] = *(float *)(state + 0x23D4) + f.mtx[4] * lbl_80561F98;
     f.pos[2] = *(float *)(state + 0x23D8) + f.mtx[5] * lbl_80561F98;
     ((void (*)(void *, float *, float *))fn_8017B6D4)(arg0, f.vel, f.pos);
-    if (fabsf(*(float *)(state + 0x23AC)) < lbl_80561F9C && *(float *)(state + 0x23AC) < lbl_80561F74) {
-    }
-    {
+    if ((float)__fabs((double)*(float *)(state + 0x23AC)) < lbl_80561F9C && *(float *)(state + 0x23AC) < lbl_80561F74) {
         float k = *(float *)(state + 0x23AC);
         f.out[0] = f.mtx[0] * k + *(float *)(base + 0x124);
         f.out[1] = f.mtx[1] * k + *(float *)(base + 0x128);
