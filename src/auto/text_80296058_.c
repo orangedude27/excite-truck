@@ -7,8 +7,9 @@ void fn_80296058(void) {
 void fn_8029605C(void) {
 }
 
+/* No-op subsystem init hook, called during the global startup sequence
+ * (fn_80287914); does nothing in this build. */
 void fn_80296060(void) {
-
 }
 
 /* No-op stub: subsystem hook called during the global teardown sequence; does nothing in this build. */
