@@ -1169,16 +1169,16 @@ acquire_setup:
 #pragma pop
 extern const char lbl_80321FE8[];
 #pragma use_lmw_stmw off
-extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(void *manager, void *voice) {
+extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(void *manager, void * const voice) {
     if (voice == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x21D, lbl_80321FE8);
     }
-    int firstState = OSDisableInterrupts();
-    int secondState = OSDisableInterrupts();
+    unsigned int firstState = OSDisableInterrupts();
+    unsigned int secondState = OSDisableInterrupts();
     if (voice == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
     }
-    void *link = (char *)voice + 0x1A8;
+    char *link = (char *)voice + 0x1A8;
     Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((char *)manager + 0x14, link);
     void *iterator = (char *)manager + 0x24;
     if (voice == 0) {
@@ -2428,8 +2428,8 @@ extern "C" int GetCurrentPlayingDspAddress__Q46nw4hbm3snd6detail7AxVoiceCFv(void
     return address;
 }
 
-extern "C" void fn_800E5A8C(void) {
-    ((void (*)(void))fn_800E6A44)();
+extern "C" void fn_800E5A8C(void *arg0, int arg1, int arg2, void *arg3) {
+    fn_800E6A44(arg0, arg1, arg2, arg3);
 }
 
 extern "C" void fn_80033538(unsigned short);
