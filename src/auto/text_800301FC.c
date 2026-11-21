@@ -333,13 +333,21 @@ void TRKReadBuffer1_ui64(void) {
 #pragma push
 #pragma scheduling on
 void TRKAppendBuffer_ui32(void) {
-    u32 *a = lbl_8035BF20;
-    u32 *b = (u32 *)lbl_8035BEA0;
+    /* __AXAllocInit: clear the 32 per-priority voice stacks (heads and tails)
+     * and the pending-buffer queue head. */
+#define __AXStackHead lbl_8035BEA0
+#define __AXStackTail lbl_8035BF20
+#define sPendingQueue lbl_8055D6E8
+    u32 *tail = __AXStackTail;
+    u32 *head = (u32 *)__AXStackHead;
     int i;
-    lbl_8055D6E8 = 0;
+    sPendingQueue = 0;
     for (i = 0; i < 32; i++) {
-        a[i] = 0; b[i] = 0;
+        tail[i] = 0; head[i] = 0;
     }
+#undef sPendingQueue
+#undef __AXStackHead
+#undef __AXStackTail
 }
 
 void TRKAppendBuffer1_ui64(void) {
