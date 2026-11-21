@@ -1370,30 +1370,43 @@ long fn_8027C71C(void *event) {
     return flag;
 }
 
-long fn_8027C650();
+long fn_8027C650(void *);
 extern char lbl_80347A50[];
 #pragma dont_inline on
-long fn_8027C788(void *arg0) {
-    register void *item;
-    register long index = 0;
-    char *name;
-    long value;
-    goto fetch;
-body:
-    name = ((char *(*)(void *))(*(void ***)item)[2])(item);
-    if (stricmp(name, lbl_80347A50) == 0) {
-        value = ((long (*)(void *, char *))(*(void ***)item)[5])(item, lbl_80347A5C);
-        fn_8027C120(lbl_8055F654, value);
-        if (fn_8027C650() == 0)
-            return 0;
+#pragma cplusplus on
+extern "C" long fn_8027C788(void *recordPtr) {
+    struct GoalNodeC {
+        virtual char *getTypeName();
+        virtual void m1();
+        virtual void m2();
+        virtual char *getString(const char *name);
+    };
+    struct PathNodeC {
+        virtual void m0(); virtual void m1(); virtual void m2();
+        virtual void m3(); virtual void m4(); virtual void m5();
+        virtual void m6(); virtual void m7(); virtual void m8();
+        virtual void m9(); virtual void m10(); virtual void m11();
+        virtual void m12(); virtual void m13(); virtual void m14();
+        virtual void m15(); virtual void m16(); virtual void m17();
+        virtual void m18(); virtual void m19(); virtual void m20();
+        virtual void m21();
+        virtual GoalNodeC *getChild(long index);
+    };
+    struct EventPathRecord *record = (struct EventPathRecord *)recordPtr;
+    GoalNodeC *goal;
+    long index = 0;
+    while ((goal = ((PathNodeC *)record->pathObject)->getChild(index)) != 0) {
+        if (stricmp(goal->getTypeName(), OBJ_TYPE_EVENT_GOAL) == 0) {
+            if (fn_8027C650(fn_8027C120(lbl_8055F654,
+                                        (long)goal->getString(ATTR_CONTEST_NAME))) == 0) {
+                return 0;
+            }
+        }
+        index++;
     }
-    index++;
-fetch:
-    item = ((void *(*)(void *, long))(*(void ***)*(void **)((char *)arg0 + 8))[24])(*(void **)((char *)arg0 + 8), index);
-    if (item != 0)
-        goto body;
     return 1;
 }
+#pragma cplusplus reset
 
 #pragma push
 #pragma scheduling invalid_target
