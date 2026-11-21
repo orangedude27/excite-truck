@@ -154,6 +154,10 @@ extern void fn_8028D084(void *, void *);
 #pragma dont_inline on
 #pragma cplusplus on
 int fn_8028D17C(void) {
+    /* Initialize the 8 terrain skid-handler slots: for each "terrain_%d", look up
+       its object, fetch the "skid" sub-object through virtual get(), build a
+       0x1C-byte handler with fn_8028D084 and record its index, or store -1 when
+       the terrain has no skid data.  Returns nonzero if any handler was built. */
     struct Obj {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
@@ -164,17 +168,17 @@ int fn_8028D17C(void) {
         virtual void *get(void *);
     };
     register int *slot;
-    int i;
+    int terrainIndex;
     register int invalid;
-    char temp[0x20];
+    char terrainName[0x20];
     void *obj;
     slot = (int *)lbl_804B3470;
     lbl_8055F728 = 0;
-    i = 0;
+    terrainIndex = 0;
     invalid = -1;
-    for (; i < 8; i++) {
-        fn_801345D8(temp, 0x20, lbl_80348CA0, i);
-        obj = fn_802AE414(temp);
+    for (; terrainIndex < 8; terrainIndex++) {
+        fn_801345D8(terrainName, 0x20, lbl_80348CA0, terrainIndex);
+        obj = fn_802AE414(terrainName);
         if (obj != 0) {
             obj = ((Obj *)obj)->get(&lbl_8055C8D0);
         }
@@ -622,6 +626,7 @@ void fn_8028DDF0(register void *arg0, register int arg1) {
         int a, b, c, d, e, f, g, h;
     } Output;
     Entry *entry = (Entry *)arg0;
+    register int invalid;
     register int *slot;
     register int i;
     register float threshold;
@@ -638,6 +643,7 @@ void fn_8028DDF0(register void *arg0, register int arg1) {
     result = fn_801E7E18();
     slot = lbl_804B3490;
     i = 0;
+    invalid = -1;
     while (i < arg1) {
         if (entry->f8 < threshold &&
             (void *)(unsigned long)entry->items[0x19] == (void *)slot[entry->index] &&
@@ -647,10 +653,10 @@ void fn_8028DDF0(register void *arg0, register int arg1) {
                 fn_8028D89C(entry, j, result);
         } else {
             int offset = entry->index << 5;
-            *(int *)((char *)(unsigned long)lbl_8055F720 + offset) = -1;
-            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 8) = -1;
-            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 0x10) = -1;
-            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 0x18) = -1;
+            *(int *)((char *)(unsigned long)lbl_8055F720 + offset) = invalid;
+            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 8) = invalid;
+            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 0x10) = invalid;
+            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 0x18) = invalid;
         }
         slot[entry->index] = entry->items[0x19];
         entry++;
