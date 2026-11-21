@@ -133,7 +133,6 @@ void fn_802DD750(void) {
 
 extern double lbl_805650A0;
 extern float lbl_80565094, lbl_80565098;
-typedef struct { float data[36]; int count; } TexCache754;
 void fn_802DE788(void);
 void fn_802DD898(void *, float, float);
 void fn_802DEA6C();
