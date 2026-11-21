@@ -505,8 +505,12 @@ void* fn_802168E4(void) {
     return lbl_8055EF88;
 }
 
-void fn_802168EC(void) {
-    fn_80218C98();
+void fn_802168EC(void *parent, void *child, int id) {
+    #define UIWindow_AddChild fn_80218C98
+    /* UIWindow_AddChild: register a child widget under this parent window;
+     * forward (parent, child, id) to the add-child implementation. */
+    UIWindow_AddChild(parent, (void **)child, id);
+    #undef UIWindow_AddChild
 }
 
 extern s32 fn_8012742C(void);
