@@ -938,8 +938,10 @@ extern "C" void fn_80207490(Obj80207490 *sound, const Rec80207490 *entries, int 
     }
     sound->flag18 = (sound->flag18 & sound->flag6e) != 0;
 }
-extern "C" void fn_8020769C(void* arg0, int arg1, int arg2) {
-	fn_802073A4(arg0, arg1, arg2);
+extern "C" void fn_8020769C(void *self, int arg1, int arg2) {
+    /* Tail-call forward to fn_802073A4, which flushes this sound object's dirty
+     * mix values. */
+    fn_802073A4(self, arg1, arg2);
 }
 
 /* Create a SoundDash sound object (0x70 bytes), initialize it, and
