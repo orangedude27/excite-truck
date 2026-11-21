@@ -492,7 +492,6 @@ void fn_8020FE90(void) {
 #pragma push
 #pragma dont_inline off
 long fn_8020FEF0(long arg0) {
-    long delta = arg0;
     long sum;
     long state = lbl_8055EEE0;
     long count;
@@ -500,20 +499,20 @@ long fn_8020FEF0(long arg0) {
     long max;
 
     if (state == -2 && lbl_8055EEBC > 0) {
-        if (delta == 1) {
+        if (arg0 == 1) {
             lbl_8055EEE0 = -1;
             fn_8020FE90();
         }
         return;
     } else if (state == -1) {
-        if (delta == -1) {
+        if (arg0 == -1) {
             lbl_8055EEE0 = -2;
             fn_8020FE90();
         }
         return;
     } else {
         pos = lbl_8055EEE4;
-        sum = pos + delta;
+        sum = pos + arg0;
         max = clampTrackDigit(sum, lbl_8055EEE8 - 1);
         lbl_8055EEE4 = max;
         count = lbl_8055EEBC;
@@ -619,37 +618,38 @@ struct Record_802101F8 {
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_802101F8(Dummy_802101F8 *arg0, long arg1, long arg2, struct Record_802101F8 *arg3) {
-    long temp_r31;
+extern "C" void fn_802101F8(Dummy_802101F8 *widget, long resource, long baseIndex, struct Record_802101F8 *record) {
+    /* Lay out three stepped track-music UI entries, fetching each step's float value from the widget's resource set and advancing the record's float position. */
+    long resourceSet;
     struct Record_802101F8 rec;
-    long i;
+    long stepIndex;
     long f8;
     long f4;
 
-    if (arg0 == 0 || arg3 == 0) return;
-    temp_r31 = arg0->v4();
-    i = 0;
-    rec.f0 = arg3->f0;
-    f4 = ((volatile struct Record_802101F8 *)arg3)->f4;
-    f8 = ((volatile struct Record_802101F8 *)arg3)->f8;
+    if (widget == 0 || record == 0) return;
+    resourceSet = widget->v4();
+    stepIndex = 0;
+    rec.f0 = record->f0;
+    f4 = ((volatile struct Record_802101F8 *)record)->f4;
+    f8 = ((volatile struct Record_802101F8 *)record)->f8;
     rec.f4 = f4;
     rec.f8 = f8;
-    rec.fC = arg3->fC;
-    rec.f10 = arg3->f10;
-    rec.f14 = arg3->f14;
-    rec.f18 = arg3->f18;
+    rec.fC = record->fC;
+    rec.f10 = record->f10;
+    rec.f14 = record->f14;
+    rec.f18 = record->f18;
     do {
-        long step = arg2 + i;
-        if (i == 1) {
-            float temp_f31 = fn_80235EF0(temp_r31, arg2 + 2);
-            rec.f10 = (arg3->f10 - fn_80235EF0(temp_r31, arg2)) - temp_f31;
+        long step = baseIndex + stepIndex;
+        if (stepIndex == 1) {
+            float finalValue = fn_80235EF0(resourceSet, baseIndex + 2);
+            rec.f10 = (record->f10 - fn_80235EF0(resourceSet, baseIndex)) - finalValue;
         } else {
-            rec.f10 = fn_80235EF0(temp_r31, step);
+            rec.f10 = fn_80235EF0(resourceSet, step);
         }
-        fn_80147940(arg0, &rec, arg1, step);
-        i++;
+        fn_80147940(widget, &rec, resource, step);
+        stepIndex++;
         *(float *)&rec.f4 += rec.f10;
-    } while (i < 3);
+    } while (stepIndex < 3);
 }
 #pragma cplusplus reset
  
