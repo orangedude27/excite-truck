@@ -25,6 +25,7 @@ extern float fn_801E9FDC(void *, float, float);
 extern int lbl_8055C4FC, lbl_8055C500;
 extern unsigned char lbl_8049A028[];
 extern void fn_8026A1F0(int, int, int);
+/* No-op per-entry constructor callback for the fixed-size object pool built by fn_8026B0D4. */
 void fn_8026B118(void) {}
 
 extern int lbl_8055F4D0, lbl_8055F4CC;
@@ -140,7 +141,7 @@ extern "C" void fn_8026B260(void) {
     lbl_8055F4C8 = iteratorOrZero;
     obj = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
     nameObj = *(FileName **)((char *)obj + 0x20);
-    dot = nameObj->getFileName((const char *)lbl_80346988 + 0, 0);
+    dot = nameObj->getFileName(base, 0);
     if (dot != 0) {
         strncpy(name, dot, 11);
         dot = strchr(name, '.');
