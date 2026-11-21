@@ -189,28 +189,29 @@ extern "C" int ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46n
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 int nw4hbm::snd::detail::WsdFileReader::ReadWaveParam(int index, nw4hbm::snd::detail::WaveData* data, const void* arg) const {
-    void* arg3 = (void*)arg;
-    void* arg2 = (void*)data;
-    void* this_ = (void*)this;
-    unsigned int arg1 = (unsigned int)index;
-    struct Hdr { char pad[6]; unsigned short ver; };
-    const struct Hdr* h = (const struct Hdr*)*(void**)this_;
-    unsigned char sp8[8];
-    char* base;
-    void* entry;
-    if (h->ver == 0x100) {
-        base = (char*)*(void**)((char*)this_ + 8);
-        unsigned int off = *(unsigned int*)(base + arg1 * 4 + 8);
-        entry = (void*)((unsigned int)off + (unsigned int)base);
+    /* Look up the indexed entry in the WSD wave table (whose layout depends on the
+     * file version), then let WaveFileReader fill *data from that wave entry. */
+    void* fileBase = (void*)arg;
+    void* waveData = (void*)data;
+    void* reader = (void*)this;
+    unsigned int waveIndex = (unsigned int)index;
+    const WsdFileHeader* fileHeader = (const WsdFileHeader*)*(void**)reader;
+    unsigned char waveEntryRef[8];
+    char* waveTable;
+    void* waveEntry;
+    if (fileHeader->version == 0x100) {
+        waveTable = (char*)*(void**)((char*)reader + 8);
+        unsigned int entryOffset = *(unsigned int*)(waveTable + waveIndex * 4 + 8);
+        waveEntry = (void*)((unsigned int)entryOffset + (unsigned int)waveTable);
     } else {
-        base = (char*)*(void**)((char*)this_ + 8);
-        if (arg1 >= *(unsigned int*)(base + 8))
+        waveTable = (char*)*(void**)((char*)reader + 8);
+        if (waveIndex >= *(unsigned int*)(waveTable + 8))
             return 0;
-        unsigned int off = *(unsigned int*)(base + arg1 * 4 + 0xC);
-        entry = (void*)((unsigned int)off + (unsigned int)base);
+        unsigned int entryOffset = *(unsigned int*)(waveTable + waveIndex * 4 + 0xC);
+        waveEntry = (void*)((unsigned int)entryOffset + (unsigned int)waveTable);
     }
-    fn_800FEC1C(sp8, entry);
-    return ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(sp8, arg2, arg3);
+    fn_800FEC1C(waveEntryRef, waveEntry);
+    return ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(waveEntryRef, waveData, fileBase);
 }
 #pragma pop
 extern "C" void* __ct__Q46nw4hbm3snd6detail9WsdPlayerFv(void* this_) {
