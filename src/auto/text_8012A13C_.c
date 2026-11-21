@@ -1,17 +1,17 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
+/* Fixed-size block pool ("Joint Pool"): construct/initialize, rebuild the free
+ * list, pop/push elements and destroy the pool. */
 
 typedef signed int s32;
 typedef unsigned char u8;
-typedef struct { int pad[4]; char *base; int stride; int count; int head; } PoolList_8012A218;
-extern char lbl_8032A5FC[];
-extern char lbl_8032A620[];
-extern int lbl_8055E174;
-extern float lbl_80561474;
+extern char lbl_8032A5FC[]; /* "Panic: out of memory in pool(%s)" */
+#define sPanicPoolEmpty lbl_8032A5FC
+extern char lbl_8032A5D8[]; /* "Unable to allocate memory for pool" */
+#define sPanicPoolAlloc lbl_8032A5D8
+extern char lbl_8032A620[]; /* this class's vtable */
+#define sPoolVtable     lbl_8032A620
 int fn_802E317C(int *, ...);
 int fn_80128658(int);
 int fn_80128668(void *);
-void fn_8013B950(void);
 #pragma scheduling invalid_target
 /* Construct a fixed-size block pool: install its vtable and initialize it with no caller-supplied buffer. */
 void *fn_8012A13C(void *self, int name, int count, int blockSize) {
