@@ -51,7 +51,8 @@ void fn_80276098(void *arg0, void *arg1, float arg2, float arg3, float arg4, int
     float (*a)[3] = (float (*)[3])arg0;
     float (*b)[3] = (float (*)[3])arg1;
     float trace, root, inv;
-    int i, j, k, eq, off;
+    register int i, j, k;
+    int eq, off;
     if ((float)__fabs(arg2-arg3) <= lbl_80558DC4[0]) {
         eq = (float)__fabs(PSVECSquareDistance((char*)arg0+0x24,(char*)arg1+0x24)) <= lbl_80558DC4[0];
         if (eq) eq = (float)__fabs(PSVECSquareDistance(arg0,arg1)) <= lbl_80558DC4[0];
@@ -142,35 +143,38 @@ unsigned int fn_8027656C(void *arg0, void *arg1, unsigned int arg2) {
     float t, scalar, trace, root, inv, s;
     float x, y, z, w, x2, y2, z2, xx, yy, zz, wx, yz;
     float *outm;
+    float p0, p1, p2, pf;
     t = fn_80277704(arg2);
     base = lbl_8049FD58;
     off = arg2 * 0x50;
     if (*(int *)(base + off + 0x4C) != 0x22) {
+        float (*m)[3];
         fn_8026A49C(arg2, *(int *)(base + off + 0x4C), (float *)mat, &scalar);
-        trace = mat[0][0] + mat[1][1] + mat[2][2];
+        m = mat;
+        trace = m[0][0] + m[1][1] + m[2][2];
         if (trace > lbl_80564048) {
             root = (float)fn_8002F234(lbl_8056404C + trace);
             inv = lbl_80564050 / root;
             *(float *)(base + off + 0x20) = lbl_80564050 * root;
-            *(float *)(base + off + 0x14) = inv * (mat[1][2] - mat[2][1]);
-            *(float *)(base + off + 0x18) = inv * (mat[2][0] - mat[0][2]);
-            *(float *)(base + off + 0x1C) = inv * (mat[0][1] - mat[1][0]);
+            *(float *)(base + off + 0x14) = inv * (m[1][2] - m[2][1]);
+            *(float *)(base + off + 0x18) = inv * (m[2][0] - m[0][2]);
+            *(float *)(base + off + 0x1C) = inv * (m[0][1] - m[1][0]);
         } else {
             i = 0;
-            if (mat[1][1] > mat[0][0]) i = 1;
-            if (mat[2][2] > mat[i][i]) i = 2;
+            if (m[1][1] > m[0][0]) i = 1;
+            if (m[2][2] > m[i][i]) i = 2;
             j = (i + 1) % 3;
             k = (j + 1) % 3;
-            root = (float)fn_8002F234(lbl_8056404C + (mat[i][i] - (mat[j][j] + mat[k][k])));
+            root = (float)fn_8002F234(lbl_8056404C + (m[i][i] - (m[j][j] + m[k][k])));
             inv = lbl_80564050 / root;
             *(float *)(base + off + 0x14 + i * 4) = lbl_80564050 * root;
-            *(float *)(base + off + 0x20) = inv * (mat[j][k] - mat[k][j]);
-            *(float *)(base + off + 0x14 + j * 4) = inv * (mat[i][j] + mat[j][i]);
-            *(float *)(base + off + 0x14 + k * 4) = inv * (mat[i][k] + mat[k][i]);
+            *(float *)(base + off + 0x20) = inv * (m[j][k] - m[k][j]);
+            *(float *)(base + off + 0x14 + j * 4) = inv * (m[i][j] + m[j][i]);
+            *(float *)(base + off + 0x14 + k * 4) = inv * (m[i][k] + m[k][i]);
         }
-        *(float *)(base + off + 0x30) = mat[3][0];
-        *(float *)(base + off + 0x34) = mat[3][1];
-        *(float *)(base + off + 0x38) = mat[3][2];
+        *(float *)(base + off + 0x30) = m[3][0];
+        *(float *)(base + off + 0x34) = m[3][1];
+        *(float *)(base + off + 0x38) = m[3][2];
         *(float *)(base + off + 0x40) = scalar;
     }
     if (t >= lbl_8056404C || t < lbl_80564048) {
@@ -194,8 +198,8 @@ unsigned int fn_8027656C(void *arg0, void *arg1, unsigned int arg2) {
     } else {
         if (t < lbl_80564054) s = lbl_80564054;
         else if (t > lbl_8056404C) s = lbl_8056404C;
-        else if (t <= lbl_80564048) s = lbl_80564058 * t * t * t - lbl_8056405C * t * t;
-        else s = lbl_80564058 * t * t * t + lbl_8056405C * t * t;
+        else if (t > lbl_80564048) s = lbl_80564058 * t * t * t + lbl_8056405C * t * t;
+        else s = lbl_80564058 * t * t * t - lbl_8056405C * t * t;
         fn_8012F57C(quat, (float *)(base + off + 4), (float *)(base + off + 0x14), s);
         x = quat[0]; y = quat[1]; z = quat[2]; w = quat[3];
         x2 = x + x; y2 = y + y; z2 = z + z;
@@ -207,10 +211,15 @@ unsigned int fn_8027656C(void *arg0, void *arg1, unsigned int arg2) {
         outm[7] = yz - wx; outm[5] = yz + wx;
         outm[6] = x * z2 + w * y2; outm[3] = x * y2 - w * z2;
         outm[1] = x * y2 + w * z2; outm[2] = x * z2 - w * y2;
-        outm[9] = *(float *)(base + off + 0x24) + s * (*(float *)(base + off + 0x30) - *(float *)(base + off + 0x24));
-        outm[10] = *(float *)(base + off + 0x28) + s * (*(float *)(base + off + 0x34) - *(float *)(base + off + 0x28));
-        outm[11] = *(float *)(base + off + 0x2C) + s * (*(float *)(base + off + 0x38) - *(float *)(base + off + 0x2C));
-        *(float *)arg1 = *(float *)(base + off + 0x3C) + s * (*(float *)(base + off + 0x40) - *(float *)(base + off + 0x3C));
+        p0 = *(float *)(base + off + 0x24);
+        p1 = *(float *)(base + off + 0x28);
+        p2 = *(float *)(base + off + 0x2C);
+        p0 = p0 + s * (*(float *)(base + off + 0x30) - p0);
+        p1 = p1 + s * (*(float *)(base + off + 0x34) - p1);
+        p2 = p2 + s * (*(float *)(base + off + 0x38) - p2);
+        outm[9] = p0; outm[10] = p1; outm[11] = p2;
+        pf = *(float *)(base + off + 0x3C);
+        *(float *)arg1 = pf + s * (*(float *)(base + off + 0x40) - pf);
     }
 }
 
@@ -380,20 +389,23 @@ extern float lbl_802FA818[];
 extern float lbl_80564064, lbl_80564068, lbl_8056406C;
   u32 fn_8027656C(void *, void *, u32);
   extern u8 lbl_8049FE98[];
-void fn_80276BE4(u32 *arg0, f32 *arg1) {
+/* Refresh the current camera from running blend record 0 if a blend is active,
+ * then copy its 3x4 transform (rotation matrix + position, 0x30 bytes) into
+ * outTransform and its field of view into outFov. */
+void fn_80276BE4(u32 *outTransform, f32 *outFov) {
     struct Pair2 { u32 x, y; };
-    unsigned char *dst = (unsigned char *)arg0;
+    unsigned char *out = (unsigned char *)outTransform;
     if (*(unsigned char *)&lbl_8049FD58 != 0) {
         fn_8027656C(lbl_8049FE98 + 4, lbl_8049FE98 + 0x34, 0);
     }
-    *(struct Pair2 *)(dst + 0x00) = *(struct Pair2 *)(lbl_8049FE98 + 0x04);
-    *(struct Pair2 *)(dst + 0x08) = *(struct Pair2 *)(lbl_8049FE98 + 0x0c);
-    *(struct Pair2 *)(dst + 0x10) = *(struct Pair2 *)(lbl_8049FE98 + 0x14);
-    *(struct Pair2 *)(dst + 0x18) = *(struct Pair2 *)(lbl_8049FE98 + 0x1c);
-    *(u32 *)(dst + 0x20) = *(u32 *)(lbl_8049FE98 + 0x24);
-    *(struct Pair2 *)(dst + 0x24) = *(struct Pair2 *)(lbl_8049FE98 + 0x28);
-    *(u32 *)(dst + 0x2c) = *(u32 *)(lbl_8049FE98 + 0x30);
-    *arg1 = *(f32 *)(lbl_8049FE98 + 0x34);
+    *(struct Pair2 *)(out + 0x00) = *(struct Pair2 *)(lbl_8049FE98 + 0x04);
+    *(struct Pair2 *)(out + 0x08) = *(struct Pair2 *)(lbl_8049FE98 + 0x0c);
+    *(struct Pair2 *)(out + 0x10) = *(struct Pair2 *)(lbl_8049FE98 + 0x14);
+    *(struct Pair2 *)(out + 0x18) = *(struct Pair2 *)(lbl_8049FE98 + 0x1c);
+    *(u32 *)(out + 0x20) = *(u32 *)(lbl_8049FE98 + 0x24);
+    *(struct Pair2 *)(out + 0x24) = *(struct Pair2 *)(lbl_8049FE98 + 0x28);
+    *(u32 *)(out + 0x2c) = *(u32 *)(lbl_8049FE98 + 0x30);
+    *outFov = *(f32 *)(lbl_8049FE98 + 0x34);
 }
 
 /* Points the current camera at the record named `name` - at the "rddefault"
@@ -442,11 +454,13 @@ void fn_80276DC8(int arg0) {
     float trans[3][3];
     void *target;
     float mag;
+    volatile int *first;
 
     base = (char *)&lbl_8049FD58;
     src = (struct TruckState *)fn_802678E4(arg0);
     dst = (struct TruckState *)(base + 0xF08 + arg0 * 0x228);
-    dst->unk_00 = src->unk_00;
+    first = (volatile int *)(base + 0xF08);
+    first[arg0 * 0x8A] = src->unk_00;
     dst->unk_04 = src->unk_04;
     dst->unk_08 = src->unk_08;
     dst->unk_0C = src->unk_0C;
@@ -677,7 +691,6 @@ void fn_80276DC8(int arg0) {
 
     fn_80276098((char *)src + 0x58, rot, src->unk_BC, lbl_80564068 * lbl_802FA818[6], lbl_80564060, arg0, 0x22);
 }
-#pragma opt_propagation reset
 /* Return a camera blend's interpolation factor (elapsed / duration), or -1.0f if it is inactive. */
 float fn_80277704(int blendIndex) {
     volatile unsigned char *blends = (volatile unsigned char *)&gCameraBlends;
@@ -737,8 +750,12 @@ extern float lbl_80564070, lbl_80564074;
 extern int sprintf(char*, const char*, ...);
 extern char *strcpy(char*, const char*);
 void fn_80277828(void) {
-    register int i;
     register struct CameraEntry *entry;
+    register int i;
+    register int one;
+    register int zero;
+    one = 1;
+    zero = 0;
     ((struct CameraEntry *)lbl_8049FE98)->rot[0][0] = 1.0f;
     ((struct CameraEntry *)lbl_8049FE98)->rot[0][1] = 0.0f;
     ((struct CameraEntry *)lbl_8049FE98)->rot[0][2] = 0.0f;
@@ -752,8 +769,8 @@ void fn_80277828(void) {
     ((struct CameraEntry *)lbl_8049FE98)->pos[1] = 0.0f;
     ((struct CameraEntry *)lbl_8049FE98)->pos[2] = 0.0f;
     ((struct CameraEntry *)lbl_8049FE98)->fov = 1.5707964f;
-    ((struct CameraEntry *)lbl_8049FE98)->name[0] = 0;
-    ((struct CameraEntry *)lbl_8049FE98)->inUse = 1;
+    ((struct CameraEntry *)lbl_8049FE98)->name[0] = zero;
+    ((struct CameraEntry *)lbl_8049FE98)->inUse = one;
 
     if (lbl_8055F598 == 0) {
         char *fmt = *(char**)&lbl_8055C638;
@@ -772,10 +789,10 @@ void fn_80277828(void) {
         entry->pos[1] = 0.0f;
         entry->pos[2] = 0.0f;
         entry->fov = 1.5707964f;
-        ((volatile char *)entry->name)[0] = 0;
+        ((volatile char *)entry->name)[0] = zero;
         lbl_8055F5A0 = i + 1;
         lbl_8055F598 = (int)entry;
-        entry->inUse = 1;
+        entry->inUse = one;
         sprintf(entry->name, fmt);
     }
     if (lbl_8055F59C == 0) {
@@ -814,8 +831,8 @@ void fn_80277A14(void *arg0, int arg1) {
     extern void fn_80015A20();
     extern void fn_80015B20(void *, void *, void *);
     extern void fn_80020434(void *, void *);
-    extern double fn_8002EF30(float, float, float);
-    extern double fn_8002EFB0(float, float);
+    extern double fn_8002EF30(double, double, double);
+    extern double fn_8002EFB0(double, double);
     extern int fn_80178CA4(void *, float);
     extern void *fn_8017960C(int);
     extern int fn_801B89F8(void);
