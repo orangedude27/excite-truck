@@ -698,6 +698,7 @@ void fn_802321D8(void) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_80232230(void) {
+    s32 handle = -1;
     int i;
     char *stringBase;
     Fn80232230_Record *record;
@@ -722,7 +723,7 @@ void fn_80232230(void) {
                     record->resource = fn_8023512C(entry->vtable->getString(entry, lbl_8055B9BC));
                     record->artIdx = entry->vtable->getInt(entry, lbl_8055B9C0);
                     record->field18 = entry->vtable->getFloat(entry, stringBase + 0xA0, lbl_8056368C);
-                    record->handle = -1;
+                    record->handle = handle;
                 } else {
                     record->resource = 0;
                     record->artIdx = 0;
@@ -1484,6 +1485,8 @@ void fn_80233E80(s32 *font, s32 color) {
     fn_802C8C04(*font);
 }
 
+/* gText: end a text draw pass. Restores the drawlist's normal GX render mode and
+ * reapplies the matrix state saved by fn_80233E80/fn_802C8C04, then clears it. */
 void fn_80233EBC(void) {
     fn_802C8D74();
 }
