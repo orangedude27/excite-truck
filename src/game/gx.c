@@ -753,8 +753,7 @@ void fn_802CF850(void) {
     extern void fn_802D0188(unsigned char, unsigned char, unsigned char);
     extern void fn_802D0160(unsigned char, unsigned char, unsigned char);
     extern void fn_802D007C(float);
-    #define FN_802D01B0_VEC float
-extern void fn_802D01B0(FN_802D01B0_VEC *, float);
+    extern void fn_802D01B0(float *, float);
     extern void fn_802D01E0(int, int, int, int);
     extern void fn_802D0368(float, float, float, float);
     extern void fn_802D03F4(float *, float);
