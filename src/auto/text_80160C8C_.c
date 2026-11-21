@@ -1778,42 +1778,43 @@ extern "C" s32 fn_801628E8(void *state) {
 #pragma cplusplus off
 #pragma scheduling on
 void *fn_80162938(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = (void *)lbl_8032F858;
-        *((void **)arg0 + 0x56C / 4) = (void *)(lbl_8032F858 + 0x68);
-        if ((u32)arg0 + 0x56C != 0) {
-            if ((u32)arg0 + 0x56C != 0) {
-                fn_8015857C((u32)((char *)arg0 + 0x56C));
+    register void *self = arg0;
+    if (self != 0) {
+        *(void **)self = (void *)lbl_8032F858;
+        *((void **)self + 0x56C / 4) = (void *)(lbl_8032F858 + 0x68);
+        if ((u32)self + 0x56C != 0) {
+            if ((u32)self + 0x56C != 0) {
+                fn_8015857C((char *)self + 0x56C);
             }
         }
-        if ((u32)arg0 + 0x570 != 0) {
-            if ((u32)arg0 + 0x570 != 0) {
-                *(s32 *)((char *)arg0 + 0x570) = 0;
-                *(s32 *)((char *)arg0 + 0x574) = 0;
-                *(s32 *)((char *)arg0 + 0x578) = 0;
+        if ((u32)self + 0x570 != 0) {
+            if ((u32)self + 0x570 != 0) {
+                *(s32 *)((char *)self + 0x570) = 0;
+                *(s32 *)((char *)self + 0x574) = 0;
+                *(s32 *)((char *)self + 0x578) = 0;
             }
         }
-        if (arg0 != 0) {
-            if ((u32)arg0 + 0xE0 != 0) {
-                if ((u32)arg0 + 0xE0 != 0) {
-                    *(s32 *)((char *)arg0 + 0xE0) = 0;
-                    *(s32 *)((char *)arg0 + 0xE4) = 0;
-                    *(s32 *)((char *)arg0 + 0xE8) = 0;
+        if (self != 0) {
+            if ((u32)self + 0xE0 != 0) {
+                if ((u32)self + 0xE0 != 0) {
+                    *(s32 *)((char *)self + 0xE0) = 0;
+                    *(s32 *)((char *)self + 0xE4) = 0;
+                    *(s32 *)((char *)self + 0xE8) = 0;
                 }
             }
-            if (arg0 != 0) {
-                if ((u32)arg0 + 0x34 != 0) {
-                    if ((u32)arg0 + 0x34 != 0) {
-                        *(s32 *)((char *)arg0 + 0x34) = 0;
-                        *(s32 *)((char *)arg0 + 0x38) = 0;
-                        *(s32 *)((char *)arg0 + 0x3C) = 0;
+            if (self != 0) {
+                if ((u32)self + 0x34 != 0) {
+                    if ((u32)self + 0x34 != 0) {
+                        *(s32 *)((char *)self + 0x34) = 0;
+                        *(s32 *)((char *)self + 0x38) = 0;
+                        *(s32 *)((char *)self + 0x3C) = 0;
                     }
                 }
             }
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (arg1 > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 #pragma cplusplus on
@@ -3275,6 +3276,11 @@ void fn_80164D64(void *menu, s32 unused) {
 #undef FLOAT_ZERO
 }
 #pragma scheduling invalid_target
+/* Seed the challenge level-select menu: raise the "menu is up" hold flag, start
+ * the selection at the number of unlocked challenge levels (clamped to the
+ * challenge sub-task list count), clear the menu state bytes, set the camera and
+ * the popup range values, and push the level-select popup with the two message
+ * keys held in the UI string pool. */
 void fn_80164F50(void *arg0) {
     extern void fn_801796BC(unsigned char);
     extern s32 fn_80131234(void *);
@@ -3285,44 +3291,44 @@ void fn_80164F50(void *arg0) {
     extern u8 lbl_8032F588[];
     extern u8 lbl_8042FDEC[];
     extern f32 lbl_80561848;
-    void *self = arg0;
+    u8 *menu = (u8 *)arg0;
     f32 out[2];
     f32 in[2];
-    s32 value;
-    s32 first;
-    s32 second;
-    u8 *base = lbl_8032F588;
-    f32 f2;
-    f32 f1;
-    f32 f0;
+    s32 unlocked;
+    s32 popupMessage;
+    s32 popupArg;
+    u8 *uiStrings = lbl_8032F588;
+    f32 upper;
+    f32 lower;
+    f32 floorValue;
     f32 *outPtr;
     f32 *inPtr;
 
     fn_801796BC(1);
-    value = fn_80160CE4();
-    if (lbl_8055E2DC != 0 && value <= *(s32 *)(lbl_8042FDEC + 4)) {
-        *(s32 *)((u8 *)self + 8) = value;
+    unlocked = fn_80160CE4();
+    if (lbl_8055E2DC != 0 && unlocked <= *(s32 *)(subtask_list + 4)) {
+        *(s32 *)(menu + 8) = unlocked;
     }
-    if (*(s32 *)((u8 *)self + 8) >= *(s32 *)(lbl_8042FDEC + 4)) {
-        *(s32 *)((u8 *)self + 8) = *(s32 *)(lbl_8042FDEC + 4);
+    if (*(s32 *)(menu + 8) >= *(s32 *)(subtask_list + 4)) {
+        *(s32 *)(menu + 8) = *(s32 *)(subtask_list + 4);
     }
-    *(u8 *)((u8 *)self + 4) = 0;
-    f2 = 9999.0f;
+    *(u8 *)(menu + 4) = 0;
+    upper = 9999.0f;
     outPtr = out;
-    f1 = 1.0f;
+    lower = 1.0f;
     inPtr = in;
-    *(u8 *)((u8 *)self + 6) = 0;
-    f0 = lbl_80561848;
-    *(u8 *)((u8 *)self + 5) = 0;
-    outPtr[0] = f2;
-    outPtr[1] = f2;
-    inPtr[0] = f1;
-    inPtr[1] = f0;
-    fn_802A95A8(outPtr, inPtr, f1, f2);
-    fn_80276CB0(base + 0x630, 0);
-    first = fn_80131234(base + 0x654);
-    second = fn_80131234(base + 0x63C);
-    fn_801DF380((void *)second, first, (void (*)())fn_80161438, 0);
+    *(u8 *)(menu + 6) = 0;
+    floorValue = lbl_80561848;
+    *(u8 *)(menu + 5) = 0;
+    outPtr[0] = upper;
+    outPtr[1] = upper;
+    inPtr[0] = lower;
+    inPtr[1] = floorValue;
+    fn_802A95A8(outPtr, inPtr, lower, upper);
+    fn_80276CB0(uiStrings + 0x630, 0);
+    popupMessage = fn_80131234(uiStrings + 0x654);
+    popupArg = fn_80131234(uiStrings + 0x63C);
+    fn_801DF380((void *)popupArg, popupMessage, (void (*)())fn_80161438, 0);
 }
 extern void fn_801796BC(unsigned char);
 typedef struct Work_80164D64 {
