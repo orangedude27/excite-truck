@@ -1306,6 +1306,7 @@ void *fn_8025007C(s32 count) {
     return list;
 }
 #pragma pop
+static inline f32 Fn80250108ToF32(s32 v) { return (f32)v; }
 void fn_80250108(void *arg0) {
     extern f32 fn_80214D48(void);
     extern const f32 lbl_80563964, lbl_80563968, lbl_8056396C, lbl_80563970;
