@@ -28,20 +28,32 @@ typedef struct {
     /* 0x2420 */ Record records[3];
 } RecordSet;
 #pragma scheduling invalid_target
-void *fn_80209D4C(void *arg0) {
+void *fn_80209D4C(void *soundSource) {
+#define kVtable         lbl_8033C258
+#define kSfxName        lbl_8033C268    /* "squeal.sfx" */
+#define kAllocTag       lbl_8055B548    /* "tiresnd" */
+#define allocObject     fn_801284F8
+#define createSfx       fn_802077A4
+#define createRoadSound fn_8020CA3C
     /* Construct a squeal sound object, attaching its SFX handle and a road-sound helper. */
     void *squealObj;
     void *sfxHandle;
-    squealObj = fn_801284F8(0x10, &lbl_8055B548);
+    squealObj = allocObject(0x10, &kAllocTag);
     if (squealObj != 0) {
-        *(void **)squealObj = lbl_8033C258;
-        *((void **)squealObj + 1) = arg0;
-        sfxHandle = fn_802077A4(lbl_8033C268, 4, (char *)arg0 + 0x118, (char *)arg0 + 0x60);
+        *(void **)squealObj = kVtable;
+        *((void **)squealObj + 1) = soundSource;
+        sfxHandle = createSfx(kSfxName, 4, (char *)soundSource + 0x118, (char *)soundSource + 0x60);
         *((void **)squealObj + 2) = sfxHandle;
         if (sfxHandle != 0) *(int *)((char *)sfxHandle + 0x10) = *(int *)((char *)*((void **)squealObj + 1) + 0x1ec);
-        *((void **)squealObj + 3) = (void *)fn_8020CA3C(arg0);
+        *((void **)squealObj + 3) = (void *)createRoadSound(soundSource);
     }
     return squealObj;
+#undef createRoadSound
+#undef createSfx
+#undef allocObject
+#undef kAllocTag
+#undef kSfxName
+#undef kVtable
 }
 
 extern void fn_80128668(void *);
