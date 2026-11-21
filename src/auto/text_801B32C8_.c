@@ -414,8 +414,9 @@ void* fn_801B3D24(void* obj, s32 shouldFree) {
     return obj;
 }
 #pragma scheduling reset
-void fn_801B3DBC(void* arg0) {
-    fn_801B435C(arg0);
+void fn_801B3DBC(void* collisionManager) {
+    /* Reset this manager's collision-sound history by clearing its 16 recent-collision records. */
+    fn_801B435C(collisionManager);
 }
 
 /* hasRecentSoundSlot: TRUE if one of the manager's 16 sound slots is already
