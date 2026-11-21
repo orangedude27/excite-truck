@@ -53,6 +53,13 @@ extern u8 lbl_80320408[];
 extern u8 fn_800D2DD4[];
 extern u32 lbl_8055DDF0;
 #pragma pop
+
+/* vtable installed on a Picture, the layout allocator, and the deleting
+ * destructor handed to the detail::TexCoordAry helpers. */
+#define sPictureVTable lbl_80320408
+#define sLayoutAllocator lbl_8055DDF0
+#define sTexCoordDtor fn_800D2DD4
+
 extern "C" void MEMFreeToAllocator(void*, void*);
 extern "C" void fn_800D598C(void*);
 struct PicDataVt {
