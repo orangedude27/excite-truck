@@ -799,6 +799,7 @@ int fn_8028F0C0(int *lists, int index, int excludeTexId) {
 #pragma scheduling invalid_target
 void fn_8028F114(register int *arg0, register int arg1, register int arg2)
 {
+  #pragma opt_lifetimes off
   register int n1 = 0;
   register int n2 = 0;
   register int n3 = 0;
@@ -1041,36 +1042,64 @@ extern double lbl_80564428;
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_8028F608(float *out0, float *out1, float (*matrix)[3], float angle) {
-    extern double fn_8002EFB4(double, double);
-    extern float lbl_80564424, lbl_80564430, lbl_80564434, lbl_80564438;
-    float d, x, d2, a, b, g, e, c, y, h;
-    union { float f; unsigned int u; } bits;
-    d = (float)fn_8002EFB4(angle, 6.283185307179586) - lbl_80564430;
-    bits.f = d;
-    if (!(bits.u & 0x80000000)) {
-        float t = lbl_80564434 * d / lbl_80564430 - lbl_80564424;
-        x = lbl_80564424 - t * t;
-    } else {
-        float t;
-        d = -d;
-        t = lbl_80564434 * d / lbl_80564430 - lbl_80564424;
-        x = -(lbl_80564424 - t * t);
+void fn_8028F608(float *out0, float *out1, float (*matrix)[3], float angle)
+{
+  extern double fn_8002EFB4(double, double);
+  extern float lbl_80564424;
+  extern float lbl_80564430;
+  extern float lbl_80564434;
+  extern float lbl_80564438;
+  float d;
+  float x;
+  float d2;
+  float a;
+  float b;
+  float g;
+  float e;
+  float c;
+  float y;
+  float h;
+  union 
+  {
+    float f;
+    unsigned int u;
+  } bits;
+  d = (bits.f = ((float) fn_8002EFB4(angle, 6.283185307179586)) - lbl_80564430);
+  if (!(bits.u & 0x80000000))
+  {
+    if (1)
+    {
+ if (1) { }
+      x = lbl_80564424 - ((((lbl_80564434 * d) / lbl_80564430) - lbl_80564424) * (((lbl_80564434 * d) / lbl_80564430) - lbl_80564424));
     }
-    d2 = (float)fn_8002EFB4(lbl_80564438 + angle, 6.283185307179586) - lbl_80564430;
-    bits.f = d2;
-    if (!(bits.u & 0x80000000)) {
-        float t = lbl_80564434 * d2 / lbl_80564430 - lbl_80564424;
-        y = lbl_80564424 - t * t;
-    } else {
-        float t;
-        d2 = -d2;
-        t = lbl_80564434 * d2 / lbl_80564430 - lbl_80564424;
-        y = -(lbl_80564424 - t * t);
-    }
-    a=matrix[0][0]; b=matrix[1][0]; c=matrix[0][1]; e=matrix[1][1]; g=matrix[0][2]; h=matrix[1][2];
-    out0[0]=y*a+x*b; out0[1]=y*c+x*e; out0[2]=y*g+x*h;
-    out1[0]=y*b-x*a; out1[1]=y*e-x*c; out1[2]=y*h-x*g;
+  }
+  else
+  {
+    d = -d;
+    x = -(lbl_80564424 - ((((lbl_80564434 * d) / lbl_80564430) - lbl_80564424) * (((lbl_80564434 * d) / lbl_80564430) - lbl_80564424)));
+  }
+  d2 = (bits.f = ((float) fn_8002EFB4(lbl_80564438 + angle, 6.283185307179586)) - lbl_80564430);
+  if (!(bits.u & 0x80000000))
+  {
+    y = lbl_80564424 - ((((lbl_80564434 * d2) / lbl_80564430) - lbl_80564424) * (((lbl_80564434 * d2) / lbl_80564430) - lbl_80564424));
+  }
+  else
+  {
+    d2 = -d2;
+    y = -(lbl_80564424 - ((((lbl_80564434 * d2) / lbl_80564430) - lbl_80564424) * (((lbl_80564434 * d2) / lbl_80564430) - lbl_80564424)));
+  }
+  a = matrix[0][0];
+  b = matrix[1][0];
+  c = matrix[0][1];
+  e = matrix[1][1];
+  g = matrix[0][2];
+  h = matrix[1][2];
+  out0[0] = (y * a) + (x * b);
+  out0[1] = (y * c) + (x * e);
+  out0[2] = (y * g) + (x * h);
+  out1[0] = (y * b) - (x * a);
+  out1[1] = (y * e) - (x * c);
+  out1[2] = (y * h) - (x * g);
 }
 #pragma pop
 int fn_8028F7AC(void *arg0, void *arg1, int arg2) {
@@ -1968,6 +1997,8 @@ int fn_802916F8(void *object) {
 }
 
 #pragma dont_inline on
+/* Thin derived nw4r::ef virtual override: tail-calls the no-op base method
+   fn_802916E8. */
 void fn_80291700(void) { fn_802916E8(); }
 /* Derived virtual override that simply forwards to the no-op base method
    fn_802916EC (a tail call in the generated code). */
