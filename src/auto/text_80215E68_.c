@@ -258,12 +258,14 @@ void fn_80216194(void) {
 #define sPrimaryGroup     lbl_8055EF88
 #define updateGroup       fn_80218464
 #pragma dont_inline on
-void fn_802161CC(s32 arg0) {
-    s32 i;
-    for (i = 0; i < 16; i++) {
-        void *value = ((void **)sWindowGroupTable)[i];
-        if (value != 0 && (arg0 != 0 || value != sPrimaryGroup)) {
-            updateGroup(value);
+void fn_802161CC(s32 includePrimary) {
+    /* Run the per-group update on every registered window group, skipping the
+     * primary group unless includePrimary is set and skipping empty slots. */
+    s32 slot;
+    for (slot = 0; slot < 16; slot++) {
+        void *group = ((void **)sWindowGroupTable)[slot];
+        if (group != 0 && (includePrimary != 0 || group != sPrimaryGroup)) {
+            updateGroup(group);
         }
     }
 }
