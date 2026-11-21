@@ -1042,6 +1042,8 @@ void fn_802AB994(void) {
 
 void fn_802AB9E0(void) { fn_8028E070(); }
 
+/* End a particle/effect update pass: advance every effect in the primary list
+ * by the frame time and disallow further adds (delegates to fn_8028E080). */
 void fn_802AB9E4(void) { fn_8028E080(); }
 
 extern void fn_8028DFFC(void);
@@ -1211,12 +1213,11 @@ void fn_802ABE50(void) { fn_8028E240(0); }
 
 #pragma scheduling invalid_target
 void fn_802ABE58(volatile float *arg0, volatile float *arg1, int *arg2, float delta) {
-#pragma scheduling on
     unsigned char green;
     unsigned char red;
     unsigned char blue;
     float angle;
-    double dummy;
+    float dummy;
     float current;
     float magnitude;
     float wave;
@@ -1260,7 +1261,6 @@ void fn_802ABE58(volatile float *arg0, volatile float *arg1, int *arg2, float de
     if (active != 0)
         result = lbl_80564AA8 * *arg0 - wave;
     *arg1 = result;
-    (void)dummy;
 }
 /* Begin a tinted draw of the vehicle: stash the state fn_802AC070 has to put
  * back, then tint the model with `tint` (0xRRGGBB) and switch the global scale
