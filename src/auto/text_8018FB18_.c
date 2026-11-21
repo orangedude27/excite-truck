@@ -1230,6 +1230,7 @@ extern "C" void fn_80190FA8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) 
 
 #pragma cplusplus off
 
+/* No-op hook: forwards to the empty stub fn_801B6664, so it has no effect. */
 void fn_80191060(void) {
     fn_801B6664();
 }
