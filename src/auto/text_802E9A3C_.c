@@ -614,13 +614,13 @@ void fn_802EAB28(void) {
     extern int lbl_8055D25C, lbl_8055D260, lbl_8055D264, lbl_8055D268, lbl_8055D26C;
     extern int lbl_80560070, lbl_80560098, lbl_8056009C, lbl_805600A8, lbl_805600AC, lbl_805600B0, lbl_805600BC, lbl_805600C0, lbl_805600CC;
     extern char lbl_805600C9;
-    register char *base;
+    char *base;
     void *curNode;
     long consumed;
-    register char *msgBuf, *cmdBuf;
+    char *msgBuf, *cmdBuf;
     long off, retries;
-    register unsigned int *tb;
-    register long zero;
+    unsigned int *tb;
+    long zero;
     int *audioStatus;
     long sp8;
     int info[5];
