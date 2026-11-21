@@ -5620,43 +5620,44 @@ done:
         *(u8 *)((u8 *)arg0 + 0x234) = 1;
 }
 
-extern "C" void fn_80222234(void *obj, s32 x, s32 y) {
-    s32 left, current, top, count, row, col;
-    s32 *state = (s32 *)obj;
-    s32 *items;
-    s32 *entry;
-    if (*((u8 *)obj + 0x248) == 0) return;
-    items = *(s32 **)((u8 *)obj + 0x244);
-    current = state[0x24C / 4];
-    count = items[0x120 / 4];
-    if (current >= count) state[0x24C / 4] = -1;
+extern "C" void fn_80222234(void *widget, s32 x, s32 y) {
+    /* Hit-test the grid menu at pointer (x,y): above the rows set the selected column (+0x24C), otherwise set the selected row (+0x250) within the current column's 50px band. */
+    s32 left, columnIndex, top, columnCount, rowIndex, hitColumn;
+    s32 *state = (s32 *)widget;
+    s32 *columns;
+    s32 *columnEntry;
+    if (*((u8 *)widget + 0x248) == 0) return;
+    columns = *(s32 **)((u8 *)widget + 0x244);
+    columnIndex = state[0x24C / 4];
+    columnCount = columns[0x120 / 4];
+    if (columnIndex >= columnCount) state[0x24C / 4] = -1;
     top = state[2];
     if (y < top + 10) {
         left = state[1];
-        col = (x - left) / 50;
-        if (col < 0) return;
-        items = *(s32 **)((u8 *)obj + 0x244);
-        if (col >= items[0x120 / 4]) return;
-        state[0x24C / 4] = col;
+        hitColumn = (x - left) / 50;
+        if (hitColumn < 0) return;
+        columns = *(s32 **)((u8 *)widget + 0x244);
+        if (hitColumn >= columns[0x120 / 4]) return;
+        state[0x24C / 4] = hitColumn;
         state[0x250 / 4] = -1;
         return;
     }
-    current = state[0x24C / 4];
-    if (current < 0) return;
+    columnIndex = state[0x24C / 4];
+    if (columnIndex < 0) return;
     left = state[1];
-    s32 lo = current * 50;
-    lo += left;
-    if (x < lo) goto fail_x;
-    s32 hi = (current + 1) * 50;
-    hi += left;
-    if (x > hi) goto fail_x;
-    s32 delta = y - top;
-    items = *(s32 **)((u8 *)obj + 0x244);
-    entry = *(s32 **)((u8 *)items + current * 0x24);
-    row = (delta - 10) / 10;
-    if (row < 0) goto fail_row;
-    if (row >= entry[2]) goto fail_row;
-    state[0x250 / 4] = row;
+    s32 colLeft = columnIndex * 50;
+    colLeft += left;
+    if (x < colLeft) goto fail_x;
+    s32 colRight = (columnIndex + 1) * 50;
+    colRight += left;
+    if (x > colRight) goto fail_x;
+    s32 deltaY = y - top;
+    columns = *(s32 **)((u8 *)widget + 0x244);
+    columnEntry = *(s32 **)((u8 *)columns + columnIndex * 0x24);
+    rowIndex = (deltaY - 10) / 10;
+    if (rowIndex < 0) goto fail_row;
+    if (rowIndex >= columnEntry[2]) goto fail_row;
+    state[0x250 / 4] = rowIndex;
     return;
 fail_row:
     state[0x250 / 4] = -1;
