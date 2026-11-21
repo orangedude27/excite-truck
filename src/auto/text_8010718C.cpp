@@ -1,5 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
+/* nw4hbm::ut file-stream wrappers from SDK code that had no original source
+ * file: Seek() guards that panic on unsupported seeks, and a CancelAsync()
+ * guard that panics when cancel/async operations are unavailable. Each wrapper
+ * declares its own minimal stream class because their vtable layouts differ. */
 
 typedef unsigned char u8;
 typedef unsigned long u32;
