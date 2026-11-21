@@ -2460,6 +2460,8 @@ extern "C" void* GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void)
     return lbl_804127A8;
 }
 
+struct RemoteSpkView { u8 pad[8]; u32 alarm; };
+
 void nw4hbm::snd::detail::RemoteSpeakerManager::Setup() {
     u8* p;
     s32 i;
