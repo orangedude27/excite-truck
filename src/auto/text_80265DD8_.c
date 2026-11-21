@@ -2135,6 +2135,7 @@ void fn_8026A2B0(int slotIndex) {
     lbl_80499E50[slotIndex] = 1;
 }
 
+/* Tail-call alias: forwards to fn_801EA994, passing through the car-info count in r3. */
 void fn_8026A2C8(void) {
     fn_801EA994();
 }
