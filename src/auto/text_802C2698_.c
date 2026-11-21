@@ -58,15 +58,15 @@ void fn_802C26F0(void) {
     sSwlMapTargetSlot = targetSlot;
 }
 
-extern s32 fn_801D9B58(void);
-extern s32 fn_802C2C00(s32);
-extern s32 fn_802C8638(f32 *, f32, f32, f32, f32);
-extern s32 fn_802C86E8(s32);
-extern s32 fn_802C87B4(s32, s32, s32, s32);
-extern s32 fn_802C88BC(s32);
-extern s32 fn_802C9294(s32, s32);
-extern s32 fn_802C974C(f32, f32, f32);
-extern s32 fn_802CB274(s32);
+extern s32 fn_801D9B58(void); /* draw the current scene */
+extern s32 fn_802C2C00(s32); /* save/restore the depth-test state word */
+extern s32 fn_802C8638(f32 *, f32, f32, f32, f32); /* set a transform matrix and scale */
+extern s32 fn_802C86E8(s32); /* set the clear color */
+extern s32 fn_802C87B4(s32, s32, s32, s32); /* set a screen rectangle */
+extern s32 fn_802C88BC(s32); /* set a render mode (-1 resets) */
+extern s32 fn_802C9294(s32, s32); /* select the active texture and draw flags */
+extern s32 fn_802C974C(f32, f32, f32); /* update projection / field-of-view parameters */
+extern s32 fn_802CB274(s32); /* bind a render target */
 extern f32 lbl_8055FB74, lbl_80564EB4, lbl_80564EB8, lbl_80564EBC, lbl_80564EC0, lbl_80564EC4, lbl_80564EC8, lbl_80564ECC, lbl_80564ED0;
 #pragma scheduling invalid_target
 /* When the level's swlmap.tex is absent, render the light map into its 512x512
