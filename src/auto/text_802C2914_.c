@@ -32,8 +32,9 @@ int fn_802C2930(void *node, int shouldFree) {
 }
 
 #pragma cplusplus on
+/* Sum calc() over the lbl_8055FB80 node list, commit via fn_802BAD9C,
+   run finish() on each, then mark done. */
 extern "C" void fn_802C29A0(void) {
-    /* Sum calc() over the lbl_8055FB80 node list, commit via fn_802BAD9C, run finish() on each, then mark done. */
     struct Prefix {
         Prefix *next;
     };
