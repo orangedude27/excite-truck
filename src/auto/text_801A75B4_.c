@@ -27,12 +27,12 @@ typedef struct Rec2_801A7A5C {
     unsigned char pad[3];
 } Rec2_801A7A5C;
 typedef struct Tail_801A7A5C { float x, y; unsigned char a, b, c; } Tail_801A7A5C;
-extern unsigned char lbl_80435370[];
-extern int lbl_8055CFF0;
-extern int lbl_8055CFF4;
+extern unsigned char lbl_80435370[]; /* pointer state: f32 x @0, f32 y @4, button bits @8..10 */
+extern int lbl_8055CFF0; /* screen width (640) */
+extern int lbl_8055CFF4; /* screen height (480) */
 extern double lbl_80562450;
-extern void fn_80127A84(int *, int *, unsigned int *);
-extern int fn_80129AE8(void *, int);
+extern void fn_80127A84(int *, int *, unsigned int *); /* read pointer x/y and button mask */
+extern int fn_80129AE8(void *, int); /* copy controller config at index into a 0x64-byte dst */
 extern void *memset(void *, int, unsigned int);
 extern int fn_801A8E38();
 
