@@ -3271,7 +3271,11 @@ loop_80:
 
 extern f64 fn_8002F234(f32, f32, f32, f32, f32);
 #pragma use_lmw_stmw off
-void fn_80170DA8(void *arg0, void *arg1) {
+/* Advance a route's waypoint index when the vehicle enters the next waypoint's
+ * radius: compare the waypoint XZ (+0x24/+0x2C) to the vehicle XZ (+0x60/+0x68),
+ * and if within the waypoint's radius (+0x34) clear the old waypoint's active flag
+ * (+0x30), bump the index and set the new waypoint's flag. */
+void fn_80170DA8(void *route, void *vehicle) {
     u8 *base;
     u8 *item;
     s32 index;
@@ -3279,23 +3283,23 @@ void fn_80170DA8(void *arg0, void *arg1) {
     struct { f32 x, z; } q, p, d;
     f32 distance;
     f32 threshold;
-    index = *(s32 *)((u8 *)arg0 + 0x10);
+    index = *(s32 *)((u8 *)route + 0x10);
     next = index + 1;
-    if (next < *(s32 *)(*(u8 **)((u8 *)arg0 + 4) + 4)) {
-        base = *(u8 **)*(void **)((u8 *)arg0 + 4);
+    if (next < *(s32 *)(*(u8 **)((u8 *)route + 4) + 4)) {
+        base = *(u8 **)*(void **)((u8 *)route + 4);
         item = base + (index + 1) * 0x38;
         q.x = *(f32 *)(item + 0x24);
         q.z = *(f32 *)(item + 0x2C);
-        p.x = *(f32 *)((u8 *)arg1 + 0x60);
-        p.z = *(f32 *)((u8 *)arg1 + 0x68);
+        p.x = *(f32 *)((u8 *)vehicle + 0x60);
+        p.z = *(f32 *)((u8 *)vehicle + 0x68);
         d.x = q.x - p.x;
         d.z = q.z - p.z;
         distance = (f32)fn_8002F234(d.x * d.x + d.z * d.z, p.z, p.x, d.x, d.z);
         threshold = *(f32 *)(item + 0x34);
         if (distance < threshold) {
             *(u8 *)(base + index * 0x38 + 0x30) = 0;
-            *(s32 *)((u8 *)arg0 + 0x10) = next;
-            *(u8 *)(*(u8 **)*(void **)((u8 *)arg0 + 4) + next * 0x38 + 0x30) = 1;
+            *(s32 *)((u8 *)route + 0x10) = next;
+            *(u8 *)(*(u8 **)*(void **)((u8 *)route + 4) + next * 0x38 + 0x30) = 1;
         }
     }
 }
