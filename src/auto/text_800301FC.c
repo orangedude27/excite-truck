@@ -178,23 +178,31 @@ void TRKConstructEvent(void) {
 #undef sTrkEventFlag
 }
 
-void TRKGetNextEvent(void *arg0, void *restoreContext) {
+/* Handle a debug-interface interrupt on a scratch OS context: invoke the pending
+   TRK callback (or build the event queue), then restore the previous context. */
+void TRKGetNextEvent(void *unused, void *restoreContext) {
+#define sEventCallback lbl_8055D6E0
+#define sPendingEvent lbl_8055D6DC
+#define sInCallback lbl_8055D6AC
     u8 context[0x2D0];
     s32 value;
     void (*cb)(void);
     *(volatile u16 *)0xCC00500A = (*(volatile u16 *)0xCC00500A & ~0xA0) | 8;
     OSClearContext(context);
     OSSetCurrentContext(context);
-    cb = (void (*)(void))lbl_8055D6E0;
-    if (cb != 0 && lbl_8055D6AC == 0) {
-        value = lbl_8055D6DC;
-        lbl_8055D6AC = 1;
+    cb = (void (*)(void))sEventCallback;
+    if (cb != 0 && sInCallback == 0) {
+        value = sPendingEvent;
+        sInCallback = 1;
         if (value != 0) ((void (*)(void (*)(void)))TRKInitializeEventQueue)(cb);
         else cb();
-        lbl_8055D6AC = 0;
+        sInCallback = 0;
     }
     OSClearContext(context);
     OSSetCurrentContext(restoreContext);
+#undef sInCallback
+#undef sPendingEvent
+#undef sEventCallback
 }
 
 extern s32 lbl_8055D6D8;
