@@ -2637,7 +2637,7 @@ void fn_8006AED4(s32 arg0) {
     packet[2] = (u8)(header >> 16);
     packet[3] = (u8)(header >> 24);
     for (L.i = 0; L.i < L.length; L.i++)
-        packet[L.i + 4] = *(volatile u8 *)&lbl_803135C0[8 + L.i];
+        packet[L.i + 4] = *(volatile u8 *)&lbl_803135C0[(u32)L.i + 8];
     lbl_8055DC40 = L.length;
     BTM_VendorSpecificCommand(0xFC4C, (u8)(L.length + 4), packet, fn_8006B044);
 }
@@ -6413,6 +6413,7 @@ extern u8 lbl_803C0D18[];
 extern tBTM_STATUS fn_8007A2C8(u16 *);
 extern void bta_dm_pm_set_mode(u8 *, u8);
 typedef struct { u8 f0, f1, f2; } PmCfgEntry;
+#pragma scheduling 750
 void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
     u8 version[10];
     u16 policy;
@@ -6421,7 +6422,7 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
     u8 *connEntry;
     u8 i;
     u8 j;
-    u32 k;
+    u8 k;
     u8 spec_idx;
     u8 *cfgEnt;
     if (fn_8007A2C8((u16 *)version) == 0 && *(u16 *)(version + 6) == 15 && version[0] < 3) {
@@ -6441,7 +6442,7 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
     if (i > *(volatile u8 *)(cfg + 1))
         return;
     for (k = 0; k < 3; k++) {
-        connEntry = lbl_803C0C14 + ((u8)k << 5);
+        connEntry = lbl_803C0C14 + (k << 5);
         if (connEntry[182] != 0 && bdcmp(connEntry + 176, peer_addr) == 0) {
             fn_8007148C((s32)(connEntry + 152));
             connEntry[182] = 0;
@@ -6487,7 +6488,6 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
     (lbl_803C0D18 + j * 9)[9] = status;
     bta_dm_pm_set_mode(peer_addr, 0);
 }
-
 extern tBTM_PM_PWR_MD *lbl_80559020;
 extern u8 lbl_803151B4[];
 extern void bta_dm_pm_timer_cback(void *);
@@ -10211,13 +10211,14 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *result
     u8 *p = (u8 *)params;
     s32 mode, filter;
     u8 status;
-    u8 one = 1;
-    u8 zero = 0;
+    u8 one, zero;
     if (state[0x27C0] >= 3)
         ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(0xD0002, lbl_803163EC, p[0], p[1], p[2], p[3]);
     if (state[0x1848] != 0 || state[0x1844] != 0) return 2;
     if (p[0] != 0 && p[0] != 1) return 5;
     if (fn_80079514() == 0) return 6;
+    zero = 0;
+    one = 1;
     *(Bytes10 *)&state[0x1834] = *(Bytes10 *)p;
     state[0x1847]=3;
     *(void **)(state+0x16B0)=complete_cb;
@@ -10931,14 +10932,22 @@ tBTM_STATUS BTM_PmRegister(UINT8 mask, UINT8 *p_pm_id, tBTM_PM_STATUS_CBACK *p_c
 extern u8 lbl_80560D38;
 extern u8 lbl_80560D3C;
 extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
+#pragma dont_inline off
+static __inline UINT8 btm_pm_find_acl_ind(BD_ADDR remote_bda) {
+    UINT8 xx;
+    u8 *p_acl = lbl_803C0F78 + 0x34;
+    for (xx = 0; xx < 4; xx++, p_acl += 0x11C) {
+        if (p_acl[0x119] && memcmp(p_acl + 8, remote_bda, 6) == 0)
+            break;
+    }
+    return xx;
+}
 tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_mode)
 {
     int ind;
-    u32 acl_ind;
-    UINT8 acl_index;
+    int acl_ind;
     UINT8 feature_offset, feature_mask;
     UINT8 *p_cb;
-    UINT8 *p_acl;
     UINT8 *p_features;
     tBTM_PM_MODE mode;
 
@@ -10948,25 +10957,11 @@ tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_
         return BTM_ILLEGAL_VALUE;
 
     mode = p_mode->mode & ~BTM_PM_MD_FORCE;
-    acl_ind = 0;
-    p_acl = lbl_803C0F78 + 0x34;
-loop:
-    if (p_acl[0x119] == 0)
-        goto next;
-    if (memcmp(p_acl + 8, remote_bda, 6) != 0)
-        goto next;
-    goto found;
-next:
-    acl_ind++;
-    p_acl += 0x11C;
-    if (acl_ind < 4)
-        goto loop;
-found:
-    acl_index = (UINT8)acl_ind;
-    if ((s32)acl_index == 4)
+    acl_ind = btm_pm_find_acl_ind(remote_bda);
+    if (acl_ind == 4)
         return BTM_UNKNOWN_ADDR;
 
-    p_cb = lbl_803C0F78 + acl_index * 0x22 + 0x4CC;
+    p_cb = lbl_803C0F78 + acl_ind * 0x22 + 0x4CC;
     if (mode != BTM_PM_MD_ACTIVE) {
         ind = mode - BTM_PM_MD_HOLD;
         p_features = (UINT8 *)fn_8007A3A4();
@@ -11004,8 +10999,9 @@ found:
     if (p_cb[0x20] == 1 || p_cb[0x20] == 4 ||
         lbl_803C0F78[0x564] != 4)
         return 0xD;
-    return btm_pm_snd_md_req(pm_id, acl_index, p_mode);
+    return btm_pm_snd_md_req(pm_id, acl_ind, p_mode);
 }
+#pragma dont_inline reset
 
 /* Read the current power mode for the ACL link to remote_bda into *p_mode. */
 tBTM_STATUS BTM_ReadPowerMode(BD_ADDR remote_bda, tBTM_PM_MODE *p_mode) {
