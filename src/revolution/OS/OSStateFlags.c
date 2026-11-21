@@ -27,7 +27,7 @@ BOOL __OSWriteStateFlags(const OSStateFlags* state) {
     memcpy(&StateFlags, state, sizeof(OSStateFlags));
     StateFlags.checksum = CheckSum(&StateFlags);
 
-    if (NANDOpen("/title/00000001/00000002/data/state.dat", &file, NAND_ACCESS_WRITE) == NAND_RESULT_OK) {
+    if (NANDOpen(STATE_FILE_PATH, &file, NAND_ACCESS_WRITE) == NAND_RESULT_OK) {
         bytesWritten = NANDWrite(&file, &StateFlags, sizeof(OSStateFlags));
         NANDClose(&file);
         if (bytesWritten == NAND_RESULT_OK)
