@@ -3,7 +3,7 @@
 
 /* Debug-heap wrappers from text_801281A0_.c (tagged allocations): allocate an
    object ("new"), allocate an array ("new[]"), delete an object, delete an
-   array.  The first word of every block holds its heap tag at runtime. */
+   array. */
 extern void fn_80128668(void);                    /* delete   */
 extern void fn_80128670(s32 block);               /* delete[] */
 extern void *fn_801284F8(s32 size, void *tag);    /* new      */
