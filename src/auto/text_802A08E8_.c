@@ -136,6 +136,7 @@ void fn_802A0AFC(void) {
 #undef BLOCK_HEADER
 }
 
+/* No-op subsystem initialization step in fn_8028797C; this build leaves it empty. */
 void fn_802A0B50(void) {
 }
 
