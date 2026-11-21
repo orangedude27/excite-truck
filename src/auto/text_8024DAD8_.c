@@ -2276,7 +2276,7 @@ extern "C" s32 fn_8025157C(u8 *arg0, s32 arg1) {
     }
 }
 #pragma pop
-extern "C" void fn_80251934(void *menu) {
+extern "C" void fn_80251934(void *arg0) {
     /* Refresh a menu's per-item active flags from its input entries, animate each
      * item's highlight value toward its flag, smooth the selection value, then
      * enable or disable the menu through its Selector. */
@@ -2285,10 +2285,6 @@ extern "C" void fn_80251934(void *menu) {
     extern double __fabs(double);
     extern void fn_80214A9C(s32, f32);
     extern void fn_80214AF0(s32);
-    #define SmoothFactor lbl_80563968 /* 0.2 */
-    #define AnimSpeed    lbl_8056396C /* 6.0 */
-    #define AnimMax      lbl_80563964 /* 1.0 */
-    #define AnimWrap     lbl_80563970 /* 2.0 */
     class Selector {
     public:
         virtual void v0();
@@ -2301,64 +2297,64 @@ extern "C" void fn_80251934(void *menu) {
     register s32 active;
     register s32 inputOffset;
     register s32 outputOffset;
-    register s32 index;
-    u8 *stateEntry;
-    u8 *itemInfo;
+    register s32 i;
+    u8 *entry;
+    u8 *result;
 
-    index = 0;
-    *(s32 *)((u8 *)menu + 0xC0) =
-        *(u8 *)(*(u8 **)((u8 *)menu + 0x4C) + 0xDC) == 0;
+    i = 0;
+    *(s32 *)((u8 *)arg0 + 0xC0) =
+        *(u8 *)(*(u8 **)((u8 *)arg0 + 0x4C) + 0xDC) == 0;
     inputOffset = 0;
     outputOffset = 0;
-    while (index < *(s32 *)((u8 *)menu + 0x1C)) {
+    while (i < *(s32 *)((u8 *)arg0 + 0x1C)) {
         active = 0;
-        stateEntry = *(u8 **)((u8 *)menu + 0xCC) + inputOffset;
-        itemInfo = ((u8 *(*)(s32, s32))fn_80016BC8)(*(s32 *)(stateEntry + 8), 0);
-        if (itemInfo[8] != 0 && stateEntry[0xC] != 0)
+        entry = *(u8 **)((u8 *)arg0 + 0xCC) + inputOffset;
+        result = ((u8 *(*)(s32, s32))fn_80016BC8)(*(s32 *)(entry + 8), 0);
+        if (result[8] != 0 && entry[0xC] != 0)
             active = 1;
-        stateEntry = *(u8 **)((u8 *)menu + 0x18) + outputOffset;
-        if (active != *(s32 *)(stateEntry + 4)) {
-            *(s32 *)(stateEntry + 4) = active;
-            *(f32 *)(stateEntry + 8) =
-                (f32)__fabs((double)*(f32 *)(stateEntry + 8));
+        entry = *(u8 **)((u8 *)arg0 + 0x18) + outputOffset;
+        if (active != *(s32 *)(entry + 4)) {
+            *(s32 *)(entry + 4) = active;
+            *(f32 *)(entry + 8) =
+                (f32)__fabs((double)*(f32 *)(entry + 8));
         }
         inputOffset += 0x14;
         outputOffset += 0xC;
-        ++index;
+        ++i;
     }
 
     {
-        f32 deltaTime = fn_80214D48();
-        register u8 *animEntry;
-        register s32 entryIndex;
-        register s32 entryOffset;
+        f32 dt = fn_80214D48();
+        register u8 *item;
+        register s32 j;
+        register s32 offset;
         f32 current;
 
-        entryIndex = 0;
-        entryOffset = 0;
-        current = *(f32 *)((u8 *)menu + 0x28);
-        *(f32 *)((u8 *)menu + 0x28) =
-            current + SmoothFactor * ((f32)*(s32 *)((u8 *)menu + 0x2C) - current);
-        for (; entryIndex < *(s32 *)((u8 *)menu + 0x1C); entryOffset += 12, entryIndex++) {
-            animEntry = *(u8 **)((u8 *)menu + 0x18) + entryOffset;
-            if (*(s32 *)(animEntry + 4) != *(s32 *)animEntry) {
-                *(f32 *)(animEntry + 8) += AnimSpeed * deltaTime;
-                if (*(f32 *)(animEntry + 8) >= AnimMax) {
-                    *(s32 *)animEntry = *(s32 *)(animEntry + 4);
-                    *(f32 *)(animEntry + 8) -= AnimWrap;
+        j = 0;
+        offset = 0;
+        current = *(f32 *)((u8 *)arg0 + 0x28);
+        *(f32 *)((u8 *)arg0 + 0x28) =
+            current + lbl_80563968 * ((f32)*(s32 *)((u8 *)arg0 + 0x2C) - current);
+        for (; j < *(s32 *)((u8 *)arg0 + 0x1C); offset += 12, j++) {
+            item = *(u8 **)((u8 *)arg0 + 0x18) + offset;
+            if (*(s32 *)(item + 4) != *(s32 *)item) {
+                *(f32 *)(item + 8) += lbl_8056396C * dt;
+                if (*(f32 *)(item + 8) >= lbl_80563964) {
+                    *(s32 *)item = *(s32 *)(item + 4);
+                    *(f32 *)(item + 8) -= lbl_80563970;
                 }
             } else {
-                f32 value = *(f32 *)(animEntry + 8) + AnimSpeed * deltaTime;
+                f32 value = *(f32 *)(item + 8) + lbl_8056396C * dt;
                 if (0.0f < value)
                     value = 0.0f;
-                *(f32 *)(animEntry + 8) = value;
+                *(f32 *)(item + 8) = value;
             }
         }
     }
 
     {
-        Selector *selector = *(Selector **)((u8 *)menu + 0xD0);
-        if (selector->check(*(s32 *)((u8 *)menu + 0x2C)) == 0)
+        Selector *selector = *(Selector **)((u8 *)arg0 + 0xD0);
+        if (selector->check(*(s32 *)((u8 *)arg0 + 0x2C)) == 0)
             ((void (*)(s32))fn_80214A9C)(2);
         else
             fn_80214AF0(2);
