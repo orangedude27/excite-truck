@@ -337,10 +337,15 @@ extern double __fabs(double);
 #pragma cplusplus on
 extern "C" void fn_8017B3A8(void *, float *, float *);
 extern "C" float fn_801A5A7C(void *, float *, float *);
+#pragma opt_dead_assignments off
 extern "C" void fn_801A56A0(void *arg0, void *arg1, float *arg2) {
-    float v[3], point[3], impulse[3], scaled[3], contact[3], direction[3];
-    float dot, ratio, movement, other, push, f, scale, limit;
-    int active;
+    typedef struct { float v[3]; } Vec3;
+    float v[3], point[3], scaled[3], impulse[3], contact[3];
+    Vec3 direction;
+    float dot, ratio, movement, other, push, limit, f, scale, mass;
+    double absPush;
+    float pd;
+    int active, outside;
     char *a = (char *)arg0;
     char *b = (char *)arg1;
     if (*(void **)(a + 0x20) != 0) {
@@ -349,66 +354,73 @@ extern "C" void fn_801A56A0(void *arg0, void *arg1, float *arg2) {
         v[2] = arg2[2] + *(float *)(b + 0x120);
         dot = PSVECDotProduct(v, (float *)arg0);
         ratio = *(float *)(a + 0x18) / *(float *)(a + 0x1c);
-        ratio = lbl_805623CC < ratio ? lbl_805623CC : ratio;
-        ratio = ratio > lbl_805623C8 ? ratio : lbl_805623C8;
+        ratio = 1.0f < ratio ? 1.0f : ratio;
+        ratio = ratio > 0.0f ? ratio : 0.0f;
+        movement = *(float *)(a + 0xc) + ratio * (*(float *)(a + 0x10) - *(float *)(a + 0xc));
         point[0] = *(float *)(b + 0x60) + v[0] * lbl_805623D0;
         point[1] = *(float *)(b + 0x64) + v[1] * lbl_805623D0;
         point[2] = *(float *)(b + 0x68) + v[2] * lbl_805623D0;
-        movement = *(float *)(a + 0xc) + ratio * (*(float *)(a + 0x10) - *(float *)(a + 0xc));
         other = fn_801A5A7C(arg0, point, (float *)((char *)*(void **)((char *)*(void **)(a + 0x20) + 0xc) + 0x24));
+        pd = *(float *)(a + 0x14);
+        outside = 0;
+        if (0.0f < pd) {
+            outside = 1;
+        }
         active = *(float *)(a + 0x18) < *(float *)(a + 0x1c);
         if (active) {
             push = movement - dot;
-            push = lbl_805623C8 > push ? lbl_805623C8 : push;
-            f = lbl_805623C8;
-            if (dot < lbl_805623C8) {
-                ratio = (other - lbl_805623D4) / lbl_805623D8;
-                ratio = lbl_805623CC < ratio ? lbl_805623CC : ratio;
-                ratio = ratio > lbl_805623C8 ? ratio : lbl_805623C8;
-                push = lbl_805623C8;
-                f = push + ratio * ((lbl_805623DC + -dot) - push);
+            push = 0.0f > push ? 0.0f : push;
+            f = 0.0f;
+            if (dot < 0.0f) {
+                ratio = (other - 0.5f) / -0.5f;
+                ratio = 1.0f < ratio ? 1.0f : ratio;
+                ratio = ratio > 0.0f ? ratio : 0.0f;
+                push = 0.0f;
+                f = push + ratio * ((6.6666665f + -dot) - push);
             }
             scale = f + push;
             impulse[0] = *(float *)(a + 0) * scale;
             impulse[1] = *(float *)(a + 4) * scale;
             impulse[2] = *(float *)(a + 8) * scale;
             arg2[0] += impulse[0]; arg2[1] += impulse[1]; arg2[2] += impulse[2];
-            ratio = *(float *)(b + 0xd4) / lbl_805623D0;
+            ratio = *(float *)(b + 0xd4) / 0.016683366f;
             scaled[0] = impulse[0] * ratio; scaled[1] = impulse[1] * ratio; scaled[2] = impulse[2] * ratio;
-            limit = lbl_805623E0;
+            limit = 0.44444445f;
             if (v[1] > limit && *(int *)(b + 0x2620) == 0) {
-                other = lbl_805623E4 * v[1];
+                other = 0.1f * v[1];
+                mass = *(float *)(b + 0xd4);
                 limit = limit < other ? limit : other;
-                scaled[1] = -limit * (*(float *)(b + 0xd4) / lbl_805623D0);
+                scaled[1] = -limit * (mass / lbl_805623D0);
             }
-            scale = push + f;
-            direction[0] = *(float *)(b + 0x54);
-            direction[1] = *(float *)(b + 0x58);
-            direction[2] = *(float *)(b + 0x5c);
-            direction[1] = lbl_805623C8;
-            if ((float)__fabs(scale) > *(float *)&lbl_80558DC4 && PSVECDotProduct(direction, (float *)arg0) < lbl_805623C8 && (float)__fabs(*(float *)(b + 0x128)) < lbl_805623E8) {
-                ratio = lbl_805623EC / scale;
-                ratio = lbl_805623CC < ratio ? lbl_805623CC : ratio;
-                ratio *= lbl_805623F0;
-                contact[0] = *(float *)(b + 0x60) + direction[0] * ratio;
-                contact[1] = *(float *)(b + 0x64) + direction[1] * ratio;
-                contact[2] = *(float *)(b + 0x68) + direction[2] * ratio;
+            push += f;
+            absPush = __fabs(push);
+            other = (float)absPush;
+            direction = *(Vec3 *)(b + 0x54);
+            direction.v[1] = 0.0f;
+            if (!(other <= *(float *)lbl_80558DC4) && PSVECDotProduct(direction.v, (float *)arg0) < 0.0f && (float)__fabs(*(float *)(b + 0x128)) < 1.5707964f) {
+                ratio = 17.777779f / push;
+                ratio = 1.0f < ratio ? 1.0f : ratio;
+                ratio = 0.8f * ratio;
+                contact[0] = *(float *)(b + 0x60) + direction.v[0] * ratio;
+                contact[1] = *(float *)(b + 0x64) + direction.v[1] * ratio;
+                contact[2] = *(float *)(b + 0x68) + direction.v[2] * ratio;
             } else {
                 contact[0] = *(float *)(b + 0x60);
                 contact[1] = *(float *)(b + 0x64);
                 contact[2] = *(float *)(b + 0x68);
             }
             fn_8017B3A8(arg1, scaled, contact);
-            *(float *)(b + 0x26b4) = lbl_805623C8;
-            *(float *)(b + 0x26b8) = lbl_805623C8;
-            *(float *)(b + 0x26bc) = lbl_805623C8;
+            *(float *)(b + 0x26b4) = 0.0f;
+            *(float *)(b + 0x26b8) = 0.0f;
+            *(float *)(b + 0x26bc) = 0.0f;
         }
         movement = *(float *)(a + 0x18) + lbl_805623D0;
         *(float *)(a + 0x18) = movement;
-        if (movement > lbl_805623F4 + *(float *)(a + 0x1c) && !active)
+        if (movement > 0.2f + *(float *)(a + 0x1c) && !active)
             *(void **)(a + 0x20) = 0;
     }
 }
+#pragma opt_dead_assignments reset
 #pragma pop
 
 /* Signed distance of a world point from a contact plane: dot(normal, point - origin).
