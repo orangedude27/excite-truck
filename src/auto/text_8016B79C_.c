@@ -3395,21 +3395,23 @@ public:
     virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23();
     virtual s32 query();
 };
-extern "C" u32 fn_80170FDC(const void *arg0) {
-    s32 temp_r4;
-    const u8 *p = (const u8 *)arg0;
-    if ((lbl_8055E3C8 - *(const f32 *)(p + 0xA0)) < 2.25f) {
-        ((Q70FDC *)(void *)arg0)->f17();
+/* Near-deadline hook: fire the virtual callback (or the flagged fallbacks), then
+ * return 1 unless this object's status field at +0xAC equals 4. */
+extern "C" u32 fn_80170FDC(const void *self) {
+    s32 status;
+    const u8 *bytes = (const u8 *)self;
+    if ((lbl_8055E3C8 - *(const f32 *)(bytes + 0xA0)) < 2.25f) {
+        ((Q70FDC *)(void *)self)->f17();
     } else {
-        if (*(const u8 *)(p + 0xB4) != 0)
-            ((Q70FDC *)(void *)arg0)->f17();
-        if (*(const s32 *)(p + 0xB8) != 0)
-            fn_802AE220(*(const s32 *)(p + 0xB8), 0);
+        if (*(const u8 *)(bytes + 0xB4) != 0)
+            ((Q70FDC *)(void *)self)->f17();
+        if (*(const s32 *)(bytes + 0xB8) != 0)
+            fn_802AE220(*(const s32 *)(bytes + 0xB8), 0);
     }
-    if (((Q70FDC *)(void *)arg0)->query() != 0)
+    if (((Q70FDC *)(void *)self)->query() != 0)
         fn_8001DFCC();
-    temp_r4 = *(const s32 *)(p + 0xAC);
-    return (u32)((4 - temp_r4) | (temp_r4 - 4)) >> 31;
+    status = *(const s32 *)(bytes + 0xAC);
+    return (u32)((4 - status) | (status - 4)) >> 31;
 }
 #pragma cplusplus reset
 
