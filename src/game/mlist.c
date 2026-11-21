@@ -41,43 +41,47 @@ extern float PSVECDotProduct(float *, float *);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-int fn_802CCBC4(void *__restrict arg0, float *arg1, float arg2, float arg3) {
+/* Visibility test for one 0x20-byte mlist entry 'entry': build a radius from the two
+   tuning factors baseRadius/radiusScale and the squared distance from the viewer point
+   'view' to the entry's centre at +0x10, then test the entry's first three floats against
+   +-radius. Returns a 3-bit mask (bits 0, 2, 4) of bounds that lie inside the radius. */
+int fn_802CCBC4(void *__restrict entry, float *view, float baseRadius, float radiusScale) {
     struct {
         double copies[2];
         unsigned int words[4];
         float delta[3];
         unsigned int pad;
         float box[4];
-    } temp;
+    } scratch;
     register float dx;
     register float dy;
     register float dz;
-    float dot;
+    float distSq;
     float radius;
     int mask;
-    temp.words[0] = *(unsigned int *)((char *)arg0 + 0);
-    temp.words[1] = *(unsigned int *)((char *)arg0 + 4);
-    temp.words[2] = *(unsigned int *)((char *)arg0 + 8);
-    temp.words[3] = *(unsigned int *)((char *)arg0 + 12);
-    memcpy(temp.box, temp.words, 0x10);
-    dx = arg1[0] - *(float *)((char *)arg0 + 0x10);
-    dy = arg1[1] - *(float *)((char *)arg0 + 0x14);
-    dz = arg1[2] - *(float *)((char *)arg0 + 0x18);
-    temp.delta[0] = dx;
-    temp.delta[1] = dy;
-    temp.delta[2] = dz;
-    dot = PSVECDotProduct(temp.delta, temp.delta);
-    radius = arg2 + dot;
-    temp.copies[0] = *(double *)temp.box;
-    temp.copies[1] = *((double *)temp.box + 1);
-    radius = arg3 * radius;
+    scratch.words[0] = *(unsigned int *)((char *)entry + 0);
+    scratch.words[1] = *(unsigned int *)((char *)entry + 4);
+    scratch.words[2] = *(unsigned int *)((char *)entry + 8);
+    scratch.words[3] = *(unsigned int *)((char *)entry + 12);
+    memcpy(scratch.box, scratch.words, 0x10);
+    dx = view[0] - *(float *)((char *)entry + 0x10);
+    dy = view[1] - *(float *)((char *)entry + 0x14);
+    dz = view[2] - *(float *)((char *)entry + 0x18);
+    scratch.delta[0] = dx;
+    scratch.delta[1] = dy;
+    scratch.delta[2] = dz;
+    distSq = PSVECDotProduct(scratch.delta, scratch.delta);
+    radius = baseRadius + distSq;
+    scratch.copies[0] = *(double *)scratch.box;
+    scratch.copies[1] = *((double *)scratch.box + 1);
+    radius = radiusScale * radius;
     mask = 0;
-    if (((float *)temp.copies)[0] > radius) mask |= 1;
-    if (((float *)temp.copies)[0] < -radius) mask |= 2;
-    if (((float *)temp.copies)[1] > radius) mask |= 4;
-    if (((float *)temp.copies)[1] < -radius) mask |= 8;
-    if (((float *)temp.copies)[2] > radius) mask |= 0x10;
-    if (((float *)temp.copies)[2] < -radius) mask |= 0x20;
+    if (((float *)scratch.copies)[0] > radius) mask |= 1;
+    if (((float *)scratch.copies)[0] < -radius) mask |= 2;
+    if (((float *)scratch.copies)[1] > radius) mask |= 4;
+    if (((float *)scratch.copies)[1] < -radius) mask |= 8;
+    if (((float *)scratch.copies)[2] > radius) mask |= 0x10;
+    if (((float *)scratch.copies)[2] < -radius) mask |= 0x20;
     return ~mask & 0x15;
 }
 #pragma pop
@@ -440,7 +444,9 @@ void fn_802CD37C(void *arg0, void *arg1, float *arg2, int arg3, float farg0, flo
         while (n < cnt2) {
             int res;
             if (*(signed char *)(gDrawContext + *(unsigned short *)((char *)e2 + 0xC)) != 0) {
-                float pair[2]; pair[0] = f[38]; pair[1] = f[40];
+                float px = f[38], pz = f[40];
+                float pair[2];
+                pair[0] = px; pair[1] = pz;
                 res = fn_802CCBC4(e2, pair, farg0, farg1);
             } else {
                 res = 0;
