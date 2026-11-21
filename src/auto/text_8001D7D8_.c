@@ -19,7 +19,6 @@ int fn_8001D7EC(char *name) {
     } while (i < 5);
     return -1;
 }
-#pragma cplusplus reset
 void fn_8001D868(int *effectData) {
     /* Initialize the effect's 5-entry data block to -1 (no-entry sentinel). */
     effectData[0] = -1;
