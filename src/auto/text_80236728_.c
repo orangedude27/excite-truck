@@ -194,8 +194,9 @@ void fn_80236900(void) {
 #undef sUiAnimeTail
 }
 
-void fn_80236910(void) {
-    fn_80236960();
+void fn_80236910(char *fileName) {
+    /* Forward a .val file name to ValFileAnimList_SetFileName (fn_80236960). */
+    fn_80236960(fileName);
 }
 
 void fn_80236914(int arg0, float *arg1, float arg2) {
