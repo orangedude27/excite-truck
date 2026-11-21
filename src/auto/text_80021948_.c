@@ -17,6 +17,9 @@ struct SubBlock {
     SubBlock *prev;
     SubBlock *next;
 };
+static inline unsigned int *blockStart(unsigned int *heap) {
+    return *(unsigned int **)((unsigned char *)heap + (heap[3] & ~7) - 4);
+}
 
 /* No-op default constructor registered by fn_800218FC for the 8-element array of 0x70-byte records at lbl_8035B758; leaves each element untouched. */
 void fn_80021948(void) {
