@@ -121,10 +121,10 @@ public:
 
 #pragma push
 #pragma opt_propagation off
+/* Ask the stream to cancel a pending async read (virtual slot 0x54, v21) and
+ * confirm it supports async operations (slot 0x28, v10), panicking if either
+ * is unavailable. */
 s32 nw4hbm::ut::FileStream::CancelAsync(CancelCallback callback, void* userArg) {
-    /* Ask the stream to cancel a pending async read (virtual slot 0x54, v21) and
-     * confirm it supports async operations (slot 0x28, v10), panicking if either
-     * is unavailable. */
     static char sFile[0x38] = "ut_FileStream.cpp";
     static char sCancel[0x28] = "Stream don't support CANCEL function\n";
     static char sAsync[0x28] = "Stream don't support ASYNC function\n";
