@@ -346,6 +346,7 @@ void fn_8016A438(void) {
         index++;
     }
 }
+#pragma pop
 
 void fn_8016B634(s32 arg0);
 
