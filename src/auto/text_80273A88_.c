@@ -354,7 +354,7 @@ void fn_80274268(void *cam) {
 }
 void fn_8027445C(void) {
     extern void fn_80274268();
-  extern void fn_80274460();
+    /* Vtable thunk: tail-forward to the camera placement (mode 2) helper. */
     fn_80274268();
 }
 
@@ -991,9 +991,7 @@ extern double fn_8002EFB4(float, double);
 extern int fn_801E9E30(void *, float *);
 #pragma processor 750
 void fn_80275B9C(void *arg0, float farg0, float farg1, float farg2) {
-    struct Vec3 {
-        float x, y, z;
-    };
+    struct Vec3 { float x, y, z; };
     struct Vec3 pos;
     struct Vec3 offset;
     struct Vec3 temp;
@@ -1005,7 +1003,7 @@ void fn_80275B9C(void *arg0, float farg0, float farg1, float farg2) {
     float py;
     float factor;
 
-    angle = (float)fn_8002EFB4(farg2 * lbl_8055E3C8, lbl_80564038);
+    angle = (float)fn_8002EFB4(farg2 * lbl_8055E3C8, 6.2831854820251465);
     *(float *)(p + 0x15C) = angle;
     s = farg0 * (float)sin(angle);
     c = farg0 * (float)cos(*(float *)(p + 0x15C));
