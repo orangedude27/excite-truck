@@ -135,8 +135,8 @@ extern "C" void fn_80018CCC(void) {
     extern void *lbl_802FD2A0 __attribute__((section(".rodata")));
     extern const char lbl_80558C48[] __attribute__((section(".sdata")));
     extern s32 stricmp(const char *, const char *);
-    register char *name;
     register char *strings = (char *)&lbl_802FD2A0;
+    register char *name;
     register int row;
     register int offset;
     register Item *object;
@@ -412,6 +412,15 @@ static inline char *fn_80019144_entry_inl(const char *name) {
     if (index < 0) entry = 0;
     return entry;
 }
+static inline s32 fn_80019144_find_base(char *base, const char *name) {
+    s32 offset;
+    s32 i;
+    for (i = 0, offset = 0; i < *(volatile s32 *)(base + 4); offset += 0x10, i++) {
+        if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) == 0)
+            return i;
+    }
+    return -1;
+}
 #pragma push
 #pragma use_lmw_stmw off
 #pragma small_data off
@@ -487,9 +496,9 @@ static inline s32 fn_8001931C_find_inl(char *base, const char *name) {
 #pragma small_data off
 #pragma scheduling invalid_target
 void fn_8001931C(s32 name) {
-    register char *strings = (char *)&lbl_802FD2A0;
     register s32 name_r = name;
-    char *p;
+    register char *strings = (char *)&lbl_802FD2A0;
+    register char *p;
     s32 i;
 
     i = fn_8001931C_find_inl((char *)&lbl_803580A4, (const char *)name_r);
