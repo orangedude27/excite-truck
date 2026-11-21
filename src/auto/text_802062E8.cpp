@@ -194,6 +194,8 @@ extern "C" void fn_80206484(int event) {
     ((MixerCallback *)fn_80208D4C())->notify(event);
 }
 
+/* No-op virtual callback stub in the audio mixer's default (null) sound device,
+ * alongside fn_80206480 and fn_802064CC.  Compiles to a bare 'blr'. */
 extern "C" void fn_802064C8(void) {
 }
 
