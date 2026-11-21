@@ -67,32 +67,30 @@ void fn_8012F418(MemStreamPtr *cursor) {
     fn_80128668();
 }
 
-/* Rewind a MemStreamPtr cursor to the start of its stream (set its byte position to 0). */
+/* MemStreamPtr_Rewind: reset a cursor's byte position to the start. */
 void fn_8012F43C(MemStreamPtr *cursor) {
     cursor->pos = 0;
 }
 
-/* Seek a MemStreamPtr cursor: set the byte position of its next access. */
+/* MemStreamPtr_Seek: set the byte position of a cursor's next access. */
 void fn_8012F448(MemStreamPtr *cursor, s32 pos) {
     cursor->pos = pos;
 }
 
-/* Return the current byte position (pos) of a MemStreamPtr cursor. */
+/* MemStreamPtr_Tell: return a cursor's current byte position. */
 s32 fn_8012F450(MemStreamPtr *cursor) {
     return cursor->pos;
 }
 
-/* Appends a 32-bit word to the stream at its cursor and advances the cursor
-   past it (MemStreamPtr write). */
-void fn_8012F458(MemStreamPtr *stream, s32 word) {
+/* MemStreamPtr_WriteWord: append one 32-bit word at the cursor and advance it. */
+void fn_8012F458(MemStreamPtr *cursor, s32 word) {
     s32 data = word;
-    memcpy(stream->stream->buffer + stream->pos, &data, 4);
-    stream->pos += 4;
+    memcpy(cursor->stream->buffer + cursor->pos, &data, 4);
+    cursor->pos += 4;
 }
 
-/* Copies size bytes from src into the stream's buffer at the cursor's
-   position and advances the cursor past them (the block-write twin of the
-   word write above). */
+/* MemStreamPtr_Write: copy size bytes from src into the stream at the cursor
+   and advance it -- the block-write twin of the word write above. */
 void fn_8012F4AC(MemStreamPtr *cursor, const void *src, s32 size) {
     memcpy(cursor->stream->buffer + cursor->pos, src, size);
     cursor->pos += size;
