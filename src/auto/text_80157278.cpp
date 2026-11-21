@@ -2724,11 +2724,15 @@ extern "C" void fn_8015B23C(Unk8015A368C* object) {
 }
 
 #pragma scheduling invalid_target
-extern "C" s32 fn_8015B2E0(void* __restrict arg0) {
-    if (*(u8*)((char*)arg0 + 0x294)) return 0x7fffffff;
-    f32 value = *(f32*)((char*)arg0 + 0x290);
-    if (value > lbl_80558DC4[0]) return (s32)value;
-    return (s32)*(f32*)((char*)arg0 + 0x28c);
+/* Return the tracker's result: max int once a slot has finished (+0x294), else
+   the best finished value (+0x290) if above zero, else the best active value (+0x28C). */
+extern "C" s32 fn_8015B2E0(void* __restrict tracker) {
+#define kZeroEpsilon lbl_80558DC4[0]
+    if (*(u8*)((char*)tracker + 0x294)) return 0x7fffffff;
+    f32 best = *(f32*)((char*)tracker + 0x290);
+    if (best > kZeroEpsilon) return (s32)best;
+    return (s32)*(f32*)((char*)tracker + 0x28c);
+#undef kZeroEpsilon
 }
 #pragma scheduling on
 /* Return the fixed constant 12 (0xC) used by this subsystem. */
