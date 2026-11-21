@@ -171,6 +171,8 @@ extern void fn_80128670(void *);
 extern void fn_802C6CF8(void *);
 extern void *fn_8012850C(int, const char *);
 extern void *fn_8002F37C(void (*)(void), int, int, int);
+/* No-op element-initializer callback for the static-shadow record array: passed
+ * to fn_8002F37C when that table is created; records need no per-element setup. */
 void fn_80297A80(void) {}
 
 /* Release every static shadow's model instance, hand the "static shadows" block
