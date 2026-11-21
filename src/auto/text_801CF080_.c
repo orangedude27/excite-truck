@@ -434,6 +434,7 @@ loop3:
 check3:
    if(i3<p->count3) goto loop3;
 }
+#pragma pop
 
 
 extern s32 fn_8012C370(s32, s32 *, s32, s32, u8 *);
