@@ -166,13 +166,16 @@ void fn_80238A80(int arg0, int arg1, int arg2, const char *fmt, ...) {
 }
 
 #pragma use_lmw_stmw off
-void fn_80238B44(int arg0, int arg1, int arg2, int arg3, int arg4) {
-    int halfY;
-    int halfX;
+void fn_80238B44(int x0, int y0, int x1, int y1, int screen) {
+    /* Draw a filled screen-space rectangle between (x0,y0) and (x1,y1): convert
+     * top-left screen coordinates to the centered coordinates the quad drawer
+     * expects, then flush the draw list. */
+    int halfHeight;
+    int halfWidth;
     fn_802C8BD0(-1);
-    halfY = (int)lbl_8055CFF4 / 2;
-    halfX = (int)lbl_8055CFF0 / 2;
-    fn_802C92DC(arg0 - halfX, halfY - arg1, arg2 - halfX, halfY - arg3, arg4);
+    halfHeight = (int)lbl_8055CFF4 / 2;
+    halfWidth = (int)lbl_8055CFF0 / 2;
+    fn_802C92DC(x0 - halfWidth, halfHeight - y0, x1 - halfWidth, halfHeight - y1, screen);
     fn_802C8D74();
 }
 #pragma use_lmw_stmw on
