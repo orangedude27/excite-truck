@@ -315,11 +315,13 @@ float fn_80209028(void) {
 #define gEffectsVolume lbl_8055B4D0
 #define MIN_EFFECTS_VOLUME lbl_80563234
 #define CONFIG_KEY_EFFECTS_VOLUME lbl_8033BEF8
-void fn_80209030(float arg0) {
-    float value = 1.0f < arg0 ? 1.0f : arg0;
-    value = value > MIN_EFFECTS_VOLUME ? value : MIN_EFFECTS_VOLUME;
-    gEffectsVolume = value;
-    fn_8013323C(4, CONFIG_KEY_EFFECTS_VOLUME, (float)(double)value);
+void fn_80209030(float volume) {
+    /* Set the mixer's effects volume: clamp the input to [0,1], publish it to config
+     * under "effects_volume", then recompute the effective master volume. */
+    float clamped = 1.0f < volume ? 1.0f : volume;
+    clamped = clamped > MIN_EFFECTS_VOLUME ? clamped : MIN_EFFECTS_VOLUME;
+    gEffectsVolume = clamped;
+    fn_8013323C(4, CONFIG_KEY_EFFECTS_VOLUME, (float)(double)clamped);
     ((void (*)(void))fn_80208A50)();
 }
 #undef CONFIG_KEY_EFFECTS_VOLUME
