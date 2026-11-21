@@ -5975,20 +5975,33 @@ extern f32 lbl_8056351C;
 extern f64 lbl_80563520;
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void *fn_80222BDC(void *arg0, void *arg1, s32 arg2) {
-    ((void *(*)(void *, void *))fn_80218F80)(arg0, arg1);
-    *(s32 *)((u8 *)arg0 + 0x244) = arg2;
-    *(void **)arg0 = lbl_8033E560;
-    s32 res = fn_80232578((s32)arg1 + 0x40);
-    *(s32 *)((u8 *)arg0 + 0x248) = res;
-    if (res == 0) {
-        fn_802E317C(lbl_8033DA60, (char *)arg1 + 0x40);
+extern "C" void *fn_80222BDC(void *resource, void *params, s32 resourceId) {
+#define initBase          fn_80218F80
+#define loadFont          fn_80232578
+#define panic             fn_802E317C
+#define gCircleListVtable lbl_8033E560
+#define sInvalidFontMsg   lbl_8033DA60
+    /* Construct a "Widget CircleList" memory-card resource: run the base object
+     * constructor, install this class's vtable, load the list's font texture from
+     * the name in params, then copy the font block and metric fields into it. */
+    ((void *(*)(void *, void *))initBase)(resource, params);
+    *(s32 *)((u8 *)resource + 0x244) = resourceId;
+    *(void **)resource = gCircleListVtable;
+    s32 fontBlock = loadFont((s32)params + 0x40);
+    *(s32 *)((u8 *)resource + 0x248) = fontBlock;
+    if (fontBlock == 0) {
+        panic(sInvalidFontMsg, (char *)params + 0x40);
     }
-    *(s32 *)((u8 *)arg0 + 0x24C) = *(s32 *)((u8 *)arg1 + 0xA0);
-    f32 val = *(u32 *)((u8 *)arg1 + 0x9C);
-    *(f32 *)((u8 *)arg0 + 0x254) = 0.2094f;
-    *(f32 *)((u8 *)arg0 + 0x250) = val;
-    return arg0;
+    *(s32 *)((u8 *)resource + 0x24C) = *(s32 *)((u8 *)params + 0xA0);
+    f32 fontMetric = *(u32 *)((u8 *)params + 0x9C);
+    *(f32 *)((u8 *)resource + 0x254) = 0.2094f;
+    *(f32 *)((u8 *)resource + 0x250) = fontMetric;
+    return resource;
+#undef sInvalidFontMsg
+#undef gCircleListVtable
+#undef panic
+#undef loadFont
+#undef initBase
 }
 #pragma pop
 extern "C" void * __dt__Q34Game10MemoryCard8ResourceFv_80222C8C(void *arg0, s32 arg1) {
@@ -9426,7 +9439,7 @@ extern "C" void fn_80229998(void *widget) {
 
 #pragma scheduling invalid_target
 extern "C" s32 fn_802299B0(void *arg0) {
-    s32 result = 0;
+    u32 result = 0;
     s32 *p;
     s32 value;
 
@@ -9438,7 +9451,7 @@ extern "C" s32 fn_802299B0(void *arg0) {
         if (*p == *(s32 *)((u8 *)arg0 + 0x258))
             value = 1;
     }
-    return (((u32)(-value | value)) >> 31) | result;
+    return (s32)((((u32)(-value | value)) >> 31) | result);
 }
 #pragma scheduling reset
 /* Dispatch current object range/state to the target callback at +0x244 with args from +0x248/+0x24C/+0x250. */
