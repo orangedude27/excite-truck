@@ -944,6 +944,7 @@ void fn_8023B2EC(void *widget) {
 }
 #pragma pop
 
+/* No-op virtual method: an empty slot in the UI option widget's dispatch table. */
 void fn_8023B368(void) {}
 
 /* Constant predicate (returns 0 / false); likely a virtual getter reached through a dispatch table. */
