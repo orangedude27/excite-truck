@@ -354,6 +354,7 @@ s32 fn_80243BD8(s32 object, s32 deleteFlag) {
 }
 
 void fn_80243C18(void) {
+    /* Widget-wrapper vtable method: forward to the helper that marks the wrapped VfWidget dirty. */
     fn_80221E7C();
 }
 
