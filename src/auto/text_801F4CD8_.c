@@ -318,12 +318,14 @@ struct F52Obj {
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-extern "C" int fn_801F52BC(void *arg0, int arg1, int arg2, int arg3) {
-    int result = 0;
-    if (((F52Obj *)arg0)->vC()) {
-        result = ((int (*)(int, int, int))fn_8012F9E8)(arg2, arg3, (int)((F52Obj *)arg0)->v14(arg1));
+extern "C" int fn_801F52BC(void *self, int sourceId, int outBuf, int outMax) {
+    /* If this object reports an encoded value, fetch the encoded string for sourceId
+       (v14) and base64-decode it into outBuf (up to outMax bytes); 1 on success, 0 else. */
+    int decoded = 0;
+    if (((F52Obj *)self)->vC()) {
+        decoded = ((int (*)(int, int, int))fn_8012F9E8)(outBuf, outMax, (int)((F52Obj *)self)->v14(sourceId));
     }
-    return result;
+    return decoded;
 }
 #pragma cplusplus on
 #pragma scheduling on
