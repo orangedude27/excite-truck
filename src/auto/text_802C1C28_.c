@@ -101,7 +101,8 @@ void fn_802C1C34(void *arg0, void *obj, int slot) {
 void fn_802C1F80(int arg0) {}
 
 #pragma dont_inline on
-void fn_802C1F84(int arg0) {}
+/* No-op finalizer: accepts an allocation-header pointer and intentionally does nothing (placeholder cleanup callback). */
+void fn_802C1F84(int header) {}
 
 void fn_802C1F88(int arg0) {}
 
