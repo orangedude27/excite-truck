@@ -551,6 +551,8 @@ void fn_802C1928(void) {
     }
 }
 #pragma pop
+/* Empty no-op reset hook: invoked by tree-hit init (fn_802C126C) and by the
+ * per-frame shutdown pass (fn_801E8CE4), but currently has no behaviour. */
 void fn_802C1A08(void) {}
 
 /* ---- treehit: the trees the trucks drive into ------------------------------
