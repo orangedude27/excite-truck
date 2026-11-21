@@ -396,8 +396,7 @@ void fn_8027889C(float seconds) {
 #undef sPlayStartTick
 }
 extern float lbl_805640B8, lbl_805640BC;
-#pragma processor 750
-#pragma scheduling off
+#pragma scheduling reset
 void fn_802788E0(float arg0) {
     float t;
     float result;
