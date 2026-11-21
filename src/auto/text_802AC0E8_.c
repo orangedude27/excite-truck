@@ -12,6 +12,14 @@ extern float lbl_80564AB0;
 extern double atof(const char *);
 extern int fn_802E2C20(void);
 extern int sscanf(const char *, const char *, ...);
+
+/* One symbol-table record used by the animation parser: a type tag, a name and the resolved id. */
+typedef struct AnimSymbolEntry {
+    int type;
+    const char *name;
+    int value;
+} AnimSymbolEntry;
+
 #pragma scheduling invalid_target
 void *fn_802AC0E8(void *node, const char *name, int key) {
     if (node == 0)
@@ -283,7 +291,8 @@ copied:
         memset(rec, 0, 0x28);
         if (strcmp(type, lbl_8055CCE0) == 0) {
             LVec3 def3, v3;
-            LVec2 def2, p;
+            LVec2 def2;
+            volatile LVec2 p;
             char *sub;
             int model;
             rec->type = 2;
@@ -364,7 +373,7 @@ copied:
     for (k = 0; k < numGroups; k++) {
         LGroup *grp;
         LVec2 def2;
-        LVec2 origin;
+        volatile LVec2 origin;
         float base;
         int numSegs;
         int j;
@@ -422,7 +431,7 @@ copied:
                     fn_802E317C(str + 0x104, q, name);
             }
             if (((HasFn)(*(void ***)s)[3])(s, lbl_8055CCF8)) {
-                LVec2 v;
+                volatile LVec2 v;
                 v = ((Vec2Fn)(*(void ***)s)[15])(s, lbl_8055CCF8);
                 v.x += ox;
                 v.y += oy;
@@ -487,7 +496,7 @@ copied:
         LVec3 off;
         float sc, sa;
         if (((HasFn)(*(void ***)g)[3])(g, lbl_8055CCF8)) {
-            LVec2 v;
+            volatile LVec2 v;
             v = ((Vec2Fn)(*(void ***)g)[15])(g, lbl_8055CCF8);
             off.z = lbl_80564AB0;
             off.x = v.x;
@@ -602,6 +611,7 @@ void fn_802AD30C(void *arg0) {
 
 #pragma scheduling invalid_target
 void fn_802AD414(void *arg0, float farg0) {
+#pragma scheduling invalid_target
     struct Entry {
         volatile float lower;
         char pad[0x30];
@@ -615,11 +625,10 @@ void fn_802AD414(void *arg0, float farg0) {
         int byteOffset = 0;
         char *group = *(char **)((char *)arg0 + 0x28) + offset;
         int count = *(int *)(group + 4);
-        struct Entry *entries = *(struct Entry **)(group + 8);
         for (; inner < count - 1; inner++) {
-            char *entry = (char *)entries + byteOffset;
-            float a = *(volatile float *)entry;
-            float b = entries[inner + 1].lower;
+            float a = *(volatile float *)((char *)*(struct Entry **)(group + 8) + byteOffset);
+            float b = (*(struct Entry **)(group + 8))[inner + 1].lower;
+            char *entry = (char *)*(struct Entry **)(group + 8) + byteOffset;
             if (farg0 >= a && farg0 <= base + b) {
                 int idx = *(int *)group;
                 char *records = *(char **)((char *)arg0 + 0x20);
@@ -659,7 +668,6 @@ void fn_802AD4C4(void *arg0, int arg1, float t) {
     int i;
     int boff;
     float one, eps, lo, c1, c2, zero, half;
-    register float qx, qw;
     h = fn_802C2C00(0);
     one = lbl_80564AB4;
     eps = lbl_80564ACC;
@@ -732,7 +740,6 @@ void fn_802AD4C4(void *arg0, int arg1, float t) {
                     m[9] = sp20[0] * f4;
                     m[10] = sp20[1] * f4;
                     m[11] = sp20[2] * f4;
-                    qx = x; qw = w;
                 }
                 sp14[2] = *(float *)(a + 0xC) + f23 * (*(float *)(b + 0xC) - *(float *)(a + 0xC));
                 sp14[1] = *(float *)(a + 8) + f23 * (*(float *)(b + 8) - *(float *)(a + 8));
@@ -791,7 +798,6 @@ void fn_802AD4C4(void *arg0, int arg1, float t) {
                     fn_8023389C(*(int *)(c + 0xC), (col & 0x00FFFFFF) | ((unsigned int)iv << 24), *(int *)(c + 0x10), m, &lbl_8055CD68, *(int *)(c + 0x1C),
                         zero, zero, zero, f6 * (f4 * (sp14[0] * *(float *)(c + 0x18))), one);
                 }
-                (void)qx; (void)qw;
                 break;
             }
         }
