@@ -1155,46 +1155,49 @@ void *fn_802B3DA4(void *container, int slot, int index) {
 }
 
 #pragma opt_propagation off
-void fn_802B3E00(void *arg0, void *arg1, short arg2, float farg0) {
+void fn_802B3E00(void *queueArg, void *pos, short value, float weight) {
     extern int lbl_8055F9B8;
     extern void *lbl_8055F9BC;
-    typedef struct Entry802B3E00 {
+    /* Append a {value,x,y,z,weight} record to a per-object queue: take a 0x14-byte
+     * slot from the tail block, linking in a fresh block from the global node pool
+     * (lbl_8055F9BC) when the tail is full; bump lbl_8055F9B8 if no block is free. */
+    typedef struct Entry {
         short value; unsigned short padding; float x; float y; float z; float weight;
-    } Entry802B3E00;
-    typedef struct Node802B3E00 {
-        void *data; volatile int count; int capacity; struct Node802B3E00 *next;
-    } Node802B3E00;
-    typedef struct Queue802B3E00 { Node802B3E00 *head; Node802B3E00 *tail; } Queue802B3E00;
-    typedef struct Pool802B3E00 { void *unknown0; Node802B3E00 *nodes; volatile int used; int capacity; } Pool802B3E00;
-    Queue802B3E00 *queue = (Queue802B3E00 *)arg0;
-    Node802B3E00 *tail = queue->tail;
-    Pool802B3E00 *pool = (Pool802B3E00 *)lbl_8055F9BC;
-    Entry802B3E00 *out = 0;
-    int index; char *data; Node802B3E00 *node;
+    } Entry;
+    typedef struct Node {
+        void *data; volatile int count; int capacity; struct Node *next;
+    } Node;
+    typedef struct Queue { Node *head; Node *tail; } Queue;
+    typedef struct Pool { void *buffer; Node *nodes; volatile int used; int capacity; } Pool;
+    Queue *queue = (Queue *)queueArg;
+    Node *tail = queue->tail;
+    Pool *pool = (Pool *)lbl_8055F9BC;
+    Entry *out = 0;
+    int index; char *data; Node *node;
     if (tail == 0 || tail->count + 1 > tail->capacity) {
-        Node802B3E00 *newNode = 0;
+        Node *newNode = 0;
         if (pool->used + 1 <= pool->capacity) {
-            newNode = (Node802B3E00 *)((char *)pool->nodes + pool->used++ * 0x10);
+            newNode = (Node *)((char *)pool->nodes + pool->used++ * 0x10);
             newNode->count = 0; newNode->next = 0;
         }
         if (newNode != 0) {
             if (queue->head == 0) queue->head = newNode;
-            { Node802B3E00 *prev = queue->tail; if (prev != 0) prev->next = newNode; }
+            { Node *prev = queue->tail; if (prev != 0) prev->next = newNode; }
             queue->tail = newNode; newNode->next = 0;
             node = queue->tail; index = node->count; data = (char *)node->data;
-            out = (Entry802B3E00 *)(data + index * 0x14);
+            out = (Entry *)(data + index * 0x14);
             node->count = index + 1;
         }
     } else {
         index = tail->count; data = (char *)tail->data;
-        out = (Entry802B3E00 *)(data + index * 0x14);
+        out = (Entry *)(data + index * 0x14);
         tail->count = index + 1;
     }
     if (out != 0) {
-        float x = ((float *)arg1)[0]; float y = ((float *)arg1)[1];
+        float x = ((float *)pos)[0]; float y = ((float *)pos)[1];
         out->x = x;
-        { float z = ((float *)arg1)[2]; out->y = y; out->z = z; }
-        out->value = arg2; out->weight = farg0;
+        { float z = ((float *)pos)[2]; out->y = y; out->z = z; }
+        out->value = value; out->weight = weight;
     } else lbl_8055F9B8 += 1;
 }
 #pragma opt_propagation reset
