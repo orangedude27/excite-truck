@@ -1,7 +1,7 @@
 #include <revolution/OS.h>
 
-static void* IpcBufferLo = (void*)-1;
-static void* IpcBufferHi = NULL;
+static void *IpcBufferLo = (void *)-1;
+static void *IpcBufferHi = NULL;
 
 /* Return the cached upper bound of the IPC buffer. */
 void* __OSGetIPCBufferHi(void) {
