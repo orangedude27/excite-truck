@@ -2061,6 +2061,7 @@ void fn_802C8218(s32 useAltMode) {
     lbl_8055D00C = mode;
 }
 
+/* mrmodel: forward to the model-manager hook (fn_802DB2B4), a no-op in this build. */
 void fn_802C8230(void) {
     fn_802DB2B4();
 }
