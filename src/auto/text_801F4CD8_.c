@@ -1,7 +1,5 @@
 // One cloth distance constraint ("edge") between two grid vertices, built by
 // fn_801F5508. restDistSq is the squared rest length (PSVECSquareDistance at build).
-#pragma cplusplus on
-#pragma cplusplus reset
 typedef struct ClothEdge {
     unsigned short from;
     unsigned short to;
