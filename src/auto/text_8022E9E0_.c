@@ -106,22 +106,24 @@ extern "C" void fn_8022EA58(void *context) {
 #pragma push
 #pragma scheduling invalid_target
 int fn_8022EAB8(int unused0, void *unused1) {
-    void *value;
-    int ret;
+    /* Lazily create the "UIContext::pool" of 0x3c-byte UIContexts, then bump the
+     * live-use count when a context is successfully taken from it. */
+    void *uiPool;
+    int initialized;
     (void)unused0;
     (void)unused1;
-    if (lbl_8055EFFC == 0) {
-        value = fn_801284F8(0x20, lbl_80340290);
-        if (value != 0) {
-            value = fn_8012A13C(value, lbl_80340290, 0x20, 0x3c);
+    if (sUIContextLiveCount == 0) {
+        uiPool = fn_801284F8(0x20, STR_UICONTEXT_POOL);
+        if (uiPool != 0) {
+            uiPool = fn_8012A13C(uiPool, STR_UICONTEXT_POOL, 0x20, 0x3c);
         }
-        lbl_8055F000 = value;
+        sUIContextPool = uiPool;
     }
-    ret = (int)fn_8012A2D8(lbl_8055F000);
-    if (ret != 0) {
-        lbl_8055EFFC += 1;
+    initialized = (int)fn_8012A2D8(sUIContextPool);
+    if (initialized != 0) {
+        sUIContextLiveCount += 1;
     }
-    return ret;
+    return initialized;
 }
 #pragma pop
 
