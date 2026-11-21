@@ -61,15 +61,16 @@ void fn_802E7330(void) {
 extern int stricmp(const char *, const char *);
 extern int fn_802E37C4(void);
 extern int fn_802E72B8(int);
+#pragma scheduling invalid_target
 int fn_802E7354(const char *name) {
-    int index;
-    unsigned char *entry;
     int fileIndex;
+    int index;
+    unsigned char c;
+    char *dst;
+    int remaining;
+    unsigned char *entry;
     int size;
     int blocks;
-    int remaining;
-    char *dst;
-    signed char c;
     entry = lbl_804FC978;
     index = 0;
     goto search_test;
@@ -84,9 +85,8 @@ search_test:
     fileIndex = fn_802E36D8((void *)name);
     if (fileIndex == -1)
         goto fail;
-    index = lbl_8055FFD8;
+    index = lbl_8055FFD8++;
     entry = lbl_804FC978 + index * 0x90;
-    lbl_8055FFD8 = index + 1;
     dst = (char *)(entry + 0x10);
     remaining = 0x80;
     goto copy_start;
@@ -96,9 +96,9 @@ dec:
         goto done;
     }
 copy_start:
-    c = *name++;
-    *dst++ = c;
-    if (c != 0)
+    c = (unsigned char)*name++;
+    *dst++ = (char)c;
+    if ((signed char)c != 0)
         goto dec;
 done:
     size = fn_802E37C4();
@@ -112,7 +112,6 @@ done:
 fail:
     return -1;
 }
-
 void fn_802E746C(int index, int *outStartSector, int *outSize) {
     /* Report the start sector (in 2048-byte units) and byte size of stream entry `index`. */
     StreamEntry *entry = (StreamEntry *)(lbl_804FC978 + index * 0x90);
@@ -142,6 +141,8 @@ int fn_802E748C(int arg0, void *arg1, int arg2, int arg3) {
     return temp_r3;
 }
 #pragma pop
+/* Stream-end callback thunk: tail-calls fn_802E3990 to end the file stream for
+ * the handle in r3 (the branch keeps the argument register intact). */
 void fn_802E7544(void) { fn_802E3990(); }
 
 /* Close the file/stream handle by value; fn_802E3734 takes the handle by address and invalidates it. */
