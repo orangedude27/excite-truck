@@ -442,12 +442,14 @@ void fn_8022DDB0(void *arg0) {
 #pragma push
 #pragma opt_propagation off
 #pragma scheduling invalid_target
-void fn_8022DE1C(void *arg0) {
-    float *p = *(float **)((char *)arg0 + 0x18);
-    float step = *(float *)((char *)arg0 + 0x14);
-    float v = step * (float)(int)(0.5f + ((*p - step) / step));
-    float low = *(float *)((char *)arg0 + 0x0C);
-    *p = (low > v) ? low : v;
+void fn_8022DE1C(void *gauge) {
+    /* Snap a float gauge's value down to a multiple of its step (rounding via
+     * 0.5), then clamp it so it does not fall below the gauge's minimum at +0x0C. */
+    float *value = *(float **)((char *)gauge + 0x18);
+    float step = *(float *)((char *)gauge + 0x14);
+    float snapped = step * (float)(int)(0.5f + ((*value - step) / step));
+    float minValue = *(float *)((char *)gauge + 0x0C);
+    *value = (minValue > snapped) ? minValue : snapped;
 }
 int fn_8022DE88(void *object) {
 #define gZeroEpsilon lbl_80558DC4
