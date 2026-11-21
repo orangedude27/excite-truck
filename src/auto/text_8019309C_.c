@@ -2707,12 +2707,9 @@ void fn_8019724C(void *arg0, float *arg1) {
                 arg1[0] = projected[0];
                 arg1[1] = projected[1];
                 if (*(float *)((char *)arg0 + 0x270) > flagThreshold) {
-                    *(volatile int *)((char *)arg0 + 0x2D0) |= 0x40;
-                    *(volatile int *)((char *)arg0 + 0x2D0) |= 0x800;
-                } else {
-                    goto end_of_block;
+                    *(int *)((char *)arg0 + 0x2D0) |= 0x40;
                 }
-                end_of_block: ;
+                *(int *)((char *)arg0 + 0x2D0) |= 0x800;
             }
         } else {
             diff = *(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x1F8);
