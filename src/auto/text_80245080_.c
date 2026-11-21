@@ -38,12 +38,16 @@ s32 fn_80245080(s32 arg0) {
 }
 #pragma scheduling off
 s32 fn_802450D4(s32 status) {
-    struct Unk_80245080 *p;
+    s32 v;
+    s32 p;
+#pragma unused(status)
     fn_80236900();
-    if ((status = (p = (struct Unk_80245080 *)lbl_8055F244)->unk_24) > 7) {
+    p = (s32)lbl_8055F244;
+    v = ((struct Unk_80245080 *)p)->unk_24;
+    if (v > 7) {
         return 1;
     }
-    p->unk_24 = status + 1;
+    ((struct Unk_80245080 *)p)->unk_24 = v + 1;
     return 0;
 }
 void fn_80245118(void) {
