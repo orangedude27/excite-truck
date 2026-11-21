@@ -264,7 +264,6 @@ void fn_8000822C(void *record) {
 }
 #pragma dont_inline reset
 
-void fn_8000822C(void *);
 #pragma dont_inline fn_8000822C
 /* Initialize a record from a looked-up source: reset the destination, then copy
  * its first field and the field at offset 8 from the looked-up object. */
