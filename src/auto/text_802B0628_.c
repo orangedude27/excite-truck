@@ -80,21 +80,22 @@ void fn_802B0690(int *handleSlot) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_802B06D4(void) {
-    class Obj {
+    class ETConfigAccess {
     public:
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual void v9();
-        virtual void call(void *, int);
+        virtual void unused00();
+        virtual void unused04();
+        virtual void unused08();
+        virtual void unused0C();
+        virtual void unused10();
+        virtual void unused14();
+        virtual void *lookup(void *, int);
+        virtual void unused24();
+        virtual void unused28();
+        virtual void unused2C();
+        virtual void status(void *, int);
     };
-    ((Obj *)fn_802B59CC())->call(lbl_8034A078, 0);
+    /* Ask the game's config access object for the "crystal_mode" flag (default 0). */
+    ((ETConfigAccess *)fn_802B59CC())->status(lbl_8034A078, 0);
 }
 #pragma scheduling on
 #pragma cplusplus off
@@ -123,8 +124,8 @@ void fn_802B0710(void) {
         ((int *)obj)[2] = 0;
         ((int **)obj)[4] = fields;
         ((void **)obj)[0] = fn_8012850C(((int *)obj)[3] << 10, lbl_8034A27C);
-        offset = 0;
         i = 0;
+        offset = 0;
         while (i < ((int *)obj)[3]) {
             int idx = ((int *)obj)[2];
             char *base = (char *)((void **)obj)[0];
@@ -745,14 +746,13 @@ extern float fn_801DCF48(int, float, float);
 #pragma push
 #pragma processor 750
 void fn_802B1758(void *arg0) {
+    register union { void *node; int state; int i; } v;
+    register int cacheCount;
+    register void *cache;
+    register char *entry;
+    register unsigned offset;
     float setupA[3];
     float setupB[3];
-    void *node;
-    int cacheCount;
-    void *cache;
-    int state;
-    int i;
-    unsigned offset;
     int sign;
     float radius;
     float *point;
@@ -761,9 +761,9 @@ void fn_802B1758(void *arg0) {
     float x;
     unsigned short values[14];
 
-    node = *(void **)((char *)arg0 + 0x934);
-    if (node != 0 && *(int *)((char *)arg0 + 4) != -2) {
-        state = *(int *)((char *)arg0 + 4);
+    v.node = *(void **)((char *)arg0 + 0x934);
+    if (v.node != 0 && *(int *)((char *)arg0 + 4) != -2) {
+        v.state = *(int *)((char *)arg0 + 4);
         setupA[2] = lbl_80564BD0;
         setupA[0] = lbl_80564BD0 / (lbl_80564BD4 * lbl_80564BB8);
         setupA[1] = lbl_80564BD8;
@@ -771,35 +771,34 @@ void fn_802B1758(void *arg0) {
         fn_802DAA18();
         fn_802C28C0();
         fn_802C8BD0();
-        fn_802DC3C0(state);
+        fn_802DC3C0(v.state);
 
         cache = *(void **)((char *)arg0 + 0x318);
         cacheCount = *(int *)((char *)arg0 + 0x31C);
-        node = *(void **)((char *)arg0 + 0x934);
-        while (node) {
-            fn_802DC464(cache, cacheCount, *(void **)node, *(int *)((char *)node + 4));
-            node = *(void **)((char *)node + 0xC);
+        v.node = *(void **)((char *)arg0 + 0x934);
+        while (v.node) {
+            fn_802DC464(cache, cacheCount, *(void **)v.node, *(int *)((char *)v.node + 4));
+            v.node = *(void **)((char *)v.node + 0xC);
         }
-        i = 0;
+        v.i = 0;
         offset = 0;
-        while (i < *(int *)((char *)arg0 + 0x328)) {
-            register char *entry = (char *)*(void **)((char *)arg0 + 0x324) + offset;
+        while (v.i < *(int *)((char *)arg0 + 0x328)) {
+            entry = (char *)*(void **)((char *)arg0 + 0x324) + offset;
             setupA[2] = *(float *)(entry + 4);
             fn_802DA704(1, setupA, 1);
             fn_802DAA18();
-            node = *(void **)entry;
-            fn_802DC464(cache, cacheCount, node, *(unsigned short *)node + 1);
+            fn_802DC464(cache, cacheCount, *(void **)entry, *(unsigned short *)*(void **)entry + 1);
             offset += 8;
-            i++;
+            v.i++;
         }
         fn_802DC440();
         fn_802C8D74();
     }
 
     if (*(unsigned char *)arg0 != 0) {
-        state = *(int *)((char *)arg0 + 8);
-        if (state != -2) {
-            if (state == *(int *)((char *)arg0 + 4))
+        v.state = *(int *)((char *)arg0 + 8);
+        if (v.state != -2) {
+            if (v.state == *(int *)((char *)arg0 + 4))
                 setupB[0] = lbl_80564BD0 / (lbl_80564BD4 * lbl_80564BB8);
             else
                 setupB[0] = lbl_80564BDC / (lbl_80564BD4 * lbl_80564BB8);
@@ -809,7 +808,7 @@ void fn_802B1758(void *arg0) {
             fn_802DAA18();
             fn_802C28C0();
             fn_802C8BD0();
-            fn_802DC3C0(state);
+            fn_802DC3C0(v.state);
 
             {
                 float t = lbl_80564BD4 * lbl_80564BB8;
@@ -817,10 +816,10 @@ void fn_802B1758(void *arg0) {
                 radius = lbl_80564BE0 + radius;
             }
             point = lbl_804BE190;
-            for (i = 0; i < 4; i++) {
-                sign = (i & 1) ? -1 : 1;
+            for (v.i = 0; v.i < 4; v.i++) {
+                sign = (v.i & 1) ? -1 : 1;
                 x = (float)sign * radius;
-                sign = (i & 2) ? -1 : 1;
+                sign = (v.i & 2) ? -1 : 1;
                 z = (float)sign * radius;
                 y = fn_801DCF48(0, x, z);
                 point[0] = x;
@@ -831,10 +830,10 @@ void fn_802B1758(void *arg0) {
 
             radius = lbl_80564BE8 * lbl_80564BB8;
             point = (float *)((char *)lbl_804BE190 + 0x30);
-            for (i = 4; i < 8; i++) {
-                sign = (i & 1) ? -1 : 1;
+            for (v.i = 4; v.i < 8; v.i++) {
+                sign = (v.i & 1) ? -1 : 1;
                 x = radius * (float)sign;
-                sign = (i & 2) ? -1 : 1;
+                sign = (v.i & 2) ? -1 : 1;
                 z = radius * (float)sign;
                 y = fn_801DCF48(0, x, z);
                 point[0] = x;
