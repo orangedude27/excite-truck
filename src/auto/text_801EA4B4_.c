@@ -6,7 +6,7 @@ void fn_801EA4B4(void) {
     fn_802797A8();
 }
 
-/* Advance/update the car state (forwards to fn_80279848). */
+/* Forward to carstate teardown: fn_80279848 frees the table. */
 void fn_801EA4B8(void) {
     fn_80279848();
 }
