@@ -1516,6 +1516,7 @@ void fn_80255928(void *arg0, char *arg1) {
 void fn_80255A7C(void) {
 }
 
+/* Unused no-op stub in this car-UI (CarUISM) module; this build leaves it empty. */
 void fn_80255A80(void) {
 }
 
