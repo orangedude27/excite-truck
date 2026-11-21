@@ -1797,6 +1797,8 @@ extern "C" s32 fn_8013F088(void *zoneMaster) {
     return (*(s32 *)((u8 *)zoneMaster + 0x134) - 2) == 0;
 }
 
+/* Tail-call thunk: forwards to fn_80140A6C, the per-player HUD effect update.
+ * The no-argument function-pointer cast makes the compiler emit a tail branch. */
 extern "C" void fn_8013F09C(void) {
     ((void(*)())fn_80140A6C)();
 }
