@@ -814,6 +814,7 @@ extern "C" void fn_800E2F84(void *self)
 #pragma pop
 
 #pragma scheduling on
+/* Returns the EmissionManager's engine gain: the product of three time-based fades, each interpolating from a start to an end factor over a frame count. */
 extern "C" f32 fn_800E310C(const void *arg0) {
     int b = *(int *)((const char *)arg0 + 0x6C4C);
     int a = *(int *)((const char *)arg0 + 0x6C50);
