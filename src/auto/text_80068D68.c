@@ -7856,6 +7856,8 @@ void bta_hh_add_device_to_list(void *devCb, s8 handle, s16 attrMask, void *desc,
     }
 }
 
+typedef struct { UINT8 tod; UINT8 app_id; } hh_dev_t;
+typedef struct { UINT8 max_devt_spt; hh_dev_t *p_devt_list; } hh_cfg_t;
 BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
     UINT8 max_devt = lbl_80559030[0];
     UINT8 cod = (sub_class >> 2) & 0x3F;
@@ -8403,9 +8405,12 @@ u16 BTM_GetHCIConnHandle(u8 *arg0) {
     var_r31 = 0;
     var_r30 = lbl_803C0F78 + 0x34;
 loop:
-    if (var_r30[0x119] != 0 && memcmp(var_r30 + 8, arg0, 6) == 0) {
-        goto found;
-    }
+    if (var_r30[0x119] == 0)
+        goto next;
+    if (memcmp(var_r30 + 8, arg0, 6) != 0)
+        goto next;
+    goto found;
+next:
     var_r31++;
     var_r30 += 0x11C;
     if (var_r31 < 4) {
