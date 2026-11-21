@@ -194,30 +194,34 @@ int fn_802E7AF4(int eventType, int shutdownMode) {
     return 0;
 }
 
-void fn_802E7B6C(int arg0, int arg1) {
-    register int var_r30 = arg0;
-    int var_r31 = arg1;
+/* WPAD sampling callback installed for each controller channel: forward the sample
+ * to the callback that was installed before rjoy (when there is one), update that
+ * channel's state-record sample-ready flag from the result, then notify the sound
+ * layer's connect callback. */
+void fn_802E7B6C(int chan, int status) {
+    register int channel = chan;
+    int result = status;
     unsigned char *record;
 
-    if (0 > var_r30) {
+    if (0 > channel) {
         goto done;
     }
-    if (var_r30 < 4) {
+    if (channel < 4) {
         goto dispatch;
     }
 done:
     return;
 dispatch:
-    if (lbl_80507268[var_r30] != 0) {
-        ((void (*)(int, int))lbl_80507268[var_r30])(var_r30, var_r31);
+    if (gPrevSamplingCallbacks[channel] != 0) {
+        ((void (*)(int, int))gPrevSamplingCallbacks[channel])(channel, result);
     }
-    record = lbl_80505978 + var_r30 * 0x638;
-    if (var_r31 == -1) {
+    record = gWiimoteStateTable + channel * 0x638;
+    if (result == WPAD_ERR_NO_CONTROLLER) {
         record[0xC4] = 0;
-    } else if (var_r31 == 0) {
+    } else if (result == WPAD_ERR_NONE) {
         record[0xC4] = 1;
     }
-    fn_802E6B44(var_r30, var_r31);
+    fn_802E6B44(channel, result);
 }
 
 #pragma push
