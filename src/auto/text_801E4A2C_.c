@@ -159,8 +159,8 @@ void fn_801E4BEC(s32 font, s32 drawFlags, s32 align, s32 x, s32 y, const char *f
             ++p;
         }
     } else {
-        fn_802C4F58(x + 1, y + 1, text, lbl_8055FBC0);
-        fn_802C4F58(x, y, text, lbl_8055FBFC);
+        fn_802C4F58(x + 1, y + 1, text, COLOR_TEXT_SHADOW);
+        fn_802C4F58(x, y, text, COLOR_TEXT);
     }
 }
 extern s32 fn_801E4B00(s32 *);
