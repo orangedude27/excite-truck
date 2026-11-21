@@ -977,8 +977,8 @@ extern "C" s32 fn_8019A820(void* arg0, void* arg1, s32 arg2, s32 arg3, s32 arg4,
     Vec d, dir, v20, delta, v8;
     f32 mag, rem, var4, ret, k, dx, dy, dz;
     s32 obj;
-    Vec* a = (Vec*)arg1;
-    Vec* b = (Vec*)arg2;
+    const Vec* a = (const Vec*)arg1;
+    const Vec* b = (const Vec*)arg2;
     dx = a->x - b->x;
     dy = a->y - b->y;
     d.x = dx;
@@ -2736,6 +2736,7 @@ extern "C" void fn_8019F4D4(void *arg0, void *arg1) {
     scratch[1] = ((f32 *)arg1)[1] + ((f32 *)vector)[4] * scale;
     scratch[5] = ((f32 *)arg1)[2] + ((f32 *)vector)[5] * scale;
 }
+/* Tail-call thunk: forwards unchanged to fn_8019F1A4, which dispatches to the fn_8019AC44 physics routine. */
 extern "C" void fn_8019F560(void) {
     fn_8019F1A4();
 }
@@ -4305,11 +4306,11 @@ extern "C" void fn_801A22A4(void* obj) {
 extern "C" void *fn_801A2354(void *arg0, s32 arg1, void *arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4)
 {
   extern char lbl_80333868[];
+  extern f32 lbl_80562300;
   f32 diffY = farg2 - 0.2f;
   f32 diffX = farg3 - 0.2f;
   f32 diffZ = farg4 - 0.2f;
   f32 dx2 = diffX * diffX;
-  f32 dy2;
   f32 dz2 = diffZ * diffZ;
   f32 dist = (dx2 + (diffY * diffY)) + dz2;
   *((f32 *) (((u8 *) arg0) + 0x10)) = farg0;
@@ -4325,7 +4326,7 @@ extern "C" void *fn_801A2354(void *arg0, s32 arg1, void *arg2, s32 arg3, f32 far
   *((f32 *) (((u8 *) arg0) + 0x28)) = diffX;
   *((f32 *) (((u8 *) arg0) + 0x2C)) = diffZ;
   *((s32 *) (((u8 *) arg0) + 0x34)) = 0;
-  f32 radius = 0.2f + ((f32) fn_8002F234(dist));
+  f32 radius = lbl_80562300 + ((f32) fn_8002F234(dist));
   volatile f32 *input = (volatile f32 *) arg2;
   f32 x = input[0];
   f32 y = input[1];
@@ -5365,7 +5366,7 @@ extern "C" s32 fn_801A40F8(void *arg0, f32 * __restrict arg1, f32 *arg2, s32 arg
     f32 stack[9];
     f32 ix = arg1[0];
     f32 iy = arg1[1];
-    f32 *m = (f32 *)*(void **)((u8 *)arg0 + 0xC);
+    f32 * __restrict m = (f32 *)*(void **)((u8 *)arg0 + 0xC);
     f32 dx = ix - m[9];
     f32 iz = arg1[2];
     stack[6] = dx;
