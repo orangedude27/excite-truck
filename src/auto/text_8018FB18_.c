@@ -1160,8 +1160,10 @@ extern "C" void fn_80190EAC(void *arg0) {
 #pragma cplusplus reset
 #pragma pop
 
-void fn_80190F90(void *arg0) {
-    fn_80191758(arg0);
+/* Thunk: initialize the car-table entry for this car via fn_80191758, which
+ * copies its name into the table and seeds the default tuning values. */
+void fn_80190F90(void *car) {
+    fn_80191758(car);
 }
 
 #pragma cplusplus on
