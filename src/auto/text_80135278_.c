@@ -16,6 +16,7 @@ extern float lbl_80561324;
 #define FLOAT_ZERO lbl_80561320 /* 0.0f */
 #define FLOAT_ONE lbl_80561324  /* 1.0f */
 extern s32 lbl_8032BE80[];
+#define sPathFollowerVTable lbl_8032BE80
 
 typedef struct {
     s32 unk_0;
