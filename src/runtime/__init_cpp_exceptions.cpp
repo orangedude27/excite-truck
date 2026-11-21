@@ -13,6 +13,7 @@ void __fini_cpp_exceptions(void);
 }
 #endif
 
+/* Read the module's TOC base out of r2, needed to register its exception tables. */
 static void* GetTOC(void) {
     register void* toc;
 
