@@ -722,18 +722,14 @@ extern "C" void fn_800E2E24(void *self)
     nw4hbm::ut::detail::LinkListImpl::Iterator iterator;
     int offset = 0;
     int i = 0;
-    int flag = 0;
     do
     {
       if (((base + (offset & 0xFFu)) + 0x2C) == 0)
       {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
       }
-      if (flag == 0)
-      {
-        iterator.node = (nw4hbm::ut::detail::LinkListNode *) (base + 0x24);
-        ((nw4hbm::ut::detail::LinkListImpl *) (base + 0x20))->Insert(iterator, (nw4hbm::ut::detail::LinkListNode *) ((base + offset) + 0x1D4));
-      }
+      iterator.node = (nw4hbm::ut::detail::LinkListNode *) (base + 0x24);
+      ((nw4hbm::ut::detail::LinkListImpl *) (base + 0x20))->Insert(iterator, (nw4hbm::ut::detail::LinkListNode *) ((base + offset) + 0x1D4));
       i++;
       offset = offset + 0x1B0;
     }
@@ -818,32 +814,32 @@ extern "C" void fn_800E2F84(void *self)
 #pragma pop
 
 #pragma scheduling on
-extern "C" f32 fn_800E310C(void *arg0) {
-    register int a = *(int *)((char *)arg0 + 0x6C50);
-    register int b = *(int *)((char *)arg0 + 0x6C4C);
+extern "C" f32 fn_800E310C(const void *arg0) {
+    int b = *(int *)((const char *)arg0 + 0x6C4C);
+    int a = *(int *)((const char *)arg0 + 0x6C50);
     float x;
-    if (a >= b) x = *(float *)((char *)arg0 + 0x6C48);
-    else x = *(float *)((char *)arg0 + 0x6C44) +
-        (float)a * (*(float *)((char *)arg0 + 0x6C48) - *(float *)((char *)arg0 + 0x6C44)) / (float)b;
+    if (a >= b) x = *(float *)((const char *)arg0 + 0x6C48);
+    else x = *(float *)((const char *)arg0 + 0x6C44) +
+        (float)a * (*(float *)((const char *)arg0 + 0x6C48) - *(float *)((const char *)arg0 + 0x6C44)) / (float)b;
 
     int c;
     int d;
-    d = *(int *)((char *)arg0 + 0x6C5C);
-    c = *(int *)((char *)arg0 + 0x6C60);
+    d = *(int *)((const char *)arg0 + 0x6C5C);
+    c = *(int *)((const char *)arg0 + 0x6C60);
     float y;
-    if (c >= d) y = *(float *)((char *)arg0 + 0x6C58);
-    else y = *(float *)((char *)arg0 + 0x6C54) +
-        (float)c * (*(float *)((char *)arg0 + 0x6C58) - *(float *)((char *)arg0 + 0x6C54)) / (float)d;
+    if (c >= d) y = *(float *)((const char *)arg0 + 0x6C58);
+    else y = *(float *)((const char *)arg0 + 0x6C54) +
+        (float)c * (*(float *)((const char *)arg0 + 0x6C58) - *(float *)((const char *)arg0 + 0x6C54)) / (float)d;
     float result = x * y;
 
     int e;
     int f;
-    f = *(int *)((char *)arg0 + 0x6C3C);
-    e = *(int *)((char *)arg0 + 0x6C40);
+    f = *(int *)((const char *)arg0 + 0x6C3C);
+    e = *(int *)((const char *)arg0 + 0x6C40);
     float z;
-    if (e >= f) z = *(float *)((char *)arg0 + 0x6C38);
-    else z = *(float *)((char *)arg0 + 0x6C34) +
-        (float)e * (*(float *)((char *)arg0 + 0x6C38) - *(float *)((char *)arg0 + 0x6C34)) / (float)f;
+    if (e >= f) z = *(float *)((const char *)arg0 + 0x6C38);
+    else z = *(float *)((const char *)arg0 + 0x6C34) +
+        (float)e * (*(float *)((const char *)arg0 + 0x6C38) - *(float *)((const char *)arg0 + 0x6C34)) / (float)f;
     result *= z;
     return result;
 }
