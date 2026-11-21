@@ -16,7 +16,9 @@ s32 fn_802DB2A8(s32 slotCount) {
     return 0;
 }
 
-void fn_802DB2B0(void) {
+/* No-op stub marking the end of a list-building run; slotCount is the number of
+   slots finalized via fn_802DB2A8/fn_802DB2B0 in fn_802CDB5C. */
+void fn_802DB2B0(s32 slotCount) {
 }
 
 void fn_802DB2B4(void) {}
