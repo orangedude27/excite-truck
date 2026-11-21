@@ -863,9 +863,11 @@ done:
 #pragma dont_inline reset
 #pragma use_lmw_stmw reset
 #pragma small_data on
-float fn_801AF9EC(int arg0, float *arg1) {
-    if (arg1 != 0) *arg1 = *(float *)((char *)lbl_80435740 + 4 + (arg0 << 3));
-    return lbl_80435740[arg0 * 2];
+float fn_801AF9EC(int competitorId, float *spareOut) {
+    /* Read competitorId's {score, spare} pair from the static race block: return
+       its score and, when spareOut is non-null, store its spare value there. */
+    if (spareOut != 0) *spareOut = *(float *)((char *)lbl_80435740 + 4 + (competitorId << 3));
+    return lbl_80435740[competitorId * 2];
 }
 
 #pragma scheduling invalid_target
