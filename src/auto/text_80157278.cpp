@@ -1368,6 +1368,33 @@ extern "C" void fn_80158558(s32 listener) {
     s32 count = list[1]++;
     items[count] = listener;
 }
+static inline int DispatchList_Find1(u32 obj) {
+    UnkFD34 *l = (UnkFD34 *)lbl_8042FD34;
+    s32 *p = l->items;
+    int i = 0;
+    for (; i < l->count; i++) {
+        if ((u32)*p == obj) return i;
+        p++;
+    }
+    return -1;
+}
+
+static inline void DispatchList_RemoveAt1(int index) {
+    int last;
+    int c;
+    UnkFD34 *l;
+    if (index < 0) return;
+    l = (UnkFD34 *)lbl_8042FD34;
+    c = ((volatile UnkFD34 *)l)->count;
+    if (index >= c) return;
+    last = c - 1;
+    if (index != last) {
+        s32 *items = ((UnkFD34 *)lbl_8042FD34)->items;
+        items[index] = items[last];
+    }
+    ((UnkFD34 *)lbl_8042FD34)->count = ((UnkFD34 *)lbl_8042FD34)->count - 1;
+}
+
 extern "C" void fn_8015857C(u32 arg0) {
     UnkFD34* list = (UnkFD34*)lbl_8042FD34;
     s32 index;
