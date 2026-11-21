@@ -14,7 +14,6 @@ void fn_8000D7F4(void) {
 
 /* No-op startup hook, third of the run. */
 void fn_8000D7F8(void) {
-    return;
 }
 
 /* No-op startup hook, last of the run. */
