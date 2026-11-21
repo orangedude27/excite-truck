@@ -2,14 +2,17 @@
 // Recovered TU window 0x802E4C14..0x802E4D7C (see docs/attribution_analysis.md).
 // Static-init thunk fn_802E4D7C (+ .ctors slot 0x802ED600) remains in
 // auto/text_802E4D7C_.c pending a promotion pass.
-extern void *fn_801284F8(int, void *);
-extern int fn_8012850C(int, void *);
-extern void fn_802E30C8(const char *, ...);
-extern int lbl_8055D1C8;
-extern char lbl_8034D1D0[];
-extern char lbl_8034D204[];
-extern char lbl_8034D1F0[];
 // split_file divides it into the game's real files (file_status shows its range).
+
+extern void *fn_801284F8(int, void *);  /* named-heap allocation */
+extern int fn_8012850C(int, void *);    /* named-heap allocation of a byte buffer */
+extern void fn_80128668(void *);       /* free */
+extern void fn_80128670(int);          /* free a named-heap buffer */
+extern void fn_802E30C8(const char *, ...); /* debug/log print */
+extern int lbl_8055D1C8;               /* "vmem" heap tag */
+extern char lbl_8034D1D0[];            /* VirtualMemory vtable */
+extern char lbl_8034D204[];            /* "vmem_buf" backing-buffer heap tag */
+extern char lbl_8034D1F0[];            /* "VirtualMemory: %d K" */
 
 /* No-op stub: called with a flag at the start of the per-tick system/physics
    update (fn_80176CC8); the argument is ignored and the body does nothing. */
