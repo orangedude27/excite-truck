@@ -230,42 +230,41 @@ extern "C" void fn_8027E908(void) {
         virtual void v4();
         virtual void v5();
     };
-    const char *base = lbl_80347E50;
     const char *idName;
-    lbl_8055F680 = ((void *(*)(const char *))fn_80258354)(base);
-    ((InitObj *)lbl_8055F680)->v1(base+0x0, base+0x14, 4);
-    ((InitObj *)lbl_8055F680)->v1(base+0x24, base+0x14, 3);
-    ((InitObj *)lbl_8055F680)->v1(base+0x30, base+0x14, 1);
-    ((InitObj *)lbl_8055F680)->v1(base+0x3c, base+0x14, 2);
-    ((InitObj *)lbl_8055F680)->v1(base+0x48, base+0x14, 4);
+    lbl_8055F680 = ((void *(*)(const char *))fn_80258354)(lbl_80347E50);
+    ((InitObj *)lbl_8055F680)->v1(lbl_80347E50+0x0, lbl_80347E50+0x14, 4);
+    ((InitObj *)lbl_8055F680)->v1(lbl_80347E50+0x24, lbl_80347E50+0x14, 3);
+    ((InitObj *)lbl_8055F680)->v1(lbl_80347E50+0x30, lbl_80347E50+0x14, 1);
+    ((InitObj *)lbl_8055F680)->v1(lbl_80347E50+0x3c, lbl_80347E50+0x14, 2);
+    ((InitObj *)lbl_8055F680)->v1(lbl_80347E50+0x48, lbl_80347E50+0x14, 4);
     idName = fn_80007F90(0x180201);
-    ((InitObj *)lbl_8055F680)->v1(idName, base+0x58, 1);
+    ((InitObj *)lbl_8055F680)->v1(idName, lbl_80347E50+0x58, 1);
     idName = fn_80007F90(0x180302);
-    ((InitObj *)lbl_8055F680)->v1(idName, base+0x58, 2);
-    ((InitObj *)lbl_8055F680)->v1(base+0x68, base+0x58, 1);
-    ((InitObj *)lbl_8055F680)->v1(&lbl_8055C798, base+0x78, 0);
-    ((InitObj *)lbl_8055F680)->v1(&lbl_8055C7A0, base+0x78, 1);
-    ((InitObj *)lbl_8055F680)->v1(&lbl_8055C7A8, base+0x78, 2);
-    ((InitObj *)lbl_8055F680)->v1(base+0x88, base+0x78, 3);
-    ((InitObj *)lbl_8055F680)->v1(&lbl_8055C7B0, base+0x78, 4);
-    ((InitObj *)lbl_8055F680)->v1(base+0x94, base+0x78, 5);
-    ((InitObj *)lbl_8055F680)->v1(base+0xA0, base+0xB4, 1);
-    ((InitObj *)lbl_8055F680)->v1(base+0xC0, base+0xB4, 0);
-    ((InitObj *)lbl_8055F680)->v1(base+0xD0, base+0xE0, 0);
-    ((InitObj *)lbl_8055F680)->v1(base+0xF0, base+0xE0, 1);
-    ((InitObj *)lbl_8055F680)->v1(base+0x100, base+0x110, 0);
-    ((InitObj *)lbl_8055F680)->v1(base+0x120, base+0x110, 1);
-    ((InitObj *)lbl_8055F680)->v1(base+0x130, base+0x140, 6);
-    ((InitObj *)lbl_8055F680)->v2(&lbl_8055C7B8, base+0x14C);
-    ((InitObj *)lbl_8055F680)->v2(&lbl_8055C7C0, base+0x158);
-    ((InitObj *)lbl_8055F680)->v3(base+0x164, base+0x174, 1);
-    ((InitObj *)lbl_8055F680)->v3(base+0x180, base+0x190, 0);
-    ((InitObj *)lbl_8055F680)->v3(base+0x1A0, base+0x1AC, 0);
-    ((InitObj *)lbl_8055F680)->v3(base+0x1BC, base+0x1D0, 0);
-    ((InitObj *)lbl_8055F680)->v3(base+0x1E0, base+0x1D0, 0);
-    ((InitObj *)lbl_8055F680)->v3(base+0x1F8, base+0x204, 0);
-    ((InitObj *)lbl_8055F680)->v3(base+0x214, base+0x190, 0);
-    ((InitObj *)lbl_8055F680)->v3(base+0x228, base+0x238, 0);
+    ((InitObj *)lbl_8055F680)->v1(idName, lbl_80347E50+0x58, 2);
+    ((InitObj *)lbl_8055F680)->v1(lbl_80347E50+0x68, lbl_80347E50+0x58, 1);
+    ((InitObj *)lbl_8055F680)->v1(&lbl_8055C798, lbl_80347E50+0x78, 0);
+    ((InitObj *)lbl_8055F680)->v1(&lbl_8055C7A0, lbl_80347E50+0x78, 1);
+    ((InitObj *)lbl_8055F680)->v1(&lbl_8055C7A8, lbl_80347E50+0x78, 2);
+    ((InitObj *)lbl_8055F680)->v1(lbl_80347E50+0x88, lbl_80347E50+0x78, 3);
+    ((InitObj *)lbl_8055F680)->v1(&lbl_8055C7B0, lbl_80347E50+0x78, 4);
+    ((InitObj *)lbl_8055F680)->v1(lbl_80347E50+0x94, lbl_80347E50+0x78, 5);
+    ((InitObj *)lbl_8055F680)->v1(lbl_80347E50+0xA0, lbl_80347E50+0xB4, 1);
+    ((InitObj *)lbl_8055F680)->v1(lbl_80347E50+0xC0, lbl_80347E50+0xB4, 0);
+    ((InitObj *)lbl_8055F680)->v1(lbl_80347E50+0xD0, lbl_80347E50+0xE0, 0);
+    ((InitObj *)lbl_8055F680)->v1(lbl_80347E50+0xF0, lbl_80347E50+0xE0, 1);
+    ((InitObj *)lbl_8055F680)->v1(lbl_80347E50+0x100, lbl_80347E50+0x110, 0);
+    ((InitObj *)lbl_8055F680)->v1(lbl_80347E50+0x120, lbl_80347E50+0x110, 1);
+    ((InitObj *)lbl_8055F680)->v1(lbl_80347E50+0x130, lbl_80347E50+0x140, 6);
+    ((InitObj *)lbl_8055F680)->v2(&lbl_8055C7B8, lbl_80347E50+0x14C);
+    ((InitObj *)lbl_8055F680)->v2(&lbl_8055C7C0, lbl_80347E50+0x158);
+    ((InitObj *)lbl_8055F680)->v3(lbl_80347E50+0x164, lbl_80347E50+0x174, 1);
+    ((InitObj *)lbl_8055F680)->v3(lbl_80347E50+0x180, lbl_80347E50+0x190, 0);
+    ((InitObj *)lbl_8055F680)->v3(lbl_80347E50+0x1A0, lbl_80347E50+0x1AC, 0);
+    ((InitObj *)lbl_8055F680)->v3(lbl_80347E50+0x1BC, lbl_80347E50+0x1D0, 0);
+    ((InitObj *)lbl_8055F680)->v3(lbl_80347E50+0x1E0, lbl_80347E50+0x1D0, 0);
+    ((InitObj *)lbl_8055F680)->v3(lbl_80347E50+0x1F8, lbl_80347E50+0x204, 0);
+    ((InitObj *)lbl_8055F680)->v3(lbl_80347E50+0x214, lbl_80347E50+0x190, 0);
+    ((InitObj *)lbl_8055F680)->v3(lbl_80347E50+0x228, lbl_80347E50+0x238, 0);
 }
 #pragma scheduling reset
 #pragma cplusplus reset
@@ -1743,11 +1742,10 @@ copy_test:
     goto finish;
 clear:
     lbl_8055F688 = 0;
-reset:
     goto finish;
-    return 0;
-finish:
+reset:
     fn_80216D28();
+finish:
     return 0;
 }
 
