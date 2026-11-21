@@ -850,6 +850,8 @@ void fn_802AB21C(void) {
 
 #pragma scheduling on
 #pragma pop
+/* No-op element constructor passed to fn_8002F37C when building the array of 8
+ * per-object effect-state entries at lbl_8055F928 (0x108 bytes each). */
 void fn_802AB500(void) {}
 
 /* Shutdown: unregister callbacks, destroy owned objects/buffers, and reset handles. */
