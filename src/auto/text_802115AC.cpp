@@ -686,6 +686,10 @@ extern "C" void *fn_8021227C(void *arg0, char *arg1, s32 arg2) {
 // Default no-op callback used by the layout builder when a node has no handler: returns 0.
 extern "C" s32 fn_80212338(void) { return 0; }
 
+#define releaseHandle  fn_8022E4BC
+#define destroyLayout  fn_8022E960
+#define isDollarTagged fn_80211678
+
 #pragma dont_inline on
 extern "C" void fn_80212340(void *__restrict arg0) {
     s32 first = *(s32 *)((char *)arg0 + 0x10);
@@ -2559,9 +2563,10 @@ extern "C" void fn_80215500(void) {
 
 #pragma scheduling off
 extern "C" void fn_80215504(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
-    f32 rate = 1.0f;
-    fn_8022BAD0(*(s32 *)((u8 *)arg0 + 8), arg1, arg2, 0, arg4, arg5,
-                *(s32 *)((u8 *)arg0 + 4), arg6, 0, rate);
+    f32 rate = lbl_80563450;
+    ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, s32, f32))fn_8022BAD0)(
+        *(s32 *)((u8 *)arg0 + 8), arg1, arg2, 0, arg4, arg5,
+        *(s32 *)((u8 *)arg0 + 4), arg6, 0, rate);
 }
 #pragma scheduling on
 extern "C" void fn_80215544(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
