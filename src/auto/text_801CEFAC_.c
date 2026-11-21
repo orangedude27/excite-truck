@@ -9,23 +9,23 @@ extern char lbl_8055E8A1;
 #define sReplayAuxFlag   lbl_8055E8A1 /* secondary flag raised on entering replay */
 extern void fn_801AED68(void);
 extern void fn_801AED5C(void);
-/* Enter replay mode: turn on lbl_8055AB50 and lbl_8055E8A1 while clearing the
- * in-playback flag lbl_8055E8A0. */
+/* Enter replay mode: raise the replay and auxiliary flags while clearing the
+ * in-playback flag. */
 void fn_801CEFAC(void) {
-    lbl_8055AB50 = 1;
-    lbl_8055E8A0 = 0;
-    lbl_8055E8A1 = 1;
+    sReplayMode = 1;
+    sReplayPlayback = 0;
+    sReplayAuxFlag = 1;
 }
 
-/* Leave replay mode: clear the replay-mode flag and the in-playback flag. */
+/* Leave replay mode: clear the replay-mode and in-playback flags. */
 void fn_801CEFC4(void) {
-    lbl_8055AB50 = 0;
-    lbl_8055E8A0 = 0;
+    sReplayMode = 0;
+    sReplayPlayback = 0;
 }
 
 /* Set the replay-mode flag and enable or disable its associated subsystem. */
 void fn_801CEFD4(int enabled) {
-    lbl_8055AB50 = enabled;
+    sReplayMode = enabled;
     if (enabled) {
         fn_801AED68();
     } else {
