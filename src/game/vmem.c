@@ -16,6 +16,8 @@ extern char lbl_8034D1F0[];
 void fn_802E4C14(void) {
 }
 
+/* No-op vmem hook: called with a flag at frame end (fn_802C2B48) and tick start
+ * (fn_80176CC8); the argument is ignored and the body does nothing. */
 void fn_802E4C18(void) {
 }
 
