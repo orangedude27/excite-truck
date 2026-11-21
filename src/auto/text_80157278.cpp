@@ -3586,31 +3586,29 @@ extern "C" s32 fn_8015CE48(void) {
 
 extern "C" s32 fn_80009C84(void);
 extern "C" void fn_80206750(void*, s32, s32);
-extern "C" void fn_8015CF00(Unk801577F0* player) {
-    /* Clear every 0x38-byte score record and the associated counters on this
-     * bonus tracker, refresh it via v31, flag its linked object, then reconfigure
-     * that object with a mode picked from fn_80009C84(). */
+extern "C" void fn_8015CF00(Unk801577F0* arg0) {
+    /* Clear every 0x38-byte score record and the counters on this bonus tracker, refresh it via v31, flag its linked object, then reconfigure it with a mode from fn_80009C84(). */
     f32 entryValue = 0.0f;
     s32 entryIndex = 0;
     s32 entryOffset = 0;
     s32 zeroWord = 0;
-    for (; entryIndex < player->mCount; entryIndex++) {
-        *(s32*)(player->mData + entryOffset) = zeroWord;
-        *(s32*)(player->mData + entryOffset + 4) = zeroWord;
-        *(s32*)(player->mData + entryOffset + 8) = zeroWord;
-        *(f32*)(player->mData + entryOffset + 0xC) = entryValue;
+    for (; entryIndex < arg0->mCount; entryIndex++) {
+        *(s32*)(arg0->mData + entryOffset) = zeroWord;
+        *(s32*)(arg0->mData + entryOffset + 4) = zeroWord;
+        *(s32*)(arg0->mData + entryOffset + 8) = zeroWord;
+        *(f32*)(arg0->mData + entryOffset + 0xC) = entryValue;
         entryOffset += 0x38;
     }
     f32 resetValue = 0.0f;
     entryValue = 1.0f;
-    player->m264 = 0;
-    player->m260 = 0;
-    player->m254 = resetValue;
-    player->m25c = entryValue;
-    player->v31();
-    void* target = *(void**)((u8*)player + 0x278);
-    player->m26c = 0;
-    *(s32*)((u8*)player + 0x270) = 0;
+    arg0->m264 = 0;
+    arg0->m260 = 0;
+    arg0->m254 = resetValue;
+    arg0->m25c = entryValue;
+    arg0->v31();
+    void* target = *(void**)((u8*)arg0 + 0x278);
+    arg0->m26c = 0;
+    *(s32*)((u8*)arg0 + 0x270) = 0;
     if (target != 0) {
         *(u8*)((u8*)target + 0x4A) = 1;
         *(u8*)((u8*)target + 0x4C) = 0;
@@ -3618,8 +3616,8 @@ extern "C" void fn_8015CF00(Unk801577F0* player) {
     s32 result = fn_80009C84();
     s32 mode = 2;
     if (result != 0) mode = 0;
-    if (*(void**)((u8*)player + 0x278) != 0)
-        fn_80206750(*(void**)((u8*)player + 0x278), *(s32*)((u8*)player + 0x274), mode);
+    if (*(void**)((u8*)arg0 + 0x278) != 0)
+        fn_80206750(*(void**)((u8*)arg0 + 0x278), *(s32*)((u8*)arg0 + 0x274), mode);
 }
 
 // The dash bonus tracker.  Like the other bonus trackers it owns a table of
