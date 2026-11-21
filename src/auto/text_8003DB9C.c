@@ -1484,61 +1484,78 @@ void __GXFifoInit(void) {
     #undef GxFifoBreakThread
 }
 
+/* RVL SDK GXFifo.c __GXCleanGPFifo(): reclaim the GP write FIFO after the GP
+ * has drained it.  With interrupts disabled, reprogram the CP read pointers
+ * from the GP FIFO object, sync, and when the CPU/GP FIFOs are linked copy its
+ * pointers into the CPU FIFO and re-aim the PI write pointer.  Finally clear
+ * the breakpoint address and mark the GP FIFO ready for reuse. */
 void __GXCleanGPFifo(void) {
+    #define GpFifoReady   lbl_8055D949                 /* __FifoIdle: GP FIFO drained */
+    #define GpFifo        lbl_8037C0C0                 /* __Fifo1: GX write FIFO object */
+    #define CpuFifo       lbl_8037C0E4                 /* __Fifo: CPU read FIFO object */
+    #define FifoLinked    lbl_8055D960                 /* CPU/GP FIFOs share a buffer */
+    #define GXBreakPtAddr lbl_8055D950                 /* saved GX breakpoint address */
+
     int zero;
-    unsigned int *fifo;
-    unsigned int *gd;
+    unsigned int *gpFifo;
+    unsigned int *gxData;
     int intStatus;
     unsigned int tmp;
     unsigned int maskResult;
-    unsigned int *gx4;
-    if ((unsigned char)lbl_8055D949 == 0) {
+    unsigned int *gxDataReload;
+    if ((unsigned char)GpFifoReady == 0) {
         return;
     }
     intStatus = OSDisableInterrupts();
     zero = 0;
-    gd = __GXData;
-    fifo = (unsigned int *)lbl_8037C0C0;
-    gd[2] &= ~1u;
-    __cpReg[1] = (unsigned short)gd[2];
-    gd[2] &= 0xFFFFFFF3u;
-    __cpReg[1] = (unsigned short)gd[2];
-    fifo[7] = zero;
-    fifo[5] = fifo[6];
+    gxData = __GXData;
+    gpFifo = (unsigned int *)GpFifo;
+    gxData[2] &= ~1u;
+    __cpReg[1] = (unsigned short)gxData[2];
+    gxData[2] &= 0xFFFFFFF3u;
+    __cpReg[1] = (unsigned short)gxData[2];
+    gpFifo[7] = zero;
+    gpFifo[5] = gpFifo[6];
     __cpReg[0x30 / 2] = (unsigned short)zero;
-    __cpReg[0x34 / 2] = (unsigned short)fifo[6];
-    __cpReg[0x38 / 2] = (unsigned short)fifo[5];
-    __cpReg[0x32 / 2] = (unsigned short)((int)fifo[7] >> 16);
-    __cpReg[0x36 / 2] = (unsigned short)((fifo[6] >> 16) & 0x3FFF);
-    __cpReg[0x3A / 2] = (unsigned short)((fifo[5] >> 16) & 0x3FFF);
+    __cpReg[0x34 / 2] = (unsigned short)gpFifo[6];
+    __cpReg[0x38 / 2] = (unsigned short)gpFifo[5];
+    __cpReg[0x32 / 2] = (unsigned short)((int)gpFifo[7] >> 16);
+    __cpReg[0x36 / 2] = (unsigned short)((gpFifo[6] >> 16) & 0x3FFF);
+    __cpReg[0x3A / 2] = (unsigned short)((gpFifo[5] >> 16) & 0x3FFF);
     PPCSync();
-    if ((unsigned char)lbl_8055D960 != 0) {
-        unsigned int *piFifo = (unsigned int *)lbl_8037C0E4;
-        piFifo[5] = fifo[5];
-        piFifo[6] = fifo[6];
-        piFifo[7] = fifo[7];
-        zero = __rlwimi(zero, fifo[6], 0, 3, 26);
+    if ((unsigned char)FifoLinked != 0) {
+        unsigned int *cpuFifo = (unsigned int *)CpuFifo;
+        cpuFifo[5] = gpFifo[5];
+        cpuFifo[6] = gpFifo[6];
+        cpuFifo[7] = gpFifo[7];
+        zero = __rlwimi(zero, gpFifo[6], 0, 3, 26);
         __piReg[5] = zero;
-        tmp = (gd[2] | 4u) & 0xFFFFFFF7u;
-        gd[2] = tmp;
+        tmp = (gxData[2] | 4u) & 0xFFFFFFF7u;
+        gxData[2] = tmp;
         __cpReg[1] = (unsigned short)tmp;
-        tmp = gd[2] | 0x10u;
-        gd[2] = tmp;
+        tmp = gxData[2] | 0x10u;
+        gxData[2] = tmp;
         __cpReg[1] = (unsigned short)tmp;
     }
-    tmp = gd[2] & ~2u;
+    tmp = gxData[2] & ~2u;
     maskResult = tmp & ~0x20u;
-    gd[2] = maskResult;
+    gxData[2] = maskResult;
     __cpReg[1] = (unsigned short)maskResult;
-    lbl_8055D950 = 0;
-    gx4 = *(unsigned int * volatile *)&__GXData;
-    tmp = gx4[4] | 3u;
-    gx4[4] = tmp;
+    GXBreakPtAddr = 0;
+    gxDataReload = *(unsigned int * volatile *)&__GXData;
+    tmp = gxDataReload[4] | 3u;
+    gxDataReload[4] = tmp;
     __cpReg[2] = (unsigned short)tmp;
-    tmp = gd[2] | 1u;
-    gd[2] = tmp;
+    tmp = gxData[2] | 1u;
+    gxData[2] = tmp;
     __cpReg[1] = (unsigned short)tmp;
     ((void (*)(int))OSRestoreInterrupts)(intStatus);
+
+    #undef GpFifoReady
+    #undef GpFifo
+    #undef CpuFifo
+    #undef FifoLinked
+    #undef GXBreakPtAddr
 }
 
 extern void *lbl_8055D94C;
@@ -4843,42 +4860,40 @@ void *GXSetTlutRegionCallback(void *callback) {
     return old;
 }
 
-void __SetSURegs(s32 arg0, s32 arg1) {
-    unsigned int *su;
-    unsigned int *tex;
+void __SetSURegs(u32 arg0, u32 arg1) {
     unsigned int *data;
     unsigned int value;
     unsigned int v1;
     unsigned int v2;
     unsigned int su1;
     unsigned int su2;
-    unsigned int mode;
+    u8 s_bias;
+    u8 t_bias;
     union { unsigned int v; struct { unsigned int lo : 16; unsigned int hi : 16; } f; } u;
     data = __GXData;
-    tex = data + arg0;
-    su = data + arg1;
-    value = tex[0x564 / 4];
+    value = (data + 0x564 / 4)[arg0];
     v1 = value & 0x3FF;
     v2 = (value >> 10) & 0x3FF;
-    su1 = su[0x108 / 4];
+    su1 = (data + 0x108 / 4)[arg1];
     u.v = su1;
     u.f.hi = v1;
     su1 = u.v;
-    su[0x108 / 4] = su1;
-    su2 = su[0x128 / 4];
+    (data + 0x108 / 4)[arg1] = su1;
+    su2 = (data + 0x128 / 4)[arg1];
     u.v = su2;
     u.f.hi = v2;
     su2 = u.v;
-    su[0x128 / 4] = su2;
-    mode = tex[0x584 / 4];
-    su1 = __rlwimi(su1, __cntlzw((mode & 3) - 1), 11, 15, 15);
-    su[0x108 / 4] = su1;
-    su2 = __rlwimi(su2, __cntlzw(((mode >> 2) & 3) - 1), 11, 15, 15);
-    su[0x128 / 4] = su2;
+    (data + 0x128 / 4)[arg1] = su2;
+    s_bias = ((data + 0x584 / 4)[arg0] & 3) == 1;
+    t_bias = (((data + 0x584 / 4)[arg0] >> 2) & 3) == 1;
+    su1 = __rlwimi(su1, s_bias, 16, 15, 15);
+    (data + 0x108 / 4)[arg1] = su1;
+    su2 = __rlwimi(su2, t_bias, 16, 15, 15);
+    (data + 0x128 / 4)[arg1] = su2;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = su[0x108 / 4];
+    *(volatile unsigned int *)0xCC008000 = (data + 0x108 / 4)[arg1];
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = su[0x128 / 4];
+    *(volatile unsigned int *)0xCC008000 = (data + 0x128 / 4)[arg1];
     *((unsigned short *)((char *)data + 2)) = 0;
 }
 
@@ -5613,12 +5628,11 @@ void GXSetZTexture(s32 op, s32 format, s32 bias) {
 
 extern unsigned int lbl_80303C80[];
 void GXSetTevOrder(int stage, int texCoord, int texMap, int color) {
-    extern unsigned int lbl_80303C80[];
     unsigned int map = (unsigned int)texMap & ~0x100u;
     unsigned int *data = __GXData;
     int stageAdj = stage + ((unsigned int)stage >> 31);
     unsigned int *bp = (unsigned int *)((char *)data + 0x150 + ((stageAdj << 1) & ~3));
-    unsigned int *stageData = data + stage;
+    unsigned int *stageData = (unsigned int *)((char *)data + ((unsigned int)stage << 2));
     unsigned int mapSel = (map >= 8) ? 0 : map;
     int colorSel;
     int texEnable;
