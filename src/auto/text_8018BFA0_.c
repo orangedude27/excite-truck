@@ -265,13 +265,15 @@ static inline void matVecDotL_8018(Vec_8018 *dest, const float *m, const float *
 
 static inline void matVecDotT_8018(Vec_8018 *dest, const float *m, const float *v) {
     if ((float *)dest == v) {
-        Vec_8018 t;
-        t.x = dot_8018(v[0], m[0], v[1], m[3], v[2], m[6]);
-        t.y = dot_8018(v[0], m[1], v[1], m[4], v[2], m[7]);
-        t.z = dot_8018(v[0], m[2], v[1], m[5], v[2], m[8]);
-        dest->x = t.x;
-        dest->y = t.y;
-        dest->z = t.z;
+        float tz;
+        float ty;
+        float tx;
+        tx = dot_8018(v[0], m[0], v[1], m[3], v[2], m[6]);
+        ty = dot_8018(v[0], m[1], v[1], m[4], v[2], m[7]);
+        tz = dot_8018(v[0], m[2], v[1], m[5], v[2], m[8]);
+        dest->x = tx;
+        dest->y = ty;
+        dest->z = tz;
     } else {
         dest->x = dot_8018(v[0], m[0], v[1], m[3], v[2], m[6]);
         dest->y = dot_8018(v[0], m[1], v[1], m[4], v[2], m[7]);
