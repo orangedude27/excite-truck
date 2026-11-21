@@ -26452,12 +26452,14 @@ extern "C" void fn_800A53E8(void *volume) { *(u16 *)((u8 *)volume + 0x1F8C) = (u
 #pragma push
 #pragma dont_inline on
 extern "C" s32 fn_800A53F8(void *arg0) {
-    void *local1 = (void *)fn_800A52DC;
-    void *local2 = (void *)fn_800A535C;
+    void *cbs[2];
     s32 result;
     s32 value;
 
-    if (fn_800A7688(*(void **)((u8 *)arg0 + 0x1FBC), &local2, (void **)local1) != 0)
+    cbs[0] = (void *)fn_800A535C;
+    cbs[1] = (void *)fn_800A52DC;
+
+    if (((s32 (*)(void *, void **))fn_800A7688)(*(void **)((u8 *)arg0 + 0x1FBC), cbs) != 0)
         return -1;
 
     result = fn_800A7214(*(void **)((u8 *)arg0 + 0x1FBC));
