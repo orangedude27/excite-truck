@@ -1068,6 +1068,8 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802BDCFC(long self, long shouldDe
     return self;
 }
 
+/* Forward to the instanced debug-entry drawer (drawDebugEntries / fn_802BD814),
+ * used here to draw pending entries during a scene transition. */
 void fn_802BDD54(void) {
     fn_802BD814();
 }
