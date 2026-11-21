@@ -146,7 +146,7 @@ s32 fn_80134424(LoadPool *pool, s32 path, s32 dataTag, s32 outSize, s32 callback
     if (activeCount >= 3) return -1;
 
     for (slot = 0; slot < p.pool->count; slot++) {
-        entry = (Entry *)((char *)p.pool->entries + slot * 0x18);
+        entry = (LoadPoolEntry *)((char *)p.pool->entries + slot * 0x18);
         if (entry->state == 0) {
             entry->state = 1;
             entry->obj = (void *)fn_8012C5B8(p.path, dataTag, outSize);
