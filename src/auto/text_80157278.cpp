@@ -1769,8 +1769,8 @@ extern "C" void fn_80158E88(void* self, void* context) {
 }
 
 #pragma dont_inline on
-void fn_80158F34(void** arg0) {
-
+void fn_80158F34(void** contextPtr) {
+    /* Default empty per-frame pre-hook: leaves the caller's context pointer untouched. */
 }
 
 /* Set the record player's enable flags: mode 1 sets flag 0x270, mode 0 sets flag 0x271. */
@@ -4391,12 +4391,15 @@ extern "C" void fn_8015E5F4(ArrayTracker* group, s32 value) {
 #pragma use_lmw_stmw off
 extern "C" void fn_8015E674(void *arg0, int arg1) {
  struct A { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void call(int); };
- int offset=0, i=0; void **array; void *state,*obj;
- while (i<*(int *)((char *)arg0+8)) {
-  array=*(void ***)((char *)arg0+4);
-  ((A *)array[offset/4])->call(arg1);
-  offset+=4; i++;
- }
+ void **array; void *state,*obj;
+ int i=0, offset=0;
+ goto check;
+loop:
+ array=*(void ***)((char *)arg0+4);
+ ((A *)array[offset/4])->call(arg1);
+ offset+=4; i++;
+check:
+ if(i<*(int *)((char *)arg0+8)) goto loop;
  state=*(void **)((char *)arg0+0x50); obj=*(void **)state;
  if(!obj) goto done;
  if(*(int *)((char *)state+8)==0) {
