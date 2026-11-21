@@ -40,35 +40,37 @@ int memcmp(const unsigned char *arg0, const unsigned char *arg1, unsigned int ar
 }
 
 void __copy_longs_aligned(unsigned char *dst, const unsigned char *src, unsigned int n) {
-    unsigned int *dw;
-    unsigned int align = (-(unsigned int)dst) & 3;
-    unsigned int blocks, words;
-    const unsigned int *sw;
+    /* Copy n bytes forward: align dst to a word boundary byte-by-byte, then copy
+       32-byte blocks (8 words at a time), leftover words, and the final byte tail. */
+    unsigned int *dstWord;
+    unsigned int alignBytes = (-(unsigned int)dst) & 3;
+    unsigned int blockCount, wordCount;
+    const unsigned int *srcWord;
     unsigned char *tailDst;
     const unsigned char *tailSrc;
     src--;
     dst--;
-    if (align) {
-        n -= align;
-        do { *++dst = *++src; } while (--align);
+    if (alignBytes) {
+        n -= alignBytes;
+        do { *++dst = *++src; } while (--alignBytes);
     }
-    blocks = n >> 5; src -= 3; dst -= 3;
-    sw = (const unsigned int *)src;
-    dw = (unsigned int *)dst;
-    if (blocks) {
+    blockCount = n >> 5; src -= 3; dst -= 3;
+    srcWord = (const unsigned int *)src;
+    dstWord = (unsigned int *)dst;
+    if (blockCount) {
         do {
-            dw[1]=sw[1]; dw[2]=sw[2]; dw[3]=sw[3]; dw[4]=sw[4];
-            dw[5]=sw[5]; dw[6]=sw[6]; dw[7]=sw[7]; dw[8]=sw[8];
-            sw += 8; dw += 8;
-        } while (--blocks);
+            dstWord[1]=srcWord[1]; dstWord[2]=srcWord[2]; dstWord[3]=srcWord[3]; dstWord[4]=srcWord[4];
+            dstWord[5]=srcWord[5]; dstWord[6]=srcWord[6]; dstWord[7]=srcWord[7]; dstWord[8]=srcWord[8];
+            srcWord += 8; dstWord += 8;
+        } while (--blockCount);
     }
-    words = (n >> 2) & 7;
-    if (words) {
-        do { dw[1] = sw[1]; sw++; dw++; } while (--words);
+    wordCount = (n >> 2) & 7;
+    if (wordCount) {
+        do { dstWord[1] = srcWord[1]; srcWord++; dstWord++; } while (--wordCount);
     }
     n &= 3;
-    tailSrc = (const unsigned char *)sw + 3;
-    tailDst = (unsigned char *)dw + 3;
+    tailSrc = (const unsigned char *)srcWord + 3;
+    tailDst = (unsigned char *)dstWord + 3;
     if (n) do { *++tailDst = *++tailSrc; } while (--n);
 }
 
