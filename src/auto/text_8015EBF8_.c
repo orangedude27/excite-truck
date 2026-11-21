@@ -359,43 +359,45 @@ extern f32 lbl_805617D4, lbl_805617D8, lbl_805617DC, lbl_805617E0;
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma processor 750
-void fn_8015F1E4(void *arg0, void * __restrict arg1)
+void fn_8015F1E4(void *out, void * __restrict candidate)
 {
-  f32 base = *(const f32 *)((const char *)arg1 + 0x24);
-  void *state = *(void **)((char *)arg1 + 0xC);
-  f32 x = *(f32 *)((char *)state + 0x18);
-  f32 z = *(f32 *)((char *)state + 0x20);
-  f32 result[5];
+  /* Fills a 0x10-byte parameter entry: a speed-derived angle at +0xC, a velocity-extrapolated
+   * X/Z position at +4/+8, and a value type of 0 at +2. */
+  f32 baseAngle = *(const f32 *)((const char *)candidate + 0x24);
+  void *motion = *(void **)((char *)candidate + 0xC);
+  f32 velX = *(f32 *)((char *)motion + 0x18);
+  f32 velZ = *(f32 *)((char *)motion + 0x20);
+  f32 predicted[5];
   f32 speed;
-  f32 tmp;
+  f32 scaledSpeed;
   f32 angle;
-  result[0] = x;
-  result[1] = z;
-  speed = (f32) ((double (*)(f32)) fn_8002F234)((x * x) + (z * z));
-  tmp = 3.05f * speed;
-  angle = base + (0.5f * tmp);
-  *((f32 *) (((char *) arg0) + 0xC)) = angle;
+  predicted[0] = velX;
+  predicted[1] = velZ;
+  speed = (f32) ((double (*)(f32)) fn_8002F234)((velX * velX) + (velZ * velZ));
+  scaledSpeed = 3.05f * speed;
+  angle = baseAngle + (0.5f * scaledSpeed);
+  *((f32 *) (((char *) out) + 0xC)) = angle;
   {
-    void *s2 = *(void **)((char *)arg1 + 0xC);
-    f32 y = *((f32 *) (((char *) s2) + 0x1C));
-    if (y < 0.0f)
+    void *motion2 = *(void **)((char *)candidate + 0xC);
+    f32 velY = *((f32 *) (((char *) motion2) + 0x1C));
+    if (velY < 0.0f)
     {
-      f32 delta = (*((f32 *) (((char *) arg1) + 0x28))) - lbl_805617E0;
-      result[2] = (*((f32 *) (((char *) s2) + 0x24))) + ((*((f32 *) (((char *) s2) + 0x18))) * delta);
-      result[3] = (*((f32 *) (((char *) s2) + 0x28))) + ((*((f32 *) (((char *) s2) + 0x1C))) * delta);
-      result[4] = (*((f32 *) (((char *) s2) + 0x2C))) + ((*((f32 *) (((char *) s2) + 0x20))) * delta);
+      f32 timeDelta = (*((f32 *) (((char *) candidate) + 0x28))) - lbl_805617E0;
+      predicted[2] = (*((f32 *) (((char *) motion2) + 0x24))) + ((*((f32 *) (((char *) motion2) + 0x18))) * timeDelta);
+      predicted[3] = (*((f32 *) (((char *) motion2) + 0x28))) + ((*((f32 *) (((char *) motion2) + 0x1C))) * timeDelta);
+      predicted[4] = (*((f32 *) (((char *) motion2) + 0x2C))) + ((*((f32 *) (((char *) motion2) + 0x20))) * timeDelta);
     }
     else
     {
-      f32 delta = -((*((f32 *) (((char *) arg1) + 0x28))) - lbl_805617E0);
-      result[2] = (*((f32 *) (((char *) s2) + 0x24))) + ((*((f32 *) (((char *) s2) + 0x18))) * delta);
-      result[3] = (*((f32 *) (((char *) s2) + 0x28))) + ((*((f32 *) (((char *) s2) + 0x1C))) * delta);
-      result[4] = (*((f32 *) (((char *) s2) + 0x2C))) + ((*((f32 *) (((char *) s2) + 0x20))) * delta);
+      f32 timeDelta = -((*((f32 *) (((char *) candidate) + 0x28))) - lbl_805617E0);
+      predicted[2] = (*((f32 *) (((char *) motion2) + 0x24))) + ((*((f32 *) (((char *) motion2) + 0x18))) * timeDelta);
+      predicted[3] = (*((f32 *) (((char *) motion2) + 0x28))) + ((*((f32 *) (((char *) motion2) + 0x1C))) * timeDelta);
+      predicted[4] = (*((f32 *) (((char *) motion2) + 0x2C))) + ((*((f32 *) (((char *) motion2) + 0x20))) * timeDelta);
     }
   }
-  *((f32 *) (((char *) arg0) + 4)) = result[2];
-  *((f32 *) (((char *) arg0) + 8)) = result[4];
-  *((u16 *) (((char *) arg0) + 2)) = 0;
+  *((f32 *) (((char *) out) + 4)) = predicted[2];
+  *((f32 *) (((char *) out) + 8)) = predicted[4];
+  *((u16 *) (((char *) out) + 2)) = 0;
 }
 void fn_8015F1E4();
 extern f64 fn_8002F234(f32, f32, f32);
