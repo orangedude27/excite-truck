@@ -123,7 +123,7 @@ extern "C" s32 fn_800A7C20(void *, void **, u32, void **, s32 *);
 extern "C" s32 fn_800A586C(void *, s32, s32, s32, s32);
 extern "C" s32 fn_800A7B34(void *, void *);
 extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
- register u32 attr;
+ register u8 attr;
  register u8 *it=(u8 *)iterator;
  u8 flags=it[0x57];
  u8 name[16], buf[13];
@@ -155,7 +155,7 @@ extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32
  d3=(u8 *)object+0x224;
  d4=(u8 *)object+0x226;
  attr=it[0x57];
- ((u8 *)object)[0x21c]=(u8)attr;
+ ((u8 *)object)[0x21c]=attr;
  if (attr & 0x10) attr = 0x10; else attr = 0;
  ((u8 *)object)[0x21b]=it[0x58]; ((u8 *)object)[0x21d]=it[0x59];
  __sthbrx(*(u16 *)(it+0x5a),d0,0);
@@ -1851,20 +1851,20 @@ extern "C" s32 fn_800A6FC4(void *arg0, s32 arg1, u32 arg2) {
     fn_800A6298(*(void **)((u8 *)arg0 + 4), &value);
     if (arg2 == value)
         return arg1 + M2C_FIELD(arg0, u32 *, 0xC);
-    u32 shift = (value >> 9) & 0x7F;
+    u32 shiftUp = (value >> 9) & 0x7F;
     u32 result = M2C_FIELD(arg0, u32 *, 0xC);
-    if (shift == 2)
+    if (shiftUp == 2)
         result <<= 1;
-    else if (shift == 4)
+    else if (shiftUp == 4)
         result <<= 2;
-    else if (shift == 8)
+    else if (shiftUp == 8)
         result <<= 3;
-    shift = (arg2 >> 9) & 0x7F;
-    if (shift == 2)
+    u32 shiftDown = (arg2 >> 9) & 0x7F;
+    if (shiftDown == 2)
         result >>= 1;
-    else if (shift == 4)
+    else if (shiftDown == 4)
         result >>= 2;
-    else if (shift == 8)
+    else if (shiftDown == 8)
         result >>= 3;
     return arg1 + result;
 }
@@ -20242,8 +20242,10 @@ check:
 
 #pragma push
 #pragma small_data on
-void homebutton::gui::PaneManager::setAllBoundingBoxComponentTriggerTarget(bool arg0) {
-    void *item;
+void homebutton::gui::PaneManager::setAllBoundingBoxComponentTriggerTarget(bool triggerTarget) {
+    /* For each pane in the manager's list, find the component whose class chain
+     * contains the bounding-box component type and set its trigger-target flag. */
+    void *listItem;
     void *component;
     const void *typeId;
     u32 index;
@@ -20260,25 +20262,25 @@ void homebutton::gui::PaneManager::setAllBoundingBoxComponentTriggerTarget(bool 
     goto loop_check;
 loop_body:
     {
-        item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(self + 0x18, (u16)index);
-        component = *(void **)item;
+        listItem = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(self + 0x18, (u16)index);
+        component = *(void **)listItem;
         typeId = &lbl_8055DDE0;
-        void *node = ((ParentDispatch *)component)->parent();
+        void *classNode = ((ParentDispatch *)component)->parent();
         u32 found;
         goto node_check;
 node_compare:
-        if (node != typeId) goto node_parent;
+        if (classNode != typeId) goto node_parent;
         found = 1;
         goto type_done;
 node_parent:
-        node = *(void **)node;
+        classNode = *(void **)classNode;
 node_check:
-        if (node != 0) goto node_compare;
+        if (classNode != 0) goto node_compare;
         found = 0;
 type_done:
         component = found ? component : 0;
         if (component != 0) {
-            ((TriggerDispatch *)*(void **)((u8 *)item + 4))->setTarget(arg0);
+            ((TriggerDispatch *)*(void **)((u8 *)listItem + 4))->setTarget(triggerTarget);
         }
     }
     ++index;
