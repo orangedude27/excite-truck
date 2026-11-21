@@ -18,6 +18,5 @@ void fn_8000D7F8(void) {
 
 /* No-op startup hook, last of the run. */
 void fn_8000D7FC(void) {
-    return;
 }
 
