@@ -122,6 +122,8 @@ s32 fn_802E7730(void) {
     return 1;
 }
 
+/* Empty stub: vtable slot +0x10 of the "null" stream-bank manager, a do-nothing
+   fallback with no bank behind it (see fn_802E7730). */
 void fn_802E7738(void) {
 }
 
