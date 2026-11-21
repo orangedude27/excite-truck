@@ -18,6 +18,9 @@ int fn_802CAC28(int, int);
 void fn_802B52C0(void *);
 int fn_802CA294(void *, int, int, int, void *);
 int fn_802D9628(short, short, unsigned int);
+/* No-op constructor for each 0x48-byte TreeHitRecord in the hit ring
+ * (lbl_804C0E10): fn_8002F53C calls it once per element while fn_802C1BB4
+ * builds the array, but the records need no per-element setup. */
 void fn_802C1C28(void) {}
 
 /* Intentionally empty no-op; one of a run of placeholder entry points kept in the table. */
