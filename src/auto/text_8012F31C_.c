@@ -57,12 +57,13 @@ void fn_8012F3CC(MemStream *stream) {
     MemStreamPtr *cursor = fn_801284F8(8, lbl_8032AFC4);
     if (cursor != 0) { cursor->stream = stream; cursor->pos = 0; }
 }
-void fn_8012F418(s32 *obj) {
-    /* Release an 8-byte tracked heap object (the physics heap block): clear its first word,
-       stamp the second with the 0x2bad2bad freed-memory poison, then free the block. */
-    if (obj == 0) return;
-    obj[0] = 0;
-    obj[1] = 0x2bad2bad;
+/* MemStreamPtr_Destroy: release a cursor block -- clear its stream pointer,
+   stamp the position word with the 0x2bad2bad freed-memory poison, then free
+   the block. */
+void fn_8012F418(MemStreamPtr *cursor) {
+    if (cursor == 0) return;
+    cursor->stream = 0;
+    cursor->pos = 0x2bad2bad;
     fn_80128668();
 }
 
