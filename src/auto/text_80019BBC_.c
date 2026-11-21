@@ -326,14 +326,18 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
         u8 vertices[0x1F8];
         u8 tail[0x1A8];
     } __attribute__((aligned(16))) frame;
-    s32 resource;
+    struct {
+        s32 *data;
+        s32 resource;
+        void *obj;
+        void *global;
+        s32 objKey;
+    } s;
     s32 index;
     s32 offset;
-    s32 *data;
     volatile u32 *destination;
     volatile u32 *destination2;
     volatile u32 *source;
-    void *global;
     void *record;
     void *part;
     f32 angle;
@@ -351,13 +355,14 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
     f32 actorY;
     s32 flag;
     s32 color;
-    register u32 *ring;
+    u32 *ring;
     f32 u, w, z, sx, sy, sz, px, py, pz;
 
     if (obj == 0) return;
-    resource = fn_801E866C(*(s32 *)((u8 *)obj + 0x44));
-    global = lbl_8055D5B4;
-    source = (u32 *)fn_801E8718(*(s32 *)((u8 *)obj + 0x44));
+    s.objKey = *(s32 *)((u8 *)obj + 0x44);
+    s.resource = fn_801E866C(s.objKey);
+    s.global = lbl_8055D5B4;
+    source = (u32 *)fn_801E8718(s.objKey);
     destination = frame.matrix;
     b = source[6]; a = source[8]; destination[6] = b;
     c = source[0]; destination[8] = a;
@@ -369,30 +374,31 @@ void fn_8001A1F4(void *obj, f32 x, f32 y, f32 width, f32 height) {
     destination[4] = g; destination[5] = h; destination[7] = i; destination[9] = j;
     destination[10] = k; destination[11] = l;
     result = (f32)fn_8002EFB0(angle, result);
-    *(f32 *)((u8 *)global + 0x10) = result;
-    record = fn_801EA9A0(resource);
-    *(u32 *)((u8 *)global + 4) = *(u32 *)((u8 *)record + 0x1C);
-    data = *(s32 **)((u8 *)obj + 0x10);
-    memset((u8 *)data + 4, 0, 0x40);
-    *(s32 *)((u8 *)data + 0x44) = fn_801EA994();
+    *(f32 *)((u8 *)s.global + 0x10) = result;
+    record = fn_801EA9A0(s.resource);
+    *(u32 *)((u8 *)s.global + 4) = *(u32 *)((u8 *)record + 0x1C);
+    s.data = *(s32 **)((u8 *)obj + 0x10);
+    s.obj = obj;
+    memset((u8 *)s.data + 4, 0, 0x40);
+    *(s32 *)((u8 *)s.data + 0x44) = fn_801EA994();
     index = 0;
     offset = 0;
     goto recordCheck;
 recordLoop:
     record = fn_801EA9A0(index);
     part = (void *)fn_80016474(*(s32 *)((u8 *)record + 0xAC));
-    *(u32 *)((u8 *)data + offset + 4) = *(u32 *)((u8 *)part + 0x50);
+    *(u32 *)((u8 *)s.data + offset + 4) = *(u32 *)((u8 *)part + 0x50);
     part = *(void **)((u8 *)record + 8);
     if (part != 0) {
         angle = (f32)fn_8002EFB0(*(f32 *)((u8 *)part + 0x20), *(f32 *)((u8 *)part + 0x18));
-        *(f32 *)((u8 *)data + offset + 8) = -angle;
+        *(f32 *)((u8 *)s.data + offset + 8) = -angle;
     }
     index++;
     offset += 8;
 recordCheck:
-    if (index < *(s32 *)((u8 *)data + 0x44)) goto recordLoop;
+    if (index < *(s32 *)((u8 *)s.data + 0x44)) goto recordLoop;
 
-    source = (u32 *)fn_801E8718(*(s32 *)((u8 *)obj + 0x44));
+    source = (u32 *)fn_801E8718(s.objKey);
     destination2 = frame.matrix2;
     b = source[6]; a = source[8]; destination2[6] = b;
     c = source[0]; destination2[8] = a;
@@ -409,17 +415,17 @@ recordCheck:
     offset = 0;
     goto subtractCheck;
 subtractLoop:
-    *(f32 *)((u8 *)data + offset + 8) -= angle;
+    *(f32 *)((u8 *)s.data + offset + 8) -= angle;
     index++;
     offset += 8;
 subtractCheck:
-    if (index < *(s32 *)((u8 *)data + 0x44)) goto subtractLoop;
-    *(s32 *)((u8 *)data + 0x48) = resource;
-    record = fn_801EA9A0(resource);
+    if (index < *(s32 *)((u8 *)s.data + 0x44)) goto subtractLoop;
+    *(s32 *)((u8 *)s.data + 0x48) = s.resource;
+    record = fn_801EA9A0(s.resource);
     desc = *(void **)((u8 *)record + 8);
     f21 = *(f32 *)((u8 *)desc + 0x2C8);
     f25 = lbl_80560424 / (*(f32 *)((u8 *)obj + 0x28) * lbl_80560420);
-    record = fn_801EA9A0(resource);
+    record = fn_801EA9A0(s.resource);
     part = *(void **)((u8 *)record + 8);
     ratio = ((*(f32 *)((u8 *)part + 0x4C) / lbl_8056043C) - *(f32 *)((u8 *)obj + 0x2C)) /
             (*(f32 *)((u8 *)obj + 0x30) - *(f32 *)((u8 *)obj + 0x2C));
@@ -428,8 +434,8 @@ subtractCheck:
     if (f25 > lbl_80560418) f25 = lbl_80560418;
     state = fn_80178C9C();
     fn_80136468(frame.vectors, state, f21);
-    actor = fn_8017960C(resource);
-    state = fn_802678E4(*(s32 *)((u8 *)obj + 0x44));
+    actor = fn_8017960C(s.resource);
+    state = fn_802678E4(s.objKey);
     desc = *(void **)((u8 *)state + 0x140);
     v = *(f32 *)((u8 *)state + 0x70);
     ratio = *(f32 *)((u8 *)state + 0x78);
@@ -540,15 +546,15 @@ subtractCheck:
         fn_802C8BD0(*(s32 *)obj);
     fn_802C8DB8((u8 *)&frame + 0x280, 0x29, (unsigned short *)((u8 *)&frame + 0x118), 0xB4);
     fn_802C8D74();
-    record = fn_801EA9A0(resource);
+    record = fn_801EA9A0(s.resource);
     index = 0;
     do {
-        if (index == fn_801E866C(*(s32 *)((u8 *)obj + 0x44))) break;
+        if (index == fn_801E866C(s.objKey)) break;
         record = fn_801EA9A0(index);
         actor = fn_8017960C(index);
-        px = *(f32 *)((u8 *)actor + 0x60) - *(f32 *)((u8 *)global + 8);
-        py = *(f32 *)((u8 *)actor + 0x64) - *(f32 *)((u8 *)global + 0xC);
-        pz = *(f32 *)((u8 *)actor + 0x68) - *(f32 *)((u8 *)global + 0x10);
+        px = *(f32 *)((u8 *)actor + 0x60) - *(f32 *)((u8 *)s.global + 8);
+        py = *(f32 *)((u8 *)actor + 0x64) - *(f32 *)((u8 *)s.global + 0xC);
+        pz = *(f32 *)((u8 *)actor + 0x68) - *(f32 *)((u8 *)s.global + 0x10);
         *(f32 *)((u8 *)&frame + 0x54) = px;
         *(f32 *)((u8 *)&frame + 0x58) = py;
         *(f32 *)((u8 *)&frame + 0x5C) = pz;
@@ -561,8 +567,8 @@ subtractCheck:
         *(f32 *)((u8 *)&frame + 0x5C) *= ratio;
         result = PSVECDotProduct((u8 *)&frame + 0x54, (u8 *)&frame + 0x54);
         if (result < (width * lbl_80560420) * (width * lbl_80560420)) {
-            color = index == *(s32 *)((u8 *)data + 0x48) ? 1 : 3;
-            angle = (f32)fn_80235EF0(*(void **)data, color);
+            color = index == *(s32 *)((u8 *)s.data + 0x48) ? 1 : 3;
+            angle = (f32)fn_80235EF0(*(void **)s.data, color);
             ratio = 1.0f - result / ((width * lbl_80560420) * (width * lbl_80560420));
             if (ratio >= lbl_80560440) {
                 if (ratio > lbl_80560424) ratio = lbl_80560424;
@@ -574,7 +580,7 @@ subtractCheck:
             v *= lbl_8056044C;
             if (v < lbl_80560418) v -= lbl_80560420;
             else v += lbl_80560420;
-            fn_80235AFC(*(void **)data, color, 0xFFFFFFFF,
+            fn_80235AFC(*(void **)s.data, color, 0xFFFFFFFF,
                         x + *(f32 *)((u8 *)&frame + 0x54), y + *(f32 *)((u8 *)&frame + 0x58), 0.0f,
                         v * width * lbl_80560420, angle,
                         *(f32 *)((u8 *)record + 8));
@@ -613,17 +619,17 @@ subtractCheck:
         index++;
         offset += 0x14;
     }
-    data = *(s32 **)((u8 *)obj + 0x10);
-    color = resource == *(s32 *)((u8 *)data + 0x48) ? 1 : 3;
-    angle = (f32)fn_80235EF0(*(void **)data, color);
+    s.data = *(s32 **)((u8 *)obj + 0x10);
+    color = s.resource == *(s32 *)((u8 *)s.data + 0x48) ? 1 : 3;
+    angle = (f32)fn_80235EF0(*(void **)s.data, color);
     result = angle * lbl_80560424;
-    fn_80235AFC(*(void **)data, color, 0xFFFFFFFF,
+    fn_80235AFC(*(void **)s.data, color, 0xFFFFFFFF,
                 x + width * lbl_80560420, y - height * lbl_80560420,
                 lbl_80560418, result, result,
-                *(f32 *)((u8 *)data + resource * 8 + 8));
-    actor = fn_8017960C(fn_801E866C(*(s32 *)((u8 *)obj + 0x44)));
-    px = *(f32 *)((u8 *)global + 8) - *(f32 *)((u8 *)&frame + 0x10C);
-    py = *(f32 *)((u8 *)global + 0xC) - *(f32 *)((u8 *)&frame + 0x110);
+                *(f32 *)((u8 *)s.data + s.resource * 8 + 8));
+    actor = fn_8017960C(fn_801E866C(s.objKey));
+    px = *(f32 *)((u8 *)s.global + 8) - *(f32 *)((u8 *)&frame + 0x10C);
+    py = *(f32 *)((u8 *)s.global + 0xC) - *(f32 *)((u8 *)&frame + 0x110);
     pz = lbl_80560418 - *(f32 *)((u8 *)&frame + 0x114);
     *(f32 *)((u8 *)&frame + 0x30) = px;
     *(f32 *)((u8 *)&frame + 0x34) = py;
@@ -637,7 +643,7 @@ subtractCheck:
     *(f32 *)((u8 *)&frame + 0x38) *= ratio;
     result = PSVECDotProduct((u8 *)&frame + 0x30, (u8 *)&frame + 0x30);
     if (result < (width * lbl_80560420) * (width * lbl_80560420)) {
-        angle = (f32)fn_80235EF0(*(void **)data, 0);
+        angle = (f32)fn_80235EF0(*(void **)s.data, 0);
         ratio = 1.0f - PSVECDotProduct((u8 *)&frame + 0x30, (u8 *)&frame + 0x30) /
                 ((width * lbl_80560420) * (width * lbl_80560420));
         if (ratio >= lbl_80560440) {
@@ -651,7 +657,7 @@ subtractCheck:
         if (v < lbl_80560418) v -= lbl_80560420;
         else v += lbl_80560420;
         color = ((s32)v << 24) | 0x00FFFFFF;
-        fn_80235AFC(*(void **)data, 0, (u32)color,
+        fn_80235AFC(*(void **)s.data, 0, (u32)color,
                     x + *(f32 *)((u8 *)&frame + 0x30), y + *(f32 *)((u8 *)&frame + 0x34), lbl_80560418,
                     angle, angle, *(f32 *)((u8 *)actor + 0x68));
     }
@@ -769,6 +775,9 @@ extern void fn_802C8E00(int, int, float, float, float, float, float);
 extern void fn_802C8E48(void);
 extern double fn_8002F234(double);
 extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440;
+static inline float lerp_8001B478(float a, float b, float t) {
+    return a + t * (b - a);
+}
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma push
