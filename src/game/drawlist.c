@@ -983,8 +983,9 @@ void fn_802C98DC(float *outTan, float *outViewX, float *outViewY, float *outSin)
 }
 
 void fn_802D007C(float);
-void fn_802C9900(float arg0) {
-    fn_802D007C(arg0);
+/* Tail-call wrapper: forward the alpha/brightness value to fn_802D007C, which sets the TEV color. */
+void fn_802C9900(float value) {
+    fn_802D007C(value);
 }
 
 #pragma dont_inline off
