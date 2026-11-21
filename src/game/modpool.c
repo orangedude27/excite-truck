@@ -67,7 +67,7 @@ void fn_802CE49C(void *object) {
 int fn_801345A4(int, int);
 void fn_8013436C(int);
 void fn_802E30C8(const char *, ...);
-extern char lbl_8034BCF0[];
+extern char lbl_8034BCF0[]; /* "modpool: oldest_model is NULL (%d)" */
 #pragma push
 #pragma scheduling invalid_target
 #pragma optimize_for_size on
