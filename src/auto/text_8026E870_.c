@@ -1114,6 +1114,8 @@ void fn_80270484(void) {
     p[14] = zero;
 }
 
+/* Tail-call thunk: forwards its arguments unchanged to fn_8026FCFC, the car
+ * camera/physics update, giving callers a separate entry point to that routine. */
 void fn_802704D0(void) { fn_8026FCFC(); }
 
 void fn_802704D4(void *mode, void *camera) {
