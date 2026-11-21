@@ -5234,28 +5234,27 @@ static inline s32 VFiPFENT_ITER_ReadEntry(u8 *iter) {
     return code & (s32)(-(u32)code | (u32)code) >> 31;
 }
 static inline s32 VFiPFENT_ITER_MoveNextAndRead(u8 *iter) {
-    struct WO { u32 v; } oldW;
-    struct WR { s32 v; } resultW;
+    u32 old = *(u32 *)iter;
+    s32 result;
     s32 code;
     u32 sp8;
-    oldW.v = *(u32 *)iter;
-    *(u32 *)iter = oldW.v + 1;
-    resultW.v = fn_800AB378((void *)iter, 0);
-    if (resultW.v != 0) {
-        *(u32 *)iter = oldW.v;
+    *(u32 *)iter = old + 1;
+    result = fn_800AB378((void *)iter, 0);
+    if (result != 0) {
+        *(u32 *)iter = old;
         fn_800AB378((void *)iter, 0);
     } else {
         if (*(u32 *)(iter + 0x44) + 0x10000 == 0xFFFF) {
             code = 0x10;
         } else {
-            resultW.v = fn_800B5324(*(void **)(iter + 4), iter + 0x4C, *(u32 *)(iter + 0x44),
-                                    *(u16 *)(iter + 0x48), 0x20, &sp8, 0);
+            result = fn_800B5324(*(void **)(iter + 4), iter + 0x4C, *(u32 *)(iter + 0x44),
+                                 *(u16 *)(iter + 0x48), 0x20, &sp8, 0);
             if (sp8 != 0x20) code = 0x11;
-            else code = resultW.v;
+            else code = result;
         }
-        resultW.v = code & (s32)(-(u32)code | (u32)code) >> 31;
+        result = code & (s32)(-(u32)code | (u32)code) >> 31;
     }
-    return resultW.v;
+    return result;
 }
 static inline s32 VFiPFENT_ITER_MoveNextAndReadOld(u8 *iter, u32 old) {
     s32 result;
