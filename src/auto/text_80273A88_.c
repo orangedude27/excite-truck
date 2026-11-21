@@ -87,6 +87,9 @@ int fn_80273B08(int object, int deleteFlag) {
     return object;
 }
 
+/* Empty per-element constructor callback for the 200-record, 0x60-byte pool at
+   lbl_8049A258+0x70, registered through fn_8002F53C by fn_802739B8; the records
+   need no initialization, so this does nothing. */
 void fn_80273B48(void) {
 }
 
@@ -807,39 +810,43 @@ void fn_802750C4(void *object, float gain, float desired) {
     *(float *)(p + 0x84) += *(float *)(p + 0x78) * step;
 }
 #pragma processor 750
-void fn_802751AC(void *arg0, float angle) {
-    float axis[3], input[3], matrix[16];
+void fn_802751AC(void *arg0) {
+    struct Matrix { int v[12]; };
+    char *self = (char *)arg0;
+    float axis[3], input[3], matrix[9];
+    volatile int params[7];
     float mag, scale, x, y, z, s, c, t;
-    unsigned int *src = (unsigned int *)((char *)arg0 + 0xC0);
-    unsigned int *dst = (unsigned int *)((char *)arg0 + 0x58);
-    int i;
-    for (i = 0; i < 12; i++) dst[i] = src[i];
-    input[0] = lbl_80564024 * lbl_802FA788[3];
-    input[1] = lbl_80564024 * lbl_802FA788[4];
-    input[2] = lbl_80564024 * lbl_802FA788[5];
-    axis[0] = lbl_802FA788[0]; axis[1] = lbl_802FA788[1]; axis[2] = lbl_802FA788[2];
+    volatile int *p = (volatile int *)lbl_802FA788;
+    params[3] = p[3]; params[4] = p[4]; params[5] = p[5];
+    params[0] = p[0]; params[1] = p[1]; params[2] = p[2];
+    params[6] = p[6];
+    *(struct Matrix *)(self + 0x58) = *(struct Matrix *)(self + 0xC0);
+    input[0] = lbl_80564024 * *(float *)&params[3];
+    input[1] = lbl_80564024 * *(float *)&params[4];
+    input[2] = lbl_80564024 * *(float *)&params[5];
+    axis[0] = *(float *)&params[0]; axis[1] = *(float *)&params[1]; axis[2] = *(float *)&params[2];
     mag = PSVECMag(input);
     if (mag > lbl_80564020) {
         scale = lbl_80563FAC / mag;
-        x = input[0] * scale; y = input[1] * scale; z = input[2] * scale;
-        s = (float)sin(angle); c = (float)cos(angle); t = lbl_80563FAC - c;
-        matrix[0] = c + t * x * x;
-        matrix[1] = y * (t * x) + s * z;
-        matrix[2] = z * (t * x) - s * y;
-        matrix[3] = y * (t * x) - s * z;
-        matrix[4] = c + t * y * y;
-        matrix[5] = z * (t * y) + s * x;
-        matrix[6] = z * (t * x) + s * y;
-        matrix[7] = z * (t * y) - s * x;
-        matrix[8] = c + t * z * z;
+        x = scale * input[0]; y = scale * input[1]; z = scale * input[2];
+        s = (float)sin(mag); c = (float)cos(mag); t = lbl_80563FAC - c;
+        matrix[0] = c + t * (x*x);
+        matrix[1] = y * (t*x) + s*z;
+        matrix[2] = z * (t*x) - s*y;
+        matrix[3] = y * (t*x) - s*z;
+        matrix[4] = c + t * (y*y);
+        matrix[5] = z * (t*y) + s*x;
+        matrix[6] = z * (t*x) + s*y;
+        matrix[7] = z * (t*y) - s*x;
+        matrix[8] = c + t * (z*z);
     } else {
-        matrix[0] = lbl_80563FAC; matrix[1] = lbl_80563FB0; matrix[2] = lbl_80563FB0;
-        matrix[3] = lbl_80563FB0; matrix[4] = lbl_80563FAC; matrix[5] = lbl_80563FB0;
-        matrix[6] = lbl_80563FB0; matrix[7] = lbl_80563FB0; matrix[8] = lbl_80563FAC;
+        matrix[0]=lbl_80563FAC; matrix[1]=lbl_80563FB0; matrix[2]=lbl_80563FB0;
+        matrix[3]=lbl_80563FB0; matrix[4]=lbl_80563FAC; matrix[5]=lbl_80563FB0;
+        matrix[6]=lbl_80563FB0; matrix[7]=lbl_80563FB0; matrix[8]=lbl_80563FAC;
     }
-    fn_801BFD34((char *)arg0 + 0x7C, axis, (char *)arg0 + 0xC0);
-    fn_80015B20((char *)arg0 + 0x58, matrix, (char *)arg0 + 0xC0);
-    *(float *)((char *)arg0 + 0xBC) = lbl_80564024 * angle;
+    fn_801BFD34(self+0x7C, axis, self+0xC0);
+    fn_80015B20(self+0x58, matrix, self+0xC0);
+    *(float *)(self+0xBC) = lbl_80564024 * *(float *)&params[6];
 }
 
 #pragma push
