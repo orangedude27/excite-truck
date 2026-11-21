@@ -169,7 +169,7 @@ void OSShutdownSystem(void) {
     if (idleMode.wc24 == 1) {
         stateFlags.bootType = 5;
     } else {
-        stateFlags.BYTE_0x5 = 1;
+        stateFlags.bootType = 1;
     }
 
     __OSClearRTCFlags();
