@@ -46,6 +46,8 @@ s32 fn_802A8A3C(s32 *arg0, s32 arg1);
 void fn_802A8978(void);
 void fn_802A81EC(void);
 
+/* No-op constructor callback passed to the array-construction helper for each 0x1C-byte
+   pool entry in lbl_804BD5D8 (see fn_802A81A0); the entries need no initialization. */
 void fn_802A81EC(void) {
 
 }
@@ -317,7 +319,6 @@ extern f64 lbl_80564960;
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma opt_common_subs off
-#pragma opt_strength_reduction off
 void fn_802A8A4C(s32 arg0, s32 arg1) {
     f32 m[9], v[2], d[2], p[2], q[2];
     f32 *a = (f32 *)arg0, *b = (f32 *)arg1;
@@ -347,7 +348,7 @@ void fn_802A8A4C(s32 arg0, s32 arg1) {
     m[0]=c; m[1]=lbl_80564928; m[2]=-s;
     m[3]=lbl_80564928; m[4]=lbl_8056494C; m[5]=lbl_80564928;
     m[6]=s; m[7]=lbl_80564928; m[8]=c;
-    transform_802A8A4C(m,(f32 *)((u8 *)a+0xC),a+3);
+    transform_802A8A4C(m,a+3,(f32 *)((u8 *)a+0xC));
     PSVECNormalize(a+3,a+3);
     scale=(length-lbl_80564928)/(a[6]*a[6]-lbl_80564928);
     scale=lbl_8056494C<scale?lbl_8056494C:scale;
@@ -381,8 +382,8 @@ void fn_802A8DE8(void) {
     f32 fy;
     register s32 i;
     register s32 *table;
-    register s32 offset;
     register s32 vec;
+    register s32 offset;
     register void *entry;
     register s32 j;
 
