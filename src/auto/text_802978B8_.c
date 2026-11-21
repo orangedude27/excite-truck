@@ -98,6 +98,8 @@ void fn_80297984(void) {
 
 void fn_80297A08();
 void fn_80297C3C(void *, void *, int, float, float);
+/* Public entry point for registering a static-shadow listener: tail-calls the
+ * internal list-appender (fn_80297A08), passing the caller's object pointer through. */
 void fn_80297988(void) {
     fn_80297A08();
 }
@@ -205,8 +207,8 @@ void fn_80297AFC(void) {
     int i;
     char *record;
     float speed;
-    float minimum;
     float maximum;
+    float minimum;
     float divisor;
     float value;
 
@@ -235,9 +237,7 @@ void fn_80297AFC(void) {
             if (value < minimum) {
                 value = minimum;
             }
-            if (value > maximum) {
-                value = maximum;
-            }
+            value = value > maximum ? maximum : value;
             value = cur + value * (maximum - cur);
         } else {
             value = *(float *)(record + 0x38);
