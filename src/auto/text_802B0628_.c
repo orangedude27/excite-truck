@@ -941,6 +941,8 @@ int fn_802B1BE4(void *table) {
     return ((int *)table)[1];
 }
 
+/* No-op subsystem hook called at the start of the manager's render/dispatch
+ * pass (fn_802B14B4); this build leaves it empty. */
 void fn_802B1BEC(void) {
 }
 
