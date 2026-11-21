@@ -311,7 +311,6 @@ RgbaColor fn_801720E0(RgbaColor color) {
 }
 #pragma pop
 
-static inline void maskW(unsigned int *p) { *p &= 0x3FFFFFFF; }
 #pragma scheduling invalid_target
 void fn_801720FC(float *__restrict arg0, int arg1, float arg2) {
     extern float PSVECMag(float *);
