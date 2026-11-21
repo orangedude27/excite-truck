@@ -235,7 +235,7 @@ void nandGenerateAbsPath(char* abs, const char* rel) {
 }
 
 static void nandGetParentDirectory(char* dir, const char* path) {
-    int i;
+    s32 i;
 
     for (i = strlen(path); i >= 0; i--) {
         if (path[i] == '/') {
