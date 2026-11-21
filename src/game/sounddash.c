@@ -56,7 +56,7 @@ int fn_8020BDB8(int arg0) {
     case 0x128:
         if (lbl_8055EE24 != 0) break;
         index = fn_8020A76C() - 1;
-        if (index < lbl_8055EE28 + 1) lbl_8055EE28 = index;
+        lbl_8055EE28 = index < lbl_8055EE28 + 1 ? index : lbl_8055EE28 + 1;
         return 1;
     case 0x126:
         if (lbl_8055EE24 != 0) break;
@@ -69,7 +69,7 @@ int fn_8020BDB8(int arg0) {
         if (index < fn_8020A76C()) {
             item = fn_8020A774(index);
             value = *(float *)((char *)item + 0x20) - lbl_805632C8;
-            value = value > lbl_805632CC ? lbl_805632CC : value;
+            value = value > lbl_805632CC ? value : lbl_805632CC;
             *(float *)((char *)item + 0x20) = value;
             return 1;
         }
@@ -80,7 +80,7 @@ int fn_8020BDB8(int arg0) {
         if (index < fn_8020A76C()) {
             item = fn_8020A774(index);
             value = lbl_805632C8 + *(float *)((char *)item + 0x20);
-            value = value < lbl_805632D0 ? lbl_805632D0 : value;
+            value = value < lbl_805632D0 ? value : lbl_805632D0;
             *(float *)((char *)item + 0x20) = value;
             return 1;
         }
