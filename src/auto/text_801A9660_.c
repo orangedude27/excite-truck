@@ -1942,7 +1942,7 @@ extern "C" void fn_801AD5F4(void *arg0, void *arg1) {
 #pragma pop
 
 extern void fn_801D0A24(void *, void *);
-extern void fn_801AC0A0(void *, float *, float *, int, int);
+extern void fn_801AC0A0();
 extern void fn_801D09A8(void *, int);
 extern void fn_801A9AB0(void *, void *);
 extern void fn_801D08C0(void *);
@@ -1980,12 +1980,12 @@ void *fn_801AD6B0(void *self, int shouldDelete) {
 #pragma push
 #pragma opt_propagation off
 void fn_801AD750(void *arg0, void *arg1) {
-    void *notifier;
+    register void *notifier;
     fn_801A9AB0(arg0, arg1);
     *(int *)((char *)arg0 + 0x240) = *(int *)((char *)arg1 + 0x80);
     if (arg0 != 0) {
         notifier = arg0;
-        if (arg0 != 0) {
+        if (notifier != 0) {
             notifier = (unsigned char *)notifier + 0x23C;
         }
         fn_801D08C0(notifier);
