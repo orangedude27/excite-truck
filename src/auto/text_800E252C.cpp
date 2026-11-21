@@ -1760,22 +1760,27 @@ extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallback
 extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(void *, void *);
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
+/* AxVoice::Free() - release an active AX voice: with interrupts disabled, return
+ * every DSP buffer in its buffer table (+0x104 rows x +0x108 columns, rows 0x10
+ * bytes, buffer pointer at entry+0xC) to the free pool, clear the table, unregister
+ * its dispose callback, free the voice from the AxManager and clear its active flag
+ * (+0x11C). Does nothing if the voice is not active. */
+extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *voice) {
     int zero = 0;
     struct { unsigned int irq; } irqHolder;
     unsigned int &interruptState = irqHolder.irq;
     interruptState = OSDisableInterrupts();
-    if (*((unsigned char *)self + 0x11C) == zero) {
+    if (*((unsigned char *)voice + 0x11C) == zero) {
         OSRestoreInterrupts(interruptState);
         return;
     }
-    char *row = (char *)self;
+    char *row = (char *)voice;
     char *entry;
     int rowIndex = zero;
-    while (rowIndex < *((int *)((char *)self + 0x104))) {
+    while (rowIndex < *((int *)((char *)voice + 0x104))) {
         entry = row;
         int column = zero;
-        while (column < *((int *)((char *)self + 0x108))) {
+        while (column < *((int *)((char *)voice + 0x108))) {
             if (*((int *)(entry + 0xC)) != zero) {
                 TRKGetFreeBuffer(*((void **)(entry + 0xC)));
                 *((int *)(entry + 0xC)) = zero;
@@ -1786,12 +1791,12 @@ extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
         row += 0x10;
         rowIndex++;
     }
-    *((int *)((char *)self + 0x104)) = zero;
+    *((int *)((char *)voice + 0x104)) = zero;
     UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
-        GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(), self);
+        GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(), voice);
     FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(
-        Instance__15EmissionManagerFv(), self);
-    *((unsigned char *)self + 0x11C) = zero;
+        Instance__15EmissionManagerFv(), voice);
+    *((unsigned char *)voice + 0x11C) = zero;
     OSRestoreInterrupts(interruptState);
 }
 #pragma pop
