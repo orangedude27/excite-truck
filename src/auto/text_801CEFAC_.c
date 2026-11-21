@@ -1,9 +1,12 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
+/* Replay-mode state helpers: enter/leave replay, toggle it via the arena-event
+ * subsystem, and start/end cutscene replay playback with a debug log. */
 
 extern char lbl_8055AB50;
 extern char lbl_8055E8A0;
 extern char lbl_8055E8A1;
+#define sReplayMode      lbl_8055AB50 /* nonzero while replay mode is active */
+#define sReplayPlayback  lbl_8055E8A0 /* nonzero while cutscene replay is playing */
+#define sReplayAuxFlag   lbl_8055E8A1 /* secondary flag raised on entering replay */
 extern void fn_801AED68(void);
 extern void fn_801AED5C(void);
 /* Enter replay mode: turn on lbl_8055AB50 and lbl_8055E8A1 while clearing the
