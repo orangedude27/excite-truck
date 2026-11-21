@@ -213,16 +213,19 @@ void fn_802B5CC4(void) {
 
 extern int __cntlzw(unsigned int);
 void fn_802B5CCC(void) {
-    u8 *sp8;
-    u8 *object;
+    /* Refresh the debug viewer's selected object: gather its tweakers, flag an empty layer, then run per-tweaker updates and refresh cached fields. */
+    #define objectIndex lbl_8055FA40
+    u8 *layerState;
+    u8 *matSet;
 
-    object = (u8 *)((void *(*)(void))fn_802B5B6C)();
-    fn_802B321C(0, (void **)&sp8, *(s32 *)(object + 8), lbl_8055FA40);
-    *(signed char *)sp8 = (unsigned int)__cntlzw(*sp8) >> 5;
-    object = (u8 *)((void *(*)(void))fn_802B5B6C)();
-    fn_802B32E0(*(s32 *)(object + 8));
-    object = (u8 *)((void *(*)(void))fn_802B5B6C)();
-    fn_802B4E44(*(s32 *)(object + 8));
+    matSet = (u8 *)((void *(*)(void))fn_802B5B6C)();
+    fn_802B321C(0, (void **)&layerState, *(s32 *)(matSet + 8), objectIndex);
+    *(signed char *)layerState = (unsigned int)__cntlzw(*layerState) >> 5;
+    matSet = (u8 *)((void *(*)(void))fn_802B5B6C)();
+    fn_802B32E0(*(s32 *)(matSet + 8));
+    matSet = (u8 *)((void *(*)(void))fn_802B5B6C)();
+    fn_802B4E44(*(s32 *)(matSet + 8));
+    #undef objectIndex
 }
 
 #pragma push
@@ -877,7 +880,7 @@ loop_body:
     offset += 0x28;
     i++;
 loop_test:
-    if (i < ((s32 *)&lbl_804BFA70)[1])
+    if (((s32 *)&lbl_804BFA70)[1] > i)
         goto loop_body;
 }
 #pragma use_lmw_stmw reset
