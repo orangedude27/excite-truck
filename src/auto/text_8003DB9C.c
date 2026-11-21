@@ -5246,6 +5246,8 @@ void GXSetTevDirect(int stage) {
     GXSetTevIndirect(stage, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
+/* GX internal hook called by __GXSetDirtyState when the GXD_BP_MASK dirty
+ * flag is set; the retail SDK leaves it as an empty stub. */
 void __GXUpdateBPMask(void) {}
 
 /* Set the indirect-texture mask: pack the 8-bit mask into the low byte of the
@@ -5721,7 +5723,7 @@ void GXSetFog(int type, GXColor color, f32 start, f32 end, f32 near, f32 far) {
     u32 a_bits, c_bits;
 
     u32 fogColorReg = 0;
-    register u32 fogParamReg0 = 0;
+    u32 fogParamReg0 = 0;
     u32 fogParamReg1 = 0;
     register u32 fogParamReg2 = 0;
     u32 fogParamReg3 = 0;
@@ -5790,19 +5792,11 @@ void GXSetFog(int type, GXColor color, f32 start, f32 end, f32 near, f32 far) {
     GX_BP_SET_OPCODE(fogColorReg, GX_BP_REG_FOGCOLOR);
     GX_BP_SET_FOGCOLOR_RGB(fogColorReg, *(u32*)&color >> 8);
 
-    {
-        u32 cmd = GX_FIFO_CMD_LOAD_BP_REG;
-        WGPIPE.c = cmd;
-        WGPIPE.i = fogParamReg0;
-        WGPIPE.c = cmd;
-        WGPIPE.i = fogParamReg1;
-        WGPIPE.c = cmd;
-        WGPIPE.i = fogParamReg2;
-        WGPIPE.c = cmd;
-        WGPIPE.i = fogParamReg3;
-        WGPIPE.c = cmd;
-        WGPIPE.i = fogColorReg;
-    }
+    GX_BP_LOAD_REG(fogParamReg0);
+    GX_BP_LOAD_REG(fogParamReg1);
+    GX_BP_LOAD_REG(fogParamReg2);
+    GX_BP_LOAD_REG(fogParamReg3);
+    GX_BP_LOAD_REG(fogColorReg);
 
     *(volatile u16 *)((u8 *)__GXData + 2) = 0;
 }
