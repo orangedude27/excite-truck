@@ -1916,15 +1916,17 @@ s32 fn_80119300(void *buffer, s32 offset, s32 count) {
     }
 }
 extern void AXSetVoiceState(void *, s32);
-void fn_8011943C(void *arg0, s32 arg1) {
-    s32 temp_r0;
-    s32 temp_r3;
-    temp_r0 = *(s32 *)arg0;
-    if (temp_r0 != 0) {
-        ((void (*)())AXSetVoiceState)(temp_r0, arg1);
+void fn_8011943C(void *voices, s32 state) {
+    /* SetVoicePairState: apply an AX voice state to both handles in a StreamPlayer's
+     * voice pair (voices+0 and voices+4), skipping any null handle. */
+    s32 voice0;
+    s32 voice1;
+    voice0 = *(s32 *)voices;
+    if (voice0 != 0) {
+        ((void (*)())AXSetVoiceState)(voice0, state);
     }
-    if ((temp_r3 = *(s32 *)((u8 *)arg0 + 4)) != 0) {
-        ((void (*)())AXSetVoiceState)(temp_r3, arg1);
+    if ((voice1 = *(s32 *)((u8 *)voices + 4)) != 0) {
+        ((void (*)())AXSetVoiceState)(voice1, state);
     }
 }
 
