@@ -28948,21 +28948,22 @@ BOOL __AllocDelayLine(AXFX_REVERBHI_EXP_FREE_VIEW *reverb) {
 }
 
 void __BzeroDelayLines(void *arg0) {
-    u32 channel, i;
-    AXFX_REVERBHI_EXP_FREE_VIEW *fx = arg0;
+    /* Zero all per-channel delay-line buffers of the exponential reverb effect. */
+    u32 channel, line;
+    AXFX_REVERBHI_EXP_FREE_VIEW *reverb = (AXFX_REVERBHI_EXP_FREE_VIEW *)arg0;
     for (channel = 0; channel < 3; channel++) {
-        if (fx->earlyLine[channel])
-            memset(fx->earlyLine[channel], 0, fx->earlyMaxLength * 4);
-        if (fx->preDelayLine[channel])
-            memset(fx->preDelayLine[channel], 0, fx->preDelayMaxLength * 4);
-        for (i = 0; i < 3; i++)
-            if (fx->combLine[channel][i])
-                memset(fx->combLine[channel][i], 0, fx->combMaxLength[i] * 4);
-        for (i = 0; i < 2; i++)
-            if (fx->allpassLine[channel][i])
-                memset(fx->allpassLine[channel][i], 0, fx->allpassMaxLength[i] * 4);
-        if (fx->lastAllpassLine[channel])
-            memset(fx->lastAllpassLine[channel], 0, fx->lastAllpassMaxLength[channel] * 4);
+        if (reverb->earlyLine[channel])
+            memset(reverb->earlyLine[channel], 0, reverb->earlyMaxLength * 4);
+        if (reverb->preDelayLine[channel])
+            memset(reverb->preDelayLine[channel], 0, reverb->preDelayMaxLength * 4);
+        for (line = 0; line < 3; line++)
+            if (reverb->combLine[channel][line])
+                memset(reverb->combLine[channel][line], 0, reverb->combMaxLength[line] * 4);
+        for (line = 0; line < 2; line++)
+            if (reverb->allpassLine[channel][line])
+                memset(reverb->allpassLine[channel][line], 0, reverb->allpassMaxLength[line] * 4);
+        if (reverb->lastAllpassLine[channel])
+            memset(reverb->lastAllpassLine[channel], 0, reverb->lastAllpassMaxLength[channel] * 4);
     }
 }
 
