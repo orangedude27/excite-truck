@@ -116,14 +116,16 @@ float fn_80135278(float *a, float *b, float *c) {
     return a[0] * (b[0] - c[0]) + a[1] * (b[1] - c[1]);
 }
 #pragma scheduling on
-void *fn_801352B8(Unk_80135278 *arg0) {
+void *fn_801352B8(Unk_80135278 *follower) {
+    /* Construct a path follower: install the PathFollower vtable, initialise its
+     * embedded sample (no node, zero fraction, "not found" tag), then reset state. */
     Unk_80135278 *self;
     float value = 0.0f;
 
-    arg0->unk_0 = (s32)&lbl_8032BE80;
-    self = arg0;
+    follower->unk_0 = (s32)&sPathFollowerVTable;
+    self = follower;
     self->unk_4 = 0;
-    self->unk_c = 0x2710;
+    self->unk_c = PATH_SAMPLE_NOT_FOUND;
     self->unk_8 = value;
     fn_80135390(self);
     return self;
