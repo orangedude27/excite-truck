@@ -1261,30 +1261,31 @@ void fn_8025AA90(void *arg0, float farg0) {
     }
 }
 #pragma pop
+/* Linearly interpolate two 3D vectors component-wise: out = a + t*(b-a). */
 void fn_8025AD3C(float *out, float *a, float *b, float t) {
-    float bZ;
-    float bY;
-    float aX;
-    float bX;
-    float aY;
-    float aZ;
-    bZ = b[2];
-    aZ = a[2];
-    bY = b[1];
-    aY = a[1];
-    bX = b[0];
-    aX = a[0];
-    out[2] = aZ + t * (bZ - aZ);
-    out[1] = aY + t * (bY - aY);
-    out[0] = aX + t * (bX - aX);
+    float endZ;
+    float endY;
+    float startX;
+    float endX;
+    float startY;
+    float startZ;
+    endZ = b[2];
+    startZ = a[2];
+    endY = b[1];
+    startY = a[1];
+    endX = b[0];
+    startX = a[0];
+    out[2] = startZ + t * (endZ - startZ);
+    out[1] = startY + t * (endY - startY);
+    out[0] = startX + t * (endX - startX);
 }
 
 void fn_8025AD88(void) { PSVECDotProduct(); }
 
 #pragma scheduling invalid_target
 void fn_8025AD8C(void *unused, float *out, float *a, float *b, float t) {
-    float bx, ax, by, dx, ay, bz, dy, az, dz;
-    float px, py, rx, pz, ry, rz;
+    float bx, by, ax, dx, ay, bz, dy, az, dz;
+    float px, py, pz, rx, ry, rz;
     float max, scale;
     scale = lbl_80563B14 * t;
     max = lbl_80563AE0;
