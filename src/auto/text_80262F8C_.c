@@ -686,6 +686,8 @@ void fn_80263CA8(void *obj) {
     }
 }
 
+/* No-op virtual slot 0x60 of the menu-widget vtables lbl_80346048 / lbl_80346120:
+ * those widgets leave this method as an empty stub. */
 void fn_80263D10(void) {}
 
 void fn_80263D14(void) {}
