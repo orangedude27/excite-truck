@@ -1461,6 +1461,8 @@ void fn_802D6B80(u8 *surfData, s32 modelBase, s32 name) {
 }
 #pragma scheduling on
 void fn_802D6C44(void) {
+    /* No-op per-group hook passed to fn_802C5DF0 during group-list traversal:
+       the caller only needs to walk the groups, so this does nothing. */
 }
 
 void fn_802D6C48(void) {
