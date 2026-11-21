@@ -29,8 +29,6 @@ extern char lbl_8034D860[];                /* null manager vtable */
 struct StrmBankObject { virtual ~StrmBankObject(); };
 #pragma cplusplus reset
 
-s32 fn_802E769C(void);
-
 /* Install the freshly created "null" stream-bank manager as the global manager. */
 void fn_802E7578(void) {
     lbl_8055FFF0 = (void *)fn_802E769C();
