@@ -3187,9 +3187,6 @@ int fn_801C957C(int enabled)
 }
 
 #pragma pop
-static inline s32 fn_801C95EC_get_id(u8 *table, s32 selection, s32 current) {
-    return *(s32 *)(*(u32 *)((char *)table + (current << 4)) + (selection << 4) + 8);
-}
 void fn_801C95EC(f32 arg0) {
     struct Entry {
         void *name;
@@ -3204,7 +3201,7 @@ void fn_801C95EC(f32 arg0) {
     strcpy(lbl_80437FC0, lbl_8055AA44);
     entry = &(*(struct Entry **)((char *)lbl_8055E86C + lbl_8055E81C * 0x10))[lbl_8055E820];
     entry->callback(entry);
-    id = *(s32 *)(*(u32 *)((u32)lbl_8055E86C + (lbl_8055E81C << 4)) + (lbl_8055E820 << 4) + 8);
+    id = *(s32 *)(*(u32 *)((char *)lbl_8055E86C + lbl_8055E81C * 0x10) + lbl_8055E820 * 0x10 + 8);
     if (id == 0x22) {
         lbl_8055E81C = lbl_8055E870;
     } else {
