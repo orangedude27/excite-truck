@@ -17,6 +17,8 @@ static inline void CornerV3Copy(CornerV3* d, const CornerV3* s) {
     ((u32*)d)[1] = ((const u32*)s)[1];
     ((u32*)d)[2] = ((const u32*)s)[2];
 }
+static inline f32 Fn801A1F98Min(f32 m, f32 p) { return (m < p) ? p : m; }
+static inline f32 Fn801A1F98Max(f32 m, f32 p) { return (m > p) ? p : m; }
 
 static inline void fn801A1F98Transform(volatile f32 *dst, volatile f32 *src, f32 *matrix) {
     f32 x = src[0];
@@ -1081,7 +1083,7 @@ static inline f32 fn_8019AC44_max(f32 a, f32 b) {
 
 extern "C" void fn_8019AC44(void* arg0, void* arg1, void* arg2, f32 farg0) {
     Vec work[64]; s32 count, sp8; Vec p70,p64,delta,p4c,p40,p34,p28,p1c,p10;
-    f32 dot,mag,limit,scale,varf1,f31,dx,dy,dz,tx,ty,tz,ux,uy,uz,vx,vy,vz,px,py,pz; void* body=*(void**)((u8*)arg0+4);
+    f32 dot,mag,limit,scale,varf1,f31,dx,dy,dz,tx,ty,tz,ux,uy,uz,vx,vy,vz,pz,px,py; void* body=*(void**)((u8*)arg0+4);
     if (lbl_8055E5A0!=0) { count=0x40; fn_801CF080((s32)lbl_8055E5A0,arg1,work,&count,0,farg0); Vec *wp = work; for(s32 i=0;i<count;wp++,++i) fn_8019A820(arg0,arg1,(s32)wp,0x6e,0,farg0); }
     if (fn_801E9F08((u8*)body+0x6c,arg1,&p70,(s32)&p64,(s32)&sp8,farg0)!=0) {
         dx=((Vec*)arg1)->x-p70.x; dy=((Vec*)arg1)->y-p70.y; dz=((Vec*)arg1)->z-p70.z; delta.x=dx; delta.y=dy; delta.z=dz;
@@ -4180,6 +4182,7 @@ extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max)
   f32 *dst = point;
   f32 *cur = corners;
   f32 *src = corners;
+  f32 *mx = max;
   int i = 0;
   for (; i < 8; i++)
   {
@@ -4237,19 +4240,19 @@ extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max)
       min[2] = r;
     }
     {
-      f32 p = point[0]; f32 m = max[0];
+      f32 p = point[0]; f32 m = mx[0];
       f32 r = (m > p) ? (p) : (m);
-      max[0] = r;
+      mx[0] = r;
     }
     {
-      f32 p = point[1]; f32 m = max[1];
+      f32 p = point[1]; f32 m = mx[1];
       f32 r = (m > p) ? (p) : (m);
-      max[1] = r;
+      mx[1] = r;
     }
     {
-      f32 p = point[2]; f32 m = max[2];
+      f32 p = point[2]; f32 m = mx[2];
       f32 r = (m > p) ? (p) : (m);
-      max[2] = r;
+      mx[2] = r;
     }
     cur += 3;
     src += 3;
@@ -5762,7 +5765,6 @@ extern "C" void* fn_801A4A8C(void* arg0, s32 arg1, s32 arg2, void* arg3, u32* ar
     t10 = *(volatile s32*)((char*)arg4 + 0x28);
     t11 = *(volatile s32*)((char*)arg4 + 0x2C);
     *(s32*)((u8*)arg0 + 0x38) = arg1;
-    *(void**)arg0 = vtable;
     *(s32*)((u8*)arg0 + 0x48) = arg5;
     *(s32*)((u8*)arg0 + 0x34) = arg2;
     *(void**)((u8*)arg0 + 0x3C) = arg3;
@@ -5778,6 +5780,7 @@ extern "C" void* fn_801A4A8C(void* arg0, s32 arg1, s32 arg2, void* arg3, u32* ar
     *(s32*)((u8*)arg0 + 0x28) = t9;
     *(s32*)((u8*)arg0 + 0x2C) = t10;
     *(s32*)((u8*)arg0 + 0x30) = t11;
+    *(void**)arg0 = vtable;
     ((VTable2C*)arg3)->Call(arg0, arg2, (s32)arg3);
     fn_801A48E4(arg0);
     return arg0;
