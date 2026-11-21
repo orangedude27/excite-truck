@@ -471,6 +471,7 @@ extern double __fabs(double);
 #pragma optimization_level 1
 int fn_8022DEC4(void *object) {
 #define gZeroEpsilon lbl_80558DC4
+    /* Return 0 when |the float at +0xC minus the float pointed to by +0x18| is within the zero epsilon, else 1. */
     float current = *(float *)((char *)object + 0xC);
     float *value_ptr = *(float **)((char *)object + 0x18);
     float value = *value_ptr;
