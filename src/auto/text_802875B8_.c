@@ -473,14 +473,17 @@ s32 fn_80287B94(s32 min, s32 max) {
 #pragma push
 #pragma processor 750
 #pragma scheduling 603
-f32 fn_80287BC8(f32 farg0, f32 farg1) {
+f32 fn_80287BC8(f32 min, f32 max) {
+    /* Return a pseudo-random float in [min, max]: take a 17-bit sample of the
+     * global RNG, scale it to [0,1] with lbl_80564250 (131071.0f), and
+     * interpolate between the two bounds. */
     unsigned int random;
-    f32 diff;
-    f32 ratio;
+    f32 span;
+    f32 fraction;
     random = ((unsigned int (*)(void))fn_80288870)() & 0x1FFFF;
-    diff = farg1 - farg0;
-    ratio = (f32)random / lbl_80564250;
-    return farg0 + diff * ratio;
+    span = max - min;
+    fraction = (f32)random / lbl_80564250;
+    return min + span * fraction;
 }
 #pragma pop
 extern void *memset(void *, int, unsigned int);
