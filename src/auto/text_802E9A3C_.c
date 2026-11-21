@@ -571,6 +571,11 @@ static inline int Mp3IsValidFormat(int *info) {
     if (Mp3IsValidChannels(info) && Mp3IsValidRate(info)) ok = 1;
     return ok;
 }
+static inline int Mp3IsValidHeader(int *info) {
+    int ok = 0;
+    if (Mp3IsValidFormat(info) && Mp3IsValidSize(info)) ok = 1;
+    return ok;
+}
 int fn_802EAA58(int *arg0, int arg1) {
     int sizeOk;
     int channelOk;
