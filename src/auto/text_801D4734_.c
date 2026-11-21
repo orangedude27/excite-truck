@@ -541,6 +541,7 @@ loop_test:
 #pragma cplusplus reset
 #pragma pop
 
+/* Intentional no-op (compiles to a bare return): a do-nothing default hook in this unit. */
 void fn_801D4F9C(void) {
 }
 
@@ -2339,7 +2340,9 @@ extern "C" int fn_801D707C(void *arg0, void *arg1) {
 
     obj = (Dummy *)arg1;
     if (obj->check(&lbl_8055AC80) == 0) {
+        #pragma scheduling invalid_target
         fn_802E30C8(lbl_80338888);
+        #pragma scheduling reset
         return 0;
     }
     src = obj->get(&lbl_8055AC80);
