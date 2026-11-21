@@ -2146,24 +2146,29 @@ extern void *memset(void *, s32, s32);
 extern "C" void *memset(void *, s32, s32);
 #pragma cplusplus off
 void *fn_8014E4BC(void *arg0) {
-    u8 *base = (u8*)arg0;
+    register s32 size = 0x7A;
+    register s32 count = 3;
+    register s32 zero = 0;
+    u8 *base = (u8 *)arg0;
     u8 *p;
     u8 *end;
-    *(u32*)(base + 8) = 0; *(u32*)(base + 0x10) = 0;
-    *(u32*)(base + 0x14) = 0; *(u32*)(base + 0x18) = 0;
-    memset(base + 0x2C, 0x7A, 3); base[0x2F] = 0;
-    memset(base + 0x40, 0x7A, 3); base[0x43] = 0;
-    memset(base + 0x45, 0x7A, 3); base[0x48] = 0;
-    memset(base + 0x59, 0x7A, 3); base[0x5C] = 0;
-    memset(base + 0x6D, 0x7A, 3); base[0x70] = 0;
-    memset(base + 0x81, 0x7A, 3); base[0x84] = 0;
-    memset(base + 0x8B, 0x7A, 3); base[0x8E] = 0;
+    *(u32 *)(base + 8) = zero;
+    *(u32 *)(base + 0x10) = zero;
+    *(u32 *)(base + 0x14) = zero;
+    *(u32 *)(base + 0x18) = zero;
+    memset(base + 0x2C, size, count); base[0x2F] = zero;
+    memset(base + 0x40, size, count); base[0x43] = zero;
+    memset(base + 0x45, size, count); base[0x48] = zero;
+    memset(base + 0x59, size, count); base[0x5C] = zero;
+    memset(base + 0x6D, size, count); base[0x70] = zero;
+    memset(base + 0x81, size, count); base[0x84] = zero;
+    memset(base + 0x8B, size, count); base[0x8E] = zero;
     p = base + 0x95; end = base + 0x149;
-    do { memset(p, 0x7A, 3); p[3] = 0; p += 0x14; } while (p < end);
+    do { memset(p, size, count); p[3] = zero; p += 0x14; } while (p < end);
     p = end; end = base + 0x1FD;
-    do { memset(p, 0x7A, 3); p[3] = 0; p += 0x14; } while (p < end);
-    memset(end, 0x7A, 3); base[0x200] = 0;
-    memset(base + 0x225, 0x7A, 3); base[0x228] = 0;
+    do { memset(p, size, count); p[3] = zero; p += 0x14; } while (p < end);
+    memset(end, size, count); base[0x200] = zero;
+    memset(base + 0x225, size, count); base[0x228] = zero;
     return arg0;
 }
 extern s32 fn_801DF074(s32, s32);
@@ -4915,27 +4920,34 @@ void fn_80155AEC(void) {
 
 }
 
-#pragma scheduling invalid_target
-void fn_80155AF0(void *arg0, void *arg1) {
+#pragma cplusplus on
+extern "C" void fn_80155AF0(void *arg0, void *arg1) {
+    class VSub {
+    public:
+        virtual void v0();
+        virtual s32 v3(void *);
+    };
+    class VArg1 {
+    public:
+        virtual VSub *v2();
+        virtual void v3();
+        virtual f32 *v4(void *);
+    };
     u8 *b358 = lbl_8032D358;
-    void *vt;
-    void *tmp;
-    s32 c;
+    VSub *sub;
+    f32 *fp;
     void *alloc;
-    void *ret;
-    float *fp;
+    s32 c;
     s32 idx;
     void **base;
-    vt = *(void **)arg1;
-    tmp = ((void *(*)(void *))*(void **)((u8 *)vt + 8))(arg1);
-    c = ((s32 (*)(void *, void *))*(void **)((u8 *)*(void **)tmp + 0xc))(tmp, (void *)lbl_80559FB8);
+    sub = ((VArg1 *)arg1)->v2();
+    c = sub->v3((void *)lbl_80559FB8);
     if (c != 0) {
         alloc = (void *)fn_801284F8(0x1c, b358 + 0xdcc);
         if (alloc != 0) {
             *(void **)((u8 *)alloc + 0x18) = lbl_8032E1E4;
             *(void **)alloc = arg1;
-            ret = ((void *(*)(void *, void *))*(void **)((u8 *)vt + 0x10))(arg1, (void *)lbl_8032E1E4);
-            fp = (float *)ret;
+            fp = ((VArg1 *)arg1)->v4((void *)lbl_8032E1E4);
             *(float *)((u8 *)alloc + 8) = fp[0];
             *(float *)((u8 *)alloc + 0xc) = fp[1];
             *(float *)((u8 *)alloc + 0x10) = fp[2];
@@ -4947,16 +4959,14 @@ void fn_80155AF0(void *arg0, void *arg1) {
         base[idx] = alloc;
         return;
     }
-    vt = *(void **)arg1;
-    tmp = ((void *(*)(void *))*(void **)((u8 *)vt + 8))(arg1);
-    c = ((s32 (*)(void *, void *))*(void **)((u8 *)*(void **)tmp + 0xc))(tmp, (void *)(b358 + 0xdd8));
+    sub = ((VArg1 *)arg1)->v2();
+    c = sub->v3((void *)(b358 + 0xdd8));
     if (c != 0) {
         alloc = (void *)fn_801284F8(0x1c, b358 + 0xde8);
         if (alloc != 0) {
             *(void **)((u8 *)alloc + 0x18) = lbl_8032E1E4;
             *(void **)alloc = arg1;
-            ret = ((void *(*)(void *, void *))*(void **)((u8 *)vt + 0x10))(arg1, (void *)lbl_8032E1E4);
-            fp = (float *)ret;
+            fp = ((VArg1 *)arg1)->v4((void *)lbl_8032E1E4);
             *(float *)((u8 *)alloc + 8) = fp[0];
             *(float *)((u8 *)alloc + 0xc) = fp[1];
             *(float *)((u8 *)alloc + 0x10) = fp[2];
@@ -4968,6 +4978,7 @@ void fn_80155AF0(void *arg0, void *arg1) {
         base[idx] = alloc;
     }
 }
+#pragma cplusplus off
 /* Constant predicate in the UI text-object subsystem: always returns 1 (true). */
 u32 fn_80155C88(void) { return 1; }
 
