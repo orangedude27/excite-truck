@@ -157,7 +157,7 @@ void fn_8026311C(void) {
     char *v22, *v24, *v30, *v29b;
     char *base45;
     void *p;
-    s32 i, r;
+    s32 i, r, k;
 
     base45 = (char *)lbl_80345FD0;
     s.spB4 = 0;
@@ -306,16 +306,16 @@ void fn_8026311C(void) {
                     *(s32 *)((char *)lbl_802FA6E8 + 0));
     switch (r) {
     case -2:
-        i = 0;
+        k = 0;
         do {
             ((void (*)(s32, const u8 *, u8))fn_80133460)(
                 *(s32 *)(v30 + 0x24) + 8, lbl_803462B8, *(u8 *)(v30 + 0x28));
             ((void (*)(s32, const u8 *, u8))fn_80133460)(
                 *(s32 *)(v29b + 0x24) + 8, lbl_80346294, *(u8 *)(v29b + 0x28));
-            i += 1;
+            k += 1;
             v30 += 0x30;
             v29b += 0x34;
-        } while (i < 2);
+        } while (k < 2);
         if (fn_802E8D84() != 0) {
             fn_802E6FBC();
         }
@@ -428,6 +428,8 @@ void *fn_802637B0(void *obj, s32 doDelete) {
     return obj;
 }
 
+/* Virtual slot 0x10 of the unified-control menu widget's vtable lbl_80346188:
+ * this widget overrides that method with a no-op, so it has an empty body. */
 void fn_8026381C(void) {}
 
 void fn_80263820(void *widget) {
