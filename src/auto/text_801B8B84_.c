@@ -73,8 +73,5 @@ outer_body: {
 outer_check:
     if ((int)s_alarmEventCount > 0)
         goto outer_body;
-#undef s_alarmEventQueue
-#undef s_alarmEventCount
-#undef s_frameCount
 }
 #pragma pop
