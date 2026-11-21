@@ -22,6 +22,8 @@ void fn_80279370(void) {
 #undef InitEntry
 }
 
+/* No-op second-stage alarm handler: invoked by the alarm callback fn_80279488
+ * with the result of fn_80279D3C; this build leaves it empty. */
 void fn_802793AC(void) {}
 #pragma push
 #pragma scheduling invalid_target
