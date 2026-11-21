@@ -775,8 +775,9 @@ extern void fn_802C8E00(int, int, float, float, float, float, float);
 extern void fn_802C8E48(void);
 extern double fn_8002F234(double);
 extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440;
-static inline float lerp_8001B478(float a, float b, float t) {
-    return a + t * (b - a);
+static inline void lerp2_8001B478(float *out, const float *a, const float *b, float t) {
+    out[0] = a[0] + t * (b[0] - a[0]);
+    out[1] = a[1] + t * (b[1] - a[1]);
 }
 #pragma processor 750
 #pragma use_lmw_stmw off
