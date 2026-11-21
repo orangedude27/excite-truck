@@ -75,7 +75,7 @@ void fn_802C2AA8(void) {
 }
 
 /* Tears down the animation streaming buffers, drawlists, joint pool and texture
- * system during global shutdown (paired with the init sequence in fn_802C2A48). */
+ * system during global shutdown (paired with the init sequence in fn_802C2AA8). */
 void fn_802C2B18(void) {
     fn_801E69EC();
     fn_802C84EC();
