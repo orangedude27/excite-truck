@@ -1280,6 +1280,7 @@ void fn_8025AD3C(float *out, float *a, float *b, float t) {
     out[0] = startX + t * (endX - startX);
 }
 
+/* Tail-call alias for PSVECDotProduct; callers cast this to a two-vector dot-product function. */
 void fn_8025AD88(void) { PSVECDotProduct(); }
 
 #pragma scheduling invalid_target
