@@ -261,36 +261,40 @@ void fn_801E3CB4(void *arg0, void *arg1, int arg2, float farg0) {
     fn_802C9904();
 }
 #pragma scheduling reset
-void fn_801E3FC8(void *__restrict arg0, float farg0) {
-    f32 sp[12];
-    float tz;
-    float ty;
-    float tx;
+void fn_801E3FC8(void *__restrict position, float radius) {
+    /* Place the cached sphere model (lbl_8055EA64) at `position`, scaling it by
+     * `radius` over the cached half-height lbl_8055EA68. Builds a 4x3 affine
+     * transform (uniform scale on the diagonal, translation in the last column)
+     * and applies it to the model instance with fn_802C744C. */
+    f32 transform[12];
+    float posZ;
+    float posY;
+    float posX;
     float zero;
-    float s;
-    int handle;
+    float scale;
+    int sphereModel;
 
     zero = 0.0f;
-    *(volatile f32 *)&sp[9] = zero;
-    tx = ((f32 *)arg0)[0];
-    tz = ((f32 *)arg0)[2];
-    s = farg0 / lbl_8055EA68;
-    ty = ((f32 *)arg0)[1];
-    *(volatile f32 *)&sp[10] = zero;
-    handle = lbl_8055EA64;
-    sp[0] = s;
-    sp[1] = zero;
-    sp[2] = zero;
-    sp[3] = zero;
-    sp[4] = s;
-    sp[5] = zero;
-    sp[6] = zero;
-    sp[7] = zero;
-    sp[8] = s;
-    sp[9] = tx;
-    sp[10] = ty;
-    sp[11] = tz;
-    fn_802C744C(handle, sp);
+    *(volatile f32 *)&transform[9] = zero;
+    posX = ((f32 *)position)[0];
+    posZ = ((f32 *)position)[2];
+    scale = radius / lbl_8055EA68;
+    posY = ((f32 *)position)[1];
+    *(volatile f32 *)&transform[10] = zero;
+    sphereModel = lbl_8055EA64;
+    transform[0] = scale;
+    transform[1] = zero;
+    transform[2] = zero;
+    transform[3] = zero;
+    transform[4] = scale;
+    transform[5] = zero;
+    transform[6] = zero;
+    transform[7] = zero;
+    transform[8] = scale;
+    transform[9] = posX;
+    transform[10] = posY;
+    transform[11] = posZ;
+    fn_802C744C(sphereModel, transform);
 }
 #pragma push
 #pragma processor 750
