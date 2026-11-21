@@ -1083,8 +1083,6 @@ void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
 }
 #pragma pop
 
-#pragma push
-#pragma scheduling on
 #pragma opt_common_subs off
 void fn_802D9628(register void *arg0, register int arg1, register int arg2, register int arg3) {
     #pragma opt_common_subs off
