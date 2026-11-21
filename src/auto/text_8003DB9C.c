@@ -2945,7 +2945,7 @@ extern void OSInitThreadQueue(void *);
 extern void (*lbl_8055D978_callback)(unsigned short);
 #pragma cplusplus reset
 #pragma push
-#pragma use_lmw_stmw on
+#pragma use_lmw_stmw off
 #pragma scheduling 750
 void GXInitSpecularDir(unsigned int arg0, void *ctx) {
     extern unsigned int lbl_8055D978;
