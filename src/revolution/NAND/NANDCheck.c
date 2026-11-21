@@ -36,7 +36,7 @@ static s32 nandCalcUsage(s32* blockCountOut, s32* fileCountOut,
 }
 
 static s32 nandCalcUserUsage(s32* blockCountOut, s32* fileCountOut) {
-    return nandCalcUsage(blockCountOut, fileCountOut, lbl_8031AF70);
+    return nandCalcUsage(blockCountOut, fileCountOut, USER_NAND_DIRS);
 }
 
 static u32 nandCheck(u32 neededBlocks, u32 neededFiles, u32 homeDirBlocks,
