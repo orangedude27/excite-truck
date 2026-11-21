@@ -72,7 +72,6 @@ static inline s32 clampHigh_80238BF4(s32 v) {
 }
 #pragma scheduling invalid_target
 void fn_80238BF4(void *arg0, u8 *arg1) {
-#pragma optimization_level 2
     struct LocalFrame {
         u16 indices3[3];
         u8 pad06[2];
@@ -167,14 +166,12 @@ void fn_80238BF4(void *arg0, u8 *arg1) {
         fn_802C8DB8(&frame.outputs[0], 3, &frame.indices3[0], 3);
     }
     fn_802C8D74();
-#pragma optimization_level 4
 }
 void fn_80238FCC(u32 arg0, u32 arg1) {
-    u32 a1 = arg1;
-    u8 *data = *(u8 **)((u8 *)arg0 + 0x14);
-    s32 stride = *(s32 *)(data + 4);
+    void *data = *(void **)((u8 *)arg0 + 0x14);
+    s32 stride = *(s32 *)((u8 *)data + 4);
     s32 offset = 0;
-    u8 *entry = (u8 *)(*(s32 *)(data + 0x24) + (s32)((a1 % (u32)stride) * 0xC));
+    u8 *entry = (u8 *)(*(s32 *)((u8 *)data + 0x24) + (s32)((arg1 % (u32)stride) * 0xC));
     s32 i = 0;
     while (i < *(u16 *)entry) {
         fn_80238BF4((void *)arg0, *(u8 **)(entry + 8) + offset);
@@ -197,6 +194,7 @@ void fn_8023905C(void *state) {
 #pragma scheduling on
 #pragma peephole on
 void fn_802390B4(void *arg0, s32 arg1) {
+#pragma optimization_level 3
     s32 unused;
     u32 version;
     u8 valid;
@@ -233,9 +231,9 @@ void fn_802390B4(void *arg0, s32 arg1) {
         SWAP32_FIELD(*(u8 **)((u8 *)arg0 + 0x14), 0x24);
 
         {
-            s32 j;
             u32 offset;
             u32 i;
+            s32 j;
 
             ptr = *(u8 **)((u8 *)arg0 + 0x14);
             *(u32 *)(ptr + 0x18) = (u32)(data + *(u32 *)(ptr + 0x18));
@@ -295,6 +293,7 @@ void fn_802390B4(void *arg0, s32 arg1) {
             }
         }
     }
+#pragma optimization_level 4
 }
 
 #pragma scheduling on
@@ -370,8 +369,8 @@ void fn_80239784(void *arg0, s32 arg1) {
     i = 0;
     offset = 0;
     *(s32 *)((u8 *)arg0 + 0x10) = *(s32 *)(data + 4) - 1;
-    while ((u32)i < *(u32 *)(data + 8)) {
-        u8 *entry = *(u8 **)(data + 0x18) + offset;
+    while ((u32)i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 8)) {
+        u8 *entry = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset;
         if ((s8)entry[4] != 0) {
             void *r = (void *)fn_802CAC28(entry + 4, 0);
             *(void **)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset) = r;
@@ -380,7 +379,6 @@ void fn_80239784(void *arg0, s32 arg1) {
         }
         offset += 0x14;
         i++;
-        data = *(u8 **)((u8 *)arg0 + 0x14);
     }
 }
 
