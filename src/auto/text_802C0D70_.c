@@ -201,6 +201,7 @@ void fn_802C10C4(void) {
     fn_802C1018();
 }
 void fn_802C10C8(void) {
+    /* Forward to the sun/light per-frame tick (fn_802C1020). */
     fn_802C1020();
 }
 
