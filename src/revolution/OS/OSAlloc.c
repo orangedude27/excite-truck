@@ -92,13 +92,13 @@ static OSHeapCell* DLInsert(OSHeapCell* list, OSHeapCell* cell) {
 
 /* Allocate a block from the given heap, splitting a free cell if enough space remains. */
 void* OSAllocFromHeap(s32 handle, s32 size) {
-    OSHeapDescriptor* heapDesc = &HeapArray[handle];
+    OSHeapDescriptor* hd = &HeapArray[handle];
     OSHeapCell* cell;
     u32 remainingSize;
 
     size = ROUND_UP(size + sizeof(OSHeapCell), 32);
 
-    for (cell = heapDesc->freeList; cell != NULL; cell = cell->next) {
+    for (cell = hd->freeList; cell != NULL; cell = cell->next) {
         if (size <= cell->size) {
             break;
         }
@@ -110,7 +110,7 @@ void* OSAllocFromHeap(s32 handle, s32 size) {
 
     remainingSize = cell->size - size;
     if (remainingSize < 64) {
-        heapDesc->freeList = DLExtract(heapDesc->freeList, cell);
+        hd->freeList = DLExtract(hd->freeList, cell);
     } else {
         OSHeapCell* splitCell;
         cell->size = size;
@@ -127,11 +127,11 @@ void* OSAllocFromHeap(s32 handle, s32 size) {
         if (splitCell->prev != NULL) {
             splitCell->prev->next = splitCell;
         } else {
-            heapDesc->freeList = splitCell;
+            hd->freeList = splitCell;
         }
     }
 
-    heapDesc->usedList = DLAddFront(heapDesc->usedList, cell);
+    hd->usedList = DLAddFront(hd->usedList, cell);
     return (u8*)cell + sizeof(OSHeapCell);
 }
 
