@@ -278,7 +278,8 @@ extern "C" void fn_801D09A8(void *notifier, void *eventData) {
     }
 }
 #pragma cplusplus on
-/* Notify every listener in the second listener list (lbl_8043870C): call virtual slot 3 on each entry's dispatch sub-object with the notifier and event data. */
+/* Notify every listener in the second listener list (lbl_8043870C): call virtual
+ * slot 3 on each entry's dispatch sub-object with the notifier and event data. */
 extern "C" void fn_801D0A24(void *notifier, void *eventData) {
     struct Listener {
         virtual void f0();
