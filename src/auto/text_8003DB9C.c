@@ -1487,7 +1487,7 @@ void __GXFifoInit(void) {
 
 void __GXCleanGPFifo(void) {
     int zero;
-    register unsigned int *gd;
+    unsigned int *gd;
     unsigned int *fifo;
     int intStatus;
     unsigned int tmp;
