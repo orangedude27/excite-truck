@@ -338,6 +338,8 @@ void fn_80176780(int mode, u8 *extraByte) {
 }
 #pragma scheduling on
 #pragma pop
+/* Public entry point for the physics fade-in: tail-call the shared fade setup
+ * that arms the fade-in callback (fn_80176E4C). */
 void fn_80176858(void) {
     fn_80177138();
 }
