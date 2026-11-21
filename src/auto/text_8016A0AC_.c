@@ -740,27 +740,31 @@ void *fn_8016B550(void *object, s32 shouldFree) {
  * through its element destructor, clear every manager field, and return 0 when
  * the record manager had no array to destroy. */
 int fn_8016B598(void) {
-    if (*(void **)((char *)&lbl_80430340 + 0x10) != 0) {
-        fn_8002F6AC(*(void **)((char *)&lbl_80430340 + 0x10), (void *(*)(void *, s32))fn_8016B4FC);
-        *(s32 *)((char *)&lbl_80430340 + 0x10) = 0;
-        *(s32 *)((char *)&lbl_80430340 + 0x14) = 0;
-        lbl_80430340.unk_0x0 = 0;
-        *(s32 *)((char *)&lbl_80430340 + 4) = 0;
-        *(s32 *)((char *)&lbl_80430340 + 8) = 0;
+    #define gModelEntryManager lbl_80430340
+    #define gModelRecordManager lbl_80430318
+    if (*(void **)((char *)&gModelEntryManager + 0x10) != 0) {
+        fn_8002F6AC(*(void **)((char *)&gModelEntryManager + 0x10), (void *(*)(void *, s32))fn_8016B4FC);
+        *(s32 *)((char *)&gModelEntryManager + 0x10) = 0;
+        *(s32 *)((char *)&gModelEntryManager + 0x14) = 0;
+        gModelEntryManager.unk_0x0 = 0;
+        *(s32 *)((char *)&gModelEntryManager + 4) = 0;
+        *(s32 *)((char *)&gModelEntryManager + 8) = 0;
     }
     {
-        void *recordArray = *(void **)(lbl_80430318 + 0x10);
+        void *recordArray = *(void **)(gModelRecordManager + 0x10);
         if (recordArray != 0) {
             fn_8002F6AC(recordArray, fn_8016B550);
-            *(s32 *)(lbl_80430318 + 0x10) = 0;
-            *(s32 *)(lbl_80430318 + 0x14) = 0;
-            *(s32 *)lbl_80430318 = 0;
-            *(s32 *)(lbl_80430318 + 4) = 0;
-            *(s32 *)(lbl_80430318 + 8) = 0;
+            *(s32 *)(gModelRecordManager + 0x10) = 0;
+            *(s32 *)(gModelRecordManager + 0x14) = 0;
+            *(s32 *)gModelRecordManager = 0;
+            *(s32 *)(gModelRecordManager + 4) = 0;
+            *(s32 *)(gModelRecordManager + 8) = 0;
         } else {
             return (int)recordArray;
         }
     }
+    #undef gModelEntryManager
+    #undef gModelRecordManager
 }
 #pragma optimize_for_size reset
 void fn_8016B634(s32 arg0) {
