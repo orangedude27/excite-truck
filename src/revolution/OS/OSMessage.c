@@ -72,7 +72,7 @@ BOOL OSJamMessage(OSMessageQueue* queue, OSMessage mesg, u32 flags) {
         OSSleepThread(&queue->sendQueue);
     }
 
-    // Find last position in queue
+    /* Find last position in queue */
     lastMesg = (queue->front + queue->capacity - 1) % queue->capacity;
     queue->front = lastMesg;
     queue->buffer[lastMesg] = mesg;
