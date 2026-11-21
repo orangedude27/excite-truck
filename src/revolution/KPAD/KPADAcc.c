@@ -59,14 +59,14 @@ static void calc_acc_vertical(KPADInsideStatus* kp) {
      * update the smoothed horizon circle position/counter. */
     f32 mag, projX, projY, dirX, dirY;
 
-    mag = (f32)fn_8002F234(kp->hard_acc.x * kp->hard_acc.x + kp->hard_acc.y * kp->hard_acc.y);
-    if (mag == 0.0f || mag >= lbl_80560BF0) return;
+    mag = (f32)kp_sqrt(kp->hard_acc.x * kp->hard_acc.x + kp->hard_acc.y * kp->hard_acc.y);
+    if (mag == 0.0f || mag >= kp_two_g) return;
 
     dirX = kp->hard_acc.x / mag;
     dirY = kp->hard_acc.y / mag;
 
-    if (mag > lbl_80560BE4) mag = lbl_80560BF0 - mag;
-    mag *= mag * lbl_80558EA4;
+    if (mag > kp_one_g) mag = kp_two_g - mag;
+    mag *= mag * kp_acc_horizon_pw;
 
     projX = kp->accXY_nrm_hori.x * dirX + kp->accXY_nrm_hori.y * dirY;
     projY = kp->accXY_nrm_hori.y * dirX - kp->accXY_nrm_hori.x * dirY;
