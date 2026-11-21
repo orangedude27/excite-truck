@@ -394,7 +394,7 @@ config.libs = [
             Object(Matching, "auto/text_80024BD4_.c"),
             Object(NonMatching, "auto/text_80024C54_.c"),
             Object(NonMatching, "auto/text_80024D0C_.c"),
-            Object(NonMatching, "auto/text_80024DD8_.c"),
+            Object(Matching, "auto/text_80024DD8_.c"),
             Object(NonMatching, "auto/text_8002514C_.c"),
             Object(NonMatching, "auto/text_800251B0_.c"),
             Object(NonMatching, "auto/text_800251C8_.c"),
