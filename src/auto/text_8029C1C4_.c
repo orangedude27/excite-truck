@@ -1505,10 +1505,10 @@ void fn_8029E8E0(float *arg0, int arg1) {
                 float y = f30 + sp8.y;
                 float len2 = x2 + z2;
                 radius = y * y + len2;
-                a = (i ^ 1) >> 1;
-                b = (i ^ 1) & i;
                 norm = (float)fn_8002F234(radius);
                 norm = f31 / norm;
+                a = (i ^ 1) >> 1;
+                b = (i ^ 1) & i;
                 {
                     float az = f31 + sp8.z * norm;
                     float ax = f31 + sp8.x * norm;
@@ -1737,6 +1737,8 @@ int fn_8029EF38(void *effect) {
 }
 
 #pragma dont_inline on
+/* Thunk in the nw4r::ef::Effect vtable (slot lbl_80349780+0x18): forwards to the
+ * empty virtual hook fn_8029EF28, a no-op in this build. */
 void fn_8029EF40(void) {
     fn_8029EF28();
 }
