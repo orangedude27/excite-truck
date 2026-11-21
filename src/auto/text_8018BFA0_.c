@@ -5,7 +5,7 @@
 typedef struct { float m[12]; } Matrix8018;
 extern void PSVECCrossProduct(float *, float *, int *);
 extern float PSVECDotProduct(int *, float *);
-extern void *__AXFXGetLfoSinTable_801769CC(int);
+extern void *__AXFXGetLfoSinTable_801769CC();
 extern void fn_80015A20(void *, void *);
 extern void fn_80015B20(float *, int *, float *);
 extern int fn_80129D18(int, int);
