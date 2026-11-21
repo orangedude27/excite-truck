@@ -278,9 +278,6 @@ namespace nw4hbm { namespace lyt {
     };
 } }
 
-/* nw4hbm::lyt::Picture::SetVtxColorElement(u32, u8): store one channel of the
- * picture's corner colors -- the four Color members at 0xD4 seen as the 16 bytes
- * an animation target indexes them by -- asserting the index is in range. */
 extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7PictureFUlUc(
     nw4hbm::lyt::Picture* this_, u32 idx, u8 color) {
     /* Store one channel of a picture corner color -- the four Colors at 0xD4
