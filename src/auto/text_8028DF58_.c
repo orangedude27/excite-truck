@@ -227,11 +227,11 @@ void fn_8028DF58(void) {
     lbl_8055F748 = 0;
 }
 void fn_8028E0F0(void) {
-    struct Pool { char a[0x104]; char b[0x104]; char c[0x100]; } *p = (struct Pool *)&lbl_804B34B0;
+    char* base = (char*)&lbl_804B34B0;
     fn_8028F5A4();
-    fn_8028EE28(p->c);
-    fn_8028ED80(p->b);
-    fn_8028ED80(p->a);
+    fn_8028EE28(base + 0x208);
+    fn_8028ED80(base + 0x104);
+    fn_8028ED80(base);
 }
 #pragma pop
 extern void fn_8028ED74(void *);
@@ -449,8 +449,9 @@ void fn_8028E584(void *emitter, int pos, float *basePos) {
 }
 
 extern void fn_8028FAE4(void *, int, float *, float);
-void fn_8028E58C(void *arg0, int arg1, float *arg2, float farg0) {
-    fn_8028FAE4(arg0, arg1, arg2, farg0);
+void fn_8028E58C(void *emitter, int posA, float *basePos, float angle) {
+    /* Forward to the effect emitter (fn_8028FAE4). */
+    fn_8028FAE4(emitter, posA, basePos, angle);
 }
 
 extern void fn_8028FC40(void *, int, float *, float);
