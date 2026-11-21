@@ -35,6 +35,8 @@ extern float lbl_80562E60;
 extern float lbl_80562E64;
 extern short lbl_80562E28;
 extern u8 lbl_80339E60[];
+#define kBaseVTable lbl_80339E60
+#define kField38Init lbl_80562E28 /* -2 */
 void fn_801EAB2C(void * __restrict arg0) {
     float b;
     float a;
