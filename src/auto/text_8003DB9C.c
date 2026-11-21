@@ -1486,10 +1486,11 @@ void __GXFifoInit(void) {
 
 void __GXCleanGPFifo(void) {
     int zero;
-    unsigned int *gd;
     unsigned int *fifo;
+    unsigned int *gd;
     int intStatus;
     unsigned int tmp;
+    unsigned int maskResult;
     unsigned int *gx4;
     if ((unsigned char)lbl_8055D949 == 0) {
         return;
@@ -1512,14 +1513,11 @@ void __GXCleanGPFifo(void) {
     __cpReg[0x3A / 2] = (unsigned short)((fifo[5] >> 16) & 0x3FFF);
     PPCSync();
     if ((unsigned char)lbl_8055D960 != 0) {
-        unsigned int wrPtr = fifo[6];
         unsigned int *piFifo = (unsigned int *)lbl_8037C0E4;
-        unsigned int rdPtr = fifo[5];
-        unsigned int count = fifo[7];
-        piFifo[5] = rdPtr;
-        piFifo[6] = wrPtr;
-        piFifo[7] = count;
-        zero = __rlwimi(zero, wrPtr, 0, 3, 26);
+        piFifo[5] = fifo[5];
+        piFifo[6] = fifo[6];
+        piFifo[7] = fifo[7];
+        zero = __rlwimi(zero, fifo[6], 0, 3, 26);
         __piReg[5] = zero;
         tmp = (gd[2] | 4u) & 0xFFFFFFF7u;
         gd[2] = tmp;
@@ -1529,9 +1527,9 @@ void __GXCleanGPFifo(void) {
         __cpReg[1] = (unsigned short)tmp;
     }
     tmp = gd[2] & ~2u;
-    tmp &= ~0x20u;
-    gd[2] = tmp;
-    __cpReg[1] = (unsigned short)tmp;
+    maskResult = tmp & ~0x20u;
+    gd[2] = maskResult;
+    __cpReg[1] = (unsigned short)maskResult;
     lbl_8055D950 = 0;
     gx4 = *(unsigned int * volatile *)&__GXData;
     tmp = gx4[4] | 3u;
