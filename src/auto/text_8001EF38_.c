@@ -242,57 +242,61 @@ void fn_8001EFCC(void* alarm) {
 
 #pragma scheduling invalid_target
 void fn_8001EFF0(void) {
-    char* base = lbl_802FDE68;
-    register VObj* obj;
-    VObj* child;
-    u32 n;
-    s32 i;
-    s32 j;
-    s32 idx;
-    SrcCoef* p;
-    s32* res;
-    p = (SrcCoef*)(base + 0xC8);
-    n = 0;
+    struct L {
+        s32 *res;
+        s32 idx;
+        char *base;
+        s32 j;
+        VObj *obj;
+        s32 i;
+        SrcCoef *p;
+        u32 n;
+        VObj *child;
+    } l;
+
+    l.n = 0;
+    l.base = lbl_802FDE68;
+    l.p = (SrcCoef*)(l.base + 0xC8);
     do {
-        p->unk8 = fn_80131234(p->unk4);
-        n++;
-        p++;
-    } while (n < 8);
-    lbl_8055D610 = fn_80131810(base + 0x148);
+        l.p->unk8 = fn_80131234(l.p->unk4);
+        l.n++;
+        l.p++;
+    } while (l.n < 8);
+    lbl_8055D610 = fn_80131810(l.base + 0x148);
     if (lbl_8055D610 != 0) {
-        p = (SrcCoef*)(base + 0xC8);
-        for (i = 0; (obj = ((VObj*)lbl_8055D610)->vt->getAt((VObj*)lbl_8055D610, i)) != NULL; i++) {
-            if (stricmp(obj->vt->getName(obj), base + 0x15C) == 0) {
-                idx = fn_8001F41C((char*)obj->vt->getAttr(obj, lbl_80558D5C));
-                if (idx >= 0 && idx < 8) {
-                    if ((u32)idx < 8) {
-                        res = (s32*)fn_801284F8(8, base + 0x174);
-                        if (res != NULL) {
-                            res[0] = 0;
-                            res[1] = 0;
-                            for (j = 0; (child = obj->vt->getChild(obj, j)) != NULL; j++) {
-                                if (stricmp(child->vt->getName(child), lbl_80558D6C) == 0) {
-                                    res[1]++;
+        l.p = (SrcCoef*)(l.base + 0xC8);
+        for (l.i = 0; (l.obj = ((VObj*)lbl_8055D610)->vt->getAt((VObj*)lbl_8055D610, l.i)) != NULL; l.i++) {
+            if (stricmp(l.obj->vt->getName(l.obj), l.base + 0x15C) == 0) {
+                l.idx = fn_8001F41C((char*)l.obj->vt->getAttr(l.obj, lbl_80558D5C));
+                if (l.idx >= 0 && l.idx < 8) {
+                    if ((u32)l.idx < 8) {
+                        l.res = (s32*)fn_801284F8(8, l.base + 0x174);
+                        if (l.res != NULL) {
+                            l.res[0] = 0;
+                            l.res[1] = 0;
+                            for (l.j = 0; (l.child = l.obj->vt->getChild(l.obj, l.j)) != NULL; l.j++) {
+                                if (stricmp(l.child->vt->getName(l.child), lbl_80558D6C) == 0) {
+                                    l.res[1]++;
                                 }
                             }
-                            if (res[1] == 0) {
-                                fn_802E317C(lbl_802FE0FC, obj->vt->getName(obj));
+                            if (l.res[1] == 0) {
+                                fn_802E317C(lbl_802FE0FC, l.obj->vt->getName(l.obj));
                             }
-                            res[0] = (s32)fn_8012850C(res[1] * 8, lbl_802FE0EC);
-                            res[1] = 0;
-                            for (j = 0; (child = obj->vt->getChild(obj, j)) != NULL; j++) {
-                                if (stricmp(child->vt->getName(child), lbl_80558D64) == 0) {
-                                    *(s32*)(res[0] + res[1] * 8) = child->vt->getAttr2(child, lbl_802FE0E0);
-                                    ((s32*)(res[0] + res[1] * 8))[1] = child->vt->getAttr(child, lbl_802FE0D4);
-                                    res[1]++;
+                            l.res[0] = (s32)fn_8012850C(l.res[1] * 8, lbl_802FE0EC);
+                            l.res[1] = 0;
+                            for (l.j = 0; (l.child = l.obj->vt->getChild(l.obj, l.j)) != NULL; l.j++) {
+                                if (stricmp(l.child->vt->getName(l.child), lbl_80558D64) == 0) {
+                                    *(s32*)(l.res[0] + l.res[1] * 8) = l.child->vt->getAttr2(l.child, lbl_802FE0E0);
+                                    ((s32*)(l.res[0] + l.res[1] * 8))[1] = l.child->vt->getAttr(l.child, lbl_802FE0D4);
+                                    l.res[1]++;
                                 }
                             }
                         }
-                        p[idx].unkC = res;
+                        l.p[l.idx].unkC = l.res;
                     }
                 } else {
-                    s32 name = obj->vt->getAttr(obj, lbl_80558D5C);
-                    fn_802E30C8(base + 0x188, obj->vt->getName(obj), name);
+                    s32 name = l.obj->vt->getAttr(l.obj, lbl_80558D5C);
+                    fn_802E30C8(l.base + 0x188, l.obj->vt->getName(l.obj), name);
                 }
             }
         }
@@ -422,14 +426,16 @@ void fn_8001F578(void) {
 }
 #pragma scheduling on
 extern void *memcpy(void *, const void *, unsigned long);
+#pragma opt_propagation off
 void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
     int *a = (int *)arg0;
     int *b = (int *)arg1;
     char *input = (char *)arg1 + 0x50;
     char *output = (char *)arg0;
     char *entry;
-    int sum7, sum6, sum5, sum4, sum3, sum2, sum1, sum0;
+    int sum0, sum7, sum6, sum5, sum4, sum3, sum2, sum1;
     int found, empty;
+    int e20, value20, value24;
     unsigned int i, j;
     sum0 = a[0] + b[0];
     sum1 = a[1] + b[1];
@@ -456,9 +462,10 @@ void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
             if (empty < 0 && (signed char)*entry == 0) {
                 empty = (int)j;
             } else if (stricmp(entry, input) == 0) {
-                int value20 = *(int *)(entry + 0x20) + *(int *)(input + 0x20);
-                int value24 = *(int *)(input + 0x24);
+                e20 = *(int *)(entry + 0x20);
                 found = 1;
+                value20 = e20 + *(int *)(input + 0x20);
+                value24 = *(int *)(input + 0x24);
                 *(int *)(entry + 0x20) = value20;
                 *(int *)(entry + 0x24) += value24;
             }
@@ -468,8 +475,6 @@ void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
         }
     }
 }
-
-#pragma scheduling invalid_target
 /* RealName: Achievements_CommitPendingSessionStats (merge pending session stats into active block, then clear pending)
  * Merges lbl_8035AF38 (pending session achievements/statistics block) into
  * lbl_8035A718 (active achievements block) and resets the pending block.
@@ -494,21 +499,50 @@ void fn_8001F76C(void) {
 #undef sPendingAchievementsBlock
 }
 
-void fn_8001F7E4(s32 arg0, s32 arg1) {
-    s32 limit;
-    s32 adjusted;
+extern void fn_8000DB18(void);
+void fn_8001F780(void) {
+    char *base = lbl_80358698;
+    char *p = fn_8000DA10() * ACH_BLOCK_SIZE + base;
+    ((void (*)())fn_8001F5BC)(p, base + 0x2080);
+    ((void (*)())fn_8001F5BC)(p, base + 0x28a0);
+    fn_8001F578();
+    fn_8000DB18();
+}
 
-    if (fn_8001FD24()) {
-        if (arg0 == 0 && *(u8 *)&lbl_8055D614 != 0) {
-            limit = lbl_8055D618 - fn_8001F89C(arg0, fn_8000DA10());
-            adjusted = arg1;
-            if (limit < arg1)
-                adjusted = limit;
-            fn_802E30C8(lbl_802FE060, arg1, adjusted);
-            arg1 = adjusted;
+void fn_8001F7E4(s32 counterId, s32 amount) {
+#define CanRecordAchievements     fn_8001FD24
+#define sCapExcitePoints          lbl_8055D614
+#define sMaxExcitePoints          lbl_8055D618
+#define GetAchCounterValue        fn_8001F89C
+#define CurrentPlayer             fn_8000DA10
+#define sPendingAchievementsBlock lbl_8035AF38
+#define DebugPrint                fn_802E30C8
+#define kScoringLimiterMsg        lbl_802FE060
+    /* RealName: Achievements_AddPendingCounterValue. Add `amount` to lifetime
+       counter `counterId` in this session's pending block while achievements can
+       be recorded; excite points (counter 0) are capped at the unlocked max. */
+    s32 limit;
+    s32 clampedAmount;
+
+    if (CanRecordAchievements()) {
+        if (counterId == 0 && *(u8 *)&sCapExcitePoints != 0) {
+            limit = sMaxExcitePoints - GetAchCounterValue(counterId, CurrentPlayer());
+            clampedAmount = amount;
+            if (limit < amount)
+                clampedAmount = limit;
+            DebugPrint(kScoringLimiterMsg, amount, clampedAmount);
+            amount = clampedAmount;
         }
-        *(s32 *)(lbl_8035AF38 + arg0 * 4) += arg1;
+        *(s32 *)(sPendingAchievementsBlock + counterId * 4) += amount;
     }
+#undef CanRecordAchievements
+#undef sCapExcitePoints
+#undef sMaxExcitePoints
+#undef GetAchCounterValue
+#undef CurrentPlayer
+#undef sPendingAchievementsBlock
+#undef DebugPrint
+#undef kScoringLimiterMsg
 }
 
 #pragma scheduling on
@@ -614,17 +648,17 @@ extern void *fn_80016720(const char *);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 int fn_8001FAC8(int arg0, const char *arg1) {
-    char (*blocks)[0x820] = (char (*)[0x820])lbl_80358698;
-    char *name;
-    int total;
-    int offset;
-    char *region;
-    char *nameTable;
-    char *valueTable;
+    register char *table = lbl_80358698;
+    register char *name;
+    register int total;
+    register int offset;
+    register char *region;
+    register char *nameTable;
+    register char *valueTable;
 
     name = (char *)fn_80016720(arg1);
     total = 0;
-    region = blocks[fn_8000DA10()];
+    region = table + fn_8000DA10() * 0x820;
     offset = arg0 * 4;
     nameTable = region + 0x50;
     valueTable = region + offset;
@@ -636,7 +670,7 @@ int fn_8001FAC8(int arg0, const char *arg1) {
         valueTable += 0x28;
     }
 
-    region = blocks[4];
+    region = table + 0x2080;
     nameTable = region + 0x50;
     valueTable = region + offset;
     arg0 = 0;
@@ -647,7 +681,7 @@ int fn_8001FAC8(int arg0, const char *arg1) {
         valueTable += 0x28;
     }
 
-    region = blocks[5];
+    region = table + 0x28A0;
     nameTable = region + 0x50;
     valueTable = region + offset;
     arg0 = 0;
