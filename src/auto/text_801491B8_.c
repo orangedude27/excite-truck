@@ -1832,10 +1832,10 @@ extern "C" void fn_8014DC08(void *arg0) {
     total = lbl_80561648;
     pending = (*listp)->pending;
     if (pending) {
-        register int duration = pending->duration;
+        int duration = pending->duration;
         pending->next = 0;
-        pending->prev = (*listp)->last;
         total += (float)duration;
+        pending->prev = (*listp)->last;
         if ((*listp)->last) (*listp)->last->next = pending;
         (*listp)->last = pending;
         if (!(*listp)->first) (*listp)->first = pending;
