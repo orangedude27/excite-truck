@@ -191,6 +191,7 @@ void fn_8028776C(int userData) { fn_80287238(userData - 4); }
 void fn_80287774(int userData) { fn_80283938(userData - 4); }
 
 void fn_8028777C(void) {
+    /* Empty placeholder invoked first in the main subsystem init sequence (fn_80287800); no work to do. */
 }
 
 /* Initializes this subsystem state by clearing its flag and running setup steps. */
