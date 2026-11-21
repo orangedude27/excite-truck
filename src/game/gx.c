@@ -1558,7 +1558,10 @@ void fn_802D08CC(int cullMode) {
     GXSetCullMode(gxCullMode);
 }
 
-void fn_802D0910(int, int, int, int, int, int) {
+/* No-op GX draw callback (compiles to a bare return).  fn_802D09E8 calls it with
+   a texture id, a tile's x/y offset and the frame/tile extents while stepping
+   through movie tiles; the arguments are unused. */
+void fn_802D0910(int tex, int x, int y, int width, int height, int tileSize) {
 }
 
 #pragma use_lmw_stmw on
