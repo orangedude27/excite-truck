@@ -76,7 +76,6 @@ void fn_802E3150(void *message) {
 void fn_802E317C(int fmt, ...) {
     va_list args;
 
-    /* Fix note: start the variadic list after its sole fixed argument. */
     va_start(args, fmt);
     fn_802E3028((const char *)fmt, args, (int)&sPanicPrefix);
     va_end(args);
