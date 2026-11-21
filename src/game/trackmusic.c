@@ -777,7 +777,7 @@ void fn_80210514(int mode) {
 
 #pragma push
 #pragma opt_strength_reduction off
-static long fn_80210570_check(char *ptr, long *valPtr) {
+static inline long fn_80210570_check(char *ptr, long *valPtr) {
     long val = *valPtr;
     if (val == 3) {
         val = *(long *)(ptr + 0x000);
