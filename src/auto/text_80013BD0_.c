@@ -622,33 +622,36 @@ void fn_80014A98(void *obj) {
 s32 fn_80014ADC(void) { return 0; }
 
 s32 fn_80014AE4(void) {
-    register s32 var_r6 = 0;
-    register s32 var_r7 = 0;
-    register s32 var_r8 = 1;
-    register s32 var_r9 = 1;
-    void *temp_r11;
+    s32 var_r6;
     s32 result;
-    if (*(s32 *)((u8 *)lbl_8055D350 + 4) == 1 && *(s32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0x30) + 0x10) > 0) {
+    s32 var_r7;
+    s32 var_r8;
+    s32 var_r9;
+    void *base;
+    void *temp_r11;
+
+    var_r6 = 0;
+    base = lbl_8055D350;
+    if (*(s32 *)((u8 *)base + 4) == 1 && *(s32 *)((u8 *)*(void **)((u8 *)base + 0x30) + 0x10) > 0) {
         var_r6 = 1;
     }
+    temp_r11 = *(void **)((u8 *)base + 0x30);
     result = 1;
-    temp_r11 = *(void **)((u8 *)lbl_8055D350 + 0x30);
     var_r7 = 0;
     var_r8 = 1;
     var_r9 = 1;
-    if (!(*(f32 *)((u8 *)temp_r11 + 0x1C) > lbl_80560368) && (*(s32 *)((u8 *)temp_r11 + 0x10) != *(s32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0xC) + 8))) {
+    if (!(*(f32 *)((u8 *)temp_r11 + 0x1C) > lbl_80560368) && *(s32 *)((u8 *)temp_r11 + 0x10) != *(s32 *)((u8 *)*(void **)((u8 *)base + 0xC) + 8)) {
         var_r9 = 0;
     }
-    if ((var_r9 == 0) && (var_r6 == 0)) {
+    if (var_r9 == 0 && var_r6 == 0) {
         var_r8 = 0;
     }
-    if ((var_r8 != 0) && (*(f32 *)((u8 *)temp_r11 + 0x14) < lbl_805603B4)) {
+    if (var_r8 != 0 && *(f32 *)((u8 *)temp_r11 + 0x14) < lbl_805603B4) {
         var_r7 = 1;
     }
-    if (var_r7 != 0) goto ret_one;
-    if (*(s32 *)((u8 *)temp_r11 + 0x10) > *(s32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0xC) + 8)) goto ret_one;
-    return 0;
-ret_one:
+    if (var_r7 == 0 && !(*(s32 *)((u8 *)temp_r11 + 0x10) > *(s32 *)((u8 *)*(void **)((u8 *)base + 0xC) + 8))) {
+        result = 0;
+    }
     return result;
 }
 
@@ -1095,15 +1098,17 @@ extern char lbl_80558BC4;
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 void fn_800154B8(void) {
-    volatile s32 *base;
+    s32 current;
+    s32 *base;
+    s32 *pFirst;
     register s32 first, left, right, start, i, limit;
-    register s32 current;
     register f32 y, step;
     current = fn_801EA994();
-    base = *(volatile s32 **)((char *)lbl_8055D350 + 0x30);
+    base = *(s32 **)((char *)lbl_8055D350 + 0x30);
     left = 2;
     right = 2;
-    first = base[1];
+    pFirst = (s32 *)((char *)base + 4);
+    first = *pFirst;
     if (first <= 2) {
         left = first - 1;
         right = 2 - left;
@@ -1347,6 +1352,7 @@ void fn_80015E30(void *arg0, f32 angle) {
     *(f32 *)((u8 *)arg0 + 0x1C) = neg;
     *(f32 *)((u8 *)arg0 + 0x20) = cosine;
 }
+#pragma scheduling on
 void fn_80015EB0(void *arg0, f32 angle) {
     f32 one;
     f32 neg;
@@ -1370,7 +1376,6 @@ void fn_80015EB0(void *arg0, f32 angle) {
     m[7] = zero;
     m[8] = c;
 }
-
 extern f32 lbl_805603F8,lbl_805603FC,lbl_80560408,lbl_8056040C,lbl_80560410,lbl_80560414;
 extern void fn_801478E0(void*,void*,s32,s32);
 extern void fn_80147F30(s32,s32,s32,f32,f32,f32,f32,f32,f32,f32,f32,f32,f32);
