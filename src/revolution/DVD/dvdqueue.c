@@ -24,8 +24,8 @@ void __DVDClearWaitingQueue(void) {
     }
 }
 
+/* Push a command block onto the tail of the specified waiting queue. */
 BOOL __DVDPushWaitingQueue(s32 prio, DVDCommandBlock* block) {
-    /* Push a command block onto the tail of the specified waiting queue. */
     BOOL enabled = OSDisableInterrupts();
     DVDCommandBlock* head = (DVDCommandBlock*)&WaitingQueue[prio];
 
