@@ -50,18 +50,20 @@ void fn_8015EC50(unsigned short *out, void *stream) {
 #define TUBE_TAG 0x54554245          /* little-endian fourcc "TUBE" */
 #define TUBE_COUNT_LIMIT 1000
 #define TUBE_VALUE_LIMIT lbl_805617D0 /* 0.9f */
-int fn_8015ECC0(void *arg0)
+int fn_8015ECC0(void *tube)
 {
-  register int result = 0;
-  register int test = (((int *) arg0)[8] < 1000 && ((unsigned int *) arg0)[6] == 0x54554245) ? 1 : 0;
-  if (test != 0)
+  /* True when a candidate scene object is a usable "TUBE": its count is below the
+     limit, its tag fourcc is TUBE, and the referenced matrix element is large enough. */
+  register int isValid = 0;
+  register int isTube = (((int *) tube)[8] < TUBE_COUNT_LIMIT && ((unsigned int *) tube)[6] == TUBE_TAG) ? 1 : 0;
+  if (isTube != 0)
   {
-    if ((float) fabs(((float *) ((void **) arg0)[3])[7]) > lbl_805617D0)
+    if ((float) fabs(((float *) ((void **) tube)[3])[7]) > TUBE_VALUE_LIMIT)
     {
-      result = 1;
+      isValid = 1;
     }
   }
-  return result;
+  return isValid;
 }
 #pragma dont_inline reset
 
