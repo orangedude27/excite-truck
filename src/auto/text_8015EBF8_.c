@@ -359,47 +359,38 @@ extern f32 lbl_805617D4, lbl_805617D8, lbl_805617DC, lbl_805617E0;
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma processor 750
-void fn_8015F1E4(void *arg0, void *arg1)
+void fn_8015F1E4(void *arg0, void * __restrict arg1)
 {
-  void *inputState;
-  f32 x = *((f32 *) (((char *) inputState) + 0x18));
-  float new_var;
-  f32 z = *((f32 *) (((char *) inputState) + 0x20));
+  f32 base = *(const f32 *)((const char *)arg1 + 0x24);
+  void *state = *(void **)((char *)arg1 + 0xC);
+  f32 x = *(f32 *)((char *)state + 0x18);
+  f32 z = *(f32 *)((char *)state + 0x20);
   f32 result[5];
   f32 speed;
-  void *state;
-  f32 threshold;
   f32 tmp;
   f32 angle;
   result[0] = x;
   result[1] = z;
   speed = (f32) ((double (*)(f32)) fn_8002F234)((x * x) + (z * z));
-  state = *((void **) (((char *) arg1) + 0xC));
-  tmp = lbl_805617D8 * speed;
-  threshold = lbl_805617D4;
-  inputState = *((void **) (((char *) arg1) + 0xC));
-  new_var = lbl_805617DC;
-  dummy_label_423612:
-  ;
-
-  ;
-  angle = x + (new_var * tmp);
+  tmp = 3.05f * speed;
+  angle = base + (0.5f * tmp);
   *((f32 *) (((char *) arg0) + 0xC)) = angle;
   {
-    f32 y = *((f32 *) (((char *) state) + 0x1C));
-    if (y < threshold)
+    void *s2 = *(void **)((char *)arg1 + 0xC);
+    f32 y = *((f32 *) (((char *) s2) + 0x1C));
+    if (y < 0.0f)
     {
       f32 delta = (*((f32 *) (((char *) arg1) + 0x28))) - lbl_805617E0;
-      result[2] = (*((f32 *) (((char *) state) + 0x24))) + ((*((f32 *) (((char *) state) + 0x18))) * delta);
-      result[3] = (*((f32 *) (((char *) state) + 0x28))) + ((*((f32 *) (((char *) state) + 0x1C))) * delta);
-      result[4] = (*((f32 *) (((char *) state) + 0x2C))) + ((*((f32 *) (((char *) state) + 0x20))) * delta);
+      result[2] = (*((f32 *) (((char *) s2) + 0x24))) + ((*((f32 *) (((char *) s2) + 0x18))) * delta);
+      result[3] = (*((f32 *) (((char *) s2) + 0x28))) + ((*((f32 *) (((char *) s2) + 0x1C))) * delta);
+      result[4] = (*((f32 *) (((char *) s2) + 0x2C))) + ((*((f32 *) (((char *) s2) + 0x20))) * delta);
     }
     else
     {
       f32 delta = -((*((f32 *) (((char *) arg1) + 0x28))) - lbl_805617E0);
-      result[2] = (*((f32 *) (((char *) state) + 0x24))) + ((*((f32 *) (((char *) state) + 0x18))) * delta);
-      result[3] = (*((f32 *) (((char *) state) + 0x28))) + ((*((f32 *) (((char *) state) + 0x1C))) * delta);
-      result[4] = (*((f32 *) (((char *) state) + 0x2C))) + ((*((f32 *) (((char *) state) + 0x20))) * delta);
+      result[2] = (*((f32 *) (((char *) s2) + 0x24))) + ((*((f32 *) (((char *) s2) + 0x18))) * delta);
+      result[3] = (*((f32 *) (((char *) s2) + 0x28))) + ((*((f32 *) (((char *) s2) + 0x1C))) * delta);
+      result[4] = (*((f32 *) (((char *) s2) + 0x2C))) + ((*((f32 *) (((char *) s2) + 0x20))) * delta);
     }
   }
   *((f32 *) (((char *) arg0) + 4)) = result[2];
