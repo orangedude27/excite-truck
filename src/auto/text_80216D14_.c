@@ -294,6 +294,8 @@ extern "C" void fn_802173F8(void *menuGroup) {
 }
 #pragma dont_inline reset
 #pragma cplusplus off
+/* No-op post-close hook: invoked with the previously active UI menu group after
+ * a window finishes closing; intentionally does nothing in this build. */
 void fn_80217478(void) {
 
 }
