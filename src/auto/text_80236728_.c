@@ -745,6 +745,8 @@ extern char lbl_8055BA08[];
 extern char lbl_8055BA10[];
 extern char lbl_80498664[];
 extern char *fn_80029004(char *, int);
+/* No-op trail/anim hook: fn_80236950 forwards here alongside the trail
+ * activate/deactivate/status hooks (fn_80237DA0 / fn_80237E7C / fn_80237EFC). */
 void fn_80237A9C(void) {
 }
 
