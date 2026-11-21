@@ -42,20 +42,34 @@ extern char lbl_802FA678[];
 extern char lbl_8055B860[];
 extern char lbl_803456B8[];
 extern void fn_8025DAEC(void *, void *);
+#define sp8 low.f8
+#define spC low.fC
+#define sp10 low.f10
+#define sp14 low.f14
+#define sp18 low.f18
+#define sp1C low.f1C
+#define sp30 low.f30
+#define sp34 low.f34
+#define sp38 low.f38
+#define sp3C low.f3C
+#define sp40 low.f40
+#define desc low.fd
 #define DS(off) desc[(((off) - 0xB8) >> 2)]
 #define APPEND(v) { int *_d=(int*)(long)lbl_8055F3C4; int _i=_d[7]; _d[7]=_i+1; ((int*)_d[6])[_i]=(v); }
 void fn_8025CE78(void) {
     char *tbl;
     char buf6[0x43C], buf5[0x43C], buf4[0x43C], buf3[0x43C];
     char buf2[0x43C], buf1[0x43C], buf0[0x43C];
-    int desc[155];
-    int sp40[30];
-    int sp3C, sp38, sp34, sp30;
-    int pad20[4];
-    void *sp1C;
-    int sp18, sp14, sp10;
-    int *spC;
-    int sp8;
+    struct {
+        int f8;
+        int *fC;
+        int f10, f14, f18;
+        void *f1C;
+        char pad[16];
+        int f30, f34, f38, f3C;
+        int f40[30];
+        int fd[155];
+    } low;
     void *list, **items, *item;
     char *name, *entry, *src, *dst;
     char c;
