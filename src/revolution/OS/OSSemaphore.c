@@ -1,5 +1,6 @@
 #include <revolution/OS.h>
 
+/* Counting semaphores built on top of an OS thread queue. */
 void OSInitSemaphore(OSSemaphore* sem, s32 count) {
     /* Initialize a semaphore with the given initial count. */
     BOOL enabled;
