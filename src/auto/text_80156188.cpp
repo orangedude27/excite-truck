@@ -586,6 +586,8 @@ extern "C" void fn_80156B4C(void) {
 extern "C" void fn_80156B50(void) {
 }
 
+/* No-op virtual method: an empty slot shared by the PSSystem::SeqHeap vtables
+ * (lbl_8032E448 at +0x20, lbl_8032E46C at +0x20/+0x44).  Calling it does nothing. */
 extern "C" void fn_80156B54(void) {
 }
 
@@ -808,6 +810,7 @@ extern "C" f32 lbl_8055E3C8;
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+#pragma opt_propagation off
 extern "C" void fn_80156F6C(void *arg0) {
     struct Object {
         virtual ~Object();
@@ -835,9 +838,8 @@ extern "C" void fn_80156F6C(void *arg0) {
         Object *obj = (Object *)fn_801B2ED0(i);
         obj = obj->call();
         s32 category;
-        f32 value = *(f32 *)((u8 *)obj + 0x34);
-        if (value > threshold) category = 1;
-        else if (value <= threshold) category = 0;
+        if (*(f32 *)((u8 *)obj + 0x34) > threshold) category = 1;
+        else if (*(f32 *)((u8 *)obj + 0x34) <= threshold) category = 0;
         s32 offset = 0;
         s32 j = 0;
         while (j < *(s32 *)(base + 8) && count + 1 <= max) {
