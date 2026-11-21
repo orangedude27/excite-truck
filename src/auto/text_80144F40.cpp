@@ -605,15 +605,16 @@ extern "C" f64 lbl_80561600;
 #pragma scheduling invalid_target
 #pragma dont_inline on
 extern "C" FloatPair80145A24 fn_80145A24(void *arg0) {
+    struct FWrap { f32 v; } corrW;
     f32 out0 = fn_80145A08(lbl_805615D4, (f32)(s32)fn_802C9C48(),
                            lbl_805615D4, lbl_805615F4,
                            (f32)*(s32 *)((u8 *)arg0 + 4));
     f32 scaled = lbl_805615F8 * (f32)(s32)fn_802C9C48();
-    f32 correction = scaled * lbl_805615D0;
+    corrW.v = scaled * lbl_805615D0;
     s32 conv = (s32)fn_802C9C38();
     s32 sh = ((u32)conv >> 31);
     s32 half = (s32)(sh + conv) >> 1;
-    f32 base = (f32)half - correction;
+    f32 base = (f32)half - corrW.v;
     f32 out1 = fn_80145A08(base,
                            base + lbl_805615F8 * (f32)(s32)fn_802C9C48(),
                            lbl_805615D4, lbl_805615FC,
