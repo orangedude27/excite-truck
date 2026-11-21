@@ -1139,7 +1139,7 @@ float fn_80272428(void *arg0, void *arg1, float a, float b, float radius)
   volatile struct Point deltaA;
   volatile struct Point deltaB;
   void *new_var[2];
-  register float fraction;
+  float fraction;
   float x;
   float y;
   float dx;
@@ -1537,9 +1537,10 @@ extern "C" float lbl_80563F50;
 extern "C" int fn_80272DCC(void *arg0, Parser2 *arg1) {
     int a, b, c, d;
     int flags;
-    char *name = lbl_80346B00;
+    char *name;
     Parser2 *p = arg1;
     char *o = (char *)arg0;
+    name = lbl_80346B00;
 
     if (p->has(lbl_8055C5BC) != 0 && p->has(lbl_8055C5C0) != 0 && p->has(lbl_8055C5C4) != 0
         && (p->has(lbl_8055C5C8) != 0 || p->has(lbl_8055C5D0) != 0) && p->has(lbl_8055C5D8) != 0) {
@@ -1549,12 +1550,12 @@ extern "C" int fn_80272DCC(void *arg0, Parser2 *arg1) {
         if (p->has(lbl_8055C5D0) != 0) {
             *(float *)(o + 0x18) = p->getFloat(lbl_8055C5D0);
         } else {
-            *(float *)(o + 0x18) = lbl_80563F94 * p->getFloat(lbl_8055C5C8);
+            *(float *)(o + 0x18) = 0.75f * p->getFloat(lbl_8055C5C8);
         }
         *(int *)(o + 0x58) = fn_80271FAC(p->getString(lbl_8055C5D8));
-        *(float *)(o + 0xC) = p->getFloatDef(lbl_8055C5E0, lbl_80563F48);
-        *(float *)(o + 0x10) = p->getFloatDef(lbl_8055C5E8, lbl_80563F48);
-        *(float *)(o + 0x14) = p->getFloatDef(lbl_8055C5F0, lbl_80563F50);
+        *(float *)(o + 0xC) = p->getFloatDef(lbl_8055C5E0, 0.0f);
+        *(float *)(o + 0x10) = p->getFloatDef(lbl_8055C5E8, 0.0f);
+        *(float *)(o + 0x14) = p->getFloatDef(lbl_8055C5F0, 1.0f);
         a = p->getFlag(name + 0x690, 0);
         b = p->getFlag(lbl_8055C5F8, 0);
         c = p->getFlag(lbl_8055C600, 0);
@@ -1582,7 +1583,7 @@ extern "C" int fn_80272DCC(void *arg0, Parser2 *arg1) {
         }
         if (p->has(lbl_8055C608) != 0 && p->has(lbl_8055C60C) != 0 && p->has(lbl_8055C610) != 0) {
             *(unsigned char *)(o + 0x1C) = 1;
-            *(float *)(o + 0x20) = *(float *)o;
+            *(float *)(o + 0x20) = *(volatile float *)o;
             *(float *)(o + 0x24) = *(float *)(o + 4);
             *(float *)(o + 0x28) = *(float *)(o + 8);
             *(float *)(o + 0x38) = *(float *)(o + 0xC);
@@ -1590,12 +1591,12 @@ extern "C" int fn_80272DCC(void *arg0, Parser2 *arg1) {
             *(float *)(o + 0x40) = *(float *)(o + 0x14);
             *(float *)(o + 0x50) = *(float *)(o + 0x18);
             *(float *)(o + 0x2C) = p->getFloatDef(lbl_8055C608, *(float *)o);
-            *(float *)(o + 0x30) = p->getFloatDef(lbl_8055C60C, lbl_80563F98 + *(float *)(o + 4));
+            *(float *)(o + 0x30) = p->getFloatDef(lbl_8055C60C, 20.0f + *(float *)(o + 4));
             *(float *)(o + 0x34) = p->getFloatDef(lbl_8055C610, *(float *)(o + 8));
             if (p->has(name + 0x6A8) != 0) {
                 *(float *)(o + 0x54) = p->getFloat(name + 0x6A8);
             } else if (p->has(lbl_8055C614) != 0) {
-                *(float *)(o + 0x54) = lbl_80563F94 * p->getFloat(lbl_8055C614);
+                *(float *)(o + 0x54) = 0.75f * p->getFloat(lbl_8055C614);
             } else {
                 *(float *)(o + 0x54) = *(float *)(o + 0x50);
             }
@@ -1679,6 +1680,7 @@ clear:
     lbl_8055F558 = 0;
 }
 
+/* Tail-call wrapper: forwards the mode and object to the camera/event update fn_80271624. */
 void fn_80273490(int mode, void *obj) {
     fn_80271624(mode, obj);
 }
