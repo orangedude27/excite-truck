@@ -632,10 +632,11 @@ int fn_802E582C(void) {
  * which holds the resource-directory names currently being played. */
 #define SFX_NAME_SLOT_SIZE 0x20
 
-/* fn_8012C41C callback used by fn_802E58B8: allocate a voice object for every
- * loaded entry of the directory whatever its type (r3 still carries the entry's
- * name into fn_802E5AE8). The tail call hands fn_802E582C's result back to
- * fn_8012C41C, so the walk stops at the first entry that cannot be allocated. */
+/* fn_8012C41C resource-directory callback used by fn_802E58B8: allocate a voice
+ * object for every loaded entry of the directory, whatever its type. It is a
+ * plain tail call to fn_802E582C, so the entry pointer still in r3 reaches
+ * fn_802E5AE8 and the allocate/continue result flows back to fn_8012C41C, which
+ * stops the walk at the first entry that cannot be allocated. */
 void fn_802E589C(void) {
     fn_802E582C();
 }
