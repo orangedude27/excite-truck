@@ -115,6 +115,7 @@ void fn_80239AC0(void)
     s32 args[5];
     s32 vals[80];
     char *base = lbl_80340B58;
+    char *err = base + 0x60;
     s32 *tbl = lbl_802FA040;
     s32 *ext = lbl_804986F8;
     s32 done = 0;
@@ -130,7 +131,7 @@ void fn_80239AC0(void)
     vals[40] = (s32)&lbl_8055BAE8; vals[41] = 0; vals[42] = 0; vals[43] = 0x10; vals[44] = 0;
     vals[45] = (s32)(base + 0x44); vals[46] = 0; vals[47] = 0; vals[48] = 4; vals[49] = 0;
     vals[50] = (s32)(base + 0x50); vals[51] = 0; vals[52] = 0; vals[53] = 5; vals[54] = 0;
-    vals[55] = (s32)(base + 0x60); vals[56] = 0; vals[57] = (s32)fn_802399DC; vals[58] = 6; vals[59] = 0;
+    vals[55] = (s32)err; vals[56] = 0; vals[57] = (s32)fn_802399DC; vals[58] = 6; vals[59] = 0;
     vals[60] = (s32)&lbl_8055BAF0; vals[61] = 0; vals[62] = 0; vals[63] = 0xc; vals[64] = 0;
     vals[65] = (s32)&lbl_8055BAF8; vals[66] = 0; vals[67] = 0; vals[68] = 0xd; vals[69] = 0;
     vals[70] = (s32)&lbl_8055BAB8; vals[71] = 8; vals[72] = (s32)fn_80236914; vals[73] = 2; vals[74] = 0;
@@ -158,7 +159,7 @@ void fn_80239AC0(void)
         case 9:
         case 12:
         case 16: break;
-        default: fn_802E317C(base + 0x6c); break;
+        default: fn_802E317C(err + 0xc); break;
         }
         if (done) break;
     }
@@ -703,20 +704,23 @@ success:
 
 #pragma push
 #pragma scheduling invalid_target
+/* Draws this options-menu row's erase-data caption: looks up the localized
+ * string "UIOptions:ERASEDATA" by name and draws it with the text renderer
+ * (style 0xCB) at the row's rectangle, with page index +0x1C. */
 void fn_8023AFD0(void *widget) {
     s32 param5;
     s32 height;
     s32 y;
     s32 x;
     s32 labelText;
-    void *p = widget;
+    void *row = widget;
 
-    param5 = *(s32 *)((char *)p + 0x10);
-    height = *(s32 *)((char *)p + 0xC);
-    y = *(s32 *)((char *)p + 8);
-    x = *(s32 *)((char *)p + 4);
+    param5 = *(s32 *)((char *)row + 0x10);
+    height = *(s32 *)((char *)row + 0xC);
+    y = *(s32 *)((char *)row + 8);
+    x = *(s32 *)((char *)row + 4);
     labelText = fn_80131234(&lbl_8034127C[0]);
-    fn_8022BAD0(0xCB, x, y, 0, height, param5, labelText, *(s32 *)((char *)p + 0x1C), 0, 1.0f);
+    fn_8022BAD0(0xCB, x, y, 0, height, param5, labelText, *(s32 *)((char *)row + 0x1C), 0, 1.0f);
 }
 #pragma pop
 
