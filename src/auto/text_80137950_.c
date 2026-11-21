@@ -1,20 +1,20 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern void *lbl_80559C00;
-extern void *lbl_8042F788[4];
-extern int lbl_8042F798[4];
+extern void *lbl_80559C00;         /* index of the selected AI league, or -1 for none */
+extern void *lbl_8042F788[4];      /* per-league data blocks (Dirt, Modified, Truck, Cup) */
+extern int lbl_8042F798[4];        /* context -> league map, 4 means "not assigned" */
+extern unsigned char lbl_8055E0E0; /* set once the league tables have been built */
+extern int lbl_80559C04;           /* "Cup" */
+extern int lbl_80559C08;           /* "Truck" */
+extern int lbl_80559C10;           /* "Dirt" */
+extern char lbl_8032BEC0[];        /* "Modified" */
+extern char lbl_8032BEE4[];        /* "AIDriver: league not set!" */
+extern char lbl_8032BECC[];        /* "driver: bad league %d" */
+extern void fn_80128668(void*);    /* free */
+extern void fn_802E317C(const char *, ...); /* debug/log print */
 extern int fn_800167F4(void);
 void fn_80137C84(int, int);
-extern unsigned char lbl_8055E0E0;
-extern void fn_80128668(void*);
-extern void fn_802E317C(const char *, ...);
-extern char lbl_8032BEE4[];
-extern char lbl_8032BEC0[];
-extern char lbl_8032BECC[];
-extern int lbl_80559C04;
-extern int lbl_80559C08;
-extern int lbl_80559C10;
 #pragma push
 #pragma scheduling invalid_target
 /* Returns the league-name string for a driver's league id (0 Dirt, 1 Modified,
