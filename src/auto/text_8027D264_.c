@@ -659,6 +659,8 @@ void fn_8027DDCC(int screenIndex) {
 }
 
 void fn_8027DE68(void) {
+    /* Alias that forwards to fn_8027B94C: validates every entry of the current
+     * player's primary group list (the group index is passed through in r3). */
     fn_8027B94C();
 }
 
