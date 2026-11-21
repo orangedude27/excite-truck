@@ -619,38 +619,6 @@ void fn_801C4B74(void) {
     }
 }
 
-static inline void fn_801C4BAC_initView(char *p) {
-    memset(p, 0, 0x9C);
-    *(f32 *)(p + 0x14) = lbl_8056296C;
-    *(f32 *)(p + 0x18) = lbl_80562970;
-    *(f32 *)(p + 0x1C) = lbl_80562970;
-    *(f32 *)(p + 0x20) = lbl_80562970;
-    *(f32 *)(p + 0x24) = lbl_8056296C;
-    *(f32 *)(p + 0x28) = lbl_80562970;
-    *(f32 *)(p + 0x2C) = lbl_80562970;
-    *(f32 *)(p + 0x30) = lbl_80562970;
-    *(f32 *)(p + 0x34) = lbl_8056296C;
-    *(f32 *)(p + 0x50) = lbl_805629A8;
-    *(f32 *)(p + 0x68) = lbl_8056296C;
-    *(f32 *)(p + 0x6C) = lbl_80562970;
-    *(f32 *)(p + 0x70) = lbl_80562970;
-    *(f32 *)(p + 0x74) = lbl_80562970;
-    *(f32 *)(p + 0x78) = lbl_8056296C;
-    *(f32 *)(p + 0x7C) = lbl_80562970;
-    *(f32 *)(p + 0x80) = lbl_80562970;
-    *(f32 *)(p + 0x84) = lbl_80562970;
-    *(f32 *)(p + 0x88) = lbl_8056296C;
-    *(f32 *)(p + 0x8C) = lbl_80562970;
-    *(f32 *)(p + 0x90) = lbl_80562970;
-    *(f32 *)(p + 0x94) = lbl_80562970;
-    *(f32 *)(p + 0x98) = lbl_805629A8;
-}
-
-static inline void fn_801C4BAC_resetTimer(s32 *t) {
-    *(f32 *)&t[2] = lbl_80562994;
-    t[0] = 0;
-}
-
 #pragma opt_common_subs off
 void fn_801C4BAC(void) {
     register Unk_80437D88 *state;
