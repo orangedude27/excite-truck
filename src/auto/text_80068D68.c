@@ -1969,15 +1969,14 @@ void fn_80069EB4(u32 pAlarm, u32 pContext) {
 
 extern void WUDStoredLinkKeyCallback(void *);
 extern void *WUDiGetDevInfo(u8 *);
-static inline u8 *WUDControlBlockAddress(void) { return lbl_80392960; }
 #pragma opt_strength_reduction off
 #pragma opt_propagation off
 u8 WUDiClearUnregisteredDevice(void) {
     u8 *entry;
     void *info;
     s32 offset;
-    u8 *raw = lbl_80392960;
-    u8 *base = raw;
+    u32 addr = (u32)lbl_80392960;
+    u8 *base = (u8 *)addr;
     s32 index;
 
     if (base[0xE] == 0) {
