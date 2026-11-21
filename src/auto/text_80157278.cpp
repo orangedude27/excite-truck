@@ -1000,6 +1000,7 @@ extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2);
 #pragma push
 #pragma opt_common_subs off
 extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2) {
+    #pragma scheduling invalid_target
     u8* ptr = (u8*)arg0 + 0x14;
     *(void**)((u8*)arg0 + 8) = ptr;
     *(void**)arg0 = lbl_8032F2BC;
@@ -1913,6 +1914,7 @@ extern "C" u8 fn_80159124(void* tracker, const void* truck) {
     return *(u8*)(self + 0x274);
 }
 #pragma pop
+/* Intentionally empty no-op method in this object's callback group; does nothing. */
 extern "C" void fn_80159724(void) {
 }
 
@@ -2661,7 +2663,7 @@ extern "C" f32 fn_8015AE18(void *a, const void *arg1) {
 }
 extern "C" void fn_8015B0A4(Unk801577F0 *arg0) {
     f32 f;
-    register s32 count = *(s32*)((u8*)arg0 + 0x260);
+    s32 count = *(volatile s32*)((u8*)arg0 + 0x260);
     *(s32*)((u8*)arg0 + 0x264) = 0;
     if (count > 0) {
         void* r3 = *(void**)((u8*)arg0 + 0x258);
@@ -2677,7 +2679,7 @@ extern "C" void fn_8015B0A4(Unk801577F0 *arg0) {
         self->v31();
     }
     s32 zero = 0;
-    count = *(s32*)((u8*)arg0 + 0x278);
+    count = *(volatile s32*)((u8*)arg0 + 0x278);
     f = lbl_80561754;
     *(u8*)((u8*)arg0 + 0x26C) = zero;
     *(f32*)((u8*)arg0 + 0x270) = f;
@@ -3247,7 +3249,8 @@ extern "C" void fn_8015C0E8(Unk801577F0* arg0) {
 #pragma scheduling invalid_target
 extern "C" void fn_8015C1B0(Unk801577F0* arg0) {
     s32 active = arg0->m260;
-    arg0->m264 = 0;
+    s32 zero = 0;
+    arg0->m264 = zero;
     if (active > 0) {
         void* resource = *(void**)((u8*)arg0 + 0x258);
         if (resource != 0) {
@@ -3267,7 +3270,7 @@ extern "C" void fn_8015C1B0(Unk801577F0* arg0) {
         *(s32*)((u8*)arg0 + 0x26c) = 0;
     }
     f32 tail = lbl_80561754;
-    *(s32*)((u8*)arg0 + 0x274) = 0;
+    *(s32*)((u8*)arg0 + 0x274) = zero;
     *(f32*)((u8*)arg0 + 0x278) = tail;
     *(f32*)((u8*)arg0 + 0x27c) = tail;
 }
@@ -3861,8 +3864,11 @@ extern "C" s32 fn_8015D504(Unk801577F0* arg0, s32 arg1) {
     for (; i < count; i++) {
         s32 value = *(s32*)((u8*)arg0->mData + offset + 0x14);
         if (arg1 < value) goto out;
-        if (value < 0) goto out;
-        offset += 0x38;
+        if (value >= 0) {
+            offset += 0x38;
+        } else {
+            goto out;
+        }
     }
     i = 0;
 out:
