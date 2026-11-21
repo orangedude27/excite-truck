@@ -11308,7 +11308,6 @@ static inline void btm_pm_cont_rswitch_inl(u8 *link, u8 *conn, u16 handle, u8 st
     }
 }
 
-#pragma opt_propagation off
 void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
     extern char lbl_80316530[];
     extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
