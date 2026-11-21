@@ -167,6 +167,8 @@ void fn_8022A5E4(void) {
     fn_8022C520();
 }
 
+/* Shut down the style/config subsystem started by fn_8022A5E4: tail-call the sweep
+   that destroys and clears every active 0x74-byte record in lbl_80490968. */
 void fn_8022A7D0(void) {
     fn_8022C9D0();
 }
