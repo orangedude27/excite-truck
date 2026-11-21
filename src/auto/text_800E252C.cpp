@@ -5,7 +5,7 @@ extern float lbl_80560F20;
 extern float lbl_80560F24;
 extern double lbl_80560F28;
 extern float lbl_80560F30;
-static inline void FillTmp(ElemTmp* end, ElemTmp* q, float f) { do { q->f1 = f; q->f2 = f; q->i1 = 0; q->i2 = 0; q++; } while (q < end); }
+static inline void FillTmp(ElemTmp* end, ElemTmp* q, float f) { while (q < end) { q->f1 = f; q->f2 = f; q->i1 = 0; q->i2 = 0; q++; } }
 typedef unsigned int u32;
 typedef signed char s8;
 typedef int M2C_UNK;
@@ -584,8 +584,8 @@ void *fn_800E279C(void *arg0)
   ((LLTmp *) (p + 0x14))->next = &((LLTmp *) (p + 0x14))->next;
   ((LLTmp *) (p + 0x14))->prev = &((LLTmp *) (p + 0x14))->next;
   ((LLTmp *) (p + 0x20))->a = 0;
-  ((LLTmp *) (p + 0x20))->prev = &((LLTmp *) (p + 0x20))->next;
   ((LLTmp *) (p + 0x20))->next = &((LLTmp *) (p + 0x20))->next;
+  ((LLTmp *) (p + 0x20))->prev = &((LLTmp *) (p + 0x20))->next;
   fn_8002F53C(p + 0x2C, &__ct__Q46nw4hbm3snd6detail7AxVoiceFv, &__dt__Q46nw4hbm3snd6detail7AxVoiceFv, 0x1B0, 0x40);
   p[0x6C30] = 0;
   p[0x6C31] = 1;
