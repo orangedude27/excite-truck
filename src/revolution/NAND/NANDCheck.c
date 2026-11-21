@@ -5,6 +5,10 @@
 // .data:0x8031AF70); NANDCheck.c itself only emits .text.
 extern const char* lbl_8031AF70[];
 
+// NULL-terminated list of the user NAND directories whose usage is summed
+// (/meta, /ticket, the /title/... directories).
+#define USER_NAND_DIRS lbl_8031AF70
+
 static s32 nandCalcUsage(s32* blockCountOut, s32* fileCountOut,
                          const char** dirList) {
     // Accumulates NAND block and file usage for each directory in a NULL-terminated list.
