@@ -1497,7 +1497,6 @@ double fn_8002EF30(double x) {
     hx = __ieee754_rem_pio2(x, y);
     return __kernel_tan(1 - ((hx & 1) << 1), y[0], y[1]);
 }
-#pragma pop
 
 extern double __ieee754_acos(double);
 
