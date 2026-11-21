@@ -438,6 +438,9 @@ void fn_80287B38(s32 callback) {
 extern u8 lbl_804B3150[12];
 extern s32 lbl_8055F6C0;
 extern s32 lbl_804B31E0[];
+/* Void-signature thunk that tail-calls the module's RNG step (fn_80288870).
+ * The generated value stays in r3, so callers cast this to an unsigned-int
+ * function pointer to read the random number despite the void signature. */
 void fn_80287B58(void) {
     fn_80288870();
 }
