@@ -90,6 +90,7 @@ void fn_8029790C(void) {
 #undef shadowVolumeHandle
 }
 #pragma pop
+/* Intentionally empty no-op; placeholder hook in the static-shadow lifecycle sequence. */
 void fn_80297980(void) {
 }
 
