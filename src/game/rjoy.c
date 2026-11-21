@@ -654,6 +654,8 @@ void fn_802E8518(int controllerIndex) {
 
 extern float lbl_80565164, lbl_80565170, lbl_80565198, lbl_8056519C;
 extern unsigned char lbl_80505978[];
+/* No-op rjoy hook: called at driver shutdown (with 0 and a driver index) and before
+   sound/key setup (with a flag and the AX stack head); empty in this build. */
 void fn_802E8524(void) {}
 
 #pragma push
