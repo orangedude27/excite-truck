@@ -45,6 +45,7 @@ extern void fn_8025DAEC(void *, void *);
 #define DS(off) desc[(((off) - 0xB8) >> 2)]
 #define APPEND(v) { int *_d=(int*)(long)lbl_8055F3C4; int _i=_d[7]; _d[7]=_i+1; ((int*)_d[6])[_i]=(v); }
 void fn_8025CE78(void) {
+    /* full reconstruction, verify compile */
     char *tbl;
     char buf6[0x43C], buf5[0x43C], buf4[0x43C], buf3[0x43C];
     char buf2[0x43C], buf1[0x43C], buf0[0x43C];
