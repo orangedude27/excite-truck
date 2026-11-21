@@ -83,7 +83,13 @@ static inline void fn_801E1048_xh(const f32 *m, const f32 *src, f32 *dst) {
 static inline void fn_801E1048_xi(const f32 *m, const f32 *src, f32 *dst) {
     f32 x, y, z;
     if (src == dst) {
-        f32 a, b, c, d, e, f, nx, ny, nz;
+        register f32 a asm("f4");
+        register f32 b asm("f2");
+        register f32 c asm("f5");
+        register f32 d asm("f3");
+        register f32 e asm("f1");
+        register f32 f asm("f0");
+        f32 nx, ny, nz;
         a = m[3];
         b = m[4];
         y = src[1];
