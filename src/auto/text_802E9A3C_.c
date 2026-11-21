@@ -539,10 +539,14 @@ extern "C" long *fn_802EA834(long arg0, long *arg1) {
 
 #pragma push
 #pragma scheduling invalid_target
+/* Stream-buffer compaction: once the write cursor (lbl_805600B8) reaches the
+ * high-water mark (lbl_805600A4), slide the unconsumed tail from the mark down
+ * to the front of the buffer (lbl_805600A0) and rewind the cursor by that mark.
+ * The volatile read forces a fresh cursor load for the byte count. */
 void fn_802EAA08(void) {
     if (lbl_805600B8 >= lbl_805600A4) {
-        int len = *(volatile int *)&lbl_805600B8 - lbl_805600A4;
-        memcpy((void *)lbl_805600A0, (void *)(lbl_805600A0 + lbl_805600A4), (unsigned int)len);
+        int tailBytes = *(volatile int *)&lbl_805600B8 - lbl_805600A4;
+        memcpy((void *)lbl_805600A0, (void *)(lbl_805600A0 + lbl_805600A4), (unsigned int)tailBytes);
         lbl_805600B8 -= lbl_805600A4;
     }
 }
