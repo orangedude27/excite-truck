@@ -35,7 +35,6 @@ void __AXDSPInitCallback_801B8BE8(void) {
     #undef s_alarmEventCount
 }
 
-extern int lbl_8055E3C4;
 #pragma push
 #pragma scheduling invalid_target
 void fn_801B8BF4(void) {
