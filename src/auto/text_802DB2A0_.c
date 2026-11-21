@@ -3,6 +3,8 @@
 
 typedef signed long s32;
 
+/* No-op stub called once after all mlist item callbacks have been submitted
+   (at the end of fn_802CDB5C), apparently to finalize/reset the list builder. */
 void fn_802DB2A0(void) {
 }
 
