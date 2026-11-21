@@ -976,16 +976,21 @@ extern float __fabsf(float);
 #pragma opt_common_subs off
 #pragma opt_loop_invariants off
 #pragma scheduling invalid_target
-void fn_801EDD7C(void *arg0, long arg1) {
-    void *object = arg0;
-    long offset;
-    char *entry;
-    float v3, v2, v1, v0;
+/* Refresh a vehicle effect's render state from its owner: copy the base
+ * transform from the effect-data block, cache the vehicle's scale (or unit
+ * scale within epsilon), build a scaled copy of the 12-word transform into
+ * the effect's cached slot, then re-submit each of its four effect entries.
+ * The second parameter is reused as the loop counter once its scale is read. */
+void fn_801EDD7C(void *renderState, long data) {
+    void *object = renderState;
+    long dataOffset;
+    char *slot;
+    float scaled3, scaled2, scaled1, scaled0;
     float scale;
-    float v4, v5, v6, v7, v8, v10, v9, v11;
+    float scaled4, scaled5, scaled6, scaled7, scaled8, copied1, copied0, copied2;
 
     fn_801EABA8(object, *(void **)((char *)object + 0x3C));
-    scale = *(float *)((char *)arg1 + 0x2D0);
+    scale = *(float *)((char *)data + 0x2D0);
     *(float *)((char *)object + 0x4D0) = scale;
     if ((float)__fabs((double)(scale - 1.0f)) <= lbl_80558DC4[0]) {
         *(unsigned int *)((char *)object + 0x4A0) = *(unsigned int *)((char *)object + 4);
@@ -1001,43 +1006,43 @@ void fn_801EDD7C(void *arg0, long arg1) {
         *(unsigned int *)((char *)object + 0x4C8) = *(unsigned int *)((char *)object + 0x2C);
         *(unsigned int *)((char *)object + 0x4CC) = *(unsigned int *)((char *)object + 0x30);
     } else {
-        v0 = *(float *)((char *)object + 4) * scale;
-        v1 = *(float *)((char *)object + 8) * scale;
-        v2 = *(float *)((char *)object + 0xC) * scale;
-        v3 = *(float *)((char *)object + 0x10) * scale;
-        v4 = *(float *)((char *)object + 0x14) * scale;
-        v5 = *(float *)((char *)object + 0x18) * scale;
-        v6 = *(float *)((char *)object + 0x1C) * scale;
-        v7 = *(float *)((char *)object + 0x20) * scale;
-        v8 = *(float *)((char *)object + 0x24) * scale;
-        v9 = *(float *)((char *)object + 0x28);
-        v10 = *(float *)((char *)object + 0x2C);
-        v11 = *(float *)((char *)object + 0x30);
-        *(float *)((char *)object + 0x4C4) = v9;
-        *(float *)((char *)object + 0x4C8) = v10;
-        *(float *)((char *)object + 0x4CC) = v11;
-        *(float *)((char *)object + 0x4A0) = v0;
-        *(float *)((char *)object + 0x4A4) = v1;
-        *(float *)((char *)object + 0x4A8) = v2;
-        *(float *)((char *)object + 0x4AC) = v3;
-        *(float *)((char *)object + 0x4B0) = v4;
-        *(float *)((char *)object + 0x4B4) = v5;
-        *(float *)((char *)object + 0x4B8) = v6;
-        *(float *)((char *)object + 0x4BC) = v7;
-        *(float *)((char *)object + 0x4C0) = v8;
+        scaled0 = *(float *)((char *)object + 4) * scale;
+        scaled1 = *(float *)((char *)object + 8) * scale;
+        scaled2 = *(float *)((char *)object + 0xC) * scale;
+        scaled3 = *(float *)((char *)object + 0x10) * scale;
+        scaled4 = *(float *)((char *)object + 0x14) * scale;
+        scaled5 = *(float *)((char *)object + 0x18) * scale;
+        scaled6 = *(float *)((char *)object + 0x1C) * scale;
+        scaled7 = *(float *)((char *)object + 0x20) * scale;
+        scaled8 = *(float *)((char *)object + 0x24) * scale;
+        copied0 = *(float *)((char *)object + 0x28);
+        copied1 = *(float *)((char *)object + 0x2C);
+        copied2 = *(float *)((char *)object + 0x30);
+        *(float *)((char *)object + 0x4C4) = copied0;
+        *(float *)((char *)object + 0x4C8) = copied1;
+        *(float *)((char *)object + 0x4CC) = copied2;
+        *(float *)((char *)object + 0x4A0) = scaled0;
+        *(float *)((char *)object + 0x4A4) = scaled1;
+        *(float *)((char *)object + 0x4A8) = scaled2;
+        *(float *)((char *)object + 0x4AC) = scaled3;
+        *(float *)((char *)object + 0x4B0) = scaled4;
+        *(float *)((char *)object + 0x4B4) = scaled5;
+        *(float *)((char *)object + 0x4B8) = scaled6;
+        *(float *)((char *)object + 0x4BC) = scaled7;
+        *(float *)((char *)object + 0x4C0) = scaled8;
     }
-    entry = object;
-    arg1 = 0;
-    offset = 0;
+    slot = object;
+    data = 0;
+    dataOffset = 0;
     do {
-        fn_801F0F78(*(long *)(entry + 0x4D4),
-                    (long)(*(char **)((char *)object + 0x3C) + offset + 0x7C),
+        fn_801F0F78(*(long *)(slot + 0x4D4),
+                    (long)(*(char **)((char *)object + 0x3C) + dataOffset + 0x7C),
                     (char *)object + 4,
                     *(float *)((char *)object + 0x4D0));
-        arg1++;
-        offset += 0x6C;
-        entry += 4;
-    } while (arg1 < 4);
+        data++;
+        dataOffset += 0x6C;
+        slot += 4;
+    } while (data < 4);
 }
 #pragma opt_loop_invariants reset
 #pragma scheduling on
