@@ -153,7 +153,12 @@ extern "C" float fn_802AC344(void *arg0, void *arg1, float *arg2) {
 #pragma cplusplus off
 
 extern float fn_802AC344(void *, void *, float *);
-float fn_802AC454(void *arg0, void *arg1, float *arg2) { return fn_802AC344(arg0, arg1, arg2); }
+/* Read a segment's "t" (time) attribute as an offset from the previous segment's start.
+   Forwards to fn_802AC344 (the time-attribute reader), which resolves named times via
+   the root attribute set and applies a leading '+' as a relative offset to baseTime. */
+float fn_802AC454(void *segment, void *root, float *baseTime) {
+    return fn_802AC344(segment, root, baseTime);
+}
 
 /* Initialize the animation state globals (count/index/timestamps and playback flag). */
 void fn_802AC458(void) {
