@@ -2972,46 +2972,49 @@ void fn_8018A750(void *arg0, int arg_sp0) {
 #pragma push
 #pragma processor 750
 #pragma scheduling on
-void fn_8018A8A8(void *arg0) {
-    float sp38[3];
-    float sp2C[3];
-    float sp20[3];
-    float sp14[3];
-    float sp8[3];
-    float angle;
-    float value;
-    float calculated;
-    register float temp_f31;
-    register float temp_f30;
-    sp38[0] = 0.0f;
-    sp38[1] = -10000.0f;
-    sp38[2] = 0.0f;
-    sp2C[0] = 0.0f;
-    sp2C[1] = 1.0f;
-    sp2C[2] = 0.0f;
-    sp20[0] = 0.0f;
-    sp20[1] = 0.0f;
-    sp20[2] = 0.0f;
-    if (*(int *)((char *)arg0 + 0x26C4) != 0) {
-        temp_f31 = lbl_8055E3C8;
-        angle = (float)fn_8002EFB4(temp_f31, lbl_80561F20);
-        value = angle - lbl_80561D00;
-        temp_f30 = lbl_80561F28 * value;
-        angle = (float)fn_8002EFB4(temp_f31, lbl_80561F30);
-        value = angle - lbl_80561F3C;
-        calculated = lbl_80561F38 * value;
-        angle = (float)fn_8002EFB4(temp_f31, lbl_80561F40);
-        sp14[1] = calculated;
-        value = angle - lbl_80561F4C;
-        sp14[2] = temp_f30;
-        sp14[0] = lbl_80561F48 * value;
-        fn_801C27D8(*(void **)((char *)arg0 + 0x26C4), sp38, sp2C, sp14, sp20);
+/* Apply time-varying offsets to an object's two animation resources (handles at
+ * +0x26C4/+0x26C8): the first gets a sawtooth wave derived from three fmod phases of
+ * the frame time, the second gets the object's position scaled by a fixed constant. */
+void fn_8018A8A8(void *object) {
+    float fallVector[3];
+    float upVector[3];
+    float zeroVector[3];
+    float waveOffset[3];
+    float positionOffset[3];
+    float phase;
+    float centered;
+    float yWave;
+    register float time;
+    register float zWave;
+    fallVector[0] = 0.0f;
+    fallVector[1] = -10000.0f;
+    fallVector[2] = 0.0f;
+    upVector[0] = 0.0f;
+    upVector[1] = 1.0f;
+    upVector[2] = 0.0f;
+    zeroVector[0] = 0.0f;
+    zeroVector[1] = 0.0f;
+    zeroVector[2] = 0.0f;
+    if (*(int *)((char *)object + 0x26C4) != 0) {
+        time = lbl_8055E3C8;
+        phase = (float)fn_8002EFB4(time, lbl_80561F20);
+        centered = phase - lbl_80561D00;
+        zWave = lbl_80561F28 * centered;
+        phase = (float)fn_8002EFB4(time, lbl_80561F30);
+        centered = phase - lbl_80561F3C;
+        yWave = lbl_80561F38 * centered;
+        phase = (float)fn_8002EFB4(time, lbl_80561F40);
+        waveOffset[1] = yWave;
+        centered = phase - lbl_80561F4C;
+        waveOffset[2] = zWave;
+        waveOffset[0] = lbl_80561F48 * centered;
+        fn_801C27D8(*(void **)((char *)object + 0x26C4), fallVector, upVector, waveOffset, zeroVector);
     }
-    if (*(int *)((char *)arg0 + 0x26C8) != 0) {
-        sp8[0] = *(float *)((char *)arg0 + 0x118) * lbl_80561F50;
-        sp8[1] = *(float *)((char *)arg0 + 0x11C) * lbl_80561F50;
-        sp8[2] = *(float *)((char *)arg0 + 0x120) * lbl_80561F50;
-        fn_801C27D8(*(void **)((char *)arg0 + 0x26C8), sp38, sp2C, sp8, sp20);
+    if (*(int *)((char *)object + 0x26C8) != 0) {
+        positionOffset[0] = *(float *)((char *)object + 0x118) * lbl_80561F50;
+        positionOffset[1] = *(float *)((char *)object + 0x11C) * lbl_80561F50;
+        positionOffset[2] = *(float *)((char *)object + 0x120) * lbl_80561F50;
+        fn_801C27D8(*(void **)((char *)object + 0x26C8), fallVector, upVector, positionOffset, zeroVector);
     }
 }
 #pragma pop
