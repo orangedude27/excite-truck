@@ -24,9 +24,9 @@ typedef struct MemStreamPtr {
     MemStream *stream; /* 0x00 buffer this cursor reads and writes */
     s32 pos;           /* 0x04 byte offset of the next access */
 } MemStreamPtr;
-/* Allocate an 8-byte MemStream object tagged "MemStream" (proposed name:
-   MemStream_Create): store the requested buffer size at +4 and allocate the
-   backing buffer (tagged "MemStream") at +0. Returns NULL on allocation failure. */
+/* Allocate an 8-byte MemStream object tagged "MemStream": store the requested
+   buffer size at +4 and allocate the backing buffer (tagged "MemStream") at +0.
+   Returns NULL on allocation failure. */
 void *fn_8012F31C(s32 bufferSize) {
     void *stream = fn_801284F8(8, lbl_8032AFB8);
     if (stream != 0) {
