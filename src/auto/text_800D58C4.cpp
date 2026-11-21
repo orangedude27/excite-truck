@@ -246,6 +246,16 @@ extern "C" const char lbl_8031E92C[];
 extern "C" s32 lbl_8055DE08;
 /* ut::RuntimeTypeInfo accessor: the DynamicCast target type info (inlined at every call site). */
 static inline StateNode_800D6CA0 *TypeInfo_800D77DC() { return (StateNode_800D6CA0 *)&lbl_8055DE08; }
+static inline u8 *DynCastC_800D77DC(u8 *obj) {
+    const StateNode_800D6CA0 *typeInfo = TypeInfo_800D77DC();
+    bool derived = false;
+    const StateNode_800D6CA0 *t = (const StateNode_800D6CA0 *)((StateObject_800D6CA0 *)obj)->v1();
+    while (t) {
+        if (t == typeInfo) { derived = true; break; }
+        t = t->next;
+    }
+    return derived ? obj : 0;
+}
 static inline u8 *DynCastB_800D77DC(u8 *obj) {
     const StateNode_800D6CA0 *typeInfo = TypeInfo_800D77DC();
     const StateNode_800D6CA0 *t = (const StateNode_800D6CA0 *)((StateObject_800D6CA0 *)obj)->v1();
