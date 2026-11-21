@@ -9,6 +9,12 @@ extern "C" {
 
 #define KPAD_MAX_SAMPLES 16
 
+#define KPAD_BUTTON_MASK 0x0000ffff
+#define KPAD_BUTTON_RPT 0x80000000
+
+#define KPAD_BTN_RPT_TIME_MAX 20000
+#define KPAD_BTN_NO_RPT_DELAY 40000
+
 typedef union KPADEXStatus {
     struct {
         Vec2 stick;    // at 0x0
