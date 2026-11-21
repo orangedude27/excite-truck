@@ -268,6 +268,9 @@ void fn_8028D2B4(void) {
 }
 #pragma pop
 
+/* RealName: SkidSystem_ElementInit (guess). No-op per-element constructor passed
+ * as the init callback to the skid element array allocator in fn_8028D2B4; skid
+ * elements need no default initialization, so it intentionally does nothing. */
 void fn_8028D49C(void) {
 }
 
