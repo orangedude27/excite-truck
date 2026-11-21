@@ -1022,6 +1022,8 @@ void fn_802E6234(void) {}
  * float from the sound's unused +0x30 field here, but this build discards it. */
 void fn_802E6238(void) {}
 
+/* No-op voice-parameter setter: the sound mixer passes a voice handle and the
+ * float from the sound's unused +0x34 field here, but this build discards it. */
 void fn_802E623C(void) {}
 
 void fn_802E6240(void* voice, int flags) {
