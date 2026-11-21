@@ -2375,6 +2375,8 @@ extern "C" s32 __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80215348(void *self, s3
     return (s32)self;
 }
 
+/* No-op hook in the nw4hbm::snd sound-archive group: an empty function used as
+ * a default callback slot that does nothing when invoked. */
 extern "C" void fn_802153A0(void) {
 }
 
