@@ -429,6 +429,7 @@ void fn_802DE774(void) {
 extern unsigned int lbl_802FAD58[];
 extern int lbl_8055FED0, lbl_8055FED4;
 extern float lbl_8056508C, lbl_80565090;
+extern double lbl_805650A0;
 extern void GXClearVtxDesc(void);
 extern void GXSetVtxDescv(void *);
 extern void GXSetVtxAttrFmtv(int, void *);
