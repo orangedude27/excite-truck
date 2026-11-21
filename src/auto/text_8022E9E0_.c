@@ -289,9 +289,6 @@ void fn_8022EE98(void *context) {
     fn_8022EB30(context);
 }
 
-extern f32 lbl_805635E0;
-extern f32 lbl_805635E4;
-extern void *fn_8022EDE4(f32 *, f32);
 void fn_8022EE9C(void) {
     /* Build an identity 3x3 rotation/translation matrix and install it as the current UI context. */
     f32 identityMatrix[12];
