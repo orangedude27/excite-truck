@@ -44,8 +44,9 @@ extern int fn_8012A364(void *, void *);
 extern void *fn_8012850C(unsigned int, void *);
 extern void *memset(void *, int, unsigned int);
   extern void fn_802E6B04(void);
-  extern char lbl_8033C388[];
-  extern void fn_802E6B34(void);
+      extern char lbl_8033C388[];
+    #define kUnfreedSoundFmt lbl_8033C388
+    extern void fn_802E6B34(void);
   typedef struct { void **vtable; } Unk8012A570;
     extern void fn_8020A860();
   extern int fn_80208E90(int);
@@ -369,15 +370,17 @@ extern "C" void fn_8020AC2C(void *arg0) {
     void *p;
     int i, j, mode, now;
     void *handle;
+    int *slot = (int *)((char *)arg0 + 8);
     lbl_8055B590 = fn_80209028();
     lbl_8055B594 = fn_802091CC();
     lbl_8055EDF8++;
     now = fn_802E2C20();
-    lbl_8055EE00 = now - (*(int *)((char *)(arg0) + (8)));
+    lbl_8055EE00 = now - *slot;
     if (lbl_8055EE00 > 200U) lbl_8055EE00 = 200;
     high = lbl_805632B4;
     low = lbl_805632B0;
-    for (i = 0, (*(int *)((char *)(arg0) + 8)) = now; i < 512; i++) {
+    *slot = now;
+    for (i = 0; i < 512; i++) {
         p = (*(void ***)((char *)(arg0) + (4)))[i];
         if (p) {
             mode = 1;
@@ -468,8 +471,7 @@ extern "C" void *fn_8020AF18(void *arg0, char *name, int unused, unsigned char f
                 *(unsigned char *)(obj + 0x3e) = 0;
                 *(unsigned char *)(obj + 0x3c) = flag;
                 *(void **)(obj + 0x10) = fn_802E5AE8(name);
-                if (*(void **)(obj + 0x10) == 0) {
-                } else {
+                if (*(void **)(obj + 0x10) != 0) {
                     { char *copy_src = name; int copy_left = 0x40; char *copy_dst = buffer;
                     goto copy_check;
 copy_next:
