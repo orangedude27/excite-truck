@@ -1512,56 +1512,59 @@ extern "C" char lbl_803494FC[]; /* "boost fire" effect name */
 extern float lbl_805645C0; /* 0.1f */
 extern float lbl_8056460C; /* 2.0f */
 #pragma scheduling invalid_target
-extern "C" void *fn_8029A6F4(void *arg0) {
-    struct Local {
-        float extra[6];
-        unsigned char config[0x8C];
-    } local;
+/* Set up a player's boost-fire effect: initialize its seven state slots, fill a
+ * 0x8C-byte "boost fire" creation descriptor (with a 24-byte scratch prefix),
+ * store the created effect at +0x160 and register its two event handlers. */
+extern "C" void *fn_8029A6F4(void *owner) {
+    struct EffectArgs {
+        float scratch[6];
+        unsigned char desc[0x8C];
+    } args;
 
-    fn_8029A8B8(arg0);
-    fn_8028E61C(local.config);
-    memset(local.config, 0, 0x8C);
+    fn_8029A8B8(owner);
+    fn_8028E61C(args.desc);
+    memset(args.desc, 0, 0x8C);
 
-    *(int *)local.config = 1;
-    *(int *)(local.config + 0x04) = 0x1F4;
-    *(float *)(local.config + 0x08) = lbl_80564598;
-    *(float *)(local.config + 0x0C) = lbl_80564590;
-    local.extra[3] = lbl_8056459C;
-    local.extra[4] = lbl_8056459C;
-    local.extra[5] = lbl_8056459C;
-    *(float *)(local.config + 0x10) = lbl_8056459C;
-    *(float *)(local.config + 0x14) = lbl_8056459C;
-    *(float *)(local.config + 0x18) = lbl_8056459C;
-    local.extra[0] = lbl_80564590;
-    local.extra[1] = lbl_80564590;
-    local.extra[2] = lbl_80564590;
-    *(float *)(local.config + 0x1C) = lbl_80564590;
-    *(float *)(local.config + 0x20) = lbl_80564590;
-    *(float *)(local.config + 0x24) = lbl_80564590;
-    *(float *)(local.config + 0x30) = lbl_805645B8;
-    *(float *)(local.config + 0x34) = lbl_805645C0;
-    *(int *)(local.config + 0x44) = 2;
-    *(float *)(local.config + 0x50) = lbl_80564590;
-    *(float *)(local.config + 0x54) = lbl_80564590;
-    *(float *)(local.config + 0x58) = lbl_805645B8;
-    *(float *)(local.config + 0x5C) = lbl_80564590;
-    *(float *)(local.config + 0x70) = lbl_805645B8;
-    *(float *)(local.config + 0x68) = lbl_805645B8;
-    *(float *)(local.config + 0x60) = lbl_805645B8;
-    *(float *)(local.config + 0x74) = lbl_80564590;
-    *(float *)(local.config + 0x6C) = lbl_80564590;
-    *(float *)(local.config + 0x64) = lbl_80564590;
-    *(float *)(local.config + 0x80) = lbl_8056460C;
-    *(int *)(local.config + 0x84) = 0x40;
-    local.config[0x88] = 1;
-    local.config[0x89] = 1;
+    *(int *)args.desc = 1;
+    *(int *)(args.desc + 0x04) = 0x1F4;
+    *(float *)(args.desc + 0x08) = lbl_80564598;
+    *(float *)(args.desc + 0x0C) = lbl_80564590;
+    args.scratch[3] = lbl_8056459C;
+    args.scratch[4] = lbl_8056459C;
+    args.scratch[5] = lbl_8056459C;
+    *(float *)(args.desc + 0x10) = lbl_8056459C;
+    *(float *)(args.desc + 0x14) = lbl_8056459C;
+    *(float *)(args.desc + 0x18) = lbl_8056459C;
+    args.scratch[0] = lbl_80564590;
+    args.scratch[1] = lbl_80564590;
+    args.scratch[2] = lbl_80564590;
+    *(float *)(args.desc + 0x1C) = lbl_80564590;
+    *(float *)(args.desc + 0x20) = lbl_80564590;
+    *(float *)(args.desc + 0x24) = lbl_80564590;
+    *(float *)(args.desc + 0x30) = lbl_805645B8;
+    *(float *)(args.desc + 0x34) = lbl_805645C0;
+    *(int *)(args.desc + 0x44) = 2;
+    *(float *)(args.desc + 0x50) = lbl_80564590;
+    *(float *)(args.desc + 0x54) = lbl_80564590;
+    *(float *)(args.desc + 0x58) = lbl_805645B8;
+    *(float *)(args.desc + 0x5C) = lbl_80564590;
+    *(float *)(args.desc + 0x70) = lbl_805645B8;
+    *(float *)(args.desc + 0x68) = lbl_805645B8;
+    *(float *)(args.desc + 0x60) = lbl_805645B8;
+    *(float *)(args.desc + 0x74) = lbl_80564590;
+    *(float *)(args.desc + 0x6C) = lbl_80564590;
+    *(float *)(args.desc + 0x64) = lbl_80564590;
+    *(float *)(args.desc + 0x80) = lbl_8056460C;
+    *(int *)(args.desc + 0x84) = 0x40;
+    args.desc[0x88] = 1;
+    args.desc[0x89] = 1;
 
-    *(void **)((char *)arg0 + 0x160) =
+    *(void **)((char *)owner + 0x160) =
         ((void *(*)(void *, const char *, int))fn_8028E2F8)(
-            local.config, lbl_803494FC, lbl_8055CA8C);
+            args.desc, lbl_803494FC, lbl_8055CA8C);
     fn_801EEFDC((void *)fn_8029C054, 0xE);
     fn_801EEFDC((void *)fn_8029C024, 0xD);
-    return arg0;
+    return owner;
 }
 #pragma scheduling on
 /* Destructor-like cleanup: unregisters handlers, releases owned subobject, and optionally frees the object. */
