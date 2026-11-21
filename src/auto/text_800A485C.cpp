@@ -16150,8 +16150,9 @@ loop_130:
             var_r12_7 = var_r10 + (temp_r18 * 4);
             if ((s32) temp_r18 < 0xC0) {
                 temp_r0_10 = var_r11_4 >> 3U;
+                var_ctr_6 = temp_r0_10;
                 if (temp_r0_10 != 0) {
-                    for (var_ctr_6 = temp_r0_10; var_ctr_6 != 0; var_ctr_6--) {
+                    do {
                         M2C_FIELD(var_r12_7, s32 *, 0) = 0;
                         M2C_FIELD(var_r12_7, s32 *, 0x900) = 0;
                         M2C_FIELD(var_r12_7, s32 *, 0x1200) = 0;
@@ -16177,19 +16178,22 @@ loop_130:
                         M2C_FIELD(var_r12_7, s32 *, 0x91C) = 0;
                         M2C_FIELD(var_r12_7, s32 *, 0x121C) = 0;
                         var_r12_7 += 0x20;
-                    }
+                        var_ctr_6 -= 1;
+                    } while (var_ctr_6 != 0);
                     var_r11_4 &= 7;
                     if (var_r11_4 != 0) {
                         goto block_135;
                     }
                 } else {
 block_135:
-                    for (var_ctr_7 = var_r11_4; var_ctr_7 != 0; var_ctr_7--) {
+                    var_ctr_7 = var_r11_4;
+                    do {
                         M2C_FIELD(var_r12_7, s32 *, 0) = 0;
                         M2C_FIELD(var_r12_7, s32 *, 0x900) = 0;
                         M2C_FIELD(var_r12_7, s32 *, 0x1200) = 0;
                         var_r12_7 += 4;
-                    }
+                        var_ctr_7 -= 1;
+                    } while (var_ctr_7 != 0);
                 }
             }
         } else {
