@@ -2,8 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef signed long s32;
-extern const float lbl_8055FB10;
-extern float lbl_80564E30;
+extern const float lbl_8055FB10;   /* minimum sun elevation angle, radians */
+extern float lbl_80564E30;         /* degrees-per-radian factor (180) */
 extern float lbl_80564E34;
 extern char lbl_8034AE98[];
 extern double fn_8002F234(double);
