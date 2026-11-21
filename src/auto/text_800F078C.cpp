@@ -212,13 +212,13 @@ extern "C" void NotifyLoadAsyncEndSeqData__Q46nw4hbm3snd6detail8SeqSoundFbPCvlPv
         virtual void s4(int);
     };
     const char *f = (const char *)lbl_80324060;
-    if (arg3 == 0) Panic__Q26nw4hbm2dbFPCciPCce(f + 0, 0x9A, f + 0xA0);
+    if (arg3 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&((char (*)[1])f)[0][0], 0x9A, f + 0xA0);
     *(u8 *)((u8 *)arg3 + 0x1E8) = 0;
     if (arg0 == 0) {
         ((Vt *)arg3)->s4(0);
         return;
     }
-    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(f + 0, 0x70, f + 0x74);
+    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&((char (*)[1])f)[0][0], 0x70, f + 0x74);
     SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl((u8 *)arg3 + 0xD8, arg1, (s32)arg2);
 }
 #pragma pop
@@ -230,8 +230,8 @@ extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkList
 extern "C" void fn_800EC848(void *, void *);
 extern "C" const char lbl_80324378[];
 extern "C" const char lbl_80324350[];
-extern "C" const char lbl_80324344[];
-extern "C" const char lbl_80324320[];
+extern "C" const char lbl_80324344[]; /* "LinkList.h" - panic file in list inserts */
+extern "C" const char lbl_80324320[]; /* "NW4HBM:Pointer must not be NULL (p)" */
 void nw4hbm::snd::detail::SeqSound::Shutdown() {
     int interrupts;
     struct SoundInstanceManager *manager;
