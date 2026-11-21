@@ -47,7 +47,7 @@ static SICallback TypeCallback[SI_MAX_CHAN][SI_MAX_TYPE];
 const char* __SIVersion = lbl_803115E8;
 
 /* .sbss */
-u32 lbl_8055DB2C;
+u32 lbl_8055DB2C; /* PAD's per-channel "fix this wireless device" request bits */
 
 static void GetTypeCallback(s32 chan, u32 status);
 static BOOL __SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr,
