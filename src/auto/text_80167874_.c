@@ -323,8 +323,8 @@ extern "C" void fn_801679F0(void) {
         DummyParamLocal **sp40[5];
     } local;
     register u8 *base;
-    register s32 zero = 0;
     register void *manager;
+    register s32 zero;
     s32 i;
     u8 *entry;
     DummyItem *object;
@@ -347,6 +347,7 @@ extern "C" void fn_801679F0(void) {
     local.sp40[0] = &local.sp8;
     local.spC = (DummyParamLocal *)lbl_80330248;
     local.sp8 = (DummyParamLocal *)lbl_80330234;
+    zero = 0;
     local.sp40[4] = (DummyParamLocal **)zero;
     local.sp40[1] = &local.sp14;
     local.sp40[2] = &local.sp10;
@@ -1357,113 +1358,115 @@ extern "C" s32 fn_80128658(s32 *);
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" char lbl_8055A1A8, lbl_8055A1B0;
 extern "C" char lbl_803303EC[], lbl_80330420[];
-extern "C" s32 fn_801699E4(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
-    class DummyCheck {
+/* Read a SinglesPickupMaker table ("coin%d"/"star%d") and add its pickups to
+   the manager: one group entry for the table plus one record per placement. */
+extern "C" s32 fn_801699E4(void *checker, DummyArg1 *table, DummyManager *manager) {
+    class NameChecker {
     public:
         virtual void v0();
-        virtual s32 checkName(const char *name);
+        virtual s32 matchesName(const char *name);
     };
 
-    f32 *cursor;
-    s32 type;
-    s32 *values;
-    s32 i;
-    s32 parsed;
-    s32 id;
+    f32 *placement;
+    s32 pickupType;
+    s32 *placements;
+    s32 placementIndex;
+    s32 tableIndex;
+    s32 groupId;
     f32 zero;
-    DummyEntry *entry;
+    DummyEntry *group;
 
-    if (((DummyCheck *)arg0)->checkName(arg1->getName()) == 0) {
-        fn_802E30C8(lbl_803303EC, arg1->getName());
+    if (((NameChecker *)checker)->matchesName(table->getName()) == 0) {
+        fn_802E30C8(lbl_803303EC, table->getName());
         return 0;
     }
 
-    if (fn_8002B1D8((s32)&lbl_8055A198, (s32 *)arg1->getName(), 4) == 0) {
-        type = 4;
-    } else if (fn_8002B1D8((s32)&lbl_8055A1A0, (s32 *)arg1->getName(), 4) == 0) {
-        type = 1;
+    if (fn_8002B1D8((s32)&lbl_8055A198, (s32 *)table->getName(), 4) == 0) {
+        pickupType = 4;
+    } else if (fn_8002B1D8((s32)&lbl_8055A1A0, (s32 *)table->getName(), 4) == 0) {
+        pickupType = 1;
     } else {
-        fn_802E30C8(lbl_80330420, arg1->getName());
+        fn_802E30C8(lbl_80330420, table->getName());
         return 0;
     }
 
-    parsed = -1;
-    if (type == 1) {
-        sscanf(arg1->getName(), (const char *)&lbl_8055A1A8, &parsed);
-    } else if (type == 4) {
-        sscanf(arg1->getName(), (const char *)&lbl_8055A1B0, &parsed);
+    tableIndex = -1;
+    if (pickupType == 1) {
+        sscanf(table->getName(), (const char *)&lbl_8055A1A8, &tableIndex);
+    } else if (pickupType == 4) {
+        sscanf(table->getName(), (const char *)&lbl_8055A1B0, &tableIndex);
     }
 
-    values = fn_801399FC(arg1);
-    id = parsed;
-    entry = &arg2->entries[arg2->entryCount++];
+    placements = fn_801399FC(table);
+    groupId = tableIndex;
+    group = &manager->entries[manager->entryCount++];
     zero = 0.0f;
-    entry->byte1C = 0;
-    entry->f8 = zero;
-    entry->fC = zero;
-    entry->f10 = zero;
-    entry->recordStart = arg2->recordCount;
-    entry->recordCount = 0;
-    entry->byte1D = 0;
-    entry->id = id;
-    entry->active = 1;
-    arg2->flag1E158 = 1;
+    group->byte1C = 0;
+    group->f8 = zero;
+    group->fC = zero;
+    group->f10 = zero;
+    group->recordStart = manager->recordCount;
+    group->recordCount = 0;
+    group->byte1D = 0;
+    group->id = groupId;
+    group->active = 1;
+    manager->flag1E158 = 1;
 
-    cursor = (f32 *)values;
-    i = 0;
-    for (; i < *values; i++) {
-        register DummyRecord *rec = &arg2->records[arg2->recordCount++];
-        rec->obj = 0;
-        rec->obj = (DummyRecordObj *)fn_80167874(type);
-        rec->x = cursor[2];
-        rec->y = zero;
-        rec->z = cursor[3];
-        rec->hit = zero;
-        fn_801E9E30(0, &rec->x);
+    placement = (f32 *)placements;
+    placementIndex = 0;
+    for (; placementIndex < *placements; placementIndex++) {
+        register DummyRecord *pickup = &manager->records[manager->recordCount++];
+        pickup->obj = 0;
+        pickup->obj = (DummyRecordObj *)fn_80167874(pickupType);
+        pickup->x = placement[2];
+        pickup->y = zero;
+        pickup->z = placement[3];
+        pickup->hit = zero;
+        fn_801E9E30(0, &pickup->x);
         {
-            f32 tmp = rec->y + rec->obj->f18;
-            rec->y = tmp + rec->hit;
+            f32 liftedY = pickup->y + pickup->obj->f18;
+            pickup->y = liftedY + pickup->hit;
         }
-        rec->flag = 0;
-        fn_801EA1E0(&rec->y, 1, rec->x, rec->z);
-        (*(s32 *)((u8 *)fn_80167874(type) + 0x1C))++;
+        pickup->flag = 0;
+        fn_801EA1E0(&pickup->y, 1, pickup->x, pickup->z);
+        (*(s32 *)((u8 *)fn_80167874(pickupType) + 0x1C))++;
 
-        if (arg2->flag1E158 != 0) {
-            entry = &arg2->entries[arg2->entryCount - 1];
-            entry->recordCount += 1;
+        if (manager->flag1E158 != 0) {
+            group = &manager->entries[manager->entryCount - 1];
+            group->recordCount += 1;
         } else {
-            s32 __c = arg2->entryCount;
-            if (__c == 0) {
+            s32 count = manager->entryCount;
+            if (count == 0) {
                 goto mkEntry;
             } else {
-                s32 __last = __c - 1;
-                volatile u8 *__e = (u8 *)arg2->entries + __last * 0x20 + 0x1C;
-                if (*__e == 0) {
+                s32 lastIndex = count - 1;
+                volatile u8 *lastFlag = (u8 *)manager->entries + lastIndex * 0x20 + 0x1C;
+                if (*lastFlag == 0) {
                     goto incEntry;
                 }
             }
 mkEntry:;
             {
-                DummyEntry *newEntry = &arg2->entries[arg2->entryCount++];
-                newEntry->byte1C = 0;
-                newEntry->recordStart = arg2->recordCount - 1;
-                newEntry->recordCount = 0;
-                newEntry->byte1D = 0;
+                DummyEntry *newGroup = &manager->entries[manager->entryCount++];
+                newGroup->byte1C = 0;
+                newGroup->recordStart = manager->recordCount - 1;
+                newGroup->recordCount = 0;
+                newGroup->byte1D = 0;
             }
 incEntry:;
             {
-                s32 last3 = arg2->entryCount - 1;
-                u8 *base3 = (u8 *)arg2->entries;
-                u8 *e3 = base3 + last3 * 0x20;
-                (*(s32 *)(e3 + 0x18))++;
+                s32 lastGroupIndex = manager->entryCount - 1;
+                u8 *groupsBase = (u8 *)manager->entries;
+                u8 *lastGroup = groupsBase + lastGroupIndex * 0x20;
+                (*(s32 *)(lastGroup + 0x18))++;
             }
-            entry = &arg2->entries[arg2->entryCount - 1];
+            group = &manager->entries[manager->entryCount - 1];
         }
-        cursor += 2;
+        placement += 2;
     }
 
-    arg2->flag1E158 = 0;
-    fn_80128658(values);
+    manager->flag1E158 = 0;
+    fn_80128658(placements);
     return 1;
 }
 #pragma cplusplus reset
