@@ -455,10 +455,9 @@ int nw4hbm::snd::detail::WsdTrack::Parse(const nw4hbm::snd::detail::WsdTrack::Ws
     return 0;
 }
 #pragma optimization_level reset
-#pragma optimization_level 3
 extern "C" const char lbl_80327CB8[];
 void nw4hbm::snd::detail::WsdTrack::ChannelCallbackFunc(nw4hbm::snd::detail::Channel *arg0, nw4hbm::snd::detail::Channel::ChannelCallbackStatus arg1, unsigned long arg2) {
-    const char * const base = lbl_80327CB8;
+    const char *base = lbl_80327CB8;
     void *track = (void *)arg2;
     void *channel;
     void *next;
