@@ -1455,7 +1455,8 @@ void fn_802D0610(int arg0) {
     }
     lbl_8055FD8C = arg0;
 }
-#pragma pop
+#pragma push
+#pragma opt_common_subs off
 void fn_802D07E4(char* arg0, int arg1) {
     extern unsigned long lbl_8055D0B8;
     extern int lbl_8055D0BC;
@@ -1495,12 +1496,11 @@ copy:
     }
 done:
     if (arg1 != 0) {
-        int *base = lbl_804C9760;
-        int v = lbl_8055D0BC;
-        fn_802E30C8(lbl_8034C108, v * base[2], lbl_8055D0C0 * base[3], base, v);
+        fn_802E30C8(lbl_8034C108, lbl_8055D0BC * lbl_804C9760[2], lbl_8055D0C0 * lbl_804C9760[3], lbl_804C9760, lbl_8055D0BC);
         lbl_8055D0B8 = 0;
     }
 }
+#pragma pop
 extern unsigned char lbl_8055FD78;
 extern int GXSetCullMode(int);
 extern void GXLoadTexMtxImm(void *, unsigned int, unsigned char);
