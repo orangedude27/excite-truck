@@ -1,6 +1,9 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+/* No-op per-entry constructor for the 8-entry, 0x184-byte pool that
+ * fn_80296014 sets up at lbl_804B42F0 via fn_8002F53C; entries need no
+ * initialisation in this build. */
 void fn_80296058(void) {
 }
 
