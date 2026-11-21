@@ -42,10 +42,15 @@ s32 fn_802E98C8(void);
 #pragma small_data on
 __declspec(section ".sdata") extern char lbl_8055D1A0[];
 __declspec(section ".sdata") extern char lbl_8055D1A8[];
-s32 fn_802E321C(const char *arg0) {
+/* Returns 1 when the path begins with the NAND prefix "nand:" (lbl_8055D1A0),
+   0 otherwise; fn_802E32C4 then hands out the NAND file system handle
+   lbl_8055FF20 for it.  Its sibling fn_802E3270 tests the "sd:" prefix. */
+s32 fn_802E321C(const char *path) {
+    /* the prefix address is held as an integer so the compiler keeps it in one
+       callee-saved register instead of re-materializing the small-data address */
     s32 prefix = (s32)lbl_8055D1A0;
     s32 prefixLen = strlen((char *)prefix);
-    s32 result = strncmp(arg0, (char *)prefix, prefixLen);
+    s32 result = strncmp(path, (char *)prefix, prefixLen);
     return (unsigned int)__cntlzw(result) >> 5;
 }
 
