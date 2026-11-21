@@ -167,7 +167,7 @@ void OSShutdownSystem(void) {
     }
 
     if (idleMode.wc24 == 1) {
-        stateFlags.BYTE_0x5 = 5;
+        stateFlags.bootType = 5;
     } else {
         stateFlags.BYTE_0x5 = 1;
     }
