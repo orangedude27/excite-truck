@@ -908,7 +908,6 @@ void fn_802A01C8(void *arg0, Unk802A0794Params *params) {
         }
     }
 }
-#pragma pop
 
 #pragma push
 #pragma cplusplus on
