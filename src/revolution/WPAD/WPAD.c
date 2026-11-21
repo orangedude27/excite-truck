@@ -6162,7 +6162,10 @@ void fn_800656E8(s32 chan, WPADStatusEx* pReport)
     OSRestoreInterrupts(enabled);
 }
 
-// fn_80065934: WPAD data processing
+/* Decode one incoming WPAD report for `chan`: zero the active RX buffer, copy the raw
+ * payload, and (when extension reporting is on) unpack/calibrate Classic or Freestyle
+ * stick, trigger and button data for the connected controller. Interrupts are disabled
+ * for the whole update. */
 void fn_80065934(s32 chan, u8* data)
 {
     typedef struct {
@@ -6193,9 +6196,9 @@ void fn_80065934(s32 chan, u8* data)
     u32 offset;
     u32 format;
     s16 x, y, v;
-    s32 enabled;
+    s32 irqState;
 
-    enabled = OSDisableInterrupts();
+    irqState = OSDisableInterrupts();
     cb = (CBView*)lbl_8038F4F0[(u8)chan];
     buf = (volatile s8*)cb->rxBufs[cb->rxBufIndex];
     for (offset = 0; offset < 96; offset++) {
@@ -6316,7 +6319,7 @@ void fn_80065934(s32 chan, u8* data)
         }
     }
     cb->rxBufIndex = (u8)((u32)__cntlzw(cb->rxBufIndex) >> 5);
-    OSRestoreInterrupts(enabled);
+    OSRestoreInterrupts(irqState);
 }
 
 // fn_800660E8: WPAD data processing
