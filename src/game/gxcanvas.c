@@ -1412,9 +1412,8 @@ int fn_802C501C(void) {
     return CANVAS_CHAR_WIDTH;
 }
 
-/* Blit one character of the canvas font at (x,y) in the given colour.  Built
- * empty in this release: the debug text overlay never draws. */
-void fn_802C5024(s32 x, s32 y, s32 ch, s32 color) {}
+/* Draw a single canvas-font glyph at (x, y) in the given colour; a no-op in this release. */
+void fn_802C5024(s32 x, s32 y, s32 glyph, s32 color) {}
 extern const char lbl_8034B060[];
 extern void fn_802C3320();
 extern void fn_802C33A8();
