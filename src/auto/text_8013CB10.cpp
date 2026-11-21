@@ -2871,6 +2871,7 @@ extern "C" f32 fn_8013CB3C(void);
 extern "C" f32 lbl_805614A4, lbl_80561498, lbl_805614FC, lbl_80561588;
 extern "C" u8 lbl_8055E1BC;
 extern "C" u8 lbl_8042FB3C[];
+#pragma scheduling on
 extern "C" void fn_80141574(char *arg0) {
     u8 *tab;
     u8 *cfg;
@@ -3042,7 +3043,6 @@ extern "C" void fn_80141574(char *arg0) {
         }
     }
 }
-
 extern "C" void fn_80141C84(void *owner, s32 index) {
     /* Refresh the indexed item record's s32 field at +0x88 from the value stored at +0x10C (records live at owner+0xB8, stride 0x12C). */
     u8 *record = *(u8 **)((u8 *)owner + 0xB8) + index * ITEM_RECORD_STRIDE;
@@ -4745,6 +4745,7 @@ extern "C" s32 fn_8014444C(void) { return 0; }
 extern "C" s32 fn_80144454(void) { return 0; }
 
 extern "C" s32 fn_8013D1F0(s32);
+static inline s32 sub_rev_8014445C(s32 a, s32 b) { return b - a; }
 #pragma scheduling invalid_target
 extern "C" s32 fn_8014445C(s32 arg0, s32 arg1) {
     s32 v = fn_8013D1F0(arg1) ^ 0xA;
