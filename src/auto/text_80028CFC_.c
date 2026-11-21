@@ -75,7 +75,8 @@ unsigned char *strncpy(unsigned char *dst, const unsigned char *src, int n) {
 
 /* Append src to dst (strcat): find the end of dst, copy src over it including
  * its terminating NUL, and return dst. */
-unsigned char *fn_80028E00(unsigned char *dst, const unsigned char *src) {
+#define strcat fn_80028E00
+unsigned char *strcat(unsigned char *dst, const unsigned char *src) {
     const unsigned char *srcPtr = src - 1;
     unsigned char *dstEnd = dst - 1;
     while (*++dstEnd != 0) {
