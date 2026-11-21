@@ -3276,6 +3276,8 @@ extern "C" void fn_8021D614(void *widget, s32 x, s32 y) {
 }
 
 extern "C" void fn_8021D618(void) {
+    /* Argument-forwarding thunk: tail-branch to fn_8021D61C (refresh the selected
+       option string and layout). The no-argument call forwards r3 as the callee's `this`. */
     ((void (*)(void))fn_8021D61C)();
 }
 
@@ -7234,6 +7236,7 @@ extern "C" s32 fn_80224B0C(void *widget, s32 action) {
 #pragma opt_propagation off
 extern "C" void *fn_80224B54(void *arg0, void *arg1, void *arg2) {
     s32 first;
+    void *p1 = arg1;
     void *p2 = arg2;
     volatile u8 *self = (volatile u8 *)arg0;
     f32 sp10;
@@ -7253,8 +7256,8 @@ extern "C" void *fn_80224B54(void *arg0, void *arg1, void *arg2) {
         sprintf((char *)(self + 0x259), lbl_8033DAD8, fn_80129D90(1, 0x42, 0x45), first);
         break;
     }
-    if (arg1 != 0) {
-        *(s32 *)(self + 0x244) = (s32)arg1;
+    if (p1 != 0) {
+        *(s32 *)(self + 0x244) = (s32)p1;
     } else {
         *(s32 *)(self + 0x244) = fn_80131234((u8 *)p2 + 0x20);
     }
