@@ -2460,9 +2460,8 @@ extern "C" void* GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void)
     return lbl_804127A8;
 }
 
-struct RemoteSpkView { u8 pad[8]; u32 alarm; };
-
 void nw4hbm::snd::detail::RemoteSpeakerManager::Setup() {
+    void *self = this;
     u8* p;
     s32 i;
     if (((u8*)this)[0] == 0) {
@@ -2473,13 +2472,13 @@ void nw4hbm::snd::detail::RemoteSpeakerManager::Setup() {
             i++;
             p += 0xA0;
         } while (i < 4);
-        OSCreateAlarm((u8*)this + 8);
+        OSCreateAlarm((void*)((u8*)self + 8));
         u64 time = OSGetTime();
         u32 ticks = *(volatile u32*)0x800000F8;
         u32 q = (ticks >> 2) / 125000;
         u32 period = q * 0x0065B9AB;
         u32 interval = period / 8000;
-        OSSetPeriodicAlarm((void*)((u8*)this + 8), q, (u32)(time >> 32), (u32)time,
+        OSSetPeriodicAlarm((void*)((u8*)self + 8), q, (u32)(time >> 32), (u32)time,
                            0, interval, (void*)fn_800EEBA8);
         ((u8*)this)[0] = 1;
     }
