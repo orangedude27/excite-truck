@@ -57,11 +57,6 @@ int fn_801379CC(void) {
     return (int)lbl_8042F788[(int)lbl_80559C00];
 }
 #pragma pop
-extern void *fn_80131808(void *);
-extern void fn_80131818(void *);
-extern int sprintf(char *, const char *, ...);
-extern int stricmp(const char *, const char *);
-extern char lbl_80559C18, lbl_80559C20, lbl_80559C28, lbl_80559C30;
 #pragma inline_depth(0)
 #pragma scheduling invalid_target
 #pragma cplusplus on
