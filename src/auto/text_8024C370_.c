@@ -722,52 +722,55 @@ extern char lbl_80343F38[], lbl_80343F20[];
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_8024D248(void *arg0) {
+void fn_8024D248(void *keyboard) {
+    /* On-screen keyboard: recompute the text scale at +0x84 from the measured
+       width of "BS" and the font's glyph height, then reset SHIFT to uppercase
+       and copy its localized label into the 10-byte buffer at +0x6D. */
     extern float lbl_8056394C;
     extern char lbl_8055C094;
     extern char lbl_80343F38[], lbl_80343F20[];
     extern int fn_80232B70(int);
     extern int __cntlzw(unsigned int);
 
-    float f31;
-    float f30;
-    float f0;
-    float f2;
-    float f_den;
+    float countScale;
+    float heightTerm;
+    float scale;
+    float heightScaled;
+    float fontHeightF;
     register float quarter = 0.25f;
-    int den_int;
-    int toggle;
+    int fontHeight;
+    int shiftUpper;
     int count;
     char *dst;
     const char *src;
 
-    f31 = (float)*(int *)((char *)arg0 + 0xC) / 10.0f;
-    f30 = (float)*(int *)((char *)arg0 + 0x10) * quarter;
+    countScale = (float)*(int *)((char *)keyboard + 0xC) / 10.0f;
+    heightTerm = (float)*(int *)((char *)keyboard + 0x10) * quarter;
 
-    f31 = (f31 - lbl_8056394C) /
-          (*(float *)((char *)arg0 + 0x84) *
+    countScale = (countScale - lbl_8056394C) /
+          (*(float *)((char *)keyboard + 0x84) *
            ((float (*)(int, const char *, float, float))fn_8023293C)(
-               *(int *)((char *)arg0 + 0x78), &lbl_8055C094,
-               *(float *)((char *)arg0 + 0x88), quarter));
+               *(int *)((char *)keyboard + 0x78), &lbl_8055C094,
+               *(float *)((char *)keyboard + 0x88), quarter));
 
-    den_int = fn_80232B70(*(int *)((char *)arg0 + 0x78));
-    f2 = f30 - lbl_8056394C;
-    f_den = (float)den_int;
-    f0 = f2 / f_den;
+    fontHeight = fn_80232B70(*(int *)((char *)keyboard + 0x78));
+    heightScaled = heightTerm - lbl_8056394C;
+    fontHeightF = (float)fontHeight;
+    scale = heightScaled / fontHeightF;
 
-    f0 = (f0 < f31) ? f0 : f31;
+    scale = (scale < countScale) ? scale : countScale;
 
-    *(float *)((char *)arg0 + 0x84) = f0;
+    *(float *)((char *)keyboard + 0x84) = scale;
     src = lbl_80343F38;
-    toggle = (unsigned int)__cntlzw(0) >> 5;
-    *(char *)((char *)arg0 + 0x6C) = toggle;
-    if (toggle) {
+    shiftUpper = (unsigned int)__cntlzw(0) >> 5;
+    *(char *)((char *)keyboard + 0x6C) = shiftUpper;
+    if (shiftUpper) {
         src = lbl_80343F20;
     }
     src = (const char *)fn_80131234(src);
 
     count = 10;
-    dst = (char *)arg0 + 0x6D;
+    dst = (char *)keyboard + 0x6D;
     goto copy_char;
 count_more:
     count--;
