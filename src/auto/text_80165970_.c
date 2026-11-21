@@ -180,36 +180,32 @@ extern "C" void fn_80165A30(void *arg0, int arg1) {
         virtual void d4(); virtual void d5(); virtual void d6();
         virtual float getValue(const char *);
     };
-    float scaleX = lbl_80561898, scaleY = lbl_805618A0;
     float y, x, z;
     void *entry = 0;
-    Entry *item = 0;
+    Entry *item;
     int j, count, minusOne;
     List *list;
     *(int *)((char *)&lbl_8042FEB0 + 4) = 0;
     list = (List *)arg0;
     j = 0;
     minusOne = -1;
-    goto next_item;
-body:
-    if (strcmp(item->getName(), lbl_8055A150) == 0) {
-        count = *(int *)((char *)&lbl_8042FEB0 + 4);
-        void *b = *(void **)&lbl_8042FEB0;
-        *(int *)((char *)&lbl_8042FEB0 + 4) = count + 1;
-        entry = (char *)b + count * 0x14;
-        x = item->getValue(lbl_8055A158);
-        y = item->getValue(lbl_8055A160);
-        *(float *)entry = item->getValue(lbl_8055A168);
-        z = x * scaleX;
-        *(float *)((char *)entry + 4) = y;
-        *(float *)((char *)entry + 8) = z;
-        *(int *)((char *)entry + 0x10) = minusOne;
-        *(float *)((char *)entry + 0xC) =
-            lbl_8055E318 - ((float (*)(int, float, float))fn_80129DC4)(3, lbl_8056189C, scaleY * z);
+    while ((item = (Entry *)list->getAt(++j)) != 0) {
+        if (strcmp(item->getName(), lbl_8055A150) == 0) {
+            count = *(int *)((char *)&lbl_8042FEB0 + 4);
+            void *b = *(void **)&lbl_8042FEB0;
+            *(int *)((char *)&lbl_8042FEB0 + 4) = count + 1;
+            entry = (char *)b + count * 0x14;
+            x = item->getValue(lbl_8055A158);
+            y = item->getValue(lbl_8055A160);
+            *(float *)entry = item->getValue(lbl_8055A168);
+            z = x * 0.5f;
+            *(float *)((char *)entry + 4) = y;
+            *(float *)((char *)entry + 8) = z;
+            *(int *)((char *)entry + 0x10) = minusOne;
+            *(float *)((char *)entry + 0xC) =
+                lbl_8055E318 - ((float (*)(int, float, float))fn_80129DC4)(3, 0.0f, 2.0f * z);
+        }
     }
-next_item:
-    item = (Entry *)list->getAt(++j);
-    if (item != 0) goto body;
 }
 #pragma cplusplus reset
 #pragma pop
@@ -234,17 +230,18 @@ extern float lbl_805618CC;
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_80165B78(void **arg0) {
-#pragma opt_common_subs off
+#pragma scheduling invalid_target
     char *strings = lbl_8032FCC0;
-    char *s0 = strings;
-    char *match, *text;
+    char *match;
+    char *text;
     Dummy80165B78 *obj2;
     Dummy80165B78 *obj;
     float scale;
     float value;
+    register float default50;
 
     obj = ((Dummy80165B78 *)arg0)->getObject(&lbl_8055A170);
-    value = obj->getFloat(s0);
+    value = obj->getFloat(strings);
     *(float *)((char *)&lbl_8042FE38 + 0x28) = value;
     value = obj->getFloat(strings + 0x10);
     *(float *)((char *)&lbl_8042FE38 + 0x2c) = value;
@@ -254,7 +251,8 @@ extern "C" void fn_80165B78(void **arg0) {
     *(float *)((char *)&lbl_8042FE38 + 0x34) = value;
     value = obj->getFloatDefault(strings + 0x3C, lbl_805618A8);
     *(float *)((char *)&lbl_8042FE38 + 0x38) = value;
-    value = obj->getFloatDefault(strings + 0x50, *(float *)((char *)&lbl_8042FE38 + 0x2c));
+    default50 = *(float *)((char *)&lbl_8042FE38 + 0x2c);
+    value = obj->getFloatDefault(strings + 0x50, default50);
     *(float *)((char *)&lbl_8042FE38 + 0x30) = value;
     value = obj->getFloatDefault(strings + 0x60, lbl_805618AC);
     *(float *)((char *)&lbl_8042FE38 + 0x44) = value;
@@ -528,12 +526,17 @@ void fn_801663C8(int count, void *records, void *config) {
     void *array;
     int i;
     float value;
+    float a, b, c;
+    int notDefault;
     lbl_8055E324 = fn_801659D0((int)config);
     fn_80165FAC();
     obj = *(void **)((char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
     value = (*(float (***)(void *, char *, float))obj)[10](obj, strings + 0x270, *(float *)((char *)&lbl_8042FE38 + 0xC));
     *(float *)((char *)&lbl_8042FE38 + 0xC) = value;
-    fn_802E30C8(strings + 0x280, *(float *)((char *)&lbl_8042FE38 + 8), (float)(double)value, *(float *)((char *)&lbl_8042FE38 + 4), *(float *)&lbl_8042FE38);
+    a = *(float *)((char *)&lbl_8042FE38 + 8);
+    b = *(float *)((char *)&lbl_8042FE38 + 4);
+    c = *(float *)&lbl_8042FE38;
+    fn_802E30C8(strings + 0x280, a, (float)(double)value, b, c);
     holder = fn_801284F8(16, strings + 0x2A0);
     if (holder) {
         array = fn_8002F37C(fn_8012850C(count * 0x88 + 16, &lbl_8055A190), (void (*)(void *))fn_80166754, 0, 0x88, count);
@@ -551,38 +554,43 @@ void fn_801663C8(int count, void *records, void *config) {
         p->id = i;
         p->flag = (signed char)(type == 0x50);
     }
+    notDefault = *(int *)((char *)config + 4) != 0x180304;
     lbl_8055E32B = 0;
-    lbl_8055E32A = *(int *)((char *)config + 4) != 0x180304;
+    lbl_8055E32A = notDefault;
     *(int *)&lbl_8055E334 = 0;
 }
 #pragma processor 750
-void *fn_80166754(void *arg0)
+/* Fill one 0x88-byte LFO/automation entry of the effect list: copy the tuning
+ * parameter's initial value, clear the fade fields, and set the LFO bounds from
+ * the tuning parameter plus a random half-period from RNG slot 3.  The unused
+ * 15.0f local is kept because it holds the compiler's FPR allocation. */
+void *fn_80166754(void *entry)
 {
   extern unsigned char lbl_8042FE38;
-  char *base = (char *) (&lbl_8042FE38);
-  float arg2;
+  char *params = (char *) (&lbl_8042FE38);
+  float unusedMax;
   float scale;
-  float result;
-  float base3c;
+  float period;
+  float lfoAmplitude;
   unsigned int pad;
-  *((float *) (((char *) arg0) + 0x18)) = *((float *) (base + 0x14));
-  arg2 = 15.0f;
-  *((float *) (((char *) arg0) + 0x0C)) = 0.0f;
-  *((float *) (((char *) arg0) + 0x08)) = 0.0f;
-  *((float *) (((char *) arg0) + 0x14)) = 0.0f;
-  *((float *) (((char *) arg0) + 0x10)) = 0.0f;
-  *((float *) (((char *) arg0) + 0x44)) = 0.4f;
-  *((float *) (((char *) arg0) + 0x38)) = 0.0f;
-  *((float *) (((char *) arg0) + 0x34)) = 0.0f;
-  *((float *) (((char *) arg0) + 0x40)) = 0.0f;
-  *((float *) (((char *) arg0) + 0x3C)) = 0.0f;
-  result = ((float (*)(int, float, float)) fn_80129DC4)(3, 8.0f, 15.0f);
-  base3c = *((float *) (base + 0x3C));
+  *((float *) (((char *) entry) + 0x18)) = *((float *) (params + 0x14));
+  unusedMax = 15.0f;
+  *((float *) (((char *) entry) + 0x0C)) = 0.0f;
+  *((float *) (((char *) entry) + 0x08)) = 0.0f;
+  *((float *) (((char *) entry) + 0x14)) = 0.0f;
+  *((float *) (((char *) entry) + 0x10)) = 0.0f;
+  *((float *) (((char *) entry) + 0x44)) = 0.4f;
+  *((float *) (((char *) entry) + 0x38)) = 0.0f;
+  *((float *) (((char *) entry) + 0x34)) = 0.0f;
+  *((float *) (((char *) entry) + 0x40)) = 0.0f;
+  *((float *) (((char *) entry) + 0x3C)) = 0.0f;
+  period = ((float (*)(int, float, float)) fn_80129DC4)(3, 8.0f, 15.0f);
+  lfoAmplitude = *((float *) (params + 0x3C));
   scale = 0.5f;
-  *((float *) (((char *) arg0) + 0x4C)) = base3c;
-  *((float *) (((char *) arg0) + 0x48)) = -base3c;
-  *((float *) (((char *) arg0) + 0x50)) = result * scale;
-  return arg0;
+  *((float *) (((char *) entry) + 0x4C)) = lfoAmplitude;
+  *((float *) (((char *) entry) + 0x48)) = -lfoAmplitude;
+  *((float *) (((char *) entry) + 0x50)) = period * scale;
+  return entry;
 }
 #pragma processor gekko
 /* IsSystemReady gate: returns 1 when the config-driven enable flag is set and
@@ -715,12 +723,13 @@ extern float lbl_8055E3C8, lbl_80561898, lbl_805618D0, lbl_805618E0, lbl_805618E
 #pragma scheduling invalid_target
 extern "C" void fn_80166A24(void) {
     unsigned char *object;
-    int wasActive;
+    unsigned int wasActive;
     unsigned char *var_r27;
     int var_r28;
     int var_r29;
     int var_r30;
     unsigned char *temp_r31;
+    unsigned char *params;
     float time;
     float delta;
     float emptyValue;
@@ -758,11 +767,11 @@ extern "C" void fn_80166A24(void) {
     previous = lbl_80561898;
     emptyValue = lbl_805618D0;
     var_r28 = 0;
-    var_r27 = (unsigned char *)&lbl_8042FE38;
-    for (var_r29 = 0, var_r30 = 0;
-         var_r29 < *(int *)((unsigned char *)(*(unsigned char *volatile *)&lbl_8055E32C) + 4);
-         var_r30 += 0x88, var_r29++) {
-        temp_r31 = *(unsigned char * volatile *)(*(unsigned char * volatile *)&lbl_8055E32C) + var_r30;
+    params = (unsigned char *)&lbl_8042FE38;
+    for (var_r30 = 0, var_r29 = 0;
+         var_r30 < *(int *)((unsigned char *)(*(unsigned char *volatile *)&lbl_8055E32C) + 4);
+         var_r29 += 0x88, var_r30++) {
+        temp_r31 = *(unsigned char * volatile *)(*(unsigned char * volatile *)&lbl_8055E32C) + var_r29;
         object = (unsigned char *)((int (*)(int))fn_801B2EC0)(*(int *)temp_r31);
         fn_8016707C(temp_r31, (void **)object);
         if (*(void **)(temp_r31 + 0x58) != 0) {
@@ -775,27 +784,27 @@ extern "C" void fn_80166A24(void) {
             delta = time - stateValue;
 
             if (fn_80166F78((float *)(temp_r31 + 0x1C))) {
-                firstValue = fn_801429D0(lbl_8056189C, *(float *)(var_r27 + 0x10) - previous);
-                ((void (*)(float *, float, float))fn_80166F3C)((float *)(temp_r31 + 0x1C), firstValue, previous + *(float *)(var_r27 + 0x10));
-                amount = fn_8014C8B4(*(float *)&lbl_8042FE38, *(float *)(var_r27 + 4), *(float *)(var_r27 + 0xC), *(float *)(var_r27 + 8), delta);
-                active = time > *(float *)(var_r27 + 0x18) && time < *(float *)(var_r27 + 0x1C);
+                firstValue = fn_801429D0(lbl_8056189C, *(float *)(params + 0x10) - previous);
+                ((void (*)(float *, float, float))fn_80166F3C)((float *)(temp_r31 + 0x1C), firstValue, previous + *(float *)(params + 0x10));
+                amount = fn_8014C8B4(*(float *)&lbl_8042FE38, *(float *)(params + 4), *(float *)(params + 0xC), *(float *)(params + 8), delta);
+                active = time > *(float *)(params + 0x18) && time < *(float *)(params + 0x1C);
                 temp_r31[5] = active;
                 if (active) {
-                    amount = ((float (*)(float, float, float))fn_8014C8F8)(amount, *(float *)(var_r27 + 0x20), *(float *)(var_r27 + 0x24));
+                    amount = ((float (*)(float, float, float))fn_8014C8F8)(amount, *(float *)(params + 0x20), *(float *)(params + 0x24));
                 }
-                fn_80166E68((float *)(temp_r31 + 8), *(float *)(var_r27 + 0x54) + amount * lbl_8055E31C);
+                fn_80166E68((float *)(temp_r31 + 8), *(float *)(params + 0x54) + amount * lbl_8055E31C);
             }
 
             active = 0;
-            if (var_r27[0x4C] != 0 && (delta < *(float *)&lbl_8042FE38 || delta > *(float *)(var_r27 + 4))) {
+            if (params[0x4C] != 0 && (delta < *(float *)&lbl_8042FE38 || delta > *(float *)(params + 4))) {
                 active = 1;
             }
             if (active) {
                 fn_80166E54(*(void **)(temp_r31 + 0x58));
             }
 
-            active = delta > *(float *)(var_r27 + 0x2C);
-            if (delta > *(float *)(var_r27 + 0x28) && fn_80166F78((float *)(temp_r31 + 0x20))) {
+            active = delta > *(float *)(params + 0x2C);
+            if (delta > *(float *)(params + 0x28) && fn_80166F78((float *)(temp_r31 + 0x20))) {
                 if (active) {
                     ((Dummy8016707C *)fn_80156A40())->v5(*(int *)temp_r31, 1);
                 } else {
@@ -810,11 +819,11 @@ extern "C" void fn_80166A24(void) {
                 fn_80166E68((float *)(temp_r31 + 0x34), lbl_8056189C);
             }
             *(float *)(temp_r31 + 0x24) = fn_80166DD4(temp_r31 + 8);
-            temp_r31[0x5D] = delta > *(float *)(var_r27 + 0x34);
-            temp_r31[0x5C] = delta > *(float *)(var_r27 + 0x30);
-            temp_r31[0x5E] = delta < *(float *)(var_r27 + 0x38);
-            temp_r31[0x5F] = delta < *(float *)(var_r27 + 0x40);
-            temp_r31[0x60] = delta < *(float *)(var_r27 + 0x44);
+            temp_r31[0x5D] = delta > *(float *)(params + 0x34);
+            temp_r31[0x5C] = delta > *(float *)(params + 0x30);
+            temp_r31[0x5E] = delta < *(float *)(params + 0x38);
+            temp_r31[0x5F] = delta < *(float *)(params + 0x40);
+            temp_r31[0x60] = delta < *(float *)(params + 0x44);
         } else {
             temp_r31[0x5C] = var_r28;
             temp_r31[0x5E] = var_r28;
