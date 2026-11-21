@@ -292,7 +292,6 @@ void fn_8022EE9C(void) {
     fn_8022EDE4(identityMatrix, 1.0f);
 }
 
-extern f32 fn_80144514(f32, f32, f32, f32, f32, f32);
 #pragma push
 #pragma processor 750
 /* Combines two UI draw-contexts into `dst`: the 3x3 matrices multiply
