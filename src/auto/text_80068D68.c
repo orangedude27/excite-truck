@@ -11309,16 +11309,20 @@ static inline void btm_pm_cont_rswitch_inl(u8 *link, u8 *conn, u16 handle, u8 st
 }
 
 #pragma opt_propagation off
+/* Handle an ACL link power-mode change: on return to active (mode 0) with no active SCO
+   links, clear the SCO packet type and restore the connection type; update the per-link PM
+   mode/interval state and any pending request modes, notify registered mode-change callbacks,
+   then finish a pending encryption or role-switch on the link and invoke the deferred callback. */
 void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
     extern char lbl_80316530[];
     extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
     union AddrConv { u32 u; u8 *p; };
-    u8 *acl, *pm, *reg, *dev, *addr, *link;
+    u8 *acl, *pmState, *regEntry, *dev, *addr, *link;
     u32 offset;
-    int index, i;
-    index = (u8)btm_handle_to_acl_index(handle);
-    if (index >= 4) return;
-    offset = index * 0x11c;
+    int aclIndex, i;
+    aclIndex = (u8)btm_handle_to_acl_index(handle);
+    if (aclIndex >= 4) return;
+    offset = aclIndex * 0x11c;
     acl = lbl_803C0F78 + offset;
     if (mode == 0 && *(u16 *)(acl + 0x38) != 0 && (u8)btm_num_sco_links_active() == 0) {
         *(u16 *)(acl + 0x38) = 0;
@@ -11326,21 +11330,21 @@ void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
             fn_8007096C(0xD0004, lbl_80316530, handle, *(u16 *)(acl + 0x36));
         btsnd_hcic_change_conn_type(*(u16 *)(acl + 0x34), *(u16 *)(acl + 0x36));
     }
-    pm = lbl_803C0F78 + index * 0x22;
-    pm[0x4ec] = mode;
-    *(u16 *)(pm + 0x4ea) = interval;
+    pmState = lbl_803C0F78 + aclIndex * 0x22;
+    pmState[0x4ec] = mode;
+    *(u16 *)(pmState + 0x4ea) = interval;
     {
-        tBTM_PM_PWR_MD *req = (tBTM_PM_PWR_MD *)(pm + 0x4cc);
+        tBTM_PM_PWR_MD *req = (tBTM_PM_PWR_MD *)(pmState + 0x4cc);
         int n;
         for (n = 0; n <= 1; ++n, ++req) {
             if (mode == 0 && req->mode == 1) req->mode = 0;
         }
     }
-    if (pm[0x4ed] == 1) btm_pm_snd_md_req(0x80, index, 0);
-    reg = lbl_803C0F78;
-    for (i = 0; i < 2; i++, reg += 8) {
-        if (reg[0x558] & 2)
-            (*(void (**)(u8 *, u8, u16, u8))(reg + 0x554))(acl + 0x3c, mode, interval, status);
+    if (pmState[0x4ed] == 1) btm_pm_snd_md_req(0x80, aclIndex, 0);
+    regEntry = lbl_803C0F78;
+    for (i = 0; i < 2; i++, regEntry += 8) {
+        if (regEntry[0x558] & 2)
+            (*(void (**)(u8 *, u8, u16, u8))(regEntry + 0x554))(acl + 0x3c, mode, interval, status);
     }
     {
         union AddrConv c;
