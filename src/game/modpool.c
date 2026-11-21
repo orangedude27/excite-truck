@@ -12,10 +12,10 @@ extern void *fn_801284F8(int, void *);
 extern void *fn_8012850C(int, void *);
 extern void *fn_8013420C(int, int);
 extern void *fn_8002F37C(void *, int, int, int);
-extern char lbl_8034BCE4[];
-extern char lbl_8034BCD8[];
+extern char lbl_8034BCE4[]; /* "loadpool" - allocation name for the load pool */
+extern char lbl_8034BCD8[]; /* "modelpool" - allocation name for model storage */
 extern void fn_802CE474(void *);
-__declspec(section ".sdata") extern char lbl_8055D0A8[];
+__declspec(section ".sdata") extern char lbl_8055D0A8[]; /* "modpool" - allocation name for the manager */
 void *fn_802CE3A4(int slotCount, int arg1, int arg2) {
     int count;
     void *pool;
