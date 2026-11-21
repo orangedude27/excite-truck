@@ -44,7 +44,7 @@ static void calc_acc_horizon(KPADInsideStatus* kp, f32* acc, f32 acc2) {
     }
 
     if (f1 >= kp->acc_play_radius) {
-        f1 = lbl_80560BE4;
+        f1 = kp_one_g;
     } else {
         f1 /= kp->acc_play_radius;
         f1 *= f1;
