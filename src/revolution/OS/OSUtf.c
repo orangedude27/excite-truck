@@ -1,5 +1,8 @@
 #include <revolution/OS.h>
 
+/* Unicode conversion helpers shared by the SDK's character APIs. The two
+ * declarations below forward-reference the lookup tables defined at the end
+ * of this file. */
 extern wchar_t UcsAnsiTable[32];
 extern wchar_t* UcsSjisTable[256];
 
