@@ -751,12 +751,15 @@ extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, s32);
 // the node/end pair in the top callee-saved registers this way.
 #pragma push
 #pragma opt_common_subs off
-extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, s32 arg1) {
+extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* self, s32 deleteMode) {
     extern const char lbl_8031E764[];
     extern const char lbl_8031E740[];
     extern const char lbl_8031F718[];
     extern const char lbl_8031F6F4[];
-    GroupLayout* group = (GroupLayout*)arg0;
+    /* nw4hbm::lyt::Group destructor: reset the group's vtable, unlink and free
+       every child-pane link node in its list, destruct the base LinkListImpl,
+       and free the group itself when deleteMode > 0. */
+    GroupLayout* group = (GroupLayout*)self;
     struct { GroupListNode *v; } nodeH;
     struct { GroupListNode *v; } endH;
     GroupListNode *&node = nodeH.v;
@@ -780,10 +783,10 @@ extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, s32 arg1) {
         }
         if (&group->children != 0)
             __dt__Q46nw4hbm2ut6detail12LinkListImplFv(&group->children, 0);
-        if (0 < arg1)
-            ((void (*)(void*))fn_80128668)(arg0);
+        if (0 < deleteMode)
+            ((void (*)(void*))fn_80128668)(self);
     }
-    return arg0;
+    return self;
 }
 #pragma pop
 #pragma push
@@ -2269,7 +2272,7 @@ extern "C" s32 fn_800D938C(void* arg0) {
 
 extern "C" s32 fn_800D93BC(void *arg0) {
     u32 x = *(u32 *)((u8 *)arg0 + 0x4C);
-    s32 y = *(s32 *)((u8 *)arg0 + 0x58);
+    u32 y = *(u32 *)((u8 *)arg0 + 0x58);
     s32 a = (x >> 5) & 4;
     s32 b = (x >> 6) & 4;
     s32 c = (x >> 0x12) & 0x3C;
