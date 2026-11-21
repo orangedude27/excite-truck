@@ -239,6 +239,7 @@ extern "C" void fn_802A172C(void) {
     } while (index < 8);
 }
 
+/* Empty no-op hook in the C++ dispatch table build; has no effect when called. */
 extern "C" void fn_802A1790(void) {}
 
 extern "C" void fn_802A1794(void) {
