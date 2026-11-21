@@ -20512,7 +20512,9 @@ extern "C" void fn_800D0B98(void *component, s32 value) {
 }
 
 extern "C" void fn_800D0BA0(void) {
-
+    /* Empty no-op callback slot (referenced as a function pointer, not called
+       directly); does nothing in this build. */
+    return;
 }
 
 extern "C" void fn_800D0BA4(void *target, void *handler) {
@@ -21314,6 +21316,7 @@ extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHe
 extern "C" void PPCHalt(void);
 extern "C" void fn_800D2098(const char *file, s32 line, const char *msg, va_list vlist) {
     const char *strings = lbl_8031E9D0;
+    void *head;
     OSDisableInterrupts();
     fn_800591AC(0);
     AIRegisterDMACallback_800591F0(0);
@@ -21325,7 +21328,7 @@ extern "C" void fn_800D2098(const char *file, s32 line, const char *msg, va_list
         Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(lbl_8055DDBC, strings + 0x60, file, line);
         Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct((void *)3, lbl_8055DDBC, msg, vlist);
         Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(lbl_8055DDBC, lbl_805597DC);
-        void *head = lbl_8055DDBC;
+        head = lbl_8055DDBC;
         if (head == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(strings + 0x70, 0x1B2, strings + 0x7C);
         }
