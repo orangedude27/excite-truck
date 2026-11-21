@@ -1713,7 +1713,10 @@ extern "C" void *fn_802A42C8(void *arg0, void *arg1, s32 arg2) {
     fn_802A4524(object);
     return object;
 }
-  extern "C" void fn_802A44B4(void) {
+extern "C" void fn_802A44B4(void) {
+    /* Empty per-element initializer callback passed to fn_8002F37C when it
+       builds the dynamic array of 0x20-byte entries in fn_802A42C8.  Invoked
+       once per entry, it does nothing; compiles to a bare 'blr'. */
 }
 
 extern "C" void fn_802CAC54(s32);
