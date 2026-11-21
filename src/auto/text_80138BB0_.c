@@ -11,7 +11,7 @@ extern unsigned int lbl_8055E0F4;
 void fn_80138BB0(void) {
     unsigned int *p = &lbl_8055E0F0;
     fn_8000D838(&lbl_8055E0E8);
-    p[1] = 0x7F000000u;
-    p[0] = 0xFFFF0000u;
+    p[1] = 0x7F000000;
+    p[0] = 0xFFFF0000;
 }
 #pragma scheduling on
