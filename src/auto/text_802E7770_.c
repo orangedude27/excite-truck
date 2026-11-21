@@ -19,6 +19,8 @@ int fn_802E7774(int (*callback)(void)) {
 void fn_802E77A8(void) {
 }
 
+/* Final no-op teardown hook in the kernel shutdown sequence (fn_802E2B34);
+ * this build leaves it empty. */
 void fn_802E77AC(void) {
 }
 
