@@ -413,6 +413,7 @@ void fn_802B5F98(void) {
     register float gridScale, uvScale;
     float height, x, z;
     float u, v;
+    float fi, fj;
     float points[3];
 
     handle = fn_802E3D68(base + 0x2c);
@@ -426,8 +427,10 @@ void fn_802B5F98(void) {
     index = 0;
     for (i = -0x200; i <= 0x200; i += 8) {
         for (j = -0x200; j <= 0x200; j += 8, index++) {
-            x = (float)i * gridScale;
-            z = (float)j * gridScale;
+            fi = (float)i;
+            fj = (float)j;
+            x = fi * gridScale;
+            z = fj * gridScale;
             height = fn_801DCF48(points, x, z);
             u = (float)(i + 0x200) * uvScale;
             v = (float)(j + 0x200) * uvScale;
@@ -624,15 +627,15 @@ extern float lbl_80564C78;
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-s32 fn_802B640C(void *arg0, s32 arg1) {
-    struct Entry {
+s32 fn_802B640C(const void *arg0, s32 arg1) {
+    const struct Entry {
         f32 unk0;
         f32 x;
         f32 y;
         f32 unkC;
         f32 scale;
         s32 flags;
-    } *e = (struct Entry *)arg0;
+    } *e = (const struct Entry *)arg0;
     f32 temp_f1, temp_f31, var_f4, temp_f5, temp_f6;
     s32 temp_r3, var_r3, var_r4, var_r5;
 
@@ -1197,7 +1200,7 @@ void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
 }
 #undef beginSampleOverlay
 #undef endSampleOverlay
-#pragma pop
+#pragma scheduling invalid_target
 s32 fn_802B7300(s16 x, s16 y, s32 arg2, s32 arg3, f32 farg0) {
     extern float lbl_80564C74;
     extern float lbl_80564C78;
@@ -1237,8 +1240,6 @@ s32 fn_802B7300(s16 x, s16 y, s32 arg2, s32 arg3, f32 farg0) {
     return fn_801E41D8(&points[3], &points[0],
                  (alpha & 0xFFFFFFu) | (color << 24), scale);
 }
-
-#pragma pop
 extern float lbl_80564C8C;
 extern double lbl_80564C80;
 extern float lbl_80564C90;
@@ -1999,8 +2000,8 @@ s32 fn_802B8510(s32 arg0) {
     struct Entry *entry;
     u32 row;
     u32 col;
-    u32 height;
-    u32 width;
+    s32 height;
+    s32 width;
     if ((u32)(arg0 - 6) > 1U) return;
     index = lbl_8055FA2C;
     if (index < 0) return;
@@ -2250,6 +2251,7 @@ void fn_802B8AE0(const char *arg0, s32 arg1)
     volatile s32 zero;
   } local;
   s32 count;
+  s32 off;
   char *base;
   char *dst;
   volatile u8 *src;
@@ -2314,7 +2316,8 @@ void fn_802B8AE0(const char *arg0, s32 arg1)
   b4 = src[4];
   *(volatile s32 *) (((u8 *) (&lbl_804BFA70)) + 4) = count + 1;
   b5 = src[5];
-  dst = base + (count * 0x28);
+  off = count * 0x28;
+  dst = base + off;
   dst[0] = b0;
   b6 = src[6];
   dst[1] = b1;
@@ -2367,16 +2370,16 @@ void fn_802B8AE0(const char *arg0, s32 arg1)
   b30 = src[30];
   dst[25] = b25;
   b31 = src[31];
-  (base + (count * 0x28))[26] = b26;
-  (base + (count * 0x28))[27] = b27;
-  (base + (count * 0x28))[28] = b28;
-  (base + (count * 0x28))[29] = b29;
-  (base + (count * 0x28))[30] = b30;
-  (base + (count * 0x28))[31] = b31;
-  *((s32 *) ((base + (count * 0x28)) + 0x20)) = arg1;
+  (base + off)[26] = b26;
+  (base + off)[27] = b27;
+  (base + off)[28] = b28;
+  (base + off)[29] = b29;
+  (base + off)[30] = b30;
+  (base + off)[31] = b31;
+  *((s32 *) ((base + off) + 0x20)) = arg1;
   local.savedArg = arg1;
   local.zero = 0;
-  *((s32 *) ((base + (count * 0x28)) + 0x24)) = 0;
+  *((s32 *) ((base + off) + 0x24)) = 0;
 }
 #pragma small_data on
 extern s32 lbl_8055CEA0;
