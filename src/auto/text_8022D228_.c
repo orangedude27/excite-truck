@@ -198,15 +198,6 @@ void fn_8022D894(void *arg0, int arg1, int arg2, const char *arg3, signed char a
     *ptr = 0;
     *(int *)((char *)arg0 + 0x24) += 1;
 }
-static inline void fn_8022D924_recalc(volatile int *p, int value) {
-    int cnt = p[0x10 / 4];
-    p[0x2C / 4] = value;
-    value = value / cnt;
-    p[0x24 / 4] = p[0x24 / 4] + 1;
-    p[0x20 / 4] = value;
-    p[0x24 / 4] = p[0x24 / 4] + 1;
-}
-
 #pragma scheduling invalid_target
 void fn_8022D924(volatile int *p, int arg1) {
     int cnt = p[0x24 / 4];
