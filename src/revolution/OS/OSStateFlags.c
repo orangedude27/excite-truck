@@ -2,6 +2,8 @@
 #include <revolution/OS.h>
 #include <string.h>
 
+#define STATE_FILE_PATH "/title/00000001/00000002/data/state.dat"
+
 static OSStateFlags StateFlags ALIGN(32);
 
 static u32 CheckSum(const OSStateFlags* state) {
