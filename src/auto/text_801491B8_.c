@@ -480,99 +480,102 @@ f32 fn_801495D4(s32 arg0) {
 void fn_80149650(void) { fn_801495D4(0x40); }
 
 u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
+    /* Refresh the shared "hi score target" HUD panel from the given parameter and
+       list data: format the name/score strings, drive the staged reveal through its
+       state machine, and return nonzero while the panel is still active. */
     u8 *self = (u8 *)selfAddr;
-    u8 *a = (u8 *)aArg;
+    u8 *params = (u8 *)aArg;
     u8 *list = (u8 *)listArg;
     u8 buf[0x32];
-    u8 *tbl = lbl_8032D358;
-    s32 id, s30, s26, s25;
-    f32 t, f4;
+    u8 *msgTable = lbl_8032D358;
+    s32 id, startValue, endValue, valueDelta;
+    f32 ratio, clampedSpan;
     int i;
     u8 *p;
-    u8 *spa; int na; u8 *dpa;
-    u8 *spb; int nb; u8 *dpb;
-    u8 *spc; int nc; u8 *dpc;
-    u8 *spd; int nd; u8 *dpd;
-    u8 *srcp2;
-    s32 offset;
-    u8 *d1, *d2;
-    int j;
-    u8 *e1, *e2;
+    u8 *srcA; int lenA; u8 *dstA;
+    u8 *srcB; int lenB; u8 *dstB;
+    u8 *srcC; int lenC; u8 *dstC;
+    u8 *srcD; int lenD; u8 *dstD;
+    u8 *entrySrc;
+    s32 entryOffset;
+    u8 *dstFirst, *dstSecond;
+    int entryIndex;
+    u8 *fillFirst, *fillSecond;
     if (*(s32 *)(self + 8) == 0) return 0;
-    id = *(s32 *)(a + 4);
+    id = *(s32 *)(params + 4);
     fn_801345D8(self + 0x2C, 0x14, lbl_80559F04, id);
     StrCopyN80149658(self + 0x40, fn_80130FE0(id), 5);
     if (fn_80179650() == 1) {
-        fn_801345D8(buf, 0x32, tbl + 0x30, *(s32 *)(a + 4));
+        fn_801345D8(buf, 0x32, msgTable + 0x30, *(s32 *)(params + 4));
         StrCopyN80149658(self + 0x1FD, fn_80131234(buf), 0x28);
     } else {
-        StrCopyN80149658(self + 0x1FD, fn_80131234(tbl + 0x50), 0x28);
+        StrCopyN80149658(self + 0x1FD, fn_80131234(msgTable + 0x50), 0x28);
     }
-    s30 = *(s32 *)(a + 0x20);
+    startValue = *(s32 *)(params + 0x20);
     i = 0;
-    if (s30 != 0 && *(f32 *)(self + 4) > lbl_80561648) {
-        f32 g = lbl_8055E3C8;
-        f4 = lbl_8056164C;
-        t = g - *(f32 *)(self + 4);
-        t = (t - lbl_80561648) / f4;
-        f4 = (f4 < t) ? f4 : t;
-        f4 = (f4 > lbl_80561648) ? f4 : lbl_80561648;
-        i = (s32)(lbl_80561648 + f4 * ((lbl_8056163C + (f32)s30) - lbl_80561648));
+    if (startValue != 0 && *(f32 *)(self + 4) > lbl_80561648) {
+        f32 now = lbl_8055E3C8;
+        clampedSpan = lbl_8056164C;
+        ratio = now - *(f32 *)(self + 4);
+        ratio = (ratio - lbl_80561648) / clampedSpan;
+        clampedSpan = (clampedSpan < ratio) ? clampedSpan : ratio;
+        clampedSpan = (clampedSpan > lbl_80561648) ? clampedSpan : lbl_80561648;
+        i = (s32)(lbl_80561648 + clampedSpan * ((lbl_8056163C + (f32)startValue) - lbl_80561648));
     }
     fn_801308F4(self + 0x45, 0x14, i);
-    s26 = *(s32 *)(a + 0x24);
-    s25 = s26 - s30;
-    fn_801308F4(self + 0x59, 0x14, s25);
-    fn_801308F8(self + 0x6D, 0x14, s26);
+    endValue = *(s32 *)(params + 0x24);
+    valueDelta = endValue - startValue;
+    fn_801308F4(self + 0x59, 0x14, valueDelta);
+    fn_801308F8(self + 0x6D, 0x14, endValue);
     {
-        s32 x = *(s32 *)(a + 0x1C);
-        fn_801345D8(self + 0x225, 0x14, x != 0 ? lbl_80559F04 : lbl_80559F08, x);
+        s32 value = *(s32 *)(params + 0x1C);
+        fn_801345D8(self + 0x225, 0x14, value != 0 ? lbl_80559F04 : lbl_80559F08, value);
     }
     {
-        s32 x = fn_801609C4(s25);
-        if (x != -1) StrCopyN80149658(self + 0x81, __AXGetStackHead(x), 10);
+        s32 value = fn_801609C4(valueDelta);
+        if (value != -1) StrCopyN80149658(self + 0x81, __AXGetStackHead(value), 10);
         else StrCopyN80149658(self + 0x81, lbl_80559F0C, 10);
     }
     {
-        s32 x = *(s32 *)(a + 0x30);
-        if (x != -1) StrCopyN80149658(self + 0x8B, __AXGetStackHead(x), 10);
+        s32 value = *(s32 *)(params + 0x30);
+        if (value != -1) StrCopyN80149658(self + 0x8B, __AXGetStackHead(value), 10);
         else StrCopyN80149658(self + 0x8B, lbl_80559F0C, 10);
     }
-    d1 = self + 0x95;
-    d2 = self + 0x149;
-    j = 0;
-    offset = 0;
-    for (; j < *(s32 *)(list + 8); j++) {
-        srcp2 = *(u8 **)(list + 4) + offset;
-        dpa = d1; spa = srcp2 + 4; na = 0x14;
-        while ((s8)(*dpa++ = *spa++) != 0) {
-            if (--na <= 0) { dpa[-1] = 0; break; }
+    dstFirst = self + 0x95;
+    dstSecond = self + 0x149;
+    entryIndex = 0;
+    entryOffset = 0;
+    for (; entryIndex < *(s32 *)(list + 8); entryIndex++) {
+        entrySrc = *(u8 **)(list + 4) + entryOffset;
+        dstA = dstFirst; srcA = entrySrc + 4; lenA = 0x14;
+        while ((s8)(*dstA++ = *srcA++) != 0) {
+            if (--lenA <= 0) { dstA[-1] = 0; break; }
         }
-        dpb = d2; spb = srcp2 + 0xA4; nb = 0x14;
-        while ((s8)(*dpb++ = *spb++) != 0) {
-            if (--nb <= 0) { dpb[-1] = 0; break; }
+        dstB = dstSecond; srcB = entrySrc + 0xA4; lenB = 0x14;
+        while ((s8)(*dstB++ = *srcB++) != 0) {
+            if (--lenB <= 0) { dstB[-1] = 0; break; }
         }
-        offset += 0xF8; d1 += 0x14; d2 += 0x14;
+        entryOffset += 0xF8; dstFirst += 0x14; dstSecond += 0x14;
     }
-    e1 = self + j * 0x14 + 0x95;
-    e2 = self + j * 0x14 + 0x149;
-    for (; (u32)j < 9; j++) {
-        dpc = e1; spc = lbl_80559F0C; nc = 0x14;
-        while ((s8)(*dpc++ = *spc++) != 0) {
-            if (--nc <= 0) { dpc[-1] = 0; break; }
+    fillFirst = self + entryIndex * 0x14 + 0x95;
+    fillSecond = self + entryIndex * 0x14 + 0x149;
+    for (; (u32)entryIndex < 9; entryIndex++) {
+        dstC = fillFirst; srcC = lbl_80559F0C; lenC = 0x14;
+        while ((s8)(*dstC++ = *srcC++) != 0) {
+            if (--lenC <= 0) { dstC[-1] = 0; break; }
         }
-        dpd = e2; spd = lbl_80559F0C; nd = 0x14;
-        while ((s8)(*dpd++ = *spd++) != 0) {
-            if (--nd <= 0) { dpd[-1] = 0; break; }
+        dstD = fillSecond; srcD = lbl_80559F0C; lenD = 0x14;
+        while ((s8)(*dstD++ = *srcD++) != 0) {
+            if (--lenD <= 0) { dstD[-1] = 0; break; }
         }
-        e1 += 0x14; e2 += 0x14;
+        fillFirst += 0x14; fillSecond += 0x14;
     }
     fn_802AE168(*(s32 *)(self + 8));
     switch (*(s32 *)self) {
     case 0:
-        fn_802E30C8(tbl + 0x70, tbl + 0xA0, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
+        fn_802E30C8(msgTable + 0x70, msgTable + 0xA0, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
         fn_802ADFF4(*(s32 *)(self + 8), *(s32 *)(self + 0x1C));
-        if (s30 > 0) {
+        if (startValue > 0) {
             p = *(u8 **)(self + 0x10);
             if (p != 0) { p[0x49] = 1; p[0x4B] = 0; p[0x4A] = 0; }
         } else {
@@ -583,18 +586,18 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
         break;
     case 1:
         if (*(s32 *)(self + 0x20) != 0 && *(f32 *)(self + 4) < lbl_80561648) {
-            fn_802E30C8(tbl + 0x70, tbl + 0xC4, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
+            fn_802E30C8(msgTable + 0x70, msgTable + 0xC4, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
             *(f32 *)(self + 4) = lbl_8055E3C8;
         }
         if (*(s32 *)(self + 0x24) != 0) {
-            fn_802E30C8(tbl + 0x70, tbl + 0xE8, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
+            fn_802E30C8(msgTable + 0x70, msgTable + 0xE8, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
             fn_802AE02C(*(s32 *)(self + 8), *(s32 *)(self + 0x1C));
             *(s32 *)self = 2;
         }
         break;
     case 2:
         if (self[0xC] != 0) {
-            fn_802E30C8(tbl + 0x70, tbl + 0x10C, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
+            fn_802E30C8(msgTable + 0x70, msgTable + 0x10C, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
             fn_802AE0B8(*(s32 *)(self + 8), *(s32 *)(self + 0x1C));
             p = *(u8 **)(self + 0x18);
             if (p != 0) { p[0x49] = 1; p[0x4B] = 0; p[0x4A] = 0; }
@@ -603,7 +606,7 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
         break;
     case 3:
         if (*(s32 *)(self + 0x28) != 0) {
-            fn_802E30C8(tbl + 0x70, tbl + 0x130, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
+            fn_802E30C8(msgTable + 0x70, msgTable + 0x130, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
             fn_802AE0E0((void *)*(s32 *)(self + 8));
             *(s32 *)self = 4;
         }
