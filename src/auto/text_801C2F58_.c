@@ -619,6 +619,8 @@ void fn_801C4B74(void) {
     }
 }
 
+struct Unk_80437D88 lbl_80437D88;
+s32 lbl_80437E24[3];
 #pragma opt_common_subs off
 void fn_801C4BAC(void) {
     register Unk_80437D88 *state;
@@ -1146,9 +1148,11 @@ void fn_801C56AC(void) {
         {
             float o;
             double fabs_tmp;
+            float absf;
             o = *(float *)((u8 *)obj + 0x25D4);
             fabs_tmp = __fabs((double)var_f23);
-            if ((f32)fabs_tmp > lbl_80558DC4[0]) {
+            absf = (float)fabs_tmp;
+            if (!(absf <= lbl_80558DC4[0])) {
                 float a;
                 float b;
                 a = c74 * (var_f23 - o);
@@ -3353,10 +3357,11 @@ s32 fn_801C9920(s32 arg0, s32 arg1) {
     f32 angle;
     f32 sv;
     f32 scale;
-    s32 i, j, k;
+    s32 i, j, k, kind;
     fn_802E3AD0(handle, base + 0x9b0);
     fn_802E3AD0(handle, base + 0x9c0, *(f32 *)record);
-    switch (*(u32 *)(record + 8)) {
+    kind = *(u32 *)(record + 8);
+    switch (kind) {
     case 0:
         fn_802E3AD0(handle, base + 0x9cc);
         fn_802E3AD0(handle, base + 0x9dc, record + 0xC);
@@ -3366,7 +3371,8 @@ s32 fn_801C9920(s32 arg0, s32 arg1) {
         fn_802E3AD0(handle, base + 0x9f8, ((f32 (*)(f32))fn_801C34F4)(*(f32 *)(record + 0x54)));
         fn_802E3AD0(handle, base + 0xa08, *(f32 *)(record + 0xC), *(f32 *)(record + 0x10), *(f32 *)(record + 0x14));
         rot = (f32 *)(record + 0x18);
-        trace = rot[0] + rot[4] + rot[8];
+        trace = rot[0] + rot[4];
+        trace = trace + rot[8];
         quat = quatBuf;
         if (trace > lbl_80562970) {
             root = (f32)fn_8002F234(lbl_8056296C + trace);
