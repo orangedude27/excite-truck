@@ -25,7 +25,7 @@ extern unsigned int strlen(const char*);
 extern char* strcpy(char*, const char*);
 #pragma push
 #pragma use_lmw_stmw off
-int PackArgs(register void* base, int count, register char** args) {
+int PackArgs(void* base, int count, char** args, int unused) {
     char** argp;
     char* str;
     char* strings;
@@ -107,11 +107,11 @@ extern void OSReport(const char *format, ...);
 extern void __OSLaunchMenu(void);
 #pragma use_lmw_stmw off
 void fn_8004DDFC(void) {
-    register unsigned char *base;
-    register unsigned char *mem;
+    unsigned char *base;
+    unsigned char *mem;
     register unsigned int *selected;
     register unsigned int *entry;
-    register unsigned char *partition;
+    unsigned char *partition;
     struct local_state {
         unsigned char b0;
         unsigned char b1;
@@ -124,17 +124,16 @@ void fn_8004DDFC(void) {
     unsigned int i;
     unsigned long long title;
     int result;
-    int zero = 0, negone = -1, one = 1;
-    state.count = one;
-    state.fd = negone;
+    state.count = 1;
+    state.fd = -1;
     state.b0 = lbl_80560C70;
     state.b1 = lbl_80560C71;
     state.b2 = lbl_80560C72;
     state.b3 = lbl_80560C73;
     base = lbl_8037D900 + 0x10000;
-    mem = lbl_8037D900 + 0;
+    mem = lbl_8037D900;
     lbl_8055DA2C = 0;
-    ((int (*)(void *, int, int, int, int, int, int, void *))fn_8003AC24)((void *)fn_8004DDF4, state.b2, state.b1, state.b0, zero, negone, one, mem);
+    ((int (*)(void *, int, int, int, int, int, int, void *))fn_8003AC24)((void *)fn_8004DDF4, state.b2, state.b1, state.b0, 0, -1, 1, mem);
     if (lbl_8055DA2C != 0) {
         if (lbl_8055DA2C != (void *)1) {
             const char *format = lbl_803049C0;
@@ -202,7 +201,7 @@ void fn_8004DDFC(void) {
     partition = base - 0x42C0;
     lbl_8055DA34 = partition;
     error = 0;
-    title = *(unsigned long long *)(partition + 0x184);
+    title = *(volatile unsigned long long *)(partition + 0x184);
     result = IOS_Open(&lbl_80558F40, 0);
     state.fd = result;
     if (result < 0)
@@ -291,16 +290,14 @@ void __OSLaunchMenu(void) {
         int fd;
         unsigned int count;
     } state;
-    register int fd = -1;
-    register unsigned int count = 1;
     int error;
     int result;
     unsigned long long title;
     register unsigned char *titlePtr;
     register unsigned char b0, b1, b2, b3;
 
-    state.count = count;
-    state.fd = fd;
+    state.count = 1;
+    state.fd = -1;
     error = 0;
     title = 0x0000000100000002ULL;
     titlePtr = lbl_8037D900;
@@ -502,11 +499,11 @@ void fn_8004E3F0(void) {
     }
 }
 
-#pragma use_lmw_stmw off
+#pragma scheduling 604
 void fn_8004E538(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
-    s32 off;
     s32 *hdr;
     s32 *params;
+    s32 off;
     u32 sp1C;
     s32 sp18;
     void *sp14;
@@ -514,7 +511,7 @@ void fn_8004E538(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     s32 (*spC)(void **, s32 *, u32 *);
     void (*sp8)(void *);
     s32 target;
-    void *copy;
+    void *copy1, *copy2;
     s32 cmp;
     BootCmdBlock cbBig, cbGetpart2, cbHdr, cbGetpart1, cbGetpartMinus1, cbLoop, cbGetpartFinal, cbFinalRead;
 
@@ -553,18 +550,18 @@ void fn_8004E538(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
         }
         params[2] = arg0;
         ((void (*)(void *, void *, void *))hdr[4])(&sp8, &spC, &sp10);
-        copy = OSAllocFromMEM1ArenaLo(0x1C, 1);
-        memcpy(copy, params, 0x1C);
-        *(void **)0x800030F0 = copy;
+        copy1 = OSAllocFromMEM1ArenaLo(0x1C, 1);
+        memcpy(copy1, params, 0x1C);
+        *(void **)0x800030F0 = copy1;
         sp8((void *)OSReport);
-        OSSetArenaLo(copy);
+        OSSetArenaLo(copy1);
         while (spC(&sp14, &sp18, &sp1C) != 0) {
             BootReadAbsC(&cbLoop, sp14, sp18, sp1C >> __DVDLayoutFormat);
         }
         target = sp10();
-        copy = OSAllocFromMEM1ArenaLo(0x1C, 1);
-        memcpy(copy, params, 0x1C);
-        *(void **)0x800030F0 = copy;
+        copy2 = OSAllocFromMEM1ArenaLo(0x1C, 1);
+        memcpy(copy2, params, 0x1C);
+        *(void **)0x800030F0 = copy2;
         *(volatile s32 *)0xCC003024 = 7;
         OSDisableInterrupts();
         fn_8004DD88((void (*)(void))target);
