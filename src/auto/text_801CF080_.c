@@ -353,7 +353,7 @@ static inline void Mesh_SwapVec(Vec *v) {
 }
 
 #pragma push
-#pragma processor 750
+#pragma scheduling off
 void fn_801CFA48(void *arg0) {
  typedef struct { unsigned char *ptr1; int count1; unsigned char *ptr2; int count2; unsigned char *ptr3; int count3; } tFA48View;
  volatile tFA48View *p=(volatile tFA48View *)arg0;
