@@ -124,6 +124,8 @@ void fn_801DF6FC(void) {
 #pragma push
 #pragma processor 750
 __declspec(section ".sdata") extern char lbl_8055AE58[];
+#pragma push
+#pragma processor 750
 int fn_801DF93C(int arg0) {
     extern float lbl_8055AE40, lbl_80562C20, lbl_80562C24, lbl_80562C28, lbl_80562C2C, lbl_80562C30, lbl_80562C34, lbl_80562C38;
     extern float fn_8014AEC8(void *);
@@ -157,10 +159,9 @@ int fn_801DF93C(int arg0) {
         char pad1[0xc];
         float h;
         char pad2[4];
-    } m;
+    } m, m2;
     struct Pt { float x, y; } pt;
     long long pair;
-    char m2[0x28];
     register void *mgr;
     register int subject;
     register char *base;
@@ -243,10 +244,10 @@ int fn_801DF93C(int arg0) {
                 obj4 = ((void *(*)(void *, void *))((*(void ***)u)[4]))(u, base + 0x130);
             }
             if (obj3 != 0 && obj4 != 0) {
-                fn_8014C978(m2, obj3);
+                fn_8014C978(&m2, obj3);
                 pair = fn_8014C770((const float *)((char *)obj3 + 4), (const float *)((char *)obj4 + 4), ease);
                 fn_8014C75C(&pt.x, (const float *)&pair);
-                fn_801DFE44((int)m2, *(int *)((char *)mgr + 0xEC));
+                fn_801DFE44((int)&m2, *(int *)((char *)mgr + 0xEC));
             }
             fn_8014C72C(*(void **)((char *)mgr + 0xE4), base + 0x13C);
         }
