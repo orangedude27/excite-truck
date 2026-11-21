@@ -2539,7 +2539,6 @@ extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *se
 }
 #pragma use_lmw_stmw reset
 extern const char lbl_80322400[];
-struct PanicFirst { char s[1]; };
 extern "C" void fn_8003381C(void *, void *);
 #pragma push
 #pragma use_lmw_stmw off
