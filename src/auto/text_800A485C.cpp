@@ -12678,86 +12678,88 @@ done:
     return result;
 }
 #pragma pop
-s32 fn_800B8520(void *arg0, u32 *arg1) {
-    u8 *p = (u8 *)arg0;
-    u8 countA = 0;
-    u8 countB;
-    u32 shift = 0x200;
-    u32 word;
-    s32 value;
-    u16 size;
-    u16 temp;
-    u16 swapped;
-    u16 shortStart;
-    u32 start;
-    s32 shortEnd;
-    u32 end;
-    u32 result;
-    u32 shifted;
-    s32 ret;
-    while ((shift = (shift >> 1) & 0x7FFF) != 0) countA++;
-    countB = 0;
-    shift = 1;
-    while ((shift = (shift >> 1) & 0x7FFF) != 0) countB++;
-    if (((u32)(p + 0x11) & 1) != 0) {
-        value = p[0x11] | (p[0x12] << 8);
+s32 fn_800B8520(void *bootSector, u32 *clusterCountOut) {
+    /* VFiPFAT_GetTypeFromBootSector: parse a FAT BPB, output its data-cluster count and
+     * return the FAT type (0 = FAT12, 1 = FAT16, 2 = FAT32). */
+    u8 *bpb = (u8 *)bootSector;
+    u8 byteToSectorShift = 0;
+    u8 clusterShift;
+    u32 scan = 0x200;
+    u32 field32;
+    s32 rootDirValue;
+    u16 rootDirSectors;
+    u16 raw16;
+    u16 swapped16;
+    u16 fatSize16;
+    u32 dataStartSector;
+    s32 totalSectors16;
+    u32 totalSectors;
+    u32 dataSectors;
+    u32 clusterCount;
+    s32 fatType;
+    while ((scan = (scan >> 1) & 0x7FFF) != 0) byteToSectorShift++;
+    clusterShift = 0;
+    scan = 1;
+    while ((scan = (scan >> 1) & 0x7FFF) != 0) clusterShift++;
+    if (((u32)(bpb + 0x11) & 1) != 0) {
+        rootDirValue = bpb[0x11] | (bpb[0x12] << 8);
     } else {
-        temp = *(u16 *)(p + 0x12);
-        swapped = ((temp & 0xFF00) >> 8) | ((temp & 0xFF) << 8);
-        value = (s32)swapped << 5;
+        raw16 = *(u16 *)(bpb + 0x12);
+        swapped16 = ((raw16 & 0xFF00) >> 8) | ((raw16 & 0xFF) << 8);
+        rootDirValue = (s32)swapped16 << 5;
     }
-    size = (u16)((value + 0x1FF) >> countA);
-    if (((u32)(p + 0x16) & 1) != 0) {
-        shortStart = p[0x16] | (p[0x17] << 8);
+    rootDirSectors = (u16)((rootDirValue + 0x1FF) >> byteToSectorShift);
+    if (((u32)(bpb + 0x16) & 1) != 0) {
+        fatSize16 = bpb[0x16] | (bpb[0x17] << 8);
     } else {
-        temp = *(u16 *)(p + 0x16);
-        swapped = ((temp & 0xFF00) >> 8) | ((temp & 0xFF) << 8);
-        shortStart = swapped;
+        raw16 = *(u16 *)(bpb + 0x16);
+        swapped16 = ((raw16 & 0xFF00) >> 8) | ((raw16 & 0xFF) << 8);
+        fatSize16 = swapped16;
     }
-    if (shortStart == 0) {
-        word = *(u32 *)(p + 0x24);
+    if (fatSize16 == 0) {
+        field32 = *(u32 *)(bpb + 0x24);
         {
-            u32 low = __rlwinm(word, 8, 8, 15);
-            low = __rlwimi(low, word, 24, 0, 7);
-            u32 high = __rlwinm(word, 24, 16, 23);
-            high = __rlwimi(high, word, 8, 24, 31);
-            start = low | high;
+            u32 low = __rlwinm(field32, 8, 8, 15);
+            low = __rlwimi(low, field32, 24, 0, 7);
+            u32 high = __rlwinm(field32, 24, 16, 23);
+            high = __rlwimi(high, field32, 8, 24, 31);
+            dataStartSector = low | high;
         }
     } else {
-        start = shortStart;
+        dataStartSector = fatSize16;
     }
-    start = (start << 1) + size + 1;
-    if (((u32)(p + 0x13) & 1) != 0) {
-        shortEnd = p[0x13] | (p[0x14] << 8);
+    dataStartSector = (dataStartSector << 1) + rootDirSectors + 1;
+    if (((u32)(bpb + 0x13) & 1) != 0) {
+        totalSectors16 = bpb[0x13] | (bpb[0x14] << 8);
     } else {
-        temp = *(u16 *)(p + 0x14);
-        swapped = ((temp & 0xFF00) >> 8) | ((temp & 0xFF) << 8);
-        shortEnd = swapped;
+        raw16 = *(u16 *)(bpb + 0x14);
+        swapped16 = ((raw16 & 0xFF00) >> 8) | ((raw16 & 0xFF) << 8);
+        totalSectors16 = swapped16;
     }
-    if (shortEnd == 0) {
-        word = *(u32 *)(p + 0x20);
+    if (totalSectors16 == 0) {
+        field32 = *(u32 *)(bpb + 0x20);
         {
-            u32 low = __rlwinm(word, 8, 8, 15);
-            low = __rlwimi(low, word, 24, 0, 7);
-            u32 high = __rlwinm(word, 24, 16, 23);
-            high = __rlwimi(high, word, 8, 24, 31);
-            end = low | high;
+            u32 low = __rlwinm(field32, 8, 8, 15);
+            low = __rlwimi(low, field32, 24, 0, 7);
+            u32 high = __rlwinm(field32, 24, 16, 23);
+            high = __rlwimi(high, field32, 8, 24, 31);
+            totalSectors = low | high;
         }
     } else {
-        end = shortEnd;
+        totalSectors = totalSectors16;
     }
-    result = end - start;
-    *arg1 = result;
-    shifted = result >> countB;
-    if (shifted < 0xFF5) return 0;
-    ret = 2;
+    dataSectors = totalSectors - dataStartSector;
+    *clusterCountOut = dataSectors;
+    clusterCount = dataSectors >> clusterShift;
+    if (clusterCount < 0xFF5) return 0;
+    fatType = 2;
     do {
-        if (shifted < 0xFFF5) {
-            ret = 1;
+        if (clusterCount < 0xFFF5) {
+            fatType = 1;
             break;
         }
     } while (0);
-    return ret;
+    return fatType;
 }
 
 extern "C" s32 fn_800B865C(u8 *buffer) {
@@ -18451,9 +18453,9 @@ void fn_800C4CF4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s8 arg4, s32 arg5) {
     var_r28 += 0x100;
     var_r27 += 0x40;
     var_r17 += 0x80;
+    var_r26 += 0x20;
     var_r16 += 0x40;
     ++var_r22;
-    var_r26 += 0x20;
   }
   while (var_r22 < 0x12);
 }
