@@ -116,6 +116,10 @@ int fn_80138C28(MotionPair *motion, float *out_time, float *out_distance) {
     return 0;
 }
 #pragma scheduling on
+static inline int motion_is_braking(const Motion1D *motion) {
+    return motion->velocity > ZERO && motion->acceleration < ZERO;
+}
+
 float fn_80138DF4(void *arg0) {
     register MotionPair *m = (MotionPair *)arg0;
     float spC;
@@ -169,46 +173,63 @@ float fn_80138DF4(void *arg0) {
     return var_f31;
 }
 #pragma scheduling invalid_target
-void fn_80138F38(const void *arg0) {
-    extern int lbl_8055E100;
-    extern float fn_80138DF4(void*);
-    float sp8;
-    union U { struct { int a; int b; int c; float d; float e; float f; } s; double _a; } sp10;
-    register float x;
-    register float y;
-    register float ratio;
-    register float square;
-    register float value;
-    register float product;
-    if (*(const float*)((const char*)arg0 + 0x10) > 0.0f) {
-        if (*(const float*)((const char*)arg0 + 0x14) < 0.0f) {
-            if (fn_80138C28((MotionPair *)arg0, &sp8, 0)) {
-                x = *(const float*)((const char*)arg0 + 0x10);
-                y = *(const float*)((const char*)arg0 + 0x14);
-                ratio = -x / y;
-                if (ratio <= sp8) {
-                    square = ratio * ratio;
-                    product = ratio * x;
-                    value = *(const float*)((const char*)arg0 + 0xC);
-                    value += product;
-                    value += (0.5f * y) * square;
-                    ((int*)&sp10)[0] = ((const int*)arg0)[0];
-                    ((int*)&sp10)[1] = ((const int*)arg0)[1];
-                    ((int*)&sp10)[2] = ((const int*)arg0)[2];
-                    ((int*)&sp10)[3] = ((const int*)arg0)[3];
-                    ((int*)&sp10)[4] = ((const int*)arg0)[4];
-                    ((int*)&sp10)[5] = ((const int*)arg0)[5];
-                    sp10.s.d = value;
-                    sp10.s.f = 0.0f;
-                    sp10.s.e = 0.0f;
-                    fn_80138DF4(&sp10);
-                    lbl_8055E100 += 6;
-                    return;
-                }
-            }
+void fn_80138F38(const void *arg0)
+{
+  extern int lbl_8055E100;
+  extern float fn_80138DF4(void *);
+  float sp8;
+  union U
+  {
+    struct 
+    {
+      int a;
+      int b;
+      int c;
+      float d;
+      float e;
+      float f;
+    } s;
+    double _a;
+  } sp10;
+  register float x;
+  register float y;
+  register float ratio;
+  register float square;
+  register float value;
+  register float product;
+  if ((*((const float *) (((const char *) arg0) + 0x10))) > 0.0f)
+  {
+    if (0.0f > (*((const float *) (((const char *) arg0) + 0x14))))
+    {
+      if (fn_80138C28((MotionPair *) arg0, &sp8, 0))
+      {
+        x = *((const float *) (((const char *) arg0) + 0x10));
+        y = *((const float *) (((const char *) arg0) + 0x14));
+        ratio = (-x) / y;
+        if (ratio <= sp8)
+        {
+          square = ratio * ratio;
+          product = ratio * x;
+          value = *((const float *) (((const char *) arg0) + 0xC));
+          value += product;
+          value += (0.5f * y) * square;
+          ((int *) (&sp10))[0] = ((const int *) arg0)[0];
+          ((int *) (&sp10))[1] = ((const int *) arg0)[1];
+          ((int *) (&sp10))[2] = ((const int *) arg0)[2];
+          ((int *) (&sp10))[3] = ((const int *) arg0)[3];
+          ((int *) (&sp10))[4] = ((const int *) arg0)[4];
+          ((int *) (&sp10))[5] = ((const int *) arg0)[5];
+          sp10.s.d = value;
+          sp10.s.f = 0.0f;
+          sp10.s.e = 0.0f;
+          fn_80138DF4(&sp10);
+          lbl_8055E100 += 6;
+          return;
         }
+      }
     }
-    fn_80138DF4((void *)arg0);
+  }
+  fn_80138DF4((void *) arg0);
 }
 void fn_80139030(MotionPair *motion) {
     /* Seeds the motion status code to -6 so fn_80138F38's success path (+6) yields 0; failures set a negative code. */
