@@ -587,121 +587,87 @@ void fn_8029CD48(void *arg0) {
     extern float fn_802BF590(void);
     extern void fn_8028E590(int, float *, float *, float);
     extern int lbl_8055F7F8;
-    extern float lbl_80564628, lbl_80564634, lbl_80564640, lbl_8056464C;
-    extern float lbl_80564658, lbl_8056465C, lbl_80564660, lbl_80564664;
-    extern float lbl_80564668, lbl_8056466C, lbl_80564670, lbl_80564674;
     struct Vec3 { float x, y, z; } sp34, sp28, sp1C, sp10;
-    volatile float sp8, spC;
-    float f31 = lbl_8056464C, f30 = lbl_80564668, f29 = lbl_80564664;
-    float f28 = lbl_80564634, f27 = lbl_8056465C, f26 = lbl_80564628;
-    float range, f24 = lbl_80564670, f23 = lbl_80564640;
+    struct { float x, z; } sp8;
+    int iterations;
+    float *matrix = (float *)arg0;
     unsigned char *obj = (unsigned char *)arg0;
-    unsigned char *mat = (unsigned char *)arg0 + 0x70;
+    float *vec = (float *)((unsigned char *)arg0 + 0x70);
     int outer, inner;
-    for (outer = 0; outer < 4; outer++, obj += 0x3c, mat += 0x3c) {
-        float f0;
+    for (outer = 0; outer < 4; outer++, obj += 0x3c, vec = (float *)((unsigned char *)vec + 0x3c)) {
+        float sign;
         if ((*(unsigned int *)(obj + 0x9c) & 8) != 0)
             continue;
-        if ((unsigned char *)&sp34.x == mat) {
-            register float f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12;
-            f0 = *(volatile float *)((char *)arg0 + 0x0c);
-            f6 = *(volatile float *)(mat + 4);
-            f2 = *(volatile float *)((char *)arg0 + 0x10);
-            f4 = f6 * f0;
-            f11 = *(volatile float *)((char *)arg0 + 0x14);
-            f1 = *(volatile float *)arg0;
-            f2 = f6 * f2;
-            f0 = *(volatile float *)mat;
-            f3 = *(volatile float *)((char *)arg0 + 0x04);
-            f5 = f0 * f1;
-            f10 = *(volatile float *)((char *)arg0 + 0x08);
-            f3 = f0 * f3;
-            f8 = *(volatile float *)((char *)arg0 + 0x18);
-            f1 = f0 * f10;
-            f0 = f6 * f11;
-            f7 = *(volatile float *)(mat + 8);
-            f9 = *(volatile float *)((char *)arg0 + 0x1c);
-            f5 = f5 + f4;
-            f6 = f7 * f8;
-            f12 = *(volatile float *)((char *)arg0 + 0x20);
-            f3 = f3 + f2;
-            f4 = f7 * f9;
-            f0 = f1 + f0;
-            f2 = f7 * f12;
-            f5 = f6 + f5;
-            f1 = f4 + f3;
-            f0 = f2 + f0;
-            sp34.x = f5;
-            sp34.y = f1;
-            sp34.z = f0;
+        if (&sp34.x == vec) {
+            float x, y, z;
+            float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+            m10 = matrix[3]; m11 = matrix[4]; m12 = matrix[5];
+            m00 = matrix[0]; m01 = matrix[1]; m02 = matrix[2];
+            m20 = matrix[6]; m21 = matrix[7]; m22 = matrix[8];
+            x = vec[0]; y = vec[1]; z = vec[2];
+            sp34.x = z * m20 + (x * m00 + y * m10);
+            sp34.y = z * m21 + (x * m01 + y * m11);
+            sp34.z = z * m22 + (x * m02 + y * m12);
         } else {
-            sp34.x = *(float *)((char *)arg0 + 0x0c) * *(float *)(mat + 4) +
-                *(float *)arg0 * *(float *)mat +
-                *(float *)((char *)arg0 + 0x18) * *(float *)(mat + 8);
-            sp34.y = *(float *)((char *)arg0 + 0x10) * *(float *)(mat + 4) +
-                *(float *)((char *)arg0 + 0x04) * *(float *)mat +
-                *(float *)((char *)arg0 + 0x1c) * *(float *)(mat + 8);
-            sp34.z = *(float *)((char *)arg0 + 0x14) * *(float *)(mat + 4) +
-                *(float *)((char *)arg0 + 0x08) * *(float *)mat +
-                *(float *)((char *)arg0 + 0x20) * *(float *)(mat + 8);
+            float m00, m01, m02, m10, m11, m12, m20, m21, m22;
+            m10 = matrix[3]; m00 = matrix[0]; m20 = matrix[6];
+            sp34.x = vec[2] * m20 + (vec[0] * m00 + vec[1] * m10);
+            m11 = matrix[4]; m01 = matrix[1]; m21 = matrix[7];
+            sp34.y = vec[2] * m21 + (vec[0] * m01 + vec[1] * m11);
+            m12 = matrix[5]; m02 = matrix[2]; m22 = matrix[8];
+            sp34.z = vec[2] * m22 + (vec[0] * m02 + vec[1] * m12);
         }
-        sp34.x += *(float *)((char *)arg0 + 0x24);
-        sp34.y += *(float *)((char *)arg0 + 0x28);
-        sp34.z += *(float *)((char *)arg0 + 0x2c);
+        sp34.x += matrix[9];
+        sp34.y += matrix[10];
+        sp34.z += matrix[11];
         if (sp34.y > fn_802BF590())
             continue;
-        sp34.y += f27;
-        if (*(float *)mat > f26)
-            f0 = lbl_80564658;
+        sp34.y += 0.5f;
+        if (vec[0] > 0.0f)
+            sign = 1.0f;
         else
-            f0 = lbl_80564660;
+            sign = -1.0f;
         {
-            float speed = *(float *)((char *)arg0 + 0x50);
-            float scale = f29 + f28 * (speed * f0);
-            float limit = f29 + f28 * speed;
-            float x = *(float *)((char *)arg0 + 0x34);
-            float z = *(float *)((char *)arg0 + 0x3c);
-            sp28.x = x + *(float *)arg0 * scale;
-            sp28.y = *(float *)((char *)arg0 + 0x38) + *(float *)((char *)arg0 + 0x04) * scale;
-            sp28.z = z + *(float *)((char *)arg0 + 0x08) * scale;
-            if (f30 < limit)
-                limit = f30;
-            sp28.x += *(float *)((char *)arg0 + 0x0c) * limit;
-            sp28.y += *(float *)((char *)arg0 + 0x10) * limit;
-            sp28.z += *(float *)((char *)arg0 + 0x14) * limit;
+            float limit;
+            float squared;
+            float z;
+            float scale = 0.2f + 0.1f * (matrix[20] * sign);
+            limit = 0.2f + 0.1f * matrix[20];
+            sp28.x = matrix[13] + matrix[0] * scale;
+            sp28.y = matrix[14] + matrix[1] * scale;
+            sp28.z = matrix[15] + matrix[2] * scale;
+            if (5.0f < limit)
+                limit = 5.0f;
+            z = matrix[15];
+            sp8.x = matrix[13];
+            sp28.x += matrix[3] * limit;
+            sp28.y += matrix[4] * limit;
+            squared = sp8.x * sp8.x + z * z;
+            sp28.z += matrix[5] * limit;
+            sp8.z = z;
             {
-                float squared = x * x + z * z;
-                sp8 = x;
-                spC = z;
-                {
-                    register float distance = fn_8002F234(squared);
-                    {
-                        float count = f31 * distance;
-                        int iterations;
-                        if ((int)count < 6)
-                            iterations = (int)count;
-                        else
-                            iterations = 6;
-                        range = f24 * distance;
-                        for (inner = 0; inner < iterations; inner++) {
-                            float step;
-                            sp1C = sp34;
-                            sp1C.x += fn_80287BC8(lbl_8056466C, lbl_8056465C);
-                            sp1C.z += fn_80287BC8(lbl_8056466C, lbl_8056465C);
-                            sp1C.y = fn_802BF590();
-                            step = f23 < range ? f23 : range;
-                            sp10 = sp28;
-                            sp10.x += fn_80287BC8(-step, step);
-                            sp10.y = f23 * fn_80287BC8(lbl_80564628, step);
-                            sp10.z += fn_80287BC8(-step, step);
-                            if (*(float *)mat > f26)
-                                f0 = lbl_80564658;
-                            else
-                                f0 = lbl_80564660;
-                            fn_8028E590(lbl_8055F7F8, &sp1C.x, &sp10.x,
-                                -f0 * fn_80287BC8(lbl_80564628, lbl_80564674));
-                        }
-                    }
+                float distance = fn_8002F234(squared);
+                if ((int)(0.25f * distance) < 6)
+                    iterations = 0.25f * distance;
+                else
+                    iterations = 6;
+                for (inner = 0; inner < iterations; inner++) {
+                    float step;
+                    sp1C = sp34;
+                    sp1C.x += fn_80287BC8(-0.5f, 0.5f);
+                    sp1C.z += fn_80287BC8(-0.5f, 0.5f);
+                    sp1C.y = fn_802BF590();
+                    step = 2.0f < 0.125f * distance ? 2.0f : 0.125f * distance;
+                    sp10 = sp28;
+                    sp10.x += fn_80287BC8(-step, step);
+                    sp10.y = 2.0f * fn_80287BC8(0.0f, step);
+                    sp10.z += fn_80287BC8(-step, step);
+                    if (vec[0] > 0.0f)
+                        sign = 1.0f;
+                    else
+                        sign = -1.0f;
+                    fn_8028E590(lbl_8055F7F8, &sp1C.x, &sp10.x,
+                        -sign * fn_80287BC8(0.0f, 3.1415927f));
                 }
             }
         }
@@ -1348,8 +1314,8 @@ extern float lbl_80564674;
 void fn_8029E49C(int unused, void *arg1, int arg2) {
     struct Locals { float sp8, spC, sp10, sp14, sp18, sp1C; } s;
     float *f = (float *)arg1;
-    char *wheel = (char *)arg1 + arg2 * 0x3C;
-    float *m = (float *)(wheel + 0x70);
+    float *wheel = (float *)((char *)arg1 + arg2 * 0x3C);
+    float *m = wheel + 0x1C;
     float temp_f1, temp_f2, temp_f3, temp_f0_2;
     float var_f1, var_f31, var_f5;
     if ((unsigned char *)&s.sp14 == (unsigned char *)m) {
