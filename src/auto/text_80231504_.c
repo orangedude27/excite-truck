@@ -930,7 +930,6 @@ void fn_80232930(void) {
 }
 
 f32 fn_8023293C(s32 font, char *text, f32 extra) {
-    register f32 scale = extra;
     register f32 height;
     register f32 width;
     f64 escapeWidth;
@@ -1012,7 +1011,7 @@ match:
 char_test:
     if ((s8)*(volatile u8 *)(text + index) != 0) goto char_body;
 
-    height *= scale;
+    height *= extra;
     return (width + height) * *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
 }
 /* Return a font's height byte (stored at offset 4), used as the glyph size for text layout and scaling. */
@@ -1096,7 +1095,7 @@ void fn_80232D3C(u8 *text, s32 font, s32 color, s32 x, s32 flags, f32 y, f32 sca
 void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 scale, f32 spacing, f32 extra) {
     u8 *pText = text;
     s32 nFont = font;
-    s32 sp10;
+    volatile s32 sp10;
     f32 spC;
     f32 sp8;
     s32 curColor;
@@ -1111,7 +1110,7 @@ void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 sca
     sp8 = x;
     spC = y;
     sp10 = color;
-    fn_80231714(&sp10);
+    fn_80231714((s32 *)&sp10);
     if ((s8)*pText != 0) {
         f32 rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x34);
         f32 f0 = (f32)*(u8 *)(nFont + 4) * scale;
@@ -1377,10 +1376,10 @@ void fn_802339A8(f32 x, s32 font, f32 y, s32 color, f32 spacing, f32 scale, s32 
     fn_80232DF4((u8 *)buffer, font, color, flags, x, y, scale, spacing, extra);
 }
 
-extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
+extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32); /* fill a 0x18-byte vertex: x, y, z, colour, u, v */
 extern void fn_802C8DB8(void *, s32, u16 *, s32, s32, s32, s32, s32);
-typedef struct IndexList_802F9FF0 { u16 idx[6]; } IndexList_802F9FF0;
-extern IndexList_802F9FF0 lbl_802F9FF0;
+typedef struct IndexList_802F9FF0 { u16 idx[6]; } IndexList_802F9FF0; /* quad triangles (0,1,3) and (0,3,2) */
+extern IndexList_802F9FF0 lbl_802F9FF0; /* shared quad index list for glyph billboards */
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
