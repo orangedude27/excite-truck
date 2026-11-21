@@ -98,11 +98,12 @@ void fn_8012F4AC(MemStreamPtr *cursor, const void *src, s32 size) {
     cursor->pos += size;
 }
 
-/* Read 4 bytes from the cursor's current position into dest and advance the cursor. */
-void fn_8012F500(void *cursor, s32 dest) {
-    s32 *bufferPtr = *(s32 **)cursor;
-    memcpy((u8 *)dest, (u8 *)*bufferPtr + ((s32 *)cursor)[1], 4);
-    ((s32 *)cursor)[1] += 4;
+/* MemStreamPtr_ReadWord: copy 4 bytes from the cursor's current position into
+   dest, then advance the cursor past them. */
+void fn_8012F500(MemStreamPtr *cursor, void *dest) {
+    MemStream *stream = cursor->stream;
+    memcpy(dest, stream->buffer + cursor->pos, 4);
+    cursor->pos += 4;
 }
 
 void fn_8012F550(MemStreamPtr *cursor, u8 **outPtr, s32 advance) {
