@@ -663,6 +663,8 @@ void fn_802411CC(void) { fn_8023FE34(); }
 #pragma dont_inline reset
 
 extern void fn_8023FE60();
+/* Wrapper for fn_8023FE60: looks up the active mroll player slot for a driver
+ * index and writes that slot's vehicle/track params through the out pointers. */
 void fn_802411D0(void) { fn_8023FE60(); }
 
 #pragma dont_inline fn_802411D4
