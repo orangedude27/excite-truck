@@ -837,10 +837,8 @@ s32 fn_802A5B8C(s32 arg0, s32 arg1) {
     return arg0;
 }
 #pragma scheduling invalid_target
-static inline f32 fn_802A5C1C_zero(void) { return 0.0f; }
-
 void fn_802A5C1C(void *arg0) {
-    f32 zero = 0.0f;
+    f32 zero = fn_802A5C1C_zero();
     f32 a = 1.0f;
     f32 b = 0.5f;
     f32 c = 5.0f;
