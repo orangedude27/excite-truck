@@ -471,7 +471,7 @@ s32 fn_80287B94(s32 min, s32 max) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling 604
+#pragma scheduling 603
 f32 fn_80287BC8(f32 farg0, f32 farg1) {
     f32 diff;
     f32 ratio;
