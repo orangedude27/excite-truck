@@ -22415,7 +22415,8 @@ extern "C" s32 fn_800D51F4(long arcHandle, long dirPath, long subDirFourCC, long
 extern "C" void fn_800DCE50(void *arg0);
 #pragma push
 #pragma small_data off
-extern u8 lbl_8031F43C[];
+extern u8 lbl_8031F43C[]; /* nw4hbm::lyt::ArcResourceAccessor vtable */
+#define sArcResourceAccessorVtable lbl_8031F43C
 #pragma push
 #pragma small_data off
 #pragma pop
