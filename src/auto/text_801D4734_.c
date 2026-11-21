@@ -2752,6 +2752,7 @@ extern "C" void fn_801D77D8(void *obj) {
 }
 #pragma cplusplus reset
 void fn_801D77E8(void) {
+    /* Empty action-group operation: returns immediately without doing anything. */
 }
 
 #pragma push
