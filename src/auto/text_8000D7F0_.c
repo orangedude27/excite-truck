@@ -12,6 +12,9 @@ void fn_8000D7F4(void) {
 }
 
 void fn_8000D7F8(void) {
+    /* No-op hook: a sibling of fn_8000D7F0 in this module's run of empty
+       callbacks (fn_8000D7F0, fn_8000D7F4, fn_8000D7F8, fn_8000D7FC);
+       does nothing in this build. */
     return;
 }
 
