@@ -2492,6 +2492,9 @@ extern "C" void fn_8021BFEC(void *arg0) {
 }
 #pragma pop
 extern "C" void fn_8021C128(void) {
+    /* Tail-call thunk: jump to fn_8021C12C without supplying its widget
+       pointer, so that routine applies/refresh-layouts the selector object
+       left in r3 by the caller and flags it active when appropriate. */
     ((void (*)())fn_8021C12C)();
 }
 
