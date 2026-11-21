@@ -59,6 +59,8 @@ void fn_802E4CA8(unsigned char *dst, const signed char *src, int maxLen) {
     }
 }
 
+/* No-op vmem hook: invoked from the debug menu after the cache-table actions
+   (keys 0xB and 0x4); the body does nothing. */
 void fn_802E4CDC(void) {
 }
 
