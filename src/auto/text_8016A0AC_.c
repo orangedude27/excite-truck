@@ -285,7 +285,7 @@ s32 fn_8016A30C(void)
   return 0;
 }
 #pragma push
-#pragma processor 7400
+#pragma processor 750
 void fn_8016A438(void) {
     Blk8016A438 blk;
     register s32 j;
@@ -293,14 +293,14 @@ void fn_8016A438(void) {
     register char *rec;
     register s32 offset;
     register s32 index;
-    register f32 c78;
-    register f32 c74 = lbl_80561974;
-    register f32 c70 = lbl_80561970;
-    register f32 c60 = lbl_80561960;
-    register f32 now;
-    register f32 t;
-    register f32 scale;
-    register f32 c7c = lbl_8056197C;
+    f32 c78;
+    f32 c74 = lbl_80561974;
+    f32 c70 = lbl_80561970;
+    f32 c60 = lbl_80561960;
+    f32 now;
+    f32 t;
+    f32 scale;
+    f32 c7c = lbl_8056197C;
     c78 = lbl_80561978;
     index = 0;
     offset = 0;
