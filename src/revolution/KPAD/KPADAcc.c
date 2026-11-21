@@ -2,7 +2,6 @@
 #include "src/review___kpad.h"
 
 extern f64 fn_8002F234(f32); /* MSL sqrt(): the game's shared double-precision square root */
-extern void reset_kpad(KPADInsideStatus*);
 
 extern u16 lbl_80560BF4, lbl_80560BF6, lbl_80560BF8;
 extern u16 lbl_80560BFC, lbl_80560BFE, lbl_80560C00;
