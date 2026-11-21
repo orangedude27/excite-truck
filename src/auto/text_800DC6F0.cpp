@@ -161,8 +161,6 @@ extern "C" void fn_800DC918(void *picture, void *tplPalette) {
     ((PictureVTable *)picture)->setTexture(texObj);
 }
 
-extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char*, s32, const char*, ...);
-extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, s32, const char*, ...);
 extern "C" void SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(void*, u8);
 extern "C" void SetTexture__Q36nw4hbm3lyt8MaterialFUcRC9_GXTexObj(void*, u8, const void*);
 extern "C" void SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(void*, u8);
