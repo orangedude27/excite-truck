@@ -99,19 +99,22 @@ void fn_8023B8AC(s32 context) {
 }
 
 #pragma scheduling invalid_target
-void fn_8023B904(void *arg0, void *dest, s32 flag) {
+/* Run one game-loop frame with a result callback and copy the submitted race
+ * results into `result`; when `reset` is nonzero, restart the frame context
+ * through fn_8000C0E8 instead. */
+void fn_8023B904(void *context, void *result, s32 reset) {
     struct Local8023B904 {
-        u8 *data;
-        s32 a, b, c;
+        u8 *data;                    /* callback vtable (lbl_803413A8) */
+        s32 a, b, c;                 /* result fields filled by submit() */
         u8 d, e, f, g;
         Tail8023C210 t;
     } local;
     Src8023C210 *out;
-    if (flag == 0) {
+    if (reset == 0) {
         local.data = lbl_803413A8;
-        ((void (*)(void *, void *))fn_8000BF20)(arg0, &local);
-        if (dest != 0) {
-            out = (Src8023C210 *)dest;
+        ((void (*)(void *, void *))fn_8000BF20)(context, &local);
+        if (result != 0) {
+            out = (Src8023C210 *)result;
             out->a = local.a;
             out->b = local.b;
             out->c = local.c;
