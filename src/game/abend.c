@@ -13,7 +13,9 @@ extern int lbl_8055D180;
 extern char lbl_8055D188;
 
 #pragma dont_inline on
-void fn_802E3028(const char *fmt, va_list args, int flag) {}
+/* Formatted-message sink for the abnormal-end logger: `prefix` is 0 for a plain
+ * message or a panic-prefix string. This build leaves the writer empty. */
+void fn_802E3028(const char *fmt, va_list args, int prefix) {}
 
 #pragma scheduling invalid_target
 int fn_802E302C(void) {
