@@ -479,6 +479,8 @@ void fn_80230C9C(float *valueA, float *valueB, float min, float max, float step)
     *valueB = var_f5;
 }
 
+/* No-op UI hook: called once per UI-render frame (via fn_800057BC and fn_802166B8)
+   while the gate flag lbl_8055F024 is set; empty in this build. */
 void fn_80230DA0(void) {}
 
 #pragma push
@@ -618,12 +620,12 @@ void fn_80231094(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     #pragma scheduling invalid_target
     f32 f2, f0, f1, f3, f4;
     s32 r5, r6;
-    f32 mode = fn_802C9A68() ? lbl_80563670 : lbl_80563674;
-    f0 = lbl_80563610;
-    f2 = lbl_80563678;
+    f32 mode = fn_802C9A68() ? 0.9f : 0.85f;
+    f0 = 1.0f;
+    f2 = 640.0f;
     f3 = f0 - mode;
-    f0 = lbl_8056367C;
-    f1 = lbl_8056365C;
+    f0 = 480.0f;
+    f1 = 0.5f;
     f2 = f2 * f3;
     f0 = f0 * f3;
     f2 = f1 * f2;
