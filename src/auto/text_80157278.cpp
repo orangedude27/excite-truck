@@ -1368,60 +1368,34 @@ extern "C" void fn_80158558(s32 listener) {
     s32 count = list[1]++;
     items[count] = listener;
 }
-static inline int DispatchList_Find1(u32 obj) {
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void fn_8015857C(u32 arg0) {
+    int index = 0;
     UnkFD34 *l = (UnkFD34 *)lbl_8042FD34;
+    int count = ((volatile UnkFD34 *)l)->count;
     s32 *p = l->items;
-    int i = 0;
-    for (; i < l->count; i++) {
-        if ((u32)*p == obj) return i;
+    for (; index < count; index++) {
+        if ((u32)*p == arg0) goto found;
         p++;
     }
-    return -1;
-}
-
-static inline void DispatchList_RemoveAt1(int index) {
-    int last;
-    int c;
-    UnkFD34 *l;
-    if (index < 0) return;
-    l = (UnkFD34 *)lbl_8042FD34;
-    c = ((volatile UnkFD34 *)l)->count;
-    if (index >= c) return;
-    last = c - 1;
-    if (index != last) {
-        s32 *items = ((UnkFD34 *)lbl_8042FD34)->items;
-        items[index] = items[last];
-    }
-    ((UnkFD34 *)lbl_8042FD34)->count = ((UnkFD34 *)lbl_8042FD34)->count - 1;
-}
-
-extern "C" void fn_8015857C(u32 arg0) {
-    UnkFD34* list = (UnkFD34*)lbl_8042FD34;
-    s32 index;
-    s32* items = (s32*)list->items;
-    s32 count = list->count;
-    if (count <= 0)
-        goto notfound;
-    do {
-        if ((u32)*items == arg0)
-            goto found;
-        items++;
-        index++;
-    } while (--count > 0);
-notfound:
     index = -1;
 found:
-    if (index == -1)
-        return;
-    if (index < 0 || index >= ((UnkFD34*)lbl_8042FD34)->count)
-        return;
-    if (index != ((UnkFD34*)lbl_8042FD34)->count - 1) {
-        items = ((UnkFD34*)lbl_8042FD34)->items;
-        items[index] = items[((UnkFD34*)lbl_8042FD34)->count - 1];
+    if (index == -1) return;
+    if (index < 0) return;
+    {
+        int c = ((volatile UnkFD34 *)l)->count;
+        int last;
+        if (index >= c) return;
+        last = c - 1;
+        if (index != last) {
+            s32 *items = ((UnkFD34 *)lbl_8042FD34)->items;
+            items[index] = items[last];
+        }
+        ((UnkFD34 *)lbl_8042FD34)->count = ((UnkFD34 *)lbl_8042FD34)->count - 1;
     }
-    ((UnkFD34*)lbl_8042FD34)->count = ((UnkFD34*)lbl_8042FD34)->count - 1;
 }
-
+#pragma pop
 /* Find the index of a named event in lbl_8032E540 (15 entries), or -1 if absent. */
 extern "C" s32 fn_80158618(const char* name) {
     const char** entry = (const char**)lbl_8032E540;
