@@ -3559,6 +3559,8 @@ extern "C" void fn_8015CC74(Unk801577F0* object) {
     *(f32*)((u8*)object + 0x250) = lbl_805617C8;
 }
 
+/* Empty hook in the record-player module, kept as a standalone entry point
+ * (likely an unimplemented virtual slot); the shipped game leaves it a no-op. */
 extern "C" void fn_8015CD0C(void) {
 
 }
