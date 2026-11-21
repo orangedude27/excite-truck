@@ -98,8 +98,8 @@ BOOL __DVDCheckWaitingQueue(void) {
     return FALSE;
 }
 
+/* Return the first queued block from the highest-priority non-empty waiting queue without removing it. */
 DVDCommandBlock* __DVDGetNextWaitingQueue(void) {
-    /* Return the first queued block from the highest-priority non-empty waiting queue without removing it. */
     u32 i;
     BOOL enabled = OSDisableInterrupts();
 
