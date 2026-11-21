@@ -15,6 +15,15 @@ extern void fn_80128668(void*);    /* free */
 extern void fn_802E317C(const char *, ...); /* debug/log print */
 extern int fn_800167F4(void);
 void fn_80137C84(int, int);
+extern void *fn_80131808(void *);       /* load a .val file */
+extern void fn_80131818(void *);        /* close a .val file */
+extern int sprintf(char *, const char *, ...);
+extern int stricmp(const char *, const char *);
+extern char lbl_80559C18, lbl_80559C20, lbl_80559C28, lbl_80559C30; /* val path / "Info" / "car_wid" / "car_len" */
+__declspec(section ".sdata") extern char lbl_80559C38[]; /* heap name "league" */
+extern void *fn_801284F8(int, const char *); /* allocate from a named heap */
+extern void *memset(void *, int, unsigned long);
+extern char *strcpy(char *, const char *);
 #pragma push
 #pragma scheduling invalid_target
 /* Returns the league-name string for a driver's league id (0 Dirt, 1 Modified,
