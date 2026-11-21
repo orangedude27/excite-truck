@@ -18,15 +18,6 @@ typedef struct {
     /* 0x6d */ char pad_6D[7];
 } Record;
 
-// The record array starts at 0x2420 of the object fn_80209E94 loads; the
-// first value/enable pair sits just before it.
-typedef struct {
-    /* 0x0000 */ char pad_0[0x2414];
-    /* 0x2414 */ float firstValue;
-    /* 0x2418 */ signed char firstEnabled;
-    /* 0x2419 */ char pad_2419[7];
-    /* 0x2420 */ Record records[3];
-} RecordSet;
 #pragma scheduling invalid_target
 void *fn_80209D4C(void *soundSource) {
 #define kVtable         lbl_8033C258
