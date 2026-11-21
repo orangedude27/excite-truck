@@ -167,6 +167,8 @@ void fn_802E7760(void) {
     /* Null stream-bank vtable method: a do-nothing slot with no state to change. */
 }
 
+/* Empty vtable method (slot +0x34) of the "null" stream-bank manager
+   (lbl_8034D860); the do-nothing fallback has no work to perform. */
 void fn_802E7764(void) {
 }
 
