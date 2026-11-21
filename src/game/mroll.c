@@ -652,6 +652,8 @@ s32 fn_802411A4(s32 *outResult) {
 
 #pragma dont_inline on
 extern void fn_8023FE20(void);
+/* MRoll_Reset: non-inlined wrapper that tail-calls fn_8023FE20 to reset the
+ * mroll player slots (lbl_80498828) to -1 before truck selection. */
 void fn_802411C8(void) { fn_8023FE20(); }
 #pragma dont_inline reset
 
