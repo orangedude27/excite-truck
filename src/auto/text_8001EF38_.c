@@ -424,7 +424,7 @@ void fn_8001F578(void) {
 #undef sActiveAchievementsBlock
 #undef sPendingAchievementsBlock
 }
-#pragma scheduling on
+#pragma scheduling 603
 extern void *memcpy(void *, const void *, unsigned long);
 #pragma opt_propagation off
 void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
@@ -502,7 +502,7 @@ void fn_8001F76C(void) {
 extern void fn_8000DB18(void);
 void fn_8001F780(void) {
     char *base = lbl_80358698;
-    char *p = fn_8000DA10() * ACH_BLOCK_SIZE + base;
+    char *p = base + fn_8000DA10() * ACH_BLOCK_SIZE;
     ((void (*)())fn_8001F5BC)(p, base + 0x2080);
     ((void (*)())fn_8001F5BC)(p, base + 0x28a0);
     fn_8001F578();
