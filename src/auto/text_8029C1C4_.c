@@ -516,14 +516,19 @@ extern "C" void fn_8029CBA0(void) {
     }
     if (fn_802BF4F0() != 0 || lbl_8055F7F0 > 0 || lbl_8055F7F4 > 0) {
         register float zero, high, scale, low, far;
+        register int five;
+        struct S { int two; unsigned short size; } s;
         fn_8028E61C((int *)&scratch[6]);
         zero = 1.0f;
+        s.two = 2;
         high = 0.75f;
+        s.size = 0x200;
         scale = 0.5f;
         low = 0.25f;
+        five = 5;
         far = -1.0f;
-        scratch[6].i = 2;
-        scratch[7].i = 0x200;
+        scratch[6].i = s.two;
+        scratch[7].i = s.size;
         scratch[8].f = high;
         scratch[9].f = high;
         scratch[3].f = zero;
@@ -541,7 +546,7 @@ extern "C" void fn_8029CBA0(void) {
         scratch[16].f = scale;
         scratch[18].f = high;
         scratch[19].f = scale;
-        scratch[23].i = 5;
+        scratch[23].i = five;
         scratch[24].f = var_f31;
         scratch[27].f = high;
         scratch[26].f = low;
@@ -551,8 +556,7 @@ extern "C" void fn_8029CBA0(void) {
         scratch[33].f = zero;
         scratch[31].f = zero;
         scratch[37].f = zero;
-        void *label = &lbl_8055CAD8;
-        lbl_8055F7F8 = fn_8028E2F8((void *)&scratch[6], label, var_r31,
+        lbl_8055F7F8 = fn_8028E2F8((void *)&scratch[6], &lbl_8055CAD8, var_r31,
             low, scale, zero, high);
         return;
     }
@@ -713,7 +717,7 @@ void *fn_8029D148(void *arg0, void *arg1, float *arg2, int arg3) {
     extern void fn_802E317C(const char *, ...);
     extern float PSQUATMultiply(float *, float *);
     extern void *fn_802CAC28(int, int);
-    extern void fn_8014E740(float *, float, float, float, float, float, float, float, float, float, float, float, float);
+    extern void fn_8014E740(float *, float, float, float, float, float, float, float, float, float, float, float, float, float, float);
     extern char lbl_80349560[];
     extern float lbl_80564628, lbl_80564658, lbl_8056465C, lbl_80564678;
     int dimX, dimY, twice, initId, data, end;
@@ -823,7 +827,7 @@ void *fn_8029D148(void *arg0, void *arg1, float *arg2, int arg3) {
     scratch[0] = f1;
     scratch[1] = f0 + f5;
     scratch[2] = f4 + f8 * f7;
-    fn_8014E740(scratch, *(float *)((char *)arg0 + 0x60), f1, f4, f0, f5, f6, f7, f8, f9, f10, f11, f12);
+    fn_8014E740(scratch, *(float *)((char *)arg0 + 0x60), f1, f4, f0, f5, f6, f7, f8, f9, f10, f11, f12, f11, f12);
     return arg0;
 }
 #pragma pop
@@ -857,7 +861,7 @@ int fn_8029D4CC(void *arg0) {
     temp_f31 = temp_f31 * temp_f31;
     temp_f2 = fn_802C88E8((char *)object + 0x54);
     temp_f2 = temp_f2 * temp_f31;
-    temp_f0 = 250.0f;
+    temp_f0 = lbl_80564648;
     temp_f1 = *(float *)((char *)object + 0x60);
     result = 0;
     temp_f0 = temp_f0 + temp_f1;
@@ -908,12 +912,12 @@ void fn_8029D644(void *arg0) {
     char *source;
     char *other;
     int offset;
+    int i;
     int count;
     char *buffers[2];
     char **bufferTable;
     int mode;
     GridRecord_8029D644 *row;
-    int i;
 
     count = (*(int *)((char *)arg0 + 0x10) - 1) * (*(int *)((char *)arg0 + 0xC) * 2);
     {
@@ -1085,7 +1089,6 @@ extern float lbl_80564690;
 #pragma push
 #pragma scheduling on
 void fn_8029DB78(void *arg0, void *arg1, int x, int z) {
-    #pragma scheduling on
     extern double fn_8002F234(float);
     extern float lbl_80564658, lbl_8056465C, lbl_8056468C;
     extern void PSVECNormalize(float *, float *);
@@ -1705,7 +1708,9 @@ int fn_8029EF1C(void) {
     return 0;
 }
 
-void fn_8029EF24(void) {
+/* No-op nw4r::ef::Effect virtual cleanup hook: invoked from the Effect
+ * destructor (fn_8029C3F0) after restoring the vtable; this build leaves it empty. */
+void fn_8029EF24(void *effect) {
 }
 
 void fn_8029EF28(void) {
