@@ -525,9 +525,10 @@ extern "C" void fn_8029B6E4(void *);
 extern "C" void fn_8029B824(void *);
 extern "C" float fn_802C9A4C(float);
 extern float lbl_80564618;
-  /* empty function definition - referenced by address in fn_802988A4 */
-  extern "C" void fn_80298A48(void) {
-  }
+/* No-op element callback passed to fn_8002F37C when fn_802988A4 builds its
+   table of 0x20-byte entries; releasing an element needs no extra work. */
+extern "C" void fn_80298A48(void) {
+}
 
 extern "C" void* fn_80298A4C(void* self, int shouldDelete) {
     /* Destructor-like cleanup: destroy owned object at +8, release resource at +4,
