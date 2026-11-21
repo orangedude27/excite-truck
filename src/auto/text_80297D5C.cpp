@@ -1372,38 +1372,37 @@ static inline void ScaleVec3(const float *src, float *dst, float scale) {
     dst[2] = src[2] * scale;
 }
 #pragma scheduling invalid_target
-/* Transform a shadow's anchor point by the 3x3 orientation in xform and add
- * its translation, writing the result to centre (handles centre aliasing the
- * anchor at xform[12..14]); also emit 0.4x the first column into xEdge and
- * 0.75x the third column into zEdge.  x/y/z are vestigial: callers pass the
- * anchor, which is read from xform instead. */
-extern "C" void fn_8029A318(float *xform, float *centre, float *xEdge, float *zEdge, float x, float y, float z) {
-    if ((unsigned char *)centre == (unsigned char *)xform + 0x30) {
+/* Transform a shadow's anchor by the 3x3 orientation in a and add its
+ * translation, writing the result to b (handles b aliasing the anchor at
+ * a[12..14]); emit 0.4x the first column into c and 0.75x the third into d.
+ * x/y/z are vestigial: the anchor is read from a instead. */
+extern "C" void fn_8029A318(float *a, float *b, float *c, float *d, float x, float y, float z) {
+    if ((unsigned char *)b == (unsigned char *)a + 0x30) {
         float ax, ay, az;
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
-        m10 = xform[3]; ay = xform[13];
-        m11 = xform[4]; m12 = xform[5];
-        m00 = xform[0]; ax = xform[12];
-        m01 = xform[1]; m02 = xform[2];
-        m20 = xform[6]; az = xform[14];
-        m21 = xform[7]; m22 = xform[8];
-        centre[0] = az * m20 + (ax * m00 + ay * m10);
-        centre[1] = az * m21 + (ax * m01 + ay * m11);
-        centre[2] = az * m22 + (ax * m02 + ay * m12);
+        m10 = a[3]; ay = a[13];
+        m11 = a[4]; m12 = a[5];
+        m00 = a[0]; ax = a[12];
+        m01 = a[1]; m02 = a[2];
+        m20 = a[6]; az = a[14];
+        m21 = a[7]; m22 = a[8];
+        b[0] = az * m20 + (ax * m00 + ay * m10);
+        b[1] = az * m21 + (ax * m01 + ay * m11);
+        b[2] = az * m22 + (ax * m02 + ay * m12);
     } else {
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
-        m10 = xform[3]; m00 = xform[0]; m20 = xform[6];
-        centre[0] = xform[14] * m20 + (xform[12] * m00 + xform[13] * m10);
-        m11 = xform[4]; m01 = xform[1]; m21 = xform[7];
-        centre[1] = xform[14] * m21 + (xform[12] * m01 + xform[13] * m11);
-        m12 = xform[5]; m02 = xform[2]; m22 = xform[8];
-        centre[2] = xform[14] * m22 + (xform[12] * m02 + xform[13] * m12);
+        m10 = a[3]; m00 = a[0]; m20 = a[6];
+        b[0] = a[14] * m20 + (a[12] * m00 + a[13] * m10);
+        m11 = a[4]; m01 = a[1]; m21 = a[7];
+        b[1] = a[14] * m21 + (a[12] * m01 + a[13] * m11);
+        m12 = a[5]; m02 = a[2]; m22 = a[8];
+        b[2] = a[14] * m22 + (a[12] * m02 + a[13] * m12);
     }
-    centre[0] += xform[9];
-    centre[1] += xform[10];
-    centre[2] += xform[11];
-    ScaleVec3(&xform[0], xEdge, 0.4f);
-    ScaleVec3(&xform[6], zEdge, 0.75f);
+    b[0] += a[9];
+    b[1] += a[10];
+    b[2] += a[11];
+    ScaleVec3(&a[0], c, 0.4f);
+    ScaleVec3(&a[6], d, 0.75f);
 }
 #pragma scheduling on
 extern "C" int fn_801EE0C8(int);   /* render object -> its model (field +0x48) */
