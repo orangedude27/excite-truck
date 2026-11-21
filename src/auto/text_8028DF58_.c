@@ -216,8 +216,10 @@ test:
 #pragma scheduling on
 void fn_8028DF58(void) {
     struct Lists { char data[0x30C]; };
+    struct First { char c; };
     struct Lists *lists = (struct Lists *)&lbl_804B34B0;
-    fn_8028ED74(lists->data);
+    struct First *first = (struct First *)&lbl_804B34B0;
+    fn_8028ED74(&first->c);
     fn_8028ED74(lists->data + 0x104);
     fn_8028EE1C(lists->data + 0x208);
     lbl_8055F740 = 0;
@@ -1939,6 +1941,8 @@ int fn_8029169C(int object, int deleteFlag) {
 /* Constant predicate (returns 0 / false); a no-op virtual getter reached through a dispatch table. */
 int fn_802916DC(void) { return 0; }
 
+/* Trivial base destructor for nw4r::ef::Effect: called by the derived destructor
+ * before the object is optionally freed. */
 void fn_802916E4(void) {}
 
 void fn_802916E8(void) {}
