@@ -4567,6 +4567,10 @@ extern "C" void fn_80144184(void *arg0) {
  if(object){if(object)object->destroy(1);*(VObj**)((char*)arg0+0x160)=0;}
 }
 
+/* Empty no-op callback stub of the zone system: virtual slot +0x14 of the
+ * ZoneMaster vtable lbl_8032CAF0, first in the run of empty slots
+ * fn_801442D4/fn_801442D8/fn_801442FC/fn_80144300.  Calling it does nothing;
+ * it compiles to a bare 'blr'. */
 extern "C" void fn_801442D4(void) {
 
 }
