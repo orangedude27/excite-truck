@@ -694,7 +694,10 @@ void* fn_8027DED0(void) {
 #undef rankOverride
 }
 
-void fn_8027DED8(void) {
+/* Empty stub: callers pass (arg0, object, value) — fn_801B86BC does so right
+   after scaling the object's float at +0x50 — but all arguments are ignored
+   and nothing is done; compiles to a bare 'blr'. */
+void fn_8027DED8(int arg0, void *arg1, float arg2) {
 }
 
 extern void *fn_8027DB40(int);
