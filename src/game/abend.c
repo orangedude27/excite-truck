@@ -53,10 +53,8 @@ void fn_802E30C8(const char *fmt, ...) {
     va_end(args);
 }
 
-extern void fn_802E30C8(const char *, ...);
 extern char lbl_8034CF34[];
 extern void fn_802E3150(void *);
-extern void fn_802E3028();
 extern char lbl_8055D190;
 extern char lbl_8055D198;
 extern void exit(int);
