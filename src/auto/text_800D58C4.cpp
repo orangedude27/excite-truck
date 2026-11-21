@@ -1337,7 +1337,6 @@ extern "C" void fn_800D7758(void *holder) {
     if (target != 0) target->invoke();
 }
 
-struct LayoutRectRet { f32 x, y, w, h; };
 extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
     register u8* p = (u8*)self;
     extern f32 lbl_80560E84;
