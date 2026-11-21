@@ -1063,15 +1063,17 @@ void fn_801F1878(void *entry) {
 
 #pragma push
 #pragma use_lmw_stmw off
-int fn_801F18F0(void *arg0) {
-    int index = fn_801F196C(*(int *)((char *)arg0 + 8),
-                            *(int *)((char *)arg0 + 0xC));
-    if (lbl_80488798[index] == 0) {
+/* Unregister a wheel entry from the (car, wheel) slot table, panicking if its
+ * slot is already empty, then clear the slot. */
+int fn_801F18F0(void *entry) {
+    int slotIndex = fn_801F196C(*(int *)((char *)entry + 8),
+                                *(int *)((char *)entry + 0xC));
+    if (lbl_80488798[slotIndex] == 0) {
         fn_802E317C(lbl_8033A578,
-                    *(int *)((char *)arg0 + 8),
-                    *(int *)((char *)arg0 + 0xC));
+                    *(int *)((char *)entry + 8),
+                    *(int *)((char *)entry + 0xC));
     }
-    lbl_80488798[index] = 0;
+    lbl_80488798[slotIndex] = 0;
 }
 #pragma pop
 int fn_801F196C(int index, int base) {
