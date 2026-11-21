@@ -354,31 +354,35 @@ extern void fn_802390B4(void *, s32);
 extern s32 fn_802CAC28(void *, s32);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_80340B2C[];
-void fn_80239784(void *arg0, s32 arg1) {
-    s32 offset;
-    s32 i;
-    u8 *data;
+void fn_80239784(void *anim, s32 animName) {
+    s32 byteOffset;
+    s32 entryIndex;
+    u8 *swfData;
+    /* Loads an SW2 animation into anim: initializes it, reads the SWF data with
+       fn_802390B4 (logging an error with animName when the load fails), then walks
+       the texture entries, registering each named texture via fn_802CAC28 or
+       marking it invalid (-1) when it has no name. */
     ((void (*)())fn_8023905C)();
-    fn_802390B4(arg0, arg1);
-    data = *(u8 **)((u8 *)arg0 + 0x14);
-    if (data == 0) {
-        fn_802E30C8(lbl_80340B2C, arg1);
+    fn_802390B4(anim, animName);
+    swfData = *(u8 **)((u8 *)anim + 0x14);
+    if (swfData == 0) {
+        fn_802E30C8(lbl_80340B2C, animName);
         return;
     }
-    *(s32 *)((u8 *)arg0 + 0xC) = 0;
-    i = 0;
-    offset = 0;
-    *(s32 *)((u8 *)arg0 + 0x10) = *(s32 *)(data + 4) - 1;
-    while ((u32)i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 8)) {
-        u8 *entry = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset;
-        if ((s8)entry[4] != 0) {
-            void *r = (void *)fn_802CAC28(entry + 4, 0);
-            *(void **)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset) = r;
+    *(s32 *)((u8 *)anim + 0xC) = 0;
+    entryIndex = 0;
+    byteOffset = 0;
+    *(s32 *)((u8 *)anim + 0x10) = *(s32 *)(swfData + 4) - 1;
+    while ((u32)entryIndex < *(u32 *)(*(u8 **)((u8 *)anim + 0x14) + 8)) {
+        u8 *texEntry = *(u8 **)(*(u8 **)((u8 *)anim + 0x14) + 0x18) + byteOffset;
+        if ((s8)texEntry[4] != 0) {
+            void *texture = (void *)fn_802CAC28(texEntry + 4, 0);
+            *(void **)(*(u8 **)(*(u8 **)((u8 *)anim + 0x14) + 0x18) + byteOffset) = texture;
         } else {
-            *(s32 *)entry = -1;
+            *(s32 *)texEntry = -1;
         }
-        offset += 0x14;
-        i++;
+        byteOffset += 0x14;
+        entryIndex++;
     }
 }
 
