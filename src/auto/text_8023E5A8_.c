@@ -796,6 +796,7 @@ int fn_8023F694(void) {
 #pragma scheduling on
 
 void fn_8023F870(void) {
+    /* Intentionally empty no-op callback; occupies a UI menu entry's function-pointer slot when no action is needed. */
 }
 
 /* Intentionally empty no-op callback; occupies a UI menu entry's function-pointer slot when no action is needed. */
