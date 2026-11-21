@@ -32,7 +32,7 @@ typedef struct MotionPair {
 extern int lbl_8055E100;
 extern float lbl_80558DC4[];
 extern float lbl_805613BC;
-extern float lbl_805613B8;
+extern const float lbl_805613B8;
 void fn_80138F38();
 #pragma dont_inline on
 /* Return nonzero when a*b is negative, i.e. the two values have opposite signs (opposite_signs in the motion-crossing solver). */
@@ -169,7 +169,7 @@ float fn_80138DF4(void *arg0) {
     return var_f31;
 }
 #pragma scheduling invalid_target
-void fn_80138F38(void *arg0) {
+void fn_80138F38(const void *arg0) {
     extern int lbl_8055E100;
     extern float fn_80138DF4(void*);
     float sp8;
@@ -178,29 +178,29 @@ void fn_80138F38(void *arg0) {
     register float y;
     register float ratio;
     register float square;
-    register float product;
     register float value;
-    if (*(float*)((char*)arg0 + 0x10) > 0.0f) {
-        if (*(float*)((char*)arg0 + 0x14) < 0.0f) {
-            if (fn_80138C28(arg0, &sp8, 0)) {
-                x = *(float*)((char*)arg0 + 0x10);
-                y = *(float*)((char*)arg0 + 0x14);
+    register float product;
+    if (*(const float*)((const char*)arg0 + 0x10) > 0.0f) {
+        if (*(const float*)((const char*)arg0 + 0x14) < 0.0f) {
+            if (fn_80138C28((MotionPair *)arg0, &sp8, 0)) {
+                x = *(const float*)((const char*)arg0 + 0x10);
+                y = *(const float*)((const char*)arg0 + 0x14);
                 ratio = -x / y;
                 if (ratio <= sp8) {
                     square = ratio * ratio;
                     product = ratio * x;
-                    value = *(float*)((char*)arg0 + 0xC);
+                    value = *(const float*)((const char*)arg0 + 0xC);
                     value += product;
                     value += (0.5f * y) * square;
-                    ((int*)&sp10)[0] = ((int*)arg0)[0];
-                    ((int*)&sp10)[1] = ((int*)arg0)[1];
-                    ((int*)&sp10)[2] = ((int*)arg0)[2];
-                    ((int*)&sp10)[3] = ((int*)arg0)[3];
-                    ((int*)&sp10)[4] = ((int*)arg0)[4];
-                    ((int*)&sp10)[5] = ((int*)arg0)[5];
+                    ((int*)&sp10)[0] = ((const int*)arg0)[0];
+                    ((int*)&sp10)[1] = ((const int*)arg0)[1];
+                    ((int*)&sp10)[2] = ((const int*)arg0)[2];
+                    ((int*)&sp10)[3] = ((const int*)arg0)[3];
+                    ((int*)&sp10)[4] = ((const int*)arg0)[4];
+                    ((int*)&sp10)[5] = ((const int*)arg0)[5];
                     sp10.s.d = value;
-                    sp10.s.e = 0.0f;
                     sp10.s.f = 0.0f;
+                    sp10.s.e = 0.0f;
                     fn_80138DF4(&sp10);
                     lbl_8055E100 += 6;
                     return;
@@ -208,7 +208,7 @@ void fn_80138F38(void *arg0) {
             }
         }
     }
-    fn_80138DF4(arg0);
+    fn_80138DF4((void *)arg0);
 }
 void fn_80139030(MotionPair *motion) {
     /* Seeds the motion status code to -6 so fn_80138F38's success path (+6) yields 0; failures set a negative code. */
