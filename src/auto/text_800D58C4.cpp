@@ -1323,6 +1323,55 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
 
 extern "C" void fn_800D6CA0(s32, s32);
 #pragma push
+#pragma inline_depth(6)
+static inline u8 *DynCastV2_800D77DC(u8 *obj) {
+    StateNode_800D6CA0 *typeInfo = (StateNode_800D6CA0 *)&lbl_8055DE08;
+    bool derived;
+    StateNode_800D6CA0 *t = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)obj)->v1();
+    while (t) {
+        if (t == typeInfo) { derived = true; goto done; }
+        t = t->next;
+    }
+    derived = false;
+done:
+    return derived ? obj : 0;
+}
+struct ChildIterV2_800D77DC { StateNode_800D6CA0 *node; };
+static inline ChildIterV2_800D77DC ChildBeginV2_800D77DC(u8 *self) {
+    ChildIterV2_800D77DC it; it.node = ((StateNode_800D6CA0 *)(self + 0x14))->next; return it;
+}
+static inline ChildIterV2_800D77DC ChildEndV2_800D77DC(u8 *self) {
+    ChildIterV2_800D77DC it; it.node = (StateNode_800D6CA0 *)(self + 0x14); return it;
+}
+static inline u8 *ChildPaneV2_800D77DC(const ChildIterV2_800D77DC &it) {
+    if (!it.node) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+    u8 *p = (u8 *)it.node - 4;
+    if (!p) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
+    return p;
+}
+static inline bool ChildNotEqualV2_800D77DC(const ChildIterV2_800D77DC &a, const ChildIterV2_800D77DC &b) { return a.node != b.node; }
+static inline void ChildNextV2_800D77DC(ChildIterV2_800D77DC &it) { it.node = it.node->next; }
+static inline void SetTagProcessorCallV2_800D77DC(u8 *child, s32 arg1) { fn_800D6CA0((s32)child, arg1); }
+static inline void SetTagProcessorLevel3V2_800D77DC(u8 *self, s32 arg1) {
+    if (u8 *cast = DynCastV2_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
+    for (ChildIterV2_800D77DC it = ChildBeginV2_800D77DC(self); ChildNotEqualV2_800D77DC(it, ChildEndV2_800D77DC(self)); ChildNextV2_800D77DC(it)) {
+        SetTagProcessorCallV2_800D77DC(ChildPaneV2_800D77DC(it), arg1);
+    }
+}
+static inline void SetTagProcessorLevel2V2_800D77DC(u8 *self, s32 arg1) {
+    if (u8 *cast = DynCastV2_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
+    for (ChildIterV2_800D77DC it = ChildBeginV2_800D77DC(self); ChildNotEqualV2_800D77DC(it, ChildEndV2_800D77DC(self)); ChildNextV2_800D77DC(it)) {
+        SetTagProcessorLevel3V2_800D77DC(ChildPaneV2_800D77DC(it), arg1);
+    }
+}
+static inline void SetTagProcessorLevel1V2_800D77DC(u8 *self, s32 arg1) {
+    if (u8 *cast = DynCastV2_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
+    for (ChildIterV2_800D77DC it = ChildBeginV2_800D77DC(self); ChildNotEqualV2_800D77DC(it, ChildEndV2_800D77DC(self)); ChildNextV2_800D77DC(it)) {
+        SetTagProcessorLevel2V2_800D77DC(ChildPaneV2_800D77DC(it), arg1);
+    }
+}
+#pragma pop
+#pragma push
 #pragma opt_common_subs off
 extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
     StateNode_800D6CA0 *sentinel = (StateNode_800D6CA0 *)&lbl_8055DE08;
