@@ -4059,6 +4059,7 @@ void fn_801D8C0C(void *state) {
 }
 
 void fn_801D8C18(void) {
+    /* No-op: returns immediately without doing anything. */
 }
 
 extern float lbl_80562AE4;
