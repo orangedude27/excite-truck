@@ -2791,36 +2791,40 @@ void fn_801D77EC(void *list, unsigned int item) {
 #pragma cplusplus on
 extern "C" char lbl_803385D0[];
 #pragma cplusplus on
-extern "C" void fn_801D7874(void *arg0, void *arg1) {
-    struct ObjA {
-        virtual void *v0();
+extern "C" void fn_801D7874(void *event, void *collectable) {
+#define kGroupIdKey lbl_803385D0
+    struct Collectable {
+        virtual void *getObstacle();
     };
-    struct ObjB {
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual int v6(char *, int);
+    struct Obstacle {
+        virtual void d0();
+        virtual void d1();
+        virtual void d2();
+        virtual void d3();
+        virtual void d4();
+        virtual void d5();
+        virtual int getIntAttr(char *, int);
     };
 
-    ObjA *b = (ObjA *)arg1;
-    void *node = b->v0();
-    int match;
-    int found;
-    int expected;
-    if (*(int *)((char *)arg0 + 0xc) >= 0 && node != 0 && (found = ((ObjB *)node)->v6(lbl_803385D0, -1), expected = *(int *)((char *)arg0 + 0xc), found == expected)) {
-        match = 1;
+    /* Add a collectable node to the event's obstacle list when the obstacle it
+     * resolves to belongs to the group id this event is configured for. */
+    Collectable *item = (Collectable *)collectable;
+    void *obstacle = item->getObstacle();
+    int matchesGroup;
+    int obstacleGroup;
+    int targetGroup;
+    if (*(int *)((char *)event + 0xc) >= 0 && obstacle != 0 && (obstacleGroup = ((Obstacle *)obstacle)->getIntAttr(kGroupIdKey, -1), targetGroup = *(int *)((char *)event + 0xc), obstacleGroup == targetGroup)) {
+        matchesGroup = 1;
     } else {
-        match = 0;
+        matchesGroup = 0;
     }
-    if (match) {
-        int count = *(int *)((char *)arg0 + 0x74);
-        void **items = *(void ***)((char *)arg0 + 0x70);
-        *(int *)((char *)arg0 + 0x74) = count + 1;
-        items[count] = b;
+    if (matchesGroup) {
+        int itemCount = *(int *)((char *)event + 0x74);
+        void **items = *(void ***)((char *)event + 0x70);
+        *(int *)((char *)event + 0x74) = itemCount + 1;
+        items[itemCount] = item;
     }
+#undef kGroupIdKey
 }
 
 #pragma pop
