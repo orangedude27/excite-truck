@@ -18,14 +18,26 @@ extern u8 lbl_80320320[];
 extern u8 lbl_803203D8[];
 #pragma pop
 
-#define sAssertFile_common lbl_803204B0 /* __FILE__ of the vertex-color element asserts */
+/* Assertion messages and strings passed to nw4hbm::db::Panic/Warning. */
+#define sAssertFile_common lbl_803204B0 /* "common.h" */
 #define sAssertIdxAnimTargetVtxColor lbl_80320474 /* "NW4HBM:Failed assertion idx < ANIMTARGET_VERTEXCOLOR_MAX" */
+#define sAssertFile_animTarget lbl_803204F8 /* "common.h" */
+#define sAssertIdxAnimTargetByte lbl_803204BC /* "NW4HBM:Failed assertion idx < ANIMTARGET_VERTEXCOLOR_MAX" */
+#define sAssertFile_picture lbl_80320320 /* "lyt_picture.cpp" */
+#define sAssertIdxVtxColorMax lbl_803203D8 /* "NW4HBM:Failed assertion idx < VERTEXCOLOR_MAX" */
+#define sMsgNullPointer lbl_80320330 /* "NW4HBM:Pointer must not be NULL " */
+#define sMsgTexNumTooLarge lbl_8032036C /* "mpMaterial->GetTextureNum(%d) is large..." */
+#define sAssertTexCoordGen lbl_80320504 /* "NW4HBM:Failed assertion idx < mGXMemNum.texCoordGen" */
+#define sAssertFile_material lbl_80320538 /* "material.h" */
+#define sZeroFloat lbl_80560EC8 /* 0.0f, the shared float constant */
+
 enum { VERTEXCOLOR_NUM = 4 }; /* corner colors a pane's vertex array carries */
 /* the four corner colors seen as their 4x4 bytes, which is how an animation
  * target addresses a single channel of one */
 enum { ANIMTARGET_VERTEXCOLOR_MAX = VERTEXCOLOR_NUM * 4 };
 
-extern u32 lbl_8055DE00;
+extern u32 lbl_8055DE00; /* sentinel that ends a layout's pane list */
+#define sLayoutListEnd lbl_8055DE00
 
 struct Color {
     u8 b0;
