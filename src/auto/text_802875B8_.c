@@ -357,7 +357,12 @@ extern void fn_802AB5B8(void);
 extern void fn_802A9574(void);
 extern void fn_80288868(void *);
 extern void fn_8028E1A4(void);
-void fn_80287974(void) { fn_8028E1A4(); }
+void fn_80287974(void) {
+#define beginParticlePass fn_8028E1A4
+    /* Begin a particle update pass: snapshot this frame's time and re-enable particle adds. */
+    beginParticlePass();
+#undef beginParticlePass
+}
 
 void fn_80287978(void) { fn_8028E1D0(); }
 
