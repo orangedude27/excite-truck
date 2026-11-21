@@ -12,14 +12,15 @@ extern s32 fn_80128668(void);
 #define csubtasktmgr_vtable lbl_8032C500
 
 #pragma scheduling invalid_target
-/* Allocate a 4-byte subtask-manager object and install its vtable pointer when arg0 is 0. */
-void fn_8013C9F4(long arg0) {
+/* Allocate a four-byte challenge sub-task manager and install its vtable when the
+   construction selector is zero. */
+void fn_8013C9F4(s32 arg0) {
     void **object;
 
     if (arg0 == 0) {
-        object = fn_801284F8(4, (void *)lbl_8032C4F0);
+        object = fn_801284F8(4, (void *)csubtasktmgr_tag);
         if (object != (void **)0) {
-            *object = (void *)lbl_8032C500;
+            *object = (void *)csubtasktmgr_vtable;
         }
     }
 }
