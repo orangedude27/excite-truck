@@ -7591,8 +7591,10 @@ extern "C" void fn_802258C8(void *arg0) {
 }
 
 #pragma pop
-extern "C" void fn_80225918(void *arg0) {
-    fn_802192AC(arg0);
+/* C-linkage thunk: forwards to fn_802192AC to flush this widget's changed
+ * tracked slots (copy src to dst and notify watchers). */
+extern "C" void fn_80225918(void *widget) {
+    fn_802192AC(widget);
 }
 
 extern "C" f32 lbl_80563548;
