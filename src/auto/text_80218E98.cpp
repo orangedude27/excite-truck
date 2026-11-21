@@ -901,6 +901,8 @@ extern "C" void fn_802192AC(void *arg0) {
 extern "C" void fn_8021889C(s32, s32, f32);
 extern "C" void fn_80218968(s32, s32, f32);
 
+/* Tail-call thunk: tick the global timers by jumping to fn_80219044, the
+ * two-timer decay routine, with no explicit argument. */
 extern "C" void fn_80219354(void) { ((void (*)(void))fn_80219044)(); }
 
 extern f32 lbl_805634A0;
