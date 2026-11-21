@@ -12,7 +12,9 @@ extern int fn_802E75FC(int);
 extern int fn_802E75E4(const char *);
 extern int sprintf(char *, const char *, ...);
 #define spuLogPrint fn_802E30C8
-#define gUnloadBankLog lbl_8032A59C
+#define gLoadBankLog lbl_8032A588 /* "SpuQueueLoadBank!" */
+#define gUnloadBankLog lbl_8032A59C /* "SpuQueueUnloadBank!" */
+#define sBankFileNameFmt lbl_80559978 /* "%s.bnk" */
 #define spuUnloadBank fn_802E75FC
 #define gLoadedBankId lbl_8055DFA8
 #pragma scheduling invalid_target
