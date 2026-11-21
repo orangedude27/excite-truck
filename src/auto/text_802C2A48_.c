@@ -158,6 +158,8 @@ void fn_802DD63C(void);
 void fn_802DD738(void);
 void fn_802DD750(void);
 void fn_802DE774(void);
+/* Thunk: initialize the split-screen view-region coefficient table for the
+ * given region/player count (fn_802DD63C). */
 void fn_802C2C60(void) { fn_802DD63C(); }
 
 /* Tail-call wrapper: forwards the region index (r3) and float value (f1) left
