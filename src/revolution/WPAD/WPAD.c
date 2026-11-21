@@ -5569,10 +5569,10 @@ void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
     u16 valueCD4 = lbl_80560CD4;
     u16 valueCD6 = lbl_80560CD6;
     u8* config = *(u8**)(p + 0x8B4);
-    u32 attempt;
-    s32 offset, i;
     u32 sum;
-    u8* src;
+    s32 i;
+    s32 offset;
+    u8 attempt;
 
     *(u16*)&status->obj[0].x = valueCC8;
     *(u16*)&status->obj[0].y = valueCD0;
@@ -5601,28 +5601,27 @@ void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
     if (result == 0) {
         if (*(s32*)(p + 0x820) == 0) {
             for (attempt = 0; attempt < 2; attempt++) {
-                offset = (u8)attempt * 11;
+                offset = attempt * 11;
                 sum = 0;
                 for (i = offset; i < offset + 10; i++) {
                     sum += config[i];
                 }
                 if ((u8)(sum + 0x55) == config[offset + 10]) {
                     DBPrintf_80068D68(messages + 0x98);
-                    src = data + offset;
-                    status->obj[0].x = (s16)src[0] | ((src[2] & 48) << 4);
-                    status->obj[0].y = 0x2FF - (s16)((s16)src[1] | ((src[2] & 192) << 2));
+                    status->obj[0].x = (s16)(u16)data[offset + 0] | ((data[offset + 2] & 48) << 4);
+                    status->obj[0].y = 0x2FF - (s16)((s16)(u16)data[offset + 1] | ((data[offset + 2] & 192) << 2));
                     status->obj[0].size = *(u16*)(p + 0x804);
                     status->obj[0].traceId = 0;
-                    status->obj[1].x = (s16)src[3] | ((src[2] & 3) << 8);
-                    status->obj[1].y = 0x2FF - (s16)((s16)src[4] | ((src[2] & 12) << 6));
+                    status->obj[1].x = (s16)(u16)data[offset + 3] | ((data[offset + 2] & 3) << 8);
+                    status->obj[1].y = 0x2FF - (s16)((s16)(u16)data[offset + 4] | ((data[offset + 2] & 12) << 6));
                     status->obj[1].size = *(u16*)(p + 0x804);
                     status->obj[1].traceId = 1;
-                    status->obj[2].x = (s16)src[5] | ((src[7] & 48) << 4);
-                    status->obj[2].y = 0x2FF - (s16)((s16)src[6] | ((src[7] & 192) << 2));
+                    status->obj[2].x = (s16)(u16)data[offset + 5] | ((data[offset + 7] & 48) << 4);
+                    status->obj[2].y = 0x2FF - (s16)((s16)(u16)data[offset + 6] | ((data[offset + 7] & 192) << 2));
                     status->obj[2].size = *(u16*)(p + 0x804);
                     status->obj[2].traceId = 2;
-                    status->obj[3].x = (s16)src[8] | ((src[7] & 12) << 8);
-                    status->obj[3].y = 0x2FF - (s16)((s16)src[9] | ((src[7] & 12) << 6));
+                    status->obj[3].x = (s16)(u16)data[offset + 8] | ((data[offset + 7] & 12) << 8);
+                    status->obj[3].y = 0x2FF - (s16)((s16)(u16)data[offset + 9] | ((data[offset + 7] & 12) << 6));
                     status->obj[3].size = *(u16*)(p + 0x804);
                     status->obj[3].traceId = 3;
                     break;
@@ -5633,7 +5632,7 @@ void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
             DBPrintf_80068D68(messages + 0xC8);
         }
         for (attempt = 0; attempt < 2; attempt++) {
-            offset = (u8)attempt * 10;
+            offset = attempt * 10;
             sum = 0;
             if (*(s32*)(p + 0x820) == 0) {
                 offset += 22;
@@ -5641,17 +5640,16 @@ void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
             for (i = offset; i < offset + 9; i++) {
                 sum += config[i];
             }
-            src = config + offset;
-            if ((u8)(sum + 0x55) == src[9]) {
+            if ((u8)(sum + 0x55) == config[offset + 9]) {
                 DBPrintf_80068D68(messages + 0x10C);
-                *(s16*)(p + 0x7b4) = (src[0] << 2) | ((src[3] >> 4) & 3);
-                *(s16*)(p + 0x7b6) = (src[1] << 2) | ((src[3] >> 2) & 3);
-                *(s16*)(p + 0x7b8) = (src[2] << 2) | ((src[3] >> 0) & 3);
-                *(s16*)(p + 0x7ba) = (src[4] << 2) | ((src[7] >> 4) & 3);
-                *(s16*)(p + 0x7bc) = (src[5] << 2) | ((src[7] >> 2) & 3);
-                *(s16*)(p + 0x7be) = (src[6] << 2) | ((src[7] >> 0) & 3);
-                p[0x7C1] = src[8] & 0x7F;
-                p[0x7C0] = src[8] & 0x80;
+                *(s16*)(p + 0x7b4) = (config[offset + 0] << 2) | ((config[offset + 3] >> 4) & 3);
+                *(s16*)(p + 0x7b6) = (config[offset + 1] << 2) | ((config[offset + 3] >> 2) & 3);
+                *(s16*)(p + 0x7b8) = (config[offset + 2] << 2) | ((config[offset + 3] >> 0) & 3);
+                *(s16*)(p + 0x7ba) = (config[offset + 4] << 2) | ((config[offset + 7] >> 4) & 3);
+                *(s16*)(p + 0x7bc) = (config[offset + 5] << 2) | ((config[offset + 7] >> 2) & 3);
+                *(s16*)(p + 0x7be) = (config[offset + 6] << 2) | ((config[offset + 7] >> 0) & 3);
+                p[0x7C1] = config[offset + 8] & 0x7F;
+                p[0x7C0] = config[offset + 8] & 0x80;
                 break;
             }
             DBPrintf_80068D68(messages + 0x118);
@@ -6167,96 +6165,100 @@ void fn_800656E8(s32 chan, WPADStatusEx* pReport)
 // fn_80065934: WPAD data processing
 void fn_80065934(s32 chan, u8* data)
 {
-    u8* cb;
+    typedef struct {
+        u8 _head[0xA0];
+        u8 rxBufs[2][RX_BUFFER_SIZE]; /* 0xA0 */
+        u8 _gap160[0x780 - 0x160];
+        u32 UNK_0x780;                /* 0x780 */
+        u8 _gap784[0x788 - 0x784];
+        u32 extDisconnected;          /* 0x788 */
+        u8 _gap78C[0x7C2 - 0x78C];
+        WPADExtConfig extCalib;       /* 0x7C2 */
+        u8 _gap7DC[0x7F8 - 0x7DC];
+        u32 dataFormat;               /* 0x7F8 */
+        s32 status;                   /* 0x7FC */
+        u8 _gap800;
+        u8 extType;                   /* 0x801 */
+        u8 UNK_0x802;                 /* 0x802 */
+        u8 _gap803[0x806 - 0x803];
+        u8 rxBufIndex;                /* 0x806 */
+        u8 _gap807[0x851 - 0x807];
+        u8 UNK_0x851;                 /* 0x851 */
+    } CBView;
+
+    CBView* cb;
     volatile s8* buf;
     WPADFSStatus* fs;
     WPADCLStatus* cl;
-    s32 enabled;
-    u32 i, offset;
+    u32 offset;
     u32 format;
     s16 x, y, v;
-    s32 bits;
+    s32 enabled;
 
     enabled = OSDisableInterrupts();
-    cb = (u8*)lbl_8038F4F0[(u8)chan];
-    buf = (volatile s8*)(cb + cb[0x806] * 0x60 + 0xA0);
+    cb = (CBView*)lbl_8038F4F0[(u8)chan];
+    buf = (volatile s8*)cb->rxBufs[cb->rxBufIndex];
     for (offset = 0; offset < 96; offset++) {
         buf[offset] = 0;
     }
     *(u16*)buf = ((u16)data[2] << 8 | data[1]) & 0x9F1F;
-    format = *(u32*)(cb + 0x7F8);
+    format = cb->dataFormat;
     if (format == 0 || format == 3 || format == 6) {
-        buf[0x29] = *(s32*)(cb + 0x7FC);
-    } else if (*(s32*)(cb + 0x7FC) == 0) {
+        buf[0x29] = cb->status;
+    } else if (cb->status == 0) {
         buf[0x29] = -4;
     }
-    buf[0x28] = cb[0x801];
-    *(u32*)(cb + 0x788) = (data[1] >> 7) & 1;
+    buf[0x28] = cb->extType;
+    cb->extDisconnected = (data[1] >> 7) & 1;
     memcpy(lbl_803928E8, data + 3, 8);
     WPADiDecode(chan, data + 3, 8, 0);
-    if (*(s32*)(cb + 0x780) != 0) {
-        if (cb[0x801] == 1) {
-            fs = (WPADFSStatus*)(cb + cb[0x806] * 0x60 + 0xA0);
+    if (cb->UNK_0x780 != 0) {
+        if (cb->extType == 1) {
+            fs = (WPADFSStatus*)cb->rxBufs[cb->rxBufIndex];
             fs->fsStickX = data[3];
             fs->fsStickY = data[4];
-            v = data[5] << 2;
-            v &= ~3;
-            bits = data[8];
-            bits >>= 2;
-            v |= bits & 3;
-            fs->fsAccX = v - *(s16*)(cb + 0x7ce);
-            v = data[6] << 2;
-            v &= ~3;
-            bits = data[8];
-            bits >>= 4;
-            v |= bits & 3;
-            fs->fsAccY = v - *(s16*)(cb + 0x7d0);
-            v = data[7] << 2;
-            v &= ~3;
-            v |= data[8] >> 6;
-            fs->fsAccZ = v - *(s16*)(cb + 0x7d2);
+            fs->fsAccX = (s16)((s16)((s16)((s16)(data[5] << 2) & ~3) | ((s16)(data[8] >> 2) & 3)) - *(s16*)((u8*)cb + 0x7ce));
+            fs->fsAccY = (s16)((s16)((s16)((s16)(data[6] << 2) & ~3) | ((s16)(data[8] >> 4) & 3)) - *(s16*)((u8*)cb + 0x7d0));
+            fs->fsAccZ = (s16)((s16)((s16)((s16)(data[7] << 2) & ~3) | (data[8] >> 6)) - *(s16*)((u8*)cb + 0x7d2));
             fs->button |= ((~data[8]) & 3) << 13;
-            if (cb[0x851] == 0) {
-                cb[0x851] = 1;
-                *(s16*)(cb + 0x7C2) = fs->fsStickX;
-                *(s16*)(cb + 0x7C8) = fs->fsStickY;
+            if (cb->UNK_0x851 == 0) {
+                cb->UNK_0x851 = 1;
+                cb->extCalib.fs.stickXCenter = fs->fsStickX;
+                cb->extCalib.fs.stickYCenter = fs->fsStickY;
             }
-            x = (u8)fs->fsStickX - (u8)*(s16*)(cb + 0x7C2);
-            y = (u8)fs->fsStickY - (u8)*(s16*)(cb + 0x7C8);
+            x = (u8)fs->fsStickX - (u8)cb->extCalib.fs.stickXCenter;
+            y = (u8)fs->fsStickY - (u8)cb->extCalib.fs.stickYCenter;
             if (x < -128) fs->fsStickX = -128;
             else if (x > 127) fs->fsStickX = 127;
             else fs->fsStickX = x;
             if (y < -128) fs->fsStickY = -128;
             else if (y > 127) fs->fsStickY = 127;
             else fs->fsStickY = y;
-        } else if (cb[0x801] == 2) {
-            switch (cb[0x802]) {
+        } else if (cb->extType == 2) {
+            switch (cb->UNK_0x802) {
             case 1:
-                cl = (WPADCLStatus*)(cb + cb[0x806] * 0x60 + 0xA0);
+                cl = (WPADCLStatus*)cb->rxBufs[cb->rxBufIndex];
                 cl->clLStickX = (data[3] & 63) << 4;
                 cl->clLStickY = (data[4] & 63) << 4;
-                v = (data[5] >> 7) | ((data[4] >> 5) & 6) | ((data[3] >> 3) & 24);
+                v = (s16)(data[5] >> 7) | ((s16)((s16)(data[3] >> 3) & 24) | (s16)((s16)(data[4] >> 5) & 6));
                 v <<= 5;
                 cl->clRStickX = v - 512;
                 v = (data[5] & 31) << 5;
                 cl->clRStickY = v - 512;
-                cl->clTriggerL = (((data[5] >> 2) & 24) | (data[6] >> 5)) << 3;
+                cl->clTriggerL = (((s16)(data[5] >> 2) & 24) | (data[6] >> 5)) << 3;
                 cl->clTriggerR = (data[6] & 31) << 3;
                 cl->clButton = ((data[7] << 8) | data[8]) ^ 0xFFFF;
                 break;
             case 2:
-                cl = (WPADCLStatus*)(cb + cb[0x806] * 0x60 + 0xA0);
-                v = data[3] << 2;
-                v &= ~3;
-                v |= (data[7] >> 0) & 3;
-                cl->clLStickX = v - 512;
+                cl = (WPADCLStatus*)cb->rxBufs[cb->rxBufIndex];
+                cl->clLStickX = (s16)((s16)((s16)(data[3] << 2) & ~3) | ((data[7] >> 0) & 3)) - 512;
                 v = data[4] << 2;
                 v &= ~3;
-                v |= (data[7] >> 2) & 3;
+                v |= (s16)(data[7] >> 2) & 3;
                 cl->clRStickX = v - 512;
                 v = data[5] << 2;
                 v &= ~3;
-                v |= (data[7] >> 4) & 3;
+                v |= (s16)(data[7] >> 4) & 3;
                 cl->clLStickY = v - 512;
                 v = data[6] << 2;
                 v &= ~3;
@@ -6267,51 +6269,43 @@ void fn_80065934(s32 chan, u8* data)
                 cl->clButton = ((data[10] << 8) | data[11]) ^ 0xFFFF;
                 break;
             case 3:
-                cl = (WPADCLStatus*)(cb + cb[0x806] * 0x60 + 0xA0);
-                v = (s16)data[3];
-                v <<= 2;
-                cl->clLStickX = v - 512;
-                v = (s16)data[4];
-                v <<= 2;
-                cl->clRStickX = v - 512;
-                v = (s16)data[5];
-                v <<= 2;
-                cl->clLStickY = v - 512;
-                v = (s16)data[6];
-                v <<= 2;
-                cl->clRStickY = v - 512;
+                cl = (WPADCLStatus*)cb->rxBufs[cb->rxBufIndex];
+                cl->clLStickX = (s16)((s16)(u16)data[3] << 2) - 512;
+                cl->clRStickX = (s16)((s16)(u16)data[4] << 2) - 512;
+                cl->clLStickY = (s16)((s16)(u16)data[5] << 2) - 512;
+                cl->clRStickY = (s16)((s16)(u16)data[6] << 2) - 512;
                 cl->clTriggerL = data[7];
                 cl->clTriggerR = data[8];
                 cl->clButton = ((data[9] << 8) | data[10]) ^ 0xFFFF;
                 break;
             }
-            if (cb[0x851] == 0) {
-                cb[0x851] = 1;
-                *(s16*)(cb + 0x7C2) = cl->clLStickX;
-                *(s16*)(cb + 0x7C8) = cl->clLStickY;
-                *(s16*)(cb + 0x7CE) = cl->clRStickX;
-                *(s16*)(cb + 0x7D4) = cl->clRStickY;
-                cb[0x7DA] = cl->clTriggerL;
-                cb[0x7DB] = cl->clTriggerR;
+            if (cb->UNK_0x851 == 0) {
+                cb->UNK_0x851 = 1;
+                cb->extCalib.cl.lStickXCenter = cl->clLStickX;
+                cb->extCalib.cl.lStickYCenter = cl->clLStickY;
+                cb->extCalib.cl.rStickXCenter = cl->clRStickX;
+                cb->extCalib.cl.rStickYCenter = cl->clRStickY;
+                cb->extCalib.cl.triggerLZero = cl->clTriggerL;
+                cb->extCalib.cl.triggerRZero = cl->clTriggerR;
             }
-            x = cl->clLStickX - *(s16*)(cb + 0x7c2);
-            y = cl->clLStickY - *(s16*)(cb + 0x7c8);
+            x = cl->clLStickX - cb->extCalib.cl.lStickXCenter;
+            y = cl->clLStickY - cb->extCalib.cl.lStickYCenter;
             if (x < -1024) cl->clLStickX = -1024;
             else if (x > 1023) cl->clLStickX = 1023;
             else cl->clLStickX = x;
             if (y < -1024) cl->clLStickY = -1024;
             else if (y > 1023) cl->clLStickY = 1023;
             else cl->clLStickY = y;
-            x = cl->clRStickX - *(s16*)(cb + 0x7ce);
-            y = cl->clRStickY - *(s16*)(cb + 0x7d4);
+            x = cl->clRStickX - cb->extCalib.cl.rStickXCenter;
+            y = cl->clRStickY - cb->extCalib.cl.rStickYCenter;
             if (x < -1024) cl->clRStickX = -1024;
             else if (x > 1023) cl->clRStickX = 1023;
             else cl->clRStickX = x;
             if (y < -1024) cl->clRStickY = -1024;
             else if (y > 1023) cl->clRStickY = 1023;
             else cl->clRStickY = y;
-            x = cl->clTriggerL - cb[0x7DA];
-            y = cl->clTriggerR - cb[0x7DB];
+            x = cl->clTriggerL - cb->extCalib.cl.triggerLZero;
+            y = cl->clTriggerR - cb->extCalib.cl.triggerRZero;
             if (x < 0) cl->clTriggerL = 0;
             else cl->clTriggerL = x;
             if (y < 0) cl->clTriggerR = 0;
@@ -6321,7 +6315,7 @@ void fn_80065934(s32 chan, u8* data)
             buf[0x29] = -7;
         }
     }
-    cb[0x806] = __cntlzw(cb[0x806]) >> 24;
+    cb->rxBufIndex = (u8)((u32)__cntlzw(cb->rxBufIndex) >> 5);
     OSRestoreInterrupts(enabled);
 }
 
