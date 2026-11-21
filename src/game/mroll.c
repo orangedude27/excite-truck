@@ -31,6 +31,19 @@ extern void fn_802E317C(char *, ...);
 typedef struct Fn241820VT { int pad[3]; int (*isActive)(void *); } Fn241820VT;
 typedef struct Fn241820Obj { char pad[0xc]; Fn241820VT *vt; } Fn241820Obj;
 typedef int (*Fn241820IsActive)(void *);
+/* Bounded name copy: copies characters until the terminator or n-1 of them, and
+ * always leaves the destination terminated. */
+static inline void MRollCopyName(char *dst, const char *src, int n) {
+    char c;
+    do {
+        if (--n <= 0) {
+            dst[-1] = 0;
+            break;
+        }
+        c = *src++;
+        *dst++ = c;
+    } while (c != 0);
+}
 /* Clear the player-info table (lbl_80498828): set the id word of each of its
  * two 0x10-byte slots to -1, marking both slots empty. */
 void fn_8023FE20(void) {
@@ -1931,10 +1944,11 @@ off_child_check:
 }
 #pragma cplusplus reset
 #pragma use_lmw_stmw off
-s32 fn_80242F68(void *__restrict arg0, s32 arg1) {
+s32 fn_80242F68(void *arg0, s32 arg1) {
     u8 *base = (u8 *)arg0;
     s32 channel = fn_802E4A10();
-    s32 active, selected, i, state0, pp, eq, cond, modeB, mode, cntSel;
+    s32 active, selected, i, state0, pp, eq, cond;
+    s32 modeB, mode, cntSel, ret;
     u8 *slot;
     if (channel >= 2) return 0;
     slot = base + channel * 0x20;
@@ -1974,7 +1988,7 @@ upd_check0:
                 if (i < *(s32 *)(obj + 0x2C)) goto upd_body0;
             }
         } else { lbl_8055F1FC = 1; lbl_8055F200 = 0; }
-        return 1;
+        ret = 1; goto finish;
     case 0xD:
         {
             s32 v0 = *(s32 *)((u8 *)arg0 + 0x34);
@@ -1995,7 +2009,7 @@ mode_done:;
             if (mode != 0) {
                 if (channel == 0) { lbl_8055F1FC = 1; lbl_8055F200 = 2; }
                 else { fn_80216D28(); fn_80214D50(1); }
-                return 1;
+                ret = 1; goto finish;
             }
         }
         if (active >= 0) {
@@ -2003,12 +2017,11 @@ mode_done:;
             slot = base + active * 0x20;
             if (*(s32 *)(slot + 0x34) > 1 && *(s32 *)(slot + 0x34) != 4) cnt2++;
             if (*(s32 *)(slot + 0x34) > 1 && *(s32 *)(slot + 0x34) != 4) cnt2++;
-            if (cnt2 <= 0) return 0;
+            if (cnt2 <= 0) { ret = 0; goto finish; }
             if (*(s32 *)(slot + 0x34) > 1) {
                 u8 *obj = *(u8 **)(slot + 0x18);
                 if (*(u8 *)(obj + 0x38)) {
-                    u8 *cur2 = obj;
-                    s32 idx = 0, done = 0;
+                    u8 *cur2 = obj; s32 idx = 0, done = 0;
                     while (idx < *(s32 *)(obj + 0x2C)) {
                         u8 *ee = *(u8 **)(cur2 + 0x18);
                         s32 (*fn)(void *) = ((s32 (**)(void *))(*(void **)((u8 *)ee + 0xC)))[5];
@@ -2041,9 +2054,7 @@ upd_check1:
         } else if (selected >= 0) {
             s32 off = selected << 5;
             u8 *obj = *(u8 **)((u8 *)arg0 + off + 0x18);
-            u8 *dst, *src;
-            s32 n;
-            signed char c;
+            u8 *dst, *src; s32 n; signed char c;
             **(s32 **)(obj + 0x34) = channel;
             *(s32 *)(*(u8 **)(obj + 0x28) + 0xD8) = **(s32 **)(obj + 0x34);
             if (**(s32 **)(obj + 0x34) < 0) {
@@ -2068,8 +2079,7 @@ copy_check1:
 copy_done1:;
             }
             {
-                u8 *cur4 = obj;
-                i = 0;
+                u8 *cur4 = obj; i = 0;
                 goto upd_check2;
 upd_body2:
                 {
@@ -2085,8 +2095,10 @@ upd_check2:
             }
             *(s32 *)((u8 *)arg0 + off + 0x34) = 2;
         }
-        return 1;
-    case 0x6F: return 1;
-    default: return 0;
+        ret = 1; goto finish;
+    case 0x6F: ret = 1; goto finish;
+    default: ret = 0; goto finish;
     }
+finish:
+    return ret;
 }
