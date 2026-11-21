@@ -71,12 +71,13 @@ Unk131588 *fn_80131588(void *arg0, s32 arg1) {
                 t = b[5]; b[5] = b[6]; b[6] = t;
                 t = b[8]; b[8] = b[0xB]; b[0xB] = t;
                 t = b[9]; b[9] = b[0xA]; b[0xA] = t;
-                off1 = 0;
-                for (i = 0; i < r->count; i++) {
-                    Unk131588Elem *e = (Unk131588Elem *)((char *)r->elems + off1);
+                arg0 = (void *)0;
+                arg1 = 0;
+                for (; (s32)arg0 < r->count; arg0 = (void *)((s32)arg0 + 1)) {
+                    Unk131588Elem *e = (Unk131588Elem *)((char *)r->elems + arg1);
                     if (e != NULL) fn_80131960(e, r);
-                    ((Unk131588Elem *)((char *)r->elems + off1))->parent = r;
-                    off1 += 0x1C;
+                    ((Unk131588Elem *)((char *)r->elems + arg1))->parent = r;
+                    arg1 += 0x1C;
                 }
                 off1 = 0;
                 for (i = 0; i < r->count; i++) {
@@ -160,11 +161,11 @@ s32 fn_8013181C(void) {
     fn_802E30C8(lbl_8032B510);
     return 0;
 }
-#pragma push
 #pragma scheduling invalid_target
 void* fn_8013184C(void) {
     if (lbl_8055E060 == 0) {
         void *tmp = (void*)lbl_8032B64C;
+        void *regdata = (void*)lbl_8042F530;
         ((void* volatile*)lbl_8042F53C)[0] = tmp;
         tmp = (void*)lbl_8032B574;
         ((void* volatile*)lbl_8042F53C)[0] = tmp;
@@ -177,12 +178,12 @@ void* fn_8013184C(void) {
         ((void* volatile*)lbl_8042F53C)[5] = 0;
         ((void* volatile*)lbl_8042F53C)[6] = 0;
         tmp = (void*)fn_80131920;
-        __register_global_object(lbl_8042F53C, (void (*)(void*))tmp, lbl_8042F530);
+        __register_global_object(lbl_8042F53C, (void (*)(void*))tmp, regdata);
         lbl_8055E060 = 1;
     }
     return lbl_8042F53C;
 }
-#pragma pop
+#pragma scheduling on
 /* CodeWarrior deleting-destructor helper: free the object with MemFree when
  * deleting (flag > 0), then return the object pointer. */
 s32 fn_801318E0(s32 object, s32 deleteFlag) {
@@ -306,38 +307,41 @@ s32 fn_80131B10(s32 object, s32 deleteFlag) {
     return object;
 }
 
+/* RealName: ValueTable_Hash. Hash every {name, value} string pair in the table:
+   start at 0xBABBA, add each signed char of the name plus 0xBAF, then each
+   signed char of the value plus 0xFAC0000 minus 0x5355. */
 s32 fn_80131B50(void *arg0)
 {
-  s32 count = *((s32 *) (((char *) arg0) + 0xC));
+  s32 entryCount = *((s32 *) (((char *) arg0) + 0xC));
   s32 hash;
-  s32 new_var[2];
+  s32 loopState[2];
   hash = 0xBABBA;
-  new_var[0] = 0;
-  for (new_var[1] = 0; new_var[1] < count; new_var[1]++)
+  loopState[0] = 0;
+  for (loopState[1] = 0; loopState[1] < entryCount; loopState[1]++)
   {
-    char *base = *((char * volatile *) (((char *) arg0) + 0x10));
-    char *entry = base + new_var[0];
-    char *s = *((char **) entry);
-    while (*s)
+    char *entries = *((char * volatile *) (((char *) arg0) + 0x10));
+    char *entry = entries + loopState[0];
+    char *p = *((char **) entry);
+    while (*p)
     {
-      hash += ((s8) (*s));
+      hash += ((s8) (*p));
       hash += 0xBAF;
-      s++;
+      p++;
     }
 
-    s = *((char **) (entry + 4));
-    while ((*s) != 0)
+    p = *((char **) (entry + 4));
+    while ((*p) != 0)
     {
-      hash += (s8) (*s);
+      hash += (s8) (*p);
       hash += (s32) 0xFAC0000;
       hash -= 0x5355;
-      s++;
-      if (((!count) && (!count)) && (!count))
+      p++;
+      if (((!entryCount) && (!entryCount)) && (!entryCount))
       {
       }
     }
 
-    new_var[0] += 8;
+    loopState[0] += 8;
   }
 
   return hash;
@@ -738,14 +742,15 @@ extern "C" Vec2 fn_801324E0(void *node, s32 index) {
 }
 #pragma cplusplus off
 #pragma small_data off
-void fn_80132584(void *arg0, void *arg1, const char *arg2) {
+void fn_80132584(u32 arg0, u32 arg1, const char *arg2) {
     typedef struct { float x, y, z; } Vec3;
     Vec3 v1, v2, v3, v4;
-    void *out = arg0;
-    void *obj = arg1;
-    const char *value = ((const char *(**)(void *, const char *))(*(void **)obj))[5](obj, arg2);
-    if (fn_8012F9E8(out, 0x30, value) != 0) {
-        u8 *p = (u8 *)out;
+    const char *value;
+    float *out;
+
+    value = ((const char *(**)(void *, const char *))(*(void **)arg1))[5]((void *)arg1, arg2);
+    if (fn_8012F9E8((void *)arg0, 0x30, value) != 0) {
+        u8 *p = (u8 *)arg0;
         int i;
         for (i = 0; i < 2; i++, p += 0x18) {
             u8 t;
@@ -764,22 +769,16 @@ void fn_80132584(void *arg0, void *arg1, const char *arg2) {
         }
         return;
     }
-    ((void (**)(Vec3 *, void *, const char *))*(void **)obj)[13](&v1, obj, lbl_80559B48);
-    ((float *)out)[0] = v1.x;
-    ((float *)out)[1] = v1.y;
-    ((float *)out)[2] = v1.z;
-    ((void (**)(Vec3 *, void *, const char *))*(void **)obj)[13](&v2, obj, lbl_80559B40);
-    ((float *)out)[3] = v2.x;
-    ((float *)out)[4] = v2.y;
-    ((float *)out)[5] = v2.z;
-    ((void (**)(Vec3 *, void *, const char *))*(void **)obj)[13](&v3, obj, lbl_80559B38);
-    ((float *)out)[6] = v3.x;
-    ((float *)out)[7] = v3.y;
-    ((float *)out)[8] = v3.z;
-    ((void (**)(Vec3 *, void *, const char *))*(void **)obj)[13](&v4, obj, lbl_80559B2C);
-    ((float *)out)[9] = v4.x;
-    ((float *)out)[10] = v4.y;
-    ((float *)out)[11] = v4.z;
+
+    out = (float *)arg0;
+    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v1, (void *)arg1, lbl_80559B48);
+    out[0] = v1.x; out[1] = v1.y; out[2] = v1.z;
+    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v2, (void *)arg1, lbl_80559B40);
+    out[3] = v2.x; out[4] = v2.y; out[5] = v2.z;
+    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v3, (void *)arg1, lbl_80559B38);
+    out[6] = v3.x; out[7] = v3.y; out[8] = v3.z;
+    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v4, (void *)arg1, lbl_80559B2C);
+    out[9] = v4.x; out[10] = v4.y; out[11] = v4.z;
 }
 #pragma cplusplus on
 extern "C" float fn_8013278C(void *arg0, s32 arg1) {
