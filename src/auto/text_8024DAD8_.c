@@ -63,6 +63,7 @@ void fn_8024DAD8(void) {
 }
 
 #pragma opt_tail_call on
+/* No-op hook wrapper: forwards to the stub fn_8024739C (which just returns 0), emitted as a tail call. */
 void fn_8024DADC(void) {
     fn_8024739C();
 }
