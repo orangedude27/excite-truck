@@ -98,7 +98,7 @@ extern "C" void *fn_80209DE4(void *self, int shouldDelete) {
 extern "C" void fn_80209E94(void *arg0) {
     struct Notifier {
         virtual void v0();
-        virtual void update();
+        virtual void v1();
     };
     /* Accumulate input/trigger contribution from 4 Records at (arg0+4)->+0x23AC:
        for each enabled==0 record, add clamp(value - 0.8f, 0, 0.25f) to total.
@@ -145,7 +145,7 @@ extern "C" void fn_80209E94(void *arg0) {
     }
     notifier = *(Notifier **)((char *)arg0 + 0xc);
     if (notifier != 0) {
-        notifier->update();
+        notifier->v1();
     }
 }
 #pragma cplusplus reset
