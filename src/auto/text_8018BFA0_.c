@@ -279,11 +279,11 @@ void fn_8018BFA0(void *out0, float *a, int *b0, int arg3, float arg4, float arg5
         out[5] = fn_80144514(a[2], b[3], a[5], b[4], a[8], b[5]);
         out[8] = fn_80144514(a[2], b[6], a[5], b[7], a[8], b[8]);
     }
-    matVecDotT_8018((Vec_8018 *)scratch, a, b + 9);
+    matVecDotS_8018((Vec_8018 *)scratch, a, b + 9);
     out[9] = a[9] + scratch[0];
     out[10] = a[10] + scratch[1];
     out[11] = a[11] + scratch[2];
-    matVecDotT_8018((Vec_8018 *)scratch, out, b + 9);
+    matVecDotS_8018((Vec_8018 *)scratch, out, b + 9);
     out[9] -= scratch[0];
     out[10] -= scratch[1];
     out[11] -= scratch[2];
@@ -311,19 +311,41 @@ extern float lbl_8056203C;
 extern float lbl_80562040;
 extern char lbl_80332758[];
      static inline void matVecAliasV_8018(Vec_8018 *dest, const float *m, const Vec_8018 *src) {
-      if (dest == src) {
-                 float tx = src->y * m[3] + src->x * m[0] + src->z * m[6];
-         float ty = src->y * m[4] + src->x * m[1] + src->z * m[7];
-         float tz = src->y * m[5] + src->x * m[2] + src->z * m[8];
-          dest->x = tx;
-          dest->y = ty;
-          dest->z = tz;
-      } else {
-          dest->x = src->y * m[3] + src->x * m[0] + src->z * m[6];
-          dest->y = src->y * m[4] + src->x * m[1] + src->z * m[7];
-          dest->z = src->y * m[5] + src->x * m[2] + src->z * m[8];
-      }
-  }
+    float m00, m01, m02, m10, m11, m12, m20, m21, m22, x, y, z;
+    if (dest == src) {
+        m10 = m[3];
+        m11 = m[4];
+        m12 = m[5];
+        m00 = m[0];
+        m01 = m[1];
+        m02 = m[2];
+        m20 = m[6];
+        m21 = m[7];
+        m22 = m[8];
+        x = src->x;
+        y = src->y;
+        z = src->z;
+        dest->x = z * m20 + (x * m00 + y * m10);
+        dest->y = z * m21 + (x * m01 + y * m11);
+        dest->z = z * m22 + (x * m02 + y * m12);
+    } else {
+        m00 = m[0];
+        m01 = m[1];
+        m02 = m[2];
+        m10 = m[3];
+        m11 = m[4];
+        m12 = m[5];
+        m20 = m[6];
+        m21 = m[7];
+        m22 = m[8];
+        x = src->x;
+        y = src->y;
+        z = src->z;
+        dest->x = z * m20 + (x * m00 + y * m10);
+        dest->y = z * m21 + (x * m01 + y * m11);
+        dest->z = z * m22 + (x * m02 + y * m12);
+    }
+}
 typedef struct { char b[0x290]; } Blob290_8018;
 typedef struct { float a, b; int c, d; unsigned char e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17; } Blob22_8018;
 extern float lbl_80561F78, lbl_80561F7C, lbl_80561F80, lbl_80561F84;
