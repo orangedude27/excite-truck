@@ -16514,7 +16514,8 @@ loop_228:
                         M2C_FIELD(var_r12_12, s32 *, 0x91C) = 0;
                         M2C_FIELD(var_r12_12, s32 *, 0x121C) = 0;
                         var_r12_12 += 0x20;
-                    }
+                        var_ctr_11 -= 1;
+                    } while (var_ctr_11 != 0);
                     var_r11_7 &= 7;
                     if (var_r11_7 != 0) {
                         goto block_233;
