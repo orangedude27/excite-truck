@@ -39,12 +39,8 @@ enum { ANIMTARGET_VERTEXCOLOR_MAX = VERTEXCOLOR_NUM * 4 };
 extern u32 lbl_8055DE00; /* sentinel that ends a layout's pane list */
 #define sLayoutListEnd lbl_8055DE00
 
-struct Color {
-    u8 b0;
-    u8 b1;
-    u8 b2;
-    u8 b3;
-};
+#include <nw4hbm_ut.h>
+using nw4hbm::ut::Color;
 
 extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(void*, void*, u32);
 #pragma push
