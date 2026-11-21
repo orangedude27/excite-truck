@@ -41,7 +41,11 @@ extern unsigned char lbl_80341CE4[], lbl_80341CF0[];
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" void fn_8023E5B4(void *arg0, int arg1) {
-    typedef char *(*Fn1)(void *);
+    class Obj {
+    public:
+        virtual void f0();
+        virtual char *f1();
+    };
     int values[36];
     int now;
     int handle;
@@ -52,7 +56,8 @@ extern "C" void fn_8023E5B4(void *arg0, int arg1) {
     int t0, t2, t3, t4;
     int e0, e1, e2, e3, e4;
     void *second;
-    void *object;
+    Obj *object;
+    int p_cf0, c10, p_bab8, p_6914, c2;
 
     now = fn_802E2C20();
     lbl_8055F1B0 = arg0;
@@ -65,8 +70,8 @@ extern "C" void fn_8023E5B4(void *arg0, int arg1) {
     for (i = 0; i < 14; i++)
         fn_8022D350(handle, &lbl_8055BC98, 0);
 
-    values[9] = 0;
     values[7] = 8;
+    values[9] = 0;
     values[8] = (int)fn_8023F874;
     values[6] = (int)&lbl_8055BAC0;
     values[10] = 0;
@@ -76,9 +81,9 @@ extern "C" void fn_8023E5B4(void *arg0, int arg1) {
     values[14] = 1;
     values[15] = 0;
 
-    object = arg0;
-    length = strlen(((Fn1 *)*(void ***)object)[3](object));
-    second = ((Fn1 *)*(void ***)object)[3](object);
+    object = (Obj *)arg0;
+    length = strlen(object->f1());
+    second = object->f1();
 
     base = (int *)lbl_802FA280;
     t0 = *base++;
@@ -93,19 +98,25 @@ extern "C" void fn_8023E5B4(void *arg0, int arg1) {
     t3 = base[1];
     t4 = base[2];
 
+    p_cf0 = (int)&lbl_80341CF0;
+    c10 = 10;
+    p_bab8 = (int)&lbl_8055BAB8;
+    p_6914 = (int)fn_80236914;
+    c2 = 2;
+
     values[16] = (int)&lbl_8055BCA0;
     values[17] = 3;
     values[19] = length;
     values[20] = 0;
-    values[21] = (int)&lbl_80341CF0;
-    values[22] = 10;
+    values[21] = p_cf0;
+    values[22] = c10;
     values[23] = handle;
     values[24] = 0;
     values[25] = 0;
-    values[26] = (int)&lbl_8055BAB8;
+    values[26] = p_bab8;
     values[27] = 8;
-    values[28] = (int)fn_80236914;
-    values[29] = 2;
+    values[28] = p_6914;
+    values[29] = c2;
     values[30] = 0;
     values[31] = e0;
     values[32] = e1;
@@ -271,7 +282,6 @@ extern unsigned char lbl_8055B860;
 extern int lbl_802FA2A8[5];
 #pragma use_lmw_stmw off
 void fn_8023ED30(void) {
-#pragma optimization_level 4
     int c0 = lbl_804987E0[0];
     int c1 = lbl_804987E0[1];
     int c2 = lbl_804987E0[2];
@@ -368,100 +378,80 @@ void fn_8023ED30(void) {
 extern int lbl_802FA2BC[5];
 #pragma cplusplus on
 extern "C" int fn_8023EEF8(void) {
-    struct Descriptor { int args[5]; int values[55]; };
-    int c0 = lbl_804987E0[0];
-    int c1 = lbl_804987E0[1];
-    int c2 = lbl_804987E0[2];
-    int c3 = lbl_804987E0[3];
-    int c4 = lbl_804987E0[4];
     int *source = (int *)lbl_802FA2BC - 1;
     int a0 = *++source;
     int a1 = *++source;
     int a2 = *++source;
     int a3 = *++source;
     int a4 = *++source;
-    int zero = 0;
-    int three = 3;
-    int four = 4;
-    int six = 6;
-    int pB860 = (int)&lbl_8055B860;
-    int pBCA0 = (int)&lbl_8055BCA0;
-    int pBCD8 = (int)&lbl_8055BCD8;
-    int pBCE0 = (int)&lbl_8055BCE0;
-    int pBCE8 = (int)&lbl_8055BCE8;
-    int pBCF0 = (int)&lbl_8055BCF0;
-    int pBCF8 = (int)&lbl_8055BCF8;
-    int pBD00 = (int)&lbl_8055BD00;
-    int pBD08 = (int)&lbl_8055BD08;
-    int pBCB8 = (int)&lbl_8055BCB8;
-    int base = (int)lbl_80341CC8;
-    struct Descriptor d;
+    int values[55];
+    int args[5];
 
-    d.values[1] = six;
-    d.values[0] = pB860;
-    d.values[6] = six;
-    d.values[5] = pB860;
-    d.values[3] = -2;
-    d.values[4] = 0xD;
-    d.values[2] = zero;
-    d.values[7] = zero;
-    d.values[8] = -1;
-    d.values[9] = 0x1B;
-    d.values[11] = three;
-    d.values[10] = pBCA0;
-    d.values[12] = base + 0x304;
-    d.values[13] = four;
-    d.values[14] = zero;
-    d.values[15] = pBCD8;
-    d.values[16] = three;
-    d.values[17] = base + 0x310;
-    d.values[18] = four;
-    d.values[19] = zero;
-    d.values[20] = pBCE0;
-    d.values[21] = three;
-    d.values[22] = base + 0x330;
-    d.values[23] = four;
-    d.values[24] = zero;
-    d.values[25] = pBCE8;
-    d.values[26] = three;
-    d.values[27] = base + 0x350;
-    d.values[28] = four;
-    d.values[29] = zero;
-    d.values[30] = pBCF0;
-    d.values[31] = three;
-    d.values[32] = base + 0x374;
-    d.values[33] = four;
-    d.values[34] = zero;
-    d.values[35] = pBCF8;
-    d.values[36] = three;
-    d.values[37] = pBCB8;
-    d.values[38] = four;
-    d.values[39] = zero;
-    d.values[40] = pBD08;
-    d.values[41] = three;
-    d.values[42] = base + 0x2F4;
-    d.values[43] = four;
-    d.values[44] = zero;
-    d.values[45] = pBD00;
-    d.values[46] = three;
-    d.values[47] = base + 0x390;
-    d.values[48] = four;
-    d.values[49] = zero;
-    d.values[50] = c0;
-    d.values[51] = c1;
-    d.values[52] = c2;
-    d.values[53] = c3;
-    d.values[54] = c4;
+    values[1] = 6;
+    values[0] = (int)&lbl_8055B860;
+    values[6] = 6;
+    values[5] = (int)&lbl_8055B860;
+    values[3] = -2;
+    values[4] = 0xD;
+    values[2] = 0;
+    values[7] = 0;
+    values[8] = -1;
+    values[9] = 0x1B;
+    values[11] = 3;
+    values[10] = (int)&lbl_8055BCA0;
+    values[12] = (int)lbl_80341CC8 + 0x304;
+    values[13] = 4;
+    values[14] = 0;
+    values[15] = (int)&lbl_8055BCD8;
+    values[16] = 3;
+    values[17] = (int)lbl_80341CC8 + 0x310;
+    values[18] = 4;
+    values[19] = 0;
+    values[20] = (int)&lbl_8055BCE0;
+    values[21] = 3;
+    values[22] = (int)lbl_80341CC8 + 0x330;
+    values[23] = 4;
+    values[24] = 0;
+    values[25] = (int)&lbl_8055BCE8;
+    values[26] = 3;
+    values[27] = (int)lbl_80341CC8 + 0x350;
+    values[28] = 4;
+    values[29] = 0;
+    values[30] = (int)&lbl_8055BCF0;
+    values[31] = 3;
+    values[32] = (int)lbl_80341CC8 + 0x374;
+    values[33] = 4;
+    values[34] = 0;
+    values[35] = (int)&lbl_8055BCF8;
+    values[36] = 3;
+    values[37] = (int)&lbl_8055BCB8;
+    values[38] = 4;
+    values[39] = 0;
+    values[40] = (int)&lbl_8055BD08;
+    values[41] = 3;
+    values[42] = (int)lbl_80341CC8 + 0x2F4;
+    values[43] = 4;
+    values[44] = 0;
+    values[45] = (int)&lbl_8055BD00;
+    values[46] = 3;
+    values[47] = (int)lbl_80341CC8 + 0x390;
+    values[48] = 4;
+    values[49] = 0;
+    values[50] = lbl_804987E0[0];
+    values[51] = lbl_804987E0[1];
+    values[52] = lbl_804987E0[2];
+    values[53] = lbl_804987E0[3];
+    values[54] = lbl_804987E0[4];
     lbl_8055F1C4 = 0;
 
-    d.args[0] = a0;
-    d.args[1] = a1;
-    d.args[2] = a2;
-    d.args[3] = a3;
-    d.args[4] = a4;
-    d.args[0] = (int)fn_8023E5A8();
-    d.args[1] = (int)d.values;
-    return (((int (*)(void *,int,int,int))fn_802146BC)((void *)&d,-999,-999,1)+2)==0;
+    args[0] = a0;
+    args[1] = a1;
+    args[2] = a2;
+    args[3] = a3;
+    args[4] = a4;
+    args[0] = (int)fn_8023E5A8();
+    args[1] = (int)values;
+    return (((int (*)(void *,int,int,int))fn_802146BC)((void *)args,-999,-999,1)+2)==0;
 }
 #pragma cplusplus reset
 
@@ -481,6 +471,8 @@ int fn_8023F0E8(void) {
         int zero[3];
         int values[59];
     } data;
+    unsigned char *base = lbl_80341CC8;
+
     data.values[7] = (int)fn_8023F9E8;
     data.values[0] = (int)&lbl_8055B860;
     data.values[5] = (int)&lbl_8055B860;
@@ -502,7 +494,7 @@ int fn_8023F0E8(void) {
     data.values[13] = 4;
     data.values[14] = 0;
     data.values[16] = 3;
-    data.values[17] = (int)(lbl_80341CC8 + 0x3A8);
+    data.values[17] = (int)(base + 0x3A8);
     data.values[18] = 4;
     data.values[19] = 0;
     data.values[21] = 3;
@@ -510,7 +502,7 @@ int fn_8023F0E8(void) {
     data.values[23] = 4;
     data.values[24] = 0;
     data.values[26] = 3;
-    data.values[27] = (int)(lbl_80341CC8 + 0x3C8);
+    data.values[27] = (int)(base + 0x3C8);
     data.values[28] = 4;
     data.values[29] = 0;
     data.values[31] = 3;
@@ -527,7 +519,7 @@ int fn_8023F0E8(void) {
     data.values[44] = 0;
     data.values[46] = 3;
     data.values[45] = (int)&lbl_8055BD00;
-    data.values[47] = (int)(lbl_80341CC8 + 0x3E8);
+    data.values[47] = (int)(base + 0x3E8);
     data.values[48] = 4;
     data.values[49] = 0;
     data.values[50] = *(int *)(lbl_804987E0 + 0);
@@ -637,74 +629,22 @@ int fn_8023F2C4(void) {
 }
 
 extern unsigned char lbl_8055BD28;
-#pragma scheduling invalid_target
-#pragma use_lmw_stmw off
+#pragma scheduling on
 int fn_8023F4B8(void) {
     struct Desc {
-        void * p0;
-        int n1;
-        int n2;
-        int n3;
-        int n4;
-        void * p5;
-        int n6;
-        void (*callback)(void);
-        int n8;
-        int n9;
-        void * p10;
-        int n11;
-        void * p12;
-        int n13;
-        int n14;
-        void * p15;
-        int n16;
-        void * p17;
-        int n18;
-        int n19;
-        void * p20;
-        int n21;
-        void * p22;
-        int n23;
-        int n24;
-        void * p25;
-        int n26;
-        void * p27;
-        int n28;
-        int n29;
-        void * p30;
-        int n31;
-        void * p32;
-        int n33;
-        int n34;
-        void * p35;
-        int n36;
-        void * p37;
-        int n38;
-        int n39;
-        void * p40;
-        int n41;
-        void * p42;
-        int n43;
-        int n44;
-        void * p45;
-        int n46;
-        void * p47;
-        int n48;
-        int n49;
-        int n50;
-        int n51;
-        int n52;
-        int n53;
-        int n54;
+        void * p0; int n1; int n2; int n3; int n4; void * p5; int n6;
+        void (*callback)(void); int n8; int n9; void * p10; int n11; void * p12;
+        int n13; int n14; void * p15; int n16; void * p17; int n18; int n19;
+        void * p20; int n21; void * p22; int n23; int n24; void * p25; int n26;
+        void * p27; int n28; int n29; void * p30; int n31; void * p32; int n33;
+        int n34; void * p35; int n36; void * p37; int n38; int n39; void * p40;
+        int n41; void * p42; int n43; int n44; void * p45; int n46; void * p47;
+        int n48; int n49; int n50; int n51; int n52; int n53; int n54;
     };
-    struct Data {
-        void *first;
-        void *second;
-        int zero[3];
-        volatile struct Desc values;
-    };
+    struct Data { void *first; void *second; int zero[3]; volatile struct Desc values; };
     struct Data data;
     register int pC = (int)(lbl_80341CC8 + 0x3E8);
+    int firstVal, v51, v52, v53, v54;
     data.values.callback = fn_8023F9E8;
     data.values.p0 = &lbl_8055B860;
     data.values.p5 = &lbl_8055B860;
@@ -721,6 +661,11 @@ int fn_8023F4B8(void) {
     data.values.p15 = &lbl_8055BCD8;
     data.values.p20 = &lbl_8055BCE0;
     data.values.p35 = &lbl_8055BCF8;
+    firstVal = *(int *)(lbl_804987E0 + 0);
+    v51 = *(int *)(lbl_804987E0 + 4);
+    v52 = *(int *)(lbl_804987E0 + 8);
+    v53 = *(int *)(lbl_804987E0 + 12);
+    v54 = *(int *)(lbl_804987E0 + 16);
     data.values.n2 = 0;
     data.values.n11 = 3;
     data.values.n13 = 4;
@@ -745,6 +690,7 @@ int fn_8023F4B8(void) {
     data.values.p37 = &lbl_8055BCB8;
     data.values.n38 = 4;
     data.values.n39 = 0;
+    data.values.n41 = 3;
     data.values.p40 = &lbl_8055BD08;
     data.values.p42 = &lbl_8055BD28;
     data.values.n43 = 4;
@@ -754,11 +700,11 @@ int fn_8023F4B8(void) {
     data.values.p47 = (void *)pC;
     data.values.n48 = 4;
     data.values.n49 = 0;
-    data.values.n50 = *(int *)(lbl_804987E0 + 0);
-    data.values.n51 = *(int *)(lbl_804987E0 + 4);
-    data.values.n52 = *(int *)(lbl_804987E0 + 8);
-    data.values.n53 = *(int *)(lbl_804987E0 + 12);
-    data.values.n54 = *(int *)(lbl_804987E0 + 16);
+    data.values.n50 = firstVal;
+    data.values.n51 = v51;
+    data.values.n52 = v52;
+    data.values.n53 = v53;
+    data.values.n54 = v54;
     data.first = 0;
     data.second = 0;
     data.zero[0] = 0;
@@ -768,22 +714,23 @@ int fn_8023F4B8(void) {
     data.second = (void *)&data.values;
     return (((int (*)(void *, int, int, int, int, int, int, int))fn_802146BC)(
                 (void *)&data, -0x3E7, -0x3E7, 1,
-                *(int *)(lbl_804987E0 + 0), 3, 4, 0) + 2) == 0;
+                firstVal, 3, 4, 0) + 2) == 0;
 }
-#pragma use_lmw_stmw on
 extern unsigned char lbl_8055BD2C;
 #pragma use_lmw_stmw off
 extern int __cntlzw(unsigned int);
 int fn_8023F694(void) {
     int data[59];
+    int args[5];
+    int six = 6, minus_one = -1, zero = 0, four = 4, three = 3, minus_two = -2;
 
     data[7] = (int)&fn_8023F9E8;
     data[0] = (int)&lbl_8055B860;
     data[5] = (int)&lbl_8055B860;
-    data[8] = -1;
-    data[1] = 6;
-    data[6] = 6;
-    data[3] = -2;
+    data[8] = minus_one;
+    data[1] = six;
+    data[6] = six;
+    data[3] = minus_two;
     data[25] = (int)&lbl_8055BCE8;
     data[4] = 0xD;
     data[9] = 0x1B;
@@ -793,59 +740,56 @@ int fn_8023F694(void) {
     data[15] = (int)&lbl_8055BCD8;
     data[20] = (int)&lbl_8055BCE0;
     data[35] = (int)&lbl_8055BCF8;
-    data[2] = 0;
-    data[11] = 3;
-    data[13] = 4;
-    data[14] = 0;
-    data[16] = 3;
+    data[2] = zero;
+    data[11] = three;
+    data[13] = four;
+    data[14] = zero;
+    data[16] = three;
     data[17] = (int)(lbl_80341CC8 + 0x4B8);
-    data[18] = 4;
-    data[19] = 0;
-    data[21] = 3;
+    data[18] = four;
+    data[19] = zero;
+    data[21] = three;
     data[22] = (int)(lbl_80341CC8 + 0x4E0);
-    data[23] = 4;
-    data[24] = 0;
-    data[26] = 3;
+    data[23] = four;
+    data[24] = zero;
+    data[26] = three;
     data[27] = (int)(lbl_80341CC8 + 0x500);
-    data[28] = 4;
-    data[29] = 0;
-    data[31] = 3;
+    data[28] = four;
+    data[29] = zero;
+    data[31] = three;
     data[32] = (int)&lbl_8055BCB8;
-    data[33] = 4;
-    data[34] = 0;
-    data[36] = 3;
+    data[33] = four;
+    data[34] = zero;
+    data[36] = three;
     data[37] = (int)&lbl_8055BCB8;
-    data[38] = 4;
-    data[39] = 0;
-    data[41] = 3;
+    data[38] = four;
+    data[39] = zero;
+    data[41] = three;
     data[40] = (int)&lbl_8055BD08;
     data[42] = (int)&lbl_8055BD2C;
-    data[43] = 4;
-    data[44] = 0;
-    data[46] = 3;
+    data[43] = four;
+    data[44] = zero;
+    data[46] = three;
     data[45] = (int)&lbl_8055BD00;
     data[47] = (int)(lbl_80341CC8 + 0x3E8);
-    data[48] = 4;
-    data[49] = 0;
+    data[48] = four;
+    data[49] = zero;
     data[50] = lbl_804987E0[0];
     data[51] = lbl_804987E0[1];
     data[52] = lbl_804987E0[2];
     data[53] = lbl_804987E0[3];
     data[54] = lbl_804987E0[4];
 
-    {
-        int args[5];
-        args[0] = 0;
-        args[1] = 0;
-        args[2] = 0;
-        args[3] = 0;
-        args[4] = 0;
-        args[0] = (int)((int (*)(int, int, int, int, int, int, int, int))fn_8023E5A8)(
-            lbl_804987E0[3], lbl_804987E0[2], lbl_804987E0[1],
-            (int)lbl_804987E0, lbl_804987E0[0], 3, 4, 0);
-        args[1] = (int)data;
-        return (fn_802146BC(args, -999, -999, 1) + 2) == 0;
-    }
+    args[0] = 0;
+    args[1] = 0;
+    args[2] = 0;
+    args[3] = 0;
+    args[4] = 0;
+    args[0] = (int)((int (*)(int, int, int, int, int, int, int, int))fn_8023E5A8)(
+        lbl_804987E0[3], lbl_804987E0[2], lbl_804987E0[1],
+        (int)lbl_804987E0, lbl_804987E0[0], three, four, zero);
+    args[1] = (int)data;
+    return (fn_802146BC(args, -999, -999, 1) + 2) == 0;
 }
 #pragma use_lmw_stmw on
 
@@ -854,6 +798,7 @@ int fn_8023F694(void) {
 void fn_8023F870(void) {
 }
 
+/* Intentionally empty no-op callback; occupies a UI menu entry's function-pointer slot when no action is needed. */
 void fn_8023F874(void) {}
 
 #pragma cplusplus on
