@@ -4025,8 +4025,10 @@ void fn_801D8B58(void) {
     /* No-op: returns immediately without doing anything. */
 }
 
+/* No-op stub: the last of the run of four empty callbacks (fn_801D8B50,
+ * fn_801D8B54, fn_801D8B58, fn_801D8B5C) between the timed-effect
+ * initializers fn_801D8ACC and fn_801D8B60; does nothing in this build. */
 void fn_801D8B5C(void) {
-
 }
 
 #pragma push
