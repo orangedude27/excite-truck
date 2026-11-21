@@ -1125,6 +1125,7 @@ void fn_802D9628(register void *arg0, register int arg1, register int arg2, regi
     }
 }
 #pragma opt_common_subs reset
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
