@@ -1,3 +1,9 @@
+// Symbol guide (the project cannot rename game symbols yet): closeTextureHandle
+// (fn_802B539C), releaseTextureSlot (fn_802B5404), isIncludeItem (fn_802B5448),
+// isGlobalParameters (fn_802B5488), isUnifiedMaterialSet (fn_802B54CC), loadArchives
+// (fn_802B5510), callThunk (fn_802B561C), fillMaterialSet (fn_802B562C),
+// loadUMat (fn_802B57B8), shutdownUMat (fn_802B5808), collectMaterialSets
+// (fn_802B58E0), getMaterialSet (fn_802B59A4), getGlobalParameters (fn_802B59CC).
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
