@@ -9,6 +9,8 @@ void fn_802DB2A0(void) {
 }
 
 void fn_802DB2A4(void) {
+    // Empty placeholder hook: invoked in the single-player update when the checked
+    // value exceeds 0.1, immediately before the fn_802DD754 screen effect.
 }
 
 s32 fn_802DB2A8(s32 slotCount) {
