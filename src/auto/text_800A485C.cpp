@@ -12364,6 +12364,7 @@ extern "C" s32 fn_800B7C34(void) {
     return result;
 }
 
+/* Tail-call thunk: forwards to fn_800B75C4 with no arguments. */
 extern "C" void fn_800B7C60(void) {
     fn_800B75C4();
 }
