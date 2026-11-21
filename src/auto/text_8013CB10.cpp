@@ -1751,12 +1751,10 @@ extern "C" void fn_8001DAE0(void *, f32);
 extern "C" f32 fn_8013EFBC(f32 value) { return lbl_80561514 - value; }
 #pragma dont_inline reset
 
-static inline f32 fn_8013EFC8_eps() { return lbl_80558DC4[0]; }
-
 #pragma scheduling invalid_target
 extern "C" unsigned int fn_8013EFC8(const TObj4C *arg0) {
     f32 magnitude = (f32)__fabs((f64)*(const f32 *)((const u8 *)arg0 + 0x250));
-    if (magnitude <= fn_8013EFC8_eps()) {
+    if (magnitude <= *(f32 *)&lbl_80558DC4) {
         if (*(const u8 *)((const u8 *)arg0 + 0x13C) != 0)
             ((TObj4C *)arg0)->v4C();
         s32 object = *(const s32 *)((const u8 *)arg0 + 0x140);
