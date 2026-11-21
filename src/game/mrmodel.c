@@ -1730,6 +1730,9 @@ void fn_802C7A10(void* modelIndex) {
     fn_8012C58C(fn_802C53A8(modelIndex));
 }
 
+/* Tail-call thunk: branches to fn_802DA704, the stack-allocator helper that
+ * queues a kind-7 record with 12 bytes (a vec3) per element in the
+ * BoneHandleAlloc arena; the caller's arguments pass straight through. */
 void fn_802C7A34(void) { fn_802DA704(); }
 
 extern void fn_802DA80C(void);
