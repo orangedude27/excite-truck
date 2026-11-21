@@ -16487,7 +16487,6 @@ loop_228:
             var_r12_12 = var_r10 + (temp_r18_2 * 4);
             if ((s32) temp_r18_2 < 0xC0) {
                 temp_r0_21 = var_r11_7 >> 3U;
-                temp_r0_21 = var_r11_7 >> 3U;
                 var_ctr_11 = temp_r0_21;
                 if (temp_r0_21 != 0) {
                     do {
