@@ -3343,9 +3343,7 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
                         if (sz < c) c = sz;
                         q.z = (c > -sz) ? c : -sz;
                         bm = *(f32 **)(other + 0xC);
-                        out.x = z * bm[2] + (x * bm[0] + y * bm[1]);
-                        out.y = z * bm[5] + (x * bm[3] + y * bm[4]);
-                        out.z = z * bm[8] + (x * bm[6] + y * bm[7]);
+                        fn801A0464RotateVec(&out, q, bm);
                         out.x += bm[9];
                         out.y += bm[10];
                         out.z += bm[11];
