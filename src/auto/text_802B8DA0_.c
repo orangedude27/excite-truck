@@ -1131,6 +1131,10 @@ extern "C" void fn_802BA010(void *arg0, int arg1) {
 extern "C" void fn_802BA560(void *);
 extern "C" char lbl_8034A9D0[];
 extern "C" char lbl_8034A9E4[];
+/* Array-new allocation: element bytes plus the 0x10-byte array header. */
+static inline void *AllocArrayBlock(int size, void *tag) {
+    return ((void *(*)(int, void *))fn_8012850C)(size + 0x10, tag);
+}
 #pragma processor 750
 #pragma scheduling invalid_target
 extern "C" void fn_802BA348(void) {
@@ -1176,7 +1180,9 @@ extern "C" void fn_802BA348(void) {
     }
     entry = fn_801284F8(0x10, lbl_8034A9E4);
     if (entry != 0) {
-        buffer = ((void *(*)(int, void *))fn_8012850C)(total * 0x54 + 0x10, lbl_8034A9E4);
+        register int sz = total * 0x54;
+        register void *tag = lbl_8034A9E4;
+        buffer = ((void *(*)(int, void *))fn_8012850C)(sz + 0x10, tag);
         items = fn_8002F37C(buffer, (void *)fn_802BA560, 0, 0x54, total);
         *(void **)entry = items;
         *(int *)((char *)entry + 8) = total;
