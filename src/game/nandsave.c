@@ -116,6 +116,9 @@ extern "C" int fn_802E8744(void *entry) {
     return ((Dummy *)lbl_80560024)->f2(params);
 }
 #pragma cplusplus off
+/* rmemcard yield callback (rmemcard_yield): the NAND async wait calls this to
+ * keep the system responsive, forwarding to the periodic task pump that drains
+ * home-button work and dispatches background tasks. */
 void fn_802E8838(void) {
     fn_80127464();
 }
