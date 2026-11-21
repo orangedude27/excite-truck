@@ -361,12 +361,13 @@ void fn_802CECF4(unsigned int targetIndex) {
 #pragma scheduling 750
 void fn_802CED50(int arg0, int arg1, int arg2, int arg3) {
     volatile unsigned char *state = lbl_804C5710;
+    u8 v = 1;
     *(volatile int *)(state + 4) = arg0;
     *(volatile int *)(state + 8) = arg1;
     *(volatile int *)(state + 0xC) = arg2;
     *(volatile int *)(state + 0x10) = arg3;
-    *(volatile unsigned char *)lbl_804C5710 = 1;
-    state[1] = 1;
+    *(volatile unsigned char *)lbl_804C5710 = v;
+    state[1] = v;
 }
 #pragma pop
 extern void KPADSetBtnRepeat(int *, int *, int *, int *);
@@ -1203,11 +1204,12 @@ void fn_802D007C(float arg0) {
 void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
     volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
+    int one = 1;
     p[7] = 0xFF;
     p[4] = a;
     p[5] = b;
     p[6] = c;
-    p[0x5C] = 1;
+    p[0x5C] = one;
 }
 #pragma scheduling invalid_target
 void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
@@ -2932,8 +2934,12 @@ void* fn_802D30F0(void) {
 }
 #pragma dont_inline off
 
-void fn_802D30FC(void) {
-    fn_802D30F0();
+void *fn_802D30FC(void) {
+    #define GetDistortTexture fn_802D30F0
+    /* GetDistortTexture: return the indirect texture object the renderer loads
+     * into GX_TEXMAP6 for the bump/distort pass. */
+    return GetDistortTexture();
+    #undef GetDistortTexture
 }
 
 void fn_802D3100(void) {
