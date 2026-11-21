@@ -126,6 +126,8 @@ void fn_802889F0(void) {
     fn_80289F54(lbl_8055F6E4);
 }
 
+/* No-op per-mode reset hook: fn_80287A6C calls this among the other subsystem
+ * mode resets, but this build needs no action here. */
 void fn_80288A1C(void) {}
 
 #pragma push
@@ -721,11 +723,10 @@ int fn_80289558(int arg0, int arg1)
     if ((e[3] > lbl_805642F0) && (e[0] >= lbl_8056428C))
     {
       float e0;
-      float b;
+      register float b;
       float c3;
       float t;
       float c0;
-      float e3re;
       fn_802898CC((void *) arg0, *((int *) (arg0 + 0xA4)), arg1, ei[4]);
       e[0] = e[0] - lbl_8056428C;
       e = (float *) (arg0 + (arg1 * 0x14));
@@ -736,8 +737,7 @@ int fn_80289558(int arg0, int arg1)
       t = b * c3;
       c0 = lbl_805642C0;
       e[0] = e0 + t;
-      e3re = e[3];
-      e[3] = e3re * c0;
+      e[3] = e[3] * c0;
     }
     else
     {
@@ -869,13 +869,13 @@ void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
     mat = (float *)fn_80288060(fn_80288208(arg1), arg2);
     if (sp14 == (float *)((char *)mat + 0x24)) {
         float m3 = vec[3];
-        float x = mat[9];
-        register float m0 = vec[0];
-        float y = mat[10];
         float m4 = vec[4];
+        float x = mat[9];
+        float m0 = vec[0];
+        float y = mat[10];
         float m1 = vec[1];
         float z = mat[11];
-        register float m6 = vec[6];
+        float m6 = vec[6];
         float m7 = vec[7];
         float m2, m5, m8;
         m5 = vec[5];
@@ -916,13 +916,13 @@ void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
     sp14[2] = sp14[2] + vec[11];
     if (sp8 == (float *)((char *)mat + 0xC)) {
         float m3 = vec[3];
-        float x = mat[3];
-        register float m0 = vec[0];
-        float y = mat[4];
         float m4 = vec[4];
+        float x = mat[3];
+        float m0 = vec[0];
+        float y = mat[4];
         float m1 = vec[1];
         float z = mat[5];
-        register float m6 = vec[6];
+        float m6 = vec[6];
         float m7 = vec[7];
         float m2, m5, m8;
         m5 = vec[5];
@@ -1421,25 +1421,29 @@ void fn_8028A32C(void) {}
 extern float lbl_805642B4;
 extern void *fn_80287B24(int);
 #pragma push
-#pragma scheduling invalid_target
+#pragma opt_common_subs off
 int fn_8028A330(int *arg0, int arg1) {
     float sp14[3], sp8[3];
     float *mat = (float *)fn_80287B24(arg1);
     float *vec = *(float **)(*(char **)arg0 + arg1 * 0x68 + 0x64);
+    float k;
 
     if (sp14 == vec) {
-        float m3 = mat[3];
-        float y = vec[1];
-        float m4 = mat[4];
-        float m5 = mat[5];
-        float m0 = mat[0];
-        float x = vec[0];
-        float m1 = mat[1];
-        float m2 = mat[2];
-        float m6 = mat[6];
-        float z = vec[2];
-        float m7 = mat[7];
-        float m8 = mat[8];
+        float m3, x, m0, y, m4, m1, z, m6, m7;
+        float m2, m5;
+        float m8;
+        m3 = mat[3];
+        y = vec[1];
+        m4 = mat[4];
+        m5 = mat[5];
+        m0 = mat[0];
+        x = vec[0];
+        m1 = mat[1];
+        m2 = mat[2];
+        m6 = mat[6];
+        z = vec[2];
+        m7 = mat[7];
+        m8 = mat[8];
         sp14[0] = (z * m6) + ((x * m0) + (y * m3));
         sp14[1] = (z * m7) + ((x * m1) + (y * m4));
         sp14[2] = (z * m8) + ((x * m2) + (y * m5));
@@ -1484,31 +1488,35 @@ int fn_8028A330(int *arg0, int arg1) {
         s2 = o2 + t2;
         sp14[2] = s2;
     }
-    sp8[0] = vec[3] * lbl_805642B4;
-    sp8[1] = vec[4] * lbl_805642B4;
-    sp8[2] = vec[5] * lbl_805642B4;
+    k = lbl_805642B4;
+    sp8[0] = vec[3] * k;
+    sp8[1] = vec[4] * k;
+    sp8[2] = vec[5] * k;
     {
         volatile float *p = sp8;
         if (p == (volatile float *)sp8) {
-            float m3 = mat[3];
-            float y = sp8[1];
-            float m4 = mat[4];
-            float m5 = mat[5];
-            float m0 = mat[0];
-            float x = sp8[0];
-            float m1 = mat[1];
-            float m2 = mat[2];
-            float m6 = mat[6];
-            float z = sp8[2];
-            float m7 = mat[7];
-            float m8 = mat[8];
+            float m3, m0, x, y, m4, m1, m6, z, m7;
+            float m2, m5;
+            float m8;
+            m3 = mat[3];
+            y = sp8[1];
+            m4 = mat[4];
+            m5 = mat[5];
+            m0 = mat[0];
+            x = sp8[0];
+            m1 = mat[1];
+            m2 = mat[2];
+            m6 = mat[6];
+            z = sp8[2];
+            m7 = mat[7];
+            m8 = mat[8];
             sp8[0] = (z * m6) + ((x * m0) + (y * m3));
             sp8[1] = (z * m7) + ((x * m1) + (y * m4));
             sp8[2] = (z * m8) + ((x * m2) + (y * m5));
         } else {
-            sp8[0] = p[2] * mat[6] + (p[0] * mat[0] + p[1] * mat[3]);
-            sp8[1] = p[2] * mat[7] + (p[0] * mat[1] + p[1] * mat[4]);
-            sp8[2] = p[2] * mat[8] + (p[0] * mat[2] + p[1] * mat[5]);
+            sp8[0] = sp8[2] * mat[6] + (sp8[0] * mat[0] + sp8[1] * mat[3]);
+            sp8[1] = sp8[2] * mat[7] + (sp8[0] * mat[1] + sp8[1] * mat[4]);
+            sp8[2] = sp8[2] * mat[8] + (sp8[0] * mat[2] + sp8[1] * mat[5]);
         }
     }
     {
