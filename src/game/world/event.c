@@ -66,6 +66,14 @@ extern char lbl_8033A354[];
 #pragma push
 #pragma optimize_for_size on
 #pragma use_lmw_stmw off
+/* Runs one event script: a u32 byte count followed by records laid out as
+ *   signed char evtType | payload bytes ...
+ * Each record's payload is copied into a private 0x400-byte buffer and handed
+ * to every handler registered for its type in lbl_80488678 (18 event types x
+ * 4 handler slots, see fn_801EEFDC / fn_801EF024); the last handler run
+ * returns how many payload bytes it consumed, and the walk advances past
+ * those plus the type byte. A type with no handler is reported
+ * ("No handler for evt type %d") and aborts the script. */
 void fn_801EF0AC(unsigned char *script) {
     char payloadCopy[0x400];
     unsigned int *slot;
@@ -75,14 +83,6 @@ void fn_801EF0AC(unsigned char *script) {
     signed char evtType;
     unsigned int slotIdx;
 
-    /* Runs one event script: a u32 byte count followed by records laid out as
-     *   signed char evtType | payload bytes ...
-     * Each record's payload is copied into a private 0x400-byte buffer and handed
-     * to every handler registered for its type in lbl_80488678 (18 event types x
-     * 4 handler slots, see fn_801EEFDC / fn_801EF024); the last handler run
-     * returns how many payload bytes it consumed, and the walk advances past
-     * those plus the type byte. A type with no handler is reported
-     * ("No handler for evt type %d") and aborts the script. */
     while (offset < (int)*(unsigned int *)script) {
         evtType = (signed char)script[offset + 4];
         payload = script + offset + 5;
