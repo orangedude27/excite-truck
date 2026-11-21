@@ -5,7 +5,7 @@
 
 extern char lbl_8055D4E0[4];
 extern u32 lbl_8055D4E8;
-extern void fn_8000D838(void *);
+extern void fn_8000D838(void *record);
 
 /* Static constructor (.ctors entry D_802ED094): register this module's static-destructor
  * record so its destructor runs at exit, then seed the following word with the
