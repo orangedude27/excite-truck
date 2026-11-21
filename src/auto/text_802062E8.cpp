@@ -194,6 +194,8 @@ extern "C" void fn_80206484(int event) {
 extern "C" void fn_802064C8(void) {
 }
 
+/* No-op virtual callback stub in the audio mixer's device callback group, next
+ * to fn_80206480/fn_802064C8.  Calling it does nothing; compiles to a bare 'blr'. */
 extern "C" void fn_802064CC(void) {
 }
 
@@ -655,10 +657,10 @@ extern "C" void fn_80206D3C(void *self, void *list, int count) {
     register unsigned char *it;
 
     p[0x64] = 0;
-    *(float *)(p + 0x68) = lbl_805631FC;
+    *(float *)(p + 0x68) = 0.0f;
     if (p[0x18]) {
-        register float threshold = lbl_805631F8;
-        register float margin = lbl_80563208;
+        register float threshold = 1.0f;
+        register float margin = 200.0f;
         it = (unsigned char *)list;
         for (i = 0; i < count; ++i, it += 0xC) {
             register float *pos = *(float **)(p + 0x74);
@@ -669,15 +671,12 @@ extern "C" void fn_80206D3C(void *self, void *list, int count) {
             vec[1] = dy;
             float dz = pos[2] - *(float *)(item + 0x2C);
             vec[2] = dz;
-            float outX = dx * *(float *)item +
-                         dy * *(float *)(item + 4) +
-                         dz * *(float *)(item + 8);
-            float outY = dx * *(float *)(item + 0xC) +
-                         dy * *(float *)(item + 0x10) +
-                         dz * *(float *)(item + 0x14);
-            float outZ = dx * *(float *)(item + 0x18) +
-                         dy * *(float *)(item + 0x1C) +
-                         dz * *(float *)(item + 0x20);
+            float outX = dz * *(float *)(item + 8) +
+                         (dx * *(float *)item + dy * *(float *)(item + 4));
+            float outY = dz * *(float *)(item + 0x14) +
+                         (dx * *(float *)(item + 0xC) + dy * *(float *)(item + 0x10));
+            float outZ = dz * *(float *)(item + 0x20) +
+                         (dx * *(float *)(item + 0x18) + dy * *(float *)(item + 0x1C));
             vec[0] = outX;
             vec[1] = outY;
             vec[2] = outZ;
@@ -686,12 +685,10 @@ extern "C" void fn_80206D3C(void *self, void *list, int count) {
             if (dot < radius * radius) {
                 float value = *(float *)(p + 8);
                 p[0x64] = 1;
-                if (value >= threshold) value = threshold;
-                value *= fn_80206CD0(vec, *(float *)(p + 0x6C));
-                if (*(float *)(p + 0x68) > value) {
-                } else {
-                    *(float *)(p + 0x68) = value;
-                }
+                value = (value < threshold) ? value : threshold;
+                float p6c = *(float *)(p + 0x6C);
+                float scaled = value * fn_80206CD0(vec, p6c);
+                *(float *)(p + 0x68) = (*(float *)(p + 0x68) > scaled) ? *(float *)(p + 0x68) : scaled;
             }
         }
         if (!p[0x64]) p[0x18] = 0;
@@ -712,10 +709,13 @@ extern "C" void fn_80206EE4(void *arg0, void *arg1, int arg2) {
         virtual void p0(); virtual void p1();
         virtual void upd(void*, int);
     };
-    unsigned char *obj = (unsigned char *)arg0;
+    unsigned char *obj;
+    unsigned char *p;
+    int count;
+    obj = (unsigned char *)arg0;
+    p = (unsigned char *)arg1;
+    count = arg2;
     if (obj[0x64] == 0) return;
-    unsigned char *p = (unsigned char *)arg1;
-    int count = arg2;
     if ((*(Hnd **)(obj + 0xC))->r38() != 0) {
         fn_80206B14(arg0, (int)arg1, arg2);
         (*(Hnd **)(obj + 0xC))->f54(*(int *)(obj + 0x70), *(int *)(obj + 0x74));
@@ -724,14 +724,13 @@ extern "C" void fn_80206EE4(void *arg0, void *arg1, int arg2) {
     ((Obj *)arg0)->upd(arg1, arg2);
     (*(Hnd **)(obj + 0xC))->s34(*(float *)(obj + 0x68));
     if (obj[0x19] == 0) return;
-    float f28 = lbl_805631FC;
-    float f30 = lbl_805631F8;
-    float f27 = lbl_805631FC;
-    float f31 = lbl_80563210;
-    float f26 = lbl_805631FC;
-    float f23 = lbl_80563214;
-    float f25 = lbl_805631FC;
-    float f29 = lbl_8056320C;
+    float f31, f30, f29, f28, f27, f26, f25, inv, f23;
+    f28 = lbl_805631FC;
+    f30 = lbl_805631F8;
+    f31 = lbl_80563210;
+    f23 = lbl_80563214;
+    f29 = lbl_8056320C;
+    f27 = f28; f26 = f28; f25 = f28;
     int idx = 0;
     while (idx < count) {
         int itmp[3];
@@ -750,20 +749,24 @@ extern "C" void fn_80206EE4(void *arg0, void *arg1, int arg2) {
         vec[2] = p74[2] - *(float*)&itmp[2];
         float mag = PSVECMag(vec);
         if (mag > f29) {
-            float inv = f30 / mag;
-            vec[0] *= inv; vec[1] *= inv; vec[2] *= inv;
+            inv = f30 / mag;
+            vec[0] *= inv;
+            float *dotp = *(float **)(p + 4);
+            vec[1] *= inv; vec[2] *= inv;
             f28 += inv;
-            float d1 = PSVECDotProduct(vec, *(int **)(p + 4));
+            float d1 = PSVECDotProduct(vec, dotp);
             if (mag < f31) d1 *= mag / f31;
             f27 += d1 * inv;
             float d2 = PSVECDotProduct(vec, (void *)((char *)*(int **)(p + 4) + 0x18));
             if (mag < f31) d2 = f30 + ((mag / f31) * (d2 - f30));
             f26 += (d2 * inv);
-            vec2[0] = (*(float **)(obj + 0x70))[0] - btmp[0];
-            vec2[1] = (*(float **)(obj + 0x70))[1] - btmp[1];
-            vec2[2] = (*(float **)(obj + 0x70))[2] - btmp[2];
+            float *p70 = *(float **)(obj + 0x70);
+            vec2[0] = p70[0] - btmp[0];
+            vec2[1] = p70[1] - btmp[1];
+            vec2[2] = p70[2] - btmp[2];
             float d3 = PSVECDotProduct(vec2, vec);
-            f25 += (f23 / (f23 + d3)) * inv;
+            float ratio = f23 / (f23 + d3);
+            f25 += ratio * inv;
         }
         p += 12;
         idx++;
