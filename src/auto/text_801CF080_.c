@@ -333,17 +333,21 @@ s32 fn_801CF828(Mesh *mesh, Vec *origin, Vec *dir, f32 *ioDist, Vec *normalOut) 
 }
 #pragma pop
 /* In-place byte swaps used to convert the big-endian mesh file. */
+static inline void Mesh_SwapByte(volatile u8 *a, volatile u8 *b) {
+    u8 t = *a;
+    *a = *b;
+    *b = t;
+}
+
 static inline void Mesh_Swap32(volatile void *p) {
     volatile u8 *b = (volatile u8 *)p;
-    u8 t;
-    t = b[0]; b[0] = b[3]; b[3] = t;
-    t = b[1]; b[1] = b[2]; b[2] = t;
+    Mesh_SwapByte(&b[0], &b[3]);
+    Mesh_SwapByte(&b[1], &b[2]);
 }
 
 static inline void Mesh_Swap16(volatile void *p) {
     volatile u8 *b = (volatile u8 *)p;
-    u8 t;
-    t = b[0]; b[0] = b[1]; b[1] = t;
+    Mesh_SwapByte(&b[0], &b[1]);
 }
 
 static inline void Mesh_SwapVec(volatile Vec *v) {
