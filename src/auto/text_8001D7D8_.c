@@ -61,10 +61,9 @@ void fn_8001D8B4(int *arg0, void *arg1, int arg2) {
     if (arg0[5] == -1)
         arg0[5] = 2;
     {
-        int j = 6;
         int *dst = &arg0[5];
         char **src = &lbl_802ED818[5];
-        while (j-- > 0) {
+        while (i-- > 0) {
             *dst = ((int (*)(void *, char *, int))obj->vtable[8])(
                 arg1, *src, -1);
             dst--;
@@ -105,5 +104,4 @@ int fn_8001DA48(int *values, int index) {
     /* Return the element at index of an int array (e.g. the 5-entry effect data block). */
     return values[index];
 }
-typedef struct { int (*f0)(); int (*f1)(); int (*f2)(); int (*f3)(); int (*f4)(); int (*f5)(); int (*f6)(); int (*f7)(); int (*f8)(); } Vtbl;
-typedef struct { Vtbl *vtable; } Obj;
+
