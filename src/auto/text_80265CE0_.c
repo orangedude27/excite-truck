@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern void fn_80128668(void*);
+extern void fn_80128668(void *);
 void *fn_80265CE0(void *object, int shouldDelete) {
     /* Clears a 3-word object and optionally deletes it. */
     if (object != 0) {
