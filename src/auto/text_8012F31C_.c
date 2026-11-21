@@ -1,15 +1,19 @@
 #include "types.h"
 #include "string.h"
-extern void fn_80128668(void);
-extern void fn_80128670(s32);
-extern void *fn_801284F8(s32, void *);
-extern char lbl_8032AFC4[];
-extern s32 fn_8012850C(s32, s32 *);
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
 
-extern char lbl_8032AFB8[];
-extern char lbl_8032AFD4[];
+/* Debug-heap wrappers from text_801281A0_.c (tagged allocations): allocate an
+   object ("new"), allocate an array ("new[]"), delete an object, delete an
+   array.  The first word of every block holds its heap tag at runtime. */
+extern void fn_80128668(void);                    /* delete   */
+extern void fn_80128670(s32 block);               /* delete[] */
+extern void *fn_801284F8(s32 size, void *tag);    /* new      */
+extern s32 fn_8012850C(s32 size, s32 *tag);       /* new[]    */
+
+/* Heap tag strings: cursors are tagged "MemStreamPtr"; stream objects and
+   their backing buffers are both tagged "MemStream". */
+extern char lbl_8032AFC4[]; /* "MemStreamPtr" */
+extern char lbl_8032AFB8[]; /* "MemStream"    */
+extern char lbl_8032AFD4[]; /* "MemStream"    */
 /* A byte buffer of the given size allocated off the heap (heap tag
    "MemStream"); it is the storage a MemStreamPtr cursor reads and writes. */
 typedef struct MemStream {
