@@ -106,6 +106,7 @@ void fn_802532BC(void *arg0) {
     extern void *memset(void *, int, unsigned long);
     extern float lbl_80563A04;
     extern float lbl_80563A14;
+    unsigned long len;
 
     *(unsigned char *)((char *)arg0 + 0x0) = 0;
     *(int *)((char *)arg0 + 0x14) = -1;
@@ -118,9 +119,9 @@ void fn_802532BC(void *arg0) {
     {
         float zero = lbl_80563A04;
         float one = lbl_80563A14;
-        unsigned long len = 312;
 
         ((struct Struct_802532BC_Offset28 *)arg0)->val = -1;
+        len = 312;
 
         *(float *)((char *)arg0 + 0x598) = one;
         *(float *)((char *)arg0 + 0x59C) = zero;
@@ -187,7 +188,7 @@ void fn_802532BC(void *arg0) {
         *(float *)((char *)arg0 + 0x428) = zero;
     }
 
-    memset((char *)arg0 + 0x45C, 0, 312);
+    memset((char *)arg0 + 0x45C, 0, len);
 
     *(float *)((char *)arg0 + 0x594) = lbl_80563A04;
 }
@@ -238,7 +239,6 @@ extern "C" float lbl_80563A10, lbl_80563A14, lbl_80563A18;
 #pragma processor 750
 #pragma scheduling invalid_target
 extern "C" void fn_80253510(void *arg0, unsigned char *arg1) {
-#pragma scheduling off
     struct Stack {
         float sp8;
         float spC;
@@ -366,7 +366,7 @@ copy_done:
         else var_f4 = temp_f31;
         if (var_r3 != 0) var_f0 = lbl_80563A10;
         else var_f0 = lbl_80563A14;
-        var_f2 = var_f4 * (temp_f3 * var_f0);
+        var_f2 = temp_f3 * var_f0 * var_f4;
         stack.spC = *(float *)((unsigned char *)var_r4_2 + 0x4F4) -
                     *(float *)((unsigned char *)var_r4_2 + 0x4DC);
         stack.sp8 = var_f2;
@@ -383,7 +383,6 @@ copy_done:
         *(float *)((unsigned char *)var_r5_2 + 0x434) = temp_f1_2;
         stack.sp10 = temp_f1_2;
     }
-#pragma scheduling on
     fn_80253890(arg0, stack.sp38);
     *(signed char *)arg0 = 1;
 }
@@ -909,7 +908,7 @@ void fn_80254938(void *arg0v, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 farg0,
         temp_r3 = temp_r6 - arg3;
         temp_f28 = lbl_80563A18 * (f32)arg4;
         temp_f23 = (f32)arg2 + temp_f28;
-        temp_f3 = (f32)(arg1 - ((s32)((temp_r3 >> 0x1FU) + temp_r3) >> 1));
+        temp_f3 = (f32)(arg1 - (((s32)(((unsigned int)temp_r3 >> 0x1FU) + temp_r3)) >> 1));
         temp_f27 = lbl_80563A18 * (f32)temp_r6;
         temp_f24 = temp_f3 + temp_f27;
         ((void (*)(void *, void *, void *, void *, float, float))fn_802C98DC)(&spC, &sp8, &sp8, &sp8, lbl_80563A18, temp_f3);
@@ -1366,12 +1365,13 @@ void *fn_80255758(void *arg0, s32 arg1, s32 arg2) {
         {
             s32 index2;
             void **cursor2;
+            void *obj2;
+            void **slot2;
             cursor2 = lbl_80498E08;
             index2 = 0;
             while (index2 < lbl_8055F33C) {
                 if (((unsigned int)__cntlzw((unsigned int)fn_8012D838(*(s32 *)((u8 *)*cursor2 + 0x20))) >> 5)) {
-                    void *obj2;
-                    void **slot2 = &lbl_80498E08[index2];
+                    slot2 = &lbl_80498E08[index2];
                     obj2 = *slot2;
                     if (obj2) {
                         fn_8012D8A8(*(s32 *)((u8 *)obj2 + 0x20));
@@ -1526,32 +1526,43 @@ extern void fn_80252F50(float);
 extern s32 fn_802C6FC0(void *, s32, s32);
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void fn_80255A84(void *arg0) {
-    if (lbl_8055F340 == 0) {
-        fn_80255604(*(s32 *)((char *)arg0 + 0x120));
+/* Register a UI car model for drawing: on the first one, load the wheel
+ * resources and build the shared view/environment state; load the rear model
+ * resource when a UI view is up (or the model is screen-facing without one);
+ * then file the model under the next index of the active-model table and seed
+ * its three starting position floats. */
+void fn_80255A84(void *model) {
+    #define gModelCount lbl_8055F340
+    #define sCurrentUiView lbl_8055F330
+    #define gActiveModels lbl_80498E28
+    if (gModelCount == 0) {
+        fn_80255604(*(s32 *)((char *)model + 0x120));
     }
-    if (lbl_8055F330 != 0) {
+    if (sCurrentUiView != 0) {
         fn_80252BF0();
         fn_80252F50(lbl_80563A64);
-        *(s32 *)((char *)arg0 + 0xE4) = fn_802C6FC0(lbl_8055C1C8, 0, 0);
+        *(s32 *)((char *)model + 0xE4) = fn_802C6FC0(lbl_8055C1C8, 0, 0);
     } else {
-        *(s32 *)((char *)arg0 + 0xE4) = -1;
-        if (*(s32 *)((char *)arg0 + 0x120) == 0) {
-            *(s32 *)((char *)arg0 + 0xE4) = fn_802C6FC0(lbl_80344A48, 0, 0);
+        *(s32 *)((char *)model + 0xE4) = -1;
+        if (*(s32 *)((char *)model + 0x120) == 0) {
+            *(s32 *)((char *)model + 0xE4) = fn_802C6FC0(lbl_80344A48, 0, 0);
         }
     }
-    *(s32 *)((char *)arg0 + 4) = lbl_8055F340;
+    *(s32 *)((char *)model + 4) = gModelCount;
     {
-        float t3, t2, t1;
-        lbl_8055F340++;
-        lbl_80498E28[*(s32 *)((char *)arg0 + 4)] = arg0;
-        t1 = 0.197f;
-        t2 = 2.452f;
-        t3 = 0.059f;
-        *(float *)((char *)arg0 + 0x9C) = t1;
-        *(float *)((char *)arg0 + 0xA0) = t2;
-        *(float *)((char *)arg0 + 0xA4) = t3;
+        float posZ, posY, posX;
+        gModelCount++;
+        gActiveModels[*(s32 *)((char *)model + 4)] = model;
+        posX = 0.197f;
+        posY = 2.452f;
+        posZ = 0.059f;
+        *(float *)((char *)model + 0x9C) = posX;
+        *(float *)((char *)model + 0xA0) = posY;
+        *(float *)((char *)model + 0xA4) = posZ;
     }
+    #undef gModelCount
+    #undef sCurrentUiView
+    #undef gActiveModels
 }
 #pragma scheduling invalid_target
 void fn_80255B5C(void *arg0) {
@@ -1575,7 +1586,7 @@ void fn_80255B5C(void *arg0) {
     extern void fn_80252C78(void);
     extern int stricmp(const char *, const char *);
     Obj58 *obj58 = (Obj58 *)arg0;
-    StringEntry **entries;
+    register StringEntry **entries;
     register long i;
 
     fn_80253824(*(void **)((char *)arg0 + 8));
