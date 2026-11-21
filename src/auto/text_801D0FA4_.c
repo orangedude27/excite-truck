@@ -12,8 +12,8 @@ extern u8 lbl_803381E0[16];
 extern void *lbl_80438858[256];
 
 #pragma scheduling invalid_target
+/* Construct an object: set initial/base vtables, register in base and secondary lists, and return it. */
 void *fn_801D0FA4(void *object) {
-    /* Construct an object: set initial/base vtables, register in base and secondary lists, and return it. */
     *(void **)object = lbl_803381C0;
     fn_801D0DDC(object);
     *(void **)object = lbl_803381E0;
