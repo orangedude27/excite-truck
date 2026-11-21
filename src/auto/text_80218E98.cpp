@@ -1560,8 +1560,10 @@ extern "C" s32 fn_8022F8CC(s32);
 extern "C" s32 fn_8022FFE8(s32);
 extern f32 lbl_805634E4;
 #pragma dont_inline on
-extern "C" s32 fn_8021A804(void *arg0, s32 arg1) {
-    return fn_802192A4(arg0, arg1);
+/* Tail-call forwarder to the base widget message handler fn_802192A4, which
+ * reports every message as unhandled (returns 0). */
+extern "C" s32 fn_8021A804(void *widget, s32 message) {
+    return fn_802192A4(widget, message);
 }
 
 /* Cursor-bound icon widget (0x25C bytes), built by fn_8021A808 (vtable
