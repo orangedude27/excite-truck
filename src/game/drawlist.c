@@ -142,6 +142,8 @@ extern int fn_80019B9C(void);
 extern int fn_802E9A0C(void);
 extern void fn_80133348(int, const char *, int);
 extern void *lbl_8055FC90;
+/* No-op callback registered under the name "mr" in the drawlist callback table;
+ * it does nothing when invoked and is only present to occupy that slot. */
 void fn_802C82C0(void) {
 }
 
