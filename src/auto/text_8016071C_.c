@@ -14,7 +14,6 @@ extern int fn_80128668(void);
 extern void fn_801607F8(void);
 extern int __AXGetStackHead(int);
 typedef struct Obj { void **vtable; } Obj;
-typedef int (*Callback)(Obj *, int, int);
 #pragma cplusplus on
 /* Build the active grade handler from the given schedule object: allocate a 0x18-byte
  * "gradeschedule" block, construct it from the object, store it as the active handler,
