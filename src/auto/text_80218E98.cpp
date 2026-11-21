@@ -4982,8 +4982,8 @@ extern "C" s32 fn_80220948(void *menu, s32 msg) {
     }
 }
 
-extern "C" void fn_80220A50(void *arg0, s32 arg1) {
-    struct Dispatch {
+extern "C" void fn_80220A50(void *menu, s32 frameNow) {
+    struct MenuWidget {
         virtual s32 v0(); virtual s32 v1(); virtual s32 v2(); virtual s32 v3();
         virtual s32 v4(); virtual s32 v5(); virtual s32 v6(); virtual s32 v7();
         virtual s32 v8(); virtual s32 v9(); virtual s32 v10(); virtual s32 v11();
@@ -4991,22 +4991,24 @@ extern "C" void fn_80220A50(void *arg0, s32 arg1) {
         virtual s32 v16(); virtual s32 v17(); virtual s32 v18(); virtual s32 v19();
         virtual s32 v20(); virtual s32 v21(); virtual s32 v22(); virtual s32 v23();
         virtual s32 v24(); virtual s32 v25(); virtual s32 v26(); virtual s32 v27();
-        virtual s32 get();
+        virtual s32 getDuration();
     };
-    *(u8 *)((u8 *)arg0 + 0x258) = 1;
-    register s32 frame = arg1;
-    register s32 field4 = *(s32 *)((u8 *)arg0 + 4);
-    register s32 field250 = *(s32 *)((u8 *)arg0 + 0x250);
-    s32 span = ((Dispatch *)arg0)->get() - 10;
-    register s32 range = *(volatile s32 *)((u8 *)arg0 + 0x254);
-    register s32 time = frame - field4 - 5;
-    register s32 distance = range - field250;
-    register s32 result = field250 + distance * time / span;
-    result = result < field250 ? field250 : result;
-    register s32 max = *(volatile s32 *)((u8 *)arg0 + 0x254);
-    max -= 1;
-    result = result >= max ? max : result;
-    *(s32 *)*(void **)((u8 *)arg0 + 0x244) = result;
+    /* Advance a menu's selection index from its start toward its target over the
+     * widget's duration, marking it active and clamping to the valid index range. */
+    *(u8 *)((u8 *)menu + 0x258) = 1;
+    register s32 frame = frameNow;
+    register s32 startFrame = *(s32 *)((u8 *)menu + 4);
+    register s32 startIndex = *(s32 *)((u8 *)menu + 0x250);
+    s32 span = ((MenuWidget *)menu)->getDuration() - 10;
+    register s32 targetIndex = *(volatile s32 *)((u8 *)menu + 0x254);
+    register s32 elapsed = frame - startFrame - 5;
+    register s32 delta = targetIndex - startIndex;
+    register s32 index = startIndex + delta * elapsed / span;
+    index = index < startIndex ? startIndex : index;
+    register s32 upperBound = *(volatile s32 *)((u8 *)menu + 0x254);
+    upperBound -= 1;
+    index = index >= upperBound ? upperBound : index;
+    *(s32 *)*(void **)((u8 *)menu + 0x244) = index;
 }
 
 extern "C" void fn_80220AFC(void *self) {
