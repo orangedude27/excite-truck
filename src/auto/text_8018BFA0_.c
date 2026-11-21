@@ -50,18 +50,17 @@ static inline void matVecAlias_8018(Vec_8018 *dest, const float *m, const Vec_80
 static inline void matVecBFA0(Vec_8018 *dest, const float *m, const Vec_8018 *src) {
     float *dy = &dest->y;
     float *dz = &dest->z;
-    float vx = src->x, vy = src->y, vz = src->z;
-    float tx = m[6] * vz + m[0] * vx + m[3] * vy;
-    float ty = m[7] * vz + m[1] * vx + m[4] * vy;
-    float tz = m[8] * vz + m[2] * vx + m[5] * vy;
     if (dest == src) {
+        float tx = m[6] * src->z + m[0] * src->x + m[3] * src->y;
+        float ty = m[7] * src->z + m[1] * src->x + m[4] * src->y;
+        float tz = m[8] * src->z + m[2] * src->x + m[5] * src->y;
         dest->x = tx;
         *dy = ty;
         *dz = tz;
     } else {
-        dest->x = tx;
-        *dy = ty;
-        *dz = tz;
+        dest->x = m[6] * src->z + m[0] * src->x + m[3] * src->y;
+        *dy = m[7] * src->z + m[1] * src->x + m[4] * src->y;
+        *dz = m[8] * src->z + m[2] * src->x + m[5] * src->y;
     }
 }
 static inline void matVecAliasF_8018(float *d, const float *m, const float *v) {
