@@ -1048,7 +1048,10 @@ int fn_802C6C20(int resource) {
 
 void fn_802C6C30(void) {}
 
-void *fn_802C6C34(int arg0) { return (void *)fn_802C53A8(arg0); }
+/* Public accessor used across the game: hand an instance id to fn_802C53A8 and
+ * return the model instance's group list (the +0x4 field of its 0x10-byte record)
+ * as an opaque pointer. */
+void *fn_802C6C34(int instanceId) { return (void *)fn_802C53A8(instanceId); }
 
 #pragma scheduling invalid_target
 void fn_802C6C38(int modelId) {
