@@ -128,6 +128,9 @@ void *fn_801A6484(void *arg0) {
     return arg0;
 }
 
+/* No-op element callback: fn_801A6484 passes this as the initializer to
+ * fn_8002F37C when creating the object's task array at +0x2700.  It leaves
+ * each element untouched. */
 void fn_801A6520(void) {
 }
 
