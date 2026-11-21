@@ -25,6 +25,8 @@ void fn_802DB2B0(s32 slotCount) {
 
 void fn_802DB2B4(void) {}
 
+/* No-op model-config hook: fn_802C8234 forwards the water amplitude value
+ * here, but this build leaves the setter empty. */
 void fn_802DB2B8(void) {}
 
 void fn_802DB2BC(void) {}
