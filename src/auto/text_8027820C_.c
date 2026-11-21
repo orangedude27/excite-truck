@@ -40,6 +40,9 @@ extern char lbl_8055F5B8;
  * elements need no per-element initialization. */
 void fn_8027820C(void) {}
 
+/* No-op element constructor for the four 0x50-byte camera-blend records at
+ * lbl_8049FD58+0: fn_8002F53C calls it once per element while fn_80278168
+ * builds the camera-blend array; the records need no per-element setup. */
 void fn_80278210(void) {}
 
 #pragma push
