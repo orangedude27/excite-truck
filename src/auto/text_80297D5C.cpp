@@ -1396,12 +1396,8 @@ extern "C" void fn_8029A318(float *a, float *b, float *c, float *d, float x, flo
     b[0] += a[9];
     b[1] += a[10];
     b[2] += a[11];
-    c[0] = a[0] * 0.4f;
-    c[1] = a[1] * 0.4f;
-    c[2] = a[2] * 0.4f;
-    d[0] = a[6] * 0.75f;
-    d[1] = a[7] * 0.75f;
-    d[2] = a[8] * 0.75f;
+    ScaleVec3(&a[0], c, 0.4f);
+    ScaleVec3(&a[6], d, 0.75f);
 }
 #pragma scheduling on
 extern "C" int fn_801EE0C8(int);   /* render object -> its model (field +0x48) */
