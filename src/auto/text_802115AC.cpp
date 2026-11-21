@@ -2557,7 +2557,7 @@ extern "C" void fn_80215500(void) {
 
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling off
 extern "C" void fn_80215504(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     f32 rate = 1.0f;
     fn_8022BAD0(*(s32 *)((u8 *)arg0 + 8), arg1, arg2, 0, arg4, arg5,
