@@ -39,17 +39,18 @@ s32 fn_80245080(s32 object) {
     return accepted;
 }
 #pragma scheduling off
+/* Refresh the save interface, then return 1 if its slot count is past 7 (full); otherwise increment the count and return 0. */
 s32 fn_802450D4(s32 status) {
-    s32 v;
-    s32 p;
+    s32 slotCount;
+    s32 iface;
 #pragma unused(status)
     fn_80236900();
-    p = (s32)lbl_8055F244;
-    v = ((struct Unk_80245080 *)p)->unk_24;
-    if (v > 7) {
+    iface = (s32)lbl_8055F244;
+    slotCount = ((struct Unk_80245080 *)iface)->unk_24;
+    if (slotCount > 7) {
         return 1;
     }
-    ((struct Unk_80245080 *)p)->unk_24 = v + 1;
+    ((struct Unk_80245080 *)iface)->unk_24 = slotCount + 1;
     return 0;
 }
 void fn_80245118(void) {
