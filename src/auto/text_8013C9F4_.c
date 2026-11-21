@@ -2,11 +2,14 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef long s32;
-typedef unsigned long u32;
 extern void** fn_801284F8(s32, void*);
 extern char lbl_8032C4F0[];
 extern char lbl_8032C500[];
-extern long fn_80128668(void);
+extern s32 fn_80128668(void);
+
+/* Allocation tag and vtable of the "csubtasktmgr" (challenge sub-task manager). */
+#define csubtasktmgr_tag lbl_8032C4F0
+#define csubtasktmgr_vtable lbl_8032C500
 
 #pragma scheduling invalid_target
 /* Allocate a 4-byte subtask-manager object and install its vtable pointer when arg0 is 0. */
