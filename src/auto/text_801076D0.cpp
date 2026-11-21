@@ -1918,17 +1918,20 @@ extern "C" f32 fn_8010D9E4(s32 writer) {
 extern "C" const char lbl_80329560[];
 extern "C" const char lbl_80329578[];
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
-extern "C" s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_8010DB5C(s32 arg0) {
-    int var_r5 = 1, var_r6 = 1, var_r7 = 1, var_r8 = 1, var_r9 = 1, var_r10 = 1;
-    u32 temp_r11 = (u32)arg0 & 0xFF000000U;
-    if (temp_r11 != 0x80000000U && ((u32)arg0 & 0xFF800000U) != 0x81000000U) var_r10 = 0;
-    if (var_r10 == 0 && ((u32)arg0 & 0xF8000000U) != 0x90000000U) var_r9 = 0;
-    if (var_r9 == 0 && temp_r11 != 0xC0000000U) var_r8 = 0;
-    if (var_r8 == 0 && ((u32)arg0 & 0xFF800000U) != 0xC1000000U) var_r7 = 0;
-    if (var_r7 == 0 && ((u32)arg0 & 0xF8000000U) != 0xD0000000U) var_r6 = 0;
-    if (var_r6 == 0 && ((u32)arg0 & 0xFFFFC000U) != 0xE0000000U) var_r5 = 0;
-    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560, 0x15A, lbl_80329578, arg0);
-    return *(s32 *)(arg0 + 0x54);
+/* nw4hbm::ut::CharWriter::GetFont() const: after asserting the writer pointer lies in
+ * one of the Wii's mapped memory windows, returns the +0x54 tab-stop glyph count this
+ * copy of the writer keeps (its actual font pointer is at +0x5C). */
+extern "C" s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_8010DB5C(s32 writer) {
+    int inIO = 1, inD0 = 1, inC1 = 1, inC0 = 1, inMem2 = 1, inMem1 = 1;
+    u32 writerTopByte = (u32)writer & 0xFF000000U;
+    if (writerTopByte != 0x80000000U && ((u32)writer & 0xFF800000U) != 0x81000000U) inMem1 = 0;
+    if (inMem1 == 0 && ((u32)writer & 0xF8000000U) != 0x90000000U) inMem2 = 0;
+    if (inMem2 == 0 && writerTopByte != 0xC0000000U) inC0 = 0;
+    if (inC0 == 0 && ((u32)writer & 0xFF800000U) != 0xC1000000U) inC1 = 0;
+    if (inC1 == 0 && ((u32)writer & 0xF8000000U) != 0xD0000000U) inD0 = 0;
+    if (inD0 == 0 && ((u32)writer & 0xFFFFC000U) != 0xE0000000U) inIO = 0;
+    if (inIO == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560, 0x15A, lbl_80329578, writer);
+    return *(s32 *)(writer + 0x54);
 }
 
 extern "C" f32 fn_8010F81C(void *writer, s32 arg1, s32 arg2);
