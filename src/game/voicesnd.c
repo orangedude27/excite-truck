@@ -173,24 +173,26 @@ int fn_8020A878(void *arg0) {
     #undef kVoiceWorkBufferSize
 }
 #pragma scheduling on
-void fn_8020A8E8(void *arg0) {
-    int off;
-    int i;
+void fn_8020A8E8(void *mixer) {
+    /* VoiceSoundMixer::End: warn about any still-unfreed sound handles in the
+       0x200-entry work buffer, free it, clear its slot, and clear the mixer. */
+    int slotOffset;
+    int slotIndex;
     fn_802E6B34();
-    i = 0;
-    off = 0;
-    while (i < 0x200) {
-        int *list = *(int **)((char *)arg0 + 4);
-        int val = *(int *)((char *)list + off);
-        if (val != 0) {
-            fn_802E317C(lbl_8033C388, val);
+    slotIndex = 0;
+    slotOffset = 0;
+    while (slotIndex < 0x200) {
+        int *list = *(int **)((char *)mixer + 4);
+        int soundHandle = *(int *)((char *)list + slotOffset);
+        if (soundHandle != 0) {
+            fn_802E317C(kUnfreedSoundFmt, soundHandle);
         }
-        i++;
-        off += 4;
+        slotIndex++;
+        slotOffset += 4;
     }
-    fn_80128670(*(void **)((char *)arg0 + 4));
-    *(int *)((char *)arg0 + 4) = 0;
-    lbl_8055EE04 = 0;
+    fn_80128670(*(void **)((char *)mixer + 4));
+    *(int *)((char *)mixer + 4) = 0;
+    gVoiceMixerInstance = 0;
 }
 
 #pragma push
