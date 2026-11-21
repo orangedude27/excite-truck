@@ -19,7 +19,8 @@ void fn_801EEFC8(void) {
     memset(lbl_80488678, 0, 18 * sizeof(EventHandlerRow));
 }
 #pragma scheduling invalid_target
-/* Registers handler for event type (eventType & 0xFF): stores it in the first free slot of that type's 4-slot row; does nothing when the row is full. */
+/* Registers a handler for event type (eventType & 0xFF): stores it in the first
+   free slot of that type's 4-slot row, or does nothing when the row is full. */
 void fn_801EEFDC(int handler, unsigned int eventType) {
     unsigned int *p;
     unsigned int *base;
