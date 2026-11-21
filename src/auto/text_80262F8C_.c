@@ -465,6 +465,8 @@ void fn_80263848(void *widget, s32 arg1) {
     fn_8022BAD0(0x12, x, y, 0, height, param5, labelText, *(s32 *)((char *)p + 0x18), 0, 1.0f);
 }
 #pragma pop
+/* No-op virtual slot 0x64 of the menu-widget vtable lbl_80346120: this widget
+ * leaves this method as an empty stub. */
 void fn_802638C4(void) {}
 
 #pragma scheduling on
