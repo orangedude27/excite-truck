@@ -76,6 +76,7 @@ void fn_80249578(void *gripSetting) {
     fn_8023E52C(*(s32 *)*(void **)((char *)gripSetting + 0x10));
 }
 
+/* Intentional no-op (compiles to a bare return): a do-nothing default/virtual hook. */
 void fn_80249584(void) {}
 
 /* Intentional no-op (compiles to a bare return): a do-nothing default/virtual hook. */
