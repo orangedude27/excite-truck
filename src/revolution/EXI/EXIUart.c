@@ -90,8 +90,8 @@ void __OSEnableBarnacle(EXIChannel chan, u32 dev) {
         if (ProbeBarnacle(chan, dev, &deviceId)) {
             Chan = chan;
             Dev = dev;
-            BarnacleEnabled = 0xA5FF005A;
-            Enabled = 0xA5FF005A;
+                    BarnacleEnabled = UART_ENABLED_MAGIC;
+        Enabled = UART_ENABLED_MAGIC;
         }
         break;
     }
