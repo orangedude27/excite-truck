@@ -128,24 +128,24 @@ void fn_801E4BEC(s32 font, s32 drawFlags, s32 align, s32 x, s32 y, const char *f
     va_end(args);
 
     value = fn_801E4A6C((s32 *)font, (u8 *)text);
-    if (align & 2) {
+    if (align & HALIGN_RIGHT) {
         x -= value;
-    } else if (align & 4) {
+    } else if (align & HALIGN_CENTER) {
         half = (unsigned int)value >> 31;
         half += value;
         half >>= 1;
         x -= half;
     }
-    if (align & 8) {
+    if (align & VALIGN_TOP) {
         y += fn_801E4B00((s32 *)font);
-    } else if (align & 0x10) {
+    } else if (align & VALIGN_MIDDLE) {
         value = fn_801E4B00((s32 *)font);
         half = fn_801E4B48((s32 *)font);
         half = value - half;
         half = ((unsigned int)half >> 31) + half;
         half >>= 1;
         y += half;
-    } else if (align & 0x40) {
+    } else if (align & VALIGN_BOTTOM) {
         y -= fn_801E4B48((s32 *)font);
     }
     if (font) {
