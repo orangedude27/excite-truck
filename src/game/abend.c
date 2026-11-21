@@ -32,17 +32,7 @@ int fn_802E302C(void) {
 }
 #pragma scheduling on
 
-extern int fn_802E367C(int);
-extern void fn_802E30C8(const char *, ...);
-extern void fn_8000D82C(void);
-extern void *__AXGetStudio_8000D82C(void);
-extern char lbl_8034CEF8[];
-extern int lbl_8055D178;
-extern int lbl_8055D180;
-extern char lbl_8055D188;
-
 extern void fn_802E3734(int *);
-extern int lbl_8055D178;
 void fn_802E3090(void) {
     /* Close the abnormal-end log file if it is open, then invalidate its handle. */
     #define ABEND_LOG_FILE lbl_8055D178  /* s32 abend log-file handle, -1 when closed */
