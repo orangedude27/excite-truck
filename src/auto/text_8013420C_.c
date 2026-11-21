@@ -109,34 +109,47 @@ s32 fn_8012C6F0(void *);
 void fn_8012C720(void *, s32, s32, s32);
 void fn_802E317C(const char *, ...);
 #pragma use_lmw_stmw off
-s32 fn_80134424(Container *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
-    const char *message = lbl_8032BB18;
+s32 fn_80134424(Container *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8) {
+    struct S {
+        s32 p6;
+        s32 p5;
+        s32 p4;
+        s32 p1;
+        Container *p0;
+        char *msg;
+    } s;
     s32 i;
     s32 active;
     Entry *entry;
     s32 size;
 
+    s.p0 = arg0;
+    s.p1 = arg1;
+    s.p4 = arg4;
+    s.p5 = arg5;
+    s.p6 = arg6;
+    s.msg = lbl_8032BB18;
     active = 0;
-    for (i = 0; i < arg0->count; i++) {
-        entry = (Entry *)((char *)arg0->entries + i * 0x18);
+    for (i = 0; i < s.p0->count; i++) {
+        entry = (Entry *)((char *)s.p0->entries + i * 0x18);
         if (entry->state == 1) active++;
     }
     if (active >= 3) return -1;
 
-    for (i = 0; i < arg0->count; i++) {
-        entry = (Entry *)((char *)arg0->entries + i * 0x18);
+    for (i = 0; i < s.p0->count; i++) {
+        entry = (Entry *)((char *)s.p0->entries + i * 0x18);
         if (entry->state == 0) {
             entry->state = 1;
-            entry->obj = (void *)fn_8012C5B8(arg1, arg2, arg3);
-            if (entry->obj == 0) fn_802E317C(message + 0x30, arg1);
-            entry->cb = (void (*)(void *, void *, void *))arg4;
-            entry->unk10 = (void *)arg5;
+            entry->obj = (void *)fn_8012C5B8(s.p1, arg2, arg3);
+            if (entry->obj == 0) fn_802E317C(s.msg + 0x30, s.p1);
+            entry->cb = (void (*)(void *, void *, void *))s.p4;
+            entry->unk10 = (void *)s.p5;
             size = fn_8012C6F0(entry->obj);
             if (arg7 <= 0) arg7 = size;
-            if (arg7 > arg0->stride) fn_802E317C(message + 0x48, arg1, arg7);
-            if (arg6 + arg7 > size) fn_802E317C(message + 0x70, size, arg6, arg7);
+            if (arg7 > s.p0->stride) fn_802E317C(s.msg + 0x48, s.p1, arg7, s.p0->stride);
+            if (s.p6 + arg7 > size) fn_802E317C(s.msg + 0x70, size, s.p6, arg7);
             entry->pad = arg7;
-            fn_8012C720(entry->obj, entry->unk4, arg7, arg6);
+            fn_8012C720(entry->obj, entry->unk4, arg7, s.p6);
             return i;
         }
     }
