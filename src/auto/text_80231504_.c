@@ -334,16 +334,19 @@ void fn_8023158C(GTexBlock *block, const char *name) {
 #pragma dont_inline on
 s32 fn_802315FC(s32 arg0) {
     s32 offset = arg0 * 0xC;
-    u8 *entry = lbl_8055F068 + offset;
+    GTexCacheEntry *entry = (GTexCacheEntry *)(gTexBlockTable + offset);
     u8 *base;
     s32 last;
     s32 lastOffset;
 
-    if ((*(s32 *)(entry + 8) -= 1) < 1) {
-        fn_802CAC54(*(void **)*(void **)entry);
-        fn_8012C4D8(*(void **)entry);
-        fn_80128670(*(void **)(entry + 4));
-        base = lbl_8055F068;
+    /* gText cache: drop one use of a font block. When its use count runs out,
+     * release the texture resource, block and name, then remove the slot by
+     * moving the last one into its place and shortening the table. */
+    if ((entry->useCount -= 1) < 1) {
+        fn_802CAC54(*(void **)entry->block);
+        fn_8012C4D8((void *)entry->block);
+        fn_80128670((void *)entry->name);
+        base = gTexBlockTable;
         last = *(s32 *)(base + 0x168) - 1;
         lastOffset = last * 0xC;
         *(s32 *)(base + 0x168) = last;
