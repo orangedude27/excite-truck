@@ -563,6 +563,8 @@ extern void fn_80128668(void *);
 extern void fn_80128670(void *);
 extern void fn_802328D4(void *);
 extern void fn_802C6CF8(void *);
+/* No-op element constructor: the array builder fn_8002F37C calls it once per
+ * 0x38-byte LSeg record while building an animation group's segment array. */
 void fn_802AD308(void) {}
 
 void fn_802AD30C(void *arg0) {
