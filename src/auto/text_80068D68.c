@@ -419,6 +419,8 @@ extern BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *);
 extern BOOL l2cap_link_chk_pkt_end(void);
 extern u8 lbl_8055DC50;
 extern u8 lbl_8055DC51;
+#define gUusbDeviceOpen lbl_8055DC50
+#define gUusbInitialized lbl_8055DC51
 extern void uusb_CloseDeviceCB(s8);
 extern void uusb_issue_intr_read(void);
 extern void uusb_issue_bulk_read(void);
