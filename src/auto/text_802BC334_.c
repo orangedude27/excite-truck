@@ -728,10 +728,11 @@ void fn_802BD4DC(void *data, int dataBase) {
 #define SwapTreeFrameList fn_802BD69C
 #define SwapTreeNearList  fn_802BD5B0
 #define RelocateOffset    fn_802BD5A8
-    /* Byte-swap the loaded "treelist.trl" TLST block in place and relocate its
-       offsets: convert the header and each tree entry's frame list (+0x20) and
-       near lists (+0x28/+0x30) from big-endian, then add `dataBase` to every
-       stored offset to turn it into a real pointer. */
+    /* RealName: SwapTreeListBlock. Byte-swap the loaded "treelist.trl" TLST
+       block in place and relocate its offsets: convert the header and each
+       tree entry's frame list (+0x20) and near lists (+0x28/+0x30) from
+       big-endian, then add `dataBase` to every stored offset to turn it into
+       a real pointer. */
     unsigned char *bytes = data;
     struct TreeList *list = data;
     char *entry;
