@@ -65,7 +65,6 @@ extern unsigned short *__cpReg;
 extern unsigned short *__peReg;
 extern unsigned char lbl_8037C0C0[];
 extern unsigned char lbl_8037C0E4[];
-static inline unsigned int *clean_fifo_ptr(void) { return (unsigned int *)lbl_8037C0C0; }
 extern unsigned int *__piReg;
 extern unsigned int *__memReg;
 extern signed long long OSGetTime(void);
