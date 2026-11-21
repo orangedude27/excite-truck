@@ -133,6 +133,7 @@ void fn_802DD750(void) {
 
 extern double lbl_805650A0;
 extern float lbl_80565094, lbl_80565098;
+typedef struct { float data[36]; int count; } TexCache754;
 void fn_802DE788(void);
 void fn_802DD898(void *, float, float);
 void fn_802DEA6C();
@@ -142,9 +143,9 @@ void fn_802DEA6C();
 #pragma scheduling invalid_target
 void fn_802DD754(void)
 {
-  register int i;
   float *entry;
   register int j;
+  register int i;
   register int one;
   register void *texObj;
   int new_var;
@@ -167,19 +168,19 @@ void fn_802DD754(void)
   {
     fn_802DE788();
     base = lbl_804DB6A0;
-    for (i = 0; i < 5; i++)
+    for (j = 0; j < 5; j++)
     {
       texObj = lbl_8055FED8;
       GXSetTexCopySrc(0, 0, (unsigned short) lbl_8055FED0, (unsigned short) lbl_8055FED4);
       GXSetTexCopyDst((unsigned short) (*((int *) (((char *) texObj) + 0x44))), (unsigned short) (*((int *) (((char *) texObj) + 0x48))), 4, *((unsigned char *) (((char *) texObj) + 0x4C)));
-      new_var = i;
+      new_var = j;
       GXCopyTex(*((void **) (((char *) texObj) + 0x40)), 0);
       *((unsigned char *) (((char *) texObj) + 0x4D)) = one;
       GXLoadTexObj(lbl_8055FED8, 0);
       entry = lbl_804DB6A0;
-      for (j = 0; j < (*((int *) (((char *) base) + 0x90))); j++)
+      for (i = 0; i < (*((int *) (((char *) base) + 0x90))); i++)
       {
-        ((void (*)(void *, int, float, float)) fn_802DD898)(entry, new_var, (float) (one << i), lbl_80565094);
+        ((void (*)(void *, int, float, float)) fn_802DD898)(entry, new_var, (float) (one << j), lbl_80565094);
         entry += 9;
       }
 
