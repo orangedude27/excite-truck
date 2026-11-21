@@ -17,9 +17,11 @@ extern int lbl_80559C08;
 extern int lbl_80559C10;
 #pragma push
 #pragma scheduling invalid_target
-char *fn_80137950(int arg0) {
-    int code;
-    switch (arg0) {
+/* Returns the league-name string for a driver's league id (0 Dirt, 1 Modified,
+ * 2 Truck, 3 Cup); an unknown id raises a fatal "bad league" panic. */
+char *fn_80137950(int league) {
+    int badLeague;
+    switch (league) {
         case 3:
             return (char *)&lbl_80559C04;
         case 1:
@@ -29,8 +31,8 @@ char *fn_80137950(int arg0) {
         case 0:
             return (char *)&lbl_80559C10;
         default:
-            code = arg0;
-            fn_802E317C(lbl_8032BECC, code);
+            badLeague = league;
+            fn_802E317C(lbl_8032BECC, badLeague);
             return (char *)0;
     }
 }
