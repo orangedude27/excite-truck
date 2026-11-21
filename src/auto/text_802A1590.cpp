@@ -793,19 +793,19 @@ extern "C" int lbl_80349AB0[];
 extern "C" void fn_8028E584(void*, void*);
 extern "C" s32 fn_80287B14(void*);
 #pragma scheduling invalid_target
-extern "C" void fn_802A2A38(void* arg0, void* arg1) {
+extern "C" void fn_802A2A38(void* arg0, const void* arg1) {
     f32 max = 1.0f;
-    u32 index = *(u32*)((char*)arg1 + 0x28);
-    f32* value = (f32*)((char*)arg0 + index * 0x10 + 0x20);
+    s32 index = *(const s32*)((const char*)arg1 + 0x28);
+    f32* value = (f32*)((char*)arg0 + (index << 4) + 0x20);
     f32 limit = max - lbl_80558DC4;
     f32 v = *value;
     int shouldCall = v > limit;
     if (shouldCall) {
         ((void (*)(void*, void*, void*))fn_8028E584)(
-            *(void**)((char*)arg0 + 0xC), arg1, (char*)arg1 + 0xC);
+            *(void**)((char*)arg0 + 0xC), (void*)arg1, (char*)arg1 + 0xC);
     }
-    index = *(u32*)((char*)arg1 + 0x28);
-    value = (f32*)((char*)arg0 + index * 0x10 + 0x20);
+    index = *(const s32*)((const char*)arg1 + 0x28);
+    value = (f32*)((char*)arg0 + (index << 4) + 0x20);
     f32 limit2 = 1.0f - lbl_80558DC4;
     f32 v2 = *value;
     if (v2 > limit2) {
