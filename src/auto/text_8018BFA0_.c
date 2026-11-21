@@ -149,6 +149,21 @@ static inline void matVecMixV_8018(Vec_8018 *dest, const float *m, const float *
     }
 }
 
+static inline void matVecMixR_8018(Vec_8018 *dest, const float (*m)[3], const float *v) {
+    if ((float *)dest == v) {
+        float tx = v[0] * m[0][0] + v[1] * m[1][0] + v[2] * m[2][0];
+        float ty = v[0] * m[0][1] + v[1] * m[1][1] + v[2] * m[2][1];
+        float tz = v[0] * m[0][2] + v[1] * m[1][2] + v[2] * m[2][2];
+        dest->x = tx;
+        dest->y = ty;
+        dest->z = tz;
+    } else {
+        dest->x = v[0] * m[0][0] + v[1] * m[1][0] + v[2] * m[2][0];
+        dest->y = v[0] * m[0][1] + v[1] * m[1][1] + v[2] * m[2][1];
+        dest->z = v[0] * m[0][2] + v[1] * m[1][2] + v[2] * m[2][2];
+    }
+}
+
 #pragma push
 #pragma processor 750
 extern float fn_80144514(float, float, float, float, float, float);
