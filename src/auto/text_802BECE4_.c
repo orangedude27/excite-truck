@@ -1306,6 +1306,8 @@ void *fn_802C0CB0(void *object, int shouldDelete) {
 #undef FreeObject
 }
 
+/* No-op method (vtable slot +0xC of lbl_8034AE20) on the ref-counted-handle
+ * object class; does nothing in this build. */
 void fn_802C0D20(void) {
 }
 
