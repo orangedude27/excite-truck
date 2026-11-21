@@ -60,6 +60,9 @@ extern f32 lbl_80562E2C;
 /* Reset a 16-bit index/value to -1 (the invalid-index sentinel). */
 void fn_801E9DC4(s16 *index) { *index = -1; }
 
+/* Alternate tail-call entry point for the ground-height query: branches straight
+ * to fn_801E9DDC with the caller's registers untouched, so callers pass the same
+ * outGroundIndex / x / z arguments as the real query. */
 f32 fn_801E9DD0(void) {
     return ((f32 (*)(void))fn_801E9DDC)();
 }
