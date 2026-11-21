@@ -1958,8 +1958,10 @@ void fn_8016E918(void *owner) {
 
 extern f32 lbl_805619A4;
 #pragma scheduling on
-void fn_8016E984(void *arg0) {
-    CrushRoundState8016B964 *round = (CrushRoundState8016B964 *)arg0;
+void fn_8016E984(void *roundState) {
+    /* Reset a ring-challenge round to idle: clear its state/timer/counters,
+       deactivate the animation cues, and stop all six of its sounds. */
+    CrushRoundState8016B964 *round = (CrushRoundState8016B964 *)roundState;
     Sound8016B964 *sound;
 
     round->state = 0;
