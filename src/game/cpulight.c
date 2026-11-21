@@ -531,6 +531,8 @@ void fn_802DC130(void) {
     fn_802DBD88();
 }
 
+/* Forwarder: invalidate the cached GX position array/vertex count so the next
+   setup reconfigures it (fn_802DBDD8). */
 void fn_802DC134(void) {
     fn_802DBDD8();
 }
