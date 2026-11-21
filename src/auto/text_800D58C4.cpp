@@ -4059,33 +4059,36 @@ struct Pane {
 }}
 #pragma push
 #pragma optimize_for_size on
-void nw4r::lyt::Pane::LoadMtx(const nw4r::lyt::DrawInfo& info_) {
-    const u8* ip = (const u8*)&info_;
-    u8* sp = (u8*)this;
-    float mtx[12];
-    float* result;
-    if ((ip[0x50] >> 7) & 1) {
-        PSMTXConcat((const f32*)(ip + 4), (const f32*)(sp + 0x84), mtx);
-        int flip = (*(const f32*)(ip + 0x40) - *(const f32*)(ip + 0x38)) < lbl_80560EA8;
+void nw4r::lyt::Pane::LoadMtx(const nw4r::lyt::DrawInfo& info) {
+    const u8* infoBytes = (const u8*)&info;
+    u8* paneBytes = (u8*)this;
+    /* Build this pane's position matrix: concatenate the draw info's view matrix
+     * with the pane matrix when the flag at +0x50 is set, otherwise use the pane
+     * matrix as-is. Negate the Y column for an inverted scale, then load it. */
+    float localMtx[12];
+    float* outMtx;
+    if ((infoBytes[0x50] >> 7) & 1) {
+        PSMTXConcat((const f32*)(infoBytes + 4), (const f32*)(paneBytes + 0x84), localMtx);
+        int flip = (*(const f32*)(infoBytes + 0x40) - *(const f32*)(infoBytes + 0x38)) < lbl_80560EA8;
         if (flip) {
-            mtx[1] = -mtx[1];
-            mtx[5] = -mtx[5];
-            mtx[9] = -mtx[9];
+            localMtx[1] = -localMtx[1];
+            localMtx[5] = -localMtx[5];
+            localMtx[9] = -localMtx[9];
         }
-        result = mtx;
+        outMtx = localMtx;
     } else {
-        int flip = (*(const f32*)(ip + 0x40) - *(const f32*)(ip + 0x38)) < lbl_80560EA8;
+        int flip = (*(const f32*)(infoBytes + 0x40) - *(const f32*)(infoBytes + 0x38)) < lbl_80560EA8;
         if (flip) {
-            PSMTXCopy((const f32*)(sp + 0x84), mtx);
-            mtx[1] = -mtx[1];
-            mtx[5] = -mtx[5];
-            mtx[9] = -mtx[9];
-            result = mtx;
+            PSMTXCopy((const f32*)(paneBytes + 0x84), localMtx);
+            localMtx[1] = -localMtx[1];
+            localMtx[5] = -localMtx[5];
+            localMtx[9] = -localMtx[9];
+            outMtx = localMtx;
         } else {
-            result = (float*)(sp + 0x84);
+            outMtx = (float*)(paneBytes + 0x84);
         }
     }
-    GXLoadPosMtxImm(result, 0);
+    GXLoadPosMtxImm(outMtx, 0);
     GXSetCurrentMtx(0);
 }
 #pragma pop
