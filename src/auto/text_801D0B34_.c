@@ -48,12 +48,14 @@ void fn_801D0BF4(void) {
 }
 
 #pragma scheduling invalid_target
-int fn_801D0BF8(int arg0, int arg1) {
+/* Look up the global entry registry for an entry whose (first, second) key pair
+   matches, returning its value, or 0 if no entry matches. */
+int fn_801D0BF8(int first, int second) {
     struct Entry *entry = lbl_80438758;
     int count = lbl_8055E8D8;
     int i;
     for (i = 0; i < count; entry++, i++) {
-        if (arg0 == entry->first && arg1 == entry->second)
+        if (first == entry->first && second == entry->second)
             return lbl_80438758[i].value;
     }
     return 0;
@@ -61,14 +63,12 @@ int fn_801D0BF8(int arg0, int arg1) {
 void fn_801D0C58(int arg0, int arg1, int arg2)
 {
   int count = lbl_8055E8D8;
-  int next;
+  int next = count + 1;
   volatile struct Entry *entry = (volatile struct Entry *) (&lbl_80438758[count]);
   entry->second = arg2;
-  next = 1;
-  next = count + next;
   ((volatile struct Entry *) lbl_80438758)[count].first = arg1;
   ((volatile struct Entry *) lbl_80438758)[count].value = arg0;
-  *((volatile int *) (&lbl_8055E8D8)) = next;
+  lbl_8055E8D8 = next;
 }
 void fn_801D0C84(unsigned int arg0) {
 #pragma scheduling off
