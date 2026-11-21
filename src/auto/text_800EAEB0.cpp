@@ -2788,6 +2788,11 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail9SeqPlayerFv(void *self, s32 freeFlag
 #pragma pop
 
 extern f32 lbl_80561068;
+static inline void ClearSeqTracks(u8 *p) {
+    s32 i;
+    for (i = 0; i < 16; ++i)
+        *(u32 *)(p + 0x9C + i * 4) = 0;
+}
 extern "C" void InitParam__Q46nw4hbm3snd6detail9SeqPlayerFiPQ46nw4hbm3snd6detail14NoteOnCallback(void *self, s32 arg, void *callback) {
     register f32 zeroValue = lbl_8056106C;
     register f32 baseValue = lbl_80561068;
@@ -2818,8 +2823,11 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail9SeqPlayerFiPQ46nw4hbm3snd6detail
     *(void **)(p + 0x94) = callback;
     for (i = 0; i < 16; ++i)
         *(s16 *)(p + 0xDC + i * 2) = -1;
-    for (i = 0; i < 16; ++i)
-        *(u32 *)(p + 0x9C + i * 4) = 0;
+    {
+        register u32 z = 0;
+        for (i = 0; i < 16; ++i)
+            *(u32 *)(p + 0x9C + i * 4) = z;
+    }
 }
 
 extern "C" void SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl(void *player, const void *seqData, s32 seqDataSize) {
