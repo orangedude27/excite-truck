@@ -285,6 +285,7 @@ extern "C" void fn_802A17FC(void) {
     } while (index < 8);
 }
 
+/* Intentionally empty placeholder callback: does nothing and returns immediately. */
 extern "C" void fn_802A1860(void) {}
 
 extern "C" char* lbl_802FAA10[];
