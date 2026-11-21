@@ -486,7 +486,7 @@ void fn_80005364(void) {
     var4 = 0x7B;
     var5 = 0x7F000000;
     lbl_802FAFA0[1] = var1;
-    lbl_8055D328 = var2;
+    *(u32 *)&lbl_8055D328 = var2;
     lbl_8034EC40[0] = var3;
     lbl_8034EC40[1] = var4;
     lbl_8034EC40[2] = var3;
