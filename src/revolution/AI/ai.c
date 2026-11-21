@@ -33,8 +33,8 @@ void AIInitDMA(void* buffer, u32 length) {
     OSRestoreInterrupts(enabled);
 }
 
+/* Start AI (audio) DMA playback by setting the PLAY bit in the AI DMA control/status register. */
 void AIStartDMA(void) {
-    /* Start AI (audio) DMA playback by setting the PLAY bit in the AI DMA control/status register. */
     DSP_HW_REGS[DSP_AI_DMA_CSR] |= DSP_AI_DMA_CSR_PLAY;
 }
 
