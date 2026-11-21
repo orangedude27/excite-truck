@@ -2779,6 +2779,8 @@ void fn_802840F4(void) {
     fn_8027E908();
 }
 
+/* Destroys the global career/UI manager singleton (gCareerObj) by delegating
+ * to fn_8027ED2C, which calls its virtual destructor and clears the pointer. */
 void fn_802840F8(void) {
     fn_8027ED2C();
 }
