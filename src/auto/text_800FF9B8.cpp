@@ -152,46 +152,49 @@ extern "C" const char lbl_803257B0[];
 extern "C" const char lbl_80325804[];
 extern "C" const char lbl_803257E0[];
 #pragma opt_propagation off
-extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail9WaveSoundFi_800FFD24(void* arg0, int arg1) {
+extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail9WaveSoundFi_800FFD24(void* sound, int requestedPriority) {
+    /* WaveSound::SetPlayerPriority: forward the request to BasicSound, then remove
+     * this sound from the player's priority-sorted list and reinsert it at the slot
+     * matching its own priority clamped to 0..0x7F. */
     #pragma opt_common_subs off
     void* node;
     void* sentinel;
-    void* list;
-    int priority;
-    void* soundNode;
+    void* priorityList;
+    int soundPriority;
+    void* listNode;
 
-    SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(arg0, arg1);
-    int rawSound = *(unsigned char*)((unsigned char*)arg0 + 0x74) + *(int*)((unsigned char*)arg0 + 0x40);
-    if (rawSound > 0x7F) {
-        priority = 0x7F;
+    SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(sound, requestedPriority);
+    int rawPriority = *(unsigned char*)((unsigned char*)sound + 0x74) + *(int*)((unsigned char*)sound + 0x40);
+    if (rawPriority > 0x7F) {
+        soundPriority = 0x7F;
     } else {
-        priority = rawSound < 0 ? 0 : rawSound;
+        soundPriority = rawPriority < 0 ? 0 : rawPriority;
     }
-    list = *(void**)((unsigned char*)arg0 + 0x1b0);
-    if (arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
-    soundNode = (unsigned char*)arg0 + 0xb8;
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((unsigned char*)list + 4, soundNode);
+    priorityList = *(void**)((unsigned char*)sound + 0x1b0);
+    if (sound == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
+    listNode = (unsigned char*)sound + 0xb8;
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((unsigned char*)priorityList + 4, listNode);
     struct { u32 v; } nodeHolder;
     struct { u32 v; } sentinelHolder;
-    nodeHolder.v = *(u32 *)((char *)list + 8);
-    sentinelHolder.v = (u32)((char *)list + 8);
-    u32 &nodeRef = nodeHolder.v;
-    u32 &sentinelRef = sentinelHolder.v;
-    while (nodeRef != sentinelRef) {
+    nodeHolder.v = *(u32 *)((char *)priorityList + 8);
+    sentinelHolder.v = (u32)((char *)priorityList + 8);
+    u32 &cursor = nodeHolder.v;
+    u32 &listEnd = sentinelHolder.v;
+    while (cursor != listEnd) {
         int nodePriority;
-        if (nodeRef == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325804, 0x23d, lbl_803257E0);
-        int raw = *(unsigned char*)(nodeRef - 0x44) + *(int*)(nodeRef - 0x78);
-        if (raw > 0x7F) {
+        if (cursor == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325804, 0x23d, lbl_803257E0);
+        int rawNodePriority = *(unsigned char*)(cursor - 0x44) + *(int*)(cursor - 0x78);
+        if (rawNodePriority > 0x7F) {
             nodePriority = 0x7F;
         } else {
-            nodePriority = raw < 0 ? 0 : raw;
+            nodePriority = rawNodePriority < 0 ? 0 : rawNodePriority;
         }
-        if (priority < nodePriority) break;
-        nodeRef = *(u32 *)nodeRef;
+        if (soundPriority < nodePriority) break;
+        cursor = *(u32 *)cursor;
     }
-    if (arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
-    void* iterator = (void*)nodeRef;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((unsigned char*)list + 4, &iterator, soundNode);
+    if (sound == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
+    void* insertPos = (void*)cursor;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((unsigned char*)priorityList + 4, &insertPos, listNode);
 }
 #pragma opt_propagation reset
 /* Return non-zero when this WaveSound's +0x1AC field is set (the value passed
