@@ -39,18 +39,31 @@ extern char lbl_8055BB48[];
 __declspec(section ".sdata") extern char lbl_8055BB48[];
 #pragma scheduling invalid_target
 s32 fn_8023C308(s32 arg0) {
-    s32 cur, diff, mode;
+    s32 val, cur, diff, mode;
     if (arg0) {
         mode = (u32)(fn_80214D04() - 2) == 0;
         cur = lbl_8055F154;
-        diff = fn_8023C308_step(cur, mode) - cur;
-        lbl_8055F154 += diff;
-        if (diff) fn_80214BE4(7, 0);
+        if (mode) {
+            val = cur - 5;
+            val = val & ~(val >> 31);
+        } else {
+            s32 tmp = cur + 5;
+            if (tmp > 0x46)
+                val = 0x46;
+            else
+                val = tmp;
+        }
+        diff = val - cur;
+        lbl_8055F154 = lbl_8055F154 + diff;
+        if (diff) ((void (*)(s32, s32, s32))fn_80214BE4)(7, 0, diff);
     }
-    if (lbl_8055F148 != lbl_8055F150) {
-        lbl_8055F150 = lbl_8055F148;
-        ((void (*)(void *, ...))fn_802E30C8)(lbl_8055BB48);
-        fn_802C82C4(lbl_8055F148);
+    {
+        s32 a148 = lbl_8055F148;
+        if (a148 != lbl_8055F150) {
+            lbl_8055F150 = a148;
+            ((void (*)(void *, s32, ...))fn_802E30C8)(lbl_8055BB48, a148);
+            fn_802C82C4(lbl_8055F148);
+        }
     }
     if (lbl_8055F144 != lbl_8055F14C) {
         lbl_8055F14C = lbl_8055F144;
@@ -96,10 +109,11 @@ extern void fn_802146BC(s32 *, s32, s32, s32, s32, s32, s32, s32);
 #pragma scheduling invalid_target
 void fn_8023C3D4(void) {
     s32 data[46];
-    s32 *v = lbl_802FA068;
-    s32 *w = lbl_80498788;
+    s32 *v, *w;
+    data[0] = lbl_802FA068[0];
+    v = lbl_802FA068;
+    w = lbl_80498788;
 
-    data[0] = v[0];
     data[1] = (s32)&data[6];
     data[2] = v[2];
     data[3] = v[3];
@@ -150,6 +164,11 @@ void fn_8023C3D4(void) {
 #pragma scheduling on
 void fn_8023C55C(void *arg0) {
     char *base = lbl_803413C0;
+    char *b10 = base + 0x10;
+    char *b24 = base + 0x24;
+    char *b38 = base + 0x38;
+    char *b44 = base + 0x44;
+    char *b54 = base + 0x54;
     char obj1[0x1C];
     char obj2[0x1C];
     s32 hdr[5];
@@ -159,10 +178,10 @@ void fn_8023C55C(void *arg0) {
 
     lbl_8055F148 = fn_802C83C4();
     lbl_8055F150 = lbl_8055F148;
-    fn_8023C800(obj1, (s32)&lbl_8055F148, fn_80131234(base + 0x10), fn_80131234(base + 0x24), 0);
+    fn_8023C800(obj1, (s32)&lbl_8055F148, fn_80131234(b10), fn_80131234(b24), 0);
     lbl_8055F144 = fn_802090CC();
     lbl_8055F14C = lbl_8055F144;
-    fn_8023C800(obj2, (s32)&lbl_8055F144, fn_80131234(base + 0x38), fn_80131234(base + 0x44), fn_80131234(base + 0x54), 0);
+    fn_8023C800(obj2, (s32)&lbl_8055F144, fn_80131234(b38), fn_80131234(b44), fn_80131234(b54), 0);
 
     data[30] = s[0];
     data[31] = s[1];
