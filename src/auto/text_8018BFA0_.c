@@ -263,6 +263,22 @@ static inline void matVecDotL_8018(Vec_8018 *dest, const float *m, const float *
     }
 }
 
+static inline void matVecDotT_8018(Vec_8018 *dest, const float *m, const float *v) {
+    if ((float *)dest == v) {
+        Vec_8018 t;
+        t.x = dot_8018(v[0], m[0], v[1], m[3], v[2], m[6]);
+        t.y = dot_8018(v[0], m[1], v[1], m[4], v[2], m[7]);
+        t.z = dot_8018(v[0], m[2], v[1], m[5], v[2], m[8]);
+        dest->x = t.x;
+        dest->y = t.y;
+        dest->z = t.z;
+    } else {
+        dest->x = dot_8018(v[0], m[0], v[1], m[3], v[2], m[6]);
+        dest->y = dot_8018(v[0], m[1], v[1], m[4], v[2], m[7]);
+        dest->z = dot_8018(v[0], m[2], v[1], m[5], v[2], m[8]);
+    }
+}
+
 static inline void matVecMixW_8018(const Vec_8018 *v, const float *m, Vec_8018 *dest) {
     if (dest == v) {
         float tx = v->y * m[3] + v->x * m[0] + v->z * m[6];
