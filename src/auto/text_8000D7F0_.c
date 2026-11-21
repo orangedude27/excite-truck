@@ -22,5 +22,8 @@ void fn_8000D7F8(void) {
 }
 
 void fn_8000D7FC(void) {
+    /* No-op hook: the last of this module's run of empty callbacks
+       (fn_8000D7F0, fn_8000D7F4, fn_8000D7F8, fn_8000D7FC); does nothing. */
+    return;
 }
 
