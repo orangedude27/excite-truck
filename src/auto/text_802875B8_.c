@@ -473,13 +473,13 @@ s32 fn_80287B94(s32 min, s32 max) {
 #pragma processor 750
 #pragma scheduling 603
 f32 fn_80287BC8(f32 farg0, f32 farg1) {
+    unsigned int random;
     f32 diff;
     f32 ratio;
-    unsigned int random;
     random = ((unsigned int (*)(void))fn_80288870)() & 0x1FFFF;
     diff = farg1 - farg0;
-    ratio = random;
-    return farg0 + diff * (ratio / 131071.0f);
+    ratio = (f32)random / lbl_80564250;
+    return farg0 + diff * ratio;
 }
 #pragma pop
 extern void *memset(void *, int, unsigned int);
