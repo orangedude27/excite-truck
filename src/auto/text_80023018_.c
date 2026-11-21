@@ -3,9 +3,9 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 // Returns nonzero if two decimal representations hold the same numeric value.
-int __equals_dec(const decimal *a, const decimal *b) {
-    const decimal *x = a;
-    const decimal *y = b;
+int __equals_dec(const decimal *lhs, const decimal *rhs) {
+    const decimal *x = lhs;
+    const decimal *y = rhs;
     unsigned char c;
     int nx;
     int ny;
