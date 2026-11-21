@@ -290,38 +290,40 @@ extern float lbl_805643F0;
 extern void fn_8028D58C(void *);
 #pragma scheduling invalid_target
 void fn_8028D4FC(void) {
-    typedef struct { unsigned char pad[0x14]; int *items; int total; } Entry;
-    typedef struct { int flag; float value; } Record;
-    Entry *e = (Entry *)&lbl_804B3400;
-    int off;
-    int i, j;
-    int *itemp;
-    i = 0;
-    while (i < *(volatile int *)&lbl_8055F728) {
-        j = 0;
-        off = 0;
-        while (j < *(volatile int *)&lbl_8055F724) {
-            itemp = (int *)((char *)e->items + off);
-            *(int *)((char *)itemp + 4) = 0;
-            j++;
-            off += 0xC;
+    /* SkidSystem_Reset: clear each group's item state (+4 of every 0xC-byte
+     * item) and reset every global record (flag -1, value 0.0f). */
+    typedef struct { unsigned char pad[0x14]; int *items; int total; } SkidEntry;
+    typedef struct { int flag; float value; } SkidRecord;
+    SkidEntry *entry = (SkidEntry *)&lbl_804B3400;
+    int itemOffset;
+    int groupIndex, itemIndex;
+    int *item;
+    groupIndex = 0;
+    while (groupIndex < *(volatile int *)&lbl_8055F728) {
+        itemIndex = 0;
+        itemOffset = 0;
+        while (itemIndex < *(volatile int *)&lbl_8055F724) {
+            item = (int *)((char *)entry->items + itemOffset);
+            *(int *)((char *)item + 4) = 0;
+            itemIndex++;
+            itemOffset += 0xC;
         }
-        e++;
-        i++;
+        entry++;
+        groupIndex++;
     }
     {
-        float f = lbl_805643F0;
-        int o;
-        int k;
-        k = 0;
-        o = 0;
-        while (k < *(volatile int *)&lbl_8055F724) {
-            Record *b = (Record *)*(volatile int *)&lbl_8055F720;
-            Record *r = (Record *)((char *)b + o);
-            r->flag = -1;
-            r->value = f;
-            k++;
-            o += 8;
+        float resetValue = lbl_805643F0;
+        int recordOffset;
+        int recordIndex;
+        recordIndex = 0;
+        recordOffset = 0;
+        while (recordIndex < *(volatile int *)&lbl_8055F724) {
+            SkidRecord *records = (SkidRecord *)*(volatile int *)&lbl_8055F720;
+            SkidRecord *record = (SkidRecord *)((char *)records + recordOffset);
+            record->flag = -1;
+            record->value = resetValue;
+            recordIndex++;
+            recordOffset += 8;
         }
     }
 }
