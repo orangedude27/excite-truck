@@ -198,21 +198,6 @@ static inline void matVecDot_8018(Vec_8018 *dest, const float *m, const float *v
     }
 }
 
-static inline void matVecDotL_8018(Vec_8018 *dest, const float *m, const float *v) {
-    if ((float *)dest == v) {
-        float x = v[0];
-        float y = v[1];
-        float z = v[2];
-        dest->x = dot_8018(x, m[0], y, m[3], z, m[6]);
-        dest->y = dot_8018(x, m[1], y, m[4], z, m[7]);
-        dest->z = dot_8018(x, m[2], y, m[5], z, m[8]);
-    } else {
-        dest->x = dot_8018(v[0], m[0], v[1], m[3], v[2], m[6]);
-        dest->y = dot_8018(v[0], m[1], v[1], m[4], v[2], m[7]);
-        dest->z = dot_8018(v[0], m[2], v[1], m[5], v[2], m[8]);
-    }
-}
-
 static inline void matVecDotT_8018(Vec_8018 *dest, const float *m, const float *v) {
     if ((float *)dest == v) {
         float tz;
