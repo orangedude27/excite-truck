@@ -17,8 +17,10 @@ extern char lbl_8055B418;
 extern char lbl_8055B420;
 extern float lbl_805630A4;
 extern int lbl_8055B414, lbl_8055ECDC;
-extern int lbl_8055ECC0;
-extern int lbl_8055ECC4;
+extern int lbl_8055ECC0; /* number of entries in the modpool position table */
+extern int lbl_8055ECC4; /* base pointer of the 16-byte modpool position table (Vec + slot id) */
+#define gModpoolCount lbl_8055ECC0
+#define gModpoolEntries lbl_8055ECC4
 extern int lbl_8055ECC8;
 extern int lbl_8055ECCC; /* primary model handle (-1 when unset) */
 extern int lbl_8055ECD0; /* secondary model handle (-1 when unset) */
@@ -160,9 +162,9 @@ extern "C" void fn_802023D4(void) {
     register s32 count;
     register s32 i;
     register s32 size;
-    register f32 *position_defaults;
-    register s32 *flags;
-    register s32 *last_flag;
+    f32 * __restrict position_defaults;
+    s32 * __restrict flags;
+    s32 * __restrict last_flag;
     s32 *entry;
     char name1[32];
     char name2[32];
@@ -290,15 +292,17 @@ void fn_80202718(int arg0) {
     extern void fn_801DCEF0(void);
     extern int fn_802CE728(int);
     extern void fn_802C7458(int, int);
-    int dir, base, i, result, center, count;
+    int i, center, result, count, base, dir;
     int *data;
     float x, y, z;
     float *o;
     Vec local;
     lbl_804888E0[0x20] = 0;
     if (lbl_8055ECD8) {
+        int v;
         fn_801E86F8(-1);
-        if (*(short *)(*(int *)((char *)fn_801EA9A0() + 8) + 0x30) >= 0) fn_801DCEF0();
+        v = *(short *)(*(int *)((char *)fn_801EA9A0() + 8) + 0x30);
+        if (v >= 0) fn_801DCEF0();
         return;
     }
     if (lbl_8055ECC0 == 0) {
