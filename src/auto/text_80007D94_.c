@@ -1,5 +1,12 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+// Symbol guide (the project cannot rename game symbols yet): loadRaceEvents
+// (fn_80007DA0), freeRaceEventConfig (fn_80007F04), initRaceEvents (fn_80007F40),
+// shutdownRaceEvents (fn_80007F68), getEventName (fn_80007F90), getEventTypeName
+// (fn_80007FF0), getEventId (fn_80008050), getRaceEventCount (fn_800080D8),
+// findRaceEventIndex (fn_800080E8), getRaceEventName (fn_80008158),
+// getRaceEventDisplayString (fn_80008188), getRaceEventEnviron (fn_800081BC),
+// clearContestRef (fn_8000822C), initContestRef (fn_8000824C).
 #include <types.h>
 #include <macros.h>
 
