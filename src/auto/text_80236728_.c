@@ -252,7 +252,9 @@ void fn_80236954(char *name, void *unused) { fn_80237DA0(name, unused); }
 extern void fn_80237E7C(char *, int);
 void fn_80236958(char *arg0, int unused) { fn_80237E7C(arg0, unused); }
 
-void fn_8023695C(void) { fn_80237EFC(); }
+/* Thunk for the trail/anim "status by name" hook: forwards the name to
+ * fn_80237EFC and passes through its 0/1/2 active status. */
+int fn_8023695C(char *name) { return fn_80237EFC(name); }
 
 #pragma scheduling invalid_target
 /* RealName: ValFileAnimList_SetFileName (rename_symbol unavailable)
