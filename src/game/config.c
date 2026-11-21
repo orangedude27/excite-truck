@@ -7,7 +7,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
- /* The console's system config, read once by the init below and handed out
+/* The console's system config, read once by the init below and handed out
  * by the getters at the end of this file.  Named here because the symbols are
  * the project's placeholders (projects can't rename the game's data yet). */
 #define sConfigReady lbl_80560040             /* set once the cache is filled in */
