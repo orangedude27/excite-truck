@@ -1,4 +1,10 @@
 #include "types.h"
+// Symbol guide (the project cannot rename game symbols yet): copyMovieName
+// (fn_802ECCE4), initMovieRecord (fn_802ECD68), popSingleMovie (fn_802ECDF4),
+// playSingleMovie (fn_802ECE48), retireSingleMovie (fn_802ECEC0), playUISingle
+// (fn_802ECEC4), hasSingleMovie (fn_802ECEEC), openMovieRecord (fn_802ECF08),
+// movieNameMatches (fn_802ECF90), playMovie (fn_802ECFEC), destroyMovie
+// (fn_802ECFF4), setupMovieDraw (fn_802ED038), movieFinished (fn_802ED040).
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
