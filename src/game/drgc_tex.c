@@ -395,7 +395,6 @@ copied_name:
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void *fn_802D7D98(void *arg0, void *arg1) {
-    u32 type = *(u32 *)arg0;
     void *texture;
     void *obj = arg0;
     int format;
@@ -405,11 +404,13 @@ void *fn_802D7D98(void *arg0, void *arg1) {
     char *dst;
     unsigned char ch;
     int mult;
+    u32 type;
     unsigned int size;
     unsigned int lod;
     char *buf;
     char *name = (char *)arg1;
     format = -1;
+    type = *(u32 *)obj;
     if (type == 0x47 || type == 3) {
         format = 6;
     } else if (type == 0x45 || type == 2) {
@@ -755,10 +756,9 @@ void fn_802D8DA0(void) {
 
 extern void fn_802D81C4(void *, int);
 extern void fn_802D86BC(void *, int);
-#pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_802D8DCC(void *arg0, int arg1) {
+void fn_802D8DCC(void * __restrict arg0, int arg1) {
  unsigned char *p = *(unsigned char **)((char *)arg0 + 0x2C);
  unsigned char t;
  unsigned int kind;
@@ -775,7 +775,6 @@ void fn_802D8DCC(void *arg0, int arg1) {
  if (kind == 0x40 || kind == 0) fn_802D81C4(arg0,arg1);
  else if (kind == 0x41 || kind == 1) fn_802D86BC(arg0,arg1);
 }
-#pragma pop
 extern void *fn_802D7B5C(void *, void *);
 extern void *fn_802D7FA0(void *, void *);
 extern void *fn_802D8A84(void *, void *);
@@ -884,8 +883,9 @@ void fn_802D9154(void) {
 }
 
 extern void fn_802D768C(void *);
-void fn_802D915C(void *arg0) {
-    fn_802D768C(arg0);
+void fn_802D915C(void *record) {
+    /* Texture-manager entry point: release a drgc texture record (free its slot and resource handle) via the shared helper. */
+    fn_802D768C(record);
 }
 
 extern void fn_802D6C68(void);
