@@ -5,6 +5,7 @@
 #include <revolution/GX/GXTypes.h>
 #include "revolution/GX/GXHardware.h"
 typedef int M2C_UNK;
+typedef float *DirArg802D01B0;
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
 extern void GXLoadTexObj(void *, int);
 
