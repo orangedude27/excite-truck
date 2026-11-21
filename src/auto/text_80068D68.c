@@ -1972,43 +1972,44 @@ extern void *WUDiGetDevInfo(u8 *);
 #pragma opt_strength_reduction off
 #pragma opt_propagation off
 u8 WUDiClearUnregisteredDevice(void) {
-    u8 *entry;
-    void *info;
-    s32 offset;
-    u8 *base = lbl_80392960;
-    s32 index;
+    /* Sweep the 16 paired-device slots: clear the device info of any registered record that has no valid link key, or ask BTM to delete a still-stored key and mark the control block busy. Returns 2 when the sweep is pre-empted, 3 when it finishes. */
+    WUDDevInfoSlot *dev;
+    void *devInfo;
+    s32 slotOffset;
+    u8 *wud = lbl_80392960;
+    s32 slot;
 
-    if (base[0xE] == 0) {
-        index = 0;
-        offset = 0;
-        while (index < 0x10) {
-            s32 interrupt = OSDisableInterrupts();
-            if (index >= 0 && index < 10) {
-                u8 *mid = lbl_80392960 + offset;
-                entry = mid + 0x64;
+    if (wud[0xE] == 0) {
+        slot = 0;
+        slotOffset = 0;
+        while (slot < 0x10) {
+            s32 interruptState = OSDisableInterrupts();
+            if (slot >= 0 && slot < 10) {
+                u8 *mid = lbl_80392960 + slotOffset;
+                dev = (WUDDevInfoSlot *)(mid + 0x64);
             } else {
-                u8 *mid = lbl_80392960 + (index - 10) * 0x60;
-                entry = mid + 0x424;
+                u8 *mid = lbl_80392960 + (slot - 10) * 0x60;
+                dev = (WUDDevInfoSlot *)(mid + 0x424);
             }
-            OSRestoreInterrupts(interrupt);
-            if (entry[0x59] != 0) {
-                if (entry[0x5C] == 1) {
-                    base[0xE] = 3;
-                    BTM_DeleteStoredLinkKey(entry + 0x40, WUDStoredLinkKeyCallback);
-                    entry[0x5C] = 0;
+            OSRestoreInterrupts(interruptState);
+            if (dev->status != 0) {
+                if (dev->flags[2] == 1) {
+                    wud[0xE] = 3;
+                    BTM_DeleteStoredLinkKey(dev->devAddr, WUDStoredLinkKeyCallback);
+                    dev->flags[2] = 0;
                     return 2;
                 }
-                if (entry[0x5C] != 3) {
-                    info = WUDiGetDevInfo(entry + 0x40);
-                    if (info != 0) {
-                        interrupt = OSDisableInterrupts();
-                        memset(info, 0, 0x60);
-                        OSRestoreInterrupts(interrupt);
+                if (dev->flags[2] != 3) {
+                    devInfo = WUDiGetDevInfo(dev->devAddr);
+                    if (devInfo != 0) {
+                        interruptState = OSDisableInterrupts();
+                        memset(devInfo, 0, 0x60);
+                        OSRestoreInterrupts(interruptState);
                     }
                 }
             }
-            index++;
-            offset += 0x60;
+            slot++;
+            slotOffset += 0x60;
         }
         return 3;
     }
