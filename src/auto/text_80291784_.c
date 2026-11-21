@@ -168,23 +168,39 @@ void fn_802919AC(void *list) {
 #pragma push
 #pragma processor 750
 void fn_80291A1C(void) {
-    struct QueryObject_80291A1C *obj;
-    int *settings;
-    float value = 300.0f;
-    obj = (struct QueryObject_80291A1C *)fn_802AE414(&lbl_8055C948);
-    if (obj != 0) {
-        value = obj->f8(&lbl_8055C938, lbl_805644A0);
+#define querySun  lbl_8055C948
+#define keyRadius lbl_8055C938
+#define kBurstTex lbl_80349158
+#define gSunFlare lbl_804B4010
+#define kZero     lbl_80564484
+#define kFadeStep lbl_80564490
+#define getFloat  f8
+    /* Set up the global sun-flare settings: read the "sun" query's "radius"
+     * (default 300), then fill in the burst texture, Z-query effect and fade. */
+    struct QueryObject_80291A1C *sunQuery;
+    int *flare;
+    float radius = 300.0f;
+    sunQuery = (struct QueryObject_80291A1C *)fn_802AE414(&querySun);
+    if (sunQuery != 0) {
+        radius = sunQuery->getFloat(&keyRadius, lbl_805644A0);
     }
-    *(float *)&lbl_804B4010 = lbl_80564484;
-    settings = (int *)&lbl_804B4010;
-    ((float *)settings)[1] = lbl_80564484;
-    ((float *)settings)[2] = lbl_80564484;
-    settings[3] = fn_802CAC28((int *)&lbl_80349158, 0);
+    *(float *)&gSunFlare = kZero;
+    flare = (int *)&gSunFlare;
+    ((float *)flare)[1] = kZero;
+    ((float *)flare)[2] = kZero;
+    flare[3] = fn_802CAC28((int *)&kBurstTex, 0);
     fn_802CA294();
-    settings[4] = fn_802D39A4(lbl_80564490);
-    *((unsigned char *)settings + 0x14) = 0;
-    settings[6] = -1;
-    ((float *)settings)[7] = value;
+    flare[4] = fn_802D39A4(kFadeStep);
+    *((unsigned char *)flare + 0x14) = 0;
+    flare[6] = -1;
+    ((float *)flare)[7] = radius;
+#undef getFloat
+#undef kFadeStep
+#undef kZero
+#undef gSunFlare
+#undef kBurstTex
+#undef keyRadius
+#undef querySun
 }
 #pragma pop
 /* Releases the texture and effect object held by the global sun/flare settings and clears their slots. */
@@ -452,24 +468,26 @@ void fn_802921F4(void) {
     #undef sFlareActive
 }
 
+#pragma processor 750
 void fn_8029222C(void) {
-    int *base;
-    char *p;
-    int count;
+    register int *base;
+    register char *p;
+    register int count;
+    register char zero;
     if (lbl_8055F75C == 0) return;
     p = (char *)&lbl_804B3EC0;
     base = (int *)p;
     count = 0;
+    zero = 0;
     goto check;
 loop:
-    p[0x14] = 0;
+    p[0x14] = zero;
     p += 0x24;
     count++;
 check:
     if (count < base[0x48]) goto loop;
     *((char *)&lbl_804B4010 + 0x14) = 0;
 }
-
 void fn_8029227C(void) {
     int old;
     if (lbl_8055F75C == 0) goto done;
