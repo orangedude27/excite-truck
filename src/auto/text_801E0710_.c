@@ -468,13 +468,16 @@ int fn_801E0ED4(int minValue, int value) {
 }
 
 #pragma scheduling on
-float fn_801E0EE4(const void *arg0, const void *arg1) {
-    const Vec2_801E *a = (const Vec2_801E *)arg0;
-    const Vec2_801E *b = (const Vec2_801E *)arg1;
-    Vec2_801E d;
+float fn_801E0EE4(const void *pointA, const void *pointB) {
+    /* Return the 2D distance between two boost-area quad points (sqrt of dx^2 + dy^2). */
+#define Sqrt fn_8002F234
+    const Vec2_801E0890 *a = (const Vec2_801E0890 *)pointA;
+    const Vec2_801E0890 *b = (const Vec2_801E0890 *)pointB;
+    Vec2_801E0890 d;
     d.y = a->y - b->y;
     d.x = a->x - b->x;
-    return (float)((double (*)(double))fn_8002F234)(d.x * d.x + d.y * d.y);
+    return (float)((double (*)(double))Sqrt)(d.x * d.x + d.y * d.y);
+#undef Sqrt
 }
 #pragma scheduling on
 /* Allocates a small block from the "arenabnd" arena sized for `count` 8-byte
@@ -831,11 +834,11 @@ void fn_801E1710(void *arg0) {
     register f32 threshold;
     register f32 initialB;
     register f32 initialA;
-    register s32 a_neg1;
-    register u32 b_zero;
-    register s32 c_neg100;
-    register u32 c_ffff;
     register u32 c_ff7f;
+    register u32 c_ffff;
+    register u32 c_neg100;
+    register u32 c_neg1;
+    register u32 c_0;
     register u8 *base;
     register u8 *row;
     register s32 i;
@@ -848,23 +851,23 @@ void fn_801E1710(void *arg0) {
     decrement = lbl_80562CA4;
     i = 0;
     reset = lbl_80562C8C;
-    a_neg1 = -1;
-    b_zero = 0;
-    c_ff7f = 0xFF7F0000;
-    c_ffff = 0xFFFF0000;
-    c_neg100 = -0x100;
+    c_neg100 = 0xFFFFFF00u;
+    c_0 = 0u;
+    c_neg1 = 0xFFFFFFFFu;
+    c_ff7f = 0xFF7F0000u;
+    c_ffff = 0xFFFF0000u;
 
     for (; i < fn_801E85A4(); base += 4, row += 0x18, i++) {
         s32 value = *(s32 *)(base + 0x6C);
         if (value != *(s32 *)(row + 0x0C)) {
-            *(u8 *)(row + 0x10) = (u8)b_zero;
-            *(s32 *)(row + 0x1C) = b_zero;
-            *(s32 *)(row + 0x20) = b_zero;
+            *(u8 *)(row + 0x10) = (u8)c_0;
+            *(s32 *)(row + 0x1C) = c_0;
+            *(s32 *)(row + 0x20) = c_0;
             *(f32 *)(row + 0x14) = initialA;
             *(f32 *)(row + 0x18) = initialB;
             *(s32 *)(row + 0x0C) = value;
         }
-        if (*(s32 *)(row + 0x0C) != a_neg1) {
+        if (*(s32 *)(row + 0x0C) != -1) {
             f32 current2;
             int cond;
             int gt;
@@ -884,13 +887,13 @@ void fn_801E1710(void *arg0) {
             *(f32 *)(row + 0x14) = current2;
             if (*(f32 *)(row + 0x18) > initialB) {
                 *(s32 *)(row + 0x1C) = c_neg100;
-                *(s32 *)(row + 0x20) = a_neg1;
+                *(s32 *)(row + 0x20) = c_neg1;
             } else if (*(u8 *)(row + 0x10) != 0) {
-                *(s32 *)(row + 0x20) = a_neg1;
+                *(s32 *)(row + 0x20) = c_neg1;
                 *(s32 *)(row + 0x1C) = c_ffff;
             } else {
                 *(s32 *)(row + 0x20) = c_ff7f + 0x7F7F;
-                *(s32 *)(row + 0x1C) = b_zero;
+                *(s32 *)(row + 0x1C) = c_0;
             }
         }
     }
