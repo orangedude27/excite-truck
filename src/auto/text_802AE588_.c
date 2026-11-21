@@ -1253,7 +1253,7 @@ void fn_802AFF80(void *list, short value) {
         *(unsigned short *)((char *)list + 4) = count;
     }
 }
-#pragma scheduling invalid_target
+#pragma scheduling on
 int fn_802AFFA8(int arg0, int arg1) {
     float out[3];
     float x = 2.0f * (float)arg0;
@@ -1296,11 +1296,12 @@ unsigned short fn_802B0070(int point) {
 
 #pragma scheduling invalid_target
 void fn_802B009C(void *arg0, int arg1, int arg2, int arg3) {
+    float *out = (float *)arg0;
     float x = (float)arg2 * lbl_80564AF0;
     float z = (float)arg3 * lbl_80564AF0;
-    ((float *)arg0)[0] = x;
-    ((float *)arg0)[2] = z;
-    ((float *)arg0)[1] = fn_801DCF48(arg1, x, z);
+    out[0] = x;
+    out[2] = z;
+    out[1] = fn_801DCF48(arg1, x, z);
 }
 void fn_802B0114(void) {
 }
@@ -1437,36 +1438,43 @@ extern float lbl_80564B84;
 extern int __cntlzw(unsigned int);
 #pragma scheduling invalid_target
 s32 fn_802B02C8(void *arg0) {
-    f32 val;
-    f32 bound;
-    f32 neg_bound;
-    s32 var_r0;
+    f32 temp_f0;
+    f32 temp_f0_2;
+    f32 temp_f1;
+    f32 temp_f2;
+    f32 denom;
+    s32 valid;
     f32 fx;
     f32 fz;
-    s32 scaled_x;
-    s32 scaled_z;
-    s16 coord_x;
-    s16 coord_z;
+    s32 sx;
+    s32 sz;
+    s16 cx;
+    s16 cz;
     u32 flags;
 
     if (fn_802AE7AC() != 0) {
-        var_r0 = 0;
-        bound = lbl_80564B84 * lbl_80564AF0;
-        val = *(f32 *)arg0;
-        neg_bound = -(bound *= lbl_80564B6C);
-        if (val > neg_bound && val < bound) {
-            val = *(f32 *)((u8 *)arg0 + 8);
-            if (val > neg_bound && val < bound)
-                var_r0 = 1;
+        valid = 0;
+        temp_f2 = lbl_80564B84;
+        temp_f0 = lbl_80564AF0;
+        temp_f2 *= temp_f0;
+        temp_f1 = lbl_80564B6C;
+        temp_f2 *= temp_f1;
+        temp_f1 = -temp_f2;
+        temp_f0 = *(f32 *)arg0;
+        if ((temp_f0 > temp_f1) && (temp_f0 < temp_f2)) {
+            temp_f0_2 = *(f32 *)((u8 *)arg0 + 8);
+            if ((temp_f0_2 > temp_f1) && (temp_f0_2 < temp_f2))
+                valid = 1;
         }
-        if (var_r0 != 0) {
+        if (valid != 0) {
             fx = *(f32 *)arg0;
+            denom = lbl_80564AF0;
             fz = *(f32 *)((u8 *)arg0 + 8);
-            scaled_x = (s32)(fx / lbl_80564AF0);
-            scaled_z = (s32)(fz / lbl_80564AF0);
-            coord_x = (s16)((s16)(scaled_x & ~7) + 4);
-            coord_z = (s16)((s16)(scaled_z & ~7) + 4);
-            flags = *(u32 *)((u8 *)fn_802BE844(coord_x, coord_z, 4) + 8);
+            sx = (s32)(fx / denom);
+            sz = (s32)(fz / denom);
+            cx = (s16)((s16)(sx & ~7) + 4);
+            cz = (s16)((s16)(sz & ~7) + 4);
+            flags = *(u32 *)((u8 *)fn_802BE844(cx, cz, 4) + 8);
             return (u32)__cntlzw(flags & 0x01000000) >> 5;
         }
         return 1;
@@ -1528,13 +1536,15 @@ s32 fn_802B04D4(void *arg0) {
     f32 temp_f1;
     f32 temp_f2;
     s32 var_r0;
+    void *modePtr;
     s16 intX;
     s16 intZ;
 
     if ((u8)lbl_8055F981 != 0) {
         return fn_801EA0E8(*(f32 *)arg0, *(f32 *)((char *)arg0 + 8)) < lbl_80564BB0;
     }
-    if (GetWaterLayer() >= 0) {
+    modePtr = lbl_8055CD78;
+    if ((s32)modePtr >= 0) {
         var_r0 = 0;
         temp_f2 = lbl_80564B84;
         temp_f0 = lbl_80564AF0;
