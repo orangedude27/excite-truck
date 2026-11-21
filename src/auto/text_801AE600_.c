@@ -116,43 +116,46 @@ int fn_801AE620(void *entry) {
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_801AE628(int arg0) {
+/* Fill in race-result points and bonuses: find the highest score (+0x14) among the
+ * active RaceResult records (ties included), then give each active record its points
+ * from its placing and a +5 bonus for a nonzero score plus another +5 for a top score. */
+void fn_801AE628(int context) {
     struct {
         int count;
         int indices[8];
         int max_val;
-    } data;
-    register int j;
-    register int offset;
-    register int i;
-    register char *entry;
-    register int k;
-    char *e2;
-    data.max_val = -1;
-    data.count = 0;
-    for (i = 0, offset = 0; i < lbl_80435780[0x3C0 / 4]; offset += 0x1C, i++) {
-        entry = (char *)*lbl_8055E624 + offset;
-        if (fn_801AE620(entry) != 0) {
-            if (*(short *)(entry + 0x14) >= data.max_val) {
-                if (*(short *)(entry + 0x14) > data.max_val) {
-                    data.count = 0;
+    } topScores;
+    register int recordIndex;
+    register int byteOffset;
+    register int scanIndex;
+    register char *record;
+    register int tieIndex;
+    char *record2;
+    topScores.max_val = -1;
+    topScores.count = 0;
+    for (scanIndex = 0, byteOffset = 0; scanIndex < lbl_80435780[0x3C0 / 4]; byteOffset += 0x1C, scanIndex++) {
+        record = (char *)*lbl_8055E624 + byteOffset;
+        if (fn_801AE620(record) != 0) {
+            if (*(short *)(record + 0x14) >= topScores.max_val) {
+                if (*(short *)(record + 0x14) > topScores.max_val) {
+                    topScores.count = 0;
                 }
-                data.indices[data.count++] = i;
-                data.max_val = *(short *)(entry + 0x14);
+                topScores.indices[topScores.count++] = scanIndex;
+                topScores.max_val = *(short *)(record + 0x14);
             }
         }
     }
-    for (j = 0, i = 0; j < lbl_80435780[0x3C0 / 4]; i += 0x1C, j++) {
-        e2 = (char *)*lbl_8055E624 + i;
-        if (fn_801AE620(e2) != 0) {
-            *(short *)(e2 + 0x10) = fn_801AE610(arg0, *(short *)(e2 + 0xC));
-            *(short *)(e2 + 0x12) = 0;
-            if (*(short *)(e2 + 0x14) != 0) {
-                *(short *)(e2 + 0x12) += 5;
+    for (recordIndex = 0, scanIndex = 0; recordIndex < lbl_80435780[0x3C0 / 4]; scanIndex += 0x1C, recordIndex++) {
+        record2 = (char *)*lbl_8055E624 + scanIndex;
+        if (fn_801AE620(record2) != 0) {
+            *(short *)(record2 + 0x10) = fn_801AE610(context, *(short *)(record2 + 0xC));
+            *(short *)(record2 + 0x12) = 0;
+            if (*(short *)(record2 + 0x14) != 0) {
+                *(short *)(record2 + 0x12) += 5;
             }
-            for (k = 0; k < data.count; k++) {
-                if (j == data.indices[k]) {
-                    *(short *)(e2 + 0x12) += 5;
+            for (tieIndex = 0; tieIndex < topScores.count; tieIndex++) {
+                if (recordIndex == topScores.indices[tieIndex]) {
+                    *(short *)(record2 + 0x12) += 5;
                 }
             }
         }
