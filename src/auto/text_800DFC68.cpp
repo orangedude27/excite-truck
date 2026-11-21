@@ -1314,37 +1314,40 @@ extern "C" void DrawFrame8__Q36nw4hbm3lyt6WindowFRCQ36nw4hbm4math4VEC2PCQ46nw4hb
 
 #pragma push
 #pragma processor 750
-extern "C" void GetFrameSize__Q36nw4hbm3lyt6WindowFUcPCQ46nw4hbm3lyt6Window5Frame(f64* out, void* self, u8 a, u32 b) {
-    f32 outv[6];
-    f32 tmp[6];
-    *(int*)&outv[0] = 0;
-    *(int*)&outv[1] = 0;
-    *(int*)&outv[2] = 0;
-    *(int*)&outv[3] = 0;
-    switch (a) {
+/* Fill a window's four frame-border sizes from its frame materials: type 1
+ * repeats the first material's texture width/height, types 4 and 8 combine the
+ * first and fourth materials. */
+extern "C" void GetFrameSize__Q36nw4hbm3lyt6WindowFUcPCQ46nw4hbm3lyt6Window5Frame(f64* outSize, void* window, u8 frameType, u32 frames) {
+    f32 sizes[6];
+    f32 texSize[6];
+    *(int*)&sizes[0] = 0;
+    *(int*)&sizes[1] = 0;
+    *(int*)&sizes[2] = 0;
+    *(int*)&sizes[3] = 0;
+    switch (frameType) {
     case 1:
-        GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(&tmp[4], (void*)(*(u32*)((u8*)b + 4)), 0);
-        outv[0] = tmp[4];
-        outv[2] = tmp[5];
-        outv[1] = tmp[4];
-        outv[3] = tmp[5];
+        GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(&texSize[4], (void*)(*(u32*)((u8*)frames + 4)), 0);
+        sizes[0] = texSize[4];
+        sizes[2] = texSize[5];
+        sizes[1] = texSize[4];
+        sizes[3] = texSize[5];
         break;
     case 4:
     case 8:
-        GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(&tmp[2], (void*)(*(u32*)((u8*)b + 4)), 0);
-        outv[0] = tmp[2];
-        outv[2] = tmp[3];
-        GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(&tmp[0], (void*)(*(u32*)((u8*)b + 0x1C)), 0);
-        tmp[2] = tmp[0];
-        tmp[3] = tmp[1];
-        outv[1] = tmp[0];
-        outv[3] = tmp[1];
+        GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(&texSize[2], (void*)(*(u32*)((u8*)frames + 4)), 0);
+        sizes[0] = texSize[2];
+        sizes[2] = texSize[3];
+        GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(&texSize[0], (void*)(*(u32*)((u8*)frames + 0x1C)), 0);
+        texSize[2] = texSize[0];
+        texSize[3] = texSize[1];
+        sizes[1] = texSize[0];
+        sizes[3] = texSize[1];
         break;
     }
-    *(u32*)out = *(u32*)&outv[0];
-    *(u32*)((char*)out + 4) = *(u32*)&outv[1];
-    *(u32*)((char*)out + 8) = *(u32*)&outv[2];
-    *(u32*)((char*)out + 12) = *(u32*)&outv[3];
+    *(u32*)outSize = *(u32*)&sizes[0];
+    *(u32*)((char*)outSize + 4) = *(u32*)&sizes[1];
+    *(u32*)((char*)outSize + 8) = *(u32*)&sizes[2];
+    *(u32*)((char*)outSize + 12) = *(u32*)&sizes[3];
 }
 #pragma pop
 /* nw4hbm::lyt::Window::GetFrameMaterial(u32) const: the material this window draws
