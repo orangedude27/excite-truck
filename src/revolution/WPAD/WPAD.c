@@ -5825,21 +5825,24 @@ s32 WPADiHIDParser(u8 port, u8* p_rpt) {
 }
 
 #pragma opt_propagation off
-void fn_80064A80(s32 chan, s32 param_2) {
+/* Extension-command reply callback: clears the extension command queue and updates the
+ * controller's extension-kind byte (0xfd = detached, 0xfc = attached) before notifying
+ * the callback held at +0x7E0.  A reply value of zero is ignored. */
+void fn_80064A80(s32 chan, s32 extResult) {
     WPADCB* cb = lbl_8038F4F0[chan];
-    if (param_2 != 0) {
-        u8 value;
+    if (extResult != 0) {
+        u8 extKind;
         WPADiClearQueue_80063BD4(&cb->extCmdQueue);
-        if (param_2 == -1) {
-            value = 0xfd;
+        if (extResult == -1) {
+            extKind = 0xfd;
         } else {
-            s32 val = *(s32*)((u8*)cb + 0x780);
-            s32 sign = (-val | val) >> 31;
-            value = (u8)sign & 0xfc;
+            s32 attached = cb->info.attach;
+            s32 sign = (-attached | attached) >> 31;
+            extKind = (u8)sign & 0xfc;
         }
-        ((u8*)cb)[0x801] = value;
+        cb->UNK_0x801 = extKind;
         if (*(s32*)((u8*)cb + 0x7e0) != 0) {
-            ((void (*)(s32, s32))*(void**)((u8*)cb + 0x7e0))(chan, value);
+            ((WPADCallback)*(void**)((u8*)cb + 0x7e0))(chan, extKind);
         }
     }
 }
