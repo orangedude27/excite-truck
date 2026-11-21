@@ -12,6 +12,8 @@ extern s32 lbl_8055E70C;
 extern s32 lbl_8055E714;
 extern void fn_80128668(s32);
 extern void fn_80128670(s32);
+extern f32 lbl_805626B0;
+extern f32 lbl_805626B4;
 extern void *lbl_8055E710;
 extern char lbl_80335EE0[];
 extern void fn_802E317C(const char *, ...);
