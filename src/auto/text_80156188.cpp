@@ -584,6 +584,9 @@ extern "C" void fn_80156AC0(void) {
 extern "C" void fn_80156B48(void) {
 }
 
+/* No-op virtual method at slot +0x18 of the PSSystem::SeqHeap vtables
+ * lbl_8032E448 and lbl_8032E46C (also +0x3C of the latter); its empty body
+ * simply returns. */
 extern "C" void fn_80156B4C(void) {
 }
 
