@@ -7,7 +7,7 @@ extern int fn_801E4F20(int);
 void fn_802CE860(int index) { fn_801E4F20(index * 4); }
 
 /* Finish the particle system's dynamic mesh pass: flush the accumulated
- * vertex/index buffers and drop the mesh mode back to idle via endMeshPass. */
+ * vertex/index buffers and drop the mesh mode back to idle (fn_801E4FF4). */
 void fn_802CE868(void) { fn_801E4FF4(); }
 
 extern void *fn_802C86DC(void);
