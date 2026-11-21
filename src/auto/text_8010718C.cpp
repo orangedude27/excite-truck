@@ -119,11 +119,14 @@ typedef struct { char file[0x38]; char cancel[0x28]; char async[0x28]; } Msgs801
 
 #pragma push
 #pragma opt_propagation off
-s32 nw4hbm::ut::FileStream::CancelAsync(CancelCallback callback, void* user) {
+s32 nw4hbm::ut::FileStream::CancelAsync(CancelCallback callback, void* userArg) {
+    /* Ask the stream to cancel a pending async read (virtual slot 0x54, v21) and
+     * confirm it supports async operations (slot 0x28, v10), panicking if either
+     * is unavailable. */
     static char sFile[0x38] = "ut_FileStream.cpp";
     static char sCancel[0x28] = "Stream don't support CANCEL function\n";
     static char sAsync[0x28] = "Stream don't support ASYNC function\n";
-    if (v21(callback, user) == 0) {
+    if (v21(callback, userArg) == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(sFile, 0x4E, sCancel);
     }
     if (v10() == 0) {
