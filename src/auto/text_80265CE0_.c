@@ -69,6 +69,8 @@ int fn_80265D7C(void) { return 0; }
 
 void fn_80265D84(void) {}
 
+/* No-op stub: called near the end of fn_80177F40's state transition; this build
+   leaves it empty. */
 void fn_80265D88(void) {}
 
 void fn_80265D8C(void) {}
