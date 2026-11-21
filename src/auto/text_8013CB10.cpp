@@ -1752,18 +1752,28 @@ extern "C" f32 fn_8013EFBC(f32 value) { return lbl_80561514 - value; }
 #pragma dont_inline reset
 
 #pragma scheduling invalid_target
-extern "C" unsigned int fn_8013EFC8(const TObj4C *arg0) {
+extern "C" unsigned int fn_8013EFC8(const void *arg0, int index) {
+    class Query {
+    public:
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+        virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+        virtual void d16(); virtual void callback(int);
+        virtual void d18(); virtual void d19(); virtual void d20(); virtual void d21();
+        virtual void d22(); virtual void d23(); virtual int query();
+    };
     f32 magnitude = (f32)__fabs((f64)*(const f32 *)((const u8 *)arg0 + 0x250));
     if (magnitude <= *(f32 *)&lbl_80558DC4) {
         if (*(const u8 *)((const u8 *)arg0 + 0x13C) != 0)
-            ((TObj4C *)arg0)->v4C();
+            ((Query *)arg0)->callback(index);
         s32 object = *(const s32 *)((const u8 *)arg0 + 0x140);
         if (object != 0)
             ((void (*)(s32, s32))fn_802AE220)(object, 0);
     } else {
-        ((TObj4C *)arg0)->v4C();
+        ((Query *)arg0)->callback(index);
     }
-    if (((TObj4C *)arg0)->v68())
+    if (((Query *)arg0)->query())
         fn_8001DFCC();
     return *(const s32 *)((const u8 *)arg0 + 0x134) != 4;
 }
@@ -3445,9 +3455,7 @@ extern "C" void fn_80142650(void *arg0) {
     if (*(u8 *)(base + 0xF8) != 0) {
         *(u8 *)(base + 0xF8) = 0;
         if (lbl_8055E1BC != 0) {
-            struct Float1 { f32 v; } sx;
-            sx.v = *(f32 *)(base + 0x94);
-            f32 x = sx.v;
+            f32 x = *(f32 *)(base + 0x94);
             f32 progress = lbl_805614AC;
             f32 f = x + lbl_8056149C / lbl_8056149C;
             progress = progress < f ? progress : f;
@@ -3730,7 +3738,7 @@ extern "C" u8 *fn_80142D3C(void *owner, s32 index) { return *(u8 **)((u8 *)owner
 extern "C" void fn_80142D4C(void *arg0) {
     u8 *self = (u8 *)arg0;
     {
-        register f32 spread = lbl_80561498;
+        register f32 spread = 0.5f;
         s32 groupOffset, groupIndex;
 
     lbl_8055E1BC = 0;
