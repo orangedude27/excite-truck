@@ -97,29 +97,31 @@ void fn_802022A0(int *handle) {
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma dont_inline on
-int fn_802022E4(const Vec *arg0) {
-    f32 temp_f1;
-    f32 var_f31;
-    s32 var_r31;
-    s32 var_r30;
-    s32 var_r29;
-    var_f31 = 1e8f;
-    var_r31 = 0;
-    var_r30 = 0;
-    var_r29 = 0;
+int fn_802022E4(const Vec *position) {
+    /* Returns the index of the modpool entry (gModpoolEntries[i], i < gModpoolCount)
+       whose stored position is closest to position, measured by squared distance. */
+    f32 distanceSquared;
+    f32 bestDistanceSq;
+    s32 byteOffset;
+    s32 nearestIndex;
+    s32 index;
+    bestDistanceSq = 1e8f;
+    byteOffset = 0;
+    nearestIndex = 0;
+    index = 0;
     goto test;
 loop:
-    temp_f1 = PSVECSquareDistance(arg0, (const Vec *)((char *)lbl_8055ECC4 + var_r31));
-    if (temp_f1 < var_f31) {
-        var_f31 = temp_f1;
-        var_r30 = var_r29;
+    distanceSquared = PSVECSquareDistance(position, (const Vec *)((char *)gModpoolEntries + byteOffset));
+    if (distanceSquared < bestDistanceSq) {
+        bestDistanceSq = distanceSquared;
+        nearestIndex = index;
     }
-    var_r31 += 0x10;
-    var_r29 += 1;
+    byteOffset += 0x10;
+    index += 1;
 test:
-    if (var_r29 < lbl_8055ECC0)
+    if (index < gModpoolCount)
         goto loop;
-    return var_r30;
+    return nearestIndex;
 }
 #pragma pop
 
