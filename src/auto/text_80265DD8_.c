@@ -416,75 +416,76 @@ void fn_80266150(void *cursor) {
     *(float *)((char *)cursor + 8) = limit;
     *(float *)((char *)cursor + 0xC) = scale;
 }
-void fn_80266170(void *arg0, int arg1, int arg2, int arg3, float farg0)
+/* Update an eased animation state from a new input value, integrating the delta into an accumulator and evaluating a clamped cubic curve. */
+void fn_80266170(void *state, int value, int hardReset, int resetScaleFlag, float scaleFactor)
 {
-  float temp_f0_2;
-  float var_f3;
-  char *new_var;
-  float temp_f4;
-  float var_f0;
-  long temp_r0_2;
-  int temp_r0;
-  float fb8;
-  float fr0;
-  float fb4;
-  float var_f4;
-  if (arg3 != 0)
+  float norm;
+  float output;
+  char *statePtr;
+  float curveX;
+  float scaled;
+  long oldAccum;
+  int newAccum;
+  float rangeMax;
+  float accumFloat;
+  float rangeMin;
+  float phase;
+  if (resetScaleFlag != 0)
   {
     register float reset_scale;
     register float reset_limit;
-    *((int *) (((char *) arg0) + 0)) = arg1;
-    *((int *) (((char *) arg0) + 4)) = 0;
+    *((int *) (((char *) state) + 0)) = value;
+    *((int *) (((char *) state) + 4)) = 0;
     reset_scale = lbl_8055C4BC;
     reset_limit = lbl_8055C4C0;
-    var_f0 = reset_scale * farg0;
-    var_f0 = (var_f0 < reset_limit) ? (var_f0) : (reset_limit);
-    *((float *) (((char *) arg0) + 8)) = var_f0;
+    scaled = reset_scale * scaleFactor;
+    scaled = (scaled < reset_limit) ? (scaled) : (reset_limit);
+    *((float *) (((char *) state) + 8)) = scaled;
   }
-  if (arg2 != 0)
+  if (hardReset != 0)
   {
-    *((int *) (((char *) arg0) + 0)) = arg1;
+    *((int *) (((char *) state) + 0)) = value;
     return;
   }
-  temp_r0 = *((int *) (((char *) arg0) + 0));
-  temp_r0_2 = *((int *) (((char *) arg0) + 4));
-  temp_r0 = arg1 - temp_r0;
-  new_var = ((char *) arg0) + 0;
-  *((int *) new_var) = arg1;
-  temp_r0 = temp_r0_2 + temp_r0;
-  *((int *) (((char *) arg0) + 4)) = temp_r0;
-  fr0 = (float) temp_r0;
-  fb8 = (float) lbl_8055C4B8;
-  fb4 = (float) lbl_8055C4B4;
-  temp_f0_2 = (fr0 - fb4) / (fb8 - fb4);
-  var_f4 = 1.0f;
-  var_f4 = (var_f4 < temp_f0_2) ? (var_f4) : (temp_f0_2);
-  var_f4 = (var_f4 > lbl_80563C20) ? (var_f4) : (lbl_80563C20);
-  var_f3 = lbl_80563C28;
-  temp_f4 = lbl_80563C20 + (var_f4 * lbl_80563C2C);
-  if (temp_f4 < var_f3)
+  newAccum = *((int *) (((char *) state) + 0));
+  oldAccum = *((int *) (((char *) state) + 4));
+  newAccum = value - newAccum;
+  statePtr = ((char *) state) + 0;
+  *((int *) statePtr) = value;
+  newAccum = oldAccum + newAccum;
+  *((int *) (((char *) state) + 4)) = newAccum;
+  accumFloat = (float) newAccum;
+  rangeMax = (float) lbl_8055C4B8;
+  rangeMin = (float) lbl_8055C4B4;
+  norm = (accumFloat - rangeMin) / (rangeMax - rangeMin);
+  phase = 1.0f;
+  phase = (phase < norm) ? (phase) : (norm);
+  phase = (phase > lbl_80563C20) ? (phase) : (lbl_80563C20);
+  output = lbl_80563C28;
+  curveX = lbl_80563C20 + (phase * lbl_80563C2C);
+  if (curveX < output)
   {
-    var_f4 = lbl_80563C2C;
+    phase = lbl_80563C2C;
   }
   else
-    if (temp_f4 > lbl_80563C2C)
+    if (curveX > lbl_80563C2C)
   {
-    var_f3 = lbl_80563C2C;
+    output = lbl_80563C2C;
   }
   else
-    if (temp_f4 > lbl_80563C20)
+    if (curveX > lbl_80563C20)
     {
-      float p = lbl_80563C30 * temp_f4;
-      p *= temp_f4;
-      var_f3 = temp_f4 * p + ((3.0f * temp_f4) * temp_f4);
+      float p = lbl_80563C30 * curveX;
+      p *= curveX;
+      output = curveX * p + ((3.0f * curveX) * curveX);
     }
   else
   {
-    float p = lbl_80563C30 * temp_f4;
-    p *= temp_f4;
-    var_f3 = temp_f4 * p - ((3.0f * temp_f4) * temp_f4);
+    float p = lbl_80563C30 * curveX;
+    p *= curveX;
+    output = curveX * p - ((3.0f * curveX) * curveX);
   }
-  *((float *) (((char *) arg0) + 0xC)) = var_f3;
+  *((float *) (((char *) state) + 0xC)) = output;
 }
 
 void fn_802662D8(float *params, float *outPoint, float *basePoint, float *direction, int count) {
@@ -535,7 +536,7 @@ void fn_80266388(int unused, int mode, float *matrix, void *pos, void *owner) {
         base = lbl_8055C4CC + (r.p[7] + r.p[6] * r.f);
         count = ((int (*)(void))fn_8026A2C8)();
         best = lbl_8055F49C;
-        zero = lbl_80563C20;
+        zero = 0.0f;
         sel = 0;
         for (i = 0; i < count; i++) {
             VObj_80266388 *ob = (VObj_80266388 *)fn_801B2EC0(i);
@@ -608,7 +609,7 @@ void fn_80266388(int unused, int mode, float *matrix, void *pos, void *owner) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_80266A0C(register float *fs, int unused, register void *pos) {
+void fn_80266A0C(float *fs, int unused, void *pos) {
     float *opos;
     void *cam;
     char *sel;
@@ -623,6 +624,7 @@ void fn_80266A0C(register float *fs, int unused, register void *pos) {
     float p2[2];
     float q[2];
     float t9, t11, tq0, tq2;
+    void *position = pos;
     fn_80274F74();
     if (fn_801769F8() == 0) {
         VObj_80266388 *camobj = *(VObj_80266388 **)(*(char **)((char *)fs + 0x140) + 0x270);
@@ -649,7 +651,7 @@ void fn_80266A0C(register float *fs, int unused, register void *pos) {
                 d += *(float *)(*(char **)((char *)cam + 0x2C) + idx * 4 + 8);
             }
             if (d * d < lbl_8055F49C) {
-                float sq = PSVECSquareDistance(pos, opos);
+                float sq = PSVECSquareDistance(position, opos);
                 if (sq < best) {
                     best = sq;
                     sel = o;
@@ -761,12 +763,22 @@ extern float fn_801EA0E8(float, float);
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_802671CC(void *arg0, int arg1) {
-    struct Scratch { float output[3]; float input[3]; } scratch;
+    struct Scratch {
+        float output[3];
+        float input[3];
+    } scratch;
     float *in = scratch.input;
     float *out = scratch.output;
     float *matrix;
-    float z, delta, xstep, widthValue, heightValue, ystep, best;
+    float z;
+    float delta;
+    float xstep;
+    float widthValue;
+    float heightValue;
+    float ystep;
+    float best;
     int i;
+
     matrix = (float *)arg0;
     z = *(float *)((char *)arg0 + 0x48);
     delta = z * *(float *)((char *)arg0 + 0x34);
@@ -776,11 +788,20 @@ void fn_802671CC(void *arg0, int arg1) {
     ystep = widthValue * delta / heightValue;
     best = lbl_80563C20;
     i = 0;
+
     for (; i < 4; i++) {
-        float x, y, heightDiff;
-        x = (i & 1) ? xstep : -xstep;
-        y = (i & 2) ? ystep : -ystep;
-        in[0] = x; in[1] = y; in[2] = z;
+        float x;
+        float y;
+        float heightDiff;
+
+        if ((i & 1) != 0) x = xstep;
+        else x = -xstep;
+        if ((i & 2) != 0) y = ystep;
+        else y = -ystep;
+
+        in[0] = x;
+        in[1] = y;
+        in[2] = z;
         if (out == in) {
             out[0] = x * matrix[0] + y * matrix[3] + z * matrix[6];
             out[1] = x * matrix[1] + y * matrix[4] + z * matrix[7];
@@ -790,10 +811,13 @@ void fn_802671CC(void *arg0, int arg1) {
             out[1] = in[0] * matrix[1] + in[1] * matrix[4] + in[2] * matrix[7];
             out[2] = in[0] * matrix[2] + in[1] * matrix[5] + in[2] * matrix[8];
         }
-        out[0] += matrix[9]; out[1] += matrix[10]; out[2] += matrix[11];
+        out[0] += matrix[9];
+        out[1] += matrix[10];
+        out[2] += matrix[11];
         heightDiff = fn_801EA0E8(out[0], out[2]) - out[1];
         if (best > heightDiff) best = heightDiff;
     }
+
     if (*(int *)((char *)arg0 + 0x58) != 0x11 &&
         *(int *)((char *)arg0 + 0x58) != 0x15) {
         *(float *)((char *)arg0 + 0x28) += best;
@@ -1648,8 +1672,8 @@ void fn_80268BD4(void *out, int arg1, float t, float angle) {
     x = inp[2] + t * d2;
     y = inp[3] + t * d3;
     z = inp[0] + t * d0;
-    sumSq = x * x + y * y;
     w = inp[1] + t * d1;
+    sumSq = x * x + y * y;
     vec[0] = x;
     vec[1] = y;
     vec[2] = z;
@@ -1999,10 +2023,10 @@ void fn_802693F4(char *p, unsigned char *flag, int arg) {
 
 void fn_80269BB0(int idx, unsigned int sel, int *out, float *outf) {
 #pragma use_lmw_stmw off
-#pragma scheduling on
     Rec2_80269BB0 r;
     Rec2_80269BB0 *p = (Rec2_80269BB0 *)lbl_80499080 + idx;
-    COPYF(w0); COPYF(w4); COPYF(f8); COPYF(fc);
+    r.w0 = ((Rec2_80269BB0 *)lbl_80499080)[idx].w0;
+    COPYF(w4); COPYF(f8); COPYF(fc);
     COPYF(w10); COPYF(w14); COPYF(w18); COPYF(w1c);
     COPYF(w20); COPYF(w24); COPYF(w28); COPYF(w2c);
     COPYF(w30); COPYF(w34); COPYF(w38); COPYF(w3c);
@@ -2117,33 +2141,33 @@ void fn_8026A2C8(void) {
 #pragma scheduling on
 void fn_8026A2CC(int *arg0, int arg1, float arg2) {
     int a, b, c, d, e;
-    int *dst;
+    Rec2_80269BB0 *dst;
     a = arg0[0];
     b = arg0[1];
     c = arg0[2];
     d = arg0[3];
-    dst = (int *)((char *)lbl_80499080 + arg1 * 0x228 + 0x1a4);
+    dst = (Rec2_80269BB0 *)(lbl_80499080 + arg1 * 0x228);
     e = arg0[4];
-    dst[0] = a;
+    dst->w1a4 = a;
     a = arg0[5];
-    dst[1] = b;
+    dst->w1a8 = b;
     b = arg0[6];
-    dst[2] = c;
+    dst->w1ac = c;
     c = arg0[7];
-    dst[3] = d;
+    dst->w1b0 = d;
     d = arg0[8];
-    dst[4] = e;
+    dst->w1b4 = e;
     e = arg0[9];
-    dst[5] = a;
+    dst->w1b8 = a;
     a = arg0[10];
-    dst[6] = b;
+    dst->w1bc = b;
     b = arg0[11];
-    dst[7] = c;
-    dst[8] = d;
-    dst[9] = e;
-    dst[10] = a;
-    dst[11] = b;
-    *(float *)(dst + 12) = arg2;
+    dst->w1c0 = c;
+    dst->w1c4 = d;
+    dst->w1c8 = e;
+    dst->w1cc = a;
+    dst->w1d0 = b;
+    dst->f1d4 = arg2;
 }
 #pragma cplusplus reset
 /* Return the index of the object the given camera is following (Camera.subject). */
