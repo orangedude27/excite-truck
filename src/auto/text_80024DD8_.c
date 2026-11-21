@@ -40,8 +40,12 @@ int memcmp(const unsigned char *arg0, const unsigned char *arg1, unsigned int ar
 }
 
 void __copy_longs_aligned(unsigned char *dst, const unsigned char *src, unsigned int n) {
+    unsigned int *dw;
     unsigned int align = (-(unsigned int)dst) & 3;
     unsigned int blocks, words;
+    const unsigned int *sw;
+    unsigned char *tailDst;
+    const unsigned char *tailSrc;
     src--;
     dst--;
     if (align) {
@@ -49,22 +53,23 @@ void __copy_longs_aligned(unsigned char *dst, const unsigned char *src, unsigned
         do { *++dst = *++src; } while (--align);
     }
     blocks = n >> 5; src -= 3; dst -= 3;
+    sw = (const unsigned int *)src;
+    dw = (unsigned int *)dst;
     if (blocks) {
-        const unsigned int *sw = (const unsigned int *)src;
-        unsigned int *dw = (unsigned int *)dst;
         do {
             dw[1]=sw[1]; dw[2]=sw[2]; dw[3]=sw[3]; dw[4]=sw[4];
             dw[5]=sw[5]; dw[6]=sw[6]; dw[7]=sw[7]; dw[8]=sw[8];
             sw += 8; dw += 8;
         } while (--blocks);
-        src = (const unsigned char *)sw; dst = (unsigned char *)dw;
     }
     words = (n >> 2) & 7;
     if (words) {
-        do { *(unsigned int *)(dst+4)=*(const unsigned int *)(src+4); src+=4; dst+=4; } while (--words);
+        do { dw[1] = sw[1]; sw++; dw++; } while (--words);
     }
-    n &= 3; src+=3; dst+=3;
-    if(n) do { *++dst=*++src; } while(--n);
+    n &= 3;
+    tailSrc = (const unsigned char *)sw + 3;
+    tailDst = (unsigned char *)dw + 3;
+    if (n) do { *++tailDst = *++tailSrc; } while (--n);
 }
 
 /* Copies n bytes backward from aligned end pointers, using byte alignment, 32-byte blocks, 4-byte words, then tail bytes. */
