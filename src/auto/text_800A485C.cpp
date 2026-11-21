@@ -16380,7 +16380,8 @@ loop_152:
                 var_r17_6 += 2;
                 var_r18_4 += 4;
                 var_r11_5 += 1;
-            }
+                var_ctr_10 -= 1;
+            } while (var_ctr_10 != 0);
             var_r12_11 = arg3 + 0x24;
             var_r18_5 = 0x24;
             var_r22 = arg_sp8 + 0x24;
