@@ -6,8 +6,6 @@
 typedef enum {
     SI_ERROR_NOREP = (1 << 3),
     SI_ERROR_BUSY = (1 << 7),
-    SI_WIRELESS_LITE = (1 << 18),
-    SI_WIRELESS_CONT = (1 << 19),
 } SIStatus;
 
 typedef struct SIPacket {
