@@ -11312,6 +11312,7 @@ static inline void btm_pm_cont_rswitch_inl(u8 *link, u8 *conn, u16 handle, u8 st
 void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
     extern char lbl_80316530[];
     extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
+    union AddrConv { u32 u; u8 *p; };
     u8 *acl, *pm, *reg, *dev, *addr, *link;
     u32 offset;
     int index, i;
@@ -11341,7 +11342,11 @@ void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
         if (reg[0x558] & 2)
             (*(void (**)(u8 *, u8, u16, u8))(reg + 0x554))(acl + 0x3c, mode, interval, status);
     }
-    link = (u8 *)((u32)lbl_803C0F78 + offset);
+    {
+        union AddrConv c;
+        c.u = (u32)lbl_803C0F78 + offset;
+        link = c.p;
+    }
     if (link[0x14f] == 1) {
         addr = link + 0x3c;
         dev = (u8 *)btm_find_dev(addr);
