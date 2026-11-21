@@ -98,7 +98,9 @@ void fn_802C1C34(void *arg0, void *obj, int slot) {
     lbl_804C1050[slot*2+1] = lbl_8055FB38;
 }
 #pragma pop
-void fn_802C1F80(int arg0) {}
+void fn_802C1F80(int allocation) {
+    /* No-op finalizer: receives an allocation header (userData - 4) but does nothing. */
+}
 
 #pragma dont_inline on
 /* No-op finalizer: accepts an allocation-header pointer and intentionally does nothing (placeholder cleanup callback). */
