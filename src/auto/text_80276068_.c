@@ -750,9 +750,8 @@ extern float lbl_80564070, lbl_80564074;
 extern int sprintf(char*, const char*, ...);
 extern char *strcpy(char*, const char*);
 #pragma push
-#pragma scheduling 603
+#pragma scheduling 604
 void fn_80277828(void) {
-    register int f59c;
     register struct CameraEntry *entry;
     register int i;
     register int one;
@@ -798,8 +797,7 @@ void fn_80277828(void) {
         entry->inUse = one;
         sprintf(entry->name, fmt);
     }
-    f59c = lbl_8055F59C;
-    if (f59c == 0) {
+    if (lbl_8055F59C == 0) {
         i = lbl_8055F5A0;
         entry = (struct CameraEntry *)&lbl_8049FEE0 + i;
         lbl_8055F59C = (int)entry;
