@@ -2,6 +2,14 @@
  * line metrics and the formatted/counted text drawers used by the UI widgets. */
 
 #include <types.h>
+
+/* Alignment flags, shared with the UI text style's horizontal/vertical flags. */
+#define HALIGN_RIGHT   2
+#define HALIGN_CENTER  4
+#define VALIGN_TOP     8
+#define VALIGN_MIDDLE  0x10
+#define VALIGN_BOTTOM  0x40
+
 extern s32 fn_80128668(s32 *);
 extern s32 fn_802C4C80(s32);
 extern s32 fn_802C4FF8(const char *);
