@@ -64,7 +64,7 @@ extern "C" void *fn_80209DE4(void *self, int shouldDelete) {
 #define kVtable    lbl_8033C258
 #define freeObject fn_80128668
     /* Destroy the squeal object, releasing its owned child objects and optionally freeing it. */
-    struct V { virtual void c(int); };
+    struct RefCounted { virtual void release(int); };
     void *sfxHandle;
     void *roadSound;
     if (self != 0) {
@@ -72,14 +72,14 @@ extern "C" void *fn_80209DE4(void *self, int shouldDelete) {
         *(void **)self = (void *)kVtable;
         if (sfxHandle != 0) {
             if (sfxHandle != 0) {
-                ((struct V *)sfxHandle)->c(1);
+                ((struct RefCounted *)sfxHandle)->release(1);
             }
             *(void **)((char *)self + 8) = 0;
         }
         roadSound = *(void **)((char *)self + 0xC);
         if (roadSound != 0) {
             if (roadSound != 0) {
-                ((struct V *)roadSound)->c(1);
+                ((struct RefCounted *)roadSound)->release(1);
             }
         }
         if (shouldDelete > 0) {
