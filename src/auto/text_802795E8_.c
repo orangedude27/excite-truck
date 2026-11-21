@@ -422,5 +422,8 @@ void fn_80279C00(unsigned char *entry, unsigned char *buffer) {
     entry[0x2B4] = buffer[0x2B0];
     entry[0x2B5] = buffer[0x2B1];
 }
+/* Tail-call wrapper: forwards its buffer pointer (left in r3) to fn_802795E8,
+   which clears and initializes the 0x2B4-byte colour-table blob held at +0x1E44
+   of the parent object. */
 void fn_80279CD8(void) { fn_802795E8(); }
 
