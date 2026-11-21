@@ -1409,23 +1409,34 @@ extern void fn_802D65F8(s32, s32);
 extern void fn_802E317C(const char *, ...);
 extern const char lbl_8034C440[];
 #pragma scheduling invalid_target
-void fn_802D6B80(u8 *arg0, s32 arg1, s32 arg2) {
+void fn_802D6B80(u8 *surfData, s32 modelBase, s32 name) {
+    extern s32 fn_802D62E4(void *);
+    extern void fn_802D65F8(s32, s32);
+    extern void fn_802E317C(const char *, ...);
+    extern const char lbl_8034C440[];
+#define IsKnownSurfFormat fn_802D62E4
+#define ConvertSurfData   fn_802D65F8
+#define Panic             fn_802E317C
+#define kBadSurfTypeMsg   lbl_8034C440 /* "gx: %s has bad surf type %s" */
+    /* RealName: LoadSurface. Byte-swap a model surface's 4-byte type code; if it
+       is the supported format convert the surface data in place, otherwise
+       panic reporting the offending type as a string. */
     union Buf { u32 word; u8 bytes[5]; } buf;
     s32 result;
     u8 t;
-    t = arg0[0];
-    arg0[0] = arg0[3];
-    arg0[3] = t;
-    t = arg0[1];
-    arg0[1] = arg0[2];
-    arg0[2] = t;
-    result = fn_802D62E4(arg0);
+    t = surfData[0];
+    surfData[0] = surfData[3];
+    surfData[3] = t;
+    t = surfData[1];
+    surfData[1] = surfData[2];
+    surfData[2] = t;
+    result = IsKnownSurfFormat(surfData);
     if (result != 0) {
-        ((void (*)(s32, s32, s32))fn_802D65F8)(result, arg1, arg2);
+        ((void (*)(s32, s32, s32))ConvertSurfData)(result, modelBase, name);
     } else {
         u8 *p = buf.bytes;
         u8 x, y;
-        buf.word = *(u32 *)arg0;
+        buf.word = *(u32 *)surfData;
         x = p[0];
         p[0] = p[3];
         p[3] = x;
@@ -1433,8 +1444,12 @@ void fn_802D6B80(u8 *arg0, s32 arg1, s32 arg2) {
         p[1] = p[2];
         p[2] = y;
         buf.bytes[4] = 0;
-        fn_802E317C(lbl_8034C440, arg2, &buf);
+        Panic(kBadSurfTypeMsg, name, &buf);
     }
+#undef IsKnownSurfFormat
+#undef ConvertSurfData
+#undef Panic
+#undef kBadSurfTypeMsg
 }
 #pragma scheduling on
 void fn_802D6C44(void) {
