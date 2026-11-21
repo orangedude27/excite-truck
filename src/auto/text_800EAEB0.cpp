@@ -744,6 +744,9 @@ static inline void *FrameHeapDestroy_GetBack(FrameHeapDestroyView *state, FrameH
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void *__dt__Q46nw4hbm3snd6detail9FrameHeapFv(void *self, s32 flag) {
+    /* FrameHeap destructor: call every registered destroy callback, drop the
+     * destroy-list entries, free and destroy the frame heap, then destroy the
+     * base LinkListImpl and free the object when flag is positive. */
     if (self != 0) {
         FrameHeapDestroyView *state = (FrameHeapDestroyView *)self;
         void *heap = state->heap;
@@ -751,31 +754,31 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail9FrameHeapFv(void *self, s32 flag) {
         if (heap == 0) goto done;
         if (state->count != 0) {
             struct { FrameHeapDestroyListView *p; } headBox;
-            FrameHeapDestroyListView *&head = headBox.p;
-            head = &state->list;
+            FrameHeapDestroyListView *&listHead = headBox.p;
+            listHead = &state->list;
             goto loop_test;
 loop_body:
             {
-                void *list = FrameHeapDestroy_GetBack(state, head);
+                void *list = FrameHeapDestroy_GetBack(state, listHead);
                 if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
                 if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
                 if (list != 0) {
                     struct { void *p; } nodeBox;
-                    void *&node = nodeBox.p;
-                    struct { void *p; } lb;
-                    void *&l = lb.p;
-                    l = list;
-                    node = (u8 *)l + 0xC;
-                    while (node != *(void **)((u8 *)l + 12)) {
+                    void *&destroyNode = nodeBox.p;
+                    struct { void *p; } listBox;
+                    void *&destroyList = listBox.p;
+                    destroyList = list;
+                    destroyNode = (u8 *)destroyList + 0xC;
+                    while (destroyNode != *(void **)((u8 *)destroyList + 12)) {
                         void (*callback)(void *, void *, void *);
-                        node = *(void **)((u8 *)node + 4);
-                        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F5C, 0x23D, (const char *)lbl_80322F38);
-                        if (node != 0) {
-                            callback = *(void (**)(void *, void *, void *))((u8 *)node + 0xC);
-                            if (callback != 0) callback((u8 *)node + 0x20, *(void **)((u8 *)node + 8), *(void **)((u8 *)node + 0x10));
+                        destroyNode = *(void **)((u8 *)destroyNode + 4);
+                        if (destroyNode == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F5C, 0x23D, (const char *)lbl_80322F38);
+                        if (destroyNode != 0) {
+                            callback = *(void (**)(void *, void *, void *))((u8 *)destroyNode + 0xC);
+                            if (callback != 0) callback((u8 *)destroyNode + 0x20, *(void **)((u8 *)destroyNode + 8), *(void **)((u8 *)destroyNode + 0x10));
                         }
                     }
-                    if ((u8 *)l + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)l + 8, 0);
+                    if ((u8 *)destroyList + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)destroyList + 8, 0);
                 }
                 if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
                 Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(&state->count, list);
@@ -2597,7 +2600,7 @@ extern "C" void* fn_800EE5E8(void*, void*);
 #pragma push
 #pragma scheduling on
 #pragma use_lmw_stmw off
-extern "C" void fn_800EEBA8(void* arg0, u64 unused1, u64 unused2) {
+extern "C" void fn_800EEBA8(void* __restrict arg0, u64 unused1, u64 unused2) {
     extern u8 lbl_803238F8[];
     const char* message = (const char*)lbl_803238F8;
     u8 sampleBuffer[0x48];
