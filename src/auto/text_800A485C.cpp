@@ -26020,6 +26020,9 @@ extern "C" void fn_800CF170(void *homeButton) {
     fn_800FA350();
 }
 
+/* No-op virtual stub: empty method slot at +0x18 of the homebutton vtables
+ * (e.g. lbl_8031E700), grouped with fn_800CF280/fn_800CF284/fn_800CF288 and
+ * fn_800CF28C/fn_800CF290. Calling it does nothing. */
 void fn_800CF27C(void) {
 
 }
