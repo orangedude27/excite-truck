@@ -41,12 +41,13 @@ void *fn_8012F31C(s32 bufferSize) {
 }
 
 #pragma scheduling invalid_target
-void fn_8012F384(void *arg0) {
-    /* Destroy an object: free its owned resource at +0x0, clear the pointer at +0x4, then delete the object. */
-    if (arg0 != 0) {
-        fn_80128670(*(s32 *)arg0);
-        ((s32 *)arg0)[1] = 0;
-        ((void (*)(void *))fn_80128668)(arg0);
+/* MemStream_Destroy: free a stream's backing buffer (delete[]), clear its
+   stored size, then delete the MemStream object itself. */
+void fn_8012F384(MemStream *stream) {
+    if (stream != 0) {
+        fn_80128670((s32)stream->buffer);
+        stream->size = 0;
+        ((void (*)(void *))fn_80128668)(stream);
     }
 }
 #pragma scheduling on
