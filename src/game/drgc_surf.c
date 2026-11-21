@@ -26,9 +26,11 @@ extern u8 lbl_804CA438[];
 extern s32 lbl_8055FD1C;
 extern u8 lbl_8055FDE4;
 extern f32 lbl_8055FDE0;
-extern s32 lbl_8055FDF0;
-extern s32 lbl_8055FDF4;
-extern s32 lbl_8055FDF8;
+/* Vertex-format display-list cache: a table of CacheEntry at lbl_804CA438,
+ * a 0x4000-byte recording buffer and the number of lists cached so far. */
+extern s32 lbl_8055FDF0;  // number of cached vertex-format lists
+extern s32 lbl_8055FDF4;  // start of the display-list recording buffer
+extern s32 lbl_8055FDF8;  // next free byte in that buffer
 extern u8 lbl_8034C3DC[];
 extern void fn_801282EC(s32);
 extern void *fn_8012850C(s32, void *);
@@ -842,21 +844,16 @@ void fn_802D5838(void *arg0)
     L = lbl_804C5690;
     if (v == m)
     {
-      f32 l1 = L[1];
-      f32 a1 = m[1];
-      f32 l4 = L[4];
-      f32 a0 = m[0];
-      f32 l0 = L[0];
-      f32 l3 = L[3];
-      f32 a2 = m[2];
-      f32 l2 = L[2];
-      f32 l5 = L[5];
-      f32 l6 = L[6];
-      f32 l7 = L[7];
-      f32 l8 = L[8];
-      f32 o0 = (a2 * l2) + ((a0 * l0) + (a1 * l1));
-      f32 o1 = (a2 * l5) + ((a0 * l3) + (a1 * l4));
-      f32 o2 = (a2 * l8) + ((a0 * l6) + (a1 * l7));
+      f32 a0, a1, a2;
+      f32 l0, l1, l2, l3, l4, l5, l6, l7, l8;
+      f32 o0, o1, o2;
+      l1 = L[1]; l4 = L[4]; l7 = L[7];
+      l0 = L[0]; l3 = L[3]; l6 = L[6];
+      l2 = L[2]; l5 = L[5]; l8 = L[8];
+      a0 = m[0]; a1 = m[1]; a2 = m[2];
+      o0 = (a2 * l2) + ((a0 * l0) + (a1 * l1));
+      o1 = (a2 * l5) + ((a0 * l3) + (a1 * l4));
+      o2 = (a2 * l8) + ((a0 * l6) + (a1 * l7));
       v[0] = o0;
       v[1] = o1;
       v[2] = o2;
@@ -866,7 +863,7 @@ void fn_802D5838(void *arg0)
       f32 l0, l1, l2, l3, l4, l5, l6, l7, l8;
       l1 = L[1]; l0 = L[0]; l2 = L[2]; l4 = L[4]; l3 = L[3]; l5 = L[5]; l7 = L[7]; l6 = L[6]; l8 = L[8];
       v[0] = (m[2] * l2) + ((m[0] * l0) + (m[1] * l1));
-      v[1] = (m[2] * l5) + ((m[0] * l3) + (m[1] * l4));
+      v[1] = (m[2] * l5) + ((m[1] * l4) + (m[0] * l3));
       new_var = m[1];
       v[2] = (m[2] * l8) + ((m[0] * l6) + (new_var * l7));
     }
