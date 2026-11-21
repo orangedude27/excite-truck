@@ -1123,8 +1123,10 @@ int fn_802CFF64(int size) {
 }
 
 #pragma dont_inline on
-int fn_802CFFA0(int arg0) {
-    return fn_802CFF64(arg0);
+/* Allocate `size` bytes from the GX dynamic-data display-list buffer by
+ * forwarding to fn_802CFF64. Kept out-of-line so the call is a tail branch. */
+int fn_802CFFA0(int size) {
+    return fn_802CFF64(size);
 }
 #pragma dont_inline reset
 
@@ -3125,10 +3127,11 @@ void fn_802D3420(void) {
     lbl_804C9778[0] = 1;
     lbl_8055FD70 = 1;
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802D362C(s32 arg0) {
-    unsigned char color[4];
+    volatile unsigned char color[4];
     unsigned int packed;
+    void *colorPtr;
 
     GXSetTexCopySrc((u16)*(int *)(lbl_804C9778 + 0x1C), (u16)*(int *)(lbl_804C9778 + 0x20), (u16)*(int *)(lbl_804C9778 + 0x24), (u16)*(int *)(lbl_804C9778 + 0x28));
     GXSetTexCopyDst((u16)*(int *)(lbl_804C9778 + 0x24), (u16)*(int *)(lbl_804C9778 + 0x28), 0x27, 0);
@@ -3148,15 +3151,15 @@ void fn_802D362C(s32 arg0) {
     GXSetBlendMode(1, 4, 5, 3);
     GXSetZMode(0, 3, 0);
     GXSetTexCoordGen2(0, 1, 0xC, 0x3C, 0, 0x7D);
+    colorPtr = (void *)color;
     packed = ((unsigned int (*)(unsigned int))fn_802CEA1C)((unsigned int)arg0);
-    color[0] = (unsigned char)(packed >> 24);
-    color[1] = (unsigned char)(packed >> 16);
-    color[2] = (unsigned char)(packed >> 8);
-    color[3] = (unsigned char)packed;
-    GXSetTevColor(1, color);
+    color[3] = packed;
+    color[0] = packed >> 24;
+    color[1] = packed >> 16;
+    color[2] = packed >> 8;
+    ((void (*)(int, void *))GXSetTevColor)(1, colorPtr);
     fn_802D3420();
 }
-#pragma scheduling reset
 
 // Depth queries, pool at 0x804C9984 (lbl_804C9984). fn_802D39A4 takes a free
 // query, fn_802D3A5C projects a world point into it (pixel x/y + its 24-bit
