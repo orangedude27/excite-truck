@@ -363,7 +363,7 @@ extern "C" void fn_801A67C4(void *self) {
 extern int lbl_8055E3C4;
 extern double lbl_80562440;
 #pragma push
-#pragma processor 7400
+#pragma processor 750
 #pragma ppc_psq_save off
 #pragma cplusplus on
 extern "C" void fn_8017A580(void *);
@@ -371,29 +371,10 @@ extern "C" void fn_801A69F4(void *arg0, float *arg1)
 {
   char *p = (char *) arg0;
   int k = lbl_8055E3C4;
-  float t[3];
-  float out0[3];
-  float outA[3];
-  float outB[3];
+  float t[3], out0[3], outA[3], outB[3];
   float a0;
-  double a;
-  double b;
-  double c;
-  double d;
-  double x;
-  double z;
-  double ab;
-  double ak;
-  double dk;
-  double y;
-  double da;
-  double xden;
-  double xnum;
-  double ka;
-  double kb;
-  double ynum;
-  double znum;
-  double yden;
+  double a, b, c, d, x, z;
+  double ab, ak, dk, y, da, xden, xnum, ka, kb, ynum, znum, yden;
   a0 = fn_801A63C4(k, *((int *) ((*((char **) (p + 0x2700))) + 4)));
   t[0] = fn_801A6370(*((float *) ((*((char **) (p + 0x2700))) + 0x1e)), *((float *) (p + 0x2708)), *((float *) (p + 0x272c)), a0);
   t[1] = fn_801A6370(*((float *) ((*((char **) (p + 0x2700))) + 0x22)), *((float *) (p + 0x270c)), *((float *) (p + 0x2730)), a0);
