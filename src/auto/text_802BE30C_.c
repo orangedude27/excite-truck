@@ -79,52 +79,54 @@ s32 fn_802BE378(s32 cellSize) {
 }
 
 #pragma scheduling invalid_target
+/* Load faninfo.fnf (magic FINF, version 2), byte-swap its words when asked and
+   patch the fan-cell grids in lbl_804C06E0 with the per-cell field bits. */
 void fn_802BE38C(void) {
-    void *buf;
+    void *finfo;
     u32 params[3];
-    u32 name;
-    u32 *data;
-    u32 index;
-    u32 n;
-    u8 *p;
-    u32 i;
-    s32 j;
+    u32 fileName;
+    u32 *cursor;
+    u32 cellSize;
+    u32 count;
+    u8 *bytes;
+    u32 wordIndex;
+    s32 cellIndex;
 
-    name = (u32)lbl_8034AC68;
-    fn_8012E96C(name);
+    fileName = (u32)lbl_8034AC68;
+    fn_8012E96C(fileName);
     lbl_8055FACC = 0;
-    buf = (void *)fn_8012C370(name, 0x46494E46, (s32)&params[2], (s32)&params[1], 0, (s32)&params[0]);
-    if (buf != NULL) {
+    finfo = (void *)fn_8012C370(fileName, 0x46494E46, (s32)&params[2], (s32)&params[1], 0, (s32)&params[0]);
+    if (finfo != NULL) {
         if (params[2] == 2) {
-            data = (u32 *)buf;
+            cursor = (u32 *)finfo;
             if (*(u8 *)&params[0] != 0) {
-                p = (u8 *)buf;
-                for (i = 0; i < (params[1] >> 2); i++) {
-                    u8 t = p[0];
-                    p[0] = p[3];
-                    p[3] = t;
-                    t = p[1];
-                    p[1] = p[2];
-                    p[2] = t;
-                    p += 4;
+                bytes = (u8 *)finfo;
+                for (wordIndex = 0; wordIndex < (params[1] >> 2); wordIndex++) {
+                    u8 t = bytes[0];
+                    bytes[0] = bytes[3];
+                    bytes[3] = t;
+                    t = bytes[1];
+                    bytes[1] = bytes[2];
+                    bytes[2] = t;
+                    bytes += 4;
                 }
             }
-            while (((FanHeader *)data)->index != 0) {
-                FanHeader *h = (FanHeader *)data;
-                n = h->count;
-                index = h->index;
-                data += 2;
-                for (j = 0; j < (s32)n; j++) {
-                    FanEntry *e = (FanEntry *)lbl_804C06E0[index] + j;
-                    e->field = (e->field & 0xFF800200) | (*data & 0x7FFDFF);
-                    data++;
+            while (((FanHeader *)cursor)->index != 0) {
+                FanHeader *h = (FanHeader *)cursor;
+                count = h->count;
+                cellSize = h->index;
+                cursor += 2;
+                for (cellIndex = 0; cellIndex < (s32)count; cellIndex++) {
+                    FanEntry *e = (FanEntry *)lbl_804C06E0[cellSize] + cellIndex;
+                    e->field = (e->field & 0xFF800200) | (*cursor & 0x7FFDFF);
+                    cursor++;
                 }
             }
             lbl_8055FACC = 1;
         } else {
             fn_802E317C(lbl_8034AC74, params[2]);
         }
-        fn_8012C4D8(buf);
+        fn_8012C4D8(finfo);
     }
 }
 #pragma scheduling on
@@ -215,6 +217,7 @@ void *fn_802BE844(s32 x, s32 y, s32 cellSize) {
 }
 
 extern s32 fn_802BBD38(s16, s16, s32);
+#pragma scheduling on
 #pragma use_lmw_stmw off
 void fn_802BE8B4(s16 arg0, s16 arg1, s32 arg2) {
     typedef union { u32 raw; struct { u32 hi : 23; u32 best : 3; u32 lo : 6; } b; } Cell;
@@ -281,7 +284,7 @@ void fn_802BE8B4(s16 arg0, s16 arg1, s32 arg2) {
     entry->raw &= ~0x1c0U;
     entry->b.best = best;
 }
-#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_802BEAB0(void) {
     s32 step;
     s32 start;
