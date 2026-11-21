@@ -15,6 +15,11 @@ struct B5Obj {
 static inline void b5_dispatch(void *obj) {
     ((B5Obj *)obj)->call();
 }
+static inline void b5_dispatch_nonnull(void *obj) {
+    if (obj != 0) {
+        ((B5Obj *)obj)->call();
+    }
+}
 #pragma cplusplus off
 
 #pragma use_lmw_stmw off
