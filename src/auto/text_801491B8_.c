@@ -81,7 +81,7 @@ typedef struct { void *pad[14]; void *(*begin)(void *, void *, void *); } ObjFA;
 typedef struct { float x,y,z,w; u8 flag; } EntryFC;
 extern f32 fn_80144514(f32,f32,f32,f32,f32,f32);
 static inline void MatrixMul80151E60(f32 *dst, const f32 *left, const f32 *right) {
- if (dst == right || dst == left) {
+ if (dst == left || dst == right) {
  f32 t0 = fn_80144514(left[0],right[0],left[3],right[1],left[6],right[2]);
  f32 t3 = fn_80144514(left[0],right[3],left[3],right[4],left[6],right[5]);
  f32 t6 = fn_80144514(left[0],right[6],left[3],right[7],left[6],right[8]);
