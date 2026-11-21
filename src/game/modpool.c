@@ -12,7 +12,6 @@ extern void *fn_801284F8(int, void *);
 extern void *fn_8012850C(int, void *);
 extern void *fn_8013420C(int, int);
 extern void *fn_8002F37C(void *, int, int, int);
-extern char lbl_8055D0A8[];
 extern char lbl_8034BCE4[];
 extern char lbl_8034BCD8[];
 extern void fn_802CE474(void *);
