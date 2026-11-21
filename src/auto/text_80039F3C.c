@@ -156,6 +156,13 @@ int DVDCompareDiskID(const DVDDiskID *id1, const DVDDiskID *id2) {
 }
 #pragma opt_propagation off
 void __DVDShowFatalMessage(void) {
+#define sFatalMessages    lbl_802EE878
+#define kJapaneseLanguage 0
+#define kMaxLanguage      6
+#define kFallbackLanguage 1
+    /* Display the localized DVD fatal message: select the font encoding for
+       Japanese, pick the message for the system language (falling back to
+       English), and show it in white on black via OSFatal. */
     unsigned char color[4];
     unsigned int zero;
     int foreground;
@@ -167,19 +174,23 @@ void __DVDShowFatalMessage(void) {
     color[1] = lbl_80560B09;
     color[2] = lbl_80560B0A;
     color[3] = lbl_80560B0B;
-    if (SCGetLanguage() == 0) {
+    if (SCGetLanguage() == kJapaneseLanguage) {
         OSSetFontEncode(1);
     } else {
         OSSetFontEncode(0);
     }
-    if (SCGetLanguage() > 6) {
-        message = lbl_802EE878[1];
+    if (SCGetLanguage() > kMaxLanguage) {
+        message = sFatalMessages[kFallbackLanguage];
     } else {
-        message = lbl_802EE878[SCGetLanguage()];
+        message = sFatalMessages[SCGetLanguage()];
     }
     foreground = *(int *)color;
     background = zero;
     OSFatal(&foreground, &background, message);
+#undef sFatalMessages
+#undef kJapaneseLanguage
+#undef kMaxLanguage
+#undef kFallbackLanguage
 }
 #pragma opt_propagation reset
 extern void __DVDShowFatalMessage(void);
