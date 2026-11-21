@@ -47,6 +47,9 @@ void fn_8015EC50(unsigned short *out, void *stream) {
     *out = (sample - ((int *)((void **)stream)[11])[7]) / 60;
 }
 
+#define TUBE_TAG 0x54554245          /* little-endian fourcc "TUBE" */
+#define TUBE_COUNT_LIMIT 1000
+#define TUBE_VALUE_LIMIT lbl_805617D0 /* 0.9f */
 int fn_8015ECC0(void *arg0)
 {
   register int result = 0;
@@ -941,10 +944,7 @@ s32 fn_8015FBCC(void *arg0, s32 arg1, u8 arg2, s32 arg3) {
         p26 = (s32 *)((s32 **)lbl_8055E2A0)[0][idx];
         ((void (*)(void *, void *))fn_801606B8)(&sp8, *(void **)lbl_8055E2A0);
         hp = table;
-        ctr = 4;
-        do {
-            for (j = 0; j < 16; j++) { hp->x = lim; hp->y = 0; hp++; }
-        } while (--ctr);
+        for (j = 0; j < 64; j++) { hp->x = lim; hp->y = 0; hp++; }
         fn_8016060C(sp50, (void *)sp68);
         n = 0;
         do {
