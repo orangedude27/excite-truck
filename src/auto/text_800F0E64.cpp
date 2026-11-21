@@ -4060,24 +4060,28 @@ extern "C" s32 ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3s
 extern "C" const char lbl_80325110[];
 #pragma push
 #pragma use_lmw_stmw off
+/* WSD callback: for sound `index` and `noteIndex`, look up the wave's file address
+ * and read its sound info, note info and wave parameters out of the bank file into
+ * the caller's structs. Returns 0 if the archive/file reader or wave data is
+ * missing, or if any of the three reads fails. */
 s32 nw4hbm::snd::SoundArchivePlayer::WsdCallback::GetWaveSoundData(nw4hbm::snd::detail::WaveSoundInfo *info, nw4hbm::snd::detail::WaveSoundNoteInfo *noteInfo, nw4hbm::snd::detail::WaveData *waveData, const void *file, int index, int noteIndex, u32 waveIndex) const {
-    struct BankReader { void *a; void *b; void *c; } reader;
+    struct BankReader { void *a; void *b; void *c; } bankReader;
     u32 waveAddress;
-    void * volatile *archiveSlot = (void * volatile *)((u8 *)this + 4);
-    void *fileReader = *(void **)((u8 *)*archiveSlot + 0x10);
+    void * volatile *soundArchiveSlot = (void * volatile *)((u8 *)this + 4);
+    void *fileReader = *(void **)((u8 *)*soundArchiveSlot + 0x10);
     if ((fileReader == 0 ? 0 : fn_800F273C(fileReader)) == 0)
         return 0;
-    if (*(u32 *)((u8 *)*archiveSlot + 0x10) == 0)
+    if (*(u32 *)((u8 *)*soundArchiveSlot + 0x10) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x2AC, lbl_80325110);
-    waveAddress = detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl_800F6490(*archiveSlot, waveIndex);
+    waveAddress = detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl_800F6490(*soundArchiveSlot, waveIndex);
     if (waveAddress == 0)
         return 0;
-    __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(&reader, file);
-    if (ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail13WaveSoundInfoi(&reader, info, index) == 0)
+    __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(&bankReader, file);
+    if (ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail13WaveSoundInfoi(&bankReader, info, index) == 0)
         return 0;
-    if (ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail17WaveSoundNoteInfoii(&reader, noteInfo, index, noteIndex) == 0)
+    if (ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail17WaveSoundNoteInfoii(&bankReader, noteInfo, index, noteIndex) == 0)
         return 0;
-    return ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3snd6detail8WaveDataPCv(&reader, *(s32 *)noteInfo, waveData, (const void *)waveAddress);
+    return ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3snd6detail8WaveDataPCv(&bankReader, *(s32 *)noteInfo, waveData, (const void *)waveAddress);
 }
 
 extern "C" s32 fn_800F73E4(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4)
