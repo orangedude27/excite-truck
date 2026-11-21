@@ -525,18 +525,15 @@ void fn_802C8BD0(int texSlot) {
 
 #pragma use_lmw_stmw off
 void fn_802C8C04(int arg0) {
-    unsigned int *dst = lbl_804C13E0;
+    struct DlMtx34 *src = (struct DlMtx34 *)lbl_804C1410;
+    struct DlMtx34 *dst = (struct DlMtx34 *)lbl_804C13E0;
     unsigned int sp8[12];
-    unsigned int v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1, v0;
-    v0 = lbl_804C1410[0];
-    v1 = lbl_804C1410[1]; v2 = lbl_804C1410[2]; v3 = lbl_804C1410[3];
-    v4 = lbl_804C1410[4]; v5 = lbl_804C1410[5]; v6 = lbl_804C1410[6];
-    v7 = lbl_804C1410[7]; v8 = lbl_804C1410[8]; v9 = lbl_804C1410[9];
-    v10 = lbl_804C1410[10]; v11 = lbl_804C1410[11];
-    *dst++ = v0; *dst++ = v1; *dst++ = v2; *dst++ = v3; *dst++ = v4; *dst++ = v5;
-    *dst++ = v6; *dst++ = v7; *dst++ = v8; *dst++ = v9; *dst++ = v10; *dst++ = v11;
+    unsigned int v11, v10, v9, v8, v7, v6, v5;
+    v5 = src->w[5]; v6 = src->w[6]; v7 = src->w[7]; v8 = src->w[8];
+    v9 = src->w[9]; v10 = src->w[10]; v11 = src->w[11];
+    *dst = *src;
     lbl_8055FC35 = 1;
-    fn_802C89E8(sp8, v11, v10, v9, v8, v7, v6, v5);
+    ((void (*)(unsigned int *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int))fn_802C89E8)(sp8, v11, v10, v9, v8, v7, v6, v5);
     fn_802C8638(sp8);
     ((void (*)(int))fn_802C8BD0)(arg0);
 }
@@ -704,6 +701,8 @@ void fn_802C92D0(void) {
     fn_802C8C04(-1);
 }
 
+/* Tail-call wrapper for DrawList_RestoreNormalMode (fn_802C8D74): restores the
+ * normal GX render mode and reapplies the saved matrix state if pending. */
 void fn_802C92D8(void) {
     fn_802C8D74();
 }
