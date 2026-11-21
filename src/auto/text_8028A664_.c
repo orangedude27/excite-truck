@@ -26,9 +26,12 @@ struct V3 { f32 x, y, z; };
 static inline void XfmV3(f32 *m, struct V3 *src, struct V3 *dst) {
     if (src == dst) {
         f32 x = src->x, y = src->y, z = src->z;
-        dst->x = z * m[6] + (x * m[0] + y * m[3]);
-        dst->y = z * m[7] + (x * m[1] + y * m[4]);
-        dst->z = z * m[8] + (x * m[2] + y * m[5]);
+        f32 o0 = z * m[6] + (x * m[0] + y * m[3]);
+        f32 o1 = z * m[7] + (x * m[1] + y * m[4]);
+        f32 o2 = z * m[8] + (x * m[2] + y * m[5]);
+        dst->x = o0;
+        dst->y = o1;
+        dst->z = o2;
     } else {
         dst->x = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
         dst->y = src->z * m[7] + (dst->x * m[1] + src->y * m[4]);
