@@ -123,6 +123,7 @@ int fn_8022EAB8(int unused0, void *unused1) {
     }
     return ret;
 }
+#pragma pop
 
 #pragma dont_inline on
 #pragma cplusplus on
