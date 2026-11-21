@@ -351,6 +351,8 @@ void fn_8023D1C0(void) {
     #undef CreateSoundMenu
 }
 
+/* Empty no-op method in the SoundOptions panel vtable (lbl_803415E8 slot +0x24):
+ * this slot has no behaviour for the sound-options panel. */
 void fn_8023D1F8(void) {}
 
 extern void fn_80221EA0(void *, s32, s32, s32);
