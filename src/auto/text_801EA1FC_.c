@@ -77,18 +77,21 @@ extern f32 lbl_80562E50, lbl_80562E54;
 #pragma push
 #pragma processor 750
 #pragma scheduling on
-void fn_801EA31C(s32 *arg0) {
-    f32 initial = 2250.0f;
-    f32 f1, f2, f3;
-    s32 result;
-    *(f32 *)lbl_8055EB60 = initial;
-    fn_8026A54C(initial);
-    result = (unsigned int)__cntlzw(fn_80012954(*arg0) - 2) >> 5;
-    f1 = lbl_80562E40;
-    f2 = *(f32 *)lbl_8055EB60;
-    f3 = lbl_80562E54;
-    ((signed char *)lbl_8055EB60)[4] = (signed char)result;
-    fn_802C974C(f1, f2, f3);
+void fn_801EA31C(s32 *idPtr) {
+    /* Initialize the EB scene context when the view is reset: store the default
+     * 2250.0 scale, derive a mode flag from the event-id query, configure the
+     * projection (near/far/fov) and set the camera-mode/active flags. */
+    f32 defaultScale = 2250.0f;
+    f32 nearPlane, farPlane, fovAngle;
+    s32 modeFlag;
+    *(f32 *)lbl_8055EB60 = defaultScale;
+    fn_8026A54C(defaultScale);
+    modeFlag = (unsigned int)__cntlzw(fn_80012954(*idPtr) - 2) >> 5;
+    nearPlane = lbl_80562E40;
+    farPlane = *(f32 *)lbl_8055EB60;
+    fovAngle = lbl_80562E54;
+    ((signed char *)lbl_8055EB60)[4] = (signed char)modeFlag;
+    fn_802C974C(nearPlane, farPlane, fovAngle);
     lbl_8055EB58 = 0;
     lbl_8055EB59 = 1;
 }
