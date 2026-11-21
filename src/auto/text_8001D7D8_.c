@@ -38,6 +38,8 @@ int *fn_8001D884(int *values, void *handle) {
     return values;
 }
 
+typedef struct { int (*f0)(); int (*f1)(); int (*f2)(); int (*f3)(); int (*f4)(); int (*f5)(); int (*f6)(); int (*f7)(); int (*f8)(); } Vtbl;
+typedef struct { Vtbl *vtable; } Obj;
 int stricmp(const char *, const char *);
 #pragma opt_unroll_loops off
 void fn_8001D8B4(int *arg0, void *arg1, int arg2) {
