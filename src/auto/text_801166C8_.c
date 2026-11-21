@@ -2290,7 +2290,6 @@ extern f32 lbl_805611A0;
 extern f64 fn_8002EFBC(f32, f64);
 extern void fn_80119288(void *, f32);
 extern s32 fn_80119300(void *, s32, s32);
-extern s32 fn_8011943C(void *, s32);
 extern s32 fn_801199A4(void *, s32);
 
 /* The pair of AX voices a stream is played through, plus the PCM ring buffers
