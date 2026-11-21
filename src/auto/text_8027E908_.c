@@ -4207,17 +4207,18 @@ extern "C" void *fn_8028732C(void *arg0, int arg1) {
     class Obj {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
-        virtual void *get();
+        virtual void get() __attribute__((noreturn));
     };
     void *cached = *(void **)((char *)arg0 + 8);
     if (cached != 0 && arg1 == *(int *)((char *)arg0 + 12)) {
         return cached;
     }
     Obj *obj = *(Obj **)((char *)arg0 + 4);
-    return obj->get();
+    obj->get();
 }
 #pragma cplusplus off
 void fn_80287360(void) {
+    /* Empty no-op stub within the title (ebi::title) code; has no effect. */
 }
 
 #pragma cplusplus on
