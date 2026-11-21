@@ -487,30 +487,30 @@ void fn_8018C5A0(char *arg0, char *arg1) {
 typedef struct { int x, y; } Pair8018;
 static void matVecS_8018(Vec_8018 *dest, const float *m, const Vec_8018 *v) {
     if (dest == v) {
-        float tx = m[0] * v->x + m[3] * v->y + m[6] * v->z;
-        float ty = m[1] * v->x + m[4] * v->y + m[7] * v->z;
-        float tz = m[2] * v->x + m[5] * v->y + m[8] * v->z;
+        float tx = dot_8018(v->x, m[0], v->y, m[3], v->z, m[6]);
+        float ty = dot_8018(v->x, m[1], v->y, m[4], v->z, m[7]);
+        float tz = dot_8018(v->x, m[2], v->y, m[5], v->z, m[8]);
         dest->x = tx;
         dest->y = ty;
         dest->z = tz;
     } else {
-        dest->x = m[0] * v->x + m[3] * v->y + m[6] * v->z;
-        dest->y = m[1] * v->x + m[4] * v->y + m[7] * v->z;
-        dest->z = m[2] * v->x + m[5] * v->y + m[8] * v->z;
+        dest->x = dot_8018(v->x, m[0], v->y, m[3], v->z, m[6]);
+        dest->y = dot_8018(v->x, m[1], v->y, m[4], v->z, m[7]);
+        dest->z = dot_8018(v->x, m[2], v->y, m[5], v->z, m[8]);
     }
 }
 static void matVecSM_8018(Vec_8018 *dest, const float *m, const Vec_8018 *v) {
     if ((void *)dest == (void *)m) {
-        float tx = m[0] * v->x + m[3] * v->y + m[6] * v->z;
-        float ty = m[1] * v->x + m[4] * v->y + m[7] * v->z;
-        float tz = m[2] * v->x + m[5] * v->y + m[8] * v->z;
+        float tx = dot_8018(m[0], ((const float *)v)[0], m[1], ((const float *)v)[3], m[2], ((const float *)v)[6]);
+        float ty = dot_8018(m[0], ((const float *)v)[1], m[1], ((const float *)v)[4], m[2], ((const float *)v)[7]);
+        float tz = dot_8018(m[0], ((const float *)v)[2], m[1], ((const float *)v)[5], m[2], ((const float *)v)[8]);
         dest->x = tx;
         dest->y = ty;
         dest->z = tz;
     } else {
-        dest->x = m[0] * v->x + m[3] * v->y + m[6] * v->z;
-        dest->y = m[1] * v->x + m[4] * v->y + m[7] * v->z;
-        dest->z = m[2] * v->x + m[5] * v->y + m[8] * v->z;
+        dest->x = dot_8018(m[0], ((const float *)v)[0], m[1], ((const float *)v)[3], m[2], ((const float *)v)[6]);
+        dest->y = dot_8018(m[0], ((const float *)v)[1], m[1], ((const float *)v)[4], m[2], ((const float *)v)[7]);
+        dest->z = dot_8018(m[0], ((const float *)v)[2], m[1], ((const float *)v)[5], m[2], ((const float *)v)[8]);
     }
 }
 #pragma scheduling invalid_target
