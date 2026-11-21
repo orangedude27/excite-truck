@@ -51,10 +51,11 @@ void fn_8012F384(MemStream *stream) {
     }
 }
 #pragma scheduling on
-/* Create an 8-byte MemStreamPtr (heap tag "MemStreamPtr") and initialize it with the given stream and cursor position 0. */
-void fn_8012F3CC(s32 arg0) {
-    s32 *streamPtr = (s32 *)fn_801284F8(8, lbl_8032AFC4);
-    if (streamPtr != 0) { streamPtr[0] = arg0; streamPtr[1] = 0; }
+/* MemStreamPtr_Create: allocate an 8-byte cursor tagged "MemStreamPtr" for the
+   given stream, with its byte position set to 0. */
+void fn_8012F3CC(MemStream *stream) {
+    MemStreamPtr *cursor = fn_801284F8(8, lbl_8032AFC4);
+    if (cursor != 0) { cursor->stream = stream; cursor->pos = 0; }
 }
 void fn_8012F418(s32 *obj) {
     /* Release an 8-byte tracked heap object (the physics heap block): clear its first word,
