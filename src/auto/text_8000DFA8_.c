@@ -1159,70 +1159,58 @@ void *fn_80010BEC(void *arg0) {
     }
 }
 void fn_80010C74(f32 farg0, f32 farg1, f32 farg2) {
-    volatile s32 sp34;
-    volatile s32 sp30;
-    volatile f32 sp2C;
-    volatile f32 sp28;
-    volatile f32 sp24;
-    volatile f32 sp20;
-    volatile s32 sp1C;
-    volatile s32 sp18;
-    volatile f32 sp14;
-    volatile f32 sp10;
-    volatile f32 spC;
-    volatile f32 sp8;
+    volatile s32 sp34, sp30;
+    volatile f32 sp2C, sp28, sp24, sp20;
+    volatile s32 sp1C, sp18;
+    volatile f32 sp14, sp10, spC, sp8;
     register s32 index, next;
     register u32 *configA, *configB;
-    register Unk0x18 *current, *following;
-    register s32 value484, value488;
-    register f32 temp_f0, temp_f1, temp_f2, temp_f4, temp_f5;
+    register void *current, *following;
+    register f32 temp_f4, temp_f5, temp_f6;
     u32 word;
     index = lbl_8055D4A8;
     if (index < 0xFF) {
         configA = (u32 *)&lbl_802ED758;
-        value484 = lbl_8055D484;
-        temp_f0 = (f32)(double)farg0;
-        word = configA[3];
-        temp_f1 = (f32)(double)farg1;
-        value488 = lbl_8055D488;
-        temp_f2 = (f32)(double)farg2;
-        *(volatile u32 *)&sp2C = word;
+        temp_f6 = (f32)(double)farg2;
         temp_f5 = lbl_80560264 + farg0;
         temp_f4 = farg1 - lbl_80560264;
         current = &lbl_8034F6B0[index];
+        ((Unk0x18 *)current)->unk_0x00 = (f32)(double)farg0;
+        word = configA[3];
+        *(volatile u32 *)&sp2C = word;
         next = index + 1;
-        current->unk_0x00 = temp_f0;
-        current->unk_0x04 = temp_f1;
-        current->unk_0x08 = temp_f2;
-        current->unk_0x0C = sp2C;
-        current->unk_0x10 = value484;
-        current->unk_0x14 = value484;
-        configB = (u32 *)&lbl_802ED770;
-        *(volatile u32 *)&sp14 = configB[3];
+        ((Unk0x18 *)current)->unk_0x04 = (f32)(double)farg1;
+        ((Unk0x18 *)current)->unk_0x08 = temp_f6;
         following = &lbl_8034F6B0[next];
-        following->unk_0x00 = temp_f5;
+        ((Unk0x18 *)current)->unk_0x0C = sp2C;
+        ((Unk0x18 *)current)->unk_0x10 = lbl_8055D484;
+        configB = (u32 *)&lbl_802ED770;
+        word = configB[3];
+        *(volatile u32 *)&sp14 = word;
+        ((Unk0x18 *)current)->unk_0x14 = lbl_8055D484;
+        ((Unk0x18 *)following)->unk_0x00 = temp_f5;
+        ((Unk0x18 *)following)->unk_0x04 = temp_f4;
+        ((Unk0x18 *)following)->unk_0x08 = temp_f6;
+        ((Unk0x18 *)following)->unk_0x0C = sp14;
         *(volatile u32 *)&sp20 = configA[0];
-        following->unk_0x04 = temp_f4;
-        following->unk_0x08 = temp_f2;
         *(volatile u32 *)&sp24 = configA[1];
         *(volatile u32 *)&sp28 = configA[2];
         *(volatile u32 *)&sp8 = configB[0];
         *(volatile u32 *)&spC = configB[1];
         *(volatile u32 *)&sp10 = configB[2];
-        following->unk_0x0C = sp14;
+        ((Unk0x18 *)following)->unk_0x10 = lbl_8055D488;
         sp20 = farg0;
         sp24 = farg1;
         sp28 = farg2;
-        sp30 = value484;
-        sp34 = value484;
+        sp30 = lbl_8055D484;
+        sp34 = lbl_8055D484;
         sp8 = temp_f5;
         spC = temp_f4;
         sp10 = farg2;
-        sp18 = value488;
-        sp1C = value488;
+        sp18 = lbl_8055D488;
+        sp1C = lbl_8055D488;
         lbl_8055D4A8 = next + 1;
-        following->unk_0x10 = value488;
-        following->unk_0x14 = value488;
+        ((Unk0x18 *)following)->unk_0x14 = lbl_8055D488;
     }
 }
 #pragma pop
@@ -1238,9 +1226,9 @@ void fn_80010D88(f64 farg0, f64 farg1, f64 farg2) {
     volatile s32 sp1C, sp18;
     volatile f32 sp14, sp10, spC, sp8;
     register s32 index, next, offset;
-    register u32 *configA;
-    register u32 *configB;
-    register Unk0x18 *base;
+    u32 *configA;
+    u32 *configB;
+    Unk0x18 *base;
     register Unk0x18 *current;
     register Unk0x18 *following;
     register s32 value484;
@@ -1401,9 +1389,9 @@ void fn_80010F38(char *name, s32 a2, s32 a3, s32 a4, f32 f1) {
     Unk80350F88 *base;
     volatile Unk80350F88Entry *entry;
     char *n;
-    n = name;
     base = (Unk80350F88 *)&lbl_80350F88;
     idx = base->unk_0x288;
+    n = name;
     base->unk_0x288 = idx + 1;
     entry = &base->entries[idx];
     strncpy((char *)entry->name, n, 0x28);
@@ -1413,6 +1401,7 @@ void fn_80010F38(char *name, s32 a2, s32 a3, s32 a4, f32 f1) {
     entry->unk_0x34 = 0;
     entry->unk_0x38 = a4;
     entry->unk_0x3C = f1;
+    return;
 }
 
 #pragma push
@@ -1622,27 +1611,29 @@ extern f32 lbl_805602E0;
 extern f32 lbl_805602E4;
  #pragma scheduling on
  #define FPRBIND(n, r) register float n a##sm(r)
- void fn_80011630(s32 arg0, s32 arg1, s32 arg2,
-
+void fn_80011630(s32 arg0, s32 arg1, s32 arg2,
                  register f32 farg0, register f32 farg1, register f32 farg2, register f32 farg3,
                  register f32 farg4, register f32 farg5, register f32 farg6, register f32 farg7,
                  register f32 arg_sp8, register f32 arg_spC) {
     volatile f32 sp14, sp10, spC, sp8;
     f32 temp_f0, temp_f0_2, temp_f0_3, temp_f0_4;
-    f32 temp_f1_2, temp_f22, temp_f23, temp_f23_2;
+    f32 temp_f1_2, temp_f23, temp_f23_2;
     f32 temp_f25, temp_f25_2, temp_f26, temp_f27, temp_f28;
     f32 temp_f29, temp_f2, temp_f2_2, temp_f30, temp_f31;
     f32 temp_f3, temp_f4, temp_f4_2, temp_f4_3, temp_f5;
     f32 var_f0, var_f0_2, var_f1, var_f1_2, var_f3, var_f4;
     f32 var_f5, var_f5_2;
+    f32 w;
     f64 temp_f1;
     s32 var_r31;
+
     if (arg1 > 0) {
         fn_802C8B98(arg2, fn_8022EDC4());
         fn_801E4F20(arg1 * 4);
-        temp_f25 = (f32)sin(farg4);
-        temp_f1 = cos(farg4);
-        temp_f22 = farg3 / farg2;
+        w = farg4;
+        temp_f25 = (f32)sin(w);
+        temp_f1 = cos(w);
+        w = farg3 / farg2;
         var_f5 = lbl_80560264;
         sp14 = temp_f25;
         temp_f4 = (f32)temp_f1;
@@ -1659,18 +1650,20 @@ extern f32 lbl_805602E4;
         var_f3 = (var_f3 < temp_f0_2) ? var_f3 : temp_f0_2;
         var_f3 = (var_f3 > lbl_80560280) ? var_f3 : lbl_80560280;
         temp_f0_2 = var_f3 * (arg_spC - farg7);
-        fn_801E4F3C(arg0, 0, farg0 + sp8, farg1 + spC, lbl_80560280, temp_f29, farg7 + temp_f0_2);
+        fn_801E4F3C(arg0, 0, farg0 + sp8, farg1 + spC, lbl_80560280,
+                    temp_f29, farg7 + temp_f0_2);
         var_f4 = lbl_80560264;
-        temp_f0_3 = ((temp_f22 * sp10) - lbl_805602E0) * lbl_8056025C;
+        temp_f0_3 = ((w * sp10) - lbl_805602E0) * lbl_8056025C;
         var_f4 = (var_f4 < temp_f0_3) ? var_f4 : temp_f0_3;
         var_f4 = (var_f4 > lbl_80560280) ? var_f4 : lbl_80560280;
         temp_f29 = farg6 + (var_f4 * (arg_sp8 - farg6));
         var_f5_2 = lbl_80560264;
-        temp_f0_4 = ((temp_f22 * sp14) - var_f5_2) / lbl_805602E4;
+        temp_f0_4 = ((w * sp14) - var_f5_2) / lbl_805602E4;
         var_f5_2 = (var_f5_2 < temp_f0_4) ? var_f5_2 : temp_f0_4;
         var_f5_2 = (var_f5_2 > lbl_80560280) ? var_f5_2 : lbl_80560280;
         temp_f0_2 = var_f5_2 * (arg_spC - farg7);
-        fn_801E4F3C(arg0, 0, farg0 + (temp_f22 * sp8), farg1 + (temp_f22 * spC), lbl_80560280, temp_f29, farg7 + temp_f0_2);
+        fn_801E4F3C(arg0, 0, farg0 + (w * sp8), farg1 + (w * spC), lbl_80560280,
+                    temp_f29, farg7 + temp_f0_2);
         temp_f29 = arg_sp8 - farg6;
         temp_f25_2 = lbl_80560264;
         temp_f31 = arg_spC - farg7;
@@ -1704,16 +1697,18 @@ extern f32 lbl_805602E4;
             if (temp_f25_2 < var_f0) var_f0 = temp_f25_2;
             var_f0 = (var_f0 > temp_f28) ? var_f0 : temp_f28;
             temp_f0_2 = var_f0 * temp_f31;
-            fn_801E4F3C(arg0, 1, farg0 + sp8, farg1 + spC, lbl_80560280, temp_f4_2, farg7 + temp_f0_2);
-            var_f1_2 = ((temp_f22 * sp10) - temp_f26) * temp_f27;
+            fn_801E4F3C(arg0, 1, farg0 + sp8, farg1 + spC, lbl_80560280,
+                        temp_f4_2, farg7 + temp_f0_2);
+            var_f1_2 = ((w * sp10) - temp_f26) * temp_f27;
             if (temp_f25_2 < var_f1_2) var_f1_2 = temp_f25_2;
             var_f1_2 = (var_f1_2 > temp_f28) ? var_f1_2 : temp_f28;
             temp_f4_2 = farg6 + (var_f1_2 * temp_f29);
-            var_f0_2 = ((temp_f22 * sp14) - temp_f25_2) / temp_f30;
+            var_f0_2 = ((w * sp14) - temp_f25_2) / temp_f30;
             if (temp_f25_2 < var_f0_2) var_f0_2 = temp_f25_2;
             var_f0_2 = (var_f0_2 > temp_f28) ? var_f0_2 : temp_f28;
             temp_f0_2 = var_f0_2 * temp_f31;
-            fn_801E4F3C(arg0, 1, farg0 + (temp_f22 * sp8), farg1 + (temp_f22 * spC), lbl_80560280, temp_f4_2, farg7 + temp_f0_2);
+            fn_801E4F3C(arg0, 1, farg0 + (w * sp8), farg1 + (w * spC), lbl_80560280,
+                        temp_f4_2, farg7 + temp_f0_2);
             var_r31++;
         } while (var_r31 < arg1);
         fn_801E4FF4();
@@ -1749,6 +1744,7 @@ extern f32 lbl_80560320, lbl_80560324, lbl_80560328, lbl_8056032C;
 extern f32 lbl_80560330, lbl_80560334, lbl_80560338, lbl_8056033C;
 extern f32 lbl_80560340, lbl_80560344;
 void fn_80011A5C(s32 arg0) {
+    union PtrU { u32 i; u8 *p; };
     f32 sp[20];
     s32 sp14, sp10, spC, sp8;
     f32 *var_r5;
@@ -1758,8 +1754,13 @@ void fn_80011A5C(s32 arg0) {
     f32 c3C, c40, c44, cFC, c5C;
     f64 c268;
     s32 temp_r0, temp_r0_2, temp_r3_4, temp_r7, var_ctr;
-    u8 *base, *temp_r3, *temp_r3_2, *temp_r3_3, *var_r4, *var_r6;
+    u8 *base, *var_r4, *var_r6;
+    union PtrU u3, u3_2, u3_3;
+    f32 sums[2];
     base = (u8 *)lbl_8034F6B0;
+    u3.i = (u32)base + 0x1814;
+    u3_2.i = (u32)base + 0x1800;
+    u3_3.i = (u32)base + 0x1800;
     lbl_8055D4A0 = arg0;
     fn_80231094(&spC, &sp8, &sp14, &sp10);
     temp_f5 = (f32)sp14;
@@ -1807,28 +1808,25 @@ void fn_80011A5C(s32 arg0) {
         sp[14] = temp_f1;
         sp[19] = temp_f0;
     }
-    temp_r3 = base + 0x1814;
     temp_f4 = lbl_805602F4 - temp_f7;
     temp_f3 = lbl_80560324 + temp_f8;
     temp_f2 = lbl_80560328 + temp_f5;
     temp_f1_2 = lbl_80560320 - temp_f6;
     *(f32 *)(base + 0x1814) = temp_f4;
-    *(f32 *)(temp_r3 + 0xC) = temp_f3;
-    *(f32 *)(temp_r3 + 4) = temp_f2;
-    *(f32 *)(temp_r3 + 8) = temp_f1_2;
+    *(f32 *)(u3.p + 0xC) = temp_f3;
+    *(f32 *)(u3.p + 4) = temp_f2;
+    *(f32 *)(u3.p + 8) = temp_f1_2;
     if (arg0 < 3) {
-        temp_r3_2 = base + 0x1800;
         *(f32 *)(base + 0x1800) = temp_f4;
-        *(f32 *)(temp_r3_2 + 4) = temp_f2;
-        *(f32 *)(temp_r3_2 + 8) = temp_f1_2;
-        *(f32 *)(temp_r3_2 + 0xC) = temp_f3;
-        *(f32 *)(temp_r3_2 + 0x10) = *(f32 *)(temp_r3 + 0x10);
+        *(f32 *)(u3_2.p + 4) = temp_f2;
+        *(f32 *)(u3_2.p + 8) = temp_f1_2;
+        *(f32 *)(u3_2.p + 0xC) = temp_f3;
+        *(f32 *)(u3_2.p + 0x10) = *(f32 *)(u3.p + 0x10);
     } else {
-        temp_r3_3 = base + 0x1800;
         *(f32 *)(base + 0x1800) = lbl_8056032C - temp_f7;
-        *(f32 *)(temp_r3_3 + 0xC) = lbl_80560330 + temp_f8;
-        *(f32 *)(temp_r3_3 + 4) = lbl_80560334 + temp_f5;
-        *(f32 *)(temp_r3_3 + 8) = lbl_80560338 - temp_f6;
+        *(f32 *)(u3_3.p + 0xC) = lbl_80560330 + temp_f8;
+        *(f32 *)(u3_3.p + 4) = lbl_80560334 + temp_f5;
+        *(f32 *)(u3_3.p + 8) = lbl_80560338 - temp_f6;
     }
     c3C = lbl_8056033C;
     c40 = lbl_80560340;
@@ -1863,8 +1861,10 @@ void fn_80011A5C(s32 arg0) {
             *(f32 *)(var_r6 + 0xC) = temp_f7_2;
             *(f32 *)(var_r6 + 4) = temp_f2_2;
             *(f32 *)(var_r6 + 8) = temp_f3_2;
-            *(f32 *)(var_r6 + 0x10) = (temp_f2_2 + temp_f3_2) * c5C;
-            *(f32 *)(var_r6 + 0x14) = (temp_f31 + temp_f7_2) * c5C;
+            sums[0] = temp_f2_2 + temp_f3_2;
+            sums[1] = temp_f31 + temp_f7_2;
+            *(f32 *)(var_r6 + 0x10) = sums[0] * c5C;
+            *(f32 *)(var_r6 + 0x14) = sums[1] * c5C;
             var_r6 += 0x18;
     }
     lbl_8055D4A4 = 1;
@@ -2065,39 +2065,43 @@ extern s32 *lbl_8055D4AC;
 extern void fn_80128668(void *);
 #pragma use_lmw_stmw off
 #pragma cplusplus on
+/* Tear down the dashboard sound player: release each sound in its two groups of
+ * three, free the block, and clear the global pointer. */
 extern "C" void fn_800120BC(void) {
-    struct Dummy {
+    #define gDashSoundPlayer lbl_8055D4AC
+    struct Sound {
         virtual void release(s32);
         virtual void v1();
         virtual void v2();
     };
-    s32 j;
-    s32 i;
-    u8 *outer;
-    u8 *inner;
-    s32 *base;
-    if ((base = lbl_8055D4AC) != 0) {
-        j = 0;
-        i = 0;
-        outer = (u8 *)base;
-        inner = outer;
-        for (; i < 2; ++i, outer += 0xC) {
-            inner = outer;
-            j = 0;
-            for (; j < 3; ++j, inner += 4) {
-                void *object = *(void **)(inner + 4);
-                if (object == 0)
+    s32 slotIndex;
+    s32 groupIndex;
+    u8 *group;
+    u8 *slot;
+    s32 *playerBlock;
+    if ((playerBlock = gDashSoundPlayer) != 0) {
+        slotIndex = 0;
+        groupIndex = 0;
+        group = (u8 *)playerBlock;
+        slot = group;
+        for (; groupIndex < 2; ++groupIndex, group += 0xC) {
+            slot = group;
+            slotIndex = 0;
+            for (; slotIndex < 3; ++slotIndex, slot += 4) {
+                void *sound = *(void **)(slot + 4);
+                if (sound == 0)
                     goto next;
-                if (object == 0)
+                if (sound == 0)
                     goto next;
-                ((struct Dummy *)object)->release(1);
+                ((struct Sound *)sound)->release(1);
             next:
                 ;
             }
         }
-        fn_80128668(base);
+        fn_80128668(playerBlock);
     }
-    lbl_8055D4AC = 0;
+    gDashSoundPlayer = 0;
+    #undef gDashSoundPlayer
 }
 #pragma cplusplus reset
 /* Activates the current entry in lbl_8055D4AC's primary slot table, sets its active/state flags, and advances/wraps the table index. */
@@ -2354,7 +2358,7 @@ void fn_8000E3B4(s32 arg0) {
     a = fn_8000DFA8(0);
     h = fn_80235F64(lbl_80350F88, a);
     limit = fn_80011EC8(arg0) - h;
-    y = (0.0f >= limit ? 0.0f : limit) + y;
+    y = (lbl_80560280 >= limit ? lbl_80560280 : limit) + y - 50.0f;
     if (arg0 < 0) width = fn_80011E34();
     else width = fn_80011DD4(arg0);
     base = (char *)&lbl_80350F88;
