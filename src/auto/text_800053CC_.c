@@ -32,16 +32,18 @@ extern s32 fn_80005580(s32);
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_800053CC(void) {
+    /* If a player-0 state record is available, compute the squared magnitude of
+       its first two floats and queue a small blue debug marker at (300*x, 200*y). */
     float buf[25];
     if (fn_801298E8(buf, 0) != 0) {
-        float t5 = buf[0] * buf[0];
-        float t01 = buf[1] * buf[1];
-        float sum = t5 + t01;
-        float t31 = lbl_80560110;
-        float t30 = lbl_80560114 * buf[0];
-        float t29 = lbl_80560118 * buf[1];
-        fn_8002F234(sum, lbl_80560118, buf[0], lbl_80560114, t5);
-        fn_80010B80(0x800000FF, t30, t29, t31, t31);
+        float xSquared = buf[0] * buf[0];
+        float ySquared = buf[1] * buf[1];
+        float sumSquares = xSquared + ySquared;
+        float markSize = kMarkSize;
+        float markLeft = kMarkScaleX * buf[0];
+        float markTop = kMarkScaleY * buf[1];
+        fn_8002F234(sumSquares, kMarkScaleY, buf[0], kMarkScaleX, xSquared);
+        fn_80010B80(0x800000FF, markLeft, markTop, markSize, markSize);
     }
 }
 #pragma pop
