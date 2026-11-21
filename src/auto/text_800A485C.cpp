@@ -14763,13 +14763,13 @@ static inline void fn_800BC538_setShortT(Fn800BC538Obj *obj, Fn800BC538Tbl *t) {
 #pragma push
 #pragma use_lmw_stmw on
 extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s16 *arg5, s16 *arg6, u8 *arg7, s16 arg_sp8) {
-    Fn800BC538Obj *obj = (Fn800BC538Obj *)arg0;
-    s32 sel;
-    s32 lim;
-    s32 i, j, k;
-    u8 *p;
-    u8 *a;
-    u8 *b;
+    register Fn800BC538Obj *obj = (Fn800BC538Obj *)arg0;
+    register s32 sel;
+    register s32 lim;
+    register s32 i, j, k;
+    register u8 *p;
+    register u8 *a;
+    register u8 *b;
 
     if (arg3 & 7) {
         if (obj->longInit == 0) {
@@ -16738,23 +16738,27 @@ fn_800C0B68((struct Fn800C0B68Context*)arg0, *(s16*)((u8*)arg0 + 0x288), (s32)ar
 return 0;
 }
 
-s32 fn_800C083C(s32 arg0, s32 arg1, s32 *arg2) {
-    u32 mask;
-    s32 shift;
-    u32 index;
-    s32 count;
-    index = 0;
-    mask = 0xF;
-    shift = 0x1C;
-    for (count = arg1; count > 0; count--) {
-        u32 *node = *(u32 **)(*(u32 **)arg2 + index);
-        u16 value = *(u16 *)((u8 *)node + ((mask & (arg0 >> shift)) * 2));
-        if (value & 0x8000) {
-            return value & 0x7FFF;
+s32 fn_800C083C(s32 codeBits, s32 maxNodes, s32 *nodeTables) {
+    /* Decode a Huffman-style symbol from the 4-bit groups of `codeBits` by walking
+     * a compressed 16-way trie for at most `maxNodes` levels. A node entry's high
+     * bit marks a terminal (low 15 bits = symbol); otherwise it holds the next
+     * node index, the branch length and the bit mask for the following level. */
+    u32 branchMask;
+    s32 bitShift;
+    u32 nodeIndex;
+    s32 remaining;
+    nodeIndex = 0;
+    branchMask = 0xF;
+    bitShift = 0x1C;
+    for (remaining = maxNodes; remaining > 0; remaining--) {
+        u32 *nodeTable = *(u32 **)(*(u32 **)nodeTables + nodeIndex);
+        u16 branch = *(u16 *)((u8 *)nodeTable + ((branchMask & (codeBits >> bitShift)) * 2));
+        if (branch & 0x8000) {
+            return branch & 0x7FFF;
         }
-        mask = *(u32 *)(lbl_8031C2B8 + ((value * 4) & 0x3C));
-        index = (u32)(value >> 8);
-        shift -= value & 0xF;
+        branchMask = *(u32 *)(lbl_8031C2B8 + ((branch * 4) & 0x3C));
+        nodeIndex = (u32)(branch >> 8);
+        bitShift -= branch & 0xF;
     }
     return 0;
 }
