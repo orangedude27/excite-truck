@@ -127,19 +127,19 @@ extern "C" void* __dt__Q36nw4hbm3lyt7PictureFv(void* this_, s32 arg1) {
     return this_;
 }
 extern "C" void fn_800DC918(void *picture, void *tplPalette) {
-    /* Build a texture object from TPL image 0 and apply it to the picture. */
-    struct Picture {
-        virtual void m0();  virtual void m1();  virtual void m2();  virtual void m3();
-        virtual void m4();  virtual void m5();  virtual void m6();  virtual void m7();
-        virtual void m8();  virtual void m9();  virtual void m10(); virtual void m11();
-        virtual void m12(); virtual void m13(); virtual void m14(); virtual void m15();
-        virtual void m16(); virtual void m17(); virtual void m18(); virtual void m19();
-        virtual void m20(); virtual void m21(); virtual void m22(); virtual void m23();
-        virtual void Set(void *texObj);
+    /* Build a GX texture object from TPL image 0 and hand it to Picture::Set. */
+    struct PictureVTable {
+        virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
+        virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
+        virtual void v08(); virtual void v09(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+        virtual void setTexture(void *texObj);
     };
     u8 texObj[0x20];
     InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(texObj, tplPalette, 0);
-    ((Picture *)picture)->Set(texObj);
+    ((PictureVTable *)picture)->setTexture(texObj);
 }
 
 extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char*, s32, const char*, ...);
