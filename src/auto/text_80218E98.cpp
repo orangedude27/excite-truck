@@ -2693,7 +2693,11 @@ extern "C" void fn_8021C6D0(void *);
 extern "C" void fn_8022EE98(void *);
 extern "C" void *lbl_8033E248[];
 extern "C" u8 lbl_8033E0BC[];
-extern "C" void fn_8021C6CC(void) { ((void (*)())fn_8021C6D0)(); }
+extern "C" void fn_8021C6CC(void) {
+    /* Argument-forwarding thunk: tail-branch to fn_8021C6D0. The no-argument call
+       keeps the incoming r3 (the object pointer) intact as the callee's `this`. */
+    ((void (*)())fn_8021C6D0)();
+}
 
 extern "C" void fn_8021C6D0(void *arg0) {
     /* Invoke a virtual method on the object at +0x2A4 for the buffer at +0x254, refresh layout, and flag when active (+0x1A). */
