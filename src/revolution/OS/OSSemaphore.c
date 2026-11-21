@@ -31,13 +31,13 @@ s32 OSWaitSemaphore(OSSemaphore* sem) {
 s32 OSSignalSemaphore(OSSemaphore* sem) {
     /* Increment the semaphore count, wake one waiting thread, and return the previous count. */
     BOOL enabled;
-    s32 count;
+    s32 prevCount;
 
     enabled = OSDisableInterrupts();
-    count = sem->count;
-    sem->count = count + 1;
+    prevCount = sem->count;
+    sem->count = prevCount + 1;
     OSWakeupThread(&sem->queue);
     OSRestoreInterrupts(enabled);
 
-    return count;
+    return prevCount;
 }
