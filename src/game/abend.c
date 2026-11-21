@@ -35,14 +35,12 @@ int fn_802E302C(void) {
 extern void fn_802E3734(int *);
 void fn_802E3090(void) {
     /* Close the abnormal-end log file if it is open, then invalidate its handle. */
-    #define ABEND_LOG_FILE lbl_8055D178  /* s32 abend log-file handle, -1 when closed */
-    #define CloseLogFile   fn_802E3734   /* closes a file handle and invalidates it */
-    if (ABEND_LOG_FILE != -1) {
-        CloseLogFile(&ABEND_LOG_FILE);
-        ABEND_LOG_FILE = -1;
+    #define CloseLogFile fn_802E3734 /* closes a file handle and invalidates it */
+    if (sLogFileHandle != -1) {
+        CloseLogFile(&sLogFileHandle);
+        sLogFileHandle = -1;
     }
     #undef CloseLogFile
-    #undef ABEND_LOG_FILE
 }
 
 /* Variadic wrapper that forwards a formatted message to fn_802E3028 with flag 0. */
