@@ -579,6 +579,8 @@ s32 fn_80156B30(void *object, s32 mode) {
 extern "C" void fn_80156AC0(void) {
 }
 
+/* No-op virtual method at slot +0x14 of the PSSystem::SeqHeap vtable
+ * lbl_8032E448; its body is empty and calling it does nothing. */
 extern "C" void fn_80156B48(void) {
 }
 
