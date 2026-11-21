@@ -259,7 +259,7 @@ void fn_802E9DDC(void) {
 #pragma pop
 extern char lbl_80560061, lbl_8055D2A4;
 #pragma push
-#pragma scheduling 603
+#pragma scheduling invalid_target
 void fn_802E9E54(unsigned char *dst, unsigned char *src, int count) {
     unsigned char next;
     goto check;
@@ -275,7 +275,7 @@ body:
     src++;
     next = *(volatile unsigned char *)src;
     count--;
-    *(volatile unsigned char *)dst = 0x3F;
+    *dst = 0x3F;
     dst++;
     if ((signed char)next == 0) goto check;
     src++;
