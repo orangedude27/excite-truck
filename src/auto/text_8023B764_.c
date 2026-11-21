@@ -487,6 +487,8 @@ void fn_8023C0EC(void *setup, s32 eventId, s32 contestIdx) {
 }
 #pragma cplusplus reset
 
+/* No-op virtual slot +0x8 of the race-result callback vtable lbl_803413A8
+ * (installed by fn_8023B904): this callback does nothing. */
 void fn_8023C20C(void) {}
 
 /* Copies a source record (three s32 header fields, three bytes, and a 0xA0-byte tail)
