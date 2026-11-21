@@ -26,22 +26,6 @@ extern void fn_80128668(void *);
 extern void *fn_8022EC7C(void);
 extern void *fn_8022ECC0(s32);
 
-/* Fixed-size object pool built by fn_8012A13C/fn_8012A17C: one block of
- * `count` elements of `stride` bytes, threaded into a free list that starts
- * at the block itself (fn_8012A218).  fn_8012A2D8 pops an element off it and
- * fn_8012A364 pushes one back; `live` counts the elements handed out. */
-typedef struct ObjectPool {
-    void *vtbl;           /* 0x00 */
-    u8 warnWhenEmpty;     /* 0x04 */
-    u8 ownsBlock;         /* 0x05 */
-    const char *name;     /* 0x08 */
-    void *block;          /* 0x0C */
-    void *free;           /* 0x10 free list head */
-    s32 stride;           /* 0x14 element size */
-    s32 count;            /* 0x18 capacity */
-    s32 live;             /* 0x1C elements handed out */
-} ObjectPool;             /* 0x20 bytes */
-
 /* One entry of the UI draw-context stack (pushed by fn_8022ED00, popped by
  * fn_8022EDB8, current one from fn_8022EDC4); the game names the 0x3c-byte
  * object "UIContext" (lbl_80340344) and allocates it from "UIContext::pool".
