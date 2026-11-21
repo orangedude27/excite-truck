@@ -78,6 +78,7 @@ void fn_80249578(void *gripSetting) {
 
 void fn_80249584(void) {}
 
+/* Intentional no-op (compiles to a bare return): a do-nothing default/virtual hook. */
 void fn_80249588(void) {}
 
 #pragma scheduling on
