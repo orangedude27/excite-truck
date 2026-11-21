@@ -27,19 +27,19 @@ void fn_802A7BE8(void) {
 }
 
 void fn_802A7C24(void) {
-    #define gCarMarkerTexBlock lbl_8055F8BC
+    #define sRankFont          lbl_8055F8BC
     #define gCarMarkerArtSet   lbl_8055F8C0
     #define GTexBlock_release  fn_802328D4
     #define ArtSet_release     fn_80235380
     /* Release the car-marker texture block and art set, then clear both globals. */
-    GTexBlock_release(gCarMarkerTexBlock);
-    gCarMarkerTexBlock = 0;
+    GTexBlock_release(sRankFont);
+    sRankFont = 0;
     ArtSet_release((void *)gCarMarkerArtSet);
     gCarMarkerArtSet = 0;
     #undef ArtSet_release
     #undef GTexBlock_release
     #undef gCarMarkerArtSet
-    #undef gCarMarkerTexBlock
+    #undef sRankFont
 }
 
 /* Empty subsystem init hook, called from fn_80287914's start-up sequence
