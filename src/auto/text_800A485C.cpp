@@ -11783,48 +11783,53 @@ done:
 
 extern "C" s32 fn_800A4BE8(s32, s32);
 extern "C" u16 lbl_802EEF80[];
-extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32 arg0, u16 *arg1) {
-    u32 c = *(u8 *)arg0;
-    u8 trail = *((u8 *)arg0 + 1);
-    s32 row;
-    s32 t;
-    u16 value;
-    if (c < 0x80) {
-        *arg1 = c;
+extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32 oem, u16 *unicode) {
+    /* Convert one CP932 (Shift-JIS) OEM character at `oem` into UTF-16 at *unicode;
+     * return the number of source bytes consumed (1 or 2), using '_' for bytes
+     * with no mapping in the CP932-to-Unicode table. */
+    #define ReplacementChar 0x5f
+    #define Cp932Table      lbl_802EEF80
+    u32 lead = *(u8 *)oem;
+    u8 trail = *((u8 *)oem + 1);
+    s32 tableRow;
+    s32 tableCol;
+    u16 unicodeValue;
+    if (lead < 0x80) {
+        *unicode = lead;
         return fn_800A4BE8(1, 2);
     }
-    if (c >= 0xa1 && c <= 0xdf) {
-        s32 v = c + 0x10000;
-        *arg1 = v - 0x140;
-        return ((s32 (*)(s32, s32, s32))fn_800A4BE8)(1, 2, c);
+    if (lead >= 0xa1 && lead <= 0xdf) {
+        s32 wide = lead + 0x10000;
+        *unicode = wide - 0x140;
+        return ((s32 (*)(s32, s32, s32))fn_800A4BE8)(1, 2, lead);
     }
-    if (c == 0x80 || c == 0x85 || c == 0x86 || c == 0xa0 || c == 0xeb || c == 0xec ||
-        (c >= 0xef && c <= 0xf9) || (c >= 0xfd && c == 0xff)) {
-        *arg1 = 0x5f;
+    if (lead == 0x80 || lead == 0x85 || lead == 0x86 || lead == 0xa0 || lead == 0xeb || lead == 0xec ||
+        (lead >= 0xef && lead <= 0xf9) || (lead >= 0xfd && lead == 0xff)) {
+        *unicode = ReplacementChar;
         return fn_800A4BE8(1, 2);
     }
     if (trail >= 0xfd) {
-        *arg1 = 0x5f;
+        *unicode = ReplacementChar;
         return fn_800A4BE8(1, 2);
     }
-    if (c >= 0x81 && c <= 0x84) row = c - 0x81;
-    else if (c >= 0x87 && c <= 0x9f) row = c - 0x83;
-    else if (c >= 0xe0 && c <= 0xea) row = c - 0xc3;
-    else if (c >= 0xed && c <= 0xee) row = c - 0xc5;
-    else if (c >= 0xfa && c <= 0xfc) row = c - 0xd0;
+    if (lead >= 0x81 && lead <= 0x84) tableRow = lead - 0x81;
+    else if (lead >= 0x87 && lead <= 0x9f) tableRow = lead - 0x83;
+    else if (lead >= 0xe0 && lead <= 0xea) tableRow = lead - 0xc3;
+    else if (lead >= 0xed && lead <= 0xee) tableRow = lead - 0xc5;
+    else if (lead >= 0xfa && lead <= 0xfc) tableRow = lead - 0xd0;
     else {
-        *arg1 = 0x5f;
+        *unicode = ReplacementChar;
         return fn_800A4BE8(1, 2);
     }
-    t = trail - 0x40;
-    if (t < 0 || t >= 0xbd) {
-        *arg1 = 0x5f;
+    tableCol = trail - 0x40;
+    if (tableCol < 0 || tableCol >= 0xbd) {
+        *unicode = ReplacementChar;
         return fn_800A4BE8(1, 2);
     }
-    value = *(u16 *)((u8 *)lbl_802EEF80 + row * 0x17a + t * 2);
-    *arg1 = value;
-    if (value == 0) {
-        *arg1 = 0x5f;
+    unicodeValue = *(u16 *)((u8 *)Cp932Table + tableRow * 0x17a + tableCol * 2);
+    *unicode = unicodeValue;
+    if (unicodeValue == 0) {
+        *unicode = ReplacementChar;
         return fn_800A4BE8(1, 2);
     }
     return fn_800A4BE8(2, 2);
@@ -14553,11 +14558,13 @@ extern "C" s32 fn_800BBCF4(void) {
 #pragma processor 750
 #pragma opt_strength_reduction off
 extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
+    s32 cmd = arg1;
     const char *str = lbl_8031B838;
     s32 r30 = 3;
     s32 field10 = dev->field10;
     s32 res;
     s32 *out = arg2;
+
     if (lbl_80559248 < 0) {
         res = (s32)0xC1000000;
     } else if (dev->state == 0) {
@@ -14588,7 +14595,7 @@ extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
                 lbl_8055DD6C = 0;
                 res = (s32)0xC1000000;
             } else {
-                switch (arg1) {
+                switch (cmd) {
                 case 9:
                 case 10:
                     r30 = 3;
@@ -14615,7 +14622,7 @@ extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
                     lbl_8055DD6C = 0;
                     goto end;
                 }
-                res = fn_800BB0A8(dev->fd, arg1, 3, r30, field10, 0, 0, 0, 0, (s32)out, 0, 0);
+                res = fn_800BB0A8(dev->fd, cmd, 3, r30, field10, 0, 0, 0, 0, (s32)out, 0, 0);
                 lbl_8055DD6C = 0;
             }
         }
