@@ -2844,6 +2844,7 @@ void fn_8019304C(void *object) {
     *(float *)((char *)object + 0x40) = lbl_8056208C;
 }
 
+/* Intentionally empty no-op method (a placeholder/default handler with no side effects). */
 void fn_80193058(void) {
 }
 
