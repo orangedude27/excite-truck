@@ -1265,12 +1265,11 @@ extern "C" const char lbl_8032AB58[];
 extern "C" void *fn_8012BD98(const char *arg0, void **arg1, s32 arg2) {
     void *p;
     s32 tries;
-    register s32 zero = 0;
     p = fn_8012BD3C(*arg1, arg0);
     if (p == 0) {
         tries = 0;
         do {
-            lbl_8055DFF9 = zero;
+            lbl_8055DFF9 = 0;
             p = fn_8012B32C(arg0);
             if (p != 0) {
                 *(void **)((char *)p + 0xA8) = *arg1;
@@ -1505,6 +1504,8 @@ extern "C" void fn_8012C4D8(void *resource) {
     fn_8012BC50(resource, 0, 0);
 }
 
+/* Tail-call thunk: jump straight to the resource-set load request handler fn_8012CC24,
+   leaving its incoming r3/r4 arguments (a request and a name) in place. */
 extern "C" void fn_8012CC20(void) {
     ((s32 (*)(void))(void *)&fn_8012CC24)();
 }
