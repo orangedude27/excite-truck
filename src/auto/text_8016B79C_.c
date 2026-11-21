@@ -473,32 +473,36 @@ extern "C" void fn_8016B964(CrushRoundState8016B964 *round, s32 totalScore, s32 
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-extern "C" void *fn_8016BE60(void *arg0) {
-    u8 *object = (u8 *)fn_801284F8(0x1B4, lbl_803306D0 + 0x20);
+extern "C" void *fn_8016BE60(void *setup) {
+    /* Build the 0x1B4-byte RingChallengeMaster singleton (lbl_8055E378): allocate
+     * it, install its vtable and sub-objects, add one "playerdata" entry per slot
+     * in setup's count, then initialize the region/difficulty fields and the
+     * "chal_prerace.sfx" sound. */
+    u8 *master = (u8 *)fn_801284F8(0x1B4, lbl_803306D0 + 0x20);
     char *strings = lbl_803306D0;
-    if (object != 0) {
-        fn_80144504((void **)object);
-        *(void **)object = lbl_80330990;
-        fn_8016D278(object + 4);
-        fn_8016D024(object + 0x30);
-        fn_8016CF08(object + 0xAC);
-        lbl_8055E378 = (s32)object;
-        fn_8016CEFC(object + 4);
-        for (s32 index = 0; index < *(s32 *)((u8 *)arg0 + 0x3E0); index++) {
-            void *allocation = (void *)fn_801284F8(0x10, strings + 0x30);
-            if (allocation != 0) allocation = fn_8016CEC0(allocation, index);
-            void *entry = allocation;
-            fn_8016CE9C(object + 4, &entry);
+    if (master != 0) {
+        fn_80144504((void **)master);
+        *(void **)master = lbl_80330990;
+        fn_8016D278(master + 4);
+        fn_8016D024(master + 0x30);
+        fn_8016CF08(master + 0xAC);
+        lbl_8055E378 = (s32)master;
+        fn_8016CEFC(master + 4);
+        for (s32 entryIndex = 0; entryIndex < *(s32 *)((u8 *)setup + 0x3E0); entryIndex++) {
+            void *newEntry = (void *)fn_801284F8(0x10, strings + 0x30);
+            if (newEntry != 0) newEntry = fn_8016CEC0(newEntry, entryIndex);
+            void *entry = newEntry;
+            fn_8016CE9C(master + 4, &entry);
         }
         fn_8016A0B0();
-        fn_8016C328(object + 0x30);
-        *(s32 *)(object + 0x98) = 0;
-        *(u8 *)(object + 0x9C) = 1;
-        *(f32 *)(object + 0xA0) = -100.0f;
-        *(s32 *)(object + 0xA4) = fn_80207848(strings + 0x3C, 1);
-        *(u8 *)(object + 0xA8) = 0;
+        fn_8016C328(master + 0x30);
+        *(s32 *)(master + 0x98) = 0;
+        *(u8 *)(master + 0x9C) = 1;
+        *(f32 *)(master + 0xA0) = -100.0f;
+        *(s32 *)(master + 0xA4) = fn_80207848(strings + 0x3C, 1);
+        *(u8 *)(master + 0xA8) = 0;
     }
-    return object;
+    return master;
 }
 
 #pragma cplusplus on
