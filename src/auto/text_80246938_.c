@@ -1457,12 +1457,20 @@ void fn_80248A68(void *arg0) {
 }
 
 #pragma scheduling invalid_target
-void fn_80248A74(void *arg0) {
-    float *fp = (float *)((char *)arg0 + 0x1C);
-    s32 rate;
-    if (*fp > 370.0f) rate = 0xC8;
-    else rate = 0x32;
-    *fp = *fp + (float)rate * fn_80214D48();
+/* Ramp a UI element's local X scroll offset by 200 units/s once it passes 370,
+ * otherwise by 50 units/s, scaled by the current frame's delta time. */
+void fn_80248A74(void *element) {
+#define SCROLL_FAST_THRESHOLD 370.0f
+#define SCROLL_FAST_RATE      0xC8 /* 200 units/s */
+#define SCROLL_SLOW_RATE      0x32 /* 50 units/s */
+    float *scrollOffset = (float *)((char *)element + 0x1C);
+    s32 scrollRate;
+    if (*scrollOffset > SCROLL_FAST_THRESHOLD) scrollRate = SCROLL_FAST_RATE;
+    else scrollRate = SCROLL_SLOW_RATE;
+    *scrollOffset = *scrollOffset + (float)scrollRate * fn_80214D48();
+#undef SCROLL_SLOW_RATE
+#undef SCROLL_FAST_RATE
+#undef SCROLL_FAST_THRESHOLD
 }
 #pragma scheduling on
 void fn_80230C30(float *, float *, s32, s32);
@@ -1752,11 +1760,11 @@ void fn_802491A8(void *arg0) {
     int obj;
     int i = 0;
     int selected;
-    float yOrigin = lbl_805638F8;
-    float xOrigin = lbl_805638EC;
-    float origin = lbl_805638E8;
-    float sub = lbl_805638E4;
     float scale = lbl_805638E0;
+    float sub = lbl_805638E4;
+    float origin = lbl_805638E8;
+    float xOrigin = lbl_805638EC;
+    float yOrigin = lbl_805638F8;
     for (; i < *(int *)(base + 0x24); i++) {
         float fi = (float)i;
         float offset;
