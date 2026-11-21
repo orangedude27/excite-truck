@@ -211,6 +211,8 @@ extern "C" void fn_802064D0(int arg0) {
     ((Callback *)fn_80208D4C())->call(arg0);
 }
 
+/* No-op virtual callback stub in the audio mixer's device callback group, next
+ * to fn_802064CC/fn_8020654C.  Calling it does nothing; compiles to a bare 'blr'. */
 extern "C" void fn_80206514(void) {
 }
 
