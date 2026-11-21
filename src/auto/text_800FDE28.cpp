@@ -193,21 +193,23 @@ extern "C" s32 MEMFreeByStateToFrmHeap(s32);
 #pragma pop
 extern "C" s32 Alloc__Q46nw4hbm3snd6detail11TaskManagerFv(void *arg0)
 {
+    struct PanicStrings {
+        char file[0x68];
+        char msg1[0x40];
+        char msg2[1];
+    };
     u32 temp_r31;
-    const char *base = (const char *)lbl_80326E08;
+    const struct PanicStrings *base = (const struct PanicStrings *)lbl_80326E08;
     s32 var_r29;
-    int line;
 
     if (*(s32 *)((u8 *)arg0 + 0x18) == 0) {
-        line = 0x45;
-        Panic__Q26nw4hbm2dbFPCciPCce(&base[line - 0x45], line, base + 0x68);
+        Panic__Q26nw4hbm2dbFPCciPCce(base->file, 0x45, base->msg1);
     }
     temp_r31 = OSDisableInterrupts();
     var_r29 = MEMFreeByStateToFrmHeap(*(s32 *)((u8 *)arg0 + 0x18));
     while (var_r29 == 0) {
         if (ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv(arg0) == 0) {
-            line = 0x4C;
-            Panic__Q26nw4hbm2dbFPCciPCce(&base[line - 0x4C], line, base + 0xA8);
+            Panic__Q26nw4hbm2dbFPCciPCce(base->file, 0x4C, base->msg2);
         }
         var_r29 = MEMFreeByStateToFrmHeap(*(s32 *)((u8 *)arg0 + 0x18));
     }
@@ -419,9 +421,9 @@ extern "C" void CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(void *arg0,
         virtual void vf2();
     };
     TaskManager *mgr = (TaskManager *)arg0;
-    register u32 level = OSDisableInterrupts();
-    register s32 count = 0;
-    register s32 offset = 0;
+    u32 level = OSDisableInterrupts();
+    s32 count = 0;
+    s32 offset = 0;
     void *node;
     for (; count < 3; count++, offset += 0xC) {
         void *current;
@@ -648,14 +650,22 @@ extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32 volumeDb) {
 #undef kDbScale
 #undef gVolumeDbTable
 }
-#pragma scheduling off
+#pragma push
+#pragma scheduling invalid_target
 extern "C" f32 CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
     f32 v;
-    if (pan > lbl_805610C8) v = lbl_805610C8;
-    else if (pan < lbl_805610E0) v = lbl_805610E0;
-    else v = pan;
-    double t = lbl_805610C8 + v;
-    return lbl_802F6124[(s32)(lbl_805610D0 + lbl_805610E4 * ((f32)t * lbl_805610D0))];
+    f32 t;
+
+    if (pan > 1.0f) {
+        v = 1.0f;
+    } else if (pan < lbl_805610E0) {
+        v = lbl_805610E0;
+    } else {
+        v = pan;
+    }
+
+    t = lbl_805610C8 + v;
+    return lbl_802F6124[(s32)(lbl_805610D0 + lbl_805610E4 * (t * lbl_805610D0))];
 }
 #pragma pop
 extern "C" f32 CalcSurroundPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
@@ -820,7 +830,12 @@ extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
         Callback callback;
         u32 callbackArg;
     };
-    u32 level = OSDisableInterrupts();
+    struct AutoIntLock {
+        u32 level;
+        AutoIntLock() { level = OSDisableInterrupts(); }
+        ~AutoIntLock() { OSRestoreInterrupts(level); }
+    };
+    AutoIntLock lock;
     if (((WavePlayer *)arg0)->inList != 0) {
         if (arg0 == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803274C0, 0x233,
@@ -829,13 +844,14 @@ extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
             lbl_8041D4AC, (u8 *)arg0 + 0x94);
         ((WavePlayer *)arg0)->inList = 0;
     }
-    u32 voiceLevel = OSDisableInterrupts();
-    if (((WavePlayer *)arg0)->voice != 0)
-        Stop__Q46nw4hbm3snd6detail7AxVoiceFv(((WavePlayer *)arg0)->voice);
-    ((WavePlayer *)arg0)->stopped = 0;
-    OSRestoreInterrupts(voiceLevel);
+    {
+        AutoIntLock voiceLock;
+        if (((WavePlayer *)arg0)->voice != 0)
+            Stop__Q46nw4hbm3snd6detail7AxVoiceFv(((WavePlayer *)arg0)->voice);
+        ((WavePlayer *)arg0)->stopped = 0;
+    }
 
-    void *sentinel = (u8 *)arg0 + 8;
+    void *sentinel = &((WavePlayer *)arg0)->waves;
     void *node = ((WavePlayer *)arg0)->waves.next;
     while (node != sentinel) {
         void *entry = node;
@@ -863,7 +879,6 @@ extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327040, 0x162,
                                      (const char *)lbl_803271B8);
     *((u8 *)arg0 + 0x1F) = 0;
-    OSRestoreInterrupts(level);
 }
 
 extern "C" void fn_800FF090(void *arg0) {
@@ -1140,7 +1155,7 @@ extern "C" void detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void 
           {
             Panic__Q26nw4hbm2dbFPCciPCce((char *) lbl_80327490, 0x23d, (char *) lbl_8032746C);
           }
-          SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*((void **) (((u8 *) player) + 0x18)), i, *((void **) ((((u8 *) base) + (i * 4)) + 8)), 0);
+          SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*((void **) (((u8 *) player) + 0x18)), i, *((void **) ((((u8 *) base) + (i << 2)) + 8)), 0);
         }
 
       }
