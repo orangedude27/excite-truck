@@ -3255,7 +3255,11 @@ extern "C" void fn_8021D568(void *arg0, s32 arg1) {
     fn_802195DC(arg0, arg1);
 }
 #pragma dont_inline reset
-extern "C" void fn_8021D614(void) {
+extern "C" void fn_8021D614(void *widget, s32 x, s32 y) {
+    /* OptionWidget's override of the base widget's onPress(widget, x, y) virtual
+     * (fn_80215464) at vtable slot +0x3C, called by fn_8021749C / fn_802175F0
+     * when the pointer goes down on the widget. The option widget does not react
+     * to a press itself, so this handler is intentionally empty. */
 }
 
 extern "C" void fn_8021D618(void) {
