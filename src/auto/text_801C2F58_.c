@@ -619,8 +619,6 @@ void fn_801C4B74(void) {
     }
 }
 
-static struct Unk_80437D88 lbl_80437D88;
-static s32 lbl_80437E24[3];
 #pragma opt_common_subs off
 void fn_801C4BAC(void) {
     register Unk_80437D88 *state;
