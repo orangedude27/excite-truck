@@ -17,6 +17,7 @@ extern s32 fn_802ECC10(void);
 extern s32 fn_802E2C20(void);
 extern void fn_802E47E8(void);
 #pragma dont_inline on
+/* No-op screenshot subsystem init hook, called once at boot by fn_802E46B0. */
 void fn_802E46AC(void) {}
 #pragma dont_inline off
 
