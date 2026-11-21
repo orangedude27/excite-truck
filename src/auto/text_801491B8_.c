@@ -2778,8 +2778,8 @@ static inline void fn_80150BDC_PlaceEffect(void *e, f32 one, f32 zero) {
 #pragma dont_inline on
 void fn_80150BDC(void *arg0) {
     char *b = (char *)arg0;
-    f32 f29 = lbl_80561650, f30 = lbl_8056164C, f31 = lbl_80561648;
-    f32 f28 = lbl_805616E0, f27 = lbl_80561638;
+    f32 f31 = lbl_80561648, f29 = lbl_80561650, f27 = lbl_80561638;
+    f32 f28 = lbl_805616E0, f30 = lbl_8056164C;
     s32 r30, r31, played;
     void *r25, *r23, *r26;
     f32 f0, f1, f2, f26, f25;
