@@ -164,6 +164,8 @@ void fn_801A7628(void) {
 }
 #pragma push
 #pragma scheduling invalid_target
+/* Refresh the pointer state: optionally reload all four controller configs, then
+ * read the pointer and store its x/y as screen-normalized floats plus its 3 button bits. */
 void fn_801A7844(int resetControllers) {
     char *config;
     int controllerIndex;
