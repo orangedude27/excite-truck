@@ -680,18 +680,26 @@ extern "C" f32 CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
 }
 #pragma pop
 extern "C" f32 CalcSurroundPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
-    f32 v;
+#define kSurroundMin lbl_805610E8
+#define kHalf lbl_805610D0
+#define kTableScale lbl_805610E4
+#define gPanRatioTable lbl_802F6124
+    f32 clampedPan;
 
+    /* Clamp the front-to-back pan to [0, 2] and look up its gain ratio in the pan table. */
     if (pan > 2.0f) {
-        v = 2.0f;
-    } else if (pan < lbl_805610E8) {
-        v = lbl_805610E8;
+        clampedPan = 2.0f;
+    } else if (pan < kSurroundMin) {
+        clampedPan = kSurroundMin;
     } else {
-        v = pan;
+        clampedPan = pan;
     }
 
-    return lbl_802F6124[(s32)(lbl_805610D0 +
-                              lbl_805610E4 * (v * lbl_805610D0))];
+    return gPanRatioTable[(s32)(kHalf + kTableScale * (clampedPan * kHalf))];
+#undef gPanRatioTable
+#undef kTableScale
+#undef kHalf
+#undef kSurroundMin
 }
 
 extern "C" s32 CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
