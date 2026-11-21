@@ -723,6 +723,8 @@ void fn_802CB3F4(void) {
 }
 
 void fn_802CB3F8(void) {
+    /* Empty no-op callback used throughout the texture module (invoked with two arguments
+     * via casts); it intentionally does nothing. */
 }
 
 DECL_SECTION(".sdata") extern char lbl_8055FCBC[];
