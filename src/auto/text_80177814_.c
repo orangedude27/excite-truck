@@ -613,12 +613,11 @@ s32 fn_801784DC(const Vec *arg0, f32 *arg1, Vec *arg2, s32 *arg3, s32 arg4) {
     Vec normal;
     s32 value;
     s32 other;
-    register f32 sy = arg0->y - 1000.0f;
-    register f32 sz = arg0->z;
-    register f32 sx = arg0->x;
+    f32 sy = arg0->y - 1000.0f;
+    f32 sz = arg0->z;
     start.z = sz;
+    start.x = arg0->x;
     start.y = sy;
-    start.x = sx;
     if (((s32 (*)(Vec *, Vec *, Vec *, Vec *, s32 *, s32 *, s32))fn_801784AC)((Vec *)arg0, &start, &hit, &normal, &value, &other, arg4)) {
         *arg1 = hit.y;
         if ((u32)arg2 != 0) {
