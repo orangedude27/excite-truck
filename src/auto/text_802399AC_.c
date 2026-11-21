@@ -724,6 +724,7 @@ void fn_8023AFD0(void *widget) {
 }
 #pragma pop
 
+/* Empty no-op handler in the options-menu UI code; intentionally does nothing. */
 void fn_8023B04C(void) {}
 
 void fn_8023B050(void) {
