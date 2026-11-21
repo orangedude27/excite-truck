@@ -56,6 +56,7 @@ extern void fn_8025DAEC(void *, void *);
 #define desc low.fd
 #define DS(off) desc[(((off) - 0xB8) >> 2)]
 #define APPEND(v) { int *_d=(int*)(long)lbl_8055F3C4; int _i=_d[7]; _d[7]=_i+1; ((int*)_d[6])[_i]=(v); }
+#pragma use_lmw_stmw off
 void fn_8025CE78(void) {
     char *tbl;
     char buf6[0x43C], buf5[0x43C], buf4[0x43C], buf3[0x43C];
@@ -236,7 +237,7 @@ void fn_8025CE78(void) {
     *(void **)(buf3 + 0x40C) = &lbl_80345718; ((void (*)(void *))fn_80235380)(*(void **)(buf3 + 0x434));
     *(void **)(buf2 + 0x40C) = &lbl_80345718; ((void (*)(void *))fn_80235380)(*(void **)(buf2 + 0x434));
     *(void **)(buf1 + 0x40C) = &lbl_80345718; ((void (*)(void *))fn_80235380)(*(void **)(buf1 + 0x434));
-    *(void **)(buf0 + 0x40C) = &lbl_80345718;     ((void (*)(void *))fn_80235380)(*(void **)(buf0 + 0x434));
+    *(void **)(buf0 + 0x40C) = &lbl_80345718; ((void (*)(void *))fn_80235380)(*(void **)(buf0 + 0x434));
 }
 #undef sp8
 #undef spC
