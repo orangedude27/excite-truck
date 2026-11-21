@@ -985,6 +985,11 @@ extern "C" void fn_80299628(void *arg0) {
 }
 
 #pragma opt_propagation off
+static inline int cmpSlotValue(char *base, int off, int best) {
+    float a = *(float *)(base + off);
+    float b = *(float *)(base + (best << 6) + 0x38);
+    return a < b;
+}
 extern "C" int fn_802996B0(void *arg0, int *out) {
  struct Slot { char pad[0x38]; float value; };
  int state, best=-1, found=0, idx;
