@@ -697,12 +697,13 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
                 (s32)((Service *)lbl_8055E2E0)->create((const char *)text + 0xD4));
         }
         temp_r3_3 = (u8 *)((Service *)lbl_8055E2E0)->find((const char *)text + 0xF0);
-        f32 value4 = *(f32 *)(temp_r3_3 + 4);
-        f32 value8 = *(f32 *)(temp_r3_3 + 8);
-        s32 valueC = *(s32 *)(temp_r3_3 + 0xC);
+        f32 value4 = *(f32 *)((u8 *)temp_r3_3 + 4);
+        u8 *alias = temp_r3_3;
+        f32 value8 = *(f32 *)((u8 *)alias + 8);
+        s32 valueC = *(s32 *)((u8 *)temp_r3_3 + 0xC);
         fn_80148134(&spC, &sp8, valueC, value4, value8);
         f32 firstValue = *(f32 *)((u8 *)temp_r3 + 0x10);
-        f32 settingValue = *(f32 *)(temp_r3_3 + 0x10);
+        f32 settingValue = *(f32 *)((u8 *)temp_r3_3 + 0x10);
         f32 delta = firstValue - lbl_80561844;
         fn_800103B8(*(s32 *)(temp_r3_3 + 0x18),
             *(s32 *)(temp_r3_3 + 0x14), (s32 *)&lbl_8055A0DC, arg1,
@@ -1742,6 +1743,7 @@ extern int fn_801476D8(int, int, int);
 extern void fn_80130980(void *, int, int, float);
 extern void fn_801475D0(void *, ...);
 #pragma cplusplus on
+#pragma processor 750
 extern "C" s32 fn_80162800(void *arg0) {
     s32 sp8[3];
     Dummy_80162800 *obj = (Dummy_80162800 *)arg0;
@@ -1757,7 +1759,7 @@ extern "C" s32 fn_80162800(void *arg0) {
     }
     return 0;
 }
-#pragma cplusplus off
+#pragma cplusplus on
 extern char lbl_8032F698[];
 extern void *lbl_8055E2E0;
 extern int fn_801476C4(void);
