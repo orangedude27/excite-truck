@@ -428,6 +428,8 @@ extern "C" void fn_801C1B60(int state) {
 #undef WriteOutputs
 #pragma dont_inline reset
 #pragma force_active reset
+/* No-op hook: called from the global setup sequence (fn_80178DD4) among the
+ * subsystem initialization routines, but its body is empty. */
 extern "C" void fn_801C1B9C(void) {
 }
 
