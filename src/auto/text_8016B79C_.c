@@ -1959,33 +1959,34 @@ void fn_8016E918(void *owner) {
 extern f32 lbl_805619A4;
 #pragma scheduling on
 void fn_8016E984(void *arg0) {
-      register f32 initial = lbl_805619A4;
-      volatile s32 temp = *(s32 *)((u8 *)arg0 + 0xC);
-      void *p;
-      *(s32 *)arg0 = 0;
-      *(f32 *)((u8 *)arg0 + 4) = initial;
-      *((u8 *)arg0 + 8) = 1;
-      *((u8 *)arg0 + 9) = 0;
-      *((u8 *)arg0 + 0x10) = 0;
-      *(s32 *)((u8 *)arg0 + 0xF8) = 0;
-      *(s32 *)((u8 *)arg0 + 0xFC) = 0;
-      *(s32 *)((u8 *)arg0 + 0x100) = 0;
-      *(s32 *)((u8 *)arg0 + 0x104) = 0;
-      if (temp != 0) fn_802AE0E0(temp);
-      p = *(void **)((u8 *)arg0 + 0x14);
-      if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
-      p = *(void **)((u8 *)arg0 + 0x18);
-      if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
-      p = *(void **)((u8 *)arg0 + 0x1C);
-      if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
-      p = *(void **)((u8 *)arg0 + 0x24);
-      *((u8 *)arg0 + 0x20) = 0;
-      if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
-      p = *(void **)((u8 *)arg0 + 0x28);
-      if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
-      p = *(void **)((u8 *)arg0 + 0x2C);
-      if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
-  }
+    CrushRoundState8016B964 *round = (CrushRoundState8016B964 *)arg0;
+    Sound8016B964 *sound;
+
+    round->state = 0;
+    round->time = -1.0f;
+    round->active = 1;
+    round->flag9 = 0;
+    round->flag10 = 0;
+    round->counters[0] = 0;
+    round->counters[1] = 0;
+    round->counters[2] = 0;
+    round->counters[3] = 0;
+    if (round->animPlayer != 0)
+        ((void (*)(void **))fn_802AE0E0)(round->animPlayer);
+    sound = round->sound14;
+    if (sound != 0) { sound->stop = 1; sound->stopOnce = 0; }
+    sound = round->sound18;
+    if (sound != 0) { sound->stop = 1; sound->stopOnce = 0; }
+    sound = round->sound1C;
+    if (sound != 0) { sound->stop = 1; sound->stopOnce = 0; }
+    sound = round->sound24;
+    round->flag20 = 0;
+    if (sound != 0) { sound->stop = 1; sound->stopOnce = 0; }
+    sound = round->sound28;
+    if (sound != 0) { sound->stop = 1; sound->stopOnce = 0; }
+    sound = round->sound2C;
+    if (sound != 0) { sound->stop = 1; sound->stopOnce = 0; }
+}
 #pragma scheduling off
 extern void fn_80130980(void *, s32, s32, f32);
 extern s32 fn_80207848(void *, s32);
