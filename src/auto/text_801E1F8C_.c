@@ -614,9 +614,10 @@ extern "C" s32 fn_801E2640(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 *arg4,
         *arg5 = 0;
     }
     if (found) {
-        arg2[0] += normal[0] * dot;
-        arg2[1] += normal[1] * dot;
-        arg2[2] += normal[2] * dot;
+        f32 tailScale = dot;
+        arg2[0] += normal[0] * tailScale;
+        arg2[1] += normal[1] * tailScale;
+        arg2[2] += normal[2] * tailScale;
     }
     return found;
 }
