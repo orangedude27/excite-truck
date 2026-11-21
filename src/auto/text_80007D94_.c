@@ -178,10 +178,10 @@ const char* fn_80007F90(u32 eventId) {
 #pragma scheduling on
 const char* fn_80007FF0(u32 eventType) {
     /* Look up the display name for an event type ID in the event type table, or return "unknown" if not found. */
-    Unk802FB70C* entry;
+    EventNameEntry *entry;
     u32 id;
-    for (entry = lbl_802FB70C; (id = entry->unk_0x0) != 0; ++entry) {
-        if (id == eventType) return entry->unk_0x8;
+    for (entry = lbl_802FB70C; (id = entry->eventId) != 0; ++entry) {
+        if (id == eventType) return entry->displayName;
     }
     fn_802E317C(lbl_802FB77C, eventType);
     return lbl_805589A0;
