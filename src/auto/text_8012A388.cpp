@@ -194,7 +194,9 @@ extern "C" s32 fn_8012A388(void *arg0) {
 extern "C" const char lbl_8032A630[];
 extern "C" void fn_8012A46C(void *, const char *);
 extern "C" s32 fn_80132E7C(void *, s32);
-extern "C" void fn_8012A46C(void *, const char *) {
+/* Debug hook that reports a loaded resource (its data pointer and a label);
+ * the release build compiles it away, leaving an empty body. */
+extern "C" void fn_8012A46C(void *data, const char *label) {
 
 }
 
