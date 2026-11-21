@@ -31,10 +31,16 @@ void fn_8029EF70(void) {
 #pragma scheduling on
 
 void fn_8029EFBC(void) {
+#define sLineTextureHandle    lbl_8055CAE0
+#define releaseTexture        fn_802CAC54
+#define isResourceHandleValid fn_8029EFF0
     /* Release the line-effect texture, if its handle is still valid. */
-    if (fn_8029EFF0(lbl_8055CAE0) != 0) {
-        fn_802CAC54(lbl_8055CAE0);
+    if (isResourceHandleValid(sLineTextureHandle) != 0) {
+        releaseTexture(sLineTextureHandle);
     }
+#undef isResourceHandleValid
+#undef releaseTexture
+#undef sLineTextureHandle
 }
 
 int fn_8029EFF0(int handle) {
