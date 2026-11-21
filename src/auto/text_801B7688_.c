@@ -187,11 +187,13 @@ extern "C" void fn_801B79D4(void *arg0, unsigned int arg1, int arg2) {
     unsigned int var28 = arg1;
     unsigned r30 = ((V1 *)fn_801B2ED0(var28))->v5();
     float f31 = fn_80139048();
-    f31 = lbl_8056270C + (fn_801B79AC() + f31);
+    float t1 = fn_801B79AC();
+    f31 = lbl_8056270C + (t1 + f31);
     if (arg2 != 0x53 && arg2 != 0x54) var28 = fn_801B3050((unsigned)var28);
     float f30 = (var28 & 1) ? lbl_80562700 : -lbl_80562700;
-    float f1 = -fn_801B79AC() * lbl_80562710;
-    float f29 = lbl_80562714;
+    float t2 = -fn_801B79AC();
+    float f1 = t2 * lbl_80562710;
+    float off = lbl_80562714;
     unsigned long sign = var28 >> 31;
     register int half = (int)(sign + var28) >> 1;
     f31 = f1 - (float)half * f31;
@@ -203,10 +205,8 @@ extern "C" void fn_801B79D4(void *arg0, unsigned int arg1, int arg2) {
         if (cur->key > best->key) best = cur;
         cur = cur->next;
     } while (cur != head);
-    f29 = best->value - f29;
-    if (((int *)((char *)__AXFXGetLfoSinTable_801769CC() + 0x10))[0] & 1) goto skip_add;
-    f31 += f29;
-skip_add:
+    float d = best->value - off;
+    f31 = ((int *)((char *)__AXFXGetLfoSinTable_801769CC() + 0x10))[0] & 1 ? f31 : d + f31;
     fn_801B78EC((int)arg0, r30, 0, f30, f31, lbl_80562708);
     if (*(int *)((char *)arg0 + 0x44) == 1) {
         float scale = fn_80134C1C();
@@ -276,20 +276,20 @@ void fn_801B7C8C(int arg0, float *arg1, float *arg2) {
     a = arg1[0];
     b = arg1[1];
     z = -d.x;
-    normal[0] = lbl_80562708;
+    normal[0] = 0.0f;
     normal[1] = 1.0f;
-    normal[2] = lbl_80562708;
+    normal[2] = 0.0f;
     pts[0] = a + arg2[0] * lbl_80562724;
-    pts[1] = lbl_80562708;
+    pts[1] = 0.0f;
     pts[2] = b + arg2[1] * lbl_80562724;
     pts[3] = a + arg2[0] * lbl_80562710 + d.y * lbl_80562710;
-    pts[4] = lbl_80562708;
+    pts[4] = 0.0f;
     pts[5] = b + arg2[1] * lbl_80562710 + z * lbl_80562710;
     pts[6] = pts[3] + d.y * lbl_80562728;
-    pts[7] = lbl_80562708;
+    pts[7] = 0.0f;
     pts[8] = pts[5] + z * lbl_80562728;
     xf.p[0] = a;
-    xf.p[1] = lbl_80562708;
+    xf.p[1] = 0.0f;
     xf.p[2] = b;
     d.x = d.y;
     d.y = z;
