@@ -10,12 +10,10 @@ s32 fn_801AE59C(void) {
 
 /* No-op stub: does nothing and leaves its s32 return value unset. */
 s32 fn_801AE5A4(void) {
-
 }
 
 /* No-op stub: empty default handler with nothing to do. */
 void fn_801AE5AC(void) {
-
 }
 
 /* No-op stub (empty function). */
