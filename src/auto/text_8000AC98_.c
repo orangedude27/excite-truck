@@ -167,6 +167,8 @@ void fn_8000AE78(int arg0) {
 }
 
 int fn_800070DC(void);
+/* Tail-call thunk registered as the startup/mode-change callback: forwards to
+ * fn_800070DC, which resets every HUD overlay to its initial state. */
 void fn_8000AEC4(void) {
     fn_800070DC();
 }
