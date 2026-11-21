@@ -373,7 +373,6 @@ extern void *fn_8001285C(int);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling 603
 void fn_8018C5A0(char *arg0, char *arg1) {
     char *base = lbl_80332758;
     char *p19;
