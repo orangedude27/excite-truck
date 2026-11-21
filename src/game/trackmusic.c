@@ -153,14 +153,16 @@ void *fn_8020F5F0(long trackIndex) {
 extern void *memset(void *, int, unsigned long);
 #pragma dont_inline on
 #pragma ctrloop on
-long fn_8020F608(long arg0, long arg1) {
-    long *p;
-    long i;
-    p = (long *)fn_8020F5F0(arg1);
-    memset(p, 0, 0x1900);
-    for (i = 0; i < 64; i++) {
-        *p = arg0;
-        p += 25;
+/* Clear the track-music buffer for a context and stamp the first word of each
+ * of its 64 slots (0x64 bytes apart) with the slot state (0 idle, 1 active). */
+long fn_8020F608(long slotState, long contextIndex) {
+    long *slot;
+    long slotIndex;
+    slot = (long *)fn_8020F5F0(contextIndex);
+    memset(slot, 0, 0x1900);
+    for (slotIndex = 0; slotIndex < 64; slotIndex++) {
+        *slot = slotState;
+        slot += 25;
     }
 }
 #pragma ctrloop reset
