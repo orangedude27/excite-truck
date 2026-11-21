@@ -502,6 +502,7 @@ void fn_8023C210(Dst8023C210 *dst, Src8023C210 *src) {
     dst->t = src->t;
 }
 
+/* Intentionally empty placeholder callback: does nothing and returns immediately. */
 void fn_8023C268(void) {}
 #pragma cplusplus on
 extern "C" s32 fn_80007FF0(s32);
