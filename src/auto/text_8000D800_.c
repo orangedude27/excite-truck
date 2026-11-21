@@ -15,9 +15,9 @@ DECL_SECTION(".ctors$00") funcptr_t D_802ED084 = fn_8000D800;
 void fn_8000D800(void)
 {
 #define s_initRecord lbl_8055D438
-#define s_value lbl_8055D440
+#define STATIC_DTOR_LIST_END 0x7f000000
     fn_8000D838(&s_initRecord);
-    s_value = 0x7f000000;
-#undef s_value
+    lbl_8055D440 = STATIC_DTOR_LIST_END;
+#undef STATIC_DTOR_LIST_END
 #undef s_initRecord
 }
