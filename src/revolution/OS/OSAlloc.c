@@ -96,7 +96,6 @@ void* OSAllocFromHeap(s32 handle, s32 size) {
     OSHeapCell* cell;
     u32 remainingSize;
 
-    heapDesc = &HeapArray[handle];
     size = ROUND_UP(size + sizeof(OSHeapCell), 32);
 
     for (cell = heapDesc->freeList; cell != NULL; cell = cell->next) {
