@@ -199,7 +199,10 @@ extern "C" void fn_802640A0(void *arg0) {
         int b;
     };
     struct CreditsMenuItem *item = (struct CreditsMenuItem *)arg0;
-    item->name = &lbl_8055C458;
+    void *name = &lbl_8055C458;
+    int zero = 0;
+    int type = 0x7b;
+    item->name = name;
     item->type = 0x7b;
     item->data = 0;
     item->a = 0;
