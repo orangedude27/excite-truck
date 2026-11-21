@@ -2216,6 +2216,11 @@ extern "C" s32 fn_8014821C(void) {
     return 0;
 }
 
+/* No-op default implementation: the third of the five unimplemented virtuals
+ * fn_80148218 / fn_8014821C / fn_80148224 / fn_80148228 / fn_8014822C, a run
+ * of empty callbacks between this file's 2D-drawing helpers and the adapter
+ * sub-object's virtuals (vtable lbl_8032D214). Nothing calls it by name, so it
+ * runs only through the pointer table its slot occupies. */
 extern "C" void fn_80148224(void) {
 }
 
