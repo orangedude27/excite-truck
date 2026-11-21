@@ -197,6 +197,7 @@ void fn_802C10B8(void) {
 }
 
 #pragma inline off(fn_802C1018)
+/* Forward to fn_802C1018, which releases the loaded "sky.mod" resource handle. */
 void fn_802C10C4(void) {
     fn_802C1018();
 }
