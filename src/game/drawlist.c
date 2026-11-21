@@ -1373,6 +1373,7 @@ void fn_802CA094(int *self) {
     __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_802C9E3C(self, 1);
 }
 
+/* Tail-call thunk: forward to fn_802C9E94, the quaternion-interpolating draw-list callback. */
 void fn_802CA09C(void) {
     ((int (*)(void))fn_802C9E94)();
 }
