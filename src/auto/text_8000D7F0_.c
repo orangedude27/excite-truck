@@ -9,6 +9,9 @@ void fn_8000D7F0(void) {
 }
 
 void fn_8000D7F4(void) {
+    /* No-op startup hook: one of a run of empty callbacks (fn_8000D7F0,
+       fn_8000D7F4, fn_8000D7F8, fn_8000D7FC) invoked during scene setup;
+       does nothing in this build. */
 }
 
 void fn_8000D7F8(void) {
