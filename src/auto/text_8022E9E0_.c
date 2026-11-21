@@ -7,8 +7,6 @@ extern void **lbl_8055F000;
 extern char lbl_80340280[];
 extern char lbl_80340290[];
 extern void *fn_801284F8(u32, void *);
-typedef void (*VFunc)(s32);
-struct Vtbl8022E { void *pad; VFunc dtor; };
 extern void *fn_8012A13C(void *, void *, u32, u32);
 extern void *fn_8012A2D8(void **);
 extern void fn_8012A364(void **, void *);
