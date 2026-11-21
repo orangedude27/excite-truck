@@ -1,6 +1,8 @@
 #include <revolution/OS.h>
 #include <runtime/GCN_mem_alloc.h>
 
+/* Create a default OS heap from the remaining arena (reserving room for one
+ * heap descriptor) and make it the current heap. */
 static void InitDefaultHeap(void) {
     void* start;
     void* end;
