@@ -350,8 +350,8 @@ static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const
 /* Same as newContext, but with the context array base passed in by the caller so the
  * inlined body shares the caller's copy of the base pointer. */
 static inline DVDLowContext *newContextBase(unsigned char *base, void *callback, unsigned int arg2, const char *msg) {
-    int offset = lbl_8055D8E8 * 0x20;
-    unsigned char *entry = base + offset;
+    DVDLowContext *ctxBase = (DVDLowContext *)base;
+    unsigned char *entry = (unsigned char *)ctxBase + lbl_8055D8E8 * 0x20;
     int id;
 
     if (((-(unsigned int)entry[8] | (unsigned int)entry[8]) >> 31) == 1U) {
@@ -364,7 +364,7 @@ static inline DVDLowContext *newContextBase(unsigned char *base, void *callback,
         for (;;) {}
     }
 
-    ((unsigned int *)base)[lbl_8055D8E8 * 8] = (unsigned int)callback;
+    ((unsigned int *)ctxBase)[lbl_8055D8E8 * 8] = (unsigned int)callback;
     *(unsigned int *)(entry + 4) = arg2;
     entry[8] = arg2;
 
@@ -373,7 +373,7 @@ static inline DVDLowContext *newContextBase(unsigned char *base, void *callback,
         lbl_8055D8E8 = 0;
     }
 
-    return &((DVDLowContext *)base)[id];
+    return &ctxBase[id];
 }
 
 #pragma scheduling 750
