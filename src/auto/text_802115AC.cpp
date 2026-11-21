@@ -2341,6 +2341,7 @@ extern "C" void fn_80215298(s32 *outX, s32 *outHalfX, s32 *outEndX, s32 *outY, s
 }
 
 #pragma dont_inline on
+/* No-op hook in the sound result-callback path; kept out of line for callers such as fn_802152CC. */
 extern "C" void fn_802152C8(void) {
 }
 #pragma dont_inline reset
