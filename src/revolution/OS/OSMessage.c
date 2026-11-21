@@ -34,8 +34,8 @@ BOOL OSSendMessage(OSMessageQueue* queue, OSMessage mesg, u32 flags) {
     return TRUE;
 }
 
+/* Receive a message from queue; block if empty and OS_MSG_BLOCKING set, else return FALSE. */
 BOOL OSReceiveMessage(OSMessageQueue* queue, OSMessage* mesg, u32 flags) {
-    /* Receive a message from queue; block if empty and OS_MSG_BLOCKING set, else return FALSE. */
     BOOL enabled = OSDisableInterrupts();
 
     while (queue->size == 0) {
