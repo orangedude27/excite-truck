@@ -342,7 +342,7 @@ void fn_801935EC(void *sound) {
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_80193604(void *arg0, void *arg1, void *unused, int arg2, void *arg3) {
+void fn_80193604(void *arg0, const void *arg1, void *unused, int arg2, void *arg3) {
     extern float PSVECDotProduct(const void *, const void *);
     extern float PSVECMag(const void *);
     extern float lbl_80562140, lbl_80562144, lbl_80562148, lbl_8056215C;
@@ -370,13 +370,7 @@ void fn_80193604(void *arg0, void *arg1, void *unused, int arg2, void *arg3) {
             *(float *)(obj + 0x2A8) += lbl_80562168;
     }
     if (code < 0x3E8 && PSVECDotProduct(arg1, *(char **)(obj + 0x294) + 0x88) < lbl_80562144) {
-        unsigned int z; unsigned int y; unsigned int x;
-        x = ((unsigned int *)arg1)[0];
-        y = ((unsigned int *)arg1)[1];
-        z = ((unsigned int *)arg1)[2];
-        ((unsigned int *)&normal)[2] = z;
-        ((unsigned int *)&normal)[1] = y;
-        ((unsigned int *)&normal)[0] = x;
+        normal = *(const struct Vec *)arg1;
         value = PSVECMag(&normal);
         scale = lbl_80562148 > value ? lbl_80562148 : value;
         scale = lbl_80562140 / scale;
@@ -734,7 +728,7 @@ extern "C" void fn_80194324(void *arg0) {
     if (!(*(int *)(p + 0x2D0) & 0x10)) {
         flag = *(float *)(*(char **)(p + 0x294) + 0x25D4) > lbl_805621BC;
         if (flag) {
-            float v;
+            register float v;
             float t = *(float *)(p + 0x26C) - *(float *)(p + 0x1D0);
             int lt = t < lbl_805621C0;
             if (lt) {
@@ -840,49 +834,40 @@ extern float *fn_8013A604(void *aiExceptionConfig, float lon); /* AI params cove
 void fn_80194624(void *arg0) {
     char *p = (char *)arg0;
     void *r = fn_8013A604((void **)(*(char **)(p + 0x2C8) + 0x40), *(float *)(p + 0x280));
-    float q, b, a, c, t;
+    float q, b, a, c;
     if (r != *(void **)(p + 0x2D8)) {
         *(void **)(p + 0x2D4) = *(void **)(p + 0x2D8);
         *(void **)(p + 0x2D8) = r;
         *(float *)(p + 0x2DC) = *(float *)(p + 0x26C);
     }
     q = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
-    c = 1.0f;
     b = ((float *)*(void **)(p + 0x2D8))[2];
     a = ((float *)*(void **)(p + 0x2D4))[2];
-    c = (c < q) ? c : q;
+    c = (1.0f < q) ? 1.0f : q;
     c = (c > 0.0f) ? c : 0.0f;
-    t = a + c * (b - a);
-    c = 1.0f;
-    *(float *)(p + 0x2E8) = t;
+    *(float *)(p + 0x2E8) = a + c * (b - a);
     q = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
     b = ((float *)*(void **)(p + 0x2D8))[1];
     a = ((float *)*(void **)(p + 0x2D4))[1];
-    c = (c < q) ? c : q;
+    c = (1.0f < q) ? 1.0f : q;
     c = (c > 0.0f) ? c : 0.0f;
-    t = a + c * (b - a);
-    c = 1.0f;
-    *(float *)(p + 0x2E4) = t;
+    *(float *)(p + 0x2E4) = a + c * (b - a);
     q = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
     b = ((float *)*(void **)(p + 0x2D8))[3];
     a = ((float *)*(void **)(p + 0x2D4))[3];
-    c = (c < q) ? c : q;
+    c = (1.0f < q) ? 1.0f : q;
     c = (c > 0.0f) ? c : 0.0f;
-    t = a + c * (b - a);
-    c = 1.0f;
-    *(float *)(p + 0x2EC) = t;
+    *(float *)(p + 0x2EC) = a + c * (b - a);
     q = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
     b = ((float *)*(void **)(p + 0x2D8))[4];
     a = ((float *)*(void **)(p + 0x2D4))[4];
-    c = (c < q) ? c : q;
+    c = (1.0f < q) ? 1.0f : q;
     c = (c > 0.0f) ? c : 0.0f;
-    t = a + c * (b - a);
-    c = 1.0f;
-    *(float *)(p + 0x2F0) = t;
+    *(float *)(p + 0x2F0) = a + c * (b - a);
     q = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
     b = ((float *)*(void **)(p + 0x2D8))[5];
     a = ((float *)*(void **)(p + 0x2D4))[5];
-    c = (c < q) ? c : q;
+    c = (1.0f < q) ? 1.0f : q;
     c = (c > 0.0f) ? c : 0.0f;
     *(float *)(p + 0x2F4) = a + c * (b - a);
 }
