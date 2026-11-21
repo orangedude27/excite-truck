@@ -241,6 +241,8 @@ void fn_80236918(void* alarm) {
 extern void fn_80237A9C(void);
 extern void fn_80237DA0(char *, void *);
 extern int fn_80237EFC();
+/* Thunk for the no-op trail/anim hook: forwards to fn_80237A9C (the fourth of
+ * the trail activate/deactivate/status hooks), empty in this build. */
 void fn_80236950(void) { fn_80237A9C(); }
 
 void fn_80236954(char *arg0, void *arg1) { fn_80237DA0(arg0, arg1); }
