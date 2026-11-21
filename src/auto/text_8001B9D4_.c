@@ -548,13 +548,14 @@ s32 fn_8001C200(const char *nameA, const char *nameB) {
 #undef sWildcardName
 }
 #pragma dont_inline on
-s32 fn_8001C27C(void *__restrict arg0, u32 arg1, const char *arg2) {
-    s32 result = 0;
-    u32 key = *(u32 *)arg0;
-    if (key == arg1 && fn_8001C200(*(const char **)((u8 *)arg0 + 4), arg2) != 0) {
-        result = 1;
+/* Stats_recordMatches: return 1 if the stat record's key equals key and its name matches name (case-insensitive or "*" wildcard, see Stats_nameMatches). */
+s32 fn_8001C27C(void *__restrict record, u32 key, const char *name) {
+    s32 matches = 0;
+    u32 recordKey = *(u32 *)record;
+    if (recordKey == key && fn_8001C200(*(const char **)((u8 *)record + 4), name) != 0) {
+        matches = 1;
     }
-    return result;
+    return matches;
 }
 #pragma dont_inline reset
 #pragma push
