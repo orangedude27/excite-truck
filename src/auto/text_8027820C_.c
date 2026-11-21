@@ -398,6 +398,9 @@ void fn_8027889C(float seconds) {
 extern float lbl_805640B8, lbl_805640BC;
 #pragma scheduling reset
 void fn_802788E0(float seconds) {
+    /* Set the scripted-movie playback range's end tick: convert a time in seconds
+       to the nearest ~60 Hz tick, rounding with +/- half a tick. */
+#define sPlayEndTick lbl_8055F5BC
     float ticks;
     float rounded;
     ticks = seconds / 0.016683366149663925f;
@@ -406,7 +409,8 @@ void fn_802788E0(float seconds) {
     } else {
         rounded = 0.5f + ticks;
     }
-    lbl_8055F5BC = (int)rounded;
+    sPlayEndTick = (int)rounded;
+#undef sPlayEndTick
 }
 #pragma push
 #pragma scheduling invalid_target
