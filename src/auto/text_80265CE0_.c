@@ -28,6 +28,8 @@ void fn_80265D48(void) {}
 
 void fn_80265D4C(void) {}
 
+/* No-op MP-client stub: called from the restart menu's "stop" path (fn_8000B42C)
+   when the client wants a restart but is not running; this build has no MP client. */
 void fn_80265D50(void) {}
 
 /* No-op MP-client stub taking a mode/flags argument (called with 2 from the
