@@ -1222,12 +1222,12 @@ void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
     lbl_804C97D0 = a;
 }
 #pragma scheduling on
-void fn_802D01B0(DirArg802D01B0 p, float v) {
+void fn_802D01B0(float *p, float v) {
     extern char lbl_804C97D0;
     float z, y, x;
     float *out;
-    x = p[0];
     out = (float *)((unsigned char *)&lbl_804C97D0 + 0xC);
+    x = p[0];
     y = p[1];
     z = p[2];
     out[0] = x;
