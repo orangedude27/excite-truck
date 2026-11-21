@@ -552,15 +552,26 @@ void fn_801DCDA0(void) {
 }
 
 void fn_801DCDA4(void) {
-    if (lbl_80446F08[2] != 0) {
-        ((void (*)(void *))fn_80128670)((void *)lbl_80446F08[2]);
-        lbl_80446F08[2] = 0;
+    /* Shut down the ground: free the heightmap pixel block, run the descriptor's cleanup callback, then clear the ground state. */
+    #define heightmapData   lbl_80446F08[2]
+    #define cleanupCallback lbl_8055E994
+    #define groundDesc      lbl_8055E990
+    #define groundActive    lbl_8055E9A4
+
+    if (heightmapData != 0) {
+        ((void (*)(void *))fn_80128670)((void *)heightmapData);
+        heightmapData = 0;
     }
-    lbl_8055E994(lbl_8055E990);
-    lbl_8055E994 = 0;
-    lbl_8055E990 = 0;
-    lbl_8055E9A4 = 0;
+    cleanupCallback(groundDesc);
+    cleanupCallback = 0;
+    groundDesc = 0;
+    groundActive = 0;
     fn_801D049C();
+
+    #undef groundActive
+    #undef groundDesc
+    #undef cleanupCallback
+    #undef heightmapData
 }
 
 /* Wrapper that calls the ground/collision init routine with no explicit argument. */
