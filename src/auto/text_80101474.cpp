@@ -244,24 +244,26 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ..
 #pragma use_lmw_stmw off
 extern "C" const char lbl_80327D00[];
 #pragma use_lmw_stmw off
-extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(void *arg0, int arg1) {
-    UpdateChannel__Q46nw4hbm3snd6detail8WsdTrackFv(arg0);
+extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(void *self, int release) {
+    /* Release every active channel of a WsdTrack: with interrupts disabled, apply
+       the given release time (0..0x7F) to each channel's envelope and release it. */
+    UpdateChannel__Q46nw4hbm3snd6detail8WsdTrackFv(self);
     struct { unsigned int irq; } irqHolder;
     unsigned int &level = irqHolder.irq;
     level = OSDisableInterrupts();
     fn_800E402C(Instance__15EmissionManagerFv());
-    void *channel = *(void **)((char *)arg0 + 0x30);
+    void *channel = *(void **)((char *)self + 0x30);
     while (channel != 0) {
         if (*(unsigned char *)((char *)channel + 0x3A) != 0) {
-            if (arg1 >= 0) {
+            if (release >= 0) {
                 int valid = 0;
-                if (arg1 >= 0 && arg1 <= 0x7F) {
+                if (release >= 0 && release <= 0x7F) {
                     valid = 1;
                 }
                 if (valid == 0) {
-                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8, 0xA0, lbl_80327D00, arg1, 0, 0x7F);
+                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8, 0xA0, lbl_80327D00, release, 0, 0x7F);
                 }
-                SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, (unsigned char)arg1);
+                SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, (unsigned char)release);
             }
             Release__Q46nw4hbm3snd6detail7ChannelFv(channel);
         }
