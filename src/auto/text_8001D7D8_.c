@@ -7,20 +7,20 @@ int __AXGetStackHead(int index) {
     return lbl_802ED82C[index];
 }
 
+#pragma cplusplus on
+extern "C" int strcmp(const char *, const char *);
 int fn_8001D7EC(char *name) {
     extern char *lbl_802ED818[];
     char **table = lbl_802ED818;
     int i = 0;
-    while (i < 5) {
-        if (*table != 0 && strcmp(*table, name) == 0) {
-            return i;
-        }
-        if (++i >= 5) break;
-        table++;
-    }
+    do {
+        if ((*table != 0) && (strcmp(*table, name) == 0)) return i;
+        ++i;
+        ++table;
+    } while (i < 5);
     return -1;
 }
-
+#pragma cplusplus reset
 void fn_8001D868(int *effectData) {
     /* Initialize the effect's 5-entry data block to -1 (no-entry sentinel). */
     effectData[0] = -1;
@@ -38,39 +38,41 @@ int *fn_8001D884(int *values, void *handle) {
 }
 
 int stricmp(const char *, const char *);
+#pragma opt_unroll_loops off
 void fn_8001D8B4(int *arg0, void *arg1, int arg2) {
-    typedef char *(*GetName)(void *, char *, char *);
-    typedef int (*GetValue)(void *, char *, int);
-    struct Vtbl {
-        void *f0, *f1, *f2, *f3, *f4, *f5;
-        GetName get_name;
-        void *f7;
-        GetValue get_value;
-    };
-    struct Obj { struct Vtbl *vtable; };
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+    struct Obj { void **vtable; };
     extern char *lbl_802ED818[];
     extern char lbl_802FDB44[];
     extern char lbl_802FDB54[];
     struct Obj *obj = (struct Obj *)arg1;
+    register int i;
     char *name;
-    int i;
+
     arg0[5] = -1;
-    name = obj->vtable->get_name(arg1, lbl_802FDB44, lbl_802FDB54);
-    i = 0;
-    while (i < 5) {
+    name = ((char *(*)(void *, char *, char *))obj->vtable[6])(
+        arg1, lbl_802FDB44, lbl_802FDB54);
+    for (i = 0; i < 5; i++) {
         if (stricmp(lbl_802ED818[i], name) == 0)
             arg0[5] = i;
-        i++;
     }
     if (arg0[5] == -1)
         arg0[5] = 2;
-    i = 5;
-    do {
-        arg0[i] = obj->vtable->get_value(arg1, lbl_802ED818[i], -1);
-    } while (--i >= 0);
+    {
+        int j = 6;
+        int *dst = &arg0[5];
+        char **src = &lbl_802ED818[5];
+        while (j-- > 0) {
+            *dst = ((int (*)(void *, char *, int))obj->vtable[8])(
+                arg1, *src, -1);
+            dst--;
+            src--;
+        }
+    }
     arg0[4] = 0;
 }
-
+#pragma opt_unroll_loops reset
 /* Return index of first element in 5-value array within [0, maxValue], or -1 if none. */
 int fn_8001D9B4(int *values, int maxValue) {
     int value;
