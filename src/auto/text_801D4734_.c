@@ -4003,6 +4003,9 @@ extern "C" s32 fn_801D8ACC(void *effectPtr, void *valueReader) {
 
 #pragma cplusplus reset
 
+/* No-op stub: the first of a run of four empty callbacks (fn_801D8B50,
+ * fn_801D8B54, fn_801D8B58, fn_801D8B5C) between the timed-effect
+ * initializers fn_801D8ACC and fn_801D8B60; does nothing in this build. */
 void fn_801D8B50(void) {
 }
 
