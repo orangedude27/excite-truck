@@ -5,8 +5,7 @@ extern void fn_8000D838(void *);
 extern double fn_8002F208(double);
 extern int lbl_8055F708;
 extern double lbl_80564418;
-extern volatile float lbl_8055F710;
-static inline void storeF710(float v) { lbl_8055F710 = v; }
+extern float lbl_8055F710;
 #pragma push
 #pragma scheduling invalid_target
 void fn_8028DF24(void) {
