@@ -125,6 +125,8 @@ extern f32 lbl_804DB068[];
 extern f32 lbl_8056500C;
 extern f32 PSVECSquareDistance(void *, void *);
 void fn_802D3F30(void) {
+    /* No-op constructor: the static-init thunk passes this as the ctor callback
+       for the 7-element lbl_804CA088 array; these objects need no setup. */
 }
 
 #pragma push
@@ -1171,18 +1173,24 @@ void fn_802D63FC(void *arg0, s32 arg1) {
     register u8 *p20;
     s32 sp1C, sp18, sp14, sp10, spC;
     unsigned sp8;
-    register u8 b2B, b26, b27, b22, b23, b1E, b1F, b1B, b11, b0D, b19, b29, b25, b21, b1D, b10, b0C, b18, b28, b24, b20, b1C;
+    u8 temp_r0, temp_r0_2, temp_r0_3, temp_r0_4, temp_r0_5;
+    u8 b2B, b26, b27, b22, b23, b1E, b1F, b1B, b11, b0D, b19, b29, b25, b21, b1D, b10, b0C, b18, b28, b24, b20, b1C;
+    temp_r0 = p[0x1A];
     p20 = p + 0x20;
-    sp1C = p[0x1A];
     b19 = p[0x19];
-    spC = p[0x0F];
+    sp1C = temp_r0;
+    temp_r0_2 = p[0x0F];
     b0C = p[0x0C];
-    sp10 = p[0x0E];
+    spC = temp_r0_2;
+    temp_r0_3 = p[0x0E];
     b0D = p[0x0D];
-    sp14 = p[0x13];
+    sp10 = temp_r0_3;
+    temp_r0_4 = p[0x13];
     b10 = p[0x10];
-    sp18 = p[0x12];
+    sp14 = temp_r0_4;
+    temp_r0_5 = p[0x12];
     b11 = p[0x11];
+    sp18 = temp_r0_5;
     b1C = p[0x1C];
     b1F = p[0x1F];
     b1D = p[0x1D];
