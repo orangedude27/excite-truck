@@ -15,12 +15,12 @@ void fn_801FC8A8(void) {
     fn_801EB9FC(lbl_8033B5C8);
 }
 
+/* Shut the "track.grf" EB resource down: tail-call the shared EB teardown
+ * (fn_801EBBB4), which releases the two resource handles lbl_8055AFBC and
+ * lbl_8055AFB8, then destroys the gEBContext singleton lbl_8055EBA0 and
+ * frees its block -- or, when no context is loaded, brings down the whole
+ * list of engine subsystems (fn_802AE9D0) instead. */
 void fn_801FC8D8(void) {
-    /* Shut the "track.grf" EB resource down: tail-call the shared EB teardown
-     * (fn_801EBBB4), which releases the two resource handles lbl_8055AFBC and
-     * lbl_8055AFB8, then destroys the gEBContext singleton lbl_8055EBA0 and
-     * frees its block -- or, when no context is loaded, brings down the whole
-     * list of engine subsystems (fn_802AE9D0) instead. */
     fn_801EBBB4();
 }
 
