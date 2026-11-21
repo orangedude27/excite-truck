@@ -2516,8 +2516,10 @@ void fn_80191AB4(void *arg0) {
     M2C_FIELD(*temp_r3_42, M2C_UNK (**)(void **, f32 *, f32 *, M2C_UNK *), 0x28)(temp_r3_42, &sp18, &sp10, &spC);
 }
 #pragma scheduling on
+/* No-op stub: an empty hook in this audio/sound module, sitting between a
+ * large audio-object setup routine and the f17() forwarding method fn_80192BE8;
+ * does nothing in this build. */
 void fn_80192BE4(void) {
-
 }
 
 #pragma push
