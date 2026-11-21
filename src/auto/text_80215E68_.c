@@ -254,16 +254,22 @@ void fn_80216194(void) {
     } while (pass++ < 3);
 }
 
+#define sWindowGroupTable lbl_804908C8
+#define sPrimaryGroup     lbl_8055EF88
+#define updateGroup       fn_80218464
 #pragma dont_inline on
 void fn_802161CC(s32 arg0) {
     s32 i;
     for (i = 0; i < 16; i++) {
-        void *value = ((void **)lbl_804908C8)[i];
-        if (value != 0 && (arg0 != 0 || value != lbl_8055EF88)) {
-            fn_80218464(value);
+        void *value = ((void **)sWindowGroupTable)[i];
+        if (value != 0 && (arg0 != 0 || value != sPrimaryGroup)) {
+            updateGroup(value);
         }
     }
 }
+#undef sWindowGroupTable
+#undef sPrimaryGroup
+#undef updateGroup
 
 #pragma push
 #pragma processor 750
