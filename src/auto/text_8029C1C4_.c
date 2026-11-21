@@ -150,6 +150,8 @@ void fn_8029C2D4(void) {
     }
 }
 #pragma pop
+/* Empty teardown placeholder: called last by the game-shutdown routine
+ * fn_8029C22C after the remaining effects resources are released; does nothing. */
 void fn_8029C3EC(void) {
 }
 
