@@ -952,6 +952,7 @@ void fn_802E97B4(void) {
     }
 }
 #pragma opt_propagation reset
+/* No-op NAND-save hook: game-menu init passes this a callback pointer (fn_8023E7A8), but this build discards it. */
 void fn_802E986C(void) {}
 
 void fn_802E9870(void) {}
