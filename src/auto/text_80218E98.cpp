@@ -2262,45 +2262,47 @@ extern "C" s32 fn_8022D850(void *, s32, s32, s32 *); /* read a grid cell and its
 extern f32 lbl_805634FC; /* 25.0f, icon width/height */
   #pragma push
  #pragma scheduling invalid_target
-extern "C" void fn_8021BC20(void *arg0, void *arg1) {
-    s32 sp18;
-    f32 sp14;
-    f32 sp10;
-    s32 sp8;
-    s32 end;
-    s32 width;
-    s32 x;
-    s32 i;
-    s32 n;
-    void *info = *(void **)((u8 *)arg0 + 0x254);
-    width = *(s32 *)((u8 *)arg0 + 4);
-    n = *(s32 *)((u8 *)info + 0x10);
-    i = *(s32 *)((u8 *)info + 0x20) * n;
-    x = *(s32 *)((u8 *)arg0 + 8);
-    end = i + n;
-    if (*(s32 *)((u8 *)info + 8) < end) {
-        end = *(s32 *)((u8 *)info + 8);
+/* Draw one row of a character grid: for each cell read its glyph and tag, draw
+ * an icon for tags above 2, then draw the glyph at the running x position. */
+extern "C" void fn_8021BC20(void *widget, void *unused) {
+    s32 tag;
+    f32 iconX;
+    f32 iconY;
+    s32 flags;
+    s32 lastCell;
+    s32 boxWidth;
+    s32 cellX;
+    s32 cellIndex;
+    s32 columns;
+    void *grid = *(void **)((u8 *)widget + 0x254);
+    boxWidth = *(s32 *)((u8 *)widget + 4);
+    columns = *(s32 *)((u8 *)grid + 0x10);
+    cellIndex = *(s32 *)((u8 *)grid + 0x20) * columns;
+    cellX = *(s32 *)((u8 *)widget + 8);
+    lastCell = cellIndex + columns;
+    if (*(s32 *)((u8 *)grid + 8) < lastCell) {
+        lastCell = *(s32 *)((u8 *)grid + 8);
     }
     s32 zero = 0;
 
-    for (; i < end; i++, x += *(s32 *)((u8 *)arg0 + 0x250)) {
-        sp18 = zero;
-        s32 obj = fn_8022D850(*(void **)((u8 *)arg0 + 0x254),
-            i, *(s32 *)((u8 *)arg0 + 0x25C), &sp18);
-        if (sp18 > 2) {
-            sp18 -= 3;
-            fn_80230C30(&sp14, &sp10, width - 0x1C,
-                x + *(s32 *)((u8 *)arg0 + 0x260));
-            if (*(s32 *)((u8 *)arg0 + 0x258) != 0) {
-                fn_802C5320(*(s32 *)((u8 *)arg0 + 0x258),
-                    sp18 % fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x258)),
-                    sp14, sp10, lbl_805634A8, lbl_805634FC, lbl_805634FC);
+    for (; cellIndex < lastCell; cellIndex++, cellX += *(s32 *)((u8 *)widget + 0x250)) {
+        tag = zero;
+        s32 glyph = fn_8022D850(*(void **)((u8 *)widget + 0x254),
+            cellIndex, *(s32 *)((u8 *)widget + 0x25C), &tag);
+        if (tag > 2) {
+            tag -= 3;
+            fn_80230C30(&iconX, &iconY, boxWidth - 0x1C,
+                cellX + *(s32 *)((u8 *)widget + 0x260));
+            if (*(s32 *)((u8 *)widget + 0x258) != 0) {
+                fn_802C5320(*(s32 *)((u8 *)widget + 0x258),
+                    tag % fn_802C51AC(*(s32 *)((u8 *)widget + 0x258)),
+                    iconX, iconY, lbl_805634A8, lbl_805634FC, lbl_805634FC);
             }
         }
-        sp8 = zero;
+        flags = zero;
         ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, s32, f32))fn_8022BAD0)(
-            *(s32 *)((u8 *)arg0 + 0x244), width, x,
-            0, 0, 0, obj, sp18, sp8, 1.0f);
+            *(s32 *)((u8 *)widget + 0x244), boxWidth, cellX,
+            0, 0, 0, glyph, tag, flags, 1.0f);
     }
 }
 #pragma scheduling on
