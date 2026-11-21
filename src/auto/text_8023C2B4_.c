@@ -38,30 +38,34 @@ extern s32 lbl_8055F144, lbl_8055F148, lbl_8055F14C, lbl_8055F150, lbl_8055F154;
 extern char lbl_8055BB48[];
 __declspec(section ".sdata") extern char lbl_8055BB48[];
 #pragma scheduling invalid_target
-s32 fn_8023C308(s32 arg0) {
-    s32 val, cur, diff, mode;
-    if (arg0) {
-        mode = (u32)(fn_80214D04() - 2) == 0;
-        cur = lbl_8055F154;
-        if (mode) {
-            val = cur - 5;
-            val = val & ~(val >> 31);
+s32 fn_8023C308(s32 allowAdjust) {
+    /* Settings-menu tick: when allowed, nudge the 0..70 value lbl_8055F154 up/down
+       by 5 (down when the active menu index is 2), clamping to 0..70 and notifying
+       the UI on change; then propagate changed display-mode (lbl_8055F148/lbl_8055F150)
+       and sound-mode (lbl_8055F144/lbl_8055F14C) settings to their handlers. */
+    s32 newValue, currentValue, delta, decrease;
+    if (allowAdjust) {
+        decrease = (u32)(fn_80214D04() - 2) == 0;
+        currentValue = lbl_8055F154;
+        if (decrease) {
+            newValue = currentValue - 5;
+            newValue = newValue & ~(newValue >> 31);
         } else {
-            s32 tmp = cur + 5;
-            if (tmp > 0x46)
-                val = 0x46;
+            s32 raised = currentValue + 5;
+            if (raised > 0x46)
+                newValue = 0x46;
             else
-                val = tmp;
+                newValue = raised;
         }
-        diff = val - cur;
-        lbl_8055F154 = lbl_8055F154 + diff;
-        if (diff) ((void (*)(s32, s32, s32))fn_80214BE4)(7, 0, diff);
+        delta = newValue - currentValue;
+        lbl_8055F154 = lbl_8055F154 + delta;
+        if (delta) ((void (*)(s32, s32, s32))fn_80214BE4)(7, 0, delta);
     }
     {
-        s32 a148 = lbl_8055F148;
-        if (a148 != lbl_8055F150) {
-            lbl_8055F150 = a148;
-            ((void (*)(void *, s32, ...))fn_802E30C8)(lbl_8055BB48, a148);
+        s32 displayMode = lbl_8055F148;
+        if (displayMode != lbl_8055F150) {
+            lbl_8055F150 = displayMode;
+            ((void (*)(void *, s32, ...))fn_802E30C8)(lbl_8055BB48, displayMode);
             fn_802C82C4(lbl_8055F148);
         }
     }
