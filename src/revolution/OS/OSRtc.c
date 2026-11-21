@@ -26,7 +26,7 @@ typedef struct OSScb {
     BOOL enabled; // at 0x44  interrupts LockSram() disabled, for its restore
     BOOL locked;  // at 0x48  the cache is handed out to a caller
     BOOL sync;    // at 0x4C  the cache is in the SRAM (__OSSyncSram)
-    UNKWORD WORD_0x50;
+    UNKWORD WORD_0x50; // at 0x50 unused trailing word
 } OSScb;
 
 static OSScb Scb ALIGN(32);
