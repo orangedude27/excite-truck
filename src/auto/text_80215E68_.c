@@ -481,6 +481,8 @@ s32 fn_802168D4(s32 window, s32 groupId) {
     #undef UIWindow_TestGroupVisibility
 }
 
+/* UIWindow_EnableGroup: forward to the group-enable method (fn_80218A34), which
+ * clears the group's disabled bit and re-marks its child widgets as active. */
 void fn_802168D8(void) {
     fn_80218A34();
 }
