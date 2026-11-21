@@ -1814,7 +1814,10 @@ void fn_8014DB94(void *owner) {
 
 extern int fn_801CB648();
 #pragma cplusplus on
-extern "C" void fn_8014DC08(void *arg0) {
+/* Advance a betarace owner's task lists: run its callback, recycle finished
+   nodes onto the free tail while summing their durations, then finalize the
+   car's finish points and time. */
+extern "C" void fn_8014DC08(void *owner) {
     struct Node { char pad0[4]; u8 flag; u8 timed; char pad1[0x102]; int duration; char pad2[0x10]; Node *next; Node *prev; };
     struct Lists { char pad[0x1244]; Node *first; Node *last; Node *active; Node *activeLast; Node *pending; };
     struct Callback { virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void call(); };
@@ -1823,18 +1826,18 @@ extern "C" void fn_8014DC08(void *arg0) {
     extern float lbl_8055E3C8;
     struct HL { Lists *p; } lh;
     Lists **listp = &lh.p;
-    Node *pending, *node, *next, *p;
-    float total, diff;
+    Node *pending, *node, *nextNode, *neighbor;
+    float elapsed, timeGap;
     int a, b;
-    void *obj;
-    ((Callback *)*(void **)((char *)arg0 + 0x10))->call();
-    *listp = *(Lists **)((char *)arg0 + 8);
-    total = lbl_80561648;
+    void *state;
+    ((Callback *)*(void **)((char *)owner + 0x10))->call();
+    *listp = *(Lists **)((char *)owner + 8);
+    elapsed = lbl_80561648;
     pending = (*listp)->pending;
     if (pending) {
         int duration = pending->duration;
         pending->next = 0;
-        total += (float)duration;
+        elapsed += (float)duration;
         pending->prev = (*listp)->last;
         if ((*listp)->last) (*listp)->last->next = pending;
         (*listp)->last = pending;
@@ -1842,14 +1845,14 @@ extern "C" void fn_8014DC08(void *arg0) {
         (*listp)->pending = 0;
     }
     node = (*listp)->active;
-    next = node ? node->next : 0;
+    nextNode = node ? node->next : 0;
     while (node) {
         if (!node->flag) {
-            if (node->timed) total += (float)node->duration;
-            p = node->prev;
-            if (p) p->next = node->next; else (*listp)->active = node->next;
-            p = node->next;
-            if (p) p->prev = node->prev; else (*listp)->activeLast = node->prev;
+            if (node->timed) elapsed += (float)node->duration;
+            neighbor = node->prev;
+            if (neighbor) neighbor->next = node->next; else (*listp)->active = node->next;
+            neighbor = node->next;
+            if (neighbor) neighbor->prev = node->prev; else (*listp)->activeLast = node->prev;
             node->prev = 0;
             node->next = 0;
             node->prev = (*listp)->last;
@@ -1857,22 +1860,22 @@ extern "C" void fn_8014DC08(void *arg0) {
             (*listp)->last = node;
             if (!(*listp)->first) (*listp)->first = node;
         }
-        node = next;
-        next = next ? next->next : 0;
+        node = nextNode;
+        nextNode = nextNode ? nextNode->next : 0;
     }
-    *(float *)((char *)arg0 + 0x14) += total;
-    *(float *)((char *)arg0 + 0x64) = lbl_8055E3C8;
-    fn_80149CEC((char *)arg0 + 0x6C, arg0);
-    if (!*(u8 *)((char *)arg0 + 0xA0)) {
-        a = *(int *)((char *)arg0 + 0x90);
-        b = *(int *)((char *)arg0 + 0x9C);
-        ((void (*)(const char *, ...))fn_802E30C8)(lbl_8032D704, *(void **)arg0, a);
-        fn_801CB5DC(*(void **)arg0, a, b);
-        obj = *(void **)((char *)arg0 + 0x68);
-        total = lbl_80561648;
-        diff = *(float *)((char *)obj + 0x8DC) - *(float *)((char *)obj + 0x8D4);
-        total = total > diff ? total : diff;
-        ((void (*)(void *, int, float))fn_801CB648)(*(void **)arg0, 1, *(float *)((char *)obj + 0x8DC) - total);
+    *(float *)((char *)owner + 0x14) += elapsed;
+    *(float *)((char *)owner + 0x64) = lbl_8055E3C8;
+    fn_80149CEC((char *)owner + 0x6C, owner);
+    if (!*(u8 *)((char *)owner + 0xA0)) {
+        a = *(int *)((char *)owner + 0x90);
+        b = *(int *)((char *)owner + 0x9C);
+        ((void (*)(const char *, ...))fn_802E30C8)(lbl_8032D704, *(void **)owner, a);
+        fn_801CB5DC(*(void **)owner, a, b);
+        state = *(void **)((char *)owner + 0x68);
+        elapsed = lbl_80561648;
+        timeGap = *(float *)((char *)state + 0x8DC) - *(float *)((char *)state + 0x8D4);
+        elapsed = elapsed > timeGap ? elapsed : timeGap;
+        ((void (*)(void *, int, float))fn_801CB648)(*(void **)owner, 1, *(float *)((char *)state + 0x8DC) - elapsed);
     }
 }
 #pragma cplusplus reset
