@@ -286,8 +286,9 @@ void *fn_8022EDE4(f32 *proto, f32 brightness) {
 }
 #pragma pop
 
-void fn_8022EE98(void *arg0) {
-    fn_8022EB30(arg0);
+/* Tail-call wrapper: release the given UIContext back to the shared pool via fn_8022EB30. */
+void fn_8022EE98(void *context) {
+    fn_8022EB30(context);
 }
 
 extern f32 lbl_805635E0;
