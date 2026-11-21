@@ -1507,10 +1507,10 @@ extern "C" void fn_8029A60C(void *xform, void *__restrict source) {
 
 extern "C" void* memset(void*, int, unsigned long);
 extern "C" void fn_8029A8B8(void *);
-extern "C" unsigned int lbl_8055CA8C;
-extern "C" char lbl_803494FC[];
-extern float lbl_805645C0;
-extern float lbl_8056460C;
+extern "C" unsigned int lbl_8055CA8C; /* effect resource id */
+extern "C" char lbl_803494FC[]; /* "boost fire" effect name */
+extern float lbl_805645C0; /* 0.1f */
+extern float lbl_8056460C; /* 2.0f */
 #pragma scheduling invalid_target
 extern "C" void *fn_8029A6F4(void *arg0) {
     struct Local {
