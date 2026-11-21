@@ -25,13 +25,14 @@ void fn_801FC8D8(void) {
 }
 
 #pragma dont_inline on
+/* Initialize the track.grf EB resource (default parameter value and resource load), then report success. */
 int fn_801FC8DC(void) {
 #define InitTrackGrf fn_801FC8A8
-    /* Initialize the track.grf EB resource (default parameter value and resource load), then report success. */
     InitTrackGrf();
     return 1;
 #undef InitTrackGrf
 }
+
 /* Release the "track.grf" EB resource: the shutdown half of the pair whose init
  * is fn_801FC8A8 / fn_801FC8DC.  Tail-calls fn_801FC8D8 (-> fn_801EBBB4), which
  * releases the two resource handles lbl_8055AFBC / lbl_8055AFB8, clears the
