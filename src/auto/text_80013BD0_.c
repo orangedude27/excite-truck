@@ -1268,31 +1268,28 @@ extern void fn_80015E30(void *, f32);
 extern void fn_80015B20(void *, void *, void *);
 extern f64 cos(void);
 extern f64 sin(f32);
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80015AA0(void *arg0, f32 angle) {
     f32 one;
     f32 neg;
     f32 zero;
     f32 sine;
     f32 cosine;
-    f32 *m;
     cosine = (f32)cos();
     sine = (f32)sin(angle);
-    zero = lbl_80560360;
-    one = lbl_80560368;
-    m = (f32 *)arg0;
-    m[0] = cosine;
-    m[1] = sine;
-    neg = -m[1];
-    m[2] = zero;
-    m[3] = neg;
-    m[4] = cosine;
-    m[5] = zero;
-    m[6] = zero;
-    m[7] = zero;
-    m[8] = one;
+    zero = 0.0f;
+    one = 1.0f;
+    *(f32 *)((u8 *)arg0 + 0) = cosine;
+    neg = -sine;
+    *(f32 *)((u8 *)arg0 + 4) = sine;
+    *(f32 *)((u8 *)arg0 + 8) = zero;
+    *(f32 *)((u8 *)arg0 + 0xC) = neg;
+    *(f32 *)((u8 *)arg0 + 0x10) = cosine;
+    *(f32 *)((u8 *)arg0 + 0x14) = zero;
+    *(f32 *)((u8 *)arg0 + 0x18) = zero;
+    *(f32 *)((u8 *)arg0 + 0x1C) = zero;
+    *(f32 *)((u8 *)arg0 + 0x20) = one;
 }
-#pragma scheduling on
 void fn_80015B20(void *arg0, void *arg1, void *arg2) {
     f32 *out = (f32 *)arg0;
     f32 *a = (f32 *)arg1;
