@@ -984,6 +984,8 @@ extern "C" void fn_8023B374(void *widget) {
 #pragma cplusplus reset
 #pragma pop
 
+/* No-op default virtual method (compiles to a bare return), paired with the
+   constant-false getter fn_8023B404 in the same dispatch table. */
 void fn_8023B400(void) {}
 
 /* Constant predicate (returns 0 / false); a default virtual getter reached
