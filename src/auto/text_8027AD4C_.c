@@ -1375,13 +1375,17 @@ extern char lbl_80347A50[];
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" long fn_8027C788(void *recordPtr) {
-    struct GoalNodeC {
+    /* Career-mode goal check for one event_path: walks the path's child nodes and,
+       for every event_goal, asks fn_8027C650 whether the contest named by its
+       contest_name attribute has a passing saved grade. Returns 0 at the first
+       still-open goal, 1 once the whole path is cleared. */
+    struct GoalObject {
         virtual char *getTypeName();
         virtual void m1();
         virtual void m2();
         virtual char *getString(const char *name);
     };
-    struct PathNodeC {
+    struct PathObject {
         virtual void m0(); virtual void m1(); virtual void m2();
         virtual void m3(); virtual void m4(); virtual void m5();
         virtual void m6(); virtual void m7(); virtual void m8();
@@ -1390,12 +1394,12 @@ extern "C" long fn_8027C788(void *recordPtr) {
         virtual void m15(); virtual void m16(); virtual void m17();
         virtual void m18(); virtual void m19(); virtual void m20();
         virtual void m21();
-        virtual GoalNodeC *getChild(long index);
+        virtual GoalObject *getChild(long index);
     };
     struct EventPathRecord *record = (struct EventPathRecord *)recordPtr;
-    GoalNodeC *goal;
+    GoalObject *goal;
     long index = 0;
-    while ((goal = ((PathNodeC *)record->pathObject)->getChild(index)) != 0) {
+    while ((goal = ((PathObject *)record->pathObject)->getChild(index)) != 0) {
         if (stricmp(goal->getTypeName(), OBJ_TYPE_EVENT_GOAL) == 0) {
             if (fn_8027C650(fn_8027C120(lbl_8055F654,
                                         (long)goal->getString(ATTR_CONTEST_NAME))) == 0) {
