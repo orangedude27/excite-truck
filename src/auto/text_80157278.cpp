@@ -1845,62 +1845,67 @@ extern "C" void fn_801590A8(void* self) {
 
 #pragma push
 #pragma processor 750
-extern "C" u8 fn_80159124(void* arg0, const void* arg1) {
-    if (*(const s32*)((const u8*)arg1 + 0x2620) == 0) {
-        *(f32*)((u8*)arg0 + 0x270) = *(f32*)((u8*)arg0 + 0x270) + lbl_8056177C;
+// One frame of the drift tracker: advances the ground-state timer (or clears
+// it when the truck is airborne), decides from the truck's spin, speed and
+// sideways velocity whether it is drifting, and turns the resulting level
+// into the drift sound's volume and play/stop flags (+0x4A stop, +0x4B/0x49
+// play, +0x4D volume-changed).  Returns the new drifting flag.
+extern "C" u8 fn_80159124(void* tracker, const void* truck) {
+    if (*(const s32*)((const u8*)truck + 0x2620) == 0) {
+        *(f32*)((u8*)tracker + 0x270) = *(f32*)((u8*)tracker + 0x270) + FRAME_TIME;
     } else {
-        *(f32*)((u8*)arg0 + 0x270) = lbl_80561754;
+        *(f32*)((u8*)tracker + 0x270) = BONUS_NONE;
     }
-    u8* self = (u8*)arg0;
-    const u8* other = (const u8*)arg1;
-    f32 limit;
-    f32 result;
-    u8 prev;
-    result = lbl_80561754;
-    prev = *(u8*)(self + 0x274);
-    limit = *(const f32*)(other + 0x25D4);
-    s32 flag;
-    if ((f32)__fabs(*(const f32*)(other + 0x2690)) <= lbl_80558DC4[0] && limit > lbl_80561788 && *(f32*)(self + 0x270) < lbl_80561760) {
+    u8* self = (u8*)tracker;
+    const u8* other = (const u8*)truck;
+    f32 speed;
+    f32 intensity;
+    u8 wasDrifting;
+    intensity = BONUS_NONE;
+    wasDrifting = *(u8*)(self + 0x274);
+    speed = *(const f32*)(other + 0x25D4);
+    s32 drifting;
+    if ((f32)__fabs(*(const f32*)(other + 0x2690)) <= DRIFT_EPSILON && speed > DRIFT_MIN_SPEED && *(f32*)(self + 0x270) < DRIFT_MAX_TIME) {
         f64 dtmp = __fabs((f64)PSVECDotProduct((void*)(other + 0x118), (void*)(other + 0x3C)));
-        f32 d = (f32)dtmp;
-        f32 k;
-        if (prev != 0) k = lbl_8056178C; else k = lbl_80561790;
-        flag = d > limit * k;
+        f32 sideways = (f32)dtmp;
+        f32 slip;
+        if (wasDrifting != 0) slip = DRIFT_KEEP_SLIP; else slip = DRIFT_START_SLIP;
+        drifting = sideways > speed * slip;
     } else {
-        flag = 0;
+        drifting = 0;
     }
-    *(u8*)(self + 0x274) = flag;
-    if ((u8)flag != 0) {
-        limit = *(const f32*)(other + 0x25D4);
+    *(u8*)(self + 0x274) = drifting;
+    if ((u8)drifting != 0) {
+        speed = *(const f32*)(other + 0x25D4);
         f64 dtmp = __fabs((f64)PSVECDotProduct((void*)(other + 0x118), (void*)(other + 0x3C)));
-        f32 d = (f32)dtmp;
-        f32 k;
-        if (prev != 0) k = lbl_8056178C; else k = lbl_80561790;
-        f32 a = lbl_80561750 - lbl_80561794 * *(f32*)(self + 0x270);
-        a = (a > lbl_80561754) ? a : lbl_80561754;
-        f32 b = lbl_80561750;
-        f32 t = lbl_80561788 * (d / (limit * k) - b);
-        b = (b < t) ? b : t;
-        b = (b > lbl_80561754) ? b : lbl_80561754;
-        result = b * a;
+        f32 sideways = (f32)dtmp;
+        f32 slip;
+        if (wasDrifting != 0) slip = DRIFT_KEEP_SLIP; else slip = DRIFT_START_SLIP;
+        f32 fade = BONUS_FULL - DRIFT_TIME_DECAY * *(f32*)(self + 0x270);
+        fade = (fade > BONUS_NONE) ? fade : BONUS_NONE;
+        f32 level = BONUS_FULL;
+        f32 target = DRIFT_MIN_SPEED * (sideways / (speed * slip) - level);
+        level = (level < target) ? level : target;
+        level = (level > BONUS_NONE) ? level : BONUS_NONE;
+        intensity = level * fade;
     }
-    u8* w = *(u8**)(self + 0x278);
-    if (w != 0) {
-        if ((f32)__fabs(result) <= lbl_80558DC4[0]) goto small;
-        f32 v = lbl_80561798 * result;
-        if (v != *(f32*)(w + 8)) {
-            w[0x4D] = 1;
-            *(f32*)(w + 8) = v;
+    u8* sound = *(u8**)(self + 0x278);
+    if (sound != 0) {
+        if ((f32)__fabs(intensity) <= DRIFT_EPSILON) goto small;
+        f32 volume = DRIFT_VOLUME_SCALE * intensity;
+        if (volume != *(f32*)(sound + 8)) {
+            sound[0x4D] = 1;
+            *(f32*)(sound + 8) = volume;
         }
-        w = *(u8**)(self + 0x278);
-        w[0x4A] = 0;
-        w[0x4B] = 1;
-        w[0x49] = 1;
-        goto done_w;
+        sound = *(u8**)(self + 0x278);
+        sound[0x4A] = 0;
+        sound[0x4B] = 1;
+        sound[0x49] = 1;
+        goto done_sound;
     small:
-        w[0x4A] = 1;
-        w[0x4C] = 0;
-    done_w: ;
+        sound[0x4A] = 1;
+        sound[0x4C] = 0;
+    done_sound: ;
     }
     return *(u8*)(self + 0x274);
 }
