@@ -19,8 +19,6 @@ typedef struct OSStateFlags {
     u32 WORD_0x1C;
 } OSStateFlags;
 
-#define BYTE_0x5 bootType
-
 BOOL __OSWriteStateFlags(const OSStateFlags* state);
 BOOL __OSReadStateFlags(OSStateFlags* state);
 
