@@ -9,5 +9,7 @@ void fn_802789A8(void) {}
  * sequence (fn_80004B5C), after the scene handlers are registered. */
 void fn_802789AC(void) {}
 
+/* No-op subsystem hook: called during the game/menu shutdown sequence
+ * (fn_80004CB4), between the road-sound and scene-handler teardown steps. */
 void fn_802789B0(void) {}
 
