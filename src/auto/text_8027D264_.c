@@ -311,8 +311,15 @@ extern "C" void fn_8027D7B8(const void *selection) {
 #pragma push
 #pragma processor 750
 extern "C" void fn_8027D7E4(const void *arg0) {
-    int v = *(const int *)((const char *)arg0 + 0xC);
-    fn_80007FF0(*(int *)((char *)fn_8001285C(v) + 8));
+    #define GetStateEntry fn_8001285C
+    #define LookupEventTypeName fn_80007FF0
+    /* Validate the event-type id stored at +8 of the per-slot state entry
+     * selected by the id at arg0+0xC, by asking for its display name (logs if
+     * unknown). */
+    int entryId = *(const int *)((const char *)arg0 + 0xC);
+    LookupEventTypeName(*(int *)((char *)GetStateEntry(entryId) + 8));
+    #undef LookupEventTypeName
+    #undef GetStateEntry
 }
 #pragma pop
 extern "C" void fn_8027D810(void *__restrict arg0) {
