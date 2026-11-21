@@ -125,8 +125,8 @@ extern "C" void fn_801D0F38(void) {
 
     /* Notifies each registered callback object in lbl_80438818 (count
      * lbl_8055E8E8) via virtual method m3. */
-    for (i = 0; i < lbl_8055E8E8; i++) {
-        Dummy_801D0F38 *obj = (Dummy_801D0F38 *)lbl_80438818[i];
+    for (i = 0; i < gManagerCount; i++) {
+        Dummy_801D0F38 *obj = (Dummy_801D0F38 *)gManagerList[i];
         obj->m3();
     }
 }
