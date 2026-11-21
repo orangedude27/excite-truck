@@ -51,11 +51,11 @@ void fn_8023B640(void) { fn_802E30C8(lbl_803412D8); fn_802473A4(); }
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
+/* E3 demo main mode: log entry, clear the model list, load setup 0x132,
+   run the attract/demo selection flow, clear again, then load setup 0x12F.
+   (fn_802E30C8 prints "mmain: e3 demo mode!"; fn_80012794 flushes models;
+   fn_80012788 / fn_80012778 load modes 0x132 / 0x12F.) */
 void fn_8023B670(void) {
-    /* E3 demo main mode: log entry, clear the model list, load setup 0x132,
-       run the attract/demo selection flow, clear again, then load setup 0x12F.
-       (fn_802E30C8 prints "mmain: e3 demo mode!"; fn_80012794 flushes models;
-       fn_80012788 / fn_80012778 load modes 0x132 / 0x12F.) */
     fn_802E30C8(lbl_803412EC);
     fn_80012794();
     fn_80012788();
