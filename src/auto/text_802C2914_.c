@@ -58,9 +58,9 @@ extern "C" void fn_802C29A0(void) {
     lbl_8055FB84 = 1;
 }
 #pragma cplusplus off
+/* Clear the commit-done flag (part of the UI shutdown reset in fn_802AE9D0). */
 void fn_802C2A34(void) {
 #define sCommitDone lbl_8055FB84
-    /* Clear the commit-done flag (part of the UI shutdown reset in fn_802AE9D0). */
     sCommitDone = 0;
 #undef sCommitDone
 }
