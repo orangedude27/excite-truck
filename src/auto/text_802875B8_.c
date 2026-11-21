@@ -364,7 +364,12 @@ void fn_80287974(void) {
 #undef beginParticlePass
 }
 
-void fn_80287978(void) { fn_8028E1D0(); }
+void fn_80287978(void) {
+#define endParticlePass fn_8028E1D0
+    /* End a particle update pass: advance every emitter by the frame time and disallow further adds. */
+    endParticlePass();
+#undef endParticlePass
+}
 
 /* Initializes game subsystems in order (counterpart to the shutdown sequence in fn_802878A8). */
 void fn_8028797C(void) {
