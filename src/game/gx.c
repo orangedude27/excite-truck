@@ -361,13 +361,12 @@ void fn_802CECF4(unsigned int targetIndex) {
 #pragma scheduling 750
 void fn_802CED50(int arg0, int arg1, int arg2, int arg3) {
     volatile unsigned char *state = lbl_804C5710;
-    u8 v = 1;
     *(volatile int *)(state + 4) = arg0;
     *(volatile int *)(state + 8) = arg1;
     *(volatile int *)(state + 0xC) = arg2;
     *(volatile int *)(state + 0x10) = arg3;
-    *(volatile unsigned char *)lbl_804C5710 = v;
-    state[1] = v;
+    state[0] = 1;
+    state[1] = 1;
 }
 #pragma pop
 extern void KPADSetBtnRepeat(int *, int *, int *, int *);
@@ -1238,8 +1237,8 @@ void fn_802D01B0(float *p, float v) {
     extern char lbl_804C97D0;
     float z, y, x;
     float *out;
-    out = (float *)((unsigned char *)&lbl_804C97D0 + 0xC);
     x = p[0];
+    out = (float *)((unsigned char *)&lbl_804C97D0 + 0xC);
     y = p[1];
     z = p[2];
     out[0] = x;
@@ -2150,7 +2149,20 @@ extern void GXSetChanCtrl(int, int, int, int, unsigned int, int, int);
 /* Experiment: the TU's own .bss laid out as separate variables (lbl_804C5650 + offset). */
 static unsigned char sBssHead_802D18E8[0x40];    /* lbl_804C5650 */
 static float sViewFrom_802D18E8[12];             /* lbl_804C5690: view matrix; [9..11] is its translation */
-static float sViewTo_802D18E8[0x4110 / 4];       /* lbl_804C56C0: the point looked at, same shape */
+static float sViewTo_802D18E8[(0x4128 - 0x70) / 4]; /* lbl_804C56C0: the point looked at, same shape */
+/* Full-screen clear state (lbl_804C9778). */
+typedef struct ClearState_802D2218 {
+    /* 0x00 */ unsigned char dirty;
+    /* 0x01 */ unsigned char pad01[0x23];
+    /* 0x24 */ int width;
+    /* 0x28 */ int height;
+    /* 0x2C */ unsigned char clearZ;
+    /* 0x2D */ unsigned char clearColor;
+    /* 0x2E */ unsigned char color[4];
+    /* 0x32 */ unsigned char pad32[6];
+} ClearState_802D2218;
+static ClearState_802D2218 sClearState_802D2218;  /* lbl_804C9778 */
+static unsigned char sFogState_802D2218[0x20];    /* lbl_804C97B0 */
 static DefaultLight_802D18E8 sDefaultLight_802D18E8; /* lbl_804C97D0 */
 static unsigned char sBssGap_802D18E8[0x4A38 - 0x4180 - sizeof(DefaultLight_802D18E8)];
 static unsigned char sLightEntries_802D18E8[0x90];  /* lbl_804CA088: SceneLight_802D18E8[], 0x14 each */
@@ -2161,6 +2173,8 @@ static void BssOrder_802D18E8(void) {
     sBssHead_802D18E8[0] = 0;
     sViewFrom_802D18E8[0] = 0.0f;
     sViewTo_802D18E8[0] = 0.0f;
+    sClearState_802D2218.dirty = 0;
+    sFogState_802D2218[0] = 0;
     sDefaultLight_802D18E8.c[0] = 0;
     sBssGap_802D18E8[0] = 0;
     sLightEntries_802D18E8[0] = 0;
