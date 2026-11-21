@@ -109,6 +109,9 @@ void fn_802924F4(void) {
         *(float *)(p + 0xC) = fn_80129DC4(0, lbl_805644DC, lbl_805644E0);
     }
 }
+/* Teardown counterpart to fn_802924F4 in the subsystem shutdown sequence
+ * (fn_802878A8). The 6-entry rotation data at lbl_804B4030 needs no cleanup,
+ * so this intentionally does nothing. */
 void fn_80292618(void) {
 }
 
