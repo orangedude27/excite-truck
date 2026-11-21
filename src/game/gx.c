@@ -365,7 +365,7 @@ void fn_802CED50(int arg0, int arg1, int arg2, int arg3) {
     *(volatile int *)(state + 8) = arg1;
     *(volatile int *)(state + 0xC) = arg2;
     *(volatile int *)(state + 0x10) = arg3;
-    state[0] = 1;
+    *(volatile unsigned char *)lbl_804C5710 = 1;
     state[1] = 1;
 }
 #pragma pop
@@ -1001,7 +1001,12 @@ void fn_802CFD74(void) {
 
 #pragma scheduling invalid_target
 int fn_802CFDE0(void) {
-    extern unsigned int lbl_8055FD98;
+    /* Finish a GX frame: update the dynamic-data high-water mark, reset GX state,
+     * flush the just-finished span of the display-list buffer (wrapping at
+     * 0x177000), then busy-wait on the draw-sync done flag lbl_8055FD3C. If the
+     * timeout counter lbl_8055FD38 exceeds 10, report an aborted frame and
+     * reinitialize GX before disarming the break point. */
+    extern unsigned int GX_DYNAMIC_HIGH_WATER;
     extern unsigned int lbl_8055FDA8;
     extern int lbl_8055FD2C;
     extern int lbl_8055FD38;
@@ -1010,25 +1015,25 @@ int fn_802CFDE0(void) {
     extern char lbl_8034C058[];
     extern void fn_802ECA48(void);
     extern int fn_802E2C20(void);
-    int sum;
-    int hw;
-    int end;
-    int start;
+    int highWaterCandidate;
+    int highWater;
+    int flushEnd;
+    int flushStart;
     fn_802ECA48();
-    sum = (int)lbl_8055FD94 + (int)lbl_8055FD9C;
-    hw = (int)lbl_8055FD98;
-    lbl_8055FD98 = sum > hw ? (unsigned int)sum : (unsigned int)hw;
+    highWaterCandidate = (int)GX_DYNAMIC_OFFSET + (int)lbl_8055FD9C;
+    highWater = (int)GX_DYNAMIC_HIGH_WATER;
+    GX_DYNAMIC_HIGH_WATER = highWaterCandidate > highWater ? (unsigned int)highWaterCandidate : (unsigned int)highWater;
     fn_802D6C78();
     GXGetVtxDesc();
     GXMiscInit(2);
-    end = (int)lbl_8055FD94;
-    start = lbl_8055FDA4;
-    lbl_8055FDA8 = (unsigned int)end;
-    if (start < end) {
-        DCFlushRange((void *)(lbl_8055FDA0 + start), (unsigned long)(end - start));
+    flushEnd = (int)GX_DYNAMIC_OFFSET;
+    flushStart = lbl_8055FDA4;
+    lbl_8055FDA8 = (unsigned int)flushEnd;
+    if (flushStart < flushEnd) {
+        DCFlushRange((void *)(GX_DYNAMIC_DATA + flushStart), (unsigned long)(flushEnd - flushStart));
     } else {
-        DCFlushRange((void *)(lbl_8055FDA0 + start), (unsigned long)(0x177000 - start));
-        DCFlushRange((void *)lbl_8055FDA0, (unsigned long)lbl_8055FDA8);
+        DCFlushRange((void *)(GX_DYNAMIC_DATA + flushStart), (unsigned long)(0x177000 - flushStart));
+        DCFlushRange((void *)GX_DYNAMIC_DATA, (unsigned long)lbl_8055FDA8);
     }
     lbl_8055FD38 = 0;
     lbl_8055FD34 = 1;
