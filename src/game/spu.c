@@ -1018,6 +1018,8 @@ void fn_802E622C(void *voice, float rate) { *(float *)((char *)voice + 0x10) = r
  * float from the sound's unused +0x2C field here, but this build discards it. */
 void fn_802E6234(void) {}
 
+/* No-op voice-parameter setter: the sound mixer passes a voice handle and the
+ * float from the sound's unused +0x30 field here, but this build discards it. */
 void fn_802E6238(void) {}
 
 void fn_802E623C(void) {}
