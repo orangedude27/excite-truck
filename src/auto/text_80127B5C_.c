@@ -12,6 +12,9 @@ struct B5Obj {
     virtual void slot0();
     virtual void call();
 };
+static inline void b5_dispatch(void *obj) {
+    ((B5Obj *)obj)->call();
+}
 #pragma cplusplus off
 
 #pragma use_lmw_stmw off
