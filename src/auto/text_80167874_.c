@@ -323,7 +323,7 @@ extern "C" void fn_801679F0(void) {
         DummyParamLocal **sp40[5];
     } local;
     register u8 *base;
-    register s32 zero;
+    register s32 zero = 0;
     register void *manager;
     s32 i;
     u8 *entry;
@@ -347,7 +347,6 @@ extern "C" void fn_801679F0(void) {
     local.sp40[0] = &local.sp8;
     local.spC = (DummyParamLocal *)lbl_80330248;
     local.sp8 = (DummyParamLocal *)lbl_80330234;
-    zero = 0;
     local.sp40[4] = (DummyParamLocal **)zero;
     local.sp40[1] = &local.sp14;
     local.sp40[2] = &local.sp10;
@@ -614,6 +613,7 @@ group_check:
 #pragma use_lmw_stmw off
 #pragma push
 #pragma opt_common_subs off
+#pragma scheduling invalid_target
 void fn_80168104(void) {
     extern void *fn_802C86DC(void);
     extern double fn_8002F234(float);
@@ -663,38 +663,52 @@ void fn_80168104(void) {
     }
 }
 #pragma pop
-void fn_80168328(void) {
-    extern s32 lbl_8055E354;
-    extern void fn_801678D8(void);
-    s32 *root;
-    s32 i, offset, j, count;
-    s32 *slot;
-    u8 *entry;
-    s32 flag;
-    root = (s32 *)lbl_8055E354;
-    fn_801678D8();
-    i = 0;
-    offset = 0;
-    while (i < *(s32 *)((u8 *)root + 0x1D4D0)) {
-        entry = (u8 *)(*(s32 **)((u8 *)root + 0x1D4CC)) + offset;
-        if (entry[0x1D] == 0) {
-            entry[0x1D] = 1;
-            count = *(s32 *)(entry + 0x18);
-            for (j = 0; j < count; j++) {
-                flag = 0;
-                slot = (s32 *)((u8 *)*(s32 **)root + (*(s32 *)(entry + 0x14) + j) * 0x18);
-                if (*slot != 0 && *((u8 *)slot + 0x14) == 0) {
-                    flag = 1;
-                }
-                if (flag != 0) {
-                    entry[0x1D] = 0;
-                    break;
-                }
-            }
+void fn_80168328(void)
+{
+  extern s32 lbl_8055E354;
+  extern void fn_801678D8(void);
+  s32 *root;
+  s32 flag;
+  s32 *base;
+  s32 one = 1;
+  s32 **table;
+  s32 j;
+  s32 i;
+  u8 *entry;
+  s32 offset;
+  s32 count;
+  s32 *slot;
+  root = (s32 *) lbl_8055E354;
+  fn_801678D8();
+  table = (s32 **)((u8 *)root + 0x1D4CC);
+  i = 0;
+  offset = 0;
+  while (i < *((s32 *)((u8 *)table + 4)))
+  {
+    entry = (u8 *)*table + offset;
+    if (entry[0x1D] == 0)
+    {
+      entry[0x1D] = one;
+      count = *((s32 *) (entry + 0x18));
+      for (j = 0; j < count; j++)
+      {
+        flag = 0;
+        base = *(s32 **)root;
+        slot = (s32 *) ((u8 *)base + (((*((s32 *) (entry + 0x14))) + j) * 0x18));
+        if (((*slot) != 0) && ((*(((u8 *) slot) + 0x14)) == 0))
+        {
+          flag = 1;
         }
-        offset += 0x20;
-        i++;
+        if (flag != 0)
+        {
+          entry[0x1D] = 0;
+          break;
+        }
+      }
     }
+    offset += 0x20;
+    i++;
+  }
 }
 
 #pragma push
@@ -707,7 +721,6 @@ void fn_801683F4(void *arg0, s32 arg1) {
     extern f32 lbl_80561950;
     extern void *fn_8017960C(s32);
     extern f64 fn_8002F234(f32);
-    s32 counts[7];
     s32 num;
     s32 i;
     s32 j;
@@ -733,6 +746,7 @@ void fn_801683F4(void *arg0, s32 arg1) {
     f32 tx;
     f32 tz;
     f32 radius;
+    s32 counts[7];
     memset(counts, 0, 0x18);
     object = fn_8017960C(arg1);
     tableIndex = arg1 * 4;
@@ -1138,7 +1152,7 @@ extern "C" s32 fn_80169160(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
     s32 *values;
     DummyEntry *entry;
     f32 *cursor;
-    f32 diffs[8];
+    f32 diffs[16];
     f32 dist[4];
     s32 off;
     f32 total;
@@ -1382,15 +1396,14 @@ extern "C" s32 fn_801699E4(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
 
     values = fn_801399FC(arg1);
     id = parsed;
-    entry = &arg2->entries[arg2->entryCount];
-    arg2->entryCount = arg2->entryCount + 1;
-    zero = lbl_80561924;
-    entry->f8 = zero;
+    entry = &arg2->entries[arg2->entryCount++];
+    zero = 0.0f;
     entry->byte1C = 0;
+    entry->f8 = zero;
     entry->fC = zero;
+    entry->f10 = zero;
     entry->recordStart = arg2->recordCount;
     entry->recordCount = 0;
-    entry->f10 = zero;
     entry->byte1D = 0;
     entry->id = id;
     entry->active = 1;
