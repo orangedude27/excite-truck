@@ -473,8 +473,12 @@ void fn_802168D0(void) {
     fn_80218968();
 }
 
-void fn_802168D4(void) {
-    fn_8021885C();
+/* UIWindow_IsGroupVisible: forward (window, groupId) to the window's hidden-group
+ * test; returns nonzero when the group's bit is clear in the +0x464 mask. */
+s32 fn_802168D4(s32 window, s32 groupId) {
+    #define UIWindow_TestGroupVisibility fn_8021885C
+    return UIWindow_TestGroupVisibility((void *)window, groupId);
+    #undef UIWindow_TestGroupVisibility
 }
 
 void fn_802168D8(void) {
