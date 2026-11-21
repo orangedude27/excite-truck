@@ -2625,23 +2625,22 @@ extern void fn_8006B044(tBTM_VSC_CMPL *);
 #pragma unroll 8
 void fn_8006AED4(s32 arg0) {
     u8 packet[0x100];
-    s32 length;
+    struct { s32 length; s32 i; } L;
     u32 header;
-    s32 i;
     if (arg0 == 0) {
         fn_8006B330();
         return;
     }
-    length = (u8)(lbl_8055DC44 >= 0xFB ? 0xFB : lbl_8055DC44);
+    L.length = (u8)(lbl_8055DC44 >= 0xFB ? 0xFB : lbl_8055DC44);
     header = lbl_8055DC3C;
     packet[0] = (u8)header;
     packet[1] = (u8)(header >> 8);
     packet[2] = (u8)(header >> 16);
     packet[3] = (u8)(header >> 24);
-    for (i = 0; i < length; i++)
-        packet[i + 4] = *(volatile u8 *)&lbl_803135C0[i + 8];
-    lbl_8055DC40 = length;
-    BTM_VendorSpecificCommand(0xFC4C, (u8)(length + 4), packet, fn_8006B044);
+    for (L.i = 0; L.i < L.length; L.i++)
+        packet[L.i + 4] = *(volatile u8 *)&lbl_803135C0[8 + L.i];
+    lbl_8055DC40 = L.length;
+    BTM_VendorSpecificCommand(0xFC4C, (u8)(L.length + 4), packet, fn_8006B044);
 }
 void fn_8006B044(tBTM_VSC_CMPL *arg0) {
     extern u8 lbl_8055DC39;
@@ -9331,6 +9330,7 @@ void btm_reset_complete(void) {
 void fn_8008C04C(s16);
 s32 btsnd_hcic_inq_cancel_8008576C(void);
 s32 btsnd_hcic_inq_cancel_80085850(void);
+#pragma scheduling on
 void btm_read_hci_buf_size_complete(UINT8 *p, UINT16 evt_len) {
     UINT8 status = p[0];
 
@@ -9357,21 +9357,21 @@ void btm_read_hci_buf_size_complete(UINT8 *p, UINT16 evt_len) {
         *(UINT16 *)(base + 0x7E) = packet_size;
         ((void (*)(UINT16))fn_8008C04C)(num);
         btsnd_hcic_set_host_buf_size(0x69B, 0x1E, 0x14, 0xA);
-        lbl_803C0F78[0x64E] = 3;
-        lbl_803C0F78[0x64F] = 4;
-    } else {
-        p[0x64F] = status;
-        p[0x64E] = status;
+    }
+    btm_cb_dev_state = 3;
+    btm_cb_dev_retry = 4;
+    if (btm_cb_dev_retry == 0) {
+        btm_cb_dev_retry = 0;
+        btm_cb_dev_state = 0;
         ((void (*)(void))btu_start_timer)();
         ((void (*)(void))btsnd_hcic_reset)();
-        return;
+    } else {
+        btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x574), 1, 1);
+        btsnd_hcic_inq_cancel_8008576C();
+        btsnd_hcic_inq_cancel_80085850();
+        btm_pm_reset();
     }
-    btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x574), 1, 1);
-    btsnd_hcic_inq_cancel_8008576C();
-    btsnd_hcic_inq_cancel_80085850();
-    btm_pm_reset();
 }
-
 void btm_read_local_version_complete(UINT8 *p, UINT16 evt_len) {
     UINT8 status = p[0];
     register UINT8 *base = lbl_803C0F78;
@@ -12264,7 +12264,7 @@ void bta_dm_inq_cmpl(void *p_data) {
 
 void bta_dm_rmt_name(s32 arg0) {
     extern void bta_dm_remname_cback(u8 *);
-    void *scb = bta_dm_search_cb;
+    const u8 *scb = bta_dm_search_cb;
     BtaDmSearch info;
     tBTM_INQ_INFO *p_inq_info;
     u8 *peer_addr;
@@ -12281,7 +12281,7 @@ void bta_dm_rmt_name(s32 arg0) {
             DM_SCB_P_SEARCH_CBACK(BTA_DM_DISC_RES_EVT, &info);
         } else {
             if (BTM_CB_PAGE_TIMEOUT < 0x7530)
-                bta_sys_start_timer((s32)((u8 *)scb + 0x58), BTA_DM_REMT_NAME_TOUT_EVT, BTM_CB_PAGE_TIMEOUT + 0x64);
+                bta_sys_start_timer((s32)(scb + 0x58), BTA_DM_REMT_NAME_TOUT_EVT, BTM_CB_PAGE_TIMEOUT + 0x64);
             if (BTM_ReadRemoteDeviceName(INQ_INFO_BD_ADDR(DM_SCB_P_INQ_INFO), (tBTM_CMPL_CB *)bta_dm_remname_cback) != 1) {
                 bta_sys_stop_timer((s32)DM_SCB_SDP_DB_TIMER);
                 peer_addr = INQ_INFO_BD_ADDR(DM_SCB_P_INQ_INFO);
@@ -12297,8 +12297,8 @@ void bta_dm_rmt_name(s32 arg0) {
             break;
         }
     check_entry:
-        p_inq_info = (tBTM_INQ_INFO *)*(u8 **)((u8 *)scb + 4);
-    } while ((DM_SCB_P_INQ_INFO = BTM_InqDbNext(*(tBTM_INQ_INFO **)((u8 *)scb + 4))) != 0);
+        p_inq_info = (tBTM_INQ_INFO *)*(u8 **)(scb + 4);
+    } while ((DM_SCB_P_INQ_INFO = BTM_InqDbNext(*(tBTM_INQ_INFO **)(scb + 4))) != 0);
 
     if (search_complete) {
         p_msg = GKI_getbuf(BTA_DM_MSG_SIZE);
