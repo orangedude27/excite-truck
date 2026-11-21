@@ -2,8 +2,15 @@
 // split_file divides it into the game's real files (file_status shows its range).
 typedef signed int s32;
 typedef unsigned int u32;
+typedef struct {
+    volatile s32 unk0;
+    volatile s32 unk4;
+    volatile s32 unk8;
+    volatile s32 unkC;
+    volatile s32 unk10;
+} UnkStruct_80430378;
 extern void fn_8000D838(void *);
-extern s32 lbl_80430378[];
+extern UnkStruct_80430378 lbl_80430378;
 extern u32 lbl_8055E390;
 extern volatile s32 lbl_8055E398;
 extern volatile s32 lbl_8055E39C;
@@ -13,16 +20,18 @@ extern volatile s32 lbl_8055E3A0;
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
 void fn_80176404(void) {
-    s32 v;
+    register s32 zero;
+    register s32 v;
     s32 *p;
     fn_8000D838(&lbl_8055E390);
-    p = lbl_80430378 + 1;
-    lbl_80430378[0] = 0;
+    p = (s32 *)&lbl_80430378 + 1;
+    zero = 0;
+    lbl_80430378.unk0 = zero;
     v = 0x7B;
-    lbl_80430378[2] = 0;
-    lbl_80430378[1] = v;
-    lbl_80430378[3] = 0;
-    lbl_80430378[4] = 0;
+    lbl_80430378.unk8 = zero;
+    lbl_80430378.unk4 = v;
+    lbl_80430378.unkC = zero;
+    lbl_80430378.unk10 = zero;
     lbl_8055E398 = 0xFFFF0000;
     lbl_8055E39C = 0xFFFF0000;
     lbl_8055E3A0 = 0x7F000000;
