@@ -1437,45 +1437,47 @@ extern float lbl_80564B84;
 #pragma dont_inline on
 extern int __cntlzw(unsigned int);
 #pragma scheduling invalid_target
-s32 fn_802B02C8(void *arg0) {
-    f32 temp_f0;
-    f32 temp_f0_2;
-    f32 temp_f1;
-    f32 temp_f2;
-    f32 denom;
-    s32 valid;
-    f32 fx;
-    f32 fz;
-    s32 sx;
-    s32 sz;
-    s16 cx;
-    s16 cz;
-    u32 flags;
+/* Check a world position against the loaded map: within the play field, snap
+ * x/z to the 8-cell grid, read that tile's flags and return whether its
+ * 0x01000000 bit is clear (out-of-range positions also count as clear). */
+s32 fn_802B02C8(void *position) {
+    f32 scratch;
+    f32 z;
+    f32 negBound;
+    f32 bound;
+    s32 inRange;
+    f32 x;
+    f32 zCoord;
+    s32 cellX;
+    s32 cellZ;
+    s16 blockX;
+    s16 blockZ;
+    u32 tileFlags;
 
     if (fn_802AE7AC() != 0) {
-        valid = 0;
-        temp_f2 = lbl_80564B84;
-        temp_f0 = lbl_80564AF0;
-        temp_f2 *= temp_f0;
-        temp_f1 = lbl_80564B6C;
-        temp_f2 *= temp_f1;
-        temp_f1 = -temp_f2;
-        temp_f0 = *(f32 *)arg0;
-        if ((temp_f0 > temp_f1) && (temp_f0 < temp_f2)) {
-            temp_f0_2 = *(f32 *)((u8 *)arg0 + 8);
-            if ((temp_f0_2 > temp_f1) && (temp_f0_2 < temp_f2))
-                valid = 1;
+        inRange = 0;
+        bound = lbl_80564B84;
+        scratch = lbl_80564AF0;
+        bound *= scratch;
+        negBound = lbl_80564B6C;
+        bound *= negBound;
+        negBound = -bound;
+        scratch = *(f32 *)position;
+        if ((scratch > negBound) && (scratch < bound)) {
+            z = *(f32 *)((u8 *)position + 8);
+            if ((z > negBound) && (z < bound))
+                inRange = 1;
         }
-        if (valid != 0) {
-            fx = *(f32 *)arg0;
-            denom = lbl_80564AF0;
-            fz = *(f32 *)((u8 *)arg0 + 8);
-            sx = (s32)(fx / denom);
-            sz = (s32)(fz / denom);
-            cx = (s16)((s16)(sx & ~7) + 4);
-            cz = (s16)((s16)(sz & ~7) + 4);
-            flags = *(u32 *)((u8 *)fn_802BE844(cx, cz, 4) + 8);
-            return (u32)__cntlzw(flags & 0x01000000) >> 5;
+        if (inRange != 0) {
+            x = *(f32 *)position;
+            scratch = lbl_80564AF0;
+            zCoord = *(f32 *)((u8 *)position + 8);
+            cellX = (s32)(x / scratch);
+            cellZ = (s32)(zCoord / scratch);
+            blockX = (s16)((s16)(cellX & ~7) + 4);
+            blockZ = (s16)((s16)(cellZ & ~7) + 4);
+            tileFlags = *(u32 *)((u8 *)fn_802BE844(blockX, blockZ, 4) + 8);
+            return (u32)__cntlzw(tileFlags & 0x01000000) >> 5;
         }
         return 1;
     }
