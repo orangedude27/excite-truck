@@ -1259,8 +1259,8 @@ extern "C" void *fn_80158280(void *vec, s32 *__restrict pValue) {
 }
 
 extern "C" char lbl_8032F184[];
-extern "C" f32 lbl_80561774;
-extern "C" f32 lbl_80561770;
+extern "C" const f32 lbl_80561774;
+extern "C" const f32 lbl_80561770;
 extern "C" void* fn_801582A4(void* self, s32 arg1, s32 arg2, void* arg3) {
     struct Tail {
         u8 pad244[0x244];
