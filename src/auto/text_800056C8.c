@@ -32,7 +32,8 @@ extern s32 fn_801E866C(void);
 extern void *fn_801EA9A0(void);
 extern s32 fn_801B84D8(s32, s32);
 extern s32 fn_801B8570(s32);
-extern u8 lbl_8034EEB8_arr[];
+extern u8 lbl_8034EEB8_arr[]; /* arena overlay object table, indexed by player */
+extern u8 lbl_802FB69C[]; /* "Your car is impaired." */
 extern s32 fn_80011A5C(s32);
 extern s32 fn_801B84A4(s32);
 extern s32 fn_80230DA0(void);
