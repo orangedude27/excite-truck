@@ -316,7 +316,7 @@ extern "C" void fn_801564B0(void) {
 
     u8 path[0x40];
     char input[0x10], text[0x20];
-    u8 *base = lbl_8032E238;
+    register u8 *base = lbl_8032E238;
     register const char *format;
     register s32 line;
     register const char *suffix;
@@ -417,7 +417,8 @@ extern "C" void fn_801564B0(void) {
                 void *item;
                 while ((item = list->get(index)) != 0 &&
                        resource->objectCount + 1 <= resource->objectCapacity) {
-                    resource->objects[resource->objectCount++] = fn_801399FC(item);
+                    resource->objects[resource->objectCount++] =
+                        ((void *(*)(void *))fn_801399FC)(item);
                     index++;
                 }
             }
@@ -716,6 +717,7 @@ extern "C" s32 fn_80156C84(void *arg0, s32 arg1) {
 }
 #pragma pop
 extern s32 fn_80129D90(s32, s32, s32);
+#define GAME_TIME lbl_8055E3C8 /* .sbss: current game time in seconds */
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
