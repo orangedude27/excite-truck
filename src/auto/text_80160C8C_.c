@@ -1346,6 +1346,8 @@ extern s32 lbl_8055A0C0;
 #pragma scheduling invalid_target
 #pragma dont_inline on
 #pragma cplusplus on
+__declspec(section ".data") extern char lbl_8032F744[];
+__declspec(section ".data") extern char lbl_8032F750[];
 extern "C" void fn_80161F10(s32 arg0, s32 arg1) {
     s32 pad[0x2e];
     register const char *label1;
@@ -2029,7 +2031,7 @@ done:
 #pragma processor 750
 #pragma scheduling on
 #pragma cplusplus on
-extern "C" s32 fn_80162FE8(void *arg0) {
+extern "C" s32 fn_80162FE8(const void *arg0) {
     class Obj {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
@@ -2037,7 +2039,7 @@ extern "C" s32 fn_80162FE8(void *arg0) {
         virtual s32 check();
     };
     Obj *obj = (Obj *)arg0;
-    f32 tmp = *(f32 *)((char *)obj + 0x5B8);
+    f32 tmp = *(const f32 *)((const char *)arg0 + 0x5B8);
     if (obj->check() != 0) {
         return *(f32 *)((char *)obj + 0x5B4) > tmp;
     }
@@ -2306,8 +2308,8 @@ extern "C" void fn_801636E0(void *arg0) {
     extern void fn_802A95AC(s32);
     extern s32 fn_8016D294(s32, s32, s32);
     s32 i;
+    s32 firstOffset;
     u32 j;
-    u32 firstOffset;
     char *obj2;
     s32 secondOffset;
     float resetValue;
@@ -3028,114 +3030,125 @@ extern char lbl_8055A128;
 extern float lbl_80561840;
 extern float lbl_8056186C;
 #pragma opt_common_subs off
-s32 fn_801648AC(void *arg0, void *arg1, s32 arg2) {
-    struct State { void *node; float frac; s32 id; };
-    char obj[0x40];
-    struct Vec2_648 pts[3];
-    char place[0x10];
-    struct State state;
-    char bound[0x10];
-    struct Vec2_648 pos;
-    struct Vec2_648 dir;
-    struct Vec2_648 copy;
-    struct Vec2_648 ret;
-    struct Vec2_648 e2;
-    struct Vec2_648 e1;
-    struct Vec2_648 mid;
-    void *self;
-    void *scalePtr;
-    void *obj2;
-    s32 i;
-    struct Vec2_648 *p;
-    s32 best;
-    float bestLen;
-    float len;
-    float inv;
-    float len01;
+s32 fn_801648AC(void *arg0, void *arg1, s32 arg2)
+{
+  struct State
+  {
     void *node;
     float frac;
-    float speed;
-    float scale;
-    self = arg0;
-    scalePtr = (char *)self + arg2 * 4;
-    *(float *)((char *)scalePtr + 0x14) = lbl_80561848;
-    if (*(void **)((char *)self + 4) != 0) {
-        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(place, 0x10, lbl_8032FB9C, arg2);
-        obj2 = ((struct ObjInner_648*)*(void **)((char *)self + 4))->i21(place);
-        if (obj2 != 0) {
-            pos.x = lbl_80561848;
-            pos.y = lbl_80561848;
-            dir.x = lbl_80561848;
-            dir.y = lbl_80561848;
-            p = pts;
-            i = 0;
-            do {
-                ((void (*)(char *, s32, const char *, ...))fn_801345D8)(bound, 0x10, (char *)&lbl_8055A120, i);
-                ret = ((struct Obj2_648*)obj2)->o13(bound);
-                p->x = ret.x;
-                p->y = ret.y;
-                p++;
-                i++;
-            } while (i < 3);
-            best = 2;
-            e2.y = pts[2].y - pts[0].y;
-            e2.x = pts[2].x - pts[0].x;
-            bestLen = e2.x * e2.x + e2.y * e2.y;
-            e1.y = pts[0].y - pts[1].y;
-            e1.x = pts[0].x - pts[1].x;
-            len01 = e1.x * e1.x + e1.y * e1.y;
-            if (len01 > bestLen) {
-                bestLen = len01;
-                best = 0;
-            }
-            e1.y = pts[1].y - pts[2].y;
-            e1.x = pts[1].x - pts[2].x;
-            if (e1.x * e1.x + e1.y * e1.y > bestLen) {
-                best = 1;
-            }
-#pragma opt_common_subs off
-            mid.x = pts[best].x + lbl_8056185C * (pts[(best + 1) % 3].x - pts[best].x);
-            mid.y = pts[best].y + lbl_8056185C * (pts[(best + 1) % 3].y - pts[best].y);
-#pragma opt_common_subs reset
-            *(double *)&copy = *(double *)&mid;
-            pos.x = copy.x;
-            pos.y = copy.y;
-            dir.x = pts[(best + 2) % 3].x - copy.x;
-            dir.y = pts[(best + 2) % 3].y - copy.y;
-            len = (float)fn_8002F234(dir.x * dir.x + dir.y * dir.y);
-            inv = lbl_80561840 / len;
-            dir.x = dir.x * inv;
-            dir.y = dir.y * inv;
-            if (((struct Obj2_648*)obj2)->o10(lbl_8032FBA8, 1) != 0) {
-                fn_801352B8(obj);
-                fn_80135D60(obj, ((struct Mgr_648*)fn_80156A40())->m1(0));
-                state.node = 0;
-                state.id = 0x2710;
-                state.frac = lbl_80561848;
-                fn_801355C0(obj, &pos, 0, &state, 0);
-                node = state.node;
-                frac = state.frac;
-                pos.x = *(float *)node + frac * (*(float *)(*(void **)((char *)node + 0x14)) - *(float *)node);
-                pos.y = *(float *)((char *)node + 4) + frac * (*(float *)((char *)(*(void **)((char *)node + 0x14)) + 4) - *(float *)((char *)node + 4));
-                dir.x = *(float *)((char *)node + 8) + frac * (*(float *)((char *)(*(void **)((char *)node + 0x14)) + 8) - *(float *)((char *)node + 8));
-                dir.y = *(float *)((char *)node + 0xC) + frac * (*(float *)((char *)(*(void **)((char *)node + 0x14)) + 0xC) - *(float *)((char *)node + 0xC));
-                len = (float)fn_8002F234(dir.x * dir.x + dir.y * dir.y);
-                inv = lbl_80561840 / len;
-                dir.x = dir.x * inv;
-                dir.y = dir.y * inv;
-                fn_8013530C(obj, -1);
-            }
-            fn_801B7C8C(arg1, &pos, &dir);
-            speed = ((struct Obj2_648*)obj2)->o8((char *)&lbl_8055A128, lbl_80561848);
-            scale = lbl_8056186C * speed;
-            *(float *)((char *)arg1 + 0x30) = *(float *)((char *)arg1 + 0x18) * scale;
-            *(float *)((char *)arg1 + 0x34) = *(float *)((char *)arg1 + 0x1C) * scale;
-            *(float *)((char *)arg1 + 0x38) = *(float *)((char *)arg1 + 0x20) * scale;
-            *(float *)((char *)scalePtr + 0x14) = scale;
-            return 1;
-        }
+    s32 id;
+  };
+  char obj[0x40];
+  struct Vec2_648 pts[3];
+  char place[0x10];
+  struct State state;
+  char bound[0x10];
+  struct Vec2_648 pos;
+  struct Vec2_648 dir;
+  struct Vec2_648 copy;
+  struct Vec2_648 ret;
+  struct Vec2_648 e2;
+  struct Vec2_648 e1;
+  struct Vec2_648 mid;
+  void *self;
+  void *scalePtr;
+  void *obj2;
+  s32 i;
+  struct Vec2_648 *p;
+  s32 best;
+  float bestLen;
+  float len;
+  float inv;
+  float len01;
+  void *node;
+  float frac;
+  float speed;
+  float scale;
+  self = arg0;
+  scalePtr = ((char *) self) + (arg2 * 4);
+  *((float *) (((char *) scalePtr) + 0x14)) = lbl_80561848;
+  if ((*((void **) (((char *) self) + 4))) != 0)
+  {
+    ((void (*)(char *, s32, const char *, ...)) fn_801345D8)(place, 0x10, lbl_8032FB9C, arg2);
+    obj2 = ((struct ObjInner_648 *) (*((void **) (((char *) self) + 4))))->i21(place);
+    if (obj2 != 0)
+    {
+      pos.x = lbl_80561848;
+      pos.y = lbl_80561848;
+      dir.x = lbl_80561848;
+      dir.y = lbl_80561848;
+      p = pts;
+      i = 0;
+      do
+      {
+        ((void (*)(char *, s32, const char *, ...)) fn_801345D8)(bound, 0x10, (char *) (&lbl_8055A120), i);
+        ret = ((struct Obj2_648 *) obj2)->o13(bound);
+        p->x = ret.x;
+        p->y = ret.y;
+        p++;
+        i++;
+      }
+      while (i < 3);
+      best = 2;
+      e2.y = pts[2].y - pts[0].y;
+      e2.x = pts[2].x - pts[0].x;
+      bestLen = (e2.x * e2.x) + (e2.y * e2.y);
+      e1.y = pts[0].y - pts[1].y;
+      e1.x = pts[0].x - ((0, pts[1].x));
+      len01 = (e1.x * e1.x) + (e1.y * e1.y);
+      if (len01 > bestLen)
+      {
+        bestLen = len01;
+        best = 0;
+      }
+      e1.y = pts[1].y - pts[2].y;
+      e1.x = pts[1].x - pts[2].x;
+      if (((e1.x * e1.x) + (e1.y * e1.y)) > bestLen)
+      {
+        best = 1;
+      }
+      mid.x = pts[best].x + (lbl_8056185C * (pts[(best + 1) % 3].x - pts[best].x));
+      mid.y = pts[best].y + (lbl_8056185C * (pts[(best + 1) % 3].y - pts[best].y));
+      *((double *) (&copy)) = *((double *) (&mid));
+      pos.x = copy.x;
+      pos.y = copy.y;
+      dir.x = pts[(best + 2) % 3].x - copy.x;
+      dir.y = pts[(best + 2) % 3].y - copy.y;
+      len = (float) fn_8002F234((dir.x * dir.x) + (dir.y * dir.y));
+      inv = lbl_80561840 / len;
+      dir.x = dir.x * inv;
+      dir.y = dir.y * inv;
+      if (((struct Obj2_648 *) obj2)->o10(lbl_8032FBA8, 1) != 0)
+      {
+        fn_801352B8(obj);
+        fn_80135D60(obj, ((struct Mgr_648 *) fn_80156A40())->m1(0));
+        state.node = 0;
+        state.id = 0x2710;
+        state.frac = lbl_80561848;
+        fn_801355C0(obj, &pos, 0, &state, 0);
+        node = state.node;
+        frac = state.frac;
+        pos.x = (*((float *) node)) + (frac * ((*((float *) (*((void **) (((char *) node) + 0x14))))) - (*((float *) node))));
+        pos.y = (*((float *) (((char *) node) + 4))) + (frac * ((*((float *) (((char *) (*((void **) (((char *) node) + 0x14)))) + 4))) - (*((float *) (((char *) node) + 4)))));
+        dir.x = (*((float *) (((char *) node) + 8))) + (frac * ((*((float *) (((char *) (*((void **) (((char *) node) + 0x14)))) + 8))) - (*((float *) (((char *) node) + 8)))));
+        dir.y = (*((float *) (((char *) node) + 0xC))) + (frac * ((*((float *) (((char *) (*((void **) (((char *) node) + 0x14)))) + 0xC))) - (*((float *) (((char *) node) + 0xC)))));
+        len = (float) fn_8002F234((dir.x * dir.x) + (dir.y * dir.y));
+        inv = lbl_80561840 / len;
+        dir.x = dir.x * inv;
+        dir.y = dir.y * inv;
+        fn_8013530C(obj, -1);
+      }
+      fn_801B7C8C(arg1, &pos, &dir);
+      speed = ((struct Obj2_648 *) obj2)->o8((char *) (&lbl_8055A128), lbl_80561848);
+      scale = lbl_8056186C * speed;
+      *((float *) (((char *) arg1) + 0x30)) = (*((float *) (((char *) arg1) + 0x18))) * scale;
+      *((float *) (((char *) arg1) + 0x34)) = (*((float *) (((char *) arg1) + 0x1C))) * scale;
+      *((float *) (((char *) arg1) + 0x38)) = (*((float *) (((char *) arg1) + 0x20))) * scale;
+      *((float *) (((char *) scalePtr) + 0x14)) = scale;
+      return 1;
     }
-    return 0;
+  }
+  return 0;
 }
 #pragma opt_common_subs reset
 extern f32 lbl_80561870;
