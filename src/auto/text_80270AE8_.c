@@ -240,13 +240,13 @@ int fn_80270D1C(int sourceType) {
 }
 
 #pragma peephole on
-int fn_80270D4C(void *arg0, void *arg1) {
+int fn_80270D4C(void *arg0, const void *arg1) {
     float *right;
     float *left;
-    if (*((unsigned char *)arg1 + 4) != 0) {
-        right = (float *)(*(char **)arg1 + 0xC);
+    if (*((const unsigned char *)arg1 + 4) != 0) {
+        right = (float *)(*(char * const *)((const char *)arg1) + 0xC);
     } else {
-        right = (float *)(*(char **)arg1 + 4);
+        right = (float *)(*(char * const *)((const char *)arg1) + 4);
     }
     if (*((unsigned char *)arg0 + 4) != 0) {
         left = (float *)(*(char **)arg0 + 0xC);
