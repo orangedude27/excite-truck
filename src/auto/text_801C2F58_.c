@@ -532,6 +532,30 @@ void fn_801C3D88(void *arg0) {
         fn_802E30C8(lbl_80336B00 + 0xe4, arg0);
         fn_802E317C(lbl_80336B00 + 0x100, arg0);
         return;
+    } else {
+        void *obj = fn_80131808(arg0);
+        s32 val = lbl_8055E814;
+        if (val == 0) {
+            void *cfg = (void *)fn_801C3D5C();
+            s32 r = (*(s32(**)(void *, char *))(*(u8 **)cfg + 0xc))(cfg, lbl_80336B00 + 0x130);
+            if (r != 0) {
+                cfg = (void *)fn_801C3D5C();
+                r = (*(s32(**)(void *, char *))(*(u8 **)cfg + 0x14))(cfg, lbl_80336B00 + 0x130);
+            } else {
+                r = (s32)fn_80007F90(__AXFXGetLfoSinTable_801769CC()[1]);
+            }
+            val = r;
+        }
+        if ((*(s32(**)(void *, s32))(*(u8 **)obj + 0x10))(obj, val) == 0) {
+            fn_802E30C8(lbl_80336B00 + 0xe4, val);
+            val = (s32)lbl_8055A990;
+        }
+        if ((*(s32(**)(void *, s32))(*(u8 **)obj + 0x10))(obj, val) == 0) {
+            fn_802E30C8(lbl_80336B00 + 0xe4, val);
+            fn_80131818(obj);
+            fn_802E317C(lbl_80336B00 + 0x140, val, arg0);
+            return;
+        }
     }
 }
 
@@ -2231,6 +2255,7 @@ void fn_801C7FE4(void) {
     extern char lbl_80336FB0[];
     Unk_80437D88 *base = &lbl_80437D88;
     void *obj;
+    union { Unk_80437D88 *b; u32 u; } ub;
     Vec *v;
     lbl_8055E83A = 0;
     obj = fn_801C3C80();
@@ -2240,7 +2265,8 @@ void fn_801C7FE4(void) {
     strcpy((char *)obj + 0x114, (char *)base + 0x5F8);
     *(s32 *)((char *)obj + 0x10) = fn_801C3954((s32)obj + 0x14);
     *(s32 *)((char *)obj + 0x10) &= ~fn_801C3954((s32)obj + 0x114);
-    v = (Vec *)((char *)base + 0x4E0);
+    ub.b = base;
+    v = (Vec *)(ub.u + 0x4E0);
     *(f32 *)((char *)obj + 0x214) = *(f32 *)((char *)base + 0x4E0);
     *(f32 *)((char *)obj + 0x218) = v->y;
     *(f32 *)((char *)obj + 0x21C) = v->z;
@@ -3161,6 +3187,9 @@ int fn_801C957C(int enabled)
 }
 
 #pragma pop
+static inline s32 fn_801C95EC_get_id(u8 *table, s32 selection, s32 current) {
+    return *(s32 *)(*(u32 *)((char *)table + (current << 4)) + (selection << 4) + 8);
+}
 void fn_801C95EC(f32 arg0) {
     struct Entry {
         void *name;
@@ -3230,9 +3259,8 @@ s32 fn_801C9708(s32 arg0) {
             arg0 == 0x20 || arg0 == 0x2D) {
             u32 length = strlen(lbl_804380F0);
             if (length < 0xFF) {
-                char *addr = lbl_804380F0;
-                addr[length] = (char)arg0;
-                *(char *)(length + (u32)addr + 1) = 0;
+                lbl_804380F0[length] = (char)arg0;
+                *(char *)(length * 1 + (u32)lbl_804380F0 + 1) = 0;
             }
         }
         break;
