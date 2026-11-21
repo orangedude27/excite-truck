@@ -6535,7 +6535,10 @@ extern "C" void fn_800FA9E8(void* arg0) {
     OSRestoreInterrupts(interruptLevel);
 }
 
-extern "C" void *Alloc__Q44nw4r3snd6detail14StrmBufferPoolFv(void *arg0) {
+extern "C" void *Alloc__Q44nw4r3snd6detail14StrmBufferPoolFv(void *this_) {
+    /* Allocate one block from a StrmBufferPool: with interrupts disabled, scan
+       its allocation bitmap for the first free bit, mark it used, and return the
+       block's address (NULL if every block is already taken). */
     struct StrmBufferPoolView {
         void *buffer;
         u32 bufferSize;
@@ -6545,7 +6548,7 @@ extern "C" void *Alloc__Q44nw4r3snd6detail14StrmBufferPoolFv(void *arg0) {
         u8 bits[32];
     };
     struct ByteHolder { u8 b; } holder;
-    register StrmBufferPoolView *pool = (StrmBufferPoolView *)arg0;
+    register StrmBufferPoolView *pool = (StrmBufferPoolView *)this_;
     u8 &value = holder.b;
     u32 interruptState = OSDisableInterrupts();
     s32 capacity = pool->capacity;
