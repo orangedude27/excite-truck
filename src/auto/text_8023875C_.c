@@ -93,14 +93,21 @@ void fn_80238920(void) {
 }
 #pragma scheduling dynamic
 void fn_8023895C(void) {
-    float sp8[12];
+    /* Open the overlay/debug text pass: set up the 2D view matrix and depth
+     * range, mark the pass active and enable text queuing. The matching closer
+     * is fn_802389E4. */
+#define text_pass_active lbl_8055F0D8
+#define text_queue_enable fn_802344C4
+    float viewMatrix[12];
 
     fn_802C974C(1.0f, lbl_80563710, lbl_80563714);
-    fn_80230B5C(&sp8[0]);
-    sp8[11] = (float)(-((int)lbl_8055CFF0 / 2)) / lbl_8055FC88;
-    ((void (*)(void *))fn_802C8638)(&sp8[0]);
-    lbl_8055F0D8 = 1;
-    fn_802344C4(1);
+    fn_80230B5C(&viewMatrix[0]);
+    viewMatrix[11] = (float)(-((int)lbl_8055CFF0 / 2)) / lbl_8055FC88;
+    ((void (*)(void *))fn_802C8638)(&viewMatrix[0]);
+    text_pass_active = 1;
+    text_queue_enable(1);
+#undef text_pass_active
+#undef text_queue_enable
 }
 /* Close the overlay/debug text pass: if any lines are still queued, render
  * (flush) them now, then clear the pass-active flag and disable queuing.
