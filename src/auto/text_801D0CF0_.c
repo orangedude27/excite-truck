@@ -73,8 +73,8 @@ extern "C" void fn_801D0E0C(void) {
         virtual void m2();
     };
     int index;
-    for (index = 0; index < lbl_8055E8E8; index++) {
-        Dummy_801D0E0C *obj = (Dummy_801D0E0C *)lbl_80438818[index];
+    for (index = 0; index < gManagerCount; index++) {
+        Dummy_801D0E0C *obj = (Dummy_801D0E0C *)gManagerList[index];
         obj->m1();
     }
 }
