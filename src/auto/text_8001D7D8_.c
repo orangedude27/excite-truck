@@ -8,16 +8,18 @@ int __AXGetStackHead(int index) {
 }
 
 int strcmp(const char *, const char *);
-int fn_8001D7EC(char *name) {
+/* Look up a grade name ("S", "A", "B", "C", "D") in the name table and return its
+   0-based index, or -1 when the name is not one of the five grades. */
+int fn_8001D7EC(char *gradeName) {
 #pragma scheduling invalid_target
     extern char *lbl_802ED818[];
-    char **table = lbl_802ED818;
-    int i = 0;
+    char **gradeNameEntry = lbl_802ED818;
+    int gradeIndex = 0;
     do {
-        if ((*table != 0) && (strcmp(*table, name) == 0)) return i;
-        ++i;
-        ++table;
-    } while (i < 5);
+        if ((*gradeNameEntry != 0) && (strcmp(*gradeNameEntry, gradeName) == 0)) return gradeIndex;
+        ++gradeIndex;
+        ++gradeNameEntry;
+    } while (gradeIndex < 5);
     return -1;
 }
 void fn_8001D868(int *effectData) {
