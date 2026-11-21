@@ -8837,6 +8837,9 @@ extern "C" void fn_80228A6C(void *container) {
 }
 
 extern "C" void fn_80228A80(void) {
+    /* Empty no-op virtual method in the J2DTextBox widget group, sitting between
+       the vf4-forwarding fn_80228A6C and the vf5-invoking fn_80228A84.
+       Does nothing; compiles to a bare 'blr'. */
 }
 
 /* Set a draw/color state from this object's parameters, invoke a virtual
