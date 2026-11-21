@@ -2,8 +2,9 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 
-
+extern int fn_80128668();
 extern int fn_8023695C(void *);
+
 extern void fn_80216CA8(void);
 extern void fn_802168BC(int);
 extern float fn_80235F64(void *, int);
@@ -190,7 +191,7 @@ void fn_80264098(void *item, int type) {
 extern void *operator new(unsigned long, void *);
 #pragma push
 #pragma scheduling invalid_target
-void fn_802640A0(void *arg0) {
+extern "C" void fn_802640A0(void *arg0) {
     struct CreditsMenuItem {
         void *name;
         int type;
