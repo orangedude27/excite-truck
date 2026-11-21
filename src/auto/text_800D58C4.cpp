@@ -246,6 +246,17 @@ extern "C" const char lbl_8031E92C[];
 extern "C" s32 lbl_8055DE08;
 /* ut::RuntimeTypeInfo accessor: the DynamicCast target type info (inlined at every call site). */
 static inline StateNode_800D6CA0 *TypeInfo_800D77DC() { return (StateNode_800D6CA0 *)&lbl_8055DE08; }
+static inline bool HasStateX_800D77DC(u8 *obj) {
+    StateNode_800D6CA0 *typeInfo = (StateNode_800D6CA0 *)&lbl_8055DE08;
+    StateNode_800D6CA0 *t = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)obj)->v1();
+    bool derived;
+    while (t) {
+        if (t == typeInfo) { derived = true; break; }
+        t = t->next;
+    }
+    if (t == 0) derived = false;
+    return derived;
+}
 static inline u8 *DynCastC_800D77DC(u8 *obj) {
     const StateNode_800D6CA0 *typeInfo = TypeInfo_800D77DC();
     bool derived = false;
@@ -1427,7 +1438,7 @@ extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
             if (!n2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
             p2 = (u8 *)n2 - 4;
             if (!p2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
-            { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p2)->v1(), TypeInfo_800D77DC()) ? p2 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
+            { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p2)->v1(), (StateNode_800D6CA0 *)((u8 *)&lbl_8055DE08 + 0)) ? p2 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
             cur3.node = *(StateNode_800D6CA0 **)(p2 + 0x14);
             while (n3 != (StateNode_800D6CA0 *)(p2 + 0x14)) {
                 if (!n3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
