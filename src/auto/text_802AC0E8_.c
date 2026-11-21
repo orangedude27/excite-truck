@@ -21,13 +21,16 @@ typedef struct AnimSymbolEntry {
 } AnimSymbolEntry;
 
 #pragma scheduling invalid_target
-void *fn_802AC0E8(void *node, const char *name, int key) {
-    if (node == 0)
+/* RealName: Anim_FindSymbolEntry. Walk the animation symbol table (a list of
+   12-byte { type, name, value } records ended by a zero type) and return the
+   entry whose type tag and name both match, or 0 if none does. */
+void *fn_802AC0E8(void *entry, const char *name, int type) {
+    if (entry == 0)
         return 0;
-    while (*(int *)node != 0) {
-        if (*(int *)node == key && strcmp(*(const char **)((char *)node + 4), name) == 0)
-            return node;
-        node = (char *)node + 0xC;
+    while (((AnimSymbolEntry *)entry)->type != 0) {
+        if (((AnimSymbolEntry *)entry)->type == type && strcmp(((AnimSymbolEntry *)entry)->name, name) == 0)
+            return entry;
+        entry = (char *)entry + 0xC;
     }
     return 0;
 }
