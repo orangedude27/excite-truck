@@ -29,6 +29,9 @@ void fn_80265D3C(void) {}
  * this build leaves it empty. */
 void fn_80265D40(void *object, int objectSlot, float scalarValue) {}
 
+/* No-op teardown hook called from the destructor fn_801A669C (text_801A6370_.c)
+ * just after the vtable is reinstalled and before the owned buffer at +0x2700
+ * is released; this build leaves it empty. */
 void fn_80265D44(void) {}
 
 void fn_80265D48(void) {}
