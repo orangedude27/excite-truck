@@ -1029,6 +1029,7 @@ extern "C" u32 MEMGetAllocatableSizeForFrmHeapEx(void *, s32);
 #pragma push
 #pragma use_lmw_stmw off
 void *nw4hbm::snd::detail::FrameHeap::Alloc(unsigned long size, void (*callback)(void *, unsigned long, void *), void *user) {
+    register void (*cb)(void *, unsigned long, void *) = callback;
     register u32 block;
     register void *list;
     register void *link;
@@ -1038,11 +1039,13 @@ void *nw4hbm::snd::detail::FrameHeap::Alloc(unsigned long size, void (*callback)
     block = (u32)MEMAllocFromFrmHeapEx(*(void **)this, ((size + 0x1f) & ~31UL) + 0x20, 0x20);
     if (block == 0)
         return 0;
-    *(u32 *)block = 0;
-    *((u32 *)block + 1) = 0;
-    *((u32 *)block + 2) = size;
-    *((void **)block + 3) = (void *)callback;
-    *((void **)block + 4) = user;
+    if (block != 0) {
+        *(u32 *)block = 0;
+        *((u32 *)block + 1) = 0;
+        *((u32 *)block + 2) = size;
+        *(void (**)(void *, unsigned long, void *))((u8 *)block + 0xC) = cb;
+        *((u32 *)block + 4) = (u32)user;
+    }
     if (*(void **)((u8 *)this + 4) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1fb, (const char *)lbl_80322FF8);
     list = *(void **)((u8 *)this + 0xC);
@@ -1469,7 +1472,9 @@ extern "C" s32 fn_800ED018(s32 object, s32 deleteFlag) {
 }
 
 #pragma dont_inline on
-extern "C" void fn_800ED058(s32 arg0 = 0) {
+extern "C" void fn_800ED058(s32 baseThis = 0) {
+    /* Empty base virtual: a no-op implementation. Derived this-adjusting thunks
+       (e.g. fn_800ED0E4) subtract the multiple-inheritance offset and tail-call it. */
     return;
 }
 #pragma dont_inline off
@@ -1873,7 +1878,7 @@ void MmlParser::CommandProc(MmlSeqTrack *track, u32 command, s32 arg1, s32 arg2)
         }
     } else if (command <= 0xFFFF) {
         u32 cmd = command >> 8;
-        s16 *var;
+        register s16 *var;
         command &= 0xFF;
         if (cmd != 0xF0) Panic__Q26nw4hbm2dbFPCciPCce(str, 0x264, str + 0x2A0);
         var = 0;
@@ -2461,7 +2466,6 @@ extern "C" void* GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void)
 }
 
 void nw4hbm::snd::detail::RemoteSpeakerManager::Setup() {
-    void *self = this;
     u8* p;
     s32 i;
     if (((u8*)this)[0] == 0) {
@@ -2472,13 +2476,14 @@ void nw4hbm::snd::detail::RemoteSpeakerManager::Setup() {
             i++;
             p += 0xA0;
         } while (i < 4);
-        OSCreateAlarm((void*)((u8*)self + 8));
+        OSCreateAlarm((void*)((u8*)this + 8));
         u64 time = OSGetTime();
         u32 ticks = *(volatile u32*)0x800000F8;
-        u32 q = (ticks >> 2) / 125000;
+        u32 slowTicks = ticks >> 2;
+        u32 q = slowTicks / 125000;
         u32 period = q * 0x0065B9AB;
         u32 interval = period / 8000;
-        OSSetPeriodicAlarm((void*)((u8*)self + 8), q, (u32)(time >> 32), (u32)time,
+        OSSetPeriodicAlarm((void*)((u8*)this + 8), q, (u32)(time >> 32), (u32)time,
                            0, interval, (void*)fn_800EEBA8);
         ((u8*)this)[0] = 1;
     }
@@ -2651,6 +2656,8 @@ extern "C" void* __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(void* self, const
     u32 magic;
     u32 size;
     u32 valid;
+    u32 mask;
+    u32 diff;
     *(void**)self = 0;
     *(void**)((u8*)self + 4) = 0;
     if (data == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x47, (const char*)(file + 0xB4));
@@ -2671,7 +2678,9 @@ extern "C" void* __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(void* self, const
     }
     if (size > 0x100) Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x34, (const char*)(file + 0x5C));
     size = *sizeField;
-    valid = (~(size & ~0x100u) - ((0x100u - size) >> 1)) >> 31;
+    diff = (0x100u - size) >> 1;
+    mask = ~(size & ~0x100u);
+    valid = (mask - diff) >> 31;
 check_valid:
     if (valid == 0) return self;
     *(void**)self = (void*)data;
