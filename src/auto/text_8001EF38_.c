@@ -428,8 +428,8 @@ void fn_8001F578(void) {
 extern void *memcpy(void *, const void *, unsigned long);
 #pragma opt_propagation off
 void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
-    int *__restrict a = (int *)arg0;
-    const int *__restrict b = (const int *)arg1;
+    int *a = (int *)arg0;
+    int *b = (int *)arg1;
     char *input = (char *)arg1 + 0x50;
     char *output = (char *)arg0;
     char *entry;
