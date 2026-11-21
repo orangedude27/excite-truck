@@ -11281,6 +11281,8 @@ void btm_pm_proc_cmd_status(UINT8 status) {
     lbl_803C0F78[0x564] = 4;
 }
 
+static inline u8 *btm_pm_acl_link(u32 off) { return (u8 *)((u32)lbl_803C0F78 + off); }
+
 /* Continue a role switch / encryption change that waited for the mode change. */
 static inline void btm_pm_cont_rswitch_inl(u8 *link, u8 *conn, u16 handle, u8 status) {
     u8 *addr;
