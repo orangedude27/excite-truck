@@ -329,7 +329,8 @@ extern "C" void fn_801A5660(void *wrapper) {
     ((Dummy_801A5660 *)*(void **)((char *)wrapper + 0x270C))->d11();
 }
 
-extern float lbl_805623CC, lbl_805623D0, lbl_805623D4, lbl_805623D8, lbl_805623DC, lbl_805623E0, lbl_805623E4, lbl_805623E8, lbl_805623F0, lbl_80558DC4;
+extern float lbl_805623CC, lbl_805623D0, lbl_805623D4, lbl_805623D8, lbl_805623DC, lbl_805623E0, lbl_805623E4, lbl_805623E8, lbl_805623F0;
+extern int lbl_80558DC4[]; /* MSL __float_epsilon: FLT_EPSILON */
 extern double __fabs(double);
 #pragma push
 #pragma processor 750
