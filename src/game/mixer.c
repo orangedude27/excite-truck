@@ -310,7 +310,7 @@ float fn_80209028(void) {
 
 #pragma cplusplus on
 void fn_80209030(float arg0) {
-    float value = lbl_80563230 < arg0 ? lbl_80563230 : arg0;
+    float value = 1.0f < arg0 ? 1.0f : arg0;
     value = value > lbl_80563234 ? value : lbl_80563234;
     lbl_8055B4D0 = value;
     fn_8013323C(4, lbl_8033BEF8, (float)(double)value);
