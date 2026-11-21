@@ -683,6 +683,7 @@ s32 fn_8023512C(char *, s32, char *, s32);
 s32 fn_80232578(char *, char *, s32);
 void fn_80241224(void) {}
 
+/* Unused no-op stub in the mroll (player-info/roll) module; this build leaves it empty. */
 void fn_80241228(void) {
 }
 
@@ -740,7 +741,7 @@ extern float fn_8023659C(int *);
 extern float lbl_80563764, lbl_80563768, lbl_8056376C, lbl_80563770;
 extern float lbl_80563774, lbl_80563778, lbl_8056377C;
 #pragma scheduling on
-s32 fn_80241354(void *arg0, s32 arg1) {
+s32 fn_80241354(void *__restrict arg0, s32 arg1) {
     char *base = (char *)arg0;
     s32 direction = arg1;
     s32 active = 0;
@@ -754,8 +755,7 @@ s32 fn_80241354(void *arg0, s32 arg1) {
     float t, curve;
     register void *vtable = *(void **)(base + 0x0C);
     register void *method = *(void **)((char *)vtable + 0x10);
-    int result;
-    result = ((int (*)(void *))method)(arg0);
+    int result = ((int (*)(void *))method)(arg0);
     if (result != 0) {
         active = 1;
         switch (direction) {
@@ -1189,7 +1189,9 @@ extern "C" void fn_80241EF0(void *arg0, s32 arg1) {
     }
     if (self->index < 0) return;
     if (self->index >= self->col->getCount()) return;
-    void *item = self->col->getItem(self->index);
+    struct PtrHolder { void *p; } ih;
+    ih.p = self->col->getItem(self->index);
+    void *item = ih.p;
     void *record = fn_8001668C(item, 0);
     *self->field14 = *(s32 *)((u8 *)record + 4);
     *self->field10 = *(s32 *)((u8 *)record + 0x9C);
@@ -1728,11 +1730,11 @@ extern "C" void fn_802E317C(char *, ...);
 #pragma dont_inline on
 extern "C" void fn_80242B1C(void *arg0) {
     register unsigned refreshIndex;
+    s32 mode;
     s32 i, selected, selectedValue, current, previous;
     s32 modeA, modeB;
     s32 tick, quotient;
-    s32 mode;
-    u8 *base, *slot, *widget, *entry, *child, *list;
+    u8 *loopBase, *base, *slot, *widget, *entry, *child, *list;
     unsigned outer;
     int c;
     u8 *src;
@@ -1772,8 +1774,8 @@ copy_check0:
 copy_done0:;
                 } else {
                     src = fn_802E85B8(selected);
-                    dst = widget + 0x39;
                     n = 0x20;
+                    dst = widget + 0x39;
                     goto copy_check1;
 copy_check_loop1:
                     --n;
@@ -1835,31 +1837,31 @@ mode_done:
         *(s32 *)((u8 *)arg0 + 0x50) = 0;
     }
 
-    base = (u8 *)arg0 + 0x18;
-    for (refreshIndex = 0; refreshIndex < 2U; refreshIndex++, base += 0x20) {
-        current = *(s32 *)(base + 0x1C);
-        previous = *(s32 *)(base + 0x18);
+    loopBase = (u8 *)arg0 + 0x18;
+    for (refreshIndex = 0; refreshIndex < 2U; refreshIndex++, loopBase += 0x20) {
+        current = *(s32 *)(loopBase + 0x1C);
+        previous = *(s32 *)(loopBase + 0x18);
         if (current != previous) {
             switch (current) {
             case 0:
                 break;
             case 1:
-                fn_80214AF0(*(s32 *)(base + 4));
-                fn_80214A9C(*(s32 *)(base + 8));
-                fn_80214A9C(*(s32 *)(base + 0x0C));
+                fn_80214AF0(*(s32 *)(loopBase + 4));
+                fn_80214A9C(*(s32 *)(loopBase + 8));
+                fn_80214A9C(*(s32 *)(loopBase + 0x0C));
                 break;
             case 2:
             case 3:
-                fn_80214A9C(*(s32 *)(base + 4));
-                fn_80214AF0(*(s32 *)(base + 8));
-                fn_80214A9C(*(s32 *)(base + 0x0C));
-                fn_80214AF0(*(s32 *)(base + 0x14));
-                if (refreshIndex != 0 && *(s32 *)(base + (s32)0x1C) == 2) {
-                    fn_80214A9C(*(s32 *)(base + 0x10));
+                fn_80214A9C(*(s32 *)(loopBase + 4));
+                fn_80214AF0(*(s32 *)(loopBase + 8));
+                fn_80214A9C(*(s32 *)(loopBase + 0x0C));
+                fn_80214AF0(*(s32 *)(loopBase + 0x14));
+                if (refreshIndex != 0 && *(s32 *)(loopBase + (s32)0x1C) == 2) {
+                    fn_80214A9C(*(s32 *)(loopBase + 0x10));
                 } else {
-                    fn_80214AF0(*(s32 *)(base + 0x10));
+                    fn_80214AF0(*(s32 *)(loopBase + 0x10));
                 }
-                list = *(u8 **)base;
+                list = *(u8 **)loopBase;
                 *(u8 *)(list + 0x38) = 1;
                 entry = list;
                 i = 0;
@@ -1877,12 +1879,12 @@ on_child_check:
                 if (i < *(volatile s32 *)(list + 0x2C)) goto on_child_body;
                 break;
             case 4:
-                fn_80214A9C(*(s32 *)(base + 4));
-                fn_80214AF0(*(s32 *)(base + 8));
-                fn_80214AF0(*(s32 *)(base + 0x0C));
-                fn_80214A9C(*(s32 *)(base + 0x14));
-                fn_80214AF0(*(s32 *)(base + 0x10));
-                list = *(u8 **)base;
+                fn_80214A9C(*(s32 *)(loopBase + 4));
+                fn_80214AF0(*(s32 *)(loopBase + 8));
+                fn_80214AF0(*(s32 *)(loopBase + 0x0C));
+                fn_80214A9C(*(s32 *)(loopBase + 0x14));
+                fn_80214AF0(*(s32 *)(loopBase + 0x10));
+                list = *(u8 **)loopBase;
                 *(u8 *)(list + 0x38) = 0;
                 entry = list;
                 i = 0;
@@ -1903,7 +1905,7 @@ off_child_check:
                 fn_802E317C(lbl_80342840, 0, refreshIndex);
                 break;
             }
-            *(s32 *)(base + 0x18) = *(s32 *)(base + 0x1C);
+            *(s32 *)(loopBase + 0x18) = *(s32 *)(loopBase + 0x1C);
         }
     }
 
