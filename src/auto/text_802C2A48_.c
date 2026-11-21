@@ -160,6 +160,9 @@ void fn_802DD750(void);
 void fn_802DE774(void);
 void fn_802C2C60(void) { fn_802DD63C(); }
 
+/* Tail-call wrapper: forwards the region index (r3) and float value (f1) left
+   by the caller to fn_802DD738, which stores it in the texture-copy cache
+   table at lbl_804DB6A0. */
 void fn_802C2C64(void) { fn_802DD738(); }
 
 void fn_802C2C68(void) { fn_802DD750(); }
