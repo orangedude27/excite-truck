@@ -34,7 +34,7 @@ void fn_8013CA3C(s32 closestIndex, s32 entryIndex) {
 
 /* CodeWarrior deleting-destructor helper: free object via Mem_freeObject (fn_80128668)
    when deleteFlag > 0, then return object. */
-long fn_8013CA40(long object, long deleteFlag) {
+s32 fn_8013CA40(s32 object, s32 deleteFlag) {
     if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
