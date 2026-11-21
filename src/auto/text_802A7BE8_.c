@@ -42,6 +42,8 @@ void fn_802A7C24(void) {
     #undef gCarMarkerTexBlock
 }
 
+/* Empty subsystem init hook, called from fn_80287914's start-up sequence
+ * (between fn_802A4C20 and fn_802AB5B8); does nothing in this build. */
 void fn_802A7C64(void) {
 }
 
