@@ -14,18 +14,18 @@ void OSInitSemaphore(OSSemaphore* sem, s32 count) {
 s32 OSWaitSemaphore(OSSemaphore* sem) {
     /* Decrement the semaphore, sleeping the current thread until its count is positive. */
     BOOL enabled;
-    s32 count;
+    s32 prevCount;
 
     enabled = OSDisableInterrupts();
 
-    while ((count = sem->count) <= 0) {
+    while ((prevCount = sem->count) <= 0) {
         OSSleepThread(&sem->queue);
     }
 
     sem->count--;
     OSRestoreInterrupts(enabled);
 
-    return count;
+    return prevCount;
 }
 
 s32 OSSignalSemaphore(OSSemaphore* sem) {
