@@ -1042,7 +1042,9 @@ void fn_802AB994(void) {
     fn_802C2C00(lbl_8055F92D);
 }
 
-void fn_802AB9E0(void) { fn_8028E070(); }
+/* Alias of fn_8028E070: record the given particle time in lbl_8055F738 and set
+   the particle-add flag lbl_8055F73C (called by fn_80255D3C). */
+void fn_802AB9E0(float time) { fn_8028E070(time); }
 
 /* End a particle/effect update pass: advance every effect in the primary list
  * by the frame time and disallow further adds (delegates to fn_8028E080). */
