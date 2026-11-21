@@ -190,8 +190,7 @@ void fn_80264098(void *item, int type) {
 #pragma cplusplus on
 extern void *operator new(unsigned long, void *);
 #pragma push
-#pragma scheduling off
-extern "C" void fn_802640A0(void *arg0) {
+void fn_802640A0(void *arg0) {
     struct CreditsMenuItem {
         void *name;
         int type;
