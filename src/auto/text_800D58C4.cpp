@@ -1469,26 +1469,6 @@ extern "C" void* __ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hb
 extern "C" void* fn_800D57AC(void*, const void*, const void*);
 extern "C" const char lbl_8031F728[];
 extern "C" const char lbl_8031F854[];
-static void* makePaneObj(const void* pane) {
-    void* obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xD4);
-    if (!obj) return 0;
-    return new (obj) nw4hbm::lyt::Pane((const nw4hbm::lyt::res::Pane*)pane);
-}
-static void* makePictureObj(const void* pane, const ResBlockSetTmp& tmp) {
-    void* obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xEC);
-    if (!obj) return 0;
-    return new (obj) nw4hbm::lyt::Picture((const nw4hbm::lyt::res::Picture*)pane, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
-}
-static void* makeTextBoxObj(const void* pane, const ResBlockSetTmp& tmp) {
-    void* obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x100);
-    if (!obj) return 0;
-    return new (obj) nw4hbm::lyt::TextBox((const nw4hbm::lyt::res::TextBox*)pane, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
-}
-static void* makeWindowObj(const void* pane, const ResBlockSetTmp& tmp) {
-    void* obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x104);
-    if (!obj) return 0;
-    return new (obj) nw4hbm::lyt::Window((const nw4hbm::lyt::res::Window*)pane, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
-}
 extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(u32 kind, const void* pane, const ResBlockSetTmp* set) {
     void* obj;
     switch (kind) {
