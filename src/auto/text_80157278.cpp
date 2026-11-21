@@ -1335,7 +1335,10 @@ extern "C" void *fn_80158374(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     return arg0;
 }
 
-extern "C" void fn_801584A4(void* arg0) {
+/* No-op reset hook: called with a pointer to the initial score-multiplier value
+ * while building a per-course bonus-tracker group (fn_801572A4), but the base
+ * implementation ignores it.  Compiles to a bare 'blr'. */
+extern "C" void fn_801584A4(void* initValue) {
 }
 
 extern "C" void fn_801584A8(void *object) {
