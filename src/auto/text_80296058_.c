@@ -19,7 +19,6 @@ void fn_80296060(void) {
 
 /* No-op stub: subsystem hook called during the global teardown sequence; does nothing in this build. */
 void fn_80296064(void) {
-
 }
 
 /* No-op stub callback that reports zero. */
