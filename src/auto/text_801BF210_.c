@@ -21,6 +21,8 @@ void fn_801BF210(void) {
 }
 
 #pragma scheduling invalid_target
+#pragma push
+#pragma scheduling on
 void *fn_801BF214(void) {
     extern void *fn_801284F8(int, void *);
     extern void fn_8017B0B0(void);
@@ -39,7 +41,7 @@ void *fn_801BF214(void) {
         index = lbl_8055E7BC;
         *(void **)(lbl_80437D48 + index * 4) = p;
         index++;
-        lbl_8055E7BC = index;
+        *(volatile int *)&lbl_8055E7BC = index;
         *(int *)((char *)p + 0x214) = fn_801C1BA4(4, 6, 2, lbl_80437D48, index);
     }
     return p;
@@ -119,43 +121,42 @@ int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int a
   }
   found = 0;
   {
-    int cnt;
-    void **ptr;
+    struct SearchCtx { void **ptr; int cnt; } sc;
     int i;
-    cnt = lbl_8055E7BC;
-    ptr = (void **) lbl_80437D48;
-    for (i = 0; i < cnt; i++)
+    sc.ptr = (void **) lbl_80437D48;
+    sc.cnt = lbl_8055E7BC;
+    for (i = 0; i < sc.cnt; i++)
     {
-      void *obj = *ptr;
+      void *obj = *sc.ptr;
       if ((*((int *) (((char *) obj) + 0x1EC))) == 0)
       {
         found = ((void **) lbl_80437D48)[i];
         break;
       }
-      ptr++;
+      sc.ptr++;
     }
 
   }
   if (found == 0)
   {
+    float f0val;
     float f1val = *((float *) (((char *) ((void **) lbl_80437D48)[0]) + 0x218));
     found = ((void **) lbl_80437D48)[0];
     {
-      int cnt;
-      void **ptr;
+      struct SearchCtx { void **ptr; int cnt; } sc;
       int j;
-      cnt = lbl_8055E7BC;
-      ptr = (void **) lbl_80437D48;
-      for (j = 0; j < cnt; j++)
+      sc.ptr = (void **) lbl_80437D48;
+      sc.cnt = lbl_8055E7BC;
+      for (j = 0; j < sc.cnt; j++)
       {
-        void *obj = *ptr;
-        float f0val = *((float *) (((char *) obj) + 0x218));
+        void *obj = *sc.ptr;
+        f0val = *((float *) (((char *) obj) + 0x218));
         if (f0val <= f1val)
         {
           f1val = f0val;
           found = obj;
         }
-        ptr++;
+        sc.ptr++;
       }
 
     }
@@ -201,31 +202,36 @@ int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int a
     fn_8001BA68(frame.sp20);
     fn_801BFE7C(frame.sp14, arg3, arg2);
     fn_801BFE7C(frame.sp20, arg4, arg2);
-    *((int *) (((char *) found) + 0x21C)) = 0;
-    *((int *) (((char *) found) + 0x220)) = 0;
-    *((int *) (((char *) found) + 0x224)) = 1;
-    *((int *) (((char *) found) + 0x228)) = 0;
-    *((int *) (((char *) found) + 0x22C)) = 2;
+    {
+      int zero = 0;
+      *((int *) (((char *) found) + 0x21C)) = zero;
+      *((int *) (((char *) found) + 0x220)) = zero;
+      *((int *) (((char *) found) + 0x224)) = 1;
+      *((int *) (((char *) found) + 0x228)) = zero;
+      *((int *) (((char *) found) + 0x22C)) = 2;
+    }
     new_var = (char *) found;
     fn_8017E388(new_var + 0x230, 1, 0);
     {
-      struct { int v; } as, bs, cs;
+      int c;
+      int b;
+      int a;
       float cond2;
       float cond1;
-      as.v = 1;
-      bs.v = 4;
+      a = 1;
+      b = 4;
       cond2 = frame.sp20[1] - frame.sp14[1];
       cond1 = frame.sp20[0] - frame.sp14[0];
-      cs.v = 2;
+      c = 2;
       if (cond2 > cond1)
       {
-        bs.v = 1;
-        cs.v = 2;
-        as.v = 4;
+        b = 1;
+        c = 2;
+        a = 4;
       }
       {
-        float f30v = lbl_805628C4;
         float f31v = lbl_805628C8;
+        float f30v = lbl_805628C4;
         int idx = 0;
         float *p = frame.spE0;
         do
@@ -233,7 +239,7 @@ int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int a
           float var_f3;
           float var_f2;
           float var_f1;
-          if (idx & cs.v)
+          if (idx & c)
           {
             var_f3 = frame.sp14[2];
           }
@@ -241,7 +247,7 @@ int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int a
           {
             var_f3 = frame.sp20[2];
           }
-          if (idx & bs.v)
+          if (idx & b)
           {
             var_f2 = frame.sp14[1];
           }
@@ -249,7 +255,7 @@ int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int a
           {
             var_f2 = frame.sp20[1];
           }
-          if (idx & as.v)
+          if (idx & a)
           {
             var_f1 = frame.sp14[0];
           }
@@ -526,6 +532,7 @@ void GXInitLightAttnA_801BFEBC(void *lightObj, float aa, float ab, float ac) {
     ((float *)lightObj)[2] = ac;
 }
 
+#pragma scheduling on
 void fn_801BFECC(void *arg0, void *arg1) {
     int a11, a10, a9, a8, a7, a6, a5, a4, a3, a2, a1, a0;
     a3 = *(volatile int *)((char *)arg1 + 0x0C);
@@ -804,10 +811,7 @@ static inline void helper_801C02F4(void *self, int flag) {
     }
 }
 
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
-#pragma opt_propagation off
+#pragma opt_propagation reset
 void fn_801C02F4(void *arg0) {
     struct Mat43 {
         float m[4][3];
@@ -816,18 +820,14 @@ void fn_801C02F4(void *arg0) {
     extern void fn_8017B164(void *);
     register void *self = arg0;
     struct Mat43 mat;
-    int flag;
+    float f = lbl_805628E8;
 
-    {
-        float f = lbl_805628E8;
-        *(int *)((char *)arg0 + 0x1EC) = 0;
-        *(float *)((char *)arg0 + 0x218) = f;
-        flag = 0;
-    }
-    if (flag != 0) {
-        *(int *)((char *)self + 0x1F0) = 0;
+    *(int *)((char *)arg0 + 0x1EC) = 0;
+    *(float *)((char *)arg0 + 0x218) = f;
+    if (*(int *)((char *)self + 0x1EC) != 0) {
+        *(int *)((char *)arg0 + 0x1F0) = 0;
     } else {
-        *(int *)((char *)self + 0x1F0) = -1;
+        *(int *)((char *)arg0 + 0x1F0) = -1;
     }
     fn_8017B164(self);
 
@@ -868,7 +868,6 @@ void fn_801C02F4(void *arg0) {
         *(float *)((char *)self + 0x274) = f2;
     }
 }
-#pragma pop
 int fn_801C0440(void *sceneLight) {
     // Nonzero if this scene light is in use: +0x1EC holds its owner id (0 when free).
     return *(int *)((char *)sceneLight + 0x1EC) != 0;
