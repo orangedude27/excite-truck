@@ -737,6 +737,7 @@ void __GXInitGX(void) {
     unsigned char *base;
     int tv;
     register u32 i;
+    register u32 zero = 0;
     f32 mtx[3][4];
     unsigned int texObj[8];
 
@@ -795,12 +796,12 @@ void __GXInitGX(void) {
     GXSetScissorBoxOffset(0, 0);
     GXSetNumChans(0);
     GXSetChanCtrl(4, 0, 0, 1, 0, 0, 2);
-    ambBlack4 = 0;
+    ambBlack4 = zero;
     GXSetChanAmbColor_Internal(4, &ambBlack4);
     matTmp4 = *(u32 *)&matColor;
     GXSetChanMatColor_Internal(4, &matTmp4);
     GXSetChanCtrl(5, 0, 0, 1, 0, 0, 2);
-    ambBlack5 = 0;
+    ambBlack5 = zero;
     GXSetChanAmbColor_Internal(5, &ambBlack5);
     matTmp5 = *(u32 *)&matColor;
     GXSetChanMatColor_Internal(5, &matTmp5);
@@ -847,7 +848,7 @@ void __GXInitGX(void) {
     GXSetIndTexCoordScale(1, 0, 0);
     GXSetIndTexCoordScale(2, 0, 0);
     GXSetIndTexCoordScale(3, 0, 0);
-    *(u32 *)&fogColor = 0;
+    *(u32 *)&fogColor = zero;
     GXSetFog(0, fogColor, 0.0f, lbl_80560B2C, lbl_80560B30, lbl_80560B2C);
     GXSetFogRangeAdj(0, 0, 0);
     GXSetBlendMode(0, 4, 5, 0);
@@ -5525,20 +5526,17 @@ void GXSetTevSwapMode(s32 stage, s32 rasSel, s32 texSel) {
     *(unsigned short *)((unsigned char *)base + 2) = 0;
 }
 
+static inline void gxFifoWrite61(u32 value) {
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = value;
+}
 void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 texSel2) {
     u32 offset1;
     u32 offset0;
     u32 index2;
     unsigned int *table;
     unsigned int *data;
-    union {
-        u32 value;
-        struct {
-            unsigned int unused : 28;
-            unsigned int texSel : 2;
-            unsigned int rasSel : 2;
-        } fields;
-    } word;
+    u32 value;
 
     offset0 = (u32)index << 3;
     index2 = (u32)index << 1;
@@ -5546,22 +5544,22 @@ void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 t
     data = __GXData;
     table = (unsigned int *)((char *)data + 0x200);
 
-    word.value = *(u32 *)((char *)table + offset0);
-    word.fields.rasSel = rasSel;
-    word.fields.texSel = texSel;
-    *(u32 *)((char *)table + offset0) = word.value;
+    value = *(u32 *)((char *)table + offset0);
+    value = __rlwimi(value, rasSel, 0, 30, 31);
+    value = __rlwimi(value, texSel, 2, 28, 29);
+    *(u32 *)((char *)table + offset0) = value;
 
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = *(u32 *)((char *)table + offset0);
+    GXCopyWGFifo.u8 = 0x61;
+    GXCopyWGFifo.u32 = *(u32 *)((char *)table + offset0);
 
     offset1 <<= 2;
-    word.value = *(u32 *)((char *)table + offset1);
-    word.fields.rasSel = rasSel2;
-    word.fields.texSel = texSel2;
-    *(u32 *)((char *)table + offset1) = word.value;
+    value = *(u32 *)((char *)table + offset1);
+    value = __rlwimi(value, rasSel2, 0, 30, 31);
+    value = __rlwimi(value, texSel2, 2, 28, 29);
+    *(u32 *)((char *)table + offset1) = value;
 
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = *(u32 *)((char *)table + offset1);
+    GXCopyWGFifo.u8 = 0x61;
+    GXCopyWGFifo.u32 = *(u32 *)((char *)table + offset1);
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
