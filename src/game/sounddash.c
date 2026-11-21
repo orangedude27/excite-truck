@@ -1,13 +1,15 @@
-// sounddash - sound debug dash ("SOUND DASH", sounds.txt dump).
-// Recovered TU window 0x8020BCE4..0x8020C114+thunk (see docs/attribution_analysis.md).
-// Static-init thunk fn_8020C114 (+ .ctors slot 0x802ED394) remains in
-// auto/text_8020C114_.c pending a promotion pass.
+/* Sound debug dash ("SOUND DASH"): an on-screen overlay for browsing and
+ * adjusting voice volumes, plus a "sounds.txt" table dump. */
 extern int fn_8020A76C(void);
 extern char *fn_8020A774(int);
 extern void fn_8020BCE4(void);
 extern void fn_802E30C8(const char *, ...);
+
+/* Debug-dash state: display mode and the currently selected entry index. */
 extern int lbl_8055EE24, lbl_8055EE28;
+/* Volume step, lower clamp and upper clamp. */
 extern float lbl_805632C8, lbl_805632CC, lbl_805632D0;
+/* "writing sounds.txt..." and the "SOUND DASH" overlay title. */
 extern char lbl_8033C5B4[];
 extern char lbl_8033C5CC[];
 extern void fn_8023895C(void);
@@ -15,6 +17,7 @@ extern void fn_802389E4(void);
 extern void fn_80238A74(int, int, const char *, int);
 extern void fn_80238B44(int, int, int, int, int);
 extern void fn_802E6B38(int, char *);
+/* "%1.2f" format string. */
 extern char lbl_8055B5C8;
 extern int sprintf(char *, const char *, ...);
 
