@@ -65,6 +65,7 @@ extern unsigned short *__cpReg;
 extern unsigned short *__peReg;
 extern unsigned char lbl_8037C0C0[];
 extern unsigned char lbl_8037C0E4[];
+static inline unsigned int *clean_fifo_ptr(void) { return (unsigned int *)lbl_8037C0C0; }
 extern unsigned int *__piReg;
 extern unsigned int *__memReg;
 extern signed long long OSGetTime(void);
@@ -1227,15 +1228,15 @@ void GXSetGPFifo(unsigned int *fifo) {
 }
 #pragma pop
 void __GXSaveFifo(void) {
-    int level;
-    GXFifoObjInternal *fifo;
-    unsigned int *pi;
-    u8 hasCPUFifo;
-    u16 *cp;
+    register int level;
+    register GXFifoObjInternal *fifo;
+    register unsigned int *pi;
+    register u8 hasCPUFifo;
+    register u16 *cp;
+    register u32 reg;
     level = OSDisableInterrupts();
     hasCPUFifo = lbl_8055D948;
     if (hasCPUFifo) {
-        u32 reg;
         pi = __piReg;
         fifo = (GXFifoObjInternal *)lbl_8037C0E4;
         reg = pi[5];
@@ -4857,8 +4858,8 @@ void __SetSURegs(s32 arg0, s32 arg1) {
     unsigned int mode;
     union { unsigned int v; struct { unsigned int lo : 16; unsigned int hi : 16; } f; } u;
     data = __GXData;
-    tex = (unsigned int *)((char *)data + arg0 * 4);
-    su = (unsigned int *)((char *)data + arg1 * 4);
+    tex = data + arg0;
+    su = data + arg1;
     value = tex[0x564 / 4];
     v1 = value & 0x3FF;
     v2 = (value >> 10) & 0x3FF;
