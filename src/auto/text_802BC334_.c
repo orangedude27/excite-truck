@@ -60,6 +60,9 @@ extern "C" int fn_802BC39C(void *item) {
 
 void *fn_802BE844(short, short, short);
 int fn_802BC39C();
+/* Receiver-preserving tail call to fn_802BC39C (UMatItem_IsDyno): forwards the
+   material item in r3 and its boolean result in r3, acting as the "is a dyno item"
+   filter predicate in the material-item list. */
 void fn_802BC3DC(void) {
     fn_802BC39C();
 }
@@ -692,22 +695,22 @@ int fn_802BD210(void *arg0) {
 void *fn_801284F8(int, int);
 int strcmp(const char *, const char *);
 int fn_802BA580(int, float *, float);
-#pragma scheduling on
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_802BD414(int arg0, volatile int *arg1)
 {
-    volatile int *result = (volatile int *)fn_801284F8(0xC, arg0);
+    volatile int *result;
+    int first;
+    result = (volatile int *)fn_801284F8(0xC, arg0);
     if (result == 0)
         return;
-    {
-        int first = arg1[0];
-        result[0] = arg1[1];
-        result[2] = first;
-        result[1] = 0;
-        result[1] = result[1] + arg1[0];
-    }
+    first = arg1[0];
+    result[0] = arg1[1];
+    result[2] = first;
+    result[1] = 0;
+    result[1] = result[1] + arg1[0];
 }
 #pragma scheduling on
-#pragma peephole off
 void fn_802BD478(int arg0, volatile int *arg1)
 {
   volatile int *result = (volatile int *) fn_801284F8(0xC, arg0);
