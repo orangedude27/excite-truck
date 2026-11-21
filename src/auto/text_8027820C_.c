@@ -83,6 +83,9 @@ void fn_80278214(void) {
 }
 #pragma scheduling on
 #pragma pop
+/* No-op element constructor: the cscript-movie keyframe array builder
+ * fn_8002F37C calls it once per 0x38-byte record when fn_80278214 allocates
+ * the captured keyframe list. */
 void fn_80278284(void) {}
 
 // Free the captured script-movie keyframe list and reset its count.
