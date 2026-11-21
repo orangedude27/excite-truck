@@ -2451,31 +2451,34 @@ extern "C" void fn_80140728(void *obj, void *index, void *item) {
 }
 extern "C" void fn_8013FAC4(void *, int, void *);
 #pragma scheduling on
-extern "C" void fn_80140A6C(void *arg0, int arg1) {
+/* One stage of the zone-HUD draw pass outside active gameplay: select this
+ * player's 0x12C-byte record, apply the nine setup helpers, and in sudden-death
+ * mode draw its effect when the HUD's scene object has one. */
+extern "C" void fn_80140A6C(void *hud, int playerIndex) {
     extern char lbl_8032CA64[];
     class VObj { public: virtual void d0(); virtual void d1(); virtual int check(const char *); };
     struct Ent { char pad[0x12C]; };
-    void *tmp;
-    void *obj;
-    int vr;
-    int idx = fn_801E866C(arg1);
-    Ent *base = *(Ent **)((char *)arg0 + 0xB8);
-    tmp = base + idx;
-    if (((int (*)(int))fn_8013CB10)(arg1) == 0) {
-        fn_8013F0A0(arg0, (void *)arg1, tmp);
-        ((void (*)(void *, void *, void *))fn_8013F434)(arg0, (void *)arg1, tmp);
-        fn_8013F580(arg0, (void *)arg1, tmp);
-        fn_8013FAC4(arg0, arg1, tmp);
-        ((void (*)(void *, void *, void *))fn_8013FDB0)(arg0, (void *)arg1, tmp);
-        fn_8013F918(arg0, (void *)arg1, tmp);
-        fn_8014052C(arg0, arg1, (unsigned char *)tmp);
-        fn_80140728(arg0, (void *)arg1, tmp);
-        fn_80140614(arg0, (void *)arg1, tmp);
+    void *entity;
+    void *sceneObject;
+    int effect;
+    int entryIndex = fn_801E866C(playerIndex);
+    Ent *records = *(Ent **)((char *)hud + 0xB8);
+    entity = records + entryIndex;
+    if (((int (*)(int))fn_8013CB10)(playerIndex) == 0) {
+        fn_8013F0A0(hud, (void *)playerIndex, entity);
+        ((void (*)(void *, void *, void *))fn_8013F434)(hud, (void *)playerIndex, entity);
+        fn_8013F580(hud, (void *)playerIndex, entity);
+        fn_8013FAC4(hud, playerIndex, entity);
+        ((void (*)(void *, void *, void *))fn_8013FDB0)(hud, (void *)playerIndex, entity);
+        fn_8013F918(hud, (void *)playerIndex, entity);
+        fn_8014052C(hud, playerIndex, (unsigned char *)entity);
+        fn_80140728(hud, (void *)playerIndex, entity);
+        fn_80140614(hud, (void *)playerIndex, entity);
         if (lbl_8055E1BC != 0) {
-            obj = *(void **)((char *)arg0 + 0x54);
-            vr = ((VObj *)obj)->check(lbl_8032CA64);
-            if (vr != 0)
-                fn_801476D8((void *)vr, (void *)-1, *(int *)((char *)arg0 + 0xA0));
+            sceneObject = *(void **)((char *)hud + 0x54);
+            effect = ((VObj *)sceneObject)->check(lbl_8032CA64);
+            if (effect != 0)
+                fn_801476D8((void *)effect, (void *)-1, *(int *)((char *)hud + 0xA0));
         }
     }
 }
