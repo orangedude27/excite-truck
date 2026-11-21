@@ -1,7 +1,8 @@
 #include "decomp.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-typedef struct Ctx80012794 { void *items[32]; int count; } Ctx80012794;
+/* Global table of registered resource handles: up to 32 handles followed by the count. */
+typedef struct HandleTable { void *handles[32]; int count; } HandleTable;
 
 extern void fn_802E317C(void *, ...);
 extern char lbl_802FC638[];
