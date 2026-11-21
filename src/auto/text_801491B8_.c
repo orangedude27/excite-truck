@@ -617,22 +617,26 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
 #pragma dont_inline on
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_80149CEC(void *arg0, const void *arg1) {
-    struct Dummy {
-        virtual void f0();
-        virtual void f1();
-        virtual void* f2();
+extern "C" void fn_80149CEC(void *state, const void *owner) {
+    /* Refresh a betarace debug-state sub-object from its owner: copy the timing
+     * base from the owner's +0x68 state, obtain a count via a virtual call on the
+     * racer's +0x270 manager, cache it as the current/maximum entry, then hand
+     * both objects to fn_80149D64. */
+    struct CountProvider {
+        virtual void d0();
+        virtual void d1();
+        virtual void *getCountSource();
     };
-    void *r3;
-    s32 val;
-    void *r5 = *(void * const *)((const u8 *)arg1 + 0x68);
-    *(f32 *)((u8 *)arg0 + 0x28) = *(const f32 *)((const u8 *)r5 + 0x8D4);
-    r3 = *(void **)((u8 *)fn_8017960C(*(s32 *)((const u8 *)arg1)) + 0x270);
-    r3 = ((Dummy *)r3)->f2();
-    val = *(s32 *)((u8 *)r3 + 4);
-    *(s32 *)((u8 *)arg0 + 4) = val;
-    *(s32 *)((u8 *)arg0 + 0x10) = val - 1;
-    fn_80149D64(arg0, (void *)arg1, val);
+    void *provider;
+    s32 count;
+    void *timingState = *(void * const *)((const u8 *)owner + 0x68);
+    *(f32 *)((u8 *)state + 0x28) = *(const f32 *)((const u8 *)timingState + 0x8D4);
+    provider = *(void **)((u8 *)fn_8017960C(*(s32 *)((const u8 *)owner)) + 0x270);
+    provider = ((CountProvider *)provider)->getCountSource();
+    count = *(s32 *)((u8 *)provider + 4);
+    *(s32 *)((u8 *)state + 4) = count;
+    *(s32 *)((u8 *)state + 0x10) = count - 1;
+    fn_80149D64(state, (void *)owner, count);
 }
 #pragma pop
 #pragma dont_inline reset
@@ -2778,8 +2782,8 @@ static inline void fn_80150BDC_PlaceEffect(void *e, f32 one, f32 zero) {
 #pragma dont_inline on
 void fn_80150BDC(void *arg0) {
     char *b = (char *)arg0;
-    f32 f31 = lbl_80561648, f29 = lbl_80561650, f27 = lbl_80561638;
-    f32 f28 = lbl_805616E0, f30 = lbl_8056164C;
+    f32 f29 = lbl_80561650, f30 = lbl_8056164C, f31 = lbl_80561648;
+    f32 f28 = lbl_805616E0, f27 = lbl_80561638;
     s32 r30, r31, played;
     void *r25, *r23, *r26;
     f32 f0, f1, f2, f26, f25;
@@ -2790,7 +2794,7 @@ void fn_80150BDC(void *arg0) {
         r23 = *(void **)((char *)r25 + 0xB8);
         if (r23 != 0) {
             f2 = (f32)sin(f27 * (f32)fn_8002EFB4(lbl_80559EC8 * lbl_8055E3C8, lbl_805616A0));
-            f26 = *(f32 *)((char *)r25 + 0xBC) + f2 * f28;
+            f26 = f2 * f28 + *(f32 *)((char *)r25 + 0xBC);
             *(f32 *)((char *)r23 + 0x24) = *(f32 *)r25;
             *(f32 *)((char *)r23 + 0x28) = *(f32 *)((char *)r25 + 4);
             *(f32 *)((char *)r23 + 0x2C) = *(f32 *)((char *)r25 + 8);
