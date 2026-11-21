@@ -8774,6 +8774,8 @@ extern "C" void fn_8022897C(void *object) {
 }
 
 extern "C" void fn_80228990(void) {
+    /* Empty no-op virtual method in the J2DTextBox widget group (next to the
+       vf2-forwarding fn_8022897C).  Does nothing; compiles to a bare 'blr'. */
 }
 
 #pragma push
