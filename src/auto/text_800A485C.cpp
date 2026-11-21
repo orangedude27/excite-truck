@@ -19508,6 +19508,8 @@ extern "C" void fn_800CF280(void) {
 
 }
 
+/* No-op virtual method: an empty slot in the homebutton::HomeButtonEventHandler
+ * vtable (lbl_8031E700 at +0x38), one of several empty stubs that do nothing. */
 void fn_800CF284(void) {
 
 }
