@@ -49,12 +49,10 @@ extern void fn_8018A180(void);
 int fn_802E2C20(void);
 extern int lbl_8055E464;
 void fn_80177814(int *arg0) {
-#pragma scheduling invalid_target
-    *arg0 = (fn_802E2C20() + lbl_8055E464) % 30000;
+    *arg0 = (lbl_8055E464 + fn_802E2C20()) % 30000;
     lbl_8055E464 = *arg0 + 0x9947;
-    arg0[1] = (fn_802E2C20() + lbl_8055E464) % 30000;
+    arg0[1] = (lbl_8055E464 + fn_802E2C20()) % 30000;
     lbl_8055E464 = arg0[1] + 0x2F1CD;
-#pragma scheduling reset
 }
 
 #pragma dont_inline on
@@ -607,24 +605,23 @@ int fn_801784AC(void *start, void *end, void *outHit, int flags, void *outValue,
     return fn_801E2640(start, end, outHit, flags, outValue, outObject, &lbl_804340C0[0], lbl_8055E468, filter);
 }
 
-extern float lbl_80561B64;
+extern const float lbl_80561B64;
 #pragma scheduling invalid_target
-s32 fn_801784DC(Vec *arg0, f32 *arg1, Vec *arg2, s32 *arg3, s32 arg4) {
+s32 fn_801784DC(const Vec *arg0, f32 *arg1, Vec *arg2, s32 *arg3, s32 arg4) {
     Vec start;
     Vec hit;
     Vec normal;
     s32 value;
     s32 other;
-    register f32 y = arg0->y;
-    register f32 sy = y - 1000.0f;
+    register f32 sy = arg0->y - 1000.0f;
     register f32 sz = arg0->z;
     register f32 sx = arg0->x;
     start.z = sz;
-    start.x = sx;
     start.y = sy;
-    if (((s32 (*)(Vec *, Vec *, Vec *, Vec *, s32 *, s32 *, s32))fn_801784AC)(arg0, &start, &hit, &normal, &value, &other, arg4)) {
+    start.x = sx;
+    if (((s32 (*)(Vec *, Vec *, Vec *, Vec *, s32 *, s32 *, s32))fn_801784AC)((Vec *)arg0, &start, &hit, &normal, &value, &other, arg4)) {
         *arg1 = hit.y;
-        if (arg2 != 0) {
+        if ((u32)arg2 != 0) {
             arg2->x = normal.x;
             arg2->y = normal.y;
             arg2->z = normal.z;
@@ -848,7 +845,7 @@ int fn_801787B4(void *arg0)
                         t2 = fn_80178BBC(p);
                         fn_802E30C8(tbl + 0x178, (s32)t2, (s32)(t2 >> 32), (s32)t2);
                         diff = lbl_8055E3C4 - p[0];
-                        sum = *(s64 *)(p + 2) + (s64)(s32)diff * 0x412B;
+                        sum = (s64)(s32)diff * 0x412B + *(s64 *)(p + 2);
                         fn_802E30C8(tbl + 0x19C, (s32)diff * 0x412B, (s32)(sum >> 32), (s32)sum);
                         t3 = fn_802E2C9C();
                         fn_802E30C8(tbl + 0x1C0, (s32)t3, (s32)(t3 >> 32), (s32)t3);
@@ -1048,7 +1045,7 @@ extern void fn_80267420(void);
 extern void fn_8026B644(void);
  #pragma push
  #pragma use_lmw_stmw off
- void fn_80178DD4(int arg0) {
+void fn_80178DD4(int arg0) {
     register char *table = jumptable_803318F8;
     register char *base = (char *)lbl_80430590;
     register int var_r28;
@@ -1056,8 +1053,8 @@ extern void fn_8026B644(void);
     register int var_r26;
     register int var_r31;
     register int version;
-    int mix;
     int value;
+    int *field;
     void *object;
 
     __AXDSPInitCallback_801D0CF0();
@@ -1069,12 +1066,12 @@ extern void fn_8026B644(void);
     if (value != 0) value = fn_80135DC4(value, 0, 0);
     lbl_8055E414 = (void *)value;
     memset(base + 0x32F0, 0, 0x840);
-    mix = (int)&lbl_8055E418;
-    fn_80129C80(4, lbl_8055E418, *(int *)(mix + 4));
-    mix = (int)&lbl_8055E420;
-    fn_80129C80(3, lbl_8055E420, *(int *)(mix + 4));
-    mix = (int)&lbl_8055E428;
-    fn_80129C80(5, lbl_8055E428, *(int *)(mix + 4));
+    field = (int *)&lbl_8055E418;
+    fn_80129C80(4, lbl_8055E418, field[1]);
+    field = (int *)&lbl_8055E420;
+    fn_80129C80(3, lbl_8055E420, field[1]);
+    field = (int *)&lbl_8055E428;
+    fn_80129C80(5, lbl_8055E428, field[1]);
 
     var_r28 = (int)base;
     var_r27 = (int)(base + 0x10);
@@ -1102,12 +1099,10 @@ extern void fn_8026B644(void);
 
     lbl_8055E434 = (void **)fn_8012850C(0x800, table + 0x230);
     fn_801E2188();
-    *(int *)(base + 0x2A0) = var_r31;
-    {
-        int *field = (int *)(base + 0x2A0);
-        field[1] = var_r31; field[2] = var_r31; field[3] = var_r31;
-        field[4] = var_r31; field[5] = var_r31; field[6] = var_r31; field[7] = var_r31;
-    }
+    field = (int *)(base + 0x2A0);
+    *field = var_r31;
+    field[1] = var_r31; field[2] = var_r31; field[3] = var_r31;
+    field[4] = var_r31; field[5] = var_r31; field[6] = var_r31; field[7] = var_r31;
     lbl_8055E45E = var_r31; lbl_8055E45F = var_r31; lbl_8055E45C = var_r31; lbl_8055E45D = var_r31;
     lbl_8055E438 = var_r31;
     *(int *)(base + 0x22E8) = var_r31;
@@ -1135,20 +1130,18 @@ extern void fn_8026B644(void);
     fn_80267420();
     lbl_8055E450 = fn_801284E8(table + 0x23C, lbl_8055E3CC + 0x2EE8);
     fn_801AD5EC(); fn_80127464(); fn_801B2320(); fn_801C4B10();
-    {
-        int *field = (int *)(base + 0x2C0);
-        field[4] = var_r31;
-        *((unsigned char *)field + 0x14) = 1;
-        field[7] = var_r31; field[6] = var_r31;
-        fn_801E1D38(field, 1);
-    }
+    field = (int *)(base + 0x2C0);
+    field[4] = var_r31;
+    *((unsigned char *)field + 0x14) = 1;
+    field[7] = var_r31; field[6] = var_r31;
+    fn_801E1D38(field, 1);
     fn_801D47F4(); fn_801B5364(9, (void *)fn_80178C4C);
-    mix = (int)&lbl_8055E418;
-    fn_80129C80(4, lbl_8055E418, *(int *)(mix + 4));
-    mix = (int)&lbl_8055E420;
-    fn_80129C80(3, lbl_8055E420, *(int *)(mix + 4));
-    mix = (int)&lbl_8055E428;
-    fn_80129C80(5, lbl_8055E428, *(int *)(mix + 4));
+    field = (int *)&lbl_8055E418;
+    fn_80129C80(4, lbl_8055E418, field[1]);
+    field = (int *)&lbl_8055E420;
+    fn_80129C80(3, lbl_8055E420, field[1]);
+    field = (int *)&lbl_8055E428;
+    fn_80129C80(5, lbl_8055E428, field[1]);
     fn_80127464(); fn_80179320();
 }
 #pragma pop
