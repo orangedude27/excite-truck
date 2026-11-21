@@ -2402,8 +2402,10 @@ extern "C" void fn_8021BE48(void *widget) {
 #pragma dont_inline reset
 
 #pragma scheduling on
-extern "C" void fn_8021BEBC(void *arg0) {
-    fn_8021BE48(arg0);
+/* Widget virtual: refresh this numeric text label by delegating to the
+ * formatter fn_8021BE48 (recompute the displayed value and mark it dirty). */
+extern "C" void fn_8021BEBC(void *widget) {
+    fn_8021BE48(widget);
 }
 
 extern "C" char lbl_8033EEDC[];
