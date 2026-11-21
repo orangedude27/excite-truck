@@ -76,7 +76,9 @@ void fn_80265D84(void) {}
    leaves it empty. */
 void fn_80265D88(void) {}
 
-void fn_80265D8C(void) {}
+/* No-op scene-init subsystem hook: called from the scene setup sequence
+ * (fn_801E7984) with the scene-data pointer; this build leaves it empty. */
+void fn_80265D8C(void *sceneData) {}
 
 void fn_80265D90(void) {}
 
