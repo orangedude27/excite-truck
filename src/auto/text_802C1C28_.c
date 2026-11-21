@@ -259,8 +259,6 @@ void fn_802C21C0(void) {
 void fn_802C21DC(int worldX, int worldY, unsigned int value) {
 #define roadOpacityTexHandle lbl_8055FB50
 #define roadOpacityTexture   lbl_8055FB54
-#define getTexObject         fn_802CA294
-#define writeTexelNibble     fn_802D9628
     /* Plot one pixel of the road-opacity image: replicate value's low byte into a
      * packed RGBA word, store it in the texture buffer, then pack its low nibble
      * into the matching texel of the uploaded texture. */
@@ -291,11 +289,9 @@ void fn_802C21DC(int worldX, int worldY, unsigned int value) {
         height = height - 1 - texYCoord;
         pixelIndex = height * width + texXCoord;
         pixels[pixelIndex] = packedColor;
-        texObject = ((int (*)(int))getTexObject)((int)roadOpacityTexHandle);
-        ((void (*)(void *, int, int, unsigned int))writeTexelNibble)((void *)texObject, texX, texY, packedColor);
+        texObject = ((int (*)(int))fn_802CA294)((int)roadOpacityTexHandle);
+        ((void (*)(void *, int, int, unsigned int))fn_802D9628)((void *)texObject, texX, texY, packedColor);
     }
-#undef writeTexelNibble
-#undef getTexObject
 #undef roadOpacityTexture
 #undef roadOpacityTexHandle
 }
