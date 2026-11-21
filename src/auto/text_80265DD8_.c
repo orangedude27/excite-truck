@@ -88,7 +88,7 @@ typedef struct Camera {
     float v120[6];                /* 0x120: two points handed to fn_8020655C */
     unsigned char reset;          /* 0x138: 1 = just (re)set; the next frame takes it whole */
     unsigned char b139;           /* 0x139: second one-shot flag, cleared with reset */
-    float f13C;                   /* 0x13C */
+    float f13C;                   /* 0x13C: shake amount, 0.03 * followed truck speed clamped to 1 */
     void *subjectObject;          /* 0x140: the followed object, looked up from subject */
     int w144;                     /* 0x144 */
     int w148;                     /* 0x148 */
