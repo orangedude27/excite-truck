@@ -597,7 +597,9 @@ void fn_802AAD5C(int arg0, int arg1, int arg2) {
     fn_802C8D74();
 }
 #pragma pop
-void fn_802AAF00(int a, int b, int c) {}
+/* Reserved draw step in the stunt-car effect pass: receives the draw list, a
+   per-object effect entry and the source object, but does nothing in this build. */
+void fn_802AAF00(int drawList, int entry, int object) {}
 
 extern int lbl_8055CC64;
 extern float lbl_805649F0, lbl_805649F4, lbl_805649F8, lbl_805649FC;
