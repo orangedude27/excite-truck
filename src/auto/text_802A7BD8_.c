@@ -8,7 +8,8 @@ void fn_802A7BD8(void) {
 }
 
 /* No-op "add item to collection" hook called by fn_802B5F24 for each item it
- * collects (arg0 = collection handle, arg1 = item); this build ignores both. */
+ * collects; this build ignores both and returns the collection unchanged. */
 int fn_802A7BDC(int collection, int item) {
+    return collection;
 }
 
