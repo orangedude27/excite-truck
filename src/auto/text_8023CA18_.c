@@ -19,6 +19,8 @@ void fn_8023CA18(void) {
 #undef SOUND_MENU_STATE
 }
 
+/* No-op UI callback: installed as the handler ("value") of a menu element in
+   the frame built by fn_8023CA18; the body does nothing. */
 void fn_8023CA50(void) {}
 
 extern char lbl_803414D0[];
@@ -143,21 +145,16 @@ void fn_8023CBA4(void) {
 void fn_8023CC84(char *arg0) {
     struct Frame8023 fr;
     s32 i;
+    char *p7c, *p90;
+    char *p4c, *pb8, *pc4, *p10, *p40, *pd8, *pe4, *pf0;
     char *base = lbl_803414D0;
-    char *p7c = base + 0x7C;
-    char *p90 = base + 0x90;
-    char *p4c = base + 0x4C;
-    char *pb8 = base + 0xB8;
-    char *pc4 = base + 0xC4;
-    char *p10 = base + 0x10;
-    char *p40 = base + 0x40;
-    char *pd8 = base + 0xD8;
-    char *pe4 = base + 0xE4;
-    char *pf0 = base + 0xF0;
+    fr.argStruct[0] = (s32)arg0;
     fn_8023CA54();
     if (lbl_8055F160 == 0) {
         lbl_8055F164 = lbl_8056373C;
     }
+    p7c = base + 0x7C;
+    p90 = base + 0x90;
     fr.result = fn_80208D70();
     fr.obj.a5c = (s32)lbl_803415E8;
     fr.obj.a70[3] = fr.result;
@@ -170,6 +167,17 @@ void fn_8023CC84(char *arg0) {
     fr.obj.a70[7] = (s32)&lbl_8055F170;
     fr.obj.a70[8] = (s32)&lbl_8055F174;
     fr.obj.a70[9] = 0;
+    if (fr.obj.a70[9] != 0) {
+        *(u8 *)((char *)fr.obj.a70[9] + 0x34) = 1;
+        *(f32 *)((char *)fr.obj.a70[9] + 0x28) = lbl_8056373C;
+    }
+    {
+        f32 v = lbl_8055F168;
+        if (v != *(f32 *)((char *)fr.obj.a70[9] + 8)) {
+            *(u8 *)((char *)fr.obj.a70[9] + 0x4D) = 1;
+            *(f32 *)((char *)fr.obj.a70[9] + 8) = v;
+        }
+    }
     fn_8022D228(fr.obj.a48, 0x11, 0x20);
     i = 0;
     do {
@@ -186,6 +194,14 @@ void fn_8023CC84(char *arg0) {
     fr.fl[7] = lbl_8056373C;
     fr.fl[8] = lbl_80563738;
     fr.fl[9] = lbl_8056373C;
+    p4c = base + 0x4C;
+    pb8 = base + 0xB8;
+    pc4 = base + 0xC4;
+    p10 = base + 0x10;
+    p40 = base + 0x40;
+    pd8 = base + 0xD8;
+    pe4 = base + 0xE4;
+    pf0 = base + 0xF0;
     fr.big[0] = (s32)&lbl_8055BAC0;
     fr.big[1] = 8;
     fr.big[2] = (s32)fn_8023CA18;
@@ -276,7 +292,6 @@ void fn_8023CC84(char *arg0) {
     fr.big[87] = lbl_804987A0[2];
     fr.big[88] = lbl_804987A0[3];
     fr.big[89] = lbl_804987A0[4];
-    fr.argStruct[0] = (s32)arg0;
     fr.argStruct[1] = (s32)fr.big;
     fr.argStruct[2] = 0;
     fr.argStruct[3] = 0;
@@ -284,13 +299,13 @@ void fn_8023CC84(char *arg0) {
     if (fn_802146BC(fr.argStruct, -999, -999, 1, 0, lbl_804987A0[4], 8, 0x100) == -2) {
         fn_8023CBA4();
     }
-    lbl_8055F160 = (lbl_8055F164 == lbl_80563740) ? 1 : 0;
-    fn_8013323C(4, p10, lbl_8055F164);
-    fn_80133460(4, base, lbl_8055F160);
-    fn_8013323C(4, base + 0x20, lbl_8055F168);
-    fn_8013323C(4, p40, lbl_8055F170);
-    fn_8013323C(4, p4c, lbl_8055F174);
-    fn_80133348(4, base + 0x5C, lbl_8055F178);
+    lbl_8055F160 = (lbl_8055F164 > lbl_80563740) ? 1 : 0;
+    fn_8013323C(4, lbl_803414D0 + 0x10, lbl_8055F164);
+    fn_80133460(4, lbl_803414D0, lbl_8055F160);
+    fn_8013323C(4, lbl_803414D0 + 0x20, lbl_8055F168);
+    fn_8013323C(4, lbl_803414D0 + 0x40, lbl_8055F170);
+    fn_8013323C(4, lbl_803414D0 + 0x4C, lbl_8055F174);
+    fn_80133348(4, lbl_803414D0 + 0x5C, lbl_8055F178);
     fn_8022D2BC(fr.obj.a48, -1);
     fr.obj.a5c = (s32)lbl_803415E8;
     if (fr.obj.a70[9] != 0) {
