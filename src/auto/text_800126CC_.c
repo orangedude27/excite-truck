@@ -512,12 +512,13 @@ extern "C" void fn_8001335C(int a0, int arg1) {
     int i;
     Dummy *obj;
     char *base = lbl_802FC610;
+    int zero = 0;
     if (a0 != 0) {
         for (i = 0; (obj = (Dummy *)((Dummy *)a0)->child(i)) != 0; i++) {
             if (stricmp(obj->name(), lbl_80558B68) == 0) {
                 if (fn_8012C33C(obj->get(lbl_80558B1C)) == 0)
                     fn_802E317C(base + 0x488, obj->get(lbl_80558B1C));
-                obj->set(lbl_80558B1C, 0);
+                obj->set(lbl_80558B1C, zero);
                 ((void (*)())fn_80013618)();
             } else if (stricmp(obj->name(), lbl_80558B70) == 0) {
                 if ((int)lbl_8055D504 >= 0x23)
@@ -531,10 +532,10 @@ extern "C" void fn_8001335C(int a0, int arg1) {
                     fn_802E317C(base + 0x4E4, lbl_8055D518 - 1);
                 if (fn_80012AB4(obj) != 0) {
                     fn_80012B50(lbl_803551E0 + lbl_8055D518 * 0x88, -1 - lbl_8055D518, obj, arg1);
-                    *(int *)(lbl_803551E0 + lbl_8055D518 * 0x88 + 0x84) = 0;
+                    *(int *)(lbl_803551E0 + lbl_8055D518 * 0x88 + 0x84) = zero;
                     lbl_8055D518 += 1;
                 }
-            } else if (stricmp(obj->name(), base + 0x524) == 0 && lbl_8055D514 == 0) {
+            } else if (stricmp(obj->name(), base + 0x524) == 0 && lbl_8055D514 == zero) {
                 lbl_8055D514 = (int)obj;
             }
         }
@@ -577,20 +578,22 @@ void fn_80013618(int object) {
 
 #pragma scheduling on
 #pragma cplusplus on
-extern "C" int fn_80013680(void *__restrict arg0, void *arg1) {
-    struct Dummy {
+/* qsort comparator: order records by the "display_order" attribute (default 99)
+   of the child object at +0x80, read through virtual slot 6. */
+extern "C" int fn_80013680(void *__restrict lhs, void *rhs) {
+    struct DisplayOrderProvider {
         virtual int f0();
         virtual int f1();
         virtual int f2();
         virtual int f3();
         virtual int f4();
         virtual int f5();
-        virtual int f6(char *, int);
+        virtual int getDisplayOrder(char *, int);
     };
-    void *a = *(void **)((char *)arg0 + 0x80);
-    int x = ((Dummy *)a)->f6(lbl_802FCB74, 0x63);
-    int y = ((Dummy *)*(void **)((char *)arg1 + 0x80))->f6(lbl_802FCB74, 0x63);
-    return x - y;
+    void *provider = *(void **)((char *)lhs + 0x80);
+    int lhsOrder = ((DisplayOrderProvider *)provider)->getDisplayOrder(lbl_802FCB74, 0x63);
+    int rhsOrder = ((DisplayOrderProvider *)*(void **)((char *)rhs + 0x80))->getDisplayOrder(lbl_802FCB74, 0x63);
+    return lhsOrder - rhsOrder;
 }
 #pragma cplusplus reset
 #pragma scheduling invalid_target
@@ -664,10 +667,10 @@ void fn_80013724(void) {
 extern int lbl_8055D518;
 #pragma scheduling invalid_target
 void fn_80013A34(void) {
+    int p = (int)lbl_803551E0;
     int count = lbl_8055D518;
-    char *p = lbl_803551E0;
-    int blocks, i;
     int zero = 0;
+    int blocks, i;
     if (count > 0) {
         blocks = (unsigned int)count >> 3;
         for (i = blocks; i != 0; i--) {
@@ -681,18 +684,22 @@ void fn_80013A34(void) {
             *(int *)(p + 0x43C) += *(int *)(p + 0x428); *(int *)(p + 0x428) = zero;
             p += 0x440;
         }
-        for (i = 0; i < (count & 7); i++) {
-            *(int *)(p + 0x84) += *(int *)(p + 0x70);
-            *(int *)(p + 0x70) = zero;
-            p += 0x88;
+        i = count & 7;
+        if (i != 0) {
+            do {
+                *(int *)(p + 0x84) += *(int *)(p + 0x70);
+                *(int *)(p + 0x70) = zero;
+                p += 0x88;
+            } while (--i != 0);
         }
     }
     {
         char *entry = lbl_80352AD0;
+        char *q;
         int x;
-        for (x = 0; x < lbl_8055D508; x++, entry += 0x28) {
-            char *q = lbl_803551E0;
+        for (x = 0; x < lbl_8055D508; entry += 0x28, x++) {
             int y;
+            q = lbl_803551E0;
             for (y = 0; y < lbl_8055D518; y++, q += 0x88) {
                 if (*(int *)(entry + 4) == *(int *)q)
                     entry[0x24] = zero;
