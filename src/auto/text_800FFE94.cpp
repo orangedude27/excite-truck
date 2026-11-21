@@ -607,7 +607,7 @@ extern "C" void fn_80101130(void) {
         node = *(char **)node;
         if (entry == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327C7C, 0x23D, lbl_80327C58);
-        unsigned char * const track = entry - 0x14;
+        unsigned char *track = entry - 0x14;
         if (entry[9] == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x216, strings + 0x148);
         if (track[0x1F] == 0)
@@ -661,7 +661,15 @@ extern "C" char lbl_8041D4C4[];
 #pragma push
 #pragma use_lmw_stmw off
 #pragma opt_lifetimes off
+/* Stop every WsdPlayer in the global sPlayerList, then assert the list is empty.
+ * Each list node sits at +0x14 inside its player, so the player is 0x14 bytes
+ * before the node; the list's own node ends the walk. */
 extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_80101300(void) {
+    #define wsdPlayerList lbl_8041D4C4       /* nw4hbm::ut::LinkList sPlayerList */
+    #define linkListH lbl_80327C7C           /* "LinkList.h" */
+    #define nullPointerMsg lbl_80327C58      /* "NW4HBM:Pointer must not be NULL (p)" */
+    #define wsdPlayerCpp lbl_80327930        /* "snd_WsdPlayer.cpp" */
+    #define listNotEmptyMsg lbl_80327AC4     /* "NW4HBM:Failed assertion sPlayerList.IsEmpty()" */
     class PlayerVTable {
     public:
         virtual void Dummy0();
@@ -669,21 +677,28 @@ extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_80101300(void) 
         virtual void Stop();
     };
     struct Iter { void* node; };
-    Iter begin;
-    begin.node = *(void**)&lbl_8041D4C4[0x04];
+    Iter begin;                                  /* LinkList::GetBeginIter() */
+    begin.node = *(void**)&wsdPlayerList[0x04];  /* the list's first node */
     Iter it = begin;
+    /* Holding the end node through a reference keeps the list base out of a
+     * callee-saved register across the loop. */
     struct EndWrap { void* e; } sentinel;
-    sentinel.e = (void*)&lbl_8041D4C4[0x04];
+    sentinel.e = (void*)&wsdPlayerList[0x04];
     void*& end = sentinel.e;
     while (it.node != end) {
         void* node = it.node;
-        it.node = *(void**)it.node;
-        if (node == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327C7C, 0x23D, (const char*)lbl_80327C58);
-        ((PlayerVTable*)((char*)node - 0x14))->Stop();
+        it.node = *(void**)it.node;              /* ++it */
+        if (node == 0)                           /* *it */
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)linkListH, 0x23D, (const char*)nullPointerMsg);
+        ((PlayerVTable*)((char*)node - 0x14))->Stop(); /* player at +0x14 */
     }
-    if (*(int*)&lbl_8041D4C4[0] != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327930, 0x24D, (const char*)lbl_80327AC4);
+    if (*(int*)&wsdPlayerList[0] != 0)           /* !sPlayerList.IsEmpty() */
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)wsdPlayerCpp, 0x24D, (const char*)listNotEmptyMsg);
+    #undef wsdPlayerList
+    #undef linkListH
+    #undef nullPointerMsg
+    #undef wsdPlayerCpp
+    #undef listNotEmptyMsg
 }
 #pragma pop
 extern "C" void fn_801013B0(void) {
