@@ -283,47 +283,51 @@ void fn_8022FF90(void *);
 #pragma scheduling on
 #pragma use_lmw_stmw off
 #pragma dont_inline fn_8022F2FC
-void *fn_8022F638(char *arg0, unsigned char arg1, unsigned char arg2, int arg3, float farg0) {
-    void *node;
+/* Create a named 0xB4-byte background-overlay quad: resolve the texture, record the
+ * name, then either fill in a fresh 720x480 quad with the default layout or copy the
+ * shared default record when the name matches it; finally register it in the gBack
+ * tracker list. */
+void *fn_8022F638(char *textureName, unsigned char paramA, unsigned char paramB, int intParam, float floatParam) {
+    void *quad;
     int width, height;
-    float f8, f4, f0, ec, e8;
+    float fineScale, tinyScale, largeScale, mediumScale, margin;
 
-    if (arg0 == 0) return 0;
+    if (textureName == 0) return 0;
     ((void *(*)(void))fn_8022F2FC)();
-    node = fn_801284F8(0xb4, &lbl_8055B98C);
-    if (fn_8012C33C(arg0) != 0) {
-        *(int *)((char *)node + 0x30) = fn_802CAC28(arg0, 0);
-        *(int *)((char *)node + 0x80) = arg3;
+    quad = fn_801284F8(0xb4, &lbl_8055B98C);
+    if (fn_8012C33C(textureName) != 0) {
+        *(int *)((char *)quad + 0x30) = fn_802CAC28(textureName, 0);
+        *(int *)((char *)quad + 0x80) = intParam;
     } else {
-        *(int *)((char *)node + 0x30) = -1;
-        ((void (*)(const char *, ...))fn_802E30C8)(lbl_803403DC, arg0);
-        *(int *)((char *)node + 0x80) = 0;
+        *(int *)((char *)quad + 0x30) = -1;
+        ((void (*)(const char *, ...))fn_802E30C8)(lbl_803403DC, textureName);
+        *(int *)((char *)quad + 0x80) = 0;
     }
-    strcpy((char *)node + 0x3c, arg0);
-    if (strcmp(arg0, lbl_80497E3C + 0x3c) != 0) {
-        fn_8022FF90(node);
-        *((unsigned char *)node + 0x9d) = arg2;
+    strcpy((char *)quad + 0x3c, textureName);
+    if (strcmp(textureName, lbl_80497E3C + 0x3c) != 0) {
+        fn_8022FF90(quad);
+        *((unsigned char *)quad + 0x9d) = paramB;
         width = 0x2d0;
-        e8 = 30.0f;
+        margin = 30.0f;
         height = 0x1e0;
-        *((unsigned char *)node + 0x9c) = arg1;
-        ec = lbl_805635EC;
-        *(float *)((char *)node + 0xa0) = e8;
-        f0 = lbl_805635F0;
-        *(float *)((char *)node + 0x7c) = farg0;
-        f4 = lbl_805635F4;
-        *(float *)((char *)node + 0xac) = ec;
-        f8 = lbl_805635F8;
-        *(float *)((char *)node + 0xb0) = f0;
-        *(float *)((char *)node + 0xa4) = f4;
-        *(float *)((char *)node + 0xa8) = f8;
-        *(int *)((char *)node + 0x84) = width;
-        *(int *)((char *)node + 0x88) = height;
+        *((unsigned char *)quad + 0x9c) = paramA;
+        mediumScale = lbl_805635EC;
+        *(float *)((char *)quad + 0xa0) = margin;
+        largeScale = lbl_805635F0;
+        *(float *)((char *)quad + 0x7c) = floatParam;
+        tinyScale = lbl_805635F4;
+        *(float *)((char *)quad + 0xac) = mediumScale;
+        fineScale = lbl_805635F8;
+        *(float *)((char *)quad + 0xb0) = largeScale;
+        *(float *)((char *)quad + 0xa4) = tinyScale;
+        *(float *)((char *)quad + 0xa8) = fineScale;
+        *(int *)((char *)quad + 0x84) = width;
+        *(int *)((char *)quad + 0x88) = height;
     } else {
-        fn_8022F548(node);
+        fn_8022F548(quad);
     }
-    fn_8022F364(node);
-    return node;
+    fn_8022F364(quad);
+    return quad;
 }
 #pragma use_lmw_stmw reset
 #pragma scheduling on
