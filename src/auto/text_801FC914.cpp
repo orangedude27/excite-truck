@@ -1117,22 +1117,24 @@ extern "C" void fn_801FE77C(void* container) {
     }
 }
 
-extern "C" void fn_801FE7E8(void* arg0) {
+extern "C" void fn_801FE7E8(void *spawners) {
+    /* Advance each timed path-spawn entry's countdown by the frame delta; when it
+     * expires, spawn the prop and reschedule it with a random delay. */
     float threshold = 0.0f;
-    char* item = (char*)arg0 + 4;
-    int i = 0;
-    while (i < *(int*)((char*)arg0 + 0x94)) {
-        if (*(unsigned short*)(item + 0x14) == 1) {
-            float time = *(float*)(item + 0x20) - fn_801E7E24();
-            *(float*)(item + 0x20) = time;
-            if (time < threshold) {
-                typedef float (*UpdateFn)(int, float, float);
-                fn_801FEDA4(item);
-                *(float*)(item + 0x20) = ((UpdateFn)fn_80129DC4)(0, *(float*)(item + 0x18), *(float*)(item + 0x1C));
+    PathSpawnEntry *entry = (PathSpawnEntry *)((char *)spawners + 4);
+    int index = 0;
+    while (index < *(int *)((char *)spawners + 0x94)) {
+        if (entry->mode == PATH_SPAWN_TIMED) {
+            float remaining = entry->nextSpawn - fn_801E7E24();
+            entry->nextSpawn = remaining;
+            if (remaining < threshold) {
+                typedef float (*RandomInRangeFn)(int, float, float);
+                fn_801FEDA4(entry);
+                entry->nextSpawn = ((RandomInRangeFn)fn_80129DC4)(0, entry->minDelay, entry->maxDelay);
             }
         }
-        item += 0x24;
-        ++i;
+        ++entry;
+        ++index;
     }
 }
 #pragma scheduling reset
