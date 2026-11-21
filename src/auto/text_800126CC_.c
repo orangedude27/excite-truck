@@ -77,6 +77,7 @@ void fn_80012780(void) { fn_80012984(0x130); }
 /* Initialize/load the resource set for game mode id 0x132 (a thin wrapper over fn_80012984). */
 void fn_80012788(void) { fn_80012984(0x132); }
 
+/* Initialize/load the resource set for the given game mode id (tail-call to fn_80012984). */
 void fn_80012790(int modeId) {
     fn_80012984(modeId);
 }
