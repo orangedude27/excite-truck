@@ -98,24 +98,24 @@ extern "C" void *fn_80209DE4(void *self, int shouldDelete) {
 extern "C" void fn_80209E94(void *arg0) {
     struct Notifier {
         virtual void v0();
-        virtual void v1();
+        virtual void update();
     };
     /* Accumulate input/trigger contribution from 4 Records at (arg0+4)->+0x23AC:
        for each enabled==0 record, add clamp(value - 0.8f, 0, 0.25f) to total.
        Write into state object at *(arg0+8): set flag +0x4e and force field +4
        to 1.0f if changed, set flag +0x4d and store total at +8 if changed; if
        total > 0.001f set flags (+0x49,+0x4b)=1, +0x4a=0 else set +0x4a=1,
-       +0x4c=0. Then call notifier v1() on *(arg0+0xc) if present. */
-    Record *records = (Record *)(*(char **)((char *)arg0 + 4) + 0x23AC);
+       +0x4c=0. Then call notifier update() on *(arg0+0xc) if present. */
+    Record *squealRecords = (Record *)(*(char **)((char *)arg0 + 4) + 0x23AC);
     float value;
     float total = 0.0f;
-    char *obj;
+    char *state;
     int i;
-    Notifier *notify;
+    Notifier *notifier;
 
     for (i = 0; i < 4; i++) {
-        value = records[i].value - 0.8f;
-        if (records[i].enabled == 0 && value > 0.0f) {
+        value = squealRecords[i].value - 0.8f;
+        if (squealRecords[i].enabled == 0 && value > 0.0f) {
             if (0.25f < value) {
                 value = 0.25f;
             }
@@ -123,29 +123,29 @@ extern "C" void fn_80209E94(void *arg0) {
         }
     }
 
-    obj = *(char **)((char *)arg0 + 8);
-    if (1.0f != *(float *)(obj + 4)) {
-        *(signed char *)(obj + 0x4e) = 1;
-        *(float *)(obj + 4) = 1.0f;
+    state = *(char **)((char *)arg0 + 8);
+    if (1.0f != *(float *)(state + 4)) {
+        *(signed char *)(state + 0x4e) = 1;
+        *(float *)(state + 4) = 1.0f;
     }
-    obj = *(char **)((char *)arg0 + 8);
-    if (total != *(float *)(obj + 8)) {
-        *(signed char *)(obj + 0x4d) = 1;
-        *(float *)(obj + 8) = total;
+    state = *(char **)((char *)arg0 + 8);
+    if (total != *(float *)(state + 8)) {
+        *(signed char *)(state + 0x4d) = 1;
+        *(float *)(state + 8) = total;
     }
     if (total > 0.001f) {
-        obj = *(char **)((char *)arg0 + 8);
-        *(signed char *)(obj + 0x4a) = 0;
-        *(signed char *)(obj + 0x4b) = 1;
-        *(signed char *)(obj + 0x49) = 1;
+        state = *(char **)((char *)arg0 + 8);
+        *(signed char *)(state + 0x4a) = 0;
+        *(signed char *)(state + 0x4b) = 1;
+        *(signed char *)(state + 0x49) = 1;
     } else {
-        obj = *(char **)((char *)arg0 + 8);
-        *(signed char *)(obj + 0x4a) = 1;
-        *(signed char *)(obj + 0x4c) = 0;
+        state = *(char **)((char *)arg0 + 8);
+        *(signed char *)(state + 0x4a) = 1;
+        *(signed char *)(state + 0x4c) = 0;
     }
-    notify = *(Notifier **)((char *)arg0 + 0xc);
-    if (notify != 0) {
-        notify->v1();
+    notifier = *(Notifier **)((char *)arg0 + 0xc);
+    if (notifier != 0) {
+        notifier->update();
     }
 }
 #pragma cplusplus reset
