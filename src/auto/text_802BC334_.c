@@ -407,7 +407,6 @@ __declspec(section ".data") extern int lbl_804C00D4;
 extern void *fn_802BC4D4(void *);
 #pragma push
 #pragma scheduling invalid_target
-#pragma processor 750
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_802BCBDC(void) {
@@ -433,7 +432,8 @@ extern "C" void fn_802BCBDC(void) {
     register char *entry;
     register char *rdata = (char *)&lbl_8034AB38;
     float half;
-    float min[3], max[3], center[3];
+    Vec bounds[2];
+    Vec center;
     float dx, nx, dy, dz;
     float cx, cy, cz;
     void *value;
@@ -465,11 +465,11 @@ extern "C" void fn_802BCBDC(void) {
             ((void (*)(void *, const char *, const char *))(*(void ***)item)[6])(item, rdata + 0x74, lbl_8055CF48);
             *(int *)(entry + 0x2C) = fn_801D04D0();
             *(int *)(entry + 0x28) = fn_802C143C(item);
-            *(Vec *)min = ((Query *)item)->get(lbl_8055CF50);
-            *(Vec *)max = ((Query *)item)->get(lbl_8055CF58, *(unsigned int *)&min[0], *(unsigned int *)&min[1], *(unsigned int *)&min[2]);
+            *(Vec *)&bounds[0].x = ((Query *)item)->get(lbl_8055CF50);
+            *(Vec *)&bounds[1].x = ((Query *)item)->get(lbl_8055CF58, *(unsigned int *)&bounds[0].x, *(unsigned int *)&bounds[0].y, *(unsigned int *)&bounds[0].z);
             {
-                float minX = min[0], minY = min[1], minZ = min[2];
-                float maxX = max[0], maxY = max[1], maxZ = max[2];
+                float minX = bounds[0].x, minY = bounds[0].y, minZ = bounds[0].z;
+                float maxX = bounds[1].x, maxY = bounds[1].y, maxZ = bounds[1].z;
                 dx = maxX - minX;
                 nx = minX - maxX;
                 dy = maxY - minY;
@@ -481,12 +481,12 @@ extern "C" void fn_802BCBDC(void) {
             *(float *)(entry + 0x34) = cx;
             *(float *)(entry + 0x38) = cy;
             *(float *)(entry + 0x3C) = cz;
-            center[0] = cx;
-            center[1] = cy;
-            center[2] = cz;
+            center.x = cx;
+            center.y = cy;
+            center.z = cz;
             *(float *)(entry + 0x40) = nx;
-            *(float *)(entry + 0x44) = min[1] - max[1];
-            *(float *)(entry + 0x48) = min[2] - max[2];
+            *(float *)(entry + 0x44) = bounds[0].y - bounds[1].y;
+            *(float *)(entry + 0x48) = bounds[0].z - bounds[1].z;
             *(float *)(entry + 0x4C) = PSVECMag((Vec *)(entry + 0x40)) * half;
             PSVECNormalize((Vec *)(entry + 0x40), (Vec *)(entry + 0x40));
             *(float *)(entry + 0x50) = ((float (*)(void *, const char *))(*(void ***)item)[9])(item, lbl_8055CF60);
