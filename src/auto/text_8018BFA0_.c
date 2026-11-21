@@ -311,39 +311,17 @@ extern float lbl_8056203C;
 extern float lbl_80562040;
 extern char lbl_80332758[];
      static inline void matVecAliasV_8018(Vec_8018 *dest, const float *m, const Vec_8018 *src) {
-    float m00, m01, m02, m10, m11, m12, m20, m21, m22, x, y, z;
     if (dest == src) {
-        m10 = m[3];
-        m11 = m[4];
-        m12 = m[5];
-        m00 = m[0];
-        m01 = m[1];
-        m02 = m[2];
-        m20 = m[6];
-        m21 = m[7];
-        m22 = m[8];
-        x = src->x;
-        y = src->y;
-        z = src->z;
-        dest->x = z * m20 + (x * m00 + y * m10);
-        dest->y = z * m21 + (x * m01 + y * m11);
-        dest->z = z * m22 + (x * m02 + y * m12);
+        float tx = src->y * m[3] + src->x * m[0] + src->z * m[6];
+        float ty = src->y * m[4] + src->x * m[1] + src->z * m[7];
+        float tz = src->y * m[5] + src->x * m[2] + src->z * m[8];
+        dest->x = tx;
+        dest->y = ty;
+        dest->z = tz;
     } else {
-        m00 = m[0];
-        m01 = m[1];
-        m02 = m[2];
-        m10 = m[3];
-        m11 = m[4];
-        m12 = m[5];
-        m20 = m[6];
-        m21 = m[7];
-        m22 = m[8];
-        x = src->x;
-        y = src->y;
-        z = src->z;
-        dest->x = z * m20 + (x * m00 + y * m10);
-        dest->y = z * m21 + (x * m01 + y * m11);
-        dest->z = z * m22 + (x * m02 + y * m12);
+        dest->x = src->y * m[3] + src->x * m[0] + src->z * m[6];
+        dest->y = src->y * m[4] + src->x * m[1] + src->z * m[7];
+        dest->z = src->y * m[5] + src->x * m[2] + src->z * m[8];
     }
 }
 typedef struct { char b[0x290]; } Blob290_8018;
