@@ -363,7 +363,7 @@ extern "C" void fn_801A67C4(void *self) {
 extern int lbl_8055E3C4;
 extern double lbl_80562440;
 #pragma push
-#pragma processor 750
+#pragma processor 7400
 #pragma ppc_psq_save off
 #pragma cplusplus on
 extern "C" void fn_8017A580(void *);
