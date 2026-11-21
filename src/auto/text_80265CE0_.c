@@ -52,6 +52,8 @@ int fn_80265D64(void) {
 /* MP-client query stub: always answers 0 (false / nothing to report). */
 int fn_80265D6C(void) { return 0; }
 
+/* No-op stub: invoked in the state-0xD setup sequence of fn_8000AF1C, alongside
+   the other subsystem hooks; this build leaves it empty. */
 void fn_80265D74(void) {}
 
 void fn_80265D78(void) {}
