@@ -31,19 +31,6 @@ extern void fn_802E317C(char *, ...);
 typedef struct Fn241820VT { int pad[3]; int (*isActive)(void *); } Fn241820VT;
 typedef struct Fn241820Obj { char pad[0xc]; Fn241820VT *vt; } Fn241820Obj;
 typedef int (*Fn241820IsActive)(void *);
-/* Bounded name copy: copies characters until the terminator or n-1 of them, and
- * always leaves the destination terminated. */
-static inline void MRollCopyName(char *dst, const char *src, int n) {
-    char c;
-    do {
-        if (--n <= 0) {
-            dst[-1] = 0;
-            break;
-        }
-        c = *src++;
-        *dst++ = c;
-    } while (c != 0);
-}
 /* Clear the player-info table (lbl_80498828): set the id word of each of its
  * two 0x10-byte slots to -1, marking both slots empty. */
 void fn_8023FE20(void) {
