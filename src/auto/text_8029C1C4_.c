@@ -1005,22 +1005,23 @@ void fn_8029D7D0(int arg0, void **__restrict arg1) {
     v = (float *)fn_802C6C34();
     m = (float *)st[0];
     if (sp == v + 8) {
-        float p0 = m[3] * v[9];
-        float p1 = m[4] * v[9];
-        float p2 = m[0] * v[8];
-        float p3 = m[1] * v[8];
-        float p4 = m[2] * v[8];
-        float p5 = m[5] * v[9];
-        float p6 = m[6] * v[10];
-        float p7 = m[7] * v[10];
-        float p8 = m[8] * v[10];
-        sp[0] = p6 + (p2 + p0);
-        sp[1] = p7 + (p3 + p1);
-        sp[2] = p8 + (p4 + p5);
+        float x, y, z;
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = m[3]; m11 = m[4]; m12 = m[5];
+        m00 = m[0]; m01 = m[1]; m02 = m[2];
+        m20 = m[6]; m21 = m[7]; m22 = m[8];
+        x = v[8]; y = v[9]; z = v[10];
+        sp[0] = z * m20 + (x * m00 + y * m10);
+        sp[1] = z * m21 + (x * m01 + y * m11);
+        sp[2] = z * m22 + (x * m02 + y * m12);
     } else {
-        sp[0] = m[3] * v[9] + m[0] * v[8] + m[6] * v[10];
-        sp[1] = m[4] * v[9] + m[1] * v[8] + m[7] * v[10];
-        sp[2] = m[5] * v[9] + m[2] * v[8] + m[8] * v[10];
+        float m00, m01, m02, m10, m11, m12, m20, m21, m22;
+        m10 = m[3]; m00 = m[0]; m20 = m[6];
+        sp[0] = v[10] * m20 + (v[8] * m00 + v[9] * m10);
+        m11 = m[4]; m01 = m[1]; m21 = m[7];
+        sp[1] = v[10] * m21 + (v[8] * m01 + v[9] * m11);
+        m12 = m[5]; m02 = m[2]; m22 = m[8];
+        sp[2] = v[10] * m22 + (v[8] * m02 + v[9] * m12);
     }
     sp[0] += m[9];
     sp[1] += m[10];
