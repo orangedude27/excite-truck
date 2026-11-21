@@ -372,7 +372,9 @@ s32 fn_802316A4(void *block) {
     return 0;
 }
 #pragma scheduling on
-void fn_80231714(s32 *arg0) {}
+void fn_80231714(s32 *pValue) {
+    /* Empty debug hook: receives an in/out value (e.g. text color or spacing) but leaves it unchanged. */
+}
 #pragma dont_inline off
 
 s32 fn_80231718(s32 primary) {
