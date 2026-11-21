@@ -860,8 +860,10 @@ void *fn_80131234(void *key) {
     }
 }
 #pragma scheduling on
-void fn_80131264(void *arg0) {
-    fn_801302E0(arg0);
+/* Return the message id registered for a locale key (0 when the key is absent
+ * from the loaded message table); callers use it to test key existence. */
+int fn_80131264(void *key) {
+    return fn_801302E0(key);
 }
 
 void fn_80131268(void *arg0) {
