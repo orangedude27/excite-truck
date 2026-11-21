@@ -157,8 +157,8 @@ void fn_801A6524(void *object) {
     fn_801A6558(object);
 }
 
+#pragma opt_propagation off
 void fn_801A6558(void *arg0) {
-    #pragma scheduling invalid_target
     float zero;
     float one;
     void *tmp;
