@@ -1341,6 +1341,8 @@ void fn_802E6B04(void) {
 #undef registerResetCallback
 }
 #pragma scheduling on
+/* No-op sound-system teardown hook: called from the SPU shutdown (fn_802E56F0)
+ * and VoiceSoundMixer::End (fn_8020A8E8); this build leaves it empty. */
 void fn_802E6B34(void) {
 }
 
