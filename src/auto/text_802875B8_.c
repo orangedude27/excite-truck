@@ -470,14 +470,13 @@ s32 fn_80287B94(s32 min, s32 max) {
 }
 
 #pragma push
-#pragma processor 750
+#pragma ppc_psq_save off
 #pragma scheduling on
 f32 fn_80287BC8(f32 farg0, f32 farg1) {
-#pragma scheduling on
     unsigned int random;
     f32 diff;
     f32 ratio;
-    random = fn_80288870() & 0x1FFFF;
+    random = ((unsigned int (*)(void))fn_80288870)() & 0x1FFFF;
     diff = farg1 - farg0;
     ratio = (f32)random / lbl_80564250;
     return farg0 + diff * ratio;
