@@ -2258,8 +2258,8 @@ extern "C" void *fn_8021BBA0(void *object, s32 shouldDelete) {
     return object;
 }
 #pragma pop
-extern "C" s32 fn_8022D850(void *, s32, s32, s32 *);
-extern f32 lbl_805634FC;
+extern "C" s32 fn_8022D850(void *, s32, s32, s32 *); /* read a grid cell and its tag */
+extern f32 lbl_805634FC; /* 25.0f, icon width/height */
   #pragma push
  #pragma scheduling invalid_target
 extern "C" void fn_8021BC20(void *arg0, void *arg1) {
@@ -5546,6 +5546,10 @@ extern "C" void fn_80221F9C(void *arg0, s32 arg1) {
     temp_r30 = lbl_8055FBC0;
     temp_r29 = lbl_8055FBFC;
     temp_r28 = lbl_8055FBF8;
+    var_r26 = 0;
+    var_r25 = 0;
+    var_r20 = 0;
+    var_r27 = 0;
     self = arg0;
     goto outer_check;
 outer_body:
