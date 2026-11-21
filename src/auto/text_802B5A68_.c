@@ -627,7 +627,11 @@ extern float lbl_80564C78;        /* 0.5f: half-width factor for centered text *
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-s32 fn_802B640C(const void *arg0, s32 arg1) {
+/* Hit test for a debug-menu text entry: returns 1 when the cursor held in the input
+ * state (integer x/y at lbl_804BFF80+4/+8) lies inside the entry's text box. The text
+ * width/height come from the UI font metrics; the entry's alignment flags shift the
+ * box horizontally (left, right or centered). */
+s32 fn_802B640C(const void *entryObj, s32 text) {
     const struct Entry {
         f32 unk0;
         f32 x;
@@ -635,33 +639,40 @@ s32 fn_802B640C(const void *arg0, s32 arg1) {
         f32 unkC;
         f32 scale;
         s32 flags;
-    } *e = (const struct Entry *)arg0;
-    f32 temp_f1, temp_f31, var_f4, temp_f5, temp_f6;
-    s32 temp_r3, var_r3, var_r4, var_r5;
+    } *e = (const struct Entry *)entryObj;
+    f32 textHeight, textWidth, alignOffset, entryX, rightEdge;
+    s32 alignFlags, inside, withinX, withinY;
+#define cursorX *(s32 *)((u8 *)&lbl_804BFF80 + 4)
+#define cursorY *(s32 *)((u8 *)&lbl_804BFF80 + 8)
+#define LEFT_ALIGN_OFFSET lbl_80564C74
+#define CENTER_ALIGN_FACTOR lbl_80564C78
 
-    temp_f31 = fn_800108C8(e->scale, arg1);
-    temp_f1 = fn_8001090C(e->scale);
-    temp_r3 = e->flags;
-    temp_f5 = e->x;
-    temp_f6 = temp_f5 + temp_f31;
-    if (temp_r3 & 1)
-        var_f4 = lbl_80564C74;
-    else if (temp_r3 & 2)
-        var_f4 = -temp_f31;
+    textWidth = fn_800108C8(e->scale, text);
+    textHeight = fn_8001090C(e->scale);
+    alignFlags = e->flags;
+    entryX = e->x;
+    rightEdge = entryX + textWidth;
+    if (alignFlags & 1)
+        alignOffset = LEFT_ALIGN_OFFSET;
+    else if (alignFlags & 2)
+        alignOffset = -textWidth;
     else
-        var_f4 = -temp_f31 * lbl_80564C78;
-    var_r3 = 0;
-    var_r5 = 0;
-    var_r4 = 0;
-    if ((f32)*(s32 *)((u8 *)&lbl_804BFF80 + 4) >= temp_f5 + var_f4 &&
-        (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 4) < temp_f6 + var_f4)
-        var_r4 = 1;
-    if (var_r4 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) >= e->y)
-        var_r5 = 1;
-    if (var_r5 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) <
-        e->y + temp_f1)
-        var_r3 = 1;
-    return var_r3;
+        alignOffset = -textWidth * CENTER_ALIGN_FACTOR;
+    inside = 0;
+    withinY = 0;
+    withinX = 0;
+    if ((f32)cursorX >= entryX + alignOffset &&
+        (f32)cursorX < rightEdge + alignOffset)
+        withinX = 1;
+    if (withinX && (f32)cursorY >= e->y)
+        withinY = 1;
+    if (withinY && (f32)cursorY < e->y + textHeight)
+        inside = 1;
+    return inside;
+#undef cursorX
+#undef cursorY
+#undef LEFT_ALIGN_OFFSET
+#undef CENTER_ALIGN_FACTOR
 }
 #pragma pop
 __declspec(section ".sdata") extern const char lbl_8055CE70[];
