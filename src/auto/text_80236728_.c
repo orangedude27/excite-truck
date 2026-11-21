@@ -250,7 +250,9 @@ void fn_80236950(void) { fn_80237A9C(); }
 void fn_80236954(char *name, void *unused) { fn_80237DA0(name, unused); }
 
 extern void fn_80237E7C(char *, int);
-void fn_80236958(char *arg0, int unused) { fn_80237E7C(arg0, unused); }
+/* Thunk for the trail/anim "deactivate by name" hook: forwards the name to
+ * fn_80237E7C, which clears the active flag of every trail entry with that name. */
+void fn_80236958(char *name, int unused) { fn_80237E7C(name, unused); }
 
 /* Thunk for the trail/anim "status by name" hook: forwards the name to
  * fn_80237EFC and passes through its 0/1/2 active status. */
