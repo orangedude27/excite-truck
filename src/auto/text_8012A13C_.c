@@ -78,13 +78,12 @@ void *fn_8012A260(void *this_, s32 flag) {
         s32 count;          /* +0x18 */
         s32 usedCount;      /* +0x1C */
     };
-#define poolVtable lbl_8032A620 /* this class's vtable */
 #define freeBuffer fn_80128658  /* MemFree(ptr, 1) */
 #define freePool fn_80128668    /* MemFree(ptr, 3) */
 
     if (this_ != 0) {
         struct Pool *pool = (struct Pool *)this_;
-        pool->vtable = (void **)poolVtable;
+        pool->vtable = (void **)sPoolVtable;
         if (pool->userBuffer == 0) {
             freeBuffer((s32)pool->buffer);
         }
