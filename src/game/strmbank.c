@@ -16,6 +16,13 @@ extern void *lbl_8055FFF0;                 /* global stream-bank manager */
 extern s32 fn_802E30C8(const char *, ...); /* debug/log print */
 extern char lbl_8034D808[];                /* "+StrmUnloadBank" */
 extern char lbl_8034D818[];                /* "-StrmUnloadBank" */
+extern s32 fn_80128668(void);              /* free */
+extern s32 OSGetConsoleType(void);
+extern s32 fn_801284F8(s32, void *);       /* allocate from a named heap */
+extern s32 fn_802E769C(void);              /* creates the null stream-bank manager */
+extern char lbl_8034D828[];                /* "StrmBank: creating 'null' manager" */
+extern char lbl_8034D84C[];                /* "NullStrmBank" */
+extern char lbl_8034D860[];                /* null manager vtable */
 
 /* C++ virtual-delete lowering needs this pragma block to match CodeWarrior. */
 #pragma cplusplus on
