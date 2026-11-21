@@ -83,7 +83,7 @@ static double zero;
 
 
 extern double lbl_80560AE0;
-extern const double lbl_80560AD0;
+extern double lbl_80560AD0;
 extern double lbl_80560A98;
 extern double __kernel_tan(int, double, double);
 extern int __ieee754_rem_pio2(double, double *);
