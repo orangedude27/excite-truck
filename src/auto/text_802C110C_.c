@@ -295,25 +295,30 @@ extern "C" int fn_802C143C(void *modelObject) {
     return index;
 }
 #pragma cplusplus off
-int fn_802C1500(int arg0, int arg1) {
+int fn_802C1500(int tree, int classIndex) {
 #pragma scheduling invalid_target
-    struct Entry {
-        int first;
-        int second;
-        char padding[0x58];
-    };
-    int index = lbl_8055FB2C;
-    struct Entry *table = (struct Entry *)lbl_804C0810;
-    int off = arg1 * 0x60;
-    lbl_8055FB2C = index + 1;
-    ((int *)lbl_8055FB30)[index] = arg0;
-    if (((struct Entry *)((char *)table + off))->first < 0) {
-        ((struct Entry *)((char *)table + off))->first = index;
-        ((struct Entry *)((char *)table + off))->second = index;
+#define treeClassTable lbl_804C0810 /* the TreeClass table */
+#define treeList       lbl_8055FB30 /* the "treehittree" heap block */
+#define treeCount      lbl_8055FB2C /* trees in treeList */
+#define treeHandleBase lbl_8055CFA0 /* arena block; handle - base = tree index */
+    /* Append a tree to the treehit list, add its index to the given class's
+       [firstTree, lastTree] range, and return its tree handle. */
+    int index = treeCount;
+    struct TreeClass *table = (struct TreeClass *)treeClassTable;
+    int off = classIndex * 0x60;
+    treeCount = index + 1;
+    ((int *)treeList)[index] = tree;
+    if (((struct TreeClass *)((char *)table + off))->firstTree < 0) {
+        ((struct TreeClass *)((char *)table + off))->firstTree = index;
+        ((struct TreeClass *)((char *)table + off))->lastTree = index;
     } else {
-        ((struct Entry *)((char *)table + off))->second = index;
+        ((struct TreeClass *)((char *)table + off))->lastTree = index;
     }
-    return lbl_8055CFA0 + index;
+    return treeHandleBase + index;
+#undef treeClassTable
+#undef treeList
+#undef treeCount
+#undef treeHandleBase
 }
 #pragma cplusplus on
 extern char lbl_8034AED0[];
