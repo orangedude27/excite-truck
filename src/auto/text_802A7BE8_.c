@@ -175,7 +175,7 @@ struct TeamEntry {
     s32 otherTeam;              /* 0xF8 */
 };
 
-/* The UI font and the marker constants (the game's .sdata2 pool). */
+/* The loaded rank-font handle, the "%s" format and the marker float constants. */
 #define sRankFont         lbl_8055F8BC   /* loaded from "uifnt_o.gtx" */
 #define STR_PERCENT_S     lbl_8055CC30   /* "%s" */
 #define MARKER_ONE        lbl_805648F4   /* 1.0f: clamp low end, and the "1 -" of every fade */
