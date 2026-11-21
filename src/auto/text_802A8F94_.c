@@ -31,7 +31,7 @@ void *fn_802A8F94(void *obj, s32 shouldFree) {
 }
 
 extern f32 fn_801EA0E8(f32, f32);
-#pragma push
+#pragma scheduling invalid_target
 #pragma processor 750
 void fn_802A8FEC(void *arg0, void *arg1) {
     f32 *dst = (f32 *)arg0;
@@ -43,7 +43,6 @@ void fn_802A8FEC(void *arg0, void *arg1) {
     dst[0] = x2;
     dst[2] = y;
 }
-#pragma pop
 s32 fn_802A9048(void) {
     /* Returns nonzero when the flag at bit 8 of the mode word (offset +4 of
      * fn_801E87A8()) is set and the mode ID, after subtracting 0x180000, is
@@ -220,28 +219,24 @@ extern void *fn_801E7E3C(void *);
 extern void fn_802C744C(s32, void *);
 void fn_802A9428(void) {
     char *base = lbl_804BD6F8;
-    char *entries;
-    s32 index;
-    s32 kind;
-    s32 value;
+    s32 *entries = (s32 *)(base + 0x98);
+    s32 index, kind, value, selected;
     s32 *entry;
     s32 *current;
-    s32 selected;
     f32 elapsed;
-    entries = base + 0x98;
     if (lbl_8055F8F0 == 0)
         return;
     selected = -1;
     index = fn_801E85B4();
     kind = fn_801E866C(-1);
     value = *(s32 *)((u8 *)fn_801EA9A0() + 0x1C);
-    entry = (s32 *)(entries + index * 16);
-    if (kind != ((s32 *)entries)[index * 4] || value < ((s32 *)entries)[index * 4 + 2]) {
+    entry = entries + index * 4;
+    if (kind != entries[index * 4] || value < entries[index * 4 + 2]) {
         entry[0] = kind;
         entry[1] = value;
         entry[2] = value;
         *(f32 *)(entry + 3) = lbl_80564978;
-    } else if (value != ((s32 *)entries)[index * 4 + 2]) {
+    } else if (value != entries[index * 4 + 2]) {
         entry[1] = entry[2];
         entry[2] = value;
         *(f32 *)(entry + 3) = lbl_80564984;
@@ -251,8 +246,8 @@ void fn_802A9428(void) {
         elapsed = fn_801E7E24();
         *(f32 *)(entry + 3) -= elapsed;
     }
-    current = (s32 *)fn_801E7E3C(entry);
     index = entry[1];
+    current = (s32 *)fn_801E7E3C(entry);
     if (lbl_8055F8F1 == 0 && index >= current[2])
         selected = 3;
     else if ((u32)(index + 1) < 4U)
@@ -278,8 +273,9 @@ void fn_802A9574(void) {
     p[4] = -1;
     *(volatile f32 *)(p + 7) = f;
 }
-void fn_802A95A8(void) {
-    fn_802A9090();
+/* Tail-call alias: forwards the (pos, dir) pair straight to fn_802A9090. */
+void fn_802A95A8(f32 *pos, f32 *dir) {
+    fn_802A9090(pos, dir);
 }
 
 /* Set the global flag read by fn_802A9428 when choosing a model slot. */
