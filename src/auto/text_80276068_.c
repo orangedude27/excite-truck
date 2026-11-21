@@ -809,6 +809,7 @@ void fn_80277828(void) {
         strcpy(((struct CameraEntry *)lbl_8055F59C)->name, &lbl_8055C644);
     }
 }
+#pragma pop
 int fn_80277960(void *name, void *outCamera, float *outParam) {
     /* Look up the named camera record and copy its matrix, translation vector
      * and trailing float into the caller's outputs; return whether it was found. */
