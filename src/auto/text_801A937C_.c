@@ -6,13 +6,12 @@ extern unsigned char lbl_80333D18[];
 extern unsigned char lbl_8055E5C0;
 extern void fn_8000D838(void *);
 extern void fn_801312EC(void *, void *);
+#pragma scheduling invalid_target
 void fn_801A937C(void) {
-    unsigned char *src = lbl_80333D18;
-    unsigned char *dst = lbl_80435050;
-    void *s0 = src + 0x126C;
-    void *d0 = dst + 0x338;
+    unsigned char * const dst = lbl_80435050;
+    unsigned char * const src = lbl_80333D18;
     fn_8000D838(&lbl_8055E5C0);
-    fn_801312EC(d0, s0);
+    fn_801312EC(dst + 0x338, src + 0x126C);
     fn_801312EC(dst + 0x344, src + 0x1288);
     fn_801312EC(dst + 0x350, src + 0x12A4);
     fn_801312EC(dst + 0x35C, src + 0x12C0);
@@ -69,3 +68,4 @@ void fn_801A937C(void) {
     fn_801312EC(dst + 0x5C0, src + 0x17E0);
     fn_801312EC(dst + 0x5CC, src + 0x17F8);
 }
+#pragma scheduling on
