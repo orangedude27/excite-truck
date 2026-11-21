@@ -1975,8 +1975,7 @@ u8 WUDiClearUnregisteredDevice(void) {
     u8 *entry;
     void *info;
     s32 offset;
-    u32 addr = (u32)lbl_80392960;
-    u8 *base = (u8 *)addr;
+    u8 *base = lbl_80392960;
     s32 index;
 
     if (base[0xE] == 0) {
@@ -1985,10 +1984,10 @@ u8 WUDiClearUnregisteredDevice(void) {
         while (index < 0x10) {
             s32 interrupt = OSDisableInterrupts();
             if (index >= 0 && index < 10) {
-                u8 *mid = base + offset;
+                u8 *mid = lbl_80392960 + offset;
                 entry = mid + 0x64;
             } else {
-                u8 *mid = base + (index - 10) * 0x60;
+                u8 *mid = lbl_80392960 + (index - 10) * 0x60;
                 entry = mid + 0x424;
             }
             OSRestoreInterrupts(interrupt);
