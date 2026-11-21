@@ -1072,6 +1072,8 @@ extern "C" void fn_80190E08(void) {
 #pragma cplusplus reset
 #pragma dont_inline reset
 
+/* Thunk: forwards to fn_80190E08, which calls virtual method m16 on every
+ * object registered in the listener list at lbl_804349A0. */
 void fn_80190E6C(void) {
     fn_80190E08();
 }
