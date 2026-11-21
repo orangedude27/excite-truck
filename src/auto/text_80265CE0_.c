@@ -80,6 +80,7 @@ void fn_80265D8C(void) {}
 
 void fn_80265D90(void) {}
 
+/* No-op stub in the MP-client/subsystem hook cluster; unreferenced in this build. */
 void fn_80265D94(void) {}
 
 /* Camera move-follow blend-parameter query stub: returns null in this build,
