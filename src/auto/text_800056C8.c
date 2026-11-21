@@ -24,10 +24,10 @@ extern s32 fn_8000C630(s32, s32);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern s32 fn_80128668(void);
-extern s32 fn_80005564(void);
-extern void *fn_801B83A0(void);
-extern void *lbl_8055D350;
-extern f32 lbl_8056011C;
+extern s32 fn_80005564(void); /* nonzero while the arena overlay is active */
+extern void *fn_801B83A0(void); /* the global arena-event master object */
+extern void *lbl_8055D350; /* session state: [7] player index, +0x10 time window, +0x30 HUD object */
+extern f32 lbl_8056011C; /* zero, pooled as a read-only float constant */
 extern s32 fn_801E866C(void);
 extern void *fn_801EA9A0(void);
 extern s32 fn_801B84D8(s32, s32);
@@ -972,14 +972,14 @@ extern "C" void fn_800066B4(void *arg0) {
     s32 now;
     s32 i;
     u8 alpha;
-    s32 two;
+    u32 two;
     void *(*get)(void *, s32);
     void *(*get2)(void *, s32, s32);
     fn_8027AA48();
     fn_80011E70();
     fn_80011E90();
     two = 2;
-    ((void (*)(u32, f32, f32, f32, f32, f64))fn_800109E4)(0x7F000000, lbl_80560140, lbl_80560144, lbl_80560148, lbl_8056014C, (f64)(u32)two);
+    ((void (*)(u32, f32, f32, f32, f32, f64))fn_800109E4)(0x7F000000, lbl_80560140, lbl_80560144, lbl_80560148, lbl_8056014C, (f64)two);
     obj = *(void **)((u8 *)arg0 + 0x1C);
     if (obj != 0) ((void (*)(void *, void *, void *, s32))fn_8014784C)(obj, base + 0x1B4, base + 0x1C0, 0);
     f = (f32)fn_802E2C20();
