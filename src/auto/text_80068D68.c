@@ -3817,23 +3817,24 @@ static void gki_remove_pool_from_list_del(UINT8 pool_id) {
 }
 #pragma push
 #pragma use_lmw_stmw off
+/* Delete a GKI buffer pool, clearing its free queue and control-block entries; report an error if the queue is still in use. */
 void GKI_delete_pool(UINT8 pool_id) {
-    FREE_QUEUE_T *Q;
+    FREE_QUEUE_T *free_queue;
     tGKI_COM_CB *p_cb = &((tGKI_CB *)lbl_803946C0)->com;
 
     if (pool_id >= 9 || p_cb->pool_start[pool_id] == NULL)
         return;
 
     fn_8006EBAC();
-    Q = &p_cb->freeq[pool_id];
-    if (Q->cur_cnt != 0)
+    free_queue = &p_cb->freeq[pool_id];
+    if (free_queue->cur_cnt != 0)
         goto bad_pool;
-    Q->size = 0;
-    Q->total = 0;
-    Q->cur_cnt = 0;
-    Q->max_cnt = 0;
-    Q->p_first = NULL;
-    Q->p_last = NULL;
+    free_queue->size = 0;
+    free_queue->total = 0;
+    free_queue->cur_cnt = 0;
+    free_queue->max_cnt = 0;
+    free_queue->p_first = NULL;
+    free_queue->p_last = NULL;
     fn_8006EC20(p_cb->pool_start[pool_id]);
     p_cb->pool_start[pool_id] = NULL;
     p_cb->pool_end[pool_id] = NULL;
