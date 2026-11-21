@@ -6351,7 +6351,7 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
     arg2 = (u32)page;
     arg0 = *(void **)((u8 *)arg2 + 0x18);
     savedResult = 0;
-    for (index = 0; (u16)index < *(u8 *)((u8 *)context + 0x22); index++) {
+    for (cluster = 0; (u16)cluster < *(u8 *)((u8 *)context + 0x22); cluster++) {
         result = fn_800B5618(context, *(void **)((u8 *)arg2 + 8),
                              (u32)arg0, 0, *(u16 *)context);
         if (result != 0 && savedResult == 0) savedResult = result;
@@ -14744,7 +14744,7 @@ extern "C" u8 lbl_80559250;
 extern "C" u8 lbl_80559258;
 extern "C" u8 lbl_80559260;
 extern "C" u8 lbl_80559268;
-static inline void fn_800BC538_setShort(Fn800BC538Obj *obj, s16 *thr, u8 *val) {
+static inline void fn_800BC538_setShort(Fn800BC538Obj *obj, volatile s16 *thr, volatile u8 *val) {
     s32 k;
     for (k = 0; k < 12; k++) {
         obj->shortThr[k] = *thr++;
