@@ -345,11 +345,12 @@ void fn_80177F40(void) {
     extern int lbl_8055E488;
     extern float lbl_80561B50, lbl_80561B54, lbl_80561B58, lbl_80561B5C;
     int other;
-    unsigned char flag;
-    unsigned active;
     unsigned char saved;
     char *base = (char *)lbl_80430590;
-    float *dst, *src;
+    unsigned active;
+    unsigned char flag;
+    float *dst;
+    float *src;
     int i;
 
     fn_80176A6C();
@@ -386,7 +387,7 @@ void fn_80177F40(void) {
         }
         cur = lbl_8055A300;
         if (cur >= 0 && cur < 0x4B) {
-            float s = (float)sin(lbl_80561B54 * (lbl_80561B58 * lbl_8055E3C8));
+            float s = (float)sin(lbl_80561B54 * (lbl_8055E3C8 * lbl_80561B58));
             fn_80178DBC(cur, lbl_80561B5C + lbl_80561B5C * s);
         }
         fn_801B8BF4();
@@ -916,54 +917,57 @@ void* fn_80178CA4(void) {
 }
 
 #pragma use_lmw_stmw off
-void fn_80178CAC(void *a, void *b)
+void fn_80178CAC(void *carA, void *carB)
 {
-  int t31;
-  int t30;
-  int t29;
-  int t28;
-  int *p;
-  int i;
-  void *x;
-  void *new_var;
-  void *y;
-  int t25;
-  int t24;
-  p = lbl_80430590;
-  for (i = 0; i < 4; i++, p++)
+  /* Swap two cars: repoint any of the four camera subjects that track either car,
+   * then exchange the two car data objects' fields at +0x1F0, +0x10 and +0x270C
+   * and refresh each car's entry in the car manager. */
+  int field10A;
+  int field10B;
+  int field270CA;
+  int field270CB;
+  int *cameraSubject;
+  int cameraIndex;
+  void *carAObj;
+  void *carAData;
+  void *carBObj;
+  int field1F0A;
+  int field1F0B;
+  cameraSubject = lbl_80430590;
+  for (cameraIndex = 0; cameraIndex < 4; cameraIndex++, cameraSubject++)
   {
-    if (((int) a) == (*p))
+    if (((int) carA) == (*cameraSubject))
     {
-      *p = (int) b;
-      fn_8026A248((int) b, i);
+      *cameraSubject = (int) carB;
+      fn_8026A248((int) carB, cameraIndex);
     }
     else
-      if (((int) b) == (*p))
+      if (((int) carB) == (*cameraSubject))
     {
-      *p = (int) a;
-      fn_8026A248((int) a, i);
+      *cameraSubject = (int) carA;
+      fn_8026A248((int) carA, cameraIndex);
     }
   }
 
-  new_var = (void *) fn_8017960C((int) a);
-  x = new_var;
-  y = (void *) fn_8017960C((int) b);
-  t25 = *((int *) (((char *) x) + 0x1F0));
-  t24 = *((int *) (((char *) y) + 0x1F0));
-  t31 = *((int *) (((char *) x) + 0x10));
-  t30 = *((int *) (((char *) y) + 0x10));
-  t28 = *((int *) (((char *) y) + 0x270C));
-  t29 = *((int *) (((char *) x) + 0x270C));
-  fn_801A5300(new_var, 0);
-  fn_801A5300(y, 0);
-  fn_801A5300(x, t28);
-  fn_801A5300(y, t29);
-  *((int *) (((char *) x) + 0x1F0)) = t24;
-  *((int *) (((char *) y) + 0x1F0)) = t25;
-  *((int *) (((char *) new_var) + 0x10)) = t30;
-  *((int *) (((char *) y) + 0x10)) = t31;
-  fn_801EAA94((int) a, t24);
-  fn_801EAA94((int) b, t25);
+  carAData = (void *) fn_8017960C((int) carA);
+  carAObj = carAData;
+  carBObj = (void *) fn_8017960C((int) carB);
+  field1F0A = *((int *) (((char *) carAObj) + 0x1F0));
+  field1F0B = *((int *) (((char *) carBObj) + 0x1F0));
+  field10A = *((int *) (((char *) carAObj) + 0x10));
+  field10B = *((int *) (((char *) carBObj) + 0x10));
+  field270CB = *((int *) (((char *) carBObj) + 0x270C));
+  field270CA = *((int *) (((char *) carAObj) + 0x270C));
+  fn_801A5300(carAData, 0);
+  fn_801A5300(carBObj, 0);
+  fn_801A5300(carAObj, field270CB);
+  fn_801A5300(carBObj, field270CA);
+  *((int *) (((char *) carAObj) + 0x1F0)) = field1F0B;
+  *((int *) (((char *) carBObj) + 0x1F0)) = field1F0A;
+  *((int *) (((char *) carAData) + 0x10)) = field10B;
+  *((int *) (((char *) carBObj) + 0x10)) = field10A;
+  fn_801EAA94((int) carA, field1F0B);
+  fn_801EAA94((int) carB, field1F0A);
 }
 /* Stores weight at index in both parallel tables: lbl_804305D4 here and
    lbl_804424B0 through fn_801DCEC8. */
