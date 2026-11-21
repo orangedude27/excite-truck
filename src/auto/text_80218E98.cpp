@@ -1135,8 +1135,11 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80219900(void *self, 
 }
 
 #pragma dont_inline on
-extern "C" s32 fn_80219958(void *arg0, s32 arg1) {
-    return fn_802192A4(arg0, arg1);
+/* Forward a widget message to the default message handler (fn_802192A4),
+ * which always reports the message as unhandled. Kept out-of-line by the
+ * surrounding #pragma dont_inline so the call is a tail call. */
+extern "C" s32 fn_80219958(void *widget, s32 message) {
+    return fn_802192A4(widget, message);
 }
 #pragma dont_inline reset
 extern "C" void *fn_8021995C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
