@@ -197,11 +197,13 @@ void __DVDShowFatalMessage(void) {
 extern void __DVDShowFatalMessage(void);
 extern void (*lbl_8055D8D0)(int, int);
 int DVDSetAutoFatalMessaging(int enable) {
+    /* Enable or disable the automatic DVD fatal-error message handler, returning whether
+     * it was previously enabled. The callback swap is protected by disabled interrupts. */
     int old;
     unsigned int level = OSDisableInterrupts();
-    old = FatalFunc_8055D8D8 != 0;
-    if (enable) FatalFunc_8055D8D8 = __DVDShowFatalMessage;
-    else FatalFunc_8055D8D8 = 0;
+    old = FatalFunc != 0;
+    if (enable) FatalFunc = __DVDShowFatalMessage;
+    else FatalFunc = 0;
     OSRestoreInterrupts(level);
     return old;
 }
