@@ -181,16 +181,16 @@ void TRKConstructEvent(void) {
 void TRKGetNextEvent(void *arg0, void *restoreContext) {
     u8 context[0x2D0];
     s32 value;
-    u32 addr;
+    void (*cb)(void);
     *(volatile u16 *)0xCC00500A = (*(volatile u16 *)0xCC00500A & ~0xA0) | 8;
     OSClearContext(context);
     OSSetCurrentContext(context);
-    addr = *(volatile u32 *)&lbl_8055D6E0;
-    if (addr != 0 && lbl_8055D6AC == 0) {
+    cb = (void (*)(void))lbl_8055D6E0;
+    if (cb != 0 && lbl_8055D6AC == 0) {
         value = lbl_8055D6DC;
         lbl_8055D6AC = 1;
-        if (value != 0) TRKInitializeEventQueue();
-        else ((void (*)(void))addr)();
+        if (value != 0) ((void (*)(void (*)(void)))TRKInitializeEventQueue)(cb);
+        else cb();
         lbl_8055D6AC = 0;
     }
     OSClearContext(context);
