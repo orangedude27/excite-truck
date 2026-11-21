@@ -5,12 +5,6 @@
 int fn_80128668(void *);
 int fn_80128670(int);
 int fn_801342B0(int, int);
-void fn_802C6FB4(int);
-void fn_802C703C(int);
-
-int fn_80128668(void *);
-int fn_80128670(int);
-int fn_801342B0(int, int);
 char *strcpy(char *, const char *);
 void fn_802C6FB4(int);
 void fn_802C703C(int);
