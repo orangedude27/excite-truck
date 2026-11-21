@@ -406,12 +406,14 @@ void fn_801E3488(void *outTranslation, void *node) {
 
 #pragma push
 #pragma processor 750
-void fn_801E34E4(const s32 *arg0, s32 arg1) {
-    s32 sp8[12];
+void fn_801E34E4(const s32 *modelTransform, s32 baseTransform) {
+    /* If the model-transform object holds a valid instance id, compute its world
+       transform from the parent chain and base transform, then apply it to that instance. */
+    s32 worldTransform[12];
 
-    if (*arg0 != -1) {
-        fn_801E3284(&sp8[0], (s32 *)arg0, arg1);
-        fn_802C744C(*arg0, &sp8[0]);
+    if (*modelTransform != -1) {
+        fn_801E3284(&worldTransform[0], (s32 *)modelTransform, baseTransform);
+        fn_802C744C(*modelTransform, &worldTransform[0]);
     }
 }
 #pragma pop
