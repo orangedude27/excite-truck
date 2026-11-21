@@ -227,7 +227,7 @@ void fn_802E9CF0(void) {
         fn_802E317C(strings + 0x15C);
     if (fn_800B7968(0, 0, 0, base + 0xB8) != 0)
         fn_802E317C(strings + 0x170);
-    lbl_80560061 = ((volatile unsigned char *)(base + 0xB8))[9] >> 4 & 1;
+    lbl_80560061 = ((unsigned char *)(base + 0xB8))[9] >> 4 & 1;
 }
 
 #pragma dont_inline on
@@ -272,9 +272,11 @@ body:
         dst++;
         goto check;
     }
-    next = *(volatile unsigned char *)++src;
-    *dst++ = 0x3F;
+    src++;
+    next = *(volatile unsigned char *)src;
     count--;
+    *(volatile unsigned char *)dst = 0x3F;
+    dst++;
     if ((signed char)next == 0) goto check;
     src++;
 check:
@@ -302,7 +304,7 @@ void fn_802E9EB8(void) {
     extern int lbl_8055D264;
     extern int lbl_8055D260;
 
-    if (lbl_805600D2 != 0) {
+    if ((unsigned char)lbl_805600D2 != 0) {
         ((long (*)(char *, long))fn_802E30C8)((char *)&lbl_8034E260 + 0x1A0, 0);
         fn_802E61BC((&lbl_80560090)[0]);
         fn_802E61BC((&lbl_80560090)[1]);
@@ -342,12 +344,12 @@ void fn_802E9EB8(void) {
         OSUnlockMutex(&lbl_805584A0);
     }
 
-    if (lbl_805600D1 == 0 && lbl_8055D264 != lbl_8055D260) {
+    if ((unsigned char)lbl_805600D1 == 0 && lbl_8055D264 != lbl_8055D260) {
     }
 
     {
         float f30;
-        if (lbl_805600C9 != 0) {
+        if ((unsigned char)lbl_805600C9 != 0) {
             int now = fn_802E2C20();
             int delta = now - lbl_805600CC;
             float t = (lbl_805651BC * (float)delta - lbl_805651C4) / lbl_805651C8;
@@ -361,7 +363,7 @@ void fn_802E9EB8(void) {
             int i;
             float vol;
             int en = 0;
-            if (lbl_805600D0 != 0 && lbl_805600D1 == 0) en = 1;
+            if ((unsigned char)lbl_805600D0 != 0 && (unsigned char)lbl_805600D1 == 0) en = 1;
             vol = en ? lbl_8055D270 * f30 : lbl_805651C4;
             for (i = 0; i < 2; i++) {
                 fn_802E61E4((&lbl_80560090)[i], vol);
@@ -491,9 +493,11 @@ extern "C" long *fn_802EA834(long arg0, long *arg1) {
     if (selector <= -2) {
         index = -2 - selector;
         if ((index >= 0) && (index < 3)) {
+            long off = index * 8;
             table = (long *)(globalBase + 0xA0);
-            if (table[index * 2] != 0) {
-                result = fn_802E9A3C(table[index * 2], table[index * 2 + 1]);
+            if (*(long *)((char *)table + off) != 0) {
+                result = fn_802E9A3C(*(long *)((char *)table + off),
+                                     *(long *)((char *)table + off + 8));
             }
         }
         if (result != 0) {
@@ -536,21 +540,43 @@ extern "C" long *fn_802EA834(long arg0, long *arg1) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_802EAA08(void) {
-    int offset = lbl_805600A4;
-    int end = lbl_805600B8;
-    if (end >= offset) {
-        memcpy((void *)lbl_805600A0, (void *)(lbl_805600A0 + lbl_805600A4), (unsigned int)lbl_805600B8 - (unsigned int)lbl_805600A4);
+    if (lbl_805600B8 >= lbl_805600A4) {
+        int len = lbl_805600B8 - lbl_805600A4;
+        memcpy((void *)lbl_805600A0, (void *)(lbl_805600A0 + lbl_805600A4), (unsigned int)len);
         lbl_805600B8 -= lbl_805600A4;
     }
 }
 #pragma scheduling on
 #pragma pop
+/* MP3 header field checks fn_802EAA58 inlines. */
+static inline int Mp3IsValidChannels(int *info) {
+    int ok = 1;
+    if (info[2] != 1 && info[2] != 2) ok = 0;
+    return ok;
+}
+static inline int Mp3IsValidRate(int *info) {
+    int rate = info[1];
+    int ok = 0;
+    if (rate >= 8000 && rate <= 60000) ok = 1;
+    return ok;
+}
+static inline int Mp3IsValidSize(int *info) {
+    unsigned int size = info[4];
+    int ok = 0;
+    if (size != 0 && size <= 0x1200) ok = 1;
+    return ok;
+}
+static inline int Mp3IsValidFormat(int *info) {
+    int ok = 0;
+    if (Mp3IsValidChannels(info) && Mp3IsValidRate(info)) ok = 1;
+    return ok;
+}
 int fn_802EAA58(int *arg0, int arg1) {
     int sizeOk;
     int channelOk;
     int channels;
     int valid;
-    short rateOk;
+    int rateOk;
     int result;
     int rate;
     int size;
@@ -991,16 +1017,15 @@ done:
 }
 int fn_802EBD40(void) {
     extern void OSSleepTicks(unsigned long long);
-    register char *base;
+    char *base = (char *)&lbl_8034E260;
+    register unsigned int *tb;
     register unsigned int multiplier;
     register int elapsed;
-    register unsigned int *tb;
-    unsigned int clock;
-    base = (char *)&lbl_8034E260;
+    register unsigned int clock;
     lbl_80560062 = 0;
     ((void (*)(char *, ...))fn_802E30C8)(base + 0x65C);
-    multiplier = 0x10624DD3;
     elapsed = 0;
+    multiplier = 0x10624DD3;
     tb = (unsigned int *)0x80000000;
     while ((unsigned char)lbl_80560063 == 0) {
         clock = tb[0x3E] >> 2;
@@ -1050,38 +1075,35 @@ void fn_802EBE2C(void) {
     extern void fn_802E9EB8(void);
     int i, off, h;
     float f;
-    int a4, ac;
 
     lbl_8055D260 = -1;
     lbl_8055D264 = 0xAC44;
     lbl_80560078 = (void *)-1;
     lbl_8055D25C = lbl_8055D264;
     lbl_8056009C = (int)fn_8012850C(0xED80, (char *)&lbl_8034E260 + 0x6BC);
-    a4 = 0x47FC0;
-    lbl_805600A4 = a4;
-    fn_802E30C8((char *)&lbl_8034E260 + 0x6C8, a4 / 1024);
+    lbl_805600A4 = 0x47FC0;
+    ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E260 + 0x6C8, lbl_805600A4 / 1024);
     lbl_805600A0 = (int)fn_8012850C((lbl_805600A4 + 0x1200) * 2 - (lbl_805600A4 + 0x1200), &lbl_8055D2D8);
-    ac = 0x1E000;
-    lbl_805600AC = ac;
-    lbl_805600A8 = (int)fn_8012850C(ac * 2 - ac, &lbl_8055D2E0);
+    lbl_805600AC = 0x1E000;
+    lbl_805600A8 = (int)fn_8012850C(lbl_805600AC * 2 - lbl_805600AC, &lbl_8055D2E0);
     lbl_805600B8 = 0x2400;
     i = 0;
     off = 0;
     do {
-        *(int *)((char *)&lbl_805600B0 + off) = 0;
-        *(int *)((char *)&lbl_80560088 + off) = fn_802E5DD8(&lbl_8055D2E8, 0x7FF8, 0, fn_802EB7D4, i);
-        *(int *)((char *)&lbl_80560090 + off) = fn_802E6058();
+        *(volatile int *)((char *)&lbl_805600B0 + off) = 0;
+        *(volatile int *)((char *)&lbl_80560088 + off) = fn_802E5DD8(&lbl_8055D2E8, 0x7FF8, 0, fn_802EB7D4, i);
+        *(volatile int *)((char *)&lbl_80560090 + off) = fn_802E6058();
         if (i == 0) f = lbl_805651CC; else f = lbl_805651C0;
-        fn_802E61EC(*(int *)((char *)&lbl_80560090 + off), f);
+        fn_802E61EC(*(volatile int *)((char *)&lbl_80560090 + off), f);
         i++;
         off += 4;
     } while (i < 2);
     i = 0;
     off = 0;
     do {
-        fn_802E61E4(*(int *)((char *)&lbl_80560090 + off), lbl_805651C4);
-        fn_802E622C(*(int *)((char *)&lbl_80560090 + off), lbl_805651C4);
-        fn_802E61BC(*(int *)((char *)&lbl_80560090 + off));
+        fn_802E61E4(*(volatile int *)((char *)&lbl_80560090 + off), lbl_805651C4);
+        fn_802E622C(*(volatile int *)((char *)&lbl_80560090 + off), lbl_805651C4);
+        fn_802E61BC(*(volatile int *)((char *)&lbl_80560090 + off));
         i++;
         off += 4;
     } while (i < 2);
@@ -1225,24 +1247,20 @@ extern void OSSleepTicks(unsigned long long);
 #pragma push
 #pragma dont_inline on
 void fn_802EC1E4(void) {
-    register unsigned int *timebase;
     register int start;
-    register unsigned int multiplier;
-    register unsigned int clock;
+    unsigned int clock;
     int current;
     fn_802EC1D8();
     ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E95C);
     start = fn_802E2C20();
-    multiplier = 0x10624DD3;
-    timebase = (unsigned int *)0x80000000;
     while ((unsigned char)lbl_805600C8 != 0) {
         current = fn_802E2C20();
         if (current - start > 0xBB8) {
             ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E980);
             break;
         }
-        clock = *(volatile unsigned int *)((char *)timebase + 0xF8) >> 2;
-        ((void (*)(int, int))OSSleepTicks)(0, (clock / 1000) + ((clock / 250) & 0x0FFFFFFC));
+        clock = *(volatile unsigned int *)0x800000F8 >> 2;
+        OSSleepTicks((unsigned long long)((clock / 1000) + ((clock / 250) & 0x0FFFFFFC)));
     }
 }
 #pragma pop
