@@ -678,7 +678,9 @@ void fn_802DC464(int positions, int vertexCount, unsigned short *__restrict list
 }
 #pragma pop
 
-void fn_802DC628(void) {}
+void fn_802DC628(void) {
+    /* No-op default lookup hook: returns without touching any register. */
+}
 
 #pragma push
 #pragma small_data off
