@@ -217,11 +217,14 @@ void fn_802877D0(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_80287800(s32 arg0) {
+void fn_80287800(s32 initOptions) {
 #pragma scheduling invalid_target
-    s32 a;
+#define gMultiplayerMode lbl_8055F6BC
+    /* Bring up every game subsystem in order, cache whether this is a
+     * multiplayer session (more than one player slot), then finish setup. */
+    s32 slotState;
     ((void (*)(void))fn_8028777C)();
-    fn_80288218(arg0);
+    fn_80288218(initOptions);
     fn_802880F4();
     fn_802A81F0();
     fn_802888D8();
@@ -241,9 +244,10 @@ void fn_80287800(s32 arg0) {
     fn_8029F03C();
     fn_802AB21C();
     fn_8028DFB0();
-    a = fn_801E7DF0(0);
-    lbl_8055F6BC = (a > 1);
+    slotState = fn_801E7DF0(0);
+    gMultiplayerMode = (slotState > 1);
     fn_80288868(0);
+#undef gMultiplayerMode
 }
 #pragma pop
 void fn_802878A8(void) {
