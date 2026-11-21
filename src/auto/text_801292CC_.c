@@ -1,10 +1,10 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern int lbl_8055DFA8;
-extern float lbl_80561238, lbl_8056123C, lbl_80561240;
-extern char lbl_8032A588[0x14], lbl_80559978;
-extern char lbl_8032A59C[];
+extern int lbl_8055DFA8; /* id of the currently loaded stream bank */
+extern float lbl_80561238, lbl_8056123C, lbl_80561240; /* full/half/mute mix levels */
+extern char lbl_8032A588[0x14], lbl_80559978; /* "SpuQueueLoadBank!" and "%s.bnk" */
+extern char lbl_8032A59C[]; /* "SpuQueueUnloadBank!" */
 extern int fn_802E765C(int,int,int);
 extern int fn_802E7684(float);
 extern int fn_802E30C8(const char *, ...);
