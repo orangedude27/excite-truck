@@ -2772,6 +2772,9 @@ int fn_80283E28(void) {
 }
 
 #pragma scheduling on
+/* Thin wrapper around fn_8027E908: rebuild the UI menu system's item/identifier
+ * registry from its static table. Called after the menu list is (re)obtained in
+ * text_8027D264_.c, before the list is walked or rebuilt again. */
 void fn_802840F4(void) {
     fn_8027E908();
 }
