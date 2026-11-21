@@ -39,8 +39,9 @@ void *fn_802E4C1C(int size) {
 #pragma scheduling on
 #pragma dont_inline off
 
-void *fn_802E4CA4(int arg0) {
-    return fn_802E4C1C(arg0);
+void *fn_802E4CA4(int size) {
+    /* Tail-call wrapper: allocate a virtual-memory block of `size` bytes via fn_802E4C1C. */
+    return fn_802E4C1C(size);
 }
 
 void fn_802E4CA8(unsigned char *dst, const signed char *src, int maxLen) {
