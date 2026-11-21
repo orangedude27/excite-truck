@@ -464,6 +464,7 @@ void fn_802168BC(s32 result) {
     #undef s_fadeResult
 }
 
+/* Thunk for UIWindow_HideGroup: tail-forwards (window, groupId, fadeTime) unchanged to the hide-group implementation fn_8021889C. */
 void fn_802168CC(void) {
     fn_8021889C();
 }
