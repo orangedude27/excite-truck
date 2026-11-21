@@ -481,22 +481,25 @@ typedef signed short s16;
 extern float lbl_80320E38[];
 #pragma pop
 extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32 angle) {
+    /* nw4r math sine: wrap the absolute angle into one 65536-unit turn, quantize
+     * it to the 256-entry sin/cos table, then linearly interpolate the table's
+     * sine value with its slope; negate for negative angles (sine is odd). */
     struct SinEntry { f32 s, c, sd, cd; };
-    f32 index = __fabsf(angle);
-    while (index >= 65536.0f) index -= 65536.0f;
-    u16 q = __OSf32tou16(index);
-    f32 whole = __OSu16tof32(&q);
-    u32 idx = q & 0xFF;
-    u32 off = idx * 0x10;
-    struct SinEntry *tbl = (struct SinEntry *)lbl_80320E38;
-    f32 v0;
-    f32 v1;
-    f32 frac = index - whole;
-    v1 = *(f32 *)((char *)lbl_80320E38 + off + 8);
-    v0 = tbl[idx].s;
-    f32 value = v0 + frac * v1;
-    if (angle < lbl_80560F04) value = -value;
-    return value;
+    f32 absAngle = __fabsf(angle);
+    while (absAngle >= 65536.0f) absAngle -= 65536.0f;
+    u16 quantized = __OSf32tou16(absAngle);
+    f32 wholePart = __OSu16tof32(&quantized);
+    u32 tableIndex = quantized & 0xFF;
+    u32 byteOffset = tableIndex * 0x10;
+    struct SinEntry *sineTable = (struct SinEntry *)lbl_80320E38;
+    f32 sineValue;
+    f32 sineSlope;
+    f32 fraction = absAngle - wholePart;
+    sineSlope = *(f32 *)((char *)lbl_80320E38 + byteOffset + 8);
+    sineValue = sineTable[tableIndex].s;
+    f32 result = sineValue + fraction * sineSlope;
+    if (angle < lbl_80560F04) result = -result;
+    return result;
 }
 
 extern "C" f32 CosFIdx__Q24nw4r4mathFf(f32 angle) {
