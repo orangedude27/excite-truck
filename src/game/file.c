@@ -529,6 +529,8 @@ extern "C" void fn_802E3CA4(s32 findHandle) {
 #pragma cplusplus off
 
 #pragma cplusplus off
+/* No-op engine file-API hook: called at track-resource load (fn_8000A8C4) and
+ * world teardown; this build needs no action. */
 void fn_802E3D00(void) {
 }
 
