@@ -581,93 +581,97 @@ void fn_8029CD14(void) {
 #pragma scheduling invalid_target
 #pragma ppc_psq_save off
 #pragma use_lmw_stmw off
-void fn_8029CD48(void *arg0) {
-    extern double fn_8002F234(float);
-    extern float fn_80287BC8(float, float);
-    extern float fn_802BF590(void);
-    extern void fn_8028E590(int, float *, float *, float);
-    extern int lbl_8055F7F8;
-    struct Vec3 { float x, y, z; } sp34, sp28, sp1C, sp10;
-    struct { float x, z; } sp8;
-    int iterations;
-    float *matrix = (float *)arg0;
-    unsigned char *obj = (unsigned char *)arg0;
-    float *vec = (float *)((unsigned char *)arg0 + 0x70);
-    int outer, inner;
-    for (outer = 0; outer < 4; outer++, obj += 0x3c, vec = (float *)((unsigned char *)vec + 0x3c)) {
-        float sign;
+/* Emit splash particles from a nearby object's four water-contact points.  Each
+ * local point is transformed into world space; points above the water surface
+ * are skipped, and a jittered line of particles is emitted toward an offset
+ * target, with the count scaling with horizontal distance from the origin. */
+void fn_8029CD48(void *object) {
+    extern double fn_8002F234(float); /* sqrt */
+    extern float fn_80287BC8(float, float); /* random float in [min, max] */
+    extern float fn_802BF590(void); /* water surface Y */
+    extern void fn_8028E590(int, float *, float *, float); /* emit a splash particle */
+    extern int lbl_8055F7F8; /* splash particle emitter handle */
+    struct Vec3 { float x, y, z; } emitWorld, target, startJitter, endJitter;
+    struct { float x, z; } originXZ;
+    int particleCount;
+    float *pose = (float *)object;
+    unsigned char *obj = (unsigned char *)object;
+    float *localPoint = (float *)((unsigned char *)object + 0x70);
+    int pointIndex, particleIndex;
+    for (pointIndex = 0; pointIndex < 4; pointIndex++, obj += 0x3c, localPoint = (float *)((unsigned char *)localPoint + 0x3c)) {
+        float sideSign;
         if ((*(unsigned int *)(obj + 0x9c) & 8) != 0)
             continue;
-        if (&sp34.x == vec) {
+        if (&emitWorld.x == localPoint) {
             float x, y, z;
             float m00, m10, m20, m01, m11, m21, m02, m12, m22;
-            m10 = matrix[3]; m11 = matrix[4]; m12 = matrix[5];
-            m00 = matrix[0]; m01 = matrix[1]; m02 = matrix[2];
-            m20 = matrix[6]; m21 = matrix[7]; m22 = matrix[8];
-            x = vec[0]; y = vec[1]; z = vec[2];
-            sp34.x = z * m20 + (x * m00 + y * m10);
-            sp34.y = z * m21 + (x * m01 + y * m11);
-            sp34.z = z * m22 + (x * m02 + y * m12);
+            m10 = pose[3]; m11 = pose[4]; m12 = pose[5];
+            m00 = pose[0]; m01 = pose[1]; m02 = pose[2];
+            m20 = pose[6]; m21 = pose[7]; m22 = pose[8];
+            x = localPoint[0]; y = localPoint[1]; z = localPoint[2];
+            emitWorld.x = z * m20 + (x * m00 + y * m10);
+            emitWorld.y = z * m21 + (x * m01 + y * m11);
+            emitWorld.z = z * m22 + (x * m02 + y * m12);
         } else {
             float m00, m01, m02, m10, m11, m12, m20, m21, m22;
-            m10 = matrix[3]; m00 = matrix[0]; m20 = matrix[6];
-            sp34.x = vec[2] * m20 + (vec[0] * m00 + vec[1] * m10);
-            m11 = matrix[4]; m01 = matrix[1]; m21 = matrix[7];
-            sp34.y = vec[2] * m21 + (vec[0] * m01 + vec[1] * m11);
-            m12 = matrix[5]; m02 = matrix[2]; m22 = matrix[8];
-            sp34.z = vec[2] * m22 + (vec[0] * m02 + vec[1] * m12);
+            m10 = pose[3]; m00 = pose[0]; m20 = pose[6];
+            emitWorld.x = localPoint[2] * m20 + (localPoint[0] * m00 + localPoint[1] * m10);
+            m11 = pose[4]; m01 = pose[1]; m21 = pose[7];
+            emitWorld.y = localPoint[2] * m21 + (localPoint[0] * m01 + localPoint[1] * m11);
+            m12 = pose[5]; m02 = pose[2]; m22 = pose[8];
+            emitWorld.z = localPoint[2] * m22 + (localPoint[0] * m02 + localPoint[1] * m12);
         }
-        sp34.x += matrix[9];
-        sp34.y += matrix[10];
-        sp34.z += matrix[11];
-        if (sp34.y > fn_802BF590())
+        emitWorld.x += pose[9];
+        emitWorld.y += pose[10];
+        emitWorld.z += pose[11];
+        if (emitWorld.y > fn_802BF590())
             continue;
-        sp34.y += 0.5f;
-        if (vec[0] > 0.0f)
-            sign = 1.0f;
+        emitWorld.y += 0.5f;
+        if (localPoint[0] > 0.0f)
+            sideSign = 1.0f;
         else
-            sign = -1.0f;
+            sideSign = -1.0f;
         {
-            float limit;
-            float squared;
-            float z;
-            float scale = 0.2f + 0.1f * (matrix[20] * sign);
-            limit = 0.2f + 0.1f * matrix[20];
-            sp28.x = matrix[13] + matrix[0] * scale;
-            sp28.y = matrix[14] + matrix[1] * scale;
-            sp28.z = matrix[15] + matrix[2] * scale;
-            if (5.0f < limit)
-                limit = 5.0f;
-            z = matrix[15];
-            sp8.x = matrix[13];
-            sp28.x += matrix[3] * limit;
-            sp28.y += matrix[4] * limit;
-            squared = sp8.x * sp8.x + z * z;
-            sp28.z += matrix[5] * limit;
-            sp8.z = z;
+            float forwardOffset;
+            float distSq;
+            float originZ;
+            float sideOffset = 0.2f + 0.1f * (pose[20] * sideSign);
+            forwardOffset = 0.2f + 0.1f * pose[20];
+            target.x = pose[13] + pose[0] * sideOffset;
+            target.y = pose[14] + pose[1] * sideOffset;
+            target.z = pose[15] + pose[2] * sideOffset;
+            if (5.0f < forwardOffset)
+                forwardOffset = 5.0f;
+            originZ = pose[15];
+            originXZ.x = pose[13];
+            target.x += pose[3] * forwardOffset;
+            target.y += pose[4] * forwardOffset;
+            distSq = originXZ.x * originXZ.x + originZ * originZ;
+            target.z += pose[5] * forwardOffset;
+            originXZ.z = originZ;
             {
-                float distance = fn_8002F234(squared);
+                float distance = fn_8002F234(distSq);
                 if ((int)(0.25f * distance) < 6)
-                    iterations = 0.25f * distance;
+                    particleCount = 0.25f * distance;
                 else
-                    iterations = 6;
-                for (inner = 0; inner < iterations; inner++) {
-                    float step;
-                    sp1C = sp34;
-                    sp1C.x += fn_80287BC8(-0.5f, 0.5f);
-                    sp1C.z += fn_80287BC8(-0.5f, 0.5f);
-                    sp1C.y = fn_802BF590();
-                    step = 2.0f < 0.125f * distance ? 2.0f : 0.125f * distance;
-                    sp10 = sp28;
-                    sp10.x += fn_80287BC8(-step, step);
-                    sp10.y = 2.0f * fn_80287BC8(0.0f, step);
-                    sp10.z += fn_80287BC8(-step, step);
-                    if (vec[0] > 0.0f)
-                        sign = 1.0f;
+                    particleCount = 6;
+                for (particleIndex = 0; particleIndex < particleCount; particleIndex++) {
+                    float jitterStep;
+                    startJitter = emitWorld;
+                    startJitter.x += fn_80287BC8(-0.5f, 0.5f);
+                    startJitter.z += fn_80287BC8(-0.5f, 0.5f);
+                    startJitter.y = fn_802BF590();
+                    jitterStep = 2.0f < 0.125f * distance ? 2.0f : 0.125f * distance;
+                    endJitter = target;
+                    endJitter.x += fn_80287BC8(-jitterStep, jitterStep);
+                    endJitter.y = 2.0f * fn_80287BC8(0.0f, jitterStep);
+                    endJitter.z += fn_80287BC8(-jitterStep, jitterStep);
+                    if (localPoint[0] > 0.0f)
+                        sideSign = 1.0f;
                     else
-                        sign = -1.0f;
-                    fn_8028E590(lbl_8055F7F8, &sp1C.x, &sp10.x,
-                        -sign * fn_80287BC8(0.0f, 3.1415927f));
+                        sideSign = -1.0f;
+                    fn_8028E590(lbl_8055F7F8, &startJitter.x, &endJitter.x,
+                        -sideSign * fn_80287BC8(0.0f, 3.1415927f));
                 }
             }
         }
