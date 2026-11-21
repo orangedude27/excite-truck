@@ -75,6 +75,34 @@ static inline void matVecAliasY_8018(Vec_8018 *dest, const float *m, const Vec_8
         dest->z = src->y * m[5] + src->x * m[2] + src->z * m[8];
     }
 }
+static inline void matVecMix_8018(Vec_8018 *dest, const float *m, const float *v) {
+    if ((float *)dest == v) {
+        float tx = m[0] * v[0] + m[3] * v[1] + m[6] * v[2];
+        float ty = m[1] * v[0] + m[4] * v[1] + m[7] * v[2];
+        float tz = m[2] * v[0] + m[5] * v[1] + m[8] * v[2];
+        dest->x = tx;
+        dest->y = ty;
+        dest->z = tz;
+    } else {
+        dest->x = m[0] * v[0] + m[3] * v[1] + m[6] * v[2];
+        dest->y = m[1] * v[0] + m[4] * v[1] + m[7] * v[2];
+        dest->z = m[2] * v[0] + m[5] * v[1] + m[8] * v[2];
+    }
+}
+static inline void matVecMixY_8018(Vec_8018 *dest, const float *m, const float *v) {
+    if ((float *)dest == v) {
+        float tx = m[3] * v[1] + m[0] * v[0] + m[6] * v[2];
+        float ty = m[4] * v[1] + m[1] * v[0] + m[7] * v[2];
+        float tz = m[5] * v[1] + m[2] * v[0] + m[8] * v[2];
+        dest->x = tx;
+        dest->y = ty;
+        dest->z = tz;
+    } else {
+        dest->x = m[3] * v[1] + m[0] * v[0] + m[6] * v[2];
+        dest->y = m[4] * v[1] + m[1] * v[0] + m[7] * v[2];
+        dest->z = m[5] * v[1] + m[2] * v[0] + m[8] * v[2];
+    }
+}
 
 
 #pragma push
