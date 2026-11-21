@@ -4,6 +4,10 @@
 /* fn_80129C24 seeds the seven RNG state blocks; fn_8012BE90 initializes the
  * TOC/resource subsystem; fn_8012C4E8 tears it down; fn_80129C60 is an empty
  * completion hook. */
+extern void fn_80129C24(void);
+extern int fn_8012BE90(void);
+extern void fn_8012C4E8();
+extern void fn_80129C60(void);
 
 /* Per-frame hook: reseed the RNGs, then tick the TOC subsystem. */
 void fn_80129BD4(void) {
