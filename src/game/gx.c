@@ -753,7 +753,8 @@ void fn_802CF850(void) {
     extern void fn_802D0188(unsigned char, unsigned char, unsigned char);
     extern void fn_802D0160(unsigned char, unsigned char, unsigned char);
     extern void fn_802D007C(float);
-    extern void fn_802D01B0(float *, float);
+    typedef float *DirArg802D01B0;
+    extern void fn_802D01B0(DirArg802D01B0, float);
     extern void fn_802D01E0(int, int, int, int);
     extern void fn_802D0368(float, float, float, float);
     extern void fn_802D03F4(float *, float);
@@ -1220,6 +1221,7 @@ void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
     p[0x5C] = 1;
     lbl_804C97D0 = a;
 }
+#pragma scheduling on
 void fn_802D01B0(float *p, float v) {
     extern char lbl_804C97D0;
     float z, y, x;
@@ -1234,7 +1236,6 @@ void fn_802D01B0(float *p, float v) {
     out[3] = v;
     *((unsigned char *)&lbl_804C97D0 + 0x5C) = 1;
 }
-#pragma pop
 void fn_802D2218(void);
 #pragma push
 #pragma paired off
