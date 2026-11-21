@@ -116,10 +116,6 @@ int fn_80138C28(MotionPair *motion, float *out_time, float *out_distance) {
     return 0;
 }
 #pragma scheduling on
-static inline int motion_is_braking(const Motion1D *motion) {
-    return motion->velocity > ZERO && motion->acceleration < ZERO;
-}
-
 float fn_80138DF4(void *arg0) {
     register MotionPair *m = (MotionPair *)arg0;
     float spC;
