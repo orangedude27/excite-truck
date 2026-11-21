@@ -2901,7 +2901,7 @@ extern "C" void *fn_8021CAD4(void *self, s32 deletingFlag) {
     return self;
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" void fn_8021CB4C(void *__restrict arg0, s32 arg1) {
     struct First {
         virtual void v0(); virtual void v1(); virtual void v2();
@@ -2922,6 +2922,7 @@ extern "C" void fn_8021CB4C(void *__restrict arg0, s32 arg1) {
     volatile s32 sp8;
     register s32 result;
     register s32 start;
+    register s32 diff;
     First *first;
 
     fn_802C3034(arg1);
@@ -2930,7 +2931,8 @@ extern "C" void fn_8021CB4C(void *__restrict arg0, s32 arg1) {
     result = ((Second *)arg0)->get();
     start = *(s32 *)((u8 *)arg0 + 0x254);
     sp8 = 0x43300000;
-    spC = (result - start) ^ 0x80000000;
+    diff = result - start;
+    spC = diff ^ 0x80000000;
 }
 /* Draw a slider/tab widget: draw its track at the widget's screen-centred
  * position, then offset the tab by scrollRate * (current value - base value)
