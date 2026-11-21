@@ -45,14 +45,14 @@ void fn_801FC900(void) {
 #undef ReleaseTrackGrf
 }
 
+/* Scene step for the case where no EB scene context (gEBContext,
+ * lbl_8055EBA0) is loaded: tail-call fn_801EBD70, which ticks the UI
+ * (fn_802B0144) and, when the UI flag lbl_8055EB2C is 1, hands the current
+ * player's progress (player config +0x34, fn_801E8738) to the active screen
+ * object (fn_802BF598).  The per-frame scene step fn_801EA404 calls it
+ * before fn_801FC908, which does the same for the loaded-context case. */
 void fn_801FC904(void) {
 #define StepEBWithoutScene fn_801EBD70
-    /* Scene step for the case where no EB scene context (gEBContext,
-     * lbl_8055EBA0) is loaded: tail-call fn_801EBD70, which ticks the UI
-     * (fn_802B0144) and, when the UI flag lbl_8055EB2C is 1, hands the current
-     * player's progress (player config +0x34, fn_801E8738) to the active screen
-     * object (fn_802BF598).  The per-frame scene step fn_801EA404 calls it
-     * before fn_801FC908, which does the same for the loaded-context case. */
     StepEBWithoutScene();
 #undef StepEBWithoutScene
 }
