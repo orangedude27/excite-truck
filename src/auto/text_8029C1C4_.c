@@ -1713,6 +1713,8 @@ int fn_8029EF1C(void) {
 void fn_8029EF24(void *effect) {
 }
 
+/* Empty nw4r::ef::Effect virtual hook; reached through the fn_8029EF40 wrapper
+ * and left as a no-op in this build. */
 void fn_8029EF28(void) {
 }
 
