@@ -1258,14 +1258,17 @@ extern "C" void fn_800E402C(void *manager) {
 extern "C" void TRKProcessInput(void *, unsigned int);
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void fn_800E4064(void *arg0, void *arg1) {
-    struct Owner {
+extern "C" void fn_800E4064(void *manager) {
+    struct Manager {
         unsigned char pad0[0x18];
         void *head;
         unsigned char pad1[0x6c31 - 0x1c];
         unsigned char active;
     };
-    struct Owner *owner = (Owner *)arg0;
+    /* Walk the emission manager's linked list with interrupts off; for each
+     * enabled element, feed every non-null buffer in its row/column table to
+     * TRKProcessInput, then restore interrupts. */
+    struct Manager *mgr = (Manager *)manager;
     struct { unsigned int irq; } irqHolder;
     unsigned int &level = irqHolder.irq;
     struct { void *head; } cursor;
@@ -1273,32 +1276,32 @@ extern "C" void fn_800E4064(void *arg0, void *arg1) {
     struct { void *end; } sentinelHolder;
     void *&sentinel = sentinelHolder.end;
     level = OSDisableInterrupts();
-    node = owner->head;
-    owner->active = 1;
-    sentinel = &owner->head;
+    node = mgr->head;
+    mgr->active = 1;
+    sentinel = &mgr->head;
     while (node != sentinel) {
         if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
         if (*(int *)((char *)node - 0x84) != 0xff) {
             if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
-            int outer;
-            int inner;
-            char *base;
+            int rowIndex;
+            int column;
+            char *block;
             char *row;
             char *entry;
-            base = (char *)node - 0x1a8;
-            outer = 0;
-            row = base;
-            while (outer < *(int *)(base + 0x104)) {
+            block = (char *)node - 0x1a8;
+            rowIndex = 0;
+            row = block;
+            while (rowIndex < *(int *)(block + 0x104)) {
                 entry = row;
-                inner = 0;
-                while (inner < *(int *)(base + 0x108)) {
+                column = 0;
+                while (column < *(int *)(block + 0x108)) {
                     void *input = *(void **)(entry + 0xC);
                     if (input != 0) TRKProcessInput(input, 0x10);
                     entry += 4;
-                    inner++;
+                    column++;
                 }
                 row += 0x10;
-                outer++;
+                rowIndex++;
             }
         }
         node = *(void **)node;
