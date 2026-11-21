@@ -1186,7 +1186,7 @@ void fn_802678E8(void *arg0, int arg1) {
        t = ((float)__fabs(PSVECDotProduct(p+0x70,p+0xd8))-0.97f)/lbl_80563C74;
        t = (1.0f < t) ? 1.0f : t;
        t = (t > 0.0f) ? t : 0.0f;
-       height = frame.height * (1.0f + -0.5f * t);
+       height = frame.height * (1.0f + t * -0.5f);
        goto set_height;
      }
    }
@@ -1204,13 +1204,12 @@ set_height:
  else *(short *)((char *)arg0+0x64)=*(short *)(*(char **)(p+0x140)+0x6c);
  if (!fn_801769F8()) {
    float *q=lbl_80499980; float dec=lbl_80563C7C, zero=lbl_80563C20;
-   float d;
    int n = 2;
    i = 0; do {
-     d=q[0]-dec; if (zero>d) d=zero; q[0]=d;
-     d=q[1]-dec; if (zero>d) d=zero; q[1]=d;
-     d=q[2]-dec; if (zero>d) d=zero; q[2]=d;
-     d=q[3]-dec; if (zero>d) d=zero; q[3]=d;
+     t=q[0]-dec; if (t<zero) t=zero; q[0]=t;
+     t=q[1]-dec; if (t<zero) t=zero; q[1]=t;
+     t=q[2]-dec; if (t<zero) t=zero; q[2]=t;
+     t=q[3]-dec; if (t<zero) t=zero; q[3]=t;
      q+=4; i+=3;
    } while (--n != 0);
  }
@@ -1252,6 +1251,8 @@ extern int lbl_8055F4A0;
 extern int lbl_8055F4A4;
 extern int lbl_8055F4A8;
 extern void fn_801E9DC4(int *);
+/* Tail-call wrapper for fn_802734F0: forwards the incoming event type (passed
+ * in the first argument by callers) to compute its region/track flags. */
 void fn_80267EE0(void) {
     fn_802734F0();
 }
