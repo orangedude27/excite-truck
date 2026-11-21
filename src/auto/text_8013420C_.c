@@ -109,48 +109,53 @@ s32 fn_8012C6F0(void *);
 void fn_8012C720(void *, s32, s32, s32);
 void fn_802E317C(const char *, ...);
 #pragma use_lmw_stmw off
-s32 fn_80134424(Container *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8) {
-    struct S {
-        s32 p6;
-        s32 p5;
-        s32 p4;
-        s32 p1;
-        Container *p0;
-        char *msg;
-    } s;
-    s32 i;
-    s32 active;
+/* Reserve a load-pool slot for a resource stream: refuse if three loads are
+ * already active, otherwise claim the first free entry, open the resource with
+ * fn_8012C5B8, set its callback/user data, validate the requested byte count
+ * against the pool's slot stride and the resource size, and start the transfer.
+ * Returns the slot index, or -1 if none is available. */
+s32 fn_80134424(Container *pool, s32 path, s32 dataTag, s32 outSize, s32 callback, s32 userData, s32 sourceOffset, s32 byteCount, s32 arg8) {
+    struct Params {
+        s32 sourceOffset;
+        s32 userData;
+        s32 callback;
+        s32 path;
+        Container *pool;
+        char *msgBase;
+    } p;
+    s32 slot;
+    s32 activeCount;
     Entry *entry;
-    s32 size;
+    s32 dataSize;
 
-    s.p0 = arg0;
-    s.p1 = arg1;
-    s.p4 = arg4;
-    s.p5 = arg5;
-    s.p6 = arg6;
-    s.msg = lbl_8032BB18;
-    active = 0;
-    for (i = 0; i < s.p0->count; i++) {
-        entry = (Entry *)((char *)s.p0->entries + i * 0x18);
-        if (entry->state == 1) active++;
+    p.pool = pool;
+    p.path = path;
+    p.callback = callback;
+    p.userData = userData;
+    p.sourceOffset = sourceOffset;
+    p.msgBase = lbl_8032BB18;
+    activeCount = 0;
+    for (slot = 0; slot < p.pool->count; slot++) {
+        entry = (Entry *)((char *)p.pool->entries + slot * 0x18);
+        if (entry->state == 1) activeCount++;
     }
-    if (active >= 3) return -1;
+    if (activeCount >= 3) return -1;
 
-    for (i = 0; i < s.p0->count; i++) {
-        entry = (Entry *)((char *)s.p0->entries + i * 0x18);
+    for (slot = 0; slot < p.pool->count; slot++) {
+        entry = (Entry *)((char *)p.pool->entries + slot * 0x18);
         if (entry->state == 0) {
             entry->state = 1;
-            entry->obj = (void *)fn_8012C5B8(s.p1, arg2, arg3);
-            if (entry->obj == 0) fn_802E317C(s.msg + 0x30, s.p1);
-            entry->cb = (void (*)(void *, void *, void *))s.p4;
-            entry->unk10 = (void *)s.p5;
-            size = fn_8012C6F0(entry->obj);
-            if (arg7 <= 0) arg7 = size;
-            if (arg7 > s.p0->stride) fn_802E317C(s.msg + 0x48, s.p1, arg7, s.p0->stride);
-            if (s.p6 + arg7 > size) fn_802E317C(s.msg + 0x70, size, s.p6, arg7);
-            entry->pad = arg7;
-            fn_8012C720(entry->obj, entry->unk4, arg7, s.p6);
-            return i;
+            entry->obj = (void *)fn_8012C5B8(p.path, dataTag, outSize);
+            if (entry->obj == 0) fn_802E317C(p.msgBase + 0x30, p.path);
+            entry->cb = (void (*)(void *, void *, void *))p.callback;
+            entry->unk10 = (void *)p.userData;
+            dataSize = fn_8012C6F0(entry->obj);
+            if (byteCount <= 0) byteCount = dataSize;
+            if (byteCount > p.pool->stride) fn_802E317C(p.msgBase + 0x48, p.path, byteCount, p.pool->stride);
+            if (p.sourceOffset + byteCount > dataSize) fn_802E317C(p.msgBase + 0x70, dataSize, p.sourceOffset, byteCount);
+            entry->pad = byteCount;
+            fn_8012C720(entry->obj, entry->unk4, byteCount, p.sourceOffset);
+            return slot;
         }
     }
     return -1;
