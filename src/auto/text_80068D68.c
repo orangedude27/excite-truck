@@ -7046,9 +7046,10 @@ void bta_hh_handsk_act(u8 *p_cb, s32 *p_data) {
         case 0: status = 0; break;
         case 1: case 2: case 3: case 4:
             status = (u8)result; break;
-        case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 12: case 13: case 14: case 15:
-            result = result;
         default:
+            goto set5a;
+        case 5 ... 15:
+        set5a:
             status = 5; break;
         }
         hs_data[0] = status;
@@ -7062,9 +7063,10 @@ void bta_hh_handsk_act(u8 *p_cb, s32 *p_data) {
         case 0: status = 0; break;
         case 1: case 2: case 3: case 4:
             status = (u8)result; break;
-        case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 12: case 13: case 14: case 15:
-            result = result;
         default:
+            goto set5b;
+        case 5 ... 15:
+        set5b:
             status = 5; break;
         }
         cback_data[0] = status;
@@ -12271,7 +12273,8 @@ void bta_dm_inq_cmpl(void *p_data) {
     DM_SCB_P_SEARCH_CBACK(BTA_DM_INQ_CMPL_EVT, &result);
 }
 
-void bta_dm_rmt_name(s32 arg0) {
+/* Walk the inquiry database, reporting known remote names and requesting unknown ones; signal completion once all names are available. */
+void bta_dm_rmt_name(s32 p_data) {
     extern void bta_dm_remname_cback(u8 *);
     BtaDmSearch info;
     tBTM_INQ_INFO *p_inq_info;
@@ -12314,7 +12317,7 @@ void bta_dm_rmt_name(s32 arg0) {
             bta_sys_sendmsg(p_msg);
         }
     }
-    DM_SCB_P_SEARCH_CBACK(2, (void *)(arg0 + 8));
+    DM_SCB_P_SEARCH_CBACK(2, (void *)(p_data + 8));
 }
 
 /* Handle a remote name discovery request by posting a "name done/none" result and reporting it to the search callback. */
