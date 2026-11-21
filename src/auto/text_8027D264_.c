@@ -308,10 +308,9 @@ extern "C" void fn_8027D7B8(const void *arg0) {
 
 #pragma push
 #pragma processor 750
-extern "C" void fn_8027D7E4(int *arg0) {
-    #pragma scheduling invalid_target
-    void *r = fn_8001285C(arg0[3]);
-    fn_80007FF0(*(int *)((char *)r + 8));
+extern "C" void fn_8027D7E4(const void *arg0) {
+    int v = *(const int *)((const char *)arg0 + 0xC);
+    fn_80007FF0(*(int *)((char *)fn_8001285C(v) + 8));
 }
 #pragma pop
 extern "C" void fn_8027D810(void *__restrict arg0) {
