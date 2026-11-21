@@ -950,8 +950,9 @@ extern "C" s32 fn_800A5958(void *loader, s32 *outRecord) {
     return result & ((-result | result) >> 31);
 }
 
-extern "C" s32 fn_800A5990(s32 arg0) {
-    return fn_800A61D0((void *)arg0);
+/* Wrapper: forward a resource handle to fn_800A61D0, which validates and releases its slot; nonzero means failure. */
+extern "C" s32 fn_800A5990(s32 handle) {
+    return fn_800A61D0((void *)handle);
 }
 /* Register a handle for loader with the given parameter, store it through outHandle, and return the status code. */
 extern "C" s32 fn_800A5994(void *loader, s32 param, s32 *outHandle) {
@@ -13255,8 +13256,7 @@ extern "C" s32 fn_800B94EC(s32 arg0, s32 arg1) {
     entries = base + 0x40;
     i = 0;
 loop_6:
-    u16 idx = (u16)i;
-    u8 *entry = entries + (u32)idx * 0xF0;
+    u8 *entry = entries + (u32)(u16)i * 0xF0;
     if (fn_800A4AD0(entry + 4, (u8 *)arg0) == 0)
         return 0;
     if (*(s32 *)entry == 0) {
@@ -13268,7 +13268,7 @@ loop_6:
     if (i < 0x17)
         goto loop_6;
 block_11:
-    return -0x16 & ((s32)~(((s32)(u16)i - 0x17) | (0x17 - (s32)(u16)i)) >> 31);
+    return ((s32)~(((s32)(u16)i - 0x17) | (0x17 - (s32)(u16)i)) >> 31) & -0x16;
 }
 
 /* One entry of the prfile2 file-state table: 0x17 slots of 0xF0 bytes at
