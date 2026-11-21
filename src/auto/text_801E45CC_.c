@@ -112,12 +112,12 @@ int fn_801E47BC(int key) {
     case '[': DBG_LOD_FACTOR -= LOD_STEP; break;   /* finer LOD */
     case '\'': DBG_LOD_FACTOR = LOD_DEFAULT; break; /* back to 1.0 */
     case ']': DBG_LOD_FACTOR += LOD_STEP; break;   /* coarser LOD */
-    case 'n': toggle = (unsigned char)lbl_8055EA8C; lbl_8055EA8C = toggle == 0; break;
-    case 'c': toggle = (unsigned char)lbl_8055AEDC; lbl_8055AEDC = toggle == 0; break;
-    case 'm': lbl_8055EA8E = 1; break;
+    case 'n': toggle = (unsigned char)DBG_FLAG_N; DBG_FLAG_N = toggle == 0; break;
+    case 'c': toggle = (unsigned char)DBG_FLAG_C; DBG_FLAG_C = toggle == 0; break;
+    case 'm': DBG_FLAG_M = 1; break;
     case 'l': toggle = DBG_LOG_WINDOW; *(char *)&DBG_LOG_WINDOW = toggle == 0; break; /* the log lines */
-    case 'w': toggle = lbl_8055EA90; *(char *)&lbl_8055EA90 = toggle == 0; break;     /* the "WIRE" line */
-    case 'E': toggle = (unsigned char)lbl_8055EA8D; lbl_8055EA8D = toggle == 0; break;
+    case 'w': toggle = DBG_WIRE_FLAG; *(char *)&DBG_WIRE_FLAG = toggle == 0; break;   /* the "WIRE" line */
+    case 'E': toggle = (unsigned char)DBG_FLAG_E; DBG_FLAG_E = toggle == 0; break;
     case 0xB: fn_801EC1F8(); fn_802E4CDC(); break; /* first cache table, then the vmem hook */
     case 0x4: fn_801EC204(); fn_802E4CDC(); break; /* the second one */
     case 0x9: break;                              /* tab: swallowed, nothing to do */
