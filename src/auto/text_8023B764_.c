@@ -348,9 +348,7 @@ void fn_8023BEA8(void) {
 extern void *fn_8001285C(void);
 extern void *fn_80012820(s32);
 extern s32 *fn_80012870(s32, s32);
-extern void fn_8023B9EC(s32, s32, s32, s32, s32);
 extern void fn_8023BE38(int, int);
-extern const char lbl_80341340[];
 #pragma dont_inline on
 /* Run the context/frame sequence with the given context id, index and parameter,
  * leaving the two extra options of fn_8023B9EC at their zero defaults. */
