@@ -332,7 +332,7 @@ extern "C" void UpdateChannel__Q46nw4hbm3snd6detail8WsdTrackFv(void *arg0) {
     f26 += (*(WsdPlayerIface **)(self + 0x2C))->m58();
     float f25 = lbl_8056112C;
     f25 += (*(WsdPlayerIface **)(self + 0x2C))->m5C();
-    unsigned char b3 = self[0x29];
+    register unsigned char b3 = self[0x29];
     pl = *(WsdPlayerIface **)(self + 0x2C);
     float f24 = lbl_80561128;
     f24 += ((float)b3 / lbl_80561138) - f24;
@@ -347,8 +347,9 @@ extern "C" void UpdateChannel__Q46nw4hbm3snd6detail8WsdTrackFv(void *arg0) {
     unsigned char *cp = col;
     float *ap = acc;
     for (int i = 0; i < 3; i++) {
+        register unsigned char cb = *cp;
         *ap = zero1;
-        *ap += (float)*cp / k255;
+        *ap += (float)cb / k255;
         *ap += (*(WsdPlayerIface **)(self + 0x2C))->m88(i);
         cp++; ap++;
     }
@@ -376,7 +377,7 @@ extern "C" void UpdateChannel__Q46nw4hbm3snd6detail8WsdTrackFv(void *arg0) {
         *(int *)(ch + 0x5C) = (*(WsdPlayerIface **)(self + 0x2C))->m7C();
         *(float *)(ch + 0x60) = (*(WsdPlayerIface **)(self + 0x2C))->m80();
         *(float *)(ch + 0x64) = f24;
-        *(float *)(ch + 0x68) = (unsigned int)a0;
+        *(float *)(ch + 0x68) = (unsigned)a0;
         *(float *)(ch + 0x6C) = a2;
         *(float *)(ch + 0x70) = a1;
         unsigned char *p = ch;
@@ -454,31 +455,30 @@ int nw4hbm::snd::detail::WsdTrack::Parse(const nw4hbm::snd::detail::WsdTrack::Ws
     return 0;
 }
 #pragma optimization_level reset
+#pragma optimization_level 3
 extern "C" const char lbl_80327CB8[];
 void nw4hbm::snd::detail::WsdTrack::ChannelCallbackFunc(nw4hbm::snd::detail::Channel *arg0, nw4hbm::snd::detail::Channel::ChannelCallbackStatus arg1, unsigned long arg2) {
-    const char *base = lbl_80327CB8;
+    const char * const base = lbl_80327CB8;
     void *track = (void *)arg2;
     void *channel;
     void *next;
-    if (arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x1cf, &base[0x88]);
-    if (track == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x1d0, &base[0xb8]);
+    if (arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x1cf, base + 0x88);
+    if (track == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x1d0, base + 0xb8);
     if ((int)arg1 == 2) fn_800EAD00(arg0);
     channel = *(void **)((char *)track + 0x30);
     if (channel == arg0) {
         *(void **)((char *)track + 0x30) = *(void **)((char *)arg0 + 0xe4);
         return;
     }
-    if (channel == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x1dd, &base[0xe0]);
-    next = *(void **)((char *)channel + 0xe4);
-    while (next != 0) {
+    if (channel == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x1dd, base + 0xe0);
+    while ((next = *(void **)((char *)channel + 0xe4)) != 0) {
         if (next == arg0) {
             *(void **)((char *)channel + 0xe4) = *(void **)((char *)arg0 + 0xe4);
             return;
         }
         channel = next;
-        next = *(void **)((char *)channel + 0xe4);
     }
-    Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x1e7, &base[0x10c]);
+    Panic__Q26nw4hbm2dbFPCciPCce(base, 0x1e7, base + 0x10c);
 }
 
 extern "C" int IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(const void *arg0, unsigned long arg1, unsigned short arg2, unsigned short arg3) {
