@@ -503,13 +503,17 @@ extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32 angle) {
 }
 
 extern "C" f32 CosFIdx__Q24nw4r4mathFf(f32 angle) {
-    f32 index = __fabsf(angle);
-    while (index >= 65536.0f) index -= 65536.0f;
-    u16 q = __OSf32tou16(index);
-    f32 whole = __OSu16tof32(&q);
-    f32 *entry = (f32 *)((char *)lbl_80320E38 + ((q * 0x10) & 0xFF0));
-    f32 fraction = index - whole;
-    return entry[1] + fraction * entry[3];
+    /* nw4r math cosine: wrap the absolute angle into one 65536-unit turn, quantize
+     * it to the 256-entry sin/cos table, then interpolate the table's cosine value
+     * with its slope (cosine is even, so negative angles need no sign fix-up). */
+    struct TrigEntry { f32 s, c, sd, cd; };
+    f32 absAngle = __fabsf(angle);
+    while (absAngle >= 65536.0f) absAngle -= 65536.0f;
+    u16 quantized = __OSf32tou16(absAngle);
+    f32 wholePart = __OSu16tof32(&quantized);
+    struct TrigEntry *entry = (struct TrigEntry *)((char *)lbl_80320E38 + ((quantized * 0x10) & 0xFF0));
+    f32 fraction = absAngle - wholePart;
+    return entry->c + fraction * entry->cd;
 }
 
 #pragma push
