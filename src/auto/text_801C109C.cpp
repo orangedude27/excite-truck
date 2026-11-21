@@ -202,7 +202,7 @@ extern "C" float lbl_80562904, lbl_8056290C, lbl_80562918, lbl_8056291C, lbl_805
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling 603
+#pragma scheduling invalid_target
 void fn_801C1364(int arg0) {
     char *base = (char *)arg0;
     int iter;
