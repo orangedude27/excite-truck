@@ -658,83 +658,92 @@ s32 fn_8015F7A0(s32 arg0, void *arg1, void *arg2) {
 extern f32 lbl_8055E2A4;
 extern f32 lbl_805617DC;
 extern f32 lbl_80561808;
-s32 fn_8015F848(f32 *arg0, f32 farg0) {
+s32 fn_8015F848(f32 *arg0, f32 farg0)
+{
 #pragma scheduling invalid_target
-    f32 *var_r5;
-    f32 *var_r6;
-    f32 *temp_r7;
-    f32 threshold;
-    f32 multiplier;
-    f32 temp_f6;
-    f32 product;
-    f32 spacing;
-    f32 temp_f2;
-    s32 temp_r0;
-    s32 var_r9;
-    s32 var_r8;
-
-    var_r5 = arg0;
-    var_r8 = -1;
-    var_r9 = 0;
-    threshold = lbl_8055E2A4;
-    multiplier = lbl_805617DC;
-    spacing = lbl_80561808;
-    do {
-        temp_f6 = *var_r5;
-        if (temp_f6 < farg0) {
-            if (var_r8 > 0) {
-                temp_r0 = var_r8 * 8;
-                temp_r7 = (f32 *)((char *)arg0 + temp_r0);
-                product = farg0 * multiplier;
-                if ((f32)fabs((double)(*temp_r7 - temp_f6)) < product &&
-                    threshold * (f32)(var_r9 - var_r8) < spacing) {
-                    var_r6 = temp_r7;
+  f32 *var_r5;
+  f32 *var_r6;
+  f32 *temp_r7;
+  f32 threshold;
+  f32 multiplier;
+  f32 temp_f6;
+  f32 product;
+  f32 spacing;
+  f32 temp_f2;
+  s32 temp_r0;
+  s32 var_r9;
+  s32 var_r8;
+  var_r5 = arg0;
+  var_r8 = -1;
+  var_r9 = 0;
+  threshold = lbl_8055E2A4;
+  multiplier = lbl_805617DC;
+  spacing = lbl_80561808;
+  do
+  {
+    temp_f6 = *var_r5;
+    if (temp_f6 < farg0)
+    {
+      if (var_r8 > 0)
+      {
+        temp_r0 = var_r8 * 8;
+        temp_r7 = (f32 *) (((char *) arg0) + temp_r0);
+        product = farg0;
+        product = product * multiplier;
+        if ((((f32) fabs((double) ((*temp_r7) - temp_f6))) < product) && ((threshold * ((f32) (var_r9 - var_r8))) < spacing))
+        {
+          var_r6 = temp_r7;
 #pragma ctrloop on
-                    for (; var_r8 <= var_r9; var_r6 = (f32 *)((char *)var_r6 + 8), var_r8++) {
-                        temp_f2 = *var_r5;
-                        temp_f6 = *temp_r7;
-                        temp_f6 = (temp_f6 < temp_f2) ? temp_f6 : temp_f2;
-                        *var_r6 = temp_f6;
-                    }
+          for (; var_r8 <= var_r9; var_r6 = (f32 *) (((char *) var_r6) + 8), var_r8++)
+          {
+            temp_f2 = *var_r5;
+            temp_f6 = *temp_r7;
+            temp_f6 = (temp_f6 < temp_f2) ? (temp_f6) : (temp_f2);
+            *var_r6 = temp_f6;
+          }
 #pragma ctrloop reset
-                }
-            }
-            var_r8 = var_r9;
         }
-        var_r9 += 1;
-        var_r5 = (f32 *)((char *)var_r5 + 8);
-    } while (var_r9 < 0x40);
-    return ((u32)var_r8 >> 31) ^ 1;
+      }
+      var_r8 = var_r9;
+    }
+    var_r9 += 1;
+    var_r5 = (f32 *) (((char *) var_r5) + 8);
+  }
+  while (var_r9 < 0x40);
+  return (((u32) var_r8) >> 31) ^ 1;
 }
 
 extern long lbl_8055E2A8;
 extern float lbl_8056180C;
-void fn_8015F92C(float *arg0, float farg0)
+void fn_8015F92C(float *spectrum, float limit)
 {
   #pragma scheduling off
   #pragma opt_propagation off
-  s32 v;
+  /* Expand an interleaved spectrum of 64 {x,y} bins: first find the smallest
+   * magnitude (seeded by limit) across both halves of the table, then push every
+   * bin away from that minimum by the 1.5x factor lbl_8056180C. */
+  s32 size;
   s32 i;
-  s32 count;
-  float value;
-  float temp;
-  float *p;
-  v = *(volatile long *)&lbl_8055E2A8;
+  s32 binCount;
+  float minValue;
+  float candidate;
+  float *scan;
+  size = *(volatile long *)&lbl_8055E2A8;
   i = 0;
-  count = (v / 2) + 1;
-  value = farg0;
-  p = arg0;
-  for (; i < count; i++)
+  binCount = (size / 2) + 1;
+  minValue = limit;
+  scan = spectrum;
+  for (; i < binCount; i++)
   {
-    temp = p[64];
-    value = (value < temp) ? (value) : (temp);
-    temp = arg0[(32 - i) * 2];
-    value = (value < temp) ? (value) : (temp);
-    p += 2;
+    candidate = scan[64];
+    minValue = (minValue < candidate) ? (minValue) : (candidate);
+    candidate = spectrum[(32 - i) * 2];
+    minValue = (minValue < candidate) ? (minValue) : (candidate);
+    scan += 2;
   }
   {
-    s32 n;
-    float scale;
+    s32 rows;
+    float expansion;
     float current0;
     float current1;
     float current2;
@@ -743,27 +752,27 @@ void fn_8015F92C(float *arg0, float farg0)
     float current5;
     float current6;
     float current7;
-    n = 8;
-    scale = lbl_8056180C;
-    for (i = 0; i < n; i++)
+    rows = 8;
+    expansion = lbl_8056180C;
+    for (i = 0; i < rows; i++)
     {
-      current0 = (current4 = arg0[0]);
-      arg0[0] = current0 + ((current0 - value) * scale);
-      current1 = arg0[2];
-      arg0[2] = current1 + ((current1 - value) * scale);
-      current2 = arg0[4];
-      arg0[4] = current2 + ((current2 - value) * scale);
-      current3 = arg0[6];
-      arg0[6] = current3 + ((current3 - value) * scale);
-      current4 = arg0[8];
-      arg0[8] = current4 + ((current4 - value) * scale);
-      current5 = arg0[10];
-      arg0[10] = current5 + ((current5 - value) * scale);
-      current6 = arg0[12];
-      arg0[12] = current6 + ((current6 - value) * scale);
-      current7 = arg0[14];
-      arg0[14] = current7 + ((current7 - value) * scale);
-      arg0 += 16;
+      current0 = (current4 = spectrum[0]);
+      spectrum[0] = current0 + ((current0 - minValue) * expansion);
+      current1 = spectrum[2];
+      spectrum[2] = current1 + ((current1 - minValue) * expansion);
+      current2 = spectrum[4];
+      spectrum[4] = current2 + ((current2 - minValue) * expansion);
+      current3 = spectrum[6];
+      spectrum[6] = current3 + ((current3 - minValue) * expansion);
+      current4 = spectrum[8];
+      spectrum[8] = current4 + ((current4 - minValue) * expansion);
+      current5 = spectrum[10];
+      spectrum[10] = current5 + ((current5 - minValue) * expansion);
+      current6 = spectrum[12];
+      spectrum[12] = current6 + ((current6 - minValue) * expansion);
+      current7 = spectrum[14];
+      spectrum[14] = current7 + ((current7 - minValue) * expansion);
+      spectrum += 16;
     }
   }
 }
@@ -1207,7 +1216,7 @@ void fn_801602D4(void *arg0_, int *arg1_, void *arg2_, unsigned char arg3_, floa
 
 float fn_80160588(void * __restrict arg0, void * __restrict arg1, void * __restrict arg2) {
     volatile f32 d[2];
-    f32 dx, dy, t0, t1, r;
+    f32 dy, dx, t1, t0, r;
     dx = ((f32 *)arg1)[0] - ((f32 *)arg2)[0];
     dy = ((f32 *)arg1)[1] - ((f32 *)arg2)[1];
     t0 = ((f32 *)arg0)[0] * dx;
@@ -1230,8 +1239,8 @@ f32 fn_801605C8(void *arg0, void *arg1, void *arg2) {
     f32 spC;
     negX = -*(f32 *)arg0;
     dx = *(f32 *)arg1 - *(f32 *)arg2;
-    dy = *(f32 *)((u8 *)arg1 + 4) - *(f32 *)((u8 *)arg2 + 4);
     y = *(f32 *)((u8 *)arg0 + 4);
+    dy = *(f32 *)((u8 *)arg1 + 4) - *(f32 *)((u8 *)arg2 + 4);
     result1 = y * dx;
     *(volatile f32 *)&spC = dx;
     result2 = negX * dy;
@@ -1239,7 +1248,6 @@ f32 fn_801605C8(void *arg0, void *arg1, void *arg2) {
     return result1 + result2;
 }
 void *fn_8016060C(void *arg0, void *arg1) {
-#pragma scheduling invalid_target
     f32 *dst = (f32 *)arg0;
     f32 *src = (f32 *)arg1;
     f32 x = src[6];
