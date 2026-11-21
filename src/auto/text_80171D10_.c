@@ -311,7 +311,8 @@ RgbaColor fn_801720E0(RgbaColor color) {
 }
 #pragma pop
 
-#pragma scheduling on
+static inline void maskW(unsigned int *p) { *p &= 0x3FFFFFFF; }
+#pragma scheduling invalid_target
 void fn_801720FC(float *__restrict arg0, int arg1, float arg2) {
     extern float PSVECMag(float *);
     extern float lbl_8055E3A8;
@@ -413,6 +414,7 @@ void fn_801720FC(float *__restrict arg0, int arg1, float arg2) {
     fn_802C8DB8(L.e, 5, L.s, 6);
     fn_802C8D74();
 }
+#pragma scheduling on
 extern void *fn_802C86DC(void);
 extern double fn_8002EFB4(float, double);
 extern float lbl_80561A44, lbl_80561A68, lbl_80561A6C;
