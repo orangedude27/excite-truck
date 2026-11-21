@@ -2281,7 +2281,7 @@ extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     f32 temp_f3;
     f32 temp_f4;
     volatile f32 sp[9];
-    s32 res;
+    u16 res;
 
     temp_r3 = ((Fn8019EA7CDispatch*)arg1)->Get();
     temp_r5 = *(void**)((u8*)arg0 + 0xC);
@@ -2292,7 +2292,7 @@ extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     sp[6] = temp_f4;
     sp[1] = temp_f2;
     sp[5] = temp_f1 - *(f32*)((u8*)temp_r3 + 0x2C);
-    res = ((u16 (*)(void*, void**, void*, f32, f32, f32, f32))fn_8019E874)(arg0, (void**)arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4);
+    res = fn_8019E874(arg0, (void**)arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4);
     return res != 0;
 }
 #pragma use_lmw_stmw on
@@ -4345,30 +4345,22 @@ extern "C" s32 fn_801A2434(s32 object, s32 shouldDestroy) {
     return object;
 }
 
-#pragma scheduling on
+#pragma dont_inline off
 extern "C" void fn_801A2474(void *arg0) {
+    struct Row { f32 v[3]; };
     struct Object {
         char pad0[0xC];
         f32 *matrix;
         char pad10[0x28];
         Vec input;
-        char pad14[0x24];
+        Row cache[3];
         volatile Vec output;
     };
     Object *self = (Object *)arg0;
-    u32 *cache = (u32 *)((char *)self + 0x44);
-    u32 m0, m1, m3, m4, m6, m7;
     f32 *m = self->matrix;
-    u32 *mw = (u32 *)m;
-    m0 = mw[0]; m1 = mw[1];
-    cache[1] = m1; cache[0] = m0;
-    cache[2] = mw[2];
-    m3 = mw[3]; m4 = mw[4];
-    cache[4] = m4; cache[3] = m3;
-    cache[5] = mw[5];
-    m6 = mw[6]; m7 = mw[7];
-    cache[7] = m7; cache[6] = m6;
-    cache[8] = mw[8];
+    self->cache[0] = ((Row *)m)[0];
+    self->cache[1] = ((Row *)m)[1];
+    self->cache[2] = ((Row *)m)[2];
     if (&self->output == (volatile Vec *)&self->input) {
         float x, y, z;
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
