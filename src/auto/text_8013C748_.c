@@ -230,9 +230,3 @@ int fn_8013C9C8(void) {
     return *getEntry();
 }
 
-void *fn_8013C770();
-extern int lbl_8055E188;
-void fn_80131818(int);
-void fn_8013C748(void);
-extern char lbl_80559D10[];
-int stricmp(const char *, const char *);
