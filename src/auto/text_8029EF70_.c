@@ -10,11 +10,23 @@ extern char lbl_803497D8[];
 extern char lbl_803497E8[];
 #pragma scheduling invalid_target
 void fn_8029EF70(void) {
+#define sLineTextureHandle    lbl_8055CAE0
+#define kLineTextureName      lbl_803497D8    /* "efx_line.tex" */
+#define kLineTextureError     lbl_803497E8    /* "drawline: Couldn't get the line texture" */
+#define loadTexture           fn_802CAC28
+#define isResourceHandleValid fn_8029EFF0
+#define debugPrint            fn_802E30C8
     /* Load the line-effect texture handle; log an error if the handle is invalid. */
-    lbl_8055CAE0 = fn_802CAC28(lbl_803497D8, 0);
-    if (fn_8029EFF0(lbl_8055CAE0) == 0) {
-        fn_802E30C8(lbl_803497E8);
+    sLineTextureHandle = loadTexture(kLineTextureName, 0);
+    if (isResourceHandleValid(sLineTextureHandle) == 0) {
+        debugPrint(kLineTextureError);
     }
+#undef debugPrint
+#undef isResourceHandleValid
+#undef loadTexture
+#undef kLineTextureError
+#undef kLineTextureName
+#undef sLineTextureHandle
 }
 #pragma scheduling on
 
