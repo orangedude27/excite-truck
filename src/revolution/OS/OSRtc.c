@@ -257,7 +257,8 @@ u16 OSGetGbsMode(void) {
 void OSSetGbsMode(u16 gbs) {
     OSSramEx* sram;
 
-    if (((u32)gbs & 0x7C00) == 0x5000 || ((u32)gbs & 0xC0) == 0xC0) {
+    if (((u32)gbs & SRAM_GBS_RESERVED_MASK_0) == SRAM_GBS_RESERVED_0 ||
+        ((u32)gbs & SRAM_GBS_RESERVED_MASK_1) == SRAM_GBS_RESERVED_1) {
         gbs = 0;
     }
 
