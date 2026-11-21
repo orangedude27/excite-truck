@@ -1315,8 +1315,10 @@ extern "C" void fn_8012BEF0(s32 resName) {
 }
 
 extern "C" void fn_8012E498(void *);
-extern "C" void fn_8012BF24(void *arg0) {
-    fn_8012E498(arg0);
+/* Thunk: forwards a resource name to fn_8012E498, which releases the named
+ * resource (decrementing its refcount and unlinking it from the effect lists). */
+extern "C" void fn_8012BF24(void *resName) {
+    fn_8012E498(resName);
 }
 
 extern "C" s32 fn_802E3BB4(s32, char *, s32);
