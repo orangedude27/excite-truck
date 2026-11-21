@@ -3189,9 +3189,9 @@ static inline void fn801A0464RotateVec(Vec *dst, const Vec &src, const f32 *m) {
     f32 y = src.y;
     f32 z = src.z;
     if (dst == &src) {
-        f32 rx = (y * m[1] + x * m[0]) + z * m[2];
-        f32 ry = (y * m[4] + x * m[3]) + z * m[5];
-        f32 rz = (y * m[7] + x * m[6]) + z * m[8];
+        f32 rx = (x * m[0] + y * m[3]) + z * m[6];
+        f32 ry = (x * m[1] + y * m[4]) + z * m[7];
+        f32 rz = (x * m[2] + y * m[5]) + z * m[8];
         dst->x = rx;
         dst->y = ry;
         dst->z = rz;
