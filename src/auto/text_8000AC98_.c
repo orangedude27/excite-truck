@@ -41,6 +41,10 @@ void fn_8000ACA4(void) {
 }
 
 void fn_8000ACA8(void) {
+    /* No-op callback stub: another empty default slot in this module's run
+       (fn_8000AC98, fn_8000AC9C, fn_8000ACA4, fn_8000ACA8, fn_8000ACAC);
+       does nothing in this build. */
+    return;
 }
 
 void fn_8000ACAC(void) {
