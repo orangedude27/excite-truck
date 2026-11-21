@@ -1149,6 +1149,8 @@ extern "C" char lbl_803494F0[];
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+static inline float fn_80299A88_readC(float *p) { return p[11]; }
+
 void fn_80299A88(void *arg0, void *out, unsigned int unused, float scale) {
     Fn80299A88Frame frame;
     float *q;
