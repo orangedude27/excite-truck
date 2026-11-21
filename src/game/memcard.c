@@ -99,14 +99,15 @@ loop_check:
 #pragma scheduling on
 #pragma dont_inline off
 
+/* No-op second memory-card hook: called with flag 1 at the start of the save
+ * flow (fn_8023B5EC), between fn_802E712C and the MCSH load fn_802E6CA8. */
 void fn_802E6CA4(void) {}
 
-#pragma push
 #pragma use_lmw_stmw off
 int fn_802E6CA8(void) {
     unsigned char *allocation;
+    char *messages = lbl_8034D678;
     int size;
-    char *messages;
     int payloadSize;
     unsigned char flags[10];
     int success;
@@ -121,7 +122,6 @@ int fn_802E6CA8(void) {
     unsigned char *flagIt;
     void (*callback)(int);
 
-    messages = lbl_8034D678;
     size = fn_802E7130();
     payloadSize = size - 0x20D0;
     allocation = (unsigned char *)fn_801284E8(messages + 0x40, size);
@@ -232,7 +232,6 @@ second_check:
     }
     return 0;
 }
-#pragma pop
 extern char lbl_8034D6B8[];
 extern char lbl_8034D784[];
 #pragma push
@@ -300,14 +299,16 @@ void fn_802E712C(void) {}
 
 #pragma scheduling reset
 int fn_802E7130(void) {
-    int count = lbl_8055FFC0;
+    struct Entry { unsigned char pad[0xC]; int value; unsigned char tail[4]; };
     int total = 0x20D0;
     int i = 0;
-    unsigned char *entry = lbl_804FC8B0;
-    while (i < count) {
-        total += *(int *)(entry + 0xC);
-        entry += 0x14;
-        i++;
+    if (lbl_8055FFC0 > 0) {
+        int count = lbl_8055FFC0;
+        struct Entry *entries = (struct Entry *)lbl_804FC8B0;
+        while (i < count) {
+            total += entries[i].value;
+            i++;
+        }
     }
     return (total + 0x1FFF) & 0xFFFFE000;
 }
