@@ -696,6 +696,9 @@ void fn_802CF600(void) {
     VIFlush();
 }
 #pragma dont_inline on
+/* No-op callback passed to the GX buffer manager during startup when it
+ * creates lbl_8055FDB0 over the display-list buffer; only a placeholder
+ * callback is needed here, so this does nothing. */
 void fn_802CF830(void) {
 }
 
