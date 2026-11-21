@@ -137,7 +137,7 @@ s32 fn_80134424(Container *pool, s32 path, s32 dataTag, s32 outSize, s32 callbac
     p.callback = callback;
     p.userData = userData;
     p.sourceOffset = sourceOffset;
-    p.msgBase = lbl_8032BB18;
+    p.msgBase = gLoadPoolErrorMsgs;
     activeCount = 0;
     for (slot = 0; slot < p.pool->count; slot++) {
         entry = (Entry *)((char *)p.pool->entries + slot * 0x18);
