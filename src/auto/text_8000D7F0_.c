@@ -6,7 +6,6 @@
 
 /* No-op startup hook, first of the run. */
 void fn_8000D7F0(void) {
-    return;
 }
 
 /* No-op startup hook, second of the run. */
