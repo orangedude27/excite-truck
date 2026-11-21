@@ -3,7 +3,6 @@
 
 #include <types.h>
 extern f32 fn_801E8738(s32);
-extern void fn_801EA28C(s32, f32);
 extern void fn_801FC904(void);
 extern void fn_801EBF00(void);
 extern void fn_801FC908(s32);
