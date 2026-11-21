@@ -1079,6 +1079,8 @@ void fn_8024B628(void *obj) {
 }
 
 void fn_8024B6A8(void) {
+    /* Tail-call the menu/UI name-record initializer, forwarding the object
+       pointer still held in r3. */
     fn_8024B260();
 }
 
