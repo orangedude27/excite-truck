@@ -299,12 +299,13 @@ void fn_8013028C(void) {
 
 int fn_801302E0(void *arg0) {
     char *base = (char *)&lbl_804230D0;
+    char **head = (char **)(base + 4);
     int offset, index;
-    if (*(void **)(base + 4) != 0) {
+    if (*head != 0) {
         index = 0;
         offset = 0;
-        while (index < *(int *)(*(char **)(base + 4) + 0x40)) {
-            if (stricmp((const char *)arg0, *(const char **)(*(char **)(base + 4) + offset + 0x44)) == 0)
+        while (index < *(int *)(*head + 0x40)) {
+            if (stricmp((const char *)arg0, *(const char **)(*head + offset + 0x44)) == 0)
                 return *(int *)(*(char **)((char *)&lbl_804230D0 + 4) + index * 8 + 0x48);
             offset += 8;
             index++;
@@ -409,7 +410,6 @@ extern char *strchr(const char *, int);
 void fn_80130568(char *arg0) {
     char *base = arg0;
     if (*(char *)lbl_8055E050 != '.') {
-        *arg0 = *(char *)lbl_8055E050;
         while ((arg0 = strchr(base, '.')) != 0) {
             *arg0 = *(char *)lbl_8055E050;
         }
