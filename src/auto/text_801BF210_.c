@@ -21,8 +21,6 @@ void fn_801BF210(void) {
 }
 
 #pragma scheduling invalid_target
-#pragma push
-#pragma scheduling on
 void *fn_801BF214(void) {
     extern void *fn_801284F8(int, void *);
     extern void fn_8017B0B0(void);
@@ -41,7 +39,7 @@ void *fn_801BF214(void) {
         index = lbl_8055E7BC;
         *(void **)(lbl_80437D48 + index * 4) = p;
         index++;
-        *(volatile int *)&lbl_8055E7BC = index;
+        lbl_8055E7BC = index;
         *(int *)((char *)p + 0x214) = fn_801C1BA4(4, 6, 2, lbl_80437D48, index);
     }
     return p;
