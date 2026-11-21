@@ -1068,6 +1068,9 @@ void *fn_802C9A40(void) {
     #undef globalDirection
 }
 
+/* Floating-point state save/restore stub: callers pass a new value and expect the
+ * old one back, but this build ignores the argument and tail-calls fn_802D93E0,
+ * which simply returns a constant 0.0f. */
 void fn_802C9A4C(void) {
     fn_802D93E0();
 }
