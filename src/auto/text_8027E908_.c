@@ -1677,13 +1677,16 @@ extern unsigned char lbl_804B3068[];
 typedef unsigned int (*GetKeyFn)(void *);
 typedef char *(*GetTextFn)(void *);
 extern "C" int fn_80280DC8(void) {
-    class Obj {
+    /* Menu action: step the selection forward to the next entry on the same page
+     * (same getKey) as the current one, show that entry's text in the selection
+     * buffer, and reset the menu when nothing is selected. */
+    class Object {
     public:
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
         virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
         virtual void f8(); virtual unsigned int getKey(); virtual char *getText();
     };
-    struct Finder {
+    struct ItemFinder {
         static int indexOf(void *entry) {
             void **items = lbl_804B3048.items;
             int count = lbl_804B3048.count;
@@ -1695,38 +1698,38 @@ extern "C" int fn_80280DC8(void) {
             return -1;
         }
     };
-    unsigned int key;
-    int index;
+    unsigned int pageKey;
+    int itemIndex;
     void *item;
-    Obj *obj;
+    Object *obj;
 
     if (*(volatile unsigned int *)&lbl_8055F688 == 0)
         goto reset;
-    index = Finder::indexOf((void *)lbl_8055F688);
-    item = lbl_804B3048.items[index];
-    if (*(Obj * volatile *)((char *)item + 0x60) == 0)
+    itemIndex = ItemFinder::indexOf((void *)lbl_8055F688);
+    item = lbl_804B3048.items[itemIndex];
+    if (*(Object * volatile *)((char *)item + 0x60) == 0)
         goto finish;
-    obj = *(Obj **)((char *)item + 0x60);
-    key = obj->getKey();
-    index++;
-    while (index < lbl_804B3048.count) {
-        item = lbl_804B3048.items[index];
-        obj = *(Obj **)((char *)item + 0x60);
-        if (obj != 0 && obj->getKey() == key)
+    obj = *(Object **)((char *)item + 0x60);
+    pageKey = obj->getKey();
+    itemIndex++;
+    while (itemIndex < lbl_804B3048.count) {
+        item = lbl_804B3048.items[itemIndex];
+        obj = *(Object **)((char *)item + 0x60);
+        if (obj != 0 && obj->getKey() == pageKey)
             break;
-        index++;
+        itemIndex++;
     }
-    if (index >= lbl_804B3048.count)
+    if (itemIndex >= lbl_804B3048.count)
         goto finish;
     lbl_804B3068[0] = 0;
-    if (index < 0)
+    if (itemIndex < 0)
         goto clear;
-    if (index >= lbl_804B3048.count)
+    if (itemIndex >= lbl_804B3048.count)
         goto clear;
-    item = lbl_804B3048.items[index];
+    item = lbl_804B3048.items[itemIndex];
     lbl_8055F688 = (unsigned int)item;
-    if (item != 0 && *(Obj * volatile *)((char *)item + 0x60) != 0) {
-        Obj *o = *(Obj **)((char *)item + 0x60);
+    if (item != 0 && *(Object * volatile *)((char *)item + 0x60) != 0) {
+        Object *o = *(Object **)((char *)item + 0x60);
         char *src = o->getText();
         int n = 100;
         char *dst = (char *)lbl_804B3068;
