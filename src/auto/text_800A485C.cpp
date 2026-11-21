@@ -21752,7 +21752,6 @@ extern "C" s32 fn_800D3634(s32 arg0) {
 #undef COL8
 #undef COL16
 }
-#pragma pop
 
 extern "C" s32 fn_800D3824(void) {
     /* Return 1 if the linked-list registry head lbl_8055DDD4 is set, else 0:
