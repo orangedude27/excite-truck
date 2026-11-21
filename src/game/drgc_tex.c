@@ -785,53 +785,56 @@ extern char lbl_8034C5C8[];
 extern void *fn_802D7D98(void *, void *);
 #pragma push
 #pragma scheduling on
-void *fn_802D8E9C(const void *arg0, void *arg1) {
-    void *obj = 0;
-    int kind = *(const int *)arg0;
-    void *name = arg1;
-    if (kind == 0x17) goto use_a84;
-    if (kind >= 0x17) goto high_range;
-    if (kind == 0x10) goto use_a84;
-    if (kind >= 0x10) goto low_mid;
-    if (kind >= 0x02) goto low_two;
-    if (kind < 0) goto report_error;
-    goto use_b5c;
-low_two:
-    if (kind < 0x04) goto use_d98;
-    goto report_error;
-low_mid:
-    if (kind < 0x12) goto use_c00;
-    goto report_error;
-high_range:
-    if (kind == 0x44) goto use_c00;
-    if (kind >= 0x44) goto high_tail;
-    if (kind >= 0x42) goto use_a84;
-    if (kind < 0x40) goto report_error;
-    goto use_b5c;
-high_tail:
-    if (kind == 0x47) goto use_d98;
-    if (kind < 0x47) goto use_fa0;
-    if (kind >= 0x4C) goto report_error;
-use_fa0:
-    obj = fn_802D7FA0((void *)arg0, name);
-    goto finish;
-use_b5c:
-    obj = fn_802D7B5C((void *)arg0, name);
-    goto finish;
-use_a84:
-    obj = fn_802D8A84((void *)arg0, name);
-    goto finish;
-use_c00:
-    obj = fn_802D8C00((void *)arg0, name);
-    goto finish;
-use_d98:
-    obj = fn_802D7D98((void *)arg0, name);
-    goto finish;
-report_error:
-    fn_802E317C(lbl_8034C5C8, kind, name);
-finish:
-    fn_802D9340(obj);
-    return obj;
+/* Create a texture for the named source record: dispatch on its drgc format id
+   (enum DrTexFormat) to the matching creator, log an error for an unknown id,
+   then flush the finished texture and return it. */
+void *fn_802D8E9C(const void *source, void *nameArg) {
+    void *texture = 0;
+    int format = *(const int *)source;
+    void *name = nameArg;
+    if (format == 0x17) goto build_cmpr;
+    if (format >= 0x17) goto check_modern;
+    if (format == 0x10) goto build_cmpr;
+    if (format >= 0x10) goto check_old_cmpr;
+    if (format >= 0x02) goto check_old_rgb;
+    if (format < 0) goto unknown_format;
+    goto build_palette;
+check_old_rgb:
+    if (format < 0x04) goto build_rgba;
+    goto unknown_format;
+check_old_cmpr:
+    if (format < 0x12) goto build_cmpr_i4;
+    goto unknown_format;
+check_modern:
+    if (format == 0x44) goto build_cmpr_i4;
+    if (format >= 0x44) goto check_modern_tail;
+    if (format >= 0x42) goto build_cmpr;
+    if (format < 0x40) goto unknown_format;
+    goto build_palette;
+check_modern_tail:
+    if (format == 0x47) goto build_rgba;
+    if (format < 0x47) goto build_linear;
+    if (format >= 0x4C) goto unknown_format;
+build_linear:
+    texture = fn_802D7FA0((void *)source, name);
+    goto done;
+build_palette:
+    texture = fn_802D7B5C((void *)source, name);
+    goto done;
+build_cmpr:
+    texture = fn_802D8A84((void *)source, name);
+    goto done;
+build_cmpr_i4:
+    texture = fn_802D8C00((void *)source, name);
+    goto done;
+build_rgba:
+    texture = fn_802D7D98((void *)source, name);
+    goto done;
+unknown_format:
+    fn_802E317C(lbl_8034C5C8, format, name);
+done:
+    fn_802D9340(texture);
+    return texture;
 }
 #pragma pop
 void fn_802D8FB4(void *texObj) {
