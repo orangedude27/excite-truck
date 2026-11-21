@@ -1090,6 +1090,8 @@ int fn_8028F7AC(void *arg0, void *arg1, int arg2) {
     return (int)arg0;
 }
 #pragma pop
+/* No-op element-constructor callback for fn_8002F37C: passed when fn_8028F7AC
+ * builds its 0x28-byte-per-element array; elements need no initialization. */
 void fn_8028F854(void) {}
 
 /* Destroys an object: releases its subobject, frees its buffer, and optionally deletes it. */
