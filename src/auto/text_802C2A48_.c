@@ -171,4 +171,6 @@ void fn_802C2C64(void) { fn_802DD738(); }
    callers pass are ignored and nothing is changed. */
 void fn_802C2C68(void) { fn_802DD750(); }
 
+/* Thunk: reset the split-screen view-region table by clearing its entry count
+ * (fn_802DE774). */
 void fn_802C2C6C(void) { fn_802DE774(); }
