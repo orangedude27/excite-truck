@@ -229,8 +229,9 @@ extern "C" void Append__Q36nw4hbm3lyt7PictureFRC9_GXTexObj(void *picture, const 
 
 /* Gets one of the picture's four vertex colors, asserting the index is in range. */
 extern "C" void GetVtxColor__Q36nw4hbm3lyt7PictureCFUl(Color* out, const void* this_, u32 idx) {
-    if (idx >= 4) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80320320, 0xFB, (const char*)lbl_803203D8);
+    /* Gets one of the picture's four vertex colors, asserting the index is in range. */
+    if (idx >= VERTEXCOLOR_NUM) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)sAssertFile_picture, 0xFB, (const char*)sAssertIdxVtxColorMax);
     }
     const u8* p = (const u8*)this_ + idx * 4 + 0xD4;
     out->b0 = p[0];
