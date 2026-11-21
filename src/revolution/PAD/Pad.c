@@ -82,10 +82,10 @@ u32 lbl_8055DB18[2];
 
 /* PAD per-channel state block: origin status, SI type and previous status. */
 typedef struct PADBlock {
-    u8 origin[0x30];                  /* 0x00: PADStatus origin[4], 12-byte stride */
-    u32 type[PAD_MAX_CONTROLLER];     /* 0x30 */
-    u32 unk_0x40[PAD_MAX_CONTROLLER]; /* 0x40 */
-    u8 prev[0x30];                    /* 0x50: PADStatus prev[4], 12-byte stride */
+    PADStatus status[PAD_MAX_CONTROLLER]; /* 0x00 */
+    u32 type[PAD_MAX_CONTROLLER];         /* 0x30 */
+    u32 unk_0x40[PAD_MAX_CONTROLLER];     /* 0x40 */
+    PADStatus prev[PAD_MAX_CONTROLLER];   /* 0x50 */
 } PADBlock;
 
 #define PAD_BLOCK ((PADBlock*)(void*)lbl_8038F080)
