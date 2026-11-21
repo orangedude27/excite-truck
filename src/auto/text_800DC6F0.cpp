@@ -131,20 +131,22 @@ extern "C" void* __ct__Q36nw4hbm3lyt7PictureFPCQ46nw4hbm3lyt3res7PictureRCQ36nw4
 
 /* nw4hbm::lyt::Picture destructor: release owned picture data/material,
  * destroy child list and base Pane, then optionally delete storage. */
-extern "C" void* __dt__Q36nw4hbm3lyt7PictureFv(void* this_, s32 arg1) {
-    register void* data;
+extern "C" void* __dt__Q36nw4hbm3lyt7PictureFv(void* this_, s32 deleteFlag) {
+    /* Picture destructor: release the owned material, destroy the texcoord and
+     * vertex-color arrays and the base Pane, then optionally free the storage. */
+    register void* material;
     if (this_ != 0) {
-        data = *(void**)((u8*)this_ + 0x28);
-        *(void**)this_ = lbl_80320408;
-        if (data != 0 && *((u8*)data + 0x54) == 0) {
-            ((PicDataVt*)data)->vf0(-1);
-            MEMFreeToAllocator((void*)lbl_8055DDF0, *(void**)((u8*)this_ + 0x28));
+        material = *(void**)((u8*)this_ + 0x28);
+        *(void**)this_ = sPictureVTable;
+        if (material != 0 && *((u8*)material + 0x54) == 0) {
+            ((PicDataVt*)material)->vf0(-1);
+            MEMFreeToAllocator((void*)sLayoutAllocator, *(void**)((u8*)this_ + 0x28));
             *(u32*)((u8*)this_ + 0x28) = 0;
         }
         fn_800D598C((u8*)this_ + 0xE4);
-        fn_8002F634((u8*)this_ + 0xD4, fn_800D2DD4, 4, 4);
+        fn_8002F634((u8*)this_ + 0xD4, sTexCoordDtor, 4, 4);
         __dt__Q36nw4hbm3lyt4PaneFv(this_, 0);
-        if (arg1 > 0) fn_80128668(this_);
+        if (deleteFlag > 0) fn_80128668(this_);
     }
     return this_;
 }
