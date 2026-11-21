@@ -7856,8 +7856,6 @@ void bta_hh_add_device_to_list(void *devCb, s8 handle, s16 attrMask, void *desc,
     }
 }
 
-typedef struct { UINT8 tod; UINT8 app_id; } hh_dev_t;
-typedef struct { UINT8 max_devt_spt; hh_dev_t *p_devt_list; } hh_cfg_t;
 BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
     UINT8 max_devt = lbl_80559030[0];
     UINT8 cod = (sub_class >> 2) & 0x3F;
