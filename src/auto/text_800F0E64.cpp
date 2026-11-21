@@ -1522,16 +1522,16 @@ copy_if_valid:
 extern "C" const char lbl_80324868[];
 extern "C" void fn_800F2EAC(void *self, void *arg) {
     u8 *object = (u8 *)self;
-    const char * const base = lbl_80324868;
+    const char (*base)[0x104] = (const char (*)[0x104])lbl_80324868;
     u8 *bytes = (u8 *)arg;
     u8 *table;
     u32 baseAddress;
     u8 *offsetPtr;
     u32 value;
     if (arg == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x60, base + 0x104);
+        Panic__Q26nw4hbm2dbFPCciPCce(base[0], 0x60, (const char *)base + 0x104);
     if ((*(u32 *)bytes - 0x53590000U) != 0x4d42U)
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x63, base + 0x138);
+        Panic__Q26nw4hbm2dbFPCciPCce(base[0], 0x63, (const char *)base + 0x138);
     table = bytes + 8;
     *(u8 **)(object + 0x2c) = table;
     u32 offset = *(u32 *)(bytes + 8);
@@ -3513,9 +3513,9 @@ extern "C" s32 fn_800F65F0(void *arg0, void **arg1, u32 arg2, s32 arg3, s32 arg4
     register s32 playerIndex;
     register s32 startPosition;
     register s32 soundCount;
-    register u32 soundIndex;
-    void *options;
-    register s32 loop;
+         register u32 soundIndex;
+     register void *options;
+     register s32 loop;
     register s32 result;
     register s32 soundType;
     register s32 priority;
@@ -4091,7 +4091,7 @@ extern "C" s32 fn_800F73E4(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4)
   fileInfo = *((void **) (((u8 *) reader) + 0x10));
   if (fn_800FE0DC(fn_800FDE60()) < 0x28)
   {
-    Panic__Q26nw4hbm2dbFPCciPCce(*new_var, 0x650, (*new_var) + 0x5B8);
+    Panic__Q26nw4hbm2dbFPCciPCce(base, 0x650, base + 0x5B8);
   }
   if (task != 0)
   {
@@ -4292,7 +4292,7 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv
         if ((u32)(-f.valid | f.valid) >> 31) {
             fn_800FAB98(&f.valid, f.header);
         }
-        for (off = 0, i = 0; i < f.header[2]; i++, off += 0x30) {
+        for (i = 0, off = 0; i < f.header[2]; i++, off += 0x30) {
             if ((u32)(-f.valid | f.valid) >> 31) {
                 fn_800FACC0(&f.valid, (void*)((u8*)f.adpcm + off), i);
             }
@@ -4700,16 +4700,18 @@ extern "C" void DisposeCallbackFunc__Q36nw4hbm3snd9SoundHeapFPvUlPv(void* start,
                                                                               user);
 }
 
+#pragma push
+#pragma scheduling off
 extern "C" void __ct__Q36nw4hbm3snd11SoundPlayerFv(void* self) {
     u8* p = (u8*)self;
-    register u32 zero = 0;
     register u32 one = 1;
+    register u32 zero = 0;
     register f32 initialValue = lbl_805610B8;
+    *(volatile u32*)(p + 4) = zero;
     register u8* firstList = p + 4;
     register u8* secondList = p + 0x10;
-    register u8* thirdList = p + 0x1c;
     *(volatile u32*)(p + 8) = zero;
-    *(volatile u32*)(p + 4) = zero;
+    register u8* thirdList = p + 0x1c;
     *(volatile u32*)(p + 0x10) = zero;
     *(volatile u32*)(p + 0x14) = zero;
     *(volatile u32*)(p + 0x1c) = zero;
@@ -4735,7 +4737,7 @@ extern "C" void __ct__Q36nw4hbm3snd11SoundPlayerFv(void* self) {
     *(f32*)(p + 0x40) = initialValue;
     *(f32*)(p + 0x44) = initialValue;
 }
-
+#pragma pop
 extern "C" void fn_800F8520(void *list) {
     // Initialize an empty nw4r ut::LinkList: clear the element count at +0x00,
     // then make the sentinel node's next (+0x04) and prev (+0x08) point at itself.
@@ -6134,6 +6136,8 @@ extern "C" void OSResumeThread(void *);
 extern "C" s32 fn_800FA77C(s32);
 extern "C" const char lbl_80326450[];
 extern "C" const char lbl_80326464[];
+#pragma push
+#pragma optimization_level 3
 extern "C" void InitSoundSystem__Q36nw4hbm3snd11SoundSystemFll(s32 arg0, s32 arg1) {
     register const char *labels = (const char *)lbl_803263B8;
     u32 status;
@@ -6159,7 +6163,7 @@ extern "C" void InitSoundSystem__Q36nw4hbm3snd11SoundSystemFll(s32 arg0, s32 arg
     if (fn_800FA4C4(GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(), arg0) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(labels, 0x82, labels + 0x48);
 }
-
+#pragma pop
 extern "C" void fn_800FA350(void) {
     void *instance;
 
@@ -6830,7 +6834,6 @@ extern "C" void * __ct__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
     u8 *p = (u8 *)arg0;
     volatile u32 *vp = (volatile u32 *)p;
     u32 zero = 0;
-    u32 minusone = -1;
     void *it;
     void *head0 = p + 0x98;
     void *tail = p + 0xa4;
@@ -6839,7 +6842,7 @@ extern "C" void * __ct__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
     vp[0x9c / 4] = zero;
     vp[0xa4 / 4] = zero;
     vp[0xa8 / 4] = zero;
-    vp[1] = minusone;
+    vp[1] = -1;
     ((struct StrmHead *)p)->vtable = (u32)vtable;
     vp[2] = zero;
     vp[3] = zero;
