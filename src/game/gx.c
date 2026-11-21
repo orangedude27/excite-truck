@@ -5,7 +5,7 @@
 #include <revolution/GX/GXTypes.h>
 #include "revolution/GX/GXHardware.h"
 typedef int M2C_UNK;
-typedef float *DirArg802D01B0;
+typedef const float *DirArg802D01B0;
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
 extern void GXLoadTexObj(void *, int);
 
@@ -1222,7 +1222,7 @@ void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
     lbl_804C97D0 = a;
 }
 #pragma scheduling on
-void fn_802D01B0(float *p, float v) {
+void fn_802D01B0(DirArg802D01B0 p, float v) {
     extern char lbl_804C97D0;
     float z, y, x;
     float *out;
