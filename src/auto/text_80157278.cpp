@@ -20,8 +20,16 @@ extern "C" f32 lbl_80561750, lbl_80561754, lbl_8056177C, lbl_80561788, lbl_80561
 // The bonus trackers' two shared multipliers, used from the first reset below.
 #define BONUS_FULL  lbl_80561750 // .sdata2: 1.0f, the multiplier an event starts at
 #define BONUS_NONE  lbl_80561754 // .sdata2: 0.0f
-#define FRAME_TIME  lbl_8056177C // .sdata2: 0.0166834f, one 60 Hz frame
-class Fn8015B404Obj {
+ #define FRAME_TIME  lbl_8056177C // .sdata2: 0.0166834f, one 60 Hz frame
+ // Constants of the drift test, shared with fn_80159624.
+ #define DRIFT_EPSILON     lbl_80558DC4[0] // .sdata: 2^-23, the "is zero" tolerance
+ #define DRIFT_MIN_SPEED   lbl_80561788    // .sdata2: 5.0f, least speed a drift counts at
+ #define DRIFT_MAX_TIME    lbl_80561760    // .sdata2: 0.5f, most the ground timer may read
+ #define DRIFT_KEEP_SLIP   lbl_8056178C    // .sdata2: 0.15f, sideways share of speed that keeps a drift going
+ #define DRIFT_START_SLIP  lbl_80561790    // .sdata2: 0.35f, sideways share of speed that starts one
+ #define DRIFT_TIME_DECAY  lbl_80561794    // .sdata2: 8.0f, fades the drift level as ground time grows
+ #define DRIFT_VOLUME_SCALE lbl_80561798   // .sdata2: 0.4f, scales drift level into the drift sound's volume
+ class Fn8015B404Obj {
 public:
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
     virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
