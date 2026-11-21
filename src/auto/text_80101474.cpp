@@ -199,10 +199,15 @@ check:
 
 #pragma use_lmw_stmw off
 #pragma scheduling on
-int nw4hbm::snd::detail::WsdTrack::ParseNextTick(const WsdCallback *callback, unsigned long arg1, bool arg2) {
-    int valid = *(int *)((char *)this + 0x2C);
+int nw4hbm::snd::detail::WsdTrack::ParseNextTick(const WsdCallback *callback, unsigned long parseArg, bool parseFlag) {
+    /* Advance a WSD track one tick: assert the owning player is set, walk the
+       active-channel list decrementing each channel's remaining note time (+0xD4),
+       advancing its frame counter via fn_800EA880 and releasing it when the time
+       runs out; then parse the next track event.  Return -1 if the channel count
+       (+8) disagrees with an empty active list (+0x30). */
+    int player = *(int *)((char *)this + 0x2C);
     void *channel;
-    if (valid == 0) {
+    if (player == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8, 0x6F, lbl_80327CCC);
     }
     channel = *(void **)((char *)this + 0x30);
@@ -223,7 +228,7 @@ check:
     if (*(int *)((char *)this + 8) != 0 && *(void **)((char *)this + 0x30) == 0) {
         return -1;
     }
-    return Parse__Q46nw4hbm3snd6detail8WsdTrackFPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUlb(this, callback, arg1, arg2);
+    return Parse__Q46nw4hbm3snd6detail8WsdTrackFPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUlb(this, callback, parseArg, parseFlag);
 }
 #pragma scheduling reset
 #pragma use_lmw_stmw on
