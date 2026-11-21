@@ -2,7 +2,6 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern int fn_8002194C(void*, unsigned int, int*);
-struct Node80021F88 { void *next; unsigned int avail; };
 int fn_80021F88(void** arg0, int arg1, int* arg2) {
     void* node; unsigned int size; int result;
     size=(arg1+15)&~7; if(size<0x50)size=0x50; *arg2=0; node=*arg0;
