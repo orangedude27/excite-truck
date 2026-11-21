@@ -407,11 +407,12 @@ static inline void format_append(char *dstp, int sizep, char *str) {
 extern char *strchr(const char *, int);
 #pragma opt_propagation off
 #pragma opt_common_subs off
-void fn_80130568(char *arg0) {
-    char *base = arg0;
+/* Localize decimal points: replace every '.' in text with the active locale's decimal-separator character (lbl_8055E050[0]); no-op when that separator is '.'. */
+void fn_80130568(char *text) {
+    char *base = text;
     if (*(char *)lbl_8055E050 != '.') {
-        while ((arg0 = strchr(base, '.')) != 0) {
-            *arg0 = *(char *)lbl_8055E050;
+        while ((text = strchr(base, '.')) != 0) {
+            *text = *(char *)lbl_8055E050;
         }
     }
 }
