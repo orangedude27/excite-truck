@@ -51,7 +51,7 @@ BOOL __OSReadStateFlags(OSStateFlags* outState) {
         NANDClose(&file);
 
         if (bytesRead != sizeof(OSStateFlags)) {
-            NANDDelete("/title/00000001/00000002/data/state.dat");
+            NANDDelete(STATE_FILE_PATH);
             memset(outState, 0, sizeof(OSStateFlags));
             return FALSE;
         }
