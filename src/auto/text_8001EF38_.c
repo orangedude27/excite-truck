@@ -424,7 +424,7 @@ void fn_8001F578(void) {
 #undef sActiveAchievementsBlock
 #undef sPendingAchievementsBlock
 }
-#pragma scheduling 603
+#pragma scheduling on
 extern void *memcpy(void *, const void *, unsigned long);
 #pragma opt_propagation off
 void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
