@@ -532,7 +532,6 @@ extern "C" void SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *env, int a
 #pragma scheduling on
 void nw4hbm::snd::detail::EnvGenerator::SetDecay(int decay)
 {
-  #pragma opt_propagation off
   const char *file = (const char *) lbl_80322B80;
   f32 value;
   int valid = 0;
@@ -543,7 +542,7 @@ void nw4hbm::snd::detail::EnvGenerator::SetDecay(int decay)
   }
   if (valid == 0)
   {
-    Panic__Q26nw4hbm2dbFPCciPCce((const char *)((unsigned int)file), 0x105, file + 0x94, decay, 0, 0x7F);
+    Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x105, file + 0x94, decay, 0, 0x7F);
   }
   valid = 0;
   if ((decay >= 0) && (decay <= 0x7F))
@@ -552,7 +551,7 @@ void nw4hbm::snd::detail::EnvGenerator::SetDecay(int decay)
   }
   if (valid == 0)
   {
-    Panic__Q26nw4hbm2dbFPCciPCce((const char *)((unsigned int)file), 0x132, file + 0xD0, decay, 0, 0x7F);
+    Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x132, file + 0xD0, decay, 0, 0x7F);
   }
   if (decay == 0x7F)
   {
@@ -735,17 +734,25 @@ extern "C" void fn_800EBB88(void *arg0) {
     links[3] = (s32)sentinel;
 }
 
+static inline void *FrameHeapDestroy_GetBack(FrameHeapDestroyView *state, FrameHeapDestroyListView *head) {
+    if (state->count == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1FB, (const char *)lbl_80322FF8);
+    }
+    return head->tail;
+}
+
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void *__dt__Q46nw4hbm3snd6detail9FrameHeapFv(void *self, s32 flag) {
     if (self != 0) {
         FrameHeapDestroyView *state = (FrameHeapDestroyView *)self;
-        void *heap = state->heap;
-        if (heap == 0) goto done;
-        if (heap == 0) goto done;
-        if (state->count != 0) {
-            struct { FrameHeapDestroyListView *p; } headBox;
-            FrameHeapDestroyListView *&head = headBox.p;
+        struct { FrameHeapDestroyListView *p; } headBox;
+        FrameHeapDestroyListView *&head = headBox.p;
+        struct { void *p; } listBox;
+        void *&list = listBox.p;
+        if (state->heap != 0) {
+            if (state->heap == 0) goto done;
+            if (state->count == 0) goto free_heap;
             head = &state->list;
             goto loop_test;
 loop_body:
@@ -753,8 +760,6 @@ loop_body:
                 Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1FB, (const char *)lbl_80322FF8);
             }
             {
-                struct { void *p; } listBox;
-                void *&list = listBox.p;
                 list = head->tail;
                 if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
                 if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
@@ -778,10 +783,11 @@ loop_body:
             }
 loop_test:
             if (state->count != 0) goto loop_body;
+free_heap:
+            MEMFreeToFrmHeap(state->heap, 3);
+            MEMDestroyFrmHeap(state->heap);
+            state->heap = 0;
         }
-        MEMFreeToFrmHeap(state->heap, 3);
-        MEMDestroyFrmHeap(state->heap);
-        state->heap = 0;
 done:
         if ((u8 *)self + 4 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 4, 0);
         if (flag > 0) fn_80128668(self);
@@ -796,6 +802,8 @@ bool nw4hbm::snd::detail::FrameHeap::Create(void *buffer, unsigned long size) {
     FrameHeapDestroyView *state = (FrameHeapDestroyView *)this;
     struct { FrameHeapDestroyListView *p; } headBox;
     FrameHeapDestroyListView *&head = headBox.p;
+    struct { void *p; } listBox;
+    void *&list = listBox.p;
     if (buffer == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322D60, 0x4B, (const char *)lbl_80322D74);
     }
@@ -809,8 +817,6 @@ bool nw4hbm::snd::detail::FrameHeap::Create(void *buffer, unsigned long size) {
                 Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1FB, (const char *)lbl_80322FF8);
             }
             {
-                struct { void *p; } listBox;
-                void *&list = listBox.p;
                 list = head->tail;
                 if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
                 if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
