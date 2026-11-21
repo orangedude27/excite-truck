@@ -9252,6 +9252,8 @@ extern "C" void fn_80229604(void *widget) {
 }
 
 extern "C" void fn_80229610(void) {
+    /* Default widget-manager callback: does nothing (paired with the
+       always-true predicate fn_80229614 in the default callback set). */
 }
 
 /* Default widget-manager callback: an always-true predicate, reporting success to its caller. */
