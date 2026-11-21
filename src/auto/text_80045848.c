@@ -1,27 +1,82 @@
 #include "types.h"
+#include "revolution/KPAD/KPAD.h"
+#include "revolution/WPAD/WPAD.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-/* Updates auto-repeat state for the pad's digital buttons (mode 2: horizon, else standard), setting repeat-trigger flags from timers/thresholds. */
-void calc_button_repeat(void *arg0, void *arg1, u32 arg2) {
-    u16 t, t2, t3, t4;
-#define F(p,T,o) (*(T *)((u8 *)(p)+(o)))
-    if(arg2==2) {
-      if(F(arg1,s32,0x64)||F(arg1,s32,0x68)){ F(arg0,u16,0x3e4)=0; F(arg0,u16,0x3e6)=F(arg0,u16,0x3e8); if(F(arg1,s32,0x64)&&F(arg0,u16,0x3ea)) F(arg1,s32,0x60)|=0x80000000; }
-      else if(F(arg1,s32,0x60)){ t=F(arg0,u16,0x3e4)+F(arg0,u16,0x112); F(arg0,u16,0x3e4)=t; if(t>=0x9c40) F(arg0,u16,0x3e4)=t-0x9c40; if(F(arg0,u16,0x3e4)>=F(arg0,u16,0x3e6)){ F(arg1,s32,0x60)|=0x80000000; F(arg0,u16,0x3e6)=F(arg0,u16,0x3e6)+F(arg0,u16,0x3ea); if(F(arg0,u16,0x3e4)>=0x4e20){ F(arg0,u16,0x3e4)=F(arg0,u16,0x3e4)-0x4e20; F(arg0,u16,0x3e6)=F(arg0,u16,0x3e6)-0x4e20; } } }
-    } else if(F(arg1,s32,4)||F(arg1,s32,8)){F(arg0,u16,0x3dc)=0;F(arg0,u16,0x3de)=F(arg0,u16,0x3e0);if(F(arg1,s32,4)&&F(arg0,u16,0x3e2))F(arg1,s32,0)|=0x80000000;}
-    else if(F(arg1,s32,0)){t3=F(arg0,u16,0x3dc)+F(arg0,u16,0x112);F(arg0,u16,0x3dc)=t3;if(t3>=0x9c40)F(arg0,u16,0x3dc)=t3-0x9c40;if(F(arg0,u16,0x3dc)>=F(arg0,u16,0x3de)){F(arg1,s32,0)|=0x80000000;F(arg0,u16,0x3de)=F(arg0,u16,0x3de)+F(arg0,u16,0x3e2);if(F(arg0,u16,0x3dc)>=0x4e20){F(arg0,u16,0x3dc)=F(arg0,u16,0x3dc)-0x4e20;F(arg0,u16,0x3de)=F(arg0,u16,0x3de)-0x4e20;}}
+/* The button and auto-repeat slice of one channel's KPADInsideStatus record.
+   Repeat timers advance by repeat_count each sample until they hit a threshold. */
+typedef struct KpadButtonStatus {
+    /* 0x000 */ u32 hold;
+    /* 0x004 */ u32 trig;
+    /* 0x008 */ u32 release;
+    u8 padC[0x60 - 0x0C];
+    /* 0x060 */ u32 cl_hold;
+    /* 0x064 */ u32 cl_trig;
+    /* 0x068 */ u32 cl_release;
+    u8 pad6C[0x112 - 0x6C];
+    /* 0x112 */ u16 repeat_count;
+    /* 0x114 */ s16 active_chan;
+    u8 pad116[0x3DC - 0x116];
+    /* 0x3DC */ u16 btn_repeat_time;
+    /* 0x3DE */ u16 btn_repeat_next;
+    /* 0x3E0 */ u16 btn_repeat_delay;
+    /* 0x3E2 */ u16 btn_repeat_pulse;
+    /* 0x3E4 */ u16 btn_cl_repeat_time;
+    /* 0x3E6 */ u16 btn_cl_repeat_next;
+    /* 0x3E8 */ u16 btn_cl_repeat_delay;
+    /* 0x3EA */ u16 btn_cl_repeat_pulse;
+} KpadButtonStatus;
+
+/* Advance the core or classic button auto-repeat timers and flag a repeat press. */
+void calc_button_repeat(KpadButtonStatus *kp, KpadButtonStatus *status, u32 dev_type) {
+    u16 cls_time, core_time;
+    if (dev_type == WPAD_DEV_CLASSIC) {
+        if (status->cl_trig || status->cl_release) {
+            kp->btn_cl_repeat_time = 0;
+            kp->btn_cl_repeat_next = kp->btn_cl_repeat_delay;
+            if (status->cl_trig && kp->btn_cl_repeat_pulse)
+                status->cl_hold |= KPAD_BUTTON_RPT;
+        } else if (status->cl_hold) {
+            cls_time = kp->btn_cl_repeat_time + kp->repeat_count;
+            kp->btn_cl_repeat_time = cls_time;
+            if (cls_time >= KPAD_BTN_NO_RPT_DELAY)
+                kp->btn_cl_repeat_time = cls_time - KPAD_BTN_NO_RPT_DELAY;
+            if (kp->btn_cl_repeat_time >= kp->btn_cl_repeat_next) {
+                status->cl_hold |= KPAD_BUTTON_RPT;
+                kp->btn_cl_repeat_next = kp->btn_cl_repeat_next + kp->btn_cl_repeat_pulse;
+                if (kp->btn_cl_repeat_time >= KPAD_BTN_RPT_TIME_MAX) {
+                    kp->btn_cl_repeat_time = kp->btn_cl_repeat_time - KPAD_BTN_RPT_TIME_MAX;
+                    kp->btn_cl_repeat_next = kp->btn_cl_repeat_next - KPAD_BTN_RPT_TIME_MAX;
+                }
+            }
+        }
+    } else if (status->trig || status->release) {
+        kp->btn_repeat_time = 0;
+        kp->btn_repeat_next = kp->btn_repeat_delay;
+        if (status->trig && kp->btn_repeat_pulse)
+            status->hold |= KPAD_BUTTON_RPT;
+    } else if (status->hold) {
+        core_time = kp->btn_repeat_time + kp->repeat_count;
+        kp->btn_repeat_time = core_time;
+        if (core_time >= KPAD_BTN_NO_RPT_DELAY)
+            kp->btn_repeat_time = core_time - KPAD_BTN_NO_RPT_DELAY;
+        if (kp->btn_repeat_time >= kp->btn_repeat_next) {
+            status->hold |= KPAD_BUTTON_RPT;
+            kp->btn_repeat_next = kp->btn_repeat_next + kp->btn_repeat_pulse;
+            if (kp->btn_repeat_time >= KPAD_BTN_RPT_TIME_MAX) {
+                kp->btn_repeat_time = kp->btn_repeat_time - KPAD_BTN_RPT_TIME_MAX;
+                kp->btn_repeat_next = kp->btn_repeat_next - KPAD_BTN_RPT_TIME_MAX;
+            }
+        }
     }
-#undef F
 }
 
 extern void reset_kpad(void *);
-extern void calc_button_repeat(void *, void *, u32);
-void calc_acc_horizon(void *p, void *input, u32 mode) {
-    /* Update held/pressed/released buttons (and horizon buttons for mode 2) from a report,
-     * handling error/reset status and maintaining repeat state via calc_button_repeat. */
-    u8 *pad = (u8 *)p;
-    u8 *report = (u8 *)input;
+
+/* Update held/pressed/released buttons (plus classic buttons) from a WPAD report,
+   handling error/reset status and maintaining repeat state via calc_button_repeat. */
+void calc_acc_horizon(KpadButtonStatus *kp, WPADCLStatus *report, u32 mode) {
     u32 old_buttons;
     u32 old_horizon;
     u32 current;
@@ -30,64 +85,64 @@ void calc_acc_horizon(void *p, void *input, u32 mode) {
     s16 count;
     s8 status;
 
-    count = *(s16 *)(pad + 0x114);
+    count = kp->active_chan;
     if (count < 0)
         return;
-    previous = *(u32 *)(pad + 0);
-    old_buttons = previous & 0xFFFF;
-    if (mode == 2) {
-        previous = *(u32 *)(pad + 0x60);
-        old_horizon = previous & 0xFFFF;
+    previous = kp->hold;
+    old_buttons = previous & KPAD_BUTTON_MASK;
+    if (mode == WPAD_DEV_CLASSIC) {
+        previous = kp->cl_hold;
+        old_horizon = previous & KPAD_BUTTON_MASK;
     }
-    if (mode == 1) {
-        status = *(s8 *)(report + 0x29);
+    if (mode == WPAD_DEV_FREESTYLE) {
+        status = report->err;
         if (status != 0) {
-            if (status == -1) {
-                *(s16 *)(pad + 0x114) -= 4;
-                reset_kpad(p);
+            if (status == WPAD_ERR_NO_CONTROLLER) {
+                kp->active_chan -= 4;
+                reset_kpad(kp);
                 return;
             }
             goto process;
         }
-        *(u32 *)(pad + 0) = *(u16 *)(report + 0);
+        kp->hold = report->button;
         goto process;
     }
-    if (mode == 2) {
-        status = *(s8 *)(report + 0x29);
+    if (mode == WPAD_DEV_CLASSIC) {
+        status = report->err;
         if (status != 0) {
-            if (status == -1) {
-                *(s16 *)(pad + 0x114) -= 4;
-                reset_kpad(p);
+            if (status == WPAD_ERR_NO_CONTROLLER) {
+                kp->active_chan -= 4;
+                reset_kpad(kp);
                 return;
             }
             goto process;
         }
-        *(u32 *)(pad + 0) = *(u16 *)(report + 0);
-        *(u32 *)(pad + 0x60) = *(u16 *)(report + 0x2A);
+        kp->hold = report->button;
+        kp->cl_hold = report->clButton;
         goto process;
     }
-    status = *(s8 *)(report + 0x29);
+    status = report->err;
     if (status != 0) {
-        if (status == -1) {
-            *(s16 *)(pad + 0x114) -= 4;
-            reset_kpad(p);
+        if (status == WPAD_ERR_NO_CONTROLLER) {
+            kp->active_chan -= 4;
+            reset_kpad(kp);
             return;
         }
         goto process;
     }
-    *(u32 *)(pad + 0) = *(u16 *)(report + 0);
+    kp->hold = report->button;
 process:
-    current = *(u32 *)(pad + 0);
+    current = kp->hold;
     changed = current ^ old_buttons;
-    *(u32 *)(pad + 4) = changed & current;
-    *(u32 *)(pad + 8) = changed & old_buttons;
-    calc_button_repeat(p, p, 0);
-    if (mode == 2) {
-        current = *(u32 *)(pad + 0x60);
+    kp->trig = changed & current;
+    kp->release = changed & old_buttons;
+    calc_button_repeat(kp, kp, WPAD_DEV_CORE);
+    if (mode == WPAD_DEV_CLASSIC) {
+        current = kp->cl_hold;
         changed = current ^ old_horizon;
-        *(u32 *)(pad + 0x64) = changed & current;
-        *(u32 *)(pad + 0x68) = changed & old_horizon;
-        calc_button_repeat(p, p, 2);
+        kp->cl_trig = changed & current;
+        kp->cl_release = changed & old_horizon;
+        calc_button_repeat(kp, kp, WPAD_DEV_CLASSIC);
     }
 }
 
