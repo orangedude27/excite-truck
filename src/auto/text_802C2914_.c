@@ -15,8 +15,9 @@ void fn_802C2914(void *node) {
     lbl_8055FB80 = node;
 }
 
+/* Unlink `node` from the lbl_8055FB80 list if present, optionally free it,
+   and return the original pointer. */
 int fn_802C2930(void *node, int shouldFree) {
-    /* Unlink `node` from the lbl_8055FB80 list if present; optionally free it; return the original pointer. */
     void *cur;
     void **link;
     if (node != 0) {
