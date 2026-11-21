@@ -94,6 +94,8 @@ void fn_8029790C(void) {
 void fn_80297980(void) {
 }
 
+/* Empty no-op hook called by the per-frame shutdown pass (fn_801E8CE4);
+ * the static-shadow module has no per-frame teardown work to do. */
 void fn_80297984(void) {
 }
 
