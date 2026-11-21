@@ -44,15 +44,22 @@ extern char lbl_8055B860[];
 #define APPEND(v) { int *_d=(int*)(long)lbl_8055F3C4; int _i=_d[7]; _d[7]=_i+1; ((int*)_d[6])[_i]=(v); }
 void fn_8025CE78(void) {
     char *tbl;
-    int heapType;
-    void *list;
-    void **items;
-    void *item;
-    char *name;
-    int i, j, count, n;
-    char *entry, *src, *dst;
+    char buf6[0x43C], buf5[0x43C], buf4[0x43C], buf3[0x43C];
+    char buf2[0x43C], buf1[0x43C], buf0[0x43C];
+    int desc[155];
+    int sp40[30];
+    int sp3C, sp38, sp34, sp30;
+    int pad20[4];
+    void *sp1C;
+    int sp18, sp14, sp10;
+    int *spC;
+    int sp8;
+    void *list, **items, *item;
+    char *name, *entry, *src, *dst;
     char c;
-    char buf0[1084], buf1[1084], buf2[1084], buf3[1084], buf4[1084], buf5[1084], buf6[1084];
+    int heapType, i, j, count, n;
+    void *base;
+    int heap2;
     tbl = lbl_803454C8;
     heapType = fn_80012810();
     if (heapType != 304) {
