@@ -40,21 +40,23 @@ extern void fn_802E3734(int *);
 #pragma push
 #pragma pool_strings off
 #pragma readonly_strings on
+/* Dump the voice-sound table to sounds.txt: a header, one "<name>  <volume>" line
+ * per entry, then a footer; reports a panic if the file cannot be opened. */
 void fn_8020BCE4(void) {
-    int handle;
+    int file;
     int i;
-    void *item;
-    handle = fn_802E3D68("sounds.txt\0");
-    if (handle != -1) {
-        fn_802E3AD0(handle, "tabular samples\r\n\0\0");
-        fn_802E3AD0(handle, "\tname\t\t\tvolume\r\n\0\0\0");
-        fn_802E3AD0(handle, ";\t----\t\t\t------\r\n\0\0");
+    VoiceSndEntry *entry;
+    file = fn_802E3D68("sounds.txt\0");
+    if (file != -1) {
+        fn_802E3AD0(file, "tabular samples\r\n\0\0");
+        fn_802E3AD0(file, "\tname\t\t\tvolume\r\n\0\0\0");
+        fn_802E3AD0(file, ";\t----\t\t\t------\r\n\0\0");
         for (i = 0; i < fn_8020A76C(); i++) {
-            item = fn_8020A774(i);
-            fn_802E3AD0(handle, "\t%s\t\t%1.2f\r\n\0\0\0", item, *(float *)((char *)item + 0x20));
+            entry = (VoiceSndEntry *)fn_8020A774(i);
+            fn_802E3AD0(file, "\t%s\t\t%1.2f\r\n\0\0\0", entry->name, entry->volume);
         }
-        fn_802E3AD0(handle, "end\r\n\r\nend\r\n\0\0\0");
-        fn_802E3734(&handle);
+        fn_802E3AD0(file, "end\r\n\r\nend\r\n\0\0\0");
+        fn_802E3734(&file);
     } else {
         fn_802E30C8("can't write to sounds.txt\0\0");
     }
