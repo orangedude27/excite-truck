@@ -80,6 +80,8 @@ void fn_80265D88(void) {}
  * (fn_801E7984) with the scene-data pointer; this build leaves it empty. */
 void fn_80265D8C(void *sceneData) {}
 
+/* No-op subsystem-shutdown stub: called from WorldEndCommon (fn_801E7C28)
+ * among the race-subsystem teardown hooks; this build leaves it empty. */
 void fn_80265D90(void) {}
 
 /* No-op stub in the MP-client/subsystem hook cluster; unreferenced in this build. */
