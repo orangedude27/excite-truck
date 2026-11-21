@@ -314,46 +314,49 @@ struct SeqListLink {
     u8 priorityOffset;
 };
 
-extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail8SeqSoundFi(void* arg0, int arg1) {
+/* Set this sequence sound's player priority and re-sort it into its player's
+ * active-sound list: unlink it, walk to the first sound with a lower effective
+ * priority (base +0x40 plus offset +0x74, clamped to 0..127) and insert there. */
+extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail8SeqSoundFi(void* seqSound, int playerPriority) {
     #pragma opt_common_subs off
     void* node;
     void* sentinel;
-    void* list;
-    int priority;
-    void* soundNode;
+    void* priorityList;
+    int ourPriority;
+    void* linkNode;
 
-    SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(arg0, arg1);
-    int rawSound = *(unsigned char*)((unsigned char*)arg0 + 0x74) + *(int*)((unsigned char*)arg0 + 0x40);
-    if (rawSound > 0x7F) {
-        priority = 0x7F;
+    SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(seqSound, playerPriority);
+    int rawPriority = *(unsigned char*)((unsigned char*)seqSound + 0x74) + *(int*)((unsigned char*)seqSound + 0x40);
+    if (rawPriority > 0x7F) {
+        ourPriority = 0x7F;
     } else {
-        priority = rawSound < 0 ? 0 : rawSound;
+        ourPriority = rawPriority < 0 ? 0 : rawPriority;
     }
-    list = *(void**)((unsigned char*)arg0 + 0x1e4);
-    if (arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324344, 0x233, lbl_80324320);
-    soundNode = (unsigned char*)arg0 + 0xb8;
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((unsigned char*)list + 4, soundNode);
-    struct { u32 v; } nodeHolder;
-    struct { u32 v; } sentinelHolder;
-    nodeHolder.v = *(u32 *)((char *)list + 8);
-    sentinelHolder.v = (u32)((char *)list + 8);
-    u32 &nodeRef = nodeHolder.v;
-    u32 &sentinelRef = sentinelHolder.v;
-    while (nodeRef != sentinelRef) {
-        int nodePriority;
-        if (nodeRef == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324314, 0x23d, lbl_803242F0);
-        int raw = *(unsigned char*)(nodeRef - 0x44) + *(int*)(nodeRef - 0x78);
-        if (raw > 0x7F) {
-            nodePriority = 0x7F;
+    priorityList = *(void**)((unsigned char*)seqSound + 0x1e4);
+    if (seqSound == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324344, 0x233, lbl_80324320);
+    linkNode = (unsigned char*)seqSound + 0xb8;
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((unsigned char*)priorityList + 4, linkNode);
+    struct { u32 v; } cursorHolder;
+    struct { u32 v; } endHolder;
+    cursorHolder.v = *(u32 *)((char *)priorityList + 8);
+    endHolder.v = (u32)((char *)priorityList + 8);
+    u32 &cursor = cursorHolder.v;
+    u32 &end = endHolder.v;
+    while (cursor != end) {
+        int otherPriority;
+        if (cursor == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324314, 0x23d, lbl_803242F0);
+        int rawNodePriority = *(unsigned char*)(cursor - 0x44) + *(int*)(cursor - 0x78);
+        if (rawNodePriority > 0x7F) {
+            otherPriority = 0x7F;
         } else {
-            nodePriority = raw < 0 ? 0 : raw;
+            otherPriority = rawNodePriority < 0 ? 0 : rawNodePriority;
         }
-        if (priority < nodePriority) break;
-        nodeRef = *(u32 *)nodeRef;
+        if (ourPriority < otherPriority) break;
+        cursor = *(u32 *)cursor;
     }
-    if (arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324344, 0x233, lbl_80324320);
-    void* iterator = (void*)nodeRef;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((unsigned char*)list + 4, &iterator, soundNode);
+    if (seqSound == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324344, 0x233, lbl_80324320);
+    void* insertPoint = (void*)cursor;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((unsigned char*)priorityList + 4, &insertPoint, linkNode);
 }
 #pragma pop
 // Returns nonzero when the SeqSound has a player/handle assigned (field +0x1E0).
