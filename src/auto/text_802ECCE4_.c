@@ -122,17 +122,10 @@ s32 fn_802ECEC0(void) {
 }
 #pragma dont_inline reset
 
+/* Stop the current single movie, then play the "uisingle" movie on its own. */
 void fn_802ECEC4(void) {
-#define retireSingleMovie fn_802ECEC0
-#define playSingleMovie   fn_802ECE48
-#define uiSingleMovie     lbl_8055D300
-    /* Stop the current single movie (pop the single-movie list head), then
-     * play the "uisingle" movie on its own. */
-    retireSingleMovie();
-    playSingleMovie(uiSingleMovie);
-#undef uiSingleMovie
-#undef playSingleMovie
-#undef retireSingleMovie
+    fn_802ECEC0();
+    fn_802ECE48(lbl_8055D300);
 }
 
 s32 fn_802ECEEC(void) {
