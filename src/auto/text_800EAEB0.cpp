@@ -746,28 +746,27 @@ static inline void *FrameHeapDestroy_GetBack(FrameHeapDestroyView *state, FrameH
 extern "C" void *__dt__Q46nw4hbm3snd6detail9FrameHeapFv(void *self, s32 flag) {
     if (self != 0) {
         FrameHeapDestroyView *state = (FrameHeapDestroyView *)self;
-        struct { FrameHeapDestroyListView *p; } headBox;
-        FrameHeapDestroyListView *&head = headBox.p;
-        struct { void *p; } listBox;
-        void *&list = listBox.p;
-        if (state->heap != 0) {
-            if (state->heap == 0) goto done;
-            if (state->count == 0) goto free_heap;
+        void *heap = state->heap;
+        if (heap == 0) goto done;
+        if (heap == 0) goto done;
+        if (state->count != 0) {
+            struct { FrameHeapDestroyListView *p; } headBox;
+            FrameHeapDestroyListView *&head = headBox.p;
             head = &state->list;
             goto loop_test;
 loop_body:
-            if (state->count == 0) {
-                Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1FB, (const char *)lbl_80322FF8);
-            }
             {
-                list = head->tail;
+                void *list = FrameHeapDestroy_GetBack(state, head);
                 if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
                 if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
                 if (list != 0) {
                     struct { void *p; } nodeBox;
                     void *&node = nodeBox.p;
-                    node = (u8 *)list + 0xC;
-                    while (node != *(void **)((u8 *)list + 12)) {
+                    struct { void *p; } lb;
+                    void *&l = lb.p;
+                    l = list;
+                    node = (u8 *)l + 0xC;
+                    while (node != *(void **)((u8 *)l + 12)) {
                         void (*callback)(void *, void *, void *);
                         node = *(void **)((u8 *)node + 4);
                         if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F5C, 0x23D, (const char *)lbl_80322F38);
@@ -776,18 +775,17 @@ loop_body:
                             if (callback != 0) callback((u8 *)node + 0x20, *(void **)((u8 *)node + 8), *(void **)((u8 *)node + 0x10));
                         }
                     }
-                    if ((u8 *)list + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)list + 8, 0);
+                    if ((u8 *)l + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)l + 8, 0);
                 }
                 if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
                 Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(&state->count, list);
             }
 loop_test:
             if (state->count != 0) goto loop_body;
-free_heap:
-            MEMFreeToFrmHeap(state->heap, 3);
-            MEMDestroyFrmHeap(state->heap);
-            state->heap = 0;
         }
+        MEMFreeToFrmHeap(state->heap, 3);
+        MEMDestroyFrmHeap(state->heap);
+        state->heap = 0;
 done:
         if ((u8 *)self + 4 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 4, 0);
         if (flag > 0) fn_80128668(self);
