@@ -1078,17 +1078,19 @@ found:
 #pragma push
 #pragma scheduling invalid_target
 extern int __cntlzw(unsigned int);
-long fn_8027C1C8(void *arg0, const char *arg1) {
-    struct StringTable {
+long fn_8027C1C8(void *container, const char *name) {
+    /* Returns the index of the named entry in container's 0xC-byte event-path
+       table (base at +0xAF0C, count at +0xAF10), or -1 if no name matches. */
+    struct EventPathTable {
         char padding[0xAF0C];
         char *entries;
         long count;
     };
-    struct StringTable *table = (struct StringTable *)arg0;
+    struct EventPathTable *table = (struct EventPathTable *)container;
     long index = 0;
     long offset = 0;
     while (index < table->count) {
-        unsigned int equal = (unsigned int)__cntlzw((unsigned int)stricmp(arg1, *(char **)(table->entries + offset + 4))) >> 5;
+        unsigned int equal = (unsigned int)__cntlzw((unsigned int)stricmp(name, *(char **)(table->entries + offset + 4))) >> 5;
         switch (equal) {
         case 0:
             offset += 0xC;
