@@ -2699,35 +2699,38 @@ extern "C" void fn_801FB284(void *arg0, void *arg1) {
 }
 
 #pragma use_lmw_stmw off
-extern "C" void fn_801FB354(void *__restrict arg0, void *arg1) {
-    s32 result;
-    s32 flags;
-    f32 cz;
-    f32 cy;
-    f32 cx;
-    f32 z;
-    f32 y;
-    f32 x;
+extern "C" void fn_801FB354(void *__restrict model, void *matrix) {
+    /* Pick model draw flags: when facing checks are enabled, test the object's
+       position against its facing direction relative to the camera to mark it
+       behind (0x10) or in front (0x20), then submit the draw with those flags. */
+    s32 isBehind;
+    s32 drawFlags;
+    f32 camZ;
+    f32 camY;
+    f32 camX;
+    f32 posZ;
+    f32 posY;
+    f32 posX;
     f32 delta[3];
-    void *camera;
+    void *cameraMatrix;
 
-    if (*(u32 *)((u8 *)arg0 + 0x190) & 1) {
-        camera = fn_802C86DC();
-        x = *(f32 *)((u8 *)arg1 + 0x24);
-        y = *(f32 *)((u8 *)arg1 + 0x28);
-        cx = *(f32 *)((u8 *)camera + 0x24);
-        z = *(f32 *)((u8 *)arg1 + 0x2C);
-        delta[0] = x - cx;
-        cy = *(f32 *)((u8 *)camera + 0x28);
-        delta[1] = y - cy;
-        cz = *(f32 *)((u8 *)camera + 0x2C);
-        delta[2] = z - cz;
-        result = PSVECDotProduct(delta, (const f32 *)((u8 *)arg1 + 0x18)) < lbl_80562FF0;
-        flags = (result ? 0x10 : 0x20) | 1;
+    if (*(u32 *)((u8 *)model + 0x190) & 1) {
+        cameraMatrix = fn_802C86DC();
+        posX = *(f32 *)((u8 *)matrix + 0x24);
+        posY = *(f32 *)((u8 *)matrix + 0x28);
+        camX = *(f32 *)((u8 *)cameraMatrix + 0x24);
+        posZ = *(f32 *)((u8 *)matrix + 0x2C);
+        delta[0] = posX - camX;
+        camY = *(f32 *)((u8 *)cameraMatrix + 0x28);
+        delta[1] = posY - camY;
+        camZ = *(f32 *)((u8 *)cameraMatrix + 0x2C);
+        delta[2] = posZ - camZ;
+        isBehind = PSVECDotProduct(delta, (const f32 *)((u8 *)matrix + 0x18)) < lbl_80562FF0;
+        drawFlags = (isBehind ? 0x10 : 0x20) | 1;
     } else {
-        flags = -0xF;
+        drawFlags = -0xF;
     }
-    fn_802C70AC(*(s32 *)((u8 *)arg0 + 0x74), arg1, -1, flags);
+    fn_802C70AC(*(s32 *)((u8 *)model + 0x74), matrix, -1, drawFlags);
 }
 #pragma use_lmw_stmw reset
 extern "C" void fn_801FB40C(void *sender, s32 code, void *target) {
@@ -2736,96 +2739,167 @@ extern "C" void fn_801FB40C(void *sender, s32 code, void *target) {
 }
 
 extern "C" void fn_801FB420(void *arg0, void *arg1) {
-    unsigned char *self = (unsigned char *)arg0;
-    unsigned char *par = (unsigned char *)arg1;
-    int flags = *(int *)(self + 0x190);
-    *(int *)(self + 0x188) = -1;
-    const char *base = lbl_8033AF80;
-    if ((flags & 4) != 0) {
+    typedef void *(*FnPtr)(void *);
+    u8 *self = (u8 *)arg0;
+    u8 *par = (u8 *)arg1;
+    s32 flags = *(s32 *)(self + 0x190);
+    s32 need = 0, cnt, i, count;
+    char *base = lbl_8033AF80;
+    void *r24, *r29, *fp, *vec;
+    u8 *obj;
+    u32 mask;
+    *(s32 *)(self + 0x188) = -1;
+    if ((flags & 4) == 0) goto branchB;
+    {
         void *o34 = *(void **)(par + 0x34);
         if (o34 != 0) {
             VT_C *vt = *(VT_C **)o34;
-            vt->fC(o34, lbl_8055B398);
+            (void)vt->fC(o34, lbl_8055B398);
         }
-        int v15c = *(int *)(self + 0x15c);
-        int need = 0;
-        {
-            unsigned int t = (unsigned int)(v15c - 6);
-            if (t <= 0x10 && (((1u << t) & 0x12319u) != 0)) need = 1;
+        s32 t = *(s32 *)(self + 0x15c) - 6;
+        if ((u32)t <= 0x10 && (((1u << t) & 0x12319u) != 0)) need = 1;
+    }
+    if (need == 0) goto needZero;
+    cnt = lbl_8055EC78;
+    lbl_8055EC78 = cnt + 1;
+    r29 = 0;
+    {
+        s32 vv = *(s32 *)(self + 0x15c) - 6;
+        switch (vv) {
+        case 0: case 9: r24 = fn_801FC12C(self + 0x10c); break;
+        case 8: r24 = ((FnPtr)fn_801FC048)(self + 0x10c); break;
+        case 4: r24 = ((FnPtr)fn_801FBFE8)(self + 0x10c); break;
+        case 3: r24 = ((FnPtr)fn_801FBF48)(self + 0x10c); break;
+        case 16: r24 = ((FnPtr)fn_801FBEA8)(self + 0x10c); break;
+        default: fn_802E317C(base + 0x510); r24 = 0; break;
         }
-        if (need != 0) {
-            int cnt = lbl_8055EC78;
-            lbl_8055EC78 = cnt + 1;
-            void *r24 = 0;
-            int vv = *(int *)(self + 0x15c);
-            switch (vv) {
-            case 6: fn_801FC12C(self + 0x10c); r24 = 0; break;
-            case 9: fn_801FBF48(self + 0x10c); r24 = 0; break;
-            case 10: fn_801FBFE8(self + 0x10c); r24 = 0; break;
-            case 14: fn_801FC048(self + 0x10c); r24 = 0; break;
-            case 15: fn_801FC12C(self + 0x10c); r24 = 0; break;
-            case 19: fn_801FC048(self + 0x10c); r24 = 0; break;
-            case 22: fn_801FBEA8(self + 0x10c); r24 = 0; break;
-            default: fn_802E317C(base + 0x510); r24 = 0; break;
-            }
-            if (r24 != 0) {
-                void **vt = *(void ***)r24;
-                void (*fn)(void *, void *) = (void (*)(void *, void *))vt[0x10];
-                (void)fn;
-            }
-            {
-                void *a = lbl_8055EC74;
-                (void)a;
-                void *nn = fn_801FBE1C((void **)0, 0, 0, 0, 0, 0);
-                (void)nn;
-            }
-            {
-                unsigned char *obj = (unsigned char *)fn_801284F8(0x48, (void *)(base + 0x540));
-                (void)obj;
-            }
-        } else {
-            void *o2 = *(void **)(par + 0x34);
-            int r31 = -1;
-            if (o2 != 0) {
-                VT_20 *vt = *(VT_20 **)o2;
-                r31 = vt->f20(o2, lbl_8055B3A0, -1);
-            }
-            {
-                unsigned char *obj = (unsigned char *)fn_801284F8(0x48, (void *)(base + 0x540));
-                if (obj != 0) {
-                    int f = *(int *)(self + 0x190);
-                    void *fp = (void *)fn_801FBD04;
-                    if ((f & 0x20) == 0) {
-                        if ((f & 1) != 0) fp = (void *)fn_801FBD0C;
-                    } else fp = (void *)fn_801FBD94;
-                    int av = (int)fn_802C6FC0(self + 0x61, 0, 0);
-                    *(int *)obj = av;
-                    for (int i = 0; i < 12; i++) ((int *)(obj + 4))[i] = ((int *)par)[i];
-                    obj[0x41] = (unsigned char)(((unsigned int)f >> 9) & 1);
-                    *(int *)(obj + 0x34) = 0;
-                    *(void **)(obj + 0x38) = (void *)fp;
-                    *(int *)(obj + 0x3c) = r31;
+    }
+    if (r24 != 0) {
+        void **vt = *(void ***)r24;
+        void (*fn)(void *, void *) = (void (*)(void *, void *))vt[0x10];
+        fn(r24, *(void **)(self + 0x154));
+        r29 = fn_801FBE1C((void **)lbl_8055EC74, cnt, *(s32 *)(self + 0x198), (s32)r24, (s32)par, *(void **)(par + 0x34));
+    }
+    obj = (u8 *)fn_801284F8(0x48, (void *)(base + 0x540));
+    if (obj == 0) goto tails;
+    fp = (flags & 0x20) != 0 ? (void *)fn_801FBD94 : (((flags & 1) != 0) ? (void *)fn_801FBD0C : (void *)fn_801FBD04);
+    *(void **)obj = (void *)fn_802C6FC0(self + 0x61, 0, 0);
+    for (i = 0; i < 12; i++) ((s32 *)(obj + 4))[i] = ((s32 *)par)[i];
+    obj[0x41] = (u8)((flags >> 9) & 1);
+    *(void **)(obj + 0x34) = r29;
+    *(void **)(obj + 0x38) = fp;
+    *(s32 *)(obj + 0x3c) = cnt;
+    if (*(s32 *)(self + 0x78) != 0) {
+        vec = fn_802C9A40();
+        count = *(s32 *)(self + 0x104);
+        mask = 0xFFFFFFFFu;
+        if (count > 0) {
+            f32 lim = lbl_80562FF0;
+            f32 *pts = (f32 *)(self + 0x84);
+            f32 *m = (f32 *)(obj + 4);
+            for (i = 0; i < count; i++) {
+                f32 tmp[3];
+                f32 *dst = tmp;
+                f32 *src = pts + i * 4;
+                if (dst == src) {
+                    f32 x = src[0], y = src[1], z = src[2];
+                    dst[0] = (y * m[3] + x * m[0]) + z * m[6];
+                    dst[1] = (y * m[4] + x * m[1]) + z * m[7];
+                    dst[2] = (y * m[5] + x * m[2]) + z * m[8];
+                } else {
+                    dst[0] = (src[1] * m[3] + src[0] * m[0]) + src[2] * m[6];
+                    dst[1] = (src[1] * m[4] + src[0] * m[1]) + src[2] * m[7];
+                    dst[2] = (src[1] * m[5] + src[0] * m[2]) + src[2] * m[8];
+                }
+                if (PSVECDotProduct((const f32 *)vec, tmp) < lim) {
+                    mask &= ~(1u << *(u32 *)(src + 3));
                 }
             }
         }
-        if ((*(int *)(self + 0x190) & 0x80) == 0) {
-            fn_801FBCF4((void **)0, 0);
-        } else {
-            fn_801FBCF4((void **)0, 0);
+        fn_8029798C((void *)(self + 0x78), (void *)(obj + 4), mask, *(f32 *)(self + 0x7c), *(f32 *)(self + 0x80));
+    }
+    goto tails;
+needZero:
+    {
+        void *o34 = *(void **)(par + 0x34);
+        r24 = 0;
+        if (o34 != 0) {
+            VT_20 *vt = *(VT_20 **)o34;
+            r24 = (void *)(s32)vt->f20(o34, lbl_8055B3A0, -1);
         }
-        if ((*(int *)(self + 0x190) & 2) != 0) fn_802981EC(par);
-        if ((*(int *)(self + 0x190) & 0x40) != 0) fn_801F4DD4(*(void **)(self + 0x194), par);
-    } else {
-        for (int i = 0; i < 12; i++) ((int *)(self + 0x124))[i] = ((int *)par)[i];
+    }
+    obj = (u8 *)fn_801284F8(0x48, (void *)(base + 0x540));
+    if (obj == 0) goto tails;
+    fp = (flags & 0x20) != 0 ? (void *)fn_801FBD94 : (((flags & 1) != 0) ? (void *)fn_801FBD0C : (void *)fn_801FBD04);
+    *(void **)obj = (void *)fn_802C6FC0(self + 0x61, 0, 0);
+    for (i = 0; i < 12; i++) ((s32 *)(obj + 4))[i] = ((s32 *)par)[i];
+    obj[0x41] = (u8)((flags >> 9) & 1);
+    *(s32 *)(obj + 0x34) = 0;
+    *(void **)(obj + 0x38) = fp;
+    *(void **)(obj + 0x3c) = r24;
+    if (*(s32 *)(self + 0x78) != 0) {
+        vec = fn_802C9A40();
+        count = *(s32 *)(self + 0x104);
+        mask = 0xFFFFFFFFu;
+        if (count > 0) {
+            f32 lim = lbl_80562FF0;
+            f32 *pts = (f32 *)(self + 0x84);
+            f32 *m = (f32 *)(obj + 4);
+            for (i = 0; i < count; i++) {
+                f32 tmp[3];
+                f32 *dst = tmp;
+                f32 *src = pts + i * 4;
+                if (dst == src) {
+                    f32 x = src[0], y = src[1], z = src[2];
+                    dst[0] = (y * m[3] + x * m[0]) + z * m[6];
+                    dst[1] = (y * m[4] + x * m[1]) + z * m[7];
+                    dst[2] = (y * m[5] + x * m[2]) + z * m[8];
+                } else {
+                    dst[0] = (src[1] * m[3] + src[0] * m[0]) + src[2] * m[6];
+                    dst[1] = (src[1] * m[4] + src[0] * m[1]) + src[2] * m[7];
+                    dst[2] = (src[1] * m[5] + src[0] * m[2]) + src[2] * m[8];
+                }
+                if (PSVECDotProduct((const f32 *)vec, tmp) < lim) {
+                    mask &= ~(1u << *(u32 *)(src + 3));
+                }
+            }
+        }
+        fn_8029798C((void *)(self + 0x78), (void *)(obj + 4), mask, *(f32 *)(self + 0x7c), *(f32 *)(self + 0x80));
+    }
+tails:
+    if ((flags & 0x80) != 0) fn_801FBCF4((void **)lbl_8055EC50, obj);
+    else fn_801FBCF4((void **)lbl_8055EC4C, obj);
+    if ((flags & 2) != 0) fn_802981EC(par);
+    if ((flags & 0x40) != 0) fn_801F4DD4(*(void **)(self + 0x194), par);
+    return;
+branchB:
+    {
+        u32 v30 = *(u32 *)(par + 0x30);
+        for (i = 0; i < 12; i++) ((s32 *)(self + 0x124))[i] = ((s32 *)par)[i];
         *(void **)(self + 0x18c) = *(void **)(par + 0x34);
-        {
-            unsigned char *obj = (unsigned char *)fn_801284F8(0x58, (void *)(base + 0x54c));
-            if (obj != 0) {
-                fn_801EAC44(obj, self + 0x10c, self + 0x61);
-                *(void **)obj = lbl_8033B588;
-                *(int *)(obj + 0x44) = -1;
-                *(float *)(obj + 0x48) = lbl_80562FF0;
-                *(float *)(obj + 0x4c) = lbl_80562FF0;
+        if ((v30 & 1) != 0) *(u32 *)(self + 0x160) = v30;
+        cnt = (flags >> 22) & 1;
+        obj = (u8 *)fn_801284F8(0x58, (void *)(base + 0x54c));
+        if (obj != 0) {
+            fn_801EAC44(obj, self + 0x10c, self + 0x61);
+            *(void **)obj = lbl_8033B588;
+            *(s32 *)(obj + 0x44) = -1;
+            *(f32 *)(obj + 0x48) = lbl_80562FF0;
+            *(f32 *)(obj + 0x4c) = lbl_80562FF0;
+            fp = (flags & 0x20) != 0 ? (void *)fn_801FBD94 : (((flags & 1) != 0) ? (void *)fn_801FBD0C : (void *)fn_801FBD04);
+            *(void **)(obj + 0x40) = fp;
+            if (*(s32 *)(self + 0x78) != 0) {
+                *(void **)(obj + 0x44) = (void *)fn_802C6FC0((void *)0, 0, 0);
+                *(f32 *)(obj + 0x48) = *(f32 *)(self + 0x7c);
+                *(f32 *)(obj + 0x4c) = *(f32 *)(self + 0x80);
+            }
+            if (*(s32 *)(self + 0x78) != 0) fn_80297988(obj);
+            obj[0x50] = (u8)cnt;
+            if (cnt != 0) {
+                *(void **)(obj + 0x54) = (void *)(u32)lbl_8055EC48;
+                lbl_8055EC48 = (s32)obj;
+            } else {
+                *(s32 *)(obj + 0x54) = 0;
             }
             fn_801E87D4(obj);
         }
@@ -2994,8 +3068,8 @@ extern "C" void fn_801FC048(void *__restrict arg0) {
         *(volatile s32 *)((u8 *)obj + 0x20) = 0x64;
         *(volatile s32 *)((u8 *)obj + 0x1C) = 0;
         *(volatile void **)obj = lbl_80333B48;
-        *(volatile f32 *)((u8 *)obj + 0x24) = x;
         *(volatile f32 *)((u8 *)obj + 0x34) = zero;
+        *(volatile f32 *)((u8 *)obj + 0x24) = x;
         *(volatile f32 *)((u8 *)obj + 0x38) = zero;
         *(volatile f32 *)((u8 *)obj + 0x3C) = zero;
         *(volatile f32 *)((u8 *)obj + 0x40) = zero;
@@ -3090,7 +3164,6 @@ extern "C" void fn_801FC274(void *arg0, void *arg1) {
     u32 w11, w10, w9, w8;
     register u32 w7, w6, w5, w4;
     u32 w3, w2, w1, w0;
-    u32 zero = 0;
     w0 = input[0]; w1 = input[1]; w2 = input[2]; w3 = input[3];
     w4 = input[4]; w5 = input[5]; w6 = input[6]; w7 = input[7];
     w8 = input[8]; w9 = input[9]; w10 = input[10]; w11 = input[11];
@@ -3149,6 +3222,7 @@ extern "C" void fn_801FC274(void *arg0, void *arg1) {
                 fn_801E6CD0(*(void **)((u8 *)object + 0x30), 0, lbl_80562FF0);
             }
         }
+        register u32 zero = 0;
         *(u8 *)((u8 *)object + 0x5a) = zero;
         register int a = *(u32 *)((u8 *)arg0 + 0x10c);
         u32 b = *(u32 *)((u8 *)arg0 + 0x110);
