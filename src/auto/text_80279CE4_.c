@@ -84,6 +84,8 @@ void fn_80279CE4(void) {
     } while (index < 0x20);
 }
 
+/* No-op first-stage alarm handler: the alarm callback fn_80279488 forwards its
+ * result to fn_802793AC; both stages are empty in this build. */
 void fn_80279D3C(void) {
 }
 
@@ -150,7 +152,7 @@ void fn_80279D40(void *arg0, int arg1) {
 void fn_80279F58(void *arg0, void *arg1) {
     float *f = (float *)arg0;
     int *w = (int *)arg0;
-    char name[32];
+    char name[8];
     Vec3_80279F58 tmpVec;
     File_80279F58 *file = (File_80279F58 *)arg1;
     Res_80279F58 *res;
@@ -159,8 +161,17 @@ void fn_80279F58(void *arg0, void *arg1) {
     char *base = lbl_80347848;
     int i;
     float *dest;
-    register f32 v;
-    register f32 v2;
+    f32 v;
+    f32 v2;
+    f32 t;
+    f32 d;
+    register f32 v31;
+    register f32 a;
+    register f32 b;
+    register f32 c;
+    register f32 c8;
+    register f32 cA0;
+    register f32 cB0;
     fn_80279D40(arg0, (int)arg1);
     res = file->getRes(lbl_8055C6E8);
     f[0] = lbl_80564198 * res->getFloat(lbl_8055C6F0);
@@ -211,6 +222,7 @@ void fn_80279F58(void *arg0, void *arg1) {
     v = lbl_805641B0 * res->getFloatDefault(lbl_8055C740, lbl_805641D0);
     f[31] = v / lbl_805641A0;
     tmpVec = res->getVec(base + 0x100);
+    v31 = lbl_805641A0 * tmpVec.x;
     f[75] = lbl_805641D8;
     f[76] = -f[8];
     f[77] = -(f[7] - lbl_8056411C) * f[6];
@@ -223,11 +235,11 @@ void fn_80279F58(void *arg0, void *arg1) {
     file->getRes(lbl_8055C748);
     file->getRes(lbl_8055C750);
     dest = f + 32;
+    c8 = lbl_805641C8;
+    cA0 = lbl_805641A0;
+    cB0 = lbl_805641B0;
     for (i = 0; i < 4; i++) {
         int useAlt;
-        register f32 a;
-        register f32 b;
-        register f32 c;
         useAlt = 0;
         if (i == 0 || i == 1) {
             useAlt = 1;
@@ -235,18 +247,19 @@ void fn_80279F58(void *arg0, void *arg1) {
         a = res->getFloatDefault(base + 0x11C, lbl_80564120);
         b = res->getFloatDefault(base + 0x12C, lbl_80564120);
         c = res->getFloatDefault(base + 0x13C, lbl_80564120);
+        t = res->getFloatDefault(base + 0x148, b);
         if (useAlt) {
-            tmpVec = res->getVec(base + 0x158);
+            d = res->getFloatDefault(base + 0x158, t);
         } else {
-            tmpVec = res->getVec(base + 0x168);
+            d = res->getFloatDefault(base + 0x168, t);
         }
-        dest[6] = lbl_805641C8;
+        dest[6] = c8;
         dest[1] = dest[1] * a;
         dest[2] = dest[2] * c;
-        dest[3] = dest[3] * tmpVec.x;
-        dest[0] = lbl_805641A0 * res->getFloatDefault(base + 0x178, lbl_805641DC);
-        dest[4] = lbl_805641A0 * res->getFloatDefault(base + 0x188, lbl_805641D8);
-        dest[5] = lbl_805641B0 * res->getFloatDefault(base + 0x188, lbl_805641D8) / lbl_805641A0;
+        dest[3] = dest[3] * d;
+        dest[0] = v31;
+        dest[4] = cA0 * res->getFloatDefault(base + 0x178, lbl_805641DC);
+        dest[5] = cB0 * res->getFloatDefault(base + 0x188, lbl_805641D8) / cA0;
         dest += 9;
     }
     f[73] = res->getFloatDefault(base + 0x198, lbl_805641E0);
