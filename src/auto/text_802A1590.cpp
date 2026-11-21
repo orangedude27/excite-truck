@@ -473,6 +473,8 @@ extern "C" s32 fn_802A1C30(void* arg0) {
 extern "C" void fn_802A1CBC(void) {}
 
 extern "C" void fn_802A1CC0(void) {
+    /* Empty no-op: the next virtual slot of the effect-group vtable, paired
+     * with fn_802A1CBC; this method does nothing. */
 }
 
 struct EfSettings {
