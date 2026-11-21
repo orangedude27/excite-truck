@@ -691,20 +691,23 @@ extern "C" s32 fn_80212338(void) { return 0; }
 #define isDollarTagged fn_80211678
 
 #pragma dont_inline on
-extern "C" void fn_80212340(void *__restrict arg0) {
-    s32 first = *(s32 *)((char *)arg0 + 0x10);
-    s32 *p = (s32 *)arg0;
-    if (first != 0) {
-        fn_8022E4BC(first);
-        p[4] = 0;
+extern "C" void fn_80212340(void *__restrict builder) {
+    /* Tear down a layout builder: release its secondary handle (+0x10), then,
+     * if it holds source data, either release the node handle (+0x0C) or destroy
+     * the loaded layout when that data is '$'-tagged, and clear the field. */
+    s32 secondaryHandle = *(s32 *)((char *)builder + 0x10);
+    s32 *fields = (s32 *)builder;
+    if (secondaryHandle != 0) {
+        releaseHandle(secondaryHandle);
+        fields[4] = 0;
     }
-    if ((u8 *)p[0] != 0) {
-        if (fn_80211678((u8 *)p[0]) == 0) {
-            fn_8022E4BC(p[3]);
+    if ((u8 *)fields[0] != 0) {
+        if (isDollarTagged((u8 *)fields[0]) == 0) {
+            releaseHandle(fields[3]);
         } else {
-            fn_8022E960(p[3]);
+            destroyLayout(fields[3]);
         }
-        p[3] = 0;
+        fields[3] = 0;
     }
 }
 #pragma dont_inline off
