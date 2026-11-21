@@ -721,26 +721,30 @@ extern s32 fn_80129D90(s32, s32, s32);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern "C" void fn_80156DCC(void *arg0, s32 arg1) {
-    struct S { u8 *element; u32 oldValue; u32 value; s32 offset; } s;
-    s.offset = arg1 * 8;
-    s.element = (u8 *)arg0 + s.offset;
-    f32 base = lbl_8055E3C8;
-    s.oldValue = *(u32 *)(s.element + 0xE8);
-    s32 count = *(s32 *)((u8 *)arg0 + 8);
-    s32 index = fn_80129D90(4, 0, count);
-    u32 *table = *(u32 **)((u8 *)arg0 + 4);
-    s.value = *(u32 *)((u8 *)table + index * 8);
-    if (s.value == s.oldValue) {
-        s32 next = index + 1;
-        s32 divisor = *(s32 *)((u8 *)arg0 + 8);
-        index = next % divisor;
-        s.value = *(u32 *)((u8 *)table + index * 8);
+/* Pick a new random label id for one element of a sound sequence: draw an index
+ * from the sequence's entry table, advance to the next entry when it would repeat
+ * the element's current id, schedule the element at game time plus seeded jitter,
+ * and store the chosen id back. */
+extern "C" void fn_80156DCC(void *seq, s32 elementIndex) {
+    struct Pick { u8 *element; u32 oldId; u32 newId; s32 offset; } p;
+    p.offset = elementIndex * 8;
+    p.element = (u8 *)seq + p.offset;
+    f32 gameTime = GAME_TIME;
+    p.oldId = *(u32 *)(p.element + 0xE8);
+    s32 entryCount = *(s32 *)((u8 *)seq + 8);
+    s32 entryIndex = fn_80129D90(4, 0, entryCount);
+    u32 *entryTable = *(u32 **)((u8 *)seq + 4);
+    p.newId = *(u32 *)((u8 *)entryTable + entryIndex * 8);
+    if (p.newId == p.oldId) {
+        s32 next = entryIndex + 1;
+        s32 divisor = *(s32 *)((u8 *)seq + 8);
+        entryIndex = next % divisor;
+        p.newId = *(u32 *)((u8 *)entryTable + entryIndex * 8);
     }
-    ((f32 *)arg0)[arg1 * 2 + 0x39] = base +
+    ((f32 *)seq)[elementIndex * 2 + 0x39] = gameTime +
         ((f32 (*)(s32, f32, f32))fn_80129DC4)(
-            4, *(f32 *)((u8 *)arg0 + 0xDC), *(f32 *)((u8 *)arg0 + 0xE0));
-    *(u32 *)(s.element + 0xE8) = s.value;
+            4, *(f32 *)((u8 *)seq + 0xDC), *(f32 *)((u8 *)seq + 0xE0));
+    *(u32 *)(p.element + 0xE8) = p.newId;
 }
 #pragma pop
 #pragma push
