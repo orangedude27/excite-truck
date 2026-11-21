@@ -34,6 +34,13 @@ extern char lbl_80344750, lbl_80344740, lbl_80344730, lbl_80344720;
 extern void *fn_802CAC28(void *, int);
 extern void fn_80131818(void *);
 extern int strcmp(const char *, const char *);
+extern void fn_802146BC();
+extern void fn_802CAC54(void *);
+extern int fn_80128670(void *);
+extern char lbl_80498ED0[];
+extern char lbl_802FA678[];
+extern char lbl_8055B860[];
+#define DS(off) desc[(((off) - 0xB8) >> 2)]
 void fn_8025CE78(void) {
     char *tbl;
     int heapType;
@@ -284,7 +291,7 @@ copy2:      *dst++=*src++; } while(dst[-1]);
 #pragma scheduling invalid_target
 #pragma processor 750
 #pragma paired_single off
-void fn_8025DDD0(void *arg0, int arg1) {
+extern "C" void fn_8025DDD0(void *arg0, int arg1) {
     float spC, sp8, outC, out8, f29, f28, f27, f26, f25, f24;
     float tmpA, tmpB;
     unsigned int color, packed;
