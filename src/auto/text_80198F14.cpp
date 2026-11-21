@@ -576,7 +576,7 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
     temp_r29 = (*(void **)((u8 *)(arg0) + (4)));
     temp_r28 = (*(void **)((u8 *)(arg1) + (4)));
     if (temp_r26 == 0x3EA) {
-        fn_80199870(temp_r29, (u32)arg1);
+        fn_80199870(temp_r29);
         return;
     }
     if (temp_r26 >= 0x3E8) {
@@ -2273,6 +2273,7 @@ extern "C" s32 fn_8019E874(void*, void**, void*, f32, f32, f32, f32);
 extern void fn_8019AA34(void*, void*, void*, s32, s32, void*, f32, f32);
 extern void fn_8019A820(void*, s32, s32, s32, f32);
 #pragma use_lmw_stmw off
+static inline s32 Fn8019EA7C_Trunc(s32 v) { return v; }
 extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     void* temp_r3;
     void* temp_r5;
@@ -4345,7 +4346,7 @@ extern "C" s32 fn_801A2434(s32 object, s32 shouldDestroy) {
     return object;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_801A2474(void *arg0) {
     struct Object {
         char pad0[0xC];
@@ -4356,18 +4357,18 @@ extern "C" void fn_801A2474(void *arg0) {
         volatile Vec output;
     };
     Object *self = (Object *)arg0;
-    volatile u32 *cache = (volatile u32 *)((char *)self + 0x44);
+    u32 *cache = (u32 *)((char *)self + 0x44);
     u32 m0, m1, m3, m4, m6, m7;
     f32 *m = self->matrix;
     u32 *mw = (u32 *)m;
     m0 = mw[0]; m1 = mw[1];
-    cache[0] = m0; cache[1] = m1;
+    cache[1] = m1; cache[0] = m0;
     cache[2] = mw[2];
     m3 = mw[3]; m4 = mw[4];
-    cache[3] = m3; cache[4] = m4;
+    cache[4] = m4; cache[3] = m3;
     cache[5] = mw[5];
     m6 = mw[6]; m7 = mw[7];
-    cache[6] = m6; cache[7] = m7;
+    cache[7] = m7; cache[6] = m6;
     cache[8] = mw[8];
     if (&self->output == (volatile Vec *)&self->input) {
         float x, y, z;
@@ -4392,7 +4393,6 @@ extern "C" void fn_801A2474(void *arg0) {
     self->output.y += m[10];
     self->output.z += m[11];
 }
-#pragma scheduling on
 extern "C" char lbl_80333818[];
 extern "C" void fn_801A2674(void*, s32, s32, f32);
 #pragma scheduling on
