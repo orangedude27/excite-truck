@@ -106,15 +106,6 @@ void fn_80137B14(void) {
 }
 #undef s_currentLeague
 
-__declspec(section ".sdata") extern char lbl_80559C38[];
-extern void *fn_801284F8(int, const char *);
-extern char *fn_80137950(int);
-extern void fn_80137B0C(void *);
-extern int fn_801379CC(void);
-extern void fn_80137A18(void);
-extern void fn_80137B14(void);
-extern void *memset(void *, int, unsigned long);
-extern char *strcpy(char *, const char *);
 #pragma use_lmw_stmw off
 /* Build the AI driver's four league entries: allocate one block per league
  * (Dirt, Modified, Truck, Cup) under the heap name "league", store the name
