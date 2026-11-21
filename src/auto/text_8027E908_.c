@@ -294,7 +294,6 @@ void* fn_8027ED70(void) {
 #pragma dont_inline reset
 
 extern int fn_802146BC(int *, int, int, int, int, int, int, int);
-typedef struct { int w0, w1, w2, w3, w4; } T802FA848;
 extern int lbl_802FA848;
 extern int lbl_803480A8;
 extern int lbl_804B2FF8;
