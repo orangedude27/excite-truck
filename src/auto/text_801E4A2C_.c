@@ -163,11 +163,6 @@ void fn_801E4BEC(s32 font, s32 drawFlags, s32 align, s32 x, s32 y, const char *f
         fn_802C4F58(x, y, text, COLOR_TEXT);
     }
 }
-extern s32 fn_801E4B00(s32 *);
-extern s32 fn_801E4B48(s32 *);
-extern s32 fn_802C4EFC(s32);
-extern void fn_801E4BEC(s32, s32, s32, s32, s32, const char *, ...);
-extern char *strncpy(char *, const char *, unsigned long);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
