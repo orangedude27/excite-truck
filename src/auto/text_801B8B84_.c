@@ -22,17 +22,15 @@ void fn_801B8B84(void) {
     s_alarmEventCount = 0;
 }
 #pragma scheduling on
-/* Tear down the alarm-event queue: free the ring-buffer allocation held in lbl_8055E760, then clear the pointer. */
+/* Tear down the alarm-event queue: free the ring-buffer allocation and clear the pointer. */
 void fn_801B8BBC(void) {
-    fn_80128670((int)lbl_8055E760);
-    lbl_8055E760 = 0;
+    fn_80128670((int)s_alarmEventQueue);
+    s_alarmEventQueue = 0;
 }
 
 void __AXDSPInitCallback_801B8BE8(void) {
     /* AX DSP init callback: reset the pending alarm-event count. */
-    #define s_alarmEventCount lbl_8055E764
     s_alarmEventCount = 0;
-    #undef s_alarmEventCount
 }
 
 #pragma push
