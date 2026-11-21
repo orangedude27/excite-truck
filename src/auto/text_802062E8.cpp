@@ -367,6 +367,9 @@ extern "C" void fn_802067C8(void *object, void *context, int arg) {
     }
 }
 #pragma scheduling on
+/* Base-class no-op for Sound3D's per-frame update virtual (vtable lbl_8033BDC0
+ * at +0x14), called every frame by Sound3D::update; derived sounds override it.
+ * The base implementation does nothing, so it compiles to a bare 'blr'. */
 extern "C" void fn_80206820(void) {
 }
 
