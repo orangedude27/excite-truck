@@ -526,6 +526,7 @@ void fn_802DC078(void* positions, s32 posCount, u16* list, s32 size, s32 first,
 }
 #pragma pop
 extern void GXSetBlendMode(int, int, int, int);
+/* Forwarder: resets the CPU-light GX vertex-array cache and binds the default texture (fn_802DBD88). */
 void fn_802DC130(void) {
     fn_802DBD88();
 }
