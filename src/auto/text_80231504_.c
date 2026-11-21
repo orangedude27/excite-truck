@@ -1383,28 +1383,31 @@ extern IndexList_802F9FF0 lbl_802F9FF0; /* shared quad index list for glyph bill
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
-    register void *font = arg0;
+/* Build and submit a textured quad for one font glyph (spaces draw nothing): four
+ * Pack6 vertices are filled from the corner positions (x0,y0)-(x1,y1), a common depth
+ * and the glyph's UV rectangle, then drawn with the shared quad index list. */
+void fn_80233AA4(void *fontArg, s32 glyphIndex, f32 x0, f32 y0, f32 x1, f32 y1, f32 z) {
+    register void *font = fontArg;
     s32 glyphInfo[2];
-    u8 out3[0x18];
-    u8 out2[0x18];
-    u8 out1[0x18];
-    u8 out0[0x18];
+    u8 vertex11[0x18];
+    u8 vertex01[0x18];
+    u8 vertex10[0x18];
+    u8 vertex00[0x18];
     IndexList_802F9FF0 indices;
     u8 *glyph;
-    if (arg1 != 0x20) {
-        glyphInfo[0] = arg1 * 0x1C;
+    if (glyphIndex != 0x20) {
+        glyphInfo[0] = glyphIndex * 0x1C;
         glyph = (*((u8 **) (((u8 *) font) + 0x10))) + glyphInfo[0];
         glyphInfo[1] = lbl_8055F050;
-        fn_80231380(out0, glyphInfo[1], farg0, farg1, farg4, *((f32 *) (glyph + 0xC)), *((f32 *) (glyph + 0x10)));
+        fn_80231380(vertex00, glyphInfo[1], x0, y0, z, *((f32 *) (glyph + 0xC)), *((f32 *) (glyph + 0x10)));
         glyph = (*((u8 **) (((u8 *) font) + 0x10))) + glyphInfo[0];
-        fn_80231380(out1, glyphInfo[1], farg2, farg1, farg4, *((f32 *) (glyph + 0x14)), *((f32 *) (glyph + 0x10)));
+        fn_80231380(vertex10, glyphInfo[1], x1, y0, z, *((f32 *) (glyph + 0x14)), *((f32 *) (glyph + 0x10)));
         glyph = (*((u8 **) (((u8 *) font) + 0x10))) + glyphInfo[0];
-        fn_80231380(out2, glyphInfo[1], farg0, farg3, farg4, *((f32 *) (glyph + 0xC)), *((f32 *) (glyph + 0x18)));
+        fn_80231380(vertex01, glyphInfo[1], x0, y1, z, *((f32 *) (glyph + 0xC)), *((f32 *) (glyph + 0x18)));
         glyph = (*((u8 **) (((u8 *) font) + 0x10))) + glyphInfo[0];
-        fn_80231380(out3, glyphInfo[1], farg2, farg3, farg4, *((f32 *) (glyph + 0x14)), *((f32 *) (glyph + 0x18)));
+        fn_80231380(vertex11, glyphInfo[1], x1, y1, z, *((f32 *) (glyph + 0x14)), *((f32 *) (glyph + 0x18)));
         indices = lbl_802F9FF0;
-        ((void (*)(void *, s32, u16 *, s32))fn_802C8DB8)(out0, 4, indices.idx, 6);
+        ((void (*)(void *, s32, u16 *, s32))fn_802C8DB8)(vertex00, 4, indices.idx, 6);
     }
 }
 #pragma pop
