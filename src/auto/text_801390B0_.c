@@ -7,25 +7,32 @@
 extern char lbl_8032BFA0[];
 extern char lbl_8032BFAC[];
 extern float lbl_805613E4;
-extern float lbl_805613E8;
-extern float lbl_805613EC;
+extern const float lbl_805613E8;
+extern const float lbl_805613EC;
 extern void fn_80148134(float *, float *, int, float, float);
 extern void fn_802C8E00(int, int, float, float, float, float, float);
 typedef struct VT390 { int pad[4]; char *(*fn)(void *, void *); } VT390;
 typedef struct Obj390 { VT390 *vt; } Obj390;
 #pragma push
 #pragma processor 750
-void fn_801390B0(void *arg0, float *arg1, float *arg2, int arg3, float farg0, float farg1) {
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_801390B0(void *arg0, float *arg1, float *arg2, int arg3, float farg0, float farg1) {
+    struct Obj390 {
+        virtual void v0() = 0;
+        virtual void v1() = 0;
+        virtual char *v2(void *) = 0;
+    };
     float d[4];
     float pos[2];
     char *obj;
     int color;
-    float f3, f4;
+    float f1, f2, f3, f4;
     char *tbl = lbl_8032BFAC;
     if (arg3 != 0) tbl = lbl_8032BFA0;
-    obj = ((Obj390 *)arg0)->vt->fn(arg0, tbl);
-    f4 = lbl_805613E8 * (farg0 * *(float *)(obj + 0x10));
-    f3 = lbl_805613E8 * (farg0 * *(float *)(obj + 0x14));
+    obj = ((Obj390 *)arg0)->v2(tbl);
+    f3 = (farg0 * *(float *)(obj + 0x14)) * lbl_805613E8;
+    f4 = (farg0 * *(float *)(obj + 0x10)) * lbl_805613E8;
     d[2] = arg2[0] * f3;
     d[3] = arg2[1] * f3;
     d[0] = arg2[1] * f4;
@@ -42,6 +49,7 @@ void fn_801390B0(void *arg0, float *arg1, float *arg2, int arg3, float farg0, fl
         fn_802C8E00(color, 1, pos[1], pos[0], lbl_805613E4, *(float *)(obj + 0x20), *(float *)(obj + 0x24));
     }
 }
+#pragma cplusplus reset
 #pragma pop
 /* Player slot of a racer vehicle: objects registered in the 8-entry object
  * table (lbl_80430830, see fn_8017960C/fn_801795D8) carry their type at +0x1F0
@@ -95,15 +103,15 @@ void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
     o1 = ((Obj390 *)arg0)->vt->fn(arg0, lbl_8032BFB8);
     fn_801476D8(o1, -1, arg1);
     o2 = ((Obj390 *)arg0)->vt->fn(arg0, lbl_8032BFC8);
-    v[10] = *(float *)(o2 + 4);
-    v[11] = *(float *)(o2 + 8);
+    *(int *)&v[10] = *(int *)(o2 + 4);
+    *(int *)&v[11] = *(int *)(o2 + 8);
     v[0] = *(float *)(o2 + 0x10);
     v[1] = *(float *)(o2 + 0x14);
     v[8] = v[10] + v[0];
     v[9] = v[11] + v[1];
     ip = fn_801E8718(fn_801392F8((void *)fn_8017960C(arg2)));
-    if ((float)__fabs((double)*(float *)(ip + 0x18)) > lbl_80558DC4 ||
-        (float)__fabs((double)*(float *)(ip + 0x20)) > lbl_80558DC4) {
+    if (lbl_80558DC4 <= (float)__fabs((double)*(float *)(ip + 0x18)) ||
+        lbl_80558DC4 <= (float)__fabs((double)*(float *)(ip + 0x20))) {
         ex = *(float *)(ip + 0x18);
         ey = *(float *)(ip + 0x20);
         v[6] = ex;
@@ -118,6 +126,7 @@ void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
         v[6] = vy;
         v[7] = (float)-vx;
         v[18] = vy;
+        v[19] = lbl_805613E4;
         v[20] = (float)-vx;
         v[21] = lbl_805613E4;
         v[22] = lbl_805613E0;
@@ -139,10 +148,13 @@ void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
             for (n = lbl_8055E4D0 - 1; n >= 0; n--) {
                 cur = (char *)fn_8017960C(n);
                 if (fn_801B8570(n) != 0) {
-                    if (&v[15] == (float *)((char *)cur + 0x54)) {
-                        v[15] = *(float *)(cur + 0x5C) * v[20] + (*(float *)(cur + 0x54) * v[18] + *(float *)(cur + 0x58) * v[19]);
-                        v[16] = *(float *)(cur + 0x5C) * v[23] + (*(float *)(cur + 0x54) * v[21] + *(float *)(cur + 0x58) * v[22]);
-                        v[17] = *(float *)(cur + 0x5C) * v[26] + (*(float *)(cur + 0x54) * v[24] + *(float *)(cur + 0x58) * v[25]);
+                    if ((float *)&v[15] == (float *)((char *)cur + 0x54)) {
+                        float c54 = *(float *)(cur + 0x54);
+                        float c58 = *(float *)(cur + 0x58);
+                        float c5c = *(float *)(cur + 0x5C);
+                        v[15] = c5c * v[20] + (c54 * v[18] + c58 * v[19]);
+                        v[16] = c5c * v[23] + (c54 * v[21] + c58 * v[22]);
+                        v[17] = c5c * v[26] + (c54 * v[24] + c58 * v[25]);
                     } else {
                         v[15] = *(float *)(cur + 0x5C) * v[20] + (*(float *)(cur + 0x54) * v[18] + *(float *)(cur + 0x58) * v[19]);
                         v[16] = *(float *)(cur + 0x5C) * v[23] + (*(float *)(cur + 0x54) * v[21] + *(float *)(cur + 0x58) * v[22]);
@@ -161,7 +173,7 @@ void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
                     v[12] = t2 * v[20] + (t0 * v[18] + t1 * v[19]);
                     v[13] = t2 * v[23] + (t0 * v[21] + t1 * v[22]);
                     v[14] = t2 * v[26] + (t0 * v[24] + t1 * v[25]);
-                    mag = PSVECMag(&v[12]);
+                    mag = PSVECMag((void *)&v[12]);
                     t3 = f26 * farg0;
                     cl0 = (mag - t3) / (f27 * farg0 - t3);
                     if (f25 < cl0) cl0 = f25;
@@ -173,8 +185,8 @@ void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
                     if (cl1 <= f28) cl1 = f28;
                     f21 = f25 + cl1 * f31;
                     if (mag > farg0) {
-                        t4 = PSVECMag(&v[12]);
-                        if ((float)__fabs((double)t4) > lbl_80558DC4) {
+                        t4 = PSVECMag((void *)&v[12]);
+                        if (lbl_80558DC4 < (float)__fabs((double)t4)) {
                             k = farg0 / t4;
                             v[12] *= k;
                             v[13] *= k;
@@ -190,7 +202,7 @@ void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
                     if (f25 < w) w = f25;
                     if (w <= f28) w = f28;
                     v[3] = v[11] + (w * (v[9] - v[11]));
-                    fn_801390B0(arg0, &v[2], &v[4], n == arg2, f22, f21);
+                    fn_801390B0(arg0, (float *)&v[2], (float *)&v[4], n == arg2, f22, f21);
                 }
             }
             fn_802C8E48();
