@@ -588,6 +588,7 @@ void fn_8000F884(void) {
     }
     lbl_80558A98 = -1;
 }
+#pragma use_lmw_stmw on
 
 #pragma dont_inline on
 #pragma scheduling invalid_target
