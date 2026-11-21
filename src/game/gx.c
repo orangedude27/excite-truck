@@ -2990,6 +2990,8 @@ void* fn_802D312C(void) {
     return fn_802D3104();
 }
 
+/* Tail-call: load the default indirect-texture matrix (fn_802D3104) and return
+ * the indirect-texture GXTexObj at +0x24 of the global GX state block. */
 void* fn_802D3130(void) {
     return fn_802D3104();
 }
