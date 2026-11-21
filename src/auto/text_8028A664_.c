@@ -1032,8 +1032,9 @@ void fn_8028BC88(s32 arg0) {
     *(f32 *)(arg0 + 0xd8) = zero;
 }
 
-void fn_8028BD5C(s32 arg0) {
-    fn_8028BFEC(arg0);
+/* Thin tail-call wrapper: forward the effect-list handle to fn_8028BFEC, which ages/filters its spark entries. */
+void fn_8028BD5C(s32 effectList) {
+    fn_8028BFEC(effectList);
 }
 
 extern s32 fn_801E85B4(void);
