@@ -974,59 +974,61 @@ void fn_8029D644(void *arg0) {
 
 extern void fn_8029E49C(int, void *, int);
 extern void fn_8029E130(void *, float *, float *, float);
-void fn_8029D7D0(int arg0, void **__restrict arg1) {
+void fn_8029D7D0(int pool, void **__restrict nearRecord) {
     extern void fn_801EE0C8(int);
     extern void *fn_802C6C34(void);
     extern int lbl_80488648[];
     extern float lbl_80564688;
-    char *o = (char *)arg0;
-    char **st = (char **)arg1;
-    char *info = st[0];
+    /* For a vehicle inside this 3D water pool, emit wheel splashes and place an
+       effect at its transformed position. */
+    char *poolObj = (char *)pool;
+    char **near = (char **)nearRecord;
+    char *vehicle = near[0];
     float sp[3];
-    float r = *(float *)(o + 0x60);
-    float dz = *(float *)(info + 0x2C) - *(float *)(o + 0x5C);
-    float dx = *(float *)(info + 0x24) - *(float *)(o + 0x54);
-    float r2 = r * r;
-    float dzSq = dz * dz;
-    float dxSq = dx * dx;
-    float dist = dxSq + dzSq;
-    int off, i;
-    unsigned idx;
-    float *v;
-    float *m;
-    if (dist > r2)
+    float radius = *(float *)(poolObj + 0x60);
+    float offsetZ = *(float *)(vehicle + 0x2C) - *(float *)(poolObj + 0x5C);
+    float offsetX = *(float *)(vehicle + 0x24) - *(float *)(poolObj + 0x54);
+    float radiusSq = radius * radius;
+    float offsetZSq = offsetZ * offsetZ;
+    float offsetXSq = offsetX * offsetX;
+    float distSq = offsetXSq + offsetZSq;
+    int wheelOffset, wheelIndex;
+    unsigned objectIndex;
+    float *pose;
+    float *matrix;
+    if (distSq > radiusSq)
         return;
-    for (i = 0, off = 0; i < 4; i++, off += 0x3C) {
-        if ((*(int *)(st[0] + off + 0x9C) & 8) == 0)
-            fn_8029E49C(arg0, st[0], i);
+    for (wheelIndex = 0, wheelOffset = 0; wheelIndex < 4; wheelIndex++, wheelOffset += 0x3C) {
+        if ((*(int *)(near[0] + wheelOffset + 0x9C) & 8) == 0)
+            fn_8029E49C(pool, near[0], wheelIndex);
     }
-    idx = *(unsigned *)(st + 1);
-    fn_801EE0C8(idx < 8 ? lbl_80488648[idx] : 0);
-    v = (float *)fn_802C6C34();
-    m = (float *)st[0];
-    if (sp == v + 8) {
+    objectIndex = *(unsigned *)(near + 1);
+    fn_801EE0C8(objectIndex < 8 ? lbl_80488648[objectIndex] : 0);
+    pose = (float *)fn_802C6C34();
+    matrix = (float *)near[0];
+    if (sp == pose + 8) {
         float x, y, z;
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
-        m10 = m[3]; m11 = m[4]; m12 = m[5];
-        m00 = m[0]; m01 = m[1]; m02 = m[2];
-        m20 = m[6]; m21 = m[7]; m22 = m[8];
-        x = v[8]; y = v[9]; z = v[10];
+        m10 = matrix[3]; m11 = matrix[4]; m12 = matrix[5];
+        m00 = matrix[0]; m01 = matrix[1]; m02 = matrix[2];
+        m20 = matrix[6]; m21 = matrix[7]; m22 = matrix[8];
+        x = pose[8]; y = pose[9]; z = pose[10];
         sp[0] = z * m20 + (x * m00 + y * m10);
         sp[1] = z * m21 + (x * m01 + y * m11);
         sp[2] = z * m22 + (x * m02 + y * m12);
     } else {
         float m00, m01, m02, m10, m11, m12, m20, m21, m22;
-        m10 = m[3]; m00 = m[0]; m20 = m[6];
-        sp[0] = v[10] * m20 + (v[8] * m00 + v[9] * m10);
-        m11 = m[4]; m01 = m[1]; m21 = m[7];
-        sp[1] = v[10] * m21 + (v[8] * m01 + v[9] * m11);
-        m12 = m[5]; m02 = m[2]; m22 = m[8];
-        sp[2] = v[10] * m22 + (v[8] * m02 + v[9] * m12);
+        m10 = matrix[3]; m00 = matrix[0]; m20 = matrix[6];
+        sp[0] = pose[10] * m20 + (pose[8] * m00 + pose[9] * m10);
+        m11 = matrix[4]; m01 = matrix[1]; m21 = matrix[7];
+        sp[1] = pose[10] * m21 + (pose[8] * m01 + pose[9] * m11);
+        m12 = matrix[5]; m02 = matrix[2]; m22 = matrix[8];
+        sp[2] = pose[10] * m22 + (pose[8] * m02 + pose[9] * m12);
     }
-    sp[0] += m[9];
-    sp[1] += m[10];
-    sp[2] += m[11];
-    fn_8029E130((void *)arg0, sp, (float *)(st[0] + 0x34), lbl_80564688 * v[7]);
+    sp[0] += matrix[9];
+    sp[1] += matrix[10];
+    sp[2] += matrix[11];
+    fn_8029E130((void *)pool, sp, (float *)(near[0] + 0x34), lbl_80564688 * pose[7]);
 }
 
 #pragma pop
@@ -1346,32 +1348,28 @@ extern float lbl_80564674;
 void fn_8029E49C(int unused, void *arg1, int arg2) {
     struct Locals { float sp8, spC, sp10, sp14, sp18, sp1C; } s;
     float *f = (float *)arg1;
-    float *m = (float *)((char *)arg1 + arg2 * 0x3C + 0x70);
+    char *wheel = (char *)arg1 + arg2 * 0x3C;
+    float *m = (float *)(wheel + 0x70);
     float temp_f1, temp_f2, temp_f3, temp_f0_2;
     float var_f1, var_f31, var_f5;
     if ((unsigned char *)&s.sp14 == (unsigned char *)m) {
-        float a3, m10, a5, a4, m00, a0, a1, a2, a6, m20, a7, a8;
-        a3 = f[3];
-        m10 = m[1];
-        a4 = f[4]; a5 = f[5];
-        m00 = m[0];
-        a0 = f[0];
-        a1 = f[1]; a2 = f[2];
-        a6 = f[6];
-        m20 = m[2];
-        a7 = f[7]; a8 = f[8];
-        s.sp14 = m20 * a6 + (m00 * a0 + m10 * a3);
-        s.sp18 = m20 * a7 + (m00 * a1 + m10 * a4);
-        s.sp1C = m20 * a8 + (m00 * a2 + m10 * a5);
+        float x, y, z;
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = f[3]; m11 = f[4]; m12 = f[5];
+        m00 = f[0]; m01 = f[1]; m02 = f[2];
+        m20 = f[6]; m21 = f[7]; m22 = f[8];
+        x = m[0]; y = m[1]; z = m[2];
+        s.sp14 = z * m20 + (x * m00 + y * m10);
+        s.sp18 = z * m21 + (x * m01 + y * m11);
+        s.sp1C = z * m22 + (x * m02 + y * m12);
     } else {
-        float b3, m10, m00, m20;
-        b3 = f[3];
-        m10 = m[1];
-        m00 = m[0];
-        m20 = m[2];
-        s.sp14 = m20 * f[6] + (m00 * f[0] + m10 * b3);
-        s.sp18 = m20 * f[7] + (m00 * f[1] + m10 * f[4]);
-        s.sp1C = m20 * f[8] + (m00 * f[2] + m10 * f[5]);
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = f[3]; m00 = f[0]; m20 = f[6];
+        s.sp14 = m[2] * m20 + (m[0] * m00 + m[1] * m10);
+        m11 = f[4]; m01 = f[1]; m21 = f[7];
+        s.sp18 = m[2] * m21 + (m[0] * m01 + m[1] * m11);
+        m12 = f[5]; m02 = f[2]; m22 = f[8];
+        s.sp1C = m[2] * m22 + (m[0] * m02 + m[1] * m12);
     }
     temp_f2 = s.sp18; temp_f1 = s.sp1C;
     s.sp14 += f[9];
