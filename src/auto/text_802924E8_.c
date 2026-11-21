@@ -94,7 +94,7 @@ void fn_802924F4(void) {
     long i;
 
     for (i = 0; i < 6; i++, p += 0x34) {
-        float x = fn_80129DC4(0, lbl_805644D0, lbl_805644D4);
+        register float x = fn_80129DC4(0, lbl_805644D0, lbl_805644D4);
         float y = (float)fn_8002F234((one - x * x) - offset);
         float z = (float)fn_8002F234((one - x * x) - offset);
         float w = fn_80129DC4(0, -z, y);
@@ -277,38 +277,31 @@ extern void *fn_80293034(void *, void *, int);
 extern void *fn_80293A00(void *, void *, int, int, int);
 extern void *fn_80294254(void *, void *, int, int, int);
 #pragma cplusplus on
-extern "C" int fn_802928D4(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
-    struct ChunkSys {
-        char car[0x10];
-        char ter[0x10];
-        char wood[0x10];
-        char invalid[0x20];
-    };
-    struct ChunkSys *sys = (struct ChunkSys *)lbl_80349170;
+int fn_802928D4(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
+    char *str = lbl_80349170;
     void *ptr;
-    #pragma scheduling on
 
     switch (arg1) {
     case 1:
-        ptr = fn_801284F8(0x2FF0, &sys->car);
+        ptr = fn_801284F8(0x2FF0, str);
         if (ptr != 0) {
             return (int)fn_80293034(ptr, (void *)arg0, arg2);
         }
         break;
     case 2:
-        ptr = fn_801284F8(0x4C30, &sys->ter);
+        ptr = fn_801284F8(0x4C30, str + 0x10);
         if (ptr != 0) {
             return (int)fn_80293A00(ptr, (void *)arg0, arg2, arg3, arg4);
         }
         break;
     case 3:
-        ptr = fn_801284F8(0x2230, &sys->wood);
+        ptr = fn_801284F8(0x2230, str + 0x20);
         if (ptr != 0) {
             return (int)fn_80294254(ptr, (void *)arg0, arg2, arg3, arg4);
         }
         break;
     default:
-        fn_802E317C((const char *)&sys->invalid);
+        fn_802E317C(str + 0x30);
         return 0;
     }
     return (int)ptr;
@@ -809,6 +802,12 @@ void fn_80293530(void* arg0) {
     }
 }
 
+static inline u8 scaleChannel_802935A0(float scale, u8 value) {
+    s32 comp = 0xFF;
+    s32 tmp = (s32)(scale * (float)value);
+    if (tmp <= 0xFF) comp = tmp;
+    return comp;
+}
 #pragma scheduling invalid_target
 void *fn_802935A0(void *arg0) {
     register u8 *out = (u8 *)arg0;
@@ -821,7 +820,7 @@ void *fn_802935A0(void *arg0) {
     s32 comp;
     s32 red;
     s32 green;
-    s32 blue;
+    unsigned int packed;
     void *item;
     goto check_loop;
 body:
@@ -839,8 +838,10 @@ body:
     comp = 0xFF;
     tmp = (s32)(scale * (float)(u8)(color >> 16));
     if (tmp <= 0xFF) comp = tmp;
-    blue = ((comp & 0xFF) << 16) | 0xFF000000;
-    *(unsigned int *)(out + 0x2FB0) = (unsigned int)(blue | green | red);
+    packed = ((comp & 0xFF) << 16) | 0xFF000000;
+    packed |= green;
+    packed |= red;
+    *(unsigned int *)(out + 0x2FB0) = packed;
     *(unsigned int *)(out + 0x2FB4) = color;
     table++;
     count++;
