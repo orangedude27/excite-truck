@@ -7,8 +7,6 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char* file, s32 line,
                                              const char* fmt, ...);
 extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char* file, s32 line,
                                                const char* fmt, ...);
-extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char* file, s32 line,
-                                               const char* fmt, ...);
 
 #pragma push
 #pragma small_data off
