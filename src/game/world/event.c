@@ -12,6 +12,7 @@ typedef struct {
 } EventHandlerRow;
 extern unsigned char lbl_80488678[];
 void *memset(void *, int, unsigned int);
+extern void *memcpy(void *, const void *, unsigned int);
 #pragma scheduling off
 /* Clears the whole event-handler registry (all 18 event-type rows of handlers). */
 void fn_801EEFC8(void) {
