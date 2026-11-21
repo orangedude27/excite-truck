@@ -5,7 +5,7 @@ extern float lbl_80560F20;
 extern float lbl_80560F24;
 extern double lbl_80560F28;
 extern float lbl_80560F30;
-static inline void FillTmp(ElemTmp* end, ElemTmp* q, float f) { if (q < end) { do { q->f1 = f; q->f2 = f; q->i1 = 0; q->i2 = 0; q++; } while (q < end); } }
+static inline void FillTmp(ElemTmp* end, ElemTmp* q, float f) { while (q != end) { q->f1 = f; q->f2 = f; q->i1 = 0; q->i2 = 0; q++; } }
 typedef unsigned int u32;
 typedef signed char s8;
 typedef int M2C_UNK;
@@ -1192,10 +1192,11 @@ extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7
 #pragma opt_common_subs off
 extern "C" void fn_800E3DDC(void *arg0, void *arg1) {
     struct Mgr { char pad0[0x14]; char activeList[0xC]; char freeList[0x4]; char pad1[8]; void *head; char pad2[0x6c31 - 0x1c]; unsigned char flag; };
+    register unsigned int outerLevel;
+    register unsigned int level;
+    register void *it1;
+    register void *it2;
     Mgr *m = (Mgr *)arg0;
-    void *it1;
-    void *it2;
-    unsigned int outerLevel, level;
     outerLevel = OSDisableInterrupts();
     level = OSDisableInterrupts();
     if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
