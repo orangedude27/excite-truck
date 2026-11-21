@@ -747,6 +747,8 @@ void fn_802E85F4(int padIndex) {
 #undef kTiltHistoryMax
 }
 #pragma pop
+/* No-op rjoy hook from control-scheme setup (passed 1 for schemes 0/2, 0 for 1/3),
+   presumably to toggle rumble; empty in this build. */
 void fn_802E8664(void) {}
 
 /* lbl_80505978 is the table of 0x638-byte Wiimote/controller state records;
