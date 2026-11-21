@@ -6241,40 +6241,43 @@ extern "C" void* __dt__10TitleSceneFv(void* this_, s32 flag) {
 }
 
 #pragma optimization_level 2
-extern "C" s32 fn_800FA4C4(void *arg0, s32 arg1) {
-    s32 result;
-    u8 *thread = (u8 *)arg0;
+extern "C" s32 fn_800FA4C4(void *threadObj, s32 priority) {
+    /* SoundThread::Create: start the singleton SoundThread (lbl_80412CC8) at the
+     * requested priority, lazily constructing it and registering its destructor on
+     * first use; returns nonzero on success. */
+    s32 created;
+    u8 *threadBytes = (u8 *)threadObj;
 
-    if (thread[0x2394] != 0) {
+    if (threadBytes[0x2394] != 0) {
         return 1;
     }
-    thread[0x2394] = 1;
+    threadBytes[0x2394] = 1;
     if (((u8 *)Instance__15EmissionManagerFv())[0x6c30] == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326450, 0x44, lbl_80326464);
     }
-    OSInitThreadQueue(thread + 0x2318);
-    OSInitMutex(thread + 0x2320);
+    OSInitThreadQueue(threadBytes + 0x2318);
+    OSInitMutex(threadBytes + 0x2320);
     if ((s8)lbl_8055DE68 == 0) {
-        void *object;
-        object = (void *)&lbl_80412CC8[0x2388];
+        void *listNode;
+        listNode = (void *)&lbl_80412CC8[0x2388];
         *(volatile u32 *)&lbl_80412CC8[0x2388] = 0;
         *(volatile u32 *)&lbl_80412CC8[0x238c] = 0;
         *(u32 *)&lbl_80412CC8[0x2378] = 0;
         *(u32 *)&lbl_80412CC8[0x237c] = 0;
         *(u32 *)&lbl_80412CC8[0x2384] = 0;
-        *(void **)&lbl_80412CC8[0x2388] = object;
-        *(void **)&lbl_80412CC8[0x238c] = object;
+        *(void **)&lbl_80412CC8[0x2388] = listNode;
+        *(void **)&lbl_80412CC8[0x238c] = listNode;
         *(u8 *)&lbl_80412CC8[0x2394] = 0;
         __register_global_object((void *)lbl_80412CC8, (void *)&__dt__10TitleSceneFv,
-                                 (void *)&lbl_80412CB8, object);
+                                 (void *)&lbl_80412CB8, listNode);
         lbl_8055DE68 = 1;
     }
-    result = OSCreateThread(arg0, (void *)fn_800FA77C, (void *)lbl_80412CC8,
-                            thread + 0x2318, 0x2000, arg1, 0);
-    if (result != 0) {
-        OSResumeThread(arg0);
+    created = OSCreateThread(threadObj, (void *)fn_800FA77C, (void *)lbl_80412CC8,
+                            threadBytes + 0x2318, 0x2000, priority, 0);
+    if (created != 0) {
+        OSResumeThread(threadObj);
     }
-    return result != 0;
+    return created != 0;
 }
 s32 nw4hbm::snd::detail::SoundThread::Shutdown() {
     u8 *thread = (u8 *)this;
