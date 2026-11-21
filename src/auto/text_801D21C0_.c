@@ -106,6 +106,7 @@ extern f32 lbl_8055E3C8;
 extern void fn_801796CC(s32, f32 *, s32);
 #pragma scheduling invalid_target
 void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
+#pragma scheduling invalid_target
     struct Temp {
         f32 position[3];
         f32 velocity[3];
@@ -122,7 +123,6 @@ void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
     register s32 index;
     register f32 z, y, x;
     f32 p2, p1, p0;
-    s32 storedId;
     p0 = vec[0];
     p1 = vec[1];
     p2 = vec[2];
@@ -136,8 +136,8 @@ void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
     active = 1;
     for (; i < *(s32 *)((u8 *)arg0 + 0x28); entry += 8, i++) {
         if (*(s32 *)(entry + 8) < 0) {
-            storedId = id;
-            temp.id = storedId;
+            storedId:
+            temp.id = id;
             fn_801796CC(10, (f32 *)&temp, 0x20);
             {
                 s32 isType = 0;
@@ -187,6 +187,7 @@ void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
             }
         }
     }
+#pragma scheduling reset
 }
 
 extern f32 lbl_80562A98;
@@ -200,28 +201,30 @@ extern f32 fabs(f32);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+extern float __fabsf(float);
 void fn_801D2E38(void *a0, void *a1, s32 a2, void *a3, f32 scale) {
-    u8 *arg0 = a0;
-    f32 *arg1 = a1;
-    f32 *arg2 = (f32 *)a2;
-    f32 *arg3 = a3;
-    f32 sp8[3];
-    f32 sp14[3];
-    f32 sp20[3];
+    struct Tail { s32 w[9]; f32 v[3]; } tail;
+    register u8 *arg0 = a0;
+    register f32 *arg1 = a1;
+    register s32 *arg2 = (s32 *)a2;
+    register f32 *arg3 = a3;
     f32 sp2C[3];
-    s32 sp38[9];
-    f32 sp5C[3];
+    f32 sp20[3];
+    f32 sp14[3];
+    s32 sp8[3];
     f32 inv, a, b, c, d;
-    register f32 c98, c9C;
-    s32 i;
+    register f32 c9C, c98;
     u8 *e;
     void *r7;
     s32 r24;
     u8 *obj;
     f32 g1, g2, g3;
     s32 *src = (s32 *)arg1;
-    c98 = lbl_80562A98;
+    register s32 i;
+    #define sp38 tail.w
+    #define sp5C tail.v
     c9C = lbl_80562A9C;
+    c98 = lbl_80562A98;
     sp38[0] = src[1];
     sp38[1] = src[2];
     inv = scale / c98;
@@ -256,7 +259,7 @@ void fn_801D2E38(void *a0, void *a1, s32 a2, void *a3, f32 scale) {
             d = *(f32 *)(e + 0x50);
             sp14[0] = sp2C[0] * d; sp14[1] = sp2C[1] * d; sp14[2] = sp2C[2] * d;
             sp8[0] = arg2[0]; sp8[1] = arg2[1]; sp8[2] = arg2[2];
-            (*(Vt801E **)obj)->fn48(obj, sp14, sp8, r24, 0);
+            (*(Vt801E **)obj)->fn48(obj, sp14, (f32 *)sp8, r24, 0);
             d = *(f32 *)(obj + 0xD4) / c98;
             sp14[0] = *(f32 *)(e + 0x44) * d;
             sp14[1] = *(f32 *)(e + 0x48) * d;
@@ -266,7 +269,7 @@ void fn_801D2E38(void *a0, void *a1, s32 a2, void *a3, f32 scale) {
             g2 = fn_80129DC4(4, lbl_80562A90, lbl_80562A94);
             g1 = fn_80129DC4(4, lbl_80562A90, lbl_80562A94);
             sp14[0] = g1; sp14[1] = g2; sp14[2] = g3;
-            if (fabs(PSVECDotProduct(sp14, sp14)) > lbl_80558DC4[0]) {
+            if (!((f32)__fabsf(PSVECDotProduct(sp14, sp14)) <= lbl_80558DC4[0])) {
                 PSVECNormalize(sp14, sp14);
                 d = fn_80129DC4(4, lbl_80562A90, *(f32 *)(e + 0x54));
                 sp14[0] *= d; sp14[1] *= d; sp14[2] *= d;
@@ -274,6 +277,8 @@ void fn_801D2E38(void *a0, void *a1, s32 a2, void *a3, f32 scale) {
             }
         }
     }
+    #undef sp38
+    #undef sp5C
 }
 #pragma pop
 
@@ -286,11 +291,11 @@ typedef struct { u8 first[0x14]; u8 second[0x10]; u8 third[4]; } Blk801D21C0;
 #pragma dont_inline on
 #pragma opt_propagation off
 void fn_801D21C0(void) {
-    Blk801D21C0 *const blk = (Blk801D21C0 *)lbl_803382A8;
+    register u8 (*base)[0x14] = (u8 (*)[0x14])lbl_803382A8;
     lbl_8055E930 = 0;
-    fn_801D2AD4(blk->first);
-    fn_801D2AD4(blk->second);
-    fn_801D2AD4(blk->third);
+    fn_801D2AD4(base[0]);
+    fn_801D2AD4((u8 *)base + 0x14);
+    fn_801D2AD4((u8 *)base + 0x24);
     fn_801D2C04();
 }
 #pragma pop
@@ -561,11 +566,12 @@ void fn_801D25BC(void *arg0, void *arg1) {
     s32 index;
     f32 value;
     s32 i;
+    s32 count;
     if (((s32 (*)(void))fn_801D2550)() != 0) {
         i = 0;
         *(s32 *)((char *)arg0 + 8) = -1;
-        *(s32 *)((char *)arg0 + 0x28) = i + 1;
-        while (*(s32 *)((char *)arg0 + 0x28) < 4) {
+        *(s32 *)((char *)arg0 + 0x28) = ++i;
+        while ((count = *(s32 *)((char *)arg0 + 0x28)) < 4) {
             fn_801345D8(name, 0x20, lbl_8033830C);
             item = (Dummy *)((Dummy *)arg1)->fn5C((u32)name);
             if (item == 0) {
@@ -581,28 +587,36 @@ void fn_801D25BC(void *arg0, void *arg1) {
     }
 }
 
-#pragma push
+#pragma cplusplus on
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling on
-void fn_801D26C8(void *arg0, void *arg1) {
-    typedef struct ScnVtx {
-        char pad0[8];
-        void *fn08;
-        s32 (*fn0C)(void *, const char *);
-        char pad10[4];
-        void *(*fn14)(void *, const char *);
-        char pad18[4];
-        s32 (*fn1C)(void *, unsigned int);
-        s32 (*fn20)(void *, const char *, s32);
-        char pad24[4];
-        float (*fn28)(void *, const char *, float);
-        char pad2C[12];
-        void (*fn38)(Vec *, void *, const char *, Vec *);
-        char pad3C[32];
-        void *(*fn5C)(void *, const char *);
-    } ScnVtx;
-    typedef struct ScnObj { const ScnVtx *vt; } ScnObj;
+extern "C" void fn_801D26C8(void *arg0, void *arg1) {
+    class Scn {
+    public:
+        virtual void v0();
+        virtual s32 v1(const char *);
+        virtual void v2();
+        virtual void *v3(const char *);
+        virtual void v4();
+        virtual void v5();
+        virtual s32 v6(const char *, s32);
+        virtual void v7();
+        virtual f32 v8(const char *, f32);
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12(Vec *, const char *, Vec *);
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual void *v21(const char *);
+    };
     char name[32];
     Vec ret1;
     Vec def1;
@@ -614,67 +628,66 @@ void fn_801D26C8(void *arg0, void *arg1) {
     Vec *pDef1;
     Vec *pDef2;
     float zero;
+    Scn *obj = (Scn *)arg1;
     unsigned char *self = (unsigned char *)arg0;
-    ScnObj *obj = (ScnObj *)arg1;
-    ScnObj *child;
+    Scn *child;
     unsigned char *entry;
-    int minusOne = -1;
-    int one = 1;
     if (((s32 (*)(void *, void *))fn_801D2550)(arg0, arg1)) {
-        if ((obj->vt->fn0C)(obj, (const char *)(base + 0x70)))
-            fn_801D3610(self + 8, (obj->vt->fn14)(obj, (const char *)(base + 0x70)));
+        if (obj->v1((const char *)(base + 0x70)))
+            fn_801D3610(self + 8, obj->v3((const char *)(base + 0x70)));
         else
-            fn_801D334C(self + 8, obj);
-        *(int *)(self + 0x2C) = (obj->vt->fn20)(obj, (const char *)(base + 0x7C), minusOne);
-        *(int *)(self + 0x3C) = fn_802C6FC0((obj->vt->fn14)(obj, (const char *)lbl_8055ABE8), 0, 0);
+            fn_801D334C(self + 8, arg1);
+        *(int *)(self + 0x2C) = obj->v6((const char *)(base + 0x7C), -1);
+        *(int *)(self + 0x3C) = fn_802C6FC0(obj->v3((const char *)lbl_8055ABE8), 0, 0);
         zero = lbl_80562A90;
         pDef1 = &def1;
         pDef2 = &def2;
         *(int *)(self + 0x490) = 0;
         while (*(int *)(self + 0x490) < 12) {
             fn_801345D8(name, 32, (const char *)lbl_8055ABF0, *(int *)(self + 0x490) + 1);
-            if (!(obj->vt->fn5C)(obj, name))
+            if (!obj->v21(name))
                 break;
-            child = (ScnObj *)(obj->vt->fn5C)(obj, name);
+            child = (Scn *)obj->v21(name);
             entry = self + *(int *)(self + 0x490) * 0x5C;
             init1.x = init1.y = init1.z = zero;
             def1 = init1;
-            (child->vt->fn38)(&ret1, child, (const char *)lbl_8055ABF8, pDef1);
+            child->v12(&ret1, (const char *)lbl_8055ABF8, pDef1);
             *(float *)(entry + 0x78) = ret1.x;
             *(float *)(entry + 0x7C) = ret1.y;
             *(float *)(entry + 0x80) = ret1.z;
             init2.x = init2.y = init2.z = zero;
             def2 = init2;
-            (child->vt->fn38)(&ret2, child, (const char *)lbl_8055AC00, pDef2);
+            child->v12(&ret2, (const char *)lbl_8055AC00, pDef2);
             *(float *)(entry + 0x84) = ret2.x;
             *(float *)(entry + 0x88) = ret2.y;
             *(float *)(entry + 0x8C) = ret2.z;
-            if ((child->vt->fn0C)(child, (const char *)lbl_8055AC08))
-                *(int *)(entry + 0x98) = fn_802C7830((child->vt->fn14)(child, (const char *)lbl_8055AC08));
+            if (child->v1((const char *)lbl_8055AC08))
+                *(int *)(entry + 0x98) = fn_802C7830(child->v3((const char *)lbl_8055AC08));
             else
-                *(int *)(entry + 0x98) = minusOne;
-            if ((unsigned char)(child->vt->fn5C)(child, (const char *)(base + 0x70)) != 0) {
-                fn_801D334C(entry + 0x44, (child->vt->fn5C)(child, (const char *)(base + 0x70)));
-                entry[0x40] = one;
+                *(int *)(entry + 0x98) = -1;
+            if ((unsigned char)child->v21((const char *)(base + 0x70)) != 0) {
+                fn_801D334C(entry + 0x44, child->v21((const char *)(base + 0x70)));
+                entry[0x40] = 1;
             } else
                 entry[0x40] = 0;
-            *(float *)(entry + 0x90) = (child->vt->fn28)(child, (const char *)lbl_8055AC10, lbl_80562A94);
-            *(float *)(entry + 0x94) = (child->vt->fn28)(child, (const char *)(base + 0x88), lbl_80562A90);
+            *(float *)(entry + 0x90) = child->v8((const char *)lbl_8055AC10, lbl_80562A94);
+            *(float *)(entry + 0x94) = child->v8((const char *)(base + 0x88), lbl_80562A90);
             ++*(int *)(self + 0x490);
         }
         if (*(int *)(self + 0x490) < 1) {
-            *(int *)(self + 0x98) = minusOne;
+            *(int *)(self + 0x98) = -1;
             *(float *)(self + 0x78) = lbl_80562A90;
             *(float *)(self + 0x7C) = lbl_80562A90;
             *(float *)(self + 0x80) = lbl_80562A90;
-            *(int *)(self + 0x490) = one;
+            *(int *)(self + 0x490) = 1;
         }
     } else {
-        *(int *)(self + 0x3C) = minusOne;
+        *(int *)(self + 0x3C) = -1;
         *(int *)(self + 0x490) = 0;
     }
 }
-#pragma pop
+#pragma scheduling on
+#pragma cplusplus reset
 /* Initializes the next event entry (stride 0x4C4 in lbl_80438958, indexed by lbl_8055E930) from a scene object: id, effect sub-object, and spawn sub-object. */
 extern "C" void fn_801D2A24(void *sceneObj_) {
     struct Dummy {
