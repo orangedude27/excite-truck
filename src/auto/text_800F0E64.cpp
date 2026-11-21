@@ -3512,11 +3512,11 @@ extern "C" s32 fn_800F65F0(void *arg0, void **arg1, u32 arg2, s32 arg3, s32 arg4
     void *sound;
     register s32 playerIndex;
     register s32 startPosition;
-    register s32 soundCount;
-         register u32 soundIndex;
-     register void *options;
+         register s32 soundCount;
+     register u32 soundIndex;
+     void *options;
      register s32 loop;
-    register s32 result;
+     register s32 result;
     register s32 soundType;
     register s32 priority;
 
