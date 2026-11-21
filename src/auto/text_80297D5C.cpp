@@ -986,6 +986,7 @@ extern "C" void fn_80299628(void *arg0) {
 
 #pragma opt_propagation off
 extern "C" int fn_802996B0(void *arg0, int *out) {
+ struct Slot { char pad[0x38]; float value; };
  int state, best=-1, found=0, idx;
  state=*(int*)((char*)arg0+0x34);
  idx=0;
@@ -994,15 +995,15 @@ extern "C" int fn_802996B0(void *arg0, int *out) {
  state=*(int*)((char*)arg0+0x74);
  idx=1;
  if(state==0){*out=idx;return 1;}
- if(state==2 && (!found || *(float*)((char*)arg0+0x78)<*(float*)((char*)arg0+(best<<6)+0x38))){best=1;found=1;}
+ if(state==2 && (!found || *(float*)((char*)arg0+0x78)<((Slot*)((char*)arg0+(best<<6)))->value)){best=1;found=1;}
  state=*(int*)((char*)arg0+0xB4);
  idx=2;
  if(state==0){*out=idx;return 1;}
- if(state==2 && (!found || *(float*)((char*)arg0+0xB8)<*(float*)((char*)arg0+(best<<6)+0x38))){best=2;found=1;}
+ if(state==2 && (!found || *(float*)((char*)arg0+0xB8)<((Slot*)((char*)arg0+(best<<6)))->value)){best=2;found=1;}
  state=*(int*)((char*)arg0+0xF4);
  idx=3;
  if(state==0){*out=idx;return 1;}
- if(state==2 && (!found || *(float*)((char*)arg0+0xF8)<*(float*)((char*)arg0+(best<<6)+0x38))){best=idx;found=1;}
+ if(state==2 && (!found || *(float*)((char*)arg0+0xF8)<((Slot*)((char*)arg0+(best<<6)))->value)){best=idx;found=1;}
  if(found)*out=best;
  return found;
 }
