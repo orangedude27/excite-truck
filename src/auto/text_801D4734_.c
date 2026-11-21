@@ -252,8 +252,10 @@ void fn_801D4900(int arg0) {
     fn_801D5A1C(arg0);
 }
 
-void fn_801D4904(void) {
-    fn_801D5A24();
+/* Tail-call predicate: forwards to fn_801D5A24, which tests whether the
+ * registered action sequence's field at +4 equals 4. */
+int fn_801D4904(int sequence) {
+    return fn_801D5A24(sequence);
 }
 
 /* Action-sequence test wrapper: forwards to fn_801D5A2C, which looks the
