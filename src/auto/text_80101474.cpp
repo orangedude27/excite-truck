@@ -158,21 +158,40 @@ extern int fn_800EC890(void *, void *, int, int, int);
 #pragma scheduling on
 extern void fn_800EC890(void *);
 extern "C" void Init__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail9WsdPlayer(void *arg0, void *arg1) {
-    *(void **)((char *)arg0 + 0x2C) = arg1;
-    *(int *)((char *)arg0 + 0) = 0;
-    *(int *)((char *)arg0 + 4) = -1;
-    *(unsigned char *)((char *)arg0 + 0x1D) = 0x40;
-    *(unsigned char *)((char *)arg0 + 0x1C) = 2;
-    *(float *)((char *)arg0 + 0x20) = 1.0f;
-    *(unsigned char *)((char *)arg0 + 0x24) = 0x40;
-    *(unsigned char *)((char *)arg0 + 0x25) = 0;
-    *(unsigned char *)((char *)arg0 + 0x26) = 0;
-    *(unsigned char *)((char *)arg0 + 0x27) = 0;
-    *(unsigned char *)((char *)arg0 + 0x28) = 0;
-    *(unsigned char *)((char *)arg0 + 0x29) = 0x7F;
+    /* nw4hbm::snd::detail::WsdTrack::Init: bind a track to its owning WsdPlayer and
+       reset its playback state, channel count, sequencer sub-object and channel list. */
+    struct WsdTrackState {
+        int state;                    /* 0x00 */
+        int program;                  /* 0x04 */
+        int channelCount;             /* 0x08 */
+        unsigned char seqTrack[0x10]; /* 0x0C MmlSeqTrack sub-object */
+        unsigned char unk1C;          /* 0x1C */
+        unsigned char unk1D;          /* 0x1D */
+        float volume;                 /* 0x20 */
+        unsigned char pan;            /* 0x24 */
+        unsigned char unk25;          /* 0x25 */
+        unsigned char unk26;          /* 0x26 */
+        unsigned char unk27;          /* 0x27 */
+        unsigned char unk28;          /* 0x28 */
+        unsigned char unk29;          /* 0x29 */
+        void *player;                 /* 0x2C */
+        void *activeChannels;         /* 0x30 */
+    };
+    ((WsdTrackState *)arg0)->player = arg1;
+    ((WsdTrackState *)arg0)->state = 0;
+    ((WsdTrackState *)arg0)->program = -1;
+    ((WsdTrackState *)arg0)->unk1D = 0x40;
+    ((WsdTrackState *)arg0)->unk1C = 2;
+    ((WsdTrackState *)arg0)->volume = 1.0f;
+    ((WsdTrackState *)arg0)->pan = 0x40;
+    ((WsdTrackState *)arg0)->unk25 = 0;
+    ((WsdTrackState *)arg0)->unk26 = 0;
+    ((WsdTrackState *)arg0)->unk27 = 0;
+    ((WsdTrackState *)arg0)->unk28 = 0;
+    ((WsdTrackState *)arg0)->unk29 = 0x7F;
     fn_800EC890((char *)arg0 + 0xC);
-    *(int *)((char *)arg0 + 8) = 0;
-    *(int *)((char *)arg0 + 0x30) = 0;
+    ((WsdTrackState *)arg0)->channelCount = 0;
+    ((WsdTrackState *)arg0)->activeChannels = 0;
 }
 #pragma scheduling on
 /* Points an NWC24 data descriptor at a payload buffer and records its byte size. */
@@ -791,9 +810,8 @@ static inline Color4 GetFogColor_80101474() {
 #pragma push
 #pragma opt_propagation off
 extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
-    struct Strings { char file[0x14]; char ptrMsg[0x70]; char typeMsg[4]; };
     unsigned int arg0_int = (unsigned int)arg0;
-    const Strings *base = (const Strings *)lbl_80328178;
+    char *base = (char *)lbl_80328178;
     unsigned char sp20[4], sp1C[4], sp18[4], sp14[4], sp10[4], spC[4], sp8[4];
     unsigned int temp_r30;
     unsigned int temp_r3;
@@ -807,6 +825,7 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
     int var_r5_2;
     SetupGXFontType *temp_r3_2;
     int type;
+    int fogType;
 
     var_r5 = 1;
     var_r6 = 1;
@@ -834,7 +853,7 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
         var_r5 = 0;
     }
     if (var_r5 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(base->file, 0xAD, base->ptrMsg, arg0_int);
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0xAD, base + 0x14, arg0_int);
     }
     var_r5_2 = 0;
     if (temp_r30 == 0x80000000U ||
@@ -847,7 +866,7 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
         var_r5_2 = 1;
     }
     if (var_r5_2 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(base->file, 0x12C, base->ptrMsg, arg0_int);
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x12C, base + 0x14, arg0_int);
     }
     (*(int *)((signed char*)(&lbl_8041D4E0) + (0))) = 0xFF;
     (*(int *)((signed char*)(&lbl_8041D4E0) + (4))) = 0;
@@ -878,7 +897,8 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
             sp18[1] = lbl_8055DE95;
             sp18[2] = lbl_8055DE96;
             sp18[3] = lbl_8055DE97;
-            ((void (*)(int, void*, float, float, float, float))GXSetFog)(0, &sp18[0], lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+            fogType = 0;
+            ((void (*)(int, void*, float, float, float, float))GXSetFog)(fogType, &sp18[0], lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
             GXSetTevSwapModeTable(0, 0, 1, 2, 3);
             GXSetZTexture(0, 0x11, 0);
             GXSetNumChans(1);
@@ -974,7 +994,7 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
             GXSetVtxDesc(0xD, 1);
             return;
         default:
-            Warning__Q26nw4hbm2dbFPCciPCce(base->file, 0xCF, base->typeMsg, type);
+            Warning__Q26nw4hbm2dbFPCciPCce(base, 0xCF, base + 0x84, type);
             if ((signed char) lbl_8055DE90 == 0) {
                 *(int *)&lbl_8055DE94 = 0;
                 __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
