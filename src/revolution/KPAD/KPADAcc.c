@@ -92,29 +92,29 @@ static void calc_acc_vertical(KPADInsideStatus* kp) {
 }
 
 static void read_kpad_acc_head(KPADInsideStatus* kp) {
+    /* Filter the reported acceleration into the status' 2D "head" (vertical) vector. */
     KPADStatus* sp = &kp->status;
     f32 f1, f2, ax, ay;
 
-    /* Updates the status' vertical acceleration vector from raw accelerometer readings. */
     f2 = kp->hard_acc.x * kp->hard_acc.x + kp->hard_acc.y * kp->hard_acc.y;
-    ax = fn_8002F234(f2);
+    ax = kp_sqrt(f2);
     ay = -kp->hard_acc.z;
-    f1 = fn_8002F234(f2 + ay * ay);
-    if (f1 == 0.0f || f1 >= lbl_80560BF0) {
+    f1 = kp_sqrt(f2 + ay * ay);
+    if (f1 == 0.0f || f1 >= kp_two_g) {
         return;
     }
     ax = ax / f1;
     ay /= f1;
 
-    if (f1 > lbl_80560BE4) {
-        f1 = lbl_80560BF0 - f1;
+    if (f1 > kp_one_g) {
+        f1 = kp_two_g - f1;
     }
-    f1 *= f1 * lbl_80558EA4;
+    f1 *= f1 * kp_acc_horizon_pw;
 
     ax = (ax - sp->acc_vertical.x) * f1 + sp->acc_vertical.x;
     ay = (ay - sp->acc_vertical.y) * f1 + sp->acc_vertical.y;
 
-    f1 = fn_8002F234(ax * ax + ay * ay);
+    f1 = kp_sqrt(ax * ax + ay * ay);
     if (f1 == 0.0f) {
         return;
     }
