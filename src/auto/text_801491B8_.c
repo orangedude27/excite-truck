@@ -5017,7 +5017,7 @@ void *fn_80155E6C(void *arg0)
     Node *prev;
     Node *next;
   };
-  typedef struct 
+  typedef struct
   {
     unsigned char pad[0x1244];
     Node *head;
@@ -5031,7 +5031,6 @@ void *fn_80155E6C(void *arg0)
   Node *next;
   Node *prev;
   Node *tail;
-  float f1648 = f1648;
   if (node != 0)
   {
     next = node->next;
@@ -5065,18 +5064,29 @@ void *fn_80155E6C(void *arg0)
     {
       owner->first = node;
     }
-    *(((unsigned char *) node) + 4) = 1;
-    *((float *) (((unsigned char *) node) + 0x10)) = lbl_8055E3C8;
-    *((float *) (((unsigned char *) node) + 0xC)) = f1648;
-    *((float *) (((unsigned char *) node) + 8)) = f1648;
-    *(((unsigned char *) node) + 0x14) = 0;
-    *(((unsigned char *) node) + 0x64) = 0;
-    *(((unsigned char *) node) + 0xB4) = 0;
-    *(((unsigned char *) node) + 5) = 0;
-    *((int *) (((unsigned char *) node) + 0x10C)) = -1;
-    *((float *) (((unsigned char *) node) + 0x104)) = f1648;
-    *((int *) (((unsigned char *) node) + 0x108)) = 0;
-    *((int *) (((unsigned char *) node) + 0x114)) = 1;
+    {
+      int one = 1;
+      float zero;
+      float onef;
+      int zeroi;
+      int neg1;
+      *(((unsigned char *) node) + 4) = one;
+      zero = 0.0f;
+      onef = lbl_8055E3C8;
+      zeroi = 0;
+      neg1 = -1;
+      *((float *) (((unsigned char *) node) + 0x10)) = onef;
+      *((float *) (((unsigned char *) node) + 0xC)) = zero;
+      *((float *) (((unsigned char *) node) + 8)) = zero;
+      *(((unsigned char *) node) + 0x14) = zeroi;
+      *(((unsigned char *) node) + 0x64) = zeroi;
+      *(((unsigned char *) node) + 0xB4) = zeroi;
+      *(((unsigned char *) node) + 5) = zeroi;
+      *((int *) (((unsigned char *) node) + 0x10C)) = neg1;
+      *((float *) (((unsigned char *) node) + 0x104)) = zero;
+      *((int *) (((unsigned char *) node) + 0x108)) = zeroi;
+      *((int *) (((unsigned char *) node) + 0x114)) = one;
+    }
     return node;
   }
   return 0;
