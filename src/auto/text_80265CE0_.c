@@ -42,7 +42,11 @@ void fn_80265D54(int mode) {
  * (callers: the "msingle:do_event()" report and the track-editor screen). */
 int fn_80265D58(void) { return 0; }
 
-void fn_80265D60(void) {}
+/* No-op MP-client session-reset stub: called from the game init/reset pass
+ * (fn_80179320) with a pointer to the session block at gGameState+0x32F0.
+ * Other builds clear per-player session state here; this build has no MP client. */
+void fn_80265D60(int *sessionState) {
+}
 
 /* MP-client query stub: always answers 0 ("wants restart" is false). */
 int fn_80265D64(void) {
