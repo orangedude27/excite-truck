@@ -1593,6 +1593,8 @@ done:
     return 0;
 }
 #pragma scheduling on
+/* Return to the remembered page entry (lbl_8055F690): save the current
+   selection, select that entry in the list and copy its text for display. */
 extern "C" int fn_80280C00(void) {
     class Object {
     public:
@@ -1612,21 +1614,21 @@ extern "C" int fn_80280C00(void) {
             return -1;
         }
     };
-    extern int lbl_8055F68C;
-    extern int lbl_8055F690;
-    extern unsigned char lbl_804B3068[];
+    extern int lbl_8055F68C;                  /* the entry of page 0, the list */
+    extern int lbl_8055F690;                  /* the page entry to come back to */
+    extern unsigned char lbl_804B3068[];      /* text shown for the selection */
     int i;
     int index;
     void *item;
 
-    if (lbl_8055F688 == 0)
+    if (lbl_8055F688 == 0)                    /* nothing selected */
         goto done;
     if (*(Object * volatile *)((char *)lbl_8055F688 + 0x60) == 0)
         goto done;
     if ((*(Object **)((char *)lbl_8055F688 + 0x60))->getKey() != 0)
         goto done;
 
-    lbl_8055F68C = lbl_8055F688;
+    lbl_8055F68C = lbl_8055F688;              /* remember the current selection */
     if (lbl_8055F690 == 0) {
         for (i = 0; i < lbl_804B3048.count; i++) {
             void *entry = lbl_804B3048.items[i];
@@ -1642,7 +1644,7 @@ extern "C" int fn_80280C00(void) {
 
     {
         index = ItemFinder::indexOf((void *)lbl_8055F690);
-        lbl_804B3068[0] = 0;
+        lbl_804B3068[0] = 0;                  /* the shown text goes with the selection */
         if (index < 0 || index >= *(volatile int *)&lbl_804B3048.count)
             goto clear;
         item = lbl_804B3048.items[index];
@@ -1650,7 +1652,7 @@ extern "C" int fn_80280C00(void) {
         if (item != 0 && *(Object * volatile *)((char *)item + 0x60) != 0) {
             Object *o = *(Object **)((char *)item + 0x60);
             char *src = o->getText();
-            int n = 100;
+            int n = 100;                      /* at most this much of it fits */
             char *dst = (char *)lbl_804B3068;
             goto copy_test;
             for (;;) {
@@ -1666,7 +1668,7 @@ copy_test:
     }
     goto done;
 clear:
-    lbl_8055F688 = 0;
+    lbl_8055F688 = 0;                         /* gone: leave nothing selected */
 done:
     return 0;
 }
@@ -1841,8 +1843,8 @@ extern "C" FN81138_RET fn_80281138(void) {
     extern void *lbl_8055F694;
     extern char lbl_8034848C[];
     extern char lbl_8034849C[];
-    int index;
-    void *selected;
+    register int index;
+    register void *selected;
 
     index = fn_80281138_find(lbl_804B3048.items, lbl_804B3048.count,
                              (void *)lbl_8055F688);
@@ -1860,7 +1862,7 @@ extern "C" FN81138_RET fn_80281138(void) {
     selected = lbl_8055F694;
     if (selected != 0) {
         char buffer2[0x1E];
-        int idx;
+        register int idx;
         lbl_8055F688 = 0;
         if (*(unsigned char *)((char *)selected + 0x64) != 0) {
             idx = 5;
@@ -3375,7 +3377,7 @@ extern "C" void fn_802854E0(void *arg0) {
     char *p = (char *)arg0;
     half = lbl_80564228;
     if (*(List **)(p + 0x60) != 0) {
-        if (*(unsigned char *)(p + 0xcd) != 0) {
+        if (*(volatile unsigned char *)(p + 0xcd) != 0) {
             fn_80230C30(&x, &y, *(int *)(p+4), *(int *)(p+8));
             cx = x + lbl_80564228 * (float)*(int *)(p+12);
             cy = y - lbl_80564228 * (float)*(int *)(p+16);
