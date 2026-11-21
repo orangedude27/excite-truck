@@ -29,8 +29,6 @@ enum { ANIMTARGET_VERTEXCOLOR_MAX = VERTEXCOLOR_NUM * 4 };
 
 extern u32 lbl_8055DE00;
 
-struct VEC2 { u32 x; u32 y; };
-
 struct Color {
     u8 b0;
     u8 b1;
