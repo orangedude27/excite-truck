@@ -901,6 +901,9 @@ extern "C" void *fn_80145FEC(void *collection, const char *wantedName, s32 unuse
 }
 #pragma dont_inline reset
 #pragma pop
+/* Empty per-element destructor callback passed to the array allocator fn_8002F37C
+ * by fn_80145FEC for its 0x28-byte result entries; they need no cleanup, so this
+ * does nothing (a bare 'blr'). */
 extern "C" void fn_801460F4(void) {
 }
 
