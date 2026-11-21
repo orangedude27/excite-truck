@@ -10,13 +10,17 @@ extern int lbl_8055DF10;
 extern struct State lbl_8041DEE0;
 void fn_801279E0(void) {
     #pragma scheduling invalid_target
-    /* RealName: ProfilerListInit. Static constructor: register a static-destructor
-       record for lbl_8055DF10, then bring up the profiler index list as an empty
-       header with room for 16 words. */
-    fn_8000D838(&lbl_8055DF10);
-    lbl_8041DEE0.data = (char *)&lbl_8041DEE0 + 0xC;
-    lbl_8041DEE0.capacity = 0x10;
-    lbl_8041DEE0.count = 0;
+    /* RealName: ProfilerListInit — a .ctors entry. Register this unit's static-destructor
+       record, then bring up the profiler's active-index list as an empty buffer with
+       room for 16 32-bit words. */
+#define dtorRecord   lbl_8055DF10
+#define profilerList lbl_8041DEE0
+    fn_8000D838(&dtorRecord);
+    profilerList.data = (char *)&profilerList + 0xC;
+    profilerList.capacity = 0x10;
+    profilerList.count = 0;
+#undef dtorRecord
+#undef profilerList
 }
 
 #pragma section ".ctors$00"
