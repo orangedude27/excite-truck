@@ -5003,22 +5003,31 @@ done:
     return ret;
 }
 
-void UUSB_Close(void *arg0) {
+void UUSB_Close(void *unused) {
+#define gkiDisable  fn_8006EBAC
+#define gkiEnable   fn_8006EB88
+#define uusbControl lbl_803BD1E0
     extern s32 IUSB_CloseDeviceAsync(s32, void (*)(void), void *);
-    fn_8006EBAC();
-    lbl_803BD1E0.state = 0;
-    fn_8006EB88();
-    if (lbl_803BD1E0.acl_q.count != 0) {
-        while (lbl_803BD1E0.acl_q.count != 0) {
-            GKI_freebuf(GKI_dequeue(&lbl_803BD1E0.acl_q));
+    /* Close the USB HCI transport: clear the control-block state inside a
+     * critical section, drain and free every queued ACL/SCO buffer, then hand
+     * the device to the async close routine with its completion callback. */
+    gkiDisable();
+    uusbControl.state = 0;
+    gkiEnable();
+    if (uusbControl.acl_q.count != 0) {
+        while (uusbControl.acl_q.count != 0) {
+            GKI_freebuf(GKI_dequeue(&uusbControl.acl_q));
         }
     }
-    if (lbl_803BD1E0.sco_q.count != 0) {
-        while (lbl_803BD1E0.sco_q.count != 0) {
-            GKI_freebuf(GKI_dequeue(&lbl_803BD1E0.sco_q));
+    if (uusbControl.sco_q.count != 0) {
+        while (uusbControl.sco_q.count != 0) {
+            GKI_freebuf(GKI_dequeue(&uusbControl.sco_q));
         }
     }
-    IUSB_CloseDeviceAsync(lbl_803BD1E0.fd, (void (*)(void))uusb_CloseDeviceCB, 0);
+    IUSB_CloseDeviceAsync(uusbControl.fd, (void (*)(void))uusb_CloseDeviceCB, 0);
+#undef uusbControl
+#undef gkiEnable
+#undef gkiDisable
 }
 
 /* uusb control block at lbl_803BD1E0 (96 bytes): fd @0, state u8 @0x29,
@@ -14562,8 +14571,7 @@ extern BOOLEAN l2c_link_hci_disc_comp(UINT16, UINT8);
 
 #pragma cplusplus on
 extern "C" void btu_hcif_process_event(BT_HDR *p_msg) {
-    register UINT16 disc_handle;
-    register UINT16 clk_handle;
+#pragma opt_common_subs off
     UINT8 *p = (UINT8 *)(p_msg + 1) + p_msg->offset;
     UINT8 hci_evt_code, hci_evt_len;
 
@@ -14591,16 +14599,17 @@ extern "C" void btu_hcif_process_event(BT_HDR *p_msg) {
         break;
     case 0x05: {
         UINT8 status;
+        UINT16 handle;
         struct { UINT8 value; } reasonLocal;
         UINT8 &reason = reasonLocal.value;
         UINT8 *d = p + 2;
         STREAM_TO_UINT8(status, d);
-        STREAM_TO_UINT16(disc_handle, d);
-        disc_handle = HCID_GET_HANDLE(disc_handle);
+        STREAM_TO_UINT16(handle, d);
+        handle = HCID_GET_HANDLE(handle);
         STREAM_TO_UINT8(reason, d);
-        if (!l2c_link_hci_disc_comp(disc_handle, reason))
-            btm_sco_removed(disc_handle, reason);
-        btm_sec_disconnected(disc_handle, reason);
+        if (!l2c_link_hci_disc_comp(handle, reason))
+            btm_sco_removed(handle, reason);
+        btm_sec_disconnected(handle, reason);
         break;
     }
     case 0x06: {
@@ -14722,13 +14731,15 @@ extern "C" void btu_hcif_process_event(BT_HDR *p_msg) {
         break;
     case 0x1C:
         if (p[2] == 0) {
+            struct { UINT16 value; } handleLocal;
+            UINT16 &handle = handleLocal.value;
             UINT16 clock_offset;
             UINT8 *d = p + 3;
-            STREAM_TO_UINT16(clk_handle, d);
-            clk_handle = HCID_GET_HANDLE(clk_handle);
+            STREAM_TO_UINT16(handle, d);
+            handle = HCID_GET_HANDLE(handle);
             STREAM_TO_UINT16(clock_offset, d);
-            btm_process_clk_off_comp_evt(clk_handle, clock_offset);
-            btm_sec_update_clock_offset(clk_handle, clock_offset);
+            btm_process_clk_off_comp_evt(handle, clock_offset);
+            btm_sec_update_clock_offset(handle, clock_offset);
         }
         break;
     case 0x1E: {
@@ -20272,16 +20283,8 @@ void l2c_init(void) {
 void l2c_rcv_acl_data(BT_HDR *p_msg) {
     extern char lbl_80318E58[];
     extern void process_l2cap_cmd(void *, UINT8 *, UINT16);
-    struct L2cTraceStrings {
-        char s00[0x24];
-        char s24[0x54];
-        char s78[0x18];
-        char s90[0x24];
-        char sB4[0x2C];
-        char sE0[1];
-    };
     UINT8 *p = (UINT8 *)(p_msg + 1) + p_msg->offset;
-    struct L2cTraceStrings *trace = (struct L2cTraceStrings *)lbl_80318E58;
+    char *trace = lbl_80318E58;
     UINT16 handle, hci_len;
     UINT8 pkt_type;
     void *p_lcb;
@@ -20294,7 +20297,7 @@ void l2c_rcv_acl_data(BT_HDR *p_msg) {
 
     if (pkt_type != 2) {
         if (lbl_803C4040[0] >= 2)
-            fn_80070954(0x80001, trace->s00, pkt_type);
+            fn_80070954(0x80001, &trace[0], pkt_type);
         GKI_freebuf(p_msg);
         return;
     }
@@ -20308,7 +20311,7 @@ void l2c_rcv_acl_data(BT_HDR *p_msg) {
             (cmd_code == 10 || cmd_code == 2) && !(UINT8)fn_8007FEFC(handle)) {
             if (lbl_803C4040[0] >= 2)
                 ((void (*)(u32, void *, u16, u16, u16, u8, u16))fn_800709B4)(
-                    0x80001, trace->s24, handle, p_msg->layer_specific,
+                    0x80001, trace + 0x24, handle, p_msg->layer_specific,
                     rcv_cid, cmd_code, *(u16 *)(lbl_803C4040 + 0x7C8));
             p_msg->layer_specific = 2;
             GKI_enqueue((BUFFER_Q *)(lbl_803C4040 + 0x7C0), p_msg);
@@ -20327,7 +20330,7 @@ void l2c_rcv_acl_data(BT_HDR *p_msg) {
     if (rcv_cid > 2) {
         if ((p_ccb = (void *)l2cu_find_ccb_by_cid(p_lcb, rcv_cid)) == NULL) {
             if (lbl_803C4040[0] >= 2)
-                fn_80070954(0x80001, trace->s78, rcv_cid);
+                fn_80070954(0x80001, trace + 0x78, rcv_cid);
             GKI_freebuf(p_msg);
             return;
         }
@@ -20337,13 +20340,13 @@ void l2c_rcv_acl_data(BT_HDR *p_msg) {
         p_msg->offset += 4;
     } else {
         if (lbl_803C4040[0] >= 2)
-            fn_8007093C(0x80001, trace->s90);
+            fn_8007093C(0x80001, trace + 0x90);
         GKI_freebuf(p_msg);
         return;
     }
     if (l2cap_len != p_msg->len) {
         if (lbl_803C4040[0] >= 2)
-            fn_8007096C(0x80001, trace->sB4, l2cap_len, p_msg->len);
+            fn_8007096C(0x80001, trace + 0xB4, l2cap_len, p_msg->len);
         GKI_freebuf(p_msg);
         return;
     }
@@ -20357,7 +20360,7 @@ void l2c_rcv_acl_data(BT_HDR *p_msg) {
         p_msg->offset += 2;
         p_msg->len -= 2;
         if (lbl_803C4040[0] >= 5)
-            fn_80070954(0x80004, trace->sE0, psm);
+            fn_80070954(0x80004, trace + 0xE0, psm);
         GKI_freebuf(p_msg);
         return;
     }
