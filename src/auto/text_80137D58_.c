@@ -506,6 +506,13 @@ float fn_801385F0(float position, float period, float center, float radius) {
 
 extern float lbl_805613B0, lbl_805613B4;
 extern double fn_8002F234(double);
+struct Vec2f_801386D0 { float x, y; };
+static inline struct Vec2f_801386D0 Vec2fPerp_801386D0(struct Vec2f_801386D0 v) {
+  struct Vec2f_801386D0 r;
+  r.x = v.y;
+  r.y = -v.x;
+  return r;
+}
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
@@ -516,8 +523,8 @@ int fn_801386D0(void *arg0, float farg0, float farg1, float farg2)
   {
     float x;
     float y;
-  } new_var[2];
-  struct Vec2 p;
+  } p;
+  struct Vec2 new_var[2];
   char *ctx = (char *) arg0;
   char *n;
   int hit = 0;
