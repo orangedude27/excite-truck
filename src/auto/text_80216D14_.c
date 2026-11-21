@@ -1198,36 +1198,25 @@ extern float lbl_80563490;
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_802184D0(void *arg0) {
-    class Obj {
-    public:
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual void v9();
-    };
+/* Update every active widget in a UI menu group: a widget counts as active when
+ * it is shown or its off timer has run out, and active widgets get their v9
+ * callback. */
+extern "C" void fn_802184D0(void *group) {
     float threshold = 0.0f;
     char *cursor;
     int i;
     char *base;
-    base = (char *)arg0;
+    base = (char *)group;
     cursor = base;
     i = 0;
     for (; i < *(int *)(base + 0x430); cursor += 4, i++) {
-        void *obj = *(void **)(cursor + 0x30);
+        UiWidget *widget = *(UiWidget **)(cursor + 0x30);
         int call = 0;
-        if (*(unsigned char *)((char *)obj + 0x1A) != 0 ||
-            *(float *)((char *)obj + 0x20) >= threshold) {
+        if (widget->shown != 0 || widget->offTimer >= threshold) {
             call = 1;
         }
         if (call != 0) {
-            ((Obj *)obj)->v9();
+            widget->v9();
         }
     }
 }
