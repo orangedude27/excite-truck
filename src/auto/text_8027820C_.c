@@ -371,16 +371,20 @@ void *fn_802678E4(int);
 extern int lbl_8055F5BC;
 extern double lbl_805640B0;
 #pragma scheduling reset
-void fn_8027889C(float arg0) {
-    float t;
-    float result;
-    t = arg0 / 0.016683366149663925f;
-    if (t < 0.0f) {
-        result = t - 0.5f;
+void fn_8027889C(float seconds) {
+    /* Set the scripted-movie playback range's start tick: convert a time in seconds
+       to the nearest ~60 Hz tick, rounding with +/- half a tick. */
+#define sPlayStartTick lbl_8055F5C0
+    float ticks;
+    float rounded;
+    ticks = seconds / 0.016683366149663925f;
+    if (ticks < 0.0f) {
+        rounded = ticks - 0.5f;
     } else {
-        result = 0.5f + t;
+        rounded = 0.5f + ticks;
     }
-    lbl_8055F5C0 = (int)result;
+    sPlayStartTick = (int)rounded;
+#undef sPlayStartTick
 }
 extern float lbl_805640B8, lbl_805640BC;
 #pragma processor 750
