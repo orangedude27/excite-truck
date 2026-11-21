@@ -164,29 +164,29 @@ void fn_801A7628(void) {
 }
 #pragma push
 #pragma scheduling invalid_target
-void fn_801A7844(int arg0) {
-    char *entry;
-    int i;
-    int sp10;
-    int spC;
-    unsigned int sp8;
+void fn_801A7844(int resetControllers) {
+    char *config;
+    int controllerIndex;
+    int pointerX;
+    int pointerY;
+    unsigned int buttons;
 
-    if (arg0 != 0) {
-        entry = (char *)lbl_80435050;
-        i = 0;
+    if (resetControllers != 0) {
+        config = (char *)lbl_80435050;
+        controllerIndex = 0;
         do {
-            memset(entry, 0, 0x64);
-            fn_80129AE8(entry, i);
-            i++;
-            entry += 0x64;
-        } while (i < 4);
+            memset(config, 0, 0x64);
+            fn_80129AE8(config, controllerIndex);
+            controllerIndex++;
+            config += 0x64;
+        } while (controllerIndex < 4);
     }
-    fn_80127A84(&sp10, &spC, &sp8);
-    *(float *)&lbl_80435370[0] = (float)(sp10 - (int)lbl_8055CFF0 / 2) / (float)((int)lbl_8055CFF0 / 2);
-    *(float *)&lbl_80435370[4] = (float)(spC - (int)lbl_8055CFF4 / 2) / (float)((int)lbl_8055CFF4 / 2);
-    lbl_80435370[8] = sp8 & 1;
-    lbl_80435370[9] = (sp8 >> 1) & 1;
-    lbl_80435370[10] = (sp8 >> 2) & 1;
+    fn_80127A84(&pointerX, &pointerY, &buttons);
+    *(float *)&lbl_80435370[0] = (float)(pointerX - (int)lbl_8055CFF0 / 2) / (float)((int)lbl_8055CFF0 / 2);
+    *(float *)&lbl_80435370[4] = (float)(pointerY - (int)lbl_8055CFF4 / 2) / (float)((int)lbl_8055CFF4 / 2);
+    lbl_80435370[8] = buttons & 1;
+    lbl_80435370[9] = (buttons >> 1) & 1;
+    lbl_80435370[10] = (buttons >> 2) & 1;
 }
 #pragma pop
 extern void fn_801334F4(int, int, int *, int);
