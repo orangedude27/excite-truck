@@ -421,6 +421,12 @@ static inline s32 fn_80019144_find_base(char *base, const char *name) {
     }
     return -1;
 }
+static inline char *fn_80019144_entry_from_row(s32 index) {
+    char *entry;
+    entry = (char *)lbl_803580A4 + index * 0x10 + 4;
+    if (index < 0) entry = 0;
+    return entry;
+}
 #pragma push
 #pragma use_lmw_stmw off
 #pragma small_data off
@@ -431,14 +437,18 @@ s32 fn_80019144(s32 arg0) {
     s32 lower;
     s32 upper;
     s32 result;
-    char *entry;
+    s32 index;
+    void *entry;
 
-    if ((entry = fn_80019144_entry_inl((const char *)arg0)) != 0) {
+    index = fn_80019144_find_inl((const char *)arg0);
+    entry = (void *)((char *)lbl_803580A4 + index * 0x10 + 4);
+    if (index < 0) entry = 0;
+    if (entry != 0) {
         if ((u8)lbl_8055D588 != 0) return 1;
         value0 = fn_8001EFC0(0, arg0);
         lower = *(s32 *)entry <= value0;
         value1 = fn_8001EFC0(1, arg0);
-        upper = *(s32 *)(entry + 4) <= value1;
+        upper = *(s32 *)((char *)entry + 4) <= value1;
         result = 0;
         if (lower != 0 || upper != 0)
             result = 1;
