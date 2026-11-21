@@ -16,6 +16,8 @@ void *fn_80265CE0(void *object, int shouldDelete) {
     return object;
 }
 
+/* No-op reset hook called from fn_801A5258 with the object and its +0x1EC
+ * subobject pointer; this build leaves it empty. */
 void fn_80265D38(void) {}
 
 void fn_80265D3C(void) {}
