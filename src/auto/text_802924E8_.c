@@ -1120,53 +1120,57 @@ check:
 typedef struct { unsigned int first, second; } Pair_80293BB4;
 #pragma optimize_for_size on
 #pragma use_lmw_stmw off
-void fn_80293BB4(void *arg0, const float *arg1, const float *arg2, short arg3) {
-    int count;
-    int index;
-    int offset;
-    int flags, zero;
-    u8 *object;
-    u8 *record;
-    u8 *tmpl;
-    float x, y, z, c, b, a;
+void fn_80293BB4(void *effect, const float *position, const float *velocity, short entry) {
+    /* Spawn a terrain-debris chunk in the "ter" ChunkSys effect: pick a random
+     * velocity/state template from lbl_804B4030, copy it into the next free record
+     * (stride 0x4C), then fill in the position, initial velocity, age, mode and
+     * metadata from the arguments and advance the record count at +0x4C2C. */
+    int chunkCount;
+    int templateIndex;
+    int templateOffset;
+    int initialMode, rngSlot;
+    u8 *effectBytes;
+    u8 *chunk;
+    u8 *tpl;
+    float px, py, pz, vz, vy, vx;
     unsigned int secondWord, firstWord;
-    object = (u8 *)arg0;
-    count = *(s32 *)(object + 0x4C2C);
-    if (count >= 0x100) return;
-    record = object + count * 0x4C;
-    index = fn_80129D18(0, 6);
-    offset = index * 0x34;
-    x = arg1[0];
-    y = arg1[1];
-    z = arg1[2];
-    *(float *)(record + 0x50) = x;
-    *(float *)(record + 0x54) = y;
-    tmpl = (u8 *)lbl_804B4030 + offset;
-    c = arg2[2];
-    b = arg2[1];
-    a = arg2[0];
-    *(float *)(record + 0x58) = z;
-    arg1 = (const float *)index;
-    firstWord = *(unsigned int *)(tmpl + 0x10);
-    flags = 2;
-    secondWord = *(unsigned int *)(tmpl + 0x14);
-    zero = 0;
-    *(Pair_80293BB4 *)(record + 0x2C) = *(Pair_80293BB4 *)(tmpl + 0x10);
-    *(unsigned int *)(record + 0x34) = *(unsigned int *)(tmpl + 0x18);
-    *(Pair_80293BB4 *)(record + 0x38) = *(Pair_80293BB4 *)(tmpl + 0x1C);
-    *(unsigned int *)(record + 0x40) = *(unsigned int *)(tmpl + 0x24);
-    *(Pair_80293BB4 *)(record + 0x44) = *(Pair_80293BB4 *)(tmpl + 0x28);
-    *(unsigned int *)(record + 0x4C) = *(unsigned int *)(tmpl + 0x30);
-    *(float *)(record + 0x5C) = a;
-    *(float *)(record + 0x60) = b;
-    *(float *)(record + 0x64) = c;
-    *(float *)(record + 0x68) = 0.0f;
-    *(short *)(record + 0x6C) = arg3;
-    *(unsigned int *)(record + 0x70) = flags;
-    *(u8 *)(record + 0x74) = fn_80129D18(zero, *(s32 *)(object + 0x28));
-    *(u8 *)(record + 0x75) = (u8)arg1;
-    count = *(s32 *)(object + 0x4C2C);
-    *(s32 *)(object + 0x4C2C) = count + 1;
+    effectBytes = (u8 *)effect;
+    chunkCount = *(s32 *)(effectBytes + 0x4C2C);
+    if (chunkCount >= 0x100) return;
+    chunk = effectBytes + chunkCount * 0x4C;
+    templateIndex = fn_80129D18(0, 6);
+    templateOffset = templateIndex * 0x34;
+    px = position[0];
+    py = position[1];
+    pz = position[2];
+    *(float *)(chunk + 0x50) = px;
+    *(float *)(chunk + 0x54) = py;
+    tpl = (u8 *)lbl_804B4030 + templateOffset;
+    vz = velocity[2];
+    vy = velocity[1];
+    vx = velocity[0];
+    *(float *)(chunk + 0x58) = pz;
+    position = (const float *)templateIndex;
+    firstWord = *(unsigned int *)(tpl + 0x10);
+    initialMode = 2;
+    secondWord = *(unsigned int *)(tpl + 0x14);
+    rngSlot = 0;
+    *(Pair_80293BB4 *)(chunk + 0x2C) = *(Pair_80293BB4 *)(tpl + 0x10);
+    *(unsigned int *)(chunk + 0x34) = *(unsigned int *)(tpl + 0x18);
+    *(Pair_80293BB4 *)(chunk + 0x38) = *(Pair_80293BB4 *)(tpl + 0x1C);
+    *(unsigned int *)(chunk + 0x40) = *(unsigned int *)(tpl + 0x24);
+    *(Pair_80293BB4 *)(chunk + 0x44) = *(Pair_80293BB4 *)(tpl + 0x28);
+    *(unsigned int *)(chunk + 0x4C) = *(unsigned int *)(tpl + 0x30);
+    *(float *)(chunk + 0x5C) = vx;
+    *(float *)(chunk + 0x60) = vy;
+    *(float *)(chunk + 0x64) = vz;
+    *(float *)(chunk + 0x68) = 0.0f;
+    *(short *)(chunk + 0x6C) = entry;
+    *(unsigned int *)(chunk + 0x70) = initialMode;
+    *(u8 *)(chunk + 0x74) = fn_80129D18(rngSlot, *(s32 *)(effectBytes + 0x28));
+    *(u8 *)(chunk + 0x75) = (u8)position;
+    chunkCount = *(s32 *)(effectBytes + 0x4C2C);
+    *(s32 *)(effectBytes + 0x4C2C) = chunkCount + 1;
 }
 #pragma use_lmw_stmw reset
 #pragma optimize_for_size reset
