@@ -1919,14 +1919,14 @@ extern "C" const char lbl_80329560[];
 extern "C" const char lbl_80329578[];
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 extern "C" s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_8010DB5C(s32 arg0) {
-    u8 var_r5 = 1, var_r6 = 1, var_r7 = 1, var_r8 = 1, var_r9 = 1, var_r10 = 1;
+    int var_r5 = 1, var_r6 = 1, var_r7 = 1, var_r8 = 1, var_r9 = 1, var_r10 = 1;
     u32 temp_r11 = (u32)arg0 & 0xFF000000U;
-    if ((((u32)(temp_r11 + 0x80000000U)) >= 1U) && (((u32)((arg0 & 0xFF800000) + 0x7F000000)) >= 1U)) var_r10 = 0;
-    if ((var_r10 == 0) && (((u32)((arg0 & 0xF8000000) + 0x70000000)) >= 1U)) var_r9 = 0;
-    if ((var_r9 == 0) && (((u32)(temp_r11 + 0x40000000U)) >= 1U)) var_r8 = 0;
-    if ((var_r8 == 0) && (((u32)((arg0 & 0xFF800000) + 0x3F000000)) >= 1U)) var_r7 = 0;
-    if ((var_r7 == 0) && (((u32)((arg0 & 0xF8000000) + 0x30000000)) >= 1U)) var_r6 = 0;
-    if ((var_r6 == 0) && (((u32)((arg0 & 0xFFFFC000) + 0x20000000)) >= 1U)) var_r5 = 0;
+    if (temp_r11 != 0x80000000U && ((u32)arg0 & 0xFF800000U) != 0x81000000U) var_r10 = 0;
+    if (var_r10 == 0 && ((u32)arg0 & 0xF8000000U) != 0x90000000U) var_r9 = 0;
+    if (var_r9 == 0 && temp_r11 != 0xC0000000U) var_r8 = 0;
+    if (var_r8 == 0 && ((u32)arg0 & 0xFF800000U) != 0xC1000000U) var_r7 = 0;
+    if (var_r7 == 0 && ((u32)arg0 & 0xF8000000U) != 0xD0000000U) var_r6 = 0;
+    if (var_r6 == 0 && ((u32)arg0 & 0xFFFFC000U) != 0xE0000000U) var_r5 = 0;
     if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560, 0x15A, lbl_80329578, arg0);
     return *(s32 *)(arg0 + 0x54);
 }
@@ -5502,17 +5502,17 @@ extern "C" f32 fn_80110D68(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
         copyA[0x1E] = (*(u8 *)((u8*)(arg0) + (0x1E)));
         copyA[0x1F] = (*(u8 *)((u8*)(arg0) + (0x1F)));
         (*(s32*)(copyA+0x20)) = (*(s32 *)((u8*)(arg0) + (0x20)));
-        u32 copyA_28 = (*(s32 *)((u8*)(arg0) + (0x28)));
         u32 copyA_24 = (*(s32 *)((u8*)(arg0) + (0x24)));
+        u32 copyA_28 = (*(s32 *)((u8*)(arg0) + (0x28)));
         (*(s32*)(copyA+0x24)) = copyA_24;
         (*(s32*)(copyA+0x28)) = copyA_28;
-        s32 copyA_30 = (*(s32 *)((u8*)(arg0) + (0x30)));
         s32 copyA_2C = (*(s32 *)((u8*)(arg0) + (0x2C)));
+        s32 copyA_30 = (*(s32 *)((u8*)(arg0) + (0x30)));
         (*(s32*)(copyA+0x2C)) = copyA_2C;
         (*(s32*)(copyA+0x30)) = copyA_30;
         (*(s32*)(copyA+0x34)) = (*(s32 *)((u8*)(arg0) + (0x34)));
-        s32 copyA_3C = (*(s32 *)((u8*)(arg0) + (0x3C)));
         s32 copyA_38 = (*(s32 *)((u8*)(arg0) + (0x38)));
+        s32 copyA_3C = (*(s32 *)((u8*)(arg0) + (0x3C)));
         (*(s32*)(copyA+0x38)) = copyA_38;
         (*(s32*)(copyA+0x3C)) = copyA_3C;
         copyA[0x40] = (*(u8 *)((u8*)(arg0) + (0x40)));
@@ -5641,17 +5641,17 @@ extern "C" f32 fn_80110D68(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
         copyB[0x1E] = (*(u8 *)((u8*)(arg0) + (0x1E)));
         copyB[0x1F] = (*(u8 *)((u8*)(arg0) + (0x1F)));
         (*(s32*)(copyB+0x20)) = (*(s32 *)((u8*)(arg0) + (0x20)));
-        u32 copyB_28 = (*(s32 *)((u8*)(arg0) + (0x28)));
         u32 copyB_24 = (*(s32 *)((u8*)(arg0) + (0x24)));
+        u32 copyB_28 = (*(s32 *)((u8*)(arg0) + (0x28)));
         (*(s32*)(copyB+0x24)) = copyB_24;
         (*(s32*)(copyB+0x28)) = copyB_28;
-        s32 copyB_30 = (*(s32 *)((u8*)(arg0) + (0x30)));
         s32 copyB_2C = (*(s32 *)((u8*)(arg0) + (0x2C)));
+        s32 copyB_30 = (*(s32 *)((u8*)(arg0) + (0x30)));
         (*(s32*)(copyB+0x2C)) = copyB_2C;
         (*(s32*)(copyB+0x30)) = copyB_30;
         (*(s32*)(copyB+0x34)) = (*(s32 *)((u8*)(arg0) + (0x34)));
-        s32 copyB_3C = (*(s32 *)((u8*)(arg0) + (0x3C)));
         s32 copyB_38 = (*(s32 *)((u8*)(arg0) + (0x38)));
+        s32 copyB_3C = (*(s32 *)((u8*)(arg0) + (0x3C)));
         (*(s32*)(copyB+0x38)) = copyB_38;
         (*(s32*)(copyB+0x3C)) = copyB_3C;
         copyB[0x40] = (*(u8 *)((u8*)(arg0) + (0x40)));
@@ -5768,17 +5768,17 @@ extern "C" f32 fn_80110D68(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
         copyC[0x1E] = (*(u8 *)((u8*)(arg0) + (0x1E)));
         copyC[0x1F] = (*(u8 *)((u8*)(arg0) + (0x1F)));
         (*(s32*)(copyC+0x20)) = (*(s32 *)((u8*)(arg0) + (0x20)));
-        u32 copyC_28 = (*(s32 *)((u8*)(arg0) + (0x28)));
         u32 copyC_24 = (*(s32 *)((u8*)(arg0) + (0x24)));
+        u32 copyC_28 = (*(s32 *)((u8*)(arg0) + (0x28)));
         (*(s32*)(copyC+0x24)) = copyC_24;
         (*(s32*)(copyC+0x28)) = copyC_28;
-        s32 copyC_30 = (*(s32 *)((u8*)(arg0) + (0x30)));
         s32 copyC_2C = (*(s32 *)((u8*)(arg0) + (0x2C)));
+        s32 copyC_30 = (*(s32 *)((u8*)(arg0) + (0x30)));
         (*(s32*)(copyC+0x2C)) = copyC_2C;
         (*(s32*)(copyC+0x30)) = copyC_30;
         (*(s32*)(copyC+0x34)) = (*(s32 *)((u8*)(arg0) + (0x34)));
-        s32 copyC_3C = (*(s32 *)((u8*)(arg0) + (0x3C)));
         s32 copyC_38 = (*(s32 *)((u8*)(arg0) + (0x38)));
+        s32 copyC_3C = (*(s32 *)((u8*)(arg0) + (0x3C)));
         (*(s32*)(copyC+0x38)) = copyC_38;
         (*(s32*)(copyC+0x3C)) = copyC_3C;
         copyC[0x40] = (*(u8 *)((u8*)(arg0) + (0x40)));
@@ -6423,7 +6423,7 @@ class Processor { public: virtual void d0(); virtual void d1(); virtual s32 rect
     s32 temp_r23, temp_r26, temp_r27, temp_r30;
     s32 temp_r3_2, temp_r3_3, temp_r3_4, temp_r3_5, temp_r3_6, temp_r3_7, temp_r3_8;
     s32 temp_r4, temp_r4_2, temp_r4_3, temp_r4_4, temp_r5, temp_r7;
-    s32 var_r0, var_r0_2, var_r10, var_r10_2, var_r10_3, var_r19, var_r20;
+    s32 var_r0, var_r0_2, var_r10, var_r10_2, var_r10_3, var_r19, var_r20, var_r20_2;
     s32 var_r3, var_r3_2, var_r3_3, var_r3_4, var_r3_5, var_r3_6, var_r3_7, var_r3_8;
     s32 var_r4, var_r4_2, var_r4_3, var_r4_4, var_r4_5;
     s32 var_r5, var_r5_2, var_r5_3, var_r5_4, var_r5_5, var_r5_6, var_r5_7, var_r5_8, var_r5_9;
@@ -6588,11 +6588,11 @@ class Processor { public: virtual void d0(); virtual void d1(); virtual s32 rect
     }
     temp_r3_6 = GetFont__Q36nw4hbm2ut10CharWriterCFv(arg0);
     if (temp_r3_6 != 0) {
-        var_r20 = ((Font*)temp_r3_6)->ascent();
+        var_r20_2 = ((Font*)temp_r3_6)->ascent();
     } else {
-        var_r20 = 0;
+        var_r20_2 = 0;
     }
-    var_f1_2 = *(f32*)(arg0 + 0x50) + ((f32) var_r20 * GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(arg0));
+    var_f1_2 = *(f32*)(arg0 + 0x50) + ((f32) var_r20_2 * GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(arg0));
     var_f1_2 = (lbl_80561178 < var_f1_2) ? var_f1_2 : lbl_80561178;
     *(f32*)(arg1 + 0xC) = var_f1_2;
     temp_r23 = (s32) &reader.cursor & 0xFF000000;
