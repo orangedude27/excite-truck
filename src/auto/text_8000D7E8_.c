@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char gStaticDtorRecord[4];
-extern void fn_8000D838(void *queue);
+extern void fn_8000D838(void *record);
 /* Register gStaticDtorRecord as a static-destructor record (see fn_8000D838) so
  * its destructor runs at shutdown. */
 void fn_8000D7E8(void) {
