@@ -1354,28 +1354,27 @@ void fn_80015E30(void *outMatrix, f32 angle) {
     *(f32 *)((u8 *)outMatrix + 0x1C) = negSine;
     *(f32 *)((u8 *)outMatrix + 0x20) = cosine;
 }
+#pragma scheduling on
 void fn_80015EB0(void *arg0, f32 angle) {
     f32 one;
     f32 neg;
     f32 zero;
-    f32 s;
-    f32 c;
-    f32 *m;
-    c = (f32)cos();
-    s = (f32)sin(angle);
-    zero = lbl_80560360;
-    one = lbl_80560368;
-    m = (f32 *)arg0;
-    m[0] = c;
-    neg = -s;
-    m[1] = zero;
-    m[2] = neg;
-    m[3] = zero;
-    m[4] = one;
-    m[5] = zero;
-    m[6] = s;
-    m[7] = zero;
-    m[8] = c;
+    f32 sine;
+    f32 cosine;
+    cosine = (f32)cos();
+    sine = (f32)sin(angle);
+    zero = 0.0f;
+    one = 1.0f;
+    *(f32 *)((u8 *)arg0 + 0) = cosine;
+    neg = -sine;
+    *(f32 *)((u8 *)arg0 + 4) = zero;
+    *(f32 *)((u8 *)arg0 + 8) = neg;
+    *(f32 *)((u8 *)arg0 + 0xC) = zero;
+    *(f32 *)((u8 *)arg0 + 0x10) = one;
+    *(f32 *)((u8 *)arg0 + 0x14) = zero;
+    *(f32 *)((u8 *)arg0 + 0x18) = sine;
+    *(f32 *)((u8 *)arg0 + 0x1C) = zero;
+    *(f32 *)((u8 *)arg0 + 0x20) = cosine;
 }
 extern f32 lbl_805603F8,lbl_805603FC,lbl_80560408,lbl_8056040C,lbl_80560410,lbl_80560414;
 extern void fn_801478E0(void*,void*,s32,s32);
