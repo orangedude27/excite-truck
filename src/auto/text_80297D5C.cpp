@@ -1517,57 +1517,43 @@ extern "C" void *fn_8029A6F4(void *arg0) {
     fn_8028E61C(local.config);
     memset(local.config, 0, 0x8C);
 
-    float value90 = lbl_80564590;
-    int one = 1;
-    float value9C = lbl_8056459C;
-    int size = 0x1F4;
-    float valueB8 = lbl_805645B8;
-    float value98 = lbl_80564598;
-    int two = 2;
-    float valueC0 = lbl_805645C0;
-    int forty = 0x40;
-    float value6460C = lbl_8056460C;
-    int *cfg = (int *)local.config;
-
-    cfg[0] = one;
-    cfg[1] = size;
-    *(float *)(local.config + 0x08) = value98;
-    *(float *)(local.config + 0x0C) = value90;
-    local.extra[3] = value9C;
-    local.extra[4] = value9C;
-    local.extra[5] = value9C;
-    *(float *)(local.config + 0x10) = value9C;
-    *(float *)(local.config + 0x14) = value9C;
-    *(float *)(local.config + 0x18) = value9C;
-    local.extra[0] = value90;
-    local.extra[1] = value90;
-    local.extra[2] = value90;
-    *(float *)(local.config + 0x1C) = value90;
-    *(float *)(local.config + 0x20) = value90;
-    *(float *)(local.config + 0x24) = value90;
-    *(float *)(local.config + 0x30) = valueB8;
-    *(float *)(local.config + 0x34) = valueC0;
-    cfg[0x11] = two;
-    *(float *)(local.config + 0x50) = value90;
-    *(float *)(local.config + 0x54) = value90;
-    *(float *)(local.config + 0x58) = valueB8;
-    *(float *)(local.config + 0x5C) = value90;
-    *(float *)(local.config + 0x70) = valueB8;
-    *(float *)(local.config + 0x68) = valueB8;
-    *(float *)(local.config + 0x60) = valueB8;
-    *(float *)(local.config + 0x74) = value90;
-    *(float *)(local.config + 0x6C) = value90;
-    *(float *)(local.config + 0x64) = value90;
-    *(float *)(local.config + 0x80) = value6460C;
-    cfg[0x21] = forty;
-    local.config[0x88] = (unsigned char)one;
-    local.config[0x89] = (unsigned char)one;
+    *(int *)local.config = 1;
+    *(int *)(local.config + 0x04) = 0x1F4;
+    *(float *)(local.config + 0x08) = lbl_80564598;
+    *(float *)(local.config + 0x0C) = lbl_80564590;
+    local.extra[3] = lbl_8056459C;
+    local.extra[4] = lbl_8056459C;
+    local.extra[5] = lbl_8056459C;
+    *(float *)(local.config + 0x10) = lbl_8056459C;
+    *(float *)(local.config + 0x14) = lbl_8056459C;
+    *(float *)(local.config + 0x18) = lbl_8056459C;
+    local.extra[0] = lbl_80564590;
+    local.extra[1] = lbl_80564590;
+    local.extra[2] = lbl_80564590;
+    *(float *)(local.config + 0x1C) = lbl_80564590;
+    *(float *)(local.config + 0x20) = lbl_80564590;
+    *(float *)(local.config + 0x24) = lbl_80564590;
+    *(float *)(local.config + 0x30) = lbl_805645B8;
+    *(float *)(local.config + 0x34) = lbl_805645C0;
+    *(int *)(local.config + 0x44) = 2;
+    *(float *)(local.config + 0x50) = lbl_80564590;
+    *(float *)(local.config + 0x54) = lbl_80564590;
+    *(float *)(local.config + 0x58) = lbl_805645B8;
+    *(float *)(local.config + 0x5C) = lbl_80564590;
+    *(float *)(local.config + 0x70) = lbl_805645B8;
+    *(float *)(local.config + 0x68) = lbl_805645B8;
+    *(float *)(local.config + 0x60) = lbl_805645B8;
+    *(float *)(local.config + 0x74) = lbl_80564590;
+    *(float *)(local.config + 0x6C) = lbl_80564590;
+    *(float *)(local.config + 0x64) = lbl_80564590;
+    *(float *)(local.config + 0x80) = lbl_8056460C;
+    *(int *)(local.config + 0x84) = 0x40;
+    local.config[0x88] = 1;
+    local.config[0x89] = 1;
 
     *(void **)((char *)arg0 + 0x160) =
-        ((void *(*)(void *, const char *, int,
-                    float, float, float, float, float))fn_8028E2F8)(
-            local.config, lbl_803494FC, lbl_8055CA8C,
-            valueC0, valueB8, value9C, value90, value98);
+        ((void *(*)(void *, const char *, int))fn_8028E2F8)(
+            local.config, lbl_803494FC, lbl_8055CA8C);
     fn_801EEFDC((void *)fn_8029C054, 0xE);
     fn_801EEFDC((void *)fn_8029C024, 0xD);
     return arg0;
