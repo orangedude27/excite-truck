@@ -241,7 +241,7 @@ void OSReturnToMenu(void) {
             stateFlags.discState = 1;
         }
     }
-    stateFlags.BYTE_0x5 = 3;
+    stateFlags.bootType = 3;
     __OSClearRTCFlags();
     __OSWriteStateFlags(&stateFlags);
 
