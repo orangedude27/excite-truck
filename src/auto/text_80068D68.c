@@ -2222,19 +2222,6 @@ typedef struct {
     u16 shorts2[16];
 } WUDInitClearView;
 
-static void WUDiClearCtrlBlock(u8 *p) {
-    u32 *words = (u32 *)(p + 0xCC8);
-    u16 *shorts1 = (u16 *)(p + 0x1D20);
-    u16 *shorts2 = (u16 *)(p + 0x1D40);
-    int i;
-
-    for (i = 0; i < 16; i++) {
-        words[i] = 0;
-        shorts1[i] = 0;
-        shorts2[i] = 0;
-    }
-}
-
 s32 fn_8006A460(s32 arg0) {
     register u8 *var_r6;
     u32 temp_r10;
