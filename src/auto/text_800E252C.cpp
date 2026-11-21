@@ -3582,6 +3582,7 @@ extern "C" void InvalidateWaveData__Q46nw4hbm3snd6detail7AxVoiceFPCvPCv(void *se
     OSRestoreInterrupts(irq);
 }
 
+/* Intentional no-op: an external-C entry point with an empty body (just returns). */
 extern "C" void fn_800E80B4(void) {
 
 }
