@@ -736,6 +736,9 @@ void fn_80288218(int arg0) {
     memset(*(void **)lbl_804B3150, 0, count * 0x160);
 }
 
+/* No-op element-constructor callback for fn_8002F37C: fn_80288218 passes it
+ * when allocating the 0x160-byte car snapshot records at lbl_804B3150, which
+ * are zeroed by memset afterwards and need no per-element initialization. */
 void fn_8028829C(void) {}
 
 void fn_802882A0(void) {
