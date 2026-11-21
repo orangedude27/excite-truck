@@ -1261,23 +1261,36 @@ extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FF824(void
 #undef nullPointerMsg
 }
 #pragma use_lmw_stmw off
+/* Stop every WavePlayer in the global player list, then assert the list is empty.
+ * Each list node sits at +0x94 inside its player, so the player is 0x94 bytes
+ * before the node; the list's own node ends the walk. */
 extern "C" void detail_StopAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void) {
+    #define wavePlayerList lbl_8041D4AC   /* nw4hbm::snd::detail::WavePlayer list */
+    #define linkListH lbl_80327370        /* "LinkList.h" */
+    #define nullPointerMsg lbl_8032734C   /* "NW4HBM:Pointer must not be NULL (p)" */
+    #define wavePlayerCpp lbl_80327040    /* "snd_WavePlayer.cpp" */
+    #define listNotEmptyMsg lbl_80327304  /* "NW4HBM:Failed assertion sPlayerList.IsEmpty()" */
     struct Iter { void* node; };
     Iter begin;
-    begin.node = *(void**)&lbl_8041D4AC[0x04];
+    begin.node = *(void**)&wavePlayerList[0x04];
     Iter it = begin;
     struct EndWrap { void* e; } sentinel;
-    sentinel.e = (void*)&lbl_8041D4AC[0x04];
+    sentinel.e = (void*)&wavePlayerList[0x04];
     void*& end = sentinel.e;
     while (it.node != end) {
         void* node = it.node;
         it.node = *(void**)it.node;
         if (node == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327370, 0x23D, (const char*)lbl_8032734C);
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)linkListH, 0x23D, (const char*)nullPointerMsg);
         Stop__Q36nw4hbm3snd10WavePlayerFv((u8*)node - 0x94);
     }
-    if (*(int*)&lbl_8041D4AC[0] != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327040, 0x319, (const char*)lbl_80327304);
+    if (*(int*)&wavePlayerList[0] != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)wavePlayerCpp, 0x319, (const char*)listNotEmptyMsg);
+    #undef wavePlayerList
+    #undef linkListH
+    #undef nullPointerMsg
+    #undef wavePlayerCpp
+    #undef listNotEmptyMsg
 }
 #pragma use_lmw_stmw reset
 extern "C" s32 fn_80128668(void *);
