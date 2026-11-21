@@ -26,6 +26,7 @@ extern int IOS_Open(const char *, int);
 extern char *strncpy(char *, const char *, unsigned int);
 void OSReport(const char *, ...);
 extern void (*FatalFunc_8055D8D8)(void);
+#define FatalFunc FatalFunc_8055D8D8 /* automatic DVD fatal-message callback */
 extern unsigned char lbl_80560B08, lbl_80560B09, lbl_80560B0A, lbl_80560B0B;
 extern const char *lbl_802EE878[];
 extern char __ErrorInfo[];
@@ -72,8 +73,8 @@ void fn_80039FC4(int arg0) {
     };
     struct NandErrorData *base = (struct NandErrorData *)lbl_8037B640;
     if (arg0 == 0) {
-        if (NANDWriteAsync(&base->info, &base->data, 0x80, fn_80039F68, &base->cmd) != 0 &&
-            NANDCloseAsync(&base->info, fn_80039F3C, &base->cmd) != 0 && lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
+        if (NANDWriteAsync(&base->info[0], &base->data[0], 0x80, fn_80039F68, &base->cmd[0]) != 0 &&
+            NANDCloseAsync(&base->info[0], fn_80039F3C, &base->cmd[0]) != 0 && lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
     } else if (lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
 }
 
