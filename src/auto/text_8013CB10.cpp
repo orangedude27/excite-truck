@@ -1918,11 +1918,12 @@ extern "C" f32 lbl_805614A4, lbl_805614AC, lbl_80561530, lbl_80561538, lbl_80561
 #pragma processor 750
 #pragma scheduling on
 #pragma dont_inline on
-extern "C" s32 fn_8013F438(f32 x) {
-    f32 t = (x - 0.2f) / 0.6f;
-    f32 v = (1.0f < t) ? 1.0f : t;
-    v = (v > 0.0f) ? v : 0.0f;
-    return (s32)(lbl_8056153C + v * lbl_80561540);
+/* Remap value from [0.2, 0.8] into [0,1], clamp it there, then scale into [-200,200]. */
+extern "C" s32 fn_8013F438(f32 value) {
+    f32 normalized = (value - 0.2f) / 0.6f;
+    f32 clamped = (1.0f < normalized) ? 1.0f : normalized;
+    clamped = (clamped > 0.0f) ? clamped : 0.0f;
+    return (s32)(lbl_8056153C + clamped * lbl_80561540);
 }
 #pragma dont_inline reset
 #pragma pop
