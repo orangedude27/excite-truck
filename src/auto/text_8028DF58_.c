@@ -1949,6 +1949,7 @@ void fn_802916E4(void) {}
    return); fn_80291700 is the thin derived override that forwards to it. */
 void fn_802916E8(void) {}
 
+/* No-op nw4r::ef virtual method; forwarded to by the thin wrapper fn_80291704. */
 void fn_802916EC(void) {}
 
 /* Return the 32-bit field at offset 0x4 of the given object (a virtual getter). */
