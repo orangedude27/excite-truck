@@ -348,11 +348,14 @@ extern void fn_802C8750(void *, s32);
 extern s32 lbl_80558A98;
 extern s32 lbl_8055CFF0, lbl_8055CFF4;
 extern f32 lbl_805602CC, lbl_805602D0, lbl_805602D4;
-#pragma push
+#pragma cplusplus on
 #pragma processor 750
-#pragma opt_common_subs off
-void fn_8000F4F0(void)
+extern "C" void fn_8000F4F0(void)
 {
+  struct ObjF4F0 {
+      virtual void dummy();
+      virtual UnkF4F0Style *lookup(const char *);
+  };
   char *strBase;
   char text[32];
   char buffer[20];
@@ -368,6 +371,8 @@ void fn_8000F4F0(void)
   char *dst;
   UnkF4F0Style *p;
   UnkF4F0Style *q;
+  s32 b4;
+  s32 b8;
   strBase = (char *) lbl_802FC2A8;
   fn_802C86F0(scope, 0, 0, lbl_8055CFF0, lbl_8055CFF4);
   time = *((f32 *) (((u8 *) fn_801E7E3C()) + 0x10));
@@ -430,7 +435,7 @@ void fn_8000F4F0(void)
       y = y - (-time);
       if (y < lbl_805602D4)
       {
-        alpha = (s32) (((f32) alpha) * (y / lbl_805602D4));
+        alpha = (s32)(((f32)alpha) * (y / lbl_805602D4));
       }
       src = fn_80131268(strBase + 0x1A4);
       dst = text;
@@ -449,8 +454,8 @@ void fn_8000F4F0(void)
   lbl_80558A98 = number;
   if (lbl_8055D4B0)
   {
-    p = (*(UnkF4F0Style *(**)(void *, const char *))(((u8 *) lbl_8055D4B0->vtable) + 0xC))(lbl_8055D4B0, strBase + 0x1B8);
-    q = (*(UnkF4F0Style *(**)(void *, const char *))(((u8 *) lbl_8055D4B0->vtable) + 0xC))(lbl_8055D4B0, strBase + 0x1C4);
+    p = ((ObjF4F0 *)lbl_8055D4B0)->lookup(strBase + 0x1B8);
+    q = ((ObjF4F0 *)lbl_8055D4B0)->lookup(strBase + 0x1C4);
     if (p && q)
     {
       a.unk_0x00 = p->unk_0x00;
@@ -462,8 +467,10 @@ void fn_8000F4F0(void)
       a.unk_0x18 = p->unk_0x18;
       a.unk_0x1C = p->unk_0x1C;
       b.unk_0x00 = q->unk_0x00;
-      b.unk_0x04 = ((q->unk_0x04 & 0xFF) & 0xFF) & 0xFF;
-      b.unk_0x08 = q->unk_0x08;
+      b4 = q->unk_0x04;
+      b8 = q->unk_0x08;
+      b.unk_0x04 = b4;
+      b.unk_0x08 = b8;
       b.unk_0x0C = q->unk_0x0C;
       b.unk_0x10 = q->unk_0x10;
       b.unk_0x14 = q->unk_0x14;
@@ -478,7 +485,8 @@ void fn_8000F4F0(void)
   }
   fn_802C8750(scope, -1);
 }
-#pragma pop
+#pragma cplusplus reset
+#pragma use_lmw_stmw off
 void fn_8000F884(void) {
     extern s32 fn_800167F4(void);
     extern s32 fn_80145E70(s32);
@@ -1524,6 +1532,7 @@ void fn_80011278(s32 color) {
 }
 
 extern f32 fn_80235EF0(s32, s32);
+#pragma scheduling invalid_target
 void fn_80011280(s32 arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
     volatile f32 spC;
     volatile f32 sp8;
@@ -1598,7 +1607,7 @@ void fn_80011280(s32 arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3)
     spC = farg1 - temp_f1_11;
     fn_802354A0(arg1, 8, arg0, sp8, spC, lbl_80560280, temp_f27, (farg3 - temp_f1_11) - fn_80235F64(arg1, 2));
 }
-
+#pragma scheduling on
 extern f64 sin(f32);
 extern f64 cos(f32);
 extern s32 fn_8022EDC4(void);
