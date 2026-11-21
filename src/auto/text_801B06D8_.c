@@ -815,13 +815,12 @@ extern "C" void fn_801B15A8(s32 arg0, f32 farg0) {
         virtual void complete(s32, s32);
     };
     u8 *state = (u8 *)arg0;
-    s32 *totalPtr = (s32 *)(state + 0x14);
     register s32 copied;
     s32 one;
     s32 resource;
 
     if (*(state + 0x78) == 0 && *(state + 0x79) == 0) {
-        s32 count = *totalPtr;
+        s32 count = *(s32 *)(state + 0x14);
         if (count == *(s32 *)(state + 0x68)) {
             if (count > 0) {
                 register f32 threshold;
@@ -841,7 +840,7 @@ extern "C" void fn_801B15A8(s32 arg0, f32 farg0) {
                 ((Progress *)*(void **)(state + 0x5C))->update();
                 fn_8000D7F8(*(s32 *)(state + 0x60), delta);
 
-                count = *totalPtr + 1;
+                count = *(s32 *)(state + 0x14) + 1;
                 *(s32 *)(state + 0x14) = count;
                 if (count > *(s32 *)&lbl_8055E694) {
                     *(s32 *)&lbl_8055E694 = count;
@@ -849,7 +848,7 @@ extern "C" void fn_801B15A8(s32 arg0, f32 farg0) {
                         lbl_8055E698 = 1;
                 }
                 {
-                    copied = *totalPtr;
+                    copied = *(volatile s32 *)(state + 0x14);
                     *(s32 *)(state + 0x68) = copied;
                     if (copied == (s32)lbl_8055E680 + 1) {
 
@@ -1706,8 +1705,7 @@ extern "C" void fn_801B265C(void) {
         virtual void v6();
     };
     s32 order[8];
-    u32 j;
-    s32 i;
+    s32 j, i;
     register f32 temp_f31;
 
     lbl_8055E6A8 = 1;
@@ -1731,12 +1729,8 @@ extern "C" void fn_801B265C(void) {
     lbl_8055E6A0 = 0;
     memset(lbl_80435C30, -1, 0x20);
     ((Mgr *)fn_80156A40())->v6();
-    i = 0;
-    j = 0;
-    while (i < (s32)lbl_8055E678) {
+    for (i = 0, j = 0; i < (s32)lbl_8055E678; j += 0x80, i++) {
         fn_801B1A5C((u8 *)lbl_8055E684 + j);
-        j += 0x80;
-        i++;
     }
     {
         u8 *obj;
@@ -1781,10 +1775,10 @@ extern "C" void fn_801B2910(void) {
         virtual s32 v6();
         virtual void v7();
     };
-    s32 i, j;
-    s32 a, b, one;
-    f32 f31, f30;
-    s32 *p;
+    register s32 i, j;
+    register s32 a, b, one;
+    register f32 f31, f30;
+    register s32 *p;
 
     lbl_8055E6A0 = 0;
     fn_801E89F4(0);
@@ -1860,13 +1854,17 @@ void fn_801B2C6C(void) {
 }
 
 #pragma opt_propagation off
-s32 fn_801B2C70(void *arg0) {
-    s32 x;
-    unsigned int shifted;
-    unsigned int y;
-    s32 mask;
+s32 fn_801B2C70(void *outTable) {
+    /* Build the competitor-result table: zero it, copy the deity-slot count and key
+       scalars into the header, derive the sign byte of (lbl_8055E69C - lbl_8055E67C)
+       with an XOR/borrow trick, then fill one 0x14-byte entry per deity slot from
+       the 0x80-byte slot table. */
+    s32 xorDiff;
+    unsigned int signBits;
+    unsigned int compareValue;
+    s32 borrowMask;
     s32 zero;
-    struct Entry {
+    struct CompetitorEntry {
         s32 unknown0;
         s32 value;
         s32 unknown8;
@@ -1874,28 +1872,28 @@ s32 fn_801B2C70(void *arg0) {
         u8 flag;
         u8 unknown11[3];
     } *entry;
-    s32 offset;
+    s32 slotOffset;
     s32 i;
-    memset(arg0, 0, 0xB0);
-    *(s32 *)arg0 = (s32)lbl_8055E678;
-    *(s32 *)((u8 *)arg0 + 4) = lbl_8055E67C;
+    memset(outTable, 0, 0xB0);
+    *(s32 *)outTable = (s32)lbl_8055E678;
+    *(s32 *)((u8 *)outTable + 4) = lbl_8055E67C;
     zero = 0;
-    *(u8 *)((u8 *)arg0 + 0xC) = zero;
-    *(u8 *)((u8 *)arg0 + 0xD) = lbl_8055E698;
-    x = (unsigned)lbl_8055E69C;
-    y = lbl_8055E67C;
-    x = y ^ x;
-    shifted = x >> 1;
-    mask = x & y;
-    shifted = shifted - mask;
-    *(u8 *)((u8 *)arg0 + 0xE) = (u32)shifted >> 31;
-    entry = (struct Entry *)((u8 *)arg0 + 0x10);
+    *(u8 *)((u8 *)outTable + 0xC) = zero;
+    *(u8 *)((u8 *)outTable + 0xD) = lbl_8055E698;
+    xorDiff = (unsigned)lbl_8055E69C;
+    compareValue = lbl_8055E67C;
+    xorDiff = compareValue ^ xorDiff;
+    signBits = xorDiff >> 1;
+    borrowMask = xorDiff & compareValue;
+    signBits = signBits - borrowMask;
+    *(u8 *)((u8 *)outTable + 0xE) = (u32)signBits >> 31;
+    entry = (struct CompetitorEntry *)((u8 *)outTable + 0x10);
     i = 0;
-    offset = 0;
+    slotOffset = 0;
     while (i < (s32)lbl_8055E678) {
         i = i + 1;
-        entry->value = *(s32 *)((u8 *)lbl_8055E684 + offset + 8);
-        offset = offset + 0x80;
+        entry->value = *(s32 *)((u8 *)lbl_8055E684 + slotOffset + 8);
+        slotOffset = slotOffset + 0x80;
         entry->unknown8 = zero;
         entry->flag = zero;
         entry++;
