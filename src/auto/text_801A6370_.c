@@ -369,6 +369,7 @@ extern double lbl_80562440;
 extern "C" void fn_8017A580(void *);
 extern "C" void fn_801A69F4(void *arg0, float *arg1)
 {
+#pragma opt_propagation off
   char *p = (char *) arg0;
   int k = lbl_8055E3C4;
   float t[3], out0[3], outA[3], outB[3];
@@ -574,13 +575,11 @@ extern "C" void fn_801A6C14(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-float fn_801A70EC(int arg0, void *arg1, void *arg2, int arg3) {
-    int a = *(int *)((char *)arg1 + 4);
-    int b = *(int *)((char *)arg2 + 4);
+float fn_801A70EC(int arg0, const void *arg1, void *arg2, int arg3) {
     float ratio;
     float denominator;
-    denominator = fn_801A63C4(b, a);
-    ratio = fn_801A63C4(arg3, *(int *)((char *)arg1 + 4));
+    denominator = fn_801A63C4(*(int *)((char *)arg2 + 4), *(const int *)((const char *)arg1 + 4));
+    ratio = fn_801A63C4(arg3, *(const int *)((const char *)arg1 + 4));
     ratio /= denominator;
     fn_8012F57C(arg0, (char *)arg1 + 0x2A, (char *)arg2 + 0x2A, ratio);
     return ratio;
