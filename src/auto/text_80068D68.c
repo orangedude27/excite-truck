@@ -363,7 +363,9 @@ typedef struct uusb_cb_t {
     s32 fd;
     u8 pad4[0x0D];
     u8 endpoint;
-    u8 pad12[0x0B];
+    u8 intr_endpoint;
+    u8 pad13[0x09];
+    u8 intr_pool_id;
     u8 pool_id;
     u8 pad1E[0x0A];
     u8 at_0x28;
@@ -4644,58 +4646,44 @@ void uusb_issue_bulk_read(void) {
 #pragma push
 #pragma use_lmw_stmw off
 void uusb_issue_intr_read(void) {
-    struct uusb_intr_cb_view {
-        s32 fd;
-        u8 pad04[0x0E];
-        u8 endpoint;
-        u8 pad13[0x09];
-        u8 pool_id;
-        u8 pad1D[0x0B];
-        u8 at_0x28;
-    } *control = (struct uusb_intr_cb_view *)&lbl_803BD1E0;
     extern char lbl_803142C8[];
-    extern void uusb_ReadIntrDataCB(s32, BT_HDR *);
     extern u16 fn_8006D8D0(u32);
-    register char *report = lbl_803142C8;
-    register u8 *buf;
-    register u8 *aligned;
-    u16 header;
-    s32 result;
+    extern void uusb_ReadIntrDataCB(s32, BT_HDR *);
+    char *logBase = lbl_803142C8;
+    u8 *buf;
+    u8 *dataBuf;
+    s32 status;
 
     for (;;) {
-        buf = GKI_getpoolbuf(control->pool_id);
+        buf = GKI_getpoolbuf(lbl_803BD1E0.pool_id);
         if (buf != 0) {
             break;
         }
-        if (control->at_0x28 != 0) {
-            OSReport(report + 0x378);
+        if (lbl_803BD1E0.at_0x28 != 0) {
+            OSReport(logBase + 0x378);
         }
     }
 
     *(u16 *)buf = 0x1000;
-    aligned = (u8 *)(((u32)(buf + 0x27)) & ~31);
+    dataBuf = (u8 *)(((u32)(buf + 0x27)) & ~31);
     *(u16 *)(buf + 2) = 0;
-    header = (u16)(aligned - (buf + 8));
-    *(u16 *)(buf + 4) = header;
+    *(u16 *)(buf + 4) = dataBuf - (buf + 8);
 
-    result = IUSB_ReadIntrMsgAsync(lbl_803BD1E0.fd, control->endpoint,
-                                   fn_8006D8D0((u32)buf) - 0x28 - header,
-                                   aligned, (void (*)(void))uusb_ReadIntrDataCB, buf);
-    if (result != 0) {
-        if (control->at_0x28 != 0) {
-            OSReport(report + 0x3CC, result);
+    status = IUSB_ReadIntrMsgAsync(lbl_803BD1E0.fd, lbl_803BD1E0.endpoint,
+                                   fn_8006D8D0((u32)buf) - 0x28 - *(u16 *)(buf + 4),
+                                   dataBuf, (void (*)(void))uusb_ReadIntrDataCB, buf);
+    if (status != 0) {
+        if (lbl_803BD1E0.at_0x28 != 0) {
+            OSReport(logBase + 0x3CC, status);
         }
         if (lbl_803BD1E0.at_0x28 != 0) {
-            OSReport(report + 0x404, result);
+            OSReport(logBase + 0x404, status);
         }
         GKI_freebuf(buf);
     }
 
     ((u8 *)&lbl_803BD1E0)[0x2B] = 1;
 }
-
-#pragma push
-#pragma scheduling 750
 void uusb_WriteCtrlDataCB(s32 arg0, void *arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteCtrlMsgAsync(s32, s32, s32, s32, s32, u32, void *, void *, void *);
