@@ -67,6 +67,9 @@ void fn_80265D78(void) {}
 /* CarMgr query stub: always answers 0 (false), so CAR_TYPE_R ('R') cars are never in play in this build. */
 int fn_80265D7C(void) { return 0; }
 
+/* No-op per-step subsystem hook: called from the main game step (fn_80177F40)
+ * alongside the other subsystem update hooks, after clearing gGameState+0x2E0.
+ * This build leaves it empty. */
 void fn_80265D84(void) {}
 
 /* No-op stub: called near the end of fn_80177F40's state transition; this build
