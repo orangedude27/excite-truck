@@ -400,12 +400,16 @@ __declspec(section ".sdata") extern const char lbl_8055B290[];
 __declspec(section ".sdata") extern const char lbl_8055B298[];
 extern "C" s32 fn_801F7A88(void *, s32, void *, s32);
 extern "C" void fn_801F7A14(void *);
-#pragma scheduling invalid_target
+extern s32 fn_801F7A88(void *, s32, void *, s32);
+extern void fn_801F7A14(void *);
+__declspec(section ".sdata") extern const char lbl_8055B280[], lbl_8055B288[], lbl_8055B290[], lbl_8055B298[];
+#pragma use_lmw_stmw off
 extern "C" s32 fn_801F7B10(void *arg0, void *arg1, s32 arg2) {
+    volatile u8 *dst = (volatile u8 *)arg0;
+    s32 i;
     F7B10Obj *obj = (F7B10Obj *)arg1;
-    int i;
-    if (fn_801F7A88(obj, arg2, arg0, 0x30) != 0) {
-        volatile u8 *p = (volatile u8 *)arg0;
+    if (fn_801F7A88(arg1, arg2, arg0, 0x30) != 0) {
+        volatile u8 *p = dst;
         for (i = 0; i < 2; i++) {
             u8 t;
             t=p[0];p[0]=p[3];p[3]=t;t=p[1];p[1]=p[2];p[2]=t;
@@ -429,7 +433,7 @@ extern "C" s32 fn_801F7B10(void *arg0, void *arg1, s32 arg2) {
     }
     fn_801F7A14(arg0);
 }
-#pragma scheduling on
+#pragma use_lmw_stmw on
 extern "C" s32 fn_80204BB4(void);
 extern "C" s32 fn_80204CF0(void);
 extern "C" char lbl_8033AFB8[];
@@ -1267,7 +1271,7 @@ failed:
 }
 
 extern "C" void fn_801F92A8(void) {
-
+    /* No-op stub: called on a newly created obstacle's OBST field, does nothing in this build. */
 }
 
 #pragma scheduling invalid_target
@@ -1511,10 +1515,16 @@ extern "C" void fn_801F973C(void *arg0, void *arg1, u32 arg2)
 {
   u8 scratch[0x38];
   u32 temp;
-  void (**new_var)(void *, void *);
   u32 flags;
   register s32 zero;
   void *node;
+  class DispatchPad { public: char pad[0x108]; };
+  class Dispatchable : public DispatchPad {
+  public:
+    virtual void v0();
+    virtual void v1();
+    virtual void call(void *, void *);
+  };
   if (((!node) && (!node)) && (!node))
   {
   }
@@ -1529,24 +1539,17 @@ extern "C" void fn_801F973C(void *arg0, void *arg1, u32 arg2)
     }
     node = arg0;
     zero = 0;
-    goto next_node;
-    new_var = &((void (**)(void *, void *)) (*((void **) (((u8 *) node) + 0x108))))[4];
-    loop_body:
-    *((s32 *) (scratch + 0x34)) = zero;
-
-    *((s32 *) (scratch + 0x30)) = zero;
-    fn_801BFD34(scratch + 0x24, ((u8 *) node) + 0x54, arg1);
-    fn_80015B20(scratch, ((u8 *) node) + 0x30, arg1);
-    s32 value = *((s32 *) (((u8 *) arg1) + 0x34));
-    *((s32 *) (scratch + 0x30)) = flags;
-    *((s32 *) (scratch + 0x34)) = value;
-    (*new_var)(node, scratch);
-    next_node:
-    node = *((void **) (((u8 *) node) + 0x24));
-
-    if (node != 0)
+    while (node != 0)
     {
-      goto loop_body;
+      *((s32 *) (scratch + 0x34)) = zero;
+      *((s32 *) (scratch + 0x30)) = zero;
+      fn_801BFD34(scratch + 0x24, ((u8 *) node) + 0x54, arg1);
+      fn_80015B20(scratch, ((u8 *) node) + 0x30, arg1);
+      s32 value = *((s32 *) (((u8 *) arg1) + 0x34));
+      *((s32 *) (scratch + 0x30)) = flags;
+      *((s32 *) (scratch + 0x34)) = value;
+      ((Dispatchable *) node)->call(scratch, arg1);
+      node = *((void **) (((u8 *) node) + 0x24));
     }
   }
   if ((arg2 & 1) != 0)
