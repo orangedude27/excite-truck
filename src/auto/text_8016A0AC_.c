@@ -541,8 +541,8 @@ void* fn_8016AC24(void* self, s32 shouldDelete) {
 s32 fn_8016AC90(s32 unused) {
     typedef struct AEntry { u8 flag; u8 pad1[3]; void *ptr4; void *ptr8; float data[11]; u8 b3c; u8 b3d; u8 pad3e[2]; float f40; float f44; } AEntry;
     typedef struct BEntry { u8 flag; char name[31]; s32 first; s32 count; u8 last; } BEntry;
-    register Ctr804302F0 *aMgr;
-    register Ctr804302F0 *bMgr;
+    Ctr804302F0 *aMgr;
+    Ctr804302F0 *bMgr;
     void *obj;
     void *cfg;
     void *iter;
@@ -554,10 +554,10 @@ s32 fn_8016AC90(s32 unused) {
     AEntry *aEnt;
     BEntry *bEnt;
     float floats[12];
-    float v1[3];
     float v2[3];
-    float limit;
+    float v1[3];
     float base;
+    float limit;
     aMgr = (Ctr804302F0 *)(lbl_804302E0 + 0x38);
     bMgr = (Ctr804302F0 *)(lbl_804302E0 + 0x60);
     if (aMgr->ptr10 != 0) {
@@ -587,7 +587,7 @@ s32 fn_8016AC90(s32 unused) {
     bMgr->limit = bMgr->cap;
     bMgr->count = 0;
     obj = *(void **)((char *)fn_8000AC38() + 0x20);
-    cfg = fn_80204EA0(&lbl_80330460[0x14]);
+    cfg = fn_80204EA0((char*)lbl_80330460 + 0x14);
     if (((s32 (*)(void*, void*, s32))(*(void ***)obj)[3])(obj, cfg, 0) != 0) {
         ((void *(*)(void*, void*))(*(void ***)obj)[5])(obj, cfg);
         iter = fn_80131810();
@@ -598,7 +598,7 @@ s32 fn_8016AC90(s32 unused) {
                 item = ((void *(*)(void*, s32))(*(void ***)iter)[2])(iter, i);
                 if (item == 0) break;
                 ((void (*)(void*))(*(void ***)item)[2])(item);
-                if (strcmp((char *)((void *(*)(void*))(*(void ***)item)[2])(item), &lbl_80330460[0x24]) == 0) {
+                if (strcmp((char *)((void *(*)(void*))(*(void ***)item)[2])(item), (char*)lbl_80330460 + 0x24) == 0) {
                     bEnt = &((BEntry *)bMgr->data)[bMgr->count];
                     bMgr->count++;
                     bEnt->flag = 0;
@@ -679,7 +679,8 @@ s32 fn_8016AC90(s32 unused) {
                                 AEntry *prev = &((AEntry *)aMgr->data)[k2 - 1];
                                 v2[0] = cur->data[9] - prev->data[9];
                                 v2[1] = cur->data[10] - prev->data[10];
-                                if (PSVECDotProduct(v2, v1, cur->data[11] - prev->data[11]) < limit) {
+                                v2[2] = cur->data[11] - prev->data[11];
+                                if (((f32(*)(f32*, f32*))PSVECDotProduct)(v2, v1) < limit) {
                                     fn_802E30C8(&lbl_803305A0);
                                     fn_802E30C8(&lbl_80330578, bEnt->name + 1);
                                     fn_802E30C8(&lbl_80330540);
@@ -699,10 +700,10 @@ s32 fn_8016AC90(s32 unused) {
             fn_80131818(iter);
             return 0;
         }
-        fn_802E30C8(&lbl_80330460[0x30], ((void *(*)(void*, void*))(*(void ***)obj)[5])(obj, &lbl_80330460[0x58]));
+        fn_802E30C8((char*)lbl_80330460 + 0x30, ((void *(*)(void*, void*))(*(void ***)obj)[5])(obj, (char*)lbl_80330460 + 0x58));
         return 0;
     }
-    fn_802E30C8(&lbl_80330460[0x64]);
+    fn_802E30C8((char*)lbl_80330460 + 0x64);
     return 0;
 }
 #pragma pop
@@ -735,6 +736,9 @@ void *fn_8016B550(void *object, s32 shouldFree) {
 }
 
 #pragma optimize_for_size on
+/* Shut down the model subsystem's two managers: destroy each one's owned array
+ * through its element destructor, clear every manager field, and return 0 when
+ * the record manager had no array to destroy. */
 int fn_8016B598(void) {
     if (*(void **)((char *)&lbl_80430340 + 0x10) != 0) {
         fn_8002F6AC(*(void **)((char *)&lbl_80430340 + 0x10), (void *(*)(void *, s32))fn_8016B4FC);
@@ -745,16 +749,16 @@ int fn_8016B598(void) {
         *(s32 *)((char *)&lbl_80430340 + 8) = 0;
     }
     {
-        void *p2 = *(void **)(lbl_80430318 + 0x10);
-        if (p2 != 0) {
-            fn_8002F6AC(p2, fn_8016B550);
+        void *recordArray = *(void **)(lbl_80430318 + 0x10);
+        if (recordArray != 0) {
+            fn_8002F6AC(recordArray, fn_8016B550);
             *(s32 *)(lbl_80430318 + 0x10) = 0;
             *(s32 *)(lbl_80430318 + 0x14) = 0;
             *(s32 *)lbl_80430318 = 0;
             *(s32 *)(lbl_80430318 + 4) = 0;
             *(s32 *)(lbl_80430318 + 8) = 0;
         } else {
-            return (int)p2;
+            return (int)recordArray;
         }
     }
 }
