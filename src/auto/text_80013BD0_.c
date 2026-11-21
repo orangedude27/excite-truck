@@ -1330,6 +1330,7 @@ void fn_80015B20(void *arg0, void *arg1, void *arg2) {
         out[8] = (b[8] * a[8]) + ((b[2] * a[6]) + (b[5] * a[7]));
     }
 }
+#pragma scheduling on
 void fn_80015E30(void *arg0, f32 angle) {
     f32 neg;
     f32 zero;
@@ -1338,10 +1339,9 @@ void fn_80015E30(void *arg0, f32 angle) {
     f32 cosine;
     cosine = (f32)cos();
     sine = (f32)sin(angle);
-    zero = lbl_80560360;
-    one = lbl_80560368;
-#pragma scheduling off
-    *(volatile f32 *)((u8 *)arg0 + 4) = zero;
+    zero = 0.0f;
+    one = 1.0f;
+    *(f32 *)((u8 *)arg0 + 4) = zero;
     neg = -sine;
     *(f32 *)((u8 *)arg0 + 0) = one;
     *(f32 *)((u8 *)arg0 + 8) = zero;
@@ -1352,7 +1352,6 @@ void fn_80015E30(void *arg0, f32 angle) {
     *(f32 *)((u8 *)arg0 + 0x1C) = neg;
     *(f32 *)((u8 *)arg0 + 0x20) = cosine;
 }
-#pragma scheduling on
 void fn_80015EB0(void *arg0, f32 angle) {
     f32 one;
     f32 neg;
