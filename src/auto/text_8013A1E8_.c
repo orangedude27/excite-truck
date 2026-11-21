@@ -30,7 +30,9 @@ void fn_8013A200(s32 carIndex) {
 
 }
 
-void fn_8013A204(void) {
+/* No-op hook notified with a proximity entry's value after its enabled/disabled
+ * transition is applied (fn_80134A8C); the shipped game leaves it empty. */
+void fn_8013A204(s32 value) {
 
 }
 
