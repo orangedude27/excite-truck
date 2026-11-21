@@ -487,6 +487,8 @@ void fn_802168D8(void) {
     fn_80218A34();
 }
 
+/* UIWindow_DisableGroup: forward to the group-disable method (fn_80218ADC), which
+ * sets the group's disabled bit and clears its child widgets' active flags. */
 void fn_802168DC(void) {
     fn_80218ADC();
 }
