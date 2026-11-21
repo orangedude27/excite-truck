@@ -353,7 +353,6 @@ static inline void Mesh_SwapVec(volatile Vec *v) {
 }
 
 #pragma push
-#pragma scheduling off
 void fn_801CFA48(void *arg0) {
     volatile Mesh *mesh = (volatile Mesh *)arg0;
     u8 *p;
