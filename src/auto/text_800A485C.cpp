@@ -25678,10 +25678,8 @@ extern "C" void fn_800CD38C(const char *selfArg, const char *paneName) {
     }
 }
 
-static inline s32 findPaneIndex_800A485C(s32 a, s32 b, s32 count, s32 *e) {
+static inline s32 findPaneIndex_800A485C(s32 count, s32 *entry, s32 a, s32 b) {
     s32 k;
-    s32 *entry;
-    entry = e;
     for (k = 0; k < count; entry += 2, k++)
         if (a == entry[0] && b == entry[1])
             return k;
