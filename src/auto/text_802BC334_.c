@@ -139,6 +139,7 @@ void fn_801EA18C(void *, s32, s32);
 #pragma push
 #pragma scheduling invalid_target
 void fn_802BC588(float *arg0, float *arg1, float *arg2, float *arg3, float *arg4) {
+#pragma opt_lifetimes off
 float sp14[3];
 float sp8[3];
 float one, f1, f2, f3, zero, f5;
@@ -260,6 +261,7 @@ arg0[6] *= scale;
 arg0[7] *= scale;
 arg0[8] *= scale;
 }
+#pragma opt_lifetimes reset
 }
 #pragma cplusplus on
 #pragma processor 750
@@ -295,12 +297,11 @@ extern "C" void *fn_802BC9B0(const void *arg0, int arg1, float scale) {
     char *obj = (char *)fn_801284F8(0x2C, (int)&lbl_8034AB54);
     if (obj != 0) {
         *(int *)(obj + 0xC) = 0;
-        float initial = lbl_80564D20;
         *(int *)(obj + 4) = 0;
         *(int *)(obj + 8) = 0;
         *(int *)(obj + 0x18) = 0x54554245;
         *(float *)(obj + 0x10) = value;
-        *(float *)(obj + 0x14) = initial;
+        *(float *)(obj + 0x14) = lbl_80564D20;
         *(int *)(obj + 0x20) = 100;
         *(int *)(obj + 0x1C) = 0;
         *(float *)(obj + 0x24) = b;
@@ -406,6 +407,7 @@ __declspec(section ".data") extern int lbl_804C00D4;
 extern void *fn_802BC4D4(void *);
 #pragma push
 #pragma scheduling invalid_target
+#pragma processor 750
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_802BCBDC(void) {
@@ -498,9 +500,11 @@ extern "C" void fn_802BCBDC(void) {
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void fn_802BCF04(void) {
+#pragma scheduling invalid_target
     char *entry;
     int offset;
     int i;
+    char *flag;
     i = 0;
     offset = 0;
     for (; i < *(int *)((char *)&lbl_804C00D4 + 4); i++) {
@@ -514,9 +518,10 @@ extern "C" void fn_802BCF04(void) {
         *(int *)(entry + 8) = 0;
         offset += 0x60;
     }
+    flag = (char *)lbl_8055FAB4;
     *(int *)((char *)&lbl_804C00D4 + 4) = 0;
-    if (lbl_8055FAB4 != 0) {
-        fn_80131818(lbl_8055FAB4);
+    if (flag != 0) {
+        fn_80131818(flag);
         lbl_8055FAB4 = 0;
     }
 }
