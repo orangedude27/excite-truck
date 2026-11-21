@@ -60,6 +60,8 @@ int fn_80265D6C(void) { return 0; }
    the other subsystem hooks; this build leaves it empty. */
 void fn_80265D74(void) {}
 
+/* No-op stub: called during startup subsystem initialization in fn_8000B09C;
+   this build leaves it empty. */
 void fn_80265D78(void) {}
 
 /* CarMgr query stub: always answers 0 (false), so CAR_TYPE_R ('R') cars are never in play in this build. */
