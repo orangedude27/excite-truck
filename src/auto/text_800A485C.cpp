@@ -1,4 +1,5 @@
   #include <types.h>
+#include "revolution/OS/OSFastCast.h"
 extern "C" {
 __declspec(section ".sdata") extern u8 lbl_805591F8[];
 /* 12.20 fixed-point multiply. */
@@ -21694,11 +21695,10 @@ extern "C" s32 fn_800D3634(s32 arg0) {
 #define COL8(o) (*(u8 *)((u8 *)lbl_80407BE8 + (o)))
 #define COL16(o) (*(u16 *)((u8 *)lbl_80407BE8 + (o)))
     if (lbl_8055DDC8 == 0) {
-        u16 w = 0x280;
         lbl_80407BD8[0] = 0;
-        DST16(8) = w;
+        DST16(8) = 0x280;
         DST16(10) = 0x1E0;
-        DST16(12) = w;
+        DST16(12) = 0x280;
         lbl_80407BD8[1] = DST16(12) * DST16(10) * 2;
         COL8(0) = 0xFF;
         COL8(1) = 0xFF;
