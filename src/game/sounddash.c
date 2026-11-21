@@ -60,47 +60,48 @@ void fn_8020BCE4(void) {
     }
 }
 #pragma pop
-int fn_8020BDB8(int arg0) {
+/* Handle a SOUND DASH debug command: toggle mode, move the selected entry, adjust its volume, or dump sounds.txt. */
+int fn_8020BDB8(int command) {
     int index;
-    void *item;
-    float value;
-    switch (arg0) {
-    case 0x6D:
+    VoiceSndEntry *entry;
+    float volume;
+    switch (command) {
+    case SOUND_DASH_CMD_TOGGLE_MODE:
         lbl_8055EE24 = !lbl_8055EE24;
         return 1;
-    case 0x128:
+    case SOUND_DASH_CMD_NEXT:
         if (lbl_8055EE24 != 0) break;
         index = fn_8020A76C() - 1;
         lbl_8055EE28 = index < lbl_8055EE28 + 1 ? index : lbl_8055EE28 + 1;
         return 1;
-    case 0x126:
+    case SOUND_DASH_CMD_PREV:
         if (lbl_8055EE24 != 0) break;
         index = lbl_8055EE28 - 1;
         lbl_8055EE28 = index & ~(index >> 31);
         return 1;
-    case 0x125:
+    case SOUND_DASH_CMD_VOL_DOWN:
         if (lbl_8055EE24 != 0) break;
         index = lbl_8055EE28;
         if (index < fn_8020A76C()) {
-            item = fn_8020A774(index);
-            value = *(float *)((char *)item + 0x20) - lbl_805632C8;
-            value = value > lbl_805632CC ? value : lbl_805632CC;
-            *(float *)((char *)item + 0x20) = value;
+            entry = (VoiceSndEntry *)fn_8020A774(index);
+            volume = entry->volume - lbl_805632C8;
+            volume = volume > lbl_805632CC ? volume : lbl_805632CC;
+            entry->volume = volume;
             return 1;
         }
         break;
-    case 0x127:
+    case SOUND_DASH_CMD_VOL_UP:
         if (lbl_8055EE24 != 0) break;
         index = lbl_8055EE28;
         if (index < fn_8020A76C()) {
-            item = fn_8020A774(index);
-            value = lbl_805632C8 + *(float *)((char *)item + 0x20);
-            value = value < lbl_805632D0 ? value : lbl_805632D0;
-            *(float *)((char *)item + 0x20) = value;
+            entry = (VoiceSndEntry *)fn_8020A774(index);
+            volume = lbl_805632C8 + entry->volume;
+            volume = volume < lbl_805632D0 ? volume : lbl_805632D0;
+            entry->volume = volume;
             return 1;
         }
         break;
-    case 0x53:
+    case SOUND_DASH_CMD_DUMP:
         if (lbl_8055EE24 != 0) break;
         fn_802E30C8(lbl_8033C5B4);
         fn_8020BCE4();
