@@ -12263,7 +12263,6 @@ void bta_dm_inq_cmpl(void *p_data) {
 
 void bta_dm_rmt_name(s32 arg0) {
     extern void bta_dm_remname_cback(u8 *);
-    const u8 *scb = bta_dm_search_cb;
     BtaDmSearch info;
     tBTM_INQ_INFO *p_inq_info;
     u8 *peer_addr;
@@ -12280,7 +12279,7 @@ void bta_dm_rmt_name(s32 arg0) {
             DM_SCB_P_SEARCH_CBACK(BTA_DM_DISC_RES_EVT, &info);
         } else {
             if (BTM_CB_PAGE_TIMEOUT < 0x7530)
-                bta_sys_start_timer((s32)(scb + 0x58), BTA_DM_REMT_NAME_TOUT_EVT, BTM_CB_PAGE_TIMEOUT + 0x64);
+                bta_sys_start_timer((s32)DM_SCB_SDP_DB_TIMER, BTA_DM_REMT_NAME_TOUT_EVT, BTM_CB_PAGE_TIMEOUT + 0x64);
             if (BTM_ReadRemoteDeviceName(INQ_INFO_BD_ADDR(DM_SCB_P_INQ_INFO), (tBTM_CMPL_CB *)bta_dm_remname_cback) != 1) {
                 bta_sys_stop_timer((s32)DM_SCB_SDP_DB_TIMER);
                 peer_addr = INQ_INFO_BD_ADDR(DM_SCB_P_INQ_INFO);
@@ -12295,9 +12294,8 @@ void bta_dm_rmt_name(s32 arg0) {
             search_complete = 0;
             break;
         }
-    check_entry:
-        p_inq_info = (tBTM_INQ_INFO *)*(u8 **)(scb + 4);
-    } while ((DM_SCB_P_INQ_INFO = BTM_InqDbNext(*(tBTM_INQ_INFO **)(scb + 4))) != 0);
+    check_entry:;
+    } while ((DM_SCB_P_INQ_INFO = BTM_InqDbNext((tBTM_INQ_INFO *)DM_SCB_P_INQ_INFO)) != 0);
 
     if (search_complete) {
         p_msg = GKI_getbuf(BTA_DM_MSG_SIZE);
