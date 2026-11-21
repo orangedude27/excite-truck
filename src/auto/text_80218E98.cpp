@@ -863,6 +863,7 @@ extern "C" void fn_80219284(void *widget, s32 width, s32 height) {
     *(s32 *)((u8 *)widget + 0x10) = *(s32 *)((u8 *)widget + 8) + height;
 }
 
+/* Intentional no-op (compiles to a bare return): a do-nothing default hook used by the widget/layout code. */
 extern "C" void fn_802192A0(void) {
 
 }
@@ -7234,9 +7235,9 @@ extern "C" s32 fn_80224B0C(void *widget, s32 action) {
 
 #pragma push
 #pragma opt_propagation off
-extern "C" void *fn_80224B54(void *arg0, void *arg1, void *arg2) {
+extern "C" void *fn_80224B54(void *arg0, s32 arg1, void *arg2) {
+#pragma opt_lifetimes off
     s32 first;
-    void *p1 = arg1;
     void *p2 = arg2;
     volatile u8 *self = (volatile u8 *)arg0;
     f32 sp10;
@@ -7256,8 +7257,8 @@ extern "C" void *fn_80224B54(void *arg0, void *arg1, void *arg2) {
         sprintf((char *)(self + 0x259), lbl_8033DAD8, fn_80129D90(1, 0x42, 0x45), first);
         break;
     }
-    if (p1 != 0) {
-        *(s32 *)(self + 0x244) = (s32)p1;
+    if (arg1 != 0) {
+        *(s32 *)(self + 0x244) = arg1;
     } else {
         *(s32 *)(self + 0x244) = fn_80131234((u8 *)p2 + 0x20);
     }
@@ -7273,9 +7274,9 @@ extern "C" void *fn_80224B54(void *arg0, void *arg1, void *arg2) {
     memcpy(&sp10, (u8 *)p2 + 0xA4, 4);
     memcpy(&spC, (u8 *)p2 + 0xA8, 4);
     memcpy(&sp8, (u8 *)p2 + 0xAC, 4);
-    if (!((f32)FN8021C18C_ABS((double)sp10) <= *(f32 *)&lbl_80558DC4) ||
-        !((f32)FN8021C18C_ABS((double)spC) <= *(f32 *)&lbl_80558DC4) ||
-        !((f32)FN8021C18C_ABS((double)sp8) <= *(f32 *)&lbl_80558DC4)) {
+    if (!(*(f32 *)&lbl_80558DC4 >= (f32)FN8021C18C_ABS((double)sp10)) ||
+        !(*(f32 *)&lbl_80558DC4 >= (f32)FN8021C18C_ABS((double)spC)) ||
+        !(*(f32 *)&lbl_80558DC4 >= (f32)FN8021C18C_ABS((double)sp8))) {
         fn_80224DDC((void *)self, sp10, spC, sp8);
     }
     return (void *)self;
