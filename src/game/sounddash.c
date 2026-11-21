@@ -6,6 +6,7 @@ extern void fn_8020BCE4(void);
 extern void fn_802E30C8(const char *, ...);
 
 /* Debug-dash state: display mode and the currently selected entry index. */
+/* Debug-dash state: display mode and the currently selected entry index. */
 extern int lbl_8055EE24, lbl_8055EE28;
 /* Volume step, lower clamp and upper clamp. */
 extern float lbl_805632C8, lbl_805632CC, lbl_805632D0;
