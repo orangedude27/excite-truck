@@ -99,7 +99,6 @@ void fn_801B60A8(void) {
     if (lbl_8055E70C != 0) fn_80128670(lbl_8055E70C - 0x10);
 }
 
-extern float lbl_805626B8;
 static inline s32 GridCell(f32 v) {
     s32 i;
     v += 1000.0f;
