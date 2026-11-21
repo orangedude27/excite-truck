@@ -2733,10 +2733,9 @@ static inline f32 fn_80252238_fabs(f32 x) {
 }
 #pragma scheduling on
 s32 fn_80252238(void *arg0, s32 arg1) {
-    extern double __fabs(double);
     if (arg1 == 13 &&
-        (lbl_80558DC4 >= (f32)__fabs((double)*(f32 *)((char *)arg0 + 0x194)) ||
-         lbl_80558DC4 >= (f32)__fabs((double)*(f32 *)((char *)arg0 + 0x198)))) {
+        (fn_80252238_fabs(*(f32 *)((char *)arg0 + 0x194)) <= lbl_80558DC4 ||
+         fn_80252238_fabs(*(f32 *)((char *)arg0 + 0x198)) <= lbl_80558DC4)) {
         fn_80221F94(arg0, 0);
         return 1;
     }
