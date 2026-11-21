@@ -381,30 +381,31 @@ static inline int allocateStructures(const char *msg) {
 }
 
 #pragma scheduling reset
-static inline void initDvdContexts(void) {
-    DVDLowContext *base = (DVDLowContext *)lbl_8037B820;
-    base[0].callback = (void *)0;
-    base[0].WORD_0x4 = 0;
-    base[0].inUse = 0;
-    base[0].magic = 0xFEEBDAED;
-    base[0].id = 0;
-    base[1].callback = (void *)0;
-    base[1].WORD_0x4 = 0;
-    base[1].inUse = 0;
-    base[1].magic = 0xFEEBDAED;
-    base[1].id = 1;
-    base[2].callback = (void *)0;
-    base[2].WORD_0x4 = 0;
-    base[2].inUse = 0;
-    base[2].magic = 0xFEEBDAED;
-    base[2].id = 2;
-    base[3].callback = (void *)0;
-    base[3].WORD_0x4 = 0;
-    base[3].inUse = 0;
-    base[3].magic = 0xFEEBDAED;
-    base[3].id = 3;
-    lbl_8055D8E8 = 0;
-    lbl_8055D8EC = 1;
+static inline void initDvdContexts(unsigned int magic, DVDLowContext *base, unsigned int zero, unsigned int id) {
+    unsigned int one = 1;
+    base[0].callback = (void *)zero;
+    base[0].WORD_0x4 = zero;
+    base[0].inUse = zero;
+    base[0].magic = magic;
+    base[0].id = zero;
+    base[1].callback = (void *)zero;
+    base[1].WORD_0x4 = zero;
+    base[1].inUse = zero;
+    base[1].magic = magic;
+    base[1].id = one;
+    base[2].callback = (void *)zero;
+    base[2].WORD_0x4 = zero;
+    base[2].inUse = zero;
+    base[2].magic = magic;
+    base[2].id = id;
+    id = 3;
+    base[3].callback = (void *)zero;
+    base[3].WORD_0x4 = zero;
+    base[3].inUse = zero;
+    base[3].magic = magic;
+    base[3].id = id;
+    lbl_8055D8E8 = zero;
+    lbl_8055D8EC = one;
 }
 #pragma scheduling 750
 
@@ -429,11 +430,11 @@ int DVDLowInit(void) {
         }
 
         if (!lbl_8055D8EC) {
-            unsigned int zero = 0;
             DVDLowContext *base = (DVDLowContext *)lbl_8037B820;
+            unsigned int zero = 0;
             unsigned int magic = 0xFEEBDAED;
-            unsigned int one = 1;
             unsigned int id = 2;
+            unsigned int one = 1;
             base[0].callback = (void *)zero;
             base[0].WORD_0x4 = zero;
             base[0].inUse = zero;
