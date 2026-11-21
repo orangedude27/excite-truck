@@ -23,6 +23,7 @@ void fn_802C1C28(void) {}
 /* Intentionally empty no-op; one of a run of placeholder entry points kept in the table. */
 void fn_802C1C2C(void) {}
 
+/* Intentionally empty no-op; one of a run of placeholder entry points kept in the table. */
 void fn_802C1C30(void) {}
 
 #pragma push
