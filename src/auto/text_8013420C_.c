@@ -24,10 +24,6 @@ typedef struct LoadPool {
     LoadPoolEntry *entries;       /* entry array */
 } LoadPool;
 
-/* Compatibility aliases for other matched functions in this unit. */
-typedef LoadPoolEntry Entry;
-typedef LoadPool Container;
-
 /* String constants used by the load pool: the "loadbuf" allocation tag and the
  * "loadlost..." family of diagnostic messages (selected by offsets from the base). */
 extern void *lbl_80559BD0; /* "loadbuf" */
