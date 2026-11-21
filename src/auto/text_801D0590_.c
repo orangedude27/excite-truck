@@ -29,10 +29,7 @@ typedef struct VehicleObject {
 } VehicleObject;
 #pragma push
 #pragma small_data off
-extern DispatchList lbl_804386B4[];
 extern DispatchList lbl_8043870C[];
-#pragma push
-#pragma small_data off
 __declspec(section ".data") extern DispatchList lbl_804386B4[];
 #pragma scheduling invalid_target
 /* Append a listener (called back later by this file's dispatch walkers) to the first listener list, growing its count. */
