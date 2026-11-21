@@ -87,6 +87,7 @@ void fn_8023FE60(s32 playerIndex, s32 *outField2, s32 *outField3, s32 *outId) {
 }
 
 #pragma push
+#pragma scheduling on
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 extern "C" {
@@ -240,12 +241,15 @@ struct MRollDialogCfg {
 };
 
 extern "C" s32 fn_8023FF1C(s32 arg0) {
-    MRollTwoPlayers players;
+    MRollPlayerData players[2];
     MRollMenuEntry entries[38];
     MRollJoinLeaveWidget widget;
     MRollDialogCfg dialog;
     register char *strings = lbl_803422C0;
     register MRollPlayerData *p;
+    MRollFocusEntry *focii;
+    MRollFocusEntry *entry;
+    s32 i;
     char *title;
     s32 ret;
     s32 running;
@@ -253,7 +257,7 @@ extern "C" s32 fn_8023FF1C(s32 arg0) {
     fn_8001880C();
     fn_8013C804();
 
-    p = &players.p0;
+    p = &players[0];
     fn_802556BC(p, 0);
     fn_802410F8(&p->carIcon, (s32)(lbl_80498828 + 0xC), &p->value, (s32)p);
     fn_80241024(&p->container);
@@ -263,7 +267,7 @@ extern "C" s32 fn_8023FF1C(s32 arg0) {
     fn_802409AC(&p->menuItem, (s32)&p->carIcon);
     fn_802409A4(&p->container, arg0);
 
-    p = &players.p1;
+    p = &players[1];
     fn_802556BC(p, 0);
     fn_802410F8(&p->carIcon, (s32)(lbl_80498828 + 0x1C), &p->value, (s32)p);
     fn_80241024(&p->container);
@@ -277,46 +281,86 @@ extern "C" s32 fn_8023FF1C(s32 arg0) {
     widget.unk14 = 0;
     memset(widget.focii, 0, sizeof(widget.focii));
 
-    widget.addFocus(&players.p0.menuItem, 3, 1, 5, 7, 9);
-    widget.addFocus(&players.p1.menuItem, 4, 2, 6, 8, 10);
+    focii = widget.focii;
+    entry = focii;
+    for (i = 0; i < 2; i++, entry++) {
+        if (entry->target == 0) {
+            entry->target = &players[0].menuItem;
+            entry->b = 1;
+            entry->a = 3;
+            entry->c = 5;
+            entry->d = 7;
+            entry->e = 9;
+            entry->f = 0;
+            if (*players[0].menuItem.payload < 0) {
+                entry->g = 1;
+                goto focus0_done;
+            }
+            entry->g = 2;
+            goto focus0_done;
+        }
+    }
+    fn_802E317C(strings + 0x50, 2);
+focus0_done:
+
+    entry = focii;
+    for (i = 0; i < 2; i++, entry++) {
+        if (entry->target == 0) {
+            entry->target = &players[1].menuItem;
+            entry->b = 2;
+            entry->a = 4;
+            entry->c = 6;
+            entry->d = 8;
+            entry->e = 10;
+            entry->f = 0;
+            if (*players[1].menuItem.payload < 0) {
+                entry->g = 1;
+                goto focus1_done;
+            }
+            entry->g = 2;
+            goto focus1_done;
+        }
+    }
+    fn_802E317C(strings + 0x50, 2);
+focus1_done:
 
     entries[0].label = 0; entries[0].type = 5; entries[0].value = &widget; entries[0].flags = 0; entries[0].id = 0;
-    entries[1].label = 0; entries[1].type = 5; entries[1].value = &players.p0.menuItem; entries[1].flags = 0; entries[1].id = 0;
-    entries[2].label = (s32)(strings + 0x90); entries[2].type = 0x13; entries[2].value = &players.p0; entries[2].flags = 0; entries[2].id = 0;
-    entries[3].label = (s32)(strings + 0x90); entries[3].type = 3; entries[3].value = players.p0.recordOpt.name; entries[3].flags = 0; entries[3].id = 0;
-    entries[4].label = (s32)(strings + 0x9C); entries[4].type = 0x10; entries[4].value = &players.p0.recordOpt; entries[4].flags = 0; entries[4].id = 0;
-    entries[5].label = (s32)(strings + 0xA8); entries[5].type = 5; entries[5].value = &players.p0.carIcon.secondaryVtable; entries[5].flags = 0; entries[5].id = 0;
-    entries[6].label = (s32)(strings + 0xB4); entries[6].type = 2; entries[6].value = &players.p0.recordOpt.result; entries[6].flags = 0; entries[6].id = 0;
-    entries[7].label = (s32)(strings + 0xC0); entries[7].type = 3; entries[7].value = players.p0.menuItem.name; entries[7].flags = 0; entries[7].id = 0;
-    entries[8].label = (s32)(strings + 0xD0); entries[8].type = 5; entries[8].value = &players.p0.base.sub; entries[8].flags = 0; entries[8].id = 0;
-    entries[9].label = (s32)(strings + 0xE0); entries[9].type = 3; entries[9].value = players.p0.container.texts[0]; entries[9].flags = 0; entries[9].id = 0;
-    entries[10].label = (s32)(strings + 0xF0); entries[10].type = 2; entries[10].value = &players.p0.container.pairs[0].b; entries[10].flags = 0; entries[10].id = 0;
-    entries[11].label = (s32)(strings + 0x100); entries[11].type = 3; entries[11].value = players.p0.container.texts[1]; entries[11].flags = 0; entries[11].id = 0;
-    entries[12].label = (s32)(strings + 0x110); entries[12].type = 2; entries[12].value = &players.p0.container.pairs[1].b; entries[12].flags = 0; entries[12].id = 0;
-    entries[13].label = (s32)(strings + 0x120); entries[13].type = 3; entries[13].value = players.p0.container.texts[2]; entries[13].flags = 0; entries[13].id = 0;
-    entries[14].label = (s32)(strings + 0x130); entries[14].type = 2; entries[14].value = &players.p0.container.pairs[2].b; entries[14].flags = 0; entries[14].id = 0;
-    entries[15].label = (s32)(strings + 0x140); entries[15].type = 3; entries[15].value = players.p0.container.texts[3]; entries[15].flags = 0; entries[15].id = 0;
-    entries[16].label = (s32)(strings + 0x150); entries[16].type = 5; entries[16].value = players.p0.container.widgets[3]; entries[16].flags = 0; entries[16].id = 0;
-    entries[17].label = (s32)(strings + 0x168); entries[17].type = 3; entries[17].value = players.p0.container.texts[4]; entries[17].flags = 0; entries[17].id = 0;
-    entries[18].label = (s32)(strings + 0x178); entries[18].type = 2; entries[18].value = &players.p0.container.pairs[4].b; entries[18].flags = 0; entries[18].id = 0;
-    entries[19].label = 0; entries[19].type = 5; entries[19].value = &players.p1.menuItem; entries[19].flags = 0; entries[19].id = 0;
-    entries[20].label = (s32)(strings + 0x188); entries[20].type = 0x13; entries[20].value = &players.p1; entries[20].flags = 0; entries[20].id = 0;
-    entries[21].label = (s32)(strings + 0x188); entries[21].type = 3; entries[21].value = players.p1.recordOpt.name; entries[21].flags = 0; entries[21].id = 0;
-    entries[22].label = (s32)(strings + 0x194); entries[22].type = 0x10; entries[22].value = &players.p1.recordOpt; entries[22].flags = 0; entries[22].id = 0;
-    entries[23].label = (s32)(strings + 0x1A0); entries[23].type = 5; entries[23].value = &players.p1.carIcon.secondaryVtable; entries[23].flags = 0; entries[23].id = 0;
-    entries[24].label = (s32)(strings + 0x1AC); entries[24].type = 2; entries[24].value = &players.p1.recordOpt.result; entries[24].flags = 0; entries[24].id = 0;
-    entries[25].label = (s32)(strings + 0x1B8); entries[25].type = 3; entries[25].value = players.p1.menuItem.name; entries[25].flags = 0; entries[25].id = 0;
-    entries[26].label = (s32)(strings + 0x1C8); entries[26].type = 5; entries[26].value = &players.p1.base.sub; entries[26].flags = 0; entries[26].id = 0;
-    entries[27].label = (s32)(strings + 0x1D8); entries[27].type = 3; entries[27].value = players.p1.container.texts[0]; entries[27].flags = 0; entries[27].id = 0;
-    entries[28].label = (s32)(strings + 0x1E8); entries[28].type = 2; entries[28].value = &players.p1.container.pairs[0].b; entries[28].flags = 0; entries[28].id = 0;
-    entries[29].label = (s32)(strings + 0x1F8); entries[29].type = 3; entries[29].value = players.p1.container.texts[1]; entries[29].flags = 0; entries[29].id = 0;
-    entries[30].label = (s32)(strings + 0x208); entries[30].type = 2; entries[30].value = &players.p1.container.pairs[1].b; entries[30].flags = 0; entries[30].id = 0;
-    entries[31].label = (s32)(strings + 0x218); entries[31].type = 3; entries[31].value = players.p1.container.texts[2]; entries[31].flags = 0; entries[31].id = 0;
-    entries[32].label = (s32)(strings + 0x228); entries[32].type = 2; entries[32].value = &players.p1.container.pairs[2].b; entries[32].flags = 0; entries[32].id = 0;
-    entries[33].label = (s32)(strings + 0x238); entries[33].type = 3; entries[33].value = players.p1.container.texts[3]; entries[33].flags = 0; entries[33].id = 0;
-    entries[34].label = (s32)(strings + 0x248); entries[34].type = 5; entries[34].value = players.p1.container.widgets[3]; entries[34].flags = 0; entries[34].id = 0;
-    entries[35].label = (s32)(strings + 0x260); entries[35].type = 3; entries[35].value = players.p1.container.texts[4]; entries[35].flags = 0; entries[35].id = 0;
-    entries[36].label = (s32)(strings + 0x270); entries[36].type = 2; entries[36].value = &players.p1.container.pairs[4].b; entries[36].flags = 0; entries[36].id = 0;
+    entries[1].label = 0; entries[1].type = 5; entries[1].value = &players[0].menuItem; entries[1].flags = 0; entries[1].id = 0;
+    entries[2].label = (s32)(strings + 0x90); entries[2].type = 0x13; entries[2].value = &players[0]; entries[2].flags = 0; entries[2].id = 0;
+    entries[3].label = (s32)(strings + 0x90); entries[3].type = 3; entries[3].value = players[0].recordOpt.name; entries[3].flags = 0; entries[3].id = 0;
+    entries[4].label = (s32)(strings + 0x9C); entries[4].type = 0x10; entries[4].value = 0; entries[4].flags = (s32)&players[0].recordOpt; entries[4].id = 0;
+    entries[5].label = (s32)(strings + 0xA8); entries[5].type = 5; entries[5].value = &players[0].carIcon.secondaryVtable; entries[5].flags = 0; entries[5].id = 0;
+    entries[6].label = (s32)(strings + 0xB4); entries[6].type = 2; entries[6].value = &players[0].recordOpt.result; entries[6].flags = 0; entries[6].id = 0;
+    entries[7].label = (s32)(strings + 0xC0); entries[7].type = 3; entries[7].value = players[0].menuItem.name; entries[7].flags = 0; entries[7].id = 0;
+    entries[8].label = (s32)(strings + 0xD0); entries[8].type = 5; entries[8].value = &players[0].base.sub; entries[8].flags = 0; entries[8].id = 0;
+    entries[9].label = (s32)(strings + 0xE0); entries[9].type = 3; entries[9].value = players[0].container.texts[0]; entries[9].flags = 0; entries[9].id = 0;
+    entries[10].label = (s32)(strings + 0xF0); entries[10].type = 2; entries[10].value = &players[0].container.pairs[0].b; entries[10].flags = 0; entries[10].id = 0;
+    entries[11].label = (s32)(strings + 0x100); entries[11].type = 3; entries[11].value = players[0].container.texts[1]; entries[11].flags = 0; entries[11].id = 0;
+    entries[12].label = (s32)(strings + 0x110); entries[12].type = 2; entries[12].value = &players[0].container.pairs[1].b; entries[12].flags = 0; entries[12].id = 0;
+    entries[13].label = (s32)(strings + 0x120); entries[13].type = 3; entries[13].value = players[0].container.texts[2]; entries[13].flags = 0; entries[13].id = 0;
+    entries[14].label = (s32)(strings + 0x130); entries[14].type = 2; entries[14].value = &players[0].container.pairs[2].b; entries[14].flags = 0; entries[14].id = 0;
+    entries[15].label = (s32)(strings + 0x140); entries[15].type = 3; entries[15].value = players[0].container.texts[3]; entries[15].flags = 0; entries[15].id = 0;
+    entries[16].label = (s32)(strings + 0x150); entries[16].type = 5; entries[16].value = players[0].container.widgets[3]; entries[16].flags = 0; entries[16].id = 0;
+    entries[17].label = (s32)(strings + 0x168); entries[17].type = 3; entries[17].value = players[0].container.texts[4]; entries[17].flags = 0; entries[17].id = 0;
+    entries[18].label = (s32)(strings + 0x178); entries[18].type = 2; entries[18].value = &players[0].container.pairs[4].b; entries[18].flags = 0; entries[18].id = 0;
+    entries[19].label = 0; entries[19].type = 5; entries[19].value = &players[1].menuItem; entries[19].flags = 0; entries[19].id = 0;
+    entries[20].label = (s32)(strings + 0x188); entries[20].type = 0x13; entries[20].value = &players[1]; entries[20].flags = 0; entries[20].id = 0;
+    entries[21].label = (s32)(strings + 0x188); entries[21].type = 3; entries[21].value = players[1].recordOpt.name; entries[21].flags = 0; entries[21].id = 0;
+    entries[22].label = (s32)(strings + 0x194); entries[22].type = 0x10; entries[22].value = 0; entries[22].flags = (s32)&players[1].recordOpt; entries[22].id = 0;
+    entries[23].label = (s32)(strings + 0x1A0); entries[23].type = 5; entries[23].value = &players[1].carIcon.secondaryVtable; entries[23].flags = 0; entries[23].id = 0;
+    entries[24].label = (s32)(strings + 0x1AC); entries[24].type = 2; entries[24].value = &players[1].recordOpt.result; entries[24].flags = 0; entries[24].id = 0;
+    entries[25].label = (s32)(strings + 0x1B8); entries[25].type = 3; entries[25].value = players[1].menuItem.name; entries[25].flags = 0; entries[25].id = 0;
+    entries[26].label = (s32)(strings + 0x1C8); entries[26].type = 5; entries[26].value = &players[1].base.sub; entries[26].flags = 0; entries[26].id = 0;
+    entries[27].label = (s32)(strings + 0x1D8); entries[27].type = 3; entries[27].value = players[1].container.texts[0]; entries[27].flags = 0; entries[27].id = 0;
+    entries[28].label = (s32)(strings + 0x1E8); entries[28].type = 2; entries[28].value = &players[1].container.pairs[0].b; entries[28].flags = 0; entries[28].id = 0;
+    entries[29].label = (s32)(strings + 0x1F8); entries[29].type = 3; entries[29].value = players[1].container.texts[1]; entries[29].flags = 0; entries[29].id = 0;
+    entries[30].label = (s32)(strings + 0x208); entries[30].type = 2; entries[30].value = &players[1].container.pairs[1].b; entries[30].flags = 0; entries[30].id = 0;
+    entries[31].label = (s32)(strings + 0x218); entries[31].type = 3; entries[31].value = players[1].container.texts[2]; entries[31].flags = 0; entries[31].id = 0;
+    entries[32].label = (s32)(strings + 0x228); entries[32].type = 2; entries[32].value = &players[1].container.pairs[2].b; entries[32].flags = 0; entries[32].id = 0;
+    entries[33].label = (s32)(strings + 0x238); entries[33].type = 3; entries[33].value = players[1].container.texts[3]; entries[33].flags = 0; entries[33].id = 0;
+    entries[34].label = (s32)(strings + 0x248); entries[34].type = 5; entries[34].value = players[1].container.widgets[3]; entries[34].flags = 0; entries[34].id = 0;
+    entries[35].label = (s32)(strings + 0x260); entries[35].type = 3; entries[35].value = players[1].container.texts[4]; entries[35].flags = 0; entries[35].id = 0;
+    entries[36].label = (s32)(strings + 0x270); entries[36].type = 2; entries[36].value = &players[1].container.pairs[4].b; entries[36].flags = 0; entries[36].id = 0;
     entries[37] = *(MRollMenuEntry *)lbl_80498810;
 
     title = strings + 0x290;
