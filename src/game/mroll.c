@@ -86,46 +86,278 @@ void fn_8023FE60(s32 playerIndex, s32 *outField2, s32 *outField3, s32 *outId) {
     fn_802E317C(lbl_803422C0, playerIndex, activeCount); /* bad index abort */
 }
 
-extern void fn_8001880C(void), fn_8013C804(void);
-extern void fn_802556BC(void *, s32);
-extern void *fn_802410F8(void *, s32, s32 *, s32);
-extern void *fn_80241024(void *);
-extern void *fn_80240BA4(void *, s32, void *, void *, void *, void *);
-extern void *fn_80240A1C(void *, int *, void *);
-extern void fn_802409AC(void *, s32);
-extern void fn_802409A4(void *, s32);
+#pragma push
+#pragma cplusplus on
+#pragma use_lmw_stmw off
+extern "C" {
+void fn_8001880C(void);
+void fn_8013C804(void);
+void fn_802556BC(void *, s32);
+void *fn_802410F8(void *, s32, s32 *, s32);
+void *fn_80241024(void *);
+void *fn_80240BA4(void *, s32, void *, void *, void *, void *);
+void *fn_80240A1C(void *, int *, void *);
+void fn_802409AC(void *, s32);
+void fn_802409A4(void *, s32);
+void fn_80129AEC(s32);
+s32 fn_802146BC(void *, s32, s32, s32);
+s32 fn_802E4A10(void);
+void fn_8023D4B8(void);
+void fn_8013C8B8(void);
+void fn_80018B24(void);
+void fn_8002F634(void *, void *, s32, s32);
+void *fn_80240928(void *, s32);
+s32 fn_80235380(s32, s32);
+void *fn_80255758(void *, s32);
 extern char lbl_803425B8[];
-#define FR(t, o) (*(t *)((char *)frame + (o) - 8))
-s32 fn_8023FF1C(s32 arg0) {
-    unsigned int frame[0x3AC];
-    fn_8001880C();
-    fn_8013C804();
-    fn_802556BC(&FR(char, 0x370), 0);
-    fn_802410F8(&FR(char, 0x494), (s32)((char *)lbl_80498828 + 0xC),
-                (s32 *)&FR(char, 0x8E8), (s32)&FR(char, 0x370));
-    fn_80241024(&FR(char, 0x530));
-    fn_80240BA4(&FR(char, 0x81C), (s32)((char *)lbl_80498828 + 4),
-                (void *)((char *)lbl_80498828 + 8), &FR(char, 0x494),
-                &FR(char, 0x530), (void *)arg0);
-    fn_80240A1C(&FR(char, 0x88C), (int *)lbl_80498828, &FR(char, 0x370));
-    fn_802409AC(&FR(char, 0x88C), FR(s32, 0x81C));
-    fn_802409AC(&FR(char, 0x88C), FR(s32, 0x494));
-    fn_802409A4(&FR(char, 0x530), arg0);
-    fn_802556BC(&FR(char, 0x8EC), 0);
-    fn_802410F8(&FR(char, 0xA10), (s32)((char *)lbl_80498828 + 0x1C),
-                (s32 *)&FR(char, 0xE64), (s32)&FR(char, 0x8EC));
-    fn_80241024(&FR(char, 0xACC));
-    fn_80240BA4(&FR(char, 0xD98), (s32)((char *)lbl_80498828 + 0x14),
-                (void *)((char *)lbl_80498828 + 0x18), &FR(char, 0xA10),
-                &FR(char, 0xACC), (void *)arg0);
-    fn_80240A1C(&FR(char, 0xE08), (int *)((char *)lbl_80498828 + 0x10), &FR(char, 0x8EC));
-    fn_802409AC(&FR(char, 0xE08), FR(s32, 0xD98));
-    fn_802409AC(&FR(char, 0xE08), FR(s32, 0xA10));
-    fn_802409A4(&FR(char, 0xACC), arg0);
-    return arg0;
+extern s32 lbl_80498810[];
+extern s32 lbl_802FA30C[];
+extern u8 lbl_8055FC8C;
+extern char lbl_80342618[];
+extern char lbl_803426B0[];
+extern s32 lbl_8055F1F4;
 }
 
-#pragma scheduling on
+struct MRollRecordCol {
+    virtual void f0();
+    virtual void f1();
+    virtual void destroy(s32);
+};
+struct MRollBaseObj {
+    u8 data[0xFC];
+    void *sub;
+    u8 tail[0x24];
+    ~MRollBaseObj() {
+        fn_80255758(this, -1);
+    }
+};
+struct MRollCarIconCpp {
+    u8 base[0xC];
+    void *vtable;
+    void *secondaryVtable;
+    u8 pad14[0x30];
+    s32 carIconResource;
+    u8 pad48[0x54];
+    ~MRollCarIconCpp() {
+        s32 lastId;
+        vtable = lbl_803426B0;
+        secondaryVtable = lbl_803426B0 + 0x18;
+        lastId = lbl_8055F1F4;
+        lbl_8055F1F4 = lastId - 1;
+        fn_80235380(carIconResource, lastId);
+    }
+};
+struct MRollContainer {
+    s32 header;
+    struct { s32 a, b; } pairs[5];
+    u8 widgets[5][0x28];
+    char texts[5][0x64];
+    u8 tail[4];
+    ~MRollContainer() {
+        fn_8002F634(widgets, (void *)fn_80240928, 0x28, 5);
+    }
+};
+struct MRollRecordOpt {
+    u8 base[0xC];
+    void *vtable;
+    u8 pad10[0x14];
+    void *records;
+    s32 index;
+    char name[0x20];
+    char recordName[0x20];
+    s32 result;
+    ~MRollRecordOpt() {
+        vtable = lbl_80342618;
+        if (records != 0) {
+            ((MRollRecordCol *)records)->destroy(1);
+        }
+    }
+};
+struct MRollMenuItem {
+    u8 pad00[0x34];
+    s32 *payload;
+    u8 flag;
+    char name[0x20];
+};
+struct MRollPlayerData {
+    MRollBaseObj base;
+    MRollCarIconCpp carIcon;
+    MRollContainer container;
+    MRollRecordOpt recordOpt;
+    MRollMenuItem menuItem;
+    s32 value;
+};
+struct MRollTwoPlayers {
+    MRollPlayerData p0;
+    MRollPlayerData p1;
+};
+struct MRollFocusEntry {
+    void *target;
+    s32 a;
+    s32 b;
+    s32 c;
+    s32 d;
+    s32 e;
+    s32 f;
+    s32 g;
+};
+struct MRollJoinLeaveWidget {
+    void *vtable;
+    u8 pad04[0x10];
+    s32 unk14;
+    MRollFocusEntry focii[2];
+    u8 mode;
+    void addFocus(MRollMenuItem *target, s32 a, s32 b, s32 c, s32 d, s32 e) {
+        MRollFocusEntry *entry = focii;
+        s32 i;
+        for (i = 0; i < 2; i++, entry++) {
+            if (entry->target == 0) {
+                entry->target = target;
+                entry->b = b;
+                entry->a = a;
+                entry->c = c;
+                entry->d = d;
+                entry->e = e;
+                entry->f = 0;
+                if (*target->payload < 0) {
+                    entry->g = 1;
+                    return;
+                }
+                entry->g = 2;
+                return;
+            }
+        }
+        fn_802E317C(lbl_803422C0 + 0x50, 2);
+    }
+};
+struct MRollMenuEntry {
+    s32 label;
+    s32 type;
+    void *value;
+    s32 flags;
+    s32 id;
+};
+struct MRollDialogCfg {
+    s32 w[5];
+};
+
+extern "C" s32 fn_8023FF1C(s32 arg0) {
+    MRollTwoPlayers players;
+    MRollMenuEntry entries[38];
+    MRollJoinLeaveWidget widget;
+    MRollDialogCfg dialog;
+    char *title;
+    s32 ret;
+    s32 running;
+
+    fn_8001880C();
+    fn_8013C804();
+
+    {
+        MRollPlayerData *p = &players.p0;
+        fn_802556BC(p, 0);
+        fn_802410F8(&p->carIcon, (s32)(lbl_80498828 + 0xC), &p->value, (s32)p);
+        fn_80241024(&p->container);
+        fn_80240BA4(&p->recordOpt, (s32)(lbl_80498828 + 4), lbl_80498828 + 8, &p->carIcon, &p->container, p);
+        fn_80240A1C(&p->menuItem, (int *)lbl_80498828, p);
+        fn_802409AC(&p->menuItem, (s32)&p->recordOpt);
+        fn_802409AC(&p->menuItem, (s32)&p->carIcon);
+        fn_802409A4(&p->container, arg0);
+    }
+    {
+        MRollPlayerData *p = &players.p1;
+        fn_802556BC(p, 0);
+        fn_802410F8(&p->carIcon, (s32)(lbl_80498828 + 0x1C), &p->value, (s32)p);
+        fn_80241024(&p->container);
+        fn_80240BA4(&p->recordOpt, (s32)(lbl_80498828 + 0x14), lbl_80498828 + 0x18, &p->carIcon, &p->container, p);
+        fn_80240A1C(&p->menuItem, (int *)(lbl_80498828 + 0x10), p);
+        fn_802409AC(&p->menuItem, (s32)&p->recordOpt);
+        fn_802409AC(&p->menuItem, (s32)&p->carIcon);
+        fn_802409A4(&p->container, arg0);
+    }
+
+    widget.vtable = lbl_803425B8;
+    widget.unk14 = 0;
+    memset(widget.focii, 0, sizeof(widget.focii));
+
+    widget.addFocus(&players.p0.menuItem, 3, 1, 5, 7, 9);
+    widget.addFocus(&players.p1.menuItem, 4, 2, 6, 8, 10);
+
+    entries[0].label = 0; entries[0].type = 5; entries[0].value = &widget; entries[0].flags = 0; entries[0].id = 0;
+    entries[1].label = 0; entries[1].type = 5; entries[1].value = &players.p0.menuItem; entries[1].flags = 0; entries[1].id = 0;
+    entries[2].label = (s32)(lbl_803422C0 + 0x90); entries[2].type = 0x13; entries[2].value = &players.p0; entries[2].flags = 0; entries[2].id = 0;
+    entries[3].label = (s32)(lbl_803422C0 + 0x90); entries[3].type = 3; entries[3].value = players.p0.recordOpt.name; entries[3].flags = 0; entries[3].id = 0;
+    entries[4].label = (s32)(lbl_803422C0 + 0x9C); entries[4].type = 0x10; entries[4].value = &players.p0.recordOpt; entries[4].flags = 0; entries[4].id = 0;
+    entries[5].label = (s32)(lbl_803422C0 + 0xA8); entries[5].type = 5; entries[5].value = &players.p0.carIcon.secondaryVtable; entries[5].flags = 0; entries[5].id = 0;
+    entries[6].label = (s32)(lbl_803422C0 + 0xB4); entries[6].type = 2; entries[6].value = &players.p0.recordOpt.result; entries[6].flags = 0; entries[6].id = 0;
+    entries[7].label = (s32)(lbl_803422C0 + 0xC0); entries[7].type = 3; entries[7].value = players.p0.menuItem.name; entries[7].flags = 0; entries[7].id = 0;
+    entries[8].label = (s32)(lbl_803422C0 + 0xD0); entries[8].type = 5; entries[8].value = &players.p0.base.sub; entries[8].flags = 0; entries[8].id = 0;
+    entries[9].label = (s32)(lbl_803422C0 + 0xE0); entries[9].type = 3; entries[9].value = players.p0.container.texts[0]; entries[9].flags = 0; entries[9].id = 0;
+    entries[10].label = (s32)(lbl_803422C0 + 0xF0); entries[10].type = 2; entries[10].value = &players.p0.container.pairs[0].b; entries[10].flags = 0; entries[10].id = 0;
+    entries[11].label = (s32)(lbl_803422C0 + 0x100); entries[11].type = 3; entries[11].value = players.p0.container.texts[1]; entries[11].flags = 0; entries[11].id = 0;
+    entries[12].label = (s32)(lbl_803422C0 + 0x110); entries[12].type = 2; entries[12].value = &players.p0.container.pairs[1].b; entries[12].flags = 0; entries[12].id = 0;
+    entries[13].label = (s32)(lbl_803422C0 + 0x120); entries[13].type = 3; entries[13].value = players.p0.container.texts[2]; entries[13].flags = 0; entries[13].id = 0;
+    entries[14].label = (s32)(lbl_803422C0 + 0x130); entries[14].type = 2; entries[14].value = &players.p0.container.pairs[2].b; entries[14].flags = 0; entries[14].id = 0;
+    entries[15].label = (s32)(lbl_803422C0 + 0x140); entries[15].type = 3; entries[15].value = players.p0.container.texts[3]; entries[15].flags = 0; entries[15].id = 0;
+    entries[16].label = (s32)(lbl_803422C0 + 0x150); entries[16].type = 5; entries[16].value = players.p0.container.widgets[3]; entries[16].flags = 0; entries[16].id = 0;
+    entries[17].label = (s32)(lbl_803422C0 + 0x168); entries[17].type = 3; entries[17].value = players.p0.container.texts[4]; entries[17].flags = 0; entries[17].id = 0;
+    entries[18].label = (s32)(lbl_803422C0 + 0x178); entries[18].type = 2; entries[18].value = &players.p0.container.pairs[4].b; entries[18].flags = 0; entries[18].id = 0;
+    entries[19].label = 0; entries[19].type = 5; entries[19].value = &players.p1.menuItem; entries[19].flags = 0; entries[19].id = 0;
+    entries[20].label = (s32)(lbl_803422C0 + 0x188); entries[20].type = 0x13; entries[20].value = &players.p1; entries[20].flags = 0; entries[20].id = 0;
+    entries[21].label = (s32)(lbl_803422C0 + 0x188); entries[21].type = 3; entries[21].value = players.p1.recordOpt.name; entries[21].flags = 0; entries[21].id = 0;
+    entries[22].label = (s32)(lbl_803422C0 + 0x194); entries[22].type = 0x10; entries[22].value = &players.p1.recordOpt; entries[22].flags = 0; entries[22].id = 0;
+    entries[23].label = (s32)(lbl_803422C0 + 0x1A0); entries[23].type = 5; entries[23].value = &players.p1.carIcon.secondaryVtable; entries[23].flags = 0; entries[23].id = 0;
+    entries[24].label = (s32)(lbl_803422C0 + 0x1AC); entries[24].type = 2; entries[24].value = &players.p1.recordOpt.result; entries[24].flags = 0; entries[24].id = 0;
+    entries[25].label = (s32)(lbl_803422C0 + 0x1B8); entries[25].type = 3; entries[25].value = players.p1.menuItem.name; entries[25].flags = 0; entries[25].id = 0;
+    entries[26].label = (s32)(lbl_803422C0 + 0x1C8); entries[26].type = 5; entries[26].value = &players.p1.base.sub; entries[26].flags = 0; entries[26].id = 0;
+    entries[27].label = (s32)(lbl_803422C0 + 0x1D8); entries[27].type = 3; entries[27].value = players.p1.container.texts[0]; entries[27].flags = 0; entries[27].id = 0;
+    entries[28].label = (s32)(lbl_803422C0 + 0x1E8); entries[28].type = 2; entries[28].value = &players.p1.container.pairs[0].b; entries[28].flags = 0; entries[28].id = 0;
+    entries[29].label = (s32)(lbl_803422C0 + 0x1F8); entries[29].type = 3; entries[29].value = players.p1.container.texts[1]; entries[29].flags = 0; entries[29].id = 0;
+    entries[30].label = (s32)(lbl_803422C0 + 0x208); entries[30].type = 2; entries[30].value = &players.p1.container.pairs[1].b; entries[30].flags = 0; entries[30].id = 0;
+    entries[31].label = (s32)(lbl_803422C0 + 0x218); entries[31].type = 3; entries[31].value = players.p1.container.texts[2]; entries[31].flags = 0; entries[31].id = 0;
+    entries[32].label = (s32)(lbl_803422C0 + 0x228); entries[32].type = 2; entries[32].value = &players.p1.container.pairs[2].b; entries[32].flags = 0; entries[32].id = 0;
+    entries[33].label = (s32)(lbl_803422C0 + 0x238); entries[33].type = 3; entries[33].value = players.p1.container.texts[3]; entries[33].flags = 0; entries[33].id = 0;
+    entries[34].label = (s32)(lbl_803422C0 + 0x248); entries[34].type = 5; entries[34].value = players.p1.container.widgets[3]; entries[34].flags = 0; entries[34].id = 0;
+    entries[35].label = (s32)(lbl_803422C0 + 0x260); entries[35].type = 3; entries[35].value = players.p1.container.texts[4]; entries[35].flags = 0; entries[35].id = 0;
+    entries[36].label = (s32)(lbl_803422C0 + 0x270); entries[36].type = 2; entries[36].value = &players.p1.container.pairs[4].b; entries[36].flags = 0; entries[36].id = 0;
+    entries[37] = *(MRollMenuEntry *)lbl_80498810;
+
+    title = lbl_803422C0 + 0x290;
+    if (lbl_8055FC8C != 0) {
+        title = lbl_803422C0 + 0x280;
+    }
+    ret = 1;
+    dialog = *(MRollDialogCfg *)lbl_802FA30C;
+    dialog.w[0] = (s32)title;
+    dialog.w[1] = (s32)entries;
+    fn_80129AEC(-1);
+    running = 1;
+    while (running) {
+        s32 res = fn_802146BC(&dialog, -0x3E7, -0x3E7, 1);
+        switch (res) {
+        case 0:
+            ret = 1;
+            running = 0;
+            break;
+        case 1:
+            fn_802E4A10();
+            fn_8023D4B8();
+            break;
+        case 2:
+            ret = 0;
+            running = 0;
+            break;
+        default:
+            fn_802E317C(lbl_803422C0 + 0x2A0, res);
+            break;
+        }
+    }
+    fn_80129AEC(0);
+    fn_8013C8B8();
+    fn_80018B24();
+    return ret;
+}
+#pragma pop
 extern char lbl_80342618[];
 s32 fn_802407B0(s32 object, s32 deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
@@ -569,7 +801,7 @@ extern "C" void *fn_80240BA4(void *arg0, s32 arg1, void *arg2, void *arg3, void 
         *(u8 *)((u8 *)infoDst + 0x284) = 0;
     }
 done:
-    return self;
+    return arg0;
 }
 #pragma cplusplus reset
 
