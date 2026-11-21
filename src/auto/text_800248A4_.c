@@ -1,6 +1,8 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
+/* Locale-aware string comparison and the MSL stream-position (ftell) helper,
+ * from SDK/MSL code that had no original source file. */
 
+/* Global locale state: +0x38 holds the active locale, whose +0x10 is the
+ * character collation table used by the comparison below. */
 extern unsigned char lbl_802FE850[];
 int fn_800248A4(unsigned char *str1, unsigned char *str2, int n)
 {
