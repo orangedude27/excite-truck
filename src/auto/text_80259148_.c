@@ -1802,6 +1802,7 @@ shown_done:;
 }
 #pragma cplusplus reset
 void fn_8025B784(void) {
+    /* Intentionally empty callback in the achievements display code: does no work. */
 }
 
 extern int stricmp(const char *, const char *);
