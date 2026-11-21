@@ -7,7 +7,6 @@ extern void *memset(void *, int, unsigned int);
 extern void deallocate_from_fixed_pools(void ***, unsigned char *, unsigned int);
 extern void Block_link(void *, void *);
 extern void __sys_free(void *);
-#pragma scheduling 603
 void free(void *arg0) {
     unsigned char *__restrict pflag = &lbl_8055D678;
     void ***pool;
