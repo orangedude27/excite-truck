@@ -3250,52 +3250,56 @@ extern f32 fn_801495D4(s32);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_80151B48(void *arg0) {
+/* Walk the manager's entry list and, for each eligible entry, overwrite its packed
+ * appearance value with a blend of two stored colours driven by a frame-counter
+ * oscillation. Eligibility comes from the per-slot state record (mode at +4, float at
+ * +0x1C) plus the entry's own zero/enable flags. */
+extern "C" void fn_80151B48(void *managerArg) {
     struct Dummy {
-        virtual void f2();
-        virtual void f0();
-        virtual void f1();
-        virtual void f3();
-        virtual void f4();
-        virtual void f5();
-        virtual s32 check(s32);
+        virtual void slot0();
+        virtual void slot1();
+        virtual void slot2();
+        virtual void slot3();
+        virtual void slot4();
+        virtual void slot5();
+        virtual s32 isSlotActive(s32);
     };
-    void *self = arg0;
-    s32 addr;
-    s32 flag;
+    void *manager = managerArg;
+    s32 stateRecord;
+    s32 applyColor;
     register void *entry;
-    void *p;
-    void *obj;
-    s32 offset;
-    s32 index;
-    s32 i;
-    f32 f;
+    void *colorRecordB;
+    void *colorRecordA;
+    s32 entryOffset;
+    s32 slotIndex;
+    s32 entryIndex;
+    f32 blend;
 
     fn_801E85B4();
-    index = ((s32 (*)(void))fn_801E866C)();
-    if (((struct Dummy *)self)->check(index) == 0) goto done;
-    addr = (s32)self + index * 0xC0 + 0x9E4;
-    if (!addr) goto done;
-    if (*(s32 *)(addr + 4) == 0) {
-        flag = 0;
-    } else if (*(s32 *)(addr + 4) == 1) {
-        flag = 1;
+    slotIndex = ((s32 (*)(void))fn_801E866C)();
+    if (((struct Dummy *)manager)->isSlotActive(slotIndex) == 0) goto done;
+    stateRecord = (s32)manager + slotIndex * 0xC0 + 0x9E4;
+    if (!stateRecord) goto done;
+    if (*(s32 *)(stateRecord + 4) == 0) {
+        applyColor = 0;
+    } else if (*(s32 *)(stateRecord + 4) == 1) {
+        applyColor = 1;
     } else {
-        flag = (f32)__fabs((f64)(*(f32 *)(addr + 0x1C) - lbl_8056164C)) <= lbl_80558DC4[0];
+        applyColor = (f32)__fabs((f64)(*(f32 *)(stateRecord + 0x1C) - lbl_8056164C)) <= lbl_80558DC4[0];
     }
-    i = 0;
-    offset = 0;
-    while (i < *(s32 *)((s32)self + 0x18)) {
-        entry = *(void **)(*(s32 *)((s32)self + 0x14) + offset);
-        f = *(f32 *)((u8 *)entry + 0x34);
-        if (fn_80141F7C(f) != 0 && flag != 0 && ((u8 *)entry)[0xCC] != 0) {
-            f = ((f32 (*)(void))fn_80149650)();
-            obj = fn_801538E4(entry);
-            p = fn_801538E4(entry);
-            fn_80151C98(entry, fn_801537CC(*(s32 *)((char *)p + 4), *(s32 *)obj, f));
+    entryIndex = 0;
+    entryOffset = 0;
+    while (entryIndex < *(s32 *)((s32)manager + 0x18)) {
+        entry = *(void **)(*(s32 *)((s32)manager + 0x14) + entryOffset);
+        blend = *(f32 *)((u8 *)entry + 0x34);
+        if (fn_80141F7C(blend) != 0 && applyColor != 0 && ((u8 *)entry)[0xCC] != 0) {
+            blend = ((f32 (*)(void))fn_80149650)();
+            colorRecordA = fn_801538E4(entry);
+            colorRecordB = fn_801538E4(entry);
+            fn_80151C98(entry, fn_801537CC(*(s32 *)((char *)colorRecordB + 4), *(s32 *)colorRecordA, blend));
         }
-        offset += 4;
-        i += 1;
+        entryOffset += 4;
+        entryIndex += 1;
     }
 done:
     fn_80167844();
