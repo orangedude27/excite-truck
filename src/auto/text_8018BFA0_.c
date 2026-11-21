@@ -248,6 +248,21 @@ static inline void matVecDot_8018(Vec_8018 *dest, const float *m, const float *v
     }
 }
 
+static inline void matVecDotL_8018(Vec_8018 *dest, const float *m, const float *v) {
+    if ((float *)dest == v) {
+        float x = v[0];
+        float y = v[1];
+        float z = v[2];
+        dest->x = dot_8018(x, m[0], y, m[3], z, m[6]);
+        dest->y = dot_8018(x, m[1], y, m[4], z, m[7]);
+        dest->z = dot_8018(x, m[2], y, m[5], z, m[8]);
+    } else {
+        dest->x = dot_8018(v[0], m[0], v[1], m[3], v[2], m[6]);
+        dest->y = dot_8018(v[0], m[1], v[1], m[4], v[2], m[7]);
+        dest->z = dot_8018(v[0], m[2], v[1], m[5], v[2], m[8]);
+    }
+}
+
 static inline void matVecMixW_8018(const Vec_8018 *v, const float *m, Vec_8018 *dest) {
     if (dest == v) {
         float tx = v->y * m[3] + v->x * m[0] + v->z * m[6];
@@ -295,11 +310,11 @@ void fn_8018BFA0(void *out0, float *a, int *b0, int arg3, float arg4, float arg5
         out[5] = fn_80144514(a[2], b[3], a[5], b[4], a[8], b[5]);
         out[8] = fn_80144514(a[2], b[6], a[5], b[7], a[8], b[8]);
     }
-    matVecMixY_8018((Vec_8018 *)scratch, a, b + 9);
+    matVecDot_8018((Vec_8018 *)scratch, a, b + 9);
     out[9] = a[9] + scratch[0];
     out[10] = a[10] + scratch[1];
     out[11] = a[11] + scratch[2];
-    matVecMixY_8018((Vec_8018 *)scratch, out, b + 9);
+    matVecDot_8018((Vec_8018 *)scratch, out, b + 9);
     out[9] -= scratch[0];
     out[10] -= scratch[1];
     out[11] -= scratch[2];
