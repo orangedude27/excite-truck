@@ -3,11 +3,7 @@
 
 #include <types.h>
 
-/* Record fn_8000D838 chains onto the global static-destructor list. */
-typedef struct {
-    unsigned char tag;  /* 0x31, written by fn_8000D838 */
-    void *next;         /* 0x4 previous head of the list (lbl_8055D450) */
-} StaticDtorRecord;
+#include <static_dtor.h>
 
 extern StaticDtorRecord lbl_8055D558; /* this module's record, in .sbss */
 void fn_8000D838(void *record);
