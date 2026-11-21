@@ -670,9 +670,17 @@ extern "C" f32 CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
 #pragma pop
 extern "C" f32 CalcSurroundPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
     f32 v;
-    if (pan > lbl_805610CC) v = lbl_805610CC;
-    else v = (pan < lbl_805610E8) ? lbl_805610E8 : pan;
-    return lbl_802F6124[(s32)(lbl_805610D0 + lbl_805610E4 * (v * lbl_805610D0))];
+
+    if (pan > 2.0f) {
+        v = 2.0f;
+    } else if (pan < lbl_805610E8) {
+        v = lbl_805610E8;
+    } else {
+        v = pan;
+    }
+
+    return lbl_802F6124[(s32)(lbl_805610D0 +
+                              lbl_805610E4 * (v * lbl_805610D0))];
 }
 
 extern "C" s32 CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
