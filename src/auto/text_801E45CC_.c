@@ -53,36 +53,36 @@ extern int sprintf(char *, const char *, ...);
 /* Draws the debug/status overlay panel with device, recording, and log information. */
 void fn_801E45CC(void) {
     char textBuf[80];
-    register char *textBase = lbl_80339930;
+    register char *textBase = DBG_FORMAT_STR;
     int y;
     int i;
     int statusColor;
 
     fn_8023895C();
     fn_80238B44(10, 10, 230, 84, 0x80000000);
-    sprintf(textBuf, textBase + 0x4C, lbl_8055AEC4);
+    sprintf(textBuf, textBase + 0x4C, DBG_LOD_FACTOR);
     fn_80238A74(15, 15, textBuf, -1);
     fn_80238A74(15, 27, textBase + 0x60, -1);
-    sprintf(textBuf, textBase + 0x74, lbl_8055AEC8, lbl_8055AED4);
+    sprintf(textBuf, textBase + 0x74, DBG_CAR_INDEX, DBG_CAR_NAME);
     fn_80238A74(10, 39, textBuf, -1);
-    sprintf(textBuf, textBase + 0x80, lbl_8055AECC, lbl_8055AED8);
+    sprintf(textBuf, textBase + 0x80, DBG_WHEEL_INDEX, DBG_WHEEL_NAME);
     fn_80238A74(10, 51, textBuf, -1);
-    statusColor = lbl_8055EA90 ? 0xFF2DC82D : 0xFF202020;
-    fn_80238A74(10, 63, lbl_8055AEE0, statusColor);
+    statusColor = DBG_WIRE_FLAG ? 0xFF2DC82D : 0xFF202020;
+    fn_80238A74(10, 63, DBG_WIRE_TEXT, statusColor);
     if (fn_802CC744() == 0) {
         fn_80238A74(50, 63, textBase + 0x90, 0xFF2D2DC8);
     } else if (fn_802CC74C() == 0) {
-        fn_80238A74(50, 63, lbl_8055AEE8, 0xFF2DC82D);
+        fn_80238A74(50, 63, DBG_CACHE_TEXT, 0xFF2DC82D);
     }
-    if (lbl_8055EA88) {
-        fn_80238A74(150, 63, (const char *)lbl_8055EA88, 0xFF2DC82D);
+    if (DBG_LOG_TEXT) {
+        fn_80238A74(150, 63, (const char *)DBG_LOG_TEXT, 0xFF2DC82D);
     }
-    if (lbl_8055EA8F) {
+    if (DBG_LOG_WINDOW) {
         y = 100;
         fn_80238B44(20, 100, 320, 112, 0x60000000);
         i = 0;
-        while (i < *(int *)((char *)lbl_804874F0 + 0x80)) {
-            fn_80238A74(20, y, (const char *)lbl_804874F0, -1);
+        while (i < *(int *)((char *)DBG_LOG_LINES + 0x80)) {
+            fn_80238A74(20, y, (const char *)DBG_LOG_LINES, -1);
             y -= 12;
             i++;
         }
