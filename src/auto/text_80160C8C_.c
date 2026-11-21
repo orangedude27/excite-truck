@@ -2031,19 +2031,23 @@ done:
 #pragma processor 750
 #pragma scheduling on
 #pragma cplusplus on
-extern "C" s32 fn_80162FE8(const void *arg0) {
-    class Obj {
+extern "C" s32 fn_80162FE8(const void *subTask) {
+    /* A finished challenge draws its results once the finish-delay timer passes.
+     * isCompleted() (vtable+0x28) reports the challenge is cleared; +0x5B4 then
+     * counts up each frame and is compared to the +0x5B8 delay threshold.  If it
+     * is not cleared yet the state flag at +8 decides instead. */
+    class ChallengeSubTask {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
         virtual void v5(); virtual void v6(); virtual void v7();
-        virtual s32 check();
+        virtual s32 isCompleted();
     };
-    Obj *obj = (Obj *)arg0;
-    f32 tmp = *(const f32 *)((const char *)arg0 + 0x5B8);
-    if (obj->check() != 0) {
-        return *(f32 *)((char *)obj + 0x5B4) > tmp;
+    ChallengeSubTask *task = (ChallengeSubTask *)subTask;
+    f32 finishDelay = *(const f32 *)((const char *)subTask + 0x5B8);
+    if (task->isCompleted() != 0) {
+        return *(f32 *)((char *)task + 0x5B4) > finishDelay;
     }
-    return *(s32 *)((char *)obj + 8) != 0;
+    return *(s32 *)((char *)task + 8) != 0;
 }
 #pragma cplusplus off
 #pragma pop
