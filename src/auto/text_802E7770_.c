@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+/* No-op SPU idle hook (spuIdleNoop), called once before the reset callback is
+ * registered in fn_802E6B04; this build leaves it empty. */
 void fn_802E7770(void) {
 }
 
