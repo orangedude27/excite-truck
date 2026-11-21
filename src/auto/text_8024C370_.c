@@ -21,6 +21,8 @@ void fn_801345D8(void *, int, const char *, ...);
 extern char lbl_80498A00[];
 extern int lbl_80498A48[];
 extern char lbl_8055C018[];
+/* Intentionally empty handler for the corresponding menu/dialog selection (case 13):
+ * selecting it has no side effects. */
 void fn_8024C370(void) {}
 
 int sprintf(char *, const char *, ...);
@@ -462,91 +464,95 @@ void fn_8024CBF4(void) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 int fn_8024CC54(void *out, void *arg1, int arg2) {
-    int args[90];
+#pragma scheduling invalid_target
+    typedef struct { int v[5]; } Hdr;
+    typedef struct { int l, t, v, f, i; } Ent;
+    typedef struct { Hdr h; Ent e[17]; } Frame;
+    Frame fr;
+    int *args = (int *)&fr;
     char *base = lbl_804989E8;
     char *temp_r11 = base + 0x70;
     char *temp_r10 = base + 0xB8;
     int temp_r3;
-    register int zero = 0;
-    register int three = 3;
+
     args[22] = (int)arg1;
     args[37] = (int)arg1;
-    args[8] = zero;
-    args[9] = zero;
+    args[8] = 0;
+    args[9] = 0;
     args[7] = (int)((char *)&fn_8024CBF4);
     args[6] = 8;
     args[5] = (int)lbl_8055BAC0;
     args[10] = (int)lbl_8055C01C;
-    args[11] = three;
+    args[11] = 3;
     args[12] = (int)temp_r11;
-    args[13] = zero;
-    args[14] = zero;
-    args[16] = three;
+    args[13] = 0;
+    args[14] = 0;
+    args[16] = 3;
     args[15] = (int)lbl_8055C06C;
     args[17] = (int)temp_r10;
-    args[18] = zero;
-    args[19] = zero;
-    args[21] = zero;
+    args[18] = 0;
+    args[19] = 0;
+    args[21] = 0;
     args[20] = (int)lbl_8055C01C;
-    args[23] = zero;
-    args[24] = zero;
-    args[26] = three;
+    args[23] = 0;
+    args[24] = 0;
+    args[26] = 3;
     args[25] = (int)lbl_8055C02C;
     args[27] = (int)(temp_r11 + 0x12);
-    args[28] = zero;
-    args[29] = zero;
-    args[31] = three;
+    args[28] = 0;
+    args[29] = 0;
+    args[31] = 3;
     args[30] = (int)lbl_8055C074;
     args[32] = (int)(temp_r10 + 0x64);
-    args[33] = zero;
-    args[34] = zero;
-    args[36] = zero;
+    args[33] = 0;
+    args[34] = 0;
+    args[36] = 0;
     args[35] = (int)lbl_8055C02C;
     args[38] = 1;
-    args[39] = zero;
-    args[41] = three;
+    args[39] = 0;
+    args[41] = 3;
     args[40] = (int)lbl_8055C03C;
     args[42] = (int)(temp_r11 + 0x24);
-    args[43] = zero;
-    args[44] = zero;
+    args[43] = 0;
+    args[44] = 0;
     args[45] = (int)lbl_8055C07C;
     args[47] = (int)(temp_r10 + 0xC8);
     args[55] = (int)lbl_8055C04C;
     args[50] = (int)lbl_8055C03C;
-    args[46] = three;
-    args[48] = zero;
-    args[49] = zero;
-    args[51] = zero;
+    args[46] = 3;
+    args[48] = 0;
+    args[49] = 0;
+    args[51] = 0;
     args[52] = (int)arg1;
     args[53] = 2;
-    args[54] = zero;
-    args[56] = three;
+    args[54] = 0;
+    args[56] = 3;
     args[57] = (int)(temp_r11 + 0x36);
-    args[58] = zero;
-    args[59] = zero;
-    args[61] = three;
+    args[58] = 0;
+    args[59] = 0;
+    args[61] = 3;
     args[60] = (int)lbl_8055C084;
     args[62] = (int)(temp_r10 + 0x12C);
-    args[63] = zero;
-    args[64] = zero;
-    args[66] = zero;
+    args[63] = 0;
+    args[64] = 0;
+    args[66] = 0;
     args[65] = (int)lbl_8055C04C;
     args[67] = (int)arg1;
-    args[68] = three;
-    args[69] = zero;
-    args[71] = zero;
+    args[68] = 3;
+    args[69] = 0;
+    args[71] = 0;
     args[70] = (int)lbl_8055C05C;
-    args[72] = zero;
+    args[72] = 0;
     args[73] = 4;
-    args[74] = zero;
-    args[76] = zero;
+    args[74] = 0;
+    args[76] = 0;
     args[75] = (int)lbl_8055C064;
-    args[77] = zero;
+    args[77] = 0;
     args[78] = 5;
-    args[79] = zero;
+    args[79] = 0;
     args[81] = 6;
     args[80] = (int)lbl_8055B860;
-    args[82] = zero;
+    args[82] = 0;
     args[83] = -1;
     args[84] = 0x1B;
     args[85] = *(int *)(base + 0);
@@ -781,19 +787,19 @@ extern void *memmove(void *, const void *, unsigned int);
 extern int __cntlzw(unsigned int);
 #pragma scheduling on
 int fn_8024D394(void *arg0, int arg1) {
-    char *base = lbl_80343F00;
+    const char *base = lbl_80343F00;
 
     switch (arg1) {
     case 0x113: {
         unsigned char *toggle = (unsigned char *)arg0 + 0x6C;
-        char *text;
         char *dst;
+        char *text;
         int count;
         int on = (unsigned int)__cntlzw((unsigned int)*toggle) >> 5;
         *(signed char *)toggle = on;
-        text = base + 0x38;
+        text = (char *)base + 0x38;
         if (on != 0)
-            text = base + 0x20;
+            text = (char *)base + 0x20;
         text = (char *)fn_80131234(text);
         dst = (char *)arg0 + 0x6D;
         count = 0xA;
@@ -850,9 +856,9 @@ int fn_8024D394(void *arg0, int arg1) {
         } else {
             char value;
             column = *(int *)((char *)arg0 + 0x68);
-            table = base + 0x248;
+            table = (char *)base + 0x248;
             if (*(unsigned char *)((char *)arg0 + 0x6C) != 0)
-                table = base + 0x220;
+                table = (char *)base + 0x220;
             value = (signed char)table[column * 10 + row];
             if (*(unsigned char *)((char *)arg0 + 0x60) == 0) {
                 memset(*(char **)((char *)arg0 + 0x44), 0, 0x11);
