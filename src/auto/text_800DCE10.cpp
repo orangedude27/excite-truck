@@ -463,7 +463,7 @@ extern "C" void fn_800DD70C(register u8 *self) {
     register const char *msg = lbl_80320560;
     if (*(s32 *)(self + 0xD4) != 0 && *(s32 *)(self + 0xE0) != 0) {
     if (*(s32 *)(self + 0x28) == 0) return;
-    (*(void (**)(void *))(*(u8 **)self + 0x60))(self);
+    ((DD70CVTab *)self)->call();
     fn_80111B64(&w);
     SetFont__Q36nw4hbm2ut10CharWriterFRCQ36nw4hbm2ut4Font(&w, *(void **)(self + 0xE0));
     SetFontSize__Q36nw4hbm2ut10CharWriterFff(&w, *(f32 *)(self + 0xE4), *(f32 *)(self + 0xE8));
@@ -536,113 +536,30 @@ extern f32 fn_80111C10(s32);
 extern f32 lbl_80560ED0;
 extern const char lbl_80320560[],lbl_80320980[],lbl_803209B8[],lbl_803209CC[],lbl_80320A04[],lbl_80320A18[],lbl_80320A64[],lbl_80320A78[],lbl_80320AB0[],lbl_80320AC4[],lbl_80320AFC[],lbl_80320B10[],lbl_80320B48[];
 class Reader { public: s32 cursor; u16 (Reader::*next)(); };
-struct Context { s32 writer,str; u32 x,y; s32 flags; } context;
 Reader reader;
+struct Context { s32 writer,str; u32 x,y; s32 flags; } context;
 class Font { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(); virtual s32 ascent(); virtual void x0(); virtual void x1(); virtual void x2(); virtual void x3(); virtual s32 width(u16); };
 class Processor { public: virtual void d0(); virtual void d1(); virtual s32 rectCall(f32*,u16,Context*); };
 const char *base = lbl_80320560;
 struct Rect { f32 left,top,right,bottom; } saved;
 f32 rect[4];
 
-    f32 temp_f0;
-    f32 temp_f0_2;
-    f32 temp_f0_3;
-    f32 temp_f0_4;
-    f32 temp_f27;
-    f32 temp_f28;
-    f32 var_f0;
-    f32 var_f1;
-    f32 var_f1_2;
-    f32 var_f1_3;
-    f32 var_f1_4;
-    f32 var_f1_5;
-    f32 var_f1_6;
-    f32 var_f2;
-    f32 var_f31;
-    s32 temp_r10;
-    s32 temp_r11;
-    s32 temp_r11_2;
-    s32 temp_r14;
-    s32 temp_r20;
-    s32 temp_r22;
-    s32 temp_r23;
-    s32 temp_r24;
-    s32 temp_r25;
-    s32 temp_r30;
-    s32 temp_r3_3;
-    s32 temp_r3_4;
-    s32 temp_r3_5;
-    s32 temp_r3_6;
-    s32 temp_r4;
-    s32 temp_r4_2;
-    s32 temp_r4_3;
-    s32 temp_r5;
-    s32 temp_r7;
-    s32 var_r0;
-    s32 var_r0_2;
-    s32 var_r10;
-    s32 var_r10_2;
-    s32 var_r10_3;
-    s32 var_r21;
-    s32 var_r3;
-    s32 var_r3_2;
-    s32 var_r3_3;
-    s32 var_r3_4;
-    s32 var_r3_5;
-    s32 var_r3_6;
-    s32 var_r3_7;
-    s32 var_r3_8;
-    s32 var_r4;
-    s32 var_r4_2;
-    s32 var_r4_3;
-    s32 var_r4_4;
-    s32 var_r4_5;
-    s32 var_r5;
-    s32 var_r5_2;
-    s32 var_r5_3;
-    s32 var_r5_4;
-    s32 var_r5_5;
-    s32 var_r5_6;
-    s32 var_r5_7;
-    s32 var_r6;
-    s32 var_r6_2;
-    s32 var_r6_3;
-    s32 var_r6_4;
-    s32 var_r6_5;
-    s32 var_r6_6;
-    s32 var_r6_7;
-    s32 var_r7;
-    s32 var_r7_2;
-    s32 var_r7_3;
-    s32 var_r7_4;
-    s32 var_r7_5;
-    s32 var_r7_6;
-    s32 var_r8;
-    s32 var_r8_2;
-    s32 var_r8_3;
-    s32 var_r8_4;
-    s32 var_r8_5;
-    s32 var_r8_6;
-    s32 var_r9;
-    s32 var_r9_2;
-    s32 var_r9_3;
-    s32 var_r9_4;
-    s32 var_r9_5;
-    s32 var_r9_6;
-    s32 var_r9_7;
+    f32 temp_f0, temp_f0_2, temp_f0_3, temp_f0_4, temp_f27, temp_f28;
+    f32 var_f0, var_f1, var_f1_2, var_f1_3, var_f1_4, var_f1_5, var_f1_6, var_f2, var_f31;
+    s32 temp_r10, temp_r11, temp_r11_2, temp_r14, temp_r20, temp_r22, temp_r23, temp_r24, temp_r25, temp_r30;
+    s32 temp_r3_3, temp_r3_4, temp_r3_5, temp_r3_6, temp_r4, temp_r4_2, temp_r4_3, temp_r5, temp_r7;
+    s32 var_r0, var_r0_2, var_r10, var_r10_2, var_r10_3, var_r21, var_r3, var_r3_2, var_r3_3, var_r3_4, var_r3_5, var_r3_6, var_r3_7, var_r3_8;
+    s32 var_r4, var_r4_2, var_r4_3, var_r4_4, var_r4_5;
+    s32 var_r5, var_r5_2, var_r5_3, var_r5_4, var_r5_5, var_r5_6, var_r5_7;
+    s32 var_r6, var_r6_2, var_r6_3, var_r6_4, var_r6_5, var_r6_6, var_r6_7;
+    s32 var_r7, var_r7_2, var_r7_3, var_r7_4, var_r7_5, var_r7_6;
+    s32 var_r8, var_r8_2, var_r8_3, var_r8_4, var_r8_5, var_r8_6;
+    s32 var_r9, var_r9_2, var_r9_3, var_r9_4, var_r9_5, var_r9_6, var_r9_7;
     u16 var_r26;
-    u32 temp_r31;
-    u32 temp_r3;
-    u32 temp_r3_2;
-    u32 temp_r3_7;
+    u32 temp_r31, temp_r3, temp_r3_2, temp_r3_7;
 
     temp_r11 = ((s32)arg1_ptr) & 0xFF000000;
-    var_r5 = 1;
-    var_r6 = 1;
-    var_r7 = 1;
-    var_r8 = 1;
-    var_r9 = 1;
-    var_r10 = 1;
+    var_r5 = 1; var_r6 = 1; var_r7 = 1; var_r8 = 1; var_r9 = 1; var_r10 = 1;
     if (((u32) (temp_r11) != 0x80000000U) && ((u32) ((((s32)arg1_ptr) & 0xFF800000)) != 0x81000000U)) {
         var_r10 = 0;
     }
@@ -665,12 +582,7 @@ f32 rect[4];
         ((void (*)(const char*, s32, const char*, ...))Panic__Q26nw4hbm2dbFPCciPCce)(base + 0x10, 0x47, base + 0x194, ((s32)arg1_ptr));
     }
     temp_r10 = ((s32)arg0_ptr) & 0xFF000000;
-    var_r4 = 1;
-    var_r5_2 = 1;
-    var_r6_2 = 1;
-    var_r7_2 = 1;
-    var_r8_2 = 1;
-    var_r9_2 = 1;
+    var_r4 = 1; var_r5_2 = 1; var_r6_2 = 1; var_r7_2 = 1; var_r8_2 = 1; var_r9_2 = 1;
     if (((u32) (temp_r10) != 0x80000000U) && ((u32) ((((s32)arg0_ptr) & 0xFF800000)) != 0x81000000U)) {
         var_r9_2 = 0;
     }
@@ -693,12 +605,7 @@ f32 rect[4];
         ((void (*)(const char*, s32, const char*, ...))Panic__Q26nw4hbm2dbFPCciPCce)(base + 0x10, 0x48, base + 0x240, ((s32)arg0_ptr));
     }
     temp_r14 = ((s32)arg2_ptr) & 0xFF000000;
-    var_r4_2 = 1;
-    var_r5_3 = 1;
-    var_r6_3 = 1;
-    var_r7_3 = 1;
-    var_r8_3 = 1;
-    var_r9_3 = 1;
+    var_r4_2 = 1; var_r5_3 = 1; var_r6_3 = 1; var_r7_3 = 1; var_r8_3 = 1; var_r9_3 = 1;
     if (((u32) (temp_r14) != 0x80000000U) && ((u32) ((((s32)arg2_ptr) & 0xFF800000)) != 0x81000000U)) {
         var_r9_3 = 0;
     }
@@ -732,12 +639,7 @@ f32 rect[4];
     temp_r11_2 = temp_r3_3 & 0xFF000000;
     var_f31 = lbl_80560ED0;
     var_r21 = 0;
-    var_r5_4 = 1;
-    var_r6_4 = 1;
-    var_r7_4 = 1;
-    var_r8_4 = 1;
-    var_r9_4 = 1;
-    var_r10_2 = 1;
+    var_r5_4 = 1; var_r6_4 = 1; var_r7_4 = 1; var_r8_4 = 1; var_r9_4 = 1; var_r10_2 = 1;
     if (((u32) (temp_r11_2) != 0x80000000U) && ((u32) ((temp_r3_3 & 0xFF800000)) != 0x81000000U)) {
         var_r10_2 = 0;
     }
@@ -762,11 +664,7 @@ f32 rect[4];
     GetCharStrmReader__Q36nw4hbm2ut4FontCFv(&reader.cursor, (u32)temp_r3_3);
     var_r4_3 = 1;
     temp_r25 = (s32) &reader.cursor & 0xFF000000;
-    var_r5_5 = 1;
-    var_r6_5 = 1;
-    var_r7_5 = 1;
-    var_r8_5 = 1;
-    var_r9_5 = 1;
+    var_r5_5 = 1; var_r6_5 = 1; var_r7_5 = 1; var_r8_5 = 1; var_r9_5 = 1;
     if (((u32) (temp_r25) != 0x80000000U) && ((u32) (((s32) &reader.cursor & 0xFF800000)) != 0x81000000U)) {
         var_r9_5 = 0;
     }
@@ -956,7 +854,7 @@ loop_262:
             goto block_273;
         }
         switch (temp_r30) {
-        case 3: goto block_273;                         /* irregular */
+        case 3: goto block_273;
         case 4:
             return arg3;
         case 1:
@@ -1096,16 +994,24 @@ extern "C" void AllocStringBuffer__Q36nw4hbm3lyt7TextBoxFUs(void *this_ptr, u16 
         virtual void m20(); virtual void m21(); virtual void m22(); virtual void m23();
         virtual void FreeStringBuffer();
     };
+#define mStringBuffer ((u8 *)this_ptr + 0xD4)
+#define mStringBufferSize ((u8 *)this_ptr + 0xF8)
+#define sTextAllocator lbl_8055DDF0
+    /* Ensure the string buffer holds len wide characters plus a terminator,
+     * freeing the old buffer and reallocating when its capacity is too small. */
     if (len != 0) {
-        u16 bytes = (len + 1) * 2;
-        u16 current = *(u16 *)((u8 *)this_ptr + 0xF8);
-        if (bytes > current) {
+        u16 neededBytes = (len + 1) * 2;
+        u16 oldCapacity = *(u16 *)mStringBufferSize;
+        if (neededBytes > oldCapacity) {
             ((TextBox *)this_ptr)->FreeStringBuffer();
-            void *result = MEMAllocFromAllocator(lbl_8055DDF0, bytes);
-            *(void **)((u8 *)this_ptr + 0xD4) = result;
-            if (result != NULL) *(u16 *)((u8 *)this_ptr + 0xF8) = bytes;
+            void *newBuffer = MEMAllocFromAllocator(sTextAllocator, neededBytes);
+            *(void **)mStringBuffer = newBuffer;
+            if (newBuffer != NULL) *(u16 *)mStringBufferSize = neededBytes;
         }
     }
+#undef mStringBuffer
+#undef mStringBufferSize
+#undef sTextAllocator
 }
 #pragma scheduling on
 extern "C" void fn_800DEFD8(void *this_ptr) {
@@ -1205,6 +1111,7 @@ extern "C" s32 fn_800DF1C8(s32 object, s32 deleteFlag) {
     return object;
 }
 
+#pragma opt_propagation off
 extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
     const char *msg = lbl_80320560;
     f64 posD;
@@ -1249,10 +1156,10 @@ extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
     ((u8 *)&tmp)[28] = ((u8 *)arg2)[28]; ((u8 *)&tmp)[29] = ((u8 *)arg2)[29];
     ((u8 *)&tmp)[30] = ((u8 *)arg2)[30]; ((u8 *)&tmp)[31] = ((u8 *)arg2)[31];
     tmp.w[0] = ((s32 *)arg2)[8];
-    { s32 u1 = ((s32 *)arg2)[10]; s32 u0 = ((s32 *)arg2)[9]; tmp.w[2] = u1; tmp.w[1] = u0; }
-    { s32 u1 = ((s32 *)arg2)[12]; s32 u0 = ((s32 *)arg2)[11]; tmp.w[4] = u1; tmp.w[3] = u0; }
+    { s32 u1; s32 u0; u0 = ((volatile s32 *)arg2)[9]; u1 = ((volatile s32 *)arg2)[10]; tmp.w[1] = u0; tmp.w[2] = u1; }
+    { s32 u1; s32 u0; u0 = ((volatile s32 *)arg2)[11]; u1 = ((volatile s32 *)arg2)[12]; tmp.w[3] = u0; tmp.w[4] = u1; }
     tmp.w[5] = ((s32 *)arg2)[13];
-    { s32 u1 = ((s32 *)arg2)[15]; s32 u0 = ((s32 *)arg2)[14]; tmp.w[7] = u1; tmp.w[6] = u0; }
+    { s32 u1; s32 u0; u0 = ((volatile s32 *)arg2)[14]; u1 = ((volatile s32 *)arg2)[15]; tmp.w[6] = u0; tmp.w[7] = u1; }
     tmp.c[0] = ((u8 *)arg2)[0x40]; tmp.c[1] = ((u8 *)arg2)[0x41];
     tmp.c[2] = ((u8 *)arg2)[0x42]; tmp.c[3] = ((u8 *)arg2)[0x43];
     tmp.f0 = ((f32 *)arg2)[0x11]; tmp.i0 = ((s32 *)arg2)[0x12];
@@ -1273,18 +1180,22 @@ extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
     case 1: fb = lbl_80560EE0; break;
     case 2: fb = lbl_80560EE4; break;
     }
-    h = arg0[3] - arg0[1];
-    w = arg0[2] - arg0[0];
+    h = *(volatile f32 *)&arg0[3] - *(volatile f32 *)&arg0[1];
+    w = *(volatile f32 *)&arg0[2] - *(volatile f32 *)&arg0[0];
     {
-        f32 ny = ((f32 *)&posD)[1] + (*(f32 *)(arg1 + 0x50) - h) * fb;
-        f32 nx = ((f32 *)&posD)[0] + (*(f32 *)(arg1 + 0x4C) - w) * fa;
+        f32 dy = *(f32 *)(arg1 + 0x50) - h;
+        f32 dx = *(f32 *)(arg1 + 0x4C) - w;
+        f32 nx;
+        f32 ny;
+        ny = ((f32 *)&posD)[1] + dy * fb;
+        nx = ((f32 *)&posD)[0] + dx * fa;
         arg0[0] = nx;
         arg0[1] = ny;
         arg0[2] = nx + w;
         arg0[3] = ny + h;
     }
 }
-
+#pragma opt_propagation reset
 extern "C" void SetCursor__Q36nw4hbm2ut10CharWriterFff(void *, f32, f32);
 extern "C" s32 fn_800DDDF4(f32 *, void *, const u16 *, s32, u8 *, f32);
 extern "C" unsigned long lbl_80559800;
