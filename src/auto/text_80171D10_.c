@@ -2278,16 +2278,18 @@ void fn_80175B0C(char *arg0) {
     float k = lbl_80561B04;
     float a, b, f24, f25, f26;
     float d[2], v[2], w[2];
-    int n;
-    char *obj;
-    char *out = arg0;
-    int i = 0;
+    float len, c, s, dx, dy, inv;
+    double rad;
     float step = lbl_80561A38;
     float shrink = lbl_80561B08;
     float min26 = lbl_80561A80;
     float min25 = lbl_80561B0C;
     float shrink24 = lbl_80561ABC;
     float min24 = lbl_80561A78;
+    int n;
+    char *obj;
+    char *out = arg0;
+    int i = 0;
     for (; i < *(int *)(arg0 + 0x124); i++, out += 0x24) {
         if (fn_801B3050(i) & 1) {
             a = lbl_80561AF8;
@@ -2301,8 +2303,6 @@ void fn_80175B0C(char *arg0) {
         f24 = lbl_80561B00;
         n = 0x13;
         do {
-            float len, c, s, dx, dy;
-            double rad;
             obj = (char *)fn_8017960C(i);
             v[0] = *(float *)(obj + 0x60);
             v[1] = *(float *)(obj + 0x68);
@@ -2310,7 +2310,7 @@ void fn_80175B0C(char *arg0) {
             d[1] = *(float *)(obj + 0x5C);
             len = (float)fn_8002F234(d[0] * d[0] + d[1] * d[1]);
             if (!((float)__fabs(len) <= lbl_80558DC4[0])) {
-                float inv = f24 / len;
+                inv = f24 / len;
                 d[0] *= inv;
                 d[1] *= inv;
             }
@@ -2567,37 +2567,40 @@ extern float lbl_80561AA4, lbl_80561AA8, lbl_80561AAC, lbl_80561AB0;
 #pragma use_lmw_stmw off
 #pragma processor 750
 #pragma cplusplus on
-extern "C" void fn_80173058(unsigned char *self) {
+/* Initialise a freshly allocated crushmaster from the config file: set up the
+   per-car radar records, load the crush tuning values into lbl_8043038C, read
+   the radar pair overrides, make the round's DSA player and reset the round. */
+extern "C" void fn_80173058(unsigned char *crush) {
     struct { const char *p; } labelsBox;
     labelsBox.p = lbl_80330F48;
     const char *&labels = labelsBox.p;
     char key[0x20];
-    register float initial;
+    register float initialTime;
     ConfigPair73058 pair;
     Config73058 *config, *root;
-    char *name;
+    char *sectionName;
     unsigned char *record;
     unsigned char *entry;
-    int i;
-    void *object;
-    *(int *)(self + 0x1A8) = fn_80145E70(labels + 0x1FC);
-    *(int *)(self + 0x170) = fn_801EA994();
-    record = self;
-    initial = -1.0f;
-    entry = self + 0x90;
-    for (i = 0; i < *(int *)(self + 0x170); record += 0x1C, entry += 0x1C, ++i) {
-        record[0x91] = fn_80171EC0(i);
+    int carIndex;
+    void *animPlayer;
+    *(int *)(crush + 0x1A8) = fn_80145E70(labels + 0x1FC);
+    *(int *)(crush + 0x170) = fn_801EA994();
+    record = crush;
+    initialTime = -1.0f;
+    entry = crush + 0x90;
+    for (carIndex = 0; carIndex < *(int *)(crush + 0x170); record += 0x1C, entry += 0x1C, ++carIndex) {
+        record[0x91] = fn_80171EC0(carIndex);
         record[0x90] = 1;
-        *(float *)(record + 0xA8) = initial;
+        *(float *)(record + 0xA8) = initialTime;
         *(int *)(record + 0x9C) = 0;
         *(int *)(record + 0x98) = 0;
         *(int *)(record + 0x94) = 0;
         memset(entry + 0x10, 0, 8);
     }
-    name = fn_80204EA0(labels + 0x20C);
+    sectionName = fn_80204EA0(labels + 0x20C);
     root = *(Config73058 **)((unsigned char *)fn_8000AC38() + 0x20);
-    config = root->section( name);
-    *(float *)(self + 0x1A4) = config->number( lbl_8055A2B0, lbl_80561A94);
+    config = root->section( sectionName);
+    *(float *)(crush + 0x1A4) = config->number( lbl_8055A2B0, lbl_80561A94);
     lbl_8043038C[0] = lbl_80561A98 * config->number( labels + 0x218, 160.0f);
     lbl_8043038C[1] = lbl_80561A98 * config->number( labels + 0x224, lbl_80561AA0);
     lbl_8043038C[2] = config->number( labels + 0x230, lbl_80561AA4);
@@ -2610,7 +2613,7 @@ extern "C" void fn_80173058(unsigned char *self) {
     lbl_8043038C[8] = config->number( labels + 0x2AC, lbl_80561AAC);
     lbl_8043038C[9] = config->number( labels + 0x2B8, lbl_80561A40);
     lbl_8043038C[10] = config->number( labels + 0x2C8, lbl_80561AB0);
-    *(int *)(self + 8) = 0;
+    *(int *)(crush + 8) = 0;
     root = *(Config73058 **)((unsigned char *)fn_8000AC38() + 0x20);
     {
         Config73058 *config2 = root->section( lbl_8055A2B8);
@@ -2618,25 +2621,25 @@ extern "C" void fn_80173058(unsigned char *self) {
             int j = 0;
             for (;;) {
                 ((void (*)(void *, int, const char *, ...))fn_801345D8)(key, 0x20, lbl_8055A2C0, j);
-                if (!config2->contains( key) || *(int *)(self + 8) + 1 > *(int *)(self + 0xC)) break;
+                if (!config2->contains( key) || *(int *)(crush + 8) + 1 > *(int *)(crush + 0xC)) break;
                 pair.bits = config2->pair( key);
                 {
-                    int index = *(int *)(self + 8);
-                    float *data = *(float **)(self + 4);
+                    int index = *(int *)(crush + 8);
+                    float *data = *(float **)(crush + 4);
                     ++j;
-                    *(int *)(self + 8) = index + 1;
+                    *(int *)(crush + 8) = index + 1;
                     data[index * 2] = pair.value[0];
                     data[index * 2 + 1] = pair.value[1];
                 }
             }
         }
     }
-    object = fn_801284F8(8, (void *)(labels + 0x2DC));
-    if (object) object = fn_802ADDD8(object, 1);
-    *(void **)(self + 0x1B8) = object;
-    ((void (*)(void *))fn_8017353C)(self + 0x1AC);
-    ((void (*)(void *))fn_80173424)(self + 0x1AC);
-    fn_802E30C8((void *)(labels + 0x2F0), *(float *)(self + 0x1A4),
+    animPlayer = fn_801284F8(8, (void *)(labels + 0x2DC));
+    if (animPlayer) animPlayer = fn_802ADDD8(animPlayer, 1);
+    *(void **)(crush + 0x1B8) = animPlayer;
+    ((void (*)(void *))fn_8017353C)(crush + 0x1AC);
+    ((void (*)(void *))fn_80173424)(crush + 0x1AC);
+    fn_802E30C8((void *)(labels + 0x2F0), *(float *)(crush + 0x1A4),
         lbl_8043038C[0] / lbl_80561A98, lbl_8043038C[1] / lbl_80561A98,
         lbl_8043038C[2], lbl_8043038C[3]);
 }
