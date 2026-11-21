@@ -31,7 +31,7 @@ static BOOL ProbeBarnacle(EXIChannel channel, u32 device, u32* outId) {
         goto _unlock;
     }
 
-    idCommand = 0x20011300;
+    idCommand = BARNACLE_ID_CMD;
     failed = !EXIImm(channel, &idCommand, sizeof(u32), EXI_WRITE, NULL);
     failed |= !EXISync(channel);
 
