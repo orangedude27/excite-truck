@@ -17,19 +17,22 @@ extern char lbl_80339B70[]; /* "DrawList verts" */
 extern char lbl_80339B80[]; /* "DrawList idxs" */
 #define sDrawListVertsTag lbl_80339B70
 #define sDrawListIdxsTag lbl_80339B80
-void *fn_801E76A8(void *arg0, int arg1) {
+void *fn_801E76A8(void *list, int vertexCapacity) {
     #pragma scheduling invalid_target
-    int rem;
-    int size;
-    *(void **)arg0 = fn_8012850C(arg1 * 0x18, lbl_80339B70);
-    rem = arg1 - 2;
-    *(int *)((char *)arg0 + 8) = arg1;
-    size = (rem * 4) - rem;
-    *(int *)((char *)arg0 + 4) = 0;
-    *(void **)((char *)arg0 + 0xC) = fn_8012850C(size * 2, lbl_80339B80);
-    *(int *)((char *)arg0 + 0x10) = 0;
-    *(int *)((char *)arg0 + 0x14) = size;
-    return arg0;
+    /* Initialize a GenericDrawList: allocate the vertex buffer (0x18-byte
+     * vertices) and the triangle-strip index buffer ((capacity-2)*3 u16 indices),
+     * store their capacities, and reset both write cursors. */
+    int span;
+    int indexCapacity;
+    *(void **)list = fn_8012850C(vertexCapacity * 0x18, sDrawListVertsTag);
+    span = vertexCapacity - 2;
+    *(int *)((char *)list + 8) = vertexCapacity;
+    indexCapacity = (span * 4) - span;
+    *(int *)((char *)list + 4) = 0;
+    *(void **)((char *)list + 0xC) = fn_8012850C(indexCapacity * 2, sDrawListIdxsTag);
+    *(int *)((char *)list + 0x10) = 0;
+    *(int *)((char *)list + 0x14) = indexCapacity;
+    return list;
 }
 
 /* Destroy a PhysicsWorld-like object by releasing owned buffers at offsets 0xC
