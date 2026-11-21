@@ -342,50 +342,52 @@ void fn_801935EC(void *sound) {
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_80193604(void *arg0, const void *arg1, void *unused, int arg2, void *arg3) {
+/* Collision callback: add to the owner's rival/contact and impact counters from
+   the other truck's kind, the contact normal and the hit code. */
+void fn_80193604(void *ownerObj, const void *contactNormal, void *unused, int hitCode, void *otherObj) {
     extern float PSVECDotProduct(const void *, const void *);
     extern float PSVECMag(const void *);
     extern float lbl_80562140, lbl_80562144, lbl_80562148, lbl_8056215C;
     extern float lbl_80562160, lbl_80562164, lbl_8056216C;
     extern float lbl_80562170, lbl_80562174;
     struct Vec { float x, y, z; };
-    char *other = (char *)arg3, *obj = (char *)arg0;
-    int code = arg2;
+    char *other = (char *)otherObj, *owner = (char *)ownerObj;
+    int code = hitCode;
     float value, scale, delta[3];
     struct Vec normal;
     if (other != 0) {
         if (*(unsigned int *)(other + 0x10) == 0x50434152) {
-            char *vehicle = *(char **)(obj + 0x294);
+            char *vehicle = *(char **)(owner + 0x294);
             delta[0] = *(float *)(other + 0x60) - *(float *)(vehicle + 0x60);
             delta[1] = *(float *)(other + 0x64) - *(float *)(vehicle + 0x64);
             delta[2] = *(float *)(other + 0x68) - *(float *)(vehicle + 0x68);
-            if (PSVECDotProduct(delta, *(char **)(obj + 0x294) + 0x54) > lbl_80562144) {
+            if (PSVECDotProduct(delta, *(char **)(owner + 0x294) + 0x54) > lbl_80562144) {
                 value = PSVECDotProduct(other + 0x118, other + 0x54);
                 if (value > lbl_80562160 && (float)__fabs(PSVECDotProduct(other + 0x118, other + 0x3C) / value) > lbl_80562164)
-                    *(float *)(obj + 0x2A8) += lbl_80562168;
+                    *(float *)(owner + 0x2A8) += lbl_80562168;
             }
         }
         if ((*(unsigned int *)(other + 0x10) == 0x41434152 || *(unsigned int *)(other + 0x10) == 0x50434152) &&
-            fn_80193524(*(void **)(obj + 0x294), other))
-            *(float *)(obj + 0x2A8) += lbl_80562168;
+            fn_80193524(*(void **)(owner + 0x294), other))
+            *(float *)(owner + 0x2A8) += lbl_80562168;
     }
-    if (code < 0x3E8 && PSVECDotProduct(arg1, *(char **)(obj + 0x294) + 0x88) < lbl_80562144) {
-        normal = *(const struct Vec *)arg1;
+    if (code < 0x3E8 && PSVECDotProduct(contactNormal, *(char **)(owner + 0x294) + 0x88) < lbl_80562144) {
+        normal = *(const struct Vec *)contactNormal;
         value = PSVECMag(&normal);
         scale = lbl_80562148 > value ? lbl_80562148 : value;
         scale = lbl_80562140 / scale;
         normal.x *= scale; normal.y *= scale; normal.z *= scale;
-        if ((float)__fabs(PSVECDotProduct(&normal, *(char **)(obj + 0x294) + 0x88)) > lbl_8056215C) {
-            value = *(float *)(obj + 0x270);
+        if ((float)__fabs(PSVECDotProduct(&normal, *(char **)(owner + 0x294) + 0x88)) > lbl_8056215C) {
+            value = *(float *)(owner + 0x270);
             if (value < lbl_8056216C && (code != 0x6D || value < lbl_80562170) &&
-                (*(int *)(obj + 0x268) != 1 || code != 0x6D))
-                *(float *)(obj + 0x2A0) += lbl_80562174;
+                (*(int *)(owner + 0x268) != 1 || code != 0x6D))
+                *(float *)(owner + 0x2A0) += lbl_80562174;
         }
     }
-    if (code == 0x3EA) *(float *)(obj + 0x2A0) += lbl_80562174;
+    if (code == 0x3EA) *(float *)(owner + 0x2A0) += lbl_80562174;
     switch (code) {
     case 0x6D:
-        *(u8 *)(obj + 0x2FE) = 0;
+        *(u8 *)(owner + 0x2FE) = 0;
         break;
     }
 }
@@ -918,10 +920,13 @@ float fn_801948B0(void *arg0, int arg1, float arg2)
   float b;
   float factor;
   float c184;
-  float v2e4;
   float c1C0;
+  float v2e4;
   float v2cc;
   float mul;
+  float c184A488;
+  float c1C0A488;
+  float scalePart;
   int flag;
   int mode;
   current = f[0x228 / 4];
@@ -931,13 +936,17 @@ float fn_801948B0(void *arg0, int arg1, float arg2)
   f[0x220 / 4] = current + (factor * (high - current));
   weight = fn_801673A4(*((int *) (((char *) arg0) + 0x290)), &sample);
   c184 = lbl_80562184;
-  v2e4 = f[0x2E4 / 4];
   c1C0 = lbl_805621C0;
+  v2e4 = f[0x2E4 / 4];
   v2cc = f[0x2CC / 4];
   f[0x220 / 4] = f[0x220 / 4] + (weight * (sample - f[0x220 / 4]));
-  scale = lbl_8055E544 * ((c184 * lbl_8055A488) * v2e4);
-  alt = (lbl_8055A488 * c1C0) * lbl_8055E568;
-  weight = fn_801931EC(arg2, v2cc);
+  c184A488 = c184 * lbl_8055A488;
+  c1C0A488 = c1C0 * lbl_8055A488;
+  scalePart = c184A488 * v2e4;
+  alt = c1C0A488 * lbl_8055E568;
+  scale = lbl_8055E544 * scalePart;
+  weight = ((float (*)(float, float, float, float, float, float, float))fn_801931EC)(
+      arg2, v2cc, c1C0A488, lbl_8055E544, scalePart, c184A488, lbl_8055A488);
   flag = 1;
   mode = *((int *) (((char *) arg0) + 0x268));
   if ((mode != 0) && (mode != 3))
@@ -1866,10 +1875,6 @@ void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, 
   float abs0;
   float sp8;
   float spC;
-  float value1;
-  float value0;
-  float out1;
-  float out0;
   int var_r0;
   temp_f5 = farg0 - farg1;
   temp_f5 += 1.33333f;
@@ -1889,9 +1894,13 @@ void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, 
   }
   spC = farg1;
   sp8 = temp_f5;
-  if (((int) ((*((unsigned int *) (&spC))) & 0x80000000U)) != ((int) ((*((unsigned int *) (&sp8))) & 0x80000000U)))
   {
-    goto different_sign;
+    int s1 = (*((int *) (&spC))) & 0x80000000;
+    int s0 = (*((int *) (&sp8))) & 0x80000000;
+    if (s0 != s1)
+    {
+      goto different_sign;
+    }
   }
   direct_case:
   *arg0 = ((float) __fabs((double) temp_f5)) / 4.905f;
@@ -1899,9 +1908,11 @@ void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, 
   *arg1 = 0.0f;
   goto finish;
   different_sign:
-  *arg0 = 0.0f;
-
-  *arg1 = ((0, (float) __fabs((double) temp_f5))) / 11.772f;
+  {
+    double d = __fabs((double) temp_f5);
+    *arg0 = 0.0f;
+    *arg1 = (float) d / 11.772f;
+  }
   finish:
   if (farg0 > 0.0f)
   {
@@ -2665,11 +2676,10 @@ void fn_8019724C(void *arg0, float *arg1) {
     float diff;
     float weight;
     float factor;
-    float flagThreshold;
     int index;
     void *obj;
 
-    if (*(float *)((char *)arg0 + 0x270) > *(const float *)&lbl_80562160) {
+    if (*(float *)((char *)arg0 + 0x270) > 40.0f / 9.0f) {
         index = fn_801671AC(*(int *)((char *)arg0 + 0x290));
         obj = *(void **)((char *)arg0 + 0x294);
         direction[0] = *(float *)((char *)obj + 0x70);
@@ -2692,12 +2702,17 @@ void fn_8019724C(void *arg0, float *arg1) {
             current = current > lower ? current : lower;
             *(float *)((char *)arg0 + 0x1F8) = current;
             *(float *)((char *)arg0 + 0x20C) = fn_801973FC(direction, projected, arg1);
-            flagThreshold = *(volatile float *)&lbl_8056222C;
-            arg1[0] = projected[0];
-            arg1[1] = projected[1];
-            if (flagThreshold < *(float *)((char *)arg0 + 0x270)) {
-                *(volatile int *)((char *)arg0 + 0x2D0) |= 0x40;
-                *(volatile int *)((char *)arg0 + 0x2D0) |= 0x800;
+            {
+                const float flagThreshold = 40.0f;
+                arg1[0] = projected[0];
+                arg1[1] = projected[1];
+                if (*(float *)((char *)arg0 + 0x270) > flagThreshold) {
+                    *(volatile int *)((char *)arg0 + 0x2D0) |= 0x40;
+                    *(volatile int *)((char *)arg0 + 0x2D0) |= 0x800;
+                } else {
+                    goto end_of_block;
+                }
+                end_of_block: ;
             }
         } else {
             diff = *(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x1F8);
