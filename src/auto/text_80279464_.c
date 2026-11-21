@@ -16,7 +16,7 @@ void fn_80279488(void* alarm) {
 
 extern void *fn_801E87A8(void);
 extern void fn_802E317C(char *, ...);
-extern char lbl_803477F0[];
+extern char lbl_803477F0[]; // "CarTypeIsReal: Unrecognized CarType"
 #pragma push
 #pragma scheduling invalid_target
 /* Return whether the given car type is considered "real"/valid (1) or not (0).
