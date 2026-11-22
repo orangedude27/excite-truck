@@ -95,6 +95,8 @@ s32 fn_80127538(void) {
 }
 
 #pragma scheduling invalid_target
+/* Stop the profiler's elapsed-time callback and print the accumulated profiler counters report,
+ * or return immediately if none were recorded. */
 void fn_801275AC(void) {
     const char *messages = lbl_80329E30;
     s32 *counter;
@@ -103,17 +105,17 @@ void fn_801275AC(void) {
     fn_80127D58(fn_80127968);
     if (lbl_8055DF44 == 0)
         return;
-    fn_802E30C8(base + 0xD0);
-    fn_802E30C8(base + 0x108, lbl_8055DF44);
-    entry = lbl_8041DF30;
-    i = 0;
-    while (i < lbl_8055DF44) {
-        s32 start = entry[2];
-        fn_802E30C8(base + 0x11C, start, entry[5] - start, entry[0], entry[1]);
-        entry += 3;
-        i++;
+    fn_802E30C8(messages + 0xD0);
+    fn_802E30C8(messages + 0x108, lbl_8055DF44);
+    counter = lbl_8041DF30;
+    index = 0;
+    while (index < lbl_8055DF44) {
+        s32 startTime = counter[2];
+        fn_802E30C8(messages + 0x11C, startTime, counter[5] - startTime, counter[0], counter[1]);
+        counter += 3;
+        index++;
     }
-    fn_802E30C8(base + 0xD0);
+    fn_802E30C8(messages + 0xD0);
 }
 
 void fn_8012766C(void) {
