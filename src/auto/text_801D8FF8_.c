@@ -39,4 +39,3 @@ void fn_801D8FF8(void) {
     *(volatile int *)(obj + 0x04) = zero;
     __register_global_object(obj, fn_801D9090, (unsigned char *)base + 0xC0, obj + 0x0C, (float *)values, flags, zero);
 }
-#pragma pop
