@@ -172,22 +172,18 @@ s32 fn_802B5B74(void *arg0) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802B5C24(s32 arg0) {
-    s32 temp_r31 = 0;
+    s32 temp_r31;
     s32 temp_r3;
     s32 value;
     void *object;
 
-loop_1:
-    temp_r3 = arg0 + lbl_8055FA40;
-    value = temp_r3 + 7;
-    temp_r31 = value % 7;
-    lbl_8055FA40 = temp_r31;
-    object = ((void *(*)(void))fn_802B5B6C)();
-    if (temp_r31 >= fn_802B3F0C(*(s32 *)((u8 *)object + 8))) {
-        if (temp_r31 != 6) {
-            goto loop_1;
-        }
-    }
+    do {
+        temp_r3 = arg0 + lbl_8055FA40;
+        value = temp_r3 + 7;
+        lbl_8055FA40 = value % 7;
+        temp_r31 = lbl_8055FA40;
+        object = ((void *(*)(void))fn_802B5B6C)();
+    } while (temp_r31 >= fn_802B3F0C(*(s32 *)((u8 *)object + 8)) && temp_r31 != 6);
 }
 #pragma pop
 
@@ -1401,22 +1397,34 @@ s32 fn_802B7694(void) {
 
 #pragma optimization_level 2
 void fn_802B773C(void) {
+    struct StateBuf {
+        s32 f0;
+        s32 f1;
+        s32 f2;
+        s32 f3;
+        u8 pad[0x24];
+        s8 f34;
+    };
+    struct TblHeader {
+        s32 entries;
+        s32 count;
+    };
     f32 sp8[3];
-    s32 *state = lbl_804BFF80;
+    struct StateBuf *state = (struct StateBuf *)lbl_804BFF80;
     u8 previous = lbl_8055FA58;
 
     lbl_8055FA58 = 0;
-    if (*(s8 *)((u8 *)state + 0x34) != 0)
+    if (state->f34 != 0)
         return;
     if (lbl_8055FA2C < 0)
         return;
-    if (lbl_8055FA2C >= ((s32 *)&lbl_804BE7D8)[1])
+    if (lbl_8055FA2C >= ((struct TblHeader *)&lbl_804BE7D8)->count)
         return;
-    if (fn_80204054(sp8, 0, 0, fn_802C86DC(), state[1], state[2]) == 0)
+    if (fn_80204054(sp8, 0, 0, fn_802C86DC(), state->f1, state->f2) == 0)
         return;
 
-    if (state[3] & 1) {
-        if (lbl_804BFF80[0] != 0 && previous == 0)
+    if (state->f3 & 1) {
+        if (state->f0 != 0 && previous == 0)
             return;
         lbl_8055FA58 = 1;
         if (((s32 (*)(void *))fn_802B7694)(sp8) == 0)
@@ -1429,7 +1437,7 @@ void fn_802B773C(void) {
                     (u8 *)(lbl_804BE7D8 + lbl_8055FA2C * 0x128),
                     (void (*)(s16, s16, u8))fn_802B7518);
         fn_802B7434();
-    } else if ((state[3] & 2) == 0) {
+    } else if ((state->f3 & 2) == 0) {
         fn_802B6F34(sp8,
                     (u8 *)(lbl_804BE7D8 + lbl_8055FA2C * 0x128),
                     (void (*)(s16, s16, u8))fn_802B7420);
@@ -1953,8 +1961,10 @@ s32 fn_802B8310(s32 deltaIndex) {
     }
     return changed;
 }
+#pragma processor 750
+#pragma scheduling reset
 void fn_802B83CC(void) {
-    Struct804BFF80 *state = (Struct804BFF80 *)&lbl_804BFF80;
+    const Struct804BFF80 *state = (const Struct804BFF80 *)&lbl_804BFF80;
     Struct804BFF80 *callbackState;
     Fn802B83CCEntry *entry;
     Fn802B83CCEntry *actionEntry;
@@ -1986,8 +1996,6 @@ void fn_802B83CC(void) {
         return;
     }
 }
-
-#pragma dont_inline on
 /* Rescale the UI state's X and Y fields from the live framebuffer resolution to the fixed 640x480 reference grid. */
 void fn_802B84E4(void *state) {
 #define REF_WIDTH  0x280
