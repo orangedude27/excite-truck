@@ -1077,7 +1077,6 @@ extern "C" u32 fn_800EC56C(void *__restrict soundHeapRef) {
     return (allocSize - 0x20) & ~31;
 }
 
-#pragma opt_common_subs off
 extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, void* buffer, u32 size, u32 blockSize) {
     extern u8 lbl_80323058[], lbl_80323070[];
     void** head = (void**)headArg;
@@ -1950,7 +1949,7 @@ s32 nw4hbm::snd::detail::MmlParser::ReadArg(const u8 **pp, SeqPlayer *player, Se
     register SeqPlayer *rplayer = player;
     register SeqTrack *rtrack = track;
     register const char *rbase = (const char*)::lbl_80323268;
-    s32 rcount;
+    register s32 rcount;
     s32 res;
     switch (type) {
     case (SeqArgType)0: {
@@ -1966,7 +1965,7 @@ s32 nw4hbm::snd::detail::MmlParser::ReadArg(const u8 **pp, SeqPlayer *player, Se
         u8 b0 = *p;
         *rpp = q + 1;
         u8 b1 = *q;
-        res = (b0 << 8) | b1;
+        res = ((s32)b0 << 8) | b1;
         break;
     }
     case (SeqArgType)2: {
