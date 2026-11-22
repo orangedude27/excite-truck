@@ -428,7 +428,7 @@ extern "C" void fn_80145538(TextSizeEntry80145538 *entry, void *propertySource) 
 
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-extern "C" void fn_801455B8(void *arg0, void *arg1) {
+/* Fills one 0x20-byte extended on-screen text entry from a level element's property set: base id/x/y/justification, style flags from just, a scale float, a color, and a comparison flag. */ extern "C" void fn_801455B8(void *arg0, void *arg1) {
     class Obj {
     public:
         virtual void f0();
