@@ -531,7 +531,6 @@ extern "C" s32 fn_80157278(s32 carIndex) {
 struct VObj;
 extern "C" void fn_80157560(VObj*);
 extern "C" s32 fn_80157558(void*);
-extern "C" s32 PtrArray_GetCount(void*);
 extern "C" s32 fn_8015782C(s32*, s32);
 extern "C" void* fn_8015783C(void*, s32, s32);
 extern "C" void* fn_801579F4(void*, s32, s32);
@@ -3534,8 +3533,8 @@ extern "C" u32 fn_8015CC28(void) { return 1; }
 
 #pragma scheduling reset
 extern "C" s32 fn_8015CC30(void* arg0) {
-    f32 x;
-    x = *(f32*)((char*)arg0 + 0x250);
+    f32 *const p = (f32*)((char*)arg0 + 0x250);
+    f32 x = *p;
     f32 rounded;
     if (x < lbl_80561754) rounded = x - lbl_80561760;
     else rounded = lbl_80561760 + x;
