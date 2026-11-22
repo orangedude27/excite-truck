@@ -173,11 +173,11 @@ extern u8 lbl_802FE850[];
 /* ARC path comparison helper */
 static inline BOOL isSame(const char *lhs, const char *rhs, u8 *locale) {
     while (rhs[0] != '\0') {
-        int a = *lhs++;
-        int b = *rhs++;
-        a = (a < 0 || a >= 256) ? a : (*(u8 **)(locale + 0x10))[a];
-        b = (b < 0 || b >= 256) ? b : (*(u8 **)(locale + 0x10))[b];
-        if (a != b) return FALSE;
+        int c = *rhs++;
+        int lc = (c < 0 || c >= 256) ? c : (*(u8 **)(locale + 0x10))[c];
+        int d = *lhs++;
+        int rd = (d < 0 || d >= 256) ? d : (*(u8 **)(locale + 0x10))[d];
+        if (lc != rd) return FALSE;
     }
     if (lhs[0] == '/' || lhs[0] == '\0') return TRUE;
     return FALSE;
@@ -2913,24 +2913,26 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
     DvdStream *stream = (DvdStream *)arg0;
     volatile u32 *rd;
     u32 work = (u32)arg2;
-    u8 *buf0 = (u8 *)arg3;
     u32 total = 0;
+    u8 *buf0 = (u8 *)arg3;
     u32 t0;
     u32 first;
     if (stream->error != 0)
         return 0;
     t0 = fn_80116D30();
-    if (work != (u32)-1 && stream->consumerOffset != (u32)work) {
+    if ((s32)work != -1 && stream->consumerOffset != (u32)work) {
         if ((u32)work > stream->consumerOffset && (u32)work <= (u32)stream->readOffset) {
             BOOL en = OSDisableInterrupts();
             u32 d = (u32)work - stream->consumerOffset;
-            u32 p;
-            stream->freeSpace += d;
-            p = stream->consumerPtr + d;
+            volatile DvdStream *locked = stream;
+            u32 freeSpace = locked->freeSpace;
+            u32 p = locked->consumerPtr + d;
+            u32 end = locked->bufferEnd;
+            locked->freeSpace = freeSpace + d;
             stream->consumerOffset = (u32)work;
             stream->fill -= d;
             stream->consumerPtr = p;
-            if (p > stream->bufferEnd)
+            if (p > end)
                 stream->consumerPtr = p - stream->capacity;
             OSRestoreInterrupts(en);
         } else {
@@ -2964,8 +2966,9 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
             fn_8011A45C(arg0, total, work);
         {
             u32 now = fn_80116D30();
-            stream->readTime += now - (u32)work;
-            stream->totalTime += now - t0;
+            volatile DvdStream *timing = stream;
+            timing->readTime += now - work;
+            timing->totalTime += now - t0;
         }
     } else {
         rd = &stream->consumerOffset;
