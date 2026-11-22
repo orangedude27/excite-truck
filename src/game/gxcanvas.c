@@ -256,7 +256,7 @@ s32 fn_802C3130(void *canvas, s32 x, s32 y) {
     return 0;
 }
 
-s32 fn_802C3170(void *bounds, s32 *x, s32 *y, s32 *srcX, s32 *srcY, s32 *w, s32 *h) {
+s32 gxCanvasClipBlitRect(void *bounds, s32 *x, s32 *y, s32 *srcX, s32 *srcY, s32 *w, s32 *h) {
     /* Clip a source/destination rectangle to the bounds at bounds+0x14/18/1C/20, adjusting positions and sizes; returns nonzero if anything remains. */
     s32 temp_r0, temp_r0_2, deltaX, rectY2, rectX, rectY, leftBound;
     s32 bottomBound, width, height2, topBound, topDelta, rightBound;
@@ -542,7 +542,7 @@ void fn_802C3850(s32 dstCanvas, s32 srcX, s32 srcY, s32 srcX2, s32 srcY2, s32 sr
     fn_802E317C(lbl_8034B094, (s32)*(s8 *)dstCanvas, (s32)*(s8 *)srcCanvas);
 }
 
-extern s32 fn_802C3170(void *, s32 *, s32 *, s32 *, s32 *, s32 *, s32 *);
+extern s32 gxCanvasClipBlitRect(void *, s32 *, s32 *, s32 *, s32 *, s32 *, s32 *);
 extern const char lbl_8034B0B8[];
 #pragma push
 #pragma dont_inline on
@@ -580,7 +580,7 @@ void gxCanvasCopy16to16(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
     height = srcBottom - srcTop;
     /* Clip the rectangle against the destination's clip rectangle; the source
      * origin moves by however much of the rectangle was cut off. */
-    if (fn_802C3170((void *)dstCanvas, &clipX, &clipY, &srcX, &srcY, &width,
+    if (gxCanvasClipBlitRect((void *)dstCanvas, &clipX, &clipY, &srcX, &srcY, &width,
                     &height) != 0) {
         srcPix = (u16 *)gxCanvasGetPixelAddr((void *)srcCanvas, srcX, srcY);
         dstPix = (u16 *)gxCanvasGetPixelAddr((void *)dstCanvas, clipX, clipY);
@@ -721,7 +721,7 @@ void fn_802C3C68(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     sp14 = arg7;
     sp1C = arg3 - arg1;
     sp18 = arg4 - arg2;
-    if (fn_802C3170((void *)arg5, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
+    if (gxCanvasClipBlitRect((void *)arg5, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
         src = (s32 *)fn_802C3060((void *)arg0, sp8, spC);
         dst = (s32 *)fn_802C3060((void *)arg5, sp10, sp14);
         widthBytes = sp1C * 4;
@@ -770,7 +770,7 @@ void fn_802C3D74(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
     clipY = dstTop;
     width = srcRight - srcLeft;
     height = srcBottom - srcTop;
-    if (fn_802C3170((void *)dstCanvas, &clipX, &clipY, &srcX, &srcY, &width, &height) != 0) {
+    if (gxCanvasClipBlitRect((void *)dstCanvas, &clipX, &clipY, &srcX, &srcY, &width, &height) != 0) {
         src = (u16 *)gxCanvasGetPixelAddr((void *)srcCanvas, srcX, srcY);
         dst = (s32 *)fn_802C3060((void *)dstCanvas, clipX, clipY);
         /* Pixels to step over the ones a row does not hold, per canvas. */
@@ -839,7 +839,7 @@ void fn_802C3F00(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     sp14 = arg7;
     sp1C = arg3 - arg1;
     sp18 = arg4 - arg2;
-    if (fn_802C3170(targetObj, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
+    if (gxCanvasClipBlitRect(targetObj, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
         src = (u32 *)fn_802C3060(sourceObj, sp8, spC);
         dst = (s16 *)gxCanvasGetPixelAddr(targetObj, sp10, sp14);
         formatByte = *(u8 *)targetObj;
@@ -917,7 +917,7 @@ void fn_802C4108(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     sp14 = arg7;
     sp1C = arg3 - arg1;
     sp18 = arg4 - arg2;
-    if (fn_802C3170((void *)arg5, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
+    if (gxCanvasClipBlitRect((void *)arg5, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
         u8 fmt;
         src = (u16 *)gxCanvasGetPixelAddr((void *)arg0, sp8, spC);
         dst = (u16 *)gxCanvasGetPixelAddr((void *)arg5, sp10, sp14);
@@ -981,7 +981,7 @@ void fn_802C4388(s32 src, s32 x, s32 y, s32 x2, s32 y2, s32 dst, s32 dx, s32 dy)
     u32 *sp;
     u16 *dp;
     sx = x; sy = y; tx = dx; ty = dy; w = x2 - x; h = y2 - y;
-    if (!fn_802C3170((void *)dst, &tx, &ty, &sx, &sy, &w, &h)) return;
+    if (!gxCanvasClipBlitRect((void *)dst, &tx, &ty, &sx, &sy, &w, &h)) return;
     sp = (u32 *)fn_802C3060((void *)src, sx, sy);
     dp = (u16 *)gxCanvasGetPixelAddr((void *)dst, tx, ty);
     srcskip = (*(s32 *)((u8 *)src + 0x10) - w * 4) / 4;
@@ -1033,7 +1033,7 @@ void fn_802C4610(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     sp14 = arg7;
     sp1C = arg3 - arg1;
     sp18 = arg4 - arg2;
-    if (fn_802C3170((void *)arg5, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
+    if (gxCanvasClipBlitRect((void *)arg5, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
         var_r31 = (u32 *)fn_802C3060((void *)arg0, sp8, spC);
         var_r3 = (u32 *)fn_802C3060((void *)arg5, sp10, sp14);
         widthBytes = sp1C * 4;
