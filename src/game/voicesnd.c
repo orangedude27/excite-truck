@@ -659,7 +659,7 @@ extern "C" void fn_8020B348(void *self) {
 //     +0x08 fn_8020B1C8  destroy
 //     +0x10 fn_8020B2A8  has a sound loaded
 //     +0x14 fn_8020B874  load another sound by name
-//     +0x18 fn_8020B368  play once
+//     +0x18 VoiceSnd_playOnce  play once
 //     +0x1C fn_8020B5EC  play, looping
 //     +0x20 fn_8020AA0C  release the voices
 //     +0x24 fn_8020AA98  state
@@ -722,7 +722,7 @@ typedef struct VoiceSnd {
 
 #pragma push
 #pragma processor 750
-extern "C" void fn_8020B368(void *arg0) {
+extern "C" void VoiceSnd_playOnce(void *arg0) {
     VoiceSnd *snd = (VoiceSnd *)arg0;
     float master, gain, side;
     int i;
@@ -952,7 +952,7 @@ void fn_8020B9D4(void *self) {
         snd->mute = 0;
         // Only a sound that was playing when it got muted comes back.
         if (snd->state == 1 && snd->voice == 0) {
-            // From here this is the grab-and-start code of fn_8020B368 (play).
+            // From here this is the grab-and-start code of VoiceSnd_playOnce (play).
             if (snd->sound != 0 && snd->voice == 0) {
                 snd->voice = SND_GrabVoice(snd->sound);
                 if (snd->voice == 0) {

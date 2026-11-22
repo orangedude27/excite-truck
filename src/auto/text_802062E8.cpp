@@ -382,7 +382,7 @@ extern "C" void fn_80206820(void) {
  * lbl_8033C3F4, the one the mixer's createSound hands back).  Only the slots
  * this unit calls through are declared; the mix-value setters at +0x30..+0x4C
  * and the effect flags at +0x50 just store into the sound, and
- * fn_8020B368/fn_8020B5EC push them into the voice when it starts. */
+ * VoiceSnd_playOnce/fn_8020B5EC push them into the voice when it starts. */
 class VoiceSnd {
 public:
     virtual void destroy();               /* +0x08 */
