@@ -10,7 +10,7 @@
 // the other modes.
 typedef struct CarSound {
     void *vtable;         // at 0x0, this class's vtable, lbl_8033C8C4:
-                          // +0x8 destructor fn_8020E288, +0xC per-frame update
+                          // +0x8 destructor CarSound_destroy, +0xC per-frame update
                           // fn_8020E598, then one handler per sound -- +0x10..+0x30
                           // and +0x30 re-arm or set the volume of a sound, +0x34
                           // fn_8020F39C is empty and +0x38 fn_8020F3A0 raises flag72
@@ -220,7 +220,7 @@ void *fn_8020DE74(void *arg0) {
 // fn_8020DE74() created for the truck and, when deleteMemory is positive,
 // frees the object itself. The vtable goes back first, so a sound torn down
 // from here sees the object as dead.
-extern "C" void *fn_8020E288(CarSound *snd, s32 deleteMemory) {
+extern "C" void *CarSound_destroy(CarSound *snd, s32 deleteMemory) {
     void *sound;
     u8 *p;
     u32 i;
