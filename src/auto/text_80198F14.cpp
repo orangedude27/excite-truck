@@ -4121,130 +4121,131 @@ extern "C" void fn_801A1F44(void* arg0, void* arg1) {
 
 #pragma push
 #pragma use_lmw_stmw off
-/* Compute the world-space AABB of a box: build its eight local corners from the half-extents at +0x24/0x28/0x2C, transform each through the matrix returned by the object's virtual Call(), translate it, and expand outMin/outMax with the result. */ extern "C" void fn_801A1F98(const void *arg0, f32 *min, f32 *max)
+/* Compute the world-space AABB of a box: build its eight local corners from the half-extents at +0x24/0x28/0x2C, transform each through the matrix returned by the object's virtual Call(), translate it, and expand outMin/outMax with the result. */
+extern "C" void fn_801A1F98(const void *box, f32 *outMin, f32 *outMax)
 {
-  f32 point[3];
-  f32 corners[24];
-  register f32 x;
-  register f32 y;
-  register f32 z;
-  z = *((f32 *) (((char *) arg0) + 0x2C));
-  y = *((f32 *) (((char *) arg0) + 0x28));
-  x = *((f32 *) (((char *) arg0) + 0x24));
-  register f32 nx;
-  register f32 ny;
-  register f32 nz;
-  ny = -y;
-  nx = -x;
-  corners[1] = y;
-  nz = -z;
-  corners[0] = x;
-  corners[2] = z;
-  corners[3] = nx;
-  corners[4] = y;
-  corners[5] = z;
-  corners[6] = x;
-  corners[7] = ny;
-  corners[8] = z;
-  corners[9] = nx;
-  corners[10] = ny;
-  corners[11] = z;
-  corners[12] = x;
-  corners[13] = y;
-  corners[14] = nz;
-  corners[15] = nx;
-  corners[16] = y;
-  corners[17] = nz;
-  corners[18] = x;
-  corners[19] = ny;
-  corners[20] = nz;
-  corners[21] = nx;
-  corners[22] = ny;
-  corners[23] = nz;
-  f32 *matrix = (f32 *) ((VTab1A1E7C *) arg0)->Call();
-  min[0] = matrix[9];
-  min[1] = matrix[10];
-  min[2] = matrix[11];
-  matrix = (f32 *) ((VTab1A1E7C *) arg0)->Call();
-  max[0] = matrix[9];
-  max[1] = matrix[10];
-  max[2] = matrix[11];
-  f32 *dst = point;
-  f32 *cur = corners;
-  f32 *src = corners;
-  int i = 0;
-  for (; i < 8; i++)
+  f32 worldPoint[3];
+  f32 localCorners[24];
+  register f32 halfX;
+  register f32 halfY;
+  register f32 halfZ;
+  halfZ = *((f32 *) (((char *) box) + 0x2C));
+  halfY = *((f32 *) (((char *) box) + 0x28));
+  halfX = *((f32 *) (((char *) box) + 0x24));
+  register f32 negHalfX;
+  register f32 negHalfY;
+  register f32 negHalfZ;
+  negHalfY = -halfY;
+  negHalfX = -halfX;
+  localCorners[1] = halfY;
+  negHalfZ = -halfZ;
+  localCorners[0] = halfX;
+  localCorners[2] = halfZ;
+  localCorners[3] = negHalfX;
+  localCorners[4] = halfY;
+  localCorners[5] = halfZ;
+  localCorners[6] = halfX;
+  localCorners[7] = negHalfY;
+  localCorners[8] = halfZ;
+  localCorners[9] = negHalfX;
+  localCorners[10] = negHalfY;
+  localCorners[11] = halfZ;
+  localCorners[12] = halfX;
+  localCorners[13] = halfY;
+  localCorners[14] = negHalfZ;
+  localCorners[15] = negHalfX;
+  localCorners[16] = halfY;
+  localCorners[17] = negHalfZ;
+  localCorners[18] = halfX;
+  localCorners[19] = negHalfY;
+  localCorners[20] = negHalfZ;
+  localCorners[21] = negHalfX;
+  localCorners[22] = negHalfY;
+  localCorners[23] = negHalfZ;
+  f32 *transform = (f32 *) ((VTab1A1E7C *) box)->Call();
+  outMin[0] = transform[9];
+  outMin[1] = transform[10];
+  outMin[2] = transform[11];
+  transform = (f32 *) ((VTab1A1E7C *) box)->Call();
+  outMax[0] = transform[9];
+  outMax[1] = transform[10];
+  outMax[2] = transform[11];
+  f32 *dst = worldPoint;
+  f32 *compare = localCorners;
+  f32 *corner = localCorners;
+  int cornerIdx = 0;
+  for (; cornerIdx < 8; cornerIdx++)
   {
-    matrix = (f32 *) ((VTab1A1E7C *) arg0)->Call();
-    if (dst == cur)
+    transform = (f32 *) ((VTab1A1E7C *) box)->Call();
+    if (dst == compare)
     {
-      f32 sx, sy, sz;
+      f32 cx, cy, cz;
       f32 m0, m3, m6, m1, m4, m7, m2, m5, m8;
-      m3 = matrix[3]; m4 = matrix[4]; m5 = matrix[5];
-      m0 = matrix[0]; m1 = matrix[1]; m2 = matrix[2];
-      m6 = matrix[6]; m7 = matrix[7]; m8 = matrix[8];
-      sx = src[0]; sy = src[1]; sz = src[2];
-      f32 t0 = sz * m6 + (sx * m0 + sy * m3);
-      f32 t1 = sz * m7 + (sx * m1 + sy * m4);
-      f32 t2 = sz * m8 + (sx * m2 + sy * m5);
+      m3 = transform[3]; m4 = transform[4]; m5 = transform[5];
+      m0 = transform[0]; m1 = transform[1]; m2 = transform[2];
+      m6 = transform[6]; m7 = transform[7]; m8 = transform[8];
+      cx = corner[0]; cy = corner[1]; cz = corner[2];
+      f32 t0 = cz * m6 + (cx * m0 + cy * m3);
+      f32 t1 = cz * m7 + (cx * m1 + cy * m4);
+      f32 t2 = cz * m8 + (cx * m2 + cy * m5);
       dst[0] = t0;
       dst[1] = t1;
       dst[2] = t2;
     }
     else
     {
-      f32 m3, sx, m0, sy, m6, sz, m4, m1, m7, m5, m2, m8;
-      m3 = matrix[3];
-      sy = src[1];
-      m0 = matrix[0];
-      sx = src[0];
-      m6 = matrix[6];
-      sz = src[2];
-      dst[0] = sx * m0 + sy * m3 + sz * m6;
-      m4 = matrix[4];
-      m1 = matrix[1];
-      m7 = matrix[7];
-      dst[1] = sx * m1 + sy * m4 + sz * m7;
-      m5 = matrix[5];
-      m2 = matrix[2];
-      m8 = matrix[8];
-      dst[2] = sx * m2 + sy * m5 + sz * m8;
+      f32 m3, cx, m0, cy, m6, cz, m4, m1, m7, m5, m2, m8;
+      m3 = transform[3];
+      cy = corner[1];
+      m0 = transform[0];
+      cx = corner[0];
+      m6 = transform[6];
+      cz = corner[2];
+      dst[0] = cx * m0 + cy * m3 + cz * m6;
+      m4 = transform[4];
+      m1 = transform[1];
+      m7 = transform[7];
+      dst[1] = cx * m1 + cy * m4 + cz * m7;
+      m5 = transform[5];
+      m2 = transform[2];
+      m8 = transform[8];
+      dst[2] = cx * m2 + cy * m5 + cz * m8;
     }
-    point[0] += matrix[9];
-    point[1] += matrix[10];
-    point[2] += matrix[11];
+    worldPoint[0] += transform[9];
+    worldPoint[1] += transform[10];
+    worldPoint[2] += transform[11];
     {
-      f32 p = point[0]; f32 m = min[0];
+      f32 p = worldPoint[0]; f32 m = outMin[0];
       m = (m < p) ? (m) : (p);
-      min[0] = m;
+      outMin[0] = m;
     }
     {
-      f32 p = point[1]; f32 m = min[1];
+      f32 p = worldPoint[1]; f32 m = outMin[1];
       m = (m < p) ? (m) : (p);
-      min[1] = m;
+      outMin[1] = m;
     }
     {
-      f32 p = point[2]; f32 m = min[2];
+      f32 p = worldPoint[2]; f32 m = outMin[2];
       m = (m < p) ? (m) : (p);
-      min[2] = m;
+      outMin[2] = m;
     }
     {
-      f32 p = point[0]; f32 m = max[0];
+      f32 p = worldPoint[0]; f32 m = outMax[0];
       m = (m > p) ? (m) : (p);
-      max[0] = m;
+      outMax[0] = m;
     }
     {
-      f32 p = point[1]; f32 m = max[1];
+      f32 p = worldPoint[1]; f32 m = outMax[1];
       m = (m > p) ? (m) : (p);
-      max[1] = m;
+      outMax[1] = m;
     }
     {
-      f32 p = point[2]; f32 m = max[2];
+      f32 p = worldPoint[2]; f32 m = outMax[2];
       m = (m > p) ? (m) : (p);
-      max[2] = m;
+      outMax[2] = m;
     }
-    cur += 3;
-    src += 3;
+    compare += 3;
+    corner += 3;
   }
 }
 #pragma pop
@@ -4715,10 +4716,8 @@ extern "C" void fn_801A2ECC(void *arg0, void *arg1, void *arg2) {
     f32 tmp[3];
     f32 *lo = (f32 *)arg1;
     f32 *hi = (f32 *)arg2;
-    register f32 b, a, c;
-    b = *(f32 *)((u8 *)arg0 + 0x28);
-    a = *(f32 *)((u8 *)arg0 + 0x24);
-    c = a + b;
+    f32 b = *(f32 *)((u8 *)arg0 + 0x28);
+    f32 c = *(f32 *)((u8 *)arg0 + 0x24) + b;
     const f32 *m = *(const f32 **)((u8 *)arg0 + 0xC);
     f32 *p, *q;
     int i;
@@ -4736,7 +4735,7 @@ extern "C" void fn_801A2ECC(void *arg0, void *arg1, void *arg2) {
     q = p;
     for (i = 0; i < 8; i++, p += 3, q += 3) {
         m = *(const f32 **)((u8 *)arg0 + 0xC);
-        if (tmp == p) {
+        if (tmp == q) {
             f32 x, y, z;
             f32 m0, m3, m6, m1, m4, m7, m2, m5, m8;
             m3 = m[3]; y = q[1]; m4 = m[4]; m5 = m[5];
@@ -4772,7 +4771,9 @@ extern "C" void fn_801A2ECC(void *arg0, void *arg1, void *arg2) {
         lo[0] = (lo[0] < tmp[0]) ? lo[0] : tmp[0];
         lo[1] = (lo[1] < tmp[1]) ? lo[1] : tmp[1];
         lo[2] = (lo[2] < tmp[2]) ? lo[2] : tmp[2];
-        hi[0] = (hi[0] > tmp[0]) ? hi[0] : tmp[0];
+        f32 first = tmp[0];
+        f32 upper = hi[0];
+        hi[0] = (upper > first) ? upper : first;
         hi[1] = (hi[1] > tmp[1]) ? hi[1] : tmp[1];
         hi[2] = (hi[2] > tmp[2]) ? hi[2] : tmp[2];
     }
