@@ -167,7 +167,7 @@ extern float lbl_80562B64;
 extern float lbl_80562B68;
 extern float lbl_80562B6C;
 #pragma push
-#pragma processor 750
+#pragma processor gekko
 #pragma opt_common_subs off
 #pragma scheduling invalid_target
 float fn_801DB398(float grid[4][4], float t, float u) {
@@ -182,12 +182,11 @@ float fn_801DB398(float grid[4][4], float t, float u) {
         p1 = src[4];
         dp20 = p2 - p0;
         p3 = src[12];
-        dp21 = p2 - p1;
         dp31 = p3 - p1;
         half20 = lbl_80562B64 * dp20;
         twice20 = lbl_80562B68 * half20;
         half31 = lbl_80562B64 * dp31;
-        c3t = lbl_80562B6C * dp21;
+        c3t = lbl_80562B6C * (dp21 = p2 - p1);
         sum = half20 + half31;
         twice21 = lbl_80562B68 * dp21;
         coeff3 = c3t - twice20;
@@ -223,6 +222,8 @@ float fn_801DB398(float grid[4][4], float t, float u) {
 #pragma pop
 
 static inline float eval_spline(const float *p, int stride, float t, float *out_deriv) {
+    float t2 = t * t;
+    float t3 = t2 * t;
     float p2 = p[stride * 2];
     float p0 = p[0];
     float p1 = p[stride];
@@ -238,8 +239,6 @@ static inline float eval_spline(const float *p, int stride, float t, float *out_
     float sum = half20 + half31;
     float coeff3 = c3_term - twice20;
     float coeff2 = sum - twice21;
-    float t2 = t * t;
-    float t3 = t2 * t;
     coeff3 = coeff3 - half31;
     if (out_deriv != 0) {
         *out_deriv = (lbl_80562B6C * coeff2 * t2 + lbl_80562B68 * coeff3 * t) + half20;
@@ -587,31 +586,34 @@ void fn_801DCE10(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-int fn_801DCE14(short *arg0, float *arg1, float *arg2, int arg3, int *arg4) {
-    float spC;
-    int sp8;
-    float b0;
-    float b2;
-    float t0;
-    float tC;
-    float t2;
+int fn_801DCE14(short *groundIndex, const float *queryPos, float *outPos, int outNormal, int *outType) {
+    float height;
+    int type;
+    float worldX;
+    float worldZ;
+    float outX;
+    float outHeight;
+    float outZ;
 
-    if (arg0 != 0) {
-        *arg0 = 0;
+    /* Resolve a world point to the ground surface: clear the caller's ground-index
+     * field, sample the height and terrain type at (x, z), and return the resolved
+     * (x, ground height, z) in outPos. */
+    if (groundIndex != 0) {
+        *groundIndex = 0;
     }
-    b0 = arg1[0];
-    sp8 = 0xFF;
-    b2 = arg1[2];
-    if (((int (*)(float *, int *, short *, int, float, float))fn_801DC258)((float *)&spC, &sp8, arg0, arg3, b0, b2) != 0) {
-        if (arg4 != 0) {
-            *arg4 = sp8;
+    type = 0xFF;
+    worldX = queryPos[0];
+    worldZ = queryPos[2];
+    if (((int (*)(float *, int *, short *, int, float, float))fn_801DC258)((float *)&height, &type, groundIndex, outNormal, worldX, worldZ) != 0) {
+        if (outType != 0) {
+            *outType = type;
         }
-        tC = spC;
-        t2 = arg1[2];
-        t0 = arg1[0];
-        arg2[1] = tC;
-        arg2[0] = t0;
-        arg2[2] = t2;
+        outHeight = height;
+        outZ = queryPos[2];
+        outX = queryPos[0];
+        outPos[1] = outHeight;
+        outPos[0] = outX;
+        outPos[2] = outZ;
         return 1;
     }
     return 0;
@@ -1030,7 +1032,6 @@ int fn_801DDA84(int unused, int *out, int max, float x, float z, float thr)
   int idx;
   char *node;
   char *map;
-  register int oi;
   if (ground->tiled == 0)
   {
     return 0;
@@ -1072,7 +1073,6 @@ int fn_801DDA84(int unused, int *out, int max, float x, float z, float thr)
   }
   idx = *((int *) (node + 0x890));
   count = 0;
-  oi = 0;
   if (idx < 0)
   {
     goto done;
@@ -1084,9 +1084,8 @@ int fn_801DDA84(int unused, int *out, int max, float x, float z, float thr)
     float h = (float) fabs(layer->baseHeight + (layer->heightScale * ((float) layer->samples[remX][remZ])));
     if ((thr > h) && (count < max))
     {
-      *(int *)((char *)out + oi) = *((int *) (map + 0x808));
+      out[count] = *((int *) (map + 0x808));
       count++;
-      oi += 4;
     }
     idx = layer->next;
     if (0 > idx)
