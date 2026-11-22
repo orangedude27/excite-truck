@@ -30,4 +30,3 @@ void fn_802BB734(void) {
     object->size = 4;
     __register_global_object(object, fn_802BB7CC, base + 0x58);
 }
-#pragma scheduling on
