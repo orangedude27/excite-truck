@@ -282,12 +282,17 @@ extern char lbl_8055AD58[3], lbl_8055AD5C[3];
 extern float lbl_8055E3C8, lbl_80562AD8, lbl_80562ADC, lbl_80562AE0, lbl_80562AE4, lbl_80562AE8, lbl_80562AEC, lbl_80562AF0, lbl_80562AF4, lbl_80562AF8, lbl_80562AFC;
 extern char *strchr(char *, int);
 #pragma push
-#pragma processor 750
+#pragma processor 604
 void fn_801D490C(void) {
-    float width, right, x, alpha, t, edge, dy, y;
+    float width, right, x;
     float limit = lbl_8055E3C8;
-    int color, n;
-    char text[0x40], *src, *dst, *part, *caret;
+    float alpha, t, edge, dy, y;
+    char c;
+    char *src;
+    int n;
+    char *dst;
+    char text[0x40], *part, *caret;
+    int color;
     x = *(float *)lbl_80442310;
     width = *(float *)(lbl_80442310 + 4);
     right = x + width;
@@ -319,7 +324,7 @@ void fn_801D490C(void) {
         dst[-1] = 0;
         goto done;
     copy:
-        { char c = *src++; *dst++ = c; if ((signed char)c) goto limit_lbl; }
+        c = *src++; *dst++ = c; if ((signed char)c) goto limit_lbl;
     done:
         y = lbl_80562AD8;
         dy = lbl_80562AFC;
@@ -4247,9 +4252,10 @@ extern "C" int fn_801D8E10(void *arg0, void *arg1) {
         virtual void f7();
         virtual float get(char *, float);
     };
-    char *src;
-    char *dst;
     int count;
+    char *dst;
+    char *src;
+    char c;
     Lookup *lookup;
     Measure *measure;
 
@@ -4265,8 +4271,9 @@ count_check:
     dst[-1] = 0;
     goto copied;
 copy:
-    *dst++ = *src++;
-    if ((signed char)dst[-1] != 0)
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c != 0)
         goto count_check;
 copied:
     if ((signed char)((char *)arg0)[8] == 0) {
