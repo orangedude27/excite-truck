@@ -659,7 +659,7 @@ extern "C" void GXInitTexObjLOD(void*, u32, u32, f32, f32, f32, u32, u32, u32);
 #pragma use_lmw_stmw off
 #pragma scheduling on
 #pragma dont_inline InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl
-extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(void *texObj, void *palette, u32 id) {
+/* Initialize a GXTexObj from a TPL palette descriptor: bind the palette if unrelocated, build the texture with or without a CLUT, enable mipmaps when minLOD and maxLOD differ, then apply the header's LOD/filter settings. */ extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(void *texObj, void *palette, u32 id) {
     u8 *tpl;
     u8 height;
     u8 width;
@@ -1098,11 +1098,11 @@ s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *
   void *lastPane;
   s32 groupCreated;
   s32 depth;
-  const u8 *block;
   s32 count;
   ResBlockSetTmp blockSet;
   void *container;
   void *rootPane;
+  const u8 *block;
   void *groupResult;
   u16 size;
   u32 tag;
@@ -1206,7 +1206,7 @@ s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *
             *((void **) (((u8 *) container) + 8)) = 0;
             *((void **) container) = 0;
             *((void **) (((u8 *) container) + 4)) = ((u8 *) container) + 4;
-            *((void **) (((u8 *) container) + 8)) = ((u8 *) container) + (4 & 0xFF);
+            *((void **) (((u8 *) container) + 8)) = ((u8 *) container) + 4;
           }
         }
         else
@@ -2384,10 +2384,10 @@ extern "C" s32 fn_800D938C(void* arg0) {
     u32 scaled = high * 0x14;
     u32 low = (bits >> 0x06) & 4;
     u32 top = (bits >> 0x17) & 0x1E0;
-    s32 base = *pBase;
-    s32 past = base + scaled;
     s32 gen = mid + top;
-    return gen + past + low;
+    s32 base = *pBase;
+    s32 past = scaled + low;
+    return past + (base + gen);
 }
 
 extern "C" s32 fn_800D93BC(void *arg0) {
@@ -3371,62 +3371,56 @@ extern "C" u16 GXGetTexObjWrapS(void *);
 extern "C" u16 GXGetTexObjWrapT(void *);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 #pragma opt_propagation off
-extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f32 *out, void *material, u8 index)
-{
-  u32 texObj[8];
-  u32 count;
-  u32 word7;
-  u32 word6;
-  u32 word5;
-  f32 wrapT;
-  u32 word4;
-  u32 word3;
-  u32 word2;
-  u32 word1;
-  u32 word0;
-  f32 defaultValue;
-  u16 wrapS;
-  const char *file = (const char *) (&lbl_8031F990);
-  count = (*((u32 *) (((u8 *) material) + 0x50))) >> 28;
-  if (index >= count)
-  {
-    defaultValue = lbl_80560E90;
-    out[0] = defaultValue;
-    out[1] = defaultValue;
-    return;
-  }
-  if (((void *) texObj) == 0)
-  {
-    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x3DC, file + 0x42C);
-  }
-  count = (*((u32 *) (((u8 *) material) + 0x50))) >> 28;
-  if (index >= count)
-  {
-    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x3DD, file + 0x458);
-  }
-  u32 *base = (u32 *) (*((void **) (((u8 *) material) + 0x58)));
-  u32 *src = base + ((((u32) index) << 5) / 4);
-  word0 = ((volatile u32 *) src)[0];
-  word1 = ((volatile u32 *) src)[1];
-  texObj[0] = word0;
-  texObj[1] = word1;
-  word2 = ((volatile u32 *) src)[2];
-  word3 = ((volatile u32 *) src)[3];
-  texObj[2] = word2;
-  texObj[3] = word3;
-  word4 = ((volatile u32 *) src)[4];
-  word5 = ((volatile u32 *) src)[5];
-  texObj[4] = word4;
-  texObj[5] = word5;
-  word6 = ((volatile u32 *) src)[6];
-  word7 = ((volatile u32 *) src)[7];
-  texObj[6] = word6;
-  texObj[7] = word7;
-  ((void (*)(void *, int, u32, void *)) GXGetTexObjWidth)(texObj, 0, word6, src);
-  wrapT = (f32) GXGetTexObjWrapT(texObj);
-  wrapS = GXGetTexObjWrapS(texObj);
-  out[1] = wrapT;
-  out[0] = (f32) wrapS;
+extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f32 *out, void *material, u8 index) {
+    u32 texObj[8];
+    u32 count;
+    u32 word7, word6, word5, word4, word3, word2, word1, word0;
+    f32 defaultValue;
+    f32 wrapT;
+    u16 wrapS;
+    const char *file = (const char *)&lbl_8031F990;
+
+    count = *(u32 *)((u8 *)material + 0x50) >> 28;
+    if (index >= count) {
+        defaultValue = lbl_80560E90;
+        out[0] = defaultValue;
+        out[1] = defaultValue;
+        return;
+    }
+
+    if ((void *)texObj == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x3DC, file + 0x42C);
+    }
+
+    count = *(u32 *)((u8 *)material + 0x50) >> 28;
+    if (index >= count) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x3DD, file + 0x458);
+    }
+
+    u32 *base = (u32 *)*(void **)((u8 *)material + 0x58);
+    u32 *src = base + (((u32)index << 5) / 4);
+    word0 = ((volatile u32 *)src)[0];
+    word1 = ((volatile u32 *)src)[1];
+    texObj[0] = word0;
+    texObj[1] = word1;
+    word2 = ((volatile u32 *)src)[2];
+    word3 = ((volatile u32 *)src)[3];
+    texObj[2] = word2;
+    texObj[3] = word3;
+    word4 = ((volatile u32 *)src)[4];
+    word5 = ((volatile u32 *)src)[5];
+    texObj[4] = word4;
+    texObj[5] = word5;
+    word6 = ((volatile u32 *)src)[6];
+    word7 = ((volatile u32 *)src)[7];
+    texObj[6] = word6;
+    texObj[7] = word7;
+
+    ((void (*)(void *, int, u32, void *))GXGetTexObjWidth)(texObj, 0, word6, src);
+    wrapT = (f32)GXGetTexObjWrapT(texObj);
+    wrapS = GXGetTexObjWrapS(texObj);
+    out[1] = wrapT;
+    out[0] = (f32)wrapS;
 }
 #pragma opt_propagation reset
 extern "C" s32 fn_80128668();
