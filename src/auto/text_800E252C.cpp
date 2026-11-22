@@ -523,8 +523,7 @@ extern float lbl_80321E48[];
 #pragma pop
 extern "C" float Atan2FIdx__Q24nw4r4mathFff(float y, float x) {
     if (0.0f == x && 0.0f == y) return 0.0f;
-    float f3;
-    float f4 = lbl_80560F04;
+    float f3, f4 = lbl_80560F04, f0;
     int mode;
     if (x >= lbl_80560F04) {
         if (y >= lbl_80560F04) {
@@ -537,27 +536,33 @@ extern "C" float Atan2FIdx__Q24nw4r4mathFff(float y, float x) {
         }
     } else {
         if (y >= lbl_80560F04) {
-            float f0 = -x;
+            f0 = -x;
             if (f0 >= y) { f3 = f0; f4 = lbl_80560F14; mode = 1; }
             else { f3 = y; f4 = lbl_80560F0C; y = f0; mode = 0; }
         } else {
-            float f0 = -x;
+            f0 = -x;
             y = -y;
             if (f0 >= y) { f3 = f0; f4 = lbl_80560F18; mode = 0; }
             else { f3 = y; f4 = lbl_80560F10; y = f0; mode = 1; }
         }
     }
-    y = y / f3 * lbl_80560F08;
+    struct AtanEntry { f32 v, s; };
     if (mode) {
+        y = y / f3;
+        y = y * lbl_80560F08;
         u16 i = __OSf32tou16(y);
         f32 whole = __OSu16tof32(&i);
-        float *e = (float *)((char *)lbl_80321E48 + i * 8);
-        return f4 - (e[0] + (y - whole) * e[1]);
+        u32 byteOffset = i * 8;
+        struct AtanEntry *tab = (struct AtanEntry *)lbl_80321E48;
+        return f4 - (tab[i].v + (y - whole) * *(f32 *)((char *)lbl_80321E48 + byteOffset + 4));
     } else {
+        y = y / f3;
+        y = y * lbl_80560F08;
         u16 i = __OSf32tou16(y);
         f32 whole = __OSu16tof32(&i);
-        float *e = (float *)((char *)lbl_80321E48 + i * 8);
-        return f4 + (e[0] + (y - whole) * e[1]);
+        u32 byteOffset = i * 8;
+        struct AtanEntry *tab = (struct AtanEntry *)lbl_80321E48;
+        return f4 + (tab[i].v + (y - whole) * *(f32 *)((char *)lbl_80321E48 + byteOffset + 4));
     }
 }
 
