@@ -250,6 +250,7 @@ static inline float eval_spline(const float *p, int stride, float t, float *out_
 #pragma processor 750
 #pragma opt_common_subs off
 #pragma scheduling invalid_target
+#pragma ppc_psq_save off
 float fn_801DB514(float grid[4][4], void *out, float t, float u) {
     float b[4];
     float a[4];
