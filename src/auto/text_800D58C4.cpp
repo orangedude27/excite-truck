@@ -659,36 +659,39 @@ extern "C" void GXInitTexObjLOD(void*, u32, u32, f32, f32, f32, u32, u32, u32);
 #pragma use_lmw_stmw off
 #pragma scheduling on
 #pragma dont_inline InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl
-/* Initialize a GXTexObj from a TPL palette descriptor: bind the palette if unrelocated, build the texture with or without a CLUT, enable mipmaps when minLOD and maxLOD differ, then apply the header's LOD/filter settings. */ extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(void *texObj, void *palette, u32 id) {
-    u8 *tpl;
-    u8 height;
-    u8 width;
-    u32 difference;
-    u32 mipmap;
+/* Initialize a GXTexObj from a TPL palette descriptor: bind the palette if its descriptor
+ * array is still unrelocated, build the texture with or without a CLUT, enable mipmaps when
+ * the header's minLOD and maxLOD differ, then apply the header's LOD/filter settings. */
+extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(void *texObj, void *palette, u32 textureId) {
+    u8 *descriptor;
+    u8 maxLod;
+    u8 minLod;
+    u32 lodDifference;
+    u32 useMipmap;
     if (*(u32 *)((u8 *)palette + 8) < 0x80000000) {
         TPLBind(palette);
     }
-    tpl = (u8 *)TPLGet(palette, id);
-    width = (*(u8 **)tpl)[0x21];
-    height = (*(u8 **)tpl)[0x22];
-    difference = ((u32)height - (u32)width) | ((u32)width - (u32)height);
-    mipmap = difference >> 31;
-    if (*(u32 *)(tpl + 4) != 0) {
-        u8 *tex = *(u8 **)tpl;
-        GXInitTexObjCI(texObj, *(void **)(tex + 8), *(u16 *)(tex + 2), *(u16 *)tex,
-                       *(u32 *)(tex + 4), *(u32 *)(tex + 0xC), *(u32 *)(tex + 0x10),
-                       mipmap, 0);
-        ((void (*)(void *, u32))GXGetTexObjWidth)(texObj, *(u32 *)(tpl + 4));
+    descriptor = (u8 *)TPLGet(palette, textureId);
+    minLod = (*(u8 **)descriptor)[0x21];
+    maxLod = (*(u8 **)descriptor)[0x22];
+    lodDifference = ((u32)maxLod - (u32)minLod) | ((u32)minLod - (u32)maxLod);
+    useMipmap = lodDifference >> 31;
+    if (*(u32 *)(descriptor + 4) != 0) {
+        u8 *textureHeader = *(u8 **)descriptor;
+        GXInitTexObjCI(texObj, *(void **)(textureHeader + 8), *(u16 *)(textureHeader + 2), *(u16 *)textureHeader,
+                       *(u32 *)(textureHeader + 4), *(u32 *)(textureHeader + 0xC), *(u32 *)(textureHeader + 0x10),
+                       useMipmap, 0);
+        ((void (*)(void *, u32))GXGetTexObjWidth)(texObj, *(u32 *)(descriptor + 4));
     } else {
-        u8 *tex = *(u8 **)tpl;
-        GXInitTexObj(texObj, *(void **)(tex + 8), *(u16 *)(tex + 2), *(u16 *)tex,
-                     *(u32 *)(tex + 4), *(u32 *)(tex + 0xC), *(u32 *)(tex + 0x10),
-                     mipmap);
+        u8 *textureHeader = *(u8 **)descriptor;
+        GXInitTexObj(texObj, *(void **)(textureHeader + 8), *(u16 *)(textureHeader + 2), *(u16 *)textureHeader,
+                     *(u32 *)(textureHeader + 4), *(u32 *)(textureHeader + 0xC), *(u32 *)(textureHeader + 0x10),
+                     useMipmap);
     }
-    u8 *lodTex = *(u8 **)tpl;
-    GXInitTexObjLOD(texObj, *(u32 *)(lodTex + 0x14), *(u32 *)(lodTex + 0x18),
-                    (f32)lodTex[0x21], (f32)lodTex[0x22], *(f32 *)(lodTex + 0x1C),
-                    0, lodTex[0x20], 0);
+    u8 *textureHeader = *(u8 **)descriptor;
+    GXInitTexObjLOD(texObj, *(u32 *)(textureHeader + 0x14), *(u32 *)(textureHeader + 0x18),
+                    (f32)textureHeader[0x21], (f32)textureHeader[0x22], *(f32 *)(textureHeader + 0x1C),
+                    0, textureHeader[0x20], 0);
 }
 extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* drawInfo) {
     /* nw4r::lyt::DrawInfo constructor: install the vtable, set the embedded 4x3 transform
