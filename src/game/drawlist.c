@@ -309,12 +309,28 @@ void fn_802C8588(float *arg0, const float *arg1, const float *arg2) {
     PSVECNormalize(arg0, arg0);
     PSVECCrossProduct(arg0 + 6, arg0, arg0 + 3);
 }
-extern void fn_802D03F4(unsigned int *);
-
+extern void fn_802D03F4(unsigned int *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int);
+#pragma scheduling invalid_target
 void fn_802C8638(unsigned int *arg0) {
-    *(struct DlMtx34 *)lbl_804C1410 = *(const struct DlMtx34 *)arg0;
-    fn_802D03F4(lbl_804C1410);
+    register unsigned int v3 = arg0[3];
+    register unsigned int v2 = arg0[2];
+    register unsigned int v1 = arg0[1];
+    register unsigned int v0 = arg0[0];
+    unsigned int v4 = arg0[4];
+    unsigned int v5 = arg0[5];
+    unsigned int v6 = arg0[6];
+    unsigned int v7 = arg0[7];
+    unsigned int v8 = arg0[8];
+    unsigned int v9 = arg0[9];
+    unsigned int v10 = arg0[10];
+    unsigned int v11 = arg0[11];
+    volatile unsigned int *dst = (volatile unsigned int *)lbl_804C1410;
+    dst[0] = v0; dst[1] = v1; dst[2] = v2; dst[3] = v3;
+    dst[4] = v4; dst[5] = v5; dst[6] = v6; dst[7] = v7;
+    dst[8] = v8; dst[9] = v9; dst[10] = v10; dst[11] = v11;
+    fn_802D03F4((unsigned int *)dst, v10, v9, v8, v7, v6, v5, v4);
 }
+#pragma scheduling on
 /* Return the buffer holding the current camera/view matrix (a 3x4 float matrix). */
 void *fn_802C86DC(void) {
 #define sCurrentMatrix lbl_804C1410
