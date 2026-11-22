@@ -4057,7 +4057,7 @@ extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTran
     struct PaneView {
         char pad0[0x1c];
         AnimList animList;
-        register void* animation;
+        void* animation;
     };
     PaneView* p = (PaneView*)pane;
     void* node;
