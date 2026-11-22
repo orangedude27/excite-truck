@@ -637,7 +637,7 @@ void fn_8015F79C(void) {
 
 
 extern f32 lbl_805617D4, lbl_805617E4, lbl_805617E8, lbl_805617EC, lbl_805617F0;
-extern f64 lbl_805617F8;
+extern const f64 lbl_805617F8;
 extern f32 lbl_8056182C;
 extern f64 fn_8002F234(f32, f32, f32);
 f32 PSVECDotProduct(void *, void *);
