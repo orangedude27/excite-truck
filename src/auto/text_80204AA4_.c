@@ -41,6 +41,31 @@ void *fn_80204B18(int typeIndex) {
     return sTypeEntries + typeIndex * TYPE_ENTRY_SIZE;
 }
 
+#pragma dont_inline on
+/* Look up a type/difficulty name in the 3-entry type table lbl_802F9D68
+ * (0xC-byte descriptors); return the matching index, or 0 after reporting. */
+int fn_80204B2C(const char *name) {
+    typedef struct TypeDesc {
+        const char *name;
+        const char *displayName;
+        const char *propertyKey;
+    } TypeDesc;
+    const TypeDesc *entry;
+    unsigned int index;
+    index = 0;
+    entry = (const TypeDesc *)sTypeEntries;
+    while (3 > index) {
+        if (stricmp(name, entry->name) == 0) {
+            return index;
+        }
+        index++;
+        entry++;
+    }
+    fn_802E317C(lbl_8033BBA0, name);
+    return 0;
+}
+#pragma dont_inline reset
+
 /* Name-to-index lookup thunk: forward a difficulty name (e.g. "easy") to
  * fn_80204B2C, which matches it against the difficulty table. */
 int fn_80204BB4(const char *name) {
