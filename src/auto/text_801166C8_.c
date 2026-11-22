@@ -183,61 +183,61 @@ static inline BOOL isSame(const char *lhs, const char *rhs, u8 *locale) {
     return FALSE;
 }
 
-/* Resolve an archive path to a file-system entry number: handle '/', '.' and '..' components relative to handle->currDir, then walk the FST sibling chain for each name using locale-aware comparison. Returns -1 if any component is not found. */ s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
+/* Resolve an archive path to a file-system entry number: handle '/', '.' and '..' components relative to handle->currDir, then walk the FST sibling chain for each name using locale-aware comparison. Returns -1 if any component is not found. */ /* Resolve an archive path to a file-system entry number: handle '/', '.' and '..' components relative to handle->currDir, then walk the FST sibling chain for each name using locale-aware comparison. Returns -1 if any component is not found. */ s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
     u8 *locale = *(u8 **)(lbl_802FE850 + 0x38);
     const char *name_end;
     BOOL name_delimited_by_slash;
     s32 name_length;
-    u32 anchor;
-    u32 it = handle->currDir;
+    u32 dirEntry;
+    u32 entrynum = handle->currDir;
     ARCNode *nodes = handle->FSTStart;
 
     while (TRUE) {
-        if (path[0] == '\0') return it;
-        if (path[0] == '/') { it = 0; ++path; continue; }
+        if (path[0] == '\0') return entrynum;
+        if (path[0] == '/') { entrynum = 0; ++path; continue; }
         if (path[0] == '.') {
             if (path[1] == '.') {
                 if (path[2] == '/') {
-                    it = nodes[it].folder.parent;
+                    entrynum = nodes[entrynum].folder.parent;
                     path += 3;
                     continue;
                 }
-                if (path[2] == '\0') return nodes[it].folder.parent;
+                if (path[2] == '\0') return nodes[entrynum].folder.parent;
                 goto compare;
             }
             if (path[1] == '/') { path += 2; continue; }
-            if (path[1] == '\0') return it;
+            if (path[1] == '\0') return entrynum;
         }
     compare:
         name_end = path;
         while (name_end[0] != '\0' && name_end[0] != '/') ++name_end;
         name_delimited_by_slash = (name_end[0] != '\0') ? 1 : 0;
         name_length = name_end - path;
-        anchor = it;
-        ++it;
-        while (it < nodes[anchor].folder.sibling_next) {
+        dirEntry = entrynum;
+        ++entrynum;
+        while (entrynum < nodes[dirEntry].folder.sibling_next) {
             while (TRUE) {
-                if ((nodes[it].packed_type_name & 0xFF000000) ||
+                if ((nodes[entrynum].packed_type_name & 0xFF000000) ||
                     name_delimited_by_slash != TRUE) {
                     char *name_of_it = ((char *)handle->FSTStringStart) +
-                        (nodes[it].packed_type_name & 0x00FFFFFF);
+                        (nodes[entrynum].packed_type_name & 0x00FFFFFF);
                     if (name_of_it[0] == '.' && name_of_it[1] == '\0') {
-                        ++it;
+                        ++entrynum;
                         continue;
                     }
                     if (isSame(path, name_of_it, locale) == TRUE) goto descend;
                 }
-                if (nodes[it].packed_type_name & 0xFF000000) {
-                    it = nodes[it].folder.sibling_next;
+                if (nodes[entrynum].packed_type_name & 0xFF000000) {
+                    entrynum = nodes[entrynum].folder.sibling_next;
                     break;
                 }
-                ++it;
+                ++entrynum;
                 break;
             }
         }
         return -1;
     descend:
-        if (!name_delimited_by_slash) return it;
+        if (!name_delimited_by_slash) return entrynum;
         path += name_length + 1;
     }
 }
