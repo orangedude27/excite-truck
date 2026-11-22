@@ -1197,8 +1197,7 @@ extern int lbl_8055F7FC;
 extern void fn_80287B38(void *);
 extern void fn_8029C450(void *, int);
 extern float lbl_8056469C;
-#pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_8029DF64(void *arg0, int arg1, int arg2, float arg3) {
     int stride;
     int index;
