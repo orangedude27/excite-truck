@@ -22383,7 +22383,7 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
     }
 }
 
-void nw4hbm::lyt::AnimTransformBasic::Bind(Pane* pPane, bool recursive) {
+void AnimTransformBasic::Bind(Pane* pPane, bool recursive) {
     const u32* const pContentOffsetTbl =
         detail::ConvertOffsToPtr<u32>(mpRes, mpRes->animContOffsetsOffset);
 
