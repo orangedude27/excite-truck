@@ -10678,27 +10678,31 @@ extern "C" s32 fn_800B5070(s32 path, s32 *outValue) {
     #undef PATH_END_INDEX
 }
 #pragma pop
-extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *arg0, s32 arg1) {
-    s8 *p = arg0 + 7;
-    s8 b;
-    u32 digits = 7;
-    u32 divisor = 10;
-    u32 place = 1;
-    while (digits > 1 && arg1 != 0) {
-        u32 rem = (u32)arg1 % divisor;
-        if (rem != 0) {
-            arg1 -= rem;
-            rem /= place;
-            b = *p;
-            b += (s8)rem;
-            *p = b;
-        }
-        divisor *= 10;
-        digits--;
-        p--;
-        place *= 10;
+extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *arg0, s32 arg1)
+{
+  s8 *p = arg0 + 7;
+  s8 b;
+  u32 digits = 7;
+  u32 divisor = 10;
+  u32 place = 1;
+  while ((digits > 1) && (arg1 != 0))
+  {
+    u32 rem = ((u32) arg1) % divisor;
+    if (rem != 0)
+    {
+      arg1 -= rem & 0xFFFFFFFFu;
+      rem /= place;
+      b = *p;
+      b += (s8) rem;
+      *p = b;
     }
-    return 0;
+    divisor *= 10;
+    digits--;
+    p--;
+    place *= 10;
+  }
+
+  return 0;
 }
 
 extern "C" s32 fn_800A8EA0(void *, u32, void **);
@@ -26565,17 +26569,22 @@ extern "C" void fn_800A52DC(u32 arg0) {
     }
 }
 #pragma opt_propagation reset
-extern "C" void fn_800A535C(u32 arg0) {
-    u8 *ptr = (u8 *)lbl_803D2140 + 0xA0;
-    s32 i;
-    for (i = 0; i != 13; i++, ptr += 0x3F90) {
-        if (*(u32 *)(ptr + 0x1FBC) == arg0) {
-            *(u16 *)(ptr + 0x1F8C) |= 0x14;
-        }
-        if (*(u32 *)(ptr + 0x3F84) == arg0) {
-            *(u16 *)(ptr + 0x3F54) |= 0x14;
-        }
+extern "C" void fn_800A535C(u32 arg0)
+{
+  u8 *ptr = ((u8 *) lbl_803D2140) + 0xA0;
+  s32 i;
+  for (i = 0; i <= (13 - 1); i++, ptr += 0x3F90)
+  {
+    if ((*((u32 *) (ptr + 0x1FBC))) == arg0)
+    {
+      *((u16 *) (ptr + 0x1F8C)) |= 0x14;
     }
+    if ((*((u32 *) (ptr + 0x3F84))) == arg0)
+    {
+      *((u16 *) (ptr + 0x3F54)) |= 0x14;
+    }
+  }
+
 }
 
 /* Return whether media is present in this volume's drive: bit 2
