@@ -170,6 +170,7 @@ BOOL ARCFastOpen(ARCHandle *handle, s32 entrynum, ARCFileInfo *info) {
 
 extern u8 lbl_802FE850[];
 
+/* ARC path comparison helper */
 static inline BOOL isSame(const char *lhs, const char *rhs) {
     u8 *locale = *(u8 **)(lbl_802FE850 + 0x38);
     while (rhs[0] != '\0') {
