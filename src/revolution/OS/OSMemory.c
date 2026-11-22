@@ -1,5 +1,8 @@
 #include <revolution/OS.h>
 
+/* The ConfigMEM* helpers below are handwritten asm stubs that program the PowerPC
+ * BAT registers directly; BATConfig selects one and enters it through RealMode. */
+
 static BOOL OnShutdown(BOOL final, u32 event);
 static OSShutdownFunctionInfo ShutdownFunctionInfo = {OnShutdown, 127};
 
