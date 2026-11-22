@@ -635,12 +635,8 @@ extern "C" void* fn_801572A4(s32 configPtr, s32 courseIndex, s32 initValue) {
     return group;
 }
 
-extern "C" s32 fn_80157558(void* arrayHolder) {
-    return *(s32*)((u8*)arrayHolder + 4);
-}
-
 /* Get the element count stored at +4 in an array holder. */
-extern "C" s32 PtrArray_GetCount(void* arrayHolder) {
+extern "C" s32 fn_80157558(void* arrayHolder) {
     return *(s32*)((u8*)arrayHolder + 4);
 }
 
