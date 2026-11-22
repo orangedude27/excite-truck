@@ -1497,7 +1497,7 @@ extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
             u8 *p2 = ChildPane_800D77DC(it2);
             if (u8 *cast = DynCast_800D77DC(p2)) *(s32 *)(cast + 0xF4) = arg1;
             for (ChildIter_800D77DC it3 = ChildBegin_800D77DC(p2); ChildNotEqual_800D77DC(it3, ChildEnd_800D77DC(p2)); ChildNext_800D77DC(it3)) {
-                fn_800D6CA0(ChildPane_800D77DC(it3), arg1);
+                fn_800D6CA0((s32)ChildPane_800D77DC(it3), arg1);
             }
         }
     }
