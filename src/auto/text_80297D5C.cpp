@@ -170,7 +170,11 @@ extern "C" int fn_80297D90(void *out, int value) {
 extern "C" void fn_80297DC8(void* arg0) {
     float f0=lbl_805645B4,f1=lbl_805645B0,f2=lbl_805645AC,f3=lbl_805645A8,f4=lbl_805645A4,f5=lbl_805645A0,f6=lbl_8056459C,f7=lbl_80564598,f8=lbl_80564594,f9=lbl_80564590;
     float tmpA[3], tmpB[3];
-    *(int*)((char*)arg0+4)=0xC0; *(float*)((char*)arg0+8)=f9; *(float*)((char*)arg0+0xC)=f8; *(int*)arg0=1;
+    int enabled = 1;
+    int flags = 0xC0;
+    int stride = 0x40;
+    int mode = 2;
+    *(int*)((char*)arg0+4)=flags; *(float*)((char*)arg0+8)=f9; *(float*)((char*)arg0+0xC)=f8; *(int*)arg0=enabled;
     tmpA[0]=f7; tmpA[1]=f8; tmpA[2]=f7;
     *(float*)((char*)arg0+0x10)=tmpA[0]; *(float*)((char*)arg0+0x14)=tmpA[1]; *(float*)((char*)arg0+0x18)=tmpA[2];
     tmpB[0]=f9; tmpB[1]=f9; tmpB[2]=f9;
@@ -179,7 +183,7 @@ extern "C" void fn_80297DC8(void* arg0) {
     *(float*)((char*)arg0+0x54)=f4; *(float*)((char*)arg0+0x58)=f3; *(float*)((char*)arg0+0x5C)=f2;
     *(float*)((char*)arg0+0x70)=f1; *(float*)((char*)arg0+0x68)=f1; *(float*)((char*)arg0+0x60)=f1;
     *(float*)((char*)arg0+0x74)=f0; *(float*)((char*)arg0+0x6C)=f0; *(float*)((char*)arg0+0x64)=f0;
-    *(float*)((char*)arg0+0x80)=f9; *(int*)((char*)arg0+0x84)=0x40; *(unsigned char*)((char*)arg0+0x88)=1; *(int*)((char*)arg0+0x44)=2; *(unsigned char*)((char*)arg0+0x89)=1;
+    *(float*)((char*)arg0+0x80)=f9; *(int*)((char*)arg0+0x84)=stride; *(unsigned char*)((char*)arg0+0x88)=enabled; *(int*)((char*)arg0+0x44)=mode; *(unsigned char*)((char*)arg0+0x89)=enabled;
 }
 
     extern "C" void* fn_8028E61C(void*);
@@ -411,11 +415,10 @@ extern "C" float PSVECDotProduct(const float*, const float*);
 extern "C" double fabs(double);
 extern int lbl_8055CA70;
 extern int lbl_8055CA7C;
-#pragma push
-#pragma processor 750
+#pragma scheduling on
 extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, void* arg4, void* ctx) {
     float* out = (float*)arg1;
-    volatile int* base = (volatile int*)arg2;
+    float* base = (float*)arg2;
     float* d1 = (float*)arg3;
     float* d2 = (float*)arg4;
     float p0[3];
@@ -426,13 +429,16 @@ extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, voi
     float l2;
     float a0, a1, a2, b0, b1, b2;
 
-    ((int*)p0)[0] = base[0];
-    ((int*)p0)[1] = base[1];
-    ((int*)p0)[2] = base[2];
+    int x = ((const int*)base)[0];
+    int y = ((const int*)base)[1];
+    int z = ((const int*)base)[2];
+    ((int*)p0)[1] = y;
+    ((int*)p0)[0] = x;
     a1 = p0[1] + d1[1];
     a0 = p0[0] + d1[0];
     b0 = p0[0] + d2[0];
     b1 = p0[1] + d2[1];
+    ((int*)p0)[2] = z;
     a2 = p0[2] + d1[2];
     b2 = p0[2] + d2[2];
     p1[0] = a0; p1[1] = a1; p1[2] = a2;
@@ -459,7 +465,6 @@ extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, voi
     }
     return 1;
 }
-#pragma pop
 
 #pragma push
 #pragma processor 750
@@ -1685,8 +1690,8 @@ extern "C" void fn_8029A904(void* arg0, int arg1, void* arg2, float farg0, float
         *(float*)(entry + 0x24) -= farg0;
     }
 }
-#pragma scheduling reset
-extern "C" void fn_8029AAE0(int arg0, int arg1, void *arg2)
+ #pragma pop
+ extern "C" void fn_8029AAE0(int arg0, int arg1, void *arg2)
 {
   /* Transform two 3D points by a 3x3 matrix/translation from XformData, apply a fixed Y offset, and store them into the arg0+arg1*0x2C slot. */
   float *out = (float *) (((char *) arg0) + (arg1 * 0x2C));
@@ -2250,7 +2255,7 @@ extern "C" void fn_8029B824(void *arg0) {
                 scale = *(float *)(entry + 0x30);
                 az = *(float *)(item + 0x14) * scale;
                 x = *(float *)(item + 0x24) + *(float *)(item + 0x0C) * scale;
-                z = *(volatile float *)(item + 0x2C) + az;
+                z = *(float *)(item + 0x2C) + az;
                 y = *(float *)(item + 0x28) + *(float *)(item + 0x10) * scale;
                 scratch[6] = x;
                 scratch[1] = y;
@@ -2684,7 +2689,7 @@ extern "C" void* fn_801E87A8(void);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern "C" void* fn_802988A4(void* __restrict arg0) {
+extern "C" void* fn_802988A4(void* arg0) {
     struct Local {
         volatile float sp8;
         volatile float spC;
@@ -2762,3 +2767,4 @@ extern "C" void* fn_802988A4(void* __restrict arg0) {
 #pragma pop
 extern "C" void fn_80287B38(void*);
 extern "C" char lbl_80349408[];
+
