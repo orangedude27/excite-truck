@@ -5251,7 +5251,24 @@ s32 *fn_8011E0B4(s32 arg0, s32 arg1, s32 width, s32 height, s32 format, s32 *buf
 
 extern s32* fn_8011E0B4(s32, s32, s32, s32, s32, s32*, s32, s32);
 typedef struct { u32 old; u32 cur; } Idx8011FC2C;
-/* Decode the next block of every band group of one frame of the compressed sample stream. */ u32 fn_8011FC2C(void *bands, s32 arg1, s32 arg2, s32 *blocks, s32 arg4, s32 streams, s32 flags, s32 flags2) {
+/* Decode the next block of every band group of one frame of the compressed
+   sample stream.  `bands` is the decoder's band table: a header holding the
+   width and height of the two sample groups (+4/+8 and +0xC/+0x10) and the
+   index of the set being filled (+0x14), followed by two 0x30-byte sets.  Each
+   set holds, per group, the block that group was last decoded to and that
+   block's format: +0x1C/+0x20 for the group written to `blocks`, +0x28/+0x2C
+   and +0x34/+0x38 for the two groups of the second size and +0x40/+0x44 for the
+   optional group at the head of `blocks`.  The set moves to the other one as
+   soon as that one has a block of its own, so fn_8011E0B4 always sees the
+   current and the previous value of a group.
+   Every block is prefixed by its size in bytes, which is how `block` steps from
+   one group to the next; `streams` is the array of nine bit streams a group is
+   decoded from.  0x8000 in `flags` keeps the main group's block published
+   instead of moving on to the next one, 0x20000 skips the two groups of the
+   second size and 0x100000 set in both `flags` and `flags2` adds the optional
+   group.  Returns what the last group decoded reported: the main group's byte
+   count in words when the two extra groups are skipped. */
+u32 fn_8011FC2C(void *bands, s32 arg1, s32 arg2, s32 *blocks, s32 arg4, s32 streams, s32 flags, s32 flags2) {
     extern s32 *fn_8011E0B4();
     u32 result;
     Idx8011FC2C idx;
