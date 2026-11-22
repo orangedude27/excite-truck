@@ -14,6 +14,7 @@ static inline void init802BB734(struct Obj802BB734 *o, int size, void (*dtor)(vo
     o->zero = 0;
     __register_global_object(o, dtor, arg);
 }
+#pragma scheduling off
 void fn_802BB734(void) {
     char *base = (char *)lbl_804BFFE8;
     struct Obj802BB734 *object;
