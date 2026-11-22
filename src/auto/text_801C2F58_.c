@@ -2073,7 +2073,7 @@ void fn_801C7964(void) {
     dst->z = src->z;
 }
 #pragma scheduling on
-void (*fn_801C7990(void))(void) {
+funcptr_t fn_801C7990(void) {
     Unk_80437D88 *s = &lbl_80437D88;
     Vec *src = &s->f_4E0;
     Vec *dst1 = &s->f_6F8;
