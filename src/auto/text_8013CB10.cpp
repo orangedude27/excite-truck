@@ -4747,8 +4747,7 @@ extern "C" s32 fn_80144454(void) { return 0; }
 extern "C" s32 fn_8013D1F0(s32);
 #pragma scheduling invalid_target
 extern "C" s32 fn_8014445C(s32 arg0, s32 arg1) {
-    s32 v = fn_8013D1F0(arg1) ^ 0xA;
-    return ((v & 0xA) - (v >> 1)) < 0;
+    return fn_8013D1F0(arg1) < 10;
 }
 /* Vtable callback that ignores its first argument and returns the second unchanged. */
 extern "C" s32 fn_80144494(s32 self, s32 value) { return value; }
