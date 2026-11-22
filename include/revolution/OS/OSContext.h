@@ -42,6 +42,11 @@ void* OSGetStackPointer(void);
 void OSSwitchFiber(void* func, void* stack);
 void OSSwitchFiberEx(u32 r3, u32 r4, u32 r5, u32 r6, void* func, void* stack);
 void OSClearContext(OSContext* ctx);
+/* Initialize a fresh thread context for a new thread: _srr0 is the thread's
+   entry point (stored into srr0), stack its initial stack pointer. Also sets
+   srr1 to the default machine state (0x9032), zeros the GPRs/GQRs/CR/XER while
+   preserving r2/r13, and tail-calls OSClearContext to clear mode/state/FPU.
+   Hand-written assembly. */
 void OSInitContext(OSContext* ctx, void* _srr0, void* stack);
 void OSDumpContext(const OSContext* ctx);
 void __OSContextInit(void);
