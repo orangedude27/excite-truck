@@ -4810,95 +4810,76 @@ s32 uusb_get_devId(u32 vendorId, u32 productId) {
     return deviceId;
 }
 
-void UUSB_Register(tUUSB* uusb)
-{
-    IPCResult ret = 0;
+void UUSB_Register(tUUSB *uusb) {
+    extern s32 IPCCltInit(void);
+    extern u8 lbl_8055DC5C;
+    extern s32 lbl_8055DC60;
+    extern s32 lbl_8055DC64;
+    extern s32 lbl_80558FF0;
+    register char *report = lbl_803142C8;
+    register u8 *c;
+    u8 cmdPool;
+    u8 aclPool;
 
-    memset(&lbl_803BD1E0, 0, sizeof lbl_803BD1E0);
-
+    memset(&lbl_803BD1E0, 0, 0x4C);
     fn_8006EBAC();
-
-    lbl_803BD1E0.state = 5;
-
+    c = (u8 *)&lbl_803BD1E0;
+    c[0x29] = 5;
     fn_8006EB88();
-
-    if (!lbl_8055DC51)
-        uusb_set_trace_state(0);
-
-    ret = IPCCltInit();
-    if (ret != 0)
-    {
-        UUSBDBG0("HCISU_ERR: UUSB_Register: ERROR - failed IPCCltInit\n");
+    if (lbl_8055DC51 == 0) {
+        c[0x28] = 0;
+        lbl_8055DC51 = 1;
+    }
+    if (IPCCltInit() != 0) {
+        if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x670);
         return;
     }
-
-    ret = IUSB_OpenLib();
-    if (ret != 0)
-    {
-        UUSBDBG0("HCISU_ERR: UUSB_Register: ERROR - failed IUSB_OpenLib\n");
+    if (IUSB_OpenLib() != 0) {
+        if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x6A8);
         return;
     }
-
-    lbl_803BD1E0.p_uusb_cfg = uusb;
-
-    if (lbl_8055DC5C == TRUE)
-    {
-        lbl_803BD1E0.vid = lbl_8055DC60;
-        lbl_803BD1E0.pid = lbl_8055DC64;
+    *(tUUSB **)((u8 *)&lbl_803BD1E0 + 0x24) = uusb;
+    if (lbl_8055DC5C == 1) {
+        *(s32 *)((u8 *)&lbl_803BD1E0 + 0x14) = lbl_8055DC60;
+        *(s32 *)((u8 *)&lbl_803BD1E0 + 0x18) = lbl_8055DC64;
+    } else {
+        *(s32 *)((u8 *)&lbl_803BD1E0 + 0x14) = 0x57E;
+        *(s32 *)((u8 *)&lbl_803BD1E0 + 0x18) = 0x305;
     }
-    else
-    {
-        lbl_803BD1E0.vid = 0x057E; // 1406 - Nintendo Co., Ltd.
-        lbl_803BD1E0.pid = 0x0305; //  773 - Broadcom BCM2045A Bluetooth Radio [Nintendo Wii/Wii U]
-    }
-
-    lbl_803BD1E0.bulkEndpoint1 = 0;
-    lbl_803BD1E0.bulkEndpoint2 = 0;
-    lbl_803BD1E0.intrEndpoint1 = 0;
-    lbl_803BD1E0.at_0x13 = 0;
-
-    if (uusb_get_devId(lbl_803BD1E0.vid, lbl_803BD1E0.pid) < 0)
-    {
-        UUSBDBG0("HCISU_ERR: UUSB_Register: Error returned from get_devId()\n");
+    c = (u8 *)&lbl_803BD1E0;
+    c[0x10] = 0;
+    c[0x11] = 0;
+    c[0x12] = 0;
+    c[0x13] = 0;
+    if (uusb_get_devId(*(s32 *)(c + 0x14), *(s32 *)(c + 0x18)) < 0) {
+        if (c[0x28] != 0) OSReport(report + 0x6E0);
         return;
     }
-
-    UUSBDBG("HCISU_LOG: UUSB_Register: uusb_get_dev_id returned with lbl_803BD1E0.devId = %d\n",
-        lbl_803BD1E0.fd);
-
-    lbl_803BD1E0.bulkEndpoint1 = 2;
-    lbl_803BD1E0.bulkEndpoint2 = 130;
-    lbl_803BD1E0.intrEndpoint1 = 129;
-    lbl_803BD1E0.at_0x13 = 0;
-
-    fn_8006D4C4(&lbl_803BD1E0.bulk_buffer_q);
-    lbl_803BD1E0.at_0x38 = 0;
-
-    fn_8006D4C4(&lbl_803BD1E0.intr_buffer_q);
-    lbl_803BD1E0.at_0x48 = 0;
-
-    lbl_803BD1E0.cmd_buffer_pool = GKI_create_pool(660, 45, 1, NULL);
-    lbl_803BD1E0.acl_buffer_pool = GKI_create_pool(1800, 30, 1, NULL);
-
-    if (lbl_803BD1E0.cmd_buffer_pool == GKI_INVALID_POOL
-        || lbl_803BD1E0.acl_buffer_pool == GKI_INVALID_POOL)
-    {
-        UUSBDBG0("HCISU_LOG: UUSB_Register: Unable to create memory pools\n");
+    if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x720, lbl_803BD1E0.fd);
+    c = (u8 *)&lbl_803BD1E0;
+    c[0x10] = 2;
+    c[0x11] = 0x82;
+    c[0x12] = 0x81;
+    c[0x13] = 0;
+    fn_8006D4C4(c + 0x2C);
+    c[0x38] = 0;
+    fn_8006D4C4(c + 0x3C);
+    c[0x48] = 0;
+    c[0x1C] = GKI_create_pool(0x294, 0x2D, 1, NULL);
+    c[0x1D] = GKI_create_pool(0x708, 0x1E, 1, NULL);
+    cmdPool = c[0x1C];
+    aclPool = c[0x1D];
+    if (cmdPool == GKI_INVALID_POOL || aclPool == GKI_INVALID_POOL) {
+        if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x768);
         return;
     }
-
-    UUSBDBG("HCISU_LOG: UUSB_Register: hci_cmd_usb_pool_id (%d) hci_acl_usb_pool_id(%d)\n",
-        lbl_803BD1E0.cmd_buffer_pool,
-        lbl_803BD1E0.acl_buffer_pool);
-
+    if (c[0x28] != 0) OSReport(report + 0x7A4, cmdPool, aclPool);
     fn_8006EBAC();
-
-    lbl_803BD1E0.state = 4;
-
+    ((u8 *)&lbl_803BD1E0)[0x29] = 4;
     fn_8006EB88();
-
-    lbl_80558FF0 = TRUE;
+    lbl_80558FF0 = 1;
 }
+
 
 void UUSB_Open(tUUSB *uusb, void *callback) {
     extern char lbl_803142C8[];
