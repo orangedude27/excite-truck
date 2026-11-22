@@ -722,7 +722,7 @@ typedef struct VoiceSnd {
 
 #pragma push
 #pragma processor 750
-extern "C" void VoiceSnd_playOnce(void *arg0) {
+/* VoiceSnd vtable +0x18: grab one or two voices, apply group volume and pan, then start the sound playing once. */ extern "C" void VoiceSnd_playOnce(void *arg0) {
     VoiceSnd *snd = (VoiceSnd *)arg0;
     float master, gain, side;
     int i;
