@@ -981,46 +981,42 @@ void fn_802C4388(s32 src, s32 x, s32 y, s32 x2, s32 y2, s32 dst, s32 dx, s32 dy)
     u32 *sp;
     u16 *dp;
     sx = x; sy = y; tx = dx; ty = dy; w = x2 - x; h = y2 - y;
-    if (fn_802C3170((void *)dst, &tx, &ty, &sx, &sy, &w, &h) != 0) {
-        sp = (u32 *)fn_802C3060((void *)src, sx, sy);
-        dp = (u16 *)fn_802C3044((void *)dst, tx, ty);
-        srcskip = (*(s32 *)((u8 *)src + 0x10) - w * 4) / 4;
-        dstskip = (*(s32 *)((u8 *)dst + 0x10) - w * 2) / 2;
-        if (*(s8 *)dst == 3) {
+    if (!fn_802C3170((void *)dst, &tx, &ty, &sx, &sy, &w, &h)) return;
+    sp = (u32 *)fn_802C3060((void *)src, sx, sy);
+    dp = (u16 *)fn_802C3044((void *)dst, tx, ty);
+    srcskip = (*(s32 *)((u8 *)src + 0x10) - w * 4) / 4;
+    dstskip = (*(s32 *)((u8 *)dst + 0x10) - w * 2) / 2;
+    if (*(s8 *)dst == 3) {
+        do {
+            n = w;
             do {
-                n = w;
-                do {
-                    u32 pixel = *sp++;
-                    u16 old = *dp;
-                    u32 a = pixel >> 24, inv = 255 - a;
-                    s32 b = (u8)((inv * ((old << 3) & 0xf8) + a * (u8)pixel) / 255);
-                    s32 g = (u8)((inv * ((old >> 2) & 0xf8) + a * (u8)(pixel >> 8)) / 255);
-                    s32 r = (u8)((inv * ((old >> 7) & 0xf8) + a * (u8)(pixel >> 16)) / 255);
-                    *dp++ = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
-                } while (--n > 0);
-                sp += srcskip;
-                dp += dstskip;
-            } while (--h > 0);
-            return;
-        } else if (*(s8 *)dst == 4) {
+                u32 pixel = *sp++;
+                u16 old = *dp;
+                u32 a = pixel >> 24, inv = 255 - a;
+                s32 b = (u8)((inv * ((old << 3) & 0xf8) + a * (u8)pixel) / 255);
+                s32 g = (u8)((inv * ((old >> 2) & 0xf8) + a * (u8)(pixel >> 8)) / 255);
+                s32 r = (u8)((inv * ((old >> 7) & 0xf8) + a * (u8)(pixel >> 16)) / 255);
+                *dp++ = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
+            } while (--n > 0);
+            sp += srcskip;
+            dp += dstskip;
+        } while (--h > 0);
+    } else if (*(s8 *)dst == 4) {
+        do {
+            n = w;
             do {
-                n = w;
-                do {
-                    u16 old = *dp;
-                    u32 pixel = *sp++;
-                    u32 a = pixel >> 24, inv = 255 - a;
-                    u32 b = (inv * (u8)(((old << 3) & 0xf8) + 1) + a * (u8)pixel) * 0x10101;
-                    u32 g = (inv * (u8)(((old >> 3) & 0xfc) + 1) + a * (u8)(pixel >> 8)) * 0x10101;
-                    u32 r = (inv * (u8)(((old >> 8) & 0xf8) + 1) + a * (u8)(pixel >> 16)) * 0x10101;
-                    *dp++ = ((r >> 16) & 0xf800) | ((g >> 21) & 0x7e0) | (b >> 27);
-                } while (--n > 0);
-                sp += srcskip;
-                dp += dstskip;
-            } while (--h > 0);
-            return;
-        }
-        fn_802E317C(lbl_8034B124);
-    }
+                u16 old = *dp;
+                u32 pixel = *sp++;
+                u32 a = pixel >> 24, inv = 255 - a;
+                u32 b = (inv * (u8)(((old << 3) & 0xf8) + 1) + a * (u8)pixel) * 0x10101;
+                u32 g = (inv * (u8)(((old >> 3) & 0xfc) + 1) + a * (u8)(pixel >> 8)) * 0x10101;
+                u32 r = (inv * (u8)(((old >> 8) & 0xf8) + 1) + a * (u8)(pixel >> 16)) * 0x10101;
+                *dp++ = ((r >> 16) & 0xf800) | ((g >> 21) & 0x7e0) | (b >> 27);
+            } while (--n > 0);
+            sp += srcskip;
+            dp += dstskip;
+        } while (--h > 0);
+    } else fn_802E317C(lbl_8034B124);
 }
 #pragma scheduling on
 void fn_802C4610(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
@@ -1050,24 +1046,25 @@ loop_3:
             var_r31++;
             var_r0 = *var_r3;
             temp_r30 = temp_r8 >> 24;
-            if (temp_r30 == 0) {
-            } else if (temp_r30 == 0xFF) {
-                var_r0 = (var_r0 & 0xFF000000) | (temp_r8 & 0x00FFFFFF);
-            } else {
-                temp_r29 = 0xFF - temp_r30;
-                temp_r10 = (u8)(((temp_r29 * (u8)(var_r0 >> 16)) + (temp_r30 * (u8)(temp_r8 >> 16))) >> 8);
-                red = (u8)temp_r10;
-                temp_r10 = red + ((s32)red >> 7);
-                temp_r11 = (u8)(((temp_r29 * (u8)(var_r0 >> 8)) + (temp_r30 * (u8)(temp_r8 >> 8))) >> 8);
-                green = (u8)temp_r11;
-                temp_r11 = green + ((s32)green >> 7);
-                temp_r12 = (u8)(((temp_r29 * (u8)var_r0) + (temp_r30 * (u8)temp_r8)) >> 8);
-                blue = (u8)temp_r12;
-                temp_r12 = blue + ((s32)blue >> 7);
-                var_r7 = ((u32)temp_r10 << 16);
-                var_r7 |= (u32)temp_r11 << 8;
-                var_r0 = (var_r0 & 0xFF000000) | (temp_r12 & 0xFF);
-                var_r0 |= var_r7;
+            if (temp_r30 != 0) {
+                if (temp_r30 == 0xFF) {
+                    var_r0 = (var_r0 & 0xFF000000) | (temp_r8 & 0x00FFFFFF);
+                } else {
+                    temp_r29 = 0xFF - temp_r30;
+                    temp_r10 = (u8)(((temp_r29 * (u8)(var_r0 >> 16)) + (temp_r30 * (u8)(temp_r8 >> 16))) >> 8);
+                    red = (u8)temp_r10;
+                    temp_r10 = red + ((s32)red >> 7);
+                    temp_r11 = (u8)(((temp_r29 * (u8)(var_r0 >> 8)) + (temp_r30 * (u8)(temp_r8 >> 8))) >> 8);
+                    green = (u8)temp_r11;
+                    temp_r11 = green + ((s32)green >> 7);
+                    temp_r12 = (u8)(((temp_r29 * (u8)var_r0) + (temp_r30 * (u8)temp_r8)) >> 8);
+                    blue = (u8)temp_r12;
+                    temp_r12 = blue + ((s32)blue >> 7);
+                    var_r7 = ((u32)temp_r10 << 16);
+                    var_r7 |= (u32)temp_r11 << 8;
+                    var_r0 = (var_r0 & 0xFF000000) | (temp_r12 & 0xFF);
+                    var_r0 |= var_r7;
+                }
             }
             var_r6--;
             *var_r3 = var_r0;
@@ -1208,37 +1205,37 @@ extern const char lbl_8034B144[]; /* "Wrong stamp version in \"%s\": %x (expecti
    little-endian and its row table holds offsets into the block: swap its
    words and turn those offsets into pointers before handing it back. */
 void *fn_802C49E8(const char *name) {
-    s32 unused;
+    s32 outSize;
     u32 version;
-    u8 swap;
-    u8 *obj;
+    u8 needsSwap;
+    u8 *stampData;
     Stamp *stamp;
     u8 *p;
-    u32 *rows;
+    u32 *rowTable;
     s32 row;
     u8 t;
 
-    swap = 0;
-    unused = 0;
-    obj = (u8 *)((LoadResource)fn_8012C370)(name, STAMP_TAG, &version, &unused, 0, &swap);
-    if (obj == 0)
+    needsSwap = 0;
+    outSize = 0;
+    stampData = (u8 *)((LoadResource)fn_8012C370)(name, STAMP_TAG, &version, &outSize, 0, &needsSwap);
+    if (stampData == 0)
         goto ret0;
-    stamp = (Stamp *)obj;
+    stamp = (Stamp *)stampData;
     if (version != STAMP_VERSION)
         fn_802E317C(lbl_8034B144, name, version, STAMP_VERSION);
-    if (swap != 0) {
+    if (needsSwap != 0) {
         /* the header's five words and the two pointers, byte-swapped in place */
-        STAMP_SWAP_WORD(obj, 0);
-        STAMP_SWAP_WORD(obj, 4);
-        STAMP_SWAP_WORD(obj, 8);
-        STAMP_SWAP_WORD(obj, 12);
-        STAMP_SWAP_WORD(obj, 16);
-        STAMP_SWAP_WORD(obj, 0x814);
-        STAMP_SWAP_WORD(obj, 0x818);
+        STAMP_SWAP_WORD(stampData, 0);
+        STAMP_SWAP_WORD(stampData, 4);
+        STAMP_SWAP_WORD(stampData, 8);
+        STAMP_SWAP_WORD(stampData, 12);
+        STAMP_SWAP_WORD(stampData, 16);
+        STAMP_SWAP_WORD(stampData, 0x814);
+        STAMP_SWAP_WORD(stampData, 0x818);
         /* the row table follows the header, the rows' pixels follow it */
-        rows = (u32 *)(stamp + 1);
-        stamp->rows = rows;
-        stamp->pixels = (u8 *)rows + stamp->height * stamp->frames * 4;
+        rowTable = (u32 *)(stamp + 1);
+        stamp->rows = rowTable;
+        stamp->pixels = (u8 *)rowTable + stamp->height * stamp->frames * 4;
         for (row = 0; row < stamp->height * stamp->frames; row++) {
             u8 a, b;
             p = (u8 *)stamp->rows + row * 4;
@@ -1253,7 +1250,7 @@ void *fn_802C49E8(const char *name) {
             p += 4;
         }
     }
-    return obj;
+    return stampData;
 ret0:
     return 0;
 }
