@@ -2873,175 +2873,158 @@ extern "C" s32 fn_800A861C(void *volume, void *cache, s32 buffer, u32 sector) {
 }
 
 extern "C" s32 fn_800A58E0(void *, s32, s32, s32, s32);
-extern "C" s32 fn_800A8730(void *arg0, u32 *arg1, void *arg2, u32 arg3, s32 arg4, s32 *arg5)
-{
-  void *var_r30;
-  s32 var_r29;
-  u32 request_length;
-  s32 temp_r0_2;
-  s32 temp_r3;
-  s32 temp_r3_2;
-  s32 temp_r3_3;
-  s32 temp_r3_4;
-  s32 temp_r3_7;
-  s32 temp_r3_8;
-  s32 temp_r4_2;
-  s32 temp_r4_4;
-  s32 temp_r5_5;
-  s32 temp_r5_6;
-  u8 temp_r5;
-  u8 temp_r5_2;
-  u8 temp_r5_3;
-  u8 temp_r5_4;
-  s32 temp_r6;
-  u32 temp_r0;
-  u32 temp_r0_3;
-  u32 temp_r31;
-  u32 temp_r3_5_u;
-  u32 temp_r3_6_u;
-  u32 temp_r4_u;
-  u8 temp_r6_2;
-  u32 temp_r7;
-  var_r29 = arg4;
-  request_length = arg4;
-  temp_r31 = arg3 + arg4;
-  *((volatile s32 *) arg5) = (s32) (var_r30 = 0);
-  loop_1:
-  if (var_r30 == 0)
-  {
-    var_r30 = (void *) (*arg1);
+extern "C" s32 fn_800A8730(void *arg0, u32 *arg1, void *arg2, u32 arg3, s32 arg4, s32 *arg5) {
+    void *var_r30;
+    s32 var_r29;
+    u32 request_length;
+    s32 temp_r0_2;
+    s32 temp_r3;
+    s32 temp_r3_2;
+    s32 temp_r3_3;
+    s32 temp_r3_4;
+    s32 temp_r3_7;
+    s32 temp_r3_8;
+    s32 temp_r4_2;
+    s32 temp_r4_4;
+    s32 temp_r5_5;
+    s32 temp_r5_6;
+    u8 temp_r5;
+    u8 temp_r5_2;
+    u8 temp_r5_3;
+    u8 temp_r5_4;
+    s32 temp_r6;
+    u32 temp_r0;
+    u32 temp_r0_3;
+    u32 temp_r31;
+    u32 temp_r3_5_u;
+    u32 temp_r3_6_u;
+    u32 temp_r4_u;
+    u8 temp_r6_2;
+    u32 temp_r7;
+
+    var_r29 = arg4;
+    request_length = arg4;
+    temp_r31 = arg3 + arg4;
+    *(volatile s32 *)arg5 = (s32)(var_r30 = 0);
+loop_1:
+    if (var_r30 == 0) {
+        var_r30 = (void *)*arg1;
+        goto loop_scan;
+    }
+    var_r30 = *(void **)((u8 *)var_r30 + 0x20);
+    if (var_r30 == (void *)*arg1) {
+        var_r30 = 0;
+        goto loop_2;
+    }
     goto loop_scan;
-  }
-
-  var_r30 = *((void **) (((u8 *) var_r30) + 0x20));
-  if (var_r30 == ((void *) (*arg1)))
-  {
-    var_r30 = 0;
-    goto loop_2;
-  }
-  goto loop_scan;
-  loop_9:
-  if (((u32) ((*((u32 *) (((u8 *) var_r30) + 0x18))) + 0x10000)) != 0xFFFF)
-  {
-    *((u32 *) (((u8 *) var_r30) + 8)) = *((u32 *) (((u8 *) var_r30) + 4));
-    goto loop_2;
-  }
-
-  var_r30 = *((void **) (((u8 *) var_r30) + 0x20));
-  loop_scan:
-  if (((*((u16 *) var_r30)) & 1) == 0)
-  {
-    var_r30 = 0;
-  }
-  else
-  {
-    goto loop_9;
-  }
-
-  loop_2:
-  if (var_r30 != 0)
-  {
-    temp_r7 = *((u32 *) (((u8 *) var_r30) + 0x18));
-    if (((u32) (temp_r7 + 0x10000)) != 0xFFFF)
-    {
-      if ((temp_r7 <= arg3) && (((u32) (temp_r7 + (*((u32 *) (((u8 *) var_r30) + 0x14))))) >= temp_r31))
-      {
-        temp_r5 = *((u8 *) (((u8 *) arg0) + 0x20));
-        VFipf_memcpy(((u8 *) (*((void **) (((u8 *) var_r30) + 4)))) + ((arg3 - temp_r7) << temp_r5), arg2, request_length << temp_r5);
-        temp_r3_2 = (*arg5) + var_r29;
-        var_r29 = 0;
-        *arg5 = temp_r3_2;
-        *((u16 *) var_r30) |= 2;
-        temp_r5_2 = *((u8 *) (((u8 *) arg0) + 0x20));
-        temp_r6 = *((s32 *) (((u8 *) var_r30) + 0xC));
-        temp_r3_3 = (s32) (((u8 *) (*((void **) (((u8 *) var_r30) + 4)))) + ((arg3 - (*((u32 *) (((u8 *) var_r30) + 0x18)))) << temp_r5_2));
-        temp_r4_u = ((u32) temp_r3_3) + ((request_length - 1) << temp_r5_2);
-        if (temp_r6 == 0)
-        {
-          *((s32 *) (((u8 *) var_r30) + 0xC)) = temp_r3_3;
-          *((u32 *) (((u8 *) var_r30) + 0x10)) = temp_r4_u;
-        }
-        else
-          if (((u32) temp_r3_3) < ((u32) temp_r6))
-        {
-          *((s32 *) (((u8 *) var_r30) + 0xC)) = temp_r3_3;
-        }
-        else
-          if ((*((u32 *) (((u8 *) var_r30) + 0x10))) < temp_r4_u)
-        {
-          *((u32 *) (((u8 *) var_r30) + 0x10)) = temp_r4_u;
-        }
-      }
-      else
-        if ((temp_r7 >= arg3) && ((temp_r4_2 = *((s32 *) (((u8 *) var_r30) + 0x14)), ((u32) (temp_r7 + temp_r4_2)) <= temp_r31)))
-      {
-        temp_r5_3 = *((u8 *) (((u8 *) arg0) + 0x20));
-        VFipf_memcpy(*((void **) (((u8 *) var_r30) + 4)), ((u8 *) arg2) + ((temp_r7 - arg3) << temp_r5_3), temp_r4_2 << temp_r5_3);
-        temp_r3_4 = *((s32 *) (((u8 *) var_r30) + 0x14));
-        var_r29 -= temp_r3_4;
-        *arg5 += temp_r3_4;
-        *((u16 *) var_r30) |= 2;
-        *((s32 *) (((u8 *) var_r30) + 0xC)) = *((s32 *) (((u8 *) var_r30) + 4));
-        *((u32 *) (((u8 *) var_r30) + 0x10)) = (*((u32 *) (((u8 *) var_r30) + 4))) + (((*((u32 *) (((u8 *) var_r30) + 0x14))) - 1) << (*((u8 *) (((u8 *) arg0) + 0x20))));
-      }
-      else
-        if ((((temp_r7 > arg3) && (temp_r7 < temp_r31)) && (((u32) (temp_r7 + (*((u32 *) (((u8 *) var_r30) + 0x14))))) >= temp_r31)) != 0)
-      {
-        u32 temp_r4_3 = arg4 + arg3;
-        temp_r5_4 = *((u8 *) (((u8 *) arg0) + 0x20));
-        VFipf_memcpy(*((void **) (((u8 *) var_r30) + 4)), ((u8 *) arg2) + ((temp_r7 - arg3) << temp_r5_4), (temp_r31 - temp_r7) << temp_r5_4);
-        temp_r4_4 = temp_r4_3 - (*((u32 *) (((u8 *) var_r30) + 0x18)));
-        *arg5 += temp_r4_4;
-        var_r29 -= temp_r4_4;
-        *((u16 *) var_r30) |= 2;
-        temp_r5_5 = *((s32 *) (((u8 *) var_r30) + 4));
-        temp_r3_5_u = temp_r5_5 + (((temp_r4_3 - 1) - (*((u32 *) (((u8 *) var_r30) + 0x18)))) << (*((u8 *) (((u8 *) arg0) + 0x20))));
-        *((s32 *) (((u8 *) var_r30) + 0xC)) = temp_r5_5;
-        temp_r0 = *((u32 *) (((u8 *) var_r30) + 0x10));
-        if ((((s32) temp_r0) == 0) || (temp_r0 < temp_r3_5_u))
-        {
-          *((u32 *) (((u8 *) var_r30) + 0x10)) = temp_r3_5_u;
-        }
-      }
-      else
-        if (temp_r7 < arg3)
-      {
-        temp_r0_2 = *((s32 *) (((u8 *) var_r30) + 0x14));
-        temp_r3_6_u = temp_r7 + temp_r0_2;
-        if ((temp_r3_6_u > arg3) && (temp_r3_6_u <= temp_r31))
-        {
-          temp_r6_2 = *((u8 *) (((u8 *) arg0) + 0x20));
-          temp_r3_7 = arg3 - temp_r7;
-          VFipf_memcpy(((u8 *) (*((void **) (((u8 *) var_r30) + 4)))) + (temp_r3_7 << temp_r6_2), arg2, (temp_r0_2 - temp_r3_7) << temp_r6_2);
-          temp_r3_8 = (*((u32 *) (((u8 *) var_r30) + 0x14))) - (arg3 - (*((u32 *) (((u8 *) var_r30) + 0x18))));
-          *arg5 += temp_r3_8;
-          var_r29 -= temp_r3_8;
-          *((u16 *) var_r30) |= 2;
-          temp_r5_6 = *((s32 *) (((u8 *) var_r30) + 0xC));
-          temp_r0_3 = ((u32) (*((s32 *) (((u8 *) var_r30) + 4)))) + ((((*((u32 *) (((u8 *) var_r30) + 0x14))) - (arg3 - (*((u32 *) (((u8 *) var_r30) + 0x18))))) - 1) << (*((u8 *) (((u8 *) arg0) + 0x20))));
-          if ((temp_r5_6 == 0) || (temp_r0_3 < ((u32) temp_r5_6)))
-          {
-            *((s32 *) (((u8 *) var_r30) + 0xC)) = (s32) temp_r0_3;
-          }
-          *((u32 *) (((u8 *) var_r30) + 0x10)) = (*((u32 *) (((u8 *) var_r30) + 4))) + (((*((u32 *) (((u8 *) var_r30) + 0x14))) - 1) << (*((u8 *) (((u8 *) arg0) + 0x20))));
-        }
-      }
+loop_9:
+    if ((u32)(*(u32 *)((u8 *)var_r30 + 0x18) + 0x10000) != 0xFFFF) {
+        *(u32 *)((u8 *)var_r30 + 8) = *(u32 *)((u8 *)var_r30 + 4);
+        goto loop_2;
     }
-  }
-
-  if ((var_r30 != 0) && (var_r29 != 0))
-  {
-    goto loop_1;
-  }
-  if (var_r29 != 0)
-  {
-    temp_r3 = fn_800A58E0(arg0, (s32) arg2, arg3, request_length, (s32) arg5);
-    if (temp_r3 != 0)
-    {
-      return temp_r3;
+    var_r30 = *(void **)((u8 *)var_r30 + 0x20);
+loop_scan:
+    if ((*(u16 *)var_r30 & 1) == 0)
+        var_r30 = 0;
+    else
+        goto loop_9;
+loop_2:
+    if (var_r30 != 0) {
+        temp_r7 = *(u32 *)((u8 *)var_r30 + 0x18);
+        if ((u32)(temp_r7 + 0x10000) != 0xFFFF) {
+            if ((temp_r7 <= arg3) && ((u32)(temp_r7 + *(u32 *)((u8 *)var_r30 + 0x14)) >= temp_r31)) {
+                temp_r5 = *(u8 *)((u8 *)arg0 + 0x20);
+                VFipf_memcpy((u8 *)*(void **)((u8 *)var_r30 + 4) + ((arg3 - temp_r7) << temp_r5),
+                             arg2, request_length << temp_r5);
+                temp_r3_2 = *arg5 + var_r29;
+                var_r29 = 0;
+                *arg5 = temp_r3_2;
+                *(u16 *)var_r30 |= 2;
+                temp_r5_2 = *(u8 *)((u8 *)arg0 + 0x20);
+                temp_r6 = *(s32 *)((u8 *)var_r30 + 0xC);
+                temp_r3_3 = (s32)((u8 *)*(void **)((u8 *)var_r30 + 4) +
+                            ((arg3 - *(u32 *)((u8 *)var_r30 + 0x18)) << temp_r5_2));
+                temp_r4_u = (u32)temp_r3_3 + ((request_length - 1) << temp_r5_2);
+                if (temp_r6 == 0) {
+                    *(s32 *)((u8 *)var_r30 + 0xC) = temp_r3_3;
+                    *(u32 *)((u8 *)var_r30 + 0x10) = temp_r4_u;
+                } else if ((u32)temp_r3_3 < (u32)temp_r6) {
+                    *(s32 *)((u8 *)var_r30 + 0xC) = temp_r3_3;
+                } else if (*(u32 *)((u8 *)var_r30 + 0x10) < temp_r4_u) {
+                    *(u32 *)((u8 *)var_r30 + 0x10) = temp_r4_u;
+                }
+            } else if ((temp_r7 >= arg3) &&
+                       (temp_r4_2 = *(s32 *)((u8 *)var_r30 + 0x14),
+                        ((u32)(temp_r7 + temp_r4_2) <= temp_r31))) {
+                temp_r5_3 = *(u8 *)((u8 *)arg0 + 0x20);
+                VFipf_memcpy(*(void **)((u8 *)var_r30 + 4),
+                             (u8 *)arg2 + ((temp_r7 - arg3) << temp_r5_3),
+                             temp_r4_2 << temp_r5_3);
+                temp_r3_4 = *(s32 *)((u8 *)var_r30 + 0x14);
+                var_r29 -= temp_r3_4;
+                *arg5 += temp_r3_4;
+                *(u16 *)var_r30 |= 2;
+                *(s32 *)((u8 *)var_r30 + 0xC) = *(s32 *)((u8 *)var_r30 + 4);
+                *(u32 *)((u8 *)var_r30 + 0x10) =
+                    *(u32 *)((u8 *)var_r30 + 4) +
+                    ((*(u32 *)((u8 *)var_r30 + 0x14) - 1) << *(u8 *)((u8 *)arg0 + 0x20));
+            } else if ((temp_r7 > arg3) && (temp_r7 < temp_r31) &&
+                       ((u32)(temp_r7 + *(u32 *)((u8 *)var_r30 + 0x14)) >= temp_r31)) {
+                u32 temp_r4_3 = arg4 + arg3;
+                temp_r5_4 = *(u8 *)((u8 *)arg0 + 0x20);
+                VFipf_memcpy(*(void **)((u8 *)var_r30 + 4),
+                             (u8 *)arg2 + ((temp_r7 - arg3) << temp_r5_4),
+                             (temp_r31 - temp_r7) << temp_r5_4);
+                temp_r4_4 = temp_r4_3 - *(u32 *)((u8 *)var_r30 + 0x18);
+                *arg5 += temp_r4_4;
+                var_r29 -= temp_r4_4;
+                *(u16 *)var_r30 |= 2;
+                temp_r5_5 = *(s32 *)((u8 *)var_r30 + 4);
+                temp_r3_5_u = temp_r5_5 +
+                    (((temp_r4_3 - 1) - *(u32 *)((u8 *)var_r30 + 0x18)) <<
+                     *(u8 *)((u8 *)arg0 + 0x20));
+                *(s32 *)((u8 *)var_r30 + 0xC) = temp_r5_5;
+                temp_r0 = *(u32 *)((u8 *)var_r30 + 0x10);
+                if ((s32)temp_r0 == 0 || temp_r0 < temp_r3_5_u)
+                    *(u32 *)((u8 *)var_r30 + 0x10) = temp_r3_5_u;
+            } else if (temp_r7 < arg3) {
+                temp_r0_2 = *(s32 *)((u8 *)var_r30 + 0x14);
+                temp_r3_6_u = temp_r7 + temp_r0_2;
+                if (temp_r3_6_u > arg3 && temp_r3_6_u <= temp_r31) {
+                    temp_r6_2 = *(u8 *)((u8 *)arg0 + 0x20);
+                    temp_r3_7 = arg3 - temp_r7;
+                    VFipf_memcpy((u8 *)*(void **)((u8 *)var_r30 + 4) +
+                                     (temp_r3_7 << temp_r6_2),
+                                 arg2, (temp_r0_2 - temp_r3_7) << temp_r6_2);
+                    temp_r3_8 = *(u32 *)((u8 *)var_r30 + 0x14) -
+                                (arg3 - *(u32 *)((u8 *)var_r30 + 0x18));
+                    *arg5 += temp_r3_8;
+                    var_r29 -= temp_r3_8;
+                    *(u16 *)var_r30 |= 2;
+                    temp_r5_6 = *(s32 *)((u8 *)var_r30 + 0xC);
+                    temp_r0_3 = (u32)*(s32 *)((u8 *)var_r30 + 4) +
+                        (((*(u32 *)((u8 *)var_r30 + 0x14) -
+                           (arg3 - *(u32 *)((u8 *)var_r30 + 0x18))) - 1) <<
+                         *(u8 *)((u8 *)arg0 + 0x20));
+                    if (temp_r5_6 == 0 || temp_r0_3 < (u32)temp_r5_6)
+                        *(s32 *)((u8 *)var_r30 + 0xC) = (s32)temp_r0_3;
+                    *(u32 *)((u8 *)var_r30 + 0x10) =
+                        *(u32 *)((u8 *)var_r30 + 4) +
+                        ((*(u32 *)((u8 *)var_r30 + 0x14) - 1) <<
+                         *(u8 *)((u8 *)arg0 + 0x20));
+                }
+            }
+        }
     }
-  }
-  return 0;
+
+    if (var_r30 != 0 && var_r29 != 0)
+        goto loop_1;
+    if (var_r29 != 0) {
+        temp_r3 = fn_800A58E0(arg0, (s32)arg2, arg3, request_length, (s32)arg5);
+        if (temp_r3 != 0)
+            return temp_r3;
+    }
+    return 0;
 }
 
 extern "C" s32 fn_800A8AD4(void *arg0, void *arg1) {
@@ -5037,23 +5020,21 @@ extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
 #pragma push
 #pragma processor 750
 extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
+    u32 one = 1;
     u32 sp8;
-    s32 var_r31;
+    register void *temp_r5;
     s32 temp_r30;
     s32 temp_r3;
     s32 temp_r4;
     u8 temp_r7;
-    void *temp_r5;
+    s32 var_r31;
     temp_r5 = *(void **)((u8 *)arg0 + 0x3C);
     temp_r30 = *(s32 *)arg0;
     *(void **)((u8 *)arg0 + 4) = temp_r5;
     temp_r7 = *(u8 *)((u8 *)temp_r5 + 0x20) - 5;
     *(s32 *)arg0 = arg1;
     *(u8 *)((u8 *)arg0 + 0x6C) = temp_r7;
-    {
-        u32 one = 1;
-        *(u16 *)((u8 *)arg0 + 0x4A) = (one << temp_r7) - 1;
-    }
+    *(u16 *)((u8 *)arg0 + 0x4A) = (one << temp_r7) - 1;
     *(s32 *)((u8 *)arg0 + 0x40) = -1;
     temp_r3 = ((s32 (*)(void *, s32))fn_800AB378)(arg0, 0);
     var_r31 = temp_r3;
@@ -5305,10 +5286,12 @@ static inline s32 VFiPFENT_ITER_MaskNonZero(s32 value) {
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800AC708(register void *arg0, register u8 *arg1, register u32 arg2, register s32 *arg3) {
-    extern s32 VFiPFENT_loadEntryNumericFieldsFromBuf(void *, void *);
     register u8 *iter;
     s32 status;
+    s32 result;
     register s32 zero;
+    s32 code;
+    u32 sp8;
     u8 spC[13];
     u8 flags;
 
@@ -5323,6 +5306,7 @@ extern "C" s32 fn_800AC708(register void *arg0, register u8 *arg1, register u32 
     goto check_end;
 status_check:
     if (status != 0) return status;
+process:
     if (iter[0x4C] == 0xE5) {
         arg1[0x20A] = (u8)zero;
         *(u16 *)arg1 = (u16)zero;
@@ -5354,10 +5338,12 @@ status_check:
         *(u16 *)(arg1 + 0x23C) = *(u16 *)(iter + 0x48);
         *(u32 *)(arg1 + 0x22C) = *(u32 *)(iter + 0x3C);
         flags = arg1[0x21C] & 0x10;
-        if (flags && *(u32 *)(arg1 + 0x234) != arg2) {
-            arg1[0x20A] = (u8)zero;
-            *(u16 *)arg1 = (u16)zero;
-            goto advance;
+        if (flags) {
+            if (*(u32 *)(arg1 + 0x234) != arg2) {
+                arg1[0x20A] = (u8)zero;
+                *(u16 *)arg1 = (u16)zero;
+                goto advance;
+            }
         }
         if (flags && *(u32 *)(arg1 + 0x234) == 0) {
             *(u32 *)(arg1 + 0x234) = 1;
@@ -5390,7 +5376,24 @@ status_check:
     *arg3 = 1;
     return 0;
 advance:
-    status = VFiPFENT_ITER_MaskNonZero(VFiPFENT_ITER_MoveNextAndRead(iter));
+    status = *(u32 *)iter;
+    *(u32 *)iter = status + 1;
+    result = fn_800AB378((void *)iter, 0);
+    if (result != 0) {
+        *(u32 *)iter = status;
+        fn_800AB378((void *)iter, 0);
+    } else {
+        if (*(u32 *)(iter + 0x44) + 0x10000 == 0xFFFF) {
+            code = 0x10;
+        } else {
+            result = fn_800B5324(*(void **)(iter + 4), iter + 0x4C, *(u32 *)(iter + 0x44),
+                                 *(u16 *)(iter + 0x48), 0x20, &sp8, 0);
+            if (sp8 != 0x20) code = 0x11;
+            else code = result;
+        }
+        result = code & (s32)(-(u32)code | (u32)code) >> 31;
+    }
+    status = result & (s32)(-(u32)result | (u32)result) >> 31;
 check_end:
     if (VFiPFENT_ITER_IsAtLogicalEnd((void *)iter) == 0) goto status_check;
     return 0;
@@ -7825,41 +7828,54 @@ extern "C" s32 fn_800B037C(void *volume, s32 cluster, s32 value) {
     return saved;
 }
 
-extern "C" s32 fn_800B0488(void *arg0, u32 arg1, u32 arg2, void *arg3, s32 arg4) {
-    u8 *obj = (u8 *)arg0, *ctx = (u8 *)arg3;
-    u32 bytes = arg1 << 2;
-    u32 value = *(u32 *)(obj + 0x28) + (bytes >> obj[0x20]);
-    u16 block = (u16)value;
-    u16 offset = (u16)(bytes & (*(u16 *)obj - 1));
-    s32 result = 0, saved = 0;
-    if (*(u32 *)(ctx + 0x18) != block) {
-        u16 i;
-        for (i = 0; i < obj[0x22]; i++) {
-            s32 r = fn_800B5618(arg0, *(void **)(ctx + 8),
-                *(u32 *)(ctx + 0x18) + i * *(u32 *)(obj + 0xC),
-                0, *(u16 *)obj);
-            if (r && !saved) saved = r;
-        }
-        result = fn_800B5260(arg0, *(void **)(ctx + 8), block, 0, *(u16 *)obj);
-        if (result) return result;
-        *(u32 *)(ctx + 0x18) = block;
+extern "C" s32 fn_800B0488(void *arg0, u32 arg1, u32 arg2, void *arg3, s32 arg4)
+{
+  u8 *obj = (u8 *) arg0;
+  u8 *ctx = (u8 *) arg3;
+  u32 bytes = arg1 << 2;
+  u32 value = (*((u32 *) (obj + 0x28))) + (bytes >> obj[0x20]);
+  u16 block = (u16) value;
+  u16 offset = (u16) (bytes & ((*((u16 *) obj)) - 1));
+  s32 result = 0;
+  s32 saved = 0;
+  if ((*((u32 *) (ctx + 0x18))) != block)
+  {
+    u16 i;
+    for (i = 0; i < obj[0x22]; i++)
+    {
+      s32 r = fn_800B5618(arg0, *((void **) (ctx + 8)), (*((u32 *) (ctx + 0x18))) + (i * (*((u32 *) (obj + 0xC)))), 0, *((u16 *) obj));
+      if (r && (!saved))
+      {
+        saved = r;
+      }
     }
-    u8 *buffer = (u8 *)*(u32 *)(ctx + 8);
-    u32 data = *(u32 *)(buffer + offset);
-    u32 upper = __rlwinm(data, 8, 8, 15);
-    u32 lower = __rlwinm(data, 24, 16, 23);
-    upper = __rlwimi(upper, data, 24, 0, 7);
-    lower = __rlwimi(lower, data, 8, 24, 31);
-    u32 swapped = upper | lower;
-    swapped &= 0xF0000000;
-    swapped = __rlwimi(swapped, arg2, 0, 4, 31);
-    upper = __rlwinm(swapped, 8, 8, 15);
-    lower = __rlwinm(swapped, 24, 16, 23);
-    upper = __rlwimi(upper, swapped, 24, 0, 7);
-    lower = __rlwimi(lower, swapped, 8, 24, 31);
-    *(u32 *)(buffer + offset) = upper | lower;
-    if (result) saved = result;
-    return saved;
+
+    result = fn_800B5260(arg0, *((void **) (ctx + 8)), block, 0, *((u16 *) obj));
+    if (result)
+    {
+      return result;
+    }
+    *((u32 *) (ctx + 0x18)) = block;
+  }
+  u8 *buffer = (u8 *) (*((u32 *) (ctx + 8)));
+  u32 data = *((u32 *) (buffer + offset));
+  u32 upper = __rlwinm(data, 8, 8, 15);
+  u32 lower = __rlwinm(data, 24, 16, 23);
+  upper = __rlwimi(upper, data, 24, (unsigned char) 0, 7);
+  lower = __rlwimi(lower, data, 8, 24, 31);
+  u32 swapped = upper | lower;
+  swapped &= 0xF0000000;
+  swapped = __rlwimi(swapped, arg2, 0, 4, 31);
+  upper = __rlwinm(swapped, 8, 8, 15);
+  lower = __rlwinm(swapped, 24, 16, 23);
+  upper = __rlwimi(upper, swapped, 24, 0, 7);
+  lower = __rlwimi(lower, swapped, 8, 24, 31);
+  *((u32 *) (buffer + offset)) = upper | lower;
+  if (result)
+  {
+    saved = result;
+  }
+  return saved;
 }
 
 /* VFiPFFAT_GetEntry32: the 28-bit FAT32 entry of `cluster`, read through the
@@ -10702,11 +10718,11 @@ extern "C" s32 fn_800B5070(s32 path, s32 *outValue) {
 #pragma pop
 extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *arg0, s32 arg1)
 {
-  s8 *p = arg0 + 7;
+  s8 *p = arg0 - -7;
   s8 b;
   u32 digits = 7;
   u32 divisor = 10;
-  u32 place = (0, 1);
+  u32 place = 1;
   while ((digits > 1) && (arg1 != 0))
   {
     u32 rem = ((u32) arg1) % divisor;
@@ -10725,6 +10741,9 @@ extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *arg0, s32 arg1)
   }
 
   return 0;
+  if (1)
+  {
+  }
 }
 
 extern "C" s32 fn_800A8EA0(void *, u32, void **);
@@ -10928,7 +10947,7 @@ extern "C" s32 fn_800B5324(void *vol, u8 *dest, u32 sector, u32 offset, u32 leng
     return 0;
 }
 
-extern "C" s32 fn_800B5618(void *arg0, void *arg1, u32 arg2, u16 arg3, s32 arg4) {
+/* Write `length` bytes from `src` into the cached page for `sector` of `volume` at byte offset `offset`; returns 0 on success or an error code. */ extern "C" s32 fn_800B5618(void *volume, void *src, u32 sector, u16 offset, s32 length) {
     /* Write `arg4` bytes from `arg1` into the cached page for sector `arg2` of volume `arg0` at byte offset `arg3`. */
     VFiPFCACHEPage *page;
     u16 sectorSize;
@@ -10936,25 +10955,25 @@ extern "C" s32 fn_800B5618(void *arg0, void *arg1, u32 arg2, u16 arg3, s32 arg4)
 
     /* fn_800A53B4 reports VF_VOL_MEDIA_PRESENT; a write also needs an attached
      * device (VF_VOL_IN_USE) that is not VF_VOL_WRITE_PROTECTED. */
-    if (!(((VFiPFVolume *)arg0)->flags & VF_VOL_IN_USE) ||
-        fn_800A53B4(arg0) == 0 ||
-        (((VFiPFVolume *)arg0)->flags & VF_VOL_WRITE_PROTECTED)) {
+    if (!(((VFiPFVolume *)volume)->flags & VF_VOL_IN_USE) ||
+        fn_800A53B4(volume) == 0 ||
+        (((VFiPFVolume *)volume)->flags & VF_VOL_WRITE_PROTECTED)) {
         return 9;
     }
 
-    if (arg2 >= ((VFiPFVolume *)arg0)->totalSectors ||
-        arg3 >= (sectorSize = ((VFiPFVolume *)arg0)->bytesPerSector) ||
-        (s32)(arg3 + arg4) > (s32)sectorSize) {
+    if (sector >= ((VFiPFVolume *)volume)->totalSectors ||
+        offset >= (sectorSize = ((VFiPFVolume *)volume)->bytesPerSector) ||
+        (s32)(offset + length) > (s32)sectorSize) {
         return 10;
     }
 
-    result = fn_800A8EA0(arg0, arg2, (void **)&page);
+    result = fn_800A8EA0(volume, sector, (void **)&page);
     if (result != 0) {
         return result;
     }
 
-    VFipf_memcpy((u8 *)page->data + arg3, arg1, arg4);
-    result = fn_800A8FD0(arg0, (s32)page);
+    VFipf_memcpy((u8 *)page->data + offset, src, length);
+    result = fn_800A8FD0(volume, (s32)page);
     return result & ((-result | result) >> 31);
 }
 
@@ -11342,7 +11361,7 @@ extern "C" s32 fn_800B6004(void *arg0)
 
         result = 0;
       }
-      if (result)
+      if (result != 0)
       {
       }
       else
@@ -11388,13 +11407,13 @@ extern "C" s32 fn_800B6004(void *arg0)
     return result;
   }
   flags = *((u16 *) (((u8 *) arg0) + 0x1F8C));
-  switch ((flags >> 3) & 1)
+  switch ((flags >> ((int) 3)) & 1)
   {
     case 0:
       return 9;
 
     default:
-      return (-((flags >> 1) & 1)) & 0xB;
+      return (-((flags >> 1) & 1)) & ((((((((((((0xB & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF);
 
   }
 
@@ -11470,7 +11489,7 @@ extern "C" s32 fn_800B63FC(void)
   result = 0;
   ((void (*)(s32 *)) fn_800B78F0)(&key);
   p = lbl_803D2140 + 3;
-  for (i = 1; 1 < 4; p += 3, i++)
+  for (i = 1; i < 4; p += 3, i++)
   {
     if ((p[0] & 1) && (key == p[1]))
     {
@@ -11512,7 +11531,7 @@ extern "C" s32 fn_800B63FC(void)
     if (found)
     {
       p = lbl_803D2140 + 3;
-      for (i = 1; i < 4; p += 3, i++)
+      for (i = 1; 1 < 4; p += 3, i++)
       {
         if (!(p[0] & 1))
         {
@@ -15079,13 +15098,17 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s1
 extern s32 lbl_802F3238[];
 extern "C" void fn_800BD710(void *arg0, s16 arg1, s16 arg2, void *arg3, void *arg4) {
     u8 *t = (u8 *)lbl_802F3238;
+    s32 *tab0 = (s32 *)lbl_802F3238;
+    s32 *tab1 = (s32 *)((u8 *)lbl_802F3238 + 0x20);
     Fn800BD710Obj *obj = (Fn800BD710Obj *)arg0;
     s32 *out0 = (s32 *)arg3;
     s32 *out1 = (s32 *)arg4;
     if (obj->mode == 0) {
         s32 v = *out0;
-        *out1 = fn_800BD710_scale(v, (s32 *)(t + 0x20), arg2);
-        *out0 = fn_800BD710_scale(*out0, (s32 *)t, arg2);
+        s32 a = tab1[arg2];
+        s32 b = tab0[arg2];
+        *out1 = fn_800C0E7C_fxmul(v, a);
+        *out0 = fn_800C0E7C_fxmul(*out0, b);
         return;
     }
     if (obj->inited == 0) {
@@ -17747,61 +17770,52 @@ extern "C" void fn_800C2DBC(s32 *arg0, s32 *arg1, s32 *arg2) {
 }
 
 extern "C" s32 lbl_8031D778[];
-extern "C" void fn_800C2F98(s32 *in, s32 *out, s32 *negOut)
-{
-  const s32 *k = lbl_8031D778;
-  s32 zero = 0;
-  s32 value;
-  s32 coefficient;
-  s32 negative;
-  s32 result;
-  s64 product;
-  s64 second;
-  value = in[0];
-  out[0] = value;
-  negOut[0] = zero;
-  value = in[1];
-  out[1] = value;
-  negOut[-1] = 0;
-  value = in[2];
-  out[2] = value;
-  negOut[-2] = 0;
-  value = in[3];
-  out[3] = value;
-  negOut[-3] = 0;
-  value = in[4];
-  out[4] = value;
-  negOut[-4] = 0;
-  value = in[5];
-  out[5] = value;
-  negOut[-5] = 0;
-  s32 sample = in[6];
-  coefficient = *(k++);
-  product = ((s64) sample) * coefficient;
-  coefficient = *(k++);
-  second = ((s64) sample) * coefficient;
-  result = (s32) (product >> 20);
-  negative = (s32) (second >> 20);
-  out[6] = result;
-  negOut[-6] = negative;
-  value = in[7];
-  coefficient = *(k++);
-  product = ((s64) value) * coefficient;
-  coefficient = *(k++);
-  second = ((s64) value) * coefficient;
-  result = (s32) (product >> 20);
-  negative = (s32) (second >> 20);
-  out[7] = result;
-  negOut[-7] = negative;
-  value = in[8];
-  coefficient = *(k++);
-  product = ((s64) value) * coefficient;
-  coefficient = *(k++);
-  second = ((s64) value) * coefficient;
-  result = (s32) (product >> 20);
-  negative = (s32) (second >> 20);
-  out[8] = result;
-  negOut[-8] = negative;
+extern "C" void fn_800C2F98(s32 *in, s32 *out, s32 *negOut) {
+    const s32 *k = lbl_8031D778;
+    s32 zero = 0;
+    s32 value;
+    s32 coefficient;
+    s32 result;
+    s32 negative;
+    s64 product;
+    s64 second;
+
+    value = in[0]; out[0] = value; negOut[0] = zero;
+    value = in[1]; out[1] = value; negOut[-1] = zero;
+    value = in[2]; out[2] = value; negOut[-2] = zero;
+    value = in[3]; out[3] = value; negOut[-3] = zero;
+    value = in[4]; out[4] = value; negOut[-4] = zero;
+    value = in[5]; out[5] = value; negOut[-5] = zero;
+
+    s32 sample = in[6];
+    coefficient = *k++;
+    product = (s64)sample * coefficient;
+    coefficient = *k++;
+    second = (s64)sample * coefficient;
+    result = (s32)(product >> 20);
+    negative = (s32)(second >> 20);
+    out[6] = result;
+    negOut[-6] = negative;
+
+    value = in[7];
+    coefficient = *k++;
+    product = (s64)value * coefficient;
+    coefficient = *k++;
+    second = (s64)value * coefficient;
+    result = (s32)(product >> 20);
+    negative = (s32)(second >> 20);
+    out[7] = result;
+    negOut[-7] = negative;
+
+    value = in[8];
+    coefficient = *k++;
+    product = (s64)value * coefficient;
+    coefficient = *k++;
+    second = (s64)value * coefficient;
+    result = (s32)(product >> 20);
+    negative = (s32)(second >> 20);
+    out[8] = result;
+    negOut[-8] = negative;
 }
 
 extern "C" const s32 lbl_8031D790[];
@@ -21420,9 +21434,9 @@ extern "C" void fn_800D1F7C(s32 *arg0, s32 arg1) {
     const Fn800D1F7CStringTable *messages =
         (const Fn800D1F7CStringTable *)lbl_8031E9D0;
     u32 temp_r28;
-    u32 var_r27;
-    s32 var_r0;
-    fn_800D1EC4((const char *)((u32)messages + 0x0));
+    s32 var_r27;
+    register s32 var_r0;
+    fn_800D1EC4(messages->header + 0);
     fn_800D1EC4(messages->summary);
     var_r27 = 0;
 loop_1:
@@ -22342,73 +22356,86 @@ extern "C" void *__dt__Q36nw4hbm3lyt18AnimTransformBasicFv(void *self, s32 delet
 
 void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::AnimationBlock *resource, nw4hbm::lyt::ResourceAccessor *accessor)
 {
-    u8 *self = (u8 *)this;
-    const u8 *block = (const u8 *)resource;
-    const char *file = lbl_8031EE58;
-    u8 *resourceNames;
-    u32 *resourceOffsets;
-    s32 outputOffset;
-    s32 i;
-    s32 allocationSize;
-    u8 *records;
-    void **textureResources;
+  u8 *self = (u8 *) this;
+  const char *file = lbl_8031EE58;
+  u8 *resourceNames;
+  u32 *resourceOffsets;
+  s32 outputOffset;
+  s32 i;
+  s32 allocationSize;
+  u8 *records;
+  void **textureResources;
+  const u8 *block = (const u8 *) resource;
+  if ((*((void **) (self + 0x14))) != 0)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x1A6, file + 0x14);
+  }
+  if ((*((void **) (self + 0x18))) != 0)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x1A7, file + 0x40);
+  }
+  *((const void **) (self + 0xC)) = resource;
+  *((void **) (self + 0x14)) = 0;
+  if ((*((u16 *) (block + 0xC))) != 0)
+  {
+    allocationSize = ((u32) (*((u16 *) (block + 0xC)))) << 2;
+    textureResources = (void **) MEMAllocFromAllocator((MEMAllocator *) lbl_8055DDF0, allocationSize);
+    *((void ***) (self + 0x14)) = textureResources;
+    if (textureResources != 0)
+    {
+      i = 0;
+      outputOffset = 0;
+      resourceNames = ((u8 *) (*((const u8 **) (self + 0xC)))) + 0x14;
+      resourceOffsets = (u32 *) resourceNames;
+      goto texture_condition;
+      texture_body:
+      {
+        u32 offset = *resourceOffsets;
+        void *texture = accessor->GetResource(0x74696D67, (const char *) (resourceNames + offset), 0);
+        resourceOffsets++, i++;
+        *((void **) (((u8 *) (*((void **) (self + 0x14)))) + outputOffset)) = texture;
+        outputOffset += 4;
+      }
 
-    if (*(void **)(self + 0x14) != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x1A6, file + 0x14);
-    }
-    if (*(void **)(self + 0x18) != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x1A7, file + 0x40);
-    }
+      texture_condition:
+      if (i < (*((u16 *) (((u8 *) (*((const u8 **) (self + 0xC)))) + 0xC))))
+      {
+        goto texture_body;
+      }
 
-    *(const void **)(self + 0xC) = resource;
-    *(void **)(self + 0x14) = 0;
-    if (*(u16 *)(block + 0xC) != 0) {
-        allocationSize = (u32)*(u16 *)(block + 0xC) << 2;
-        textureResources = (void **)MEMAllocFromAllocator((MEMAllocator *)lbl_8055DDF0, allocationSize);
-        *(void ***)(self + 0x14) = textureResources;
-        if (textureResources != 0) {
-            i = 0;
-            outputOffset = 0;
-            resourceNames = (u8 *)*(const u8 **)(self + 0xC) + 0x14;
-            resourceOffsets = (u32 *)resourceNames;
-            goto texture_condition;
-        texture_body:
-            {
-                u32 offset = *resourceOffsets;
-                void *texture = accessor->GetResource(0x74696D67, (const char *)(resourceNames + offset), 0);
-                (resourceOffsets++, i++);
-                *(void **)((u8 *)*(void **)(self + 0x14) + outputOffset) = texture;
-                outputOffset += 4;
-            }
-        texture_condition:
-            if (i < *(u16 *)((u8 *)*(const u8 **)(self + 0xC) + 0xC)) goto texture_body;
-        }
     }
-
-    allocationSize = (u32)*(u16 *)(block + 0xE) << 4;
-    records = (u8 *)MEMAllocFromAllocator((MEMAllocator *)lbl_8055DDF0, allocationSize);
-    *(u8 **)(self + 0x18) = records;
-    if (records != 0) {
-        *(u16 *)(self + 0x1C) = *(u16 *)(block + 0xE);
-        memset(records, 0, (u32)*(u16 *)(block + 0xE) << 4);
-        i = 0;
-        goto record_condition;
+  }
+  allocationSize = ((u32) (*((u16 *) (block + 0xE)))) << 4;
+  records = (u8 *) MEMAllocFromAllocator((MEMAllocator *) lbl_8055DDF0, allocationSize);
+  *((u8 **) (self + 0x18)) = records;
+  if (records != 0)
+  {
+    *((u16 *) (self + 0x1C)) = *((u16 *) (block + 0xE));
+    memset(records, 0, ((u32) (*((u16 *) (block + 0xE)))) << 4);
+    i = 0;
+    goto record_condition;
     record_body:
-        {
-            u8 *record = *(u8 **)(self + 0x18);
-            record += (u16)i << 4;
-            if (record != 0) {
-                *(u32 *)(record + 0) = 0;
-                *(u32 *)(record + 4) = 0;
-                record[0xE] = 0;
-                *(u32 *)(record + 8) = 0;
-                *(u16 *)(record + 0xC) = 0;
-            }
-            i++;
-        }
-    record_condition:
-        if ((u16)i < *(u16 *)(block + 0xE)) goto record_body;
+    {
+      u8 *record = *((u8 **) (self + 0x18));
+      record += ((u16) i) << 4;
+      if (record != 0)
+      {
+        *((u32 *) (record + 0)) = 0;
+        *((u32 *) (record + 4)) = 0;
+        record[0xE] = 0;
+        *((u32 *) (record + 8)) = 0;
+        *((u16 *) (record + 0xC)) = 0;
+      }
+      i++;
     }
+
+    record_condition:
+    if (((u16) i) < (*((u16 *) (block + 0xE))))
+    {
+      goto record_body;
+    }
+
+  }
 }
 
 /* QUARANTINED (unit would not compile): this draft body uses undeclared nw4hbm
@@ -26687,11 +26714,11 @@ extern "C" void fn_800A535C(u32 arg0)
   s32 i;
   for (i = 0; i < 13; i++, ptr += 0x3F90)
   {
-    if (0, (*((u32 *) (ptr + 0x1FBC))) == arg0)
+    if ((*((u32 *) (ptr + 0x1FBC))) == arg0)
     {
       *((u16 *) (ptr + 0x1F8C)) |= 0x14;
     }
-    if ((*((u32 *) (ptr + 0x3F84))) == arg0)
+    if ((*((u32 *) (ptr + ((0, 0x3F84))))) == arg0)
     {
       *((u16 *) (ptr + 0x3F54)) |= 0x14;
     }
