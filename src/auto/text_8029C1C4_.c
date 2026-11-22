@@ -512,7 +512,7 @@ extern "C" void fn_8029CBA0(void) {
     union ScratchValue { float f; int i; };
     ScratchValue scratch[40];
     register float var_f31 = 0.75f;
-    int *var_r31 = (int *)&lbl_8034968C;
+    register int *var_r31 = (int *)&lbl_8034968C;
     Dummy *obj;
     obj = (Dummy *)fn_802AE414(&lbl_8055CAC8);
     if (obj != 0) {
@@ -521,19 +521,19 @@ extern "C" void fn_8029CBA0(void) {
     }
     if (fn_802BF4F0() != 0 || lbl_8055F7F0 > 0 || lbl_8055F7F4 > 0) {
         register float zero, high, scale, low, far;
-        register int five;
-        struct S { int two; unsigned short size; } s;
+        register int two, five;
+        register unsigned short size;
         fn_8028E61C((int *)&scratch[6]);
         zero = 1.0f;
-        s.two = 2;
+        two = 2;
         high = 0.75f;
-        s.size = 0x200;
+        size = 0x200;
         scale = 0.5f;
         low = 0.25f;
         five = 5;
         far = -1.0f;
-        scratch[6].i = s.two;
-        scratch[7].i = s.size;
+        scratch[6].i = two;
+        scratch[7].i = size;
         scratch[8].f = high;
         scratch[9].f = high;
         scratch[3].f = zero;
@@ -546,8 +546,8 @@ extern "C" void fn_8029CBA0(void) {
         scratch[1].f = zero;
         scratch[2].f = zero;
         scratch[13].f = zero;
-        scratch[14].f = zero;
         scratch[15].f = zero;
+        scratch[14].f = zero;
         scratch[16].f = scale;
         scratch[18].f = high;
         scratch[19].f = scale;
@@ -1140,8 +1140,8 @@ void fn_8029DDB8(void *arg0)
   y = 1;
   coeff = lbl_80564694 * (lbl_80564658 - (*((float *) (base + 0x1C))));
   amp = coeff * amp;
-  waveSquared = amp * amp;
   new_var = base;
+  waveSquared = amp * amp;
   wave = lbl_80564640 - (lbl_80564698 * waveSquared);
   while (y < ((*((int *) (new_var + 0x10))) - 1))
   {
