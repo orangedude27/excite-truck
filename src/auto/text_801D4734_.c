@@ -284,9 +284,10 @@ extern char *strchr(char *, int);
 #pragma push
 #pragma processor 604
 void fn_801D490C(void) {
-    float width, right, x;
+int __repair_literal;
+
+    float width, right, x, alpha, t, edge, dy, y;
     float limit = lbl_8055E3C8;
-    float alpha, t, edge, dy, y;
     char c;
     char *src;
     int n;
@@ -319,8 +320,10 @@ void fn_801D490C(void) {
         fn_8000FF88(color, 0xC, lbl_8055AD5C, lbl_80562AF4, lbl_80562ADC, lbl_80562AF8, lbl_80442310 + 0x48);
         src = lbl_80442310 + 8; dst = text; n = 0x40;
         goto copy;
+__repair_literal = 0;
+
     limit_lbl:
-        if (--n > 0) goto copy;
+        if (--n > __repair_literal) goto copy;
         dst[-1] = 0;
         goto done;
     copy:
