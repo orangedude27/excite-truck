@@ -17,6 +17,8 @@ extern unsigned char lbl_80345F70[];
 extern int lbl_8055F3D8;
 extern int lbl_8055F3E0;
 extern float lbl_80563B90;
+#pragma push
+#pragma scheduling invalid_target
 void fn_80262EF8(void) {
     typedef struct {
         volatile unsigned int words[8];
@@ -36,3 +38,4 @@ void fn_80262EF8(void) {
     r->words[8] = (unsigned int)lbl_80345F70;
     __register_global_object((void *)&r->obj, fn_80262F8C, (void *)&r->words[5], lbl_80345F70, 0, (void *)&r->words[0]);
 }
+#pragma pop
