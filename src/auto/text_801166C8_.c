@@ -168,56 +168,89 @@ BOOL ARCFastOpen(ARCHandle *handle, s32 entrynum, ARCFileInfo *info) {
 }
 
 extern u8 lbl_802FE850[];
-s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
-    u32 entry = handle->currDir;
-    u32 *fst = (u32 *)handle->FSTStart;
+
+static BOOL isSame(const char *lhs, const char *rhs) {
     u8 *locale = *(u8 **)(lbl_802FE850 + 0x38);
-    for (;;) {
-        const char *end;
-        u32 length, limit, node;
-        int hasSlash;
-        if (*path == 0) return entry;
-        if (*path == '/') { entry = 0; path++; continue; }
-        if (*path == '.') {
+    while (rhs[0] != '\0') {
+        int a = *lhs++;
+        int b = *rhs++;
+        a = (a < 0 || a >= 256) ? a : (*(u8 **)(locale + 0x10))[a];
+        b = (b < 0 || b >= 256) ? b : (*(u8 **)(locale + 0x10))[b];
+        if (a != b) return FALSE;
+    }
+    if (lhs[0] == '/' || lhs[0] == '\0') return TRUE;
+    return FALSE;
+}
+
+s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
+    const char *name_end;
+    BOOL name_delimited_by_slash;
+    s32 name_length;
+    u32 anchor;
+    u32 it = handle->currDir;
+    ARCNode *nodes = handle->FSTStart;
+    u8 *locale = *(u8 **)(lbl_802FE850 + 0x38);
+
+    while (TRUE) {
+        if (path[0] == '\0') return it;
+        if (path[0] == '/') { it = 0; ++path; continue; }
+        if (path[0] == '.') {
             if (path[1] == '.') {
-                if (path[2] == '/') { entry = fst[entry * 3 + 1]; path += 3; continue; }
-                if (path[2] == 0) return fst[entry * 3 + 1];
-            } else {
-                if (path[1] == '/') { path += 2; continue; }
-                if (path[1] == 0) return entry;
+                if (path[2] == '/') {
+                    it = nodes[it].folder.parent;
+                    path += 3;
+                    continue;
+                }
+                if (path[2] == '\0') return nodes[it].folder.parent;
+                goto compare;
             }
+            if (path[1] == '/') { path += 2; continue; }
+            if (path[1] == '\0') return it;
         }
-        end = path;
-        while (*end && *end != '/') end++;
-        length = end - path;
-        limit = fst[entry * 3 + 2];
-        entry++;
-        hasSlash = *end != 0;
-        while (entry < limit) {
-            char *name;
-            const char *p;
-            node = fst[entry * 3];
-            if ((node & 0xff000000) == 0 && hasSlash == 1) goto next;
-            name = handle->FSTStringStart + (node & 0xffffff);
-            if (name[0] == '.' && name[1] == 0) { entry++; continue; }
-            p = path;
-            while (*name) {
-                int a = *name++;
-                int b;
-                a = (a < 0 || a >= 256) ? a : (*(u8 **)(locale + 0x10))[a];
-                b = *p++;
-                b = (b < 0 || b >= 256) ? b : (*(u8 **)(locale + 0x10))[b];
-                if (a != b) goto next;
+    compare:
+        name_end = path;
+        while (name_end[0] != '\0' && name_end[0] != '/') ++name_end;
+        name_delimited_by_slash = (name_end[0] != '\0') ? 1 : 0;
+        name_length = name_end - path;
+        anchor = it;
+        ++it;
+        while (it < nodes[anchor].folder.sibling_next) {
+            while (TRUE) {
+                if ((nodes[it].packed_type_name & 0xFF000000) ||
+                    name_delimited_by_slash != TRUE) {
+                    char *name_of_it = ((char *)handle->FSTStringStart) +
+                        (nodes[it].packed_type_name & 0x00FFFFFF);
+                    if (name_of_it[0] == '.' && name_of_it[1] == '\0') {
+                        ++it;
+                        continue;
+                    }
+                    {
+                        const char *lhs = path;
+                        const char *rhs = name_of_it;
+                        BOOL same = TRUE;
+                        while (rhs[0] != '\0') {
+                            int a = *lhs++;
+                            int b = *rhs++;
+                            a = (a < 0 || a >= 256) ? a : (*(u8 **)(locale + 0x10))[a];
+                            b = (b < 0 || b >= 256) ? b : (*(u8 **)(locale + 0x10))[b];
+                            if (a != b) { same = FALSE; break; }
+                        }
+                        if (same == TRUE && (lhs[0] == '/' || lhs[0] == '\0'))
+                            goto descend;
+                    }
+                }
+                if (nodes[it].packed_type_name & 0xFF000000) {
+                    it = nodes[it].folder.sibling_next;
+                    break;
+                }
+                ++it;
+                break;
             }
-            if (*p == '/' || *p == 0) goto found;
-        next:
-            if (fst[entry * 3] & 0xff000000) entry = fst[entry * 3 + 2];
-            else entry++;
         }
         return -1;
-    found:
-        if (!hasSlash) return entry;
-        path += length + 1;
+    descend:
+        if (!name_delimited_by_slash) return it;
+        path += name_length + 1;
     }
 }
 
@@ -2780,11 +2813,9 @@ void fn_8011A4F8(s32 transferSize, DVDFileInfo *fileInfo) {
 }
 
 void fn_8011A6A0(void* arg0) {
-    /* Pump DVD streaming reads: check drive status, flag errors/cancel, and queue the next
-     * async read chunk when ready. */
-    DvdStream *stream = (DvdStream *)arg0;
+    /* Pump DVD streaming reads: check drive status, flag errors/cancel, and queue the next async read chunk when ready. */
     s32 driveStatus = DVDGetDriveStatus();
-    s32 bytesRemaining = stream->endOffset - stream->readOffset;
+    s32 bytesRemaining = *(s32*)((u8*)arg0 + 0xB8) - *(s32*)((u8*)arg0 + 0x90);
     if (driveStatus == 10)
         goto check_read;
     if (driveStatus >= 10)
@@ -2800,10 +2831,10 @@ status_high:
     if (driveStatus >= 12)
         goto check_read;
 set_flag:
-    stream->error = 1;
+    *(s32*)((u8*)arg0 + 0x20) = 1;
     goto done;
 check_read:
-    if (stream->cancelling != 0)
+    if (*(s32*)((u8*)arg0 + 0xC4) != 0)
         goto done;
     if (driveStatus == 0)
         goto read_valid;
@@ -2813,23 +2844,23 @@ check_read:
 done:
     return;
 read_valid:
-    if (stream->freeSpace >= 0x8000 && bytesRemaining != 0) {
-        stream->timeModeUsed = stream->timeMode;
-        stream->readStart = fn_80116D30();
-        stream->reading = 1;
+    if (*(u32*)((u8*)arg0 + 0xA0) >= 0x8000 && bytesRemaining != 0) {
+        *(s32*)((u8*)arg0 + 0xC8) = *(s32*)((u8*)arg0 + 0x2C);
+        *(s32*)((u8*)arg0 + 0xCC) = fn_80116D30();
+        *(s32*)((u8*)arg0 + 0x24) = 1;
         if ((u32)bytesRemaining > 0x8000)
             bytesRemaining = 0x8000;
         else if (bytesRemaining & 0x1F) {
             s32 pad = (-bytesRemaining) & 0x1F;
-            stream->padSize = pad;
+            *(s32*)((u8*)arg0 + 0x94) = pad;
             bytesRemaining += pad;
         }
-        DVDReadAsyncPrio((u8 *)stream + 0x54, stream->writePtr, bytesRemaining,
-            stream->discOffset + (stream->readOffset - stream->padSize),
+        DVDReadAsyncPrio((u8*)arg0 + 0x54, *(s32*)((u8*)arg0 + 0xAC), bytesRemaining,
+            *(s32*)((u8*)arg0 + 0xB4) + (*(s32*)((u8*)arg0 + 0x90) - *(s32*)((u8*)arg0 + 0x94)),
             fn_8011A4F8, 0);
         goto done;
     }
-    stream->available = stream->fill;
+    *(s32*)((u8*)arg0 + 0x48) = *(s32*)((u8*)arg0 + 0x4C);
     goto done;
 }
 
@@ -2892,26 +2923,23 @@ extern void fn_8011A45C(void *, s32, s32);
 extern void fn_8011A1A0(u32 *, u32);
 u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
     DvdStream *stream = (DvdStream *)arg0;
-    u8 *buf = (u8 *)arg3;
-    u8 *buf0 = (u8 *)arg3;
-    u32 len = arg4;
-    u32 total = 0;
-    s32 seek = arg2;
     volatile u32 *rd;
+    u32 work = (u32)arg2;
+    u8 *buf0 = (u8 *)arg3;
+    u32 total = 0;
     u32 t0;
-    u32 work;
     u32 first;
     if (stream->error != 0)
         return 0;
     t0 = fn_80116D30();
-    if (seek != -1 && stream->consumerOffset != (u32)seek) {
-        if ((u32)seek > stream->consumerOffset && (u32)seek <= (u32)stream->readOffset) {
+    if (work != (u32)-1 && stream->consumerOffset != (u32)work) {
+        if ((u32)work > stream->consumerOffset && (u32)work <= (u32)stream->readOffset) {
             BOOL en = OSDisableInterrupts();
-            u32 d = (u32)seek - stream->consumerOffset;
+            u32 d = (u32)work - stream->consumerOffset;
             u32 p;
             stream->freeSpace += d;
             p = stream->consumerPtr + d;
-            stream->consumerOffset = (u32)seek;
+            stream->consumerOffset = (u32)work;
             stream->fill -= d;
             stream->consumerPtr = p;
             if (p > stream->bufferEnd)
@@ -2923,8 +2951,8 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
             en = OSDisableInterrupts();
             {
                 u32 a4 = stream->bufferStart;
-                stream->readOffset = seek;
-                stream->consumerOffset = (u32)seek;
+                stream->readOffset = work;
+                stream->consumerOffset = (u32)work;
                 stream->freeSpace = stream->capacity;
                 stream->fill = 0;
                 stream->consumerPtr = a4;
@@ -2935,8 +2963,8 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
     }
     if (stream->bufferStart == 0) {
         work = fn_80116D30();
-        total = fn_8011A240(&stream->fileInfo, (u32)stream->readOffset, (s32)buf, len);
-        if (total < len) {
+        total = fn_8011A240(&stream->fileInfo, (u32)stream->readOffset, (s32)arg3, arg4);
+        if (total < arg4) {
             stream->error = 1;
             fn_8011A330(arg0);
         }
@@ -2948,41 +2976,41 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
             fn_8011A45C(arg0, total, work);
         {
             u32 now = fn_80116D30();
-            stream->readTime += now - work;
+            stream->readTime += now - (u32)work;
             stream->totalTime += now - t0;
         }
     } else {
         rd = &stream->consumerOffset;
-        while (len != 0 && stream->error == 0) {
+        while (arg4 != 0 && stream->error == 0) {
             fn_8011A6A0(arg0);
             work = stream->fill;
             if (work != 0) {
-                if (work > len)
-                    work = len;
-                len -= work;
+                if ((u32)work > arg4)
+                    work = arg4;
+                arg4 -= work;
                 total += work;
                 first = stream->bufferEnd - stream->consumerPtr;
                 *rd += work;
-                if (first <= work) {
-                    memcpy(buf, (void *)stream->consumerPtr, first);
-                    buf += first;
-                    work -= first;
+                if (first <= (u32)work) {
+                    memcpy(arg3, (void *)stream->consumerPtr, first);
+                    arg3 = (u8 *)arg3 + first;
+                    work = (u32)work - first;
                     stream->consumerPtr = stream->bufferStart;
                     {
                         BOOL en = OSDisableInterrupts();
-                        stream->fill -= first;
-                        stream->freeSpace += first;
+                        ((volatile DvdStream *)stream)->fill -= first;
+                        ((volatile DvdStream *)stream)->freeSpace += first;
                         OSRestoreInterrupts(en);
                     }
                 }
                 if (work != 0) {
-                    memcpy(buf, (void *)stream->consumerPtr, work);
-                    buf += work;
+                    memcpy(arg3, (void *)stream->consumerPtr, work);
+                    arg3 = (u8 *)arg3 + work;
                     stream->consumerPtr += work;
                     {
                         BOOL en = OSDisableInterrupts();
-                        stream->fill -= work;
-                        stream->freeSpace += work;
+                        ((volatile DvdStream *)stream)->fill -= work;
+                        ((volatile DvdStream *)stream)->freeSpace += work;
                         OSRestoreInterrupts(en);
                     }
                 }
@@ -2992,12 +3020,11 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
     }
     {
         u32 rem = (u32)stream->endOffset - *rd;
-        if (rem < stream->capacity)
-            stream->available = rem;
-        else
-            stream->available = stream->capacity;
+        if (rem >= stream->capacity)
+            rem = stream->capacity;
+        ((volatile DvdStream *)stream)->available = rem;
     }
-    if (stream->fill + 0x8000 > stream->available)
+    if (stream->fill + 0x8000 > ((volatile DvdStream *)stream)->available)
         stream->available = stream->fill;
     fn_8011A1A0((u32 *)buf0, total);
     return total;
@@ -5905,78 +5932,139 @@ void fn_80120F84(s32 n, s32 ip_arg, void *a_arg) {
 
 #pragma push
 #pragma use_lmw_stmw off
-void fn_80121400(s32 n, s32 *map, f32 *data) {
-    s32 *ip = map;
-    f32 *a = data;
-    int j, j1, j2, j3, k, k1, l, m, m2;
-    float xr, xi, yr, yi;
-    ip[0] = 0;
-    l = n;
-    m = 1;
-    while ((m << 3) < l) {
-        l >>= 1;
-        for (j = 0; j < m; j++) {
-            ip[m + j] = ip[j] + l;
-        }
-        m <<= 1;
+void fn_80121400(s32 n, s32 *map, f32 *data)
+{
+  s32 *ip = map;
+  f32 *a = data;
+  int j;
+  int j1;
+  int j2;
+  int j3;
+  int k;
+  int k1;
+  int l;
+  int m;
+  int m2;
+  float xr;
+  float xi;
+  float yr;
+  float yi;
+  ip[0] = 0;
+  l = n;
+  m = 1;
+  while ((m << 3) < l)
+  {
+    l >>= 1;
+    for (j = 0; j < m; j++)
+    {
+      ip[m + j] = ip[j] + l;
     }
-    m2 = 2 * m;
-    if ((m << 3) == l) {
-        for (k = 0; k < m; k++) {
-            for (j = 0; j < k; j++) {
-                j1 = 2 * j + ip[k];
-                k1 = 2 * k + ip[j];
-                xr = a[j1]; xi = -a[j1 + 1];
-                yr = a[k1]; yi = -a[k1 + 1];
-                a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
-                j1 += m2;
-                k1 += 2 * m2;
-                xr = a[j1]; xi = -a[j1 + 1];
-                yr = a[k1]; yi = -a[k1 + 1];
-                a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
-                j1 += m2;
-                k1 -= m2;
-                xr = a[j1]; xi = -a[j1 + 1];
-                yr = a[k1]; yi = -a[k1 + 1];
-                a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
-                j1 += m2;
-                k1 += 2 * m2;
-                xr = a[j1]; xi = -a[j1 + 1];
-                yr = a[k1]; yi = -a[k1 + 1];
-                a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
-            }
-            j1 = 2 * k + ip[k];
-            j2 = j1 + m2;
-            j3 = j2 + m2;
-            j3 += m2;
-            a[j1 + 1] = -a[j1 + 1];
-            xr = a[j2]; xi = -a[j2 + 1];
-            yr = a[j3 - m2]; yi = -a[j3 - m2 + 1];
-            a[j2] = yr; a[j2 + 1] = yi;
-            a[j3 - m2] = xr; a[j3 - m2 + 1] = xi;
-            a[j3 + 1] = -a[j3 + 1];
-        }
-    } else {
-        a[1] = -a[1];
-        a[m2 + 1] = -a[m2 + 1];
-        for (k = 1; k < m; k++) {
-            for (j = 0; j < k; j++) {
-                j1 = 2 * j + ip[k];
-                k1 = 2 * k + ip[j];
-                xr = a[j1]; xi = -a[j1 + 1];
-                yr = a[k1]; yi = -a[k1 + 1];
-                a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
-                j1 += m2;
-                k1 += m2;
-                xr = a[j1]; xi = -a[j1 + 1];
-                yr = a[k1]; yi = -a[k1 + 1];
-                a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
-            }
-            j1 = 2 * k + ip[k];
-            a[j1 + 1] = -a[j1 + 1];
-            a[j1 + m2 + 1] = -a[j1 + m2 + 1];
-        }
+
+    m <<= 1;
+  }
+
+  m2 = 2 * m;
+  if ((m << 3) == l)
+  {
+    for (k = 0; k < m; k++)
+    {
+      for (j = 0; j < k; j++)
+      {
+        j1 = (2 * j) + ip[k];
+        k1 = (2 * k) + ip[j];
+        xr = a[j1];
+        xi = -a[j1 + 1];
+        yr = a[k1];
+        yi = -a[k1 + 1];
+        a[j1] = yr;
+        a[j1 + 1] = yi;
+        a[k1] = xr;
+        a[k1 - -1] = xi;
+        j1 += m2;
+        k1 += 2 * m2;
+        xr = a[j1];
+        xi = -a[j1 + 1];
+        yr = a[k1];
+        yi = -a[k1 + 1];
+        a[j1] = yr;
+        a[j1 + 1] = yi;
+        a[k1] = xr;
+        a[k1 + 1] = xi;
+        j1 += m2;
+        k1 -= m2;
+        xr = a[j1];
+        xi = -a[j1 + 1];
+        yr = a[k1];
+        yi = -a[k1 + 1];
+        a[j1] = yr;
+        a[j1 + 1] = yi;
+        a[k1] = xr;
+        a[k1 + 1] = xi;
+        j1 += m2;
+        k1 += 2 * m2;
+        xr = a[j1];
+        xi = -a[j1 + 1];
+        yr = a[k1];
+        yi = -a[k1 + 1];
+        a[j1] = yr;
+        a[j1 + 1] = yi;
+        a[k1] = xr;
+        a[k1 + 1] = xi;
+      }
+
+      j1 = (2 * k) + ip[k];
+      j2 = j1 + m2;
+      j3 = j2 + m2;
+      j3 += m2;
+      a[j1 + 1] = -a[j1 + 1];
+      xr = a[j2];
+      xi = -a[j2 + 1];
+      yr = a[j3 - m2];
+      yi = -a[(j3 - m2) + 1];
+      a[j2] = yr;
+      a[j2 + 1] = yi;
+      a[j3 - m2] = xr;
+      a[(j3 - m2) + 1] = xi;
+      a[j3 + 1] = -a[j3 + 1];
     }
+
+  }
+  else
+  {
+    a[1] = -a[1];
+    a[m2 + 1] = -a[m2 + 1];
+    for (k = 1; k < m; k++)
+    {
+      for (j = 0; j < k; j++)
+      {
+        j1 = (2 * j) + ip[k];
+        k1 = (2 * k) + ip[j];
+        xr = a[j1];
+        xi = -a[j1 + 1];
+        yr = a[k1];
+        yi = -a[k1 + 1];
+        a[j1] = yr;
+        a[j1 + 1] = yi;
+        a[k1] = xr;
+        a[k1 + 1] = xi;
+        j1 += m2;
+        k1 += m2;
+        xr = a[j1];
+        xi = -a[j1 + 1];
+        yr = a[k1];
+        yi = -a[k1 + 1];
+        a[j1] = yr;
+        a[j1 + 1] = yi;
+        a[k1] = xr;
+        a[k1 + 1] = xi;
+      }
+
+      j1 = (2 * k) + ip[k];
+      a[j1 + 1] = -a[j1 + 1];
+      a[(j1 + m2) + 1] = -a[(j1 + m2) + 1];
+    }
+
+  }
 }
 #pragma pop
 void fn_80121848(void *values) {
