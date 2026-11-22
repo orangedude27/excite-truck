@@ -561,6 +561,7 @@ void fn_80207F34(void *arg0)
 }
 #pragma scheduling on
 extern "C" signed long fn_8020815C(void *arg0) {
+#pragma scheduling on
     struct Obj {
         virtual void f0();
         virtual void f1();
@@ -587,7 +588,7 @@ extern "C" signed long fn_8020815C(void *arg0) {
         entry = *(void **)((char *)*(void ***)((char *)arg0 + 0xC) + offset);
         owner = *(void **)((char *)entry + 0xC);
         if (((Obj *)owner)->check() == 1) {
-            matches += 1;
+            matches++;
         }
         offset += 4;
         i++;
@@ -789,10 +790,11 @@ void fn_80208408(void *arg0, void *arg1) {
 
 /* Trampoline for the sound-object insert helper: tail-calls fn_80208408
  * (which inserts a sound object into its class list) with no adaptation. */
+#pragma force_active on
 void fn_802085E8(void) {
 	((void (*)(void))fn_80208408)();
 }
-
+#pragma force_active reset
 /* Trampoline for the sound-play helper: tail-calls fn_80208858 (which plays a
  * sound on the manager's device) with no adaptation. */
 void fn_80208994(void) {
@@ -834,9 +836,8 @@ extern "C" void fn_802089B0(void* self) {
     }
     ((Obj*)self)->destroy(1);
 }
-signed long fn_802089D0(signed long object, signed long deleteFlag) {
-    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
-    if (object != 0 && deleteFlag != 0) {
+extern "C" signed long fn_802089D0(signed long object, signed long deleteFlag) {
+    if ((object != 0) && (deleteFlag > 0)) {
         fn_80128668();
     }
     return object;
