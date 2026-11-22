@@ -197,7 +197,7 @@ s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
             char *name;
             const char *p;
             node = fst[entry * 3];
-            if ((node >> 24) == 0 && hasSlash == 1) goto next;
+            if ((node & 0xff000000) == 0 && hasSlash == 1) goto next;
             name = handle->FSTStringStart + (node & 0xffffff);
             if (name[0] == '.' && name[1] == 0) { entry++; continue; }
             p = path;
@@ -490,35 +490,40 @@ s8 *fn_80116EE4(s8 *out, s16 *in, u32 byteCount) {
 extern void memset(void *, int, unsigned int);
 #pragma push
 #pragma use_lmw_stmw off
-u32 fn_80116F8C(void *arg0) {
-    s32 temp_r30;
-    u32 temp_r29;
-    s32 temp_r28;
-    u32 temp_r0;
-    u32 temp_r4;
-    u32 temp_r6;
-    u32 temp_r9;
-    u32 *data = (u32 *)arg0;
-    temp_r4 = data[0x4C / 4];
-    temp_r0 = data[0x40 / 4];
-    if (temp_r0 < temp_r4) {
-        temp_r30 = temp_r4 - temp_r0;
-        temp_r29 = (u32)(temp_r30 * 0x3E8) / (u32)((data[0x78 / 4] * (data[0x70 / 4] * data[0x74 / 4])) >> 3);
-        temp_r6 = data[0x38 / 4] - temp_r30;
-        temp_r9 = data[0x2C / 4];
-        data[0x38 / 4] = temp_r6;
-        if (temp_r6 < temp_r9) {
-            temp_r28 = temp_r9 - temp_r6;
-            data[0x38 / 4] = temp_r6 + data[0x28 / 4];
-            memset((void *)temp_r9, 0, temp_r30 - temp_r28);
-            memset((void *)data[0x38 / 4], 0, temp_r28);
-        } else {
-            memset((void *)temp_r6, 0, temp_r30);
-        }
-        data[0x40 / 4] = data[0x40 / 4] + temp_r30;
-        return temp_r29;
+u32 fn_80116F8C(void *arg0)
+{
+  s32 temp_r30;
+  u32 temp_r29;
+  s32 temp_r28;
+  u32 temp_r0;
+  u32 temp_r4;
+  u32 temp_r6;
+  u32 temp_r9;
+  u32 *data = (u32 *) arg0;
+  temp_r4 = data[0x4C / 4];
+  temp_r0 = data[0x40 / 4];
+  if (temp_r0 < temp_r4)
+  {
+    temp_r30 = temp_r4 - temp_r0;
+    temp_r29 = ((u32) (temp_r30 * 0x3E8)) / ((u32) ((data[0x78 / 4] * (data[0x70 / 4] * data[0x74 / 4])) >> 3));
+    temp_r6 = data[0x38 / 4] - temp_r30;
+    temp_r9 = data[0x2C / 4];
+    data[0x38 / 4] = temp_r6;
+    if (temp_r6 < temp_r9)
+    {
+      ;
+      data[0x38 / 4] = temp_r6 + data[0x28 / 4];
+      memset((void *) temp_r9, 0, temp_r30 - (temp_r9 - temp_r6));
+      memset((void *) data[0x38 / 4], 0, temp_r9 - temp_r6);
     }
-    return 0;
+    else
+    {
+      memset((void *) temp_r6, 0, temp_r30);
+    }
+    data[0x40 / 4] = data[0x40 / 4] + (temp_r4 - temp_r0);
+    return temp_r29;
+  }
+  return 0;
 }
 #pragma pop
 // Refills the output buffer of every active stream in the manager. Runs only
@@ -2775,9 +2780,11 @@ void fn_8011A4F8(s32 transferSize, DVDFileInfo *fileInfo) {
 }
 
 void fn_8011A6A0(void* arg0) {
-    /* Pump DVD streaming reads: check drive status, flag errors/cancel, and queue the next async read chunk when ready. */
+    /* Pump DVD streaming reads: check drive status, flag errors/cancel, and queue the next
+     * async read chunk when ready. */
+    DvdStream *stream = (DvdStream *)arg0;
     s32 driveStatus = DVDGetDriveStatus();
-    s32 bytesRemaining = *(s32*)((u8*)arg0 + 0xB8) - *(s32*)((u8*)arg0 + 0x90);
+    s32 bytesRemaining = stream->endOffset - stream->readOffset;
     if (driveStatus == 10)
         goto check_read;
     if (driveStatus >= 10)
@@ -2793,10 +2800,10 @@ status_high:
     if (driveStatus >= 12)
         goto check_read;
 set_flag:
-    *(s32*)((u8*)arg0 + 0x20) = 1;
+    stream->error = 1;
     goto done;
 check_read:
-    if (*(s32*)((u8*)arg0 + 0xC4) != 0)
+    if (stream->cancelling != 0)
         goto done;
     if (driveStatus == 0)
         goto read_valid;
@@ -2806,23 +2813,23 @@ check_read:
 done:
     return;
 read_valid:
-    if (*(u32*)((u8*)arg0 + 0xA0) >= 0x8000 && bytesRemaining != 0) {
-        *(s32*)((u8*)arg0 + 0xC8) = *(s32*)((u8*)arg0 + 0x2C);
-        *(s32*)((u8*)arg0 + 0xCC) = fn_80116D30();
-        *(s32*)((u8*)arg0 + 0x24) = 1;
+    if (stream->freeSpace >= 0x8000 && bytesRemaining != 0) {
+        stream->timeModeUsed = stream->timeMode;
+        stream->readStart = fn_80116D30();
+        stream->reading = 1;
         if ((u32)bytesRemaining > 0x8000)
             bytesRemaining = 0x8000;
         else if (bytesRemaining & 0x1F) {
             s32 pad = (-bytesRemaining) & 0x1F;
-            *(s32*)((u8*)arg0 + 0x94) = pad;
+            stream->padSize = pad;
             bytesRemaining += pad;
         }
-        DVDReadAsyncPrio((u8*)arg0 + 0x54, *(s32*)((u8*)arg0 + 0xAC), bytesRemaining,
-            *(s32*)((u8*)arg0 + 0xB4) + (*(s32*)((u8*)arg0 + 0x90) - *(s32*)((u8*)arg0 + 0x94)),
+        DVDReadAsyncPrio((u8 *)stream + 0x54, stream->writePtr, bytesRemaining,
+            stream->discOffset + (stream->readOffset - stream->padSize),
             fn_8011A4F8, 0);
         goto done;
     }
-    *(s32*)((u8*)arg0 + 0x48) = *(s32*)((u8*)arg0 + 0x4C);
+    stream->available = stream->fill;
     goto done;
 }
 
@@ -2892,8 +2899,7 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
     s32 seek = arg2;
     volatile u32 *rd;
     u32 t0;
-    u32 t1;
-    u32 chunk;
+    u32 work;
     u32 first;
     if (stream->error != 0)
         return 0;
@@ -2928,7 +2934,7 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
         }
     }
     if (stream->bufferStart == 0) {
-        t1 = fn_80116D30();
+        work = fn_80116D30();
         total = fn_8011A240(&stream->fileInfo, (u32)stream->readOffset, (s32)buf, len);
         if (total < len) {
             stream->error = 1;
@@ -2939,28 +2945,28 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
         *rd += total;
         stream->totalRead += total;
         if (stream->rate != 0)
-            fn_8011A45C(arg0, total, t1);
+            fn_8011A45C(arg0, total, work);
         {
             u32 now = fn_80116D30();
-            stream->readTime += now - t1;
+            stream->readTime += now - work;
             stream->totalTime += now - t0;
         }
     } else {
         rd = &stream->consumerOffset;
         while (len != 0 && stream->error == 0) {
             fn_8011A6A0(arg0);
-            chunk = stream->fill;
-            if (chunk != 0) {
-                if (chunk > len)
-                    chunk = len;
-                len -= chunk;
-                total += chunk;
+            work = stream->fill;
+            if (work != 0) {
+                if (work > len)
+                    work = len;
+                len -= work;
+                total += work;
                 first = stream->bufferEnd - stream->consumerPtr;
-                *rd += chunk;
-                if (first <= chunk) {
+                *rd += work;
+                if (first <= work) {
                     memcpy(buf, (void *)stream->consumerPtr, first);
                     buf += first;
-                    chunk -= first;
+                    work -= first;
                     stream->consumerPtr = stream->bufferStart;
                     {
                         BOOL en = OSDisableInterrupts();
@@ -2969,14 +2975,14 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
                         OSRestoreInterrupts(en);
                     }
                 }
-                if (chunk != 0) {
-                    memcpy(buf, (void *)stream->consumerPtr, chunk);
-                    buf += chunk;
-                    stream->consumerPtr += chunk;
+                if (work != 0) {
+                    memcpy(buf, (void *)stream->consumerPtr, work);
+                    buf += work;
+                    stream->consumerPtr += work;
                     {
                         BOOL en = OSDisableInterrupts();
-                        stream->fill -= chunk;
-                        stream->freeSpace += chunk;
+                        stream->fill -= work;
+                        stream->freeSpace += work;
                         OSRestoreInterrupts(en);
                     }
                 }
@@ -3052,6 +3058,7 @@ s32 fn_8011ACC4(void *arg0, void *arg1, s32 arg2)
   memset(arg0, 0, 0x144);
   if (arg2 & 0x800000)
   {
+    u32 v0 = *((u32 *) (((u8 *) arg1) + 0x00));
     u32 v13 = *((u32 *) (((u8 *) arg1) + 0x34));
     u32 v12 = *((u32 *) (((u8 *) arg1) + 0x30));
     u32 size = *((u32 *) (((u8 *) arg1) + 0x2C));
@@ -3065,7 +3072,6 @@ s32 fn_8011ACC4(void *arg0, void *arg1, s32 arg2)
     u32 v3 = *((u32 *) (((u8 *) arg1) + 0x0C));
     u32 v2 = *((u32 *) (((u8 *) arg1) + 0x08));
     u32 v1 = *((u32 *) (((u8 *) arg1) + 0x04));
-    u32 v0 = *((u32 *) (((u8 *) arg1) + 0x00));
     u32 v14 = *((u32 *) (((u8 *) arg1) + 0x38));
     *((u32 *) (((u8 *) arg0) + 0x54)) = v0;
     *((u32 *) (((u8 *) arg0) + 0x58)) = v1;
@@ -3102,7 +3108,7 @@ s32 fn_8011ACC4(void *arg0, void *arg1, s32 arg2)
   ((void **) arg0)[2] = fn_8011AC04;
   ((void **) arg0)[3] = fn_8011AC10;
   ((void **) arg0)[4] = fn_8011A7CC;
-  ((void **) arg0)[((((((((((5 & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF] = fn_8011AC84;
+  ((void **) arg0)[5] = fn_8011AC84;
   ((void **) arg0)[6] = fn_8011A870;
   return 1;
 }
@@ -3354,6 +3360,9 @@ s32 fn_8011B2AC(s32 size, u32 channels, s32 flags, s32 arg3, s32 arg4, s32 outpu
     }
     else
     {
+      if (1)
+      {
+      }
       bits.value >>= 2;
       bits.count -= 2;
     }
@@ -3388,7 +3397,7 @@ s32 fn_8011B2AC(s32 size, u32 channels, s32 flags, s32 arg3, s32 arg4, s32 outpu
         u32 word = *bits.next;
         value = bits.value | (word << bits.count);
         bits.value = word >> (29 - bits.count);
-        index = (value & 0x1fffffff) & 0xFFFFFFFFFFFFFFFF;
+        index = value & 0x1fffffff;
         bits.count += 3;
         bits.next++;
       }
@@ -4574,12 +4583,12 @@ void fn_8011D0E8(void *arg0, void *arg1, void *arg2) {
  u32 v, c;
  if((*(u32*)((char *)(arg0) + 0))!=(*(u32*)((char *)(arg0) + 4))) return;
  n=(*(u32*)((char *)(arg1) + 8)); width=(*(u32*)((char *)(arg0) + 0x28)); p=(*(u32**)((char *)(arg1) + 4)); bits=(*(u32*)((char *)(arg1) + 0));
- if(n<width){u32 x=*p++; out=(bits|(x<<n))&(-1U>>(32-width)); bits=(u32)x>>(width-n); n=n+32-width;} else {out=bits&(-1U>>(32-width)); bits>>=width; n-=width;}
+ if(n<width){u32 x=*p++; out=(bits|(x<<n))&(-1U>>(32-width)); bits=x>>(width-n); n=n+32-width;} else {out=bits&(-1U>>(32-width)); bits>>=width; n-=width;}
  if(out){
   dst=(*(u8**)((char *)(arg0) + 0x2C)); (*(u8**)((char *)(arg0) + 0))=dst; (*(u8**)((char *)(arg0) + 4))=dst+out;
   w2=(*(u32*)((char *)(arg0) + 0x20)); table=(*(u8**)((char *)(arg0) + 0x24)); lut=(u8*)arg0+0x10;
   tree=(*(u32*)((char *)(arg2) + 0x180));
-  if(n==0){sign=*p++; bits=sign>>1; n=31;} else {sign=bits; bits>>=1; n -= 1;}
+  if(n==0){sign=*p++; bits=sign>>1; n=31;} else {sign=bits; bits>>=1; n--;}
   if(sign&1) out=-20-out;
   mask=-1U>>(32-w2);
   do {
@@ -4587,7 +4596,7 @@ void fn_8011D0E8(void *arg0, void *arg1, void *arg2) {
    ent=(u32*)((u8*)arg2+tree*4);
    w=ent[0x40];
    out--;
-   if(n>=w){
+   if(n>=(unsigned)w){
     code=((u8*)ent[0x50])[bits&(-1U>>(32-w))];
     tree=((u8 (*)[16])arg2)[tree][code&15]; rem=code>>4; bits>>=rem; n-=rem;
    } else {
@@ -4612,79 +4621,142 @@ void fn_8011D0E8(void *arg0, void *arg1, void *arg2) {
 }
 
 #pragma opt_propagation off
-void fn_8011D378(void *arg0, void *arg1, void *arg2) {
-    u32 *src;
-    u32 value, remain, index, node, bit, mask;
-    s32 count;
-    u32 width;
-    u8 *out, *lookup, *table;
-    if (*(u32 *)arg0 != *(u32 *)((u8 *)arg0 + 4)) return;
-    remain = *(u32 *)((u8 *)arg1 + 8);
-    index = *(u32 *)((u8 *)arg0 + 0x28);
-    src = *(u32 **)((u8 *)arg1 + 4);
-    value = *(u32 *)arg1;
-    if (remain < index) {
-        u32 next = *src++;
-        count = (value | (next << remain)) & (0xffffffffU >> (32 - index));
-        value = next >> (index - remain);
-        remain = remain + 32 - index;
-    } else {
-        count = value & (0xffffffffU >> (32 - index));
-        value >>= index;
-        remain -= index;
+void fn_8011D378(void *arg0, void *arg1, void *arg2)
+{
+  u32 *src;
+  u32 value;
+  u32 remain;
+  u32 index;
+  u32 node;
+  u32 bit;
+  u32 mask;
+  s32 count;
+  u32 width;
+  u8 *out;
+  u8 *lookup;
+  u8 *table;
+  if ((*((u32 *) arg0)) != (*((u32 *) (((u8 *) arg0) + 4))))
+  {
+    return;
+  }
+  remain = *((u32 *) (((u8 *) arg1) + 8));
+  index = *((u32 *) (((u8 *) arg0) + 0x28));
+  src = *((u32 **) (((u8 *) arg1) + 4));
+  value = *((u32 *) arg1);
+  if (remain <= (index - 1))
+  {
+    u32 next = *(src++);
+    count = (value | (next << remain)) & (0xffffffffU >> (32 - index));
+    value = next >> (index - remain);
+    remain = (remain + 32) - index;
+  }
+  else
+  {
+    count = value & (0xffffffffU >> (32 - index));
+    value >>= index;
+    remain -= index;
+  }
+  if (count != 0)
+  {
+    out = *((u8 **) (((u8 *) arg0) + 0x2c));
+    width = *((u32 *) (((u8 *) arg0) + 0x20));
+    table = ((u8 *) arg0) + 0x10;
+    lookup = *((u8 **) (((u8 *) arg0) + 0x24));
+    *((u8 **) arg0) = out;
+    *((u8 **) (((u8 *) arg0) + 4)) = out + count;
+    node = *((u32 *) (((u8 *) arg2) + 0x180));
+    if (remain == 0)
+    {
+      bit = *(src++);
+      value = bit >> 1;
+      remain = 31;
     }
-    if (count != 0) {
-        out = *(u8 **)((u8 *)arg0 + 0x2c);
-        width = *(u32 *)((u8 *)arg0 + 0x20);
-        table = (u8 *)arg0 + 0x10;
-        lookup = *(u8 **)((u8 *)arg0 + 0x24);
-        *(u8 **)arg0 = out;
-        *(u8 **)((u8 *)arg0 + 4) = out + count;
-        node = *(u32 *)((u8 *)arg2 + 0x180);
-        if (remain == 0) { bit = *src++; value = bit >> 1; remain = 31; }
-        else { bit = value; value >>= 1; remain--; }
-        if (bit & 1) count = -20 - count;
-        mask = 0xffffffffU >> (32 - width);
-        do {
-            u32 n = *(u32 *)((u8 *)arg2 + node * 4 + 0x100);
-            u32 tmp;
-            count--;
-            if (remain >= n) {
-                u32 entry = (*(u8 **)((u8 *)arg2 + node * 4 + 0x140))[value & (0xffffffffU >> (32 - n))];
-                node = *((u8 *)arg2 + node * 16 + (entry & 15));
-                entry >>= 4;
-                value >>= entry; remain -= entry;
-            } else {
-                u32 next = *src;
-                u32 entry = (*(u8 **)((u8 *)arg2 + node * 4 + 0x140))[(value | (next << remain)) & (0xffffffffU >> (32 - n))];
-                node = *((u8 *)arg2 + node * 16 + (entry & 15));
-                entry >>= 4;
-                if (remain >= entry) { value >>= entry; remain -= entry; }
-                else { value = next >> (entry - remain); src++; remain = remain + 32 - entry; }
-            }
-            if (remain >= width) {
-                u32 entry = lookup[value & mask];
-                tmp = table[entry & 15];
-                entry >>= 4;
-                value >>= entry; remain -= entry;
-            } else {
-                u32 next = *src;
-                u32 entry = lookup[(value | (next << remain)) & mask];
-                tmp = table[entry & 15];
-                entry >>= 4;
-                if (remain >= entry) { value >>= entry; remain -= entry; }
-                else { value = next >> (entry - remain); src++; remain = remain + 32 - entry; }
-            }
-            *out++ = tmp | (node << 4);
-        } while (count > 0);
-        if (count < -22) memset(*(u8 **)((u8 *)arg0 + 0x2c), **(u8 **)((u8 *)arg0 + 0x2c), -(count + 21));
-        *(u32 *)((u8 *)arg2 + 0x180) = node;
-    } else {
-        out = *(u8 **)((u8 *)arg0 + 0x2c);
-        *(u8 **)((u8 *)arg0 + 4) = out; *(u8 **)arg0 = out + 4;
+    else
+    {
+      bit = value;
+      value >>= 1;
+      remain--;
     }
-    *(u32 **)((u8 *)arg1 + 4) = src;
-    *(u32 *)arg1 = value; *(u32 *)((u8 *)arg1 + 8) = remain;
+    if (bit & 1)
+    {
+      count = (-20) - count;
+    }
+    mask = 0xffffffffU >> (32 - width);
+    do
+    {
+      u32 n = *((u32 *) ((((u8 *) arg2) + (node * 4)) + 0x100));
+      u32 tmp;
+      count--;
+      if (!(remain >= n))
+      {
+        u32 next = *src;
+        u32 entry = (*((u8 **) ((((u8 *) arg2) + (node * 4)) + 0x140)))[(value | (next << remain)) & (0xffffffffU >> (32 - n))];
+        node = *((((u8 *) arg2) + (node * 16)) + (entry & 15));
+        entry >>= 4;
+        if (remain >= entry)
+        {
+          value >>= entry;
+          remain -= entry;
+        }
+        else
+        {
+          value = next >> (entry - remain);
+          src++;
+          remain = (remain + 32) - entry;
+        }
+      }
+      else
+      {
+        u32 entry = (*((u8 **) ((((u8 *) arg2) + (node * 4)) + 0x140)))[value & (0xffffffffU >> (32 - n))];
+        node = *((((u8 *) arg2) + (node * 16)) + (entry & 15));
+        entry >>= 4;
+        value >>= entry;
+        remain -= entry;
+      }
+      if (remain >= width)
+      {
+        u32 entry = lookup[value & mask];
+        tmp = table[entry & 15];
+        entry >>= 4;
+        value >>= entry;
+        remain -= entry;
+      }
+      else
+      {
+        u32 next = *src;
+        u32 entry = lookup[(value | (next << remain)) & mask];
+        tmp = table[entry & 15];
+        entry >>= 4;
+        if (remain >= entry)
+        {
+          value >>= entry;
+          remain -= entry;
+        }
+        else
+        {
+          value = next >> (entry - remain);
+          src++;
+          remain = (remain + 32) - entry;
+        }
+      }
+      *(out++) = tmp | (node << 4);
+    }
+    while (count > 0);
+    if (count < (-22))
+    {
+      memset(*((u8 **) (((u8 *) arg0) + 0x2c)), *(*((u8 **) (((u8 *) arg0) + 0x2c))), -(count + 21));
+    }
+    *((u32 *) (((u8 *) arg2) + 0x180)) = node;
+  }
+  else
+  {
+    out = *((u8 **) (((u8 *) arg0) + 0x2c));
+    *((u8 **) (((u8 *) arg0) + 4)) = out;
+    *((u8 **) arg0) = out + 4;
+  }
+  *((u32 **) (((u8 *) arg1) + 4)) = src;
+  *((u32 *) arg1) = value;
+  *((u32 *) (((u8 *) arg1) + 8)) = remain;
 }
 #pragma opt_propagation reset
 /* Decodes one block of a band of the compressed stream fn_8011C3A8 sets up, the
