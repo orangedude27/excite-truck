@@ -42,7 +42,7 @@ extern "C" void fn_802B59D4(void) {
     first->data = first->storage;
     first->capacity = 16;
     first->count = 0;
-    __register_global_object(first, fn_802B5AC0, &((InitArrayB59D4 *)base)[-1].storage[0]);
+    __register_global_object(first, fn_802B5AC0, base);
     second = (InitArrayB59D4 *)(base + 0x64);
     second->data = second->storage;
     second->capacity = 16;
