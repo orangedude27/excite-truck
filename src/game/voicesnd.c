@@ -795,17 +795,9 @@ typedef struct VoiceSnd {
 
 #pragma push
 #pragma processor 750
-/**
- * Starts the sound and loops it (vtable slot +0x1C of a Voicesnd object).
- *
- * Grabs a voice for the sound, plus one for its second resource when the
- * sound has one, and starts them looping. Before that the mix values are
- * handed to the sound library: the volume is the sound's own times its
- * group's, scaled by the master volume and, unless the sound is flagged
- * unscaled, by the scale refreshed every frame; a sound with two resources is
- * played hard left and hard right with the pan splitting the volume between
- * them. The playing counters start over.
- */
+/* VoiceSnd vtable +0x1C: grab one or two voices, feed them the group volume and
+ * pan (split across hard left/right when there are two resources), then start
+ * the sound playing in a loop. */
 extern "C" void VoiceSnd_playLooping(void *arg0) {
     VoiceSnd *snd = (VoiceSnd *)arg0;
     float finalVolume, gain, side;
