@@ -7,8 +7,6 @@ typedef struct Obj801D8FF8 {
     int unk_08;
 } Obj801D8FF8;
 
-#pragma push
-#pragma scheduling invalid_target
 extern void fn_8000D838(void *);
 extern void __register_global_object(void *, void *, void *, void *, void *, int, int);
 extern void fn_801D9090(void);
@@ -23,8 +21,8 @@ void fn_801D8FF8(void) {
     volatile unsigned int *base = (volatile unsigned int *)lbl_804422D8;
     unsigned char *obj;
     volatile float *values;
-    register int zero = 0;
-    register int flags = 0x7F000000;
+    int zero = 0;
+    int flags = 0x7F000000;
     fn_8000D838(&lbl_8055E948);
     obj = (unsigned char *)base + 0xCC;
     values = (volatile float *)((unsigned char *)base + 0x38);
