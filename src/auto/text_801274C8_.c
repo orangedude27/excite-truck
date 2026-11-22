@@ -94,7 +94,7 @@ s32 fn_80127538(void) {
     return 1;
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 /* Stop the profiler's elapsed-time callback and print the accumulated profiler counters report,
  * or return immediately if none were recorded. */
 void Profiler_PrintCountersReport(void) {
