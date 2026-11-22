@@ -277,8 +277,8 @@ u32 SCCheckStatus(void) {
     return status;
 }
 
-static s32 SCReloadConfFileAsync(u8* buf, u32 size, SCAsyncCallback callback) {
-    int i;
+/* Reloads SYSCONF and setting.txt into confBuf asynchronously: validates the buffer size, resets the reload state and per-file sizes/buffers, clears the config buffer, then starts by opening the first file privately. */ static s32 SCReloadConfFileAsync(u8* confBuf, u32 size, SCAsyncCallback callback) {
+    int fileIdx;
 
     if (size < __SCGetConfBufSize()) {
         return NAND_RESULT_FATAL_ERROR;
@@ -289,20 +289,20 @@ static s32 SCReloadConfFileAsync(u8* buf, u32 size, SCAsyncCallback callback) {
     Control.asyncResult = NAND_RESULT_OK;
     Control.openFileType = 0;
 
-    for (i = 0; i < SC_CONF_FILE_MAX; i++) {
-        Control.fileSizes[i] = 0;
+    for (fileIdx = 0; fileIdx < SC_CONF_FILE_MAX; fileIdx++) {
+        Control.fileSizes[fileIdx] = 0;
     }
 
     Control.filePaths[SC_CONF_FILE_SYSTEM] = ConfFileName;
     Control.filePaths[SC_CONF_FILE_PRODUCT] = ProductInfoFileName;
 
-    Control.fileBuffers[SC_CONF_FILE_SYSTEM] = buf;
+    Control.fileBuffers[SC_CONF_FILE_SYSTEM] = confBuf;
     Control.fileBuffers[SC_CONF_FILE_PRODUCT] = OS_SC_PRDINFO;
 
     Control.bufferSizes[SC_CONF_FILE_SYSTEM] = __SCGetConfBufSize();
     Control.bufferSizes[SC_CONF_FILE_PRODUCT] = ARRAY_SIZE(OS_SC_PRDINFO);
 
-    ClearConfBuf(buf);
+    ClearConfBuf(confBuf);
 
     ItemIDOffsetTblOffset = 0;
     ItemNumTotal = 0;
