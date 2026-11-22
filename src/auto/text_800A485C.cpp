@@ -250,7 +250,6 @@ extern "C" u8 lbl_80407C00[];
 extern "C" u8 lbl_80407E00[];
 extern "C" { DECL_SECTION(".sdata") extern s32 lbl_805597E8; }
 extern "C" { DECL_SECTION(".sdata") extern volatile u32 lbl_8055DDD0; }
-#endif
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(void *, void *);
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(void *a, void *b);
 class PaneAnimTransformDispatch {
@@ -24010,50 +24009,36 @@ extern "C" void fn_800C81F0(void *arg0, s32 arg1) {
 }
 
 #pragma dont_inline off
-void homebutton::HomeButton::calc_battery(int n)
-{
-  u8 *self = (u8 *) this;
-  void *obj;
-  s32 *ids = (s32 *) (((u8 *) lbl_8031E370) + (n * 16));
-  u8 *rec = self + (n * 0x18);
-  s32 i;
-  s32 index;
-  for (i = 0; i < 4; i++)
-  {
-    u8 *pane;
- goto dummy_label_639675; dummy_label_639675: ;
-    if (i < rec[0x16C])
-    {
-      pane = (u8 *) ((BatteryLayoutDispatch *) (*((void **) (((u8 *) (*((void **) (self + 0x1E0)))) + 0x10))))->findPane(*ids, 1);
-      pane[0xCF] = (pane[0xCF] & 0xFE) | 1;
+void homebutton::HomeButton::calc_battery(int n) {
+    u8 *self = (u8 *)this;
+    void *obj;
+    s32 *ids = (s32 *)((u8 *)lbl_8031E370 + n * 16);
+    u8 *rec = (u8 *)this + n * 0x18;
+    s32 i, index;
+    for (i = 0; i < 4; i++) {
+        u8 *pane;
+        if (i < rec[0x16C]) {
+            pane = (u8 *)((BatteryLayoutDispatch *)*(void **)((u8 *)*(void **)(self + 0x1E0) + 0x10))->findPane(*ids, 1);
+            pane[0xCF] = (pane[0xCF] & 0xFE) | 1;
+        } else {
+            pane = (u8 *)((BatteryLayoutDispatch *)*(void **)((u8 *)*(void **)(self + 0x1E0) + 0x10))->findPane(*ids, 1);
+            pane[0xCF] = pane[0xCF] & 0xFE;
+        }
+        ids++;
     }
-    else
-    {
-      pane = (u8 *) ((BatteryLayoutDispatch *) (*((void **) (((u8 *) (*((void **) (self + 0x1E0)))) + 0x10))))->findPane(*ids, 1);
-      pane[0xCF] = pane[0xCF] & 0xFE;
+    if (rec[0x16C] < 2) {
+        index = findEventSlot(n + 0x1F, 0x15);
+        obj = ((void **)self)[index + 166];
+        ((void (*)(void *))fn_800CF3EC)(obj);
+        *(s32 *)((u8 *)obj + 0x14) = 1;
+    } else {
+        index = findEventSlot(n + 0x1F, 0x11);
+        obj = ((void **)self)[index + 166];
+        ((void (*)(void *))fn_800CF3EC)(obj);
+        *(s32 *)((u8 *)obj + 0x14) = 1;
     }
-    ids++;
-  }
-
-  if (rec[0x16C] < 2)
-  {
-    index = findEventSlot(n + 0x1F, 0x15);
-    obj = ((void **) self)[index + 166];
-    ((void (*)(void *)) fn_800CF3EC)(obj);
-    *((s32 *) (((u8 *) obj) + 0x14)) = 1;
-  }
-  else
-  {
-    index = findEventSlot(n + 0x1F, 0x11);
-    obj = ((void **) self)[index + 166];
-    ((void (*)(void *)) fn_800CF3EC)(obj);
-    *((s32 *) (((u8 *) obj) + 0x14)) = 1;
-  }
-  if ((*((s32 *) (self + 0x78))) < 0x64)
-  {
-    *((s32 *) (self + 0x78)) = 0;
-  }
-  ((void (*)(s32 *)) fn_800D16A8)(*((s32 **) (((u8 *) (((void **) self) + n)) + 0x254)));
+    if (*(s32 *)(self + 0x78) < 0x64) *(s32 *)(self + 0x78) = 0;
+    ((void (*)(s32 *))fn_800D16A8)(*(s32 **)((u8 *)((void **)self + n) + 0x254));
 }
 extern "C" void fn_800CA064(void) {
     u32 userData = (u32)((void *(*)(void))((void *(*)(const OSAlarm *))OSGetAlarmUserData))();
