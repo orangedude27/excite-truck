@@ -2208,7 +2208,7 @@ static void BssOrder_802D18E8(void) {
  * the fallback light is, when the table is empty - those objects are loaded
  * into the GX light channels starting at GX_LIGHT1, and GX_COLOR1 is lit by
  * the channels they went into. */
-void fn_802D18E8(void) {
+void gxSetupSceneLights(void) {
     unsigned char color[4];
     float direction[3];
     float mag;
@@ -2416,7 +2416,7 @@ void fn_802D1C04(void) {
             GXLoadTexMtxImm(&tex, 0x2A, 1);
             break;
         case 4:
-            fn_802D18E8();
+            gxSetupSceneLights();
             break;
         }
         fn_802D0DD4(nrm, b);
@@ -2719,7 +2719,7 @@ void fn_802D2B0C(void) {
     extern void fn_802DF46C(void);
     extern void fn_802DEFA0(void);
     extern void fn_802DF1B4(void);
-    extern void fn_802D18E8(void);
+    extern void gxSetupSceneLights(void);
     extern void fn_802DF994(void);
     extern void fn_802D2AC4(void);
     extern void fn_802DF6D0(void);
@@ -2761,7 +2761,7 @@ void fn_802D2B0C(void) {
                 }
                 break;
             case 4:
-                fn_802D18E8();
+                gxSetupSceneLights();
                 fn_802DF994();
                 lbl_8055FD80 = fn_802D2AC4;
                 lbl_8055FD70 = 1;
