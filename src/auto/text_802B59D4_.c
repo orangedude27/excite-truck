@@ -40,6 +40,15 @@ static inline void regArrayB59D4(InitArrayB59D4 *a, void (*dtor)(void *, int), v
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma cplusplus on
+#pragma dont_inline off
+struct B59D4Registrar {
+    B59D4Registrar(InitArrayB59D4 *a, void (*dtor)(void *, int), void *node) {
+        a->data = a->storage;
+        a->capacity = 16;
+        a->count = 0;
+        __register_global_object(a, dtor, node);
+    }
+};
 extern "C" void fn_802B59D4(void) {
     unsigned char *base = lbl_804BE448;
     InitArrayB59D4 *first;
