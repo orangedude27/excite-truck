@@ -4388,75 +4388,58 @@ for (;;) {
 }
 #pragma push
 #pragma use_lmw_stmw off
-void hcisu_h2_send_msg_now(tHCISU_H2_CB *cb, HC_BT_HDR *p_msg)
+void hcisu_h2_send_msg_now(u8 *queue, s32 arg1)
 {
-	UINT8 type = 0;
-	UINT16 handle;
-	UINT16 bytes_to_send;
-	UINT8 *p = (UINT8 *)(p_msg + 1) + p_msg->offset;
-	UINT16 bytes_sent;
-	UINT8 num;
-
-	if (p_msg->event == MSG_STACK_TO_HC_HCI_ACL)
-	{
-		type = H4_TYPE_ACL_DATA;
-		num = 2;
-	}
-	else if (p_msg->event == MSG_STACK_TO_HC_HCI_SCO)
-	{
-		type = H4_TYPE_SCO_DATA;
-		num = 3;
-	}
-	else if (p_msg->event == MSG_STACK_TO_HC_HCI_CMD)
-	{
-		type = H4_TYPE_COMMAND;
-		num = 0;
-	}
-
-	if (p_msg->event == MSG_STACK_TO_HC_HCI_ACL
-	    && p_msg->len > lbl_803C0A50.hcit_acl_pkt_size)
-	{
-		STREAM_TO_UINT16(p, &handle);
-
-		handle = (handle & 0xcfff) | 0x1000;
-
-		while (p_msg->len > lbl_803C0A50.hcit_acl_pkt_size)
-		{
-			bytes_to_send = lbl_803C0A50.hcit_acl_pkt_size;
-			bytes_sent = UUSB_Write(num, p, bytes_to_send, p_msg);
-
-			p_msg->offset += lbl_803C0A50.hcit_acl_data_size;
-			p_msg->len -= lbl_803C0A50.hcit_acl_data_size;
-
-			p = (UINT8 *)(p_msg + 1) + p_msg->offset;
-
-			UINT16_TO_STREAM(p, handle);
-
-			if (p_msg->len > lbl_803C0A50.hcit_acl_pkt_size)
-				UINT16_TO_STREAM(p, lbl_803C0A50.hcit_acl_data_size);
-			else
-				UINT16_TO_STREAM(p, p_msg->len - HCI_ACL_PREAMBLE_SIZE);
-
-			if (p_msg->layer_specific)
-			{
-				if (--p_msg->layer_specific == 0)
-				{
-					p_msg->event = MSG_HC_TO_STACK_L2C_SEG_XMIT;
-
-					GKI_send_msg(lbl_803BD1A0.task_id, 0, p_msg);
-
-					return;
-				}
-			}
-		}
-	}
-
-	bytes_to_send = p_msg->len;
-	bytes_sent = UUSB_Write(num, p, bytes_to_send, p_msg);
-
-	GKI_freebuf(p_msg);
-
-	(void)cb;
+    struct Tail { u8 a; u8 b; };
+    u16 event = *(u16 *)arg1;
+    u8 *msg = (u8 *)arg1;
+    u16 header_hi, header;
+    u16 max_len, len;
+    u8 *data, *base;
+    u8 channel;
+    base = msg + *(u16 *)(msg + 4);
+    data = base + 8;
+    if (event == 0x2100) {
+        channel = 2;
+    } else if (event == 0x2200) {
+        channel = 3;
+    } else if (event == 0x2000) {
+        channel = 0;
+    }
+    if (event == 0x2100 && *(u16 *)(msg + 2) > *(u16 *)(lbl_803C0A50 + 0x7E)) {
+        header = (u16)(data[0] + ((data[1] << 8) & 0xFF00));
+        header = (header & 0xCFFF) | 0x1000;
+        header_hi = header >> 8;
+        data += 2;
+        goto check;
+    body:
+        UUSB_Write(channel, data, event, (BT_HDR *)msg);
+        len = *(u16 *)(msg + 2);
+        *(u16 *)(msg + 4) += *(u16 *)(lbl_803C0A50 + 0x7C);
+        base = msg + *(u16 *)(msg + 4);
+        *(u16 *)(msg + 2) = len - *(u16 *)(lbl_803C0A50 + 0x7C);
+        base[8] = header;
+        base[9] = header_hi;
+        data = (u8 *)((struct Tail *)(base + 0xA) + 1);
+        if (*(u16 *)(msg + 2) > *(u16 *)(lbl_803C0A50 + 0x7E)) {
+            ((struct Tail *)(data - 2))->a = *(u16 *)(lbl_803C0A50 + 0x7C);
+            ((struct Tail *)(data - 2))->b = *(u16 *)(lbl_803C0A50 + 0x7C) >> 8;
+        } else {
+            ((struct Tail *)(data - 2))->a = *(u16 *)(msg + 2) - 4;
+            ((struct Tail *)(data - 2))->b = (*(u16 *)(msg + 2) - 4) >> 8;
+        }
+        if (*(u16 *)(msg + 6) != 0 && --*(u16 *)(msg + 6) == 0) {
+            *(u16 *)msg = (short)0x1900;
+            GKI_send_msg(((u8 *)&lbl_803BD1A0)[0x1F], 0, (BT_HDR *)msg);
+            return;
+        }
+    check:
+        event = *(u16 *)(lbl_803C0A50 + 0x7E);
+        len = *(u16 *)(msg + 2);
+        if (len > event) goto body;
+    }
+    UUSB_Write(channel, data, *(u16 *)(msg + 2), (BT_HDR *)msg);
+    GKI_freebuf((BT_HDR *)msg);
 }
 #pragma pop
 /* Initialize the HCI-H2 USB transport control block: clear its state and counter
