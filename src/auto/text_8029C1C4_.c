@@ -1197,24 +1197,24 @@ extern int lbl_8055F7FC;
 extern void fn_80287B38(void *);
 extern void fn_8029C450(void *, int);
 extern float lbl_8056469C;
-#pragma scheduling invalid_target
+#pragma push
+#pragma scheduling on
 void fn_8029DF64(void *arg0, int arg1, int arg2, float arg3) {
+    int low = -32768;
     int stride;
     short *data;
     int index;
     float val;
     int cvt;
-    int low;
     int out;
     stride = *(int *)((char *)arg0 + 0xC);
     data = *(short **)((char *)arg0 + 4);
     index = arg1 + arg2 * stride;
     val = lbl_8056469C * arg3 + (float)data[index];
     cvt = (int)val;
-    low = -32768;
-    if (cvt > low) low = cvt;
+    if (cvt > -32768) low = cvt;
     out = 32767;
-    if (low < out) out = low;
+    if (low < 32767) out = low;
     data[index] = out;
 }
 #pragma scheduling invalid_target
@@ -1258,12 +1258,19 @@ void fn_8029E130(void *arg0, float *pos, float *vel, float radius) {
  float height, reach, length, inv, scale, x, z, spread, vertical;
  int ix, iz, count, i;
  char *obj = arg0;
+ float posY = pos[1];
  height = *(float *)(obj+0x3c);
- if (pos[1]-radius > height-lbl_80564634) return;
- delta[1]=pos[2]-*(float *)(obj+0x40);
- direction[1]=vel[2]; direction[0]=vel[0];
- delta[0]=pos[0]-*(float *)(obj+0x38);
- if ((float)__fabs(direction[0]*direction[0]+direction[1]*direction[1]) <= lbl_80558DC4) return;
+ if (posY-radius > height-lbl_80564634) return;
+ {
+   float vx = vel[0];
+   float vz = vel[2];
+   float magnitude = vx * vx + vz * vz;
+   delta[1] = pos[2] - *(float *)(obj + 0x40);
+   delta[0] = pos[0] - *(float *)(obj + 0x38);
+   direction[0] = vx;
+   direction[1] = vz;
+   if ((float)__fabs(magnitude) <= lbl_80558DC4) return;
+ }
  x=pos[1]-height;
  reach=fn_8002F234(radius*radius-x*x);
  length=fn_8002F234(direction[0]*direction[0]+direction[1]*direction[1]);
@@ -1280,14 +1287,13 @@ void fn_8029E130(void *arg0, float *pos, float *vel, float radius) {
  if (iz < 1) return;
  if (iz < *(int *)(obj+0x10)-1) {
  (*(short **)(obj+4))[ix+iz**(int *)(obj+0xc)]=-32768;
+ perpendicular[0]=direction[1]*inv;
+ perpendicular[1]=direction[0]*inv;
+ x=lbl_80564670*length;
  origin[2]=*(float *)(obj+0x40)+hit[1];
  origin[1]=lbl_8056464C+*(float *)(obj+0x3c);
  origin[0]=*(float *)(obj+0x38)+hit[0];
- perpendicular[0]=direction[1]*inv;
- perpendicular[1]=direction[0]*inv;
- spread=lbl_80564640;
- x=lbl_80564670*length;
- if (spread < x) spread=x;
+ spread=lbl_80564640 < x ? lbl_80564640 : x;
  count=(int)(lbl_8056464C*length)<10 ? (int)(lbl_8056464C*length):10;
  vertical=lbl_80564634*length;
  factor=lbl_80564698; cap=lbl_805646A4; lift=lbl_80564640;
@@ -1624,33 +1630,28 @@ int fn_8029EB54(void *arg0, void *arg1)
 void fn_8029EC64(void *area, void *arg1, int arg2) {
     struct Locals { float sp8, spC, sp10, sp14, sp18, sp1C; } s;
     float *f = (float *)arg1;
-    float *base2 = (float *)((char *)arg1 + arg2 * 0x3C);
-    float *m = base2 + 0x1C;
+    char *base2 = (char *)arg1 + arg2 * 0x3C;
+    float *m = (float *)(base2 + 0x70);
     float temp_f1, temp_f2, temp_f3, temp_f0_2;
     float var_f1, var_f31, var_f5;
     if ((unsigned char *)&s.sp14 == (unsigned char *)m) {
-        float a3, m10, a4, a5, a0, m00, a1, a2, a6, m20, a7, a8;
-        a3 = f[3];
-        m10 = m[1];
-        a4 = f[4]; a5 = f[5];
-        a0 = f[0];
-        m00 = m[0];
-        a1 = f[1]; a2 = f[2];
-        a6 = f[6];
-        m20 = m[2];
-        a7 = f[7]; a8 = f[8];
-        s.sp14 = m20 * a6 + (m00 * a0 + m10 * a3);
-        s.sp18 = m20 * a7 + (m00 * a1 + m10 * a4);
-        s.sp1C = m20 * a8 + (m00 * a2 + m10 * a5);
+        float x, y, z;
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = f[3]; m11 = f[4]; m12 = f[5];
+        m00 = f[0]; m01 = f[1]; m02 = f[2];
+        m20 = f[6]; m21 = f[7]; m22 = f[8];
+        x = m[0]; y = m[1]; z = m[2];
+        s.sp14 = z * m20 + (x * m00 + y * m10);
+        s.sp18 = z * m21 + (x * m01 + y * m11);
+        s.sp1C = z * m22 + (x * m02 + y * m12);
     } else {
-        float b3, m10, m00, m20;
-        b3 = f[3];
-        m10 = m[1];
-        m00 = m[0];
-        m20 = m[2];
-        s.sp14 = m20 * f[6] + (m00 * f[0] + m10 * b3);
-        s.sp18 = m20 * f[7] + (m00 * f[1] + m10 * f[4]);
-        s.sp1C = m20 * f[8] + (m00 * f[2] + m10 * f[5]);
+        float m00, m01, m02, m10, m11, m12, m20, m21, m22;
+        m10 = f[3]; m00 = f[0]; m20 = f[6];
+        s.sp14 = m[2] * m20 + (m[0] * m00 + m[1] * m10);
+        m11 = f[4]; m01 = f[1]; m21 = f[7];
+        s.sp18 = m[2] * m21 + (m[0] * m01 + m[1] * m11);
+        m12 = f[5]; m02 = f[2]; m22 = f[8];
+        s.sp1C = m[2] * m22 + (m[0] * m02 + m[1] * m12);
     }
     temp_f2 = s.sp18; temp_f1 = s.sp1C;
     s.sp14 += f[9];
