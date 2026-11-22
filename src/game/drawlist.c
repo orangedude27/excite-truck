@@ -674,7 +674,7 @@ int fn_802C90E0(void) {
 /* Save GX state through DrawList_BeginProjection and record that draw lists now run in
  * its world-matrix-saving render mode (3). */
 void fn_802C90F0(void) {
-    ((void (*)(void))DrawList_BeginProjection)();
+    ((void (*)(void))fn_802C8C04)();
     sRenderMode = 3;
 }
 
