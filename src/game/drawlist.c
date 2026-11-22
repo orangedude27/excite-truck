@@ -710,7 +710,7 @@ extern void fn_802C92DC(int, int, int, int, int);
    letting DrawList_BeginProjection be inlined. */
 void fn_802C92D0(void) {
 #pragma dont_inline off
-    DrawList_BeginProjection(-1);
+    fn_802C8C04(-1);
 }
 
 /* Tail-call wrapper for DrawList_RestoreNormalMode (fn_802C8D74): restores the
