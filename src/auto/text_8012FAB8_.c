@@ -329,12 +329,13 @@ extern void fn_8013111C();
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_801303A8(void) {
-    register int *s;
-    register int *d;
     register int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
     register int v12, v13, v14, v15, v16, v17, v18, v19, v20, v21;
     register int v22, v23, v24, v25, v26, v27;
     register unsigned char c;
+    register int *s;
+    register int *d;
+    int var_r0;
 
     lbl_8055E048 = 1;
     lbl_804230D0 = -1;
@@ -342,12 +343,13 @@ void fn_801303A8(void) {
     s = (int *)lbl_8042F4B8;
     d = (int *)lbl_80423054;
 
-    v22 = s[22]; d[24] = v22;
     v24 = s[24]; d[26] = v24;
+    v22 = s[22]; d[24] = v22;
     v25 = s[25]; d[27] = v25;
     v26 = s[26]; d[28] = v26;
     v27 = s[27]; d[29] = v27;
     c = *((unsigned char *)s + 0x70);
+    var_r0 = 0x2E;
 
     v0 = s[0]; v1 = s[1]; v2 = s[2]; v3 = s[3];
     v4 = s[4]; v5 = s[5]; v6 = s[6]; v7 = s[7];
@@ -362,8 +364,11 @@ void fn_801303A8(void) {
     d[18] = v16; d[19] = v17; d[20] = v18; d[21] = v19;
     d[22] = v20; d[23] = v21; d[25] = v23;
 
-    lbl_80423054[0] = c ? 0x2E : 0x2C;
     *((char *)d + 0x78) = c;
+    if (c != 0) {
+        var_r0 = 0x2C;
+    }
+    lbl_80423054[0] = var_r0;
 }
 #pragma scheduling on
 #pragma use_lmw_stmw on
