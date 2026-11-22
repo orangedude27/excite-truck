@@ -835,6 +835,8 @@ extern "C" s32 fn_8016C5F0(void) {
 /* Return a List8016C768's filled-entry count: `index`, the s32 at +0x4. */
 int fn_8016C760(void *list) { return ((int *)list)[1]; }
 
+void fn_8016CD10(void *);
+void fn_8016CD28(void *);
 #pragma cplusplus off
 #pragma cplusplus on
 extern "C" void fn_8016CD10(void *);
