@@ -183,7 +183,7 @@ static inline BOOL isSame(const char *lhs, const char *rhs, u8 *locale) {
     return FALSE;
 }
 
-s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
+/* Resolve an archive path to a file-system entry number: handle '/', '.' and '..' components relative to handle->currDir, then walk the FST sibling chain for each name using locale-aware comparison. Returns -1 if any component is not found. */ s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
     u8 *locale = *(u8 **)(lbl_802FE850 + 0x38);
     const char *name_end;
     BOOL name_delimited_by_slash;
@@ -2960,11 +2960,20 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
             fn_8011A330(arg0);
         }
         rd = &stream->consumerOffset;
-        stream->readOffset += total;
-        *rd += total;
-        stream->totalRead += total;
-        if (stream->rate != 0)
-            fn_8011A45C(arg0, total, work);
+        {
+            volatile DvdStream *direct = stream;
+            u32 read = direct->readOffset + total;
+            u32 offset = direct->consumerOffset + total;
+            u32 rate = direct->rate;
+            direct->readOffset = read;
+            {
+                u32 bytesRead = direct->totalRead;
+                direct->consumerOffset = offset;
+                direct->totalRead = bytesRead + total;
+            }
+            if (rate != 0)
+                fn_8011A45C(arg0, total, work);
+        }
         {
             u32 now = fn_80116D30();
             volatile DvdStream *timing = stream;
