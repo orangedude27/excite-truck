@@ -5258,61 +5258,43 @@ u32 fn_8011FC2C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5, s
     u32 next;
     s32 *ptr;
     s32 *ret;
-    s32 curOffset;
-    s32 oldOffset;
-    s32 *curBase;
-    s32 *oldBase;
-    idx.old = *(u32 *)((u8 *)arg0 + 0x14);
+    u32 (*ents)[12] = (u32 (*)[12])arg0;
+    idx.old = ents[0][5];
     next = idx.old ^ 1;
-    if (*(s32 *)((u8 *)arg0 + next * 0x30 + 0x1C) != 0) {
-        *(s32 *)((u8 *)arg0 + 0x14) = next;
+    if ((s32)ents[next][7] != 0) {
+        ents[0][5] = next;
     }
-    idx.cur = *(u32 *)((u8 *)arg0 + 0x14);
+    idx.cur = ents[0][5];
     result = 0;
     ptr = arg3;
     if ((arg7 & 0x100000) != 0) {
         if ((arg6 & 0x100000) != 0) {
-            fn_8011E0B4(*(s32 *)((u8 *)arg0 + idx.cur * 0x30 + 0x40),
-                        *(s32 *)((u8 *)arg0 + idx.old * 0x30 + 0x40),
-                        *(s32 *)((u8 *)arg0 + 4),
-                        *(s32 *)((u8 *)arg0 + 8),
-                        *(s32 *)((u8 *)arg0 + idx.old * 0x30 + 0x44),
+            fn_8011E0B4((s32)ents[idx.cur][16], (s32)ents[idx.old][16],
+                        (s32)ents[0][1], (s32)ents[0][2],
+                        (s32)ents[idx.old][17],
                         arg3 + 1, arg4, arg1, arg2, 1, arg5, arg6, &result);
         }
         ptr = (s32 *)((u8 *)ptr + *ptr);
     }
     result = 0;
     if ((arg6 & 0x8000) == 0) ptr++;
-    curOffset = idx.cur * 0x30;
-    oldOffset = idx.old * 0x30;
-    curBase = (s32 *)((u8 *)arg0 + curOffset);
-    oldBase = (s32 *)((u8 *)arg0 + oldOffset);
-    ret = fn_8011E0B4(curBase[7], oldBase[7],
-                      *(s32 *)((u8 *)arg0 + 4),
-                      *(s32 *)((u8 *)arg0 + 8),
-                      oldBase[8],
+    ret = fn_8011E0B4((s32)ents[idx.cur][7], (s32)ents[idx.old][7],
+                      (s32)ents[0][1], (s32)ents[0][2],
+                      (s32)ents[idx.old][8],
                       ptr, arg4, arg1, arg2, 1, arg5, arg6, &result);
     if ((arg6 & 0x8000) == 0) {
         ret = (s32 *)((u8 *)ptr + *(volatile s32 *)((u8 *)ptr - 4) - 4);
     }
     result >>= 2;
     if ((arg6 & 0x20000) == 0) {
-        curOffset = idx.cur * 0x30;
-        oldOffset = idx.old * 0x30;
-        ret = fn_8011E0B4(*(s32 *)((u8 *)arg0 + curOffset + 0x28),
-                          *(s32 *)((u8 *)arg0 + oldOffset + 0x28),
-                          *(s32 *)((u8 *)arg0 + 0xC),
-                          *(s32 *)((u8 *)arg0 + 0x10),
-                          *(s32 *)((u8 *)arg0 + oldOffset + 0x2C),
+        ret = fn_8011E0B4((s32)ents[idx.cur][10], (s32)ents[idx.old][10],
+                          (s32)ents[0][3], (s32)ents[0][4],
+                          (s32)ents[idx.old][11],
                           ret, arg4, arg1, arg2, 2, arg5, arg6, &result);
         result = 0;
-        curOffset = idx.cur * 0x30;
-        oldOffset = idx.old * 0x30;
-        fn_8011E0B4(*(s32 *)((u8 *)arg0 + curOffset + 0x34),
-                    *(s32 *)((u8 *)arg0 + oldOffset + 0x34),
-                    *(s32 *)((u8 *)arg0 + 0xC),
-                    *(s32 *)((u8 *)arg0 + 0x10),
-                    *(s32 *)((u8 *)arg0 + oldOffset + 0x38),
+        fn_8011E0B4((s32)ents[idx.cur][13], (s32)ents[idx.old][13],
+                    (s32)ents[0][3], (s32)ents[0][4],
+                    (s32)ents[idx.old][14],
                     ret, arg4, arg1, arg2, 2, arg5, arg6, &result);
     }
     return result;
