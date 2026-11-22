@@ -1077,6 +1077,7 @@ extern "C" u32 fn_800EC56C(void *__restrict soundHeapRef) {
     return (allocSize - 0x20) & ~31;
 }
 
+#pragma opt_common_subs off
 extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, void* buffer, u32 size, u32 blockSize) {
     extern u8 lbl_80323058[], lbl_80323070[];
     void** head = (void**)headArg;
