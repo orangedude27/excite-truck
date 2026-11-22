@@ -2226,7 +2226,7 @@ extern "C" s32 fn_800A7774(void *a, void *out, void *base, void *data, u16 count
         p += advance; d += stride; i += step;
     }
     {
-        u32 prevOff = ((s32)count) + ((-(s32)(step * 2) - (s32)rem));
+        u32 prevOff = (-(s32)(step * 2) - (s32)rem) + (s32)count;
         u32 last2 = ((u32)count - rem) - step;
         u8 *q = b + last2 * 40;
         *(void **)(q + 0x24) = (void *)(b + prevOff * 40);
@@ -5022,12 +5022,12 @@ extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
 extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
     u32 one = 1;
     u32 sp8;
-    register void *temp_r5;
-    s32 temp_r30;
+    s32 var_r31;
+    register s32 temp_r30;
     s32 temp_r3;
     s32 temp_r4;
     u8 temp_r7;
-    s32 var_r31;
+    void *temp_r5;
     temp_r5 = *(void **)((u8 *)arg0 + 0x3C);
     temp_r30 = *(s32 *)arg0;
     *(void **)((u8 *)arg0 + 4) = temp_r5;
@@ -17640,7 +17640,7 @@ extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3)
   s32 g1 = *(t++);
   arg2[256] = arg1[4] + ((s32) ((((s64) a4) * g0) >> 20));
   arg3[-256] = arg1[13] + ((s32) ((((s64) a4) * g1) >> 20));
-  s32 a5 = arg0[5];
+  s32 a5 = arg0[0, 5];
   s32 h0 = *(t++);
   s32 h1 = *(t++);
   arg2[320] = arg1[5] + ((s32) ((((s64) a5) * h0) >> 20));
@@ -17648,16 +17648,8 @@ extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3)
   s32 a6 = arg0[6];
   s32 i0 = *(t++);
   s32 i1 = *(t++);
-  if (arg1)
-  {
-    arg2[384] = arg1[6] + ((s32) ((((s64) a6) * i0) >> 20));
-    arg3[-384] = arg1[11] + ((s32) ((((s64) a6) * i1) >> 20));
-  }
-  else
-  {
-    arg2[384] = arg1[6] + ((s32) ((((s64) a6) * i0) >> 20));
-    arg3[-384] = arg1[11] + ((s32) ((((s64) a6) * i1) >> 20));
-  }
+  arg2[384] = arg1[6] + ((s32) ((((s64) a6) * i0) >> 20));
+  arg3[-384] = arg1[11] + ((s32) ((((s64) a6) * i1) >> 20));
   s32 a7 = arg0[7];
   s32 j0 = *(t++);
   s32 j1 = *(t++);
@@ -21765,9 +21757,8 @@ extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
     u16 width, height;
     s32 idx, rem, off;
     s32 i, n;
-    s32 v;
-
     v = arg2;
+    s32 v;
     if (arg2 >= 100)
         v -= 100;
 
@@ -21784,8 +21775,7 @@ extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
     scaleX = width < 400 ? 1 : 2;
     scaleY = height < 300 ? 1 : 2;
 
-    dest = (u16 *)lbl_80407BD8[0] + scaleY * arg1 * *(u16 *)((u8 *)lbl_80407BD8 + 0xC);
-    dest += arg0 * scaleX;
+    dest = (u16 *)(lbl_80407BD8[0] + scaleY * arg1 * (u16)*(u16 *)((u8 *)lbl_80407BD8 + 0xC) * 2 + arg0 * scaleX * 2);
 
     if (arg1 >= 0) {
         if (arg0 < 0)
