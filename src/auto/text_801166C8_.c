@@ -189,7 +189,6 @@ s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
     u32 anchor;
     u32 it = handle->currDir;
     ARCNode *nodes = handle->FSTStart;
-    u8 *locale = *(u8 **)(lbl_802FE850 + 0x38);
 
     while (TRUE) {
         if (path[0] == '\0') return it;
@@ -224,20 +223,7 @@ s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
                         ++it;
                         continue;
                     }
-                    {
-                        const char *lhs = path;
-                        const char *rhs = name_of_it;
-                        BOOL same = TRUE;
-                        while (rhs[0] != '\0') {
-                            int a = *lhs++;
-                            int b = *rhs++;
-                            a = (a < 0 || a >= 256) ? a : (*(u8 **)(locale + 0x10))[a];
-                            b = (b < 0 || b >= 256) ? b : (*(u8 **)(locale + 0x10))[b];
-                            if (a != b) { same = FALSE; break; }
-                        }
-                        if (same == TRUE && (lhs[0] == '/' || lhs[0] == '\0'))
-                            goto descend;
-                    }
+                    if (isSame(path, name_of_it) == TRUE) goto descend;
                 }
                 if (nodes[it].packed_type_name & 0xFF000000) {
                     it = nodes[it].folder.sibling_next;
@@ -2440,8 +2426,6 @@ s32 fn_80119DD0(void *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5) 
     extern s32 lbl_8055DEE0;
     extern s32 lbl_8055DEE8;
     extern void TRKGetFreeBuffer(void *);
-    extern s32 fn_80119824(void *);
-    extern void fn_80119D40();
      u8 *ctx = (u8 *)arg0;
     register u32 sampleRate = arg1;
     u32 count, rate, frames, i, loopSample, loopBuffer;
@@ -2453,7 +2437,7 @@ s32 fn_80119DD0(void *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5) 
     *(u32 *)(ctx + 0x5C) = 0;
     *(u32 *)(ctx + 0x70) = sampleRate;
     *(u32 *)(ctx + 0x74) = 0x10;
-    *(s32 *)(ctx + 0x78) = arg3;
+    *(s32 *)(ctx + 0x78) = (u32)arg3;
     *(u32 *)(ctx + 0x7C) = TRKInitializeMessageBuffers(0x1F, 0, 0);
     if (*(u32 *)(ctx + 0x7C) == 0) return 0;
     if (*(s32 *)(ctx + 0x78) != 1) {
@@ -2464,7 +2448,7 @@ s32 fn_80119DD0(void *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5) 
         }
     }
     *(volatile u32 *)(ctx + 0xD0) = 0x21C;
-    count = (*(u32 *)(ctx + 0x70) * 2) * *(u32 *)(ctx + 0x78);
+    count = *(u32 *)(ctx + 0x78) * (*(u32 *)(ctx + 0x70) * 2);
     *(volatile u32 *)(ctx + 0xA0) = sampleRate;
     *(volatile u32 *)(ctx + 0x68) = 0;
     frames = ((count * 0x258) / 1000 + 0x3FF) & ~0x3FF;
