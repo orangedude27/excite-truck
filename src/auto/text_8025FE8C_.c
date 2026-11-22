@@ -138,11 +138,11 @@ extern u8 lbl_8055F3E8;
 extern "C" void *fn_80016544(void *);
 extern "C" void fn_80019144(void *);
 extern "C" void fn_80016970(s32, s32, s32, s32);
-extern "C" void fn_8000DA10(void);
-extern "C" void fn_8000DB34(void);
-extern "C" void fn_800169F8(s32);
-extern "C" void fn_802E4A10(void);
-extern "C" void fn_80137C84(s32);
+extern "C" s32 fn_8000DA10(void);
+extern "C" void *fn_8000DB34(s32);
+extern "C" void fn_800169F8(const char *, s32);
+extern "C" s32 fn_802E4A10(void);
+extern "C" void fn_80137C84(s32, s32);
 extern "C" void *fn_80012870(s32, s32);
 extern "C" void fn_8023BF4C(void *);
 extern "C" void fn_80016A44(s32);
@@ -181,11 +181,13 @@ void fn_8026003C(void) {
         void *d = fn_80016544((void *)localC);
         if ((*(u32 *)((char *)d + 0xA0) & 0x2) == 0) fn_80019144((char *)d + 0x2C);
     }
+    #pragma cplusplus on
     {
         u8 *list = (u8 *)lbl_8055F420;
         u8 *p = list;
         u8 *current;
-        void *g;
+        struct Widget { virtual ~Widget(); };
+        Widget *g;
         for (i = 0; i < *(s32 *)(list + 8); p += 4, i++) {
             if (VC0(*(void **)(p + 0x60), 0x48) == 0) {
                 wasReady = 0;
@@ -195,9 +197,9 @@ void fn_8026003C(void) {
         wasReady = 1;
 closeWidgets:
         current = (u8 *)lbl_8055F420;
-        g = *(void **)(current + 0x14);
+        g = *(Widget **)(current + 0x14);
         if (g != 0) {
-            VC1(g, 0x08, 1);
+            delete g;
             *(void **)(current + 0x14) = 0;
         }
         lbl_8055F3EC = 0;
@@ -210,12 +212,10 @@ closeWidgets:
             if (obj) VC1(obj, 0x08, 1);
         }
     }
+    #pragma cplusplus reset
     fn_80016970(0, firstVal, localC, local8);
-    fn_8000DA10();
-    fn_8000DB34();
-    fn_800169F8(0);
-    fn_802E4A10();
-    fn_80137C84(0);
+    fn_800169F8((const char *)fn_8000DB34(fn_8000DA10()), 0);
+    fn_80137C84(fn_802E4A10(), 0);
     {
         char buf[0xB0];
         s32 st[4];
