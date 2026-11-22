@@ -643,7 +643,7 @@ extern void fn_802E317C(const char *, ...);
 #pragma processor 750
 #pragma cplusplus on
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling safe_target
 #pragma dont_inline on
 extern "C" void *fn_802B2958(void *arg0, void *arg1) {
     char *base = lbl_8034A288;
