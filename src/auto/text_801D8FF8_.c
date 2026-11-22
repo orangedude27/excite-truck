@@ -15,8 +15,6 @@ extern int lbl_8055E948;
 extern int lbl_8055E950;
 extern float lbl_80562B24;
 extern float lbl_80562ADC;
-#pragma push
-#pragma scheduling invalid_target
 void fn_801D8FF8(void) {
     volatile unsigned int *base = (volatile unsigned int *)lbl_804422D8;
     unsigned char *obj;
