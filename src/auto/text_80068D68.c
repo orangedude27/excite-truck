@@ -1358,7 +1358,7 @@ u8 fn_80068F94(void) {
     }
     if (base[0x667] != 0) {
         register u8 *scan_base;
-        register u8 *record;
+        u8 *record;
         register s32 i;
         register s32 offset;
         offset = 0;
@@ -17491,22 +17491,41 @@ scan_done:
 #pragma optimize_for_size reset
 
 #pragma push
-#pragma use_lmw_stmw off
-tHID_STATUS HID_HostRemoveDev(UINT8 dev_handle)
-{
-	if (!lbl_803C3C38.reg_flag)
-		return HID_ERR_NOT_REGISTERED;
+#pragma use_lmw_stmw on
+u8 HID_HostRemoveDev(u32 dev_handle) {
+    extern u8 hidh_conn_disconnect(u32);
+    register u8 *devices = lbl_803C3C38;
+    u8 *deviceEntry;
+    u8 *connectionEntry;
+    u32 entryOffset;
+    u8 disconnecting = 1;
+    u8 cleared = 0;
+    u8 isRegistered = devices[0x400];
+    u8 isInUse;
 
-	if (dev_handle > HID_HOST_MAX_DEVICES || !lbl_803C3C38.devices[dev_handle].in_use)
-		return HID_ERR_INVALID_PARAM;
-
-	HID_HostCloseDev(dev_handle);
-	lbl_803C3C38.devices[dev_handle].in_use = FALSE;
-	lbl_803C3C38.devices[dev_handle].conn.conn_state = HID_CONN_STATE_UNUSED;
-	lbl_803C3C38.devices[dev_handle].conn.ctrl_cid =
-		lbl_803C3C38.devices[dev_handle].conn.intr_cid = 0;
-
-	return HID_SUCCESS;
+    if (isRegistered == 0)
+        return 1;
+    if (dev_handle > 0x10)
+        return 5;
+    entryOffset = dev_handle * 0x34;
+    deviceEntry = devices + entryOffset;
+    isInUse = devices[entryOffset];
+    if (isInUse == 0)
+        return 5;
+    if (isRegistered == 0 || dev_handle > 0x10 || isInUse == 0)
+        goto clear_entry;
+    deviceEntry[0xC] = disconnecting;
+    fn_80070F90(deviceEntry + 0x1C);
+    if (deviceEntry[0xA] != 1)
+        goto clear_entry;
+    deviceEntry[0xC] = disconnecting;
+    hidh_conn_disconnect(dev_handle);
+clear_entry:
+    deviceEntry[0] = cleared;
+    lbl_803C3C38[entryOffset + 0x10] = cleared;
+    *(u16 *)(devices + entryOffset + 0x16) = 0;
+    *(u16 *)(devices + entryOffset + 0x14) = 0;
+    return 0;
 }
 #pragma pop
 u8 HID_HostOpenDev(u32 arg0) {
@@ -29382,7 +29401,7 @@ void fn_8006CAA8(u32 event, u8 *data) {
             pInfo[0x56] = data[7];
             base[0x664]++;
             pInfo = WUDiGetDevInfo(data);
-            if (pInfo == 0) {
+            if (!pInfo) {
                 pInfo = lbl_803935C8;
             }
             ((u32 *)lbl_80393628)[data[7]] = (u32)(pInfo + 0x40);
