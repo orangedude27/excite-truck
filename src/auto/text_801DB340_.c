@@ -673,11 +673,11 @@ float fn_801DCF0C(void) {
  extern double lbl_80562B78;
 #pragma paired_single off
 #pragma opt_common_subs on
-#pragma scheduling on
+#pragma scheduling invalid_target
 float fn_801DCF48(void *arg0, float farg0, float farg1) {
     extern float lbl_80562B84;
     extern float lbl_80562BBC;
-    char *const state = (char *)lbl_8055E990;
+    char *state = (char *)lbl_8055E990;
     char *node, *layer;
     float sp8, var_f31, x, z, roundedX, roundedZ;
     float var_f8, var_f7, weight, slope, base, normalY, factorZ, factorX;
