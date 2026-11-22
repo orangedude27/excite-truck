@@ -549,16 +549,17 @@ void fn_802C8BD0(int texSlot) {
 }
 
 #pragma use_lmw_stmw off
-void fn_802C8CBC(int arg0) {
-    struct DlMtx34 *src = (struct DlMtx34 *)lbl_804C1410;
-    struct DlMtx34 *dst = (struct DlMtx34 *)lbl_804C13E0;
-    float matrix[12];
+/* Save the current draw-list matrix (lbl_804C1410) into the backup slot (lbl_804C13E0) and flag that a save is active, then build a perspective projection matrix with fn_802C88FC, load it as the current GX matrix, and reset material/vertex state while selecting texture slot `texSlot`. */
+void fn_802C8CBC(int texSlot) {
+    struct DlMtx34 *currentMtx = (struct DlMtx34 *)lbl_804C1410;
+    struct DlMtx34 *savedMtx = (struct DlMtx34 *)lbl_804C13E0;
+    float projMtx[12];
 
-    *dst = *src;
+    *savedMtx = *currentMtx;
     lbl_8055FC35 = 1;
-    fn_802C88FC(matrix);
-    fn_802C8638((unsigned int *)matrix);
-    ((void (*)(int))fn_802C8BD0)(arg0);
+    fn_802C88FC(projMtx);
+    fn_802C8638((unsigned int *)projMtx);
+    ((void (*)(int))fn_802C8BD0)(texSlot);
 }
 
 #pragma dont_inline on
