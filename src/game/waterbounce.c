@@ -220,7 +220,7 @@ void *fn_8020DE74(void *arg0) {
 // fn_8020DE74() created for the truck and, when deleteMemory is positive,
 // frees the object itself. The vtable goes back first, so a sound torn down
 // from here sees the object as dead.
-extern "C" void *CarSound_destroy(CarSound *snd, s32 deleteMemory) {
+extern "C" void *CarSound_destroy(CarSound *snd, s32 deleteFlag) {
     void *sound;
     u8 *boostSlot;
     u32 i;
@@ -268,7 +268,7 @@ extern "C" void *CarSound_destroy(CarSound *snd, s32 deleteMemory) {
         if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
         sound = snd->invulnerable;
         if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
-        if (deleteMemory > 0) fn_80128668(snd);
+        if (deleteFlag > 0) fn_80128668(snd);
     }
     return snd;
 }
