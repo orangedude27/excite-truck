@@ -118,28 +118,29 @@ void fn_802DB3FC(void) {
 #pragma push
 #pragma scheduling on
 void fn_802DB4E4(void) {
-    volatile float m[16];
-    *(volatile int *)&m[8] = 0;
-    *(volatile int *)&m[14] = 0;
-    *(volatile int *)&m[0] = 0;
-    *(volatile int *)&m[6] = 0;
-    *(volatile int *)&m[9] = 0;
-    *(volatile int *)&m[10] = 0;
-    *(volatile int *)&m[11] = 0;
-    *(volatile int *)&m[12] = 0;
-    *(volatile int *)&m[13] = 0;
-    *(volatile int *)&m[15] = 0;
-    m[8] = *(float *)(lbl_804DB068 + 0xc);
-    m[14] = *(float *)(lbl_804DB068 + 0x10);
-    *(volatile int *)&m[1] = 0;
-    *(volatile int *)&m[2] = 0;
-    *(volatile int *)&m[3] = 0;
-    *(volatile int *)&m[4] = 0;
-    *(volatile int *)&m[5] = 0;
-    *(volatile int *)&m[7] = 0;
-    m[0] = *(float *)(lbl_804DB068 + 0x18);
-    m[6] = *(float *)(lbl_804DB068 + 0x1c);
-    GXLoadTexMtxImm((float *)&m[8], 0x1e, 1);
+    int m[16];
+    float *src = (float *)lbl_804DB068;
+    m[8] = 0;
+    m[14] = 0;
+    m[0] = 0;
+    m[6] = 0;
+    m[9] = 0;
+    m[10] = 0;
+    m[11] = 0;
+    m[12] = 0;
+    m[13] = 0;
+    m[15] = 0;
+    *(float *)&m[8] = src[3];
+    *(float *)&m[14] = src[4];
+    m[1] = 0;
+    m[2] = 0;
+    m[3] = 0;
+    m[4] = 0;
+    m[5] = 0;
+    m[7] = 0;
+    *(float *)&m[0] = src[6];
+    *(float *)&m[6] = src[7];
+    GXLoadTexMtxImm((float *)m + 8, 0x1e, 1);
     GXLoadTexMtxImm((float *)m, 0x21, 1);
 }
 #pragma pop
@@ -284,7 +285,7 @@ void fn_802DBA1C(unsigned char arg0) {
     extern unsigned char lbl_802FAD18[];
     extern unsigned char lbl_802FAD38[];
     extern void *lbl_804DB468[];
-    extern void fn_802DEAC4(void);
+    extern void GXSetupFiveStageTevPipelineA(void);
     extern void fn_802E0684(void);
     int texMtx0[8];
     int texMtx1[8];
@@ -311,7 +312,7 @@ void fn_802DBA1C(unsigned char arg0) {
         GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x24, 2);
         GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x78, 3);
         GXLoadTexObj((unsigned char *)lbl_804DB468[3] + 0x24, 4);
-        fn_802DEAC4();
+        GXSetupFiveStageTevPipelineA();
     } else {
         GXLoadTexObj((unsigned char *)lbl_804DB468[0] + 0x24, 0);
         GXLoadTexObj((unsigned char *)lbl_804DB468[1] + 0x24, 1);
@@ -398,18 +399,18 @@ void fn_802DBDD8(void) {
 void fn_802DBDE8(int arg0, void *arg1) {
     int count;
     void **entry;
-    int value;
     int oldCount;
+    unsigned int value;
 
     if (arg1 != 0) {
-        value = lbl_8055FD30;
         oldCount = *(int *)((char *)arg1 + 0xF0);
-        *(int *)((char *)arg1 + 0xEC) = value;
+        value = lbl_8055FD30;
         *(int *)((char *)arg1 + 0xF0) = oldCount + 1;
+        *(int *)((char *)arg1 + 0xEC) = value;
     }
-    count = 0;
-    lbl_804DB468[arg0] = arg1;
     entry = lbl_804DB468;
+    lbl_804DB468[arg0] = arg1;
+    count = 0;
     lbl_8055FEA4 = count;
     while (count < 3 && entry[0] != 0) {
         count++;
@@ -421,7 +422,7 @@ void fn_802DBDE8(int arg0, void *arg1) {
 
 #pragma scheduling invalid_target
 void fn_802DBE4C(void) {
-    int one;
+    unsigned char one;
     fn_802D0610(0);
     fn_802D68C4(0, 0, 0, 0);
     one = 1;
@@ -889,7 +890,7 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
     float temp_f30;
     float temp_f29;
     float alpha;
-    int count;
+    unsigned int count;
     unsigned int first;
     unsigned int *dstWords;
     unsigned int *srcWords;
@@ -902,7 +903,7 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
         srcWords = (unsigned int *)input;
         first = srcWords[0];
         dstWords = *(unsigned int **)g;
-        count = *(int *)(g + 4);
+        count = *(unsigned int *)(g + 4);
         *(void **)(g + 0x214) = state;
         dstWords += count * 0xD;
         *(int *)(g + 4) = count + 1;
