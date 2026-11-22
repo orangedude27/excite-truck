@@ -2,7 +2,6 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_8000D838(void *);
-__declspec(section ".sdata") extern unsigned char lbl_8055FC18;
 extern char lbl_804C1338[];
 #pragma opt_common_subs off
 void fn_802C8238(void) {
