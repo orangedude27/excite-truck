@@ -282,11 +282,9 @@ extern char lbl_8055AD58[3], lbl_8055AD5C[3];
 extern float lbl_8055E3C8, lbl_80562AD8, lbl_80562ADC, lbl_80562AE0, lbl_80562AE4, lbl_80562AE8, lbl_80562AEC, lbl_80562AF0, lbl_80562AF4, lbl_80562AF8, lbl_80562AFC;
 extern char *strchr(char *, int);
 #pragma push
-#pragma processor 604
+#pragma scheduling on
 void fn_801D490C(void) {
-int __repair_literal;
-
-    float width, right, x, alpha, t, edge, dy, y;
+    float width, right, x, t, edge, dy, y;
     float limit = lbl_8055E3C8;
     char c;
     char *src;
@@ -298,21 +296,21 @@ int __repair_literal;
     width = *(float *)(lbl_80442310 + 4);
     right = x + width;
     if (limit < right) {
-        alpha = lbl_80562AE0;
+        float alpha = lbl_80562AE0;
         if (width > lbl_80562AE4) {
             t = limit - x;
             if (t < lbl_80562AE8) {
                 t = t / ((lbl_80562AE8 + x) - x);
-                alpha = alpha < t ? t : alpha;
-                alpha = alpha > lbl_80562ADC ? lbl_80562ADC : alpha;
-                alpha = lbl_80562ADC + alpha * lbl_80562AE0;
+                t = alpha < t ? alpha : t;
+                t = t > lbl_80562ADC ? t : lbl_80562ADC;
+                alpha = lbl_80562ADC + t * lbl_80562AE0;
             } else {
                 edge = right - lbl_80562AE8;
                 if (limit > edge) {
                     t = (limit - edge) / (right - edge);
-                    alpha = alpha < t ? t : alpha;
-                    alpha = alpha > lbl_80562ADC ? lbl_80562ADC : alpha;
-                    alpha = lbl_80562AE0 + alpha * lbl_80562AEC;
+                    t = alpha < t ? alpha : t;
+                    t = t > lbl_80562ADC ? t : lbl_80562ADC;
+                    alpha = lbl_80562AE0 + t * lbl_80562AEC;
                 }
             }
         }
@@ -320,10 +318,8 @@ int __repair_literal;
         fn_8000FF88(color, 0xC, lbl_8055AD5C, lbl_80562AF4, lbl_80562ADC, lbl_80562AF8, lbl_80442310 + 0x48);
         src = lbl_80442310 + 8; dst = text; n = 0x40;
         goto copy;
-__repair_literal = 0;
-
     limit_lbl:
-        if (--n > __repair_literal) goto copy;
+        if (--n > 0) goto copy;
         dst[-1] = 0;
         goto done;
     copy:
