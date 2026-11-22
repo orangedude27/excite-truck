@@ -600,7 +600,7 @@ extern "C" signed long fn_8020815C(void *arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
-signed long fn_8020820C(SoundMgrObj* lhsObj, SoundMgrObj* rhsObj) {
+extern "C" signed long fn_8020820C(SoundMgrObj* lhsObj, SoundMgrObj* rhsObj) {
     float rhsValue = rhsObj->field_68;
     float lhsValue = lhsObj->field_68;
     unsigned long greater = lhsValue > rhsValue;
