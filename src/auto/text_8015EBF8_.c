@@ -450,13 +450,14 @@ extern char lbl_8032F4A0[];
 extern int lbl_8055A098, lbl_8055E29C, lbl_8055E2A0;
 #pragma push
 #pragma scheduling invalid_target
+/* Collects, per index, the registry entry that first reaches it, into the arrow buffer. */
 void fn_8015F3FC(void *arg0) {
-    register int max;
-    register int offset;
-    register int index;
-    register int *src;
-    register int i;
-    register int outIndex;
+    int max;
+    int offset;
+    int index;
+    int *src;
+    int i;
+    int outIndex;
     int count;
     int *dst, *array, *out, *items;
     if (*(volatile int *)(lbl_8055E29C + 4) <= 0) return;
@@ -636,7 +637,7 @@ void fn_8015F79C(void) {
 
 
 extern f32 lbl_805617D4, lbl_805617E4, lbl_805617E8, lbl_805617EC, lbl_805617F0;
-extern const f64 lbl_805617F8;
+extern f64 lbl_805617F8;
 extern f32 lbl_8056182C;
 extern f64 fn_8002F234(f32, f32, f32);
 f32 PSVECDotProduct(void *, void *);
@@ -644,12 +645,11 @@ f32 PSVECDotProduct(void *, void *);
 #pragma processor 750
 #pragma dont_inline on
 s32 fn_8015F7A0(s32 arg0, void *arg1, void *arg2) {
-#pragma scheduling 750
     f32 scale = (f32)arg0 * lbl_805617E4;
     f32 t = (PSVECDotProduct(arg1, arg2) - lbl_805617EC) / lbl_805617F0;
     f32 clamp = lbl_805617E8;
-    clamp = (clamp > t) ? t : clamp;
-    clamp = (lbl_805617D4 > clamp) ? lbl_805617D4 : clamp;
+    clamp = (clamp < t) ? clamp : t;
+    clamp = (clamp > lbl_805617D4) ? clamp : lbl_805617D4;
     return (s32)(-scale + clamp * (scale - -scale));
 }
 #pragma pop
@@ -813,22 +813,22 @@ s32 fn_8015FAB8(s32 *records, s32 startIndex, f32 threshold) {
 extern f32 lbl_80561810;
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_8015FB28(void *arg0, void *arg1, void *arg2, int arg3) {
-    volatile u32 *dst = (volatile u32 *)arg0;
-    volatile u32 *src = (volatile u32 *)arg1;
+void fn_8015FB28(void *arg0, void *arg1) {
+    volatile s32 *dst = (volatile s32 *)arg0;
+    volatile s32 *src = (volatile s32 *)arg1;
     volatile f32 *dstFloat = (volatile f32 *)arg0;
-    u32 word18;
-    u32 word1C;
-    u32 word20;
-    u32 word28;
-    u32 word24;
-    u32 word2C;
-    u32 word0;
-    u32 word4;
-    u32 word8;
-    u32 wordC;
-    u32 word10;
-    u32 word14;
+    s32 word18;
+    s32 word1C;
+    s32 word20;
+    s32 word24;
+    s32 word28;
+    s32 word2C;
+    s32 word0;
+    s32 word4;
+    s32 word8;
+    s32 wordC;
+    s32 word10;
+    s32 word14;
     f32 velocityX;
     f32 velocityY;
     f32 velocityZ;
@@ -853,6 +853,7 @@ void fn_8015FB28(void *arg0, void *arg1, void *arg2, int arg3) {
     word24 = src[9];
     word2C = src[11];
     dst[9] = word24;
+
     velocityX = dstFloat[6];
     scale = lbl_80561810;
     dst[10] = word28;
@@ -1234,12 +1235,12 @@ f32 fn_801605C8(void *arg0, void *arg1, void *arg2) {
     f32 spC;
     negX = -*(f32 *)arg0;
     dx = *(f32 *)arg1 - *(f32 *)arg2;
-    y = *(f32 *)((u8 *)arg0 + 4);
     dy = *(f32 *)((u8 *)arg1 + 4) - *(f32 *)((u8 *)arg2 + 4);
-    result1 = y * dx;
-    *(volatile f32 *)&spC = dx;
-    result2 = negX * dy;
+    y = *(f32 *)((u8 *)arg0 + 4);
     *(volatile f32 *)&sp8 = dy;
+    *(volatile f32 *)&spC = dx;
+    result1 = y * dx;
+    result2 = negX * (*(f32 *)((u8 *)arg1 + 4) - *(f32 *)((u8 *)arg2 + 4));
     return result1 + result2;
 }
 void *fn_8016060C(void *arg0, void *arg1) {
