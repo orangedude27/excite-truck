@@ -27,6 +27,13 @@ static inline InitArrayB59D4 *initArrayB59D4(InitArrayB59D4 *a) {
     a->count = 0;
     return a;
 }
+#pragma dont_inline off
+static inline void regArrayB59D4(InitArrayB59D4 *a, void (*dtor)(void *, int), void *node) {
+    a->data = a->storage;
+    a->capacity = 16;
+    a->count = 0;
+    __register_global_object(a, dtor, node);
+}
 /* Construct and register the two embedded arrays without defining their data. */
 #pragma push
 #pragma dont_inline on
@@ -35,14 +42,14 @@ static inline InitArrayB59D4 *initArrayB59D4(InitArrayB59D4 *a) {
 #pragma cplusplus on
 extern "C" void fn_802B59D4(void) {
     unsigned char *base = lbl_804BE448;
-    InitArrayB59D4 *second;
     InitArrayB59D4 *first;
+    InitArrayB59D4 *second;
     fn_8000D838(lbl_8055F9E0);
     first = (InitArrayB59D4 *)(base + 0xC);
     first->data = first->storage;
     first->capacity = 16;
     first->count = 0;
-    __register_global_object(first, fn_802B5AC0, &lbl_804BE448[0]);
+    __register_global_object(first, fn_802B5AC0, &((InitArrayB59D4 *)base)[-1].storage[0]);
     second = (InitArrayB59D4 *)(base + 0x64);
     second->data = second->storage;
     second->capacity = 16;
