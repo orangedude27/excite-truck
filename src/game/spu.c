@@ -405,7 +405,7 @@ enum {
  * a fresh zeroed buffer into it, hand fn_802E4F98 to the AI DMA interrupt to
  * refill the voices, and arm the periodic alarm whose callback (fn_802E52EC)
  * feeds the Wii remote speakers. */
-/* Start the SPU voice layer: take all of ARAM as the mix buffer and invalidate its cache mirror, allocate the SpuSample/SpuChannel/Spucache pools, clear ARAM via a zeroed buffer, register fn_802E4F98 as the AI DMA refill callback, arm the periodic alarm (fn_802E52EC) that feeds the Wii Remote speakers, and mark SPU running. */ void fn_802E5478(void) {
+void fn_802E5478(void) {
     extern char lbl_8034D210[];
     extern int lbl_8055FF7C, lbl_8055FF80, lbl_8055FF84, lbl_8055FF88;
     extern void *lbl_8055FFB0;
