@@ -94,10 +94,10 @@ s32 fn_80127538(void) {
     return 1;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 /* Stop the profiler's elapsed-time callback and print the accumulated profiler counters report,
  * or return immediately if none were recorded. */
-void fn_801275AC(void) {
+void Profiler_PrintCountersReport(void) {
     const char *messages = lbl_80329E30;
     s32 *counter;
     s32 index;
@@ -124,6 +124,7 @@ void fn_8012766C(void) {
     u8 *r5;
     s32 i;
     s32 idx;
+    void (**cb)(s32);
     struct CB { void (**p)(s32); int n; } c;
 
     for (i = 0; i < 2; i++) {
@@ -185,7 +186,8 @@ void fn_8012766C(void) {
     lbl_8055DF28 = 0;
     lbl_8055DF38 = 0;
 
-    for (idx = 0; idx < 14; idx += 7) {
+    idx = 0;
+    for (i = 0; i < 2; i++, idx += 7) {
         if (r5[0x00] != 0) **(u32**)(r5 + 0x24) = 0;
         if (r5[0x2C] != 0) **(u32**)(r5 + 0x50) = 0;
         if (r5[0x58] != 0) **(u32**)(r5 + 0x7C) = 0;
