@@ -189,15 +189,12 @@ int fn_801B81E0(void *__restrict arg0) {
 
 #pragma push
 #pragma cplusplus on
-#pragma scheduling invalid_target
 #pragma dont_inline on
-#pragma scheduling on
 extern "C" void fn_801B826C(void *arg0) {
+    int value = *(int *)((char *)arg0 + 0x3E8);
     void *object;
     void *manager;
-    int value;
 
-    value = *(int *)((char *)arg0 + 0x3E8);
     lbl_8055E74C = value;
     if (value & 0x200) {
         lbl_8055E744 = (void *)fn_801B81E0(arg0);
@@ -211,6 +208,7 @@ extern "C" void fn_801B826C(void *arg0) {
     manager = fn_8001285C(*(int *)((char *)arg0 + 0x3E4));
     object = *(void **)((char *)manager + 0x20);
     lbl_8055A910 = ((Dummy_801B826C *)object)->d10(lbl_8033677C, lbl_80562740);
+object = 0;
     lbl_8055E748 = 0;
     fn_80161618();
     lbl_8055E750 = lbl_80562744;
