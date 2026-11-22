@@ -530,7 +530,7 @@ extern "C" s32 fn_80157278(s32 carIndex) {
 #pragma scheduling on
 struct VObj;
 extern "C" void fn_80157560(VObj*);
-extern "C" s32 fn_80157558(void*);
+extern "C" s32 PtrArray_GetCount(void*);
 extern "C" s32 fn_8015782C(s32*, s32);
 extern "C" void* fn_8015783C(void*, s32, s32);
 extern "C" void* fn_801579F4(void*, s32, s32);
@@ -625,7 +625,7 @@ extern "C" void* fn_801572A4(s32 configPtr, s32 courseIndex, s32 initValue) {
         ringTracker = tracker;
         fn_80158280(group + 4, (s32*)&ringTracker);
         s32 index = 0;
-        while (index < fn_80157558(group + 4)) {
+        while (index < PtrArray_GetCount(group + 4)) {
             fn_80157560(*(VObj**)(u32)fn_8015782C((s32*)(group + 4), index));  /* its stunt table */
             index++;
         }
@@ -635,8 +635,12 @@ extern "C" void* fn_801572A4(s32 configPtr, s32 courseIndex, s32 initValue) {
     return group;
 }
 
-/* Get the element count stored at +4 in an array holder. */
 extern "C" s32 fn_80157558(void* arrayHolder) {
+    return *(s32*)((u8*)arrayHolder + 4);
+}
+
+/* Get the element count stored at +4 in an array holder. */
+extern "C" s32 PtrArray_GetCount(void* arrayHolder) {
     return *(s32*)((u8*)arrayHolder + 4);
 }
 
@@ -2125,7 +2129,7 @@ skip_reset:
         f32 threshold, speed;
         speed = *(f32*)(player+0x258c);
         threshold = lbl_8056175C;
-        int flag = 1;
+        s32 flag = 1;
         *(s32*)(p+0x2cc) = 0;
         p[0x2d0] = 1;
         bool running = speed > threshold;
@@ -2165,7 +2169,7 @@ skip_reset:
                 ++*(s32*)(p+0x264);
                 ++*(s32*)(p+0x260);
                 *(f32*)(p+0x254) = *(f32*)(p+0x250);
-                *(f32*)(p+0x25c) = full;
+                *(f32*)(p+0x25c) = (s32)full;
                 ((Fn8015889C*)a)->v32();
                 if (*(s32*)(p+0x248) && *(void**)(p+0x268))
                     *(s32*)((u8*)*(void**)(p+0x268)+8) = 0;
@@ -2623,7 +2627,7 @@ extern "C" f32 fn_8015AE18(void *a, const void *arg1) {
             *(f32 *)(p + 0x25c) = f;
             self->v32();
             if (*(s32 *)(p + 0x248) != 0 && *(void **)(p + 0x268) != 0) {
-                *(s32 *)(*(u8 **)(p + 0x268) + 8) = zero;
+                *(s32 *)(*(u8 **)(p + 0x268) + 8) = (unsigned)zero;
             }
         }
     }
@@ -2633,7 +2637,7 @@ extern "C" f32 fn_8015AE18(void *a, const void *arg1) {
         *(s32 *)(p + 0x274) = 1;
     }
     if (*(f32 *)(p + 0x270) > lbl_805617A8) {
-        register s32 n = *(const s32 *)((const u8 *)p + 0x278);
+        register s32 n = *(s32 *)(p + 0x278);
         *(s32 *)(p + 0x274) = zero;
         if (n > 0) {
             fn_801CB6E4((void *)0x50204, *(s32 *)(p + 4));
