@@ -180,7 +180,7 @@ void fn_802D4060(void *arg0) {
         for (i = 0; i < count; i++) {
             u8 a, b, c, d;
             f32 weight1, weight2;
-            f32 *direction;
+            f32 *direction, *direction2;
             f32 x, y, z;
             a = src[0xE];
             b = src[0xC];
@@ -264,56 +264,6 @@ void fn_802D42E4(void *arg0) {
         for (i = 0; i < count; i++) {
             u8 a, b, c, d;
             f32 weight1, weight2;
-            f32 *dirA, *dirB;
-            f32 x, y, z;
-            a = src[0xE];
-            b = src[0xC];
-            dirA = (f32 *)((u8 *)directions + b * 12);
-            weight1 = factor * (f32)a;
-            c = src[0xD];
-            d = src[0xF];
-            weight2 = factor * (f32)d;
-            x = *(f32 *)((u8 *)src + 0x0) + dirA[0] * weight1;
-            out[0] = x;
-            y = *(f32 *)((u8 *)src + 0x4) + dirA[1] * weight1;
-            out[1] = y;
-            z = *(f32 *)((u8 *)src + 0x8) + dirA[2] * weight1;
-            out[2] = z;
-            dirB = (f32 *)((u8 *)directions + c * 12);
-            src += 0x10;
-            out[0] = x + dirB[0] * weight2;
-            out[1] = y + dirB[1] * weight2;
-            out[2] = z + dirB[2] * weight2;
-            out += 3;
-        }
-    }
-    GXSetArray(9, base, 12);
-    GXSetArray(0xA, *(void **)((u8 *)object + 0x24), 3);
-    GXSetArray(0xD, *(void **)((u8 *)object + 0x28), 4);
-    GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
-}
-#pragma dont_inline reset
-#pragma scheduling on
-#pragma pop
-
-#pragma opt_propagation off
-void fn_802D4458(void *arg0) {
-    extern s32 fn_802CFF64(s32);
-    extern f32 lbl_804DB068[];
-    extern f32 lbl_80564FF0;
-    register void *object = arg0;
-    register volatile u8 *src = *(u8 **)((u8 *)object + 0x20);
-    register s32 count = *(s32 *)((u8 *)object + 0x1C);
-    f32 *base = (f32 *)(u32)fn_802CFF64(count * 12);
-    s32 i;
-    if (base == 0) return;
-    {
-        f32 (*directions)[3] = (f32 (*)[3])lbl_804DB068;
-        f32 factor = lbl_80564FF0;
-        register volatile f32 *out = base;
-        for (i = 0; i < count; i++) {
-            u8 a, b, c, d;
-            f32 weight1, weight2;
             f32 *direction;
             f32 x, y, z;
             a = src[0xE];
@@ -334,6 +284,49 @@ void fn_802D4458(void *arg0) {
             out[0] = x + direction[0] * weight2;
             out[1] = y + direction[1] * weight2;
             out[2] = z + direction[2] * weight2;
+            out += 3;
+        }
+    }
+    GXSetArray(9, base, 12);
+    GXSetArray(0xA, *(void **)((u8 *)object + 0x24), 3);
+    GXSetArray(0xD, *(void **)((u8 *)object + 0x28), 4);
+    GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
+}
+#pragma dont_inline reset
+#pragma scheduling on
+#pragma pop
+
+#pragma opt_propagation off
+void fn_802D4458(void *arg0) {
+    extern s32 fn_802CFF64(s32);
+    extern f32 lbl_804DB068[];
+    register void *object = arg0;
+    register volatile u8 *src = *(u8 **)((u8 *)object + 0x20);
+    register s32 count = *(s32 *)((u8 *)object + 0x1C);
+    f32 *base = (f32 *)(u32)fn_802CFF64(count * 12);
+    s32 i;
+    if (base == 0) return;
+    {
+        register f32 *out = base;
+        for (i = 0; i < count; i++) {
+            u8 a, b, c, d;
+            f32 weight2, weight1;
+            f32 *dir;
+            a = src[0xE];
+            b = src[0xC];
+            dir = (f32 *)((u8 *)lbl_804DB068 + b * 12);
+            weight1 = (1.0f / 255.0f) * (f32)a;
+            c = src[0xD];
+            d = src[0xF];
+            weight2 = (1.0f / 255.0f) * (f32)d;
+            out[0] = *(f32 *)((u8 *)src + 0x0) + dir[0] * weight1;
+            out[1] = *(f32 *)((u8 *)src + 0x4) + dir[1] * weight1;
+            out[2] = *(f32 *)((u8 *)src + 0x8) + dir[2] * weight1;
+            dir = (f32 *)((u8 *)lbl_804DB068 + c * 12);
+            src += 0x10;
+            out[0] += dir[0] * weight2;
+            out[1] += dir[1] * weight2;
+            out[2] += dir[2] * weight2;
             out += 3;
         }
     }
@@ -1000,18 +993,19 @@ void fn_802D5DE8(u32 flags) {
     GXSetVtxDescv(vtxDescList);
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma dont_inline on
 void fn_802D5F88(s32 arg0) {
-    register u32 flags = *(u32 *)((u8 *)arg0 + 0xC);
-    u32 normalized = flags & 0xFFCFFFFF;
-    u8 mode = *(u8 *)((u8 *)arg0 + 9);
+    u8 *base = (u8 *)arg0;
+    u32 normalized = *(u32 *)(base + 0xC) & 0xFFCFFFFF;
+    u8 mode = base[9];
     if (normalized != lbl_8055FDE8) {
-        GXCallDisplayList(*(void **)((u8 *)arg0 + 0x10), (u32)*(u8 *)((u8 *)arg0 + 0xB) << 5);
+        GXCallDisplayList(*(void **)(base + 0x10), (u32)base[0xB] << 5);
         lbl_8055FDE8 = normalized;
         lbl_8055FDEC = mode;
     }
 }
+#pragma scheduling invalid_target
 
 #pragma push
 #pragma dont_inline on
@@ -1293,7 +1287,7 @@ void fn_802D65F8(s32 arg0, s32 arg1) {
     e=bytes[0x30]; f=bytes[0x33]; g=bytes[0x31]; h=bytes[0x32];
     bytes[0x2C]=b; bytes[0x2F]=a; bytes[0x2D]=d; bytes[0x2E]=c;
     bytes[0x30]=f; bytes[0x33]=e; bytes[0x31]=h; bytes[0x32]=g;
-    ((void (*)(s32 *, s32, u8, u8, u8, u8, u8, u8))fn_802D657C)((s32 *)((u8 *)bytes+0x30),arg1,f,d,b,a,e,c);
+    ((void (*)(s32 *, s32, u8, u8, u8, u8, u8, u8))fn_802D657C)((s32 *)((u8 *)arg0+0x30),arg1,f,d,b,a,e,c);
     if((s8)bytes[8]==0x1A) fn_802D6594((void *)bytes);
     if(bytes[8]==0x13) {
         entries=*(u8 **)(bytes+0x20);
