@@ -4923,11 +4923,11 @@ u16 UUSB_Write(s32 arg0, u8 *arg1, u16 arg2, BT_HDR *arg3) {
     extern s32 IUSB_WriteCtrlMsgAsync(s32, s32, s32, s32, s32, u32, void *, void *, void *);
     extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
     s32 ret = 0;
-    uusb_cb_t *cb;
-    u16 i;
-    BT_HDR *buf;
-    u8 *data;
     char *report = lbl_803142C8;
+    uusb_cb_t *cb;
+    u8 *data;
+    BT_HDR *buf;
+    u16 i;
     if (((u8 *)&lbl_803BD1E0)[0x29] != 2) {
         if (lbl_803BD1E0.at_0x28) OSReport(report + 0x8d0);
         return 0;
@@ -4944,8 +4944,8 @@ u16 UUSB_Write(s32 arg0, u8 *arg1, u16 arg2, BT_HDR *arg3) {
     if (arg0 == 0) goto control;
     goto done;
 control:
-        cb = &lbl_803BD1E0;
         buf = GKI_getpoolbuf(((u8 *)cb)[0x1c]);
+        cb = &lbl_803BD1E0;
         if (buf == 0) {
             if (cb->at_0x28) OSReport(report + 0x958);
             return 0;
@@ -6801,24 +6801,19 @@ void bta_hh_api_disable(void) {
 
 #pragma scheduling 750
 void bta_hh_disc_cmpl(void) {
-    s8 status = 0;
-    u8 *base;
-    u32 i;
+    UINT8 deviceIndex;
+    UINT8 status;
+    void (*disableCb)(int, void *);
 
-    if (HID_HostDeregister() == 0) {
-        return;
-    }
-    status = 6;
-    i = 0;
-    base = lbl_803C0D48;
-    do {
-        fn_800716F0(base + ((u32)(u8)i << 5) + 0x14);
-        i++;
-    } while (i < 16);
-    base = lbl_803C0D48;
-    fn_800716F0(base + 0x228);
-    (*(void (**)(u32, void *))(base + 0x224))(1, &status);
-    memset(base, 0, 0x230);
+    status = 0;
+    if (HID_HostDeregister() != HID_SUCCESS)
+        status = 6;
+    for (deviceIndex = 0; deviceIndex < 0x10; deviceIndex++)
+        fn_800716F0(lbl_803C0D48 + deviceIndex * 0x20 + 0x14);
+    fn_800716F0(lbl_803C0D48 + 0x228);
+    disableCb = *(void (**)(int, void *))(lbl_803C0D48 + 0x224);
+    (*disableCb)(1, &status);
+    memset(lbl_803C0D48, 0, 0x230);
 }
 extern u8 bta_hh_tod_spt(void *, u8);
 /* SDP callback for HID host: on success, ensures device type is supported, adds the
@@ -22829,7 +22824,7 @@ void RFCOMM_ConnectInd(BD_ADDR bd_addr, UINT16 lcid, UINT16 psm, UINT8 id) {
 #pragma push
 #pragma opt_propagation off
 void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
-    int index = (s32)arg0 - 0x40;
+    s32 index = (s32)arg0 - 0x40;
     char *trace_msg = lbl_803196B8;
     u16 lcid = arg0;
     void *port;
@@ -22847,7 +22842,7 @@ void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
             if (port_lcid != lcid) {
                 if (lbl_803C4828[0x414] >= 2)
                     fn_8007096C(0x90001, trace_msg + 0x1C, lcid, port_lcid);
-                port = (u32)NULL;
+                port = NULL;
             }
         }
     }
