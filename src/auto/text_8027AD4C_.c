@@ -15,6 +15,10 @@ typedef struct EntryWordPair {
     long a;
     long b;
 } EntryWordPair;
+/* 0x64-byte tail block copied between adjacent item records. */
+typedef struct TailBlock {
+    char b[0x64];
+} TailBlock;
 long fn_8027B8E4(void *, long);
 void *fn_8027B834(void *);
 long fn_8027B984(void *, long);
@@ -388,8 +392,8 @@ process_item:
                         char *base2 = *(char **)(self + 8);
                         char *dst = base2 + index * 0x1F4;
                         char *src = base2 + last * 0x1F4;
-                        long j;
                         long offset;
+                        long j;
                         dst[4] = src[4];
                         *(long *)(dst + 8) = *(long *)(src + 8);
                         *(long *)(dst + 0xC) = *(long *)(src + 0xC);
@@ -464,13 +468,14 @@ process_item:
                         {
                             char *d = dst + 0x18B;
                             char *s = src + 0x18B;
-                            j = 0x32;
+                            unsigned long k;
+                            k = 0x32;
                             do {
                                 d[1] = s[1];
                                 d[2] = s[2];
                                 d += 2;
                                 s += 2;
-                            } while (--j != 0);
+                            } while (--k != 0);
                         }
                         dst[0x1F0] = src[0x1F0]; dst[0x1F1] = src[0x1F1];
                         dst[0x1F2] = src[0x1F2]; dst[0x1F3] = src[0x1F3];
@@ -1245,7 +1250,6 @@ void *fn_8027C41C(void *registry, long context) {
     return registry;
 }
 
-#pragma push
 #pragma scheduling priority
 long fn_8027C4B4(long arg0, long arg1) {
     long offset;
@@ -1287,7 +1291,6 @@ long fn_8027C4B4(long arg0, long arg1) {
     }
     return arg0;
 }
-#pragma pop
 /* Acquire the shared EventPathOracle (contest/event path table), creating and
  * initializing it on first use and tracking active users with a refcount. */
 void fn_8027C59C(long context) {
