@@ -144,8 +144,8 @@ s32 fn_80297354(void *arg0, void *arg1) {
         defaults.x = lbl_80564578;
         defaults.y = lbl_80564578;
         defaults.z = lbl_80564578;
-        copy = defaults;
         *(float *)arg0 = initial;
+        copy = defaults;
         ((void (*)(struct Vec3 *, void *, char *, struct Vec3 *))(*(void **)((char *)*(void **)arg1 + 0x38)))(&value, arg1, lbl_8055CA50, &copy);
         *(float *)((char *)arg0 + 4) = value.x;
         *(float *)((char *)arg0 + 8) = value.y;
@@ -199,66 +199,66 @@ extern char lbl_803493B4[];
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma cplusplus on
-extern "C" void *fn_802974CC(void *arg0) {
+/* Builds an FXSequence from the "seq" nodes of a parsed value file: counts matching nodes, allocates the header and 0x18-byte node array, fills each entry via fn_80297354, caches the maximum end time, and frees everything if an entry fails. */ extern "C" void *fn_802974CC(void *path) {
     class Iterator {
     public:
         virtual void v0();
         virtual void *get(s32);
     };
-    s32 count;
-    void *result;
+    s32 seqCount;
+    void *sequence;
     void *iterator;
-    void *item;
-    void *storage;
+    void *node;
+    void *nodesStorage;
     s32 firstIndex;
-    s32 total;
-    result = 0;
+    s32 nodesSize;
+    sequence = 0;
     if (fn_8012C33C() != 0) {
-        iterator = fn_80131808(arg0);
-        count = 0;
+        iterator = fn_80131808(path);
+        seqCount = 0;
         firstIndex = 0;
         for (;;) {
-            item = ((Iterator *)iterator)->get(firstIndex);
-            if (item == 0)
+            node = ((Iterator *)iterator)->get(firstIndex);
+            if (node == 0)
                 break;
             firstIndex++;
-            if (fn_80297450(item) != 0)
-                count++;
+            if (fn_80297450(node) != 0)
+                seqCount++;
         }
-        if (count != 0) {
-            result = fn_801284F8(0xC, lbl_803493A8);
-            *(s32 *)((u8 *)result + 4) = count;
-            total = count * 0x18;
-            storage = fn_8012850C(total + 0x10, lbl_803493B4, total);
-            *(void **)result = fn_8002F37C(storage, (void *)fn_802976D0, (void *)fn_80297654, 0x18, count);
+        if (seqCount != 0) {
+            sequence = fn_801284F8(0xC, lbl_803493A8);
+            *(s32 *)((u8 *)sequence + 4) = seqCount;
+            nodesSize = seqCount * 0x18;
+            nodesStorage = fn_8012850C(nodesSize + 0x10, lbl_803493B4, nodesSize);
+            *(void **)sequence = fn_8002F37C(nodesStorage, (void *)fn_802976D0, (void *)fn_80297654, 0x18, seqCount);
             {
-                s32 offset = 0;
-                s32 valid = 1;
-                s32 secondIndex = 0;
-                while (secondIndex < firstIndex) {
-                    arg0 = ((Iterator *)iterator)->get(secondIndex);
-                    if (fn_80297450(arg0) != 0) {
-                        void *entry = (u8 *)*(void **)result + offset;
-                        offset += 0x18;
-                        if (fn_80297354(entry, arg0) == 0) {
-                            valid = 0;
+                s32 writeOffset = 0;
+                s32 allValid = 1;
+                s32 srcIndex = 0;
+                while (srcIndex < firstIndex) {
+                    path = ((Iterator *)iterator)->get(srcIndex);
+                    if (fn_80297450(path) != 0) {
+                        void *entry = (u8 *)*(void **)sequence + writeOffset;
+                        writeOffset += 0x18;
+                        if (fn_80297354(entry, path) == 0) {
+                            allValid = 0;
                             break;
                         }
                     }
-                    secondIndex++;
+                    srcIndex++;
                 }
-                if (valid != 0)
-                    *(float *)((u8 *)result + 8) = fn_8029748C(result);
+                if (allValid != 0)
+                    *(float *)((u8 *)sequence + 8) = fn_8029748C(sequence);
                 else {
-                    fn_8002F6AC(*(s32 *)result, (void *)fn_80297654);
-                    fn_80128668(result);
-                    result = 0;
+                    fn_8002F6AC(*(s32 *)sequence, (void *)fn_80297654);
+                    fn_80128668(sequence);
+                    sequence = 0;
                 }
             }
         }
         fn_80131818(iterator);
     }
-    return result;
+    return sequence;
 }
 #pragma cplusplus reset
 #pragma dont_inline reset
