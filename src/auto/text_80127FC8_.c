@@ -5,6 +5,8 @@ extern void fn_8000D838(void *);
 extern unsigned char lbl_8041E098[];
 extern unsigned char lbl_8055DF68;
 #pragma scheduling invalid_target
+#pragma opt_unroll_loops off
+#pragma ctrloop on
 void fn_80127FC8(void) {
     unsigned char *end;
     unsigned char *p;
@@ -30,16 +32,16 @@ void fn_80127FC8(void) {
     *(int *)(lbl_8041E098 + 0xC) = 0;
     lbl_8041E098[0x14] = 0;
 
-    if ((unsigned long)p < (unsigned long)end) {
+    if (p < end) {
         start = lbl_8041E098 + 0x18;
-        length = (int)((unsigned long)end - (unsigned long)start);
+        length = (int)(end - start);
         rounded = (length + 0xF) / 16;
         countPlusOne = rounded + 1;
         bulkEnd = lbl_8041E098 + 0x28;
         if (countPlusOne > 8) {
             bulkOK = 0;
             rangeOK = 0;
-            if ((unsigned long)start <= (unsigned long)end) {
+            if (start <= end) {
                 signLength = 1;
                 if (!(signLength & (int)0x80000000) && ((length + 0xF) & (int)0x80000000)) {
                     signLength = 0;
@@ -59,8 +61,10 @@ void fn_80127FC8(void) {
                 }
             }
             if (bulkOK != 0) {
-                bulkCount = (unsigned int)(((unsigned long)bulkEnd + 0x7F - (unsigned long)p) >> 7);
-                if ((unsigned long)p < (unsigned long)bulkEnd) {
+                bulkCount = (unsigned int)((bulkEnd + 0x7F) - p) >> 7;
+                if (p < bulkEnd) {
+#pragma ctrloop on
+#pragma unroll off
                     do {
                         *(int *)(p + 8) = 0;
                         *(int *)(p + 0) = 0;
@@ -101,8 +105,10 @@ void fn_80127FC8(void) {
             }
         }
         tailEnd = lbl_8041E098 + 0xA8;
-        tailCount = (unsigned int)(((unsigned long)tailEnd + 0xF - (unsigned long)p) >> 4);
-        if ((unsigned long)p < (unsigned long)tailEnd) {
+        tailCount = (unsigned int)((tailEnd + 0xF) - p) >> 4;
+        if (p < tailEnd) {
+#pragma ctrloop on
+#pragma unroll off
             do {
                 *(int *)(p + 8) = 0;
                 *(int *)(p + 0) = 0;
