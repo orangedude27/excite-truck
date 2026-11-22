@@ -561,7 +561,7 @@ extern "C" void *lbl_8055E454;
 extern "C" void fn_80179D8C(void *, int);
 extern "C" long fn_802E317C(const char *, long, ...);
 #pragma cplusplus on
-extern "C" void **fn_801783A8(int *arg0, int arg1) {
+/* Create a stream-loaded game object from a serialized data block. Look up the provider registered for the four-character id at the head of the block, call its factory, record the block size on the new object and invoke its block-reading virtual method; panic with a formatted error if no provider or factory exists, or creation fails. */ extern "C" void **fn_801783A8(int *dataBlock, int blockSize) {
     struct Provider {
         int id;
         int reserved;
@@ -571,26 +571,26 @@ extern "C" void **fn_801783A8(int *arg0, int arg1) {
         virtual void run(int *);
     };
     struct Provider *provider;
-    char *table;
+    char *errorMessages;
     void **object;
     object = 0;
-    table = jumptable_803318F8;
-    lbl_8055E454 = arg0;
-    provider = (struct Provider *)fn_80178374(*arg0);
+    errorMessages = jumptable_803318F8;
+    lbl_8055E454 = dataBlock;
+    provider = (struct Provider *)fn_80178374(*dataBlock);
     if (provider != 0) {
         if (provider->create != 0) {
             object = provider->create();
             if (object != 0) {
-                fn_80179D8C(object, arg1);
-                ((struct Handler *)object)->run(arg0);
+                fn_80179D8C(object, blockSize);
+                ((struct Handler *)object)->run(dataBlock);
             } else {
-                fn_802E317C(table + 0xF4, (long)fn_801781F4(*arg0));
+                fn_802E317C(errorMessages + 0xF4, (long)fn_801781F4(*dataBlock));
             }
         } else {
-            fn_802E317C(table + 0x110, (long)fn_801781F4(*arg0));
+            fn_802E317C(errorMessages + 0x110, (long)fn_801781F4(*dataBlock));
         }
     } else {
-        fn_802E317C(table + 0x134, (long)fn_801781F4(*arg0));
+        fn_802E317C(errorMessages + 0x134, (long)fn_801781F4(*dataBlock));
     }
     lbl_8055E454 = 0;
     return object;
@@ -1078,7 +1078,7 @@ void fn_80178DD4(int arg0) {
     field = (int *)&lbl_8055E428;
     fn_80129C80(5, lbl_8055E428, field[1]);
 
-    var_r28 = (int)base;
+    var_r28 = (int)(base + 0);
     var_r27 = (int)(base + 0x10);
     var_r26 = 0;
     var_r31 = -1;
@@ -1145,8 +1145,7 @@ void fn_80178DD4(int arg0) {
     fn_80129C80(4, lbl_8055E418, field[1]);
     field = (int *)&lbl_8055E420;
     fn_80129C80(3, lbl_8055E420, field[1]);
-    field = (int *)&lbl_8055E428;
-    fn_80129C80(5, lbl_8055E428, field[1]);
+    fn_80129C80(5, lbl_8055E428, *(int *)((char *)&lbl_8055E428 + 4));
     fn_80127464(); fn_80179320();
 }
 #pragma pop
@@ -1593,8 +1592,8 @@ void *fn_80179824(void) {
     extern void *lbl_8055E444;
     extern float lbl_80561B6C;
     extern float lbl_8055E3C8;
-    register int *tbl = lbl_80430590;
-    register char *p = (char *)lbl_8055E450;
+    int *tbl = lbl_80430590;
+    char *p = (char *)lbl_8055E450;
     char *arg;
     char *q;
     int *e;
@@ -1630,7 +1629,7 @@ void *fn_80179824(void) {
         scale = lbl_80561B60;
         center = lbl_8055E3C8;
         diff = top - bottom;
-        *(float *)p = scale * diff + center;
+        *(float *)p = center + scale * diff;
     }
     for (k = 0; k < lbl_8055E438; k++) {
         void **o = ((void ***)lbl_8055E434)[k];
