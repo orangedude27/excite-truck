@@ -2641,8 +2641,8 @@ void fn_8006AED4(s32 arg0) {
         return;
     }
     L.length = (u8)(lbl_8055DC44 >= 0xFB ? 0xFB : lbl_8055DC44);
-    header = lbl_8055DC3C;
     packet[0] = (u8)header;
+    header = lbl_8055DC3C;
     packet[1] = (u8)(header >> 8);
     packet[2] = (u8)(header >> 16);
     packet[3] = (u8)(header >> 24);
@@ -7855,8 +7855,9 @@ BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
     UINT8 max_devt = lbl_80559030[0];
     UINT8 cod = (sub_class >> 2) & 0x3F;
     UINT8 xx;
+    UINT8 *p_list;
     for (xx = 0; xx < max_devt; xx++) {
-        UINT8 *p_list = *(UINT8 **)(lbl_80559030 + 4);
+        p_list = *(UINT8 **)(lbl_80559030 + 4);
         if (cod == p_list[xx * 2]) {
             ((UINT8 *)p_cb)[0x15] = p_list[xx * 2 + 1];
             return TRUE;
