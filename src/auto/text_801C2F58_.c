@@ -2073,26 +2073,12 @@ void fn_801C7964(void) {
     dst->z = src->z;
 }
 #pragma scheduling on
-static inline void sndvec_copy(Vec *dst, const Vec *src) {
-    dst->x = src->x;
-    dst->y = src->y;
-    dst->z = src->z;
-}
-
 funcptr_t fn_801C7990(void) {
     Unk_80437D88 *s = &lbl_80437D88;
-    u32 base = (u32)s;
-    Vec *src = (Vec *)(base + 0x4E0);
-    Vec *dst1 = (Vec *)(base + 0x6F8);
-    Vec *dst2 = (Vec *)(base + 0x4D4);
 
-    dst1->x = s->f_4E0.x;
-    dst1->y = src->y;
-    dst1->z = src->z;
+    sndvec_copy(&s->f_6F8, &s->f_4E0);
     lbl_8055E83B = 1;
-    dst2->x = s->f_4E0.x;
-    dst2->y = src->y;
-    dst2->z = src->z;
+    sndvec_copy(&s->f_4D4, &s->f_4E0);
     lbl_8055E868 = fn_801C7964;
     return fn_801C7964;
 }
