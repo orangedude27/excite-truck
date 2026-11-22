@@ -17747,52 +17747,61 @@ extern "C" void fn_800C2DBC(s32 *arg0, s32 *arg1, s32 *arg2) {
 }
 
 extern "C" s32 lbl_8031D778[];
-extern "C" void fn_800C2F98(s32 *in, s32 *out, s32 *negOut) {
-    const s32 *k = lbl_8031D778;
-    s32 zero = 0;
-    s32 value;
-    s32 coefficient;
-    s32 result;
-    s32 negative;
-    s64 product;
-    s64 second;
-
-    value = in[0]; out[0] = value; negOut[0] = zero;
-    value = in[1]; out[1] = value; negOut[-1] = zero;
-    value = in[2]; out[2] = value; negOut[-2] = zero;
-    value = in[3]; out[3] = value; negOut[-3] = zero;
-    value = in[4]; out[4] = value; negOut[-4] = zero;
-    value = in[5]; out[5] = value; negOut[-5] = zero;
-
-    s32 sample = in[6];
-    coefficient = *k++;
-    product = (s64)sample * coefficient;
-    coefficient = *k++;
-    second = (s64)sample * coefficient;
-    result = (s32)(product >> 20);
-    negative = (s32)(second >> 20);
-    out[6] = result;
-    negOut[-6] = negative;
-
-    value = in[7];
-    coefficient = *k++;
-    product = (s64)value * coefficient;
-    coefficient = *k++;
-    second = (s64)value * coefficient;
-    result = (s32)(product >> 20);
-    negative = (s32)(second >> 20);
-    out[7] = result;
-    negOut[-7] = negative;
-
-    value = in[8];
-    coefficient = *k++;
-    product = (s64)value * coefficient;
-    coefficient = *k++;
-    second = (s64)value * coefficient;
-    result = (s32)(product >> 20);
-    negative = (s32)(second >> 20);
-    out[8] = result;
-    negOut[-8] = negative;
+extern "C" void fn_800C2F98(s32 *in, s32 *out, s32 *negOut)
+{
+  const s32 *k = lbl_8031D778;
+  s32 zero = 0;
+  s32 value;
+  s32 coefficient;
+  s32 negative;
+  s32 result;
+  s64 product;
+  s64 second;
+  value = in[0];
+  out[0] = value;
+  negOut[0] = zero;
+  value = in[1];
+  out[1] = value;
+  negOut[-1] = 0;
+  value = in[2];
+  out[2] = value;
+  negOut[-2] = 0;
+  value = in[3];
+  out[3] = value;
+  negOut[-3] = 0;
+  value = in[4];
+  out[4] = value;
+  negOut[-4] = 0;
+  value = in[5];
+  out[5] = value;
+  negOut[-5] = 0;
+  s32 sample = in[6];
+  coefficient = *(k++);
+  product = ((s64) sample) * coefficient;
+  coefficient = *(k++);
+  second = ((s64) sample) * coefficient;
+  result = (s32) (product >> 20);
+  negative = (s32) (second >> 20);
+  out[6] = result;
+  negOut[-6] = negative;
+  value = in[7];
+  coefficient = *(k++);
+  product = ((s64) value) * coefficient;
+  coefficient = *(k++);
+  second = ((s64) value) * coefficient;
+  result = (s32) (product >> 20);
+  negative = (s32) (second >> 20);
+  out[7] = result;
+  negOut[-7] = negative;
+  value = in[8];
+  coefficient = *(k++);
+  product = ((s64) value) * coefficient;
+  coefficient = *(k++);
+  second = ((s64) value) * coefficient;
+  result = (s32) (product >> 20);
+  negative = (s32) (second >> 20);
+  out[8] = result;
+  negOut[-8] = negative;
 }
 
 extern "C" const s32 lbl_8031D790[];
