@@ -5556,7 +5556,7 @@ void fn_80070FA4(void *dst_addr, const void *src_addr) {
 s32 bdcmp(u8 *arg0, u8 *arg1) {
     int i;
     for (i = 0; i < 6; i++) {
-        if (arg0[i] != arg1[i]) return -1;
+        if (*arg0++ != *arg1++) return -1;
     }
     return 0;
 }
@@ -22829,7 +22829,7 @@ void RFCOMM_ConnectInd(BD_ADDR bd_addr, UINT16 lcid, UINT16 psm, UINT8 id) {
 #pragma push
 #pragma opt_propagation off
 void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
-    s32 index = (s32)arg0 - 0x40;
+    int index = (s32)arg0 - 0x40;
     char *trace_msg = lbl_803196B8;
     u16 lcid = arg0;
     void *port;
@@ -22847,7 +22847,7 @@ void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
             if (port_lcid != lcid) {
                 if (lbl_803C4828[0x414] >= 2)
                     fn_8007096C(0x90001, trace_msg + 0x1C, lcid, port_lcid);
-                port = NULL;
+                port = (u32)NULL;
             }
         }
     }
