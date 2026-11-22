@@ -135,7 +135,7 @@ void fn_8025E034(void)
     DbgMenuItemSet(&items[3], lbl_80345828 + 0x34, 3, ctx.rows[1].name, 0, 0);
     DbgMenuItemSet(&items[4], lbl_80345828 + 0x40, 2, &ctx.rows[1].state, 0, 0);
     DbgMenuItemSet(&items[5], lbl_80345828 + 0x50, 3, ctx.rows[2].name, 0, 0);
-    DbgMenuItemSet(&items[6], lbl_80345828 + 0x5C, 2, &ctx.rows[2].state, 0);
+    DbgMenuItemSet(&items[6], lbl_80345828 + 0x5C, 2, &ctx.rows[2].state, 0, 0);
     DbgMenuItemSet(&items[7], lbl_80345828 + 0x6C, 3, ctx.rows[3].name, 0, 0);
     DbgMenuItemSet(&items[8], lbl_80345828 + 0x78, 2, &ctx.rows[3].state, 0, 0);
     DbgMenuItemSet(&items[9], lbl_80345828 + 0x88, 3, ctx.rows[4].name, 0, 0);
