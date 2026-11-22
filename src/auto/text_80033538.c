@@ -25,47 +25,45 @@ void fn_80033538(void *arg0, short arg1) {
     OSRestoreInterrupts(savedInterruptState);
 }
 
-#pragma opt_strength_reduction off
+#pragma opt_strength_reduction on
 void fn_80033584(void *arg0, void *arg1) {
     int state;
     unsigned int flags = 0;
-    unsigned short *in = (unsigned short *)arg1;
     unsigned short *out = (unsigned short *)((char *)arg0 + 0x14C);
+    unsigned short *in = (unsigned short *)arg1;
     unsigned short v;
+    struct Ptrs { unsigned short *d; unsigned short *s; } p;
     state = OSDisableInterrupts();
     v = in[0]; out[0] = v; if (v) flags |= 0x1;
-    {
-    unsigned short *s = in + 2;
-    unsigned short *d = out + 1;
-    v = in[1]; d[0] = v; if (v) flags |= 0x5;
-    v = s[0]; d[1] = v; if (v) flags |= 0x2;
-    v = s[1]; d[2] = v; if (v) flags |= 0x6;
-    v = s[2]; d[3] = v; if (v) flags |= 0x10000;
-    v = s[3]; d[4] = v; if (v) flags |= 0x50000;
-    v = s[4]; d[5] = v; if (v) flags |= 0x20000;
-    v = s[5]; d[6] = v; if (v) flags |= 0x60000;
-    v = s[6]; d[7] = v; if (v) flags |= 0x200000;
-    v = s[7]; d[8] = v; if (v) flags |= 0xA00000;
-    v = s[8]; d[9] = v; if (v) flags |= 0x400000;
-    v = s[9]; d[10] = v; if (v) flags |= 0xC00000;
-    v = s[10]; d[11] = v; if (v) flags |= 0x04000000;
-    v = s[11]; d[12] = v; if (v) flags |= 0x14000000;
-    v = s[12]; d[13] = v; if (v) flags |= 0x08000000;
-    v = s[13]; d[14] = v; if (v) flags |= 0x18000000;
-    v = s[14]; d[15] = v; if (v) flags |= 0x8;
-    v = s[15]; d[16] = v; if (v) flags |= 0x18;
-    v = s[16]; d[17] = v; if (v) flags |= 0x80000;
-    v = s[17]; d[18] = v; if (v) flags |= 0x180000;
-    v = s[18]; d[19] = v; if (v) flags |= 0x01000000;
-    v = s[19]; d[20] = v; if (v) flags |= 0x03000000;
-    v = s[20]; d[21] = v; if (v) flags |= 0x20000000;
-    v = s[21]; d[22] = v; if (v) flags |= 0x60000000;
-    }
+    p.d = out + 1;
+    p.s = in + 2;
+    v = in[1]; p.d[0] = v; if (v) flags |= 0x5;
+    v = p.s[0]; p.d[1] = v; if (v) flags |= 0x2;
+    v = p.s[1]; p.d[2] = v; if (v) flags |= 0x6;
+    v = p.s[2]; p.d[3] = v; if (v) flags |= 0x10000;
+    v = p.s[3]; p.d[4] = v; if (v) flags |= 0x50000;
+    v = p.s[4]; p.d[5] = v; if (v) flags |= 0x20000;
+    v = p.s[5]; p.d[6] = v; if (v) flags |= 0x60000;
+    v = p.s[6]; p.d[7] = v; if (v) flags |= 0x200000;
+    v = p.s[7]; p.d[8] = v; if (v) flags |= 0xA00000;
+    v = p.s[8]; p.d[9] = v; if (v) flags |= 0x400000;
+    v = p.s[9]; p.d[10] = v; if (v) flags |= 0xC00000;
+    v = p.s[10]; p.d[11] = v; if (v) flags |= 0x04000000;
+    v = p.s[11]; p.d[12] = v; if (v) flags |= 0x14000000;
+    v = p.s[12]; p.d[13] = v; if (v) flags |= 0x08000000;
+    v = p.s[13]; p.d[14] = v; if (v) flags |= 0x18000000;
+    v = p.s[14]; p.d[15] = v; if (v) flags |= 0x8;
+    v = p.s[15]; p.d[16] = v; if (v) flags |= 0x18;
+    v = p.s[16]; p.d[17] = v; if (v) flags |= 0x80000;
+    v = p.s[17]; p.d[18] = v; if (v) flags |= 0x180000;
+    v = p.s[18]; p.d[19] = v; if (v) flags |= 0x01000000;
+    v = p.s[19]; p.d[20] = v; if (v) flags |= 0x03000000;
+    v = p.s[20]; p.d[21] = v; if (v) flags |= 0x20000000;
+    v = p.s[21]; p.d[22] = v; if (v) flags |= 0x60000000;
     *(unsigned int *)((char *)arg0 + 0x144) = flags;
     *(unsigned int *)((char *)arg0 + 0x1C) |= 0x12;
     OSRestoreInterrupts(state);
 }
-#pragma opt_strength_reduction reset
 void fn_800337C4(void *object, void *value) {
     int enabled;
     /* Copies a 4-byte value into object fields 0x1AC/0x1AE and sets the update flag, with interrupts disabled. */
@@ -217,10 +215,8 @@ void fn_80033B74(void *vpb, short on, short yn1) {
     OSRestoreInterrupts(state);
 }
 
-#pragma scheduling invalid_target
 void AXGetLpfCoefs(unsigned int arg0, short *arg1, short *arg2) {
-    float input = (float)arg0;
-    float angle = (lbl_80560AF0 * input) / lbl_80560AF4;
+    float angle = (lbl_80560AF0 * (float)arg0) / lbl_80560AF4;
     float c = (float)cos((double)angle);
     float t = lbl_80560AEC - c;
     float v = (float)fn_8002F234(t * t - lbl_80560AF8);
@@ -228,7 +224,6 @@ void AXGetLpfCoefs(unsigned int arg0, short *arg1, short *arg2) {
     *arg2 = coef;
     *arg1 = 0x7fff - (unsigned short)coef;
 }
-#pragma scheduling on
 void fn_80033C8C(void *arg0, short arg1) {
 #define voiceParam arg0
 #define enable arg1
@@ -241,39 +236,38 @@ void fn_80033C8C(void *arg0, short arg1) {
 #undef enable
 }
 
-void fn_80033CD8(void *arg0, void *arg1) {
-    unsigned short flags;
-    unsigned short value;
-    unsigned short *dst;
-    unsigned short *src;
-    unsigned int bits;
-    flags = 0;
-    OSDisableInterrupts();
-    src = (unsigned short *)((char *)arg1 + 4);
-    dst = (unsigned short *)((char *)arg0 + 0x212);
-    value = *(unsigned short *)arg1; *(unsigned short *)((char *)arg0 + 0x210) = value; if (value) flags |= 1;
-    value = src[0]; dst[0] = value; if (value) flags |= 0x2;
-    value = src[1]; dst[1] = value; if (value) flags |= 0x4;
-    value = src[2]; dst[2] = value; if (value) flags |= 0x8;
-    value = src[3]; dst[3] = value; if (value) flags |= 0x10;
-    value = src[4]; dst[4] = value; if (value) flags |= 0x20;
-    value = src[5]; dst[5] = value; if (value) flags |= 0x40;
-    value = src[6]; dst[6] = value; if (value) flags |= 0x80;
-    value = src[7]; dst[7] = value; if (value) flags |= 0x100;
-    value = src[8]; dst[8] = value; if (value) flags |= 0x200;
-    value = src[9]; dst[9] = value; if (value) flags |= 0x400;
-    value = src[10]; dst[10] = value; if (value) flags |= 0x800;
-    value = src[11]; dst[11] = value; if (value) flags |= 0x1000;
-    value = src[12]; dst[12] = value; if (value) flags |= 0x2000;
-    value = src[13]; dst[13] = value; if (value) flags |= 0x4000;
-    value = src[14]; dst[14] = value; if (value) flags |= 0x8000;
+#pragma opt_strength_reduction off
+void fn_80033CD8(void *arg0, const void *arg1) {
+    int state;
+    unsigned short flags = 0;
+    unsigned short *out = (unsigned short *)((char *)arg0 + 0x210);
+    const unsigned short *in = (const unsigned short *)arg1;
+    unsigned short v;
+    state = OSDisableInterrupts();
+    v = in[0]; out[0] = v; if (v) flags |= 0x1;
+    {
+    unsigned short *d = out + 1;
+    const unsigned short *s = in + 2;
+    v = in[1]; d[0] = v; if (v) flags |= 0x2;
+    v = s[0]; d[1] = v; if (v) flags |= 0x4;
+    v = s[1]; d[2] = v; if (v) flags |= 0x8;
+    v = s[2]; d[3] = v; if (v) flags |= 0x10;
+    v = s[3]; d[4] = v; if (v) flags |= 0x20;
+    v = s[4]; d[5] = v; if (v) flags |= 0x40;
+    v = s[5]; d[6] = v; if (v) flags |= 0x80;
+    v = s[6]; d[7] = v; if (v) flags |= 0x100;
+    v = s[7]; d[8] = v; if (v) flags |= 0x200;
+    v = s[8]; d[9] = v; if (v) flags |= 0x400;
+    v = s[9]; d[10] = v; if (v) flags |= 0x800;
+    v = s[10]; d[11] = v; if (v) flags |= 0x1000;
+    v = s[11]; d[12] = v; if (v) flags |= 0x2000;
+    v = s[12]; d[13] = v; if (v) flags |= 0x4000;
+    v = s[13]; d[14] = v; if (v) flags |= 0x8000;
+    }
     *(unsigned short *)((char *)arg0 + 0x20e) = flags;
-    bits = *(unsigned int *)((char *)arg0 + 0x1c);
-    bits |= 0x06000000;
-    *(unsigned int *)((char *)arg0 + 0x1c) = bits;
-    OSRestoreInterrupts(0);
+    *(unsigned int *)((char *)arg0 + 0x1c) |= 0x06000000;
+    OSRestoreInterrupts(state);
 }
-
 void *__AXGetCurrentProfile(void)
 {
   /* Round-robin: return the current 0x38-byte AX profile and advance the index; null when profiling is disabled. */
