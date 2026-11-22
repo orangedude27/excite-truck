@@ -484,7 +484,7 @@ u32 fn_802E8D84(void) { return 1; }
  * own).  rmemcard_out_of_space is consumed here: only the first failure after
  * the module ran out of blocks asks for free space.
  */
-/* Read a whole NAND file into buf. Waits for the async NAND machine to idle, requires a valid banner.bin and an existing file, reads through the shared staging buffer when allocated, and runs the recovery handlers on any failure. Returns 1 on success, 0 otherwise. */ int fn_802E8D8C(const char *path, void *buf, int len) {
+/* Read a whole NAND file into buf. Waits for the async NAND machine to idle, requires a valid banner.bin and an existing file, reads through the shared staging buffer when allocated, and runs the recovery handlers on any failure. Returns 1 on success, 0 otherwise. */ /* Read a whole NAND file into buf. Waits for the async NAND machine to idle, requires a valid banner.bin and an existing file, reads through the shared staging buffer when allocated, and runs the recovery handlers on any failure. Returns 1 on success, 0 otherwise. */ int fn_802E8D8C(const char *path, void *buf, int len) {
     /* NANDFileInfo for the file (0x8C bytes, see revolution/NAND/nand.h);
      * the word in front of it is the one the exits test. */
     struct { int self; char info[0x8C]; } file;
