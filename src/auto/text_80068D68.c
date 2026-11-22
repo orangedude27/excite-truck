@@ -2635,14 +2635,14 @@ extern void fn_8006B044(tBTM_VSC_CMPL *);
 void fn_8006AED4(s32 arg0) {
     u8 packet[0x100];
     struct { s32 length; s32 i; } L;
-    u32 header;
+    register u32 header;
     if (arg0 == 0) {
         fn_8006B330();
         return;
     }
     L.length = (u8)(lbl_8055DC44 >= 0xFB ? 0xFB : lbl_8055DC44);
-    packet[0] = (u8)header;
     header = lbl_8055DC3C;
+    packet[0] = (u8)header;
     packet[1] = (u8)(header >> 8);
     packet[2] = (u8)(header >> 16);
     packet[3] = (u8)(header >> 24);
@@ -4741,7 +4741,7 @@ void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
     register u8 *control;
-    register int status = arg0;
+    int status = arg0;
     register char *report = lbl_803142C8;
     u16 offset;
     if (lbl_803BD1E0.at_0x28 != 0) {
@@ -4752,8 +4752,8 @@ void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
     }
     if (arg1 != 0) {
         GKI_freebuf((void *)arg1);
-        ((u8 *)&lbl_803BD1E0)[0x38] = ((u8 *)&lbl_803BD1E0)[0x38] - 1;
         fn_8006EBAC();
+        ((u8 *)&lbl_803BD1E0)[0x38] = ((u8 *)&lbl_803BD1E0)[0x38] - 1;
         fn_8006EB88();
     }
     {
@@ -4810,72 +4810,94 @@ s32 uusb_get_devId(u32 vendorId, u32 productId) {
     return deviceId;
 }
 
-void UUSB_Register(tUUSB *uusb) {
-    extern u8 lbl_8055DC5C;
-    extern s32 lbl_8055DC60;
-    extern s32 lbl_8055DC64;
-    extern s32 lbl_80558FF0;
-    register char *report = lbl_803142C8;
-    register u8 *c = (u8 *)&lbl_803BD1E0;
-    u8 pool0;
-    u8 pool1;
+void UUSB_Register(tUUSB* uusb)
+{
+    IPCResult ret = 0;
 
-    memset(&lbl_803BD1E0, 0, 0x4C);
+    memset(&lbl_803BD1E0, 0, sizeof lbl_803BD1E0);
+
     fn_8006EBAC();
-    c[0x29] = 5;
+
+    lbl_803BD1E0.state = 5;
+
     fn_8006EB88();
-    if (lbl_8055DC51 == 0) {
-        c[0x28] = 0;
-        lbl_8055DC51 = 1;
-    }
-    if (IPCCltInit() != 0) {
-        if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x670);
+
+    if (!lbl_8055DC51)
+        uusb_set_trace_state(0);
+
+    ret = IPCCltInit();
+    if (ret != 0)
+    {
+        UUSBDBG0("HCISU_ERR: UUSB_Register: ERROR - failed IPCCltInit\n");
         return;
     }
-    if (IUSB_OpenLib() != 0) {
-        if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x6A8);
+
+    ret = IUSB_OpenLib();
+    if (ret != 0)
+    {
+        UUSBDBG0("HCISU_ERR: UUSB_Register: ERROR - failed IUSB_OpenLib\n");
         return;
     }
-    *(tUUSB **)((u8 *)&lbl_803BD1E0 + 0x24) = uusb;
-    if (lbl_8055DC5C == 1) {
-        *(s32 *)((u8 *)&lbl_803BD1E0 + 0x14) = lbl_8055DC60;
-        *(s32 *)((u8 *)&lbl_803BD1E0 + 0x18) = lbl_8055DC64;
-    } else {
-        *(s32 *)((u8 *)&lbl_803BD1E0 + 0x14) = 0x57E;
-        *(s32 *)((u8 *)&lbl_803BD1E0 + 0x18) = 0x305;
+
+    lbl_803BD1E0.p_uusb_cfg = uusb;
+
+    if (lbl_8055DC5C == TRUE)
+    {
+        lbl_803BD1E0.vid = lbl_8055DC60;
+        lbl_803BD1E0.pid = lbl_8055DC64;
     }
-    c = (u8 *)&lbl_803BD1E0;
-    c[0x10] = 0;
-    c[0x11] = 0;
-    c[0x12] = 0;
-    c[0x13] = 0;
-    if (uusb_get_devId(*(s32 *)(c + 0x14), *(s32 *)(c + 0x18)) < 0) {
-        if (c[0x28] != 0) OSReport(report + 0x6E0);
+    else
+    {
+        lbl_803BD1E0.vid = 0x057E; // 1406 - Nintendo Co., Ltd.
+        lbl_803BD1E0.pid = 0x0305; //  773 - Broadcom BCM2045A Bluetooth Radio [Nintendo Wii/Wii U]
+    }
+
+    lbl_803BD1E0.bulkEndpoint1 = 0;
+    lbl_803BD1E0.bulkEndpoint2 = 0;
+    lbl_803BD1E0.intrEndpoint1 = 0;
+    lbl_803BD1E0.at_0x13 = 0;
+
+    if (uusb_get_devId(lbl_803BD1E0.vid, lbl_803BD1E0.pid) < 0)
+    {
+        UUSBDBG0("HCISU_ERR: UUSB_Register: Error returned from get_devId()\n");
         return;
     }
-    if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x720, lbl_803BD1E0.fd);
-    c = (u8 *)&lbl_803BD1E0;
-    c[0x10] = 2;
-    c[0x11] = 0x82;
-    c[0x12] = 0x81;
-    c[0x13] = 0;
-    fn_8006D4C4(c + 0x2C);
-    c[0x38] = 0;
-    fn_8006D4C4(c + 0x3C);
-    c[0x48] = 0;
-    pool0 = GKI_create_pool(0x294, 0x2D, 1, 0);
-    c[0x1C] = pool0;
-    pool1 = GKI_create_pool(0x708, 0x1E, 1, 0);
-    c[0x1D] = pool1;
-    if (c[0x1C] == 0xFF || pool1 == 0xFF) {
-        if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x768);
+
+    UUSBDBG("HCISU_LOG: UUSB_Register: uusb_get_dev_id returned with lbl_803BD1E0.devId = %d\n",
+        lbl_803BD1E0.fd);
+
+    lbl_803BD1E0.bulkEndpoint1 = 2;
+    lbl_803BD1E0.bulkEndpoint2 = 130;
+    lbl_803BD1E0.intrEndpoint1 = 129;
+    lbl_803BD1E0.at_0x13 = 0;
+
+    fn_8006D4C4(&lbl_803BD1E0.bulk_buffer_q);
+    lbl_803BD1E0.at_0x38 = 0;
+
+    fn_8006D4C4(&lbl_803BD1E0.intr_buffer_q);
+    lbl_803BD1E0.at_0x48 = 0;
+
+    lbl_803BD1E0.cmd_buffer_pool = GKI_create_pool(660, 45, 1, NULL);
+    lbl_803BD1E0.acl_buffer_pool = GKI_create_pool(1800, 30, 1, NULL);
+
+    if (lbl_803BD1E0.cmd_buffer_pool == GKI_INVALID_POOL
+        || lbl_803BD1E0.acl_buffer_pool == GKI_INVALID_POOL)
+    {
+        UUSBDBG0("HCISU_LOG: UUSB_Register: Unable to create memory pools\n");
         return;
     }
-    if (c[0x28] != 0) OSReport(report + 0x7A4);
+
+    UUSBDBG("HCISU_LOG: UUSB_Register: hci_cmd_usb_pool_id (%d) hci_acl_usb_pool_id(%d)\n",
+        lbl_803BD1E0.cmd_buffer_pool,
+        lbl_803BD1E0.acl_buffer_pool);
+
     fn_8006EBAC();
-    ((u8 *)&lbl_803BD1E0)[0x29] = 4;
+
+    lbl_803BD1E0.state = 4;
+
     fn_8006EB88();
-    lbl_80558FF0 = 1;
+
+    lbl_80558FF0 = TRUE;
 }
 
 void UUSB_Open(tUUSB *uusb, void *callback) {
@@ -6685,58 +6707,62 @@ done:
     }
 }
 
-void bta_dm_pm_btm_status(void *arg0) {
-    register u8 *p = (u8 *)arg0;
-    u8 *entry;
-    u8 *timer;
-    s32 offset;
-    s32 mask;
-    u8 j;
-    u32 i;
+void bta_dm_pm_btm_status(tBTA_DM_MSG *p_data)
+{
+	UINT8 i;
 
-    i = 0;
-loop_first:
-    entry = (u8 *)&lbl_803C0C14 + ((i << 5) & 0x1FE0);
-    if (*(u8 *)((u8 *)entry + 0xB6) != 0 &&
-        bdcmp((u8 *)entry + 0xB0, p + 8) == 0) {
-        timer = entry + 0x98;
-        fn_8007148C((s32)timer);
-        *(u8 *)((u8 *)entry + 0xB6) = 0;
-    } else {
-        i++;
-        if (i < 3)
-            goto loop_first;
-    }
+	for (i = 0; i < BTA_DM_NUM_PM_TIMER; ++i)
+	{
+		if (lbl_803C0C14.pm_timer[i].in_use
+		    && bdcmp(lbl_803C0C14.pm_timer[i].peer_bdaddr,
+		             p_data->pm_status.bd_addr)
+		           == 0)
+		{
+			fn_8007148C(&lbl_803C0C14.pm_timer[i].timer);
+			lbl_803C0C14.pm_timer[i].in_use = FALSE;
 
-    switch (p[0xE]) {
-    case 0:
-        goto check_links;
-    default:
-        goto done;
-    }
-check_links:
-    if (p[0x12] == 0)
-        goto fallback;
+			break;
+		}
+	}
 
-    j = 0;
-    while (j < lbl_803C0C14[0x4D]) {
-        offset = j * 0xB;
-        if (bdcmp((u8 *)&lbl_803C0C14 + offset, p + 8) == 0) {
-            mask = lbl_803C0C14[offset + 9] & 3;
-            if (mask != 0) {
-                lbl_803C0C14[offset + 0xA] |= mask;
-                bta_dm_pm_set_mode(p + 8, 0);
-            }
-            goto done;
-        }
-        j++;
-    }
-    goto done;
+	switch (p_data->pm_status.status)
+	{
+	case BTM_PM_STS_ACTIVE:
+		if (p_data->pm_status.hci_status != 0)
+		{
+			for (i = 0; i < lbl_803C0C14.device_list.count; ++i)
+			{
+				if (bdcmp(lbl_803C0C14.device_list.peer_device[i].peer_bdaddr,
+				          p_data->pm_status.bd_addr)
+				    == 0)
+				{
+					if (!(lbl_803C0C14.device_list.peer_device[i].pm_mode_attempted
+					      & (BTA_DM_PM_PARK | BTA_DM_PM_SNIFF)))
+					{
+						return;
+					}
 
-fallback:
-    bta_dm_pm_set_mode(p + 8, 0);
-done:
-    ;
+					lbl_803C0C14.device_list.peer_device[i].pm_mode_failed |=
+						lbl_803C0C14.device_list.peer_device[i].pm_mode_attempted
+						& (BTA_DM_PM_PARK | BTA_DM_PM_SNIFF);
+
+					bta_dm_pm_set_mode(p_data->pm_status.bd_addr, FALSE);
+
+					return;
+				}
+			}
+
+			return;
+		}
+
+		bta_dm_pm_set_mode(p_data->pm_status.bd_addr, FALSE);
+		break;
+
+		/* NOTE: bluedroid includes other switch cases here guarded by
+		 * preprocessor conditional blocks that are not active here, hence the
+		 * single-case switch block.
+		 */
+	}
 }
 
 /* Power-management timer callback: switch the peer device (whose BD_ADDR sits
@@ -7765,13 +7791,13 @@ char *bta_hh_evt_code(u32 event) {
 extern "C" u8 bta_hh_find_cb(u8 *bd_addr) {
     extern u8 lbl_803159E0[];
     extern u8 lbl_80565228;
-    struct { u8 *base; } table;
     struct { u8 *base; } devices;
+    struct { u8 *base; } table;
     devices.base = lbl_803C0D48;
     u8 *&controls = devices.base;
     table.base = lbl_803159E0;
     u8 *&messages = table.base;
-    u8 i;
+    register u8 i;
 
     for (i = 0; i < 0x10; i++) {
         if (bdcmp(bd_addr, controls + ((i & 0xFF) << 5) + 0x18) == 0 &&
@@ -7855,9 +7881,8 @@ BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
     UINT8 max_devt = lbl_80559030[0];
     UINT8 cod = (sub_class >> 2) & 0x3F;
     UINT8 xx;
-    UINT8 *p_list;
     for (xx = 0; xx < max_devt; xx++) {
-        p_list = *(UINT8 **)(lbl_80559030 + 4);
+        register UINT8 *p_list = *(UINT8 **)(lbl_80559030 + 4);
         if (cod == p_list[xx * 2]) {
             ((UINT8 *)p_cb)[0x15] = p_list[xx * 2 + 1];
             return TRUE;
@@ -8549,13 +8574,11 @@ UINT16 btm_get_max_packet_size(BD_ADDR addr) {
 loop:
     if (p[0x119] == 0)
         goto next;
-    if (memcmp(p + 8, addr, 6) == 0) {
-        goto found;
-    } else {
+    if (memcmp(p + 8, addr, 6) != 0)
         goto next;
-    }
+    goto found;
 next:
-    i++;
+    i += 1;
     p += 0x11C;
     if (i < 4)
         goto loop;
@@ -9458,7 +9481,7 @@ void btm_read_local_features_complete(u8 *arg0, u16 arg1) {
                 if (!(cb[0x645] & 1)) *(u16 *)(lbl_803C0F78 + 0x654) |= 0x3000;
             }
         }
-        if ((*(u8 *)(lbl_803C0F78 + 0x27C0)) >= 5) fn_80070954(0xD0004, strings[0x44], *(u16 *)(lbl_803C0F78 + 0x654));
+        if ((*(u8 *)(lbl_803C0F78 + 0x27C0)) >= 5) fn_80070954(0xD0004, strings + 0x44, *(u16 *)(lbl_803C0F78 + 0x654));
         *(u16 *)(lbl_803C0F78 + 0x656) = 0;
         *(u8 *)(lbl_803C0F78 + 0x1908) = 0;
         if (cb[0x641] & 8) {
@@ -9484,7 +9507,7 @@ void btm_read_local_features_complete(u8 *arg0, u16 arg1) {
                 *(u16 *)(lbl_803C0F78 + 0x656) |= 0x280;
             }
         }
-        if ((*(u8 *)(lbl_803C0F78 + 0x27C0)) >= 5) fn_80070954(0xD0004, strings[0x70], *(u16 *)(lbl_803C0F78 + 0x656));
+        if ((*(u8 *)(lbl_803C0F78 + 0x27C0)) >= 5) fn_80070954(0xD0004, strings + 0x70, *(u16 *)(lbl_803C0F78 + 0x656));
         if (cb[0x640] & 0x20) *(u16 *)(lbl_803C0F78 + 0x4C4) |= 1;
         else *(u16 *)(lbl_803C0F78 + 0x4C4) &= 0xFFFE;
         if (cb[0x640] & 0x40) *(u16 *)(lbl_803C0F78 + 0x4C4) |= 2;
@@ -9500,7 +9523,7 @@ void btm_read_local_features_complete(u8 *arg0, u16 arg1) {
             (*(u8 *)(lbl_803C0F78 + 0x27BE)) = 0xFF;
             (*(u8 *)(lbl_803C0F78 + 0x27BD)) = 0xFF;
             if ((*(u8 *)(lbl_803C0F78 + 0x27C0)) >= 3) {
-                ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(0xD0002, (void *)((struct { u8 pad; u8 s[1]; } *)((u8 *)strings - 1))->s, temp_r27, 0xFF, temp_r29, 0xFF);
+                ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(0xD0002, strings + 0, temp_r27, 0xFF, temp_r29, 0xFF);
             }
             flags = *(u8 *)(lbl_803C0F78 + 0x645);
             if (((flags & 8) || (*(u8 *)(lbl_803C0F78 + 0x644) & 0x10) || (flags & 0x10)) && (((*(u8 *)(lbl_803C0F78 + 0x27BD)) != temp_r27) || ((*(u8 *)(lbl_803C0F78 + 0x27BE)) != temp_r29)) && btsnd_hcic_set_afh_channels(temp_r27, temp_r29)) {
@@ -10236,44 +10259,63 @@ tBTM_STATUS BTM_CancelInquiry(void) {
     return status;
 }
 
-tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *results_cb, tBTM_CMPL_CB *complete_cb) {
-    extern u8 lbl_803163EC[];
-    typedef struct { u8 b0,b1,b2,b3,b4,b5,b6,b7,b8,b9; } Bytes10;
-    u8 *state = lbl_803C0F78;
-    u8 *p = (u8 *)params;
-    s32 mode, filter;
-    u8 status;
-    u8 one, zero;
-    if (state[0x27C0] >= 3)
-        ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(0xD0002, lbl_803163EC, p[0], p[1], p[2], p[3]);
-    if (state[0x1848] != 0 || state[0x1844] != 0) return 2;
-    if (p[0] != 0 && p[0] != 1) return 5;
-    if (fn_80079514() == 0) return 6;
-    zero = 0;
-    one = 1;
-    *(Bytes10 *)&state[0x1834] = *(Bytes10 *)p;
-    state[0x1847]=3;
-    *(void **)(state+0x16B0)=complete_cb;
-    *(void **)(state+0x16B4)=results_cb;
-    state[0x183F]=zero;
-    mode=p[0];
-    state[0x1848]=((s32)~((mode-1)|(1-mode))>>31)+2;
-    filter=p[3];
-    switch (filter) {
-    case 0:
-        state[0x1847]=2;
-        break;
-    case 1:
-    case 2:
-        state[0x1847]=one;
-        p[3]=zero;
-        break;
-    default:
-        return 5;
-    }
-    status=btm_set_inq_event_filter(p[3],p+4);
-    if (status != one) state[0x1847]=zero;
-    return status;
+tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *p_inqparms,
+                             tBTM_INQ_RESULTS_CB *p_results_cb,
+                             tBTM_CMPL_CB *p_cmpl_cb)
+{
+	tBTM_STATUS status;
+	tBTM_INQUIRY_VAR_ST *p_inq = &lbl_803C0F78.btm_inq_vars;
+
+	BTM_TRACE(API, "BTM_StartInquiry: mode: %d, dur: %d, rsps: %d, flt: %d",
+	          p_inqparms->mode, p_inqparms->duration, p_inqparms->max_resps,
+	          p_inqparms->filter_cond_type);
+
+	if (p_inq->inq_active != BTM_INQUIRY_INACTIVE || p_inq->inqfilt_active)
+		return BTM_BUSY;
+
+	if (p_inqparms->mode != BTM_GENERAL_INQUIRY
+	    && p_inqparms->mode != BTM_LIMITED_INQUIRY)
+	{
+		return BTM_ILLEGAL_VALUE;
+	}
+
+	if (!fn_80079514())
+		return BTM_WRONG_MODE;
+
+	p_inq->inqparms = *p_inqparms;
+
+	p_inq->state = BTM_INQ_ACTIVE_STATE;
+	p_inq->p_inq_cmpl_cb = p_cmpl_cb;
+	p_inq->p_inq_results_cb = p_results_cb;
+	p_inq->inq_cmpl_info.num_resp = 0;
+	p_inq->inq_active = p_inqparms->mode == BTM_LIMITED_INQUIRY
+	                      ? BTM_LIMITED_INQUIRY_ACTIVE
+	                      : BTM_GENERAL_INQUIRY_ACTIVE;
+
+	switch (p_inqparms->filter_cond_type)
+	{
+	case BTM_CLR_INQUIRY_FILTER:
+		p_inq->state = BTM_INQ_SET_FILT_STATE;
+		break;
+
+	case BTM_FILTER_COND_DEVICE_CLASS:
+	case BTM_FILTER_COND_BD_ADDR:
+		p_inq->state = BTM_INQ_CLR_FILT_STATE;
+		p_inqparms->filter_cond_type = BTM_CLR_INQUIRY_FILTER;
+		break;
+
+	default:
+		return BTM_ILLEGAL_VALUE;
+	}
+
+	if ((status = btm_set_inq_event_filter(p_inqparms->filter_cond_type,
+	                                       &p_inqparms->filter_cond))
+	    != BTM_CMD_STARTED)
+	{
+		p_inq->state = BTM_INQ_INACTIVE_STATE;
+	}
+
+	return status;
 }
 
 #pragma push
@@ -10768,7 +10810,7 @@ found:
         else if (*(UINT32 *)(entry + 4) == *(UINT32 *)(base + 0x16c0)) is_new = 0;
         if (is_new == 1) {
             info = entry + 8;
-            info[0x13 - 8] = rep; info[0x14 - 8] = per; 
+            info[0x13 - 8] = (s32)rep; info[0x14 - 8] = per; 
             info[0x15 - 8] = scan;
             info[0x10 - 8] = dc[0]; info[0x11 - 8] = dc[1]; info[0x12 - 8] = dc[2];
             *(UINT16 *)info = clock | 0x8000;
@@ -15104,12 +15146,12 @@ void btu_hcif_hdl_command_status(s32 opcode, UINT8 status, UINT8 *p_cmd) {
 }
 
 void btu_hcif_command_status_evt(UINT8 *p, UINT16 len) {
-    UINT8 status;
+    UINT16 queued_opcode;
     UINT8 *cmd;
     register void *buf;
     UINT16 opcode;
     UINT8 *cmd_base;
-    register UINT16 queued_opcode;
+    UINT8 status;
 
     status = p[0];
     *(UINT16 *)(lbl_803C0A50 + 0x80) = p[1];
@@ -17496,39 +17538,21 @@ scan_done:
 
 #pragma push
 #pragma use_lmw_stmw off
-u8 HID_HostRemoveDev(u32 dev_handle) {
-    extern u8 hidh_conn_disconnect(u32);
-    u8 *const devices = lbl_803C3C38;
-    u8 *deviceEntry;
-    u32 entryOffset;
-    u8 disconnecting = 1;
-    u8 cleared = 0;
-    u8 isRegistered = devices[0x400];
-    u8 isInUse;
+tHID_STATUS HID_HostRemoveDev(UINT8 dev_handle)
+{
+	if (!lbl_803C3C38.reg_flag)
+		return HID_ERR_NOT_REGISTERED;
 
-    if (isRegistered == 0)
-        return 1;
-    if (dev_handle > 0x10)
-        goto clear_entry;
-    entryOffset = dev_handle * 0x34;
-    deviceEntry = devices + entryOffset;
-    isInUse = devices[entryOffset];
-    if (isInUse == 0)
-        return 5;
-    if (isRegistered == 0 || dev_handle > 0x10 || isInUse == 0)
-        goto clear_entry;
-    deviceEntry[0xC] = disconnecting;
-    fn_80070F90(deviceEntry + 0x1C);
-    if (deviceEntry[0xA] != 1)
-        goto clear_entry;
-    deviceEntry[0xC] = disconnecting;
-    hidh_conn_disconnect(dev_handle);
-clear_entry:
-    deviceEntry[0] = cleared;
-    lbl_803C3C38[entryOffset + 0x10] = cleared;
-    *(u16 *)(devices + entryOffset + 0x16) = 0;
-    *(u16 *)(devices + entryOffset + 0x14) = 0;
-    return 0;
+	if (dev_handle > HID_HOST_MAX_DEVICES || !lbl_803C3C38.devices[dev_handle].in_use)
+		return HID_ERR_INVALID_PARAM;
+
+	HID_HostCloseDev(dev_handle);
+	lbl_803C3C38.devices[dev_handle].in_use = FALSE;
+	lbl_803C3C38.devices[dev_handle].conn.conn_state = HID_CONN_STATE_UNUSED;
+	lbl_803C3C38.devices[dev_handle].conn.ctrl_cid =
+		lbl_803C3C38.devices[dev_handle].conn.intr_cid = 0;
+
+	return HID_SUCCESS;
 }
 #pragma pop
 u8 HID_HostOpenDev(u32 arg0) {
@@ -17581,13 +17605,13 @@ u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param,
 #pragma pop
 u8 HID_HostCloseDev(u8 dev_handle) {
     extern u8 hidh_conn_disconnect(u32);
+    tHID_HOST_DEV_VIEW *device;
     struct HBase { tHID_HOST_DEV_VIEW *p; } hb;
     tHID_HOST_DEV_VIEW **pdevices = &hb.p;
-    register tHID_HOST_DEV_VIEW *device;
     if (lbl_803C3C38[0x400] == 0)
         return 1;
     *pdevices = (tHID_HOST_DEV_VIEW *)lbl_803C3C38;
-    if (dev_handle > 0x10 || (device = &(*pdevices)[dev_handle])->in_use == 0)
+    if ((s32)dev_handle > 0x10 || (device = &(*pdevices)[dev_handle])->in_use == 0)
         return 5;
     device->conn_tries = 1;
     fn_80070F90(device->timer_entry);
@@ -20370,8 +20394,8 @@ void l2c_rcv_acl_data(BT_HDR *p_msg) {
     }
     if (rcv_cid == 2) {
         STREAM_TO_UINT16(psm, p);
-        p_msg->offset += 2;
         p_msg->len -= 2;
+        p_msg->offset += 2;
         if (lbl_803C4040[0] >= 5)
             fn_80070954(0x80004, trace + 0xE0, psm);
         GKI_freebuf(p_msg);
@@ -22851,7 +22875,7 @@ void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
         if (lbl_803C4828[0x414] >= 1)
             fn_80070954(0x90000, trace_msg + 0x54, lcid);
     } else {
-        *(u16 *)((u8 *)port + 0x68) = lcid;
+        *(u16 *)((u8 *)port + 0x68) = (unsigned)lcid;
         fn_800916F4(port, 9, &status);
     }
 }
@@ -22867,7 +22891,7 @@ void RFCOMM_ConfigInd(u32 arg0, u8 *arg1) {
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
-        if (port != NULL) {
+        if (port != (u32)NULL) {
             port_lcid = *(u16 *)((u8 *)port + 0x68);
             if (port_lcid != arg0) {
                 if (lbl_803C4828[0x414] >= 2)
@@ -22897,7 +22921,7 @@ void RFCOMM_ConfigCnf_800910D4(u32 arg0, u8 *arg1) {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
         if (port != NULL) {
             port_lcid = *(u16 *)((u8 *)port + 0x68);
-            if (port_lcid != arg0) {
+            if (port_lcid != (u32)arg0) {
                 if (lbl_803C4828[0x414] >= 2)
                     ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x90001, trace_msg + 0x1C, arg0, port_lcid);
                 port = NULL;
@@ -24881,7 +24905,7 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
     union { u16 off; u8 *frame; } of;
     char *messages = lbl_80319DD8;
     s32 var_r8;
-    s32 temp_r9;
+    u8 b1;
     s32 temp_r10;
     s32 temp_r11;
     s32 temp_r8_3;
@@ -24899,7 +24923,7 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
     u8 temp_r6_6;
     u8 temp_r9_2;
     u8 b0;
-    u8 b1;
+    s32 temp_r9;
     u8 fcs;
     u16 offset;
 
@@ -27104,7 +27128,7 @@ void sdp_disconnect_ind(u16 handle, u8 reason) {
     if (callback != 0) {
         state = ccb[0];
         result = 0xFFF1;
-        stateDelta = state - 3;
+        stateDelta = (s32)state - 3;
         reverseDelta = 3 - state;
         equalityMask = (s32)~(stateDelta | reverseDelta) >> 31;
         result &= ~equalityMask;
