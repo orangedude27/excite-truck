@@ -521,7 +521,7 @@ extern "C" f32 CosFIdx__Q24nw4r4mathFf(f32 angle) {
 extern float lbl_80560F04, lbl_80560F08, lbl_80560F0C, lbl_80560F10, lbl_80560F14, lbl_80560F18;
 extern float lbl_80321E48[];
 #pragma pop
-extern "C" float Atan2FIdx__Q24nw4r4mathFff(float y, float x) {
+/* nw4r math atan2: fold (x,y) into the first octant, interpolate atan(|y|/divisor) from a value/slope table, then add the quadrant base angle; returns an angle index in 1/256-turn units. */ extern "C" float Atan2FIdx__Q24nw4r4mathFff(float y, float x) {
     if (0.0f == x && 0.0f == y) return 0.0f;
     float f3, f4 = lbl_80560F04, f0;
     int mode;
