@@ -405,7 +405,7 @@ enum {
  * a fresh zeroed buffer into it, hand fn_802E4F98 to the AI DMA interrupt to
  * refill the voices, and arm the periodic alarm whose callback (fn_802E52EC)
  * feeds the Wii remote speakers. */
-void fn_802E5478(void) {
+/* Start the SPU voice layer: take all of ARAM as the mix buffer and invalidate its cache mirror, allocate the SpuSample/SpuChannel/Spucache pools, clear ARAM via a zeroed buffer, register fn_802E4F98 as the AI DMA refill callback, arm the periodic alarm (fn_802E52EC) that feeds the Wii Remote speakers, and mark SPU running. */ void fn_802E5478(void) {
     extern char lbl_8034D210[];
     extern int lbl_8055FF7C, lbl_8055FF80, lbl_8055FF84, lbl_8055FF88;
     extern void *lbl_8055FFB0;
@@ -757,6 +757,8 @@ void fn_802E5A54(void) {
 #pragma use_lmw_stmw off
 #pragma opt_strength_reduction off
 void *fn_802E5AE8(char *arg0) {
+char *__repair_addr;
+
     extern char lbl_8034D210[];
     extern float lbl_80565138, lbl_8056513C;
     extern char *fn_80029004(char *, int);
@@ -791,7 +793,9 @@ void *fn_802E5AE8(char *arg0) {
     off = 0;
     for (; i < 0x100; i++, off += 0xB0) {
         slot = (char *)lbl_8055FF90 + off;
-        if (*(int *)(slot + 0x94) != 0) {
+__repair_addr = (char *)(slot + 0x94);
+
+        if (*(int *)(__repair_addr) != 0) {
             if (stricmp(name, slot) == 0 && *(int *)((char *)lbl_8055FF90 + off + 0x20) == 0) {
                 slot = (char *)lbl_8055FF90 + i * 0xB0;
                 *(int *)(slot + 0x94) = *(int *)(slot + 0x94) + 1;
