@@ -14496,7 +14496,7 @@ extern "C" s32 fn_800BBB58(s32 arg0, void **arg1) {
     s32 handle;
     s32 returnValue = 0;
 
-    if (lbl_80559248 < 0) {
+    if (0 > lbl_80559248) {
         returnValue = (s32)0xC1000000;
     } else {
         if ((u32)arg0 >= 4) {
@@ -22556,8 +22556,8 @@ extern "C" s32 fn_800D50A8(ARCHandle *handle, const char *name) {
     ARCDir dir;
     ARCDirEntry entry;
     s32 result = -1;
-    register const char *n = name;
     register ARCHandle *h = handle;
+    register const char *n = name;
     const char *panicFile;
 
     if (!ARCOpenDir(h, lbl_805597F8, &dir))
