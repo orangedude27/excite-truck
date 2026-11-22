@@ -428,6 +428,7 @@ extern "C" void fn_80145538(TextSizeEntry80145538 *entry, void *propertySource) 
 
 #pragma use_lmw_stmw off
 #pragma dont_inline on
+/* Fills one 0x20-byte extended on-screen text entry from a level element's property set: base id/x/y/justification, then style flags from "just", a "scale" float, a "#rrggbb" color, and a comparison flag. */
 extern "C" void fn_801455B8(void *entry, void *propertySource) {
     class PropertySet {
     public:
