@@ -861,143 +861,256 @@ extern "C" int DVDGetDriveStatus(void);
 extern "C" void fn_80031C8C(unsigned short);
 extern "C" void fn_80031C94(unsigned short);
 extern "C" void fn_80031C9C(unsigned short);
-extern "C" void fn_800E3228(void *arg0) {
-    int status = DVDGetDriveStatus();
-    if (status == 0) {
-        if (*((unsigned char *)arg0 + 0x6C33) != 0) {
-            unsigned char *node, *current, *sentinel;
-            unsigned int interruptState;
-            *((unsigned char *)arg0 + 0x6C33) = 0;
-            interruptState = OSDisableInterrupts();
-            for (current = *(unsigned char **)((unsigned char *)arg0 + 0x18), sentinel = (unsigned char *)arg0 + 0x18; current != sentinel; ) {
-                node = current;
-                current = *(unsigned char **)node;
-                if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
-                if (*(unsigned char *)(node - 0x8C) != 0) {
-                    if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
-                    *(unsigned char *)(node - 0x85) |= 2;
-                }
-            }
-            OSRestoreInterrupts(interruptState);
-        }
-    } else if (status != 1 && *((unsigned char *)arg0 + 0x6C33) == 0) {
-        unsigned char *node, *current, *sentinel;
-        unsigned int interruptState;
-        *((unsigned char *)arg0 + 0x6C33) = 1;
-        interruptState = OSDisableInterrupts();
-        for (current = *(unsigned char **)((unsigned char *)arg0 + 0x18), sentinel = (unsigned char *)arg0 + 0x18; current != sentinel; ) {
-            node = current;
-            current = *(unsigned char **)node;
-            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
-            if (*(unsigned char *)(node - 0x8C) != 0) {
-                if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
-                *(unsigned char *)(node - 0x85) |= 2;
-            }
-        }
-        OSRestoreInterrupts(interruptState);
-    }
+extern "C" void fn_800E3228(void *arg0)
+{
+  int status = DVDGetDriveStatus();
+  if (status == 0)
+  {
+    if ((*(((unsigned char *) arg0) + 0x6C33)) != 0)
     {
-        float scale, lower, upper;
-        unsigned char *entry;
-        int i;
-        upper = lbl_80560F24;
-        entry = (unsigned char *)arg0;
-        lower = lbl_80560F20;
-        i = 0;
-        scale = lbl_80560F30;
-        for (; i < 3; i++, entry += 0x10) {
-            int changed = 0;
-            int limit, value;
-            volatile int *v = (volatile int *)(entry + 0x6CA8);
-            value = *v; limit = *(volatile int *)(entry + 0x6CA4);
-            if (value < limit) {
-                value = *v; limit = *(volatile int *)(entry + 0x6CA4);
-                if (value < limit) *v = value + 1;
-                changed = 1;
-            }
-            v = (volatile int *)(entry + 0x6C78);
-            value = *v; limit = *(volatile int *)(entry + 0x6C74);
-            if (limit > value) {
-                value = *v; limit = *(volatile int *)(entry + 0x6C74);
-                if (value < limit) *v = value + 1;
-                value = *v; limit = *(volatile int *)(entry + 0x6C74);
-                if (limit <= value) fn_800E4364(arg0, i);
-                changed = 1;
-            }
-            if (changed != 0) {
-                float first, second, product;
-                int count, total;
-                count = *(volatile int *)(entry + 0x6CA8);
-                total = *(volatile int *)(entry + 0x6CA4);
-                product = lbl_80560F24;
-                if (count >= total) first = *(float *)(entry + 0x6CA0);
-                else {
-                    float start = *(float *)(entry + 0x6C9C);
-                    first = start + ((float)count * (*(float *)(entry + 0x6CA0) - start)) / (float)total;
-                }
-                if (first > upper) first = upper;
-                else if (first < lower) first = lower;
-                product *= first;
-                count = *(volatile int *)(entry + 0x6C78);
-                total = *(volatile int *)(entry + 0x6C74);
-                if (count >= total) second = *(float *)(entry + 0x6C70);
-                else {
-                    float start = *(float *)(entry + 0x6C6C);
-                    second = start + ((float)count * (*(float *)(entry + 0x6C70) - start)) / (float)total;
-                }
-                if (second > upper) second = upper;
-                else if (second < lower) second = lower;
-                product *= second;
-                value = (int)(scale * product);
-                switch (i) {
-                case 0: fn_80031C8C((unsigned short)value); break;
-                case 1: fn_80031C94((unsigned short)value); break;
-                case 2: fn_80031C9C((unsigned short)value); break;
-                }
-            }
+      unsigned char *node;
+      unsigned char *current;
+      unsigned char *sentinel;
+      unsigned int interruptState;
+      *(((unsigned char *) arg0) + 0x6C33) = 0;
+      interruptState = OSDisableInterrupts();
+      current = *((unsigned char **) (((unsigned char *) arg0) + 0x18));
+      sentinel = ((unsigned char *) arg0) + 0x18;
+      while (current != sentinel)
+      {
+        node = current;
+        current = *((unsigned char **) node);
+        if (node == 0)
+        {
+          Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
         }
+        if ((*((unsigned char *) (node - 0x8C))) != 0)
+        {
+          if (node == 0)
+          {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+          }
+          *((unsigned char *) (node - 0x85)) |= 2;
+        }
+      }
+
+      OSRestoreInterrupts(interruptState);
     }
+  }
+  else
+    if ((status != 1) && ((*(((unsigned char *) arg0) + 0x6C33)) == 0))
+  {
+    unsigned char *node;
+    unsigned char *current;
+    unsigned char *sentinel;
+    unsigned int interruptState;
+    *(((unsigned char *) arg0) + 0x6C33) = 1;
+    interruptState = OSDisableInterrupts();
+    current = *((unsigned char **) (((unsigned char *) arg0) + 0x18));
+    sentinel = ((unsigned char *) arg0) + 0x18;
+    while (current != sentinel)
     {
-        int changed = 0;
-        volatile int *v;
-        int value;
-        v = (volatile int *)((unsigned char *)arg0 + 0x6C50);
-        value = *v;
-        if (value < *(volatile int *)((unsigned char *)arg0 + 0x6C4C)) {
-            value = *v;
-            if (value < *(volatile int *)((unsigned char *)arg0 + 0x6C4C)) *v = value + 1;
-            changed = 1;
+      node = current;
+      current = *((unsigned char **) node);
+      if (node == 0)
+      {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+      }
+      if ((*((unsigned char *) (node - 0x8C))) != 0)
+      {
+        if (node == 0)
+        {
+          Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
         }
-        v = (volatile int *)((unsigned char *)arg0 + 0x6C60);
-        value = *v;
-        if (value < *(volatile int *)((unsigned char *)arg0 + 0x6C5C)) {
-            value = *v;
-            if (value < *(volatile int *)((unsigned char *)arg0 + 0x6C5C)) *v = value + 1;
-            changed = 1;
-        }
-        v = (volatile int *)((unsigned char *)arg0 + 0x6C40);
-        value = *v;
-        if (value < *(volatile int *)((unsigned char *)arg0 + 0x6C3C)) {
-            value = *v;
-            if (value < *(volatile int *)((unsigned char *)arg0 + 0x6C3C)) *v = value + 1;
-            changed = 1;
-        }
-        if (changed != 0) {
-            unsigned char *node, *current;
-            unsigned int interruptState = OSDisableInterrupts();
-            node = *(unsigned char **)((unsigned char *)arg0 += 0x18);
-            while (node != arg0) {
-                current = node;
-                node = *(unsigned char **)current;
-                if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
-                if (*(unsigned char *)(current - 0x8C) != 0) {
-                    if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
-                    *(unsigned char *)(current - 0x85) |= 0x10;
-                }
-            }
-            OSRestoreInterrupts(interruptState);
-        }
+        *((unsigned char *) (node - 0x85)) |= 2;
+      }
     }
+
+    OSRestoreInterrupts(interruptState);
+  }
+  {
+    float scale;
+    float lower;
+    float upper;
+    unsigned char *entry;
+    int i;
+    upper = lbl_80560F24;
+    entry = (unsigned char *) arg0;
+    lower = lbl_80560F20;
+    i = 0;
+    scale = lbl_80560F30;
+    for (; i < 3; i++, entry += 0x10)
+    {
+      int changed = 0;
+      int limit;
+      int value;
+      volatile int *v = (volatile int *) (entry + 0x6CA8);
+      value = *v;
+      limit = *((volatile int *) (entry + 0x6CA4));
+      if (value < limit)
+      {
+        value = *v;
+        limit = *((volatile int *) (entry + 0x6CA4));
+        if (value < limit)
+        {
+          *v = value + 1;
+        }
+        changed = 1;
+      }
+      v = (volatile int *) (entry + 0x6C78);
+      value = *v;
+      limit = *((volatile int *) (entry + 0x6C74));
+      if (limit > value)
+      {
+        value = *v;
+        limit = *((volatile int *) (entry + 0x6C74));
+        if (value < limit)
+        {
+          *v = value + 1;
+        }
+        value = *v;
+        limit = *((volatile int *) (entry + 0x6C74));
+        if (limit <= value)
+        {
+          fn_800E4364(arg0, i);
+        }
+        changed = 1;
+      }
+      if (changed != 0)
+      {
+        float first;
+        float second;
+        float product;
+        int count;
+        int total;
+        count = *((volatile int *) (entry + 0x6CA8));
+        total = *((volatile int *) (entry + 0x6CA4));
+        product = lbl_80560F24;
+        if (count >= total)
+        {
+          first = *((float *) (entry + 0x6CA0));
+        }
+        else
+        {
+          float start = *((float *) (entry + 0x6C9C));
+          first = start + ((((float) count) * ((*((float *) (entry + 0x6CA0))) - start)) / ((float) total));
+        }
+        if (first > upper)
+        {
+          first = upper;
+        }
+        else
+          if (first < lower)
+        {
+          first = lower;
+        }
+        product *= first;
+        count = *((volatile int *) (entry + 0x6C78));
+        total = *((volatile int *) (entry + 0x6C74));
+        if (count >= total)
+        {
+          second = *((float *) (entry + 0x6C70));
+        }
+        else
+        {
+          float start = *((float *) (entry + 0x6C6C));
+          second = start + ((((float) count) * ((*((float *) (entry + 0x6C70))) - start)) / ((float) total));
+        }
+        if (second > upper)
+        {
+          second = upper;
+        }
+        else
+          if (second < lower)
+        {
+          second = lower;
+        }
+        product *= second;
+        value = (int) (scale * product);
+        switch (i)
+        {
+          case 0:
+            fn_80031C8C((unsigned short) value);
+            break;
+
+          case 1:
+            fn_80031C94((unsigned short) value);
+            break;
+
+          case 2:
+            fn_80031C9C((unsigned short) value);
+            break;
+
+        }
+
+      }
+    }
+
+  }
+  {
+    int changed = 0;
+    volatile int *v;
+    int value;
+    v = (volatile int *) (((unsigned char *) arg0) + 0x6C50);
+    value = *v;
+    if (value < (*((volatile int *) (((unsigned char *) arg0) + 0x6C4C))))
+    {
+      value = *v;
+      if (value < (*((volatile int *) (((unsigned char *) arg0) - -0x6C4C))))
+      {
+        *v = value + 1;
+      }
+      changed = 1;
+    }
+    v = (volatile int *) (((unsigned char *) arg0) + 0x6C60);
+    value = *v;
+    if (value < (*((volatile int *) (((unsigned char *) arg0) + (((((((((0x6C5C & 0xFFFF) & 0xFFFF) & 0xFFFF) & 0xFFFF) & 0xFFFF) & 0xFFFF) & 0xFFFF) & 0xFFFF) & 0xFFFF)))))
+    {
+      value = *v;
+      if (value < (*((volatile int *) (((unsigned char *) arg0) + 0x6C5C))))
+      {
+        *v = value + 1;
+      }
+      changed = 1;
+    }
+    v = (volatile int *) (((unsigned char *) arg0) + 0x6C40);
+    value = *v;
+    if (value < (*((volatile int *) (((unsigned char *) arg0) + 0x6C3C))))
+    {
+      value = *v;
+      if (value < (*((volatile int *) (((unsigned char *) arg0) + 0x6C3C))))
+      {
+        *v = value + 1;
+      }
+      changed = 1;
+    }
+    if (changed != 0)
+    {
+      unsigned char *node;
+      unsigned char *current;
+      unsigned int interruptState = OSDisableInterrupts();
+      node = *((unsigned char **) ((unsigned char *) arg0 += 0x18));
+      while (node != arg0)
+      {
+        current = node;
+        node = *((unsigned char **) current);
+        if (current == 0)
+        {
+          Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+        }
+        if ((*((unsigned char *) (current - 0x8C))) != 0)
+        {
+          if (current == 0)
+          {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+          }
+          *((unsigned char *) (current - 0x85)) |= 0x10;
+        }
+      }
+
+      OSRestoreInterrupts(interruptState);
+    }
+  }
 }
 
 /* nw4hbm::snd::detail::AxManager::GetZeroBufferAddress(): returns the address of the
@@ -1180,24 +1293,28 @@ acquire_setup:
 #pragma pop
 extern const char lbl_80321FE8[];
 #pragma use_lmw_stmw off
-extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(void *manager, void * const voice) {
-    if (voice == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x21D, lbl_80321FE8);
-    }
-    unsigned int firstState = OSDisableInterrupts();
-    unsigned int secondState = OSDisableInterrupts();
-    if (voice == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
-    }
-    char *link = (char *)voice + 0x1A8;
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((char *)manager + 0x14, link);
-    void *iterator = (char *)manager + 0x24;
-    if (voice == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
-    }
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)manager + 0x20, &iterator, link);
-    OSRestoreInterrupts(secondState);
-    OSRestoreInterrupts(firstState);
+extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(void *manager, void *voice)
+{
+  if (voice == 0)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x21D, lbl_80321FE8);
+  }
+  unsigned int firstState = OSDisableInterrupts();
+  unsigned int secondState = OSDisableInterrupts();
+  if (voice == 0)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
+  }
+  void *link = ((char *) voice) + 0x1A8;
+  Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(((char *) manager) + 0x14, link);
+  void *iterator = ((char *) manager) + 0x24;
+  if (voice == 0)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233 & 0xFFFFu, lbl_80322130);
+  }
+  Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(((char *) manager) + 0x20, &iterator, link);
+  OSRestoreInterrupts(secondState);
+  OSRestoreInterrupts(firstState);
 }
 
 #pragma opt_common_subs off
@@ -1815,7 +1932,7 @@ extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *voice) {
 extern float lbl_80560F44;
 extern const char lbl_803222A0[];
 extern "C" void fn_800E5E74(void *, int, int, int, int, int, int);
-extern "C" void fn_800E68EC(void *, int, int, void *, int);
+extern "C" void fn_800E68EC(void *, int, volatile unsigned char, void *, int);
 extern "C" void fn_80033408(void *, int);
 extern double lbl_80560F48;
 
@@ -2919,94 +3036,133 @@ extern "C" void SetVoiceType__Q46nw4hbm3snd6detail7AxVoiceFQ56nw4hbm3snd6detail7
     }
 }
 #pragma use_lmw_stmw reset
-extern "C" void UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(void *arg0, int arg1) {
-    struct VP { unsigned char *self; unsigned char *channel; unsigned char *src; } p;
-    struct VI { int mode; int j; int i; int offset; } n;
-    float gain = lbl_80560F58;
-    float min = lbl_80560F3C;
-    float max = lbl_80560F38;
-    float volume;
-    float ratio;
-    short values[7];
-    p.self = (unsigned char *)arg0;
-    n.mode = arg1;
-    p.src = p.self;
-    n.offset = 0;
-    n.i = 0;
+extern "C" void UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(void *arg0, int arg1)
+{
+  struct V
+  {
+    unsigned char *src;
+    int offset;
+    unsigned char *channel;
+    int i;
+    int j;
+    int mode;
+    unsigned char *self;
+  } v;
+  float gain = lbl_80560F58;
+  float min = lbl_80560F3C;
+  float max = lbl_80560F38;
+  float volume;
+  float ratio;
+  short values[7];
+  v.self = (unsigned char *) arg0;
+  v.mode = arg1;
+  v.src = v.self;
+  v.offset = 0;
+  v.i = 0;
+  {
+    float scale = (float) (*((int *) (v.self + 0x114)));
+    ratio = ((*((float *) (v.self + 0x184))) * scale) / lbl_80560F40;
+  }
+  while (v.i < (*((int *) (v.self + 0x108))))
+  {
+    volume = *((float *) (v.src + 0x98));
+    if (volume > max)
     {
-        float scale = (float)(*(int *)(p.self + 0x114));
-        ratio = (*(float *)(p.self + 0x184) * scale) / lbl_80560F40;
+      volume = max;
     }
-    while (n.i < *(int *)(p.self + 0x108)) {
-        volume = *(float *)(p.src + 0x98);
-        if (volume > max) volume = max;
-        else if (volume < min) volume = min;
-        if (n.mode != 0) {
-            float scaled = gain * ratio;
-            unsigned int sample = (unsigned int)(scaled * volume);
-            values[0] = (short)(sample >> 16);
-            values[1] = (short)sample;
-            values[2] = 0;
-            values[3] = 0;
-            values[4] = 0;
-            values[5] = 0;
-            values[6] = 0;
-            p.channel = p.self + n.offset;
-            for (n.j = 0; n.j < *(int *)(p.self + 0x104); n.j++) {
-                fn_800339B0(*(void **)(p.channel + 0xc), values);
-                p.channel += 0x10;
-            }
-        } else {
-            p.channel = p.self + n.offset;
-            for (n.j = 0; n.j < *(int *)(p.self + 0x104); n.j++) {
-                fn_80033A34(*(void **)(p.channel + 0xc), ratio * volume);
-                p.channel += 0x10;
-            }
-        }
-        p.src += 0x1c; n.offset += 4; n.i++;
+    else
+      if (volume < min)
+    {
+      volume = min;
     }
+    if (v.mode != 0)
+    {
+      float scaled = gain * ratio;
+      unsigned int sample = (unsigned int) (scaled * volume);
+      values[0] = (short) (sample >> 16);
+      values[1] = (short) sample;
+      values[2] = 0;
+      values[3] = 0;
+      values[4] = 0;
+      values[5] = 0;
+      values[6] = 0;
+      v.channel = v.self + v.offset;
+      for (v.j = 0; v.j < (*((int *) (v.self + 0x104))); v.j++)
+      {
+        fn_800339B0(*((void **) (v.channel + 0xc)), values);
+        v.channel += 0x10;
+      }
+
+    }
+    else
+    {
+      v.channel = v.self + v.offset;
+      for (v.j = 0; v.j < (*((int *) (0x104 + v.self))); v.j++)
+      {
+        fn_80033A34(*((void **) (v.channel + 0xc)), ratio * volume);
+        v.channel += 0x10;
+      }
+
+    }
+    v.src += 0x1c;
+    v.offset += 4;
+    v.i++;
+  }
+
 }
 
 extern "C" void *memcpy(void *, const void *, unsigned int);
 extern "C" void *memset(void *, int, unsigned int);
 extern "C" void fn_80033918(void *, void *);
-extern "C" void fn_800E68EC(void *arg0, int arg1, int arg2, void *arg3, int arg4) {
-    unsigned char sp8[0x28];
-    const char *message = lbl_803221A8;
-    void **entry;
-    int i;
-    if (arg1 >= 2)
-        Panic__Q26nw4hbm2dbFPCciPCce(message, 0x434, message + 0x258);
-    switch (arg2) {
+extern "C" void fn_800E68EC(void *arg0, int arg1, volatile unsigned char arg2, void *arg3, int arg4)
+{
+  const char *message = lbl_803221A8;
+  void **entry;
+  unsigned char sp8[0x28];
+  int i;
+  if (arg1 >= 2)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(message, 0x434, message + 0x258);
+  }
+  switch (arg2)
+  {
     case 0:
-        if (arg3 == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(message, 0x439, message + 0x2A0);
-        memcpy(sp8, arg3, 0x20);
-        *(u16 *)(sp8 + 0x20) = *(u16 *)((char *)arg3 + 0x20);
-        *(u16 *)(sp8 + 0x22) = *(u16 *)((char *)arg3 + 0x22);
-        *(u16 *)(sp8 + 0x24) = *(u16 *)((char *)arg3 + 0x24);
-        *(u16 *)(sp8 + 0x26) = *(u16 *)((char *)arg3 + 0x26);
-        break;
+      if (arg3 == 0)
+    {
+      Panic__Q26nw4hbm2dbFPCciPCce(message, 0x439, message + 0x2A0);
+    }
+      memcpy(sp8, arg3, 0x20);
+      *((u16 *) (sp8 + 0x20)) = *((u16 *) (((char *) arg3) + 0x20));
+      *((u16 *) (sp8 + 0x22)) = *((u16 *) (((char *) arg3) + 0x22));
+      *((u16 *) (sp8 + 0x24)) = *((u16 *) (((char *) arg3) + 0x24));
+      *((u16 *) (sp8 + 0x26)) = *((u16 *) (((char *) arg3) + 0x26));
+      break;
+
     case 10:
-        memset(sp8, 0, 0x20);
-        *(u16 *)(sp8 + 0x20) = 0x800;
-        *(u16 *)(sp8 + 0x22) = 0;
-        *(u16 *)(sp8 + 0x24) = 0;
-        *(u16 *)(sp8 + 0x26) = 0;
-        break;
+      memset(sp8, 0, 0x20);
+      *((u16 *) (sp8 + 0x20)) = 0x800;
+      *((u16 *) (sp8 + 0x22)) = 0;
+      *((u16 *) (sp8 + 0x24)) = 0;
+      *((u16 *) (sp8 + 0x26)) = 0;
+      break;
+
     case 25:
-        memset(sp8, 0, 0x20);
-        *(u16 *)(sp8 + 0x20) = 0x100;
-        *(u16 *)(sp8 + 0x22) = 0;
-        *(u16 *)(sp8 + 0x24) = 0;
-        *(u16 *)(sp8 + 0x26) = 0;
-        break;
-    }
-    entry = (void **)((char *)arg0 + (arg1 << 4));
-    for (i = 0; i < *(int *)((char *)arg0 + 0x108); i++) {
-        fn_80033918(entry[3], sp8);
-        entry = (void **)((char *)entry + 4);
-    }
+      memset(sp8, 0, 0x20);
+      *((u16 *) (sp8 + 0x20)) = 0x100;
+      *((u16 *) (sp8 + 0x22)) = 0;
+      *((u16 *) (sp8 + 0x24)) = 0;
+      *((u16 *) (sp8 + 0x26)) = 0;
+      break;
+
+  }
+
+  entry = (void **) (((char *) arg0) + (arg1 << 4));
+  for (i = 0; 0 <= ((*((int *) (((char *) arg0) + 0x108))) - 1); i++)
+  {
+    fn_80033918(entry[3], sp8);
+    entry = (void **) (((char *) entry) + 4);
+  }
+
 }
 
 #pragma opt_lifetimes off
@@ -3334,7 +3490,7 @@ void nw4r::snd::detail::Voice::TransformDpl2Pan(float *outPan, float *outSurroun
     *outSurround += lbl_80560F38;
 }
 extern "C" void CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(void *arg0, int arg1, int arg2, void *arg3) {
-    double f31, f30, f29, f28, f27, f23;
+    double f27, f28, f29, f30, f31, f23;
     float f22;
     float f21, f20, f19, f18, f17;
     float spC, sp8;
@@ -3351,9 +3507,9 @@ extern "C" void CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(void *arg
         break;
     default: break;
     }
-    float f24;
-    if (*(int *)(self + 0x13c) & 1) f24 = 1.0f * *(float *)(self + 0x140);
-    else f24 = 0.0f;
+    float f24 = lbl_80560F38;
+    if (*(int *)(self + 0x13c) & 1) f24 *= *(float *)(self + 0x140);
+    else f24 = lbl_80560F3C;
     mode = fn_800E394C((int *)Instance__15EmissionManagerFv());
     switch (mode) {
     case 3:
@@ -3373,25 +3529,32 @@ extern "C" void CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(void *arg
         break;
     default: break;
     }
-    float f24b = 0.0f;
+    float f24b = lbl_80560F3C;
     if (*(int *)(self + 0x104) == 2) {
         if (arg1 == 0) f24b = lbl_80560F50;
-        if (arg1 == 1) f24b = 1.0f;
+        if (arg1 == 1) f24b = lbl_80560F38;
     }
     mode = fn_800E394C((int *)Instance__15EmissionManagerFv());
     switch (mode) {
     case 2: {
         char *r6 = self + arg2 * 0x1c;
-        float a = f24b + (*(float *)(self + 0x128) + *(float *)(self + 0x130)) + *(float *)(r6 + 0x9c);
-        float b = (*(float *)(self + 0x12c) + *(float *)(self + 0x134)) + *(float *)(r6 + 0xa0);
+        float a = *(float *)(r6 + 0x9c) + (f24b + (*(float *)(self + 0x128) + *(float *)(self + 0x130)));
+        float b = *(float *)(r6 + 0xa0) + (*(float *)(self + 0x12c) + *(float *)(self + 0x134));
         ((nw4r::snd::detail::Voice *)self)->TransformDpl2Pan(&spC, &sp8, a, b);
         break;
     }
-    case 3: spC = 0.0f; sp8 = 0.0f; break;
+    case 3: {
+        float pan = lbl_80560F3C;
+        spC = pan;
+        sp8 = pan;
+        break;
+    }
+    case 0:
+    case 1:
     default: {
         char *r6 = self + arg2 * 0x1c;
-        spC = f24b + (*(float *)(self + 0x128) + *(float *)(self + 0x130)) + *(float *)(r6 + 0x9c);
-        sp8 = (*(float *)(self + 0x12c) + *(float *)(self + 0x134)) + *(float *)(r6 + 0xa0);
+        spC = *(float *)(r6 + 0x9c) + (f24b + (*(float *)(self + 0x128) + *(float *)(self + 0x130)));
+        sp8 = *(float *)(r6 + 0xa0) + (*(float *)(self + 0x12c) + *(float *)(self + 0x134));
         break;
     }
     }
@@ -3434,10 +3597,15 @@ extern "C" void CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(void *arg
         break;
     default: break;
     }
-    float v24 = 1.0f;
+    float v24 = lbl_80560F38;
     float v25 = *(float *)(self + 0x144);
     float tmp = *(float *)(self + 0x148) + *(float *)(self + arg2 * 0x1c + 0xa4);
-    if (tmp > v24) {} else { v24 = 0.0f; if (tmp >= v24) v24 = tmp; }
+    if (tmp > v24) {
+        // Keep the maximum.
+    } else {
+        v24 = lbl_80560F3C;
+        if (!(tmp < v24)) v24 = tmp;
+    }
     float v26 = *(float *)(self + 0x14c);
     float v16 = *(float *)(self + 0x150);
     mode = fn_800E394C((int *)Instance__15EmissionManagerFv());
@@ -3459,19 +3627,50 @@ extern "C" void CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(void *arg
         break;
     default: break;
     }
-    unsigned int c;
-    c = (unsigned int)(lbl_80560F80 * (float)f22); out[0] = c >= 0xffff ? 0xffff : c;
-    c = (unsigned int)(lbl_80560F80 * (float)f21); out[2] = c >= 0xffff ? 0xffff : c;
-    c = (unsigned int)(lbl_80560F80 * (float)f23); out[0x10] = c >= 0xffff ? 0xffff : c;
-    c = (unsigned int)(lbl_80560F80 * (float)f20); out[4] = c >= 0xffff ? 0xffff : c;
-    c = (unsigned int)(lbl_80560F80 * (float)f19); out[6] = c >= 0xffff ? 0xffff : c;
-    c = (unsigned int)(lbl_80560F80 * (float)f31); out[0x12] = c >= 0xffff ? 0xffff : c;
-    c = (unsigned int)(lbl_80560F80 * (float)f18); out[8] = c >= 0xffff ? 0xffff : c;
-    c = (unsigned int)(lbl_80560F80 * (float)f17); out[0x0a] = c >= 0xffff ? 0xffff : c;
-    c = (unsigned int)(lbl_80560F80 * (float)f30); out[0x14] = c >= 0xffff ? 0xffff : c;
-    c = (unsigned int)(lbl_80560F80 * (float)f29); out[0x0c] = c >= 0xffff ? 0xffff : c;
-    c = (unsigned int)(lbl_80560F80 * (float)f28); out[0x0e] = c >= 0xffff ? 0xffff : c;
-    c = (unsigned int)(lbl_80560F80 * (float)f27); out[0x16] = c >= 0xffff ? 0xffff : c;
+    float scale = lbl_80560F80;
+    unsigned int saturated;
+    unsigned int value;
+    saturated = (unsigned int)(scale * f22) < 0xffffU ? (unsigned int)(lbl_80560F80 * f22) : 0xffffU;
+    scale = lbl_80560F80;
+    out[0] = saturated;
+    saturated = (unsigned int)(scale * f21) < 0xffffU ? (unsigned int)(lbl_80560F80 * f21) : 0xffffU;
+    scale = lbl_80560F80;
+    out[2] = saturated;
+    value = (unsigned int)(scale * (float)f23);
+    saturated = value < 0xffffU ? value : 0xffffU;
+    scale = lbl_80560F80;
+    out[16] = saturated;
+    saturated = (unsigned int)(scale * f20) < 0xffffU ? (unsigned int)(lbl_80560F80 * f20) : 0xffffU;
+    scale = lbl_80560F80;
+    out[4] = saturated;
+    saturated = (unsigned int)(scale * f19) < 0xffffU ? (unsigned int)(lbl_80560F80 * f19) : 0xffffU;
+    scale = lbl_80560F80;
+    out[6] = saturated;
+    value = (unsigned int)(scale * (float)f31);
+    saturated = value < 0xffffU ? value : 0xffffU;
+    scale = lbl_80560F80;
+    out[18] = saturated;
+    saturated = (unsigned int)(scale * f18) < 0xffffU ? (unsigned int)(lbl_80560F80 * f18) : 0xffffU;
+    scale = lbl_80560F80;
+    out[8] = saturated;
+    saturated = (unsigned int)(scale * f17) < 0xffffU ? (unsigned int)(lbl_80560F80 * f17) : 0xffffU;
+    scale = lbl_80560F80;
+    out[10] = saturated;
+    value = (unsigned int)(scale * (float)f30);
+    saturated = value < 0xffffU ? value : 0xffffU;
+    scale = lbl_80560F80;
+    out[20] = saturated;
+    value = (unsigned int)(scale * (float)f29);
+    saturated = value < 0xffffU ? value : 0xffffU;
+    scale = lbl_80560F80;
+    out[12] = saturated;
+    value = (unsigned int)(scale * (float)f28);
+    saturated = value < 0xffffU ? value : 0xffffU;
+    scale = lbl_80560F80;
+    out[14] = saturated;
+    value = (unsigned int)(scale * (float)f27);
+    saturated = value < 0xffffU ? value : 0xffffU;
+    out[22] = saturated;
     out[1] = 0; out[3] = 0; out[0x11] = 0; out[5] = 0; out[7] = 0; out[0x13] = 0;
     out[9] = 0; out[0x0b] = 0; out[0x15] = 0; out[0x0d] = 0; out[0x0f] = 0; out[0x17] = 0;
 }
@@ -3646,31 +3845,59 @@ void *nw4hbm::snd::detail::Bank::NoteOn(const nw4hbm::snd::detail::NoteOnInfo &n
 }
 
 extern const char lbl_803224F0[];
-extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *self, const void *bank) {
-    register const char *messages = lbl_803224F0;
-    *(void **)self = 0;
-    *(void **)((char *)self + 4) = 0;
-    *(void **)((char *)self + 8) = 0;
-    if (bank == 0) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x58, messages + 0xB8);
-    unsigned int magic = *(unsigned int *)bank;
-    if (magic != 0x52424E4B) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x36, messages + 0x14);
-    magic = *(unsigned int *)bank;
-    if (magic != 0x52424E4B) return self;
-    unsigned short version = *(unsigned short *)((char *)bank + 6);
-    if (version < 0x100) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x3E, messages + 0x60);
-    version = *(unsigned short *)((char *)bank + 6);
-    if (version < 0x100) return self;
-    if (version > 0x101) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x44, messages + 0x60);
-    version = *(unsigned short *)((char *)bank + 6);
-    if (!(version == 0x100 || version == 0x101)) return self;
-    *(const void **)self = bank;
-    const char *data = (const char *)bank + *(unsigned int *)((char *)bank + 0x10);
-    *(const char **)((char *)self + 4) = data;
-    if (*(unsigned int *)data != 0x44415441) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x61, messages + 0xE4);
-    const char *wave = (const char *)bank + *(unsigned int *)((char *)bank + 0x18);
-    *(const char **)((char *)self + 8) = wave;
-    if (*(unsigned int *)wave != 0x57415645) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x65, messages + 0x13C);
+extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *self, const void *bank)
+{
+  register const char *messages = lbl_803224F0;
+  *((void **) self) = 0;
+  *((void **) (((char *) self) + 4)) = 0;
+  *((void **) (((char *) self) + 8)) = 0;
+  if (bank == 0)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x58, messages + 0xB8);
+  }
+  unsigned char magic = *((unsigned int *) bank);
+  if (magic != 0x52424E4B)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x36, messages + 0x14);
+  }
+  magic = *((unsigned int *) bank);
+  if (magic != 0x52424E4B)
+  {
     return self;
+  }
+  unsigned short version = *((unsigned short *) (((char *) bank) + 6));
+  if (version < 0x100)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x3E, messages + 0x60);
+  }
+  version = *((unsigned short *) (((char *) bank) + 6));
+  if (version < 0x100)
+  {
+    return self;
+  }
+  if (version > 0x101)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x44, messages + 0x60);
+  }
+  version = *((unsigned short *) (((char *) bank) + 6));
+  if ((version < 0x100) || (version > 0x101))
+  {
+    return self;
+  }
+  *((const void **) self) = bank;
+  const char *data = ((const char *) bank) + (*((unsigned int *) (((char *) bank) + 0x10)));
+  *((const char **) (((char *) self) + 4)) = data;
+  if ((*((unsigned int *) data)) != 0x44415441)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x61, messages + 0xE4);
+  }
+  const char *wave = ((const char *) bank) + (*((unsigned int *) (((char *) bank) + 0x18)));
+  *((const char **) (((char *) self) + 8)) = wave;
+  if ((*((unsigned int *) wave)) != 0x57415645)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x65, messages + 0x13C);
+  }
+  return self;
 }
 
 #pragma opt_peephole off
