@@ -217,7 +217,7 @@ int fn_802DB69C(void **arg0, int arg1) {
 // compare from the texture entry, loads the mode's textures with their TEV order
 // (returning how many TEV stages that needs), picks the TEV stages and the
 // texture coordinate generation of the mode, and blends on the source alpha.
-void cpulightSetupGxForMode(int mode) {
+/* Re-applies this module's GX pipeline for one of three draw modes, but only when the texture-changed flag (raised by the texture setters, cleared here) is set: sets alpha compare from the bound texture, loads the mode's textures with TEV order, selects the mode's TEV stages and texture-coordinate generation, and blends on source alpha. */ void cpulightSetupGxForMode(int mode) {
     void *texObjs[3];
     int numTevStages;
 
