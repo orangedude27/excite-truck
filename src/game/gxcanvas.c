@@ -5,7 +5,7 @@
 #include <types.h>
 extern const char lbl_8034B078[];
 extern const char lbl_8034B0E4[];
-extern void fn_802C3918(s32,s32,s32,s32,s32,s32,s32,s32);
+extern void gxCanvasCopy16to16(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C3C68(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C3D74(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C3F00(s32,s32,s32,s32,s32,s32,s32,s32);
@@ -479,7 +479,7 @@ void fn_802C3754(s32 left, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 right, s3
         isOtherMode = 0;
         if (*(s8 *)right != 5 && *(s8 *)right != 6) isOtherMode = 1;
         if (isOtherMode) {
-            fn_802C3918(left,arg1,arg2,arg3,arg4,right,arg6,arg7);
+            gxCanvasCopy16to16(left,arg1,arg2,arg3,arg4,right,arg6,arg7);
             return;
         }
     }
@@ -560,7 +560,7 @@ extern const char lbl_8034B0B8[];
  * new low bit, and RGBA4444 -> RGB565 shifts each component up into its 565
  * field and drops the alpha nibble.  Any other pair of formats only traces
  * "copy_16_to_16: can't convert from %d to %d". */
-void fn_802C3918(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
+void gxCanvasCopy16to16(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
                  s32 srcBottom, s32 dstCanvas, s32 dstLeft, s32 dstTop) {
     u16 *srcPix, *srcPix_2, *srcPix_3, *srcPix_4;
     u16 *dstPix, *dstPix_2, *dstPix_3, *dstPix_4;
@@ -1416,7 +1416,7 @@ extern void fn_802C33A8();
 extern void fn_802E317C(const char *, ...);
 extern void fn_802C3850();
 extern const char lbl_8034B078[];
-extern void fn_802C3918(s32,s32,s32,s32,s32,s32,s32,s32);
+extern void gxCanvasCopy16to16(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C3C68(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C3D74(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C3F00(s32,s32,s32,s32,s32,s32,s32,s32);
