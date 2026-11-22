@@ -10968,7 +10968,7 @@ tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_
     if (acl_ind == 4)
         return BTM_UNKNOWN_ADDR;
 
-    p_cb = (s32)lbl_803C0F78 + acl_ind * 0x22 + 0x4CC;
+    p_cb = (UINT8 *)((s32)lbl_803C0F78 + acl_ind * 0x22 + 0x4CC);
     if (mode != BTM_PM_MD_ACTIVE) {
         ind = mode - BTM_PM_MD_HOLD;
         p_features = (UINT8 *)fn_8007A3A4();
