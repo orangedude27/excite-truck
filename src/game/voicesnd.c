@@ -660,7 +660,7 @@ extern "C" void fn_8020B348(void *self) {
 //     +0x10 fn_8020B2A8  has a sound loaded
 //     +0x14 fn_8020B874  load another sound by name
 //     +0x18 VoiceSnd_playOnce  play once
-//     +0x1C fn_8020B5EC  play, looping
+//     +0x1C VoiceSnd_playLooping  play, looping
 //     +0x20 fn_8020AA0C  release the voices
 //     +0x24 fn_8020AA98  state
 //     +0x28 fn_8020B908  mute
@@ -806,7 +806,7 @@ typedef struct VoiceSnd {
  * played hard left and hard right with the pan splitting the volume between
  * them. The playing counters start over.
  */
-extern "C" void fn_8020B5EC(void *arg0) {
+extern "C" void VoiceSnd_playLooping(void *arg0) {
     VoiceSnd *snd = (VoiceSnd *)arg0;
     float finalVolume, gain, side;
     int voiceIndex;
