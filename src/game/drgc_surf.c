@@ -993,7 +993,7 @@ void fn_802D5DE8(u32 flags) {
     GXSetVtxDescv(vtxDescList);
 }
 
-#pragma opt_lifetimes off
+#pragma optimization_level 3
 #pragma scheduling on
 #pragma dont_inline on
 void fn_802D5F88(s32 arg0) {
@@ -1006,7 +1006,7 @@ void fn_802D5F88(s32 arg0) {
         lbl_8055FDEC = mode;
     }
 }
-#pragma opt_lifetimes reset
+#pragma optimization_level reset
 #pragma scheduling invalid_target
 
 #pragma push
