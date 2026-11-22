@@ -6688,62 +6688,58 @@ done:
     }
 }
 
-void bta_dm_pm_btm_status(tBTA_DM_MSG *p_data)
-{
-	UINT8 i;
+void bta_dm_pm_btm_status(void *arg0) {
+    register u8 *p = (u8 *)arg0;
+    u8 *entry;
+    u8 *timer;
+    s32 offset;
+    s32 mask;
+    u8 j;
+    u32 i;
 
-	for (i = 0; i < BTA_DM_NUM_PM_TIMER; ++i)
-	{
-		if (lbl_803C0C14.pm_timer[i].in_use
-		    && bdcmp(lbl_803C0C14.pm_timer[i].peer_bdaddr,
-		             p_data->pm_status.bd_addr)
-		           == 0)
-		{
-			fn_8007148C(&lbl_803C0C14.pm_timer[i].timer);
-			lbl_803C0C14.pm_timer[i].in_use = FALSE;
+    i = 0;
+loop_first:
+    entry = (u8 *)&lbl_803C0C14 + ((i << 5) & 0x1FE0);
+    if (*(u8 *)((u8 *)entry + 0xB6) != 0 &&
+        bdcmp((u8 *)entry + 0xB0, p + 8) == 0) {
+        timer = entry + 0x98;
+        fn_8007148C((s32)timer);
+        *(u8 *)((u8 *)entry + 0xB6) = 0;
+    } else {
+        i++;
+        if (i < 3)
+            goto loop_first;
+    }
 
-			break;
-		}
-	}
+    switch (p[0xE]) {
+    case 0:
+        goto check_links;
+    default:
+        goto done;
+    }
+check_links:
+    if (p[0x12] == 0)
+        goto fallback;
 
-	switch (p_data->pm_status.status)
-	{
-	case BTM_PM_STS_ACTIVE:
-		if (p_data->pm_status.hci_status != 0)
-		{
-			for (i = 0; i < lbl_803C0C14.device_list.count; ++i)
-			{
-				if (bdcmp(lbl_803C0C14.device_list.peer_device[i].peer_bdaddr,
-				          p_data->pm_status.bd_addr)
-				    == 0)
-				{
-					if (!(lbl_803C0C14.device_list.peer_device[i].pm_mode_attempted
-					      & (BTA_DM_PM_PARK | BTA_DM_PM_SNIFF)))
-					{
-						return;
-					}
+    j = 0;
+    while (j < lbl_803C0C14[0x4D]) {
+        offset = j * 0xB;
+        if (bdcmp((u8 *)&lbl_803C0C14 + offset, p + 8) == 0) {
+            mask = lbl_803C0C14[offset + 9] & 3;
+            if (mask != 0) {
+                lbl_803C0C14[offset + 0xA] |= mask;
+                bta_dm_pm_set_mode(p + 8, 0);
+            }
+            goto done;
+        }
+        j++;
+    }
+    goto done;
 
-					lbl_803C0C14.device_list.peer_device[i].pm_mode_failed |=
-						lbl_803C0C14.device_list.peer_device[i].pm_mode_attempted
-						& (BTA_DM_PM_PARK | BTA_DM_PM_SNIFF);
-
-					bta_dm_pm_set_mode(p_data->pm_status.bd_addr, FALSE);
-
-					return;
-				}
-			}
-
-			return;
-		}
-
-		bta_dm_pm_set_mode(p_data->pm_status.bd_addr, FALSE);
-		break;
-
-		/* NOTE: bluedroid includes other switch cases here guarded by
-		 * preprocessor conditional blocks that are not active here, hence the
-		 * single-case switch block.
-		 */
-	}
+fallback:
+    bta_dm_pm_set_mode(p + 8, 0);
+done:
+    ;
 }
 
 /* Power-management timer callback: switch the peer device (whose BD_ADDR sits
