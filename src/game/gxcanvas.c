@@ -1265,16 +1265,14 @@ void fn_802C4C80(Stamp *stamp) {
 
 #pragma push
 #pragma use_lmw_stmw off
+/* Draw one frame of a STMP stamp onto the current canvas, offset by the stamp's
+ * (x_off, y_off) from (x, y).  Each row is run-length encoded 8-bit palette
+ * indices: a count byte with bit 7 clear is that many transparent pixels to
+ * skip, bit 7 set starts a literal run of the low seven bits' length whose
+ * bytes index the palette (the stamp's, or the caller's override pair).
+ * Clipped rows and columns are stepped over; a NO_DRAW canvas, a null stamp or
+ * an out-of-range frame leaves the canvas untouched. */
 void fn_802C4C90(Stamp *stamp, s32 x, s32 y, s32 frame, StampPalette *override) {
-    /* Draw one frame of a STMP stamp onto the canvas being drawn on, the
-       stamp's (x_off, y_off) taken off (x, y).  Its rows are run-length
-       encoded 8-bit colour indices: a count byte with the top bit clear is
-       that many transparent pixels to leave alone, one with the top bit set
-       starts a literal run of the low seven bits' length whose bytes index
-       the palette -- the stamp's own, or the pair the caller passed.  Rows
-       and columns the canvas's clip rectangle cuts off are stepped over
-       instead of drawn, and a NO_DRAW canvas, a null stamp or a frame the
-       stamp does not have leave the canvas untouched. */
     GxCanvas *canvas = (GxCanvas *)sCurrentCanvas;
     if (!(canvas->flags & CANVAS_FLAG_NO_DRAW) && stamp != 0 && frame < stamp->frames) {
         s32 endRow, endCol, left, top, firstCol;
