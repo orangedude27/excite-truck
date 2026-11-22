@@ -303,7 +303,7 @@ void musicPreRaceUpdate(void) {
            f32 temp_f0, temp_f1, temp_f2, temp_f4;
            s32 featuredTrack, selection, active, cached, i, skip;
     s32 elapsed, now, track;
-           void *sound;
+           void *musicObj;
            /* The three track tables start at lbl_8055EE41 and must be set up. */
            if ((u8)lbl_8055EE41 == 0 || (u8)lbl_8055EE43 == 0 || (u8)lbl_8055EE42 == 0) fn_8020C2AC();
            lbl_8055EE58 = fn_802104B8();
@@ -326,11 +326,11 @@ void musicPreRaceUpdate(void) {
                if (fn_80009C84() == 0) {
                    /* Remember when the featured track started; fade it in. */
                    lbl_8055EE3C = fn_802E2C20();
-                   sound = (void *)lbl_8055EE38;
-                   if (sound != 0) {
-                       *(u8 *)((u8 *)sound + 0x49) = active;
-                       *(u8 *)((u8 *)sound + 0x4B) = 0;
-                       *(u8 *)((u8 *)sound + 0x4A) = 0;
+                   musicObj = (void *)lbl_8055EE38;
+                   if (musicObj != 0) {
+                       *(u8 *)((u8 *)musicObj + 0x49) = active;
+                       *(u8 *)((u8 *)musicObj + 0x4B) = 0;
+                       *(u8 *)((u8 *)musicObj + 0x4A) = 0;
                    }
                }
            } else if (cached == 0) {
