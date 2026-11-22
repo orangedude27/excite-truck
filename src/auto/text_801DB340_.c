@@ -673,11 +673,11 @@ float fn_801DCF0C(void) {
  extern double lbl_80562B78;
 #pragma paired_single off
 #pragma opt_common_subs on
-#pragma scheduling invalid_target
+#pragma scheduling on
 float fn_801DCF48(void *arg0, float farg0, float farg1) {
     extern float lbl_80562B84;
     extern float lbl_80562BBC;
-    char *state = (char *)lbl_8055E990;
+    char *const state = (char *)lbl_8055E990;
     char *node, *layer;
     float sp8, var_f31, x, z, roundedX, roundedZ;
     float var_f8, var_f7, weight, slope, base, normalY, factorZ, factorX;
@@ -796,7 +796,7 @@ float fn_801DCF48(void *arg0, float farg0, float farg1) {
             do {
                 weight = lbl_804424B0[*(int *)(layer + 0x808)];
                 var_f31 += weight * (*(float *)(layer + 0) +
-                    *(float *)(layer + 4) * (float)*(unsigned short *)(layer + deltaX + deltaZ + 8));
+                    *(float *)(layer + 4) * (float)*(unsigned short *)(deltaX + deltaZ + layer + 8));
                 next = *(int *)(layer + 0x80C);
                 layer = next >= 0 ? (char *)*(char **)((char *)*(volatile int *)&lbl_8055E990 + 0x20) + next * 0x810 : 0;
             } while (layer != 0);
