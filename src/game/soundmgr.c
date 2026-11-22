@@ -791,7 +791,7 @@ void fn_80208408(void *arg0, void *arg1) {
 /* Trampoline for the sound-object insert helper: tail-calls fn_80208408
  * (which inserts a sound object into its class list) with no adaptation. */
 #pragma force_active on
-void fn_802085E8(void) {
+extern "C" void fn_802085E8(void) {
 	((void (*)(void))fn_80208408)();
 }
 #pragma force_active reset
