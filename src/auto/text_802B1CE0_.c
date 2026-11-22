@@ -612,17 +612,24 @@ void fn_802B28BC(int *entries, int count) {
 #undef RandomIntInRange
 }
 
-    #pragma push
-  #pragma optimization_level 3
-  #pragma opt_pointer_aliasing on
-void **fn_802B2934(void *arg0, void **arg1) {
-    unsigned int valBits = *(unsigned int *)arg1;
-    int count = ((int *)arg0)[1];
-    void **data = *(void ***)arg0;
-    int next = count + 1;
-    ((int *)arg0)[1] = next;
-    data[count] = (void *)valBits;
-    return &data[count];
+        #pragma push
+   #pragma cplusplus off
+   #pragma scheduling invalid_target
+   #pragma dont_inline on
+   #pragma opt_common_subs off
+   #pragma optimization_level 3
+   #pragma opt_pointer_aliasing on
+/* Append *pValue to the { void **data; int count; } pointer vector and return the new slot. */
+void **fn_802B2934(void *vec, void **__restrict pValue) {
+    int index;
+    void **data;
+    int newIndex;
+    index = ((int *)vec)[1];
+    data = *(void ***)vec;
+    newIndex = index + 1;
+    ((int *)vec)[1] = newIndex;
+    data[index] = *pValue;
+    return &data[index];
 }
  #pragma pop
 
@@ -636,7 +643,7 @@ extern void fn_802E317C(const char *, ...);
 #pragma processor 750
 #pragma cplusplus on
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma dont_inline on
 extern "C" void *fn_802B2958(void *arg0, void *arg1) {
     char *base = lbl_8034A288;
@@ -646,8 +653,8 @@ extern "C" void *fn_802B2958(void *arg0, void *arg1) {
     int key, value, valid;
     char *obj = (char *)arg0;
     float *entry;
-    register float radius, sn, angle, c;
-    double one, zero;
+    float radius, angle, x, x2, x3, yz, product0, product1;
+    double one, zero, cosine, sine, negSine;
     unsigned int i;
     if (p != 0) {
         name = ((ParticleConfig *)arg1)->getText(lbl_8055CDE0);
@@ -684,26 +691,30 @@ extern "C" void *fn_802B2958(void *arg0, void *arg1) {
     *(float *)(obj + 0x298) = ((ParticleConfig *)arg1)->getFloat(base + 0x110, lbl_80564C04);
     *(float *)(obj + 0x29C) = ((ParticleConfig *)arg1)->getFloat(base + 0x11C, lbl_80564C04);
     *(char *)(obj + 4) = ((ParticleConfig *)arg1)->getBool(base + 0x128, 0);
-    entry = (float *)(obj + 0x18);
     zero = 0.0;
     one = 1.0;
+    entry = (float *)(obj + 0x18);
     for (i = 0; i < 16; i++, entry += 10) {
         entry[9] = ((float (*)(int, float, float))fn_80129DC4)(0, *(float *)(obj + 0x298), *(float *)(obj + 0x29C));
         angle = ((float (*)(int, float, float))fn_80129DC4)(0, lbl_80564C00, lbl_80564C08);
-        c = (float)cos(angle);
-        sn = (float)sin(angle);
-        radius = entry[9];
-        entry[0] = c * radius;
-        entry[1] = (float)zero * radius;
-        entry[2] = -sn * radius;
-        radius = entry[9];
-        entry[3] = (float)zero * radius;
-        entry[4] = (float)one * radius;
-        entry[5] = (float)zero * radius;
-        radius = entry[9];
-        entry[6] = sn * radius;
-        entry[7] = (float)zero * radius;
-        entry[8] = c * radius;
+        cosine = (float)cos(angle);
+        sine = (float)sin(angle);
+        negSine = -sine;
+        x = entry[9];
+        product1 = (float)zero * x;
+        product0 = (float)cosine * x;
+        entry[0] = product0;
+        entry[1] = product1;
+        entry[2] = (float)negSine * x;
+        x2 = entry[9];
+        yz = (float)zero * x2;
+        entry[3] = yz;
+        entry[4] = (float)one * x2;
+        entry[5] = yz;
+        x3 = entry[9];
+        entry[6] = (float)sine * x3;
+        entry[7] = (float)zero * x3;
+        entry[8] = (float)cosine * x3;
     }
     *(char *)(obj + 0x2A0) = 0;
     return obj;
