@@ -1199,18 +1199,18 @@ extern void fn_8029C450(void *, int);
 extern float lbl_8056469C;
 #pragma scheduling invalid_target
 void fn_8029DF64(void *arg0, int arg1, int arg2, float arg3) {
+    int low = -32768;
     int stride;
+    short *data;
     int index;
     float val;
-    short *data;
     int cvt;
-    int low;
     int out;
+    stride = *(int *)((char *)arg0 + 0xC);
     data = *(short **)((char *)arg0 + 4);
-    index = arg1 + arg2 * *(int *)((char *)arg0 + 0xC);
+    index = arg1 + arg2 * stride;
     val = lbl_8056469C * arg3 + (float)data[index];
     cvt = (int)val;
-    low = -32768;
     if (cvt > -32768) low = cvt;
     out = 32767;
     if (low < 32767) out = low;
