@@ -5214,8 +5214,8 @@ extern "C" s32 fn_800AC4AC(void *arg0, s32 arg1) {
         goto zero;
     *(s32 *)self = prev;
     rv = ((s32 (*)(void *, s32))fn_800AB378)(arg0, arg1);
-    if (rv != 0) {
-        *(s32 *)self = (unsigned)cnt;
+    if (rv) {
+        *(s32 *)self = cnt;
         ((s32 (*)(void *, s32))fn_800AB378)(arg0, 0);
         goto done;
     }
