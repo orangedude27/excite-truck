@@ -1,7 +1,11 @@
 #include <revolution/OS.h>
 
 /* The ConfigMEM* helpers below are handwritten asm stubs that program the PowerPC
- * BAT registers directly; BATConfig selects one and enters it through RealMode. */
+ * BAT registers directly; BATConfig selects one and enters it through RealMode.
+ * ConfigMEM2_52MB maps a 52 MB MEM2 window (0x90000000-0x93400000),
+ * ConfigMEM2_56MB maps 56 MB (0x90000000-0x93800000), ConfigMEM2_64MB maps 64 MB,
+ * and ConfigMEM2_112MB / 128MB cover the larger boards. Each writes the IBAT/DBAT
+ * upper/lower register pairs with the SDK's cache and protection attributes. */
 
 static BOOL OnShutdown(BOOL final, u32 event);
 static OSShutdownFunctionInfo ShutdownFunctionInfo = {OnShutdown, 127};
