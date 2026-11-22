@@ -171,8 +171,7 @@ BOOL ARCFastOpen(ARCHandle *handle, s32 entrynum, ARCFileInfo *info) {
 extern u8 lbl_802FE850[];
 
 /* ARC path comparison helper */
-static inline BOOL isSame(const char *lhs, const char *rhs) {
-    u8 *locale = *(u8 **)(lbl_802FE850 + 0x38);
+static inline BOOL isSame(const char *lhs, const char *rhs, u8 *locale) {
     while (rhs[0] != '\0') {
         int a = *lhs++;
         int b = *rhs++;
@@ -191,6 +190,7 @@ s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
     u32 anchor;
     u32 it = handle->currDir;
     ARCNode *nodes = handle->FSTStart;
+    u8 *locale = *(u8 **)(lbl_802FE850 + 0x38);
 
     while (TRUE) {
         if (path[0] == '\0') return it;
@@ -225,7 +225,7 @@ s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
                         ++it;
                         continue;
                     }
-                    if (isSame(path, name_of_it) == TRUE) goto descend;
+                    if (isSame(path, name_of_it, locale) == TRUE) goto descend;
                 }
                 if (nodes[it].packed_type_name & 0xFF000000) {
                     it = nodes[it].folder.sibling_next;
