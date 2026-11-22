@@ -943,7 +943,7 @@ extern void fn_802E61A8(void *);
 /* Unmute a voice sound (vtable slot +0x2C of lbl_8033C3F4): clear the mute flag
  * and, if fn_8020B908 took it down while it was playing (state 1, its voices
  * released), grab its voices again, re-apply the mix values and restart it. */
-/* Unmute a voice sound (vtable +0x2C): clear the mute flag and, if it was muted while playing (state 1, voices released), re-grab its voices, re-apply the mix values and restart it. */ void VoiceSnd_unmute(void *self) {
+void VoiceSnd_unmute(void *self) {
     VoiceSnd *snd = (VoiceSnd *)self;
     float master, gain, side;
     int i;
