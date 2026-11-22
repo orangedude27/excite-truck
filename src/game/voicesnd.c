@@ -664,7 +664,7 @@ extern "C" void fn_8020B348(void *self) {
 //     +0x20 fn_8020AA0C  release the voices
 //     +0x24 fn_8020AA98  state
 //     +0x28 fn_8020B908  mute
-//     +0x2C fn_8020B9D4  unmute
+//     +0x2C VoiceSnd_unmute  unmute
 // fn_8020AC2C pushes the mix values below into the voices every frame.
 typedef struct SoundGroup {
     char name[0x20]; // at 0x00  group name, from the sound configuration
@@ -943,7 +943,7 @@ extern void fn_802E61A8(void *);
 /* Unmute a voice sound (vtable slot +0x2C of lbl_8033C3F4): clear the mute flag
  * and, if fn_8020B908 took it down while it was playing (state 1, its voices
  * released), grab its voices again, re-apply the mix values and restart it. */
-void fn_8020B9D4(void *self) {
+void VoiceSnd_unmute(void *self) {
     VoiceSnd *snd = (VoiceSnd *)self;
     float master, gain, side;
     int i;
