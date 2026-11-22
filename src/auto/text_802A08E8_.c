@@ -32,8 +32,9 @@ void fn_802A0940(void) {
 
 s32 fn_802A0944(void *arg0)
 {
-  s32 index;
+  char index;
   Rec54 *table = (Rec54 *) lbl_8055F834;
+  volatile unsigned int pad;
   if ((*((s32 *) arg0)) != 1)
   {
     index = *(((s32 *) arg0) + 1);
@@ -41,9 +42,6 @@ s32 fn_802A0944(void *arg0)
   else
   {
     index = 0x3F - (*(((s32 *) arg0) + 1));
-    if (1)
-    {
-    }
   }
   table[index] = *((Rec54 *) arg0);
   return 0x54;
@@ -57,7 +55,7 @@ extern void fn_802A0AF8(void);
 extern char lbl_803498E0[];
 extern char lbl_803498EC[];
 void fn_802A09B0(void) {
-    register s32 offset = 0;
+    s32 offset = 0;
     s32 zero = 0;
     s32 counter = 4;
     u8 *base;
@@ -186,6 +184,7 @@ typedef struct {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma ppc_psq_save off
 void fn_802A0B54(void) {
     Fn802A0B54Work work;
