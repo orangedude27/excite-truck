@@ -2312,9 +2312,9 @@ extern "C" void *fn_801F96C8(void *);
 extern "C" void fn_801F973C(void *, void *, u32);
 #pragma use_lmw_stmw off
 extern "C" void fn_801FA7F4(void *arg0, u32 *arg1, s32 arg2) {
-    s32 zero = 0;
     volatile u32 *src = (volatile u32 *)arg1;
     s32 t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    s32 zero = 0;
     f32 data[14];
     t0 = src[0];
     ((u32 *)data)[13] = zero;
@@ -2404,22 +2404,25 @@ extern "C" void *fn_801A4548(void *);
 extern "C" void fn_801EA1E0(void *, s32, f32, f32);
 extern "C" void fn_80204050(void);
 extern "C" u8 lbl_8033B384[];
+/* Apply the stage's track.sol resource: link each solid entry to the static object with
+ * the matching id, release the resource, run the terrain hook, then initialize unbound
+ * nodes in the two static-object lists. */
 extern "C" void fn_801FA9AC(void) {
-    void *data = fn_801A4548(lbl_8033B384);
-    s32 i, j;
-    if (data != 0) {
-        for (i = 0; i < lbl_8055EC58; i++) {
-            s32 count = *(s32 *)data;
-            void *obj = lbl_8055EC54[i];
-            for (j = 0; j < count; j++) {
-                void *entry = *(void **)((u8 *)*(void **)((u8 *)data + 4) + j * 4);
-                if (*(s32 *)((u8 *)entry + 0x38) == *(s32 *)((u8 *)obj + 0x3C)) {
-                    *(void **)((u8 *)obj + 0x34) = (u8 *)entry + 4;
+    void *solData = fn_801A4548(lbl_8033B384);
+    s32 objIndex, entryIndex;
+    if (solData != 0) {
+        for (objIndex = 0; objIndex < lbl_8055EC58; objIndex++) {
+            s32 entryCount = *(s32 *)solData;
+            void *staticObj = lbl_8055EC54[objIndex];
+            for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+                void *solEntry = *(void **)((u8 *)*(void **)((u8 *)solData + 4) + entryIndex * 4);
+                if (*(s32 *)((u8 *)solEntry + 0x38) == *(s32 *)((u8 *)staticObj + 0x3C)) {
+                    *(void **)((u8 *)staticObj + 0x34) = (u8 *)solEntry + 4;
                     break;
                 }
             }
         }
-        ((void (*)(void *))(*(void **)((u8 *)data + 0x14)))(data);
+        ((void (*)(void *))(*(void **)((u8 *)solData + 0x14)))(solData);
     }
     fn_80204050();
     for (void *node = lbl_8055EC4C; node != 0; node = *(void **)((u8 *)node + 0x44)) {
