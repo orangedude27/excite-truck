@@ -217,7 +217,7 @@ int fn_802DB69C(void **arg0, int arg1) {
 // compare from the texture entry, loads the mode's textures with their TEV order
 // (returning how many TEV stages that needs), picks the TEV stages and the
 // texture coordinate generation of the mode, and blends on the source alpha.
-void fn_802DB778(int mode) {
+void cpulightSetupGxForMode(int mode) {
     void *texObjs[3];
     int numTevStages;
 
@@ -546,7 +546,7 @@ void fn_802DC138(int positionArray, int vertexCount, unsigned short *__restrict 
     int n;
     int i;
     volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
-    fn_802DB778(0);
+    cpulightSetupGxForMode(0);
     fn_802DBCFC(positionArray, vertexCount);
     while (indexListSize > 0) {
         n = *indexList;
@@ -576,7 +576,7 @@ void fn_802DC280(int verts, int count, unsigned short *__restrict list, int size
     int i;
     volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
 
-    fn_802DB778(1);
+    cpulightSetupGxForMode(1);
     fn_802DBC70(verts, count);
     while (size > 0) {
         n = *list;
@@ -1072,7 +1072,7 @@ void fn_802DCFCC(int arg0, int indTexSlot, int texSlot1, float lightLevel, float
     if (texSlot1 != -2) {
         fn_802CADD0(texSlot1, 1);
     }
-    fn_802DB778(2);
+    cpulightSetupGxForMode(2);
     if (indTexSlot != -2) {
         lbl_8055FEC0 = 1;
         base = lbl_80565050 * lightLevel;
