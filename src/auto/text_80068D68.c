@@ -2647,7 +2647,7 @@ void fn_8006AED4(s32 arg0) {
     packet[2] = (u8)(header >> 16);
     packet[3] = (u8)(header >> 24);
     for (L.i = 0; L.i < L.length; L.i++)
-        packet[L.i + 4] = *(volatile u8 *)&lbl_803135C0[(u32)L.i + 8];
+        packet[L.i + 4] = *(volatile u8 *)&lbl_803135C0[L.i + 8];
     lbl_8055DC40 = L.length;
     BTM_VendorSpecificCommand(0xFC4C, (u8)(L.length + 4), packet, fn_8006B044);
 }
@@ -4741,8 +4741,8 @@ void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
     register u8 *control;
-    register char *report = lbl_803142C8;
     register int status = arg0;
+    register char *report = lbl_803142C8;
     u16 offset;
     if (lbl_803BD1E0.at_0x28 != 0) {
         OSReport(report + 0x518, status);
@@ -4752,8 +4752,8 @@ void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
     }
     if (arg1 != 0) {
         GKI_freebuf((void *)arg1);
-        fn_8006EBAC();
         ((u8 *)&lbl_803BD1E0)[0x38] = ((u8 *)&lbl_803BD1E0)[0x38] - 1;
+        fn_8006EBAC();
         fn_8006EB88();
     }
     {
@@ -10328,7 +10328,6 @@ tBTM_STATUS BTM_CancelRemoteDeviceName(void) {
 #pragma pop
 
 tBTM_INQ_INFO *BTM_InqDbRead(BD_ADDR p_bda) {
-    /* Look up a device by BD_ADDR in the BTM inquiry database and return its inquiry info, or NULL if not found. */
     extern char lbl_80316484[];
     u32 index;
     u8 *btmCb = lbl_803C0F78;
