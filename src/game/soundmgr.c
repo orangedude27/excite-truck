@@ -616,7 +616,7 @@ extern "C" signed long fn_8020820C(SoundMgrObj* lhsObj, SoundMgrObj* rhsObj) {
 
 #pragma push
 #pragma inline_depth(0)
-void fn_802082C0(void *arg0, void *arg1) {
+extern "C" void fn_802082C0(void *arg0, void *arg1) {
     register signed long outerOffset;
     register signed long *source;
     register signed long *target;
