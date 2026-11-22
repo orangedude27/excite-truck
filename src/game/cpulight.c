@@ -286,7 +286,7 @@ void fn_802DBA1C(unsigned char arg0) {
     extern unsigned char lbl_802FAD38[];
     extern void *lbl_804DB468[];
     extern void GXSetupFiveStageTevPipelineA(void);
-    extern void fn_802E0684(void);
+    extern void GXSetupFiveStageTevPipelineB(void);
     int texMtx0[8];
     int texMtx1[8];
     int *mtxSrc;
@@ -319,7 +319,7 @@ void fn_802DBA1C(unsigned char arg0) {
         GXLoadTexObj((unsigned char *)lbl_804DB468[1] + 0x78, 2);
         GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x24, 3);
         GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x78, 4);
-        fn_802E0684();
+        GXSetupFiveStageTevPipelineB();
         GXSetZMode(0, 7, 0);
     }
 }
