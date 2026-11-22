@@ -732,7 +732,7 @@ enum {
  * checks the result, and either moves to the next step or bails out to IDLE
  * recording the error in ctx+0x258.  Steps: create -> open -> write -> close.
  */
-void rmemcardWriteStep(void *ctx) {
+/* One step of the removable-memory-card async NAND file-write state machine: advances the create -> open -> write -> close -> finished sequence when the pending async operation completes, recording any error in the context. */ void rmemcardWriteStep(void *ctx) {
     char *ctxBytes = (char *)ctx;
     unsigned char *ctxFlags = (unsigned char *)ctx;
     int step = *(int *)ctxBytes;
