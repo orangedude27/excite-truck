@@ -360,28 +360,27 @@ extern void TRKReadBuffer(void);
 extern void DCFlushRange(void *, unsigned int);
 #pragma push
 #pragma use_lmw_stmw off
-#pragma unroll off
+#pragma opt_unroll_loops off
 #pragma ctrloop on
 void fn_800331A0(void) {
     unsigned int i;
-    int j;
-    s32 *p;
-    s32 ctr;
-    lbl_8055D7E4 = 0;
+    u32 *p;
+    u32 ctr;
     lbl_8055D7E8 = *(unsigned int *)0x800000F8 / 667;
-    p = (s32 *)lbl_80363C60;
+    lbl_8055D7E4 = 0;
+    p = (u32 *)lbl_80363C60;
     ctr = 0x200;
     do {
         p[0]=0; p[1]=0; p[2]=0; p[3]=0; p[4]=0; p[5]=0; p[6]=0; p[7]=0; p[8]=0;
         p += 9;
     } while (--ctr != 0);
-    p = (s32 *)lbl_8036C460;
+    p = (u32 *)lbl_8036C460;
     ctr = 0x80;
     do {
         p[0]=0; p[1]=0; p[2]=0; p[3]=0; p[4]=0; p[5]=0; p[6]=0; p[7]=0;
         p += 8;
     } while (--ctr != 0);
-    p = (s32 *)lbl_8036D460;
+    p = (u32 *)lbl_8036D460;
     ctr = 0x3c0;
     do {
         p[0]=0; p[1]=0; p[2]=0; p[3]=0; p[4]=0; p[5]=0; p[6]=0; p[7]=0; p[8]=0; p[9]=0;
