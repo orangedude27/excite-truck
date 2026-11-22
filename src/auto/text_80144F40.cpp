@@ -138,16 +138,16 @@ extern "C" s32 fn_80144F40(const char *text, void *table) {
 extern "C" u8 lbl_80559DCC;
 #pragma scheduling invalid_target
 extern "C" s32 fn_80144FB0(void *outStr, s32 maxLen, s32 flags, const char *flagDefs) {
+    /* Append to outStr, up to maxLen bytes, an underscore-separated list of the
+     * names whose masks are fully set in flags, following flagDefs' name/mask table. */
     struct FlagDef { const char *name; u32 mask; };
-    /* Builds a '_' (lbl_80559DCC) separated string of flag names from flagDefs
-       whose masks are fully set in flags, appending into outStr up to maxLen. */
-    FlagDef *def = (FlagDef *)flagDefs;
+    FlagDef *flagDef = (FlagDef *)flagDefs;
     char *dst = (char *)outStr;
-    s32 zero = 0;
-    const char *separator = (const char *)&lbl_80559DCC;
-    *dst = zero;
-    while (def->name != 0) {
-        if ((def->mask & (u32)flags) == def->mask) {
+    s32 nul = 0;
+    const char *sep = (const char *)&lbl_80559DCC;
+    *dst = nul;
+    while (flagDef->name != 0) {
+        if ((flagDef->mask & (u32)flags) == flagDef->mask) {
             if ((s8)*dst != 0) {
                 const char *src;
                 s32 remaining = maxLen;
@@ -157,17 +157,17 @@ extern "C" s32 fn_80144FB0(void *outStr, s32 maxLen, s32 flags, const char *flag
                     ++cursor;
                 }
                 if (remaining > 0) {
-                    src = separator;
+                    src = sep;
                     while ((s8)(*cursor++ = *src++) != 0) {
                         if (--remaining <= 0) {
-                            cursor[-1] = zero;
+                            cursor[-1] = nul;
                             break;
                         }
                     }
                 }
             }
             {
-                const char *src = def->name;
+                const char *src = flagDef->name;
                 s32 remaining = maxLen;
                 char *cursor = dst;
                 while ((s8)*cursor != 0) {
@@ -177,14 +177,14 @@ extern "C" s32 fn_80144FB0(void *outStr, s32 maxLen, s32 flags, const char *flag
                 if (remaining > 0) {
                     while ((s8)(*cursor++ = *src++) != 0) {
                         if (--remaining <= 0) {
-                            cursor[-1] = zero;
+                            cursor[-1] = nul;
                             break;
                         }
                     }
                 }
             }
         }
-        ++def;
+        ++flagDef;
     }
     return (s32)dst;
 }
@@ -427,7 +427,6 @@ extern "C" void fn_80145538(TextSizeEntry80145538 *entry, void *propertySource) 
 }
 
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 #pragma dont_inline on
 extern "C" void fn_801455B8(void *arg0, void *arg1) {
     class Obj {
@@ -441,7 +440,7 @@ extern "C" void fn_801455B8(void *arg0, void *arg1) {
         virtual void f6();
         virtual f32 f7(const char *);
     };
-    char *base = lbl_8032CEC8;
+    char *const base = lbl_8032CEC8;
     Obj *obj = (Obj *)arg1;
     fn_80145368(arg0, arg1);
     *(s32 *)((u8 *)arg0 + 0x14) = fn_80144F40(obj->f3(lbl_80559E04), base + 0x10);
@@ -650,13 +649,14 @@ extern "C" void fn_8001027C(s32, s32, void *, u32, f32, f32, f32);
 extern "C" f32 fn_801452A0(s32, f32);
 extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern "C" s32 lbl_80559E1C;
-extern "C" void fn_80145B50(void *arg0, s32 arg1) {
-    f32 value = (f32)arg1;
-    f32 multiplier = lbl_80561608;
-    *(f32 *)((u8 *)arg0 + 4) = lbl_805615D4;
-    *(f32 *)((u8 *)arg0 + 0xC) = multiplier;
-    *(f32 *)((u8 *)arg0 + 8) = multiplier;
-    *(f32 *)arg0 = multiplier * value;
+extern "C" void fn_80145B50(void *arg0, s32 arg1)
+{
+  f32 value = (f32) (s32) arg1;
+  f32 multiplier = lbl_80561608;
+  *((f32 *) (((u8 *) arg0) + 4)) = lbl_805615D4;
+  *((f32 *) (((u8 *) arg0) + 0xC)) = multiplier;
+  *((f32 *) (((u8 *) arg0) + 8)) = multiplier;
+  *((f32 *) arg0) = multiplier * value;
 }
 
 #pragma dont_inline on
@@ -1273,116 +1273,142 @@ extern "C" __declspec(section ".sdata") f32 lbl_80561610;
 extern "C" __declspec(section ".sdata") f32 lbl_805615D4;
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-extern "C" void fn_80146824(void *arg0) {
-    struct Block { s32 base; s32 count; };
-    struct Record { f32 f0, f4, f8, fC; s32 value; char *label; };
-    struct Data { Record *records; s32 count; volatile s32 capacity; Record *recordsAgain; };
-    struct Proxy { s32 a, b; u8 pad8[4]; Data *data; };
-    struct Owner {
-        u8 pad[0x2C];
-        Block *block2C;
-        Block *block30;
-        Block *block34;
-        u8 pad38[0x10];
-        Data *data;
-        Proxy *proxy;
-    };
-    typedef void *(*AllocFn)(s32, const char *, s32, s32, s32, s32);
-    Owner *owner = (Owner *)arg0;
-    register Block *b2C = owner->block2C;
-    register Block *b30 = owner->block30;
-    register Block *b34 = owner->block34;
-    register s32 n2C = b2C->count;
-    register s32 n30 = b30->count;
-    register s32 n34 = b34->count;
-    register s32 size2C = n2C * 2;
-    register unsigned size30 = n30 * 4 - n30;
-    register s32 size34 = n34 * 4 - n34;
-    Data *data = (Data *)((AllocFn)fn_801284F8)(0x10, lbl_8032D114,
-        n34, n30 * 4, n30, n2C);
-    if (data != 0) {
-        s32 total = size34 + size2C + size30 + 1;
-        data->records = (Record *)fn_8012850C(total * 0x18, lbl_80559E48);
-        data->capacity = total;
-        data->count = 0;
-        data->recordsAgain = data->records;
-    }
-    owner->data = data;
-    Proxy *proxy = (Proxy *)fn_801284F8(0x18, lbl_8032D124);
-    if (proxy != 0) {
-        Data *parent = owner->data;
-        proxy->b = 0;
-        proxy->a = 0;
-        proxy->data = parent;
-        owner->proxy = proxy;
-    }
-    for (s32 i = 0; i < owner->block2C->count; i++) {
-        Record *r1 = (Record *)((Data *)owner->proxy->data)->records +
-            ((Data *)owner->proxy->data)->count++;
-        fn_80145B50(r1, 0);
-        r1->value = owner->block2C->base + i * 0x28;
-        r1->label = lbl_8055E20C;
-        r1 = (Record *)((Data *)owner->proxy->data)->records +
-            ((Data *)owner->proxy->data)->count++;
-        fn_80145B50(r1, 1);
-        r1->value = owner->block2C->base + i * 0x28;
-        r1->label = lbl_8055E210;
-    }
-    for (s32 i = 0; i < owner->block30->count; i++) {
-        Record *r = (Record *)((Data *)owner->proxy->data)->records +
-            ((Data *)owner->proxy->data)->count++;
-        fn_80145B50(r, 0);
-        r->value = owner->block30->base + i * 0x20;
-        r->label = lbl_8055E20C;
-        r = (Record *)((Data *)owner->proxy->data)->records +
-            ((Data *)owner->proxy->data)->count++;
-        fn_80145B50(r, 1);
-        r->value = owner->block30->base + i * 0x20;
-        r->label = lbl_8055E214;
-        r = (Record *)((Data *)owner->proxy->data)->records +
-            ((Data *)owner->proxy->data)->count++;
-        fn_80145B50(r, 2);
-        r->value = owner->block30->base + i * 0x20;
-        r->label = lbl_8055E218;
-    }
-    for (s32 i = 0; i < owner->block34->count; i++) {
-        Record *r = (Record *)((Data *)owner->proxy->data)->records +
-            ((Data *)owner->proxy->data)->count++;
-        fn_80145B50(r, 0);
-        r->value = owner->block34->base + i * 0x1C;
-        r->label = lbl_8055E20C;
-        r = (Record *)((Data *)owner->proxy->data)->records +
-            ((Data *)owner->proxy->data)->count++;
-        fn_80145B50(r, 1);
-        r->value = owner->block34->base + i * 0x1C;
-        r->label = lbl_8055E210;
-        r = (Record *)((Data *)owner->proxy->data)->records +
-            ((Data *)owner->proxy->data)->count++;
-        fn_80145B50(r, 2);
-        r->value = owner->block34->base + i * 0x1C;
-        r->label = lbl_8055E220;
-    }
-    register f32 third;
-    register f32 second;
-    register f32 first;
-    char *label = (char *)arg0 + 0x40;
-    s32 zero = 0;
-    first = lbl_805615D4;
-    register Record *records;
-    register Data *queue = owner->proxy->data;
-    records = queue->records;
-    second = lbl_8056160C;
-    s32 count = queue->count;
-    s32 byteOffset = count * 0x18;
-    third = lbl_80561610;
-    queue->count = count + 1;
-    Record *last = (Record *)((u8 *)records + byteOffset);
-    last->label = label;
-    last->value = zero;
-    last->f0 = first;
-    last->f4 = first;
-    last->f8 = second;
-    last->fC = third;
+extern "C" void fn_80146824(void *arg0)
+{
+  struct Block
+  {
+    s32 base;
+    s32 count;
+  };
+  struct Record
+  {
+    f32 f0;
+    f32 f4;
+    f32 f8;
+    f32 fC;
+    s32 value;
+    char *label;
+  };
+  struct Data
+  {
+    Record *records;
+    s32 count;
+    volatile s32 capacity;
+    Record *recordsAgain;
+  };
+  struct Proxy
+  {
+    s32 a;
+    s32 b;
+    u8 pad8[4];
+    Data *data;
+  };
+  struct Owner
+  {
+    u8 pad[0x2C];
+    Block *block2C;
+    Block *block30;
+    Block *block34;
+    u8 pad38[0x10];
+    Data *data;
+    Proxy *proxy;
+  };
+  typedef void *(*AllocFn)(s32, const char *, s32, s32, s32, s32);
+  Owner *owner = (Owner *) arg0;
+  register Block *b2C = owner->block2C;
+  register Block *b30 = owner->block30;
+  register Block *b34 = owner->block34;
+  register s32 n2C = b2C->count;
+  register s32 n30 = b30->count;
+  register s32 n34 = b34->count;
+  register volatile long long size2C = n2C * 2;
+  register unsigned size30 = (n30 * 4) - n30;
+  register s32 size34 = (n34 * 4) - n34;
+  Data *data = (Data *) ((AllocFn) fn_801284F8)(0x10, lbl_8032D114, n34, n30 * 4, n30, n2C);
+  if (data != 0)
+  {
+    s32 total = ((size34 + size2C) + size30) + 1;
+    data->records = (Record *) fn_8012850C(total * 0x18, lbl_80559E48);
+    data->capacity = total;
+    data->count = 0;
+    data->recordsAgain = data->records;
+  }
+  owner->data = data;
+  Proxy *proxy = (Proxy *) fn_801284F8(0x18, lbl_8032D124);
+  if (proxy != 0)
+  {
+    Data *parent = owner->data;
+    proxy->b = 0;
+    proxy->a = 0;
+    proxy->data = parent;
+    owner->proxy = proxy;
+  }
+  Record *r1;
+  for (s32 i = 0; i < owner->block2C->count; i++)
+  {
+    r1 = ((Record *) ((Data *) owner->proxy->data)->records) + (((Data *) owner->proxy->data)->count++);
+    fn_80145B50(r1, 0);
+    r1->value = owner->block2C->base + (i * 0x28);
+    r1->label = lbl_8055E20C;
+    r1 = ((Record *) ((Data *) owner->proxy->data)->records) + (((Data *) owner->proxy->data)->count++);
+    fn_80145B50(r1, 1);
+    r1->value = owner->block2C->base + (i * 0x28);
+    r1->label = lbl_8055E210;
+  }
+
+  for (s32 i = 0; i < owner->block30->count; i++)
+  {
+    Record *r = ((Record *) ((Data *) owner->proxy->data)->records) + (((Data *) owner->proxy->data)->count++);
+    fn_80145B50(r, 0);
+    r->value = owner->block30->base + (i * 0x20);
+    r->label = lbl_8055E20C;
+    r = ((Record *) ((Data *) owner->proxy->data)->records) + (((Data *) owner->proxy->data)->count++);
+    fn_80145B50(r, 1);
+    r->value = owner->block30->base + (i * 0x20);
+    r->label = lbl_8055E214;
+    r = ((Record *) ((Data *) owner->proxy->data)->records) + (((Data *) owner->proxy->data)->count++);
+    fn_80145B50(r, 2);
+    r->value = owner->block30->base + (i * 0x20);
+    r->label = lbl_8055E218;
+  }
+
+  for (s32 i = 0; i < owner->block34->count; i++)
+  {
+    Record *r = ((Record *) ((Data *) owner->proxy->data)->records) + (((Data *) owner->proxy->data)->count++);
+    fn_80145B50(r, 0);
+    r->value = owner->block34->base + (i * 0x1C);
+    r->label = lbl_8055E20C;
+    r = ((Record *) ((Data *) owner->proxy->data)->records) + (((Data *) owner->proxy->data)->count++);
+    fn_80145B50(r, 1);
+    r->value = owner->block34->base + (i * 0x1C);
+    r->label = lbl_8055E210;
+    r = ((Record *) ((Data *) owner->proxy->data)->records) + (((Data *) owner->proxy->data)->count++);
+    fn_80145B50(r, 2);
+    r->value = owner->block34->base + (i * 0x1C);
+    r->label = lbl_8055E220;
+  }
+
+  register f32 third;
+  register f32 second;
+  register f32 first;
+  char *label = ((char *) arg0) + 0x40;
+  s32 zero = 0;
+  first = lbl_805615D4;
+  Record *records;
+  Data *queue = owner->proxy->data;
+  records = queue->records;
+  second = lbl_8056160C;
+  s32 count = queue->count;
+  s32 byteOffset = count * 0x18;
+  third = lbl_80561610;
+  queue->count = count + 1;
+  Record *last = (Record *) (((u8 *) records) + byteOffset);
+  last->label = label;
+  last->value = zero;
+  last->f0 = first;
+  last->f4 = first;
+  last->f8 = second;
+  last->fC = third;
 }
 extern "C" f32 fn_800108C8(const char *, f32);
 extern "C" void fn_80235380();
@@ -1754,26 +1780,23 @@ extern "C" void fn_801476C4(void *entry) {
         fn_80145B94(entry, *(u32 *)((u8 *)entry + 0x1c));
 }
 
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
-#pragma dont_inline on
+#pragma scheduling on
 void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
-    extern void fn_802C8BD0(s32);
     extern s32 fn_802C8DBC(s32);
+    extern void fn_802C8BD0(s32);
     extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
     extern void fn_802C8E48(void);
     extern void fn_802C8D74(void);
     extern f32 fn_801452A0(s32, f32);
     f32 angle;
-    f32 tx;
+    register f32 tx;
     if (arg0 != 0) {
         fn_802C8BD0(arg2);
         if (fn_802C8DBC(4) != 0) {
             angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
             {
                 f32 x = *(volatile f32 *)((u8 *)arg0 + 4);
-                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
+                u32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
                 tx = ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
             }
             fn_802C8E00(arg1, 0, tx, angle, lbl_805615D4,
@@ -1786,11 +1809,9 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
                 s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
                 tx = fn_801452A0(mode, scaleInput);
             }
-            {
-                f32 x = *(volatile f32 *)((u8 *)arg0 + 4);
-                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
-                tx += ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
-            }
+            tx += ((f32 (*)(s32, f32))fn_801451DC)(
+                *(volatile s32 *)((u8 *)arg0 + 0xC),
+                *(volatile f32 *)((u8 *)arg0 + 4));
             fn_802C8E00(arg1, 0, tx, angle, lbl_805615D4,
                         *(f32 *)((u8 *)arg0 + 0x20),
                         *(f32 *)((u8 *)arg0 + 0x1C));
@@ -1813,11 +1834,9 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
                 s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
                 tx = fn_801452A0(mode, scaleInput);
             }
-            {
-                f32 x = *(volatile f32 *)((u8 *)arg0 + 4);
-                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
-                tx += ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
-            }
+            tx += ((f32 (*)(s32, f32))fn_801451DC)(
+                *(volatile s32 *)((u8 *)arg0 + 0xC),
+                *(volatile f32 *)((u8 *)arg0 + 4));
             fn_802C8E00(arg1, 1, tx, angle, lbl_805615D4,
                         *(f32 *)((u8 *)arg0 + 0x20),
                         *(f32 *)((u8 *)arg0 + 0x24));
@@ -1826,10 +1845,6 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
         fn_802C8D74();
     }
 }
-#pragma scheduling on
-#pragma pop
-#pragma dont_inline reset
-#pragma processor reset
 
 extern "C" void fn_8014784C(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     /* Resolve two virtual slots from arg0 (first() and second(arg2)); if both are non-null, forward them to fn_80145CF4 with arg3. */
@@ -1953,132 +1968,201 @@ extern "C" s32 fn_80147C50(u32 arg0, u32 arg1, f32 arg2) {
     return lo | hi;
 }
 #pragma scheduling invalid_target
-extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
-#pragma scheduling invalid_target
-    union Pair { struct { f32 x; f32 y; } f; f64 raw; };
-    register f32 factor = (f32)arg3;
-    u8 *dst = (u8 *)arg0;
-    u8 *src = (u8 *)arg1;
-    u8 *other = (u8 *)arg2;
-    f32 zSource = *(f32 *)(src + 0x10);
-    f32 zOther = *(f32 *)(other + 0x10);
-    f32 yOther = *(f32 *)(other + 8);
-    f32 ySource = *(f32 *)(src + 8);
-    f32 xOther = *(f32 *)(other + 4);
-    f32 xSource = *(f32 *)(src + 4);
-    yOther = yOther - ySource;
-    xOther = xOther - xSource;
-    zOther = zOther - zSource;
-    f32 y = ySource + factor * yOther;
-    f32 x = xSource + factor * xOther;
-    f32 z = zSource + factor * zOther;
-    Pair second;
-    Pair first;
-    first.f.y = y;
-    first.f.x = x;
-    second.raw = first.raw;
-    u32 w1c = *(u32 *)(src + 0x1C);
-    u32 w18 = *(u32 *)(src + 0x18);
-    u32 w14 = *(u32 *)(src + 0x14);
-    u32 wc = *(u32 *)(src + 0xC);
-    u32 w0 = *(u32 *)(src + 0);
-    u32 w8 = *(u32 *)(src + 8);
-    u32 w4 = *(u32 *)(src + 4);
-    u32 other18 = *(u32 *)(other + 0x18);
-    volatile u32 *d = (volatile u32 *)dst;
-    *(f32 *)(dst + 0x10) = zSource;
-    d[1] = w4; d[2] = w8; d[0] = w0; d[3] = wc;
-    d[5] = w14; d[6] = w18; d[7] = w1c;
-    *(f32 *)(dst + 4) = second.f.x;
-    *(f32 *)(dst + 8) = second.f.y;
-    *(f32 *)(dst + 0x10) = z;
-    d[6] = fn_80147C50(w18, other18, factor);
+extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3)
+{
+  union Pair
+  {
+    struct 
+    {
+      f32 x;
+      f32 y;
+    } f;
+    f64 raw;
+  };
+  u8 *dst = (u8 *) arg0;
+  u8 *src = (u8 *) arg1;
+  u8 *other = (u8 *) arg2;
+  f32 factor = (f32) arg3;
+  f32 zSource = *((f32 *) (src + 0x10));
+  f32 zOther = *((f32 *) (other + 0x10));
+  f32 yOther = *((f32 *) (other + 8));
+  u32 w1c = *((u32 *) (src + 0x1C));
+  f32 ySource = *((f32 *) (src + 8));
+  f32 xOther = *((f32 *) (other + 4));
+  f32 xSource = *((f32 *) (src + 4));
+  yOther = yOther - ySource;
+  xOther = xOther - xSource;
+  zOther = zOther - zSource;
+  f32 y = ySource + (factor * yOther);
+  f32 x = xSource + (factor * xOther);
+  f32 z = zSource + (factor * zOther);
+  Pair second;
+  Pair first;
+  first.f.y = y;
+  first.f.x = x;
+  second.raw = first.raw;
+  u32 w18 = *((u32 *) (src + 0x18));
+  u32 w14 = *((u32 *) (src + 0x14));
+  u32 wc = *((u32 *) (src + 0xC));
+  u32 w0 = *((u32 *) (src + 0));
+  u32 w8 = *((u32 *) (src + 8));
+  u32 w4 = *((u32 *) (src + 4));
+  u32 other18 = *((u32 *) (other + 0x18));
+  volatile u32 *d = (volatile u32 *) ((u8 *) arg0);
+  *((f32 *) (dst + 0x10)) = zSource;
+  d[1] = w4;
+  d[2] = w8;
+  d[0] = w0;
+  d[3] = wc;
+  d[5] = w14;
+  d[6] = w18;
+  d[7] = w1c;
+  *((f32 *) (dst + 4)) = second.f.x;
+  *((f32 *) (dst + 8)) = second.f.y;
+  *((f32 *) (dst + 0x10)) = (f32) (((u32) z & 0xFFu) & 0xFFu);
+  d[6] = fn_80147C50(w18, other18, factor);
 }
-#pragma scheduling on
-extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t) {
-    struct State { u32 m0; f32 m4; f32 m8; u32 mC; f32 m10; f32 m14; f32 m18; f32 m1C; f32 m20; f32 m24; };
-    union Pair { struct { f32 x; f32 y; } f; f64 raw; };
-    volatile State *src = (volatile State *)srcArg;
-    volatile State *end = (volatile State *)endArg;
-    register f32 out4, out8;
-    f32 end4, src4, end8, src8, diff8, src18, diff4, src10, prod8, src1C;
-    f32 prod4, src20, end20, diff20, end18, end1C, diff18;
-    f32 end10, diff1C, src14, diff10, prod18, prod20, prod1C, prod10;
-    f32 out20, end24, end14, src24, diff24, out18, diff14, out1C;
-    f32 prod24, prod14, out10, out24, out14;
-    u32 w4, w0, wC, w8;
-    f64 pair;
-
-    end8 = end->m8;
-    src8 = src->m8;
-    end4 = end->m4;
-    src4 = src->m4;
-    diff8 = end8 - src8;
-    src18 = src->m18;
-    diff4 = end4 - src4;
-    src10 = src->m10;
-    prod8 = t * diff8;
-    src1C = src->m1C;
-    prod4 = t * diff4;
-    out8 = src8 + prod8;
-    src20 = src->m20;
-    end20 = end->m20;
-    out4 = src4 + prod4;
+extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t)
+{
+  struct State
+  {
+    u32 m0;
+    f32 m4;
+    f32 m8;
+    u32 mC;
+    f32 m10;
+    f32 m14;
+    f32 m18;
+    f32 m1C;
+    f32 m20;
+    f32 m24;
+  };
+  union Pair
+  {
+    struct 
     {
-        Pair p;
-        p.f.x = out4;
-        p.f.y = out8;
-        pair = p.raw;
-    }
-    diff20 = end20 - src20;
-    end18 = end->m18;
-    end1C = end->m1C;
-    diff18 = end18 - src18;
-    end10 = end->m10;
-    diff1C = end1C - src1C;
-    src14 = src->m14;
-    diff10 = end10 - src10;
-    prod18 = t * diff18;
-    w4 = *(u32 *)((u8 *)srcArg + 4);
-    prod20 = t * diff20;
-    w0 = *(u32 *)((u8 *)srcArg + 0);
-    prod1C = t * diff1C;
-    prod10 = t * diff10;
-    wC = *(u32 *)((u8 *)srcArg + 0xC);
-    out20 = src20 + prod20;
-    end24 = end->m24;
-    end14 = end->m14;
-    src24 = src->m24;
-    diff24 = end24 - src24;
-    w8 = *(u32 *)((u8 *)srcArg + 8);
-    out18 = src18 + prod18;
-    diff14 = end14 - src14;
-    out1C = src1C + prod1C;
-    prod24 = t * diff24;
-    prod14 = t * diff14;
-    out10 = src10 + prod10;
-    out24 = src24 + prod24;
-    out14 = src14 + prod14;
-    volatile State *d = (volatile State *)dst;
-    d->m18 = src18;
-    d->m1C = src1C;
-    d->m10 = src10;
-    *(volatile u32 *)((u8 *)dst + 4) = w4;
-    *(volatile u32 *)((u8 *)dst + 8) = w8;
-    *(volatile u32 *)((u8 *)dst + 0) = w0;
-    *(volatile u32 *)((u8 *)dst + 0xC) = wC;
-    {
-        Pair p;
-        p.raw = pair;
-        d->m4 = p.f.x;
-        d->m8 = p.f.y;
-    }
-    d->m18 = out18;
-    d->m20 = out20;
-    d->m1C = out1C;
-    d->m24 = out24;
-    d->m10 = out10;
-    d->m14 = out14;
+      f32 x;
+      f32 y;
+    } f;
+    f64 raw;
+  };
+  volatile State *src = (volatile State *) srcArg;
+  volatile State *end = (volatile State *) endArg;
+  register f32 out4;
+  register f32 out8;
+  f32 end4;
+  f32 src4;
+  f32 end8;
+  f32 src8;
+  f32 diff8;
+  f32 src18;
+  f32 diff4;
+  f32 src10;
+  f32 prod8;
+  f32 src1C;
+  f32 prod4;
+  f32 src20;
+  f32 end20;
+  f32 diff20;
+  f32 end18;
+  f32 end1C;
+  f32 diff18;
+  f32 end10;
+  f32 diff1C;
+  f32 src14;
+  f32 diff10;
+  f32 prod18;
+  f32 prod20;
+  f32 prod1C;
+  f32 prod10;
+  f32 out20;
+  f32 end24;
+  f32 end14;
+  f32 src24;
+  f32 diff24;
+  f32 out18;
+  f32 diff14;
+  f32 out1C;
+  f32 prod24;
+  f32 prod14;
+  f32 out10;
+  f32 out24;
+  f32 out14;
+  u32 w4;
+  u32 w0;
+  u32 wC;
+  u32 w8;
+  f64 pair;
+  end8 = end->m8;
+  src8 = src->m8;
+  end4 = end->m4;
+  src4 = src->m4;
+  diff8 = end8 - src8;
+  src18 = src->m18;
+  diff4 = end4 - src4;
+  src10 = src->m10;
+  prod8 = t * diff8;
+  src1C = src->m1C;
+  prod4 = t * diff4;
+  out8 = src8 + prod8;
+  src20 = src->m20;
+  end20 = end->m20;
+  out4 = src4 + prod4;
+  {
+    Pair p;
+    p.f.x = out4;
+    p.f.y = out8;
+    pair = p.raw;
+  }
+  diff20 = end20 - src20;
+  end18 = end->m18;
+  end1C = end->m1C;
+  diff18 = end18 - src18;
+  end10 = end->m10;
+  diff1C = end1C - src1C;
+  src14 = src->m14;
+  diff10 = end10 - src10;
+  prod18 = t * diff18;
+  w4 = *((u32 *) (((u8 *) srcArg) + (4 & 0xFF)));
+  prod20 = t * diff20;
+  w0 = *((u32 *) (((u8 *) srcArg) + 0));
+  prod1C = t * diff1C;
+  prod10 = t * diff10;
+  wC = *((u32 *) (((u8 *) srcArg) + 0xC));
+  out20 = src20 + prod20;
+  end24 = end->m24;
+  end14 = end->m14;
+  src24 = src->m24;
+  diff24 = end24 - src24;
+  w8 = *((u32 *) (((u8 *) srcArg) + 8));
+  out18 = src18 + prod18;
+  diff14 = end14 - src14;
+  out1C = src1C + prod1C;
+  prod24 = t * diff24;
+  prod14 = t * diff14;
+  out10 = src10 + prod10;
+  out24 = src24 + prod24;
+  out14 = src14 + prod14;
+  volatile State *d = (volatile State *) dst;
+  d->m18 = src18;
+  d->m1C = src1C;
+  d->m10 = src10;
+  *((volatile u32 *) (((u8 *) dst) + 4)) = w4;
+  *((volatile u32 *) (((u8 *) dst) + 8)) = w8;
+  *((volatile u32 *) (((u8 *) dst) + 0)) = w0;
+  *((volatile u32 *) (((u8 *) dst) + 0xC)) = wC;
+  {
+    Pair p;
+    p.raw = pair;
+    d->m4 = p.f.x;
+    d->m8 = p.f.y;
+  }
+  d->m18 = out18;
+  d->m20 = out20;
+  d->m1C = out1C;
+  d->m24 = out24;
+  d->m10 = out10;
+  d->m14 = out14;
 }
 
 #pragma dont_inline off
