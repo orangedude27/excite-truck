@@ -774,41 +774,45 @@ int fn_8028967C(int arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_802896E4(void *arg0) {
-    char stack[0xA8];
-    fn_8028E61C((int *)&stack[0x18]);
-    *(int *)(stack+0x1c)=0x80;
-    *(float *)(stack+0x20)=lbl_80564280;
-    *(float *)(stack+0x24)=lbl_8056428C;
-    *(int *)(stack+0x18)=0;
-    *(float *)(stack+0x60)=lbl_80564284;
-    *(int *)(stack+0x5c)=6;
-    *(float *)(stack+0x0c)=lbl_805642B0;
-    *(float *)(stack+0x10)=lbl_805642B0;
-    *(float *)(stack+0x14)=lbl_805642B0;
-    *(float *)(stack+0x28)=lbl_805642B0;
-    *(float *)(stack+0x2c)=lbl_805642B0;
-    *(float *)(stack+0x30)=lbl_805642B0;
-    *(float *)(stack+0x00)=lbl_8056428C;
-    *(float *)(stack+0x04)=lbl_8056428C;
-    *(float *)(stack+0x08)=lbl_8056428C;
-    *(float *)(stack+0x34)=lbl_8056428C;
-    *(float *)(stack+0x38)=lbl_8056428C;
-    *(float *)(stack+0x3c)=lbl_8056428C;
-    *(float *)(stack+0x40)=lbl_80564274;
-    *(float *)(stack+0x48)=lbl_8056429C;
-    *(float *)(stack+0x4c)=lbl_8056428C;
-    *(float *)(stack+0x88)=lbl_805642F4;
-    *(float *)(stack+0x80)=lbl_805642F4;
-    *(float *)(stack+0x78)=lbl_805642F4;
-    *(float *)(stack+0x8c)=lbl_80564288;
-    *(float *)(stack+0x84)=lbl_80564288;
-    *(float *)(stack+0x7c)=lbl_80564288;
-    *(float *)(stack+0x70)=lbl_805642F8;
-    *(float *)(stack+0x74)=lbl_805642B0;
-    *(float *)(stack+0x68)=lbl_805642A4;
-    *(float *)(stack+0x6c)=lbl_805642C8;
-    *(int *)((char *)arg0+0xa0)=((int (*)(void *, void *, int))fn_8028E2F8)(&stack[0x18],(void *)&lbl_80348B24,lbl_8055C880);
+void fn_802896E4(void *smokeSlots) {
+    /* Create the "light exhaust" smoke effect (resource lbl_80348B24) from a
+     * stack parameter frame and store its handle at +0xA0 of the manager. */
+    fn_802897E0Frame frame;
+    fn_8028E61C((int *)&frame.sp20);
+    frame.sp24 = 0x80;
+    frame.sp28 = lbl_80564280;
+    frame.sp2C = lbl_8056428C;
+    frame.sp20 = 0;
+    frame.sp68 = lbl_80564284;
+    frame.sp64 = 6;
+    frame.sp14 = lbl_805642B0;
+    frame.sp18 = lbl_805642B0;
+    frame.sp1C = lbl_805642B0;
+    frame.sp30 = lbl_805642B0;
+    frame.sp34 = lbl_805642B0;
+    frame.sp38 = lbl_805642B0;
+    frame.sp8 = lbl_8056428C;
+    frame.spC = lbl_8056428C;
+    frame.sp10 = lbl_8056428C;
+    frame.sp3C = lbl_8056428C;
+    frame.sp40 = lbl_8056428C;
+    frame.sp44 = lbl_8056428C;
+    frame.sp48 = lbl_80564274;
+    frame.sp50 = lbl_8056429C;
+    frame.sp54 = lbl_8056428C;
+    frame.sp90 = lbl_805642F4;
+    frame.sp88 = lbl_805642F4;
+    frame.sp80 = lbl_805642F4;
+    frame.sp94 = lbl_80564288;
+    frame.sp8C = lbl_80564288;
+    frame.sp84 = lbl_80564288;
+    frame.sp78 = lbl_805642F8;
+    frame.sp7C = lbl_805642B0;
+    frame.sp70 = lbl_805642A4;
+    frame.sp74 = lbl_805642C8;
+    *(int *)((char *)smokeSlots + 0xa0) =
+        ((int (*)(void *, void *, int))fn_8028E2F8)(
+            &frame.sp20, (void *)&lbl_80348B24, lbl_8055C880);
 }
 #pragma pop
 extern int fn_8028E61C(int *);
@@ -1432,7 +1436,7 @@ int fn_8028A330(int *arg0, int arg1) {
     float sp14[3], sp8[3];
     float *mat = (float *)fn_80287B24(arg1);
     float *vec = *(float **)(*(char **)arg0 + arg1 * 0x68 + 0x64);
-    float k;
+    register float k;
 
     if (sp14 == vec) {
         float m3, x, m0, y, m4, m1, z, m6, m7;
@@ -1501,7 +1505,7 @@ int fn_8028A330(int *arg0, int arg1) {
     {
         volatile float *p = sp8;
         if (p == (volatile float *)sp8) {
-            float m3, m0, x, y, m4, m1, m6, z, m7;
+            float m3, x, m0, y, m4, m1, z, m6, m7;
             float m2, m5;
             float m8;
             m3 = mat[3];
