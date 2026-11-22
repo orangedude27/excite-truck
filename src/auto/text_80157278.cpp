@@ -635,9 +635,20 @@ extern "C" void* fn_801572A4(s32 configPtr, s32 courseIndex, s32 initValue) {
     return group;
 }
 
+/* The list of a course group's bonus trackers (fn_801584A8 sets it up,
+   fn_80158280 appends to it): the items pointer at +0x00 starts out aimed at
+   the inline storage at +0x0C, the element count is at +0x04 and the capacity
+   (0x10 items at first) at +0x08. */
+struct PtrArray801584A8 {
+    void **items;
+    s32 count;
+    s32 capacity;
+    void *inlineItems[0x10];
+};
+
 /* Get the element count stored at +4 in an array holder. */
 extern "C" s32 fn_80157558(void* arrayHolder) {
-    return *(s32*)((u8*)arrayHolder + 4);
+    return ((PtrArray801584A8*)arrayHolder)->count;
 }
 
 extern "C" void* fn_80131810(void*);
@@ -3532,9 +3543,9 @@ extern "C" void* fn_8015CBBC(void* self, s32 shouldDelete) {
 extern "C" u32 fn_8015CC28(void) { return 1; }
 
 #pragma scheduling reset
-extern "C" s32 fn_8015CC30(void* arg0) {
-    f32 *const p = (f32*)((char*)arg0 + 0x250);
-    f32 x = *p;
+extern "C" s32 fn_8015CC30(const void* arg0) {
+    f32 x;
+    x = *(f32*)((char*)arg0 + 0x250);
     f32 rounded;
     if (x < lbl_80561754) rounded = x - lbl_80561760;
     else rounded = lbl_80561760 + x;
