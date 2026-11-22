@@ -5022,12 +5022,12 @@ extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
 extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
     u32 one = 1;
     u32 sp8;
-    s32 var_r31;
-    register s32 temp_r30;
+    register void *temp_r5;
+    s32 temp_r30;
     s32 temp_r3;
     s32 temp_r4;
     u8 temp_r7;
-    void *temp_r5;
+    s32 var_r31;
     temp_r5 = *(void **)((u8 *)arg0 + 0x3C);
     temp_r30 = *(s32 *)arg0;
     *(void **)((u8 *)arg0 + 4) = temp_r5;
@@ -8185,7 +8185,6 @@ extern "C" s32 fn_800B0C10(VFiPFCursor *cur, s32 dest, u32 length, u32 *readOut)
 
 extern "C" s32 fn_800B0A60(void *, s32, u32, u32 *);
 extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) {
-    /* Fix note: keep the remaining byte count in the original size parameter across reads. */
     u32 sp8;
     u16 *var_r27;
     void *temp_r7;
@@ -8202,11 +8201,13 @@ extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) 
         return 0;
 
     arg2 -= sp8;
-    if (arg0 == 0)
+    if (arg0 == 0) {
         var_r27 = 0;
-    else
-        var_r27 = *(u16 **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
-
+        goto loop_head;
+    }
+    var_r27 = *(u16 **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
+    goto loop_head;
+loop_head:
     for (;;) {
         result = fn_800B0A60(arg0, arg1 + *arg3, arg2, &sp8);
         *arg3 += sp8;
@@ -11159,62 +11160,56 @@ extern "C" s32 fn_800B5B94(void *volume, s32 force) {
 
 #pragma opt_strength_reduction reset
 
-extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1)
-{
-  s32 enabled = arg0 & 0x10000;
-  u32 first;
-  u8 *state;
-  u8 *entries;
-  u32 zero;
-  u8 *record;
-  s32 i;
-  if (enabled != 0)
-  {
-    *((u32 *) (((u8 *) lbl_803D2140) + 0x38)) |= 0x10000;
-  }
-  else
-  {
-    *((u32 *) (((u8 *) lbl_803D2140) + 0x38)) &= 0xFFFEFFFF;
-  }
-  state = (u8 *) lbl_803D2140;
-  first = *((u32 *) lbl_803D2140);
-  entries = state + 0xA0;
-  zero = 0;
-  first |= 1;
-  *((void **) (state + 0x08)) = entries;
-  *((void **) (state + 0x14)) = entries;
-  *((void **) (state + 0x20)) = entries;
-  *((void **) (state + 0x2C)) = entries;
-  *((u32 *) lbl_803D2140) = first;
-  *((u32 *) (state + 0x30)) = 0;
-  *((u32 *) (state + 0x34)) = 0;
-  if (enabled != 0)
-  {
-    *((u32 *) (state + 0x38)) |= 0x10000;
-  }
-  else
-  {
-    *((u32 *) (state + 0x38)) &= 0xFFFEFFFF;
-  }
-  *((void **) (((u8 *) lbl_803D2140) + 0x3C)) = arg1;
-  *((u32 *) (((u8 *) lbl_803D2140) + 0x40)) = 0;
-  *((u32 *) (((u8 *) lbl_803D2140) + 0x44)) = zero;
-  *((u32 *) (((u8 *) lbl_803D2140) + 0x60)) = 1;
-  *((void **) (((u8 *) lbl_803D2140) + 0x48)) = (void *) VFiPFCODE_CP932_OEM2Unicode;
-  *((void **) (((u8 *) lbl_803D2140) + 0x4C)) = (void *) VFiPFCODE_CP932_Unicode2OEM;
-  *((void **) (((u8 *) lbl_803D2140) + 0x50)) = (void *) fn_800B7200;
-  *((void **) (((u8 *) lbl_803D2140) + 0x54)) = (void *) VFiPFCODE_CP932_isOEMMBchar;
-  *((void **) (((u8 *) lbl_803D2140) + 0x58)) = (void *) fn_800B72B0;
-  *((void **) (((u8 *) lbl_803D2140) + 0x5C)) = (void *) fn_800B72E4;
-  record = ((u8 *) lbl_803D2140) + 0xA0;
-  for (i = 0; i < 0x1A; i++, record += 0x1FC8)
-  {
-    fn_800A499C((const char *) record, 0, 0x1FC8);
-  }
+extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1) {
+    s32 enabled = arg0 & 0x10000;
+    u32 first;
+    u8 *state;
+    u8 *entries;
+    u32 zero;
+    u8 *record;
+    s32 i;
 
-  fn_800B7710(((u8 *) lbl_803D2140) + 0x64);
-  __AXDSPInitCallback_800B7860();
-  return 0;
+    if (enabled != 0)
+        *(u32 *)((u8 *)lbl_803D2140 + 0x38) |= 0x10000;
+    else
+        *(u32 *)((u8 *)lbl_803D2140 + 0x38) &= 0xFFFEFFFF;
+
+    state = (u8 *)lbl_803D2140;
+    first = *(u32 *)lbl_803D2140;
+    entries = state + 0xA0;
+    zero = 0;
+    first |= 1;
+    *(void **)(state + 0x08) = entries;
+    *(void **)(state + 0x14) = entries;
+    *(void **)(state + 0x20) = entries;
+    *(void **)(state + 0x2C) = entries;
+    *(u32 *)lbl_803D2140 = first;
+    *(u32 *)(state + 0x30) = zero;
+    *(u32 *)(state + 0x34) = zero;
+
+    if (enabled != 0)
+        *(u32 *)(state + 0x38) |= 0x10000;
+    else
+        *(u32 *)(state + 0x38) &= 0xFFFEFFFF;
+
+    *(void **)((u8 *)lbl_803D2140 + 0x3C) = arg1;
+    *(u32 *)((u8 *)lbl_803D2140 + 0x40) = zero;
+    *(u32 *)((u8 *)lbl_803D2140 + 0x44) = zero;
+    *(u32 *)((u8 *)lbl_803D2140 + 0x60) = 1;
+    *(void **)((u8 *)lbl_803D2140 + 0x48) = (void *)VFiPFCODE_CP932_OEM2Unicode;
+    *(void **)((u8 *)lbl_803D2140 + 0x4C) = (void *)VFiPFCODE_CP932_Unicode2OEM;
+    *(void **)((u8 *)lbl_803D2140 + 0x50) = (void *)fn_800B7200;
+    *(void **)((u8 *)lbl_803D2140 + 0x54) = (void *)VFiPFCODE_CP932_isOEMMBchar;
+    *(void **)((u8 *)lbl_803D2140 + 0x58) = (void *)fn_800B72B0;
+    *(void **)((u8 *)lbl_803D2140 + 0x5C) = (void *)fn_800B72E4;
+
+    record = (u8 *)lbl_803D2140 + 0xA0;
+    for (i = 0; i < 0x1A; i++, record += 0x1FC8)
+        fn_800A499C((const char *)record, 0, 0x1FC8);
+
+    fn_800B7710((u8 *)lbl_803D2140 + 0x64);
+    __AXDSPInitCallback_800B7860();
+    return 0;
 }
 
 /* Bring a volume up to date and say whether it can be used: the file calls
@@ -17612,54 +17607,44 @@ extern "C" s32 lbl_8031D670[];
 #pragma push
 #pragma scheduling invalid_target
 #pragma optimization_level 3
-extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3)
-{
-  s32 *t = (s32 *) lbl_8031D670;
-  s32 a0 = arg0[0];
-  s32 c0 = *(t++);
-  s32 c1 = *(t++);
-  arg2[0] = arg1[0] + ((s32) ((((s64) a0) * c0) >> 20));
-  arg3[0] = arg1[17] + ((s32) ((((s64) a0) * c1) >> 20));
-  s32 a1 = arg0[1];
-  s32 d0 = *(t++);
-  s32 d1 = *(t++);
-  arg2[64] = arg1[1] + ((s32) ((((s64) a1) * d0) >> 20));
-  arg3[-64] = arg1[16] + ((s32) ((((s64) a1) * d1) >> 20));
-  s32 a2 = arg0[2];
-  s32 e0 = *(t++);
-  s32 e1 = *(t++);
-  arg2[128] = arg1[2] + ((s32) ((((s64) a2) * e0) >> 20));
-  arg3[-128] = arg1[15] + ((s32) ((((s64) a2) * e1) >> 20));
-  s32 a3 = arg0[3];
-  s32 f0 = *(t++);
-  s32 f1 = *(t++);
-  arg2[192] = arg1[3] + ((s32) ((((s64) a3) * f0) >> 20));
-  arg3[-192] = arg1[14] + ((s32) ((((s64) a3) * f1) >> 20));
-  s32 a4 = arg0[4];
-  s32 g0 = *(t++);
-  s32 g1 = *(t++);
-  arg2[256] = arg1[4] + ((s32) ((((s64) a4) * g0) >> 20));
-  arg3[-256] = arg1[13] + ((s32) ((((s64) a4) * g1) >> 20));
-  s32 a5 = arg0[0, 5];
-  s32 h0 = *(t++);
-  s32 h1 = *(t++);
-  arg2[320] = arg1[5] + ((s32) ((((s64) a5) * h0) >> 20));
-  arg3[-320] = arg1[12] + ((s32) ((((s64) a5) * h1) >> 20));
-  s32 a6 = arg0[6];
-  s32 i0 = *(t++);
-  s32 i1 = *(t++);
-  arg2[384] = arg1[6] + ((s32) ((((s64) a6) * i0) >> 20));
-  arg3[-384] = arg1[11] + ((s32) ((((s64) a6) * i1) >> 20));
-  s32 a7 = arg0[7];
-  s32 j0 = *(t++);
-  s32 j1 = *(t++);
-  arg2[448] = arg1[7] + ((s32) ((((s64) a7) * j0) >> 20));
-  arg3[-448] = arg1[10] + ((s32) ((((s64) a7) * j1) >> 20));
-  s32 a8 = arg0[8];
-  s32 k0 = *(t++);
-  s32 k1 = *(t++);
-  arg2[512] = arg1[8] + ((s32) ((((s64) a8) * k0) >> 20));
-  arg3[-512] = arg1[9] + ((s32) ((((s64) a8) * k1) >> 20));
+extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
+    s32 *t = (s32 *)lbl_8031D670;
+    s32 a0 = arg0[0]; s32 c0 = *t++; s32 c1 = *t++;
+    s32 p0 = (s32)(((s64)a0 * c0) >> 20); s32 p1 = (s32)(((s64)a0 * c1) >> 20);
+    arg2[0] = arg1[0] + p0;
+    arg3[0] = arg1[17] + p1;
+    s32 a1 = arg0[1]; s32 d0 = *t++; s32 d1 = *t++;
+    s32 p2 = (s32)(((s64)a1 * d0) >> 20); s32 p3 = (s32)(((s64)a1 * d1) >> 20);
+    arg2[64] = arg1[1] + p2;
+    arg3[-64] = arg1[16] + p3;
+    s32 a2 = arg0[2]; s32 e0 = *t++; s32 e1 = *t++;
+    s32 p4 = (s32)(((s64)a2 * e0) >> 20); s32 p5 = (s32)(((s64)a2 * e1) >> 20);
+    arg2[128] = arg1[2] + p4;
+    arg3[-128] = arg1[15] + p5;
+    s32 a3 = arg0[3]; s32 f0 = *t++; s32 f1 = *t++;
+    s32 p6 = (s32)(((s64)a3 * f0) >> 20); s32 p7 = (s32)(((s64)a3 * f1) >> 20);
+    arg2[192] = arg1[3] + p6;
+    arg3[-192] = arg1[14] + p7;
+    s32 a4 = arg0[4]; s32 g0 = *t++; s32 g1 = *t++;
+    s32 p8 = (s32)(((s64)a4 * g0) >> 20); s32 p9 = (s32)(((s64)a4 * g1) >> 20);
+    arg2[256] = arg1[4] + p8;
+    arg3[-256] = arg1[13] + p9;
+    s32 a5 = arg0[5]; s32 h0 = *t++; s32 h1 = *t++;
+    s32 p10 = (s32)(((s64)a5 * h0) >> 20); s32 p11 = (s32)(((s64)a5 * h1) >> 20);
+    arg2[320] = arg1[5] + p10;
+    arg3[-320] = arg1[12] + p11;
+    s32 a6 = arg0[6]; s32 i0 = *t++; s32 i1 = *t++;
+    s32 p12 = (s32)(((s64)a6 * i0) >> 20); s32 p13 = (s32)(((s64)a6 * i1) >> 20);
+    arg2[384] = arg1[6] + p12;
+    arg3[-384] = arg1[11] + p13;
+    s32 a7 = arg0[7]; s32 j0 = *t++; s32 j1 = *t++;
+    s32 p14 = (s32)(((s64)a7 * j0) >> 20); s32 p15 = (s32)(((s64)a7 * j1) >> 20);
+    arg2[448] = arg1[7] + p14;
+    arg3[-448] = arg1[10] + p15;
+    s32 a8 = arg0[8]; s32 k0 = *t++; s32 k1 = *t++;
+    s32 p16 = (s32)(((s64)a8 * k0) >> 20); s32 p17 = (s32)(((s64)a8 * k1) >> 20);
+    arg2[512] = arg1[8] + p16;
+    arg3[-512] = arg1[9] + p17;
 }
 #pragma pop
 extern u32 lbl_8031D6B8[];
@@ -18801,24 +18786,41 @@ void fn_800C5298(s32* arg0, s32* arg1, s32* arg2) {
     }
 }
 
-void fn_800C5430(s32 *a, s32 *b, s32 *coeff) {
-    s32 c0 = coeff[0];
-    s32 c1 = coeff[1];
-    s32 c2 = coeff[2];
-    s32 c3 = coeff[3];
-    for (s32 i = 0; i < 4; i++) {
-        s32 bb, aa, dd;
-        bb = b[0]; aa = a[0]; dd = aa - bb;
-        a[0] = aa + bb; b[0] = (s32)(((s64)dd * c0) >> 24);
-        bb = b[1]; aa = a[1]; dd = aa - bb;
-        a[1] = aa + bb; b[1] = (s32)(((s64)dd * c1) >> 24);
-        bb = b[2]; aa = a[2]; dd = aa - bb;
-        a[2] = aa + bb; b[2] = (s32)(((s64)dd * c2) >> 24);
-        bb = b[3]; aa = a[3]; dd = aa - bb;
-        a[3] = aa + bb; b[3] = (s32)(((s64)dd * c3) >> 24);
-        a += 8;
-        b += 8;
-    }
+void fn_800C5430(s32 *a, s32 *b, s32 *coeff)
+{
+  s32 c0 = coeff[0];
+  s32 c1 = coeff[1];
+  s32 c2 = coeff[2];
+  s32 c3 = coeff[3];
+  for (s32 i = 0; i < 4; i++)
+  {
+    s32 bb;
+    s32 aa;
+    s32 dd;
+    bb = b[0];
+    aa = a[0];
+    dd = aa - bb;
+    a[0] = bb + aa;
+    b[0] = (s32) ((((s64) dd) * c0) >> 24);
+    bb = b[1];
+    aa = a[1];
+    dd = aa - bb;
+    a[1] = aa + bb;
+    b[1] = (s32) ((((s64) dd) * c1) >> 24);
+    bb = b[2];
+    aa = a[2];
+    dd = aa - bb;
+    a[2] = aa + bb;
+    b[2] = (s32) ((((s64) dd) * c2) >> 24);
+    bb = b[3];
+    aa = a[3];
+    dd = aa - bb;
+    a[3] = aa + bb;
+    b[3] = (s32) ((((s64) dd) * c3) >> 24);
+    a += 8;
+    b += 8;
+  }
+
 }
 
 extern "C" void fn_800C5508(void *sumBlock, void *diffBlock, void *scales) {
@@ -21757,8 +21759,9 @@ extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
     u16 width, height;
     s32 idx, rem, off;
     s32 i, n;
-    v = arg2;
     s32 v;
+
+    v = arg2;
     if (arg2 >= 100)
         v -= 100;
 
@@ -21775,7 +21778,8 @@ extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
     scaleX = width < 400 ? 1 : 2;
     scaleY = height < 300 ? 1 : 2;
 
-    dest = (u16 *)(lbl_80407BD8[0] + scaleY * arg1 * (u16)*(u16 *)((u8 *)lbl_80407BD8 + 0xC) * 2 + arg0 * scaleX * 2);
+    dest = (u16 *)lbl_80407BD8[0] + scaleY * arg1 * *(u16 *)((u8 *)lbl_80407BD8 + 0xC);
+    dest += arg0 * scaleX;
 
     if (arg1 >= 0) {
         if (arg0 < 0)
