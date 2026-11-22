@@ -357,8 +357,7 @@ void fn_802CECF4(unsigned int targetIndex) {
     } while ((unsigned short)lbl_8055D0F6 != targetIndex);
 }
 
-#pragma push
-#pragma scheduling 750
+#pragma scheduling 604
 void fn_802CED50(int arg0, int arg1, int arg2, int arg3) {
     volatile unsigned char *state = lbl_804C5710;
     *(volatile int *)(state + 4) = arg0;
@@ -368,7 +367,6 @@ void fn_802CED50(int arg0, int arg1, int arg2, int arg3) {
     state[0] = 1;
     state[1] = 1;
 }
-#pragma pop
 extern void KPADSetBtnRepeat(int *, int *, int *, int *);
 #pragma push
 #pragma use_lmw_stmw off
@@ -1144,25 +1142,24 @@ void fn_802CFFA4(unsigned short blendMode) {
 }
 
 #pragma scheduling on
-void fn_802CFFAC(int arg0, int arg1, int arg2) {
-    volatile unsigned char spB;
-    volatile unsigned char spA;
-    volatile unsigned char sp9;
-    volatile unsigned char sp8;
-    unsigned long packed;
-    unsigned char b3;
-
-    packed = fn_802CE9FC(arg0, arg1, arg2, 0);
-    spB = (unsigned char)packed;
-    sp8 = (unsigned char)((packed >> 24) & 0xFF);
-    sp9 = (unsigned char)((packed >> 16) & 0xFF);
-    b3 = (unsigned char)((packed >> 8) & 0xFF);
-    lbl_804C97B0[1] = sp8;
-    lbl_804C97B0[2] = sp9;
-    lbl_804C97B0[3] = b3;
-    lbl_804C97B0[4] = (unsigned char)packed;
-    lbl_804C97B0[0x1C] = 1;
-    spA = b3;
+void fn_802CFFAC(int arg0, int arg1, int arg2)
+{
+  volatile unsigned char spB;
+  volatile unsigned char spA;
+  volatile unsigned char sp8;
+  volatile unsigned char sp9;
+  unsigned long packed;
+  volatile unsigned long long b3;
+  packed = fn_802CE9FC(arg0, arg1, arg2, 0);
+  spB = (unsigned char) packed;
+  sp9 = (unsigned char) (packed >> 16);
+  b3 = (unsigned char) (packed >> 8);
+  lbl_804C97B0[1] = (sp8 = (unsigned char) (packed >> 24));
+  lbl_804C97B0[2] = sp9;
+  lbl_804C97B0[3] = b3;
+  lbl_804C97B0[4] = (unsigned char) packed;
+  lbl_804C97B0[0x1C] = 1;
+  spA = b3;
 }
 void fn_802D0014(float startValue, float endValue, float delta) {
     /* Sets up a float interpolation in the GX state block: stores start/end-step values and marks it active when |delta| exceeds the threshold. */
@@ -1183,6 +1180,7 @@ void fn_802D0014(float startValue, float endValue, float delta) {
 #pragma push
 #pragma small_data off
 extern __declspec(section ".data") char lbl_804C97D0;
+#pragma opt_deadstores off
 void fn_802D007C(float arg0) {
     extern float lbl_80564FA8;
     extern float lbl_80564F88;
@@ -1211,8 +1209,6 @@ void fn_802D007C(float arg0) {
     ((void (*)(int, void *))GXSetTevColor)(1, &color);
     lbl_804C5700[0] = 1;
 }
-#pragma push
-#pragma scheduling invalid_target
 void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
     volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
@@ -1223,16 +1219,18 @@ void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
     p[0x5C] = 1;
 }
 #pragma scheduling invalid_target
-void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
-    extern char lbl_804C97D0;
-    volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
-    p[1] = b;
-    p[2] = c;
-    p[3] = 0;
-    p[0x5C] = 1;
-    lbl_804C97D0 = a;
+void fn_802D0188(unsigned char a, unsigned char b, unsigned char c)
+{
+  extern char lbl_804C97D0;
+  volatile unsigned char *p = (volatile unsigned char *) (&lbl_804C97D0);
+  p[1] = b;
+  p[2] = c;
+  p[3] = 0;
+  p[0x5C] = 1;
+  lbl_804C97D0 = a;
 }
-#pragma scheduling on
+#pragma push
+#pragma opt_propagation off
 void fn_802D01B0(float *p, float v) {
     extern char lbl_804C97D0;
     float z, y, x;
@@ -1247,6 +1245,7 @@ void fn_802D01B0(float *p, float v) {
     out[3] = v;
     *((unsigned char *)&lbl_804C97D0 + 0x5C) = 1;
 }
+#pragma pop
 void fn_802D2218(void);
 #pragma push
 #pragma paired off
@@ -1273,22 +1272,25 @@ void fn_802D01E0(int viewportX, int viewportY, int viewportWidth, int viewportHe
 #pragma pop
 
 #pragma scheduling on
-void fn_802D02F8(int arg0, signed char arg1) {
-    extern unsigned char lbl_804C9778[];
-    volatile unsigned char s2, s3;
-    unsigned char s0, s1;
-    unsigned int value;
-    lbl_804C9778[0x2d] = arg1;
-    lbl_804C9778[0x2c] = 1;
-    value = ((unsigned int (*)(unsigned int))fn_802CEA1C)((unsigned int)arg0);
-    lbl_804C9778[0x31] = value;
-    s3 = (unsigned char)(value >> 24);
-    s2 = (unsigned char)(value >> 16);
-    s1 = (unsigned char)(value >> 8);
-    lbl_804C9778[0x2e] = s3;
-    lbl_804C9778[0x2f] = s2;
-    lbl_804C9778[0x30] = s1;
-    s0 = (unsigned char)value;
+void fn_802D02F8(int arg0, signed char arg1)
+{
+  extern unsigned char lbl_804C9778[];
+  volatile unsigned char s2;
+  unsigned int s3;
+  unsigned char s0;
+  unsigned char s1;
+  unsigned int value;
+  lbl_804C9778[0x2d] = arg1;
+  lbl_804C9778[0x2c] = 1;
+  value = ((unsigned int (*)(unsigned int)) fn_802CEA1C)((unsigned int) arg0);
+  lbl_804C9778[0x31] = value;
+  s3 = (unsigned char) (value >> 24);
+  s2 = (unsigned char) (value >> 16);
+  s1 = (unsigned char) (value >> 8);
+  lbl_804C9778[0x2e] = s3;
+  lbl_804C9778[0x2f] = s2;
+  lbl_804C9778[0x30] = s1;
+  s0 = (unsigned char) value;
 }
 
 #pragma push
@@ -1619,57 +1621,74 @@ void fn_802D0914(int arg0, short arg1, short arg2) {
 void fn_802D09E4(void) {
 }
 
-void fn_802D09E8(void) {
-    char *base = lbl_8034BD18;
-    int temp_r0, div, rem, val;
-    union { double d; unsigned int w[2]; } cvt;
-    if ((unsigned char)lbl_8055FD90 == 0) return;
-    if ((long)lbl_8055D0B8 < 0) {
+void fn_802D09E8(void)
+{
+  char *base = lbl_8034BD18;
+  int temp_r0;
+  int div;
+  int rem;
+  int val;
+  union 
+  {
+    double d;
+    unsigned int w[2];
+  } cvt;
+  if (((unsigned char) lbl_8055FD90) == 0)
+  {
+    return;
+  }
+  if (((long) lbl_8055D0B8) < 0)
+  {
+    lbl_8055FD90 = 0;
+    ((void (*)(void)) fn_802D09E4)();
+    return;
+  }
+  temp_r0 = lbl_8055FDC0 + 1;
+  lbl_8055FDC0 = temp_r0;
+  if ((temp_r0 - 1) > (2 - 1))
+  {
+    lbl_8055FDC0 = 0;
+    if (lbl_8055D0B8 == 0)
+    {
+      int r = fn_802E3D68(lbl_804C9830);
+      lbl_8055D10C = r;
+      if (r == (-1))
+      {
+        fn_802E30C8(base + 0x428, lbl_804C9830);
         lbl_8055FD90 = 0;
-        ((void (*)(void))fn_802D09E4)();
+        lbl_8055D0B8 = -1;
         return;
+      }
+      lbl_8055FDC4 = fn_802E2C20();
+      fn_802E30C8(base + 0x43C, lbl_804C9830);
+      if (lbl_8055FD18 == 0)
+      {
+        ((void (*)(int, int, int)) fn_802D0914)(lbl_8055D10C, lbl_804C9760[2] * lbl_8055D0BC, lbl_804C9760[3] * lbl_8055D0C0);
+      }
     }
-    temp_r0 = lbl_8055FDC0 + 1;
-    lbl_8055FDC0 = temp_r0;
-    if (temp_r0 > 2) {
-        lbl_8055FDC0 = 0;
-        if (lbl_8055D0B8 == 0) {
-            int r = fn_802E3D68(lbl_804C9830);
-            lbl_8055D10C = r;
-            if (r == -1) {
-                fn_802E30C8(base + 0x428, lbl_804C9830);
-                lbl_8055FD90 = 0;
-                lbl_8055D0B8 = -1;
-                return;
-            }
-            lbl_8055FDC4 = fn_802E2C20();
-            fn_802E30C8(base + 0x43C, lbl_804C9830);
-            if (lbl_8055FD18 == 0) {
-                ((void (*)(int, int, int))fn_802D0914)(lbl_8055D10C,
-                    lbl_804C9760[2] * lbl_8055D0BC, lbl_804C9760[3] * lbl_8055D0C0);
-            }
-        }
-        if ((long)lbl_8055D0B8 < (long)(lbl_8055D0BC * lbl_8055D0C0)) {
-            rem = (long)lbl_8055D0B8 % lbl_8055D0BC;
-            div = (long)lbl_8055D0B8 / lbl_8055D0BC;
-            fn_802E30C8(base + 0x458, (char *)(lbl_8055D0B8 + 1));
-            ((void (*)(int,int,int,int,int,int))fn_802D0910)(lbl_8055D10C, lbl_804C9760[2] * rem, lbl_804C9760[3] * div,
-                        lbl_804C9760[2] * lbl_8055D0BC, lbl_804C9760[3] * lbl_8055D0C0,
-                        lbl_804C9760[2]);
-            lbl_8055D0B8++;
-        }
-        if ((long)lbl_8055D0B8 >= (long)(lbl_8055D0BC * lbl_8055D0C0)) {
-            lbl_8055FD90 = 0;
-            lbl_8055D0B8 = -1;
-            fn_802E3734(&lbl_8055D10C);
-            lbl_8055D10C = -1;
-            val = fn_802E2C20();
-            cvt.w[0] = 0x43300000;
-            cvt.w[1] = (val - lbl_8055FDC4) ^ 0x80000000U;
-            fn_802E30C8(base + 0x468, lbl_804C9830, lbl_8055FDC4,
-                        lbl_80564F80 * (cvt.d - lbl_80564FB0));
-        }
+    if (((long) lbl_8055D0B8) < ((long) (lbl_8055D0BC * lbl_8055D0C0)))
+    {
+      rem = ((long) lbl_8055D0B8) % lbl_8055D0BC;
+      div = ((long) lbl_8055D0B8) / lbl_8055D0BC;
+      fn_802E30C8(base + 0x458, (char *) (lbl_8055D0B8 + 1));
+      ((void (*)(int, int, int, int, int, int)) fn_802D0910)(lbl_8055D10C, lbl_804C9760[2] * rem, lbl_804C9760[3] * div, lbl_804C9760[2] * lbl_8055D0BC, lbl_804C9760[3] * lbl_8055D0C0, lbl_804C9760[2]);
+      lbl_8055D0B8++;
     }
+    if (((long) lbl_8055D0B8) >= ((long) (lbl_8055D0BC * lbl_8055D0C0)))
+    {
+      lbl_8055FD90 = 0;
+      lbl_8055D0B8 = -1;
+      fn_802E3734(&lbl_8055D10C);
+      lbl_8055D10C = -1;
+      val = fn_802E2C20();
+      if (1)
+      {
+        cvt.w[0] = 0x43300000;
+        cvt.w[1] = ((unsigned int) (val - lbl_8055FDC4)) ^ 0x80000000U;
+      }
+      fn_802E30C8(base + 0x468, lbl_804C9830, lbl_8055FDC4, lbl_80564F80 * (cvt.d - lbl_80564FB0));
+    }
+  }
 }
 
 void fn_802D0BD8(void) {
@@ -1711,45 +1730,44 @@ extern void GXSetCopyFilter(unsigned char, unsigned char *, unsigned char, unsig
 extern void GXCopyDisp(void *, int);
 extern void fn_802D09E8(void);
 extern void fn_802CFF50(void);
-void fn_802D0C98(void) {
-    extern int lbl_8055FD48, lbl_8055FD4C;
-    extern unsigned int lbl_8055FD74;
-    extern unsigned char lbl_8055D0C4;
-    extern void *lbl_8055FD64;
-    extern int lbl_804C9760[];
-    unsigned short temp_r31;
-    int temp_r30 = 0;
-    unsigned char *display;
-
-    lbl_8055FD4C = temp_r30;
-    GXSetZMode(1, 3, 1);
-    GXSetColorUpdate(1);
-    fn_802D09E8();
-    GXSetColorUpdate(lbl_8055D0C4);
-    lbl_8055FD74 |= 1;
-    GXSetZMode(1, 7, 1);
-    lbl_8055FD74 = (lbl_8055FD74 | 2) & ~4U;
-    temp_r31 = (unsigned short)GXSetDispCopyYScale(
-        GXGetYScaleFactor(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 6),
-                          *(unsigned short *)((unsigned char *)lbl_8055FD64 + 8)));
-    display = (unsigned char *)lbl_8055FD64;
-    GXSetDispCopySrc(0, 0, *(unsigned short *)(display + 4), *(unsigned short *)(display + 6));
-    GXSetDispCopyDst(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 4), temp_r31);
-    GXSetCopyFilter(*((unsigned char *)lbl_8055FD64 + 0x19),
-                    (unsigned char *)lbl_8055FD64 + 0x1A, 1,
-                    (unsigned char *)lbl_8055FD64 + 0x32);
-    GXCopyDisp((void *)lbl_804C9760[1], 1);
-    VISetNextFrameBuffer((void *)lbl_804C9760[1]);
-    if (lbl_8055FD48 > 0) {
-        lbl_8055FD48 -= 1;
-        VISetBlack(1);
-    } else {
-        lbl_8055FD48 = temp_r30;
-        VISetBlack(0);
-    }
-    VIFlush();
-    lbl_804C9760[1] = lbl_804C9760[0];
-    fn_802CFF50();
+void fn_802D0C98(void)
+{
+  extern int lbl_8055FD48;
+  extern int lbl_8055FD4C;
+  extern unsigned int lbl_8055FD74;
+  extern unsigned char lbl_8055D0C4;
+  extern void *lbl_8055FD64;
+  extern int lbl_804C9760[];
+  unsigned short temp_r31;
+  int temp_r30 = 0;
+  unsigned char *display;
+  lbl_8055FD4C = temp_r30;
+  GXSetZMode(1, 3, 1);
+  GXSetColorUpdate(1);
+  fn_802D09E8();
+  GXSetColorUpdate(lbl_8055D0C4);
+  lbl_8055FD74 |= 1;
+  GXSetZMode(1, 7, 1);
+  lbl_8055FD74 = (lbl_8055FD74 | 2) & (~4U);
+  temp_r31 = (unsigned short) GXSetDispCopyYScale(GXGetYScaleFactor(*((unsigned short *) (((unsigned char *) lbl_8055FD64) + 6)), *((unsigned short *) (((unsigned char *) lbl_8055FD64) + 8))));
+  GXSetDispCopySrc(0, 0, *((unsigned short *) ((display = (unsigned char *) lbl_8055FD64) + 4)), *((unsigned short *) (display + 6)));
+  GXSetDispCopyDst(*((unsigned short *) (((unsigned char *) lbl_8055FD64) + 4)), temp_r31);
+  GXSetCopyFilter(*(((unsigned char *) lbl_8055FD64) + 0x19), ((unsigned char *) lbl_8055FD64) + 0x1A, 1, ((unsigned char *) lbl_8055FD64) + 0x32);
+  GXCopyDisp((void *) lbl_804C9760[1], 1);
+  VISetNextFrameBuffer((void *) lbl_804C9760[1]);
+  if ((lbl_8055FD48 > 0) != 0U)
+  {
+    lbl_8055FD48 -= 1;
+    VISetBlack(1);
+  }
+  else
+  {
+    lbl_8055FD48 = temp_r30;
+    VISetBlack(0);
+  }
+  VIFlush();
+  lbl_804C9760[1] = lbl_804C9760[0];
+  fn_802CFF50();
 }
 
 #pragma scheduling off
@@ -2101,7 +2119,8 @@ extern double lbl_80564FA0;
 void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float scale) {
     unsigned char rgba[4];
     float vec[3];
-    float bx, by, bz, x, y, z, mag, k, nz, vz, vx, vy;
+    float bx, by, bz, x, y, z, mag, k, nz;
+    float vz, vx, vy;
     rgba[1]=color[1]; rgba[0]=color[0]; rgba[2]=color[2]; rgba[3]=color[3];
     GXInitLightColor(light, rgba);
     x=a[0]+b[0];
@@ -2110,11 +2129,11 @@ void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float sc
     vec[0]=x; vec[1]=y; vec[2]=z;
     mag=PSVECMag(vec);
     mag = mag > lbl_80564F80 ? mag : lbl_80564F80;
-    k=lbl_80564F90/mag;
-    bx=b[0]; bz=-b[2];
     vz=vec[2]; vx=vec[0]; vy=vec[1];
+    k=lbl_80564F90/mag;
+    bx=b[0];
     z=vz*k; x=vx*k; y=vy*k;
-    by=b[1];
+    by=b[1]; bz=-b[2];
     nz=-z;
     vec[0]=x; vec[1]=y; vec[2]=z;
     GXGetLightDir_Internal(light,bx,by,bz,x,y,nz);
@@ -2412,23 +2431,14 @@ extern float lbl_80564FDC;
 #pragma processor 750
 #pragma opt_propagation off
 void fn_802D2218(void) {
-    typedef struct GxState {
-        char pad0[0x24];
-        int width;
-        int height;
-        unsigned char b2c, b2d, b2e, b2f, b30, b31;
-    } GxState;
-    typedef struct GxWhole {
-        char pad0[0x4128];
-        GxState state;
-    } GxWhole;
+    typedef struct { unsigned char r, g, b, a; } Color802D2218;
     float sp90[12];
     float sp60[12];
     float sp20[16];
     volatile float sp18;
     volatile float sp14;
     volatile float sp10;
-    unsigned char fogColor[4];
+    Color802D2218 fogColor;
     unsigned char tevColor[4];
     float temp_f1;
     float temp_f1_2;
@@ -2436,31 +2446,13 @@ void fn_802D2218(void) {
     register volatile float *fifo;
     float temp_f30;
     float temp_f31;
-    int temp_r4;
-    int screenWidth;
-    int screenHeight;
     int var_ctr;
     int var_r0;
     int var_r0_2;
     int var_r0_3;
     int var_r0_4;
     int var_r4;
-    unsigned char temp_r5;
-    unsigned char temp_r5_2;
-    unsigned char temp_r6;
-    unsigned char temp_r6_2;
-    unsigned char temp_r7_2;
-    register unsigned char *base;
-    register GxWhole *whole;
-    register GxState *state;
-    unsigned char *temp_r3_2;
-    unsigned char *temp_r3_3;
-    unsigned char *temp_r4_2;
-    unsigned char *temp_r7;
-    base = (unsigned char *)lbl_804C5650;
-    whole = (GxWhole *)lbl_804C5650;
-    state = &whole->state;
-    if ((state->b2d != 0) || (state->b2c != 0)) {
+    if (sClearState_802D2218.clearColor != 0 || sClearState_802D2218.clearZ != 0) {
         fn_802D1678();
         sp90[0] = lbl_80564F8C;
         sp90[1] = lbl_80564F88;
@@ -2476,36 +2468,24 @@ void fn_802D2218(void) {
         sp90[11] = lbl_80564F88;
         fn_802D0DD4(sp60, sp90);
         GXLoadPosMtxImm(sp60, 0);
-        state = &whole->state;
-        screenWidth = state->width;
-        screenHeight = state->height;
-        temp_f31 = lbl_80564F94 * (float)screenWidth;
-        temp_f30 = lbl_80564F94 * (float)screenHeight;
+        temp_f31 = lbl_80564F94 * (float)sClearState_802D2218.width;
+        temp_f30 = lbl_80564F94 * (float)sClearState_802D2218.height;
         C_MTXOrtho(sp20, temp_f30, -temp_f30, -temp_f31, temp_f31, lbl_80564F8C, lbl_80564FCC);
         GXSetProjection(sp20, 1);
         GXSetDstAlpha(0, 0);
         GXSetBlendMode(0, 1, 0, 5);
-        GXSetColorUpdate(state->b2d);
-        GXSetAlphaUpdate(state->b2d);
-        GXSetZMode(1, 7, state->b2c);
-        temp_r7 = base + 0x4160;
-        temp_r6 = temp_r7[2];
-        temp_r5 = temp_r7[3];
-        fogColor[0] = temp_r7[1];
-        fogColor[1] = temp_r6;
-        fogColor[2] = temp_r5;
-        fogColor[3] = temp_r7[4];
-        GXSetFog(0, fogColor, temp_r5, temp_r6, temp_r7, lbl_80564F88, lbl_80564F88, lbl_80564F88, lbl_80564F88);
+        GXSetColorUpdate(sClearState_802D2218.clearColor);
+        GXSetAlphaUpdate(sClearState_802D2218.clearColor);
+        GXSetZMode(1, 7, sClearState_802D2218.clearZ);
+        fogColor = *(Color802D2218 *)&sFogState_802D2218[1];
+        ((void (*)(int, Color802D2218, float, float, float, float))GXSetFog)(0, fogColor, lbl_80564F88, lbl_80564F88, lbl_80564F88, lbl_80564F88);
         GXSetNumTevStages(1);
         GXSetNumTexGens(0);
-        temp_r7_2 = state->b2e;
-        temp_r6_2 = state->b2f;
-        temp_r5_2 = state->b30;
-        tevColor[0] = temp_r7_2;
-        tevColor[1] = temp_r6_2;
-        tevColor[2] = temp_r5_2;
-        tevColor[3] = state->b31;
-        ((void (*)(int, unsigned char *, unsigned char, unsigned char, unsigned char))GXSetTevColor)(1, tevColor, temp_r5_2, temp_r6_2, temp_r7_2);
+        tevColor[0] = sClearState_802D2218.color[0];
+        tevColor[1] = sClearState_802D2218.color[1];
+        tevColor[2] = sClearState_802D2218.color[2];
+        tevColor[3] = sClearState_802D2218.color[3];
+        GXSetTevColor(1, tevColor);
         GXSetTevOrder(0, 0xFF, 0xFF, 0xFF);
         GXSetTevColorIn(0, 0xF, 0xF, 0xF, 2);
         GXSetTevColorOp(0, 0, 0, 0, 0, 0);
@@ -2557,18 +2537,15 @@ void fn_802D2218(void) {
         GXSetTevOrder(0, 0, 0, 4);
         GXSetTevOp(0, 0);
         GXSetDstAlpha(1, lbl_8055FD60);
-        temp_r3_2 = (unsigned char *)state;
-        temp_r3_2[0x2C] = 0;
-        temp_r3_2[0x2D] = 0;
+        sClearState_802D2218.clearZ = 0;
+        sClearState_802D2218.clearColor = 0;
         fn_802CFF50();
-        temp_r3_2[0] = 1;
+        sClearState_802D2218.dirty = 1;
         fn_802D14D8();
-        temp_r4_2 = base + 0x4180;
-        base[0xB0] = 1;
-        temp_r3_3 = base + 0x4160;
+        ((unsigned char *)sViewTo_802D18E8)[0x40] = 1;
         lbl_8055FD70 = 1;
-        temp_r4_2[0x5C] = 1;
-        temp_r3_3[0x1C] = 1;
+        ((unsigned char *)&sDefaultLight_802D18E8)[0x5C] = 1;
+        sFogState_802D2218[0x1C] = 1;
         fn_802D6C68();
     }
 }
@@ -3027,22 +3004,24 @@ void* fn_802D3138(void) {
 
 #pragma scheduling on
 #pragma dont_inline on
-void fn_802D3144(void) {
-    unsigned short ref = lbl_8055FD08;
-    unsigned short cur = lbl_8055FD86;
-    if (cur == ref) {
-        GXSetBlendMode(0, 0, 0, 5);
-    } else {
-        int lowMapped;
-        int high;
-        int low;
-        high = lbl_8055FD86 >> 8;
-        low = lbl_8055FD86 & 0xFF;
-        lowMapped = fn_802D0EC8(low);
-        GXSetBlendMode(1, fn_802D0EC8(high), lowMapped, 5);
-    }
-    lbl_8055FD88 = lbl_8055FD86;
-    lbl_804C5700[0] = 1;
+void fn_802D3144(void)
+{
+  if (lbl_8055FD86 == lbl_8055FD08)
+  {
+    GXSetBlendMode(0, 0, 0, 5);
+  }
+  else
+  {
+    int lowMapped;
+    int high;
+    int low;
+    high = lbl_8055FD86 >> 8;
+    low = ((0, lbl_8055FD86)) & 0xFF;
+    lowMapped = fn_802D0EC8(low);
+    GXSetBlendMode(1, fn_802D0EC8(high), lowMapped, 5);
+  }
+  lbl_8055FD88 = lbl_8055FD86;
+  lbl_804C5700[0] = 1;
 }
 int fn_802D31D8(void)
 {
@@ -3119,23 +3098,24 @@ extern float lbl_80564FE0, lbl_80564FE4;
 void fn_802D3420(void) {
     register float zero = 0.0f;
     register float one = 1.0f;
-    struct { float m[3][4]; } ident;
-    float mtx[3][4], proj[4][4];
+    float ident[3][4], mtx[3][4], proj[4][4];
     float width, height;
+    void *p2 = ident;
+    void *p1 = mtx;
     volatile float *fifo = (volatile float *)0xCC008000;
-    ident.m[0][1] = zero;
-    ident.m[0][0] = one;
-    ident.m[0][2] = zero;
-    ident.m[0][3] = zero;
-    ident.m[1][0] = one;
-    ident.m[1][1] = zero;
-    ident.m[1][2] = zero;
-    ident.m[1][3] = zero;
-    ident.m[2][0] = one;
-    ident.m[2][1] = zero;
-    ident.m[2][2] = zero;
-    ident.m[2][3] = zero;
-    fn_802D0DD4(mtx, &ident);
+    ident[0][1] = zero;
+    ident[0][0] = one;
+    ident[0][2] = zero;
+    ident[0][3] = zero;
+    ident[1][0] = one;
+    ident[1][1] = zero;
+    ident[1][2] = zero;
+    ident[1][3] = zero;
+    ident[2][0] = one;
+    ident[2][1] = zero;
+    ident[2][2] = zero;
+    ident[2][3] = zero;
+    fn_802D0DD4(p1, p2);
     GXLoadPosMtxImm(mtx, 0);
     C_MTXOrtho(proj, lbl_80564F88, lbl_80564FBC, lbl_80564F88, lbl_80564FE0, lbl_80564F8C, lbl_80564FCC);
     GXSetProjection(proj, 1);
@@ -3534,42 +3514,35 @@ extern char lbl_8055D100;
       extern void fn_802E2E0C(void (*)(void), void *);
     extern int lbl_804C9760[];
 
-void fn_802D2D1C(void) {
-    float *src = (float *)lbl_804C56C0;
-    float *dst = (float *)lbl_804CA2D8;
-    float t;
-    ((int *)dst)[1] = ((int *)src)[1];
-    ((int *)dst)[2] = ((int *)src)[2];
-    ((int *)dst)[3] = ((int *)src)[3];
-    ((int *)dst)[5] = ((int *)src)[5];
-    ((int *)dst)[6] = ((int *)src)[6];
-    ((int *)dst)[7] = ((int *)src)[7];
-    ((int *)dst)[0] = ((int *)src)[0];
-    ((int *)dst)[4] = ((int *)src)[4];
-    ((int *)dst)[8] = ((int *)src)[8];
-    t = dst[1]; dst[1] = dst[3]; dst[3] = t;
-    t = dst[2]; dst[2] = dst[6]; dst[6] = t;
-    t = dst[5]; dst[5] = dst[7]; dst[7] = t;
-    if (&dst[9] == &src[9]) {
-        float x = src[9], y = src[10], z = src[11];
-        float m00 = src[0], m01 = src[1], m02 = src[2];
-        float m10 = src[3], m11 = src[4], m12 = src[5];
-        float m20 = src[6], m21 = src[7], m22 = src[8];
-        dst[9] = z * m02 + (x * m00 + y * m01);
-        dst[10] = z * m12 + (x * m10 + y * m11);
-        dst[11] = z * m22 + (x * m20 + y * m21);
+/* Build the current view transform (GX_LIGHT_XF_MTX) from the camera at lbl_804C56C0: copy and transpose the camera rotation, rotate its translation by the matrix and negate it, then select matrix 0. */ void fn_802D2D1C(void) {
+    Xform_802D1C04 *src = (Xform_802D1C04 *)lbl_804C56C0;
+    Xform_802D1C04 *dst = (Xform_802D1C04 *)lbl_804CA2D8;
+    dst->r = src->r;
+    mtx33Transpose_802D1C04(dst->r.m);
+    if (&dst->t == &src->t) {
+        float x, y, z;
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = src->r.m[1]; m11 = src->r.m[4]; m12 = src->r.m[7];
+        m00 = src->r.m[0]; m01 = src->r.m[3]; m02 = src->r.m[6];
+        m20 = src->r.m[2]; m21 = src->r.m[5]; m22 = src->r.m[8];
+        x = src->t.x; y = src->t.y; z = src->t.z;
+        dst->t.x = z * m20 + (x * m00 + y * m10);
+        dst->t.y = z * m21 + (x * m01 + y * m11);
+        dst->t.z = z * m22 + (x * m02 + y * m12);
     } else {
-        float x = src[9], y = src[10], z = src[11];
-        float m00 = src[0], m01 = src[1], m02 = src[2];
-        float m10 = src[3], m11 = src[4], m12 = src[5];
-        float m20 = src[6], m21 = src[7], m22 = src[8];
-        dst[9] = z * m02 + (x * m00 + y * m01);
-        dst[10] = z * m12 + (x * m10 + y * m11);
-        dst[11] = z * m22 + (x * m20 + y * m21);
+        float x, y, z;
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = src->r.m[1]; m11 = src->r.m[4]; m12 = src->r.m[7];
+        m00 = src->r.m[0]; m01 = src->r.m[3]; m02 = src->r.m[6];
+        m20 = src->r.m[2]; m21 = src->r.m[5]; m22 = src->r.m[8];
+        x = src->t.x; y = src->t.y; z = src->t.z;
+        dst->t.x = z * m20 + (x * m00 + y * m10);
+        dst->t.y = z * m21 + (x * m01 + y * m11);
+        dst->t.z = z * m22 + (x * m02 + y * m12);
     }
-    dst[9] *= lbl_80564F90;
-    dst[10] *= lbl_80564F90;
-    dst[11] *= lbl_80564F90;
+    dst->t.x *= lbl_80564F90;
+    dst->t.y *= lbl_80564F90;
+    dst->t.z *= lbl_80564F90;
     GXSetCurrentMtx(0);
 }
 /* Apply the pending viewport change held in the sViewport settings block (+1 is
