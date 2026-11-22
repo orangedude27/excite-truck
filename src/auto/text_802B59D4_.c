@@ -6,6 +6,15 @@ typedef struct InitArrayB59D4 {
     int count, capacity;
     void *storage[16];
 } InitArrayB59D4;
+typedef struct DtorNodeB59D4 {
+    void *a, *b, *c;
+} DtorNodeB59D4;
+typedef struct B59D4Group {
+    DtorNodeB59D4 node1;
+    InitArrayB59D4 array1;
+    DtorNodeB59D4 node2;
+    InitArrayB59D4 array2;
+} B59D4Group;
 extern unsigned char lbl_804BE448[];
 __declspec(section ".sdata") extern unsigned char lbl_8055F9E0[];
 extern void fn_8000D838(void *);
@@ -26,14 +35,14 @@ static inline InitArrayB59D4 *initArrayB59D4(InitArrayB59D4 *a) {
 #pragma cplusplus on
 extern "C" void fn_802B59D4(void) {
     unsigned char *base = lbl_804BE448;
-    InitArrayB59D4 *first;
     InitArrayB59D4 *second;
+    InitArrayB59D4 *first;
     fn_8000D838(lbl_8055F9E0);
     first = (InitArrayB59D4 *)(base + 0xC);
     first->data = first->storage;
     first->capacity = 16;
     first->count = 0;
-    __register_global_object(first, fn_802B5AC0, base);
+    __register_global_object(first, fn_802B5AC0, &lbl_804BE448[0]);
     second = (InitArrayB59D4 *)(base + 0x64);
     second->data = second->storage;
     second->capacity = 16;
