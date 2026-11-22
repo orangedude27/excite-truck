@@ -36,7 +36,7 @@ extern void fn_802D3360(void);
 extern void GXSetTevKAlphaSel(int, int);
 extern void GXSetBlendMode(int, int, int, int);
 extern unsigned char lbl_8055FEBA, lbl_8055FEB8;
-extern signed char lbl_8055FE9E;
+extern signed char gCpuLightTexDirty;
 extern int lbl_8055FEA0, lbl_8055FEA4;
 #pragma push
 #pragma small_data off
@@ -221,8 +221,8 @@ int fn_802DB69C(void **arg0, int arg1) {
     void *texObjs[3];
     int numTevStages;
 
-    if ((unsigned char)lbl_8055FE9E != 0) {
-        lbl_8055FE9E = 0;
+    if ((unsigned char)gCpuLightTexDirty != 0) {
+        gCpuLightTexDirty = 0;
         fn_802DB2D4();
         fn_802DB304(texObjs, mode);
         numTevStages = fn_802DB69C(texObjs, mode);
@@ -378,7 +378,7 @@ void fn_802DBD88(void) {
     void **texSlots;
     lbl_8055FEA8 = 0;
     lbl_8055FEAC = 0;
-    lbl_8055FE9E = 1;
+    gCpuLightTexDirty = 1;
     lbl_8055FEA0 = -1;
     defaultTex = fn_802D94DC();
     lbl_8055FEA4 = 1;
@@ -417,7 +417,7 @@ void fn_802DBDE8(int arg0, void *arg1) {
         lbl_8055FEA4 = count;
         entry++;
     }
-    lbl_8055FE9E = 1;
+    gCpuLightTexDirty = 1;
 }
 
 #pragma scheduling invalid_target
@@ -462,7 +462,7 @@ extern void GXSetChanCtrl(int, int, int, int, int, int, int);
 extern u8 lbl_8055FEBA;
 extern u8 lbl_8055FEB8;
 extern int lbl_8055FD30, lbl_8055FEA4;
-extern signed char lbl_8055FE9E;
+extern signed char gCpuLightTexDirty;
 extern int lbl_8055FEA0;
 extern void *lbl_8055FEA8, *lbl_8055FEAC;
 extern void *fn_802D94DC(void);
