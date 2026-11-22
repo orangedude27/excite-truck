@@ -1323,13 +1323,13 @@ void fn_802C4C90(Stamp *stamp, s32 x, s32 y, s32 frame, StampPalette *override) 
                     pos += skip;
                 }
                 if (literal != 0) {
-                    u8 n = run;
-                    while (n != 0) {
+                    u8 remaining = run;
+                    while (remaining != 0) {
                         *dst = palette[*src];
                         pos++;
                         src++;
                         dst++;
-                        n--;
+                        remaining--;
                     }
                 } else {
                     pos += run;
