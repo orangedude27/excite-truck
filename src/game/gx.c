@@ -1214,6 +1214,7 @@ void fn_802D007C(float arg0) {
     ((void (*)(int, void *))GXSetTevColor)(1, &color);
     lbl_804C5700[0] = 1;
 }
+#pragma scheduling invalid_target
 void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
     volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
@@ -1223,7 +1224,6 @@ void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
     p[6] = c;
     p[0x5C] = 1;
 }
-#pragma scheduling invalid_target
 void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
     volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
@@ -2117,7 +2117,7 @@ extern float lbl_80564F80, lbl_80564F88, lbl_80564F8C, lbl_80564F90, lbl_80564F9
 extern double lbl_80564FA0;
 #pragma push
 #pragma processor 750
-void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float scale) {
+void gxInitPointLight(void *light, float *a, float *b, unsigned char *color, float scale) {
     unsigned char rgba[4];
     float vec[3];
     float bx, by, bz, x, y, z, mag, k, nz;
@@ -2145,7 +2145,7 @@ void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float sc
 }
 
 /* One entry of the scene light table (0x14 bytes): where the light sits, its
- * colour and how wide its cone is; fn_802D17BC turns it into a GX light object. */
+ * colour and how wide its cone is; gxInitPointLight turns it into a GX light object. */
 typedef struct SceneLight_802D18E8 {
     /* 0x00 */ float pos[3];
     /* 0x0C */ unsigned char color[4];
@@ -2241,7 +2241,7 @@ void gxSetupSceneLights(void) {
         color[1] = entry->color[1];
         color[2] = entry->color[2];
         color[3] = entry->color[3];
-        fn_802D17BC(lightObj, direction, entry->pos, color, entry->scale);
+        gxInitPointLight(lightObj, direction, entry->pos, color, entry->scale);
         entry++;
         lightObj += 0x40;
         count++;
@@ -2259,7 +2259,7 @@ void gxSetupSceneLights(void) {
         rgba[2] = (unsigned char)(int)(strength * (float)sDefaultLight_802D18E8.c[2]);
         rgba[3] = sDefaultLight_802D18E8.c[3];
         packed = *(unsigned int *)rgba;
-        fn_802D17BC(sLightObjs_802D18E8[0], direction, sDefaultLight_802D18E8.pos, (unsigned char *)&packed, lbl_80564FD4);
+        gxInitPointLight(sLightObjs_802D18E8[0], direction, sDefaultLight_802D18E8.pos, (unsigned char *)&packed, lbl_80564FD4);
         lbl_8055FDCC++;
     }
 
