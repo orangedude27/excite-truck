@@ -10328,6 +10328,7 @@ tBTM_STATUS BTM_CancelRemoteDeviceName(void) {
 #pragma pop
 
 tBTM_INQ_INFO *BTM_InqDbRead(BD_ADDR p_bda) {
+    /* Look up a device by BD_ADDR in the BTM inquiry database and return its inquiry info, or NULL if not found. */
     extern char lbl_80316484[];
     u32 index;
     u8 *btmCb = lbl_803C0F78;
