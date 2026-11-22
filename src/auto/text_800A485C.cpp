@@ -22556,8 +22556,8 @@ extern "C" s32 fn_800D50A8(ARCHandle *handle, const char *name) {
     ARCDir dir;
     ARCDirEntry entry;
     s32 result = -1;
-    register ARCHandle *h = handle;
     register const char *n = name;
+    register ARCHandle *h = handle;
     const char *panicFile;
 
     if (!ARCOpenDir(h, lbl_805597F8, &dir))
