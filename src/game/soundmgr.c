@@ -714,7 +714,7 @@ signed long fn_8020835C(void *soundMgr) {
  * constructor hook fn_80207960 is the same kind of callback.  The shipped build
  * has no body for either: whatever they did was compiled out, leaving an empty
  * function the call still reaches. */
-void fn_80208404(void) {
+extern "C" void fn_80208404(void) {
 	return;
 }
 
