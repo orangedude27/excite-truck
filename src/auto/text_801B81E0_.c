@@ -164,7 +164,7 @@ struct ArenaMaster {
 #pragma push
 #pragma scheduling invalid_target
 #pragma dont_inline fn_801B81E0
-int fn_801B81E0(void *__restrict const arg0) {
+int fn_801B81E0(void *__restrict arg0) {
     extern int fn_8014145C(void);
     extern int fn_8014DE50(void);
     extern int fn_8016BE60(void);
@@ -191,10 +191,11 @@ int fn_801B81E0(void *__restrict const arg0) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 #pragma dont_inline on
+#pragma scheduling on
 extern "C" void fn_801B826C(void *arg0) {
-    int value;
     void *object;
     void *manager;
+    int value;
 
     value = *(int *)((char *)arg0 + 0x3E8);
     lbl_8055E74C = value;
