@@ -1001,10 +1001,9 @@ extern "C" void* fn_80157B00(void* arg0, s32 arg1, s32 arg2) {
     return arg0;
 }
 extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2);
-#pragma push
-#pragma opt_common_subs off
+#pragma opt_peephole off
 extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2) {
-    #pragma scheduling invalid_target
+    Fn80157CF0Obj* obj = (Fn80157CF0Obj*)arg0;
     u8* ptr = (u8*)arg0 + 0x14;
     *(void**)((u8*)arg0 + 8) = ptr;
     *(void**)arg0 = lbl_8032F2BC;
@@ -1015,17 +1014,16 @@ extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2) {
         ptr += 0x38;
     } while (ptr < (u8*)arg0 + 0x244);
     f32 value = lbl_8056175C;
-    *(s32*)((u8*)arg0 + 4) = arg2;
-    *(s32*)((u8*)arg0 + 0xC) = 0;
-    ((Fn80157CF0Obj*)arg0)->unk244 = arg1;
-    *(s32*)((u8*)arg0 + 0x258) = 0;
-    *(f32*)((u8*)arg0 + 0x250) = value;
-    *(s32*)((u8*)arg0 + 0x268) = 0;
-    *(s32*)((u8*)arg0 + 0x248) = 0;
-    *(void**)arg0 = lbl_8032EE68;
+    obj->unk4 = arg2;
+    obj->unkC = 0;
+    obj->unk244 = arg1;
+    obj->unk258 = 0;
+    obj->value250 = value;
+    obj->unk268 = 0;
+    obj->unk248 = 0;
+    obj->vtable = lbl_8032EE68;
     return arg0;
 }
-#pragma pop
 extern "C" void *fn_80157DA0(void *self, s32 arg1, s32 arg2) {
     extern void *lbl_8032EF08;
     extern float lbl_80561760;
@@ -2134,8 +2132,8 @@ skip_reset:
         p[0x2d0] = 1;
         bool running = speed > threshold;
         if (!running) { if (!player[0x259c]) flag = 0; }
-        if (flag || *(s32*)(player+0x2620) == 0) *(s32*)(p+0x2cc) |= 2;
         else *(s32*)(p+0x2cc) &= ~2;
+        if (flag || *(s32*)(player+0x2620) == 0) *(s32*)(p+0x2cc) |= 2;
     } else if (*(s32*)(player+0x2620) > 0) {
         u8* q = player;
         for (s32 j = 0; j < 4; j++, q += 0x74) {
@@ -2169,7 +2167,7 @@ skip_reset:
                 ++*(s32*)(p+0x264);
                 ++*(s32*)(p+0x260);
                 *(f32*)(p+0x254) = *(f32*)(p+0x250);
-                *(f32*)(p+0x25c) = (s32)full;
+                *(f32*)(p+0x25c) = full;
                 ((Fn8015889C*)a)->v32();
                 if (*(s32*)(p+0x248) && *(void**)(p+0x268))
                     *(s32*)((u8*)*(void**)(p+0x268)+8) = 0;
@@ -2211,12 +2209,12 @@ skip_reset:
 
 #pragma opt_propagation off
 extern "C" void fn_8015A318(Unk8015A368C* arg0) {
-    s32 r5 = arg0->m260;
-    if (r5 > 0) {
-        s32 r3 = arg0->m258;
-        if (r3 != 0) {
-            void fn_801CB6E4(void*, s32);
-            fn_801CB6E4((void*)r3, *(s32*)&arg0->m4);
+    s32 count = arg0->m260;
+    if (count > 0) {
+        s32 event = arg0->m258;
+        if (event != 0) {
+            void fn_801CB6E4(s32, s32, s32);
+            fn_801CB6E4(event, *(s32*)&arg0->m4, count);
         }
         arg0->m260 = 0;
     }
