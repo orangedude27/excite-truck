@@ -848,14 +848,13 @@ void OSGetFontTexel(char *arg0, unsigned char *arg1, int arg2, int arg3, int *ar
     unsigned char *spC;
     int sp8;
     unsigned short mode = lbl_80558F58;
-    int perSheet, tileRowBytes, sheetNo, cell, row, col;
-    int xOff, yOff;
-    int i, j;
-    unsigned char *data;
-    unsigned char *table;
+    register int perSheet, tileRowBytes, sheetNo, cell, row, col;
+    register int xOff, yOff;
+    register int i, j;
+    register unsigned char *data;
+    register unsigned char *table;
 
-    if (mode != 0xFFFF) goto no_init;
-    {
+    if (mode == 0xFFFF) {
         int console = *(volatile int *)0x800000CC;
         if (console == 0) {
             mode = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
@@ -866,7 +865,6 @@ void OSGetFontTexel(char *arg0, unsigned char *arg1, int arg2, int arg3, int *ar
         }
         lbl_8055DA48 = ParseStringS;
     }
-no_init:
     ((char *(*)(int, char *, int **, int *))lbl_8055DA48)(mode, arg0, (int **)&spC, &sp8);
     perSheet = *(unsigned short *)(spC + 0x1A) * *(unsigned short *)(spC + 0x1C);
     tileRowBytes = ((arg3 * 4) / 8) * 32;
@@ -1019,11 +1017,15 @@ char *OSGetFontTexture(char *str, void **texOut, int *xOut, int *yOut, int *widt
     return next;
 }
 
-char *OSGetFontWidth(char *str, int *out) {
-    unsigned char *fontData;
-    int glyphIndex;
+/* Returns the rest of `str` after one encoded character and, in *widthOut when
+ * given, that character's glyph advance from the loaded font's width table. */
+char *OSGetFontWidth(char *str, int *widthOut) {
+    #define __FontParseString lbl_8055DA48
+    OSFontHeader *font;
+    int code;
     unsigned short encoding = OSGetFontEncode();
-    str = ((char *(*)(int, char *, int **, int *))lbl_8055DA48)((int)encoding, str, (int **)&fontData, &glyphIndex);
-    if (out) *out = fontData[*(unsigned short *)(fontData + 0x22) + glyphIndex];
+    str = ((char *(*)(int, char *, int **, int *))__FontParseString)((int)encoding, str, (int **)&font, &code);
+    if (widthOut) *widthOut = *(unsigned char *)((char *)font + font->widthTableOfs + code);
     return str;
+    #undef __FontParseString
 }
