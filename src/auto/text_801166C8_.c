@@ -39,6 +39,7 @@ typedef struct {
 } BitReader8011;
 
 #include <revolution/ARC/arc.h>
+#include <ctype.h>
 #include <revolution/OS/OSAlarm.h>
 #include <revolution/OS/OSContext.h>
 #include <revolution/DVD/dvd.h>
@@ -2426,6 +2427,8 @@ s32 fn_80119DD0(void *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5) 
     extern s32 lbl_8055DEE0;
     extern s32 lbl_8055DEE8;
     extern void TRKGetFreeBuffer(void *);
+    extern s32 fn_80119824(void *);
+    extern void fn_80119D40(void *);
      u8 *ctx = (u8 *)arg0;
     register u32 sampleRate = arg1;
     u32 count, rate, frames, i, loopSample, loopBuffer;
