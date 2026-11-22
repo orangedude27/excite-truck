@@ -407,15 +407,16 @@ extern "C" int fn_8025ECBC(void) {
             src = (char *)item->vC();
             q = dest1;
             n = 0x20;
-            for (;;) {
-                c = *src++;
-                *q++ = c;
-                if (c == 0) break;
+            goto copyNameByte;
+            do {
                 if (--n <= 0) {
                     q[-1] = 0;
                     break;
                 }
-            }
+copyNameByte:
+                c = *src++;
+                *q++ = c;
+            } while (c != 0);
             *(int *)(p + 0x38) = (i == *(int *)(base + 0x10)) ? 6 : 7;
             dest1 += 0x24;
             p += 0x24;
@@ -454,15 +455,16 @@ extern "C" int fn_8025ECBC(void) {
                 src = (char *)o1->vC();
                 q = dest1;
                 n = 0x20;
-                for (;;) {
-                    c = *src++;
-                    *q++ = c;
-                    if (c == 0) break;
+                goto copyFirstDetailByte;
+                do {
                     if (--n <= 0) {
                         q[-1] = 0;
                         break;
                     }
-                }
+copyFirstDetailByte:
+                    c = *src++;
+                    *q++ = c;
+                } while (c != 0);
                 src = (char *)o1->get2(0);
                 src = (char *)((Obj *)src)->vC();
                 q = dest2;
@@ -564,6 +566,7 @@ extern void *lbl_8055F3D4;
 typedef int (*CountFn)(void *);
 typedef void *(*GetFn)(void *, int);
 typedef int (*TestFn)(void *);
+#pragma scheduling invalid_target
 #pragma cplusplus on
 /* Menu callback for the "times" screen (times.lyt): refreshes which UI pane
    groups are on screen.  For every row of the event list it hides the row's
@@ -576,21 +579,19 @@ extern "C" void fn_8025F274(void) {
 #define UIShowGroup fn_80214AF0
 #define dbgCtx lbl_8055F3D4
 #define SEQ_LIST_COUNT 3
-#define UI_GROUP_ROW_NAME 0x10   /* row panes: groups 0x10..0x14 */
-#define UI_GROUP_ROW_SELECT 0x1A /* groups 0x1A..0x1E */
-#define UI_GROUP_EVENT_BASE 1    /* event row panes: row+1, row+11, row+21 */
+#define UI_GROUP_ROW_NAME 0x10
+#define UI_GROUP_ROW_SELECT 0x1A
+#define UI_GROUP_EVENT_BASE 1
 #define UI_GROUP_EVENT_STRIDE 10
 #define EVENT_ROW_COUNT 5
 #define EVENT_PANE_COUNT 3
-#define EVENT_ROW_STRIDE 0x58    /* size of a DbgCtx::sub[] record */
-#define EVENT_ROW_SEL 0x144      /* DbgCtx::sub[0].sel; add row * EVENT_ROW_STRIDE */
-    /* One of the three sequence containers held at DbgCtx::seq[]. */
+#define EVENT_ROW_STRIDE 0x58
+#define EVENT_ROW_SEL 0x144
     struct SeqList {
         virtual int v8();
         virtual int count();
         virtual void *get(int);
     };
-    /* An entry of a SeqList; inUse() (vtable +0x1C) says it holds data. */
     struct SeqEntry {
         virtual int v0();
         virtual int v4();
@@ -614,7 +615,6 @@ extern "C" void fn_8025F274(void) {
     row = 0;
     goto check_row;
 check_row_body:
-    /* Is there any list still holding something displayable for this row? */
     seqIndex = 0;
     seqOffset = 0;
     do {
@@ -636,7 +636,6 @@ check_row_body:
 name_done:
     if (found == 0)
         UIHideGroup(row + UI_GROUP_ROW_NAME);
-    /* The select marker needs an entry that is actually in use. */
     seqIndex = 0;
     secondSeqOffset = 0;
     do {
@@ -660,7 +659,6 @@ check_row:
     if (row < ((SeqList *)(*(void **)dbgCtx))->count())
         goto check_row_body;
     {
-        /* One event row shows only the pane of the variant it selected. */
         register int groupId;
         register char *rowBase;
         register int pane;
