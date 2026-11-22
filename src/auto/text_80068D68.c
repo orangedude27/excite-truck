@@ -6055,86 +6055,58 @@ s32 bta_dm_l2cap_server_compress_cback(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s
     return result;
 }
 
-void bta_dm_compress_cback(s32 event, u8 service, u8 id, s32 addr)
-{
-  extern u8 *lbl_80559014;
-  extern u8 lbl_803C0B68[];
-  extern char lbl_8031510C[];
-  extern char lbl_80315148[];
-  int found;
-  u8 k;
-  u8 j;
-  u8 i;
-  u8 *table;
-  u8 *entry;
-  u8 *slot;
-  if (event == 0)
-  {
-    table = lbl_80559014;
-    for (i = 1; i <= table[1]; i++)
-    {
-      entry = table + (i * 3);
-      if ((((id == entry[1]) || (entry[1] == 0xff)) && (service == entry[0])) && (entry[2] == 1))
-      {
-        u8 count = *((volatile u8 *) (table + 1));
-        found = 0;
-        for (j = 1; j <= count; j++)
-        {
-          if (table[(j * 3) + 2] == 2)
-          {
-            for (k = 0; k < lbl_803C0D18[0]; k++)
-            {
-              if (lbl_803C0D18[(k * 9) + 7] == table[j * 3])
-              {
-                found = 1;
-              }
+void bta_dm_compress_cback(s32 event, u8 service, u8 id, s32 addr) {
+    extern u8 *lbl_80559014;
+    extern u8 lbl_803C0B68[];
+    extern char lbl_8031510C[], lbl_80315148[];
+    int found;
+    u8 k, j, i;
+    u8 *table;
+    u8 *entry, *slot;
+    if (event == 0) {
+        table = lbl_80559014;
+        for (i = 1; i <= table[1]; i++) {
+            entry = table + i * 3;
+            if ((id == entry[1] || entry[1] == 0xff) && service == entry[0] && entry[2] == 1) {
+                u8 count = *(volatile u8 *)(table + 1);
+                found = 0;
+                for (j = 1; j <= count; j++) {
+                    if (table[j * 3 + 2] == 2) {
+                        for (k = 0; k < lbl_803C0D18[0]; k++) {
+                            if (lbl_803C0D18[k * 9 + 7] == table[j * 3]) found = 1;
+                        }
+                    }
+                }
+                if (!found) {
+                    int offset;
+                    u8 *base;
+                    u8 *current;
+                    base = lbl_803C0B68;
+                    offset = ((int)i - 1) * 9;
+                    current = base + offset;
+                    current[7] = id;
+                    current[6] = service;
+                    fn_80070FA4(current, (void *)addr);
+                    current[8] = 1;
+                    if (lbl_8055DC80 >= 4)
+                        ((void (*)(u32, void *, u8, u8, u8))fn_80070984)(0x503, lbl_8031510C, base[offset + 7], base[offset + 6], base[offset + 8]);
+                }
+                return;
             }
-
-          }
         }
-
-        if (!found)
-        {
-          int offset;
-          u8 *base;
-          u8 *current;
-          base = lbl_803C0B68;
-          offset = (((int) i) - 1) * 9;
-          current = base + offset;
-          current[7] = id;
-          current[6] = service;
-          fn_80070FA4(current, (void *) addr);
-          current[8] = 1;
-          if (lbl_8055DC80 >= 4)
-          {
-            ((void (*)(u32, void *, u8, u8, u8)) fn_80070984)(0x503, lbl_8031510C, base[offset + 7], base[offset - -6], base[offset + 8]);
-          }
+    } else if ((u32)event == 1) {
+        table = lbl_80559014;
+        for (i = 1; i <= table[1]; i++) {
+            entry = table + i * 3;
+            if ((id == entry[1] || entry[1] == 0xff) && service == entry[0]) {
+                slot = lbl_803C0B68 + (i - 1) * 9;
+                slot[8] = 0;
+                if (lbl_8055DC80 >= 4)
+                    ((void (*)(u32, void *, u8, u8, u8))fn_80070984)(0x503, lbl_80315148, slot[7], slot[6], slot[8]);
+                return;
+            }
         }
-        return;
-      }
     }
-
-  }
-  else
-    if (((u32) event) == 1)
-  {
-    table = lbl_80559014;
-    for (i = 1; i <= table[1]; i++)
-    {
-      entry = table + (i * 3);
-      if (((id == entry[1]) || (entry[1] == 0xff)) && (service == entry[0]))
-      {
-        slot = lbl_803C0B68 + ((i - 1) * 9);
-        slot[8] = 0;
-        if (lbl_8055DC80 >= 4)
-        {
-          ((void (*)(u32, void *, u8, u8, u8)) fn_80070984)(0x503, lbl_80315148, slot[7], slot[6], slot[8]);
-        }
-        return;
-      }
-    }
-
-  }
 }
 
 extern u8 *lbl_80559010;
@@ -11013,7 +10985,7 @@ tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_
     if (acl_ind == 4)
         return BTM_UNKNOWN_ADDR;
 
-    p_cb = lbl_803C0F78 + acl_ind * 0x22 + 0x4CC;
+    p_cb = (s32)lbl_803C0F78 + acl_ind * 0x22 + 0x4CC;
     if (mode != BTM_PM_MD_ACTIVE) {
         ind = mode - BTM_PM_MD_HOLD;
         p_features = (UINT8 *)fn_8007A3A4();
@@ -28547,137 +28519,138 @@ s32 IUSB_WriteBlkMsgAsync(s32 fd, u32 endpoint, u32 length, void* buffer,
                            callback, callbackArg, TRUE);
 }
 
-s32 __CtrlMsgInt(s32 fd, s32 reqType, s32 req, s32 value, s32 index, u32 length, void *buffer, void *callback, void *callbackArg, u8 async) {
-    register char *base = lbl_8031A620;
-    s32 fr;
-    char *blk;
-    char *a;
-    char *b;
-    char *c;
-    char *d;
-    char *e;
-    char *f;
-    char *msg;
+static IPCResult __CtrlMsgInt(s32 fd, u8 requestType, u8 request, u16 value,
+                              u16 index, u16 length, void* buffer,
+                              USBCallback callback, void* callbackArg,
+                              u8 async) {
+    IPCResult result;
+    IPCIOVector* vectors;
+    u8* requestTypeWork;
+    u8* requestWork;
+    u8* unkWork;
+    u16* valueWork;
+    u16* indexWork;
+    u16* lengthWork;
+    USBCommandBlock* block;
 
-    if ((buffer == 0 && length != 0) || ((u32)buffer & 0x1F)) {
-        fd = -4;
-        USB_ERR(base + 0x328);
-        goto done;
-    }
-    blk = iosAllocAligned(lbl_805590A0, 0xE0, 0x20);
-    if (blk == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0xE0, blk);
-    a = iosAllocAligned(lbl_805590A0, 0x20, 0x20);
-    if (a == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x20, a);
-    b = iosAllocAligned(lbl_805590A0, 0x20, 0x20);
-    if (b == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x20, b);
-    c = iosAllocAligned(lbl_805590A0, 0x20, 0x20);
-    if (c == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x20, c);
-    d = iosAllocAligned(lbl_805590A0, 0x20, 0x20);
-    if (d == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x20, d);
-    e = iosAllocAligned(lbl_805590A0, 0x20, 0x20);
-    if (e == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x20, e);
-    f = iosAllocAligned(lbl_805590A0, 0x20, 0x20);
-    if (f == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x20, f);
-
-    if (a == 0 || b == 0 || c == 0 || d == 0 || e == 0 || f == 0 || blk == 0) {
-        USB_ERR(base + 0x344);
-        fd = -0x16;
-        goto free_all;
+    if ((buffer == NULL && length != 0) || (u32)buffer % 32 != 0) {
+        result = IPC_RESULT_INVALID_INTERNAL;
+        USB_ERR("ctrlmsg: bad data buffer\n");
+        goto end_async;
     }
 
-    *(u8 *)a = reqType;
-    *(u8 *)b = req;
-    __sthbrx(value, d, 0);
-    __sthbrx(index, e, 0);
-    __sthbrx(length, f, 0);
-    *(u8 *)c = 0;
-    *(void **)(blk + 0) = a;
-    *(s32 *)(blk + 4) = 1;
-    *(void **)(blk + 8) = b;
-    *(s32 *)(blk + 0xC) = 1;
-    *(void **)(blk + 0x10) = d;
-    *(s32 *)(blk + 0x14) = 2;
-    *(void **)(blk + 0x18) = e;
-    *(s32 *)(blk + 0x1C) = 2;
-    *(void **)(blk + 0x20) = f;
-    *(s32 *)(blk + 0x24) = 2;
-    *(void **)(blk + 0x28) = c;
-    *(s32 *)(blk + 0x2C) = 1;
-    *(void **)(blk + 0x30) = buffer;
-    *(s32 *)(blk + 0x34) = length;
-    DCFlushRange(a, 0x20);
-    DCFlushRange(b, 0x20);
-    DCFlushRange(c, 0x20);
-    DCFlushRange(d, 0x20);
-    DCFlushRange(e, 0x20);
-    DCFlushRange(f, 0x20);
-    DCFlushRange(blk, 0xE0);
+    vectors = (IPCIOVector*)IOSAlloc(0xE0);
+    requestTypeWork = (u8*)IOSAlloc(32);
+    requestWork = (u8*)IOSAlloc(32);
+    unkWork = (u8*)IOSAlloc(32);
+    valueWork = (u16*)IOSAlloc(32);
+    indexWork = (u16*)IOSAlloc(32);
+    lengthWork = (u16*)IOSAlloc(32);
 
-    if (async == 0) {
-        fd = IOS_Ioctlv(fd, 0, 6, 1, blk);
-        goto free_all;
+    if (requestTypeWork == NULL || requestWork == NULL || unkWork == NULL ||
+        valueWork == NULL || indexWork == NULL || lengthWork == NULL ||
+        vectors == NULL) {
+        USB_ERR("Ctrl Msg: Not enough memory\n");
+        result = IPC_RESULT_ALLOC_FAILED;
+        goto end;
     }
 
-    msg = iosAllocAligned(lbl_805590A0, 0x80, 0x20);
-    if (msg == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x80, msg);
-    if (msg == 0) {
-        USB_ERR(base + 0x364);
-        fd = -0x16;
-        goto free_all;
+    *requestTypeWork = requestType;
+    *requestWork = request;
+    *valueWork = (value & 0xFF) << 8 | value >> 8 & 0xFF;
+    *indexWork = (index & 0xFF) << 8 | index >> 8 & 0xFF;
+    *lengthWork = (length & 0xFF) << 8 | length >> 8 & 0xFF;
+    *unkWork = 0;
+
+    // Input vector 1: bmRequestType
+    vectors[0].base = requestTypeWork;
+    vectors[0].length = sizeof(u8);
+
+    // Input vector 2: bmRequest
+    vectors[1].base = requestWork;
+    vectors[1].length = sizeof(u8);
+
+    // Input vector 3: wValue
+    vectors[2].base = valueWork;
+    vectors[2].length = sizeof(u16);
+
+    // Input vector 4: wIndex
+    vectors[3].base = indexWork;
+    vectors[3].length = sizeof(u16);
+
+    // Input vector 5: wLength
+    vectors[4].base = lengthWork;
+    vectors[4].length = sizeof(u16);
+
+    // Input vector 6: Unknown data
+    vectors[5].base = unkWork;
+    vectors[5].length = sizeof(u8);
+
+    // Output vector 1: Transfer buffer
+    vectors[6].base = buffer;
+    vectors[6].length = length;
+
+    DCFlushRange(requestTypeWork, 32);
+    DCFlushRange(requestWork, 32);
+    DCFlushRange(unkWork, 32);
+    DCFlushRange(valueWork, 32);
+    DCFlushRange(indexWork, 32);
+    DCFlushRange(lengthWork, 32);
+    DCFlushRange(vectors, 0xE0);
+
+    if (!async) {
+        result = IOS_Ioctlv(fd, USB_IOCTLV_CTRLMSG, 6, 1, vectors);
+        goto end;
     }
 
-    *(s32 *)(msg + 0) = (s32)callback;
-    *(s32 *)(msg + 4) = (s32)callbackArg;
-    USB_LOG(base + 0x38C, (s32)callback, (s32)callbackArg);
-    *(s32 *)(msg + 0x2C) = 7;
-    *(void **)(msg + 0xC) = a;
-    *(void **)(msg + 0x10) = b;
-    *(void **)(msg + 0x14) = d;
-    *(void **)(msg + 0x18) = e;
-    *(void **)(msg + 0x1C) = f;
-    *(void **)(msg + 0x20) = c;
-    *(void **)(msg + 0x24) = blk;
-    *(s32 *)(msg + 0x40) = (s32)buffer;
-    *(u16 *)(msg + 0x44) = length;
-    fd = IOS_IoctlvAsync(fd, 0, 6, 1, blk, _intBlkCtrlCb, msg);
-    USB_LOG(base + 0x3B0, fd);
-    if (fd >= 0) goto done;
-    if (msg != 0) {
-        fr = iosFree(lbl_805590A0, msg);
-        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, msg, fr);
+    block = IOSAlloc(sizeof(USBCommandBlock));
+    if (block == NULL) {
+        USB_ERR("CtrlMsgInt (async): Not enough memory\n");
+        result = IPC_RESULT_ALLOC_FAILED;
+        goto end;
     }
 
-free_all:
-    if (a != 0) {
-        fr = iosFree(lbl_805590A0, a);
-        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, a, fr);
+    block->callback = callback;
+    block->callbackArg = callbackArg;
+    USB_LOG("ctrlmsgint: cb = 0x%x cbArg = 0x%x\n", block->callback,
+            block->callbackArg);
+
+    // Mark memory for deletion
+    block->nclean = USB_NCLEAN_CTRLMSG;
+    block->clean[0] = requestTypeWork;
+    block->clean[1] = requestWork;
+    block->clean[2] = valueWork;
+    block->clean[3] = indexWork;
+    block->clean[4] = lengthWork;
+    block->clean[5] = unkWork;
+    block->clean[6] = vectors;
+
+    block->msg.buffer = buffer;
+    block->msg.length = length;
+
+    result = IOS_IoctlvAsync(fd, USB_IOCTLV_CTRLMSG, 6, 1, vectors,
+                             _intBlkCtrlCb, block);
+    USB_LOG("Ctrl Msg async returned: %d\n", result);
+
+    if (result >= IPC_RESULT_OK) {
+        goto end_async;
     }
-    if (b != 0) {
-        fr = iosFree(lbl_805590A0, b);
-        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, b, fr);
-    }
-    if (d != 0) {
-        fr = iosFree(lbl_805590A0, d);
-        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, d, fr);
-    }
-    if (e != 0) {
-        fr = iosFree(lbl_805590A0, e);
-        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, e, fr);
-    }
-    if (f != 0) {
-        fr = iosFree(lbl_805590A0, f);
-        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, f, fr);
-    }
-    if (c != 0) {
-        fr = iosFree(lbl_805590A0, c);
-        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, c, fr);
-    }
-    if (blk != 0) {
-        fr = iosFree(lbl_805590A0, blk);
-        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, blk, fr);
-    }
-done:
-    return fd;
+
+    IOSFree(block);
+
+// Non-async (or unsuccessful async) means we must manually free memory
+end:
+    IOSFree(requestTypeWork);
+    IOSFree(requestWork);
+    IOSFree(valueWork);
+    IOSFree(indexWork);
+    IOSFree(lengthWork);
+    IOSFree(unkWork);
+    IOSFree(vectors);
+
+// Async callback automatically freed the memory marked in block->clean
+end_async:
+    return result;
 }
 
 #pragma use_lmw_stmw off
