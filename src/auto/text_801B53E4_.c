@@ -77,15 +77,13 @@ void fn_801B5410(void *arg0, void *arg1, void *arg2) {
     f32 scale;
     f32 product;
     f32 sum;
-    f32 one;
     f32 m6;
     f32 m9;
     m = *(f32 **)((u8 *)arg0 + 0xC);
     scale = *(f32 *)((u8 *)arg0 + 0x2C);
     m6 = m[6];
-    m9 = m[9];
     product = m6 * scale;
-    sum = m9 + product;
+    sum = m[9] + product;
     *(f32 *)arg1 = sum;
     product = m[7] * scale;
     sum = m[10] + product;
@@ -100,12 +98,11 @@ void fn_801B5410(void *arg0, void *arg1, void *arg2) {
     product = m[7] * scale;
     sum = m[10] + product;
     *(f32 *)((u8 *)arg2 + 4) = sum;
-    one = lbl_80562690;
     product = m[8] * scale;
-    *(f32 *)((u8 *)arg2 + 4) = one;
     sum = m[11] + product;
+    *(f32 *)((u8 *)arg2 + 4) = 0.0f;
     *(f32 *)((u8 *)arg2 + 8) = sum;
-    *(f32 *)((u8 *)arg1 + 4) = one;
+    *(f32 *)((u8 *)arg1 + 4) = 0.0f;
 }
 
 /* Return the BPX object pointer held in this ObjectLink (at +0x3C), as an s32. */
@@ -318,7 +315,9 @@ void *fn_801B5984(void *node) {
 void fn_801B59A4(void *arg0, s32 arg1, s32 arg2) {
     extern u8 lbl_80435EC8[];
     struct Entry { struct Entry *nodes; s32 count; struct Entry *children; } *entry = (struct Entry *)arg0;
-    u16 *records; u16 *record; struct Entry *node;
+    struct Holder { s32 p; } idxHolder;
+    s32 *idx = &idxHolder.p;
+    u16 *records; u16 *record; struct Entry *node; u16 value;
     s32 offset; s32 childStart; s32 w;
     s32 max = *(s32 *)(lbl_80435EC8 + 4);
     if (arg2 >= max) { *(s32 *)(lbl_80435EC8 + 4) = arg2 + 1; }
@@ -330,11 +329,10 @@ void fn_801B59A4(void *arg0, s32 arg1, s32 arg2) {
     if (entry->children != NULL) { record[2] = *(s32 *)(lbl_80435EC8 + 4); } else { record[2] = 0; }
     node = entry->nodes;
     while (node != NULL) {
-        u16 *values = *(u16 **)(lbl_80435EC8 + 0x18);
-        s32 idx = *(s32 *)(lbl_80435EC8 + 0x10);
-        u16 value = (u16)node->count;
-        values[idx++] = value;
-        *(s32 *)(lbl_80435EC8 + 0x10) = idx;
+        *idx = *(s32 *)(lbl_80435EC8 + 0x10);
+        value = (u16)node->count;
+        (*(u16 **)(lbl_80435EC8 + 0x18))[(*idx)++] = value;
+        *(s32 *)(lbl_80435EC8 + 0x10) = *idx;
         node = *(struct Entry **)((u8 *)node + 8);
     }
     *(s32 *)lbl_80435EC8 = *(s32 *)lbl_80435EC8 + entry->count;
@@ -375,7 +373,7 @@ extern "C" void fn_801B5B04(void *arg0, void **arg1, s32 arg2) {
     void **item;
     s32 i;
     void *obj;
-    register f32 base = lbl_805626A0;
+    register f32 base = 4.0f;
 
     item = arg1;
     for (i = 0; i < arg2; i++) {
