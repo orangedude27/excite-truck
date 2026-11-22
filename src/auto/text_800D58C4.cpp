@@ -1090,119 +1090,176 @@ extern "C" void AppendGroup__Q36nw4hbm3lyt14GroupContainerFPQ36nw4hbm3lyt5Group(
 extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3lyt4Pane(void *, const void *, void *);
 #pragma push
 #pragma dont_inline on
-s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *arg2) {
-    union Msg { const char *p; char a[1]; };
-    const Msg *msgU = (const Msg *)&lbl_8031F728;
-    const char *msg = lbl_8031F728;
-    void *pane, *currentParent, *lastPane;
-    s32 groupCreated;
-    s32 depth;
-    const u8 *block;
-    s32 count;
-    ResBlockSetTmp blockSet;
-    void *container, *rootPane, *groupResult;
-    u16 size;
-    u32 tag;
-    if (lbl_8055DDF0 == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(msgU->a, 0xAB, msg + 0x10);
-    if (arg1 == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(msgU->a, 0xAC, msg + 0x40);
-    if (fn_800D5944((void *)arg1, 0x524C5954) == 0)
-        return 0;
-    size = *(const u16 *)((const u8 *)arg1 + 6);
-    if (size != 8)
-        Panic__Q26nw4hbm2dbFPCciPCce(msgU->a, 0xBB, msg + 0x6C,
-            (u8)(size >> 8), (u8)size, 0, 8);
-    blockSet.a = 0;
-    blockSet.b = 0;
-    blockSet.c = 0;
-    blockSet.d = (u32)arg2;
-    currentParent = 0;
-    lastPane = 0;
-    groupCreated = 0;
-    depth = 0;
-    count = 0;
-    block = (const u8 *)arg1 + *(const u16 *)((const u8 *)arg1 + 0xC);
-    while (count < *(const u16 *)((const u8 *)arg1 + 0xE)) {
-        tag = *(const u32 *)block;
-        switch (tag) {
-        case 0x6C797431:
-            *(u8 *)((u8 *)this + 0x20) = (*(const u8 *)(block + 8) != 0);
-            *(f32 *)((u8 *)this + 0x18) = *(const f32 *)(block + 0xC);
-            *(f32 *)((u8 *)this + 0x1C) = *(const f32 *)(block + 0x10);
-            break;
-        case 0x74786C31: blockSet.a = (u32)block; break;
-        case 0x666E6C31: blockSet.b = (u32)block; break;
-        case 0x6D617431: blockSet.c = (u32)block; break;
-        case 0x776E6431:
-        case 0x74787431:
-        case 0x70696331:
-        case 0x70616E31:
-        case 0x626E6431:
-            pane = BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(
-                tag, block, &blockSet);
-            if (pane != 0) {
-                if (*(void **)((u8 *)this + 0x10) == 0)
-                    *(void **)((u8 *)this + 0x10) = pane;
-                if (currentParent != 0)
-                    AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane(currentParent, pane);
-                lastPane = pane;
-            }
-            break;
-        case 0x70617331:
-            if (lastPane == 0)
-                Panic__Q26nw4hbm2dbFPCciPCce(msgU->a, 0xF9, msg + 0x9C);
-            currentParent = lastPane;
-            break;
-        case 0x70616531:
-            lastPane = currentParent;
-            currentParent = *(void **)((u8 *)currentParent + 0xC);
-            break;
-        case 0x67727031:
-            if (groupCreated == 0) {
-                groupCreated = 1;
-                container = (void *)MEMAllocFromAllocator(lbl_8055DDF0, 0xC);
-                if (container != 0) {
-                    if (container != 0) {
-                        *(void **)((u8 *)container + 4) = 0;
-                        *(void **)((u8 *)container + 8) = 0;
-                        *(void **)container = 0;
-                        *(void **)((u8 *)container + 4) = (u8 *)container + 4;
-                        *(void **)((u8 *)container + 8) = (u8 *)container + 4;
-                    }
-                } else {
-                    Warning__Q26nw4hbm2dbFPCciPCce(msgU->a, 0x2F, msg + 0xC8);
-                    container = 0;
-                }
-                *(void **)((u8 *)this + 0x14) = container;
-            } else if (*(void **)((u8 *)this + 0x14) != 0 && depth == 1) {
-                rootPane = *(void **)((u8 *)this + 0x10);
-                pane = (void *)MEMAllocFromAllocator(lbl_8055DDF0, 0x2C);
-                if (pane != 0) {
-                    groupResult = pane;
-                    if (pane != 0) {
-                        groupResult = __ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3lyt4Pane(
-                            pane, block, rootPane);
-                    }
-                } else {
-                    groupResult = 0;
-                }
-                if (groupResult != 0)
-                    AppendGroup__Q36nw4hbm3lyt14GroupContainerFPQ36nw4hbm3lyt5Group(
-                        *(void **)((u8 *)this + 0x14), groupResult);
-            }
-            break;
-        case 0x67727331: depth += 1; break;
-        case 0x67726531: depth -= 1; break;
+s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *arg2)
+{
+  const char *msg = lbl_8031F728;
+  void *pane;
+  void *currentParent;
+  void *lastPane;
+  s32 groupCreated;
+  s32 depth;
+  const u8 *block;
+  s32 count;
+  ResBlockSetTmp blockSet;
+  void *container;
+  void *rootPane;
+  void *groupResult;
+  u16 size;
+  u32 tag;
+  if (lbl_8055DDF0 == 0)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(msg, 0xAB, msg + 0x10);
+  }
+  if (arg1 == 0)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(msg, 0xAC, msg + 0x40);
+  }
+  if (fn_800D5944((void *) arg1, 0x524C5954) == 0)
+  {
+    return 0;
+  }
+  size = *((const u16 *) (((const u8 *) arg1) + 6));
+  if (size != 8)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(msg, 0xBB, msg + 0x6C, (u8) (size >> 8), (u8) size, 0, 8);
+  }
+  blockSet.a = 0;
+  blockSet.b = 0;
+  blockSet.c = 0;
+  blockSet.d = (u32) arg2;
+  currentParent = 0;
+  lastPane = 0;
+  groupCreated = 0;
+  depth = 0;
+  count = 0;
+  block = ((const u8 *) arg1) + (*((const u16 *) (((const u8 *) arg1) + 0xC)));
+  while (count < (*((const u16 *) (((const u8 *) arg1) + 0xE))))
+  {
+    tag = *((const u32 *) block);
+    switch (tag)
+    {
+      case 0x6C797431:
+        *((u8 *) (((u8 *) this) + 0x20)) = (*((const u8 *) (block + 8))) != 0;
+        *((f32 *) (((u8 *) this) + 0x18)) = *((const f32 *) (block + 0xC));
+        *((f32 *) (((u8 *) this) + 0x1C)) = *((const f32 *) (block + 0x10));
+        break;
+
+      case 0x74786C31:
+        blockSet.a = (u32) block;
+        break;
+
+      case 0x666E6C31:
+        blockSet.b = (u32) block;
+        break;
+
+      case 0x6D617431:
+        blockSet.c = (u32) block;
+        break;
+
+      case 0x776E6431:
+
+      case 0x74787431:
+
+      case 0x70696331:
+
+      case 0x70616E31:
+
+      case 0x626E6431:
+        pane = BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(tag, block, &blockSet);
+        if (pane != 0)
+      {
+        if ((*((void **) (((u8 *) this) + 0x10))) == 0)
+        {
+          *((void **) (((u8 *) this) + 0x10)) = pane;
         }
-        ++count;
-        block += *(const u32 *)(block + 4);
+        if (currentParent != 0)
+        {
+          AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane(currentParent, pane);
+        }
+        lastPane = pane;
+      }
+        break;
+
+      case 0x70617331:
+        if (lastPane == 0)
+      {
+        Panic__Q26nw4hbm2dbFPCciPCce(msg, 0xF9, msg + 0x9C);
+      }
+        currentParent = lastPane;
+        break;
+
+      case 0x70616531:
+        lastPane = currentParent;
+        currentParent = *((void **) (((u8 *) currentParent) + 0xC));
+        break;
+
+      case 0x67727031:
+        if (groupCreated == 0)
+      {
+        groupCreated = 1;
+        container = (void *) MEMAllocFromAllocator(lbl_8055DDF0, 0xC);
+        if (container != 0)
+        {
+          if (container != 0)
+          {
+            *((void **) (((u8 *) container) + 4)) = 0;
+            *((void **) (((u8 *) container) + 8)) = 0;
+            *((void **) container) = 0;
+            *((void **) (((u8 *) container) + 4)) = ((u8 *) container) + 4;
+            *((void **) (((u8 *) container) + 8)) = ((u8 *) container) + (4 & 0xFF);
+          }
+        }
+        else
+        {
+          Warning__Q26nw4hbm2dbFPCciPCce(msg, 0x2F, msg + 0xC8);
+          container = 0;
+        }
+        *((void **) (((u8 *) this) + 0x14)) = container;
+      }
+      else
+        if (((*((void **) (((u8 *) this) + 0x14))) != 0) && (depth == 1))
+      {
+        rootPane = *((void **) (((u8 *) this) + 0x10));
+        pane = (void *) MEMAllocFromAllocator(lbl_8055DDF0, 0x2C);
+        if (pane != 0)
+        {
+          groupResult = pane;
+          if (pane != 0)
+          {
+            groupResult = __ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3lyt4Pane(pane, block, rootPane);
+          }
+        }
+        else
+        {
+          groupResult = 0;
+        }
+        if (groupResult != 0)
+        {
+          AppendGroup__Q36nw4hbm3lyt14GroupContainerFPQ36nw4hbm3lyt5Group(*((void **) (((u8 *) this) + 0x14)), groupResult);
+        }
+      }
+        break;
+
+      case 0x67727331:
+        depth += 1;
+        break;
+
+      case 0x67726531:
+        depth -= 1;
+        break;
+
     }
-    return 1;
+
+    ++count;
+    block += *((const u32 *) (block + 4));
+  }
+
+  return 1;
 }
 #pragma pop
 struct LLHead { char pad[4]; void *list; void *term; };
 extern "C" void *CreateAnimTransform__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16ResourceAccessor(void * __restrict self, const void *resource, void *accessor) {
+    struct Link { char pad[4]; void *list; void *term; void *endAddr() { return &term; } void *listAddr() { return &list; } };
     extern const char lbl_8031F8C0[];
     extern const char lbl_8031F89C[];
     const char *msg=lbl_8031F728;
@@ -1226,17 +1283,15 @@ extern "C" void *CreateAnimTransform__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16Re
                 void *obj=(void *)MEMAllocFromAllocator(lbl_8055DDF0,0x20);
                 if (obj) obj=(void *)fn_800D4428();
                 else { Warning__Q26nw4hbm2dbFPCciPCce(msg,0x2F,msg+0xC8); obj=0; }
-                if (obj) {
-                    ((void (*)(void *,void *,void *))(*(void ***)obj)[3])(obj,block,accessor);
-                    result=obj;
-                }
+                if (obj) { ((void (*)(void *,void *,void *))(*(void ***)obj)[3])(obj,block,accessor); result=obj; }
                 break;
             }
             }
             if (result) {
-                void *it=((LLHead *)self)->term;
+                Link *l=(Link *)self;
+                void *it=l->endAddr();
                 if (result==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F8C0,0x233,lbl_8031F89C);
-                Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&((LLHead *)self)->list,(void **)&it,(char *)result+4);
+                Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(l->listAddr(),(void **)&it,(char *)result+4);
             }
             break;
         }
@@ -1347,10 +1402,14 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
         f32 negH = -h;
         f32 s = lbl_80560E84;
         f32 negW = -w;
-        *(f32*)&((u8*)pOut)[8] = w * s;
-        *(f32*)&((u8*)pOut)[4] = h * s;
-        *(f32*)&((u8*)pOut)[0xC] = negH * s;
-        *(f32*)&((u8*)pOut)[0] = negW * s;
+        f32 left = negW * s;
+        f32 top = h * s;
+        f32 right = w * s;
+        f32 bottom = negH * s;
+        *(f32*)&((u8*)pOut)[8] = right;
+        *(f32*)&((u8*)pOut)[4] = top;
+        *(f32*)&((u8*)pOut)[0] = left;
+        *(f32*)&((u8*)pOut)[0xC] = bottom;
     } else {
         f32 z = lbl_80560E80;
         f32 w = *(f32*)&p[0x18];
@@ -1411,54 +1470,21 @@ static inline void SetTagProcessorLevel1V2_800D77DC(u8 *self, s32 arg1) {
         SetTagProcessorLevel2V2_800D77DC(ChildPaneV2_800D77DC(it), arg1);
     }
 }
-#pragma pop
 #pragma push
-#pragma opt_common_subs off
+#pragma opt_lifetimes off
 extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
-    StateNode_800D6CA0 *sentinel = (StateNode_800D6CA0 *)&lbl_8055DE08;
     u8 *self = *(u8 **)((u8 *)arg0 + 0x10);
-    struct { StateNode_800D6CA0 *node; } cur1;
-    struct { StateNode_800D6CA0 *node; } cur2;
-    struct { StateNode_800D6CA0 *end; } end1s;
-    struct { StateNode_800D6CA0 *end; } end2s;
-    struct { StateNode_800D6CA0 *node; } cur3;
-    struct { u8 *ptr; } pp1;
-    struct { u8 *ptr; } pp2;
-    struct { u8 *ptr; } pp3;
-    StateNode_800D6CA0 *&n1 = cur1.node;
-    StateNode_800D6CA0 *&n2 = cur2.node;
-    StateNode_800D6CA0 *&end1 = end1s.end;
-    StateNode_800D6CA0 *&end2 = end2s.end;
-    StateNode_800D6CA0 *&n3 = cur3.node;
-    u8 *&p1 = pp1.ptr;
-    u8 *&p2 = pp2.ptr;
-    u8 *&p3 = pp3.ptr;
-    { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)self)->v1(), sentinel) ? self : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
-    cur1.node = *(StateNode_800D6CA0 **)(self + 0x14);
-    end1s.end = (StateNode_800D6CA0 *)(self + 0x14);
-    while (n1 != end1) {
-        if (!n1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-        p1 = (u8 *)n1 - 4;
-        if (!p1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
-        { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p1)->v1(), (StateNode_800D6CA0 *)&lbl_8055DE08) ? p1 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
-        cur2.node = *(StateNode_800D6CA0 **)(p1 + 0x14);
-        end2s.end = (StateNode_800D6CA0 *)(p1 + 0x14);
-        while (n2 != end2) {
-            if (!n2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-            p2 = (u8 *)n2 - 4;
-            if (!p2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
-            { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p2)->v1(), (StateNode_800D6CA0 *)&lbl_8055DE08) ? p2 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
-            cur3.node = *(StateNode_800D6CA0 **)(p2 + 0x14);
-            while (n3 != (StateNode_800D6CA0 *)(p2 + 0x14)) {
-                if (!n3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-                p3 = (u8 *)n3 - 4;
-                if (!p3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
-                fn_800D6CA0((s32)p3, arg1);
-                n3 = n3->next;
+    if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
+    for (ChildIter_800D77DC it1 = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it1, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it1)) {
+        u8 *p1 = ChildPane_800D77DC(it1);
+        if (u8 *cast = DynCast_800D77DC(p1)) *(s32 *)(cast + 0xF4) = arg1;
+        for (ChildIter_800D77DC it2 = ChildBegin_800D77DC(p1); ChildNotEqual_800D77DC(it2, ChildEnd_800D77DC(p1)); ChildNext_800D77DC(it2)) {
+            u8 *p2 = ChildPane_800D77DC(it2);
+            if (u8 *cast = DynCast_800D77DC(p2)) *(s32 *)(cast + 0xF4) = arg1;
+            for (ChildIter_800D77DC it3 = ChildBegin_800D77DC(p2); ChildNotEqual_800D77DC(it3, ChildEnd_800D77DC(p2)); ChildNext_800D77DC(it3)) {
+                fn_800D6CA0((s32)ChildPane_800D77DC(it3), arg1);
             }
-            n2 = n2->next;
         }
-        n1 = n1->next;
     }
 }
 #pragma pop
@@ -1470,33 +1496,33 @@ extern "C" void* fn_800D57AC(void*, const void*, const void*);
 extern "C" const char lbl_8031F728[];
 extern "C" const char lbl_8031F854[];
 extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(u32 kind, const void* pane, const ResBlockSetTmp* set) {
-    void* obj;
     switch (kind) {
-    case 0x70616E31:
-        obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xD4);
+    case 0x70616E31: {
+        void* obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xD4);
         if (obj) return new (obj) nw4hbm::lyt::Pane((const nw4hbm::lyt::res::Pane*)pane);
         return 0;
+    }
     case 0x70696331: {
         ResBlockSetTmp tmp = *set;
-        obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xEC);
+        void* obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xEC);
         if (obj) return new (obj) nw4hbm::lyt::Picture((const nw4hbm::lyt::res::Picture*)pane, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
         return 0;
     }
     case 0x74787431: {
         ResBlockSetTmp tmp = *set;
-        obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x100);
+        void* obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x100);
         if (obj) return new (obj) nw4hbm::lyt::TextBox((const nw4hbm::lyt::res::TextBox*)pane, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
         return 0;
     }
     case 0x776E6431: {
         ResBlockSetTmp tmp = *set;
-        obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x104);
+        void* obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x104);
         if (obj) return new (obj) nw4hbm::lyt::Window((const nw4hbm::lyt::res::Window*)pane, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
         return 0;
     }
     case 0x626E6431: {
         ResBlockSetTmp tmp = *set;
-        obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xD4);
+        void* obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xD4);
         if (!obj) return 0;
         return fn_800D57AC(obj, pane, &tmp);
     }
@@ -2350,20 +2376,23 @@ extern "C" s32 fn_800D9364(void *self) {
 }
 
 extern "C" s32 fn_800D938C(void* arg0) {
-    u32 bits = *(u32*)((u8*)arg0 + 0x4C);
-    s32 base = *(s32*)((u8*)arg0 + 0x58);
+    volatile u32 *pBits = (volatile u32 *)((u8 *)arg0 + 0x4C);
+    volatile s32 *pBase = (volatile s32 *)((u8 *)arg0 + 0x58);
+    u32 bits = *pBits;
     u32 high = (bits >> 0x18) & 0xF;
-    u32 scaled = high * 0x14;
     u32 mid = (bits >> 0x12) & 0x3C;
+    u32 scaled = high * 0x14;
     u32 low = (bits >> 0x06) & 4;
     u32 top = (bits >> 0x17) & 0x1E0;
-    s32 past = base + (mid + top);
-    return past + (scaled + low);
+    s32 base = *pBase;
+    s32 past = base + scaled;
+    s32 gen = mid + top;
+    return gen + past + low;
 }
 
 extern "C" s32 fn_800D93BC(void *arg0) {
     u32 x = *(u32 *)((u8 *)arg0 + 0x4C);
-    u32 y = *(u32 *)((u8 *)arg0 + 0x58);
+    s32 y = *(s32 *)((u8 *)arg0 + 0x58);
     s32 a = (x >> 5) & 4;
     s32 b = (x >> 6) & 4;
     s32 c = (x >> 0x12) & 0x3C;
@@ -2373,12 +2402,14 @@ extern "C" s32 fn_800D93BC(void *arg0) {
 
 #pragma scheduling off
 extern "C" s32 fn_800D93F4(void *arg0) {
-    u32 x = *(u32 *)((u8 *)arg0 + 0x4C);
-    s32 y = *(s32 *)((u8 *)arg0 + 0x58);
+    volatile u32 *pCap = (volatile u32 *)((u8 *)arg0 + 0x4C);
+    volatile s32 *pBase = (volatile s32 *)((u8 *)arg0 + 0x58);
+    u32 x = *pCap;
+    s32 y = *pBase;
     u32 a = (x >> 0xC) & 4;
     u32 b = (x >> 5) & 4;
     u32 c = (x >> 6) & 4;
-    u32 flags = a + b + c;
+    u32 flags = c + b + a;
     u32 srt = ((x >> 0x18) & 0xF) * 0x14;
     u32 gen = (x >> 0x12) & 0x3C;
     u32 tex = (x >> 0x17) & 0x1E0;
@@ -2504,9 +2535,8 @@ extern "C" void SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(void *self, unsigne
     if (count != 0) {
         if (p[0x58 / 4] == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(msg + 0, 0x39f, msg + 0x360);
-        u8 *texBuf = (u8 *)p[0x58 / 4];
         u32 raw = p[0x4C / 4];
-        u8 *base = texBuf + ((raw >> 24) & 15) * 20 + ((raw >> 23) & 0x1E0);
+        u8 *base = (u8 *)p[0x58 / 4] + ((raw >> 24) & 15) * 20 + ((raw >> 23) & 0x1E0);
         u32 old = (p[0x50 / 4] >> 20) & 15;
         for (; old < count; old++) {
             u8 *t = base + old * 4;
@@ -2544,16 +2574,16 @@ extern "C" void fn_800D9844(void* arg0, u32 arg1, s32 arg2) {
     if (arg1 != 0) {
         if (*(void**)(p + 0x58) == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x3B0, msg + 0x360);
-        register u32 fmt = *(u32*)(p + 0x4C);
-        register u32 pitch = (((fmt >> 18) & 3) + ((fmt >> 24) & 0xF)) * 0x14;
-        register u32 x = ((fmt >> 5) & 4) + ((fmt >> 12) & 4);
-        register u32 y = pitch + ((fmt >> 6) & 4);
-        register u32 w = ((fmt >> 4) & 4) + x;
-        register u32 z = ((fmt >> 23) & 0x1E0) + ((fmt >> 18) & 0x3C);
-        register u32 v = z + y;
-        register u32 u = ((fmt >> 3) & 4) + w;
-        register u32 t = ((fmt >> 13) & 0x1C) + u;
-        register TevStageDefault *stage = (TevStageDefault *)(*(u8**)(p + 0x58) + v + t);
+        u32 fmt = *(u32*)(p + 0x4C);
+        u32 pitch = (((fmt >> 18) & 3) + ((fmt >> 24) & 0xF)) * 0x14;
+        u32 x = ((fmt >> 5) & 4) + ((fmt >> 12) & 4);
+        u32 y = pitch + ((fmt >> 6) & 4);
+        u32 w = ((fmt >> 4) & 4) + x;
+        u32 z = ((fmt >> 23) & 0x1E0) + ((fmt >> 18) & 0x3C);
+        u32 v = z + y;
+        u32 u = ((fmt >> 3) & 4) + w;
+        u32 t = ((fmt >> 13) & 0x1C) + u;
+        TevStageDefault *stage = (TevStageDefault *)(*(u8**)(p + 0x58) + v + t);
         u32 count = (*(u32*)(p + 0x50) >> 9) & 0x1F;
         if (count < arg1) {
             TevStageDefault def;
@@ -3341,56 +3371,62 @@ extern "C" u16 GXGetTexObjWrapS(void *);
 extern "C" u16 GXGetTexObjWrapT(void *);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 #pragma opt_propagation off
-extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f32 *out, void *material, u8 index) {
-    u32 texObj[8];
-    u32 count;
-    u32 word7, word6, word5, word4, word3, word2, word1, word0;
-    f32 defaultValue;
-    f32 wrapT;
-    u16 wrapS;
-    const char *file = (const char *)&lbl_8031F990;
-
-    count = *(u32 *)((u8 *)material + 0x50) >> 28;
-    if (index >= count) {
-        defaultValue = lbl_80560E90;
-        out[0] = defaultValue;
-        out[1] = defaultValue;
-        return;
-    }
-
-    if ((void *)texObj == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)file + 0), 0x3DC, file + 0x42C);
-    }
-
-    count = *(u32 *)((u8 *)material + 0x50) >> 28;
-    if (index >= count) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)file + 0), 0x3DD, file + 0x458);
-    }
-
-    u32 *base = (u32 *)*(void **)((u8 *)material + 0x58);
-    u32 *src = base + (((u32)index << 5) / 4);
-    word0 = ((volatile u32 *)src)[0];
-    word1 = ((volatile u32 *)src)[1];
-    texObj[0] = word0;
-    texObj[1] = word1;
-    word2 = ((volatile u32 *)src)[2];
-    word3 = ((volatile u32 *)src)[3];
-    texObj[2] = word2;
-    texObj[3] = word3;
-    word4 = ((volatile u32 *)src)[4];
-    word5 = ((volatile u32 *)src)[5];
-    texObj[4] = word4;
-    texObj[5] = word5;
-    word6 = ((volatile u32 *)src)[6];
-    word7 = ((volatile u32 *)src)[7];
-    texObj[6] = word6;
-    texObj[7] = word7;
-
-    ((void (*)(void *, int, u32, void *))GXGetTexObjWidth)(texObj, 0, word6, src);
-    wrapT = (f32)GXGetTexObjWrapT(texObj);
-    wrapS = GXGetTexObjWrapS(texObj);
-    out[1] = wrapT;
-    out[0] = (f32)wrapS;
+extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f32 *out, void *material, u8 index)
+{
+  u32 texObj[8];
+  u32 count;
+  u32 word7;
+  u32 word6;
+  u32 word5;
+  f32 wrapT;
+  u32 word4;
+  u32 word3;
+  u32 word2;
+  u32 word1;
+  u32 word0;
+  f32 defaultValue;
+  u16 wrapS;
+  const char *file = (const char *) (&lbl_8031F990);
+  count = (*((u32 *) (((u8 *) material) + 0x50))) >> 28;
+  if (index >= count)
+  {
+    defaultValue = lbl_80560E90;
+    out[0] = defaultValue;
+    out[1] = defaultValue;
+    return;
+  }
+  if (((void *) texObj) == 0)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x3DC, file + 0x42C);
+  }
+  count = (*((u32 *) (((u8 *) material) + 0x50))) >> 28;
+  if (index >= count)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x3DD, file + 0x458);
+  }
+  u32 *base = (u32 *) (*((void **) (((u8 *) material) + 0x58)));
+  u32 *src = base + ((((u32) index) << 5) / 4);
+  word0 = ((volatile u32 *) src)[0];
+  word1 = ((volatile u32 *) src)[1];
+  texObj[0] = word0;
+  texObj[1] = word1;
+  word2 = ((volatile u32 *) src)[2];
+  word3 = ((volatile u32 *) src)[3];
+  texObj[2] = word2;
+  texObj[3] = word3;
+  word4 = ((volatile u32 *) src)[4];
+  word5 = ((volatile u32 *) src)[5];
+  texObj[4] = word4;
+  texObj[5] = word5;
+  word6 = ((volatile u32 *) src)[6];
+  word7 = ((volatile u32 *) src)[7];
+  texObj[6] = word6;
+  texObj[7] = word7;
+  ((void (*)(void *, int, u32, void *)) GXGetTexObjWidth)(texObj, 0, word6, src);
+  wrapT = (f32) GXGetTexObjWrapT(texObj);
+  wrapS = GXGetTexObjWrapS(texObj);
+  out[1] = wrapT;
+  out[0] = (f32) wrapS;
 }
 #pragma opt_propagation reset
 extern "C" s32 fn_80128668();
