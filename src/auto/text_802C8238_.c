@@ -30,5 +30,4 @@ void fn_802C8238(void) {
     p4[1] = 0;
     p4[0] = 0;
 }
-#pragma opt_common_subs reset
 
