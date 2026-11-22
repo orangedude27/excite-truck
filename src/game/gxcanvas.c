@@ -1158,12 +1158,12 @@ typedef void *(*LoadResource)(const char *name, u32 tag, u32 *version,
 extern const char lbl_8034B144[]; /* "Wrong stamp version in \"%s\": %x (expecting %x)" */
 
 /* --- STMP: a stamp, the game's run-length encoded sprite image ---------- */
-/* fn_802C49E8 loads one by name, fn_802C4C80 releases it and fn_802C4C90
+/* loadStamp loads one by name, fn_802C4C80 releases it and fn_802C4C90
    draws one of its frames onto a canvas: it walks the frame's rows through
    the row table, decodes each row's 8-bit colour indices with one of the
    two palettes and writes them out.  The file is stored little-endian and
    its row table holds offsets into the block, so the first time a stamp is
-   loaded fn_802C49E8 swaps every 32-bit field the game reads and turns
+   loaded loadStamp swaps every 32-bit field the game reads and turns
    those offsets into pointers. */
   /* A stamp's two 256-entry palettes, in the order the drawer picks them:
      [0] on a mode 3 canvas, [1] on any other.  A caller may hand the drawer a
@@ -1204,7 +1204,7 @@ extern const char lbl_8034B144[]; /* "Wrong stamp version in \"%s\": %x (expecti
    the file is not version 3.  A block that was only just read in is stored
    little-endian and its row table holds offsets into the block: swap its
    words and turn those offsets into pointers before handing it back. */
-void *fn_802C49E8(const char *name) {
+void *loadStamp(const char *name) {
     s32 outSize;
     u32 version;
     u8 needsSwap;

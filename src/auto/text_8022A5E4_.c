@@ -253,8 +253,8 @@ void fn_8022A8E4(int arg0) {
     extern void fn_80235380(void *);
     unsigned long offset;
     register unsigned char *entry;
-    register unsigned int *destination;
     register const unsigned int *source;
+    register unsigned int *destination;
     register unsigned int b, a;
     float f0, f1;
 
@@ -267,9 +267,9 @@ void fn_8022A8E4(int arg0) {
     if (*(void **)(entry + 0x6c) != 0) fn_80235380(*(void **)(entry + 0x6c));
     if (*(void **)(entry + 0x70) != 0) fn_80235380(*(void **)(entry + 0x70));
 
-    destination = (unsigned int *)((unsigned char *)lbl_80490968 + arg0 * 0x74);
     entry[0] = *(unsigned char *)lbl_80497D68;
     source = (const unsigned int *)lbl_80497D68;
+    destination = (unsigned int *)((unsigned char *)lbl_80490968 + arg0 * 0x74);
     a = source[1];
     b = source[2];
     destination[1] = a; a = source[3];
@@ -1306,7 +1306,7 @@ void fn_8022CAA8(void *arg0, void *arg1) {
     extern unsigned int fn_8022A834(unsigned int);
     extern int fn_802C5130(const char *);
     extern int fn_8023512C(const char *);
-    extern int fn_802C49E8(const char *);
+    extern int loadStamp(const char *);
     extern char *strstr(const char *, const char *);
     extern char lbl_8033FC40[];
     unsigned char *src;
@@ -1380,7 +1380,7 @@ void fn_8022CAA8(void *arg0, void *arg1) {
         } else if (fn_8022A804(resourceName) != 0) {
             *(int *)(dest + 0x6C) = fn_8023512C(resourceName);
         } else {
-            *(int *)(dest + 0x64) = fn_802C49E8(resourceName);
+            *(int *)(dest + 0x64) = loadStamp(resourceName);
         }
     }
     *(int *)(dest + 0x58) = -1;

@@ -575,7 +575,7 @@ extern "C" void fn_80211FF0(void) {
 #pragma scheduling on
 extern "C" void *fn_801284F8(s32, const char *);
 extern "C" s32 fn_8012C33C(s32);
-extern "C" s32 fn_802C49E8(s32);
+extern "C" s32 loadStamp(s32);
 extern "C" s32 fn_802C2DD4(s32);
 extern "C" void *fn_802228B0(void *, s32, s32, s32);
 extern "C" void *fn_802226D4(s32);
@@ -596,7 +596,7 @@ extern "C" void *fn_8021203C(char *path, s32 countDivisor, s32 imgArgA, s32 imgA
         stamp = (StampImage *)fn_801284F8(8, lbl_8055B728);
         if (stamp) {
             stamp->vtable = lbl_8033D528;
-            stamp->value = (void *)fn_802C49E8((s32)path);
+            stamp->value = (void *)loadStamp((s32)path);
         }
         return stamp;
     }
@@ -797,7 +797,25 @@ extern "C" char lbl_8055B7E0;
 extern "C" char lbl_8055B7E8;
 extern "C" char lbl_8055B7F0;
 extern "C" float __fabsf(float);
-#pragma scheduling invalid_target
+#pragma paired_single off
+#pragma small_data on
+extern "C" s32 fn_80212214(s32);
+#pragma dont_inline fn_80212214
+extern "C" char lbl_8055B758[8];
+extern "C" char lbl_8055B760[8];
+extern "C" char lbl_8055B768[8];
+extern "C" char lbl_8055B770[8];
+extern "C" char lbl_8055B778[8];
+extern "C" char lbl_8055B780[8];
+extern "C" char lbl_8055B790[8];
+extern "C" char lbl_8055B798[8];
+extern "C" char lbl_8055B7A0[8];
+extern "C" char lbl_8055B7A8[8];
+extern "C" char lbl_8055B7B0[8];
+extern "C" char lbl_8055B7B8[8];
+extern "C" char lbl_8055B7C0[8];
+extern "C" char lbl_8055B7D0[8];
+extern "C" char lbl_8055B7D8[8];
 extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
     extern void *lbl_8055EF38;
     extern s32 lbl_8055EF2C;
@@ -808,19 +826,19 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
     s32 count = 0;
     s32 i;
     s32 type;
+    s32 a, b, c, d;
     register const char *strings = (const char *)lbl_8033CAE8;
     register const char *data = (const char *)lbl_80490510;
     *(s32 *)&lbl_8055EF38 = *(s32 *)((char *)arg1 + 0x8C);
     type = *(s32 *)((char *)arg1 + 0);
-    (void)(type - type);
     switch (type) {
     case 5: {
-        void *child = fn_8021227C(arg2, ((char *)arg1) + 0x20, 3);
+        void *child = fn_8021227C(arg2, (char *)arg1 + 0x20, 3);
         void *node;
-        if (child) {
-            void *child2 = fn_8021227C(arg2, ((char *)arg1) + 0x20, 2);
+        if (child != 0) {
+            void *child2 = fn_8021227C(arg2, (char *)arg1 + 0x20, 2);
             node = fn_801284F8(0x368, strings + 0x2FC);
-            if (node) {
+            if (node != 0) {
                 s32 value = child2 != 0 ? *(s32 *)((char *)child2 + 8) : 0;
                 node = (void *)fn_8021B2B0(node, *(s32 *)((char *)arg1 + 8),
                     *(s32 *)((char *)arg1 + 0xC), *(s32 *)((char *)child + 8),
@@ -842,7 +860,7 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
         void *node;
         if (*(u8 *)((char *)arg1 + 0x40) == '#') {
             primary = fn_8021227C(arg2, (char *)arg1 + 0x41, 3);
-            if (!primary) {
+            if (primary == 0) {
                 child = fn_8021227C(arg2, (char *)arg1 + 0x41, 7);
                 if (child != 0) {
                     s32 v1 = fn_80212214(*(s32 *)((char *)arg1 + 0x9C));
@@ -860,7 +878,7 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
         }
         node = fn_801284F8(0x374, strings + 0x314);
         if (node != 0) {
-            s32 v1 = child ? *(s32 *)((char *)child + 8) : 0;
+            s32 v1 = child != 0 ? *(s32 *)((char *)child + 8) : 0;
             s32 v2 = primary != 0 && *(s32 *)((char *)primary + 8) != 0 ?
                 *(s32 *)((char *)primary + 8) : (s32)((char *)arg1 + 0x40);
             node = (void *)fn_8021B460(node, arg1, v2, v1);
@@ -881,8 +899,8 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
         void *second = 0;
         if (*(u8 *)((char *)arg1 + 0x40) == '#')
             second = fn_8021227C(arg2, (char *)arg1 + 0x41, 3);
-        s32 value1 = first ? *(s32 *)((char *)first + 0xC) : 0;
-        s32 value2 = second ? *(s32 *)((char *)second + 8) : (s32)((char *)arg1 + 0x40);
+        s32 value1 = first != 0 ? *(s32 *)((char *)first + 0xC) : 0;
+        s32 value2 = second != 0 ? *(s32 *)((char *)second + 8) : (s32)((char *)arg1 + 0x40);
         s32 value3 = first != 0 ? *(s32 *)((char *)first + 8) : (s32)fn_80212338;
         void *inner = fn_801284F8(0xC, strings + 0x32C);
         if (inner != 0) {
@@ -1118,7 +1136,6 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
         s32 text = child != 0 ? *(s32 *)((char *)child + 8) :
             *(s32 *)((char *)data + 0x160);
         s32 mode = *(s32 *)((char *)arg1 + 4);
-        s32 a, b, c, d;
         if (mode == 4) {
             void *node = fn_801284F8(0x25C, strings + 0x458);
             if (node != 0) node = (void *)fn_8021CA0C(node,
@@ -1152,7 +1169,6 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
     }
     case 49: {
         void *child = fn_8021227C(arg2, (char *)arg1 + 0x20, 0x10);
-        s32 a, b, c, d;
         fn_80215298(&a, &b, &c, &d, *(s32 *)((char *)arg1 + 8),
             *(s32 *)((char *)arg1 + 0xC), *(u32 *)((char *)arg1 + 0x14));
         void *node = fn_801284F8(0x26C, strings + 0x47C);
@@ -1168,7 +1184,6 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
         void *node;
         s32 size = *(s32 *)((char *)arg1 + 0x14);
         if (size > 0 && size - 0x25 > 10) {
-            s32 a, b, c, d;
             fn_80215298(&a, &b, &c, &d, *(s32 *)((char *)arg1 + 8),
                 *(s32 *)((char *)arg1 + 0xC), *(u32 *)((char *)arg1 + 0x14));
             node = fn_801284F8(0x2C4, lbl_8055B758);
@@ -1293,7 +1308,7 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
             *(s32 *)((char *)arg1 + 0x18) - 0x28, text, 0);
         results[0] = node;
         void *second = fn_801284F8(0x25C, strings + 0x4BC);
-        if (second) second = (void *)fn_8021B1C4(second,
+        if (second != 0) second = (void *)fn_8021B1C4(second,
             *(s32 *)((char *)arg1 + 8), *(s32 *)((char *)arg1 + 0xC),
             text, -1, ((s32 (*)(s32, s32))fn_80215270)(2, 0));
         results[1] = second;
@@ -1438,7 +1453,7 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
         if (node != 0) {
             f32 height;
             f32 width;
-            if (first) height = *(f32 *)((char *)first + 0x10);
+            if (first != 0) height = *(f32 *)((char *)first + 0x10);
             else height = lbl_80563450;
             if (first != 0) width = *(f32 *)((char *)first + 0xC);
             else width = lbl_80563434;
@@ -1479,10 +1494,9 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
             fn_802168EC(arg0, results[i], *(s32 *)((char *)arg1 + 0x88));
         }
     }
-        *(s32 *)&lbl_8055EF38 = -1;
+    *(s32 *)&lbl_8055EF38 = -1;
 }
-#pragma dont_inline on
-#pragma small_data on
+#pragma paired_single reset
 void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     register void *head = *(void **)((u8 *)arg1 + 4);
     register u8 *base = lbl_8033CAE8;
@@ -2066,8 +2080,7 @@ extern "C" s32 fn_80214E10(s32 arg0, s32 arg1, s32 arg2) {
     s32 state, zero;
     s32 context0, context2, context3, context4;
     s32 value0, value1, value2, value3, value4;
-    s32 labelD3F8, labelD404, labelB820, labelB824, labelB830;
-    register s32 labelB860;
+    s32 labelB860, labelB820, labelD404, labelB824, labelB830, labelD3F8;
 
     stack[0] = 2;
     labelD3F8 = (s32)lbl_8033D3F8;
@@ -2179,30 +2192,17 @@ extern "C" s32 fn_80214FE0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 stack[47];
     s32 *values;
     Ctx802 *ctx;
-    s32 state, result;
+    s32 state, result, zero;
     s32 ctx0, ctx2, ctx3, ctx4;
     s32 value0, value1, value2, value3, value4;
-    register s32 labelE, labelD, labelC, labelB;
-    register s32 zero, four, three, minusTwo, minusThree, six, addr860, maxByte;
-    s32 label0, labelA;
+    s32 label0, labelA, labelB, labelC, labelD, labelE;
+    register s32 savedByte = arg3;
 
     state = fn_802168E4();
     if (state != 0) {
         fn_80214A9C(0x1F);
     }
-    labelE = (s32)&lbl_8055B83C;
-    labelD = (s32)&lbl_8055B838;
-    labelC = (s32)&lbl_8055B830;
-    labelB = (s32)&lbl_8055B824;
-    zero = 0;
-    four = 4;
-    three = 3;
-    minusTwo = -2;
-    minusThree = -3;
-    six = 6;
-    addr860 = (s32)&lbl_8055B860;
-    maxByte = 0x1B;
-    *(u8 *)((u8 *)stack + 0x2C) = (u8)arg3;
+    *(u8 *)((u8 *)stack + 0x2C) = (u8)savedByte;
     ctx = (Ctx802 *)lbl_802F9ECC;
     ctx2 = ctx->f2;
     stack[2] = ctx2;
@@ -2214,6 +2214,11 @@ extern "C" s32 fn_80214FE0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     value4 = values[4];
     label0 = (s32)lbl_8033D420;
     labelA = (s32)&lbl_8055B6A8;
+    labelB = (s32)&lbl_8055B824;
+    labelC = (s32)&lbl_8055B830;
+    labelD = (s32)&lbl_8055B838;
+    labelE = (s32)&lbl_8055B83C;
+    zero = 0;
 
     stack[5] = label0;
     stack[13] = 5;
@@ -2222,31 +2227,31 @@ extern "C" s32 fn_80214FE0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     stack[10] = zero;
     stack[15] = zero;
     stack[16] = zero;
-    stack[18] = three;
+    stack[18] = 3;
     stack[17] = labelB;
     stack[19] = arg0;
-    stack[20] = four;
+    stack[20] = 4;
     stack[21] = zero;
-    stack[23] = three;
+    stack[23] = 3;
     stack[22] = labelC;
     stack[24] = arg1;
-    stack[25] = four;
+    stack[25] = 4;
     stack[26] = zero;
     stack[28] = zero;
     stack[27] = labelD;
     stack[29] = zero;
-    stack[30] = minusTwo;
+    stack[30] = -2;
     stack[31] = zero;
     stack[33] = zero;
     stack[32] = labelE;
     stack[34] = zero;
-    stack[35] = minusThree;
+    stack[35] = -3;
     stack[36] = zero;
-    stack[38] = six;
-    stack[37] = addr860;
+    stack[38] = 6;
+    stack[37] = (s32)&lbl_8055B860;
     stack[39] = zero;
-    stack[40] = minusThree;
-    stack[41] = maxByte;
+    stack[40] = -3;
+    stack[41] = 0x1B;
     stack[42] = value0;
     stack[43] = value1;
     stack[44] = value2;
