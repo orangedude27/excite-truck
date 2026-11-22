@@ -619,66 +619,96 @@ void fn_801C4B74(void) {
     }
 }
 
-#pragma opt_common_subs off
+#pragma push
+#pragma pool_data on
+#pragma opt_common_subs on
+/* Initialize the debug overlay: reset its flags, time base and timeline cursor,
+   fill the built-in parameter tables, then enable debug mode when bit 14 of the
+   active physics command's flags is set. */
 void fn_801C4BAC(void) {
-    register Unk_80437D88 *state;
+#define sPauseCountdown lbl_8055E800
+#define sPauseFlag      lbl_8055E7FC
+#define sAutoPlay       lbl_8055E7E8
+#define sTimelineCursor lbl_8055E7F4
+#define sTimerExpired   lbl_8055E7E3
+#define sTimeBase       lbl_8055E7E4
+#define sDebugEnabled   lbl_8055E7E2
+#define sPendingFlag    lbl_8055E7E9
+#define sFloatOne       lbl_8056296C
+#define sTimerInactive  lbl_80562994
+#define sHalfPi         lbl_805629A8
+#define sOverlayParams  bss_00
+#define sPendingTimer   bss_9C
+#define sActionBuffer   bss_A8
+    static char bss_00[0x9C];
+    static struct { s32 a; s32 b; f32 c; } bss_9C;
+    static char bss_A8[0x190];
     register s32 zero;
-    s32 flag;
-    char *p0;
-    char *p1;
-    state = &lbl_80437D88;
+    s32 debugEnabled;
     zero = 0;
-    lbl_8055E800 = zero;
-    lbl_8055E7FC = 1;
-    lbl_8055E7E8 = zero;
-    lbl_8055E7F4 = zero;
-    lbl_8055E7E3 = zero;
-    lbl_8055E7E4 = lbl_80562970;
-    p0 = state->pad_0;
-    memset(p0, zero, 0x9C);
-    p1 = state->pad_0;
-    *(f32 *)(p1 + 0x14) = lbl_8056296C;
-    *(f32 *)(p1 + 0x18) = lbl_80562970;
-    *(f32 *)(p1 + 0x1C) = lbl_80562970;
-    *(f32 *)(p1 + 0x20) = lbl_80562970;
-    *(f32 *)(p1 + 0x24) = lbl_8056296C;
-    *(f32 *)(p1 + 0x28) = lbl_80562970;
-    *(f32 *)(p1 + 0x2C) = lbl_80562970;
-    *(f32 *)(p1 + 0x30) = lbl_80562970;
-    *(f32 *)(p1 + 0x34) = lbl_8056296C;
-    *(f32 *)(p1 + 0x50) = lbl_805629A8;
-    *(f32 *)(p1 + 0x68) = lbl_8056296C;
-    *(f32 *)(p1 + 0x6C) = lbl_80562970;
-    *(f32 *)(p1 + 0x70) = lbl_80562970;
-    *(f32 *)(p1 + 0x74) = lbl_80562970;
-    *(f32 *)(p1 + 0x78) = lbl_8056296C;
-    *(f32 *)(p1 + 0x7C) = lbl_80562970;
-    *(f32 *)(p1 + 0x80) = lbl_80562970;
-    *(f32 *)(p1 + 0x84) = lbl_80562970;
-    *(f32 *)(p1 + 0x88) = lbl_8056296C;
-    *(f32 *)(p1 + 0x8C) = lbl_80562970;
-    *(f32 *)(p1 + 0x90) = lbl_80562970;
-    *(f32 *)(p1 + 0x94) = lbl_80562970;
-    *(f32 *)(p1 + 0x98) = lbl_805629A8;
-    *(f32 *)((u8 *)state + 0xA4) = lbl_80562994;
-    *(s32 *)((u8 *)state + 0x9C) = zero;
-    if (lbl_8055E7F0 == 0) {
-        lbl_8055E7E2 = zero;
+    sPauseCountdown = zero;
+    sPauseFlag = 1;
+    sAutoPlay = zero;
+    sTimelineCursor = zero;
+    sTimerExpired = zero;
+    sTimeBase = FLOAT_ZERO;
+    memset(sOverlayParams, zero, 0x9C);
+    *(f32 *)(sOverlayParams + 0x14) = sFloatOne;
+    *(f32 *)(sOverlayParams + 0x18) = FLOAT_ZERO;
+    *(f32 *)(sOverlayParams + 0x1C) = FLOAT_ZERO;
+    *(f32 *)(sOverlayParams + 0x20) = FLOAT_ZERO;
+    *(f32 *)(sOverlayParams + 0x24) = sFloatOne;
+    *(f32 *)(sOverlayParams + 0x28) = FLOAT_ZERO;
+    *(f32 *)(sOverlayParams + 0x2C) = FLOAT_ZERO;
+    *(f32 *)(sOverlayParams + 0x30) = FLOAT_ZERO;
+    *(f32 *)(sOverlayParams + 0x34) = sFloatOne;
+    *(f32 *)(sOverlayParams + 0x50) = sHalfPi;
+    *(f32 *)(sOverlayParams + 0x68) = sFloatOne;
+    *(f32 *)(sOverlayParams + 0x6C) = FLOAT_ZERO;
+    *(f32 *)(sOverlayParams + 0x70) = FLOAT_ZERO;
+    *(f32 *)(sOverlayParams + 0x74) = FLOAT_ZERO;
+    *(f32 *)(sOverlayParams + 0x78) = sFloatOne;
+    *(f32 *)(sOverlayParams + 0x7C) = FLOAT_ZERO;
+    *(f32 *)(sOverlayParams + 0x80) = FLOAT_ZERO;
+    *(f32 *)(sOverlayParams + 0x84) = FLOAT_ZERO;
+    *(f32 *)(sOverlayParams + 0x88) = sFloatOne;
+    *(f32 *)(sOverlayParams + 0x8C) = FLOAT_ZERO;
+    *(f32 *)(sOverlayParams + 0x90) = FLOAT_ZERO;
+    *(f32 *)(sOverlayParams + 0x94) = FLOAT_ZERO;
+    *(f32 *)(sOverlayParams + 0x98) = sHalfPi;
+    sPendingTimer.c = sTimerInactive;
+    sPendingTimer.a = zero;
+    if (sTimelineCount == 0) {
+        sDebugEnabled = zero;
         return;
     }
-    if ((u8)lbl_8055E7E9 != 0) {
+    if ((u8)sPendingFlag != 0) {
         fn_8020C8FC();
         fn_8020C8F8();
-        lbl_8055E7E9 = 0;
+        sPendingFlag = 0;
     }
-    flag = (fn_801769A8() >> 14) & 1;
-    lbl_8055E7E2 = flag;
-    if (flag != 0) {
-        memset((u8 *)state + 0xA8, zero, 0xA0);
+    debugEnabled = (fn_801769A8() >> 14) & 1;
+    sDebugEnabled = debugEnabled;
+    if (debugEnabled != 0) {
+        memset(sActionBuffer, zero, 0xA0);
         fn_8017960C(fn_80179630(0));
     }
+#undef sActionBuffer
+#undef sPendingTimer
+#undef sOverlayParams
+#undef sHalfPi
+#undef sTimerInactive
+#undef sFloatOne
+#undef sPendingFlag
+#undef sDebugEnabled
+#undef sTimeBase
+#undef sTimerExpired
+#undef sTimelineCursor
+#undef sAutoPlay
+#undef sPauseFlag
+#undef sPauseCountdown
 }
-#pragma opt_common_subs reset
+#pragma pop
 extern float lbl_8055A958;
 extern void fn_80176A00(s32);
 extern s32 fn_801E8838(void);
@@ -702,6 +732,8 @@ __declspec(section ".sdata") extern char lbl_8055AA48[];
 #pragma push
 #pragma use_lmw_stmw off
 void fn_801C4CE8(void) {
+int __repair_literal;
+
     struct Mtx33 { f32 m[9]; };
     struct Mtx34 { struct Mtx33 rot; Vec trans; };
     struct Placement { struct Mtx34 m; Vec pos; u32 unk3c; s16 id; };
@@ -756,7 +788,9 @@ void fn_801C4CE8(void) {
         lbl_8055E7E8 = (fn_801E8838() != 0);
     }
     wait = 0;
-    if ((u8)lbl_8055E7FC != 0 && lbl_8055E800 > 4 && fn_80202B00() == 0) {
+__repair_literal = 4;
+
+    if ((u8)lbl_8055E7FC != 0 && lbl_8055E800 > __repair_literal && fn_80202B00() == 0) {
         fn_802E30C8(str + 0x2cc);
         lbl_8055E7FC = 0;
     }
@@ -1198,7 +1232,7 @@ extern struct Unk_80437D88 lbl_80437D88;
 #pragma use_lmw_stmw off
 s32 fn_801C5B68(char *arg0, s32 arg1) {
     extern char lbl_8055E80C;
-    register struct Unk_80437D88 *state = &lbl_80437D88;
+    struct Unk_80437D88 *state = &lbl_80437D88;
     void *sp28;
     void *sp24;
     s32 sp20;
@@ -2055,9 +2089,6 @@ void (*fn_801C7990(void))(void) {
     return fn_801C7964;
 }
 void fn_801C79E0(void) {
-    /* Copy the debug menu position from lbl_80438268 to lbl_8043848C, clear
-     * lbl_8055E83B, set the menu action to the idle handler (fn_801C6CB0),
-     * and set lbl_8055E83D. */
     Vec *src = &lbl_80438268;
     Vec *dst = &lbl_8043848C;
 
@@ -2152,12 +2183,11 @@ void fn_801C7C04(void) {
     extern double fn_8002EFB0(f32, f32);
     char *base = (char *)&lbl_80437D88;
     char *obj;
-    Vec *__restrict sv = (Vec *)(base + 0x6F8);
-    Vec *__restrict mv = (Vec *)(base + 0x704);
-    Vec *__restrict ev = (Vec *)(base + 0x710);
+    Vec *sv = (Vec *)(base + 0x6F8), *mv = (Vec *)(base + 0x704), *ev = (Vec *)(base + 0x710);
     f32 a[2], b[2], c[2], d[2], e[2], f[2], g[2], h[2], i[2];
     f32 *q, *p;
     f32 len, scale;
+    s32 mode;
     lbl_8055E84C = lbl_805629D4 * (f32)atof(base + 0x368);
     fn_801C957C(0);
     obj = fn_801C3C80();
@@ -2168,7 +2198,8 @@ void fn_801C7C04(void) {
     *(s32 *)(obj + 0xC) = fn_801C3954((s32)obj + 0x10);
     *(s32 *)(obj + 0xC) &= ~fn_801C3954((s32)obj + 0x110);
     *(f32 *)(obj + 0x214) = lbl_8055E84C;
-    switch (*(s32 *)(obj + 0x210)) {
+    mode = *(s32 *)(obj + 0x210);
+    switch (mode) {
     case 2:
         *(f32 *)(obj + 0x220) = lbl_80562970;
         b[1] = ev->z; b[0] = *(f32 *)(base + 0x710);
