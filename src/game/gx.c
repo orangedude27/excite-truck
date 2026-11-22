@@ -2596,7 +2596,7 @@ extern void (*lbl_8055FD80)(void);
 // Builds the GX TEV pipeline for the scene's default draw mode (mode 0 of the
 // render request block lbl_804C5700, applied by fn_802D2B0C): a base texture
 // pass, plus optional detail, second-texture and indirect (bump) stages.
-/* Builds the GX TEV/texture pipeline for the scene's default material (request mode 0): a base texture pass plus optional detail, second-texture and indirect bump stages. */ void buildDefaultTevPipeline(void) {
+/* Builds the GX TEV/texture pipeline for the scene's default material (request mode 0): a base texture pass, plus optional detail, second-texture and indirect bump stages. */ /* Builds the GX TEV/texture pipeline for the scene's default material (request mode 0): a base texture pass plus optional detail, second-texture and indirect bump stages. */ void buildDefaultTevPipeline(void) {
     unsigned int passThroughFlag; // GX state flag 0x40: TEV0 passes the texture through
     unsigned char secondTexFlag;  // request +0x08: extra modulated texture stage
     unsigned char detailTexFlag;  // request +0x09: base * detail pass
