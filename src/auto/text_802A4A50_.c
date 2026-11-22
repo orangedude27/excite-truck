@@ -2017,7 +2017,7 @@ struct Obj802A5878 {
 
 /* Append a three-float value; read the entire input before writing its slot. */
 #pragma push
-#pragma optimization_level 4
+#pragma optimization_level 2
 #pragma cplusplus on
 extern "C" void fn_802A70E4(void *object, float *input) {
 V3A70E4 *data = *(V3A70E4 **)object;
@@ -2029,7 +2029,6 @@ z = input[2];
 data[idx].x = x;
 data[idx].y = y;
 data[idx].z = z;
-#pragma scheduling on
 ((s32 *)object)[1] = ((s32 *)object)[1] + 1;
 }
 #pragma pop
