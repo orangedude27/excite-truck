@@ -560,7 +560,7 @@ extern const char lbl_8034B0B8[];
  * new low bit, and RGBA4444 -> RGB565 shifts each component up into its 565
  * field and drops the alpha nibble.  Any other pair of formats only traces
  * "copy_16_to_16: can't convert from %d to %d". */
-void gxCanvasCopy16to16(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
+/* Blit a clipped 2-byte-pixel canvas rectangle, converting pixels when source and destination formats differ. */ void gxCanvasCopy16to16(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
                  s32 srcBottom, s32 dstCanvas, s32 dstLeft, s32 dstTop) {
     u16 *srcPix, *src565, *src1555, *src4444;
     u16 *dstPix, *dst1555, *dst565, *dst565From4444;
