@@ -31,7 +31,7 @@ extern void fn_80128670(int);
 
 extern int lbl_8056002C;
 extern char lbl_8034E108[];
-extern void fn_802E9254(void *);
+extern void rmemcardWriteStep(void *);
 extern unsigned int fn_802E91BC(int *);
 extern int fn_802E91AC(int *);
 extern void fn_802E91D8(void *, const char *, int, int);
@@ -563,7 +563,7 @@ void fn_802E9010(void) {
     /* Pump the rmemcard save state machine: advance the async NAND write step,
      * then progress the outer state (2: start banner write, 3: start file write
      * once banner done, 4: finish once file write done). */
-    fn_802E9254((char *)&lbl_80507288 + 4);
+    rmemcardWriteStep((char *)&lbl_80507288 + 4);
     saveState = (char *)&lbl_80507288;
     switch (lbl_80507288) {
     case 2:
@@ -701,7 +701,7 @@ extern char lbl_8034E114[], lbl_8034E158[], lbl_8034E168[], lbl_8034E184[];
 extern char lbl_8034E194[], lbl_8034E1B4[], lbl_8034E1C4[], lbl_8034E1E8[];
 extern char lbl_8034E1F8[], lbl_8034E218[], lbl_80560034;
 
-/* Steps of the async NAND file-write machine in fn_802E9254.  The context block
+/* Steps of the async NAND file-write machine in rmemcardWriteStep.  The context block
  * it walks (arg0) holds, at these offsets:
  *   0x000 state        - current step (values below)
  *   0x004 length       - byte count to write
@@ -724,7 +724,7 @@ enum {
 };
 
 #pragma scheduling invalid_target
-/* fn_802E9254 - one step of the removable-memory-card ("rmemcard") async
+/* rmemcardWriteStep - one step of the removable-memory-card ("rmemcard") async
  * NAND file write.  Called repeatedly (from fn_802E9010); each call advances
  * the machine in ctx by one NAND operation.  The async calls all complete
  * through fn_802E95CC, which sets ctx's async_done flag (0x250) and stores the
@@ -732,7 +732,7 @@ enum {
  * checks the result, and either moves to the next step or bails out to IDLE
  * recording the error in ctx+0x258.  Steps: create -> open -> write -> close.
  */
-void fn_802E9254(void *ctx) {
+void rmemcardWriteStep(void *ctx) {
     char *ctxBytes = (char *)ctx;
     unsigned char *ctxFlags = (unsigned char *)ctx;
     int step = *(int *)ctxBytes;
