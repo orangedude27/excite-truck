@@ -6998,7 +6998,7 @@ extern "C" s32 fn_800AEBA0(void *arg0, u32 arg1, u32 arg2, u32 *arg3, s32 arg_sp
     u32 bound;
     s32 result;
     tableType = *(s32 *)((u8 *)arg0 + 0x1C);
-    entry = (u8 *)lbl_802EEF40 + (u32)tableType * 0x14;
+    entry = (u8 *)lbl_802EEF40 + tableType * 0x14;
     expected = arg2;
     *arg3 = -1;
     output = arg3;
@@ -7144,54 +7144,56 @@ extern "C" s32 fn_800B037C(void *arg0, s32 arg1, s32 arg2);
  * then write a run of data sectors to the volume, checking each write's byte count and
  * freeing the FAT page on error. */
 extern "C" s32 fn_800AEF6C(void *volume) {
-    typedef s32 (*PageLookup)(void *, s32, void **, s32 *);
-    typedef s32 (*SetFatEntry16)(void *, s32, u32);
-    u32 bytesWritten;
-    s32 pageId;
-    void *fatPage;
+    typedef s32 (*AcquirePage)(void *, s32, void **, s32 *);
+    typedef s32 (*SetFatEntry)(void *, s32, u32);
+    u32 written;
+    s32 pageIndex;
+    void *page;
     s32 result;
-    s32 startSector;
-    s32 sectorOffset;
-    u32 maxEntry;
-    s32 fatType = *(s32 *)((u8 *)volume + 0x1C);
-    s32 entryValue = *(s32 *)((u8 *)volume + 0x10);
-    maxEntry = *(u32 *)((u8 *)lbl_802EEF40 + fatType * 0x14 + 8);
+    s32 sector;
+    s32 i;
+    u32 endOfChain;
+    s32 fatType = VF_VOL_FAT_TYPE((u8 *)volume);
+    s32 rootCluster = *(s32 *)((u8 *)volume + 0x10); /* FAT32: the cluster the root directory is a chain of */
+    /* End the root directory's chain in the FAT with the type's end-of-chain
+     * value (VF_FAT_END_OF_CHAIN(fatType)), then clear the cluster's sectors. */
+    endOfChain = *(u32 *)((u8 *)lbl_802EEF40 + fatType * 0x14 + 8);
     switch (fatType) {
-    case 0:
-        if (maxEntry > 0xFFF) result = 0x10;
-        else result = fn_800AF734(volume, (u16)entryValue, (u16)maxEntry);
+    case VF_FAT_TYPE_12:
+        if (endOfChain > 0xFFF) result = 0x10; /* the value does not fit a FAT12 entry */
+        else result = VFiPFFAT_SetEntry12NoPage(volume, (u16)rootCluster, (u16)endOfChain);
         break;
-    case 1:
-        if (maxEntry > 0xFFFF) result = 0x10;
-        else result = ((SetFatEntry16)fn_800AFF28)(volume, entryValue, maxEntry);
+    case VF_FAT_TYPE_16:
+        if (endOfChain > 0xFFFF) result = 0x10; /* the value does not fit a FAT16 entry */
+        else result = ((SetFatEntry)VFiPFFAT_SetEntry16NoPage)(volume, rootCluster, endOfChain);
         break;
-    case 2:
-        if (maxEntry > 0xFFFFFFF) result = 0x10;
-        else result = fn_800B037C(volume, entryValue, maxEntry);
+    case VF_FAT_TYPE_32:
+        if (endOfChain > 0xFFFFFFF) result = 0x10; /* the value does not fit a FAT32 entry */
+        else result = VFiPFFAT_SetEntry32NoPage(volume, rootCluster, endOfChain);
         break;
     default:
-        result = 0xF;
+        result = 0xF; /* the volume's FAT type is none of the three */
         break;
     }
     if (result != 0) return result;
     result = ((s32 (*)(void *))fn_800A9104)(volume);
     if (result != 0) return result;
-    result = ((PageLookup)(s32 (*)(s32, void **, s32 *, s32, s32 *))fn_800A8D08)(volume, -1, &fatPage, &pageId);
+    result = ((AcquirePage)(s32 (*)(s32, void **, s32 *, s32, s32 *))fn_800A8D08)(volume, -1, &page, &pageIndex);
     if (result != 0) return result;
-    fn_800A499C((const char *)*(void **)((u8 *)fatPage + 8), 0, *(u16 *)volume);
-    startSector = *(s32 *)((u8 *)volume + 0x30) + ((*(s32 *)((u8 *)volume + 0x10) - 2) << *(u8 *)((u8 *)volume + 0x21));
-    for (sectorOffset = 0; (u32)sectorOffset < *(u8 *)((u8 *)volume + 6); sectorOffset++) {
-        result = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))fn_800B5700)((s32)volume, *(void **)((u8 *)fatPage + 8), startSector + sectorOffset, 0, *(u16 *)volume, &bytesWritten, 0);
+    fn_800A499C((const char *)VF_PAGE_DATA(page), 0, VF_VOL_SECTOR_SIZE(volume));
+    sector = VF_VOL_DATA_START(volume) + ((rootCluster - VF_FAT_FIRST_CLUSTER) << VF_VOL_CLUSTER_SHIFT(volume));
+    for (i = 0; (u32)i < VF_VOL_SECTORS_PER_CLUSTER(volume); i++) {
+        result = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))fn_800B5700)((s32)volume, VF_PAGE_DATA(page), sector + i, 0, VF_VOL_SECTOR_SIZE(volume), &written, 0);
         if (result != 0) {
-            VFiPFCACHE_FreeFATPage_800A8E10(volume, fatPage);
+            VFiPFCACHE_FreeFATPage_800A8E10(volume, page);
             return result;
         }
-        if (bytesWritten != *(u16 *)volume) {
-            VFiPFCACHE_FreeFATPage_800A8E10(volume, fatPage);
-            return 0x11;
+        if (written != VF_VOL_SECTOR_SIZE(volume)) {
+            VFiPFCACHE_FreeFATPage_800A8E10(volume, page);
+            return VF_ERR_SHORT_TRANSFER;
         }
     }
-    VFiPFCACHE_FreeFATPage_800A8E10(volume, fatPage);
+    VFiPFCACHE_FreeFATPage_800A8E10(volume, page);
     return 0;
 }
 
@@ -12051,29 +12053,25 @@ extern "C" s16 fn_800B7200(s32 oemText) {
     return count;
 }
 
-u32 VFiPFCODE_CP932_isOEMMBchar(s8 cp932, u32 num) {
-    u8 code;
-    u32 is_mb;
-
-    code = (u8)cp932;
-    is_mb = 0;
+extern "C" s32 VFiPFCODE_CP932_isOEMMBchar(s32 cp932, s32 num) {
+    u8 code = (u8)cp932;
 
     switch (num) {
-        case 1:
-            is_mb = 0;
-            if ((code >= 0x81 && code <= 0x9F) || (code >= 0xE0 && code <= 0xFC)) {
-                is_mb = 1;
-            }
-            return is_mb;
-
-        case 2:
-            is_mb = 0;
-            if ((code >= 0x40 && code <= 0x7E) || (code >= 0x80 && code <= 0xFC)) {
-                is_mb = 1;
-            }
-            return is_mb;
+    case 1:
+        if (code < 0x81) return 0;
+        if (code <= 0x9F) return 1;
+        if (code < 0xE0) return 0;
+        if (code > 0xFC) return 0;
+        return 1;
+    case 2:
+        if (code < 0x40) return 0;
+        if (code <= 0x7E) return 1;
+        if (code < 0x80) return 0;
+        if (code > 0xFC) return 0;
+        return 1;
+    default:
+        return 0;
     }
-    return is_mb;
 }
 
 /* Convert a Unicode code point to CP932 (Shift-JIS) OEM bytes, then return the
