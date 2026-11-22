@@ -571,7 +571,7 @@ void fn_802E050C(void) {
  * their alpha through TEV register 0, and leave the result to standard
  * source-alpha blending.
  */
-/* Configures the second five-stage TEV pipeline chosen by fn_802DBA1C: three position-driven texgens modulate texture maps 0-4 into the previous-colour register with source-alpha blending. */ void GXSetupFiveStageTevPipelineB(void) {
+void GXSetupFiveStageTevPipelineB(void) {
     register GXTexGenType texGenType = GX_TG_MTX2x4;
 
     /* texcoord0..2 = vertex position through texture matrices 0, 1 and 3 */
