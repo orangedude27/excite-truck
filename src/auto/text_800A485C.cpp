@@ -5118,10 +5118,10 @@ return_zero:
 
 extern "C" s32 VFiPFENT_ITER_Advance(void *arg0, s32 arg1) {
     void *iter = arg0;
-    s32 result;
     s32 error;
-    u32 next;
+    s32 result;
     u32 length;
+    u32 next;
     u32 index = *(u32 *)iter;
     next = index + 1;
 
