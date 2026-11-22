@@ -4121,7 +4121,7 @@ extern "C" void fn_801A1F44(void* arg0, void* arg1) {
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void fn_801A1F98(const void *arg0, f32 *min, f32 *max)
+/* Compute the world-space AABB of a box: build its eight local corners from the half-extents at +0x24/0x28/0x2C, transform each through the matrix returned by the object's virtual Call(), translate it, and expand outMin/outMax with the result. */ extern "C" void fn_801A1F98(const void *arg0, f32 *min, f32 *max)
 {
   f32 point[3];
   f32 corners[24];
