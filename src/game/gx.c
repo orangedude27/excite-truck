@@ -2160,7 +2160,7 @@ typedef struct DefaultLight_802D18E8 {
     /* 0x18 */ float strength;
 } DefaultLight_802D18E8;
 extern int gSceneLightCount;   /* scene light table: entries in it */
-extern int lbl_8055FDCC;   /* light objects loaded into GX light channels */
+extern int gLightObjCount;   /* light objects loaded into GX light channels */
 extern float lbl_80564FD4; /* 64.0f: cone scale of the fallback light */
 extern void GXLoadLightObjImm(void *, unsigned int);
 extern void GXSetChanCtrl(int, int, int, int, unsigned int, int, int);
@@ -2226,7 +2226,7 @@ void gxSetupSceneLights(void) {
     mag = PSVECMag(direction);
     mag = mag > lbl_80564F80 ? mag : lbl_80564F80; /* lbl_80564F80 = 0.001f */
     scale = lbl_80564F8C / mag;                    /* lbl_80564F8C = 1.0f */
-    lbl_8055FDCC = 0;
+    gLightObjCount = 0;
     direction[0] *= scale;
     direction[1] *= scale;
     direction[2] *= scale;
@@ -2247,7 +2247,7 @@ void gxSetupSceneLights(void) {
         count++;
     loop_test:
         if (count < gSceneLightCount) goto loop_body;
-        lbl_8055FDCC = gSceneLightCount;
+        gLightObjCount = gSceneLightCount;
     } else {
         /* Nothing to light the scene: one light from the fallback entry, whose
          * colour is scaled by its strength and whose cone is 64.0 wide. */
@@ -2260,7 +2260,7 @@ void gxSetupSceneLights(void) {
         rgba[3] = sDefaultLight_802D18E8.c[3];
         packed = *(unsigned int *)rgba;
         gxInitPointLight(sLightObjs_802D18E8[0], direction, sDefaultLight_802D18E8.pos, (unsigned char *)&packed, lbl_80564FD4);
-        lbl_8055FDCC++;
+        gLightObjCount++;
     }
 
     lightObj = sLightObjs_802D18E8[0];
@@ -2277,7 +2277,7 @@ light_body:
         i++;
     }
 light_test:
-    if (i < lbl_8055FDCC) goto light_body;
+    if (i < gLightObjCount) goto light_body;
     GXSetNumChans(2);
     GXSetChanCtrl(GX_COLOR1, GX_ENABLE, GX_SRC_REG, GX_SRC_REG, lightMask, GX_DF_NONE, GX_AF_SPEC);
     GXSetChanCtrl(GX_ALPHA1, GX_DISABLE, GX_SRC_REG, GX_SRC_REG, GX_LIGHT_NULL, GX_DF_NONE, GX_AF_NONE);
