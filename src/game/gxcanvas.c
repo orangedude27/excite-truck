@@ -216,7 +216,7 @@ s32 fn_802C3034(s32 newCanvas) {
 }
 
 /* Return the address of the 16-bit pixel at (x, y): pixels + y * rowBytes + x * 2. */
-s32 fn_802C3044(void *canvas, s32 x, s32 y) {
+s32 gxCanvasGetPixelAddr(void *canvas, s32 x, s32 y) {
     return ((GxCanvas *)canvas)->rowBytes * y + ((s32)((GxCanvas *)canvas)->pixels + x * 2);
 }
 
@@ -334,7 +334,7 @@ void fn_802C3320(s32 x, s32 y, u32 packedValue) {
         halfValue = packedValue >> 16;
         if ((s8)*(u8 *)lbl_8055FC00 == 3)
             halfValue = packedValue & 0xFFFF;
-        *(u16 *)fn_802C3044((void *)lbl_8055FC00, x, y) = (u16)halfValue;
+        *(u16 *)gxCanvasGetPixelAddr((void *)lbl_8055FC00, x, y) = (u16)halfValue;
     }
 }
 #pragma pop
@@ -392,7 +392,7 @@ void fn_802C3478(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     width = x1 - x0;
     height = y1 - y0;
     if (*(u8 *)lbl_8055FC00 == 3) pixel = (u16)color;
-    p = (u16 *)fn_802C3044((void *)lbl_8055FC00, x0, y0);
+    p = (u16 *)gxCanvasGetPixelAddr((void *)lbl_8055FC00, x0, y0);
     skip = (*(s32 *)((u8 *)lbl_8055FC00 + 0x10) - width * 2) / 2;
     do {
         n = width;
@@ -455,7 +455,7 @@ void fn_802C365C(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     packed = __rlwimi(packed, color, 30, 24, 27);
     pixel = low | packed;
     height = y1 - y0;
-    p = (u16 *)fn_802C3044((void *)lbl_8055FC00, x0, y0);
+    p = (u16 *)gxCanvasGetPixelAddr((void *)lbl_8055FC00, x0, y0);
     skip = (*(s32 *)((u8 *)lbl_8055FC00 + 0x10) - width * 2);
     skip = (u32)((u8 *)(skip >> 31) + skip) & ~1;
     do {
@@ -582,8 +582,8 @@ void gxCanvasCopy16to16(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
      * origin moves by however much of the rectangle was cut off. */
     if (fn_802C3170((void *)dstCanvas, &clipX, &clipY, &srcX, &srcY, &width,
                     &height) != 0) {
-        srcPix = (u16 *)fn_802C3044((void *)srcCanvas, srcX, srcY);
-        dstPix = (u16 *)fn_802C3044((void *)dstCanvas, clipX, clipY);
+        srcPix = (u16 *)gxCanvasGetPixelAddr((void *)srcCanvas, srcX, srcY);
+        dstPix = (u16 *)gxCanvasGetPixelAddr((void *)dstCanvas, clipX, clipY);
         savedWidth = width;
         savedHeight = height;
         /* Bytes to step over the pixels a row does not hold, rounded to whole
@@ -609,8 +609,8 @@ copyPixel:
         if (srcFormat != dstFormat) {
             if (srcFormat == CANVAS_FORMAT_RGB565 &&
                 dstFormat == CANVAS_FORMAT_RGB1555) {
-                srcPix_2 = (u16 *)fn_802C3044((void *)srcCanvas, srcX, srcY);
-                dstPix_2 = (u16 *)fn_802C3044((void *)dstCanvas, clipX, clipY);
+                srcPix_2 = (u16 *)gxCanvasGetPixelAddr((void *)srcCanvas, srcX, srcY);
+                dstPix_2 = (u16 *)gxCanvasGetPixelAddr((void *)dstCanvas, clipX, clipY);
                 width = savedWidth;
                 height = savedHeight;
                 srcRowSkip = (((GxCanvas *)srcCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
@@ -638,8 +638,8 @@ conv565To555:
             }
             if (srcFormat == CANVAS_FORMAT_RGB1555 &&
                 dstFormat == CANVAS_FORMAT_RGB565) {
-                srcPix_3 = (u16 *)fn_802C3044((void *)srcCanvas, srcX, srcY);
-                dstPix_3 = (u16 *)fn_802C3044((void *)dstCanvas, clipX, clipY);
+                srcPix_3 = (u16 *)gxCanvasGetPixelAddr((void *)srcCanvas, srcX, srcY);
+                dstPix_3 = (u16 *)gxCanvasGetPixelAddr((void *)dstCanvas, clipX, clipY);
                 width = savedWidth;
                 height = savedHeight;
                 srcRowSkip = (((GxCanvas *)srcCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
@@ -671,8 +671,8 @@ conv555To565:
             }
             if (srcFormat == CANVAS_FORMAT_RGBA4444 &&
                 dstFormat == CANVAS_FORMAT_RGB565) {
-                srcPix_4 = (u16 *)fn_802C3044((void *)srcCanvas, srcX, srcY);
-                dstPix_4 = (u16 *)fn_802C3044((void *)dstCanvas, clipX, clipY);
+                srcPix_4 = (u16 *)gxCanvasGetPixelAddr((void *)srcCanvas, srcX, srcY);
+                dstPix_4 = (u16 *)gxCanvasGetPixelAddr((void *)dstCanvas, clipX, clipY);
                 width = savedWidth;
                 height = savedHeight;
                 srcRowSkip = (((GxCanvas *)srcCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
@@ -771,7 +771,7 @@ void fn_802C3D74(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
     width = srcRight - srcLeft;
     height = srcBottom - srcTop;
     if (fn_802C3170((void *)dstCanvas, &clipX, &clipY, &srcX, &srcY, &width, &height) != 0) {
-        src = (u16 *)fn_802C3044((void *)srcCanvas, srcX, srcY);
+        src = (u16 *)gxCanvasGetPixelAddr((void *)srcCanvas, srcX, srcY);
         dst = (s32 *)fn_802C3060((void *)dstCanvas, clipX, clipY);
         /* Pixels to step over the ones a row does not hold, per canvas. */
         srcSkip = (((GxCanvas *)srcCanvas)->rowBytes - width * 2) / 2;
@@ -841,7 +841,7 @@ void fn_802C3F00(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     sp18 = arg4 - arg2;
     if (fn_802C3170(targetObj, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
         src = (u32 *)fn_802C3060(sourceObj, sp8, spC);
-        dst = (s16 *)fn_802C3044(targetObj, sp10, sp14);
+        dst = (s16 *)gxCanvasGetPixelAddr(targetObj, sp10, sp14);
         formatByte = *(u8 *)targetObj;
         format = (s8)formatByte;
         skipSrc = (*(s32 *)(sourceObj + 0x10) - sp1C * 4) / 4;
@@ -919,8 +919,8 @@ void fn_802C4108(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     sp18 = arg4 - arg2;
     if (fn_802C3170((void *)arg5, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
         u8 fmt;
-        src = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
-        dst = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
+        src = (u16 *)gxCanvasGetPixelAddr((void *)arg0, sp8, spC);
+        dst = (u16 *)gxCanvasGetPixelAddr((void *)arg5, sp10, sp14);
         st0 = *(s32 *)((u8 *)arg0 + 0x10);
         st1 = *(s32 *)((u8 *)arg5 + 0x10);
         skipSrc = (st0 - sp1C * 2) / 2;
@@ -983,7 +983,7 @@ void fn_802C4388(s32 src, s32 x, s32 y, s32 x2, s32 y2, s32 dst, s32 dx, s32 dy)
     sx = x; sy = y; tx = dx; ty = dy; w = x2 - x; h = y2 - y;
     if (!fn_802C3170((void *)dst, &tx, &ty, &sx, &sy, &w, &h)) return;
     sp = (u32 *)fn_802C3060((void *)src, sx, sy);
-    dp = (u16 *)fn_802C3044((void *)dst, tx, ty);
+    dp = (u16 *)gxCanvasGetPixelAddr((void *)dst, tx, ty);
     srcskip = (*(s32 *)((u8 *)src + 0x10) - w * 4) / 4;
     dstskip = (*(s32 *)((u8 *)dst + 0x10) - w * 2) / 2;
     if (*(s8 *)dst == 3) {
@@ -1306,7 +1306,7 @@ void fn_802C4C90(Stamp *stamp, s32 x, s32 y, s32 frame, StampPalette *override) 
         for (; row < endRow; row++) {
             s32 skip, run, literal, pos;
             src = (u8 *)stamp->rows[row + stamp->height * frame];
-            dst = (u16 *)fn_802C3044((void *)sCurrentCanvas, left, row + top);
+            dst = (u16 *)gxCanvasGetPixelAddr((void *)sCurrentCanvas, left, row + top);
             for (pos = 0; pos < endCol;) {
                 run = *src++;
                 if (run & 0x80) {
