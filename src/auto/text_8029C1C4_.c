@@ -85,6 +85,8 @@ void fn_8029C22C(void) {
     fn_8029C3EC();
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_8029C25C(void) {
     int *p;
     int i;
@@ -97,6 +99,7 @@ void fn_8029C25C(void) {
         }
     }
 }
+#pragma pop
 
 #pragma push
 #pragma processor 750
