@@ -5656,33 +5656,35 @@ extern s32 fn_800B5700(void *, s32, s32, s32, u16, u32 *, s32);
 extern s32 fn_800A499C(s32, s32);
 #pragma push
 #pragma opt_strength_reduction off
-extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1) {
-    void *sp10;
-    s32 spC;
-    u32 sp8;
-    s32 base;
-    s32 i;
-    s32 ret;
-
-    ret = fn_800A8D08(arg0, -1, &sp10, &spC);
-    if (ret != 0)
-        return ret;
-
-    base = *(s32 *)((u8 *)arg0 + 0x30) + ((arg1 - 2) << *((u8 *)arg0 + 0x21));
-    for (i = 0; (u32)i < *((u8 *)arg0 + 6); i++) {
-        if (fn_800B5324(arg0, *(s32 *)((u8 *)sp10 + 8), base + i,
-                        0, *(u16 *)arg0, &sp8, 1) != 0 ||
-            *(u16 *)arg0 != sp8)
-            break;
-        fn_800A499C(*(s32 *)((u8 *)sp10 + 8), 0);
-        if (fn_800B5700(arg0, *(s32 *)((u8 *)sp10 + 8), base + i,
-                        0, *(u16 *)arg0, &sp8, 1) != 0 ||
-            sp8 != *(u16 *)arg0)
-            break;
+extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1)
+{
+  void *sp10;
+  s32 spC;
+  u32 sp8;
+  s32 base;
+  s32 i;
+  s32 ret;
+  ret = fn_800A8D08(arg0, -1, &sp10, &spC);
+  if (ret != 0)
+  {
+    return ret;
+  }
+  base = (*((s32 *) (((u8 *) arg0) + 0x30))) + ((arg1 - 2) << (*(((u8 *) arg0) + 0x21)));
+  for (i = 0; ((u32) i) < (*(((u8 *) arg0) + 6)); i++)
+  {
+    if ((fn_800B5324(arg0, *((s32 *) (((u8 *) sp10) + 8)), base + i, 0, *((u16 *) arg0), &sp8, 1) != 0) || ((*((u16 *) arg0)) != sp8))
+    {
+      break;
     }
+    fn_800A499C(*((s32 *) (((u8 *) sp10) + 8)), arg1 * 0);
+    if ((fn_800B5700(arg0, *((s32 *) (((u8 *) sp10) + 8)), base + i, 0, *((u16 *) arg0), &sp8, 1) != 0) || (sp8 != (*((u16 *) arg0))))
+    {
+      break;
+    }
+  }
 
-    VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp10);
-    return 0;
+  VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp10);
+  return 0;
 }
 #pragma pop
 extern "C" s32 fn_800ACF20(void *fileInfo, u32 clusterIndex, u32 *outCluster, u32 *outFromCache)
@@ -24008,36 +24010,50 @@ extern "C" void fn_800C81F0(void *arg0, s32 arg1) {
 }
 
 #pragma dont_inline off
-void homebutton::HomeButton::calc_battery(int n) {
-    u8 *self = (u8 *)this;
-    void *obj;
-    s32 *ids = (s32 *)((u8 *)lbl_8031E370 + n * 16);
-    u8 *rec = (u8 *)this + n * 0x18;
-    s32 i, index;
-    for (i = 0; i < 4; i++) {
-        u8 *pane;
-        if (i < rec[0x16C]) {
-            pane = (u8 *)((BatteryLayoutDispatch *)*(void **)((u8 *)*(void **)(self + 0x1E0) + 0x10))->findPane(*ids, 1);
-            pane[0xCF] = (pane[0xCF] & 0xFE) | 1;
-        } else {
-            pane = (u8 *)((BatteryLayoutDispatch *)*(void **)((u8 *)*(void **)(self + 0x1E0) + 0x10))->findPane(*ids, 1);
-            pane[0xCF] = pane[0xCF] & 0xFE;
-        }
-        ids++;
+void homebutton::HomeButton::calc_battery(int n)
+{
+  u8 *self = (u8 *) this;
+  void *obj;
+  s32 *ids = (s32 *) (((u8 *) lbl_8031E370) + (n * 16));
+  u8 *rec = self + (n * 0x18);
+  s32 i;
+  s32 index;
+  for (i = 0; i < 4; i++)
+  {
+    u8 *pane;
+ goto dummy_label_639675; dummy_label_639675: ;
+    if (i < rec[0x16C])
+    {
+      pane = (u8 *) ((BatteryLayoutDispatch *) (*((void **) (((u8 *) (*((void **) (self + 0x1E0)))) + 0x10))))->findPane(*ids, 1);
+      pane[0xCF] = (pane[0xCF] & 0xFE) | 1;
     }
-    if (rec[0x16C] < 2) {
-        index = findEventSlot(n + 0x1F, 0x15);
-        obj = ((void **)self)[index + 166];
-        ((void (*)(void *))fn_800CF3EC)(obj);
-        *(s32 *)((u8 *)obj + 0x14) = 1;
-    } else {
-        index = findEventSlot(n + 0x1F, 0x11);
-        obj = ((void **)self)[index + 166];
-        ((void (*)(void *))fn_800CF3EC)(obj);
-        *(s32 *)((u8 *)obj + 0x14) = 1;
+    else
+    {
+      pane = (u8 *) ((BatteryLayoutDispatch *) (*((void **) (((u8 *) (*((void **) (self + 0x1E0)))) + 0x10))))->findPane(*ids, 1);
+      pane[0xCF] = pane[0xCF] & 0xFE;
     }
-    if (*(s32 *)(self + 0x78) < 0x64) *(s32 *)(self + 0x78) = 0;
-    ((void (*)(s32 *))fn_800D16A8)(*(s32 **)((u8 *)((void **)self + n) + 0x254));
+    ids++;
+  }
+
+  if (rec[0x16C] < 2)
+  {
+    index = findEventSlot(n + 0x1F, 0x15);
+    obj = ((void **) self)[index + 166];
+    ((void (*)(void *)) fn_800CF3EC)(obj);
+    *((s32 *) (((u8 *) obj) + 0x14)) = 1;
+  }
+  else
+  {
+    index = findEventSlot(n + 0x1F, 0x11);
+    obj = ((void **) self)[index + 166];
+    ((void (*)(void *)) fn_800CF3EC)(obj);
+    *((s32 *) (((u8 *) obj) + 0x14)) = 1;
+  }
+  if ((*((s32 *) (self + 0x78))) < 0x64)
+  {
+    *((s32 *) (self + 0x78)) = 0;
+  }
+  ((void (*)(s32 *)) fn_800D16A8)(*((s32 **) (((u8 *) (((void **) self) + n)) + 0x254)));
 }
 extern "C" void fn_800CA064(void) {
     u32 userData = (u32)((void *(*)(void))((void *(*)(const OSAlarm *))OSGetAlarmUserData))();
