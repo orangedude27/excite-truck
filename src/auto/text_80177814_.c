@@ -311,7 +311,7 @@ void fn_801B2364(void);
 void fn_8026B6E4(void);
 void fn_801CEDDC(void);
 void fn_801D2214(void);
-void fn_8020C59C(void);
+void musicPreRaceUpdate(void);
 void fn_801DEFE0(void);
 void fn_801EA1F0(void);
 int fn_801B526C(void);
@@ -370,7 +370,7 @@ void fn_80177F40(void) {
     fn_8026B6E4();
     fn_801CEDDC();
     fn_801D2214();
-    fn_8020C59C();
+    musicPreRaceUpdate();
     fn_801DEFE0();
     if (flag) fn_801EA1F0();
     other = fn_801B526C();

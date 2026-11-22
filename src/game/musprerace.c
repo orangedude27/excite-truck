@@ -58,13 +58,14 @@ extern s32 lbl_8055EE38;
 #pragma push
 #pragma processor 750
 void fn_8020C140(void) {
+#pragma unroll 1
     f32 factor;
     f32 v1;
     f32 v2;
     f32 v31;
     f32 dc;
     s32 *base;
-    u32 ctr;
+    s32 ctr;
     void *obj;
     int k;
     v1 = lbl_8055EE48 * lbl_8055EE4C;
@@ -118,14 +119,14 @@ void fn_8020C2AC(void) {
     s32 tmp;
     void *o1;
     void *o2;
-    s32 one = 1;
+    s32 one;
 
     lbl_8055EE40 = 0;
     lbl_8055EE48 = fn_8020A5F0();
     base = (s32 *)&lbl_80489BE0;
     f31val = lbl_805632DC;
     lbl_8055EE4C = lbl_805632F0;
-    idx = 0;
+    idx = 0, one = 1;
     lbl_8055EE50 = lbl_805632F0;
     lbl_8055EE54 = lbl_805632F0;
     do {
@@ -297,7 +298,7 @@ extern f32 lbl_805632FC;
 /* Per-frame pre-race music update: pick which of the three music tracks is
  * featured (start countdown/race state), advance the master fade toward its
  * target volume, and tell every track object whether to keep playing. */
-void fn_8020C59C(void) {
+void musicPreRaceUpdate(void) {
            register f64 fullVolume;
            f32 temp_f0, temp_f1, temp_f2, temp_f4;
            s32 featuredTrack, selection, active, cached, i, skip;
@@ -495,8 +496,8 @@ extern s32 lbl_8055B5DC;
 #pragma scheduling invalid_target
 void fn_8020C920(s32 arg0) {
     const char *base = lbl_8033C5D8;
-    s32 i = 0;
-    s32 j = 0;
+    register s32 i = 0;
+    register s32 j = 0;
     char *dst = (char *)&lbl_80489BE0;
     fn_801345D8((char *)&lbl_80489C50, 0x20, base + 0x34, arg0);
     fn_8012DDA8(&lbl_80489C50);
