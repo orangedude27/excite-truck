@@ -2202,82 +2202,82 @@ static void BssOrder_802D18E8(void) {
 }
 #pragma push
 #pragma use_lmw_stmw off
-/* Sets up the frame's lighting. The light direction is the view direction
- * (sViewFrom's translation column minus sViewTo's) normalised to length 1.0;
- * every entry of the scene light table is turned into a GX light object - or
- * the fallback light is, when the table is empty - those objects are loaded
- * into the GX light channels starting at GX_LIGHT1, and GX_COLOR1 is lit by
- * the channels they went into. */
+/* Sets up this frame's lighting: the light direction is the view direction
+ * (sViewFrom_802D18E8's translation column minus sViewTo_802D18E8's) normalised to
+ * length 1.0; every entry of the scene light table is turned into a GX light
+ * object - or the fallback light is, when the table is empty - those objects are
+ * loaded into the GX light channels starting at GX_LIGHT1, and GX_COLOR1 is lit
+ * by the channels they went into. */
 void gxSetupSceneLights(void) {
-    unsigned char color[4];
+    unsigned char entryColor[4];
     float direction[3];
-    float mag;
-    float scale;
-    SceneLight_802D18E8 *entry;
+    float length;
+    float invLength;
+    SceneLight_802D18E8 *light;
     unsigned char *lightObj;
-    int count;
+    int entryCount;
     int lightBit;
     int lightMask;
-    int i;
+    int lightIndex;
 
     direction[0] = sViewFrom_802D18E8[9] - sViewTo_802D18E8[9];
     direction[1] = sViewFrom_802D18E8[10] - sViewTo_802D18E8[10];
     direction[2] = sViewFrom_802D18E8[11] - sViewTo_802D18E8[11];
-    mag = PSVECMag(direction);
-    mag = mag > lbl_80564F80 ? mag : lbl_80564F80; /* lbl_80564F80 = 0.001f */
-    scale = lbl_80564F8C / mag;                    /* lbl_80564F8C = 1.0f */
+    length = PSVECMag(direction);
+    length = length > lbl_80564F80 ? length : lbl_80564F80; /* lbl_80564F80 = 0.001f */
+    invLength = lbl_80564F8C / length;                      /* lbl_80564F8C = 1.0f */
     gLightObjCount = 0;
-    direction[0] *= scale;
-    direction[1] *= scale;
-    direction[2] *= scale;
+    direction[0] *= invLength;
+    direction[1] *= invLength;
+    direction[2] *= invLength;
 
     if (gSceneLightCount > 0) {
-        entry = (SceneLight_802D18E8 *)sLightEntries_802D18E8;
+        light = (SceneLight_802D18E8 *)sLightEntries_802D18E8;
         lightObj = sLightObjs_802D18E8[0];
-        count = 0;
+        entryCount = 0;
         goto loop_test;
     loop_body:
-        color[0] = entry->color[0];
-        color[1] = entry->color[1];
-        color[2] = entry->color[2];
-        color[3] = entry->color[3];
-        gxInitPointLight(lightObj, direction, entry->pos, color, entry->scale);
-        entry++;
+        entryColor[0] = light->color[0];
+        entryColor[1] = light->color[1];
+        entryColor[2] = light->color[2];
+        entryColor[3] = light->color[3];
+        gxInitPointLight(lightObj, direction, light->pos, entryColor, light->scale);
+        light++;
         lightObj += 0x40;
-        count++;
+        entryCount++;
     loop_test:
-        if (count < gSceneLightCount) goto loop_body;
+        if (entryCount < gSceneLightCount) goto loop_body;
         gLightObjCount = gSceneLightCount;
     } else {
         /* Nothing to light the scene: one light from the fallback entry, whose
          * colour is scaled by its strength and whose cone is 64.0 wide. */
-        unsigned int packed;
+        unsigned int packedColor;
         unsigned char rgba[4];
         float strength = sDefaultLight_802D18E8.strength;
         rgba[0] = (unsigned char)(int)(strength * (float)sDefaultLight_802D18E8.c[0]);
         rgba[1] = (unsigned char)(int)(strength * (float)sDefaultLight_802D18E8.c[1]);
         rgba[2] = (unsigned char)(int)(strength * (float)sDefaultLight_802D18E8.c[2]);
         rgba[3] = sDefaultLight_802D18E8.c[3];
-        packed = *(unsigned int *)rgba;
-        gxInitPointLight(sLightObjs_802D18E8[0], direction, sDefaultLight_802D18E8.pos, (unsigned char *)&packed, lbl_80564FD4);
+        packedColor = *(unsigned int *)rgba;
+        gxInitPointLight(sLightObjs_802D18E8[0], direction, sDefaultLight_802D18E8.pos, (unsigned char *)&packedColor, lbl_80564FD4);
         gLightObjCount++;
     }
 
     lightObj = sLightObjs_802D18E8[0];
     lightMask = 0;
-    i = 0;
+    lightIndex = 0;
     lightBit = GX_LIGHT1;
     goto light_test;
 light_body:
     {
-        int bits = lightBit << i;
-        GXLoadLightObjImm(lightObj, bits);
-        lightMask |= bits;
+        int channelBit = lightBit << lightIndex;
+        GXLoadLightObjImm(lightObj, channelBit);
+        lightMask |= channelBit;
         lightObj += 0x40;
-        i++;
+        lightIndex++;
     }
 light_test:
-    if (i < gLightObjCount) goto light_body;
+    if (lightIndex < gLightObjCount) goto light_body;
     GXSetNumChans(2);
     GXSetChanCtrl(GX_COLOR1, GX_ENABLE, GX_SRC_REG, GX_SRC_REG, lightMask, GX_DF_NONE, GX_AF_SPEC);
     GXSetChanCtrl(GX_ALPHA1, GX_DISABLE, GX_SRC_REG, GX_SRC_REG, GX_LIGHT_NULL, GX_DF_NONE, GX_AF_NONE);
