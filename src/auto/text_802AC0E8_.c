@@ -105,7 +105,7 @@ extern "C" int fn_802AC2B4(void **attrs, int key, float *outValue) {
 #pragma push
 #pragma processor 750
 #pragma cplusplus on
-extern "C" float fn_802AC344(void *arg0, void *arg1, float *arg2) {
+/* Reads a segment's "t" (time) attribute: resolves its string through root's float attributes (or atof), and a leading '+' makes the result relative to baseTime instead of zero. */ extern "C" float fn_802AC344(void *segment, void *root, float *baseTime) {
     struct InterfaceA {
         virtual void v0();
         virtual int hasKey(const char *);
@@ -123,31 +123,31 @@ extern "C" float fn_802AC344(void *arg0, void *arg1, float *arg2) {
         virtual float getFloat(const char *);
     };
 
-    float f31;
-    float f30;
-    char *str;
+    float defaultTime;
+    float result;
+    char *timeStr;
 
-    if (arg2 != 0) {
-        f31 = *arg2;
+    if (baseTime != 0) {
+        defaultTime = *baseTime;
     } else {
-        f31 = lbl_80564AB0;
+        defaultTime = lbl_80564AB0;
     }
 
-    if (((InterfaceA *)arg0)->hasKey(&lbl_8055CCB8) != 0) {
-        str = ((InterfaceA *)arg0)->getKey(&lbl_8055CCB8);
-        f30 = lbl_80564AB0;
-        if (*str == '+') {
-            f30 = f31;
-            str++;
+    if (((InterfaceA *)segment)->hasKey(&lbl_8055CCB8) != 0) {
+        timeStr = ((InterfaceA *)segment)->getKey(&lbl_8055CCB8);
+        result = lbl_80564AB0;
+        if (*timeStr == '+') {
+            result = defaultTime;
+            timeStr++;
         }
-        if (arg1 != 0 && ((InterfaceB *)arg1)->hasEntry(str) != 0) {
-            f30 += ((InterfaceB *)arg1)->getFloat(str);
+        if (root != 0 && ((InterfaceB *)root)->hasEntry(timeStr) != 0) {
+            result += ((InterfaceB *)root)->getFloat(timeStr);
         } else {
-            f30 += (float)atof(str);
+            result += (float)atof(timeStr);
         }
-        return f30;
+        return result;
     }
-    return f31;
+    return defaultTime;
 }
 #pragma pop
 #pragma cplusplus off
@@ -287,8 +287,8 @@ copied:
     anim->groups = fn_8012850C(numGroups * 0xC, str + 0x24);
 
     {
-        float zero = lbl_80564AB0;
         float scale = lbl_80564AB8;
+        float zero = lbl_80564AB0;
     for (k = 0; k < numRecs; k++) {
         LRec *rec;
         char *type;
@@ -299,7 +299,7 @@ copied:
         memset(rec, 0, 0x28);
         if (strcmp(type, lbl_8055CCE0) == 0) {
             LVec3 def3, v3;
-            LVec2 def2;
+            volatile LVec2 def2;
             volatile LVec2 p;
             char *sub;
             int model;
@@ -370,9 +370,9 @@ copied:
     }
 
     {
-        float half = lbl_80564AC0;
         float degToRad = lbl_80564ABC;
         float zero = lbl_80564AB0;
+        float half = lbl_80564AC0;
         float one = lbl_80564AB4;
         float cx = lbl_80564AC4;
         float cy = lbl_80564AC8;
@@ -380,7 +380,7 @@ copied:
         const char *layerTable = str + 0xDC;
     for (k = 0; k < numGroups; k++) {
         LGroup *grp;
-        LVec2 def2;
+        volatile LVec2 def2;
         volatile LVec2 origin;
         float base;
         int numSegs;
@@ -402,12 +402,13 @@ copied:
         }
         grp->count = numSegs;
         grp->segs = fn_8002F37C(fn_8012850C(numSegs * 0x38 + 0x10, str + 0xD0), (void *)fn_802AD308, 0, 0x38, numSegs);
-        for (j = 0; j < numSegs; j++) {
+        {
+            float ox = origin.x;
+            float oy = origin.y;
+            for (j = 0; j < numSegs; j++) {
             LSeg *seg = &grp->segs[j];
             LSeg *prev = j > 0 ? &grp->segs[j - 1] : 0;
             void *s = segSrc[j];
-            float ox = origin.x;
-            float oy = origin.y;
             seg->start = base + fn_802AC454(s, root, (float *)prev);
             if (((HasFn)(*(void ***)s)[3])(s, lbl_8055CD38)) {
                 LVec3 axis;
@@ -495,6 +496,7 @@ copied:
                 seg->f30 = ((HasFn)(*(void ***)s)[3])(s, layerKey) ? ((LookupFn)(*(void ***)s)[21])(s, layerKey, layerTable) : dflt;
             }
             seg->f34 = ((IntDefFn)(*(void ***)s)[8])(s, lbl_8055CD60, prev != 0 ? prev->f34 : 0);
+            }
         }
     }
     }
@@ -621,7 +623,6 @@ void fn_802AD30C(void *arg0) {
 
 #pragma scheduling invalid_target
 void fn_802AD414(void *arg0, float farg0) {
-#pragma scheduling invalid_target
     struct Entry {
         volatile float lower;
         char pad[0x30];
@@ -631,8 +632,8 @@ void fn_802AD414(void *arg0, float farg0) {
     int offset = 0;
     int outer = 0;
     while (outer < *(int *)((char *)arg0 + 0x24)) {
-        int inner = 0;
         int byteOffset = 0;
+        int inner = 0;
         char *group = *(char **)((char *)arg0 + 0x28) + offset;
         int count = *(int *)(group + 4);
         for (; inner < count - 1; inner++) {
