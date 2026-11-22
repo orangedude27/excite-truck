@@ -993,14 +993,14 @@ void fn_802D5DE8(u32 flags) {
     GXSetVtxDescv(vtxDescList);
 }
 
-#pragma scheduling off
+#pragma scheduling on
 #pragma dont_inline on
 void fn_802D5F88(s32 arg0) {
-    u32 flags = *(u32 *)((u8 *)arg0 + 0xC);
-    u32 normalized = flags & 0xFFCFFFFF;
-    u8 mode = *(u8 *)((u8 *)arg0 + 9);
+    u8 *base = (u8 *)arg0;
+    u32 normalized = *(u32 *)(base + 0xC) & 0xFFCFFFFF;
+    u8 mode = base[9];
     if (normalized != lbl_8055FDE8) {
-        GXCallDisplayList(*(void **)((u8 *)arg0 + 0x10), (u32)*(u8 *)((u8 *)arg0 + 0xB) << 5);
+        GXCallDisplayList(*(void **)(base + 0x10), (u32)base[0xB] << 5);
         lbl_8055FDE8 = normalized;
         lbl_8055FDEC = mode;
     }
