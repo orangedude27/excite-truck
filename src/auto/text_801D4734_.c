@@ -282,7 +282,8 @@ extern char lbl_8055AD58[3], lbl_8055AD5C[3];
 extern float lbl_8055E3C8, lbl_80562AD8, lbl_80562ADC, lbl_80562AE0, lbl_80562AE4, lbl_80562AE8, lbl_80562AEC, lbl_80562AF0, lbl_80562AF4, lbl_80562AF8, lbl_80562AFC;
 extern char *strchr(char *, int);
 #pragma push
-#pragma scheduling on
+#pragma processor 604
+#pragma ppc_psq_save off
 void fn_801D490C(void) {
     float width, right, x, t, edge, dy, y;
     float limit = lbl_8055E3C8;
@@ -331,7 +332,11 @@ void fn_801D490C(void) {
         while (part && (signed char)*part) {
             caret = strchr(part, 0x5e);
             if (caret) *caret = 0;
-            fn_8000FF88(color, 0xC, lbl_8055AD58, lbl_80562AE0, lbl_80562ADC, y, part);
+            {
+                float drawX = lbl_80562AE0;
+                float drawScale = lbl_80562ADC;
+                fn_8000FF88(color, 0xC, lbl_8055AD58, drawX, drawScale, y, part);
+            }
             if (caret) part = caret + 1; else part = 0;
             y -= dy;
         }
@@ -2339,18 +2344,16 @@ extern "C" int fn_801D707C(void *arg0, void *arg1) {
     extern float lbl_80562ADC;
     extern float lbl_80562AEC;
     extern int fn_80207848(char *, int);
-    extern void fn_802E30C8(const char *, ...);
+    extern void fn_802E30C8(char *);
     Dummy *obj;
     char *src;
     int remaining;
     char *dst;
-    float second;
+    register float second;
 
     obj = (Dummy *)arg1;
     if (obj->check(&lbl_8055AC80) == 0) {
-        #pragma scheduling invalid_target
-        fn_802E30C8(lbl_80338888);
-        #pragma scheduling reset
+        ((void (*)(const char *, ...))fn_802E30C8)(lbl_80338888);
         return 0;
     }
     src = obj->get(&lbl_8055AC80);
@@ -3262,7 +3265,14 @@ int fn_801D8154(void *effect) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" int fn_801D815C(void *arg0, int arg1) {
+extern "C" int fn_801D815C(PhysPathAse *cue, int direction) {
+    /* Start the "PhysPath_ASE" cue: stamp the tick and direction, switch to
+     * running, then for each racer inside the kill-bound polygon fire the
+     * arena-event callback and log whether the car was inside or outside. */
+    #define gFrameTick lbl_8055E3C4
+    #define MSG_CAR_KILL_BOUND lbl_80339018
+    #define STR_INSIDE &lbl_8055AD34
+    #define STR_OUTSIDE &lbl_8055AD40
     extern int fn_80179630(int);
     extern int fn_8017960C(int);
     extern int fn_80179650(void);
@@ -3317,37 +3327,41 @@ extern "C" int fn_801D815C(void *arg0, int arg1) {
         virtual void v39();
         virtual void run(int, int);
     };
-    register void *self = arg0;
-    register int property;
-    register int key;
-    register int index;
-    register int result;
-    Name *name;
+    register PhysPathAse *effect = cue;
+    register int racerProperty;
+    register int objectIndex;
+    register int playerSlot;
+    register int insideKillBound;
+    Name *racerSlot;
     Callback *callback;
 
-    if (*(int *)((char *)self + 0x40) == 1) {
-        *(int *)((char *)self + 0x34) = lbl_8055E3C4;
-        *(int *)((char *)self + 0x38) = arg1;
-        *(int *)((char *)self + 0x40) = 2;
-        if (*(int *)((char *)self + 0x3C) != 0) {
-            index = 0;
-            while (index < fn_80179650()) {
-                key = fn_80179630(index);
-                result = fn_80139B5C(fn_8017960C(key), *(int *)((char *)self + 0x3C));
-                if (result != 0) {
-                    name = (Name *)fn_801B2EC0(key);
-                    property = *(int *)((char *)name->get() + 4);
+    if (effect->state == TIMED_EFFECT_READY) {
+        effect->startTime = gFrameTick;
+        effect->direction = direction;
+        effect->state = TIMED_EFFECT_RUNNING;
+        if (effect->killBound != 0) {
+            playerSlot = 0;
+            while (playerSlot < fn_80179650()) {
+                objectIndex = fn_80179630(playerSlot);
+                insideKillBound = fn_80139B5C(fn_8017960C(objectIndex), (int)effect->killBound);
+                if (insideKillBound != 0) {
+                    racerSlot = (Name *)fn_801B2EC0(objectIndex);
+                    racerProperty = *(int *)((char *)racerSlot->get() + 4);
                     callback = (Callback *)fn_801B83A0();
-                    callback->run(key, property);
+                    callback->run(objectIndex, racerProperty);
                 }
                 ((void (*)(const char *, ...))fn_802E30C8)(
-                    lbl_80339018, key,
-                    result != 0 ? &lbl_8055AD34 : &lbl_8055AD40);
-                index++;
+                    MSG_CAR_KILL_BOUND, objectIndex,
+                    insideKillBound != 0 ? STR_INSIDE : STR_OUTSIDE);
+                playerSlot++;
             }
         }
         return 1;
     }
+    #undef gFrameTick
+    #undef MSG_CAR_KILL_BOUND
+    #undef STR_INSIDE
+    #undef STR_OUTSIDE
     return 0;
 }
 #pragma cplusplus reset
