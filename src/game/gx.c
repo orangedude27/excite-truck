@@ -118,7 +118,7 @@ extern void fn_802D2ED8(int, int);
 //   +0x09 u8  detail pass: base texture * texture 3, raster color ignored
 //   +0x0A u8  add the indirect (bump) texture stage
 //   +0x0C u8  texcoord0 through GX_TEXMTX0 instead of GX_IDENTITY
-//   +0x0D u8  alpha blend + indirect stage (fn_802D2684's bump pass)
+//   +0x0D u8  alpha blend + indirect stage (buildDefaultTevPipeline's bump pass)
 extern unsigned char lbl_804C5700[12];
 extern int fn_802E317C(const char *, ...);
 extern int GXInitLightDir(unsigned short, unsigned short, unsigned long *);
@@ -2596,7 +2596,7 @@ extern void (*lbl_8055FD80)(void);
 // Builds the GX TEV pipeline for the scene's default draw mode (mode 0 of the
 // render request block lbl_804C5700, applied by fn_802D2B0C): a base texture
 // pass, plus optional detail, second-texture and indirect (bump) stages.
-/* Builds the GX TEV/texture pipeline for the scene's default material (request mode 0): a base texture pass plus optional detail, second-texture and indirect bump stages. */ void fn_802D2684(void) {
+/* Builds the GX TEV/texture pipeline for the scene's default material (request mode 0): a base texture pass plus optional detail, second-texture and indirect bump stages. */ void buildDefaultTevPipeline(void) {
     unsigned int passThroughFlag; // GX state flag 0x40: TEV0 passes the texture through
     unsigned char secondTexFlag;  // request +0x08: extra modulated texture stage
     unsigned char detailTexFlag;  // request +0x09: base * detail pass
@@ -2768,7 +2768,7 @@ void fn_802D2B0C(void) {
                 break;
             case 3:
                 if (lbl_8055FD86 == lbl_8055FD0C) {
-                    fn_802D2684();
+                    buildDefaultTevPipeline();
                 } else {
                     if (lbl_804C5700[8] != 0) {
                         fn_802DF6D0();
@@ -2781,7 +2781,7 @@ void fn_802D2B0C(void) {
                 }
                 break;
             case 0:
-                fn_802D2684();
+                buildDefaultTevPipeline();
                 break;
             default:
                 break;
@@ -3401,7 +3401,7 @@ extern volatile int lbl_8055FDD0;
 extern char lbl_8034C204[];
 void fn_802D3D6C(void) {
     /* Enable texture-matrix 0 for texcoord 0 in the shared render request block
-       (request +0xC selects GX_TEXMTX0 instead of GX_IDENTITY in fn_802D2684). */
+       (request +0xC selects GX_TEXMTX0 instead of GX_IDENTITY in buildDefaultTevPipeline). */
 #define texCoordMtxFlag lbl_804C5700[12]
     texCoordMtxFlag = 1;
 #undef texCoordMtxFlag
@@ -3409,7 +3409,7 @@ void fn_802D3D6C(void) {
 
 void fn_802D3D80(void) {
     /* Disable texture-matrix 0 for texcoord 0 in the shared render request block
-       (request +0xC selects GX_IDENTITY instead of GX_TEXMTX0 in fn_802D2684). */
+       (request +0xC selects GX_IDENTITY instead of GX_TEXMTX0 in buildDefaultTevPipeline). */
     lbl_804C5700[12] = 0;
 }
 

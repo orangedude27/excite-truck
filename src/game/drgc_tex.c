@@ -170,7 +170,7 @@ enum DrTexMap {
 };
 
 /* Byte 0x0B of the render request block lbl_804C5700 (the state the setters
- * hand to the pipeline builder fn_802D2684/fn_802D2B0C, which keeps the last
+ * hand to the pipeline builder buildDefaultTevPipeline/fn_802D2B0C, which keeps the last
  * applied copy at lbl_804C9930): the texture bound as environment map ships a
  * second, alpha-plane texture, so the pass needs its extra stage. */
 #define DRREQ_ENV_ALPHA_TEX 0x0B
@@ -195,7 +195,7 @@ void fn_802D768C(void *record) {
 /* Does this drgc texture format carry an alpha channel?  1 = yes: fn_802D7780
  * then sets the 0x100 bit of the texture's draw-state word (+0xE0), which is
  * what makes the texture stage take TEV alpha from the texture (GX_CA_TEXA in
- * the TEV pipeline builder fn_802D2684).  Paletted formats count as alpha
+ * the TEV pipeline builder buildDefaultTevPipeline).  Paletted formats count as alpha
  * because their CLUT entries carry it; the CMPR pair splits on the alpha block
  * (DRTEX_CMPR_A vs DRTEX_CMPR), and DRTEX_CMPR_I4 keeps its alpha in the second
  * (I4) texture, so the primary one reports none.  The legacy paletted ids 0 and
@@ -230,6 +230,8 @@ int fn_802D76DC(int format) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_802D7780(void *arg0, void *arg1) {
+char *__repair_addr;
+
     u32 filter = *(u32 *)((u8 *)arg1 + 0x10);
     u32 opts = *(u32 *)((u8 *)arg1 + 0x18);
     int wrapS = filter & 1;
@@ -246,8 +248,10 @@ void fn_802D7780(void *arg0, void *arg1) {
     GXInitTexObjWrapMode((u8 *)arg0 + 0x24, wrapS, wrapT);
     if (*(u8 *)((u8 *)arg0 + 0xCC) != 0)
         GXInitTexObjWrapMode((u8 *)arg0 + 0x78, wrapS, wrapT);
+__repair_addr = (char *)((u8 *)arg1 + 0x14);
 
-    firstMode = *(u32 *)((u8 *)arg1 + 0x14);
+
+    firstMode = *(u32 *)(__repair_addr);
     transfer = *(u32 *)((u8 *)arg1 + 0x0C);
     *(u32 *)((u8 *)arg0 + 0xDC) = transfer;
     *(u8 *)((u8 *)arg0 + 0xE4) = *(u8 *)((u8 *)arg1 + 0x1C);
