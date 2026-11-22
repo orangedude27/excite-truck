@@ -3514,35 +3514,36 @@ extern char lbl_8055D100;
       extern void fn_802E2E0C(void (*)(void), void *);
     extern int lbl_804C9760[];
 
-/* Build the current view transform (GX_LIGHT_XF_MTX) from the camera at lbl_804C56C0: copy and transpose the camera rotation, rotate its translation by the matrix and negate it, then select matrix 0. */ void fn_802D2D1C(void) {
-    Xform_802D1C04 *src = (Xform_802D1C04 *)lbl_804C56C0;
-    Xform_802D1C04 *dst = (Xform_802D1C04 *)lbl_804CA2D8;
-    dst->r = src->r;
-    mtx33Transpose_802D1C04(dst->r.m);
-    if (&dst->t == &src->t) {
+/* Build the current view transform (GX_LIGHT_XF_MTX) from the camera at lbl_804C56C0: copy and transpose the camera rotation, rotate its translation by the matrix and negate it, then select matrix 0. */
+void fn_802D2D1C(void) {
+    Xform_802D1C04 *camera = (Xform_802D1C04 *)lbl_804C56C0;
+    Xform_802D1C04 *view = (Xform_802D1C04 *)lbl_804CA2D8;
+    view->r = camera->r;
+    mtx33Transpose_802D1C04(view->r.m);
+    if (&view->t == &camera->t) {
         float x, y, z;
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
-        m10 = src->r.m[1]; m11 = src->r.m[4]; m12 = src->r.m[7];
-        m00 = src->r.m[0]; m01 = src->r.m[3]; m02 = src->r.m[6];
-        m20 = src->r.m[2]; m21 = src->r.m[5]; m22 = src->r.m[8];
-        x = src->t.x; y = src->t.y; z = src->t.z;
-        dst->t.x = z * m20 + (x * m00 + y * m10);
-        dst->t.y = z * m21 + (x * m01 + y * m11);
-        dst->t.z = z * m22 + (x * m02 + y * m12);
+        m10 = camera->r.m[1]; m11 = camera->r.m[4]; m12 = camera->r.m[7];
+        m00 = camera->r.m[0]; m01 = camera->r.m[3]; m02 = camera->r.m[6];
+        m20 = camera->r.m[2]; m21 = camera->r.m[5]; m22 = camera->r.m[8];
+        x = camera->t.x; y = camera->t.y; z = camera->t.z;
+        view->t.x = z * m20 + (x * m00 + y * m10);
+        view->t.y = z * m21 + (x * m01 + y * m11);
+        view->t.z = z * m22 + (x * m02 + y * m12);
     } else {
         float x, y, z;
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
-        m10 = src->r.m[1]; m11 = src->r.m[4]; m12 = src->r.m[7];
-        m00 = src->r.m[0]; m01 = src->r.m[3]; m02 = src->r.m[6];
-        m20 = src->r.m[2]; m21 = src->r.m[5]; m22 = src->r.m[8];
-        x = src->t.x; y = src->t.y; z = src->t.z;
-        dst->t.x = z * m20 + (x * m00 + y * m10);
-        dst->t.y = z * m21 + (x * m01 + y * m11);
-        dst->t.z = z * m22 + (x * m02 + y * m12);
+        m10 = camera->r.m[1]; m11 = camera->r.m[4]; m12 = camera->r.m[7];
+        m00 = camera->r.m[0]; m01 = camera->r.m[3]; m02 = camera->r.m[6];
+        m20 = camera->r.m[2]; m21 = camera->r.m[5]; m22 = camera->r.m[8];
+        x = camera->t.x; y = camera->t.y; z = camera->t.z;
+        view->t.x = z * m20 + (x * m00 + y * m10);
+        view->t.y = z * m21 + (x * m01 + y * m11);
+        view->t.z = z * m22 + (x * m02 + y * m12);
     }
-    dst->t.x *= lbl_80564F90;
-    dst->t.y *= lbl_80564F90;
-    dst->t.z *= lbl_80564F90;
+    view->t.x *= lbl_80564F90;
+    view->t.y *= lbl_80564F90;
+    view->t.z *= lbl_80564F90;
     GXSetCurrentMtx(0);
 }
 /* Apply the pending viewport change held in the sViewport settings block (+1 is
