@@ -1054,7 +1054,7 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
     }
 }
 #pragma optimization_level 4
-/* Set up the CPU-light indirect-texture (bump-map) pass: optionally bind the pass texture to texcoord slot 1, derive a base-2 indirect-matrix scale from the light level (farg0) and load it into indirect matrix 1, then configure the indirect TEV and vertex state. A texture-slot value of -2 skips that binding; arg0 is unused. */
+/* Set up the CPU-light indirect-texture (bump-map) pass: optionally bind the pass texture to texcoord slot 1, derive a base-2 indirect-matrix scale from the light level and load it into indirect matrix 1, then configure the indirect TEV and vertex state. A texture-slot value of -2 skips the binding; arg0 is unused. */
 void fn_802DCFCC(int arg0, int indTexSlot, int texSlot1, float lightLevel, float texScale) {
     float logDiff;
     float magnitude;
@@ -1096,23 +1096,24 @@ void fn_802DCFCC(int arg0, int indTexSlot, int texSlot1, float lightLevel, float
         scale = base * lbl_80565078 / powResult;
         fn_802D3DF8(fn_802CA294(indTexSlot), scaleExp, scale, scale);
         GXSetNumIndStages(1);
-        GXSetTevIndirect(0, 0, 0, 3, 1, 0, 0, 0, 0, 0);
-        GXSetIndTexOrder(0, lbl_8055FEA4, 2);
+        GXSetTevIndirect(GX_TEVSTAGE0, GX_INDTEXSTAGE0, GX_ITF_8, GX_ITB_ST, GX_ITM_0, GX_ITW_OFF,
+                         GX_ITW_OFF, FALSE, FALSE, GX_ITBA_OFF);
+        GXSetIndTexOrder(GX_INDTEXSTAGE0, lbl_8055FEA4, GX_TEXMAP2);
         GXSetNumTexGens((unsigned char)(lbl_8055FEA4 + 1));
-        GXSetTexCoordGen2(lbl_8055FEA4, 1, 0, 0x24, 0, 0x7D);
+        GXSetTexCoordGen2(lbl_8055FEA4, GX_TG_MTX2x4, GX_TG_POS, GX_TEXMTX2, FALSE, GX_PTIDENTITY);
     }
     GXClearVtxDesc();
-    GXSetVtxDesc(9, 3);
-    GXSetVtxDesc(0xB, 3);
-    GXSetVtxDesc(0xD, 3);
-    GXSetVtxAttrFmt(0, 9, 1, 4, 0);
-    GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
-    GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
+    GXSetVtxDesc(GX_VA_POS, GX_INDEX16);
+    GXSetVtxDesc(GX_VA_CLR0, GX_INDEX16);
+    GXSetVtxDesc(GX_VA_TEX0, GX_INDEX16);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
     col.r = 0xC0;
     col.g = 0xC0;
     col.b = 0xC0;
     col.a = 0x14;
-    GXSetTevColor(2, col);
+    GXSetTevColor(GX_TEVREG1, col);
 }
 
 #pragma pop
