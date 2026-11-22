@@ -7140,55 +7140,58 @@ s32 fn_800AEF6C(void *);
 extern "C" s32 fn_800AF734(void *arg0, s32 arg1, s32 arg2);
 extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2);
 extern "C" s32 fn_800B037C(void *arg0, s32 arg1, s32 arg2);
-extern "C" s32 fn_800AEF6C(void *arg0) {
-    typedef s32 (*Lookup)(void *, s32, void **, s32 *);
-    typedef s32 (*Chk1)(void *, s32, u32);
-    u32 sp10;
-    s32 spC;
-    void *sp8;
+/* Set a FAT entry (12/16/28-bit, selected by the volume's FAT type) to the given value,
+ * then write a run of data sectors to the volume, checking each write's byte count and
+ * freeing the FAT page on error. */
+extern "C" s32 fn_800AEF6C(void *volume) {
+    typedef s32 (*PageLookup)(void *, s32, void **, s32 *);
+    typedef s32 (*SetFatEntry16)(void *, s32, u32);
+    u32 bytesWritten;
+    s32 pageId;
+    void *fatPage;
     s32 result;
-    s32 base;
-    s32 i;
-    u32 limit;
-    s32 type = *(s32 *)((u8 *)arg0 + 0x1C);
-    s32 arg = *(s32 *)((u8 *)arg0 + 0x10);
-    limit = *(u32 *)((u8 *)lbl_802EEF40 + type * 0x14 + 8);
-    switch (type) {
+    s32 startSector;
+    s32 sectorOffset;
+    u32 maxEntry;
+    s32 fatType = *(s32 *)((u8 *)volume + 0x1C);
+    s32 entryValue = *(s32 *)((u8 *)volume + 0x10);
+    maxEntry = *(u32 *)((u8 *)lbl_802EEF40 + fatType * 0x14 + 8);
+    switch (fatType) {
     case 0:
-        if (limit > 0xFFF) result = 0x10;
-        else result = fn_800AF734(arg0, (u16)arg, (u16)limit);
+        if (maxEntry > 0xFFF) result = 0x10;
+        else result = fn_800AF734(volume, (u16)entryValue, (u16)maxEntry);
         break;
     case 1:
-        if (limit > 0xFFFF) result = 0x10;
-        else result = ((Chk1)fn_800AFF28)(arg0, arg, limit);
+        if (maxEntry > 0xFFFF) result = 0x10;
+        else result = ((SetFatEntry16)fn_800AFF28)(volume, entryValue, maxEntry);
         break;
     case 2:
-        if (limit > 0xFFFFFFF) result = 0x10;
-        else result = fn_800B037C(arg0, arg, limit);
+        if (maxEntry > 0xFFFFFFF) result = 0x10;
+        else result = fn_800B037C(volume, entryValue, maxEntry);
         break;
     default:
         result = 0xF;
         break;
     }
     if (result != 0) return result;
-    result = ((s32 (*)(void *))fn_800A9104)(arg0);
+    result = ((s32 (*)(void *))fn_800A9104)(volume);
     if (result != 0) return result;
-    result = ((Lookup)(s32 (*)(s32, void **, s32 *, s32, s32 *))fn_800A8D08)(arg0, -1, &sp8, &spC);
+    result = ((PageLookup)(s32 (*)(s32, void **, s32 *, s32, s32 *))fn_800A8D08)(volume, -1, &fatPage, &pageId);
     if (result != 0) return result;
-    fn_800A499C((const char *)*(void **)((u8 *)sp8 + 8), 0, *(u16 *)arg0);
-    base = *(s32 *)((u8 *)arg0 + 0x30) + ((*(s32 *)((u8 *)arg0 + 0x10) - 2) << *(u8 *)((u8 *)arg0 + 0x21));
-    for (i = 0; (u32)i < *(u8 *)((u8 *)arg0 + 6); i++) {
-        result = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))fn_800B5700)((s32)arg0, *(void **)((u8 *)sp8 + 8), base + i, 0, *(u16 *)arg0, &sp10, 0);
+    fn_800A499C((const char *)*(void **)((u8 *)fatPage + 8), 0, *(u16 *)volume);
+    startSector = *(s32 *)((u8 *)volume + 0x30) + ((*(s32 *)((u8 *)volume + 0x10) - 2) << *(u8 *)((u8 *)volume + 0x21));
+    for (sectorOffset = 0; (u32)sectorOffset < *(u8 *)((u8 *)volume + 6); sectorOffset++) {
+        result = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))fn_800B5700)((s32)volume, *(void **)((u8 *)fatPage + 8), startSector + sectorOffset, 0, *(u16 *)volume, &bytesWritten, 0);
         if (result != 0) {
-            VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp8);
+            VFiPFCACHE_FreeFATPage_800A8E10(volume, fatPage);
             return result;
         }
-        if (sp10 != *(u16 *)arg0) {
-            VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp8);
+        if (bytesWritten != *(u16 *)volume) {
+            VFiPFCACHE_FreeFATPage_800A8E10(volume, fatPage);
             return 0x11;
         }
     }
-    VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp8);
+    VFiPFCACHE_FreeFATPage_800A8E10(volume, fatPage);
     return 0;
 }
 
@@ -22383,7 +22386,7 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
     }
 }
 
-void AnimTransformBasic::Bind(Pane* pPane, bool recursive) {
+void nw4hbm::lyt::AnimTransformBasic::Bind(Pane* pPane, bool recursive) {
     const u32* const pContentOffsetTbl =
         detail::ConvertOffsToPtr<u32>(mpRes, mpRes->animContOffsetsOffset);
 
