@@ -808,8 +808,8 @@ extern "C" void fn_8020B368(void *arg0) {
  */
 extern "C" void fn_8020B5EC(void *arg0) {
     VoiceSnd *snd = (VoiceSnd *)arg0;
-    float master, gain, side;
-    int i;
+    float finalVolume, gain, side;
+    int voiceIndex;
     void *voice;
     snd->loop = 1;
     if (snd->sound != 0 && snd->voice == 0) {
@@ -829,9 +829,9 @@ extern "C" void fn_8020B5EC(void *arg0) {
     if (snd->voice != 0) {
         snd->elapsed = 0;
         gain = snd->volume * snd->group->volume;
-        if (snd->mute != 0) master = FLOAT_ZERO;
+        if (snd->mute != 0) finalVolume = FLOAT_ZERO;
         else {
-            master = MASTER_VOLUME * (snd->unscaled ? gain : gain * VOLUME_SCALE);
+            finalVolume = MASTER_VOLUME * (snd->unscaled ? gain : gain * VOLUME_SCALE);
         }
         if (snd->voice2 != 0) {
             // Two resources: one per channel, the pan splits the volume.
@@ -839,21 +839,21 @@ extern "C" void fn_8020B5EC(void *arg0) {
             side = gain + -snd->pan;
             gain = (gain < side) ? gain : side;
             gain = (gain > FLOAT_ZERO) ? gain : FLOAT_ZERO;
-            SND_SetVolume(snd->voice, master * gain);
+            SND_SetVolume(snd->voice, finalVolume * gain);
             SND_SetPan(snd->voice, FLOAT_NEG_ONE);
             gain = FLOAT_ONE;
             side = gain + snd->pan;
             gain = (gain < side) ? gain : side;
             gain = (gain > FLOAT_ZERO) ? gain : FLOAT_ZERO;
-            SND_SetVolume(snd->voice2, master * gain);
+            SND_SetVolume(snd->voice2, finalVolume * gain);
             SND_SetPan(snd->voice2, FLOAT_ONE);
         } else {
-            SND_SetVolume(snd->voice, master);
+            SND_SetVolume(snd->voice, finalVolume);
             SND_SetPan(snd->voice, snd->pan);
         }
-        i = 0;
+        voiceIndex = 0;
         do {
-            if (i == 0) voice = snd->voice;
+            if (voiceIndex == 0) voice = snd->voice;
             else voice = snd->voice2;
             if (voice != 0) {
                 SND_SetSurroundPan(voice, snd->surroundPan);
@@ -863,8 +863,8 @@ extern "C" void fn_8020B5EC(void *arg0) {
                 SND_SetRate(voice, snd->rate);
                 SND_SetAuxFlags(voice, snd->auxFlags);
             }
-            i++;
-        } while (i < 2);
+            voiceIndex++;
+        } while (voiceIndex < 2);
         if (snd->loop != 0) {
             SND_StartLoop(snd->voice);
             if (snd->voice2 != 0) SND_StartLoop(snd->voice2);
