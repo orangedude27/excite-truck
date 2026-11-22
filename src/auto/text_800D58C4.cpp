@@ -195,7 +195,6 @@ extern "C" s32 lbl_8055DDF0;
 extern "C" const char lbl_8031F728[];
 extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
 extern "C" s32 fn_800D4428(void);
-int strncmp(const char *, const char *, unsigned int);
 extern "C" int strncmp(const char *, const char *, unsigned int);
 struct AlphaColor { u8 r, g, b, a; };
 /* Pane+0x28 is the pane's nw4hbm::lyt::Material: Pane::FindMaterialByName compares
@@ -995,8 +994,8 @@ static inline void SetTagProcessorImpl_800D6CA0(u8 *pane, s32 arg1) {
 #pragma inline_depth(5)
 extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
-    if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
-    for (ChildIter_800D77DC it = ChildBegin_800D77DC((u8 *)arg0); ChildNotEqual_800D77DC(it, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it)) {
+    if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = (s32)arg1;
+    for (ChildIter_800D77DC it = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it)) {
         SetTagProcessorChild_800D6CA0(ChildPane_800D77DC(it), arg1);
     }
 }
@@ -1101,11 +1100,11 @@ s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *
   void *lastPane;
   s32 groupCreated;
   s32 depth;
+  const u8 *block;
   s32 count;
   ResBlockSetTmp blockSet;
   void *container;
   void *rootPane;
-  const u8 *block;
   void *groupResult;
   u16 size;
   u32 tag;
@@ -1209,7 +1208,7 @@ s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *
             *((void **) (((u8 *) container) + 8)) = 0;
             *((void **) container) = 0;
             *((void **) (((u8 *) container) + 4)) = ((u8 *) container) + 4;
-            *((void **) (((u8 *) container) + 8)) = ((u8 *) container) + 4;
+            *((void **) (((u8 *) container) + 8)) = ((u8 *) container) + (4 & 0xFF);
           }
         }
         else
@@ -1484,7 +1483,7 @@ extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
         for (ChildIter_800D77DC it2 = ChildBegin_800D77DC(p1); ChildNotEqual_800D77DC(it2, ChildEnd_800D77DC(p1)); ChildNext_800D77DC(it2)) {
             u8 *p2 = ChildPane_800D77DC(it2);
             if (u8 *cast = DynCast_800D77DC(p2)) *(s32 *)(cast + 0xF4) = arg1;
-            for (ChildIter_800D77DC it3 = ChildBegin_800D77DC(p2); ChildNotEqual_800D77DC(it3, ChildEnd_800D77DC(p2)); ChildNext_800D77DC(it3)) {
+            for (ChildIter_800D77DC it3 = ChildBegin_800D77DC(p2); ChildNotEqual_800D77DC((unsigned)it3, ChildEnd_800D77DC(p2)); ChildNext_800D77DC(it3)) {
                 fn_800D6CA0((s32)ChildPane_800D77DC(it3), arg1);
             }
         }
@@ -1787,14 +1786,13 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
     v0 = fn_800D8744((s32*)((const u8*)res + 0x3C));
     hasA = (u8)((u8)v0 != 0);
     v1 = fn_800D8750((s32*)((const u8*)res + 0x3C), (u8)v0);
-    hasB = (u8)((u8)v1 != 0);
     chanA = fn_800D875C((s32*)((const u8*)res + 0x3C), (u8)v1);
     chanB = fn_800D8768((s32*)((const u8*)res + 0x3C));
     v0 = fn_800D8774((s32*)((const u8*)res + 0x3C));
     indNum = fn_800D89E4((u8)fn_800D8780((s32*)((const u8*)res + 0x3C)), 3);
     indTexStageNum = fn_800D89E4((u8)fn_800D878C((s32*)((const u8*)res + 0x3C)), 4);
     tevStageNum = fn_800D89E4((u8)fn_800D8798((s32*)((const u8*)res + 0x3C)), 0x10);
-    fn_800D8B28(self, (u8)texNum, (u8)texCoordNum, (u8)texCoordGenNum, (u8)tevStageNum, chanA, (u8)indTexStageNum, (u8)indNum, hasA, hasB, chanB, v0);
+    fn_800D8B28(self, (u8)texNum, (u8)texCoordNum, (u8)texCoordGenNum, (u8)tevStageNum, chanA, (u8)indTexStageNum, (u8)indNum, hasA, (hasB = (u8)((u8)v1 != 0)), chanB, v0);
     if (*(s32*)(self + 0x58) != 0) {
         SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(self, (u8)texNum);
         if ((u8)texNum != 0) {
@@ -2396,11 +2394,11 @@ extern "C" s32 fn_800D938C(void* arg0) {
 extern "C" s32 fn_800D93BC(void *arg0) {
     u32 x = *(u32 *)((u8 *)arg0 + 0x4C);
     s32 y = *(s32 *)((u8 *)arg0 + 0x58);
-    s32 a = (x >> 5) & 4;
-    s32 b = (x >> 6) & 4;
-    s32 c = (x >> 0x12) & 0x3C;
-    s32 d = (x >> 0x17) & 0x1E0;
-    return (((x >> 0x18) & 0xF) * 0x14) + ((a + b) + c) + (d + y);
+    s32 a = ((*(u32 *)((u8 *)arg0 + 0x4C)) >> 5) & 4;
+    s32 b = ((*(u32 *)((u8 *)arg0 + 0x4C)) >> 6) & 4;
+    s32 c = ((*(u32 *)((u8 *)arg0 + 0x4C)) >> 0x12) & 0x3C;
+    s32 d = ((*(u32 *)((u8 *)arg0 + 0x4C)) >> 0x17) & 0x1E0;
+    return ((((*(u32 *)((u8 *)arg0 + 0x4C)) >> 0x18) & 0xF) * 0x14) + ((a + b) + c) + (d + y);
 }
 
 #pragma scheduling off
@@ -2450,10 +2448,8 @@ extern "C" s32 fn_800D947C(void* arg0) {
 }
 
 extern "C" s32 GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(void *arg0) {
-    struct MatBits { u8 pad[0x4C]; u32 x; u8 pad2[8]; s32 base; };
-    struct MatBits *m = (struct MatBits *)arg0;
-    register u32 x = m->x;
-    register s32 base = m->base;
+    register u32 x = *(u32*)((u8*)arg0 + 0x4C);
+    register s32 base = *(s32*)((u8*)arg0 + 0x58);
     register s32 high = (x >> 24) & 0xF;
     register s32 low1 = (x >> 4) & 4;
     register s32 scaled = high * 0x14;
@@ -4047,8 +4043,8 @@ extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTran
     struct AnimList { u32 count; void* first; void* last; };
     struct PaneView {
         char pad0[0x1c];
-        AnimList animList;
         void* animation;
+        AnimList animList;
     };
     PaneView* p = (PaneView*)pane;
     void* node;
@@ -4220,16 +4216,17 @@ void nw4r::lyt::Pane::LoadMtx(const nw4r::lyt::DrawInfo& info) {
 }
 #pragma pop
 extern "C" f32 lbl_80560EC0;
-#pragma scheduling invalid_target
+#pragma peephole off
 extern "C" GetVtxPosResult GetVtxPos__Q34nw4r3lyt4PaneCFv(void* self) {
     u8 n = *(u8*)((u8*)self + 0xCC);
     s32 r = n % 3;
     GetVtxPosResult result;
-    result.x = lbl_80560EA8;
-    result.y = lbl_80560EA8;
+    result.x = 0.0f;
+    result.y = 0.0f;
     switch (r) {
+    case 0:
     default:
-        result.x = lbl_80560EA8;
+        result.x = 0.0f;
         break;
     case 1:
         result.x = -*(f32*)((u8*)self + 0x4C) * lbl_80560EC0;
@@ -4240,8 +4237,9 @@ extern "C" GetVtxPosResult GetVtxPos__Q34nw4r3lyt4PaneCFv(void* self) {
     }
     s32 q = n / 3;
     switch (q) {
+    case 0:
     default:
-        result.y = lbl_80560EA8;
+        result.y = 0.0f;
         break;
     case 1:
         result.y = -*(f32*)((u8*)self + 0x50) * lbl_80560EC0;
