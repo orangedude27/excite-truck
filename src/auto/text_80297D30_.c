@@ -7,10 +7,8 @@ extern float lbl_8056458C;
 void fn_8000D838(void *);
 #pragma push
 #pragma cplusplus on
-#pragma scheduling 750
 extern "C" void fn_80297D30(void) {
     fn_8000D838(&lbl_8055F798);
-    register float v = lbl_8056458C;
-    lbl_8055F7A0 = v;
+    lbl_8055F7A0 = lbl_8056458C;
 }
 #pragma pop
