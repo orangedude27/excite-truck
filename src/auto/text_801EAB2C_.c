@@ -106,7 +106,6 @@ extern "C" void fn_801EABA8(void *arg0, void *arg1) {
     *(s32 *)((u8 *)arg0 + 0x30) = l;
     *(s16 *)((u8 *)arg0 + 0x38) = m;
 }
-#pragma peephole on
 #pragma cplusplus off
 s16 fn_801EAC3C(void* seqHeap) {
     /* Read the 16-bit field at offset 0x38 of a SeqHeap/sound object. */
