@@ -626,7 +626,7 @@ extern "C" void* fn_801572A4(s32 configPtr, s32 courseIndex, s32 initValue) {
         ringTracker = tracker;
         fn_80158280(group + 4, (s32*)&ringTracker);
         s32 index = 0;
-        while (index < PtrArray_GetCount(group + 4)) {
+        while (index < fn_80157558(group + 4)) {
             fn_80157560(*(VObj**)(u32)fn_8015782C((s32*)(group + 4), index));  /* its stunt table */
             index++;
         }
