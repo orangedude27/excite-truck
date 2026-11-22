@@ -1787,13 +1787,17 @@ char fn_802CC744(void) {
     return lbl_8055D07D;
 }
 
-#pragma peephole reset
+#pragma push
+#pragma peephole off
 int fn_802CC74C(void) {
     int result = 0;
-    void *p = *(void **)lbl_8055FCBC;
-    if (p != 0 && *(int *)((char *)p + 4) != 0) result = 1;
+    char *p = *(char **)lbl_8055FCBC;
+    if (p != 0) {
+        if (*(int *)(p + 4) != 0) result = 1;
+    }
     return result;
 }
+#pragma pop
 extern float lbl_80564F4C;
 extern float lbl_80564F50;
 #pragma push
