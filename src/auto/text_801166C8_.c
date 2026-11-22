@@ -177,20 +177,20 @@ static inline BOOL isSame(const char *lhs, const char *rhs, u8 *locale) {
         int lc = (c < 0 || c >= 256) ? c : (*(u8 **)(locale + 0x10))[c];
         int d = *lhs++;
         int rd = (d < 0 || d >= 256) ? d : (*(u8 **)(locale + 0x10))[d];
-        if (lc != rd) return FALSE;
+        if (rd != lc) return FALSE;
     }
     if (lhs[0] == '/' || lhs[0] == '\0') return TRUE;
     return FALSE;
 }
 
 s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
+    u8 *locale = *(u8 **)(lbl_802FE850 + 0x38);
     const char *name_end;
     BOOL name_delimited_by_slash;
     s32 name_length;
     u32 anchor;
     u32 it = handle->currDir;
     ARCNode *nodes = handle->FSTStart;
-    u8 *locale = *(u8 **)(lbl_802FE850 + 0x38);
 
     while (TRUE) {
         if (path[0] == '\0') return it;
@@ -2911,8 +2911,9 @@ extern void fn_8011A45C(void *, s32, s32);
 extern void fn_8011A1A0(u32 *, u32);
 u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
     DvdStream *stream = (DvdStream *)arg0;
+    u32 seek = (u32)arg2;
+    u32 work;
     volatile u32 *rd;
-    u32 work = (u32)arg2;
     u32 total = 0;
     u8 *buf0 = (u8 *)arg3;
     u32 t0;
@@ -2920,16 +2921,16 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
     if (stream->error != 0)
         return 0;
     t0 = fn_80116D30();
-    if ((s32)work != -1 && stream->consumerOffset != (u32)work) {
-        if ((u32)work > stream->consumerOffset && (u32)work <= (u32)stream->readOffset) {
+    if ((s32)seek != -1 && stream->consumerOffset != (u32)seek) {
+        if ((u32)seek > stream->consumerOffset && (u32)seek <= (u32)stream->readOffset) {
             BOOL en = OSDisableInterrupts();
-            u32 d = (u32)work - stream->consumerOffset;
+            u32 d = (u32)seek - stream->consumerOffset;
             volatile DvdStream *locked = stream;
             u32 freeSpace = locked->freeSpace;
             u32 p = locked->consumerPtr + d;
             u32 end = locked->bufferEnd;
             locked->freeSpace = freeSpace + d;
-            stream->consumerOffset = (u32)work;
+            stream->consumerOffset = (u32)seek;
             stream->fill -= d;
             stream->consumerPtr = p;
             if (p > end)
@@ -2941,8 +2942,8 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
             en = OSDisableInterrupts();
             {
                 u32 a4 = stream->bufferStart;
-                stream->readOffset = work;
-                stream->consumerOffset = (u32)work;
+                stream->readOffset = seek;
+                stream->consumerOffset = (u32)seek;
                 stream->freeSpace = stream->capacity;
                 stream->fill = 0;
                 stream->consumerPtr = a4;
@@ -3011,8 +3012,10 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
     }
     {
         u32 rem = (u32)stream->endOffset - *rd;
-        if (rem >= stream->capacity)
-            rem = stream->capacity;
+        if (rem < stream->capacity)
+            goto storeAvailable;
+        rem = ((volatile DvdStream *)stream)->capacity;
+storeAvailable:
         ((volatile DvdStream *)stream)->available = rem;
     }
     if (stream->fill + 0x8000 > ((volatile DvdStream *)stream)->available)
