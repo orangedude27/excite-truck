@@ -636,10 +636,10 @@ extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3
   f32 w = *((f32 *) arg1);
   *fifo = x0;
   f32 y0 = *((f32 *) (((u8 *) arg0) + 4));
+  f32 x1 = (0, x0 + w);
   f32 h = *((f32 *) (((u8 *) arg1) + 4));
-  f32 y1 = y0 + h;
-  register f32 x1 = (0, x0 + w);
   *fifo = y0;
+  f32 y1 = y0 + h;
   *fifo = x1;
   *fifo = y0;
   *fifo = x1;
@@ -994,7 +994,7 @@ static inline void SetTagProcessorImpl_800D6CA0(u8 *pane, s32 arg1) {
 #pragma inline_depth(5)
 extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
-    if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = (s32)arg1;
+    if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
     for (ChildIter_800D77DC it = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it)) {
         SetTagProcessorChild_800D6CA0(ChildPane_800D77DC(it), arg1);
     }
@@ -1007,7 +1007,7 @@ extern "C" void fn_800D6EEC(void* arg0) {
     extern char lbl_8031F868[];
     volatile u8* p = (volatile u8*)arg0;
     register u32 zero = 0;
-    register f32 f = 0.0f;
+    f32 f = 0.0f;
     register void* list = (void*)(p + 8);
     void* vtable = lbl_8031F868;
     *(volatile u32*)(p + 8) = zero;
@@ -1261,7 +1261,13 @@ s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *
 #pragma pop
 struct LLHead { char pad[4]; void *list; void *term; };
 extern "C" void *CreateAnimTransform__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16ResourceAccessor(void * __restrict self, const void *resource, void *accessor) {
-    struct Link { char pad[4]; void *list; void *term; void *endAddr() { return &term; } void *listAddr() { return &list; } };
+    struct Link {
+        char pad[4];
+        void *list;
+        void *term;
+        void *endAddr() { return &term; }
+        void *listAddr() { return &list; }
+    };
     extern const char lbl_8031F8C0[];
     extern const char lbl_8031F89C[];
     const char *msg=lbl_8031F728;
@@ -1285,7 +1291,10 @@ extern "C" void *CreateAnimTransform__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16Re
                 void *obj=(void *)MEMAllocFromAllocator(lbl_8055DDF0,0x20);
                 if (obj) obj=(void *)fn_800D4428();
                 else { Warning__Q26nw4hbm2dbFPCciPCce(msg,0x2F,msg+0xC8); obj=0; }
-                if (obj) { ((void (*)(void *,void *,void *))(*(void ***)obj)[3])(obj,block,accessor); result=obj; }
+                if (obj) {
+                    ((void (*)(void *,void *,void *))(*(void ***)obj)[3])(obj,block,accessor);
+                    result=obj;
+                }
                 break;
             }
             }
@@ -1394,33 +1403,37 @@ extern "C" void fn_800D7758(void *holder) {
     if (target != 0) target->invoke();
 }
 
-extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
-    register u8* p = (u8*)self;
-    extern f32 lbl_80560E84;
-    extern f32 lbl_80560E80;
-    if (p[0x20] == 1) {
-        f32 h = *(f32*)&p[0x1C];
-        f32 w = *(f32*)&p[0x18];
-        f32 negH = -h;
-        f32 s = lbl_80560E84;
-        f32 negW = -w;
-        f32 left = negW * s;
-        f32 top = h * s;
-        f32 right = w * s;
-        f32 bottom = negH * s;
-        *(f32*)&((u8*)pOut)[8] = right;
-        *(f32*)&((u8*)pOut)[4] = top;
-        *(f32*)&((u8*)pOut)[0] = left;
-        *(f32*)&((u8*)pOut)[0xC] = bottom;
-    } else {
-        f32 z = lbl_80560E80;
-        f32 w = *(f32*)&p[0x18];
-        f32 h = *(f32*)&p[0x1C];
-        *(f32*)&((u8*)pOut)[0] = z;
-        *(f32*)&((u8*)pOut)[4] = z;
-        *(f32*)&((u8*)pOut)[8] = w;
-        *(f32*)&((u8*)pOut)[0xC] = h;
-    }
+extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void *pOut, void *self)
+{
+  register u8 *p = (u8 *) self;
+  extern f32 lbl_80560E84;
+  extern f32 lbl_80560E80;
+  if (p[0x20] == 1)
+  {
+    f32 h = *((f32 *) (&p[0x1C]));
+    f32 w = *((f32 *) (&p[0x18]));
+    f32 negH = -h;
+    f32 s = lbl_80560E84;
+    f32 negW = -w;
+    f32 left = negW * s;
+    f32 top = h * s;
+    f32 right = s * w;
+    f32 bottom = negH * s;
+    *((f32 *) (&((u8 *) pOut)[8])) = right;
+    *((f32 *) (&((u8 *) pOut)[4])) = top;
+    *((f32 *) (&((u8 *) pOut)[0])) = left;
+    *((f32 *) (&((u8 *) pOut)[0xC])) = bottom;
+  }
+  else
+  {
+    f32 z = lbl_80560E80;
+    f32 w = *((f32 *) (&p[0x18]));
+    f32 h = *((f32 *) (&p[0x1C]));
+    *((f32 *) (&((u8 *) pOut)[0])) = z;
+    *((f32 *) (&((u8 *) pOut)[4])) = z;
+    *((f32 *) (&((u8 *) pOut)[8])) = w;
+    *((f32 *) (&((u8 *) pOut)[0xC])) = h;
+  }
 }
 
 extern "C" void fn_800D6CA0(s32, s32);
@@ -1483,8 +1496,8 @@ extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
         for (ChildIter_800D77DC it2 = ChildBegin_800D77DC(p1); ChildNotEqual_800D77DC(it2, ChildEnd_800D77DC(p1)); ChildNext_800D77DC(it2)) {
             u8 *p2 = ChildPane_800D77DC(it2);
             if (u8 *cast = DynCast_800D77DC(p2)) *(s32 *)(cast + 0xF4) = arg1;
-            for (ChildIter_800D77DC it3 = ChildBegin_800D77DC(p2); ChildNotEqual_800D77DC((unsigned)it3, ChildEnd_800D77DC(p2)); ChildNext_800D77DC(it3)) {
-                fn_800D6CA0((s32)ChildPane_800D77DC(it3), arg1);
+            for (ChildIter_800D77DC it3 = ChildBegin_800D77DC(p2); ChildNotEqual_800D77DC(it3, ChildEnd_800D77DC(p2)); ChildNext_800D77DC(it3)) {
+                fn_800D6CA0(ChildPane_800D77DC(it3), arg1);
             }
         }
     }
@@ -1498,33 +1511,33 @@ extern "C" void* fn_800D57AC(void*, const void*, const void*);
 extern "C" const char lbl_8031F728[];
 extern "C" const char lbl_8031F854[];
 extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(u32 kind, const void* pane, const ResBlockSetTmp* set) {
+    void* obj;
     switch (kind) {
-    case 0x70616E31: {
-        void* obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xD4);
+    case 0x70616E31:
+        obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xD4);
         if (obj) return new (obj) nw4hbm::lyt::Pane((const nw4hbm::lyt::res::Pane*)pane);
         return 0;
-    }
     case 0x70696331: {
         ResBlockSetTmp tmp = *set;
-        void* obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xEC);
+        obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xEC);
         if (obj) return new (obj) nw4hbm::lyt::Picture((const nw4hbm::lyt::res::Picture*)pane, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
         return 0;
     }
     case 0x74787431: {
         ResBlockSetTmp tmp = *set;
-        void* obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x100);
+        obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x100);
         if (obj) return new (obj) nw4hbm::lyt::TextBox((const nw4hbm::lyt::res::TextBox*)pane, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
         return 0;
     }
     case 0x776E6431: {
         ResBlockSetTmp tmp = *set;
-        void* obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x104);
+        obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x104);
         if (obj) return new (obj) nw4hbm::lyt::Window((const nw4hbm::lyt::res::Window*)pane, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
         return 0;
     }
     case 0x626E6431: {
         ResBlockSetTmp tmp = *set;
-        void* obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xD4);
+        obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xD4);
         if (!obj) return 0;
         return fn_800D57AC(obj, pane, &tmp);
     }
@@ -1786,13 +1799,14 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
     v0 = fn_800D8744((s32*)((const u8*)res + 0x3C));
     hasA = (u8)((u8)v0 != 0);
     v1 = fn_800D8750((s32*)((const u8*)res + 0x3C), (u8)v0);
+    hasB = (u8)((u8)v1 != 0);
     chanA = fn_800D875C((s32*)((const u8*)res + 0x3C), (u8)v1);
     chanB = fn_800D8768((s32*)((const u8*)res + 0x3C));
     v0 = fn_800D8774((s32*)((const u8*)res + 0x3C));
     indNum = fn_800D89E4((u8)fn_800D8780((s32*)((const u8*)res + 0x3C)), 3);
     indTexStageNum = fn_800D89E4((u8)fn_800D878C((s32*)((const u8*)res + 0x3C)), 4);
     tevStageNum = fn_800D89E4((u8)fn_800D8798((s32*)((const u8*)res + 0x3C)), 0x10);
-    fn_800D8B28(self, (u8)texNum, (u8)texCoordNum, (u8)texCoordGenNum, (u8)tevStageNum, chanA, (u8)indTexStageNum, (u8)indNum, hasA, (hasB = (u8)((u8)v1 != 0)), chanB, v0);
+    fn_800D8B28(self, (u8)texNum, (u8)texCoordNum, (u8)texCoordGenNum, (u8)tevStageNum, chanA, (u8)indTexStageNum, (u8)indNum, hasA, hasB, chanB, v0);
     if (*(s32*)(self + 0x58) != 0) {
         SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(self, (u8)texNum);
         if ((u8)texNum != 0) {
@@ -2196,14 +2210,13 @@ extern "C" s32 fn_800D8A04(s32 base, s32 offset) {
 
 #pragma scheduling on
 extern "C" void Init__Q34nw4r3lyt8MaterialFv(void *arg0) {
-    struct InitDefaults4 { short a, b, c, d; };
-    volatile InitDefaults4 *defaults = (volatile InitDefaults4 *)&lbl_80565230;
+    volatile short *defaults = (volatile short *)&lbl_80565230;
     unsigned int v50 = *(unsigned int *)((char *)arg0 + 0x50);
     unsigned int v4c = *(unsigned int *)((char *)arg0 + 0x4c);
-    short c0 = defaults->a;
-    short c1 = defaults->b;
-    short c2 = defaults->c;
-    short c3 = defaults->d;
+    short c0 = defaults[0];
+    short c1 = defaults[1];
+    short c2 = defaults[2];
+    short c3 = defaults[3];
     v4c &= 0x1f;
     v50 &= 0x1f;
     *(short *)((char *)arg0 + 0x24) = c0;
@@ -2380,15 +2393,15 @@ extern "C" s32 fn_800D938C(void* arg0) {
     volatile u32 *pBits = (volatile u32 *)((u8 *)arg0 + 0x4C);
     volatile s32 *pBase = (volatile s32 *)((u8 *)arg0 + 0x58);
     u32 bits = *pBits;
+    s32 base = *pBase;
     u32 high = (bits >> 0x18) & 0xF;
     u32 mid = (bits >> 0x12) & 0x3C;
     u32 scaled = high * 0x14;
     u32 low = (bits >> 0x06) & 4;
     u32 top = (bits >> 0x17) & 0x1E0;
+    s32 past = base + scaled;
     s32 gen = mid + top;
-    s32 base = *pBase;
-    s32 past = scaled + low;
-    return past + (base + gen);
+    return gen + past + low;
 }
 
 extern "C" s32 fn_800D93BC(void *arg0) {
@@ -2501,7 +2514,7 @@ extern "C" char* fn_800D9584(char* material, const char* resourceName) {
 extern "C" void SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(void *arg0, u8 arg1) {
     extern const char lbl_8031F990[];
     extern void memset(void *, int, unsigned int);
-    const char * const data = lbl_8031F990;
+    const char *data = lbl_8031F990;
     u32 capacity = *(u32 *)((u8 *)arg0 + 0x4C) >> 28;
     if ((u32)arg1 > capacity)
         Panic__Q26nw4hbm2dbFPCciPCce(data, 0x38B, data + 0x330);
@@ -2577,8 +2590,8 @@ extern "C" void fn_800D9844(void* arg0, u32 arg1, s32 arg2) {
         u32 pitch = (((fmt >> 18) & 3) + ((fmt >> 24) & 0xF)) * 0x14;
         u32 x = ((fmt >> 5) & 4) + ((fmt >> 12) & 4);
         u32 y = pitch + ((fmt >> 6) & 4);
-        u32 w = ((fmt >> 4) & 4) + x;
         u32 z = ((fmt >> 23) & 0x1E0) + ((fmt >> 18) & 0x3C);
+        u32 w = ((fmt >> 4) & 4) + x;
         u32 v = z + y;
         u32 u = ((fmt >> 3) & 4) + w;
         u32 t = ((fmt >> 13) & 0x1C) + u;
@@ -2671,13 +2684,13 @@ extern "C" void SetTexture__Q36nw4hbm3lyt8MaterialFUcRC9_GXTexObj(void* self, u8
 }
 
 extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *arg0, s32 arg1, s16 arg2) {
-    s32 byte;
-    s32 value;
-    u8 *base;
     u32 flags;
     u32 info;
     u32 index;
     u32 component;
+    u8 *base;
+    s32 value;
+    s32 byte;
     if (arg1 < 0x10) {
         if (arg1 < 4) {
             if (arg1 < 0) return;
@@ -3542,14 +3555,14 @@ extern "C" const char lbl_80320250[];
 extern "C" const char lbl_8032022C[];
 extern "C" void AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane(void* arg0, void* arg1) {
     register void* iterator = (u8*)arg0 + 0x14;
-    register const char (*messages)[0x10] = (const char (*)[0x10])&lbl_8031FF90[0];
+    register const char* messages = &lbl_8031FF90[0];
     register void* child = arg1;
     register void* parent = arg0;
     void* slot;
     if (child == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(messages[0], 0xFD, (const char*)messages + 0x10);
+        Panic__Q26nw4hbm2dbFPCciPCce(&messages[0], 0xFD, messages + 0x10);
     if (*(void**)((u8*)child + 0xC) != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(messages[0], 0xFE, (const char*)messages + 0x3C);
+        Panic__Q26nw4hbm2dbFPCciPCce(&messages[0], 0xFE, messages + 0x3C);
     if (child == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320250, 0x233, lbl_8032022C);
     slot = iterator;
@@ -4043,8 +4056,8 @@ extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTran
     struct AnimList { u32 count; void* first; void* last; };
     struct PaneView {
         char pad0[0x1c];
-        void* animation;
         AnimList animList;
+        register void* animation;
     };
     PaneView* p = (PaneView*)pane;
     void* node;
