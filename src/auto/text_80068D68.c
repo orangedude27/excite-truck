@@ -18703,7 +18703,7 @@ BOOLEAN L2CA_ConnectRsp(BD_ADDR addr, UINT8 id, UINT16 lcid, UINT16 result, UINT
 
 extern u8 lbl_80317F78[];
 extern u8 lbl_80317F98[];
-BOOLEAN L2CA_ConfigReq(UINT16 cid, tL2CAP_CFG_INFO *p_cfg) {
+/* Send an L2CAP configuration request for channel `cid`: trace the call, look up the channel control block, clear the unused option flag in `p_cfg`, and dispatch a config-request event with it to the channel's state machine; return FALSE if no such channel exists. */ BOOLEAN L2CA_ConfigReq(UINT16 cid, tL2CAP_CFG_INFO *p_cfg) {
     void *channelControlBlock;
     if (lbl_803C4040[0] >= 3) {
         fn_80070954(0x80002, lbl_80317F78, cid);
