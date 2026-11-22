@@ -530,6 +530,7 @@ extern "C" s32 fn_80157278(s32 carIndex) {
 #pragma scheduling on
 struct VObj;
 extern "C" void fn_80157560(VObj*);
+extern "C" s32 fn_80157558(void*);
 extern "C" s32 PtrArray_GetCount(void*);
 extern "C" s32 fn_8015782C(s32*, s32);
 extern "C" void* fn_8015783C(void*, s32, s32);
@@ -3531,8 +3532,10 @@ extern "C" void* fn_8015CBBC(void* self, s32 shouldDelete) {
 // Trivial callback stub in this player's vtable group; always returns 1 (true).
 extern "C" u32 fn_8015CC28(void) { return 1; }
 
+#pragma scheduling reset
 extern "C" s32 fn_8015CC30(void* arg0) {
-    f32 x = *(f32*)((char*)arg0 + 0x250);
+    f32 x;
+    x = *(f32*)((char*)arg0 + 0x250);
     f32 rounded;
     if (x < lbl_80561754) rounded = x - lbl_80561760;
     else rounded = lbl_80561760 + x;
