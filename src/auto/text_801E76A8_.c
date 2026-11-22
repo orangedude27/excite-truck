@@ -3,7 +3,7 @@
 
 extern void *fn_801284F8(int, void *);
 extern void *fn_801E76A8(void *, int);
-extern void fn_802D68C4(int, int, int, int);
+extern void drawFifoTriangles(int, int, int, int);
 extern void fn_80128670(void *);
 extern void fn_80128668(void *);
 #pragma small_data off
@@ -76,7 +76,7 @@ void fn_801E7828(drawList)
     void *drawList;
 {
     int *fields = (int *)drawList;
-    fn_802D68C4(fields[0], fields[1], fields[3], fields[4]);
+    drawFifoTriangles(fields[0], fields[1], fields[3], fields[4]);
 }
 
 #pragma dont_inline off

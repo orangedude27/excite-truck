@@ -122,7 +122,7 @@ extern float lbl_804C144C[3];
 extern unsigned char lbl_8055FC8F;
 extern int fn_801E4F3C(void);
 extern int fn_801E4F20(void);
-extern void fn_802D68C4(void);
+extern void drawFifoTriangles(void);
 
 extern int lbl_8055FC70;
 
@@ -575,7 +575,7 @@ void fn_802C8D74(void) {
 #pragma dont_inline reset
 
 void fn_802C8DB8(void) {
-#define drawIndexedTriangles fn_802D68C4
+#define drawIndexedTriangles drawFifoTriangles
     /* Tail-forward the caller's vertex/index arguments (still in registers) to the
      * immediate-mode indexed triangle drawer. */
     drawIndexedTriangles();

@@ -16,7 +16,7 @@ extern u8 lbl_805600ED;
 s32 fn_8002173C(void);                      /* runs a pending sound request; 1 when it did work */
 void fn_802CFCA0(void);                     /* opens a frame: resets the GX state, sets the FIFO break point */
 void fn_802D02F8(s32 color, s32 on);        /* fade colour (aRGB) and whether to fade with it */
-void fn_802D68C4(s32, s32, s32, s32);       /* indexed triangles straight into the GX FIFO */
+void drawFifoTriangles(s32, s32, s32, s32);       /* indexed triangles straight into the GX FIFO */
 void fn_802CFDE0(void);                     /* draws the home-button UI, flushes the FIFO and waits for the GPU */
 void fn_802CFF10(void);                     /* closes the frame: clears the FIFO state */
 void fn_80127464(void);
@@ -40,12 +40,13 @@ s32 fn_802EC4BC(void) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 s32 fn_802EC4E8(s32 arg0) {
+    struct HomeStr { char s[0x40]; };
     char sp10[0x40];
     char *base = lbl_8034E9E0;
     s32 sp8;
     s32 temp_r30;
     s32 temp_r31;
-    ((void (*)(void *, s32, void *, ...))fn_801345D8)(sp10, 0x40, base, arg0);
+    ((void (*)(void *, s32, void *, ...))fn_801345D8)(sp10, 0x40, ((struct HomeStr *)lbl_8034E9E0)->s, arg0);
     sp8 = fn_802E36D8(sp10);
     if (sp8 == -1)
         ((void (*)(void *, ...))fn_802E317C)(base + 0x10, sp10);
@@ -422,7 +423,7 @@ void fn_802ECC18(u8 mode) {
  * handover runs (fn_802ECC74 repeats it until the Home Menu takes the screen
  * over), skipped on the frames fn_8002173C() spent on a pending sound request:
  * fn_802CFCA0() opens the frame, fn_802D02F8() switches on the fade colour the
- * screen is covered with -- opaque black -- fn_802D68C4() is asked for no
+ * screen is covered with -- opaque black -- drawFifoTriangles() is asked for no
  * triangles at all (only its renderer setup runs), fn_802CFDE0() draws the
  * home-button UI and flushes the FIFO to the GPU, and fn_802CFF10() closes the
  * frame again. */
@@ -431,7 +432,7 @@ void fn_802ECC20(void) {
     if (fn_8002173C() == 0) {
         fn_802CFCA0();
         fn_802D02F8(FADE_BLACK, 1);
-        fn_802D68C4(0, 0, 0, 0);
+        drawFifoTriangles(0, 0, 0, 0);
         fn_802CFDE0();
         fn_802CFF10();
     }

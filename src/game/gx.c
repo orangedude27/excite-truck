@@ -3337,7 +3337,7 @@ extern float lbl_80564F88, lbl_80564F8C;
 extern unsigned short lbl_802FACC8[];
 typedef struct { float x, y, z; } FifoVec3;
 typedef struct { FifoVec3 pos; unsigned int color; float u, v; } FifoVtx;
-extern void fn_802D68C4(FifoVtx *, int, unsigned short *, int);
+extern void drawFifoTriangles(FifoVtx *, int, unsigned short *, int);
 #pragma push
 #pragma processor 750
 void fn_802D3BB4(float *arg0, float *arg1, float *arg2, float *arg3, unsigned int arg4, float scale, unsigned int arg_sp0) {
@@ -3383,7 +3383,7 @@ void fn_802D3BB4(float *arg0, float *arg1, float *arg2, float *arg3, unsigned in
     verts[3].v = lbl_80564F8C;
     verts[2].v = lbl_80564F8C;
 
-    fn_802D68C4(verts, 4, indices, 6);
+    drawFifoTriangles(verts, 4, indices, 6);
 }
 #pragma pop
 

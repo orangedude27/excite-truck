@@ -21,36 +21,36 @@ extern Unk801E4E44State lbl_80487C88;
 extern s32 lbl_8055EAA8, lbl_8055EAAC, lbl_8055EAB0;
 void fn_801E4E44(void);
 
-extern void fn_802D68C4(s32, s32, s32, s32);
+extern void drawFifoTriangles(s32, s32, s32, s32);
 #pragma scheduling invalid_target
 void fn_801E4E44(void) {
     if ((s32)lbl_8055EAA8 > 2) {
         {
             register s32 indexCount asm("r6") = lbl_8055EAAC;
             if (indexCount > 2) {
-                fn_802D68C4((s32)&lbl_80487578, lbl_8055EAA8, (s32)&lbl_80487B18, indexCount);
+                drawFifoTriangles((s32)&lbl_80487578, lbl_8055EAA8, (s32)&lbl_80487B18, indexCount);
             }
         }
         {
             register s32 count asm("r4") = lbl_8055EAA8;
             register s32 base asm("r6") = (s32)&lbl_80487578;
-            register s32 index asm("r3") = count - 2;
-            register s32 offset asm("r0") = index * 0x18;
-            register s32 source asm("r7") = base + offset;
-            register s32 first asm("r5") = *(volatile s32 *)(base + offset);
-            register s32 lastIndex asm("r0") = count - 1;
-            register s32 secondWord asm("r4") = *(s32 *)(source + 4);
-            register s32 lastOffset asm("r3") = lastIndex * 0x18;
-            register s32 last asm("r4") = base + lastOffset;
+            register s32 source asm("r7");
+            register s32 first asm("r5");
+            s32 index, offset, lastIndex, lastOffset, secondWord, thirdWord, last;
+            index = count - 2;
+            offset = index * 0x18;
+            source = base + offset;
+            first = *(volatile s32 *)(base + offset);
+            lastIndex = count - 1;
+            secondWord = *(s32 *)(source + 4);
+            lastOffset = lastIndex * 0x18;
+            last = base + lastOffset;
             lbl_8055EAA8 = 2;
             *(s32 *)(base + 4) = secondWord;
             *(s32 *)base = first;
-            {
-                register s32 zero asm("r0") = 0;
-                register s32 thirdWord asm("r3") = *(s32 *)(source + 8);
-                lbl_8055EAAC = zero;
-                *(s32 *)(base + 8) = thirdWord;
-            }
+            thirdWord = *(s32 *)(source + 8);
+            lbl_8055EAAC = 0;
+            *(s32 *)(base + 8) = thirdWord;
             *(s32 *)(base + 0xC) = *(s32 *)(source + 0xC);
             *(f32 *)(base + 0x10) = *(f32 *)(source + 0x10);
             *(f32 *)(base + 0x14) = *(f32 *)(source + 0x14);
@@ -103,16 +103,19 @@ void fn_801E4FF4(void) {
 
 extern f32 lbl_80562D40;
 extern f32 lbl_80487C78[];
+#pragma scheduling invalid_target
+#pragma scheduling on
 s32 fn_801E501C(s32 unused, void *xyz, u8 color, f32 scale) {
     f32 y = *(f32 *)((char *)xyz + 4);
     f32 x = *(f32 *)((char *)xyz + 0);
     f32 z = *(f32 *)((char *)xyz + 8);
     f32 w = lbl_80562D40 * scale;
     u32 packed = ((u32)color << 24) | 0x00FFFFFF;
+    s32 zero = 0;
     s32 i;
     for (i = 0; i < 60; i++) lbl_80487578[i].unk_0xC = packed;
-    lbl_8055EAA8 = 0;
-    lbl_8055EAAC = 0;
+    lbl_8055EAA8 = zero;
+    lbl_8055EAAC = zero;
     lbl_80487C78[0] = x;
     lbl_80487C78[1] = y;
     lbl_80487C78[2] = z;
@@ -120,15 +123,15 @@ s32 fn_801E501C(s32 unused, void *xyz, u8 color, f32 scale) {
     lbl_8055EAB0 = 2;
     return 1;
 }
-
 extern f32 lbl_80562D44, lbl_80562D48;
 #pragma push
 #pragma scheduling invalid_target
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_801E5174(f32 arg0, f32 arg1, f32 arg2) {
-    Unk801E4E44Vertex *vertices = lbl_80487578;
-    f32 *center = (f32 *)((u8 *)lbl_80487578 + 0x700);
+    u8 *baseptr = (u8 *)lbl_80487578;
+    Unk801E4E44Vertex *vertices = (Unk801E4E44Vertex *)baseptr;
+    f32 *center = (f32 *)((u8 *)vertices + 0x700);
     s32 count;
     s32 index;
     s32 base;
@@ -137,40 +140,34 @@ void fn_801E5174(f32 arg0, f32 arg1, f32 arg2) {
 
     base = lbl_8055EAA8;
     count = base + 3;
-    vertices[base].x = arg0 - center[3];
-    vertices[base].y = arg1;
-    vertices[base].z = arg2;
-    vertices[base + 1].x = arg0 + center[3];
-    vertices[base + 1].y = arg1;
-    vertices[base + 1].z = arg2;
-    vertices[base + 2].x = vertices[base].x + center[0];
-    vertices[base + 2].y = vertices[base].y + center[1];
-    vertices[base + 2].z = vertices[base].z + center[2];
-    vertices[base + 3].x = vertices[base + 1].x + center[0];
-    vertices[base + 3].y = vertices[base + 1].y + center[1];
-    vertices[base + 3].z = vertices[base + 1].z + center[2];
-    vertices[base].unk_0x10 = lbl_80562D44;
-    vertices[base + 1].unk_0x10 = lbl_80562D48;
-    vertices[base + 2].unk_0x10 = lbl_80562D44;
-    vertices[base + 3].unk_0x10 = lbl_80562D48;
-    vertices[base].unk_0x14 = lbl_80562D48;
-    vertices[base + 1].unk_0x14 = lbl_80562D44;
-    vertices[base + 2].unk_0x14 = lbl_80562D48;
-    vertices[base + 3].unk_0x14 = lbl_80562D44;
-
+    {
+        f32 c0 = center[0], c1 = center[1], c2 = center[2], c3 = center[3];
+        Unk801E4E44Vertex *v0 = &vertices[base];
+        Unk801E4E44Vertex *v1 = &vertices[base + 1];
+        Unk801E4E44Vertex *v2 = &vertices[base + 2];
+        Unk801E4E44Vertex *v3 = &vertices[base + 3];
+        v0->x = arg0 - c3; v0->y = arg1; v0->z = arg2;
+        v1->x = arg0 + c3; v1->y = arg1; v1->z = arg2;
+        v2->x = (c0 + v0->x); v2->y = v0->y + c1; v2->z = v0->z + c2;
+        v3->x = v1->x + c0; v3->y = v1->y + c1; v3->z = v1->z + c2;
+        v0->unk_0x10 = lbl_80562D44; v1->unk_0x10 = lbl_80562D48;
+        v2->unk_0x10 = lbl_80562D44; v3->unk_0x10 = lbl_80562D48;
+        v0->unk_0x14 = lbl_80562D48; v1->unk_0x14 = lbl_80562D44;
+        v2->unk_0x14 = lbl_80562D48; v3->unk_0x14 = lbl_80562D44;
+    }
     if (count > 2) {
         index = lbl_8055EAAC;
-        *(u16 *)((u8 *)lbl_80487578 + 0x5a0 + index * 2) = count - 3;
-        *(u16 *)((u8 *)lbl_80487578 + 0x5a0 + (index + 1) * 2) = count - 2;
-        *(u16 *)((u8 *)lbl_80487578 + 0x5a0 + (index + 2) * 2) = count - 1;
+        *(u16 *)((u8 *)vertices + 0x5a0 + index * 2) = count - 3;
+        *(u16 *)((u8 *)vertices + 0x5a0 + (index + 1) * 2) = count - 2;
+        *(u16 *)((u8 *)vertices + 0x5a0 + (index + 2) * 2) = count - 1;
         lbl_8055EAAC = index + 3;
     }
     lbl_8055EAA8 = count + 1;
     if (count + 1 > 2) {
         index = lbl_8055EAAC;
-        *(u16 *)((u8 *)lbl_80487578 + 0x5a0 + index * 2) = count - 2;
-        *(u16 *)((u8 *)lbl_80487578 + 0x5a0 + (index + 1) * 2) = count - 1;
-        *(u16 *)((u8 *)lbl_80487578 + 0x5a0 + (index + 2) * 2) = count;
+        *(u16 *)((u8 *)vertices + 0x5a0 + index * 2) = count - 2;
+        *(u16 *)((u8 *)vertices + 0x5a0 + (index + 1) * 2) = count - 1;
+        *(u16 *)((u8 *)vertices + 0x5a0 + (index + 2) * 2) = count;
         lbl_8055EAAC = index + 3;
     }
 }
@@ -206,8 +203,8 @@ void fn_801E53A8(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 arg4) {
     extern f32 fn_802C88D4(void *);
     extern f32 lbl_80562D44, lbl_80562D48, lbl_80562D4C, lbl_80562D50, lbl_80562D54, lbl_80562D58;
     Unk801E4E44Vertex *verts = lbl_80487578;
-    Unk801E4E44Vertex *vtx;
     Unk801E4E44State *state = (Unk801E4E44State *)((u8 *)lbl_80487578 + 0x710);
+    Unk801E4E44Vertex *vtx;
     f32 delta[3];
     f32 sum[3];
     f32 mid[3];

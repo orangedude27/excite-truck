@@ -78,7 +78,7 @@ extern u8 lbl_8055FD19;
 extern u32 lbl_804C5650[];
 extern u32 lbl_8055FDE8;
 extern u8 lbl_8055FDEC;
-/* The FIFO vertex fn_802D68C4 pushes to the graphics processor: a position, one
+/* The FIFO vertex drawFifoTriangles pushes to the graphics processor: a position, one
    RGBA8 color and one texture coordinate, 24 bytes. */
 typedef struct { f32 x, y, z; } FifoVec3;
 typedef struct { FifoVec3 pos; u32 color; f32 u, v; } FifoVtx;
@@ -302,31 +302,31 @@ void fn_802D4458(void *arg0) {
     extern f32 lbl_804DB068[];
     register void *object = arg0;
     register volatile u8 *src = *(u8 **)((u8 *)object + 0x20);
-    register s32 count = *(s32 *)((u8 *)object + 0x1C);
+    s32 count = *(s32 *)((u8 *)object + 0x1C);
     f32 *base = (f32 *)(u32)fn_802CFF64(count * 12);
-    s32 i;
+    unsigned int i;
     if (base == 0) return;
     {
-        register f32 *out = base;
+        f32 *out = base;
         for (i = 0; i < count; i++) {
             u8 a, b, c, d;
+            f32 *dir1, *dir2;
             f32 weight2, weight1;
-            f32 *dir;
             a = src[0xE];
             b = src[0xC];
-            dir = (f32 *)((u8 *)lbl_804DB068 + b * 12);
+            dir1 = (f32 *)((u8 *)lbl_804DB068 + b * 12);
             weight1 = (1.0f / 255.0f) * (f32)a;
             c = src[0xD];
             d = src[0xF];
             weight2 = (1.0f / 255.0f) * (f32)d;
-            out[0] = *(f32 *)((u8 *)src + 0x0) + dir[0] * weight1;
-            out[1] = *(f32 *)((u8 *)src + 0x4) + dir[1] * weight1;
-            out[2] = *(f32 *)((u8 *)src + 0x8) + dir[2] * weight1;
-            dir = (f32 *)((u8 *)lbl_804DB068 + c * 12);
+            out[0] = *(f32 *)((u8 *)src + 0x0) + dir1[0] * weight1;
+            out[1] = *(f32 *)((u8 *)src + 0x4) + dir1[1] * weight1;
+            out[2] = *(f32 *)((u8 *)src + 0x8) + dir1[2] * weight1;
+            dir2 = (f32 *)((u8 *)lbl_804DB068 + c * 12);
             src += 0x10;
-            out[0] += dir[0] * weight2;
-            out[1] += dir[1] * weight2;
-            out[2] += dir[2] * weight2;
+            out[0] += dir2[0] * weight2;
+            out[1] += dir2[1] * weight2;
+            out[2] += dir2[2] * weight2;
             out += 3;
         }
     }
@@ -591,7 +591,7 @@ void fn_802D4ECC(void *arg0) {
             f32 halfB = (f32)*(s16 *)(src + 0x12);
             u8 tableA = src[0x14];
             u8 tableB = src[0x15];
-            f32 resultY = y2 + factor * halfA * lbl_804CA308[tableA]
+            f32 resultY = y2 + factor * (unsigned)halfA * lbl_804CA308[tableA]
                           + factor * halfB * lbl_804CA308[tableB];
             spc = y2;
             sp8 = x;
@@ -1785,7 +1785,7 @@ extern void fn_80128670(s32);
    the FIFO.  Each color is rotated left by eight on the way out, and the
    renderer's own cached state is set to mode 0 and applied before the draw and
    cleared again after it.  The vertex count the callers pass is not used. */
-void fn_802D68C4(FifoVtx *__restrict vertices, s32 vertexCount,
+void drawFifoTriangles(FifoVtx *__restrict vertices, s32 vertexCount,
                  u16 *__restrict indices, s32 count) {
     register s32 i;
 

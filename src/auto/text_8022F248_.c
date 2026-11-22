@@ -19,6 +19,8 @@ typedef struct QuadMtx {
     f32 m[4][3];
 } QuadMtx;
 
+typedef struct { f32 x, y, z; } Vec3_8022FF10;
+
 typedef struct OverlayQuad {
     QuadMtx mtx;      /* 0x00: transform, composed with the current one on draw */
     s32 texIndex;     /* 0x30: texture table entry (fn_802CAC28), -1 if unknown */
@@ -55,7 +57,7 @@ typedef struct QuadNode {
     struct QuadNode *next; /* 0x08: next node, 0 at the end of the list */
 } QuadNode;
 
-/* The 24-byte GX FIFO vertex fn_802D68C4 pushes: position, RGBA8 color and one
+/* The 24-byte GX FIFO vertex drawFifoTriangles pushes: position, RGBA8 color and one
  * S/T pair.  The game copies these word by word - x and y travel as a single
  * double, z as a raw word - so the fields are declared the way they travel. */
 typedef struct QuadVtx {
@@ -555,21 +557,22 @@ void fn_8022FD9C(OverlayQuad *quad, float dt) {
     quad->mtx.m[2][2] = zAxis[2];
 }
 
-#pragma push
-#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma optimize_for_size off
+#pragma scheduling on
 void fn_8022FF10(void *arg0, void *arg1) {
-    float *e = (float *)arg1;
-    int temp[12];
-    float angle = e[1];
-    float temp_f31 = e[0];
-    float temp_f30 = e[2];
-    fn_80015EB0(arg0, angle);
-    fn_80015E30(temp, temp_f31);
-    fn_80015B20(arg0, arg0, temp);
-    fn_80015AA0(temp, temp_f30);
-    fn_80015B20(arg0, arg0, temp);
+    struct Vec3 { f32 x, y, z; };
+    const struct Vec3 *angles = (const struct Vec3 *)arg1;
+    f32 stepMatrix[9];
+    f32 yaw = angles->y;
+    f32 pitch = angles->x;
+    f32 roll = angles->z;
+    fn_80015EB0(arg0, yaw);
+    fn_80015E30(stepMatrix, pitch);
+    fn_80015B20(arg0, arg0, stepMatrix);
+    fn_80015AA0(stepMatrix, roll);
+    fn_80015B20(arg0, arg0, stepMatrix);
 }
-#pragma pop
 void fn_8022FF90(void *quad) {
     float zero = lbl_805635FC;
     float one = lbl_8056360C;

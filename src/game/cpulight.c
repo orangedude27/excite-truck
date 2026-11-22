@@ -10,7 +10,7 @@ extern void *lbl_8055FEB4;
 extern unsigned char lbl_8055FEB0, lbl_8055FEB9, lbl_8055FEBB, lbl_8055FD24;
 extern unsigned char lbl_804DB480[];
 extern void fn_802D0610(int);
-extern void fn_802D68C4(int, int, int, int);
+extern void drawFifoTriangles(int, int, int, int);
 extern void GXSetZMode(int, int, int);
 extern void GXSetNumChans(int);
 extern void GXSetChanCtrl(int, int, int, int, int, int, int);
@@ -424,7 +424,7 @@ void fn_802DBDE8(int arg0, void *arg1) {
 void fn_802DBE4C(void) {
     unsigned char one;
     fn_802D0610(0);
-    fn_802D68C4(0, 0, 0, 0);
+    drawFifoTriangles(0, 0, 0, 0);
     one = 1;
     GXSetZMode(one, 3, one);
     GXSetNumChans(one);
@@ -455,7 +455,7 @@ extern void fn_802DBD88(void);
 extern void fn_802D3360(void);
 extern void GXSetTevKAlphaSel(int, int);
 extern void fn_802D0610(int);
-extern void fn_802D68C4(int, int, int, int);
+extern void drawFifoTriangles(int, int, int, int);
 extern void GXSetZMode(int, int, int);
 extern void GXSetNumChans(int);
 extern void GXSetChanCtrl(int, int, int, int, int, int, int);
