@@ -16,18 +16,19 @@ static inline void init802BB734(struct Obj802BB734 *o, int size, void (*dtor)(vo
 }
 #pragma scheduling off
 void fn_802BB734(void) {
-    char *base = (char *)lbl_804BFFE8;
-    struct Obj802BB734 *object;
+    struct Object { void *next; int zero; int size; };
+    char *base = (char *)&lbl_804BFFE8;
+    volatile struct Object *object;
     fn_8000D838(&lbl_8055FA60);
-    object = (struct Obj802BB734 *)(base + 0xC);
+    object = (volatile struct Object *)(base + 0xC);
     *(char **)(base + 0xC) = (char *)object + 0xC;
     object->size = 0x10;
     lbl_8055FA68 = 0xFFFF0000;
     object->zero = 0;
-    __register_global_object(object, fn_802BB824, base + 0);
-    object = (struct Obj802BB734 *)(base + 0x64);
-    object->zero = 0;
-    *(char **)(base + 0x64) = (char *)object + 0xC;
+    __register_global_object((void *)object, fn_802BB824, base);
+    (object = (volatile struct Object *)(base + 0x64))->zero = 0;
+    object->next = (char *)object + 0xC;
     object->size = 4;
-    __register_global_object(object, fn_802BB7CC, base + 0x58);
+    __register_global_object((void *)object, fn_802BB7CC, base + 0x58);
 }
+#pragma scheduling on
