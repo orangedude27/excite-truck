@@ -169,7 +169,7 @@ BOOL ARCFastOpen(ARCHandle *handle, s32 entrynum, ARCFileInfo *info) {
 
 extern u8 lbl_802FE850[];
 
-static BOOL isSame(const char *lhs, const char *rhs) {
+static inline BOOL isSame(const char *lhs, const char *rhs) {
     u8 *locale = *(u8 **)(lbl_802FE850 + 0x38);
     while (rhs[0] != '\0') {
         int a = *lhs++;
@@ -3187,179 +3187,229 @@ void fn_8011AED8(s32 outArg, f32 *in, u32 count, f32 scale) {
 #pragma pop
 extern u8 lbl_80329B50[];
 extern f32 lbl_805611E0;
-void fn_8011AF94(f32 *arg0, s32 arg1, void *arg2, f32 *arg3, s32 arg4) {
-    f32 var_f28;
-    f32 var_f29;
-    f32 var_f1;
-    f32 temp_f31;
-    u32 var_r29;
-    s32 var_r28;
-    f32 *var_r27;
-    u32 *var_r26;
-    u32 var_r25;
-    u32 var_r24;
-    f32 *var_r4;
-    f32 *var_r4_2;
-    f32 *var_r8;
-    u32 var_r5_3;
-    u32 *var_r5;
-    u32 *var_r5_2;
-    u32 *var_r7;
-    s32 temp_r0;
-    s32 temp_r18;
-    s32 temp_r4;
-    s32 temp_r4_2;
-    s32 temp_r5_3;
-    s32 temp_r6;
-    s32 temp_r6_2;
-    s32 var_r0_2;
-    s32 var_r0_3;
-    u32 temp_r10;
-    u32 temp_r5;
-    u32 temp_r5_2;
-    u32 temp_r9;
-    u32 var_r0;
-    u32 var_r4_3;
-    u32 var_r3;
+void fn_8011AF94(f32 *arg0, s32 arg1, void *arg2, f32 *arg3, s32 arg4)
+{
+  u32 var_r29;
+  s32 var_r28;
+  f32 *var_r27;
+  u32 *var_r26;
+  u32 var_r25;
+  u32 var_r24;
+  f32 *var_r4;
+  f32 *var_r4_2;
+  f32 *var_r8;
+  s32 var_r5_3;
+  f32 var_f1;
+  f32 var_f29;
+  f32 var_f28;
+  u32 *var_r5;
+  u32 *var_r5_2;
+  u32 *var_r7;
+  s32 temp_r0;
+  s32 temp_r18;
+  s32 temp_r4;
+  s32 temp_r4_2;
+  s32 temp_r5_3;
+  s32 temp_r6;
+  s32 temp_r6_2;
+  s32 var_ctr;
+  s32 var_r0_2;
+  s32 var_r0_3;
+  f32 temp_f31;
+  u32 temp_r10;
+  u32 temp_r5;
+  u32 temp_r5_2;
+  u32 temp_r9;
+  u32 var_r0;
+  u32 var_r24_2;
+  u32 var_r4_3;
+  u32 var_r3;
+  var_f28 = lbl_805611E0;
+  var_f29 = var_f28;
+  var_r26 = ((BitReader8011 *) arg2)->next;
+  var_r25 = ((BitReader8011 *) arg2)->value;
+  var_r24 = ((BitReader8011 *) arg2)->count;
+  var_r4 = arg3;
+  var_r5 = (u32 *) arg4;
+  var_r28 = 0;
+  goto init_test;
+  init_body:
+  var_f29 = *var_r4;
 
-    var_f29 = 0.0f;
-    var_f28 = var_f29;
-    var_r26 = ((BitReader8011 *)arg2)->next;
-    var_r25 = ((BitReader8011 *)arg2)->value;
-    var_r24 = ((BitReader8011 *)arg2)->count;
-    var_r4 = arg3;
-    var_r5 = (u32 *)arg4;
-    var_r28 = 0;
-    goto init_test;
-init_body:
-    var_f29 = *var_r4;
-    var_r4++;
-    var_r5++;
-    var_r28++;
-    var_f28 = -var_f29;
-init_test:
-    var_r0 = (u32)*var_r5 << 1;
-    if (var_r0 < 2U) goto init_body;
+  var_r4++;
+  var_r5++;
+  var_r28++;
+  var_f28 = -var_f29;
+  init_test:
+  var_r0 = ((u32) (*var_r5)) << 1;
 
-    temp_f31 = 0.0f;
-    var_r27 = (f32 *)((u8 *)arg0 + 8);
-    var_r3 = 2U;
-    goto outer_test;
+  if (var_r0 < 2U)
+  {
+    goto init_body;
+  }
+  temp_f31 = lbl_805611E0;
+  var_r27 = (f32 *) (((u8 *) arg0) + 8);
+  var_r3 = 2U;
+  goto outer_test;
+  decode:
+  if (var_r24 == 0)
+  {
+    var_r0 = *var_r26;
+    var_r24 = 0x1F;
+    var_r26++;
+    var_r25 = var_r0 >> 1U;
+  }
+  else
+  {
+    var_r0 = var_r25;
+    var_r25 = var_r25 >> 1U;
+    var_r24--;
+  }
 
-decode:
-    if (var_r24 == 0) {
-        var_r0 = *var_r26;
-        var_r24 = 0x1F;
-        var_r26++;
-        var_r25 = var_r0 >> 1U;
-    } else {
-        var_r0 = var_r25;
-        var_r25 = var_r25 >> 1U;
-        var_r24--;
+  if (var_r0 & 1)
+  {
+    if (var_r24 < 4U)
+    {
+      temp_r5 = *var_r26;
+      temp_r0 = 4 - var_r24;
+      var_r26++;
+      temp_r4 = temp_r5 << var_r24;
+      var_r24 += 0x1C;
+      temp_r4_2 = var_r25 | temp_r4;
+      var_r25 = temp_r5 >> temp_r0;
+      var_r0_2 = temp_r4_2 & 0xF;
     }
-    if (var_r0 & 1) {
-        if (var_r24 < 4U) {
-            temp_r5 = *var_r26;
-            temp_r0 = 4 - var_r24;
+    else
+    {
+      var_r0_2 = var_r25 & 0xF;
+      var_r25 = ((long long) var_r25) >> 4U;
+      var_r24 -= 4;
+    }
+    var_r29 = var_r3 + (lbl_80329B50[var_r0_2] * 8U);
+  }
+  else
+  {
+    var_r29 = var_r3 + 8U;
+  }
+  if (var_r29 > ((u32) arg1))
+  {
+    var_r29 = arg1;
+  }
+  if (var_r24 < 4U)
+  {
+    temp_r5_2 = *var_r26;
+    temp_r0 = 4 - var_r24;
+    var_r26++;
+    temp_r4 = temp_r5_2 << var_r24;
+    var_r24 += 0x1C;
+    temp_r4_2 = var_r25 | temp_r4;
+    var_r25 = temp_r5_2 >> temp_r0;
+    var_r0_3 = temp_r4_2 & 0xF;
+  }
+  else
+  {
+    var_r0_3 = var_r25 & 0xF;
+    var_r25 = var_r25 >> 4U;
+    var_r24 -= 4;
+  }
+  if (!var_r0_3)
+  {
+    register s32 temp_r18 = var_r29 - var_r3;
+    memset(var_r27, 0, temp_r18 * 4);
+    var_r4_2 = arg3 + var_r28;
+    var_r3 = var_r29;
+    var_r27 += temp_r18;
+    var_r5_2 = ((u32 *) arg4) + var_r28;
+    while (var_r29 > ((u32) ((*var_r5_2) * 2)))
+    {
+      var_f29 = *var_r4_2;
+      var_r5_2++;
+      var_r4_2++;
+      var_r28++;
+      var_f28 = -var_f29;
+    }
+
+  }
+  else
+  {
+    temp_r6 = var_r28 * 4;
+    var_r7 = ((u32 *) arg4) + var_r28;
+    var_r8 = arg3 + var_r28;
+    temp_r9 = (-1U) >> (0x20 - var_r0_3);
+    temp_r18 = var_r29 - var_r3;
+    if (var_r3 < var_r29)
+    {
+      for (var_ctr = 0; var_ctr < temp_r18; var_ctr++)
+      {
+        if (var_r3 == ((u32) ((*var_r7) * 2)))
+        {
+          var_f29 = *var_r8;
+          var_r7++;
+          var_r8++;
+          var_r28++;
+          var_f28 = -var_f29;
+        }
+        if (((u32) var_r24) < var_r0_3)
+        {
+          temp_r10 = *var_r26;
+          temp_r6_2 = var_r25 | (temp_r10 << var_r24);
+          var_r26++;
+          var_r25 = temp_r10 >> (var_r0_3 - var_r24);
+          var_r5_3 = temp_r9 & temp_r6_2;
+          var_r24 = (var_r24 + 0x20) - var_r0_3;
+        }
+        else
+        {
+          var_r5_3 = var_r25 & temp_r9;
+          var_r25 = var_r25 >> var_r0_3;
+          var_r24 -= var_r0_3;
+        }
+        if (var_r5_3 != 0)
+        {
+          if (var_r24 == 0)
+          {
+            var_r4_3 = *var_r26;
+            var_r24 = 0x1F;
             var_r26++;
-            temp_r4 = temp_r5 << var_r24;
-            var_r24 += 0x1C;
-            temp_r4_2 = var_r25 | temp_r4;
-            var_r25 = temp_r5 >> temp_r0;
-            var_r0_2 = temp_r4_2 & 0xF;
-        } else {
-            var_r0_2 = var_r25 & 0xF;
-            var_r25 = var_r25 >> 4U;
-            var_r24 -= 4;
+            var_r25 = var_r4_3 >> 1U;
+          }
+          else
+          {
+            var_r4_3 = var_r25;
+            var_r25 = var_r25 >> 1U;
+            var_r24--;
+          }
+          if (var_r4_3 & 1)
+          {
+            var_f1 = var_f28;
+          }
+          else
+          {
+            var_f1 = var_f29;
+          }
+          *var_r27 = ((f32) var_r5_3) * var_f1;
+          var_r27++;
         }
-        var_r29 = var_r3 + (lbl_80329B50[var_r0_2] * 8U);
-    } else {
-        var_r29 = var_r3 + 8U;
-    }
-    if (var_r29 > (u32)arg1) var_r29 = arg1;
-
-    if (var_r24 < 4U) {
-        temp_r5_2 = *var_r26;
-        temp_r0 = 4 - var_r24;
-        var_r26++;
-        temp_r4 = temp_r5_2 << var_r24;
-        var_r24 += 0x1C;
-        temp_r4_2 = var_r25 | temp_r4;
-        var_r25 = temp_r5_2 >> temp_r0;
-        var_r0_3 = temp_r4_2 & 0xF;
-    } else {
-        var_r0_3 = var_r25 & 0xF;
-        var_r25 = var_r25 >> 4U;
-        var_r24 -= 4;
-    }
-
-    if (!var_r0_3) {
-        register temp_r18 = var_r29 - var_r3;
-        memset(var_r27, 0, temp_r18 * 4);
-        var_r4_2 = arg3 + var_r28;
-        var_r3 = var_r29;
-        var_r27 += temp_r18;
-        var_r5_2 = (u32 *)arg4 + var_r28;
-        while (var_r29 > (u32)(*var_r5_2 * 2)) {
-            var_f29 = *var_r4_2;
-            var_r5_2++;
-            var_r4_2++;
-            var_r28++;
-            var_f28 = -var_f29;
+        else
+        {
+          *var_r27 = temp_f31;
+          var_r27++;
         }
-    } else {
-        temp_r6 = var_r28 * 4;
-        var_r7 = (u32 *)arg4 + var_r28;
-        var_r8 = arg3 + var_r28;
-        temp_r9 = -1U >> (0x20 - var_r0_3);
-        for (; var_r3 < var_r29; var_r3++) {
-            if (var_r3 == (u32)(*var_r7 * 2)) {
-                var_f29 = *var_r8;
-                var_r7++;
-                var_r8++;
-                var_r28++;
-                var_f28 = -var_f29;
-            }
-            if ((u32)var_r24 < var_r0_3) {
-                temp_r10 = *var_r26;
-                temp_r6_2 = var_r25 | (temp_r10 << var_r24);
-                var_r26++;
-                var_r25 = temp_r10 >> (var_r0_3 - var_r24);
-                var_r5_3 = temp_r9 & temp_r6_2;
-                var_r24 = var_r24 + 0x20 - var_r0_3;
-            } else {
-                var_r5_3 = var_r25 & temp_r9;
-                var_r25 = var_r25 >> var_r0_3;
-                var_r24 -= var_r0_3;
-            }
-            if (var_r5_3 != 0) {
-                if (var_r24 == 0) {
-                    var_r4_3 = *var_r26;
-                    var_r24 = 0x1F;
-                    var_r26++;
-                    var_r25 = var_r4_3 >> 1U;
-                } else {
-                    var_r4_3 = var_r25;
-                    var_r25 = var_r25 >> 1U;
-                    var_r24--;
-                }
-                if (var_r4_3 & 1) var_f1 = var_f28;
-                else var_f1 = var_f29;
-                *var_r27 = (f32)var_r5_3 * var_f1;
-                var_r27++;
-            } else {
-                *var_r27 = temp_f31;
-                var_r27++;
-            }
-        }
-    }
-    goto outer_test;
+        var_r3++;
+      }
 
-outer_test:
-    if (var_r3 < (u32)arg1) goto decode;
-    ((BitReader8011 *)arg2)->next = var_r26;
-    ((BitReader8011 *)arg2)->value = var_r25;
-    ((BitReader8011 *)arg2)->count = var_r24;
+    }
+  }
+  goto outer_test;
+  outer_test:
+  if (var_r3 < ((u32) arg1))
+  {
+    goto decode;
+  }
+
+  ((BitReader8011 *) arg2)->next = var_r26;
+  ((BitReader8011 *) arg2)->value = var_r25;
+  ((BitReader8011 *) arg2)->count = var_r24;
 }
 
 s32 fn_8011B2AC(s32 size, u32 channels, s32 flags, s32 arg3, s32 arg4, s32 output, u32 *input, u32 bands, f32 gain, s32 arg8)
