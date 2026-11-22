@@ -521,48 +521,51 @@ extern "C" f32 CosFIdx__Q24nw4r4mathFf(f32 angle) {
 extern float lbl_80560F04, lbl_80560F08, lbl_80560F0C, lbl_80560F10, lbl_80560F14, lbl_80560F18;
 extern float lbl_80321E48[];
 #pragma pop
-/* nw4r math atan2: fold (x,y) into the first octant, interpolate atan(|y|/divisor) from a value/slope table, then add the quadrant base angle; returns an angle index in 1/256-turn units. */ extern "C" float Atan2FIdx__Q24nw4r4mathFff(float y, float x) {
+extern "C" float Atan2FIdx__Q24nw4r4mathFff(float y, float x) {
+    /* nw4r math atan2: fold (x,y) into the first octant, linearly interpolate
+     * atan(|y|/divisor) from a value/slope table, then add the quadrant base angle;
+     * returns an angle index in 1/256-turn units. */
     if (0.0f == x && 0.0f == y) return 0.0f;
-    float f3, f4 = lbl_80560F04, f0;
-    int mode;
+    float divisor, angleOffset = lbl_80560F04, negX;
+    int subtractOffset;
     if (x >= lbl_80560F04) {
         if (y >= lbl_80560F04) {
-            if (x >= y) { f3 = x; mode = 0; }
-            else { f3 = y; f4 = lbl_80560F0C; y = x; mode = 1; }
+            if (x >= y) { divisor = x; subtractOffset = 0; }
+            else { divisor = y; angleOffset = lbl_80560F0C; y = x; subtractOffset = 1; }
         } else {
             y = -y;
-            if (x >= y) { f3 = x; mode = 1; }
-            else { f3 = y; f4 = lbl_80560F10; y = x; mode = 0; }
+            if (x >= y) { divisor = x; subtractOffset = 1; }
+            else { divisor = y; angleOffset = lbl_80560F10; y = x; subtractOffset = 0; }
         }
     } else {
         if (y >= lbl_80560F04) {
-            f0 = -x;
-            if (f0 >= y) { f3 = f0; f4 = lbl_80560F14; mode = 1; }
-            else { f3 = y; f4 = lbl_80560F0C; y = f0; mode = 0; }
+            negX = -x;
+            if (negX >= y) { divisor = negX; angleOffset = lbl_80560F14; subtractOffset = 1; }
+            else { divisor = y; angleOffset = lbl_80560F0C; y = negX; subtractOffset = 0; }
         } else {
-            f0 = -x;
+            negX = -x;
             y = -y;
-            if (f0 >= y) { f3 = f0; f4 = lbl_80560F18; mode = 0; }
-            else { f3 = y; f4 = lbl_80560F10; y = f0; mode = 1; }
+            if (negX >= y) { divisor = negX; angleOffset = lbl_80560F18; subtractOffset = 0; }
+            else { divisor = y; angleOffset = lbl_80560F10; y = negX; subtractOffset = 1; }
         }
     }
-    struct AtanEntry { f32 v, s; };
-    if (mode) {
-        y = y / f3;
+    struct AtanEntry { f32 value, slope; };
+    if (subtractOffset) {
+        y = y / divisor;
         y = y * lbl_80560F08;
-        u16 i = __OSf32tou16(y);
-        f32 whole = __OSu16tof32(&i);
-        u32 byteOffset = i * 8;
-        struct AtanEntry *tab = (struct AtanEntry *)lbl_80321E48;
-        return f4 - (tab[i].v + (y - whole) * *(f32 *)((char *)lbl_80321E48 + byteOffset + 4));
+        u16 tableIndex = __OSf32tou16(y);
+        f32 wholeIndex = __OSu16tof32(&tableIndex);
+        u32 byteOffset = tableIndex * 8;
+        struct AtanEntry *atanTable = (struct AtanEntry *)lbl_80321E48;
+        return angleOffset - (atanTable[tableIndex].value + (y - wholeIndex) * *(f32 *)((char *)lbl_80321E48 + byteOffset + 4));
     } else {
-        y = y / f3;
+        y = y / divisor;
         y = y * lbl_80560F08;
-        u16 i = __OSf32tou16(y);
-        f32 whole = __OSu16tof32(&i);
-        u32 byteOffset = i * 8;
-        struct AtanEntry *tab = (struct AtanEntry *)lbl_80321E48;
-        return f4 + (tab[i].v + (y - whole) * *(f32 *)((char *)lbl_80321E48 + byteOffset + 4));
+        u16 tableIndex = __OSf32tou16(y);
+        f32 wholeIndex = __OSu16tof32(&tableIndex);
+        u32 byteOffset = tableIndex * 8;
+        struct AtanEntry *atanTable = (struct AtanEntry *)lbl_80321E48;
+        return angleOffset + (atanTable[tableIndex].value + (y - wholeIndex) * *(f32 *)((char *)lbl_80321E48 + byteOffset + 4));
     }
 }
 
