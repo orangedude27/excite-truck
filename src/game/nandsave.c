@@ -733,100 +733,100 @@ enum {
  * recording the error in ctx+0x258.  Steps: create -> open -> write -> close.
  */
 void fn_802E9254(void *ctx) {
-    char *data = (char *)ctx;
-    unsigned char *flags = (unsigned char *)ctx;
-    int state = *(int *)data;
-    int status = 0;
-    int result;
+    char *ctxBytes = (char *)ctx;
+    unsigned char *ctxFlags = (unsigned char *)ctx;
+    int step = *(int *)ctxBytes;
+    int opStatus = 0;
+    int nandResult;
 
-    switch (state) {
+    switch (step) {
     case RMEMCARD_WRITE_CREATE:
-        flags[0x250] = status;
-        *(int *)(data + 0x254) = status;
-        result = NANDCreateAsync(data + 0xC, 0x30, 0, fn_802E95CC, data + 0x198);
-        if (result != 0) {
-            fn_802E30C8(lbl_8034E114, lbl_8034E218, result); /* "rmemcard: %s failed (%d)", "NANDCreateAsync" */
-            *(int *)data = status;
-            *(int *)(data + 0x258) = result;
-        } else *(int *)data = RMEMCARD_WRITE_OPEN;
+        ctxFlags[0x250] = opStatus;
+        *(int *)(ctxBytes + 0x254) = opStatus;
+        nandResult = NANDCreateAsync(ctxBytes + 0xC, 0x30, 0, fn_802E95CC, ctxBytes + 0x198);
+        if (nandResult != 0) {
+            fn_802E30C8(lbl_8034E114, lbl_8034E218, nandResult); /* "rmemcard: %s failed (%d)", "NANDCreateAsync" */
+            *(int *)ctxBytes = opStatus;
+            *(int *)(ctxBytes + 0x258) = nandResult;
+        } else *(int *)ctxBytes = RMEMCARD_WRITE_OPEN;
         break;
     case RMEMCARD_WRITE_OPEN:
-        if (flags[0x250] != status) {          /* create has finished */
-            status = *(int *)(data + 0x254);
-            if (status == 0 || status == -6) { /* created OK, or already existed */
-                flags[0x250] = 0;
-                *(int *)(data + 0x254) = 0;
-                result = NANDOpenAsync(data + 0xC, data + 0x10C, 2, fn_802E95CC, data + 0x198);
-                if (result != 0) {
-                    fn_802E30C8(lbl_8034E114, lbl_8034E1F8, result); /* "NANDOpenAsync" */
-                    *(int *)data = RMEMCARD_WRITE_IDLE;
-                    *(int *)(data + 0x258) = result;
-                } else *(int *)data = RMEMCARD_WRITE_WRITE;
+        if (ctxFlags[0x250] != opStatus) {          /* create has finished */
+            opStatus = *(int *)(ctxBytes + 0x254);
+            if (opStatus == 0 || opStatus == -6) { /* created OK, or already existed */
+                ctxFlags[0x250] = 0;
+                *(int *)(ctxBytes + 0x254) = 0;
+                nandResult = NANDOpenAsync(ctxBytes + 0xC, ctxBytes + 0x10C, 2, fn_802E95CC, ctxBytes + 0x198);
+                if (nandResult != 0) {
+                    fn_802E30C8(lbl_8034E114, lbl_8034E1F8, nandResult); /* "NANDOpenAsync" */
+                    *(int *)ctxBytes = RMEMCARD_WRITE_IDLE;
+                    *(int *)(ctxBytes + 0x258) = nandResult;
+                } else *(int *)ctxBytes = RMEMCARD_WRITE_WRITE;
             } else {
-                if (status == -11) {           /* title not found: needs a create */
+                if (opStatus == -11) {           /* title not found: needs a create */
                     lbl_80560034 = 1;
                     fn_802E888C(5);
                 }
-                status = *(int *)(data + 0x254);
-                fn_802E30C8(lbl_8034E114, lbl_8034E1E8, status); /* "NANDCreateAsync" */
-                *(int *)(data + 0x258) = status;
-                *(int *)data = RMEMCARD_WRITE_IDLE;
+                opStatus = *(int *)(ctxBytes + 0x254);
+                fn_802E30C8(lbl_8034E114, lbl_8034E1E8, opStatus); /* "NANDCreateAsync" */
+                *(int *)(ctxBytes + 0x258) = opStatus;
+                *(int *)ctxBytes = RMEMCARD_WRITE_IDLE;
             }
         }
         break;
     case RMEMCARD_WRITE_WRITE:
-        if (flags[0x250] != 0) {               /* open has finished */
-            status = *(int *)(data + 0x254);
-            if (status == 0) {
-                flags[0x250] = 0;
-                *(int *)(data + 0x254) = 0;
-                result = NANDWriteAsync(data + 0x10C, (const void *)*(int *)(data + 8),
-                                        *(unsigned int *)(data + 4), fn_802E95CC, data + 0x198);
-                if (result != 0) {
-                    fn_802E30C8(lbl_8034E114, lbl_8034E1C4, result); /* "NANDWriteAsync" */
-                    *(int *)data = RMEMCARD_WRITE_IDLE;
-                    *(int *)(data + 0x258) = result;
-                    NANDClose(data + 0x10C);
-                } else *(int *)data = RMEMCARD_WRITE_CLOSE;
+        if (ctxFlags[0x250] != 0) {               /* open has finished */
+            opStatus = *(int *)(ctxBytes + 0x254);
+            if (opStatus == 0) {
+                ctxFlags[0x250] = 0;
+                *(int *)(ctxBytes + 0x254) = 0;
+                nandResult = NANDWriteAsync(ctxBytes + 0x10C, (const void *)*(int *)(ctxBytes + 8),
+                                        *(unsigned int *)(ctxBytes + 4), fn_802E95CC, ctxBytes + 0x198);
+                if (nandResult != 0) {
+                    fn_802E30C8(lbl_8034E114, lbl_8034E1C4, nandResult); /* "NANDWriteAsync" */
+                    *(int *)ctxBytes = RMEMCARD_WRITE_IDLE;
+                    *(int *)(ctxBytes + 0x258) = nandResult;
+                    NANDClose(ctxBytes + 0x10C);
+                } else *(int *)ctxBytes = RMEMCARD_WRITE_CLOSE;
             } else {
-                fn_802E30C8(lbl_8034E114, lbl_8034E1B4, status); /* "NANDOpenAsync" */
-                *(int *)(data + 0x258) = status;
-                *(int *)data = RMEMCARD_WRITE_IDLE;
+                fn_802E30C8(lbl_8034E114, lbl_8034E1B4, opStatus); /* "NANDOpenAsync" */
+                *(int *)(ctxBytes + 0x258) = opStatus;
+                *(int *)ctxBytes = RMEMCARD_WRITE_IDLE;
             }
         }
         break;
     case RMEMCARD_WRITE_CLOSE:
-        if (flags[0x250] != 0) {               /* write has finished */
-            status = *(int *)(data + 0x254);
-            if (status == *(int *)(data + 4)) { /* wrote the whole buffer */
-                flags[0x250] = 0;
-                *(int *)(data + 0x254) = 0;
-                result = NANDCloseAsync(data + 0x10C, fn_802E95CC, data + 0x198);
-                if (result != 0) {
-                    fn_802E30C8(lbl_8034E114, lbl_8034E194, result); /* "NANDCloseAsync" */
-                    *(int *)data = RMEMCARD_WRITE_IDLE;
-                    *(int *)(data + 0x258) = result;
-                    NANDClose(data + 0x10C);
-                } else *(int *)data = RMEMCARD_WRITE_FINISHED;
+        if (ctxFlags[0x250] != 0) {               /* write has finished */
+            opStatus = *(int *)(ctxBytes + 0x254);
+            if (opStatus == *(int *)(ctxBytes + 4)) { /* wrote the whole buffer */
+                ctxFlags[0x250] = 0;
+                *(int *)(ctxBytes + 0x254) = 0;
+                nandResult = NANDCloseAsync(ctxBytes + 0x10C, fn_802E95CC, ctxBytes + 0x198);
+                if (nandResult != 0) {
+                    fn_802E30C8(lbl_8034E114, lbl_8034E194, nandResult); /* "NANDCloseAsync" */
+                    *(int *)ctxBytes = RMEMCARD_WRITE_IDLE;
+                    *(int *)(ctxBytes + 0x258) = nandResult;
+                    NANDClose(ctxBytes + 0x10C);
+                } else *(int *)ctxBytes = RMEMCARD_WRITE_FINISHED;
             } else {
-                fn_802E30C8(lbl_8034E114, lbl_8034E184, status); /* "NANDWriteAsync" */
-                *(int *)(data + 0x258) = status;
-                *(int *)data = RMEMCARD_WRITE_IDLE;
-                NANDClose(data + 0x10C);
+                fn_802E30C8(lbl_8034E114, lbl_8034E184, opStatus); /* "NANDWriteAsync" */
+                *(int *)(ctxBytes + 0x258) = opStatus;
+                *(int *)ctxBytes = RMEMCARD_WRITE_IDLE;
+                NANDClose(ctxBytes + 0x10C);
             }
         }
         break;
     case RMEMCARD_WRITE_FINISHED:
-        if (flags[0x250] != 0) {               /* close has finished */
-            status = *(int *)(data + 0x254);
-            if (status == 0) {
-                *(int *)data = RMEMCARD_WRITE_DONE;
-                fn_802E30C8(lbl_8034E168, *(int *)(data + 4), data + 0xC); /* "rmemcard: Wrote %db to %s" */
+        if (ctxFlags[0x250] != 0) {               /* close has finished */
+            opStatus = *(int *)(ctxBytes + 0x254);
+            if (opStatus == 0) {
+                *(int *)ctxBytes = RMEMCARD_WRITE_DONE;
+                fn_802E30C8(lbl_8034E168, *(int *)(ctxBytes + 4), ctxBytes + 0xC); /* "rmemcard: Wrote %db to %s" */
             } else {
-                fn_802E30C8(lbl_8034E114, lbl_8034E158, status); /* "NANDCloseAsync" */
-                *(int *)(data + 0x258) = status;
-                *(int *)data = RMEMCARD_WRITE_IDLE;
-                NANDClose(data + 0x10C);
+                fn_802E30C8(lbl_8034E114, lbl_8034E158, opStatus); /* "NANDCloseAsync" */
+                *(int *)(ctxBytes + 0x258) = opStatus;
+                *(int *)ctxBytes = RMEMCARD_WRITE_IDLE;
+                NANDClose(ctxBytes + 0x10C);
             }
         }
         break;
@@ -922,36 +922,27 @@ struct NandSaveState {
     char pad[0x258];
     int field;
 };
-#pragma opt_propagation off
+#pragma scheduling invalid_target
 void fn_802E97B4(void) {
+    struct SaveState { int status; char reserved[0x258]; int result; };
     if (lbl_80560035 == 0) {
         switch (fn_802ECC10()) {
-        case 0:
-            break;
-        default:
-            return;
+        case 0: break;
+        default: return;
         }
         lbl_80560035 = 1;
-        if (lbl_80507288 == 1) {
-            switch (*(int *)((char *)&lbl_80507288 + 0x25C)) {
-            case 0:
-                break;
-            case -9:
-                fn_802E888C(6);
-                break;
-            case -11:
-                fn_802E888C(5);
-                break;
-            default:
-                fn_802E30C8(lbl_8034E0BC);
-                break;
+        if (((struct SaveState *)&lbl_80507288)->status == 1) {
+            switch (((struct SaveState *)&lbl_80507288)->result) {
+            case 0: break;
+            case -9: fn_802E888C(6); break;
+            case -11: fn_802E888C(5); break;
+            default: fn_802E30C8(lbl_8034E0BC); break;
             }
         }
-        *(int *)((char *)&lbl_80507288 + 0x25C) = 0;
+        ((struct SaveState *)&lbl_80507288)->result = 0;
         lbl_80560035 = 0;
     }
 }
-#pragma opt_propagation reset
 /* No-op NAND-save hook: game-menu init passes this a callback pointer (fn_8023E7A8), but this build discards it. */
 void fn_802E986C(void) {}
 
