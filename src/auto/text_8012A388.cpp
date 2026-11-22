@@ -152,43 +152,43 @@ extern "C" void fn_8012D1A8(s32 arg0);
 extern "C" s32 fn_8012D024(void *, s32, s32);
 
 #pragma use_lmw_stmw off
-extern "C" s32 fn_8012A388(void *arg0) {
+/* Byte-swap the five little-endian u32 fields of a resource-table entry in place (dataTag, id, size, offset, crc at +0x20..+0x33), clear its flags and useCount, and mask id down to 16 bits. Returns the entry pointer. */ extern "C" s32 fn_8012A388(void *entry) {
     u8 b24, b20, b28, b2c, b30;
     u8 b25, b21, b29, b2d, b31;
-    b24 = *(u8 *)((u8 *)arg0 + 0x24);
-    b25 = *(u8 *)((u8 *)arg0 + 0x25);
-    b20 = *(u8 *)((u8 *)arg0 + 0x20);
-    b21 = *(u8 *)((u8 *)arg0 + 0x21);
-    b28 = *(u8 *)((u8 *)arg0 + 0x28);
-    b29 = *(u8 *)((u8 *)arg0 + 0x29);
-    b2c = *(u8 *)((u8 *)arg0 + 0x2c);
-    b2d = *(u8 *)((u8 *)arg0 + 0x2d);
-    b30 = *(u8 *)((u8 *)arg0 + 0x30);
-    b31 = *(u8 *)((u8 *)arg0 + 0x31);
-    *(u8 *)((u8 *)arg0 + 0x24) = *(u8 *)((u8 *)arg0 + 0x27);
-    *(u8 *)((u8 *)arg0 + 0x27) = b24;
-    *(u8 *)((u8 *)arg0 + 0x25) = *(u8 *)((u8 *)arg0 + 0x26);
-    *(u8 *)((u8 *)arg0 + 0x26) = b25;
-    *(u8 *)((u8 *)arg0 + 0x20) = *(u8 *)((u8 *)arg0 + 0x23);
-    *(u8 *)((u8 *)arg0 + 0x23) = b20;
-    *(u8 *)((u8 *)arg0 + 0x21) = *(u8 *)((u8 *)arg0 + 0x22);
-    *(u8 *)((u8 *)arg0 + 0x22) = b21;
-    *(u8 *)((u8 *)arg0 + 0x28) = *(u8 *)((u8 *)arg0 + 0x2b);
-    *(u8 *)((u8 *)arg0 + 0x2b) = b28;
-    *(u8 *)((u8 *)arg0 + 0x29) = *(u8 *)((u8 *)arg0 + 0x2a);
-    *(u8 *)((u8 *)arg0 + 0x2a) = b29;
-    *(u8 *)((u8 *)arg0 + 0x2c) = *(u8 *)((u8 *)arg0 + 0x2f);
-    *(u8 *)((u8 *)arg0 + 0x2f) = b2c;
-    *(u8 *)((u8 *)arg0 + 0x2d) = *(u8 *)((u8 *)arg0 + 0x2e);
-    *(u8 *)((u8 *)arg0 + 0x2e) = b2d;
-    *(u8 *)((u8 *)arg0 + 0x30) = *(u8 *)((u8 *)arg0 + 0x33);
-    *(u8 *)((u8 *)arg0 + 0x33) = b30;
-    *(u8 *)((u8 *)arg0 + 0x31) = *(u8 *)((u8 *)arg0 + 0x32);
-    *(u8 *)((u8 *)arg0 + 0x32) = b31;
-    *(u32 *)((u8 *)arg0 + 0x38) = 0;
-    *(u32 *)((u8 *)arg0 + 0x34) = 0;
-    *(u32 *)((u8 *)arg0 + 0x24) &= 0xFFFF;
-    return (s32)arg0;
+    b24 = *(u8 *)((u8 *)entry + 0x24);
+    b25 = *(u8 *)((u8 *)entry + 0x25);
+    b20 = *(u8 *)((u8 *)entry + 0x20);
+    b21 = *(u8 *)((u8 *)entry + 0x21);
+    b28 = *(u8 *)((u8 *)entry + 0x28);
+    b29 = *(u8 *)((u8 *)entry + 0x29);
+    b2c = *(u8 *)((u8 *)entry + 0x2c);
+    b2d = *(u8 *)((u8 *)entry + 0x2d);
+    b30 = *(u8 *)((u8 *)entry + 0x30);
+    b31 = *(u8 *)((u8 *)entry + 0x31);
+    *(u8 *)((u8 *)entry + 0x24) = *(u8 *)((u8 *)entry + 0x27);
+    *(u8 *)((u8 *)entry + 0x27) = b24;
+    *(u8 *)((u8 *)entry + 0x25) = *(u8 *)((u8 *)entry + 0x26);
+    *(u8 *)((u8 *)entry + 0x26) = b25;
+    *(u8 *)((u8 *)entry + 0x20) = *(u8 *)((u8 *)entry + 0x23);
+    *(u8 *)((u8 *)entry + 0x23) = b20;
+    *(u8 *)((u8 *)entry + 0x21) = *(u8 *)((u8 *)entry + 0x22);
+    *(u8 *)((u8 *)entry + 0x22) = b21;
+    *(u8 *)((u8 *)entry + 0x28) = *(u8 *)((u8 *)entry + 0x2b);
+    *(u8 *)((u8 *)entry + 0x2b) = b28;
+    *(u8 *)((u8 *)entry + 0x29) = *(u8 *)((u8 *)entry + 0x2a);
+    *(u8 *)((u8 *)entry + 0x2a) = b29;
+    *(u8 *)((u8 *)entry + 0x2c) = *(u8 *)((u8 *)entry + 0x2f);
+    *(u8 *)((u8 *)entry + 0x2f) = b2c;
+    *(u8 *)((u8 *)entry + 0x2d) = *(u8 *)((u8 *)entry + 0x2e);
+    *(u8 *)((u8 *)entry + 0x2e) = b2d;
+    *(u8 *)((u8 *)entry + 0x30) = *(u8 *)((u8 *)entry + 0x33);
+    *(u8 *)((u8 *)entry + 0x33) = b30;
+    *(u8 *)((u8 *)entry + 0x31) = *(u8 *)((u8 *)entry + 0x32);
+    *(u8 *)((u8 *)entry + 0x32) = b31;
+    *(u32 *)((u8 *)entry + 0x38) = 0;
+    *(u32 *)((u8 *)entry + 0x34) = 0;
+    *(u32 *)((u8 *)entry + 0x24) &= 0xFFFF;
+    return (s32)entry;
 }
 #pragma use_lmw_stmw reset
 extern "C" const char lbl_8032A630[];
@@ -1888,7 +1888,7 @@ extern "C" void fn_8012D024_old(void *arg0, s32 arg1, s32 arg2) {
     }
 }
 
-#pragma pop
+#pragma use_lmw_stmw off
 extern "C" void fn_8012D1A8(s32 arg0) {
     u8 *self = (u8 *)arg0;
     s32 off;
@@ -1900,12 +1900,12 @@ extern "C" void fn_8012D1A8(s32 arg0) {
             *(s32 *)(self + 0xB4) = -1;
         }
         for (i = 0, off = 0; i < *(s32 *)(self + 0x8C); i++, off += 0x44) {
-            u32 *test = (u32 *)(*(s32 *)(self + 0x64) + off);
-            if (test[0x34 / 4] & 4) {
-                fn_802E317C(lbl_8032AE20);
+            u32 *r = (u32 *)(*(s32 *)(self + 0x64) + off);
+            if (r[0x34 / 4] & 4) {
+                fn_802E317C(lbl_8032AE20, r);
             }
-            u32 *store = (u32 *)(*(s32 *)(self + 0x64) + off);
-            store[0x34 / 4] &= ~0xF;
+            r = (u32 *)(*(s32 *)(self + 0x64) + off);
+            r[0x34 / 4] &= ~0xF;
         }
         if (*(s32 *)(self + 0x68) != 0) {
             fn_8012C4D8((void *)*(s32 *)(self + 0x68));
@@ -1919,12 +1919,12 @@ extern "C" void fn_8012D1A8(s32 arg0) {
         fn_8012BA1C(self + 4);
         fn_8012BC24((void **)&lbl_8055E000, self + 4);
         for (i = 0, off = 0; i < *(s32 *)(self + 0x8C); i++, off += 0x44) {
-            u32 *test = (u32 *)(*(s32 *)(self + 0x64) + off);
-            if (test[0x34 / 4] & 4) {
-                fn_802E317C(lbl_8032AE20);
+            u32 *r = (u32 *)(*(s32 *)(self + 0x64) + off);
+            if (r[0x34 / 4] & 4) {
+                fn_802E317C(lbl_8032AE20, r);
             }
-            u32 *store = (u32 *)(*(s32 *)(self + 0x64) + off);
-            store[0x34 / 4] &= ~0xF;
+            r = (u32 *)(*(s32 *)(self + 0x64) + off);
+            r[0x34 / 4] &= ~0xF;
         }
         if (*(s32 *)(self + 0x68) != 0) {
             fn_8012C4D8((void *)*(s32 *)(self + 0x68));
@@ -1937,10 +1937,6 @@ extern "C" void fn_8012D1A8(s32 arg0) {
         break;
     }
 }
-#pragma push
-#pragma scheduling invalid_target
-
-#pragma scheduling on
 extern "C" void fn_8012D33C(u32 *arg0, u32 *arg1) {
     u32 v4 = arg1[4];
     u32 v3 = arg1[3];
@@ -2932,7 +2928,6 @@ extern "C" const char lbl_8032AD88[];
 #pragma scheduling invalid_target
 extern "C" void fn_8012E81C(s32 arg0) {
     #pragma opt_common_subs off
-    #pragma opt_dead_assignments off
     nw4r::ef::Effect *effect = lbl_8055E014;
     s32 limit;
     void *entry;
