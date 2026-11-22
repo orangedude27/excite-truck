@@ -4552,7 +4552,7 @@ void uusb_ReadIntrDataCB(s32 length, BT_HDR *buf) {
         }
         buf->len = length;
         buf->event = 0x1000;
-        size = (((u16)buf->len + buf->offset + 8) & ~3) + 4;
+        size = ((((s32)u16)buf->len + buf->offset + 8) & ~3) + 4;
         memcpy(copy, buf, size);
         if (lbl_803BD1E0.at_0x28) OSReport(report + 0x114, copy->len, copy->offset, size);
         control = &lbl_803BD1E0;
