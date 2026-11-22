@@ -806,7 +806,7 @@ extern "C" void fn_80208994(void) {
  * adaptation.  The sound-object initializer fn_80207218 in text_802062E8.cpp
  * calls this stub and keeps the returned handle at object+0xC; fn_80208994 is
  * the identical stub the other initializer uses. */
-void fn_80208998(void) {
+extern "C" void fn_80208998(void) {
 	((void (*)(void))fn_80208858)();
 }
 
