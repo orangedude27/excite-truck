@@ -693,7 +693,7 @@ extern "C" void fn_8016C328(void *arg0) {
     if (cfg->has(base + 0x50)) {
         fn_8016CE94((u8 *)arg0 + 8, cfg->getF(base + 0x50));
     } else {
-        fn_8016CE94((u8 *)arg0 + 8, lbl_8056199C);
+        fn_8016CE94((u8 *)arg0 + 8, 120.0f);
     }
     fn_801345D8(buf, 0x1E, base + 0x5C);
     obj = (void *)fn_801284F8(0x10, base + 0x6C);
@@ -708,10 +708,7 @@ extern "C" void fn_8016C328(void *arg0) {
             i = 0;
             goto get;
             do {
-                void *p18 = *(void **)((u8 *)arg0 + 0x18);
-                void *v = (void *)fn_8016CD4C(p18);
-                u8 *f14 = (u8 *)arg0 + 0x14;
-                fn_8016C768(v, item, f14);
+                fn_8016C768((void *)fn_8016CD4C(*(void **)((u8 *)arg0 + 0x18)), item, (u8 *)arg0 + 0x14 + (i & 0));
                 i++;
 get:
                 item = list->get(i);
@@ -838,8 +835,6 @@ extern "C" s32 fn_8016C5F0(void) {
 /* Return a List8016C768's filled-entry count: `index`, the s32 at +0x4. */
 int fn_8016C760(void *list) { return ((int *)list)[1]; }
 
-void fn_8016CD10(void *);
-void fn_8016CD28(void *);
 #pragma cplusplus off
 #pragma cplusplus on
 extern "C" void fn_8016CD10(void *);
@@ -2731,10 +2726,14 @@ s.f30 = lbl_80561980;
 s.f34 = lbl_80561980;
 do {
 fn_801345D8(s.sp40, 0x10, lbl_8055A270, i);
-*(unsigned long long *)s.ret = ((Obj *)obj)->get2(s.sp40);
 {
-float a = s.ret[0];
+unsigned long long xy = ((Obj *)obj)->get2(s.sp40);
+((unsigned int *)s.ret)[0] = (unsigned int)(xy >> 32);
+((unsigned int *)s.ret)[1] = (unsigned int)xy;
+}
+{
 float b = s.ret[1];
+float a = s.ret[0];
 p[0] = a;
 p[1] = b;
 }
@@ -2742,41 +2741,53 @@ p += 2;
 i += 1;
 } while (i < 3);
 idx = 2;
-s.f18 = s.pts[2][0] - s.pts[0][0];
-s.f1C = s.pts[2][1] - s.pts[0][1];
 {
-float len1 = s.f18 * s.f18 + s.f1C * s.f1C;
-float d0 = s.pts[0][0] - s.pts[1][0];
-float c0 = s.pts[0][1] - s.pts[1][1];
-float len2 = d0 * d0 + c0 * c0;
-s.f10 = d0;
-s.f14 = c0;
+float dy20 = -(s.pts[0][1] - s.pts[2][1]);
+float dx20 = s.pts[2][0] - s.pts[0][0];
+float dx01 = s.pts[0][0] - s.pts[1][0];
+float dy01 = s.pts[0][1] - s.pts[1][1];
+float dxsq = dx20 * dx20;
+float len1 = dxsq + dy20 * dy20;
+float len2 = dx01 * dx01 + dy01 * dy01;
+s.f18 = dx20;
+s.f1C = dy20;
+s.f10 = dx01;
+s.f14 = dy01;
 if (len2 > len1) {
-len1 = len2;
-idx = 0;
+    len1 = len2;
+    idx = 0;
 }
 {
-float g = s.pts[1][1] - s.pts[2][1];
-float h = s.pts[1][0] - s.pts[2][0];
-s.f14 = g;
-s.f10 = h;
-if (h * h + g * g > len1) {
-idx = 1;
-}
+    float g = s.pts[1][1] - s.pts[2][1];
+    float h = s.pts[1][0] - s.pts[2][0];
+    s.f14 = g;
+    s.f10 = h;
+    if (h * h + g * g > len1) {
+        idx = 1;
+    }
 }
 }
 o1 = (idx + 1) % 3;
 o2 = idx;
-s.fC = s.pts[o2][1] + lbl_80561988 * (s.pts[o1][1] - s.pts[o2][1]);
-s.f8 = s.pts[o2][0] + lbl_80561988 * (s.pts[o1][0] - s.pts[o2][0]);
-o1 = (idx + 2) % 3;
+{
+    float fraction = lbl_80561988;
+    float nextY = s.pts[o1][1];
+    float curY = s.pts[o2][1];
+    float nextX = s.pts[o1][0];
+    float curX = s.pts[o2][0];
+    float deltaX = fraction * (nextX - curX);
+    float deltaY = fraction * (nextY - curY);
+    o1 = (idx + 2) % 3;
+    s.fC = curY + deltaY;
+    s.f8 = curX + deltaX;
+}
 {
 double dd = *(double *)&s.f8;
 *(double *)s.d28 = dd;
 {
-float dx = s.pts[o1][0] - (float)dd;
+float dx = s.pts[o1][0] - s.d28[0];
 float dy = s.pts[o1][1] - *((float *)&s.d28 + 1);
-s.f38 = (float)dd;
+s.f38 = s.d28[0];
 s.f3C = *((float *)&s.d28 + 1);
 s.f30 = dx;
 s.f34 = dy;
@@ -2817,7 +2828,6 @@ s.f30 = nx;
 s.f34 = s.f34 * inv;
 fn_8013530C(s.query, -1, nx, inv, sqf);
 }
-}
 fn_801B7C8C(arg1, &s.f38, &s.f30);
 {
 float sc = lbl_80561A10 * ((Obj *)obj)->getf(lbl_8055A278, lbl_80561980);
@@ -2827,6 +2837,8 @@ float sc = lbl_80561A10 * ((Obj *)obj)->getf(lbl_8055A278, lbl_80561980);
 }
 return 1;
 }
+}
+return 0;
 }
 extern "C" s32 fn_80009C84(void);
 extern "C" u8 *fn_80131234(const char *);
