@@ -1785,7 +1785,7 @@ extern void fn_80128670(s32);
    the FIFO.  Each color is rotated left by eight on the way out, and the
    renderer's own cached state is set to mode 0 and applied before the draw and
    cleared again after it.  The vertex count the callers pass is not used. */
-void drawFifoTriangles(FifoVtx *__restrict vertices, s32 vertexCount,
+/* Draw an indexed GX_TRIANGLES list by streaming FifoVtx records straight into the GX FIFO, after setting up vertex format 0 for direct position/colour0/texcoord0 and clearing the renderer's cached state around the draw. */ void drawFifoTriangles(FifoVtx *__restrict vertices, s32 vertexCount,
                  u16 *__restrict indices, s32 count) {
     register s32 i;
 
