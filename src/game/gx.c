@@ -2159,7 +2159,7 @@ typedef struct DefaultLight_802D18E8 {
     /* 0x0C */ float pos[3];
     /* 0x18 */ float strength;
 } DefaultLight_802D18E8;
-extern int lbl_8055FDC8;   /* scene light table: entries in it */
+extern int gSceneLightCount;   /* scene light table: entries in it */
 extern int lbl_8055FDCC;   /* light objects loaded into GX light channels */
 extern float lbl_80564FD4; /* 64.0f: cone scale of the fallback light */
 extern void GXLoadLightObjImm(void *, unsigned int);
@@ -2231,7 +2231,7 @@ void gxSetupSceneLights(void) {
     direction[1] *= scale;
     direction[2] *= scale;
 
-    if (lbl_8055FDC8 > 0) {
+    if (gSceneLightCount > 0) {
         entry = (SceneLight_802D18E8 *)sLightEntries_802D18E8;
         lightObj = sLightObjs_802D18E8[0];
         count = 0;
@@ -2246,8 +2246,8 @@ void gxSetupSceneLights(void) {
         lightObj += 0x40;
         count++;
     loop_test:
-        if (count < lbl_8055FDC8) goto loop_body;
-        lbl_8055FDCC = lbl_8055FDC8;
+        if (count < gSceneLightCount) goto loop_body;
+        lbl_8055FDCC = gSceneLightCount;
     } else {
         /* Nothing to light the scene: one light from the fallback entry, whose
          * colour is scaled by its strength and whose cone is 64.0 wide. */
