@@ -1217,6 +1217,7 @@ void fn_8029DF64(void *arg0, int arg1, int arg2, float arg3) {
     if (low < 32767) out = low;
     data[index] = out;
 }
+#pragma pop
 #pragma scheduling invalid_target
 int fn_8029DFE0(void *arg0, void *arg1) {
     extern float lbl_805646A0, lbl_8056465C, lbl_80564634;
