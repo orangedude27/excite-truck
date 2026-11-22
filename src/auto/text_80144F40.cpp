@@ -428,7 +428,7 @@ extern "C" void fn_80145538(TextSizeEntry80145538 *entry, void *propertySource) 
 
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-/* Fills one 0x20-byte extended on-screen text entry from a level element's property set. */ /* Fills one 0x20-byte extended on-screen text entry from a level element's property set: base id/x/y/justification, style flags from just, a scale float, a color, and a comparison flag. */ extern "C" void fn_801455B8(void *arg0, void *arg1) {
+/* Fills one 0x20-byte extended on-screen text entry from a level element's property set: base id/x/y/justification, style flags from just, a scale float, a color, and a comparison flag. */ /* Fills one 0x20-byte extended on-screen text entry from a level element's property set. */ /* Fills one 0x20-byte extended on-screen text entry from a level element's property set: base id/x/y/justification, style flags from just, a scale float, a color, and a comparison flag. */ extern "C" void fn_801455B8(void *entry, void *propertySource) {
     class Obj {
     public:
         virtual void f0();
@@ -441,12 +441,12 @@ extern "C" void fn_80145538(TextSizeEntry80145538 *entry, void *propertySource) 
         virtual f32 f7(const char *);
     };
     char *const base = lbl_8032CEC8;
-    Obj *obj = (Obj *)arg1;
-    fn_80145368(arg0, arg1);
-    *(s32 *)((u8 *)arg0 + 0x14) = fn_80144F40(obj->f3(lbl_80559E04), base + 0x10);
-    *(f32 *)((u8 *)arg0 + 0x10) = obj->f7(lbl_80559E0C);
-    *(s32 *)((u8 *)arg0 + 0x18) = fn_801454E8(arg1, lbl_80559DFC);
-    *(s32 *)((u8 *)arg0 + 0x1C) = obj->f4(base + 0x5C, base + 0x70);
+    Obj *obj = (Obj *)propertySource;
+    fn_80145368(entry, propertySource);
+    *(s32 *)((u8 *)entry + 0x14) = fn_80144F40(obj->f3(lbl_80559E04), base + 0x10);
+    *(f32 *)((u8 *)entry + 0x10) = obj->f7(lbl_80559E0C);
+    *(s32 *)((u8 *)entry + 0x18) = fn_801454E8(propertySource, lbl_80559DFC);
+    *(s32 *)((u8 *)entry + 0x1C) = obj->f4(base + 0x5C, base + 0x70);
 }
 #pragma dont_inline reset
 #pragma scheduling on
