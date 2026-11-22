@@ -30,7 +30,7 @@ struct LoopItem_80207E70 {
 };
 #pragma cplusplus reset
 
-extern void fn_80208408();
+extern void fn_80208408(void *, void *);
 extern void fn_80208858(void *, signed long, signed long);
 extern signed long fn_80128668(void);
 extern void* fn_802090B4(void);
@@ -161,6 +161,7 @@ extern "C" void *fn_80207990(void *arg0, void *arg1) {
     object->count = 0;
     object->callback = arg1;
     memset(object->cleared5C, 0, 0x30);
+    source = lbl_802F9E4C;
     vector1 = lbl_804891F8;
     object->field5 = 0;
     vector2 = lbl_80489228;
@@ -182,7 +183,6 @@ extern "C" void *fn_80207990(void *arg0, void *arg1) {
     vector2[1] = zero;
     vector2[2] = zero;
     object->flag8C = 1;
-    source = lbl_802F9E4C;
     values[0] = *source++;
     values[1] = *source++;
     values[2] = *source++;
@@ -452,75 +452,113 @@ extern "C" void fn_80207E70(void *arg0) {
     }
 }
 
-void fn_80207F34(void *arg0) {
-    register char *obj = (char *)arg0;
-    signed long idx = (signed long)fn_802090B4();
-    SlotLimits *tbl = (SlotLimits *)lbl_802F9DC8;
-    signed long rem = tbl[idx].total;
-    signed long counts[9];
-    memset(counts, 0, 0x24);
-    signed long sel[9];
-    signed long row, j, take, done;
-    if (0 < rem) {
-        register char *rp = obj;
-        for (row = 0; row < 9; row++) {
-            counts[row] = 0;
-            if (*(unsigned char *)(obj + 5) == 0 || row == 0) {
-                signed long n = *(signed long *)(rp + 0x18);
-                for (j = 0; j < n; j++) {
-                    if (*(unsigned char *)(*(char **)(*(char **)(rp + 0x14) + j * 4) + 0x18) != 0) {
-                        counts[row]++;
-                    }
-                }
-            }
-            rp += 8;
-        }
-    }
-    memset(sel, 0, 0x24);
-    do {
-        done = 1;
-        row = 0;
-        while (rem > 0 && row < 9) {
-            signed long c = counts[row];
-            if (c) {
-                take = rem;
-                if (tbl[idx].lim[row] < rem) take = tbl[idx].lim[row];
-                if (take < c) {
-                    done = 0;
-                    rem -= take;
-                    counts[row] = counts[row] - sel[row];
-                    sel[row] = sel[row] + (unsigned)take;
-                } else {
-                    sel[row] += c;
-                    rem -= counts[row];
-                    counts[row] = 0;
-                }
-            }
-            ++row;
-        }
-    } while (done == 0 && rem > 0);
+#pragma push
+#pragma opt_common_subs off
+void fn_80207F34(void *arg0)
+{
+  signed long idx = (signed long) fn_802090B4();
+  signed long off = idx * 0x2c;
+  signed long rem = *((signed long *) (((char *) lbl_802F9DC8) + off));
+  register char *obj = (char *) arg0;
+  signed long counts[9];
+  memset(counts, 0, 0x24);
+  signed long sel[9];
+  register char *rp;
+  signed long row;
+  signed long j;
+  signed long take;
+  signed long done;
+  if (0 < rem)
+  {
+    rp = obj;
+    for (row = 0; row < 9; row++)
     {
-        char *rp = obj + 0x14;
-        for (row = 0; row < 9; row++) {
-            register signed long n = *(signed long *)(rp + 4);
-            for (j = 0; (int)j < n; j++) {
-                char *item = *(char **)(*(char **)rp + j * 4);
-                if (*(unsigned char *)(item + 0x18) != 0) {
-                    if (sel[row] == 0) {
-                        item[0x48] = 1;
-                    } else {
-                        sel[row]--;
-                        item[0x48] = 0;
-                    }
-                } else {
-                    item[0x48] = 1;
-                }
-            }
-            rp += 8;
+      counts[row] = 0;
+      if (((*((unsigned char *) (obj + 5))) == 0) || (row == 0))
+      {
+        signed long n = *((signed long *) (rp + 0x18));
+        for (j = 0; j < n; j++)
+        {
+          if ((*((unsigned char *) ((*((char **) ((*((char **) (rp + 0x14))) + (j * 4)))) + 0x18))) != 0)
+          {
+            counts[row]++;
+          }
         }
-    }
-}
 
+      }
+      rp += 8;
+    }
+
+  }
+  memset(sel, 0, 0x24);
+  {
+    SlotLimits *entry = (SlotLimits *) (((char *) lbl_802F9DC8) + off);
+    do
+    {
+      done = 1;
+      row = 0;
+      while ((rem > 0) && (row < 9))
+      {
+        signed long c = counts[row];
+        if (c)
+        {
+          signed long lim = entry->lim[row];
+          take = rem;
+          if (lim < rem)
+          {
+            take = lim;
+          }
+          if (!(c > take))
+          {
+            sel[row] += c;
+            rem -= counts[row];
+            counts[row] = 0;
+          }
+          else
+          {
+            done = 0;
+            rem -= take;
+            counts[row] = counts[row] - sel[row];
+            sel[row] = sel[row] + ((unsigned) take);
+          }
+        }
+        ++row;
+      }
+
+    }
+    while ((done == 0) && (rem > 0));
+  }
+  {
+    char *p3 = obj + 0x14;
+    for (row = 0; 0 < 9; row++)
+    {
+      register signed long n = *((signed long *) (p3 + 4));
+      for (j = 0; ((int) 0) < n; j++)
+      {
+        char *item = *((char **) ((*((char **) p3)) + (j * 4)));
+        if ((*((unsigned char *) (item + 0x18))) != 0)
+        {
+          if (sel[row] == 0)
+          {
+            item[0x48] = 1;
+          }
+          else
+          {
+            sel[row]--;
+            item[0x48] = 0;
+          }
+        }
+        else
+        {
+          item[0x48] = 1;
+        }
+      }
+
+      p3 += 8;
+    }
+
+  }
+}
 #pragma scheduling on
 extern "C" signed long fn_8020815C(void *arg0) {
     struct Obj {
@@ -533,21 +571,23 @@ extern "C" signed long fn_8020815C(void *arg0) {
         virtual void f6();
         virtual signed long check();
     };
-    signed long offset;
-    signed long limit;
-    signed long matches;
-    signed long i;
-    char *table;
+    register signed long offset;
+    register signed long limit;
+    register signed long matches;
+    register signed long i;
+    void *entry;
+    void *owner;
 
-    table = (char *)fn_802090B4();
-    limit = *(signed long *)((char *)lbl_802F9DC8 + (unsigned long)table * 0x2C);
+    limit = *(signed long *)((char *)lbl_802F9DC8 +
+             (signed long)fn_802090B4() * 0x2C);
     matches = 0;
     i = 0;
     offset = 0;
     while (i < *(signed long *)((char *)arg0 + 0x10)) {
-        void *entry = *(void **)((char *)*(void ***)((char *)arg0 + 0xC) + offset);
-        if (((Obj *)*(void **)((char *)entry + 0xC))->check() == 1) {
-            matches++;
+        entry = *(void **)((char *)*(void ***)((char *)arg0 + 0xC) + offset);
+        owner = *(void **)((char *)entry + 0xC);
+        if (((Obj *)owner)->check() == 1) {
+            matches += 1;
         }
         offset += 4;
         i++;
@@ -557,9 +597,6 @@ extern "C" signed long fn_8020815C(void *arg0) {
     }
 }
 
-#pragma cplusplus reset
-#pragma scheduling on
-
 #pragma push
 #pragma use_lmw_stmw off
 signed long fn_8020820C(SoundMgrObj* lhsObj, SoundMgrObj* rhsObj) {
@@ -568,7 +605,6 @@ signed long fn_8020820C(SoundMgrObj* lhsObj, SoundMgrObj* rhsObj) {
     unsigned long greater = lhsValue > rhsValue;
     signed long type = lhsObj->field_44;
 
-    /* Compare sound manager objects for ordering: for type 3/4 prefer the object owned by fn_8026A344(0), else compare field_68. */
     if (type == rhsObj->field_44 && (unsigned long)(type - 3) <= 1) {
         signed long ownerId = fn_8026A344(0);
         signed long rhsIsOwner = ownerId == rhsObj->field_10;
@@ -577,8 +613,10 @@ signed long fn_8020820C(SoundMgrObj* lhsObj, SoundMgrObj* rhsObj) {
     return greater;
 }
 
+#pragma push
 #pragma inline_depth(0)
 void fn_802082C0(void *arg0, void *arg1) {
+    register signed long outerOffset;
     register signed long *source;
     register signed long *target;
     register signed long count;
@@ -586,7 +624,6 @@ void fn_802082C0(void *arg0, void *arg1) {
     register signed long i;
     register signed long value;
     register signed long j;
-    register signed long outerOffset;
 
     base = *(signed long **)arg1;
     i = 1;
@@ -598,15 +635,12 @@ void fn_802082C0(void *arg0, void *arg1) {
 outer:
     value = *source;
     j = i;
-    target = (signed long *)((char *)base + outerOffset);
-    goto inner;
-inner:
-    *target = target[-1];
-    j--;
-    target--;
-    if (j > 0 &&
-        fn_8020820C((SoundMgrObj *)value, (SoundMgrObj *)target[-1]) != 0)
-        goto inner;
+    target = (signed long *)((unsigned long)base + (unsigned long)outerOffset);
+    while (j > 0 && fn_8020820C((SoundMgrObj *)value, (SoundMgrObj *)target[-1]) != 0) {
+        *target = target[-1];
+        j--;
+        target--;
+    }
     base[j] = value;
     source++;
     i++;
@@ -615,6 +649,7 @@ outer_check:
     if (i < count)
         goto outer;
 }
+#pragma pop
 extern char lbl_8033BE50[];
 extern char lbl_8033BE70[];
 
@@ -693,7 +728,7 @@ void fn_80208408(void *arg0, void *arg1) {
     void **list;
     char *adjust;
     int flagA;
-    int flagB;
+    int flagB = 0;
     int flagC;
 
     index = *(signed long *)((char *)arg1 + 0x44);
@@ -704,28 +739,33 @@ void fn_80208408(void *arg0, void *arg1) {
             (signed long)((char *)list - *(char **)((char *)arg0 + 0xC)) / 4) * 4);
     nextIndex = index + 1;
     if (nextIndex < 9) {
-        flagA = (nextIndex > 0x7FFFFFFE || nextIndex > 9) ? 0 : 1;
-        if (flagA != 0) {
-            flagB = ((unsigned long)(index + 1) + 0x80000000 == 0) ? 0 : 1;
-            if (flagB != 0) {
-                flagC = ((unsigned long)(-(index + 1)) >= 0x80000000 ||
-                         (unsigned long)(9 - (index + 1)) < 0x80000000) ? 1 : 0;
-                if (flagC != 0) {
-                    loops = (unsigned long)(8 - nextIndex) >> 3;
-                    adjust = (char *)arg0 + nextIndex * 8;
-                    if (nextIndex < 1) {
-                        do {
-                            *(volatile signed long *)(adjust + 0x14) += 4;
-                            *(volatile signed long *)(adjust + 0x1C) += 4;
-                            *(volatile signed long *)(adjust + 0x24) += 4;
-                            *(volatile signed long *)(adjust + 0x2C) += 4;
-                            *(volatile signed long *)(adjust + 0x34) += 4;
-                            *(volatile signed long *)(adjust + 0x3C) += 4;
-                            *(volatile signed long *)(adjust + 0x44) += 4;
-                            *(volatile signed long *)(adjust + 0x4C) += 4;
-                            adjust += 0x40;
-                            nextIndex += 8;
-                        } while (--loops != 0);
+        if (9 - nextIndex > 8) {
+            flagA = (nextIndex <= 9 && nextIndex <= 0x7FFFFFFE);
+            if (flagA != 0) {
+                {
+                    signed long v = index + 1;
+                    if (((unsigned long)(v + 0x80000000) != 0)) flagB = 1;
+                }
+                if (flagB != 0) {
+                    flagC = !((((unsigned long)(-(index + 1)) & 0x80000000) == 0) &&
+                              (((unsigned long)(9 - (index + 1)) & 0x80000000) != 0));
+                    if (flagC != 0) {
+                        loops = (unsigned long)(8 - nextIndex) >> 3;
+                        adjust = (char *)arg0 + nextIndex * 8;
+                        if (nextIndex < 1) {
+                            do {
+                                *(volatile signed long *)(adjust + 0x14) += 4;
+                                *(volatile signed long *)(adjust + 0x1C) += 4;
+                                *(volatile signed long *)(adjust + 0x24) += 4;
+                                *(volatile signed long *)(adjust + 0x2C) += 4;
+                                *(volatile signed long *)(adjust + 0x34) += 4;
+                                *(volatile signed long *)(adjust + 0x3C) += 4;
+                                *(volatile signed long *)(adjust + 0x44) += 4;
+                                *(volatile signed long *)(adjust + 0x4C) += 4;
+                                adjust += 0x40;
+                                nextIndex += 8;
+                            } while (--loops != 0);
+                        }
                     }
                 }
             }
@@ -794,16 +834,14 @@ extern "C" void fn_802089B0(void* self) {
     }
     ((Obj*)self)->destroy(1);
 }
-#pragma cplusplus reset
-#pragma pop
 signed long fn_802089D0(signed long object, signed long deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
-    if ((object != 0) && (deleteFlag > 0)) {
+    if (object != 0 && deleteFlag != 0) {
         fn_80128668();
     }
     return object;
 }
-
+#pragma pop
 /* Trampoline for the sound-object registration helper: tail-calls fn_80208408
  * (which inserts a sound object into its soundclass list on the manager) with no
  * adaptation.  The sound-object initializer in text_802062E8.cpp calls it through
@@ -831,30 +869,49 @@ signed long fn_802085F0(void* soundMgr, signed long sndClass) {
 extern char lbl_8033BE80[];
 #pragma push
 #pragma scheduling invalid_target
-void fn_80208620(void* arg0, void* arg1) {
-    typedef struct { int *ptr; int count; } Ent;
-    typedef struct { char pad0[0xc]; int *base; int total; Ent ents[9]; } Hdr;
-    Hdr *h = (Hdr*)arg0;
-    int idx = *(int*)((char*)arg1 + 0x44);
-    int *found = 0;
-    int i;
-    int j;
-    for (i = 0; i < h->ents[idx].count; i++) {
-        if ((void*)h->ents[idx].ptr[i] == arg1) {
-            found = &h->ents[idx].ptr[i];
-            break;
-        }
+void fn_80208620(void *arg0, void *arg1)
+{
+  typedef struct 
+  {
+    int *ptr;
+    int count;
+  } Ent;
+  typedef struct 
+  {
+    char pad0[0xc];
+    int *base;
+    int total;
+    Ent ents[9];
+  } Hdr;
+  Hdr *h = (Hdr *) arg0;
+  int idx = *((int *) (((char *) arg1) + 0x44));
+  int *found = 0;
+  int i;
+  int j;
+  for (i = 0; 0 < h->ents[idx].count; i++)
+  {
+    if (((void *) h->ents[idx].ptr[i]) == arg1)
+    {
+      found = &h->ents[idx].ptr[i];
+      break;
     }
-    if (found != 0) {
-        h->total -= 1;
-        h->ents[idx].count -= 1;
-        memmove(found, found + 1, (h->total - (found - h->base)) * 4);
-        for (j = idx + 1; j < 9; j++) {
-            h->ents[j].ptr--;
-        }
-    } else {
-        fn_802E317C(lbl_8033BE80, (char*)arg1 + 0x37);
+  }
+
+  if (found != 0)
+  {
+    h->total -= 1;
+    h->ents[idx].count -= 1;
+    memmove(found, found + 1, (h->total - (found - h->base)) * 4);
+    for (j = idx + 1; j < 9; j++)
+    {
+      h->ents[j].ptr--;
     }
+
+  }
+  else
+  {
+    fn_802E317C(lbl_8033BE80, ((char *) arg1) + 0x37);
+  }
 }
 #pragma pop
 /* The sound device (mixer) this manager plays on lives at +0x90: it is the
