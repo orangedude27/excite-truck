@@ -562,14 +562,14 @@ extern const char lbl_8034B0B8[];
  * "copy_16_to_16: can't convert from %d to %d". */
 void gxCanvasCopy16to16(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
                  s32 srcBottom, s32 dstCanvas, s32 dstLeft, s32 dstTop) {
-    u16 *srcPix, *srcPix_2, *srcPix_3, *srcPix_4;
-    u16 *dstPix, *dstPix_2, *dstPix_3, *dstPix_4;
+    u16 *srcPix, *src565, *src1555, *src4444;
+    u16 *dstPix, *dst1555, *dst565, *dst565From4444;
     s32 width, height, clipY, clipX, srcY, srcX;
     s32 rowsLeft, savedHeight, savedWidth;
-    s32 unused, srcRowSkip, dstRowSkip, rgb, green6;
-    s32 n, n2, n3;
-    register u16 out;
-    u16 pixel, pixel2, pixel3;
+    s32 unused, srcRowSkip, dstRowSkip, packed565, greenLowBit;
+    s32 pixelsLeft, pixelsLeft2, pixelsLeft3;
+    register u16 converted;
+    u16 pixel565, pixel4444, pixel1555;
     s8 srcFormat, dstFormat;
 
     srcX = srcLeft;
@@ -591,13 +591,13 @@ void gxCanvasCopy16to16(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
         srcRowSkip = (((GxCanvas *)srcCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
         dstRowSkip = (((GxCanvas *)dstCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
         do {
-            n = width;
+            pixelsLeft = width;
 copyPixel:
             *dstPix = *srcPix;
-            n--;
+            pixelsLeft--;
             srcPix++;
             dstPix++;
-            if (n > 0)
+            if (pixelsLeft > 0)
                 goto copyPixel;
             srcPix = (u16 *)((u8 *)srcPix + srcRowSkip);
             dstPix = (u16 *)((u8 *)dstPix + dstRowSkip);
@@ -609,28 +609,28 @@ copyPixel:
         if (srcFormat != dstFormat) {
             if (srcFormat == CANVAS_FORMAT_RGB565 &&
                 dstFormat == CANVAS_FORMAT_RGB1555) {
-                srcPix_2 = (u16 *)gxCanvasGetPixelAddr((void *)srcCanvas, srcX, srcY);
-                dstPix_2 = (u16 *)gxCanvasGetPixelAddr((void *)dstCanvas, clipX, clipY);
+                src565 = (u16 *)gxCanvasGetPixelAddr((void *)srcCanvas, srcX, srcY);
+                dst1555 = (u16 *)gxCanvasGetPixelAddr((void *)dstCanvas, clipX, clipY);
                 width = savedWidth;
                 height = savedHeight;
                 srcRowSkip = (((GxCanvas *)srcCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
                 dstRowSkip = (((GxCanvas *)dstCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
                 do {
-                    n2 = width;
+                    pixelsLeft2 = width;
 conv565To555:
-                    pixel = *srcPix_2;
-                    n2--;
-                    srcPix_2++;
+                    pixel565 = *src565;
+                    pixelsLeft2--;
+                    src565++;
                     /* ((p >> 1) & 0x7FE0) | (p & 0x1F): red and blue move down
                      * one bit slot, green loses its 6th (low) bit. */
-                    out = (u16)__rlwinm(pixel, 31, 17, 26);
-                    out = (u16)__rlwimi(out, pixel, 0, 27, 31);
-                    *dstPix_2 = out;
-                    dstPix_2++;
-                    if (n2 > 0)
+                    converted = (u16)__rlwinm(pixel565, 31, 17, 26);
+                    converted = (u16)__rlwimi(converted, pixel565, 0, 27, 31);
+                    *dst1555 = converted;
+                    dst1555++;
+                    if (pixelsLeft2 > 0)
                         goto conv565To555;
-                    srcPix_2 = (u16 *)((u8 *)srcPix_2 + srcRowSkip);
-                    dstPix_2 = (u16 *)((u8 *)dstPix_2 + dstRowSkip);
+                    src565 = (u16 *)((u8 *)src565 + srcRowSkip);
+                    dst1555 = (u16 *)((u8 *)dst1555 + dstRowSkip);
                     rowsLeft = height - 1;
                     height = rowsLeft;
                 } while (rowsLeft > 0);
@@ -638,32 +638,32 @@ conv565To555:
             }
             if (srcFormat == CANVAS_FORMAT_RGB1555 &&
                 dstFormat == CANVAS_FORMAT_RGB565) {
-                srcPix_3 = (u16 *)gxCanvasGetPixelAddr((void *)srcCanvas, srcX, srcY);
-                dstPix_3 = (u16 *)gxCanvasGetPixelAddr((void *)dstCanvas, clipX, clipY);
+                src1555 = (u16 *)gxCanvasGetPixelAddr((void *)srcCanvas, srcX, srcY);
+                dst565 = (u16 *)gxCanvasGetPixelAddr((void *)dstCanvas, clipX, clipY);
                 width = savedWidth;
                 height = savedHeight;
                 srcRowSkip = (((GxCanvas *)srcCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
                 dstRowSkip = (((GxCanvas *)dstCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
                 do {
-                    n3 = width;
+                    pixelsLeft3 = width;
 conv555To565:
-                    pixel3 = *srcPix_3;
-                    n3--;
-                    srcPix_3++;
+                    pixel1555 = *src1555;
+                    pixelsLeft3--;
+                    src1555++;
                     /* ((p << 1) & 0xFFC0) | (((p << 1) & 0x400) >> 5) |
                      * (p & 0x1F): green gains a low bit holding its own top
                      * bit, red and blue shift up one. */
-                    green6 = __rlwinm(pixel3, 1, 21, 21);
-                    rgb = __rlwinm(pixel3, 1, 16, 25);
-                    rgb = __rlwimi(rgb, pixel3, 0, 27, 31);
-                    green6 = green6 >> 5;
-                    rgb = green6 | rgb;
-                    *dstPix_3 = (u16)rgb;
-                    dstPix_3++;
-                    if (n3 > 0)
+                    greenLowBit = __rlwinm(pixel1555, 1, 21, 21);
+                    packed565 = __rlwinm(pixel1555, 1, 16, 25);
+                    packed565 = __rlwimi(packed565, pixel1555, 0, 27, 31);
+                    greenLowBit = greenLowBit >> 5;
+                    packed565 = greenLowBit | packed565;
+                    *dst565 = (u16)packed565;
+                    dst565++;
+                    if (pixelsLeft3 > 0)
                         goto conv555To565;
-                    srcPix_3 = (u16 *)((u8 *)srcPix_3 + srcRowSkip);
-                    dstPix_3 = (u16 *)((u8 *)dstPix_3 + dstRowSkip);
+                    src1555 = (u16 *)((u8 *)src1555 + srcRowSkip);
+                    dst565 = (u16 *)((u8 *)dst565 + dstRowSkip);
                     rowsLeft = height - 1;
                     height = rowsLeft;
                 } while (rowsLeft > 0);
@@ -671,30 +671,30 @@ conv555To565:
             }
             if (srcFormat == CANVAS_FORMAT_RGBA4444 &&
                 dstFormat == CANVAS_FORMAT_RGB565) {
-                srcPix_4 = (u16 *)gxCanvasGetPixelAddr((void *)srcCanvas, srcX, srcY);
-                dstPix_4 = (u16 *)gxCanvasGetPixelAddr((void *)dstCanvas, clipX, clipY);
+                src4444 = (u16 *)gxCanvasGetPixelAddr((void *)srcCanvas, srcX, srcY);
+                dst565From4444 = (u16 *)gxCanvasGetPixelAddr((void *)dstCanvas, clipX, clipY);
                 width = savedWidth;
                 height = savedHeight;
                 srcRowSkip = (((GxCanvas *)srcCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
                 dstRowSkip = (((GxCanvas *)dstCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
                 do {
-                    n = width;
+                    pixelsLeft = width;
 conv4444To565:
-                    pixel2 = *srcPix_4;
-                    n--;
-                    srcPix_4++;
+                    pixel4444 = *src4444;
+                    pixelsLeft--;
+                    src4444++;
                     /* (p << 1) & 0xF | (p << 3) & 0x780 | (p << 4) & 0xF000:
                      * every 4-bit component moves up into its 565 field, the
                      * alpha nibble is dropped. */
-                    out = (u16)__rlwinm(pixel2, 1, 27, 30);
-                    out = (u16)__rlwimi(out, pixel2, 3, 21, 24);
-                    out = (u16)__rlwimi(out, pixel2, 4, 16, 19);
-                    *dstPix_4 = out;
-                    dstPix_4++;
-                    if (n > 0)
+                    converted = (u16)__rlwinm(pixel4444, 1, 27, 30);
+                    converted = (u16)__rlwimi(converted, pixel4444, 3, 21, 24);
+                    converted = (u16)__rlwimi(converted, pixel4444, 4, 16, 19);
+                    *dst565From4444 = converted;
+                    dst565From4444++;
+                    if (pixelsLeft > 0)
                         goto conv4444To565;
-                    srcPix_4 = (u16 *)((u8 *)srcPix_4 + srcRowSkip);
-                    dstPix_4 = (u16 *)((u8 *)dstPix_4 + dstRowSkip);
+                    src4444 = (u16 *)((u8 *)src4444 + srcRowSkip);
+                    dst565From4444 = (u16 *)((u8 *)dst565From4444 + dstRowSkip);
                     rowsLeft = height - 1;
                     height = rowsLeft;
                 } while (rowsLeft > 0);
