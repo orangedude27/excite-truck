@@ -27,13 +27,6 @@ static inline InitArrayB59D4 *initArrayB59D4(InitArrayB59D4 *a) {
     a->count = 0;
     return a;
 }
-#pragma dont_inline off
-static inline void regArrayB59D4(InitArrayB59D4 *a, void (*dtor)(void *, int), void *node) {
-    a->data = a->storage;
-    a->capacity = 16;
-    a->count = 0;
-    __register_global_object(a, dtor, node);
-}
 /* Construct and register the two embedded arrays without defining their data. */
 #pragma push
 #pragma dont_inline on
