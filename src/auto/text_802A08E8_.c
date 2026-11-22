@@ -30,16 +30,23 @@ void *fn_802A08E8(void *object, s32 shouldDelete) {
 void fn_802A0940(void) {
 }
 
-s32 fn_802A0944(void *arg0) {
-    typedef struct { u32 w0,w1,w2,w3,w4,w5,w6,w7,w8,w9,w10,w11,w12,w13,w14,w15,w16,w17,w18,w19,w20; } R54s;
-    s32 index;
-    R54s *table = (R54s *)lbl_8055F834;
-    if (*(s32 *)arg0 != 1)
-        index = *((s32 *)arg0 + 1);
-    else
-        index = 0x3F - *((s32 *)arg0 + 1);
-    table[index] = *(R54s *)arg0;
-    return 0x54;
+s32 fn_802A0944(void *arg0)
+{
+  s32 index;
+  Rec54 *table = (Rec54 *) lbl_8055F834;
+  if ((*((s32 *) arg0)) != 1)
+  {
+    index = *(((s32 *) arg0) + 1);
+  }
+  else
+  {
+    index = 0x3F - (*(((s32 *) arg0) + 1));
+    if (1)
+    {
+    }
+  }
+  table[index] = *((Rec54 *) arg0);
+  return 0x54;
 }
 
 extern void fn_8012850C(void *, void *);
@@ -179,7 +186,6 @@ typedef struct {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 #pragma ppc_psq_save off
 void fn_802A0B54(void) {
     Fn802A0B54Work work;
