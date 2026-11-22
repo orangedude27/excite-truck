@@ -2072,7 +2072,7 @@ void fn_801C7964(void) {
     dst->y = src->y;
     dst->z = src->z;
 }
-static void sndvec_copy(Vec *dst, Vec *src) {
+static inline void sndvec_copy(Vec *dst, Vec *src) {
     dst->x = src->x;
     dst->y = src->y;
     dst->z = src->z;
