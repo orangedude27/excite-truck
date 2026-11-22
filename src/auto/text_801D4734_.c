@@ -1234,22 +1234,19 @@ void fn_801D5AA8(void *object) {
 
 extern void fn_801D0824(void *);
 void *fn_801D5AF0(void *arg0, int arg1) {
-    int field8;
-    void *table;
+    char *subObject;
     void *table2;
-    void *child;
+    void *table;
     if (arg0 != 0) {
-        field8 = *(int *)((char *)arg0 + 8);
         table = lbl_80338D20;
         table2 = (char *)table + 0x38;
         *(void **)arg0 = table;
         *(void **)((char *)arg0 + 4) = table2;
-        if (field8 != 0) {
+        if (*(int *)((char *)arg0 + 8) != 0) {
             *(int *)((char *)arg0 + 8) = 0;
-            child = arg0;
-            if (child != 0) {
-                fn_801D0824((char *)child + 4);
-            }
+            subObject = (char *)arg0;
+            if (arg0 != 0) subObject += 4;
+            fn_801D0824(subObject);
             *(int *)((char *)arg0 + 0xC) = -1;
         }
         if ((unsigned int)arg0 + 0x70 != 0) {
