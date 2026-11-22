@@ -476,82 +476,87 @@ void fn_802CF104(void) {
 
 void fn_802CF10C(void) {
     unsigned char* st;
-    int* fb;
-    int i;
     int j;
     fn_802CEF90();
     if ((int)lbl_8055FD44 == 0xFA0) {
         OSReport(lbl_8034BF80);
     }
     st = lbl_804C5710;
-    lbl_8055FD4C++;
     lbl_8055FD44++;
+    lbl_8055FD4C++;
     if (lbl_8055FD4C < 5) {
         return;
     }
-    if (lbl_8055FD50 == 0 && st[1] == 0) {
-        return;
-    }
-    if (st[0] != 0) {
-        int* sti = (int*)st;
-        int fb1;
-        fb = lbl_804C9760;
-        st[0] = 0;
-        DCInvalidateRange((void*)fb[1], fb[2] * fb[3] * 2);
-        fb1 = fb[1];
-        for (i = 0; i < sti[4]; i++) {
-            memcpy(st + 0x14 + i * sti[3] * 2, (unsigned char*)fb1 + (sti[1] + fb[2] * (i + sti[2])) * 2, sti[3] * 2);
-        }
-    }
-    if (st[1] != 0) {
-        if (lbl_8055FD4C % 60 != 0 && lbl_8055FD4C % 60 != 45) {
-            return;
-        }
-    } else if (lbl_8055FD4C != 0) {
-        return;
-    }
-    fb = lbl_804C9760;
-    DCInvalidateRange((void*)fb[1], fb[2] * fb[3] * 2);
-    {
-        unsigned char* fbBase = (unsigned char*)fb[1];
-        if (lbl_8055FD50 != 0) {
-            int r5 = ((unsigned)lbl_8055FD4C >> 2) & 1;
-            for (; r5 < fb[3]; r5 += 2) {
-                int r6;
-                for (r6 = 0; r6 < fb[2]; r6++) {
-                    unsigned short* ptr = (unsigned short*)(fbBase + (r6 + r5 * fb[2]) * 2);
-                    unsigned short v = *ptr;
-                    if ((v & 0xFF) > (v - 0x400)) {
-                        *ptr = v & 0xFF;
-                    }
-                }
+    if (lbl_8055FD50 != 0 || st[1] != 0) {
+        if (st[0] != 0) {
+            int* sti = (int*)st;
+            int* fb = lbl_804C9760;
+            int fb1;
+            int i;
+            st[0] = 0;
+            DCInvalidateRange((void*)fb[1], fb[2] * fb[3] * 2);
+            fb1 = fb[1];
+            for (i = 0; i < sti[4]; i++) {
+                memcpy(st + 0x14 + i * sti[3] * 2, (unsigned char*)fb1 + sti[1] * 2 + fb[2] * (i + sti[2]) * 2, sti[3] * 2);
             }
         }
         if (st[1] != 0) {
-            int* sti = (int*)st;
-            if (lbl_8055FD4C % 60 < 30) {
-                int off = 0;
-                int count = sti[3];
-                for (i = 0; i < sti[4]; i++) {
-                    unsigned short* src = (unsigned short*)(st + 0x14 + off * 2);
-                    unsigned short* dst = (unsigned short*)(fbBase + (sti[1] + fb[2] * (sti[2] + i)) * 2);
-                    for (j = 0; j < count; j++) {
-                        dst[j] = src[j];
-                    }
-                    off += count;
-                }
-            } else {
-                unsigned short fill = *(unsigned short*)(st + 0x14);
-                int count = sti[3];
-                for (i = 0; i < sti[4]; i++) {
-                    unsigned short* dst = (unsigned short*)(fbBase + (sti[1] + fb[2] * (sti[2] + i)) * 2);
-                    for (j = 0; j < count; j++) {
-                        dst[j] = fill;
+            if (lbl_8055FD4C % 60 != 0 && lbl_8055FD4C % 60 != 45) {
+                return;
+            }
+        } else if (lbl_8055FD4C % 2 != 0) {
+            return;
+        }
+        {
+            int* fb = lbl_804C9760;
+            unsigned char* fbBase = (unsigned char*)fb[1];
+            DCInvalidateRange((void*)fbBase, fb[2] * fb[3] * 2);
+            {
+                int r5 = ((unsigned)lbl_8055FD4C >> 2) & 1;
+                if (lbl_8055FD50 != 0) for (; r5 < fb[3]; r5 += 2) {
+                    int r6;
+                    for (r6 = 0; r6 < fb[2]; r6++) {
+                        unsigned short* ptr = (unsigned short*)(fbBase + (r6 + r5 * fb[2]) * 2);
+                        unsigned short v = *ptr;
+                        int t = v - 0x400;
+                        if ((v & 0xFF) > t) {
+                            t = v & 0xFF;
+                        }
+                        *ptr = t;
                     }
                 }
             }
+            if (st[1] != 0) {
+                int* sti = (int*)st;
+                if (lbl_8055FD4C % 60 < 30) {
+                    int off = 0;
+                    int count = sti[3];
+                    unsigned int k;
+                    for (k = 0; k < sti[4]; k++) {
+                        unsigned short* src = (unsigned short*)(st + 0x14 + off * 2);
+                        unsigned short* dst = (unsigned short*)(fbBase + (sti[1] + fb[2] * (sti[2] + k)) * 2);
+                        for (j = 0; j < count; j++) {
+                            dst[j] = src[j];
+                        }
+                        off += count;
+                    }
+                } else {
+                    unsigned short fill = *(unsigned short*)(st + 0x14);
+                    int count = sti[3];
+                    unsigned int m;
+                    for (m = 0; m < sti[4]; m++) {
+                        unsigned short* dst = (unsigned short*)(fbBase + (sti[1] + fb[2] * (sti[2] + m)) * 2);
+                        for (j = 0; j < count; j++) {
+                            dst[j] = fill;
+                        }
+                    }
+                }
+            }
+            {
+                int* fbFlush = lbl_804C9760;
+                DCFlushRange((void*)fbFlush[1], fbFlush[4] * (fbFlush[2] * fbFlush[3]));
+            }
         }
-        DCFlushRange(fbBase, fb[4] * (fb[2] * fb[3]));
     }
 }
 
@@ -1219,15 +1224,14 @@ void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
     p[0x5C] = 1;
 }
 #pragma scheduling invalid_target
-void fn_802D0188(unsigned char a, unsigned char b, unsigned char c)
-{
-  extern char lbl_804C97D0;
-  volatile unsigned char *p = (volatile unsigned char *) (&lbl_804C97D0);
-  p[1] = b;
-  p[2] = c;
-  p[3] = 0;
-  p[0x5C] = 1;
-  lbl_804C97D0 = a;
+void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
+    extern char lbl_804C97D0;
+    volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
+    p[1] = b;
+    p[2] = c;
+    p[3] = 0;
+    p[0x5C] = 1;
+    lbl_804C97D0 = a;
 }
 #pragma push
 #pragma opt_propagation off
@@ -1625,7 +1629,7 @@ void fn_802D09E8(void)
 {
   char *base = lbl_8034BD18;
   int temp_r0;
-  int div;
+  unsigned int div;
   int rem;
   int val;
   union 
@@ -1645,7 +1649,7 @@ void fn_802D09E8(void)
   }
   temp_r0 = lbl_8055FDC0 + 1;
   lbl_8055FDC0 = temp_r0;
-  if ((temp_r0 - 1) > (2 - 1))
+  if (temp_r0 > 2)
   {
     lbl_8055FDC0 = 0;
     if (lbl_8055D0B8 == 0)
@@ -1681,11 +1685,8 @@ void fn_802D09E8(void)
       fn_802E3734(&lbl_8055D10C);
       lbl_8055D10C = -1;
       val = fn_802E2C20();
-      if (1)
-      {
-        cvt.w[0] = 0x43300000;
-        cvt.w[1] = ((unsigned int) (val - lbl_8055FDC4)) ^ 0x80000000U;
-      }
+      cvt.w[0] = 0x43300000;
+      cvt.w[1] = ((unsigned int) (val - lbl_8055FDC4)) ^ 0x80000000U;
       fn_802E30C8(base + 0x468, lbl_804C9830, lbl_8055FDC4, lbl_80564F80 * (cvt.d - lbl_80564FB0));
     }
   }
@@ -1730,44 +1731,44 @@ extern void GXSetCopyFilter(unsigned char, unsigned char *, unsigned char, unsig
 extern void GXCopyDisp(void *, int);
 extern void fn_802D09E8(void);
 extern void fn_802CFF50(void);
-void fn_802D0C98(void)
-{
-  extern int lbl_8055FD48;
-  extern int lbl_8055FD4C;
-  extern unsigned int lbl_8055FD74;
-  extern unsigned char lbl_8055D0C4;
-  extern void *lbl_8055FD64;
-  extern int lbl_804C9760[];
-  unsigned short temp_r31;
-  int temp_r30 = 0;
-  unsigned char *display;
-  lbl_8055FD4C = temp_r30;
-  GXSetZMode(1, 3, 1);
-  GXSetColorUpdate(1);
-  fn_802D09E8();
-  GXSetColorUpdate(lbl_8055D0C4);
-  lbl_8055FD74 |= 1;
-  GXSetZMode(1, 7, 1);
-  lbl_8055FD74 = (lbl_8055FD74 | 2) & (~4U);
-  temp_r31 = (unsigned short) GXSetDispCopyYScale(GXGetYScaleFactor(*((unsigned short *) (((unsigned char *) lbl_8055FD64) + 6)), *((unsigned short *) (((unsigned char *) lbl_8055FD64) + 8))));
-  GXSetDispCopySrc(0, 0, *((unsigned short *) ((display = (unsigned char *) lbl_8055FD64) + 4)), *((unsigned short *) (display + 6)));
-  GXSetDispCopyDst(*((unsigned short *) (((unsigned char *) lbl_8055FD64) + 4)), temp_r31);
-  GXSetCopyFilter(*(((unsigned char *) lbl_8055FD64) + 0x19), ((unsigned char *) lbl_8055FD64) + 0x1A, 1, ((unsigned char *) lbl_8055FD64) + 0x32);
-  GXCopyDisp((void *) lbl_804C9760[1], 1);
-  VISetNextFrameBuffer((void *) lbl_804C9760[1]);
-  if ((lbl_8055FD48 > 0) != 0U)
-  {
-    lbl_8055FD48 -= 1;
-    VISetBlack(1);
-  }
-  else
-  {
-    lbl_8055FD48 = temp_r30;
-    VISetBlack(0);
-  }
-  VIFlush();
-  lbl_804C9760[1] = lbl_804C9760[0];
-  fn_802CFF50();
+void fn_802D0C98(void) {
+    extern int lbl_8055FD48, lbl_8055FD4C;
+    extern unsigned int lbl_8055FD74;
+    extern unsigned char lbl_8055D0C4;
+    extern void *lbl_8055FD64;
+    extern int lbl_804C9760[];
+    unsigned short temp_r31;
+    int temp_r30 = 0;
+    unsigned char *display;
+
+    lbl_8055FD4C = temp_r30;
+    GXSetZMode(1, 3, 1);
+    GXSetColorUpdate(1);
+    fn_802D09E8();
+    GXSetColorUpdate(lbl_8055D0C4);
+    lbl_8055FD74 |= 1;
+    GXSetZMode(1, 7, 1);
+    lbl_8055FD74 = (lbl_8055FD74 | 2) & ~4U;
+    temp_r31 = (unsigned short)GXSetDispCopyYScale(
+        GXGetYScaleFactor(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 6),
+                          *(unsigned short *)((unsigned char *)lbl_8055FD64 + 8)));
+    GXSetDispCopySrc(0, 0, *(unsigned short *)((display = (unsigned char *)lbl_8055FD64) + 4), *(unsigned short *)(display + 6));
+    GXSetDispCopyDst(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 4), temp_r31);
+    GXSetCopyFilter(*((unsigned char *)lbl_8055FD64 + 0x19),
+                    (unsigned char *)lbl_8055FD64 + 0x1A, 1,
+                    (unsigned char *)lbl_8055FD64 + 0x32);
+    GXCopyDisp((void *)lbl_804C9760[1], 1);
+    VISetNextFrameBuffer((void *)lbl_804C9760[1]);
+    if (lbl_8055FD48 > 0) {
+        lbl_8055FD48 -= 1;
+        VISetBlack(1);
+    } else {
+        lbl_8055FD48 = temp_r30;
+        VISetBlack(0);
+    }
+    VIFlush();
+    lbl_804C9760[1] = lbl_804C9760[0];
+    fn_802CFF50();
 }
 
 #pragma scheduling off
@@ -2318,7 +2319,7 @@ extern float lbl_80564F90, lbl_80564FD8, lbl_80564F88;
 #pragma push
 #pragma dont_inline on
 void fn_802D1C04(void) {
-    register unsigned char *base = (unsigned char *)lbl_804C5650;
+    unsigned char *base = (unsigned char *)lbl_804C5650;
     if (*(unsigned char *)&lbl_8055FD70 != 0) {
         Xform_802D1C04 inv;
         Xform_802D1C04 comb;
@@ -2333,7 +2334,7 @@ void fn_802D1C04(void) {
         Mtx33_802D1C04 rot;
         float nrm[12];
         Mtx24_802D1C04 tex;
-        register Xform_802D1C04 *src = (Xform_802D1C04 *)(base + 0x70);
+        Xform_802D1C04 *src = (Xform_802D1C04 *)(base + 0x70);
         Xform_802D1C04 *b;
         float t;
         float k;
@@ -2430,124 +2431,140 @@ extern float lbl_80564FDC;
 #pragma push
 #pragma processor 750
 #pragma opt_propagation off
-void fn_802D2218(void) {
-    typedef struct { unsigned char r, g, b, a; } Color802D2218;
-    float sp90[12];
-    float sp60[12];
-    float sp20[16];
-    volatile float sp18;
-    volatile float sp14;
-    volatile float sp10;
-    Color802D2218 fogColor;
-    unsigned char tevColor[4];
-    float temp_f1;
-    float temp_f1_2;
-    float vertexZ;
-    register volatile float *fifo;
-    float temp_f30;
-    float temp_f31;
-    int var_ctr;
-    int var_r0;
-    int var_r0_2;
-    int var_r0_3;
-    int var_r0_4;
-    int var_r4;
-    if (sClearState_802D2218.clearColor != 0 || sClearState_802D2218.clearZ != 0) {
-        fn_802D1678();
-        sp90[0] = lbl_80564F8C;
-        sp90[1] = lbl_80564F88;
-        sp90[2] = lbl_80564F88;
-        sp90[3] = lbl_80564F88;
-        sp90[4] = lbl_80564F8C;
-        sp90[5] = lbl_80564F88;
-        sp90[6] = lbl_80564F88;
-        sp90[7] = lbl_80564F88;
-        sp90[8] = lbl_80564F8C;
-        sp90[9] = lbl_80564F88;
-        sp90[10] = lbl_80564F88;
-        sp90[11] = lbl_80564F88;
-        fn_802D0DD4(sp60, sp90);
-        GXLoadPosMtxImm(sp60, 0);
-        temp_f31 = lbl_80564F94 * (float)sClearState_802D2218.width;
-        temp_f30 = lbl_80564F94 * (float)sClearState_802D2218.height;
-        C_MTXOrtho(sp20, temp_f30, -temp_f30, -temp_f31, temp_f31, lbl_80564F8C, lbl_80564FCC);
-        GXSetProjection(sp20, 1);
-        GXSetDstAlpha(0, 0);
-        GXSetBlendMode(0, 1, 0, 5);
-        GXSetColorUpdate(sClearState_802D2218.clearColor);
-        GXSetAlphaUpdate(sClearState_802D2218.clearColor);
-        GXSetZMode(1, 7, sClearState_802D2218.clearZ);
-        fogColor = *(Color802D2218 *)&sFogState_802D2218[1];
-        ((void (*)(int, Color802D2218, float, float, float, float))GXSetFog)(0, fogColor, lbl_80564F88, lbl_80564F88, lbl_80564F88, lbl_80564F88);
-        GXSetNumTevStages(1);
-        GXSetNumTexGens(0);
-        tevColor[0] = sClearState_802D2218.color[0];
-        tevColor[1] = sClearState_802D2218.color[1];
-        tevColor[2] = sClearState_802D2218.color[2];
-        tevColor[3] = sClearState_802D2218.color[3];
-        GXSetTevColor(1, tevColor);
-        GXSetTevOrder(0, 0xFF, 0xFF, 0xFF);
-        GXSetTevColorIn(0, 0xF, 0xF, 0xF, 2);
-        GXSetTevColorOp(0, 0, 0, 0, 0, 0);
-        GXSetTevAlphaIn(0, 7, 7, 7, 1);
-        GXSetTevAlphaOp(0, 0, 0, 0, 0, 0);
-        GXSetCullMode(0);
-        GXClearVtxDesc();
-        GXSetVtxDesc(9, 1);
-        GXSetVtxAttrFmt(0, 9, 1, 4, 0);
-        GXBegin(0x98, 0, 4);
-        vertexZ = lbl_80564FDC;
-        fifo = (volatile float *)0xCC010000;
-        var_r4 = 0;
-        for (var_ctr = 0; var_ctr != 2; var_ctr++) {
-            var_r0 = 1;
-            if (var_r4 & 1) {
-                var_r0 = -1;
-            }
-            var_r0_2 = 1;
-            sp10 = temp_f31 * (float)var_r0;
-            if (var_r4 & 2) {
-                var_r0_2 = -1;
-            }
-            fifo[-0x2000] = sp10;
-            sp18 = vertexZ;
-            temp_f1 = temp_f30 * (float)var_r0_2;
-            fifo[-0x2000] = temp_f1;
-            sp14 = temp_f1;
-            fifo[-0x2000] = vertexZ;
-            var_r4++;
-            var_r0_3 = 1;
-            if (var_r4 & 1) {
-                var_r0_3 = -1;
-            }
-            var_r0_4 = 1;
-            sp10 = temp_f31 * (float)var_r0_3;
-            if (var_r4 & 2) {
-                var_r0_4 = -1;
-            }
-            fifo[-0x2000] = sp10;
-            sp18 = vertexZ;
-            temp_f1_2 = temp_f30 * (float)var_r0_4;
-            fifo[-0x2000] = temp_f1_2;
-            sp14 = temp_f1_2;
-            fifo[-0x2000] = vertexZ;
-            var_r4++;
-        }
-        GXSetNumTexGens(1);
-        GXSetTevOrder(0, 0, 0, 4);
-        GXSetTevOp(0, 0);
-        GXSetDstAlpha(1, lbl_8055FD60);
-        sClearState_802D2218.clearZ = 0;
-        sClearState_802D2218.clearColor = 0;
-        fn_802CFF50();
-        sClearState_802D2218.dirty = 1;
-        fn_802D14D8();
-        ((unsigned char *)sViewTo_802D18E8)[0x40] = 1;
-        lbl_8055FD70 = 1;
-        ((unsigned char *)&sDefaultLight_802D18E8)[0x5C] = 1;
-        sFogState_802D2218[0x1C] = 1;
-        fn_802D6C68();
+void fn_802D2218(void)
+{
+  volatile unsigned short new_var;
+  typedef struct 
+  {
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+    unsigned char a;
+  } Color802D2218;
+  float sp90[12];
+  float sp60[12];
+  float sp20[16];
+  volatile float sp18;
+  volatile float sp14;
+  volatile float sp10;
+  Color802D2218 fogColor;
+  unsigned char tevColor[4];
+  float temp_f1;
+  float temp_f1_2;
+  float vertexZ;
+  register volatile float *fifo;
+  float temp_f31;
+  int var_ctr;
+  int var_r0;
+  int var_r0_2;
+  float temp_f30;
+  int var_r0_3;
+  int var_r0_4;
+  int var_r4;
+  if ((sClearState_802D2218.clearColor != 0) || (sClearState_802D2218.clearZ != 0))
+  {
+    fn_802D1678();
+    sp90[0] = lbl_80564F8C;
+    sp90[1] = lbl_80564F88;
+    sp90[2] = lbl_80564F88;
+    sp90[3] = lbl_80564F88;
+    sp90[4] = lbl_80564F8C;
+    sp90[5] = lbl_80564F88;
+    sp90[6] = lbl_80564F88;
+    sp90[7] = lbl_80564F88;
+    sp90[8] = lbl_80564F8C;
+    sp90[9] = lbl_80564F88;
+    sp90[10] = lbl_80564F88;
+    sp90[11] = lbl_80564F88;
+    fn_802D0DD4(sp60, sp90);
+    GXLoadPosMtxImm(sp60, 0);
+    temp_f31 = lbl_80564F94 * ((float) sClearState_802D2218.width);
+    temp_f30 = lbl_80564F94 * ((float) sClearState_802D2218.height);
+    C_MTXOrtho(sp20, temp_f30, -temp_f30, -temp_f31, temp_f31, lbl_80564F8C, lbl_80564FCC);
+    GXSetProjection(sp20, 1);
+    GXSetDstAlpha(0, 0);
+    GXSetBlendMode(0, 1, 0, 5);
+    GXSetColorUpdate(sClearState_802D2218.clearColor);
+    GXSetAlphaUpdate(sClearState_802D2218.clearColor);
+    GXSetZMode(1, 7, sClearState_802D2218.clearZ);
+    fogColor = *((Color802D2218 *) (&sFogState_802D2218[1]));
+    ((void (*)(int, Color802D2218, float, float, float, float)) GXSetFog)(0, fogColor, lbl_80564F88, lbl_80564F88, lbl_80564F88, lbl_80564F88);
+    GXSetNumTevStages(1);
+    GXSetNumTexGens(0);
+    tevColor[0] = sClearState_802D2218.color[0];
+    tevColor[1] = sClearState_802D2218.color[1];
+    tevColor[2] = sClearState_802D2218.color[2];
+    tevColor[3] = sClearState_802D2218.color[3];
+    GXSetTevColor(1, tevColor);
+    GXSetTevOrder(0, 0xFF, 0xFF, 0xFF);
+    GXSetTevColorIn(0, 0xF, 0xF, 0xF, 2);
+    GXSetTevColorOp(0, 0, 0, 0, 0, 0);
+    GXSetTevAlphaIn(0, 7, 7, 7, 1);
+    GXSetTevAlphaOp(0, 0, 0, 0, 0, 0);
+    new_var = 0;
+    GXSetCullMode(0);
+    GXClearVtxDesc();
+    GXSetVtxDesc(9, 1);
+    GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+    GXBegin(0x98, 0, 4);
+    vertexZ = lbl_80564FDC;
+    fifo = (volatile float *) 0xCC010000;
+    var_r4 = new_var;
+    for (var_ctr = 0; var_ctr != 2; var_ctr++)
+    {
+      var_r0 = 1;
+      if (var_r4 & 1)
+      {
+        var_r0 = -1;
+      }
+      var_r0_2 = 1;
+      sp10 = temp_f31 * ((float) var_r0);
+      if (var_r4 & 2)
+      {
+        var_r0_2 = -1;
+      }
+      fifo[-0x2000] = sp10;
+      sp18 = vertexZ;
+      temp_f1 = temp_f30 * ((float) var_r0_2);
+      fifo[-0x2000] = temp_f1;
+      sp14 = temp_f1;
+      fifo[-0x2000] = vertexZ;
+      var_r4++;
+      var_r0_3 = 1;
+      if (var_r4 & 1)
+      {
+        var_r0_3 = -1;
+      }
+      var_r0_4 = 1;
+      sp10 = temp_f31 * ((float) var_r0_3);
+      if (var_r4 & 2)
+      {
+        var_r0_4 = -1;
+      }
+      fifo[-0x2000] = sp10;
+      sp18 = vertexZ;
+      temp_f1_2 = temp_f30 * ((float) var_r0_4);
+      fifo[-0x2000] = temp_f1_2;
+      sp14 = temp_f1_2;
+      fifo[-0x2000] = vertexZ;
+      var_r4++;
     }
+
+    GXSetNumTexGens(1);
+    GXSetTevOrder(0, 0, 0, 4);
+    GXSetTevOp(0, 0);
+    GXSetDstAlpha(1, lbl_8055FD60);
+    sClearState_802D2218.clearZ = 0;
+    sClearState_802D2218.clearColor = 0;
+    fn_802CFF50();
+    sClearState_802D2218.dirty = 1;
+    fn_802D14D8();
+    ((unsigned char *) sViewTo_802D18E8)[0x40] = 1;
+    lbl_8055FD70 = 1;
+    ((unsigned char *) (&sDefaultLight_802D18E8))[0x5C] = 1;
+    sFogState_802D2218[0x1C] = 1;
+    fn_802D6C68();
+  }
 }
 #pragma pop
 /* Refresh the GX pipeline for the frame: rebuild the perspective projection,
@@ -2579,7 +2596,7 @@ extern void (*lbl_8055FD80)(void);
 // Builds the GX TEV pipeline for the scene's default draw mode (mode 0 of the
 // render request block lbl_804C5700, applied by fn_802D2B0C): a base texture
 // pass, plus optional detail, second-texture and indirect (bump) stages.
-void fn_802D2684(void) {
+/* Builds the GX TEV/texture pipeline for the scene's default material (request mode 0): a base texture pass plus optional detail, second-texture and indirect bump stages. */ void fn_802D2684(void) {
     unsigned int passThroughFlag; // GX state flag 0x40: TEV0 passes the texture through
     unsigned char secondTexFlag;  // request +0x08: extra modulated texture stage
     unsigned char detailTexFlag;  // request +0x09: base * detail pass
@@ -3006,19 +3023,19 @@ void* fn_802D3138(void) {
 #pragma dont_inline on
 void fn_802D3144(void)
 {
-  if (lbl_8055FD86 == lbl_8055FD08)
-  {
-    GXSetBlendMode(0, 0, 0, 5);
-  }
-  else
+  if (!(lbl_8055FD86 == lbl_8055FD08))
   {
     int lowMapped;
     int high;
     int low;
     high = lbl_8055FD86 >> 8;
-    low = ((0, lbl_8055FD86)) & 0xFF;
+    low = lbl_8055FD86 & 0xFF;
     lowMapped = fn_802D0EC8(low);
     GXSetBlendMode(1, fn_802D0EC8(high), lowMapped, 5);
+  }
+  else
+  {
+    GXSetBlendMode(0, 0, 0, 5);
   }
   lbl_8055FD88 = lbl_8055FD86;
   lbl_804C5700[0] = 1;
@@ -3038,7 +3055,7 @@ int fn_802D31D8(void)
   GXSetNumTevStages(1);
   GXSetNumTexGens(0);
   c = 7;
-  GXSetZMode(1, 6, 0);
+  GXSetZMode(1, 6, (int) 0);
   GXSetTevOrder(0, 0xFF, 0xFF, 4);
   GXSetTevAlphaIn(0, c, c, c, 1);
   GXSetTevAlphaOp(0, 0, 0, 0, 0, 0);
@@ -3046,7 +3063,7 @@ int fn_802D31D8(void)
   GXSetTevColorIn(0, 0xF, 0xF, 0xF, 0xF);
   c = fn_802CE9FC(0, 0, 0, 4);
   col[3] = c;
-  col[0] = c >> 24;
+  col[0] = c >> ((0, 24));
   col[1] = new_var >> 16;
   col[2] = new_var >> 8;
   ((void (*)(int, volatile unsigned char *)) GXSetTevColor)(1, col);
