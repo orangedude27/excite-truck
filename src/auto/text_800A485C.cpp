@@ -250,6 +250,7 @@ extern "C" u8 lbl_80407C00[];
 extern "C" u8 lbl_80407E00[];
 extern "C" { DECL_SECTION(".sdata") extern s32 lbl_805597E8; }
 extern "C" { DECL_SECTION(".sdata") extern volatile u32 lbl_8055DDD0; }
+#endif
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(void *, void *);
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(void *a, void *b);
 class PaneAnimTransformDispatch {
