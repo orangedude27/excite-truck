@@ -250,7 +250,6 @@ extern "C" u8 lbl_80407C00[];
 extern "C" u8 lbl_80407E00[];
 extern "C" { DECL_SECTION(".sdata") extern s32 lbl_805597E8; }
 extern "C" { DECL_SECTION(".sdata") extern volatile u32 lbl_8055DDD0; }
-#endif
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(void *, void *);
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(void *a, void *b);
 class PaneAnimTransformDispatch {
@@ -18762,25 +18761,41 @@ void fn_800C5298(s32* arg0, s32* arg1, s32* arg2) {
     }
 }
 
-void fn_800C5430(s32 *a, s32 *b, s32 *coeff) {
-    s32 c0 = coeff[0];
-    s32 c1 = coeff[1];
-    s32 c2 = coeff[2];
-    s32 c3 = coeff[3];
-    s32 i = 4;
-    for (; i != 0; i--) {
-        s32 bb, aa, dd;
-        bb = b[0]; aa = a[0]; dd = aa - bb;
-        a[0] = aa + bb; b[0] = (s32)(((s64)dd * c0) >> 24);
-        bb = b[1]; aa = a[1]; dd = aa - bb;
-        a[1] = aa + bb; b[1] = (s32)(((s64)dd * c1) >> 24);
-        bb = b[2]; aa = a[2]; dd = aa - bb;
-        a[2] = aa + bb; b[2] = (s32)(((s64)dd * c2) >> 24);
-        bb = b[3]; aa = a[3]; dd = aa - bb;
-        a[3] = aa + bb; b[3] = (s32)(((s64)dd * c3) >> 24);
-        a += 8;
-        b += 8;
-    }
+void fn_800C5430(s32 *a, s32 *b, s32 *coeff)
+{
+  s32 c0 = coeff[0];
+  s32 c1 = coeff[1];
+  s32 c2 = coeff[2];
+  s32 c3 = coeff[3];
+  for (s32 i = 0; i < 4; i++)
+  {
+    s32 bb;
+    s32 aa;
+    s32 dd;
+    bb = b[0];
+    aa = a[0];
+    dd = aa - bb;
+    a[0] = bb + aa;
+    b[0] = (s32) ((((s64) dd) * c0) >> 24);
+    bb = b[1];
+    aa = a[1];
+    dd = aa - bb;
+    a[1] = aa + bb;
+    b[1] = (s32) ((((s64) dd) * c1) >> 24);
+    bb = b[2];
+    aa = a[2];
+    dd = aa - bb;
+    a[2] = aa + bb;
+    b[2] = (s32) ((((s64) dd) * c2) >> 24);
+    bb = b[3];
+    aa = a[3];
+    dd = aa - bb;
+    a[3] = aa + bb;
+    b[3] = (s32) ((((s64) dd) * c3) >> 24);
+    a += 8;
+    b += 8;
+  }
+
 }
 
 extern "C" void fn_800C5508(void *sumBlock, void *diffBlock, void *scales) {
