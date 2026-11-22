@@ -222,18 +222,18 @@ void *fn_8020DE74(void *arg0) {
 // from here sees the object as dead.
 extern "C" void *CarSound_destroy(CarSound *snd, s32 deleteMemory) {
     void *sound;
-    u8 *p;
+    u8 *boostSlot;
     u32 i;
     if (snd != 0) {
         sound = snd->backfire;
         snd->vtable = lbl_8033C8C4;
         if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
-        p = (u8 *)snd;
+        boostSlot = (u8 *)snd;
         i = 0;
         do {                        // the two boost sounds
-            sound = *(void **)(p + 0x10);
+            sound = *(void **)(boostSlot + 0x10);
             if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
-            p += 4;
+            boostSlot += 4;
             i++;
         } while (i < 2);
         sound = snd->boostManual;
