@@ -97,7 +97,7 @@ s32 fn_80127538(void) {
 #pragma scheduling invalid_target
 /* Stop the profiler's elapsed-time callback and print the accumulated profiler counters report,
  * or return immediately if none were recorded. */
-void Profiler_PrintCountersReport(void) {
+/* Stop the profiler's elapsed-time callback and print the accumulated profiler counters report, or return immediately if none were recorded. */ void Profiler_PrintCountersReport(void) {
     const char *messages = lbl_80329E30;
     s32 *counter;
     s32 index;
