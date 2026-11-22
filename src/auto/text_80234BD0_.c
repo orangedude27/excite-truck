@@ -18,6 +18,7 @@ void fn_8000D838(char *);
 void fn_80234CEC(void);
 void fn_80234C94(void);
 void __register_global_object(void *, void (*)(void), void *);
+#pragma scheduling off
 void fn_80234BD0(void) {
     register unsigned int *base asm("r29") = (unsigned int *)lbl_80497F08;
     StaticObj *obj;
