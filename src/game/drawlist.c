@@ -536,7 +536,7 @@ void fn_802C8BD0(int texSlot) {
 #pragma dont_inline off
 
 #pragma use_lmw_stmw off
-/* Save the current draw-list matrix (lbl_804C1410) into the backup slot (lbl_804C13E0) and flag that a save is active, then build an orthographic projection matrix, load it as the current GX matrix, and reset material/vertex state while selecting texture slot `texSlot`. */ void DrawList_BeginProjection(int texSlot) {
+/* Save the current draw-list matrix (lbl_804C1410) into the backup slot (lbl_804C13E0) and flag that a save is active, then build an orthographic projection matrix, load it as the current GX matrix, and reset material/vertex state while selecting texture slot `texSlot`. */ void fn_802C8C04(int texSlot) {
     struct DlMtx34 *currentMtx = (struct DlMtx34 *)lbl_804C1410;
     struct DlMtx34 *savedMtx = (struct DlMtx34 *)lbl_804C13E0;
     float orthoMtx[12];
