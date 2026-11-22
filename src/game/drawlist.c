@@ -95,7 +95,7 @@ extern char lbl_8055FC35;
 struct DlMtx34 { unsigned int w[12]; };
 extern float lbl_80564EF8, lbl_80564F00;
 extern void fn_802C7758(int);
-extern void fn_802C89E8(unsigned int *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int);
+extern void fn_802C89E8(float *);
 extern void fn_802C8638(unsigned int *);
 extern void PSVECNormalize(void *, void *);
 extern void PSVECCrossProduct(void *, void *, void *);
@@ -277,7 +277,7 @@ void fn_802C855C(void) {
 extern void fn_802C7758(int);
 extern unsigned int lbl_804C13E0[];
 extern char lbl_8055FC35;
-extern void fn_802C89E8(unsigned int *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int);
+extern void fn_802C89E8(float *);
 extern void fn_802C8638(unsigned int *);
 extern float lbl_80564EF8, lbl_80564F00;
 extern void PSVECNormalize(void *, void *);
@@ -308,7 +308,7 @@ void fn_802C8588(float *arg0, const float *arg1, const float *arg2) {
     PSVECNormalize(arg0 + 6, arg0 + 6);
     PSVECCrossProduct(sp, arg0 + 6, arg0);
     PSVECNormalize(arg0, arg0);
-    PSVECCrossProduct(arg0 + 6, arg0, arg0 + 3);
+    do { PSVECCrossProduct(arg0 + 6, arg0, arg0 + 3); } while (0);
 }
 extern void fn_802D03F4(unsigned int *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int);
 #pragma scheduling invalid_target
@@ -316,7 +316,7 @@ void fn_802C8638(unsigned int *arg0) {
     register unsigned int v3 = arg0[3];
     register unsigned int v2 = arg0[2];
     register unsigned int v1 = arg0[1];
-    unsigned int v0 = arg0[0];
+    register unsigned int v0 = arg0[0];
     unsigned int v4 = arg0[4];
     unsigned int v5 = arg0[5];
     unsigned int v6 = arg0[6];
@@ -324,7 +324,7 @@ void fn_802C8638(unsigned int *arg0) {
     unsigned int v8 = arg0[8];
     unsigned int v9 = arg0[9];
     unsigned int v10 = arg0[10];
-    register unsigned int v11 = arg0[11];
+    unsigned int v11 = arg0[11];
     volatile unsigned int *dst = (volatile unsigned int *)lbl_804C1410;
     dst[0] = v0; dst[1] = v1; dst[2] = v2; dst[3] = v3;
     dst[4] = v4; dst[5] = v5; dst[6] = v6; dst[7] = v7;
@@ -451,7 +451,7 @@ void fn_802C88FC(float *arg0) {
     arg0[10] = (float)(unsigned int)lbl_8055FC60 + scale * (float)(unsigned int)lbl_8055FC68;
     arg0[9] = (float)(unsigned int)lbl_8055FC5C + scale * (float)(unsigned int)lbl_8055FC64;
 }
-void fn_802C89E8(unsigned int *arg0, unsigned int arg1, unsigned int arg2, unsigned int arg3, unsigned int arg4, unsigned int arg5, unsigned int arg6, unsigned int arg7) {
+void fn_802C89E8(float *arg0) {
     float var_f2;
     float var_f4;
     float fill;
@@ -473,24 +473,24 @@ void fn_802C89E8(unsigned int *arg0, unsigned int arg1, unsigned int arg2, unsig
 
     fill = lbl_80564F00;
     var_f2 = -var_f2;
-    ((float *)arg0)[0] = var_f4;
-    ((float *)arg0)[1] = fill;
-    ((float *)arg0)[2] = fill;
-    ((float *)arg0)[3] = fill;
-    ((float *)arg0)[4] = lbl_80564F1C;
-    ((float *)arg0)[5] = fill;
-    ((float *)arg0)[6] = fill;
-    ((float *)arg0)[7] = fill;
-    ((float *)arg0)[8] = lbl_80564EF8;
+    arg0[0] = var_f4;
+    arg0[1] = fill;
+    arg0[2] = fill;
+    arg0[3] = fill;
+    arg0[4] = lbl_80564F1C;
+    arg0[5] = fill;
+    arg0[6] = fill;
+    arg0[7] = fill;
+    arg0[8] = lbl_80564EF8;
 
     height = (int)lbl_8055FC68;
     y = (int)lbl_8055FC60;
     width = (int)lbl_8055FC64;
     x = (int)lbl_8055FC5C;
     scale = lbl_80564F18;
-    ((float *)arg0)[10] = scale * (float)y + (float)height;
-    ((float *)arg0)[11] = var_f2;
-    ((float *)arg0)[9] = scale * (float)x + (float)width;
+    arg0[10] = scale * (float)y + (float)height;
+    arg0[11] = var_f2;
+    arg0[9] = scale * (float)x + (float)width;
 }
 void fn_802C8B08(unsigned int *dst) {
     /* Copy the current 0x30-byte block at lbl_804C1410 (as 4 pairs plus a 0x10-byte tail) to dst. */
@@ -536,16 +536,14 @@ void fn_802C8BD0(int texSlot) {
 
 #pragma use_lmw_stmw off
 void fn_802C8C04(int arg0) {
-    unsigned int sp8[12];
-    unsigned int v11, v10, v9, v8, v7, v6, v5;
-    v5 = ((struct DlMtx34 *)lbl_804C1410)->w[5]; v6 = ((struct DlMtx34 *)lbl_804C1410)->w[6];
-    v7 = ((struct DlMtx34 *)lbl_804C1410)->w[7]; v8 = ((struct DlMtx34 *)lbl_804C1410)->w[8];
-    v9 = ((struct DlMtx34 *)lbl_804C1410)->w[9]; v10 = ((struct DlMtx34 *)lbl_804C1410)->w[10];
-    v11 = ((struct DlMtx34 *)lbl_804C1410)->w[11];
-    *(struct DlMtx34 *)lbl_804C13E0 = *(struct DlMtx34 *)lbl_804C1410;
+    struct DlMtx34 *src = (struct DlMtx34 *)lbl_804C1410;
+    struct DlMtx34 *dst = (struct DlMtx34 *)lbl_804C13E0;
+    float matrix[12];
+
+    *dst = *src;
     lbl_8055FC35 = 1;
-    ((void (*)(unsigned int *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int))fn_802C89E8)(sp8, v11, v10, v9, v8, v7, v6, v5);
-    fn_802C8638(sp8);
+    fn_802C89E8(matrix);
+    fn_802C8638((unsigned int *)matrix);
     ((void (*)(int))fn_802C8BD0)(arg0);
 }
 
