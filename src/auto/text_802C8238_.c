@@ -5,7 +5,6 @@ extern void fn_8000D838(void *);
 __declspec(section ".sdata") extern unsigned char lbl_8055FC18;
 extern char lbl_804C1338[];
 #pragma opt_common_subs off
-#pragma opt_propagation off
 void fn_802C8238(void) {
     unsigned int *base = (unsigned int *)lbl_804C1338;
     unsigned int *p0, *p1, *p2, *p3, *p4;
