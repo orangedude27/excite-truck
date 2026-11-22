@@ -854,7 +854,7 @@ void fn_802085EC(void) {
 
 /* Return nonzero for the positional sound classes (engine, tyre squeal, crash,
  * engine start, wind) that fn_80208858 may give a 3D voice. */
-signed long fn_802085F0(void* soundMgr, signed long sndClass) {
+extern "C" signed long fn_802085F0(void* soundMgr, signed long sndClass) {
     switch (sndClass) {
         case SNDCLASS_ENGINE:
         case SNDCLASS_TIRESQUEAL:
