@@ -146,7 +146,7 @@ extern int lbl_802FA9D0[];
 __declspec(section ".sdata") extern char lbl_8055C9E4[];
 extern "C" char *strstr(const char *, const char *);
 #pragma cplusplus on
-extern "C" int fn_802963F0(void *arg0, int arg1) {
+/* Return a node's "blend" attribute as a mask of channels (uv=1,color=2,tex=4,pos=8) found in its text, or defaultFlags when the attribute is absent. */ extern "C" int fn_802963F0(void *node, int defaultFlags) {
     class Node {
     public:
         virtual void f0();
@@ -154,30 +154,30 @@ extern "C" int fn_802963F0(void *arg0, int arg1) {
         virtual void f2();
         virtual char *getText(const char *);
     };
-    int *table;
-    int result = arg1;
-    int values[8];
-    char *text;
+    int *entry;
+    int flags = defaultFlags;
+    int entries[8];
+    char *blendText;
     unsigned int i;
-    if (((Node *)arg0)->has((const char *)lbl_8055C9E4) != 0) {
-        table = (int *)lbl_802FA9D0;
-        values[0] = *table++;
-        values[1] = *table++;
-        values[2] = *table++;
-        values[3] = *table++;
-        values[4] = *table++;
-        values[5] = *table++;
-        values[6] = *table++;
-        values[7] = *table++;
-        text = ((Node *)arg0)->getText((const char *)lbl_8055C9E4);
-        result = 0;
-        table = values;
-        for (i = 0; i < 4; i++, table += 2) {
-            if (strstr(text, (char *)table[1]) != 0)
-                result |= table[0];
+    if (((Node *)node)->has((const char *)lbl_8055C9E4) != 0) {
+        entry = (int *)lbl_802FA9D0;
+        entries[0] = *entry++;
+        entries[1] = *entry++;
+        entries[2] = *entry++;
+        entries[3] = *entry++;
+        entries[4] = *entry++;
+        entries[5] = *entry++;
+        entries[6] = *entry++;
+        entries[7] = *entry++;
+        blendText = ((Node *)node)->getText((const char *)lbl_8055C9E4);
+        flags = 0;
+        entry = entries;
+        for (i = 0; i < 4; i++, entry += 2) {
+            if (strstr(blendText, (char *)entry[1]) != 0)
+                flags |= entry[0];
         }
     }
-    return result;
+    return flags;
 }
 #pragma cplusplus reset
 
