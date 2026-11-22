@@ -372,6 +372,11 @@ extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv
             mPointer = mPointer->next;
             return it;
         }
+        Callback* operator->() const {
+            if (mPointer == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B44, 0x23D, (const char*)lbl_80322B20);
+            return (Callback*)mPointer;
+        }
         bool operator!=(const Iterator& o) const { return mPointer != o.mPointer; }
     };
     struct List {
@@ -380,16 +385,14 @@ extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv
         Iterator GetBeginIter() { return Iterator(node.next); }
         Iterator GetEndIter() { return Iterator(&node); }
     };
-    struct KeepAlive { void* start; void* end; unsigned long outer; void* head; } keep;
+    struct KeepAlive { void* start; void* end; unsigned long outer; } keep;
     keep.start = object;
     keep.end = (u8*)object + size;
     keep.outer = OSDisableInterrupts();
     for (Iterator it = ((List*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv())->GetBeginIter();
-         (keep.head = (void*)((List*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv())->GetEndIter().mPointer, it.mPointer != keep.head);) {
+         it != ((List*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv())->GetEndIter();) {
         Iterator cur = it++;
-        if (!cur.mPointer)
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B44, 0x23D, (const char*)lbl_80322B20);
-        ((Callback*)cur.mPointer)->dispose(keep.start, keep.end);
+        cur->dispose(keep.start, keep.end);
     }
     OSRestoreInterrupts(keep.outer);
 }
@@ -1077,7 +1080,6 @@ extern "C" u32 fn_800EC56C(void *__restrict soundHeapRef) {
     return (allocSize - 0x20) & ~31;
 }
 
-#pragma opt_common_subs off
 extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, void* buffer, u32 size, u32 blockSize) {
     extern u8 lbl_80323058[], lbl_80323070[];
     void** head = (void**)headArg;
