@@ -308,7 +308,7 @@ void fn_802C8588(float *arg0, const float *arg1, const float *arg2) {
     PSVECNormalize(arg0 + 6, arg0 + 6);
     PSVECCrossProduct(sp, arg0 + 6, arg0);
     PSVECNormalize(arg0, arg0);
-    do { PSVECCrossProduct(arg0 + 6, arg0, arg0 + 3); } while (0);
+    PSVECCrossProduct(arg0 + 6, arg0, arg0 + 3);
 }
 extern void fn_802D03F4(unsigned int *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int);
 #pragma scheduling invalid_target
@@ -325,11 +325,11 @@ void fn_802C8638(unsigned int *arg0) {
     unsigned int v9 = arg0[9];
     unsigned int v10 = arg0[10];
     unsigned int v11 = arg0[11];
-    volatile unsigned int *dst = (volatile unsigned int *)lbl_804C1410;
+    unsigned int *dst = (unsigned int *)lbl_804C1410;
     dst[0] = v0; dst[1] = v1; dst[2] = v2; dst[3] = v3;
     dst[4] = v4; dst[5] = v5; dst[6] = v6; dst[7] = v7;
     dst[8] = v8; dst[9] = v9; dst[10] = v10; dst[11] = v11;
-    fn_802D03F4((unsigned int *)dst, v10, v9, v8, v7, v6, v5, v4);
+    fn_802D03F4(dst, v10, v9, v8, v7, v6, v5, v4);
 }
 #pragma scheduling on
 /* Return the buffer holding the current camera/view matrix (a 3x4 float matrix). */
@@ -535,16 +535,16 @@ void fn_802C8BD0(int texSlot) {
 #pragma dont_inline off
 
 #pragma use_lmw_stmw off
-void fn_802C8C04(int arg0) {
-    struct DlMtx34 *src = (struct DlMtx34 *)lbl_804C1410;
-    struct DlMtx34 *dst = (struct DlMtx34 *)lbl_804C13E0;
-    float matrix[12];
+/* Save the current draw-list matrix (lbl_804C1410) into the backup slot (lbl_804C13E0) and flag that a save is active, then build an orthographic projection matrix, load it as the current GX matrix, and reset material/vertex state while selecting texture slot `texSlot`. */ void fn_802C8C04(int texSlot) {
+    struct DlMtx34 *currentMtx = (struct DlMtx34 *)lbl_804C1410;
+    struct DlMtx34 *savedMtx = (struct DlMtx34 *)lbl_804C13E0;
+    float orthoMtx[12];
 
-    *dst = *src;
+    *savedMtx = *currentMtx;
     lbl_8055FC35 = 1;
-    fn_802C89E8(matrix);
-    fn_802C8638((unsigned int *)matrix);
-    ((void (*)(int))fn_802C8BD0)(arg0);
+    fn_802C89E8(orthoMtx);
+    fn_802C8638((unsigned int *)orthoMtx);
+    ((void (*)(int))fn_802C8BD0)(texSlot);
 }
 
 #pragma use_lmw_stmw off
