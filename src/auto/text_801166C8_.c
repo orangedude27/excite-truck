@@ -390,23 +390,25 @@ extern s64 OSGetTime(void);
 extern s32 lbl_8055DEC0;
 extern u32 lbl_8055DEC4;
 #pragma dont_inline on
-s32 fn_80116D30(void) {
-    u64 time = (u64)OSGetTime();
-    u32 saved_low;
-    u32 saved_high;
-    u64 delta;
-    u32 quotient;
-    u64 remainder;
-    if ((lbl_8055DEC4 | (lbl_8055DEC0 ^ (0 >> 31))) == 0) {
-        lbl_8055DEC4 = (u32)time;
-        lbl_8055DEC0 = (s32)(time >> 32);
-    }
-    saved_low = *(volatile u32 *)&lbl_8055DEC4;
-    saved_high = *(volatile u32 *)&lbl_8055DEC0;
-    delta = time - (((u64)saved_high << 32) | saved_low);
-    quotient = (u32)(delta >> 32) * 70699U;
-    remainder = delta - ((u64)quotient * 60750U);
-    return (s32)((u64)quotient + (u32)((remainder * 0x8A15866BULL) >> 47));
+s32 fn_80116D30(void)
+{
+  u64 time = (u64) OSGetTime();
+  u32 saved_low;
+  u32 saved_high;
+  u64 delta;
+  u64 quotient;
+  u64 remainder;
+  if (((((s64) lbl_8055DEC0) * 0x100000000LL) + ((u32) lbl_8055DEC4)) == 0)
+  {
+    lbl_8055DEC4 = (u32) time;
+    lbl_8055DEC0 = (s32) (time >> 32);
+  }
+  saved_low = *((volatile u32 *) (&lbl_8055DEC4));
+  saved_high = *((volatile u32 *) (&lbl_8055DEC0));
+  delta = time - ((((u64) saved_high) << 32) | saved_low);
+  quotient = ((u32) (delta >> 32)) * 70699U;
+  remainder = delta - (quotient * ((float) 60750ULL));
+  return (s32) (quotient + ((u32) ((remainder * 0x8A15866BULL) >> 47)));
 }
 
 extern void* fn_8011FF24(void);
@@ -2658,22 +2660,20 @@ void fn_8011A330(void *dvdStream) {
 u32 fn_8011A388(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
     extern u32 fn_8011A240(void *, u32, s32, u32);
     extern void fn_8011A330(void *);
-    register s32 a2 = arg2;
-    register u32 a3 = arg3;
     volatile u32 *offset = (volatile u32 *)((u8 *)arg0 + 0x90);
     volatile u32 *base = (volatile u32 *)((u8 *)arg0 + 0xB4);
     volatile u32 *capacityPtr = (volatile u32 *)((u8 *)arg0 + 0x40);
-    u32 capacity;
+    u32 result = arg3;
     u32 current;
     u32 end;
-    u32 remaining;
     u32 newPosition;
-    u32 result = a3;
+    u32 capacity;
+    u32 remaining;
     if (arg1 != -1 && *offset != (u32)arg1) {
         *offset = (u32)arg1;
         current = *offset;
-        result = fn_8011A240((u8 *)arg0 + 0x54, current + *base, a2, a3);
-        if (result != a3) {
+        result = fn_8011A240((u8 *)arg0 + 0x54, current + *base, arg2, arg3);
+        if (result != arg3) {
             *(s32 *)((u8 *)arg0 + 0x20) = 1;
             fn_8011A330(arg0);
         }
@@ -2688,7 +2688,7 @@ u32 fn_8011A388(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
         if (capacity <= remaining) {
             *(u32 *)((u8 *)arg0 + 0x48) = *capacityPtr;
         }
-        fn_8011A1A0((u32 *)a2, result);
+        fn_8011A1A0((u32 *)arg2, result);
     }
     return result;
 }
@@ -3046,56 +3046,65 @@ extern void fn_8011AC10(void*, s32, s32, s32, s32);
 extern s32 fn_8011A7CC(DVDFileInfo*);
 extern void fn_8011AC84(void*);
 extern s32 fn_8011A870(void*, s32);
-s32 fn_8011ACC4(void* arg0, void* arg1, s32 arg2) {
-    s32 entry;
-    memset(arg0, 0, 0x144);
-    if (arg2 & 0x800000) {
-        u32 *words = (u32 *)arg1;
-        u32 v13 = words[13];
-        u32 v12 = words[12];
-        u32 size = words[11];
-        u32 v10 = words[10];
-        u32 v9 = words[9];
-        u32 v8 = words[8];
-        u32 v7 = words[7];
-        u32 v6 = words[6];
-        u32 v5 = words[5];
-        u32 v4 = words[4];
-        u32 v3 = words[3];
-        u32 v2 = words[2];
-        u32 v1 = words[1];
-        u32 v0 = words[0];
-        u32 v14 = words[14];
-        *(u32*)((u8*)arg0 + 0x54) = v0;
-        *(u32*)((u8*)arg0 + 0x58) = v1;
-        *(u32*)((u8*)arg0 + 0x5C) = v2;
-        *(u32*)((u8*)arg0 + 0x60) = v3;
-        *(u32*)((u8*)arg0 + 0x64) = v4;
-        *(u32*)((u8*)arg0 + 0x68) = v5;
-        *(u32*)((u8*)arg0 + 0x6C) = v6;
-        *(u32*)((u8*)arg0 + 0x70) = v7;
-        *(u32*)((u8*)arg0 + 0x74) = v8;
-        *(u32*)((u8*)arg0 + 0x78) = v9;
-        *(u32*)((u8*)arg0 + 0x7C) = v10;
-        *(u32*)((u8*)arg0 + 0x80) = size;
-        *(u32*)((u8*)arg0 + 0x84) = v12;
-        *(u32*)((u8*)arg0 + 0x88) = v13;
-        *(u32*)((u8*)arg0 + 0x8C) = v14;
-        *(u32*)((u8*)arg0 + 0xB0) = 1;
-        *(u32*)((u8*)arg0 + 0xB4) = size;
-    } else {
-        entry = DVDConvertPathToEntrynum(arg1);
-        if (entry == -1) return 0;
-        if (DVDFastOpen(entry, (u8*)arg0 + 0x54) == 0) return 0;
+s32 fn_8011ACC4(void *arg0, void *arg1, s32 arg2)
+{
+  s32 entry;
+  memset(arg0, 0, 0x144);
+  if (arg2 & 0x800000)
+  {
+    u32 v13 = *((u32 *) (((u8 *) arg1) + 0x34));
+    u32 v12 = *((u32 *) (((u8 *) arg1) + 0x30));
+    u32 size = *((u32 *) (((u8 *) arg1) + 0x2C));
+    u32 v10 = *((u32 *) (((u8 *) arg1) + 0x28));
+    u32 v9 = *((u32 *) (((u8 *) arg1) + 0x24));
+    u32 v8 = *((u32 *) (((u8 *) arg1) + 0x20));
+    u32 v7 = *((u32 *) (((u8 *) arg1) + 0x1C));
+    u32 v6 = *((u32 *) (((u8 *) arg1) + 0x18));
+    u32 v5 = *((u32 *) (((u8 *) arg1) + 0x14));
+    u32 v4 = *((u32 *) (((u8 *) arg1) + 0x10));
+    u32 v3 = *((u32 *) (((u8 *) arg1) + 0x0C));
+    u32 v2 = *((u32 *) (((u8 *) arg1) + 0x08));
+    u32 v1 = *((u32 *) (((u8 *) arg1) + 0x04));
+    u32 v0 = *((u32 *) (((u8 *) arg1) + 0x00));
+    u32 v14 = *((u32 *) (((u8 *) arg1) + 0x38));
+    *((u32 *) (((u8 *) arg0) + 0x54)) = v0;
+    *((u32 *) (((u8 *) arg0) + 0x58)) = v1;
+    *((u32 *) (((u8 *) arg0) + 0x5C)) = v2;
+    *((u32 *) (((u8 *) arg0) + 0x60)) = v3;
+    *((u32 *) (((u8 *) arg0) + 0x64)) = v4;
+    *((u32 *) (((u8 *) arg0) + 0x68)) = v5;
+    *((u32 *) (((u8 *) arg0) + 0x6C)) = v6;
+    *((u32 *) (((u8 *) arg0) + 0x70)) = v7;
+    *((u32 *) (((u8 *) arg0) + 0x74)) = v8;
+    *((u32 *) (((u8 *) arg0) + 0x78)) = v9;
+    *((u32 *) (((u8 *) arg0) + 0x7C)) = v10;
+    *((u32 *) (((u8 *) arg0) + 0x80)) = size;
+    *((u32 *) (((u8 *) arg0) + 0x84)) = v12;
+    *((u32 *) (((u8 *) arg0) + 0x88)) = v13;
+    *((u32 *) (((u8 *) arg0) + 0x8C)) = v14;
+    *((u32 *) (((u8 *) arg0) + 0xB0)) = 1;
+    *((u32 *) (((u8 *) arg0) + 0xB4)) = size;
+  }
+  else
+  {
+    entry = DVDConvertPathToEntrynum(arg1);
+    if (entry == (-1))
+    {
+      return 0;
     }
-    ((void**)arg0)[0] = fn_8011A388;
-    ((void**)arg0)[1] = fn_8011A8FC;
-    ((void**)arg0)[2] = fn_8011AC04;
-    ((void**)arg0)[3] = fn_8011AC10;
-    ((void**)arg0)[4] = fn_8011A7CC;
-    ((void**)arg0)[5] = fn_8011AC84;
-    ((void**)arg0)[6] = fn_8011A870;
-    return 1;
+    if (DVDFastOpen(entry, ((u8 *) arg0) + 0x54) == 0)
+    {
+      return 0;
+    }
+  }
+  ((void **) arg0)[0] = fn_8011A388;
+  ((void **) arg0)[1] = fn_8011A8FC;
+  ((void **) arg0)[2] = fn_8011AC04;
+  ((void **) arg0)[3] = fn_8011AC10;
+  ((void **) arg0)[4] = fn_8011A7CC;
+  ((void **) arg0)[((((((((((5 & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF] = fn_8011AC84;
+  ((void **) arg0)[6] = fn_8011A870;
+  return 1;
 }
 
 f32 fn_8011AE18(s32 packedValue) {
@@ -3320,94 +3329,128 @@ outer_test:
     ((BitReader8011 *)arg2)->count = var_r24;
 }
 
-s32 fn_8011B2AC(s32 size, u32 channels, s32 flags, s32 arg3, s32 arg4, s32 output, u32 *input, u32 bands, f32 gain, s32 arg8) {
-    f32 buffer[4096];
-    f32 factors[26];
-    BitReader8011 bits;
-    s32 mode;
-    u32 i, j, index;
-    f32 *p;
-    register u32 zero = 0;
-    mode = flags & 1;
-    bits.start = input;
-    bits.next = input;
-    bits.count = zero;
-    bits.value = zero;
-    if (mode) {
-        if (bits.count < 2) {
-            bits.value = *bits.next >> (2 - bits.count);
-            bits.count += 30;
-            bits.next++;
-        } else {
-            bits.value = 0;
-            bits.count -= 2;
-        }
+s32 fn_8011B2AC(s32 size, u32 channels, s32 flags, s32 arg3, s32 arg4, s32 output, u32 *input, u32 bands, f32 gain, s32 arg8)
+{
+  f32 buffer[4096];
+  f32 factors[26];
+  BitReader8011 bits;
+  s32 mode;
+  u32 i;
+  u32 j;
+  u32 index;
+  f32 *p;
+  mode = flags & 1;
+  bits.start = input;
+  bits.next = input;
+  bits.count = 0;
+  bits.value = 0;
+  if (mode)
+  {
+    if (bits.count < 2)
+    {
+      bits.value = (*bits.next) >> (2 - bits.count);
+      bits.count += 30;
+      bits.next++;
     }
-    p = buffer;
-    for (i = 0; i < channels; i++) {
-        {
-            u32 value;
-            if (bits.count < 29) {
-                u32 word = *bits.next;
-                value = bits.value | (word << bits.count);
-                bits.value = word >> (29 - bits.count);
-                index = value & 0x1fffffff;
-                bits.count += 3;
-                bits.next++;
-            } else {
-                bits.count -= 29;
-                value = bits.value;
-                index = value & 0x1fffffff;
-                bits.value >>= 29;
-            }
-        }
-        p[0] = fn_8011AE18(index);
-        {
-            u32 value;
-            if (bits.count < 29) {
-                u32 word = *bits.next;
-                value = bits.value | (word << bits.count);
-                bits.value = word >> (29 - bits.count);
-                index = value & 0x1fffffff;
-                bits.count += 3;
-                bits.next++;
-            } else {
-                bits.count -= 29;
-                value = bits.value;
-                index = value & 0x1fffffff;
-                bits.value >>= 29;
-            }
-        }
-        p[1] = fn_8011AE18(index);
-        for (j = 0; j < bands; j++) {
-            {
-            u32 value;
-            if (bits.count < 8) {
-                u32 word = *bits.next;
-                value = bits.value | (word << bits.count);
-                bits.value = word >> (8 - bits.count);
-                index = value & 0xff;
-                bits.count += 24;
-                bits.next++;
-            } else {
-                bits.count -= 8;
-                value = bits.value;
-                index = value & 0xff;
-                bits.value >>= 8;
-            }
-        }
-            if (index > 95) index = 95;
-            factors[j] = lbl_80329BC8[index];
-        }
-        fn_8011AF94(p, size, &bits, factors, arg8);
-        if (mode) fn_8012023C(size, 1, p, arg3, arg4);
-        else fn_801200BC(size, -1, p, arg3, arg4);
-        p += size;
+    else
+    {
+      bits.value >>= 2;
+      bits.count -= 2;
     }
-    if (channels == 1) fn_8011AE68(output, buffer, size, gain);
-    else fn_8011AED8(output, buffer, size, gain);
-    bits.count = 0;
-    return ((u32)bits.next - (u32)bits.start) & 0x1fffffff;
+  }
+  p = buffer;
+  for (i = 0; i < channels; i++)
+  {
+    {
+      u32 value;
+      if (bits.count < 29)
+      {
+        u32 word = *bits.next;
+        value = bits.value | (word << bits.count);
+        bits.value = word >> (29 - bits.count);
+        index = value & 0x1fffffff;
+        bits.count += 3;
+        bits.next++;
+      }
+      else
+      {
+        bits.count -= 29;
+        value = bits.value;
+        index = value & 0x1fffffff;
+        bits.value >>= 29;
+      }
+    }
+    p[0] = fn_8011AE18(index);
+    {
+      u32 value;
+      if (bits.count < 29)
+      {
+        u32 word = *bits.next;
+        value = bits.value | (word << bits.count);
+        bits.value = word >> (29 - bits.count);
+        index = (value & 0x1fffffff) & 0xFFFFFFFFFFFFFFFF;
+        bits.count += 3;
+        bits.next++;
+      }
+      else
+      {
+        bits.count -= 29;
+        value = bits.value;
+        index = value & 0x1fffffff;
+        bits.value >>= 29;
+      }
+    }
+    p[1] = fn_8011AE18(index);
+    for (j = 0; j < bands; j++)
+    {
+      {
+        u32 value;
+        if (bits.count < 8)
+        {
+          u32 word = *bits.next;
+          value = bits.value | (word << bits.count);
+          bits.value = word >> (8 - bits.count);
+          index = value & 0xff;
+          bits.count += 24;
+          bits.next++;
+        }
+        else
+        {
+          bits.count -= 8;
+          value = bits.value;
+          index = value & 0xff;
+          bits.value >>= 8;
+        }
+      }
+      if (index > 95)
+      {
+        index = 95;
+      }
+      factors[j] = lbl_80329BC8[index];
+    }
+
+    fn_8011AF94(p, size, &bits, factors, arg8);
+    if (mode)
+    {
+      fn_8012023C(size, 1, p, arg3, arg4);
+    }
+    else
+    {
+      fn_801200BC(size, -1, p, arg3, arg4);
+    }
+    p += size;
+  }
+
+  if (channels == 1)
+  {
+    fn_8011AE68(output, buffer, size, gain);
+  }
+  else
+  {
+    fn_8011AED8(output, buffer, size, gain);
+  }
+  bits.count = 0;
+  return (((u32) bits.next) - ((u32) bits.start)) & 0x1fffffff;
 }
 
 extern u32 lbl_80329B60[25];
@@ -3416,7 +3459,6 @@ extern f64 lbl_805611F0;
 extern f32 lbl_805611F8;
 extern f64 lbl_80561200;
 void *fn_8011B584(u32 arg0, s32 arg1, s32 arg2, s32 arg_sp0) {
-#pragma opt_propagation off
     u32 *sp18;
     u32 *sp14;
     u32 *sp10;
@@ -3579,16 +3621,14 @@ void *fn_8011B584(u32 arg0, s32 arg1, s32 arg2, s32 arg_sp0) {
 void fn_8011B94C(void *arg0, s32 *arg1, s32 *arg2, s32 arg3, s32 *arg4, s32 arg5, u32 *arg6, u32 arg7, f32 arg8, s32 arg9) {
     u8 *p = (u8 *)arg0;
     u32 i, count;
-    s16 *a;
-    s16 *b;
     s32 result = fn_8011B2AC(*(s32 *)p, *(u32 *)(p + 0x10), *(s32 *)(p + 0x30), *(s32 *)(p + 0x24), *(s32 *)(p + 0x28), *(s32 *)(p + 0x14), (u32 *)arg3, *(u32 *)(p + 0x1C), *(f32 *)(p + 4), *(u32 *)(p + 0x20));
     if (*(s32 *)(p + 0x18)) *(s32 *)(p + 0x18) = 0;
     else {
         i = 0;
         count = *(u32 *)(p + 0xC) >> 1;
         for (; i < count; i++) {
-            a = *(s16 **)(p + 0x14);
-            b = *(s16 **)(p + 0x2C);
+            s16 *a = *(s16 **)(p + 0x14);
+            s16 *b = *(s16 **)(p + 0x2C);
             a[i] = (s16)(((u32)i * a[i] + b[i] * (u32)(count - i)) / count);
         }
     }
@@ -3721,20 +3761,21 @@ void fn_8011BDF0(s32 alarmPtr) {
     }
 }
 
-void *fn_8011BE48(s32 arg0) {
-    void *ptr;
-
-    ptr = fn_8011FFC4(0x40);
-    if (ptr != NULL) {
-        memset(ptr, 0, 0x40);
-        *(s32 *)((u8 *)ptr + 0x00) = 0;
-        *(s32 *)((u8 *)ptr + 0x04) = 1;
-        *(s32 *)((u8 *)ptr + 0x30) = 0;
-        *(s32 *)((u8 *)ptr + 0x34) = 1;
-        *(s32 *)((u8 *)ptr + 0x38) = 0;
-        *(s32 *)((u8 *)ptr + 0x3C) = (arg0 < 0) ? -arg0 : arg0;
-    }
-    return ptr;
+void *fn_8011BE48(long arg0)
+{
+  void *ptr;
+  ptr = fn_8011FFC4(0x40);
+  if (ptr != NULL)
+  {
+    memset(ptr, 0, 0x40);
+    *((s32 *) (((u8 *) ptr) + 0x00)) = 0;
+    *((s32 *) (((u8 *) ptr) + 0x04)) = 1;
+    *((s32 *) (((u8 *) ptr) + 0x30)) = 0;
+    *((s32 *) (((u8 *) ptr) + 0x34)) = 1;
+    *((s32 *) (((u8 *) ptr) + 0x38)) = 0;
+    *((s32 *) (((u8 *) ptr) + 0x3C)) = (arg0 < 0) ? (-arg0) : (arg0);
+  }
+  return ptr;
 }
 
 /* Register a tick-listener node on a Bink tick object, linking it at the head
@@ -4421,10 +4462,13 @@ void fn_8011CD90(s32 objectBase, s32 bitReader, s32 workBuffer) {
 const u8 lbl_80561208[] = {0x04, 0x08, 0x0C, 0x20};
 void fn_8011CE18(void *arg0, void *arg1) {
     u32 *bits;
-    u32 value, bitCount, available, count, code, len, s, w, fill;
-    register u32 mask;
-    u8 *dst, *table;
-    register u8 *lookup;
+    u32 value, bitCount, available, count, code, len, s, w;
+    u32 indexBits;
+    struct { u32 value; } maskStorage;
+    u8 *dst;
+    u32 fill;
+    u8 *lookup;
+    u8 *table;
     u32 sym;
     u8 run;
     u32 fw;
@@ -4453,12 +4497,12 @@ void fn_8011CE18(void *arg0, void *arg1) {
             dst = *(u8 **)((u8 *)arg0 + 0x2C);
             table = (u8 *)arg0 + 0x10;
             lookup = *(u8 **)((u8 *)arg0 + 0x24);
-            available = *(u32 *)((u8 *)arg0 + 0x20);
+            indexBits = *(u32 *)((u8 *)arg0 + 0x20);
             fill = 0;
-            mask = 0xFFFFFFFFU >> (32 - available);
+            maskStorage.value = 0xFFFFFFFFU >> (32 - indexBits);
             while (count != 0) {
-                if (bitCount >= available) {
-                    code = value & mask;
+                if (bitCount >= indexBits) {
+                    code = value & maskStorage.value;
                     s = lookup[code];
                     len = s >> 4;
                     code = s & 15;
@@ -4467,7 +4511,7 @@ void fn_8011CE18(void *arg0, void *arg1) {
                     bitCount -= len;
                 } else {
                     u32 next = *bits;
-                    code = (value | (next << bitCount)) & mask;
+                    code = (value | (next << bitCount)) & maskStorage.value;
                     s = lookup[code];
                     len = s >> 4;
                     code = s & 15;
@@ -4484,7 +4528,7 @@ void fn_8011CE18(void *arg0, void *arg1) {
                         do {
                             *dst++ = fill;
                             run--;
-                        } while (run != 0 && ((u32)dst & 3));
+                        } while (run != 0);
                     }
                     while (run >= 4) {
                         *(u32 *)dst = fw;
@@ -4528,14 +4572,14 @@ void fn_8011D0E8(void *arg0, void *arg1, void *arg2) {
  u32 w2;
  u8 *dst, *table, *lut;
  u32 v, c;
- if(M2C_FIELD(arg0,u32*,0)!=M2C_FIELD(arg0,u32*,4)) return;
- n=M2C_FIELD(arg1,u32*,8); width=M2C_FIELD(arg0,u32*,0x28); p=M2C_FIELD(arg1,u32**,4); bits=M2C_FIELD(arg1,u32*,0);
- if(n<width){u32 x=*p++; out=(bits|(x<<n))&(-1U>>(32-width)); bits=x>>(width-n); n=n+32-width;} else {out=bits&(-1U>>(32-width)); bits>>=width; n-=width;}
+ if((*(u32*)((char *)(arg0) + 0))!=(*(u32*)((char *)(arg0) + 4))) return;
+ n=(*(u32*)((char *)(arg1) + 8)); width=(*(u32*)((char *)(arg0) + 0x28)); p=(*(u32**)((char *)(arg1) + 4)); bits=(*(u32*)((char *)(arg1) + 0));
+ if(n<width){u32 x=*p++; out=(bits|(x<<n))&(-1U>>(32-width)); bits=(u32)x>>(width-n); n=n+32-width;} else {out=bits&(-1U>>(32-width)); bits>>=width; n-=width;}
  if(out){
-  dst=M2C_FIELD(arg0,u8**,0x2C); M2C_FIELD(arg0,u8**,0)=dst; M2C_FIELD(arg0,u8**,4)=dst+out;
-  w2=M2C_FIELD(arg0,u32*,0x20); table=M2C_FIELD(arg0,u8**,0x24); lut=(u8*)arg0+0x10;
-  tree=M2C_FIELD(arg2,u32*,0x180);
-  if(n==0){sign=*p++; bits=sign>>1; n=31;} else {sign=bits; bits>>=1; n--;}
+  dst=(*(u8**)((char *)(arg0) + 0x2C)); (*(u8**)((char *)(arg0) + 0))=dst; (*(u8**)((char *)(arg0) + 4))=dst+out;
+  w2=(*(u32*)((char *)(arg0) + 0x20)); table=(*(u8**)((char *)(arg0) + 0x24)); lut=(u8*)arg0+0x10;
+  tree=(*(u32*)((char *)(arg2) + 0x180));
+  if(n==0){sign=*p++; bits=sign>>1; n=31;} else {sign=bits; bits>>=1; n -= 1;}
   if(sign&1) out=-20-out;
   mask=-1U>>(32-w2);
   do {
@@ -4545,11 +4589,11 @@ void fn_8011D0E8(void *arg0, void *arg1, void *arg2) {
    out--;
    if(n>=w){
     code=((u8*)ent[0x50])[bits&(-1U>>(32-w))];
-    tree=((u8*)arg2)[tree*16+(code&15)]; rem=code>>4; bits>>=rem; n-=rem;
+    tree=((u8 (*)[16])arg2)[tree][code&15]; rem=code>>4; bits>>=rem; n-=rem;
    } else {
     u32 x=*p;
     code=((u8*)ent[0x50])[(bits|(x<<n))&(-1U>>(32-w))];
-    tree=((u8*)arg2)[tree*16+(code&15)]; rem=code>>4;
+    tree=((u8 (*)[16])arg2)[tree][code&15]; rem=code>>4;
     if(n>=rem){bits>>=rem;n-=rem;} else {p++; bits=x>>(rem-n); n=n+32-rem;}
    }
    if(n>=w2){
@@ -4561,10 +4605,10 @@ void fn_8011D0E8(void *arg0, void *arg1, void *arg2) {
    }
    c=v|(tree<<4); v=c&127; if(c&128)v=(u8)(-v); *dst++=v+128;
   } while(out>0);
-  if(out < -22) memset(M2C_FIELD(arg0,u8**,0x2C),*(u8*)M2C_FIELD(arg0,u8**,0x2C),-(out+21));
-  M2C_FIELD(arg2,u32*,0x180)=tree;
- } else {dst=M2C_FIELD(arg0,u8**,0x2C);M2C_FIELD(arg0,u8**,4)=dst;M2C_FIELD(arg0,u8**,0)=dst+4;}
- M2C_FIELD(arg1,u32**,4)=p;M2C_FIELD(arg1,u32*,0)=bits;M2C_FIELD(arg1,u32*,8)=n;
+  if(out < -22) memset((*(u8**)((char *)(arg0) + 0x2C)),*(u8*)(*(u8**)((char *)(arg0) + 0x2C)),-(out+21));
+  (*(u32*)((char *)(arg2) + 0x180))=tree;
+ } else {dst=(*(u8**)((char *)(arg0) + 0x2C));(*(u8**)((char *)(arg0) + 4))=dst;(*(u8**)((char *)(arg0) + 0))=dst+4;}
+ (*(u32**)((char *)(arg1) + 4))=p;(*(u32*)((char *)(arg1) + 0))=bits;(*(u32*)((char *)(arg1) + 8))=n;
 }
 
 #pragma opt_propagation off
@@ -5216,8 +5260,8 @@ u32 fn_8011FC2C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5, s
     s32 *ret;
     s32 curOffset;
     s32 oldOffset;
-    s32 *oldBase;
     s32 *curBase;
+    s32 *oldBase;
     idx.old = *(u32 *)((u8 *)arg0 + 0x14);
     next = idx.old ^ 1;
     if (*(s32 *)((u8 *)arg0 + next * 0x30 + 0x1C) != 0) {
@@ -5228,11 +5272,12 @@ u32 fn_8011FC2C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5, s
     ptr = arg3;
     if ((arg7 & 0x100000) != 0) {
         if ((arg6 & 0x100000) != 0) {
-            fn_8011E0B4(*(s32 *)((u8 *)arg0 + idx.cur * 0x30 + 0x40),
-                        *(s32 *)((u8 *)arg0 + idx.old * 0x30 + 0x40),
+            s32 *c = (s32 *)((u8 *)arg0 + idx.cur * 0x30);
+            s32 *o = (s32 *)((u8 *)arg0 + idx.old * 0x30);
+            fn_8011E0B4(c[0x10], o[0x10],
                         *(s32 *)((u8 *)arg0 + 4),
                         *(s32 *)((u8 *)arg0 + 8),
-                        *(s32 *)((u8 *)arg0 + idx.old * 0x30 + 0x44),
+                        o[0x11],
                         arg3 + 1, arg4, arg1, arg2, 1, arg5, arg6, &result);
         }
         ptr = (s32 *)((u8 *)ptr + *ptr);
@@ -5277,12 +5322,11 @@ u32 fn_8011FC2C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5, s
 }
 
 void fn_8011FE20(u32 **arg0, u32 arg1) {
-    void *newSizes;
     void *newBuffer;
+    void *newSizes;
     u32 base;
     u32 rounded;
     u32 extra;
-    u32 total;
     if (lbl_80559950 == lbl_8055DEF4) {
         newBuffer = fn_8011FFC4(lbl_80559950 << 4);
         newSizes = (u8 *)newBuffer + (lbl_80559950 << 3);
@@ -5296,13 +5340,12 @@ void fn_8011FE20(u32 **arg0, u32 arg1) {
         lbl_8055994C = (u32 *)newSizes;
     }
     base = (u32)lbl_8055DEF0;
-    rounded = arg1 + 0x1F;
-    extra = (((base >> 5) & 0x1F) + 0x21 - ((rounded >> 5) & 0x1F)) & 0x1F;
-    total = (rounded & ~0x1F) + (extra << 5);
-    lbl_8055DEF0 = (void *)(base + total);
-    lbl_8055994C[lbl_8055DEF4] = total;
-    lbl_80559948[lbl_8055DEF4] = arg0;
-    lbl_8055DEF4++;
+    extra = (((base >> 5) & 0x1F) + 0x21 - (((arg1 + 0x1F) >> 5) & 0x1F)) & 0x1F;
+    arg1 = (arg1 + 0x1F) & ~0x1F;
+    arg1 += extra << 5;
+    lbl_8055DEF0 = (void *)(base + arg1);
+    lbl_8055994C[lbl_8055DEF4] = arg1;
+    lbl_80559948[lbl_8055DEF4++] = arg0;
 }
 
 extern void *lbl_8055DEF0;
@@ -8285,9 +8328,9 @@ void fn_80124CE8(void *arg0, void *arg1) {
 void fn_80124F90(void *arg0) {
     f32 temp_f0;
     f32 temp_f1;
+    f32 temp_f2;
     f32 temp_f3;
     f32 temp_f4;
-    f32 temp_f2;
     f32 temp_f5;
     f32 temp_f6;
     f32 temp_f7;
@@ -8306,11 +8349,11 @@ void fn_80124F90(void *arg0) {
     temp_f3 = *(f32 *)((u8 *)arg0 + 8);
     temp_f2 = *(f32 *)((u8 *)arg0 + 0x18);
     temp_f7 = temp_f5 + temp_f4;
-    temp_f0 = *(f32 *)((u8 *)arg0 + 0xC);
-    temp_f1 = *(f32 *)((u8 *)arg0 + 0x1C);
+    temp_f1 = *(f32 *)((u8 *)arg0 + 0xC);
+    temp_f0 = *(f32 *)((u8 *)arg0 + 0x1C);
     temp_f9 = temp_f5 - temp_f4;
-    temp_f12 = temp_f0 - temp_f1;
-    temp_f4 = temp_f0 + temp_f1;
+    temp_f12 = temp_f1 - temp_f0;
+    temp_f4 = temp_f1 + temp_f0;
     temp_f10 = temp_f3 + temp_f2;
     temp_f11 = temp_f3 - temp_f2;
     *(f32 *)((u8 *)arg0 + 0) = temp_f6 + temp_f10;
@@ -8324,8 +8367,19 @@ void fn_80124F90(void *arg0) {
 }
 #pragma opt_propagation reset
 void fn_80125014(void *arg0) {
-    f32 temp_f0, temp_f1, temp_f3, temp_f4, temp_f2, temp_f5;
-    f32 temp_f6, temp_f7, temp_f8, temp_f9, temp_f10, temp_f11, temp_f12;
+    f32 temp_f0;
+    f32 temp_f1;
+    f32 temp_f3;
+    f32 temp_f2;
+    f32 temp_f4;
+    f32 temp_f5;
+    f32 temp_f6;
+    f32 temp_f7;
+    f32 temp_f8;
+    f32 temp_f9;
+    f32 temp_f10;
+    f32 temp_f11;
+    f32 temp_f12;
 
     temp_f1 = *(f32 *)((u8 *)arg0 + 0);
     temp_f0 = *(f32 *)((u8 *)arg0 + 0x10);
@@ -8333,16 +8387,16 @@ void fn_80125014(void *arg0) {
     temp_f4 = *(f32 *)((u8 *)arg0 + 0x14);
     temp_f6 = temp_f1 + temp_f0;
     temp_f8 = temp_f1 - temp_f0;
-    temp_f3 = *(f32 *)((u8 *)arg0 + 8);
-    temp_f2 = *(f32 *)((u8 *)arg0 + 0x18);
+    temp_f2 = *(f32 *)((u8 *)arg0 + 8);
+    temp_f3 = *(f32 *)((u8 *)arg0 + 0x18);
     temp_f7 = temp_f5 + temp_f4;
-    temp_f0 = *(f32 *)((u8 *)arg0 + 0xC);
-    temp_f1 = *(f32 *)((u8 *)arg0 + 0x1C);
+    temp_f1 = *(f32 *)((u8 *)arg0 + 0xC);
+    temp_f0 = *(f32 *)((u8 *)arg0 + 0x1C);
     temp_f9 = temp_f5 - temp_f4;
-    temp_f12 = temp_f0 - temp_f1;
-    temp_f4 = temp_f0 + temp_f1;
-    temp_f10 = temp_f3 + temp_f2;
-    temp_f11 = temp_f3 - temp_f2;
+    temp_f12 = temp_f1 - temp_f0;
+    temp_f4 = temp_f1 + temp_f0;
+    temp_f10 = temp_f2 + temp_f3;
+    temp_f11 = temp_f2 - temp_f3;
     *(f32 *)((u8 *)arg0 + 0) = temp_f6 + temp_f10;
     *(f32 *)((u8 *)arg0 + 4) = temp_f7 + temp_f4;
     *(f32 *)((u8 *)arg0 + 0x10) = temp_f6 - temp_f10;
