@@ -5272,12 +5272,11 @@ u32 fn_8011FC2C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5, s
     ptr = arg3;
     if ((arg7 & 0x100000) != 0) {
         if ((arg6 & 0x100000) != 0) {
-            s32 *c = (s32 *)((u8 *)arg0 + idx.cur * 0x30);
-            s32 *o = (s32 *)((u8 *)arg0 + idx.old * 0x30);
-            fn_8011E0B4(c[0x10], o[0x10],
+            fn_8011E0B4(*(s32 *)((u8 *)arg0 + idx.cur * 0x30 + 0x40),
+                        *(s32 *)((u8 *)arg0 + idx.old * 0x30 + 0x40),
                         *(s32 *)((u8 *)arg0 + 4),
                         *(s32 *)((u8 *)arg0 + 8),
-                        o[0x11],
+                        *(s32 *)((u8 *)arg0 + idx.old * 0x30 + 0x44),
                         arg3 + 1, arg4, arg1, arg2, 1, arg5, arg6, &result);
         }
         ptr = (s32 *)((u8 *)ptr + *ptr);
@@ -5300,22 +5299,20 @@ u32 fn_8011FC2C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5, s
     if ((arg6 & 0x20000) == 0) {
         curOffset = idx.cur * 0x30;
         oldOffset = idx.old * 0x30;
-        curBase = (s32 *)((u8 *)arg0 + curOffset);
-        oldBase = (s32 *)((u8 *)arg0 + oldOffset);
-        ret = fn_8011E0B4(curBase[10], oldBase[10],
+        ret = fn_8011E0B4(*(s32 *)((u8 *)arg0 + curOffset + 0x28),
+                          *(s32 *)((u8 *)arg0 + oldOffset + 0x28),
                           *(s32 *)((u8 *)arg0 + 0xC),
                           *(s32 *)((u8 *)arg0 + 0x10),
-                          oldBase[11],
+                          *(s32 *)((u8 *)arg0 + oldOffset + 0x2C),
                           ret, arg4, arg1, arg2, 2, arg5, arg6, &result);
         result = 0;
         curOffset = idx.cur * 0x30;
         oldOffset = idx.old * 0x30;
-        curBase = (s32 *)((u8 *)arg0 + curOffset);
-        oldBase = (s32 *)((u8 *)arg0 + oldOffset);
-        fn_8011E0B4(curBase[13], oldBase[13],
+        fn_8011E0B4(*(s32 *)((u8 *)arg0 + curOffset + 0x34),
+                    *(s32 *)((u8 *)arg0 + oldOffset + 0x34),
                     *(s32 *)((u8 *)arg0 + 0xC),
                     *(s32 *)((u8 *)arg0 + 0x10),
-                    oldBase[14],
+                    *(s32 *)((u8 *)arg0 + oldOffset + 0x38),
                     ret, arg4, arg1, arg2, 2, arg5, arg6, &result);
     }
     return result;
