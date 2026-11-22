@@ -81,14 +81,14 @@ extern int lbl_802FA690[5];
 extern int lbl_80498EE8[5];
 __declspec(section ".sdata") extern char lbl_8055BAC0[];
 __declspec(section ".sdata") extern char lbl_8055B860[];
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_8025E034(void)
 {
     extern void *fn_801284F8(int, const char *);
     extern void *lbl_8055F2E4;
     extern int lbl_8055F2E8;
-    int old;
-    char *str;
     struct DbgMenu { int w0; DbgMenuItem *items; int w2; int w3; int w4; };
     struct DbgCtx {
         void *list;
@@ -102,9 +102,8 @@ void fn_8025E034(void)
     struct DbgCtx ctx;
     DbgMenuItem items[35];
     struct DbgMenu menu;
-
-    str = lbl_80345828;
-    old = fn_80012810();
+    char *str = lbl_80345828;
+    int old = fn_80012810();
     if (old != 0x130) {
         fn_80012794();
         fn_80012790(0x130);
@@ -136,7 +135,7 @@ void fn_8025E034(void)
     DbgMenuItemSet(&items[3], lbl_80345828 + 0x34, 3, ctx.rows[1].name, 0, 0);
     DbgMenuItemSet(&items[4], lbl_80345828 + 0x40, 2, &ctx.rows[1].state, 0, 0);
     DbgMenuItemSet(&items[5], lbl_80345828 + 0x50, 3, ctx.rows[2].name, 0, 0);
-    DbgMenuItemSet(&items[6], lbl_80345828 + 0x5C, 2, &ctx.rows[2].state, 0, 0);
+    DbgMenuItemSet(&items[6], lbl_80345828 + 0x5C, 2, &ctx.rows[2].state, 0);
     DbgMenuItemSet(&items[7], lbl_80345828 + 0x6C, 3, ctx.rows[3].name, 0, 0);
     DbgMenuItemSet(&items[8], lbl_80345828 + 0x78, 2, &ctx.rows[3].state, 0, 0);
     DbgMenuItemSet(&items[9], lbl_80345828 + 0x88, 3, ctx.rows[4].name, 0, 0);
@@ -197,6 +196,7 @@ void fn_8025E034(void)
         lbl_8055F2E4 = 0;
     }
 }
+#pragma pop
 void* __dt__Q28PSSystem7SeqHeapFv_8025E614(void* arg0, int arg1) {
     /* Destroy a PSSystem::SeqHeap: reset its vtable, tear down the owned
        object at +0x2C, and optionally free the storage when arg1 > 0. */
@@ -214,6 +214,7 @@ void* __dt__Q28PSSystem7SeqHeapFv_8025E614(void* arg0, int arg1) {
 extern "C" int fn_8025E678(void) {
     typedef SeqObj Obj;
     struct Key { int a; int b; unsigned char c; } out, tmp;
+    volatile char pad[0xC];
     char buf0[0x24], buf1[0x24], buf2[0x24];
     char *base, *recPtr, *dest1, *dest2, *dest3, *p, *q, *src, *chosen, *arr;
     Obj *obj, *item, *o1;
@@ -383,7 +384,6 @@ extern "C" int fn_8025E678(void) {
     return 0;
 }
 
-#pragma scheduling invalid_target
 extern "C" int fn_8025ECBC(void) {
     typedef SeqObj Obj;
     int tmpArr[3], outArr[3];
@@ -564,7 +564,6 @@ extern void *lbl_8055F3D4;
 typedef int (*CountFn)(void *);
 typedef void *(*GetFn)(void *, int);
 typedef int (*TestFn)(void *);
-#pragma scheduling invalid_target
 #pragma cplusplus on
 /* Menu callback for the "times" screen (times.lyt): refreshes which UI pane
    groups are on screen.  For every row of the event list it hides the row's
@@ -712,7 +711,7 @@ void fn_8025F46C(void *arg0) {
     unsigned char *recPtr;
     unsigned char *dest1, *dest2, *dest3;
     void *obj, *obj2, *item;
-    char *src;
+    char *str, *src;
     char buf0[0x24], buf1[0x24], buf2[0x24];
     int outBuf[6];
     int tmpBuf[6];
@@ -732,8 +731,8 @@ void fn_8025F46C(void *arg0) {
             char *q;
             int k;
             obj = *(void **)base;
-            src = ((char *(*)(void *, int))(*(void ***)obj)[4])(obj, i18);
-            src = ((char *(*)(void *))(*(void ***)src)[3])(src);
+            str = ((char *(*)(void *, int))(*(void ***)obj)[4])(obj, i18);
+            src = ((char *(*)(void *))(*(void ***)str)[3])(str);
             p = (char *)p16;
             q = src;
             k = 0x20;
@@ -935,7 +934,8 @@ static inline void setRecordIds_8025FA18(char *dst, int index) {
     *(int *)(dst + 0x20) = fn_802CAC28(index ? lbl_80344750 : lbl_80344740, 0);
     *(int *)(dst + 0x24) = fn_802CAC28(index ? lbl_80344730 : lbl_80344720, 0);
 }
-#pragma cplusplus on
+#pragma push
+#pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" void *fn_8025FA18(void) {
     int index, count;
@@ -945,6 +945,7 @@ extern "C" void *fn_8025FA18(void) {
     char *dst, *src, *q;
     int n;
     char c;
+    int *record;
     if (lbl_8055F2E8 == 0) {
         heap = fn_801284F8(8, lbl_8055C114);
         if (heap != 0) {
@@ -956,9 +957,10 @@ extern "C" void *fn_8025FA18(void) {
                     index = 0;
                     do {
                         int nn = *(int *)((char *)heap + 4);
-                        dst = (char *)*(void **)heap + nn * 0x38;
+                        record = (int *)((char *)*(void **)heap + nn * 0x38);
                         *(int *)((char *)heap + 4) = nn + 1;
                         src = entry->getParam(lbl_8055C100);
+                        dst = (char *)record;
                         q = dst;
                         n = 0x20;
                         goto copy1_check;
@@ -971,7 +973,7 @@ extern "C" void *fn_8025FA18(void) {
                     copy1_done:
                         if (index != 0) {
                             n = 0x20;
-                            q = dst;
+                            q = (char *)record;
                             goto scan_check;
                         scan_dec:
                             n--;
@@ -991,12 +993,12 @@ extern "C" void *fn_8025FA18(void) {
                             copy2_done: ;
                             }
                         }
-                        *(int *)(dst + 0x20) = fn_802CAC28(index ? lbl_80344750 : lbl_80344740, 0);
-                        *(int *)(dst + 0x24) = fn_802CAC28(index ? lbl_80344730 : lbl_80344720, 0);
-                        *(float *)(dst + 0x28) = entry->getFloat(lbl_8055C0F8);
-                        *(float *)(dst + 0x2C) = entry->getFloat(lbl_8055C0F4);
-                        *(float *)(dst + 0x30) = entry->getFloat(lbl_8055C0F0);
-                        *(float *)(dst + 0x34) = entry->getFloat(lbl_8055C0EC);
+                        record[8] = fn_802CAC28(index ? lbl_80344750 : lbl_80344740, 0);
+                        record[9] = fn_802CAC28(index ? lbl_80344730 : lbl_80344720, 0);
+                        *(float *)((char *)record + 0x28) = entry->getFloat(lbl_8055C0F8);
+                        *(float *)((char *)record + 0x2C) = entry->getFloat(lbl_8055C0F4);
+                        *(float *)((char *)record + 0x30) = entry->getFloat(lbl_8055C0F0);
+                        *(float *)((char *)record + 0x34) = entry->getFloat(lbl_8055C0EC);
                         index++;
                     } while (index < 2);
                 }
@@ -1008,7 +1010,6 @@ extern "C" void *fn_8025FA18(void) {
     lbl_8055F2E8++;
     return lbl_8055F2E4;
 }
-#pragma cplusplus reset
 extern float lbl_80563B70;
 extern float lbl_80563B74;
 extern float lbl_80563B78;
@@ -1017,14 +1018,13 @@ extern "C" void fn_80230C30(float *, float *, int, int);
 extern "C" void fn_802354A0(int, unsigned char, int, float, float, float, float, float);
 extern "C" void fn_80231220(int, int, float, float, float, float, float, float, float, float);
 extern float lbl_80563B70, lbl_80563B74, lbl_80563B78;
-#pragma scheduling invalid_target
 #pragma processor 750
 #pragma paired_single off
-void fn_8025FC8C(void* p, int arg1) {
+extern "C" void fn_8025FC8C(void* p, int arg1) {
     float spC, sp8, outC, out8, f29, f28, f27, f26, f25, f24;
     float tmpA, tmpB;
     unsigned int color, packed;
-    int blue, green, red;
+    int red, green, blue;
     char* item;
     if (*(unsigned char*)((char*)p + 0x25) == 0)
         return;
