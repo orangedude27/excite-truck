@@ -5251,14 +5251,14 @@ s32 *fn_8011E0B4(s32 arg0, s32 arg1, s32 width, s32 height, s32 format, s32 *buf
 
 extern s32* fn_8011E0B4(s32, s32, s32, s32, s32, s32*, s32, s32);
 typedef struct { u32 old; u32 cur; } Idx8011FC2C;
-u32 fn_8011FC2C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+/* Decode the next block of every band group of one frame of the compressed sample stream. */ u32 fn_8011FC2C(void *bands, s32 arg1, s32 arg2, s32 *blocks, s32 arg4, s32 streams, s32 flags, s32 flags2) {
     extern s32 *fn_8011E0B4();
     u32 result;
     Idx8011FC2C idx;
     u32 next;
-    s32 *ptr;
-    s32 *ret;
-    u32 (*ents)[12] = (u32 (*)[12])arg0;
+    s32 *block;
+    s32 *out;
+    u32 (*ents)[12] = (u32 (*)[12])bands;
     idx.old = ents[0][5];
     next = idx.old ^ 1;
     if ((s32)ents[next][7] != 0) {
@@ -5266,36 +5266,36 @@ u32 fn_8011FC2C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5, s
     }
     idx.cur = ents[0][5];
     result = 0;
-    ptr = arg3;
-    if ((arg7 & 0x100000) != 0) {
-        if ((arg6 & 0x100000) != 0) {
+    block = blocks;
+    if ((flags2 & 0x100000) != 0) {
+        if ((flags & 0x100000) != 0) {
             fn_8011E0B4((s32)ents[idx.cur][16], (s32)ents[idx.old][16],
                         (s32)ents[0][1], (s32)ents[0][2],
                         (s32)ents[idx.old][17],
-                        arg3 + 1, arg4, arg1, arg2, 1, arg5, arg6, &result);
+                        blocks + 1, arg4, arg1, arg2, 1, streams, flags, &result);
         }
-        ptr = (s32 *)((u8 *)ptr + *ptr);
+        block = (s32 *)((u8 *)block + *block);
     }
     result = 0;
-    if ((arg6 & 0x8000) == 0) ptr++;
-    ret = fn_8011E0B4((s32)ents[idx.cur][7], (s32)ents[idx.old][7],
+    if ((flags & 0x8000) == 0) block++;
+    out = fn_8011E0B4((s32)ents[idx.cur][7], (s32)ents[idx.old][7],
                       (s32)ents[0][1], (s32)ents[0][2],
                       (s32)ents[idx.old][8],
-                      ptr, arg4, arg1, arg2, 1, arg5, arg6, &result);
-    if ((arg6 & 0x8000) == 0) {
-        ret = (s32 *)((u8 *)ptr + *(volatile s32 *)((u8 *)ptr - 4) - 4);
+                      block, arg4, arg1, arg2, 1, streams, flags, &result);
+    if ((flags & 0x8000) == 0) {
+        out = (s32 *)((u8 *)block + *(volatile s32 *)((u8 *)block - 4) - 4);
     }
     result >>= 2;
-    if ((arg6 & 0x20000) == 0) {
-        ret = fn_8011E0B4((s32)ents[idx.cur][10], (s32)ents[idx.old][10],
+    if ((flags & 0x20000) == 0) {
+        out = fn_8011E0B4((s32)ents[idx.cur][10], (s32)ents[idx.old][10],
                           (s32)ents[0][3], (s32)ents[0][4],
                           (s32)ents[idx.old][11],
-                          ret, arg4, arg1, arg2, 2, arg5, arg6, &result);
+                          out, arg4, arg1, arg2, 2, streams, flags, &result);
         result = 0;
         fn_8011E0B4((s32)ents[idx.cur][13], (s32)ents[idx.old][13],
                     (s32)ents[0][3], (s32)ents[0][4],
                     (s32)ents[idx.old][14],
-                    ret, arg4, arg1, arg2, 2, arg5, arg6, &result);
+                    out, arg4, arg1, arg2, 2, streams, flags, &result);
     }
     return result;
 }
