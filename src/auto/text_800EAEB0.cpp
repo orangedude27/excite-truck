@@ -1081,8 +1081,7 @@ extern "C" u32 fn_800EC56C(void *__restrict soundHeapRef) {
 extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, void* buffer, u32 size, u32 blockSize) {
     extern u8 lbl_80323058[], lbl_80323070[];
     void** head = (void**)headArg;
-    u32 previous;
-    u32 start, stride, i, irq;
+    u32 start, stride, i, irq, previous;
     u32 addr = (u32)buffer;
     if (buffer == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323058, 0x26, (const char*)lbl_80323070);
     irq = OSDisableInterrupts();
@@ -1090,7 +1089,7 @@ extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, 
     i = 0;
     stride = (blockSize + 3) & ~3;
     blockSize = (size - (start - addr)) / stride;
-    if (blockSize != 0) {
+    {
         u32 node = start;
         previous = (u32)*head;
         for (; i < blockSize; i++) {
@@ -1632,45 +1631,49 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
                 u32 b0 = *track->cur++;
                 u32 w = *track->cur++ << 8;
                 w |= *track->cur++;
-                u32 b3 = *track->cur++;
+                s32 b3 = *track->cur++;
+                u32 val = (w << 8) | b3;
                 if (enabled) {
-                    CommandProc(track, cmd, b0, (w << 8) | b3);
+                    CommandProc(track, cmd, b0, val);
                 }
                 break;
             }
             case 0x89: {
                 u32 w = *track->cur++ << 8;
                 w |= *track->cur++;
-                u32 b2 = *track->cur++;
+                s32 b2 = *track->cur++;
+                u32 val = (w << 8) | b2;
                 if (enabled) {
-                    CommandProc(track, cmd, (w << 8) | b2, 0);
+                    CommandProc(track, cmd, val, 0);
                 }
                 break;
             }
             case 0x8a: {
                 u32 w = *track->cur++ << 8;
                 w |= *track->cur++;
-                u32 b2 = *track->cur++;
+                s32 b2 = *track->cur++;
+                u32 val = (w << 8) | b2;
                 if (enabled) {
-                    CommandProc(track, cmd, (w << 8) | b2, 0);
+                    CommandProc(track, cmd, val, 0);
                 }
                 break;
             }
             }
             break;
         case 0xc0:
-        case 0xd0:
+        case 0xd0: {
             v = ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_BYTE);
             if (enabled) {
-                s32 w = (u8)v;
-                if ((s32)cmd < 0xc5) {
-                    if ((s32)cmd >= 0xc3) {
-                        w = (s8)(u8)v;
-                    }
+                s32 w;
+                if ((s32)cmd < 0xc5 && (s32)cmd >= 0xc3) {
+                    w = (s8)(u8)v;
+                } else {
+                    w = (u8)v;
                 }
                 CommandProc(track, cmd, w, 0);
             }
             break;
+        }
         case 0x90:
         case 0xb0:
             if (enabled) {
@@ -2149,7 +2152,6 @@ extern "C" void FreeTrack__Q46nw4hbm3snd6detail20MmlSeqTrackAllocatorFPQ46nw4hbm
     }
 }
 #pragma pop
-extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void*, void*, u32, u32);
 extern "C" void fn_800EE428(void* allocator, void* buffer, u32 bufferSize) {
     /* Initialise an MmlSeqTrackAllocator: set up the PoolImpl embedded at +8 as a
      * free list of 0xD4-byte MmlSeqTrack slots carved out of the given buffer. */
@@ -2300,13 +2302,13 @@ extern "C" void IntervalAlarmHandler__Q34nw4r3snd13RemoteSpeakerFP7OSAlarmP9OSCo
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void* fn_800EE5E8(void* arg0, void* arg1) {
-    register s32 startAlarm;
-    register u8* file = lbl_80323840;
-    register u32 outerLevel;
-    register u8* state = (u8*)arg0;
-    register const s16* pcm = (const s16*)arg1;
-    register s32 repeatAlarm;
-    register s32 active;
+    s32 startAlarm;
+    u8* file = lbl_80323840;
+    u32 outerLevel;
+    u8* state = (u8*)arg0;
+    const s16* pcm = (const s16*)arg1;
+    s32 repeatAlarm;
+    s32 active;
     u8 first = ((volatile u8*)arg0)[1];
     s32 encoded;
     u32 mode;
