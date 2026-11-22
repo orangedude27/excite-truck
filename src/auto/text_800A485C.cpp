@@ -6998,7 +6998,7 @@ extern "C" s32 fn_800AEBA0(void *arg0, u32 arg1, u32 arg2, u32 *arg3, s32 arg_sp
     u32 bound;
     s32 result;
     tableType = *(s32 *)((u8 *)arg0 + 0x1C);
-    entry = (u8 *)lbl_802EEF40 + tableType * 0x14;
+    entry = (u8 *)lbl_802EEF40 + (u32)tableType * 0x14;
     expected = arg2;
     *arg3 = -1;
     output = arg3;
