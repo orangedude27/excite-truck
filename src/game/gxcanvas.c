@@ -1204,7 +1204,7 @@ extern const char lbl_8034B144[]; /* "Wrong stamp version in \"%s\": %x (expecti
    the file is not version 3.  A block that was only just read in is stored
    little-endian and its row table holds offsets into the block: swap its
    words and turn those offsets into pointers before handing it back. */
-/* Load a STMP stamp resource by name, stop on a wrong version, and byte-swap a freshly read block in place before returning it. */ void *loadStamp(const char *name) {
+/* Load a STMP stamp resource by name, stop on a wrong version, and byte-swap a freshly read block in place before returning it. */ /* Load a STMP stamp resource by name, stop on a wrong version, and byte-swap a freshly read block in place before returning it. */ void *loadStamp(const char *name) {
     s32 outSize;
     u32 version;
     u8 needsSwap;
