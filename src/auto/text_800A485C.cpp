@@ -5117,21 +5117,21 @@ return_zero:
 }
 
 extern "C" s32 VFiPFENT_ITER_Advance(void *arg0, s32 arg1) {
-    s32 result;
+    void *iter = arg0;
     s32 error;
+    s32 result;
     u32 length;
     u32 next;
-    u32 index = *(u32 *)arg0;
-    u8 *iter = (u8 *)(u32)arg0;
+    u32 index = *(u32 *)iter;
     next = index + 1;
 
     if (index != next)
         goto normal;
-    if (*(u32 *)(iter + 0x44) + 0x10000 != 0xFFFF)
+    if (*(u32 *)((u8 *)iter + 0x44) + 0x10000 != 0xFFFF)
         goto normal;
     if (arg1 != 0)
         goto zero;
-    *(u32 *)arg0 = next;
+    *(u32 *)iter = next;
     result = ((s32 (*)(void *, s32))fn_800AB378)(iter, arg1);
     if (result != 0) {
         *(u32 *)iter = index;
@@ -5139,13 +5139,13 @@ extern "C" s32 VFiPFENT_ITER_Advance(void *arg0, s32 arg1) {
         goto done;
     }
 normal:
-    if (*(u32 *)(iter + 0x44) + 0x10000 == 0xFFFF) {
+    if (*(u32 *)((u8 *)iter + 0x44) + 0x10000 == 0xFFFF) {
         error = 0x10;
     } else {
-        result = fn_800B5324(*(void **)(iter + 4),
-                             iter + 0x4C,
-                             *(u32 *)(iter + 0x44),
-                             *(u16 *)(iter + 0x48),
+        result = fn_800B5324(*(void **)((u8 *)iter + 4),
+                             (u8 *)iter + 0x4C,
+                             *(u32 *)((u8 *)iter + 0x44),
+                             *(u16 *)((u8 *)iter + 0x48),
                              0x20,
                              &length,
                              0);
@@ -22384,6 +22384,12 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
     }
 }
 
+/* QUARANTINED (unit would not compile): this draft body uses undeclared nw4hbm
+ * types (mpRes, res::AnimationContent, detail::ConvertOffsToPtr,
+ * Pane::FindPaneByName/FindMaterialByName, mAnimLinkAry); the compiler stopped at
+ * 22389 "undefined identifier 'detail'". Add the missing declarations before
+ * re-enabling. */
+#if 0
 void nw4hbm::lyt::AnimTransformBasic::Bind(Pane* pPane, bool recursive) {
     const u32* const pContentOffsetTbl =
         detail::ConvertOffsToPtr<u32>(mpRes, mpRes->animContOffsetsOffset);
