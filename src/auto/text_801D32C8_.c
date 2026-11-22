@@ -350,6 +350,7 @@ struct Obj3910 {
 };
 #pragma scheduling invalid_target
 void fn_801D3910(void *arg0) {
+#pragma scheduling on
     char *p;
     int i;
 
@@ -392,16 +393,15 @@ void fn_801D3910(void *arg0) {
     }
     fn_80179F94(arg0, *(void **)((char *)arg0 + 0x244));
     *(char *)((char *)arg0 + 0x1E8) = 1;
-    i = *(int *)&lbl_8055E940;
-    lbl_804421D8[i] = arg0;
+    lbl_804421D8[(i = *(int *)&lbl_8055E940)] = arg0;
     *(int *)&lbl_8055E940 = i + 1;
 }
 
 #pragma opt_propagation off
-void fn_801D3A1C(void *arg0) {
+/* Reset a mut_phob physics object to its defaults: clear state fields, reinitialize its attached SPHR sphere shape, reset the local transform to identity with a -1000 z offset, copy it to the world matrix, and refresh per-frame/child state. */ void fn_801D3A1C(void *object) {
     struct Mtx48Copy { int w[12]; };
-    register char *self = (char *)arg0;
-    char *sound = *(char **)(self + 0x244);
+    register char *self = (char *)object;
+    char *sphere = *(char **)(self + 0x244);
     register float one;
     register float zero;
     volatile float sp8, spC, sp10, sp14, sp18, sp1C;
@@ -414,43 +414,43 @@ void fn_801D3A1C(void *arg0) {
     *(int *)(self + 0x22C) = 0;
     *(int *)(self + 0x23C) = 0;
     *(int *)(self + 0x24) = *(int *)(self + 0x28);
-    if (sound != 0) {
-        *(void **)(sound + 0xC) = self + 0x3C;
+    if (sphere != 0) {
+        *(void **)(sphere + 0xC) = self + 0x3C;
         one = 1.0f;
-        *(void **)(sound + 4) = arg0;
-        *(int *)(sound + 8) = 0;
-        *(int *)(sound + 0x18) = 0x53504852;
-        *(volatile float *)(sound + 0x10) = one;
-        *(volatile float *)(sound + 0x14) = one;
-        *(int *)(sound + 0x20) = 100;
-        *(int *)(sound + 0x1C) = 0;
-        *(void **)sound = lbl_80333B48;
-        *(volatile float *)(sound + 0x24) = one;
-        *(volatile float *)(sound + 0x34) = zero;
-        *(volatile float *)(sound + 0x38) = zero;
-        *(volatile float *)(sound + 0x3C) = zero;
-        *(volatile float *)(sound + 0x40) = zero;
-        *(volatile float *)(sound + 0x44) = zero;
-        *(volatile float *)(sound + 0x48) = zero;
-        *(char *)(sound + 0x4C) = 0;
-        *(volatile float *)(sound + 0x50) = zero;
-        *(volatile float *)(sound + 0x28) = zero;
-        *(volatile float *)(sound + 0x2C) = zero;
+        *(void **)(sphere + 4) = object;
+        *(int *)(sphere + 8) = 0;
+        *(int *)(sphere + 0x18) = 0x53504852;
+        *(volatile float *)(sphere + 0x10) = one;
+        *(volatile float *)(sphere + 0x14) = one;
+        *(int *)(sphere + 0x20) = 100;
+        *(int *)(sphere + 0x1C) = 0;
+        *(void **)sphere = lbl_80333B48;
+        *(volatile float *)(sphere + 0x24) = one;
+        *(volatile float *)(sphere + 0x34) = zero;
+        *(volatile float *)(sphere + 0x38) = zero;
+        *(volatile float *)(sphere + 0x3C) = zero;
+        *(volatile float *)(sphere + 0x40) = zero;
+        *(volatile float *)(sphere + 0x44) = zero;
+        *(volatile float *)(sphere + 0x48) = zero;
+        *(char *)(sphere + 0x4C) = 0;
+        *(volatile float *)(sphere + 0x50) = zero;
+        *(volatile float *)(sphere + 0x28) = zero;
+        *(volatile float *)(sphere + 0x2C) = zero;
         sp10 = zero;
         spC = zero;
         sp8 = zero;
-        *(volatile float *)(sound + 0x30) = zero;
-        if (arg0 != 0)
-            fn_8019EECC(arg0, sound + 0x28);
+        *(volatile float *)(sphere + 0x30) = zero;
+        if (object != 0)
+            fn_8019EECC(object, sphere + 0x28);
     }
     {
-        register float special;
+        register float defaultZ;
         register float zero2;
         register float one2;
         zero2 = 0.0f;
         one2 = 1.0f;
         *(volatile float *)(self + 0x220) = zero2;
-        special = lbl_80562ABC;
+        defaultZ = lbl_80562ABC;
         *(volatile int *)(self + 0x24) = 0;
         *(volatile float *)(self + 0x1F4) = one2;
         *(volatile float *)(self + 0x1F8) = zero2;
@@ -462,7 +462,7 @@ void fn_801D3A1C(void *arg0) {
         *(volatile float *)(self + 0x210) = zero2;
         *(volatile float *)(self + 0x214) = one2;
         *(volatile float *)(self + 0x218) = zero2;
-        *(volatile float *)(self + 0x21C) = special;
+        *(volatile float *)(self + 0x21C) = defaultZ;
         *(volatile float *)(self + 0x220) = zero2;
         sp1C = zero2;
         sp18 = zero2;
@@ -471,10 +471,10 @@ void fn_801D3A1C(void *arg0) {
         *(volatile float *)(self + 0x34) = zero2;
         *(volatile float *)(self + 0x38) = zero2;
     }
-    fn_8017A57C(arg0);
+    fn_8017A57C(object);
     *(struct Mtx48Copy *)(self + 0x3C) = *(struct Mtx48Copy *)(self + 0x1F4);
-    fn_8017A580(arg0);
-    fn_8017B164(arg0);
+    fn_8017A580(object);
+    fn_8017B164(object);
 }
 #pragma opt_propagation reset
 extern void fn_8017A57C(void *);
@@ -529,14 +529,14 @@ extern char lbl_80558DC4[];
 #pragma scheduling on
 void fn_801D3CB8(void *arg0, char *arg1) {
     struct E8 { float f[8]; };
-    struct F2 { float a, blend; } g;
     int off = *(int *)((char *)arg0 + 8);
     char *out = arg1 + off;
     unsigned int w8, w9a, w9b, w11;
+    float g[2];
     float delta;
-    g.a = lbl_80562AAC;
-    g.blend = lbl_8055E460;
-    delta = lbl_8055E460 - g.a;
+    g[0] = lbl_80562AAC;
+    g[1] = lbl_8055E460;
+    delta = g[1] - g[0];
     if ((float)fabs((double)delta) <= *(float *)lbl_80558DC4) {
         *(struct E8 *)out = *(struct E8 *)((char *)arg0 + 0x70);
         w8 = *(unsigned int *)((char *)arg0 + 0x90);
@@ -555,12 +555,12 @@ void fn_801D3CB8(void *arg0, char *arg1) {
         b = (float *)((char *)arg0 + 0xA0);
         a = (float *)((char *)arg0 + 0x70);
         for (i = 0; i < 2; i++) {
-            p[0] = b[0] + g.blend * (a[0] - b[0]);
-            p[1] = b[1] + g.blend * (a[1] - b[1]);
-            p[2] = b[2] + g.blend * (a[2] - b[2]);
-            p[3] = b[3] + g.blend * (a[3] - b[3]);
-            p[4] = b[4] + g.blend * (a[4] - b[4]);
-            p[5] = b[5] + g.blend * (a[5] - b[5]);
+            p[0] = b[0] + g[1] * (a[0] - b[0]);
+            p[1] = b[1] + g[1] * (a[1] - b[1]);
+            p[2] = b[2] + g[1] * (a[2] - b[2]);
+            p[3] = b[3] + g[1] * (a[3] - b[3]);
+            p[4] = b[4] + g[1] * (a[4] - b[4]);
+            p[5] = b[5] + g[1] * (a[5] - b[5]);
             a += 6;
             b += 6;
             p += 6;
@@ -572,7 +572,7 @@ void fn_801D3CB8(void *arg0, char *arg1) {
         w9b = *(volatile unsigned int *)((char *)temp + 0x28);
         *(unsigned int *)(out + 0x24) = w9a;
         *(unsigned int *)(out + 0x28) = w9b;
-        w11 = *(unsigned int *)((char *)temp + 0x2C);
+        w11 = *(volatile unsigned int *)((char *)temp + 0x2C);
         *(unsigned int *)(out + 0x2C) = w11;
     }
     *(short *)(out + 0x30) = *(short *)((char *)arg0 + 0x6C);
@@ -593,7 +593,7 @@ extern void fn_8017B2D0(void *, float, float, float, float);
 extern void fn_801D4294(void *, void *);
 extern void fn_8017D2C8();
 extern void fn_801796CC();
-#pragma scheduling on
+#pragma processor 750
 void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
     float tmp[8];
 
@@ -614,7 +614,7 @@ void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
         tmp[5] = *(float *)((char *)arg4 + 0x120);
         *(short *)((char *)tmp + 0x18) = *(short *)((char *)arg4 + 0x6C);
         *(int *)((char *)tmp + 0x1C) = *(int *)((char *)arg0 + 0x238);
-        fn_801796CC(10, tmp, 0x20);
+        fn_801796CC(10, tmp, (char *)&tmp[8] - (char *)tmp);
     }
     if (*(int *)((char *)arg0 + 0x230) == 2 && *(void **)((char *)arg0 + 0x22C) != arg4 && arg4 != 0) {
         int is_car = 0;
@@ -630,10 +630,27 @@ void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
     }
 }
 void fn_801D3FA4(void *arg0, int arg1, int arg2, void *arg3, void *arg4, void *arg5, int arg6) {
-    float fa, fb, fc;
-    int temp_r21, temp_r22, temp_r23, temp_r24, temp_r25, temp_r26, temp_r27;
-    int temp_r12, temp_r7, temp_r11, temp_r6, temp_r4, temp_r4_2, temp_r5, temp_r6_2;
-    int r0, zero, t0, t1, t2, t3;
+    float fa;
+    float fb;
+    float fc;
+    int temp_r21;
+    int temp_r22;
+    int temp_r23;
+    int temp_r24;
+    int temp_r25;
+    int temp_r26;
+    int temp_r27;
+    int temp_r12;
+    int temp_r11;
+    int temp_r7;
+    int temp_r6;
+    int temp_r4;
+    int temp_r4_2;
+    int temp_r5;
+    int temp_r6_2;
+    int r0;
+    int zero;
+    int t0, t1, t2, t3;
 
     temp_r11 = ((int *)arg3)[0];
     temp_r27 = ((int *)arg3)[1];
@@ -780,6 +797,7 @@ extern "C" void fn_802E317C(const char *, ...);
 extern "C" float lbl_80562AAC, lbl_80562AB8, lbl_80562AC4;
 extern "C" char lbl_8033837C[];
 extern "C" int lbl_80333918[];
+#pragma processor 7400
 extern "C" void fn_801D4294(void *arg0, void *arg1) {
     unsigned char *self = (unsigned char *)arg0;
     const unsigned char *src = (const unsigned char *)arg1;
@@ -840,7 +858,6 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
         float y = *(float *)(src + 0x2C);
         float xx = x * x;
         float yy = y * y;
-        int z = 0;
         *(unsigned int *)(self + 0x23C) = 0x54554245;
         *(float *)(self + 0x240) = (float)fn_8002F234(yy + xx);
         resource = *(void **)(self + 0x244);
@@ -853,14 +870,14 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
             *(void **)(p + 0x0C) = subObj;
             posy = *(float *)(src + 0x18);
             *(void **)(p + 0x04) = self;
-            *(unsigned int *)(p + 0x08) = z;
+            *(unsigned int *)(p + 0x08) = 0;
             *(unsigned int *)(p + 0x18) = 0x54554245;
             f = lbl_80562AC4 * *(float *)(src + 0x30);
             h = *(float *)(src + 0x2C);
             *(float *)(p + 0x10) = posx;
             *(float *)(p + 0x14) = posy;
             *(unsigned int *)(p + 0x20) = 0x64;
-            *(unsigned int *)(p + 0x1C) = z;
+            *(unsigned int *)(p + 0x1C) = 0;
             *(float *)(p + 0x24) = h;
             *(float *)(p + 0x28) = f - h;
             *(void **)p = lbl_80333918;
@@ -872,7 +889,6 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
         float y = *(float *)(src + 0x2C);
         float xx = x * x;
         float yy = y * y;
-        int z = 0;
         *(unsigned int *)(self + 0x23C) = 0x54554245;
         *(float *)(self + 0x240) = (float)fn_8002F234(yy + xx);
         resource = *(void **)(self + 0x244);
@@ -885,14 +901,14 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
             *(void **)(p + 0x0C) = subObj;
             posx = *(float *)(src + 0x14);
             vtable = lbl_80333918;
-            *(unsigned int *)(p + 0x08) = z;
+            *(unsigned int *)(p + 0x08) = 0;
             posy = *(float *)(src + 0x18);
             *(void **)(p + 0x04) = self;
             *(unsigned int *)(p + 0x18) = 0x54554245;
             h = *(float *)(src + 0x2C);
             *(unsigned int *)(p + 0x20) = 0x64;
             f = *(float *)(src + 0x30);
-            *(unsigned int *)(p + 0x1C) = z;
+            *(unsigned int *)(p + 0x1C) = 0;
             *(float *)(p + 0x10) = posx;
             *(float *)(p + 0x14) = posy;
             *(float *)(p + 0x24) = h;
