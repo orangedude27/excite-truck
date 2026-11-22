@@ -152,39 +152,42 @@ extern "C" void fn_8012D1A8(s32 arg0);
 extern "C" s32 fn_8012D024(void *, s32, s32);
 
 #pragma use_lmw_stmw off
-/* Byte-swap the five little-endian u32 fields of a resource-table entry in place (dataTag, id, size, offset, crc at +0x20..+0x33), clear its flags and useCount, and mask id down to 16 bits. Returns the entry pointer. */ extern "C" s32 fn_8012A388(void *entry) {
-    u8 b24, b20, b28, b2c, b30;
-    u8 b25, b21, b29, b2d, b31;
-    b24 = *(u8 *)((u8 *)entry + 0x24);
-    b25 = *(u8 *)((u8 *)entry + 0x25);
-    b20 = *(u8 *)((u8 *)entry + 0x20);
-    b21 = *(u8 *)((u8 *)entry + 0x21);
-    b28 = *(u8 *)((u8 *)entry + 0x28);
-    b29 = *(u8 *)((u8 *)entry + 0x29);
-    b2c = *(u8 *)((u8 *)entry + 0x2c);
-    b2d = *(u8 *)((u8 *)entry + 0x2d);
-    b30 = *(u8 *)((u8 *)entry + 0x30);
-    b31 = *(u8 *)((u8 *)entry + 0x31);
+/* Byte-swap the five little-endian u32 fields of a resource-table entry in place
+ * (dataTag, id, size, offset, crc at +0x20..+0x33), clear its flags and useCount,
+ * and mask id down to 16 bits. Returns the entry pointer. */
+extern "C" s32 fn_8012A388(void *entry) {
+    u8 idByte0, tagByte0, sizeByte0, offsetByte0, crcByte0;
+    u8 idByte1, tagByte1, sizeByte1, offsetByte1, crcByte1;
+    idByte0 = *(u8 *)((u8 *)entry + 0x24);
+    idByte1 = *(u8 *)((u8 *)entry + 0x25);
+    tagByte0 = *(u8 *)((u8 *)entry + 0x20);
+    tagByte1 = *(u8 *)((u8 *)entry + 0x21);
+    sizeByte0 = *(u8 *)((u8 *)entry + 0x28);
+    sizeByte1 = *(u8 *)((u8 *)entry + 0x29);
+    offsetByte0 = *(u8 *)((u8 *)entry + 0x2c);
+    offsetByte1 = *(u8 *)((u8 *)entry + 0x2d);
+    crcByte0 = *(u8 *)((u8 *)entry + 0x30);
+    crcByte1 = *(u8 *)((u8 *)entry + 0x31);
     *(u8 *)((u8 *)entry + 0x24) = *(u8 *)((u8 *)entry + 0x27);
-    *(u8 *)((u8 *)entry + 0x27) = b24;
+    *(u8 *)((u8 *)entry + 0x27) = idByte0;
     *(u8 *)((u8 *)entry + 0x25) = *(u8 *)((u8 *)entry + 0x26);
-    *(u8 *)((u8 *)entry + 0x26) = b25;
+    *(u8 *)((u8 *)entry + 0x26) = idByte1;
     *(u8 *)((u8 *)entry + 0x20) = *(u8 *)((u8 *)entry + 0x23);
-    *(u8 *)((u8 *)entry + 0x23) = b20;
+    *(u8 *)((u8 *)entry + 0x23) = tagByte0;
     *(u8 *)((u8 *)entry + 0x21) = *(u8 *)((u8 *)entry + 0x22);
-    *(u8 *)((u8 *)entry + 0x22) = b21;
+    *(u8 *)((u8 *)entry + 0x22) = tagByte1;
     *(u8 *)((u8 *)entry + 0x28) = *(u8 *)((u8 *)entry + 0x2b);
-    *(u8 *)((u8 *)entry + 0x2b) = b28;
+    *(u8 *)((u8 *)entry + 0x2b) = sizeByte0;
     *(u8 *)((u8 *)entry + 0x29) = *(u8 *)((u8 *)entry + 0x2a);
-    *(u8 *)((u8 *)entry + 0x2a) = b29;
+    *(u8 *)((u8 *)entry + 0x2a) = sizeByte1;
     *(u8 *)((u8 *)entry + 0x2c) = *(u8 *)((u8 *)entry + 0x2f);
-    *(u8 *)((u8 *)entry + 0x2f) = b2c;
+    *(u8 *)((u8 *)entry + 0x2f) = offsetByte0;
     *(u8 *)((u8 *)entry + 0x2d) = *(u8 *)((u8 *)entry + 0x2e);
-    *(u8 *)((u8 *)entry + 0x2e) = b2d;
+    *(u8 *)((u8 *)entry + 0x2e) = offsetByte1;
     *(u8 *)((u8 *)entry + 0x30) = *(u8 *)((u8 *)entry + 0x33);
-    *(u8 *)((u8 *)entry + 0x33) = b30;
+    *(u8 *)((u8 *)entry + 0x33) = crcByte0;
     *(u8 *)((u8 *)entry + 0x31) = *(u8 *)((u8 *)entry + 0x32);
-    *(u8 *)((u8 *)entry + 0x32) = b31;
+    *(u8 *)((u8 *)entry + 0x32) = crcByte1;
     *(u32 *)((u8 *)entry + 0x38) = 0;
     *(u32 *)((u8 *)entry + 0x34) = 0;
     *(u32 *)((u8 *)entry + 0x24) &= 0xFFFF;
