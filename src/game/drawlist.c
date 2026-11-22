@@ -695,7 +695,7 @@ void fn_802C9294(int textureIndex, int mode) {
     fn_802CB29C(textureIndex);
 }
 #pragma scheduling on
-extern void DrawList_BeginProjection(int);
+extern void fn_802C8C04(int);
 extern void fn_802C8D74(void);
 extern int lbl_8055FC70;
 extern int fn_802CB29C(void);
