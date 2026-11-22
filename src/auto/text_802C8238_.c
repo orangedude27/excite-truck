@@ -4,19 +4,16 @@
 extern void fn_8000D838(void *);
 __declspec(section ".sdata") extern unsigned char lbl_8055FC18;
 extern char lbl_804C1338[];
-#pragma push
-#pragma scheduling invalid_target
 void fn_802C8238(void) {
-    unsigned char *base = (unsigned char *)lbl_804C1338;
-    int *p0 = (int *)(base + 0x00);
-    int *p1 = (int *)(base + 0x58);
-    int *p2 = (int *)(base + 0x64);
-    int *p3 = (int *)(base + 0x70);
-    int *p4 = (int *)(base + 0x7C);
+    unsigned int *base = (unsigned int *)lbl_804C1338;
+    unsigned int *p1 = &base[0x58 >> 2];
+    unsigned int *p2 = &base[0x64 >> 2];
+    unsigned int *p3 = &base[0x70 >> 2];
+    unsigned int *p4 = &base[0x7C >> 2];
     fn_8000D838(&lbl_8055FC18);
-    p0[0] = 0;
-    p0[2] = 0;
-    p0[1] = 0;
+    base[0x00 >> 2] = 0;
+    base[0x08 >> 2] = 0;
+    base[0x04 >> 2] = 0;
     p1[2] = 0;
     p1[1] = 0;
     p1[0] = 0;
@@ -30,4 +27,4 @@ void fn_802C8238(void) {
     p4[1] = 0;
     p4[0] = 0;
 }
-#pragma pop
+#pragma opt_common_subs reset
