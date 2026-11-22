@@ -62,10 +62,11 @@ struct DrawListWrapper {
  * (fn_802C90E0 asks whether the module is shut down); the other values record
  * the state the function that set them left GX in: 1 the game's normal one
  * (fn_802C8D74 puts it back), 2 the one fn_802CAD74/fn_801E4FF4 set up,
- * 3 fn_802C8C04's with the world matrix saved, 4 the alpha-only overlay pass
+ * 3 DrawList_BeginProjection's with the world matrix saved, 4 the alpha-only overlay pass
  * fn_802C9C8C begins, 6 the pass fn_802C8DBC begins. */
 #define sRenderMode  lbl_8055FC70
 #define sOverlayTint lbl_8055FC84 /* colour fn_802C9CE0 blends the screen back with */
+extern void fn_802C8C04(int);
 
 #define RENDER_MODE_ALPHA_OVERLAY 4 /* GX writes alpha only, see fn_802C9C8C */
 #define RENDER_MODE_NORMAL 1        /* the game's normal GX state */
@@ -317,6 +318,7 @@ void fn_802C8638(unsigned int *arg0) {
     register unsigned int v2 = arg0[2];
     register unsigned int v1 = arg0[1];
     register unsigned int v0 = arg0[0];
+    register unsigned int v11 = arg0[11];
     unsigned int v4 = arg0[4];
     unsigned int v5 = arg0[5];
     unsigned int v6 = arg0[6];
@@ -324,12 +326,11 @@ void fn_802C8638(unsigned int *arg0) {
     unsigned int v8 = arg0[8];
     unsigned int v9 = arg0[9];
     unsigned int v10 = arg0[10];
-    unsigned int v11 = arg0[11];
-    unsigned int *dst = (unsigned int *)lbl_804C1410;
+    volatile unsigned int *dst = (volatile unsigned int *)lbl_804C1410;
     dst[0] = v0; dst[1] = v1; dst[2] = v2; dst[3] = v3;
     dst[4] = v4; dst[5] = v5; dst[6] = v6; dst[7] = v7;
     dst[8] = v8; dst[9] = v9; dst[10] = v10; dst[11] = v11;
-    fn_802D03F4(dst, v10, v9, v8, v7, v6, v5, v4);
+    fn_802D03F4((unsigned int *)dst, v10, v9, v8, v7, v6, v5, v4);
 }
 #pragma scheduling on
 /* Return the buffer holding the current camera/view matrix (a 3x4 float matrix). */
@@ -535,7 +536,7 @@ void fn_802C8BD0(int texSlot) {
 #pragma dont_inline off
 
 #pragma use_lmw_stmw off
-/* Save the current draw-list matrix (lbl_804C1410) into the backup slot (lbl_804C13E0) and flag that a save is active, then build an orthographic projection matrix, load it as the current GX matrix, and reset material/vertex state while selecting texture slot `texSlot`. */ void fn_802C8C04(int texSlot) {
+/* Save the current draw-list matrix (lbl_804C1410) into the backup slot (lbl_804C13E0) and flag that a save is active, then build an orthographic projection matrix, load it as the current GX matrix, and reset material/vertex state while selecting texture slot `texSlot`. */ void DrawList_BeginProjection(int texSlot) {
     struct DlMtx34 *currentMtx = (struct DlMtx34 *)lbl_804C1410;
     struct DlMtx34 *savedMtx = (struct DlMtx34 *)lbl_804C13E0;
     float orthoMtx[12];
@@ -670,10 +671,10 @@ int fn_802C90E0(void) {
     return sRenderMode == 0;
 }
 
-/* Save GX state through fn_802C8C04 and record that draw lists now run in
+/* Save GX state through DrawList_BeginProjection and record that draw lists now run in
  * its world-matrix-saving render mode (3). */
 void fn_802C90F0(void) {
-    ((void (*)(void))fn_802C8C04)();
+    ((void (*)(void))DrawList_BeginProjection)();
     sRenderMode = 3;
 }
 
@@ -694,7 +695,7 @@ void fn_802C9294(int textureIndex, int mode) {
     fn_802CB29C(textureIndex);
 }
 #pragma scheduling on
-extern void fn_802C8C04(int);
+extern void DrawList_BeginProjection(int);
 extern void fn_802C8D74(void);
 extern int lbl_8055FC70;
 extern int fn_802CB29C(void);
@@ -704,12 +705,12 @@ extern int lbl_8055CFF0;
 extern int lbl_8055CFF4;
 extern void fn_802C92DC(int, int, int, int, int);
 #pragma dont_inline on
-/* Set up drawlist/GX state through fn_802C8C04 with mode -1. The surrounding
+/* Set up drawlist/GX state through DrawList_BeginProjection with mode -1. The surrounding
    dont_inline pragma keeps this wrapper a real call (a tail branch) rather than
-   letting fn_802C8C04 be inlined. */
+   letting DrawList_BeginProjection be inlined. */
 void fn_802C92D0(void) {
 #pragma dont_inline off
-    fn_802C8C04(-1);
+    DrawList_BeginProjection(-1);
 }
 
 /* Tail-call wrapper for DrawList_RestoreNormalMode (fn_802C8D74): restores the
@@ -1304,56 +1305,59 @@ int *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_802C9E3C(int *sel
 
 extern void fn_801E7890(void);
 #pragma scheduling invalid_target
-int fn_802C9E94(void *arg0, int arg1, int arg2, float farg0, float farg1, float farg2, float farg3, float farg4) {
-    struct State {
-        void *callback;
-        float x;
-        float y;
-        float z;
-        float w;
-        int count;
-    };
-    struct State *state = (struct State *)arg0;
-    float q[3];
-    float diff[3];
-    float result;
-    float step;
-    float new_w;
-    int old_count;
-
-    if (state->count == 0) {
-        float zero = lbl_80564F00;
-        state->x = farg0;
-        state->y = farg1;
-        state->z = farg2;
-        state->w = zero;
-    } else {
-        q[0] = farg0;
-        q[1] = farg1;
-        q[2] = farg2;
-        result = ((float (*)(void *, float *))PSQUATMultiply)(&state->x, q);
-        if (result > state->w) {
-            diff[0] = q[0] - state->x;
-            diff[1] = q[1] - state->y;
-            diff[2] = q[2] - state->z;
-            PSVECNormalize(diff, diff);
-            step = lbl_80564F18 * (result - state->w);
-            new_w = lbl_80564F18 * (state->w + result);
-            state->x = state->x + diff[0] * step;
-            state->y = state->y + diff[1] * step;
-            {
-                float z_step = diff[2] * step;
-                state->w = new_w;
-                state->z = state->z + z_step;
-            }
-        }
+int fn_802C9E94(void *arg0, int arg1, int arg2, float farg0, float farg1, float farg2, float farg3, float farg4)
+{
+  struct State
+  {
+    void *callback;
+    float x;
+    float y;
+    float z;
+    float w;
+    int count;
+  };
+  struct State *state = (struct State *) arg0;
+  float q[3];
+  float diff[3];
+  float result;
+  float step;
+  float new_w;
+  int old_count;
+  if (state->count == 0)
+  {
+    float zero = lbl_80564F00;
+    state->x = farg0;
+    state->y = farg1;
+    state->z = farg2;
+    state->w = zero;
+  }
+  else
+  {
+    q[0] = farg0;
+    q[1] = farg1;
+    q[2] = farg2;
+    result = ((float (*)(void *, float *)) PSQUATMultiply)(&state->x, q);
+    if (result > state->w)
+    {
+      diff[0] = q[0] - state->x;
+      diff[1] = q[1] - state->y;
+      diff[2] = q[2] - state->z;
+      PSVECNormalize(diff, diff);
+      step = lbl_80564F18 * (result - state->w);
+      new_w = lbl_80564F18 * (state->w + result);
+      state->x = state->x + (step * diff[0]);
+      state->y += diff[1] * step;
+      {
+        float z_step = diff[2] * step;
+        state->w = new_w;
+        state->z = state->z + z_step;
+      }
     }
-
-    ((void (*)(void *, int, int, float, float, float, float, float))fn_801E7890)(
-        state->callback, arg1, arg2, farg0, farg1, farg2, farg3, farg4);
-    old_count = state->count;
-    state->count = old_count + 1;
-    return old_count;
+  }
+  ((void (*)(void *, int, int, float, float, float, float, float)) fn_801E7890)(state->callback, arg1, arg2, farg0, farg1, farg2, farg3, farg4);
+  old_count = state->count;
+  state->count = old_count + 1;
+  return old_count;
 }
 /* Advance the embedded timer/animation state at +4 by the delta at +0x10; if it expires, notify the owner object at +0. */
 void fn_802CA008(void *owner) {
