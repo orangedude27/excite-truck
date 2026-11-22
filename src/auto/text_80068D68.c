@@ -4810,9 +4810,6 @@ s32 uusb_get_devId(u32 vendorId, u32 productId) {
     return deviceId;
 }
 
-/* Local IPCResult view (ipcclt.h cannot be included here: its IOS_* prototypes clash). */
-typedef enum { IPC_RESULT_OK = 0 } IPCResult;
-
 void UUSB_Register(tUUSB* uusb)
 {
     IPCResult ret = 0;
