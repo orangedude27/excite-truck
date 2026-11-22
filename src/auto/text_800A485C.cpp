@@ -11141,56 +11141,62 @@ extern "C" s32 fn_800B5B94(void *volume, s32 force) {
 
 #pragma opt_strength_reduction reset
 
-extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1) {
-    s32 enabled = arg0 & 0x10000;
-    u32 first;
-    u8 *state;
-    u8 *entries;
-    u32 zero;
-    u8 *record;
-    s32 i;
+extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1)
+{
+  s32 enabled = arg0 & 0x10000;
+  u32 first;
+  u8 *state;
+  u8 *entries;
+  u32 zero;
+  u8 *record;
+  s32 i;
+  if (enabled != 0)
+  {
+    *((u32 *) (((u8 *) lbl_803D2140) + 0x38)) |= 0x10000;
+  }
+  else
+  {
+    *((u32 *) (((u8 *) lbl_803D2140) + 0x38)) &= 0xFFFEFFFF;
+  }
+  state = (u8 *) lbl_803D2140;
+  first = *((u32 *) lbl_803D2140);
+  entries = state + 0xA0;
+  zero = 0;
+  first |= 1;
+  *((void **) (state + 0x08)) = state + 0xA0;
+  *((void **) (state + 0x14)) = entries;
+  *((void **) (state + 0x20)) = entries;
+  *((void **) (state + 0x2C)) = entries;
+  *((u32 *) lbl_803D2140) = first;
+  *((u32 *) (state + 0x30)) = zero;
+  *((u32 *) (state + 0x34)) = zero;
+  if (enabled != 0)
+  {
+    *((u32 *) (state + 0x38)) |= 0x10000;
+  }
+  else
+  {
+    *((u32 *) (state + 0x38)) &= 0xFFFEFFFF;
+  }
+  *((void **) (((u8 *) lbl_803D2140) + 0x3C)) = arg1;
+  *((u32 *) (((u8 *) lbl_803D2140) + 0x40)) = zero;
+  *((u32 *) (((u8 *) lbl_803D2140) + 0x44)) = zero;
+  *((u32 *) (((u8 *) lbl_803D2140) + 0x60)) = 1;
+  *((void **) (((u8 *) lbl_803D2140) + 0x48)) = (void *) VFiPFCODE_CP932_OEM2Unicode;
+  *((void **) (((u8 *) lbl_803D2140) + 0x4C)) = (void *) VFiPFCODE_CP932_Unicode2OEM;
+  *((void **) (((u8 *) lbl_803D2140) + 0x50)) = (void *) fn_800B7200;
+  *((void **) (((u8 *) lbl_803D2140) + 0x54)) = (void *) VFiPFCODE_CP932_isOEMMBchar;
+  *((void **) (((u8 *) lbl_803D2140) + 0x58)) = (void *) fn_800B72B0;
+  *((void **) (((u8 *) lbl_803D2140) + 0x5C)) = (void *) fn_800B72E4;
+  record = ((u8 *) lbl_803D2140) + 0xA0;
+  for (i = 0; i < 0x1A; i++, record += 0x1FC8)
+  {
+    fn_800A499C((const char *) record, 0, 0x1FC8);
+  }
 
-    if (enabled != 0)
-        *(u32 *)((u8 *)lbl_803D2140 + 0x38) |= 0x10000;
-    else
-        *(u32 *)((u8 *)lbl_803D2140 + 0x38) &= 0xFFFEFFFF;
-
-    state = (u8 *)lbl_803D2140;
-    first = *(u32 *)lbl_803D2140;
-    entries = state + 0xA0;
-    zero = 0;
-    first |= 1;
-    *(void **)(state + 0x08) = entries;
-    *(void **)(state + 0x14) = entries;
-    *(void **)(state + 0x20) = entries;
-    *(void **)(state + 0x2C) = entries;
-    *(u32 *)lbl_803D2140 = first;
-    *(u32 *)(state + 0x30) = zero;
-    *(u32 *)(state + 0x34) = zero;
-
-    if (enabled != 0)
-        *(u32 *)(state + 0x38) |= 0x10000;
-    else
-        *(u32 *)(state + 0x38) &= 0xFFFEFFFF;
-
-    *(void **)((u8 *)lbl_803D2140 + 0x3C) = arg1;
-    *(u32 *)((u8 *)lbl_803D2140 + 0x40) = zero;
-    *(u32 *)((u8 *)lbl_803D2140 + 0x44) = zero;
-    *(u32 *)((u8 *)lbl_803D2140 + 0x60) = 1;
-    *(void **)((u8 *)lbl_803D2140 + 0x48) = (void *)VFiPFCODE_CP932_OEM2Unicode;
-    *(void **)((u8 *)lbl_803D2140 + 0x4C) = (void *)VFiPFCODE_CP932_Unicode2OEM;
-    *(void **)((u8 *)lbl_803D2140 + 0x50) = (void *)fn_800B7200;
-    *(void **)((u8 *)lbl_803D2140 + 0x54) = (void *)VFiPFCODE_CP932_isOEMMBchar;
-    *(void **)((u8 *)lbl_803D2140 + 0x58) = (void *)fn_800B72B0;
-    *(void **)((u8 *)lbl_803D2140 + 0x5C) = (void *)fn_800B72E4;
-
-    record = (u8 *)lbl_803D2140 + 0xA0;
-    for (i = 0; i < 0x1A; i++, record += 0x1FC8)
-        fn_800A499C((const char *)record, 0, 0x1FC8);
-
-    fn_800B7710((u8 *)lbl_803D2140 + 0x64);
-    __AXDSPInitCallback_800B7860();
-    return 0;
+  fn_800B7710(((u8 *) lbl_803D2140) + 0x64);
+  __AXDSPInitCallback_800B7860();
+  return 0;
 }
 
 /* Bring a volume up to date and say whether it can be used: the file calls
@@ -26245,8 +26251,8 @@ void* VFipf_memcpy(void* dst, void* src, u32 length) {
     u32* ld;
     const u32* ls;
 
-    ld = dst;
-    ls = src;
+    ld = (u32*)dst;
+    ls = (const u32*)src;
     if (((u32)ld & 3) == 0 && ((u32)ls & 3) == 0) {
         while (length > 3) {
             *ld++ = *ls++;
