@@ -10236,63 +10236,40 @@ tBTM_STATUS BTM_CancelInquiry(void) {
     return status;
 }
 
-tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *p_inqparms,
-                             tBTM_INQ_RESULTS_CB *p_results_cb,
-                             tBTM_CMPL_CB *p_cmpl_cb)
-{
-	tBTM_STATUS status;
-	tBTM_INQUIRY_VAR_ST *p_inq = &lbl_803C0F78.btm_inq_vars;
-
-	BTM_TRACE(API, "BTM_StartInquiry: mode: %d, dur: %d, rsps: %d, flt: %d",
-	          p_inqparms->mode, p_inqparms->duration, p_inqparms->max_resps,
-	          p_inqparms->filter_cond_type);
-
-	if (p_inq->inq_active != BTM_INQUIRY_INACTIVE || p_inq->inqfilt_active)
-		return BTM_BUSY;
-
-	if (p_inqparms->mode != BTM_GENERAL_INQUIRY
-	    && p_inqparms->mode != BTM_LIMITED_INQUIRY)
-	{
-		return BTM_ILLEGAL_VALUE;
-	}
-
-	if (!fn_80079514())
-		return BTM_WRONG_MODE;
-
-	p_inq->inqparms = *p_inqparms;
-
-	p_inq->state = BTM_INQ_ACTIVE_STATE;
-	p_inq->p_inq_cmpl_cb = p_cmpl_cb;
-	p_inq->p_inq_results_cb = p_results_cb;
-	p_inq->inq_cmpl_info.num_resp = 0;
-	p_inq->inq_active = p_inqparms->mode == BTM_LIMITED_INQUIRY
-	                      ? BTM_LIMITED_INQUIRY_ACTIVE
-	                      : BTM_GENERAL_INQUIRY_ACTIVE;
-
-	switch (p_inqparms->filter_cond_type)
-	{
-	case BTM_CLR_INQUIRY_FILTER:
-		p_inq->state = BTM_INQ_SET_FILT_STATE;
-		break;
-
-	case BTM_FILTER_COND_DEVICE_CLASS:
-	case BTM_FILTER_COND_BD_ADDR:
-		p_inq->state = BTM_INQ_CLR_FILT_STATE;
-		p_inqparms->filter_cond_type = BTM_CLR_INQUIRY_FILTER;
-		break;
-
-	default:
-		return BTM_ILLEGAL_VALUE;
-	}
-
-	if ((status = btm_set_inq_event_filter(p_inqparms->filter_cond_type,
-	                                       &p_inqparms->filter_cond))
-	    != BTM_CMD_STARTED)
-	{
-		p_inq->state = BTM_INQ_INACTIVE_STATE;
-	}
-
-	return status;
+tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *results_cb, tBTM_CMPL_CB *complete_cb) {
+    extern u8 lbl_803163EC[];
+    u8 *state = lbl_803C0F78;
+    u8 *p = (u8 *)params;
+    s32 mode, filter;
+    u8 status;
+    if (state[0x27C0] >= 3)
+        ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(0xD0002, lbl_803163EC, p[0], p[1], p[2], p[3]);
+    if (state[0x1848] != 0 || state[0x1844] != 0) return 2;
+    if (p[0] != 0 && p[0] != 1) return 5;
+    if (fn_80079514() == 0) return 6;
+    *(tBTM_INQ_PARMS *)(state + 0x1834) = *params;
+    state[0x1847]=3;
+    *(void **)(state+0x16B0)=complete_cb;
+    *(void **)(state+0x16B4)=results_cb;
+    state[0x183F]=0;
+    mode=p[0];
+    state[0x1848]=((s32)~((mode-1)|(1-mode))>>31)+2;
+    filter=p[3];
+    switch (filter) {
+    case 0:
+        state[0x1847]=2;
+        break;
+    case 1:
+    case 2:
+        state[0x1847]=1;
+        p[3]=0;
+        break;
+    default:
+        return 5;
+    }
+    status=btm_set_inq_event_filter(p[3],p+4);
+    if (status!=1) state[0x1847]=0;
+    return status;
 }
 
 #pragma push
