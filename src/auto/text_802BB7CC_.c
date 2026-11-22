@@ -107,7 +107,9 @@ extern void fn_802B52B4(void *);
 extern int fn_802B52C0(int, void *);
 extern char *strchr(const char *, int);
 extern char lbl_8055CF18;
+#pragma scheduling off
 int fn_802BBA08(void *arg0, int arg1) {
+#pragma scheduling invalid_target
     struct Image {
         int width;
         int height;
@@ -118,15 +120,14 @@ int fn_802BBA08(void *arg0, int arg1) {
     int *p;
     int y, x, pix, shift, k;
     char filename[0x80];
-    char *dst;
-    char *dst2;
-    char *src;
-    char *dot;
     int n;
+    char *dst;
+    char *src;
     int m;
-    char c;
-    char d;
+    char *dst2;
+    char *dot;
     char *name;
+    int idx;
 
     name = (char *)arg0;
     image = (struct Image *)fn_802B51E4(0x200, 0x200);
@@ -141,7 +142,8 @@ int fn_802BBA08(void *arg0, int arg1) {
                         pix |= ((fn_802D972C((void *)*p, y, x) >> 8) & 0xFF) << shift;
                     }
                 }
-                image->pixels[(image->height - 1 - x) * image->width + y] = pix;
+                idx = (image->height - 1 - x) * image->width + y;
+                image->pixels[idx] = pix;
             }
         }
         dst = filename;
@@ -153,9 +155,8 @@ int fn_802BBA08(void *arg0, int arg1) {
                 break;
             }
 body1:
-            c = *name++;
-            *dst++ = c;
-            if (c == 0) break;
+            *dst++ = *name++;
+            if (dst[-1] == 0) break;
         }
         if (strchr(filename, '.') != 0) {
             dot = strchr(filename, '.');
@@ -179,20 +180,14 @@ scan:
                     break;
                 }
 body2:
-                d = *src++;
-                *dst2++ = d;
-                if (d == 0) break;
+                *dst2++ = *src++;
+                if (dst2[-1] == 0) break;
             }
         }
         fn_802B52C0((int)filename, image);
         fn_802B52B4(image);
     }
 }
-
-#pragma pop
-#pragma push
-#pragma scheduling invalid_target
-#pragma use_lmw_stmw off
 void fn_802BBBC8(void) {
     #define sLayerPathFmt lbl_8034AAB8
     #define sNoTextureFmt lbl_8034AAC4
@@ -301,7 +296,7 @@ unsigned char fn_802BBD38(int arg0, int arg1, int arg2) {
     int x2;
     int y2;
     unsigned char invalid;
-    int result;
+    register int result;
 
     if ((unsigned char)lbl_8055FA90 != 0)
         return (unsigned char)(~((arg2 - 1) | (1 - arg2)) >> 31);
@@ -436,7 +431,7 @@ int fn_802BBF94(unsigned char packedNibble) {
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 /* Normalizes 6 nibble-duplicated bytes and adjusts them so their sum becomes 0xFF. */
-void fn_802BBFA4(unsigned char *arg0, int arg1, int arg2, int arg3) {
+void fn_802BBFA4(unsigned char *arg0, int arg1, int arg2) {
     register unsigned char *base = arg0;
     register int index = arg1;
     register int skip = arg2;
@@ -536,17 +531,17 @@ int fn_802BC09C(short arg0, int arg1, int arg2, signed char arg3, float farg0) {
                     double ds, dd;
                     for (k = 0; k < 3; k++) {
                         ((int *)&dd)[0] = hi; ((int *)&dd)[1] = d[0];
-                        b = dd - lbl_80564D08;
+                        b = (float)(dd - lbl_80564D08);
                         ((int *)&ds)[0] = hi; ((int *)&ds)[1] = s[0];
-                        a = ds - lbl_80564D08;
+                        a = (float)(ds - lbl_80564D08);
                         f = a + farg0 * (b - a);
                         if (f < zero) f = f - half;
                         else f = half + f;
                         d[0] = (unsigned char)(int)f;
                         ((int *)&dd)[0] = hi; ((int *)&dd)[1] = d[1];
-                        b = dd - lbl_80564D08;
+                        b = (float)(dd - lbl_80564D08);
                         ((int *)&ds)[0] = hi; ((int *)&ds)[1] = s[1];
-                        a = ds - lbl_80564D08;
+                        a = (float)(ds - lbl_80564D08);
                         f = a + farg0 * (b - a);
                         if (f < zero) f = f - half;
                         else f = half + f;
