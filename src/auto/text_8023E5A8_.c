@@ -133,7 +133,6 @@ extern "C" void fn_8023E5B4(void *arg0, int arg1) {
 }
 #pragma scheduling on
 #pragma use_lmw_stmw on
-#pragma use_lmw_stmw on
 #pragma cplusplus reset
 
 extern unsigned char lbl_80341CC8[];
