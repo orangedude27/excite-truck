@@ -428,25 +428,25 @@ extern "C" void fn_80145538(TextSizeEntry80145538 *entry, void *propertySource) 
 
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-/* Fills one 0x20-byte extended on-screen text entry from a level element's property set: base id/x/y/justification, style flags from just, a scale float, a color, and a comparison flag. */ /* Fills one 0x20-byte extended on-screen text entry from a level element's property set. */ /* Fills one 0x20-byte extended on-screen text entry from a level element's property set: base id/x/y/justification, style flags from just, a scale float, a color, and a comparison flag. */ extern "C" void fn_801455B8(void *entry, void *propertySource) {
-    class Obj {
+extern "C" void fn_801455B8(void *entry, void *propertySource) {
+    class PropertySet {
     public:
         virtual void f0();
         virtual void f1();
         virtual void f2();
-        virtual const char *f3(const char *);
-        virtual s32 f4(const char *, const char *);
+        virtual const char *getString(const char *);
+        virtual s32 compareStrings(const char *, const char *);
         virtual void f5();
         virtual void f6();
-        virtual f32 f7(const char *);
+        virtual f32 getFloat(const char *);
     };
-    char *const base = lbl_8032CEC8;
-    Obj *obj = (Obj *)propertySource;
+    char *const baseline = lbl_8032CEC8;
+    PropertySet *props = (PropertySet *)propertySource;
     fn_80145368(entry, propertySource);
-    *(s32 *)((u8 *)entry + 0x14) = fn_80144F40(obj->f3(lbl_80559E04), base + 0x10);
-    *(f32 *)((u8 *)entry + 0x10) = obj->f7(lbl_80559E0C);
+    *(s32 *)((u8 *)entry + 0x14) = fn_80144F40(props->getString(lbl_80559E04), baseline + 0x10);
+    *(f32 *)((u8 *)entry + 0x10) = props->getFloat(lbl_80559E0C);
     *(s32 *)((u8 *)entry + 0x18) = fn_801454E8(propertySource, lbl_80559DFC);
-    *(s32 *)((u8 *)entry + 0x1C) = obj->f4(base + 0x5C, base + 0x70);
+    *(s32 *)((u8 *)entry + 0x1C) = props->compareStrings(baseline + 0x5C, baseline + 0x70);
 }
 #pragma dont_inline reset
 #pragma scheduling on
