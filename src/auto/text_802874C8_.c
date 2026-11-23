@@ -13,7 +13,7 @@ extern float lbl_80564200;
 extern unsigned char lbl_8033D618[];
 extern unsigned char lbl_803489C0[];
 extern int lbl_8055F670;
-#pragma scheduling on
+
 void fn_802874C8(void) {
     register volatile unsigned char *base = (volatile unsigned char *)lbl_804B2FF8;
     register volatile unsigned int *obj;
