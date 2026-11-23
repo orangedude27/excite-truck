@@ -523,7 +523,7 @@ extern void GXBegin(int, int, unsigned short);
  * In the second mode (lbl_8055FEBA) the list is replayed once more with colour
  * writes off and the Z test and Z write on, so the batch also fills the Z
  * buffer it was blended over. */
-void fn_802DC078(void* positions, s32 posCount, u16* list, s32 size, s32 first,
+/* DrawLitBillboardBatch: apply the lighting pipeline, blend mode and position array for one batch, then replay its triangle-fan list; in the second mode replay it again with color writes off to fill the Z buffer. */ void fn_802DC078(void* positions, s32 posCount, u16* list, s32 size, s32 first,
                  s32 light) {
     fn_802DBA1C(lbl_8055FEBA);
     fn_802DB9DC(first);
