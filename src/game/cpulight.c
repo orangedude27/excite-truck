@@ -177,7 +177,8 @@ void fn_802DB620(void) {
 }
 #pragma dont_inline on
 #pragma use_lmw_stmw off
-/* Load each active texture object into GX and assign TEV stages: one stage per texture, plus an extra stage for textures carrying a second map. Returns the number of TEV stages configured. */ int fn_802DB69C(void **texObjs, int mode) {
+/* Load each active texture object into GX and assign TEV stages: one stage per texture, plus an extra stage for textures carrying a second map. Returns the number of TEV stages configured. */
+int fn_802DB69C(void **texObjs, int mode) {
     extern int lbl_8055FEA4;
     extern void GXLoadTexObj(void *, int);
     extern void GXSetTevOrder(int, int, int, int);
@@ -187,7 +188,6 @@ void fn_802DB620(void) {
     int nextTexMap = 0;
     unsigned char *texObj;
     int texIndex = 0;
-    /* Load texture objects into GX and set up TEV stages for each active texture; returns the number of stages configured. */
     while (texIndex < lbl_8055FEA4) {
         int baseTexMap;
         unsigned char *baseTexObj;
