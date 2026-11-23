@@ -113,18 +113,18 @@ s32 fn_802E33D0(void) { return 0; }
 
 #pragma scheduling invalid_target
 /* Validate a file handle index and return the address of its entry in the file table, logging on invalid/unused cases. */
-/* GetFileEntry: validate a file-handle id (panic if out of range or its table entry is unused) and return that entry's address in the file table. */ /* GetFileEntry: validate a file-handle id (panic if out of range or its table entry is unused) and return the address of that entry in the file table. */ /* GetFileEntry: validate a file-handle id (panic if out of range or its table entry is marked unused) and return the address of that entry in the file table. */ /* GetFileEntry: validate a file-handle id (panic if out of range or its table entry is marked unused) and return the address of that entry in the file table. */ s32 fn_802E33D8(s32 fileId, const char *name, s32 line) {
-    s32 offset;
+/* GetFileEntry: validate a file-handle id (panic if out of range or its table entry is unused) and return that entry's address in the file table. */ /* GetFileEntry: validate a file-handle id (panic if out of range or its table entry is unused) and return that entry's address in the file table. */ /* GetFileEntry: validate a file-handle id (panic if out of range or its table entry is unused) and return the address of that entry in the file table. */ /* GetFileEntry: validate a file-handle id (panic if out of range or its table entry is marked unused) and return the address of that entry in the file table. */ /* GetFileEntry: validate a file-handle id (panic if out of range or its table entry is marked unused) and return the address of that entry in the file table. */ s32 fn_802E33D8(s32 fileId, const char *name, s32 line) {
+    s32 entryOffset;
     unsigned char *entry;
     if (fileId < 0 || fileId == -1 || fileId > 0x10) {
         fn_802E317C(lbl_8034CF40, fileId, name, line);
     }
-    offset = fileId * 0x28;
-    entry = (unsigned char *)(lbl_804DB810 + offset);
+    entryOffset = fileId * 0x28;
+    entry = (unsigned char *)(lbl_804DB810 + entryOffset);
     if (entry[0x20] == 0) {
         fn_802E317C(lbl_8034CF60, fileId, entry, name, line);
     }
-    return (s32)lbl_804DB810 + offset;
+    return (s32)lbl_804DB810 + entryOffset;
 }
 #pragma scheduling on
 void fn_802E3498(void) {
