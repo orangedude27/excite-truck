@@ -1260,10 +1260,10 @@ extern void fn_802CBD30(void **, void **, void *);
 #pragma use_lmw_stmw off
 /* Discard texture nodes with priority <= arg1 from the active list, moving them to
  * the free list and releasing/dereferencing any associated child resources. */
-void fn_802CBC3C(void *arg0, int arg1) {
-    register void **manager = (void **)arg0;
+/* Evict texture nodes whose priority is at or below priorityLimit from the manager's loaded list to its free list, releasing their textures and any child resource's last reference. */ void fn_802CBC3C(void *managerPtr, int arg1) {
+    register void **manager = (void **)managerPtr;
     register int priorityLimit = arg1;
-    register char *child;
+    register char *childResource;
     register char *node = (char *)manager[3];
     register int zero = 0;
     register int minusOne = -1;
@@ -1277,17 +1277,17 @@ inspect:
     ((void (*)(int))fn_802CB3F4)(*(int *)(node + 4));
     *(int *)(node + 4) = zero;
     fn_802CBD30(manager + 4, manager + 3, node);
-    child = *(char **)(node + 0xC);
-    if (child != 0) {
-        refCount = *(int *)(child + 0x10) - 1;
-        *(int *)(child + 0x10) = refCount;
+    childResource = *(char **)(node + 0xC);
+    if (childResource != 0) {
+        refCount = *(int *)(childResource + 0x10) - 1;
+        *(int *)(childResource + 0x10) = refCount;
         if (refCount == 0) {
-            *(int *)(child + 0x10) = minusOne;
-            fn_8012C720(*(void **)child, *(int *)(child + 8),
+            *(int *)(childResource + 0x10) = minusOne;
+            fn_8012C720(*(void **)childResource, *(int *)(childResource + 8),
                         *(int *)((char *)lbl_8055FCB0 +
-                            *(int *)(child + 4) * 0x4C + 0x3C), 0);
+                            *(int *)(childResource + 4) * 0x4C + 0x3C), 0);
             ((void (*)(void *, const char *))fn_802CB3F8)(
-                (void *)((char *)lbl_8055FCB0 + *(int *)(child + 4) * 0x4C + 4),
+                (void *)((char *)lbl_8055FCB0 + *(int *)(childResource + 4) * 0x4C + 4),
                 &lbl_8055D088);
         }
         *(void **)(node + 0xC) = 0;
