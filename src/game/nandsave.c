@@ -293,7 +293,7 @@ void fn_802E8B98(void) {
     }
 }
 
-int fn_802E8BE4(void) {
+int rmemcardRecover(void) {
     /* Poll NAND request 1 until it completes; on success run cleanup and return 1, else 0. */
     for (;;) {
         if (((int (*)(int))fn_802E888C)(1) != 0) {
@@ -416,7 +416,7 @@ extern int NANDRead(void *, void *, unsigned int);
 extern void *memcpy(void *, const void *, unsigned int);
 extern int fn_802E8A18(void);
 extern int fn_802E8AE8(const char *);
-extern int fn_802E8BE4(void);
+extern int rmemcardRecover(void);
 extern void fn_802E8C2C(void);
 extern void fn_802E8920(int);
 /* NAND device availability check: hardwired to 1 (device present) in this build, gating save/menu paths that call it. */
@@ -511,7 +511,7 @@ int rmemcardReadFile(const char *path, void *buf, int len) {
     }
     if (banner_ok == 0 || file_exists == 0) {
         fn_802E30C8(messages + 0x594); /* one of the two is missing */
-        if (((int (*)(void))fn_802E8BE4)() != 0) rmemcard_recover_space(len);
+        if (((int (*)(void))rmemcardRecover)() != 0) rmemcard_recover_space(len);
         if (&file.self != 0) rmemcard_current_path = 0;
         return 0;
     }
@@ -539,7 +539,7 @@ int rmemcardReadFile(const char *path, void *buf, int len) {
         NANDClose(file.info);
         if (bytes_read == -4 /* NAND_RESULT_CORRUPT */) {
             ((void (*)(void))fn_802E8C2C)();
-        } else if (((int (*)(void))fn_802E8BE4)() != 0) {
+        } else if (((int (*)(void))rmemcardRecover)() != 0) {
             rmemcard_recover_space(len);
         }
         if (&file.self != 0) rmemcard_current_path = 0;
