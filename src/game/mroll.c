@@ -1004,43 +1004,47 @@ extern int lbl_802FA300[3];
 extern char lbl_80342898[];
 extern float lbl_8056375C, lbl_80563760, lbl_80563764;
 #pragma processor 750
-void fn_8024122C(void *arg0) {
-    char textBuf[0x1E];
-    float posY, posX;
+/* Draw an MRoll car-stat label: derive a 0..3 tier from the stat value at
+ * +0x24 against the thresholds, format the localized message key
+ * "UICar:STAT_%i_TEXT_%i" from the label's rank and tier, pick the flag-driven
+ * style and scale, then draw the localized text at the label's screen position.
+ * Labels with a negative rank (+0x1C) are skipped. */
+void fn_8024122C(void *statLabel) {
+    char msgKey[0x1E];
+    float centeredX, centeredY;
     int tier;
-    float scale;
+    float textScale;
     int style;
-    int textId;
-    int *thresholdTable;
-    volatile int *tagPtr;
-    int tagValue;
-    /* Formats and draws a UI car stat text label for a valid entry, selecting a
-     * tier index from threshold table and adjusting style/scale by flag. */
-    fn_80230C30(&posY, &posX, *(int *)((char *)arg0 + 4), *(int *)((char *)arg0 + 8));
-    if (*(int *)((char *)arg0 + 0x1C) >= 0) {
-        tagPtr = *(volatile int * volatile *)((char *)arg0 + 0x24);
-        thresholdTable = lbl_802FA300;
-        tagValue = *tagPtr;
+    int localizedText;
+    int *tierThresholds;
+    volatile int *valuePtr;
+    int statValue;
+
+    fn_80230C30(&centeredX, &centeredY, *(int *)((char *)statLabel + 4), *(int *)((char *)statLabel + 8));
+    if (*(int *)((char *)statLabel + 0x1C) >= 0) {
+        valuePtr = *(volatile int * volatile *)((char *)statLabel + MROLL_STAT_VALUE_PTR_OFFSET);
+        tierThresholds = lbl_802FA300;
+        statValue = *valuePtr;
         tier = 0;
-        if (tagValue != 0 && tagValue >= thresholdTable[0])
+        if (statValue != 0 && statValue >= tierThresholds[0])
             tier = 1;
-        tagPtr = *(volatile int * volatile *)((char *)arg0 + 0x24);
-        tagValue = *tagPtr;
-        if (tagValue != 0 && tagValue >= thresholdTable[1])
+        valuePtr = *(volatile int * volatile *)((char *)statLabel + MROLL_STAT_VALUE_PTR_OFFSET);
+        statValue = *valuePtr;
+        if (statValue != 0 && statValue >= tierThresholds[1])
             tier = 2;
-        tagPtr = *(volatile int * volatile *)((char *)arg0 + 0x24);
-        tagValue = *tagPtr;
-        if (tagValue != 0 && tagValue >= thresholdTable[2])
+        valuePtr = *(volatile int * volatile *)((char *)statLabel + MROLL_STAT_VALUE_PTR_OFFSET);
+        statValue = *valuePtr;
+        if (statValue != 0 && statValue >= tierThresholds[2])
             tier = 3;
-        ((int (*)(void *, int, void *, ...))fn_801345D8)(textBuf, 0x1E, lbl_80342898, *(int *)((char *)arg0 + 0x1C), tier);
-        scale = lbl_8056375C;
+        ((int (*)(void *, int, void *, ...))fn_801345D8)(msgKey, 0x1E, lbl_80342898, *(int *)((char *)statLabel + 0x1C), tier);
+        textScale = lbl_8056375C;
         style = 0xA;
-        if (*(unsigned char *)*(void **)((char *)arg0 + 0x20)) {
-            scale = lbl_80563760;
+        if (*(unsigned char *)*(void **)((char *)statLabel + MROLL_STAT_FLAG_OFFSET)) {
+            textScale = lbl_80563760;
             style = 9;
         }
-        textId = fn_80131234(textBuf);
-        ((int (*)(int, int, int, int, float, float, float, float, float))fn_80232BA4)(textId, *(int *)((char *)arg0 + 0x18), -0x100, style, posY, posX, scale, lbl_80563758, lbl_80563764);
+        localizedText = fn_80131234(msgKey);
+        ((int (*)(int, int, int, int, float, float, float, float, float))fn_80232BA4)(localizedText, *(int *)((char *)statLabel + MROLL_STAT_FONT_OFFSET), -0x100, style, centeredX, centeredY, textScale, lbl_80563758, lbl_80563764);
     }
 }
 #pragma processor reset
