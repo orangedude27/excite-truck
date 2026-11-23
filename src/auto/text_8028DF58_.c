@@ -1056,8 +1056,7 @@ void fn_8028F608(float *out0, float *out1, float (*matrix)[3], float angle)
   float g;
   float e;
       float c;
-    c = matrix[0][1];
-  float y;
+      float y;
   float h;
   union 
   {
