@@ -519,32 +519,36 @@ extern void fn_802C4610();
 extern void fn_802C4388();
 extern void fn_802C4108(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C4610(s32,s32,s32,s32,s32,s32,s32,s32);
-/* Dispatches a canvas copy/blit based on destination/source mode bytes (5/6 special-cased), tracing when unsupported. */
-void fn_802C3850(s32 dstCanvas, s32 srcX, s32 srcY, s32 srcX2, s32 srcY2, s32 srcCanvas, s32 dstX, s32 dstY) {
-    u8 dstMode = *(u8 *)dstCanvas;
-    s32 isNormalMode = 0;
-    if ((s8)dstMode != 5 && (s8)dstMode != 6) isNormalMode = 1;
-    if (isNormalMode) {
-        isNormalMode = 0;
-        if (*(s8 *)srcCanvas != 5 && *(s8 *)srcCanvas != 6) isNormalMode = 1;
-        if (isNormalMode) {
-            fn_802C4108(dstCanvas, srcX, srcY, srcX2, srcY2, srcCanvas, dstX, dstY);
+/* Alpha-blit the rectangle (srcLeft,srcTop)-(srcRight,srcBottom) of srcCanvas onto
+ * dstCanvas at (dstLeft,dstTop), picking the routine that matches the two pixel
+ * formats: 16-bit -> 16-bit, 4-byte -> 4-byte or 4-byte -> 16-bit.  A format-6
+ * canvas takes none of them: "unsupported alpha blit". */
+void fn_802C3850(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight, s32 srcBottom,
+                 s32 dstCanvas, s32 dstLeft, s32 dstTop) {
+    u8 srcFormat = *(u8 *)srcCanvas;
+    s32 is16Bit = 0;
+    if ((s8)srcFormat != CANVAS_FORMAT_RGBA && (s8)srcFormat != CANVAS_FORMAT_NONE) is16Bit = 1;
+    if (is16Bit) {
+        is16Bit = 0;
+        if (*(s8 *)dstCanvas != CANVAS_FORMAT_RGBA && *(s8 *)dstCanvas != CANVAS_FORMAT_NONE) is16Bit = 1;
+        if (is16Bit) {
+            fn_802C4108(srcCanvas,srcLeft,srcTop,srcRight,srcBottom,dstCanvas,dstLeft,dstTop);
             return;
         }
     }
-    if ((s8)dstMode == 5 && (s32)*(u8 *)srcCanvas == 5) {
-        fn_802C4610(dstCanvas, srcX, srcY, srcX2, srcY2, srcCanvas, dstX, dstY);
+    if ((s8)srcFormat == CANVAS_FORMAT_RGBA && (s32)*(u8 *)dstCanvas == CANVAS_FORMAT_RGBA) {
+        fn_802C4610(srcCanvas,srcLeft,srcTop,srcRight,srcBottom,dstCanvas,dstLeft,dstTop);
         return;
     }
-    if ((s8)dstMode == 5) {
-        isNormalMode = 0;
-        if (*(s8 *)srcCanvas != 5 && *(s8 *)srcCanvas != 6) isNormalMode = 1;
-        if (isNormalMode) {
-            fn_802C4388(dstCanvas, srcX, srcY, srcX2, srcY2, srcCanvas, dstX, dstY);
+    if ((s8)srcFormat == CANVAS_FORMAT_RGBA) {
+        is16Bit = 0;
+        if (*(s8 *)dstCanvas != CANVAS_FORMAT_RGBA && *(s8 *)dstCanvas != CANVAS_FORMAT_NONE) is16Bit = 1;
+        if (is16Bit) {
+            fn_802C4388(srcCanvas,srcLeft,srcTop,srcRight,srcBottom,dstCanvas,dstLeft,dstTop);
             return;
         }
     }
-    fn_802E317C(lbl_8034B094, (s32)*(s8 *)dstCanvas, (s32)*(s8 *)srcCanvas);
+    fn_802E317C(lbl_8034B094, (s32)*(s8 *)srcCanvas, (s32)*(s8 *)dstCanvas);
 }
 
 extern s32 gxCanvasClipBlitRect(void *, s32 *, s32 *, s32 *, s32 *, s32 *, s32 *);
