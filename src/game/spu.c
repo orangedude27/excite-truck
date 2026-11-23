@@ -126,8 +126,11 @@ return_null:
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-/* AI DMA callback: refill the 0x20 SPU voice stream buffers, streaming the next half of each active sample's buffer and wrapping at the loop end; writes silence while the disc drive is active. */ void fn_802E4F98(void) {
-    // Refill the 0x20 SPU voice buffers: stream each half, wrap at the loop end, flag completion.
+/* AI DMA callback: refill the 0x20 SPU voice stream buffers. For each active
+ * voice, stream the next half of its sample buffer (or wrap to the start at the
+ * loop point), flushing the cache; write silence instead while the disc drive
+ * is active, and flag completion when done. */
+void fn_802E4F98(void) {
     extern char lbl_8055FFA4;
     extern char lbl_8055FFA5;
     extern char lbl_8055FFA6;
