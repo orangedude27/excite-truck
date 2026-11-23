@@ -4,6 +4,7 @@
 #pragma push
 #pragma scheduling invalid_target
 
+extern void fn_8000D838(void *);
 extern void fn_80287668(void);
 extern void fn_80287610(void);
 extern void fn_802875B8(void);
