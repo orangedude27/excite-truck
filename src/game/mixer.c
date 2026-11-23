@@ -259,45 +259,54 @@ extern "C" void fn_80208D80(int closeDevices) {
 #pragma cplusplus on
 extern "C" int strncmp(const char *, const char *, unsigned int);
 extern "C" void fn_802E30C8(const char *, ...);
-extern "C" void fn_80208E90(void *objectPtr, int mode) {
-    struct Dummy {
-        virtual void close(int);
-        virtual const char *name();
-        virtual void unused10();
-        virtual void unused14();
-        virtual int enabled();
-        virtual void unused1c();
-        virtual void unused20();
-        virtual void finish();
+/* RealName: Mixer_RegisterDevice — add one sound-mixer backend ("Null Mixer",
+   "Voice Mixer", ...) to the mixer's device registry, which holds at most
+   MIXER_DEVICE_MAX (6) device pointers at lbl_80489238 (+0x18 is the count).
+   A device whose name matches the hard-coded bogus name, and any device past
+   the 6th, is refused with a message and destroyed.  mode 0 registers the
+   device as it stands; mode 1 registers it only if its startup method (+0x18)
+   succeeds, and immediately runs its shutdown method (+0x24) again. */
+extern "C" void fn_80208E90(void *devicePtr, int mode) {
+    /* Sound-mixer backend interface.  CodeWarrior reserves the first two vtable
+       slots for the deleting and complete destructors, so the first method
+       declared here lands at +0x8; the two backends in the game implement this
+       table ("Null Mixer" lbl_8033C058, "Voice Mixer" lbl_8033C458). */
+    struct MixerDevice {
+        virtual void close(int deleteObject);  /* 0x8 deleting destructor */
+        virtual const char *name();            /* 0xC backend name */
+        virtual void reset();                  /* 0x10 clear the backend's voice state */
+        virtual int method14();                /* 0x14 */
+        virtual int begin();                   /* 0x18 start the backend, 1 on success */
+        virtual void *createSound();           /* 0x1C allocate a Sound from this backend */
+        virtual void update();                 /* 0x20 per-frame tick */
+        virtual void end();                    /* 0x24 shut the backend down */
     };
-    /* Registers a sound device: rejects a known-bogus device and devices past the
-       6-slot limit, otherwise stores it (finalizing enabled ones when mode==1). */
-    Dummy *device = (Dummy *)objectPtr;
-    const char *messages = lbl_8033BEF8;
+    MixerDevice *device = (MixerDevice *)devicePtr;
+    const char *messages = lbl_8033BEF8; /* string pool; the registry messages sit past the config keys */
     int registerDevice;
     unsigned int count;
 
     if (strncmp(device->name(), messages + MIXER_BOGUS_NAME_OFF, 0xB) == 0) {
         fn_802E30C8(messages + MIXER_BOGUS_MSG_OFF, device->name());
-        if (objectPtr != 0) {
+        if (devicePtr != 0) {
             device->close(1);
         }
     } else {
         count = (unsigned int)MIXER_DEVICE_COUNT;
         if (count < MIXER_DEVICE_MAX) {
             registerDevice = mode == 0;
-            if (mode == 1 && device->enabled() != 0) {
+            if (mode == 1 && device->begin() != 0) {
                 registerDevice = 1;
-                device->finish();
+                device->end();
             }
             if (registerDevice != 0) {
-                MIXER_DEVICES[MIXER_DEVICE_COUNT++] = (int)objectPtr;
-            } else if (objectPtr != 0) {
+                MIXER_DEVICES[MIXER_DEVICE_COUNT++] = (int)devicePtr;
+            } else if (devicePtr != 0) {
                 device->close(1);
             }
         } else {
             fn_802E30C8(messages + MIXER_FULL_MSG_OFF, device->name());
-            if (objectPtr != 0) {
+            if (devicePtr != 0) {
                 device->close(1);
             }
         }
@@ -452,7 +461,7 @@ extern float lbl_8055B4D0;
 extern void fn_801332D0(int, void *, void *);
 #pragma scheduling on
 int fn_8020921C(void) {
-    struct Config { int pad; int value; unsigned int version; };
+    struct Config { int pad; int value; volatile unsigned int version; };
     extern struct Config lbl_8048929C;
     extern unsigned int lbl_8055E044;
     extern void fn_80131318(void);
