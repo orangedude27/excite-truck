@@ -332,10 +332,9 @@ void fn_801303A8(void) {
     register int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
     register int v12, v13, v14, v15, v16, v17, v18, v19, v20, v21;
     register int v22, v23, v24, v25, v26, v27;
-    register unsigned char c;
+    unsigned char c;
     register int *s;
     register int *d;
-    int var_r0;
 
     lbl_8055E048 = 1;
     lbl_804230D0 = -1;
@@ -349,7 +348,6 @@ void fn_801303A8(void) {
     v26 = s[26]; d[28] = v26;
     v27 = s[27]; d[29] = v27;
     c = *((unsigned char *)s + 0x70);
-    var_r0 = 0x2E;
 
     v0 = s[0]; v1 = s[1]; v2 = s[2]; v3 = s[3];
     v4 = s[4]; v5 = s[5]; v6 = s[6]; v7 = s[7];
@@ -365,10 +363,7 @@ void fn_801303A8(void) {
     d[22] = v20; d[23] = v21; d[25] = v23;
 
     *((char *)d + 0x78) = c;
-    if (c != 0) {
-        var_r0 = 0x2C;
-    }
-    lbl_80423054[0] = var_r0;
+    lbl_80423054[0] = c ? 0x2C : 0x2E;
 }
 #pragma scheduling on
 #pragma use_lmw_stmw on
@@ -909,39 +904,47 @@ __declspec(section ".data") extern int lbl_802FE850;
 extern int atoi(const char *);
 extern int strlen(const char *);
 extern int fn_8002B1D8(const char *, const char *, int);
-#pragma scheduling on
-void fn_80131368(char *arg0) {
-    int flag = 0;
-    int c;
-    int signedC;
-    int isNumber;
-    int *p;
-    unsigned int i;
-
-    c = *(unsigned char *)arg0;
-    signedC = (signed char)c;
-    if (signedC < 0 || signedC >= 0x100)
-        flag = 1;
-    if (flag != 0)
-        isNumber = 0;
-    else
-        isNumber = *(unsigned short *)(*(int *)(*(int *)((char *)&lbl_802FE850 + 0x38) + 8) + signedC * 2) & 8;
-
-    if (isNumber) {
-        lbl_8055E04C = atoi(arg0);
-        return;
+#pragma scheduling invalid_target
+void fn_80131368(char *arg0)
+{
+  int flag = 0;
+  int c;
+  int signedC;
+  int isNumber;
+  int *p;
+  unsigned int i;
+  c = *((unsigned char *) arg0);
+  signedC = (signed char) c;
+  if (((signedC < 0) & 0xFFFFu) || (signedC >= 0x100))
+  {
+    flag = 1;
+  }
+  if (flag != 0)
+  {
+    isNumber = 0;
+  }
+  else
+  {
+    isNumber = (*((unsigned short *) ((*((int *) ((*((int *) (((char *) (&lbl_802FE850)) + 0x38))) + 8))) + (signedC * 2)))) & 8;
+  }
+  if (isNumber)
+  {
+    lbl_8055E04C = atoi(arg0);
+    return;
+  }
+  p = lbl_802F8E60;
+  i = 0;
+  do
+  {
+    if (fn_8002B1D8(arg0, (const char *) p[0], strlen(arg0)) == 0)
+    {
+      lbl_8055E04C = i;
+      return;
     }
-
-    p = lbl_802F8E60;
-    i = 0;
-    do {
-        if (fn_8002B1D8(arg0, (const char *)p[0], strlen(arg0)) == 0) {
-            lbl_8055E04C = i;
-            return;
-        }
-        i++;
-        p += 3;
-    } while (i < 2);
+    i++;
+    p += 3;
+  }
+  while (i < 2);
 }
 extern int lbl_8055E044;
 /* "LocaleUnXlator - really shouldn't use this in non-DEBUG mode" */
