@@ -904,7 +904,7 @@ __declspec(section ".data") extern int lbl_802FE850;
 extern int atoi(const char *);
 extern int strlen(const char *);
 extern int fn_8002B1D8(const char *, const char *, int);
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80131368(char *arg0)
 {
   int flag = 0;
