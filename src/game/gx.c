@@ -1286,9 +1286,9 @@ void fn_802D02F8(int arg0, signed char arg1) {
     lbl_804C9778[0x2c] = 1;
     value = ((unsigned int (*)(unsigned int))fn_802CEA1C)((unsigned int)arg0);
     lbl_804C9778[0x31] = value;
-    s3 = (unsigned char)(value >> 24);
-    s2 = (unsigned char)(value >> 16);
-    s1 = (unsigned char)(value >> 8);
+    s3 = (value >> 24) & 0xFF;
+    s2 = (value >> 16) & 0xFF;
+    s1 = (value >> 8) & 0xFF;
     lbl_804C9778[0x2e] = s3;
     lbl_804C9778[0x2f] = s2;
     lbl_804C9778[0x30] = s1;
@@ -2998,7 +2998,7 @@ void* fn_802D312C(void) {
 
 /* Tail-call: load the default indirect-texture matrix (fn_802D3104) and return
  * the indirect-texture GXTexObj at +0x24 of the global GX state block. */
-void* fn_802D3130(void) {
+void* gxGetBumpMapTexObj(void) {
     return fn_802D3104();
 }
 

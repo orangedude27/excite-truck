@@ -269,7 +269,7 @@ void fn_802DF46C(void) {
     GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
 }
 #pragma pop
-void *fn_802D3130(void); /* the current material's bump map, into GX_TEXMAP5 */
+void *gxGetBumpMapTexObj(void); /* the current material's bump map, into GX_TEXMAP5 */
 void *fn_802D3100(void); /* the texture it distorts, into GX_TEXMAP6 */
 /* The water surface pass: drgc_surf.c asks for mode 3 of the render request
  * block (lbl_804C5700) and fn_802D2B0C builds the pipeline here.  Stage 0 draws
@@ -305,7 +305,7 @@ void GXSetupWaterBumpTevPipelineA(void) {
     GXSetTevIndirect(GX_TEVSTAGE1, GX_INDTEXSTAGE0, GX_ITF_8, GX_ITB_NONE, GX_ITM_0, GX_ITW_0,
                      GX_ITW_0, GX_DISABLE, utcLod, alphaSel);
     GXSetNumTevStages(2);
-    GXLoadTexObj(fn_802D3130(), GX_TEXMAP5);
+    GXLoadTexObj(gxGetBumpMapTexObj(), GX_TEXMAP5);
     GXLoadTexObj(fn_802D3100(), GX_TEXMAP6);
 }
 
