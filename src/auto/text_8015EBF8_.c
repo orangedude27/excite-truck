@@ -642,11 +642,10 @@ extern f32 lbl_8056182C;
 extern f64 fn_8002F234(f32, f32, f32);
 f32 PSVECDotProduct(void *, void *);
 #pragma push
-#pragma processor 750
+#pragma scheduling invalid_target
 #pragma dont_inline on
 s32 fn_8015F7A0(s32 arg0, void *arg1, void *arg2) {
-    f32 a = (f32)arg0;
-    f32 scale = a * lbl_805617E4;
+    f32 scale = (f32)arg0 * lbl_805617E4;
     f32 t = (PSVECDotProduct(arg1, arg2) - lbl_805617EC) / lbl_805617F0;
     f32 clamp = lbl_805617E8;
     clamp = (clamp < t) ? clamp : t;
