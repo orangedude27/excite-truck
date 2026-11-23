@@ -3114,7 +3114,7 @@ extern void fn_802D92B0(void);
 extern void GXSetTevOrder(int, int, int, int);
 extern void GXSetTevOp(int, int);
 #pragma dont_inline on
-void fn_802D3360(void) {
+/* InitRenderState: initialize GX/TEV state for this render path: reset alpha and state masks, set texcoord generators for all four channels, configure TEV stages and select matrix 0. */ void fn_802D3360(void) {
     /* Initialize GX/TEV state for this render path: reset helpers, enable pending render flags, set texcoord generators, configure stages, and select matrix 0. */
     int texCoord;
 
