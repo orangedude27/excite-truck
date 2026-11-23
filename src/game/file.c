@@ -417,21 +417,20 @@ extern "C" s32 fn_802E3A64(s32 fileHandle, s32 buffer, s32 size) {
 extern "C" int vsprintf(char *, const char *, va_list);
 #pragma scheduling invalid_target
 extern "C" void fn_802E3AD0(s32 arg0, const char *fmt, ...) {
-    /* Variadic formatted print: format into a 0x400-byte buffer. If arg0 is not
-       the special sink -0x29A, write the buffer (length via strlen) with
-       fn_802E3A64; otherwise fetch the global output object via fn_802E333C(0)
-       (queried twice) and, if non-null, call its vtable method v6(buf). */
+#define FILESYSTEM_SINK (-0x29A)  /* route output to the default filesystem's v6 print instead of a file handle */
+    /* Format `fmt` into a 0x400-byte buffer; write it to file handle `arg0`, or,
+       for FILESYSTEM_SINK, to the default filesystem's v6(buf). */
     char buf[0x400];
     va_list args;
     va_start(args, fmt);
     vsprintf(buf, fmt, args);
     va_end(args);
-    if (arg0 != -0x29A) {
+    if (arg0 != FILESYSTEM_SINK) {
         fn_802E3A64(arg0, (s32)buf, strlen(buf));
         return;
     }
-    s32 *p = ((s32 *(*)(s32))fn_802E333C)(0);
-    if (p != 0) {
+    s32 *fileSystem = ((s32 *(*)(s32))fn_802E333C)(0);
+    if (fileSystem != 0) {
         class Obj {
         public:
             virtual void v0();
@@ -442,9 +441,10 @@ extern "C" void fn_802E3AD0(s32 arg0, const char *fmt, ...) {
             virtual void v5();
             virtual void v6(char *);
         };
-        p = ((s32 *(*)(s32))fn_802E333C)(0);
-        ((Obj *)p)->v6(buf);
+        fileSystem = ((s32 *(*)(s32))fn_802E333C)(0);
+        ((Obj *)fileSystem)->v6(buf);
     }
+#undef FILESYSTEM_SINK
 }
 #pragma scheduling on
 extern "C" s32 fn_802E3BB4(s32 arg0, s32 arg1, s32 arg2) {
