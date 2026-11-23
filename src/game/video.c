@@ -1015,6 +1015,9 @@ struct BinkMovieInfo {
     s32 binkHandle;     /* 0x04, 0 while no movie is open */
     char name[0x40];    /* 0x08, "video/<name>.bik" */
     u8 flags;           /* 0x48 */
+    char pad49[3];      /* 0x49 */
+    s32 frameTimerMs;   /* 0x4C, millisecond timer used to pace movie frames */
+    char videoRing[1];  /* 0x50, start of the decoded-frame ring buffer */
 };
 /* Open a Bink movie: build "video/<name>.bik" in the movie object, reset its
  * handle, set its mode byte, and pass it to fn_802E0EAC to actually open it.
