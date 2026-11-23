@@ -1020,9 +1020,9 @@ void fn_802CFD74(void) {
 int fn_802CFDE0(void) {
     /* Finish a GX frame: update the dynamic-data high-water mark, reset GX state,
      * flush the just-finished span of the display-list buffer (wrapping at
-     * 0x177000), then busy-wait on the draw-sync done flag lbl_8055FD3C. If the
-     * timeout counter lbl_8055FD38 exceeds 10, report an aborted frame and
-     * reinitialize GX before disarming the break point. */
+     * 0x177000), then busy-wait on the draw-sync done flag. If the timeout
+     * counter exceeds 10, report an aborted frame and reinitialize GX before
+     * disarming the break point. */
     extern unsigned int GX_DYNAMIC_HIGH_WATER;
     extern unsigned int lbl_8055FDA8;
     extern int lbl_8055FD2C;
@@ -1032,30 +1032,36 @@ int fn_802CFDE0(void) {
     extern char lbl_8034C058[];
     extern void fn_802ECA48(void);
     extern int fn_802E2C20(void);
+    #define sGxSyncDone lbl_8055FD3C
+    #define sGxTimeout lbl_8055FD38
+    #define sGxBusy lbl_8055FD34
+    #define sGxPendingBytes lbl_8055FD9C
+    #define sGxFifoFlushStart lbl_8055FDA4
+    #define sGxFifoFlushEnd lbl_8055FDA8
     int highWaterCandidate;
     int highWater;
     int flushEnd;
     int flushStart;
     fn_802ECA48();
-    highWaterCandidate = (int)GX_DYNAMIC_OFFSET + (int)lbl_8055FD9C;
+    highWaterCandidate = (int)GX_DYNAMIC_OFFSET + (int)sGxPendingBytes;
     highWater = (int)GX_DYNAMIC_HIGH_WATER;
     GX_DYNAMIC_HIGH_WATER = highWaterCandidate > highWater ? (unsigned int)highWaterCandidate : (unsigned int)highWater;
     fn_802D6C78();
     GXGetVtxDesc();
     GXMiscInit(2);
     flushEnd = (int)GX_DYNAMIC_OFFSET;
-    flushStart = lbl_8055FDA4;
-    lbl_8055FDA8 = (unsigned int)flushEnd;
+    flushStart = sGxFifoFlushStart;
+    sGxFifoFlushEnd = (unsigned int)flushEnd;
     if (flushStart < flushEnd) {
         DCFlushRange((void *)(GX_DYNAMIC_DATA + flushStart), (unsigned long)(flushEnd - flushStart));
     } else {
         DCFlushRange((void *)(GX_DYNAMIC_DATA + flushStart), (unsigned long)(0x177000 - flushStart));
-        DCFlushRange((void *)GX_DYNAMIC_DATA, (unsigned long)lbl_8055FDA8);
+        DCFlushRange((void *)GX_DYNAMIC_DATA, (unsigned long)sGxFifoFlushEnd);
     }
-    lbl_8055FD38 = 0;
-    lbl_8055FD34 = 1;
-    while (*(volatile unsigned char *)&lbl_8055FD3C == 0) {
-        if (*(volatile int *)&lbl_8055FD38 > 10) {
+    sGxTimeout = 0;
+    sGxBusy = 1;
+    while (*(volatile unsigned char *)&sGxSyncDone == 0) {
+        if (*(volatile int *)&sGxTimeout > 10) {
             OSReport(lbl_8034C058);
             gxReportGPStatus();
             fn_802CFD74();
@@ -1064,7 +1070,7 @@ int fn_802CFDE0(void) {
             break;
         }
     }
-    lbl_8055FD34 = 0;
+    sGxBusy = 0;
     lbl_8055FD2C = (int)lbl_8055FD30 - 1;
     GXDisableBreakPt();
 }
