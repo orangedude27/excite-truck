@@ -80,10 +80,10 @@ extern void fn_801282F4(void);
     fn_802E30C8(messages + 0x88);
 }
 
-void fn_802CA1E0(void) {
+/* Shut down the texture system: release the built-in texture handles, report any of the 512 texture slots still in use, and free the slot table. */ void fn_802CA1E0(void) {
     /* Texture system shutdown: release active texture handles, warn for any of the
        512 0x4C-byte texture slots still in use, then free the texture pool. */
-    int slotOffset;
+    int byteOffset;
     int slotIndex;
     if (lbl_8055D03C != -1) {
         fn_802CAC54(lbl_8055D03C);
@@ -92,12 +92,12 @@ void fn_802CA1E0(void) {
     fn_802CAC54(lbl_8055FCB4);
     lbl_8055FCB4 = -1;
     slotIndex = 0;
-    slotOffset = 0;
+    byteOffset = 0;
     do {
-        if (*(int *)(lbl_8055FCB0 + slotOffset) != 0)
-            fn_802E317C(lbl_8034B5F0, slotIndex, lbl_8055FCB0 + slotOffset + 4);
+        if (*(int *)(lbl_8055FCB0 + byteOffset) != 0)
+            fn_802E317C(lbl_8034B5F0, slotIndex, lbl_8055FCB0 + byteOffset + 4);
         slotIndex++;
-        slotOffset += 0x4C;
+        byteOffset += 0x4C;
     } while (slotIndex < 0x200);
     fn_802CB6B4();
     fn_80128670(lbl_8055FCB0);
