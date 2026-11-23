@@ -296,7 +296,7 @@ extern unsigned char lbl_804FC6C0[]; /* the AX remote-speaker mix, 0x28 samples 
 extern int lbl_8055FFA8;             /* channels whose voices used a speaker lately */
 #pragma push
 #pragma use_lmw_stmw off
-/* Remote-speaker pump, the callback of the periodic OS alarm fn_802E5478 arms:
+/* Remote-speaker pump, the callback of the periodic OS alarm Spu_Init arms:
  * for each of the 4 Wii remote channels that can take stream data, whose radio
  * quality is still good and whose speaker mix has a full frame, it reads 0x28
  * samples out of the AX remote mix, ADPCM-encodes them with the channel's WENC
@@ -340,7 +340,7 @@ void fn_802E52EC(void) {
 int fn_802E540C(int request) {
 #define KERNEL_RESET_NOTIFY 1
 #define spuResetTeardown TRKReadBuffer_ui32
-    /* Reset callback registered under "Spu" in fn_802E5478: when the reset is
+    /* Reset callback registered under "Spu" in Spu_Init: when the reset is
      * actually on, tear down the TRK/AX debugger state; never cancels a reset. */
     if (request == KERNEL_RESET_NOTIFY) {
         spuResetTeardown();
@@ -406,7 +406,7 @@ enum {
  * a fresh zeroed buffer into it, hand fn_802E4F98 to the AI DMA interrupt to
  * refill the voices, and arm the periodic alarm whose callback (fn_802E52EC)
  * feeds the Wii remote speakers. */
-void fn_802E5478(void) {
+void Spu_Init(void) {
     extern char lbl_8034D210[];
     extern int lbl_8055FF7C, lbl_8055FF80, lbl_8055FF84, lbl_8055FF88;
     extern void *lbl_8055FFB0;
@@ -495,7 +495,7 @@ void fn_802E5478(void) {
 }
 
 /* One of the 32 voice channels of the pool at lbl_8055FF94 (0x580 bytes),
- * built by fn_802E5478 and walked by the per-frame mixer fn_802E5C2C. */
+ * built by Spu_Init and walked by the per-frame mixer fn_802E5C2C. */
 struct SpuChannel {
     int index;                  /* +0x00: channel number */
     void *voice;                /* +0x04: voice object from the pool allocator */
@@ -536,7 +536,7 @@ struct SpuSample {
     void *res;                  /* +0xAC: the loaded SFX0 blob */
 };
 
-/* Shuts the SPU layer down (the counterpart of fn_802E5478): stops the
+/* Shuts the SPU layer down (the counterpart of Spu_Init): stops the
  * speaker-stream alarm and the mixer hook, then checks the pools for leaks --
  * any channel still handed out or sample still referenced panics with
  * "Spu: channel %s still in use" / "Spu: sample %s still in use" -- hands each

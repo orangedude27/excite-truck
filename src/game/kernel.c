@@ -59,7 +59,6 @@ unsigned int fn_802E176C(unsigned int value) {
 #pragma scheduling invalid_target
 void fn_802E1780(void *arg0, unsigned int arg1, int arg2) {
     #pragma opt_strength_reduction off
-    #pragma opt_lifetimes off
     int xi;
     int ydiff;
     int rowoff;
@@ -85,7 +84,6 @@ void fn_802E1780(void *arg0, unsigned int arg1, int arg2) {
             }
         }
     }
-#pragma opt_lifetimes reset
 }
 #pragma optimization_level 2
 #pragma use_lmw_stmw off
@@ -524,7 +522,6 @@ void fn_802E27F0(void) {
     int size;
     register int count;
     register int i;
-    int poison = 0x53FFEEDD;
 
     lbl_804DB780[0] = 0x7400;
     heap[1] = local;
@@ -532,7 +529,7 @@ void fn_802E27F0(void) {
     fn_802E30C8(lbl_8034CD00, size / 1024, local);
     count = lbl_804DB780[0] / 4;
     for (i = 0; i < count; i++) {
-        (*(int **)((char *)lbl_804DB780 + 4))[-i] = poison;
+        (*(int **)((char *)lbl_804DB780 + 4))[-i] = 0x53FFEEDD;
     }
     *(int **)((char *)lbl_804DB780 + 8) =
         (int *)((char *)(*(int **)((char *)lbl_804DB780 + 4)) +
@@ -598,7 +595,7 @@ extern void fn_80127C8C(void);
 extern void fn_802E8CA8(void);
 extern void fn_80127538(void);
 extern void fn_80129790(void);
-extern void fn_802E5478(void);
+extern void Spu_Init(void);
 extern void fn_802E7578(void);
 extern void fn_802EBE2C(void);
 extern void fn_802CF600(void);
@@ -652,7 +649,7 @@ int fn_802E2A5C(void) {
     fn_802E8CA8();
     fn_80127538();
     fn_80129790();
-    fn_802E5478();
+    Spu_Init();
     fn_802E7578();
     fn_802EBE2C();
     fn_802CF600();
@@ -673,7 +670,7 @@ extern void fn_802EC038(void);
 extern void fn_802E759C(void);
 extern void fn_802E56F0(void);
 extern void fn_80129864(void);
-extern void fn_801275AC(void);
+extern void Profiler_PrintCountersReport(void);
 extern void fn_802E8D2C(void);
 extern void fn_80127EF8(void);
 extern void fn_802E46E4(void);
@@ -700,7 +697,7 @@ void fn_802E2B34(void) {
     fn_802E759C();
     fn_802E56F0();
     fn_80129864();
-    fn_801275AC();
+    Profiler_PrintCountersReport();
     fn_802E8D2C();
     fn_80127EF8();
     fn_802E46E4();
@@ -758,10 +755,12 @@ extern unsigned long long __div2i(unsigned long long, unsigned long long);
 #pragma scheduling invalid_target
 unsigned long long fn_802E2C9C(void) {
     unsigned long long now = OSGetTime();
-    unsigned long long elapsed = now - *(unsigned long long *)&lbl_8055FEF8;
+    unsigned int lo = lbl_8055FEFC;
+    unsigned int hi = lbl_8055FEF8;
     unsigned int busClock = *(volatile unsigned int *)0x800000F8;
+    unsigned long long elapsed = (now - (((unsigned long long)hi << 32) | lo)) << 3;
     unsigned int scale = (busClock >> 2) / 125000;
-    return __div2i(elapsed << 3, scale);
+    return __div2i(elapsed, scale);
 }
 #pragma scheduling on
 /* Store the console's real date and time (RTC ticks from OSGetTime(), broken
@@ -931,7 +930,7 @@ extern void fn_802EC038(void);
 extern void fn_802E759C(void);
 extern void fn_802E56F0(void);
 extern void fn_80129864(void);
-extern void fn_801275AC(void);
+extern void Profiler_PrintCountersReport(void);
 extern void fn_802E8D2C(void);
 extern void fn_80127EF8(void);
 extern void fn_802E46E4(void);
