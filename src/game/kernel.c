@@ -796,7 +796,7 @@ void fn_802E2D74(int milliseconds) {
     }
 }
 #pragma scheduling on
-void fn_802E2E0C(int callback, int name) {
+void KERNEL_AddResetCallback(int callback, int name) {
     /* Append a reset callback and its log name to the parallel registration tables. */
     int index = lbl_8055FF00;
     lbl_8055FF00 = index + 1;
@@ -805,7 +805,7 @@ void fn_802E2E0C(int callback, int name) {
 }
 /* Reset / power-down.
  * A subsystem that has to wind down before the console leaves the game
- * registers with fn_802E2E0C(callback, name):
+ * registers with KERNEL_AddResetCallback(callback, name):
  *   lbl_804DB790[]  the registered callbacks
  *   lbl_804DB7D0[]  the name a callback logs under when it cancels a reset
  *   lbl_8055FF00    how many are registered
@@ -851,7 +851,7 @@ extern void OSShutdownSystem(void);
 #pragma scheduling invalid_target
 /* Leave the game and hand the console back, in `mode`: KERNEL_MODE_RESTART
  * hot-resets, KERNEL_MODE_STANDBY powers off and anything else returns to the
- * Wii Menu.  Every subsystem registered a reset callback with fn_802E2E0C;
+ * Wii Menu.  Every subsystem registered a reset callback with KERNEL_AddResetCallback;
  * each is first asked whether the reset may go ahead - the first one to answer
  * 1 cancels the whole thing and is named in the log - and otherwise told, last
  * registered first, that it is happening.  The DVD drive's queued requests are

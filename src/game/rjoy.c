@@ -257,7 +257,7 @@ void fn_802E7C40(void) {
 extern void fn_8005EE78();
 extern int fn_800569D0(void);
 extern void KPADInit(void);
-extern int fn_802E2E0C(int, int);
+extern int KERNEL_AddResetCallback(int, int);
 extern int lbl_8055D22C;
 #pragma push
 #pragma dont_inline on
@@ -283,7 +283,7 @@ void fn_802E7C64(void) {
         *callbackSlot = previousCallback;
         callbackSlot += 1;
     } while (controllerIndex < 4);
-    fn_802E2E0C((int)fn_802E7AF4, (int)&lbl_8055D22C);
+    KERNEL_AddResetCallback((int)fn_802E7AF4, (int)&lbl_8055D22C);
     fn_802E7C40();
     lbl_80560009 = 1;
 }

@@ -1053,7 +1053,7 @@ void fn_802EBE2C(void) {
     extern void OSInitMutex(void *);
     extern void fn_802E3DCC(void);
     extern int OSCreateThread();
-    extern void fn_802E2E0C();
+    extern void KERNEL_AddResetCallback();
     extern void OSResumeThread(void *);
     extern void fn_80127C90();
     extern int fn_802EB7D4();
@@ -1103,7 +1103,7 @@ void fn_802EBE2C(void) {
     if (OSCreateThread(&lbl_805584B8, fn_802EAB28, 0, &lbl_805544A0 + 0x3FE0, 0x3FE0, 14, 1) == 0) {
         fn_802E317C((char *)&lbl_8034E260 + 0x6E0);
     }
-    fn_802E2E0C(fn_802EBE00, &lbl_8055D2E8);
+    KERNEL_AddResetCallback(fn_802EBE00, &lbl_8055D2E8);
     OSResumeThread(&lbl_805584B8);
     fn_80127C90(fn_802E9EB8, &lbl_8055D2E8);
 }

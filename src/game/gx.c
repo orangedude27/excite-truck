@@ -77,7 +77,7 @@ extern unsigned char lbl_8055FD91;
 extern unsigned char lbl_8055D0FF;
 extern char lbl_8055D100;
   extern int fn_802CEC04(int);
-  extern void fn_802E2E0C(void (*)(void), void *);
+  extern void KERNEL_AddResetCallback(void (*)(void), void *);
   extern void fn_802D6C68();
   extern void fn_802DA52C(void);
   extern void GXSetDrawSync(void);
@@ -567,7 +567,7 @@ void fn_802CF5A8(void) {
 #define sGxResetRegistered lbl_8055D0FF
 #define sGxResetName lbl_8055D100
 #define GxResetCallback fn_802CEC04
-#define RegisterResetCallback fn_802E2E0C
+#define RegisterResetCallback KERNEL_AddResetCallback
     /* Register the GX reset callback with its "GX" log name, once on first init. */
     if (sGxResetRegistered == 0) return;
     sGxResetRegistered = 0;
@@ -3526,7 +3526,7 @@ extern unsigned char lbl_804C5700[12];
 extern unsigned char lbl_8055FD91;
 extern unsigned char lbl_8055D0FF;
 extern char lbl_8055D100;
-      extern void fn_802E2E0C(void (*)(void), void *);
+      extern void KERNEL_AddResetCallback(void (*)(void), void *);
     extern int lbl_804C9760[];
 
 /* Build the current view transform (GX_LIGHT_XF_MTX) from the camera at lbl_804C56C0: copy and transpose the camera rotation, rotate its translation by the matrix and negate it, then select matrix 0. */

@@ -16,7 +16,7 @@ extern void fn_801282EC(int);
 extern int fn_8012850C(int, const char *);
 extern void fn_802E6B50(void);
 extern void fn_80127C90(void *, void *);
-extern void fn_802E2E0C(void *, void *);
+extern void KERNEL_AddResetCallback(void *, void *);
 extern int fn_802E8C6C(int);
 extern char lbl_8034DED4[];
 extern char lbl_8034DEF4[];
@@ -350,7 +350,7 @@ void fn_802E8CA8(void) {
     lbl_80560020 = fn_8012850C(0x55730, lbl_8034DEF4);
     fn_802E6B50();
     fn_80127C90((void *)fn_802E9010, &lbl_8055D248);
-    fn_802E2E0C((void *)fn_802E8C6C, &lbl_8055D250);
+    KERNEL_AddResetCallback((void *)fn_802E8C6C, &lbl_8055D250);
 }
 
 /* Shut down NAND save: wait for async end, detach save pump, and free the async buffer. */
@@ -399,7 +399,7 @@ extern void fn_801282F4(void);
 extern void fn_801282EC(int);
 extern int fn_8012850C(int, const char *);
 extern void fn_80127C90(void *, void *);
-extern void fn_802E2E0C(void *, void *);
+extern void KERNEL_AddResetCallback(void *, void *);
 extern int NANDInit(void);
 extern void fn_802E8838(void);
 extern void fn_802E9010(void);

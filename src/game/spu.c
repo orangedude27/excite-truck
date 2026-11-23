@@ -14,7 +14,7 @@ extern int lbl_8055D1EC;
 extern int lbl_8055D1F0;
 extern void fn_802E7770(void);
 extern int fn_802E7774(void (*arg0)(void));
-extern void fn_802E2E0C(void *arg0, void *arg1);
+extern void KERNEL_AddResetCallback(void *arg0, void *arg1);
 extern int TRKReadBuffer_ui32(void);
 extern float fn_802E9A2C(void);
 extern void fn_80060CC0(int, int, void (*)());
@@ -487,7 +487,7 @@ void Spu_Init(void) {
     vec[1] = one;
     vec[2] = one;
     vec[3] = one;
-    fn_802E2E0C((void *)fn_802E540C, &lbl_8055D1E0);
+    KERNEL_AddResetCallback((void *)fn_802E540C, &lbl_8055D1E0);
     gSpuRunning = 1;
     ((void (*)(void))fn_802E5438)();
 }
@@ -1344,7 +1344,7 @@ int fn_802E6AD0(int request) {
 
 #pragma scheduling invalid_target
 void fn_802E6B04(void) {
-#define registerResetCallback fn_802E2E0C
+#define registerResetCallback KERNEL_AddResetCallback
 #define spuResetCallback      fn_802E6AD0
 #define spuCallbackTag        lbl_8055D1F0
 #define spuIdleNoop           fn_802E7770
