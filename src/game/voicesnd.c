@@ -281,7 +281,7 @@ extern void fn_802E58B8(int);
 extern int strcmp(const char *, const char *);
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_8020AAC0(int unused, int arg1) {
+/* Load the value file, copy each "samples" entry's "name" and "volume" into consecutive 0x24-byte records, release the table, then queue the given resource directory. */ extern "C" void fn_8020AAC0(int unused, int directory) {
     struct List {
         virtual void dummy0();
         virtual void *getAt(int);
@@ -297,18 +297,18 @@ extern "C" void fn_8020AAC0(int unused, int arg1) {
         virtual void dummy7();
         virtual float getValue(const char *, float);
     };
-    char *recordBase;
+    char *records;
     List *list = (List *)fn_80131808(lbl_8033C3B4);
     if (list != 0) {
-        recordBase = lbl_804892D0;
+        records = lbl_804892D0;
         Entry *entry;
-        int index = 0;
+        int entryIndex = 0;
         /* Scans list entries named lbl_8055B5A0, copies their string/value into records, then finalizes. */
-        while ((entry = (Entry *)list->getAt(index)) != 0) {
-            const char *name = entry->getName();
-            if (strcmp(name, lbl_8055B5A0) == 0) {
+        while ((entry = (Entry *)list->getAt(entryIndex)) != 0) {
+            const char *entryName = entry->getName();
+            if (strcmp(entryName, lbl_8055B5A0) == 0) {
                 int recordIndex = (int)lbl_8055EE08;
-                char *record = recordBase + recordIndex * 0x24;
+                char *record = records + recordIndex * 0x24;
                 const char *source;
                 lbl_8055EE08 = (void *)(recordIndex + 1);
                 source = entry->getString(lbl_8055B5A8, recordIndex);
@@ -333,13 +333,13 @@ copy_done:
                 }
                 *((float *)(record + 0x20)) = entry->getValue(lbl_8055B5B0, lbl_805632B4);
             }
-            ++index;
+            ++entryIndex;
         }
         fn_80131818(list);
     } else {
         fn_802E317C(lbl_8033C3C0);
     }
-    fn_802E58B8(arg1);
+    fn_802E58B8(directory);
 }
 #pragma cplusplus reset
 #pragma pop
