@@ -309,7 +309,7 @@ int rmemcardRecover(void) {
 
 extern int fn_8012C4D8(int);
 extern int fn_802E88D8(void);
-void fn_802E8C2C(void) {
+void rmemcardCorruptReset(void) {
     /* After a corrupt NAND read: poll request 4 until it completes, then run fn_802E8918 (home-menu mode 1); return early if request 0 completes first. */
     for (;;) {
         if (((int (*)(int))fn_802E888C)(4) != 0) {
@@ -417,7 +417,7 @@ extern void *memcpy(void *, const void *, unsigned int);
 extern int fn_802E8A18(void);
 extern int fn_802E8AE8(const char *);
 extern int rmemcardRecover(void);
-extern void fn_802E8C2C(void);
+extern void rmemcardCorruptReset(void);
 extern void fn_802E8920(int);
 /* NAND device availability check: hardwired to 1 (device present) in this build, gating save/menu paths that call it. */
 u32 fn_802E8D84(void) { return 1; }
@@ -538,7 +538,7 @@ int rmemcardReadFile(const char *path, void *buf, int len) {
         fn_802E30C8(messages + 0x624, bytes_read);
         NANDClose(file.info);
         if (bytes_read == -4 /* NAND_RESULT_CORRUPT */) {
-            ((void (*)(void))fn_802E8C2C)();
+            ((void (*)(void))rmemcardCorruptReset)();
         } else if (((int (*)(void))rmemcardRecover)() != 0) {
             rmemcard_recover_space(len);
         }
