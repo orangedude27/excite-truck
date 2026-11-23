@@ -111,7 +111,7 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
     if (node == 0) {
         return 0;
     }
-    h = *(float *)(node + 0) + *(float *)(node + 4) * (float)*(unsigned short *)(node + remZ * 2 + remX * 64 + 8);
+    h = *(float *)(node + 0) + *(float *)(node + 4) * (float)*(unsigned short *)(node + (remX * 64 + remZ * 2) + 8);
     next = *(int *)(node + 0x890);
     layer = next >= 0 ? *(char **)((char *)lbl_8055E990 + 0x20) + next * 0x810 : 0;
     while (layer != 0) {
