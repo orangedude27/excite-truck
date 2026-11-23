@@ -412,6 +412,8 @@ void gxReportGPStatus(void) {
 }
 #pragma scheduling invalid_target
 void fn_802CEF90(void) {
+    /* GX hang watchdog: if the GP reports a busy status on the same GX thread
+     * ten checks in a row, dump the GP status and panic with a hang warning. */
     extern void GXGetGPStatus(char *, char *, char *, char *, char *);
     extern void *GXGetCurrentGXThread(void);
     extern void OSReport(const char *, ...);
