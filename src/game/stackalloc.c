@@ -61,24 +61,23 @@ extern void fn_80128668(void *);
 extern void fn_80128670(int);
 extern char lbl_8034C8E8[];
 #pragma scheduling on
-#pragma opt_propagation off
 void fn_802D9C5C(int arg0, void *arg1, int arg2)
 {
-  int __repair_literal;
+  
   extern float lbl_804DB068[];
   float *var_r3;
   float *var_r4;
-  int var_r9 = 0;
   float temp_r0_2;
   float temp_r1;
   float temp_r0;
+  int var_r9 = 0;
   int temp_r7;
   int temp_r7_2;
   int var_ctr_2;
   int var_r8;
   unsigned int var_ctr;
-  float *var_r7;
   float *var_r6;
+  float *var_r7;
   if (arg2 > 0)
   {
     temp_r7 = arg2 - 8;
@@ -91,19 +90,16 @@ void fn_802D9C5C(int arg0, void *arg1, int arg2)
       }
       if (var_r8 != 0)
       {
-        var_ctr = ((unsigned int) (temp_r7 + 7)) >> 3;
-        if (1)
-        {
-          var_r7 = (float *) arg1;
-        }
+        var_ctr = (((unsigned int) (temp_r7 + 7)) >> 2) >> 1;
+        var_r7 = (float *) arg1;
         var_r6 = &lbl_804DB068[arg0 * 3];
-        __repair_literal = 0;
-        if (temp_r7 > __repair_literal)
+        var_r8 = 0;
+        if (temp_r7 > var_r8)
         {
           do
           {
             var_r9 += 8;
-            var_r6[0] = var_r7[0];
+            var_r6[0 & 0xFFFFFFFFFFFFFFFFu] = var_r7[0];
             var_r6[1] = var_r7[1];
             var_r6[2] = var_r7[2];
             var_r6[3] = var_r7[3];
@@ -129,16 +125,17 @@ void fn_802D9C5C(int arg0, void *arg1, int arg2)
             var_r6[23] = var_r7[23];
             var_r7 += 24;
             var_r6 += 24;
+            var_ctr -= 1;
           }
-          while (--var_ctr != 0);
+          while (var_ctr != 0);
         }
       }
     }
     temp_r7_2 = var_r9 * 12;
-    var_ctr_2 = (arg2 - var_r9) & 0xFFFFFFFFFFFFFFFF;
+    var_ctr_2 = arg2 - var_r9;
     var_r4 = (float *) (((char *) arg1) + temp_r7_2);
-    var_r3 = (float *) ((((char *) lbl_804DB068) + temp_r7_2) + ((((((arg0 & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) * 12));
-    if ((var_r9 + 1) <= arg2)
+    var_r3 = (float *) ((((char *) lbl_804DB068) + temp_r7_2) + (((short) arg0) * 12));
+    if (var_r9 <= (arg2 - 1))
     {
       do
       {
@@ -150,8 +147,9 @@ void fn_802D9C5C(int arg0, void *arg1, int arg2)
         var_r3[1] = temp_r1;
         var_r3[2] = temp_r0;
         var_r3 += 3;
+        var_ctr_2 -= 1;
       }
-      while (--var_ctr_2 != 0);
+      while (var_ctr_2 != 0);
     }
   }
 }
