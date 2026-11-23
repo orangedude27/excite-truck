@@ -234,19 +234,19 @@ void fn_802E8920(int requestedFreeBytes) {
 #undef BLOCKS_OVER
 }
 
-int fn_802E8A18(void) {
+/* Check that the title's banner.bin exists and is exactly 0xF0A0 bytes. */ int fn_802E8A18(void) {
     char fileInfo[0x8C];
     unsigned int fileLength;
-    int result;
-    int isValid = 0;
+    int openResult;
+    int bannerValid = 0;
     /* Check that the title's banner.bin exists and is exactly 0xF0A0 bytes. */
-    result = NANDOpen(lbl_8034D9C0 + 0x3B8, fileInfo, 1);
-    if (result == 0) {
+    openResult = NANDOpen(lbl_8034D9C0 + 0x3B8, fileInfo, 1);
+    if (openResult == 0) {
         fileLength = 0;
         if (NANDGetLength(fileInfo, &fileLength) == 0) {
             if (fileLength == 0xF0A0) {
                 fn_802E30C8(lbl_8034D9C0 + 0x3C4);
-                isValid = 1;
+                bannerValid = 1;
             } else {
                 fn_802E30C8(lbl_8034D9C0 + 0x3EC, fileLength, 0xF0A0);
             }
@@ -255,9 +255,9 @@ int fn_802E8A18(void) {
         }
         NANDClose(fileInfo);
     } else {
-        fn_802E30C8(lbl_8034D9C0 + 0x460, result);
+        fn_802E30C8(lbl_8034D9C0 + 0x460, openResult);
     }
-    return isValid;
+    return bannerValid;
 }
 
 #pragma scheduling on
