@@ -1353,9 +1353,10 @@ void fn_802C70AC(int arg0, void *arg1, int arg2, int arg3) {
 extern unsigned char lbl_804C13C0[];
 extern float lbl_80564EF0;
 extern float PSVECSquareDistance(const float *, const float *);
-/* For each outer entry of type 2 within range, dispatches eligible inner elements via fn_802C53C4/fn_802CC550 using the global context. */
-/* Submit eligible model elements of type-2 groups for display, culling groups by SPHL sphere distance before dispatch via fn_802C53C4 / fn_802CC550. */ void fn_802C729C(int instanceId, float viewDistance) {
-    char *entry;
+/* For each type-2 group of the model, cull it by SPHL sphere distance and submit
+ * its eligible elements through fn_802C53C4 / fn_802CC550 using the global context. */
+void fn_802C729C(int instanceId, float viewDistance) {
+    char *groupEntry;
     int transformId;
     int j;
     int *elementList;
@@ -1393,17 +1394,17 @@ extern float PSVECSquareDistance(const float *, const float *);
             continue;
         if (modelVectors != 0) {
             squareDistance = PSVECSquareDistance((float *)(lbl_804C13C0 + 4),
-                                           (float *)distanceVector);
+                                                 (float *)distanceVector);
             if (!(squareDistance < (viewDistance + *(float *)((char *)heightVector + 0xC)) *
-                             (viewDistance + *(float *)((char *)heightVector + 0xC))))
+                                    (viewDistance + *(float *)((char *)heightVector + 0xC))))
                 continue;
         }
 
         j = 0;
         transformId = *(int *)lbl_804C13C0;
         elementOffset = 0;
-        entry = (char *)*(int **)((char *)groupList + 4) + groupOffset;
-        elementList = *(int **)(entry + 8);
+        groupEntry = (char *)*(int **)((char *)groupList + 4) + groupOffset;
+        elementList = *(int **)(groupEntry + 8);
 
         for (; j < *elementList;
              elementOffset += 4, j++) {
@@ -1432,9 +1433,9 @@ extern float PSVECSquareDistance(const float *, const float *);
             if (valid) {
                 void *node = *(void **)((char *)element + 0x14);
                 void *r4;
-                fn_802C53C4(entry, node, transformId, -1, 0);
+                fn_802C53C4(groupEntry, node, transformId, -1, 0);
                 r4 = ((void *(*)(void *))fn_802C57B0)(
-                    *(void **)(entry + 0xC));
+                    *(void **)(groupEntry + 0xC));
                 fn_802CC550(*(int *)node, r4, baseRadius,
                             *(float *)((char *)r4 + 0x18));
             }
