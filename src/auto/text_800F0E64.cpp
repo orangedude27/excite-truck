@@ -7450,9 +7450,7 @@ extern "C" void UpdatePlayingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFv(void
         self[0x52] = 1;
     }
 }
-#pragma push
-#pragma opt_common_subs off
-extern "C" void UpdateLoadingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFQ66nw4hbm3snd6detail10StrmPlayer11LoadCommand6Status(void* arg0, s32 arg1) {
+extern "C" void UpdateLoadingBlockIndex__Q26nw4hbm3snd6detail10StrmPlayerFQ66nw4hbm3snd6detail10StrmPlayer11LoadCommand6Status(void* arg0, s32 arg1) {
 char *__repair_addr;
 
     void* slots[6];
