@@ -1102,6 +1102,7 @@ void fn_8029DB78(void *arg0, void *arg1, int x, int z) {
     *(int *)(out + 3) = *(int *)(p + 0x2C) |
         ((lo + (int)((float)(hi - lo) * (lbl_80564658 - proj[1] * proj[1]))) << 24);
 }
+#pragma pop
 extern float lbl_8056462C, lbl_80564634, lbl_80564640, lbl_80564658, lbl_80564694, lbl_80564698;
 #pragma push
 #pragma processor 750
