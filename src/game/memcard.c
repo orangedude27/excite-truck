@@ -63,37 +63,39 @@ extern char lbl_8034D690[];
 #pragma scheduling invalid_target
 #pragma push
 #pragma use_lmw_stmw off
-/* Adds a save record to the memcard cookie table: cookieId is the record's
- * four-character id (e.g. 'Rep0' = 0x52657030), recordType the record type,
- * recordAddr/recordSize the buffer to read the record from and recordCallback
- * an optional completion callback stored with it.  An id that is already in the
- * table has its pending write dropped first, so the new entry replaces it. */
+/* Register a memcard chunk record: log its id/type/size, then panic (fn_802E317C
+ * aborts) if a record with this cookie id is already in the table; otherwise append
+ * a new 0x14-byte record {id, type, addr, size, callback} and bump the record count. */
 void fn_802E6BD8(unsigned int cookieId, unsigned int recordType, unsigned int recordAddr, unsigned int recordSize, unsigned int recordCallback) {
-    unsigned char *entry;
+    #define gChunkTable lbl_804FC8B0
+    #define gChunkCount lbl_8055FFC0
+    unsigned char *chunk;
     int index;
     int count;
 
     fn_802E30C8(lbl_8034D678, fn_802E6B98(cookieId), recordType, recordSize);
-    entry = lbl_804FC8B0;
+    chunk = gChunkTable;
     index = 0;
     goto loop_check;
 loop_body:
-    if (cookieId == *(unsigned int *)entry)
+    if (cookieId == *(unsigned int *)chunk)
         fn_802E317C(lbl_8034D690, cookieId);
-    entry += 0x14;
+    chunk += 0x14;
     index++;
 loop_check:
-    if (index < lbl_8055FFC0)
+    if (index < gChunkCount)
         goto loop_body;
 
-    count = lbl_8055FFC0;
-    entry = lbl_804FC8B0 + count * 0x14;
-    *(unsigned int *)(entry + 0) = cookieId;
-    *(unsigned int *)(entry + 4) = recordType;
-    *(unsigned int *)(entry + 8) = recordAddr;
-    *(unsigned int *)(entry + 0xC) = recordSize;
-    lbl_8055FFC0 = count + 1;
-    *(unsigned int *)(entry + 0x10) = recordCallback;
+    count = gChunkCount;
+    chunk = gChunkTable + count * 0x14;
+    *(unsigned int *)(chunk + 0) = cookieId;
+    *(unsigned int *)(chunk + 4) = recordType;
+    *(unsigned int *)(chunk + 8) = recordAddr;
+    *(unsigned int *)(chunk + 0xC) = recordSize;
+    gChunkCount = count + 1;
+    *(unsigned int *)(chunk + 0x10) = recordCallback;
+    #undef gChunkCount
+    #undef gChunkTable
 }
 #pragma pop
 #pragma scheduling on
