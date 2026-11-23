@@ -155,9 +155,10 @@ unsigned int fn_802E1960(unsigned int size) {
 }
 
 #pragma use_lmw_stmw off
-/* Builds a 4-row IA8 lookup texture (width rounded up to a power of two for size),
-   tiles and flushes its image data into imagePtr, initializes texObj, and returns
-   the 128-byte-aligned byte size. */
+/* Build a 4-row IA8 lookup texture from `size`: pick a power-of-two width, fill
+ * a linear IA8 buffer, tile it into imagePtr, flush the cache, initialize texObj
+ * and return the texture's 128-byte-aligned byte size.  The chosen width and the
+ * fixed height of 4 are written through outWidth/outHeight. */
 int fn_802E1980(int imagePtr, void *texObj, void *outWidth, void *outHeight, unsigned int size) {
     unsigned char linearBuf[0x800];
     int width;
