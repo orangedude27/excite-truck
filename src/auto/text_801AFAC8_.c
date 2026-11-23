@@ -41,6 +41,7 @@ void fn_801AFAC8(void) {
         }
     }
 }
+#pragma opt_strength_reduction reset
 /* Release the heap-allocated "tire_list" table (undoing its 0x10 allocator header)
  * and clear the global pointer. */
 void fn_801AFBE8(void) {
