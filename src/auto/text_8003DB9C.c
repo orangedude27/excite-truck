@@ -5452,7 +5452,7 @@ void GXSetTevColorS10(s32 tevReg, const void *color) {
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
-void GXSetTevKColor(s32 tevReg, unsigned int *color) {
+void GXSetTevKColor(s32 tevReg, const unsigned int *color) {
     unsigned int index = tevReg << 1;
     unsigned int value = *color;
     unsigned int first = __rlwimi(__rlwimi(__rlwimi((index + 0xE0) << 24, value, 8, 24, 31), value, 12, 12, 19), 8, 20, 8, 11);
