@@ -375,7 +375,7 @@ void fn_801B8054(int obj, int source, float offset, float interp) {
 }
 
 #pragma scheduling on
-void fn_801B8060(int arg0, void *arg1) {
+void fn_801B8060(int arg0, const void *arg1) {
     float position[2];
     float direction[2];
     float x;
