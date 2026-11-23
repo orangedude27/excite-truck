@@ -267,18 +267,18 @@ extern int fn_80028F94(char*, const char*, int);
  * table parser, then looks through it for "-interlude"/"/interlude" and turns on the interlude-mode
  * flag when it finds one. Always returns 1, so the boot continues either way. */
 int fn_80004D64(char* args) {
-    char* p;
+    char* argPtr;
 
     if (args != NULL) {
         fn_800199B8(); /* option table parser; the argument string is still in r3 */
-        for (p = args; *p != '\0'; p++) {
-            switch (*p) {
+        for (argPtr = args; *argPtr != '\0'; argPtr++) {
+            switch (*argPtr) {
             case '-':
             case '/':
-                if (strncmp(p + 1, INTERLUDE_OPT_NAME, INTERLUDE_OPT_LEN) == 0) {
+                if (strncmp(argPtr + 1, INTERLUDE_OPT_NAME, INTERLUDE_OPT_LEN) == 0) {
                     sInterludeMode = 1;
                 } else {
-                    strncmp(p + 1, RES_PATH_PREFIX, RES_PATH_PREFIX_LEN); /* result unused */
+                    strncmp(argPtr + 1, RES_PATH_PREFIX, RES_PATH_PREFIX_LEN); /* result unused */
                 }
                 break;
             case ' ':
