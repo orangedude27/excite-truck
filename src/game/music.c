@@ -277,36 +277,36 @@ extern void fn_80127C90(void*, const char*);
 extern const char lbl_8033C2DC[];
 extern const char lbl_8033C2F0[];
 extern const char lbl_8055B588;
-void fn_8020A47C(void) {
+/* Begin UI music playback: reset the active-track and song-request state, preload both .sng tracks, register the crossfade callback under the "music" name, then start the first track. */ void fn_8020A47C(void) {
     /* Initialize UI music playback: reset state, preload two song tracks, register the music callback, and start the first track. */
     struct {
         char songNameBuf[8];
         char pad[0x38];
         char songPathBuf[0x38];
     } local;
-    s32 *trackId;
-    s8 *loadedFlag;
-    s32 i;
+    s32 *trackIdPtr;
+    s8 *loadedFlagPtr;
+    s32 trackIdx;
     s32 zero;
 
     fn_802E30C8(lbl_8033C2DC);
     zero = 0;
     lbl_8055EDE0 = (void *)zero;
-    i = zero;
+    trackIdx = zero;
     lbl_8055EDD0 = 1;
-    trackId = &lbl_8055B560;
-    loadedFlag = &lbl_8055EDD4;
+    trackIdPtr = &lbl_8055B560;
+    loadedFlagPtr = &lbl_8055EDD4;
     lbl_8055EDE4 = zero;
     lbl_8055EDE8 = zero;
     do {
-        sprintf(local.songPathBuf, &lbl_8055B568, *trackId);
-        *loadedFlag = zero;
+        sprintf(local.songPathBuf, &lbl_8055B568, *trackIdPtr);
+        *loadedFlagPtr = zero;
         fn_802E30C8(lbl_8033C2F0, local.songPathBuf);
         fn_8012DDA8(local.songPathBuf);
-        i += 1;
-        trackId++;
-        loadedFlag++;
-    } while (i < 2);
+        trackIdx += 1;
+        trackIdPtr++;
+        loadedFlagPtr++;
+    } while (trackIdx < 2);
     fn_80127C90(fn_8020A100, &lbl_8055B588);
     sprintf(local.songNameBuf, &lbl_8055B568, lbl_8055B560);
     fn_8012E81C(local.songNameBuf);
