@@ -1373,9 +1373,9 @@ int fn_802D0514(void *source) {
     register unsigned char *aux;
     int index;
     int next;
-    unsigned int a;
-    unsigned int b;
-    unsigned int c;
+    int a;
+    int b;
+    int c;
     index = (int)lbl_8055FDAC;
     if (index >= 0x800) return 0;
     src = (unsigned int *)source;
