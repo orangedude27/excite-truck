@@ -189,28 +189,28 @@ void fn_802E3550(void) {
 }
 #pragma scheduling on
 extern char lbl_8034CF98[];
-s32 fn_802E35C0(const char *arg0, s32 arg1) {
+/* AllocFileSlot: find a free slot in the open-file table, store the name and handle there, and return its index (or -1/panic if full). */ s32 fn_802E35C0(const char *name, s32 fileHandle) {
     /* Allocate a free slot in the open-file table: copy the name, store the
      * associated handle, and return its index, or -1 if the table is full. */
-    char *base;
-    s32 offset;
-    s32 index = 0;
-    s32 handle = arg1;
-    unsigned char *entry = (unsigned char *)lbl_804DB810;
-    s32 remaining;
-    for (remaining = 16; remaining != 0; remaining--) {
-        if (entry[0x20] == 0) {
-            offset = index * 0x28;
-            base = lbl_804DB810;
-            *(base + offset + 0x20) = 1;
-            strncpy(base + offset, arg0, 0x20);
-            *(s32 *)((u32)base + offset + 0x24) = handle;
-            return index;
+    char *tableBase;
+    s32 entryOffset;
+    s32 slotIndex = 0;
+    s32 handleValue = fileHandle;
+    unsigned char *scan = (unsigned char *)lbl_804DB810;
+    s32 slotsLeft;
+    for (slotsLeft = 16; slotsLeft != 0; slotsLeft--) {
+        if (scan[0x20] == 0) {
+            entryOffset = slotIndex * 0x28;
+            tableBase = lbl_804DB810;
+            *(tableBase + entryOffset + 0x20) = 1;
+            strncpy(tableBase + entryOffset, name, 0x20);
+            *(s32 *)((u32)tableBase + entryOffset + 0x24) = handleValue;
+            return slotIndex;
         }
-        entry += 0x28;
-        index++;
+        scan += 0x28;
+        slotIndex++;
     }
-    fn_802E317C(lbl_8034CF98, arg0);
+    fn_802E317C(lbl_8034CF98, name);
     return -1;
 }
 
