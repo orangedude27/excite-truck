@@ -9812,7 +9812,7 @@ extern "C" void fn_80229DE8(void *self, s32 unused, s32 value) {
     ((Fn80229DE8Dispatch2 *)self)->Call(unused, value - (end - start) - 3);
 }
 
-extern s32 fn_8021E1C8(void *, s32, s32);
+extern "C" void fn_8021E1C8(void *, s32, s32);
 /* Delegate to fn_8021E1C8 with value reduced by the object's index span (end - start) plus 3. */
 extern "C" void fn_80229E1C(void *self, s32 unused, s32 value) {
     s32 start = *(s32 *)((u8 *)self + 8);
