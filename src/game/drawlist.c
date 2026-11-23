@@ -1124,10 +1124,10 @@ extern float lbl_80564F18, lbl_80564F28;
  * left/right and/or top/bottom black bars based on scaled view dimensions.
  */
 void fn_802C9A70(int drawBars) {
-    int barWidth;
-    int barHeight;
-    int hDelta;
-    int vDelta;
+    int sideBarWidth;
+    int topBarHeight;
+    int horizontalDelta;
+    int verticalDelta;
     lbl_8055FC74 = 1;
     if ((unsigned char)lbl_8055FC8D != 0) {
         fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
@@ -1135,22 +1135,22 @@ void fn_802C9A70(int drawBars) {
         fn_802C974C(lbl_8055FC38, lbl_8055FC3C, lbl_80564F28);
     }
     if (((unsigned char)lbl_8055FC8C != 0 || (unsigned char)lbl_8055FC8D != 0) && drawBars != 0) {
-        hDelta = lbl_8055CFF0 - (int)(lbl_80564F18 + ((float)lbl_8055CFF0 * lbl_8055D020));
-        barWidth = hDelta / 2;
-        if (barWidth > 1) {
+        horizontalDelta = lbl_8055CFF0 - (int)(lbl_80564F18 + ((float)lbl_8055CFF0 * lbl_8055D020));
+        sideBarWidth = horizontalDelta / 2;
+        if (sideBarWidth > 1) {
             fn_802C92D0();
-            fn_802C92DC(0, 0, barWidth, lbl_8055CFF4, 0xFF000000);
-            fn_802C92DC(lbl_8055CFF0 - barWidth, 0, lbl_8055CFF0, lbl_8055CFF4, 0xFF000000);
+            fn_802C92DC(0, 0, sideBarWidth, lbl_8055CFF4, 0xFF000000);
+            fn_802C92DC(lbl_8055CFF0 - sideBarWidth, 0, lbl_8055CFF0, lbl_8055CFF4, 0xFF000000);
             fn_802C92D8();
         }
     }
     if ((unsigned char)lbl_8055FC8D != 0) {
-        vDelta = lbl_8055CFF4 - (int)(lbl_80564F18 + ((float)lbl_8055CFF4 * lbl_8055D024));
-        barHeight = vDelta / 2;
-        if (barHeight > 1) {
+        verticalDelta = lbl_8055CFF4 - (int)(lbl_80564F18 + ((float)lbl_8055CFF4 * lbl_8055D024));
+        topBarHeight = verticalDelta / 2;
+        if (topBarHeight > 1) {
             fn_802C92D0();
-            fn_802C92DC(0, 0, lbl_8055CFF0, barHeight, 0xFF000000);
-            fn_802C92DC(0, lbl_8055CFF4 - barHeight, lbl_8055CFF0, lbl_8055CFF4, 0xFF000000);
+            fn_802C92DC(0, 0, lbl_8055CFF0, topBarHeight, 0xFF000000);
+            fn_802C92DC(0, lbl_8055CFF4 - topBarHeight, lbl_8055CFF0, lbl_8055CFF4, 0xFF000000);
             fn_802C92D8();
         }
     }
