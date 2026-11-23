@@ -122,23 +122,23 @@ void fn_802E746C(int index, int *outStartSector, int *outSize) {
 #pragma push
 #pragma use_lmw_stmw off
 /* Open the stream entry containing arg0, seek to its byte offset, and read up to arg2 bytes into arg1. */
-int fn_802E748C(int arg0, void *arg1, int arg2, int arg3) {
-    unsigned char *temp_r31;
-    int var_r5;
-    int temp_r3_2;
-    int temp_r3;
-    int temp_r29;
-    temp_r3_2 = fn_802E72C8(arg0);
-    if (temp_r3_2 < 0) return -1;
-    temp_r31 = lbl_804FC978 + temp_r3_2 * 0x90;
-    temp_r3 = fn_802E36D8(temp_r31 + 0x10);
-    if (temp_r3 == -1) return -1;
-    temp_r29 = (arg0 - *(int *)temp_r31) << 11;
-    ((void (*)(int, int))fn_802E3A14)(temp_r3, temp_r29);
-    var_r5 = (*(int *)(temp_r31 + 8) - temp_r29 + 0x1f) & ~0x1f;
-    if (var_r5 > arg2) var_r5 = arg2;
-    fn_802E3930(temp_r3, arg1, var_r5);
-    return temp_r3;
+/* StreamRead: find the stream entry covering this sector, open its file, seek to the byte offset within it and read up to maxBytes into dst; return the file handle (or -1 on failure). */ int fn_802E748C(int sector, void *dst, int maxBytes, int arg3) {
+    unsigned char *entry;
+    int bytesToRead;
+    int entryIndex;
+    int fileId;
+    int byteOffset;
+    entryIndex = fn_802E72C8(sector);
+    if (entryIndex < 0) return -1;
+    entry = lbl_804FC978 + entryIndex * 0x90;
+    fileId = fn_802E36D8(entry + 0x10);
+    if (fileId == -1) return -1;
+    byteOffset = (sector - *(int *)entry) << 11;
+    ((void (*)(int, int))fn_802E3A14)(fileId, byteOffset);
+    bytesToRead = (*(int *)(entry + 8) - byteOffset + 0x1f) & ~0x1f;
+    if (bytesToRead > maxBytes) bytesToRead = maxBytes;
+    fn_802E3930(fileId, dst, bytesToRead);
+    return fileId;
 }
 #pragma pop
 /* Stream-end callback thunk: tail-calls fn_802E3990 to end the file stream for
