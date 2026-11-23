@@ -598,39 +598,72 @@ extern void DSPSendMailToDSP(u32);
 extern void DBPrintf_800343C8(const char *, ...);
 extern char lbl_80301E30[];
 #pragma optimization_level 2
-void __DSP_boot_task(void *arg0) {
-    volatile u32 mail;
-    u32 *task = (u32 *)arg0;
-    const char *fmt = lbl_80301E30;
-    const char *first = fmt + 0;
-    while (DSPCheckMailFromDSP() == 0) {}
-    mail = DSPReadMailFromDSP();
-    DSPSendMailToDSP(0x80F3A001);
-    while (DSPCheckMailToDSP() != 0) {}
-    DSPSendMailToDSP(task[3]);
-    while (DSPCheckMailToDSP() != 0) {}
-    DSPSendMailToDSP(0x80F3C002);
-    while (DSPCheckMailToDSP() != 0) {}
-    DSPSendMailToDSP((u16)task[5]);
-    while (DSPCheckMailToDSP() != 0) {}
-    DSPSendMailToDSP(0x80F3A002);
-    while (DSPCheckMailToDSP() != 0) {}
-    DSPSendMailToDSP(task[4]);
-    while (DSPCheckMailToDSP() != 0) {}
-    DSPSendMailToDSP(0x80F3B002);
-    while (DSPCheckMailToDSP() != 0) {}
-    DSPSendMailToDSP(0);
-    while (DSPCheckMailToDSP() != 0) {}
-    DSPSendMailToDSP(0x80F3D001);
-    while (DSPCheckMailToDSP() != 0) {}
-    DSPSendMailToDSP(*(u16 *)((u8 *)arg0 + 0x24));
-    while (DSPCheckMailToDSP() != 0) {}
-    DBPrintf_800343C8(first, arg0);
-    DBPrintf_800343C8(fmt + 0x20, task[3]);
-    DBPrintf_800343C8(fmt + 0x50, task[5]);
-    DBPrintf_800343C8(fmt + 0x80, task[4]);
-    DBPrintf_800343C8(fmt + 0xB0, task[7]);
-    DBPrintf_800343C8(fmt + 0xE0, *(u16 *)((u8 *)arg0 + 0x24));
+void __DSP_boot_task(void *arg0)
+{
+  volatile u32 mail;
+  u32 *task;
+  const char *fmt = lbl_80301E30;
+  while (DSPCheckMailFromDSP() == 0)
+  {
+  }
+
+  mail = DSPReadMailFromDSP();
+  DSPSendMailToDSP(0x80F3A001);
+  while (DSPCheckMailToDSP() != 0)
+  {
+  }
+
+  DSPSendMailToDSP(((u32 *) arg0)[3]);
+  while (DSPCheckMailToDSP() != 0)
+  {
+  }
+
+  DSPSendMailToDSP(0x80F3C002);
+  while (DSPCheckMailToDSP() != 0)
+  {
+  }
+
+  DSPSendMailToDSP((u16) ((u32 *) arg0)[5]);
+  while (DSPCheckMailToDSP() != 0)
+  {
+  }
+
+  DSPSendMailToDSP(0x80F3A002);
+  while (DSPCheckMailToDSP() != 0)
+  {
+  }
+
+  DSPSendMailToDSP(((u32 *) arg0)[4]);
+  while (DSPCheckMailToDSP() != 0)
+  {
+  }
+
+  DSPSendMailToDSP(0x80F3B002);
+  while (DSPCheckMailToDSP() != 0)
+  {
+  }
+
+  DSPSendMailToDSP(0);
+  while (DSPCheckMailToDSP() != 0)
+  {
+  }
+
+  DSPSendMailToDSP(0x80F3D001);
+  while (DSPCheckMailToDSP() != 0)
+  {
+  }
+
+  DSPSendMailToDSP(*((u16 *) (((u8 *) arg0) + 0x24)));
+  while (DSPCheckMailToDSP() != 0)
+  {
+  }
+
+  DBPrintf_800343C8(fmt + 0, arg0);
+  DBPrintf_800343C8(fmt + 0x20, ((u32 *) arg0)[3]);
+  DBPrintf_800343C8(fmt + 0x50, ((u32 *) arg0)[5]);
+  DBPrintf_800343C8(fmt + 0x80, ((u32 *) arg0)[4]);
+  DBPrintf_800343C8(fmt + 0xB0, ((u32 *) arg0)[7]);
+  DBPrintf_800343C8(fmt + 0xE0, *((u16 *) (((u8 *) arg0) + 0x24)));
 }
 #pragma optimization_level reset
 void __DSP_insert_task(void *arg0) {
@@ -1089,7 +1122,7 @@ u32 DVDConvertEntrynumToPath(s32 entry, char *path, u32 max) {
     grandparentName = (char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
     n = DVDConvertEntrynumToPath(n, path, max);
     pos = n;
-    if (n != max) goto copy_grandparent;
+    if (pos != max) goto copy_grandparent;
     goto append_parent;
 copy_grandparent:
     start = pos + 1;
@@ -2216,45 +2249,57 @@ void fn_800373E0(u32 arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
-void fn_800375A8(u32 arg0) {
-    register u32 value = arg0;
-    s32 interrupts;
-    interrupts = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 == 0) {
-        *(u32 *)(__ErrorInfo + 0x78) = value;
-    } else {
-        *(u32 *)(__ErrorInfo + 0x28 + (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = value;
+void fn_800375A8(u32 arg0)
+{
+  register u32 value = arg0;
+  s32 interrupts;
+  interrupts = OSDisableInterrupts();
+  if ((*((volatile u32 *) (&lbl_8055D848))) == 0)
+  {
+    *((u32 *) (__ErrorInfo + 0x78)) = value;
+  }
+  else
+  {
+    *((u32 *) ((__ErrorInfo + 0x28) + (((*((volatile u32 *) (&lbl_8055D848))) - 1) * 0x14))) = value;
+  }
+  OSRestoreInterrupts(interrupts);
+  if (value == 0x10)
+  {
+    fn_8003A1A0(0x1234568, fn_80035C78);
+  }
+  else
+    if (value == 0x20)
+  {
+    fn_8003A1A0(0x1234569, fn_80035C78);
+  }
+  else
+    if (value & 1)
+  {
+    u32 layout;
+    register u32 shiftedSize;
+    register u32 formattedSize;
+    register u32 rawSize;
+    register u32 discOffset;
+    lbl_8055D860 = 0;
+    lbl_8055D8CC = (s32) fn_8003588C;
+    if ((*((u32 *) (((u8 *) bootInfo_8055D8C0) + 0x3C))) < (*((u32 *) (lbl_80376A80 + 8))))
+    {
+      ((void (*)(const char *, s32, const char *, ...)) OSPanic)(lbl_80558E0C, 0x3F6, lbl_80302120);
     }
-    OSRestoreInterrupts(interrupts);
-    if (value == 0x10) {
-        fn_8003A1A0(0x1234568, fn_80035C78);
-    } else if (value == 0x20) {
-        fn_8003A1A0(0x1234569, fn_80035C78);
-    } else if (value & 1) {
-        u32 layout;
-        u32 shiftedSize;
-        u32 rawSize;
-        u32 discOffset;
-        lbl_8055D860 = 0;
-        lbl_8055D8CC = (s32)fn_8003588C;
-        if (*(u32 *)((u8 *)bootInfo_8055D8C0 + 0x3C) < *(u32 *)(lbl_80376A80 + 8)) {
-            ((void (*)(const char *, s32, const char *, ...))OSPanic)(lbl_80558E0C, 0x3F6, lbl_80302120);
-        }
-        fn_8003BCDC(0);
-        layout = *(volatile u32 *)&__DVDLayoutFormat;
-        shiftedSize = *(u32 *)(lbl_80376A80 + 8) << (~*(volatile u32 *)&__DVDLayoutFormat & 2);
-        rawSize = *(u32 *)(lbl_80376A80 + 4);
-        discOffset = rawSize >> layout;
-        shiftedSize = (shiftedSize + 0x1F) & ~0x1F;
-        ((void (*)(s32, s32, s32, u32, u32))fn_800356F4)(1, discOffset, shiftedSize, layout, rawSize);
-        fn_8003B81C(*(void **)((u8 *)bootInfo_8055D8C0 + 0x38),
-                    ((*(u32 *)(lbl_80376A80 + 8) << (~*(volatile u32 *)&__DVDLayoutFormat & 2)) + 0x1F) & ~0x1F,
-                    *(u32 *)(lbl_80376A80 + 4) >> *(volatile u32 *)&__DVDLayoutFormat,
-                    (s32)fn_80035A04);
-    } else {
-        fn_800356F4(0x27, 0, 0);
-        fn_8003B218(fn_80035E6C);
-    }
+    fn_8003BCDC(0);
+    layout = *((volatile u32 *) (&__DVDLayoutFormat));
+    shiftedSize = (*((u32 *) (lbl_80376A80 + 8))) << ((~(*((volatile u32 *) (&__DVDLayoutFormat)))) & 2);
+    rawSize = *((u32 *) (lbl_80376A80 + 4));
+    discOffset = rawSize >> layout;
+    formattedSize = (shiftedSize + 0x1F) & (~0x1F);
+    ((void (*)(s32, s32, s32, u32, u32)) fn_800356F4)(1, (unsigned long long) discOffset, formattedSize, layout, rawSize);
+    fn_8003B81C(*((void **) (((u8 *) bootInfo_8055D8C0) + 0x38)), (((*((u32 *) (lbl_80376A80 + 8))) << ((~(*((volatile u32 *) (&__DVDLayoutFormat)))) & 2)) + 0x1F) & (~0x1F), (*((u32 *) (lbl_80376A80 + 4))) >> (*((volatile u32 *) (&__DVDLayoutFormat))), (s32) fn_80035A04);
+  }
+  else
+  {
+    fn_800356F4(0x27, 0, 0);
+    fn_8003B218(fn_80035E6C);
+  }
 }
 #pragma pop
 extern s32 MotorState_8055D8A8;
@@ -2832,7 +2877,6 @@ void fn_80038870(u32 arg0) {
     s32 interrupts;
     u32 tlow;
     u64 now, start;
-    s64 diff;
     u32 result;
 
     interrupts = OSDisableInterrupts();
@@ -2884,9 +2928,9 @@ void fn_80038870(u32 arg0) {
             }
         }
     } else {
-        cmd_valid = 0;
         if (CMDN == 1 || CMDN == 4 || CMDN == 5 || CMDN == 0x21 || CMDN == 0xE) cmd_valid = 1;
         else if (CMDN == lbl_80558E14) cmd_valid = 1;
+        else cmd_valid = 0;
         if (cmd_valid) {
             s32 add = (arg0 & 9) ? *(s32 *)((char *)executing_8055D8C8 + 0x1C) : 0;
             *(s32 *)((char *)executing_8055D8C8 + 0x20) += add;
@@ -2907,7 +2951,7 @@ void fn_80038870(u32 arg0) {
             *(volatile u32 *)&lbl_8055D860 = 0;
             if (CMD == 0x10) {
                 block = (char *)executing_8055D8C8;
-                MotorState_8055D8A8 = (*(s32 *)(block + 0x10) != 0) + 1;
+                MotorState_8055D8A8 = (*(u32 *)(block + 0x10) != 0) + 1;
                 executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
                 *(s32 *)(block + 0xC) = 0;
                 cbp = *(void **)(block + 0x28);
@@ -2916,8 +2960,8 @@ void fn_80038870(u32 arg0) {
                 return;
             }
             if (CMD == 0x20) {
-                block = (char *)executing_8055D8C8;
                 now = __OSGetSystemTime();
+                block = (char *)executing_8055D8C8;
                 lbl_8055D8A4 = (u32)now;
                 lbl_8055D8A0 = (u32)(now >> 32);
                 lbl_8055D8AC = 0;
@@ -2947,8 +2991,8 @@ void fn_80038870(u32 arg0) {
                     now = __OSGetSystemTime();
                     start = ((u64)(u32)lbl_8055D8A0 << 32) | (u32)lbl_8055D8A4;
                     tlow = ((*(u32 *)0x800000F8 >> 2) / 1000) * 100;
-                    diff = (s64)(now - start) - tlow;
-                    if (diff >= 0) flag = 0; else flag = -(s32)(result & 1) + 2;
+                    if ((s64)(now - start) >= (s64)tlow) flag = 0;
+                    else flag = 2 - (s32)(result & 1);
                     block = (char *)executing_8055D8C8;
                     executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
                     *(s32 *)(block + 0xC) = 0;
@@ -2960,7 +3004,7 @@ void fn_80038870(u32 arg0) {
                 }
                 if (CMD == 0x24) {
                     result = fn_8003BB48();
-                    if (result & 4 || result & 1) flag = 0;
+                    if (((result >> 2) & 1) || (result & 1)) flag = 0;
                     else flag = (lbl_8055D85C == 0);
                     block = (char *)executing_8055D8C8;
                     executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
@@ -2971,7 +3015,10 @@ void fn_80038870(u32 arg0) {
                     fn_80038040();
                     return;
                 }
-                if (CMDN == 1 || CMDN == 4 || CMDN == 5 || CMDN == 0x21 || CMDN == 0xE || CMDN == lbl_80558E14) {
+                if (CMDN == 1 || CMDN == 4 || CMDN == 5 || CMDN == 0x21 || CMDN == 0xE) cmd_valid = 1;
+                else if (CMDN == lbl_80558E14) cmd_valid = 1;
+                else cmd_valid = 0;
+                if (cmd_valid) {
                     block = (char *)executing_8055D8C8;
                     if (*(u32 *)(block + 0x20) != *(u32 *)(block + 0x14)) {
                         fn_80038368(block);
@@ -2984,13 +3031,20 @@ void fn_80038870(u32 arg0) {
                     fn_80038040();
                     return;
                 }
-                if ((u32)(CMD - 9) <= 3 || CMD == *(u32 *)lbl_8030228C || CMD == *(u32 *)(lbl_8030228C + 4) || CMD == *(u32 *)(lbl_8030228C + 8)) {
-                    fn_8003BCC0();
+                if ((u32)(CMDN - 9) <= 3) cmd_valid = 1;
+                else if (CMDN == *(const u32 *)(lbl_8030228C + 0)) cmd_valid = 1;
+                else if (CMDN == *(const u32 *)(lbl_8030228C + 4)) cmd_valid = 1;
+                else if (CMDN == *(const u32 *)(lbl_8030228C + 8)) cmd_valid = 1;
+                else cmd_valid = 0;
+                if (cmd_valid) {
+                    u32 arg;
+                    if ((u32)(CMDN - 0xA) <= 1) arg = ((s32 (*)(void))fn_8003BCC0)() << 2;
+                    else arg = ((s32 (*)(void))fn_8003BCC0)();
                     block = (char *)executing_8055D8C8;
                     executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
                     *(s32 *)(block + 0xC) = 0;
                     cbp = *(void **)(block + 0x28);
-                    if (cbp != 0) ((void (*)(void))cbp)();
+                    if (cbp != 0) ((void (*)(u32, void *))cbp)(arg, block);
                     fn_80038040();
                     return;
                 }
@@ -3006,9 +3060,9 @@ void fn_80038870(u32 arg0) {
                 fn_8003A1A0(0x01234567, &fn_80035C64);
                 return;
             }
+            block = (char *)executing_8055D8C8;
             if ((CMD == 1 || CMD == 4 || CMD == 5 || CMD == 0x21 || CMD == 0xE) &&
-                *(u32 *)((char *)executing_8055D8C8 + 0x20) == *(u32 *)((char *)executing_8055D8C8 + 0x14)) {
-                block = (char *)executing_8055D8C8;
+                *(u32 *)(block + 0x20) == *(u32 *)(block + 0x14)) {
                 if (lbl_8055D858 != 0) {
                     lbl_8055D85C = 0;
                     lbl_8055D858 = 0;
@@ -3021,6 +3075,7 @@ void fn_80038870(u32 arg0) {
                     flag = 1;
                 } else flag = 0;
                 if (flag == 0) {
+                    block = (char *)executing_8055D8C8;
                     executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
                     *(s32 *)(block + 0xC) = 0;
                     cbp = *(void **)(block + 0x28);
