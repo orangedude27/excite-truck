@@ -148,10 +148,10 @@ s32 fn_80136A18(s32 self, s32 deleteFlag) {
 
 #pragma scheduling reset
 void fn_80136AA8(void *g) {
-    int i = 0, j;
-    int zero = i;
-    int k = 0;
-    for (; i < I(g, 0); i++) {
+    int i, j;
+    register int k = 0;
+    register int zero = 0;
+    for (i = 0; i < I(g, 0); i++) {
         short si = i;
         B(I(g, 0x10) + i * I(g, 0xC), 0x15) = 1;
         I(i * I(g, 0xC) + (i * 4 + I(g, 0x10)), 0x18) = zero;
@@ -202,17 +202,20 @@ extern "C" void fn_80136D20(void *arg0, s32 arg1) {
     void *entry = (char*)base + arg1 * stride;
     void *obj = ((Dummy*)fn_801B2ED0(arg1))->v4();
     if (*(unsigned char*)((char*)entry + 0x15) != 0) {
-        *(volatile unsigned char*)((char*)entry + 0x14) = 0;
-        void *r5 = *(void**)((char*)obj + 4);
-        float f2 = *(float*)((char*)obj + 8);
-        void *r4 = *(void**)((char*)r5 + 0x14);
-        float f1 = *(float*)((char*)r5 + 0x2C);
-        float f0 = *(float*)((char*)r4 + 0x2C);
-        float f3 = *(float*)((char*)obj + 0x40);
+        int c = (*(unsigned char*)((char*)entry + 0x15) == 0);
+        void *r4, *r5;
+        float f1, f2, f0, f3;
+        *(unsigned char*)((char*)entry + 0x14) = c;
+        r5 = *(void**)((char*)obj + 4);
+        f2 = *(float*)((char*)obj + 8);
+        r4 = *(void**)((char*)r5 + 0x14);
+        f1 = *(float*)((char*)r5 + 0x2C);
+        f0 = *(float*)((char*)r4 + 0x2C);
+        f3 = *(float*)((char*)obj + 0x40);
         f0 = (f0 - f1) * f2 + f1;
         f2 = f3 + f0;
         f1 = *(float*)((char*)obj + 0x48) + *(float*)((char*)r5 + 0x30);
-        if (*(volatile unsigned char*)((char*)entry + 0x14) != 0) {
+        if (c != 0) {
             f1 = *(float*)((char*)arg0 + 0x14) - f1;
         }
         *(float*)((char*)entry + 8) = *(float*)((char*)obj + 0x44);
@@ -255,21 +258,22 @@ void fn_80136E8C(void *proxer, s32 carIndex, signed char active) {
 void fn_80136EA4(void *arg0, s32 arg1) {
     s32 values[3];
     s32 *source;
-    s32 tmp;
+    s32 stride;
     s32 index;
     s32 base;
-    s32 d;
+    s32 destination;
 
     source = lbl_8032BEB4;
     values[0] = *source++;
     values[1] = *source++;
     values[2] = *source++;
-    tmp = arg1 * *(s32 *)((char *)arg0 + 0xC);
+    stride = *(s32 *)((char *)arg0 + 0xC);
     index = *(s32 *)arg0;
     base = *(s32 *)((char *)arg0 + 0x10);
-    d = base + tmp;
-    d += index * 8 + 0x18;
-    fn_801376A8((s32)arg0, (s32 *)d, (s32)values, arg1, (s32 *)base);
+    destination = base + arg1 * stride;
+    destination += index * 8;
+    destination += 0x18;
+    fn_801376A8((s32)arg0, (s32 *)destination, (s32)values, arg1, (s32 *)base);
 }
 
 extern void *fn_801B2ED0(int);
@@ -347,32 +351,18 @@ s32 fn_8013705C(f32 valueA, f32 valueB) {
 
 extern float PSVECDotProduct(const void *, const void *);
 #pragma scheduling invalid_target
-s32 fn_80137078(void *arg0, void *arg1, f32 farg0, f32 farg1) {
-    f32 sp28, sp24, sp20, sp1C, sp18, sp14, sp10, spC, sp8;
-    f32 temp_f10, temp_f11, temp_f1, temp_f2, temp_f3, temp_f4, temp_f5;
-    f32 temp_f6, temp_f7, temp_f8, temp_f9;
-    temp_f10 = *(f32 *)((char *)arg0 + 0x1C) * farg0;
-    temp_f8 = *(f32 *)((char *)arg0 + 0x20) * farg0;
-    temp_f11 = *(f32 *)((char *)arg0 + 0x24) + (*(f32 *)((char *)arg0 + 0x18) * farg0);
-    temp_f6 = *(f32 *)((char *)arg1 + 0x24) + (*(f32 *)((char *)arg1 + 0x18) * farg1);
-    temp_f7 = *(f32 *)((char *)arg0 + 0x2C);
-    temp_f4 = *(f32 *)((char *)arg1 + 0x28) + (*(f32 *)((char *)arg1 + 0x1C) * farg1);
-    temp_f9 = *(f32 *)((char *)arg0 + 0x28) + temp_f10;
-    temp_f3 = *(f32 *)((char *)arg1 + 0x2C) + (*(f32 *)((char *)arg1 + 0x20) * farg1);
-    temp_f5 = temp_f7 + temp_f8;
-    sp20 = temp_f11;
-    temp_f2 = temp_f11 - temp_f6;
-    temp_f1 = temp_f9 - temp_f4;
-    sp24 = temp_f9;
-    sp28 = temp_f5;
-    sp14 = temp_f6;
-    sp18 = temp_f4;
-    sp1C = temp_f3;
-    sp8 = temp_f2;
-    spC = temp_f1;
-    sp10 = temp_f5 - temp_f3;
-    PSVECDotProduct(&sp8, (char *)arg1 + 0x18);
-    return PSVECDotProduct(&sp8, (char *)arg1 + 0x18) > lbl_80561368;
+s32 fn_80137078(const void *arg0, const void *arg1, f32 farg0, f32 farg1) {
+    f32 v[9];
+    v[6] = *(f32 *)((char *)arg0 + 0x18) * farg0 + *(f32 *)((char *)arg0 + 0x24);
+    v[7] = *(f32 *)((char *)arg0 + 0x1C) * farg0 + *(f32 *)((char *)arg0 + 0x28);
+    v[8] = *(f32 *)((char *)arg0 + 0x20) * farg0 + *(f32 *)((char *)arg0 + 0x2C);
+    v[3] = *(f32 *)((char *)arg1 + 0x18) * farg1 + *(f32 *)((char *)arg1 + 0x24);
+    v[4] = *(f32 *)((char *)arg1 + 0x1C) * farg1 + *(f32 *)((char *)arg1 + 0x28);
+    v[5] = *(f32 *)((char *)arg1 + 0x20) * farg1 + *(f32 *)((char *)arg1 + 0x2C);
+    v[0] = v[6] - v[3];
+    v[1] = v[7] - v[4];
+    v[2] = v[8] - v[5];
+    return PSVECDotProduct((const void *)v, (const void *)((const char *)arg1 + 0x18)) > lbl_80561368;
 }
 s32 fn_80137140(s32 indexA, s32 indexB) {
     s32 objA;
@@ -395,7 +385,8 @@ extern float lbl_80561378, lbl_8056137C, lbl_80561380, lbl_80561384, lbl_8056138
 #pragma use_lmw_stmw off
 void fn_801371E0(void *arg0) {
     register float c90, c8c, c68, c88, c84, threshold, c78, radius, limit;
-    float sign, velocity, distance, dy, t, ya, yb;
+    register float distance, velocity, sign;
+    float dy, t, ya, yb;
     register void *a, *b;
     register int offset, i, count;
     int flag;
@@ -441,11 +432,9 @@ void fn_801371E0(void *arg0) {
                     sign = F(a, 0xc) > c68 ? lbl_8056137C : lbl_8056136C;
                     if (sign * F(pair, 0x20) > c68) {
                         B(pair, 0x10) = 0;
-                        velocity = sign * F(pair, 0x28);
-                        if (velocity < c8c) {
-                            distance = sign * F(pair, 0x20);
-                            t = -((distance - radius) / velocity);
-                            if (t < c90 || distance <= limit) {
+                        if (sign * F(pair, 0x28) < c8c) {
+                            t = -((sign * F(pair, 0x20) - radius) / (sign * F(pair, 0x28)));
+                            if (t < c90 || sign * F(pair, 0x20) <= limit) {
                                 B(pair, 8) = 1;
                                 F(pair, 4) = t;
                             } else B(pair, 8) = 0;
@@ -553,8 +542,9 @@ s32 fn_8002F768(void *, s32, s32);
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_801376A8(s32 arg0, s32 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
-    struct CompareObject { s32 length; s32 sortIndex; s32 compare(s32, s32); };
+    struct CompareObject { s32 compare(s32, s32); };
     typedef s32 (CompareObject::*CompareMethod)(s32, s32);
+    const s32 *source;
     s32 *item;
     s32 flag;
     s32 start;
@@ -563,8 +553,9 @@ extern "C" void fn_801376A8(s32 arg0, s32 *arg1, s32 arg2, s32 arg3, s32 *arg4) 
     s32 index;
     s32 temp;
     CompareMethod *method;
-    ((CompareObject *)arg0)->sortIndex = arg3;
-    length = ((CompareObject *)arg0)->length;
+    *(s32 *)(arg0 + 4) = arg3;
+    source = (const s32 *)arg0;
+    length = source[0];
     method = (CompareMethod *)arg2;
     start = 0;
     do {
