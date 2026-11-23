@@ -146,7 +146,7 @@ void *fn_802023C8(void) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 #pragma dont_inline on
-extern "C" void fn_802023D4(void) {
+void fn_802023D4(void) {
     struct Manager { virtual void *get(void *); };
     struct Position { f32 x, y, z; };
     struct Interface {
@@ -453,7 +453,7 @@ int fn_802C7040(int);
 void fn_802C7A50(void);
 #pragma push
 #pragma scheduling on
-void fn_80202AD4(float *arg0) {
+void fn_80202AD4(const float *arg0) {
     float c, b, a;
     a = arg0[0];
     b = arg0[1];
