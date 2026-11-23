@@ -75,7 +75,7 @@ extern unsigned char *fn_8012C370(int, unsigned int *, int, unsigned char *, uns
 extern char lbl_8034D280[];
 #pragma scheduling invalid_target
 /* Load an SFX0 sample blob by name: endian-swap its header when the loader says so, relocate its data offset into a pointer, byte-swap 16-bit sample data for non-raw formats, then flush it for the ARAM/DSP reader. */
-void *fn_802E4DC8(char *path) {
+void *SFXLoad(char *path) {
     unsigned int version;
     unsigned char attr;
     unsigned char needsSwap;
@@ -126,7 +126,7 @@ return_null:
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_802E4F98(void) {
+/* AI DMA callback: refill the 0x20 SPU voice stream buffers, streaming the next half of each active sample's buffer and wrapping at the loop end; writes silence while the disc drive is active. */ void fn_802E4F98(void) {
     // Refill the 0x20 SPU voice buffers: stream each half, wrap at the loop end, flag completion.
     extern char lbl_8055FFA4;
     extern char lbl_8055FFA5;
@@ -135,71 +135,71 @@ void fn_802E4F98(void) {
     extern int OSEnableInterrupts(int);
     extern int fn_802D9BF0(void);
     extern void fn_80033AAC(void *, void *);
-    register int byteOff;
-    register int savedInts;
-    register int voiceIdx;
-    int silent;
-    unsigned char *voice;
-    unsigned char *stream;
-    unsigned int playPos;
-    unsigned int halfSize;
-    unsigned int wrapPos;
-    short initSamp[3];
+    register int channelOffset;
+    register int interruptState;
+    register int channelIndex;
+    int silence;
+    unsigned char *channel;
+    unsigned char *sample;
+    unsigned int playPosition;
+    unsigned int halfBufferSize;
+    unsigned int wrapPosition;
+    short initialSamples[3];
 
     if ((unsigned char)lbl_8055FFA5 != 0 &&
         (unsigned char)lbl_8055FFA6 == 0) {
-        savedInts = ((int (*)(void))OSEnableInterrupts)();
-        silent = fn_802D9BF0();
+        interruptState = ((int (*)(void))OSEnableInterrupts)();
+        silence = fn_802D9BF0();
         lbl_8055FFB4 = 1;
-        voiceIdx = 0;
-        byteOff = 0;
+        channelIndex = 0;
+        channelOffset = 0;
         do {
-            voice = lbl_8055FF94 + byteOff;
-            stream = *(unsigned char **)(voice + 0x1C);
-            if (voice[0x20] != 0 && stream != 0 &&
-                *(int *)(stream + 0x20) == 1 && voice[0x21] == 0) {
-                playPos = *(unsigned int *)(*(unsigned char **)(voice + 4) + 0x1BC);
-                if (stream[0x24] != 0) {
-                    playPos >>= 1;
+            channel = lbl_8055FF94 + channelOffset;
+            sample = *(unsigned char **)(channel + 0x1C);
+            if (channel[0x20] != 0 && sample != 0 &&
+                *(int *)(sample + 0x20) == 1 && channel[0x21] == 0) {
+                playPosition = *(unsigned int *)(*(unsigned char **)(channel + 4) + 0x1BC);
+                if (sample[0x24] != 0) {
+                    playPosition >>= 1;
                 } else {
-                    playPos <<= 1;
+                    playPosition <<= 1;
                 }
-                halfSize = *(unsigned int *)(stream + 0xA0) >> 1;
-                wrapPos = *(unsigned int *)(stream + 0x9C) + halfSize;
-                if (playPos < *(unsigned int *)(voice + 0x28)) {
-                    if (silent == 0) {
-                        ((void (*)(void *, unsigned int, void *))*(void **)(stream + 0x88))(
-                            (unsigned char *)*(void **)(stream + 0x90) + halfSize,
-                            halfSize, *(void **)(stream + 0x8C));
+                halfBufferSize = *(unsigned int *)(sample + 0xA0) >> 1;
+                wrapPosition = *(unsigned int *)(sample + 0x9C) + halfBufferSize;
+                if (playPosition < *(unsigned int *)(channel + 0x28)) {
+                    if (silence == 0) {
+                        ((void (*)(void *, unsigned int, void *))*(void **)(sample + 0x88))(
+                            (unsigned char *)*(void **)(sample + 0x90) + halfBufferSize,
+                            halfBufferSize, *(void **)(sample + 0x8C));
                     } else {
-                        memset((unsigned char *)*(void **)(stream + 0x90) + halfSize, 0, halfSize);
+                        memset((unsigned char *)*(void **)(sample + 0x90) + halfBufferSize, 0, halfBufferSize);
                     }
-                    DCFlushRange((unsigned char *)*(void **)(stream + 0x90) + halfSize, halfSize);
+                    DCFlushRange((unsigned char *)*(void **)(sample + 0x90) + halfBufferSize, halfBufferSize);
                 }
-                if (playPos >= wrapPos && *(unsigned int *)(voice + 0x28) < wrapPos) {
-                    if (silent == 0) {
-                        ((void (*)(void *, unsigned int, void *))*(void **)(stream + 0x88))(
-                            *(void **)(stream + 0x90),
-                            halfSize, *(void **)(stream + 0x8C));
+                if (playPosition >= wrapPosition && *(unsigned int *)(channel + 0x28) < wrapPosition) {
+                    if (silence == 0) {
+                        ((void (*)(void *, unsigned int, void *))*(void **)(sample + 0x88))(
+                            *(void **)(sample + 0x90),
+                            halfBufferSize, *(void **)(sample + 0x8C));
                     } else {
-                        memset(*(void **)(stream + 0x90), 0, halfSize);
+                        memset(*(void **)(sample + 0x90), 0, halfBufferSize);
                     }
-                    if (stream[0x24] != 0) {
-                        initSamp[0] = (short)*((unsigned char *)*(void **)(stream + 0x90));
-                        initSamp[1] = 0;
-                        initSamp[2] = 0;
-                        fn_80033AAC(*(void **)(voice + 4), initSamp);
+                    if (sample[0x24] != 0) {
+                        initialSamples[0] = (short)*((unsigned char *)*(void **)(sample + 0x90));
+                        initialSamples[1] = 0;
+                        initialSamples[2] = 0;
+                        fn_80033AAC(*(void **)(channel + 4), initialSamples);
                     }
-                    DCFlushRange(*(void **)(stream + 0x90), halfSize);
+                    DCFlushRange(*(void **)(sample + 0x90), halfBufferSize);
                 }
-                *(unsigned int *)(voice + 0x28) = playPos;
+                *(unsigned int *)(channel + 0x28) = playPosition;
             }
-            ++voiceIdx;
-            byteOff += 0x2C;
-        } while (voiceIdx < 0x20);
+            ++channelIndex;
+            channelOffset += 0x2C;
+        } while (channelIndex < 0x20);
         *(volatile unsigned char *)&lbl_8055FFA4 = 1;
         *(volatile unsigned char *)&lbl_8055FFB4 = 0;
-        OSRestoreInterrupts(savedInts);
+        OSRestoreInterrupts(interruptState);
     }
 }
 #pragma scheduling on
@@ -646,7 +646,7 @@ void fn_802E589C(void) {
     fn_802E582C();
 }
 
-/* FourCC of the sample blobs fn_802E4DC8 loads, found at a resource entry's data. */
+/* FourCC of the sample blobs SFXLoad loads, found at a resource entry's data. */
 #define TAG_SFX0 0x53465830
 extern unsigned char lbl_804FC558[]; /* sound-name queue: 0x20-byte NUL-terminated names */
 extern int lbl_8055FF78;             /* sound-name queue: names in use */
@@ -805,7 +805,7 @@ __repair_addr = (char *)(slot + 0x94);
         }
     }
     if (freeIdx < 0) fn_802E317C(msg + 0x2A8, arg0);
-    res = (struct Res *)fn_802E4DC8(arg0);
+    res = (struct Res *)SFXLoad(arg0);
     if (res == 0) return 0;
     res->unkC = 0xCFFE;
     if (res->unkC != 0xCFFE) fn_802E317C(msg + 0x2C4, arg0);
