@@ -2722,9 +2722,9 @@ void fn_802D2B0C(void) {
     extern void gxSetupSceneLights(void);
     extern void fn_802DF994(void);
     extern void fn_802D2AC4(void);
-    extern void GXSetupWaterBumpTevPipelineB(void);
+    extern void fn_802DF6D0(void);
     extern void fn_802DF938(void);
-    extern void fn_802DF4A8(void);
+    extern void GXSetupWaterBumpTevPipelineA(void);
     extern void fn_802DF684(void);
     extern void fn_802D1C04(void);
     int diff;
@@ -2771,10 +2771,10 @@ void fn_802D2B0C(void) {
                     buildDefaultTevPipeline();
                 } else {
                     if (lbl_804C5700[8] != 0) {
-                        GXSetupWaterBumpTevPipelineB();
+                        fn_802DF6D0();
                         lbl_8055FD80 = fn_802DF938;
                     } else {
-                        fn_802DF4A8();
+                        GXSetupWaterBumpTevPipelineA();
                         lbl_8055FD80 = fn_802DF684;
                     }
                     lbl_8055FD70 = 1;
@@ -2975,7 +2975,7 @@ void *fn_802D30FC(void) {
 void *fn_802D3100(void) {
     #define GetDistortTexture fn_802D30F0
     /* GetDistortTexture: return the indirect texture object loaded into GX_TEXMAP6
-     * by fn_802DF4A8's bump/distort pass. */
+     * by GXSetupWaterBumpTevPipelineA's bump/distort pass. */
     return GetDistortTexture();
     #undef GetDistortTexture
 }
@@ -3160,7 +3160,7 @@ void fn_802D362C(s32 arg0) {
 
     GXSetTexCopySrc((u16)*(int *)(lbl_804C9778 + 0x1C), (u16)*(int *)(lbl_804C9778 + 0x20), (u16)*(int *)(lbl_804C9778 + 0x24), (u16)*(int *)(lbl_804C9778 + 0x28));
     GXSetTexCopyDst((u16)*(int *)(lbl_804C9778 + 0x24), (u16)*(int *)(lbl_804C9778 + 0x28), 0x27, 0);
-    GXCopyTex((void *)lbl_804C9940, 0);
+    GXCopyTex((void *)lbl_804C9940);
     __GXSetGenMode();
     GXSetColorUpdate(1);
     GXSetAlphaUpdate(0);

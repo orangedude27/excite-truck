@@ -271,7 +271,7 @@ void *fn_802D3100(void); /* the texture it distorts, into GX_TEXMAP6 */
  * indirect stage 0 shifts with the bump map in GX_TEXMAP5.  fn_802DF684 undoes
  * it again; GXSetupWaterBumpTevPipelineB is the twin used when a second texture stage is wanted.
  */
-void fn_802DF4A8(void) {
+void GXSetupWaterBumpTevPipelineA(void) {
     s32 alphaSel = GX_ITBA_OFF; /* GXSetTevIndirect's last two arguments go on */
     s32 utcLod = FALSE;         /* the stack, so they need somewhere to live */
     /* texcoord0 is the model's own texture coordinates; texcoord1 is the normal,
@@ -314,7 +314,7 @@ void fn_802DF684(void) {
 #pragma scheduling on
 void *fn_802D3134(void); /* the current material's bump map, into GX_TEXMAP5 */
 void *fn_802D30FC(void); /* the texture it distorts, into GX_TEXMAP6 */
-/* Water-surface bump TEV pipeline: the fn_802DF4A8 twin used when the render
+/* Water-surface bump TEV pipeline: the GXSetupWaterBumpTevPipelineA twin used when the render
  * request block lbl_804C5700 also asks for the second texture stage (+0x08);
  * fn_802D2B0C selects it in mode 3 and stores fn_802DF938 as the undo.  Two
  * texgens feed one indirect stage, which shifts GX_TEXMAP6's coordinates by the
