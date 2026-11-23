@@ -527,6 +527,7 @@ void GXInitLightAttnA_801BFEBC(void *lightObj, float aa, float ab, float ac) {
 }
 
 #pragma scheduling on
+#pragma scheduling off
 void fn_801BFECC(void *arg0, void *arg1) {
     int a11, a10, a9, a8, a7, a6, a5, a4, a3, a2, a1, a0;
     a3 = *(volatile int *)((char *)arg1 + 0x0C);
