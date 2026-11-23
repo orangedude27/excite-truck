@@ -259,17 +259,17 @@ void fn_80176610(void) {
 #pragma dont_inline reset
 
 #pragma scheduling invalid_target
-void fn_80176614(void) {
-    s32 i;
+/* Initialize physics: seal the init stream with a sentinel and log how much of it was used, pump the state machine until it leaves the init state (abort after 10 ticks), then enter state 3, arm the fade-in and notify listeners. */ void fn_80176614(void) {
+    s32 ticks;
     lbl_8055E3F4 = 1;
     fn_8012F458(lbl_8055E3E0, -1);
     fn_802E30C8(lbl_803315A0, fn_8012F450(lbl_8055E3E0), 0x10000);
-    i = 0;
+    ticks = 0;
     goto loop_test;
 loop_body:
     fn_80176CC8();
-    i++;
-    if (i >= 10) fn_802E317C(lbl_803315C8);
+    ticks++;
+    if (ticks >= 10) fn_802E317C(lbl_803315C8);
 loop_test:
     if (lbl_8055E3F4 == 1) goto loop_body;
     lbl_8055E3F4 = 3;
