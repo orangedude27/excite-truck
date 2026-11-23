@@ -18,27 +18,27 @@ struct Root_802114F4 {
     struct Object_802114F4 reg2;
     struct Object_802114F4 obj2;
 };
+#pragma scheduling invalid_target
 void fn_802114F4(void) {
-    struct Object { void *next; unsigned int zero; unsigned int size; } *obj;
-    unsigned int zero = 0;
-    unsigned int size = 0x80;
+    struct Object_802114F4 *obj;
+    unsigned int *words = (unsigned int *)lbl_80489C88;
     unsigned char *base = lbl_80489C88;
     fn_8000D838(lbl_8055EEB0);
-    *(unsigned int *)base = zero;
-    *(unsigned int *)(base + 4) = 123;
-    *(unsigned int *)(base + 8) = zero;
-    *(unsigned int *)(base + 0xc) = zero;
-    *(unsigned int *)(base + 0x10) = zero;
+    words[0] = 0;
+    words[1] = 123;
+    words[2] = 0;
+    words[3] = 0;
+    words[4] = 0;
     lbl_8055EEB8 = 0x7f000000;
     obj = (void *)(base + 0x6424);
     *(void **)(base + 0x6424) = (char *)obj + 0xc;
-    obj->size = size;
-    obj->zero = zero;
+    obj->size = 0x80;
+    obj->zero = 0;
     __register_global_object((void *)obj, fn_80211604, base + 0x6418);
     obj = (void *)(base + 0x663c);
     *(void **)(base + 0x663c) = (char *)obj + 0xc;
-    obj->size = size;
-    obj->zero = zero;
+    obj->size = 0x80;
+    obj->zero = 0;
     __register_global_object((void *)obj, fn_802115AC, base + 0x6630);
 }
 #pragma scheduling on
