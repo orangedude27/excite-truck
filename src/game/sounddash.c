@@ -124,10 +124,10 @@ void fn_8020BF58(void) {
     int zero = 0;
     unsigned int column;
     unsigned int indexSign;
-    int nameX, var_r3_3, var_r6_2, var_r5;
-    unsigned int temp_r4;
-    char *var_r3_2, *var_r6;
-    unsigned char temp_r4_2;
+    int nameX, valueX, textColor, copyRemaining;
+    unsigned int slotSign;
+    char *sourceText, *destText;
+    unsigned char copiedChar;
 
     /* Draw the "SOUND DASH" debug overlay: sound-name grid in mode 1, sound/value list in mode 0. */
     fn_8023895C();
@@ -153,40 +153,40 @@ void fn_8020BF58(void) {
         fn_80238B44(7, 7, 0x12C, 0x1C0, 0x8C000000);
         soundIndex = fn_8020A76C() * 2;
         for (drawSlot = 0; drawSlot < soundIndex; drawSlot++) {
-            var_r3_2 = fn_8020A774(drawSlot / 2);
-            temp_r4 = (unsigned int)drawSlot >> 31;
-            isValueColumn = ((drawSlot & 1) ^ temp_r4) - temp_r4;
-            entryIndex = (int)(temp_r4 + drawSlot) >> 1;
+            sourceText = fn_8020A774(drawSlot / 2);
+            slotSign = (unsigned int)drawSlot >> 31;
+            isValueColumn = ((drawSlot & 1) ^ slotSign) - slotSign;
+            entryIndex = (int)(slotSign + drawSlot) >> 1;
             if (isValueColumn == 0) {
-                var_r6 = scratch.sp8;
-                var_r5 = 0x40;
+                destText = scratch.sp8;
+                copyRemaining = 0x40;
                 goto copy_text_body;
             copy_text_limit:
-                if (--var_r5 <= 0) {
-                    *(var_r6 - 1) = zero;
+                if (--copyRemaining <= 0) {
+                    *(destText - 1) = zero;
                     goto copy_text_done;
                 }
             copy_text_body:
-                temp_r4_2 = (unsigned char)*var_r3_2;
-                var_r3_2 += 1;
-                *var_r6 = temp_r4_2;
-                var_r6 += 1;
-                if ((signed char)temp_r4_2 == 0)
+                copiedChar = (unsigned char)*sourceText;
+                sourceText += 1;
+                *destText = copiedChar;
+                destText += 1;
+                if ((signed char)copiedChar == 0)
                     goto copy_text_done;
                 else
                     goto copy_text_limit;
             copy_text_done:
                 ;
             } else {
-                sprintf(scratch.sp8, (const char *)&lbl_8055B5C8, *(float *)(var_r3_2 + 0x20));
+                sprintf(scratch.sp8, (const char *)&lbl_8055B5C8, *(float *)(sourceText + 0x20));
             }
-            var_r6_2 = -0x100;
+            textColor = -0x100;
             if (entryIndex == lbl_8055EE28)
-                var_r6_2 = 0xFF2D2DC8;
-            var_r3_3 = 0x14;
+                textColor = 0xFF2D2DC8;
+            valueX = 0x14;
             if (isValueColumn != 0)
-                var_r3_3 = 0xF0;
-            fn_80238A74(var_r3_3, (entryIndex * 0xE) + 0x1A, scratch.sp8, var_r6_2);
+                valueX = 0xF0;
+            fn_80238A74(valueX, (entryIndex * 0xE) + 0x1A, scratch.sp8, textColor);
         }
     }
 
