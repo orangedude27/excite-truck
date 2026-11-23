@@ -529,11 +529,11 @@ struct SpuSample {
     void *decodeArg;            /* +0x8C */
     void *streamBuffer;         /* +0x90: ring buffer fed to the DSP */
     int refCount;               /* +0x94: channels holding this sample */
-    int unk98;                  /* +0x98: instances still playing */
+    int activeChannels;         /* +0x98: instances still playing */
     unsigned int unk9C;         /* +0x9C: format/rate code of the blob */
     unsigned int size;          /* +0xA0: byte size, 0x40-aligned */
     float fA4;                  /* +0xA4 */
-    float fA8;                  /* +0xA8 */
+    float rate;                 /* +0xA8: playback rate copied into a channel */
     void *res;                  /* +0xAC: the loaded SFX0 blob */
 };
 
