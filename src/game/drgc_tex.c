@@ -1026,22 +1026,22 @@ extern void GXSetZMode(int, int, int);
 extern void GXSetColorUpdate(int);
 extern void fn_802CFF50(void);
 #pragma opt_propagation off
-void fn_802D9418(void)
+/* Copy the currently bound texture (lbl_8055FE24) into the EFB, then clear the binding: take the copy size from the texture object's wrap fields, set up the GX texture-copy source/destination, force depth test on with colour writes, copy with a depth clear, and reset lbl_8055FE24 to zero. */ void fn_802D9418(void)
 {
   unsigned int zero;
-  void *obj;
-  long long s;
-  unsigned int t;
+  void *texObj;
+  long long width;
+  unsigned int height;
   fn_802D2614();
-  obj = ((char *) lbl_8055FE24) - (-0x24);
-  s = GXGetTexObjWrapS(obj) & 0xFFFF;
-  t = GXGetTexObjWrapT(obj) & 0xFFFF;
+  texObj = ((char *) lbl_8055FE24) - (-0x24);
+  width = GXGetTexObjWrapS(texObj) & 0xFFFF;
+  height = GXGetTexObjWrapT(texObj) & 0xFFFF;
   zero = 0;
-  GXSetTexCopySrc((0, zero), zero, s, t);
-  GXSetTexCopyDst(s, t, GXGetTexObjMipMap(obj), zero);
+  GXSetTexCopySrc((0, zero), zero, width, height);
+  GXSetTexCopyDst(width, height, GXGetTexObjMipMap(texObj), zero);
   GXSetZMode(1, 7, 1);
   GXSetColorUpdate(1);
-  GXCopyTex(GXGetTexObjFmt(obj), 1);
+  GXCopyTex(GXGetTexObjFmt(texObj), 1);
   lbl_8055FE24 = zero;
   fn_802CFF50();
 }
