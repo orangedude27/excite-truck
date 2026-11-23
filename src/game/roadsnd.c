@@ -30,7 +30,8 @@ extern const char lbl_8055B628[4];
 extern f32 lbl_80563300;
 extern void* fn_801284F8(int, const char*);
 extern void* fn_80131808(const char*);
-extern void fn_80131818(void*);
+  extern void fn_80131818(void*);
+  extern void fn_80128668(void*);
 extern void* fn_802077A4(int, int, void*, void*);
 extern int fn_802E30C8(const char*, ...);
 extern int strcmp(const char*, const char*);
@@ -61,7 +62,7 @@ typedef struct RoadSndParamDir Dir_8020CA3C;
  * fn_802789A8), and its teardown fn_80004CB4 calls the matching empty
  * shutdown hook fn_8020CA34; the third empty hook fn_8020CA38 is called by
  * fn_8000AA38 when it releases the sound/UI state.  Nothing to do here: the
- * road-sound container is built per owner by fn_8020CA3C and released by
+ * road-sound container is built per owner by RoadSnd_createContainer and released by
  * fn_8020CC78, so the module keeps no global state to start up. */
 void fn_8020CA30(void) {
 
@@ -92,7 +93,7 @@ void fn_8020CA38(void) {
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void* fn_8020CA3C(void* ownerCtx) {
+extern "C" void* RoadSnd_createContainer(void* ownerCtx) {
     /* Builds a road-sound container from "roadsnd.val": one 0x24-byte entry per
      * "sound" param item holds its Sound3D handle, surface type and scaled
      * speed/volume/pitch values; the owner context is stored at +4. */
@@ -181,7 +182,6 @@ void *fn_8020CC78(void *obj, int freeFlag) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_8020CD28(char *arg0) {
-    #pragma scheduling invalid_target
     char *ctx = *(char **)(arg0 + 4);
     char *e;
     int max = 0;

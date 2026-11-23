@@ -7,7 +7,7 @@ extern char lbl_8033C268[];
 extern int lbl_8055B548;
 extern void *fn_801284F8(unsigned int, void *);
 extern void *fn_802077A4(void *, int, void *, void *);
-extern void *fn_8020CA3C(void *);
+extern void *RoadSnd_createContainer(void *);
 extern float lbl_80563278, lbl_8056327C, lbl_80563280, lbl_80563284, lbl_80563288;
 
 // 0x74-byte record: value at 0x68, enable byte at 0x6c.
@@ -25,7 +25,7 @@ void *fn_80209D4C(void *soundSource) {
 #define kAllocTag       lbl_8055B548    /* "tiresnd" */
 #define allocObject     fn_801284F8
 #define createSfx       fn_802077A4
-#define createRoadSound fn_8020CA3C
+#define createRoadSound RoadSnd_createContainer
     /* Construct a squeal sound object, attaching its SFX handle and a road-sound helper. */
     void *squealObj;
     void *sfxHandle;
