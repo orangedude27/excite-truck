@@ -630,38 +630,38 @@ struct Record_802101F8 {
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_802101F8(Dummy_802101F8 *widget, long resource, long baseIndex, struct Record_802101F8 *record) {
+/* Lay out the three dash step markers, spacing UI entries along the record's x position using float widths read from the widget's resource set. */ extern "C" void fn_802101F8(Dummy_802101F8 *widget, long resource, long baseStep, struct Record_802101F8 *record) {
     /* Lay out three stepped track-music UI entries, fetching each step's float value from the widget's resource set and advancing the record's float position. */
-    long resourceSet;
+    long widgetResourceSet;
     struct Record_802101F8 rec;
-    long stepIndex;
-    long f8;
-    long f4;
+    long step;
+    long posY;
+    long posX;
 
     if (widget == 0 || record == 0) return;
-    resourceSet = widget->v4();
-    stepIndex = 0;
+    widgetResourceSet = widget->v4();
+    step = 0;
     rec.f0 = record->f0;
-    f4 = ((volatile struct Record_802101F8 *)record)->f4;
-    f8 = ((volatile struct Record_802101F8 *)record)->f8;
-    rec.f4 = f4;
-    rec.f8 = f8;
+    posX = ((volatile struct Record_802101F8 *)record)->f4;
+    posY = ((volatile struct Record_802101F8 *)record)->f8;
+    rec.f4 = posX;
+    rec.f8 = posY;
     rec.fC = record->fC;
     rec.f10 = record->f10;
     rec.f14 = record->f14;
     rec.f18 = record->f18;
     do {
-        long step = baseIndex + stepIndex;
-        if (stepIndex == 1) {
-            float finalValue = fn_80235EF0(resourceSet, baseIndex + 2);
-            rec.f10 = (record->f10 - fn_80235EF0(resourceSet, baseIndex)) - finalValue;
+        long entryIndex = baseStep + step;
+        if (step == 1) {
+            float lastStepValue = fn_80235EF0(widgetResourceSet, baseStep + 2);
+            rec.f10 = (record->f10 - fn_80235EF0(widgetResourceSet, baseStep)) - lastStepValue;
         } else {
-            rec.f10 = fn_80235EF0(resourceSet, step);
+            rec.f10 = fn_80235EF0(widgetResourceSet, entryIndex);
         }
-        fn_80147940(widget, &rec, resource, step);
-        stepIndex++;
+        fn_80147940(widget, &rec, resource, entryIndex);
+        step++;
         *(float *)&rec.f4 += rec.f10;
-    } while (stepIndex < 3);
+    } while (step < 3);
 }
 #pragma cplusplus reset
  
