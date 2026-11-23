@@ -388,7 +388,7 @@ after_lookup:
     return 0;
 }
 /* Shutdown/reset sequence for game/menu subsystems during bootstrap teardown. */
-void fn_80004CB4(void) {
+/* Shut down all game and menu subsystems during bootstrap teardown, calling each subsystem's reset/teardown routine in order. */ void fn_80004CB4(void) {
     fn_8020A634();
     fn_802E9880(0);
     fn_802E9884(0);
