@@ -306,7 +306,7 @@ extern int lbl_8055FFA8;             /* channels whose voices used a speaker lat
  * state and queues them to the remote as stream data.  A channel whose stream
  * is open but that was skipped marks its encoder to restart on the next frame;
  * the mix pointer is advanced once, after all channels, if any of them read. */
-void fn_802E52EC(void) {
+/* Remote-speaker pump: ADPCM-encode and send a 0x28-sample frame to each eligible Wii remote speaker stream, marking skipped streams to restart. */ void fn_802E52EC(void) {
     struct SpkStream *stream = (struct SpkStream *)lbl_804FC800;
     short *samples = (short *)lbl_804FC6C0;
     int chan;
