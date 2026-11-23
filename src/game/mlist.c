@@ -281,7 +281,7 @@ extern "C" void fn_802CD254(void *list) {
     int byteOffset;
     int reset;
     char *materialEntry;
-    /* Clear material list entries and destroy referenced objects, then reset the list state. */
+    /* Clear a material list: release each material handle in the 0x1C-byte entries at +0x34 (marking it invalid, -2), detach each draw-entry object in the pointer array at +0x90 via its virtual method0(1) and null the slots, then zero the object count at +0x88 and clear the built flag at +8. */
     index = 0;
     byteOffset = 0;
     reset = -2;
