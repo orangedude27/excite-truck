@@ -5,7 +5,7 @@
 extern void fn_802E317C(const char *, ...);
 extern char lbl_8034D020[];
 #pragma scheduling invalid_target
-void fn_802E3DF8(int arena, void **outLo, unsigned int *outSize) {
+/* Return the 128-byte-aligned base and size of the MEM1 (0) or MEM2 (1) arena; a bad arena id is a fatal error. */ void fn_802E3DF8(int arena, void **outLo, unsigned int *outSize) {
     unsigned int hi = 0;
     unsigned int lo = 0;
 
