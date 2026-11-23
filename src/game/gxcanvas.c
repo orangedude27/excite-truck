@@ -470,38 +470,42 @@ void fn_802C365C(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     } while (height > 0);
 }
 
-void fn_802C3754(s32 left, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 right, s32 arg6, s32 arg7) {
-    /* Dispatches a canvas copy/blit operation based on the mode bytes (5/6 are special cases) of the left and right canvas objects, falling back to a trace when unsupported. */
-    u8 leftMode = *(u8 *)left;
-    s32 isOtherMode = 0;
-    if ((s8)leftMode != 5 && (s8)leftMode != 6) isOtherMode = 1;
-    if (isOtherMode) {
-        isOtherMode = 0;
-        if (*(s8 *)right != 5 && *(s8 *)right != 6) isOtherMode = 1;
-        if (isOtherMode) {
-            gxCanvasCopy16to16(left,arg1,arg2,arg3,arg4,right,arg6,arg7);
+/* Blit the rectangle (srcLeft,srcTop)-(srcRight,srcBottom) of srcCanvas onto
+ * dstCanvas at (dstLeft,dstTop), picking the routine that matches the two pixel
+ * formats: 16-bit -> 16-bit, 4-byte -> 4-byte, 16-bit -> 4-byte or
+ * 4-byte -> 16-bit.  A format-6 canvas takes none of them: "unsupported copy". */
+void fn_802C3754(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight, s32 srcBottom,
+                 s32 dstCanvas, s32 dstLeft, s32 dstTop) {
+    u8 srcFormat = *(u8 *)srcCanvas;
+    s32 is16Bit = 0;
+    if ((s8)srcFormat != CANVAS_FORMAT_RGBA && (s8)srcFormat != CANVAS_FORMAT_NONE) is16Bit = 1;
+    if (is16Bit) {
+        is16Bit = 0;
+        if (*(s8 *)dstCanvas != CANVAS_FORMAT_RGBA && *(s8 *)dstCanvas != CANVAS_FORMAT_NONE) is16Bit = 1;
+        if (is16Bit) {
+            gxCanvasCopy16to16(srcCanvas,srcLeft,srcTop,srcRight,srcBottom,dstCanvas,dstLeft,dstTop);
             return;
         }
     }
-    if ((s8)leftMode == 5 && (s32)*(u8 *)right == 5) {
-        fn_802C3C68(left,arg1,arg2,arg3,arg4,right,arg6,arg7);
+    if ((s8)srcFormat == CANVAS_FORMAT_RGBA && (s32)*(u8 *)dstCanvas == CANVAS_FORMAT_RGBA) {
+        fn_802C3C68(srcCanvas,srcLeft,srcTop,srcRight,srcBottom,dstCanvas,dstLeft,dstTop); /* 4-byte -> 4-byte */
         return;
     }
-    isOtherMode = 0;
-    if ((s8)leftMode != 5 && (s8)leftMode != 6) isOtherMode = 1;
-    if (isOtherMode && (s32)*(u8 *)right == 5) {
-        fn_802C3D74(left,arg1,arg2,arg3,arg4,right,arg6,arg7);
+    is16Bit = 0;
+    if ((s8)srcFormat != CANVAS_FORMAT_RGBA && (s8)srcFormat != CANVAS_FORMAT_NONE) is16Bit = 1;
+    if (is16Bit && (s32)*(u8 *)dstCanvas == CANVAS_FORMAT_RGBA) {
+        fn_802C3D74(srcCanvas,srcLeft,srcTop,srcRight,srcBottom,dstCanvas,dstLeft,dstTop); /* 16-bit -> 4-byte */
         return;
     }
-    if ((s8)leftMode == 5) {
-        isOtherMode = 0;
-        if (*(s8 *)right != 5 && *(s8 *)right != 6) isOtherMode = 1;
-        if (isOtherMode) {
-            fn_802C3F00(left,arg1,arg2,arg3,arg4,right,arg6,arg7);
+    if ((s8)srcFormat == CANVAS_FORMAT_RGBA) {
+        is16Bit = 0;
+        if (*(s8 *)dstCanvas != CANVAS_FORMAT_RGBA && *(s8 *)dstCanvas != CANVAS_FORMAT_NONE) is16Bit = 1;
+        if (is16Bit) {
+            fn_802C3F00(srcCanvas,srcLeft,srcTop,srcRight,srcBottom,dstCanvas,dstLeft,dstTop); /* 4-byte -> 16-bit */
             return;
         }
     }
-    fn_802E317C(lbl_8034B078, (s32)*(s8 *)left, (s32)*(s8 *)right);
+    fn_802E317C(lbl_8034B078, (s32)*(s8 *)srcCanvas, (s32)*(s8 *)dstCanvas);
 }
 
 #pragma pop
