@@ -549,22 +549,21 @@ void fn_802DC134(void) {
 }
 
 /* Submit indexed GX triangle-fan primitives (mode 0): apply the mode 0 CPU-light
-   state, set up the position array, then for each run in the index list read a
-   vertex count, begin a triangle fan with that many indices, and write each index
-   to the GP FIFO until the list is consumed. */
+   state and position array, then for each run in the index list read its length,
+   begin a fan of that many indices, and stream the indices to the GP FIFO. */
 void fn_802DC138(int positionArray, int vertexCount, unsigned short *__restrict indexList, int indexListSize) {
-    int n;
-    int i;
+    int runLength;
+    int idx;
     volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
     cpulightSetupGxForMode(0);
     fn_802DBCFC(positionArray, vertexCount);
     while (indexListSize > 0) {
-        n = *indexList;
+        runLength = *indexList;
         indexList++;
-        GXBegin(0xA0, 0, n);
-        indexListSize -= n + 1;
+        GXBegin(0xA0, 0, runLength);
+        indexListSize -= runLength + 1;
         #pragma unroll 8
-        for (i = 0; i < n; i++, indexList++) {
+        for (idx = 0; idx < runLength; idx++, indexList++) {
             *fifo = *indexList;
         }
     }
@@ -749,7 +748,7 @@ extern void fn_802D3D94(void *, int);
 extern void fn_802D6B54(void *);
 extern void fn_802D6B78(void *);
 extern void fn_802D6B7C(void *);
-extern void fn_802D2D1C(void);
+extern void buildViewXform(void);
 extern void GXSetupThreeStageTevPipelineAlt(void);
 extern void fn_802E009C(void);
 extern void fn_802E050C(void);
@@ -772,7 +771,7 @@ extern "C" void fn_802DC71C(int arg0, int arg1) {
     fn_802DBD88();
     lbl_8055FEB4 = 0;
     fn_802CADD0(arg1, 1);
-    fn_802D2D1C();
+    buildViewXform();
     base = lbl_804DB468;
     tex1 = base[1];
     useAlt = *((unsigned char *)tex1 + 0xCC);
