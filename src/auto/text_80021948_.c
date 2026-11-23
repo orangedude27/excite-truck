@@ -24,7 +24,7 @@ void fn_80021948(void) {
        task table set up by fn_800218FC; reserved, with no work in this build. */
 }
 
-void *fn_8002194C(void *arg0, unsigned int size, unsigned int *outMax) {
+void *Block_subBlock(void *arg0, unsigned int size, unsigned int *outMax) {
     unsigned int *heap = (unsigned int *)arg0;
     unsigned int *blk;
     unsigned int *newb;
