@@ -424,30 +424,30 @@ extern void* memmove(void*, const void*, unsigned long);
 #pragma cplusplus on
 /* Compacts the owner's pointer list at +0x94/+0x114 by removing entries whose
  * child object reports state 3 (f7()==3), deleting them (f0(1)) as it goes. */
-extern "C" void fn_80207E70(void *arg0) {
-    void *base = arg0;
-    void *cur = base;
-    void *src = (char *)base + 0x98;
-    void *dst = (char *)base + 0x94;
-    signed long i = 0;
-    void *temp;
-    void *sub;
-    signed long n;
-    while (i < *(signed long *)((char *)base + 0x114)) {
-        temp = *(void **)((char *)cur + 0x94);
-        sub = *(void **)((char *)temp + 0xC);
-        if (((LoopItem_80207E70 *)sub)->f7() == 3) {
-            temp = *(void **)((char *)cur + 0x94);
-            if (temp != 0)
-                ((LoopItem_80207E70 *)temp)->f0(1);
-            n = *(signed long *)((char *)base + 0x114) - 1;
-            *(signed long *)((char *)base + 0x114) = n;
-            memmove(dst, src, (unsigned long)(n - i) * 4);
+/* Remove finished sounds from the manager's tracked-item list at +0x94 (count at +0x114). Each item holds its sound object at +0xC; the object's f7() reports its state, and state 3 means done, so the item is deleted via f0(1), the count is decremented and the remaining pointers are shifted down with memmove. */ extern "C" void fn_80207E70(void *soundMgr) {
+    void *mgr = soundMgr;
+    void *slotCursor = mgr;
+    void *nextSlot = (char *)mgr + 0x98;
+    void *holeSlot = (char *)mgr + 0x94;
+    signed long index = 0;
+    void *item;
+    void *sound;
+    signed long newCount;
+    while (index < *(signed long *)((char *)mgr + 0x114)) {
+        item = *(void **)((char *)slotCursor + 0x94);
+        sound = *(void **)((char *)item + 0xC);
+        if (((LoopItem_80207E70 *)sound)->f7() == 3) {
+            item = *(void **)((char *)slotCursor + 0x94);
+            if (item != 0)
+                ((LoopItem_80207E70 *)item)->f0(1);
+            newCount = *(signed long *)((char *)mgr + 0x114) - 1;
+            *(signed long *)((char *)mgr + 0x114) = newCount;
+            memmove(holeSlot, nextSlot, (unsigned long)(newCount - index) * 4);
         } else {
-            cur = (char *)cur + 4;
-            src = (char *)src + 4;
-            dst = (char *)dst + 4;
-            i++;
+            slotCursor = (char *)slotCursor + 4;
+            nextSlot = (char *)nextSlot + 4;
+            holeSlot = (char *)holeSlot + 4;
+            index++;
         }
     }
 }
@@ -730,7 +730,7 @@ void fn_80208408(void *arg0, void *arg1)
     int idx = *(int *)((char *)arg1 + 0x44);
     int i;
     Ent *ent = &h->ents[idx];
-    int *p = ent->ptr;
+    int *p = h->ents[idx].ptr;
     memmove(p + 1, p, (h->total - (p - h->base)) * 4);
     for (i = idx + 1; i < 9; i++) {
         h->ents[i].ptr++;
