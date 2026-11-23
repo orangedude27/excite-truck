@@ -28164,6 +28164,17 @@ enum {
 /* IOS work buffers are one cache line, allocated 32 bytes aligned. */
 #define USB_WORK_SIZE 0x20
 
+/* IPC results (revolution/IPC/ipcclt.h) and usb.c's IOSAlloc()/IOSFree()
+   wrappers, spelled out here for the same reason as IPCIOVector above. */
+typedef s32 IPCResult;
+enum {
+    IPC_RESULT_INVALID_INTERNAL = -0x15,
+    IPC_RESULT_ALLOC_FAILED = -0x16,
+    IPC_RESULT_OK = 0
+};
+#define IOSAlloc(size) iosAllocAligned(usbHeapId, (size), USB_WORK_SIZE)
+#define IOSFree(mem) ((void)iosFree(usbHeapId, (mem)))
+
 /* IPC's IPCIOVector (revolution/IPC/ipcclt.h); this unit cannot include it
    without pulling in IOS_* prototypes that clash with its own. */
 typedef struct IPCIOVector {
