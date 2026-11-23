@@ -443,8 +443,8 @@ void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
     s32 count = lbl_804C13A8[0];
     struct Entry *match = 0;
     struct Entry *freeEntry = 0;
-    u8 one = 1;
-    u8 zero = 0;
+    int one = 1;
+    int zero = 0;
     struct Entry *base;
     s32 next;
     s32 i;
@@ -1354,62 +1354,62 @@ extern unsigned char lbl_804C13C0[];
 extern float lbl_80564EF0;
 extern float PSVECSquareDistance(const float *, const float *);
 /* For each outer entry of type 2 within range, dispatches eligible inner elements via fn_802C53C4/fn_802CC550 using the global context. */
-void fn_802C729C(int arg0, float arg1) {
-    char *outerEntry;
-    int globalValue;
-    int innerIndex;
-    int *innerInfo;
-    int outerOffset;
-    void *vectorDistance;
-    void *vectorHeight;
-    int innerOffset;
-    int *outerInfo;
-    void *vectors;
-    int outerIndex;
-    float distance;
-    float radius;
+/* Submit eligible model elements of type-2 groups for display, culling groups by SPHL sphere distance before dispatch via fn_802C53C4 / fn_802CC550. */ void fn_802C729C(int instanceId, float viewDistance) {
+    char *entry;
+    int transformId;
+    int j;
+    int *elementList;
+    int groupOffset;
+    void *distanceVector;
+    void *heightVector;
+    int elementOffset;
+    int *groupList;
+    void *modelVectors;
+    int groupIndex;
+    float squareDistance;
+    float baseRadius;
 
     if ((unsigned int)(*(unsigned int *)lbl_804C13C0 + 0x10000U) == 0xFFFFU)
         return;
-    if (arg0 == -1)
+    if (instanceId == -1)
         return;
 
-    outerInfo = (int *)fn_802C53A8(arg0);
-    if (*outerInfo <= 0)
+    groupList = (int *)fn_802C53A8(instanceId);
+    if (*groupList <= 0)
         return;
 
-    radius = lbl_80564EF0;
-    vectors = (void *)fn_802C5E7C(outerInfo);
-    vectorDistance = vectors;
-    vectorHeight = vectors;
+    baseRadius = lbl_80564EF0;
+    modelVectors = (void *)fn_802C5E7C(groupList);
+    distanceVector = modelVectors;
+    heightVector = modelVectors;
 
-    for (outerIndex = 0, outerOffset = 0;
-         outerIndex < *outerInfo;
-         outerOffset += 0x10,
-         vectorDistance = (char *)vectorDistance + 0x10,
-         vectorHeight = (char *)vectorHeight + 0x10,
-         outerIndex++) {
-        if (*(int *)((char *)*(int **)((char *)outerInfo + 4) + outerOffset) != 2)
+    for (groupIndex = 0, groupOffset = 0;
+         groupIndex < *groupList;
+         groupOffset += 0x10,
+         distanceVector = (char *)distanceVector + 0x10,
+         heightVector = (char *)heightVector + 0x10,
+         groupIndex++) {
+        if (*(int *)((char *)*(int **)((char *)groupList + 4) + groupOffset) != 2)
             continue;
-        if (vectors != 0) {
-            distance = PSVECSquareDistance((float *)(lbl_804C13C0 + 4),
-                                           (float *)vectorDistance);
-            if (!(distance < (arg1 + *(float *)((char *)vectorHeight + 0xC)) *
-                             (arg1 + *(float *)((char *)vectorHeight + 0xC))))
+        if (modelVectors != 0) {
+            squareDistance = PSVECSquareDistance((float *)(lbl_804C13C0 + 4),
+                                           (float *)distanceVector);
+            if (!(squareDistance < (viewDistance + *(float *)((char *)heightVector + 0xC)) *
+                             (viewDistance + *(float *)((char *)heightVector + 0xC))))
                 continue;
         }
 
-        innerIndex = 0;
-        globalValue = *(int *)lbl_804C13C0;
-        innerOffset = 0;
-        outerEntry = (char *)*(int **)((char *)outerInfo + 4) + outerOffset;
-        innerInfo = *(int **)(outerEntry + 8);
+        j = 0;
+        transformId = *(int *)lbl_804C13C0;
+        elementOffset = 0;
+        entry = (char *)*(int **)((char *)groupList + 4) + groupOffset;
+        elementList = *(int **)(entry + 8);
 
-        for (; innerIndex < *innerInfo;
-             innerOffset += 4, innerIndex++) {
+        for (; j < *elementList;
+             elementOffset += 4, j++) {
             int valid = 0;
-            void **innerEntries = *(void ***)((char *)innerInfo + 4);
-            void *element = *(void **)((char *)innerEntries + innerOffset);
+            void **innerEntries = *(void ***)((char *)elementList + 4);
+            void *element = *(void **)((char *)innerEntries + elementOffset);
             unsigned int type = *(unsigned int *)element;
 
             if (type < 13) {
@@ -1432,10 +1432,10 @@ void fn_802C729C(int arg0, float arg1) {
             if (valid) {
                 void *node = *(void **)((char *)element + 0x14);
                 void *r4;
-                fn_802C53C4(outerEntry, node, globalValue, -1, 0);
+                fn_802C53C4(entry, node, transformId, -1, 0);
                 r4 = ((void *(*)(void *))fn_802C57B0)(
-                    *(void **)(outerEntry + 0xC));
-                fn_802CC550(*(int *)node, r4, radius,
+                    *(void **)(entry + 0xC));
+                fn_802CC550(*(int *)node, r4, baseRadius,
                             *(float *)((char *)r4 + 0x18));
             }
         }
@@ -1812,12 +1812,12 @@ void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
     void *manager;
     void *entry;
     float *rot;
-    const float *input;
+    float *input;
 
     manager = fn_802C5390(arg0);
     local.status = 1;
     rot = (float *)((char *)*(void **)((char *)manager + 4) + 0x20);
-    input = (const float *)arg1;
+    input = (float *)arg1;
     if (local.vector == rot) {
         float x, y, z;
         float m0, m3, m6, m1, m4, m7, m2, m5, m8;
@@ -1860,7 +1860,7 @@ void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
         float tz = input[11] + local.vector[2];
         local.vector[0] = tx;
         local.vector[1] = ty;
-        local.vector[2] = tz;
+        local.vector[2] = tz + 0.0f;
     }
     {
         float *vec = fn_802C9A40();
