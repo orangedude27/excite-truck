@@ -563,12 +563,11 @@ void GXSetupThreeStageTevPipelineAlt(void) {
 }
 
 #pragma scheduling invalid_target
-/* RealName: GXSetupOneStageKColorTevPipeline (rename_symbol is refused
- * project-wide right now).  TEV pipeline for the CPU-light pass when the light
- * texture carries no extra map: fn_802DC71C picks it (with fn_802DC62C) when
- * that texture's S wrap is GX_REPEAT; fn_802E050C is its two-stage twin for the
- * extra-map case and fn_802DFD00 the variant used when the wrap is not
- * GX_REPEAT.
+/* RealName: GXSetupOneStageKColorTevPipeline
+ * TEV pipeline for the CPU-light pass when the light texture carries no extra
+ * map: fn_802DC71C picks it (with fn_802DC62C) when that texture's S wrap is
+ * GX_REPEAT; fn_802E050C is its two-stage twin for the extra-map case and
+ * fn_802DFD00 the variant used when the wrap is not GX_REPEAT.
  * One texture generator: texcoord 0 passes the vertex's texcoord0 through the
  * identity matrix.  The single combiner stage samples texmap 1 with that
  * texcoord, ignores the vertex colour channel and clamps into TEVPREV, reading
