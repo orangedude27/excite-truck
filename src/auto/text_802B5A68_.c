@@ -1911,20 +1911,22 @@ extern f32 fn_802B822C(s32);
 extern float lbl_80564C9C;
 extern s32 lbl_8055CFF0;
 extern s32 lbl_8055CFF4;
-s32 fn_802B825C(s32 arg0) {
+/* Adjust the selected item's lower value by the step for deltaIndex, clamping it
+ * between 0.05f and the item's upper value, and mark it dirty if it changes. */
+s32 fn_802B825C(s32 deltaIndex) {
     struct { s32 pad[2]; float *values; } result;
     float *values;
-    float value;
-    float next;
+    float clampedValue;
+    float adjustedValue;
     s32 changed = 0;
     if (fn_802B5B74(&result) != 0) {
         values = result.values;
-        value = values[1];
-        next = values[0] + fn_802B822C(arg0);
-        value = value < next ? value : next;
-        value = value > lbl_80564C98 ? value : lbl_80564C98;
-        if (value != values[0]) {
-            values[0] = value;
+        clampedValue = values[1];
+        adjustedValue = values[0] + fn_802B822C(deltaIndex);
+        clampedValue = clampedValue < adjustedValue ? clampedValue : adjustedValue;
+        clampedValue = clampedValue > FRAME_STEP ? clampedValue : FRAME_STEP;
+        if (clampedValue != values[0]) {
+            values[0] = clampedValue;
             changed = 1;
             *(volatile u8 *)((u8 *)result.values + 8) = 1;
         }
@@ -2011,41 +2013,59 @@ void fn_802B84E4(void *state) {
 }
 
 #pragma scheduling invalid_target
-s32 fn_802B8510(s32 arg0) {
-    struct Entry {
-        u8 unk[0x20];
-        u32 first;
-        u32 second;
-        u8 pixels[0x100];
-    } copy;
-    s32 index;
-    struct Entry *entry;
-    u32 row;
-    u32 col;
-    s32 height;
-    s32 width;
-    if ((u32)(arg0 - 6) > 1U) return;
-    index = lbl_8055FA2C;
-    if (index < 0) return;
-    if (index >= *(s32 *)((u8 *)&lbl_804BE7D8 + 4)) return;
-    entry = (struct Entry *)(*(u32 *)&lbl_804BE7D8) + index;
-    copy = *entry;
-    width = copy.second;
-    row = 0;
-    entry->first = width;
-    height = copy.first;
-    entry->second = height;
-    while (row < entry->first) {
-        col = 0;
-        while (col < entry->second) {
-            if (arg0 == 6)
-                entry->pixels[row + col * entry->first] = height * (row + 1) - 1 - col;
-            else
-                entry->pixels[row + col * entry->first] = (width - row - 1) * height + col;
-            col++;
-        }
-        row++;
+s32 fn_802B8510(s32 arg0)
+{
+  struct Entry
+  {
+    u8 unk[0x20];
+    u32 first;
+    u32 second;
+    u8 pixels[0x100];
+  } copy;
+  struct Entry *entry;
+  int row;
+  u32 col;
+  s32 height;
+  s32 index;
+  if (((u32) (arg0 - 6)) > 1U)
+  {
+    return;
+  }
+  index = lbl_8055FA2C;
+  if (index < 0)
+  {
+    return;
+  }
+  if (index >= (*((s32 *) (((u8 *) (&lbl_804BE7D8)) + 4))))
+  {
+    return;
+  }
+  entry = ((struct Entry *) (*((u32 *) (&lbl_804BE7D8)))) + index;
+  copy = *entry;
+  index = copy.second;
+  row = 0;
+  entry->first = ((((((((((index & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu;
+  height = copy.first;
+  entry->second = copy.first;
+  while (row < entry->first)
+  {
+    col = 0;
+    while (col < entry->second)
+    {
+      if (arg0 != 6)
+      {
+        entry->pixels[row + (col * entry->first)] = (((index - row) - (((((((((1 & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu)) * height) + (col & 0xFF);
+      }
+      else
+      {
+        ((0, entry))->pixels[(((((((((row & 0xFF) & 0xFF) & 0xFF) & 0xFFu) & 0xFF) & 0xFF) & 0xFF) & 0xFF) & 0xFF) + (((((((col & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) * entry->first)] = ((height * (row + 1)) - 1) - col;
+      }
+      col++;
     }
+
+    row++;
+  }
+
 }
 /* Apply a 5-word UI configuration to the global UI state, recompute layout, apply changes, and refresh. */ 
 void fn_802B8624(void *config) {
