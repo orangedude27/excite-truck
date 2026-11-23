@@ -1619,51 +1619,51 @@ extern char lbl_8055D090;
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 void fn_802CC410(void *texMgr) {
-    struct { int *v; } w_req;
+    struct { int *v; } w_request;
     register int zero = 0;
-    register int done = 2;
-    struct { int v; } w_entry;
-    register char *mgr = (char *)texMgr;
-    #define req w_req.v
-    #define entry w_entry.v
+    register int doneFlag = 2;
+    struct { int v; } w_entrySlot;
+    register char *manager = (char *)texMgr;
+    #define request w_request.v
+    #define entry w_entrySlot.v
     int loadedSize;
-    int loaded;
+    int loadedBlock;
 
     /* Process the manager's pending texture requests: for a request whose async
      * resource is loaded, fill its 0x4C-byte record in lbl_8055FCB0, tag it
      * "LOADED", accumulate its size into +0x18, and mark its status slot at
      * +0x40 done; then restart from the list head until none is ready. */
 outer:
-    req = *(int **)mgr;
+    request = *(int **)manager;
     entry = -2;
-    while (req != 0) {
-        if (req[4] == -1) {
-            loaded = fn_8012C7FC((void *)req[0], &loadedSize);
-            if (loaded != 0) {
-                entry = lbl_8055FCB0 + req[1] * 0x4C;
-                *(int *)(entry + 0x44) = req[2];
-                *(int *)(entry + 0x40) = fn_802CB38C((void *)loaded,
-                    (void *)req[3],
-                    (void *)*(int *)(lbl_8055FCB0 + 0x34 + req[1] * 0x4C));
-                req[3] = zero;
-                fn_8012C958(req[0]);
-                req[0] = zero;
-                req[2] = zero;
-                fn_802CBB9C((int **)(mgr + 4), (int)mgr, req);
+    while (request != 0) {
+        if (request[4] == -1) {
+            loadedBlock = fn_8012C7FC((void *)request[0], &loadedSize);
+            if (loadedBlock != 0) {
+                entry = lbl_8055FCB0 + request[1] * 0x4C;
+                *(int *)(entry + 0x44) = request[2];
+                *(int *)(entry + 0x40) = fn_802CB38C((void *)loadedBlock,
+                    (void *)request[3],
+                    (void *)*(int *)(lbl_8055FCB0 + 0x34 + request[1] * 0x4C));
+                request[3] = zero;
+                fn_8012C958(request[0]);
+                request[0] = zero;
+                request[2] = zero;
+                fn_802CBB9C((int **)(manager + 4), (int)manager, request);
                 ((void (*)(void *, const char *))fn_802CB3F8)(
                     (void *)(entry + 4), &lbl_8055D090);
-                *(int *)(mgr + 0x18) += *(int *)(entry + 0x3C);
-                entry = req[1];
+                *(int *)(manager + 0x18) += *(int *)(entry + 0x3C);
+                entry = request[1];
                 break;
             }
         }
-        req = *(int **)((char *)req + 0x14);
+        request = *(int **)((char *)request + 0x14);
     }
     if (entry != -2) {
-        *(int *)(mgr + entry * 0x14 + 0x40) = done;
+        *(int *)(manager + entry * 0x14 + 0x40) = doneFlag;
         goto outer;
     }
-#undef req
+#undef request
 #undef entry
 }
 #pragma scheduling on
