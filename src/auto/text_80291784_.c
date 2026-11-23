@@ -492,22 +492,48 @@ check:
     if (count < base[0x48]) goto loop;
     *((char *)&lbl_804B4010 + 0x14) = 0;
 }
-void fn_8029227C(void) {
-    int old;
-    if (lbl_8055F75C == 0) goto done;
-    switch (lbl_8055C920) {
-    case 0:
-        goto done;
-    default:
-        goto body;
+void fn_8029227C(void)
+{
+  int old;
+  if (lbl_8055F75C == 0)
+  {
+    goto done;
+  }
+  if (lbl_8055C920 == 0)
+  {
+    if (lbl_8055C920)
+    {
+      goto done;
     }
-body:
-    old = fn_802C2C00(0);
-    if (*((unsigned char *)(lbl_804B4010 + 0x14))) fn_802D3BB0(*((int *)(lbl_804B4010 + 0x10)));
-    if (*((unsigned char *)(lbl_804B4010 + 0x14))) fn_802920D0();
-    if (*((unsigned char *)&lbl_804B3EC0 + 0x148)) fn_80291E64(&lbl_804B3EC0);
-    fn_802C2C00(old);
-done: ;
+    else
+    {
+      goto done;
+    }
+  }
+  goto body;
+  done2:
+  goto done;
+
+  body:
+  old = fn_802C2C00(0);
+
+  if (*((unsigned char *) (lbl_804B4010 + 0x14)))
+  {
+    fn_802D3BB0(*((int *) (lbl_804B4010 + 0x10)));
+  }
+  if (*((unsigned char *) (lbl_804B4010 + 0x14)))
+  {
+    fn_802920D0();
+  }
+  if (*(((unsigned char *) (&lbl_804B3EC0)) + 0x148))
+  {
+    fn_80291E64(&lbl_804B3EC0);
+  }
+  fn_802C2C00(old);
+  done:
+  ;
+
+  ;
 }
 
 #pragma push
