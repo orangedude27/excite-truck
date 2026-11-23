@@ -1044,7 +1044,7 @@ void fn_802CB6B4(void)
           fn_802E30C8(lbl_8034BBA8, lbl_8034BB1C);
           fn_802E30C8(lbl_8034BB9C);
           total = 0;
-          record = *((void **) (((char *) manager) + 0xC));
+          record = *((void **) (((char *) manager) + ((0, 0xC))));
           while (record != 0)
           {
             fn_802E30C8(lbl_8034BB88, ((char *) record) + 0x10, *((int *) (((char *) record) + 4)));
@@ -1068,7 +1068,7 @@ void fn_802CB6B4(void)
         }
         fn_80128668(manager);
       }
-      fn_80128670(*((int *) (((char *) root) - -0x20)));
+      fn_80128670(*((int *) (((char *) root) + 0x20)));
       *((int *) (((char *) root) + 0x20)) = 0;
       *((void **) (((char *) root) + 0x24)) = 0;
       *((int *) (((char *) root) + 0x28)) = 0;
@@ -1341,7 +1341,7 @@ extern void fn_802CC03C(int **, int *, int);
 extern int fn_802CC10C(void *, int, int, int);
 extern int fn_802CC404(void *);
 extern void *fn_802CC2C8(void *, int);
-void fn_802CBDD0(void *mgr) {
+void texAllocPending(void *mgr) {
     // Queue the pending texture by priority, allocate it, evicting lower-priority entries until it fits.
     char *context;
     int texId;
@@ -1964,7 +1964,7 @@ node = *(char **)(node + 0x10);
 {
 char *root = *(char **)lbl_8055FCBC;
 fn_802CC410(root);
-fn_802CBDD0(root);
+texAllocPending(root);
 fn_802CBC3C(root, *(int *)(root + 0x2848));
 *(int *)(root + 0x2848) = *(int *)(root + 0x2848) + 1;
 }
