@@ -91,35 +91,49 @@ int fn_8020F400(int source, int destination, int size) {
 
 #pragma dont_inline on
 void fn_8020F444(void) {
-    /* Load and register track music paths into three slots once each, logging the loaded path. */
+#define gSongLoaded0 lbl_8055EEF4
+#define gSongLoaded1 lbl_8055EEF5
+#define gSongLoaded2 lbl_8055EEF6
+#define gSongName0   lbl_804904D0
+#define gSongName1   lbl_8055B650
+#define gSongName2   lbl_8055B654
+#define gTriedToLoad lbl_8033C95C
+    /* Load and register the three track-music song paths once each, then log the path used. */
     char pathBuffer[0x40];
-    if ((unsigned char)lbl_8055EEF4 == 0) {
-        if (fn_8012E938(fn_8020F400((long)lbl_804904D0, (long)pathBuffer, 0x40)) != 0) {
-            fn_8020F400((long)lbl_804904D0, (long)pathBuffer, 0x40);
+    if ((unsigned char)gSongLoaded0 == 0) {
+        if (fn_8012E938(fn_8020F400((long)gSongName0, (long)pathBuffer, 0x40)) != 0) {
+            fn_8020F400((long)gSongName0, (long)pathBuffer, 0x40);
             fn_8012E81C();
-            fn_802EC294(0, fn_8020F3BC((int)lbl_804904D0, (int)pathBuffer, 0x40));
-            fn_802E30C8(lbl_8033C95C, pathBuffer);
-            lbl_8055EEF4 = 1;
+            fn_802EC294(0, fn_8020F3BC((int)gSongName0, (int)pathBuffer, 0x40));
+            fn_802E30C8(gTriedToLoad, pathBuffer);
+            gSongLoaded0 = 1;
         }
     }
-    if ((unsigned char)lbl_8055EEF5 == 0) {
-        if (fn_8012E938(fn_8020F400((long)lbl_8055B650, (long)pathBuffer, 0x40)) != 0) {
-            fn_8020F400((long)lbl_8055B650, (long)pathBuffer, 0x40);
+    if ((unsigned char)gSongLoaded1 == 0) {
+        if (fn_8012E938(fn_8020F400((long)gSongName1, (long)pathBuffer, 0x40)) != 0) {
+            fn_8020F400((long)gSongName1, (long)pathBuffer, 0x40);
             fn_8012E81C();
-            fn_802EC294(1, fn_8020F3BC((int)lbl_8055B650, (int)pathBuffer, 0x40));
-            fn_802E30C8(lbl_8033C95C, pathBuffer);
-            lbl_8055EEF5 = 1;
+            fn_802EC294(1, fn_8020F3BC((int)gSongName1, (int)pathBuffer, 0x40));
+            fn_802E30C8(gTriedToLoad, pathBuffer);
+            gSongLoaded1 = 1;
         }
     }
-    if ((unsigned char)lbl_8055EEF6 == 0) {
-        if (fn_8012E938(fn_8020F400((long)lbl_8055B654, (long)pathBuffer, 0x40)) != 0) {
-            fn_8020F400((long)lbl_8055B654, (long)pathBuffer, 0x40);
+    if ((unsigned char)gSongLoaded2 == 0) {
+        if (fn_8012E938(fn_8020F400((long)gSongName2, (long)pathBuffer, 0x40)) != 0) {
+            fn_8020F400((long)gSongName2, (long)pathBuffer, 0x40);
             fn_8012E81C();
-            fn_802EC294(2, fn_8020F3BC((int)lbl_8055B654, (int)pathBuffer, 0x40));
-            fn_802E30C8(lbl_8033C95C, pathBuffer);
-            lbl_8055EEF6 = 1;
+            fn_802EC294(2, fn_8020F3BC((int)gSongName2, (int)pathBuffer, 0x40));
+            fn_802E30C8(gTriedToLoad, pathBuffer);
+            gSongLoaded2 = 1;
         }
     }
+#undef gTriedToLoad
+#undef gSongName2
+#undef gSongName1
+#undef gSongName0
+#undef gSongLoaded2
+#undef gSongLoaded1
+#undef gSongLoaded0
 }
 #pragma dont_inline reset
 
