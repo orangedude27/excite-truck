@@ -880,20 +880,29 @@ extern int fn_802CB2FC(int, int, int, unsigned char, unsigned short, unsigned ch
 #pragma opt_propagation off
 /* Allocate and initialize a render-target texture slot ("rtarg") and return its slot index. */
 int fn_802CB128(int width, int height, int unused, int flagsMask) {
+#define rtargName       lbl_8055D05C
+#define rtTexName       lbl_8055D064
+#define nextTexId       lbl_8055FCAA
+#define allocTexSlot    fn_802CB018
+#define makeTexDesc     fn_802CB2FC
+#define createTexture   fn_802CA4E0
     int mipCount;
     const char *slotName;
     unsigned short texId;
     unsigned char createFlags;
     int *slot;
-    texId = lbl_8055FCAA;
-    slotName = &lbl_8055D05C;
+
+    /* Allocate and initialize a render-target ("rtarg") texture slot, then
+     * return its index in the texture-slot table. */
+    texId = nextTexId;
+    slotName = &rtargName;
     createFlags = 3;
     if (flagsMask & 0x20)
         createFlags = 2;
     if (flagsMask & 0x40)
         createFlags &= ~2;
     mipCount = (flagsMask & 1) + 2;
-    slot = (int *)fn_802CB018();
+    slot = (int *)allocTexSlot();
     memset(slot, 0, 0x4C);
     slot[0] = 1;
     slot[9] = 0;
@@ -902,9 +911,15 @@ int fn_802CB128(int width, int height, int unused, int flagsMask) {
     slot[17] = 0;
     slot[13] = 0xE;
     strcpy((char *)slot + 4, slotName);
-    slot[11] = fn_802CB2FC(width, height, 1, (unsigned char)mipCount, texId, createFlags);
-    slot[10] = fn_802CA4E0(slot[11], (int)&lbl_8055D064, 1, 0, slot[13]);
-    return ((char *)slot - (char *)lbl_8055FCB0) / 0x4C;
+    slot[11] = makeTexDesc(width, height, 1, (unsigned char)mipCount, texId, createFlags);
+    slot[10] = createTexture(slot[11], (int)&rtTexName, 1, 0, slot[13]);
+    return ((char *)slot - (char *)textureSlots) / 0x4C;
+#undef createTexture
+#undef makeTexDesc
+#undef allocTexSlot
+#undef nextTexId
+#undef rtTexName
+#undef rtargName
 }
 #pragma pop
 /* Release a texture slot: destroy its GPU texture object, free its resource handle, and clear the slot. */
