@@ -532,41 +532,41 @@ appended:                   ;
 
 extern char lbl_8033C3F4[];
 #pragma scheduling invalid_target
-void *fn_8020B1C8(void *arg0, int arg1) {
+/* Destroy a VoiceSnd: reset its vtable, stop and release the voices at +8/+0xC, free the sound resources at +0x10/+0x14 and clear the mixer work-buffer slot (index at +0x40), then free the object when shouldFree > 0. */ void *fn_8020B1C8(void *voiceSnd, int shouldFree) {
     /* Destroys a voice-sound object, releasing owned SPU resources and freeing it when requested. */
-    void *oldSlot;
-    int value;
+    void *voice;
+    int resource;
 
-    if (arg0 != 0) {
-        oldSlot = *(void **)((char *)arg0 + 8);
-        *(void **)arg0 = (void *)lbl_8033C3F4;
-        if (oldSlot != 0)
-            fn_802E61D8(oldSlot);
-        value = *(int *)((char *)arg0 + 0xC);
-        if (value != 0)
-            fn_802E61D8((void *)value);
-        value = *(int *)((char *)arg0 + 0xC);
-        if (value != 0) {
-            ((void (*)(void *))fn_802E6138)((void *)value);
-            *(int *)((char *)arg0 + 0xC) = 0;
+    if (voiceSnd != 0) {
+        voice = *(void **)((char *)voiceSnd + 8);
+        *(void **)voiceSnd = (void *)lbl_8033C3F4;
+        if (voice != 0)
+            fn_802E61D8(voice);
+        resource = *(int *)((char *)voiceSnd + 0xC);
+        if (resource != 0)
+            fn_802E61D8((void *)resource);
+        resource = *(int *)((char *)voiceSnd + 0xC);
+        if (resource != 0) {
+            ((void (*)(void *))fn_802E6138)((void *)resource);
+            *(int *)((char *)voiceSnd + 0xC) = 0;
         }
-        value = *(int *)((char *)arg0 + 8);
-        if (value != 0) {
-            ((void (*)(void *))fn_802E6138)((void *)value);
-            *(int *)((char *)arg0 + 8) = 0;
+        resource = *(int *)((char *)voiceSnd + 8);
+        if (resource != 0) {
+            ((void (*)(void *))fn_802E6138)((void *)resource);
+            *(int *)((char *)voiceSnd + 8) = 0;
         }
-        value = *(int *)((char *)arg0 + 0x14);
-        if (value != 0)
-            fn_802E5D5C((void *)value);
-        value = *(int *)((char *)arg0 + 0x10);
-        if (value != 0) {
-            fn_802E5D5C((void *)value);
-            ((void (*)(void *, int, int))fn_8020B2BC)(lbl_8055EE04, (int)arg0, *(int *)((char *)arg0 + 0x40));
+        resource = *(int *)((char *)voiceSnd + 0x14);
+        if (resource != 0)
+            fn_802E5D5C((void *)resource);
+        resource = *(int *)((char *)voiceSnd + 0x10);
+        if (resource != 0) {
+            fn_802E5D5C((void *)resource);
+            ((void (*)(void *, int, int))fn_8020B2BC)(lbl_8055EE04, (int)voiceSnd, *(int *)((char *)voiceSnd + 0x40));
         }
-        if (arg1 > 0)
-            ((void (*)(void *))fn_8020A800)(arg0);
+        if (shouldFree > 0)
+            ((void (*)(void *))fn_8020A800)(voiceSnd);
     }
-    return arg0;
+    return voiceSnd;
 }
 #pragma scheduling on
 
