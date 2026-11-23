@@ -61,7 +61,7 @@ typedef struct MRollPlayerSlot {
 #pragma scheduling invalid_target
 /* Looks up the nth active player-info slot in g_MRollPlayerSlots and returns
  * its stored fields (and id); aborts on a bad index. */
-void fn_8023FE60(s32 playerIndex, s32 *outField2, s32 *outField3, s32 *outId) {
+/* Looks up the nth active player-info slot in g_MRollPlayerSlots and returns its stored fields (and id); aborts on a bad index. */ void fn_8023FE60(s32 playerIndex, s32 *outField2, s32 *outField3, s32 *outId) {
     register s32 *cursor = (s32 *)lbl_80498828; /* g_MRollPlayerSlots */
     register s32 activeCount = 0;
     register s32 slotIndex = 0;
