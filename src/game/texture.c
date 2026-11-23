@@ -838,32 +838,32 @@ extern char lbl_8034B940[];
 // "in use" flag clear) after the reserved slot 0, walking the table 7 slots
 // at a time. With none left it reports that and hands back the slot in front
 // of the array, which no caller may use.
-int fn_802CB018(void) {
+/* Allocate a texture slot: return the address of the first free one (in-use flag clear) from slot 1 onward, checking seven slots per group; on exhaustion panic and return the address just before the table. */ int fn_802CB018(void) {
     int index = 1;                    /* slot 0 is reserved */
-    int result = -1;                  /* slot number, -1 while none is free */
+    int freeSlot = -1;                  /* slot number, -1 while none is free */
     int group;
-    unsigned char *slot = (unsigned char *)textureSlots + texSlotSize;
+    unsigned char *groupStart = (unsigned char *)textureSlots + texSlotSize;
     for (group = 0; group < texSlotGroups; group++) {
-        if (*(int *)slot == 0) { result = index; goto found; }
+        if (*(int *)groupStart == 0) { freeSlot = index; goto found; }
         index++;
-        if (*(int *)(slot + texSlotSize) == 0) { result = index; goto found; }
+        if (*(int *)(groupStart + texSlotSize) == 0) { freeSlot = index; goto found; }
         index++;
-        if (*(int *)(slot + 2 * texSlotSize) == 0) { result = index; goto found; }
+        if (*(int *)(groupStart + 2 * texSlotSize) == 0) { freeSlot = index; goto found; }
         index++;
-        if (*(int *)(slot + 3 * texSlotSize) == 0) { result = index; goto found; }
+        if (*(int *)(groupStart + 3 * texSlotSize) == 0) { freeSlot = index; goto found; }
         index++;
-        if (*(int *)(slot + 4 * texSlotSize) == 0) { result = index; goto found; }
+        if (*(int *)(groupStart + 4 * texSlotSize) == 0) { freeSlot = index; goto found; }
         index++;
-        if (*(int *)(slot + 5 * texSlotSize) == 0) { result = index; goto found; }
+        if (*(int *)(groupStart + 5 * texSlotSize) == 0) { freeSlot = index; goto found; }
         index++;
-        if (*(int *)(slot + 6 * texSlotSize) == 0) { result = index; goto found; }
-        slot += 7 * texSlotSize;
+        if (*(int *)(groupStart + 6 * texSlotSize) == 0) { freeSlot = index; goto found; }
+        groupStart += 7 * texSlotSize;
         index++;
     }
 found:
-    if (result < 0)
+    if (freeSlot < 0)
         fn_802E317C(lbl_8034B940); /* "tex: Out of texture slots" */
-    return (int)((unsigned char *)textureSlots + result * texSlotSize);
+    return (int)((unsigned char *)textureSlots + freeSlot * texSlotSize);
 }
 #pragma pop
 
