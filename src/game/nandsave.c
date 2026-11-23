@@ -877,43 +877,61 @@ extern char lbl_8034D9C0[];
 extern char lbl_8034E0E8[];
 extern char lbl_8034E0F8[];
 extern void *memcpy(void *, const void *, unsigned int);
-/**
- * Starts an asynchronous NAND save: waits for the save state machine to
- * become idle, copies the payload into the staging buffer, arms the save
- * state (banner + file write) and stores the target file name.
- */
-int fn_802E967C(char *fileName, void *src, int size) {
-    char *state;
-    int bufferPtr;
-    int nameCount;
+/* fn_802E967C - begin an asynchronous NAND save of `size` bytes from `src` to
+ * the file named `path`: wait for the async save machine to go idle, stage the
+ * payload in the shared buffer, release the old banner resource and arm the
+ * banner + data write, then copy the target name into the save context.
+ * Returns 1 once armed, 0 on a timeout or if the save was flagged invalid. */
+int fn_802E967C(char *path, void *src, int size) {
+#define rmemcard_wait_async   fn_802E95E0
+#define rmemcard_yield        fn_802E8838
+#define rmemcard_log_strings  lbl_8034D9C0
+#define nandLogPrintf         fn_802E30C8
+#define gNandSaveInvalid      lbl_80560034
+#define rmemcard_async_buffer lbl_80560020
+#define rmemcard_async_state  lbl_80507288
+#define BANNER_RES_TAG        0x5256424E
+#define MAX_NAME_LEN          0x100
+    char *ctx;
+    int buffer;
+    int charsLeft;
     char *nameDst;
-    int sp8;
+    int dummy;
 
-    if (((int (*)(void *, void (*)(void)))fn_802E95E0)(lbl_8034D9C0 + 0x694, fn_802E8838) == 0) {
-        fn_802E30C8(lbl_8034D9C0 + 0x6A8);
+    if (((int (*)(void *, void (*)(void)))rmemcard_wait_async)(rmemcard_log_strings + 0x694, rmemcard_yield) == 0) {
+        nandLogPrintf(rmemcard_log_strings + 0x6A8);
         return 0;
     }
-    if ((unsigned char)lbl_80560034 != 0) {
-        fn_802E30C8(lbl_8034D9C0 + 0x6D8);
+    if ((unsigned char)gNandSaveInvalid != 0) {
+        nandLogPrintf(rmemcard_log_strings + 0x6D8);
         return 0;
     }
-    memcpy((void *)lbl_80560020, src, size);
-    bufferPtr = lbl_80560020;
-    *(int *)&lbl_80507288 = 2;
+    memcpy((void *)rmemcard_async_buffer, src, size);
+    buffer = rmemcard_async_buffer;
+    *(int *)&rmemcard_async_state = RMEMCARD_WRITE_CREATE;
     fn_8012E81C(lbl_8034E0F8);
-    state = (char *)&lbl_80507288;
-    *(int *)(state + 0x260) = fn_8012C370(lbl_8034E0E8, 0x5256424E, &sp8, state + 0x264, 0, 0);
-    nameDst = state + 0x270;
-    nameCount = 0x100;
-    *(int *)(state + 0x268) = bufferPtr;
-    *(int *)(state + 0x26C) = size;
-    while ((*nameDst++ = *fileName++) != 0) {
-        if (--nameCount <= 0) {
+    ctx = (char *)&rmemcard_async_state;
+    *(int *)(ctx + 0x260) = fn_8012C370(lbl_8034E0E8, BANNER_RES_TAG, &dummy, ctx + 0x264, 0, 0);
+    nameDst = ctx + 0x270;
+    charsLeft = MAX_NAME_LEN;
+    *(int *)(ctx + 0x268) = buffer;
+    *(int *)(ctx + 0x26C) = size;
+    while ((*nameDst++ = *path++) != 0) {
+        if (--charsLeft <= 0) {
             nameDst[-1] = 0;
             break;
         }
     }
     return 1;
+#undef MAX_NAME_LEN
+#undef BANNER_RES_TAG
+#undef rmemcard_async_state
+#undef rmemcard_async_buffer
+#undef gNandSaveInvalid
+#undef nandLogPrintf
+#undef rmemcard_log_strings
+#undef rmemcard_yield
+#undef rmemcard_wait_async
 }
 
 __declspec(section ".data") extern int lbl_80507288;
