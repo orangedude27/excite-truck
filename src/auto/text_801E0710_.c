@@ -785,18 +785,18 @@ void fn_801E1688(void) {
 }
 
 #pragma scheduling safe_target
-void fn_801E168C(void *arg0) {
+void fn_801E168C(const void *arg0) {
     f32 y;
     f32 x = lbl_80562C78;
     s32 zero = 0;
     s32 minus = -1;
-    y = lbl_80562C7C;
     *(s32 *)((u8 *)arg0 + 0x6C) = minus;
     *(s32 *)((u8 *)arg0 + 0x0C) = minus;
     *(u8 *)((u8 *)arg0 + 0x10) = zero;
     *(s32 *)((u8 *)arg0 + 0x1C) = zero;
     *(s32 *)((u8 *)arg0 + 0x20) = zero;
     *(f32 *)((u8 *)arg0 + 0x14) = x;
+    y = lbl_80562C7C;
     *(f32 *)((u8 *)arg0 + 0x18) = y;
     *(s32 *)((u8 *)arg0 + 0x70) = minus;
     *(s32 *)((u8 *)arg0 + 0x24) = minus;
