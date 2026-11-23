@@ -164,7 +164,7 @@ void fn_80208B8C(int initBackends) {
         gSoundMode = SC_SND_MONO;
         break;
     }
-    MIXER_VOLUME_HANDLE_COUNT = 0;
+    MIXER_VOLUME_HANDLE_COUNT = 0; /* no volume handles yet */
     if (initBackends != 0) {
         void *nullMixer;
         int *registry; /* devices[MIXER_DEVICE_MAX], count, selected index */
@@ -190,7 +190,7 @@ void fn_80208B8C(int initBackends) {
                     (char *)registry + MIXER_SELECTED_OFFSET);
         selected = registry[MIXER_DEVICE_MAX + 1];
         if (selected < 0 || selected >= registry[MIXER_DEVICE_MAX])
-            *(int *)((char *)MIXER_DEVICES + MIXER_SELECTED_OFFSET) = 0;
+            *(int *)((char *)MIXER_DEVICES + MIXER_SELECTED_OFFSET) = 0; /* null mixer */
     }
     fn_8013323C(OPTIONS_SECTION_SOUND, CONFIG_KEY_EFFECTS_VOLUME, DEFAULT_EFFECTS_VOLUME);
     fn_80208A78();
