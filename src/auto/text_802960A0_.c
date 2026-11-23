@@ -595,7 +595,7 @@ typedef struct FlipBook {
 #pragma push
 #pragma cplusplus on
 extern "C" float fn_802970C8(void *book) {
-    /* RealName: FlipBook_getDuration -- total playback length of a FlipBook
+    /* RealName: FlipBook::getDuration -- total playback length of a FlipBook
      * keyframe collection: 0.0 plus every keyframe's duration.  Reached through
      * FlipBookElem's vtable slot 0x10 (fn_802978A8), which passes the element's
      * collection; fn_80296D2C walks the same records to pick the pair to blend. */
