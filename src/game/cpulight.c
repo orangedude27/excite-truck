@@ -1054,7 +1054,11 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
     }
 }
 #pragma optimization_level 4
-/* Set up the CPU-light indirect-texture (bump-map) pass: optionally bind the pass texture to texcoord slot 1, derive a base-2 indirect-matrix scale from the light level and load it into indirect matrix 1, then configure the indirect TEV and vertex state. A texture-slot value of -2 skips the binding; arg0 is unused. */
+/* Set up the CPU-light indirect (bump-map) pass: bind the pass texture to
+ * texcoord slot 1 unless texSlot1 == -2, derive a base-2 indirect-matrix scale
+ * from the light level and load it into indirect matrix 1, then configure the
+ * indirect TEV and vertex state. indTexSlot == -2 skips the indirect setup;
+ * arg0 is unused. */
 void CpuLight_BeginIndirectPass(int arg0, int indTexSlot, int texSlot1, float lightLevel, float texScale) {
     float logDiff;
     float magnitude;
