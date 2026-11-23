@@ -1123,6 +1123,11 @@ s32 fn_802D62E4(void *object) {
  * returns the stored list offset and size; a miss records a new GX display
  * list into the shared buffer and appends it to the cache. */
 void fn_802D62FC(void *__restrict surface, s32 *outOffset, s32 *outSize) {
+#define vertexFormatCache   lbl_804CA438
+#define vertexFormatCount   lbl_8055FDF0
+#define vertexFormatDlStart lbl_8055FDF4
+#define vertexFormatDlEnd   lbl_8055FDF8
+#define setVtxDescFromFlags fn_802D5DE8
     extern s32 lbl_8055FDF0;
     extern s32 lbl_8055FDF4;
     extern s32 lbl_8055FDF8;
@@ -1130,14 +1135,15 @@ void fn_802D62FC(void *__restrict surface, s32 *outOffset, s32 *outSize) {
     extern u32 GXEndDisplayList(void);
     extern void fn_802D5DE8(u32);
     register u8 *desc = (u8 *)surface;
-    register CacheEntry *scan = (CacheEntry *)lbl_804CA438;
+    register CacheEntry *scan = (CacheEntry *)vertexFormatCache;
     register u8 key = desc[9];
     register u32 id = *(u32 *)(desc + 0xC);
-    s32 count = lbl_8055FDF0;
+    s32 count = vertexFormatCount;
     s32 i;
     CacheEntry *write;
     s32 size;
 
+    /* Cache key is the surface descriptor's format byte (key) and flag word (id). */
     for (i = 0; i < count; i++, scan++) {
         if (scan->id == id && scan->key == key) {
             *outOffset = scan->start;
@@ -1146,19 +1152,24 @@ void fn_802D62FC(void *__restrict surface, s32 *outOffset, s32 *outSize) {
         }
     }
 
-    count = lbl_8055FDF0;
-    write = (CacheEntry *)lbl_804CA438 + count;
+    count = vertexFormatCount;
+    write = (CacheEntry *)vertexFormatCache + count;
     write->id = id;
-    lbl_8055FDF0 = count + 1;
+    vertexFormatCount = count + 1;
     write->key = key;
-    GXBeginDisplayList((void *)lbl_8055FDF8, lbl_8055FDF4 + 0x4000 - lbl_8055FDF8);
-    fn_802D5DE8(id);
+    GXBeginDisplayList((void *)vertexFormatDlEnd, vertexFormatDlStart + 0x4000 - vertexFormatDlEnd);
+    setVtxDescFromFlags(id);
     size = GXEndDisplayList();
-    write->start = lbl_8055FDF8;
+    write->start = vertexFormatDlEnd;
     write->size = size;
-    lbl_8055FDF8 += size;
+    vertexFormatDlEnd += size;
     *outOffset = write->start;
     *outSize = write->size;
+#undef setVtxDescFromFlags
+#undef vertexFormatDlEnd
+#undef vertexFormatDlStart
+#undef vertexFormatCount
+#undef vertexFormatCache
 }
 #pragma push
 #pragma use_lmw_stmw off
