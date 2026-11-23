@@ -111,23 +111,29 @@ void fn_80208A78(void) {
  * with the global "effects_volume".  Event 0 resets effects volume to the default,
  * event 3 loads the player's value into effects, events 1/2 copy effects back to the player. */
 void fn_80208AC8(int playerSlot, int event) {
+#define CONFIG_KEY_EFFECTS_VOLUME lbl_8033BEF8
+#define CONFIG_KEY_PLAYER_SFX_VOL lbl_8033BF08
+#define OPTIONS_SECTION_SOUND     4
     float volume = 1.0f;
     switch (event) {
     case 3:
-        fn_801331C4(playerSlot + 12, lbl_8033BF08, &volume);
-        fn_8013323C(4, lbl_8033BEF8, volume);
+        fn_801331C4(playerSlot + 12, CONFIG_KEY_PLAYER_SFX_VOL, &volume);
+        fn_8013323C(OPTIONS_SECTION_SOUND, CONFIG_KEY_EFFECTS_VOLUME, volume);
         fn_80209030(volume);
         break;
     case 1:
     case 2:
-        fn_801331C4(4, lbl_8033BEF8, &volume);
-        fn_8013323C(playerSlot + 12, lbl_8033BF08, volume);
+        fn_801331C4(OPTIONS_SECTION_SOUND, CONFIG_KEY_EFFECTS_VOLUME, &volume);
+        fn_8013323C(playerSlot + 12, CONFIG_KEY_PLAYER_SFX_VOL, volume);
         break;
     case 0:
-        fn_8013323C(4, lbl_8033BEF8, volume);
+        fn_8013323C(OPTIONS_SECTION_SOUND, CONFIG_KEY_EFFECTS_VOLUME, volume);
         fn_80209030(volume);
         break;
     }
+#undef CONFIG_KEY_EFFECTS_VOLUME
+#undef CONFIG_KEY_PLAYER_SFX_VOL
+#undef OPTIONS_SECTION_SOUND
 }
 
 /* Names the mixer start-up works with.  The device registry (lbl_80489238) is
