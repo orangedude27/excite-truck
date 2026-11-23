@@ -438,7 +438,7 @@ void Spu_Init(void) {
     char *buf;
     long long now;
 
-    ((void (*)(char *, ...))fn_802E30C8)(sSpuBeginName);
+    ((void (*)(char *, ...))fn_802E30C8)(sBeginLogName);
     lbl_8055FF8C = (void *)1;
     gAramSize = SPU_ARAM_SIZE;
     fn_801282F4();
