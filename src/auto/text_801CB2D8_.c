@@ -396,102 +396,118 @@ extern s32 fn_8001BD6C(void *, void *);
 extern void fn_802E317C(char *, s32);
 #pragma opt_propagation off
 void *fn_801CB954(s32 arg0, void *arg1, s32 arg2) {
-    char *base = lbl_80337AC8;
-    void *result;
-    s32 i, j, best, best2;
+    struct Ctx {
+        void *arg1;
+        s32 arg0;
+        char *base;
+        void *result;
+        s32 i;
+        s32 j;
+        s32 best;
+        s32 best2;
+    } c;
+    s32 mode;
+    void *item;
 
-    switch (arg0 & 0x300) {
+    mode = arg0 & 0x300;
+    c.arg1 = arg1;
+    c.arg0 = arg0;
+    c.base = lbl_80337AC8;
+
+    switch (mode) {
     default:
-        ((void (*)(char *, ...))fn_802E317C)(base, arg0);
+        ((void (*)(char *, ...))fn_802E317C)(c.base, c.arg0);
     case 0x200: {
         s32 sp2[9], sp[9];
-        void *item;
-        result = fn_801284F8(0x10, base + 0x40);
-        if (result) {
-            item = fn_801284F8(0x24, base + 0x4C);
+        c.result = fn_801284F8(0x10, c.base + 0x40);
+        if (c.result) {
+            item = fn_801284F8(0x24, c.base + 0x4C);
             if (item) {
-                item = fn_8001C070(item, fn_8000DA10(), arg0, *(s32 *)arg1, *(s32 *)((char *)arg1 + 4));
+                item = fn_8001C070(item, fn_8000DA10(), c.arg0, *(s32 *)c.arg1, *(s32 *)((char *)c.arg1 + 4));
             }
-            *(void **)result = item;
-            *(void **)((char *)result + 4) = lbl_80338024;
-            *(void **)((char *)result + 8) = 0;
-            *(s32 *)((char *)result + 0xC) = 0;
-            best = -1;
-            best2 = -1;
-            for (j = 0; j < 3; j++) {
-                for (i = 0; i < fn_80012854(); i++) {
-                    if (i == *(s32 *)arg1 && j == *(s32 *)((char *)arg1 + 4)) {
+            *(void **)c.result = item;
+            *(void **)((char *)c.result + 4) = lbl_80338024;
+            *(void **)((char *)c.result + 8) = 0;
+            *(s32 *)((char *)c.result + 0xC) = 0;
+            c.i = 0;
+            c.j = 0;
+            c.best2 = -1;
+            c.best = -1;
+            for (c.j = 0; c.j < 3; c.j++) {
+                for (c.i = 0; c.i < fn_80012854(); c.i++) {
+                    if (c.i == *(s32 *)c.arg1 && c.j == *(s32 *)((char *)c.arg1 + 4)) {
                         continue;
                     }
-                    fn_8001BC38(sp, fn_8000DA10(), arg0, i, j);
+                    fn_8001BC38(sp, fn_8000DA10(), c.arg0, c.i, c.j);
                     if (fn_8001BCF0(sp)) {
-                        if (best < 0) {
-                            best = i;
-                            best2 = j;
+                        if (c.best < 0) {
+                            c.best = c.i;
+                            c.best2 = c.j;
                         } else {
-                            fn_8001BC38(sp2, fn_8000DA10(), arg0, best, best2);
+                            fn_8001BC38(sp2, fn_8000DA10(), c.arg0, c.best, c.best2);
                             if (fn_8001BD6C(sp, sp2)) {
-                                best = i;
-                                best2 = j;
+                                c.best = c.i;
+                                c.best2 = c.j;
                             }
                         }
                     }
                 }
             }
-            if (best >= 0) {
-                item = fn_801284F8(0x24, base + 0x4C);
+            if (c.best >= 0) {
+                item = fn_801284F8(0x24, c.base + 0x4C);
                 if (item) {
-                    item = fn_8001C070(item, fn_8000DA10(), arg0, best, best2);
+                    item = fn_8001C070(item, fn_8000DA10(), c.arg0, c.best, c.best2);
                 }
-                *(void **)((char *)result + 8) = item;
+                *(void **)((char *)c.result + 8) = item;
             }
         }
-        return result;
+        return c.result;
     }
     case 0x100: {
         s32 sp2[9], sp[9];
-        void *item;
-        result = fn_801284F8(0x10, base + 0x58);
-        if (result) {
-            item = fn_801284F8(0x24, base + 0x64);
+        c.result = fn_801284F8(0x10, c.base + 0x58);
+        if (c.result) {
+            item = fn_801284F8(0x24, c.base + 0x64);
             if (item) {
-                item = fn_8001BE94(item, fn_8000DA10(), arg0, *(s32 *)arg1, *(s32 *)((char *)arg1 + 4));
+                item = fn_8001BE94(item, fn_8000DA10(), c.arg0, *(s32 *)c.arg1, *(s32 *)((char *)c.arg1 + 4));
             }
-            *(void **)result = item;
-            *(void **)((char *)result + 4) = lbl_80338010;
-            *(void **)((char *)result + 8) = 0;
-            *(s32 *)((char *)result + 0xC) = 0;
-            best = -1;
-            best2 = -1;
-            for (j = 0; j < 3; j++) {
-                for (i = 0; i < fn_80012854(); i++) {
-                    if (i == *(s32 *)arg1 && j == *(s32 *)((char *)arg1 + 4)) {
+            *(void **)c.result = item;
+            *(void **)((char *)c.result + 4) = lbl_80338010;
+            *(void **)((char *)c.result + 8) = 0;
+            *(s32 *)((char *)c.result + 0xC) = 0;
+            c.i = 0;
+            c.j = 0;
+            c.best2 = -1;
+            c.best = -1;
+            for (c.j = 0; c.j < 3; c.j++) {
+                for (c.i = 0; c.i < fn_80012854(); c.i++) {
+                    if (c.i == *(s32 *)c.arg1 && c.j == *(s32 *)((char *)c.arg1 + 4)) {
                         continue;
                     }
-                    fn_8001BC38(sp, fn_8000DA10(), arg0, i, j);
+                    fn_8001BC38(sp, fn_8000DA10(), c.arg0, c.i, c.j);
                     if (fn_8001BCF0(sp)) {
-                        if (best < 0) {
-                            best = i;
-                            best2 = j;
+                        if (c.best < 0) {
+                            c.best = c.i;
+                            c.best2 = c.j;
                         } else {
-                            fn_8001BC38(sp2, fn_8000DA10(), arg0, best, best2);
+                            fn_8001BC38(sp2, fn_8000DA10(), c.arg0, c.best, c.best2);
                             if (fn_8001BD6C(sp, sp2)) {
-                                best = i;
-                                best2 = j;
+                                c.best = c.i;
+                                c.best2 = c.j;
                             }
                         }
                     }
                 }
             }
-            if (best >= 0) {
-                item = fn_801284F8(0x24, base + 0x64);
+            if (c.best >= 0) {
+                item = fn_801284F8(0x24, c.base + 0x64);
                 if (item) {
-                    item = fn_8001BE94(item, fn_8000DA10(), arg0, best, best2);
+                    item = fn_8001BE94(item, fn_8000DA10(), c.arg0, c.best, c.best2);
                 }
-                *(void **)((char *)result + 8) = item;
+                *(void **)((char *)c.result + 8) = item;
             }
         }
-        return result;
+        return c.result;
     }
     }
 }
@@ -555,14 +571,14 @@ void fn_801CBD48(void *arg0, void *arg1) {
     extern f32 lbl_80558DC0[];
     extern f32 lbl_80558DC4[];
     extern void *fn_8001BB58(s32, s32, s32);
-    typedef struct { char a[0x14]; char b[0x14]; char c[0x14]; } Row;
     char *strings = lbl_80337AC8;
     u8 *obj = (u8 *)arg0;
     s32 *key = (s32 *)arg1;
     s32 sp8[9];
     int i;
-    char *s1;
-    char *s2;
+    u8 *slot;
+    register char *s1;
+    register char *s2;
     int valid;
     s32 idx;
     int isX;
@@ -604,17 +620,17 @@ void fn_801CBD48(void *arg0, void *arg1) {
         fn_80130978(obj + 0x174, 0x14, -lbl_80558DC0[0]);
     }
     fn_8001BB0C(fn_8000DA10(), key[0], key[1]);
-    for (i = 0; i < 5; i++) {
-        Row *row = &((Row *)(obj + 0x20))[i];
+    slot = obj + 0x20;
+    for (i = 0; i < 5; i++, slot += 0x3C) {
         s32 *e = (s32 *)((void *(*)(int, s32, s32, s32))fn_8001BB58)(fn_8000DA10(), key[0], key[1], i);
         if (e != 0) {
-            fn_801308F4(row->a, 0x14, e[1]);
-            STRNCPY_801CBD48(row->b, e[2] != -1 ? __AXGetStackHead(e[2]) : lbl_8055AB30, 0x14);
-            fn_80130978(row->c, 0x14, *(f32 *)&e[3]);
+            fn_801308F4(slot, 0x14, e[1]);
+            STRNCPY_801CBD48(slot + 0x14, e[2] != -1 ? __AXGetStackHead(e[2]) : lbl_8055AB30, 0x14);
+            fn_80130978(slot + 0x28, 0x14, *(f32 *)&e[3]);
         } else {
-            STRNCPY_801CBD48(row->a, lbl_8055AB34, 0x14);
-            STRNCPY_801CBD48(row->b, lbl_8055AB34, 0x14);
-            fn_80130978(row->c, 0x14, -lbl_80558DC0[0]);
+            STRNCPY_801CBD48(slot, lbl_8055AB34, 0x14);
+            STRNCPY_801CBD48(slot + 0x14, lbl_8055AB34, 0x14);
+            fn_80130978(slot + 0x28, 0x14, -lbl_80558DC0[0]);
         }
     }
     STRNCPY_801CBD48(obj + 0x264, fn_8000DB34(fn_8000DA10()), 0x12);
@@ -725,7 +741,9 @@ extern void fn_801CC594(void *);
 extern void *fn_80207848(void *, int);
 extern void *fn_8023512C(void *);
 extern float lbl_80562A04;
-#pragma opt_propagation off
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_801CC470(void) {
     register void *object;
     register int i;
@@ -766,7 +784,7 @@ void fn_801CC470(void) {
     }
     lbl_8055E884 = (s32 *)object;
 }
-#pragma opt_propagation reset
+#pragma pop
 /* Prepares a freshly created award stat handler for its first race: hands every
  * entry of the current stat set back to its record, empties the node pool and
  * the free list that hands its nodes out, and returns the handler's counters,
@@ -886,10 +904,14 @@ void **fn_801CC784(void *vec) {
 
 extern void *memset(void *, int, unsigned long);
 void *fn_801CC7A0(void *arg0) {
-    unsigned char *end = (unsigned char *)arg0 + 0x14C;
-    unsigned char *p = (unsigned char *)arg0 + 0x20;
-    unsigned char *base = (unsigned char *)arg0;
-    long zero = 0;
+    unsigned char *end;
+    unsigned char *p;
+    long zero;
+    unsigned char *base;
+    zero = 0;
+    base = (unsigned char *)arg0;
+    end = base + 0x14C;
+    p = base + 0x20;
     *(long *)(base + 8) = zero;
     *(long *)(base + 0xC) = zero;
     *(long *)(base + 0x10) = zero;
@@ -902,8 +924,8 @@ void *fn_801CC7A0(void *arg0) {
         memset(p + 0x28, 0x7A, 3);
         p[0x2B] = zero;
         p += 0x3C;
-    } while (p < end);
-    memset(end, 0x7A, 3);
+    } while (p < (base + 0x14C));
+    memset((base + 0x14C), 0x7A, 3);
     base[0x14F] = 0;
     memset(base + 0x160, 0x7A, 3);
     base[0x163] = 0;
@@ -1210,10 +1232,10 @@ unsigned char *temp_r0;
 unsigned char *temp_r4;
 unsigned char *temp_r7;
 unsigned char *temp_r7_2, *temp_r7_3, *temp_r7_4, *temp_r7_5;
-register unsigned char *var_r4;
-register unsigned char *var_r5;
 register unsigned char *var_r6;
 register unsigned char *var_r7;
+register unsigned char *var_r4;
+register unsigned char *var_r5;
 
 if ((fn_801CE898() == 0) &&
 (temp_r31 = lbl_8055E884, (*(unsigned char *)((unsigned char *)temp_r31 + 0x10) == 0))) {
@@ -1227,21 +1249,19 @@ var_r0_2 = *(unsigned char *)((unsigned char *)temp_r31 + var_r0 + 0x11);
 else
 var_r0_2 = 1;
 if (var_r0_2 == 0) {
-var_r30 = 0;
 var_r29 = 0;
-for (; var_r30 < *(s32 *)((unsigned char *)temp_r31 + 0x1C); ) {
-if (fn_801CB900(*(int **)(*(s32 **)((unsigned char *)temp_r31 + 0x18) + var_r29 / 4), arg0) == 0) {
-var_r29 += 4;
-var_r30 += 1;
-} else {
+var_r30 = 0;
+for (; var_r29 < *(s32 *)((unsigned char *)temp_r31 + 0x1C); ) {
+if (fn_801CB900(*(int **)(*(s32 **)((unsigned char *)temp_r31 + 0x18) + var_r30 / 4), arg0) != 0)
 goto after_search;
+var_r30 += 4;
+var_r29 += 1;
 }
-}
-var_r30 = -1;
+var_r29 = -1;
 after_search:
-if (var_r30 < 0)
+if (var_r29 < 0)
 ((void (*)(const char *, ...))fn_802E317C)(lbl_80337CA0, arg0);
-temp_r30 = (unsigned char *)*(void **)(*(s32 **)((unsigned char *)temp_r31 + 0x18) + var_r30);
+temp_r30 = (unsigned char *)*(void **)(*(s32 **)((unsigned char *)temp_r31 + 0x18) + var_r29);
 if (temp_r30 != 0) {
 if (((Dummy_801CCDAC *)temp_r30)->v1(arg2) != 0) {
 var_r6 = (unsigned char *)temp_r31;
@@ -1391,7 +1411,7 @@ register s32 var_r0_2;
 register s32 var_ctr;
 register unsigned char *var_r5;
 register unsigned char *var_r4;
-u32 var_r6;
+register unsigned char *var_r6;
 register unsigned char *var_r3;
 register unsigned char *temp_r30;
 void *temp_r3;
@@ -1446,12 +1466,12 @@ var_r4 = var_r7;
 goto block_24;
 }
 if (*(void **)(var_r3 + 0x4C) == temp_r30) {
-var_r5 = (unsigned char *)temp_r31 + var_r6 * 0x14 + 0x44;
+var_r5 = (unsigned char *)temp_r31 + (s32)var_r6 * 0x14 + 0x44;
 goto scan_done;
 } else {
 block_24:
 temp_r7 = var_r7 + 0x14;
-temp_r3_2 = var_r6 + 1;
+temp_r3_2 = (s32)var_r6 + 1;
 if (*(unsigned char *)(var_r3 + 0x58) == 0) {
 var_r4 = temp_r7;
 goto block_28;
@@ -1507,7 +1527,7 @@ goto scan_done;
 block_44:
 var_r3 += 0x78;
 var_r7 = temp_r7_5 + 0x14;
-var_r6 = temp_r3_6 + 1;
+var_r6 = (unsigned char *)(temp_r3_6 + 1);
 
 }
 }
@@ -1532,7 +1552,7 @@ var_r4 = temp_r3_7;
 if (temp_r0 == 0)
 *(void ***)((unsigned char *)temp_r31 + 0x2A0) =
 (void **)((unsigned char *)temp_r31 + 0x29C);
-*(void **)(temp_r3_7 + 0x10) = 0;
+*(void **)((unsigned char *)temp_r3_7 + 0x10) = 0;
 }
 }
 *var_r4 = 1;
@@ -1793,7 +1813,8 @@ void fn_801CD970(int arg0) {
     typedef struct { s32 field0; f32 field4; s32 field8; s32 fieldC; f32 field10; f32 field14; s32 field18; s32 field1C; } DataB;
     typedef struct { u8 field0; u8 active; u8 pad2[2]; f32 timer; void *data; u32 padC; void *next; } Item;
     void *manager; Item *item;
-    f32 threshold, delta, temp, ratio, value, blend, clamp;
+    register f32 delta, threshold;
+    f32 temp, ratio, value, blend, clamp;
     char *strings;
     DataA *record0; DataB *recordA, *recordB, *recordC;
     DataB local1; DataA local0;
@@ -1921,12 +1942,19 @@ void fn_801CDE00(s32 arg0) {
     Struct_801CE670 t5, t4, t3, t2, t1, s30, s29, s28, s27, s26, s25, s24, s23, s22, s21, s20, s19, s18, s17, s16, s15, s14, s13, s12, s11, s10, s9, s8, s7, s6, s5, s4, s3, s2, s1;
     s32 dest[108];
     s32 i;
+    s32 *dp;
     base = lbl_80337AC8;
     tmp = fn_801284F8(8, (void *)(base + 0x348));
     if (tmp != 0) tmp = (void *)fn_802ADDD8(0x10);
     *(void **)((char *)arg0 + 8) = tmp;
     s31 = ((s32 (*)())fn_80204CF0)();
-    for (i = 0; i < 108; i++) dest[i] = 0;
+    dp = dest;
+    i = 54;
+    do {
+        dp[1] = 0;
+        dp[0] = 0;
+        dp += 2;
+    } while (--i != 0);
     fn_801CE6D0(&s1, (s32)(base + 0x358), (s32)((char *)arg0 + 0x18));
     dest[0] = s1.field8; dest[1] = s1.field4; dest[2] = s1.field0;
     fn_801CE6A4(&s2, (s32)(base + 0x368), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x20, s1.field8, s1.field4));
