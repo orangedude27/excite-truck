@@ -527,6 +527,7 @@ void GXInitLightAttnA_801BFEBC(void *lightObj, float aa, float ab, float ac) {
 }
 
 #pragma scheduling on
+#pragma scheduling invalid_target
 void fn_801BFECC(void *arg0, void *arg1) {
     int a11, a10, a9, a8, a7, a6, a5, a4, a3, a2, a1, a0;
     a3 = *(volatile int *)((char *)arg1 + 0x0C);
@@ -1122,7 +1123,7 @@ void fn_801C0E94(void *arg0, int arg1) {
     float base = lbl_805628BC;
     float top = lbl_8055E460;
     float delta = top - base;
-    if ((float)fabs(delta) <= *(float *)lbl_80558DC4) {
+    if ((float)fabs((double)delta) <= *(float *)lbl_80558DC4) {
         unsigned int v0 = *(unsigned int *)(src + 0x70);
         unsigned int v1 = *(unsigned int *)(src + 0x74);
         *(unsigned int *)(dst + 0x00) = v0;
@@ -1147,7 +1148,6 @@ void fn_801C0E94(void *arg0, int arg1) {
         *(unsigned int *)(dst + 0x2C) = *(unsigned int *)(src + 0x9C);
     } else {
         struct Blend6 { float v[6]; } tmp[2];
-        struct Blend6 *out = tmp;
         float *a = (float *)(src + 0x70);
         float *b = (float *)(src + 0xA0);
         int i;
