@@ -142,6 +142,13 @@ struct DummyStrmLoadStream {
     virtual void f19();
     virtual s32 f20();
 };
+struct DummyStrmUpdateCallback {
+    virtual s32 f0();
+    virtual s32 f1();
+    virtual s32 f2();
+    virtual s32 f3();
+    virtual s32 f4(void*, unsigned, s32, s32, s32, unsigned short, s32, void*, void*, s32);
+};
 struct DummyStrmLoadCallback {
     virtual void *f2();
     virtual void f0();
@@ -4268,7 +4275,7 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv
     typedef s32 (*Faf_t)(void*, void*, u32);
     void* m2;
     u8* gm;
-    s32 off;
+    unsigned int off;
     s32 i;
     void* mutex;
     if (*(void**)((u8*)self + 0x10) != 0) {
@@ -4807,7 +4814,7 @@ extern "C" void *__dt__Q36nw4hbm3snd11SoundPlayerFv(void *arg0, s32 arg1) {
             __dt__Q46nw4hbm2ut6detail12LinkListImplFv((char *)arg0 + 0xC, 0);
         if (arg0)
             __dt__Q46nw4hbm2ut6detail12LinkListImplFv(arg0, 0);
-        if (arg1 > 0)
+        if (0 < arg1)
             ((void (*)(void *))fn_80128668)(arg0);
     }
     return arg0;
@@ -6011,42 +6018,68 @@ extern "C" const char lbl_80326384[];
 extern "C" const char lbl_80326378[];
 extern "C" const char lbl_80326354[];
 #pragma opt_propagation off
-extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer(void *self, int priority, void *external) {
-    int limit;
-    if (*(u16 *)((u8 *)self + 0x24) == 0)
+extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer(void *self, int priority, void *external)
+{
+  u8 *first;
+  u8 *sound;
+  int limit;
+  if ((*((u16 *) (((u8 *) self) + 0x24))) == 0)
+  {
+    return 0;
+  }
+  while ((*((s32 *) self)) >= (*((u16 *) (((u8 *) self) + 0x24))))
+  {
+    if ((*((s32 *) (((u8 *) self) + 0xC))) == 0)
+    {
+      Panic__Q26nw4hbm2dbFPCciPCce(lbl_803263A8, 0x1F1, lbl_80326384);
+    }
+    first = *((u8 **) (((u8 *) self) + 0x10));
+    if (first == 0)
+    {
+      Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
+    }
+    sound = first - 0xC8;
+    if (sound == 0)
+    {
+      Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326378, 0x193, lbl_80326354);
+    }
+    if (sound == 0)
+    {
+      return 0;
+    }
+    limit = sound[0x74] + (*((s32 *) (sound + 0x40)));
+    limit = (limit > 0x7F) ? (0x7F) : ((limit < 0) ? (0) : (limit));
+    if (priority < limit)
+    {
+      return 0;
+    }
+    ((DummyCheckPlayable *) (first - 0xC8))->f7();
+  }
+
+  if (external != 0)
+  {
+    if ((*((u16 *) (((u8 *) external) + 0xC))) == 0)
+    {
+      return 0;
+    }
+    while ((*((s32 *) external)) >= (*((u16 *) (((u8 *) external) + 0xC))))
+    {
+      sound = (u8 *) GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlayerFv(external);
+      if (sound == 0)
+      {
         return 0;
-    while (*(s32 *)self >= *(u16 *)((u8 *)self + 0x24)) {
-        if (*(s32 *)((u8 *)self + 0xC) == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803263A8, 0x1F1, lbl_80326384);
-        u8 *first = *(u8 **)((u8 *)self + 0x10);
-        if (first == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
-        u8 *sound = first - 0xC8;
-        if (sound == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326378, 0x193, lbl_80326354);
-        if (sound == 0)
-            return 0;
-        limit = sound[0x74] + *(s32 *)(sound + 0x40);
-        limit = (limit > 0x7F) ? 0x7F : ((limit < 0) ? 0 : limit);
-        if (priority < limit)
-            return 0;
-        ((DummyCheckPlayable *)sound)->f7();
+      }
+      limit = sound[0x74] + (*((s32 *) (sound + 0x40)));
+      limit = (limit > 0x7F) ? (0x7F) : ((limit < 0) ? (0) : (limit));
+      if (priority < limit)
+      {
+        return 0;
+      }
+      ((DummyCheckPlayable *) sound)->f7();
     }
-    if (external != 0) {
-        if (*(u16 *)((u8 *)external + 0xC) == 0)
-            return 0;
-        while (*(s32 *)external >= *(u16 *)((u8 *)external + 0xC)) {
-            u8 *snd = (u8 *)GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlayerFv(external);
-            if (snd == 0)
-                return 0;
-            limit = snd[0x74] + *(s32 *)(snd + 0x40);
-            limit = (limit > 0x7F) ? 0x7F : ((limit < 0) ? 0 : limit);
-            if (priority < limit)
-                return 0;
-            ((DummyCheckPlayable *)snd)->f7();
-        }
-    }
-    return 1;
+
+  }
+  return 1;
 }
 #pragma opt_propagation reset
 extern "C" void detail_AppendPlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10PlayerHeap(void *player, void *heap) {
@@ -7192,20 +7225,20 @@ extern "C" void Update__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
     f32 temp_f1;
     f32 temp_f2;
     f32 temp_f8;
+    f32 temp_f7;
+    f32 temp_f6;
     f32 temp_f3;
     f32 temp_f4;
     f32 temp_f5;
-    f32 temp_f6;
-    f32 temp_f7;
     f32 temp_f9;
     f32 temp_f10;
     f32 temp_f25;
     f32 temp_f26;
     f32 temp_f27;
-    f32 temp_f28;
-    f32 temp_f29;
-    f32 temp_f30;
     f32 temp_f31;
+    f32 temp_f30;
+    f32 temp_f29;
+    f32 temp_f28;
     register u32 temp_r31;
     register s32 var_r28;
     register s32 var_r30;
@@ -7425,11 +7458,13 @@ extern "C" void UpdatePlayingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFv(void
     }
 }
 extern "C" void UpdateLoadingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFQ66nw4hbm3snd6detail10StrmPlayer11LoadCommand6Status(void* arg0, s32 arg1) {
+char *__repair_addr;
+
     void* slots[6];
     s32 var_r10;
     if (*(unsigned char*)((unsigned char*)arg0 + 0x53) == 0) {
         unsigned long irq = OSDisableInterrupts();
-        if (*(void **)((unsigned char*)arg0 + 0x94) == 0) {
+        if (*(u32*)((unsigned char*)arg0 + 0x94) == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C1C, 0x1F1, lbl_80326BF8);
         }
         s32 tmp28 = *(s32*)((unsigned char*)arg0 + 0x98);
@@ -7440,7 +7475,9 @@ extern "C" void UpdateLoadingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFQ66nw4
         if (nd == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326BEC, 0x193, lbl_80326BC8);
         }
-        *(s32*)&slots[5] = *(s32*)((unsigned char*)arg0 + 0x98);
+__repair_addr = (char *)((unsigned char*)arg0 + 0x98);
+
+        *(s32*)&slots[5] = *(s32*)(__repair_addr);
         Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((unsigned char*)arg0 + 0x94, (s32*)&slots[5]);
         OSRestoreInterrupts(irq);
         *(s32*)(nd + 8) = arg1;
@@ -7471,7 +7508,7 @@ extern "C" void UpdateLoadingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFQ66nw4
         slots[1] = arg0;
         slots[2] = (void*)*(s32*)((unsigned char*)arg0 + 0x434);
         s32 res = ((s32(*)(void*, void*, unsigned, s32, s32, s32, unsigned short, s32))((void**)*(void***)((unsigned char*)arg0 + 0x430))[4])((void*)*(void**)((unsigned char*)arg0 + 0x430), lbl_80415080, r27, r26, *(s32*)((unsigned char*)arg0 + 0x4A0), v30, r6, var_r10);
-        if (res == 1) {
+        if (res) {
             ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(arg0);
         } else if (res == 0) {
             ((void(*)(void*, s32))((void**)*(void**)nd)[2])(nd, 1);
@@ -8173,7 +8210,7 @@ extern "C" void ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(void* self) {
         u32 activeHead;
         u32 iterator;
         char pad2[0x438 - 0xA8];
-        u32 voice;
+        s32 voice;
     };
     Player *p = (Player *)self;
     struct { u32 irq; } irqHolder;
@@ -8192,17 +8229,19 @@ extern "C" void ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(void* self) {
     u32 head;
     head = p->activeHead;
     if (head == 0) goto done;
+    s32 iterator;
+    s32 eraseValue;
     goto check;
 loop:
     if (head == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C1C, 0x1F1, lbl_80326BF8);
-    s32 iterator = p->iterator;
+    iterator = p->iterator;
     if (iterator == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326BBC, 0x23D, lbl_80326B98);
     s32 count = iterator - 0x14;
     if (count == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326BEC, 0x193, lbl_80326BC8);
-    s32 eraseValue = p->iterator;
+    eraseValue = p->iterator;
     Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(&p->activeHead, &eraseValue);
     if (count == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C7C, 0x233, lbl_80326C58);
