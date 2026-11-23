@@ -83,37 +83,37 @@ extern int fn_80131234(int, int, int, int, int, int, int, int);
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-extern "C" int fn_802E8744(void *entry) {
+extern "C" int fn_802E8744(void *request) {
     struct Dummy {
         virtual void f0();
         virtual void f1();
         virtual int f2(int *);
     };
-    volatile int *p = (volatile int *)entry;
+    volatile int *p = (volatile int *)request;
     int v13, v12, v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1, v0;
-    int params[14];
-    int *dst;
-    int slot;
+    int normalizedRequest[14];
+    int *dest;
+    int wordIndex;
 
     /* Copy a NAND-save request entry, normalize selected fields via fn_80131234, then dispatch it. */
     v0 = p[0]; v1 = p[1]; v2 = p[2]; v3 = p[3];
     v4 = p[4]; v5 = p[5]; v6 = p[6]; v7 = p[7];
     v8 = p[8]; v9 = p[9]; v10 = p[10]; v11 = p[11];
     v12 = p[12]; v13 = p[13];
-    params[0] = v0; params[1] = v1; params[2] = v2; params[3] = v3;
-    params[4] = v4; params[5] = v5; params[6] = v6; params[7] = v7;
-    params[8] = v8; params[9] = v9; params[10] = v10; params[11] = v11;
-    params[12] = v12; params[13] = v13;
-    params[1] = fn_80131234(v1, v12, v11, v10, v9, v8, v7, v6);
-    dst = params;
-    p = (volatile int *)entry;
-    for (slot = 0; slot < 4; slot++) {
-        int value = p[6];
-        if (value != 0) dst[6] = ((int (*)(int))fn_80131234)(value);
+    normalizedRequest[0] = v0; normalizedRequest[1] = v1; normalizedRequest[2] = v2; normalizedRequest[3] = v3;
+    normalizedRequest[4] = v4; normalizedRequest[5] = v5; normalizedRequest[6] = v6; normalizedRequest[7] = v7;
+    normalizedRequest[8] = v8; normalizedRequest[9] = v9; normalizedRequest[10] = v10; normalizedRequest[11] = v11;
+    normalizedRequest[12] = v12; normalizedRequest[13] = v13;
+    normalizedRequest[1] = fn_80131234(v1, v12, v11, v10, v9, v8, v7, v6);
+    dest = normalizedRequest;
+    p = (volatile int *)request;
+    for (wordIndex = 0; wordIndex < 4; wordIndex++) {
+        int stringKey = p[6];
+        if (stringKey != 0) dest[6] = ((int (*)(int))fn_80131234)(stringKey);
         p += 2;
-        dst += 2;
+        dest += 2;
     }
-    return ((Dummy *)lbl_80560024)->f2(params);
+    return ((Dummy *)lbl_80560024)->f2(normalizedRequest);
 }
 #pragma cplusplus off
 /* rmemcard yield callback (rmemcard_yield): the NAND async wait calls this to
