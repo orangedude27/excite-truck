@@ -1070,44 +1070,45 @@ void *fn_802C6C34(int instanceId) { return (void *)fn_802C53A8(instanceId); }
 #pragma scheduling invalid_target
 void fn_802C6C38(int modelId) {
     u8 *instance = (u8 *)fn_802C5390(modelId);
-    s32 outerOff, innerOff, outerIndex;
+    s32 groupOff, elementOff, groupIndex;
     u8 *group;
-    s32 innerIndex;
-    u8 *groupList, *outerTable, *elementTable, *element;
-    u8 *node;
+    s32 elementIndex;
+    u8 *groupList, *groupTable, *elementTable, *element;
+    u8 *displayNode;
 
-    /* Release the instance's display nodes and clear its group links when its
-     * refcount drops to zero. */
+    /* Release a model instance: decrement its refcount and, when it hits zero,
+     * walk the instance's group/element tables to drop each display-node
+     * reference, then clear its group and link pointers. */
     if (--*(s32 *)instance <= 0) {
-        outerIndex = 0;
-        outerOff = 0;
+        groupIndex = 0;
+        groupOff = 0;
         goto outer_check;
 
     outer_setup:
         groupList = *(u8 **)(instance + 4);
-        outerTable = *(u8 **)(groupList + 0xC);
-        group = *(u8 **)(outerTable + outerOff);
-        innerIndex = 0;
-        innerOff = 0;
+        groupTable = *(u8 **)(groupList + 0xC);
+        group = *(u8 **)(groupTable + groupOff);
+        elementIndex = 0;
+        elementOff = 0;
         goto inner_check;
 
     inner_body:
         elementTable = *(u8 **)(group + 4);
-        element = *(u8 **)(elementTable + innerOff);
-        node = *(u8 **)(element + (*(s32 *)(instance + 8) << 2) + 0x14);
+        element = *(u8 **)(elementTable + elementOff);
+        displayNode = *(u8 **)(element + (*(s32 *)(instance + 8) << 2) + 0x14);
         *(u8 **)(element + (*(s32 *)(instance + 8) << 2) + 0x14) = 0;
-        fn_802C5BA0((int *)node);
-        innerOff += 4;
-        innerIndex++;
+        fn_802C5BA0((int *)displayNode);
+        elementOff += 4;
+        elementIndex++;
 
     inner_check:
-        if (innerIndex < *(s32 *)group) goto inner_body;
-        outerOff += 4;
-        outerIndex++;
+        if (elementIndex < *(s32 *)group) goto inner_body;
+        groupOff += 4;
+        groupIndex++;
 
     outer_check:
         groupList = *(u8 **)(instance + 4);
-        if (outerIndex < *(s32 *)(groupList + 8)) goto outer_setup;
+        if (groupIndex < *(s32 *)(groupList + 8)) goto outer_setup;
 
         *(void **)(instance + 4) = 0;
         *(void **)(instance + 0xC) = 0;
