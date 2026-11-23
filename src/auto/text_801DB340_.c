@@ -112,13 +112,11 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
     }
     h = *(float *)(node + 0) + *(float *)(node + 4) * (float)*(unsigned short *)(node + (remX * 64 + remZ * 2) + 8);
     next = *(int *)(node + 0x890);
-    if (next >= 0) {
-        for (;;) {
-            layer = *(char **)((char *)lbl_8055E990 + 0x20) + next * 0x810;
-            h += lbl_804424B0[*(int *)(layer + 0x808)] * (*(float *)(layer + 0) + *(float *)(layer + 4) * (float)*(unsigned short *)(layer + (remX * 64 + remZ * 2) + 8));
-            next = *(int *)(layer + 0x80C);
-            if (next < 0) break;
-        }
+    layer = next >= 0 ? *(char **)((char *)lbl_8055E990 + 0x20) + next * 0x810 : 0;
+    while (layer != 0) {
+        next = *(int *)(layer + 0x80C);
+        h += lbl_804424B0[*(int *)(layer + 0x808)] * (*(float *)(layer + 0) + *(float *)(layer + 4) * (float)*(unsigned short *)(layer + (remX * 64 + remZ * 2) + 8));
+        layer = next >= 0 ? *(char **)((char *)lbl_8055E990 + 0x20) + next * 0x810 : 0;
     }
     type_p = *(unsigned char **)((char *)lbl_8055E990 + 0x30) + *(int *)(node + 0x810 + remZ * 4);
     sum = 0;
@@ -814,7 +812,8 @@ void fn_801DD3BC(float *value, int flag, float x, float z) {
     float saved[75];
     float before, base, delta, minimum, t, t1;
     float zero, one;
-    float *p, *q;
+    float *p, *q, *weights;
+    int layer;
     unsigned char *pair;
     unsigned char *slot;
     int i, count, smallest;
@@ -823,55 +822,66 @@ void fn_801DD3BC(float *value, int flag, float x, float z) {
     slot = lbl_80446F18 + depth * 0x20;
     *(float **)slot = value;
     before = ((float (*)(float,float))fn_801DCF0C)(x,z);
+    {
+        float reset = lbl_80562B84;
     for (i=0; i<72; i+=8) {
-      saved[i+0] = lbl_804424B0[i+0]; lbl_804424B0[i+0] = lbl_80562B84;
-      saved[i+1] = lbl_804424B0[i+1]; lbl_804424B0[i+1] = lbl_80562B84;
-      saved[i+2] = lbl_804424B0[i+2]; lbl_804424B0[i+2] = lbl_80562B84;
-      saved[i+3] = lbl_804424B0[i+3]; lbl_804424B0[i+3] = lbl_80562B84;
-      saved[i+4] = lbl_804424B0[i+4]; lbl_804424B0[i+4] = lbl_80562B84;
-      saved[i+5] = lbl_804424B0[i+5]; lbl_804424B0[i+5] = lbl_80562B84;
-      saved[i+6] = lbl_804424B0[i+6]; lbl_804424B0[i+6] = lbl_80562B84;
-      saved[i+7] = lbl_804424B0[i+7]; lbl_804424B0[i+7] = lbl_80562B84;
+      saved[i+0] = lbl_804424B0[i+0]; lbl_804424B0[i+0] = reset;
+      saved[i+1] = lbl_804424B0[i+1]; lbl_804424B0[i+1] = reset;
+      saved[i+2] = lbl_804424B0[i+2]; lbl_804424B0[i+2] = reset;
+      saved[i+3] = lbl_804424B0[i+3]; lbl_804424B0[i+3] = reset;
+      saved[i+4] = lbl_804424B0[i+4]; lbl_804424B0[i+4] = reset;
+      saved[i+5] = lbl_804424B0[i+5]; lbl_804424B0[i+5] = reset;
+      saved[i+6] = lbl_804424B0[i+6]; lbl_804424B0[i+6] = reset;
+      saved[i+7] = lbl_804424B0[i+7]; lbl_804424B0[i+7] = reset;
     }
+    }
+    zero = lbl_80562B84;
     p = lbl_804424B0;
     q = saved;
     p += i;
     q += i;
     t = p[0];
-    p[0] = lbl_80562B84;
+    p[0] = zero;
     t1 = p[1];
     q[0] = t;
-    p[1] = lbl_80562B84;
+    p[1] = zero;
     q[1] = t1;
     q[2] = p[2];
-    p[2] = lbl_80562B84;
+    p[2] = zero;
     base = ((float (*)(float,float))fn_801DCF0C)(x,z);
     if (flag == 0) before=base;
     *(float *)(slot+4)=base+(*value-before);
-    *(int *)(slot+8)=0; *(float *)(slot+12)=lbl_80562B84;
-    *(int *)(slot+16)=0; *(float *)(slot+20)=lbl_80562B84;
-    *(int *)(slot+24)=0; *(float *)(slot+28)=lbl_80562B84;
-    count=0; pair=slot; zero=lbl_80562B84; one=lbl_80562B70;
-    for(i=0;i<75;i++) {
-        lbl_804424B0[i]=one;
+    count=0;
+    *(int *)(slot+8)=count; *(float *)(slot+12)=lbl_80562B84;
+    *(int *)(slot+16)=count; *(float *)(slot+20)=lbl_80562B84;
+    *(int *)(slot+24)=count; *(float *)(slot+28)=lbl_80562B84;
+    pair=slot; zero=lbl_80562B84; one=lbl_80562B70;
+    weights = lbl_804424B0;
+    for(flag=0;flag<75;flag++, weights++) {
+        *weights=one;
         delta=((float (*)(float,float))fn_801DCF0C)(x,z)-base;
         if (!((float)fabs(delta) <= lbl_80558DC4[0])) {
-            if (count<3) {
-                *(int *)(pair+8)=i;
-                *(float *)(pair+12)=delta;
-                count++; pair+=8;
-            } else {
-                smallest=-1; minimum=zero;
+            if (count >= 3) {
+                smallest=-1; minimum=lbl_80562B84;
                 if (smallest<0 || (float)fabs(*(float *)(slot+12)) < (float)fabs(minimum)) { smallest=0; minimum=*(float *)(slot+12); }
                 if (smallest<0 || (float)fabs(*(float *)(slot+20)) < (float)fabs(minimum)) { smallest=1; minimum=*(float *)(slot+20); }
                 if (smallest<0 || (float)fabs(*(float *)(slot+28)) < (float)fabs(minimum)) { smallest=2; }
-                if ((float)fabs(delta) > (float)fabs(*(float *)(slot+12+smallest*8))) {
-                    *(float *)(slot+12+smallest*8)=delta;
-                    *(int *)(slot+8+smallest*8)=i;
+                {
+                    float magnitude = (float)fabs(delta);
+                    float *best = (float *)(slot + 12 + smallest * 8);
+                    if ((float)fabs(*best) < magnitude) {
+                        *best = delta;
+                        *(int *)(slot+8+smallest*8)=flag;
+                    }
                 }
+            } else if (count < 3) {
+                *(int *)(pair+8)=flag;
+                *(float *)(pair+12)=delta;
+                count++; pair+=8;
+            } else {
             }
         }
-        lbl_804424B0[i]=zero;
+        *weights=zero;
     }
     for (i=0;i<72;i+=24) {
       lbl_804424B0[i+0]=saved[i+0];
@@ -899,12 +909,18 @@ void fn_801DD3BC(float *value, int flag, float x, float z) {
       lbl_804424B0[i+22]=saved[i+22];
       lbl_804424B0[i+23]=saved[i+23];
     }
-    lbl_804424B0[72]=saved[72]; lbl_804424B0[73]=saved[73]; lbl_804424B0[74]=saved[74];
     {
+        float threshold = lbl_80558DC4[0];
         int any=0;
-        if (!((float)fabs(*(float *)(slot+12)) <= lbl_80558DC4[0])) any=1;
-        if (!((float)fabs(*(float *)(slot+20)) <= lbl_80558DC4[0])) any=1;
-        if (!((float)fabs(*(float *)(slot+28)) <= lbl_80558DC4[0])) any=1;
+        float magnitude = (float)fabs(*(float *)(slot+12));
+        p = lbl_804424B0 + i;
+        q = saved + i;
+        p[0] = q[0];
+        p[1] = q[1];
+        p[2] = q[2];
+        if (!(magnitude <= threshold)) any=1;
+        if (!((float)fabs(*(float *)(slot+20)) <= threshold)) any=1;
+        if (!((float)fabs(*(float *)(slot+28)) <= threshold)) any=1;
         if (!any) lbl_8055E9A8=(void *)((int)lbl_8055E9A8-1);
     }
 }
