@@ -132,10 +132,8 @@ void fn_80208AC8(int playerSlot, int event) {
 
 #pragma push
 #pragma inline_depth(0)
-/* Initialize the sound subsystem: publish the configured sound mode, optionally
- * allocate and register a null mixer backend, load saved mixer settings, register
- * the settings-reload callback, and install the identity-event handler. */
-void fn_80208B8C(int initBackends) {
+/* Initializes the sound mixer backend and default settings. */
+/* Initialize the sound subsystem: publish the configured sound mode, optionally allocate and register a null mixer backend, load saved mixer settings, register the settings-reload callback, and install the identity-event handler. */ void fn_80208B8C(int initBackends) {
     int configMode = (int)fn_802E9A14();
     switch (configMode) {
     default:
