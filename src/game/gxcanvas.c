@@ -229,26 +229,25 @@ s32 fn_802C3060(void *arg0, s32 x, s32 y) {
     return canvas->rowBytes * y + ((s32)canvas->pixels + x * 4);
 }
 
-s32 fn_802C307C(void *arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 *arg4) {
-    /* Clip the axis-aligned integer rectangle (*arg1,*arg2)-(*arg3,*arg4) to
-       the bounds stored in arg0 at +0x14/+0x18 (min x/y) and +0x1C/+0x20
-       (max x/y). Updates the in/out corners to the intersection and returns
-       nonzero if the clipped rectangle is non-empty. */
-    s32 left = *arg1;
+s32 fn_802C307C(void *arg0, s32 *left, s32 *top, s32 *right, s32 *bottom) {
+    /* Clip the rectangle (*left,*top)-(*right,*bottom) to the canvas's clip
+       rectangle (GxCanvas.minX/minY/maxX/maxY), updating the corners in place;
+       returns nonzero if the clipped rectangle is non-empty. */
+    s32 leftValue = *left;
     s32 bound;
     s32 rightBound;
-    if (left >= *(s32 *)((u8 *)arg0 + 0x1C)) return 0;
-    if (*arg2 >= *(s32 *)((u8 *)arg0 + 0x20)) return 0;
-    bound = *(s32 *)((u8 *)arg0 + 0x14);
-    if (left < bound) *arg1 = bound;
-    bound = *(s32 *)((u8 *)arg0 + 0x18);
-    if (*arg2 < bound) *arg2 = bound;
-    bound = *(s32 *)((u8 *)arg0 + 0x1C);
-    if (*arg3 > bound) *arg3 = bound;
-    rightBound = *(s32 *)((u8 *)arg0 + 0x20);
-    if (*arg4 > rightBound) *arg4 = rightBound;
-    if (*arg1 >= *arg3) return 0;
-    return *arg2 < *arg4;
+    if (leftValue >= ((GxCanvas *)arg0)->maxX) return 0;
+    if (*top >= ((GxCanvas *)arg0)->maxY) return 0;
+    bound = ((GxCanvas *)arg0)->minX;
+    if (leftValue < bound) *left = bound;
+    bound = ((GxCanvas *)arg0)->minY;
+    if (*top < bound) *top = bound;
+    bound = ((GxCanvas *)arg0)->maxX;
+    if (*right > bound) *right = bound;
+    rightBound = ((GxCanvas *)arg0)->maxY;
+    if (*bottom > rightBound) *bottom = rightBound;
+    if (*left >= *right) return 0;
+    return *top < *bottom;
 }
 
 s32 fn_802C3130(void *canvas, s32 x, s32 y) {
