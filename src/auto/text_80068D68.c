@@ -8977,12 +8977,12 @@ tBTM_SEC_DEV_REC *btm_sec_alloc_dev(BD_ADDR bd_addr) {
     return (tBTM_SEC_DEV_REC *)devRec;
 }
 
-tBTM_SEC_DEV_REC *btm_find_dev_by_handle(UINT16 handle) {
-    int index;
-    u8 *devRec = lbl_803C0F78 + 0x1F30;
-    for (index = 0; index < 16; index++, devRec += 0x88) {
-        if ((devRec[0x76] & 0x80) && *(u16 *)(devRec + 0x18) == handle)
-            return (tBTM_SEC_DEV_REC *)devRec;
+/* Returns the in-use security device record whose HCI connection handle matches handle, or NULL if none does. */ tBTM_SEC_DEV_REC *btm_find_dev_by_handle(UINT16 handle) {
+    int i;
+    u8 *p_dev_rec = lbl_803C0F78 + 0x1F30;
+    for (i = 0; i < 16; i++, p_dev_rec += 0x88) {
+        if ((p_dev_rec[0x76] & 0x80) && *(u16 *)(p_dev_rec + 0x18) == handle)
+            return (tBTM_SEC_DEV_REC *)p_dev_rec;
     }
     return 0;
 }
