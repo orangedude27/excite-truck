@@ -18,7 +18,6 @@ struct Root_802114F4 {
     struct Object_802114F4 reg2;
     struct Object_802114F4 obj2;
 };
-#pragma scheduling invalid_target
 void fn_802114F4(void) {
     struct Object { void *next; unsigned int zero; unsigned int size; } *obj;
     unsigned int zero = 0;
