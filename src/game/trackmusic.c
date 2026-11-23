@@ -275,7 +275,6 @@ void fn_8020F950(void) {
     long nextIndex5;
     long nextIndex6;
 
-    /* Return the index of the first free track-music slot in the current context's 8x8 table, or 0 if none are free. */
     groupSlots = (char *)fn_8020F5F0(fn_8000DA10());
     slotIndex = 0;
     for (groupIndex = 0; groupIndex < 8; groupIndex++) {
