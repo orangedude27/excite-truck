@@ -14,6 +14,13 @@ extern void fn_80236914(void);
 extern u8 lbl_8055F3E9;
 extern u8 lbl_8055F3EA;
 extern u8 lbl_8055F3EB;
+extern void fn_80230F6C(s32 *);
+extern float fn_8023659C(void);
+extern float lbl_8055C404, lbl_8055C408, lbl_8055C40C, lbl_8055C410, lbl_8055C414;
+extern u8 lbl_8055F3FC, lbl_8055F404, lbl_8055F40C, lbl_8055F414, lbl_8055F41C;
+extern float lbl_8055F3F8, lbl_8055F400, lbl_8055F408, lbl_8055F410, lbl_8055F418;
+extern float lbl_80563BB0, lbl_80563BB4, lbl_80563BB8;
+extern float lbl_80563BBC, lbl_80563BC0, lbl_80563BC4;
 #pragma push
 #pragma small_data on
 extern u8 *lbl_8055F420;
