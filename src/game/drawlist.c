@@ -373,24 +373,36 @@ void *fn_802C8750(void *savedRect, int deleteFlag) {
 #pragma scheduling invalid_target
 /* Sets the current viewport rectangle (and aspect), applying a vertical scale/offset adjustment when the relevant flags are set, then updates the projection and scissor state. */
 void fn_802C87B4(int x, int y, int width, int height) {
+    /* Sets the current viewport rectangle (and aspect), applying a vertical scale/offset adjustment when the relevant flags are set, then updates the projection and scissor state. */
+    #define gViewMode lbl_8055FC74
+    #define sLetterboxMode lbl_8055FC8D
+    #define sScaleY lbl_8055D024
+    #define gRadPerDeg lbl_80564F18
+    #define sReferenceHeight lbl_8055CFF4
+    #define gViewportWidth lbl_8055FC64
+    #define gViewportX lbl_8055FC5C
+    #define gViewportY lbl_8055FC60
+    #define gViewportHeight lbl_8055FC68
+    #define gAspect lbl_8055FC6C
+    #define gRightSlope lbl_8055FC44
     int half;
     int deltaY;
     unsigned int rounding;
-    if ((unsigned char)lbl_8055FC74 == 0 && (unsigned char)lbl_8055FC8D != 0) {
-        rounding = (unsigned int)lbl_8055CFF4 >> 31;
-        rounding += (unsigned int)lbl_8055CFF4;
+    if ((unsigned char)gViewMode == 0 && (unsigned char)sLetterboxMode != 0) {
+        rounding = (unsigned int)sReferenceHeight >> 31;
+        rounding += (unsigned int)sReferenceHeight;
         half = (int)rounding >> 1;
         deltaY = y - half;
-        y = half + (int)(lbl_80564F18 + lbl_8055D024 * (float)deltaY);
-        height = (int)(lbl_80564F18 + (float)height * lbl_8055D024);
+        y = half + (int)(gRadPerDeg + sScaleY * (float)deltaY);
+        height = (int)(gRadPerDeg + (float)height * sScaleY);
     }
-    lbl_8055FC64 = (void *)width;
-    lbl_8055FC5C = (void *)x;
-    lbl_8055FC60 = (void *)y;
-    lbl_8055FC68 = (void *)height;
-    lbl_8055FC6C = (float)width / (float)height;
+    gViewportWidth = (void *)width;
+    gViewportX = (void *)x;
+    gViewportY = (void *)y;
+    gViewportHeight = (void *)height;
+    gAspect = (float)width / (float)height;
     fn_802D01E0(x, y, width);
-    fn_802CC518(width, lbl_8055FC44);
+    fn_802CC518(width, gRightSlope);
 }
 #pragma pop
 
@@ -466,7 +478,11 @@ void fn_802C89E8(float *arg0) {
     if ((unsigned char)lbl_8055FC74 == 0) {
         var_f2 *= lbl_80564EF8 / lbl_8055D020;
     }
-    var_f4 = (unsigned char)lbl_8055FC74 != 0 ? lbl_80564EF8 : lbl_80564EF8 / lbl_8055D020;
+    if ((unsigned char)lbl_8055FC74 != 0) {
+        var_f4 = lbl_80564EF8;
+    } else {
+        var_f4 = lbl_80564EF8 / lbl_8055D020;
+    }
 
     fill = lbl_80564F00;
     var_f2 = -var_f2;
@@ -485,9 +501,9 @@ void fn_802C89E8(float *arg0) {
     width = (int)lbl_8055FC64;
     x = (int)lbl_8055FC5C;
     scale = lbl_80564F18;
-    arg0[10] = scale * (float)y + (float)height;
+    arg0[10] = (float)y + scale * (float)height;
     arg0[11] = var_f2;
-    arg0[9] = scale * (float)x + (float)width;
+    arg0[9] = (float)x + scale * (float)width;
 }
 void fn_802C8B08(unsigned int *dst) {
     /* Copy the current 0x30-byte block at lbl_804C1410 (as 4 pairs plus a 0x10-byte tail) to dst. */
