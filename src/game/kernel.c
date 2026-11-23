@@ -16,7 +16,7 @@ extern char lbl_8034CD30[];
 extern void fn_802E317C(const char *, ...);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_8034CEE4[];
-extern int lbl_804DB790[];
+extern int sResetCallbacks[];
 extern int lbl_804DB7D0[];
 extern int lbl_8055FF00;
 extern int lbl_8055FEF8;
@@ -800,13 +800,13 @@ void KERNEL_AddResetCallback(int callback, int name) {
     /* Append a reset callback and its log name to the parallel registration tables. */
     int index = lbl_8055FF00;
     lbl_8055FF00 = index + 1;
-    lbl_804DB790[index] = callback;
+    sResetCallbacks[index] = callback;
     lbl_804DB7D0[index] = name;
 }
 /* Reset / power-down.
  * A subsystem that has to wind down before the console leaves the game
  * registers with KERNEL_AddResetCallback(callback, name):
- *   lbl_804DB790[]  the registered callbacks
+ *   sResetCallbacks[]  the registered callbacks
  *   lbl_804DB7D0[]  the name a callback logs under when it cancels a reset
  *   lbl_8055FF00    how many are registered
  * KERNEL_Reset runs the table, then resets. */
@@ -866,7 +866,7 @@ void KERNEL_Reset(int mode) {
 
     /* Ask every subsystem whether the reset may go ahead. */
     fn_802E30C8(KERNEL_LOG_RESET_BEGIN);
-    callback = (ResetCallback *)lbl_804DB790;
+    callback = (ResetCallback *)sResetCallbacks;
     for (i = 0; i < lbl_8055FF00; callback++, i++) {
         if ((*callback)(KERNEL_RESET_ASK, mode) == 1) {
             fn_802E30C8(KERNEL_LOG_CANCELLED, (const char *)lbl_804DB7D0[i]);
@@ -876,7 +876,7 @@ void KERNEL_Reset(int mode) {
     /* Nobody objected: tell them all, last registered first. */
     fn_802E30C8(KERNEL_LOG_RESET_OKAY);
     n = lbl_8055FF00 - 1;
-    last = (ResetCallback *)lbl_804DB790 + n;
+    last = (ResetCallback *)sResetCallbacks + n;
     for (; n >= 0; last--, n--) {
         (*last)(KERNEL_RESET_NOTIFY, mode);
     }
