@@ -1834,11 +1834,11 @@ void __GXSetVCD(void) {
     unsigned int compCount;
     unsigned int vatPart;
     unsigned int vatCount;
-    register unsigned int cRaw, sRaw;
     unsigned int masked;
     unsigned int sizeCount;
     unsigned int sizePart;
     unsigned int countPart;
+    register unsigned int cRaw, sRaw;
     volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
     volatile unsigned int *fifo32 = (volatile unsigned int *)0xCC008000;
     unsigned int *data = __GXData;
@@ -1878,17 +1878,19 @@ extern unsigned char lbl_80558E40;
 void __GXCalculateVLim(void) {
     register unsigned int *gx = __GXData;
     register unsigned int flags;
+    register int extra;
+    register int mode;
     register unsigned char *table;
     register unsigned int vtx;
     register int sum;
     int tableValue;
-    register int extra;
 
     if (*(unsigned short *)((char *)gx + 4) == 0) return;
 
     flags = gx[0x14 / 4];
-    table = &lbl_80558E40;
     extra = gx[0x1C / 4];
+    mode = (extra >> 9) & 1;
+    table = &lbl_80558E40;
 
     sum = flags & 1;
     sum += (flags >> 1) & 1;
@@ -1903,7 +1905,7 @@ void __GXCalculateVLim(void) {
 
     sum += (flags >> 8) & 1;
     sum += table[(flags >> 9) & 3];
-    sum += tableValue * (((extra >> 9) & 1) == 1 ? 3 : 1);
+    sum += tableValue * (mode == 1 ? 3 : 1);
 
     table = &lbl_80558E38;
     sum += table[(flags >> 13) & 3];
@@ -3130,12 +3132,12 @@ void __GXSetDirtyState(void) {
     gxdt[0x5FC / 4] = 0;
 }
 
-void GXBegin(unsigned char prim, unsigned char vtxfmt, unsigned short nverts)
+void GXBegin(s32 prim, unsigned char vtxfmt, unsigned short nverts)
 {
   unsigned int *data = __GXData;
   unsigned int *dim;
   unsigned int new_var2[2];
-  unsigned int i = 0;
+  unsigned int i;
   unsigned short width;
   volatile unsigned short *new_var;
   if (data[0x5FC / 4] != 0)
@@ -3639,31 +3641,25 @@ unsigned int GXSetDispCopyYScale(f32 vscale) {
 }
 
 void GXSetCopyClear(unsigned char *color, unsigned int depth) {
+    unsigned int first = 0;
+    unsigned int second = 0;
+    unsigned int third = 0;
     unsigned int *data;
-    {
-        unsigned int first = 0;
-        first = __rlwimi(first, color[0], 0, 24, 31);
-        *(volatile unsigned char *)0xCC008000 = 0x61;
-        first = __rlwimi(first, color[3], 8, 16, 23);
-        first = __rlwimi(first, 0x4F, 24, 0, 7);
-        *(volatile unsigned int *)0xCC008000 = first;
-    }
-    {
-        unsigned int second = 0;
-        second = __rlwimi(second, color[2], 0, 24, 31);
-        second = __rlwimi(second, color[1], 8, 16, 23);
-        *(volatile unsigned char *)0xCC008000 = 0x61;
-        second = __rlwimi(second, 0x50, 24, 0, 7);
-        data = __GXData;
-        *(volatile unsigned int *)0xCC008000 = second;
-    }
-    {
-        unsigned int third = 0;
-        third = __rlwimi(third, depth, 0, 8, 31);
-        third = __rlwimi(third, 0x51, 24, 0, 7);
-        *(volatile unsigned char *)0xCC008000 = 0x61;
-        *(volatile unsigned int *)0xCC008000 = third;
-    }
+    first = __rlwimi(first, color[0], 0, 24, 31);
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    first = __rlwimi(first, color[3], 8, 16, 23);
+    first = __rlwimi(first, 0x4F, 24, 0, 7);
+    *(volatile unsigned int *)0xCC008000 = first;
+    second = __rlwimi(second, color[2], 0, 24, 31);
+    second = __rlwimi(second, color[1], 8, 16, 23);
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    second = __rlwimi(second, 0x50, 24, 0, 7);
+    data = __GXData;
+    *(volatile unsigned int *)0xCC008000 = second;
+    third = __rlwimi(third, depth, 0, 8, 31);
+    third = __rlwimi(third, 0x51, 24, 0, 7);
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = third;
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
@@ -4418,8 +4414,6 @@ void GXInitTexObj(void *obj, void *image, unsigned short width, unsigned short h
     GXTexObjInt *t = (GXTexObjInt *)obj;
     u32 mode, image0, image3, maxLOD;
     int rowShift, colShift;
-    u8 flags;
-    u16 count;
     memset(t, 0, 0x20);
     mode = t->mode0;
     mode = __rlwimi(mode, wrapS, 0, 30, 31);
@@ -4438,12 +4432,12 @@ void GXInitTexObj(void *obj, void *image, unsigned short width, unsigned short h
     } else {
         t->mode0 = __rlwimi(mode, 4, 5, 24, 26);
     }
+    t->fmt = format;
     image0 = t->image0;
     image0 = __rlwimi(image0, width - 1, 0, 22, 31);
-    t->fmt = format;
-    image0 = __rlwimi(image0, height - 1, 10, 12, 21);
     image3 = t->image3;
     image3 = __rlwimi(image3, (u32)image, 27, 8, 31);
+    image0 = __rlwimi(image0, height - 1, 10, 12, 21);
     image0 = __rlwimi(image0, format, 20, 8, 11);
     t->image3 = image3;
     t->image0 = image0;
@@ -4461,10 +4455,13 @@ void GXInitTexObj(void *obj, void *image, unsigned short width, unsigned short h
     default:
         t->loadFmt = 2; rowShift = 2; colShift = 2; break;
     }
-    count = (((width + (1 << rowShift) - 1) >> rowShift) * ((height + (1 << colShift) - 1) >> colShift)) & 0x7fff;
-    flags = t->flags;
-    t->flags = flags | 2;
-    t->loadCnt = count;
+    {
+        u32 cw = (width + (1 << rowShift) - 1) >> rowShift;
+        u16 count;
+        t->flags |= 2;
+        count = (cw * ((height + (1 << colShift) - 1) >> colShift)) & 0x7fff;
+        t->loadCnt = count;
+    }
 #pragma opt_common_subs reset
 }
 
@@ -4746,14 +4743,14 @@ unsigned short GXGetTexObjTlut(void *tlutObj) {
     return *(unsigned short *)((char *)tlutObj + 8);
 }
 
-void GXLoadTlut(void *arg0, int arg1) {
+void GXLoadTlut(const void *arg0, int arg1) {
     union Low10 {
         unsigned int v;
         struct { unsigned int hi : 22; unsigned int lo : 10; } f;
     };
-    union Low10 v;
     unsigned int *src = (unsigned int *)arg0;
     unsigned int *dst = ((unsigned int *(*)(int))__GXData[0x51C / 4])(arg1);
+    union Low10 v;
     __GXFlushTextureState();
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = src[1];
@@ -5457,7 +5454,7 @@ void GXSetTevColorS10(s32 tevReg, void *color) {
 
 void GXSetTevKColor(s32 tevReg, unsigned int *color) {
     unsigned int index = tevReg << 1;
-    unsigned int value = *(volatile unsigned int *)color;
+    unsigned int value = *color;
     unsigned int first = __rlwimi(__rlwimi(__rlwimi((index + 0xE0) << 24, value, 8, 24, 31), value, 12, 12, 19), 8, 20, 8, 11);
     unsigned int second = __rlwimi(__rlwimi(__rlwimi((index + 0xE1) << 24, value, 24, 24, 31), value, 28, 12, 19), 8, 20, 8, 11);
     unsigned int *data = __GXData;
@@ -6175,10 +6172,12 @@ void GXSetProjection(float *arg0, int arg1) {
 
 void GXSetProjectionv(float *arg0) {
     unsigned int *data;
-    int value = 1;
-    if (lbl_80560BC8 == arg0[0]) value = 0;
+    enum E { GX_PERSPECTIVE, GX_ORTHOGRAPHIC };
+    enum E type;
+    if (lbl_80560BC8 == arg0[0]) type = GX_PERSPECTIVE;
+    else type = GX_ORTHOGRAPHIC;
     data = __GXData;
-    data[0x528 / 4] = value;
+    data[0x528 / 4] = type;
     *(float *)((char *)data + 0x52C) = arg0[1];
     *(float *)((char *)data + 0x534) = arg0[2];
     *(float *)((char *)data + 0x53C) = arg0[4];
