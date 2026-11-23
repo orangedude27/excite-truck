@@ -3559,9 +3559,9 @@ void buildViewXform(void) {
         view->t.y = z * m21 + (x * m01 + y * m11);
         view->t.z = z * m22 + (x * m02 + y * m12);
     }
-    view->t.x *= lbl_80564F90;
-    view->t.y *= lbl_80564F90;
-    view->t.z *= lbl_80564F90;
+    view->t.x *= gNegOne;
+    view->t.y *= gNegOne;
+    view->t.z *= gNegOne;
     GXSetCurrentMtx(0);
 }
 /* Apply the pending viewport change held in the sViewport settings block (+1 is
