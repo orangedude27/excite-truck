@@ -21824,9 +21824,10 @@ extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2)
           s32 cnt;
           pat = (((lbl_8031EC40[(pat >> 26) & 0xC] << 4) | lbl_8031EC40[(pat >> 24) & 0xC]) | (lbl_8031EC40[(pat >> 28) & 0xC] << 8)) << 19;
         }
-        if (n > 0)
-        {
-          cnt = (s32) (((u32) (n + 1)) >> 1);
+                  if (n > 0)
+          {
+            s32 cnt;
+            cnt = (s32) (((u32) (n + 1)) >> 1);
           for (j = 0; j < cnt; j++)
           {
             u32 m27 = pat & 0x40000000;
