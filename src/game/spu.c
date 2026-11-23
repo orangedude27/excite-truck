@@ -399,12 +399,11 @@ enum {
     SPU_CHANNEL_COUNT = 32
 };
 
-/* Start the SPU voice layer (logs "SpuBegin"): take all of ARAM as the mix
- * buffer and invalidate its cache mirror, allocate the "SpuSample" slots, the
- * 32 "SpuChannel" entries and the "Spucache", clear the ARAM block by copying
- * a fresh zeroed buffer into it, hand fn_802E4F98 to the AI DMA interrupt to
- * refill the voices, and arm the periodic alarm whose callback (fn_802E52EC)
- * feeds the Wii remote speakers. */
+/* Start the SPU voice layer (logs "SpuBegin"): reserve all of ARAM as the mix
+ * buffer and invalidate its cache mirror, allocate the SpuSample slots, the 32
+ * SpuChannel entries and the Spucache, clear ARAM by copying in a zeroed buffer,
+ * register fn_802E4F98 as the AI DMA refill callback, and arm the periodic alarm
+ * whose callback fn_802E52EC feeds the Wii Remote speakers. */
 void Spu_Init(void) {
     extern char lbl_8034D210[];
     extern int lbl_8055FF7C, lbl_8055FF80, lbl_8055FF84, lbl_8055FF88;
