@@ -484,18 +484,18 @@ u32 fn_802E8D84(void) { return 1; }
  * own).  rmemcard_out_of_space is consumed here: only the first failure after
  * the module ran out of blocks asks for free space.
  */
-int rmemcardReadFile(const char *path, void *buf, int len) {
+/* Read a whole NAND file into buf: wait for the async machine to idle, require a valid banner and an existing file, read through the shared staging buffer when one is allocated, and run the module's recovery handlers on any failure. Returns 1 on success, 0 otherwise. */ int rmemcardReadFile(const char *path, void *buf, int len) {
     /* NANDFileInfo for the file (0x8C bytes, see revolution/NAND/nand.h);
      * the word in front of it is the one the exits test. */
     struct { int self; char info[0x8C]; } file;
     int banner_ok, was_out_of_space;
-    char *messages;
+    char *logStrings;
     int bytes_read;
     int file_exists, result;
 
-    messages = rmemcard_log_strings;
+    logStrings = rmemcard_log_strings;
     rmemcard_current_path = (int)path;
-    if (((int (*)(void *, void (*)(void)))rmemcard_wait_async)(messages + 0x550, rmemcard_yield) == 0) {
+    if (((int (*)(void *, void (*)(void)))rmemcard_wait_async)(logStrings + 0x550, rmemcard_yield) == 0) {
         if (&file.self != 0) rmemcard_current_path = 0; /* timed out waiting */
         return 0;
     }
@@ -504,20 +504,20 @@ int rmemcardReadFile(const char *path, void *buf, int len) {
     banner_ok = rmemcard_test_banner_ok();
     file_exists = rmemcard_file_exists(path);
     if (banner_ok == 0 && file_exists == 0) {
-        fn_802E30C8(messages + 0x560); /* no banner and no file to read */
+        fn_802E30C8(logStrings + 0x560); /* no banner and no file to read */
         if (was_out_of_space != 0) rmemcard_recover_space(len);
         if (&file.self != 0) rmemcard_current_path = 0;
         return 0;
     }
     if (banner_ok == 0 || file_exists == 0) {
-        fn_802E30C8(messages + 0x594); /* one of the two is missing */
+        fn_802E30C8(logStrings + 0x594); /* one of the two is missing */
         if (((int (*)(void))rmemcardRecover)() != 0) rmemcard_recover_space(len);
         if (&file.self != 0) rmemcard_current_path = 0;
         return 0;
     }
     result = NANDOpen(path, file.info, 1 /* NAND_ACCESS_READ */);
     if (result != 0) {
-        fn_802E30C8(messages + 0x5CC, result);
+        fn_802E30C8(logStrings + 0x5CC, result);
         if (was_out_of_space != 0) rmemcard_recover_space(len);
         if (&file.self != 0) rmemcard_current_path = 0;
         return 0;
@@ -525,7 +525,7 @@ int rmemcardReadFile(const char *path, void *buf, int len) {
     if (rmemcard_async_buffer != 0) {
         /* read into the shared staging buffer and copy out of it */
         if (len > RMEMCARD_ASYNC_BUFFER_SIZE) {
-            fn_802E317C(messages + 0x5F0, len, RMEMCARD_ASYNC_BUFFER_SIZE);
+            fn_802E317C(logStrings + 0x5F0, len, RMEMCARD_ASYNC_BUFFER_SIZE);
         }
         bytes_read = NANDRead(file.info, (void *)rmemcard_async_buffer, len);
         if (bytes_read == len) {
@@ -535,7 +535,7 @@ int rmemcardReadFile(const char *path, void *buf, int len) {
         bytes_read = NANDRead(file.info, buf, len);
     }
     if (bytes_read != len) {
-        fn_802E30C8(messages + 0x624, bytes_read);
+        fn_802E30C8(logStrings + 0x624, bytes_read);
         NANDClose(file.info);
         if (bytes_read == -4 /* NAND_RESULT_CORRUPT */) {
             ((void (*)(void))rmemcardCorruptReset)();
@@ -547,7 +547,7 @@ int rmemcardReadFile(const char *path, void *buf, int len) {
     }
     result = NANDClose(file.info);
     if (result != 0) {
-        fn_802E30C8(messages + 0x644, result);
+        fn_802E30C8(logStrings + 0x644, result);
         if (&file.self != 0) rmemcard_current_path = 0;
         return 0;
     }
