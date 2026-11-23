@@ -645,8 +645,11 @@ extern void GXSetTevColor();
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_802DC464(int positions, int vertexCount, unsigned short *__restrict list, int listSize) {
-    /* Sets the vertex positions, applies the cpu-light fade alpha to TEV color 1, then draws the index list as GX triangle fans. */
+void fn_802DC464(int positionArray, int vertexCount, unsigned short *__restrict indexList, int indexListSize) {
+    /* Point the GX position array at `positionArray` (vertexCount xyz vertices), fade TEV
+     * colour 1 to round(255 * CpuLight_FadeScale) clamped to 0..255 (only when that byte
+     * changed since the last call), then push every [count, index...] run of `indexList`
+     * to the GP FIFO as a GX triangle fan until indexListSize words have been written. */
     float fadeFactor;
     float scaledAlpha;
     float roundedAlpha;
@@ -660,7 +663,7 @@ void fn_802DC464(int positions, int vertexCount, unsigned short *__restrict list
     int i;
     unsigned short vertexIndex;
     volatile unsigned short *fifo = (volatile unsigned short *)GXFIFO_ADDR;
-    CpuLight_SetPositionArray(positions, vertexCount);
+    CpuLight_SetPositionArray(positionArray, vertexCount);
     fadeFactor = CpuLight_FadeScale;
     scaledAlpha = CpuLight_AlphaScale * fadeFactor;
     if (scaledAlpha < CpuLight_Zero)
@@ -683,12 +686,12 @@ void fn_802DC464(int positions, int vertexCount, unsigned short *__restrict list
         CpuLight_CachedTevAlpha = alphaByte;
         GXSetTevColor(GX_TEVREG0, color);
     }
-    while (listSize > 0) {
-        indexCount = *list++;
-        GXBegin(GX_TRIANGLEFAN, 0, indexCount);
-        listSize -= indexCount + 1;
+    while (indexListSize > 0) {
+        indexCount = *indexList++;
+        GXBegin(GX_TRIANGLEFAN, GX_VTXFMT0, indexCount);
+        indexListSize -= indexCount + 1;
         for (i = 0; i < indexCount; ++i) {
-            vertexIndex = *list++;
+            vertexIndex = *indexList++;
             *fifo = vertexIndex;
         }
     }
