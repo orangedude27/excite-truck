@@ -223,12 +223,12 @@ void fn_802E1A9C(void *desc, int *outCombinedWidth, int *outCombinedPlusHeight, 
 #pragma opt_common_subs off
 int fn_802E1BB4(void *obj, int unused) {
     /* Build an image bank's textures: ask fn_802E1A9C how the four images of one
-     * slot lay out, take the whole run of slots from the allocator in one block,
-     * then make a GX texture object for every image the slot actually uses and
-     * remember where its data went.  Anything failing gives the block back. */
+     * slot lay out, allocate the whole run of slots as one handle, then make a
+     * GX texture object for every image a slot uses and record where its data
+     * went.  Free the handle again if anything fails. */
     typedef void (*Calc)(void *, int *, int *, int *, int *, int *, int *, int *);
     int combinedWidth, combinedPlusHeight, alignedWidthA, rowBytes, totalBytes, widthA, widthB;
-    int handle;
+    int bufferHandle;
     char *slot;
     char *texObjs;
     unsigned char *image;
@@ -236,10 +236,10 @@ int fn_802E1BB4(void *obj, int unused) {
     (void)unused;
     ((Calc)fn_802E1A9C)((char *)obj + 0x100, &combinedWidth, &combinedPlusHeight, &alignedWidthA, &rowBytes, &totalBytes, &widthA, &widthB);
     /* one rowBytes-aligned row of image data per slot, plus the alignment slack */
-    handle = fn_8011FFC4(totalBytes + rowBytes * *(int *)((char *)obj + 0x100) + 0x7F, rowBytes);
-    if (handle == 0) goto fail;
-    *(int *)((char *)obj + 0x178) = handle;
-    image = (unsigned char *)(((unsigned int)handle + 0x7F) & ~0x7F);
+    bufferHandle = fn_8011FFC4(totalBytes + rowBytes * *(int *)((char *)obj + 0x100) + 0x7F, rowBytes);
+    if (bufferHandle == 0) goto fail;
+    *(int *)((char *)obj + 0x178) = bufferHandle;
+    image = (unsigned char *)(((unsigned int)bufferHandle + 0x7F) & ~0x7F);
     slot = (char *)obj;    /* the slot's own record starts at +0x118 */
     texObjs = (char *)obj; /* and its four GXTexObj at +0x00 */
     for (i = 0; i < *(int *)((char *)obj + 0x100); i++, image += rowBytes, slot += 0x30, texObjs += 0x80) {
