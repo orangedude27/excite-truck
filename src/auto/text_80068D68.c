@@ -7843,8 +7843,8 @@ void bta_hh_add_device_to_list(void *devCb, s8 handle, s16 attrMask, void *desc,
 }
 
 BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
-    UINT8 max_devt = lbl_80559030[0];
     UINT8 cod = (sub_class >> 2) & 0x3F;
+    UINT8 max_devt = lbl_80559030[0];
     UINT8 xx;
     for (xx = 0; xx < max_devt; xx++) {
         UINT8 *p_list = *(UINT8 **)(lbl_80559030 + 4);
@@ -27247,149 +27247,93 @@ void sdp_server_handle_client_req(tCONN_CB *p_ccb, BT_HDR *p_msg) {
     }
 }
 
-void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len, UINT8 *p) {
-    UINT16 start_offset;
-    tSDP_RECORD *p_rec;
-    UINT16 num_uids;
-    UINT16 total_handles;
-    u8 *uid;
-    tSDP_UUID_SEQ seq;
-    u32 handles[20];
-    UINT16 max_handles;
-    UINT16 count;
-    UINT8 sp17c;
-    u8 *p_param_len;
-    u8 *p_end;
-    u8 *p_cont;
-    u32 param_len2;
-    BT_HDR *buf;
-    s32 total;
+void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len, UINT8 *p_req) {
+    UINT16 max_replies, cur_handles, rem_handles, cont_offset;
+    tSDP_UUID_SEQ uid_seq;
+    UINT8 *p_rsp, *p_rsp_start, *p_rsp_param_len;
+    UINT16 rsp_param_len, num_rsp_handles, xx;
+    UINT32 rsp_handles[20];
+    tSDP_RECORD *p_rec = NULL;
+    BT_HDR *p_buf;
+    BOOLEAN is_cont = FALSE;
 
-    sp17c = 0;
-    p_rec = NULL;
-    uid = sdpu_extract_uid_seq(p, param_len, &seq);
-    if ((uid == NULL) || (seq.num_uids == 0)) {
+    p_req = sdpu_extract_uid_seq(p_req, param_len, &uid_seq);
+
+    if ((!p_req) || (!uid_seq.num_uids)) {
         sdpu_build_n_send_error(p_ccb, trans_num, 3, 0);
         return;
     }
-    num_uids = ((UINT16) uid[0] << 8) + uid[1];
-    if (num_uids > 0x14) {
-        num_uids = 0x14;
-    }
-    total_handles = 0;
-    while (total_handles < num_uids) {
-        p_rec = sdp_db_service_search(p_rec, &seq);
-        if (p_rec == 0) {
+
+    BE_STREAM_TO_UINT16(max_replies, p_req);
+
+    if (max_replies > 20)
+        max_replies = 20;
+
+    for (num_rsp_handles = 0; num_rsp_handles < max_replies; ) {
+        p_rec = sdp_db_service_search(p_rec, &uid_seq);
+        if (p_rec)
+            rsp_handles[num_rsp_handles++] = p_rec->record_handle;
+        else
             break;
-        }
-        handles[total_handles] = p_rec->record_handle;
-        total_handles++;
     }
-    if (uid[2] != 0) {
-        if (uid[2] != 2) {
+
+    if (*p_req) {
+        if (*p_req++ != 2) {
             sdpu_build_n_send_error(p_ccb, trans_num, 5, 0);
             return;
         }
-        p_cont = uid + 3;
-        start_offset = ((UINT16) p_cont[0] << 8) + p_cont[1];
-        if (start_offset != ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset) {
+        BE_STREAM_TO_UINT16(cont_offset, p_req);
+        if (cont_offset != ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset) {
             sdpu_build_n_send_error(p_ccb, trans_num, 5, 0);
             return;
         }
-        count = total_handles - start_offset;
+        rem_handles = num_rsp_handles - cont_offset;
     } else {
-        count = total_handles;
-        start_offset = 0;
+        rem_handles = num_rsp_handles;
+        cont_offset = 0;
     }
-    max_handles = (UINT16)(((s32)p_ccb->rem_mtu_size - 12) / 4);
-    if (count <= max_handles) {
-        max_handles = count;
-    } else {
-        sp17c = 1;
-        ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset += max_handles;
+
+    cur_handles = (UINT16)((p_ccb->rem_mtu_size - 12) / 4);
+
+    if (rem_handles <= cur_handles)
+        cur_handles = rem_handles;
+    else {
+        ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset += cur_handles;
+        is_cont = TRUE;
     }
-    buf = (BT_HDR *)GKI_getpoolbuf(2);
-    if (buf == NULL) {
-        if (lbl_803C4C40[0x4630] >= 1) {
+
+    if ((p_buf = (BT_HDR *)GKI_getpoolbuf(2)) == NULL) {
+        if (lbl_803C4C40[0x4630] >= 1)
             fn_8007093C(0xA0000, lbl_8031A50C);
-        }
         return;
     }
-    buf->offset = 9;
-    p_end = (UINT8 *)buf + 0x11;
-    p_param_len = p_end + 3;
-    p_end[0] = 3;
-    total = start_offset + max_handles;
-    p_end[1] = (UINT8)(trans_num >> 8);
-    p_end[2] = (UINT8)trans_num;
-    p_param_len[2] = (UINT8)(total_handles >> 8);
-    p_param_len[3] = (UINT8)total_handles;
-    p_param_len[4] = (UINT8)(max_handles >> 8);
-    p_param_len[5] = (UINT8)max_handles;
-    p_end = p_param_len + 6;
-    if (start_offset < total) {
-        if ((total - start_offset) > 8) {
-            while (start_offset < total - 8) {
-                p_end[0] = (UINT8)(handles[start_offset] >> 24);
-                p_end[1] = (UINT8)(handles[start_offset] >> 16);
-                p_end[2] = (UINT8)(handles[start_offset] >> 8);
-                p_end[3] = (UINT8)handles[start_offset];
-                p_end[4] = (UINT8)(handles[start_offset + 1] >> 24);
-                p_end[5] = (UINT8)(handles[start_offset + 1] >> 16);
-                p_end[6] = (UINT8)(handles[start_offset + 1] >> 8);
-                p_end[7] = (UINT8)handles[start_offset + 1];
-                p_end[8] = (UINT8)(handles[start_offset + 2] >> 24);
-                p_end[9] = (UINT8)(handles[start_offset + 2] >> 16);
-                p_end[10] = (UINT8)(handles[start_offset + 2] >> 8);
-                p_end[11] = (UINT8)handles[start_offset + 2];
-                p_end[12] = (UINT8)(handles[start_offset + 3] >> 24);
-                p_end[13] = (UINT8)(handles[start_offset + 3] >> 16);
-                p_end[14] = (UINT8)(handles[start_offset + 3] >> 8);
-                p_end[15] = (UINT8)handles[start_offset + 3];
-                p_end[16] = (UINT8)(handles[start_offset + 4] >> 24);
-                p_end[17] = (UINT8)(handles[start_offset + 4] >> 16);
-                p_end[18] = (UINT8)(handles[start_offset + 4] >> 8);
-                p_end[19] = (UINT8)handles[start_offset + 4];
-                p_end[20] = (UINT8)(handles[start_offset + 5] >> 24);
-                p_end[21] = (UINT8)(handles[start_offset + 5] >> 16);
-                p_end[22] = (UINT8)(handles[start_offset + 5] >> 8);
-                p_end[23] = (UINT8)handles[start_offset + 5];
-                p_end[24] = (UINT8)(handles[start_offset + 6] >> 24);
-                p_end[25] = (UINT8)(handles[start_offset + 6] >> 16);
-                p_end[26] = (UINT8)(handles[start_offset + 6] >> 8);
-                p_end[27] = (UINT8)handles[start_offset + 6];
-                p_end[28] = (UINT8)(handles[start_offset + 7] >> 24);
-                p_end[29] = (UINT8)(handles[start_offset + 7] >> 16);
-                p_end[30] = (UINT8)(handles[start_offset + 7] >> 8);
-                p_end[31] = (UINT8)handles[start_offset + 7];
-                start_offset += 8;
-                p_end += 0x20;
-            }
-        }
-        while (start_offset < total) {
-            u32 h = handles[start_offset];
-            p_end[0] = (UINT8)(h >> 24);
-            p_end[1] = (UINT8)(h >> 16);
-            p_end[2] = (UINT8)(h >> 8);
-            p_end[3] = (UINT8)h;
-            start_offset++;
-            p_end += 4;
-        }
-    }
-    if (sp17c != 0) {
-        p_end[0] = 2;
-        p_end[1] = (UINT8)(((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset >> 8);
-        p_end[2] = (UINT8)((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset;
-        p_end += 3;
-    } else {
-        p_end[0] = 0;
-        p_end += 1;
-    }
-    param_len2 = (u32)p_end - (u32)p_param_len - 2;
-    p_param_len[0] = (UINT8)(param_len2 >> 8);
-    p_param_len[1] = (UINT8)param_len2;
-    buf->len = (UINT16)((u32)p_end - ((u32)buf + 0x11));
-    L2CA_DataWrite(p_ccb->connection_id, buf);
+    p_buf->offset = 9;
+    p_rsp = p_rsp_start = (UINT8 *)p_buf + 0x11;
+
+    UINT8_TO_BE_STREAM(p_rsp, 3);
+    UINT16_TO_BE_STREAM(p_rsp, trans_num);
+
+    p_rsp_param_len = p_rsp;
+    p_rsp += 2;
+
+    UINT16_TO_BE_STREAM(p_rsp, num_rsp_handles);
+    UINT16_TO_BE_STREAM(p_rsp, cur_handles);
+
+    for (xx = cont_offset; xx < cont_offset + cur_handles; xx++)
+        UINT32_TO_BE_STREAM(p_rsp, rsp_handles[xx]);
+
+    if (is_cont) {
+        UINT8_TO_BE_STREAM(p_rsp, 2);
+        UINT16_TO_BE_STREAM(p_rsp, ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset);
+    } else
+        UINT8_TO_BE_STREAM(p_rsp, 0);
+
+    rsp_param_len = p_rsp - p_rsp_param_len - 2;
+    UINT16_TO_BE_STREAM(p_rsp_param_len, rsp_param_len);
+
+    p_buf->len = p_rsp - p_rsp_start;
+
+    L2CA_DataWrite(p_ccb->connection_id, p_buf);
 }
 
 #pragma opt_common_subs off
