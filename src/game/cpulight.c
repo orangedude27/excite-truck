@@ -659,9 +659,9 @@ void fn_802DC464(int positions, int vertexCount, unsigned short *__restrict list
     int indexCount;
     int i;
     unsigned short vertexIndex;
-    volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
+    volatile unsigned short *fifo = (volatile unsigned short *)GXFIFO_ADDR;
     CpuLight_SetPositionArray(positions, vertexCount);
-    fadeFactor = ((float *)lbl_804DB068)[5];
+    fadeFactor = CpuLight_FadeScale;
     scaledAlpha = CpuLight_AlphaScale * fadeFactor;
     if (scaledAlpha < CpuLight_Zero)
         roundedAlpha = scaledAlpha - CpuLight_RoundHalf;
