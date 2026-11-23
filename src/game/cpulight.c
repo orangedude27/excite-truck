@@ -177,39 +177,39 @@ void fn_802DB620(void) {
 }
 #pragma dont_inline on
 #pragma use_lmw_stmw off
-int fn_802DB69C(void **arg0, int arg1) {
+/* Load each active texture object into GX and assign TEV stages: one stage per texture, plus an extra stage for textures carrying a second map. Returns the number of TEV stages configured. */ int fn_802DB69C(void **texObjs, int mode) {
     extern int lbl_8055FEA4;
     extern void GXLoadTexObj(void *, int);
     extern void GXSetTevOrder(int, int, int, int);
     extern void GXSetNumTexGens(unsigned char);
-    void **p = arg0;
-    int stage = 0;
-    int tex = 0;
-    unsigned char *obj;
-    int i = 0;
+    void **objIter = texObjs;
+    int tevStage = 0;
+    int nextTexMap = 0;
+    unsigned char *texObj;
+    int texIndex = 0;
     /* Load texture objects into GX and set up TEV stages for each active texture; returns the number of stages configured. */
-    while (i < lbl_8055FEA4) {
-        int base;
-        unsigned char *texture;
-        obj = *p;
-        base = tex;
-        texture = obj + 0x24;
-        tex = base + 1;
-        GXLoadTexObj(texture, base);
-        if (obj[0xCC]) {
-            int extra = tex++;
-            GXLoadTexObj(obj + 0x78, extra);
-            GXSetTevOrder(stage++, i, extra, 0xFF);
+    while (texIndex < lbl_8055FEA4) {
+        int baseTexMap;
+        unsigned char *baseTexObj;
+        texObj = *objIter;
+        baseTexMap = nextTexMap;
+        baseTexObj = texObj + 0x24;
+        nextTexMap = baseTexMap + 1;
+        GXLoadTexObj(baseTexObj, baseTexMap);
+        if (texObj[0xCC]) {
+            int extraTexMap = nextTexMap++;
+            GXLoadTexObj(texObj + 0x78, extraTexMap);
+            GXSetTevOrder(tevStage++, texIndex, extraTexMap, 0xFF);
         }
         {
-            int current = stage++;
-            GXSetTevOrder(current, i, base, fn_802DB378(arg1, i));
+            int curTevStage = tevStage++;
+            GXSetTevOrder(curTevStage, texIndex, baseTexMap, fn_802DB378(mode, texIndex));
         }
-        p++;
-        i++;
+        objIter++;
+        texIndex++;
     }
     GXSetNumTexGens((unsigned char)lbl_8055FEA4);
-    return stage;
+    return tevStage;
 }
 
 // Re-applies this module's GX pipeline for one of its three draw modes, and only
