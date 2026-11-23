@@ -359,24 +359,35 @@ extern s32 fn_802EC4BC(void);
 extern float lbl_805651E0, lbl_805651E8, lbl_805651F0, lbl_805651F4;
 extern float lbl_805651F8, lbl_805651FC, lbl_80565200, lbl_80565204, lbl_80565208;
 #pragma dont_inline on
-/* Set up GX state and orthographic projection for home-button/menu rendering
- * when active: configures viewport/scissor, TEV/Z/blend, chooses ortho bounds
- * based on layout mode, then draws/flushes the home-button UI.
- */
+/* When the Home menu is active, configure GX for a 2D overlay: viewport and
+ * scissor from the current render dims, simple TEV/Z/blend state, and an
+ * orthographic projection whose width follows the console aspect ratio (16:9
+ * or 4:3); then draw the home-button UI quad and re-initialize GX state. */
 void fn_802ECA48(void) {
+#define gHomeMenuActive lbl_805600E8
+#define gViewportOrigin lbl_805651E0
+#define gViewportFar lbl_805651E8
+#define gOrthoTop lbl_805651F0
+#define gOrthoBottom lbl_805651F4
+#define gOrthoLeftWide lbl_805651F8
+#define gOrthoRightWide lbl_805651FC
+#define gOrthoLeft4x3 lbl_80565204
+#define gOrthoRight4x3 lbl_80565208
+#define gOrthoNear lbl_805651E0
+#define gOrthoFar lbl_80565200
     u8 projection[0x40];
-    u16 *dims;
-    float scale;
-    if ((u8)lbl_805600E8 != 0) {
+    u16 *renderDims;
+    float viewportOrigin;
+    if ((u8)gHomeMenuActive != 0) {
         GXClearVtxDesc();
         GXSetVtxAttrFmt(4, 9, 0, 4, 0);
         GXSetVtxAttrFmt(4, 0xB, 0, 1, 0);
         GXSetVtxDesc(9, 1);
         GXSetVtxDesc(0xB, 1);
-        dims = fn_802D2D14();
-        scale = lbl_805651E0;
-        GXSetViewport(scale, scale, (float)dims[2], (float)dims[3], scale, lbl_805651E8);
-        GXSetScissor(0, 0, dims[2], dims[3]);
+        renderDims = fn_802D2D14();
+        viewportOrigin = gViewportOrigin;
+        GXSetViewport(viewportOrigin, viewportOrigin, (float)renderDims[2], (float)renderDims[3], viewportOrigin, gViewportFar);
+        GXSetScissor(0, 0, renderDims[2], renderDims[3]);
         GXSetNumChans(1);
         GXSetNumTexGens(0);
         GXSetNumTevStages(1);
@@ -386,13 +397,24 @@ void fn_802ECA48(void) {
         GXSetZMode(1, 3, 1);
         GXSetCurrentMtx(3);
         if (fn_802EC4BC() != 0)
-            C_MTXOrtho(projection, lbl_805651F0, lbl_805651F4, lbl_805651F8, lbl_805651FC, lbl_805651E0, lbl_80565200);
+            C_MTXOrtho(projection, gOrthoTop, gOrthoBottom, gOrthoLeftWide, gOrthoRightWide, gOrthoNear, gOrthoFar);
         else
-            C_MTXOrtho(projection, lbl_805651F0, lbl_805651F4, lbl_80565204, lbl_80565208, lbl_805651E0, lbl_80565200);
+            C_MTXOrtho(projection, gOrthoTop, gOrthoBottom, gOrthoLeft4x3, gOrthoRight4x3, gOrthoNear, gOrthoFar);
         GXSetProjection(projection, 1);
-        if ((u8)lbl_805600E8 != 0) fn_800C6610();
+        if ((u8)gHomeMenuActive != 0) fn_800C6610();
         fn_802D3360();
     }
+#undef gOrthoFar
+#undef gOrthoNear
+#undef gOrthoRight4x3
+#undef gOrthoLeft4x3
+#undef gOrthoRightWide
+#undef gOrthoLeftWide
+#undef gOrthoBottom
+#undef gOrthoTop
+#undef gViewportFar
+#undef gViewportOrigin
+#undef gHomeMenuActive
 }
 #pragma dont_inline off
 void fn_802ECBF8(void) {
