@@ -938,6 +938,10 @@ extern char lbl_8033BEB0[];
 #pragma push
 #pragma cplusplus on
 #pragma inline_depth(0)
+/* Play a sound on the manager's device: prefer a 3D voice for positional classes
+ * the device allows, a 2D voice where supported, else a plain voice; retry as 2D
+ * if 3D creation fails, and fall back to plain when the device is already active
+ * and the class is not positional. */
 extern "C" void fn_80208858(void *soundMgr, signed long soundName, signed long sndClass) {
     struct SoundDevice {
         virtual void slot8();
@@ -947,14 +951,12 @@ extern "C" void fn_80208858(void *soundMgr, signed long soundName, signed long s
         virtual void slot18();
         virtual signed long createSound(signed long, signed long, signed long);
     };
-    /* The positional classes may have a 3D voice; UI sounds are flagged. */
     signed long positional = fn_802085F0(soundMgr, sndClass);
     signed long uiFlag = fn_80207964(sndClass);
     struct SoundDevState *state = (*(struct SoundDevice **)((char *)soundMgr + 0x90))->resetState();
     unsigned char active = state->active;
     signed long voice;
     signed long sound;
-    /* Play it: a sound already on the device only gets the plain voice. */
     if (active == 0 || positional != 0) {
         if (state->allow3D != 0 && positional != 0) {
             voice = SOUND_VOICE_3D;
