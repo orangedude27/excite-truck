@@ -561,16 +561,19 @@ void GXSetupThreeStageTevPipelineAlt(void) {
 /* Configures GX for 1 texgen and 1 TEV stage: tex map 1 with constant K color
    sel 0xD and K alpha sel 0x1D (color 0xF,8,0xE,0xF; alpha 7,4,6,7). */
 void fn_802E0420(void) {
-    GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
+    GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY, GX_FALSE,
+                      GX_PTIDENTITY);
     GXSetNumTexGens(1);
-    GXSetTevOrder(0, 0, 1, 0xFF);
-    GXSetTevSwapMode(0, 0, 0);
-    GXSetTevKColorSel(0, 0xD);
-    GXSetTevColorIn(0, 0xF, 8, 0xE, 0xF);
-    GXSetTevColorOp(0, 0, 0, 0, 1, 0);
-    GXSetTevKAlphaSel(0, 0x1D);
-    GXSetTevAlphaIn(0, 7, 4, 6, 7);
-    GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP1, GX_COLOR_NULL);
+    GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    GXSetTevKColorSel(GX_TEVSTAGE0, GX_TEV_KCSEL_K1);
+    GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_TEXC, GX_CC_KONST, GX_CC_ZERO);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE,
+                    GX_TEVPREV);
+    GXSetTevKAlphaSel(GX_TEVSTAGE0, GX_TEV_KASEL_K1_A);
+    GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_TEXA, GX_CA_KONST, GX_CA_ZERO);
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE,
+                    GX_TEVPREV);
     GXSetNumTevStages(1);
 }
 #pragma scheduling on
