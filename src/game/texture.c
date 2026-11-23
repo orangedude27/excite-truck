@@ -113,23 +113,22 @@ int fn_802CA294(int textureSlot) {
 
 extern char *fn_80029004(char *, int); /* strchr */
 extern char lbl_8055D048;              /* ".tm0": suffix of a texture archive member's name */
-int fn_802CA2A8(void *arg0, int arg1, int arg2) {
-    /* Build a texture archive name: copy the given name into the caller's
-     * buffer of arg1 bytes, drop whatever extension it already had and append
-     * the ".tm0" texture suffix in its place; returns the buffer. */
-    int remaining = arg1;
-    char *name = (char *)arg0;
-    const char *src = (const char *)arg2;
+/* Build a texture archive name into dst: bounded-copy srcName, truncate at its '.' extension, then append the ".tm0" suffix; returns dst. */ int fn_802CA2A8(void *dst, int capacity, int srcName) {
+    /* Build a texture archive name: copy the source name into the caller's
+       buffer, cut it at its '.' extension, then append the ".tm0" suffix. */
+    int remaining = capacity;
+    char *name = (char *)dst;
+    const char *src = (const char *)srcName;
     const char *suffix;
     char *cursor;
     char *dot;
 
     {
-        int space = arg1;
-        char *write = name;
-        while ((signed char)(*write++ = *src++) != 0) {
-            if (--space <= 0) {
-                write[-1] = 0;
+        int copyCapacity = capacity;
+        char *copyDst = name;
+        while ((signed char)(*copyDst++ = *src++) != 0) {
+            if (--copyCapacity <= 0) {
+                copyDst[-1] = 0;
                 break;
             }
         }
