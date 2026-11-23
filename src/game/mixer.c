@@ -151,45 +151,50 @@ void fn_80208AC8(int playerSlot, int event) {
  * allocate and register a null mixer backend, load saved mixer settings, register
  * the settings-reload callback, and install the identity-event handler. */
 void fn_80208B8C(int initBackends) {
-    int configMode = (int)fn_802E9A14();
-    switch (configMode) {
-    default:
-    case 1:
-        *(int *)&lbl_8055B4D8 = 1;
+    int soundMode = (int)fn_802E9A14(); /* ConfigGetSoundMode() */
+    switch (soundMode) {
+    default: /* anything the config block holds besides mono and surround */
+    case SC_SND_STEREO:
+        gSoundMode = SC_SND_STEREO;
         break;
-    case 2:
-        *(int *)&lbl_8055B4D8 = 2;
+    case SC_SND_SURROUND:
+        gSoundMode = SC_SND_SURROUND;
         break;
-    case 0:
-        *(int *)&lbl_8055B4D8 = 0;
+    case SC_SND_MONO:
+        gSoundMode = SC_SND_MONO;
         break;
     }
-    *(int *)(lbl_80489258 + 0x40) = 0;
+    MIXER_VOLUME_HANDLE_COUNT = 0;
     if (initBackends != 0) {
         void *nullMixer;
-        int *mixerTable;
-        memset((void *)lbl_80489238, 0, 0x20);
-        nullMixer = fn_801284F8(0x10, lbl_8033BF18);
+        int *registry; /* devices[MIXER_DEVICE_MAX], count, selected index */
+        int count;
+
+        memset((void *)MIXER_DEVICES, 0, 0x20);
+        nullMixer = fn_801284F8(0x10, NULL_MIXER_NAME);
         if (nullMixer != 0) {
-            *(void **)nullMixer = lbl_8033C058;
+            *(void **)nullMixer = NULL_MIXER_VTABLE;
             memset((char *)nullMixer + 4, 0, 0xC);
         }
-        mixerTable = (int *)lbl_80489238;
-        mixerTable[mixerTable[6]] = (int)nullMixer;
-        configMode = mixerTable[6];
-        mixerTable[6] = configMode + 1;
-        fn_8020A72C();
+        registry = (int *)MIXER_DEVICES;
+        registry[registry[MIXER_DEVICE_MAX]] = (int)nullMixer;
+        count = registry[MIXER_DEVICE_MAX];
+        registry[MIXER_DEVICE_MAX] = count + 1;
+        fn_8020A72C(); /* create the voice mixer and register it */
     }
     {
-        int *mixerTable = (int *)lbl_80489238;
-        fn_801332D0(4, &lbl_8055B4E8, (char *)mixerTable + 0x1C);
-        configMode = mixerTable[7];
-        if (configMode < 0 || configMode >= mixerTable[6])
-            *(int *)((char *)lbl_80489238 + 0x1C) = 0;
+        int *registry = (int *)MIXER_DEVICES;
+        int selected;
+
+        fn_801332D0(OPTIONS_SECTION_SOUND, &CONFIG_KEY_MIXER,
+                    (char *)registry + MIXER_SELECTED_OFFSET);
+        selected = registry[MIXER_DEVICE_MAX + 1];
+        if (selected < 0 || selected >= registry[MIXER_DEVICE_MAX])
+            *(int *)((char *)MIXER_DEVICES + MIXER_SELECTED_OFFSET) = 0;
     }
-    fn_8013323C(4, lbl_8033BEF8, lbl_80563230);
+    fn_8013323C(OPTIONS_SECTION_SOUND, CONFIG_KEY_EFFECTS_VOLUME, DEFAULT_EFFECTS_VOLUME);
     fn_80208A78();
-    lbl_8055B4DC = fn_8013365C((int)&lbl_8055B4F0, (int)fn_80208A78);
+    gMixerReloadSlot = fn_8013365C((int)&MIXER_CALLBACK_NAME, (int)fn_80208A78);
     fn_8000DBC8((void *)fn_80208AC8);
 }
 #pragma pop
