@@ -972,24 +972,26 @@ void fn_802D5B8C(void *arg0) {
 }
 #pragma pop
 
-/* Build and set a GX vertex descriptor list from a bitmask of attribute flags. */
+/* Build and set the GX vertex descriptor list for an indexed display list from
+ * the surface attribute flags: PNMTXIDX is direct, POS/NRM/CLR0/TEX0/TEX1 are
+ * INDEX8 or INDEX16 per flag, terminated by GX_VA_NULL. */
 void fn_802D5DE8(u32 flags) {
     int vtxDescList[54];
     int *desc;
     memset(vtxDescList, 0, 0xD8);
     desc = vtxDescList;
-    if (flags & 1) { desc[0] = 0; desc[1] = 1; desc += 2; }
-    if (flags & 2) { desc[0] = 9; desc[1] = 2; desc += 2; }
-    else if (flags & 4) { desc[0] = 9; desc[1] = 3; desc += 2; }
-    if (flags & 8) { desc[0] = 10; desc[1] = 2; desc += 2; }
-    else if (flags & 0x10) { desc[0] = 10; desc[1] = 3; desc += 2; }
-    if (flags & 0x20) { desc[0] = 11; desc[1] = 2; desc += 2; }
-    else if (flags & 0x40) { desc[0] = 11; desc[1] = 3; desc += 2; }
-    if (flags & 0x80) { desc[0] = 13; desc[1] = 2; desc += 2; }
-    else if (flags & 0x100) { desc[0] = 13; desc[1] = 3; desc += 2; }
-    if (flags & 0x200) { desc[0] = 14; desc[1] = 2; desc += 2; }
-    else if (flags & 0x400) { desc[0] = 14; desc[1] = 3; desc += 2; }
-    desc[0] = 0xff; desc[1] = 0;
+    if (flags & 1) { desc[0] = GX_VA_PNMTXIDX; desc[1] = GX_DIRECT; desc += 2; }
+    if (flags & 2) { desc[0] = GX_VA_POS; desc[1] = GX_INDEX8; desc += 2; }
+    else if (flags & 4) { desc[0] = GX_VA_POS; desc[1] = GX_INDEX16; desc += 2; }
+    if (flags & 8) { desc[0] = GX_VA_NRM; desc[1] = GX_INDEX8; desc += 2; }
+    else if (flags & 0x10) { desc[0] = GX_VA_NRM; desc[1] = GX_INDEX16; desc += 2; }
+    if (flags & 0x20) { desc[0] = GX_VA_CLR0; desc[1] = GX_INDEX8; desc += 2; }
+    else if (flags & 0x40) { desc[0] = GX_VA_CLR0; desc[1] = GX_INDEX16; desc += 2; }
+    if (flags & 0x80) { desc[0] = GX_VA_TEX0; desc[1] = GX_INDEX8; desc += 2; }
+    else if (flags & 0x100) { desc[0] = GX_VA_TEX0; desc[1] = GX_INDEX16; desc += 2; }
+    if (flags & 0x200) { desc[0] = GX_VA_TEX1; desc[1] = GX_INDEX8; desc += 2; }
+    else if (flags & 0x400) { desc[0] = GX_VA_TEX1; desc[1] = GX_INDEX16; desc += 2; }
+    desc[0] = GX_VA_NULL; desc[1] = GX_NONE;
     GXClearVtxDesc();
     GXSetVtxDescv(vtxDescList);
 }
