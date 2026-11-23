@@ -199,13 +199,16 @@ void fn_802E4A2C(void) {
 
 extern unsigned char lbl_8055FF58;
 extern unsigned char lbl_804FC3B0[];
-/* Copies the saved state from lbl_804FC3B0 into dst when lbl_8055FF58 is set; returns 1 on copy, 0 otherwise. */
-int fn_802E4A60(void *arg0) {
-    unsigned char *dst = (unsigned char *)arg0;
-    if (lbl_8055FF58 != 0) {
-        volatile unsigned char *src = lbl_804FC3B0;
-        unsigned char a, b;
-        unsigned int wordA, wordB;
+/* Restores a saved 0x61-byte input/telemetry snapshot into out when one is available:
+ * copies the record from the saved-state buffer and returns 1, or returns 0 if none is saved. */
+int fn_802E4A60(void *out) {
+#define hasSavedState lbl_8055FF58
+#define savedStateBuffer lbl_804FC3B0
+    unsigned char *dst = (unsigned char *)out;
+    if (hasSavedState != 0) {
+        volatile unsigned char *src = savedStateBuffer;
+        unsigned char firstByte, secondByte;
+        unsigned int word0, word1;
 
         *(float *)(dst + 0x00) = *(float *)(src + 0x00);
         *(float *)(dst + 0x04) = *(float *)(src + 0x04);
@@ -215,7 +218,7 @@ int fn_802E4A60(void *arg0) {
         *(float *)(dst + 0x14) = *(float *)(src + 0x14);
         *(float *)(dst + 0x18) = *(float *)(src + 0x18);
         *(float *)(dst + 0x1C) = *(float *)(src + 0x1C);
-#define COPY_PAIR(o) b = src[(o)]; a = src[(o) + 1]; dst[(o)] = b; dst[(o) + 1] = a
+#define COPY_PAIR(o) firstByte = src[(o)]; secondByte = src[(o) + 1]; dst[(o)] = firstByte; dst[(o) + 1] = secondByte
         COPY_PAIR(0x20);
         COPY_PAIR(0x22);
         COPY_PAIR(0x24);
@@ -234,22 +237,24 @@ int fn_802E4A60(void *arg0) {
         COPY_PAIR(0x3E);
 #undef COPY_PAIR
         *(unsigned int *)(dst + 0x40) = *(unsigned int *)(src + 0x40);
-        wordB = *(volatile unsigned int *)(src + 0x44);
-        wordA = *(volatile unsigned int *)(src + 0x48);
-        *(unsigned int *)(dst + 0x44) = wordB;
-        *(unsigned int *)(dst + 0x48) = wordA;
-        wordA = *(volatile unsigned int *)(src + 0x4C);
-        wordB = *(volatile unsigned int *)(src + 0x50);
-        *(unsigned int *)(dst + 0x4C) = wordA;
-        *(unsigned int *)(dst + 0x50) = wordB;
-        wordA = *(volatile unsigned int *)(src + 0x54);
-        wordB = *(volatile unsigned int *)(src + 0x58);
-        *(unsigned int *)(dst + 0x54) = wordA;
-        *(unsigned int *)(dst + 0x58) = wordB;
+        word1 = *(volatile unsigned int *)(src + 0x44);
+        word0 = *(volatile unsigned int *)(src + 0x48);
+        *(unsigned int *)(dst + 0x44) = word1;
+        *(unsigned int *)(dst + 0x48) = word0;
+        word0 = *(volatile unsigned int *)(src + 0x4C);
+        word1 = *(volatile unsigned int *)(src + 0x50);
+        *(unsigned int *)(dst + 0x4C) = word0;
+        *(unsigned int *)(dst + 0x50) = word1;
+        word0 = *(volatile unsigned int *)(src + 0x54);
+        word1 = *(volatile unsigned int *)(src + 0x58);
+        *(unsigned int *)(dst + 0x54) = word0;
+        *(unsigned int *)(dst + 0x58) = word1;
         *(unsigned int *)(dst + 0x5C) = *(unsigned int *)(src + 0x5C);
         dst[0x60] = src[0x60];
         return 1;
     }
     return 0;
+#undef hasSavedState
+#undef savedStateBuffer
 }
 
