@@ -466,11 +466,7 @@ void fn_802C89E8(float *arg0) {
     if ((unsigned char)lbl_8055FC74 == 0) {
         var_f2 *= lbl_80564EF8 / lbl_8055D020;
     }
-    if ((unsigned char)lbl_8055FC74 == 0) {
-        var_f4 = lbl_80564EF8 / lbl_8055D020;
-    } else {
-        var_f4 = lbl_80564EF8;
-    }
+    var_f4 = (unsigned char)lbl_8055FC74 != 0 ? lbl_80564EF8 : lbl_80564EF8 / lbl_8055D020;
 
     fill = lbl_80564F00;
     var_f2 = -var_f2;
