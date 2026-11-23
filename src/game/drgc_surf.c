@@ -889,7 +889,7 @@ void fn_802D5838(void *arg0)
   }
 }
 #pragma pop
-void fn_802D5ACC(void *arg0) {
+void fn_802D5ACC(void *surface) {
     struct DrawData {
         u8 pad0[0x20];
         void *array0;
@@ -901,7 +901,7 @@ void fn_802D5ACC(void *arg0) {
         f32 rot0;
         f32 rot1;
     };
-    register struct DrawData *data = (struct DrawData *)arg0;
+    register struct DrawData *data = (struct DrawData *)surface;
     register void *array = data->array0;
     f32 matrix[3][4];
 
