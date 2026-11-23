@@ -139,6 +139,7 @@ void fn_80208AC8(int playerSlot, int event) {
 #define NULL_MIXER_VTABLE lbl_8033C058         /* the null backend's vtable */
 #define CONFIG_KEY_MIXER lbl_8055B4E8          /* "mixer": the selected device */
 #define CONFIG_KEY_EFFECTS_VOLUME lbl_8033BEF8 /* "effects_volume" */
+#define CONFIG_KEY_QUALITY lbl_8055B4E0          /* "quality": the sound quality */
 #define DEFAULT_EFFECTS_VOLUME lbl_80563230    /* 1.0f */
 #define MIXER_CALLBACK_NAME lbl_8055B4F0       /* "Mixer": the reload hook's name */
 #define gMixerReloadSlot lbl_8055B4DC          /* that hook's slot, freed on shutdown */
