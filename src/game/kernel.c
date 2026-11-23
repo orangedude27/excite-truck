@@ -18,7 +18,7 @@ extern void fn_802E30C8(const char *, ...);
 extern char lbl_8034CEE4[];
 extern int sResetCallbacks[];
 extern int sResetCallbackNames[];
-extern int lbl_8055FF00;
+extern int sResetCallbackCount;
 extern int lbl_8055FEF8;
 extern unsigned int lbl_8055FEFC;
 extern unsigned long long __div2i(unsigned long long, unsigned long long);
@@ -798,8 +798,8 @@ void fn_802E2D74(int milliseconds) {
 #pragma scheduling on
 void KERNEL_AddResetCallback(int callback, int name) {
     /* Append a reset callback and its log name to the parallel registration tables. */
-    int index = lbl_8055FF00;
-    lbl_8055FF00 = index + 1;
+    int index = sResetCallbackCount;
+    sResetCallbackCount = index + 1;
     sResetCallbacks[index] = callback;
     sResetCallbackNames[index] = name;
 }
@@ -808,7 +808,7 @@ void KERNEL_AddResetCallback(int callback, int name) {
  * registers with KERNEL_AddResetCallback(callback, name):
  *   sResetCallbacks[]  the registered callbacks
  *   sResetCallbackNames[]  the name a callback logs under when it cancels a reset
- *   lbl_8055FF00    how many are registered
+ *   sResetCallbackCount    how many are registered
  * KERNEL_Reset runs the table, then resets. */
 typedef int (*ResetCallback)(int request, int mode);
 
@@ -867,7 +867,7 @@ void KERNEL_Reset(int mode) {
     /* Ask every subsystem whether the reset may go ahead. */
     fn_802E30C8(KERNEL_LOG_RESET_BEGIN);
     callback = (ResetCallback *)sResetCallbacks;
-    for (i = 0; i < lbl_8055FF00; callback++, i++) {
+    for (i = 0; i < sResetCallbackCount; callback++, i++) {
         if ((*callback)(KERNEL_RESET_ASK, mode) == 1) {
             fn_802E30C8(KERNEL_LOG_CANCELLED, (const char *)sResetCallbackNames[i]);
             return;
@@ -875,7 +875,7 @@ void KERNEL_Reset(int mode) {
     }
     /* Nobody objected: tell them all, last registered first. */
     fn_802E30C8(KERNEL_LOG_RESET_OKAY);
-    n = lbl_8055FF00 - 1;
+    n = sResetCallbackCount - 1;
     last = (ResetCallback *)sResetCallbacks + n;
     for (; n >= 0; last--, n--) {
         (*last)(KERNEL_RESET_NOTIFY, mode);
