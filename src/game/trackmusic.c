@@ -822,23 +822,11 @@ long fn_80210570(void) {
     }
 }
 #pragma pop
-/* Per-frame track-music update, run with the "music is muted" flag.
- *
- * It loads any song bank that is not loaded yet, rebuilds the song list when
- * the number of songs the dash found (fn_802EC0FC) changed - telling the
- * player-facing selection state about it through lbl_8055EEC0 - and, while a
- * song is selected (lbl_8055B658, -1 = none), hands the current one to the
- * music system (fn_802EC11C) whenever no song is already on hold and the race
- * is not inside the window (lbl_8055EEC8/lbl_8055EECC, 0xFA0 timebase ticks)
- * in which a change is held off.  A slot of the random type then advances to
- * the next shuffled song, and a change of the mute flag starts or stops the
- * music.  fn_8020F3B4() returns the "no song" index (-1) whatever it is
- * passed, so the three mode tests below only compare against that index;
- * fn_801B85CC() is a query on the current scene object and fn_800216D0()
- * reports the tips/results overlay being up, both suppressed while the game is
- * paused (fn_80009C84).  The virtual call is slot 6 of the audio resource
- * list, looking the "name" property up on the "invalid_contest" contest.
- */
+/* Per-frame track-music update: load any unloaded song bank, rebuild the song
+ * list when the dash's song count changes, and while a song is selected hand
+ * it to the music system when nothing is on hold and the race is outside the
+ * change-hold window.  A random slot advances to the next shuffled song and a
+ * change of the mute flag starts or stops the music. */
 void trackMusicUpdate(unsigned char mute) {
     long songCount;
     long now;
