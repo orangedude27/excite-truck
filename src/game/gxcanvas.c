@@ -120,22 +120,22 @@ extern void fn_802E317C(const char *,...);
 extern const char gxCanvasWrongVerFmt[],gxCanvasLoadFailFmt[];
 #pragma scheduling invalid_target
 /* Loads a CANV image resource, byte-swaps its header fields when flagged, converts pixels to RGBA order, and reports load/format errors. */
-void *gxCanvasLoad(s32 resourceId) {
-    u32 format;
-    s32 size;
+/* Load the CANV canvas image at path; for version-1 data flagged as big-endian, byte-swap the header fields in place and rotate each pixel's channels into GX RGBA order. Panics if the lookup fails or the version is unsupported. */ void *gxCanvasLoad(s32 path) {
+    u32 version;
+    s32 byteSize;
     u8 needsSwap;
     u32 *pixels;
     s32 row;
     s32 col;
     u32 pixel;
     u8 temp;
-    void *resource;
+    void *canvas;
 
-    resource = ((void *(*)(s32, s32, u32 *, s32 *, s32, u8 *))fn_8012C370)(resourceId, 0x43414E56, &format, &size, 0, &needsSwap);
-    if (resource != 0) {
-        if (format == 1) {
+    canvas = ((void *(*)(s32, s32, u32 *, s32 *, s32, u8 *))fn_8012C370)(path, 0x43414E56, &version, &byteSize, 0, &needsSwap);
+    if (canvas != 0) {
+        if (version == 1) {
             if (needsSwap != 0) {
-                volatile u8 *bytes = (volatile u8 *)resource;
+                volatile u8 *bytes = (volatile u8 *)canvas;
                 pixels = (u32 *)(bytes + 0x24);
                 temp = bytes[4]; bytes[4] = bytes[7]; bytes[7] = temp;
                 temp = bytes[5]; bytes[5] = bytes[6]; bytes[6] = temp;
@@ -163,12 +163,12 @@ void *gxCanvasLoad(s32 resourceId) {
                 }
             }
         } else {
-            fn_802E317C(gxCanvasWrongVerFmt, resourceId, format, 1);
+            fn_802E317C(gxCanvasWrongVerFmt, path, version, 1);
         }
     } else {
-        fn_802E317C(gxCanvasLoadFailFmt, resourceId);
+        fn_802E317C(gxCanvasLoadFailFmt, path);
     }
-    return resource;
+    return canvas;
 }
 #pragma scheduling on
 void fn_802C2FC4(void) {
