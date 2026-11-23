@@ -312,10 +312,10 @@ void fn_802C57B4(int instanceId, int transformId, int entryId, unsigned char sta
     struct ModelInstance *instance;
     unsigned char entryStatus;
     int j;
-    struct ElementList *inner_info;
-    int offset;
+    struct ElementList *elementList;
+    int groupOffset;
     int nodeSlotOffset;
-    int inner_offset;
+    int elementOffset;
     struct GroupList *groups;
     int i;
     struct GroupEntry *entry;
@@ -326,37 +326,37 @@ void fn_802C57B4(int instanceId, int transformId, int entryId, unsigned char sta
         fn_802C543C();
     }
     nodeSlotOffset = instance->nodeSlot << 2;
-    for (i = 0, offset = 0; i < groups->count; offset += 0x10, i++) {
+    for (i = 0, groupOffset = 0; i < groups->count; groupOffset += 0x10, i++) {
         int bitIndex;
-        entry = (struct GroupEntry *)(groups->items + offset);
+        entry = (struct GroupEntry *)(groups->items + groupOffset);
         bitIndex = entry->bitIndex;
         if (lbl_8055D008 & (1 << bitIndex)) {
             unsigned char localStatus = status;
             char *positions = instance->groupPositions;
-            if (positions == 0 || fn_802C9638(positions + offset, &localStatus, *(float *)(positions + offset + 12)) != 0) {
+            if (positions == 0 || fn_802C9638(positions + groupOffset, &localStatus, *(float *)(positions + groupOffset + 12)) != 0) {
                 entryStatus = localStatus;
-                inner_info = entry->elements;
-                for (j = 0, inner_offset = 0; j < inner_info->count; inner_offset += 4, j++) {
-                    int valid = 0;
-                    struct ModelElement *elem = (struct ModelElement *)*(void **)(inner_info->items + inner_offset);
+                elementList = entry->elements;
+                for (j = 0, elementOffset = 0; j < elementList->count; elementOffset += 4, j++) {
+                    int draw = 0;
+                    struct ModelElement *elem = (struct ModelElement *)*(void **)(elementList->items + elementOffset);
                     unsigned int type = elem->type;
                     if (type < 13) {
-                        int skip;
-                        valid = 1;
+                        int otherPass;
+                        draw = 1;
                         switch (type) {
                         case 4:
                         case 6:
                         case 9:
                         case 11:
-                            skip = 1;
+                            otherPass = 1;
                             break;
                         default:
-                            skip = 0;
+                            otherPass = 0;
                             break;
                         }
-                        if (skip) valid = 0;
+                        if (otherPass) draw = 0;
                     }
-                    if (valid) {
+                    if (draw) {
                         void *node = *(void **)(nodeSlotOffset + (int)elem + 0x14);
                         void *r4;
                         fn_802C53C4(entry, node, transformId, entryId, entryStatus);
