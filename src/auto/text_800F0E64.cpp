@@ -142,13 +142,6 @@ struct DummyStrmLoadStream {
     virtual void f19();
     virtual s32 f20();
 };
-struct DummyStrmUpdateCallback {
-    virtual s32 f0();
-    virtual s32 f1();
-    virtual s32 f2();
-    virtual s32 f3();
-    virtual s32 f4(void*, unsigned, s32, s32, s32, unsigned short, s32, void*, void*, s32);
-};
 struct DummyStrmLoadCallback {
     virtual void *f2();
     virtual void f0();
@@ -7457,6 +7450,8 @@ extern "C" void UpdatePlayingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFv(void
         self[0x52] = 1;
     }
 }
+#pragma push
+#pragma opt_common_subs off
 extern "C" void UpdateLoadingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFQ66nw4hbm3snd6detail10StrmPlayer11LoadCommand6Status(void* arg0, s32 arg1) {
 char *__repair_addr;
 
@@ -7464,7 +7459,7 @@ char *__repair_addr;
     s32 var_r10;
     if (*(unsigned char*)((unsigned char*)arg0 + 0x53) == 0) {
         unsigned long irq = OSDisableInterrupts();
-        if (*(u32*)((unsigned char*)arg0 + 0x94) == 0) {
+        if (*(s32*)((unsigned char*)arg0 + 0x94) == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C1C, 0x1F1, lbl_80326BF8);
         }
         s32 tmp28 = *(s32*)((unsigned char*)arg0 + 0x98);
@@ -7538,7 +7533,6 @@ __repair_addr = (char *)((unsigned char*)arg0 + 0x98);
         *(s32*)((unsigned char*)arg0 + 0x6C) = v5;
     }
 }
-
 #pragma pop
 extern "C" void UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(void *);
 extern "C" const char lbl_80326B68[];
