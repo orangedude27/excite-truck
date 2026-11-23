@@ -62,84 +62,98 @@ extern void fn_80128670(int);
 extern char lbl_8034C8E8[];
 #pragma scheduling on
 #pragma opt_propagation off
-void fn_802D9C5C(int arg0, void *arg1, int arg2) {
-    extern float lbl_804DB068[];
-    float *var_r3;
-    float *var_r4;
-    float temp_r0_2;
-    float temp_r1;
-    float temp_r0;
-    int temp_r7;
-    int temp_r7_2;
-    int var_ctr_2;
-    int var_r8;
-    int var_r9 = 0;
-    unsigned int var_ctr;
-    float *var_r7;
-    float *var_r6;
-
-    if (arg2 > 0) {
-        temp_r7 = arg2 - 8;
-        if (arg2 > 8) {
-            var_r8 = 0;
-            if (arg2 >= 0 && arg2 <= 0x7FFFFFFE)
-                var_r8 = 1;
-            if (var_r8 != 0) {
-                var_ctr = (unsigned int)(temp_r7 + 7) >> 3;
-                var_r7 = (float *)arg1;
-                var_r6 = &lbl_804DB068[arg0 * 3];
-                if (temp_r7 > 0) {
-                    do {
-                        var_r9 += 8;
-                        var_r6[0] = var_r7[0];
-                        var_r6[1] = var_r7[1];
-                        var_r6[2] = var_r7[2];
-                        var_r6[3] = var_r7[3];
-                        var_r6[4] = var_r7[4];
-                        var_r6[5] = var_r7[5];
-                        var_r6[6] = var_r7[6];
-                        var_r6[7] = var_r7[7];
-                        var_r6[8] = var_r7[8];
-                        var_r6[9] = var_r7[9];
-                        var_r6[10] = var_r7[10];
-                        var_r6[11] = var_r7[11];
-                        var_r6[12] = var_r7[12];
-                        var_r6[13] = var_r7[13];
-                        var_r6[14] = var_r7[14];
-                        var_r6[15] = var_r7[15];
-                        var_r6[16] = var_r7[16];
-                        var_r6[17] = var_r7[17];
-                        var_r6[18] = var_r7[18];
-                        var_r6[19] = var_r7[19];
-                        var_r6[20] = var_r7[20];
-                        var_r6[21] = var_r7[21];
-                        var_r6[22] = var_r7[22];
-                        var_r6[23] = var_r7[23];
-                        var_r7 += 24;
-                        var_r6 += 24;
-                        var_ctr -= 1;
-                    } while (var_ctr != 0);
-                }
-            }
+void fn_802D9C5C(int arg0, void *arg1, int arg2)
+{
+  int __repair_literal;
+  extern float lbl_804DB068[];
+  float *var_r3;
+  float *var_r4;
+  int var_r9 = 0;
+  float temp_r0_2;
+  float temp_r1;
+  float temp_r0;
+  int temp_r7;
+  int temp_r7_2;
+  int var_ctr_2;
+  int var_r8;
+  unsigned int var_ctr;
+  float *var_r7;
+  float *var_r6;
+  if (arg2 > 0)
+  {
+    temp_r7 = arg2 - 8;
+    if (arg2 > 8)
+    {
+      var_r8 = 0;
+      if ((arg2 >= 0) && (arg2 <= 0x7FFFFFFE))
+      {
+        var_r8 = 1;
+      }
+      if (var_r8 != 0)
+      {
+        var_ctr = ((unsigned int) (temp_r7 + 7)) >> 3;
+        if (1)
+        {
+          var_r7 = (float *) arg1;
         }
-        temp_r7_2 = var_r9 * 12;
-        var_ctr_2 = arg2 - var_r9;
-        var_r4 = (float *)((char *)arg1 + temp_r7_2);
-        var_r3 = (float *)((char *)lbl_804DB068 + temp_r7_2 + (arg0 * 12));
-        if (var_r9 < arg2) {
-            do {
-                temp_r0_2 = var_r4[0];
-                temp_r1 = var_r4[1];
-                var_r3[0] = temp_r0_2;
-                temp_r0 = var_r4[2];
-                var_r4 += 3;
-                var_r3[1] = temp_r1;
-                var_r3[2] = temp_r0;
-                var_r3 += 3;
-                var_ctr_2 -= 1;
-            } while (var_ctr_2 != 0);
+        var_r6 = &lbl_804DB068[arg0 * 3];
+        __repair_literal = 0;
+        if (temp_r7 > __repair_literal)
+        {
+          do
+          {
+            var_r9 += 8;
+            var_r6[0] = var_r7[0];
+            var_r6[1] = var_r7[1];
+            var_r6[2] = var_r7[2];
+            var_r6[3] = var_r7[3];
+            var_r6[4] = var_r7[4];
+            var_r6[5] = var_r7[5];
+            var_r6[6] = var_r7[6];
+            var_r6[7] = var_r7[7];
+            var_r6[8] = var_r7[8];
+            var_r6[9] = var_r7[9];
+            var_r6[10] = var_r7[10];
+            var_r6[11] = var_r7[11];
+            var_r6[12] = var_r7[12];
+            var_r6[13] = var_r7[13];
+            var_r6[14] = var_r7[14];
+            var_r6[15] = var_r7[15];
+            var_r6[16] = var_r7[16];
+            var_r6[17] = var_r7[17];
+            var_r6[18] = var_r7[18];
+            var_r6[19] = var_r7[19];
+            var_r6[20] = var_r7[20];
+            var_r6[21] = var_r7[21];
+            var_r6[22] = var_r7[22];
+            var_r6[23] = var_r7[23];
+            var_r7 += 24;
+            var_r6 += 24;
+          }
+          while (--var_ctr != 0);
         }
+      }
     }
+    temp_r7_2 = var_r9 * 12;
+    var_ctr_2 = (arg2 - var_r9) & 0xFFFFFFFFFFFFFFFF;
+    var_r4 = (float *) (((char *) arg1) + temp_r7_2);
+    var_r3 = (float *) ((((char *) lbl_804DB068) + temp_r7_2) + ((((((arg0 & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) * 12));
+    if ((var_r9 + 1) <= arg2)
+    {
+      do
+      {
+        temp_r0_2 = var_r4[0];
+        temp_r1 = var_r4[1];
+        var_r3[0] = temp_r0_2;
+        temp_r0 = var_r4[2];
+        var_r4 += 3;
+        var_r3[1] = temp_r1;
+        var_r3[2] = temp_r0;
+        var_r3 += 3;
+      }
+      while (--var_ctr_2 != 0);
+    }
+  }
 }
 
 #pragma opt_propagation off
@@ -649,6 +663,8 @@ void *fn_802DA550(void *arg0, void *arg1, int arg2, void *arg3, void *arg4, int 
 #pragma scheduling invalid_target
 /* Allocates a 12-byte-per-element record from the stack allocator arena (type 7). */
 void *fn_802DA704(int owner, void *data, int count) {
+    /* Allocate a record for count 12-byte elements from the "BoneHandleAlloc"
+     * stack-allocator arena, tag it with owner/count, copy data in and return it. */
     volatile unsigned char *state;
     int savedInitialized;
     unsigned char *blockBase;
@@ -660,6 +676,10 @@ void *fn_802DA704(int owner, void *data, int count) {
     unsigned int blockOffset;
     int newUsed;
     void *record;
+    #define allocCapacity (*(volatile int *)(state + 0x0C))
+    #define allocUsed (*(volatile int *)(state + 0x10))
+    #define allocName (*(volatile int *)(state + 8))
+    #define allocBuffer (*(unsigned int *)(state + 4))
 
     state = (volatile unsigned char *)lbl_8055FE5C;
     payloadBytes = count * 12;
@@ -667,25 +687,25 @@ void *fn_802DA704(int owner, void *data, int count) {
     state[0x25] = 0;
     recordSize = payloadBytes + 0x18;
     roundedSize = recordSize + 3;
-    used = *(volatile int *)(state + 0x10);
+    used = allocUsed;
     alignedSize = roundedSize & ~3;
-    if (alignedSize + used + 8 > *(volatile int *)(state + 0x0C)) {
-        int capacity = *(volatile int *)(state + 0x0C);
-        fn_802E317C(lbl_80346798, *(volatile int *)(state + 8), recordSize, capacity / 1024);
+    if (alignedSize + used + 8 > allocCapacity) {
+        int capacity = allocCapacity;
+        fn_802E317C(lbl_80346798, allocName, recordSize, capacity / 1024);
         record = 0;
     } else {
-        blockOffset = *(unsigned int *)(state + 4);
+        blockOffset = allocBuffer;
         blockBase = (unsigned char *)*(volatile int *)(state + 0x10);
         blockBase += blockOffset;
         *(int *)blockBase = 1;
         record = blockBase + 4;
-        blockOffset = *(unsigned int *)(state + 4);
-        used = *(volatile int *)(state + 0x10);
+        blockOffset = allocBuffer;
+        used = allocUsed;
         used = blockOffset + used;
         blockOffset = used + alignedSize;
         *(int *)(blockOffset + 4) = alignedSize;
-        newUsed = alignedSize + *(volatile int *)(state + 0x10);
-        *(volatile int *)(state + 0x10) = newUsed + 8;
+        newUsed = alignedSize + allocUsed;
+        allocUsed = newUsed + 8;
     }
     *(int *)((char *)record + 0) = 7;
     *(int *)((char *)record + 4) = owner;
@@ -695,6 +715,10 @@ void *fn_802DA704(int owner, void *data, int count) {
     *(unsigned char *)((char *)record + 0x10) = (unsigned char)savedInitialized;
     memcpy((char *)record + 0x18, data, payloadBytes);
     return record;
+#undef allocCapacity
+#undef allocUsed
+#undef allocName
+#undef allocBuffer
 }
 #pragma scheduling on
 #pragma use_lmw_stmw reset
