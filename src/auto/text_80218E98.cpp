@@ -1,4 +1,5 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
+// build-probe
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
@@ -1004,7 +1005,8 @@ extern "C" void fn_80219510(void *widget, s32 offsetX, s32 offsetY) {
     *(s32 *)((u8 *)widget + 0x248) = scrollY;
 }
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma scheduling 750
 extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
     void* p = *(void**)((u8*)arg0 + 0x2C);
     if (*(u8*)((u8*)arg0 + 0x24C) != 0) {
@@ -1016,7 +1018,7 @@ extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
         *(s32*)((u8*)p + 0x458) = old2 + dy;
     }
 }
-#pragma scheduling on
+#pragma pop
 extern "C" void *fn_80219568(void *obj, s32 x, s32 y, s32 arg3, s32 arg4, s32 width, s32 height, s32 arg7) {
     /* Initialize a menu text widget: set up base bounds, vtable, and fields at 0x244-0x250. */
     fn_80218F34(obj, x, y, x + width, y + height, arg3);
@@ -1645,16 +1647,16 @@ extern "C" void fn_8021A910(void *arg0, s32 arg1) {
 extern "C" s32 fn_8021A9A4(void *arg0) {
     unsigned char *base = (unsigned char *)arg0;
     unsigned int flag = *(unsigned char *)fn_80216708();
-    struct Values { s32 second; s32 first; } v;
+    s32 first, second;
     s32 *p;
-    v.first = 0;
+    first = 0;
     if (flag != 0)
-        v.first = 2;
+        first = 2;
+    second = 0;
     p = *(s32 **)(base + 0x254);
-    v.second = 0;
     if (p != 0 && *p == *(s32 *)(base + 0x258))
-        v.second = 1;
-    return (s32)(((unsigned int)((-v.second) | v.second)) >> 31) | v.first;
+        second = 1;
+    return (s32)(((unsigned int)((-second) | second)) >> 31) | first;
 }
 #pragma dont_inline off
 extern "C" void fn_8021AA18(void *widget) {
@@ -2066,7 +2068,7 @@ f32 *output;
 s32 i, made;
 f32 t2, t0, t5, t3, t6;
 struct Transform1 {
-    inline void run(f32 *o, f32 *v, f32 a, f32 b) const {
+    void run(f32 *o, f32 *v, f32 a, f32 b) const {
         if (o == v) {
             f32 f5 = b*lbl_805634A8; f32 f3 = a*lbl_805634A8; f32 f6 = v[2]*lbl_805634A8;
             o[0] = f6+((a*lbl_805634A4)+f5); o[1] = f6+(f3+(b*lbl_805634A4)); o[2] = (v[2]*lbl_805634A4)+(f3+f5);
@@ -2902,27 +2904,52 @@ extern "C" void *fn_8021CAD4(void *self, s32 deletingFlag) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_8021CB4C(void *__restrict arg0, s32 arg1) {
+extern "C" void fn_8021CB4C(void *arg0, s32 arg1) {
     struct First {
-        virtual void v0(); virtual void v1(); virtual void v2();
-        virtual void v3(); virtual void v4(); virtual void v5();
-        virtual void v6(); virtual void call();
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void call();
     };
     struct Second {
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
-        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
-        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual void v21();
+        virtual void v22();
+        virtual void v23();
+        virtual void v24();
+        virtual void v25();
+        virtual void v26();
+        virtual void v27();
         virtual s32 get();
     };
     volatile s32 spC;
     volatile s32 sp8;
     register s32 result;
     register s32 start;
-    register s32 diff;
     First *first;
 
     fn_802C3034(arg1);
@@ -2931,8 +2958,7 @@ extern "C" void fn_8021CB4C(void *__restrict arg0, s32 arg1) {
     result = ((Second *)arg0)->get();
     start = *(s32 *)((u8 *)arg0 + 0x254);
     sp8 = 0x43300000;
-    diff = result - start;
-    spC = diff ^ 0x80000000;
+    spC = (result - start) ^ 0x80000000;
 }
 /* Draw a slider/tab widget: draw its track at the widget's screen-centred
  * position, then offset the tab by scrollRate * (current value - base value)
@@ -3648,14 +3674,14 @@ extern "C" void *fn_8021E0C0(void *obj, s32 x, s32 y, s32 width, s32 height, voi
 }
 #pragma pop
 
-extern "C" s32 fn_8021E1C8(void *arg0, s32 arg1, s32 arg2) {
-    register s32 temp_r4;
-    register s32 temp_r4_2;
-    register s32 temp_r4_4;
-    register s32 var_r5;
-    register void *temp_r6;
-    register s32 var_r7;
-    register s32 *temp_r4_3;
+extern "C" void fn_8021E1C8(void *arg0, s32 arg1, s32 arg2) {
+    s32 temp_r4;
+    s32 temp_r4_2;
+    s32 temp_r4_4;
+    s32 var_r5;
+    void *temp_r6;
+    s32 var_r7;
+    s32 *temp_r4_3;
     *(s32 *)((u8 *)arg0 + 0x260) = 0;
     if (*(u8 *)((u8 *)arg0 + 0x268) != 0) {
         if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
@@ -4632,7 +4658,7 @@ extern "C" void fn_8021FC40(void *arg0, s32 arg1) {
     var_r28 = 0;
     temp_r5 = *(s32 **)((u8 *)arg0 + 0x274);
     if (temp_r5 != 0 && *temp_r5 == *(s32 *)((u8 *)arg0 + 0x278)) { var_r28 = 1; }
-    if (var_r28) {
+    if (var_r28 != 0) {
         temp_r31 = *(s32 *)((u8 *)arg0 + 8);
         temp_r30 = *(s32 *)((u8 *)arg0 + 4);
         fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x25C),
@@ -5348,19 +5374,20 @@ extern "C" void fn_80221544(void *arg0, s32 arg1) {
         u8 pad14[0x230]; Child *child; s32 texture; s32 overlay; s32 state; s32 flag;
     };
     Object *self = (Object *)arg0;
-    s32 a1 = arg1;
-    fn_802C3034(a1);
+    Child *child;
+    s32 childBase;
+    fn_802C3034(arg1);
     if (self->flag == 0) {
-        fn_80228E80(a1, self->texture, self->x, self->y,
+        fn_80228E80(arg1, self->texture, self->x, self->y,
                     self->end - self->y, 0);
     } else {
         s32 top = self->y;
-        s32 result = ((Vf78 *)arg0)->get();
         s32 left = self->x;
-        fn_80228DC4(a1, self->texture, left, top, result, 0);
+        s32 result = ((Vf78 *)arg0)->get();
+        fn_80228DC4(arg1, self->texture, left, top, result, 0);
     }
-    Child *child = self->child;
-    s32 childBase = child->base;
+    child = self->child;
+    childBase = child->base;
     if (child->length < childBase) {
         if (self->flag == 0) {
             s32 left = self->x + 1;
@@ -5375,7 +5402,7 @@ extern "C" void fn_80221544(void *arg0, s32 arg1) {
                 s32 overlay = self->overlay;
                 if (overlay != 0) {
                     s32 diff = fn_802C51C0(self->texture) - fn_802C51C0(overlay);
-                    fn_80228E80(a1, overlay, left + ((diff + (diff < 0)) >> 1),
+                    fn_80228E80(arg1, overlay, left + ((diff + (diff < 0)) >> 1),
                                 y0, y1 - y0, 0);
                 } else {
                     fn_802C3424(left, y0, right, y1, lbl_8055FBDC);
@@ -5399,7 +5426,7 @@ extern "C" void fn_80221544(void *arg0, s32 arg1) {
                 s32 overlay = self->overlay;
                 if (overlay != 0) {
                     s32 diff = fn_802C5220(self->texture) - fn_802C5220(overlay);
-                    fn_80228DC4(a1, overlay, left, top + ((diff + (diff < 0)) >> 1),
+                    fn_80228DC4(arg1, overlay, left, top + ((diff + (diff < 0)) >> 1),
                                 right - left, 0);
                 } else {
                     fn_802C3424(left, top, right, bottom, lbl_8055FBDC);
@@ -5424,85 +5451,113 @@ struct Fn80221970Object {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
-extern "C" void fn_80221970(Fn80221970Object *self) {
-    typedef Fn80221970Child Child;
-    s32 scroll;
-    Child *child;
-    Child *child0;
-    Child *child1;
-    s32 left;
-    long right;
-    s32 y0;
-    s32 diff;
-    s32 y1;
-    s32 color;
+extern "C" void fn_80221970(void *arg0)
+{
+  struct Child
+  {
     s32 base;
-    s32 bottom;
-    s32 top;
-    f32 scale;
-    f32 spC;
-    f32 sp8;
-
-    spC = (f32)(self->x - lbl_8055FB9C / 2);
-    sp8 = (f32)(lbl_8055FBA0 / 2 - self->y);
-    fn_802C5320(self->texture, 0, spC, sp8, lbl_805634A8,
-                (f32)((Vf78 *)self)->get(), (f32)(self->end - self->y));
-    child = self->child;
-    base = child->base;
-    if (child->length < base) {
-        if (self->flag == 0) {
-            scale = (f32)(self->end - self->y) / (f32)base;
-            base = self->x;
-            left = base + 1;
-            scroll = ((Vf78 *)self)->get();
-            right = base + scroll - 1;
-            child0 = self->child;
-            y0 = self->y + (s32)(scale * (f32)child0->offset) + 5;
-            y1 = self->y + (s32)(scale * (f32)(child0->offset + child0->length)) - 5;
-            if (y1 - 1 > y0 + 1 && right - 1 > left + 1) {
-                if (self->overlay != 0) {
-                    diff = fn_802C51C0(self->texture) - fn_802C51C0(self->overlay);
-                    fn_80230C30(&spC, &sp8, left + diff / 2, y0);
-                    fn_802C5320(self->overlay, 0, spC, sp8, lbl_805634A8,
-                                (f32)fn_802C51C0(self->overlay), (f32)(y1 - y0));
-                } else {
-                    fn_802E30C8(lbl_8033D9F8);
-                    fn_802C3424(left, y0, right, y1, lbl_8055FBDC);
-                    color = lbl_8055FBE0;
-                    fn_802C3424(left, y1 - 1, right, y1, color);
-                    fn_802C3424(right - 1, y0, right, y1, color);
-                    color = lbl_8055FBFC;
-                    fn_802C3424(left, y0, right, y0 + 1, color);
-                    fn_802C3424(left, y0, left + 1, y1, color);
-                }
-            }
-        } else {
-            scroll = ((Vf78 *)self)->get();
-            child1 = self->child;
-            scale = (f32)scroll / (f32)base;
-            top = self->y + 1;
-            bottom = self->end - 1;
-            register left = self->x + (s32)(scale * (f32)child1->offset) + 5;
-            right = self->x + (s32)(scale * (f32)(child1->offset + child1->length)) - 5;
-            if (right - 1 > left + 1 && bottom - 1 > top + 1) {
-                if (self->overlay != 0) {
-                    diff = fn_802C5220(self->texture) - fn_802C5220(self->overlay);
-                    fn_80230C30(&spC, &sp8, left, top + diff / 2);
-                    fn_802C5320(self->overlay, 0, spC, sp8, lbl_805634A8,
-                                (f32)(right - left), (f32)fn_802C5220(self->overlay));
-                } else {
-                    fn_802E30C8(lbl_8033D9F8);
-                    fn_802C3424(left, top, right, bottom, lbl_8055FBDC);
-                    color = lbl_8055FBE0;
-                    fn_802C3424(left, bottom - 1, right, bottom, color);
-                    fn_802C3424(right - 1, top, right, bottom, color);
-                    color = lbl_8055FBFC;
-                    fn_802C3424(left, top, right, top + 1, color);
-                    fn_802C3424(left, top, left + 1, bottom, color);
-                }
-            }
+    s32 length;
+    s32 offset;
+  };
+  struct Object
+  {
+    u8 pad0[4];
+    s32 x;
+    s32 y;
+    u8 padC[4];
+    s32 end;
+    u8 pad14[0x230];
+    Child *child;
+    s32 texture;
+    s32 overlay;
+    s32 state;
+    s32 flag;
+  };
+  Object *self = (Object *) arg0;
+  Child *child;
+  s32 base;
+  unsigned int x;
+  s32 left;
+  s32 right;
+  s32 y0;
+  s32 diff;
+  s32 y1;
+  s32 color;
+  s32 scroll;
+  s32 bottom;
+  s32 top;
+  f32 scale;
+  f32 spC;
+  f32 sp8;
+  spC = (f32) (self->x - (lbl_8055FB9C / 2));
+  sp8 = (f32) ((lbl_8055FBA0 / 2) - self->y);
+  fn_802C5320(((Object *) arg0)->texture, 0, spC, sp8, lbl_805634A8, (f32) ((Vf78 *) arg0)->get(), (f32) (((Object *) arg0)->end - ((Object *) arg0)->y));
+  child = self->child;
+  base = child->base;
+  if (child->length < base)
+  {
+    if (self->flag == 0)
+    {
+      x = self->x;
+      left = x + 1;
+      scale = ((f32) (self->end - self->y)) / ((f32) base);
+      scroll = ((Vf78 *) arg0)->get();
+      right = (x + scroll) - 1;
+      child = self->child;
+      y0 = (self->y + ((s32) (scale * ((f32) child->offset)))) + 5;
+      y1 = (self->y + ((s32) (scale * ((f32) (child->offset + child->length))))) - 5;
+      if (((y1 - 1) > (y0 + 1)) && ((right - 1) > (left + 1)))
+      {
+        if (self->overlay != 0)
+        {
+          diff = fn_802C51C0(self->texture) - fn_802C51C0(self->overlay);
+          fn_80230C30(&spC, &sp8, left + (diff / 2), y0);
+          fn_802C5320(self->overlay, 0, spC, sp8, lbl_805634A8, (f32) fn_802C51C0(self->overlay), (f32) (y1 - y0));
         }
+        else
+        {
+          fn_802E30C8(lbl_8033D9F8);
+          fn_802C3424(left, y0, right, y1, lbl_8055FBDC);
+          color = lbl_8055FBE0;
+          fn_802C3424(left, y1 - 1, right, y1, color);
+          fn_802C3424(right - 1, y0, right, y1, color);
+          color = lbl_8055FBFC;
+          fn_802C3424(left, y0, right, y0 + 1, color);
+          fn_802C3424(left, y0, left + 1, y1, color);
+        }
+      }
     }
+    else
+    {
+      scroll = ((Vf78 *) arg0)->get();
+      child = self->child;
+      scale = ((f32) scroll) / ((f32) base);
+      top = self->y + 1;
+      bottom = self->end - 1;
+      left = (self->x + ((s32) (scale * ((f32) child->offset)))) + 5;
+      right = (self->x + ((s32) (scale * ((f32) (child->offset + child->length))))) - 5;
+      if (((right - 1) > (left + 1)) && ((bottom - 1) > (top + 1)))
+      {
+        if (self->overlay != 0)
+        {
+          diff = fn_802C5220(self->texture) - fn_802C5220(self->overlay);
+          fn_80230C30(&spC, &sp8, left, top + (diff / 2));
+          fn_802C5320(self->overlay, 0, spC, sp8, lbl_805634A8, (f32) (right - left), (f32) fn_802C5220(self->overlay));
+        }
+        else
+        {
+          fn_802E30C8(lbl_8033D9F8);
+          fn_802C3424(left, top, right, bottom, lbl_8055FBDC);
+          color = lbl_8055FBE0;
+          fn_802C3424(left, bottom - 1, right, bottom, color);
+          fn_802C3424(right - 1, top, right, bottom, color);
+          color = lbl_8055FBFC;
+          fn_802C3424(left, top, right, top + 1, color);
+          fn_802C3424(left, top, left + 1, bottom, color);
+        }
+      }
+    }
+  }
 }
 #pragma pop
 
@@ -5530,9 +5585,8 @@ extern "C" void fn_80221EA0(void *panel, s32 fieldId, void *value, s32 size) {
 extern "C" s32 fn_80221EA8(void *arg0) {
     extern char lbl_8033DA2C[];
     u32 value = *(u32*)((u8*)*(void**)((u8*)arg0 + 0x14) + 0x238);
-    u32 one = 1;
     for (s32 i = 0; i < 32; i++) {
-        if (value == (one << i)) {
+        if (value == (1u << i)) {
             return i;
         }
     }
@@ -5554,19 +5608,18 @@ extern "C" void fn_80221F9C(void *arg0, s32 arg1) {
     s32 temp_r30;
     s32 temp_r29;
     s32 temp_r28;
-    long var_r26;
-    s32 var_r20;
-    u32 temp_r20;
     s32 var_r27;
+    s32 var_r26;
+    s32 var_r25;
+    s32 var_r24;
     s32 temp_r23;
     s32 var_r22;
     void *temp_r21;
-    s32 var_r25;
-    s32 var_r18;
+    s32 temp_r20;
+    s32 var_r20;
     s32 temp_r18;
-    unsigned int var_r24;
+    s32 var_r18;
     s32 *items;
-    void *self;
     fn_802C3034(arg1);
     temp_r18 = *(s32 *)((u8 *)arg0 + 4);
     temp_r20 = *(s32 *)((u8 *)arg0 + 8);
@@ -5579,31 +5632,26 @@ extern "C" void fn_80221F9C(void *arg0, s32 arg1) {
     temp_r30 = lbl_8055FBC0;
     temp_r29 = lbl_8055FBFC;
     temp_r28 = lbl_8055FBF8;
-    var_r26 = 0;
-    var_r25 = 0;
-    var_r20 = 0;
-    var_r27 = 0;
-    self = arg0;
     goto outer_check;
 outer_body:
     temp_r21 = *(void **)((u8 *)items + var_r31);
     fn_802C4F58(var_r24 + 2, temp_r23 + 2, (const char *)((u8 *)items + var_r31 + 4), temp_r30);
-    if (var_r22 == *(s32 *)((u8 *)self + 0x24C)) {
-        register temp_r20 = *(s32 *)((u8 *)temp_r21 + 8);
+    if (var_r22 == *(s32 *)((u8 *)arg0 + 0x24C)) {
+        temp_r20 = *(s32 *)((u8 *)temp_r21 + 8);
         fn_802C3424(var_r24, temp_r23 + 0xA, var_r24 + 0x32, temp_r23 + (temp_r20 + 1) * 0xA, temp_r29);
         var_r26 = temp_r23 + 0xB;
         var_r25 = temp_r23 + 0xC;
         var_r20 = 0;
         var_r27 = 0;
         while (var_r20 < *(s32 *)((u8 *)temp_r21 + 8)) {
-            if (var_r20 == *(s32 *)((u8 *)self + 0x250))
+            if (var_r20 == *(s32 *)((u8 *)arg0 + 0x250))
                 fn_802C3424(var_r24 + 1, var_r26, var_r24 + 0x31, temp_r23 + var_r27 + 0x13, temp_r30);
             temp_r18 = temp_r30;
-            if (var_r20 == *(s32 *)((u8 *)self + 0x250))
+            if (var_r20 == *(s32 *)((u8 *)arg0 + 0x250))
                 temp_r18 = temp_r28;
             fn_802C4F58(var_r24 + 2, var_r25, (const char *)((s32 (*)(s32 *, s32))fn_8022D97C)((s32 *)temp_r21, var_r20), temp_r18);
-            var_r26 += 0xA;
             var_r27 += 0xA;
+            var_r26 += 0xA;
             var_r25 += 0xA;
             var_r20 += 1;
         }
@@ -5612,7 +5660,7 @@ outer_body:
     var_r31 += 0x24;
     var_r22 += 1;
 outer_check:
-    items = *(s32 **)((u8 *)self + 0x244);
+    items = *(s32 **)((u8 *)arg0 + 0x244);
     if (var_r22 < items[0x120 / 4])
         goto outer_body;
 }
@@ -6076,9 +6124,9 @@ extern "C" void fn_80222CFC(void *arg0, s32 arg1) {
     register s32 var_r30;
     register void *temp_r29;
     register void *temp_r28;
-    register void *temp_r25;
     register void *temp_r27;
     register s32 var_r26;
+    register void *temp_r25;
     register char *temp_r24;
     register f32 *var_r23;
     register f32 *var_r22;
@@ -6225,9 +6273,7 @@ outer_test:
 #pragma use_lmw_stmw off
 #pragma ppc_psq_save off
 #pragma scheduling invalid_target
-extern "C" void *fn_802230A4(void *self, s32 arg1, s32 arg2, void *arg3, s32 arg4) {
-    register u8 *obj = (u8 *)self;
-    register u8 *input = (u8 *)arg3;
+extern "C" void *fn_802230A4(u8 *obj, s32 arg1, s32 arg2, u8 *input, s32 arg4) {
     register s32 data = arg4;
     register s32 i;
     register u8 *row;
@@ -6339,17 +6385,17 @@ extern "C" void fn_80223280(void *arg0, s32 arg1) {
     s32 temp_r29;
     char *temp_r30_2;
     u32 scratch[4];
-    f32 temp_f31;
-    f32 temp_f30;
-    f32 temp_f29;
-    f32 temp_f28;
-    f32 temp_f27;
-    f32 temp_f2;
-    f32 temp_f1;
-    f32 temp_f30_2;
-    f32 temp_f6;
-    f32 temp_f28_2;
-    f32 temp_f27_2;
+    register f32 temp_f31;
+    register f32 temp_f30;
+    register f32 temp_f29;
+    register f32 temp_f28;
+    register f32 temp_f27;
+    register f32 temp_f2;
+    register f32 temp_f1;
+    register f32 temp_f30_2;
+    register f32 temp_f6;
+    register f32 temp_f28_2;
+    register f32 temp_f27_2;
     temp_f30 = *(f32 *)((u8 *)arg0 + 0x408);
     temp_f29 = temp_f30;
     var_r28 = 0;
@@ -6673,10 +6719,13 @@ extern "C" void *fn_80223AB4(void *arg0, void *arg1, s32 arg2) {
     } else {
         *(s32 *)((u8 *)arg0 + 0x250) = 0;
     }
-    *(f32 *)((u8 *)arg0 + 0x254) = (f32)*(s32 *)((u8 *)arg1 + 0x14);
-    *(f32 *)((u8 *)arg0 + 0x25C) = lbl_805634A4;
-    *(f32 *)((u8 *)arg0 + 0x258) = (f32)*(s32 *)((u8 *)arg1 + 0x14);
-    *(s32 *)((u8 *)arg0 + 0x260) = (s32)fn_8022EE9C();
+    f32 first = *(s32 *)((u8 *)arg1 + 0x14);
+    f32 scale = lbl_805634A4;
+    *(f32 *)((u8 *)arg0 + 0x254) = (f32)first;
+    f32 second = *(s32 *)((u8 *)arg1 + 0x14);
+    *(f32 *)((u8 *)arg0 + 0x25C) = scale;
+    *(f32 *)((u8 *)arg0 + 0x258) = (f32)second;
+    *(s32 *)((u8 *)arg0 + 0x260) = fn_8022EE9C();
     *(s32 *)((u8 *)arg0 + 0x264) = arg2;
     return arg0;
 }
@@ -6969,7 +7018,7 @@ extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2,
     register u8 *self = (u8 *)arg0;
     register s32 length = arg3;
     register s32 *link = arg4;
-    register s32 zero;
+    register s32 zero = 0;
     char name[0x100];
 
     ((void *(*)(void *, void *))fn_80218F80)(self, resource);
@@ -6978,9 +7027,9 @@ extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2,
                 *(s32 *)(resource + 8), *(s32 *)(resource + 0xc));
 
     *(f32 *)(self + 0x278) = (f32)*(s32 *)(resource + 0x14);
-    *(u8 *)(self + 0x260) = 0;
+    *(u8 *)(self + 0x260) = zero;
     *(f32 *)(self + 0x27c) = (f32)*(s32 *)(resource + 0x18);
-    *(u8 *)(self + 0x261) = 0;
+    *(u8 *)(self + 0x261) = zero;
 
     u32 top = *(u32 *)(resource + 0x9c) >> 31;
     *(u32 *)(self + 0x248) = top;
@@ -6995,7 +7044,6 @@ extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2,
 
     *(s32 *)(self + 0x254) =
         fn_80228F40(*(s32 *)(self + 4), *(s32 *)(self + 8));
-    zero = 0;
     *(s32 *)(self + 0x258) = zero;
     *(s32 *)(self + 0x25c) = length;
     *(s32 *)(self + 0x250) = initial;
@@ -7242,7 +7290,6 @@ extern "C" s32 fn_80224B0C(void *widget, s32 action) {
 #pragma push
 #pragma opt_propagation off
 extern "C" void *fn_80224B54(void *arg0, s32 arg1, void *arg2) {
-#pragma opt_lifetimes off
     s32 first;
     void *p2 = arg2;
     volatile u8 *self = (volatile u8 *)arg0;
@@ -7979,42 +8026,66 @@ extern "C" void fn_80226B6C(void *arg0) {
     f32 now = fn_8023659C();
     f32 scale;
     volatile f32 *matrix = (volatile f32 *)*(void **)(p + 0x248);
-    f32 zero, one, x, delta, factor, y, delta2;
+    f32 zero;
+    f32 one;
+    f32 x;
+    f32 delta;
+    f32 factor;
+    f32 y;
+    f32 delta2;
+
     one = lbl_805634A4;
     zero = lbl_805634A8;
     matrix[0] = one;
     scale = now / lbl_805634E4;
-    matrix[1] = zero; matrix[2] = zero; matrix[3] = zero; matrix[4] = one;
-    matrix[5] = zero; matrix[6] = zero; matrix[7] = zero; matrix[8] = one;
-    matrix[9] = zero; matrix[10] = zero; matrix[11] = zero;
-    *(u32 *)(scratch + 0x74) = *(u32 *)(p + 0x25c) ^ 0x80000000;
+    matrix[1] = zero;
+    matrix[2] = zero;
+    matrix[3] = zero;
+    matrix[4] = one;
+    matrix[5] = zero;
+    matrix[6] = zero;
+    matrix[7] = zero;
+    matrix[8] = one;
+    matrix[9] = zero;
+    matrix[10] = zero;
+    matrix[11] = zero;
+
+    *(u32 *)(scratch + 0x74) =
+        *(u32 *)(p + 0x25c) ^ 0x80000000;
     *(u32 *)(scratch + 0x70) = 0x43300000;
     *(f32 *)(scratch + 0x00) = zero;
     *(f32 *)(scratch + 0x04) = zero;
-    *(f32 *)(scratch + 0x08) = scale * (f32)(*(f64 *)(scratch + 0x70) - lbl_805634B8);
+    *(f32 *)(scratch + 0x08) =
+        scale * (f32)(*(f64 *)(scratch + 0x70) - lbl_805634B8);
+
     {
         void *obj = *(void **)(p + 0x248);
         ((void (*)(void *, void *))fn_80015A20)(scratch + 0x0c, scratch);
         fn_80015B20(obj, scratch + 0x0c, obj);
     }
+
     delta = *(f32 *)(p + 0x258);
     factor = lbl_805634C4;
     x = *(f32 *)(p + 0x24c);
     delta *= factor;
     x += delta;
     *(f32 *)((u8 *)*(void **)(p + 0x248) + 0x24) = x;
+
     delta2 = *(f32 *)(p + 0x254);
     y = *(f32 *)(p + 0x250);
     delta2 *= factor;
     y -= delta2;
     *(f32 *)((u8 *)*(void **)(p + 0x248) + 0x28) = y;
+
     if (*(s32 *)(p + 0x244) != 0) {
         s32 value = fn_8022EDC4();
-        fn_8022EEF8(scratch + 0x30, (s32)*(void **)(p + 0x248), value);
+        fn_8022EEF8(scratch + 0x30,
+                    (s32)*(void **)(p + 0x248), value);
         fn_8022ED00(scratch + 0x30);
         f32 a = *(f32 *)(p + 0x258);
         f32 b = *(f32 *)(p + 0x254);
-        fn_802C5320(*(s32 *)(p + 0x244), 0, -a * lbl_805634C4, b * lbl_805634C4, lbl_805634A8, a, b);
+        fn_802C5320(*(s32 *)(p + 0x244), 0, -a * lbl_805634C4,
+                    b * lbl_805634C4, lbl_805634A8, a, b);
         fn_8022EDB8();
     }
 }
@@ -8132,7 +8203,7 @@ extern "C" void fn_80227044(void *arg0, f32 x, f32 y, f32 z) {
     scaled[1] = sy;
     scaled[2] = sz;
     void *handle = *(void **)((u8 *)arg0 + 0x25C);
-    ((void (*)(void *, void *))fn_80015A20)(&result[0], &scaled[0]);
+    ((void (*)(void *, void *, f32, f32))fn_80015A20)(&result[0], &scaled[0], sx, sy);
     fn_80015B20(handle, &result[0], handle);
 }
 #pragma pop
@@ -8509,8 +8580,7 @@ extern f32 lbl_80563578;
 #pragma ppc_psq_save off
 #pragma scheduling invalid_target
 extern "C" void fn_80228010(void* arg0) {
-if (*(s32*)((u8*)arg0 + 0x250) != 0 && *(s32*)((u8*)arg0 + 0x254) != 0) {
-if (*(s32*)((u8*)arg0 + 0x258) == 0) return;
+if (*(s32*)((u8*)arg0 + 0x250) != 0 && *(s32*)((u8*)arg0 + 0x254) != 0 && *(s32*)((u8*)arg0 + 0x258) != 0) {
 f32 duration, initial, radius;
 s32 lastIndex;
 duration = fn_80235EF0(*(s32*)((u8*)arg0 + 0x254), 0);
@@ -9467,7 +9537,7 @@ extern "C" void fn_80229998(void *widget) {
 
 #pragma scheduling invalid_target
 extern "C" s32 fn_802299B0(void *arg0) {
-    u32 result = 0;
+    s32 result = 0;
     s32 *p;
     s32 value;
 
@@ -9479,7 +9549,7 @@ extern "C" s32 fn_802299B0(void *arg0) {
         if (*p == *(s32 *)((u8 *)arg0 + 0x258))
             value = 1;
     }
-    return (s32)((((u32)(-value | value)) >> 31) | result);
+    return (((u32)(-value | value)) >> 31) | result;
 }
 #pragma scheduling reset
 /* Dispatch current object range/state to the target callback at +0x244 with args from +0x248/+0x24C/+0x250. */
