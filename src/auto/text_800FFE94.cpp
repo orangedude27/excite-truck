@@ -42,11 +42,11 @@ extern "C" void fn_800FFE94(void* handle) {
 extern "C" char lbl_803276F0[];
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 #pragma push
-#pragma optimization_level 3
+#pragma opt_peephole off
 extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(void *arg0, const void *arg1) {
     register void *self = arg0;
     register const unsigned char *file = (const unsigned char *)arg1;
-    register char *strings = lbl_803276F0;
+    char *strings = lbl_803276F0;
     register unsigned short temp_r0;
     register unsigned int var_r0;
     *(unsigned int *)self = 0;
