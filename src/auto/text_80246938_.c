@@ -1753,7 +1753,7 @@ extern int __cntlzw(unsigned int);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802491A8(const void *arg0)
 {
   char *base = (char *) arg0;
