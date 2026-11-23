@@ -1102,7 +1102,6 @@ void fn_8029DB78(void *arg0, void *arg1, int x, int z) {
     *(int *)(out + 3) = *(int *)(p + 0x2C) |
         ((lo + (int)((float)(hi - lo) * (lbl_80564658 - proj[1] * proj[1]))) << 24);
 }
-#pragma pop
 extern float lbl_8056462C, lbl_80564634, lbl_80564640, lbl_80564658, lbl_80564694, lbl_80564698;
 #pragma push
 #pragma processor 750
@@ -1202,13 +1201,13 @@ extern void fn_8029C450(void *, int);
 extern float lbl_8056469C;
 #pragma scheduling invalid_target
 void fn_8029DF64(void *arg0, int arg1, int arg2, float arg3) {
-    int low = -32768;
     int stride;
     short *data;
     int index;
     float val;
     int cvt;
     int out;
+    int low = -32768;
     stride = *(int *)((char *)arg0 + 0xC);
     data = *(short **)((char *)arg0 + 4);
     index = arg1 + arg2 * stride;
@@ -1223,12 +1222,17 @@ int fn_8029DFE0(void *arg0, void *arg1) {
     extern float lbl_805646A0, lbl_8056465C, lbl_80564634;
     struct Delta { float x, z; };
     volatile struct Delta delta;
-    float x = *(float *)arg1 - *(float *)((char *)arg0 + 0x38);
-    float z = *(float *)((char *)arg1 + 8) - *(float *)((char *)arg0 + 0x40);
-    float u = z * *(float *)((char *)arg0 + 0x48) + x * *(float *)((char *)arg0 + 0x44);
-    float v = z * *(float *)((char *)arg0 + 0x50) + x * *(float *)((char *)arg0 + 0x4C);
-    float upper = (float)*(int *)((char *)arg0 + 0xC) - lbl_805646A0;
-    int result = 0, inside = 0, test = 0;
+    float x, z, u, v, upper;
+    int result, inside, test;
+
+    result = 0;
+    x = *(float *)arg1 - *(float *)((char *)arg0 + 0x38);
+    z = *(float *)((char *)arg1 + 8) - *(float *)((char *)arg0 + 0x40);
+    u = z * *(float *)((char *)arg0 + 0x48) + x * *(float *)((char *)arg0 + 0x44);
+    inside = 0;
+    v = z * *(float *)((char *)arg0 + 0x50) + x * *(float *)((char *)arg0 + 0x4C);
+    test = 0;
+    upper = (float)*(int *)((char *)arg0 + 0xC) - lbl_805646A0;
 
     delta.x = x;
     delta.z = z;
