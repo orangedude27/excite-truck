@@ -681,7 +681,7 @@ void fn_802DC464(int positions, int vertexCount, unsigned short *__restrict list
         color.r = 0xFF;
         color.a = alphaByte;
         CpuLight_CachedTevAlpha = alphaByte;
-        GXSetTevColor(1, color);
+        GXSetTevColor(GX_TEVREG0, color);
     }
     while (listSize > 0) {
         indexCount = *list++;
