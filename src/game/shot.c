@@ -117,33 +117,33 @@ void fn_802E4800(u16 inputWord) {
 #define s_keyHistory lbl_8055FF50
 #define inputHistoryBuffer lbl_804FC418
 #define lastInputTime lbl_8055FF5C
-    volatile u16 *q;
-    u32 i;
-    u16 next1, next2, next3;
+    volatile u16 *recentKeys;
+    u32 idx;
+    u16 slot1, slot2, slot3;
 
     if (fn_802ECC10() != 0) {
         return;
     }
     lastInputTime = fn_802E2C20();
-    for (i = 0; i < 31; i++) {
-        inputHistoryBuffer[i] = inputHistoryBuffer[i + 1];
+    for (idx = 0; idx < 31; idx++) {
+        inputHistoryBuffer[idx] = inputHistoryBuffer[idx + 1];
     }
     inputHistoryBuffer[31] = inputWord & 0xFFF;
 
-    for (i = 0; i < 4; i++) {
-        if ((&s_keyHistory)[i] == 0) {
-            (&s_keyHistory)[i] = inputWord;
+    for (idx = 0; idx < 4; idx++) {
+        if ((&s_keyHistory)[idx] == 0) {
+            (&s_keyHistory)[idx] = inputWord;
             return;
         }
     }
-    q = &s_keyHistory;
-    next1 = q[1];
-    next2 = q[2];
-    next3 = q[3];
-    q[0] = next1;
-    q[1] = next2;
-    q[2] = next3;
-    q[3] = inputWord;
+    recentKeys = &s_keyHistory;
+    slot1 = recentKeys[1];
+    slot2 = recentKeys[2];
+    slot3 = recentKeys[3];
+    recentKeys[0] = slot1;
+    recentKeys[1] = slot2;
+    recentKeys[2] = slot3;
+    recentKeys[3] = inputWord;
 #undef s_keyHistory
 #undef inputHistoryBuffer
 #undef lastInputTime
