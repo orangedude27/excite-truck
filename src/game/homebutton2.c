@@ -363,7 +363,7 @@ extern float lbl_805651F8, lbl_805651FC, lbl_80565200, lbl_80565204, lbl_8056520
  * scissor from the current render dims, simple TEV/Z/blend state, and an
  * orthographic projection whose width follows the console aspect ratio (16:9
  * or 4:3); then draw the home-button UI quad and re-initialize GX state. */
-void fn_802ECA48(void) {
+/* When the Home menu is active, set up GX for a 2D overlay (viewport/scissor, TEV/Z/blend, and an orthographic projection whose width follows 16:9 vs 4:3), draw the home-button UI quad, then re-initialize GX state. */ void fn_802ECA48(void) {
 #define gHomeMenuActive lbl_805600E8
 #define gViewportOrigin lbl_805651E0
 #define gViewportFar lbl_805651E8
