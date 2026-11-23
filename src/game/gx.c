@@ -2830,7 +2830,7 @@ void* fn_802D2D14(void) {
  * cpulight.c).  A light record is a 3x3 rotation matrix at +0x00 followed by its
  * world position at +0x24; records are 0x34 bytes apart.
  *   GX_LIGHT_XF_MTX   3x4 matrix lights are transformed by (the current view
- *                     transform, rebuilt by fn_802D2D1C from the camera at
+ *                     transform, rebuilt by buildViewXform from the camera at
  *                     lbl_804C56C0); the light rotation and position are
  *                     multiplied by it.
  *   GX_POSMTX_SCRATCH scratch 3x4 matrix: the transformed light, transposed with
@@ -3530,9 +3530,12 @@ extern char lbl_8055D100;
     extern int lbl_804C9760[];
 
 /* Build the current view transform (GX_LIGHT_XF_MTX) from the camera at lbl_804C56C0: copy and transpose the camera rotation, rotate its translation by the matrix and negate it, then select matrix 0. */
-void fn_802D2D1C(void) {
-    Xform_802D1C04 *camera = (Xform_802D1C04 *)lbl_804C56C0;
-    Xform_802D1C04 *view = (Xform_802D1C04 *)lbl_804CA2D8;
+void buildViewXform(void) {
+#define gCamera lbl_804C56C0
+#define gViewXform lbl_804CA2D8
+#define gNegOne lbl_80564F90
+    Xform_802D1C04 *camera = (Xform_802D1C04 *)gCamera;
+    Xform_802D1C04 *view = (Xform_802D1C04 *)gViewXform;
     view->r = camera->r;
     mtx33Transpose_802D1C04(view->r.m);
     if (&view->t == &camera->t) {
