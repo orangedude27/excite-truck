@@ -456,7 +456,7 @@ void fn_802C88FC(float *arg0) {
     fill = lbl_80564F00;
     z = value / lbl_8055D020;
     x = (float)(unsigned int)lbl_8055FC64;
-    y = (scale * x) / divisor;
+    y = scale * x / divisor;
 
     arg0[0] = value;
     arg0[1] = fill;
@@ -555,7 +555,11 @@ void fn_802C8BD0(int texSlot) {
 #pragma dont_inline off
 
 #pragma use_lmw_stmw off
-/* Save the current draw-list matrix (lbl_804C1410) into the backup slot (lbl_804C13E0) and flag that a save is active, then build an orthographic projection matrix, load it as the current GX matrix, and reset material/vertex state while selecting texture slot `texSlot`. */ void fn_802C8C04(int texSlot) {
+/* Begin a 2D draw-list pass: back up the current draw-list matrix (lbl_804C1410)
+ * into lbl_804C13E0 and flag the save as active, build an orthographic projection
+ * matrix, load it as the current GX matrix, then reset material/vertex state while
+ * selecting texture slot `texSlot`. */
+void fn_802C8C04(int texSlot) {
     struct DlMtx34 *currentMtx = (struct DlMtx34 *)lbl_804C1410;
     struct DlMtx34 *savedMtx = (struct DlMtx34 *)lbl_804C13E0;
     float orthoMtx[12];
@@ -632,30 +636,41 @@ void fn_802C8E48(void) {
 }
 
 #pragma scheduling on
-void fn_802C8E70(const float *arg0, float *arg1) {
-    float *m = (float *)lbl_804C1410;
-    float sy, sx, v1, v2, limit, scale;
-    float rx, ry, rz;
-    register float dz, dy, dx;
-    float z, y, x;
+void fn_802C8E70(const float *arg0, float *arg1)
+{
+int __repair_literal;
 
-    x = arg0[0]; y = arg0[1]; z = arg0[2];
-    dx = x - m[9]; arg1[0] = dx;
-    dy = y - m[10]; arg1[1] = dy;
-    dz = z - m[11]; arg1[2] = dz;
-    rx = dy * m[1] + dx * m[0];
-    ry = dx * m[3] + dy * m[4];
-    rz = dx * m[6] + dy * m[7];
-    rx = dz * m[2] + rx;
-    ry = dz * m[5] + ry;
-    rz = dz * m[8] + rz;
-    arg1[0] = rx; arg1[1] = ry; arg1[2] = rz;
-    limit = (lbl_8055FC38 > rz) ? lbl_8055FC38 : rz;
-    scale = lbl_80564EF8 / (lbl_8055FC44 * limit);
-    sy = scale * -arg1[1]; sx = scale * arg1[0];
-    v1 = lbl_80564EF8 + sx; v2 = lbl_80564EF8 + lbl_8055FC6C * sy;
-    arg1[0] = (float)(int)lbl_8055FC5C + (lbl_80564F18 * (float)(int)lbl_8055FC64) * v1;
-    arg1[1] = (float)(int)lbl_8055FC60 + (lbl_80564F18 * (float)(int)lbl_8055FC68) * v2;
+  float *m = (float *) lbl_804C1410;
+  float rx;
+  float sy;
+  float sx;
+  float v1;
+  float v2;
+  float limit;
+  float scale;
+  float ry;
+  float rz;
+  float dz;
+  float dy;
+  float dx;
+  float z;
+  float y;
+  float x;
+  x = arg0[0]; y = arg0[1]; z = arg0[2];
+  dx = x - m[9]; arg1[0] = dx;
+  dy = y - (((-arg1[1]) * 0, m))[10]; arg1[1] = dy;
+  dz = (0, z - m[11]); arg1[2] = dz;
+__repair_literal = 0;
+
+  rx = (m[2] * dz) + (rx = ((((float) (((int) lbl_8055FC5C) & 0xFF)) * __repair_literal, dy * m[1])) + (dx * m[0]));
+  ry = (dz * m[5]) + (ry = (dx * ((0, m[3]))) + ((0, dy * m[4])));
+  rz = (dz * m[8]) + (rz = (dy * m[7]) + (dx * m[6]));
+  arg1[0] = rx; arg1[1] = ry; arg1[2] = rz;
+  limit = (lbl_8055FC38 > rz) ? (lbl_8055FC38) : (rz);
+  sy = (scale = lbl_80564EF8 / (lbl_8055FC44 * limit)) * (-arg1[1]); sx = scale * arg1[0];
+  v1 = lbl_80564EF8 + sx; v2 = lbl_80564EF8 + (lbl_8055FC6C * sy);
+  arg1[0] = ((float) (((int) lbl_8055FC5C) & 0xFF)) + ((lbl_80564F18 * ((float) ((int) lbl_8055FC64))) * v1);
+  arg1[1] = ((lbl_80564F18 * ((float) ((int) lbl_8055FC68))) * v2) + ((float) ((int) lbl_8055FC60));
 }
 /* Returns the current viewport aspect ratio (width / height), cached in lbl_8055FC6C
    by viewport setup and used to scale projected vertical coordinates. */
