@@ -222,7 +222,7 @@ extern s8 lbl_8055EE42;
 extern s8 lbl_8055EE43;
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_8020C45C(void) {
+/* Pre-race music shutdown: release the goalline SFX and each of the three track sounds, then clear their selectors and setup flags. */ extern "C" void fn_8020C45C(void) {
     /* Pre-race music shutdown: release the goalline SFX and the three track
        sounds, then clear their selector state and setup flags. */
     class Releasable {
@@ -239,7 +239,7 @@ extern "C" void fn_8020C45C(void) {
     fn_802103BC();
     {
         s32 *track = &lbl_80489BE0;
-        s32 index = 0;
+        s32 trackIndex = 0;
         do {
             sound = *(Releasable **)((char *)track + 0x20);
             if (sound != 0) {
@@ -251,9 +251,9 @@ extern "C" void fn_8020C45C(void) {
                 }
                 *(Releasable **)((char *)track + 0x20) = 0;
             }
-            index += 1;
+            trackIndex += 1;
             track += 9;
-        } while (index < 3);
+        } while (trackIndex < 3);
     }
     fn_8012E498(&lbl_80489C50);
     fn_8012E498(lbl_8055B5D4);
