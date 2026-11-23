@@ -2722,7 +2722,7 @@ void fn_802D2B0C(void) {
     extern void gxSetupSceneLights(void);
     extern void fn_802DF994(void);
     extern void fn_802D2AC4(void);
-    extern void fn_802DF6D0(void);
+    extern void GXSetupWaterBumpTevPipelineB(void);
     extern void fn_802DF938(void);
     extern void fn_802DF4A8(void);
     extern void fn_802DF684(void);
@@ -2771,7 +2771,7 @@ void fn_802D2B0C(void) {
                     buildDefaultTevPipeline();
                 } else {
                     if (lbl_804C5700[8] != 0) {
-                        fn_802DF6D0();
+                        GXSetupWaterBumpTevPipelineB();
                         lbl_8055FD80 = fn_802DF938;
                     } else {
                         fn_802DF4A8();
@@ -3157,7 +3157,6 @@ void fn_802D3420(void) {
 void fn_802D362C(s32 arg0) {
     volatile unsigned char color[4];
     unsigned int packed;
-    void *colorPtr;
 
     GXSetTexCopySrc((u16)*(int *)(lbl_804C9778 + 0x1C), (u16)*(int *)(lbl_804C9778 + 0x20), (u16)*(int *)(lbl_804C9778 + 0x24), (u16)*(int *)(lbl_804C9778 + 0x28));
     GXSetTexCopyDst((u16)*(int *)(lbl_804C9778 + 0x24), (u16)*(int *)(lbl_804C9778 + 0x28), 0x27, 0);
@@ -3177,13 +3176,12 @@ void fn_802D362C(s32 arg0) {
     GXSetBlendMode(1, 4, 5, 3);
     GXSetZMode(0, 3, 0);
     GXSetTexCoordGen2(0, 1, 0xC, 0x3C, 0, 0x7D);
-    colorPtr = (void *)color;
     packed = ((unsigned int (*)(unsigned int))fn_802CEA1C)((unsigned int)arg0);
     color[3] = packed;
     color[0] = packed >> 24;
     color[1] = packed >> 16;
     color[2] = packed >> 8;
-    ((void (*)(int, void *))GXSetTevColor)(1, colorPtr);
+    ((void (*)(int, void *))GXSetTevColor)(1, (void *)color);
     fn_802D3420();
 }
 

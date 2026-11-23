@@ -269,7 +269,7 @@ void *fn_802D3100(void); /* the texture it distorts, into GX_TEXMAP6 */
  * block (lbl_804C5700) and fn_802D2B0C builds the pipeline here.  Stage 0 draws
  * the surface itself, stage 1 adds the GX_TEXMAP6 texture whose coordinates
  * indirect stage 0 shifts with the bump map in GX_TEXMAP5.  fn_802DF684 undoes
- * it again; fn_802DF6D0 is the twin used when a second texture stage is wanted.
+ * it again; GXSetupWaterBumpTevPipelineB is the twin used when a second texture stage is wanted.
  */
 void fn_802DF4A8(void) {
     s32 alphaSel = GX_ITBA_OFF; /* GXSetTevIndirect's last two arguments go on */
@@ -322,7 +322,7 @@ void *fn_802D30FC(void); /* the texture it distorts, into GX_TEXMAP6 */
  * texture, and stage 2 passes that colour through while taking alpha from the
  * second texture in GX_TEXMAP1.
  */
-void fn_802DF6D0(void) {
+void GXSetupWaterBumpTevPipelineB(void) {
     s32 alphaSel = GX_ITBA_OFF; /* GXSetTevIndirect's last two arguments go on */
     s32 utcLod = FALSE;         /* the stack, so they need somewhere to live */
     /* texcoord0 is the model's own texture coordinates; texcoord1 is the normal,
