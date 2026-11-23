@@ -240,7 +240,7 @@ void fn_802DF2F0(void) {
 
 void *fn_802D3138(void);
 /* Configures GX TEV/texture state for a 2-stage textured blend setup. */
-void fn_802DF300(void) {
+/* Configure the 2-stage TEV pipeline for render mode 2's non-indirect branch: stage 0 uses the rasterized color, stage 1 samples the texture from fn_802D3138() loaded into GX_TEXMAP7. */ void fn_802DF300(void) {
     register u32 texCoordId = 0;
     register u32 texGenType = 1;
     GXSetTexCoordGen2(texCoordId, texGenType, 0, 0x2D, 0, 0x7D);
