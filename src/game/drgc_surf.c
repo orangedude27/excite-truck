@@ -337,58 +337,59 @@ void fn_802D4458(void *arg0) {
 }
 #pragma opt_propagation reset
 #pragma opt_unroll_loops off
-/* Format-16 surface drawer (fn_802D5FE4 case 16): rebuild the position array by pushing
- * each source vertex along the shared offset direction, queueing that transform for the
- * streaming pass instead of running it here, then bind the arrays and submit the list. */
+/* Format-16 surface drawer (fn_802D5FE4 case 16): build a fresh position array by
+ * displacing each weighted source vertex along the shared offset direction, queue
+ * that transform for the next frame's streaming pass when there is room (or do it
+ * inline when the queue is full), then bind the arrays and submit the prebuilt list. */
 void fn_802D45C0(void *surface) {
-    /* The source vertices of this layout: a position plus how far along lbl_804C56F0
-       (the normalized offset direction the renderer keeps for surfaces) to push it. */
+    /* Source vertices of this layout: a position plus how far along lbl_804C56F0
+       (the renderer's shared normalized offset direction) to push it. */
     struct WeightedPos { f32 x, y, z, weight; };
     extern s32 fn_802CFF64(s32);
-    extern u8 lbl_804CEC3C[];   /* this drawer's struct SurfXformQueue */
-    extern f32 lbl_804C56F0[];  /* offset direction, set by fn_802D03F4 */
+    extern u8 lbl_804CEC3C[];
+    extern f32 lbl_804C56F0[];
     register void *object = surface;
     register struct WeightedPos *src = ((struct SurfDraw *)object)->positions;
     register s32 count = ((struct SurfDraw *)object)->vertexCount;
-    /* A fresh position array for this frame's vertices, 12 bytes each. */
-    f32 *base = (f32 *)(u32)fn_802CFF64(count * 12);
-    s32 index;
-    s32 queued;
-    f32 *out;
+    /* Fresh position array for this frame's vertices, 12 bytes each. */
+    f32 *newPositions = (f32 *)(u32)fn_802CFF64(count * 12);
+    s32 queueIndex;
+    s32 didQueue;
+    f32 *dst;
     s32 i;
 
-    if (base == 0) return;
+    if (newPositions == 0) return;
     {
         register struct SurfXformQueue *queue = (struct SurfXformQueue *)lbl_804CEC3C;
-        index = queue->queued;
-        if (index < 0x400) {
-            /* Room in the queue: fn_802D6C78 rebuilds the array out of the L2 cache
+        queueIndex = queue->queued;
+        if (queueIndex < 0x400) {
+            /* Room in the queue: fn_802D6C78 rebuilds the array from L2 cache
                before the list is drawn, so nothing is transformed here. */
             struct SurfXform *xform;
-            queue->queued = index + 1;
-            xform = &queue->entry[index];
+            queue->queued = queueIndex + 1;
+            xform = &queue->entry[queueIndex];
             xform->count = count;
             xform->src = src;
-            xform->dst = base;
+            xform->dst = newPositions;
             xform->flag = 0;
-            queued = 1;
+            didQueue = 1;
         } else {
-            queued = 0;
+            didQueue = 0;
         }
-        if (queued == 0) {
+        if (didQueue == 0) {
             /* Queue full: rebuild the array here instead. */
-            out = base;
+            dst = newPositions;
             for (i = count; i > 0; i--) {
                 f32 weight = src->weight;
-                out[0] = src->x + lbl_804C56F0[0] * weight;
-                out[1] = src->y + lbl_804C56F0[1] * weight;
-                out[2] = src->z + lbl_804C56F0[2] * weight;
+                dst[0] = src->x + lbl_804C56F0[0] * weight;
+                dst[1] = src->y + lbl_804C56F0[1] * weight;
+                dst[2] = src->z + lbl_804C56F0[2] * weight;
                 src++;
-                out += 3;
+                dst += 3;
             }
         }
     }
-    GXSetArray(GX_VA_POS, base, 0xC);
+    GXSetArray(GX_VA_POS, newPositions, 0xC);
     GXSetArray(GX_VA_CLR0, ((struct SurfDraw *)object)->normals, 2);
     GXSetArray(GX_VA_TEX0, ((struct SurfDraw *)object)->colors, 4);
     GXCallDisplayList(((struct SurfDraw *)object)->displayList,
