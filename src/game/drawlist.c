@@ -781,6 +781,15 @@ extern float lbl_80564F20, lbl_8055FC50, lbl_8055FC54, lbl_8055FC58;
 #pragma scheduling invalid_target
 /* Test whether a 3D point lies inside the current view volume, optionally reporting a status byte and the point's view-space depth. */
 int fn_802C94A0(const float *position, unsigned char *status, float *depth, float tolerance) {
+#define gViewMatrix        lbl_804C1410
+#define gNearClip          lbl_8055FC38
+#define gFarClip           lbl_8055FC3C
+#define gRightSlope        lbl_8055FC44
+#define gUpSlope           lbl_8055FC50
+#define gRightSlack        lbl_8055FC54
+#define gUpSlack           lbl_8055FC58
+#define gFarMarginFactor   lbl_80564F20
+#define gZeroFloat         lbl_80564F00
     float *matrix;
     Vec delta;
     float dx;
@@ -797,7 +806,7 @@ int fn_802C94A0(const float *position, unsigned char *status, float *depth, floa
         *status = 1;
     }
 
-    matrix = (float *)lbl_804C1410;
+    matrix = (float *)gViewMatrix;
     dx = position[0] - matrix[9];
     dy = position[1] - matrix[10];
     dz = position[2] - matrix[11];
@@ -806,26 +815,26 @@ int fn_802C94A0(const float *position, unsigned char *status, float *depth, floa
     delta.z = dz;
 
     viewDepth = PSVECDotProduct(&delta, (Vec *)(matrix + 6));
-    if ((viewDepth < lbl_8055FC38 - tolerance) || (viewDepth > lbl_8055FC3C + tolerance)) {
+    if ((viewDepth < gNearClip - tolerance) || (viewDepth > gFarClip + tolerance)) {
         return 0;
     }
-    if (viewDepth - tolerance > lbl_8055FC3C - lbl_80564F20 * lbl_8055FC3C) {
+    if (viewDepth - tolerance > gFarClip - gFarMarginFactor * gFarClip) {
         return 0;
     }
 
     absRight = (float)__fabs((double)PSVECDotProduct(&delta, (Vec *)matrix));
-    scaledLimit = viewDepth * lbl_8055FC44;
-    rightLimit = lbl_80564F00;
+    scaledLimit = viewDepth * gRightSlope;
+    rightLimit = gZeroFloat;
     rightLimit = (rightLimit > scaledLimit) ? rightLimit : scaledLimit;
-    if (absRight > rightLimit + tolerance * lbl_8055FC54) {
+    if (absRight > rightLimit + tolerance * gRightSlack) {
         return 0;
     }
 
-    absUp = (float)__fabs((double)PSVECDotProduct(&delta, (Vec *)((float *)lbl_804C1410 + 3)));
-    scaledLimit = viewDepth * lbl_8055FC50;
-    upLimit = lbl_80564F00;
+    absUp = (float)__fabs((double)PSVECDotProduct(&delta, (Vec *)((float *)gViewMatrix + 3)));
+    scaledLimit = viewDepth * gUpSlope;
+    upLimit = gZeroFloat;
     upLimit = (upLimit > scaledLimit) ? upLimit : scaledLimit;
-    if (absUp > upLimit + tolerance * lbl_8055FC58) {
+    if (absUp > upLimit + tolerance * gUpSlack) {
         return 0;
     }
 
@@ -833,6 +842,15 @@ int fn_802C94A0(const float *position, unsigned char *status, float *depth, floa
         *depth = viewDepth - tolerance;
     }
     return 1;
+#undef gZeroFloat
+#undef gFarMarginFactor
+#undef gUpSlack
+#undef gRightSlack
+#undef gUpSlope
+#undef gRightSlope
+#undef gFarClip
+#undef gNearClip
+#undef gViewMatrix
 }
 #pragma scheduling on
 /* View-volume containment test for a position: calls the full checker without
