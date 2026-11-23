@@ -4955,7 +4955,6 @@ extern "C" void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm
 
 #pragma use_lmw_stmw off
 #pragma push
-#pragma opt_propagation off
 #pragma dont_inline off
 /* Inline LinkList<BasicSound, 0xC8> helpers (asserting GetFront / PopFront / PushBack). */
 static inline void *SndPrioListImplIter_Deref(void *node) {
@@ -5004,11 +5003,12 @@ extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0
     extern void* fn_8002F634(void*, void* (*)(void*, int), s32, s32);
     extern void fn_800F8520(void*);
     extern void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540(void*, int);
+    u8* elt;
     u8* self = (u8*)arg0;
     u8 arr[0x600];
     fn_8002F53C(arr, fn_800F8520, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540, 0xC, 0x80);
     while (*(s32*)(self + 0xC) != 0) {
-        u8* elt = SndPrioList_GetFront(self + 0xC);
+        elt = SndPrioList_GetFront(self + 0xC);
         SndPrioList_PopFront(self + 0xC);
         s32 prio = *(u8*)(elt + 0x74) + *(s32*)(elt + 0x40);
         prio = prio > 0x7F ? 0x7F : (prio < 0 ? 0 : prio);
@@ -5019,7 +5019,7 @@ extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0
     do {
         if (*(s32*)list != 0) {
             while (*(s32*)list != 0) {
-                u8* elt = SndPrioList_GetFront(list);
+                elt = SndPrioList_GetFront(list);
                 SndPrioList_PopFront(list);
                 SndPrioList_PushBack(self + 0xC, elt);
             }
@@ -7452,14 +7452,13 @@ extern "C" void UpdatePlayingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFv(void
 }
 #pragma push
 #pragma opt_common_subs off
+#pragma opt_propagation off
 extern "C" void UpdateLoadingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFQ66nw4hbm3snd6detail10StrmPlayer11LoadCommand6Status(void* arg0, s32 arg1) {
-char *__repair_addr;
-
     void* slots[6];
     s32 var_r10;
     if (*(unsigned char*)((unsigned char*)arg0 + 0x53) == 0) {
         unsigned long irq = OSDisableInterrupts();
-        if (*(s32*)((unsigned char*)arg0 + 0x94) == 0) {
+        if (((u32)__cntlzw(*(u32*)((unsigned char*)arg0 + 0x94))) >> 5) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C1C, 0x1F1, lbl_80326BF8);
         }
         s32 tmp28 = *(s32*)((unsigned char*)arg0 + 0x98);
@@ -7470,9 +7469,7 @@ char *__repair_addr;
         if (nd == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326BEC, 0x193, lbl_80326BC8);
         }
-__repair_addr = (char *)((unsigned char*)arg0 + 0x98);
-
-        *(s32*)&slots[5] = *(s32*)(__repair_addr);
+        *(s32*)&slots[5] = *(s32*)((unsigned char*)arg0 + 0x98);
         Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((unsigned char*)arg0 + 0x94, (s32*)&slots[5]);
         OSRestoreInterrupts(irq);
         *(s32*)(nd + 8) = arg1;
@@ -7502,11 +7499,19 @@ __repair_addr = (char *)((unsigned char*)arg0 + 0x98);
         slots[0] = nd;
         slots[1] = arg0;
         slots[2] = (void*)*(s32*)((unsigned char*)arg0 + 0x434);
-        s32 res = ((s32(*)(void*, void*, unsigned, s32, s32, s32, unsigned short, s32))((void**)*(void***)((unsigned char*)arg0 + 0x430))[4])((void*)*(void**)((unsigned char*)arg0 + 0x430), lbl_80415080, r27, r26, *(s32*)((unsigned char*)arg0 + 0x4A0), v30, r6, var_r10);
-        if (res) {
+        void** decoder = *(void***)((unsigned char*)arg0 + 0x430);
+        s32 res = ((s32(*)(void*, void*, unsigned, s32, s32, s32, unsigned short, s32))((void**)*decoder)[4])((void*)decoder, lbl_80415080, r27, r26, *(s32*)((unsigned char*)arg0 + 0x4A0), v30, r6, var_r10);
+        switch (res) {
+        case 2:
+            break;
+        case 1:
             ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(arg0);
-        } else if (res == 0) {
+            break;
+        default:
+            break;
+        case 0:
             ((void(*)(void*, s32))((void**)*(void**)nd)[2])(nd, 1);
+            break;
         }
         s32 t = *(s32*)((unsigned char*)arg0 + 0x74) + 1;
         *(s32*)((unsigned char*)arg0 + 0x74) = t;
@@ -7527,7 +7532,8 @@ __repair_addr = (char *)((unsigned char*)arg0 + 0x98);
         s32 v5 = r4 + 1;
         s32 a = (r5 - *(s32*)((unsigned char*)arg0 + 0x74)) + 1;
         s32 b = (r5 - *(s32*)((unsigned char*)arg0 + 0x84)) + 1;
-        if (((v5 - a) % b) != 0) {
+        if (((v5 - a) % b) == 0) {
+        } else {
             v5 = r4;
         }
         *(s32*)((unsigned char*)arg0 + 0x6C) = v5;
