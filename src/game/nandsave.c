@@ -176,7 +176,7 @@ void fn_802E8918(void) {
 }
 
 #pragma scheduling invalid_target
-void fn_802E8920(int lenBytes) {
+void fn_802E8920(int requestedFreeBytes) {
     /* Recover free NAND space: see how far over its block/file limits the title is, print a
      * warning for each exceeded limit, then keep running recovery requests until the check
      * comes back clean; a fatal NANDCheck error is logged and reported instead. */
@@ -189,21 +189,21 @@ void fn_802E8920(int lenBytes) {
 #define APP_FILES_OVER  2 /* NAND_CHECK_TOO_MANY_APP_FILES */
 #define ANY_LIMIT_OVER  0xF
 #define BLOCKS_OVER     5 /* app or user blocks are over their limit */
-    unsigned int checkFlags = 0;
+    unsigned int nandCheckFlags = 0;
     char *logStrings = rmemcard_log_strings;
-    int checkResult = NANDCheck((lenBytes + 0x3FFF) / 0x4000 + 4, 2, &checkFlags);
-    if (checkResult == 0) {
+    int nandCheckResult = NANDCheck((requestedFreeBytes + 0x3FFF) / 0x4000 + 4, 2, &nandCheckFlags);
+    if (nandCheckResult == 0) {
         for (;;) {
         loop:
-            if (checkFlags & APP_BLOCKS_OVER) {
+            if (nandCheckFlags & APP_BLOCKS_OVER) {
                 nandLogPrintf(logStrings + 0x328);
             }
-            if (checkFlags & APP_FILES_OVER) {
+            if (nandCheckFlags & APP_FILES_OVER) {
                 nandLogPrintf(logStrings + 0x35C);
             }
-            if (checkFlags & ANY_LIMIT_OVER) {
+            if (nandCheckFlags & ANY_LIMIT_OVER) {
                 int requestIndex = 3;
-                if (checkFlags & BLOCKS_OVER) {
+                if (nandCheckFlags & BLOCKS_OVER) {
                     requestIndex = 2;
                 }
                 if (nandDispatchRequest(requestIndex) != 0) {
@@ -221,7 +221,7 @@ void fn_802E8920(int lenBytes) {
             }
         }
     } else {
-        nandLogPrintf(logStrings + 0x398, checkResult);
+        nandLogPrintf(logStrings + 0x398, nandCheckResult);
     }
 #undef rmemcard_log_strings
 #undef nandLogPrintf
