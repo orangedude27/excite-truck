@@ -86,7 +86,7 @@ extern "C" void *fn_80209DE4(void *self, int shouldDelete) {
 #pragma scheduling on
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_80209E94(void *arg0) {
+/* Update the squeal state from the four input records: accumulate clamped (value - 0.8f) contributions, publish the total and active flags into the state object, then notify the listener. */ extern "C" void fn_80209E94(void *self) {
     struct Notifier {
         virtual void v0();
         virtual void v1();
@@ -97,16 +97,16 @@ extern "C" void fn_80209E94(void *arg0) {
        to 1.0f if changed, set flag +0x4d and store total at +8 if changed; if
        total > 0.001f set flags (+0x49,+0x4b)=1, +0x4a=0 else set +0x4a=1,
        +0x4c=0. Then call notifier v1() on *(arg0+0xc) if present. */
-    Record *squealRecords = (Record *)(*(char **)((char *)arg0 + 4) + 0x23AC);
+    Record *squealRecords = (Record *)(*(char **)((char *)self + 4) + 0x23AC);
     float value;
     float total = 0.0f;
     char *state;
-    int i;
+    int recordIndex;
     Notifier *notifier;
 
-    for (i = 0; i < 4; i++) {
-        value = squealRecords[i].value - 0.8f;
-        if (squealRecords[i].enabled == 0 && value > 0.0f) {
+    for (recordIndex = 0; recordIndex < 4; recordIndex++) {
+        value = squealRecords[recordIndex].value - 0.8f;
+        if (squealRecords[recordIndex].enabled == 0 && value > 0.0f) {
             if (0.25f < value) {
                 value = 0.25f;
             }
@@ -114,27 +114,27 @@ extern "C" void fn_80209E94(void *arg0) {
         }
     }
 
-    state = *(char **)((char *)arg0 + 8);
+    state = *(char **)((char *)self + 8);
     if (1.0f != *(float *)(state + 4)) {
         *(signed char *)(state + 0x4e) = 1;
         *(float *)(state + 4) = 1.0f;
     }
-    state = *(char **)((char *)arg0 + 8);
+    state = *(char **)((char *)self + 8);
     if (total != *(float *)(state + 8)) {
         *(signed char *)(state + 0x4d) = 1;
         *(float *)(state + 8) = total;
     }
     if (total > 0.001f) {
-        state = *(char **)((char *)arg0 + 8);
+        state = *(char **)((char *)self + 8);
         *(signed char *)(state + 0x4a) = 0;
         *(signed char *)(state + 0x4b) = 1;
         *(signed char *)(state + 0x49) = 1;
     } else {
-        state = *(char **)((char *)arg0 + 8);
+        state = *(char **)((char *)self + 8);
         *(signed char *)(state + 0x4a) = 1;
         *(signed char *)(state + 0x4c) = 0;
     }
-    notifier = *(Notifier **)((char *)arg0 + 0xc);
+    notifier = *(Notifier **)((char *)self + 0xc);
     if (notifier != 0) {
         notifier->v1();
     }
