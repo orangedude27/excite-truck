@@ -1341,83 +1341,83 @@ extern void fn_802CC03C(int **, int *, int);
 extern int fn_802CC10C(void *, int, int, int);
 extern int fn_802CC404(void *);
 extern void *fn_802CC2C8(void *, int);
-void texAllocPending(void *mgr) {
+/* Service the texture manager's active request: split the priority-sorted node list so lower-priority textures can be evicted, allocate the request's texture from the heap (freeing nodes until it fits), and mark the texture active on success. */ void texAllocPending(void *texMgr) {
     // Queue the pending texture by priority, allocate it, evicting lower-priority entries until it fits.
-    char *context;
+    char *base;
     int texId;
-    char *freeHead;
-    char *texInfo;
-    char *req;
-    int didAlloc;
+    char *freeTex;
+    char *record;
+    char *request;
+    int allocated;
     int zero = 0;
-    char *active;
-    char *probe;
-    char **prevLink;
-    int isLower;
+    char *activeTex;
+    char *scanNode;
+    char **link;
+    int lowerPriority;
 
-    active = *(char **)((char *)mgr + 0x2844);
-    context = (char *)mgr;
-    if (active == 0)
+    activeTex = *(char **)((char *)texMgr + 0x2844);
+    base = (char *)texMgr;
+    if (activeTex == 0)
         return;
-    if (*(void **)((char *)mgr + 4) == 0)
+    if (*(void **)((char *)texMgr + 4) == 0)
         return;
 
-    prevLink = (char **)(context + 0x283C);
+    link = (char **)(base + 0x283C);
     goto load_scan;
 compare_scan:
-    isLower = *(float *)(probe + 8) < *(float *)(active + 8);
-    if (isLower != 0) {
-        *(char **)(context + 0x2840) = probe;
-        *prevLink = 0;
+    lowerPriority = *(float *)(scanNode + 8) < *(float *)(activeTex + 8);
+    if (lowerPriority != 0) {
+        *(char **)(base + 0x2840) = scanNode;
+        *link = 0;
         goto scan_done;
     }
-    prevLink = (char **)(probe + 0x10);
+    link = (char **)(scanNode + 0x10);
 load_scan:
-    probe = *prevLink;
-    if (probe != 0)
+    scanNode = *link;
+    if (scanNode != 0)
         goto compare_scan;
 scan_done:
-    req = *(char **)(context + 4);
-    didAlloc = zero;
-    active = *(char **)(context + 0x2844);
-    freeHead = *(char **)(context + 0x283C);
-    texId = *(int *)active;
-    if (req != 0) {
+    request = *(char **)(base + 4);
+    allocated = zero;
+    activeTex = *(char **)(base + 0x2844);
+    freeTex = *(char **)(base + 0x283C);
+    texId = *(int *)activeTex;
+    if (request != 0) {
         if (fn_802D9068() != 0) {
-            texInfo = (char *)lbl_8055FCB0 + texId * 0x4C;
-            *(int *)(req + 0x10) = zero;
+            record = (char *)lbl_8055FCB0 + texId * 0x4C;
+            *(int *)(request + 0x10) = zero;
         alloc_loop:
-            *(void **)(req + 8) =
-                fn_802CC2C8((void *)fn_802CC404(context),
-                            *(int *)(texInfo + 0x3C));
-            if (*(void **)(req + 8) == 0 && freeHead != 0 &&
-                fn_802CC10C(context, *(int *)freeHead,
-                            *(int *)(freeHead + 0xC) + 2, (int)req) != 0) {
-                *(int *)(freeHead + 4) = zero;
-                freeHead = *(char **)(freeHead + 0x10);
-                (*(int *)(req + 0x10))++;
+            *(void **)(request + 8) =
+                fn_802CC2C8((void *)fn_802CC404(base),
+                            *(int *)(record + 0x3C));
+            if (*(void **)(request + 8) == 0 && freeTex != 0 &&
+                fn_802CC10C(base, *(int *)freeTex,
+                            *(int *)(freeTex + 0xC) + 2, (int)request) != 0) {
+                *(int *)(freeTex + 4) = zero;
+                freeTex = *(char **)(freeTex + 0x10);
+                (*(int *)(request + 0x10))++;
                 goto alloc_loop;
             }
-            if (*(void **)(req + 8) != 0) {
-                fn_802CC03C((int **)context, (int *)req, texId);
-                if (*(int *)(req + 0x10) == zero)
-                    fn_802CBFCC(context, req);
-                didAlloc = 1;
+            if (*(void **)(request + 8) != 0) {
+                fn_802CC03C((int **)base, (int *)request, texId);
+                if (*(int *)(request + 0x10) == zero)
+                    fn_802CBFCC(base, request);
+                allocated = 1;
             } else {
-                fn_802CBFA0(context, (unsigned int)req);
-                *(int *)(req + 0x10) = zero;
+                fn_802CBFA0(base, (unsigned int)request);
+                *(int *)(request + 0x10) = zero;
             }
-        } else if (freeHead != 0 &&
+        } else if (freeTex != 0 &&
                    *(int *)((char *)lbl_8055FCB0 +
-                            *(int *)freeHead * 0x4C + 0x44) != zero &&
-                   fn_802CC10C(context, *(int *)freeHead,
-                               *(int *)(freeHead + 0xC) + 2, zero) != 0) {
-            *(int *)(freeHead + 4) = zero;
+                            *(int *)freeTex * 0x4C + 0x44) != zero &&
+                   fn_802CC10C(base, *(int *)freeTex,
+                               *(int *)(freeTex + 0xC) + 2, zero) != 0) {
+            *(int *)(freeTex + 4) = zero;
         }
     }
-    if (didAlloc != zero) {
-        active = *(char **)(context + 0x2844);
-        *(int *)(active + 4) = 1;
+    if (allocated != zero) {
+        activeTex = *(char **)(base + 0x2844);
+        *(int *)(activeTex + 4) = 1;
     }
 }
 
