@@ -111,20 +111,24 @@ void fn_802E3EB8(void) {}
 
 #pragma processor 750
 #pragma scheduling invalid_target
-void *fn_802E3EBC(void) {
-    unsigned char *p;
-    int i;
-    p = lbl_804FBAA0;
-    for (i = 0; i < 0x10; i++) {
-        if (*p == 0) {
-            p = &lbl_804FBAA0[i * 0x91];
-            *p = 1;
-            return p + 1;
-        }
-        p += 0x91;
+void *fn_802E3EBC(void)
+{
+  unsigned char *p;
+  int i;
+  p = lbl_804FBAA0;
+  for (i = 0; i < 0x10; i++)
+  {
+    if (!(*p))
+    {
+      p = &lbl_804FBAA0[i * 0x91];
+      *p = 1;
+      return p + 1;
     }
-    fn_802E317C(lbl_8034D038);
-    return (void *)lbl_8055FF40;
+    p += 0x91;
+  }
+
+  fn_802E317C(lbl_8034D038);
+  return (void *) lbl_8055FF40;
 }
 #pragma scheduling on
 
@@ -285,36 +289,36 @@ extern int DVDGetCurrentDir(char **, char *);
 // file could not be opened is released again.
 extern "C" int fn_802E4280(void *owner, char *path) {
     char pathBuf[0x100];
-    FileDisk *file;
-    char *name;
-    int status;
-    name = path;
-    file = (FileDisk *)((void *(*)(int, void *))fn_802E3EBC)(sizeof(FileDisk), &fdoPoolName);
-    if (file != 0) {
-        *(void **)file = &FileDiskVTable;
-        file->owner = owner;
-        if (strncmp(name, (char *)&dotSlashPrefix, 2) == 0) name += 2;
-        if (*name == '\\') name++;
-        strcpy(file->pathText, name);
-        memset(file->info, 0, sizeof(file->info));
-        file->cursor = 0;
-        file->length = 0;
-        strcpy(pathBuf, file->pathText);
-        status = DVDGetCurrentDir((char **)&pathBuf, file->info);
-        file->valid = (unsigned int)(-status | status) >> 31;
-        if (file->valid != 0) file->length = *(int *)(file->info + 0x34);
+    FileDisk *disk;
+    char *pathStart;
+    int dvdResult;
+    pathStart = path;
+    disk = (FileDisk *)((void *(*)(int, void *))fn_802E3EBC)(sizeof(FileDisk), &fdoPoolName);
+    if (disk != 0) {
+        *(void **)disk = &FileDiskVTable;
+        disk->owner = owner;
+        if (strncmp(pathStart, (char *)&dotSlashPrefix, 2) == 0) pathStart += 2;
+        if (*pathStart == '\\') pathStart++;
+        strcpy(disk->pathText, pathStart);
+        memset(disk->info, 0, sizeof(disk->info));
+        disk->cursor = 0;
+        disk->length = 0;
+        strcpy(pathBuf, disk->pathText);
+        dvdResult = DVDGetCurrentDir((char **)&pathBuf, disk->info);
+        disk->valid = (unsigned int)(-dvdResult | dvdResult) >> 31;
+        if (disk->valid != 0) disk->length = *(int *)(disk->info + 0x34);
     }
-    switch (file->valid) {
+    switch (disk->valid) {
     case 0:
-        if (file != 0) file->release(1);
-        file = 0;
+        if (disk != 0) disk->release(1);
+        disk = 0;
         break;
     default:
         break;
     }
-    if (file != 0) {
-        int length = file->getLength();
-        file->seek(length);
+    if (disk != 0) {
+        int fileLength = disk->getLength();
+        disk->seek(fileLength);
     }
     return 0;
 }
