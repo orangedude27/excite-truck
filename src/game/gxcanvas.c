@@ -117,7 +117,7 @@ void fn_802C2D94(void *canvas) {
 
 extern void *fn_8012C370(s32,u32 *,s32 *,s32,u8 *);
 extern void fn_802E317C(const char *,...);
-extern const char lbl_8034B020[],lbl_8034B048[];
+extern const char gxCanvasWrongVerFmt[],lbl_8034B048[];
 #pragma scheduling invalid_target
 /* Loads a CANV image resource, byte-swaps its header fields when flagged, converts pixels to RGBA order, and reports load/format errors. */
 void *gxCanvasLoad(s32 resourceId) {
@@ -163,7 +163,7 @@ void *gxCanvasLoad(s32 resourceId) {
                 }
             }
         } else {
-            fn_802E317C(lbl_8034B020, resourceId, format, 1);
+            fn_802E317C(gxCanvasWrongVerFmt, resourceId, format, 1);
         }
     } else {
         fn_802E317C(lbl_8034B048, resourceId);
