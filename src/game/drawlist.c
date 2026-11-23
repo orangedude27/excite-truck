@@ -162,11 +162,15 @@ extern "C" void fn_802C82C4(int requestedMode) {
 #define sScaleY         lbl_8055D024
 #define SCALE_NORMAL    lbl_80564EF8
 #define SCALE_WIDE      lbl_80564EFC
-    /* Set the drawlist display mode (0 normal, 1 widescreen, 2 letterbox), forcing
-     * widescreen when required, save it to config, and update the mode flags,
-     * scale factors, and log message. */
+#define DISPLAY_MODE_NORMAL     0
+#define DISPLAY_MODE_WIDESCREEN 1
+#define DISPLAY_MODE_LETTERBOX  2
+    /* Set the mr renderer display mode (0 normal, 1 widescreen, 2 letterbox),
+     * forcing widescreen when the locale requires it or the console is set to
+     * 16:9, store it in the "display_type" option, and update the mode flags,
+     * the screen scale factors and the log message. */
     int mode = requestedMode;
-    if (fn_80019B9C() != 0 || fn_802E9A0C() == 1) mode = 1;
+    if (fn_80019B9C() != 0 || fn_802E9A0C() == DISPLAY_MODE_WIDESCREEN) mode = DISPLAY_MODE_WIDESCREEN;
     sDisplayType = (void *)mode;
     if (fn_80133010() != 0) fn_80133348(1, DISPLAY_TYPE_KEY, (int)sDisplayType);
     sWidescreenMode = 0;
@@ -174,21 +178,24 @@ extern "C" void fn_802C82C4(int requestedMode) {
     sScaleY = SCALE_NORMAL;
     sLetterboxMode = 0;
     switch (mode) {
-    case 0:
+    case DISPLAY_MODE_NORMAL:
         fn_802E30C8(LOG_NORMAL_MODE);
         break;
-    case 1:
+    case DISPLAY_MODE_WIDESCREEN:
         fn_802E30C8(LOG_WIDESCREEN_MODE);
         sWidescreenMode = 1;
         sScaleX = SCALE_WIDE;
         break;
-    case 2:
+    case DISPLAY_MODE_LETTERBOX:
         fn_802E30C8(LOG_LETTERBOX_MODE);
         sLetterboxMode = 1;
         sScaleX = SCALE_WIDE;
         sScaleY = SCALE_WIDE;
         break;
     }
+#undef DISPLAY_MODE_LETTERBOX
+#undef DISPLAY_MODE_WIDESCREEN
+#undef DISPLAY_MODE_NORMAL
 #undef SCALE_WIDE
 #undef SCALE_NORMAL
 #undef sScaleY
