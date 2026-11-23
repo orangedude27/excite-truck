@@ -2,6 +2,7 @@
 // Recovered TU window 0x80208A18..0x80209410+thunk (see docs/attribution_analysis.md).
 // Static-init thunk fn_80209410 (+ .ctors slot 0x802ED380) remains in
 // auto/text_80209410_.c pending a promotion pass.
+#include "revolution/SC/scapi.h" /* SCSoundMode: the console sound mode */
 extern char lbl_8033BF18[];
 extern char lbl_8033C058[];
 extern char lbl_8055B4F0;
