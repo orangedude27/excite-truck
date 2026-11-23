@@ -179,21 +179,24 @@ void fn_802C2FC4(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_802C2FC8(void *arg0, u32 arg1, u32 arg2, s32 arg3, s32 arg4) {
-    s32 var_r0;
-    s32 var_r10;
-    var_r10 = *(s32 *)((u8 *)arg0 + 8);
-    *(s32 *)((u8 *)arg0 + 0x14) = (s32)(arg1 & ((arg1 >> 31) - 1));
-    *(s32 *)((u8 *)arg0 + 0x18) = (s32)(arg2 & ((arg2 >> 31) - 1));
-    if (arg3 < var_r10) {
-        var_r10 = arg3;
-    }
-    var_r0 = *(s32 *)((u8 *)arg0 + 0xC);
-    *(s32 *)((u8 *)arg0 + 0x1C) = var_r10;
-    if (arg4 < var_r0) {
-        var_r0 = arg4;
-    }
-    *(s32 *)((u8 *)arg0 + 0x20) = var_r0;
+void fn_802C2FC8(void *arg0, u32 arg1, u32 arg2, s32 arg3, s32 arg4)
+{
+  s32 var_r0;
+  s32 var_r10;
+  var_r10 = (0, *((s32 *) (((u8 *) arg0) + 8)));
+  *((s32 *) (((u8 *) arg0) + 0x14)) = (s32) (arg1 & ((arg1 >> 31) - 1));
+  *((s32 *) (((u8 *) arg0) + 0x18)) = (s32) (arg2 & ((arg2 >> 31) - 1));
+  if (arg3 < var_r10)
+  {
+    var_r10 = arg3;
+  }
+  var_r0 = *((s32 *) (((u8 *) arg0) + 0xC));
+  *((s32 *) (((u8 *) arg0) + 0x1C)) = var_r10;
+  if (arg4 < var_r0)
+  {
+    var_r0 = arg4;
+  }
+  *((s32 *) (((u8 *) arg0) + 0x20)) = var_r0;
 }
 #pragma pop
 /* Resets a canvas's clip rectangle to the whole surface: {0, 0, width, height}. */
