@@ -124,7 +124,7 @@ void fn_8020BF58(void) {
     int zero = 0;
     unsigned int column;
     unsigned int indexSign;
-    int var_r3, var_r3_3, var_r6_2, var_r5;
+    int nameX, var_r3_3, var_r6_2, var_r5;
     unsigned int temp_r4;
     char *var_r3_2, *var_r6;
     unsigned char temp_r4_2;
@@ -143,10 +143,10 @@ void fn_8020BF58(void) {
             column -= indexSign;
             column = (column << 4) | (column >> 28);
             column += indexSign;
-            var_r3 = 0x14;
+            nameX = 0x14;
             if (soundIndex / 16 != 0)
-                var_r3 = 0x122;
-            fn_80238A74(var_r3, (column * 0xE) + 0x1A, scratch.sp48, -0x100);
+                nameX = 0x122;
+            fn_80238A74(nameX, (column * 0xE) + 0x1A, scratch.sp48, -0x100);
             soundIndex += 1;
         } while (soundIndex < 0x20);
     } else if (lbl_8055EE24 == 0) {
