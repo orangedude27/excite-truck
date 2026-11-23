@@ -879,13 +879,13 @@ extern void *lbl_8055FE1C;
 extern void *lbl_8055FE20;
 extern void fn_802CFEEC(void);
 
-/* Return 1 if any texture slot in the table has no owner at +0x20, else 0. */
+/* Return 1 if any texture slot in the drgc pool has no owner (inUse == 0), else 0. */
 int fn_802D9068(void) {
-    unsigned char *slot = (unsigned char *)lbl_8055FE28;
+    DrTexRecord *slot = (DrTexRecord *)lbl_8055FE28;
     int slotIndex = 0;
-    while (slotIndex < 450) {
-        if (slot[0x20] == 0) return 1;
-        slot += 0xF4;
+    while (slotIndex < DRTEX_SLOT_COUNT) {
+        if (slot->inUse == 0) return 1;
+        slot = (DrTexRecord *)((char *)slot + DRTEX_SLOT_STRIDE);
         slotIndex++;
     }
     return 0;
