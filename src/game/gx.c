@@ -960,18 +960,24 @@ void fn_802CFBA8(void) {
 extern double __fabs(double);
 #pragma scheduling invalid_target
 void fn_802CFCA0(void *alarm) {
+    /* GX draw-sync callback: reset per-frame state, arm the FIFO break point,
+     * and flag a sensor-threshold exceed once per enabled frame. */
     extern char lbl_80558DC4[];
     char fifoBuffer[0x80];
     int fifoReadPtr;
     int fifoWritePtr;
     float sampleValue;
-
-    /* GX draw-sync callback: reset per-frame state, set FIFO break point, and flag threshold exceed. */
+#define sGxFifoFlushStart lbl_8055FDA4
+#define sGxPendingBytes   lbl_8055FD9C
+#define sGxDrawSyncCount  lbl_8055FD30
+#define sRenderRequest    lbl_804C5700
+#define sSensorStatus     lbl_804C97B0
+#define sJitterThreshold  lbl_80558DC4
     fn_802D6C68();
     *(volatile unsigned char *)&lbl_8055FE39 = 1;
-    lbl_8055FDA4 = lbl_8055FD94;
-    lbl_8055FD9C = 0;
-    lbl_804C5700[0] = 1;
+    sGxFifoFlushStart = lbl_8055FD94;
+    sGxPendingBytes = 0;
+    sRenderRequest[0] = 1;
     lbl_8055FD8C = -1;
     fn_802DA52C();
     GXSetDrawSync();
@@ -982,14 +988,20 @@ void fn_802CFCA0(void *alarm) {
     GXGetVtxDesc();
     GXInvalidateVtxCache();
     GXMiscInit(1);
-    lbl_8055FD30 += 1;
-    if (lbl_804C97B0[0] == 0) {
-        sampleValue = *(volatile float *)((unsigned char *)lbl_804C97B0 + 0x10);
-        if (!((float)__fabs((double)sampleValue) <= *(volatile float *)lbl_80558DC4)) {
-            lbl_804C97B0[0] = 1;
-            lbl_804C97B0[0x1C] = 1;
+    sGxDrawSyncCount += 1;
+    if (sSensorStatus[0] == 0) {
+        sampleValue = *(volatile float *)((unsigned char *)sSensorStatus + 0x10);
+        if (!((float)__fabs((double)sampleValue) <= *(volatile float *)sJitterThreshold)) {
+            sSensorStatus[0] = 1;
+            sSensorStatus[0x1C] = 1;
         }
     }
+#undef sGxFifoFlushStart
+#undef sGxPendingBytes
+#undef sGxDrawSyncCount
+#undef sRenderRequest
+#undef sSensorStatus
+#undef sJitterThreshold
 }
 #pragma scheduling on
 extern int GXGetFifoBase(void *);
