@@ -651,9 +651,9 @@ void fn_802DC464(int positions, int vertexCount, unsigned short *__restrict list
     float scaledAlpha;
     float roundedAlpha;
     int alpha;
-    int nonNegMask;
-    int nonNegAlpha;
-    int rawAlpha;
+    int absMask;
+    int absAlpha;
+    int roundedInt;
     unsigned char alphaByte;
     GXColor color;
     int indexCount;
@@ -667,13 +667,13 @@ void fn_802DC464(int positions, int vertexCount, unsigned short *__restrict list
         roundedAlpha = scaledAlpha - CpuLight_RoundHalf;
     else
         roundedAlpha = CpuLight_RoundHalf + scaledAlpha;
-    rawAlpha = (int)roundedAlpha;
-    nonNegMask = -rawAlpha & ~rawAlpha;
-    nonNegMask >>= 31;
-    nonNegAlpha = rawAlpha & nonNegMask;
+    roundedInt = (int)roundedAlpha;
+    absMask = -roundedInt & ~roundedInt;
+    absMask >>= 31;
+    absAlpha = roundedInt & absMask;
     alpha = 0xFF;
-    if (nonNegAlpha < 0xFF)
-        alpha = nonNegAlpha;
+    if (absAlpha < 0xFF)
+        alpha = absAlpha;
     alphaByte = (unsigned char)alpha;
     if (alphaByte != CpuLight_CachedTevAlpha) {
         color.b = 0xFF;
