@@ -368,8 +368,7 @@ void fn_802E5438(void) {
 
 /* The strings of this file's block at lbl_8034D210 that the SPU start-up logs
  * with and registers its allocations under (`msg` is that block). */
-#define sSpuBeginName   (msg + 0x1BC)  /* "SpuBegin" */
-#define sBeginLogName   sSpuBeginName
+#define sBeginLogName   (msg + 0x1BC)  /* "SpuBegin" */
 #define sAramBufName    (msg + 0x1C8)  /* "aram_buf" */
 #define sAramBaseFmt    (msg + 0x1D4)  /* "spu: aram_base: %x -- %x (%dK)" */
 #define sSpuSampleName  (msg + 0x1F4)  /* "SpuSample" */
