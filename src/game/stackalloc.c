@@ -61,6 +61,7 @@ extern void fn_80128668(void *);
 extern void fn_80128670(int);
 extern char lbl_8034C8E8[];
 #pragma scheduling on
+#pragma opt_propagation off
 void fn_802D9C5C(int arg0, void *arg1, int arg2)
 {
   
