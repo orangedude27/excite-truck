@@ -255,18 +255,18 @@ static inline void swap32_802CA57C(unsigned char *p) {
 #pragma push
 #pragma auto_inline off
 /* Byte-swaps and relocates a resource header in place once, then builds a context and processes it. */
-void fn_802CA57C(void *arg0, int arg1, int arg2, int arg3) {
-    unsigned char *data = (unsigned char *)arg0;
-    char context[0x34];
-    if ((data[5] & 0x80) == 0) {
-        swap32_802CA57C(data + 0x14);
-        swap16_802CA57C(data + 0);
-        swap16_802CA57C(data + 2);
-        swap16_802CA57C(data + 0xC);
-        *(int *)(data + 0x14) = (int)((unsigned char *)arg0 + *(int *)(data + 0x14));
-        fn_802CA3F4(context, (int)arg0, 0, arg2, arg3);
-        fn_802D8DCC(context, arg1);
-        data[5] |= 0x80;
+/* Byte-swaps and relocates a loaded "TEX " resource header in place once (guarded by the 0x80 flag at +5), then builds a texture request from it and dispatches it to fn_802D8DCC. */ void fn_802CA57C(void *texData, int texturePath, int value, int flags) {
+    unsigned char *header = (unsigned char *)texData;
+    char request[0x34];
+    if ((header[5] & 0x80) == 0) {
+        swap32_802CA57C(header + 0x14);
+        swap16_802CA57C(header + 0);
+        swap16_802CA57C(header + 2);
+        swap16_802CA57C(header + 0xC);
+        *(int *)(header + 0x14) = (int)((unsigned char *)texData + *(int *)(header + 0x14));
+        fn_802CA3F4(request, (int)texData, 0, value, flags);
+        fn_802D8DCC(request, texturePath);
+        header[5] |= 0x80;
     }
 }
 #pragma pop
