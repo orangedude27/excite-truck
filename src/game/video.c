@@ -1073,29 +1073,29 @@ void fn_802E1290(void *movie) {
 /* Per-frame Bink movie update: close a movie that reports an error, open one if
  * none is loaded, then pump its frame and resync the frame timer when it drifts. */
 void fn_802E12DC(void) {
+    struct BinkMovieInfo *movie = (struct BinkMovieInfo *)fn_802E0BA4();
     s32 nowMs;
-    void *movie = fn_802E0BA4();
-    if (*(void **)((char *)movie + 4) != 0 &&
-        *(s32 *)((char *)(*(void **)((char *)movie + 4)) + 0x1C) != 0) {
+    if (movie->binkHandle != 0 &&
+        *(s32 *)((char *)movie->binkHandle + 0x1C) != 0) {
         fn_802E30C8(lbl_8034CBE0);
         fn_802E0E60(movie);
     }
-    if (*(void **)((char *)movie + 4) == 0)
+    if (movie->binkHandle == 0)
         fn_802E0EAC(movie);
-    if (*(void **)((char *)movie + 4) != 0) {
-        fn_802E27B8((char *)movie + 0x50);
-        fn_801186B8(*(void **)((char *)movie + 4));
+    if (movie->binkHandle != 0) {
+        fn_802E27B8(movie->videoRing);
+        fn_801186B8((void *)movie->binkHandle);
         nowMs = ((s32 (*)(void))fn_802E2C20)();
-        if (nowMs - *(s32 *)((char *)movie + 0x4C) > 0x96) {
+        if (nowMs - movie->frameTimerMs > 0x96) {
             fn_802E30C8(lbl_8034CBF8);
-            *(s32 *)((char *)movie + 0x4C) = nowMs - 0x20;
+            movie->frameTimerMs = nowMs - 0x20;
         }
-        if (nowMs - *(s32 *)((char *)movie + 0x4C) > 0x1E) {
+        if (nowMs - movie->frameTimerMs > 0x1E) {
             if (((s32 (*)(void))fn_802ECC10)() == 0)
-                fn_80118C44(*(void **)((char *)movie + 4));
-            *(s32 *)((char *)movie + 0x4C) += 0x20;
+                fn_80118C44((void *)movie->binkHandle);
+            movie->frameTimerMs += 0x20;
         }
-        fn_802E27A0((char *)movie + 0x50);
+        fn_802E27A0(movie->videoRing);
     }
 }
 extern void GXSetZMode(GXBool, GXCompare, GXBool);
