@@ -281,46 +281,56 @@ void fn_802DB9DC(int replaceFramebuffer) {
     }
 }
 
-void fn_802DBA1C(unsigned char arg0) {
-    extern unsigned char lbl_802FAD18[];
-    extern unsigned char lbl_802FAD38[];
-    extern void *lbl_804DB468[];
+/* Sets up GX for one batch of CPU-lit billboards and picks the pipeline for it.
+
+ * The two 2x4 texture matrices of the light pass are copied out of the read-only
+ * matrix pair and loaded into GX_TEXMTX2 and GX_TEXMTX3 (fn_802DB4E4 loads the
+ * GX_TEXMTX0/GX_TEXMTX1 pair next to them), the alpha compare is set to always
+ * pass, and then one of the two texture sets of lbl_804DB468 is bound to texmaps
+ * 0-4: each entry is a texture wrapper whose first GXTexObj sits at +0x24 and
+ * whose second one at +0x78. The first lighting mode binds the plain textures and
+ * installs GXSetupFiveStageTevPipelineA; the second mode (lbl_8055FEBA) binds the
+ * set that includes the two extra textures, installs
+ * GXSetupFiveStageTevPipelineB and turns the Z test off, because that mode
+ * replays the batch a second time with colour writes off to fill the Z buffer. */
+void fn_802DBA1C(unsigned char secondMode) {
+    extern unsigned char lbl_802FAD18[];   /* the light pass's 2x4 matrix, GX_TEXMTX2 */
+    extern unsigned char lbl_802FAD38[];   /* the light pass's 2x4 matrix, GX_TEXMTX3 */
+    extern void *lbl_804DB468[];           /* the light pass's textures: GXTexObj at +0x24, a second at +0x78 */
     extern void GXSetupFiveStageTevPipelineA(void);
     extern void GXSetupFiveStageTevPipelineB(void);
-    int texMtx0[8];
-    int texMtx1[8];
+    int texMtx2[8];
+    int texMtx3[8];
     int *mtxSrc;
     int i;
 
-    /* Loads two texture matrices and sets up GX texture/alpha state, then binds
-     * one of two texture-object sets and draws based on arg0. */
     mtxSrc = (int *)lbl_802FAD18;
     for (i = 0; i < 8; i++)
-        texMtx0[i] = mtxSrc[i];
-    GXLoadTexMtxImm((float *)texMtx0, 0x24, 1);
+        texMtx2[i] = mtxSrc[i];
+    GXLoadTexMtxImm((float *)texMtx2, GX_TEXMTX2, 1 /* GX_MTX2x4_TB */);
 
     mtxSrc = (int *)lbl_802FAD38;
     for (i = 0; i < 8; i++)
-        texMtx1[i] = mtxSrc[i];
-    GXLoadTexMtxImm((float *)texMtx1, 0x27, 1);
+        texMtx3[i] = mtxSrc[i];
+    GXLoadTexMtxImm((float *)texMtx3, GX_TEXMTX3, 1 /* GX_MTX2x4_TB */);
 
-    GXSetAlphaCompare(7, 0, 1, 7, 0);
+    GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_OR, GX_ALWAYS, 0);
     fn_802DB4E4();
-    if (arg0 == 0) {
-        GXLoadTexObj((unsigned char *)lbl_804DB468[0] + 0x24, 0);
-        GXLoadTexObj((unsigned char *)lbl_804DB468[1] + 0x24, 1);
-        GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x24, 2);
-        GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x78, 3);
-        GXLoadTexObj((unsigned char *)lbl_804DB468[3] + 0x24, 4);
+    if (secondMode == 0) {
+        GXLoadTexObj((unsigned char *)lbl_804DB468[0] + 0x24, GX_TEXMAP0);
+        GXLoadTexObj((unsigned char *)lbl_804DB468[1] + 0x24, GX_TEXMAP1);
+        GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x24, GX_TEXMAP2);
+        GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x78, GX_TEXMAP3);
+        GXLoadTexObj((unsigned char *)lbl_804DB468[3] + 0x24, GX_TEXMAP4);
         GXSetupFiveStageTevPipelineA();
     } else {
-        GXLoadTexObj((unsigned char *)lbl_804DB468[0] + 0x24, 0);
-        GXLoadTexObj((unsigned char *)lbl_804DB468[1] + 0x24, 1);
-        GXLoadTexObj((unsigned char *)lbl_804DB468[1] + 0x78, 2);
-        GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x24, 3);
-        GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x78, 4);
+        GXLoadTexObj((unsigned char *)lbl_804DB468[0] + 0x24, GX_TEXMAP0);
+        GXLoadTexObj((unsigned char *)lbl_804DB468[1] + 0x24, GX_TEXMAP1);
+        GXLoadTexObj((unsigned char *)lbl_804DB468[1] + 0x78, GX_TEXMAP2);
+        GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x24, GX_TEXMAP3);
+        GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x78, GX_TEXMAP4);
         GXSetupFiveStageTevPipelineB();
-        GXSetZMode(0, 7, 0);
+        GXSetZMode(GX_DISABLE, GX_ALWAYS, GX_DISABLE);
     }
 }
 
