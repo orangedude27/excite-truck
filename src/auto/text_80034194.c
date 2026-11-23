@@ -2249,7 +2249,7 @@ void fn_800373E0(u32 arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
-void fn_800375A8(u32 arg0)
+/* Completion callback for the small disc-header read issued by fn_800370F4: log the drive status in the error ring, then on a cancel/odd status re-issue the boot-data read (its offset and length come from the header) and finish through fn_80035A04; otherwise log a fatal error and queue a drive reset. */ void fn_800375A8(u32 arg0)
 {
   register u32 value = arg0;
   s32 interrupts;
