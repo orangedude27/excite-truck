@@ -45,11 +45,11 @@ extern int __cntlzw(unsigned int);
 
 typedef struct SoundMgrObj {
     char pad0[0x10];
-    signed long field_10;
+    signed long field_10; /* owning object index (Camera.subject = player truck) */
     char pad14[0x30];
-    signed long field_44;
+    signed long field_44; /* sound class (SndClass) */
     char pad48[0x20];
-    float field_68;
+    float field_68;       /* priority score; higher ranks first in the class list */
 } SoundMgrObj;
 
 typedef struct SoundMgr {
