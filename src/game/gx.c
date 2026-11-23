@@ -2715,7 +2715,7 @@ void fn_802D2B0C(void) {
     extern void fn_802E0B68(void);
     extern void fn_802DF300(void);
     extern void fn_802DF46C(void);
-    extern void fn_802DEFA0(void);
+    extern void GXSetupIndirectTevPipeline(void);
     extern void fn_802DF1B4(void);
     extern void gxSetupSceneLights(void);
     extern void fn_802DF994(void);
@@ -2754,7 +2754,7 @@ void fn_802D2B0C(void) {
                     fn_802DF300();
                     lbl_8055FD80 = fn_802DF46C;
                 } else {
-                    fn_802DEFA0();
+                    GXSetupIndirectTevPipeline();
                     lbl_8055FD80 = fn_802DF1B4;
                 }
                 break;

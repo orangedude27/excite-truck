@@ -171,7 +171,7 @@ void fn_802DEF70(void) {
 }
 #pragma scheduling on
 /* Sets up GX indirect texture/TEV pipeline and loads required texture objects. */
-void fn_802DEFA0(void) {
+void GXSetupIndirectTevPipeline(void) {
     s32 spC;
     s32 sp8;
     GXSetTexCoordGen2(0, 0, 1, 0x2A, 1, 0x4C);
