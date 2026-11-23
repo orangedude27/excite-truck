@@ -709,40 +709,41 @@ conv4444To565:
 // Keep the target scheduling and helper calls: these reproduce the original copy loop.
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void fn_802C3C68(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
-                 s32 arg5, s32 arg6, s32 arg7) {
-    /* Blit a 32bpp rectangle from arg0 (arg1,arg2)-(arg3,arg4) to arg5 at (arg6,arg7), clipped to arg5 bounds. */
-    s32 sp1C, sp18, sp14, sp10, spC, sp8;
-    s32 *src, *dst;
-    s32 i, widthBytes, skipSrc, skipDst;
-    sp8 = arg1;
-    spC = arg2;
-    sp10 = arg6;
-    sp14 = arg7;
-    sp1C = arg3 - arg1;
-    sp18 = arg4 - arg2;
-    if (gxCanvasClipBlitRect((void *)arg5, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
-        src = (s32 *)fn_802C3060((void *)arg0, sp8, spC);
-        dst = (s32 *)fn_802C3060((void *)arg5, sp10, sp14);
-        widthBytes = sp1C * 4;
-        skipSrc = (*(s32 *)((char *)arg0 + 0x10) - widthBytes) / 4;
-        skipDst = (*(s32 *)((char *)arg5 + 0x10) - widthBytes) / 4;
+void fn_802C3C68(s32 srcCanvas, s32 srcX, s32 srcY, s32 srcRight, s32 srcBottom,
+                 s32 dstCanvas, s32 dstX, s32 dstY) {
+    /* Blit a 32bpp rectangle from (srcX,srcY)-(srcRight,srcBottom) on srcCanvas
+     * to (dstX,dstY) on dstCanvas, clipped to dstCanvas bounds. */
+    s32 blitWidth, blitHeight, clipDstY, clipDstX, clipSrcY, clipSrcX;
+    s32 *srcPixel, *dstPixel;
+    s32 pixelsLeft, rowBytes, srcSkip, dstSkip;
+    clipSrcX = srcX;
+    clipSrcY = srcY;
+    clipDstX = dstX;
+    clipDstY = dstY;
+    blitWidth = srcRight - srcX;
+    blitHeight = srcBottom - srcY;
+    if (gxCanvasClipBlitRect((void *)dstCanvas, &clipDstX, &clipDstY, &clipSrcX, &clipSrcY, &blitWidth, &blitHeight) != 0) {
+        srcPixel = (s32 *)fn_802C3060((void *)srcCanvas, clipSrcX, clipSrcY);
+        dstPixel = (s32 *)fn_802C3060((void *)dstCanvas, clipDstX, clipDstY);
+        rowBytes = blitWidth * 4;
+        srcSkip = (*(s32 *)((char *)srcCanvas + 0x10) - rowBytes) / 4;
+        dstSkip = (*(s32 *)((char *)dstCanvas + 0x10) - rowBytes) / 4;
         do {
-            i = sp1C;
+            pixelsLeft = blitWidth;
 loop_3:
             {
-                s32 t = *src;
-                i--;
-                src++;
-                *dst = t;
-                dst++;
+                s32 pixel = *srcPixel;
+                pixelsLeft--;
+                srcPixel++;
+                *dstPixel = pixel;
+                dstPixel++;
             }
-            if (i > 0)
+            if (pixelsLeft > 0)
                 goto loop_3;
-            src += skipSrc;
-            dst += skipDst;
-            sp18--;
-        } while (sp18 > 0);
+            srcPixel += srcSkip;
+            dstPixel += dstSkip;
+            blitHeight--;
+        } while (blitHeight > 0);
     }
 }
 
