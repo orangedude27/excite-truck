@@ -798,7 +798,7 @@ extern void *fn_802D7D98(void *, void *);
 /* Create a texture for the named source record: dispatch on its drgc format id
    (enum DrTexFormat) to the matching creator, log an error for an unknown id,
    then flush the finished texture and return it. */
-void *fn_802D8E9C(const void *source, void *nameArg) {
+/* Create a drgc texture for the named source record by dispatching on its format id to the matching creator, logging unknown formats, then flush and return the texture. */ void *fn_802D8E9C(const void *source, void *nameArg) {
     void *texture = 0;
     int format = *(const int *)source;
     void *name = nameArg;
