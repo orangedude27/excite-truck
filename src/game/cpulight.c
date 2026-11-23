@@ -495,19 +495,19 @@ void fn_802DBF30(void) {
 extern void GXBegin(int, int, unsigned short);
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_802DBF54(unsigned short *__restrict list, int listSize) {
+/* Replay a packed triangle-fan index list into the GX FIFO, one packet of an index count followed by that many u16 vertex indices at a time. */ void fn_802DBF54(unsigned short *__restrict list, int entryCount) {
     /* Replay a packed triangle-fan index list into the GX FIFO: each packet
        starts with its index count, followed by that many u16 vertex indices. */
-    int indexCount;
+    int packetSize;
     int i;
     volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
-    while (listSize > 0) {
-        indexCount = *list++;
-        GXBegin(GX_TRIANGLEFAN, 0, indexCount);
-        listSize -= indexCount + 1;
-        for (i = 0; i < indexCount; i++) {
-            unsigned short index = *list++;
-            *fifo = index;
+    while (entryCount > 0) {
+        packetSize = *list++;
+        GXBegin(GX_TRIANGLEFAN, 0, packetSize);
+        entryCount -= packetSize + 1;
+        for (i = 0; i < packetSize; i++) {
+            unsigned short vertexIndex = *list++;
+            *fifo = vertexIndex;
         }
     }
 }
