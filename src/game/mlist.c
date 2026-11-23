@@ -280,15 +280,15 @@ extern "C" void fn_802CD254(void *list) {
     int index;
     int byteOffset;
     int reset;
-    char *entry;
+    char *materialEntry;
     /* Clear material list entries and destroy referenced objects, then reset the list state. */
     index = 0;
     byteOffset = 0;
     reset = -2;
     while (index < *(int *)((char *)list + 0x30)) {
-        entry = *(char **)((char *)list + 0x34) + byteOffset;
-        fn_802CAC54(*(int *)(entry + 0x10));
-        *(int *)(entry + 0x10) = reset;
+        materialEntry = *(char **)((char *)list + 0x34) + byteOffset;
+        fn_802CAC54(*(int *)(materialEntry + 0x10));
+        *(int *)(materialEntry + 0x10) = reset;
         byteOffset += 0x1C;
         index++;
     }
@@ -296,13 +296,13 @@ extern "C" void fn_802CD254(void *list) {
     index = 0;
     reset = 0;
     while (byteOffset < *(int *)((char *)list + 0x88)) {
-        void **items = *(void ***)((char *)list + 0x90);
-        void *obj = *(void **)((char *)items + index);
-        if (obj != 0)
-            ((Dummy *)obj)->method0(1);
-        items = *(void ***)((char *)list + 0x90);
+        void **drawEntries = *(void ***)((char *)list + 0x90);
+        void *drawEntry = *(void **)((char *)drawEntries + index);
+        if (drawEntry != 0)
+            ((Dummy *)drawEntry)->method0(1);
+        drawEntries = *(void ***)((char *)list + 0x90);
         byteOffset++;
-        *(void **)((char *)items + index) = (void *)reset;
+        *(void **)((char *)drawEntries + index) = (void *)reset;
         index += 4;
     }
     *(int *)((char *)list + 0x88) = 0;
