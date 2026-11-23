@@ -1184,19 +1184,19 @@ typedef struct { LightVec3 pos; u32 color; f32 u, v; } LightVtx;
  * array, three times over, for the `count` vertices of the list. */
 void fn_802DD27C(LightVtx *__restrict vertices, s32 vertexCount,
                  u16 *__restrict indices, s32 count) {
-    register s32 i;
-    u16 index;
+    register s32 listIndex;
+    u16 vertexIndex;
     volatile u16 *fifo = (volatile u16 *)0xCC008000;
     GXSetArray(GX_VA_POS, vertices, sizeof(LightVtx));
     GXSetArray(GX_VA_CLR0, (char *)&vertices->color, sizeof(LightVtx));
     GXSetArray(GX_VA_TEX0, (char *)&vertices->u, sizeof(LightVtx));
     DCFlushRange(vertices, vertexCount * sizeof(LightVtx));
     GXBegin(GX_TRIANGLES, GX_VTXFMT0, (u16)count);
-    for (i = 0; i < count; ++i) {
-        index = indices[i];
-        *fifo = index;
-        *fifo = index;
-        *fifo = index;
+    for (listIndex = 0; listIndex < count; ++listIndex) {
+        vertexIndex = indices[listIndex];
+        *fifo = vertexIndex;
+        *fifo = vertexIndex;
+        *fifo = vertexIndex;
     }
 }
 #pragma pop
