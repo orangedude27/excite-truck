@@ -263,10 +263,10 @@ void fn_8020F950(void) {
 }
 
 #pragma scheduling invalid_target
-long fn_8020F9F4(void) {
-    char *groupBase;
+/* Return the index of the first free slot (slot state byte == 0) in the current context's 8 groups of 8 track-music entries, scanning groups in order; returns 0 when every slot is taken. */ long fn_8020F9F4(void) {
+    char *groupSlots;
     long slotIndex;
-    long group;
+    long groupIndex;
     long nextIndex0;
     long nextIndex1;
     long nextIndex2;
@@ -276,41 +276,41 @@ long fn_8020F9F4(void) {
     long nextIndex6;
 
     /* Return the index of the first free track-music slot in the current context's 8x8 table, or 0 if none are free. */
-    groupBase = (char *)fn_8020F5F0(fn_8000DA10());
+    groupSlots = (char *)fn_8020F5F0(fn_8000DA10());
     slotIndex = 0;
-    for (group = 0; group < 8; group++) {
-        if ((signed char)groupBase[4] == 0) {
+    for (groupIndex = 0; groupIndex < 8; groupIndex++) {
+        if ((signed char)groupSlots[4] == 0) {
             return slotIndex;
         }
         nextIndex0 = slotIndex + 1;
-        if ((signed char)groupBase[0x68] == 0) {
+        if ((signed char)groupSlots[0x68] == 0) {
             return nextIndex0;
         }
         nextIndex1 = nextIndex0 + 1;
-        if ((signed char)groupBase[0xCC] == 0) {
+        if ((signed char)groupSlots[0xCC] == 0) {
             return nextIndex1;
         }
         nextIndex2 = nextIndex1 + 1;
-        if ((signed char)groupBase[0x130] == 0) {
+        if ((signed char)groupSlots[0x130] == 0) {
             return nextIndex2;
         }
         nextIndex3 = nextIndex2 + 1;
-        if ((signed char)groupBase[0x194] == 0) {
+        if ((signed char)groupSlots[0x194] == 0) {
             return nextIndex3;
         }
         nextIndex4 = nextIndex3 + 1;
-        if ((signed char)groupBase[0x1F8] == 0) {
+        if ((signed char)groupSlots[0x1F8] == 0) {
             return nextIndex4;
         }
         nextIndex5 = nextIndex4 + 1;
-        if ((signed char)groupBase[0x25C] == 0) {
+        if ((signed char)groupSlots[0x25C] == 0) {
             return nextIndex5;
         }
         nextIndex6 = nextIndex5 + 1;
-        if ((signed char)groupBase[0x2C0] == 0) {
+        if ((signed char)groupSlots[0x2C0] == 0) {
             return nextIndex6;
         }
-        groupBase += 0x320;
+        groupSlots += 0x320;
         slotIndex = nextIndex6 + 1;
     }
     return 0;
