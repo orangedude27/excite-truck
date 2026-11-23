@@ -237,53 +237,53 @@ extern char lbl_8034D784[];
 #pragma push
 #pragma use_lmw_stmw off
 /* Builds a memory card save image (MCSH) from registered save entries and writes it. */
-void *fn_802E6FBC(void) {
-    register unsigned char *entry;
+/* Build a memory-card save image in MCSH format from the registered 0x14-byte save entries (lbl_804FC8B0), compute its header checksum, write it through the NAND save helper, and free the buffer. */ void *fn_802E6FBC(void) {
+    register unsigned char *saveEntry;
     register unsigned char *descriptor;
     register int entryIndex;
     register int imageSize = fn_802E7130();
-    register unsigned char *imageBuffer;
-    register unsigned char *dataPtr;
+    register unsigned char *saveImage;
+    register unsigned char *dataDest;
     unsigned int entrySize;
     void (*entryCallback)(int);
     void *writeResult;
-    imageBuffer = (unsigned char *)fn_801284E8(lbl_8034D6B8, imageSize);
-    memset(imageBuffer, 0, 0x20D0);
-    *(unsigned int *)(imageBuffer + 0x2040) = 0x4D435348; /* 'MCSH' */
-    *(unsigned int *)(imageBuffer + 0x2044) = 4;
-    *(unsigned int *)(imageBuffer + 0x2048) = 0x20D0;
-    *(unsigned int *)(imageBuffer + 0x204C) = imageSize - 0x20D0;
-    *(unsigned int *)(imageBuffer + 0x2054) = lbl_8055FFC0;
-    memset(imageBuffer + 0x20D0, 0, imageSize - 0x20D0);
-    dataPtr = imageBuffer + 0x20D0;
-    entry = lbl_804FC8B0;
-    descriptor = imageBuffer + 0x2058;
+    saveImage = (unsigned char *)fn_801284E8(lbl_8034D6B8, imageSize);
+    memset(saveImage, 0, 0x20D0);
+    *(unsigned int *)(saveImage + 0x2040) = 0x4D435348; /* 'MCSH' */
+    *(unsigned int *)(saveImage + 0x2044) = 4;
+    *(unsigned int *)(saveImage + 0x2048) = 0x20D0;
+    *(unsigned int *)(saveImage + 0x204C) = imageSize - 0x20D0;
+    *(unsigned int *)(saveImage + 0x2054) = lbl_8055FFC0;
+    memset(saveImage + 0x20D0, 0, imageSize - 0x20D0);
+    dataDest = saveImage + 0x20D0;
+    saveEntry = lbl_804FC8B0;
+    descriptor = saveImage + 0x2058;
     entryIndex = 0;
     goto loop_check;
 loop_body:
-    *(unsigned int *)(descriptor + 0) = *(unsigned int *)(entry + 0);
-    *(unsigned int *)(descriptor + 4) = *(unsigned int *)(entry + 4);
-    *(unsigned int *)(descriptor + 8) = *(unsigned int *)(entry + 0xC);
-    entryCallback = *(void (**)(int))(entry + 0x10);
+    *(unsigned int *)(descriptor + 0) = *(unsigned int *)(saveEntry + 0);
+    *(unsigned int *)(descriptor + 4) = *(unsigned int *)(saveEntry + 4);
+    *(unsigned int *)(descriptor + 8) = *(unsigned int *)(saveEntry + 0xC);
+    entryCallback = *(void (**)(int))(saveEntry + 0x10);
     if (entryCallback != 0)
         entryCallback(3);
-    memcpy(dataPtr, *(void **)(entry + 8), *(unsigned int *)(entry + 0xC));
-    entryCallback = *(void (**)(int))(entry + 0x10);
+    memcpy(dataDest, *(void **)(saveEntry + 8), *(unsigned int *)(saveEntry + 0xC));
+    entryCallback = *(void (**)(int))(saveEntry + 0x10);
     if (entryCallback != 0)
         entryCallback(4);
-    entrySize = *(unsigned int *)(entry + 0xC);
+    entrySize = *(unsigned int *)(saveEntry + 0xC);
     entryIndex++;
-    dataPtr += entrySize;
-    entry += 0x14;
+    dataDest += entrySize;
+    saveEntry += 0x14;
     descriptor += 0xC;
 loop_check:
     if (entryIndex < lbl_8055FFC0)
         goto loop_body;
-    *(unsigned int *)(imageBuffer + 0x2050) =
-        fn_80132E7C(imageBuffer + 0x20D0, *(unsigned int *)(imageBuffer + 0x204C));
+    *(unsigned int *)(saveImage + 0x2050) =
+        fn_80132E7C(saveImage + 0x20D0, *(unsigned int *)(saveImage + 0x204C));
     fn_802E30C8(lbl_8034D784, (imageSize + 0x1FFF) / 0x2000, imageSize);
-    writeResult = fn_802E967C(lbl_8055D200, imageBuffer, imageSize);
-    fn_80128658(imageBuffer);
+    writeResult = fn_802E967C(lbl_8055D200, saveImage, imageSize);
+    fn_80128658(saveImage);
     return writeResult;
 }
 #pragma pop
