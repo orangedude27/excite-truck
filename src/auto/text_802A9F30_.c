@@ -156,23 +156,23 @@ extern float PSVECDotProduct(const void *, const void *);
 #pragma push
 #pragma processor 750
 #pragma opt_propagation off
-void fn_802AA100(void *arg0, void *arg1, void *arg2, void *arg3) {
-    float tb[3];
-    float tc[3];
-    float d1;
-    float d2;
+/* Reconstruct a vector from its projections onto two basis vectors: out = basis0*(vec·basis0) + basis1*(vec·basis1). */ void fn_802AA100(void *out, void *vec, void *basis0, void *basis1) {
+    float term0[3];
+    float term1[3];
+    float dot0;
+    float dot1;
 
-    d1 = PSVECDotProduct(arg1, arg2);
-    d2 = PSVECDotProduct(arg1, arg3);
-    tb[0] = ((float *)arg2)[0] * d1;
-    tb[1] = ((float *)arg2)[1] * d1;
-    tb[2] = ((float *)arg2)[2] * d1;
-    tc[0] = ((float *)arg3)[0] * d2;
-    tc[1] = ((float *)arg3)[1] * d2;
-    tc[2] = ((float *)arg3)[2] * d2;
-    ((float *)arg0)[0] = tb[0] + tc[0];
-    ((float *)arg0)[1] = tb[1] + tc[1];
-    ((float *)arg0)[2] = tb[2] + tc[2];
+    dot0 = PSVECDotProduct(vec, basis0);
+    dot1 = PSVECDotProduct(vec, basis1);
+    term0[0] = ((float *)basis0)[0] * dot0;
+    term0[1] = ((float *)basis0)[1] * dot0;
+    term0[2] = ((float *)basis0)[2] * dot0;
+    term1[0] = ((float *)basis1)[0] * dot1;
+    term1[1] = ((float *)basis1)[1] * dot1;
+    term1[2] = ((float *)basis1)[2] * dot1;
+    ((float *)out)[0] = term0[0] + term1[0];
+    ((float *)out)[1] = term0[1] + term1[1];
+    ((float *)out)[2] = term0[2] + term1[2];
 }
 #pragma opt_propagation reset
 #pragma pop
