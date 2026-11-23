@@ -193,28 +193,28 @@ int fn_802E4070(void) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void *fn_802E40A0(void *owner, char *path) {
+/* Open a file by path: allocate a FileDisk node from the fdo pool, resolve its DVD info and return it with its cursor at the start, or 0 on failure. */ extern "C" void *fn_802E40A0(void *owner, char *path) {
     // filecd "open": carve a FileDisk node out of this TU's "fdo" pool, point it
     // at "path" on the DVD and hand it back with its read cursor at the start of
     // the file.  Returns 0 when the pool is full or the file is not on the disc.
     char pathBuf[0x100];
     FileDisk *file;
-    char *name;
-    int status;
-    name = path;
+    char *pathName;
+    int dvdResult;
+    pathName = path;
     file = (FileDisk *)((void *(*)(int, void *))fn_802E3EBC)(sizeof(FileDisk), &fdoPoolName);
     if (file != 0) {
         *(void **)file = &FileDiskVTable;
         file->owner = owner;
-        if (strncmp(name, (char *)&dotSlashPrefix, 2) == 0) name += 2;
-        if (*name == '\\') name++;
-        strcpy(file->pathText, name);
+        if (strncmp(pathName, (char *)&dotSlashPrefix, 2) == 0) pathName += 2;
+        if (*pathName == '\\') pathName++;
+        strcpy(file->pathText, pathName);
         memset(file->info, 0, sizeof(file->info));
         file->cursor = 0;
         file->length = 0;
         strcpy(pathBuf, file->pathText);
-        status = DVDGetCurrentDir((char **)&pathBuf, file->info);
-        file->valid = (unsigned int)(-status | status) >> 31;
+        dvdResult = DVDGetCurrentDir((char **)&pathBuf, file->info);
+        file->valid = (unsigned int)(-dvdResult | dvdResult) >> 31;
         if (file->valid != 0) file->length = *(int *)(file->info + 0x34);
     }
     switch (file->valid) {
