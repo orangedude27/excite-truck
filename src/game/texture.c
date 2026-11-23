@@ -1465,22 +1465,22 @@ void fn_802CBFCC(void *unused, void *request) {
 extern char lbl_8034BA34[];
 extern char lbl_8034BA70[];
 int fn_802D9154(void);
-void fn_802CC03C(int **arg0, int *arg1, int arg2) {
-    int offset = arg2 * 0x4C;
+void fn_802CC03C(int **listHead, int *record, int texId) {
+    int entryOffset = texId * 0x4C;
     char nameBuf[0x20];
     int version;
 
     /* Set up a texture record for texId: build its ".tm0" name, load the TEX
        resource (version to version), store texId and drgc-tex context, report
        load/version errors, then link the record into the list. */
-    arg1[0] = fn_8012C5B8((char *)fn_802CA2A8(nameBuf, 0x20, (int)((char *)lbl_8055FCB0 + offset + 4)), 0x54455820, &version);
-    arg1[1] = arg2;
-    arg1[3] = fn_802D9154();
-    if (arg1[0] == 0)
+    record[0] = fn_8012C5B8((char *)fn_802CA2A8(nameBuf, 0x20, (int)((char *)lbl_8055FCB0 + entryOffset + 4)), 0x54455820, &version);
+    record[1] = texId;
+    record[3] = fn_802D9154();
+    if (record[0] == 0)
         fn_802E317C(lbl_8034BA34, nameBuf);
     if ((unsigned int)version != 0xF)
         fn_802E317C(lbl_8034BA70, nameBuf, version, 0xF);
-    ((void (*)(int **, int, int *))fn_802CBB9C)(arg0, (int)arg0 + 4, arg1);
+    ((void (*)(int **, int, int *))fn_802CBB9C)(listHead, (int)listHead + 4, record);
 }
 
 #pragma optimization_level 2
