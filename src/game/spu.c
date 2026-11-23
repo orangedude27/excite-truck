@@ -861,41 +861,41 @@ extern void *fn_8012850C(void *, char *);
 void *fn_802E5DD8(const char *name, unsigned int bufSize, int hasAdpcmData, int decodeFn, int decodeArg) {
     #define sNoStreamSamplesFmt lbl_8034D554 /* "spu: out of samples for stream %s" */
     #define sStreamBufName      lbl_8034D578 /* "stream_buf" */
-    int i, freeIndex = -1;
-    unsigned char *p = (unsigned char *)lbl_8055FF90;
-    char *slot, *dst;
-    const char *src = name;
-    unsigned char c;
-    float fB, fA;
-    for (i = 0; i < 0x100; p += 0xB0, i++) if (*(int *)(p + 0x94) == 0) { freeIndex = i; break; }
-    if (freeIndex < 0) fn_802E317C(sNoStreamSamplesFmt, (int)name);
-    slot = (char *)lbl_8055FF90 + freeIndex * 0xB0;
-    memset(slot, 0, 0xB0);
+    int i, freeSlot = -1;
+    unsigned char *walker = (unsigned char *)lbl_8055FF90;
+    char *sample, *nameDst;
+    const char *nameSrc = name;
+    unsigned char ch;
+    float lengthValue, rateValue;
+    for (i = 0; i < 0x100; walker += 0xB0, i++) if (*(int *)(walker + 0x94) == 0) { freeSlot = i; break; }
+    if (freeSlot < 0) fn_802E317C(sNoStreamSamplesFmt, (int)name);
+    sample = (char *)lbl_8055FF90 + freeSlot * 0xB0;
+    memset(sample, 0, 0xB0);
     fn_801282EC(0x80); fn_801282F4();
-    *(void **)(slot + 0x90) = fn_8012850C((void *)bufSize, sStreamBufName);
-    memset(*(void **)(slot + 0x90), 0, bufSize);
-    fA = 1.0f;
-    slot[0x25] = 1;
-    *(void **)(slot + 0x9C) = (void *)((unsigned int)*(void **)(slot + 0x90) + 0x80000000);
-    fB = 1000.0f;
-    *(unsigned int *)(slot + 0xA0) = bufSize;
-    *(int *)(slot + 0x94) = 1; *(int *)(slot + 0x20) = 1;
-    slot[0x24] = (hasAdpcmData == 1);
-    *(int *)(slot + 0x88) = decodeFn; *(int *)(slot + 0x8C) = decodeArg; *(int *)(slot + 0x98) = 0;
-    *(float *)(slot + 0xA8) = fA;
-    *(float *)(slot + 0xA4) = fB;
-    dst = slot; i = 0x20;
+    *(void **)(sample + 0x90) = fn_8012850C((void *)bufSize, sStreamBufName);
+    memset(*(void **)(sample + 0x90), 0, bufSize);
+    rateValue = 1.0f;
+    sample[0x25] = 1;
+    *(void **)(sample + 0x9C) = (void *)((unsigned int)*(void **)(sample + 0x90) + 0x80000000);
+    lengthValue = 1000.0f;
+    *(unsigned int *)(sample + 0xA0) = bufSize;
+    *(int *)(sample + 0x94) = 1; *(int *)(sample + 0x20) = 1;
+    sample[0x24] = (hasAdpcmData == 1);
+    *(int *)(sample + 0x88) = decodeFn; *(int *)(sample + 0x8C) = decodeArg; *(int *)(sample + 0x98) = 0;
+    *(float *)(sample + 0xA8) = rateValue;
+    *(float *)(sample + 0xA4) = lengthValue;
+    nameDst = sample; i = 0x20;
     goto copy;
 chk:
     if (--i > 0) goto copy;
-    dst[-1] = 0;
+    nameDst[-1] = 0;
     goto end;
 copy:
-    c = *src++;
-    *dst++ = c;
-    if ((signed char)c != 0) goto chk;
+    ch = *nameSrc++;
+    *nameDst++ = ch;
+    if ((signed char)ch != 0) goto chk;
 end:
-    return slot;
+    return sample;
     #undef sStreamBufName
     #undef sNoStreamSamplesFmt
 }
