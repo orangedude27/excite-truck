@@ -267,7 +267,7 @@ extern void fn_800C687C(void);
 extern void fn_800C68B0(void);
 extern s32 fn_802D9BF0(void);
 extern void fn_802E2C20(void);
-extern void fn_802E2E38(s32);
+extern void KERNEL_Reset(s32);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_802E5438(void);
 extern void fn_802E7C40(void);
@@ -321,11 +321,11 @@ void fn_802EC884(void) {
         switch (fn_800C673C()) {
         case 1:
             fn_802E30C8(homeStrBase + 0x1E0);
-            fn_802E2E38(1);
+            KERNEL_Reset(1);
             break;
         case 2:
             fn_802E30C8(homeStrBase + 0x200);
-            fn_802E2E38(0);
+            KERNEL_Reset(0);
             break;
         }
         fn_800C687C();

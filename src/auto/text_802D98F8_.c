@@ -33,30 +33,13 @@ void fn_802D992C(void) {
     s32 count = (u32)__cntlzw((u32)(lbl_8055FE3C - 1)) >> 5;
     s32 driveStatus = DVDGetDriveStatus();
     switch (driveStatus) {
-    case 0:
-        lbl_8055FE3C = 0;
-        break;
-    case -1:
-        lbl_8055FE3C = 2;
-        break;
-    case 5:
-        lbl_8055FE3C = 4;
-        break;
-    case 6:
-        lbl_8055FE3C = 5;
-        break;
-    case 4:
-        lbl_8055FE3C = 3;
-        break;
-    case 11:
-        lbl_8055FE3C = 6;
-    case 1:
-    case 2:
-    case 3:
-    case 7:
-    case 8:
-    case 9:
-    case 10:
+    case 0: lbl_8055FE3C = 0; break;
+    case -1: lbl_8055FE3C = 2; break;
+    case 5: lbl_8055FE3C = 4; break;
+    case 6: lbl_8055FE3C = 5; break;
+    case 4: lbl_8055FE3C = 3; break;
+    case 11: lbl_8055FE3C = 6;
+    case 1: case 2: case 3: case 7: case 8: case 9: case 10:
         if (OSGetResetButtonState()) {
             lbl_8055FE40 = 1;
         } else if (lbl_8055FE40) {
@@ -64,20 +47,20 @@ void fn_802D992C(void) {
             lbl_8055FE3C = 1;
         }
         break;
-    default:
-        break;
+    default: break;
     }
     if (count != 0 && lbl_8055FE3C != 2)
         lbl_8055FE3C = 1;
     if (lbl_8055FE3C != lbl_8055FE44) {
+        char *msg = lbl_8034C838;
         lbl_8055FE44 = lbl_8055FE3C;
-        OSReport(lbl_8034C838);
+        OSReport(msg);
     }
     if (GXGetCurrentGXThread())
         fn_802D3DAC();
 }
 
-extern void fn_802E2E38(int);
+extern void KERNEL_Reset(int);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80129AFC(void);
 extern void fn_802E6264(void);
@@ -106,18 +89,18 @@ void fn_802D9A50(void) {
 
     /* DVD-drive / power-button monitor: while the drive state is nonzero, react
        to the power button and reset requests by logging status messages and
-       calling the kernel reset (fn_802E2E38) or the state's message screen, then
+       calling the kernel reset (KERNEL_Reset) or the state's message screen, then
        finalize once the drive returns to idle. */
     msgBase = lbl_8034C680;
     if (lbl_8055FFB4 != 0)
         return;
 
     if (lbl_8055FE38 != 0) {
-        fn_802E2E38(0);
+        KERNEL_Reset(0);
         lbl_8055FE38 = 0;
     }
     if ((u8)lbl_8055FE41 != 0)
-        fn_802E2E38(2);
+        KERNEL_Reset(2);
     if (*(volatile s32 *)&lbl_8055FE3C != 1)
         lbl_8055FE4C = 0;
 
@@ -128,13 +111,13 @@ void fn_802D9A50(void) {
         if (driveState == 0)
             break;
         if ((u8)lbl_8055FE41 != 0)
-            fn_802E2E38(2);
+            KERNEL_Reset(2);
         if (driveState == 1) {
             register subsystemClear = (u32)__cntlzw((u32)lbl_8055FE39) >> 5;
             lbl_8055FE4C++;
             if ((unsigned)subsystemClear != 0) {
                 fn_802E30C8(msgBase + 0x1FC);
-                fn_802E2E38(0);
+                KERNEL_Reset(0);
             } else {
                 fn_802E30C8(msgBase + 0x210);
                 lbl_8055FE38 = 1;

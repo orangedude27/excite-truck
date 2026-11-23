@@ -809,14 +809,14 @@ void fn_802E2E0C(int callback, int name) {
  *   lbl_804DB790[]  the registered callbacks
  *   lbl_804DB7D0[]  the name a callback logs under when it cancels a reset
  *   lbl_8055FF00    how many are registered
- * fn_802E2E38 runs the table, then resets. */
+ * KERNEL_Reset runs the table, then resets. */
 typedef int (*ResetCallback)(int request, int mode);
 
 /* First argument handed to a reset callback. */
 #define KERNEL_RESET_ASK 0 /* may we reset?  answer 1 to cancel it */
 #define KERNEL_RESET_NOTIFY 1 /* the reset is on: save, close, stop */
 
-/* The mode fn_802E2E38 is asked for (the Home Menu hands back its own). */
+/* The mode KERNEL_Reset is asked for (the Home Menu hands back its own). */
 #define KERNEL_MODE_RESTART 0 /* hot-reset the console */
 #define KERNEL_MODE_MENU 1 /* back to the Wii Menu */
 #define KERNEL_MODE_STANDBY 2 /* power the console off */
@@ -857,7 +857,7 @@ extern void OSShutdownSystem(void);
  * registered first, that it is happening.  The DVD drive's queued requests are
  * cancelled next, and a restart falls back to the Wii Menu when the disc is
  * misbehaving rather than the reset button having been held. */
-void fn_802E2E38(int mode) {
+void KERNEL_Reset(int mode) {
     char *base = lbl_8034CCE0;
     ResetCallback *callback;
     ResetCallback *last;

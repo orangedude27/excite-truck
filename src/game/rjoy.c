@@ -358,7 +358,6 @@ void fn_802E7DDC(void *arg0, void *arg1) {
     Input *in = (Input *)arg1;
     float temp_f0, temp_f0_2, var_f1, var_f31, var_f4;
     float ax, ay, vectorX, vectorY, vectorZ;
-    float coef, lower;
     double temp_f1;
     int var_r5;
 
@@ -379,10 +378,8 @@ void fn_802E7DDC(void *arg0, void *arg1) {
     out->heading = var_f31;
     if (var_f31 > lbl_80565180) var_f31 -= lbl_80565184;
     else if (var_f31 < lbl_80565188) var_f31 += lbl_80565184;
-    lower = lbl_80565160;
-    coef = lbl_8056518C;
-    temp_f0 = coef * in->acc.z;
-    var_f1 = lower;
+    var_f1 = lbl_80565160;
+    temp_f0 = lbl_8056518C * in->acc.z;
     var_f1 = (var_f1 > temp_f0) ? var_f1 : temp_f0;
     var_f1 = (var_f1 > lbl_8056517C) ? var_f1 : lbl_8056517C;
     var_f1 = fn_802E78A4(var_f1);
@@ -419,7 +416,7 @@ extern int fn_800604E8(int, int, void *);
 extern int fn_802ECC10(void);
 extern void fn_802EC884(void);
 extern void fn_802ECBF8(void);
-extern void fn_802E2E38(int);
+extern void KERNEL_Reset(int);
 extern void fn_802E7C14(int);
 extern void *memset(void *, int, unsigned int);
 #pragma push
@@ -555,7 +552,7 @@ void fn_802E7FD0(void) {
         if (filtered == 0)
             *(int *)(record + 0xC0) = timeNow;
         else if (timeNow - *(int *)(record + 0xC0) > 0x3E8)
-            fn_802E2E38(0);
+            KERNEL_Reset(0);
 
         channel += 1;
         record += 0x638;
