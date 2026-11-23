@@ -857,7 +857,7 @@ extern void OSShutdownSystem(void);
  * registered first, that it is happening.  The DVD drive's queued requests are
  * cancelled next, and a restart falls back to the Wii Menu when the disc is
  * misbehaving rather than the reset button having been held. */
-void KERNEL_Reset(int mode) {
+/* Leave the game and hand the console back in `mode`: ask every registered reset callback for a veto (first one answering 1 cancels and is logged), notify the rest last-registered-first, cancel queued DVD requests, then restart, power down, or return to the Wii Menu. */ void KERNEL_Reset(int mode) {
     char *base = lbl_8034CCE0;
     ResetCallback *callback;
     ResetCallback *last;
