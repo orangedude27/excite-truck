@@ -215,20 +215,17 @@ test:
 }
 #pragma scheduling on
 void fn_8028DF58(void) {
-    struct Lists { char data[0x30C]; };
-    struct First { char c; };
-    struct Lists *lists = (struct Lists *)&lbl_804B34B0;
-    struct First *first = (struct First *)&lbl_804B34B0;
-    fn_8028ED74(&first->c);
-    fn_8028ED74(lists->data + 0x104);
-    fn_8028EE1C(lists->data + 0x208);
+    char *base = (char *)&lbl_804B34B0;
+    fn_8028ED74(base);
+    do { fn_8028ED74(base + 0x104); } while (0);
+    fn_8028EE1C(base + 0x208);
     lbl_8055F740 = 0;
     lbl_8055F744 = 1;
     lbl_8055F748 = 0;
 }
 void fn_8028E0F0(void) {
     char* base = (char*)&lbl_804B34B0;
-    fn_8028F5A4();
+    do { fn_8028F5A4(); } while (0);
     fn_8028EE28(base + 0x208);
     fn_8028ED80(base + 0x104);
     fn_8028ED80(base);
@@ -1058,7 +1055,8 @@ void fn_8028F608(float *out0, float *out1, float (*matrix)[3], float angle)
   float b;
   float g;
   float e;
-  float c;
+      float c;
+    c = matrix[0][1];
   float y;
   float h;
   union 
@@ -1092,7 +1090,6 @@ void fn_8028F608(float *out0, float *out1, float (*matrix)[3], float angle)
   }
   a = matrix[0][0];
   b = matrix[1][0];
-  c = matrix[0][1];
   e = matrix[1][1];
   g = matrix[0][2];
   h = matrix[1][2];
@@ -1108,12 +1105,11 @@ int fn_8028F7AC(void *arg0, void *arg1, int arg2) {
     int count;
     void *buffer;
     void *result;
-    volatile int *countp = (volatile int *)((char *)arg1 + 4);
 
     ((int (*)(void *))fn_8028E61C)(arg0);
     ((void (*)(void *, void *))fn_8028FD00)(arg0, arg1);
-    count = *countp;
-    buffer = fn_8012850C(count * 0x28 + 0x10, &lbl_80348FC4);
+    count = *(int *)((char *)arg1 + 4);
+    buffer = fn_8012850C(count * 0x28 + 0x10, lbl_80348FC4);
     result = fn_8002F37C(buffer, (void *)fn_8028F854, 0, 0x28, count);
     *(void **)((char *)arg0 + 0x8c) = result;
     *(int *)((char *)arg0 + 0x98) = count;
