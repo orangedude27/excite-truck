@@ -5434,7 +5434,7 @@ void GXSetTevColor(s32 arg0, unsigned int *arg1) {
     *(unsigned short *)((char *)__GXData + 2) = 0;
 }
 
-void GXSetTevColorS10(s32 tevReg, void *color) {
+void GXSetTevColorS10(s32 tevReg, const void *color) {
     unsigned int c0 = ((unsigned int *)color)[0];
     unsigned int c1 = ((unsigned int *)color)[1];
     unsigned int *data = __GXData;
