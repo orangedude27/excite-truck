@@ -411,7 +411,7 @@ void gxReportGPStatus(void) {
     }
 }
 #pragma scheduling invalid_target
-void fn_802CEF90(void) {
+/* GX hang watchdog: when the GP stays busy on the same GX thread for ten consecutive checks, dump GP status and panic with a hang warning. */ void fn_802CEF90(void) {
     /* GX hang watchdog: if the GP reports a busy status on the same GX thread
      * ten checks in a row, dump the GP status and panic with a hang warning. */
     extern void GXGetGPStatus(char *, char *, char *, char *, char *);
@@ -428,14 +428,14 @@ void fn_802CEF90(void) {
     extern unsigned int lbl_8055FDBC;
     unsigned char gpStatus;
     unsigned char dummy;
-    unsigned int gxThread;
+    unsigned int currentThread;
 
     if (lbl_8055FD34 != 0) {
         lbl_8055FD38++;
     }
     GXGetGPStatus((char *)&gpStatus, (char *)&dummy, (char *)&dummy, (char *)&dummy, (char *)&dummy);
-    gxThread = (unsigned int)GXGetCurrentGXThread();
-    if (gpStatus != 0 && gxThread == lbl_8055FDBC) {
+    currentThread = (unsigned int)GXGetCurrentGXThread();
+    if (gpStatus != 0 && currentThread == lbl_8055FDBC) {
         lbl_8055FDB8++;
         if (lbl_8055FDB8 >= 10) {
             OSReport(lbl_8034BF34);
@@ -443,7 +443,7 @@ void fn_802CEF90(void) {
             OSPanic(lbl_8055D0F8, 0x201, lbl_8034BF70);
         }
     } else {
-        lbl_8055FDBC = gxThread;
+        lbl_8055FDBC = currentThread;
         lbl_8055FDB8 = 0;
     }
 }
