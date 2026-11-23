@@ -371,40 +371,41 @@ extern void KPADSetBtnRepeat(int *, int *, int *, int *);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-/* Reports the GX GP status flags and whether the GP metric counters
- * (KPADSetBtnRepeat is the misnamed CP counter read) changed between two
- * samples, via OSReport. */
+/* Reports GP status flags and changes between two CP performance-counter
+ * reads via OSReport, then prints a follow-up diagnostic chosen by which
+ * counters moved; invoked before a GX-hang panic. KPADSetBtnRepeat here is
+ * the misnamed four-counter CP read. */
 void gxReportGPStatus(void) {
     extern char lbl_8034BD18[];
     extern void GXGetGPStatus(char *, char *, char *, char *, char *);
-    int a1, a0, a3, a2, b1, b0, b3, b2;
-    unsigned char status2, status3, status0, status1, status4;
-    char *base = lbl_8034BD18;
-    int changed2, changed3, same1, same0;
-    int c0, c1, c2, c3, c4;
-    KPADSetBtnRepeat(&a0, &a1, &a2, &a3);
-    KPADSetBtnRepeat(&b0, &b1, &b2, &b3);
-    same1 = a1 == b1;
-    same0 = a0 == b0;
-    changed3 = (b3 - a3) != 0;
-    changed2 = (b2 - a2) != 0;
-    GXGetGPStatus((char *)&status0, (char *)&status1, (char *)&status2, (char *)&status3, (char *)&status4);
-    c4 = status4 ? 'B' : '-';
-    c3 = status3 ? '-' : 'C';
-    c2 = status2 ? '-' : 'R';
-    c1 = status1 ? 'U' : '-';
-    c0 = status0 ? 'O' : '-';
-    OSReport(base + 0x12C, c0, c1, c2, c3, c4, same1, same0, changed3, changed2);
-    if (!same0 && changed3) {
-        OSReport(base + 0x15C);
-    } else if (!same1 && same0 && changed3) {
-        OSReport(base + 0x180);
-    } else if (!status3 && same1 && same0 && changed3) {
-        OSReport(base + 0x1A8);
-    } else if (status2 && status3 && same1 && same0 && changed3 && changed2) {
-        OSReport(base + 0x1D0);
+    int metric1a, metric0a, metric3a, metric2a, metric1b, metric0b, metric3b, metric2b;
+    unsigned char readIdle, cmdIdle, overrunHi, underrunLo, brkpt;
+    char *msgTable = lbl_8034BD18;
+    int metric2Moved, metric3Moved, metric1Held, metric0Held;
+    int overrunFlag, underrunFlag, readFlag, cmdFlag, brkptFlag;
+    KPADSetBtnRepeat(&metric0a, &metric1a, &metric2a, &metric3a);
+    KPADSetBtnRepeat(&metric0b, &metric1b, &metric2b, &metric3b);
+    metric1Held = metric1a == metric1b;
+    metric0Held = metric0a == metric0b;
+    metric3Moved = (metric3b - metric3a) != 0;
+    metric2Moved = (metric2b - metric2a) != 0;
+    GXGetGPStatus((char *)&overrunHi, (char *)&underrunLo, (char *)&readIdle, (char *)&cmdIdle, (char *)&brkpt);
+    brkptFlag = brkpt ? 'B' : '-';
+    cmdFlag = cmdIdle ? '-' : 'C';
+    readFlag = readIdle ? '-' : 'R';
+    underrunFlag = underrunLo ? 'U' : '-';
+    overrunFlag = overrunHi ? 'O' : '-';
+    OSReport(msgTable + 0x12C, overrunFlag, underrunFlag, readFlag, cmdFlag, brkptFlag, metric1Held, metric0Held, metric3Moved, metric2Moved);
+    if (!metric0Held && metric3Moved) {
+        OSReport(msgTable + 0x15C);
+    } else if (!metric1Held && metric0Held && metric3Moved) {
+        OSReport(msgTable + 0x180);
+    } else if (!cmdIdle && metric1Held && metric0Held && metric3Moved) {
+        OSReport(msgTable + 0x1A8);
+    } else if (readIdle && cmdIdle && metric1Held && metric0Held && metric3Moved && metric2Moved) {
+        OSReport(msgTable + 0x1D0);
     } else {
-        OSReport(base + 0x200);
+        OSReport(msgTable + 0x200);
     }
 }
 #pragma scheduling invalid_target
@@ -1276,25 +1277,22 @@ void fn_802D01E0(int viewportX, int viewportY, int viewportWidth, int viewportHe
 #pragma pop
 
 #pragma scheduling on
-void fn_802D02F8(int arg0, signed char arg1)
-{
-  extern unsigned char lbl_804C9778[];
-  volatile unsigned char s2;
-  unsigned int s3;
-  unsigned char s0;
-  unsigned char s1;
-  unsigned int value;
-  lbl_804C9778[0x2d] = arg1;
-  lbl_804C9778[0x2c] = 1;
-  value = ((unsigned int (*)(unsigned int)) fn_802CEA1C)((unsigned int) arg0);
-  lbl_804C9778[0x31] = value;
-  s3 = (unsigned char) (value >> 24);
-  s2 = (unsigned char) (value >> 16);
-  s1 = (unsigned char) (value >> 8);
-  lbl_804C9778[0x2e] = s3;
-  lbl_804C9778[0x2f] = s2;
-  lbl_804C9778[0x30] = s1;
-  s0 = (unsigned char) value;
+void fn_802D02F8(int arg0, signed char arg1) {
+    extern unsigned char lbl_804C9778[];
+    volatile unsigned char s2, s3;
+    unsigned char s0, s1;
+    unsigned int value;
+    lbl_804C9778[0x2d] = arg1;
+    lbl_804C9778[0x2c] = 1;
+    value = ((unsigned int (*)(unsigned int))fn_802CEA1C)((unsigned int)arg0);
+    lbl_804C9778[0x31] = value;
+    s3 = (unsigned char)(value >> 24);
+    s2 = (unsigned char)(value >> 16);
+    s1 = (unsigned char)(value >> 8);
+    lbl_804C9778[0x2e] = s3;
+    lbl_804C9778[0x2f] = s2;
+    lbl_804C9778[0x30] = s1;
+    s0 = (unsigned char)value;
 }
 
 #pragma push
