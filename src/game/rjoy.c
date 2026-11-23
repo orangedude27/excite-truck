@@ -578,58 +578,67 @@ void fn_802E830C(int *table) {
     table[6] = 6;
 }
 #pragma scheduling on
-/* Copy an indexed rjoy input/state record (0x638 bytes per entry) into an output buffer and return its status byte. */
-unsigned char fn_802E8364(void *out, int index) {
-    extern unsigned char lbl_80505978[];
-    unsigned char *src = lbl_80505978 + index * 0x638;
-    unsigned char *dst = (unsigned char *)out;
-    unsigned char a, b;
-    unsigned int x, y;
+/* Take one controller's input snapshot: copy the 0x62 bytes at +0x04 of the
+ * channel's 0x638-byte record in the Wiimote/controller state table into `out`
+ * (+0x00..0x1C are the eight analog readings, +0x20..0x3B the button bytes,
+ * +0x40..0x61 the words and error byte), and return the record's status byte at
+ * +0x00.  fn_80129400 stores the result into its caller's snapshot at +0x1C. */
+unsigned char fn_802E8364(void *out, int controllerIndex) {
+#define gWiimoteStateTable lbl_80505978
+    extern unsigned char gWiimoteStateTable[];
+    unsigned char *record = gWiimoteStateTable + controllerIndex * 0x638;
+    unsigned char *snapshot = (unsigned char *)out;
+    unsigned char byte0, byte1;
+    unsigned int word0, word1;
 
-    *(float *)(dst + 0) = *(float *)(src + 4);
-    *(float *)(dst + 4) = *(float *)(src + 8);
-    *(float *)(dst + 8) = *(float *)(src + 12);
-    *(float *)(dst + 12) = *(float *)(src + 16);
-    *(float *)(dst + 16) = *(float *)(src + 20);
-    *(float *)(dst + 20) = *(float *)(src + 24);
-    *(float *)(dst + 24) = *(float *)(src + 28);
-    *(float *)(dst + 28) = *(float *)(src + 32);
-    b = src[36]; a = src[37]; dst[32] = b; dst[33] = a;
-    a = src[38]; b = src[39]; dst[34] = a; dst[35] = b;
-    a = src[40]; b = src[41]; dst[36] = a; dst[37] = b;
-    a = src[42]; b = src[43]; dst[38] = a; dst[39] = b;
-    a = src[44]; b = src[45]; dst[40] = a; dst[41] = b;
-    a = src[46]; b = src[47]; dst[42] = a; dst[43] = b;
-    a = src[48]; b = src[49]; dst[44] = a; dst[45] = b;
-    a = src[50]; b = src[51]; dst[46] = a; dst[47] = b;
-    a = src[52]; b = src[53]; dst[48] = a; dst[49] = b;
-    a = src[54]; b = src[55]; dst[50] = a; dst[51] = b;
-    a = src[56]; b = src[57]; dst[52] = a; dst[53] = b;
-    a = src[58]; b = src[59]; dst[54] = a; dst[55] = b;
-    a = src[60]; b = src[61]; dst[56] = a; dst[57] = b;
-    a = src[62]; b = src[63]; dst[58] = a; dst[59] = b;
-    b = *(volatile unsigned char *)(src + 64);
-    a = *(volatile unsigned char *)(src + 65);
-    dst[60] = b; dst[61] = a;
-    b = *(volatile unsigned char *)(src + 66);
-    a = *(volatile unsigned char *)(src + 67);
-    dst[62] = b; dst[63] = a;
-    *(unsigned int *)(dst + 0x40) = *(unsigned int *)(src + 0x44);
-    y = *(unsigned int *)(src + 0x48);
-    x = *(unsigned int *)(src + 0x4c);
-    *(unsigned int *)(dst + 0x44) = y;
-    *(unsigned int *)(dst + 0x48) = x;
-    x = *(volatile unsigned int *)(src + 0x50);
-    y = *(volatile unsigned int *)(src + 0x54);
-    *(unsigned int *)(dst + 0x4c) = x;
-    *(unsigned int *)(dst + 0x50) = y;
-    x = *(volatile unsigned int *)(src + 0x58);
-    y = *(volatile unsigned int *)(src + 0x5c);
-    *(unsigned int *)(dst + 0x54) = x;
-    *(unsigned int *)(dst + 0x58) = y;
-    *(unsigned int *)(dst + 0x5c) = *(unsigned int *)(src + 0x60);
-    dst[0x60] = src[0x64];
-    return src[0];
+    /* the eight analog values, copied as floats */
+    *(float *)(snapshot + 0) = *(float *)(record + 4);
+    *(float *)(snapshot + 4) = *(float *)(record + 8);
+    *(float *)(snapshot + 8) = *(float *)(record + 12);
+    *(float *)(snapshot + 12) = *(float *)(record + 16);
+    *(float *)(snapshot + 16) = *(float *)(record + 20);
+    *(float *)(snapshot + 20) = *(float *)(record + 24);
+    *(float *)(snapshot + 24) = *(float *)(record + 28);
+    *(float *)(snapshot + 28) = *(float *)(record + 32);
+    /* the button bytes, two at a time */
+    byte1 = record[36]; byte0 = record[37]; snapshot[32] = byte1; snapshot[33] = byte0;
+    byte0 = record[38]; byte1 = record[39]; snapshot[34] = byte0; snapshot[35] = byte1;
+    byte0 = record[40]; byte1 = record[41]; snapshot[36] = byte0; snapshot[37] = byte1;
+    byte0 = record[42]; byte1 = record[43]; snapshot[38] = byte0; snapshot[39] = byte1;
+    byte0 = record[44]; byte1 = record[45]; snapshot[40] = byte0; snapshot[41] = byte1;
+    byte0 = record[46]; byte1 = record[47]; snapshot[42] = byte0; snapshot[43] = byte1;
+    byte0 = record[48]; byte1 = record[49]; snapshot[44] = byte0; snapshot[45] = byte1;
+    byte0 = record[50]; byte1 = record[51]; snapshot[46] = byte0; snapshot[47] = byte1;
+    byte0 = record[52]; byte1 = record[53]; snapshot[48] = byte0; snapshot[49] = byte1;
+    byte0 = record[54]; byte1 = record[55]; snapshot[50] = byte0; snapshot[51] = byte1;
+    byte0 = record[56]; byte1 = record[57]; snapshot[52] = byte0; snapshot[53] = byte1;
+    byte0 = record[58]; byte1 = record[59]; snapshot[54] = byte0; snapshot[55] = byte1;
+    byte0 = record[60]; byte1 = record[61]; snapshot[56] = byte0; snapshot[57] = byte1;
+    byte0 = record[62]; byte1 = record[63]; snapshot[58] = byte0; snapshot[59] = byte1;
+    byte1 = *(volatile unsigned char *)(record + 64);
+    byte0 = *(volatile unsigned char *)(record + 65);
+    snapshot[60] = byte1; snapshot[61] = byte0;
+    byte1 = *(volatile unsigned char *)(record + 66);
+    byte0 = *(volatile unsigned char *)(record + 67);
+    snapshot[62] = byte1; snapshot[63] = byte0;
+    /* the words that follow */
+    *(unsigned int *)(snapshot + 0x40) = *(unsigned int *)(record + 0x44);
+    word1 = *(unsigned int *)(record + 0x48);
+    word0 = *(unsigned int *)(record + 0x4c);
+    *(unsigned int *)(snapshot + 0x44) = word1;
+    *(unsigned int *)(snapshot + 0x48) = word0;
+    word0 = *(volatile unsigned int *)(record + 0x50);
+    word1 = *(volatile unsigned int *)(record + 0x54);
+    *(unsigned int *)(snapshot + 0x4c) = word0;
+    *(unsigned int *)(snapshot + 0x50) = word1;
+    word0 = *(volatile unsigned int *)(record + 0x58);
+    word1 = *(volatile unsigned int *)(record + 0x5c);
+    *(unsigned int *)(snapshot + 0x54) = word0;
+    *(unsigned int *)(snapshot + 0x58) = word1;
+    *(unsigned int *)(snapshot + 0x5c) = *(unsigned int *)(record + 0x60);
+    snapshot[0x60] = record[0x64];
+    return record[0];
+#undef gWiimoteStateTable
 }
 
 /* Return byte 0 (the connected flag) of the given controller's record in the
