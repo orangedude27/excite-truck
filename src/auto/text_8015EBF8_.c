@@ -642,7 +642,7 @@ extern f32 lbl_8056182C;
 extern f64 fn_8002F234(f32, f32, f32);
 f32 PSVECDotProduct(void *, void *);
 #pragma push
-#pragma scheduling invalid_target
+#pragma processor 750
 #pragma dont_inline on
 s32 fn_8015F7A0(s32 arg0, void *arg1, void *arg2) {
     f32 scale = (f32)arg0 * lbl_805617E4;
