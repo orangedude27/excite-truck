@@ -47,37 +47,37 @@ extern void *fn_801284F8(int, void *);
 extern int lbl_8055D080;
 extern void fn_801282EC(int);
 extern void fn_801282F4(void);
-/* Initialize the 0x200-entry texture record table, load the null and lightmap textures, and select the lightmap. */ void fn_802CA0E4(void) {
-    char *strings = lbl_8034B538;
+/* Allocate and zero the 512-entry texture-slot table (lbl_8055FCB0), then register the built-in "null" and "gclmap" textures; on success select the lightmap and bind its GPU handle. */ /* Initialize the 0x200-entry texture record table, load the null and lightmap textures, and select the lightmap. */ void fn_802CA0E4(void) {
+    char *messages = lbl_8034B538;
     int recordOffset;
-    int i;
+    int slotIndex;
     int textureId;
-    register int record;
+    register int lightmapEntry;
 
     lbl_8055FCB0 = fn_8012850C(0x9800, &lbl_8055D040);
     fn_802CB424();
-    i = 0;
+    slotIndex = 0;
     recordOffset = 0;
     do {
         memset((void *)(lbl_8055FCB0 + recordOffset), 0, 0x4C);
-        i++;
+        slotIndex++;
         recordOffset += 0x4C;
-    } while (i < 0x200);
+    } while (slotIndex < 0x200);
     lbl_8055FCB8 = -2;
     textureId = ((int (*)(int, int))fn_802CAC28)(lbl_8055D038, 0);
     lbl_8055FCB4 = textureId;
     if (textureId == -1)
-        fn_802E317C(strings + 0x40, lbl_8055D038);
-    textureId = ((int (*)(int, int))fn_802CAC28)((int)(strings + 0x60), 0);
+        fn_802E317C(messages + 0x40, lbl_8055D038);
+    textureId = ((int (*)(int, int))fn_802CAC28)((int)(messages + 0x60), 0);
     lbl_8055D03C = textureId;
     if (textureId != -1) {
-        fn_802E30C8(strings + 0x6C);
-        record = lbl_8055FCB0;
-        record += lbl_8055D03C * 0x4C;
-        fn_802D92B8(*(int *)(record + 0x28));
+        fn_802E30C8(messages + 0x6C);
+        lightmapEntry = lbl_8055FCB0;
+        lightmapEntry += lbl_8055D03C * 0x4C;
+        fn_802D92B8(*(int *)(lightmapEntry + 0x28));
         return;
     }
-    fn_802E30C8(strings + 0x88);
+    fn_802E30C8(messages + 0x88);
 }
 
 void fn_802CA1E0(void) {
