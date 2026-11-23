@@ -66,7 +66,7 @@ void fn_8020BCE4(void) {
 }
 #pragma pop
 /* Handle a SOUND DASH debug command: toggle mode, move the selected entry, adjust its volume, or dump sounds.txt. */
-int fn_8020BDB8(int command) {
+/* Handle one SOUND DASH debug-dash command: 0x6D toggles the overlay between the sound-name grid and the volume list (every other command is ignored while the grid is up); 0x128/0x126 move the selected voice entry, 0x125/0x127 step its volume down/up between the two clamps, and 0x53 prints "writing sounds.txt..." then dumps the table.  Returns 1 when the command was handled, 0 otherwise. */ int fn_8020BDB8(int command) {
     int index;
     VoiceSndEntry *entry;
     float volume;
