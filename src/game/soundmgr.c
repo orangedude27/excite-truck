@@ -320,32 +320,36 @@ typedef struct SlotLimits { signed long total; signed long lim[9]; signed long p
  * run each sound's own update (fn_80206824), then finish with
  * fn_8020815C/fn_80207E70. */
 void fn_80207C80(void *soundMgr) {
-    struct Object {
+    /* The manager's view of its tracked sounds (the full object is laid out in
+     * fn_80207990): +0x0C is the array of sound ids, +0x10 its count, +0x5C the
+     * emitter context handed to each sound, +0x8C a flag passed through to the
+     * sound's update callback. */
+    struct TrackedSounds {
         char pad0[0xC];
-        int *sounds;
-        signed long count;
+        int *soundIds;
+        signed long soundCount;
         char pad14[0x48];
         char context[0x30];
-        signed long arg;
+        signed long updateArg;
     };
-    struct Object *object = (struct Object *)soundMgr;
-    signed long i;
-    signed long offset;
-    offset = 0;
-    i = 0;
-    while (i < object->count) {
-        fn_802067C8(*(int *)((char *)object->sounds + offset), (void *)object->context, object->arg);
-        offset += 4;
-        ++i;
+    struct TrackedSounds *mgr = (struct TrackedSounds *)soundMgr;
+    signed long index;
+    signed long byteOffset;
+    byteOffset = 0;
+    index = 0;
+    while (index < mgr->soundCount) {
+        fn_802067C8(*(int *)((char *)mgr->soundIds + byteOffset), (void *)mgr->context, mgr->updateArg);
+        byteOffset += 4;
+        ++index;
     }
     fn_8020835C(soundMgr);
     fn_80207F34(soundMgr);
-    i = 0;
-    offset = 0;
-    while (i < object->count) {
-        fn_80206824(*(int *)((char *)object->sounds + offset), (void *)object->context, object->arg);
-        offset += 4;
-        ++i;
+    index = 0;
+    byteOffset = 0;
+    while (index < mgr->soundCount) {
+        fn_80206824(*(int *)((char *)mgr->soundIds + byteOffset), (void *)mgr->context, mgr->updateArg);
+        byteOffset += 4;
+        ++index;
     }
     fn_8020815C(soundMgr);
     fn_80207E70(soundMgr);
