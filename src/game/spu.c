@@ -926,11 +926,13 @@ __declspec(section ".sdata") extern unsigned char *lbl_8055FF94;
 #pragma scheduling invalid_target
 /* Allocate a free SPU voice channel for the given sample and initialize it for playback. */
 void *fn_802E6058(void *sample) {
+#define CHANNEL_COUNT 32
+#define CHANNEL_SIZE  0x2C
     struct SpuChannel *channel;
     int i;
 
-    for (i = 0; i < 32; i++) {
-        channel = (struct SpuChannel *)(lbl_8055FF94 + (i % 32) * 0x2C);
+    for (i = 0; i < CHANNEL_COUNT; i++) {
+        channel = (struct SpuChannel *)(lbl_8055FF94 + (i % CHANNEL_COUNT) * CHANNEL_SIZE);
         if (channel->active == 0) {
             OSDisableInterrupts();
             channel->active = 1;
@@ -939,10 +941,10 @@ void *fn_802E6058(void *sample) {
             channel->pan = 0.0f;
             channel->surroundPan = 1.0f;
             channel->auxFlags = 0;
-            channel->rate = *(float *)((char *)sample + 0xA8);
+            channel->rate = ((struct SpuSample *)sample)->rate;
             channel->wantPlay = 0;
             channel->adpcm = 0;
-            *(int *)((char *)sample + 0x98) += 1;
+            ((struct SpuSample *)sample)->activeChannels += 1;
             channel->playing = 1;
             channel->started = 0;
             channel->playPos = 0;
@@ -952,6 +954,8 @@ void *fn_802E6058(void *sample) {
         }
     }
     return 0;
+#undef CHANNEL_SIZE
+#undef CHANNEL_COUNT
 }
 #pragma scheduling on
 void fn_802E6138(void *arg0) {
