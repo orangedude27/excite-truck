@@ -1023,6 +1023,10 @@ struct BinkMovieInfo {
  * handle, set its mode byte, and pass it to fn_802E0EAC to actually open it.
  * Returns the movie system state saved on entry. */
 s32 fn_802E11A4(const char *name, u8 mode) {
+#define VIDEO_PATH_FMT lbl_8034CBC4  /* "video/%s" */
+#define BIK_EXT        lbl_8055D168  /* ".bik" */
+#define NAME_CAPACITY  0x40          /* size of BinkMovieInfo.name */
+#define DOT_CHAR       0x2e          /* '.' */
     s32 saved;
     struct BinkMovieInfo *object;
     char *dot;
@@ -1033,13 +1037,13 @@ s32 fn_802E11A4(const char *name, u8 mode) {
     object = (struct BinkMovieInfo *)fn_802E0BA4();
     object->binkHandle = 0;
     object->flags = mode;
-    fn_801345D8(object->name, 0x40, lbl_8034CBC4, name);
-    dot = fn_80029004(object->name, 0x2e);
+    fn_801345D8(object->name, NAME_CAPACITY, VIDEO_PATH_FMT, name);
+    dot = fn_80029004(object->name, DOT_CHAR);
     if (dot != 0)
         *dot = 0;
     dest = object->name;
-    remaining = 0x40;
-    suffix = lbl_8055D168;
+    remaining = NAME_CAPACITY;
+    suffix = BIK_EXT;
     while ((s8)*dest) {
         --remaining;
         ++dest;
@@ -1054,6 +1058,10 @@ s32 fn_802E11A4(const char *name, u8 mode) {
     }
     fn_802E0EAC(object);
     return saved;
+#undef DOT_CHAR
+#undef NAME_CAPACITY
+#undef BIK_EXT
+#undef VIDEO_PATH_FMT
 }
 #pragma pop
 /* Log and unload a movie: destroy it, run movie teardown, and close its handle. */
