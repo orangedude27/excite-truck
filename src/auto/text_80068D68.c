@@ -27247,7 +27247,7 @@ void sdp_server_handle_client_req(tCONN_CB *p_ccb, BT_HDR *p_msg) {
     }
 }
 
-void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len, UINT8 *p_req) {
+/* Handle an SDP ServiceSearch request from a client: extract the UUID sequence, collect up to 20 matching service record handles, then reply with as many as fit the remote MTU (carrying a continuation offset for the rest) or send an SDP error response. */ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len, UINT8 *p_req) {
     UINT16 max_replies, cur_handles, rem_handles, cont_offset;
     tSDP_UUID_SEQ uid_seq;
     UINT8 *p_rsp, *p_rsp_start, *p_rsp_param_len;
