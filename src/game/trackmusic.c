@@ -1147,41 +1147,67 @@ extern signed char lbl_8055EEEC;
 extern signed char lbl_8055EEED;
 extern float lbl_80563400;
 void fn_802113D8(void) {
-    long mode;
-    long trackIndex;
-    long pageIndex;
-    long digitIndex;
+#define sTrackMusicHandle     lbl_8055EEF0
+#define defaultVolume         lbl_80563400
+#define trackMusicSelection   lbl_8055EEE0 /* -2 = OFF, -1 = RANDOM, >= 0 = row on the page */
+#define trackMusicPage        lbl_8055EEE4 /* song-list page the menu is on */
+#define trackMusicPrevSong    lbl_8055B65C /* song id from the previous selection, kept for restart */
+#define trackMusicCurrentSong lbl_8055B658 /* song id in use (-1 = none) */
+#define sResetOnStop          lbl_8055EEEC /* reset the context music buffer when stopped */
+#define sResetOnRandom        lbl_8055EEED /* reset the context music buffer when randomized */
+#define EVENT_NAME_OUT        lbl_8055B674 /* scene/event name output buffer */
+#define NO_EVENT              lbl_8033C970 /* "invalid_contest" */
+#define SEL_OFF               (-2)
+#define SEL_RANDOM            (-1)
+#define SONGS_PER_PAGE        10
+    long entryType;
+    long songIndex;
+    long page;
+    long row;
     long zero = 0;
     long minusTwo = -2;
-    void *container;
-    struct Dummy_802113D8 *resource;
+    void *audioContainer;
+    struct Dummy_802113D8 *resourceObj;
 
-    /* Initializes track-music selection state, refreshes the current track resource, and decodes the saved track index into page/digit selection. */
+    /* Initializes track-music selection state, refreshes the current track resource, and decodes the saved song index into page/row selection. */
     if (fn_80265D64() == 0) {
         __AXDSPInitCallback_801769E0();
     }
     fn_80206444();
-    fn_80209190(lbl_8055EEF0, lbl_80563400);
-    lbl_8055EEE0 = minusTwo;
-    lbl_8055EEE4 = zero;
-    lbl_8055B65C = lbl_8055B658;
-    lbl_8055EEEC = zero;
-    lbl_8055EEED = zero;
-    container = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
-    resource = *(struct Dummy_802113D8 **)((char *)container + 0x20);
-    resource->f6(&lbl_8055B674, lbl_8033C970);
-    mode = *(long *)fn_8020FAF0();
-    if (mode == 1) {
-        lbl_8055EEE0 = -1;
-    } else if (mode == 2) {
-        trackIndex = lbl_8055B658;
-        if (trackIndex >= 0) {
-            pageIndex = trackIndex / 10;
-            digitIndex = trackIndex % 10;
-            lbl_8055EEE4 = pageIndex;
-            lbl_8055EEE0 = digitIndex;
+    fn_80209190(sTrackMusicHandle, defaultVolume);
+    trackMusicSelection = minusTwo;
+    trackMusicPage = zero;
+    trackMusicPrevSong = trackMusicCurrentSong;
+    sResetOnStop = zero;
+    sResetOnRandom = zero;
+    audioContainer = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
+    resourceObj = *(struct Dummy_802113D8 **)((char *)audioContainer + 0x20);
+    resourceObj->f6(&EVENT_NAME_OUT, NO_EVENT);
+    entryType = *(long *)fn_8020FAF0();
+    if (entryType == 1) {
+        trackMusicSelection = SEL_RANDOM;
+    } else if (entryType == 2) {
+        songIndex = trackMusicCurrentSong;
+        if (songIndex >= 0) {
+            page = songIndex / SONGS_PER_PAGE;
+            row = songIndex % SONGS_PER_PAGE;
+            trackMusicPage = page;
+            trackMusicSelection = row;
         }
     }
+#undef SONGS_PER_PAGE
+#undef SEL_RANDOM
+#undef SEL_OFF
+#undef NO_EVENT
+#undef EVENT_NAME_OUT
+#undef sResetOnRandom
+#undef sResetOnStop
+#undef trackMusicCurrentSong
+#undef trackMusicPrevSong
+#undef trackMusicPage
+#undef trackMusicSelection
+#undef defaultVolume
+#undef sTrackMusicHandle
 }
 
 extern float lbl_80563404;
