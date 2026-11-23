@@ -126,6 +126,9 @@ struct MRollBaseObj {
     u8 data[0xFC];
     void *sub;
     u8 tail[0x24];
+    MRollBaseObj() {
+        fn_802556BC(this, 0);
+    }
     ~MRollBaseObj() {
         fn_80255758(this, -1);
     }
@@ -185,10 +188,42 @@ struct MRollPlayerData {
     MRollRecordOpt recordOpt;
     MRollMenuItem menuItem;
     s32 value;
+    MRollPlayerData() {}
+    MRollPlayerData(char *slot, s32 arg0) {
+        fn_802410F8(&carIcon, (s32)(slot + 0xC), &value, (s32)this);
+        fn_80241024(&container);
+        fn_80240BA4(&recordOpt, (s32)(slot + 4), slot + 8, &carIcon, &container, this);
+        fn_80240A1C(&menuItem, (int *)slot, this);
+        fn_802409AC(&menuItem, (s32)&recordOpt);
+        fn_802409AC(&menuItem, (s32)&carIcon);
+        fn_802409A4(&container, arg0);
+    }
+    void init(char *slot, s32 arg0) {
+        fn_802410F8(&carIcon, (s32)(slot + 0xC), &value, (s32)this);
+        fn_80241024(&container);
+        fn_80240BA4(&recordOpt, (s32)(slot + 4), slot + 8, &carIcon, &container, this);
+        fn_80240A1C(&menuItem, (int *)slot, this);
+        fn_802409AC(&menuItem, (s32)&recordOpt);
+        fn_802409AC(&menuItem, (s32)&carIcon);
+        fn_802409A4(&container, arg0);
+    }
+    inline void setup(char *slot, s32 arg0) {
+        fn_802556BC(&base, 0);
+        fn_802410F8(&carIcon, (s32)(slot + 0xC), &value, (s32)this);
+        fn_80241024(&container);
+        fn_80240BA4(&recordOpt, (s32)(slot + 4), slot + 8, &carIcon, &container, this);
+        fn_80240A1C(&menuItem, (int *)slot, this);
+        fn_802409AC(&menuItem, (s32)&recordOpt);
+        fn_802409AC(&menuItem, (s32)&carIcon);
+        fn_802409A4(&container, arg0);
+    }
 };
 struct MRollTwoPlayers {
     MRollPlayerData p0;
     MRollPlayerData p1;
+    MRollTwoPlayers() {}
+    MRollTwoPlayers(s32 arg0)
+        : p0(lbl_80498828, arg0), p1(lbl_80498828 + 0x10, arg0) {}
 };
 struct MRollFocusEntry {
     void *target;
@@ -235,47 +270,31 @@ struct MRollMenuEntry {
     void *value;
     s32 flags;
     s32 id;
+    MRollMenuEntry() {}
+    MRollMenuEntry(s32 l, s32 t, void *v, s32 f = 0, s32 i = 0) {
+        label = l;
+        type = t;
+        value = v;
+        flags = f;
+        id = i;
+    }
 };
 struct MRollDialogCfg {
     s32 w[5];
 };
 
 extern "C" s32 fn_8023FF1C(s32 arg0) {
-    MRollPlayerData players[2];
-    MRollMenuEntry entries[38];
     MRollJoinLeaveWidget widget;
-    MRollDialogCfg dialog;
     register char *strings = lbl_803422C0;
-    register MRollPlayerData *p;
     MRollFocusEntry *focii;
     MRollFocusEntry *entry;
     s32 i;
-    char *title;
     s32 ret;
     s32 running;
 
     fn_8001880C();
     fn_8013C804();
-
-    p = &players[0];
-    fn_802556BC(p, 0);
-    fn_802410F8(&p->carIcon, (s32)(lbl_80498828 + 0xC), &p->value, (s32)p);
-    fn_80241024(&p->container);
-    fn_80240BA4(&p->recordOpt, (s32)(lbl_80498828 + 4), lbl_80498828 + 8, &p->carIcon, &p->container, p);
-    fn_80240A1C(&p->menuItem, (int *)lbl_80498828, p);
-    fn_802409AC(&p->menuItem, (s32)&p->recordOpt);
-    fn_802409AC(&p->menuItem, (s32)&p->carIcon);
-    fn_802409A4(&p->container, arg0);
-
-    p = &players[1];
-    fn_802556BC(p, 0);
-    fn_802410F8(&p->carIcon, (s32)(lbl_80498828 + 0x1C), &p->value, (s32)p);
-    fn_80241024(&p->container);
-    fn_80240BA4(&p->recordOpt, (s32)(lbl_80498828 + 0x14), lbl_80498828 + 0x18, &p->carIcon, &p->container, p);
-    fn_80240A1C(&p->menuItem, (int *)(lbl_80498828 + 0x10), p);
-    fn_802409AC(&p->menuItem, (s32)&p->recordOpt);
-    fn_802409AC(&p->menuItem, (s32)&p->carIcon);
-    fn_802409A4(&p->container, arg0);
+    MRollTwoPlayers players(arg0);
 
     widget.vtable = lbl_803425B8;
     widget.unk14 = 0;
@@ -285,14 +304,14 @@ extern "C" s32 fn_8023FF1C(s32 arg0) {
     entry = focii;
     for (i = 0; i < 2; i++, entry++) {
         if (entry->target == 0) {
-            entry->target = &players[0].menuItem;
+            entry->target = &players.p0.menuItem;
             entry->b = 1;
             entry->a = 3;
             entry->c = 5;
             entry->d = 7;
             entry->e = 9;
             entry->f = 0;
-            if (*players[0].menuItem.payload < 0) {
+            if (*players.p0.menuItem.payload < 0) {
                 entry->g = 1;
                 goto focus0_done;
             }
@@ -306,14 +325,14 @@ focus0_done:
     entry = focii;
     for (i = 0; i < 2; i++, entry++) {
         if (entry->target == 0) {
-            entry->target = &players[1].menuItem;
+            entry->target = &players.p1.menuItem;
             entry->b = 2;
             entry->a = 4;
             entry->c = 6;
             entry->d = 8;
             entry->e = 10;
             entry->f = 0;
-            if (*players[1].menuItem.payload < 0) {
+            if (*players.p1.menuItem.payload < 0) {
                 entry->g = 1;
                 goto focus1_done;
             }
@@ -323,80 +342,85 @@ focus0_done:
     }
     fn_802E317C(strings + 0x50, 2);
 focus1_done:
+    {
+        const MRollMenuEntry endEntry = *(const MRollMenuEntry *)lbl_80498810;
+        MRollMenuEntry entries[38] = {
+            MRollMenuEntry(0, 5, &widget),
+            MRollMenuEntry(0, 5, &players.p0.menuItem),
+            MRollMenuEntry((s32)(strings + 0x90), 0x13, &players.p0),
+            MRollMenuEntry((s32)(strings + 0x90), 3, players.p0.recordOpt.name),
+            MRollMenuEntry((s32)(strings + 0x9C), 0x10, 0, (s32)&players.p0.recordOpt),
+            MRollMenuEntry((s32)(strings + 0xA8), 5, &players.p0.carIcon.secondaryVtable),
+            MRollMenuEntry((s32)(strings + 0xB4), 2, &players.p0.recordOpt.result),
+            MRollMenuEntry((s32)(strings + 0xC0), 3, players.p0.menuItem.name),
+            MRollMenuEntry((s32)(strings + 0xD0), 5, &players.p0.base.sub),
+            MRollMenuEntry((s32)(strings + 0xE0), 3, players.p0.container.texts[0]),
+            MRollMenuEntry((s32)(strings + 0xF0), 2, &players.p0.container.pairs[0].b),
+            MRollMenuEntry((s32)(strings + 0x100), 3, players.p0.container.texts[1]),
+            MRollMenuEntry((s32)(strings + 0x110), 2, &players.p0.container.pairs[1].b),
+            MRollMenuEntry((s32)(strings + 0x120), 3, players.p0.container.texts[2]),
+            MRollMenuEntry((s32)(strings + 0x130), 2, &players.p0.container.pairs[2].b),
+            MRollMenuEntry((s32)(strings + 0x140), 3, players.p0.container.texts[3]),
+            MRollMenuEntry((s32)(strings + 0x150), 5, players.p0.container.widgets[3]),
+            MRollMenuEntry((s32)(strings + 0x168), 3, players.p0.container.texts[4]),
+            MRollMenuEntry((s32)(strings + 0x178), 2, &players.p0.container.pairs[4].b),
+            MRollMenuEntry(0, 5, &players.p1.menuItem),
+            MRollMenuEntry((s32)(strings + 0x188), 0x13, &players.p1),
+            MRollMenuEntry((s32)(strings + 0x188), 3, players.p1.recordOpt.name),
+            MRollMenuEntry((s32)(strings + 0x194), 0x10, 0, (s32)&players.p1.recordOpt),
+            MRollMenuEntry((s32)(strings + 0x1A0), 5, &players.p1.carIcon.secondaryVtable),
+            MRollMenuEntry((s32)(strings + 0x1AC), 2, &players.p1.recordOpt.result),
+            MRollMenuEntry((s32)(strings + 0x1B8), 3, players.p1.menuItem.name),
+            MRollMenuEntry((s32)(strings + 0x1C8), 5, &players.p1.base.sub),
+            MRollMenuEntry((s32)(strings + 0x1D8), 3, players.p1.container.texts[0]),
+            MRollMenuEntry((s32)(strings + 0x1E8), 2, &players.p1.container.pairs[0].b),
+            MRollMenuEntry((s32)(strings + 0x1F8), 3, players.p1.container.texts[1]),
+            MRollMenuEntry((s32)(strings + 0x208), 2, &players.p1.container.pairs[1].b),
+            MRollMenuEntry((s32)(strings + 0x218), 3, players.p1.container.texts[2]),
+            MRollMenuEntry((s32)(strings + 0x228), 2, &players.p1.container.pairs[2].b),
+            MRollMenuEntry((s32)(strings + 0x238), 3, players.p1.container.texts[3]),
+            MRollMenuEntry((s32)(strings + 0x248), 5, players.p1.container.widgets[3]),
+            MRollMenuEntry((s32)(strings + 0x260), 3, players.p1.container.texts[4]),
+            MRollMenuEntry((s32)(strings + 0x270), 2, &players.p1.container.pairs[4].b),
+            endEntry
+        };
+        MRollDialogCfg dialog;
 
-    entries[0].label = 0; entries[0].type = 5; entries[0].value = &widget; entries[0].flags = 0; entries[0].id = 0;
-    entries[1].label = 0; entries[1].type = 5; entries[1].value = &players[0].menuItem; entries[1].flags = 0; entries[1].id = 0;
-    entries[2].label = (s32)(strings + 0x90); entries[2].type = 0x13; entries[2].value = &players[0]; entries[2].flags = 0; entries[2].id = 0;
-    entries[3].label = (s32)(strings + 0x90); entries[3].type = 3; entries[3].value = players[0].recordOpt.name; entries[3].flags = 0; entries[3].id = 0;
-    entries[4].label = (s32)(strings + 0x9C); entries[4].type = 0x10; entries[4].value = 0; entries[4].flags = (s32)&players[0].recordOpt; entries[4].id = 0;
-    entries[5].label = (s32)(strings + 0xA8); entries[5].type = 5; entries[5].value = &players[0].carIcon.secondaryVtable; entries[5].flags = 0; entries[5].id = 0;
-    entries[6].label = (s32)(strings + 0xB4); entries[6].type = 2; entries[6].value = &players[0].recordOpt.result; entries[6].flags = 0; entries[6].id = 0;
-    entries[7].label = (s32)(strings + 0xC0); entries[7].type = 3; entries[7].value = players[0].menuItem.name; entries[7].flags = 0; entries[7].id = 0;
-    entries[8].label = (s32)(strings + 0xD0); entries[8].type = 5; entries[8].value = &players[0].base.sub; entries[8].flags = 0; entries[8].id = 0;
-    entries[9].label = (s32)(strings + 0xE0); entries[9].type = 3; entries[9].value = players[0].container.texts[0]; entries[9].flags = 0; entries[9].id = 0;
-    entries[10].label = (s32)(strings + 0xF0); entries[10].type = 2; entries[10].value = &players[0].container.pairs[0].b; entries[10].flags = 0; entries[10].id = 0;
-    entries[11].label = (s32)(strings + 0x100); entries[11].type = 3; entries[11].value = players[0].container.texts[1]; entries[11].flags = 0; entries[11].id = 0;
-    entries[12].label = (s32)(strings + 0x110); entries[12].type = 2; entries[12].value = &players[0].container.pairs[1].b; entries[12].flags = 0; entries[12].id = 0;
-    entries[13].label = (s32)(strings + 0x120); entries[13].type = 3; entries[13].value = players[0].container.texts[2]; entries[13].flags = 0; entries[13].id = 0;
-    entries[14].label = (s32)(strings + 0x130); entries[14].type = 2; entries[14].value = &players[0].container.pairs[2].b; entries[14].flags = 0; entries[14].id = 0;
-    entries[15].label = (s32)(strings + 0x140); entries[15].type = 3; entries[15].value = players[0].container.texts[3]; entries[15].flags = 0; entries[15].id = 0;
-    entries[16].label = (s32)(strings + 0x150); entries[16].type = 5; entries[16].value = players[0].container.widgets[3]; entries[16].flags = 0; entries[16].id = 0;
-    entries[17].label = (s32)(strings + 0x168); entries[17].type = 3; entries[17].value = players[0].container.texts[4]; entries[17].flags = 0; entries[17].id = 0;
-    entries[18].label = (s32)(strings + 0x178); entries[18].type = 2; entries[18].value = &players[0].container.pairs[4].b; entries[18].flags = 0; entries[18].id = 0;
-    entries[19].label = 0; entries[19].type = 5; entries[19].value = &players[1].menuItem; entries[19].flags = 0; entries[19].id = 0;
-    entries[20].label = (s32)(strings + 0x188); entries[20].type = 0x13; entries[20].value = &players[1]; entries[20].flags = 0; entries[20].id = 0;
-    entries[21].label = (s32)(strings + 0x188); entries[21].type = 3; entries[21].value = players[1].recordOpt.name; entries[21].flags = 0; entries[21].id = 0;
-    entries[22].label = (s32)(strings + 0x194); entries[22].type = 0x10; entries[22].value = 0; entries[22].flags = (s32)&players[1].recordOpt; entries[22].id = 0;
-    entries[23].label = (s32)(strings + 0x1A0); entries[23].type = 5; entries[23].value = &players[1].carIcon.secondaryVtable; entries[23].flags = 0; entries[23].id = 0;
-    entries[24].label = (s32)(strings + 0x1AC); entries[24].type = 2; entries[24].value = &players[1].recordOpt.result; entries[24].flags = 0; entries[24].id = 0;
-    entries[25].label = (s32)(strings + 0x1B8); entries[25].type = 3; entries[25].value = players[1].menuItem.name; entries[25].flags = 0; entries[25].id = 0;
-    entries[26].label = (s32)(strings + 0x1C8); entries[26].type = 5; entries[26].value = &players[1].base.sub; entries[26].flags = 0; entries[26].id = 0;
-    entries[27].label = (s32)(strings + 0x1D8); entries[27].type = 3; entries[27].value = players[1].container.texts[0]; entries[27].flags = 0; entries[27].id = 0;
-    entries[28].label = (s32)(strings + 0x1E8); entries[28].type = 2; entries[28].value = &players[1].container.pairs[0].b; entries[28].flags = 0; entries[28].id = 0;
-    entries[29].label = (s32)(strings + 0x1F8); entries[29].type = 3; entries[29].value = players[1].container.texts[1]; entries[29].flags = 0; entries[29].id = 0;
-    entries[30].label = (s32)(strings + 0x208); entries[30].type = 2; entries[30].value = &players[1].container.pairs[1].b; entries[30].flags = 0; entries[30].id = 0;
-    entries[31].label = (s32)(strings + 0x218); entries[31].type = 3; entries[31].value = players[1].container.texts[2]; entries[31].flags = 0; entries[31].id = 0;
-    entries[32].label = (s32)(strings + 0x228); entries[32].type = 2; entries[32].value = &players[1].container.pairs[2].b; entries[32].flags = 0; entries[32].id = 0;
-    entries[33].label = (s32)(strings + 0x238); entries[33].type = 3; entries[33].value = players[1].container.texts[3]; entries[33].flags = 0; entries[33].id = 0;
-    entries[34].label = (s32)(strings + 0x248); entries[34].type = 5; entries[34].value = players[1].container.widgets[3]; entries[34].flags = 0; entries[34].id = 0;
-    entries[35].label = (s32)(strings + 0x260); entries[35].type = 3; entries[35].value = players[1].container.texts[4]; entries[35].flags = 0; entries[35].id = 0;
-    entries[36].label = (s32)(strings + 0x270); entries[36].type = 2; entries[36].value = &players[1].container.pairs[4].b; entries[36].flags = 0; entries[36].id = 0;
-    entries[37] = *(MRollMenuEntry *)lbl_80498810;
-
-    title = strings + 0x290;
-    if (lbl_8055FC8C != 0) {
-        title = strings + 0x280;
-    }
-    ret = 1;
-    dialog = *(MRollDialogCfg *)lbl_802FA30C;
-    dialog.w[0] = (s32)title;
-    dialog.w[1] = (s32)entries;
-    fn_80129AEC(-1);
-    running = 1;
-    while (running) {
-        s32 res = fn_802146BC(&dialog, -0x3E7, -0x3E7, 1);
-        switch (res) {
-        case 0:
-            ret = 1;
-            running = 0;
-            break;
-        case 1:
-            fn_802E4A10();
-            fn_8023D4B8();
-            break;
-        case 2:
-            ret = 0;
-            running = 0;
-            break;
-        default:
-            fn_802E317C(strings + 0x2A0, res);
-            break;
+        char *title = strings + 0x290;
+        if (lbl_8055FC8C != 0) {
+            title = strings + 0x280;
         }
+        dialog = *(const MRollDialogCfg *)lbl_802FA30C;
+        dialog.w[0] = (s32)title;
+        ret = 1;
+        dialog.w[1] = (s32)entries;
+        fn_80129AEC(-1);
+        running = 1;
+        while (running) {
+            s32 res = fn_802146BC(&dialog, -0x3E7, -0x3E7, 1);
+            switch (res) {
+            case 0:
+                ret = 1;
+                running = 0;
+                break;
+            case 1:
+                fn_802E4A10();
+                fn_8023D4B8();
+                break;
+            case 2:
+                ret = 0;
+                running = 0;
+                break;
+            default:
+                fn_802E317C(strings + 0x2A0, res);
+                break;
+            }
+        }
+        fn_80129AEC(0);
+        fn_8013C8B8();
+        fn_80018B24();
+        return ret;
     }
-    fn_80129AEC(0);
-    fn_8013C8B8();
-    fn_80018B24();
-    return ret;
 }
 #pragma pop
 extern char lbl_80342618[];
@@ -560,85 +584,89 @@ void fn_802409AC(void *menu, s32 entryId) {
 }
 
 #pragma scheduling invalid_target
-void *fn_80240A1C(void *arg0, int *arg1, void *arg2) {
+void *fn_80240A1C(void *menuItemOut, int *valuePtr, void *ownerObj) {
     extern unsigned char *fn_802E85B8(int);
     extern char lbl_80342650[];
     extern char lbl_8055BD60;
+#define gMRollMenuItemVtable lbl_80342650
+#define gMRollEmptyName      lbl_8055BD60
     struct Constructor {
         void *vtable;
         u8 pad4[0x10];
-        int unk14;
+        int field14;
         void *entries[4];
-        void *object;
+        void *owner;
         int count;
         int selected;
         int *payload;
         u8 active;
         char name[0x20];
     };
-    struct Constructor *self = (struct Constructor *)arg0;
-    int i;
+    struct Constructor *item = (struct Constructor *)menuItemOut;
+    int index;
 
-    /* Initialize a menu item: bind vtable/payload, copy the default or indexed name, publish the value, and refresh entry states. */
-    self->vtable = lbl_80342650;
+    /* Constructs a menu item: binds its vtable, owner and value pointer, copies the default or value-indexed name, and refreshes each entry's selected flag and displayed value. */
+    item->vtable = gMRollMenuItemVtable;
     {
-        char *source;
-        int length;
-        char *dest = self->name;
-        self->object = arg2;
-        self->unk14 = 0;
-        self->count = 0;
-        self->selected = 0;
-        self->payload = arg1;
-        self->active = 1;
-        length = 0x20;
-        source = &lbl_8055BD60;
-        while ((signed char)(*dest++ = *source++) != 0) {
-            if (--length <= 0) {
-                dest[-1] = 0;
+        char *nameSource;
+        int remaining;
+        char *nameDest = item->name;
+        item->owner = ownerObj;
+        item->field14 = 0;
+        item->count = 0;
+        item->selected = 0;
+        item->payload = valuePtr;
+        item->active = 1;
+        remaining = 0x20;
+        nameSource = &gMRollEmptyName;
+        while ((signed char)(*nameDest++ = *nameSource++) != 0) {
+            if (--remaining <= 0) {
+                nameDest[-1] = 0;
                 break;
             }
         }
     }
-    *(int *)((unsigned char *)self->object + 0xD8) = *self->payload;
-    if (*self->payload < 0) {
-        char *source = &lbl_8055BD60;
-        int length = 0x20;
-        char *dest = self->name;
-        while ((signed char)(*dest++ = *source++) != 0) {
-            if (--length <= 0) {
-                dest[-1] = 0;
+    *(int *)((unsigned char *)item->owner + 0xD8) = *item->payload;
+    if (*item->payload < 0) {
+        char *nameSource = &gMRollEmptyName;
+        int remaining = 0x20;
+        char *nameDest = item->name;
+        while ((signed char)(*nameDest++ = *nameSource++) != 0) {
+            if (--remaining <= 0) {
+                nameDest[-1] = 0;
                 break;
             }
         }
     } else {
-        char *source = (char *)fn_802E85B8(*self->payload);
-        int length = 0x20;
-        char *dest = self->name;
-        while ((signed char)(*dest++ = *source++) != 0) {
-            if (--length <= 0) {
-                dest[-1] = 0;
+        char *nameSource = (char *)fn_802E85B8(*item->payload);
+        int remaining = 0x20;
+        char *nameDest = item->name;
+        while ((signed char)(*nameDest++ = *nameSource++) != 0) {
+            if (--remaining <= 0) {
+                nameDest[-1] = 0;
                 break;
             }
         }
     }
     {
-        void *item;
-        int selected;
-        int value;
-        register void **entry = (void **)self;
-        i = 0;
-        while (i < self->count) {
-            value = *self->payload;
-            selected = self->active != 0 && i == self->selected;
-            item = entry[6];
-            entry++;
-            i++;
-            *(u8 *)item = selected;
-            *(int *)((char *)item + 4) = value;
+        void *entryItem;
+        int isSelected;
+        int currentValue;
+        register void **entryCursor = (void **)item;
+        index = 0;
+        while (index < item->count) {
+            currentValue = *item->payload;
+            isSelected = item->active != 0 && index == item->selected;
+            entryItem = entryCursor[6];
+            entryCursor++;
+            index++;
+            *(u8 *)entryItem = isSelected;
+            *(int *)((char *)entryItem + 4) = currentValue;
         }
     }
-    return self;
+    return item;
+#undef gMRollEmptyName
+#undef gMRollMenuItemVtable
 }
 #pragma cplusplus on
 extern "C" void *fn_80240BA4(void *arg0, s32 arg1, void *arg2, void *arg3, void *arg4, void *arg5) {
