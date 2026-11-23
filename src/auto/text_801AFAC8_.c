@@ -13,33 +13,34 @@ extern char lbl_803359E0[];
 #define memFree          fn_80128670
 #define ALLOC_HEADER_SIZE 0x10
 
+#pragma opt_strength_reduction off
 void fn_801AFAC8(void) {
-    register int off asm("r5") = 0;
-    register int ctr asm("r0") = 2;
-    register int zero asm("r4") = 0;
-    fn_8012850C(0xC90, lbl_803359E0);
-    lbl_8055E640 = fn_8002F37C(0, 0, 0x64, 0x20);
-    while (ctr--) {
-        *(int *)(lbl_8055E640 + off + 0x50) = zero;
-        *(int *)(lbl_8055E640 + off + 0xB4) = zero;
-        *(int *)(lbl_8055E640 + off + 0x118) = zero;
-        *(int *)(lbl_8055E640 + off + 0x17C) = zero;
-        *(int *)(lbl_8055E640 + off + 0x1E0) = zero;
-        *(int *)(lbl_8055E640 + off + 0x244) = zero;
-        *(int *)(lbl_8055E640 + off + 0x2A8) = zero;
-        *(int *)(lbl_8055E640 + off + 0x30C) = zero;
-        *(int *)(lbl_8055E640 + off + 0x320 + 0x50) = zero;
-        *(int *)(lbl_8055E640 + off + 0x320 + 0xB4) = zero;
-        *(int *)(lbl_8055E640 + off + 0x320 + 0x118) = zero;
-        *(int *)(lbl_8055E640 + off + 0x320 + 0x17C) = zero;
-        *(int *)(lbl_8055E640 + off + 0x320 + 0x1E0) = zero;
-        *(int *)(lbl_8055E640 + off + 0x320 + 0x244) = zero;
-        *(int *)(lbl_8055E640 + off + 0x320 + 0x2A8) = zero;
-        *(int *)(lbl_8055E640 + off + 0x320 + 0x30C) = zero;
-        off += 0x640;
+    lbl_8055E640 = ((int (*)(int, int, int, int, int))fn_8002F37C)(fn_8012850C(0xC90, lbl_803359E0), 0, 0, 0x64, 0x20);
+    {
+        int off = 0;
+        int i;
+        for (i = 0; i < 2; i++) {
+            *(int *)(lbl_8055E640 + off + 0x50) = 0;
+            *(int *)(lbl_8055E640 + off + 0xB4) = 0;
+            *(int *)(lbl_8055E640 + off + 0x118) = 0;
+            *(int *)(lbl_8055E640 + off + 0x17C) = 0;
+            *(int *)(lbl_8055E640 + off + 0x1E0) = 0;
+            *(int *)(lbl_8055E640 + off + 0x244) = 0;
+            *(int *)(lbl_8055E640 + off + 0x2A8) = 0;
+            *(int *)(lbl_8055E640 + off + 0x30C) = 0;
+            off += 0x320;
+            *(int *)(lbl_8055E640 + off + 0x50) = 0;
+            *(int *)(lbl_8055E640 + off + 0xB4) = 0;
+            *(int *)(lbl_8055E640 + off + 0x118) = 0;
+            *(int *)(lbl_8055E640 + off + 0x17C) = 0;
+            *(int *)(lbl_8055E640 + off + 0x1E0) = 0;
+            *(int *)(lbl_8055E640 + off + 0x244) = 0;
+            *(int *)(lbl_8055E640 + off + 0x2A8) = 0;
+            *(int *)(lbl_8055E640 + off + 0x30C) = 0;
+            off += 0x320;
+        }
     }
 }
-
 /* Release the heap-allocated "tire_list" table (undoing its 0x10 allocator header)
  * and clear the global pointer. */
 void fn_801AFBE8(void) {
