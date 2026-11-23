@@ -1322,7 +1322,8 @@ extern "C" void fn_802A36D0(void *arg0, const void *arg1, s32 arg2) {
     unsigned char *base2 = *(unsigned char **)arg1;
     unsigned char *p = base + arg2 * 0x3C;
     if (v > limit) goto done;
-    if (!(*(f32*)(p + 0x98) < lbl_805647DC) || !(*(f32*)(p + 0x94) < lbl_80564818)) goto body;
+    if (!(*(f32*)(p + 0x98) < lbl_805647DC)) goto body;
+    if (!(*(f32*)(p + 0x94) < lbl_80564818)) goto body;
     goto done;
 body:
     {
@@ -1563,30 +1564,30 @@ body:
 
 extern "C" f32 lbl_80564834;
 #pragma scheduling invalid_target
-extern "C" void fn_802A4118(const void *arg0, const void *arg1)
+/* Advance an emitter's looping 0..1 phase, firing the particle emitter with a random angle offset when the phase passes the wrap point, then wrapping and incrementing it. */ extern "C" void fn_802A4118(const void *particleSystem, const void *emitter)
 {
-  s32 index = *((s32 *) (((char *) arg1) + 0x28));
-  f32 *p = (f32 *) (((char *) arg0) + (index << 2));
-  s32 shouldCall = p[2] > (1.0f - lbl_80558DC4);
-  if (shouldCall)
+  s32 trackIndex = *((s32 *) (((char *) emitter) + 0x28));
+  f32 *phase = (f32 *) (((char *) particleSystem) + (trackIndex << 2));
+  s32 shouldEmit = phase[2] > (1.0f - lbl_80558DC4);
+  if (shouldEmit)
   {
-    f32 scale = fn_80287BC8(-3.14159274f, 3.14159274f);
-    fn_8028E590(*((s32 *) (((char *) arg0) + 4)), (f32 *) arg1, (f32 *) (((char *) arg1) + 0xC), scale);
+    f32 angleOffset = fn_80287BC8(-3.14159274f, 3.14159274f);
+    fn_8028E590(*((s32 *) (((char *) particleSystem) + 4)), (f32 *) emitter, (f32 *) (((char *) emitter) + 0xC), angleOffset);
   }
-  index = *((s32 *) (((char *) arg1) + 0x28));
-  p = (f32 *) (((char *) arg0) + (index << 2));
-  if (p[2] > (1.0f - lbl_80558DC4))
+  trackIndex = *((s32 *) (((char *) emitter) + 0x28));
+  phase = (f32 *) (((char *) particleSystem) + (trackIndex << 2));
+  if (phase[2] > (1.0f - lbl_80558DC4))
   {
-    if (p || lbl_80558DC4)
+    if (phase || lbl_80558DC4)
     {
-      p[2] = p[2] - 1.0f;
+      phase[2] = phase[2] - 1.0f;
     }
     else
     {
-      p[2] = p[2] - 1.0f;
+      phase[2] = phase[2] - 1.0f;
     }
   }
-  p[2] += 0.1f;
+  phase[2] += 0.1f;
 }
 #pragma scheduling on
 extern "C" void fn_8028E61C(void *);
