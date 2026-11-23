@@ -1259,7 +1259,7 @@ void fn_802D2218(void);
 #pragma paired_single off
 #pragma scheduling invalid_target
 /* Sets the GX viewport/scissor rectangle (x, y, width, height), adjusting vertical position and height for the non-widescreen aspect when the widescreen flag is clear. */
-void fn_802D01E0(int viewportX, int viewportY, int viewportWidth, int viewportHeight) {
+/* Set the GX viewport/scissor rectangle, adjusting vertical position and height for the non-widescreen aspect when the widescreen flag is clear. */ void fn_802D01E0(int viewportX, int viewportY, int viewportWidth, int viewportHeight) {
     if (lbl_8055FE24 == 0) {
         viewportY = (int)(lbl_80564F94 + ((lbl_80564FB8 * (float)viewportY) / lbl_80564FBC));
         viewportHeight = (int)(lbl_80564F94 + ((lbl_80564FB8 * (float)viewportHeight) / lbl_80564FBC));
