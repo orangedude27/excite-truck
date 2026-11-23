@@ -45,15 +45,15 @@ extern char lbl_80560040;                  /* sConfigReady */
  * marks the cache valid; the start-up calls this before anything reads it.
  */
 void fn_802E98D0(void) {
-    u32 status;      /* SCCheckStatus()'s SCStatus */
+    u32 scStatus;      /* SCCheckStatus()'s SCStatus */
     s32 aspectRatio; /* an SCAspectRatio */
     s32 soundMode;   /* an SCSoundMode */
 
     SCInit();
     do {
-        status = SCCheckStatus();
-    } while (status == SC_STATUS_BUSY);
-    if (status == SC_STATUS_FATAL) {
+        scStatus = SCCheckStatus();
+    } while (scStatus == SC_STATUS_BUSY);
+    if (scStatus == SC_STATUS_FATAL) {
         fn_802E317C(sScCheckStatusError);
     }
 
