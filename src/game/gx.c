@@ -411,41 +411,55 @@ void gxReportGPStatus(void) {
     }
 }
 #pragma scheduling invalid_target
-/* GX hang watchdog: when the GP stays busy on the same GX thread for ten consecutive checks, dump GP status and panic with a hang warning. */ void fn_802CEF90(void) {
-    /* GX hang watchdog: if the GP reports a busy status on the same GX thread
-     * ten checks in a row, dump the GP status and panic with a hang warning. */
+void fn_802CEF90(void) {
+    /* GX hang watchdog: when the GP stays busy on the same GX thread for ten
+     * consecutive checks, dump GP status and panic with a hang warning. */
     extern void GXGetGPStatus(char *, char *, char *, char *, char *);
     extern void *GXGetCurrentGXThread(void);
     extern void OSReport(const char *, ...);
     extern void OSPanic(const char *, int, const char *, ...);
     extern void gxReportGPStatus(void);
-    extern char lbl_8034BF34[];
-    extern char lbl_8034BF70[];
-    extern char lbl_8055D0F8[7];
-    extern unsigned char lbl_8055FD34;
-    extern int lbl_8055FD38;
-    extern unsigned int lbl_8055FDB8;
-    extern unsigned int lbl_8055FDBC;
+    #define sGxBusy lbl_8055FD34
+    #define sGxTimeout lbl_8055FD38
+    #define sHangCheckCount lbl_8055FDB8
+    #define sHangThread lbl_8055FDBC
+    #define sHangWarningMsg lbl_8034BF34
+    #define sHaltingMsg lbl_8034BF70
+    #define sCppFileName lbl_8055D0F8
+    extern char sHangWarningMsg[];
+    extern char sHaltingMsg[];
+    extern char sCppFileName[7];
+    extern unsigned char sGxBusy;
+    extern int sGxTimeout;
+    extern unsigned int sHangCheckCount;
+    extern unsigned int sHangThread;
     unsigned char gpStatus;
     unsigned char dummy;
     unsigned int currentThread;
 
-    if (lbl_8055FD34 != 0) {
-        lbl_8055FD38++;
+    if (sGxBusy != 0) {
+        sGxTimeout++;
     }
     GXGetGPStatus((char *)&gpStatus, (char *)&dummy, (char *)&dummy, (char *)&dummy, (char *)&dummy);
     currentThread = (unsigned int)GXGetCurrentGXThread();
-    if (gpStatus != 0 && currentThread == lbl_8055FDBC) {
-        lbl_8055FDB8++;
-        if (lbl_8055FDB8 >= 10) {
-            OSReport(lbl_8034BF34);
+    if (gpStatus != 0 && currentThread == sHangThread) {
+        sHangCheckCount++;
+        if (sHangCheckCount >= 10) {
+            OSReport(sHangWarningMsg);
             gxReportGPStatus();
-            OSPanic(lbl_8055D0F8, 0x201, lbl_8034BF70);
+            OSPanic(sCppFileName, 0x201, sHaltingMsg);
         }
     } else {
-        lbl_8055FDBC = currentThread;
-        lbl_8055FDB8 = 0;
+        sHangThread = currentThread;
+        sHangCheckCount = 0;
     }
+    #undef sGxBusy
+    #undef sGxTimeout
+    #undef sHangCheckCount
+    #undef sHangThread
+    #undef sHangWarningMsg
+    #undef sHaltingMsg
+    #undef sCppFileName
 }
 /* Emit GX FIFO commands that set up performance-metric state: when enable is
  * set, program GP metrics and load nonzero BP/XF register values; otherwise
