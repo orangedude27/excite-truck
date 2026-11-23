@@ -46,7 +46,7 @@ extern float PSVECDotProduct(float *, float *);
    tuning factors baseRadius/radiusScale and the squared distance from the viewer point
    'view' to the entry's centre at +0x10, then test the entry's first three floats against
    +-radius. Returns a 3-bit mask (bits 0, 2, 4) of bounds that lie inside the radius. */
-int fn_802CCBC4(void *__restrict entry, float *view, float baseRadius, float radiusScale) {
+/* Visibility test for a 0x20-byte mlist entry: build a cull radius from the tuning factors and the squared viewer-to-centre distance, flag each box extent that falls outside +/-radius, and return a 3-bit mask of the axes still inside. */ int fn_802CCBC4(void *__restrict entry, float *view, float baseRadius, float radiusScale) {
     struct {
         double copies[2];
         unsigned int words[4];
@@ -58,8 +58,8 @@ int fn_802CCBC4(void *__restrict entry, float *view, float baseRadius, float rad
     register float dy;
     register float dz;
     float distSq;
-    float radius;
-    int mask;
+    float cullRadius;
+    int outsideMask;
     scratch.words[0] = *(unsigned int *)((char *)entry + 0);
     scratch.words[1] = *(unsigned int *)((char *)entry + 4);
     scratch.words[2] = *(unsigned int *)((char *)entry + 8);
@@ -72,41 +72,41 @@ int fn_802CCBC4(void *__restrict entry, float *view, float baseRadius, float rad
     scratch.delta[1] = dy;
     scratch.delta[2] = dz;
     distSq = PSVECDotProduct(scratch.delta, scratch.delta);
-    radius = baseRadius + distSq;
+    cullRadius = baseRadius + distSq;
     scratch.copies[0] = *(double *)scratch.box;
     scratch.copies[1] = *((double *)scratch.box + 1);
-    radius = radiusScale * radius;
-    mask = 0;
-    if (((float *)scratch.copies)[0] > radius) mask |= 1;
-    if (((float *)scratch.copies)[0] < -radius) mask |= 2;
-    if (((float *)scratch.copies)[1] > radius) mask |= 4;
-    if (((float *)scratch.copies)[1] < -radius) mask |= 8;
-    if (((float *)scratch.copies)[2] > radius) mask |= 0x10;
-    if (((float *)scratch.copies)[2] < -radius) mask |= 0x20;
-    return ~mask & 0x15;
+    cullRadius = radiusScale * cullRadius;
+    outsideMask = 0;
+    if (((float *)scratch.copies)[0] > cullRadius) outsideMask |= 1;
+    if (((float *)scratch.copies)[0] < -cullRadius) outsideMask |= 2;
+    if (((float *)scratch.copies)[1] > cullRadius) outsideMask |= 4;
+    if (((float *)scratch.copies)[1] < -cullRadius) outsideMask |= 8;
+    if (((float *)scratch.copies)[2] > cullRadius) outsideMask |= 0x10;
+    if (((float *)scratch.copies)[2] < -cullRadius) outsideMask |= 0x20;
+    return ~outsideMask & 0x15;
 }
 #pragma pop
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-int fn_802CCD0C(const void *__restrict arg0, const void *arg1) {
-    int x = fn_802CAFC8(*(const int *)((const char *)arg0 + 0x10));
-    int y = fn_802CAFC8(*(const int *)((const char *)arg1 + 0x10));
+int fn_802CCD0C(void * const arg0, void * const arg1) {
+    int x = fn_802CAFC8(*(int *)((char *)arg0 + 0x10));
+    int y = fn_802CAFC8(*(int *)((char *)arg1 + 0x10));
     if (x != y) {
         return x - y;
     }
-    x = fn_802CAFF0(*(const int *)((const char *)arg0 + 0x10));
-    y = fn_802CAFF0(*(const int *)((const char *)arg1 + 0x10));
+    x = fn_802CAFF0(*(int *)((char *)arg0 + 0x10));
+    y = fn_802CAFF0(*(int *)((char *)arg1 + 0x10));
     if (x != y) {
         return x - y;
     }
-    if (*(const int *)((const char *)arg0 + 0x10) == -1) {
+    if (*(int *)((char *)arg0 + 0x10) == -1) {
         return 1;
     }
-    if (*(const int *)((const char *)arg1 + 0x10) == -1) {
+    if (*(int *)((char *)arg1 + 0x10) == -1) {
         return -1;
     }
-    return stricmp((const char *)arg0, (const char *)arg1);
+    return stricmp((char *)arg0, (char *)arg1);
 }
 #pragma pop
 
@@ -235,7 +235,6 @@ loop_23_body:
             *(int *)(var_r28 + 0x44) += 1;
 loop_23_test:
             if (var_r25_2 < *(int *)((char *)arg0 + 0x88)) goto loop_23_body;
-            goto loop_21_inc;
 loop_21_inc:
             var_r27 += 4;
             var_r25++;
@@ -594,6 +593,7 @@ static inline void MlistCallV3(void *object, void *context) {
 #pragma cplusplus off
 #pragma opt_propagation off
 void fn_802CDB5C(int arg0) {
+    #pragma opt_propagation off
     struct Item {
         unsigned short id;
         unsigned short type;
@@ -744,14 +744,24 @@ void fn_802CE2F0(int *, int);
 void fn_802CDDC8(void *arg0, int arg1) {
     volatile unsigned char *base = (volatile unsigned char *)arg0;
     volatile unsigned char *rec;
+    unsigned char a10, a6, a2, a8, a4, a0, a1, a3, a5, a7, a9, a11;
     unsigned char t;
     int i;
     int index;
     int offset;
     {
-        unsigned char a0 = base[0], a1 = base[3], a2 = base[1], a3 = base[2];
-        unsigned char a4 = base[4], a5 = base[7], a6 = base[5], a7 = base[6];
-        unsigned char a8 = base[8], a9 = base[0xB], a10 = base[9], a11 = base[0xA];
+        a0 = base[0];
+        a1 = base[3];
+        a2 = base[1];
+        a3 = base[2];
+        a4 = base[4];
+        a5 = base[7];
+        a6 = base[5];
+        a7 = base[6];
+        a8 = base[8];
+        a9 = base[0xB];
+        a10 = base[9];
+        a11 = base[0xA];
         base[0] = a1; base[3] = a0; base[1] = a3; base[2] = a2;
         base[4] = a5; base[7] = a4; base[5] = a7; base[6] = a6;
         base[8] = a9; base[0xB] = a8; base[9] = a11; base[0xA] = a10;
