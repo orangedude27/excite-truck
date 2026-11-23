@@ -220,7 +220,7 @@ extern char lbl_8033BEE8[];
 #pragma scheduling invalid_target
 #pragma cplusplus on
 /* Destructor for a sound-manager object: tear down active sounds/resources, log leaks, then optionally delete. */
-extern "C" void* fn_80207B60(void* arg0, signed long arg1) {
+/* SoundManager destructor: reset the vtable, destroy tracked items and log every leftover sound id, free the sound-id array at +0xC, call the callback's f7, deregister the object task, clear the active flag, and free the manager itself when shouldFree > 0. */ extern "C" void* fn_80207B60(void* self, signed long shouldFree) {
     struct Obj {
         virtual void f0();
         virtual void f1();
@@ -231,32 +231,32 @@ extern "C" void* fn_80207B60(void* arg0, signed long arg1) {
         virtual void f6();
         virtual void f7();
     };
-    signed long offset;
-    signed long i;
-    void* obj;
-    if (arg0 != 0) {
-        *(void**)arg0 = lbl_8033BEE8;
-        fn_80207DE0(arg0);
-        i = 0;
-        offset = 0;
-        while (i < *(signed long*)((char*)arg0 + 0x10)) {
-            fn_802E30C8(lbl_8033BE08, *(signed long*)((char*)*(void***)((char*)arg0 + 0xC) + offset) + 0x37);
-            offset += 4;
-            i++;
+    signed long byteOffset;
+    signed long index;
+    void* ptr;
+    if (self != 0) {
+        *(void**)self = lbl_8033BEE8;
+        fn_80207DE0(self);
+        index = 0;
+        byteOffset = 0;
+        while (index < *(signed long*)((char*)self + 0x10)) {
+            fn_802E30C8(lbl_8033BE08, *(signed long*)((char*)*(void***)((char*)self + 0xC) + byteOffset) + 0x37);
+            byteOffset += 4;
+            index++;
         }
-        obj = *(void**)((char*)arg0 + 0xC);
-        if (obj != 0) {
-            ((void (*)(void*))fn_80128670)(obj);
-            *(void**)((char*)arg0 + 0xC) = 0;
+        ptr = *(void**)((char*)self + 0xC);
+        if (ptr != 0) {
+            ((void (*)(void*))fn_80128670)(ptr);
+            *(void**)((char*)self + 0xC) = 0;
         }
-        obj = *(void**)((char*)arg0 + 0x90);
-        *(signed long*)((char*)arg0 + 0x10) = 0;
-        if (obj != 0) ((Obj*)obj)->f7();
-        fn_80127E28(arg0);
-        *(char*)((char*)arg0 + 4) = 0;
-        if (arg1 > 0) ((void (*)(void*))fn_80128668)(arg0);
+        ptr = *(void**)((char*)self + 0x90);
+        *(signed long*)((char*)self + 0x10) = 0;
+        if (ptr != 0) ((Obj*)ptr)->f7();
+        fn_80127E28(self);
+        *(char*)((char*)self + 4) = 0;
+        if (shouldFree > 0) ((void (*)(void*))fn_80128668)(self);
     }
-    return arg0;
+    return self;
 }
 #pragma cplusplus reset
 #pragma pop
