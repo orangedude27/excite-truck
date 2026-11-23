@@ -324,13 +324,22 @@ void fn_80016928(int carDefId, int value) {
 }
 #pragma push
 #pragma scheduling invalid_target
-void fn_80016970(int arg0, int arg1, int arg2, int arg3) {
-    struct E { char pad[0x4]; int id; char pad2[0x44]; int f4C; int f50; char rest[0x8]; };
-    struct E *b = (struct E *)lbl_803577F0;
-    b[(unsigned)arg0].id = arg1;
-    b[(unsigned)arg0].f4C = *(int *)fn_80016544(arg2);
-    b[(unsigned)arg0].f50 = arg3;
-    *(int *)(lbl_80357960 + arg0 * 0xA8 + 4) = -1000;
+void fn_80016970(int arg0, int arg1, int arg2, int arg3)
+{
+  struct E
+  {
+    char pad[0x4];
+    int id;
+    char pad2[0x44];
+    int f4C;
+    int f50;
+    char rest[0x8];
+  };
+  struct E *b = (0, (struct E *) lbl_803577F0);
+  b[arg0].id = arg1;
+  b[arg0].f4C = *((int *) fn_80016544(arg2));
+  b[arg0].f50 = arg3;
+  *((int *) ((lbl_80357960 + (arg0 * 0xA8)) + 4)) = -1000;
 }
 #pragma pop
 /* Copy a string into the name field (+0x08) of entry `entryIndex` in lbl_803577F0, truncating to 0x40 bytes. */
