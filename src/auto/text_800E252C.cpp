@@ -2613,71 +2613,117 @@ extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
 }
 
 #pragma use_lmw_stmw off
-extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
-    struct Holder { int v; } h;
-    int *size = &h.v;
-    int level;
-    int position;
-    int format;
-    unsigned int p;
-    p = (unsigned int)self;
-    level = OSDisableInterrupts();
-    *size = *(int *)(p + 0x2C);
-    if (*size == 0) {
-        OSRestoreInterrupts(level);
-        return 0;
+extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self)
+{
+  struct Holder
+  {
+    int v;
+  } h;
+  int *size = &h.v;
+  int level;
+  int position;
+  int format;
+  unsigned int p;
+  p = (unsigned int) self;
+  level = OSDisableInterrupts();
+  *size = *((int *) (p + 0x2C));
+  if ((*size) == 0)
+  {
+    OSRestoreInterrupts(level);
+    return 0;
+  }
+  if (IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv((void *) p))
+  {
+    int inner = OSDisableInterrupts();
+    unsigned char *pos = (*((unsigned char **) (p + 0xC))) + 0x138;
+    if (pos == 0)
+    {
+      OSRestoreInterrupts(inner);
+      position = 0;
     }
-    if (IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv((void *)p)) {
-        int inner = OSDisableInterrupts();
-        unsigned char *pos = *(unsigned char **)(p + 0xC) + 0x138;
-        if (pos == 0) {
-            OSRestoreInterrupts(inner);
-            position = 0;
-        } else {
-            position = ((int)*(unsigned short *)(pos + 0x80) << 16) + *(unsigned short *)(pos + 0x82);
-            OSRestoreInterrupts(inner);
-        }
-        format = *(int *)(p + 0x118);
-        if (*size != 0) *size += (int)0x80000000;
-        int result = 0;
-        switch (format) {
-        case 0: {
-            unsigned int rem = position - *size * 2;
-            result = ((rem & 0xF) + ((rem >> 4) * 0xE)) - 2;
-            break;
-        }
-        case 25: result = position - *size; break;
-        case 10: result = position - ((unsigned int)*size >> 1); break;
-        default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x583, lbl_80322438); break;
-        }
-        OSRestoreInterrupts(level);
-        return result + 1;
-    } else {
-        int inner = OSDisableInterrupts();
-        unsigned char *pos = *(unsigned char **)(p + 0xC) + 0x138;
-        if (pos == 0) {
-            OSRestoreInterrupts(inner);
-            position = 0;
-        } else {
-            position = ((int)*(unsigned short *)(pos + 0x84) << 16) + *(unsigned short *)(pos + 0x86);
-            OSRestoreInterrupts(inner);
-        }
-        format = *(int *)(p + 0x118);
-        if (*size != 0) *size += (int)0x80000000;
-        int result = 0;
-        switch (format) {
-        case 0: {
-            unsigned int rem = position - *size * 2;
-            result = ((rem & 0xF) + ((rem >> 4) * 0xE)) - 2;
-            break;
-        }
-        case 25: result = position - *size; break;
-        case 10: result = position - ((unsigned int)*size >> 1); break;
-        default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x583, lbl_80322438); break;
-        }
-        OSRestoreInterrupts(level);
-        return result;
+    else
+    {
+      position = (((int) (*((unsigned short *) (pos + 0x80)))) << 16) + (*((unsigned short *) (pos + 0x82)));
+      OSRestoreInterrupts(inner);
     }
+    format = *((int *) (p + 0x118));
+    if ((*size) != 0)
+    {
+      *size += (int) 0x80000000;
+    }
+    int result = 0;
+    switch (format)
+    {
+      case 0:
+      {
+        unsigned int rem = position - ((*size) * 2);
+        result = ((rem & 0xF) + ((rem >> 4) * 0xE)) - 2;
+        break;
+      }
+
+      case 25:
+        result = position - (*size);
+        break;
+
+      case 10:
+        result = position - (((unsigned int) (*size)) >> 1);
+        break;
+
+      default:
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x583, lbl_80322438);
+        break;
+
+    }
+
+    OSRestoreInterrupts(level);
+    return result + 1;
+  }
+  else
+  {
+    int inner = OSDisableInterrupts();
+    unsigned char *pos = (*((unsigned char **) (p + 0xC))) + 0x138;
+    if (pos == 0)
+    {
+      OSRestoreInterrupts(inner);
+      position = 0;
+    }
+    else
+    {
+      position = (((int) (*((unsigned short *) (pos + 0x84)))) << 16) + (*((unsigned short *) (pos + 0x86)));
+      OSRestoreInterrupts(inner);
+    }
+    format = *((int *) (p + 0x118));
+    if (0 != (*size))
+    {
+      *size += (int) 0x80000000;
+    }
+    int result = 0;
+    switch (format)
+    {
+      case 0:
+      {
+        unsigned int rem = position - ((*size) * 2);
+        result = ((rem & 0xF) + ((rem >> 4) * 0xE)) - 2;
+        break;
+      }
+
+      case 25:
+        result = position - (*size);
+        break;
+
+      case 10:
+        result = position - (((unsigned int) (*size)) >> 1);
+        break;
+
+      default:
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x583, lbl_80322438);
+        break;
+
+    }
+
+    OSRestoreInterrupts(level);
+    return result;
+  }
 }
 #pragma use_lmw_stmw reset
 extern const char lbl_80322400[];
@@ -3845,62 +3891,49 @@ void *nw4hbm::snd::detail::Bank::NoteOn(const nw4hbm::snd::detail::NoteOnInfo &n
 }
 
 extern const char lbl_803224F0[];
-extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *self, const void *bank)
-{
-  register const char *messages = lbl_803224F0;
-  *((void **) self) = 0;
-  *((void **) (((char *) self) + 4)) = 0;
-  *((void **) (((char *) self) + 8)) = 0;
-  if (bank == 0)
-  {
-    Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x58, messages + 0xB8);
-  }
-  unsigned char magic = *((unsigned int *) bank);
-  if (magic != 0x52424E4B)
-  {
-    Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x36, messages + 0x14);
-  }
-  magic = *((unsigned int *) bank);
-  if (magic != 0x52424E4B)
-  {
+#pragma opt_peephole on
+extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *arg0, const void *arg1) {
+    register void *self = arg0;
+    register const unsigned char *file = (const unsigned char *)arg1;
+    char *strings = (char *)lbl_803224F0;
+    register unsigned short temp_r0;
+    register unsigned int var_r0;
+    *(unsigned int *)self = 0;
+    *(unsigned int *)((char *)self + 4) = 0;
+    *(unsigned int *)((char *)self + 8) = 0;
+    if (file == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x58, strings + 0xB8);
+    if (*(const unsigned int *)file != 0x52424E4B)
+        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x36, strings + 0x14);
+    if (*(const unsigned int *)file != 0x52424E4B) {
+        var_r0 = 0;
+    } else {
+        if (*(const unsigned short *)(file + 6) < 0x100)
+            Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x3E, strings + 0x60);
+        temp_r0 = *(const unsigned short *)(file + 6);
+        if (temp_r0 < 0x100) {
+            var_r0 = 0;
+        } else {
+            if (temp_r0 > 0x101)
+                Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x44, strings + 0x60);
+            var_r0 = (*(const unsigned short *)(file + 6) <= 0x101);
+        }
+    }
+    if ((int)var_r0 == 0)
+        return self;
+    *(const void **)self = (const void *)file;
+    *(void **)((char *)self + 4) = (void *)(*(const unsigned int *)(file + 0x10) + (unsigned int)file);
+    if (**(const unsigned int **)((char *)self + 4) != 0x44415441)
+        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x61, strings + 0xE4);
+    {
+        register const unsigned char *stored = (const unsigned char *)*(volatile void **)self;
+        *(void **)((char *)self + 8) = (void *)(*(const unsigned int *)(stored + 0x18) + (unsigned int)stored);
+    }
+    if (**(const unsigned int **)((char *)self + 8) != 0x57415645)
+        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x65, strings + 0x13C);
     return self;
-  }
-  unsigned short version = *((unsigned short *) (((char *) bank) + 6));
-  if (version < 0x100)
-  {
-    Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x3E, messages + 0x60);
-  }
-  version = *((unsigned short *) (((char *) bank) + 6));
-  if (version < 0x100)
-  {
-    return self;
-  }
-  if (version > 0x101)
-  {
-    Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x44, messages + 0x60);
-  }
-  version = *((unsigned short *) (((char *) bank) + 6));
-  if ((version < 0x100) || (version > 0x101))
-  {
-    return self;
-  }
-  *((const void **) self) = bank;
-  const char *data = ((const char *) bank) + (*((unsigned int *) (((char *) bank) + 0x10)));
-  *((const char **) (((char *) self) + 4)) = data;
-  if ((*((unsigned int *) data)) != 0x44415441)
-  {
-    Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x61, messages + 0xE4);
-  }
-  const char *wave = ((const char *) bank) + (*((unsigned int *) (((char *) bank) + 0x18)));
-  *((const char **) (((char *) self) + 8)) = wave;
-  if ((*((unsigned int *) wave)) != 0x57415645)
-  {
-    Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x65, messages + 0x13C);
-  }
-  return self;
 }
-
-#pragma opt_peephole off
+#pragma opt_peephole reset
 extern "C" int ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8InstInfoiii(void *arg0, void *arg1, int arg2, int arg3, int arg4) {
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
     extern void *fn_800E8690(void *, void *, int);
