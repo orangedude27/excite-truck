@@ -6725,7 +6725,7 @@ extern "C" void *fn_80223AB4(void *arg0, void *arg1, s32 arg2) {
     f32 second = *(s32 *)((u8 *)arg1 + 0x14);
     *(f32 *)((u8 *)arg0 + 0x25C) = scale;
     *(f32 *)((u8 *)arg0 + 0x258) = (f32)second;
-    *(s32 *)((u8 *)arg0 + 0x260) = fn_8022EE9C();
+    *(s32 *)((u8 *)arg0 + 0x260) = (s32)fn_8022EE9C();
     *(s32 *)((u8 *)arg0 + 0x264) = arg2;
     return arg0;
 }
