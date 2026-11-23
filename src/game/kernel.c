@@ -189,7 +189,7 @@ extern unsigned int fn_802E1960(unsigned int);
 /* Computes aligned layout sizes/offsets for a texture/image block descriptor.
  * Selects width/height factors from descriptor flags, rounds dimensions via
  * fn_802E1954/fn_802E1960, and outputs combined byte spans and factor flags. */
-void fn_802E1A9C(void *desc, int *outCombinedWidth, int *outCombinedPlusHeight, int *outAlignedWidthA, int *outCombinedPlusDoubleHeight, int *outTotalAlignedBytes, int *outWidthFactorMask, int *outHeightFactor, int unused) {
+/* Compute 128-byte-aligned width, height and byte-span layout values for a texture/image descriptor, returning them through the output pointers. */ void fn_802E1A9C(void *desc, int *outCombinedWidth, int *outCombinedPlusHeight, int *outAlignedWidthA, int *outCombinedPlusDoubleHeight, int *outTotalAlignedBytes, int *outWidthFactorMask, int *outHeightFactor, int unused) {
     int alignedWidthA, alignedWidthB, alignedHeight, alignedDimC;
     int baseWidth, baseHeight;
     int widthFactorA, widthFactorB, heightFactor;
