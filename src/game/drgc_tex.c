@@ -1023,24 +1023,24 @@ extern void GXSetZMode(int, int, int);
 extern void GXSetColorUpdate(int);
 extern void fn_802CFF50(void);
 #pragma opt_propagation off
-void fn_802D9418(void) {
-    void *obj;
-    unsigned int zero;
-    fn_802D2614();
-    obj = (char *)lbl_8055FE24 + 0x24;
-    {
-        unsigned int s, t;
-        s = GXGetTexObjWrapS(obj) & 0xFFFF;
-        t = GXGetTexObjWrapT(obj) & 0xFFFF;
-        zero = 0;
-        GXSetTexCopySrc(0, 0, s, t);
-        GXSetTexCopyDst(s, t, GXGetTexObjMipMap(obj), 0);
-    }
-    GXSetZMode(1, 7, 1);
-    GXSetColorUpdate(1);
-    GXCopyTex(GXGetTexObjFmt(obj), 1);
-    lbl_8055FE24 = zero;
-    fn_802CFF50();
+void fn_802D9418(void)
+{
+  unsigned int zero;
+  void *obj;
+  long long s;
+  unsigned int t;
+  fn_802D2614();
+  obj = ((char *) lbl_8055FE24) - (-0x24);
+  s = GXGetTexObjWrapS(obj) & 0xFFFF;
+  t = GXGetTexObjWrapT(obj) & 0xFFFF;
+  zero = 0;
+  GXSetTexCopySrc((0, zero), zero, s, t);
+  GXSetTexCopyDst(s, t, GXGetTexObjMipMap(obj), zero);
+  GXSetZMode(1, 7, 1);
+  GXSetColorUpdate(1);
+  GXCopyTex(GXGetTexObjFmt(obj), 1);
+  lbl_8055FE24 = zero;
+  fn_802CFF50();
 }
 extern void *lbl_8055FE28;
 extern char lbl_8034C5B8[];
