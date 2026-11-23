@@ -1090,7 +1090,7 @@ extern int fn_800241CC(int); /* abs(): (v >> 31) ^ v - (v >> 31) */
    minor coordinate accumulates the slope as a float and is truncated at each
    point. */
 void fn_802C47B8(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
-    s32 dx, dy, pos, inc, end, dir, x, y;
+    s32 dx, dy, stepPos, stepInc, stepEnd, dir, x, y;
     dx = x1 - x0;
     x = x0;
     y = y0;
@@ -1099,10 +1099,10 @@ void fn_802C47B8(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
         if (dy != 0) {
             dir = -1;
             if (y0 < y1) dir = 1;
-            pos = y0 * dir;
-            inc = dir * dir;
-            end = dir * y1;
-            for (; pos < end; pos += inc, y += dir)
+            stepPos = y0 * dir;
+            stepInc = dir * dir;
+            stepEnd = dir * y1;
+            for (; stepPos < stepEnd; stepPos += stepInc, y += dir)
                 fn_802C32B8(x, y, color);
         }
         return;
@@ -1110,10 +1110,10 @@ void fn_802C47B8(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     if (dy == 0) {
         dir = -1;
         if (x0 < x1) dir = 1;
-        pos = x0 * dir;
-        inc = dir * dir;
-        end = dir * x1;
-        for (; pos < end; pos += inc, x += dir)
+        stepPos = x0 * dir;
+        stepInc = dir * dir;
+        stepEnd = dir * x1;
+        for (; stepPos < stepEnd; stepPos += stepInc, x += dir)
             fn_802C32B8(x, y, color);
         return;
     }
