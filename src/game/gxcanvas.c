@@ -119,8 +119,8 @@ extern void *fn_8012C370(s32,u32 *,s32 *,s32,u8 *);
 extern void fn_802E317C(const char *,...);
 extern const char gxCanvasWrongVerFmt[],gxCanvasLoadFailFmt[];
 #pragma scheduling invalid_target
-/* Loads a CANV image resource, byte-swaps its header fields when flagged, converts pixels to RGBA order, and reports load/format errors. */
-/* Load the CANV canvas image at path; for version-1 data flagged as big-endian, byte-swap the header fields in place and rotate each pixel's channels into GX RGBA order. Panics if the lookup fails or the version is unsupported. */ void *gxCanvasLoad(s32 path) {
+/* Load the CANV canvas image at path; for version-1 data flagged big-endian, swap the header fields in place and rotate each pixel into GX RGBA order. Panics if the lookup fails or the version is unsupported. */
+void *gxCanvasLoad(s32 path) {
     u32 version;
     s32 byteSize;
     u8 needsSwap;
@@ -745,6 +745,9 @@ loop_3:
         } while (sp18 > 0);
     }
 }
+
+#define gxCanvasGetPixelAddr32 fn_802C3060 /* 4-byte-pixel counterpart of gxCanvasGetPixelAddr */
+#define CANVAS_COPY_FORMAT_MSG lbl_8034B0E4 /* "Can't copy from %d to %d" */
 
 #pragma push
 #pragma dont_inline on
