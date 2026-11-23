@@ -168,11 +168,23 @@ void fn_8026003C(void) {
     firstVal = *(s32 *)((char *)fn_80016464(0) + 4);
     localC = *(s32 *)((char *)fn_80016510(*(s32 *)((char *)fn_80016464(0) + 0x4C)) + 4);
     local8 = *(s32 *)((char *)fn_80016464(0) + 0x50);
+    #pragma push
+    #pragma cplusplus on
     {
+        struct Manager {
+            virtual void slot08();
+            virtual void slot0C();
+            virtual void slot10();
+            virtual void slot14();
+            virtual void slot18();
+            virtual void slot1C();
+            virtual s32 selectedItem();
+        };
         s32 n0 = *(s32 *)lbl_8055F420;
-        void *mgr = *(void **)((char *)lbl_8055F420 + (n0 << 2) + 0x60);
-        found = VC0(mgr, 0x20);
+        Manager *mgr = *(Manager **)((char *)lbl_8055F420 + (n0 << 2) + 0x60);
+        found = mgr->selectedItem();
     }
+    #pragma pop
     obj = fn_8001285C();
     queryId = *(s32 *)((char *)obj + 4);
     parameter = *(s32 *)(lbl_8055F420 + 0x10);
@@ -1673,4 +1685,13 @@ void fn_80262584(void *obj) {
         *(u8 *)((u8 *)obj + 0x1F) = 0;
     }
 }
+
+extern void fn_80230F6C(s32 *);
+extern float fn_8023659C(void);
+extern float lbl_8055C404, lbl_8055C408, lbl_8055C40C, lbl_8055C410, lbl_8055C414;
+extern u8 lbl_8055F3FC, lbl_8055F404, lbl_8055F40C, lbl_8055F414, lbl_8055F41C;
+extern float lbl_8055F3F8, lbl_8055F400, lbl_8055F408, lbl_8055F410, lbl_8055F418;
+extern float lbl_80563BB0, lbl_80563BB4, lbl_80563BB8;
+extern float lbl_80563BBC, lbl_80563BC0, lbl_80563BC4;
+extern u8 lbl_80345B40[];
 
