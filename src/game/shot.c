@@ -54,6 +54,11 @@ extern const char lbl_8034D1C0[];
 s32 fn_802E46F0(void) {
     /* Screenshot hotkey check: shift the recent-input history, and when the
        current combo (0x17A/0x17B) follows 0x112, save a numbered "shotNN.tga". */
+#define s_keyHistory    lbl_8055FF50
+#define lastInputWord   lbl_8055FF5A
+#define previousCombo   lbl_8055FF60
+#define screenshotCount lbl_8055FF64
+#define shotNameFormat  lbl_8034D1C0
     u16 input;
     u32 code;
     u32 combo;
@@ -61,11 +66,11 @@ s32 fn_802E46F0(void) {
     volatile u16 *history;
     u16 next1, next2, next3;
     fn_802E4A2C();
-    input = lbl_8055FF50;
+    input = s_keyHistory;
     code = (u32)input & 0xFFFF0FFF;
-    lbl_8055FF5A = input;
+    lastInputWord = input;
     if (code != 0) {
-        history = &lbl_8055FF50;
+        history = &s_keyHistory;
         next1 = history[1];
         next2 = history[2];
         next3 = history[3];
@@ -78,14 +83,19 @@ s32 fn_802E46F0(void) {
     if (combo == 0x17A) goto check;
     if (combo != 0x17B) goto done;
 check:
-    if (lbl_8055FF60 != 0x112) goto done;
-    sprintf(fileName, lbl_8034D1C0, lbl_8055FF64);
+    if (previousCombo != 0x112) goto done;
+    sprintf(fileName, shotNameFormat, screenshotCount);
     fn_802D07E4(fileName, combo == 0x17B);
     combo = 0;
-    lbl_8055FF64++;
+    screenshotCount++;
 done:
-    if (combo != 0) lbl_8055FF60 = combo;
+    if (combo != 0) previousCombo = combo;
     return combo;
+#undef s_keyHistory
+#undef lastInputWord
+#undef previousCombo
+#undef screenshotCount
+#undef shotNameFormat
 }
 void* memset(void*, int, unsigned long);
 s32 fn_802E47B8(void) {
