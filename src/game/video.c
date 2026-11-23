@@ -277,7 +277,7 @@ void *gxGetDistortTexObj(void); /* the texture it distorts, into GX_TEXMAP6 */
  * indirect stage 0 shifts with the bump map in GX_TEXMAP5.  fn_802DF684 undoes
  * it again; GXSetupWaterBumpTevPipelineB is the twin used when a second texture stage is wanted.
  */
-/* Configure the two-stage TEV pipeline for the water surface: stage 0 draws the lit surface, stage 1 adds the GX_TEXMAP6 texture whose coordinates indirect stage 0 shifts with the bump map in GX_TEXMAP5. */ void GXSetupWaterBumpTevPipelineA(void) {
+/* Set up the two-stage water-surface TEV pipeline: stage 0 draws the lit surface, stage 1 adds the GX_TEXMAP6 texture shifted by the bump map in GX_TEXMAP5. */ /* Configure the two-stage TEV pipeline for the water surface: stage 0 draws the lit surface, stage 1 adds the GX_TEXMAP6 texture whose coordinates indirect stage 0 shifts with the bump map in GX_TEXMAP5. */ void GXSetupWaterBumpTevPipelineA(void) {
     s32 alphaSel = GX_ITBA_OFF; /* GXSetTevIndirect's last two arguments go on */
     s32 utcLod = FALSE;         /* the stack, so they need somewhere to live */
     /* texcoord0 is the model's own texture coordinates; texcoord1 is the normal,
