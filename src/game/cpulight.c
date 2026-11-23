@@ -647,7 +647,7 @@ extern void GXSetTevColor();
 #pragma use_lmw_stmw off
 void fn_802DC464(int positions, int vertexCount, unsigned short *__restrict list, int listSize) {
     /* Sets the vertex positions, applies the cpu-light fade alpha to TEV color 1, then draws the index list as GX triangle fans. */
-    float alphaFactor;
+    float fadeFactor;
     float scaledAlpha;
     float roundedAlpha;
     int alpha;
@@ -661,8 +661,8 @@ void fn_802DC464(int positions, int vertexCount, unsigned short *__restrict list
     unsigned short vertexIndex;
     volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
     CpuLight_SetPositionArray(positions, vertexCount);
-    alphaFactor = ((float *)lbl_804DB068)[5];
-    scaledAlpha = CpuLight_AlphaScale * alphaFactor;
+    fadeFactor = ((float *)lbl_804DB068)[5];
+    scaledAlpha = CpuLight_AlphaScale * fadeFactor;
     if (scaledAlpha < CpuLight_Zero)
         roundedAlpha = scaledAlpha - CpuLight_RoundHalf;
     else
