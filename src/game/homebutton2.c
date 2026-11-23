@@ -226,14 +226,19 @@ struct HomeBtn2Resources {
  * callback the game left registered, then frees the archive buffer, the four
  * opened files and the two home-button UI resources. */
 void fn_802EC7AC(void) {
+#define gHomeBtn2Resources lbl_80558860
+#define gHomeBtn2Callbacks lbl_805588D8
+#define gHomeBtn2UiBuffer  lbl_805600E0
+#define gHomeBtn2UiRes     lbl_805600E4
+#define gHomeBtn2Ready     lbl_805600EC
     s32 *callback;
     s32 i;
     struct HomeBtn2Resources *res;
 
-    lbl_805600EC = 0;
+    gHomeBtn2Ready = 0;
     fn_800C657C();
 
-    callback = (s32 *)lbl_805588D8;
+    callback = (s32 *)gHomeBtn2Callbacks;
     i = 0;
     do {
         if (*callback != 0)
@@ -242,17 +247,22 @@ void fn_802EC7AC(void) {
         ++callback;
     } while (i < HOMEBTN2_CALLBACK_COUNT);
 
-    res = (struct HomeBtn2Resources *)&lbl_80558860;
+    res = (struct HomeBtn2Resources *)&gHomeBtn2Resources;
     fn_80128670((s32)res->archive);
-    fn_80128670(*(s32 *)lbl_80558860);
-    if (*(s32 *)(lbl_80558860 + 4) != 0)
-        fn_80128670(*(s32 *)(lbl_80558860 + 4));
-    fn_80128670(*(s32 *)(lbl_80558860 + 8));
-    fn_80128670(*(s32 *)(lbl_80558860 + 12));
-    if (lbl_805600E0 != 0)
-        fn_80128670(lbl_805600E0);
-    if (lbl_805600E4 != 0)
-        fn_80128670(lbl_805600E4);
+    fn_80128670(*(s32 *)gHomeBtn2Resources);
+    if (*(s32 *)(gHomeBtn2Resources + 4) != 0)
+        fn_80128670(*(s32 *)(gHomeBtn2Resources + 4));
+    fn_80128670(*(s32 *)(gHomeBtn2Resources + 8));
+    fn_80128670(*(s32 *)(gHomeBtn2Resources + 12));
+    if (gHomeBtn2UiBuffer != 0)
+        fn_80128670(gHomeBtn2UiBuffer);
+    if (gHomeBtn2UiRes != 0)
+        fn_80128670(gHomeBtn2UiRes);
+#undef gHomeBtn2Resources
+#undef gHomeBtn2Callbacks
+#undef gHomeBtn2UiBuffer
+#undef gHomeBtn2UiRes
+#undef gHomeBtn2Ready
 }
 #pragma scheduling on
 #pragma small_data on
