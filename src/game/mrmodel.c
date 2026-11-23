@@ -331,15 +331,15 @@ void fn_802C57B4(int instanceId, int transformId, int entryId, unsigned char sta
         entry = (struct GroupEntry *)(groups->items + groupOffset);
         bitIndex = entry->bitIndex;
         if (lbl_8055D008 & (1 << bitIndex)) {
-            unsigned char localStatus = status;
+            unsigned char groupStatus = status;
             char *positions = instance->groupPositions;
-            if (positions == 0 || fn_802C9638(positions + groupOffset, &localStatus, *(float *)(positions + groupOffset + 12)) != 0) {
-                entryStatus = localStatus;
+            if (positions == 0 || fn_802C9638(positions + groupOffset, &groupStatus, *(float *)(positions + groupOffset + 12)) != 0) {
+                entryStatus = groupStatus;
                 elementList = entry->elements;
                 for (j = 0, elementOffset = 0; j < elementList->count; elementOffset += 4, j++) {
                     int draw = 0;
-                    struct ModelElement *elem = (struct ModelElement *)*(void **)(elementList->items + elementOffset);
-                    unsigned int type = elem->type;
+                    struct ModelElement *modelElem = (struct ModelElement *)*(void **)(elementList->items + elementOffset);
+                    unsigned int type = modelElem->type;
                     if (type < 13) {
                         int otherPass;
                         draw = 1;
@@ -357,11 +357,11 @@ void fn_802C57B4(int instanceId, int transformId, int entryId, unsigned char sta
                         if (otherPass) draw = 0;
                     }
                     if (draw) {
-                        void *node = *(void **)(nodeSlotOffset + (int)elem + 0x14);
-                        void *r4;
-                        fn_802C53C4(entry, node, transformId, entryId, entryStatus);
-                        r4 = ((void *(*)(void *))fn_802C57B0)((void *)entry->id);
-                        fn_802CC550(*(int *)node, r4, distance, *(float *)((char *)r4 + 0x18));
+                        void *displayNode = *(void **)(nodeSlotOffset + (int)modelElem + 0x14);
+                        void *lookupData;
+                        fn_802C53C4(entry, displayNode, transformId, entryId, entryStatus);
+                        lookupData = ((void *(*)(void *))fn_802C57B0)((void *)entry->id);
+                        fn_802CC550(*(int *)displayNode, lookupData, distance, *(float *)((char *)lookupData + 0x18));
                     }
                 }
             }
