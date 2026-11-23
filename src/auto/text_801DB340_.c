@@ -76,7 +76,7 @@ static inline void swap16idx(unsigned char *r, int c) {
 extern float fn_801DB514(float grid[4][4], void *, float, float);
 
 static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *arg4) {
-    int tileX, tileZ, divX, divY, remX, remZ;
+    int divX, divY, tileX, tileZ, remX, remZ;
     char *node;
     char *layer;
     unsigned char *type_p;
