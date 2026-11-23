@@ -858,7 +858,7 @@ extern void *fn_8012850C(void *, char *);
 /* Creates a streaming SpuSample in a free pool slot: allocates a zeroed stream
  * buffer of bufSize bytes under the "stream_buf" name, initializes the sample's
  * fields and decode callback, copies name into the slot, and returns the slot. */
-void *fn_802E5DD8(const char *name, unsigned int bufSize, int hasAdpcmData, int decodeFn, int decodeArg) {
+void *Spu_createStreamSample(const char *name, unsigned int bufSize, int hasAdpcmData, int decodeFn, int decodeArg) {
     #define sNoStreamSamplesFmt lbl_8034D554 /* "spu: out of samples for stream %s" */
     #define sStreamBufName      lbl_8034D578 /* "stream_buf" */
     int i, freeSlot = -1;

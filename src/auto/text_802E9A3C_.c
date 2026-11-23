@@ -618,23 +618,25 @@ void fn_802EAB28(void) {
     extern int lbl_8055D25C, lbl_8055D260, lbl_8055D264, lbl_8055D268, lbl_8055D26C;
     extern int lbl_80560070, lbl_80560098, lbl_8056009C, lbl_805600A8, lbl_805600AC, lbl_805600B0, lbl_805600BC, lbl_805600C0, lbl_805600CC;
     extern char lbl_805600C9;
+    long zero = 0;
     char *base;
-    void *curNode;
-    long consumed;
     char *msgBuf, *cmdBuf;
-    long off, retries;
     unsigned int *tb;
-    long zero;
-    int *audioStatus;
-    long sp8;
+    void *curNode;
+    long consumed, retries, off, sp8;
     int info[5];
     unsigned char flag;
     base = (char *)&lbl_8034E260;
     OSReport(base + 0x2f4);
-    curNode = 0; consumed = 0; flag = 0;
-    msgBuf = lbl_80507640; cmdBuf = lbl_805587E0;
-    off = 0; retries = 0; tb = (unsigned int *)0x80000000;
-    audioStatus = &lbl_805600C0; zero = 0; sp8 = 0;
+    msgBuf = lbl_80507640;
+    cmdBuf = lbl_805587E0;
+    tb = (unsigned int *)0x80000000;
+    curNode = 0;
+    consumed = 0;
+    off = 0;
+    retries = 0;
+    sp8 = 0;
+    flag = 0;
     for (;;) {
         long taken, r15, r21, r22, r24, r25, r26, r27, r28;
         if (flag) {
@@ -659,16 +661,20 @@ void fn_802EAB28(void) {
             void *node;
             consumed = 0;
             node = fn_802EA834(0, &consumed);
-            curNode = node; retries = 0;
+            curNode = node;
+            retries = 0;
             if (node != 0) {
                 struct NodeObj *n = (struct NodeObj *)node;
                 long sz = n->vt->size(n);
                 if (n->vt->seek(n, sz - 0x80) != 0) {
                     if (n->vt->read(n, cmdBuf, 0x80) != 0) {
                         if (strncmp(cmdBuf, lbl_8055D2A8, 3) == 0) {
-                            strncpy(msgBuf, cmdBuf + 3, 0x1e); msgBuf[0x1e] = zero;
-                            strncpy(msgBuf + 0x20, cmdBuf + 0x21, 0x1e); msgBuf[0x3e] = zero;
-                            strncpy(msgBuf + 0x40, cmdBuf + 0x3f, 0x1e); msgBuf[0x5e] = zero;
+                            strncpy(msgBuf, cmdBuf + 3, 0x1e);
+                            msgBuf[0x1e] = zero;
+                            strncpy(msgBuf + 0x20, cmdBuf + 0x21, 0x1e);
+                            msgBuf[0x3e] = zero;
+                            strncpy(msgBuf + 0x40, cmdBuf + 0x3f, 0x1e);
+                            msgBuf[0x5e] = zero;
                         }
                     }
                 }
@@ -701,7 +707,9 @@ void fn_802EAB28(void) {
                 struct NodeObj *n = (struct NodeObj *)curNode;
                 if (n->vt->seek(curNode, off) != 0) {
                     if (n->vt->read(curNode, (char *)buf, r28) != 0) {
-                        r27 = 0; r21 = 0; r15 = 0;
+                        r27 = 0;
+                        r21 = 0;
+                        r15 = 0;
                         if (lbl_80560098 == 0 && strncmp((char *)buf, lbl_8055D2AC, 3) == 0) {
                             unsigned short field;
                             r26 = (buf[8] << 7) + (buf[7] << 14) + buf[9] + (buf[6] << 21) + 0xa;
@@ -718,9 +726,13 @@ void fn_802EAB28(void) {
                                         len = fr[5] + (fr[4] << 7) + (fr[3] << 14) + 6;
                                         if ((signed char)buf[r25] == 0x54) {
                                             char *v = (char *)fr + 7;
-                                            if (strncmp((char *)fr, lbl_8055D2B0, 3) == 0) { strncpy(msgBuf, v, 0x1f); msgBuf[0x1f] = zero; }
-                                            else if (strncmp((char *)fr, lbl_8055D2B4, 3) == 0) { strncpy(msgBuf + 0x20, v, 0x1f); msgBuf[0x3f] = zero; }
-                                            else if (strncmp((char *)fr, lbl_8055D2B8, 3) == 0) { strncpy(msgBuf + 0x40, v, 0x1f); msgBuf[0x5f] = zero; }
+                                            if (strncmp((char *)fr, lbl_8055D2B0, 3) == 0) {
+                                                strncpy(msgBuf, v, 0x1f); msgBuf[0x1f] = zero;
+                                            } else if (strncmp((char *)fr, lbl_8055D2B4, 3) == 0) {
+                                                strncpy(msgBuf + 0x20, v, 0x1f); msgBuf[0x3f] = zero;
+                                            } else if (strncmp((char *)fr, lbl_8055D2B8, 3) == 0) {
+                                                strncpy(msgBuf + 0x40, v, 0x1f); msgBuf[0x5f] = zero;
+                                            }
                                         }
                                         r25 += len;
                                         if (len == 0) break;
@@ -738,9 +750,15 @@ void fn_802EAB28(void) {
                                             char *v = (char *)fr + 0xb;
                                             max = szf - 1;
                                             if (max >= 0x20) max = 0x1f;
-                                            if (strncmp((char *)fr, lbl_8055D2BC, 4) == 0) { strncpy(msgBuf, v, max); msgBuf[max] = zero; }
-                                            if (strncmp((char *)fr, lbl_8055D2C4, 4) == 0) { strncpy(msgBuf + 0x20, v, max); msgBuf[0x20 + max] = zero; }
-                                            if (strncmp((char *)fr, lbl_8055D2CC, 4) == 0) { strncpy(msgBuf + 0x40, v, max); msgBuf[0x40 + max] = zero; }
+                                            if (strncmp((char *)fr, lbl_8055D2BC, 4) == 0) {
+                                                strncpy(msgBuf, v, max); msgBuf[max] = zero;
+                                            }
+                                            if (strncmp((char *)fr, lbl_8055D2C4, 4) == 0) {
+                                                strncpy(msgBuf + 0x20, v, max); msgBuf[0x20 + max] = zero;
+                                            }
+                                            if (strncmp((char *)fr, lbl_8055D2CC, 4) == 0) {
+                                                strncpy(msgBuf + 0x40, v, max); msgBuf[0x40 + max] = zero;
+                                            }
                                         }
                                         r25 += len;
                                         if (len == 0) break;
@@ -752,7 +770,8 @@ void fn_802EAB28(void) {
                             } else {
                                 ((long (*)(char *, ...))fn_802E30C8)(base + 0x3b4, (unsigned short)r26, r28);
                             }
-                            off += r26; r15 = 1;
+                            off += r26;
+                            r15 = 1;
                         }
                         if (r15 == 0) {
                             long found = 0, i = 0;
@@ -762,9 +781,13 @@ void fn_802EAB28(void) {
                                 if (i >= bound) break;
                                 if (p[0] == 0xff && (p[1] & 0xe0) == 0xe0) {
                                     if (i != 0) ((long (*)(char *, ...))fn_802E30C8)(base + 0x3e0, (unsigned short)i);
-                                    r21 = i; off += i; found = 1; break;
+                                    r21 = i;
+                                    off += i;
+                                    found = 1;
+                                    break;
                                 }
-                                i++; p++;
+                                i++;
+                                p++;
                             }
                             if (found == 0) ((long (*)(char *, ...))fn_802E30C8)(base + 0x408);
                         }
@@ -787,7 +810,8 @@ void fn_802EAB28(void) {
                                 ((long (*)(char *, ...))fn_802E30C8)(base + 0x494, 4);
                                 if (fn_802EAA58(info, retries > 0) == 0) {
                                     fn_800C3D9C(lbl_80560098);
-                                    retries++; lbl_80560098 = zero;
+                                    retries++;
+                                    lbl_80560098 = zero;
                                     if (retries > 0x10) {
                                         ((long (*)(char *, ...))fn_802E30C8)(base + 0x4a8);
                                         r27 = 1;
@@ -805,7 +829,7 @@ void fn_802EAB28(void) {
                             lbl_8055D268 = info[2];
                             if (lbl_8055D25C != lbl_8055D260 || lbl_8055D268 != lbl_8055D26C || (unsigned char)lbl_805600C9 != 0) {
                                 ((long (*)(char *, ...))fn_802E30C8)(base + 0x504);
-                                while (*(audioStatus + 1) < 4 && (unsigned char)lbl_805600D1 == 0 && (unsigned char)lbl_805600D0 != 0) {
+                                while (*(int *)((char *)&lbl_805600C0 + 4) < 4 && (unsigned char)lbl_805600D1 == 0 && (unsigned char)lbl_805600D0 != 0) {
                                     ((void (*)(int, int))OSSleepTicks)(0, (*tb >> 2) / 1000 + (((*tb >> 2) / 250) & 0x0FFFFFFC));
                                 }
                                 lbl_8055D26C = lbl_8055D268;
@@ -825,7 +849,8 @@ void fn_802EAB28(void) {
                                 if (lbl_805600B8 < r22) avail = r22 - lbl_805600B8;
                                 else avail = lbl_805600A4 - (lbl_805600B8 - r22);
                                 if (avail >= info[4] * 2) {
-                                    sync2 = -1; j = 0;
+                                    sync2 = -1;
+                                    j = 0;
                                     for (;;) {
                                         unsigned char *pp;
                                         long bound = r28 > 0x400 ? 0x400 : r28;
@@ -833,7 +858,10 @@ void fn_802EAB28(void) {
                                         pp = buf + r21 + j;
                                         if (pp[0] == 0xff && (pp[1] & 0xe0) == 0xe0) {
                                             if (j != 0) ((long (*)(char *, ...))fn_802E30C8)(base + 0x570, j, buf[r21], buf[r21 + 1], buf[r21 + 2], buf[r21 + 3]);
-                                            sync2 = j; r21 += j; off += j; break;
+                                            sync2 = j;
+                                            r21 += j;
+                                            off += j;
+                                            break;
                                         }
                                         j++;
                                     }
@@ -842,7 +870,9 @@ void fn_802EAB28(void) {
                                         long res = fn_800BDF4C(lbl_80560098, lbl_805600A0 + lbl_805600B8, buf + r21, 0x780, info[4], &sp8, 0);
                                         if (res == 0) {
                                             lbl_805600B8 += info[4];
-                                            off += sp8; r21 += sp8; flag = 1;
+                                            off += sp8;
+                                            r21 += sp8;
+                                            flag = 1;
                                             fn_802EAA08();
                                             continue;
                                         }
@@ -851,7 +881,10 @@ void fn_802EAB28(void) {
                                         if (sp8 == 0 || retries > 0x1e) {
                                             r27 = 1;
                                         } else {
-                                            off += sp8; r21 += sp8; lbl_805600B8 += info[4]; flag = 1;
+                                            off += sp8;
+                                            r21 += sp8;
+                                            lbl_805600B8 += info[4];
+                                            flag = 1;
                                             fn_802EAA08();
                                             continue;
                                         }
@@ -1013,7 +1046,7 @@ void fn_802EBE2C(void) {
     extern char lbl_8055D2D8, lbl_8055D2E0, lbl_8055D2E8, lbl_805584A0, lbl_805584B8, lbl_805544A0;
     extern float lbl_805651C0, lbl_805651CC;
     extern void *fn_8012850C(int, void *);
-    extern int fn_802E5DD8();
+    extern int Spu_createStreamSample();
     extern int fn_802E6058();
     extern void fn_802E61EC(int, float);
     extern void fn_802E61BC(int);
@@ -1044,7 +1077,7 @@ void fn_802EBE2C(void) {
     off = 0;
     do {
         *(volatile int *)((char *)&lbl_805600B0 + off) = 0;
-        *(volatile int *)((char *)&lbl_80560088 + off) = fn_802E5DD8(&lbl_8055D2E8, 0x7FF8, 0, fn_802EB7D4, i);
+        *(volatile int *)((char *)&lbl_80560088 + off) = Spu_createStreamSample(&lbl_8055D2E8, 0x7FF8, 0, fn_802EB7D4, i);
         *(volatile int *)((char *)&lbl_80560090 + off) = fn_802E6058();
         if (i == 0) f = lbl_805651CC; else f = lbl_805651C0;
         fn_802E61EC(*(volatile int *)((char *)&lbl_80560090 + off), f);
