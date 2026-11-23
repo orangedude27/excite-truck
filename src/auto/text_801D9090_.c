@@ -161,55 +161,76 @@ void fn_801D9118(s32 userData) { fn_801D89C0(userData - 4); }
 #pragma dont_inline on
 #pragma push
 #pragma processor 750
-#pragma scheduling on
-void fn_801D9120(float *out, float *values, int count, float weight) {
-    float value = values[count - 1];
-    if (count == 1) {
-        float inv = lbl_80562B28 - value;
-        out[1] = weight * value;
-        out[0] = weight * inv;
-    } else {
-        fn_801D9120(out, values, count - 1, weight * (lbl_80562B28 - value));
-        fn_801D9120(out + (1 << (count - 1)), values, count - 1, weight * value);
+#pragma scheduling invalid_target
+void fn_801D9120(float *out, float *values, int count, float weight)
+{
+  volatile short pad;
+  float *last = (values + count) - 1;
+  float value = *((values + count) - 1);
+  if ((count & 0xFFu) == (1 & 0xFFu))
+  {
+    float inv = lbl_80562B28 - value;
+    if (lbl_80562B28 || count)
+    {
+      out[1] = weight * value;
+      out[0] = weight * inv;
     }
+    else
+    {
+      out[1] = weight * value;
+      out[0] = weight * inv;
+    }
+  }
+  else
+  {
+    fn_801D9120(out, values, (count & 0xFF) - 1, weight * (lbl_80562B28 - value));
+    fn_801D9120(out + (1 << (count - 1)), values, count - 1, weight * value);
+  }
 }
 #pragma pop
 #pragma dont_inline off
 #pragma scheduling default
-void fn_801D91D8(void) {
-    extern void *lbl_8055E96C;
-    extern void *lbl_8055E964;
-    int count;
-    int i;
-    int off;
-    void *node;
-    void *item;
-
-    for (node = lbl_8055E96C; node != 0; node = *(void **)((char *)node + 0x54)) {
-        for (item = lbl_8055E964; item != 0; item = *(void **)((char *)item + 0x34)) {
-            count = *(int *)((char *)item + 4);
-            i = 0;
-            off = 0;
-            for (; i < count; i++) {
-                if (*(void **)((char *)*(void **)item + off) == node) {
-                    goto have_it;
-                } else {
-                    off += 4;
-                    goto bumped;
-                }
-            bumped:
-                ;
-            }
-            i = -1;
-        have_it:
-            if (i != -1) {
-                int used = *(int *)((char *)node + 0x2C);
-                int base = *(int *)((char *)node + 0x28);
-                *(int *)((char *)node + 0x2C) = used + 1;
-                *(void **)((char *)base + used * 4) = item;
-            }
+void fn_801D91D8(void)
+{
+  extern void *lbl_8055E96C;
+  extern void *lbl_8055E964;
+  int count;
+  int i;
+  int off;
+  void *node;
+  void *item;
+#pragma scheduling invalid_target
+  for (node = lbl_8055E96C; node != 0; node = *((void **) (((char *) node) + 0x54)))
+  {
+    for (item = lbl_8055E964; item != 0; item = *((void **) (((char *) item) + 0x34)))
+    {
+      i = 0;
+      off = 0;
+      count = *((int *) (((char *) item) + 4));
+      for (; i < count; i++)
+      {
+        if ((*((void **) (((char *) (*((void **) item))) + off))) == node)
+        {
+          node = *((void **) (((char *) node) + 0x54));
+          goto have_it;
         }
+        off += 4;
+      }
+
+      i = -1;
+      have_it:
+      if (i != (-1))
+      {
+        int used = *((int *) (((char *) node) + 0x2C));
+        int base = *((int *) (((char *) node) + 0x28));
+        *((int *) (((char *) node) + 0x2C)) = used + 1;
+        *((void **) (((char *) base) + (used * 4))) = item;
+      }
+
     }
+
+  }
+
 }
 
 extern void *lbl_8055E96C;
@@ -432,9 +453,7 @@ extern "C" void fn_801D9654(void **head, DtbManager801D9394 *manager, const char
     char key[0x20];
     extern const char lbl_8055AD80;
     extern const char lbl_8055AD88;
-    item = 0;
-    goto next_item;
-    do {
+    while ((item = (DtbItem *)manager->getAt(index)) != 0) {
         if (strcmp(item->getName(), name) == 0) {
             node = (Node *)fn_801284F8(0x38, name);
             if (node != 0) {
@@ -477,10 +496,8 @@ extern "C" void fn_801D9654(void **head, DtbManager801D9394 *manager, const char
             node->next = *head;
             *head = node;
         }
-    next_item:
-        item = (DtbItem *)manager->getAt(index);
-        index++;
-    } while (item != 0);
+        ++index;
+    }
 }
 #pragma cplusplus reset
 
