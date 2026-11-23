@@ -946,52 +946,96 @@ extern double __fabs(double);
 extern int fn_802CC518();
 #pragma push
 #pragma processor 750
-void fn_802C974C(float f0, float f1, float f2) {
-    float *view = lbl_804C144C;
-    register float angle = f2;
+void fn_802C974C(float nearClip, float farClip, float fov) {
+#define gViewBackup  lbl_804C144C
+#define gNearClip    lbl_8055FC38
+#define gFarClip     lbl_8055FC3C
+#define gFov         lbl_8055FC40
+#define gViewAngle   lbl_8055FC4C
+#define gRightSlope  lbl_8055FC44
+#define gViewSin     lbl_8055FC48
+#define gUpSlope     lbl_8055FC50
+#define gRightSlack  lbl_8055FC54
+#define gUpSlack     lbl_8055FC58
+#define gTangentDup  lbl_8055FC88
+#define gViewMode    lbl_8055FC74
+#define gForceRecalc lbl_8055FC75
+#define gOne         lbl_80564EF8
+#define gHalfPi      lbl_80564F28
+#define gRadPerDeg   lbl_80564F18
+#define gRadInv      lbl_80564F24
+#define gEpsilon     lbl_80558DC4
+#define gFarValue    lbl_8055D020
+#define gNearValue   lbl_8055D024
+#define gTanDivisor  lbl_8055FC6C
+#define gDisplayObj  lbl_8055FC64
+    float *view = gViewBackup;
+    register float angle = fov;
     float f4;
     register float sine, theta, tangent;
     float cosine;
     float denom_angle, denom_sine, atan_value, ratio, depth;
-    unsigned char mode = lbl_8055FC74;
+    unsigned char mode = gViewMode;
 
-    /* Updates projection/FOV-related view parameters from near/far/fov inputs and recomputes derived trig and depth values. */
-    lbl_8055FC38 = f0;
-    lbl_8055FC3C = f1;
-    lbl_8055FC40 = f2;
-    view[2] = f2;
-    if (mode == 0 || (unsigned char)lbl_8055FC75 != 0) {
-        float diff = lbl_8055D020 - lbl_80564EF8;
+    /* Applies the near/far/FOV inputs and recomputes the derived projection angles, slopes and depth values. */
+    gNearClip = nearClip;
+    gFarClip = farClip;
+    gFov = fov;
+    view[2] = fov;
+    if (mode == 0 || (unsigned char)gForceRecalc != 0) {
+        float diff = gFarValue - gOne;
         float abs = (float)__fabs((double)diff);
-        if (!(abs <= (*(float *)&lbl_80558DC4))) {
-            atan_value = (float)atan((float)fn_8002EF30(lbl_80564F18 * f2) / lbl_8055D020);
-            angle = lbl_80564F24 * atan_value;
+        if (!(abs <= (*(float *)&gEpsilon))) {
+            atan_value = (float)atan((float)fn_8002EF30(gRadPerDeg * fov) / gFarValue);
+            angle = gRadInv * atan_value;
         }
     }
-    lbl_8055FC4C = angle;
-    theta = lbl_80564F18 * angle;
+    gViewAngle = angle;
+    theta = gRadPerDeg * angle;
     sine = (float)sin(theta);
     cosine = (float)cos(theta);
-    denom_angle = lbl_80564F28 - angle * lbl_80564F18;
-    lbl_8055FC48 = sine;
+    denom_angle = gHalfPi - angle * gRadPerDeg;
+    gViewSin = sine;
     tangent = sine / cosine;
-    lbl_8055FC44 = tangent;
-    lbl_8055FC88 = tangent;
+    gRightSlope = tangent;
+    gTangentDup = tangent;
     denom_sine = (float)sin(denom_angle);
-    depth = lbl_80564EF8 / denom_sine;
-    ratio = lbl_8055FC44 / lbl_8055FC6C;
-    lbl_8055FC54 = depth;
-    lbl_8055FC50 = ratio;
+    depth = gOne / denom_sine;
+    ratio = gRightSlope / gTanDivisor;
+    gRightSlack = depth;
+    gUpSlope = ratio;
     atan_value = (float)atan(ratio);
-    theta = lbl_80564F24 * atan_value;
-    sine = (float)sin(lbl_80564F28 - theta * lbl_80564F18);
-    f4 = lbl_80564EF8;
-    lbl_8055FC58 = f4 / sine;
+    theta = gRadInv * atan_value;
+    sine = (float)sin(gHalfPi - theta * gRadPerDeg);
+    f4 = gOne;
+    gUpSlack = f4 / sine;
     switch (mode) {
-    case 0: f4 = lbl_8055D020 / lbl_8055D024; break;
+    case 0: f4 = gFarValue / gNearValue; break;
     }
-    fn_802D0368(lbl_8055FC38, lbl_8055FC3C, angle, f4);
-    fn_802CC518((int)lbl_8055FC64, lbl_8055FC44);
+    fn_802D0368(gNearClip, gFarClip, angle, f4);
+    fn_802CC518((int)gDisplayObj, gRightSlope);
+#undef gDisplayObj
+#undef gTanDivisor
+#undef gNearValue
+#undef gFarValue
+#undef gEpsilon
+#undef gRadInv
+#undef gRadPerDeg
+#undef gHalfPi
+#undef gOne
+#undef gForceRecalc
+#undef gViewMode
+#undef gTangentDup
+#undef gUpSlack
+#undef gRightSlack
+#undef gUpSlope
+#undef gViewSin
+#undef gRightSlope
+#undef gViewAngle
+#undef gFov
+#undef gFarClip
+#undef gNearClip
+#undef gViewBackup
 }
 #pragma pop
 /* Aliases for the view/projection parameters maintained by fn_802C974C. */
