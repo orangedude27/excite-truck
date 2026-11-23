@@ -1355,7 +1355,7 @@ extern float lbl_80564EF0;
 extern float PSVECSquareDistance(const float *, const float *);
 /* For each type-2 group of the model, cull it by SPHL sphere distance and submit
  * its eligible elements through fn_802C53C4 / fn_802CC550 using the global context. */
-void fn_802C729C(int instanceId, float viewDistance) {
+/* Submit eligible elements of the model's type-2 groups for display, culling groups by SPHL sphere distance first. */ void fn_802C729C(int instanceId, float viewDistance) {
     char *groupEntry;
     int transformId;
     int j;
