@@ -1438,14 +1438,13 @@ extern "C" void fn_802A3990(void *arg0, void *arg1, int arg2) {
         MtxMultVecLocal(*(unsigned char **)arg1, v, v);
         obj = *(unsigned char **)arg1;
         v[0] += *(f32 *)(obj + 0x24); v[1] += *(f32 *)(obj + 0x28); v[2] += *(f32 *)(obj + 0x2C);
-        obj = *(unsigned char **)arg1;
         k = lbl_805647A4;
         s = lbl_80564764 + lbl_8056481C * (sx * *(f32 *)(obj + 0x50));
         w[0] = *(f32 *)(obj + 0x34) + *(f32 *)obj * s;
         w[1] = *(f32 *)(obj + 0x38) + *(f32 *)(obj + 4) * s;
         w[2] = *(f32 *)(obj + 0x3C) + *(f32 *)(obj + 8) * s;
         t = lbl_80564764 + lbl_8056482C * *(f32 *)(obj + 0x50);
-        if (!(k < t)) k = t;
+        k = k < t ? k : t;
         w[0] += *(f32 *)(obj + 0xC) * k;
         w[1] += *(f32 *)(obj + 0x10) * k;
         w[2] += *(f32 *)(obj + 0x14) * k;
