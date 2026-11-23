@@ -409,7 +409,7 @@ int fn_8020FC6C(void) {
 /* Pick the track-music song for the current event: read the event name from the
  * scene's resource, resolve the matching song index, log the choice and switch
  * to it (stopping the old song first when it changes). */
-extern "C" void fn_8020FCC4(void) {
+/* Pick the track-music song for the current scene event, log the choice and switch to it, stopping the old song first when it changes. */ extern "C" void fn_8020FCC4(void) {
     #define TRACK_SONGS     lbl_804900AC
     #define CURRENT_SONG    lbl_8055B658
     #define EVENT_NAME_OUT  lbl_8055B674
@@ -421,10 +421,10 @@ extern "C" void fn_8020FCC4(void) {
     int songIndex;
     int currentSong;
     void *scene;
-    struct Dummy_802113D8 *resource;
+    struct Dummy_802113D8 *sceneResource;
     scene = fn_8001285C(*(long *)SCENE_IDX_PTR());
-    resource = *(struct Dummy_802113D8 **)((char *)scene + 0x20);
-    eventName = resource->f6(&EVENT_NAME_OUT, NO_EVENT);
+    sceneResource = *(struct Dummy_802113D8 **)((char *)scene + 0x20);
+    eventName = sceneResource->f6(&EVENT_NAME_OUT, NO_EVENT);
     songIndex = ((int (*)(void))fn_8020FC6C)();
     if (songIndex >= 0 && songIndex < TRACK_SONGS.m_count) {
         fn_802E30C8(FOUND_MSG, songIndex, TRACK_SONGS.m_entries[songIndex], eventName);
