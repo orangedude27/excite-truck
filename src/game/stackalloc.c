@@ -730,7 +730,7 @@ void *fn_802DA704(int owner, void *data, int count) {
    lbl_804DAC48.  Returns the record, or 0 when the "BoneHandleAlloc" arena has
    no room; fn_802DAA18 applies it later through the copyMtx callback
    (elemType 1). */
-struct StackAllocRecord *fn_802DA80C(int index, void *data, int count) {
+/* Queues a deferred StackAlloc write of `count` 3x4 bone matrices (0x30 bytes each) from `data` starting at element `index` of the shared bone matrix table; allocates the record from the BoneHandleAlloc arena, returning 0 when full. */ struct StackAllocRecord *fn_802DA80C(int index, void *data, int count) {
     struct StackAllocRecord *record;
     volatile struct StackAlloc *alloc;
     int savedInitialized;
