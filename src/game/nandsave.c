@@ -558,33 +558,48 @@ u32 fn_802E8D84(void) { return 1; }
 #pragma push
 #pragma optimization_level 3
 void fn_802E9010(void) {
+#define rmemcardSave    lbl_80507288
+#define bannerPath      lbl_8034E108
+#define beginWrite      fn_802E91D8
+#define writeIdle       fn_802E91BC
+#define writeDone       fn_802E91AC
+#define finishSave      fn_802E9118
+#define abortSave       fn_802E9160
     char *saveState;
 
-    /* Pump the rmemcard save state machine: advance the async NAND write step,
-     * then progress the outer state (2: start banner write, 3: start file write
-     * once banner done, 4: finish once file write done). */
-    rmemcardWriteStep((char *)&lbl_80507288 + 4);
-    saveState = (char *)&lbl_80507288;
-    switch (lbl_80507288) {
+    /* Pump the rmemcard save once per call: step the low-level async NAND
+     * write, then advance the outer save state: 2 starts the banner.bin write,
+     * 3 starts the main file write once the banner write goes idle, and 4
+     * finishes (or aborts on error) once that write goes idle. */
+    rmemcardWriteStep((char *)&rmemcardSave + 4);
+    saveState = (char *)&rmemcardSave;
+    switch (rmemcardSave) {
     case 2:
-        fn_802E91D8(saveState + 4, lbl_8034E108, *(int *)(saveState + 0x260), *(int *)(saveState + 0x264));
-        lbl_80507288 = 3;
+        beginWrite(saveState + 4, bannerPath, *(int *)(saveState + 0x260), *(int *)(saveState + 0x264));
+        rmemcardSave = 3;
         break;
     case 3:
-        if (fn_802E91BC((int *)(saveState + 4)) != 0) {
-            if (fn_802E91AC((int *)(saveState + 4)) == 0) {
-                fn_802E91D8(saveState + 4, saveState + 0x270, *(int *)(saveState + 0x268), *(int *)(saveState + 0x26C));
-                lbl_80507288 = 4;
-            } else fn_802E9160(saveState);
+        if (writeIdle((int *)(saveState + 4)) != 0) {
+            if (writeDone((int *)(saveState + 4)) == 0) {
+                beginWrite(saveState + 4, saveState + 0x270, *(int *)(saveState + 0x268), *(int *)(saveState + 0x26C));
+                rmemcardSave = 4;
+            } else abortSave(saveState);
         }
         break;
     case 4:
-        if (fn_802E91BC((int *)(saveState + 4)) != 0) {
-            if (fn_802E91AC((int *)(saveState + 4)) == 0) fn_802E9118(saveState);
-            else fn_802E9160(saveState);
+        if (writeIdle((int *)(saveState + 4)) != 0) {
+            if (writeDone((int *)(saveState + 4)) == 0) finishSave(saveState);
+            else abortSave(saveState);
         }
         break;
     }
+#undef abortSave
+#undef finishSave
+#undef writeDone
+#undef writeIdle
+#undef beginWrite
+#undef bannerPath
+#undef rmemcardSave
 }
 #pragma pop
 void fn_802E9118(void *arg0) {
