@@ -1003,24 +1003,25 @@ extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
 
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void fn_800D6EEC(void* arg0) {
-    extern char lbl_8031F868[];
-    volatile u8* p = (volatile u8*)arg0;
-    register u32 zero = 0;
-    f32 f = 0.0f;
-    register void* list = (void*)(p + 8);
-    void* vtable = lbl_8031F868;
-    *(volatile u32*)(p + 8) = zero;
-    *(volatile u32*)(p + 0xC) = zero;
-    *(void* volatile*)p = vtable;
-    *(volatile u32*)(p + 4) = zero;
-    *(void* volatile*)(p + 8) = list;
-    *(void* volatile*)(p + 0xC) = list;
-    *(volatile u32*)(p + 0x10) = zero;
-    *(volatile u32*)(p + 0x14) = zero;
-    *(volatile f32*)(p + 0x18) = f;
-    *(volatile f32*)(p + 0x1C) = f;
-    *(volatile u8*)(p + 0x20) = zero;
+extern "C" void fn_800D6EEC(void *arg0)
+{
+  extern char lbl_8031F868[];
+  volatile u8 *p = (volatile u8 *) arg0;
+  register u32 zero = 0;
+  f32 f = 0.0f;
+  register void *list = (void *) (p + 8);
+  void *vtable = lbl_8031F868;
+  *((volatile u32 *) (p + 8)) = 0;
+  *((volatile u32 *) (p + 0xC)) = 0;
+  *((void * volatile *) p) = vtable;
+  *((volatile u32 *) (p + 4)) = 0;
+  *((void * volatile *) (p + 8)) = list;
+  *((void * volatile *) (p + 0xC)) = list;
+  *((volatile u32 *) (p + 0x10)) = 0;
+  *((volatile u32 *) (p + 0x14)) = 0;
+  *((volatile f32 *) (p + 0x18)) = f;
+  *((volatile f32 *) (p + 0x1C)) = f;
+  *((volatile u8 *) (p + 0x20)) = 0;
 }
 #pragma scheduling on
 #pragma pop
@@ -2420,8 +2421,8 @@ extern "C" s32 fn_800D93F4(void *arg0) {
     volatile s32 *pBase = (volatile s32 *)((u8 *)arg0 + 0x58);
     u32 x = *pCap;
     s32 y = *pBase;
-    u32 a = (x >> 0xC) & 4;
-    u32 b = (x >> 5) & 4;
+    u32 a = ((*pCap) >> 0xC) & 4;
+    u32 b = ((*pCap) >> 5) & 4;
     u32 c = (x >> 6) & 4;
     u32 flags = c + b + a;
     u32 srt = ((x >> 0x18) & 0xF) * 0x14;
@@ -2438,26 +2439,30 @@ extern "C" s32 fn_800D9434(void *arg0) {
     return ((x >> 23) & 0x1E0) + ((x >> 24) & 1) + ((x >> 24) & 0x10) + y + ((x >> 18) & 0x3C) + ((x >> 4) & 4) + ((x >> 5) & 4) + ((x >> 6) & 4) + ((((x >> 24) & 0xF) * 0x14));
 }
 
-extern "C" s32 fn_800D947C(void* arg0) {
-    s32 x = *(s32*)((u8*)arg0 + 0x4C);
-    s32 base = *(s32*)((u8*)arg0 + 0x58);
-    s32 high = (x >> 24) & 0xF;
-    s32 low1 = (x >> 4) & 4;
-    s32 scaled = high * 0x14;
-    s32 low2 = (x >> 6) & 4;
-    s32 low3 = (x >> 12) & 4;
-    s32 low4 = (x >> 5) & 4;
-    s32 mid = (x >> 18) & 0x3C;
-    s32 top = (x >> 23) & 0x1E0;
-    top = mid + top;
-    low4 = low3 + low4;
-    low1 = low1 + low2;
-    s32 low5 = (x >> 3) & 4;
-    low4 = low4 + low1;
-    top = scaled + top;
-    low4 = low5 + low4;
-    top = base + top;
-    return low4 + top;
+extern "C" s32 fn_800D947C(void *arg0)
+{
+  s32 x = *((s32 *) (((u8 *) arg0) + 0x4C));
+  unsigned long long base = *((s32 *) (((u8 *) arg0) + 0x58));
+  s32 high = (x >> 24) & 0xF;
+  s32 low1 = (x >> 4) & 4;
+  s32 scaled = high * 0x14;
+  s32 low2 = (x >> 6) & 4;
+  s32 low3 = (x >> 12) & 4;
+  s32 low4 = (x >> 5) & 4;
+  s32 mid = (x >> 18) & 0x3C;
+  s32 top = (x >> 23) & 0x1E0;
+  top = mid + top;
+  low4 = low3 + low4;
+  low1 = low1 + low2;
+  s32 low5 = (x >> 3) & 4;
+  low4 = low4 + low1;
+  top = scaled + top;
+  low4 = low5 + low4;
+  top = base + top;
+  if (1)
+  {
+  }
+  return low4 + top;
 }
 
 extern "C" s32 GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(void *arg0) {
@@ -2578,36 +2583,48 @@ struct TevStageDefault {
         return *this;
     }
 };
-extern "C" void fn_800D9844(void* arg0, u32 arg1, s32 arg2) {
-    u8* p = (u8*)arg0;
-    const char *msg = lbl_8031F990;
-    if (arg1 > ((*(u32*)(p + 0x4C) >> 9) & 0x1F))
-        Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x3AD, msg + 0x3C4);
-    if (arg1 != 0) {
-        if (*(void**)(p + 0x58) == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x3B0, msg + 0x360);
-        u32 fmt = *(u32*)(p + 0x4C);
-        u32 pitch = (((fmt >> 18) & 3) + ((fmt >> 24) & 0xF)) * 0x14;
-        u32 x = ((fmt >> 5) & 4) + ((fmt >> 12) & 4);
-        u32 y = pitch + ((fmt >> 6) & 4);
-        u32 z = ((fmt >> 23) & 0x1E0) + ((fmt >> 18) & 0x3C);
-        u32 w = ((fmt >> 4) & 4) + x;
-        u32 v = z + y;
-        u32 u = ((fmt >> 3) & 4) + w;
-        u32 t = ((fmt >> 13) & 0x1C) + u;
-        TevStageDefault *stage = (TevStageDefault *)(*(u8**)(p + 0x58) + v + t);
-        u32 count = (*(u32*)(p + 0x50) >> 9) & 0x1F;
-        if (count < arg1) {
-            TevStageDefault def;
-            TevStageMid_800D9844 mid = def.mid;
-            stage += count;
-            for (u32 i = count; i < arg1; i++) {
-                *stage = mid;
-                stage++;
-            }
+extern "C" void fn_800D9844(void *arg0, u32 arg1, s32 arg2)
+{
+  u8 *p = (u8 *) arg0;
+  const char *msg = lbl_8031F990;
+  if (arg1 > (((*((u32 *) (p + 0x4C))) >> 9) & 0x1F))
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x3AD, msg + 0x3C4);
+  }
+  if (arg1 != 0)
+  {
+    if (1)
+    {
+      if ((*((void **) (p + 0x58))) == 0)
+      {
+        Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x3B0, msg + 0x360);
+      }
+      u32 fmt = *((u32 *) (p + 0x4C));
+      u32 pitch = (((fmt >> 18) & 3) + ((fmt >> 24) & 0xF)) * 0x14;
+      u32 x = ((fmt >> 5) & 4) + ((fmt >> 12) & 4);
+      u32 y = pitch + ((fmt >> 6) & 4);
+      u32 z = ((fmt >> 23) & 0x1E0) + ((fmt >> 18) & 0x3C);
+      u32 w = ((fmt >> 4) & 4) + x;
+      u32 v = z + y;
+      u32 u = ((fmt >> 3) & 4) + w;
+      u32 t = ((fmt >> 13) & 0x1C) + u;
+      TevStageDefault *stage = (TevStageDefault *) (((*((u8 **) (p + 0x58))) + v) + t);
+      u32 count = ((*((u32 *) (p + 0x50))) >> 9) & 0x1F;
+      if (count < arg1)
+      {
+        TevStageDefault def;
+        TevStageMid_800D9844 mid = def.mid;
+        stage += count;
+        for (u32 i = count; i < arg1; i++)
+        {
+          *stage = mid;
+          stage++;
         }
-        ((CountField_800D9844 *)(p + 0x50))->cnt = arg1;
+
+      }
     }
+    ((CountField_800D9844 *) (p + 0x50))->cnt = arg1;
+  }
 }
 
 extern "C" void fn_800D9ACC(void* arg0, u32 arg1) {
@@ -4056,8 +4073,8 @@ extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTran
     struct AnimList { u32 count; void* first; void* last; };
     struct PaneView {
         char pad0[0x1c];
-        AnimList animList;
         void* animation;
+        AnimList animList;
     };
     PaneView* p = (PaneView*)pane;
     void* node;
@@ -4081,7 +4098,7 @@ extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTran
           void* slot = current;
           Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(&p->animList, &slot);
         }
-        if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23d, lbl_8031F1D8);
+        if (!current) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23d, lbl_8031F1D8);
         *(u32*)((char*)current + 8) = 0;
         *(u16*)((char*)current + 0xc) = 0;
     }
