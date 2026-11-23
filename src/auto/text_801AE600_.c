@@ -214,17 +214,15 @@ void fn_801AE894(void *arg0) {
     float temp_f2;
     float temp_f4;
     short temp_r0;
-    double bias = lbl_80562568;
 
     temp_r0 = *(short *)((char *)arg0 + 0x18);
     if (temp_r0 > 0) {
         temp_f4 = *(float *)arg0;
         if (temp_f4 > lbl_8056255C) {
-            (void)bias;
             temp_f2 = (lbl_8055E630 * (float)temp_r0) / temp_f4;
             *(float *)((char *)arg0 + 4) = temp_f2;
             *(float *)((char *)arg0 + 4) =
-                temp_f2 * ((float)temp_r0 / (float)lbl_8055E62C);
+                temp_f2 * ((float)(*(short *)((char *)arg0 + 0x18)) / (float)lbl_8055E62C);
             return;
         }
     }
@@ -466,7 +464,7 @@ void fn_801AED74(void)
 
     table = (int **) lbl_8055E620;
     zero = 0;
-    for (j = 0; j < 8; j += 4)
+    for (j = 0; j < 6; j += 3)
     {
       entry = table[j + 0];
       if (entry != 0)
@@ -479,7 +477,6 @@ void fn_801AED74(void)
           count++;
           byteOffset += 8;
         }
-
       }
       entry = table[j + 1];
       if (entry != 0)
@@ -492,7 +489,6 @@ void fn_801AED74(void)
           count++;
           byteOffset += 8;
         }
-
       }
       entry = table[j + 2];
       if (entry != 0)
@@ -505,7 +501,6 @@ void fn_801AED74(void)
           count++;
           byteOffset += 8;
         }
-
       }
       entry = table[j + 3];
       if (entry != 0)
@@ -518,10 +513,8 @@ void fn_801AED74(void)
           count++;
           byteOffset += 8;
         }
-
       }
     }
-
   }
   lbl_8055E62C = fn_801B2ED4();
 }
