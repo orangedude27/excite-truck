@@ -3895,27 +3895,27 @@ extern const char lbl_803224F0[];
 extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *arg0, const void *arg1) {
     register void *self = arg0;
     register const unsigned char *file = (const unsigned char *)arg1;
-    char *strings = (char *)lbl_803224F0;
+    const char *strings = lbl_803224F0;
     register unsigned short temp_r0;
     register unsigned int var_r0;
     *(unsigned int *)self = 0;
     *(unsigned int *)((char *)self + 4) = 0;
     *(unsigned int *)((char *)self + 8) = 0;
     if (file == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x58, strings + 0xB8);
+        Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x58, strings + 0xB8);
     if (*(const unsigned int *)file != 0x52424E4B)
-        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x36, strings + 0x14);
+        Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x36, strings + 0x14);
     if (*(const unsigned int *)file != 0x52424E4B) {
         var_r0 = 0;
     } else {
         if (*(const unsigned short *)(file + 6) < 0x100)
-            Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x3E, strings + 0x60);
+            Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x3E, strings + 0x60);
         temp_r0 = *(const unsigned short *)(file + 6);
         if (temp_r0 < 0x100) {
             var_r0 = 0;
         } else {
             if (temp_r0 > 0x101)
-                Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x44, strings + 0x60);
+                Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x44, strings + 0x60);
             var_r0 = (*(const unsigned short *)(file + 6) <= 0x101);
         }
     }
@@ -3924,16 +3924,15 @@ extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *arg0, cons
     *(const void **)self = (const void *)file;
     *(void **)((char *)self + 4) = (void *)(*(const unsigned int *)(file + 0x10) + (unsigned int)file);
     if (**(const unsigned int **)((char *)self + 4) != 0x44415441)
-        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x61, strings + 0xE4);
+        Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x61, strings + 0xE4);
     {
         register const unsigned char *stored = (const unsigned char *)*(volatile void **)self;
         *(void **)((char *)self + 8) = (void *)(*(const unsigned int *)(stored + 0x18) + (unsigned int)stored);
     }
     if (**(const unsigned int **)((char *)self + 8) != 0x57415645)
-        Panic__Q26nw4hbm2dbFPCciPCce(strings, 0x65, strings + 0x13C);
+        Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x65, strings + 0x13C);
     return self;
 }
-#pragma opt_peephole reset
 extern "C" int ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8InstInfoiii(void *arg0, void *arg1, int arg2, int arg3, int arg4) {
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
     extern void *fn_800E8690(void *, void *, int);
