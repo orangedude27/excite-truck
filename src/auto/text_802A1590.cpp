@@ -1322,8 +1322,7 @@ extern "C" void fn_802A36D0(void *arg0, const void *arg1, s32 arg2) {
     unsigned char *base2 = *(unsigned char **)arg1;
     unsigned char *p = base + arg2 * 0x3C;
     if (v > limit) goto done;
-    if (!(*(f32*)(p + 0x98) < lbl_805647DC)) goto body;
-    if (!(*(f32*)(p + 0x94) < lbl_80564818)) goto body;
+    if (!(*(f32*)(p + 0x98) < lbl_805647DC) || !(*(f32*)(p + 0x94) < lbl_80564818)) goto body;
     goto done;
 body:
     {
@@ -1348,7 +1347,7 @@ body:
 done:
     ;
 }
-
+#pragma scheduling on
 extern "C" void fn_802A37C8(void* arg0, s32 arg1) {
     /* Build an effect descriptor on the stack, initialize it, and create/store the
        "trail sand" effect instance in the target object. */
