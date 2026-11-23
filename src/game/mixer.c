@@ -130,6 +130,21 @@ void fn_80208AC8(int playerSlot, int event) {
     }
 }
 
+/* Names the mixer start-up works with.  The device registry (lbl_80489238) is
+ * MIXER_DEVICE_MAX device pointers, the number registered at +0x18 and the
+ * selected device at +0x1C; the selected device doubles as the "mixer" option,
+ * so the options module reads and writes that field directly. */
+#define gSoundMode (*(int *)&lbl_8055B4D8)     /* the sound mode the mixer runs in */
+#define NULL_MIXER_NAME lbl_8033BF18           /* "Null Mixer": operator-new tag */
+#define NULL_MIXER_VTABLE lbl_8033C058         /* the null backend's vtable */
+#define CONFIG_KEY_MIXER lbl_8055B4E8          /* "mixer": the selected device */
+#define CONFIG_KEY_EFFECTS_VOLUME lbl_8033BEF8 /* "effects_volume" */
+#define DEFAULT_EFFECTS_VOLUME lbl_80563230    /* 1.0f */
+#define MIXER_CALLBACK_NAME lbl_8055B4F0       /* "Mixer": the reload hook's name */
+#define gMixerReloadSlot lbl_8055B4DC          /* that hook's slot, freed on shutdown */
+#define MIXER_SELECTED_OFFSET 0x1C             /* registry field holding the index */
+#define OPTIONS_SECTION_SOUND 4                /* the [SOUND] options section */
+
 #pragma push
 #pragma inline_depth(0)
 /* Initialize the sound subsystem: publish the configured sound mode, optionally
