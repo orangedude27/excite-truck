@@ -277,22 +277,22 @@ extern void fn_802CA57C(void *, int, int, int);
 /* Loads a "TEX " texture resource by path (texturePath), verifies 128-byte alignment
    and version 15 (0xF), and endian-swaps/initializes the loaded header when newly
    loaded (swapEndian != 0). */
-int fn_802CA658(int texturePath, int flags) {
+/* Load a "TEX " texture resource by path, verify 128-byte alignment and version 15, and byte-swap/initialize the loaded header when newly loaded. */ int fn_802CA658(int texturePath, int flags) {
     unsigned int version;
     int dataSize;
-    signed char isNew = 0;
+    signed char newlyLoaded = 0;
     unsigned char swapEndian = 0;
-    int texData;
-    texData = ((int (*)(int, int, unsigned int *, int *, signed char *, unsigned char *))fn_8012C370)(texturePath, 0x54455820, &version, &dataSize, &isNew, &swapEndian);
-    if (texData != 0) {
-        if ((texData & 0x7F) != 0)
-            fn_802E317C(lbl_8034B634, texturePath, texData);
+    int textureData;
+    textureData = ((int (*)(int, int, unsigned int *, int *, signed char *, unsigned char *))fn_8012C370)(texturePath, 0x54455820, &version, &dataSize, &newlyLoaded, &swapEndian);
+    if (textureData != 0) {
+        if ((textureData & 0x7F) != 0)
+            fn_802E317C(lbl_8034B634, texturePath, textureData);
         if (version != 0xF)
             fn_802E317C(lbl_8034B658, texturePath, version);
         if (swapEndian != 0)
-            fn_802CA57C((void *)texData, texturePath, 0, flags);
+            fn_802CA57C((void *)textureData, texturePath, 0, flags);
     }
-    return texData;
+    return textureData;
 }
 #pragma scheduling on
 /* Return the GX texture format name string for a texture format id. */
