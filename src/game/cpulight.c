@@ -639,6 +639,9 @@ extern void GXSetTevColor();
 #define CpuLight_RoundHalf lbl_80565044  /* 0.5f */
 #define CpuLight_Zero lbl_80565048       /* 0.0f */
 #define CpuLight_CachedTevAlpha lbl_8055FEA0
+/* Float 5 of the global cpu-light parameter block lbl_804DB068 (the same falloff
+ * scale the surf shading uses): current light strength in 0..1. */
+#define CpuLight_FadeScale (((float *)lbl_804DB068)[5])
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
