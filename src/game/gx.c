@@ -448,8 +448,8 @@ void fn_802CEF90(void) {
 /* Emit GX FIFO commands that set up performance-metric state: when enable is
  * set, program GP metrics and load nonzero BP/XF register values; otherwise
  * load the same registers with their zero (idle) values. */
-void fn_802CF048(int enable) {
-    if (enable != 0) {
+/* Program GX performance-metric state over the FIFO: when enable is set, configure GP metrics and load nonzero BP/XF register values; otherwise load those same registers with their zero (idle) values. */ void fn_802CF048(int enableMetrics) {
+    if (enableMetrics != 0) {
         GXSetGPMetric(0x23, 0x16);
         WGPIPE.c = GX_FIFO_CMD_LOAD_BP_REG;
         WGPIPE.i = 0x2402C004;
