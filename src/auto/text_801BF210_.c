@@ -558,6 +558,7 @@ void fn_801BFECC(void *arg0, void *arg1) {
     *(int *)((char *)arg0 + 0x68) = a11;
     ((void (*)(void *, void *, int, int, int, int, int, int))fn_8017A580)(arg0, arg1, a10, a9, a8, a7, a6, a5);
 }
+#pragma pop
 static inline void inline_transform_vec(float *out, const float *in, const float *m) {
     if (out == in) {
         float y0 = m[3] * in[1];
