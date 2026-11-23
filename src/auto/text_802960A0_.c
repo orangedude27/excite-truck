@@ -583,58 +583,12 @@ ret0:
 #pragma push
 #pragma cplusplus on
 extern "C" float fn_802970C8(void *arg0) {
-    int count = *(int *)((char *)arg0 + 0x2C);
-    int processed = 0;
-    int rest;
-    unsigned int groups;
+    struct Ctx { char pad[0x24]; struct KF *kf; int unk28; int count; };
+    Ctx *ctx = (Ctx *)arg0;
     float sum = lbl_8056456C;
-    int use_unrolled = 0;
-    if (count <= 0) {
-        return sum;
-    }
-    rest = count - 8;
-    if (rest <= 0) {
-        goto tail;
-    }
-    if (count < 0) {
-        goto check;
-    }
-    if (count > 0x7FFFFFFE) {
-        goto check;
-    }
-    use_unrolled = 1;
-check:
-    if (use_unrolled == 0) {
-        goto tail;
-    }
-    groups = ((unsigned int)rest + 7) >> 3;
-    {
-        int offset = 0;
-        unsigned int g = groups;
-        float *base0 = *(float **)((char *)arg0 + 0x24);
-        do {
-            float *rec = (float *)((char *)base0 + offset);
-            sum += rec[0];
-            sum += rec[0x30/4];
-            sum += rec[0x60/4];
-            sum += rec[0x90/4];
-            sum += rec[0xC0/4];
-            sum += rec[0xF0/4];
-            sum += rec[0x120/4];
-            sum += rec[0x150/4];
-            processed += 8;
-            offset += 0x180;
-        } while (--g != 0);
-    }
-tail:
-    if (processed < count) {
-        float *base = *(float **)((char *)arg0 + 0x24);
-        int off = processed * 0x30;
-        int r = count - processed;
-        do {
-            sum += *(float *)((char *)base + off);
-            off += 0x30;
-        } while (--r != 0);
+    int i;
+    for (i = 0; i < ctx->count; i++) {
+        sum += ctx->kf[i].dur;
     }
     return sum;
 }
