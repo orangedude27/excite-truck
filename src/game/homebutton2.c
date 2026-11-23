@@ -5,6 +5,8 @@
 #include "types.h"
 #include "revolution/OS/OSFastCast.h"
 #include "revolution/SC/scapi.h"
+#include "revolution/GX/GXTypes.h"
+#include "revolution/MTX/mtxtypes.h"
 
 extern char lbl_805600E8;
 extern u8 lbl_805600E9;
