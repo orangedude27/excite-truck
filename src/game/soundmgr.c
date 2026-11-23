@@ -720,71 +720,83 @@ extern "C" void fn_80208404(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_80208408(void *arg0, void *arg1) {
-    signed long index;
-    signed long nextIndex;
-    signed long count;
+void fn_80208408(void *arg0, void *arg1)
+{
+  void *entry;
+  signed long index;
+  signed long nextIndex;
+  signed long count;
+  void **list;
+  char *adjust;
+  int flagA;
+  int flagB = 0;
+  int flagC;
+  index = *((signed long *) (((char *) arg1) + 0x44));
+  entry = ((char *) arg0) + (index * 8);
+  list = *((void ***) (((char *) entry) + 0x14));
+  memmove(list + 1, list, ((unsigned long) ((*((signed long *) (((char *) arg0) + 0x10))) - (((signed long) (((char *) list) - (*((char **) (((char *) arg0) + 0xC))))) / 4))) * 4);
+  nextIndex = index + 1;
+  if (nextIndex < 9)
+  {
     unsigned long loops;
-    void *entry;
-    void **list;
-    char *adjust;
-    int flagA;
-    int flagB = 0;
-    int flagC;
-
-    index = *(signed long *)((char *)arg1 + 0x44);
-    entry = (char *)arg0 + index * 8;
-    list = *(void ***)((char *)entry + 0x14);
-    memmove(list + 1, list,
-            (unsigned long)(*(signed long *)((char *)arg0 + 0x10) -
-            (signed long)((char *)list - *(char **)((char *)arg0 + 0xC)) / 4) * 4);
-    nextIndex = index + 1;
-    if (nextIndex < 9) {
-        if (9 - nextIndex > 8) {
-            flagA = (nextIndex <= 9 && nextIndex <= 0x7FFFFFFE);
-            if (flagA != 0) {
-                {
-                    signed long v = index + 1;
-                    if (((unsigned long)(v + 0x80000000) != 0)) flagB = 1;
-                }
-                if (flagB != 0) {
-                    flagC = !((((unsigned long)(-(index + 1)) & 0x80000000) == 0) &&
-                              (((unsigned long)(9 - (index + 1)) & 0x80000000) != 0));
-                    if (flagC != 0) {
-                        loops = (unsigned long)(8 - nextIndex) >> 3;
-                        adjust = (char *)arg0 + nextIndex * 8;
-                        if (nextIndex < 1) {
-                            do {
-                                *(volatile signed long *)(adjust + 0x14) += 4;
-                                *(volatile signed long *)(adjust + 0x1C) += 4;
-                                *(volatile signed long *)(adjust + 0x24) += 4;
-                                *(volatile signed long *)(adjust + 0x2C) += 4;
-                                *(volatile signed long *)(adjust + 0x34) += 4;
-                                *(volatile signed long *)(adjust + 0x3C) += 4;
-                                *(volatile signed long *)(adjust + 0x44) += 4;
-                                *(volatile signed long *)(adjust + 0x4C) += 4;
-                                adjust += 0x40;
-                                nextIndex += 8;
-                            } while (--loops != 0);
-                        }
-                    }
-                }
+    if ((9 - nextIndex) > 8)
+    {
+      flagA = (nextIndex <= 9) && (nextIndex <= 0x7FFFFFFE);
+      if (flagA != 0)
+      {
+        if ((((unsigned long) (index + 1)) + 0x80000000) != 0)
+        {
+          do
+          {
+            flagB = 1;
+          }
+          while (0);
+        }
+        if (flagB != 0)
+        {
+          flagC = !(((((unsigned long) (-(index + 1))) & 0x80000000) == 0) && ((((unsigned long) (9 - (index + 1))) & 0x80000000) != 0));
+          if (flagC != 0)
+          {
+            loops = ((unsigned long) (8 - nextIndex)) >> 3;
+            adjust = ((char *) arg0) + ((nextIndex & 0xFFFFFFFFu) * 8);
+            if ((nextIndex + 1) < (1 + 1))
+            {
+              do
+              {
+                *((volatile signed long *) (adjust + 0x14)) += 4;
+                *((volatile signed long *) (adjust + 0x1C)) += 4;
+                *((volatile signed long *) (adjust + 0x24)) += 4;
+                *((volatile signed long *) (adjust + 0x2C)) += 4;
+                *((volatile signed long *) (adjust + 0x34)) += 4;
+                *((volatile signed long *) (adjust + 0x3C)) += 4;
+                *((volatile signed long *) (adjust + 0x44)) += 4;
+                *((volatile signed long *) (adjust + 0x4C)) += 4;
+                adjust += 0x40;
+                nextIndex += 8;
+              }
+              while ((--loops) != 0);
             }
+          }
         }
-        adjust = (char *)arg0 + nextIndex * 8 + 0x14;
-        if (nextIndex < 9) {
-            do {
-                *(volatile signed long *)adjust += 4;
-                adjust += 8;
-                nextIndex++;
-            } while (nextIndex < 9);
-        }
+      }
     }
-    *(void **)(*(void **)((char *)entry + 0x14)) = arg1;
-    *(signed long *)((char *)entry + 0x18) += 1;
-    count = *(signed long *)((char *)arg0 + 0x10);
-    *(signed long *)((char *)arg0 + 0x10) = count + 1;
-    fn_80208404();
+    adjust = (((char *) arg0) + (nextIndex * 8)) + 0x14;
+    if ((nextIndex + 1) < (9 + 1))
+    {
+      do
+      {
+        *((volatile signed long *) adjust) += 4;
+        adjust += 8;
+        nextIndex++;
+      }
+      while ((nextIndex - 1) < (9 - 1));
+    }
+  }
+  *((void **) (*((void **) (((char *) entry) + 0x14)))) = arg1;
+  *((signed long *) (((char *) entry) + 0x18)) += 1;
+  count = *((signed long *) (((char *) arg0) + 0x10));
+  *((signed long *) (((char *) arg0) + 0x10)) = count + 1;
+  fn_80208404();
 }
 #pragma pop
 
