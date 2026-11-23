@@ -1039,8 +1039,7 @@ extern long fn_802100AC(void);
 extern long fn_80012158(void);
 #pragma scheduling invalid_target
 long fn_802111E4(long keyCode) {
-    /* Handle track-music menu key/input codes: navigate selection, invoke a
-     * callback on confirm, refresh state, and return whether the key was handled. */
+    /* Handle one track-music dash command: 0x126/0x128 move the song selection up/down a row (fn_8020FFE4), 0x125/0x127 step the page or toggle OFF/RANDOM (fn_8020FEF0), 0x53 confirm/apply (call the hook at lbl_8055EED8 then fn_802100AC); 0x113/0x1B are ignored. Handled keys refresh the active entry (fn_80012158) and return 1; all others return 0. */
     switch (keyCode) {
     case 0x126:
         fn_8020FFE4(-1);
