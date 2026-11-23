@@ -380,83 +380,83 @@ void fn_802353F4(int artSet, int pictureIndex, float x, float y, float z) {
 
 #pragma push
 #pragma processor 750
-void fn_802354A0(int arg0, int arg1, int arg2, float x, float y, float z, float dx, float dy)
+void fn_802354A0(int artSet, int pictureIndex, int colorIndex, float x, float y, float z, float width, float height)
 {
   Idx_80235CBC ids;
-  Vtx_80235CBC t3;
-  Vtx_80235CBC t2;
-  Vtx_80235CBC t1;
-  Vtx_80235CBC t0;
+  Vtx_80235CBC v3;
+  Vtx_80235CBC v2;
+  Vtx_80235CBC v1;
+  Vtx_80235CBC v0;
   struct Frame
   {
     Vtx_80235CBC v[4];
   } __attribute__((aligned(16))) frame;
-  void *node;
-  float sx;
-  float sy;
+  void *picture;
+  float spanX;
+  float spanY;
   float n0;
   float n1;
   float n2;
   float n3;
-  int handle;
-  void *obj;
-  int index;
+  int drawHandle;
+  void *drawObj;
+  int color;
   float one;
-  float scale;
-  float diff;
-  char is_close;
-  if (arg1 < 0)
+  float objScale;
+  float scaleDiff;
+  char scaleMatches;
+  if (pictureIndex < 0)
   {
     return;
   }
-  node = fn_8023505C((void *) arg0, arg1);
-  if (node == 0)
+  picture = fn_8023505C((void *) artSet, pictureIndex);
+  if (picture == 0)
   {
-    fn_802E30C8(lbl_80340808, arg1, arg0);
+    fn_802E30C8(lbl_80340808, pictureIndex, artSet);
     return;
   }
-  sy = dy;
-  n3 = *(((float *) node) + 3);
-  sx = dx;
-  n2 = *(((float *) node) + 2);
-  n1 = *(((float *) node) + 1);
-  n0 = *((float *) node);
-  handle = *((int *) (((char *) arg0) + 0x84));
-  obj = fn_8022EDC4();
-  fn_802C8B98(handle, (int) obj);
-  index = fn_80230B9C(arg2);
-  scale = *((float *) (((char *) obj) + 0x38));
+  spanY = height;
+  n3 = *(((float *) picture) + 3);
+  spanX = width;
+  n2 = *(((float *) picture) + 2);
+  n1 = *(((float *) picture) + 1);
+  n0 = *((float *) picture);
+  drawHandle = *((int *) (((char *) artSet) + 0x84));
+  drawObj = fn_8022EDC4();
+  fn_802C8B98(drawHandle, (int) drawObj);
+  color = fn_80230B9C(colorIndex);
+  objScale = *((float *) (((char *) drawObj) + 0x38));
   one = lbl_805636B0;
-  diff = scale - one;
-  if (((float) __fabs(diff)) <= lbl_80558DC4)
+  scaleDiff = objScale - one;
+  if (((float) __fabs(scaleDiff)) <= lbl_80558DC4)
   {
-    is_close = 1;
+    scaleMatches = 1;
   }
   else
     if (x)
   {
-    is_close = 0;
+    scaleMatches = 0;
   }
   else
   {
-    is_close = 0;
+    scaleMatches = 0;
   }
-  if (is_close == 0)
+  if (scaleMatches == 0)
   {
-    float s = *((float *) (((char *) obj) + 0x38));
-    sx = dx * s;
-    sy = dy * s;
-    x += lbl_805636B4 * (dx * (lbl_805636B0 - s));
-    y -= lbl_805636B4 * (dy * (lbl_805636B0 - s));
+    float s = *((float *) (((char *) drawObj) + 0x38));
+    spanX = width * s;
+    spanY = height * s;
+    x += lbl_805636B4 * (width * (lbl_805636B0 - s));
+    y -= lbl_805636B4 * (height * (lbl_805636B0 - s));
   }
-  t0 = fn_80230A68(index, x, y, z, n0, n1);
-  frame.v[0].a = t0.a; frame.v[0].b = t0.b; frame.v[0].c = t0.c; frame.v[0].d = t0.d; frame.v[0].e = t0.e;
-  t1 = fn_80230A68(index, x + sx, y, z, n2, n1);
-  frame.v[1].a = t1.a; frame.v[1].b = t1.b; frame.v[1].c = t1.c; frame.v[1].d = t1.d; frame.v[1].e = t1.e;
-  t2 = fn_80230A68(index, x, y - sy, z, n0, n3);
-  frame.v[2].a = t2.a; frame.v[2].b = t2.b; frame.v[2].c = t2.c; frame.v[2].d = t2.d; frame.v[2].e = t2.e;
-  t3 = fn_80230A68(index, x + sx, y - sy, z, n2, n3);
-  frame.v[3].a = t3.a; frame.v[3].b = t3.b; frame.v[3].c = t3.c; frame.v[3].d = t3.d; frame.v[3].e = t3.e;
+  v0 = fn_80230A68(color, x, y, z, n0, n1);
+  frame.v[0].a = v0.a; frame.v[0].b = v0.b; frame.v[0].c = v0.c; frame.v[0].d = v0.d; frame.v[0].e = v0.e;
+  v1 = fn_80230A68(color, x + spanX, y, z, n2, n1);
+  frame.v[1].a = v1.a; frame.v[1].b = v1.b; frame.v[1].c = v1.c; frame.v[1].d = v1.d; frame.v[1].e = v1.e;
+  v2 = fn_80230A68(color, x, y - spanY, z, n0, n3);
+  frame.v[2].a = v2.a; frame.v[2].b = v2.b; frame.v[2].c = v2.c; frame.v[2].d = v2.d; frame.v[2].e = v2.e;
+  v3 = fn_80230A68(color, x + spanX, y - spanY, z, n2, n3);
+  frame.v[3].a = v3.a; frame.v[3].b = v3.b; frame.v[3].c = v3.c; frame.v[3].d = v3.d; frame.v[3].e = v3.e;
   ids = *((Idx_80235CBC *) lbl_802FA008);
   fn_802C8DB8(frame.v, 4, ids.i, 6);
   fn_802C8D74();
