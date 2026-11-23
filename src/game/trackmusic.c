@@ -548,24 +548,24 @@ extern long lbl_8055EEE0;
 extern long lbl_8055EEE4;
 extern long gTrackMusicPageCount;
 extern void fn_8020FE90(void);
-/* Adjusts the track-music digit selection state by delta, clamping to valid range and refreshing on change. */
-void fn_8020FFE4(long arg0) {
-    long old = lbl_8055EEE0;
-    long value = lbl_8055EEBC;
-    long digit;
-    if (value == 0) lbl_8055EEE0 = -2;
+/* Adjust the track-music selection by delta (-2 = OFF, -1 = RANDOM, >= 0 = a row on the current page), clamping it to the last valid row, and re-resolve the current track when the selection changed. */
+void fn_8020FFE4(long delta) {
+    long oldSelection = lbl_8055EEE0;
+    long songCount = lbl_8055EEBC;
+    long maxRow;
+    if (songCount == 0) lbl_8055EEE0 = -2;
     else {
-        digit = 9;
-        if ((lbl_8055EEE4 + 1) * 10 >= value) digit = (value - 1) % 10;
-        if (old == -2) { if (arg0 == 1) lbl_8055EEE0 = 0; }
-        else if (old == -1) { if (arg0 == 1) lbl_8055EEE0 = 0; }
+        maxRow = 9;
+        if ((lbl_8055EEE4 + 1) * 10 >= songCount) maxRow = (songCount - 1) % 10;
+        if (oldSelection == -2) { if (delta == 1) lbl_8055EEE0 = 0; }
+        else if (oldSelection == -1) { if (delta == 1) lbl_8055EEE0 = 0; }
         else {
-            lbl_8055EEE0 = (*(volatile long *)&lbl_8055EEE0) + arg0;
+            lbl_8055EEE0 = (*(volatile long *)&lbl_8055EEE0) + delta;
             if (lbl_8055EEE0 < 0) lbl_8055EEE0 = -2;
-            if (lbl_8055EEE0 > digit) lbl_8055EEE0 = digit;
+            if (lbl_8055EEE0 > maxRow) lbl_8055EEE0 = maxRow;
         }
     }
-    if (old != lbl_8055EEE0) fn_8020FE90();
+    if (oldSelection != lbl_8055EEE0) fn_8020FE90();
 }
 
 extern long lbl_8055B67C;
