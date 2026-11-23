@@ -151,31 +151,31 @@ static inline void CC78_call(void *p, int v) { ((CC78_Item *)p)->s0(v); }
 #pragma cplusplus reset
 #pragma scheduling invalid_target
 /* Destroys a road-sound container: installs its vtable, calls slot 0(v=1) on each active 0x24-byte entry's object, and optionally frees the container. */
-void *fn_8020CC78(void *obj, int freeFlag) {
-    void *cur;
-    int i;
-    if (obj != 0) {
-        *(void **)obj = lbl_8033C650;
-        cur = obj;
-        i = 0;
-        while (i < *(int *)((char *)obj + 8)) {
-            void *item = *(void **)((char *)cur + 0xC);
-            if (item == 0) {
+/* Road-sound container destructor: install its vtable, release the object held by each active 0x24-byte entry, and optionally free the container. */ void *fn_8020CC78(void *container, int shouldFree) {
+    void *entry;
+    int entryIndex;
+    if (container != 0) {
+        *(void **)container = lbl_8033C650;
+        entry = container;
+        entryIndex = 0;
+        while (entryIndex < *(int *)((char *)container + 8)) {
+            void *soundObject = *(void **)((char *)entry + 0xC);
+            if (soundObject == 0) {
                 goto next;
             }
-            if (item == 0) {
+            if (soundObject == 0) {
                 goto next;
             }
-            CC78_call(item, 1);
+            CC78_call(soundObject, 1);
         next:
-            cur = (char *)cur + 0x24;
-            i++;
+            entry = (char *)entry + 0x24;
+            entryIndex++;
         }
-        if (freeFlag > 0) {
-            fn_80128668(obj);
+        if (shouldFree > 0) {
+            fn_80128668(container);
         }
     }
-    return obj;
+    return container;
 }
 
 #pragma push
