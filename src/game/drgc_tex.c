@@ -909,23 +909,23 @@ extern void GXLoadTlut(void *, int);
 extern unsigned int lbl_8055FD1C;
 extern unsigned char lbl_8055FD24;
 extern unsigned int lbl_8055FD30;
-void fn_802D9160(void *arg0) {
-    char *obj = (char *)arg0;
+/* Bind a texture (and optional secondary texture/TLUT) to GX state and record it as the active primary texture. */ void fn_802D9160(void *texture) {
+    char *tex = (char *)texture;
     /* Bind a texture (and optional secondary texture/T LUT) to GX state and record it as the active primary texture. */
     fn_802D6C68();
-    lbl_8055FE18 = arg0;
-    fn_802CFF5C((void *)(*(unsigned int *)(obj + 0xE0) | (lbl_8055FD1C & ~0x14E)));
-    fn_802CFFA4(*(unsigned int *)(obj + 0xDC));
-    lbl_8055FD24 = *(unsigned char *)(obj + 0xE4);
-    if (*(int *)(obj + 0x70) != 0) GXLoadTlut(obj + 0x64, 0);
-    GXLoadTexObj(obj + 0x24, 0);
-    if (*(unsigned char *)(obj + 0xCC) != 0) {
-        if (*(int *)(obj + 0xC4) != 0) GXLoadTlut(obj + 0xB8, 1);
-        GXLoadTexObj(obj + 0x78, 1);
+    lbl_8055FE18 = texture;
+    fn_802CFF5C((void *)(*(unsigned int *)(tex + 0xE0) | (lbl_8055FD1C & ~0x14E)));
+    fn_802CFFA4(*(unsigned int *)(tex + 0xDC));
+    lbl_8055FD24 = *(unsigned char *)(tex + 0xE4);
+    if (*(int *)(tex + 0x70) != 0) GXLoadTlut(tex + 0x64, 0);
+    GXLoadTexObj(tex + 0x24, 0);
+    if (*(unsigned char *)(tex + 0xCC) != 0) {
+        if (*(int *)(tex + 0xC4) != 0) GXLoadTlut(tex + 0xB8, 1);
+        GXLoadTexObj(tex + 0x78, 1);
     }
-    *(volatile unsigned int *)(obj + 0xEC) = lbl_8055FD30;
-    *(unsigned int *)(obj + 0xF0) += 1;
-    lbl_804C5700[8] = *(volatile unsigned char *)(obj + 0xCC);
+    *(volatile unsigned int *)(tex + 0xEC) = lbl_8055FD30;
+    *(unsigned int *)(tex + 0xF0) += 1;
+    lbl_804C5700[8] = *(volatile unsigned char *)(tex + 0xCC);
 }
 
 extern void *lbl_8055FE1C;
