@@ -149,18 +149,23 @@ void fn_802DEE1C(void) {
     GXSetTevSwapMode(4, 0, 0);
 }
 #pragma scheduling on
-/* Configures a single-texture GX TEV pipeline and standard alpha blending. */
+/* Set up the single-texture TEV pipeline: texcoord 0 comes from TEX0 through the
+ * identity matrix, stage 0 outputs TEXC with the raster alpha, and standard
+ * SRCALPHA/INVSRCALPHA blending is enabled. */
 void fn_802DEE88(void) {
-    GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
+    GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY,
+                      GX_FALSE, GX_PTIDENTITY);
     GXSetNumTexGens(1);
-    GXSetTevOrder(0, 0, 0, 4);
-    GXSetTevSwapMode(0, 0, 0);
-    GXSetTevColorIn(0, 8, 0xF, 0xF, 0xF);
-    GXSetTevColorOp(0, 0, 0, 0, 1, 0);
-    GXSetTevAlphaIn(0, 5, 7, 7, 7);
-    GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR0A0);
+    GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_TEXC, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1,
+                    GX_TRUE, GX_TEVPREV);
+    GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_RASA, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO);
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1,
+                    GX_TRUE, GX_TEVPREV);
     GXSetNumTevStages(1);
-    GXSetBlendMode(1, 4, 5, 0);
+    GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_CLEAR);
 }
 
 #pragma scheduling invalid_target
