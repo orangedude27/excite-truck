@@ -939,10 +939,10 @@ void *fn_802E6058(void *sample) {
             channel->pan = 0.0f;
             channel->surroundPan = 1.0f;
             channel->auxFlags = 0;
-            channel->rate = ((struct SpuSample *)sample)->fA8;
+            channel->rate = *(float *)((char *)sample + 0xA8);
             channel->wantPlay = 0;
             channel->adpcm = 0;
-            ((struct SpuSample *)sample)->unk98 += 1;
+            *(int *)((char *)sample + 0x98) += 1;
             channel->playing = 1;
             channel->started = 0;
             channel->playPos = 0;
