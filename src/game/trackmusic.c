@@ -196,6 +196,7 @@ long fn_8020F6FC(void) {
 }
 #pragma dont_inline reset
 
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_8020F730(void) {
     long count = lbl_804900AC.m_count;
@@ -218,6 +219,7 @@ void fn_8020F730(void) {
     lbl_8055EEC4 = 0;
 }
 #pragma scheduling on
+#pragma use_lmw_stmw on
 void fn_8020F950(void) {
     /* Rebuild the track-music list from the dash's scanned music table - one
        path per scanned song, as many as the list's buffer holds - and rebuild
@@ -373,14 +375,14 @@ null_result:
 
 extern int fn_8020FB80(void *);
 #pragma scheduling invalid_target
-void fn_8020FC6C(int dummy) {
+int fn_8020FC6C(void) {
     void *p;
     if (lbl_804900AC.m_count == 0) {
-        ((long (*)(long))fn_8020F3B4)(0);
+        return ((int (*)(int))fn_8020F3B4)(0);
     } else if ((p = fn_8020FC04()) != 0) {
-        fn_8020FB80(p);
+        return fn_8020FB80(p);
     } else {
-        ((long (*)(long))fn_8020F3B4)(0);
+        return ((int (*)(int))fn_8020F3B4)(0);
     }
 }
 
@@ -837,7 +839,7 @@ long fn_80210570(void) {
  * paused (fn_80009C84).  The virtual call is slot 6 of the audio resource
  * list, looking the "name" property up on the "invalid_contest" contest.
  */
-void fn_80210688(unsigned char mute) {
+void trackMusicUpdate(unsigned char mute) {
     long songCount;
     long now;
     long overlayUp;

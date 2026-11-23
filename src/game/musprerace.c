@@ -285,7 +285,7 @@ extern s32 fn_80009C84(void);
 extern s32 fn_801B85CC(void);
 extern s32 fn_800216FC(void);
 extern s32 fn_802E2C20(void);
-extern void fn_80210688(s32);
+extern void trackMusicUpdate(s32);
 extern s8 lbl_8055EE58;
 extern f32 lbl_805632D8;
 extern f64 lbl_805632E8;
@@ -402,7 +402,7 @@ void musicPreRaceUpdate(void) {
                i += 1;
                selection += 0x24;
            } while (i < 3);
-           fn_80210688(0);
+           trackMusicUpdate(0);
        }
 #pragma pop
 /* Pre-race music module entry point, empty in this build.  The debug action
