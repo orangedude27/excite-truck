@@ -903,28 +903,28 @@ void **fn_801CC784(void *vec) {
 }
 
 extern void *memset(void *, int, unsigned long);
-void *fn_801CC7A0(void *arg0) {
-    unsigned char *end;
-    unsigned char *p;
+/* Initialize a sound-name sub-block: clear the four leading int fields, then fill every fixed-size name slot with the placeholder string "zzz". */ void *fn_801CC7A0(void *block) {
+    unsigned char *endPtr;
+    unsigned char *slot;
     long zero;
     unsigned char *base;
     zero = 0;
-    base = (unsigned char *)arg0;
-    end = base + 0x14C;
-    p = base + 0x20;
+    base = (unsigned char *)block;
+    endPtr = base + 0x14C;
+    slot = base + 0x20;
     *(long *)(base + 8) = zero;
     *(long *)(base + 0xC) = zero;
     *(long *)(base + 0x10) = zero;
     *(long *)(base + 0x14) = zero;
     do {
-        memset(p, 0x7A, 3);
-        p[3] = zero;
-        memset(p + 0x14, 0x7A, 3);
-        p[0x17] = zero;
-        memset(p + 0x28, 0x7A, 3);
-        p[0x2B] = zero;
-        p += 0x3C;
-    } while (p < (base + 0x14C));
+        memset(slot, 0x7A, 3);
+        slot[3] = zero;
+        memset(slot + 0x14, 0x7A, 3);
+        slot[0x17] = zero;
+        memset(slot + 0x28, 0x7A, 3);
+        slot[0x2B] = zero;
+        slot += 0x3C;
+    } while (slot < (base + 0x14C));
     memset((base + 0x14C), 0x7A, 3);
     base[0x14F] = 0;
     memset(base + 0x160, 0x7A, 3);
@@ -941,7 +941,7 @@ void *fn_801CC7A0(void *arg0) {
     base[0x267] = 0;
     memset(base + 0x276, 0x7A, 3);
     base[0x279] = 0;
-    return arg0;
+    return block;
 }
 
 void fn_801CC8EC(void *arg0) {
