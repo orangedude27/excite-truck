@@ -554,15 +554,18 @@ void TRKProcessInput(void *buffer, s32 queueId) {
     OSRestoreInterrupts(interrupts);
 }
 
+#pragma push
+#pragma opt_unroll_loops off
+#pragma ctrloop on
 void TRKGetInput(void) {
     extern u8 lbl_8035BFA0[];
     extern s32 lbl_8055D6F8;
     extern s32 lbl_8055D6F4;
     extern s32 lbl_8055D6F0;
     u32 *first;
-    u32 *second;
     u32 *third;
     int i;
+    u32 *second;
 
     lbl_8055D728 = 0;
     first = (u32 *)lbl_8035BFA0;
@@ -749,15 +752,27 @@ void InitMetroTRKCommTable(void) {
     u8 *base = lbl_8035BFA0;
     s32 i8 = lbl_8055D6F8 * 0x480;
     s32 i4 = lbl_8055D6F4 * 0x480;
+    u8 *s0;
+    u8 *s1;
+    u8 *s2;
+    u8 *s3;
+    u8 *s4;
+    u8 *s5;
     bs.b0 = lbl_8035BFA0;
     bs.b1 = bs.b0 + 0xD80;
     bs.b2 = bs.b0 + 0x1B00;
-    lbl_8055D710 = bs.b0 + i8;
-    lbl_8055D70C = bs.b0 + i4;
-    lbl_8055D708 = bs.b1 + i8;
-    lbl_8055D704 = bs.b1 + i4;
-    lbl_8055D700 = bs.b2 + i8;
-    lbl_8055D6FC = bs.b2 + i4;
+    s0 = bs.b0 + i8;
+    s1 = bs.b0 + i4;
+    s2 = bs.b1 + i8;
+    s3 = bs.b1 + i4;
+    s4 = bs.b2 + i8;
+    s5 = bs.b2 + i4;
+    lbl_8055D710 = s0;
+    lbl_8055D70C = s1;
+    lbl_8055D708 = s2;
+    lbl_8055D704 = s3;
+    lbl_8055D700 = s4;
+    lbl_8055D6FC = s5;
     if (lbl_8055D728 != 0) {
         u8 *b2 = base + 0x1B00;
         if ((u32)lbl_8055D740 == 2) {
@@ -1609,7 +1624,7 @@ s32 AXRmtGetSamples(s32 arg0, s16 *arg1, s32 arg2) {
     }
     index = *(volatile s32 *)&lbl_8055D750;
     for (i = count; i > 0; i--) {
-        *arg1++ = ((s16 (*)[0xB4])lbl_8035EE60)[arg0][index];
+        *arg1++ = *(s16 *)(lbl_8035EE60 + arg0 * 0x168 + index * 2);
         index++;
         if (index >= lbl_8055D758) index = 0;
     }
