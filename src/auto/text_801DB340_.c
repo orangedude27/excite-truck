@@ -75,13 +75,6 @@ static inline void swap16idx(unsigned char *r, int c) {
 }
 extern float fn_801DB514(float grid[4][4], void *, float, float);
 
-static inline float fast_u16f(unsigned short v) {
-    union { double d; unsigned int w[2]; } conv;
-    conv.w[0] = 0x43300000;
-    conv.w[1] = v;
-    return (float)(conv.d - lbl_80562B78);
-}
-
 static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *arg4) {
     int divX, divY, tileX, tileZ, remX, remZ;
     char *node;
