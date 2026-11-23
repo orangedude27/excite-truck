@@ -508,7 +508,7 @@ void fn_802E009C(void) {
  * texture (loaded into map 2 by fn_802DC71C): texcoord 0 samples map 1, texcoord
  * 1 samples map 0, and the combiner blends both into the final stage 2.  The
  * non-alternate twin is fn_802E009C. */
-void fn_802E0218(void) {
+void GXSetupThreeStageTevPipelineAlt(void) {
     register u32 texCoord = 0;
     GXSetTexCoordGen2(texCoord, 1, 5, 0x3C, 0, 0x7D);
     GXSetTexCoordGen2(1, 1, 4, 0x3C, 0, 0x7D);

@@ -733,7 +733,7 @@ extern void fn_802D6B54(void *);
 extern void fn_802D6B78(void *);
 extern void fn_802D6B7C(void *);
 extern void fn_802D2D1C(void);
-extern void fn_802E0218(void);
+extern void GXSetupThreeStageTevPipelineAlt(void);
 extern void fn_802E009C(void);
 extern void fn_802E050C(void);
 extern void fn_802E0420(void);
@@ -768,7 +768,7 @@ extern "C" void fn_802DC71C(int arg0, int arg1) {
     GXLoadTexObj((unsigned char *)tex1 + 0x24, 1);
     if (useAlt != 0) GXLoadTexObj((unsigned char *)tex1 + 0x78, 2);
     if (lbl_8055FEBB != 0) {
-        if (useAlt != 0) fn_802E0218();
+        if (useAlt != 0) GXSetupThreeStageTevPipelineAlt();
         else fn_802E009C();
         lbl_8055FEB0 = 0;
     } else {
