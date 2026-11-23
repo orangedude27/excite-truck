@@ -1058,7 +1058,7 @@ void fn_802D6170(struct SurfDraw *surface) {
 #pragma pop
 
 /* Update surface state/mode flags from a command packet and apply cache-related side effects. */
-void fn_802D61BC(void *packet) {
+/* Apply a surface state command: packet byte 8 selects the pipeline, byte 0xA carries lighting (bit 3), detail-texture (bit 4) and pipeline-class (bits 0-1) flags, and byte 0x14 is an address compared against lbl_8055FD28; then rebuild GX state. */ void fn_802D61BC(void *packet) {
     extern u8 lbl_804C5700[16];
     extern s32 lbl_8055FD20;
     extern volatile u8 lbl_8055FD25;
@@ -1066,16 +1066,16 @@ void fn_802D61BC(void *packet) {
     extern u8 lbl_8055FDFC;
     extern void fn_802D2614(void);
     extern void fn_802D2B0C(void);
-    u8 *packetBytes = (u8 *)packet;
-    u8 flags;
-    u8 modeFlag;
+    u8 *cmd = (u8 *)packet;
+    u8 stateFlags;
+    u8 detailTexMode;
 
-    lbl_8055FD25 = (*(u8 *)(packetBytes + 0xA) >> 3) & 1;
-    modeFlag = (*(u8 *)(packetBytes + 0xA) >> 4) & 1;
+    lbl_8055FD25 = (*(u8 *)(cmd + 0xA) >> 3) & 1;
+    detailTexMode = (*(u8 *)(cmd + 0xA) >> 4) & 1;
     *(volatile s32 *)(lbl_804C5700 + 4) = 6;
-    lbl_804C5700[9] = modeFlag;
+    lbl_804C5700[9] = detailTexMode;
 
-    switch (*(u8 *)(packetBytes + 8)) {
+    switch (*(u8 *)(cmd + 8)) {
     case 16:
         *(s32 *)(lbl_804C5700 + 4) = 2;
         break;
@@ -1083,10 +1083,10 @@ void fn_802D61BC(void *packet) {
         *(s32 *)(lbl_804C5700 + 4) = 1;
         break;
     default:
-        flags = *(u8 *)(packetBytes + 0xA);
-        if (flags & 1) {
+        stateFlags = *(u8 *)(cmd + 0xA);
+        if (stateFlags & 1) {
             *(s32 *)(lbl_804C5700 + 4) = 3;
-        } else if (flags & 2) {
+        } else if (stateFlags & 2) {
             if (lbl_8055FDFC != 0)
                 *(s32 *)(lbl_804C5700 + 4) = 5;
             else
@@ -1097,10 +1097,10 @@ void fn_802D61BC(void *packet) {
         break;
     }
 
-    if (*(u8 *)(packetBytes + 0xA) & 4) {
-        if (lbl_8055FD28 != *(u32 *)(packetBytes + 0x14))
+    if (*(u8 *)(cmd + 0xA) & 4) {
+        if (lbl_8055FD28 != *(u32 *)(cmd + 0x14))
             lbl_8055FD20 |= 0x20;
-        lbl_8055FD28 = *(u32 *)(packetBytes + 0x14);
+        lbl_8055FD28 = *(u32 *)(cmd + 0x14);
     }
 
     fn_802D2614();
