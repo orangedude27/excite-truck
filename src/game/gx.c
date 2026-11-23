@@ -901,13 +901,13 @@ void fn_802CF850(void) {
 #define GX_DYNAMIC_OFFSET lbl_8055FD94 /* current bump offset into GX_DYNAMIC_DATA */
 #define GX_DYNAMIC_HIGH_WATER lbl_8055FD98
 
-/* fn_802CFBA8 - shuts the graphics subsystem down.  Called from the engine's
- * exit sequence (fn_802E2B34) after that sequence has dropped its own alarm:
- * drops the draw-sync alarm fn_802D9A50, the AI DMA callback and the VI
- * retrace callback, reports the GX dynamic-data high-water mark and any
- * visibility tests still in use, blanks the screen over two retraces while
- * clearing the draw-sync callback, then frees every buffer fn_802CF600
- * allocated and empties the frame-buffer block. */
+/* Shuts the graphics subsystem down.  Called from the engine's exit sequence
+ * (fn_802E2B34) after that sequence has dropped its own alarm: drops the
+ * draw-sync alarm fn_802D9A50, the AI DMA callback and the VI retrace callback,
+ * reports the GX dynamic-data high-water mark and any visibility tests still in
+ * use, blanks the screen over two retraces while waiting for GX to catch up,
+ * then frees every buffer fn_802CF600 allocated and empties the frame-buffer
+ * block. */
 void fn_802CFBA8(void) {
     extern void fn_802D9A50(void);
     extern void fn_80127D58(void (*)(void));
@@ -924,30 +924,30 @@ void fn_802CFBA8(void) {
     extern void fn_802DAE18(void);
     extern void fn_802D8DA0(void);
     extern char lbl_8034C038[];
-    fn_80127D58(fn_802D9A50);          /* drop the draw-sync alarm */
+    fn_80127D58(fn_802D9A50);          /* remove the draw-sync alarm */
     fn_802D9C4C();                     /* AIRegisterDMACallback(0) */
-    fn_800591AC(0);                    /* VISetRetraceCallback(0) */
-    fn_802E30C8(lbl_8034C038, GX_DYNAMIC_HIGH_WATER);
-    fn_802DD5F4();
+    fn_800591AC(0);                    /* VISetPreRetraceCallback(0) */
+    fn_802E30C8(lbl_8034C038, GX_DYNAMIC_HIGH_WATER);   /* "gx: max dynamic data used = %d" */
+    fn_802DD5F4();                     /* free the cached texture object */
     fn_802D3894();                     /* report visibility tests still in use */
-    fn_802D6860();
-    fn_80128670(GX_SCREEN_TEX_BUFFER);
+    fn_802D6860();                     /* free the vertex-format display list; log the ymorph total */
+    fn_80128670(GX_SCREEN_TEX_BUFFER); /* the full-screen texture */
     GX_SCREEN_TEX_BUFFER = 0;
-    fn_802DA4C4();
-    fn_802D0C98();
+    fn_802DA4C4();                     /* destroy the BoneHandleAlloc stack allocator */
+    fn_802D0C98();                     /* copy the EFB to the frame buffer and present it */
     VISetBlack(1);                     /* blank the screen and wait for it */
     VIFlush();
     VIWaitForRetrace();
-    GXGetVtxDesc();
-    GXSetDrawSyncCallback();           /* clears it; r3 is the retrace count */
+    GXGetVtxDesc();                    /* GXFlush(): push the FIFO and sync */
+    GXSetDrawSyncCallback();           /* GXDrawSync(): wait for GX; r3 is the retrace count */
     VIFlush();
     VIWaitForRetrace();
-    fn_802DAE18();
+    fn_802DAE18();                     /* free the debug font resources */
     fn_80128670(GX_WORK_MEMORY);       /* the 3 MiB GXInit work memory */
     GX_WORK_MEMORY = 0;
     fn_80128670(GX_XFB_BLOCK[0]);      /* the frame buffers */
     GX_XFB_BLOCK[0] = 0;
-    fn_802D8DA0();
+    fn_802D8DA0();                     /* free the drgc texture-cache pool */
     if (GX_RECORD_TABLE != 0) {
         fn_80128670((char *)GX_RECORD_TABLE - 0x10);  /* free from the header */
     }
