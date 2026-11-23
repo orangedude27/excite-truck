@@ -1803,7 +1803,7 @@ extern "C" s32 fn_80158F60(Unk8015A368C* bonus) {
 }
 
 #pragma scheduling on
-extern "C" s32 fn_80158F98(const void *arg0, f32 *arg1) {
+extern "C" s32 fn_80158F98(const void *obj, f32 *out) {
     struct Dummy {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
@@ -1817,16 +1817,18 @@ extern "C" s32 fn_80158F98(const void *arg0, f32 *arg1) {
     };
     extern f32 lbl_80561750;
     extern f32 lbl_80561754;
-    if (*(u8 *)((u8 *)arg0 + 0x273) != 0) {
-        if (arg1 != 0) {
-            f32 value0, field, value1;
-            field = *(f32 *)((u8 *)arg0 + 0x274);
-            value0 = (f32)((Dummy *)arg0)->getB();
-            value1 = (f32)((Dummy *)arg0)->getA();
-            f32 ratio = (field - value1) / (value0 - value1);
-            ratio = (lbl_80561750 < ratio) ? lbl_80561750 : ratio;
-            ratio = (ratio > lbl_80561754) ? ratio : lbl_80561754;
-            *arg1 = lbl_80561754 + ratio * lbl_80561750;
+    /* If the object's normalize flag at +0x273 is set, map its field at +0x274
+       from [getA(), getB()] into [0,1] and store to *out; return 1 when set. */
+    if (*(u8 *)((u8 *)obj + 0x273) != 0) {
+        if (out != 0) {
+            f32 upper, fieldValue, lower;
+            fieldValue = *(f32 *)((u8 *)obj + 0x274);
+            upper = (f32)((Dummy *)obj)->getB();
+            lower = (f32)((Dummy *)obj)->getA();
+            f32 t = (fieldValue - lower) / (upper - lower);
+            t = (lbl_80561750 < t) ? lbl_80561750 : t;
+            t = (t > lbl_80561754) ? t : lbl_80561754;
+            *out = lbl_80561754 + t * lbl_80561750;
         }
         return 1;
     }
