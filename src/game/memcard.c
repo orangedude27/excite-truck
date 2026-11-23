@@ -301,14 +301,9 @@ void fn_802E712C(void) {}
 int fn_802E7130(void) {
     struct Entry { unsigned char pad[0xC]; int value; unsigned char tail[4]; };
     int total = 0x20D0;
-    int i = 0;
-    if (lbl_8055FFC0 > 0) {
-        int count = lbl_8055FFC0;
-        struct Entry *entries = (struct Entry *)lbl_804FC8B0;
-        while (i < count) {
-            total += entries[i].value;
-            i++;
-        }
+    int i;
+    for (i = 0; i < lbl_8055FFC0; i++) {
+        total += ((struct Entry *)lbl_804FC8B0)[i].value;
     }
     return (total + 0x1FFF) & 0xFFFFE000;
 }
