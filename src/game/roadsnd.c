@@ -93,7 +93,7 @@ void fn_8020CA38(void) {
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void* RoadSnd_createContainer(void* ownerCtx) {
+/* Build the per-owner road-sound container from roadsnd.val: one 0x24-byte entry per "sound" item holds its Sound3D handle, surface type, and surface-scaled speed/volume/pitch values. */ extern "C" void* RoadSnd_createContainer(void* ownerCtx) {
     /* Builds a road-sound container from "roadsnd.val": one 0x24-byte entry per
      * "sound" param item holds its Sound3D handle, surface type and scaled
      * speed/volume/pitch values; the owner context is stored at +4. */
