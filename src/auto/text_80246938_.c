@@ -1748,7 +1748,7 @@ extern char lbl_8055BF00, lbl_8055BF08;
 extern float fn_80235EF0(s32, s32);
 extern void fn_802353F4(s32, s32, float, float, float);
 extern void fn_802354A0(s32, s32, s32, float, float, float, float, float);
-extern void fn_80234AFC(s32, char *, float, float);
+extern void fn_80234AFC(s32, char *, float, float, ...);
 extern int __cntlzw(unsigned int);
 #pragma push
 #pragma processor 750
