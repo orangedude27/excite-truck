@@ -41,6 +41,7 @@ extern int fn_802C7760(void *, float *, float *, float *, float *, float *, floa
 #pragma scheduling invalid_target
 extern float lbl_80562CF0;
 extern void PSVECCrossProduct(const float *, const float *, float *);
+#pragma scheduling on
 void fn_801E3640(void *arg0, float *arg1) {
     float basis[3];
     float x = *(float *)arg0;
