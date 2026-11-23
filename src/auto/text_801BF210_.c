@@ -1112,8 +1112,8 @@ void fn_801C0E60(float *out, float *lhs, float *rhs) {
 }
 
 #pragma push
-#pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_801C0E94(void *arg0, int arg1) {
     extern float lbl_805628BC, lbl_8055E460;
     extern char lbl_80558DC4[];
