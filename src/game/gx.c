@@ -2060,17 +2060,23 @@ extern void C_MTXPerspective(void *, float, float, float, float);
 extern double atan(double);
 #pragma push
 #pragma processor 750
-/* Rebuild and upload the GX perspective projection matrix from the camera
-   settings in lbl_804C9778 (+0 is a one-shot request flag): compute the vertical
-   FOV and aspect, then optionally scale/offset the matrix for one tile of a
-   grid of viewports before calling GXSetProjection. */
+/* Rebuild and upload the GX perspective projection from the camera settings in
+ * the graphics parameter block lbl_804C9778 (+0x00 is the one-shot "the
+ * projection needs updating" flag that fn_802D0368 and fn_802D01E0 set).  The
+ * vertical FOV in radians at +0x0C is halved, taken through tan, divided by the
+ * aspect (pixel aspect * the viewport aspect at +0x18 / the caller's aspect
+ * width at +0x14) and brought back to full degrees for C_MTXPerspective with
+ * the near/far planes at +0x04/+0x08.  When drawing to the framebuffer rather
+ * than to the current texture object (lbl_8055FE24) and a viewport tile is
+ * selected, the matrix is squeezed and shifted to that tile of the
+ * lbl_8055D0BC by lbl_8055D0C0 grid before GXSetProjection(GX_PERSPECTIVE). */
 void fn_802D14D8(void) {
     float mtx[4][4];
-    float aspectScale;
+    float pixelAspect;
     float halfAngle;
     float aspect;
-    float fovRad;
-    double tanHalf;
+    float halfFovRad;
+    double tanHalfAngle;
     register unsigned char *params;
     float fovDegrees;
     float aspectArg;
@@ -2080,17 +2086,17 @@ void fn_802D14D8(void) {
     }
     lbl_804C9778[0] = 0;
     if (lbl_8055FE24 != 0) {
-        aspectScale = lbl_80564F8C;
+        pixelAspect = lbl_80564F8C; /* 1.0f: square pixels when a texture object is current */
     } else {
-        aspectScale = lbl_80564FC8;
+        pixelAspect = lbl_80564FC8; /* 0.933333f: the framebuffer's pixel aspect */
     }
     params = lbl_804C9778;
-    aspect = aspectScale / *(float *)(params + 0x14);
+    aspect = pixelAspect / *(float *)(params + 0x14);
     aspect = *(float *)(params + 0x18) * aspect;
-    halfAngle = lbl_80564F94 * *(float *)(params + 0x0C);
-    tanHalf = fn_8002EF30((double)halfAngle);
-    fovRad = (float)atan((float)tanHalf / aspect);
-    fovDegrees = (lbl_80564FCC * fovRad) / lbl_80564FD0;
+    halfAngle = lbl_80564F94 * *(float *)(params + 0x0C); /* half the vertical FOV, in radians */
+    tanHalfAngle = fn_8002EF30((double)halfAngle);        /* tan() */
+    halfFovRad = (float)atan((float)tanHalfAngle / aspect);
+    fovDegrees = (lbl_80564FCC * halfFovRad) / lbl_80564FD0; /* 2 * rad / (pi/180): full FOV in degrees */
     aspectArg = aspect;
     C_MTXPerspective(mtx, fovDegrees, aspectArg, *(float *)(params + 4), *(float *)(params + 8));
     if ((lbl_8055FE24 == 0) && ((int)lbl_8055D0B8 >= 0) && ((int)lbl_8055D0B8 < lbl_8055D0BC * lbl_8055D0C0)) {
@@ -2104,7 +2110,7 @@ void fn_802D14D8(void) {
         mtx[0][2] += (float)(((tileIndex % gridWidth) * 2 - gridWidth) + 1);
         mtx[1][2] -= (float)(((tileIndex / gridWidth) * 2 - gridHeight) + 1);
     }
-    GXSetProjection(mtx, 0);
+    GXSetProjection(mtx, GX_PERSPECTIVE);
 }
 #pragma pop
 extern void GXInitLightColor(void *, unsigned char *);
