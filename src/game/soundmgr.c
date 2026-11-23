@@ -604,18 +604,18 @@ extern "C" signed long fn_8020815C(void *arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" signed long fn_8020820C(SoundMgrObj* lhsObj, SoundMgrObj* rhsObj) {
-    float rhsValue = rhsObj->field_68;
-    float lhsValue = lhsObj->field_68;
-    unsigned long greater = lhsValue > rhsValue;
-    signed long type = lhsObj->field_44;
+/* Comparator for insertion-sorting positional sounds: returns nonzero when lhs ranks ahead of rhs by priority score (field_68). ENGINE/TIRESQUEAL voices of the same class owned by the camera's subject (the player's truck) are ranked first. */ extern "C" signed long fn_8020820C(SoundMgrObj* lhsObj, SoundMgrObj* rhsObj) {
+    float rhsScore = rhsObj->field_68;
+    float lhsScore = lhsObj->field_68;
+    unsigned long lhsHigherScore = lhsScore > rhsScore;
+    signed long sndClass = lhsObj->field_44;
 
-    if (type == rhsObj->field_44 && (unsigned long)(type - 3) <= 1) {
-        signed long ownerId = fn_8026A344(0);
-        signed long rhsIsOwner = ownerId == rhsObj->field_10;
-        return ownerId == lhsObj->field_10 || (!rhsIsOwner && greater);
+    if (sndClass == rhsObj->field_44 && (unsigned long)(sndClass - 3) <= 1) {
+        signed long subjectIdx = fn_8026A344(0);
+        signed long rhsOwnedBySubject = subjectIdx == rhsObj->field_10;
+        return subjectIdx == lhsObj->field_10 || (!rhsOwnedBySubject && lhsHigherScore);
     }
-    return greater;
+    return lhsHigherScore;
 }
 
 #pragma push
