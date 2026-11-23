@@ -46,98 +46,20 @@ extern f32 lbl_80563248, lbl_8056324C, lbl_80563250, lbl_80563254;
 extern "C" void *fn_80209448(void *arg0) {
 extern void *fn_802077A4(void *, s32, void *, void *);
 extern void *fn_80207848(void *, s32);
-struct Block {
-    void *entry;
-    f32 f04;
-    f32 f08;
-    f32 f0c;
-    f32 f10;
-    f32 f14;
-    f32 f18;
-    f32 f1c;
-    f32 f20;
-    f32 f24;
-    f32 f28;
-    f32 f2c;
-    f32 f30;
-};
-struct MyClass {
-    void *vtable;
-    Block blocks[6];
-    s32 count;
-    void *arg0;
-    f32 f144;
-    f32 f148;
-    f32 f14c;
-    f32 f150;
-    f32 f154;
-};
-struct M2CKeyObject {
-virtual void *f2(const char *);
-virtual void *f3();
-virtual void *f4();
-virtual void *f5();
-virtual void *f6(const char *, s32);
-};
-struct M2CManager {
-virtual void *f2(const char *);
-virtual void *f3(s32);
-};
-struct M2CItem {
-virtual const char *f2();
-virtual void *f3();
-virtual void *f4();
-virtual void *f5(const char *);
-virtual void *f6();
-virtual void *f7();
-virtual void *f8();
-virtual f32 f9(const char *);
-virtual void *f10();
-virtual void *f11();
-virtual void *f12();
-virtual void *f13();
-virtual void *f14();
-virtual void *f15();
-virtual void *f16();
-virtual void *f17();
-virtual void *f18();
-virtual void *f19();
-virtual void *f20();
-virtual void *f21();
-virtual void *f22();
-virtual void *f23(const char *);
-};
-struct M2CValues {
-virtual void *f2();
-virtual void *f3();
-virtual void *f4();
-virtual void *f5();
-virtual void *f6();
-virtual void *f7();
-virtual void *f8();
-virtual f64 f9(const char *);
-virtual f32 f10(const char *, f32);
-};
-MyClass *result;
-s32 index;
-void *manager;
-void *item;
-void *text;
-void *block;
-void *object;
-f64 temp_f1;
-f32 z, scale, height;
-f32 width, half, e, d, c, b, a, y, x;
+struct Block { void *entry; f32 f04,f08,f0c,f10,f14,f18,f1c,f20,f24,f28,f2c,f30; };
+struct MyClass { void *vtable; Block blocks[6]; s32 count; void *arg0; f32 f144,f148,f14c,f150,f154; };
+struct M2CKeyObject { virtual void *f2(const char *); virtual void *f3(); virtual void *f4(); virtual void *f5(); virtual void *f6(const char *, s32); };
+struct M2CManager { virtual void *f2(const char *); virtual void *f3(s32); };
+struct M2CItem { virtual const char *f2(); virtual void *f3(); virtual void *f4(); virtual void *f5(const char *); virtual void *f6(); virtual void *f7(); virtual void *f8(); virtual f32 f9(const char *); virtual void *f10(); virtual void *f11(); virtual void *f12(); virtual void *f13(); virtual void *f14(); virtual void *f15(); virtual void *f16(); virtual void *f17(); virtual void *f18(); virtual void *f19(); virtual void *f20(); virtual void *f21(); virtual void *f22(); virtual void *f23(const char *); };
+struct M2CValues { virtual void *f2(); virtual void *f3(); virtual void *f4(); virtual void *f5(); virtual void *f6(); virtual void *f7(); virtual void *f8(); virtual f64 f9(const char *); virtual f32 f10(const char *, f32); };
+MyClass *result; s32 index; void *manager; void *item; register void *text; void *block; void *object; f64 temp_f1;
+f32 z, scale, height; f32 width, half, e, d, c, b, a, y, x;
 result = (MyClass *)fn_801284F8(0x158, (const char *)&lbl_8055B500);
 if (result != 0) {
 result->vtable = (void *)&lbl_8033C1E0;
-if (lbl_8055EDBC == 0) {
-lbl_8055EDB8 = lbl_80563238;
-fn_80127C90((void *)fn_80209904, (const char *)&lbl_8055B520);
-}
+if (lbl_8055EDBC == 0) { lbl_8055EDB8 = lbl_80563238; fn_80127C90((void *)fn_80209904, (const char *)&lbl_8055B520); }
 lbl_8055EDBC++;
-result->arg0 = arg0;
-result->count = 0;
+result->arg0 = arg0; result->count = 0;
 object = M2C_FIELD(M2C_FIELD(arg0, void **, 0x26C), void **, 0x2134);
 object = ((M2CKeyObject *)object)->f2((const char *)&lbl_8033C248);
 ((M2CKeyObject *)object)->f6((const char *)&lbl_8033C238, lbl_8055B4F8);
@@ -146,52 +68,37 @@ block = ((M2CManager *)manager)->f2((const char *)&lbl_8055B53C);
 result->f14c = ((M2CValues *)block)->f10((const char *)&lbl_8033C22C, lbl_8056323C);
 temp_f1 = ((M2CValues *)block)->f9((const char *)&lbl_8033C21C);
 width = (f32)temp_f1;
-half = lbl_80563240;
+half = 0.9f;
 result->f144 = temp_f1;
 index = 0;
-scale = lbl_8056323C;
+scale = 1.0f;
 result->f148 = half * width;
-height = lbl_80563244;
-z = lbl_80563238;
+height = -1.0f;
+z = 0.0f;
 goto loop_test;
 loop_body:
 if (strcmp(((M2CItem *)item)->f2(), (const char *)&lbl_8055B534) == 0) {
 Block *b_entry = &result->blocks[result->count++];
-block = (void *)b_entry;
-memset(block, 0, 0x34);
+block = (void *)b_entry; memset(block, 0, 0x34);
 text = ((M2CItem *)item)->f5((const char *)&lbl_8055B52C);
-void *entry;
-void *obj = result->arg0;
-if (M2C_FIELD(obj, s32 *, 0x1F0) != 0x50) {
-entry = fn_802077A4(text, 3, (u8 *)obj + 0x118, (u8 *)arg0 + 0x60);
-((Block *)block)->entry = entry;
-} else {
+void *entry; void *obj = result->arg0;
+if (M2C_FIELD(obj, s32 *, 0x1F0) != 0x50) { entry = fn_802077A4(text, 3, (u8 *)obj + 0x118, (u8 *)arg0 + 0x60); ((Block *)block)->entry = entry; }
+else {
 entry = fn_80207848(text, 2);
 if (entry != 0) {
 if (fn_80137C74() == 2) {
 if ((M2C_FIELD(result->arg0, u8 *, 0x260) & 3) == 0) {
-if (height != M2C_FIELD(entry, f32 *, 0x64)) {
-M2C_FIELD(entry, u8 *, 0x6C) = 1;
-M2C_FIELD(entry, f32 *, 0x64) = height;
+if (height != M2C_FIELD(entry, f32 *, 0x64)) { M2C_FIELD(entry, u8 *, 0x6C) = 1; M2C_FIELD(entry, f32 *, 0x64) = height; }
+} else if (scale != M2C_FIELD(entry, f32 *, 0x64)) { M2C_FIELD(entry, u8 *, 0x6C) = 1; M2C_FIELD(entry, f32 *, 0x64) = scale; }
 }
-} else if (scale != M2C_FIELD(entry, f32 *, 0x64)) {
-M2C_FIELD(entry, u8 *, 0x6C) = 1;
-M2C_FIELD(entry, f32 *, 0x64) = scale;
-}
-}
-if (z != M2C_FIELD(entry, f32 *, 0x68)) {
-M2C_FIELD(entry, u8 *, 0x6D) = 1;
-M2C_FIELD(entry, f32 *, 0x68) = z;
-}
+if (z != M2C_FIELD(entry, f32 *, 0x68)) { M2C_FIELD(entry, u8 *, 0x6D) = 1; M2C_FIELD(entry, f32 *, 0x68) = z; }
 }
 ((Block *)block)->entry = entry;
 }
 ((Block *)block)->f30 = z;
 entry = ((Block *)block)->entry;
-if (entry == 0) {
-fn_802E30C8((const char *)&lbl_8033C208, text);
-result->count--;
-} else {
+if (entry == 0) { fn_802E30C8((const char *)&lbl_8033C208, text); result->count--; }
+else {
 M2C_FIELD(entry, s32 *, 0x10) = M2C_FIELD(arg0, s32 *, 0x1EC);
 text = ((M2CItem *)item)->f23((const char *)&lbl_8033C1FC);
 y = ((M2CValues *)text)->f10((const char *)&lbl_8055B508, lbl_8056323C);
@@ -199,24 +106,16 @@ x = ((M2CValues *)text)->f10((const char *)&lbl_8055B510, lbl_80563248);
 a = ((M2CValues *)text)->f10((const char *)&lbl_8055B514, lbl_8056324C);
 b = ((M2CValues *)text)->f10((const char *)&lbl_8055B518, lbl_80563250);
 c = ((M2CValues *)text)->f10((const char *)&lbl_8055B51C, lbl_80563254);
-((Block *)block)->f1c = b;
-((Block *)block)->f20 = a;
-d = scale / (b - c);
-((Block *)block)->f24 = d;
-((Block *)block)->f28 = scale / (x - a);
-((Block *)block)->f2c = y;
+((Block *)block)->f1c = b; ((Block *)block)->f20 = a;
+d = scale / (b - c); ((Block *)block)->f24 = d; ((Block *)block)->f28 = scale / (x - a); ((Block *)block)->f2c = y;
 text = M2C_VFUNC(item, 23, M2CPtr1)(item, (const char *)&lbl_8055B528);
 e = ((M2CValues *)text)->f10((const char *)&lbl_8055B508, lbl_8056323C);
 a = ((M2CValues *)text)->f10((const char *)&lbl_8055B510, lbl_80563248);
 x = ((M2CValues *)text)->f10((const char *)&lbl_8055B514, lbl_8056324C);
 b = ((M2CValues *)text)->f10((const char *)&lbl_8055B518, lbl_80563250);
 c = ((M2CValues *)text)->f10((const char *)&lbl_8055B51C, lbl_80563254);
-((Block *)block)->f08 = b;
-((Block *)block)->f0c = x;
-d = scale / (b - c);
-((Block *)block)->f10 = d;
-((Block *)block)->f14 = scale / (a - x);
-((Block *)block)->f18 = e;
+((Block *)block)->f08 = b; ((Block *)block)->f0c = x;
+d = scale / (b - c); ((Block *)block)->f10 = d; ((Block *)block)->f14 = scale / (a - x); ((Block *)block)->f18 = e;
 ((Block *)block)->f04 = scale / ((M2CItem *)item)->f9((const char *)&lbl_8033C1F0);
 }
 }
@@ -225,8 +124,7 @@ loop_test:
 item = ((M2CManager *)manager)->f3(index);
 if (item != 0) goto loop_body;
 fn_80131818(manager);
-result->f150 = lbl_80563238;
-result->f154 = lbl_80563238;
+result->f150 = lbl_80563238; result->f154 = lbl_80563238;
 }
 return result;
 }
@@ -264,34 +162,35 @@ extern "C" void fn_80128668(void *);
 extern "C" s32 lbl_8055EDBC;
 extern "C" u8 lbl_8033C1E0[];
 /* Destroy this sound-object collection, deleting owned items and freeing when requested. */
-extern "C" void *fn_8020999C(void *obj, s32 shouldFree) {
+extern "C" void *fn_8020999C(void *collection, s32 shouldFree) {
     struct ItemDummy {
         virtual void m0(s32) = 0;
     };
-    u8 *cursor;
-    void *item;
-    s32 index;
+    u8 *block;
+    void *entry;
+    s32 blockIndex;
 
-    if (obj != 0) {
-        *(s32 *)obj = (s32)&lbl_8033C1E0[0];
-        cursor = (u8 *)obj;
-        index = 0;
+    /* Destroy an engine-sound collection: reset its vtable, destroy each owned sound entry (m0(1)), decrement the global collection count (unregistering the update alarm when the last collection goes), and optionally free the object; returns collection. */
+    if (collection != 0) {
+        *(s32 *)collection = (s32)&lbl_8033C1E0[0];
+        block = (u8 *)collection;
+        blockIndex = 0;
         goto check;
     loop:
-        item = *(void **)(cursor + 4);
-        if (item != 0)
-            ((ItemDummy *)item)->m0(1);
-        cursor += 0x34;
-        index += 1;
+        entry = *(void **)(block + 4);
+        if (entry != 0)
+            ((ItemDummy *)entry)->m0(1);
+        block += 0x34;
+        blockIndex += 1;
     check:
-        if (index < *(s32 *)((u8 *)obj + 0x13C))
+        if (blockIndex < *(s32 *)((u8 *)collection + 0x13C))
             goto loop;
         if (--lbl_8055EDBC == 0)
             fn_80127D58((void *)fn_80209904);
         if (shouldFree > 0)
-            fn_80128668(obj);
+            fn_80128668(collection);
     }
-    return obj;
+    return collection;
 }
 
 #pragma pop
@@ -312,17 +211,17 @@ extern "C" void fn_80209A64(void *obj, s32 muted) {
     f32 rpm;
     f32 speed = M2C_FIELD(obj, f32 *, 0x14c) * spdFactor;
     f32 value, factor, weight;
-    s32 i, found = 0, count;
+    s32 id, found = 0, i, count;
     u8 *entry;
     M2C_FIELD(obj, f32 *, 0x154) = old + lbl_8056325C * (lbl_8056323C - old);
     M2C_FIELD(obj, f32 *, 0x150) = speed;
     rpm = M2C_FIELD(cfg, f32 *, 0x25fc);
     count = fn_80178CA4();
-    { s32 id;
     for (i = 0; i < count; i++) {
+        s32 match;
         id = M2C_FIELD(M2C_FIELD(obj, void **, 0x140), s32 *, 0x1ec);
-        if (fn_8026A344(i) == id) { found = 1; break; }
-    }
+        match = fn_8026A344(i);
+        if (match == id) { found = 1; break; }
     }
     factor = found ? M2C_FIELD(obj, f32 *, 0x144) : M2C_FIELD(obj, f32 *, 0x148);
     if (muted) factor = lbl_80563238;
