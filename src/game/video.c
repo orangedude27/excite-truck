@@ -314,13 +314,13 @@ void fn_802DF684(void) {
 #pragma scheduling on
 void *fn_802D3134(void); /* the current material's bump map, into GX_TEXMAP5 */
 void *fn_802D30FC(void); /* the texture it distorts, into GX_TEXMAP6 */
-/* Water-surface bump TEV pipeline: the GXSetupWaterBumpTevPipelineA twin used when the render
- * request block lbl_804C5700 also asks for the second texture stage (+0x08);
- * fn_802D2B0C selects it in mode 3 and stores fn_802DF938 as the undo.  Two
- * texgens feed one indirect stage, which shifts GX_TEXMAP6's coordinates by the
- * bump map in GX_TEXMAP5.  Stage 0 draws the surface, stage 1 adds the shifted
- * texture, and stage 2 passes that colour through while taking alpha from the
- * second texture in GX_TEXMAP1.
+/* Water-surface bump TEV pipeline: the GXSetupWaterBumpTevPipelineA twin used
+ * when the render request block lbl_804C5700 also asks for the second texture
+ * stage (+0x08); fn_802D2B0C selects it in mode 3 and stores fn_802DF938 as the
+ * undo.  Two texgens feed one indirect stage, which shifts GX_TEXMAP6's
+ * coordinates by the bump map in GX_TEXMAP5.  Stage 0 draws the surface, stage
+ * 1 adds the shifted texture, and stage 2 passes that colour through while
+ * taking alpha from the second texture in GX_TEXMAP1.
  */
 void GXSetupWaterBumpTevPipelineB(void) {
     s32 alphaSel = GX_ITBA_OFF; /* GXSetTevIndirect's last two arguments go on */
