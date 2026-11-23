@@ -790,38 +790,41 @@ extern char lbl_80346798[];
 /* Queue a fixed three-float record (kind 7) in the BoneHandleAlloc arena: the
  * payload is {x, y, 1/(z*z)} and the block always occupies 0x2c bytes. */
 void *fn_802DA918(float x, float y, float z) {
+    /* Queue one Vec3 {x, y, 1/(z*z)} at index 1 of the shared bone vector table
+     * lbl_804DB068 through the BoneHandleAlloc arena; returns 0 if it is full. */
     float payload[3];
     unsigned char savedInitialized;
     unsigned char *blockBase;
     int blockOffset;
-    void *record;
-    void *state;
+    struct StackAllocRecord *record;
+    volatile struct StackAlloc *alloc;
+
     payload[0] = x;
     payload[1] = y;
     payload[2] = 1.0f / (z * z);
-    state = lbl_8055FE5C;
-    savedInitialized = *(volatile unsigned char *)((char *)state + 0x25);
-    *(volatile unsigned char *)((char *)state + 0x25) = 0;
-    if (*(volatile int *)((char *)state + 0x10) + 0x2c > *(volatile int *)((char *)state + 0x0C)) {
-        int capacity = *(volatile int *)((char *)state + 0x0C);
-        fn_802E317C(lbl_80346798, *(volatile int *)((char *)state + 8), 0x24, capacity / 1024);
+    alloc = (volatile struct StackAlloc *)lbl_8055FE5C;
+    savedInitialized = alloc->initialized;
+    alloc->initialized = 0;
+    if (alloc->used + 0x2c > alloc->capacity) {
+        int capacity = alloc->capacity;
+        fn_802E317C(lbl_80346798, alloc->name, 0x24, capacity / 1024);
         record = 0;
     } else {
-        blockOffset = *(volatile int *)((char *)state + 4);
-        blockBase = (unsigned char *)*(volatile int *)((char *)state + 0x10);
+        blockOffset = (int)alloc->buffer;
+        blockBase = (unsigned char *)alloc->used;
         blockBase += blockOffset;
         *(int *)blockBase = 1;
-        record = blockBase + 4;
-        *(int *)((*(volatile int *)((char *)state + 4) + *(volatile int *)((char *)state + 0x10)) + 0x28) = 0x24;
-        *(volatile int *)((char *)state + 0x10) += 0x2c;
+        record = (struct StackAllocRecord *)(blockBase + 4);
+        *(int *)((int)alloc->buffer + alloc->used + 0x28) = 0x24;
+        alloc->used += 0x2c;
     }
-    *(int *)((char *)record + 0) = 7;
-    *(int *)((char *)record + 4) = 1;
-    *(int *)((char *)record + 8) = 1;
-    *(int *)((char *)record + 0x0C) = 0;
-    *(int *)((char *)record + 0x14) = 0;
-    *((unsigned char *)record + 0x10) = savedInitialized;
-    memcpy((char *)record + 0x18, payload, 0xc);
+    record->kind = 7;
+    record->index = 1;
+    record->count = 1;
+    record->elemType = 0;
+    record->next = 0;
+    record->status = savedInitialized;
+    memcpy(record->data, payload, 0xc);
     return record;
 }
 extern void *memset(void *, int, unsigned int);
