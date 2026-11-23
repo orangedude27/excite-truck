@@ -298,14 +298,26 @@ void fn_802E7128(void) { fn_802E6FBC(); }
 void fn_802E712C(void) {}
 
 #pragma scheduling reset
+/* Return the memory-card save image size: the 0x20D0-byte header plus the data
+ * size of every registered chunk, rounded up to a 0x2000-byte block boundary. */
 int fn_802E7130(void) {
-    struct Entry { unsigned char pad[0xC]; int value; unsigned char tail[4]; };
-    int total = 0x20D0;
+#define gChunkTable lbl_804FC8B0
+#define gChunkCount lbl_8055FFC0
+#define HEADER_SIZE 0x20D0
+#define BLOCK_ROUND 0x1FFF
+#define BLOCK_MASK  0xFFFFE000
+    struct Chunk { unsigned char pad[0xC]; int dataSize; unsigned char tail[4]; };
+    int total = HEADER_SIZE;
     int i;
-    for (i = 0; i < lbl_8055FFC0; i++) {
-        total += ((struct Entry *)lbl_804FC8B0)[i].value;
+    for (i = 0; i < gChunkCount; i++) {
+        total += ((struct Chunk *)gChunkTable)[i].dataSize;
     }
-    return (total + 0x1FFF) & 0xFFFFE000;
+    return (total + BLOCK_ROUND) & BLOCK_MASK;
+#undef BLOCK_MASK
+#undef BLOCK_ROUND
+#undef HEADER_SIZE
+#undef gChunkCount
+#undef gChunkTable
 }
 /* Finds the index of a memcard record matching (arg0,arg1,arg2); logs and returns -1 on mismatch. */
 int fn_802E721C(unsigned int arg0, unsigned int arg1, int arg2) {
