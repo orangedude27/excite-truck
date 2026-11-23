@@ -72,46 +72,54 @@ extern char lbl_8034BCF0[]; /* "modpool: oldest_model is NULL (%d)" */
 #pragma scheduling invalid_target
 #pragma optimize_for_size on
 #pragma use_lmw_stmw off
+/* Reclaim a model-pool slot when the pool is full: clear entries whose load has
+ * finished, pick the oldest idle (state 2) entry as a victim and evict it, then
+ * poll the load pool. */
 void fn_802CE4F4(void *arg0, int arg1) {
- /* Reclaim model pool slot when full: clear finished entries, evict oldest idle (state 2) if needed, then service manager. */
- void *entry;
- int best;
- int active;
- int i;
- int offset;
- void *manager=arg0;
- void *selected;
- active=0;
- selected=0;
- best=-1;
- i=0;
- offset=0;
- while (i < *(int *)((char *)manager+8)) {
-  entry=(char *)*(void **)manager+offset;
-  if (*(int *)((char *)entry+0x38)==3 &&
-      fn_801345A4(*(int *)((char *)manager+4), *(int *)((char *)entry+0x2C))) {
-   *(int *)((char *)entry+0x38)=0;
-   *(int *)((char *)entry+0x2C)=-1;
-  }
-  if (*(int *)((char *)entry+0x38)!=0) active++;
-  if (*(int *)((char *)entry+0x38)==2) {
-   int delta=*(int *)((char *)manager+0x10)-*(int *)((char *)entry+0x3C);
-   if (delta>best || selected==0) { best=delta; selected=entry; }
-  }
-  offset+=0x40; i++;
- }
- if (*(int *)((char *)manager+0xC)-active<1) {
-  if (selected!=0) {
-   if (*(int *)((char *)selected+0x38)==2) {
-    fn_802C6FB4(*(int *)((char *)selected+0x30));
-    fn_802C703C(*(int *)((char *)selected+0x34));
-    *(int *)((char *)selected+0x34)=-1;
-    *(int *)((char *)selected+0x30)=0;
-    *(int *)((char *)selected+0x38)=3;
-   }
-  } else fn_802E30C8(lbl_8034BCF0, *(int *)((char *)manager+0x10));
- }
- fn_8013436C(*(int *)((char *)manager+4));
+    void *entry;
+    int best;
+    int active;
+    int i;
+    int offset;
+    void *manager = arg0;
+    void *selected;
+    active = 0;
+    selected = 0;
+    best = -1;
+    i = 0;
+    offset = 0;
+    while (i < *(int *)((char *)manager + 8)) {
+        entry = (char *)*(void **)manager + offset;
+        if (*(int *)((char *)entry + 0x38) == 3 &&
+            fn_801345A4(*(int *)((char *)manager + 4), *(int *)((char *)entry + 0x2C))) {
+            *(int *)((char *)entry + 0x38) = 0;
+            *(int *)((char *)entry + 0x2C) = -1;
+        }
+        if (*(int *)((char *)entry + 0x38) != 0) active++;
+        if (*(int *)((char *)entry + 0x38) == 2) {
+            int delta = *(int *)((char *)manager + 0x10) - *(int *)((char *)entry + 0x3C);
+            if (delta > best || selected == 0) {
+                best = delta;
+                selected = entry;
+            }
+        }
+        offset += 0x40;
+        i++;
+    }
+    if (*(int *)((char *)manager + 0xC) - active < 1) {
+        if (selected != 0) {
+            if (*(int *)((char *)selected + 0x38) == 2) {
+                fn_802C6FB4(*(int *)((char *)selected + 0x30));
+                fn_802C703C(*(int *)((char *)selected + 0x34));
+                *(int *)((char *)selected + 0x34) = -1;
+                *(int *)((char *)selected + 0x30) = 0;
+                *(int *)((char *)selected + 0x38) = 3;
+            }
+        } else {
+            fn_802E30C8(lbl_8034BCF0, *(int *)((char *)manager + 0x10));
+        }
+    }
+    fn_8013436C(*(int *)((char *)manager + 4));
 }
 #pragma pop
 #pragma scheduling on
