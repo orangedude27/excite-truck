@@ -22,7 +22,7 @@ struct Dummy10688 {
 extern long lbl_8055EEE0;
 extern long lbl_8055EEE4;
 extern long lbl_8055EEBC;
-extern long lbl_8055EEE8;
+extern long gTrackMusicPageCount;
 extern long lbl_8055B658;
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -525,7 +525,7 @@ long fn_8020FEF0(long arg0) {
     } else {
         pos = lbl_8055EEE4;
         sum = pos + arg0;
-        max = clampTrackDigit(sum, lbl_8055EEE8 - 1);
+        max = clampTrackDigit(sum, gTrackMusicPageCount - 1);
         lbl_8055EEE4 = max;
         count = lbl_8055EEBC;
         if (pos == max) {
@@ -547,7 +547,7 @@ long fn_8020FEF0(long arg0) {
 extern long lbl_8055EEBC;
 extern long lbl_8055EEE0;
 extern long lbl_8055EEE4;
-extern long lbl_8055EEE8;
+extern long gTrackMusicPageCount;
 extern void fn_8020FE90(void);
 /* Adjusts the track-music digit selection state by delta, clamping to valid range and refreshing on change. */
 void fn_8020FFE4(long arg0) {
@@ -1069,44 +1069,44 @@ long fn_802111E4(long keyCode) {
     return 1;
 }
 
-void fn_802112AC(void) {
-    long mode;
-    long trackIndex;
-    long quotient;
-    long remainder;
-    long trackCount;
-    void *base;
-    struct Dummy_802113D8 *object;
+/* After the dash's song list changed, re-sync the track-music menu selection (OFF / RANDOM / song row + page) to the current song, then rebuild the page count (10 songs per page, always at least one) and reset an out-of-range page. */ void fn_802112AC(void) {
+    long entryType;
+    long songIndex;
+    long page;
+    long row;
+    long pageCount;
+    void *container;
+    struct Dummy_802113D8 *resource;
 
     /* Initialize track selection state and update display counters from current track data. */
     if (lbl_8055EEC0 != 0) {
         lbl_8055EEE0 = -2;
         if (lbl_8055EEBC > 0) {
             fn_8020FCC4();
-            base = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
-            object = *(struct Dummy_802113D8 **)((char *)base + 0x20);
-            object->f6(&lbl_8055B674, lbl_8033C970);
-            mode = *(long *)fn_8020FAF0();
-            if (mode == 1) {
+            container = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
+            resource = *(struct Dummy_802113D8 **)((char *)container + 0x20);
+            resource->f6(&lbl_8055B674, lbl_8033C970);
+            entryType = *(long *)fn_8020FAF0();
+            if (entryType == 1) {
                 lbl_8055EEE0 = -1;
-            } else if (mode == 2) {
-                trackIndex = lbl_8055B658;
-                if (trackIndex >= 0) {
-                    quotient = trackIndex / 10;
-                    remainder = trackIndex % 10;
-                    lbl_8055EEE4 = quotient;
-                    lbl_8055EEE0 = remainder;
+            } else if (entryType == 2) {
+                songIndex = lbl_8055B658;
+                if (songIndex >= 0) {
+                    page = songIndex / 10;
+                    row = songIndex % 10;
+                    lbl_8055EEE4 = page;
+                    lbl_8055EEE0 = row;
                 }
             }
         }
     }
-    trackCount = lbl_8055EEBC / 10;
-    lbl_8055EEE8 = trackCount;
+    pageCount = lbl_8055EEBC / 10;
+    gTrackMusicPageCount = pageCount;
     if ((lbl_8055EEBC % 10) != 0 || lbl_8055EEBC == 0) {
-        trackCount++;
-        lbl_8055EEE8 = trackCount;
+        pageCount++;
+        gTrackMusicPageCount = pageCount;
     }
-    if (lbl_8055EEE4 >= trackCount) {
+    if (lbl_8055EEE4 >= pageCount) {
         lbl_8055EEE4 = 0;
     }
 }
