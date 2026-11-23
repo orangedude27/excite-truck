@@ -7843,11 +7843,12 @@ void bta_hh_add_device_to_list(void *devCb, s8 handle, s16 attrMask, void *desc,
 }
 
 BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
-    UINT8 cod = (sub_class >> 2) & 0x3F;
-    UINT8 max_devt = lbl_80559030[0];
     UINT8 xx;
-    for (xx = 0; xx < max_devt; xx++) {
-        UINT8 *p_list = *(UINT8 **)(lbl_80559030 + 4);
+    UINT8 *p_list;
+    UINT8 cod;
+    for (xx = 0; xx < lbl_80559030[0]; xx++) {
+        p_list = *(UINT8 **)(lbl_80559030 + 4);
+        cod = (UINT8)(sub_class >> 2);
         if (cod == p_list[xx * 2]) {
             ((UINT8 *)p_cb)[0x15] = p_list[xx * 2 + 1];
             return TRUE;
@@ -9386,8 +9387,10 @@ void btm_read_hci_buf_size_complete(UINT8 *params, UINT16 evt_len) {
     }
 }
 void btm_read_local_version_complete(UINT8 *p, UINT16 evt_len) {
+    UINT8 status;
     register UINT8 *base = lbl_803C0F78;
-    UINT8 status = p[0];
+
+    status = p[0];
     if (status == 0) {
         base[0x636] = p[1];
         *(u16 *)(base + 0x638) = (p[3] << 8) + p[2];
@@ -9399,7 +9402,7 @@ void btm_read_local_version_complete(UINT8 *p, UINT16 evt_len) {
     } else {
         lbl_803C0F78[0x64F] = status;
         lbl_803C0F78[0x64E] = status;
-        btu_start_timer(base + 0x574, 1, 1);
+        btu_start_timer(lbl_803C0F78 + 0x574, 1, 1);
         ((void (*)(void))btsnd_hcic_reset)();
         return;
     }
@@ -18664,7 +18667,11 @@ BOOLEAN L2CA_ConnectRsp(BD_ADDR addr, UINT8 id, UINT16 lcid, UINT16 result, UINT
 
 extern u8 lbl_80317F78[];
 extern u8 lbl_80317F98[];
-/* Send an L2CAP configuration request for channel `cid`: trace the call, look up the channel control block, clear the unused option flag in `p_cfg`, and dispatch a config-request event with it to the channel's state machine; return FALSE if no such channel exists. */ BOOLEAN L2CA_ConfigReq(UINT16 cid, tL2CAP_CFG_INFO *p_cfg) {
+/* Send an L2CAP configuration request for channel `cid`: trace the call, look up
+ * the channel control block, clear the unused option flag in `p_cfg`, and dispatch
+ * a config-request event with it to the channel's state machine; return FALSE if
+ * no such channel exists. */
+BOOLEAN L2CA_ConfigReq(UINT16 cid, tL2CAP_CFG_INFO *p_cfg) {
     void *channelControlBlock;
     if (lbl_803C4040[0] >= 3) {
         fn_80070954(0x80002, lbl_80317F78, cid);
