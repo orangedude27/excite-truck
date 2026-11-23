@@ -102,18 +102,20 @@ void fn_802DB394(void) {
 
 #pragma push
 #pragma processor 750
-/* Configures the 4-stage GX TEV op/alpha setup used by this draw mode. */
+/* Sets up the four TEV stages of CPU-light draw mode 1: stage 0 replaces the
+ * colour, stage 1 passes it through taking alpha from the texture, stage 2
+ * modulates, and stage 3 passes colour through with alpha from APREV and TEXA. */
 void fn_802DB3FC(void) {
-    GXSetTevOp(0, 3);
-    GXSetTevOp(1, 4);
-    GXSetTevAlphaOp(1, 0, 0, 0, 1, 0);
-    GXSetTevAlphaIn(1, 4, 7, 7, 7);
-    GXSetTevOp(2, 0);
-    GXSetTevAlphaOp(2, 0, 0, 0, 1, 0);
-    GXSetTevAlphaIn(2, 0, 7, 7, 7);
-    GXSetTevOp(3, 4);
-    GXSetTevAlphaOp(3, 0, 0, 0, 1, 0);
-    GXSetTevAlphaIn(3, 7, 0, 4, 7);
+    GXSetTevOp(GX_TEVSTAGE0, GX_REPLACE);
+    GXSetTevOp(GX_TEVSTAGE1, GX_PASSCLR);
+    GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_ENABLE, GX_TEVPREV);
+    GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_TEXA, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO);
+    GXSetTevOp(GX_TEVSTAGE2, GX_MODULATE);
+    GXSetTevAlphaOp(GX_TEVSTAGE2, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_ENABLE, GX_TEVPREV);
+    GXSetTevAlphaIn(GX_TEVSTAGE2, GX_CA_APREV, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO);
+    GXSetTevOp(GX_TEVSTAGE3, GX_PASSCLR);
+    GXSetTevAlphaOp(GX_TEVSTAGE3, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_ENABLE, GX_TEVPREV);
+    GXSetTevAlphaIn(GX_TEVSTAGE3, GX_CA_ZERO, GX_CA_APREV, GX_CA_TEXA, GX_CA_ZERO);
 }
 #pragma push
 #pragma scheduling on
