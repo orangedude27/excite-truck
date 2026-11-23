@@ -326,11 +326,10 @@ void fn_80016928(int carDefId, int value) {
 #pragma scheduling invalid_target
 void fn_80016970(int arg0, int arg1, int arg2, int arg3) {
     struct E { char pad[0x4]; int id; char pad2[0x44]; int f4C; int f50; char rest[0x8]; };
-    register int idx = arg0;
     struct E *b = (struct E *)lbl_803577F0;
-    b[idx].id = arg1;
-    b[idx].f4C = *(int *)fn_80016544(arg2);
-    b[idx].f50 = arg3;
+    b[(unsigned)arg0].id = arg1;
+    b[(unsigned)arg0].f4C = *(int *)fn_80016544(arg2);
+    b[(unsigned)arg0].f50 = arg3;
     *(int *)(lbl_80357960 + arg0 * 0xA8 + 4) = -1000;
 }
 #pragma pop
@@ -519,7 +518,7 @@ extern int sscanf(const char *, const char *, ...);
 #pragma processor gekko
 #pragma dont_inline fn_80016DD8
 int fn_80016DD8(const char *arg0) {
-    unsigned int hex, blue, green, red;
+    unsigned int hex, red, green, blue;
     int c;
     int first = *(const unsigned char *)arg0;
     int result = 0xFF008040;
@@ -629,8 +628,8 @@ extern "C" void fn_80017010(void *arg0) {
     char *entry;
     char *r26;
     int off, eidx;
-    int flag;
     int c;
+    int flag;
     int count;
     count = (int)lbl_8055D550;
     base = lbl_802FCEA8;
@@ -738,9 +737,10 @@ extern "C" void fn_80017010(void *arg0) {
         if (s != (char *)0) {
             *(int *)(entry + 0x64 + *(int *)(entry + 0x98) * 4) = fn_80016DD8(s);
         } else {
-            if (*(int *)(entry + 0x98) != 0) break;
-            *(int *)(entry + 0x64 + *(int *)(entry + 0x98) * 4) = 0xFF008040;
-            *(int *)(entry + 0x98) = *(int *)(entry + 0x98) + 1;
+            int idx = *(int *)(entry + 0x98);
+            if (idx != 0) break;
+            *(int *)(entry + 0x64 + idx * 4) = 0xFF008040;
+            *(int *)(entry + 0x98) = idx + 1;
             break;
         }
         *(int *)(entry + 0x98) = *(int *)(entry + 0x98) + 1;
@@ -834,22 +834,28 @@ void fn_80017558(void) {
 #pragma pop
 extern unsigned char lbl_802FD07C[];
 extern void *memset(void *, int, unsigned int);
-#pragma scheduling invalid_target
+#pragma processor 750
 void fn_8001766C(int arg0) {
     unsigned char *base = lbl_803577F0;
-    int idx = arg0;
-    int off68 = idx * 0x68;
-    int off8 = idx * 8;
-    unsigned char *entry = base + idx * 0x5C;
+    int offset = arg0 * 0x5C;
+    unsigned char *entryBase = base;
+    unsigned char *entry = entryBase + offset;
+    int index = arg0;
+    int offset68;
+    int offset8;
+
     memset(entry, 0, 0x5C);
     *(int *)(entry + 4) = -1000;
-    ((void (*)(char *, int, const char *, ...))fn_801345D8)((char *)(entry + 8), 0x40, (const char *)lbl_802FD07C, idx + 1);
+    ((void (*)(char *, int, const char *, ...))fn_801345D8)(
+        (char *)(entry + 8), 0x40, (const char *)lbl_802FD07C, index + 1);
+    offset68 = index * 0x68;
     *(int *)(entry + 0x48) = 1000;
-    base[0x410 + off8] = 0;
-    base[0x430 + off68] = 0;
+    offset8 = index * 8;
+    *(unsigned char *)(offset8 + (unsigned int)(base + 0x410)) = 0;
+    *(unsigned char *)(offset68 + (unsigned int)(base + 0x430)) = 0;
 }
-#pragma scheduling on
-void fn_80017708(void *arg0, int arg1, void *arg2) {
+#pragma processor reset
+void fn_80017708(const void *arg0, int arg1, void *arg2) {
     int temp_r0;
     int temp_r0_2;
     int temp_r4;
