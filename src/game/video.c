@@ -270,7 +270,7 @@ void fn_802DF46C(void) {
 }
 #pragma pop
 void *gxGetBumpMapTexObj(void); /* the current material's bump map, into GX_TEXMAP5 */
-void *fn_802D3100(void); /* the texture it distorts, into GX_TEXMAP6 */
+void *gxGetDistortTexObj(void); /* the texture it distorts, into GX_TEXMAP6 */
 /* The water surface pass: drgc_surf.c asks for mode 3 of the render request
  * block (lbl_804C5700) and fn_802D2B0C builds the pipeline here.  Stage 0 draws
  * the surface itself, stage 1 adds the GX_TEXMAP6 texture whose coordinates
@@ -306,7 +306,7 @@ void GXSetupWaterBumpTevPipelineA(void) {
                      GX_ITW_0, GX_DISABLE, utcLod, alphaSel);
     GXSetNumTevStages(2);
     GXLoadTexObj(gxGetBumpMapTexObj(), GX_TEXMAP5);
-    GXLoadTexObj(fn_802D3100(), GX_TEXMAP6);
+    GXLoadTexObj(gxGetDistortTexObj(), GX_TEXMAP6);
 }
 
 #pragma scheduling invalid_target

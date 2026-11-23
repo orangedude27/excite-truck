@@ -2970,7 +2970,7 @@ void *fn_802D30FC(void) {
     #undef GetDistortTexture
 }
 
-void *fn_802D3100(void) {
+void *gxGetDistortTexObj(void) {
     #define GetDistortTexture fn_802D30F0
     /* GetDistortTexture: return the indirect texture object loaded into GX_TEXMAP6
      * by fn_802DF4A8's bump/distort pass. */
