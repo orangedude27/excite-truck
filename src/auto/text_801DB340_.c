@@ -92,9 +92,9 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
     }
     divX = x / 32;
     divY = y / 32;
-    tileX = divX - lbl_8055E99C;
     remX = x - divX * 32;
     remZ = y - divY * 32;
+    tileX = divX - lbl_8055E99C;
     tileZ = divY - lbl_8055E9A0;
     if (tileX < 0 || tileZ < 0) {
         node = 0;
@@ -273,8 +273,7 @@ float fn_801DB514(float grid[4][4], void *out, float t, float u) {
     return height;
 }
 extern int fn_801DB348(int, int, float *, int *, void *);
-#pragma push
-#pragma processor 750
+#pragma opt_common_subs on
 #pragma use_lmw_stmw off
 int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *arg5, float farg0, float farg1) {
     float grid[4][4];
@@ -303,7 +302,6 @@ int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *ar
     }
     return 1;
 }
-#pragma pop
 /* Ground height at a world position: turns (world_x, world_z) into the ground
  * descriptor's grid cells, and has fn_801DB74C bicubically interpolate the 4x4
  * cells around the floor of that point with the fraction inside the cell.
