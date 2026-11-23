@@ -1711,9 +1711,9 @@ void fn_802D09E8(void)
 }
 
 void fn_802D0BD8(void) {
-    /* Set the GX viewport from the current render target: jittered using the
-     * next field when the target enables it, otherwise plain; then invalidate
-     * the vertex and texture caches. */
+    /* Set the GX viewport from the current render target: jittered using the next
+     * field when the target enables it, otherwise plain; then invalidate the
+     * vertex and texture caches. */
     extern void GXInvalidateTexAll(void);
     unsigned char *renderTarget = (unsigned char *)lbl_8055FD64;
     unsigned short width;
