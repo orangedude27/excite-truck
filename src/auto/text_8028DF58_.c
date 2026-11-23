@@ -1063,6 +1063,7 @@ void fn_8028F608(float *out0, float *out1, float (*matrix)[3], float angle)
     float f;
     unsigned int u;
   } bits;
+    c = matrix[0][1];
   d = (bits.f = ((float) fn_8002EFB4(angle, 6.283185307179586)) - lbl_80564430);
   if (!(bits.u & 0x80000000))
   {
