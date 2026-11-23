@@ -1,8 +1,9 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma push
+#pragma scheduling invalid_target
 
-extern void fn_8000D838(void *);
 extern void fn_80287668(void);
 extern void fn_80287610(void);
 extern void fn_802875B8(void);
