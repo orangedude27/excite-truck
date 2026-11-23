@@ -574,26 +574,39 @@ void fn_802E0420(void) {
     GXSetNumTevStages(1);
 }
 #pragma scheduling on
-/* Configures GX texcoord generation and a 2-stage TEV combiner with constant color/alpha selection. */
+/* RealName: GXSetupTwoStageKColorTevPipeline — the "alt texture" variant of
+ * fn_802E0420 (both are installed by fn_802DC71C when the second texture wraps
+ * with GX_REPEAT; this one is used when that texture carries the extra map).
+ * One texture generator: texcoord 0 passes the vertex's texcoord0 through the
+ * identity matrix.  Two combiner stages, neither using a vertex colour
+ * channel and both clamped into TEVPREV:
+ *   stage 0 (texmap 1, constant colour K1): rgb = K1 - texC, alpha = 0;
+ *   stage 1 (texmap 2, constant alpha K1.a): rgb = the previous stage's rgb,
+ *                                            alpha = K1.a - texA. */
 void fn_802E050C(void) {
-    register u32 texCoord = 0;
-    register u32 texGenType = 1;
-    GXSetTexCoordGen2(texCoord, texGenType, 4, 0x3C, 0, 0x7D);
+    register u32 texCoordId = GX_TEXCOORD0;
+    register u32 texGenType = GX_TG_MTX2x4;
+    GXSetTexCoordGen2(texCoordId, texGenType, GX_TG_TEX0, GX_IDENTITY, GX_FALSE,
+                      GX_PTIDENTITY);
     GXSetNumTexGens(1);
-    GXSetTevOrder(0, 0, 1, 0xFF);
-    GXSetTevOrder(1, 0, 2, 0xFF);
-    GXSetTevSwapMode(0, 0, 0);
-    GXSetTevSwapMode(1, 0, 0);
-    GXSetTevKColorSel(0, 0xD);
-    GXSetTevColorIn(0, 0xF, 8, 0xE, 0xF);
-    GXSetTevColorOp(0, 0, 0, 0, 1, 0);
-    GXSetTevAlphaIn(0, 7, 7, 7, 7);
-    GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
-    GXSetTevColorIn(1, 0xF, 0xF, 0xF, 0);
-    GXSetTevColorOp(1, 0, 0, 0, 1, 0);
-    GXSetTevKAlphaSel(1, 0x1D);
-    GXSetTevAlphaIn(1, 7, 4, 6, 7);
-    GXSetTevAlphaOp(1, 0, 0, 0, 1, 0);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP1, GX_COLOR_NULL);
+    GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD0, GX_TEXMAP2, GX_COLOR_NULL);
+    GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    GXSetTevKColorSel(GX_TEVSTAGE0, GX_TEV_KCSEL_K1);
+    GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_TEXC, GX_CC_KONST, GX_CC_ZERO);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE,
+                    GX_TEVPREV);
+    GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO);
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE,
+                    GX_TEVPREV);
+    GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO, GX_CC_CPREV);
+    GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE,
+                    GX_TEVPREV);
+    GXSetTevKAlphaSel(GX_TEVSTAGE1, GX_TEV_KASEL_K1_A);
+    GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_ZERO, GX_CA_TEXA, GX_CA_KONST, GX_CA_ZERO);
+    GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE,
+                    GX_TEVPREV);
     GXSetNumTevStages(2);
 }
 
