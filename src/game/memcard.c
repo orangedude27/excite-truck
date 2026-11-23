@@ -22,7 +22,7 @@ extern unsigned int fn_80132E7C(void *, int);
 extern void *fn_802E967C(int, void *, int);
 extern int fn_802E7130(void);
 extern int fn_802E721C(unsigned int, unsigned int, int);
-extern int fn_802E8D8C(void *, void *, int);
+extern int rmemcardReadFile(void *, void *, int);
 extern unsigned int lbl_8034D7B0[];
 void fn_802E6B50(void) {
     #pragma scheduling invalid_target
@@ -132,7 +132,7 @@ int fn_802E6CA8(void) {
     success = 0;
     readError = 0;
 
-    if (fn_802E8D8C((void *)lbl_8055D200, allocation, size) == 0) {
+    if (rmemcardReadFile((void *)lbl_8055D200, allocation, size) == 0) {
         fn_802E30C8(messages + 0x50);
         readError = 1;
     } else {
