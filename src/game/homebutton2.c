@@ -277,27 +277,27 @@ extern s32 lbl_80558898[];
 /* Update Home Menu/WPAD shutdown flow: on a request, stop motors, initialize
  * home-button state, then poll/advance until completion and log status. */
 void fn_802EC884(void) {
-    register char *homeStrBase = lbl_8034E9E0;
-    const char *message;
-    char *destination;
+    register char *menuStrings = lbl_8034E9E0;
+    const char *statusText;
+    char *logFormat;
     register s32 *wpadInfoOut;
-    register u32 isNormalMode;
-    s32 chan;
+    register u32 isNormalBoot;
+    s32 channel;
     s32 i;
 
     if ((u8)lbl_805600EC == 0) return;
     if ((u8)lbl_805600EA != 0) {
         lbl_805600EA = 0;
         if (fn_802D9BF0() == 0) {
-            destination = homeStrBase + 0x16C;
-            message = &lbl_8055D2F8;
-            isNormalMode = (u32)__cntlzw((u32)lbl_805600E9);
-            isNormalMode >>= 5;
-            lbl_805600EB = isNormalMode;
-            if (isNormalMode != 0) message = homeStrBase + 0x198;
-            fn_802E30C8(destination, message);
+            logFormat = menuStrings + 0x16C;
+            statusText = &lbl_8055D2F8;
+            isNormalBoot = (u32)__cntlzw((u32)lbl_805600E9);
+            isNormalBoot >>= 5;
+            lbl_805600EB = isNormalBoot;
+            if (isNormalBoot != 0) statusText = menuStrings + 0x198;
+            fn_802E30C8(logFormat, statusText);
             lbl_805600E8 = 1;
-            for (chan = 0; chan < 4; chan++) WPADControlMotor(chan, 0);
+            for (channel = 0; channel < 4; channel++) WPADControlMotor(channel, 0);
             fn_800C6774(lbl_805600E4, lbl_805600E0, 0x19000);
             fn_800C65C4();
             fn_802EC4BC();
@@ -315,16 +315,16 @@ void fn_802EC884(void) {
         fn_802E99AC();
         fn_802E7C40();
         fn_802E5438();
-        fn_802E30C8(homeStrBase + 0x1A4);
-        fn_802E30C8(homeStrBase + 0x1C0, fn_800C673C());
-        fn_802E30C8(homeStrBase + 0x1D0, fn_800C6768());
+        fn_802E30C8(menuStrings + 0x1A4);
+        fn_802E30C8(menuStrings + 0x1C0, fn_800C673C());
+        fn_802E30C8(menuStrings + 0x1D0, fn_800C6768());
         switch (fn_800C673C()) {
         case 1:
-            fn_802E30C8(homeStrBase + 0x1E0);
+            fn_802E30C8(menuStrings + 0x1E0);
             KERNEL_Reset(1);
             break;
         case 2:
-            fn_802E30C8(homeStrBase + 0x200);
+            fn_802E30C8(menuStrings + 0x200);
             KERNEL_Reset(0);
             break;
         }
