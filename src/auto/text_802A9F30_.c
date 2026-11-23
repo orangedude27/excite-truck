@@ -1199,27 +1199,35 @@ void fn_802ABC2C(void) {
 }
 
 #pragma processor 750
-void fn_802ABC80(const void *arg0, const void *arg1, float farg0, float farg1, float farg2) {
+void fn_802ABC80(const void *object, const void *direction, float halfWidth, float halfDepth, float halfHeight) {
     extern float fn_80287BC8(float, float);
     extern void fn_8028E590(int, Vec *, Vec *, float);
     extern float lbl_80564A04, lbl_80564A48, lbl_80564A4C, lbl_805649F0, lbl_805649FC;
     extern void *lbl_8055F924;
     extern double cos(double), sin(double);
-    Vec pos, callpos, dir, side, forward;
+    Vec pos, callPos, dirVec, sideVec, forwardVec;
     float angle, scale;
-    angle=fn_80287BC8(lbl_80564A48,lbl_80564A4C);
-    forward=*(Vec*)arg0; side=*(Vec*)((char*)arg0+0x18); pos=*(Vec*)((char*)arg0+0x24);
-    scale=farg0*(float)cos(angle);
-    pos.x+=forward.x*scale; pos.y+=forward.y*scale; pos.z+=forward.z*scale;
-    scale=farg1*(float)sin(angle);
-    pos.x+=side.x*scale; pos.y+=side.y*scale; pos.z+=side.z*scale;
-    scale=fn_80287BC8(lbl_805649F0,lbl_80564A04*farg2);
-    pos.x+=((float*)((char*)arg0+0xC))[0]*scale;
-    pos.y+=((float*)((char*)arg0+0xC))[1]*scale;
-    pos.z+=((float*)((char*)arg0+0xC))[2]*scale;
-    dir=*(Vec*)arg1;
-    callpos=pos;
-    fn_8028E590(*(int*)lbl_8055F924,&callpos,&dir,lbl_805649FC);
+    /* Emit one particle at a random point inside the object's local box
+     * (forward*halfWidth, side*halfDepth, up*halfHeight) in the given direction. */
+    angle = fn_80287BC8(lbl_80564A48, lbl_80564A4C);
+    forwardVec = *(Vec *)object;
+    sideVec = *(Vec *)((char *)object + 0x18);
+    pos = *(Vec *)((char *)object + 0x24);
+    scale = halfWidth * (float)cos(angle);
+    pos.x += forwardVec.x * scale;
+    pos.y += forwardVec.y * scale;
+    pos.z += forwardVec.z * scale;
+    scale = halfDepth * (float)sin(angle);
+    pos.x += sideVec.x * scale;
+    pos.y += sideVec.y * scale;
+    pos.z += sideVec.z * scale;
+    scale = fn_80287BC8(lbl_805649F0, lbl_80564A04 * halfHeight);
+    pos.x += ((float *)((char *)object + 0xC))[0] * scale;
+    pos.y += ((float *)((char *)object + 0xC))[1] * scale;
+    pos.z += ((float *)((char *)object + 0xC))[2] * scale;
+    dirVec = *(Vec *)direction;
+    callPos = pos;
+    fn_8028E590(*(int *)lbl_8055F924, &callPos, &dirVec, lbl_805649FC);
 }
 
 /* Draw the primary particle-emitter list (mode 0) via the particle draw routine. */
