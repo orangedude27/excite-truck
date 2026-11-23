@@ -142,8 +142,7 @@ void fn_802D9C5C(int arg0, void *arg1, int arg2) {
     }
 }
 
-#pragma push
-#pragma opt_propagation reset
+#pragma opt_propagation off
 void fn_802D9DE4(int arg0, void *arg1, int arg2) {
     unsigned int *src, *dest;
     int i = 0, n, ctr, safe;
@@ -384,10 +383,10 @@ void fn_802D9DE4(int arg0, void *arg1, int arg2) {
             dest[10] = t0;
             dest[11] = t1;
             src += 12; dest += 12;
-        } while (--ctr);
+            ctr -= 1;
+        } while (ctr != 0);
     }
 }
-#pragma pop
 void fn_802DA1F4(int arg0, void *arg1, int arg2) {
     extern int lbl_804DB458[];
     extern signed char lbl_8055FE58;
@@ -457,71 +456,71 @@ void fn_802DA1F4(int arg0, void *arg1, int arg2) {
 /* Initializes the global BoneHandleAlloc stack allocator and its associated bone
  * matrix tables, setting the main table to repeated identity-like 4-float blocks
  * and the tail table to a 3x3 identity diagonal. */
-void fn_802DA2F4(void) {
-    void *alloc;
+/* Initialize the global BoneHandleAlloc stack allocator with a 0x19000-byte arena and its three callbacks, then pattern the bone matrix table lbl_804DAC48 and set the tail table lbl_804DB434 to a 3x3 identity. */ void fn_802DA2F4(void) {
+    void *allocator;
     void *arena;
-    float *matrix;
-    int count;
-    int i;
-    float value1;
-    float value0;
-    float *tail;
-    alloc = fn_801284F8(0x28, lbl_8055D128);
-    if (alloc != 0) {
+    float *boneMatrix;
+    int matrixCount;
+    int matrixIndex;
+    float oneValue;
+    float zeroValue;
+    float *tailMatrix;
+    allocator = fn_801284F8(0x28, lbl_8055D128);
+    if (allocator != 0) {
         arena = (void *)fn_8012850C(0x19000, lbl_8034C908);
-        *(void **)((char *)alloc + 8) = lbl_8034C8F8;
-        *(int *)((char *)alloc + 0x10) = 0;
-        *(int *)((char *)alloc + 0xC) = 0x19000;
-        *(void **)((char *)alloc + 4) = arena;
-        *(void **)alloc = lbl_8034C8E8;
-        *(void **)((char *)alloc + 0x14) = (void *)fn_802D9C5C;
-        *(void **)((char *)alloc + 0x18) = (void *)fn_802D9DE4;
-        *(void **)((char *)alloc + 0x1C) = (void *)fn_802DA1F4;
+        *(void **)((char *)allocator + 8) = lbl_8034C8F8;
+        *(int *)((char *)allocator + 0x10) = 0;
+        *(int *)((char *)allocator + 0xC) = 0x19000;
+        *(void **)((char *)allocator + 4) = arena;
+        *(void **)allocator = lbl_8034C8E8;
+        *(void **)((char *)allocator + 0x14) = (void *)fn_802D9C5C;
+        *(void **)((char *)allocator + 0x18) = (void *)fn_802D9DE4;
+        *(void **)((char *)allocator + 0x1C) = (void *)fn_802DA1F4;
     }
-    lbl_8055FE5C = alloc;
-    value0 = lbl_80565030;
-    value1 = lbl_80565034;
-    matrix = lbl_804DAC48;
-    count = 0xB;
-    for (i = 0; i < count; i++) {
-        matrix[0] = value0;
-        matrix[1] = value1;
-        matrix[2] = value1;
-        matrix[3] = value1;
-        matrix[4] = value0;
-        matrix[5] = value1;
-        matrix[6] = value1;
-        matrix[7] = value1;
-        matrix[8] = value0;
-        matrix[9] = value1;
-        matrix[10] = value1;
-        matrix[11] = value1;
-        matrix[12] = value0;
-        matrix[13] = value1;
-        matrix[14] = value1;
-        matrix[15] = value1;
-        matrix[16] = value0;
-        matrix[17] = value1;
-        matrix[18] = value1;
-        matrix[19] = value1;
-        matrix[20] = value0;
-        matrix[21] = value1;
-        matrix[22] = value1;
-        matrix[23] = value1;
-        matrix += 24;
+    lbl_8055FE5C = allocator;
+    zeroValue = lbl_80565030;
+    oneValue = lbl_80565034;
+    boneMatrix = lbl_804DAC48;
+    matrixCount = 0xB;
+    for (matrixIndex = 0; matrixIndex < matrixCount; matrixIndex++) {
+        boneMatrix[0] = zeroValue;
+        boneMatrix[1] = oneValue;
+        boneMatrix[2] = oneValue;
+        boneMatrix[3] = oneValue;
+        boneMatrix[4] = zeroValue;
+        boneMatrix[5] = oneValue;
+        boneMatrix[6] = oneValue;
+        boneMatrix[7] = oneValue;
+        boneMatrix[8] = zeroValue;
+        boneMatrix[9] = oneValue;
+        boneMatrix[10] = oneValue;
+        boneMatrix[11] = oneValue;
+        boneMatrix[12] = zeroValue;
+        boneMatrix[13] = oneValue;
+        boneMatrix[14] = oneValue;
+        boneMatrix[15] = oneValue;
+        boneMatrix[16] = zeroValue;
+        boneMatrix[17] = oneValue;
+        boneMatrix[18] = oneValue;
+        boneMatrix[19] = oneValue;
+        boneMatrix[20] = zeroValue;
+        boneMatrix[21] = oneValue;
+        boneMatrix[22] = oneValue;
+        boneMatrix[23] = oneValue;
+        boneMatrix += 24;
     }
-    value1 = lbl_80565030;
-    value0 = lbl_80565034;
-    tail = lbl_804DB434;
-    *tail++ = value1;
-    *tail++ = value0;
-    *tail++ = value0;
-    *tail++ = value0;
-    *tail++ = value1;
-    *tail++ = value0;
-    *tail++ = value0;
-    *tail++ = value0;
-    *tail = value1;
+    oneValue = lbl_80565030;
+    zeroValue = lbl_80565034;
+    tailMatrix = lbl_804DB434;
+    *tailMatrix++ = oneValue;
+    *tailMatrix++ = zeroValue;
+    *tailMatrix++ = zeroValue;
+    *tailMatrix++ = zeroValue;
+    *tailMatrix++ = oneValue;
+    *tailMatrix++ = zeroValue;
+    *tailMatrix++ = zeroValue;
+    *tailMatrix++ = zeroValue;
+    *tailMatrix = oneValue;
 }
 #pragma pop
 /* Destructor-like cleanup for the stack allocator object: installs its vtable, frees the owned buffer, and optionally deletes the object. */
@@ -820,17 +819,16 @@ void fn_802DAA18(void *arg0) {
     int size;
 
     lbl_8055FE60 = var_r31;
-    if (var_r31 == 0) {
+    if (!var_r31) {
         entry = (struct StackAllocRecord *)ctx->current;
         if ((unsigned int)entry + 0x10000 == 0xFFFF) {
             memset(sp8, 0, 0x3C0);
             ctx->initialized = 0;
             var_r31 = (void *)1;
             if (*(volatile int *)&ctx->used + 0x3E0 > *(volatile int *)&ctx->capacity) {
-                size = *(volatile int *)&ctx->capacity;
                 format = lbl_80346798;
                 name = ctx->name;
-                fn_802E317C(format, name, 0x3D8, size / 0x400);
+                fn_802E317C(format, name, 0x3D8, (size = *(volatile int *)&ctx->capacity) / 0x400);
                 var_r29 = 0;
             } else {
                 allocPtr = (int *)(*(volatile unsigned char **)&ctx->buffer + *(volatile int *)&ctx->used);
@@ -865,42 +863,20 @@ void fn_802DAA18(void *arg0) {
     }
     ctx->status = entry->status;
 }
-void fn_802DABA4(float *arg0) {
-    float a0 = arg0[0];
-    float s1 = lbl_80565038;
-    float a1 = arg0[1];
-    float s2 = lbl_8056503C;
-    float t0 = a0 * s1;
-    float a2 = arg0[2];
-    float t3 = a0 * s2;
-    float t1 = a1 * s1;
-    float t2 = a2 * s1;
+void fn_802DABA4(const float *arg0) {
     float sp[12];
-    sp[0] = t0;
-    a0 = arg0[3];
-    t0 = a0 * s1;
-    t3 = a1 * s2;
-    a1 = arg0[4];
-    t1 = a2 * s2;
-    a2 = arg0[5];
-    t2 = a1 * s1;
-    a0 = a2 * s1;
-    sp[1] = t1;
-    t1 = a0;
-    a0 = arg0[3];
-    t2 = a0 * s2;
-    t1 = a1 * s2;
-    a1 = a2 * s2;
-    sp[2] = t2;
-    sp[3] = t3;
-    sp[4] = t3;
-    sp[5] = t1;
-    sp[6] = t0;
-    sp[7] = t2;
-    sp[8] = a0;
-    sp[9] = t2;
-    sp[10] = t1;
-    sp[11] = a1;
+    float s1 = 10.0f;
+    float s2 = -10.0f;
+    float a0 = arg0[0], a1 = arg0[1], a2 = arg0[2];
+    float a3 = arg0[3], a4 = arg0[4], a5 = arg0[5];
+    float p0 = a0 * s1, p1 = a1 * s1, p2 = a2 * s1;
+    float p3 = a0 * s2, p4 = a1 * s2, p5 = a2 * s2;
+    float p6 = a3 * s1, p7 = a4 * s1, p8 = a5 * s1;
+    float p9 = a3 * s2, p10 = a4 * s2, p11 = a5 * s2;
+    sp[0] = p0; sp[1] = p1; sp[2] = p2;
+    sp[3] = p3; sp[4] = p4; sp[5] = p5;
+    sp[6] = p6; sp[7] = p7; sp[8] = p8;
+    sp[9] = p9; sp[10] = p10; sp[11] = p11;
     fn_802DAA18(fn_802DA704(0x4C, sp, 4));
 }
 
