@@ -956,29 +956,29 @@ void fn_802E0EAC(void *arg0) {
     }
 }
 
-void fn_802E0F98(void) {
-    void *heap;
+/* InitSimpleHeap: register the best-fit alloc/free callbacks, allocate 0x600000 bytes of backing memory and a heap-head node, then link them into one aligned free block as the initial heap. */ void fn_802E0F98(void) {
+    void *heapHead;
     fn_80119214((void *)fn_802E0C04, (void *)fn_802E0D44);
     fn_80116E54(&fn_8011A168, &lbl_8055D150);
     fn_801282EC(0x80);
     fn_801282F4();
     lbl_8055FEEC = fn_8012850C(0x600000, &lbl_8055D158);
-    heap = ((void *(*)(u32, void *))fn_801284F8)(0x10, &lbl_8055D160);
-    if (heap != 0) {
+    heapHead = ((void *(*)(u32, void *))fn_801284F8)(0x10, &lbl_8055D160);
+    if (heapHead != 0) {
         register void *freeBlock = lbl_8055FEEC;
-        *(u32 *)((char *)heap + 0xC) = 0;
-        *(u32 *)((char *)heap + 4) = 0x1F;
+        *(u32 *)((char *)heapHead + 0xC) = 0;
+        *(u32 *)((char *)heapHead + 4) = 0x1F;
         *(u32 *)freeBlock = 0xABCFEED0;
         *(u32 *)((char *)freeBlock + 8) = 0;
         {
-            u32 size = *(u32 *)((char *)heap + 4);
-            *(u32 *)((char *)freeBlock + 4) = 0x600000 - ((size + 0x10) & ~size);
+            u32 align = *(u32 *)((char *)heapHead + 4);
+            *(u32 *)((char *)freeBlock + 4) = 0x600000 - ((align + 0x10) & ~align);
         }
-        *(void **)((char *)freeBlock + 0xC) = heap;
-        *(void **)((char *)heap + 8) = freeBlock;
-        *(u8 *)heap = 1;
+        *(void **)((char *)freeBlock + 0xC) = heapHead;
+        *(void **)((char *)heapHead + 8) = freeBlock;
+        *(u8 *)heapHead = 1;
     }
-    lbl_8055FEE8 = heap;
+    lbl_8055FEE8 = heapHead;
 }
 
 /* Destroys the SimpleHeap (lbl_8055FEE8): if any block is still handed out it
