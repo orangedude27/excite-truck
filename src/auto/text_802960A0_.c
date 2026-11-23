@@ -580,6 +580,18 @@ ret0:
 }
 #pragma pop
 
+/* FlipBook: the named keyframe collection fn_80296B10 hands out and
+ * FlipBook_release (fn_80296D28) refcounts.  Its 0x30-byte keyframe records
+ * (struct KF above) start at +0x24; +0x2C counts them. */
+typedef struct FlipBook {
+    char pad[0x24];    /* +0x00 header, links; the next collection is at +0x20 */
+    struct KF *kf;     /* +0x24 keyframe records, count of them */
+    int refCount;      /* +0x28 references held */
+    int count;         /* +0x2C number of keyframe records */
+} FlipBook;
+
+#define kZeroTime lbl_8056456C  /* .sdata2: 0.0f, the running time these sums start from */
+
 #pragma push
 #pragma cplusplus on
 extern "C" float fn_802970C8(void *arg0) {
