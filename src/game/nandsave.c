@@ -467,7 +467,7 @@ u32 fn_802E8D84(void) { return 1; }
 
 #pragma use_lmw_stmw off
 
-/* rmemcard_read_file - read a whole NAND file into the caller's buffer.
+/* rmemcardReadFile - read a whole NAND file into the caller's buffer.
  * Returns 1 when all len bytes are in buf, 0 on any failure.
  *
  * The path is published in rmemcard_current_path for the whole read so the
