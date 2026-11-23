@@ -519,7 +519,7 @@ int fn_80005044(int* eventIndex, int* subIndex, const char* name) {
 #pragma push
 #pragma cplusplus on
 #pragma use_lmw_stmw off
-extern "C" int fn_80004F00(int* eventIndex, int* subIndex, const char* name) {
+/* Look up a contest entry by its contestant's name (case-insensitive): scan every registered event's entries and, on a match, write the event and entry indices to the outputs and return 1; return 0 if none match. */ extern "C" int fn_80004F00(int* eventIndex, int* subIndex, const char* name) {
     class VirtualObj {
     public:
         virtual void v0();
@@ -529,18 +529,18 @@ extern "C" int fn_80004F00(int* eventIndex, int* subIndex, const char* name) {
         virtual const char* getName(const char*, u32*);
     };
     int found = 0;
-    int eventIdx;
+    int eventId;
     /* Search events and their entries for an object whose name matches; return its indices. */
-    for (eventIdx = 0; eventIdx < fn_80012818(); eventIdx++) {
-        u8* event = fn_80012820(eventIdx);
-        int entryIdx;
-        for (entryIdx = 0; entryIdx < *(int*)(event + 0x70); entryIdx++) {
-            u8* entry = fn_80012870(eventIdx, entryIdx);
+    for (eventId = 0; eventId < fn_80012818(); eventId++) {
+        u8* event = fn_80012820(eventId);
+        int entryIndex;
+        for (entryIndex = 0; entryIndex < *(int*)(event + 0x70); entryIndex++) {
+            u8* entry = fn_80012870(eventId, entryIndex);
             VirtualObj* object = *(VirtualObj**)(entry + 0x20);
             const char* entryName = object->getName(lbl_80558918, lbl_80558920);
             if (stricmp(entryName, name) == 0) {
-                *eventIndex = eventIdx;
-                *subIndex = entryIdx;
+                *eventIndex = eventId;
+                *subIndex = entryIndex;
                 found = 1;
                 break;
             }
