@@ -236,7 +236,6 @@ void fn_802CEA34(void) {
 
 #pragma dont_inline reset
 
-/* Draws the Clip Clocks indicator depending on TV format and connection status. */
 /* Select a render-mode preset for the current TV format and component-cable status, log the choice, copy it into the working record with a 16-line border inset, then scroll the picture by nudging two screen-rectangle offsets. */ /* Select a render-mode preset for the current TV format and component-cable status, log the choice, copy it into the working record with a 16-line border inset, then scroll the picture by nudging two screen-rectangle offsets. */ void fn_802CEAC4(void) {
     extern int VIGetTvFormat(void), fn_802E9A1C(void), fn_8005AD9C(void);
     extern void fn_802E30C8(const char *, ...);
