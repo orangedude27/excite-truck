@@ -139,6 +139,9 @@ typedef struct DrTlutObj {
  * texture record the drCreateTexture (fn_802D8E9C) format creators build.
  * Only the fields this TU touches are named; the two GX object pairs are 0x40
  * and 0xC bytes apart, matching GXInitTexObj()/GXInitTlutObj(). */
+#define DRTEX_SLOT_COUNT 0x1C2 /* number of DrTexRecord slots in lbl_8055FE28 */
+#define DRTEX_SLOT_STRIDE 0xF4 /* byte stride between consecutive slots */
+
 typedef struct DrTexRecord {
     char name[0x20];          /* at 0x00: texture name, copied by the creator */
     unsigned char inUse;      /* at 0x20: slot owner flag */
