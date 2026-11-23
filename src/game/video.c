@@ -170,7 +170,13 @@ void fn_802DEF70(void) {
     fn_802D3144();
 }
 #pragma scheduling on
-/* Sets up GX indirect texture/TEV pipeline and loads required texture objects. */
+/* Set up the two-stage indirect-texture TEV pipeline used by render mode 2
+ * (without the extra texture stage of GXSetupWaterBumpTevPipelineB): texcoord 0
+ * samples the surface, texcoord 1 carries the indirect coordinate read from
+ * TEXMAP5, and stage 1 folds in the distort texture held in TEXMAP6.  Load the
+ * indirect matrix/map (fn_802D312C) into map 5, the indirect texture
+ * (fn_802D30E4) into map 7 and the distort texture (fn_802D30F0) into map 6.
+ * spC/sp8 reserve stack slots for GXSetTevIndirect's trailing arguments. */
 void GXSetupIndirectTevPipeline(void) {
     s32 spC;
     s32 sp8;
