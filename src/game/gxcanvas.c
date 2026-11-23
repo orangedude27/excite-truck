@@ -120,7 +120,7 @@ extern void fn_802E317C(const char *,...);
 extern const char lbl_8034B020[],lbl_8034B048[];
 #pragma scheduling invalid_target
 /* Loads a CANV image resource, byte-swaps its header fields when flagged, converts pixels to RGBA order, and reports load/format errors. */
-void *fn_802C2DD4(s32 resourceId) {
+void *gxCanvasLoad(s32 resourceId) {
     u32 format;
     s32 size;
     u8 needsSwap;

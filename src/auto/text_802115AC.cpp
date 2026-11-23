@@ -576,7 +576,7 @@ extern "C" void fn_80211FF0(void) {
 extern "C" void *fn_801284F8(s32, const char *);
 extern "C" s32 fn_8012C33C(s32);
 extern "C" s32 loadStamp(s32);
-extern "C" s32 fn_802C2DD4(s32);
+extern "C" s32 gxCanvasLoad(s32);
 extern "C" void *fn_802228B0(void *, s32, s32, s32);
 extern "C" void *fn_802226D4(s32);
 #pragma use_lmw_stmw off
@@ -605,7 +605,7 @@ extern "C" void *fn_8021203C(char *path, s32 countDivisor, s32 imgArgA, s32 imgA
         if (canvas) {
             canvas->vtable = lbl_8033D504;
             if (fn_8012C33C((s32)path)) {
-                obj = (void *)fn_802C2DD4((s32)path);
+                obj = (void *)gxCanvasLoad((s32)path);
                 canvas->value = obj;
                 canvas->count = *(s32 *)((char *)obj + 12) / countDivisor;
             } else {
