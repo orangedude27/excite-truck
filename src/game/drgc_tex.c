@@ -660,7 +660,7 @@ void fn_802D81C4(void *arg0, int arg1) {
     fn_80128670(tmp);
 }
 #pragma unroll reset
-extern char lbl_8034C5AC[];
+extern char drTexPal8TmpTag[];
 /* Prepares an 8-bit paletted (C8) drgc source texture for GX in place: byte-swaps the 256-entry RGBA8888 palette, then rewrites the linear image into GX 4x8 tiled order through a temporary copy. arg1 is unused (shared C4/C8 dispatch signature). */ void fn_802D86BC(void *source, int arg1)
 {
   void **srcData = *((void ***) (((char *) source) + 0x2c));
@@ -683,7 +683,7 @@ extern char lbl_8034C5AC[];
   }
 
   fn_801282EC(0x20);
-  linearCopy = (unsigned char *) fn_8012850C((void *) (width * height), lbl_8034C5AC);
+  linearCopy = (unsigned char *) fn_8012850C((void *) (width * height), drTexPal8TmpTag);
   memcpy(linearCopy, image, width * height);
   for (i = 0; i < height; i++)
   {
