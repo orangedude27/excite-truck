@@ -16,26 +16,26 @@ extern char lbl_8034BCE4[]; /* "loadpool" - allocation name for the load pool */
 extern char lbl_8034BCD8[]; /* "modelpool" - allocation name for model storage */
 extern void fn_802CE474(void *);
 __declspec(section ".sdata") extern char lbl_8055D0A8[]; /* "modpool" - allocation name for the manager */
-void *fn_802CE3A4(int slotCount, int arg1, int arg2) {
+/* Allocate and initialize a pooled manager: its inner load pool, backing slot storage, and a table of slotCount entries. */ void *fn_802CE3A4(int slotCount, int arg1, int arg2) {
     int count;
-    void *pool;
-    void *data;
-    void *storage;
+    void *manager;
+    void *loadPool;
+    void *slotStorage;
 
     /* Allocates and initializes a pooled manager: inner data block, backing storage, and a table of slotCount entries. */
-    pool = fn_801284F8(0x14, lbl_8055D0A8);
-    if (pool != 0) {
-        *(int *)((char *)pool + 8) = slotCount;
-        *(int *)((char *)pool + 0xC) = arg1;
-        data = fn_801284F8(0x10, lbl_8034BCE4);
-        if (data != 0) data = ((void *(*)(void *, int, int))fn_8013420C)(data, *(int *)((char *)pool + 0xC), arg2);
-        *(void **)((char *)pool + 4) = data;
-        count = *(int *)((char *)pool + 8);
-        storage = fn_8012850C((count << 6) + 0x10, lbl_8034BCD8);
-        *(void **)pool = ((void *(*)(void *, void *, int, int, int))fn_8002F37C)(storage, fn_802CE474, 0, 0x40, count);
-        *(int *)((char *)pool + 0x10) = 0;
+    manager = fn_801284F8(0x14, lbl_8055D0A8);
+    if (manager != 0) {
+        *(int *)((char *)manager + 8) = slotCount;
+        *(int *)((char *)manager + 0xC) = arg1;
+        loadPool = fn_801284F8(0x10, lbl_8034BCE4);
+        if (loadPool != 0) loadPool = ((void *(*)(void *, int, int))fn_8013420C)(loadPool, *(int *)((char *)manager + 0xC), arg2);
+        *(void **)((char *)manager + 4) = loadPool;
+        count = *(int *)((char *)manager + 8);
+        slotStorage = fn_8012850C((count << 6) + 0x10, lbl_8034BCD8);
+        *(void **)manager = ((void *(*)(void *, void *, int, int, int))fn_8002F37C)(slotStorage, fn_802CE474, 0, 0x40, count);
+        *(int *)((char *)manager + 0x10) = 0;
     }
-    return pool;
+    return manager;
 }
 
 void fn_802CE474(void *slot) {
