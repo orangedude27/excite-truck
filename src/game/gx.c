@@ -3574,7 +3574,7 @@ void buildViewXform(void) {
    the dirty flag): clear it, set the GX viewport (jittered by field when field
    rendering is enabled), set the matching scissor box, then invalidate the
    cached vertex format. */
-void fn_802D1678() {
+/* Applies the pending viewport change held in the sViewport settings block (+1 is the dirty flag): clear it, set the GX viewport (jittered by field when field rendering is enabled), set the matching scissor box, then invalidate the cached vertex format. */ void fn_802D1678() {
 #define sViewport           lbl_804C9778
 #define gRenderMode         lbl_8055FD64
 #define gNearPlane          lbl_80564F88
