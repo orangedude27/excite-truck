@@ -28167,6 +28167,7 @@ enum {
 /* IPC results (revolution/IPC/ipcclt.h) and usb.c's IOSAlloc()/IOSFree()
    wrappers, spelled out here for the same reason as IPCIOVector above. */
 typedef s32 IPCResult;
+typedef void (*USBCallback)(IPCResult result, void *arg);
 enum {
     IPC_RESULT_INVALID_INTERNAL = -0x15,
     IPC_RESULT_ALLOC_FAILED = -0x16,
