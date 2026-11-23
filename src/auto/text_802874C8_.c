@@ -1,8 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-#pragma push
-#pragma scheduling invalid_target
+
 extern void fn_8000D838(void *);
 extern void fn_80287668(void);
 extern void fn_80287610(void);
@@ -17,14 +16,16 @@ extern int lbl_8055F670;
 #pragma scheduling on
 void fn_802874C8(void) {
     register volatile unsigned char *base = (volatile unsigned char *)lbl_804B2FF8;
-    volatile unsigned int *obj;
+    register volatile unsigned int *obj;
+    register volatile float *fobj;
     volatile unsigned int *root;
 
     fn_8000D838(&lbl_8055F670);
     *(volatile unsigned int *)(base + 0x20) = (unsigned int)lbl_8033D618;
     obj = (volatile unsigned int *)(base + 0x20);
-    *(volatile float *)(obj + 6) = lbl_80564200;
-    root = (volatile unsigned int *)base;
+    fobj = (volatile float *)(base + 0x38);
+    *fobj = lbl_80564200;
+    root = (volatile unsigned int *)&lbl_804B2FF8[0];
     *(volatile int *)base = 0;
     root[1] = 0x7b;
     root[2] = 0;
