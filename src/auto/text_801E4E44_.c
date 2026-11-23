@@ -105,17 +105,19 @@ extern f32 lbl_80562D40;
 extern f32 lbl_80487C78[];
 #pragma scheduling invalid_target
 #pragma scheduling on
-s32 fn_801E501C(s32 unused, void *xyz, u8 color, f32 scale) {
-    f32 y = *(f32 *)((char *)xyz + 4);
-    f32 x = *(f32 *)((char *)xyz + 0);
-    f32 z = *(f32 *)((char *)xyz + 8);
-    f32 w = lbl_80562D40 * scale;
-    u32 packed = ((u32)color << 24) | 0x00FFFFFF;
-    s32 zero = 0;
+s32 fn_801E501C(s32 unused, const void *xyz, u8 color, f32 scale) {
+    f32 w, z, y, x;
+    u32 packed;
     s32 i;
-    for (i = 0; i < 60; i++) lbl_80487578[i].unk_0xC = packed;
+    s32 zero = 0;
+    x = *(f32 *)((char *)xyz + 0);
+    w = lbl_80562D40 * scale;
+    y = *(f32 *)((char *)xyz + 4);
+    z = *(f32 *)((char *)xyz + 8);
+    packed = ((u32)color << 24) | 0x00FFFFFF;
     lbl_8055EAA8 = zero;
     lbl_8055EAAC = zero;
+    for (i = 0; i < 60; i++) lbl_80487578[i].unk_0xC = packed;
     lbl_80487C78[0] = x;
     lbl_80487C78[1] = y;
     lbl_80487C78[2] = z;
