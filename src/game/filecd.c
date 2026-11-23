@@ -284,9 +284,9 @@ extern void *memset(void *, int, unsigned int);
 extern int DVDGetCurrentDir(char **, char *);
 #pragma push
 #pragma cplusplus on
-// Open "path" on the DVD as a FileDisk node taken from this TU's "fdo" pool and
-// leave its read cursor at the end of the file.  Always returns 0; a node whose
-// file could not be opened is released again.
+// Open "path" from the DVD as a FileDisk node taken from the fdo pool, seed its
+// vtable/owner, strip a leading ".\\" or "\", fetch its info block, then seek to
+// end of file. Invalid nodes are released again; always returns 0.
 extern "C" int fn_802E4280(void *owner, char *path) {
     char pathBuf[0x100];
     FileDisk *disk;
