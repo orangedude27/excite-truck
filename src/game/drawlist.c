@@ -721,12 +721,12 @@ void fn_802C92D8(void) {
 }
 
 /* Draws an axis-aligned quad outline/strip on the given screen if fn_801E4F20(4) succeeds. */
-void fn_802C92DC(int left, int top, int right, int bottom, int screen) {
+/* Draw an axis-aligned filled rectangle from (left,top) to (right,bottom) in color, wrapped in a temporary mode-1 mesh pass: begin the pass, append four vertices with a triangle strip, then flush. */ void fn_802C92DC(int left, int top, int right, int bottom, int color) {
     if (((int (*)(int))fn_801E4F20)(4) != 0) {
-        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)right, (float)top, 0.0f, 0.0f, 0.0f);
-        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)left, (float)top, 0.0f, 0.0f, 0.0f);
-        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 1, (float)right, (float)bottom, 0.0f, 0.0f, 0.0f);
-        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 1, (float)left, (float)bottom, 0.0f, 0.0f, 0.0f);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(color, 0, (float)right, (float)top, 0.0f, 0.0f, 0.0f);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(color, 0, (float)left, (float)top, 0.0f, 0.0f, 0.0f);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(color, 1, (float)right, (float)bottom, 0.0f, 0.0f, 0.0f);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(color, 1, (float)left, (float)bottom, 0.0f, 0.0f, 0.0f);
         fn_801E4FF4();
     }
 }
