@@ -125,7 +125,7 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
         sum += type_p[1];
         type_p += 2;
     }
-    if (type_p[0] != 0xFF) {
+    if ((int)type_p[0] != 0xFF) {
         *out_h = h;
         if (out_type != 0) {
             *out_type = type_p[0];
