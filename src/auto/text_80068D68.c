@@ -28574,7 +28574,7 @@ end_async:
 /* Starts an asynchronous USB control write: flushes the data buffer and issues the internal control message. */
 s32 IUSB_WriteCtrlMsgAsync(s32 fd, s32 requestType, s32 request, s32 value, s32 index, u32 length, void* data, void* callback, void* callbackArg) {
     DCFlushRange(data, length);
-    return __CtrlMsgInt(fd, requestType, request, value, index, length, data, callback, callbackArg, 1);
+    return ((IPCResult (*)(s32, s32, s32, s32, s32, u32, void*, void*, void*, u8))__CtrlMsgInt)(fd, requestType, request, value, index, length, data, callback, callbackArg, 1);
 }
 #pragma use_lmw_stmw reset
 s32 AXFXReverbHiInit(void* arg0) {
