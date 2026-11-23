@@ -28583,7 +28583,7 @@ static IPCResult __CtrlMsgInt(s32 fd, u8 requestType, u8 request, u16 value,
         goto end;
     }
 
-    block->callback = callback;
+    block->callback = (void (*)())callback;
     block->callbackArg = callbackArg;
     USB_LOG("ctrlmsgint: cb = 0x%x cbArg = 0x%x\n", block->callback,
             block->callbackArg);
