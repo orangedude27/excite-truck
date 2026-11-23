@@ -92,9 +92,9 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
     }
     divX = x / 32;
     divY = y / 32;
+    tileX = divX - lbl_8055E99C;
     remX = x - divX * 32;
     remZ = y - divY * 32;
-    tileX = divX - lbl_8055E99C;
     tileZ = divY - lbl_8055E9A0;
     if (tileX < 0 || tileZ < 0) {
         node = 0;
