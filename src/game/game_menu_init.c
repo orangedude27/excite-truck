@@ -289,13 +289,13 @@ int fn_80004D64(char* args) {
     return 1;
 }
 
-void fn_80004B5C(void) {
+/* Initialize the game/menu subsystems in boot order (core services, resources/UI, audio/DSP, game modules), register the scene callbacks, then finalize setup; paired with fn_80004CB4's shutdown. */ void fn_80004B5C(void) {
     /* Runs the main game/menu initialization sequence: core subsystems, resources/UI,
        audio/DSP, game modules, then registers scene/callback handlers and finalizes setup. */
-    void* data = lbl_802FAEA0;
+    void* menuData = lbl_802FAEA0;
     fn_802E2C20();
     fn_80004ACC();
-    fn_8012E81C((char*)data + 0x90);
+    fn_8012E81C((char*)menuData + 0x90);
     fn_80133024();
     fn_802C2AA8(lbl_80558900);
     fn_80127464();
@@ -306,9 +306,9 @@ void fn_80004B5C(void) {
     fn_80245118();
     fn_802E712C();
     fn_80012478();
-    fn_800124DC((char*)data + 0x128, 1, 1, lbl_80560100);
+    fn_800124DC((char*)menuData + 0x128, 1, 1, lbl_80560100);
     fn_80127464();
-    fn_8012E81C((char*)data + 0x9c);
+    fn_8012E81C((char*)menuData + 0x9c);
     fn_80232230();
     fn_80137B20();
     fn_80016354();
