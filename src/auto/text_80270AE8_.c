@@ -728,12 +728,12 @@ extern "C" void fn_80271624(int mode, void *arg1)
         Zone zones[1];
     };
     Table *tbl = (Table *)lbl_8049A258;
-    char *o = (char *)arg1;
     char *cam;
     Ent *e;
     int arg;
     int changed;
     int idx;
+    char *o = (char *)arg1;
 
     cam = (char *)(*(Manager **)(*(char **)(o + 0x140) + 0x270))->getCamera();
     switch (*(char **)(cam + 4) != 0 ? *(unsigned char *)(*(char **)(cam + 4) + 0x34) : 3) {
@@ -1106,13 +1106,14 @@ void fn_802723B4(void *arg0, void *arg1) {
     void *object;
     float factor;
     float base;
+float __repair_base_1;
     ((void (*)(void **, void *))fn_80136468)(&slot, arg0);
     object = slot;
     factor = *(float *)((char *)&slot + 4);
     base = *(float *)object;
     *(float *)arg1 = base + (*(float *)*(void **)((char *)object + 0x14) - base) * factor;
-    base = *(float *)((char *)object + 4);
-    *(float *)((char *)arg1 + 4) = base + (*(float *)((char *)*(void **)((char *)object + 0x14) + 4) - base) * factor;
+    __repair_base_1 = *(float *)((char *)object + 4);
+    *(float *)((char *)arg1 + 4) = __repair_base_1 + (*(float *)((char *)*(void **)((char *)object + 0x14) + 4) - __repair_base_1) * factor;
 }
 extern float lbl_8055F560, lbl_80563F40, lbl_80563F48;
 extern void fn_80136468(void **, void *, float);
@@ -1811,7 +1812,7 @@ void fn_80273604(void *arg0, s32 arg1) {
     case 0x22: {
         struct Scratch { float vec[3]; float pad; float matrix[9]; float pos[3]; } scratch;
         float mag, nx, ny, nz, sine, oneMinusCos, t0, t1, t2, t3, t4, t5, cosine;
-        float scale = lbl_80563F4C;
+        register float scale = 0.0174532925f;
         *(s32 *)((u8 *)arg0 + 88) = *(s32 *)((u8 *)arg0 + 192); *(s32 *)((u8 *)arg0 + 92) = *(s32 *)((u8 *)arg0 + 196); *(s32 *)((u8 *)arg0 + 96) = *(s32 *)((u8 *)arg0 + 200); *(s32 *)((u8 *)arg0 + 100) = *(s32 *)((u8 *)arg0 + 204);
         *(s32 *)((u8 *)arg0 + 104) = *(s32 *)((u8 *)arg0 + 208); *(s32 *)((u8 *)arg0 + 108) = *(s32 *)((u8 *)arg0 + 212); *(s32 *)((u8 *)arg0 + 112) = *(s32 *)((u8 *)arg0 + 216); *(s32 *)((u8 *)arg0 + 116) = *(s32 *)((u8 *)arg0 + 220);
         *(s32 *)((u8 *)arg0 + 120) = *(s32 *)((u8 *)arg0 + 224); *(s32 *)((u8 *)arg0 + 124) = *(s32 *)((u8 *)arg0 + 228); *(s32 *)((u8 *)arg0 + 128) = *(s32 *)((u8 *)arg0 + 232); *(s32 *)((u8 *)arg0 + 132) = *(s32 *)((u8 *)arg0 + 236);
