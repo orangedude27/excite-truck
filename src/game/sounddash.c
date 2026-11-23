@@ -117,13 +117,13 @@ int fn_8020BDB8(int command) {
 
 void fn_8020BF58(void) {
     struct { char sp8[64]; char sp48[64]; char padding[0xD0]; } scratch;
-    int var_r29;
-    int var_r28;
-    int temp_r26;
-    int temp_r27;
+    int soundIndex;
+    int drawSlot;
+    int entryIndex;
+    int isValueColumn;
     int zero = 0;
-    unsigned int temp_r0;
-    unsigned int temp_r3;
+    unsigned int column;
+    unsigned int indexSign;
     int var_r3, var_r3_3, var_r6_2, var_r5;
     unsigned int temp_r4;
     char *var_r3_2, *var_r6;
@@ -135,29 +135,29 @@ void fn_8020BF58(void) {
 
     if (lbl_8055EE24 == 1) {
         fn_80238B44(7, 7, 0x15E, 0x1C0, 0x8C000000);
-        var_r29 = 0;
+        soundIndex = 0;
         do {
-            fn_802E6B38(var_r29, scratch.sp48);
-            temp_r0 = (unsigned int)var_r29 << 28;
-            temp_r3 = (unsigned int)var_r29 >> 31;
-            temp_r0 -= temp_r3;
-            temp_r0 = (temp_r0 << 4) | (temp_r0 >> 28);
-            temp_r0 += temp_r3;
+            fn_802E6B38(soundIndex, scratch.sp48);
+            column = (unsigned int)soundIndex << 28;
+            indexSign = (unsigned int)soundIndex >> 31;
+            column -= indexSign;
+            column = (column << 4) | (column >> 28);
+            column += indexSign;
             var_r3 = 0x14;
-            if (var_r29 / 16 != 0)
+            if (soundIndex / 16 != 0)
                 var_r3 = 0x122;
-            fn_80238A74(var_r3, (temp_r0 * 0xE) + 0x1A, scratch.sp48, -0x100);
-            var_r29 += 1;
-        } while (var_r29 < 0x20);
+            fn_80238A74(var_r3, (column * 0xE) + 0x1A, scratch.sp48, -0x100);
+            soundIndex += 1;
+        } while (soundIndex < 0x20);
     } else if (lbl_8055EE24 == 0) {
         fn_80238B44(7, 7, 0x12C, 0x1C0, 0x8C000000);
-        var_r29 = fn_8020A76C() * 2;
-        for (var_r28 = 0; var_r28 < var_r29; var_r28++) {
-            var_r3_2 = fn_8020A774(var_r28 / 2);
-            temp_r4 = (unsigned int)var_r28 >> 31;
-            temp_r27 = ((var_r28 & 1) ^ temp_r4) - temp_r4;
-            temp_r26 = (int)(temp_r4 + var_r28) >> 1;
-            if (temp_r27 == 0) {
+        soundIndex = fn_8020A76C() * 2;
+        for (drawSlot = 0; drawSlot < soundIndex; drawSlot++) {
+            var_r3_2 = fn_8020A774(drawSlot / 2);
+            temp_r4 = (unsigned int)drawSlot >> 31;
+            isValueColumn = ((drawSlot & 1) ^ temp_r4) - temp_r4;
+            entryIndex = (int)(temp_r4 + drawSlot) >> 1;
+            if (isValueColumn == 0) {
                 var_r6 = scratch.sp8;
                 var_r5 = 0x40;
                 goto copy_text_body;
@@ -181,12 +181,12 @@ void fn_8020BF58(void) {
                 sprintf(scratch.sp8, (const char *)&lbl_8055B5C8, *(float *)(var_r3_2 + 0x20));
             }
             var_r6_2 = -0x100;
-            if (temp_r26 == lbl_8055EE28)
+            if (entryIndex == lbl_8055EE28)
                 var_r6_2 = 0xFF2D2DC8;
             var_r3_3 = 0x14;
-            if (temp_r27 != 0)
+            if (isValueColumn != 0)
                 var_r3_3 = 0xF0;
-            fn_80238A74(var_r3_3, (temp_r26 * 0xE) + 0x1A, scratch.sp8, var_r6_2);
+            fn_80238A74(var_r3_3, (entryIndex * 0xE) + 0x1A, scratch.sp8, var_r6_2);
         }
     }
 
