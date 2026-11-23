@@ -169,14 +169,14 @@ extern void *memset(void *, int, unsigned long);
 #pragma ctrloop on
 /* Clear the track-music buffer for a context and stamp the first word of each
  * of its 64 slots (0x64 bytes apart) with the slot state (0 idle, 1 active). */
-long fn_8020F608(long slotState, long contextIndex) {
-    long *slot;
+/* Zero a context's 0x1900-byte track-music buffer and set the state word of each of its 64 slots (stride 0x64 = 25 longs) to slotState (0 idle, 1 active). */ long fn_8020F608(long slotState, long contextIndex) {
+    long *slotPtr;
     long slotIndex;
-    slot = (long *)fn_8020F5F0(contextIndex);
-    memset(slot, 0, 0x1900);
+    slotPtr = (long *)fn_8020F5F0(contextIndex);
+    memset(slotPtr, 0, 0x1900);
     for (slotIndex = 0; slotIndex < 64; slotIndex++) {
-        *slot = slotState;
-        slot += 25;
+        *slotPtr = slotState;
+        slotPtr += 25;
     }
 }
 #pragma ctrloop reset
