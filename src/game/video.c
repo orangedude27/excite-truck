@@ -387,7 +387,7 @@ void fn_802DF938(void) {
 /* Mode-4 render setup: one texgen passes the model's texcoords through the
  * identity matrix, then a 2-stage TEV combiner multiplies the texel colour by
  * the raster colour (stage 0) and folds the raster alpha into the result (stage 1). */
-void fn_802DF994(void) {
+/* Set up the mode-4 TEV pipeline used after gxSetupSceneLights: one texgen passes model texcoords through the identity matrix; stage 0 multiplies the texel colour by the raster colour, stage 1 folds the second vertex colour's alpha into the result. */ void fn_802DF994(void) {
     GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
     GXSetNumTexGens(1);
     GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR0A0);
