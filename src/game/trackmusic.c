@@ -571,38 +571,38 @@ void fn_8020FFE4(long arg0) {
 
 extern long lbl_8055B67C;
 extern signed char lbl_8055EEEC, lbl_8055EEED;
-long fn_802100AC(void) {
-    long trackState;
-    long trackIndex;
-    void *container;
-    struct Dummy_802113D8 *resource;
+/* Apply the pending track-music request: clear it, set up the requested song slot (-2/-1 are special IDs, otherwise index the song-path list), optionally reset the context's music buffer, and record the chosen song index. */ long fn_802100AC(void) {
+    long request;
+    long songIndex;
+    void *audioContainer;
+    struct Dummy_802113D8 *resourceObj;
 
     /* Selects/prepares track music entry based on lbl_8055EEE0 state and updates related globals. */
     fn_802EC12C();
-    trackState = lbl_8055EEE0;
-    if (trackState == -2) {
-        container = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
-        resource = *(struct Dummy_802113D8 **)((char *)container + 0x20);
+    request = lbl_8055EEE0;
+    if (request == -2) {
+        audioContainer = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
+        resourceObj = *(struct Dummy_802113D8 **)((char *)audioContainer + 0x20);
         fn_8020FDE4(0, (const char *)&lbl_8055B67C,
-                    (char *)resource->f6(&lbl_8055B674, lbl_8033C970));
+                    (char *)resourceObj->f6(&lbl_8055B674, lbl_8033C970));
         if ((unsigned char)lbl_8055EEEC != 0) {
             fn_8020F608(0, fn_8000DA10());
         }
-    } else if (trackState == -1) {
-        container = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
-        resource = *(struct Dummy_802113D8 **)((char *)container + 0x20);
+    } else if (request == -1) {
+        audioContainer = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
+        resourceObj = *(struct Dummy_802113D8 **)((char *)audioContainer + 0x20);
         fn_8020FDE4(1, (const char *)&lbl_8055B67C,
-                    (char *)resource->f6(&lbl_8055B674, lbl_8033C970));
+                    (char *)resourceObj->f6(&lbl_8055B674, lbl_8033C970));
         if ((unsigned char)lbl_8055EEED != 0) {
             fn_8020F608(1, fn_8000DA10());
         }
     } else {
-        trackIndex = trackState + lbl_8055EEE4 * 10;
-        container = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
-        resource = *(struct Dummy_802113D8 **)((char *)container + 0x20);
-        fn_8020FDE4(2, (const char *)lbl_804900AC.m_entries[trackIndex],
-                    (char *)resource->f6(&lbl_8055B674, lbl_8033C970));
-        lbl_8055B658 = trackIndex;
+        songIndex = request + lbl_8055EEE4 * 10;
+        audioContainer = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
+        resourceObj = *(struct Dummy_802113D8 **)((char *)audioContainer + 0x20);
+        fn_8020FDE4(2, (const char *)lbl_804900AC.m_entries[songIndex],
+                    (char *)resourceObj->f6(&lbl_8055B674, lbl_8033C970));
+        lbl_8055B658 = songIndex;
     }
 }
 
