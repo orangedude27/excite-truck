@@ -535,22 +535,22 @@ extern int fn_802CAF8C(void);
 extern int fn_802CAFF0(void);
 extern int fn_802CAFC8(int);
 __declspec(section ".sdata") extern const char lbl_8055D010[];
-void fn_802C5CC4(void *arg0, int arg1, int arg2, int arg3) {
-    char name[0x100];
-    char temp[0x100];
-    int other;
-    int value;
-    int index;
-    u16 result;
+/* Resolve an item's resource name (with an optional numbered suffix), register its texture, and store the resulting handle in the item's per-slot handle array. */ void fn_802C5CC4(void *item, int slot, int subKeyKind, int suffix) {
+    char resName[0x100];
+    char suffixedName[0x100];
+    int secondKey;
+    int baseId;
+    int textureIndex;
+    u16 subKey;
 
     /* Resolve a resource name (optionally with a numbered suffix) to an object handle and store it at arg0 + arg1*4 + 0x14. */
-    fn_802C595C(name, 0x100, (char *)arg0 + 4, arg1);
-    if (arg3 != 0) {
-        fn_801345D8(temp, 0x100, lbl_8055D010, arg3, name);
-        if (fn_8012C33C(temp) != 0) {
-            char *src = temp;
+    fn_802C595C(resName, 0x100, (char *)item + 4, slot);
+    if (suffix != 0) {
+        fn_801345D8(suffixedName, 0x100, lbl_8055D010, suffix, resName);
+        if (fn_8012C33C(suffixedName) != 0) {
+            char *src = suffixedName;
             int count = 0x100;
-            char *dst = name;
+            char *dst = resName;
             while (*dst++ = *src++) {
                 if (--count <= 0) {
                     dst[-1] = '\0';
@@ -559,15 +559,15 @@ void fn_802C5CC4(void *arg0, int arg1, int arg2, int arg3) {
             }
         }
     }
-    value = *(int *)arg0;
-    index = fn_802CAC44(name, value);
-    if (arg2 != 0) {
-        result = fn_802C5BEC(value, fn_802CAF8C());
+    baseId = *(int *)item;
+    textureIndex = fn_802CAC44(resName, baseId);
+    if (subKeyKind != 0) {
+        subKey = fn_802C5BEC(baseId, fn_802CAF8C());
     } else {
-        other = fn_802CAFF0();
-        result = fn_802C5A50(fn_802CAFC8(index), other);
+        secondKey = fn_802CAFF0();
+        subKey = fn_802C5A50(fn_802CAFC8(textureIndex), secondKey);
     }
-    *(int *)((char *)arg0 + arg1 * 4 + 0x14) = (int)fn_802C5A60(index, value, result);
+    *(int *)((char *)item + slot * 4 + 0x14) = (int)fn_802C5A60(textureIndex, baseId, subKey);
 }
 
 /* Iterate over all 0x10-byte GroupEntry records in a model's GroupList and
