@@ -30002,9 +30002,3 @@ void fn_80085E24(void *pCmdBuf, u8 scanType) {
     *(u8 *)((u8 *)pCmdBuf + 11) = scanType;
     btu_hcif_send_cmd(pCmdBuf);
 }
-;
-}
-CmdBuf);
-}
-;
-}
