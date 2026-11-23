@@ -380,7 +380,7 @@ void fn_802353F4(int artSet, int pictureIndex, float x, float y, float z) {
 
 #pragma push
 #pragma processor 750
-void fn_802354A0(int artSet, int pictureIndex, int colorIndex, float x, float y, float z, float width, float height)
+/* Draw one picture from an art set as a screen-aligned textured quad: look up the picture, apply the object's draw list and scale the quad when the object scale differs from one, build the four textured vertices, then queue them and restore the render mode. */ void fn_802354A0(int artSet, int pictureIndex, int colorIndex, float x, float y, float z, float width, float height)
 {
   Idx_80235CBC ids;
   Vtx_80235CBC v3;
