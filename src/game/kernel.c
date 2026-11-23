@@ -630,8 +630,8 @@ struct StartupCalendar {
  * area with 0x53FFEEDD and fn_802E2A1C, registered under the name "check_stack",
  * reports "STACK OVERRUN!" once that marker is gone.  Returning 1 is main()'s cue to
  * run the matching shutdown (fn_802E2B34) and panic. */
-int fn_802E2A5C(void) {
-    struct StartupCalendar now;
+/* Brings up the OS and all engine subsystems in order, logs the console's start date/time, then arms the stack-guard check and returns 1 so main() runs the matching shutdown. */ int fn_802E2A5C(void) {
+    struct StartupCalendar startTime;
     char * const base = lbl_8034CCE0;
     OSInit();
     fn_8005954C();
@@ -654,9 +654,9 @@ int fn_802E2A5C(void) {
     fn_802EBE2C();
     fn_802CF600();
     fn_802EC614();
-    fn_802E2CFC(&now);
-    fn_802E30C8(KERNEL_DATE_FORMAT, now.month, now.day, now.year, now.weekDay);
-    fn_802E30C8(KERNEL_TIME_FORMAT, now.hour, now.minute, now.second);
+    fn_802E2CFC(&startTime);
+    fn_802E30C8(KERNEL_DATE_FORMAT, startTime.month, startTime.day, startTime.year, startTime.weekDay);
+    fn_802E30C8(KERNEL_TIME_FORMAT, startTime.hour, startTime.minute, startTime.second);
     fn_802E27F0();
     fn_80127C90(fn_802E2A1C, KERNEL_STACK_CHECK_NAME);
     return 1;
