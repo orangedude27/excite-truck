@@ -123,7 +123,7 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
     layer = next >= 0 ? *(char **)((char *)lbl_8055E990 + 0x20) + next * 0x810 : 0;
     while (layer != 0) {
         next = *(int *)(layer + 0x80C);
-        h += lbl_804424B0[*(int *)(layer + 0x808)] * (*(float *)(layer + 0) + *(float *)(layer + 4) * fast_u16f(*(unsigned short *)(layer + (remX * 64 + remZ * 2) + 8)));
+        h += lbl_804424B0[*(int *)(layer + 0x808)] * (*(float *)(layer + 0) + *(float *)(layer + 4) * (float)*(unsigned short *)(layer + (remX * 64 + remZ * 2) + 8));
         layer = next >= 0 ? *(char **)((char *)lbl_8055E990 + 0x20) + next * 0x810 : 0;
     }
     type_p = *(unsigned char **)((char *)lbl_8055E990 + 0x30) + *(int *)(node + 0x810 + remZ * 4);
