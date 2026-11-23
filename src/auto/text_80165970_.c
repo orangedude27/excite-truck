@@ -493,7 +493,7 @@ extern "C" float fn_80166274(void) {
 extern void fn_802E30C8(char *, ...);
 extern int __cntlzw(unsigned int);
 extern int lbl_8055E330;
-extern signed char lbl_8055E329;
+extern unsigned char lbl_8055E329;
 extern unsigned char lbl_8055E328;
 extern float lbl_8055E31C;
 extern char lbl_8032FEC0[];
