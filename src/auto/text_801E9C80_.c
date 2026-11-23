@@ -22,7 +22,6 @@ s32 fn_801E9C84(f32 *arg0, void *arg1, void *arg2, s32 arg3, s32 arg4, s32 arg5,
     s32 original[3];
     f32 normal[3];
     f32 delta[3];
-    f32 valueZ, valueY, valueX;
     f32 diffX;
     f32 diffY;
     f32 diffZ;
@@ -40,10 +39,10 @@ s32 fn_801E9C84(f32 *arg0, void *arg1, void *arg2, s32 arg3, s32 arg4, s32 arg5,
     delta[2] = diffZ;
     dot = PSVECDotProduct(normal, delta);
     if ((f32)__fabs((double)dot) < farg0) {
+        f32 valueZ = ((f32 *)arg1)[2];
+        f32 valueY = ((f32 *)arg1)[1];
+        f32 valueX = ((f32 *)arg1)[0];
         f32 ndot = -dot;
-        valueZ = ((f32 *)arg1)[2];
-        valueY = ((f32 *)arg1)[1];
-        valueX = ((f32 *)arg1)[0];
         ((f32 *)arg2)[0] = valueX + normal[0] * ndot;
         ((f32 *)arg2)[1] = valueY + normal[1] * ndot;
         ((f32 *)arg2)[2] = valueZ + normal[2] * ndot;
@@ -150,23 +149,24 @@ s32 fn_801E9F08(void *context, void *position, void *contactPoint, s32 normalOut
     return 0;
 }
 #pragma scheduling on
-f32 fn_801E9FDC(s16 *arg0, f32 farg0, f32 farg1) {
+f32 fn_801E9FDC(const s16 *arg0, f32 farg0, f32 farg1) {
     s16 index = *arg0;
     f32 data[3];
     f32 out[3];
-    *(volatile f32 *)&data[0] = farg0;
+    data[0] = farg0;
     data[1] = 0.0f;
     data[2] = farg1;
     if (((s32 (*)(void *, void *, void *, s32, s32))fn_801DCE14)(&index, data, out, 0, 0) != 0)
         return out[1];
     return 0.0f;
 }
+#pragma scheduling 603
 void fn_801EA03C(s16 *arg0, void *arg1) {
     register f32 v = 0.0f;
     s16 index = *arg0;
     struct V { s32 a, b, c; } data = *(struct V *)arg1;
     *(f32 *)((char *)arg1 + 4) = v;
-    ((s32 (*)(s16 *, struct V *, void *, s32, s32))fn_801DCE14)(&index, &data, arg1, data.a - data.a, 0);
+    ((s32 (*)(s16 *, struct V *, void *, s32, s32))fn_801DCE14)(&index, &data, arg1, 0, 0);
 }
 /* RealName: QueryGroundPosAtXZ
  * Builds an XZ query position using the caller's X/Z and the input position's Y,
