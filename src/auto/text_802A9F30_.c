@@ -157,37 +157,22 @@ extern float PSVECDotProduct(const void *, const void *);
 #pragma processor 750
 #pragma opt_propagation off
 void fn_802AA100(void *arg0, void *arg1, void *arg2, void *arg3) {
-    float sp1C;
-    float sp18;
-    float sp14;
-    float sp10;
-    float spC;
-    float sp8;
-    float temp_f1;
-    float temp_f31;
-    float temp_f3;
-    float temp_f4;
-    float temp_f5;
-    float temp_f6;
-    float temp_f7;
-    float temp_f8;
-    temp_f31 = PSVECDotProduct(arg1, arg2);
-    temp_f1 = PSVECDotProduct(arg1, arg3);
-    temp_f7 = ((float *)arg2)[1] * temp_f31;
-    temp_f8 = ((float *)arg2)[0] * temp_f31;
-    temp_f4 = ((float *)arg3)[1] * temp_f1;
-    temp_f6 = ((float *)arg2)[2] * temp_f31;
-    temp_f5 = ((float *)arg3)[0] * temp_f1;
-    sp14 = temp_f8;
-    temp_f3 = ((float *)arg3)[2] * temp_f1;
-    sp18 = temp_f7;
-    sp1C = temp_f6;
-    ((float *)arg0)[1] = temp_f7 + temp_f4;
-    ((float *)arg0)[0] = temp_f8 + temp_f5;
-    ((float *)arg0)[2] = temp_f6 + temp_f3;
-    sp8 = temp_f5;
-    spC = temp_f4;
-    sp10 = temp_f3;
+    float tb[3];
+    float tc[3];
+    float d1;
+    float d2;
+
+    d1 = PSVECDotProduct(arg1, arg2);
+    d2 = PSVECDotProduct(arg1, arg3);
+    tb[0] = ((float *)arg2)[0] * d1;
+    tb[1] = ((float *)arg2)[1] * d1;
+    tb[2] = ((float *)arg2)[2] * d1;
+    tc[0] = ((float *)arg3)[0] * d2;
+    tc[1] = ((float *)arg3)[1] * d2;
+    tc[2] = ((float *)arg3)[2] * d2;
+    ((float *)arg0)[0] = tb[0] + tc[0];
+    ((float *)arg0)[1] = tb[1] + tc[1];
+    ((float *)arg0)[2] = tb[2] + tc[2];
 }
 #pragma opt_propagation reset
 #pragma pop
