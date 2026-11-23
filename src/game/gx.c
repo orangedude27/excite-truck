@@ -1710,7 +1710,7 @@ void fn_802D09E8(void)
   }
 }
 
-void fn_802D0BD8(void) {
+/* Set the GX viewport from the current render target (jittered by the next field when the target's +0x18 flag is set, otherwise plain) and invalidate the vertex and texture caches. */ void fn_802D0BD8(void) {
     /* Set the GX viewport from the current render target: jittered using the next
      * field when the target enables it, otherwise plain; then invalidate the
      * vertex and texture caches. */
