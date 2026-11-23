@@ -106,7 +106,7 @@ void *fn_802EC598(void) {
 #pragma dont_inline off
 
 #pragma scheduling invalid_target
-void fn_802EC614(void) {
+/* Initializes home-button channel 2: clears the menu flags, sets up fast casts and WPAD info, loads the language archive and UI resources, then marks the module ready. */ void fn_802EC614(void) {
     // Home-button channel 2 start-up: clear the menu mode/request flags, init the
     // fast-cast table, seed the WPAD info config, fill the HomeBtn2Resources block
     // (per-language homeBtn_*.arc + three files, a 0x80000-byte archive buffer and
@@ -123,13 +123,13 @@ void fn_802EC614(void) {
     char *const strBase = gHomeBtn2Strings;
     s32 zero = 0;
     s32 *wpadInfo;
-    char *res;
+    char *resources;
     void *buffer;
-    char *p100 = strBase + 0x100;
-    char *p110 = strBase + 0x110;
-    char *p11C = strBase + 0x11C;
-    char *p128 = strBase + 0x128;
-    char *p134 = strBase + 0x134;
+    char *file04Path = strBase + 0x100;
+    char *file08Path = strBase + 0x110;
+    char *file0CPath = strBase + 0x11C;
+    char *uiBufferName = strBase + 0x128;
+    char *uiResPath = strBase + 0x134;
 
     gHomeMenuMode = zero;
     gHomeMenuRequest = zero;
@@ -150,30 +150,30 @@ void fn_802EC614(void) {
     wpadInfo[15] = zero;
     fn_801282EC(0x20);
 
-    res = gHomeBtn2Resources;
+    resources = gHomeBtn2Resources;
     buffer = (void *)fn_8012850C(0x80000, (void *)&lbl_8055D2F0);
-    *(void **)(res + 0x10) = buffer;
+    *(void **)(resources + 0x10) = buffer;
     memset(buffer, 0, 0x80000);
-    *(s32 *)(res + 0x24) = 0x80000;
-    *(s32 *)(res + 0x1C) = SCGetLanguage();
-    *(s32 *)(res + 0x00) = fn_802EC4E8((s32)fn_802EC598());
-    *(s32 *)(res + 0x04) = fn_802EC4E8((s32)p100);
-    *(s32 *)(res + 0x08) = fn_802EC4E8((s32)p110);
-    *(s32 *)(res + 0x0C) = fn_802EC4E8((s32)p11C);
-    *(s32 *)(res + 0x14) = zero;
-    *(s32 *)(res + 0x18) = zero;
-    *(s32 *)(res + 0x20) = zero;
-    ((f32 *)res)[0x2C / 4] = lbl_805651E4;
-    ((f32 *)res)[0x30 / 4] = lbl_805651E8;
-    ((f32 *)res)[0x28 / 4] = lbl_805651EC;
+    *(s32 *)(resources + 0x24) = 0x80000;
+    *(s32 *)(resources + 0x1C) = SCGetLanguage();
+    *(s32 *)(resources + 0x00) = fn_802EC4E8((s32)fn_802EC598());
+    *(s32 *)(resources + 0x04) = fn_802EC4E8((s32)file04Path);
+    *(s32 *)(resources + 0x08) = fn_802EC4E8((s32)file08Path);
+    *(s32 *)(resources + 0x0C) = fn_802EC4E8((s32)file0CPath);
+    *(s32 *)(resources + 0x14) = zero;
+    *(s32 *)(resources + 0x18) = zero;
+    *(s32 *)(resources + 0x20) = zero;
+    ((f32 *)resources)[0x2C / 4] = lbl_805651E4;
+    ((f32 *)resources)[0x30 / 4] = lbl_805651E8;
+    ((f32 *)resources)[0x28 / 4] = lbl_805651EC;
     fn_801282EC(0x20);
     fn_801282F4();
 
-    buffer = (void *)fn_8012850C(0x19000, p128);
+    buffer = (void *)fn_8012850C(0x19000, uiBufferName);
     gHomeBtn2UiBuffer = (s32)buffer;
     memset(buffer, zero, 0x19000);
-    gHomeBtn2UiRes = fn_802EC4E8((s32)p134);
-    fn_800C64F4(res);
+    gHomeBtn2UiRes = fn_802EC4E8((s32)uiResPath);
+    fn_800C64F4(resources);
     gHomeBtn2Ready = 1;
 #undef gHomeBtn2Strings
 #undef gHomeBtn2Resources
