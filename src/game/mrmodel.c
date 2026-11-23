@@ -168,14 +168,13 @@ void fn_802C54D4(void) {
     extern s8 lbl_8055FC21;
     extern void qsort(void *, unsigned int, unsigned int, int (*)(void *, void *));
     int level;
-    int sourceOffset;
+    unsigned int sourceOffset;
     int sourceIndex;
     int itemIndex;
     int count;
     int itemOffset;
     void *table;
     int *list;
-    void *entry;
 
     if (*(volatile unsigned char *)&lbl_8055FC21 == 0)
         return;
@@ -183,7 +182,7 @@ void fn_802C54D4(void) {
     for (sourceIndex = 0, sourceOffset = 0;
          sourceIndex < *(volatile int *)lbl_804C13A8;
          sourceOffset += 0x10, sourceIndex++) {
-        entry = (char *)(void *)(unsigned long)*(volatile int *)((char *)lbl_804C13A8 + 8) + sourceOffset;
+        void *entry = (char *)(void *)(unsigned long)*(volatile int *)((char *)lbl_804C13A8 + 8) + sourceOffset;
         if (*(unsigned short *)((char *)entry + 4) != 0) {
             void **slot;
             if (lbl_804C1390[0] < lbl_804C1390[1]) {
@@ -205,7 +204,7 @@ void fn_802C54D4(void) {
     for (itemIndex = 0, itemOffset = 0;
          itemIndex < lbl_804C1390[0];
          itemOffset += 4, itemIndex++) {
-        entry = *(void **)((char *)(void *)list[2] + itemOffset);
+        void *entry = *(void **)((char *)(void *)list[2] + itemOffset);
         while (level < ((int (*)(unsigned int))fn_802C54CC)(*(short *)((char *)entry + 6)) && level <= 9) {
             level++;
             count = (int)((char *)(void *)list[2] + itemOffset -
@@ -1014,28 +1013,28 @@ void fn_802C6B2C(s32 *value, s32 delta) {
 }
 
 /* Loads a MODL resource, validates its version, and optionally prepares it for use. */
-int fn_802C6B44(int arg0) {
-    void *result;
-    int sp10;
-    u32 spC;
-    u8 sp9;
-    u8 sp8;
+/* Load a MODL model resource by path; on a swapped-endian load verify version 12, flush the cache and byte-fix the data, and on a first reference walk its group list. */ int fn_802C6B44(int modelPath) {
+    void *modelData;
+    int dataSize;
+    u32 version;
+    u8 swapEndian;
+    u8 isNew;
 
-    result = fn_8012C370(arg0, 0x4D4F444C, &spC, &sp10, &sp8, &sp9);
-    if (result != 0) {
-        if (sp9 != 0) {
-            if (spC != 0xC) {
-                fn_802E317C(lbl_8034B2E8, spC, 0xC, arg0);
+    modelData = fn_8012C370(modelPath, 0x4D4F444C, &version, &dataSize, &isNew, &swapEndian);
+    if (modelData != 0) {
+        if (swapEndian != 0) {
+            if (version != 0xC) {
+                fn_802E317C(lbl_8034B2E8, version, 0xC, modelPath);
             }
-            DCStoreRangeNoSync(result, sp10);
-            fn_802C61BC(result, arg0);
+            DCStoreRangeNoSync(modelData, dataSize);
+            fn_802C61BC(modelData, modelPath);
         }
-        if (sp8 != 0) {
-            fn_802C5DF0(result, fn_802D6C48);
+        if (isNew != 0) {
+            fn_802C5DF0(modelData, fn_802D6C48);
         }
-        return (int)result;
+        return (int)modelData;
     }
-    fn_802E317C(lbl_8034B314, arg0);
+    fn_802E317C(lbl_8034B314, modelPath);
     return 0;
 }
 
