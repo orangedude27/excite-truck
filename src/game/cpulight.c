@@ -1178,11 +1178,9 @@ typedef struct { LightVec3 pos; u32 color; f32 u, v; } LightVtx;
 #pragma processor 750
 #pragma use_lmw_stmw off
 /* Draws one batch of CPU-lit geometry as an indexed triangle list: points the
- * position, color 0 and texture coordinate 0 arrays at the renderer's vertex
- * buffer (`vertexCount` LightVtx records), flushes it out of the cache and
- * begins a GX_TRIANGLES draw in vertex format 0.  Each of the three arrays is
- * indexed on its own, so every 16-bit index is written to the FIFO once per
- * array, three times over, for the `count` vertices of the list. */
+ * position, color 0 and texture coordinate 0 arrays at the vertex buffer,
+ * flushes it and begins a GX_TRIANGLES draw in vertex format 0, writing each
+ * 16-bit index three times (once per array) to the FIFO. */
 void fn_802DD27C(LightVtx *__restrict vertices, s32 vertexCount,
                  u16 *__restrict indices, s32 count) {
     register s32 listIndex;
