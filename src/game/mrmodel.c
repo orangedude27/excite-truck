@@ -373,22 +373,22 @@ void fn_802C57B4(int instanceId, int transformId, int entryId, unsigned char sta
 }
 #pragma push
 #pragma use_lmw_stmw off
-void fn_802C595C(char *outName, int maxLen, const char *lookupName, int id) {
+/* Resolve a resource name through the model name-override table lbl_804C13B4, bounded-copying the matching replacement (or the original lookupName) into outName. */ void fn_802C595C(char *outName, int maxLen, const char *lookupName, int id) {
     /* Resolve a resource name through the (name,id) override table, bounded-copying
        the replacement into outName, or the original name when there is no override. */
     int entryOffset;
     int entryIndex;
-    char *entry;
+    char *overrideEntry;
     register const unsigned char *copySrc;
     unsigned char ch;
     entryIndex = 0;
     entryOffset = 0;
     goto table_check;
 table_loop:
-    entry = (char *)(unsigned long)lbl_804C13B4[2] + entryOffset;
-    if (stricmp(lookupName, entry) == 0) {
-        if (id == *(int *)(entry + 0x10)) {
-            copySrc = (const unsigned char *)(entry + 0x14);
+    overrideEntry = (char *)(unsigned long)lbl_804C13B4[2] + entryOffset;
+    if (stricmp(lookupName, overrideEntry) == 0) {
+        if (id == *(int *)(overrideEntry + 0x10)) {
+            copySrc = (const unsigned char *)(overrideEntry + 0x14);
             goto copy_body;
 copy_check:
             if (--maxLen <= 0) {
