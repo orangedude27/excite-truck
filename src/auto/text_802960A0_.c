@@ -594,13 +594,16 @@ typedef struct FlipBook {
 
 #pragma push
 #pragma cplusplus on
-extern "C" float fn_802970C8(void *arg0) {
-    struct Ctx { char pad[0x24]; struct KF *kf; int unk28; int count; };
-    Ctx *ctx = (Ctx *)arg0;
-    float sum = lbl_8056456C;
+extern "C" float fn_802970C8(void *book) {
+    /* RealName: FlipBook_getDuration -- total playback length of a FlipBook
+     * keyframe collection: 0.0 plus every keyframe's duration.  Reached through
+     * FlipBookElem's vtable slot 0x10 (fn_802978A8), which passes the element's
+     * collection; fn_80296D2C walks the same records to pick the pair to blend. */
+    FlipBook *flipBook = (FlipBook *)book;
+    float sum = kZeroTime;
     int i;
-    for (i = 0; i < ctx->count; i++) {
-        sum += ctx->kf[i].dur;
+    for (i = 0; i < flipBook->count; i++) {
+        sum += flipBook->kf[i].dur;
     }
     return sum;
 }
