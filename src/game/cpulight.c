@@ -577,24 +577,24 @@ void fn_802DC27C(void) { fn_802DBDD8(); }
 
 #pragma push
 #pragma use_lmw_stmw off
-void fn_802DC280(int verts, int count, unsigned short *__restrict list, int size) {
-    /* Submit indexed GX triangle-fan primitives (mode 1): set up the position array,
-       then for each run in `list` read a vertex count, begin a fan with that many
-       indices, and write each index to the GP FIFO until `size` entries are consumed. */
-    int n;
-    int i;
+/* Submit indexed GX triangle-fan primitives (mode 1): apply the mode 1 CPU-light
+   state and position array, then for each run in the index list read its length,
+   begin a fan of that many indices, and stream the indices to the GP FIFO. */
+void fn_802DC280(int positionArray, int vertexCount, unsigned short *__restrict indexList, int indexListSize) {
+    int runLength;
+    int idx;
     volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
 
     cpulightSetupGxForMode(1);
-    fn_802DBC70(verts, count);
-    while (size > 0) {
-        n = *list;
-        list++;
-        GXBegin(0xA0, 0, n);
-        size -= n + 1;
+    fn_802DBC70(positionArray, vertexCount);
+    while (indexListSize > 0) {
+        runLength = *indexList;
+        indexList++;
+        GXBegin(0xA0, 0, runLength);
+        indexListSize -= runLength + 1;
         #pragma unroll 8
-        for (i = 0; i < n; i++, list++) {
-            *fifo = *list;
+        for (idx = 0; idx < runLength; idx++, indexList++) {
+            *fifo = *indexList;
         }
     }
 }
