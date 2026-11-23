@@ -65,11 +65,12 @@ void fn_801B7760(int arg0, int arg1, float farg0, float farg1) {
         struct Vector *value;
         float t;
     };
-    struct Vector *p = ((struct Args *)arg1)->value;
-    float t = ((struct Args *)arg1)->t;
+    const struct Args *a = (const struct Args *)arg1;
+    struct Vector *p = a->value;
+    float t = a->t;
     float angle = farg1;
     float offset = farg0;
-    double temp;
+    volatile double temp;
     float value[4];
 
     value[2] = p->x + t * (p->next->x - p->x);
@@ -86,14 +87,14 @@ void fn_801B7760(int arg0, int arg1, float farg0, float farg1) {
         temp = *(double *)&value[0];
         z = value[0];
         {
-            float normW, normZ, negZ;
-            normZ = ((float *)&temp)[0];
-            normW = ((float *)&temp)[1];
-            negZ = -normZ;
+            float normW = ((float *)&temp)[1];
+            float normZ = ((float *)&temp)[0];
+            float negZ = (float)-((double)normZ);
+
+            value[2] += normW * offset;
+            value[3] += negZ * offset;
             ((float *)&temp)[0] = normW;
             ((float *)&temp)[1] = negZ;
-            value[2] += ((float *)&temp)[0] * offset;
-            value[3] += ((float *)&temp)[1] * offset;
         }
         offset = (float)cos(angle);
         {
