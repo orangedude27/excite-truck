@@ -845,54 +845,57 @@ void fn_801945F8(void *driver) {
 }
 
 extern float *fn_8013A604(void *aiExceptionConfig, float lon); /* AI params covering lon, or the defaults */
-void fn_80194624(void *arg0) {
-    char *p = (char *)arg0;
-    void *r = fn_8013A604((void **)(*(char **)(p + 0x2C8) + 0x40), *(float *)(p + 0x280));
-    float ratio, b, a, c, t;
-    if (r != *(void **)(p + 0x2D8)) {
-        *(void **)(p + 0x2D4) = *(void **)(p + 0x2D8);
-        *(void **)(p + 0x2D8) = r;
-        *(float *)(p + 0x2DC) = *(float *)(p + 0x26C);
+void fn_80194624(void *driver) {
+    /* Selects the AI driving params covering the driver's current track position; when the
+       active set changes it saves the old set and blend start time, then eases five tuning
+       values from the old set toward the new one over on_t. */
+    char *base = (char *)driver;
+    void *params = fn_8013A604((void **)(*(char **)(base + 0x2C8) + 0x40), *(float *)(base + 0x280));
+    float ratio, target, previous, blend, blended;
+    if (params != *(void **)(base + 0x2D8)) {
+        *(void **)(base + 0x2D4) = *(void **)(base + 0x2D8);
+        *(void **)(base + 0x2D8) = params;
+        *(float *)(base + 0x2DC) = *(float *)(base + 0x26C);
     }
-    ratio = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
-    b = ((float *)*(void **)(p + 0x2D8))[2];
-    a = ((float *)*(void **)(p + 0x2D4))[2];
-    c = 1.0f;
-    c = (c < ratio) ? c : ratio;
-    c = (c > 0.0f) ? c : 0.0f;
-    t = a + c * (b - a);
-    c = 1.0f;
-    *(float *)(p + 0x2E8) = t;
-    ratio = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
-    b = ((float *)*(void **)(p + 0x2D8))[1];
-    a = ((float *)*(void **)(p + 0x2D4))[1];
-    c = (c < ratio) ? c : ratio;
-    c = (c > 0.0f) ? c : 0.0f;
-    t = a + c * (b - a);
-    c = 1.0f;
-    *(float *)(p + 0x2E4) = t;
-    ratio = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
-    b = ((float *)*(void **)(p + 0x2D8))[3];
-    a = ((float *)*(void **)(p + 0x2D4))[3];
-    c = (c < ratio) ? c : ratio;
-    c = (c > 0.0f) ? c : 0.0f;
-    t = a + c * (b - a);
-    c = 1.0f;
-    *(float *)(p + 0x2EC) = t;
-    ratio = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
-    b = ((float *)*(void **)(p + 0x2D8))[4];
-    a = ((float *)*(void **)(p + 0x2D4))[4];
-    c = (c < ratio) ? c : ratio;
-    c = (c > 0.0f) ? c : 0.0f;
-    t = a + c * (b - a);
-    c = 1.0f;
-    *(float *)(p + 0x2F0) = t;
-    ratio = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
-    b = ((float *)*(void **)(p + 0x2D8))[5];
-    a = ((float *)*(void **)(p + 0x2D4))[5];
-    c = (c < ratio) ? c : ratio;
-    c = (c > 0.0f) ? c : 0.0f;
-    *(float *)(p + 0x2F4) = a + c * (b - a);
+    ratio = (*(float *)(base + 0x26C) - *(float *)(base + 0x2DC)) / **(float **)(base + 0x2D8);
+    target = ((float *)*(void **)(base + 0x2D8))[2];
+    previous = ((float *)*(void **)(base + 0x2D4))[2];
+    blend = 1.0f;
+    blend = (blend < ratio) ? blend : ratio;
+    blend = (blend > 0.0f) ? blend : 0.0f;
+    blended = previous + blend * (target - previous);
+    blend = 1.0f;
+    *(float *)(base + 0x2E8) = blended;
+    ratio = (*(float *)(base + 0x26C) - *(float *)(base + 0x2DC)) / **(float **)(base + 0x2D8);
+    target = ((float *)*(void **)(base + 0x2D8))[1];
+    previous = ((float *)*(void **)(base + 0x2D4))[1];
+    blend = (blend < ratio) ? blend : ratio;
+    blend = (blend > 0.0f) ? blend : 0.0f;
+    blended = previous + blend * (target - previous);
+    blend = 1.0f;
+    *(float *)(base + 0x2E4) = blended;
+    ratio = (*(float *)(base + 0x26C) - *(float *)(base + 0x2DC)) / **(float **)(base + 0x2D8);
+    target = ((float *)*(void **)(base + 0x2D8))[3];
+    previous = ((float *)*(void **)(base + 0x2D4))[3];
+    blend = (blend < ratio) ? blend : ratio;
+    blend = (blend > 0.0f) ? blend : 0.0f;
+    blended = previous + blend * (target - previous);
+    blend = 1.0f;
+    *(float *)(base + 0x2EC) = blended;
+    ratio = (*(float *)(base + 0x26C) - *(float *)(base + 0x2DC)) / **(float **)(base + 0x2D8);
+    target = ((float *)*(void **)(base + 0x2D8))[4];
+    previous = ((float *)*(void **)(base + 0x2D4))[4];
+    blend = (blend < ratio) ? blend : ratio;
+    blend = (blend > 0.0f) ? blend : 0.0f;
+    blended = previous + blend * (target - previous);
+    blend = 1.0f;
+    *(float *)(base + 0x2F0) = blended;
+    ratio = (*(float *)(base + 0x26C) - *(float *)(base + 0x2DC)) / **(float **)(base + 0x2D8);
+    target = ((float *)*(void **)(base + 0x2D8))[5];
+    previous = ((float *)*(void **)(base + 0x2D4))[5];
+    blend = (blend < ratio) ? blend : ratio;
+    blend = (blend > 0.0f) ? blend : 0.0f;
+    *(float *)(base + 0x2F4) = previous + blend * (target - previous);
 }
 
 /* Initializes per-run state from the linked context and resets runtime timers/flags. */
