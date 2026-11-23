@@ -1069,7 +1069,20 @@ long fn_802111E4(long keyCode) {
     return 1;
 }
 
-/* After the dash's song list changed, re-sync the track-music menu selection (OFF / RANDOM / song row + page) to the current song, then rebuild the page count (10 songs per page, always at least one) and reset an out-of-range page. */ void fn_802112AC(void) {
+/* After the dash's song list changed, re-sync the track-music menu selection
+ * (OFF / RANDOM / song row + page) to the song in use, then rebuild the page
+ * count (10 songs per page, always at least one) and reset an out-of-range page. */
+void fn_802112AC(void) {
+#define trackMusicSongListChanged lbl_8055EEC0 /* the song list was just rebuilt */
+#define trackMusicSelection       lbl_8055EEE0 /* -2 = OFF, -1 = RANDOM, >= 0 = row on the page */
+#define trackMusicPage            lbl_8055EEE4 /* song-list page the menu is on */
+#define trackMusicSongCount       lbl_8055EEBC /* songs the dash found */
+#define trackMusicCurrentSong     lbl_8055B658 /* song id in use (-1 = none) */
+#define EVENT_NAME_OUT            lbl_8055B674 /* scene/event name output buffer */
+#define NO_EVENT                  lbl_8033C970 /* "invalid_contest" */
+#define SEL_OFF                   (-2)
+#define SEL_RANDOM                (-1)
+#define SONGS_PER_PAGE            10
     long entryType;
     long songIndex;
     long page;
@@ -1078,37 +1091,46 @@ long fn_802111E4(long keyCode) {
     void *container;
     struct Dummy_802113D8 *resource;
 
-    /* Initialize track selection state and update display counters from current track data. */
-    if (lbl_8055EEC0 != 0) {
-        lbl_8055EEE0 = -2;
-        if (lbl_8055EEBC > 0) {
+    if (trackMusicSongListChanged != 0) {
+        trackMusicSelection = SEL_OFF;
+        if (trackMusicSongCount > 0) {
             fn_8020FCC4();
             container = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
             resource = *(struct Dummy_802113D8 **)((char *)container + 0x20);
-            resource->f6(&lbl_8055B674, lbl_8033C970);
+            resource->f6(&EVENT_NAME_OUT, NO_EVENT);
             entryType = *(long *)fn_8020FAF0();
             if (entryType == 1) {
-                lbl_8055EEE0 = -1;
+                trackMusicSelection = SEL_RANDOM;
             } else if (entryType == 2) {
-                songIndex = lbl_8055B658;
+                songIndex = trackMusicCurrentSong;
                 if (songIndex >= 0) {
-                    page = songIndex / 10;
-                    row = songIndex % 10;
-                    lbl_8055EEE4 = page;
-                    lbl_8055EEE0 = row;
+                    page = songIndex / SONGS_PER_PAGE;
+                    row = songIndex % SONGS_PER_PAGE;
+                    trackMusicPage = page;
+                    trackMusicSelection = row;
                 }
             }
         }
     }
-    pageCount = lbl_8055EEBC / 10;
+    pageCount = trackMusicSongCount / SONGS_PER_PAGE;
     gTrackMusicPageCount = pageCount;
-    if ((lbl_8055EEBC % 10) != 0 || lbl_8055EEBC == 0) {
+    if ((trackMusicSongCount % SONGS_PER_PAGE) != 0 || trackMusicSongCount == 0) {
         pageCount++;
         gTrackMusicPageCount = pageCount;
     }
-    if (lbl_8055EEE4 >= pageCount) {
-        lbl_8055EEE4 = 0;
+    if (trackMusicPage >= pageCount) {
+        trackMusicPage = 0;
     }
+#undef trackMusicSongListChanged
+#undef trackMusicSelection
+#undef trackMusicPage
+#undef trackMusicSongCount
+#undef trackMusicCurrentSong
+#undef EVENT_NAME_OUT
+#undef NO_EVENT
+#undef SEL_OFF
+#undef SEL_RANDOM
+#undef SONGS_PER_PAGE
 }
 
 #pragma scheduling on
