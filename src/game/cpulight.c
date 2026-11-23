@@ -199,7 +199,7 @@ void fn_802DB620(void) {
         if (texObj[0xCC]) {
             int extraTexMap = nextTexMap++;
             GXLoadTexObj(texObj + 0x78, extraTexMap);
-            GXSetTevOrder(tevStage++, texIndex, extraTexMap, 0xFF);
+            GXSetTevOrder(tevStage++, texIndex, extraTexMap, GX_COLOR_NULL);
         }
         {
             int curTevStage = tevStage++;
