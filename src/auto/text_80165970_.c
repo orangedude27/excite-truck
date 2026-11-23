@@ -182,30 +182,36 @@ extern "C" void fn_80165A30(void *arg0, int arg1) {
     };
     float y, x, z;
     void *entry = 0;
-    Entry *item;
+    Entry *item = 0;
     int j, count, minusOne;
     List *list;
     *(int *)((char *)&lbl_8042FEB0 + 4) = 0;
     list = (List *)arg0;
     j = 0;
     minusOne = -1;
-    while ((item = (Entry *)list->getAt(++j)) != 0) {
-        if (strcmp(item->getName(), lbl_8055A150) == 0) {
-            count = *(int *)((char *)&lbl_8042FEB0 + 4);
-            void *b = *(void **)&lbl_8042FEB0;
-            *(int *)((char *)&lbl_8042FEB0 + 4) = count + 1;
-            entry = (char *)b + count * 0x14;
-            x = item->getValue(lbl_8055A158);
-            y = item->getValue(lbl_8055A160);
-            *(float *)entry = item->getValue(lbl_8055A168);
-            z = x * 0.5f;
-            *(float *)((char *)entry + 4) = y;
-            *(float *)((char *)entry + 8) = z;
-            *(int *)((char *)entry + 0x10) = minusOne;
-            *(float *)((char *)entry + 0xC) =
-                lbl_8055E318 - ((float (*)(int, float, float))fn_80129DC4)(3, 0.0f, 2.0f * z);
-        }
+    goto next_item;
+body:
+    if (strcmp(item->getName(), lbl_8055A150) == 0) {
+        count = *(int *)((char *)&lbl_8042FEB0 + 4);
+        void *b = *(void **)&lbl_8042FEB0;
+        *(int *)((char *)&lbl_8042FEB0 + 4) = count + 1;
+        entry = (char *)b + count * 0x14;
+        x = item->getValue(lbl_8055A158);
+        y = item->getValue(lbl_8055A160);
+        *(float *)entry = item->getValue(lbl_8055A168);
+        z = x / 2.0f;
+        *(float *)((char *)entry + 4) = y;
+        *(float *)((char *)entry + 8) = z;
+        *(int *)((char *)entry + 0x10) = minusOne;
+        *(float *)((char *)entry + 0xC) =
+            lbl_8055E318 - ((float (*)(int, float, float))fn_80129DC4)(3, 0.0f, 2.0f * z);
     }
+next_item:
+    {
+        const int idx = ++j;
+        item = (Entry *)list->getAt(idx);
+    }
+    if (item != 0) goto body;
 }
 #pragma cplusplus reset
 #pragma pop
@@ -229,77 +235,74 @@ extern float lbl_805618CC;
 #pragma small_data on
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_80165B78(void **arg0) {
-#pragma scheduling invalid_target
-    char *strings = lbl_8032FCC0;
-    char *match;
-    char *text;
-    Dummy80165B78 *obj2;
-    Dummy80165B78 *obj;
-    float scale;
-    float value;
-    register float default50;
-
-    obj = ((Dummy80165B78 *)arg0)->getObject(&lbl_8055A170);
-    value = obj->getFloat(strings);
-    *(float *)((char *)&lbl_8042FE38 + 0x28) = value;
-    value = obj->getFloat(strings + 0x10);
-    *(float *)((char *)&lbl_8042FE38 + 0x2c) = value;
-    value = obj->getFloatDefault(strings + 0x20, lbl_805618A4);
-    *(float *)((char *)&lbl_8042FE38 + 0x3c) = value;
-    value = obj->getFloat(strings + 0x30);
-    *(float *)((char *)&lbl_8042FE38 + 0x34) = value;
-    value = obj->getFloatDefault(strings + 0x3C, lbl_805618A8);
-    *(float *)((char *)&lbl_8042FE38 + 0x38) = value;
-    default50 = *(float *)((char *)&lbl_8042FE38 + 0x2c);
-    value = obj->getFloatDefault(strings + 0x50, default50);
-    *(float *)((char *)&lbl_8042FE38 + 0x30) = value;
-    value = obj->getFloatDefault(strings + 0x60, lbl_805618AC);
-    *(float *)((char *)&lbl_8042FE38 + 0x44) = value;
-    value = obj->getFloatDefault(strings + 0x70, lbl_805618AC);
-    *(float *)((char *)&lbl_8042FE38 + 0x40) = value;
-    value = obj->getFloat(strings + 0x84);
-    *(float *)((char *)&lbl_8042FE38 + 0x48) = value;
-    value = obj->getFloatDefault(strings + 0x98, lbl_805618B0);
-    *(float *)((char *)&lbl_8042FE38 + 0x64) = value;
-    value = obj->getFloatDefault(&lbl_8055A178, lbl_805618B0);
-    *(float *)((char *)&lbl_8042FE38 + 0x68) = value;
-    value = obj->getFloatDefault(strings + 0xA8, lbl_805618B4);
-    *(float *)((char *)&lbl_8042FE38 + 0x50) = value;
-
-    text = obj->getString(strings + 0x84);
-    match = strchr(text, 0x4C);
-    if (match != 0) {
-        scale = fn_8013672C((int)match);
-        { float parsed = (float)atof(text); value = parsed * scale; }
-    } else {
-        value = (float)atof(text);
+extern "C" void fn_80165B78(void **arg0)
+{
+  char *strings = lbl_8032FCC0;
+  char *match;
+  char *text;
+  Dummy80165B78 *obj2;
+  Dummy80165B78 *obj;
+  float scale;
+  float value;
+  obj = ((Dummy80165B78 *) arg0)->getObject(&lbl_8055A170);
+  value = obj->getFloat(strings);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x28)) = value;
+  value = obj->getFloat(strings + 0x10);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x2c)) = value;
+  value = obj->getFloatDefault(strings + 0x20, lbl_805618A4);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x3c)) = value;
+  value = obj->getFloat(strings + 0x30);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x34)) = value;
+  value = obj->getFloatDefault(strings + 0x3C, lbl_805618A8);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x38)) = value;
+  value = obj->getFloatDefault(strings + 0x50, *((float *) (((char *) (&lbl_8042FE38)) + 0x2c)));
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x30)) = value;
+  value = obj->getFloatDefault(strings + 0x60, lbl_805618AC);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x44)) = value;
+  value = obj->getFloatDefault(strings + 0x70, lbl_805618AC);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x40)) = value;
+  value = obj->getFloat(strings + 0x84);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x48)) = value;
+  value = obj->getFloatDefault(strings + 0x98, lbl_805618B0);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x64)) = value;
+  value = obj->getFloatDefault(&lbl_8055A178, lbl_805618B0);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x68)) = value;
+  value = obj->getFloatDefault(strings + 0xA8, lbl_805618B4);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x50)) = value;
+  text = obj->getString(strings + 0x84);
+  match = strchr(text, 0x4C);
+  if (match != 0)
+  {
+    scale = fn_8013672C((int) match);
+    {
+      float parsed = (float) atof(text);
+      value = parsed * scale;
     }
-    *(volatile float *)((volatile char *)&lbl_8042FE38 + 0x48) = lbl_8055E324 - value;
-
-    *((volatile unsigned char *)&lbl_8042FE38 + 0x4C) =
-        obj->getFlag(strings + 0xC0, 1);
-    *((volatile unsigned char *)&lbl_8042FE38 + 0x4D) =
-        obj->getFlag(strings + 0xD8, 1);
-    *((volatile unsigned char *)&lbl_8042FE38 + 0x4E) =
-        obj->getFlag(strings + 0xEC, 0);
-
-    obj2 = obj->getObject(strings + 0x100);
-    *(float *)((char *)&lbl_8042FE38 + 0x0) = obj2->getFloat(lbl_8055A168);
-    *(float *)((char *)&lbl_8042FE38 + 0x8) = obj2->getFloat(&lbl_8055A180);
-    *(float *)((char *)&lbl_8042FE38 + 0x4) = obj2->getFloat(lbl_8055A160);
-    *(float *)((char *)&lbl_8042FE38 + 0xc) = obj2->getFloat(&lbl_8055A188);
-    *(float *)((char *)&lbl_8042FE38 + 0x10) = obj2->getFloat(strings + 0x10C);
-    *(float *)((char *)&lbl_8042FE38 + 0x14) = obj2->getFloat(strings + 0x118);
-    *(float *)((char *)&lbl_8042FE38 + 0x18) = obj2->getFloatDefault(strings + 0x124, lbl_805618A8);
-    *(float *)((char *)&lbl_8042FE38 + 0x1c) = obj2->getFloatDefault(strings + 0x134, lbl_805618B8);
-    *(float *)((char *)&lbl_8042FE38 + 0x20) = obj2->getFloatDefault(strings + 0x144, lbl_805618BC);
-    *(float *)((char *)&lbl_8042FE38 + 0x24) = obj2->getFloatDefault(strings + 0x154, lbl_805618C0);
-    *(float *)((char *)&lbl_8042FE38 + 0x54) = fn_80204CFC(strings + 0x164);
-    *(float *)((char *)&lbl_8042FE38 + 0x58) = fn_80204CFC(strings + 0x178);
-    *(float *)((char *)&lbl_8042FE38 + 0x5c) = obj->getFloatDefault(strings + 0x194, lbl_805618C4);
-    value = (float)((Dummy80165B78D *)obj)->getFloatDefaultDouble(strings + 0x1A8, lbl_805618C8);
-    *(float *)((char *)&lbl_8042FE38 + 0x60) = value * lbl_805618CC;
+  }
+  else
+  {
+    value = (float) atof(text);
+  }
+  *((volatile float *) (0x48 + ((volatile char *) (&lbl_8042FE38)))) = lbl_8055E324 - value;
+  *(((volatile unsigned char *) (&lbl_8042FE38)) + 0x4C) = obj->getFlag(strings + 0xC0, 1);
+  *(((volatile unsigned char *) (&lbl_8042FE38)) + 0x4D) = obj->getFlag(strings + 0xD8, 1);
+  *(((volatile unsigned char *) (&lbl_8042FE38)) + 0x4E) = obj->getFlag(strings + 0xEC, 0);
+  obj2 = obj->getObject(strings + 0x100);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x0)) = obj2->getFloat(lbl_8055A168);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x8)) = obj2->getFloat(&lbl_8055A180);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x4)) = obj2->getFloat(lbl_8055A160);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0xc)) = obj2->getFloat(&lbl_8055A188);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x10)) = obj2->getFloat(strings + 0x10C);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x14)) = obj2->getFloat(strings + 0x118);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x18)) = obj2->getFloatDefault(strings + 0x124, lbl_805618A8);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x1c)) = obj2->getFloatDefault(strings + 0x134, lbl_805618B8);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x20)) = obj2->getFloatDefault(strings + 0x144, lbl_805618BC);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x24)) = obj2->getFloatDefault(strings + 0x154, lbl_805618C0);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x54)) = fn_80204CFC(strings + 0x164);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x58)) = fn_80204CFC(strings + 0x178);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x5c)) = obj->getFloatDefault(strings + 0x194, lbl_805618C4);
+  value = (float) ((Dummy80165B78D *) obj)->getFloatDefaultDouble(strings + 0x1A8, lbl_805618C8);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x60)) = value * lbl_805618CC;
 }
 
 #pragma push
@@ -488,6 +491,7 @@ extern "C" float fn_80166274(void) {
 #pragma cplusplus reset
 #pragma pop
 extern void fn_802E30C8(char *, ...);
+extern int __cntlzw(unsigned int);
 extern int lbl_8055E330;
 extern signed char lbl_8055E329;
 extern unsigned char lbl_8055E328;
@@ -516,7 +520,7 @@ extern void *fn_80166754(void *);
 #pragma processor gekko
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_801663C8(int count, void *records, void *config) {
+void fn_801663C8(int count, const void *records, const void *config) {
     typedef struct Entry { int id; signed char flag; char pad[0x83]; } Entry;
     typedef struct Holder { Entry *entries; int used; int count; Entry *base; } Holder;
     typedef struct Record { int type; char pad[0x74]; } Record;
@@ -526,27 +530,23 @@ void fn_801663C8(int count, void *records, void *config) {
     void *array;
     int i;
     float value;
-    float a, b, c;
     int notDefault;
     lbl_8055E324 = fn_801659D0((int)config);
     fn_80165FAC();
     obj = *(void **)((char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
     value = (*(float (***)(void *, char *, float))obj)[10](obj, strings + 0x270, *(float *)((char *)&lbl_8042FE38 + 0xC));
     *(float *)((char *)&lbl_8042FE38 + 0xC) = value;
-    a = *(float *)((char *)&lbl_8042FE38 + 8);
-    b = *(float *)((char *)&lbl_8042FE38 + 4);
-    c = *(float *)&lbl_8042FE38;
-    fn_802E30C8(strings + 0x280, a, (float)(double)value, b, c);
+    fn_802E30C8(strings + 0x280, *(float *)((char *)&lbl_8042FE38 + 8), (float)(double)value, *(float *)((char *)&lbl_8042FE38 + 4), *(float *)&lbl_8042FE38);
     holder = fn_801284F8(16, strings + 0x2A0);
     if (holder) {
         array = fn_8002F37C(fn_8012850C(count * 0x88 + 16, &lbl_8055A190), (void (*)(void *))fn_80166754, 0, 0x88, count);
         *(void **)holder = array;
-        *(int *)((char *)holder + 8) = count;
-        *(int *)((char *)holder + 4) = 0;
-        *(void **)((char *)holder + 12) = array;
+        *(int *)((char *)((char *)holder + 8)) = count;
+        *(int *)((char *)((char *)holder + 4)) = 0;
+        *(void **)((char *)((char *)holder + 12)) = array;
     }
     *(void **)&lbl_8055E32C = holder;
-    *(int *)((char *)holder + 4) = 0;
+    *(int *)((char *)((char *)holder + 4)) = 0;
     for (i = 0; i < count; i++) {
         int type = ((Record *)records)[i].type;
         Holder *h = *(Holder **)&lbl_8055E32C;
