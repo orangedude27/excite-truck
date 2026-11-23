@@ -296,12 +296,12 @@ extern char lbl_8034D908[];
 extern int lbl_8034D8E8;
 extern int lbl_80507268[], lbl_80507258[], lbl_8056000C;
 #pragma scheduling invalid_target
-void fn_802E7D0C(void) {
+/* Reset WPAD controllers and sampling callbacks, wait for shutdown, then free any pending controller handles. */ void fn_802E7D0C(void) {
     int *samplingCallbacks;
     int controllerIndex;
     int shutdownIndex;
-    int freeIndex;
-    int *handles;
+    int handleIdx;
+    int *controllerHandles;
 
     /* Reset WPAD controllers and sampling callbacks, wait for shutdown, then
        free any pending controller handles. */
@@ -325,12 +325,12 @@ void fn_802E7D0C(void) {
     }
     fn_802E30C8((const char *)&lbl_8034D8E8);
 
-    handles = lbl_80507258;
-    freeIndex = 0;
-    while (freeIndex < lbl_8056000C) {
-        ((int (*)(int))fn_80128658)(*handles);
-        handles++;
-        freeIndex++;
+    controllerHandles = lbl_80507258;
+    handleIdx = 0;
+    while (handleIdx < lbl_8056000C) {
+        ((int (*)(int))fn_80128658)(*controllerHandles);
+        controllerHandles++;
+        handleIdx++;
     }
     lbl_8056000C = 0;
 }
