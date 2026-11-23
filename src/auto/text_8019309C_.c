@@ -716,46 +716,58 @@ static inline float Cross2D_80194324(float ax, float ay, float bx, float by) {
 #pragma cplusplus on
 extern "C" int fn_800216D0(void);
 extern "C" void *fn_801B83A0(void);
-extern "C" void fn_80194324(void *arg0) {
-    char *p = (char *)arg0;
-    int flag;
-    float thresh;
-    float limit;
-    if (fn_800216D0()) {
-        *(int *)(p + 0x2D0) |= 0x10;
+extern "C" void fn_80194324(void *arg0)
+{
+  char *p = (char *) arg0;
+  int flag;
+  float thresh;
+  float limit;
+  if (fn_800216D0())
+  {
+    *((int *) (p + 0x2D0)) |= 0x10;
+  }
+  flag = 1;
+  thresh = lbl_80562198;
+  limit = lbl_805621B8;
+  if (((*((int *) (p + 0x2D0))) & 0x10) == 0)
+  {
+    flag = (*((float *) ((*((char **) (p + 0x294))) + 0x25D4))) > lbl_805621BC;
+    if (flag)
+    {
+      float v;
+      float t = (*((float *) (p + 0x26C))) - (*((float *) (p + 0x1D0)));
+      int lt = t < lbl_805621C0;
+      if (lt)
+      {
+        float k = t / lbl_805621C0;
+        float a = Cross2D_80194324(*((float *) (p + 0x1B0)), *((float *) (p + 0x1AC)), *((float *) (p + 0x1B4)), *((float *) (p + 0x1B8)));
+        float b = Cross2D_80194324(*((float *) (p + 0x17C)), *((float *) (p + 0x178)), *((float *) (p + 0x180)), *((float *) (p + 0x184)));
+        v = b + (k * (a - b));
+      }
+      else
+      {
+        v = Cross2D_80194324(*((float *) (p + 0x1B0)), *((float *) (p + 0x1AC)), *((float *) (p + 0x1B4)), *((float *) (p + 0x1B8)));
+      }
+      flag = ((float) __fabs(v)) < thresh;
     }
-    flag = 1;
-    thresh = lbl_80562198;
-    limit = lbl_805621B8;
-    if (!(*(int *)(p + 0x2D0) & 0x10)) {
-        flag = *(float *)(*(char **)(p + 0x294) + 0x25D4) > lbl_805621BC;
-        if (flag) {
-            register float v;
-            float t = *(float *)(p + 0x26C) - *(float *)(p + 0x1D0);
-            int lt = t < lbl_805621C0;
-            if (lt) {
-                float k = t / lbl_805621C0;
-                float a = Cross2D_80194324(*(float *)(p + 0x1B0), *(float *)(p + 0x1AC), *(float *)(p + 0x1B4), *(float *)(p + 0x1B8));
-                float b = Cross2D_80194324(*(float *)(p + 0x17C), *(float *)(p + 0x178), *(float *)(p + 0x180), *(float *)(p + 0x184));
-                v = b + k * (a - b);
-            } else {
-                v = Cross2D_80194324(*(float *)(p + 0x1B0), *(float *)(p + 0x1AC), *(float *)(p + 0x1B4), *(float *)(p + 0x1B8));
-            }
-            flag = (float)__fabs(v) < thresh;
-        }
-        if (!flag) {
-            if (*(float *)(p + 0x1D8) >= limit) {
-                ((Vt_80194324 *)fn_801B83A0())->v41(*(void **)(p + 0x290));
-                *(float *)(p + 0x1D8) = lbl_80562144;
-            }
-        }
+    if (!flag)
+    {
+      if ((*((float *) (p + 0x1D8))) >= limit)
+      {
+        ((Vt_80194324 *) fn_801B83A0())->v41(*((void **) (p + 0x290)));
+        *((float *) (p + 0x1D8)) = lbl_80562144;
+      }
     }
-    if (!flag) {
-        *(float *)(p + 0x1D8) = *(float *)(p + 0x1D8) + lbl_805621C4;
-    } else {
-        float x = *(float *)(p + 0x1D8) - lbl_805621C4;
-        *(float *)(p + 0x1D8) = (x > lbl_80562144) ? x : lbl_80562144;
-    }
+  }
+  if (!flag)
+  {
+    *((float *) (p + 0x1D8)) = (*((float *) (p + 0x1D8))) + lbl_805621C4;
+  }
+  else
+  {
+    float x = (*((float *) (p + 0x1D8))) - lbl_805621C4;
+    *((float *) (p + 0x1D8)) = (x > lbl_80562144) ? (x) : (lbl_80562144);
+  }
 }
 #pragma cplusplus reset
 extern void fn_8018AF04(void *);
@@ -836,7 +848,7 @@ extern float *fn_8013A604(void *aiExceptionConfig, float lon); /* AI params cove
 void fn_80194624(void *arg0) {
     char *p = (char *)arg0;
     void *r = fn_8013A604((void **)(*(char **)(p + 0x2C8) + 0x40), *(float *)(p + 0x280));
-    float q, b, a, c;
+    float q, b, a, c, t;
     if (r != *(void **)(p + 0x2D8)) {
         *(void **)(p + 0x2D4) = *(void **)(p + 0x2D8);
         *(void **)(p + 0x2D8) = r;
@@ -845,31 +857,40 @@ void fn_80194624(void *arg0) {
     q = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
     b = ((float *)*(void **)(p + 0x2D8))[2];
     a = ((float *)*(void **)(p + 0x2D4))[2];
-    c = (1.0f < q) ? 1.0f : q;
+    c = 1.0f;
+    c = (c < q) ? c : q;
     c = (c > 0.0f) ? c : 0.0f;
-    *(float *)(p + 0x2E8) = a + c * (b - a);
+    t = a + c * (b - a);
+    c = 1.0f;
+    *(float *)(p + 0x2E8) = t;
     q = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
     b = ((float *)*(void **)(p + 0x2D8))[1];
     a = ((float *)*(void **)(p + 0x2D4))[1];
-    c = (1.0f < q) ? 1.0f : q;
+    c = (c < q) ? c : q;
     c = (c > 0.0f) ? c : 0.0f;
-    *(float *)(p + 0x2E4) = a + c * (b - a);
+    t = a + c * (b - a);
+    c = 1.0f;
+    *(float *)(p + 0x2E4) = t;
     q = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
     b = ((float *)*(void **)(p + 0x2D8))[3];
     a = ((float *)*(void **)(p + 0x2D4))[3];
-    c = (1.0f < q) ? 1.0f : q;
+    c = (c < q) ? c : q;
     c = (c > 0.0f) ? c : 0.0f;
-    *(float *)(p + 0x2EC) = a + c * (b - a);
+    t = a + c * (b - a);
+    c = 1.0f;
+    *(float *)(p + 0x2EC) = t;
     q = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
     b = ((float *)*(void **)(p + 0x2D8))[4];
     a = ((float *)*(void **)(p + 0x2D4))[4];
-    c = (1.0f < q) ? 1.0f : q;
+    c = (c < q) ? c : q;
     c = (c > 0.0f) ? c : 0.0f;
-    *(float *)(p + 0x2F0) = a + c * (b - a);
+    t = a + c * (b - a);
+    c = 1.0f;
+    *(float *)(p + 0x2F0) = t;
     q = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
     b = ((float *)*(void **)(p + 0x2D8))[5];
     a = ((float *)*(void **)(p + 0x2D4))[5];
-    c = (1.0f < q) ? 1.0f : q;
+    c = (c < q) ? c : q;
     c = (c > 0.0f) ? c : 0.0f;
     *(float *)(p + 0x2F4) = a + c * (b - a);
 }
@@ -1389,87 +1410,102 @@ extern void fn_8019743C(void *, void *);
 extern void fn_80197BD0(void *, void *);
 extern void fn_8019724C(void *, float *);
 extern unsigned char fn_80167544(int);
-void fn_80195654(void *arg0, void *arg1) {
-    struct IntPair { int word0, word1; };
-    struct Scratch { int word0, word1; float value0, value1; } scratch;
-    float threshold = 1.5f;
-    float previous;
-    float current;
-    float difference;
-    float interpolated;
-    int doInterpolate;
-    void *first;
-    void *second;
-    void *left;
-    void *right;
-    int flags;
-
-    current = *(volatile float *)((char *)arg0 + 0x26C);
-    previous = *(volatile float *)((char *)arg0 + 0x1D0);
-    *(volatile int *)((char *)arg0 + 0x2D0) = 0;
-    difference = current - previous;
-    doInterpolate = difference < threshold;
-    if (doInterpolate) {
-        first = *(void **)((char *)arg0 + 0x1A0);
-        second = *(void **)((char *)arg0 + 0x16C);
-        left = *(void **)((char *)first + 0x14);
-        right = *(void **)((char *)second + 0x14);
-        {
-            float nextA = *(float *)((char *)left + 0x24);
-            float baseA = *(float *)((char *)first + 0x24);
-            float deltaA = nextA - baseA;
-            float scaleA = *(float *)((char *)arg0 + 0x1A4);
-            float nextB = *(float *)((char *)right + 0x24);
-            float baseB = *(float *)((char *)second + 0x24);
-            float deltaB = nextB - baseB;
-            float scaleB = *(float *)((char *)arg0 + 0x170);
-            float valueA = scaleA * deltaA + baseA;
-            float valueB = scaleB * deltaB + baseB;
-            float fraction = difference / threshold;
-            interpolated = valueB + fraction * (valueA - valueB);
-        }
-    } else {
-        float next;
-        float base;
-        float value;
-        float delta;
-        first = *(void **)((char *)arg0 + 0x1A0);
-        left = *(void **)((char *)first + 0x14);
-        next = *(float *)((char *)left + 0x24);
-        base = *(float *)((char *)first + 0x24);
-        value = *(float *)((char *)arg0 + 0x1A4);
-        delta = next - base;
-        interpolated = base + value * delta;
+void fn_80195654(void *arg0, void *arg1)
+{
+  struct IntPair
+  {
+    int word0;
+    int word1;
+  };
+  struct Scratch
+  {
+    int word0;
+    int word1;
+    float value0;
+    float value1;
+  } scratch;
+  float threshold = 1.5f;
+  float previous;
+  float current;
+  float difference;
+  float interpolated;
+  int doInterpolate;
+  void *first;
+  void *second;
+  void *left;
+  void *right;
+  int flags;
+  current = *((volatile float *) (((char *) arg0) + 0x26C));
+  previous = *((volatile float *) (((char *) arg0) + 0x1D0));
+  *((volatile int *) (((char *) arg0) + 0x2D0)) = 0;
+  difference = current - previous;
+  doInterpolate = difference < threshold;
+  if (doInterpolate)
+  {
+    first = *((void **) (((char *) arg0) + 0x1A0));
+    second = *((void **) (((char *) arg0) + 0x16C));
+    left = *((void **) (((char *) first) + 0x14));
+    right = *((void **) (((char *) second) + 0x14));
+    {
+      float nextA = *((float *) (((char *) left) + 0x24));
+      float baseA = *((float *) (((char *) first) + 0x24));
+      float deltaA = nextA - baseA;
+      float scaleA = *((float *) (((char *) arg0) + 0x1A4));
+      float nextB = *((float *) (((char *) right) + 0x24));
+      float baseB = *((float *) (((char *) second) + 0x24));
+      float deltaB;
+      float scaleB = *((float *) (((char *) arg0) + 0x170));
+      float valueA = baseA + (scaleA * deltaA);
+      float valueB = baseB + (scaleB * (nextB - baseB));
+      float fraction = difference / threshold;
+      interpolated = valueB + (fraction * (valueA - valueB));
     }
-    if (*(int *)((char *)arg0 + 0x268) == 1) {
-        ((void (*)(void *, void *, float))fn_80194C4C)(arg0, arg1, interpolated);
-    } else {
-        ((void (*)(void *, void *, float))fn_80194FD0)(arg0, arg1, interpolated);
-        if (*(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x1E4) <
-            *(float *)((char *)arg0 + 0x2BC)) {
-            *(struct IntPair *)&scratch = *(struct IntPair *)arg1;
-            scratch.value0 = ((float *)arg1)[2];
-            scratch.value1 = ((float *)arg1)[3];
-            ((void (*)(void *, float *, float))fn_801955F0)(arg0, (float *)&scratch, interpolated);
-            {
-                float t = (*(float *)((char *)arg0 + 0x26C) -
-                           *(float *)((char *)arg0 + 0x1E4)) /
-                          *(float *)((char *)arg0 + 0x2BC);
-                t = t * t;
-                fn_80194AF4(arg0, (float *)arg1, (float *)&scratch, (float *)arg1, t);
-            }
-        }
+  }
+  else
+  {
+    float next;
+    float base;
+    float value;
+    float delta;
+    first = *((void **) (((char *) arg0) + 0x1A0));
+    left = *((void **) (((char *) first) + 0x14));
+    next = *((float *) (((char *) left) + 0x24));
+    base = *((float *) (((char *) first) + 0x24));
+    value = *((float *) (((char *) arg0) + 0x1A4));
+    delta = next - base;
+    interpolated = base + (value * delta);
+  }
+  if ((*((int *) (((char *) arg0) + 0x268))) == 1)
+  {
+    ((void (*)(void *, void *, float)) fn_80194C4C)(arg0, arg1, interpolated);
+  }
+  else
+  {
+    ((void (*)(void *, void *, float)) fn_80194FD0)(arg0, arg1, interpolated);
+    if (((*((float *) (((char *) arg0) + 0x26C))) - (*((float *) (((char *) arg0) + 0x1E4)))) < (*((float *) (((char *) arg0) + 0x2BC))))
+    {
+      *((struct IntPair *) (&scratch)) = *((struct IntPair *) arg1);
+      scratch.value0 = ((float *) arg1)[2];
+      scratch.value1 = ((float *) arg1)[3];
+      ((void (*)(void *, float *, float)) fn_801955F0)(arg0, (float *) (&scratch), interpolated);
+      {
+        float t = ((*((float *) (((char *) arg0) + 0x26C))) - (*((float *) (((char *) arg0) + 0x1E4)))) / (*((float *) (((char *) arg0) + 0x2BC)));
+        t = t * t;
+        fn_80194AF4(arg0, (float *) arg1, (float *) (&scratch), (float *) arg1, t);
+      }
     }
-    fn_801971AC(arg0, arg1);
-    *(float *)((char *)arg0 + 0x1C) = ((float *)arg1)[2];
-    fn_801981A0(arg0, arg1);
-    fn_8019743C(arg0, arg1);
-    fn_80197BD0(arg0, arg1);
-    fn_8019724C(arg0, arg1);
-    flags = ((int (*)(int))fn_80167544)(*(int *)((char *)arg0 + 0x290));
-    if (flags != 0) {
-        *(int *)((char *)arg0 + 0x2D0) |= 0x50;
-    }
+  }
+  fn_801971AC(arg0, arg1);
+  *((float *) (((char *) arg0) + 0x1C)) = ((float *) arg1)[2];
+  fn_801981A0(arg0, arg1);
+  fn_8019743C(arg0, arg1);
+  fn_80197BD0(arg0, arg1);
+  fn_8019724C(arg0, arg1);
+  flags = ((int (*)(int)) fn_80167544)(*((int *) (((char *) arg0) + 0x290)));
+  if (flags != 0)
+  {
+    *((int *) (((char *) arg0) + 0x2D0)) |= 0x50;
+  }
 }
 
 /* Computes a normalized 2D output direction from the object's XY (at +0x20) with minimum length clamp. */
@@ -1752,65 +1788,76 @@ struct Self_80195D80 {
     float f2cc;
 };
 #pragma opt_lifetimes off
-extern "C" void fn_80195D80(void *arg0, float arg1) {
-    Self_80195D80 *self = (Self_80195D80 *)arg0;
-    Obj_80195D80 *obj = ((Vt_80195D80 *)self->src)->v5();
-    Shape_80195D80 *next;
-    int changed;
-    int cond;
-    float vec[5];
-    Other_80195D80 *o;
-    Shape_80195D80 *shape;
-    float dy, dz, dx, s, x, y, z;
-    float px, py;
-    self->f2cc = obj->snap.shape->f14;
-    self->f2c8 = obj->snap.shape->f28;
-    self->f18 = fn_801388F4(obj->snap.h.w0);
-    changed = 0;
-    shape = self->cur.shape;
-    o = self->other;
-    next = obj->snap.shape;
-    if (shape != 0 && shape != next) {
-        changed = 1;
-    }
-    if (changed) {
-        self->prev.h.w0 = self->cur.h.w0;
-        self->prev.h.w[0] = self->cur.h.w[0];
-        self->prev.h.w[1] = self->cur.h.w[1];
-        self->prev.body.w[0] = self->cur.body.w[0];
-        self->prev.body.w[1] = self->cur.body.w[1];
-        self->prev.body.w[2] = self->cur.body.w[2];
-        self->prev.body.w[3] = self->cur.body.w[3];
-        self->prev.body.w[4] = self->cur.body.w[4];
-        self->prev.body.w[5] = self->cur.body.w[5];
-        self->prev.b = self->cur.b;
-        self->prev.shape = self->cur.shape;
-        self->prev.w2 = self->cur.w2;
-        self->f1d0 = lbl_8055E3C8;
-    }
-    self->cur.h = obj->snap.h;
-    self->cur.body = obj->snap.body;
-    self->cur.b = obj->snap.b;
-    self->cur.shape = obj->snap.shape;
-    self->cur.w2 = obj->snap.w2;
-    cond = arg1 - self->f1d0 < 1.5f;
-    if (cond) {
-        s = o->a5bc;
-        dx = o->a54;
-        dy = o->a58;
-        dz = o->a5c;
-        px = dx * s;
-        py = dy * s;
-        x = o->a94 + px;
-        y = o->a98 + py;
-        vec[2] = x;
-        z = o->a9c + dz * s;
-        vec[0] = x;
-        vec[3] = y;
-        vec[4] = z;
-        vec[1] = z;
-        fn_801353C4(self->f168, vec);
-    }
+extern "C" void fn_80195D80(void *arg0, float arg1)
+{
+  Self_80195D80 *self = (Self_80195D80 *) arg0;
+  Obj_80195D80 *obj = ((Vt_80195D80 *) ((Self_80195D80 *) arg0)->src)->v5();
+  Shape_80195D80 *next;
+  int changed;
+  int cond;
+  float vec[5];
+  Other_80195D80 *o;
+  Shape_80195D80 *shape;
+  float dy;
+  float dz;
+  float dx;
+  float s;
+  float x;
+  float y;
+  float z;
+  float px;
+  float py;
+  ((Self_80195D80 *) arg0)->f2cc = obj->snap.shape->f14;
+  self->f2c8 = obj->snap.shape->f28;
+  self->f18 = fn_801388F4(obj->snap.h.w0);
+  changed = 0;
+  shape = self->cur.shape;
+  o = self->other;
+  next = obj->snap.shape;
+  if ((shape != 0) && (shape != next))
+  {
+    changed = 1;
+  }
+  if (changed)
+  {
+    self->prev.h.w0 = self->cur.h.w0;
+    self->prev.h.w[0] = self->cur.h.w[0];
+    self->prev.h.w[1] = self->cur.h.w[1];
+    self->prev.body.w[0] = self->cur.body.w[0];
+    self->prev.body.w[1] = self->cur.body.w[1];
+    self->prev.body.w[2] = self->cur.body.w[2];
+    self->prev.body.w[3] = self->cur.body.w[3];
+    self->prev.body.w[4] = self->cur.body.w[4];
+    self->prev.body.w[5] = self->cur.body.w[5];
+    self->prev.b = self->cur.b;
+    self->prev.shape = self->cur.shape;
+    self->prev.w2 = self->cur.w2;
+    self->f1d0 = lbl_8055E3C8;
+  }
+  self->cur.h = obj->snap.h;
+  self->cur.body = obj->snap.body;
+  self->cur.b = obj->snap.b;
+  self->cur.shape = obj->snap.shape;
+  self->cur.w2 = obj->snap.w2;
+  cond = (arg1 - self->f1d0) < 1.5f;
+  if (cond)
+  {
+    s = o->a5bc;
+    dx = o->a54;
+    dy = o->a58;
+    dz = o->a5c;
+    px = dx * s;
+    py = dy * s;
+    x = px + o->a94;
+    y = o->a98 + py;
+    vec[2] = x;
+    z = o->a9c + (dz * s);
+    vec[0] = x;
+    vec[3] = y;
+    vec[4] = z;
+    vec[1] = z;
+    fn_801353C4(self->f168, vec);
+  }
 }
 #pragma opt_lifetimes reset
 extern "C" void fn_80135B9C(void *, void *, void *, void *, void *, float);
@@ -1825,9 +1872,12 @@ void fn_80195F6C(void *arg0, void *arg1) {
     Trio sp24;
     Trio sp18;
     double u1, u2;
-    float m, t, f2, scale, keep;
-    int flag;
+    float f2;
+    float scale;
+    float keep;
+    float m, t;
     char *obj;
+    int flag;
 
     if (*(unsigned char *)(self + 0x2A5) == 0) {
         obj = *(char **)(self + 0x164);
@@ -1939,9 +1989,9 @@ void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, 
   float temp_f5;
   double mag0;
   float abs0;
-  float sp8;
   float spC;
   int var_r0;
+  float sp8;
   temp_f5 = farg0 - farg1;
   temp_f5 += 1.33333f;
   temp_f5 /= farg2;
@@ -1965,7 +2015,10 @@ void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, 
     int s0 = (*((int *) (&sp8))) & 0x80000000;
     if (s0 != s1)
     {
-      goto different_sign;
+      if (1)
+      {
+        goto different_sign;
+      }
     }
   }
   direct_case:
@@ -1977,8 +2030,9 @@ void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, 
   {
     double d = __fabs((double) temp_f5);
     *arg0 = 0.0f;
-    *arg1 = (float) d / 11.772f;
+    *arg1 = ((float) d) / 11.772f;
   }
+
   finish:
   if (farg0 > 0.0f)
   {
@@ -2295,8 +2349,8 @@ extern "C" void fn_8019684C(void) {
         virtual void update();
     };
     struct Controllers { Controller *entries[8]; int count; };
-    List active, inactive;
     int mode, i;
+    List active, inactive;
     Controllers *controllers;
     Controller **iter;
     active.count = 0;
@@ -2311,9 +2365,9 @@ extern "C" void fn_8019684C(void) {
     }
     for (i = 0; i < inactive.count; i++) ((void (*)(void *))fn_8019639C)(inactive.entry[i]);
     for (i = 0; i < active.count; i++) ((void (*)(void *))fn_8019639C)(active.entry[i]);
-    for (i = 0; i < inactive.count; i++) fn_80196328(inactive.entry[i]);
+    for (i = 0; (unsigned)i < inactive.count; i++) fn_80196328(inactive.entry[i]);
     for (i = 0; i < active.count; i++) fn_801963A0(active.entry[i]);
-    for (i = 0; i < active.count; i++) fn_80196414(active.entry[i]);
+    for (i = 0; (u32)i < active.count; i++) fn_80196414(active.entry[i]);
     for (i = 0; i < active.count; i++) fn_80196418(active.entry[i]);
     for (i = 0; i < active.count; i++) fn_801967A4(active.entry[i]);
     for (i = 0; i < active.count; i++) fn_801967FC(active.entry[i]);
@@ -3143,6 +3197,7 @@ int fn_80197FE4(void *arg0, void *arg1)
   }
   return result;
 }
+#pragma scheduling 603
 void fn_8019813C(void *arg0, void *arg1, float arg2, float arg3) {
     int should_update = 1;
     float event_time;
@@ -3161,14 +3216,13 @@ void fn_8019813C(void *arg0, void *arg1, float arg2, float arg3) {
     index = *((int *)((char *)arg1 + 0x18));
     result = (*(float *)((char *)arg0 + 0x270) + event_time) - *((volatile float *)&lbl_805621E4);
 
-    *((u8 *)arg0 + 0x11C) = 1;
+    *((volatile u8 *)arg0 + 0x11C) = 1;
     *((float *)((char *)arg0 + 0x128)) = arg3;
     *((float *)((char *)arg0 + 0x124)) = arg2;
     *((float *)((char *)arg0 + 0x12C)) = weight;
     *((float *)((char *)arg0 + 0x130)) = result;
     *((int *)((char *)arg0 + 0x138)) = index;
 }
-
 extern float lbl_80562298, lbl_8056229C, lbl_805622A0, lbl_805622A4, lbl_8056227C, lbl_8056221C;
 #pragma push
 #pragma opt_common_subs off
