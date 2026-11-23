@@ -2249,57 +2249,50 @@ void fn_800373E0(u32 arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
-/* Completion callback for the small disc-header read issued by fn_800370F4: log the drive status in the error ring, then on a cancel/odd status re-issue the boot-data read (its offset and length come from the header) and finish through fn_80035A04; otherwise log a fatal error and queue a drive reset. */ void fn_800375A8(u32 arg0)
-{
-  register u32 value = arg0;
-  s32 interrupts;
-  interrupts = OSDisableInterrupts();
-  if ((*((volatile u32 *) (&lbl_8055D848))) == 0)
-  {
-    *((u32 *) (__ErrorInfo + 0x78)) = value;
-  }
-  else
-  {
-    *((u32 *) ((__ErrorInfo + 0x28) + (((*((volatile u32 *) (&lbl_8055D848))) - 1) * 0x14))) = value;
-  }
-  OSRestoreInterrupts(interrupts);
-  if (value == 0x10)
-  {
-    fn_8003A1A0(0x1234568, fn_80035C78);
-  }
-  else
-    if (value == 0x20)
-  {
-    fn_8003A1A0(0x1234569, fn_80035C78);
-  }
-  else
-    if (value & 1)
-  {
-    u32 layout;
-    register u32 shiftedSize;
-    register u32 formattedSize;
-    register u32 rawSize;
-    register u32 discOffset;
-    lbl_8055D860 = 0;
-    lbl_8055D8CC = (s32) fn_8003588C;
-    if ((*((u32 *) (((u8 *) bootInfo_8055D8C0) + 0x3C))) < (*((u32 *) (lbl_80376A80 + 8))))
-    {
-      ((void (*)(const char *, s32, const char *, ...)) OSPanic)(lbl_80558E0C, 0x3F6, lbl_80302120);
+void fn_800375A8(u32 statusCode) {
+    register u32 status = statusCode;
+    s32 interrupts;
+
+    /* Completion callback for the small disc-header read issued by fn_800370F4:
+     * log the drive status in the error ring, then on a cancel/odd status re-issue
+     * the boot-data read (its offset and length come from the header) and finish
+     * through fn_80035A04; otherwise log a fatal error and queue a drive reset. */
+    interrupts = OSDisableInterrupts();
+    if (*(volatile u32 *)&lbl_8055D848 == 0) {
+        *(u32 *)(__ErrorInfo + 0x78) = status;
+    } else {
+        *(u32 *)(__ErrorInfo + 0x28 + (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = status;
     }
-    fn_8003BCDC(0);
-    layout = *((volatile u32 *) (&__DVDLayoutFormat));
-    shiftedSize = (*((u32 *) (lbl_80376A80 + 8))) << ((~(*((volatile u32 *) (&__DVDLayoutFormat)))) & 2);
-    rawSize = *((u32 *) (lbl_80376A80 + 4));
-    discOffset = rawSize >> layout;
-    formattedSize = (shiftedSize + 0x1F) & (~0x1F);
-    ((void (*)(s32, s32, s32, u32, u32)) fn_800356F4)(1, (unsigned long long) discOffset, formattedSize, layout, rawSize);
-    fn_8003B81C(*((void **) (((u8 *) bootInfo_8055D8C0) + 0x38)), (((*((u32 *) (lbl_80376A80 + 8))) << ((~(*((volatile u32 *) (&__DVDLayoutFormat)))) & 2)) + 0x1F) & (~0x1F), (*((u32 *) (lbl_80376A80 + 4))) >> (*((volatile u32 *) (&__DVDLayoutFormat))), (s32) fn_80035A04);
-  }
-  else
-  {
-    fn_800356F4(0x27, 0, 0);
-    fn_8003B218(fn_80035E6C);
-  }
+    OSRestoreInterrupts(interrupts);
+
+    if (status == 0x10) {
+        fn_8003A1A0(0x1234568, fn_80035C78);
+    } else if (status == 0x20) {
+        fn_8003A1A0(0x1234569, fn_80035C78);
+    } else if (status & 1) {
+        u32 layoutShift;
+        register u32 shiftedLength;
+        register u32 readLength;
+        register u32 rawLength;
+        register u32 discOffset;
+
+        lbl_8055D860 = 0;
+        lbl_8055D8CC = (s32)fn_8003588C;
+        if (*(u32 *)((u8 *)bootInfo_8055D8C0 + 0x3C) < *(u32 *)(lbl_80376A80 + 8)) {
+            ((void (*)(const char *, s32, const char *, ...))OSPanic)(lbl_80558E0C, 0x3F6, lbl_80302120);
+        }
+        fn_8003BCDC(0);
+        layoutShift = *(volatile u32 *)&__DVDLayoutFormat;
+        shiftedLength = (*((u32 *) (lbl_80376A80 + 8))) << ((~(*((volatile u32 *) (&__DVDLayoutFormat)))) & 2);
+        rawLength = *((u32 *) (lbl_80376A80 + 4));
+        discOffset = rawLength >> layoutShift;
+        readLength = (shiftedLength + 0x1F) & (~0x1F);
+        ((void (*)(s32, s32, s32, u32, u32)) fn_800356F4)(1, (unsigned long long) discOffset, readLength, layoutShift, rawLength);
+        fn_8003B81C(*((void **) (((u8 *) bootInfo_8055D8C0) + 0x38)), (((*((u32 *) (lbl_80376A80 + 8))) << ((~(*((volatile u32 *) (&__DVDLayoutFormat)))) & 2)) + 0x1F) & (~0x1F), (*((u32 *) (lbl_80376A80 + 4))) >> (*((volatile u32 *) (&__DVDLayoutFormat))), (s32) fn_80035A04);
+    } else {
+        fn_800356F4(0x27, 0, 0);
+        fn_8003B218(fn_80035E6C);
+    }
 }
 #pragma pop
 extern s32 MotorState_8055D8A8;
