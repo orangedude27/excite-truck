@@ -274,8 +274,9 @@ extern void fn_802E7C40(void);
 extern s32 fn_802E8668(s32);
 extern void fn_802E99AC(void);
 extern s32 lbl_80558898[];
-/* Update Home Menu/WPAD shutdown flow: on a request, stop motors, initialize
- * home-button state, then poll/advance until completion and log status. */
+/* Drive the Home menu / Wii Remote shutdown flow. When a Home-menu request
+ * arrives, stop all rumble and snapshot the menu state; then gather WPAD info
+ * and, once the menu reports completion, log the result and reset the console. */
 void fn_802EC884(void) {
     register char *menuStrings = lbl_8034E9E0;
     const char *statusText;
@@ -321,11 +322,11 @@ void fn_802EC884(void) {
         switch (fn_800C673C()) {
         case 1:
             fn_802E30C8(menuStrings + 0x1E0);
-            KERNEL_Reset(1);
+            fn_802E2E38(1);
             break;
         case 2:
             fn_802E30C8(menuStrings + 0x200);
-            KERNEL_Reset(0);
+            fn_802E2E38(0);
             break;
         }
         fn_800C687C();
