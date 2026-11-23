@@ -558,8 +558,16 @@ void GXSetupThreeStageTevPipelineAlt(void) {
 }
 
 #pragma scheduling invalid_target
-/* Configures GX for 1 texgen and 1 TEV stage: tex map 1 with constant K color
-   sel 0xD and K alpha sel 0x1D (color 0xF,8,0xE,0xF; alpha 7,4,6,7). */
+/* TEV pipeline for the CPU-light pass when the light texture carries no extra
+ * map: fn_802DC71C picks it (with fn_802DC62C) when that texture's S wrap is
+ * GX_REPEAT; fn_802E050C is its two-stage twin for the extra-map case and
+ * fn_802DFD00 the variant used when the wrap is not GX_REPEAT.
+ * One texture generator: texcoord 0 passes the vertex's texcoord0 through the
+ * identity matrix.  The single combiner stage samples texmap 1 with that
+ * texcoord, ignores the vertex colour channel and clamps into TEVPREV, reading
+ * constant colour K1 for both combine terms:
+ *   rgb   = 0 + texC - K1   + 0   (GX_CC_ZERO, TEXC, KONST, ZERO)
+ *   alpha = 0 + texA - K1.a + 0   (GX_CA_ZERO, TEXA, KONST, ZERO) */
 void fn_802E0420(void) {
     GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY, GX_FALSE,
                       GX_PTIDENTITY);
