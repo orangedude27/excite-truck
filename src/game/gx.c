@@ -28,7 +28,7 @@ extern __declspec(section ".data") unsigned int lbl_804C9940;
 extern void OSReport(const char *, ...);
 extern int DCFlushRange(void *, unsigned long);
 extern void GXDisableBreakPt(void);
-extern void fn_802CED78(void);
+extern void gxReportGPStatus(void);
 extern void fn_802D6C78(void);
 extern unsigned char lbl_804C5710[];
 extern unsigned char lbl_8055D0F0;
@@ -374,7 +374,7 @@ extern void KPADSetBtnRepeat(int *, int *, int *, int *);
 /* Reports the GX GP status flags and whether the GP metric counters
  * (KPADSetBtnRepeat is the misnamed CP counter read) changed between two
  * samples, via OSReport. */
-void fn_802CED78(void) {
+void gxReportGPStatus(void) {
     extern char lbl_8034BD18[];
     extern void GXGetGPStatus(char *, char *, char *, char *, char *);
     int a1, a0, a3, a2, b1, b0, b3, b2;
@@ -413,7 +413,7 @@ void fn_802CEF90(void) {
     extern void *GXGetCurrentGXThread(void);
     extern void OSReport(const char *, ...);
     extern void OSPanic(const char *, int, const char *, ...);
-    extern void fn_802CED78(void);
+    extern void gxReportGPStatus(void);
     extern char lbl_8034BF34[];
     extern char lbl_8034BF70[];
     extern char lbl_8055D0F8[7];
@@ -434,7 +434,7 @@ void fn_802CEF90(void) {
         lbl_8055FDB8++;
         if (lbl_8055FDB8 >= 10) {
             OSReport(lbl_8034BF34);
-            fn_802CED78();
+            gxReportGPStatus();
             OSPanic(lbl_8055D0F8, 0x201, lbl_8034BF70);
         }
     } else {
@@ -1054,7 +1054,7 @@ int fn_802CFDE0(void) {
     while (*(volatile unsigned char *)&lbl_8055FD3C == 0) {
         if (*(volatile int *)&lbl_8055FD38 > 10) {
             OSReport(lbl_8034C058);
-            fn_802CED78();
+            gxReportGPStatus();
             fn_802CFD74();
             fn_802CF048(1);
             lbl_8055FD40 = fn_802E2C20();
@@ -2724,7 +2724,7 @@ void fn_802D2B0C(void) {
     extern void fn_802D2AC4(void);
     extern void fn_802DF6D0(void);
     extern void fn_802DF938(void);
-    extern void GXSetupWaterBumpTevPipelineA(void);
+    extern void fn_802DF4A8(void);
     extern void fn_802DF684(void);
     extern void fn_802D1C04(void);
     int diff;
@@ -2774,7 +2774,7 @@ void fn_802D2B0C(void) {
                         fn_802DF6D0();
                         lbl_8055FD80 = fn_802DF938;
                     } else {
-                        GXSetupWaterBumpTevPipelineA();
+                        fn_802DF4A8();
                         lbl_8055FD80 = fn_802DF684;
                     }
                     lbl_8055FD70 = 1;
@@ -2975,7 +2975,7 @@ void *fn_802D30FC(void) {
 void *fn_802D3100(void) {
     #define GetDistortTexture fn_802D30F0
     /* GetDistortTexture: return the indirect texture object loaded into GX_TEXMAP6
-     * by GXSetupWaterBumpTevPipelineA's bump/distort pass. */
+     * by fn_802DF4A8's bump/distort pass. */
     return GetDistortTexture();
     #undef GetDistortTexture
 }
@@ -3157,10 +3157,11 @@ void fn_802D3420(void) {
 void fn_802D362C(s32 arg0) {
     volatile unsigned char color[4];
     unsigned int packed;
+    void *colorPtr;
 
     GXSetTexCopySrc((u16)*(int *)(lbl_804C9778 + 0x1C), (u16)*(int *)(lbl_804C9778 + 0x20), (u16)*(int *)(lbl_804C9778 + 0x24), (u16)*(int *)(lbl_804C9778 + 0x28));
     GXSetTexCopyDst((u16)*(int *)(lbl_804C9778 + 0x24), (u16)*(int *)(lbl_804C9778 + 0x28), 0x27, 0);
-    GXCopyTex((void *)lbl_804C9940);
+    GXCopyTex((void *)lbl_804C9940, 0);
     __GXSetGenMode();
     GXSetColorUpdate(1);
     GXSetAlphaUpdate(0);
@@ -3176,12 +3177,13 @@ void fn_802D362C(s32 arg0) {
     GXSetBlendMode(1, 4, 5, 3);
     GXSetZMode(0, 3, 0);
     GXSetTexCoordGen2(0, 1, 0xC, 0x3C, 0, 0x7D);
+    colorPtr = (void *)color;
     packed = ((unsigned int (*)(unsigned int))fn_802CEA1C)((unsigned int)arg0);
     color[3] = packed;
     color[0] = packed >> 24;
     color[1] = packed >> 16;
     color[2] = packed >> 8;
-    ((void (*)(int, void *))GXSetTevColor)(1, (void *)color);
+    ((void (*)(int, void *))GXSetTevColor)(1, colorPtr);
     fn_802D3420();
 }
 
