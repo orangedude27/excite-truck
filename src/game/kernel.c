@@ -753,14 +753,16 @@ extern int lbl_8055FEF8;
 extern unsigned int lbl_8055FEFC;
 extern unsigned long long __div2i(unsigned long long, unsigned long long);
 #pragma scheduling invalid_target
-unsigned long long fn_802E2C9C(void) {
-    unsigned long long now = OSGetTime();
-    unsigned int lo = lbl_8055FEFC;
-    unsigned int hi = lbl_8055FEF8;
-    unsigned int busClock = *(volatile unsigned int *)0x800000F8;
-    unsigned long long elapsed = (now - (((unsigned long long)hi << 32) | lo)) << 3;
-    unsigned int scale = (busClock >> 2) / 125000;
-    return __div2i(elapsed, scale);
+unsigned long long fn_802E2C9C(void)
+{
+  unsigned long long now = OSGetTime();
+  unsigned long long elapsed = now - (*((unsigned long long *) (&lbl_8055FEF8)));
+  unsigned int busClock = (*((volatile unsigned int *) 0x800000F8)) & 0xFFFFFFFF;
+  unsigned int scale = (busClock >> 2) / 125000;
+  if (1)
+  {
+  }
+  return __div2i(elapsed << 3, scale);
 }
 #pragma scheduling on
 /* Store the console's real date and time (RTC ticks from OSGetTime(), broken
