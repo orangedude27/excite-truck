@@ -1347,7 +1347,6 @@ body:
 done:
     ;
 }
-#pragma scheduling on
 extern "C" void fn_802A37C8(void* arg0, s32 arg1) {
     /* Build an effect descriptor on the stack, initialize it, and create/store the
        "trail sand" effect instance in the target object. */
