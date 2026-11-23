@@ -1012,30 +1012,42 @@ void fn_802C6B2C(s32 *value, s32 delta) {
     }
 }
 
-/* Loads a MODL resource, validates its version, and optionally prepares it for use. */
-/* Load a MODL model resource by path; on a swapped-endian load verify version 12, flush the cache and byte-fix the data, and on a first reference walk its group list. */ int fn_802C6B44(int modelPath) {
+/* Load a MODL model resource by path; on a swapped-endian load verify version
+ * 12, flush the cache and byte-fix the data, and on a first reference walk its
+ * group list. */
+int fn_802C6B44(int modelPath) {
+#define modlTag         0x4D4F444C
+#define expectedVersion 0xC
+#define fixupResource   fn_802C61BC
+#define forEachGroup    fn_802C5DF0
+#define groupHook       fn_802D6C48
     void *modelData;
     int dataSize;
     u32 version;
     u8 swapEndian;
     u8 isNew;
 
-    modelData = fn_8012C370(modelPath, 0x4D4F444C, &version, &dataSize, &isNew, &swapEndian);
+    modelData = fn_8012C370(modelPath, modlTag, &version, &dataSize, &isNew, &swapEndian);
     if (modelData != 0) {
         if (swapEndian != 0) {
-            if (version != 0xC) {
-                fn_802E317C(lbl_8034B2E8, version, 0xC, modelPath);
+            if (version != expectedVersion) {
+                fn_802E317C(lbl_8034B2E8, version, expectedVersion, modelPath);
             }
             DCStoreRangeNoSync(modelData, dataSize);
-            fn_802C61BC(modelData, modelPath);
+            fixupResource(modelData, modelPath);
         }
         if (isNew != 0) {
-            fn_802C5DF0(modelData, fn_802D6C48);
+            forEachGroup(modelData, groupHook);
         }
         return (int)modelData;
     }
     fn_802E317C(lbl_8034B314, modelPath);
     return 0;
+#undef modlTag
+#undef expectedVersion
+#undef fixupResource
+#undef forEachGroup
+#undef groupHook
 }
 
 #pragma dont_inline on
