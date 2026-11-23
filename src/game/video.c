@@ -504,10 +504,13 @@ void fn_802E009C(void) {
     GXSetNumTevStages(2);
 }
 
-/* 3-stage TEV combiner setup, alternate-texture variant (picked by fn_802DC71C when useAlt is set). */
+/* Three-stage TEV pipeline for a material whose texture flag is 0x1D and has
+ * an alternate texture (loaded into map 2 by fn_802DC71C): texcoord 0 samples
+ * map 1, texcoord 1 samples map 0, and the combiner blends both through stages
+ * 0-1 into the final stage 2.  The non-alternate twin is fn_802E009C. */
 void fn_802E0218(void) {
-    register u32 coord = 0;
-    GXSetTexCoordGen2(coord, 1, 5, 0x3C, 0, 0x7D);
+    register u32 texCoord = 0;
+    GXSetTexCoordGen2(texCoord, 1, 5, 0x3C, 0, 0x7D);
     GXSetTexCoordGen2(1, 1, 4, 0x3C, 0, 0x7D);
     GXSetNumTexGens(2);
     GXSetTevOrder(0, 1, 1, 0xFF);
