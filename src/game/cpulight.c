@@ -1055,7 +1055,7 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
 }
 #pragma optimization_level 4
 /* Set up the CPU-light indirect-texture (bump-map) pass: optionally bind the pass texture to texcoord slot 1, derive a base-2 indirect-matrix scale from the light level and load it into indirect matrix 1, then configure the indirect TEV and vertex state. A texture-slot value of -2 skips the binding; arg0 is unused. */
-void fn_802DCFCC(int arg0, int indTexSlot, int texSlot1, float lightLevel, float texScale) {
+void CpuLight_BeginIndirectPass(int arg0, int indTexSlot, int texSlot1, float lightLevel, float texScale) {
     float logDiff;
     float magnitude;
     float sign;
@@ -1117,14 +1117,14 @@ void fn_802DCFCC(int arg0, int indTexSlot, int texSlot1, float lightLevel, float
 }
 
 #pragma pop
-/* Ends the indirect-texture pass fn_802DCFCC set up, once the geometry drawn
+/* Ends the indirect-texture pass CpuLight_BeginIndirectPass set up, once the geometry drawn
  * with it is on screen (its caller fn_802C03F0 draws it with fn_802DD27C in
  * between): drops the indirect texture matrix from the GX state block, forgets
  * the cached position array, unbinds the pass' texture from texcoord slot 1,
  * turns indirect stages off and makes tev stage 0 direct again.
  * (rename_symbol is refused here; suggested name CpuLight_EndIndirectPass.) */
 void fn_802DD228(void) {
-    /* Whether fn_802DCFCC left an indirect-texture pass running. */
+    /* Whether CpuLight_BeginIndirectPass left an indirect-texture pass running. */
 #define indirectPassRunning lbl_8055FEC0
 #define ClearIndTexMtxFlag fn_802D3E88 /* lbl_804C5700[13]: indirect tex matrix loaded */
 #define ForgetPositionArray fn_802DBDD8 /* cached position array + vertex count */
