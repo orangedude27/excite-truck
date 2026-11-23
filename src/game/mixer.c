@@ -239,45 +239,46 @@ extern "C" void fn_801336E0(int, void (*)(void));
 #pragma scheduling default
 #pragma cplusplus on
 extern "C" void fn_80208D80(int closeDevices) {
-    /* Mixer shutdown: report any volume handles still held, optionally close every
-     * registered sound device, then save the selected device, effects volume and
-     * sound quality to config and install the settings-reload callback. */
+    /* Mixer shutdown: warn about volume handles still held, optionally close
+     * every registered sound device, then persist the selected device ("mixer"),
+     * effects volume and sound quality ("quality") to config and re-register the
+     * settings-reload callback. */
     void **deviceIt;
     void *device;
-    char *handlePtr = lbl_80489258;
-    int name;
+    char *handleIt = lbl_80489258;
+    int handleName;
     int i = 0;
     int j;
 
     while (i < MIXER_VOLUME_HANDLE_COUNT) {
-        name = *(int *)(handlePtr + 4);
-        if (name != 0) {
-            fn_802E317C(lbl_8033BF28, name);
+        handleName = *(int *)(handleIt + 4);
+        if (handleName != 0) {
+            fn_802E317C(lbl_8033BF28, handleName);
         }
-        handlePtr += 8;
+        handleIt += 8;
         i++;
     }
 
     if (closeDevices != 0) {
-        deviceIt = (void **)lbl_80489238;
+        deviceIt = (void **)MIXER_DEVICES;
         j = 0;
         while (j < MIXER_DEVICE_COUNT) {
             device = *deviceIt;
             if (device != 0) {
-                struct Dummy {
+                struct SoundDevice {
                     virtual void close(int);
                 };
-                ((struct Dummy *)device)->close(1);
+                ((struct SoundDevice *)device)->close(1);
             }
             deviceIt++;
             j++;
         }
     }
 
-    fn_80133348(4, &lbl_8055B4E8, MIXER_SELECTED_DEVICE);
-    fn_8013323C(4, lbl_8033BEF8, lbl_8055B4D0);
-    fn_80133348(4, &lbl_8055B4E0, (int)lbl_8055EDA8);
-    fn_801336E0(lbl_8055B4DC, fn_80208A78);
+    fn_80133348(OPTIONS_SECTION_SOUND, &CONFIG_KEY_MIXER, MIXER_SELECTED_DEVICE);
+    fn_8013323C(OPTIONS_SECTION_SOUND, CONFIG_KEY_EFFECTS_VOLUME, lbl_8055B4D0);
+    fn_80133348(OPTIONS_SECTION_SOUND, &CONFIG_KEY_QUALITY, (int)gSoundQuality);
+    fn_801336E0(gMixerReloadSlot, fn_80208A78);
 }
 
 #pragma cplusplus on
