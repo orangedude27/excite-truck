@@ -899,9 +899,11 @@ int fn_8020B874(void *object, void *name) {
 extern void fn_802E61E4(float);
 extern int lbl_8055EDFC;
 extern float lbl_805632B0;
-/* Mute a playing voice sound: pause/release its voices and silence their volume. */
-void fn_8020B908(void *arg0) {
-    VoiceSnd *snd = (VoiceSnd *)arg0;
+/* Mute a voice sound (vtable +0x28 of lbl_8033C3F4): if not already muted and
+ * still playing, set the mute flag, stop and release its voices, and zero their
+ * volume; counterpart of VoiceSnd_unmute. */
+void fn_8020B908(void *self) {
+    VoiceSnd *snd = (VoiceSnd *)self;
     if (snd->mute == 0 && snd->state != 3) {
         snd->mute = 1;
         lbl_8055EDFC++;
