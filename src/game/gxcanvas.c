@@ -763,10 +763,12 @@ loop_3:
  * convert; any other source format only traces "Can't copy from %d to %d". */
 void fn_802C3D74(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
                   s32 srcBottom, s32 dstCanvas, s32 dstLeft, s32 dstTop) {
+    /* Destination corner after clipping, the matching source corner, and the
+       size that is left of the requested rectangle. */
     s32 width, height, clipY, clipX, srcY, srcX;
     u16 *src;
     s32 *dst;
-    s32 i, srcSkip, dstSkip, srcAdd, dstAdd;
+    s32 pixelsLeft, srcSkip, dstSkip, srcAdd, dstAdd;
     srcX = srcLeft;
     srcY = srcTop;
     clipX = dstLeft;
@@ -775,24 +777,25 @@ void fn_802C3D74(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
     height = srcBottom - srcTop;
     if (gxCanvasClipBlitRect((void *)dstCanvas, &clipX, &clipY, &srcX, &srcY, &width, &height) != 0) {
         src = (u16 *)gxCanvasGetPixelAddr((void *)srcCanvas, srcX, srcY);
-        dst = (s32 *)fn_802C3060((void *)dstCanvas, clipX, clipY);
+        dst = (s32 *)gxCanvasGetPixelAddr32((void *)dstCanvas, clipX, clipY);
         /* Pixels to step over the ones a row does not hold, per canvas. */
         srcSkip = (((GxCanvas *)srcCanvas)->rowBytes - width * 2) / 2;
         dstSkip = (((GxCanvas *)dstCanvas)->rowBytes - width * 4) / 4;
         if (*(s8 *)srcCanvas == CANVAS_FORMAT_RGB565) {
+            /* Row pitch in bytes, for the two loops below. */
             srcAdd = srcSkip * 2;
             dstAdd = dstSkip * 4;
             do {
-                i = width;
+                pixelsLeft = width;
                 do {
                     u16 pixel = *src;
                     s32 converted;
                     src++;
                     converted = Convert565ToRGBA(pixel);
-                    i--;
+                    pixelsLeft--;
                     *dst = converted;
                     dst++;
-                } while (i > 0);
+                } while (pixelsLeft > 0);
                 src = (u16 *)((u8 *)src + srcAdd);
                 dst = (s32 *)((u8 *)dst + dstAdd);
                 height--;
@@ -801,22 +804,22 @@ void fn_802C3D74(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
             srcAdd = srcSkip * 2;
             dstAdd = dstSkip * 4;
             do {
-                i = width;
+                pixelsLeft = width;
                 do {
                     u16 pixel = *src;
                     s32 converted;
                     src++;
                     converted = Convert555ToRGBA(pixel);
-                    i--;
+                    pixelsLeft--;
                     *dst = converted;
                     dst++;
-                } while (i > 0);
+                } while (pixelsLeft > 0);
                 src = (u16 *)((u8 *)src + srcAdd);
                 dst = (s32 *)((u8 *)dst + dstAdd);
                 height--;
             } while (height > 0);
         } else {
-            fn_802E317C(lbl_8034B0E4, (s32)*(s8 *)srcCanvas, *(s8 *)dstCanvas);
+            fn_802E317C(CANVAS_COPY_FORMAT_MSG, (s32)*(s8 *)srcCanvas, *(s8 *)dstCanvas);
         }
     }
 }
