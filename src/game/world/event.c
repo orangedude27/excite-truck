@@ -76,28 +76,28 @@ extern char lbl_8033A354[];
  * returns how many payload bytes it consumed, and the walk advances past
  * those plus the type byte. A type with no handler is reported
  * ("No handler for evt type %d") and aborts the script. */
-void fn_801EF0AC(unsigned char *script) {
+/* Walks one event script: for each record, copies its payload to a scratch buffer, calls all registered handlers for its type, and advances by the bytes the last handler consumed; aborts with a panic if the type has no handler. */ void fn_801EF0AC(unsigned char *script) {
     char payloadCopy[0x400];
-    unsigned int *slot;
+    unsigned int *handlerSlot;
     unsigned char *payload;
     int offset = 0;
-    int consumed;
+    int bytesConsumed;
     signed char evtType;
-    unsigned int slotIdx;
+    unsigned int slotIndex;
 
     while (offset < (int)*(unsigned int *)script) {
         evtType = (signed char)script[offset + 4];
         payload = script + offset + 5;
-        consumed = -1;
-        slot = (unsigned int *)(lbl_80488678 + evtType * 16);
-        for (slotIdx = 0; slotIdx < 4; slotIdx++, slot++) {
-            if (*slot != 0) {
+        bytesConsumed = -1;
+        handlerSlot = (unsigned int *)(lbl_80488678 + evtType * 16);
+        for (slotIndex = 0; slotIndex < 4; slotIndex++, handlerSlot++) {
+            if (*handlerSlot != 0) {
                 memcpy(payloadCopy, payload, 0x400);
-                consumed = ((EventHandler)*slot)(payloadCopy);
+                bytesConsumed = ((EventHandler)*handlerSlot)(payloadCopy);
             }
         }
-        if (consumed != -1) {
-            offset = offset + consumed + 1;
+        if (bytesConsumed != -1) {
+            offset = offset + bytesConsumed + 1;
         } else {
             fn_802E317C(lbl_8033A354, *((volatile unsigned char *)script + offset + 4));
             return;
