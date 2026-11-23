@@ -1612,111 +1612,111 @@ s32 fn_802C7830(char *hexStr) {
 }
 
 #pragma scheduling on
-void fn_802C7888(void *src, s32 count)
+/* Register `recordCount` 0x2C-byte model resource name-override records from `records` into the name-override table lbl_804C13B4 ({used count, capacity, base} of 0x2C-byte entries). Each record holds a 16-byte lookup name at +0, an id at +0x10, a 16-byte replacement name at +0x14, and a back-reference pointer at +0x28 that is cleared to -1 on copy. The next free entry is taken for each record; bytes are moved individually so the copy is safe even if the source overlaps the table. */ void fn_802C7888(void *records, s32 recordCount)
 {
   /* Copy `count` 0x2C-byte model records from `src` into the model-entry pool
    * lbl_804C13B4 (used-count at +0, capacity at +4, base at +8), taking the next
    * free entry for each record.  Each record's +0x28 word is a back-pointer key
    * that is reset to -1 on copy.  The bytes are moved one at a time so that the
    * copy is safe even when the source overlaps the pool. */
-  for (; count > 0; count--)
+  for (; recordCount > 0; recordCount--)
   {
-    volatile u8 *source = (volatile u8 *) src;
-    volatile u8 *dest;
-    s32 index;
-    s32 *key = *((s32 **) (((u8 *) src) + 0x28));
+    volatile u8 *recordBytes = (volatile u8 *) records;
+    volatile u8 *entryBytes;
+    s32 entryIndex;
+    s32 *backRef = *((s32 **) (((u8 *) records) + 0x28));
     u8 a;
     u8 b;
-    u32 word;
-    u32 word2;
-    u32 word3;
-    if (key != 0)
+    u32 idWord;
+    u32 word24;
+    u32 keyWord;
+    if (backRef != 0)
     {
-      *key = -1;
+      *backRef = -1;
     }
-    index = lbl_804C13B4[0];
-    if (index < lbl_804C13B4[1])
+    entryIndex = lbl_804C13B4[0];
+    if (entryIndex < lbl_804C13B4[1])
     {
-      s32 offset = index * 0x2C;
+      s32 offset = entryIndex * 0x2C;
       unsigned char *base = (unsigned char *) ((unsigned long) lbl_804C13B4[2]);
-      lbl_804C13B4[0] = index + 1;
-      dest = (volatile u8 *) (base + offset);
+      lbl_804C13B4[0] = entryIndex + 1;
+      entryBytes = (volatile u8 *) (base + offset);
     }
     else
     {
-      dest = 0;
+      entryBytes = 0;
     }
-    a = source[0];
-    b = source[1];
-    dest[0] = a;
-    a = source[2];
-    dest[1] = b;
-    b = source[3];
-    dest[2] = a;
-    a = source[4];
-    dest[3] = b;
-    b = source[5];
-    dest[4] = a;
-    a = source[6];
-    dest[5] = b;
-    b = source[7];
-    dest[6] = a;
-    a = source[8];
-    dest[7] = b;
-    b = source[9];
-    dest[8] = a;
-    a = source[10];
-    dest[9] = b;
-    b = source[11];
-    dest[10] = a;
-    a = source[12];
-    dest[11] = b;
-    b = source[13];
-    dest[12] = a;
-    a = source[14];
-    dest[13] = b;
-    b = source[15];
-    dest[14] = a;
-    *(u32 *)&word = *(volatile u32 *)(source + 0x10);
-    dest[15] = b;
-    b = source[0x14];
-    *((volatile u32 *) (dest + 0x10)) = *(u32 *)&word;
-    a = source[0x15];
-    dest[0x14] = b;
-    b = source[0x16];
-    dest[0x15] = a;
-    a = source[0x17];
-    dest[0x16] = b;
-    b = source[0x18];
-    dest[0x17] = a;
-    a = source[0x19];
-    dest[0x18] = b;
-    b = source[0x1A];
-    dest[0x19] = a;
-    a = source[0x1B];
-    dest[0x1A] = b;
-    b = source[0x1C];
-    dest[0x1B] = a;
-    a = source[0x1D];
-    dest[0x1C] = b;
-    b = source[0x1E];
-    dest[0x1D] = a;
-    a = source[0x1F];
-    dest[0x1E] = b;
-    b = source[0x20];
-    dest[0x1F] = a;
-    a = source[0x21];
-    dest[0x20] = b;
-    b = source[0x22];
-    dest[0x21] = a;
-    a = source[0x23];
-    dest[0x22] = b;
-    word2 = *((volatile u32 *) (source + 0x24));
-    dest[0x23] = a;
-    word3 = *((volatile u32 *) (source + 0x28));
-    src = ((u8 *) src) + 0x2C;
-    *((volatile u32 *) (dest + 0x24)) = word2;
-    *((volatile u32 *) (dest + 0x28)) = word3;
+    a = recordBytes[0];
+    b = recordBytes[1];
+    entryBytes[0] = a;
+    a = recordBytes[2];
+    entryBytes[1] = b;
+    b = recordBytes[3];
+    entryBytes[2] = a;
+    a = recordBytes[4];
+    entryBytes[3] = b;
+    b = recordBytes[5];
+    entryBytes[4] = a;
+    a = recordBytes[6];
+    entryBytes[5] = b;
+    b = recordBytes[7];
+    entryBytes[6] = a;
+    a = recordBytes[8];
+    entryBytes[7] = b;
+    b = recordBytes[9];
+    entryBytes[8] = a;
+    a = recordBytes[10];
+    entryBytes[9] = b;
+    b = recordBytes[11];
+    entryBytes[10] = a;
+    a = recordBytes[12];
+    entryBytes[11] = b;
+    b = recordBytes[13];
+    entryBytes[12] = a;
+    a = recordBytes[14];
+    entryBytes[13] = b;
+    b = recordBytes[15];
+    entryBytes[14] = a;
+    *(u32 *)&idWord = *(volatile u32 *)(recordBytes + 0x10);
+    entryBytes[15] = b;
+    b = recordBytes[0x14];
+    *((volatile u32 *) (entryBytes + 0x10)) = *(u32 *)&idWord;
+    a = recordBytes[0x15];
+    entryBytes[0x14] = b;
+    b = recordBytes[0x16];
+    entryBytes[0x15] = a;
+    a = recordBytes[0x17];
+    entryBytes[0x16] = b;
+    b = recordBytes[0x18];
+    entryBytes[0x17] = a;
+    a = recordBytes[0x19];
+    entryBytes[0x18] = b;
+    b = recordBytes[0x1A];
+    entryBytes[0x19] = a;
+    a = recordBytes[0x1B];
+    entryBytes[0x1A] = b;
+    b = recordBytes[0x1C];
+    entryBytes[0x1B] = a;
+    a = recordBytes[0x1D];
+    entryBytes[0x1C] = b;
+    b = recordBytes[0x1E];
+    entryBytes[0x1D] = a;
+    a = recordBytes[0x1F];
+    entryBytes[0x1E] = b;
+    b = recordBytes[0x20];
+    entryBytes[0x1F] = a;
+    a = recordBytes[0x21];
+    entryBytes[0x20] = b;
+    b = recordBytes[0x22];
+    entryBytes[0x21] = a;
+    a = recordBytes[0x23];
+    entryBytes[0x22] = b;
+    word24 = *((volatile u32 *) (recordBytes + 0x24));
+    entryBytes[0x23] = a;
+    keyWord = *((volatile u32 *) (recordBytes + 0x28));
+    records = ((u8 *) records) + 0x2C;
+    *((volatile u32 *) (entryBytes + 0x24)) = word24;
+    *((volatile u32 *) (entryBytes + 0x28)) = keyWord;
   }
 
 }
