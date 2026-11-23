@@ -130,8 +130,8 @@ s32 fn_80246938(void) {
 
     index = fn_802E4A10();
     if (index >= 0 && index < 4) {
-        fn_80214A9C(0x1F);
         zero = 0;
+        fn_80214A9C(0x1F);
         z14 = 0;
         z18 = 0;
         while (((s32 (*)(s32))fn_802E8690)(index) != 0) {
@@ -298,7 +298,7 @@ s32 fn_80246E4C(void) {
     s32 menu[5];
     s32 res;
     s32 var_r25 = 0;
-    s32 *p;
+    register s32 *p;
     float f;
 
     fn_802ECEC4();
@@ -411,20 +411,24 @@ Obj_802470D4 *fn_802470D4(Obj_802470D4 *self, s32 deleteFlag) {
 #pragma pop
 #pragma push
 #pragma processor 750
-void fn_80247174(void) {
-    extern double lbl_805638A0;
-    register double bias = lbl_805638A0;
-    register float divisor = 49.0f;
-    register float base = 1.0f;
-    s32 i = 0;
-    do {
-        fn_80246CAC(base - (float)i / divisor);
-        fn_80127464();
-        fn_802E2D74(0x10);
-        i++;
-    } while (i < 0x32);
-    fn_8020A634();
-    fn_80246CAC(lbl_80563898);
+void fn_80247174(void)
+{
+  s32 i = 0;
+  do
+  {
+    register float divisor;
+    register float base;
+    fn_80246CAC(1.0f - (((float) i) / 49.0f));
+    fn_80127464();
+    if (0 != 1)
+    {
+      fn_802E2D74((char) 0x10);
+      i++;
+    }
+  }
+  while (i < 0x32);
+  fn_8020A634();
+  fn_80246CAC(lbl_80563898);
 }
 #pragma pop
 
@@ -784,9 +788,7 @@ void fn_80247768(void) {
 extern void *lbl_8055BEB0;
 extern s32 lbl_8055BEB8;
 extern s32 lbl_8055F26C;
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8024778C(void) {
     s32 i;
     s32 current;
@@ -826,7 +828,6 @@ void fn_8024778C(void) {
         i += 1;
     } while (i < 3);
 }
-#pragma pop
 extern void* lbl_8055BEB0;
 extern s32 lbl_8055BEB4;
 #define gSelectedMenuIndex lbl_8055BEB0 /* active UI window's menu index; mirrors fn_80247768 */
@@ -840,17 +841,18 @@ void fn_802478A4(void) {
     extern s32 lbl_802FA3F0[];
     extern s32 lbl_8055BAC0, lbl_8055BABC, lbl_8055B860;
     s32 data[40];
-    s32 b0 = lbl_804988F0[0];
     volatile s32 *q = (volatile s32 *)lbl_804988F0;
     volatile s32 *p = (volatile s32 *)lbl_802FA3F0;
+    s32 b0 = lbl_804988F0[0];
     s32 b1, b2, b3, b4;
     s32 a0, a2, a3, a4;
     s32 stringBase;
 
     b1 = q[1];
-    data[6] = 8;
+    data[7] = (s32)fn_8024778C;
+    data[8] = 0;
     b2 = q[2];
-    data[11] = 8;
+    data[12] = (s32)fn_80247880;
     a0 = *p++;
     stringBase = (s32)lbl_80343270;
     b3 = q[3];
@@ -859,12 +861,11 @@ void fn_802478A4(void) {
     a3 = p[2];
     a4 = p[3];
 
-    data[7] = (s32)fn_8024778C;
-    data[12] = (s32)fn_80247880;
+    data[6] = 8;
+    data[11] = 8;
     data[5] = (s32)&lbl_8055BAC0;
     data[10] = (s32)&lbl_8055BABC;
     data[13] = 1;
-    data[8] = 0;
     data[9] = 0;
     data[14] = 0;
     data[15] = stringBase + 0x2A0;
@@ -897,9 +898,7 @@ void fn_802478A4(void) {
     data[3] = a3;
     data[4] = a4;
     data[1] = (s32)&data[5];
-    ((void (*)(s32 *, s32, s32, s32, s32, s32, s32, s32))fn_802146BC)(
-        data, -999, -999, 1, stringBase + 0x2A0,
-        stringBase + 0x2AC, stringBase + 0x2B8, (s32)&data[5]);
+    fn_802146BC(data, -999, -999, 1);
 }
 
 
@@ -918,6 +917,8 @@ static void fn_80247A0C_init(s32 a, s32 b) {
 #pragma opt_propagation off
 #pragma opt_lifetimes off
 void fn_80247A0C(void) {
+#pragma opt_propagation off
+#pragma opt_lifetimes off
     s32 var_r31;
     s32 a;
     s32 b;
@@ -992,13 +993,15 @@ extern char lbl_803435A0[], lbl_802FA418[], lbl_8055BEC4, lbl_8055BEA0, lbl_8055
 #pragma opt_propagation off
 #pragma scheduling invalid_target
 int fn_80247C18() {
+ #pragma opt_propagation off
+ #pragma scheduling invalid_target
  struct Entry { s32 id; unsigned char enabled; char pad[3]; };
  struct Frame { s32 args[5]; s32 title; s32 pad[4]; s32 zero; struct Entry *entries; s32 count; s32 capacity; struct Entry data[10]; s32 items[75]; } frame;
- char *base = lbl_80343270; s32 a; s32 *table; s32 v;
+ char *base = lbl_80343270; s32 a; s32 *table; s32 b, missing, v, result, flag; struct Entry *entry;
  lbl_8055F26C = 0;
  a = fn_80161D50();
- { s32 b = fn_80161D14();
-   s32 d = b ^ a; s32 half = d >> 1; s32 masked = d & b; s32 diff = half - masked; if ((unsigned long)diff >> 31) {
+ b = fn_80161D14();
+ { s32 d = b ^ a; s32 half = d >> 1; s32 masked = d & b; s32 diff = half - masked; if ((unsigned long)diff >> 31) {
    lbl_8055F26C = 1;
    if (fn_8027DE68(0)) {
      lbl_8055F26C = 2;
@@ -1012,18 +1015,14 @@ int fn_80247C18() {
  table = lbl_802FA3B4 + lbl_8055F26C * 3;
  frame.zero = 0; frame.count = 0; frame.title = (s32)lbl_803435A0;
  frame.entries = frame.data; frame.capacity = 10;
- {
-   s32 b = fn_8027DE68(2);
-   s32 missing = (b == 0);
-   struct Entry *entry;
-   s32 flag = 0; if (missing && lbl_8055F26C >= 2) flag = 1; entry = &frame.entries[frame.count++]; entry->id = 11; entry->enabled = flag;
-   flag = 0; if (missing && lbl_8055F26C >= 3) flag = 1; entry = &frame.entries[frame.count++]; entry->id = 12; entry->enabled = flag;
-   entry = &frame.entries[frame.count++]; entry->id = 13; entry->enabled = (int)b;
-   b = fn_8027B9EC(1);
-   flag = 0; if (b == 0 && lbl_8055BEA8 >= 5) flag = 1; entry = &frame.entries[frame.count++]; entry->id = 14; entry->enabled = flag;
-   entry = &frame.entries[frame.count++]; entry->id = 15; entry->enabled = b;
-   entry = &frame.entries[frame.count++]; entry->id = 16; entry->enabled = 0;
- }
+ b = fn_8027DE68(2); missing = (b == 0);
+ flag = 0; if (missing && lbl_8055F26C >= 2) flag = 1; entry = &frame.entries[frame.count++]; entry->id = 11; entry->enabled = flag;
+ flag = 0; if (missing && lbl_8055F26C >= 3) flag = 1; entry = &frame.entries[frame.count++]; entry->id = 12; entry->enabled = flag;
+ entry = &frame.entries[frame.count++]; entry->id = 13; entry->enabled = (int)b;
+ b = fn_8027B9EC(1);
+ flag = 0; if (b == 0 && lbl_8055BEA8 >= 5) flag = 1; entry = &frame.entries[frame.count++]; entry->id = 14; entry->enabled = flag;
+ entry = &frame.entries[frame.count++]; entry->id = 15; entry->enabled = b;
+ entry = &frame.entries[frame.count++]; entry->id = 16; entry->enabled = 0;
  v = fn_8000DA10();
  if (lbl_8055BEC0 < 0 || lbl_8055BEC0 != v) lbl_8055BEAC = (void *)table[0];
  lbl_8055BEC0 = v;
@@ -1214,10 +1213,10 @@ void fn_802483E0(void)
     s32 item[20];
     struct Object object;
   } frame;
-  s32 *textPtr = frame.text;
-  s32 zero = 0;
-  s32 one;
-  struct Object *objectPtr;
+  register s32 *textPtr = frame.text;
+  register s32 zero = 0;
+  register s32 one;
+  register struct Object *objectPtr;
   textPtr[5] = zero;
   textPtr[0] = (s32) lbl_803436C0;
   textPtr[8] = 0x1388;
@@ -1755,37 +1754,40 @@ extern int __cntlzw(unsigned int);
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_802491A8(void *arg0) {
-    char *base = (char *)arg0;
-    int obj;
-    int i = 0;
-    int selected;
-    float scale = lbl_805638E0;
-    float sub = lbl_805638E4;
-    float origin = lbl_805638E8;
-    float xOrigin = lbl_805638EC;
-    float yOrigin = lbl_805638F8;
-    for (; i < *(int *)(base + 0x24); i++) {
-        float fi = (float)i;
-        float offset;
-        float x;
-        selected = i == *(int *)(base + 0x28);
-        offset = scale * (fi - *(float *)(base + 0x2C)) - sub;
-        if (selected)
-            obj = *(int *)(base + 0x18);
-        else
-            obj = *(int *)(base + 0x1C);
-        fn_802353F4(obj, 0, origin + offset - fn_80235EF0(obj, 0), lbl_805638E4, lbl_805638B0);
-        x = xOrigin + offset;
-        fn_802354A0(*(int *)(base + 0x20), i, selected ? -0x100 : (int)0xC0202020,
-                    x, lbl_805638F0, lbl_805638B0,
-                    lbl_805638F4, lbl_805638F4);
-        *(int *)(*(int *)(base + 0x30) + 4) = selected ? -0x100 : (int)0xC0202020;
-        fn_80234AFC(*(int *)(base + 0x30),
-                    i == 0 ? (char *)&lbl_8055BF08 : (char *)&lbl_8055BF00,
-                    sub + offset - yOrigin, lbl_805638FC);
+void fn_802491A8(const void *arg0)
+{
+  char *base = (char *) arg0;
+  int obj;
+  int i = 0;
+  int selected;
+  float scale = lbl_805638E0;
+  float sub = lbl_805638E4;
+  float x;
+  float origin = lbl_805638E8;
+  float xOrigin = lbl_805638EC;
+  float yOrigin = lbl_805638F8;
+  for (; i < (*((int *) (base + 0x24))); i++)
+  {
+    float fi = (float) i;
+    float offset;
+    selected = i == (*((int *) (base + 0x28)));
+    offset = (scale * (fi - (*((float *) (base + 0x2C))))) - sub;
+    if (selected)
+    {
+      obj = *((int *) (base + 0x18));
     }
-    *(float *)(base + 0x2C) += lbl_80563900 * ((float)*(int *)(base + 0x28) - *(float *)(base + 0x2C));
+    else
+    {
+      obj = *((int *) (base + 0x1C));
+    }
+    fn_802353F4(obj, 0, (origin + offset) - fn_80235EF0(obj, 0), lbl_805638E4, lbl_805638B0);
+    x = xOrigin + offset;
+    fn_802354A0(*((int *) (base + 0x20)), i, (selected) ? (-0x100) : ((int) 0xC0202020), x, lbl_805638F0, lbl_805638B0, lbl_805638F4, lbl_805638F4);
+    *((int *) ((*((int *) (base + 0x30))) + 4)) = (selected) ? (-0x100) : ((int) 0xC0202020);
+    fn_80234AFC(*((int *) (base + 0x30)), (i == 0) ? ((char *) (&lbl_8055BF08)) : ((char *) (&lbl_8055BF00)), (sub + offset) - yOrigin, lbl_805638FC);
+  }
+
+  *((float *) (base + 0x2C)) += lbl_80563900 * (((float) (*((int *) (base + 0x28)))) - (*((float *) (base + 0x2C))));
 }
 #pragma pop
 /* Handle menu navigation input: adjust selected index at +0x28 within [0, count at +0x24), calling fn_80214D50(0) on move or (1) on boundary. */
