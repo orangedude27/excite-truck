@@ -1223,17 +1223,12 @@ int fn_8029DFE0(void *arg0, void *arg1) {
     extern float lbl_805646A0, lbl_8056465C, lbl_80564634;
     struct Delta { float x, z; };
     volatile struct Delta delta;
-    float x, z, u, v, upper, upper2;
-    int result, inside, test;
-
-    z = *(float *)((char *)arg1 + 8) - *(float *)((char *)arg0 + 0x40);
-    x = *(float *)arg1 - *(float *)((char *)arg0 + 0x38);
-    u = x * *(float *)((char *)arg0 + 0x44) + z * *(float *)((char *)arg0 + 0x48);
-    v = x * *(float *)((char *)arg0 + 0x4C) + z * *(float *)((char *)arg0 + 0x50);
-    upper = (float)*(int *)((char *)arg0 + 0xC) - lbl_805646A0;
-    result = 0;
-    inside = 0;
-    test = 0;
+    float x = *(float *)arg1 - *(float *)((char *)arg0 + 0x38);
+    float z = *(float *)((char *)arg1 + 8) - *(float *)((char *)arg0 + 0x40);
+    float u = z * *(float *)((char *)arg0 + 0x48) + x * *(float *)((char *)arg0 + 0x44);
+    float v = z * *(float *)((char *)arg0 + 0x50) + x * *(float *)((char *)arg0 + 0x4C);
+    float upper = (float)*(int *)((char *)arg0 + 0xC) - lbl_805646A0;
+    int result = 0, inside = 0, test = 0;
 
     delta.x = x;
     delta.z = z;
