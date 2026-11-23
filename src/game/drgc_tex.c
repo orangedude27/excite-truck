@@ -661,40 +661,40 @@ void fn_802D81C4(void *arg0, int arg1) {
 }
 #pragma unroll reset
 extern char lbl_8034C5AC[];
-void fn_802D86BC(void *arg0, int arg1)
+/* Prepares an 8-bit paletted (C8) drgc source texture for GX in place: byte-swaps the 256-entry RGBA8888 palette, then rewrites the linear image into GX 4x8 tiled order through a temporary copy. arg1 is unused (shared C4/C8 dispatch signature). */ void fn_802D86BC(void *source, int arg1)
 {
-  void **data = *((void ***) (((char *) arg0) + 0x2c));
-  int width = *((int *) (((char *) arg0) + 0x24));
-  int height = *((int *) (((char *) arg0) + 0x28));
-  unsigned char *image = (unsigned char *) data[1];
-  unsigned char *copy;
-  unsigned char *palette = (unsigned char *) data[0];
-  unsigned char c;
-  int n = (arg1 != 0) ? (128) : (128);
-  int p;
+  void **srcData = *((void ***) (((char *) source) + 0x2c));
+  int width = *((int *) (((char *) source) + 0x24));
+  int height = *((int *) (((char *) source) + 0x28));
+  unsigned char *image = (unsigned char *) srcData[1];
+  unsigned char *linearCopy;
+  unsigned char *palette = (unsigned char *) srcData[0];
+  unsigned char tmp;
+  int palBlockCount = (arg1 != 0) ? (128) : (128);
+  int i;
   int x;
-  for (p = 0; p < n; p++)
+  for (i = 0; i < palBlockCount; i++)
   {
-    c = palette[0]; palette[0] = palette[3]; palette[3] = c;
-    c = palette[1]; palette[1] = palette[2]; palette[2] = c & 0xFF;
-    c = palette[4]; palette[4] = palette[7]; palette[7] = c;
-    c = palette[5]; palette[5] = palette[6]; palette[6] = c;
+    tmp = palette[0]; palette[0] = palette[3]; palette[3] = tmp;
+    tmp = palette[1]; palette[1] = palette[2]; palette[2] = tmp & 0xFF;
+    tmp = palette[4]; palette[4] = palette[7]; palette[7] = tmp;
+    tmp = palette[5]; palette[5] = palette[6]; palette[6] = tmp;
     palette += 8;
   }
 
   fn_801282EC(0x20);
-  copy = (unsigned char *) fn_8012850C((void *) (width * height), lbl_8034C5AC);
-  memcpy(copy, image, width * height);
-  for (p = 0; p < height; p++)
+  linearCopy = (unsigned char *) fn_8012850C((void *) (width * height), lbl_8034C5AC);
+  memcpy(linearCopy, image, width * height);
+  for (i = 0; i < height; i++)
   {
     for (x = 0; x < width; x++)
     {
-      image[(((((p / 4) * (width / 8)) + (x / 8)) * 32) + ((p % 4) * 8)) + (x % 8)] = copy[(p * width) + x] & 0xFF;
+      image[(((((i / 4) * (width / 8)) + (x / 8)) * 32) + ((i % 4) * 8)) + (x % 8)] = linearCopy[(i * width) + x] & 0xFF;
     }
 
   }
 
-  fn_80128670(copy);
+  fn_80128670(linearCopy);
 }
 
 #pragma processor reset
