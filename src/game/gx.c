@@ -411,7 +411,7 @@ void gxReportGPStatus(void) {
     }
 }
 #pragma scheduling invalid_target
-void fn_802CEF90(void) {
+/* Per-frame GX hang watchdog; calls gxReportGPStatus and OSPanic if the GP stalls. */ void fn_802CEF90(void) {
     /* GX hang watchdog: when the GP stays busy on the same GX thread for ten
      * consecutive checks, dump GP status and panic with a hang warning. */
     extern void GXGetGPStatus(char *, char *, char *, char *, char *);
