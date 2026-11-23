@@ -231,8 +231,7 @@ s32 fn_802C3060(void *arg0, s32 x, s32 y) {
 
 s32 fn_802C307C(void *arg0, s32 *left, s32 *top, s32 *right, s32 *bottom) {
     /* Clip the rectangle (*left,*top)-(*right,*bottom) to the canvas's clip
-       rectangle (GxCanvas.minX/minY/maxX/maxY), updating the corners in place;
-       returns nonzero if the clipped rectangle is non-empty. */
+       rectangle, updating the corners in place; returns nonzero if non-empty. */
     s32 leftValue = *left;
     s32 bound;
     s32 rightBound;
