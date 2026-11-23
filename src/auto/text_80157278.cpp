@@ -1113,6 +1113,7 @@ extern "C" void *fn_80157DA0(void *self, s32 arg1, s32 arg2) {
     }
     *(int *)(base + 0x26c) = 0;
     *(char *)(base + 0x2f0) = 0;
+base = 0;
     return self;
 }
 #pragma scheduling on
@@ -1801,8 +1802,8 @@ extern "C" s32 fn_80158F60(Unk8015A368C* bonus) {
     return bonus->v21() > 0;
 }
 
-#pragma scheduling invalid_target
-extern "C" s32 fn_80158F98(void *arg0, f32 *arg1) {
+#pragma scheduling on
+extern "C" s32 fn_80158F98(const void *arg0, f32 *arg1) {
     struct Dummy {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
@@ -1823,8 +1824,8 @@ extern "C" s32 fn_80158F98(void *arg0, f32 *arg1) {
             value0 = (f32)((Dummy *)arg0)->getB();
             value1 = (f32)((Dummy *)arg0)->getA();
             f32 ratio = (field - value1) / (value0 - value1);
-            ratio = (lbl_80561750 > ratio) ? lbl_80561750 : ratio;
-            ratio = (ratio > lbl_80561754) ? lbl_80561754 : ratio;
+            ratio = (lbl_80561750 < ratio) ? lbl_80561750 : ratio;
+            ratio = (ratio > lbl_80561754) ? ratio : lbl_80561754;
             *arg1 = lbl_80561754 + ratio * lbl_80561750;
         }
         return 1;
