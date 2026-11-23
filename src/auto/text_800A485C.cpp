@@ -7184,7 +7184,7 @@ extern "C" s32 fn_800AEF6C(void *volume) {
     result = ((AcquirePage)(s32 (*)(s32, void **, s32 *, s32, s32 *))fn_800A8D08)(volume, -1, &page, &pageIndex);
     if (result != 0) return result;
     fn_800A499C((const char *)VF_PAGE_DATA(page), 0, VF_VOL_SECTOR_SIZE(volume));
-    sector = VF_VOL_DATA_START(volume) + ((rootCluster - VF_FAT_FIRST_CLUSTER) << VF_VOL_CLUSTER_SHIFT(volume));
+    sector = VF_VOL_DATA_START(volume) + ((*(s32 *)((u8 *)volume + 0x10) - VF_FAT_FIRST_CLUSTER) << VF_VOL_CLUSTER_SHIFT(volume));
     for (i = 0; (u32)i < VF_VOL_SECTORS_PER_CLUSTER(volume); i++) {
         result = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))fn_800B5700)((s32)volume, VF_PAGE_DATA(page), sector + i, 0, VF_VOL_SECTOR_SIZE(volume), &written, 0);
         if (result != 0) {
@@ -27121,7 +27121,7 @@ loop_18:
                     } else {
                         var_r29 = var_r8;
                         var_r12 = var_r31;
-                        var_r11 = ((u32) ((temp_r11 | ~var_r3) - ((u32) (temp_r11 - var_r3) >> 1U)) >> 0x1FU) + 1;
+                        var_r11 = ((u32) ((temp_r11 | ~var_r3) - ((u32) (temp_r11 - (u8)var_r3) >> 1U)) >> 0x1FU) + 1;
                         temp_r10 = M2C_FIELD(arg0, u16 *, 0xE) + var_r11;
                         if (temp_r10 > M2C_FIELD(arg0, u16 *, 4)) {
                             var_r11 = 0;
