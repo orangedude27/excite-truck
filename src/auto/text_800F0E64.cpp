@@ -7531,7 +7531,6 @@ __repair_addr = (char *)((unsigned char*)arg0 + 0x98);
         *(s32*)((unsigned char*)arg0 + 0x6C) = v5;
     }
 }
-#pragma pop
 extern "C" void UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(void *);
 extern "C" const char lbl_80326B68[];
 extern "C" const char lbl_80326B8C[];
