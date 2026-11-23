@@ -658,7 +658,7 @@ void fn_802DC464(int positions, int vertexCount, unsigned short *__restrict list
     GXColor color;
     int indexCount;
     int i;
-    unsigned short index;
+    unsigned short vertexIndex;
     volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
     CpuLight_SetPositionArray(positions, vertexCount);
     alphaFactor = ((float *)lbl_804DB068)[5];
@@ -688,8 +688,8 @@ void fn_802DC464(int positions, int vertexCount, unsigned short *__restrict list
         GXBegin(GX_TRIANGLEFAN, 0, indexCount);
         listSize -= indexCount + 1;
         for (i = 0; i < indexCount; ++i) {
-            index = *list++;
-            *fifo = index;
+            vertexIndex = *list++;
+            *fifo = vertexIndex;
         }
     }
 }
