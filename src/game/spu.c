@@ -556,35 +556,35 @@ void fn_802E56F0(void) {
     extern char lbl_8055FFA5;   /* SPU layer running */
     extern int lbl_8055FF84;    /* mix buffer size */
     extern void *lbl_8055FFB0;  /* mix buffer */
-    int offset;
-    int i;
-    int count;
+    int channelOffset;
+    int idx;
+    int sampleIndex;
     OSCancelAlarm(lbl_804FC690);
     lbl_8055FFA5 = 0;
     fn_802E6B34();
-    i = 0;
-    offset = 0;
+    idx = 0;
+    channelOffset = 0;
     do {
-        struct SpuChannel *channel = (struct SpuChannel *)(lbl_8055FF94 + offset);
+        struct SpuChannel *channel = (struct SpuChannel *)(lbl_8055FF94 + channelOffset);
         if (channel->active != 0) {
             fn_802E317C(lbl_8034D450, channel->sample);
         }
         /* the voice object is reached through the pool base each time */
-        TRKGetFreeBuffer(((struct SpuChannel *)(lbl_8055FF94 + offset))->voice);
-        i++;
-        ((struct SpuChannel *)(lbl_8055FF94 + offset))->voice = 0;
-        offset += 0x2C;
-    } while (i < 0x20);
-    count = 0;
-    i = 0;
+        TRKGetFreeBuffer(((struct SpuChannel *)(lbl_8055FF94 + channelOffset))->voice);
+        idx++;
+        ((struct SpuChannel *)(lbl_8055FF94 + channelOffset))->voice = 0;
+        channelOffset += 0x2C;
+    } while (idx < 0x20);
+    sampleIndex = 0;
+    idx = 0;
     do {
-        struct SpuSample *sample = (struct SpuSample *)((unsigned char *)lbl_8055FF90 + i);
+        struct SpuSample *sample = (struct SpuSample *)((unsigned char *)lbl_8055FF90 + idx);
         if (sample->refCount > 0) {
             fn_802E317C(lbl_8034D470, sample->name);
         }
-        count++;
-        i += 0xB0;
-    } while (count < 0x100);
+        sampleIndex++;
+        idx += 0xB0;
+    } while (sampleIndex < 0x100);
     fn_80128670((int)lbl_8055FF94);
     lbl_8055FF94 = 0;
     fn_80128670((int)lbl_8055FF90);
@@ -1059,6 +1059,7 @@ void fn_802E6264(void) {
     extern int lbl_8055FFAC;
     extern char lbl_8034D210[];
     extern int lbl_804FC658[];
+    extern double lbl_80565140;
     extern float lbl_80565138, lbl_8056514C, lbl_80565150, lbl_80565154, lbl_80565158;
     extern void AXSetVoiceState(int, int);
     extern int OSRestoreInterrupts(int);
@@ -1075,30 +1076,33 @@ void fn_802E6264(void) {
     extern void fn_80033CD8(void *, void *);
     extern int fn_802D9BF0(void);
     extern int fn_802ECC10(void);
-    char *msg = lbl_8034D210;
-    unsigned char *v;
-    unsigned char *s;
-    int mixed;
-    int irq;
-    int i;
     int off;
     int flags;
+    int irq;
+    int i;
+    unsigned char *v;
     int wasPlaying;
+    unsigned char *s;
     unsigned int r16;
-    unsigned short sp8[2];
-    unsigned short spC[2];
-    unsigned short sp10[8];
-    unsigned short sp20[8];
-    unsigned short sp30[8];
-    unsigned short sp40[8];
-    unsigned short sp50[8];
-    unsigned short sp60[16];
-    unsigned short sp80[24];
-    unsigned short spB0[20];
-    unsigned short spD8[20];
+    union { struct { unsigned int hi, lo; } word; double value; } conv;
     unsigned int sp100[24];
+    unsigned short spD8[20];
+    unsigned short spB0[20];
+    unsigned short sp80[24];
+    unsigned short sp60[16];
+    unsigned short sp50[8];
+    unsigned short sp40[8];
+    unsigned short sp30[8];
+    unsigned short sp20[8];
+    unsigned short sp10[8];
+    unsigned short spC[2];
+    unsigned short sp8[2];
     float f0, f1, f2, f4;
-    float one, inv, k4C, k50, k58, k54;
+    float k54, k58, one, k50, inv;
+    double magic;
+    float k4C;
+    char *msg = lbl_8034D210;
+    int mixed;
     if ((unsigned char)lbl_8055FFA4 != 0) {
         lbl_8055FFA4 = 0;
         lbl_8055FFA6 = 1;
@@ -1123,13 +1127,14 @@ void fn_802E6264(void) {
         if (fn_802ECC10() == 0 && fn_802D9BF0() == 0) mixed = 0;
         irq = OSDisableInterrupts();
         one = lbl_80565128;
+        magic = lbl_80565140;
         inv = lbl_80565138;
         k4C = lbl_8056514C;
         k50 = lbl_80565150;
-        k58 = lbl_80565158;
-        k54 = lbl_80565154;
         i = 0;
+        k58 = lbl_80565158;
         off = 0;
+        k54 = lbl_80565154;
         do {
             v = lbl_8055FF94 + off;
             wasPlaying = VU8(0x24);
@@ -1264,13 +1269,13 @@ void fn_802E6264(void) {
                         fn_800337C4(*(void **)(v + 4), &sp8[0]);
                         memset(&sp80[0], 0, 0x30);
                         f1 = one - VF(0xC);
-                        if (f1 >= one) f1 = one;
+                        f1 = f1 < one ? f1 : one;
                         f4 = one + VF(0xC);
-                        if (f4 >= one) f4 = one;
+                        f4 = f4 < one ? f4 : one;
                         f2 = one + VF(0x14);
-                        if (f2 >= one) f2 = one;
+                        f2 = f2 < one ? f2 : one;
                         f0 = one - VF(0x14);
-                        if (f0 >= one) f0 = one;
+                        f0 = f0 < one ? f0 : one;
                         sp80[0] = k58 * (f1 * f2);
                         sp80[2] = k58 * (f4 * f2);
                         sp80[16] = k58 * (f1 * f0);
@@ -1282,12 +1287,12 @@ void fn_802E6264(void) {
                         else fn_80033C8C(*(void **)(v + 4), 0);
                         memset(&sp60[0], 0, 0x20);
                         if (r16 & 1) {
-                            short t = fn_802E5168(lbl_804FC680[0] * VF(8));
+                            short t = ((unsigned short (*)(float))fn_802E5168)(lbl_804FC680[0] * VF(8));
                             sp60[0] = t;
                             sp60[2] = t;
                         }
                         if (r16 & 2) {
-                            short t = fn_802E5168(lbl_804FC680[1] * VF(8));
+                            short t = ((unsigned short (*)(float))fn_802E5168)(lbl_804FC680[1] * VF(8));
                             sp60[4] = t;
                             sp60[6] = t;
                         }
@@ -1303,7 +1308,7 @@ void fn_802E6264(void) {
         r16 = lbl_8055FFAC;
         lbl_8055FFAC = r16 + 1;
         lbl_804FC658[r16] = flags;
-        if (r16 + 1 >= 10) lbl_8055FFAC = 0;
+        if ((int)(r16 + 1) >= 10) lbl_8055FFAC = 0;
         flags |= lbl_804FC658[0];
         flags |= lbl_804FC658[1];
         flags |= lbl_804FC658[2];
