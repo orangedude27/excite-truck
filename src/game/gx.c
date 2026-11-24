@@ -2320,23 +2320,24 @@ light_test:
 
 #pragma push
 #pragma scheduling invalid_target
-/* Loads a texture matrix (GX_TEXMTX0) using the negated Y-column components from lbl_804C5690. */
+/* Load a 2x4 texture matrix into GX_TEXMTX1: start from the constant half-and-half
+ * bias matrix and replace the U row with the negated Y column of the view matrix. */
 void fn_802D1B58(void) {
     int texMtx[8];
-    float *srcMtx = (float *)lbl_804C5690;
-    int *baseMtx = (int *)lbl_802FAC70;
-    texMtx[0] = baseMtx[0];
-    texMtx[1] = baseMtx[1];
-    texMtx[2] = baseMtx[2];
-    texMtx[3] = baseMtx[3];
-    texMtx[4] = baseMtx[4];
-    texMtx[5] = baseMtx[5];
-    texMtx[6] = baseMtx[6];
-    texMtx[7] = baseMtx[7];
-    *(float *)&texMtx[0] = 0.5f * -srcMtx[1];
-    *(float *)&texMtx[1] = 0.5f * -srcMtx[4];
-    *(float *)&texMtx[2] = 0.5f * -srcMtx[7];
-    GXLoadTexMtxImm((float *)texMtx, 0x21, 1);
+    float *viewMtx = (float *)lbl_804C5690;
+    int *biasMtx = (int *)lbl_802FAC70;
+    texMtx[0] = biasMtx[0];
+    texMtx[1] = biasMtx[1];
+    texMtx[2] = biasMtx[2];
+    texMtx[3] = biasMtx[3];
+    texMtx[4] = biasMtx[4];
+    texMtx[5] = biasMtx[5];
+    texMtx[6] = biasMtx[6];
+    texMtx[7] = biasMtx[7];
+    *(float *)&texMtx[0] = 0.5f * -viewMtx[1];
+    *(float *)&texMtx[1] = 0.5f * -viewMtx[4];
+    *(float *)&texMtx[2] = 0.5f * -viewMtx[7];
+    GXLoadTexMtxImm((float *)texMtx, GX_TEXMTX1, GX_MTX_2x4);
 }
 
 extern int PSMTXTranspose(void *, void *);
