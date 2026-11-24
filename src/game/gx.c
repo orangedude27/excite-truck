@@ -350,19 +350,19 @@ void fn_802CEC44(void) {
 
 /* Cycles lbl_8055D0F6 through values 1..2 until it equals targetIndex, calling
  * fn_802CEC50 for each step. */
-void fn_802CECF4(unsigned int targetIndex) {
+/* Advance the GX draw-sync token counter (1..2) and process each token until it reaches targetToken. */ void fn_802CECF4(unsigned int targetToken) {
     extern unsigned short lbl_8055D0F6;
     extern void fn_802CEC50(int);
-    unsigned int value;
+    unsigned int token;
     do {
-        value = lbl_8055D0F6 + 1;
-        lbl_8055D0F6 = value;
-        if ((unsigned short)value > 2) {
-            value = 1;
+        token = lbl_8055D0F6 + 1;
+        lbl_8055D0F6 = token;
+        if ((unsigned short)token > 2) {
+            token = 1;
             lbl_8055D0F6 = 1;
         }
-        fn_802CEC50((unsigned short)value);
-    } while ((unsigned short)lbl_8055D0F6 != targetIndex);
+        fn_802CEC50((unsigned short)token);
+    } while ((unsigned short)lbl_8055D0F6 != targetToken);
 }
 
 #pragma scheduling 604
