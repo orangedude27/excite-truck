@@ -618,7 +618,7 @@ group_check:
 void fn_80168104(void) {
     extern void *fn_802C86DC(void);
     extern double fn_8002F234(float);
-    extern unsigned int fn_802C9994(unsigned int);
+    extern unsigned int setLightAmbientColor(unsigned int);
     extern unsigned int setDrawListColor(unsigned int);
     extern void fn_802C9900(float);
     extern void fn_802C9904(void);
@@ -645,7 +645,7 @@ void fn_80168104(void) {
                 unsigned char *obj = *(unsigned char **)record;
                 if (obj != 0 && *(int *)(obj + 0x10) != 0 && record[0x14] == 0) {
                     unsigned int token = obj ? *(unsigned int *)(obj + 8) : (unsigned int)-1;
-                    unsigned int a = fn_802C9994(token);
+                    unsigned int a = setLightAmbientColor(token);
                     unsigned int b = setDrawListColor((((token >> 25) & 0x7F) << 24) | (((token >> 17) & 0x7F) << 16) | (((token >> 9) & 0x7F) << 8) | ((token >> 1) & 0x7F));
                     fn_802C9900((float)(token >> 24) / scale);
                     {
@@ -655,7 +655,7 @@ void fn_80168104(void) {
                         *(float *)(out + 0x2C) = *(float *)(record + 0xC);
                         fn_802C744C(*(void **)(*(unsigned int *)record + 0x10), out);
                     }
-                    fn_802C9994(a);
+                    setLightAmbientColor(a);
                     setDrawListColor(b);
                     fn_802C9904();
                 }

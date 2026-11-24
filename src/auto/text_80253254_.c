@@ -2026,7 +2026,7 @@ extern void fn_802C974C(float, float, float); /* projection: near, far, fov */
 extern void DrawList_loadMatrix(void *);         /* make a 4x3 matrix the current one */
 extern void fn_802C99E8(float);          /* light intensity */
 extern void setDrawListColor(s32);            /* light diffuse colour */
-extern void fn_802C9994(s32);            /* light ambient colour */
+extern void setLightAmbientColor(s32);            /* light ambient colour */
 extern void fn_801F1C24(void *);         /* camera-relative orthonormal basis */
 extern void fn_802C7730(void *);
 extern void fn_802ABE58(void *, float *, s32 *, float); /* level -> scale + colour */
@@ -2081,7 +2081,7 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
         setDrawListColor(UI_LIGHT_DIFFUSE_MODE1);
     else
         setDrawListColor(UI_LIGHT_DIFFUSE_MODE0);
-    fn_802C9994(UI_LIGHT_AMBIENT);
+    setLightAmbientColor(UI_LIGHT_AMBIENT);
     fn_801F1C24(frame + 0x80);
     fn_802C7730(frame + 0x80);
     fn_802ABE58(&model->level, (float *)(frame + 0x4),

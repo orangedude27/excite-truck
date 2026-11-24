@@ -1138,7 +1138,7 @@ extern int lbl_8055FC80;
 extern void fn_802D0188(unsigned char, unsigned char, unsigned char);
 /* Sets the current packed RGB color (stored in lbl_8055FC80) and forwards its
  * 8-bit R/G/B components to fn_802D0188, returning the previous packed color. */
-int fn_802C9994(int packedColor) {
+int setLightAmbientColor(int packedColor) {
 #define s_currentPackedColor lbl_8055FC80
 #define ApplyPackedRgb fn_802D0188
     int previousColor = s_currentPackedColor;
@@ -1164,7 +1164,7 @@ void fn_802C99D8(void) {
 
 #pragma dont_inline on
 /* Set the global draw scalar lbl_8055D01C to value, apply it through
- * fn_802C99D8, and return the previous value (float analog of fn_802C9994). */
+ * fn_802C99D8, and return the previous value (float analog of setLightAmbientColor). */
 float fn_802C99E8(float value) {
     float previous = lbl_8055D01C;
     lbl_8055D01C = value;

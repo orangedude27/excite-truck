@@ -633,7 +633,7 @@ extern float fn_801E7E24(void*);
 extern void fn_802936C4(void*);
 extern float lbl_80558DC4;
 extern int setDrawListColor(int);
-extern int fn_802C9994(int);
+extern int setLightAmbientColor(int);
 extern int fn_802C744C(void*, void*);
 extern int fn_80128668(void*);
 extern void fn_80293530(void*);
@@ -685,15 +685,15 @@ void fn_80293178(void *arg0, int unused) {
     register int index;
 
     savedState9950 = setDrawListColor(0);
-    savedState9994 = fn_802C9994(0);
+    savedState9994 = setLightAmbientColor(0);
     entryPtr = (unsigned char *)arg0 + 0x2C;
     index = 0;
     for (; index < *(int *)((char *)arg0 + 0x2FAC); entryPtr += 0x4C, index++) {
         setDrawListColor(*(int *)((char *)arg0 + (*(unsigned char *)(entryPtr + 0x4A) << 3) + 0x2FB0));
-        fn_802C9994(*(int *)((char *)arg0 + (*(unsigned char *)(entryPtr + 0x4A) << 3) + 0x2FB4));
+        setLightAmbientColor(*(int *)((char *)arg0 + (*(unsigned char *)(entryPtr + 0x4A) << 3) + 0x2FB4));
         fn_802C744C(*(void **)((char *)arg0 + (*(unsigned char *)(entryPtr + 0x48) << 2) + 8), entryPtr);
     }
-    fn_802C9994(savedState9994);
+    setLightAmbientColor(savedState9994);
     setDrawListColor(savedState9950);
 }
 

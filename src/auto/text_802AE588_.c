@@ -142,7 +142,7 @@ void fn_802AE5E0(int arg0) {
 #pragma scheduling on
 extern void fn_802AE64C(void *);
 extern void setDrawListColor(int);
-extern void fn_802C9994(int);
+extern void setLightAmbientColor(int);
 extern void fn_802C10C4(void);
 extern char fn_802B05E4(void);
 extern void fn_802BF40C(void);
@@ -262,7 +262,7 @@ int fn_802AE7AC(void) {
 void fn_802AE7C0(void) {
     /* Set the two packed RGB colors in the GX draw state: a muted blue-gray (0x555766) and a cream white (0xFFF5D9). */
     setDrawListColor(0x555766);
-    fn_802C9994(0xFFF5D9);
+    setLightAmbientColor(0xFFF5D9);
 }
   
 #pragma dont_inline on

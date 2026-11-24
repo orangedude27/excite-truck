@@ -1155,7 +1155,7 @@ __declspec(section ".data") extern int lbl_8033A8F8;
 void *__dt__Q28PSSystem7SeqHeapFv_801F3460(void *this_, int shouldDelete) {
     if (this_ != 0) {
         *(void **)this_ = &lbl_8033A8F8;
-        fn_802C9994(-1, &lbl_8033A8F8);
+        setLightAmbientColor(-1, &lbl_8033A8F8);
         if (shouldDelete > 0) fn_80128668(this_);
     }
     return this_;
@@ -1177,7 +1177,7 @@ void fn_801F3514(void *arg0) {
     extern float lbl_80562F74, lbl_80562F78, lbl_80562F7C, lbl_80562F80, lbl_80562F84, lbl_80562F88, lbl_80562F8C, lbl_80562F64, lbl_8055EC04, lbl_80562F48;
     extern char lbl_8033ABC4[], lbl_8033ABF0[], lbl_8033AC18[];
     extern int *fn_801E1F44(void);
-    extern int fn_802C9994();
+    extern int setLightAmbientColor();
     extern int fn_802923C4();
     extern int fn_802C9A1C();
     extern void fn_802E30C8(const char *, ...);
@@ -1206,7 +1206,7 @@ void fn_801F3514(void *arg0) {
         *(float *)(p + 8) = b;
         *(float *)(p + 0xC) = c;
     }
-    fn_802C9994(*(int *)(p + 0x10));
+    setLightAmbientColor(*(int *)(p + 0x10));
     fn_802923C4(*(int *)(p + 0x10));
     v[0] = *(float *)(p + 4) * lbl_80562F48;
     v[1] = *(float *)(p + 8) * lbl_80562F48;

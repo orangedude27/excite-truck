@@ -2804,7 +2804,7 @@ extern "C" void fn_80164480(void *arg0) {
 #pragma cplusplus off
 extern s32 fn_802A96E8(void *, s32, s32, s32, s32);
 extern s32 setDrawListColor(s32);
-extern s32 fn_802C9994(s32);
+extern s32 setLightAmbientColor(s32);
 #pragma use_lmw_stmw off
 /* Draw each active entry's sprite when the object is initialized and drawing is enabled. */
 void fn_80164510(void *arg0, s32 arg1) {
@@ -2815,7 +2815,7 @@ void fn_80164510(void *arg0, s32 arg1) {
     void *entry;
 
     savedColorState = setDrawListColor(-0x100);
-    savedDrawState = fn_802C9994(0);
+    savedDrawState = setLightAmbientColor(0);
     if (*(s32 *)((char *)arg0 + 0xA0) != -1) {
         i = 0;
         entryOffset = 0;
@@ -2829,7 +2829,7 @@ void fn_80164510(void *arg0, s32 arg1) {
         }
     }
     setDrawListColor(savedColorState);
-    fn_802C9994(savedDrawState);
+    setLightAmbientColor(savedDrawState);
 }
 #pragma use_lmw_stmw reset
 extern s32 lbl_8055A0E0;

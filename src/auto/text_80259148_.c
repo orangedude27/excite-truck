@@ -1335,7 +1335,7 @@ extern void fn_801E67B4(void *, void *, void *);
 extern void fn_801C0E60(void *, void *, void *);
 extern void fn_801BFE7C(void *, void *, void *);
 extern int setDrawListColor(int);
-extern int fn_802C9994(int);
+extern int setLightAmbientColor(int);
 extern float fn_802C99E8(float);
 extern void *fn_802C9A40(void);
 extern void fn_802C9A1C(void *);
@@ -1388,7 +1388,7 @@ void fn_8025AE18(void *arg0) {
     }
     color[0] = lbl_80563B24; color[1] = lbl_80563B28; color[2] = lbl_80563B2C;
     a = setDrawListColor(0xFF646464);
-    b = fn_802C9994(0xFFB4B4B4);
+    b = setLightAmbientColor(0xFFB4B4B4);
     old = fn_802C99E8(lbl_80563AE0);
     *(struct RenderWords3 *)oldcolor = *(struct RenderWords3 *)fn_802C9A40();
     fn_802C9A1C(color);
@@ -1400,7 +1400,7 @@ void fn_8025AE18(void *arg0) {
     fn_802D7554(0);
     fn_802C9A1C(oldcolor);
     fn_802C99E8(old);
-    fn_802C9994(b);
+    setLightAmbientColor(b);
     setDrawListColor(a);
     DrawList_restoreProjection(state, -1);
 }
