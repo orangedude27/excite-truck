@@ -239,6 +239,7 @@ extern int DVDReadAsyncPrio(void *, void *, int, int, int, int);
 extern int DVDGetCommandBlockStatus(void *);
 extern unsigned int lbl_8055D1BC;
 extern char lbl_8034D180[];
+#define fileCdMsgDvdReadFails lbl_8034D180 /* "filecd: DVDRead fails!" */
 extern void DVDInit(void);
 extern int DVDClose(void *);
 extern void fn_802E3F38(void *);
