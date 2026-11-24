@@ -728,11 +728,11 @@ extern "C" void fn_802103BC(void) {
 #pragma pop
 extern long fn_80009C84(void);
 extern unsigned char lbl_8055EEC0;
-extern signed char lbl_8055EEC8, lbl_8055B660;
+extern signed char lbl_8055EEC8, gTrackMusicMuted;
 extern long lbl_8055EECC, lbl_8055B658;
 /* Stop track music: mute, clear selection/hold state, and if a song is selected while inactive reset to none and stop playback. */
 void stopTrackMusic(void) {
-#define trackMusicMuted lbl_8055B660
+#define trackMusicMuted gTrackMusicMuted
 #define trackMusicSongListReady lbl_8055EEC0
 #define trackMusicHoldSongChange lbl_8055EEC8
 #define trackMusicHoldUntil lbl_8055EECC
@@ -899,14 +899,14 @@ void trackMusicUpdate(unsigned char mute) {
                 lbl_8055B658 = fn_8020F6FC();
             }
         }
-        if ((unsigned char)lbl_8055B660 != mute) {
+        if ((unsigned char)gTrackMusicMuted != mute) {
             if (mute != 0) {
                 fn_802EC158();
             } else {
                 fn_802EC138();
             }
         }
-        lbl_8055B660 = mute;
+        gTrackMusicMuted = mute;
     }
 }
 
