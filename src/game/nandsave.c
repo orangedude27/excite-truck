@@ -260,7 +260,7 @@ void fn_802E8920(int requestedFreeBytes) {
 }
 
 #pragma scheduling on
-int fn_802E8AE8(const char *path) {
+int rmemcardFileExists(const char *path) {
     /* Return 1 if the NAND file at `path` can be opened for reading, else 0. */
     unsigned char fileInfo[0x88];
     int exists = 0;
@@ -420,7 +420,7 @@ extern unsigned char lbl_8055D255;
 extern int NANDRead(void *, void *, unsigned int);
 extern void *memcpy(void *, const void *, unsigned int);
 extern int fn_802E8A18(void);
-extern int fn_802E8AE8(const char *);
+extern int rmemcardFileExists(const char *);
 extern int rmemcardRecover(void);
 extern void rmemcardCorruptReset(void);
 extern void fn_802E8920(int);
@@ -464,7 +464,7 @@ u32 fn_802E8D84(void) { return 1; }
 #define rmemcard_yield          rmemcardYield
 #define rmemcard_wait_async     rmemcardWaitAsync
 #define rmemcard_test_banner_ok fn_802E8A18
-#define rmemcard_file_exists    fn_802E8AE8
+#define rmemcard_file_exists    rmemcardFileExists
 #define rmemcard_recover_space  fn_802E8920
 #define rmemcard_async_state    lbl_80507288
 #define rmemcard_timeout_msg    lbl_8034E024
