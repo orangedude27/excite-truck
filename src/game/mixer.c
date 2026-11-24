@@ -519,7 +519,7 @@ int fn_80209270(void) { return 1; }
 
 /* Null-mixer backend device method, slot +0x20 of the Null Mixer vtable
  * (lbl_8033C058), just past its createSound (+0x1C, Sound_CreateNullSource
- * fn_80209280).  Slot +0x20 is the mixer's per-frame tick -- the voice backend
+ * SoundCreateNullSource).  Slot +0x20 is the mixer's per-frame tick -- the voice backend
  * implements it as fn_8020AC2C, which walks its sound list and updates every
  * playing sound.  The null backend has no sounds and no hardware to act on, so
  * this method does nothing; fn_8020927C is the same no-op for slot +0x24
@@ -543,7 +543,7 @@ extern char lbl_8033C0E8[];
  * Allocates a small sound object tagged "Null Sound"; on success installs
  * its vtable pointer and sets its field at +8 to 3.
  */
-void fn_80209280(void) {
+void SoundCreateNullSource(void) {
 #define sNullSoundTag lbl_8033C1C0
 #define sNullSoundVTable lbl_8033C0E8
     struct Obj { void *vtable; int pad; int value; };
