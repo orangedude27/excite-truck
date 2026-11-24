@@ -158,12 +158,13 @@ void drDrawSurfLayout28(struct SurfDraw *surface) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
-void drDrawSurfLayout12(void *arg0) {
-    /* Binds this object's position, texture, and color vertex arrays, then submits its display list. */
-    GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
-    GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
-    GXSetArray(0xE, *(void **)((char *)arg0 + 0x24), 4);
-    GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
+void drDrawSurfLayout12(struct SurfDraw *surface) {
+    /* Draw a surface with 12-byte positions and two 4-byte texcoord arrays,
+     * binding GX_VA_POS/TEX0/TEX1 before submitting its display list. */
+    GXSetArray(GX_VA_POS, surface->positions, 0xC);
+    GXSetArray(GX_VA_TEX0, surface->colors, 4);
+    GXSetArray(GX_VA_TEX1, surface->normals, 4);
+    GXCallDisplayList(surface->displayList, surface->listSize);
 }
 #pragma scheduling invalid_target
 void fn_802D4060(void *arg0) {
