@@ -90,7 +90,7 @@ s32 *fn_802E336C(void) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_802E339C(void) {
+extern "C" void FileFind_GetSubsystem(void) {
     /* Resolve the default file-system object via fn_802E333C(0) and call its
        vtable method at offset 0x24 (slot 7), with no arguments. */
     class FileSystem {
@@ -455,7 +455,7 @@ extern "C" s32 FileFindFirst(s32 arg0, s32 arg1, s32 arg2) {
     };
 
     /* Call file-subsystem vtable slot 2 with (arg0, arg1, arg2); return -1 if unavailable. */
-    s32 obj = ((s32 (*)(void))fn_802E339C)();
+    s32 obj = ((s32 (*)(void))FileFind_GetSubsystem)();
     s32 result;
     if (obj != 0) {
         result = ((Obj *)obj)->v2(arg0, arg1, arg2);
@@ -478,7 +478,7 @@ extern "C" s32 fn_802E3C24(s32 findHandle, s32 pathBuffer, s32 bufferSize) {
         virtual void v2();
         virtual s32 findNext(s32, s32, s32);
     };
-    s32 fileSubsystem = ((s32 (*)(void))fn_802E339C)();
+    s32 fileSubsystem = ((s32 (*)(void))FileFind_GetSubsystem)();
     s32 result;
 
     if (fileSubsystem != 0) {
@@ -505,7 +505,7 @@ extern "C" void fn_802E3CA4(s32 findHandle) {
         virtual void v4(s32);
     };
 
-    s32 fileSubsystem = ((s32 (*)(void))fn_802E339C)();
+    s32 fileSubsystem = ((s32 (*)(void))FileFind_GetSubsystem)();
     if (fileSubsystem != 0) {
         ((Obj *)fileSubsystem)->v4(findHandle);
     } else {
