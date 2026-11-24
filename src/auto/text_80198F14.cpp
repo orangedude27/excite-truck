@@ -2764,10 +2764,9 @@ extern "C" void fn_8019F4D4(void *arg0, void *arg1) {
         (const Vec *)arg1);
     void *vector = *(void **)((u8 *)arg0 + 0xC);
     volatile f32 scratch[10];
-    fn_8019F4D4_store(scratch,
-        ((f32 *)arg1)[0] + ((f32 *)vector)[3] * scale,
-        ((f32 *)arg1)[1] + ((f32 *)vector)[4] * scale,
-        ((f32 *)arg1)[2] + ((f32 *)vector)[5] * scale);
+    scratch[0] = ((f32 *)arg1)[0] + ((f32 *)vector)[3] * scale;
+    scratch[1] = ((f32 *)arg1)[1] + ((f32 *)vector)[4] * scale;
+    scratch[2] = ((f32 *)arg1)[2] + ((f32 *)vector)[5] * scale;
 }
 /* Tail-call thunk: forwards unchanged to fn_8019F1A4, which dispatches to the fn_8019AC44 physics routine. */
 extern "C" void fn_8019F560(void) {
