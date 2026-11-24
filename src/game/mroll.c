@@ -99,7 +99,7 @@ void *fn_802410F8(void *, s32, s32 *, s32);
 void *MRollContainer_init(void *);
 void *fn_80240BA4(void *, s32, void *, void *, void *, void *);
 void *fn_80240A1C(void *, int *, void *);
-void fn_802409AC(void *, s32);
+void MRollMenuItem_addEntry(void *, s32);
 void fn_802409A4(void *, s32);
 void fn_80129AEC(s32);
 s32 fn_802146BC(void *, s32, s32, s32);
@@ -195,8 +195,8 @@ struct MRollPlayerData {
         MRollContainer_init(&container);
         fn_80240BA4(&recordOpt, (s32)(slot + 4), slot + 8, &carIcon, &container, this);
         fn_80240A1C(&menuItem, (int *)slot, this);
-        fn_802409AC(&menuItem, (s32)&recordOpt);
-        fn_802409AC(&menuItem, (s32)&carIcon);
+        MRollMenuItem_addEntry(&menuItem, (s32)&recordOpt);
+        MRollMenuItem_addEntry(&menuItem, (s32)&carIcon);
         fn_802409A4(&container, arg0);
     }
     void init(char *slot, s32 arg0) {
@@ -204,8 +204,8 @@ struct MRollPlayerData {
         MRollContainer_init(&container);
         fn_80240BA4(&recordOpt, (s32)(slot + 4), slot + 8, &carIcon, &container, this);
         fn_80240A1C(&menuItem, (int *)slot, this);
-        fn_802409AC(&menuItem, (s32)&recordOpt);
-        fn_802409AC(&menuItem, (s32)&carIcon);
+        MRollMenuItem_addEntry(&menuItem, (s32)&recordOpt);
+        MRollMenuItem_addEntry(&menuItem, (s32)&carIcon);
         fn_802409A4(&container, arg0);
     }
     inline void setup(char *slot, s32 arg0) {
@@ -214,8 +214,8 @@ struct MRollPlayerData {
         MRollContainer_init(&container);
         fn_80240BA4(&recordOpt, (s32)(slot + 4), slot + 8, &carIcon, &container, this);
         fn_80240A1C(&menuItem, (int *)slot, this);
-        fn_802409AC(&menuItem, (s32)&recordOpt);
-        fn_802409AC(&menuItem, (s32)&carIcon);
+        MRollMenuItem_addEntry(&menuItem, (s32)&recordOpt);
+        MRollMenuItem_addEntry(&menuItem, (s32)&carIcon);
         fn_802409A4(&container, arg0);
     }
 };
@@ -563,7 +563,7 @@ void fn_802409A4(void *object, s32 value) {
 }
 
 /* Append a menu entry id and refresh each item's selected flag and displayed value from the shared payload. */
-void fn_802409AC(void *menu, s32 entryId) {
+void MRollMenuItem_addEntry(void *menu, s32 entryId) {
     void *item;
     s32 count = *(s32 *)((char *)menu + 0x2C);
     s32 index;
@@ -1294,7 +1294,7 @@ void fn_80241820(void *arg0) {
  * pointers in the array at +0x18, store whether that row is the selected one
  * (menu enabled at +0x38 and this index == the selected index at +0x30) into the
  * item's flag byte at +0, and the value the menu follows (*+0x34) into its word
- * at +4. Same refresh as fn_802409AC, without appending an entry first. */
+ * at +4. Same refresh as MRollMenuItem_addEntry, without appending an entry first. */
 void fn_80241DE8(void *menu) {
     void *item;
     s32 index;
