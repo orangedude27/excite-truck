@@ -754,7 +754,7 @@ void fn_802D5270(void *arg0) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
-void fn_802D5680(struct SurfDraw *surface) {
+void drDrawSurfPosNormals(struct SurfDraw *surface) {
     /* Static draw of a surface laid out as positions plus s8 normals, with no
      * color array: bind its raw 16-byte position records (three floats plus the
      * four y-morph bytes GX never reads) and its 3-byte normals, then run the
@@ -784,7 +784,7 @@ void fn_802D56D4(void *arg0) {
     f32 *base = (f32 *)fn_802CFF64(count * 12);
     s32 i;
     if (base == 0) {
-        fn_802D5680(object);
+        drDrawSurfPosNormals(object);
         return;
     }
     {
@@ -1037,7 +1037,7 @@ void fn_802D5F88(s32 arg0) {
     case 2: drDrawSurfLayout12(surface); break;
     case 3: fn_802D4060(surface); break;
     case 6:
-    case 8: if (fn_802DAC64()) fn_802D5680(surface); else fn_802D56D4(surface); break;
+    case 8: if (fn_802DAC64()) drDrawSurfPosNormals(surface); else fn_802D56D4(surface); break;
     case 7: fn_802D5838(surface); break;
     case 10: fn_802D5ACC(surface); break;
     case 11: fn_802D479C(surface); break;
