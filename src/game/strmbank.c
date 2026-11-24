@@ -21,7 +21,7 @@ extern s32 fn_801284F8(s32, void *);       /* allocate from a named heap */
 extern s32 createNullStrmBank(void);              /* creates the null stream-bank manager */
 extern char strCreatingNullManager[];                /* "StrmBank: creating 'null' manager" */
 extern char strHeapNullStrmBank[];                /* "NullStrmBank" */
-extern char lbl_8034D860[];                /* null manager vtable */
+extern char vtblNullStrmBank[];                /* null manager vtable */
 
 /* C++ virtual-delete lowering needs this pragma block to match CodeWarrior. */
 #pragma cplusplus on
@@ -33,7 +33,7 @@ void fn_802E7578(void) {
     strmBankManager = (void *)createNullStrmBank();
 }
 
-/* Interface of the global stream-bank manager; slots line up with lbl_8034D860. */
+/* Interface of the global stream-bank manager; slots line up with vtblNullStrmBank. */
 #pragma cplusplus on
 struct StrmBankManager {
     virtual ~StrmBankManager();
@@ -82,7 +82,7 @@ extern "C" void fn_802E7684(s32 level) {
 }
 #pragma cplusplus reset
 /* Allocate the do-nothing "null" manager the game falls back on: a single pointer
-   to lbl_8034D860, its vtable. fn_802E7578 installs the returned object globally;
+   to vtblNullStrmBank, its vtable. fn_802E7578 installs the returned object globally;
    the console-type query first is unused. */
 s32 createNullStrmBank(void) {
     void **manager;
@@ -90,7 +90,7 @@ s32 createNullStrmBank(void) {
     fn_802E30C8(strCreatingNullManager);
     manager = (void **)fn_801284F8(4, strHeapNullStrmBank);
     if (manager != 0) {
-        *manager = (void *)lbl_8034D860;
+        *manager = (void *)vtblNullStrmBank;
     }
 }
 #pragma scheduling on
