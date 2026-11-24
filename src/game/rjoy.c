@@ -669,28 +669,26 @@ void fn_802E8524(void) {}
 #pragma scheduling invalid_target
 void fn_802E8528(int controllerIndex, float level, float unused) {
 #define gWiimoteStateTable lbl_80505978
-    /* Set one controller's rumble force: scale a 0..1 level to 16 bits
-     * ((level - 0.01) * 65535, rounded to nearest), clamp it to 0..0xFFFF and
-     * store it in that controller's state record at +0xB0.  The third
-     * argument is never read. */
+    /* Sets a controller's rumble force: scale the 0..1 level to 16 bits, clamp
+     * to 0..0xFFFF and store at +0xB0 of its Wiimote state record (arg 3 unused). */
     extern unsigned char gWiimoteStateTable[];
-    float scaled;
-    float rounded;
-    int clampedHigh;
-    int truncated;
-    int clampedLow;
+    float scaledLevel;
+    float roundedLevel;
+    int result;
+    int truncatedValue;
+    int lowerClamped;
 
-    scaled = (level - 0.01f) * 65535.0f;
-    if (scaled < 0.0f)
-        rounded = scaled - 0.5f;
+    scaledLevel = (level - 0.01f) * 65535.0f;
+    if (scaledLevel < 0.0f)
+        roundedLevel = scaledLevel - 0.5f;
     else
-        rounded = 0.5f + scaled;
-    truncated = (int)rounded;
-    clampedLow = truncated & ((-truncated & ~truncated) >> 31);
-    clampedHigh = 0xFFFF;
-    if (clampedLow < clampedHigh)
-        clampedHigh = clampedLow;
-    *(unsigned short *)(gWiimoteStateTable + controllerIndex * 0x638 + 0xB0) = clampedHigh;
+        roundedLevel = 0.5f + scaledLevel;
+    truncatedValue = (int)roundedLevel;
+    lowerClamped = truncatedValue & ((-truncatedValue & ~truncatedValue) >> 31);
+    result = 0xFFFF;
+    if (lowerClamped < result)
+        result = lowerClamped;
+    *(unsigned short *)(gWiimoteStateTable + controllerIndex * 0x638 + 0xB0) = result;
 #undef gWiimoteStateTable
 }
 #pragma pop
