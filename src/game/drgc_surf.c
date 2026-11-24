@@ -447,7 +447,7 @@ void fn_802D479C(void *arg0) {
 #pragma push
 #pragma processor 750
 void fn_802D4988(void *arg0) {
-    extern s32 lbl_8055FE00;
+    extern s32 gTotalYmorphVerts;
     extern u8 lbl_804D2C40[];
     extern void PSQUATMultiply(void *, void *);
     struct SourceVertex { f32 x; f32 y; f32 z; s16 half0; s16 half1; u8 index0; u8 index1; u16 pad; };
@@ -461,7 +461,7 @@ void fn_802D4988(void *arg0) {
 
     PSQUATMultiply(lbl_804C56C0 + 9, src);
     count = *(s32 *)((u8 *)object + 0x1C);
-    lbl_8055FE00 += count;
+    gTotalYmorphVerts += count;
     base = (f32 *)fn_802CFF64(count * 12);
     if (base) {
         register u8 *cache = lbl_804D2C40;
@@ -1368,7 +1368,7 @@ void drVertexFormatCacheInit(void) {
 }
 extern u32 lbl_8055FDE8;
 extern u8 lbl_8055FDEC;
-extern s32 lbl_8055FE00;
+extern s32 gTotalYmorphVerts;
 extern const char lbl_8034C3F4[];
 extern const char lbl_8034C428[];
 extern void fn_802E30C8(const char *, ...);
@@ -1380,7 +1380,7 @@ void drVertexFormatCacheShutdown(void) {
 #define vertexFormatDlStart gVertexFormatDlStart
 #define vertexFormatDlEnd gVertexFormatDlEnd
 #define vertexFormatCount gVertexFormatCount
-#define totalYmorphVerts lbl_8055FE00
+#define totalYmorphVerts gTotalYmorphVerts
 #define logVertexFormatDlMsg lbl_8034C3F4
 #define logTotalYmorphVertsMsg lbl_8034C428
 
@@ -1784,14 +1784,14 @@ void fn_802D7554(u8 value) {
     // Sets the global byte flag consulted by the surf packet handler (fn_802D61BC).
     lbl_8055FDFC = value;
 }
-extern s32 lbl_8055FE00;
+extern s32 gTotalYmorphVerts;
 extern const char lbl_8034C3F4[];
 extern const char lbl_8034C428[];
 extern u32 lbl_8055FDE8;
 extern u8 lbl_8055FDEC;
 extern u32 lbl_8055FDE8;
 extern u8 lbl_8055FDEC;
-extern s32 lbl_8055FE00;
+extern s32 gTotalYmorphVerts;
 extern const char lbl_8034C3F4[];
 extern const char lbl_8034C428[];
 extern void fn_802D5FE4(void *);
