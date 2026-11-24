@@ -908,7 +908,7 @@ void fn_802E0D44(u32 size)
 
 /* Close a video object's Bink handle at +4 if loaded: free the subobject at
  * +0x50, close the Bink through fn_80118DC0, then clear the handle. */
-void VideoObject_FreeBink(object)
+/* Close the video object's Bink handle at +4 if loaded, freeing its +0x50 subobject and clearing the handle. */ void VideoObject_FreeBink(object)
 void *object;
 {
     s32 *binkHandle;
