@@ -81,9 +81,10 @@ extern "C" void fn_802E7684(s32 level) {
     ((StrmBankManager *)strmBankManager)->setLevel(level);
 }
 #pragma cplusplus reset
-/* Allocate the do-nothing "null" manager the game falls back on: a single pointer
-   to vtblNullStrmBank, its vtable. fn_802E7578 installs the returned object globally;
-   the console-type query first is unused. */
+/* Build the "null" stream-bank manager the game falls back on: allocate a
+   4-byte object and point it at vtblNullStrmBank, the do-nothing manager's
+   vtable.  fn_802E7578 installs the returned pointer globally; the console
+   type queried first is unused. */
 s32 createNullStrmBank(void) {
     void **manager;
     OSGetConsoleType();
