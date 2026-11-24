@@ -1221,8 +1221,8 @@ void fn_802CB82C(int arg0) {
 #pragma pop
  void TexRequestUnlink();
  extern char texMsgUnlinkNodeNotFound[];
-/* Remove arg2 from the list rooted at arg1, then push arg2 onto the front of *arg0. */
-/* Move a texture-request node from the source list to the front of the destination list: unlink it, then link it at *destHead. */ void fn_802CBB9C(int **destHead, int srcLink, int *requestNode) {
+/* Move a texture-request node from the source list to the front of the destination list: unlink it, then link it at *destHead. */
+void fn_802CBB9C(int **destHead, int srcLink, int *requestNode) {
     TexRequestUnlink(srcLink, requestNode);
     *(int **)((char *)requestNode + 0x14) = *destHead;
     *destHead = requestNode;
