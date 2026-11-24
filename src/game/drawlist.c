@@ -109,7 +109,7 @@ extern float lbl_8055FC44;
 extern float lbl_8055FC48;
 
 extern int lbl_8055FC70;
-extern void fn_802CFDE0(void);
+extern void HomeMenu_drawUIAndFlush(void);
 extern void fn_802CC770(void);
 extern void fn_802CC60C(void);
 extern void HomeMenu_beginFrame(void);
@@ -276,7 +276,7 @@ void fn_802C8530(void) {
 /* Tear down the draw-list module: reset GX, release the texture list, and mark rendering shut down. */
 void fn_802C855C(void) {
 #define RENDER_MODE_SHUTDOWN 0
-    fn_802CFDE0();
+    HomeMenu_drawUIAndFlush();
     fn_802CC770();
     sRenderMode = RENDER_MODE_SHUTDOWN;
 #undef RENDER_MODE_SHUTDOWN

@@ -301,7 +301,7 @@ int fn_802CEC04(int reason) {
     return 0;
 }
 
-/* Signal completion of the GX operation: set the flag that fn_802CFDE0
+/* Signal completion of the GX operation: set the flag that HomeMenu_drawUIAndFlush
    busy-waits on (cleared to 0 by gxHandleDrawSyncToken case 1). */
 void fn_802CEC44(void) {
 #define sGxSyncDone lbl_8055FD3C
@@ -913,7 +913,7 @@ void fn_802CF850(void) {
  *                         0x10-byte header sits before the table, so that is
  *                         the address that gets freed
  *   GX_DYNAMIC_DATA       0x177000-byte GX dynamic-data (display list) buffer
- *                         the frame is flushed out of, see fn_802CFDE0
+ *                         the frame is flushed out of, see HomeMenu_drawUIAndFlush
  *   GX_DYNAMIC_HIGH_WATER high-water mark of GX_DYNAMIC_DATA, reported here */
 #define GX_XFB_BLOCK lbl_804C9760
 #define GX_SCREEN_TEX_BUFFER lbl_804C9940
@@ -1053,7 +1053,7 @@ void GXReinit(void) {
 }
 
 #pragma scheduling invalid_target
-int fn_802CFDE0(void) {
+int HomeMenu_drawUIAndFlush(void) {
     /* Finish a GX frame: update the dynamic-data high-water mark, reset GX state,
      * flush the just-finished span of the display-list buffer (wrapping at
      * 0x177000), then busy-wait on the draw-sync done flag. If the timeout
@@ -1117,10 +1117,10 @@ int fn_802CFDE0(void) {
 extern void HomeMenu_beginFrame(void*);
 /* GX draw-sync alarm callback: begin a fresh frame by resetting per-frame state
    and arming the FIFO break point (HomeMenu_beginFrame), then flush the just-finished
-   frame's dynamic-data buffer and disarm the break point (fn_802CFDE0). */
+   frame's dynamic-data buffer and disarm the break point (HomeMenu_drawUIAndFlush). */
 void fn_802CFEEC(void *alarm) {
     HomeMenu_beginFrame(alarm);
-    fn_802CFDE0();
+    HomeMenu_drawUIAndFlush();
 }
 
 extern unsigned long lbl_8055FD44;
