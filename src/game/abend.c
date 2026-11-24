@@ -9,8 +9,8 @@ extern void fn_802E30C8(const char *, ...);
 extern void *__AXGetStudio_8000D82C(void);
 extern char ABEND_Separator[];
 #define sSeparator     ABEND_Separator /* "================================" */
-extern int lbl_8055D178;
-#define sLogFileHandle lbl_8055D178
+extern int ABEND_LogFileHandle;
+#define sLogFileHandle ABEND_LogFileHandle
 extern int ABEND_LogFileName;
 #define sLogFileName   ABEND_LogFileName /* "log.log" */
 extern char ABEND_FormatStringS;
