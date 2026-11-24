@@ -2026,11 +2026,11 @@ extern "C" s32 fn_8021B3A0(void *widget) {
     return 0;
 }
 
-extern "C" s32 fn_802C3424(s32, s32, s32, s32, s32);
+extern "C" s32 gxCanvasFillRect(s32, s32, s32, s32, s32);
 /* Set the canvas state, then draw the object's stored rectangle. */
 extern "C" void fn_8021B3BC(void *object, s32 canvasState) {
     fn_802C3034(canvasState);
-    fn_802C3424(*(s32 *)((u8 *)object + 0x244), *(s32 *)((u8 *)object + 0x248), *(s32 *)((u8 *)object + 0x24C), *(s32 *)((u8 *)object + 0x250), *(s32 *)((u8 *)object + 0x254));
+    gxCanvasFillRect(*(s32 *)((u8 *)object + 0x244), *(s32 *)((u8 *)object + 0x248), *(s32 *)((u8 *)object + 0x24C), *(s32 *)((u8 *)object + 0x250), *(s32 *)((u8 *)object + 0x254));
 }
 
 extern "C" s32 fn_80128668(void*);
@@ -3286,7 +3286,7 @@ checked:
 extern "C" void fn_8021D568(void *arg0, s32 arg1) {
     /* Set the active gx canvas, then if this object's linked selection id
        (+0x2BC) matches the expected id (+0x2C0), draw the object's horizontal
-       span via fn_802C3424 using vf28() as width and global lbl_8055FBC0
+       span via gxCanvasFillRect using vf28() as width and global lbl_8055FBC0
        (sbss, purpose unclear). Finally forward to fn_802195DC. */
     fn_802C3034(arg1);
     s32 *selectionIdPtr = *(s32 **)((u8 *)arg0 + 0x2BC);
@@ -3294,7 +3294,7 @@ extern "C" void fn_8021D568(void *arg0, s32 arg1) {
         s32 left = *(s32 *)((u8 *)arg0 + 4);
         s32 top = *(s32 *)((u8 *)arg0 + 8);
         s32 width = ((VfObj *)arg0)->vf28();
-        fn_802C3424(left, top, left + width, *(s32 *)((u8 *)arg0 + 0x10), lbl_8055FBC0);
+        gxCanvasFillRect(left, top, left + width, *(s32 *)((u8 *)arg0 + 0x10), lbl_8055FBC0);
     }
     fn_802195DC(arg0, arg1);
 }
@@ -3793,7 +3793,7 @@ body:
         yBase = *(s32 *)((u8 *)arg0 + 4);
         xBase = *(s32 *)((u8 *)arg0 + 8);
         result = yBase + ((VfObj *)arg0)->vf28();
-        fn_802C3424(yBase + 2,
+        gxCanvasFillRect(yBase + 2,
                     xBase + index * *(s32 *)((u8 *)arg0 + 0x258) + 2,
                     result - 2,
                     xBase + (index + 1) * *(s32 *)((u8 *)arg0 + 0x258) + 2,
@@ -4044,7 +4044,7 @@ extern "C" void fn_8021E8DC(void *widget, s32 drawContext) {
     y = *(s32 *)((u8 *)widget + 8);
     rightBound = ((Fn8021E8DCVTable *)widget)->Get();
     innerWidth = x + rightBound;
-    fn_802C3424(x, y, innerWidth, *(s32 *)((u8 *)widget + 0x10), lbl_8055FBDC);
+    gxCanvasFillRect(x, y, innerWidth, *(s32 *)((u8 *)widget + 0x10), lbl_8055FBDC);
     labelText = ((char *(*)(s32, s32, s32))fn_8022D3F8)(
         *(s32 *)((u8 *)widget + 0x244),
         **(s32 **)((u8 *)widget + 0x25C), 0);
@@ -5403,13 +5403,13 @@ extern "C" void fn_80221544(void *arg0, s32 arg1) {
                     fn_80228E80(arg1, overlay, left + ((diff + (diff < 0)) >> 1),
                                 y0, y1 - y0, 0);
                 } else {
-                    fn_802C3424(left, y0, right, y1, lbl_8055FBDC);
+                    gxCanvasFillRect(left, y0, right, y1, lbl_8055FBDC);
                     s32 color = lbl_8055FBE0;
-                    fn_802C3424(left, y1 - 1, right, y1, color);
-                    fn_802C3424(right - 1, y0, right, y1, color);
+                    gxCanvasFillRect(left, y1 - 1, right, y1, color);
+                    gxCanvasFillRect(right - 1, y0, right, y1, color);
                     color = lbl_8055FBFC;
-                    fn_802C3424(left, y0, right, y0 + 1, color);
-                    fn_802C3424(left, y0, left + 1, y1, color);
+                    gxCanvasFillRect(left, y0, right, y0 + 1, color);
+                    gxCanvasFillRect(left, y0, left + 1, y1, color);
                 }
             }
         } else {
@@ -5427,13 +5427,13 @@ extern "C" void fn_80221544(void *arg0, s32 arg1) {
                     fn_80228DC4(arg1, overlay, left, top + ((diff + (diff < 0)) >> 1),
                                 right - left, 0);
                 } else {
-                    fn_802C3424(left, top, right, bottom, lbl_8055FBDC);
+                    gxCanvasFillRect(left, top, right, bottom, lbl_8055FBDC);
                     s32 color = lbl_8055FBE0;
-                    fn_802C3424(left, bottom - 1, right, bottom, color);
-                    fn_802C3424(right - 1, top, right, bottom, color);
+                    gxCanvasFillRect(left, bottom - 1, right, bottom, color);
+                    gxCanvasFillRect(right - 1, top, right, bottom, color);
                     color = lbl_8055FBFC;
-                    fn_802C3424(left, top, right, top + 1, color);
-                    fn_802C3424(left, top, left + 1, bottom, color);
+                    gxCanvasFillRect(left, top, right, top + 1, color);
+                    gxCanvasFillRect(left, top, left + 1, bottom, color);
                 }
             }
         }
@@ -5515,13 +5515,13 @@ extern "C" void fn_80221970(void *arg0)
         else
         {
           fn_802E30C8(lbl_8033D9F8);
-          fn_802C3424(left, y0, right, y1, lbl_8055FBDC);
+          gxCanvasFillRect(left, y0, right, y1, lbl_8055FBDC);
           color = lbl_8055FBE0;
-          fn_802C3424(left, y1 - 1, right, y1, color);
-          fn_802C3424(right - 1, y0, right, y1, color);
+          gxCanvasFillRect(left, y1 - 1, right, y1, color);
+          gxCanvasFillRect(right - 1, y0, right, y1, color);
           color = lbl_8055FBFC;
-          fn_802C3424(left, y0, right, y0 + 1, color);
-          fn_802C3424(left, y0, left + 1, y1, color);
+          gxCanvasFillRect(left, y0, right, y0 + 1, color);
+          gxCanvasFillRect(left, y0, left + 1, y1, color);
         }
       }
     }
@@ -5545,13 +5545,13 @@ extern "C" void fn_80221970(void *arg0)
         else
         {
           fn_802E30C8(lbl_8033D9F8);
-          fn_802C3424(left, top, right, bottom, lbl_8055FBDC);
+          gxCanvasFillRect(left, top, right, bottom, lbl_8055FBDC);
           color = lbl_8055FBE0;
-          fn_802C3424(left, bottom - 1, right, bottom, color);
-          fn_802C3424(right - 1, top, right, bottom, color);
+          gxCanvasFillRect(left, bottom - 1, right, bottom, color);
+          gxCanvasFillRect(right - 1, top, right, bottom, color);
           color = lbl_8055FBFC;
-          fn_802C3424(left, top, right, top + 1, color);
-          fn_802C3424(left, top, left + 1, bottom, color);
+          gxCanvasFillRect(left, top, right, top + 1, color);
+          gxCanvasFillRect(left, top, left + 1, bottom, color);
         }
       }
     }
@@ -5622,7 +5622,7 @@ extern "C" void fn_80221F9C(void *arg0, s32 arg1) {
     temp_r18 = *(s32 *)((u8 *)arg0 + 4);
     temp_r20 = *(s32 *)((u8 *)arg0 + 8);
     var_r18 = ((VfObj *)arg0)->vf28();
-    fn_802C3424(temp_r18, temp_r20, temp_r18 + var_r18, temp_r20 + 0xA, lbl_8055FBE4);
+    gxCanvasFillRect(temp_r18, temp_r20, temp_r18 + var_r18, temp_r20 + 0xA, lbl_8055FBE4);
     var_r24 = *(s32 *)((u8 *)arg0 + 4);
     var_r22 = 0;
     temp_r23 = *(s32 *)((u8 *)arg0 + 8);
@@ -5636,14 +5636,14 @@ outer_body:
     fn_802C4F58(var_r24 + 2, temp_r23 + 2, (const char *)((u8 *)items + var_r31 + 4), temp_r30);
     if (var_r22 == *(s32 *)((u8 *)arg0 + 0x24C)) {
         temp_r20 = *(s32 *)((u8 *)temp_r21 + 8);
-        fn_802C3424(var_r24, temp_r23 + 0xA, var_r24 + 0x32, temp_r23 + (temp_r20 + 1) * 0xA, temp_r29);
+        gxCanvasFillRect(var_r24, temp_r23 + 0xA, var_r24 + 0x32, temp_r23 + (temp_r20 + 1) * 0xA, temp_r29);
         var_r26 = temp_r23 + 0xB;
         var_r25 = temp_r23 + 0xC;
         var_r20 = 0;
         var_r27 = 0;
         while (var_r20 < *(s32 *)((u8 *)temp_r21 + 8)) {
             if (var_r20 == *(s32 *)((u8 *)arg0 + 0x250))
-                fn_802C3424(var_r24 + 1, var_r26, var_r24 + 0x31, temp_r23 + var_r27 + 0x13, temp_r30);
+                gxCanvasFillRect(var_r24 + 1, var_r26, var_r24 + 0x31, temp_r23 + var_r27 + 0x13, temp_r30);
             temp_r18 = temp_r30;
             if (var_r20 == *(s32 *)((u8 *)arg0 + 0x250))
                 temp_r18 = temp_r28;
