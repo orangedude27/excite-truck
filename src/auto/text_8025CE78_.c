@@ -8,7 +8,7 @@ extern void fn_80128668(void*);
 extern int lbl_8055F3C4;
 extern void fn_80128668(void *);
 extern void fn_80214A9C(int);
-extern void *fn_8023512C(void *, void *, void *);
+extern void *ArtSetGet(void *, void *, void *);
 extern char lbl_80345694[];
 extern int lbl_8055C3E0;
 extern double lbl_80563B68;
@@ -58,7 +58,6 @@ extern void fn_8025DAEC(void *, void *);
 #define APPEND(v) { int *_d=(int*)(long)lbl_8055F3C4; int _i=_d[7]; _d[7]=_i+1; ((int*)_d[6])[_i]=(v); }
 #pragma use_lmw_stmw off
 void fn_8025CE78(void) {
-    char *tbl;
     char buf6[0x43C], buf5[0x43C], buf4[0x43C], buf3[0x43C];
     char buf2[0x43C], buf1[0x43C], buf0[0x43C];
     struct {
@@ -77,7 +76,6 @@ void fn_8025CE78(void) {
     int heapType, i, j, count, n;
     void *base;
     int heap2;
-    tbl = lbl_803454C8;
     heapType = fn_80012810();
     if (heapType != 304) { fn_80012794(); fn_80012790(304); }
     fn_8025D9D0(buf0); fn_8025D9D0(buf1); fn_8025D9D0(buf2); fn_8025D9D0(buf3);
@@ -123,7 +121,6 @@ void fn_8025CE78(void) {
         }
         lbl_8055F2E4 = list;
     }
-    (void)tbl;
     lbl_8055F2E8++;
     *(void **)(buf0 + 0x424) = lbl_8055F2E4; *(void **)(buf1 + 0x424) = lbl_8055F2E4;
     *(void **)(buf2 + 0x424) = lbl_8055F2E4; *(void **)(buf3 + 0x424) = lbl_8055F2E4;
@@ -292,7 +289,7 @@ void *fn_8025D9D0(void *self) {
     *(volatile void **)((char *)self + 0x40C) = lbl_80345718;
     *(int *)((char *)self + 0x424) = 0;
     *((char *)self + 0x42C) = 0;
-    *(void **)((char *)self + 0x434) = ((void *(*)(const char *))fn_8023512C)(lbl_80345694);
+    *(void **)((char *)self + 0x434) = ((void *(*)(const char *))ArtSetGet)(lbl_80345694);
     nameDst = (char *)self + 4;
     *(void **)self = (void *)&lbl_8055C3E0;
     defaultName = (char *)&lbl_8055C3E0;

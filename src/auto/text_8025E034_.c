@@ -57,7 +57,7 @@ static inline int SeqNextHasItem(void) {
 #pragma cplusplus reset
 extern char lbl_80345A30[];
 extern char lbl_80345A1C[];
-extern void* fn_8023512C(const char*);
+extern void* ArtSetGet(const char*);
 extern void fn_80235380(void*, void*);
 extern void fn_80128668(void*);
 extern int fn_80012810(void);
@@ -386,8 +386,8 @@ extern "C" int fn_8025E678(void) {
 
 extern "C" int fn_8025ECBC(void) {
     typedef SeqObj Obj;
-    int tmpArr[3], outArr[3];
-    char buf0[0x24], buf1[0x24], buf2[0x24];
+    char buf2[0x24], buf1[0x24], buf0[0x24];
+    int outArr[3], tmpArr[3];
     char *base, *recPtr, *dest1, *dest2, *dest3, *p, *q, *src, *chosen, *arr;
     Obj *obj, *item, *o1;
     void *obj300, *table, *key;
@@ -465,19 +465,19 @@ copyFirstDetailByte:
                     c = *src++;
                     *q++ = c;
                 } while (c != 0);
-                src = (char *)o1->get2(0);
-                src = (char *)((Obj *)src)->vC();
+                src = ((char *(*)(Obj *))(*(void ***)o1)[7])(o1);
                 q = dest2;
                 n = 0x20;
-                for (;;) {
-                    c = *src++;
-                    *q++ = c;
-                    if (c == 0) break;
+                goto copySecondDetailByte;
+                do {
                     if (--n <= 0) {
                         q[-1] = 0;
                         break;
                     }
-                }
+copySecondDetailByte:
+                    c = *src++;
+                    *q++ = c;
+                } while (c != 0);
                 t = o1->v20();
                 fn_8001BC38(buf0, fn_8000DA10((void *)t), (void *)0x20507, (void *)t, 0);
                 t = o1->v20();
@@ -515,24 +515,22 @@ copyFirstDetailByte:
                     tmpArr[1] = outArr[1];
                     tmpArr[2] = outArr[2];
                     obj300 = *(void **)(base + 0x300);
-                    *(int *)((char *)obj300 + 0x20) = outArr[1];
+                    *(int *)((char *)obj300 + 0x20) = tmpArr[1];
                     *(unsigned char *)((char *)obj300 + 0x24) = *(unsigned char *)&tmpArr[2];
-                    key = fn_80016510(outArr[0]);
+                    o1 = (Obj *)fn_80016510(tmpArr[0]);
                     table = *(void **)((char *)obj300 + 0x18);
-                    arr = *(char **)table;
                     foundIdx = 0;
                     byteOff = 0;
-                    for (;;) {
-                        if (foundIdx >= *(int *)((char *)table + 4)) {
-                            foundIdx = -1;
-                            break;
-                        }
-                        if (stricmp(arr + byteOff, (char *)key + 0x2C) == 0) break;
+                    while (foundIdx < *(int *)((char *)table + 4)) {
+                        if (stricmp(*(char **)table + byteOff, (char *)o1 + 0x2C) == 0)
+                            goto foundEntry;
                         byteOff += 0x38;
                         foundIdx++;
                     }
+                    foundIdx = -1;
+foundEntry:
                     *(int *)((char *)obj300 + 0x1C) = foundIdx;
-                    *(int *)((char *)obj300 + 0x28) = *(int *)((char *)key + *(int *)((char *)obj300 + 0x20) * 4 + 0x64);
+                    *(int *)((char *)obj300 + 0x28) = *(int *)((char *)o1 + *(int *)((char *)obj300 + 0x20) * 4 + 0x64);
                 }
                 dest1 += 0x58;
                 dest2 += 0x58;
@@ -890,7 +888,7 @@ void* fn_8025F9C0(void* self) {
     *(void**)self = lbl_80345A30;
     *(int*)((char*)self + 0x18) = 0;
     *((char*)self + 0x25) = 0;
-    *(void**)((char*)self + 0x2C) = fn_8023512C(lbl_80345A1C);
+    *(void**)((char*)self + 0x2C) = ArtSetGet(lbl_80345A1C);
     return self;
 }
 

@@ -289,7 +289,7 @@ extern void fn_802ECEC0(void);
 extern int gxGetImageArt(const char *);
 extern s32 fn_80232578(const char *);
 extern void *fn_801284F8(unsigned long, void *);
-extern s32 fn_8023512C();
+extern s32 ArtSetGet();
 #pragma opt_pointer_aliasing on
 s32 fn_80246E4C(void) {
     s32 text[11];
@@ -312,8 +312,8 @@ s32 fn_80246E4C(void) {
     text[6] = 1;
     *(s32 *)((char *)&obj + 0x14) = var_r25;
     obj.vtable = &lbl_80343600;
-    obj.field18 = ((s32 (*)(void *, void *))fn_8023512C)(lbl_80343960, &lbl_80343600);
-    obj.field1C = fn_8023512C(lbl_80343950);
+    obj.field18 = ((s32 (*)(void *, void *))ArtSetGet)(lbl_80343960, &lbl_80343600);
+    obj.field1C = ArtSetGet(lbl_80343950);
     obj.field20 = gxGetImageArt(lbl_80343944);
 
     p = (s32 *)fn_801284F8(0x14, &lbl_8055BEF8);
@@ -574,7 +574,7 @@ extern char lbl_80498908;
 extern char lbl_8055BE90;
 extern s32 lbl_8055F25C;
 extern s32 lbl_8055B860;
-extern s32 fn_8023512C(void *);
+extern s32 ArtSetGet(void *);
 extern s32 fn_80246938(void);
 
 #pragma opt_propagation off
@@ -587,7 +587,7 @@ s32 fn_80246AE8(void) {
     lbl_8055F25C = fn_802E2C20();
     text[0] = (s32)lbl_80343780;
     text[5] = 0;
-    result = fn_8023512C(lbl_80343970);
+    result = ArtSetGet(lbl_80343970);
     args[0] = lbl_802FA38C[0];
     args[1] = lbl_802FA38C[1];
     args[2] = lbl_802FA38C[2];

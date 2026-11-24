@@ -41,7 +41,7 @@ body:
 end:;
 }
 /* Same copy with a local destination cursor: sets up the source before the
- * destination (fn_8023512C's second and fourth copies). */
+ * destination (ArtSetGet's second and fourth copies). */
 static inline void CopyStrI_8023512C(const char *src, int n, char *dst) {
     char *d = dst;
     unsigned char c;
@@ -282,7 +282,7 @@ extern char lbl_8055B9F0[4];
 extern char *fn_80029004(char *, int);
 /* gArtGet: return the loaded art set for a resource name, bumping its
  * reference count, or create it (texture handle + the ".tab" picture table). */
-void *fn_8023512C(const char *resourceName) {
+void *ArtSetGet(const char *resourceName) {
     char *tbl = (char *)lbl_80340670;
     char fullName[0x80];
     char tableName[0x80];

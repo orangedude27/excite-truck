@@ -161,7 +161,7 @@ L_check3:
 #pragma cplusplus reset
 #pragma use_lmw_stmw on
 #pragma scheduling on
-extern int fn_8023512C(void *);
+extern int ArtSetGet(void *);
 
 /* One entry of UIObjects_impl's object table (array at +0x04, count at +0x08,
  * 0x20 entries of 0x48 bytes; fn_80258550 adds them and fn_8025878C,
@@ -172,7 +172,7 @@ extern int fn_8023512C(void *);
 typedef struct UIObjectEntry {
     char name[0x20];    /* +0x00 what callers look the object up by */
     char artName[0x20]; /* +0x20 name of the art set it draws from */
-    void *art;          /* +0x40 the art set, referenced (see fn_8023512C) */
+    void *art;          /* +0x40 the art set, referenced (see ArtSetGet) */
     int item;           /* +0x44 which item of that art set */
 } UIObjectEntry;        /* == 0x48 */
 
@@ -209,7 +209,7 @@ check2:
 copy2:
     if ((*dst++ = *name++) != 0) goto check2;
 copied2:
-    entry->art = (void *)fn_8023512C((void *)artName);
+    entry->art = (void *)ArtSetGet((void *)artName);
     entry->item = item;
 }
 #pragma scheduling on

@@ -703,7 +703,7 @@ void fn_80246210(void) {
     fn_80214CB4(*(int *)((char *)*(void **)((char *)lbl_8055F244 + 0x20) + 0x10));
 }
 
-extern int fn_8023512C(void *);
+extern int ArtSetGet(void *);
 extern int fn_80216CA8(int, int, int, int, void *, int, int, int);
 extern int fn_802146BC(int *, int, int, int);
 extern int strlen(const char *);
@@ -744,7 +744,7 @@ extern "C" void fn_802462A0(register void *arg0, register void *arg1) {
     frame.state.value = *(float *)((char *)arg1 + 8);
     frame.state.object = &lbl_803430E8;
     frame.state.zero = 0;
-    frame.state.result = fn_8023512C(&lbl_803430CC);
+    frame.state.result = ArtSetGet(&lbl_803430CC);
 
     frame.config[3] = strlen(*(char **)arg1);
     frame.config[1] = 3;

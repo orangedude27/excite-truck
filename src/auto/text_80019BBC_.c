@@ -36,7 +36,7 @@ extern char lbl_80558C88[8];
 extern float lbl_80560420, lbl_80560424;
 extern float lbl_80560428, lbl_8056042C, lbl_80560430, lbl_80560434, lbl_80560438;
 extern void *fn_801284F8(int, void*);
-extern void* fn_8023512C(void*);
+extern void* ArtSetGet(void*);
 extern void fn_802A1120(void*, float*);
 extern int fn_8012C33C(void*);
 extern void* fn_80131808(void*);
@@ -91,7 +91,7 @@ struct TrackMarker {
     float angle;
     TrackMarker() {
         float v[2];
-        type = (int)fn_8023512C(lbl_802FD6CC);
+        type = (int)ArtSetGet(lbl_802FD6CC);
         fn_802A1120(dir, v);
         { float x = v[0]; v[0] = v[1]; v[1] = -x; }
         unk4 = 0;
@@ -106,7 +106,7 @@ struct TruckDraw {
     int unk44;
     int unk48;
     TruckDraw() {
-        type = (int)fn_8023512C(lbl_802FD6C0);
+        type = (int)ArtSetGet(lbl_802FD6C0);
         memset(data, 0, 0x40);
         unk44 = 0;
         unk48 = -1;
@@ -861,7 +861,7 @@ extern "C" int fn_8001B754(float arg0) {
     int result;
     while (result != 0) {
         ((void (*)(float))fn_8001B478)((float)arg0);
-        i = i + 1;
+        i++;
         result = ((Callback *)fn_80156A40())->invoke(i);
     }
     return result;
@@ -886,7 +886,7 @@ extern float lbl_80560430;
 extern float lbl_80560434;
 extern float lbl_80560438;
 extern void* fn_801284F8(int, void*);
-extern void* fn_8023512C(void*);
+extern void* ArtSetGet(void*);
 extern void fn_802A1120(void*, float*);
 extern int fn_8012C33C(void*);
 extern void* fn_80131808(void*);

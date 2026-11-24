@@ -445,7 +445,7 @@ extern void fn_80176780(s32, s32);
 extern s32 fn_801B8914(void);
 extern s32 fn_801B8900(void);
 extern void *fn_80145E70(void *);
-extern void *fn_8023512C(void *);
+extern void *ArtSetGet(void *);
 extern void *lbl_8055D344;
 extern void *lbl_802FB4E8[];
 extern void *lbl_802FB4B0[];
@@ -557,8 +557,8 @@ extern "C" void fn_80005C88(void) {
         object = fn_801284F8(0x20, (const char *)(strings + 0x148));
         if (object != 0) {
             *(void **)object = lbl_802FB478;
-            *(void **)((u8 *)object + 0x14) = fn_8023512C(lbl_802FB65C);
-            *(void **)((u8 *)object + 0x18) = fn_8023512C(lbl_802FB650);
+            *(void **)((u8 *)object + 0x14) = ArtSetGet(lbl_802FB65C);
+            *(void **)((u8 *)object + 0x18) = ArtSetGet(lbl_802FB650);
             *(void **)((u8 *)object + 0x1C) = fn_80145E70(lbl_802FB640);
             ((Dummy *)object)->v5();
         }

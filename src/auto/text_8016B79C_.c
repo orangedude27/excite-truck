@@ -1100,7 +1100,7 @@ extern char lbl_80330A90[];
 extern f32 lbl_80561984;
 extern void fn_802C2914(void *);
 extern void *fn_80131808(void *);
-extern void *fn_8023512C(void *);
+extern void *ArtSetGet(void *);
 extern void *fn_802076A0(void *, s32, s32, s32);
 extern s32 fn_80204CF0(void);
 #pragma push
@@ -1118,7 +1118,7 @@ void *fn_8016D024(void *controller) {
     fn_802C2914(controller);                                  /* links it as the current one */
     *(void **)((u8 *)controller + 4) = lbl_80330A90;          /* the controller's vtable */
     *(void **)((u8 *)controller + 0x14) = fn_80131808(base + 0x1E0);      /* "race.res/obstacle.val" */
-    *(void **)((u8 *)controller + 0x20) = fn_8023512C(base + 0x1F8);      /* the "mapgems.art" set */
+    *(void **)((u8 *)controller + 0x20) = ArtSetGet(base + 0x1F8);      /* the "mapgems.art" set */
     *(void **)((u8 *)controller + 0x4C) = fn_802076A0(base + 0x204, 1, 0, 0); /* "ringhit.sfx" */
     *(void **)((u8 *)controller + 0x50) = fn_802076A0(base + 0x210, 1, 0, 0); /* "cheerhit.sfx" */
     *(void **)((u8 *)controller + 0x58) = fn_802076A0(base + 0x220, 1, 0, 0); /* "rctally.sfx" */

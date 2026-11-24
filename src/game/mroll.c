@@ -23,7 +23,7 @@ extern s32 lbl_8055F200;
 extern float lbl_80563758;
 extern char lbl_803425A8[];
 extern char lbl_8034288C[];
-extern s32 fn_8023512C(char *, s32, char *, s32);
+extern s32 ArtSetGet(char *, s32, char *, s32);
 extern s32 fn_80232578(char *, char *, s32);
 extern char lbl_80498828[];
 extern void *MRollStatLabel_init(void *);
@@ -479,7 +479,7 @@ typedef struct MRollCarIcon {
     s32 field38;           /* +0x38 */
     s32 instanceId;        /* +0x3C: id taken from the next-id counter lbl_8055F1F4 */
     s32 field40;           /* +0x40 */
-    s32 carIconResource;   /* +0x44: "caricona.art" handle loaded by fn_8023512C */
+    s32 carIconResource;   /* +0x44: "caricona.art" handle loaded by ArtSetGet */
 } MRollCarIcon;
 
 extern int fn_80128668(); /* free(): releases an allocation back to the primary/secondary buffer */
@@ -911,7 +911,7 @@ void *MRollStatLabel_init(void *statLabel) {
 }
 
 /* Construct an object (vtable lbl_803426B0, secondary +0x18), copy *valuePtr, store id/arg3,
-   assign next id from lbl_8055F1F4, load resource "caricona.art" via fn_8023512C, init floats to 0.0f. */
+   assign next id from lbl_8055F1F4, load resource "caricona.art" via ArtSetGet, init floats to 0.0f. */
 /* Construct a roll/player-info object: set its two vtables and fields, copy the supplied value, assign and bump the global id counter, load the car-icon art set, and zero its float fields. */ void *fn_802410F8(void *self, s32 id, s32 *valuePtr, s32 arg3) {
     s32 nextId;
     s32 resource;
@@ -933,7 +933,7 @@ void *MRollStatLabel_init(void *statLabel) {
     *(s32 *)((u8 *)self + 0x3C) = nextId;
     lbl_8055F1F4 = nextId + 1;
 
-    resource = ((s32 (*)(char *))fn_8023512C)(lbl_803425A8);
+    resource = ((s32 (*)(char *))ArtSetGet)(lbl_803425A8);
     zero = lbl_80563758;
     *(s32 *)((u8 *)self + 0x44) = resource;
     *(float *)((u8 *)self + 0x58) = zero;
@@ -987,7 +987,7 @@ extern s32 lbl_8055F200;
 extern float lbl_80563758;
 extern char lbl_803425A8[];
 extern char lbl_8034288C[];
-s32 fn_8023512C(char *, s32, char *, s32);
+s32 ArtSetGet(char *, s32, char *, s32);
 s32 fn_80232578(char *, char *, s32);
 /* Unused no-op stub in the mroll (player-info/roll) module; this build leaves it empty. */
 void fn_80241224(void) {

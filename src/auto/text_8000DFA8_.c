@@ -79,7 +79,7 @@ extern s32 lbl_8055D4D0;
 extern s32 lbl_8055D4C0;
 extern s32 lbl_8055D4C4;
 extern s32 lbl_8055D4C8;
-extern s32 fn_8023512C();
+extern s32 ArtSetGet();
 extern void fn_80235380();
 __declspec(section ".data") extern s32 lbl_80350F88;
 __declspec(section ".data") extern s32 lbl_80351214;
@@ -167,11 +167,11 @@ void fn_8000F1B4(void) {
     lbl_80558A94 = -1;
 }
 
-/* Initializes the 3-2-1 countdown assets: caches the handle from fn_8023512C and loads the two sound objects. */
+/* Initializes the 3-2-1 countdown assets: caches the handle from ArtSetGet and loads the two sound objects. */
 void fn_8000F1E0(void) {
     s32 createFlag;
     createFlag = 1;
-    lbl_8055D4BC = fn_8023512C();
+    lbl_8055D4BC = ArtSetGet();
     lbl_8055D4B4 = (UnkF22C *)fn_80207848(lbl_802FC420, createFlag);
     lbl_8055D4B8 = (UnkF22C *)fn_80207848(lbl_802FC42C, createFlag);
 }
@@ -213,11 +213,11 @@ extern "C" void fn_8000F22C(void) {
 }
 #pragma pop
 #pragma cplusplus reset
-/* Opens two refcounted archive/file handles via fn_8023512C and stores them in globals
+/* Opens two refcounted archive/file handles via ArtSetGet and stores them in globals
  * lbl_80350F88 and lbl_80351214 (released later by fn_8000F2EC). */
 void fn_8000F2A8(s32 fileId0, s32 fileId1) {
-    lbl_80350F88 = fn_8023512C(fileId0);
-    lbl_80351214 = fn_8023512C(fileId1);
+    lbl_80350F88 = ArtSetGet(fileId0);
+    lbl_80351214 = ArtSetGet(fileId1);
 }
 
 /* Releases the two refcounted file handles stored in lbl_80350F88 and lbl_80351214, if set. */
@@ -229,7 +229,7 @@ void fn_8000F2EC(void) {
 /* Load the resources the two bottom-of-screen banners are drawn from, the same
  * ones fn_8000F384 releases again: the sprite sheet fn_8000FC8C and fn_8000FDF0
  * draw as their end caps, opened as a refcounted archive file handle
- * (fn_8023512C; fn_80235EF0 / fn_80235F64 give one of its frames' size), and the
+ * (ArtSetGet; fn_80235EF0 / fn_80235F64 give one of its frames' size), and the
  * gText font taken twice, once per banner, so each holds a reference of its own
  * (fn_802328D4 drops one).  The names come from the string table at
  * lbl_802FC2A8 -- "interlude.art" and, for both font slots, the "uifnt.gtx" UI
@@ -240,7 +240,7 @@ void fn_8000F330(const char *artName, const char *fontName, s32 otherFontName) {
 #define INTERLUDE_ART lbl_8055D4C0 /* the "interlude.art" file handle */
 #define VALUE_FONT lbl_8055D4C4 /* font of the value banner fn_8000FC8C */
 #define INTERLUDE_FONT lbl_8055D4C8 /* font of the interlude banner fn_8000FDF0 */
-    INTERLUDE_ART = fn_8023512C(artName);
+    INTERLUDE_ART = ArtSetGet(artName);
     VALUE_FONT = fn_80232578((s32)fontName);
     INTERLUDE_FONT = fn_80232578(otherFontName);
 #undef INTERLUDE_ART
@@ -266,7 +266,7 @@ void fn_8000F384(void) {
 
 void fn_8000F3E8(const char *resourceName) {
     /* Load the ArtSet for the given resource path and cache its handle in the global. */
-    lbl_8055D4D0 = fn_8023512C(resourceName);
+    lbl_8055D4D0 = ArtSetGet(resourceName);
 }
 
 void fn_8000F40C(void) {
@@ -288,10 +288,10 @@ extern f32 fn_80011EDC(void);
 extern s32 fn_80232578(s32);
 extern char lbl_802FC414[];
 extern s32 lbl_8055D49C;
-/* Caches the ArtSet named by the resource-name string in r3: fn_8023512C opens
+/* Caches the ArtSet named by the resource-name string in r3: ArtSetGet opens
  * it by name and takes a reference, released later by fn_8000F464. */
 void fn_8000F440(const char *resourceName) {
-    lbl_8055D4CC = fn_8023512C(resourceName);
+    lbl_8055D4CC = ArtSetGet(resourceName);
 }
 
 /* Releases the globally cached ArtSet (lbl_8055D4CC) on teardown, if one is loaded. */
@@ -316,12 +316,12 @@ extern s32 lbl_8055D4D4;
  * frameArtSet for later use by fn_80011278 / fn_8000F4BC.
  */
 void fn_8000F498(const char *name) {
-    frameArtSet = fn_8023512C(name);
+    frameArtSet = ArtSetGet(name);
 }
 #undef frameArtSet
 
 /* Shuts the UI frame art down: drops this module's reference to the 9-slice
- * frame art set that fn_8000F498 cached at startup (fn_8023512C opens it by
+ * frame art set that fn_8000F498 cached at startup (ArtSetGet opens it by
  * name, fn_80011278 lays its nine pictures as the frame) and clears the slot,
  * so the art set is freed once nothing else holds it.  Called by the UI module's
  * shutdown fn_8000FB44. */
@@ -522,7 +522,7 @@ void fn_8000F884(void) {
     count = fn_800167F4();
     if (count > 1) {
         id = lbl_80558AA0;
-        handle = fn_8023512C(id);
+        handle = ArtSetGet(id);
         lbl_80351738[0x14] = handle;
         if (handle == 0) {
             fn_802E30C8(lbl_802FC5CC, id);
@@ -547,7 +547,7 @@ void fn_8000F884(void) {
         }
     } else {
         id = lbl_80558A9C;
-        handle = fn_8023512C(id);
+        handle = ArtSetGet(id);
         lbl_80351738[0x14] = handle;
         if (handle == 0) {
             fn_802E30C8(lbl_802FC5CC, id);
@@ -634,17 +634,17 @@ void fn_8000FBE8(f32 arg0, f32 arg1, f32 arg2) {
     extern s32 lbl_8055D4CC;
     extern f32 lbl_80560290, lbl_805602F8, lbl_805602FC;
     extern void fn_80010E94(f32, f32, f32, f32, s32, s32);
-    f32 temp_f28;
-    f32 temp_f29;
-    f32 temp_f30;
-    f32 temp_f31;
     f32 temp_f3;
+    f32 temp_f31;
+    f32 temp_f30;
+    f32 temp_f29;
+    f32 temp_f28;
 
     temp_f28 = arg1 + lbl_80560264;
     temp_f3 = fn_80235F64(lbl_8055D4CC, 4) * arg2;
     temp_f31 = lbl_805602F8 + temp_f3;
-    temp_f30 = arg0 - lbl_80560290;
     temp_f29 = lbl_80560290 + (temp_f28 + (temp_f3 * lbl_8056025C));
+    temp_f30 = arg0 - lbl_80560290;
     ((void (*)(s32, s32, f32, f32, f32, f32))fn_80010E94)(lbl_8055D4D0, 4, temp_f30, temp_f29, temp_f31, temp_f31);
     ((void (*)(s32, s32, f32, f32, f32, f32))fn_80010E94)(lbl_8055D4D0, 5, temp_f30 + temp_f31, temp_f29, lbl_805602FC, temp_f31);
 }
@@ -1399,9 +1399,9 @@ void fn_80010F38(char *name, s32 a2, s32 a3, s32 a4, f32 f1) {
     char *n;
     base = (Unk80350F88 *)&lbl_80350F88;
     idx = base->unk_0x288;
-    n = name;
     base->unk_0x288 = idx + 1;
     entry = &base->entries[idx];
+    n = name;
     strncpy((char *)entry->name, n, 0x28);
     entry->unk_0x28 = 0;
     entry->unk_0x2C = a2;
@@ -1409,7 +1409,6 @@ void fn_80010F38(char *name, s32 a2, s32 a3, s32 a4, f32 f1) {
     entry->unk_0x34 = 0;
     entry->unk_0x38 = a4;
     entry->unk_0x3C = f1;
-    return;
 }
 
 #pragma push
@@ -1506,7 +1505,6 @@ void fn_800111A4(char *name, s32 a1, s32 a2, s32 a3, s32 a4, f32 f) {
     entry->unk_0x38 = a4;
     entry->unk_0x3C = f;
     entry->unk_0x34 = a3;
-#pragma scheduling invalid_target
 }
 #pragma ppc_psq_save reset
 /* RealName: HudList_DrawAll. Draws each of the three 0x40-byte-entry HUD lists
@@ -1649,7 +1647,7 @@ void fn_80011630(s32 arg0, s32 arg1, s32 arg2,
         sp10 = temp_f4;
         spC = temp_f25 * farg2;
         sp8 = temp_f4 * farg2;
-        temp_f0 = (temp_f4 - lbl_805602E0) * lbl_8056025C;
+        temp_f0 = lbl_8056025C * (temp_f4 - lbl_805602E0);
         var_f5 = (var_f5 < temp_f0) ? var_f5 : temp_f0;
         var_f5 = (var_f5 > lbl_80560280) ? var_f5 : lbl_80560280;
         temp_f29 = farg6 + (var_f5 * (arg_sp8 - farg6));
@@ -1662,7 +1660,7 @@ void fn_80011630(s32 arg0, s32 arg1, s32 arg2,
         fn_801E4F3C(arg0, 0, farg0 + sp8, farg1 + spC, lbl_80560280,
                     temp_f29, farg7 + temp_f0_2);
         var_f4 = lbl_80560264;
-        temp_f0_3 = ((w * sp10) - lbl_805602E0) * lbl_8056025C;
+        temp_f0_3 = lbl_8056025C * ((w * sp10) - lbl_805602E0);
         var_f4 = (var_f4 < temp_f0_3) ? var_f4 : temp_f0_3;
         var_f4 = (var_f4 > lbl_80560280) ? var_f4 : lbl_80560280;
         temp_f29 = farg6 + (var_f4 * (arg_sp8 - farg6));

@@ -60,7 +60,7 @@ __declspec(section ".sdata") extern char lbl_8055B9C8[];
 __declspec(section ".sdata") extern char lbl_8055B9CC[];
 extern void *fn_80131810(const char *);
 extern void fn_80131818(void *);
-extern void *fn_8023512C(const char *);
+extern void *ArtSetGet(const char *);
 extern void *fn_802CAC28(const char *, s32);
 extern s32 fn_8002B1D8(const char *, const char *, s32);
 extern f32 fn_80235EF0(s32, s32);
@@ -409,7 +409,7 @@ f32 outX, outY, outZ;
 #pragma use_lmw_stmw off
 #pragma small_data off
 #pragma scheduling invalid_target
-void fn_80231780(void * __restrict arg0) {
+void fn_80231780(void *arg0) {
     f32 f25, f26, f27, f28, f29, f30, f31;
     volatile f32 sp10, spC, sp8;
     f32 x, y, z;
@@ -641,10 +641,10 @@ void fn_80232040(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     s32 sp8;
     f32 temp_f31;
     f32 rate;
-    register s32 var_r31;
-    register s32 temp_r30;
-    register u8 *var_r29;
-    register s32 var_r5;
+    s32 var_r31;
+    s32 temp_r30;
+    u8 *var_r29;
+    s32 var_r5;
     f32 tmpRate;
     sp8 = (s32)arg0;
     spC = farg0;
@@ -700,7 +700,6 @@ void fn_802321D8(void) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_80232230(void) {
-    s32 handle = -1;
     int i;
     char *stringBase;
     Fn80232230_Record *record;
@@ -711,7 +710,7 @@ void fn_80232230(void) {
 
     *(s32 *)(lbl_80497F14 + 4) = 0;
     stringBase = lbl_80340440;
-    list = (struct Fn80232230_List *)fn_80131810(stringBase + 0x94);
+    list = (struct Fn80232230_List *)fn_80131810(lbl_80340440 + 0x94);
     if (list != NULL) {
         temp_f31 = lbl_8056368C;
         for (i = 0; (entry = list->vtable->getEntry(list, i)) != NULL; i++) {
@@ -722,10 +721,10 @@ void fn_80232230(void) {
                 record->seq = entry->vtable->getString(entry, lbl_8055B9B8);
                 if (entry->vtable->hasKey(entry, lbl_8055B9BC) != 0 &&
                     entry->vtable->hasKey(entry, lbl_8055B9C0) != 0) {
-                    record->resource = fn_8023512C(entry->vtable->getString(entry, lbl_8055B9BC));
+                    record->resource = ArtSetGet(entry->vtable->getString(entry, lbl_8055B9BC));
                     record->artIdx = entry->vtable->getInt(entry, lbl_8055B9C0);
-                    record->field18 = entry->vtable->getFloat(entry, stringBase + 0xA0, lbl_8056368C);
-                    record->handle = handle;
+                    record->field18 = entry->vtable->getFloat(entry, lbl_80340440 + 0xA0, lbl_8056368C);
+                    record->handle = -1;
                 } else {
                     record->resource = 0;
                     record->artIdx = 0;
@@ -733,7 +732,7 @@ void fn_80232230(void) {
                     record->handle = (s32)fn_802CAC28(entry->vtable->getString(entry, lbl_8055B9C8), 0);
                 }
                 record->scale = entry->vtable->getFloat(entry, lbl_8055B9CC, lbl_80563684);
-                record->flag = entry->vtable->getByte(entry, stringBase + 0xB0, 0);
+                record->flag = entry->vtable->getByte(entry, lbl_80340440 + 0xB0, 0);
             }
         }
         fn_80131818(list);
@@ -1230,10 +1229,7 @@ void fn_80233010(char *string, s32 font, s32 color, s32 flags, s32 mode, f32 x, 
     }
 }
 
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling 603
 void fn_80233354(u8 *text, u8 *ctx, s32 arg2, s32 flags, f32 x, f32 y, f32 sx, f32 z) {
     s32 sp8;
     f32 y0;
@@ -1303,7 +1299,6 @@ void fn_80233354(u8 *text, u8 *ctx, s32 arg2, s32 flags, f32 x, f32 y, f32 sx, f
         }
     }
 }
-#pragma pop
 
 #pragma pop
 #pragma scheduling reset
@@ -1710,8 +1705,7 @@ void fn_8023423C(s32 entryIndex, s32 flags) {
 #pragma scheduling invalid_target
 void fn_8023441C(const char *arg0) {
     lbl_8055F06C = (s32)((void *(*)(s32, const char *))fn_8012850C)(0x2100, lbl_80340614);
-    lbl_8055F058 = fn_80232578(arg0);
-    *(s32 *)((u8 *)&lbl_8055F058 + 4) = 0;
+    *(u64 *)&lbl_8055F058 = (u64)(u32)fn_80232578(arg0);
 }
 #pragma pop
 void fn_80234470(void) {

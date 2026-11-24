@@ -8,7 +8,7 @@ typedef float f32;
 extern f32 fn_80235EF0(int);
 extern f32 lbl_80564EE8;
 extern f32 lbl_80564EEC;
-extern int fn_8023512C(char*);
+extern int ArtSetGet(char*);
 extern int fn_802E30C8(const char*, ...);
 extern unsigned int strlen(const char*);
 extern char gxGetImageLongNameFmt[];
@@ -27,7 +27,7 @@ int gxGetImageArt(char* imageName) {
         WARNED_LONG_NAME = 1;
         return 0;
     }
-    return fn_8023512C(imageName);
+    return ArtSetGet(imageName);
 }
 #pragma pop
 /* Release the referenced art set through fn_80235380 when `artSet` is non-null;

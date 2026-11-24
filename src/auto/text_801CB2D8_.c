@@ -739,7 +739,7 @@ extern void *fn_801CB954();
 extern void fn_801CC768(void *, float);
 extern void fn_801CC594(void *);
 extern void *fn_80207848(void *, int);
-extern void *fn_8023512C(void *);
+extern void *ArtSetGet(void *);
 extern float lbl_80562A04;
 #pragma push
 #pragma processor 750
@@ -779,7 +779,7 @@ void fn_801CC470(void) {
         *(void **)((char *)object + 8) = field;
         if (field != 0)
             fn_801CC768(field, lbl_80562A04);
-        *(void **)((char *)object + 0xC) = fn_8023512C(lbl_80337AC8 + 0x1C8);
+        *(void **)((char *)object + 0xC) = ArtSetGet(lbl_80337AC8 + 0x1C8);
         fn_801CC594(object);
     }
     lbl_8055E884 = (s32 *)object;

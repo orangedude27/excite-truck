@@ -1303,7 +1303,7 @@ void fn_8022CAA8(void *arg0, void *arg1) {
     extern int fn_80232578(const char *);
     extern unsigned int fn_8022A834(unsigned int);
     extern int gxGetImageArt(const char *);
-    extern int fn_8023512C(const char *);
+    extern int ArtSetGet(const char *);
     extern int loadStamp(const char *);
     extern char *strstr(const char *, const char *);
     extern char lbl_8033FC40[];
@@ -1376,7 +1376,7 @@ void fn_8022CAA8(void *arg0, void *arg1) {
         if (fn_8022A7D4(resourceName) != 0) {
             *(int *)(dest + 0x68) = gxGetImageArt(resourceName);
         } else if (fn_8022A804(resourceName) != 0) {
-            *(int *)(dest + 0x6C) = fn_8023512C(resourceName);
+            *(int *)(dest + 0x6C) = ArtSetGet(resourceName);
         } else {
             *(int *)(dest + 0x64) = loadStamp(resourceName);
         }

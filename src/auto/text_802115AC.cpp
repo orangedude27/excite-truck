@@ -13,7 +13,7 @@ extern "C" void fn_8020A47C(void);
 extern "C" void fn_8023889C(void);
 extern "C" void fn_8022A5E4(void);
 extern "C" void fn_80216710(void);
-extern "C" s32 fn_8023512C(const char *);
+extern "C" s32 ArtSetGet(const char *);
 extern "C" void *fn_8022D228(void *, s32, s32);
 extern "C" void fn_8022D350(s32, const char *, s32);
 extern "C" void *fn_8022D458(void *, s32, s32, s32 *);
@@ -344,8 +344,8 @@ extern "C" void fn_80211690(s32 arg0) {
         drow += 4;
     }
     if (isZero == 0) {
-        lbl_8055EF1C = fn_8023512C(base + 0x138);
-        lbl_8055EF20 = fn_8023512C(base + 0x148);
+        lbl_8055EF1C = ArtSetGet(base + 0x138);
+        lbl_8055EF20 = ArtSetGet(base + 0x148);
     }
     lbl_8055EF10 = lbl_80563434;
     fn_8022A5E4();

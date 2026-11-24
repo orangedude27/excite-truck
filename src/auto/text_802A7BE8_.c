@@ -9,7 +9,7 @@ extern s32 lbl_8055F8BC;
 extern s32 lbl_8055F8C0;
 extern void fn_802328D4(s32);
 extern long fn_80232578(void *);
-extern long fn_8023512C(void *);
+extern long ArtSetGet(void *);
 extern long lbl_80349CF0[];
 extern long lbl_80349CFC[];
 void fn_802A7BE8(void) {
@@ -19,7 +19,7 @@ void fn_802A7BE8(void) {
     #define ART_SET_NAME       lbl_80349CFC  /* "mapgems.art" */
     /* Load the UI font texture block and the car-marker art set used by the debug markers. */
     sRankFont = fn_80232578(&FONT_FILE_NAME);
-    gCarMarkerArtSet = fn_8023512C(&ART_SET_NAME);
+    gCarMarkerArtSet = ArtSetGet(&ART_SET_NAME);
     #undef ART_SET_NAME
     #undef FONT_FILE_NAME
     #undef gCarMarkerArtSet

@@ -388,7 +388,7 @@ extern unsigned char lbl_8032F588[];
 #define FAIL_REASON_CRASH 2
 extern void *fn_80145E70(void *);
 extern void *fn_802CAC28(void *, int);
-extern void *fn_8023512C(void *);
+extern void *ArtSetGet(void *);
 void* fn_80160C8C(void* arg0, s32 arg1) {
     /* Destroy a small struct by clearing its three fields and optionally freeing it. */
     if (arg0 != 0) {
@@ -834,7 +834,7 @@ extern "C" void fn_801617BC(void) {
     lbl_8055E2F0 = (int)fn_802CAC28(lbl_8032F588 + 0x158, 0);
     lbl_8055E2F4 = (int)fn_802CAC28(lbl_8032F588 + 0x168, 0);
     lbl_8055E2F8 = (int)fn_802CAC28(lbl_8032F588 + 0x178, 0);
-    lbl_8055E2FC = (int)fn_8023512C(lbl_8032F588 + 0x188);
+    lbl_8055E2FC = (int)ArtSetGet(lbl_8032F588 + 0x188);
 
     itemCountPtr = (s32 *)(lbl_8042FDEC + 4);
     itemIndex = 0;

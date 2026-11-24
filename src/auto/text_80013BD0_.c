@@ -311,7 +311,7 @@ void fn_80013EDC(void *arg0, void *name, s32 mode, char *first, char *second, f3
 }
 #pragma pop
 extern u8 lbl_80558B80;
-extern void *fn_8023512C(void *);
+extern void *ArtSetGet(void *);
 extern void *fn_802CAC28(void *, s32);
 extern void fn_801333E8(s32, void *, void *);
 extern void *fn_80019C68(s32);
@@ -329,10 +329,10 @@ extern "C" void *fn_80014524(void *object, s32 index) {
     *(void **)self = lbl_802FCE18;
     lbl_803577E0[index] = object;
     self[8] = 0;
-    *(void **)(self + 0x34) = fn_8023512C(strBase + 0x130);
-    *(void **)(self + 0x38) = fn_8023512C(strBase + 0x140);
-    *(void **)(self + 0x3C) = fn_8023512C(strBase + 0x14C);
-    *(void **)(self + 0x40) = fn_8023512C(strBase + 0x158);
+    *(void **)(self + 0x34) = ArtSetGet(strBase + 0x130);
+    *(void **)(self + 0x38) = ArtSetGet(strBase + 0x140);
+    *(void **)(self + 0x3C) = ArtSetGet(strBase + 0x14C);
+    *(void **)(self + 0x40) = ArtSetGet(strBase + 0x158);
     *(void **)(self + 0x44) = fn_802CAC28(strBase + 0x168, 0);
     *(s32 *)(self + 4) = index;
     self[0x4C] = 0;
@@ -1298,9 +1298,9 @@ void fn_80015B20(void *arg0, void *arg1, void *arg2) {
     f32 *b = (f32 *)arg2;
 
     if ((arg0 == arg1) || (arg0 == arg2)) {
-        f32 temp_f10, temp_f1, temp_f19, temp_f12, temp_f3, temp_f9, temp_f0, temp_f20;
-        f32 temp_f11, temp_f18, temp_f7, temp_f6, temp_f1_2, temp_f0_2, temp_f2;
-        f32 temp_f4, temp_f5, temp_f8;
+        register f32 temp_f10, temp_f1, temp_f19, temp_f12, temp_f3, temp_f9, temp_f0, temp_f20;
+        register f32 temp_f11, temp_f18, temp_f7, temp_f6, temp_f1_2, temp_f0_2, temp_f2;
+        register f32 temp_f4, temp_f5, temp_f8;
 
         temp_f10 = a[1]; temp_f1 = b[3]; temp_f19 = a[4]; temp_f12 = b[4];
         temp_f3 = a[7]; temp_f9 = a[0]; temp_f0 = b[0]; temp_f20 = a[3];
@@ -1414,23 +1414,22 @@ extern "C" void fn_80015F30(void* arg0) {
  obj=*(void**)((u8*)arg0+0x50);
  desc=((Obj*)obj)->find(base+0x234);
  if(desc) {
-  if(flag || *(f32*)((u8*)*(void**)((u8*)lbl_8055D350+0x2c)+0x2c4)>0.0f) {
-   f32 a=lbl_8056040C*value;
-   f32 b;
-   s32 rounded;
-   if(a<0.0f) b=a-0.5f; else b=0.5f+a;
-   rounded=(s32)b;
-   f32 delta=high-low;
-   f32 scale=delta/lbl_8056040C;
-   ((void(*)(f32,f32,f32,f32,s32,s32,s32,f32,f32,f32,f32,f32,f32))fn_80147F30)(desc->x,desc->y,desc->w,desc->h,desc->g,rounded,*(s32*)((u8*)arg0+0x44),low,scale,0.5f,0.0f,lbl_80560410,lbl_80560414);
-  } else {
+  if(flag || *(f32*)((u8*)*(void**)((u8*)lbl_8055D350+0x2c)+0x2c4)>lbl_80560360) {
    f32 a=lbl_8056040C*value;
    f32 b;
    s32 rounded;
    if(a<0.0f) b=a-0.5f; else b=0.5f+a;
    rounded=(s32)b;
    f32 scale=(high-low)/lbl_8056040C;
-   ((void(*)(f32,f32,f32,f32,s32,s32,s32,f32,f32,f32,f32,f32,f32))fn_80147F30)(desc->x,desc->y,desc->w,desc->h,desc->g,rounded,*(s32*)((u8*)arg0+0x44),low,scale,0.0f,0.0f,lbl_80560414,lbl_80560414);
+   ((void(*)(f32,f32,f32,f32,s32,s32,s32,f32,f32,f32,f32,f32,f32))fn_80147F30)(desc->x,desc->y,desc->w,desc->h,desc->g,rounded,*(s32*)((u8*)arg0+0x44),low,scale,0.5f,0.0f,1.0859375f,0.5859375f);
+  } else {
+   f32 a=lbl_8056040C*value;
+   f32 b;
+   s32 rounded;
+   if(a<lbl_80560360) b=a-0.5f; else b=0.5f+a;
+   rounded=(s32)b;
+   f32 scale=(high-low)/lbl_8056040C;
+   ((void(*)(f32,f32,f32,f32,s32,s32,s32,f32,f32,f32,f32,f32,f32))fn_80147F30)(desc->x,desc->y,desc->w,desc->h,desc->g,rounded,*(s32*)((u8*)arg0+0x44),low,scale,0.0f,0.0f,0.5859375f,0.5859375f);
   }
  }
  fn_801478E0(*(void**)((u8*)arg0+0x50),base+0x240,*(s32*)((u8*)arg0+0x40),0);
@@ -1457,7 +1456,7 @@ extern "C" void fn_80015F30(void* arg0) {
 #pragma scheduling off
 #pragma processor 750
 s32 fn_80016214(void) {
-    const f64 scale = lbl_80560400;
+    register f64 scale = lbl_80560400;
     register void *manager = lbl_8055D350;
     f32 speed = *(f32 *)((u8 *)manager + 0x10);
     f32 value = (f32)((f64 (*)(void *, f32, f64))fn_8002EFB4)(manager, speed, scale);

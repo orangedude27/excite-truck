@@ -1199,7 +1199,7 @@ extern "C" void *fn_80219A28(void *label, LayoutEntry *entry, s32 text, s32 watc
 
 extern "C" s32 fn_80232B70(s32);
 extern "C" f32 fn_8023293C(s32, s32, f32);
-extern "C" s32 fn_8023512C(s32);
+extern "C" s32 ArtSetGet(s32);
 extern "C" void fn_80235380(void *);
 extern char lbl_8033D8B8[];
 
@@ -1231,7 +1231,7 @@ extern "C" void fn_80219AB4(void *widget, s32 kind, s32 text, s32 idleValue, s32
     #define GTexLoadFont   fn_80232578 /* gText: the font texture of an archive file name */
     #define GTexFontHeight fn_80232B70 /* gText: a font's nominal glyph height */
     #define GTexMeasure    fn_8023293C /* gText: how wide a string is in a font */
-    #define ArtSetLoad     fn_8023512C /* the ArtSet picture set of a resource name */
+    #define ArtSetLoad     ArtSetGet /* the ArtSet picture set of a resource name */
     #define WatchValue     fn_80219440 /* start following the value at a pointer */
     #define FLOAT_ONE      lbl_805634A4 /* 1.0f */
     #define UNKNOWN_KIND   lbl_8033D8B8 /* "ArtWidget: unknown type %d" */
@@ -1364,7 +1364,7 @@ extern "C" void fn_80219F14(void *arg0) {
         return;
     if (object->old != 0)
         fn_80235380((void *)object->old);
-    object->old = fn_8023512C((s32)object->source);
+    object->old = ArtSetGet((s32)object->source);
     {
         u8 c;
         char *source = object->source;
@@ -5907,9 +5907,9 @@ extern "C" void fn_8022264C(void *item, s32 gridX, s32 gridY, s32 *outLeft, s32 
 extern "C" void *fn_802226D4(void *self, s32 resourceId) {
     /* RealName: InitWithVTableAndResource_802226D4. Initialize object with vtable lbl_8033F9BC and store resource loaded from resourceId. */
     extern char lbl_8033F9BC[];
-    extern s32 fn_8023512C(s32);
+    extern s32 ArtSetGet(s32);
     *(volatile char **)self = lbl_8033F9BC;
-    *(s32 *)((u8 *)self + 4) = fn_8023512C(resourceId);
+    *(s32 *)((u8 *)self + 4) = ArtSetGet(resourceId);
     return self;
 }
 
@@ -8112,7 +8112,7 @@ extern "C" void *fn_80226CBC(void *arg0, void *arg1) {
         else *(s32 *)(self + 0x258) = 7;
     }
     char *name = base + 0x328;
-    *(s32 *)(self + 0x244) = fn_8023512C((s32)name);
+    *(s32 *)(self + 0x244) = ArtSetGet((s32)name);
     if (!*(s32 *)(self + 0x244)) fn_802E30C8(base + 0x338, name);
     if (*(s32 *)(self + 0x244) && fn_80235FD8(*(s32 *)(self + 0x244)) != 15) {
         fn_802E30C8(base + 0x368, name, fn_80235FD8(*(s32 *)(self + 0x244)));
@@ -8464,7 +8464,7 @@ extern "C" void *fn_80227D00(void *object) {
     fn_80218F80();
     vtable = lbl_8033DEAC;
     *(void **)object = vtable;
-    result = ((s32 (*)(void *, void *))fn_8023512C)(lbl_8033DC4C, lbl_8033DEAC);
+    result = ((s32 (*)(void *, void *))ArtSetGet)(lbl_8033DC4C, lbl_8033DEAC);
     *(s32 *)((u8 *)object + 0x244) = result;
     if (result == 0)
         fn_802E30C8(lbl_8033DC58);
@@ -8526,11 +8526,11 @@ extern "C" void *fn_80227E84(void *self, s32 arg1, void *arg2, s32 arg3) {
     *(s32 *)((u8 *)self + 0x250) = resource;
     if (resource == 0)
         fn_802E30C8(base + 0x408);
-    resource = ((s32 (*)(const char *))fn_8023512C)(base + 0x42C);
+    resource = ((s32 (*)(const char *))ArtSetGet)(base + 0x42C);
     *(s32 *)((u8 *)self + 0x254) = resource;
     if (resource == 0)
         fn_802E30C8(base + 0x438);
-    resource = ((s32 (*)(const char *))fn_8023512C)(base + 0x3D4);
+    resource = ((s32 (*)(const char *))ArtSetGet)(base + 0x3D4);
     *(s32 *)((u8 *)self + 0x258) = resource;
     if (resource == 0)
         fn_802E30C8(base + 0x3E0);

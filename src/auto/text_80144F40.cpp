@@ -97,7 +97,7 @@ extern char lbl_8032CF48[];
 extern __declspec(section ".sdata") char lbl_80559DD0[];
 extern __declspec(section ".sdata") char lbl_80559DD8[];
 extern __declspec(section ".sdata") char lbl_80559DDC[];
-s32 fn_8023512C(void);
+s32 ArtSetGet(void);
 void fn_802E3AD0(s32, const char *, ...);
 }
 
@@ -458,7 +458,7 @@ extern "C" void fn_80145670(void *outEntry, void *propertySource) {
     struct GArtSetEntry {
         const char *name;         /* +0x00 "name" */
         const char *resourceName; /* +0x04 "resource_name" */
-        void *resource;           /* +0x08 gArt resource, refcounted by fn_8023512C */
+        void *resource;           /* +0x08 gArt resource, refcounted by ArtSetGet */
     };
     class PropertySet {
     public:
@@ -469,12 +469,12 @@ extern "C" void fn_80145670(void *outEntry, void *propertySource) {
     };
     /* FillGArtSetEntry: one "gart_set" entry from a level element - its "name" and
        "resource_name" strings and the gArt resource loaded for that name (the name
-       is still in r3 for fn_8023512C, which looks a resource up by name). */
+       is still in r3 for ArtSetGet, which looks a resource up by name). */
     GArtSetEntry *entry = (GArtSetEntry *)outEntry;
     PropertySet *props = (PropertySet *)propertySource;
     entry->name = props->getString(lbl_80559DD0);
     entry->resourceName = props->getString(lbl_8032CF48);
-    entry->resource = (void *)fn_8023512C();
+    entry->resource = (void *)ArtSetGet();
 }
 
 extern "C" s32 fn_8013126C(void *, s32);
@@ -1987,10 +1987,9 @@ extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3)
   f32 zSource = *((f32 *) (src + 0x10));
   f32 zOther = *((f32 *) (other + 0x10));
   f32 yOther = *((f32 *) (other + 8));
-  u32 w1c = *((u32 *) (src + 0x1C));
-  f32 ySource = *((f32 *) (src + 8));
   f32 xOther = *((f32 *) (other + 4));
   f32 xSource = *((f32 *) (src + 4));
+  f32 ySource = *((f32 *) (src + 8));
   yOther = yOther - ySource;
   xOther = xOther - xSource;
   zOther = zOther - zSource;
@@ -2002,14 +2001,15 @@ extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3)
   first.f.y = y;
   first.f.x = x;
   second.raw = first.raw;
+  u32 w1c = *((u32 *) (src + 0x1C));
   u32 w18 = *((u32 *) (src + 0x18));
   u32 w14 = *((u32 *) (src + 0x14));
   u32 wc = *((u32 *) (src + 0xC));
   u32 w0 = *((u32 *) (src + 0));
-  u32 w8 = *((u32 *) (src + 8));
   u32 w4 = *((u32 *) (src + 4));
+  u32 w8 = *((u32 *) (src + 8));
   u32 other18 = *((u32 *) (other + 0x18));
-  volatile u32 *d = (volatile u32 *) ((u8 *) arg0);
+  volatile u32 *d = (volatile u32 *) dst;
   *((f32 *) (dst + 0x10)) = zSource;
   d[1] = w4;
   d[2] = w8;
@@ -2020,7 +2020,7 @@ extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3)
   d[7] = w1c;
   *((f32 *) (dst + 4)) = second.f.x;
   *((f32 *) (dst + 8)) = second.f.y;
-  *((f32 *) (dst + 0x10)) = (f32) (((u32) z & 0xFFu) & 0xFFu);
+  *((f32 *) (dst + 0x10)) = z;
   d[6] = fn_80147C50(w18, other18, factor);
 }
 extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t)

@@ -190,7 +190,7 @@ void fn_80264098(void *item, int type) {
 #pragma cplusplus on
 extern void *operator new(unsigned long, void *);
 #pragma push
-extern "C" void fn_802640A0(void *arg0) {
+void fn_802640A0(void *arg0) {
     struct CreditsMenuItem {
         void *name;
         int type;
@@ -199,10 +199,7 @@ extern "C" void fn_802640A0(void *arg0) {
         int b;
     };
     struct CreditsMenuItem *item = (struct CreditsMenuItem *)arg0;
-    void *name = &lbl_8055C458;
-    int zero = 0;
-    int type = 0x7b;
-    item->name = name;
+    item->name = &lbl_8055C458;
     item->type = 0x7b;
     item->data = 0;
     item->a = 0;
@@ -471,7 +468,7 @@ void *fn_802646D0(void *arg0) {
     extern int lbl_802FA700[], lbl_80346364[], lbl_80346678[];
     extern char lbl_8055C490[4];
     extern float lbl_80563BFC, lbl_80563C00, lbl_80563C04, lbl_80563BF0;
-    extern void *fn_8023512C(const char *);
+    extern void *ArtSetGet(const char *);
     extern void *fn_8012850C(int, void *);
     struct Desc { int a[15]; };
     register int *vt = lbl_80346678;
@@ -494,7 +491,7 @@ void *fn_802646D0(void *arg0) {
     *(int *)(p+0x30) = d6; *(int *)(p+0x34) = d7; *(int *)(p+0x38) = d8;
     *(int *)(p+0x3c) = d9; *(int *)(p+0x40) = d10; *(int *)(p+0x44) = d11;
     *(int *)(p+0x48) = d12; *(int *)(p+0x4c) = d13; *(int *)(p+0x50) = d14;
-    *(void **)(p+0x54) = fn_8023512C((const char *)d0);
+    *(void **)(p+0x54) = ArtSetGet((const char *)d0);
     n = src->a[9];
     data = fn_8012850C(n*32, lbl_8055C490);
     *(void **)(p+0x58)=data; *(int *)(p+0x60)=n; *(int *)(p+0x5c)=zero; *(void **)(p+0x64)=data;
@@ -517,7 +514,7 @@ void *fn_802646D0(void *arg0) {
     *(int *)(p+0xa0) = lbl_80346364[10]; *(int *)(p+0xa4) = lbl_80346364[11];
     *(int *)(p+0xa8) = lbl_80346364[12]; *(int *)(p+0xac) = lbl_80346364[13];
     *(int *)(p+0xb0) = lbl_80346364[14];
-    *(void **)(p+0xb4) = fn_8023512C((const char *)lbl_80346364[0]);
+    *(void **)(p+0xb4) = ArtSetGet((const char *)lbl_80346364[0]);
     n = lbl_80346364[9];
     data = fn_8012850C(n*32, lbl_8055C490);
     *(void **)(p+0xb8)=data; *(int *)(p+0xc0)=n; *(int *)(p+0xbc)=zero; *(void **)(p+0xc4)=data;
@@ -712,19 +709,21 @@ void fn_80264D5C(void *arg0) {
         p = (SparkParticle *)((char *)l->items + off);
         p->life -= dt;
         if (p->life < lbl_80558DC4[0]) {
-            if (i >= 0 && i < l->count) {
-                if (i != l->count - 1) {
-                    last = &l->items[l->count - 1];
-                    *(int *)((char *)l->items + off) = *(int *)((char *)l->items + (l->count - 1) * 0x20);
-                    *(int *)&p->y = *(int *)&last->y;
-                    *(int *)&p->vx = *(int *)&last->vx;
-                    *(int *)&p->vy = *(int *)&last->vy;
-                    p->a10 = last->a10;
-                    p->a14 = last->a14;
-                    p->life = last->life;
-                    p->id = last->id;
+            if (i >= 0) {
+                if (i < l->count) {
+                    if (i != l->count - 1) {
+                        last = &l->items[l->count - 1];
+                        *(int *)((char *)l->items + off) = *(int *)((char *)l->items + (l->count - 1) * 0x20);
+                        *(int *)&p->y = *(int *)&last->y;
+                        *(int *)&p->vx = *(int *)&last->vx;
+                        *(int *)&p->vy = *(int *)&last->vy;
+                        p->a10 = last->a10;
+                        p->a14 = last->a14;
+                        p->life = last->life;
+                        p->id = last->id;
+                    }
+                    l->count = l->count - 1;
                 }
-                l->count = l->count - 1;
             }
         } else {
             double nvx, nvy;

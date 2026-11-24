@@ -804,7 +804,7 @@ void *fn_8024F17C(void *arg0, void **arg1, s32 *arg2, s32 *arg3, void *arg4, voi
     extern void *fn_80131808(void *);
     extern void fn_80131818(void *);
     extern void fn_801345D8(void *, s32, void *, ...);
-    extern s32 fn_8023512C(void *);
+    extern s32 ArtSetGet(void *);
     extern void fn_80255918(void *, s32);
     extern s32 fn_802CAC28(void *, s32);
     extern void fn_802E317C(void *, void *);
@@ -845,7 +845,7 @@ void *fn_8024F17C(void *arg0, void **arg1, s32 *arg2, s32 *arg3, void *arg4, voi
         *(s32 *)(var_r5 + temp_r0) = 0;
         M2C_FIELD(temp_r3_2, f32, 8) = lbl_80563960;
     }
-    M2C_FIELD(this_obj, s32, 0x24) = fn_8023512C((void *)(base_4170 + 0x188));
+    M2C_FIELD(this_obj, s32, 0x24) = ArtSetGet((void *)(base_4170 + 0x188));
     M2C_FIELD(this_obj, s32, 0x20) = fn_802CAC28((void *)(base_4170 + 0x198), 0);
     M2C_FIELD(this_obj, s32, 0x2C) = 0;
     M2C_FIELD(this_obj, void *, 0) = lbl_803444D8;
