@@ -29,7 +29,7 @@ extern char lbl_8034D3C0[];
 extern unsigned char lbl_804FC800[];
 extern unsigned char lbl_804FC558[];
 extern int lbl_8055FF78;
-extern int lbl_8055FFA0;
+extern int gSpuSoundSlotCount;
 extern int *gSpuSoundSlotTable;
 extern unsigned char *lbl_8055FF94;
 extern void *lbl_8055FF90;
@@ -391,7 +391,7 @@ void fn_802E5438(void) {
 #define gSpuSamples     lbl_8055FF90   /* "SpuSample": 256 slots of 0xB0 */
 #define gSpuChannels    lbl_8055FF94   /* "SpuChannel": the 32 voice channels */
 #define gSoundSlotTable gSpuSoundSlotTable   /* "Spucache" */
-#define gSoundSlotCount lbl_8055FFA0   /* entries of it in use */
+#define gSoundSlotCount gSpuSoundSlotCount   /* entries of it in use */
 #define gSpuRunning     lbl_8055FFA5   /* the voice refill (fn_802E4F98) may run */
 #define gSpuResetPending lbl_8055FFB5  /* set by the reset callback, forces a re-init */
 
@@ -620,7 +620,7 @@ void fn_802E5828(void) {
  * table; returns 1 on success, 0 if the table is full or allocation failed. */
 int Spu_CacheVoiceObject(void) {
 #define gSoundSlotTable gSpuSoundSlotTable
-#define gSoundSlotCount lbl_8055FFA0
+#define gSoundSlotCount gSpuSoundSlotCount
 #define Spu_allocVoiceObject fn_802E5AE8
     if (gSoundSlotCount < 0x100) {
         gSoundSlotTable[gSoundSlotCount] = (int)Spu_allocVoiceObject();
@@ -655,7 +655,7 @@ void fn_802E589C(void) {
 #define TAG_SFX0 0x53465830
 extern unsigned char lbl_804FC558[]; /* sound-name queue: 0x20-byte NUL-terminated names */
 extern int lbl_8055FF78;             /* sound-name queue: names in use */
-extern int lbl_8055FFA0;             /* voice table gSpuSoundSlotTable: entries in use */
+extern int gSpuSoundSlotCount;             /* voice table gSpuSoundSlotTable: entries in use */
 extern int *gSpuSoundSlotTable;            /* voice objects allocated by fn_802E5AE8 */
 extern void fn_8012BEF0(unsigned char *);
 extern void fn_8012C41C(void (*)(void), int, unsigned char *);
@@ -747,10 +747,10 @@ void fn_802E5A54(void) {
     int nameIndex;
     unsigned char *name;
 
-    for (slotIndex = 0; slotIndex < lbl_8055FFA0; slotIndex++) {
+    for (slotIndex = 0; slotIndex < gSpuSoundSlotCount; slotIndex++) {
         SpuSampleReleaseRef((void *)gSpuSoundSlotTable[slotIndex]);
     }
-    lbl_8055FFA0 = 0;
+    gSpuSoundSlotCount = 0;
     for (nameIndex = 0, name = lbl_804FC558; nameIndex < lbl_8055FF78; name += 0x20, nameIndex++) {
         fn_8012BF24(name);
     }
