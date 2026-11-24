@@ -411,13 +411,15 @@ Obj_802470D4 *fn_802470D4(Obj_802470D4 *self, s32 deleteFlag) {
 #pragma pop
 #pragma push
 #pragma processor 750
-/* Fade the master music volume from full to silence over 50 steps (~16 ms apart, yielding to background tasks each step), then stop playback and restore full volume. */ /* Fade the master music volume from full to silence over 50 steps (~16 ms apart, yielding to background tasks each step), then stop playback and restore full volume. */ void fn_80247174(void)
+void fn_80247174(void)
 {
+  /* Fade the master music volume from full to silence over 50 steps (~16 ms apart,
+     yielding to background tasks each step), then stop playback and restore full volume. */
   s32 step = 0;
   do
   {
-    register float unusedDivisor;
-    register float unusedBase;
+    register float divisor;
+    register float base;
     fn_80246CAC(1.0f - (((float) step) / 49.0f));
     fn_80127464();
     if (0 != 1)
