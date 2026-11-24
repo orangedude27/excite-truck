@@ -2973,11 +2973,16 @@ void fn_802D306C(unsigned char alpha) {
 }
 
 extern void GXSetIndTexMtx(int, void *, int);
-/* Loads the default indirect-texture scale matrix into indirect texture matrix 1. */
+/* Load the default (identity-scale) indirect-texture matrix into indirect texture matrix 1. */
 void fn_802D307C(void) {
     int indTexMtx[6];
-    int *src = (int *)lbl_802FACB0;
-    indTexMtx[0] = src[0]; indTexMtx[1] = src[1]; indTexMtx[2] = src[2]; indTexMtx[3] = src[3]; indTexMtx[4] = src[4]; indTexMtx[5] = src[5];
+    int *defaultMtx = (int *)lbl_802FACB0;
+    indTexMtx[0] = defaultMtx[0];
+    indTexMtx[1] = defaultMtx[1];
+    indTexMtx[2] = defaultMtx[2];
+    indTexMtx[3] = defaultMtx[3];
+    indTexMtx[4] = defaultMtx[4];
+    indTexMtx[5] = defaultMtx[5];
     GXSetIndTexMtx(1, indTexMtx, 1);
 }
 
