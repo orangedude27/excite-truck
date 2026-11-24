@@ -1332,7 +1332,7 @@ void fn_802C9CE0(void) {
  * "mrDrawList") go unused: every element of this pool is the same.  Returns 0
  * when the pool is empty; fn_802C9D88 hands elements back and tears the pool
  * down once no DrawListWrapper is live any more. */
-void *fn_802C9D10(int size, const char *name) {
+void *DrawListWrapper_alloc(int size, const char *name) {
     struct ObjectPool *pool;
     void *element;
 
@@ -1468,7 +1468,7 @@ extern char lbl_8034B52C[];
 /* Creates and initializes a draw list node (size 0x18) tagged "mrDrawList". */
 void fn_802CA04C(int listCount) {
     void *obj;
-    obj = fn_802C9D10(0x18, lbl_8034B52C);
+    obj = DrawListWrapper_alloc(0x18, lbl_8034B52C);
     if (obj != 0) {
         fn_802C9DE8(obj, listCount);
     }
