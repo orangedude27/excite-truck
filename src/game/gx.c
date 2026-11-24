@@ -350,7 +350,7 @@ void fn_802CEC44(void) {
 
 /* Cycles gDrawSyncToken through values 1..2 until it equals targetIndex, calling
  * gxHandleDrawSyncToken for each step. */
-/* Advance the GX draw-sync token counter (1..2) and process each token until it reaches targetToken. */ void fn_802CECF4(unsigned int targetToken) {
+/* Advance the GX draw-sync token counter (1..2) and process each token until it reaches targetToken. */ void gxAdvanceDrawSyncToken(unsigned int targetToken) {
     extern unsigned short gDrawSyncToken;
     extern void gxHandleDrawSyncToken(int);
     unsigned int token;
@@ -710,7 +710,7 @@ void fn_802CF600(void) {
     lbl_804C9940 = (unsigned long)buffer;
     GXInitTexObj(&lbl_804C9940 + 1, buffer, 0x280, 0x1C0, 1, 0, 0, 0);
 #pragma small_data on
-    GXGetLightDir(fn_802CECF4);
+    GXGetLightDir(gxAdvanceDrawSyncToken);
     GXLoadLightObjIndx(fn_802CEC44);
     fn_802D37E4();
     fn_802DD4FC();
