@@ -50,7 +50,7 @@ typedef struct GxCanvas {
 } GxCanvas;       /* 0x24: fn_802C2D94 memsets the whole block on free */
 
 #define CANVAS_FLAG_NO_DRAW 0x04 /* GxCanvas.flags: drawing is turned off */
-#define CANVAS_FORMAT_RGBA4444 1 /* GxCanvas.format: 4-bit components; the fillers keep the destination's alpha nibble (fn_802C365C) */
+#define CANVAS_FORMAT_RGBA4444 1 /* GxCanvas.format: 4-bit components; the fillers keep the destination's alpha nibble (gxCanvasFillRectRGBA4444) */
 #define CANVAS_FORMAT_RGB1555 3  /* GxCanvas.format: X1R5G5B5, blue in the low 5 bits */
 #define CANVAS_FORMAT_RGB565  4  /* GxCanvas.format: R5G6B5, blue in the low 5 bits */
 #define CANVAS_FORMAT_RGBA  5    /* GxCanvas.format: 4-byte pixels */
@@ -65,7 +65,7 @@ extern void fn_802C3754(s32, s32, s32, s32, s32, s32, s32, s32);
 extern void fn_802DB2C8(void);
 extern void gxCanvasFillRect16(s32, s32, s32, s32, u32);
 extern void gxCanvasFillRectRGBA(s32, s32, s32, s32, u32);
-extern void fn_802C365C(s32, s32, s32, s32, u32);
+extern void gxCanvasFillRectRGBA4444(s32, s32, s32, s32, u32);
 #pragma scheduling invalid_target
 #pragma push
 #pragma peephole off
@@ -364,7 +364,7 @@ void gxCanvasFillRect(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
             gxCanvasFillRect16(x0, y0, x1, y1, color);
             return;
         }
-        fn_802C365C(x0, y0, x1, y1, color);
+        gxCanvasFillRectRGBA4444(x0, y0, x1, y1, color);
         return;
     }
     if (*(volatile s8 *)lbl_8055FC00 != CANVAS_FORMAT_RGBA)
@@ -436,7 +436,7 @@ void gxCanvasFillRectRGBA(s32 x0, s32 y0, s32 x1, s32 y1, u32 packedColor) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma optimize_for_size off
-void fn_802C365C(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
+void gxCanvasFillRectRGBA4444(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     u32 pixel;
     u32 packed;
     s32 low;
@@ -1431,5 +1431,5 @@ extern void fn_802C3D74(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C3F00(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802DB2C8(void);
 extern void gxCanvasFillRect16(s32, s32, s32, s32, u32);
-extern void fn_802C365C(s32, s32, s32, s32, u32);
+extern void gxCanvasFillRectRGBA4444(s32, s32, s32, s32, u32);
 extern void gxCanvasFillRectRGBA(s32, s32, s32, s32, u32);
