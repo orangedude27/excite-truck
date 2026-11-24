@@ -2731,9 +2731,9 @@ extern void (*lbl_8055FD80)(void);
 #pragma scheduling on
 void GXResetSceneLightsPipeline(void) {
 #define ResetTevSwapModes fn_802DFAF4
-    /* Configure one color channel with no lighting and reset TEV swap modes. */
+    /* Restore callback for the scene-lights pipeline: fall back to one unlit color channel and clear the TEV swap selectors. */
     GXSetNumChans(1);
-    GXSetChanCtrl(1, 0, 0, 0, 0, 0, 2);
+    GXSetChanCtrl(GX_COLOR1, GX_DISABLE, GX_SRC_REG, GX_SRC_REG, GX_LIGHT_NULL, GX_DF_NONE, GX_AF_NONE);
     ResetTevSwapModes();
 #undef ResetTevSwapModes
 }
