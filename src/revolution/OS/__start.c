@@ -8,6 +8,7 @@ int main(int argc, char** argv);
 
 static u8 Debug_BBA;
 
+/* Zero GPRs and load stack/SDA base registers from linker symbols at boot. */
 DECL_SECTION(".init") static void __init_registers(void);
 DECL_SECTION(".init") static void __init_data(void);
 
