@@ -157,7 +157,7 @@ void fn_8020A860(VoiceMixerDevice *mixer) {
 }
 
 #pragma scheduling invalid_target
-int fn_8020A878(void *arg0) {
+int initVoiceMixer(void *arg0) {
     // Initialize voice mixer: pick scale, store mixer instance, allocate/clear 0x800-byte work buffer, then start mixer init.
     void *workBuffer;
 
@@ -737,7 +737,7 @@ typedef struct VoiceSnd {
 #define SND_ReportGrabFailed() fn_80207938()  // "sound: %08d: grab failed (%s)"
 
 // Volume knobs: the master volume is 0 while the sound is switched off
-// (fn_8020A878); the scale is refreshed every frame by fn_8020AC2C.
+// (initVoiceMixer); the scale is refreshed every frame by fn_8020AC2C.
 #define MASTER_VOLUME lbl_8055B598
 #define VOLUME_SCALE lbl_8055B590
 #define FLOAT_ZERO lbl_805632B0
