@@ -78,7 +78,7 @@ void fn_802C2AA8(void) {
  * system during global shutdown (paired with the init sequence in fn_802C2AA8). */
 void fn_802C2B18(void) {
     fn_801E69EC();
-    fn_802C84EC();
+    DrawList_UnregisterCallbackAndShutdown();
     fn_801E2F68();
     fn_802CA1E0();
     fn_802CF5FC();
