@@ -330,14 +330,19 @@ typedef struct {
     f32 f34, f38, f3c;
     u8 rest[0x38];
 } CamEntry80253104;
-#pragma scheduling invalid_target
+#pragma scheduling off
 #pragma dont_inline on
 void fn_80253104(s32 arg0, void *arg1) {
-    CamEntry80253104 *cam = (CamEntry80253104 *)lbl_80498D00;
+    f32 z, y, x;
+    CamEntry80253104 *cam;
     CamBasis80253104 basis;
-    cam[arg0].f34 = *(volatile f32 *)((u8 *)arg1 + 0x12C);
-    cam[arg0].f38 = *(volatile f32 *)((u8 *)arg1 + 0x130);
-    cam[arg0].f3c = *(volatile f32 *)((u8 *)arg1 + 0x134);
+    x = *(f32 *)((u8 *)arg1 + 0x12C);
+    y = *(f32 *)((u8 *)arg1 + 0x130);
+    z = *(f32 *)((u8 *)arg1 + 0x134);
+    ((CamEntry80253104 *)lbl_80498D00)[arg0].f34 = x;
+    ((CamEntry80253104 *)lbl_80498D00)[arg0].f38 = y;
+    ((CamEntry80253104 *)lbl_80498D00)[arg0].f3c = z;
+    cam = (CamEntry80253104 *)lbl_80498D00;
     fn_801BDA74(arg0, arg1);
     if (cam[arg0].flag30 == 0) {
         fn_80252B88(arg0);
