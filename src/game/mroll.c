@@ -100,6 +100,7 @@ void *MRollContainer_init(void *);
 void *fn_80240BA4(void *, s32, void *, void *, void *, void *);
 void *fn_80240A1C(void *, int *, void *);
 void MRollMenuItem_addEntry(void *, s32);
+void fn_802E317C(char *, s32);
 void fn_802409A4(void *, s32);
 void fn_80129AEC(s32);
 s32 fn_802146BC(void *, s32, s32, s32);
