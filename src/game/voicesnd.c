@@ -173,7 +173,7 @@ int fn_8020A878(void *arg0) {
     #undef kVoiceWorkBufferSize
 }
 #pragma scheduling on
-/* VoiceSoundMixer::End: call the SPU teardown hook, warn about any still-unfreed sound handles in the 0x200-entry work buffer at +4, free that buffer, clear its slot and the global mixer instance. */ void fn_8020A8E8(void *mixer) {
+/* VoiceSoundMixer::End: call the SPU teardown hook, warn about any still-unfreed sound handles in the 0x200-entry work buffer at +4, free that buffer, clear its slot and the global mixer instance. */ /* VoiceSoundMixer::End: call the SPU teardown hook, warn about any still-unfreed sound handles in the 0x200-entry work buffer at +4, free that buffer, clear its slot and the global mixer instance. */ void fn_8020A8E8(void *mixer) {
     /* VoiceSoundMixer::End: warn about any still-unfreed sound handles in the
        0x200-entry work buffer, free it, clear its slot, and clear the mixer. */
     int slotOffset;
