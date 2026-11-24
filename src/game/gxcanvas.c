@@ -345,7 +345,7 @@ void fn_802C3320(s32 x, s32 y, u32 packedValue) {
  * carried in the high half of packedColor - the same half fn_802C3320 stores on
  * the 16-bit canvases; it is widened to the 4-byte pixel format 5 keeps, each
  * component shifted up into its own byte under a fully opaque alpha. */
-/* Plot one opaque RGBA pixel on the current GxCanvas at (x, y) when the point is inside the clip rectangle; the RGB565 colour is widened into a 4-byte pixel. */ void fn_802C33A8(s32 x, s32 y, u32 rgb565) {
+/* Plot one opaque RGBA pixel on the current GxCanvas at (x, y) when the point is inside the clip rectangle; widen the RGB565 colour into a 4-byte pixel. */ /* Plot one opaque RGBA pixel on the current GxCanvas at (x, y) when the point is inside the clip rectangle; the RGB565 colour is widened into a 4-byte pixel. */ void fn_802C33A8(s32 x, s32 y, u32 rgb565) {
     u32 *pixel;
     u32 rgba;
     if (fn_802C3130((void *)lbl_8055FC00, x, y) != 0) {
