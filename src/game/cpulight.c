@@ -163,7 +163,7 @@ void fn_802DB4E4(void) {
 }
 #pragma scheduling on
 /* Load texture matrix 0x1E (GX_MTX2x4) from the lbl_802FACF8 template (translation 0.5, 0.5), setting X/Y scale to lbl_8055D148 (1.0f). */
-/* Load texture matrix 0x1E (GX_MTX2x4) from the lbl_802FACF8 template (translation 0.5, 0.5), setting X/Y scale to lbl_8055D148 (1.0f). */ void CpuLight_LoadTexMtx0(void) {
+void CpuLight_LoadTexMtx0(void) {
     int texMtx[8];
     int *texMtxTemplate = (int *)lbl_802FACF8;
 
