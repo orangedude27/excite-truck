@@ -252,7 +252,7 @@ static inline void fn_80266388_multiply(float *out, const float *a, const float 
  }
  }
   /* Zero a state block via NoiseWalk_Reset and return its pointer (camera block initializer). */
-void* fn_80265DD8(void* block) {
+void* Camera_InitBlock(void* block) {
     NoiseWalk_Reset(block);
     return block;
 }

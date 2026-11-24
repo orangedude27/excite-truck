@@ -3,12 +3,12 @@
 
 extern unsigned char lbl_80499E60[];
 extern float PSVECDotProduct(const void *, const void *);
-extern void fn_80265DD8(void *);
+extern void Camera_InitBlock(void *);
 extern void fn_80266120(void *);
 /* Initialize a 0x228-byte camera object's two embedded state blocks - the one at
    +0x160 and the spline cursor at +0x178 - through their init helpers. */
 void *fn_8026A600(void *camera) {
-#define InitCameraBlock_160 fn_80265DD8 /* zeroes the 0x18-byte block at camera+0x160 */
+#define InitCameraBlock_160 Camera_InitBlock /* zeroes the 0x18-byte block at camera+0x160 */
 #define InitCameraSplineCursor fn_80266120 /* zeroes the spline cursor at camera+0x178 */
     InitCameraBlock_160((char *)camera + 0x160);
     InitCameraSplineCursor((char *)camera + 0x178);
@@ -71,6 +71,8 @@ extern int fn_801EA03C(void *, void *);
 extern void fn_80176A24(float);
 extern void fn_8026E22C(void *, void *, void *, float);
 extern double atan(double, double);
+extern double fabs(double);
+extern double __fabs(double);
 #pragma push
 #pragma processor 750
 int fn_8026A698(void *arg0, int arg1) {
@@ -116,8 +118,7 @@ int fn_8026A698(void *arg0, int arg1) {
     s = (unsigned)((inv >> 1) - (inv & r)) >> 31;
     use = 0;
     t = *(float *)(o + 0x2690);
-    if (t < 0) t = -t;
-    if (t > lbl_80558DC4) {
+    if ((float)fabs(t) > lbl_80558DC4) {
         if (fn_801B8570(*(int *)(o + 0x1EC)) != 0) use = 1;
     }
     if (use == 0) {
