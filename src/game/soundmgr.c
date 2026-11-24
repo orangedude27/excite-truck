@@ -378,7 +378,7 @@ signed long fn_80207D40(SoundMgr* soundMgr) {
  * manager tracks and then ticks the mixer device it plays on (+0x90, virtual
  * +0x20), handing it the manager's sound context at +0x5C -- the four
  * {id, matrix, vector} emitter slots fn_80207990 sets up at construction. */
-extern "C" void fn_80207D8C(SoundMgr *soundMgr) {
+extern "C" void SoundMgr_update(SoundMgr *soundMgr) {
     /* The mixer device of src/game/mixer.c (its vtable is documented there and in
      * fn_80208858); only the slots this file reaches through are declared. */
     struct SoundDevice {
