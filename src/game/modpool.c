@@ -173,27 +173,27 @@ extern void fn_802CE7D4(int, int, void *);
 extern int fn_80134424(int, void *, int, int *, void *, void *, int, int);
 #pragma push
 #pragma scheduling invalid_target
-void fn_802CE744(void *slot) {
+/* Stamp a model-pool slot with the pool's request counter (+0x3C) and, when it is idle (+0x38 == 0), start an async 'MODL' load into it, saving the request id at +0x2C and marking the slot busy. */ void fn_802CE744(void *modelSlot) {
     /* Stamp the slot with the pool's load counter and, if idle, start an async MODL load. */
-    void *manager = *(void **)((char *)slot + 4);
+    void *pool = *(void **)((char *)modelSlot + 4);
     int requestId;
-    int resultSize;
+    int loadedSize;
 
-    *(int *)((char *)slot + 0x3C) = (*(int *)((char *)manager + 0x10))++;
-    if (*(int *)((char *)slot + 0x38) == 0) {
-        resultSize = 0;
+    *(int *)((char *)modelSlot + 0x3C) = (*(int *)((char *)pool + 0x10))++;
+    if (*(int *)((char *)modelSlot + 0x38) == 0) {
+        loadedSize = 0;
         requestId = fn_80134424(
-            *(int *)((char *)manager + 4),
-            (char *)slot + 8,
+            *(int *)((char *)pool + 4),
+            (char *)modelSlot + 8,
             0x4D4F444C,
-            &resultSize,
+            &loadedSize,
             (void *)fn_802CE7D4,
-            slot,
+            modelSlot,
             0,
             -1);
         if (requestId >= 0) {
-            *(int *)((char *)slot + 0x2C) = requestId;
-            *(int *)((char*)slot + 0x38) = 1;
+            *(int *)((char *)modelSlot + 0x2C) = requestId;
+            *(int *)((char*)modelSlot + 0x38) = 1;
         }
     }
 }
