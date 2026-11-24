@@ -7847,7 +7847,7 @@ void bta_hh_add_device_to_list(void *devCb, s8 handle, s16 attrMask, void *desc,
    (sub_class >> 2) and search the configured device list (pairs of tod/app_id
    bytes) for a matching 'tod'; on a match copy that entry's app_id into the
    device control block and return TRUE, otherwise FALSE. */
-/* Return TRUE and set the device control block's app_id when sub_class>>2 matches a {tod, app_id} entry in the supported-device table. */ BOOLEAN bta_hh_tod_spt(void *p_dev_cb, UINT8 sub_class) {
+BOOLEAN bta_hh_tod_spt(void *p_dev_cb, UINT8 sub_class) {
     UINT8 dev_idx;
     UINT8 cod = (UINT8)(sub_class >> 2);
     for (dev_idx = 0; dev_idx < pBtaHhCfg[0]; dev_idx++) {
