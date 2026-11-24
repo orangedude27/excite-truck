@@ -724,7 +724,7 @@ int fn_802E85B8(int socketIndex) {
 #pragma scheduling invalid_target
 /* Clamp the controller's latest tilt value into [-0.523599, 0.261799], append it
    to the 16-entry circular history buffer at +0x70, and advance the write index. */
-/* Clamp the controller's latest tilt into [-0.523599, 0.261799], append it to the 16-entry circular history buffer at +0x70, and advance the write index. */ void RjoyUpdateTiltHistory(int controllerIndex) {
+void RjoyUpdateTiltHistory(int padIndex) {
 #define gWiimoteStateTable lbl_80505978
 #define kTiltHistoryMin lbl_805651A0
 #define kTiltHistoryMax lbl_805651A4
@@ -736,7 +736,7 @@ int fn_802E85B8(int socketIndex) {
 
     clampedTilt = kTiltHistoryMax;
     minTilt = kTiltHistoryMin;
-    padState = gWiimoteStateTable + controllerIndex * 0x638;
+    padState = gWiimoteStateTable + padIndex * 0x638;
     currentTilt = *(float *)(padState + 0x6C);
     clampedTilt = clampedTilt < currentTilt ? clampedTilt : currentTilt;
     clampedTilt = clampedTilt > minTilt ? clampedTilt : minTilt;
