@@ -153,7 +153,7 @@ extern const char lbl_802FAFD4[];
 DECL_SECTION(".sdata") extern const char lbl_80558910[];
 extern u8 lbl_8055F63C;
 extern const char lbl_802FB0A8[];
-extern const char lbl_802FB0B8[];
+extern const char kEventMenuNameFormat[];
 extern u32 lbl_8034EC40[];
 extern u32 lbl_8055D320;
 extern u8 lbl_8055D328[4];
@@ -586,7 +586,7 @@ void ProbeEventMenus(void) DECOMP_DONT_INLINE {
     char menuName[64];
     int index = 0;
     while (1) {
-        sprintf(menuName, lbl_802FB0B8, index);
+        sprintf(menuName, kEventMenuNameFormat, index);
         if (fn_80005158(menuName) == 0) {
             return;
         }
