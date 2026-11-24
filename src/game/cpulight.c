@@ -163,18 +163,18 @@ void fn_802DB4E4(void) {
 }
 #pragma scheduling on
 /* Load texture matrix 0x1E (GX_MTX2x4) from the lbl_802FACF8 template (translation 0.5, 0.5), setting X/Y scale to lbl_8055D148 (1.0f). */
-void CpuLight_LoadTexMtx0(void) {
+/* Load texture matrix 0x1E (GX_MTX2x4) from the lbl_802FACF8 template (translation 0.5, 0.5), setting X/Y scale to lbl_8055D148 (1.0f). */ void CpuLight_LoadTexMtx0(void) {
     int texMtx[8];
-    int *texMtxTemplate = (int *)lbl_802FACF8;
+    int *texMtxSrc = (int *)lbl_802FACF8;
 
-    texMtx[0] = texMtxTemplate[0];
-    texMtx[1] = texMtxTemplate[1];
-    texMtx[2] = texMtxTemplate[2];
-    texMtx[3] = texMtxTemplate[3];
-    texMtx[4] = texMtxTemplate[4];
-    texMtx[5] = texMtxTemplate[5];
-    texMtx[6] = texMtxTemplate[6];
-    texMtx[7] = texMtxTemplate[7];
+    texMtx[0] = texMtxSrc[0];
+    texMtx[1] = texMtxSrc[1];
+    texMtx[2] = texMtxSrc[2];
+    texMtx[3] = texMtxSrc[3];
+    texMtx[4] = texMtxSrc[4];
+    texMtx[5] = texMtxSrc[5];
+    texMtx[6] = texMtxSrc[6];
+    texMtx[7] = texMtxSrc[7];
     *(float *)&texMtx[0] = lbl_8055D148;
     *(float *)&texMtx[6] = lbl_8055D148;
     GXLoadTexMtxImm((float *)texMtx, 0x1e, 1);
