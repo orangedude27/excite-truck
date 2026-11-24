@@ -966,15 +966,15 @@ void *fn_802C9694(void *arg0) {
 #undef kViewZ
 }
 
-void *DrawList_restoreProjection(void *object, int shouldDelete) {
+/* Reapplies the saved near/far/FOV triple and returns the buffer; frees it when freeBuffer is positive. */ void *DrawList_restoreProjection(void *savedParams, int freeBuffer) {
     /* Destructor helper: apply stored projection parameters, then optionally free the object. */
-    if (object != 0) {
-        fn_802C974C(((float *)object)[0], ((float *)object)[1], ((float *)object)[2]);
-        if (shouldDelete > 0) {
-            fn_80128668(object);
+    if (savedParams != 0) {
+        fn_802C974C(((float *)savedParams)[0], ((float *)savedParams)[1], ((float *)savedParams)[2]);
+        if (freeBuffer > 0) {
+            fn_80128668(savedParams);
         }
     }
-    return object;
+    return savedParams;
 }
 
 /* Effective view/projection angle recomputed by fn_802C974C. */
