@@ -51,16 +51,16 @@ void fn_802CE474(void *slot) {
     *(int *)((char *)slot + 0x3C) = -1;
 }
 
-void modPoolDestroy(void *object) {
-    int value;
+/* Destroy a model-pool manager: free its slot-storage block, delete the load pool, then free the manager itself. */ void modPoolDestroy(void *manager) {
+    int slotStorage;
     /* Destroys a modpool object: frees its data buffer, releases its load pool, and deletes the object. */
-    if (object != 0) {
-        value = *(int *)object;
-        if (value != 0) {
-            fn_80128670(value - 0x10);
+    if (manager != 0) {
+        slotStorage = *(int *)manager;
+        if (slotStorage != 0) {
+            fn_80128670(slotStorage - 0x10);
         }
-        fn_801342B0(*(int *)((char *)object + 4), 1);
-        fn_80128668(object);
+        fn_801342B0(*(int *)((char *)manager + 4), 1);
+        fn_80128668(manager);
     }
 }
 
