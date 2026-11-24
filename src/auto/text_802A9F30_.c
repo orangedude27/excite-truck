@@ -67,7 +67,7 @@ extern int fn_8028E2F8(void *, const void *, const void *, ...);
 
 void fn_8028E240(int);
 int fn_802C2C00(int);
-int fn_802C990C(int);
+int setModelColor(int);
 void fn_802C2BB8(int *, int *, int *);
 void fn_802C2B78(float, float, float);
 extern int lbl_804BD7B0[4];
@@ -979,7 +979,7 @@ void fn_802AB770(int arg0) {
     extern float fn_80287BC8(float, float);
     extern double fn_8002EFB4(float, double);
     extern int fn_802C2C00(int);
-    extern int fn_802C990C(int);
+    extern int setModelColor(int);
     extern void fn_802C2BB8(int *, int *, int *);
     extern void fn_802C2B78(float, float, float);
     char *state = (char *)(lbl_8055F928 + arg0 * 0x108);
@@ -1024,7 +1024,7 @@ void fn_802AB770(int arg0) {
     if (active != 0) result = lbl_80564AA8 * *(float *)(state + 0xE4) - wave;
     obj = *(int *)(state + 0xE8);
     lbl_8055F92D = fn_802C2C00(1);
-    lbl_804BD7B0[0] = fn_802C990C(obj);
+    lbl_804BD7B0[0] = setModelColor(obj);
     fn_802C2BB8(&lbl_804BD7B0[1], &lbl_804BD7B0[2], &lbl_804BD7B0[3]);
     fn_802C2B78(result, lbl_80564AAC + result, lbl_805649FC);
 }
@@ -1032,7 +1032,7 @@ void fn_802AB770(int arg0) {
 // Restore the draw state saved by fn_802AB770: model colour,
 // global scale parameters, and the global-scale-on flag.
 void fn_802AB994(void) {
-    fn_802C990C(lbl_804BD7B0[0]);
+    setModelColor(lbl_804BD7B0[0]);
     ((void (*)(void *, float, float, float))fn_802C2B78)((void *)lbl_804BD7B0, *(float *)&lbl_804BD7B0[1], *(float *)&lbl_804BD7B0[2], *(float *)&lbl_804BD7B0[3]);
     fn_802C2C00(lbl_8055F92D);
 }
@@ -1280,7 +1280,7 @@ void fn_802ABFF8(int tint, float scale) {
 #define savedDrawState lbl_804BD7B0   /* the single restore slot, see fn_802AC070 */
 #define savedScaleOn lbl_8055F92D     /* global-scale on/off flag that was set */
 #define Scale_SetOn fn_802C2C00       /* turn the global scale on/off, old state */
-#define Color_Set fn_802C990C         /* model colour, old colour */
+#define Color_Set setModelColor         /* model colour, old colour */
 #define Scale_Get fn_802C2BB8         /* reads back (start, end, rate) */
 #define Scale_Set fn_802C2B78         /* sets (start, end, rate) */
 #define TINT_SCALE_RANGE lbl_80564AAC /* 1000.0f: how far above scale it ramps */
@@ -1304,7 +1304,7 @@ void fn_802ABFF8(int tint, float scale) {
 /* Restore the draw state saved by fn_802ABFF8/fn_802AB770: model colour,
  * global scale parameters, and the global-scale-on flag. */
 void fn_802AC070(void) {
-    fn_802C990C(lbl_804BD7B0[0]);
+    setModelColor(lbl_804BD7B0[0]);
     ((void (*)(void *, float, float, float))fn_802C2B78)((void *)lbl_804BD7B0, *(float *)&lbl_804BD7B0[1], *(float *)&lbl_804BD7B0[2], *(float *)&lbl_804BD7B0[3]);
     fn_802C2C00(lbl_8055F92D);
 }

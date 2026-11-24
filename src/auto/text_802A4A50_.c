@@ -62,7 +62,7 @@ typedef struct {
 void fn_802C2C00(s32);
 void *fn_801E1F44(void);
 void fn_802C2C00(s32);
-s32 fn_802C990C(s32);
+s32 setModelColor(s32);
 s32 fn_802C2B78(f32, f32, f32);
 f32 fn_802A4A50(void);
 void fn_802A6A7C();
@@ -266,7 +266,7 @@ void fn_802A4CA8(void) {
     u8 *weather = (u8 *)fn_801E1F44();
     if (weather[0x18] != 0) {
         fn_802C2C00(1);
-        fn_802C990C(*(s32 *)(weather + 8));
+        setModelColor(*(s32 *)(weather + 8));
         fn_802C2B78(*(f32 *)(weather + 0xC), *(f32 *)(weather + 0x10), *(f32 *)(weather + 0x14));
     }
 }
@@ -1914,7 +1914,7 @@ void fn_802A775C(void *arg0)
   if (((unsigned int) ((*((f32 *) ((void *) (&lbl_80558DC4)))) >= ((f32) __fabs(f29)))) != ((unsigned int) (((f32) __fabs(obj->unk3C)) <= (*((f32 *) ((void *) (&lbl_80558DC4)))))))
   {
     new_var2 = obj;
-    fn_802C990C(new_var2->unk34);
+    setModelColor(new_var2->unk34);
   }
   fn_802C2B78(lbl_80564850, lbl_805648D4, f29);
   obj->unk3C = f29;

@@ -6,7 +6,7 @@ extern f32 fn_801E8738(s32);
 extern void fn_801FC904(void);
 extern void fn_801EBF00(void);
 extern void fn_801FC908(s32);
-extern void fn_802C990C(s32);
+extern void setModelColor(s32);
 extern void fn_802C86E8(s32);
 extern void fn_802C2B78(f32, f32, f32);
 extern f32 lbl_8055AF68;
@@ -115,7 +115,7 @@ void fn_801EA3B8(void) {
 #define uiScaleZero lbl_80562E58
 #define uiScaleDefault lbl_80562E5C
 #define uiActive lbl_8055EB59
-    fn_802C990C(0xC9C9EB);
+    setModelColor(0xC9C9EB);
     fn_802C86E8(0xFF000000);
     fn_802C2B78(uiScaleZero, uiScaleDefault, uiScaleZero);
     uiActive = 0;

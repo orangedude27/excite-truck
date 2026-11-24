@@ -2039,7 +2039,7 @@ extern void fn_802B016C(void);
 extern s32 fn_802C9C8C(s32);             /* start drawing to the screen */
 extern void fn_802C9CE0(void);           /* and show it */
 extern u8 fn_802C2C00(u8);               /* global scale on/off, returns old */
-extern s32 fn_802C990C(s32);             /* model colour, returns old */
+extern s32 setModelColor(s32);             /* model colour, returns old */
 extern void fn_802C2BB8(float *, float *, float *); /* get global scale */
 extern void fn_802C2B78(float, float, float);       /* set global scale */
 extern void fn_802ABFF8(s32, float);     /* draw tinted and scaled */
@@ -2137,7 +2137,7 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
 
     if (model->stretch != 0) {
         *(u8 *)(frame + 0x18) = fn_802C2C00(1);
-        *(s32 *)(frame + 0x8) = fn_802C990C(0xFF000000);
+        *(s32 *)(frame + 0x8) = setModelColor(0xFF000000);
         fn_802C2BB8((float *)(frame + 0xc), (float *)(frame + 0x10),
                     (float *)(frame + 0x14));
         fn_802C2B78(lbl_80563A14, lbl_80563AA4 /* 1.01f */, lbl_80563A14);
@@ -2161,7 +2161,7 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
         fn_802AC070();
 
     if (model->stretch != 0) {
-        fn_802C990C(*(s32 *)(frame + 0x8));
+        setModelColor(*(s32 *)(frame + 0x8));
         fn_802C2B78(*(float *)(frame + 0xc), *(float *)(frame + 0x10),
                     *(float *)(frame + 0x14));
         fn_802C2C00(*(u8 *)(frame + 0x18));

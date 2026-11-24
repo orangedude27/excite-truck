@@ -1421,11 +1421,11 @@ void fn_801F3B40(void *unused, int arg1) {
  * colour setter when one was loaded (flag at +4), otherwise use the default
  * fog colour 0x00C9C9EB. */
 void fn_801F3BE4(void *fog) {
-    extern void fn_802C990C(int);
+    extern void setModelColor(int);
     if (*(unsigned char *)((char *)fog + 4) != 0) {
-        fn_802C990C(*(int *)((char *)fog + 8));
+        setModelColor(*(int *)((char *)fog + 8));
     } else {
-        fn_802C990C(0x00C9C9EB);
+        setModelColor(0x00C9C9EB);
     }
 }
 

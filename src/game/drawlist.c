@@ -1114,7 +1114,7 @@ void fn_802C9904(void) {
     fn_802D007C(lbl_80564EF8);
 }
 
-int fn_802C990C(int arg0) {
+int setModelColor(int arg0) {
     /* Set the current packed draw color, forward its RGB components to
      * fn_802CFFAC, and return the previous packed color. */
     int previousColor = lbl_8055FC78;
