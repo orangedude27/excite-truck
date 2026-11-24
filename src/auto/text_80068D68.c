@@ -7847,8 +7847,7 @@ BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
     UINT8 xx;
     for (xx = 0; xx < lbl_80559030[0]; xx++) {
         UINT8 *p_list = *(UINT8 **)(lbl_80559030 + 4);
-        UINT8 cls = (UINT8)(sub_class >> 2);
-        if (cls == p_list[xx * 2]) {
+        if ((UINT8)(sub_class >> 2) == p_list[xx * 2]) {
             ((UINT8 *)p_cb)[0x15] = p_list[xx * 2 + 1];
             return TRUE;
         }
@@ -28053,7 +28052,7 @@ BOOLEAN sdpu_compare_uuid_arrays(UINT8 *p_uuid1, UINT32 len1, UINT8 *p_uuid2, UI
     }
 }
 
-BOOLEAN sdpu_compare_uuid_with_attr(tBT_UUID *p_btuuid, tSDP_DISC_ATTR *p_attr) {
+/* Compare a Bluetooth UUID with the UUID value held in an SDP discovery attribute (2, 4 or 16 compressed bytes). */ BOOLEAN sdpu_compare_uuid_with_attr(tBT_UUID *p_btuuid, tSDP_DISC_ATTR *p_attr) {
     UINT16 attr_len = SDP_DISC_ATTR_LEN(p_attr->attr_len_type);
 
     /* Since both UUIDs are compressed, lengths must match  */
