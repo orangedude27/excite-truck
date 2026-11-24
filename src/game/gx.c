@@ -1847,7 +1847,7 @@ extern void GXSetAlphaCompare(int, unsigned char, int, int, int);
 extern void GXSetZMode(int, int, int);
 extern unsigned char lbl_8055FD24;
 /* Configure alpha compare and Z mode for a transparent (mode 0) or opaque (mode 1) drawing pass. */
-/* Configure alpha compare and Z-write state for a transparent (mode 0) or opaque (mode 1) drawing pass: the reference byte is the cached alpha-ref used by GXSetAlphaCompare. */ void fn_802D0E48(int mode) {
+/* Set alpha compare and Z-write state for transparent (mode 0) or opaque (mode 1) passes. */ /* Configure alpha compare and Z-write state for a transparent (mode 0) or opaque (mode 1) drawing pass: the reference byte is the cached alpha-ref used by GXSetAlphaCompare. */ void fn_802D0E48(int mode) {
     if (mode == 0) {
         GXSetAlphaCompare(3, alphaCompareRef, 1, 0, 0);
         GXSetZMode(1, 3, 0);
