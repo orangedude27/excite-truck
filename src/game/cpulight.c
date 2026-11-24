@@ -163,7 +163,7 @@ void fn_802DB4E4(void) {
 }
 #pragma scheduling on
 /* Load texture matrix 0x1E (GX_MTX2x4) from the lbl_802FACF8 template (translation 0.5, 0.5), setting X/Y scale to lbl_8055D148 (1.0f). */
-void fn_802DB620(void) {
+void CpuLight_LoadTexMtx0(void) {
     int texMtx[8];
     int *texMtxTemplate = (int *)lbl_802FACF8;
 
@@ -265,7 +265,7 @@ int fn_802DB69C(void **texObjs, int mode) {
             GXSetTexCoordGen2(GX_TEXCOORD2, GX_TG_MTX2x4, GX_TG_POS, GX_TEXMTX2, GX_FALSE, GX_PTIDENTITY);
             break;
         case 2:
-            fn_802DB620();
+            CpuLight_LoadTexMtx0();
             GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
             GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_POS, GX_TEXMTX0, GX_FALSE, GX_PTIDENTITY);
             break;
