@@ -769,9 +769,6 @@ extern void __OSUnhandledException(u8, void *, u32, u32);
 /* Default exception handler for the OS exception vector table: save the GPRs,
    graphics quantisation registers (GQR1-7) and DSI/DAR into the context block,
    then tail-call __OSUnhandledException to report and handle the fault. */
-/* Default exception handler for the OS exception vector table: save the GPRs,
-   graphics quantisation registers (GQR1-7) and DSI/DAR into the context block,
-   then tail-call __OSUnhandledException to report and handle the fault. */
 asm void OSDefaultExceptionHandler(u8 exception, void *context) {
     nofralloc
     stw r0, 0x0(r4)
