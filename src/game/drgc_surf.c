@@ -212,12 +212,12 @@ void fn_802D4060(void *arg0) {
     GXSetArray(14, *(void **)((u8 *)object + 0x24), 4);
     GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
 }
-void drDrawSurfLayout10(void *arg0) {
+/* Draw a layout-10 surface: bind 12-byte position, 3-byte normal and 4-byte color arrays, then submit its display list. */ void drDrawSurfLayout10(void *surface) {
     /* Binds this object's position, normal, and color vertex arrays, then submits its display list. */
-    GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
-    GXSetArray(0xA, *(void **)((char *)arg0 + 0x24), 3);
-    GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
-    GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
+    GXSetArray(9, *(void **)((char *)surface + 0x20), 0xC);
+    GXSetArray(0xA, *(void **)((char *)surface + 0x24), 3);
+    GXSetArray(0xD, *(void **)((char *)surface + 0x28), 4);
+    GXCallDisplayList(*(void **)((char *)surface + 0x30), *(u32 *)((char *)surface + 0x2C));
 }
 #pragma pop
 /* Draw of vertex layout 30 (fn_802D5FE4's case 20): a textured surface with no
