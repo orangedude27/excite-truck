@@ -5,7 +5,9 @@
  * ConfigMEM2_52MB maps a 52 MB MEM2 window (0x90000000-0x93400000),
  * ConfigMEM2_56MB maps 56 MB (0x90000000-0x93800000), ConfigMEM2_64MB maps 64 MB,
  * and ConfigMEM2_112MB / 128MB cover the larger boards. Each writes the IBAT/DBAT
- * upper/lower register pairs with the SDK's cache and protection attributes. */
+ * upper/lower register pairs with the SDK's cache and protection attributes.
+ * ConfigMEM2_128MB maps the full 128 MB window: pair 0 cached at 0x90000000,
+ * pair 1 guarded at the 0xD0000000 alias, pairs 2-7 disabled. */
 
 static BOOL OnShutdown(BOOL final, u32 event);
 static OSShutdownFunctionInfo ShutdownFunctionInfo = {OnShutdown, 127};
