@@ -47,6 +47,11 @@ void PPCMtwpar(u32 val);
 void PPCDisableSpeculation(void);
 void PPCSetFpNonIEEEMode(void);
 
+#define PPC_JOIN_(a, b) a##b
+#define PPC_JOIN(a, b) PPC_JOIN_(a, b)
+/* Write v to the HID4 special-purpose register (SPR 0x3F3). */
+#define PPC_MTSPR_HID4(v) PPC_JOIN(__as, m) { mtspr 0x3F3, v }
+
 void PPCMthid4(u32 val);
 
 #ifdef __cplusplus
