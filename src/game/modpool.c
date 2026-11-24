@@ -165,16 +165,16 @@ done:
     return entry;
 }
 #pragma pop
-void modPoolReleaseLoadedSlot(void *slot) {
+/* Release a loaded model-pool slot (state 2): drop its model data and instance, reset both handles to their none values, set state 3 (finished, awaiting reclaim), and clear its in-use flag. */ void modPoolReleaseLoadedSlot(void *modelSlot) {
     /* Release a loaded modpool slot (state 2): destroy its model/handle, mark state 3, and clear the in-use flag. */
-    if (*(int *)((char *)slot + 0x38) == 2 && *(int *)((char *)slot + 0x38) == 2) {
-        fn_802C6FB4(*(int *)((char *)slot + 0x30));
-        fn_802C703C(*(int *)((char *)slot + 0x34));
-        *(volatile int *)((char *)slot + 0x34) = -1;
-        *(volatile int *)((char *)slot + 0x30) = 0;
-        *(volatile int *)((char *)slot + 0x38) = 3;
+    if (*(int *)((char *)modelSlot + 0x38) == 2 && *(int *)((char *)modelSlot + 0x38) == 2) {
+        fn_802C6FB4(*(int *)((char *)modelSlot + 0x30));
+        fn_802C703C(*(int *)((char *)modelSlot + 0x34));
+        *(volatile int *)((char *)modelSlot + 0x34) = -1;
+        *(volatile int *)((char *)modelSlot + 0x30) = 0;
+        *(volatile int *)((char *)modelSlot + 0x38) = 3;
     }
-    *(unsigned char *)slot = 0;
+    *(unsigned char *)modelSlot = 0;
 }
 
 /* Returns the loaded model handle from a ready model-pool slot (state 2 at +0x38),
