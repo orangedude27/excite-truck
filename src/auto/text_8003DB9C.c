@@ -4743,7 +4743,7 @@ unsigned short GXGetTexObjTlut(void *tlutObj) {
     return *(unsigned short *)((char *)tlutObj + 8);
 }
 
-/* Load a texture lookup table (TLUT) from data into the GX TLUT identified by tlut: resolve the destination through the GX data callback, push the load-BP-reg FIFO commands, then copy and pack the source words into the TLUT entry. */ void GXLoadTlut(const void *arg0, int arg1) {
+/* Load a texture lookup table (TLUT) from data into the GX TLUT identified by tlut: resolve the destination through the GX data callback, push the load-BP-reg FIFO commands, then copy and pack the source words into the TLUT entry. */ /* Load a texture lookup table (TLUT) from data into the GX TLUT identified by tlut: resolve the destination through the GX data callback, push the load-BP-reg FIFO commands, then copy and pack the source words into the TLUT entry. */ void GXLoadTlut(const void *arg0, int arg1) {
     union Low10 {
         unsigned int v;
         struct { unsigned int hi : 22; unsigned int lo : 10; } f;
