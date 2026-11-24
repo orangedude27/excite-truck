@@ -156,7 +156,8 @@ typedef struct DrTexRecord {
     void *texelData;          /* at 0xD0: primary texture image */
     unsigned int texelSize;   /* at 0xD4: its size */
         void *srcClut;            /* at 0xD8: source RGBA8888 palette the CLUTs come from */
-    char pad_DC[0x10];        /* at 0xDC..0xEB */
+    char pad_DC[0xC];         /* at 0xDC..0xE7 */
+    void *resourceHandle;     /* at 0xE8: owned texel buffer (a MemAlloc block), freed when the slot is released */
     unsigned int lastBoundFrame; /* at 0xEC: GX draw-sync count when last bound (lbl_8055FD30) */
     unsigned int bindCount;      /* at 0xF0: number of times this record has been GX-bound */
 } DrTexRecord;
