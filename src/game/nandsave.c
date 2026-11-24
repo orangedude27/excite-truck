@@ -858,7 +858,7 @@ void fn_802E95CC(int result, void **cb_ctx) {
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-/* Wait for NAND async machine idle; pump each pass, timeout after 4000 ms. */ /* Wait for the NAND/memcard async machine to go idle, pumping it once per pass; log a timeout and return 0 past 4000 ms or on clock rollback, else return 1. */ /* Wait for the NAND/memcard async machine to go idle (rmemcard_async_state < 2), calling the pump callback once per pass; log a timeout and return 0 if it exceeds 4000 ms or the clock goes backwards, otherwise return 1. */ /* Wait for the NAND/memcard async machine to go idle (rmemcard_async_state < 2), calling the pump callback once per pass; log a timeout and return 0 if it exceeds 4000 ms or the clock goes backwards, otherwise return 1. */ int fn_802E95E0(void *opName, void (*pump)(void), int unused) {
+int fn_802E95E0(void *opName, void (*pump)(void), int unused) {
     /* rmemcard_wait_async: pump the async NAND machine until it leaves its busy
        states (rmemcard_async_state < 2), running pump() once per pass. Gives up
        and returns 0 (after logging rmemcard_timeout_msg with opName and the
