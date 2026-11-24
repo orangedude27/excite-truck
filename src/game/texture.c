@@ -1229,7 +1229,7 @@ void fn_802CBB9C(int **arg0, int arg1, int *arg2) {
 }
 
 #pragma scheduling invalid_target
-/* Unlink a texture-request node (its next pointer lives at +0x14) from the list whose head pointer is *link; panic with texMsgUnlinkNodeNotFound if the node is not on that list. */ void TexRequestUnlink(register int **link, int *node, int *scan) {
+/* Unlink a texture-request node from the list whose head pointer is *link (nodes chain through +0x14); panic if the node is not found. */ /* Unlink a texture-request node (its next pointer lives at +0x14) from the list whose head pointer is *link; panic with texMsgUnlinkNodeNotFound if the node is not on that list. */ void TexRequestUnlink(register int **link, int *node, int *scan) {
     /* Unlink `node` from the texture list threaded through `link` (each node's next pointer is at +0x14);
        log a diagnostic if the node is not in the list. */
     int found = 0;
