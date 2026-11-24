@@ -136,16 +136,16 @@ void *fn_802E3EBC(void)
 /* Release a DVD file node back to the 16-slot "fdo" pool (fn_802E3EBC hands
  * them out).  The node is the slot base plus one; if it isn't one of our
  * slots, panic with the owner pointer. */
-void fn_802E3F38(void *node) {
-    unsigned char *slot;
-    int i;
-    slot = lbl_804FBAA0;
-    for (i = 0; i < 0x10; i++) {
-        if (node == slot + 1) {
-            lbl_804FBAA0[i * 0x91] = 0;
+/* Return a FileDisk node to the fdo pool by clearing its slot's used flag; panic if the pointer is not one of our 16 nodes. */ void fn_802E3F38(void *node) {
+    unsigned char *slotBase;
+    int slotIndex;
+    slotBase = lbl_804FBAA0;
+    for (slotIndex = 0; slotIndex < 0x10; slotIndex++) {
+        if (node == slotBase + 1) {
+            lbl_804FBAA0[slotIndex * 0x91] = 0;
             return;
         }
-        slot += 0x91;
+        slotBase += 0x91;
     }
     fn_802E317C(lbl_8034D054, node);
 }
