@@ -28,7 +28,7 @@ extern long gTrackMusicCurrentSong;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
   
-extern void *fn_8020FAF0();
+extern void *findTrackMusicEntry();
 extern long fn_8000DA10(void);
 extern long fn_8020F9F4(void);
 extern int stricmp(const char *, const char *);
@@ -318,7 +318,7 @@ void fn_8020F730(void) {
 #pragma push
 #pragma dont_inline on
 /* Find the track-music entry whose key matches `key`, or the first free entry if none match. */
-void *fn_8020FAF0(key)
+void *findTrackMusicEntry(key)
 char *key;
 {
     char *entry;
@@ -363,7 +363,7 @@ char *key;
 #pragma dont_inline on
 /* Returns the current track-music entry's payload: NULL if none, the selected path from the track-music list for type 1, or the inline path at +0x24 for other types. */
 void *getCurrentTrackMusicPath(void) {
-#define GetCurrentTrackMusicEntry fn_8020FAF0
+#define GetCurrentTrackMusicEntry findTrackMusicEntry
 #define GetNextTrackMusicIndex fn_8020F6FC
 #define trackMusicList lbl_804900AC
     char *trackEntry = (char *)GetCurrentTrackMusicEntry();
@@ -463,14 +463,14 @@ static inline long clampTrackDigit(long value, long limit) {
     return limit;
 }
 #pragma dont_inline on
-/* Initialize the current track-music slot (found by fn_8020FAF0): store the track id, copy the display name, and copy the slot key (truncated to 0x20 bytes). */ void fn_8020FDE4(long trackId, const char *name, register char *slotKey) {
+/* Initialize the current track-music slot (found by findTrackMusicEntry): store the track id, copy the display name, and copy the slot key (truncated to 0x20 bytes). */ void fn_8020FDE4(long trackId, const char *name, register char *slotKey) {
     /* Initialize a track-music slot: store the track id, copy the display name, and copy the slot key (truncated to 0x20). */
     char *entry;
     long remaining;
     char *keyDst;
     unsigned char ch;
 
-    entry = (char *)((void *(*)(char *))fn_8020FAF0)(slotKey);
+    entry = (char *)((void *(*)(char *))findTrackMusicEntry)(slotKey);
     memset(entry, 0, 4);
     *(long *)entry = trackId;
     strncpy(entry + 0x24, name, 0x3F);
@@ -887,7 +887,7 @@ void trackMusicUpdate(unsigned char mute) {
             fn_802EC138();
             resource = *(struct Dummy_802113D8 **)((char *)fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC()) + 0x20);
             resource->f6(&lbl_8055B674, lbl_8033C970);
-            if (*(long *)fn_8020FAF0() == 1 && lbl_8055EEBC > 0) {
+            if (*(long *)findTrackMusicEntry() == 1 && lbl_8055EEBC > 0) {
                 gTrackMusicCurrentSong = fn_8020F6FC();
             }
         }
@@ -1089,7 +1089,7 @@ void fn_802112AC(void) {
             container = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
             resource = *(struct Dummy_802113D8 **)((char *)container + 0x20);
             resource->f6(&EVENT_NAME_OUT, NO_EVENT);
-            entryType = *(long *)fn_8020FAF0();
+            entryType = *(long *)findTrackMusicEntry();
             if (entryType == 1) {
                 trackMusicSelection = SEL_RANDOM;
             } else if (entryType == 2) {
@@ -1131,7 +1131,7 @@ extern void fn_80206444(void);
 extern void fn_80209190(long, float);
 extern long __AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(long);
-extern void *fn_8020FAF0();
+extern void *findTrackMusicEntry();
 extern char lbl_8033C970[];
 extern long lbl_8055B65C;
 extern long lbl_8055B674;
@@ -1175,7 +1175,7 @@ void fn_802113D8(void) {
     audioContainer = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
     resourceObj = *(struct Dummy_802113D8 **)((char *)audioContainer + 0x20);
     resourceObj->f6(&EVENT_NAME_OUT, NO_EVENT);
-    entryType = *(long *)fn_8020FAF0();
+    entryType = *(long *)findTrackMusicEntry();
     if (entryType == 1) {
         trackMusicSelection = SEL_RANDOM;
     } else if (entryType == 2) {
