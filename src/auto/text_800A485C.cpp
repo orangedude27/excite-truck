@@ -17772,10 +17772,12 @@ extern "C" void fn_800C2A88(volatile s32 *a, volatile s32 *b, volatile s32 *c, v
     d[-512] = b[9] + reverse;
 }
 
+union PtrU32 { u32 i; s32 *p; };
 extern "C" s32 lbl_8031D718[];
 extern "C" void fn_800C2C18(s32 *a, s32 *b, s32 *o1, s32 *o2) {
     s32 t;
     s32 a6, a7, a8;
+    s32 *pb = b + 17;
     t = -a[0]; o1[0] = b[0]; o2[0] = -(t + b[17]);
     t = -a[1]; o1[64] = -b[1]; o2[-64] = t + b[16];
     t = -a[2]; o1[128] = b[2]; o2[-128] = -(t + b[15]);
@@ -17787,10 +17789,10 @@ extern "C" void fn_800C2C18(s32 *a, s32 *b, s32 *o1, s32 *o2) {
     o2[-384]= -((s32)(((s64)a6*lbl_8031D718[1])>>20)+b[11]);
     a7 = a[7];
     o1[448]= -((s32)(((s64)a7*lbl_8031D718[2])>>20)+b[7]);
-    o2[-448]= (s32)(((s64)a7*lbl_8031D718[3])>>20)+b[10];
+    o2[-448]= (s32)(((s64)a7*lbl_8031D718[3])>>20)+pb[-7];
     a8 = a[8];
     o1[512]=(s32)(((s64)a8*lbl_8031D718[4])>>20)+b[8];
-    o2[-512]= -((s32)(((s64)a8*lbl_8031D718[5])>>20)+b[9]);
+    o2[-512]= -((s32)(((s64)a8*lbl_8031D718[5])>>20)+pb[-8]);
 }
 
 extern u32 lbl_8031D730[];
@@ -22477,6 +22479,7 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
   }
 }
 
+#pragma opt_strength_reduction off
 void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Material *material) {
     u8 *entries;
     u8 *contentOffsets;
@@ -22491,14 +22494,15 @@ void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Material *material) {
                 u8 *link = (u8 *)*(void **)((u8 *)this + 0x18) + index * 0x10;
                 *(void **)(link + 8) = (u8 *)this;
                 *(u16 *)(link + 0xC) = index;
+                link = (u8 *)*(void **)((u8 *)this + 0x18) + index * 0x10;
                 AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(
-                    material, (u8 *)*(void **)((u8 *)this + 0x18) + index * 0x10);
+                    material, link);
             }
         }
         index++;
     }
 }
-
+#pragma opt_strength_reduction reset
 /* QUARANTINED (unit would not compile): this draft body uses undeclared nw4hbm
  * types (mpRes, res::AnimationContent, detail::ConvertOffsToPtr,
  * Pane::FindPaneByName/FindMaterialByName, mAnimLinkAry); the compiler stopped at
