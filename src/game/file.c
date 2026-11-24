@@ -468,21 +468,22 @@ extern "C" s32 fn_802E3BB4(s32 arg0, s32 arg1, s32 arg2) {
 
 extern char lbl_8034CFE4[];
 #pragma cplusplus on
-/* Find the next file in an open directory iteration (vtable slot 5). Logs a
-   "not supported" message and returns 0 if the file subsystem is unavailable. */
+/* FileFindNext: advance an open directory search through the file subsystem
+   (vtable slot 5), returning the native result or 0 with a "not supported"
+   log when no subsystem is available. */
 extern "C" s32 fn_802E3C24(s32 findHandle, s32 pathBuffer, s32 bufferSize) {
-    class Obj {
+    class FileSystem {
     public:
         virtual void v0();
         virtual void v1();
         virtual void v2();
-        virtual s32 v3(s32, s32, s32);
+        virtual s32 findNext(s32, s32, s32);
     };
     s32 fileSubsystem = ((s32 (*)(void))fn_802E339C)();
     s32 result;
 
     if (fileSubsystem != 0) {
-        result = ((Obj *)fileSubsystem)->v3(findHandle, pathBuffer, bufferSize);
+        result = ((FileSystem *)fileSubsystem)->findNext(findHandle, pathBuffer, bufferSize);
     } else {
         fn_802E317C(lbl_8034CFE4);
         result = 0;
