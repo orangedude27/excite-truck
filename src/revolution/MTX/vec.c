@@ -50,6 +50,8 @@ void PSVECNormalize(register const Vec* in, register Vec* out) {
 
 /* Euclidean length of a 3D Vec: squared length via paired singles, then a
  * Newton-Raphson-refined reciprocal square root (zero when length is zero). */
+/* Euclidean length of a 3D Vec: squared length via paired singles, then a
+ * Newton-Raphson-refined reciprocal square root (zero when length is zero). */
 f32 PSVECMag(register const Vec* v) {
     register f32 xy, xy2;
     register f32 z, z2;
