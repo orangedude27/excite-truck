@@ -20,7 +20,7 @@ extern s32 OSGetConsoleType(void);
 extern s32 fn_801284F8(s32, void *);       /* allocate from a named heap */
 extern s32 createNullStrmBank(void);              /* creates the null stream-bank manager */
 extern char strCreatingNullManager[];                /* "StrmBank: creating 'null' manager" */
-extern char lbl_8034D84C[];                /* "NullStrmBank" */
+extern char strHeapNullStrmBank[];                /* "NullStrmBank" */
 extern char lbl_8034D860[];                /* null manager vtable */
 
 /* C++ virtual-delete lowering needs this pragma block to match CodeWarrior. */
@@ -88,7 +88,7 @@ s32 createNullStrmBank(void) {
     void **manager;
     OSGetConsoleType();
     fn_802E30C8(strCreatingNullManager);
-    manager = (void **)fn_801284F8(4, lbl_8034D84C);
+    manager = (void **)fn_801284F8(4, strHeapNullStrmBank);
     if (manager != 0) {
         *manager = (void *)lbl_8034D860;
     }
