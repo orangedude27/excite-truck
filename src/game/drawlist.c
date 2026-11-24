@@ -1386,7 +1386,7 @@ extern "C" void fn_802C9D88(int element) {
 #pragma cplusplus reset
 #pragma pop
 
-void *DrawListWrapper_init(void *obj, int listCount) {
+/* Construct a DrawListWrapper: allocate its GenericDrawList, then zero the accumulated orientation and frame count. */ void *DrawListWrapper_init(void *obj, int listCount) {
 #define NewGenericDrawList fn_801E7840
     /* DrawListWrapper constructor: creates the GenericDrawList of `listCount` entries
      * this wrapper draws through, then clears the orientation (x, y, z, w) that
