@@ -234,7 +234,7 @@ void fn_8020F730(void) {
 }
 #pragma scheduling on
 #pragma use_lmw_stmw on
-void fn_8020F950(void) {
+/* Rebuild the track-music list from the dash's scanned songs (up to the buffer capacity), then recompute the shuffled play order. */ void fn_8020F950(void) {
     /* Rebuild the track-music list from the dash's scanned music table - one
        path per scanned song, as many as the list's buffer holds - and rebuild
        the shuffled play order from the new count. */
