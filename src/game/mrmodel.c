@@ -633,15 +633,14 @@ s32 fn_802C5EB8(void *resource, u32 tag) {
     }
     return (s32)result;
 }
-void *fn_802C5EFC(int id) {
-    /* Find an active 0x10-byte entry in lbl_804C13A8's table whose id matches:
-       returns the entry pointer, or NULL if not found. */
+void *fn_802C5EFC(int textureSlotId) {
+    /* Find the active model display node (refs != 0) whose texture-slot key0 matches textureSlotId; return the node or NULL. */
     int count = lbl_804C13A8[0];
-    void *entry = (void *)(unsigned long)lbl_804C13A8[2];
+    struct ModelDisplayNode *node = (struct ModelDisplayNode *)(unsigned long)lbl_804C13A8[2];
     int i;
-    for (i = 0; i < count; i++, entry = (void *)((char *)entry + 0x10)) {
-        if (*(u16 *)((char *)entry + 4) != 0 && *(int *)entry == id) {
-            return entry;
+    for (i = 0; i < count; i++, node++) {
+        if (node->refs != 0 && node->key0 == textureSlotId) {
+            return node;
         }
     }
     return 0;
