@@ -785,15 +785,15 @@ void fn_802E2CFC(void *arg0) {
     now->msec = calendar.msec;
 }
 #pragma scheduling invalid_target
-/* Busy-wait for the given number of milliseconds (in microsecond ticks from fn_802E2C9C),
- * also breaking out if the timer appears to go backwards. */
+/* Busy-wait for the given number of milliseconds, polling the microsecond timer
+   fn_802E2C9C; also break out if the timer appears to jump backwards. */
 void fn_802E2D74(int milliseconds) {
-    long long limit = (long long)milliseconds * 1000;
-    u64 start = fn_802E2C9C();
-    u64 now;
+    long long limitUs = (long long)milliseconds * 1000;
+    u64 startUs = fn_802E2C9C();
+    u64 nowUs;
     for (;;) {
-        now = fn_802E2C9C();
-        if ((long long)(now - start) >= limit || (long long)now < (long long)start) {
+        nowUs = fn_802E2C9C();
+        if ((long long)(nowUs - startUs) >= limitUs || (long long)nowUs < (long long)startUs) {
             break;
         }
     }
