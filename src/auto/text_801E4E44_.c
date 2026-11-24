@@ -65,7 +65,7 @@ void fn_801E4E44(void) {
 }
 #pragma scheduling on
 /* Begin a mode-1 mesh pass: clear the vertex/index counters, set the mesh mode to 1, and report success. */
-s32 fn_801E4F20(void) {
+s32 beginMeshPass(void) {
     lbl_8055EAA8 = 0;
     lbl_8055EAAC = 0;
     lbl_8055EAB0 = 1;

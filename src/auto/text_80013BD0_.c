@@ -47,7 +47,7 @@ extern void fn_801473F8(void *, void *, ...);
 extern char lbl_80558BA4, lbl_80558BA8, lbl_80558BAC, lbl_80558BB4;
 extern f32 lbl_805603B8;
 extern void fn_802C8BD0(s32);
-extern void fn_801E4F20(s32);
+extern void beginMeshPass(s32);
 extern void fn_801E4F3C(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_801E4FF4(void);
 extern void DrawList_RestoreNormalMode(void);
@@ -1230,7 +1230,7 @@ void fn_80015770(void *arg0, f64 x, f64 y, f32 a, f32 b, f32 c) {
         p += 3;
     }
     fn_802C8BD0(*(s32 *)((u8 *)arg0 + 0x44));
-    fn_801E4F20(4);
+    beginMeshPass(4);
     p = verts[0];
     for (i = 0; i < 4; i++) {
         fn_801E4F3C(-1, i > 1, p[0], p[1], p[2],

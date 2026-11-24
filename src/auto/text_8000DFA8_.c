@@ -1608,7 +1608,7 @@ extern f64 sin(f32);
 extern f64 cos(f32);
 extern s32 fn_8022EDC4(void);
 extern void fn_802C8B98(s32, s32);
-extern s32 fn_801E4F20(s32);
+extern s32 beginMeshPass(s32);
 extern s32 fn_801E4F3C(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_801E4FF4(void);
 extern f32 lbl_8056025C, lbl_80560264, lbl_80560280, lbl_805602E0, lbl_805602E4;
@@ -1634,7 +1634,7 @@ void fn_80011630(s32 arg0, s32 arg1, s32 arg2,
 
     if (arg1 > 0) {
         fn_802C8B98(arg2, fn_8022EDC4());
-        fn_801E4F20(arg1 * 4);
+        beginMeshPass(arg1 * 4);
         w = farg4;
         temp_f25 = (f32)sin(w);
         temp_f1 = cos(w);
