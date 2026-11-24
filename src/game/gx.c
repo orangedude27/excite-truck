@@ -1622,9 +1622,8 @@ void fn_802D0910(int tex, int x, int y, int width, int height, int tileSize) {
 #pragma use_lmw_stmw on
 void fn_802D0914(int arg0, short arg1, short arg2) {
     extern int fn_802E3A64(int, unsigned char *, int, int, int, int, int, int);
-    struct { unsigned char b[0x12]; } p;
-    unsigned char *buffer = p.b;
-    int first = arg0;
+    unsigned char buffer[0x12];
+    register s32 first = arg0;
     unsigned char b15, b13, b11, b9, b8;
     memset(buffer, 0, 0x12);
     *(unsigned short *)(buffer + 8) = 0;
@@ -1638,10 +1637,10 @@ void fn_802D0914(int arg0, short arg1, short arg2) {
     arg0 = buffer[10];
     b11 = buffer[11];
     arg2 = buffer[14];
-    b15 = buffer[15];
     buffer[0] = 0;
-    buffer[1] = 0;
+    b15 = buffer[15];
     buffer[2] = 2;
+    buffer[1] = 0;
     buffer[16] = 0x18;
     buffer[17] = 0;
     buffer[8] = b9;
@@ -1651,7 +1650,7 @@ void fn_802D0914(int arg0, short arg1, short arg2) {
     buffer[12] = b13;
     buffer[13] = arg1;
     buffer[14] = b15;
-    buffer[15] = arg2;
+    buffer[15] = (u32)arg2;
     fn_802E3A64(first, buffer, 0x12, b13, b11, b9, 0x18, 2);
 }
 /* No-op hook in the tiled movie renderer (fn_802D09E8): called when its tile
@@ -2890,17 +2889,17 @@ void fn_802D2ED8(int light, int index) {
      * matrix into matrix, the result transposed (third row negated) into
      * GX_POSMTX_SCRATCH, and that loaded as the light's position matrix.  Light 0
      * also marks the XF state dirty and drops the applied-preset cache. */
-    float matrix[12];
-    int *base;
+    float lightMtx[12];
+    int *viewMtx;
 
     if (index == 0) {
         GX_XF_DIRTY = 1;
         GX_XF_INDEX = -1;
     }
-    base = GX_LIGHT_XF_MTX;
-    fn_801BFD34((unsigned char *)matrix + 0x24, (unsigned char *)light + 0x24, base);
-    fn_80015B20(matrix, (void *)light, base);
-    fn_802D0DD4(GX_POSMTX_SCRATCH, matrix);
+    viewMtx = GX_LIGHT_XF_MTX;
+    fn_801BFD34((unsigned char *)lightMtx + 0x24, (unsigned char *)light + 0x24, viewMtx);
+    fn_80015B20(lightMtx, (void *)light, viewMtx);
+    fn_802D0DD4(GX_POSMTX_SCRATCH, lightMtx);
     GXLoadPosMtxImm(GX_POSMTX_SCRATCH, (index * 4) - index);
 }
 #pragma dont_inline off
