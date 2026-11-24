@@ -29,12 +29,8 @@ s32 ConfigGetSDCardHandle(void);
 #pragma small_data on
 __declspec(section ".sdata") extern char sNandPathPrefix[];
 __declspec(section ".sdata") extern char sSdPathPrefix[];
-/* Returns 1 when the path begins with the NAND prefix "nand:" (sNandPathPrefix),
-   0 otherwise; getFileSystemForPath then hands out the NAND file system handle
-   lbl_8055FF20 for it.  Its sibling IsSdPath tests the "sd:" prefix. */
+/* Return 1 when path starts with the "nand:" prefix (sNandPathPrefix), else 0. The prefix address is held as an integer so MWCC keeps it in one callee-saved register across the strlen/strncmp calls instead of reloading the small-data address. */
 s32 IsNandPath(const char *path) {
-    /* the prefix address is held as an integer so the compiler keeps it in one
-       callee-saved register instead of re-materializing the small-data address */
     s32 prefix = (s32)sNandPathPrefix;
     s32 prefixLen = strlen((char *)prefix);
     s32 result = strncmp(path, (char *)prefix, prefixLen);
