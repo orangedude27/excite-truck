@@ -239,7 +239,6 @@ void fn_802E8920(int requestedFreeBytes) {
     unsigned int fileLength;
     int openResult;
     int bannerValid = 0;
-    /* Check that the title's banner.bin exists and is exactly 0xF0A0 bytes. */
     openResult = NANDOpen(lbl_8034D9C0 + 0x3B8, fileInfo, 1);
     if (openResult == 0) {
         fileLength = 0;
