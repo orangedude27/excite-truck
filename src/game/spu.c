@@ -619,20 +619,17 @@ void fn_802E5828(void) {
 /* Allocates the next voice/sample object and stores it in the sound-name slot
  * table; returns 1 on success, 0 if the table is full or allocation failed. */
 int Spu_CacheVoiceObject(void) {
-#define gSoundSlotTable gSpuSoundSlotTable
-#define gSoundSlotCount gSpuSoundSlotCount
-#define Spu_allocVoiceObject fn_802E5AE8
-    if (gSoundSlotCount < 0x100) {
-        gSoundSlotTable[gSoundSlotCount] = (int)Spu_allocVoiceObject();
-        if (gSoundSlotTable[gSoundSlotCount] == 0)
+    /* Allocate a voice object (fn_802E5AE8 reads the sound name still in r3) and
+     * cache it in the next slot; fail when the 256-entry table is full or the
+     * allocation returned 0. */
+    if (gSpuSoundSlotCount < 0x100) {
+        gSpuSoundSlotTable[gSpuSoundSlotCount] = (int)fn_802E5AE8();
+        if (gSpuSoundSlotTable[gSpuSoundSlotCount] == 0)
             return 0;
-        gSoundSlotCount = gSoundSlotCount + 1;
+        gSpuSoundSlotCount = gSpuSoundSlotCount + 1;
         return 1;
     }
     return 0;
-#undef gSoundSlotTable
-#undef gSoundSlotCount
-#undef Spu_allocVoiceObject
 }
 #pragma scheduling on
 #pragma dont_inline reset
