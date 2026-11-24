@@ -6,7 +6,7 @@
 extern char lbl_8034BA98[];
 extern void fn_802E317C(const char *, ...);
 extern char lbl_8034B538[];
-extern char lbl_8034B7D0[];
+extern char texMsgBadExtractionName[];
 extern void *jumptable_8034B794[];
 extern char lbl_8034B618[];
 extern int lbl_8055D058;
@@ -337,7 +337,7 @@ int texGetExtractionName(int path) {
     if (((int (*)(const unsigned char *))texIsExtractionName)((const unsigned char *)path) != 0) {
         separator = (int)strchr((char *)path, 0x2F);
         if (separator == 0)
-            fn_802E317C(lbl_8034B7D0, path);
+            fn_802E317C(texMsgBadExtractionName, path);
         return separator + 1;
     }
     return path;
@@ -1987,7 +1987,7 @@ lbl_8055FCB8 = -2;
 }
 #pragma pop
 extern void fn_802E317C(const char *, ...);
-extern char lbl_8034B7D0[];
+extern char texMsgBadExtractionName[];
 
 extern int lbl_8055D03C;
 extern char lbl_8034B5F0[];
