@@ -4,7 +4,7 @@
 // auto/text_802E3214_.c pending a promotion pass.
 #include <stdarg.h>
 
-extern int fn_802E367C(int);            /* opens the log file, returns its handle */
+extern int File_Open(int);            /* opens the log file, returns its handle */
 extern void fn_802E30C8(const char *, ...);
 extern void *__AXGetStudio_8000D82C(void);
 extern char ABEND_Separator[];
@@ -24,7 +24,7 @@ void fn_802E3028(const char *fmt, va_list args, int prefix) {}
 #pragma scheduling invalid_target
 int Abend_InitLog(void) {
     /* Opens the log file, writes a separator banner, the studio name, and another separator. */
-    sLogFileHandle = fn_802E367C((int)&sLogFileName);
+    sLogFileHandle = File_Open((int)&sLogFileName);
     fn_802E30C8(sSeparator);
     fn_802E30C8(&sFmtPercentS, __AXGetStudio_8000D82C());
     fn_802E30C8(sSeparator);

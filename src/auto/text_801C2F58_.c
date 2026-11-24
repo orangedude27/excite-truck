@@ -3526,13 +3526,13 @@ enum {
 #define sInterludeTableName  lbl_8055E814 /* name to save under; 0 = ask the scene's variable table */
 #define sInterludeDuration   lbl_8055A958 /* interlude duration, set from the console */
 #define console_message      lbl_80437FC0 /* console line the result is reported on */
-#define file_create          fn_802E367C  /* name -> write handle, -1 on failure */
+#define file_create          File_Open  /* name -> write handle, -1 on failure */
 #define file_printf          fn_802E3AD0  /* handle, printf-style format, ... */
 #define file_close           fn_802E3734  /* &handle */
 #define timeline_write_entry fn_801C9920  /* entry, handle: one entry as text */
 extern char lbl_80336B00[];
 extern s32 lbl_8055E814;
-extern s32 fn_802E367C(const char *);
+extern s32 File_Open(const char *);
 extern s32 fn_801C9920(s32, s32);
 extern const char *fn_80007F90(u32);
 extern void fn_802E3734(s32 *);
