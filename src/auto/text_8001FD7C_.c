@@ -188,9 +188,7 @@ extern void fn_8001FEE8(void);
 #pragma scheduling invalid_target
 void fn_8001FD7C(void) {
     struct cfg_t* p = (struct cfg_t*) lbl_802FE138;
-#pragma peephole off
     fn_8012E81C(p);
-#pragma peephole on
     lbl_8055D64C = fn_80232578(p->f1);
     lbl_8055D650 = fn_80232578(p->f2);
     lbl_8055D654 = fn_8023512C(p->f3);
@@ -453,8 +451,6 @@ void fn_80020430(void) {
 int fn_80020434(void* arg0, float* arg1) {
     float out1[2], out2[2];
     float mat[12];
-    register float z = 0.0f;
-    register float o = 1.0f;
     float var_f1;
     float var_f3;
     float var_f31;
@@ -472,18 +468,18 @@ int fn_80020434(void* arg0, float* arg1) {
     s32 temp_r0;
     void* temp_r28;
 
-    mat[0] = o;
-    mat[1] = z;
-    mat[2] = z;
-    mat[3] = z;
-    mat[4] = o;
-    mat[5] = z;
-    mat[6] = z;
-    mat[7] = z;
-    mat[8] = o;
-    mat[9] = z;
-    mat[10] = z;
-    mat[11] = z;
+    mat[0] = 1.0f;
+    mat[1] = 0.0f;
+    mat[2] = 0.0f;
+    mat[3] = 0.0f;
+    mat[4] = 1.0f;
+    mat[5] = 0.0f;
+    mat[6] = 0.0f;
+    mat[7] = 0.0f;
+    mat[8] = 1.0f;
+    mat[9] = 0.0f;
+    mat[10] = 0.0f;
+    mat[11] = 0.0f;
     fn_802A1120(out1, out2, lbl_805604B8);
     mat[9] = out1[0];
     mat[10] = lbl_805604B4;
@@ -555,7 +551,7 @@ int fn_80020434(void* arg0, float* arg1) {
 }
 #pragma pop
 extern int fn_80020434(void*, float*);
-extern int fn_8026A2CC(void*, int, float);
+extern int Camera_SetViewMatrix(void*, int, float);
 extern int fn_8000C630(int, int);
 /* Update timed overlay state and, while active, draw it and trigger sound 0x15. */
 void fn_800207B0(void) {
@@ -571,7 +567,7 @@ void fn_800207B0(void) {
     }
     if (lbl_8055D644 != 0) {
         fn_80020434(&overlayData, &overlayScale);
-        fn_8026A2CC(&overlayData, 0, overlayScale);
+        Camera_SetViewMatrix(&overlayData, 0, overlayScale);
         fn_8000C630(0x15, -1);
     }
 }
@@ -996,8 +992,7 @@ int fn_800213DC(int keyCode) {
 void fn_80021464(KArg *a, int arg1) {
     KArg *p;
     int sp[6];
-    int n, rk, vhh;
-    register int c;
+    int c, rk, vhh;
     char *base = lbl_802FE138;
     lbl_8055D62C = 1;
     fn_8001FEE8();
@@ -1009,11 +1004,14 @@ void fn_80021464(KArg *a, int arg1) {
     if (lbl_8055D646 != 0) {
         lbl_8055D660 = fn_80131234(base + 0x2A0);
     }
-    c = a->f8;
-    lbl_8055D668 = a->f0;
-    lbl_8055D66C = arg1;
-    lbl_8055D647 = (c != 0x180302);
-    p = fn_8001285C(a->f0);
+    {
+        int course = a->f0;
+        c = a->f8;
+        lbl_8055D66C = arg1;
+        lbl_8055D668 = course;
+        lbl_8055D647 = (c != 0x180302);
+        p = fn_8001285C(course);
+    }
     fn_80012820(p->f4);
     lbl_8035BAD8.f8 = p->fC;
     vhh = p->obj->vt->f5C(p->obj, fn_80205268(base + 0x2B4, lbl_8055D66C, lbl_8055D668));
@@ -1026,19 +1024,22 @@ void fn_80021464(KArg *a, int arg1) {
         lbl_8035BAD8.f4 = fn_8001DA48(sp, rk);
     }
     lbl_8035BAD8.f0 = fn_8014E7DC(lbl_8055D668, arg1);
-    n = 0;
+    vhh = 0;
     for (;;) {
-        fn_8001FFD0(n, c, lbl_8035BB18, 0x40);
+        fn_8001FFD0(vhh, c, lbl_8035BB18, 0x40);
         if (fn_80131264(lbl_8035BB18) == 0) break;
-        n++;
+        vhh++;
     }
-    if (n == 0) n = 1;
+    if (vhh == 0) vhh = 1;
+    {
+    int n = vhh;
     rk = 0;
     do {
         vhh = fn_80129D18(1, n);
         if (vhh != lbl_80558DA4) break;
         rk++;
     } while (rk < 10);
+    }
     lbl_80558DA4 = vhh;
     fn_8001FFD0(vhh, c, lbl_8035BB18, 0x40);
     lbl_8055D65C = fn_80131234(lbl_8035BB18);

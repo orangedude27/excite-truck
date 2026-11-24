@@ -102,7 +102,7 @@ typedef struct Camera {
     float f180[2];                /* 0x180 */
     int pad188;                   /* 0x188 */
     float f18C[6];                /* 0x18C */
-    float viewMatrix[12];         /* 0x1A4: 4x3 view matrix handed in by fn_8026A2CC */
+    float viewMatrix[12];         /* 0x1A4: 4x3 view matrix handed in by Camera_SetViewMatrix */
     float angle;                  /* 0x1D4: view angle that goes with it */
     int w1D8[5];                  /* 0x1D8 */
     short h1EC;                   /* 0x1EC */
@@ -2175,7 +2175,7 @@ void fn_8026A2C8(void) {
 
 #pragma scheduling invalid_target
 #pragma scheduling on
-/* Set a camera's 4x3 view matrix and its matching view angle. */ void fn_8026A2CC(const int *srcMatrix, int cameraIndex, float angle) {
+/* Set a camera's 4x3 view matrix and its matching view angle. */ void Camera_SetViewMatrix(const int *srcMatrix, int cameraIndex, float angle) {
     int *viewMatrix;
     viewMatrix = (int *)((char *)lbl_80499080 + cameraIndex * 0x228 + 0x1a4);
     viewMatrix[0] = srcMatrix[0];

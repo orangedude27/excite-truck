@@ -457,14 +457,14 @@ extern "C" void fn_80160CF4(void) {
         virtual Node *child(s32);
     };
     struct Root { s32 pad[8]; Node *node; };
-    register Root *root;
-    register Node *n, *c;
-    register s32 idx;
+    Root *root;
+    Node *n, *c;
+    s32 idx;
     f32 f31;
     s32 i;
     void *obj;
     s32 lst;
-    register char *text;
+    char *text;
     text = (char *)lbl_8032F588;
     root = (Root *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
     lbl_8055E300 = 0;
@@ -2784,7 +2784,7 @@ int fn_80164468(void *object) {
 
 #pragma cplusplus on
 extern "C" void fn_80020434(int *, float *);
-extern "C" void fn_8026A2CC(int *, int, float);
+extern "C" void Camera_SetViewMatrix(int *, int, float);
 extern "C" void fn_8000C630(int, int);
 #pragma cplusplus on
 extern "C" void fn_80164480(void *arg0) {
@@ -2795,7 +2795,7 @@ extern "C" void fn_80164480(void *arg0) {
     if (((Dummy_801638A0 *)arg0)->f7() != 0) {
         if ((lbl_8055E3C8 - *((float *)((char *)arg0 + 0xC))) > lbl_80561868) {
             fn_80020434(sp10, &sp8);
-            fn_8026A2CC(sp10, 0, sp8);
+            Camera_SetViewMatrix(sp10, 0, sp8);
             fn_8000C630(0x15, -1);
             return;
         }
@@ -3532,7 +3532,7 @@ void fn_801657DC(void) {
     float viewScale;
 
     fn_80020434(viewData, &viewScale);
-    fn_8026A2CC(viewData, 0, viewScale);
+    Camera_SetViewMatrix(viewData, 0, viewScale);
     fn_8000C630(0x15, -1);
 }
 
