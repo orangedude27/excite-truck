@@ -732,21 +732,21 @@ extern "C" void fn_8020E598(void *arg0) {
 }
 extern "C" s32 fn_80009C84();
 extern "C" void fn_80206750(s32, s32, s32);
-extern "C" void fn_8020F15C(void *arg0) {
+/* Forward a scene-state value to up to three child sound handlers, using aux mode 0 while a scene runs and 2 during teardown. */ extern "C" void fn_8020F15C(void *sound) {
     /* Propagate a state value to up to three child handlers, choosing mode 2 or 0 based on fn_80009C84. */
-    void *state = *(void **)((char *)arg0 + 4);
-    int value = *(int *)((char *)state + 0x1EC);
-    int mode;
-    int flag = fn_80009C84();
-    mode = 2;
-    if (flag != 0)
-        mode = 0;
-    if (*(int *)((char *)arg0 + 0x48) != 0)
-        fn_80206750(*(int *)((char *)arg0 + 0x48), value, mode);
-    if (*(int *)((char *)arg0 + 0x4C) != 0)
-        fn_80206750(*(int *)((char *)arg0 + 0x4C), value, mode);
-    if (*(int *)((char *)arg0 + 0x50) != 0)
-        fn_80206750(*(int *)((char *)arg0 + 0x50), value, mode);
+    void *sceneState = *(void **)((char *)sound + 4);
+    int auxIndex = *(int *)((char *)sceneState + 0x1EC);
+    int auxMode;
+    int sceneActive = fn_80009C84();
+    auxMode = 2;
+    if (sceneActive != 0)
+        auxMode = 0;
+    if (*(int *)((char *)sound + 0x48) != 0)
+        fn_80206750(*(int *)((char *)sound + 0x48), auxIndex, auxMode);
+    if (*(int *)((char *)sound + 0x4C) != 0)
+        fn_80206750(*(int *)((char *)sound + 0x4C), auxIndex, auxMode);
+    if (*(int *)((char *)sound + 0x50) != 0)
+        fn_80206750(*(int *)((char *)sound + 0x50), auxIndex, auxMode);
 }
 
 #pragma scheduling on
