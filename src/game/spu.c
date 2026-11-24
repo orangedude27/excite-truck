@@ -64,7 +64,8 @@ enum {
 #define VI(o) (*(int *)(v + (o)))
 #define SI(o) (*(int *)(s + (o)))
 #define SU(o) (*(unsigned int *)(s + (o)))
-/* Copy size bytes from src into dst with memcpy, then flush dst's cache lines so hardware (ARAM/DSP DMA) that bypasses the CPU data cache sees the writes. */ /* Copy size bytes from src into dst with memcpy, then flush dst's cache lines so the written data is visible to hardware (ARAM/DSP DMA) that bypasses the CPU data cache. */ void fn_802E4D84(void *dst, void *src, int size) {
+/* Copy size bytes from src into dst with memcpy, then flush dst's cache lines so hardware (ARAM/DSP DMA) that bypasses the CPU data cache sees the writes. */
+void fn_802E4D84(void *dst, void *src, int size) {
     register unsigned long destination = (unsigned long)dst;
     register unsigned long length = (unsigned long)size;
     memcpy((void *)destination, src, length);
