@@ -63,7 +63,7 @@ extern void fn_802E6B04(void);
   typedef struct { void **vtable; } Unk8012A570;
     extern void fn_8020A860();
   extern int fn_80208E90(int);
-  extern float lbl_805632B0, lbl_805632B4, lbl_8055B598;
+  extern float lbl_805632B0, lbl_805632B4, gVoiceMasterVolume;
 
   extern void *lbl_8055EE04;
 #define gVoiceMixerInstance lbl_8055EE04
@@ -161,7 +161,7 @@ int initVoiceMixer(void *arg0) {
     // Initialize voice mixer: pick scale, store mixer instance, allocate/clear 0x800-byte work buffer, then start mixer init.
     void *workBuffer;
 
-    #define gVoiceScale lbl_8055B598
+    #define gVoiceScale gVoiceMasterVolume
     #define gVoiceScaleAltA lbl_805632B0
     #define gVoiceScaleAltB lbl_805632B4
     #define gActiveVoiceMixer lbl_8055EE04
@@ -424,7 +424,7 @@ extern "C" void fn_8020AC2C(void *arg0) {
                     volume = lbl_805632B0;
                 } else {
                     v = (*(unsigned char *)((char *)(p) + (0x3c))) ? v : v * lbl_8055B590;
-                    volume = lbl_8055B598 * v;
+                    volume = gVoiceMasterVolume * v;
                 }
                 if ((*(void **)((char *)(p) + (0xc)))) {
                     x = high + -(*(float *)((char *)(p) + (0x20)));
@@ -738,7 +738,7 @@ typedef struct VoiceSnd {
 
 // Volume knobs: the master volume is 0 while the sound is switched off
 // (initVoiceMixer); the scale is refreshed every frame by fn_8020AC2C.
-#define MASTER_VOLUME lbl_8055B598
+#define MASTER_VOLUME gVoiceMasterVolume
 #define VOLUME_SCALE lbl_8055B590
 #define FLOAT_ZERO lbl_805632B0
 #define FLOAT_ONE lbl_805632B4
@@ -1109,7 +1109,7 @@ extern void *fn_8012850C(unsigned int, void *);
 extern void *memset(void *, int, unsigned int);
 extern char lbl_8033C388[];
 extern char lbl_8033C37C[];
-extern float lbl_805632B0, lbl_805632B4, lbl_8055B598;
+extern float lbl_805632B0, lbl_805632B4, gVoiceMasterVolume;
 extern void *lbl_8055EE04;
 extern int lbl_8055EE0C;
 extern void *lbl_8055EE10;
