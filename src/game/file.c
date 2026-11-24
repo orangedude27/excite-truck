@@ -303,13 +303,13 @@ extern char lbl_8034CFC0[];
 
 #pragma cplusplus on
 extern "C" void fn_802E3898(s32, const char *, s32 *);
-extern "C" void fn_802E3804(s32 arg0, const char *arg1, s32 arg2) {
+/* Read byteCount bytes from file handle fileId into buffer: validate the handle, read via fn_802E3898, and warn through fn_802E317C if the bytes read differ from the request. */ extern "C" void fn_802E3804(s32 fileId, const char *buffer, s32 byteCount) {
     /* Read arg2 bytes from file handle arg0 into arg1 (file.cpp:0x130 context), and warn via fn_802E317C if the bytes read differ. */
-    s32 fileEntry = fn_802E33D8(arg0, lbl_8034CFB4, 0x130);
-    s32 bytesRead = arg2;
-    fn_802E3898(arg0, arg1, &bytesRead);
-    if (bytesRead != arg2) {
-        fn_802E317C(lbl_8034CFC0, arg2, fileEntry);
+    s32 fileEntry = fn_802E33D8(fileId, lbl_8034CFB4, 0x130);
+    s32 bytesRead = byteCount;
+    fn_802E3898(fileId, buffer, &bytesRead);
+    if (bytesRead != byteCount) {
+        fn_802E317C(lbl_8034CFC0, byteCount, fileEntry);
     }
 }
 #pragma use_lmw_stmw off
