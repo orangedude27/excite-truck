@@ -14,7 +14,7 @@ extern s32 lbl_8055FF20;
 extern s32 fn_802E321C(const char *);
 extern s32 fn_802E3270(s32);
 extern s32 getFileSystemForPath(s32);
-extern s32 lbl_8055FF18;
+extern s32 gDefaultFileSystem;
 extern s32 lbl_8055FF1C;
 
 extern char lbl_8034CFB4[];
@@ -69,14 +69,14 @@ s32 fn_802E3270(s32 path) {
 }
 #pragma dont_inline reset
 /* Return the file system picked by getFileSystemForPath, or the default file system
-   (lbl_8055FF18) when none is available. */
+   (gDefaultFileSystem) when none is available. */
 s32 *fn_802E333C(void) {
     s32 *fileSystem;
     fileSystem = (s32 *)((s32 (*)())getFileSystemForPath)();
     if (fileSystem != 0) {
         return fileSystem;
     }
-    return (s32 *)lbl_8055FF18;
+    return (s32 *)gDefaultFileSystem;
 }
 
 /* Return the file system picked by getFileSystemForPath, or the secondary file system (lbl_8055FF1C) when none is available. */
@@ -130,7 +130,7 @@ s32 fn_802E33D0(void) { return 0; }
 void fn_802E3498(void) {
     /* RealName: File_InitSubsystem (clears the open-file table and lazily creates the default DVD file-system object). */
 #define sOpenFileTable lbl_804DB810
-#define sDefaultFileSystem lbl_8055FF18
+#define sDefaultFileSystem gDefaultFileSystem
     memset((void *)((char *)sOpenFileTable + 0), 0, 0x280);
     if (sDefaultFileSystem == 0) {
         sDefaultFileSystem = fn_802E3F94();
@@ -142,7 +142,7 @@ void fn_802E3498(void) {
 extern void File_checkOpenFiles(void);
 #pragma cplusplus on
 /* Shut down file subsystems: close remaining open files, then destroy the
-   primary (lbl_8055FF18) and secondary (lbl_8055FF1C) file-system objects. */
+   primary (gDefaultFileSystem) and secondary (lbl_8055FF1C) file-system objects. */
 extern "C" void File_ShutdownSubsystem(void) {
     class FileSystem {
     public:
@@ -150,11 +150,11 @@ extern "C" void File_ShutdownSubsystem(void) {
     };
     s32 fileSystem;
     File_checkOpenFiles();
-    fileSystem = lbl_8055FF18;
+    fileSystem = gDefaultFileSystem;
     if (fileSystem != 0) {
         ((FileSystem *)fileSystem)->destroy(1);
     }
-    lbl_8055FF18 = 0;
+    gDefaultFileSystem = 0;
     fileSystem = lbl_8055FF1C;
     if (fileSystem != 0) {
         if (fileSystem != 0) {
