@@ -782,9 +782,10 @@ void fn_80210510(float volume) {
     ((void (*)(float))fn_802EC1C0)(volume);
 }
 
-/* Select the track-music mode (0/1) using the current DA parameter, or do nothing for 2. */
-void trackMusicSetSlotStates(int mode) {
-    switch (mode) {
+/* Clear the current player's track-music buffer and stamp its 64 slot states to
+   slotState (0 idle, 1 active); state 2 is a no-op. */
+void trackMusicSetSlotStates(int slotState) {
+    switch (slotState) {
     case 0:
         fn_8020F608(0, fn_8000DA10());
         break;
