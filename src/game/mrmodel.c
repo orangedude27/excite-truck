@@ -143,10 +143,10 @@ void fn_802C543C(void) {
 #pragma dont_inline off
 
 #pragma scheduling on
-/* qsort comparator for model display entries: sort by detail level (short at +6), breaking ties by case-insensitive texture name. */ int fn_802C544C(void **leftSlot, void **__restrict rightSlot) {
-    /* qsort comparator for model display entries: primary key is the signed short at +6 (detail level); ties break by texture name. */
-    void *rightEntry = *rightSlot;
-    void *leftEntry = *leftSlot;
+/* qsort comparator for model display entries: sort by detail level (short at +6), breaking ties by case-insensitive texture name. */
+int fn_802C544C(void **leftEntryPtr, void **__restrict rightEntryPtr) {
+    void *rightEntry = *rightEntryPtr;
+    void *leftEntry = *leftEntryPtr;
     short rightDetail = *(short *)((char *)rightEntry + 6);
     short leftDetail = *(short *)((char *)leftEntry + 6);
     if (leftDetail != rightDetail) return leftDetail - rightDetail;
