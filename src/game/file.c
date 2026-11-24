@@ -139,7 +139,7 @@ void fn_802E3498(void) {
 #undef sDefaultFileSystem
 }
 
-extern void fn_802E3550(void);
+extern void File_checkOpenFiles(void);
 #pragma cplusplus on
 /* Shut down file subsystems: close remaining open files, then destroy the
    primary (lbl_8055FF18) and secondary (lbl_8055FF1C) file-system objects. */
@@ -149,7 +149,7 @@ extern "C" void File_ShutdownSubsystem(void) {
         virtual void destroy(s32);
     };
     s32 fileSystem;
-    fn_802E3550();
+    File_checkOpenFiles();
     fileSystem = lbl_8055FF18;
     if (fileSystem != 0) {
         ((FileSystem *)fileSystem)->destroy(1);
@@ -166,7 +166,7 @@ extern "C" void File_ShutdownSubsystem(void) {
 #pragma cplusplus off
 extern char lbl_8034CF80[];
 #pragma scheduling invalid_target
-void fn_802E3550(void) {
+void File_checkOpenFiles(void) {
 #define sOpenFileTable lbl_804DB810
 #define sFileStillInUseMsg lbl_8034CF80
 #define FilePanic fn_802E317C
