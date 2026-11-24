@@ -73,7 +73,7 @@ extern void fn_802D3050(s32);
 extern void fn_802D306C(s32);
 typedef struct { u8 pad[0x24]; f32 x; f32 y; f32 z; } unk_80203A88_dest;
 void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1);
-extern s32 fn_802C8DBC(s32, ...);
+extern s32 beginDrawListPass(s32, ...);
 extern void fn_80202D50();
 extern void fn_802C8B98(s32, s32);
 extern f32 PSVECMag(const void *);
@@ -308,7 +308,7 @@ void fn_80202F58(const void *arg0, const void *arg1, void *arg2) {
         (*(f32 *)((u8 *)arg2 + 0x28)) = zero;
         (*(f32 *)((u8 *)arg2 + 0x2C)) = zero;
     }
-    if (fn_802C8DBC(4) != 0) {
+    if (beginDrawListPass(4) != 0) {
         temp_r3 = fn_802C9A40();
         temp_f0 = (*(f32 *)((u8 *)temp_r3 + 0));
         temp_f2_2 = (*(f32 *)((u8 *)temp_r3 + 8));
@@ -362,7 +362,7 @@ void fn_80202F58(const void *arg0, const void *arg1, void *arg2) {
     DrawList_RestoreNormalMode();
 }
 #pragma pop
-extern s32 fn_802C8DBC(s32, ...);
+extern s32 beginDrawListPass(s32, ...);
 extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8E48(void);
 extern double fn_801DCF48(s32, f32, f32);
@@ -414,7 +414,7 @@ void fn_80203380(void *argp) {
     work.heights[1] = second;
     work.heights[2] = third;
     work.heights[3] = fourth;
-    fn_802C8DBC(0xA0, third, second, first);
+    beginDrawListPass(0xA0, third, second, first);
 
     minMag = lbl_805630F8;
     height = (f32 *)work.heights;
@@ -544,7 +544,7 @@ void fn_802036E4(s32 arg0, u8* arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
         fn_802C8BD0(lbl_8055ED1C);
         fn_802D3ECC(lbl_8055ECF0);
     }
-    if (((s32 (*)(s32))fn_802C8DBC)(arg3 * 8) != 0) {
+    if (((s32 (*)(s32))beginDrawListPass)(arg3 * 8) != 0) {
         g = (f32*)&lbl_80488B88;
         f26 = lbl_805630F8;
         f27 = lbl_805630D4;

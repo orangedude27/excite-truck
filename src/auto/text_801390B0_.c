@@ -85,7 +85,7 @@ extern double fn_8002F234(float x);
 extern float PSVECMag(void *);
 extern int fn_801B8570(int);
 extern void fn_802C8BD0(int);
-extern int fn_802C8DBC(int);
+extern int beginDrawListPass(int);
 extern void fn_802C8E48(void);
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_801390B0(void *, float *, float *, int, float, float);
@@ -136,7 +136,7 @@ void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
         v[28] = *(float *)(ip + 0x28);
         v[29] = *(float *)(ip + 0x2C);
         fn_802C8BD0(arg1);
-        if (fn_802C8DBC(0x20) != 0) {
+        if (beginDrawListPass(0x20) != 0) {
             f25 = lbl_805613E0;
             f28 = lbl_805613E4;
             f23 = lbl_805613F0;

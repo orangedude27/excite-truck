@@ -7,7 +7,7 @@ extern void *fn_801284E8(void *, s32);
 __declspec(section ".data") extern unsigned int lbl_8032C108;
 extern f32 lbl_80562C78;
 extern f32 lbl_80562C7C;
-extern s32 fn_802C8DBC(s32);
+extern s32 beginDrawListPass(s32);
 extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8E48(void);
 
@@ -652,7 +652,7 @@ void fn_801E1384(s32 arg0, s32 arg1) {
     if (*(volatile s32 *)desc != 0) {
         s32 width = *(volatile s32 *)((char *)desc + 8);
         height = *(volatile s32 *)((char *)desc + 0xC);
-        fn_802C8DBC(height * ((width - 1) << 1));
+        beginDrawListPass(height * ((width - 1) << 1));
         for (x = 1; x < *(volatile s32 *)((char *)desc + 8); x++) {
             height = *(volatile s32 *)((char *)desc + 0xC);
             base = (char *)*(volatile s32 *)((char *)desc + 4);

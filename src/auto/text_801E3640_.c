@@ -10,7 +10,7 @@ extern float lbl_80558DC4[];
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern float lbl_80562CF4, lbl_80562CF8, lbl_80562CFC, lbl_80562D00, lbl_80562D04, lbl_80562D28;
-extern int fn_802C8DBC(int);
+extern int beginDrawListPass(int);
 extern void fn_802C8BD0(int);
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C8E00(int, int, float, float, float, float, float);
@@ -81,7 +81,7 @@ void fn_801E370C(float *arg0, int arg1, int arg2) {
     float c, half;
     int i;
     fn_802C8BD0(lbl_8055EA6C);
-    if (fn_802C8DBC(0x11) != 0) {
+    if (beginDrawListPass(0x11) != 0) {
         c = lbl_80562CFC;
         half = lbl_80562D00;
         out[0] = lbl_80562CF4;

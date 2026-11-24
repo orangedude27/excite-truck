@@ -1067,7 +1067,7 @@ void fn_801F6778(float *out, int count, float *angles, float offset, float scale
 void fn_801F6880(void *arg0) {
     extern float fn_802C9A4C(float);
     extern void fn_802C8BD0(void *);
-    extern int fn_802C8DBC(int);
+    extern int beginDrawListPass(int);
     extern void fn_802C8E00(int, int, void *, float, float, float, float, float);
     extern void fn_802C8E48(void);
     extern void DrawList_RestoreNormalMode(void);
@@ -1078,7 +1078,7 @@ void fn_801F6880(void *arg0) {
     void *temp_r3_2, *temp_r3_3, *temp_r5, *temp_r5_3;
     temp_f31 = fn_802C9A4C(scale);
     fn_802C8BD0(*(void **)((char *)arg0 + 0x24));
-    if (fn_802C8DBC((*(int *)((char *)arg0 + 0x30) - 1) * (*(int *)((char *)arg0 + 0x2C) * 2)) != 0) {
+    if (beginDrawListPass((*(int *)((char *)arg0 + 0x30) - 1) * (*(int *)((char *)arg0 + 0x2C) * 2)) != 0) {
         for (var_r31 = 1; var_r31 < *(int *)((char *)arg0 + 0x30); var_r31++) {
             var_r28 = var_r31 - 1;
             for (var_r30 = 0; var_r30 < *(int *)((char *)arg0 + 0x2C); var_r30++) {

@@ -534,7 +534,7 @@ void fn_802AAC80(void *arg0, void *arg1, float farg0) {
 void fn_802AAD5C(int arg0, int arg1, int arg2) {
     extern void fn_802C8BD0(int);
     extern void fn_801E866C(int);
-    extern void fn_802C8DBC(int);
+    extern void beginDrawListPass(int);
     extern void fn_802C8E00(unsigned int, int, float, float, float, float, float);
     extern void fn_802C8E48(void);
     extern void DrawList_RestoreNormalMode(void);
@@ -551,7 +551,7 @@ void fn_802AAD5C(int arg0, int arg1, int arg2) {
     fn_802C8BD0(lbl_8055CC60);
     fn_801E866C(-1);
     if (*(float *)((char *)arg1 + 0xCC) > lbl_80564A24) {
-        fn_802C8DBC(0x10);
+        beginDrawListPass(0x10);
         temp_f31 = *(float *)((char *)arg1 + 0xC0);
         temp_f26 = lbl_80564A40;
         temp_f27 = lbl_80564A30;
@@ -600,7 +600,7 @@ extern __declspec(section ".sdata2") const double lbl_80564A40;
 #pragma scheduling invalid_target
 void fn_802AAF04(int arg0, int arg1, int arg2) {
     extern void fn_802C8BD0(int);
-    extern void fn_802C8DBC(int);
+    extern void beginDrawListPass(int);
     extern void fn_802C8E00(unsigned int, int, float, float, float, float, float);
     extern void fn_802C8E48(void);
     extern void DrawList_RestoreNormalMode(void);
@@ -661,7 +661,7 @@ void fn_802AAF04(int arg0, int arg1, int arg2) {
         temp_f18 = lbl_80564A5C;
         temp_f15 = lbl_80564A40;
         do {
-            fn_802C8DBC(0xA);
+            beginDrawListPass(0xA);
             var_r27 = 0;
         loop_3:
             frame.conv.words[0] = 0x43300000;

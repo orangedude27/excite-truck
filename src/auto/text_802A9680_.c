@@ -34,7 +34,7 @@ void* fn_802A9680(void* arg0, s32 arg1) {
     return arg0;
 }
 extern void *fn_802C86DC(void);
-extern s32 fn_802C8DBC(s32);
+extern s32 beginDrawListPass(s32);
 extern void fn_802C8E00(s32, s32, float, float, float, float, float);
 extern void fn_802C8E48(void);
 extern float fn_801E7E18(void);
@@ -58,7 +58,7 @@ void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
     e18 = fn_801E7E18();
     f31v = lbl_80564998 - (float)fn_8002EFB4(e18, lbl_80564990);
     f30v = lbl_8056499C + f31v;
-    if (fn_802C8DBC(count * 4) != 0) {
+    if (beginDrawListPass(count * 4) != 0) {
         float p[3];
         float w;
         float cA0;
@@ -148,7 +148,7 @@ void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
         s32 m;
         s32 col;
         fn_802C8BD0(arg4);
-        fn_802C8DBC(count * 4);
+        beginDrawListPass(count * 4);
         c98b = lbl_80564998;
         lowb = (u32)colorArg & 0xFFFFFF;
         cA4b = lbl_805649A4;

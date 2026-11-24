@@ -65,7 +65,7 @@ extern "C" int fn_8029C190(void*);
   extern "C" int fn_80287B14(void);
   extern "C" void fn_80299830(void*, int);
   extern "C" void fn_802C8BD0(int);
-  extern "C" int fn_802C8DBC(int);
+  extern "C" int beginDrawListPass(int);
   extern "C" void fn_802C8E48(void);
   extern "C" void DrawList_RestoreNormalMode(void);
       extern "C" void* fn_80299FA8(void*, void*);
@@ -990,7 +990,7 @@ extern "C" void fn_80299628(void *arg0) {
     /* Bind draw state for arg0+0x100, then (if draw-list mode 0x14 is active) draw each of the 4
        0x40-byte slots whose +0x34 value is set, finalize drawing, and tear down draw state. */
     fn_802C8BD0(*(int *)((char *)arg0 + 0x100));
-    if (fn_802C8DBC(0x14) != 0) {
+    if (beginDrawListPass(0x14) != 0) {
         void *slotPtr = arg0;
         int slotIndex = 0;
         do {
@@ -1111,7 +1111,7 @@ extern "C" void fn_80299830(void* arg0, int arg1) {
 
 extern "C" void fn_80299830(void*, int);
 extern "C" void fn_802C8BD0(int);
-extern "C" int fn_802C8DBC(int);
+extern "C" int beginDrawListPass(int);
 extern "C" void fn_802C8E48(void);
 extern "C" void DrawList_RestoreNormalMode(void);
 extern "C" void* fn_80299FA8(void*, void*);
@@ -1962,13 +1962,13 @@ extern "C" int fn_8029AF24(int managerPtr) {
         float ratio = (float)(-rawValue) / lbl_80564618;
         float converted = ((float (*)(float))fn_802C9A4C)(ratio);
         fn_802C8BD0(*(int *)((char *)manager + 0x1E8));
-        if (fn_802C8DBC(totalCount * 4)) {
+        if (beginDrawListPass(totalCount * 4)) {
             fn_8029B6E4(manager);
             fn_802C8E48();
         }
         DrawList_RestoreNormalMode();
         fn_802C8BD0(*(int *)((char *)manager + 0x1E4));
-        if (fn_802C8DBC(totalCount * 8)) {
+        if (beginDrawListPass(totalCount * 8)) {
             fn_8029B824(manager);
             fn_802C8E48();
         }

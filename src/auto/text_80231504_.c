@@ -169,7 +169,7 @@ extern f32 lbl_8056368C;
 extern const f64 lbl_80563698;
 extern f32 fn_8023400C(s32);
 extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
-extern s32 fn_802C8DBC(s32);
+extern s32 beginDrawListPass(s32);
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8E48(void);
@@ -462,7 +462,7 @@ loop_body:
             fn_802C8B98(*(s32 *)(*(u8 **)lbl_80497F14 + *(s32 *)record * 0x1C + 8), (s32)arg0);
         else
             fn_802C8B98(*(s32 *)(*(u8 **)lbl_80497F14 + *(s32 *)record * 0x1C + 8), fn_8022EDC4());
-        fn_802C8DBC(4);
+        beginDrawListPass(4);
         f25 = *(f32 *)(record + 4);
         f26 = *(f32 *)(record + 8);
         f27 = f25 + *(f32 *)(record + 0x14);
@@ -1849,7 +1849,7 @@ else object = (u8 *)lbl_8055F058;
 fn_802C8BD0(*(s32 *)object);
 totalChars = fn_80234654();
 totalChars <<= 2;
-if (totalChars > 0 && fn_802C8DBC(totalChars) != 0) {
+if (totalChars > 0 && beginDrawListPass(totalChars) != 0) {
 i = 0;
 textOffset = 0;
 goto record_test;

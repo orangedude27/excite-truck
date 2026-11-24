@@ -17,7 +17,7 @@ extern f32 lbl_80564340, lbl_80564344, lbl_80564348, lbl_80564350, lbl_80564354;
 extern f32 lbl_80564358, lbl_8056435C, lbl_80564360;
 extern f32 lbl_80564364, lbl_805643BC, lbl_805643C0, lbl_805643C4;
 extern f32 fn_80144514(f32, f32, f32, f32, f32, f32);
-extern s32 fn_802C8DBC(s32);
+extern s32 beginDrawListPass(s32);
 extern void fn_802C8E00();
 extern void fn_802C8E48(void);
 #define FLD(p, off) (*(f32 *)((u8 *)(p) + (off)))
@@ -1206,7 +1206,7 @@ void fn_8028C11C(void *arg0, s32 *arg1, s32 *arg2) {
     s32 i, off;
     f32 *ent;
 
-    if (fn_802C8DBC(*(s32 *)((u8 *)arg0 + 4) * 4) == 0)
+    if (beginDrawListPass(*(s32 *)((u8 *)arg0 + 4) * 4) == 0)
         return;
     t = fn_801E7E18();
     now = fn_801E7E24();
@@ -1414,7 +1414,7 @@ void fn_8028CA70(s32 arg0) {
     extern f32 fn_801E7E18(void);
     extern void fn_802C8BD0(s32);
     extern void DrawList_RestoreNormalMode(void);
-    extern s32 fn_802C8DBC(s32);
+    extern s32 beginDrawListPass(s32);
     extern void fn_802C8E00();
     extern void fn_802C8E48(void);
     extern void *fn_802C9A40(void);
@@ -1435,7 +1435,7 @@ void fn_8028CA70(s32 arg0) {
         saved = fn_802C9A4C(*(f32 *)(arg0 + 0x10));
         fn_802C8BD0(*(s32 *)(arg0 + 0xC));
         temp_r3 = *(s32 *)(arg0 + 4);
-        if (fn_802C8DBC((temp_r3 * 4) - temp_r3) != 0) {
+        if (beginDrawListPass((temp_r3 * 4) - temp_r3) != 0) {
             *(struct Axis *)&stack.axisX = *(struct Axis *)fn_802C9A40();
             time = fn_801E7E18();
             one = lbl_8056432C;

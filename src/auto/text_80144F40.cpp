@@ -1629,7 +1629,7 @@ extern "C" s32 fn_80147070(s32 object, s32 deleteFlag) {
 }
 
 extern "C" void fn_802C8BD0(s32);
-extern "C" s32 fn_802C8DBC(s32);
+extern "C" s32 beginDrawListPass(s32);
 extern "C" void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern "C" void fn_802C8E48(void);
 extern "C" void DrawList_RestoreNormalMode(void);
@@ -1642,7 +1642,7 @@ extern "C" void fn_801470B0(s32 arg0, s32 arg1, s32 arg2, f32 x, f32 y, f32 widt
 
     /* Draw an axis-aligned quad as four vertices (two triangles/strip) when the draw state is ready. */
     fn_802C8BD0(arg1);
-    if (fn_802C8DBC(4) != 0) {
+    if (beginDrawListPass(4) != 0) {
         temp = fn_801452B4(y);
         fn_802C8E00(arg0, 0, ((f32 (*)(s32, f32))fn_801451DC)(arg2, x), temp, lbl_805615D4, u0, v0);
         temp = fn_801452B4(y);
@@ -1783,7 +1783,7 @@ extern "C" void fn_801476C4(void *entry) {
 
 #pragma scheduling on
 void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
-    extern s32 fn_802C8DBC(s32);
+    extern s32 beginDrawListPass(s32);
     extern void fn_802C8BD0(s32);
     extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
     extern void fn_802C8E48(void);
@@ -1793,7 +1793,7 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
     register f32 tx;
     if (arg0 != 0) {
         fn_802C8BD0(arg2);
-        if (fn_802C8DBC(4) != 0) {
+        if (beginDrawListPass(4) != 0) {
             angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
             {
                 f32 x = *(volatile f32 *)((u8 *)arg0 + 4);

@@ -63,7 +63,7 @@ struct DrawListWrapper {
  * the state the function that set them left GX in: 1 the game's normal one
  * (DrawList_RestoreNormalMode puts it back), 2 the one texSelectSlot/fn_801E4FF4 set up,
  * 3 DrawList_BeginProjection's with the world matrix saved, 4 the alpha-only overlay pass
- * fn_802C9C8C begins, 6 the pass fn_802C8DBC begins. */
+ * fn_802C9C8C begins, 6 the pass beginDrawListPass begins. */
 #define sRenderMode  lbl_8055FC70
 #define sOverlayTint lbl_8055FC84 /* colour fn_802C9CE0 blends the screen back with */
 extern void fn_802C8C04(int);
@@ -618,7 +618,7 @@ void fn_802C8DB8(void) {
 
 /* If fn_801E4F20() reports active, sets the drawlist active flag (lbl_8055FC8F),
  * switches render mode to 6, and returns 1; otherwise returns 0. */
-int fn_802C8DBC(void) {
+int beginDrawListPass(void) {
     if (fn_801E4F20() != 0) {
         lbl_8055FC8F = 1;
         lbl_8055FC70 = 6;

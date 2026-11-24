@@ -1,7 +1,7 @@
 __declspec(section ".data") extern float lbl_80558DC4;
 extern void *fn_802C86DC(void);
 extern void fn_802C8BD0(int);
-extern int fn_802C8DBC(int);
+extern int beginDrawListPass(int);
 extern void fn_802C8E00(int, unsigned int, float, float, float, float, float);
 extern void fn_802C8E48(void);
 extern void DrawList_RestoreNormalMode(void);
@@ -903,7 +903,7 @@ void fn_8029D644(void *arg0) {
         *(float *)((char *)arg0 + 0x6C) = *(float *)(result + 0x2C);
     }
     fn_802C8BD0(*(int *)((char *)arg0 + 0x74));
-    if (fn_802C8DBC(count) != 0) {
+    if (beginDrawListPass(count) != 0) {
         other = *(char **)((char *)arg0 + 0x70);
         buffers[0] = other;
         buffers[1] = other + *(int *)((char *)arg0 + 0xC) * 0x18;
@@ -1441,7 +1441,7 @@ void *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_8029E888(void *s
 
 extern void *fn_802C86DC(void);
 extern void fn_802C8BD0(int);
-extern int fn_802C8DBC(int);
+extern int beginDrawListPass(int);
 extern void fn_802C8E48(void);
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C8E00(int, unsigned int, float, float, float, float, float);
@@ -1462,7 +1462,7 @@ void fn_8029E8E0(float *arg0, int arg1) {
     int i;
     int a, b;
     fn_802C8BD0(*(int *)((char *)arg0 + 0x40));
-    if (fn_802C8DBC(4) != 0) {
+    if (beginDrawListPass(4) != 0) {
         struct ReverseVec3 *view;
         view = (struct ReverseVec3 *)((char *)fn_802C86DC() + 0x24);
         center = *view;

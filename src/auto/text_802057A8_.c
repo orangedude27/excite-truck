@@ -17,7 +17,7 @@ extern int fn_801B8570(void);
 extern void fn_801E866C(int);
 #pragma inline no fn_80205964
 extern void fn_802C8CBC(int);
-extern void fn_802C8DBC(int);
+extern void beginDrawListPass(int);
 extern void fn_802C8E48(void);
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_802057A8(int, int, float, float, float, float);
@@ -87,7 +87,7 @@ void fn_802057A8(int arg0, int arg1, float arg2, float arg3, float arg4, float a
 /* Initializes/configures a set of 8 parameter entries via fn_802057A8 using constant float globals (-1, 0, 1, 0.005, 0.995), bracketed by setup/teardown calls to fn_802C8CBC/DBC/E48/D74. */
 void fn_80205850(void) {
     fn_802C8CBC(-1);
-    fn_802C8DBC(0x20);
+    beginDrawListPass(0x20);
     fn_802057A8(-1, 0, lbl_80563194, lbl_805631A8, lbl_805631A8, lbl_805631A8);
     fn_802057A8(-1, 0, lbl_805631B8, lbl_805631A8, lbl_805631A8, lbl_805631A8);
     fn_802057A8(-1, 1, lbl_80563194, lbl_805631BC, lbl_805631A8, lbl_805631A8);
@@ -227,7 +227,7 @@ void fn_802059C0(void)
     if (((unsigned char) c4) != 0)
     {
       fn_802C8CBC(-1);
-      fn_802C8DBC(6);
+      beginDrawListPass(6);
       col = c24 & 0xFFFFFF; col2 = c23 & 0xFFFFFF;
       fn_802057A8(col, 0, f18, temp_f14, lbl_805631A8, lbl_805631A8);
       fn_802057A8(col2, 0, lbl_805631A8, temp_f14, lbl_805631A8, lbl_805631A8);
@@ -260,7 +260,7 @@ void fn_802059C0(void)
     if (lbl_8055ED6C != (-2))
     {
       ((void (*)(int)) fn_802C8CBC)(0);
-      fn_802C8DBC(4);
+      beginDrawListPass(4);
       fn_802057A8(-1, 0, temp_f16, temp_f14, lbl_805631B8, lbl_805631A8);
       fn_802057A8(-1, 0, lbl_805631A8, temp_f14, lbl_805631B8, lbl_805631B8);
       temp_f14 = temp_f14 - temp_f15;
@@ -295,7 +295,7 @@ void fn_80205D5C(void)
   float f30;
   int i;
   fn_802C8CBC(-1);
-  fn_802C8DBC(0x10);
+  beginDrawListPass(0x10);
   f3 = lbl_80563198 * (lbl_805631D4 * ((float) lbl_8055CFF0));
   new_var = (float) lbl_8055CFF0;
   f31 = new_var * lbl_80563198;

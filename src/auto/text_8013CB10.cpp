@@ -2125,7 +2125,7 @@ extern "C" s32 fn_8013FD20(const void *arg0, s32 index) {
 }
 
 extern "C" void fn_802C8BD0(s32);
-extern "C" s32 fn_802C8DBC(s32);
+extern "C" s32 beginDrawListPass(s32);
 extern "C" void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern "C" void fn_802C8E48(void);
 extern "C" void DrawList_RestoreNormalMode(void);
@@ -2152,7 +2152,7 @@ extern "C" void fn_8013FDB0(void *arg0, void *arg1, void *arg2) {
     if (lbl_8055E1BC != 0) {
         s32 tex;
         fn_802C8BD0(*(s32 *)(a + 0xA0));
-        if (fn_802C8DBC(0x10) == 0) return;
+        if (beginDrawListPass(0x10) == 0) return;
         node = ((VStr *)*(void **)(a + 0x54))->get(base + 0x464);
         x = fn_8013EFB0(*(f32 *)((char *)node + 4));
         y = fn_8013EFBC(*(f32 *)((char *)node + 8));

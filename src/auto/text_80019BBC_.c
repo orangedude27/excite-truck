@@ -770,7 +770,7 @@ void fn_8001B450(int index) {
 extern void fn_801352B8(void *);
 extern int fn_80135D60(void *, int);
 extern void fn_8013530C(void *, int);
-extern void fn_802C8DBC(int);
+extern void beginDrawListPass(int);
 extern void fn_802C8E00(int, int, float, float, float, float, float);
 extern void fn_802C8E48(void);
 extern double fn_8002F234(double);
@@ -807,7 +807,7 @@ void fn_8001B478(int arg0, float farg0) {
         n++;
     }
     if ((n % 4) > 0) n += 4 - (n % 4);
-    fn_802C8DBC((n / 4) * 2 + 2);
+    beginDrawListPass((n / 4) * 2 + 2);
     n++;
     angle = lbl_80560440;
     t = lbl_80560418;
