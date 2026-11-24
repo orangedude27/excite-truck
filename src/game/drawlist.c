@@ -1134,12 +1134,12 @@ int setDrawListColor(int packedColor)
     return previousColor;
 }
 
-extern int lbl_8055FC80;
+extern int gLightAmbientColor;
 extern void fn_802D0188(unsigned char, unsigned char, unsigned char);
-/* Sets the current packed RGB color (stored in lbl_8055FC80) and forwards its
+/* Sets the current packed RGB color (stored in gLightAmbientColor) and forwards its
  * 8-bit R/G/B components to fn_802D0188, returning the previous packed color. */
 int setLightAmbientColor(int packedColor) {
-#define s_currentPackedColor lbl_8055FC80
+#define s_currentPackedColor gLightAmbientColor
 #define ApplyPackedRgb fn_802D0188
     int previousColor = s_currentPackedColor;
     s_currentPackedColor = packedColor;
