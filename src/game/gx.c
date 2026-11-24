@@ -1602,7 +1602,7 @@ void fn_802D08C4(unsigned char enabled) {
 }
 
 /* Sets the GX cull mode from a small app-specific mode selector. */
-/* Map the app's cull-mode selector (1 front, 2 back, 0 or other none) to a GX cull mode and apply it via GXSetCullMode. */ void gxApplyCullMode(int cullMode) {
+/* Map the app's cull-mode selector (1 front, 2 back, 0 or other none) to a GX cull mode and apply it via GXSetCullMode. */ /* Map the app's cull-mode selector (1 front, 2 back, 0 or other none) to a GX cull mode and apply it via GXSetCullMode. */ void gxApplyCullMode(int cullMode) {
     int gxCullMode;
     switch (cullMode) {
     case 1:
