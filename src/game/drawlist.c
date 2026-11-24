@@ -1370,16 +1370,17 @@ extern void *fn_801E7840(int);
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_802C9D88(int element) {
-    /* Return a DrawListWrapper to its pool and, when none remain live, destroy the pool via its vtable and clear it. */
-    class Obj {
+    /* Return a DrawListWrapper to its pool and, once none remain live, destroy
+     * the pool through its vtable and clear the static pool pointer. */
+    class ObjectPoolView {
     public:
-        virtual void f(int);
+        virtual void release(int);
     };
-    fn_8012A364(lbl_8055FC9C, element);
-    if (--lbl_8055FC98 == 0) {
-        if (lbl_8055FC9C != 0)
-            ((Obj *)lbl_8055FC9C)->f(1);
-        lbl_8055FC9C = 0;
+    Pool_Free(sDrawListPool, element);
+    if (--sDrawListLiveCount == 0) {
+        if (sDrawListPool != 0)
+            ((ObjectPoolView *)sDrawListPool)->release(1);
+        sDrawListPool = 0;
     }
 }
 #pragma cplusplus reset
