@@ -460,7 +460,10 @@ void fn_80128658(s32 block) {
 
 /* Free a block that was allocated through MemAllocPhys (allocator source id 2):
    hand it and its source id to fn_80128584, which routes it to the right heap. */
-void fn_80128660(s32 block) { fn_80128584(block, 2); }
+void fn_80128660(s32 block) {
+    /* Free a "MemAllocPhys" heap block (allocation source id 2) through the ring-buffer free routine. */
+    fn_80128584(block, 2);
+}
 
 /* Frees an object using allocator mode 3. */
 void fn_80128668(s32 object) {
