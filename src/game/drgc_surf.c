@@ -31,7 +31,7 @@ extern f32 lbl_8055FDE0;
 extern s32 gVertexFormatCount;  // number of cached vertex-format lists
 extern s32 gVertexFormatDlStart;  // start of the display-list recording buffer
 extern s32 gVertexFormatDlEnd;  // next free byte in that buffer
-extern u8 lbl_8034C3DC[];
+extern u8 sVertexFormatDlBufTag[];
 extern void fn_801282EC(s32);
 extern void *fn_8012850C(s32, void *);
 extern void DCInvalidateRange(void *, u32);
@@ -1354,7 +1354,7 @@ void drVertexFormatCacheInit(void) {
     /* Initialize the vertex-format display list buffer and reset its state. */
     gVertexFormatCount = 0;
     fn_801282EC(0x20);
-    displayListBuffer = fn_8012850C(0x4000, lbl_8034C3DC);
+    displayListBuffer = fn_8012850C(0x4000, sVertexFormatDlBufTag);
     gVertexFormatDlStart = (s32)displayListBuffer;
     gVertexFormatDlEnd = (s32)displayListBuffer;
     DCInvalidateRange(displayListBuffer, 0x4000);
