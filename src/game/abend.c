@@ -73,7 +73,7 @@ void fn_802E3150(void *message) {
 #pragma scheduling on
 #pragma dont_inline reset
 /* Report a fatal "PANIC" with a formatted message, then print "ABEND" and halt. */
-/* Fatal panic: log the formatted message under the "PANIC: " prefix, then emit the ABEND banner (which faults and hangs); exit(-1) is a fallback. */ void fn_802E317C(int fmt, ...) {
+/* Fatal panic: log the formatted message under the "PANIC: " prefix, then emit the ABEND banner (which faults and hangs); exit(-1) is a fallback. */ /* Fatal panic: log the formatted message under the "PANIC: " prefix, then emit the ABEND banner (which faults and hangs); exit(-1) is a fallback. */ void fn_802E317C(int fmt, ...) {
     va_list args;
 
     va_start(args, fmt);
