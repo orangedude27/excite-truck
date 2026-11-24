@@ -5405,33 +5405,21 @@ void GXSetTevAlphaOp(s32 stage, s32 op, s32 bias, s32 scale, s32 clamp, s32 outR
     *(volatile unsigned short *)((unsigned char *)__GXData + 2) = 0;
 }
 
-void GXSetTevColor(s32 arg0, unsigned int *arg1) {
-    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
-    volatile unsigned int *fifo32 = (volatile unsigned int *)0xCC008000;
-    unsigned char cmd = 0x61;
-    s32 index;
-    unsigned int value;
-    s32 reg, reg2;
-    unsigned int first, second;
-    index = arg0 * 2;
-    value = *arg1;
-    reg = index + 0xE0;
-    first = (unsigned int)(reg << 24);
-    first = __rlwimi(first, value, 8, 24, 31);
-    *fifo8 = cmd;
-    first = __rlwimi(first, value, 12, 12, 19);
-    reg2 = index + 0xE1;
-    *fifo32 = first;
-    second = (unsigned int)(reg2 << 24);
-    second = __rlwimi(second, value, 24, 24, 31);
-    *fifo8 = cmd;
-    second = __rlwimi(second, value, 28, 12, 19);
-    *fifo32 = second;
-    *fifo8 = cmd;
-    *fifo32 = second;
-    *fifo8 = cmd;
-    *fifo32 = second;
-    *(unsigned short *)((char *)__GXData + 2) = 0;
+void GXSetTevColor(s32 tevReg, const unsigned int *color) {
+    unsigned int value = *color;
+    s32 index = tevReg * 2;
+    unsigned int first = __rlwimi(__rlwimi((index + 0xE0) << 24, value, 8, 24, 31), value, 12, 12, 19);
+    unsigned int second = __rlwimi(__rlwimi((index + 0xE1) << 24, value, 24, 24, 31), value, 28, 12, 19);
+    unsigned int *data = __GXData;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = first;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = second;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = second;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = second;
+    *(unsigned short *)((char *)data + 2) = 0;
 }
 
 void GXSetTevColorS10(s32 tevReg, const void *color) {
@@ -6176,7 +6164,7 @@ void GXSetProjection(float *arg0, int arg1) {
 void GXSetProjectionv(float *arg0) {
     unsigned int *data;
     double *src;
-    double *dst;
+    volatile double *dst;
     enum E { GX_PERSPECTIVE, GX_ORTHOGRAPHIC };
     enum E type;
     if (lbl_80560BC8 == arg0[0]) type = GX_PERSPECTIVE;
@@ -6184,7 +6172,7 @@ void GXSetProjectionv(float *arg0) {
     data = __GXData;
     data[0x528 / 4] = type;
     src = (double *)(arg0 + 1);
-    dst = (double *)((char *)data + 0x52C);
+    dst = (volatile double *)((char *)data + 0x52C);
     dst[0] = src[0];
     dst[1] = src[1];
     dst[2] = src[2];
