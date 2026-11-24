@@ -798,11 +798,15 @@ void fn_802C9118(void) {
 #pragma processor reset
 
 #pragma dont_inline on
-/* Draws a full-screen quad using the current screen dimensions and the given color. */
+/* Draw a full-screen quad from (0,0) to the current screen width/height in the given color. */
 void fn_802C942C(int color) {
+#define screenWidth lbl_8055CFF0
+#define screenHeight lbl_8055CFF4
     fn_802C92D0();
-    fn_802C92DC(0, 0, lbl_8055CFF0, lbl_8055CFF4, color);
+    fn_802C92DC(0, 0, screenWidth, screenHeight, color);
     fn_802C92D8();
+#undef screenHeight
+#undef screenWidth
 }
 #pragma dont_inline reset
 void fn_802C9474(void) {
