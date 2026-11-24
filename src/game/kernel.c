@@ -39,12 +39,12 @@ struct OSTimeCalendar {
     int msec;
 };
 extern void OSTicksToCalendarTime(u64, struct OSTimeCalendar *);
-/* Free the allocated handle/buffer at offset 0x178 in the object, if present, and clear it. */
-void fn_802E1728(void *obj) {
-    int handle = *(int *)((char *)obj + 0x178);
-    if (handle != 0) {
-        fn_80120084(handle);
-        *(int *)((char *)obj + 0x178) = 0;
+/* Free the 32-byte-aligned texture-buffer handle stored at +0x178 of the image bank, then clear the field. */
+void freeStoredBufferHandle(void *imageBank) {
+    int bufferHandle = *(int *)((char *)imageBank + 0x178);
+    if (bufferHandle != 0) {
+        fn_80120084(bufferHandle);
+        *(int *)((char *)imageBank + 0x178) = 0;
     }
 }
 
@@ -270,7 +270,7 @@ int fn_802E1BB4(void *obj, int unused) {
     buildLookupTextures(obj, (int)image);                    /* the two lookup textures after the slots */
     return 1;
 fail:
-    fn_802E1728(obj);
+    freeStoredBufferHandle(obj);
     return 0;
 }
 #pragma pop
