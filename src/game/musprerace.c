@@ -494,24 +494,24 @@ extern s32 lbl_8055B5DC;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma opt_propagation off
-void musicPreRaceSetup(s32 arg0) {
+/* Pre-race music setup: format the pre-race song resource name from songId, queue its TOC plus the two fixed selector TOCs for loading, then fill the three per-track name buffers in sPreRaceTracks. */ void musicPreRaceSetup(s32 songId) {
     const char *base = sPreRaceMusicStrings;
     char *dst;
-    register s32 vol;
+    register s32 songIdCopy;
     register s32 i;
-    register s32 j;
-    vol = arg0;
-    fn_801345D8((char *)&lbl_80489C50, 0x20, base + 0x34, arg0);
+    register s32 variant;
+    songIdCopy = songId;
+    fn_801345D8((char *)&lbl_80489C50, 0x20, base + 0x34, songId);
     fn_8012DDA8(&lbl_80489C50);
     fn_8012DDA8(lbl_8055B5D0);
     fn_8012DDA8(lbl_8055B5D4);
     dst = (char *)&lbl_80489BE0;
     i = 0;
-    j = 0;
+    variant = 0;
     do {
         switch (i) {
         case 0:
-            fn_801345D8(dst, 0x20, base + 0x40, vol, j == 1 ? &lbl_8055B5D8 : &lbl_8055B5DC);
+            fn_801345D8(dst, 0x20, base + 0x40, songIdCopy, variant == 1 ? &lbl_8055B5D8 : &lbl_8055B5DC);
             break;
         case 1:
             fn_801345D8(dst, 0x20, base + 0x50);
