@@ -37,7 +37,7 @@ extern s8 lbl_8055D5C8;
 extern s32 *lbl_8055D5D0;
 extern u8 *lbl_8055D5CC;
 extern char lbl_803583C8[];
-extern void fn_8002F634(void *, void *, s32, s32);
+extern void __array_delete(void *, void *, s32, s32);
 extern s32 fn_8001BA10(s32, s32);
 extern s32 fn_8001D2E4(s32, s32, s32, s32);
 extern void *lbl_80358658[];
@@ -142,7 +142,7 @@ void fn_8001B9D4(void *values) {
 void fn_8001B9F4(void) {
     /* Global destructor: array_delete the 16-element array of 0x14-byte ring-challenge map markers, freeing each record. */
 #define gMapMarkerRecords lbl_803583C8
-    fn_8002F634(&gMapMarkerRecords, fn_8001BA10, 0x14, 0x10);
+    __array_delete(&gMapMarkerRecords, fn_8001BA10, 0x14, 0x10);
 #undef gMapMarkerRecords
 }
 #pragma scheduling reset
@@ -595,7 +595,7 @@ extern const char lbl_802FD750[];
 #pragma scheduling on
 s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
     char *p;
-    register char *out;
+    char *out;
     s32 room;
     char c;
     s32 *descriptor;
@@ -690,15 +690,15 @@ extern const char lbl_802FD8C4[];
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void *fn_8001C540(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 *descriptor;
+    char c;
+    s32 room;
+    s32 i;
+    char *out;
+    char *p;
+    char *freeEntry;
     char *name = (char *)arg1;
     char *record;
-    char *freeEntry;
-    char *p;
-    char *out;
-    s32 i;
-    s32 room;
-    char c;
-    s32 *descriptor;
 
     if (arg0 < 0) {
         record = (char *)(lbl_8055D5CC + 0x36B10);
@@ -798,7 +798,7 @@ s32 fn_8001C73C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
             ((void (*)(void *, s32, s32, f32))fn_801308E4)((void *)a2, a3, 1, f);
             break;
         default:
-            ((void (*)(const char *, ...))fn_802E317C)(base + 0x218);
+            ((void (*)(const char *, ...))fn_802E317C)(base + 0x218, 0);
         case 0x4000:
             ((void (*)(void *, s32, void *, ...))fn_801345D8)((void *)a2, a3, &lbl_80558CA4, f);
             break;
@@ -826,7 +826,7 @@ s32 fn_8001C73C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
             break;
         }
         default:
-            ((void (*)(const char *, ...))fn_802E317C)(base + 0x294);
+            ((void (*)(const char *, ...))fn_802E317C)(base + 0x294, 0);
         case 0x4000:
             ((void (*)(void *, s32, void *, ...))fn_801345D8)((void *)a2, a3, &lbl_80558CCC, a1);
             break;

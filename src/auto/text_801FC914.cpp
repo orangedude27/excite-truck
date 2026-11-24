@@ -602,8 +602,7 @@ extern "C" void fn_801FD320(void* arg0, float t) {
     float q[4];
     fn_8012F57C(q, (char*)arg0 + 0x44, (char*)arg0 + 0x54, t);
     volatile float* pq = q;
-    register float z, y, x2, yy, xx, one, w, x, z2, y2, yz, xw;
-    one = lbl_80563030;
+    register float z, y, x2, one, yy, xx, w, x, yz, xw, z2, y2;
     x = pq[0];
     y = pq[1];
     z = pq[2];
@@ -612,18 +611,20 @@ extern "C" void fn_801FD320(void* arg0, float t) {
     w = pq[3];
     z2 = z + z;
     xx = x * x2;
+    one = lbl_80563030;
     yy = y * y2;
-    z = z * z2;
+    float zz = z * z2;
     xw = w * x2;
     yz = y * z2;
-    float sum0 = yy + z;
-    float sum1 = xx + z;
+    float sum0 = yy + zz;
+    float sum1 = xx + zz;
     float sum2 = xx + yy;
     float m00 = one - sum0;
     float m11 = one - sum1;
     float m22 = one - sum2;
     float m12 = yz - xw;
     *(float*)((char*)arg0 + 0xC) = m00;
+    *(float*)((char*)arg0 + 0x1C) = m11;
     float m21 = yz + xw;
     float yw = w * y2;
     float xz = x * z2;
@@ -640,7 +641,6 @@ extern "C" void fn_801FD320(void* arg0, float t) {
     *(float*)((char*)arg0 + 0x14) = m14;
     *(float*)((char*)arg0 + 0x20) = m21;
     *(float*)((char*)arg0 + 0x2C) = m22;
-    *(float*)((char*)arg0 + 0x1C) = m11;
 }
 
 #pragma push
@@ -756,74 +756,76 @@ extern "C" void fn_801FD5E8(void* arg0, float farg0) {
 
         int turn_idx = *(int*)(obj + 0x3C) + 1;
         int count = *(int*)(track + 0x6D0);
-        if (turn_idx >= count && turn_idx < count * 2) {
-            float qx = *(float*)(obj + 0x54);
-            float qy = *(float*)(obj + 0x58);
-            float qz = *(float*)(obj + 0x5C);
-            float y2 = qy + qy;
-            float qw = *(float*)(obj + 0x60);
-            float z2 = qz + qz;
-            float x2 = qx + qx;
-            float yy = qy * y2;
-            float xx = qx * x2;
-            float zz = qz * z2;
-            float wx = qw * x2;
-            float yz = qy * z2;
+        if (turn_idx >= count) {
+            if (turn_idx < count * 2) {
+                float qx = *(float*)(obj + 0x54);
+                float qy = *(float*)(obj + 0x58);
+                float qz = *(float*)(obj + 0x5C);
+                float y2 = qy + qy;
+                float qw = *(float*)(obj + 0x60);
+                float z2 = qz + qz;
+                float x2 = qx + qx;
+                float yy = qy * y2;
+                float xx = qx * x2;
+                float zz = qz * z2;
+                float wx = qw * x2;
+                float yz = qy * z2;
 
-            float m[9];
-            m[0] = lbl_80563030 - (yy + zz);
-            m[4] = lbl_80563030 - (xx + zz);
-            m[8] = lbl_80563030 - (xx + yy);
+                float m[9];
+                m[0] = lbl_80563030 - (yy + zz);
+                m[4] = lbl_80563030 - (xx + zz);
+                m[8] = lbl_80563030 - (xx + yy);
 
-            float wy = qw * y2;
-            float xz = qx * z2;
-            float wz = qw * z2;
-            float xy = qx * y2;
+                float wy = qw * y2;
+                float xz = qx * z2;
+                float wz = qw * z2;
+                float xy = qx * y2;
 
-            m[7] = yz - wx;
-            m[5] = yz + wx;
-            m[6] = xz + wy;
-            m[2] = xz - wy;
-            m[1] = xy + wz;
-            m[3] = xy - wz;
+                m[7] = yz - wx;
+                m[5] = yz + wx;
+                m[6] = xz + wy;
+                m[2] = xz - wy;
+                m[1] = xy + wz;
+                m[3] = xy - wz;
 
-            float rot[9];
-            float cos_val = (float)cos(lbl_80563048);
-            float sin_val = (float)sin(lbl_80563048);
-            rot[0] = cos_val;
-            rot[1] = lbl_80563034;
-            rot[2] = -sin_val;
-            rot[3] = lbl_80563034;
-            rot[4] = lbl_80563030;
-            rot[5] = lbl_80563034;
-            rot[6] = sin_val;
-            rot[7] = lbl_80563034;
-            rot[8] = cos_val;
+                float rot[9];
+                float cos_val = (float)cos(lbl_80563048);
+                float sin_val = (float)sin(lbl_80563048);
+                rot[0] = cos_val;
+                rot[1] = lbl_80563034;
+                rot[2] = -sin_val;
+                rot[3] = lbl_80563034;
+                rot[4] = lbl_80563030;
+                rot[5] = lbl_80563034;
+                rot[6] = sin_val;
+                rot[7] = lbl_80563034;
+                rot[8] = cos_val;
 
-            MatrixMul801FD5E8(m, m, rot);
+                MatrixMul801FD5E8(m, m, rot);
 
-            float trace = m[8] + (m[0] + m[4]);
-            if (trace > lbl_80563034) {
-                float root = (float)fn_8002F234(lbl_80563030 + trace);
-                float inv_root = lbl_80563040 / root;
-                *(float*)(obj + 0x60) = lbl_80563040 * root;
-                *(float*)(obj + 0x54) = inv_root * (m[5] - m[7]);
-                *(float*)(obj + 0x58) = inv_root * (m[6] - m[2]);
-                *(float*)(obj + 0x5C) = inv_root * (m[1] - m[3]);
-            } else {
-                int i = 0;
-                if (m[4] > m[0]) i = 1;
-                if (m[8] > m[i * 3 + i]) i = 2;
-                int j = (i + 1) % 3;
-                int k = (j + 1) % 3;
-                float diag_sum = m[j * 3 + j] + m[k * 3 + k];
-                float root = (float)fn_8002F234(lbl_80563030 + (m[i * 3 + i] - diag_sum));
-                float inv_root = lbl_80563040 / root;
-                float* q_out = (float*)(obj + 0x54);
-                q_out[i] = lbl_80563040 * root;
-                *(float*)(obj + 0x60) = inv_root * (m[j * 3 + k] - m[k * 3 + j]);
-                q_out[j] = inv_root * (m[i * 3 + j] + m[j * 3 + i]);
-                q_out[k] = inv_root * (m[i * 3 + k] + m[k * 3 + i]);
+                float trace = m[8] + (m[0] + m[4]);
+                if (trace > lbl_80563034) {
+                    float root = (float)fn_8002F234(lbl_80563030 + trace);
+                    float inv_root = lbl_80563040 / root;
+                    *(float*)(obj + 0x60) = lbl_80563040 * root;
+                    *(float*)(obj + 0x54) = inv_root * (m[5] - m[7]);
+                    *(float*)(obj + 0x58) = inv_root * (m[6] - m[2]);
+                    *(float*)(obj + 0x5C) = inv_root * (m[1] - m[3]);
+                } else {
+                    int i = 0;
+                    if (m[4] > m[0]) i = 1;
+                    if (m[8] > m[i * 3 + i]) i = 2;
+                    int j = (i + 1) % 3;
+                    int k = (j + 1) % 3;
+                    float diag_sum = m[j * 3 + j] + m[k * 3 + k];
+                    float root = (float)fn_8002F234(lbl_80563030 + (m[i * 3 + i] - diag_sum));
+                    float inv_root = lbl_80563040 / root;
+                    float* q_out = (float*)(obj + 0x54);
+                    q_out[i] = lbl_80563040 * root;
+                    *(float*)(obj + 0x60) = inv_root * (m[j * 3 + k] - m[k * 3 + j]);
+                    q_out[j] = inv_root * (m[i * 3 + j] + m[j * 3 + i]);
+                    q_out[k] = inv_root * (m[i * 3 + k] + m[k * 3 + i]);
+                }
             }
         }
     }
@@ -922,35 +924,35 @@ extern "C" void* fn_801FE188(void* obj) {
 #pragma use_lmw_stmw off
 #pragma scheduling on
 extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
-    register unsigned char* q = p + 0x3C;
-    register unsigned char a=p[0x2C];
-    register unsigned char x0=p[0x3B];
-    register unsigned char b=p[0x2D];
-    register unsigned char x1=p[0x3A];
-    register unsigned char c=p[0x2E];
-    register unsigned char x2=p[0x39];
-    register unsigned char d=p[0x2F];
-    register unsigned char x3=p[0x38];
-    register unsigned char e=p[0x30];
-    register unsigned char x4=p[0x37];
-    register unsigned char f=p[0x31];
-    register unsigned char x5=p[0x36];
-    register unsigned char g=p[0x32];
-    register unsigned char x6=p[0x35];
-    register unsigned char h=p[0x33];
-    register unsigned char x7=p[0x34];
+    register unsigned char (*q)[0x18] = (unsigned char (*)[0x18])(p + 0x3C);
+    register unsigned int a=p[0x2C];
+    register unsigned int x0=p[0x3B];
+    register unsigned int b=p[0x2D];
+    register unsigned int x1=p[0x3A];
+    register unsigned int c=p[0x2E];
+    register unsigned int x2=p[0x39];
+    register unsigned int d=p[0x2F];
+    register unsigned int x3=p[0x38];
+    register unsigned int e=p[0x30];
+    register unsigned int x4=p[0x37];
+    register unsigned int f=p[0x31];
+    register unsigned int x5=p[0x36];
+    register unsigned int g=p[0x32];
+    register unsigned int x6=p[0x35];
+    register unsigned int h=p[0x33];
+    register unsigned int x7=p[0x34];
     p[0x2C]=x0; p[0x3B]=a; p[0x2D]=x1; p[0x3A]=b;
     p[0x2E]=x2; p[0x39]=c; p[0x2F]=x3; p[0x38]=d;
     p[0x32]=x6; p[0x35]=g; p[0x33]=x7; p[0x34]=h;
     p[0x30]=x4; p[0x37]=e; p[0x31]=x5; p[0x36]=f;
-    for (int i=0; i<32; i++, q+=0x18) {
-      unsigned char x;
-      x=q[0];q[0]=q[3];q[3]=x; x=q[1];q[1]=q[2];q[2]=x;
-      x=q[4];q[4]=q[7];q[7]=x; x=q[5];q[5]=q[6];q[6]=x;
-      x=q[8];q[8]=q[11];q[11]=x; x=q[9];q[9]=q[10];q[10]=x;
-      x=q[12];q[12]=q[15];q[15]=x; x=q[13];q[13]=q[14];q[14]=x;
-      x=q[16];q[16]=q[19];q[19]=x; x=q[17];q[17]=q[18];q[18]=x;
-      x=q[20];q[20]=q[23];q[23]=x; x=q[21];q[21]=q[22];q[22]=x;
+    for (int i=0; i<32; i++, q++) {
+      unsigned int x;
+      x=(*q)[0];(*q)[0]=(*q)[3];(*q)[3]=x; x=(*q)[1];(*q)[1]=(*q)[2];(*q)[2]=x;
+      x=(*q)[4];(*q)[4]=(*q)[7];(*q)[7]=x; x=(*q)[5];(*q)[5]=(*q)[6];(*q)[6]=x;
+      x=(*q)[8];(*q)[8]=(*q)[11];(*q)[11]=x; x=(*q)[9];(*q)[9]=(*q)[10];(*q)[10]=x;
+      x=(*q)[12];(*q)[12]=(*q)[15];(*q)[15]=x; x=(*q)[13];(*q)[13]=(*q)[14];(*q)[14]=x;
+      x=(*q)[16];(*q)[16]=(*q)[19];(*q)[19]=x; x=(*q)[17];(*q)[17]=(*q)[18];(*q)[18]=x;
+      x=(*q)[20];(*q)[20]=(*q)[23];(*q)[23]=x; x=(*q)[21];(*q)[21]=(*q)[22];(*q)[22]=x;
     }
     volatile unsigned char *v = p;
     unsigned char i0=v[0x33C], i1=v[0x33F];
@@ -1777,14 +1779,14 @@ extern "C" void fn_801FF994(void* arg0, void* arg1) {
     }
 }
 #pragma dont_inline reset
-extern "C" void* fn_8002F634(void*, void*, int, int);
+extern "C" void* __array_delete(void*, void*, int, int);
 #pragma dont_inline on
 /* Destroy SHMainMenu: tear down the subobject at offset 0xE08, then destroy the
  * 0x20 inline elements at offset 4 (0x70 bytes each) using fn_801FCED8 as the
- * element destructor (fn_8002F634 runs the destructor over the array). */
+ * element destructor (__array_delete runs the destructor over the array). */
 SHMainMenu::~SHMainMenu() {
     fn_801FF364((char *)this + 0xE08, -1);
-    fn_8002F634((char *)this + 4, (void *)fn_801FCED8, 0x70, 0x20);
+    __array_delete((char *)this + 4, (void *)fn_801FCED8, 0x70, 0x20);
 }
 #pragma dont_inline on
 /* Deleting destructor for SHMainMenu: destroys the subobject at offset 0x1008,
@@ -1793,7 +1795,7 @@ SHMainMenu::~SHMainMenu() {
 extern "C" void* __dt__10SHMainMenuFv_801FFA68(void* thisPtr, int shouldDelete) {
     if (thisPtr != 0) {
         fn_801FF6B4((char*)thisPtr + 0x1008, -1);
-        fn_8002F634((char*)thisPtr + 4, (void*)fn_801FCA14, 0x40, 0x40);
+        __array_delete((char*)thisPtr + 4, (void*)fn_801FCA14, 0x40, 0x40);
         if (shouldDelete > 0) fn_80128668(thisPtr);
     }
     return thisPtr;

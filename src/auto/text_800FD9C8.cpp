@@ -6,7 +6,7 @@
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
 
 extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void* this_, u32 a);
-extern "C" void fn_8002F634(void* arg0, void* arg1, s32 arg2, s32 arg3);
+extern "C" void __array_delete(void* arg0, void* arg1, s32 arg2, s32 arg3);
 extern "C" void fn_80128668(void* arg0);
 extern "C" void fn_800FB374(void);
 extern "C" void __ct__Q44nw4r3snd6detail10BasicSoundFv(void*);
@@ -20,7 +20,7 @@ extern "C" char lbl_80326C88[];
 extern "C" s32 Prepare__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3snd6detail14StrmBufferPoolQ56nw4hbm3snd6detail10StrmPlayer15StartOffsetTypeliPQ56nw4hbm3snd6detail10StrmPlayer12StrmCallbackUl(void*, void*, s32, s32, s32, s32, s32);
 extern "C" void fn_800FDE28(void* arg0);
 extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void* this_, u32 a);
-extern "C" void fn_8002F634(void* arg0, void* arg1, s32 arg2, s32 arg3);
+extern "C" void __array_delete(void* arg0, void* arg1, s32 arg2, s32 arg3);
 extern "C" void fn_80128668(void* arg0);
 extern "C" void fn_800FB374(void);
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FD9C8(void *self, int shouldDelete) {
@@ -108,7 +108,7 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail9StrmSoundFv(void* self, s32 deleteFl
 
     if (self != NULL) {
         if ((u8*)self + 0xD8 != NULL) {
-            fn_8002F634((u8*)self + 0x184, &fn_800FB374, 0x1C, 0x20);
+            __array_delete((u8*)self + 0x184, &fn_800FB374, 0x1C, 0x20);
             linkList1 = (u8*)self + 0x178;
             if (linkList1 != NULL) {
                 __dt__Q46nw4hbm2ut6detail12LinkListImplFv(linkList1, 0);

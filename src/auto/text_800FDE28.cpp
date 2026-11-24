@@ -66,7 +66,7 @@ extern double lbl_80561108; // 1.0
 extern f32 lbl_802F6124[]; // pan table
 #pragma pop
 
-extern "C" void fn_8002F634(void*, void*, s32, s32);
+extern "C" void __array_delete(void*, void*, s32, s32);
 extern "C" s32 ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv(void*);
 extern "C" u32 OSDisableInterrupts(void);
 extern "C" void OSRestoreInterrupts(u32 level);
@@ -121,7 +121,6 @@ extern "C" void *fn_800FDE60(void) {
         u8 pad[0x1C];
         volatile s32 unk_0x1C;
     };
-    struct Word { u32 w; };
     u8 *base = lbl_804190A0;
     if ((s8)lbl_8055DE78 == 0) {
         volatile Manager *manager = (volatile Manager *)(base + 0x2050);
@@ -129,9 +128,8 @@ extern "C" void *fn_800FDE60(void) {
         fn_8002F53C((u8 *)manager + 0x20, (void *)fn_800FDFF8,
                     (void *)__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0, 0xC, 3);
         OSInitMutex((void *)manager);
-        struct Word *words = (struct Word *)lbl_804190A0;
         *(void **)((u8 *)manager + 0x18) =
-            MEMRecordStateForFrmHeap((void *)&words[0], 0x2044, 0x40, 4, 0);
+            MEMRecordStateForFrmHeap((void *)base, 0x2044, 0x40, 4, 0);
         if (MEMResizeForMBlockFrmHeap() < 0x80)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x37,
                                         (const char *)lbl_80326E20);
@@ -145,11 +143,11 @@ extern "C" void *fn_800FDE60(void) {
 #pragma dont_inline reset
 
 /* nw4hbm::snd::detail::TaskManager destructor: destroy the embedded array of 3
-   tasks at offset 0x20 (0xC bytes each) via fn_8002F634 with the task element
+   tasks at offset 0x20 (0xC bytes each) via __array_delete with the task element
    destructor, then delete this object when the deleting-destructor flag is set. */
 extern "C" void *__dt__Q46nw4hbm3snd6detail11TaskManagerFv(void *this_, s32 deletingFlag) {
     if (this_) {
-        fn_8002F634((u8 *)this_ + 0x20,
+        __array_delete((u8 *)this_ + 0x20,
                     (void *)__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0,
                     0xC, 3);
         if (deletingFlag > 0) {
@@ -754,7 +752,7 @@ extern "C" u32 GetSampleByDspAddress__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hb
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-extern "C" s32 ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(void **self, u8 *out, const void *base) {
+extern "C" s32 ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(void * const *self, u8 *out, const void *base) {
     struct Coef { u16 v[20]; };
     register u8 *h = (u8 *)*self;
     u16 *d;
@@ -800,7 +798,7 @@ extern "C" s32 ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3s
         dst[4] = *(u32 *)(entry + 0x14);
         off = *(u32 *)(entry + 4);
         if (off != 0) {
-            s = (u16 *)(off + (u32)*self);
+            s = (u16 *)(off + *(u32 * volatile)self);
             d = (u16 *)(dst + 5);
             *(Coef *)d = *(Coef *)s;
             d[20] = s[20];
@@ -808,7 +806,7 @@ extern "C" s32 ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3s
             d[22] = s[22];
             d[23] = s[23];
         }
-        dst[0] = *(u32 *)entry + (*(u32 *)((u8 *)*self + 0x14) + (u32)base);
+        dst[0] = (u32)base + *(u32 *)((u8 *)*self + 0x14) + *(u32 *)entry;
     }
     return 1;
 }

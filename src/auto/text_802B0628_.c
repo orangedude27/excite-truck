@@ -109,6 +109,8 @@ extern int lbl_8055CD88;
 #pragma push
 #pragma scheduling 750
 void fn_802B0710(void) {
+int __repair_literal;
+
     void *obj;
     int *fields;
     int n = 0x54;
@@ -130,7 +132,9 @@ void fn_802B0710(void) {
             int idx = ((int *)obj)[2];
             char *base = (char *)((void **)obj)[0];
             int *flds = (int *)((void **)obj)[1];
-            entry = flds + idx * 4;
+__repair_literal = 4;
+
+            entry = flds + idx * __repair_literal;
             ((int *)obj)[2] = idx + 1;
             flds[idx * 4] = (int)(base + offset);
             offset += 0x400;
@@ -223,7 +227,7 @@ __declspec(section ".data") extern void *lbl_804BE104;
 #pragma opt_common_subs off
 void fn_802B0954(void) {
     /* Clears the global pool and destroys all entries in lbl_804BE104, releasing nested handles/rows and freeing each object. */
-    extern void fn_8002F634(void *, void *, int, int);
+    extern void __array_delete(void *, void *, int, int);
     extern void fn_802B0690(int *);
     extern void fn_802B0874(void);
     extern void fn_80128668(void *);
@@ -273,7 +277,7 @@ void fn_802B0954(void) {
                 }
             }
             if ((char *)entry + 0xc != 0) {
-                fn_8002F634((char *)entry + 0x18, fn_802B0AC0, 0x80, 6);
+                __array_delete((char *)entry + 0x18, fn_802B0AC0, 0x80, 6);
                 if ((char *)entry + 0xc != 0) {
                     *(int *)((char *)entry + 0xc) = 0;
                     *(int *)((char *)entry + 0x10) = 0;

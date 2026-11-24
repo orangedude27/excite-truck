@@ -107,7 +107,7 @@ s32 fn_802E4A10(void);
 void fn_8023D4B8(void);
 void fn_8013C8B8(void);
 void fn_80018B24(void);
-void fn_8002F634(void *, void *, s32, s32);
+void __array_delete(void *, void *, s32, s32);
 void *fn_80240928(void *, s32);
 s32 fn_80235380(s32, s32);
 void *fn_80255758(void *, s32);
@@ -157,7 +157,7 @@ struct MRollContainer {
     char texts[5][0x64];
     u8 tail[4];
     ~MRollContainer() {
-        fn_8002F634(widgets, (void *)fn_80240928, 0x28, 5);
+        __array_delete(widgets, (void *)fn_80240928, 0x28, 5);
     }
 };
 struct MRollRecordOpt {

@@ -59,7 +59,7 @@ typedef struct {
 
 extern s32 fn_80215EC4(s32, s32);
 extern char lbl_80490710[];
-extern void fn_8002F634(void *, void *, s32, s32);
+extern void __array_delete(void *, void *, s32, s32);
 extern f32 lbl_8055EF94;
 extern s32 lbl_8055EF74;
 extern s32 fn_80217270(s32);
@@ -88,7 +88,7 @@ s32 fn_80215E68(s32 value, s32 count) {
 #pragma scheduling invalid_target
 /* Delete the array at lbl_80490710: 16 elements of 24 bytes each, using the deleting destructor fn_80215EC4. */
 void fn_80215EA8(void) {
-    fn_8002F634(lbl_80490710, fn_80215EC4, 0x18, 0x10);
+    __array_delete(lbl_80490710, fn_80215EC4, 0x18, 0x10);
 }
 #pragma scheduling on
 s32 fn_80215EC4(s32 value, s32 count) {
@@ -218,7 +218,8 @@ s32 fn_802160AC(void)
   f32 a;
   f32 *new_var;
   f32 b;
-  if (lbl_8055EF88 != 0)
+  register s32 cond = (s32)lbl_8055EF88;
+  if (cond != 0)
   {
     temp_r31 = fn_8021832C();
   }
@@ -240,7 +241,7 @@ s32 fn_802160AC(void)
   b = lbl_80563478 - b;
   if (temp_r31 != 0)
   {
-    fn_802C5310(temp_r31, 0, a, b, lbl_80563458);
+    do { fn_802C5310(temp_r31, 0, a, b, lbl_80563458); } while (0);
   }
   else
   {
@@ -283,7 +284,7 @@ void fn_802161CC(s32 includePrimary) {
 #pragma scheduling invalid_target
 #pragma dont_inline reset
 s32 fn_80216244(void) {
-    s32 i, j;
+    s32 i;
     u32 *p;
     u8 *obj;
     f32 matrix[12];
@@ -300,7 +301,7 @@ s32 fn_80216244(void) {
     fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
     fn_802C88BC(2);
     p = lbl_804908C8;
-    for (j = 0; j < 16; j++, p++) {
+    for (i = 0; i < 16; i++, p++) {
         if (*p != 0) {
             obj = (u8 *)*p;
             fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
@@ -310,7 +311,9 @@ s32 fn_80216244(void) {
             x = -(f32)(s32)raw;
             raw = *(u32 *)(obj + 0x458);
             y = (f32)(s32)raw;
-            vec[0] = x; vec[1] = y; vec[2] = 0.0f;
+            vec[2] = 0.0f;
+            vec[0] = x;
+            vec[1] = y;
             fn_80216244_rotate(matrix, pos, vec);
             matrix[9] += pos[0];
             matrix[10] += pos[1];

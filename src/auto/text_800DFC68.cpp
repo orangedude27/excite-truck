@@ -82,7 +82,7 @@ extern "C" int lbl_8055DDF0;
 extern "C" const char lbl_80320CFC[];
 extern "C" void MEMFreeToAllocator(int, void*);
 extern "C" void fn_800D598C(void*);
-extern "C" void fn_8002F634(void*, void*, int, int);
+extern "C" void __array_delete(void*, void*, int, int);
 extern "C" void fn_800D2DD4(void);
 extern "C" void __dt__Q36nw4hbm3lyt4PaneFv(void*, int);
 extern "C" void fn_80128668(void*);
@@ -215,7 +215,7 @@ extern "C" void* __dt__Q36nw4hbm3lyt6WindowFv(void* self, int shouldDelete) {
         }
         fn_800D598C(window + 0xF4);
         if (window + 0xE4 != 0)
-            fn_8002F634(window + 0xE4, (void *)fn_800D2DD4, 4, 4);
+            __array_delete(window + 0xE4, (void *)fn_800D2DD4, 4, 4);
         __dt__Q36nw4hbm3lyt4PaneFv(self, 0);
         if (shouldDelete > 0)
             fn_80128668(self);
@@ -460,7 +460,13 @@ void nw4r::lyt::Window::DrawContent(const nw4r::math::VEC2 &arg1, const nw4r::ly
     s32 useVtxColor;
     void *vtxColor;
     f32 quad[4];
-    register f32 t0, t1, t2, t3, t4, t5, t6;
+    register f32 t0;
+    register f32 t1;
+    register f32 t2;
+    register f32 t3;
+    register f32 t4;
+    register f32 t5;
+    register f32 t6;
     s32 texture;
     u8 format;
     modulate = IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(self + 0xE4, arg3);

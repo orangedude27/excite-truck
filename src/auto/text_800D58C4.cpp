@@ -1726,8 +1726,8 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
     extern char lbl_8031FF08[];
     extern const char lbl_8031F990[];
-    const char* strBase = lbl_8031F990;
     u8* self = (u8*)this_;
+    const char* strBase = lbl_8031F990;
     const u8* src;
     u8* dst;
     int i;
@@ -2237,7 +2237,7 @@ extern "C" void Init__Q34nw4r3lyt8MaterialFv(void *arg0) {
     *(unsigned char *)((char *)arg0 + 0x54) = 0;
     *(unsigned int *)((char *)arg0 + 0x58) = 0;
 }
-extern "C" void fn_8002F634(void *, void *, s32, s32);
+extern "C" void __array_delete(void *, void *, s32, s32);
 extern "C" void fn_800D2DD4(void);
 extern "C" s32 fn_80128668(void);
 extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, s32);
@@ -2261,7 +2261,7 @@ extern "C" void *__dt__Q34nw4r3lyt8MaterialFv(void *this_, s32 deleteFlag) {
             MEMFreeToAllocator(lbl_8055DDF0, data);
             *(void **)((u8 *)this_ + 0x58) = 0;
         }
-        fn_8002F634((u8 *)this_ + 0x3C, (void *)fn_800D2DD4, 4, 4);
+        __array_delete((u8 *)this_ + 0x3C, (void *)fn_800D2DD4, 4, 4);
         if ((u8 *)this_ + 0x18 != 0) {
             __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)this_ + 0x18, 0);
         }
@@ -2274,7 +2274,7 @@ extern "C" void *__dt__Q34nw4r3lyt8MaterialFv(void *this_, s32 deleteFlag) {
 
 extern "C" void fn_800D8B28(void *self, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7, u8 h, u8 i, u8 j, u8 k) {
     extern const char lbl_8031F990[];
-    const char *data = lbl_8031F990;
+    const char *data = &lbl_8031F990[0];
     MatGXBits_800D8B28 *cap = (MatGXBits_800D8B28 *)((u8 *)self + 0x4C);
     MatGXBits_800D8B28 *cnt = (MatGXBits_800D8B28 *)((u8 *)self + 0x50);
     u8 *mem;
@@ -2309,40 +2309,51 @@ extern "C" void fn_800D8B28(void *self, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, 
             cap->k = k;
             cnt->srt = cap->srt;
             {
-                MatSRT_800D8B28 *p = (MatSRT_800D8B28 *)(mem + cap->tex * 32);
                 u32 num = cnt->srt;
+                MatSRT_800D8B28 *p = (MatSRT_800D8B28 *)(mem + cap->tex * 32);
                 for (u32 n = 0; n < num; n++) MatInitSRT_800D8B28(&p[n]);
             }
             cnt->ind = cap->ind;
             {
+                u32 num = cnt->ind;
                 u8 *b = MatFlagBase_800D8B28((u8 *)self);
                 MatSRT_800D8B28 *p = (MatSRT_800D8B28 *)(b + cap->h * 4 + cap->i * 4 + cap->f * 4 + cap->j * 4 + cap->k * 4 + cap->e * 4);
-                u32 num = cnt->ind;
                 for (u32 n = 0; n < num; n++) MatInitSRT_800D8B28(&p[n]);
             }
             cnt->h = cap->h;
             if (cnt->h) {
-                u8 *q = MatFlagBase_800D8B28((u8 *)self);
-                q[0] = 1; q[1] = 1; q[2] = 0; q[3] = 0;
+                u32 w = *(u32 *)((u8 *)self + 0x4C);
+                u8 *b = *(u8 **)((u8 *)self + 0x58) + ((w >> 0x18) & 0xF) * 0x14;
+                u32 o = ((w >> 0x14) & 0xF) * 4 + ((w >> 0x1C) & 0xF) * 32;
+                b[o] = 1; b += o; b[1] = 1; b[2] = 0; b[3] = 0;
             }
             cnt->i = cap->i;
             if (cnt->i) {
-                *(s32 *)(MatFlagBase_800D8B28((u8 *)self) + cap->h * 4) = -1;
+                u32 w = *(u32 *)((u8 *)self + 0x4C);
+                u8 *b = *(u8 **)((u8 *)self + 0x58) + ((w >> 0x18) & 0xF) * 0x14;
+                u32 o = ((w >> 0x14) & 0xF) * 4 + ((w >> 0x1C) & 0xF) * 32 + ((w >> 0x17) & 1) * 4;
+                *(s32 *)(b + o) = -1;
             }
             cnt->f = cap->f;
             if (cnt->f) {
-                u8 *q = MatFlagBase_800D8B28((u8 *)self) + cap->i * 4 + cap->h * 4;
-                q[0] = 0xE4; q[1] = 0xC0; q[2] = 0xD5; q[3] = 0xEA;
+                u32 w = *(u32 *)((u8 *)self + 0x4C);
+                u8 *b = *(u8 **)((u8 *)self + 0x58) + ((w >> 0x18) & 0xF) * 0x14;
+                u32 o = ((w >> 0x14) & 0xF) * 4 + ((w >> 0x1C) & 0xF) * 32 + ((w >> 0x18) & 1) * 4 + ((w >> 0x17) & 1) * 4;
+                b[o] = 0xE4; b += o; b[1] = 0xC0; b[2] = 0xD5; b[3] = 0xEA;
             }
             cnt->j = cap->j;
             if (cnt->j) {
-                u8 *q = MatFlagBase_800D8B28((u8 *)self) + cap->f * 4 + cap->i * 4 + cap->h * 4;
-                q[0] = 0x77; q[1] = 0; q[2] = 0; q[3] = 0;
+                u32 w = *(u32 *)((u8 *)self + 0x4C);
+                u8 *b = *(u8 **)((u8 *)self + 0x58) + ((w >> 0x18) & 0xF) * 0x14;
+                u32 o = ((w >> 0x14) & 0xF) * 4 + ((w >> 0x1C) & 0xF) * 32 + ((w >> 0x1D) & 1) * 4 + ((w >> 0x18) & 1) * 4 + ((w >> 0x17) & 1) * 4;
+                b[o] = 0x77; b += o; b[1] = 0; b[2] = 0; b[3] = 0;
             }
             cnt->k = cap->k;
             if (cnt->k) {
-                u8 *q = MatFlagBase_800D8B28((u8 *)self) + cap->j * 4 + cap->f * 4 + cap->i * 4 + cap->h * 4;
-                q[0] = 1; q[1] = 4; q[2] = 5; q[3] = 0xF;
+                u32 w = *(u32 *)((u8 *)self + 0x4C);
+                u8 *b = *(u8 **)((u8 *)self + 0x58) + ((w >> 0x18) & 0xF) * 0x14;
+                u32 o = ((w >> 0x14) & 0xF) * 4 + ((w >> 0x1C) & 0xF) * 32 + ((w >> 0x19) & 1) * 4 + ((w >> 0x1D) & 1) * 4 + ((w >> 0x18) & 1) * 4 + ((w >> 0x17) & 1) * 4;
+                b[o] = 1; b += o; b[1] = 4; b[2] = 5; b[3] = 0xF;
             }
         }
     }

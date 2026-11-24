@@ -100,7 +100,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
     extern void fn_802556BC(void *, s32);
     extern s32 fn_802E4A10(void);
     extern void fn_8002F53C(void *, void *, void *, s32, s32);
-    extern void fn_8002F634(void *, void *, s32, s32);
+    extern void __array_delete(void *, void *, s32, s32);
     extern void fn_80255758(void *, s32);
     extern void fn_80018B24(void);
     extern void fn_8013C8B8(void);
@@ -307,7 +307,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
     fn_80128670(*(s32 *)(m.screen + 0x18));
     fn_80235380(*(s32 *)(m.screen + 0x24));
     fn_802CAC54(*(s32 *)(m.screen + 0x20));
-    fn_8002F634(m.res, fn_80240928, 0x28, 5);
+    __array_delete(m.res, fn_80240928, 0x28, 5);
     fn_80255758(m.work, -1);
     fn_80018B24();
     fn_8013C8B8();
@@ -1082,7 +1082,6 @@ void *fn_8024FB64(void *this_, s32 shouldFree) {
 
 #pragma cplusplus on
 extern "C" void fn_8024FBD8(void *arg0, s32 arg1) {
-#pragma scheduling invalid_target
     class Obj {
     public:
         virtual void destroy(int);
@@ -1098,7 +1097,7 @@ extern "C" void fn_8024FBD8(void *arg0, s32 arg1) {
     extern void fn_802556BC(void *, s32);
     extern s32 fn_802E4A10(void);
     extern void fn_8002F53C(void *, void *, void *, s32, s32);
-    extern void fn_8002F634(void *, void *, s32, s32);
+    extern void __array_delete(void *, void *, s32, s32);
     extern void fn_80018B24(void);
     extern void fn_8013C8B8(void);
     extern s32 fn_802146BC(s32 *, s32, s32, s32);
@@ -1149,91 +1148,92 @@ extern "C" void fn_8024FBD8(void *arg0, s32 arg1) {
         object = *(void **)(stack+0x308);
         ((Obj *)object)->configure(lbl_803446AC, lbl_80563964);
     }
-    *(void * volatile *)(stack+0x20)=stack+0x180;
-    *(volatile s32 *)(stack+0x18)=0;
-    *(volatile s32 *)(stack+0x24)=0;
-    *(void * volatile *)(stack+0x34)=stack+0x288;
-    *(volatile s32 *)(stack+0x1c)=5;
-    *(volatile s32 *)(stack+0x28)=0;
-    *(volatile s32 *)(stack+0x30)=3;
-    *(volatile s32 *)(stack+0x38)=0;
-    *(volatile s32 *)(stack+0x3c)=0;
-    *(void * volatile *)(stack+0x2c)=&lbl_8055C0D8;
-    *(volatile s32 *)(stack+0x44)=0x13;
-    *(void * volatile *)(stack+0x40)=base+0x40;
-    *(void * volatile *)(stack+0x48)=stack+0x320;
-    *(volatile s32 *)(stack+0x4c)=0;
-    *(volatile s32 *)(stack+0x50)=0;
-    *(volatile s32 *)(stack+0x58)=3;
-    *(void * volatile *)(stack+0x54)=base+0x40;
-    *(void * volatile *)(stack+0x5c)=stack+0x1a8;
-    *(volatile s32 *)(stack+0x60)=0;
-    *(volatile s32 *)(stack+0x64)=0;
-    *(void * volatile *)(stack+0x6c)=base+0x58;
-    *(volatile s32 *)(stack+0x68)=5;
-    *(void * volatile *)(stack+0x70)=stack+0x41c;
-    *(volatile s32 *)(stack+0x74)=0;
-    *(volatile s32 *)(stack+0x78)=0;
-    *(volatile s32 *)(stack+0x80)=3;
-    *(void * volatile *)(stack+0x7c)=base+0x1f0;
-    *(void * volatile *)(stack+0x84)=stack+0x208;
-    *(volatile s32 *)(stack+0x88)=0;
-    *(volatile s32 *)(stack+0x8c)=0;
-    *(volatile s32 *)(stack+0x94)=3;
-    *(void * volatile *)(stack+0x90)=base+0x1fc;
-    *(void * volatile *)(stack+0x98)=stack+0x1c8;
-    *(volatile s32 *)(stack+0x9c)=0;
-    *(volatile s32 *)(stack+0xa0)=0;
-    *(volatile s32 *)(stack+0xa8)=3;
-    *(void * volatile *)(stack+0xa4)=base+0x68;
-    *(void * volatile *)(stack+0xac)=stack+0x538;
-    *(volatile s32 *)(stack+0xb0)=0;
-    *(volatile s32 *)(stack+0xb4)=0;
-    *(volatile s32 *)(stack+0xbc)=2;
-    *(void * volatile *)(stack+0xb8)=base+0x78;
-    *(void * volatile *)(stack+0xc0)=stack+0x44c;
-    *(volatile s32 *)(stack+0xc4)=0;
-    *(volatile s32 *)(stack+0xc8)=0;
-    *(volatile s32 *)(stack+0xd0)=3;
-    *(volatile s32 *)(stack+0xd8)=0;
-    *(volatile s32 *)(stack+0xdc)=0;
-    *(volatile s32 *)(stack+0xec)=0;
-    *(volatile s32 *)(stack+0xf0)=0;
-    *(volatile s32 *)(stack+0x100)=0;
-    *(volatile s32 *)(stack+0x104)=0;
-    *(volatile s32 *)(stack+0x114)=0;
-    *(volatile s32 *)(stack+0x118)=0;
-    *(volatile s32 *)(stack+0x128)=0;
-    *(volatile s32 *)(stack+0x12c)=0;
-    *(volatile s32 *)(stack+0x13c)=0;
-    *(volatile s32 *)(stack+0x140)=0;
-    *(volatile s32 *)(stack+0x150)=0;
-    *(volatile s32 *)(stack+0x154)=0;
-    *(volatile s32 *)(stack+0x164)=0;
-    *(volatile s32 *)(stack+0x168)=0;
-    *(void * volatile *)(stack+0xcc)=base+0x84;
-    *(void * volatile *)(stack+0xd4)=stack+0x59c;
-    *(volatile s32 *)(stack+0xe4)=2;
-    *(void * volatile *)(stack+0xe0)=base+0x94;
-    *(void * volatile *)(stack+0xe8)=stack+0x454;
-    *(volatile s32 *)(stack+0xf8)=3;
-    *(void * volatile *)(stack+0xf4)=base+0xa0;
-    *(void * volatile *)(stack+0xfc)=stack+0x600;
-    *(volatile s32 *)(stack+0x10c)=2;
-    *(void * volatile *)(stack+0x108)=base+0xb0;
-    *(void * volatile *)(stack+0x110)=stack+0x45c;
-    *(volatile s32 *)(stack+0x120)=3;
-    *(void * volatile *)(stack+0x11c)=base+0xbc;
-    *(void * volatile *)(stack+0x124)=stack+0x664;
-    *(volatile s32 *)(stack+0x134)=5;
-    *(void * volatile *)(stack+0x130)=base+0xcc;
-    *(void * volatile *)(stack+0x138)=stack+0x4e8;
-    *(volatile s32 *)(stack+0x148)=3;
-    *(void * volatile *)(stack+0x144)=base+0xdc;
-    *(void * volatile *)(stack+0x14c)=stack+0x6c8;
-    *(volatile s32 *)(stack+0x15c)=2;
-    *(void * volatile *)(stack+0x158)=base+0xec;
-    *(void * volatile *)(stack+0x160)=stack+0x46c;
+*(void * *)(stack+0x20)=stack+0x180;
+    *(s32 *)(stack+0x18)=0;
+*(s32 *)(stack+0x24)=0;
+*(void * *)(stack+0x34)=stack+0x288;
+*(s32 *)(stack+0x1c)=5;
+*(s32 *)(stack+0x28)=0;
+*(s32 *)(stack+0x30)=3;
+*(s32 *)(stack+0x38)=0;
+*(s32 *)(stack+0x3c)=0;
+*(void * *)(stack+0x2c)=&lbl_8055C0D8;
+*(s32 *)(stack+0x44)=0x13;
+    void *descriptor = base + 0x40;
+    *(void **)(stack+0x40) = descriptor;
+*(void * *)(stack+0x48)=stack+0x320;
+*(s32 *)(stack+0x4c)=0;
+*(s32 *)(stack+0x50)=0;
+*(s32 *)(stack+0x58)=3;
+    *(void **)(stack+0x54) = descriptor;
+*(void * *)(stack+0x5c)=stack+0x1a8;
+*(s32 *)(stack+0x60)=0;
+*(s32 *)(stack+0x64)=0;
+*(void * *)(stack+0x6c)=base+0x58;
+*(s32 *)(stack+0x68)=5;
+*(void * *)(stack+0x70)=stack+0x41c;
+*(s32 *)(stack+0x74)=0;
+*(s32 *)(stack+0x78)=0;
+*(s32 *)(stack+0x80)=3;
+*(void * *)(stack+0x7c)=base+0x1f0;
+*(void * *)(stack+0x84)=stack+0x208;
+*(s32 *)(stack+0x88)=0;
+*(s32 *)(stack+0x8c)=0;
+*(s32 *)(stack+0x94)=3;
+*(void * *)(stack+0x90)=base+0x1fc;
+*(void * *)(stack+0x98)=stack+0x1c8;
+*(s32 *)(stack+0x9c)=0;
+*(s32 *)(stack+0xa0)=0;
+*(s32 *)(stack+0xa8)=3;
+*(void * *)(stack+0xa4)=base+0x68;
+*(void * *)(stack+0xac)=stack+0x538;
+*(s32 *)(stack+0xb0)=0;
+*(s32 *)(stack+0xb4)=0;
+*(s32 *)(stack+0xbc)=2;
+*(void * *)(stack+0xb8)=base+0x78;
+*(void * *)(stack+0xc0)=stack+0x44c;
+*(s32 *)(stack+0xc4)=0;
+*(s32 *)(stack+0xc8)=0;
+*(s32 *)(stack+0xd0)=3;
+*(s32 *)(stack+0xd8)=0;
+*(s32 *)(stack+0xdc)=0;
+*(volatile s32 *)(stack+0xec)=0;
+*(volatile s32 *)(stack+0xf0)=0;
+*(volatile s32 *)(stack+0x100)=0;
+*(volatile s32 *)(stack+0x104)=0;
+*(volatile s32 *)(stack+0x114)=0;
+*(volatile s32 *)(stack+0x118)=0;
+*(volatile s32 *)(stack+0x128)=0;
+*(volatile s32 *)(stack+0x12c)=0;
+*(volatile s32 *)(stack+0x13c)=0;
+*(volatile s32 *)(stack+0x140)=0;
+*(volatile s32 *)(stack+0x150)=0;
+*(volatile s32 *)(stack+0x154)=0;
+*(volatile s32 *)(stack+0x164)=0;
+*(volatile s32 *)(stack+0x168)=0;
+*(void * *)(stack+0xcc)=base+0x84;
+*(void * *)(stack+0xd4)=stack+0x59c;
+*(s32 *)(stack+0xe4)=2;
+*(void * *)(stack+0xe0)=base+0x94;
+*(void * *)(stack+0xe8)=stack+0x454;
+*(s32 *)(stack+0xf8)=3;
+*(void * *)(stack+0xf4)=base+0xa0;
+*(void * *)(stack+0xfc)=stack+0x600;
+*(s32 *)(stack+0x10c)=2;
+*(void * *)(stack+0x108)=base+0xb0;
+*(void * *)(stack+0x110)=stack+0x45c;
+*(s32 *)(stack+0x120)=3;
+*(void * *)(stack+0x11c)=base+0xbc;
+*(void * *)(stack+0x124)=stack+0x664;
+*(s32 *)(stack+0x134)=5;
+*(void * *)(stack+0x130)=base+0xcc;
+*(void * *)(stack+0x138)=stack+0x4e8;
+*(s32 *)(stack+0x148)=3;
+*(void * *)(stack+0x144)=base+0xdc;
+*(void * *)(stack+0x14c)=stack+0x6c8;
+*(s32 *)(stack+0x15c)=2;
+*(void * *)(stack+0x158)=base+0xec;
+*(void * *)(stack+0x160)=stack+0x46c;
     *(s32 *)(stack+0x16c) = *(s32 *)lbl_80498C30;
     *(s32 *)(stack+0x170) = *(s32 *)(lbl_80498C30+4);
     *(s32 *)(stack+0x174) = *(s32 *)(lbl_80498C30+8);
@@ -1258,7 +1258,7 @@ extern "C" void fn_8024FBD8(void *arg0, s32 arg1) {
         if (object != 0)
             ((Obj *)object)->destroy(1);
     }
-    fn_8002F634(stack+0x470, fn_80240928, 0x28, 5);
+    __array_delete(stack+0x470, fn_80240928, 0x28, 5);
     fn_80255758(stack+0x320, -1);
 }
 #pragma cplusplus reset
@@ -1627,8 +1627,8 @@ extern "C" void fn_80251078(void *arg0, s32 index, s32 selected, f32 x, f32 y, f
     s32 *values = ((s32 *(*)(s32, s32))fn_80016BC8)(*(s32 *)(entry + 8), 0);
     s32 choice = lbl_80498C48[4] ? values[0] : values[1];
     s32 valid = 0;
-    s32 color;
     void *control;
+    long color;
     s32 disabled, active;
     s32 flag;
     f32 time;
@@ -1639,12 +1639,12 @@ extern "C" void fn_80251078(void *arg0, s32 index, s32 selected, f32 x, f32 y, f
     control = *(void **)(self + 0xD0);
     disabled = ((Control *)control)->enabled(index) == 0;
     active = 0;
-    if (!disabled) {
+    if (disabled == 0) {
         control = *(void **)(self + 0xD0);
         if (((Control *)control)->active(index)) active = 1;
     }
     flag = -1;
-    if (disabled) flag = (s32)0xFF808080;
+    if (disabled) flag = 0xFF808080;
     {
         f32 drawX = x, drawY = y, drawZ = lbl_80563960, drawW = w, drawH = h;
         fn_802354A0(*(s32 *)(self + 0x24), selected && active, flag, drawX, drawY, drawZ, drawW, drawH);
@@ -1668,10 +1668,10 @@ extern "C" void fn_80251078(void *arg0, s32 index, s32 selected, f32 x, f32 y, f
             limit = one < factor ? one : factor;
             limit = limit > zero ? limit : zero;
             sh = half + limit * half;
-            { f32 glyph = fn_80235F64(*(s32 *)(self + 0x24), id); sh = glyph * sh; }
+            { f32 glyph = fn_80235F64(*(s32 *)(self + 0x24), (unsigned)id); sh = glyph * sh; }
             rounded = alpha < zero ? alpha - half : half + alpha;
-            a = (s32)rounded;
             if (a > 0x13F) a = 0x13F;
+            a = rounded;
             py = i ? y - h : y + sh;
             offset = center - half * sw;
             fn_802354A0(*(s32 *)(self + 0x24), id, (a << 24) | 0xFFFFFF, offset, py, zero, sw, sh);
@@ -1682,26 +1682,26 @@ extern "C" void fn_80251078(void *arg0, s32 index, s32 selected, f32 x, f32 y, f
         s32 which = 1;
         char *item;
         f32 v1, u1, v0, u0;
-        u32 mask;
+        register long mask;
         volatile u32 mixed;
         s32 red, green, blue, ma, mr, mg, mb;
         which = positive < 1 ? positive : 1;
         item = *(char **)(*(char **)(self + 0xC8)) + *(s32 *)(entry + which * 4) * 0x38;
+        u1 = *(f32 *)(item + 0x30);
         u0 = *(f32 *)(item + 0x28);
         v0 = *(f32 *)(item + 0x2C);
-        u1 = *(f32 *)(item + 0x30);
         v1 = *(f32 *)(item + 0x34);
         mask = disabled ? 0xFF000000 : 0xFFFFFFFF;
         ma = 255;
         mr = ((disabled ? 0xFF000000U : 0xFFFFFFFFU) >> 16) & 0xff;
         mg = ((disabled ? 0xFF000000U : 0xFFFFFFFFU) >> 8) & 0xff;
         mb = (disabled ? 0xFF000000U : 0xFFFFFFFFU) & 0xff;
-        blue = (mb * mb * (s32)((u32)color & 0xff)) / 256 / 256;
-        green = (mg * mg * (s32)(((u32)color >> 8) & 0xff)) / 256 / 256;
-        red = (ma * mr * (s32)(((u32)color >> 16) & 0xff)) / 256 / 256;
+        blue = (mb * mb * (s32)(color & 0xff)) / 256 / 256;
+        green = (mg * mg * (s32)((color >> 8) & 0xff)) / 256 / 256;
+        red = (ma * mr * (s32)((color >> 16) & 0xff)) / 256 / 256;
         mixed = 0xFF000000 | ((red & 0xff) << 16) | ((green & 0xff) << 8) | (blue & 0xff);
-        ((void (*)(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32))fn_80231220)(*(s32 *)(item + 0x20), mask, x + lbl_80563980 * (w - lbl_80563988 * w), y - lbl_80563980 * (h - lbl_80563988 * h), lbl_80563988 * w, lbl_80563988 * h, u0, v0, u1, v1);
         ((void (*)(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32))fn_80231220)(*(s32 *)(item + 0x24), mixed, x + lbl_80563980 * (w - lbl_80563988 * w), y - lbl_80563980 * (h - lbl_80563988 * h), lbl_80563988 * w, lbl_80563988 * h, u0, v0, u1, v1);
+        ((void (*)(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32))fn_80231220)(*(s32 *)(item + 0x20), mask, x + lbl_80563980 * (w - lbl_80563988 * w), y - lbl_80563980 * (h - lbl_80563988 * h), lbl_80563988 * w, lbl_80563988 * h, u0, v0, u1, v1);
     }
 }
 #pragma pop
@@ -2155,7 +2155,7 @@ copy1_body:
                 *dstA++ = tempA;
                 if ((s8)tempA != 0) goto copy1_cnt;
 copy1_end: ;
-                save31 = (void *)fn_8001668C((s32)((u8*)arg0 + 0x28), 0);
+                save31 = (void *)fn_8001668C((s32)arg0 + 0x28, 0);
                 srcB = (u8*)save31 + 0xC;
                 dstB = (u8*)arg0 + 0x48;
                 n = 0x40;
@@ -2211,10 +2211,10 @@ copy4_end: ;
                     }
                 }
                 {
-                    u8 *res = fn_80131234((u8*)arg0 + 0x88);
-                    if (res != (u8*)arg0 + 0x88) {
+                    u8 *res = fn_80131234((u8*)((s32)arg0 + 0x88));
+                    if (res != (u8*)((s32)arg0 + 0x88)) {
                         srcE = res;
-                        dstE = (u8*)arg0 + 0x88;
+                        dstE = (u8*)((s32)arg0 + 0x88);
                         n = 0x80;
                         goto copy5_body;
 copy5_cnt:
@@ -2286,6 +2286,7 @@ copy6_end: ;
         M2C_FIELD(save31, s32, 0x24) = copy_a;
         M2C_FIELD(save31, s32, 0x28) = copy_b;
         do {
+            u8 *fillTail = (u8 *)save31 + 0x2E8;
             srcG = M2C_FIELD(entryPtr, u8 *, 4);
             if (srcG != 0) {
                 dstG = copyDst;
@@ -2305,7 +2306,7 @@ copy7_end: ;
             } else {
                 M2C_FIELD(dstPtr, s8, 0xF4) = 0;
             }
-            ((Table *)tablePtr)->fill(loopCnt, fillDst, (u8*)save31 + 0x2E8);
+            ((Table *)tablePtr)->fill(loopCnt, fillDst, fillTail);
             loopCnt += 1;
             entryPtr += 8;
             copyDst += 0x64;
@@ -2322,22 +2323,16 @@ copy7_end: ;
         M2C_FIELD(save31, s8, 0x284) = 0;
     }
     {
-        f32 lim;
-        f32 tmp;
-        tmp = M2C_FIELD(arg0, f32, 0x194) - fn_80214D48();
-        lim = lbl_80563960;
-        if (lim <= tmp) lim = tmp;
+        f32 tmp = M2C_FIELD(arg0, f32, 0x194) - fn_80214D48();
+        f32 lim = (tmp > lbl_80563960) ? tmp : lbl_80563960;
         M2C_FIELD(arg0, f32, 0x194) = lim;
         if ((f32)__fabs((double)lim) <= lbl_80558DC4) {
             fn_80214AF0(0x1F);
         }
     }
     {
-        f32 lim;
-        f32 tmp;
-        tmp = M2C_FIELD(arg0, f32, 0x198) - fn_80214D48();
-        lim = lbl_80563960;
-        if (lim <= tmp) lim = tmp;
+        f32 tmp = M2C_FIELD(arg0, f32, 0x198) - fn_80214D48();
+        f32 lim = (tmp > lbl_80563960) ? tmp : lbl_80563960;
         M2C_FIELD(arg0, f32, 0x198) = lim;
         if ((f32)__fabs((double)lim) <= lbl_80558DC4) {
             fn_80214AF0(0x1F);

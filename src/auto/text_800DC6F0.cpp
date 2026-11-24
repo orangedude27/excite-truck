@@ -63,7 +63,7 @@ struct PicDataVt {
     virtual void vf1();
     virtual void vf2(int);
 };
-extern "C" void fn_8002F634(void*, void*, s32, s32);
+extern "C" void __array_delete(void*, void*, s32, s32);
 extern "C" void __dt__Q36nw4hbm3lyt4PaneFv(void*, s32);
 extern "C" void fn_80128668(void*);
 
@@ -133,7 +133,7 @@ extern "C" void* __dt__Q36nw4hbm3lyt7PictureFv(void* this_, s32 deleteFlag) {
             *(u32*)((u8*)this_ + 0x28) = 0;
         }
         fn_800D598C((u8*)this_ + 0xE4);
-        fn_8002F634((u8*)this_ + 0xD4, sTexCoordDtor, 4, 4);
+        __array_delete((u8*)this_ + 0xD4, sTexCoordDtor, 4, 4);
         __dt__Q36nw4hbm3lyt4PaneFv(this_, 0);
         if (deleteFlag > 0) fn_80128668(this_);
     }

@@ -30,7 +30,7 @@ extern char lbl_80347CC0[];
 extern char lbl_80347CF8[];
 extern char lbl_804A4380[];
 extern void *fn_8027B60C(void *);
-extern void fn_8002F634(void *, void *, int, int);
+extern void __array_delete(void *, void *, int, int);
 extern void *fn_8027D280(void *, int);
 extern int fn_80012810(void);
 extern void fn_80012794(void);
@@ -71,14 +71,14 @@ extern void fn_8027B94C(void);
 #pragma scheduling invalid_target
 void fn_8027D264(void) {
     /* Tear down the array at lbl_804A4380: 4 player blocks of 0x3B10 bytes each, run through the per-block deleting destructor fn_8027D280 (MSL runtime array_delete). */
-    fn_8002F634(lbl_804A4380, fn_8027D280, 0x3B10, 4);
+    __array_delete(lbl_804A4380, fn_8027D280, 0x3B10, 4);
 }
 #pragma scheduling on
 /* Destroys two embedded element arrays (offset 0x2370, count 2, and base, count 3) and optionally frees the block. */
 void *fn_8027D280(void *arg0, int arg1) {
     if (arg0 != 0) {
-        fn_8002F634((char *)arg0 + 0x2370, fn_8027D304, 0xBD0, 2);
-        fn_8002F634(arg0, fn_8027D304, 0xBD0, 3);
+        __array_delete((char *)arg0 + 0x2370, fn_8027D304, 0xBD0, 2);
+        __array_delete(arg0, fn_8027D304, 0xBD0, 3);
         if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
     }
     return arg0;
@@ -99,7 +99,7 @@ void *fn_8027D304(void *arg0, int arg1) {
         object->vtable = lbl_80347CA8;
         fn_8027B60C(object);
         if (&object->field_08 != 0) {
-            fn_8002F634((char *)object + 0x14, fn_8027D39C, 0x1F4, 6);
+            __array_delete((char *)object + 0x14, fn_8027D39C, 0x1F4, 6);
             if (&object->field_08 != 0) {
                 object->field_08 = 0;
                 object->field_0C = 0;
@@ -126,7 +126,7 @@ void *fn_8027D39C(void *thisPtr, int deleteFlags) {
         obj->vtable = lbl_80347CC0;
         fn_8027B288(obj);
         if (&obj->field_18 != 0) {
-            fn_8002F634((char *)obj + 0x24, __dt__Q34nw4r2ef6EffectFv_8027D434, 0x3C, 6);
+            __array_delete((char *)obj + 0x24, __dt__Q34nw4r2ef6EffectFv_8027D434, 0x3C, 6);
             if (&obj->field_18 != 0) {
                 obj->field_18 = 0;
                 obj->field_1C = 0;

@@ -491,10 +491,10 @@ void fn_80167EE0(s32 *record) {
     *record = 0;
 }
 
-extern void fn_8002F634(void *, void *, s32, s32);
+extern void __array_delete(void *, void *, s32, s32);
 extern void fn_802C6CF8(s32);
 #pragma cplusplus on
-void fn_8002F634(void *, void *, s32, s32);
+void __array_delete(void *, void *, s32, s32);
 void fn_802C6CF8(s32);
 extern "C" void fn_80167EEC(void) {
     /* Tear down the pickup manager (lbl_8055E354, the block fn_801679F0 made):
@@ -533,7 +533,7 @@ extern "C" void fn_80167EEC(void) {
             manager->entryCapacity = 0;
         }
         if (manager != 0) {
-            fn_8002F634((u8 *)manager + 0xC, (void *)fn_80167E98, 0x18, 0x1388);
+            __array_delete((u8 *)manager + 0xC, (void *)fn_80167E98, 0x18, 0x1388);
             if (manager != 0) {
                 manager->records = 0;
                 manager->recordCount = 0;
@@ -922,6 +922,8 @@ extern "C" s32 fn_8016899C(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
         virtual s32 check(const char *name);
     };
     register char *strBase = lbl_80330000;
+    const char *prefix;
+    s32 plen;
     DummyPatternTable pats;
     DummyLaneTypes laneTypes;
     DummyVec2 dir;
@@ -978,8 +980,8 @@ extern "C" s32 fn_8016899C(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
         pats = lbl_802F94B8;
         pat = pats.p;
         while (pat->type != 6) {
-            const char *prefix = pat->prefix;
-            s32 plen = strlen(prefix);
+            prefix = pat->prefix;
+            plen = strlen(prefix);
             if (fn_8002B1D8((s32)arg1->getName(), (s32 *)prefix, plen) == 0)
                 break;
             pat++;
@@ -1485,83 +1487,94 @@ s32 fn_80169D64(s32 unused, s32 name) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
-    s32 sp8 = -1;
+/* Place one "poop_<id>" object group: the table's own name carries the group id,
+ * and every item it holds is a scene object with a "loc" position and a "hit"
+ * radius.  Each item becomes a coin-type (1) pickup record standing on the
+ * ground at its position, lifted by the pickup type's height offset and by its
+ * own hit radius; the whole group shares one entry in the manager's group list.
+ * fn_80169D64() is the name check that picks this handler for a table. */
+extern "C" s32 fn_80169DB8(void *unused, DummyArg1 *table, DummyManager *manager) {
+    s32 parsedId = -1;
     DummyItem *item = 0;
-    s32 id = 0;
+    s32 groupId = 0;
     s32 i;
     f32 zero;
 
-    sscanf(arg1->getName(), lbl_8055A1C0, &sp8);
-    id = sp8;
+    /* "poop_<id>" - the number in the table's name is the group's id */
+    sscanf(table->getName(), lbl_8055A1C0, &parsedId);
+    groupId = parsedId;
     {
-        DummyEntry *entry = &arg2->entries[arg2->entryCount++];
+        /* One group entry up front; flag1E158 keeps every item below in it */
+        DummyEntry *entry = &manager->entries[manager->entryCount++];
         entry->byte1C = 0;
         zero = 0.0f;
         entry->f8 = zero;
         entry->fC = zero;
         entry->f10 = zero;
-        entry->recordStart = arg2->recordCount;
+        entry->recordStart = manager->recordCount;
         entry->recordCount = 0;
         entry->byte1D = 0;
-        entry->id = id;
+        entry->id = groupId;
         entry->active = 1;
-        arg2->flag1E158 = 1;
+        manager->flag1E158 = 1;
     }
 
-    for (i = 0; (item = arg1->getItem(i)) != 0; i++) {
-        f32 hit = item->getHit(lbl_8055A1C8);
-        DummyVec2 loc = item->getLoc(lbl_8055A1CC);
-        DummyRecord *rec = &arg2->records[arg2->recordCount++];
+    for (i = 0; (item = table->getItem(i)) != 0; i++) {
+        f32 hit = item->getHit(lbl_8055A1C8);   /* "hit" */
+        DummyVec2 loc = item->getLoc(lbl_8055A1CC); /* "loc" */
+        DummyRecord *pickup = &manager->records[manager->recordCount++];
         f32 sum;
-        rec->obj = 0;
-        rec->obj = (DummyRecordObj *)fn_80167874(1);
-        rec->x = loc.x;
-        rec->y = zero;
-        rec->z = loc.y;
-        rec->hit = hit;
-        fn_801E9E30(0, &rec->x);
-        sum = rec->y + rec->obj->f18;
-        rec->y = sum + rec->hit;
-        rec->flag = 0;
-        fn_801EA1E0(&rec->y, 1, rec->x, rec->z);
+        pickup->obj = 0;
+        pickup->obj = (DummyRecordObj *)fn_80167874(1); /* the coin pickup type */
+        pickup->x = loc.x;
+        pickup->y = zero;
+        pickup->z = loc.y;
+        pickup->hit = hit;
+        fn_801E9E30(0, &pickup->x);  /* drop y onto the ground under (x, z) */
+        sum = pickup->y + pickup->obj->f18; /* the type's standing height */
+        pickup->y = sum + pickup->hit;      /* plus this item's own lift */
+        pickup->flag = 0;
+        fn_801EA1E0(&pickup->y, 1, pickup->x, pickup->z);
+        /* count the placed pickup on the type info */
         *(s32 *)((u8 *)fn_80167874(1) + 0x1C) += 1;
 
-        if (arg2->flag1E158 != 0) {
-            s32 last2 = arg2->entryCount - 1;
-            u8 *base2 = (u8 *)arg2->entries;
-            u8 *e2 = base2 + last2 * 0x20;
-            (*(s32 *)(e2 + 0x18))++;
+        if (manager->flag1E158 != 0) {
+            /* still the group opened above: one more record in it */
+            s32 lastGroupIndex = manager->entryCount - 1;
+            u8 *groupsBase = (u8 *)manager->entries;
+            u8 *lastGroup = groupsBase + lastGroupIndex * 0x20;
+            (*(s32 *)(lastGroup + 0x18))++;
         } else {
-            s32 __c = arg2->entryCount;
-            if (__c == 0) {
+            s32 count = manager->entryCount;
+            if (count == 0) {
                 goto mkEntry;
             } else {
-                s32 __last = __c - 1;
-                volatile u8 *__e = (u8 *)arg2->entries + __last * 0x20 + 0x1C;
-                if (*__e == 0) {
+                s32 lastIndex = count - 1;
+                volatile u8 *lastFlag = (u8 *)manager->entries + lastIndex * 0x20 + 0x1C;
+                if (*lastFlag == 0) {
                     goto incEntry;
                 }
             }
         mkEntry:;
             {
-                DummyEntry *newEntry = &arg2->entries[arg2->entryCount++];
-                newEntry->byte1C = 0;
-                newEntry->recordStart = arg2->recordCount - 1;
-                newEntry->recordCount = 0;
-                newEntry->byte1D = 0;
+                /* the last group is closed, so open one for this record */
+                DummyEntry *newGroup = &manager->entries[manager->entryCount++];
+                newGroup->byte1C = 0;
+                newGroup->recordStart = manager->recordCount - 1;
+                newGroup->recordCount = 0;
+                newGroup->byte1D = 0;
             }
         incEntry:;
             {
-                s32 last3 = arg2->entryCount - 1;
-                u8 *base3 = (u8 *)arg2->entries;
-                u8 *e3 = base3 + last3 * 0x20;
-                (*(s32 *)(e3 + 0x18))++;
+                s32 lastAddedIndex = manager->entryCount - 1;
+                u8 *addedBase = (u8 *)manager->entries;
+                u8 *addedGroup = addedBase + lastAddedIndex * 0x20;
+                (*(s32 *)(addedGroup + 0x18))++;
             }
         }
     }
 
-    arg2->flag1E158 = 0;
+    manager->flag1E158 = 0;
     return 1;
 }
 #pragma pop

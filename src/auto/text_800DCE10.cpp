@@ -272,7 +272,7 @@ extern "C" void *__ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4
 #pragma pop
 extern const char lbl_80320580[];
 extern "C" void *__dt__Q36nw4hbm3lyt4PaneFv(void *, s32);
-extern "C" void fn_8002F634(void *, void *, s32, s32);
+extern "C" void __array_delete(void *, void *, s32, s32);
 extern f32 lbl_80560ED0;
 extern char lbl_803208D4[];
 extern void fn_800D2DD4(void);
@@ -332,7 +332,7 @@ extern "C" void *__dt__Q36nw4hbm3lyt7TextBoxFv(void *arg0, s32 arg1) {
             *(void **)(self + 0x28) = 0;
         }
         ((TextBox *)arg0)->m24();
-        fn_8002F634(self + 0xD8, fn_800D2DD4, 4, 2);
+        __array_delete(self + 0xD8, fn_800D2DD4, 4, 2);
         __dt__Q36nw4hbm3lyt4PaneFv(arg0, 0);
         if (arg1 > 0)
             ((s32 (*)(void *))fn_80128668)(arg0);

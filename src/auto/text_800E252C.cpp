@@ -452,7 +452,7 @@ struct EmissionManagerAlloc { char pad0[0xC]; void *next; char pad1[0x6C2C-0x10]
 extern char lbl_80407F6C[];
 extern char lbl_80407F60[];
 #pragma pop
-extern "C" void *fn_8002F634(void *, void *, int, int);
+extern "C" void *__array_delete(void *, void *, int, int);
 extern "C" void *__dt__Q46nw4hbm3snd6detail7AxVoiceFv(void *, int);
 extern "C" void *fn_800E2D74(void *, int);
 extern "C" void TRKGetFreeBuffer(void *);
@@ -709,8 +709,8 @@ extern "C" void *Instance__15EmissionManagerFv(void) {
 /* EmissionManager deleting destructor: destroys embedded subobjects/arrays and optionally frees the object. */
 extern "C" void *fn_800E2D74(void *self, int deleteFlag) {
     if (self != 0) {
-        fn_8002F634((char *)self + 0x6ccc, (void *)__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8, 0xc, 3);
-        fn_8002F634((char *)self + 0x2c, (void *)__dt__Q46nw4hbm3snd6detail7AxVoiceFv, 0x1b0, 0x40);
+        __array_delete((char *)self + 0x6ccc, (void *)__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8, 0xc, 3);
+        __array_delete((char *)self + 0x2c, (void *)__dt__Q46nw4hbm3snd6detail7AxVoiceFv, 0x1b0, 0x40);
         if ((char *)self + 0x20 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((char *)self + 0x20, 0);
         if ((char *)self + 0x14 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((char *)self + 0x14, 0);
         if ((char *)self + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((char *)self + 8, 0);
@@ -3895,7 +3895,7 @@ extern const char lbl_803224F0[];
 extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *arg0, const void *arg1) {
     register void *self = arg0;
     register const unsigned char *file = (const unsigned char *)arg1;
-    const char *strings = lbl_803224F0;
+    register const char *strings = lbl_803224F0;
     register unsigned short temp_r0;
     register unsigned int var_r0;
     *(unsigned int *)self = 0;

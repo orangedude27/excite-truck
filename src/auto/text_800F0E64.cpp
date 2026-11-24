@@ -3079,7 +3079,7 @@ extern "C" void Update__Q36nw4hbm3snd18SoundArchivePlayerFv(void* arg0) {
     extern void OSUnlockMutex(void*);
     extern void Update__Q36nw4hbm3snd11SoundPlayerFv(void*);
     extern void* fn_8002F53C(void*, void (*)(void*), void* (*)(void*, int), s32, s32);
-    extern void* fn_8002F634(void*, void* (*)(void*, int), s32, s32);
+    extern void* __array_delete(void*, void* (*)(void*, int), s32, s32);
     extern void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void*, void**);
     extern void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void*, void**, void*);
     extern void fn_800F4F04(void*);
@@ -3200,7 +3200,7 @@ extern "C" void Update__Q36nw4hbm3snd18SoundArchivePlayerFv(void* arg0) {
             entry += 0xC;
         } while (k < 0x80);
     }
-    fn_8002F634(arrA, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F4F24, 0xC, 0x80);
+    __array_delete(arrA, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F4F24, 0xC, 0x80);
     fn_8002F53C(arrB, fn_800F4F7C, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F4F9C, 0xC, 0x80);
     while (*(s32*)(self + 0x8C) != 0) {
         if (*(s32*)(self + 0x8C) == 0) {
@@ -3267,7 +3267,7 @@ extern "C" void Update__Q36nw4hbm3snd18SoundArchivePlayerFv(void* arg0) {
             entry += 0xC;
         } while (k < 0x80);
     }
-    fn_8002F634(arrB, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F4F9C, 0xC, 0x80);
+    __array_delete(arrB, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F4F9C, 0xC, 0x80);
     fn_8002F53C(arrC, fn_800F4FF4, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F5014, 0xC, 0x80);
     while (*(s32*)(self + 0x9C) != 0) {
         if (*(s32*)(self + 0x9C) == 0) {
@@ -3334,7 +3334,7 @@ extern "C" void Update__Q36nw4hbm3snd18SoundArchivePlayerFv(void* arg0) {
             entry += 0xC;
         } while (k < 0x80);
     }
-    fn_8002F634(arrC, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F5014, 0xC, 0x80);
+    __array_delete(arrC, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F5014, 0xC, 0x80);
     OSUnlockMutex(mutex);
     return;
 }
@@ -5000,15 +5000,14 @@ static inline void SndPrioList_PushBack(u8 *list, u8 *obj) {
 }
 extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0) {
     extern void* fn_8002F53C(void*, void (*)(void*), void* (*)(void*, int), s32, s32);
-    extern void* fn_8002F634(void*, void* (*)(void*, int), s32, s32);
+    extern void* __array_delete(void*, void* (*)(void*, int), s32, s32);
     extern void fn_800F8520(void*);
     extern void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540(void*, int);
-    u8* elt;
     u8* self = (u8*)arg0;
     u8 arr[0x600];
     fn_8002F53C(arr, fn_800F8520, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540, 0xC, 0x80);
     while (*(s32*)(self + 0xC) != 0) {
-        elt = SndPrioList_GetFront(self + 0xC);
+        u8* elt = SndPrioList_GetFront(self + 0xC);
         SndPrioList_PopFront(self + 0xC);
         s32 prio = *(u8*)(elt + 0x74) + *(s32*)(elt + 0x40);
         prio = prio > 0x7F ? 0x7F : (prio < 0 ? 0 : prio);
@@ -5019,7 +5018,7 @@ extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0
     do {
         if (*(s32*)list != 0) {
             while (*(s32*)list != 0) {
-                elt = SndPrioList_GetFront(list);
+                u8* elt = SndPrioList_GetFront(list);
                 SndPrioList_PopFront(list);
                 SndPrioList_PushBack(self + 0xC, elt);
             }
@@ -5027,7 +5026,7 @@ extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0
         k++;
         list += 0xC;
     } while (k < 0x80);
-    fn_8002F634(arr, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540, 0xC, 0x80);
+    __array_delete(arr, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540, 0xC, 0x80);
 }
 #pragma pop
 extern "C" void* fn_800F07EC(void*, void*);
@@ -8451,13 +8450,13 @@ extern "C" int fn_800FD8F4(void* player) {
     return *((unsigned char*)player + 0x48) != 0;
 }
 
-extern "C" void* fn_8002F634(void*, void*, int, int);
+extern "C" void* __array_delete(void*, void*, int, int);
 extern "C" void* __dt__Q46nw4hbm3snd6detail10StrmPlayerFv(void* self, int shouldDelete) {
     /* Destroy a StrmPlayer: tear down embedded collections/lists and optionally delete. */
     void* list;
     void* list2;
     if (self != 0) {
-        fn_8002F634((char*)self + 0xAC, (void*)fn_800FB374, 0x1C, 0x20);
+        __array_delete((char*)self + 0xAC, (void*)fn_800FB374, 0x1C, 0x20);
         list = (char*)self + 0xA0;
         if (list != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv(list, 0);
         list2 = (char*)self + 0x94;

@@ -761,7 +761,7 @@ void *fn_801E1568(void *self, int shouldDelete) {
             *(int *)((char *)self + 8) = -2;
         }
         if ((char *)self + 0x7c != 0) {
-            fn_8002F634((char *)self + 0x88, fn_801E07E8, 0x1c, 0x64);
+            __array_delete((char *)self + 0x88, fn_801E07E8, 0x1c, 0x64);
             if ((char *)self + 0x7c != 0) {
                 *(int *)((char *)self + 0x7c) = 0;
                 *(int *)((char *)self + 0x80) = 0;

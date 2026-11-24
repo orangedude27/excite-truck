@@ -22,7 +22,7 @@ extern f32 lbl_80562650;
 extern s32 lbl_802F9630[39];
 extern void fn_80128670(s32);
 extern void fn_80128668(void*);
-extern void fn_8002F634(void*, void*, s32, s32);
+extern void __array_delete(void*, void*, s32, s32);
 extern void* fn_801B3BD4(void*, s32);
 extern s32 fn_802077A4();
 extern s32 lbl_80335DAC[3];
@@ -119,6 +119,7 @@ typedef struct Unk801B3398 {
 } Unk801B3398;
 
 #pragma scheduling invalid_target
+#pragma dont_inline on
 s32 fn_801B32C8(void* arg0, s32 arg1) {
     s32 vals[2];
     s32 first = *(s32*)((char*)arg0 + 0x20);
@@ -202,8 +203,8 @@ void fn_801B3448(void) {
         check = fn_801B3B70(check);
         *(void **)&lbl_8055E6C0 = check;
     }
-    fn_801B5364(1, &fn_801B3390);
-    fn_801B5364(0xF, &fn_801B3398);
+    fn_801B5364(1, (void *)((u32)fn_801B3390 + 0));
+    fn_801B5364(0xF, fn_801B3398);
 }
 #pragma pop
 /* Reset all collision-sound history when the game state is restarted.
@@ -225,8 +226,8 @@ void fn_801B34DC(void *arg0, void *arg1, V3_801B34DC *pos, V3_801B34DC *arg3, V3
     Ev30_801B34DC e30;
     Ev20_801B34DC e20;
     Ev14_801B34DC e14;
-    V3_801B34DC a = *arg3;
-    V3_801B34DC b = *arg4;
+    V3_801B34DC a;
+    V3_801B34DC b;
     V3_801B34DC p1, diff, p2, sc;
     V3_801B34DC t;
     Cp38_801B34DC *s = (Cp38_801B34DC *)&ev;
@@ -234,6 +235,11 @@ void fn_801B34DC(void *arg0, void *arg1, V3_801B34DC *pos, V3_801B34DC *arg3, V3
     void *r31;
     void *r26;
     s32 ok, in;
+    u32 ax, az, ay, bx, by, bz;
+    ax = ((u32 *)arg3)[0]; ay = ((u32 *)arg3)[1]; az = ((u32 *)arg3)[2];
+    bx = ((u32 *)arg4)[0]; by = ((u32 *)arg4)[1]; bz = ((u32 *)arg4)[2];
+    ((u32 *)&a)[0] = ax; ((u32 *)&a)[1] = ay; ((u32 *)&a)[2] = az;
+    ((u32 *)&b)[0] = bx; ((u32 *)&b)[1] = by; ((u32 *)&b)[2] = bz;
     if (*(s32 *)((u8 *)arg0 + 4) == 0) {
         void *sw = arg0;
         arg0 = arg1;
@@ -250,19 +256,43 @@ void fn_801B34DC(void *arg0, void *arg1, V3_801B34DC *pos, V3_801B34DC *arg3, V3
     }
     diff.x = p1.x - p2.x; diff.y = p1.y - p2.y; diff.z = p1.z - p2.z;
     d = PSVECDotProduct(&b, &a);
-    ok = 1;
-    in = 0;
-    if ((u32)(arg5 - 0x6B) <= 3 && ((1 << (arg5 - 0x6B)) & 0xD)) in = 1;
-    if (in == 0 && arg5 >= 8) ok = 0;
+    {
+        u32 kindIndex = (u32)arg5 - 0x6B;
+        in = 0;
+        ok = 1;
+        if (kindIndex <= 3 && ((1U << kindIndex) & 0xD) != 0) {
+            in = 1;
+        }
+        if ((in & 1) == 0 && arg5 >= 8) ok = 0;
+    }
     r31 = fn_801B3338(arg0);
     if (r31 != 0 && ok != 0 && d * d > lbl_80562628 && PSVECDotProduct(&diff, &diff) > lbl_8056262C) {
         if (arg1 != 0) r26 = fn_801B3338(arg1); else r26 = 0;
-        ev.a.x = p1.x * lbl_80562630 + p2.x * lbl_80562630;
-        ev.a.y = p1.y * lbl_80562630 + p2.y * lbl_80562630;
-        ev.a.z = p1.z * lbl_80562630 + p2.z * lbl_80562630;
-        ev.b.x = pos->x; ev.b.y = pos->y; ev.b.z = pos->z;
-        ev.c.x = a.x; ev.c.y = a.y; ev.c.z = a.z;
-        ev.d.x = b.x; ev.d.y = b.y; ev.d.z = b.z;
+        {
+            f32 bz, by, bx, pz, py, px, az, ay, ax;
+            f32 secondY, secondX, firstY, firstX;
+            f32 combinedZ, combinedY, combinedX, firstZ, scale;
+            {
+                f32 first = p1.x;
+                scale = lbl_80562630;
+                firstX = first * scale;
+            }
+            firstY = p1.y * scale;
+            firstZ = p1.z * scale;
+            secondX = p2.x * scale;
+            secondY = p2.y * scale;
+            combinedX = firstX + secondX;
+            combinedY = firstY + secondY;
+            ax = a.x; ay = a.y; az = a.z;
+            px = pos->x;
+            combinedZ = firstZ + p2.z * scale;
+            py = pos->y; pz = pos->z;
+            bx = b.x; by = b.y; bz = b.z;
+            ev.a.x = combinedX; ev.a.y = combinedY; ev.a.z = combinedZ;
+            ev.c.x = ax; ev.c.y = ay; ev.c.z = az;
+            ev.b.x = px; ev.b.y = py; ev.b.z = pz;
+            ev.d.x = bx; ev.d.y = by; ev.d.z = bz;
+        }
         ev.kind = arg5;
         ev.id = *(s32 *)((u8 *)r31 + 0x1EC);
         fn_801796CC(1, &ev, 0x38);
@@ -281,16 +311,23 @@ void fn_801B34DC(void *arg0, void *arg1, V3_801B34DC *pos, V3_801B34DC *arg3, V3
         }
     }
     if (PSVECDotProduct(&p1, &p1) > lbl_80562634 && fn_801B32C8(arg0, arg5) != 0) {
-        e20.q.x = pos->x; e20.q.y = pos->y; e20.q.z = pos->z;
-        e20.p.x = p1.x; e20.p.y = p1.y; e20.p.z = p1.z;
+        f32 z, y, x, pz, py, px;
+        px = pos->x; py = pos->y; pz = pos->z;
+        x = p1.x; y = p1.y; z = p1.z;
+        e20.q.x = px; e20.q.y = py; e20.q.z = pz;
+        e20.p.x = x; e20.p.y = y; e20.p.z = z;
         e20.s = *(s16 *)(*(u8 **)((u8 *)arg0 + 4) + 0x6C);
         e20.id = r31 != 0 ? *(s32 *)((u8 *)r31 + 0x1EC) : -1;
         fn_801796CC(0, &e20, 0x20);
     }
     if (r31 != 0 && arg5 < 8 && ((s32 *)lbl_80435C50)[*(s32 *)((u8 *)r31 + 0x1EC)] < lbl_8055E3C4) {
-        e30.p.x = pos->x; e30.p.y = pos->y; e30.p.z = pos->z;
-        e30.q.x = p1.x; e30.q.y = p1.y; e30.q.z = p1.z;
-        e30.r.x = b.x; e30.r.y = b.y; e30.r.z = b.z;
+        f32 bz, by, bx, z, y, x, pz, py, px;
+        px = pos->x; py = pos->y; pz = pos->z;
+        x = p1.x; y = p1.y; z = p1.z;
+        bx = b.x; by = b.y; bz = b.z;
+        e30.p.x = px; e30.p.y = py; e30.p.z = pz;
+        e30.q.x = x; e30.q.y = y; e30.q.z = z;
+        e30.r.x = bx; e30.r.y = by; e30.r.z = bz;
         e30.dot = d;
         e30.id = *(s32 *)((u8 *)r31 + 0x1EC);
         e30.kind = arg5;
@@ -307,14 +344,14 @@ void fn_801B34DC(void *arg0, void *arg1, V3_801B34DC *pos, V3_801B34DC *arg3, V3
     } else {
         sc.x = a.x; sc.y = a.y; sc.z = a.z;
     }
-    if (fn_801B3DC0((void *)lbl_8055E6C0, (u32)arg0, (u32)arg1) == 0 && PSVECDotProduct(&sc, &sc) > lbl_8056263C) {
-        f = PSVECMag(&sc);
-        if (lbl_80562640 < f) f = lbl_80562640;
-        f = lbl_80562644 + lbl_80562648 * (f / lbl_80562640);
-        e14.id = 0x4D2;
-        t = *pos;
-        e14.p = t;
+    if (fn_801B3DC0((void *)lbl_8055E6C0, (u32)arg0, (u32)arg1) == 0 && (((u32)(PSVECDotProduct(&sc, &sc) > lbl_8056263C) & 1U) != 0)) {
+        f32 mag = PSVECMag(&sc);
+        f32 limit = lbl_80562640;
+        f32 clamped = limit < mag ? limit : mag;
+        f = lbl_80562644 + lbl_80562648 * (clamped / lbl_80562640);
+        e14.p = (*(volatile V3_801B34DC *)&t = *pos);
         e14.w = f;
+        e14.id = 0x4D2;
         fn_801B5360(1, &e14, 0x14);
         fn_801B3E24((void *)lbl_8055E6C0, pos, arg0, (s32)arg1, arg5, f);
     }
@@ -406,7 +443,7 @@ void* fn_801B3D24(void* obj, s32 shouldFree) {
             fn_80128670(*slot);
             slot += 3;
         }
-        fn_8002F634((u8*)obj + 0x2FC, (void*)fn_801B3BD4, 0x2C, 0x10);
+        __array_delete((u8*)obj + 0x2FC, (void*)fn_801B3BD4, 0x2C, 0x10);
         if (shouldFree > 0) {
             fn_80128668(obj);
         }
@@ -544,14 +581,14 @@ void fn_801B3FD8(void* arg0) {
         start = pos;
         while (pos < 13 && tbl[pos].group == g) pos++;
         n = pos - start;
-        if (n < 1) fn_802E317C(lbl_80335D50, g);
+        if (n < 1) fn_802E317C(lbl_80335D50);
         out->p = (Ent801B3FD8*)fn_8012850C(n * 8, lbl_80335D74);
         out->n = n;
         out->z = 0;
         for (i = 0; i < n; i++) {
             struct OutRec* d = &((struct OutRec*)out->p)[i];
-            d->a = ((const Ent801B3FD8*)lbl_802F9630)[start + i].a;
-            d->c = ((const Ent801B3FD8*)lbl_802F9630)[start + i].c;
+            d->a = ((Ent801B3FD8*)lbl_802F9630)[start + i].a;
+            d->c = ((Ent801B3FD8*)lbl_802F9630)[start + i].c;
         }
     }
 }
@@ -561,29 +598,38 @@ extern s32 fn_801B4428(u32 *, u32 *);
 extern void *fn_801B447C(void *, void *, s32);
 extern void qsort(void *, u32, u32, s32 (*)(u32 *, u32 *));
 void fn_801B4204(void *arg0) {
-    s32 *src = lbl_802F96CC;
-    s32 *dst = (s32 *)((char *)arg0 + 0x48);
-    s32 i, a, b, key, n;
+    s32 key;
+    s32 a;
+    s32 b;
+    s32 i;
+    s32 n;
+    s32 *src;
+    u8 *base;
+    register u8 *dst;
+
+    base = (u8 *)arg0;
+    src = lbl_802F96CC;
+    dst = base;
     for (i = 0; i < 0x2B; i++) {
         a = src[1];
         b = src[2];
         if (a < 0 || b < 0) {
             key = -1;
-        } else if (a >= b) {
-            key = (a & 0xFFFF) | ((b & 0xFFFF) << 16);
+        } else if (a < b) {
+            key = ((a & 0xFFFF) << 16) | (b & 0xFFFF);
         } else {
-            key = (b & 0xFFFF) | ((a & 0xFFFF) << 16);
+            key = ((b & 0xFFFF) << 16) | (a & 0xFFFF);
         }
         n = src[0];
-        dst[0] = key;
-        dst[1] = (s32)arg0 + n * 0xC;
-        dst[2] = 0;
-        dst[3] = 0;
+        *(s32 *)(dst + 0x48) = key;
+        *(s32 *)(dst + 0x4C) = (s32)arg0 + n * 0xC;
+        *(s32 *)(dst + 0x50) = 0;
+        *(s32 *)(dst + 0x54) = 0;
         src += 3;
-        dst += 4;
+        dst += 0x10;
     }
-    qsort((u8 *)arg0 + 0x48, 0x2B, 0x10, fn_801B4428);
-    *(void **)((u8 *)arg0 + 0x2F8) = fn_801B447C(arg0, (u8 *)arg0 + 0x48, 0x2B);
+    qsort(base + 0x48, 0x2B, 0x10, fn_801B4428);
+    *(void **)(base + 0x2F8) = fn_801B447C(arg0, base + 0x48, 0x2B);
 }
 
 #pragma push

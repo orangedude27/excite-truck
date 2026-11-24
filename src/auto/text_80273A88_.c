@@ -3,7 +3,7 @@
 
 typedef struct { float x, y, z; } Vec;
 extern void fn_80272354(void);
-extern void fn_8002F634(void *, void *, int, int);
+extern void __array_delete(void *, void *, int, int);
 extern void fn_80015B20(void *, void *, void *);
 extern void fn_801BFD34(void *, void *, void *);
 extern float PSVECMag(float *);
@@ -58,7 +58,7 @@ typedef struct {
 #pragma scheduling invalid_target
 void fn_80273A88(void) {
     /* Tear down the array at lbl_8049F9D8: 32 records of 0x1C bytes each, run through the per-element deleting destructor fn_80273978 (MSL runtime array_delete). */
-    fn_8002F634(lbl_8049F9D8, fn_80273978, 0x1C, 0x20);
+    __array_delete(lbl_8049F9D8, fn_80273978, 0x1C, 0x20);
 }
 #pragma scheduling on
 void fn_80273AA4(PoolRecord *record) {
@@ -75,7 +75,7 @@ int fn_80273ABC(int object) {
 
 void fn_80273AEC(void) {
     /* Tear down the array at lbl_8049A2C8: 200 records of 0x60 bytes each, run through the per-element deleting destructor fn_80273B08 (MSL runtime array_delete). */
-    fn_8002F634(lbl_8049A2C8, fn_80273B08, 0x60, 0xC8);
+    __array_delete(lbl_8049A2C8, fn_80273B08, 0x60, 0xC8);
 }
 
 int fn_80273B08(int object, int deleteFlag) {

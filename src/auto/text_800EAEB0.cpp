@@ -190,7 +190,7 @@ extern "C" void *memcpy(void *, const void *, u32);
 // split_file divides it into the game's real files (file_status shows its range).
 
 /* Forward declarations for DisposeCallbackManager cluster */
-extern "C" void fn_8002F634(void* a, void* b, s32 c, s32 d);
+extern "C" void __array_delete(void* a, void* b, s32 c, s32 d);
 extern "C" void* __dt__Q46nw4hbm3snd6detail7ChannelFv(void*, s32);
 extern "C" u32 OSDisableInterrupts(void);
 extern "C" void OSRestoreInterrupts(u32 level);
@@ -223,7 +223,7 @@ extern s32 fn_80128668(void);
 extern "C" void fn_800EAEB0(void) {
     /* Register the global sound Channel's destructor with the dispose callback
      * manager so it is torn down at shutdown (0xE8-byte object, priority 0x41). */
-    fn_8002F634(&lbl_8040EC90, &__dt__Q46nw4hbm3snd6detail7ChannelFv, 0xE8, 0x41);
+    __array_delete(&lbl_8040EC90, &__dt__Q46nw4hbm3snd6detail7ChannelFv, 0xE8, 0x41);
 }
 
 extern "C" void* GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void) {
@@ -330,7 +330,7 @@ extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(voi
             return it;
         }
         Callback* operator->() const {
-            if (!mPointer)
+            if (mPointer == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B44, 0x23D, (const char*)lbl_80322B20);
             return (Callback*)mPointer;
         }
@@ -342,8 +342,8 @@ extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(voi
         Iterator GetBeginIter() { return Iterator(node.next); }
         Iterator GetEndIter() { return Iterator(&node); }
     };
-    u8* start = (u8*)object;
-    u8* end = start + size;
+    void* start = object;
+    void* end = (u8*)start + size;
     unsigned long outerLevel = OSDisableInterrupts();
     for (Iterator it = ((List*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv())->GetBeginIter();
          it != ((List*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv())->GetEndIter();) {
@@ -368,7 +368,7 @@ extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv
         ListNode* mPointer;
         Iterator(ListNode* p) : mPointer(p) {}
         Iterator operator++(int) {
-            Iterator it = *this;
+            register Iterator it = *this;
             mPointer = mPointer->next;
             return it;
         }
@@ -380,7 +380,7 @@ extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv
         bool operator!=(const Iterator& o) const { return mPointer != o.mPointer; }
     };
     struct List {
-        u32 count;
+        long count;
         ListNode node;
         Iterator GetBeginIter() { return Iterator(node.next); }
         Iterator GetEndIter() { return Iterator(&node); }
@@ -1080,7 +1080,7 @@ extern "C" u32 fn_800EC56C(void *__restrict soundHeapRef) {
     return (allocSize - 0x20) & ~31;
 }
 
-extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, void* buffer, u32 size, u32 blockSize) {
+extern "C" u32 CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, void* buffer, u32 size, u32 blockSize) {
     extern u8 lbl_80323058[], lbl_80323070[];
     void** head = (void**)headArg;
     u32 start, stride, i, irq, previous;
@@ -1092,16 +1092,17 @@ extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, 
     stride = (blockSize + 3) & ~3;
     blockSize = (size - (start - addr)) / stride;
     {
-        u32 node = start;
+        u32* node = (u32*)start;
         previous = (u32)*head;
         for (; i < blockSize; i++) {
-            *(u32*)node = previous;
+            *node = previous;
             *head = (void*)node;
-            previous = node;
-            node += stride;
+            previous = (u32)node;
+            node = (u32*)((u32)node + stride);
         }
     }
     OSRestoreInterrupts(irq);
+    return blockSize;
 }
 #pragma opt_common_subs reset
 void nw4hbm::snd::detail::PoolImpl::DestroyImpl(void* buffer, unsigned long size) {
@@ -1264,9 +1265,9 @@ extern "C" s32 fn_800ECB90(void *arg0, s32 arg1) {
     extern void Init__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCv(void *, const void *);
     extern void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi_800F2750(void *, s32);
     extern void SetInfoChunk__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCvUl(void *, const void *, u32);
-    extern void fn_800F2EAC(void *, const void *, u32);
     const char *file = (const char *)lbl_803230E8;
-    if (arg1 == 0) {
+    extern void fn_800F2EAC(void *, const void *, u32);
+    if (!arg1) {
         Panic__Q26nw4hbm2dbFPCciPCce(file, 0x43, file + 0x1C);
     }
     if (((u32)arg1 & 3) != 0) {
