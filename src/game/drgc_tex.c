@@ -80,7 +80,8 @@ extern void GXInitTlutObj(void *, void *, int, unsigned short);
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-/* Allocate a free drgc texture-cache slot from the lbl_8055FE28 pool (0x1C2 entries of 0xF4 bytes): clear and mark the first unused slot in use, or dump the table and panic with the requester's name if none are free. */ void *fn_802D7600(void *requesterName) {
+/* Allocate a free drgc texture-cache slot from the lbl_8055FE28 pool (0x1C2 entries of 0xF4 bytes): clear and mark the first unused slot in use, or dump the table and panic with the requester's name if none are free. */
+void *fn_802D7600(void *requesterName) {
     unsigned char *texEntry;
     int index;
 
