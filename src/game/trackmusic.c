@@ -673,15 +673,20 @@ struct Record_802101F8 {
 }
 #pragma cplusplus reset
  
-/* Initializes the track-music buffer and registers it with the 'Tmus' resource handler. */
+/* Set up the track-music buffer: zero its 0x6400 bytes, register it as the
+ * 'Tmus' memcard chunk, and install the clear-context broadcast callback. */
 void fn_8021031C(void) {
+#define TMUS_TAG    0x546D7573
+#define BUFFER_SIZE 0x6400
     long resourceTag;
     char *trackMusicBuffer;
-    resourceTag = 0x546D7573;
+    resourceTag = TMUS_TAG;
     trackMusicBuffer = lbl_80489CA0;
-    memset(&lbl_80489CA0, 0, 0x6400);
-    fn_802E6BD8(resourceTag, 0, trackMusicBuffer, 0x6400, 0);
+    memset(&lbl_80489CA0, 0, BUFFER_SIZE);
+    fn_802E6BD8(resourceTag, 0, trackMusicBuffer, BUFFER_SIZE, 0);
     fn_8000DBC8(&fn_8020F6E0);
+#undef BUFFER_SIZE
+#undef TMUS_TAG
 }
  
 extern long fn_80207848(void *, long);
