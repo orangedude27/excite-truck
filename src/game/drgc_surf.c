@@ -147,7 +147,7 @@ void drDrawSurfLayout11(struct SurfDraw *surface) {
 #pragma scheduling on
 /* Bind this surface object's position, normal, and color vertex arrays, then
  * submit its prebuilt display list. */
-void fn_802D3F98(struct SurfDraw *surface) {
+void drDrawSurfLayout28(struct SurfDraw *surface) {
     /* Draw a surface with 12-byte positions, a 4-byte color0 array and 4-byte
      * texcoords: bind the three vertex arrays, then run its display list. */
     GXSetArray(GX_VA_POS, surface->positions, 0xC);
@@ -1031,7 +1031,7 @@ void fn_802D5F88(s32 arg0) {
     case 17: fn_802D50B4(surface); break;
     case 5: fn_802D5270(surface); break;
     case 1: drDrawSurfLayout11(surface); break;
-    case 18: fn_802D3F98(surface); break;
+    case 18: drDrawSurfLayout28(surface); break;
     case 2: drDrawSurfLayout12(surface); break;
     case 3: fn_802D4060(surface); break;
     case 6:
