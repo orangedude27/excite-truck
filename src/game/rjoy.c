@@ -153,13 +153,15 @@ extern int gWpadAllocHandles[];
 extern int wpadAllocTag;
 extern int gWpadAllocCount;
 #pragma scheduling invalid_target
-/* Registers a WPAD input handler for the given device and stores its handle. */
-void wpadAlloc(int deviceIndex) {
-    int handle;
+/* WPAD/WUD allocator callback: request 0x80-byte alignment, select the heap
+ * ring, then allocate a `size`-byte block tagged "wpad" and append its handle
+ * to gWpadAllocHandles (the block is also left in r3 as the callback result). */
+void wpadAlloc(int size) {
+    int block;
     fn_801282EC(0x80);
     fn_801282F4();
-    handle = fn_801284E8(&wpadAllocTag, deviceIndex);
-    gWpadAllocHandles[gWpadAllocCount++] = handle;
+    block = fn_801284E8(&wpadAllocTag, size);
+    gWpadAllocHandles[gWpadAllocCount++] = block;
 }
 #pragma scheduling on
 extern float lbl_805651A0, lbl_805651A4;
