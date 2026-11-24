@@ -1473,7 +1473,7 @@ int fn_802C9E94(void *arg0, int arg1, int arg2, float farg0, float farg1, float 
   return old_count;
 }
 /* Advance the embedded timer/animation state at +4 by the delta at +0x10; if it expires, notify the owner object at +0. */
-void fn_802CA008(void *owner) {
+void drawIfVisible(void *owner) {
     if (((int (*)(int, float))fn_802C9640)((int)((char *)owner + 4), *(float *)((char *)owner + 0x10)) != 0) {
         fn_801E7894(*(int *)owner);
     }
@@ -1501,9 +1501,9 @@ void fn_802CA09C(void) {
     ((int (*)(void))fn_802C9E94)();
 }
 
-/* Tail-call thunk: forward `owner` to fn_802CA008, which advances its embedded
+/* Tail-call thunk: forward `owner` to drawIfVisible, which advances its embedded
    timer at +4 by the delta at +0x10 and notifies the owner at +0 on expiry. */
-void fn_802CA0A0(void *owner) { fn_802CA008(owner); }
+void fn_802CA0A0(void *owner) { drawIfVisible(owner); }
 
 extern char lbl_8055FC94;
 extern char lbl_8055D030[];
