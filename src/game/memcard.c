@@ -322,21 +322,21 @@ int fn_802E7130(void) {
 #undef gChunkTable
 }
 /* Finds the index of a memcard record matching (arg0,arg1,arg2); logs and returns -1 on mismatch. */
-int fn_802E721C(unsigned int arg0, unsigned int arg1, int arg2) {
-    unsigned char *entry = lbl_804FC8B0;
-    int count = lbl_8055FFC0;
-    int i = 0;
-    while (count > 0) {
-        if (*(unsigned int *)entry == arg0) {
-            if (*(unsigned int *)(entry + 4) != arg1 || *(int *)(entry + 0xC) != arg2) {
-                fn_802E30C8((const char *)lbl_8034D7B0, arg0);
+/* Find the index of the memory-card chunk entry matching (chunkId, chunkFormat, chunkSize); if the id matches but the format or size differs, log a "bad chunk format" message and return -1. */ int fn_802E721C(unsigned int chunkId, unsigned int chunkFormat, int chunkSize) {
+    unsigned char *chunkEntry = lbl_804FC8B0;
+    int chunkCount = lbl_8055FFC0;
+    int chunkIndex = 0;
+    while (chunkCount > 0) {
+        if (*(unsigned int *)chunkEntry == chunkId) {
+            if (*(unsigned int *)(chunkEntry + 4) != chunkFormat || *(int *)(chunkEntry + 0xC) != chunkSize) {
+                fn_802E30C8((const char *)lbl_8034D7B0, chunkId);
                 return -1;
             }
-            return i;
+            return chunkIndex;
         }
-        entry += 0x14;
-        i++;
-        count--;
+        chunkEntry += 0x14;
+        chunkIndex++;
+        chunkCount--;
     }
     return -1;
 }
