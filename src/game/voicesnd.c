@@ -43,7 +43,20 @@ extern int fn_8012A2D8(void *);
 extern int fn_8012A364(void *, void *);
 extern void *fn_8012850C(unsigned int, void *);
 extern void *memset(void *, int, unsigned int);
-  extern void fn_802E6B04(void);
+
+/* VoiceSound pool: a fixed-size ObjectPool (see drawlist.c) of VoiceSound
+ * objects, created on first use and shared by every voice sound. */
+#define STR_VOICESOUND_POOL      lbl_8033C368 /* "VoiceSound::pool" */
+#define sVoiceSoundPool          lbl_8055EE10 /* the ObjectPool of VoiceSounds */
+#define sVoiceSoundLiveCount     lbl_8055EE0C /* VoiceSounds currently handed out */
+#define VOICESOUND_POOL_CAPACITY 0x200
+#define VOICESOUND_OBJECT_SIZE   0x54
+#define NamedAlloc  fn_801284F8 /* void *(int size, const char *name) */
+#define Pool_Init   fn_8012A13C /* (void *pool, const char *name, int count, int stride) */
+#define Pool_Alloc  fn_8012A2D8 /* void *(void *pool): pop one element */
+#define Pool_Free   fn_8012A364 /* (void *pool, void *element): push one back */
+
+extern void fn_802E6B04(void);
       extern char lbl_8033C388[];
     #define kUnfreedSoundFmt lbl_8033C388
     extern void fn_802E6B34(void);
