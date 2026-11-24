@@ -82,10 +82,10 @@ int fn_8020F3BC(int path, int buffer, int size) {
     fn_801345D8((void *)buffer, size, (void *)&lbl_8055B664, path);
     return buffer;
 }
-extern long lbl_8055B66C;
+extern long gSngPathFormat;
 int buildSngSongPath(int source, int destination, int size) {
     /* Format a track-music song path ("%s.sng") into the destination buffer and return it. */
-    fn_801345D8((void *)destination, size, (void *)&lbl_8055B66C, source);
+    fn_801345D8((void *)destination, size, (void *)&gSngPathFormat, source);
     return destination;
 }
 
