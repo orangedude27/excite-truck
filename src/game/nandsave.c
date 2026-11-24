@@ -607,14 +607,14 @@ void rmemcardPumpAsync(void) {
 #undef rmemcardSave
 }
 #pragma pop
-void fn_802E9118(void *arg0) {
-#define mHandle ((char *)arg0 + 0x260)
-#define mField264 ((char *)arg0 + 0x264)
-#define mField268 ((char *)arg0 + 0x268)
-#define mField26C ((char *)arg0 + 0x26C)
-#define mState ((int *)arg0)
+void fn_802E9118(void *saveState) {
+#define mHandle ((char *)saveState + 0x260)
+#define mField264 ((char *)saveState + 0x264)
+#define mField268 ((char *)saveState + 0x268)
+#define mField26C ((char *)saveState + 0x26C)
+#define mState ((int *)saveState)
 #define ReleaseHandle fn_8012C4D8
-    /* Release the stored handle and clear the associated fields/state. */
+    /* Finish the async NAND save: release the stored handle, clear the request fields, and set the state word to 0. */
     ReleaseHandle(*(int *)mHandle);
     *(int *)mHandle = 0;
     *(int *)mField264 = 0;
