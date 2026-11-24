@@ -420,16 +420,16 @@ int fn_802E4440(void *arg0, void *arg1, int arg2) {
     }
 }
 #pragma pop
-int FileDisk_readAsync(void *arg0, void *arg1, int arg2) {
-    /* Starts an async DVD read from the file node's current cursor into arg1
-     * for arg2 bytes (priority 2), reports on failure, advances the cursor,
-     * and returns 1. */
+/* FileDisk::readAsync (vtable slot 0x10): start an async DVD read from the file's
+ * cursor into dst for len bytes at priority 2.  A non-positive return from
+ * DVDReadAsyncPrio is fatal; otherwise advance the cursor by len and return 1. */
+int FileDisk_readAsync(void *file, void *dst, int len) {
     int result;
-    result = DVDReadAsyncPrio((char *)arg0 + 4, arg1, arg2, *(int *)((char *)arg0 + 0x88), 0, 2);
+    result = DVDReadAsyncPrio((char *)file + 4, dst, len, *(int *)((char *)file + 0x88), 0, 2);
     if (result <= 0) {
-        fn_802E317C((void *)&lbl_8034D180);
+        fn_802E317C((void *)&fileCdMsgDvdReadFails);
     }
-    *(int *)((char *)arg0 + 0x88) += arg2;
+    *(int *)((char *)file + 0x88) += len;
     return 1;
 }
 #pragma scheduling on
