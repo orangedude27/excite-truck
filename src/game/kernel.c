@@ -771,19 +771,19 @@ unsigned long long fn_802E2C9C(void)
  * out by OSTicksToCalendarTime()) into the halfword-packed calendar struct
  * fn_802E2A5C logs "date:" and "time:" from at start-up.  The month is kept
  * 1-12 here, unlike the OS calendar's 0-11. */
-void KERNEL_ReadStartupCalendar(void *arg0) {
+/* Read the console RTC and store the current date/time into the halfword-packed startup calendar, converting the month from 0-based to 1-based. */ void KERNEL_ReadStartupCalendar(void *calendarOut) {
     struct OSTimeCalendar calendar;
-    struct StartupCalendar *now = (struct StartupCalendar *)arg0;
+    struct StartupCalendar *out = (struct StartupCalendar *)calendarOut;
 
     OSTicksToCalendarTime(OSGetTime(), &calendar);
-    now->second = (short)calendar.sec;
-    now->minute = (short)calendar.min;
-    now->hour = (short)calendar.hour;
-    now->day = (short)calendar.mday;
-    now->month = (short)(calendar.month + 1);
-    now->year = (short)calendar.year;
-    now->weekDay = calendar.wday;
-    now->msec = calendar.msec;
+    out->second = (short)calendar.sec;
+    out->minute = (short)calendar.min;
+    out->hour = (short)calendar.hour;
+    out->day = (short)calendar.mday;
+    out->month = (short)(calendar.month + 1);
+    out->year = (short)calendar.year;
+    out->weekDay = calendar.wday;
+    out->msec = calendar.msec;
 }
 #pragma scheduling invalid_target
 /* Busy-wait until the microsecond timer from fn_802E2C9C shows that
