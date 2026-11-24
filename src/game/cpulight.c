@@ -359,7 +359,7 @@ void fn_802DBBE4(int positionArray, int vertexCount) {
 extern void fn_802DBC70(int,int);
 /* Sets up GX position vertex array (vtx attr 9, 3 floats, index mode) for the given
  * vertex buffer and flushes it from data cache when the cached buffer changes. */
-/* Configure GX to draw the indexed position array for the mode-1 CPU-light pass, but only when the cached array pointer changes; then flush its vertex data from the data cache. */ void fn_802DBC70(int positionArray, int vertexCount) {
+/* Configure GX to draw the indexed position array for the mode-1 CPU-light pass, but only when the cached array pointer changes; then flush its vertex data from the data cache. */ /* Configure GX to draw the indexed position array for the mode-1 CPU-light pass, but only when the cached array pointer changes; then flush its vertex data from the data cache. */ void fn_802DBC70(int positionArray, int vertexCount) {
     if ((void *)lbl_8055FEA8 != (void *)positionArray) {
         lbl_8055FEA8 = (void *)positionArray;
         lbl_8055FEAC = (void *)vertexCount;
