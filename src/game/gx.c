@@ -217,21 +217,27 @@ unsigned char fn_802CEA1C(unsigned int argbColor) {
 
 /* Allocate and clear the EFB copy buffer based on the current render mode dimensions. */
 void fn_802CEA34(void) {
-    unsigned char *renderMode = (unsigned char *)lbl_8055FD64;
+#define sCurrentRenderMode lbl_8055FD64
+#define sXfbCopyInfo       lbl_804C9760
+#define kXfbAllocTag       lbl_8055D0F0  /* "xfb.a" */
+    unsigned char *renderMode = (unsigned char *)sCurrentRenderMode;
     unsigned short fbWidth = *(unsigned short *)(renderMode + 4);
     unsigned short efbHeight = *(unsigned short *)(renderMode + 8);
     int rowBytes = (fbWidth + 0xF) & 0xFFF0;
     int bufferSize = rowBytes * efbHeight;
     void *copyBuffer;
 
-    lbl_804C9760[2] = fbWidth;
-    lbl_804C9760[3] = *(unsigned short *)(renderMode + 8);
-    lbl_804C9760[4] = 2;
+    sXfbCopyInfo[2] = fbWidth;
+    sXfbCopyInfo[3] = *(unsigned short *)(renderMode + 8);
+    sXfbCopyInfo[4] = 2;
     copyBuffer = ((void *(*)(int, void *, int, unsigned short, void *))fn_8012850C)(
-        bufferSize * 2, &lbl_8055D0F0, bufferSize, fbWidth, renderMode);
-    lbl_804C9760[0] = (int)copyBuffer;
+        bufferSize * 2, &kXfbAllocTag, bufferSize, fbWidth, renderMode);
+    sXfbCopyInfo[0] = (int)copyBuffer;
     memset(copyBuffer, 0, bufferSize * 2);
-    lbl_804C9760[1] = lbl_804C9760[0];
+    sXfbCopyInfo[1] = sXfbCopyInfo[0];
+#undef kXfbAllocTag
+#undef sXfbCopyInfo
+#undef sCurrentRenderMode
 }
 
 #pragma dont_inline reset
