@@ -1370,7 +1370,7 @@ extern u32 lbl_8055FDE8;
 extern u8 lbl_8055FDEC;
 extern s32 gTotalYmorphVerts;
 extern const char sVertexFormatDlLogMsg[];
-extern const char lbl_8034C428[];
+extern const char sTotalYmorphVertsLogMsg[];
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80128670(s32);
 #pragma scheduling invalid_target
@@ -1382,7 +1382,7 @@ void drVertexFormatCacheShutdown(void) {
 #define vertexFormatCount gVertexFormatCount
 #define totalYmorphVerts gTotalYmorphVerts
 #define logVertexFormatDlMsg sVertexFormatDlLogMsg
-#define logTotalYmorphVertsMsg lbl_8034C428
+#define logTotalYmorphVertsMsg sTotalYmorphVertsLogMsg
 
     fn_802E30C8(logVertexFormatDlMsg, vertexFormatDlEnd - vertexFormatDlStart, vertexFormatCount);
     fn_80128670(vertexFormatDlStart);
@@ -1786,14 +1786,14 @@ void fn_802D7554(u8 value) {
 }
 extern s32 gTotalYmorphVerts;
 extern const char sVertexFormatDlLogMsg[];
-extern const char lbl_8034C428[];
+extern const char sTotalYmorphVertsLogMsg[];
 extern u32 lbl_8055FDE8;
 extern u8 lbl_8055FDEC;
 extern u32 lbl_8055FDE8;
 extern u8 lbl_8055FDEC;
 extern s32 gTotalYmorphVerts;
 extern const char sVertexFormatDlLogMsg[];
-extern const char lbl_8034C428[];
+extern const char sTotalYmorphVertsLogMsg[];
 extern void fn_802D5FE4(void *);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80128670(s32);
