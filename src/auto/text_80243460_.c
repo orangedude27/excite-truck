@@ -691,10 +691,10 @@ u8 fn_80244550(void *menu) {
     return ((MenuListObject *)menu)->edited;
 }
 
-s32 MenuList_GetTextLength(void *arg0) {
-    char *str = *(char **)((u8 *)arg0 + 0x18);
-    s32 len = strlen(str);
-    if (len > 0 && *(s8 *)((u32)len + (u32)str - 1) == '_') len--;
+/* Return the length of the menu list's text field, not counting a trailing '_' placeholder marker. */ s32 MenuList_GetTextLength(void *list) {
+    char *text = *(char **)((u8 *)list + 0x18);
+    s32 len = strlen(text);
+    if (len > 0 && *(s8 *)((u32)len + (u32)text - 1) == '_') len--;
     return len;
 }
 
