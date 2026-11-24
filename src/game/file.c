@@ -338,7 +338,7 @@ extern "C" void fn_802E3898(s32, const char *, s32 *);
     *countPtr = bytesRead;
 }
 #pragma use_lmw_stmw reset
-extern "C" void fn_802E3930(s32 fileHandle, s32 offset, s32 whence) {
+extern "C" void File_read(s32 fileHandle, s32 offset, s32 whence) {
     /* Seek the stream for fileHandle to offset/whence via its vtable (file.cpp:0x15e). */
     class Obj {
     public:

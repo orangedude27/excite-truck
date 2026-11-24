@@ -13,7 +13,7 @@ extern int fn_802E3734(int *);
 extern int fn_802E72C8(int);
 extern int fn_802E36D8(void *);
 extern void fn_802E3A14(int);
-extern void fn_802E3930(int, void *, int);
+extern void File_read(int, void *, int);
 extern unsigned char lbl_804FC978[];
 extern int lbl_8055FFD8;
 extern int lbl_8055FFDC;
@@ -137,7 +137,7 @@ void fn_802E746C(int index, int *outStartSector, int *outSize) {
     ((void (*)(int, int))fn_802E3A14)(fileId, byteOffset);
     bytesToRead = (*(int *)(entry + 8) - byteOffset + 0x1f) & ~0x1f;
     if (bytesToRead > maxBytes) bytesToRead = maxBytes;
-    fn_802E3930(fileId, dst, bytesToRead);
+    File_read(fileId, dst, bytesToRead);
     return fileId;
 }
 #pragma pop
