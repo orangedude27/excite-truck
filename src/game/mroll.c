@@ -562,7 +562,8 @@ void fn_802409A4(void *object, s32 value) {
     *(signed char *)((char *)object + 0x2E8) = (signed char)value;
 }
 
-/* Append a menu entry id and refresh each item's selected flag and displayed value from the shared payload. */
+/* Append `entryId` to the MRollMenuItem's entry list, then refresh every item's
+ * selected flag and displayed value from the menu's shared payload. */
 void MRollMenuItem_addEntry(void *menu, s32 entryId) {
     void *item;
     s32 count = *(s32 *)((char *)menu + 0x2C);
