@@ -119,7 +119,7 @@ extern "C" int fn_802E8744(void *request) {
 /* rmemcard yield callback (rmemcard_yield): the NAND async wait calls this to
  * keep the system responsive, forwarding to the periodic task pump that drains
  * home-button work and dispatches background tasks. */
-void fn_802E8838(void) {
+void rmemcardYield(void) {
     fn_80127464();
 }
 
@@ -357,7 +357,7 @@ int fn_802E8C6C(int request) {
 void NandSaveShutdown(void) {
 #define sMemCardEndOpName lbl_8034DF00
 #define sNandSaveAsyncBuffer lbl_80560020
-    ((int (*)(void *, void (*)(void)))fn_802E95E0)(sMemCardEndOpName, fn_802E8838);
+    ((int (*)(void *, void (*)(void)))fn_802E95E0)(sMemCardEndOpName, rmemcardYield);
     fn_80127D58((void *)fn_802E9010);
     fn_802E6B94();
     fn_80128670(sNandSaveAsyncBuffer);
@@ -401,7 +401,7 @@ extern int fn_8012850C(int, const char *);
 extern void fn_80127C90(void *, void *);
 extern void KERNEL_AddResetCallback(void *, void *);
 extern int NANDInit(void);
-extern void fn_802E8838(void);
+extern void rmemcardYield(void);
 extern void fn_802E9010(void);
 extern int fn_802E8C6C(int);
 extern char lbl_8034DF00[];
@@ -456,7 +456,7 @@ u32 fn_802E8D84(void) { return 1; }
 #define rmemcard_out_of_space   lbl_8055D255
 #define rmemcard_async_buffer   lbl_80560020
 #define rmemcard_log_strings    lbl_8034D9C0
-#define rmemcard_yield          fn_802E8838
+#define rmemcard_yield          rmemcardYield
 #define rmemcard_wait_async     fn_802E95E0
 #define rmemcard_test_banner_ok fn_802E8A18
 #define rmemcard_file_exists    fn_802E8AE8
@@ -897,7 +897,7 @@ extern void *memcpy(void *, const void *, unsigned int);
  * Returns 1 once armed, 0 on a timeout or if the save was flagged invalid. */
 int fn_802E967C(char *path, void *src, int size) {
 #define rmemcard_wait_async   fn_802E95E0
-#define rmemcard_yield        fn_802E8838
+#define rmemcard_yield        rmemcardYield
 #define rmemcard_log_strings  lbl_8034D9C0
 #define nandLogPrintf         fn_802E30C8
 #define gNandSaveInvalid      lbl_80560034
