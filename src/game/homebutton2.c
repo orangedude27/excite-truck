@@ -473,24 +473,32 @@ void fn_802ECC20(void) {
     }
 #undef FADE_BLACK
 }
+/* Drain the Home-button handover: when one was requested, paint a black frame
+ * and service the periodic callback each frame while the Home Menu is active,
+ * then paint one final frame and clear the request. A guard prevents reentry. */
 void fn_802ECC74(void) {
-    /* Drain home button2 work while requested: guard against reentry, then loop/process until inactive. */
+#define gHomeMenuActive lbl_805600E8
+#define gHandoverRequested lbl_805600EB
+#define gHandoverRunning lbl_805600ED
     u8 wasRequested;
 
-    if (lbl_805600ED != 0) {
+    if (gHandoverRunning != 0) {
         return;
     }
-    wasRequested = lbl_805600EB;
-    lbl_805600ED = 1;
+    wasRequested = gHandoverRequested;
+    gHandoverRunning = 1;
     if (wasRequested != 0) {
-        while ((u8)lbl_805600E8 != 0) {
+        while ((u8)gHomeMenuActive != 0) {
             fn_802ECC20();
             fn_80127464();
         }
         fn_802ECC20();
-        lbl_805600EB = 0;
+        gHandoverRequested = 0;
     }
-    lbl_805600ED = 0;
+    gHandoverRunning = 0;
+#undef gHandoverRunning
+#undef gHandoverRequested
+#undef gHomeMenuActive
 }
 
 #pragma dont_inline off
