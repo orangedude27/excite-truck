@@ -913,13 +913,17 @@ end:
 }
 
 // Free the audio buffer/region owned by this object and clear its state fields.
-void Spu_freeStreamBuffer(void *obj) {
-    if (*(int *)((char *)obj + 0x98) > 0) {
-        fn_802E317C(lbl_8034D584, obj, *(int *)((char *)obj + 0x98));
+void Spu_freeStreamBuffer(void *sample) {
+    #define sStreamStillInUseFmt lbl_8034D584 /* "Spu: stream %s still in use by %d channels" */
+    /* Free a stream sample's audio buffer, panicking first if channels still use it,
+       then clear the buffer pointer and state field. */
+    if (*(int *)((char *)sample + 0x98) > 0) {
+        Abend_panic(sStreamStillInUseFmt, sample, *(int *)((char *)sample + 0x98));
     }
-    fn_80128670(*(int *)((char *)obj + 0x90));
-    *(int *)((char *)obj + 0x90) = 0;
-    *(int *)((char *)obj + 0x94) = 0;
+    fn_80128670(*(int *)((char *)sample + 0x90));
+    *(int *)((char *)sample + 0x90) = 0;
+    *(int *)((char *)sample + 0x94) = 0;
+    #undef sStreamStillInUseFmt
 }
 
 float fn_802E6040(void *sample) {
