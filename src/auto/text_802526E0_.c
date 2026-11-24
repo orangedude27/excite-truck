@@ -331,6 +331,8 @@ typedef struct {
     u8 rest[0x38];
 } CamEntry80253104;
 #pragma scheduling invalid_target
+#pragma opt_propagation off
+#pragma opt_dead_assignments off
 #pragma dont_inline on
 void fn_80253104(s32 arg0, void *arg1) {
     f32 z, y, x;
