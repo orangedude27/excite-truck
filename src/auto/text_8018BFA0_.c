@@ -1873,28 +1873,28 @@ void fn_8018F538(unsigned char *arg0, unsigned char *arg1) {
     *(int *)(p.dst + 0x29C) = *(int *)(arg0 + 0x1E3C);
 }
 #pragma scheduling on
-void resetSceneLights(void *arg0) {
-    int i;
-    float divisor;
-    float value;
-    char *type;
-    char *entry;
+/* Reset active, idle light slots of definition types 0xE-0x10: mark state 4, clear the flag and intensity, and scale the stored range by 0.75. */ void resetSceneLights(void *sceneState) {
+    int slotsLeft;
+    float rangeScale;
+    float zero;
+    char *lightDef;
+    char *lightSlot;
 
-    i = 0x11;
-    value = lbl_80561F74;
-    type = (char *)&lbl_80332840;
-    entry = (char *)arg0 + 0x152C;
-    divisor = lbl_80562050;
-    for (; i != 0; i--) {
-        if (*(int *)entry != 0 && *(int *)(entry + 0x7C) == 0 &&
-            (unsigned int)(*(int *)type - 0xE) <= 2U) {
-            *(int *)(entry + 0x7C) = 4;
-            *(char *)(entry + 0x78) = 0;
-            *(float *)(entry + 0xC) = value;
-            *(float *)(entry + 0x10) = *(float *)(entry + 0x14) / divisor;
+    slotsLeft = 0x11;
+    zero = lbl_80561F74;
+    lightDef = (char *)&lbl_80332840;
+    lightSlot = (char *)sceneState + 0x152C;
+    rangeScale = lbl_80562050;
+    for (; slotsLeft != 0; slotsLeft--) {
+        if (*(int *)lightSlot != 0 && *(int *)(lightSlot + 0x7C) == 0 &&
+            (unsigned int)(*(int *)lightDef - 0xE) <= 2U) {
+            *(int *)(lightSlot + 0x7C) = 4;
+            *(char *)(lightSlot + 0x78) = 0;
+            *(float *)(lightSlot + 0xC) = zero;
+            *(float *)(lightSlot + 0x10) = *(float *)(lightSlot + 0x14) / rangeScale;
         }
-        type += 0x40;
-        entry += 0x80;
+        lightDef += 0x40;
+        lightSlot += 0x80;
     }
 }
 
