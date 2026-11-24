@@ -951,14 +951,14 @@ void fn_802108C8(void) {
  
 #pragma cplusplus on
 extern "C" void fn_80210904(void) {
-    /* Shut down track music: stop its controller and destroy the active resource. */
+    /* Shut down track music: release the volume handle and destroy the overlay-layout resource. */
 #define sTrackMusicHandle lbl_8055EEF0
 #define sTrackMusicResource lbl_8055EED4
 
     fn_80209110(&sTrackMusicHandle);
-    struct Dummy_80210904 *resource = (struct Dummy_80210904 *)sTrackMusicResource;
-    if (resource != 0) {
-        resource->f1(1);
+    struct Dummy_80210904 *musicResource = (struct Dummy_80210904 *)sTrackMusicResource;
+    if (musicResource != 0) {
+        musicResource->f1(1);
     }
     sTrackMusicResource = 0;
 
