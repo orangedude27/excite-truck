@@ -63,7 +63,7 @@ extern s32 lbl_8055FC00; /* the canvas the gxCanvas* routines below draw on:
  *  the clip rectangle fn_802C3130/fn_802C307C test against */
 extern void fn_802C3754(s32, s32, s32, s32, s32, s32, s32, s32);
 extern void fn_802DB2C8(void);
-extern void fn_802C3478(s32, s32, s32, s32, u32);
+extern void gxCanvasFillRect16(s32, s32, s32, s32, u32);
 extern void fn_802C356C(s32, s32, s32, s32, u32);
 extern void fn_802C365C(s32, s32, s32, s32, u32);
 #pragma scheduling invalid_target
@@ -361,7 +361,7 @@ void gxCanvasFillRect(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
         is16Bit = 1;
     if (is16Bit != 0) {
         if (*(volatile s8 *)lbl_8055FC00 != CANVAS_FORMAT_RGBA4444) {
-            fn_802C3478(x0, y0, x1, y1, color);
+            gxCanvasFillRect16(x0, y0, x1, y1, color);
             return;
         }
         fn_802C365C(x0, y0, x1, y1, color);
@@ -377,7 +377,7 @@ void gxCanvasFillRect(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
 #pragma push
 #pragma processor 750
 #pragma inline_depth(0)
-void fn_802C3478(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
+void gxCanvasFillRect16(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     u32 pixel;
     s32 width, height, skip, n;
     u16 *p;
@@ -1430,6 +1430,6 @@ extern void fn_802C3C68(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C3D74(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C3F00(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802DB2C8(void);
-extern void fn_802C3478(s32, s32, s32, s32, u32);
+extern void gxCanvasFillRect16(s32, s32, s32, s32, u32);
 extern void fn_802C365C(s32, s32, s32, s32, u32);
 extern void fn_802C356C(s32, s32, s32, s32, u32);
