@@ -126,149 +126,201 @@ void fn_801DF6FC(void) {
 __declspec(section ".sdata") extern char lbl_8055AE58[];
 #pragma push
 #pragma processor 750
-int fn_801DF93C(int arg0) {
-    extern float lbl_8055AE40, lbl_80562C20, lbl_80562C24, lbl_80562C28, lbl_80562C2C, lbl_80562C30, lbl_80562C34, lbl_80562C38;
-    extern float fn_8014AEC8(void *);
-    extern int fn_80141F7C(float);
-    extern void *fn_801E85A4(void);
-    extern void fn_8014C72C(void *, void *);
-    extern float fn_8014C8F8(float, float, float);
-    extern float fn_80176A2C(void);
-    extern float fn_801E7E18(void);
-    extern float fn_801429D0(float, float);
-    extern int fn_80144C68(unsigned int, unsigned int, unsigned int, unsigned int);
-    extern void fn_80147C50(int, int, float);
-    extern void fn_801DFEB8(void *, void *, int, int);
-    extern void fn_801DFE50(void *, int, int);
-    extern void fn_801DFE44(int, int);
-    extern int fn_801DFF08(int);
-    extern float fn_8014C8B4(float, float, float, float, float);
-    extern void fn_8014C978(void *, void *);
-    extern void fn_8014C7B4(void *, void *);
-    extern float fn_80144BD8(float);
-    extern float fn_801DFE94();
-    extern long long fn_8014C770(const float *, const float *, float);
-    extern void fn_8014C75C(float *, const float *);
-    extern void fn_801479A8(void *, void *, void *, float, ...);
-    extern void *fn_80131234(void *);
-    extern void *__AXFXGetLfoSinTable_801769CC(void);
-
-    struct DrawMat {
-        char pad0[0x10];
-        float w;
-        char pad1[0xc];
-        float h;
-        char pad2[4];
-    } m, m2;
-    struct Pt { float x, y; } pt;
-    long long pair;
-    register void *mgr;
-    register int subject;
-    register char *base;
-    register char *entry;
-    float f31, f27, f30, opacity, now;
-    int c1, c2, c3;
-    void *obj1, *obj2, *obj3, *obj4, *obj5, *obj6;
-    float w, rem, ratio, r1, r2, ease, v, t, interp;
-
-    mgr = lbl_8055EA04;
-    base = lbl_803395D8;
-    subject = fn_801E866C(arg0);
-    if (fn_80141F7C(fn_8014AEC8((void *)fn_801DFF08(subject))) != 0)
-        return 0;
-    if ((int)fn_801E85A4() > 1) {
-        fn_8014C72C(*(void **)((char *)mgr + 0xE4), lbl_8055AE58);
-        return 1;
-    }
-    entry = (char *)mgr + subject * 0x1C;
-    {
-        void *u = *(void **)((char *)mgr + 0xE4);
-        ((void (*)(void *))((*(void ***)u)[7]))(u);
-    }
-    opacity = fn_8014C8F8(*(float *)(entry + 4), lbl_80562C1C, lbl_80562C20);
-    f27 = lbl_8055AE40 / fn_80176A2C();
-    f30 = f27 / lbl_80562C24;
-    now = fn_801E7E18();
-    f31 = fn_801429D0(lbl_80562C1C, f27 - (now - *(float *)(entry + 8)));
-    if (f31 > f27 - f30 || *(unsigned char *)(entry + 0xC) == 0) {
-        c1 = fn_80144C68(0xFF, 0x1E, 0x64, 0xF0);
-        c2 = fn_80144C68(0xFF, 0xF0, 0x32, 0);
-        fn_80147C50(c1, c2, opacity);
-        fn_801DFEB8(*(void **)((char *)mgr + 0xE4), base + 0xAC, -1, *(int *)((char *)mgr + 0xF0));
-        fn_801DFEB8(*(void **)((char *)mgr + 0xE4), base + 0xB8, -1, *(int *)((char *)mgr + 0xF0));
-        {
-            void *u = *(void **)((char *)mgr + 0xE4);
-            obj1 = ((void *(*)(void *, void *))((*(void ***)u)[4]))(u, base + 0xC4);
-        }
-        {
-            void *u = *(void **)((char *)mgr + 0xE4);
-            obj2 = ((void *(*)(void *, void *))((*(void ***)u)[4]))(u, base + 0xD4);
-        }
-        if (obj1 != 0 && obj2 != 0) {
-            w = *(float *)((char *)obj1 + 0x10);
-            ratio = w / (w + *(float *)((char *)obj2 + 0x10));
-            r1 = fn_8014C8B4(lbl_80562C1C, ratio, lbl_80562C1C, lbl_80562C20, opacity);
-            r2 = fn_8014C8B4(ratio, lbl_80562C20, lbl_80562C1C, lbl_80562C20, opacity);
-            fn_8014C978(&m, obj1);
-            m.w *= r1;
-            m.h *= r1;
-            ((void (*)(void *, int, int, float))fn_801476D8)(&m, -1, *(int *)((char *)mgr + 0xF0), m.w);
-            fn_8014C7B4(&m, obj2);
-            m.w *= r2;
-            m.h *= r2;
-            ((void (*)(void *, int, int, float))fn_801476D8)(&m, -1, *(int *)((char *)mgr + 0xF0), m.w);
-        }
-        fn_80144C68((unsigned char)(int)(lbl_80562C28 * opacity), 0xFF, 0xFF, 0xFF);
-        if (*(unsigned char *)(entry + 0xC) == 0)
-            fn_8014C72C(*(void **)((char *)mgr + 0xE4), base + 0xE4);
-        if (fn_80141F7C(f31) != 0) {
-            rem = ((float (*)(float, float))fn_801DFE94)(lbl_80562C2C * fn_801E7E18() * fn_80176A2C(), lbl_80562C20);
-            if (rem < lbl_80562C30)
-                v = fn_8014C8B4(lbl_80562C1C, lbl_80562C30, lbl_80562C1C, lbl_80562C20, rem);
-            else
-                v = fn_8014C8B4(lbl_80562C30, lbl_80562C20, lbl_80562C20, lbl_80562C1C, rem);
-            c3 = fn_80144C68((unsigned char)(int)(lbl_80562C28 * v), 0xFF, 0xFF, 0xFF);
-            fn_801DFEB8(*(void **)((char *)mgr + 0xE4), base + 0xF0, c3, *(int *)((char *)mgr + 0xEC));
-            fn_801DFEB8(*(void **)((char *)mgr + 0xE4), base + 0xFC, c3, *(int *)((char *)mgr + 0xEC));
-            if (rem > lbl_80562C34 && rem < lbl_80562C38)
-                fn_801DFE50(*(void **)((char *)mgr + 0xE4), (int)(base + 0x10C), *(int *)((char *)mgr + 0xEC));
-            else
-                fn_801DFE50(*(void **)((char *)mgr + 0xE4), (int)(base + 0x118), *(int *)((char *)mgr + 0xEC));
-            ease = fn_80144BD8(v);
-            {
-                void *u = *(void **)((char *)mgr + 0xE4);
-                obj3 = ((void *(*)(void *, void *))((*(void ***)u)[4]))(u, base + 0x124);
-            }
-            {
-                void *u = *(void **)((char *)mgr + 0xE4);
-                obj4 = ((void *(*)(void *, void *))((*(void ***)u)[4]))(u, base + 0x130);
-            }
-            if (obj3 != 0 && obj4 != 0) {
-                fn_8014C978(&m2, obj3);
-                pair = fn_8014C770((const float *)((char *)obj3 + 4), (const float *)((char *)obj4 + 4), ease);
-                fn_8014C75C(&pt.x, (const float *)&pair);
-                fn_801DFE44((int)&m2, *(int *)((char *)mgr + 0xEC));
-            }
-            fn_8014C72C(*(void **)((char *)mgr + 0xE4), base + 0x13C);
-        }
-    }
-    if (fn_80141F7C(f31) == 0 && *(unsigned char *)(entry + 0xC) != 0) {
-        t = lbl_8055AE40 / fn_80176A2C();
-        interp = fn_8014C8B4(t - f30, t - t * lbl_80562C30, lbl_80562C1C, lbl_80562C20, f31);
-        ease = fn_80144BD8(interp);
-        {
-            void *u = *(void **)((char *)mgr + 0xE4);
-            obj5 = ((void *(*)(void *, void *))((*(void ***)u)[3]))(u, base + 0xE4);
-        }
-        {
-            void *u = *(void **)((char *)mgr + 0xE4);
-            obj6 = ((void *(*)(void *, void *))((*(void ***)u)[3]))(u, base + 0x148);
-        }
-        if (obj5 != 0 && obj6 != 0)
-            fn_801479A8(obj5, obj6, fn_80131234(base + 0x154), ease);
-    }
-    __AXFXGetLfoSinTable_801769CC();
+int fn_801DF93C(int arg0)
+{
+  extern float lbl_8055AE40;
+  extern float lbl_80562C20;
+  extern float lbl_80562C24;
+  extern float lbl_80562C28;
+  extern float lbl_80562C2C;
+  extern float lbl_80562C30;
+  extern float lbl_80562C34;
+  extern float lbl_80562C38;
+  extern float fn_8014AEC8(void *);
+  extern int fn_80141F7C(float);
+  extern void *fn_801E85A4(void);
+  extern void fn_8014C72C(void *, void *);
+  extern float fn_8014C8F8(float, float, float);
+  extern float fn_80176A2C(void);
+  extern float fn_801E7E18(void);
+  extern float fn_801429D0(float, float);
+  extern int fn_80144C68(unsigned int, unsigned int, unsigned int, unsigned int);
+  extern void fn_80147C50(int, int, float);
+  extern void fn_801DFEB8(void *, void *, int, int);
+  extern void fn_801DFE50(void *, int, int);
+  extern void fn_801DFE44(int, int);
+  extern int fn_801DFF08(int);
+  extern float fn_8014C8B4(float, float, float, float, float);
+  extern void fn_8014C978(void *, void *);
+  extern void fn_8014C7B4(void *, void *);
+  extern float fn_80144BD8(float);
+  extern float fn_801DFE94();
+  extern long long fn_8014C770(const float *, const float *, float);
+  extern void fn_8014C75C(float *, const float *);
+  extern void fn_801479A8(void *, void *, void *, float, ...);
+  extern void *fn_80131234(void *);
+  extern void *__AXFXGetLfoSinTable_801769CC(void);
+  struct DrawMat
+  {
+    char pad0[0x10];
+    float w;
+    char pad1[0xc];
+    float h;
+    char pad2[4];
+  } m;
+  struct Pt
+  {
+    float x;
+    float y;
+  } pt;
+  long long pair;
+  char m2[0x28];
+  register void *mgr;
+  register int subject;
+  register char *base;
+  register char *entry;
+  float f31;
+  float f27;
+  float f30;
+  float opacity;
+  float now;
+  int c1;
+  int c2;
+  int c3;
+  void *obj1;
+  void *obj2;
+  void *obj3;
+  void *obj4;
+  void *obj5;
+  void *obj6;
+  float w;
+  float rem;
+  float ratio;
+  float r1;
+  float r2;
+  float ease;
+  float v;
+  float t;
+  float interp;
+  mgr = lbl_8055EA04;
+  base = lbl_803395D8;
+  subject = fn_801E866C(arg0);
+  if (fn_80141F7C(fn_8014AEC8((void *) fn_801DFF08(subject))) != 0)
+  {
+    return 0;
+  }
+  if (((int) fn_801E85A4()) > 1)
+  {
+    fn_8014C72C(*((void **) (((char *) mgr) + 0xE4)), lbl_8055AE58);
     return 1;
+  }
+  entry = ((char *) mgr) + (subject * 0x1C);
+  {
+    void *u = *((void **) (((char *) mgr) + 0xE4));
+    ((void (*)(void *)) (*((void ***) u))[7])(u);
+  }
+  opacity = fn_8014C8F8(*((float *) (entry + 4)), lbl_80562C1C, lbl_80562C20);
+  f27 = lbl_8055AE40 / fn_80176A2C();
+  f30 = f27 / lbl_80562C24;
+  now = fn_801E7E18();
+  f31 = fn_801429D0(lbl_80562C1C, f27 - (now - (*((float *) (entry + 8)))));
+  if ((f31 > (f27 - f30)) || ((*((unsigned char *) (entry + 0xC))) == 0))
+  {
+    c1 = fn_80144C68(0xFF, 0x1E, 0x64, 0xF0);
+    c2 = fn_80144C68(0xFF, 0xF0, 0x32, 0);
+    fn_80147C50(c1, c2, opacity);
+    fn_801DFEB8(*((void **) (((char *) mgr) + 0xE4)), base + 0xAC, -1, *((int *) (((char *) mgr) + 0xF0)));
+    fn_801DFEB8(*((void **) (((char *) mgr) + 0xE4)), base + 0xB8, -1, *((int *) (((char *) mgr) + 0xF0)));
+    {
+      void *u = *((void **) (((char *) mgr) + 0xE4));
+      obj1 = ((void *(*)(void *, void *)) (*((void ***) u))[4])(u, base + 0xC4);
+      now = fn_801E7E18();
+    }
+    {
+      void *u = *((void **) (((char *) mgr) + 0xE4));
+      obj2 = ((void *(*)(void *, void *)) (*((void ***) u))[4])(u, base + 0xD4);
+    }
+    if ((obj1 != 0) && (obj2 != 0))
+    {
+      w = *((float *) (((char *) obj1) + 0x10));
+      ratio = w / (w + (*((float *) (((char *) obj2) + 0x10))));
+      r1 = fn_8014C8B4(lbl_80562C1C, ratio, lbl_80562C1C, lbl_80562C20, opacity);
+      r2 = fn_8014C8B4(ratio, lbl_80562C20, lbl_80562C1C, lbl_80562C20, opacity);
+      fn_8014C978(&m, obj1);
+      m.w *= r1;
+      m.h *= r1;
+      ((void (*)(void *, int, int, float)) fn_801476D8)(&m, -1, *((int *) (((char *) mgr) + 0xF0)), m.w);
+      fn_8014C7B4(&m, obj2);
+      m.w *= r2;
+      m.h *= r2;
+      ((void (*)(void *, int, int, float)) fn_801476D8)(&m, -1, *((int *) (((char *) mgr) + 0xF0)), m.w);
+    }
+    fn_80144C68((unsigned char) ((int) (lbl_80562C28 * opacity)), 0xFF, 0xFF, 0xFF);
+    if ((*((unsigned char *) (entry + 0xC))) == 0)
+    {
+      fn_8014C72C(*((void **) (((char *) mgr) + 0xE4)), base + 0xE4);
+    }
+    if (fn_80141F7C(f31) != 0)
+    {
+      rem = ((float (*)(float, float)) fn_801DFE94)((lbl_80562C2C * fn_801E7E18()) * fn_80176A2C(), lbl_80562C20);
+      if (rem < lbl_80562C30)
+      {
+        v = fn_8014C8B4(lbl_80562C1C, lbl_80562C30, lbl_80562C1C, lbl_80562C20, rem);
+      }
+      else
+      {
+        v = fn_8014C8B4(lbl_80562C30, lbl_80562C20, lbl_80562C20, lbl_80562C1C, rem);
+      }
+      c3 = fn_80144C68((unsigned char) ((int) (lbl_80562C28 * v)), 0xFF, 0xFF, 0xFF);
+      fn_801DFEB8(*((void **) (((char *) mgr) + 0xE4)), base + 0xF0, c3, *((int *) (((char *) mgr) + 0xEC)));
+      fn_801DFEB8(*((void **) (((char *) mgr) + 0xE4)), base + 0xFC, c3, *((int *) (((char *) mgr) + 0xEC)));
+      if ((rem > lbl_80562C34) && (rem < lbl_80562C38))
+      {
+        fn_801DFE50(*((void **) (((char *) mgr) + 0xE4)), (int) (base + 0x10C), *((int *) (((char *) mgr) + 0xEC)));
+      }
+      else
+      {
+        fn_801DFE50(*((void **) (((char *) mgr) + 0xE4)), (int) (base + 0x118), *((int *) (((char *) mgr) + 0xEC)));
+      }
+      ease = fn_80144BD8(v);
+      {
+        void *u = *((void **) (((char *) mgr) + 0xE4));
+        obj3 = ((void *(*)(void *, void *)) (*((void ***) u))[4])(u, base + 0x124);
+      }
+      {
+        void *u = *((void **) (((char *) mgr) + 0xE4));
+        obj4 = ((void *(*)(void *, void *)) (*((void ***) u))[4])(u, base + 0x130);
+      }
+      if ((obj3 != 0) && (obj4 != 0))
+      {
+        fn_8014C978(m2, obj3);
+        pair = fn_8014C770((const float *) (((char *) obj3) + 4), (const float *) (((char *) obj4) + 4), ease);
+        fn_8014C75C(&pt.x, (const float *) (&pair));
+        fn_801DFE44((int) m2, *((int *) (((char *) mgr) + 0xEC)));
+      }
+      fn_8014C72C(*((void **) (((char *) mgr) + 0xE4)), base + 0x13C);
+    }
+  }
+  if ((fn_80141F7C(f31) == 0) && ((*((unsigned char *) (entry + 0xC))) != 0))
+  {
+    t = lbl_8055AE40 / fn_80176A2C();
+    interp = fn_8014C8B4(t - f30, t - (t * lbl_80562C30), lbl_80562C1C, lbl_80562C20, f31);
+    ease = fn_80144BD8(interp);
+    {
+      void *u = *((void **) (((char *) mgr) + 0xE4));
+      obj5 = ((void *(*)(void *, void *)) (*((void ***) u))[3])(u, base + 0xE4);
+    }
+    {
+      void *u = *((void **) (((char *) mgr) + 0xE4));
+      obj6 = ((void *(*)(void *, void *)) (*((void ***) u))[3])(u, base + 0x148);
+    }
+    if ((obj5 != 0) && (obj6 != 0))
+    {
+      fn_801479A8(obj5, obj6, fn_80131234(base + 0x154), ease);
+    }
+  }
+  __AXFXGetLfoSinTable_801769CC();
+  return 1;
 }
 #pragma pop
 void fn_801476D8(int, int);
@@ -520,25 +572,28 @@ void fn_801E02AC(void) {
 
 }
 
-void fn_801E02B0(void* arg0) {
-    float b;
-    float a;
-    char* entry;
+void fn_801E02B0(void *manager) {
+    /* Clear every vehicle's slip/skid record: zero the charge, elapsed time and
+       slip, clear the two flags, put the activation timer far in the past and
+       set the sound zone to -1 (none). */
+    float zero;
+    float longAgo;
+    struct SlipRecord *record;
     int i;
-    a = lbl_80562C40;
-    b = lbl_80562C1C;
-    entry = (char*)arg0 + 4;
+    longAgo = lbl_80562C40;
+    zero = lbl_80562C1C;
+    record = (struct SlipRecord *)((char *)manager + 4);
     i = 0;
     while (i < lbl_8055E4D0) {
-        *(char*)(entry + 8) = 0;
+        record->active = 0;
         i++;
-        *(float*)(entry + 4) = a;
-        *(float*)(entry + 0xC) = b;
-        *(float*)(entry + 0x10) = b;
-        *(char*)(entry + 0x14) = 0;
-        *(int*)(entry + 0x18) = -1;
-        *(float*)entry = b;
-        entry += 0x1C;
+        record->timer = longAgo;
+        record->elapsed = zero;
+        record->slip = zero;
+        record->started = 0;
+        record->zone = -1;
+        record->charge = zero;
+        record++;
     }
 }
 
