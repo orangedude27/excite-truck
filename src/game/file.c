@@ -58,7 +58,7 @@ s32 fn_802E3270(s32 path) {
 /* Returns the file system handle for the given path: NAND (lbl_8055FF20) for
    paths matching the "nand:" prefix, SD card (lbl_8055FF24) for paths matching
    the "sd:" prefix, or 0 if no matching file system is available. */
-s32 getFileSystemForPath(s32 path) {
+/* Return the NAND or SD-card file-system handle selected by the path prefix, or 0 when none matches. */ s32 getFileSystemForPath(s32 path) {
     if (path != 0 && fn_802E321C((const char *)path) != 0 && lbl_8055FF20 != 0) {
         return lbl_8055FF20;
     }
