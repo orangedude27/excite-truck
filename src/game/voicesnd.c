@@ -65,8 +65,8 @@ extern void fn_802E6B04(void);
   extern int fn_80208E90(int);
   extern float lbl_805632B0, lbl_805632B4, gVoiceMasterVolume;
 
-  extern void *lbl_8055EE04;
-#define gVoiceMixerInstance lbl_8055EE04
+  extern void *gVoiceMixer;
+#define gVoiceMixerInstance gVoiceMixer
 extern char lbl_8033C37C[];
 extern void *lbl_8055EE08;
 extern unsigned char lbl_8033C520[];
@@ -164,7 +164,7 @@ int initVoiceMixer(void *arg0) {
     #define gVoiceScale gVoiceMasterVolume
     #define gVoiceScaleAltA lbl_805632B0
     #define gVoiceScaleAltB lbl_805632B4
-    #define gActiveVoiceMixer lbl_8055EE04
+    #define gActiveVoiceMixer gVoiceMixer
     #define kVoiceWorkBufferSize 0x800
 
     if (fn_80019B60() != 0) {
@@ -585,7 +585,7 @@ extern char lbl_8033C3F4[];
         resource = *(int *)((char *)voiceSnd + 0x10);
         if (resource != 0) {
             SpuSampleReleaseRef((void *)resource);
-            ((void (*)(void *, int, int))fn_8020B2BC)(lbl_8055EE04, (int)voiceSnd, *(int *)((char *)voiceSnd + 0x40));
+            ((void (*)(void *, int, int))fn_8020B2BC)(gVoiceMixer, (int)voiceSnd, *(int *)((char *)voiceSnd + 0x40));
         }
         if (shouldFree > 0)
             ((void (*)(void *))fn_8020A800)(voiceSnd);
@@ -1110,7 +1110,7 @@ extern void *memset(void *, int, unsigned int);
 extern char lbl_8033C388[];
 extern char lbl_8033C37C[];
 extern float lbl_805632B0, lbl_805632B4, gVoiceMasterVolume;
-extern void *lbl_8055EE04;
+extern void *gVoiceMixer;
 extern int lbl_8055EE0C;
 extern void *lbl_8055EE10;
 extern int fn_8012A364(void *, void *);
