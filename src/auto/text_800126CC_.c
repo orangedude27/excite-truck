@@ -311,12 +311,11 @@ extern char lbl_80558B60[4];
 #define H2(o, k) ((int (*)(void *, char *))*(void **)((char *)*(void **)(o) + 0xC))((o), (k))
 #define H3(o, k, v) ((int (*)(void *, char *, int))*(void **)((char *)*(void **)(o) + 0xC))((o), (k), (v))
 void fn_80012B50(void *arg0, int arg1, void *arg2, void *arg3) {
-#pragma scheduling invalid_target
-    register char *base = lbl_802FC610;
-    void *a3 = arg3;
-    int a1 = arg1;
-    void *a2 = arg2;
     char *obj = (char *)arg0;
+    void *a2 = arg2;
+    int a1 = arg1;
+    void *a3 = arg3;
+    register char *base = lbl_802FC610;
     char spD0[0x100];
     char buf10[0xC0];
     int spC;
@@ -442,10 +441,10 @@ copy_done:
                 *(int *)(entry + 0x14) = temp;
                 if ((unsigned int)(temp + 0x10000) == 0xffffU) {
                     int t2 = ((int (*)(void *, char *, int))*(void **)((char *)*(void **)ch + 0x20))(ch, base + 0x250, 0);
-                    if (t2 == 0) {
-                        *(int *)(entry + 0x14) = 0;
-                    } else {
+                    if (t2 != 0) {
                         *(int *)(entry + 0x14) = 1 << (t2 - 1);
+                    } else {
+                        *(int *)(entry + 0x14) = 0;
                     }
                 }
                 *(int *)(entry + 0x14) |= cnt;
@@ -475,7 +474,7 @@ copy_done:
 }
 
 #pragma cplusplus on
-/* Value lookup through a virtual interface (same shape as fn_80004FCC): when the
+/* Value lookup through a virtual interface (same shape as getVirtualValue): when the
    object's +0xC predicate passes, return what its +0x1C method gives for
    `argument`; otherwise return the caller's `fallback`. */
 extern "C" int fn_800132E4(void *object, int argument, int fallback) {
@@ -627,11 +626,12 @@ void fn_80013724(void) {
         int n1 = (int)lbl_8055D504;
         int n2 = lbl_8055D518;
         int x, found;
-        for (x = 0; x < xcount; x++, entry += 0x28) {
+        char *p;
+        int y;
+        for (x = 0; x < xcount; entry += 0x28, x++) {
             found = 0;
             {
-                int y;
-                char *p = base + 0x98;
+                p = base + 0x98;
                 for (y = 0; y < n1; y++, p += 0x84) {
                     if (*(int *)p == *(int *)(entry + 4)) {
                         *(int *)(entry + 4) = y;
@@ -662,9 +662,8 @@ void fn_80013724(void) {
     {
         int n = lbl_8055D518;
         int i;
-        char *p = base + 0x39b8;
-        for (i = 0; i < n; i++, p += 0x88)
-            *(int *)p = -1 - i;
+        for (i = 0; i < n; i++)
+            *(int *)(base + 0x39b8 + i * 0x88) = -1 - i;
     }
 }
 

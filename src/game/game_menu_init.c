@@ -460,7 +460,7 @@ void fn_80004EC0(const char* source) {
 }
 
 #pragma cplusplus on
-extern "C" u32 fn_80004FCC(GameVirtualObject* object, u32 argument, u32 fallback) {
+extern "C" u32 getVirtualValue(GameVirtualObject* object, u32 argument, u32 fallback) {
     /* Return the virtual object's value for argument when it reports ready, else the fallback. */
     struct VirtualObject {
         virtual s32 reserved0();
