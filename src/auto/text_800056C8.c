@@ -387,7 +387,7 @@ void fn_80005B70(void) {
 #pragma cplusplus on
 #pragma push
 #pragma dont_inline on
-extern "C" void fn_80005B74(void) {
+/* Draw a PA-timing hint when the locale flag is set: read the 'pa_sample_request_t' deadline from the audio object and show 'Please trigger PA' or '%.1f seconds til grab' against the session clock. */ extern "C" void fn_80005B74(void) {
     class LfoValue {
     public:
         virtual void method0() = 0;
@@ -976,7 +976,7 @@ extern "C" void fn_800066B4(void *arg0) {
     s32 now;
     s32 i;
     u8 alpha;
-    u32 two;
+    s32 two;
     void *(*get)(void *, s32);
     void *(*get2)(void *, s32, s32);
     fn_8027AA48();
@@ -1006,7 +1006,7 @@ extern "C" void fn_800066B4(void *arg0) {
     t2 = lbl_80560130 < t2 ? lbl_80560130 : t2;
     t2 = t2 > lbl_8056011C ? t2 : lbl_8056011C;
     *(f32 *)&table[9] = lbl_80560160 + t2 * lbl_80560164;
-    { f32 zero = lbl_8056011C, half = lbl_8056013C, one = lbl_80560130;
+    { f32 zero = lbl_8056011C, one = lbl_80560130, half = lbl_8056013C;
     for (i = 0; i < 3; i++) {
         s32 *entry = (s32 *)(table + i * 4);
         u32 item[8];
@@ -1039,7 +1039,7 @@ extern "C" void fn_800066B4(void *arg0) {
                     *(f32 *)&out[5] = w * (one + val);
                     *(f32 *)&out[1] = q;
                     *(f32 *)&out[2] = r;
-                    out[6] = (out[6] & 0x00FFFF00) | ((u32)alpha << 24) | (out[6] & 0xFFFF);
+                    out[6] = ((u32)alpha << 24) | (out[6] & 0x00FFFF00);
                     ((void (*)(void *, void *, void *, s32))fn_80147940)(*(void **)((u8 *)arg0 + 0x1C), out, base + 0x1CC, 1);
                 }
             }
