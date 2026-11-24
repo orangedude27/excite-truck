@@ -52,7 +52,7 @@ extern void fn_802E870C(void);
 extern int fn_802E8744(void *);
 extern void fn_80127464(void);
 extern int NANDDelete(const char *);
-extern char lbl_8034DE54[];
+extern char sRmemcardDeletingMsg[];
 extern char lbl_8034DE6C[];
 
 #pragma dont_inline on
@@ -274,7 +274,7 @@ int fn_802E8AE8(const char *path) {
 
 void rmemcardDeleteFile(const char *path) {
     /* Logs the NAND delete attempt and reports an error if NANDDelete fails. */
-    fn_802E30C8(lbl_8034DE54, path);
+    fn_802E30C8(sRmemcardDeletingMsg, path);
     {
         int result = NANDDelete(path);
         if (result != 0) {
@@ -376,7 +376,7 @@ typedef unsigned int u32;
 extern int fn_8012C4D8(int);
 extern int fn_802E88D8(void);
 extern int NANDDelete(const char *);
-extern char lbl_8034DE54[];
+extern char sRmemcardDeletingMsg[];
 extern char lbl_8034DE6C[];
   extern int NANDOpen(const char *, void *, int);
   extern int NANDGetLength(void *, unsigned int *);
