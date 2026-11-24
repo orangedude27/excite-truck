@@ -182,7 +182,7 @@ enum DrTexMap {
 
 #pragma dont_inline on
 /* Marks a drgc texture record slot free and releases its external resource handle, if any. */
-void drTexRecordFree(void *record) {
+/* Free a drgc texture record slot: clear its inUse flag and release its owned MemAlloc texel buffer, if any. */ void drTexRecordFree(void *record) {
     extern void fn_80128658(s32);
     s32 resourceHandle;
 
