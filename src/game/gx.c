@@ -2885,8 +2885,8 @@ void fn_802D2ED8(int light, int index) {
     /* Transform one point light into the current view space and load it into GX
      * position-matrix slot index*3.  `light` points at a light record (3x3
      * rotation at +0x00, world position at +0x24).  Its position is transformed
-     * by GX_LIGHT_XF_MTX into matrix+0x24, its rotation multiplied by the same
-     * matrix into matrix, the result transposed (third row negated) into
+     * by GX_LIGHT_XF_MTX into lightMtx+0x24, its rotation multiplied by the same
+     * matrix into lightMtx, the result transposed (third row negated) into
      * GX_POSMTX_SCRATCH, and that loaded as the light's position matrix.  Light 0
      * also marks the XF state dirty and drops the applied-preset cache. */
     float lightMtx[12];
