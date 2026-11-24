@@ -4,7 +4,7 @@
 // auto/text_802CA0A4_.c pending a promotion pass.
 #include <revolution/MTX/mtxtypes.h>
 extern char lbl_8055FC34;
-extern int lbl_8055D028;
+extern int sDrawlistCallbackId;
 extern int lbl_8055D02C;
 extern float lbl_80564F04;
 extern float lbl_80564F08;
@@ -246,22 +246,22 @@ void fn_802C83CC(void) {
     fn_802C9C58(0);
     if (fn_80133010() != 0) {
         LoadIntOptionValue(1, lbl_8034B498, (int *)&lbl_8055FC90);
-        lbl_8055D028 = fn_8013365C((int)&lbl_8055D02C, (int)fn_802C82C0);
+        sDrawlistCallbackId = fn_8013365C((int)&lbl_8055D02C, (int)fn_802C82C0);
     }
 }
 #pragma scheduling on
 extern int fn_80133010(void);
 extern void fn_801336E0(int, void (*)(void));
 extern void fn_802C6080(void);
-extern int lbl_8055D028;
+extern int sDrawlistCallbackId;
 extern int fn_802C9E94(void *, int, int, float, float, float, float, float);
 extern int fn_801E7894(int);
 /* RealName: DrawList_UnregisterCallbackAndShutdown_802C84EC */
 void DrawList_UnregisterCallbackAndShutdown(void) {
     /* Unregister the drawlist debug callback if active, then shut down drawlists. */
     if (fn_80133010() != 0) {
-        fn_801336E0(lbl_8055D028, fn_802C82C0);
-        lbl_8055D028 = -1;
+        fn_801336E0(sDrawlistCallbackId, fn_802C82C0);
+        sDrawlistCallbackId = -1;
     }
     fn_802C6080();
 }
