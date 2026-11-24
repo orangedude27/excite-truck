@@ -1114,15 +1114,15 @@ void fn_802C6C38(int modelId) {
     }
 }
 /* Release a model instance handle, or warn if MODEL_INVALID (-1). */
-void fn_802C6CF8(int modelHandle) {
-    int resource;
+/* Release a loaded model instance: if the handle is MODEL_INVALID (-1), log a warning; otherwise fetch its group list, drop the instance reference, then release the group-list resource. */ void fn_802C6CF8(int modelHandle) {
+    int groupList;
     if (modelHandle == -1) {
         ((int (*)(const char *, ...))fn_802E30C8)(lbl_8034B34C);
         return;
     }
-    resource = fn_802C53A8();
+    groupList = fn_802C53A8();
     fn_802C6C38(modelHandle);
-    fn_802C6C20(resource);
+    fn_802C6C20(groupList);
 }
 
 /* Return 1 when any element in the model's group/element tables has a nonzero base id, else 0. */
