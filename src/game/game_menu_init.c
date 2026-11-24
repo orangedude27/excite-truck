@@ -229,17 +229,18 @@ void fn_80004ACC(void) DECOMP_DONT_INLINE {
 
 /* Iterate a null-terminated table of IDs, handling each and stepping related state. */
 void ReleaseInitTableResources(void) DECOMP_DONT_INLINE {
-#define sIdTable lbl_802FAFA0
-#define HandleId fn_80004AB8
-#define StepState fn_8012E498
-    u32 *id;
-    for (id = sIdTable; *id != 0; id++) {
-        HandleId(*id);
-        StepState();
+    /* During bootstrap teardown, walk the null-terminated init table, handling each entry and releasing its resource. */
+#define sInitTable lbl_802FAFA0
+#define HandleEntry fn_80004AB8
+#define ReleaseResource fn_8012E498
+    u32 *entry;
+    for (entry = sInitTable; *entry != 0; entry++) {
+        HandleEntry(*entry);
+        ReleaseResource();
     }
-#undef sIdTable
-#undef HandleId
-#undef StepState
+#undef sInitTable
+#undef HandleEntry
+#undef ReleaseResource
 }
 
 void fn_800052F8(void) DECOMP_DONT_INLINE {
