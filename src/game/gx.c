@@ -1340,25 +1340,25 @@ void fn_802D02F8(int arg0, signed char arg1) {
 #pragma push
 #pragma processor 750
 #pragma scheduling on
-void fn_802D0368(float nearZ, float farZ, float fovY, float aspectWidth)
+/* Set the camera near/far planes, vertical FOV and aspect width in the graphics parameter block; cache tan(fovY/2) and mirror near/far into the depth/fog record. */ void fn_802D0368(float nearZ, float farZ, float fovY, float aspectWidth)
 {
   /* Set the camera's clipping planes, vertical FOV and aspect width in the
    * graphics parameter block, cache tan(fovY/2), and mirror the near/far
    * planes into the depth record. */
-  register unsigned char *params = lbl_804C9778;
-  register int one = 1;
+  register unsigned char *gfxParams = lbl_804C9778;
+  register int flagValue = 1;
   float tanHalfFov;
-  float scale = 0.5f;
-  lbl_804C9778[0] = one;
-  *((float *) (params + 8)) = farZ;
-  *((float *) (params + 0xc)) = fovY;
-  *((float *) (params + 0x14)) = aspectWidth;
-  *((float *) (params + 4)) = nearZ;
-  tanHalfFov = fn_8002EF30(fovY * scale);
+  float halfFovScale = 0.5f;
+  lbl_804C9778[0] = flagValue;
+  *((float *) (gfxParams + 8)) = farZ;
+  *((float *) (gfxParams + 0xc)) = fovY;
+  *((float *) (gfxParams + 0x14)) = aspectWidth;
+  *((float *) (gfxParams + 4)) = nearZ;
+  tanHalfFov = fn_8002EF30(fovY * halfFovScale);
   *((float *) (lbl_804C97B0 + 0x14)) = nearZ;
-  *((float *) (params + 0x10)) = tanHalfFov;
+  *((float *) (gfxParams + 0x10)) = tanHalfFov;
   *((float *) (lbl_804C97B0 + 0x18)) = farZ;
-  lbl_804C97B0[0x1c] = one;
+  lbl_804C97B0[0x1c] = flagValue;
 }
 
 extern unsigned long lbl_804C56C0[];
