@@ -1374,29 +1374,17 @@ extern const char sTotalYmorphVertsLogMsg[];
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80128670(s32);
 #pragma scheduling invalid_target
+/* Shut down the vertex-format display-list cache: log the recording-buffer usage and
+   cached-format count, free the buffer, clear the cache state and report total ymorph verts. */
 void drVertexFormatCacheShutdown(void) {
     s32 savedYmorphVertCount;
-    /* Finalize vertex-format display list logging/cleanup, then report total ymorph verts. */
-#define vertexFormatDlStart gVertexFormatDlStart
-#define vertexFormatDlEnd gVertexFormatDlEnd
-#define vertexFormatCount gVertexFormatCount
-#define totalYmorphVerts gTotalYmorphVerts
-#define logVertexFormatDlMsg sVertexFormatDlLogMsg
-#define logTotalYmorphVertsMsg sTotalYmorphVertsLogMsg
 
-    fn_802E30C8(logVertexFormatDlMsg, vertexFormatDlEnd - vertexFormatDlStart, vertexFormatCount);
-    fn_80128670(vertexFormatDlStart);
-    savedYmorphVertCount = totalYmorphVerts;
-    vertexFormatDlStart = 0;
-    vertexFormatDlEnd = 0;
-    fn_802E30C8(logTotalYmorphVertsMsg, savedYmorphVertCount);
-
-#undef vertexFormatDlStart
-#undef vertexFormatDlEnd
-#undef vertexFormatCount
-#undef totalYmorphVerts
-#undef logVertexFormatDlMsg
-#undef logTotalYmorphVertsMsg
+    fn_802E30C8(sVertexFormatDlLogMsg, gVertexFormatDlEnd - gVertexFormatDlStart, gVertexFormatCount);
+    fn_80128670(gVertexFormatDlStart);
+    savedYmorphVertCount = gTotalYmorphVerts;
+    gVertexFormatDlStart = 0;
+    gVertexFormatDlEnd = 0;
+    fn_802E30C8(sTotalYmorphVertsLogMsg, savedYmorphVertCount);
 }
 #pragma scheduling on
 /* Update a surface: do common work, then dispatch to the flagged or default path based on lbl_8055FD1C bit 3. */
