@@ -158,7 +158,7 @@ void fn_802D3F98(struct SurfDraw *surface) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
-void fn_802D3FFC(void *arg0) {
+void drDrawSurfLayout12(void *arg0) {
     /* Binds this object's position, texture, and color vertex arrays, then submits its display list. */
     GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
     GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
@@ -1032,7 +1032,7 @@ void fn_802D5F88(s32 arg0) {
     case 5: fn_802D5270(surface); break;
     case 1: drDrawSurfLayout11(surface); break;
     case 18: fn_802D3F98(surface); break;
-    case 2: fn_802D3FFC(surface); break;
+    case 2: drDrawSurfLayout12(surface); break;
     case 3: fn_802D4060(surface); break;
     case 6:
     case 8: if (fn_802DAC64()) fn_802D5680(surface); else fn_802D56D4(surface); break;
