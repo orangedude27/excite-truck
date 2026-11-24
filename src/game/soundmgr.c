@@ -306,7 +306,7 @@ void fn_80207C74(void *object, signed long value) {
 /* The last of the three empty members of this stretch of soundmgr.cpp (see the note
  * on fn_80207C48): the shipped build kept no body for it.  It sits right after the
  * setter of a sound object's +0x8C flag (fn_80207C74) and just before the manager's
- * per-frame pass fn_80207C80, and nothing in the recovered code calls it. */
+ * per-frame pass SoundMgr_refreshSounds, and nothing in the recovered code calls it. */
 void fn_80207C7C(void) {
 	return;
 }
@@ -319,7 +319,7 @@ typedef struct SlotLimits { signed long total; signed long lim[9]; signed long p
  * every tracked sound, flush the queued mix values (fn_8020835C/fn_80207F34),
  * run each sound's own update (fn_80206824), then finish with
  * fn_8020815C/fn_80207E70. */
-void fn_80207C80(void *soundMgr) {
+void SoundMgr_refreshSounds(void *soundMgr) {
     /* The manager's view of its tracked sounds (the full object is laid out in
      * fn_80207990): +0x0C is the array of sound ids, +0x10 its count, +0x5C the
      * emitter context handed to each sound, +0x8C a flag passed through to the
@@ -391,12 +391,12 @@ extern "C" void SoundMgr_update(SoundMgr *soundMgr) {
         virtual void update(void *soundContext);                           /* +0x20 */
     };
     if (SoundMgr_readyForUpdate(soundMgr) != 0) {
-        fn_80207C80(soundMgr);
+        SoundMgr_refreshSounds(soundMgr);
         ((struct SoundDevice *)*(void **)((char *)soundMgr + 0x90))->update((char *)soundMgr + 0x5C);
     }
 }
 #pragma cplusplus reset
-extern void fn_80207C80(void*);
+extern void SoundMgr_refreshSounds(void*);
 extern void* lbl_802F9DC8[];
 extern char lbl_8033BE20[];
 #pragma cplusplus on

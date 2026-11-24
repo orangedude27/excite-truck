@@ -455,7 +455,7 @@ struct Sound3D {
 };
 
 /* Sound3D::update -- the pass the SoundManager runs over every sound it owns
- * (fn_80207C80, right after fn_802067C8 worked out whether each is audible).
+ * (SoundMgr_refreshSounds, right after fn_802067C8 worked out whether each is audible).
  * The game queues its wishes as the flags at Sound3D+0x48; here they are
  * carried out on the VoiceSnd being played, in step with the state that sound
  * reports: a playing sound gets its voices back or is muted, a stopped one
