@@ -356,8 +356,9 @@ extern "C" void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(void *textBox, void *outC
     GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(textBox, outColor, vertexIndex >> 1);
 }
 
-/* Copy one of a TextBox's two text colors (slot 0 or 1, at +0xD8) as four RGBA bytes into outColor; panics if colorIndex is not 0 or 1. */ void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *outColor, const void *textBox, u32 colorIndex) {
-    /* Get one of the TextBox text colors (0 or 1) from +0xD8 by copying its 4 RGBA bytes into outColor. */
+void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *outColor, const void *textBox, u32 colorIndex) {
+    /* Copy one of a TextBox's two text colors (slot 0 or 1, at +0xD8) as four RGBA
+       bytes into outColor; panics if colorIndex is not 0 or 1. */
     if (colorIndex >= 2) {
         ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(lbl_80320B8C, 0x5f, lbl_80320B5C);
     }
