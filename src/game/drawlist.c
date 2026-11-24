@@ -954,20 +954,20 @@ void fn_802C967C(void) {
     fn_802C974C(lbl_804C144C[0], lbl_804C144C[1], lbl_804C144C[2]);
 }
 
-void *DrawList_saveProjection(void *arg0) {
-    /* Initialize a 3-float vector from view/projection globals (lbl_8055FC38/3C/40),
-       run fn_802C974C on it, and return the object. */
-#define kViewX lbl_8055FC38
-#define kViewY lbl_8055FC3C
-#define kViewZ lbl_8055FC40
-    ((float *)arg0)[0] = kViewX;
-    ((float *)arg0)[1] = kViewY;
-    ((float *)arg0)[2] = kViewZ;
-    ((void (*)())fn_802C974C)(arg0);
-    return arg0;
-#undef kViewX
-#undef kViewY
-#undef kViewZ
+/* Save the current near/far planes and field of view into the 3-float vector
+ * at out, then apply the caller's new values through fn_802C974C. */
+void *DrawList_saveProjection(void *out) {
+#define gNearClip lbl_8055FC38
+#define gFarClip  lbl_8055FC3C
+#define gFov      lbl_8055FC40
+    ((float *)out)[0] = gNearClip;
+    ((float *)out)[1] = gFarClip;
+    ((float *)out)[2] = gFov;
+    ((void (*)())fn_802C974C)(out);
+    return out;
+#undef gNearClip
+#undef gFarClip
+#undef gFov
 }
 
 /* Reapplies the saved near/far/FOV triple and returns the buffer; frees it when freeBuffer is positive. */ void *DrawList_restoreProjection(void *savedParams, int freeBuffer) {
