@@ -324,7 +324,7 @@ extern void fn_802CA57C(void *, int, int, int);
  * is never reset. */
 char fn_802CA7D4(void) { return 1; }
 /* True when the path's first byte is '*' (0x2A), marking a special extraction name. */
-int fn_802CA7DC(const unsigned char *path) { return ((signed char)*path - 0x2A) == 0; }
+int texIsExtractionName(const unsigned char *path) { return ((signed char)*path - 0x2A) == 0; }
 
 #pragma dont_inline fn_802CA7F4
 /* Return nonzero when the path string contains a '/' separator. */
@@ -334,7 +334,7 @@ int fn_802CA7F4(const char *path) { return strchr(path, '/') != 0; }
    its '/' (warning if missing); otherwise return the path unchanged. */
 int texGetExtractionName(int path) {
     int separator;
-    if (((int (*)(const unsigned char *))fn_802CA7DC)((const unsigned char *)path) != 0) {
+    if (((int (*)(const unsigned char *))texIsExtractionName)((const unsigned char *)path) != 0) {
         separator = (int)strchr((char *)path, 0x2F);
         if (separator == 0)
             fn_802E317C(lbl_8034B7D0, path);
@@ -383,7 +383,7 @@ int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
     path_value = arg0;
     strings = (int)lbl_8034B538;
     if (strlen((char *)path_value) >= 0x10 &&
-        ((int (*)(const char *))fn_802CA7DC)((char *)path_value) == 0 &&
+        ((int (*)(const char *))texIsExtractionName)((char *)path_value) == 0 &&
         fn_802CA7F4((char *)path_value) == 0) {
         fn_802E317C((const char *)(strings + 0x2B8), (char *)path_value, strlen((char *)path_value), 0x10);
     }
@@ -438,7 +438,7 @@ int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
     entry->unk48 = 0;
     entry->type = arg1;
 
-    if (((int (*)(const char *))fn_802CA7DC)((char *)path_value) == 0) {
+    if (((int (*)(const char *))texIsExtractionName)((char *)path_value) == 0) {
         src = (char *)path_value;
         dst = entry->name;
         count = 0x20;
