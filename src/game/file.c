@@ -11,7 +11,7 @@ extern char lbl_8034CF60[];
 extern char gOpenFileTable[];
 extern char lbl_8055D1A0[];
 extern s32 lbl_8055FF20;
-extern s32 fn_802E321C(const char *);
+extern s32 IsNandPath(const char *);
 extern s32 fn_802E3270(s32);
 extern s32 getFileSystemForPath(s32);
 extern s32 gDefaultFileSystem;
@@ -32,7 +32,7 @@ __declspec(section ".sdata") extern char lbl_8055D1A8[];
 /* Returns 1 when the path begins with the NAND prefix "nand:" (lbl_8055D1A0),
    0 otherwise; getFileSystemForPath then hands out the NAND file system handle
    lbl_8055FF20 for it.  Its sibling fn_802E3270 tests the "sd:" prefix. */
-s32 fn_802E321C(const char *path) {
+s32 IsNandPath(const char *path) {
     /* the prefix address is held as an integer so the compiler keeps it in one
        callee-saved register instead of re-materializing the small-data address */
     s32 prefix = (s32)lbl_8055D1A0;
@@ -43,7 +43,7 @@ s32 fn_802E321C(const char *path) {
 
 /* Returns 1 when the path begins with the SD-card prefix "sd:"
    (lbl_8055D1A8), 0 otherwise; getFileSystemForPath then hands out the SD-card file
-   system handle lbl_8055FF24 for it.  Its sibling fn_802E321C tests the
+   system handle lbl_8055FF24 for it.  Its sibling IsNandPath tests the
    "nand:" prefix (lbl_8055D1A0). */
 s32 fn_802E3270(s32 path) {
     /* the prefix address is held as an integer so the compiler keeps it in one
@@ -59,7 +59,7 @@ s32 fn_802E3270(s32 path) {
    paths matching the "nand:" prefix, SD card (lbl_8055FF24) for paths matching
    the "sd:" prefix, or 0 if no matching file system is available. */
 /* Return the NAND or SD-card file-system handle selected by the path prefix, or 0 when none matches. */ s32 getFileSystemForPath(s32 path) {
-    if (path != 0 && fn_802E321C((const char *)path) != 0 && lbl_8055FF20 != 0) {
+    if (path != 0 && IsNandPath((const char *)path) != 0 && lbl_8055FF20 != 0) {
         return lbl_8055FF20;
     }
     if (path != 0 && fn_802E3270(path) != 0 && (s32)lbl_8055FF24 != 0) {
