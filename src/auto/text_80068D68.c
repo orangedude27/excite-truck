@@ -6796,7 +6796,7 @@ void bta_hh_api_disable(void) {
 }
 
 #pragma scheduling 750
-void bta_hh_disc_cmpl(void) {
+/* HID host disconnection complete: deregister, free every device record's buffer and the control block's payload, invoke the disable callback with the result, and zero the control block. */ void bta_hh_disc_cmpl(void) {
     UINT8 deviceIndex;
     UINT8 status;
     void (*disableCb)(int, void *);
@@ -7844,12 +7844,9 @@ void bta_hh_add_device_to_list(void *devCb, s8 handle, s16 attrMask, void *desc,
 
 BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
     UINT8 xx;
-    UINT8 *p_list;
-    UINT8 cod;
     for (xx = 0; xx < lbl_80559030[0]; xx++) {
-        p_list = *(UINT8 **)(lbl_80559030 + 4);
-        cod = (UINT8)(sub_class >> 2);
-        if (cod == p_list[xx * 2]) {
+        UINT8 *p_list = *(UINT8 **)(lbl_80559030 + 4);
+        if ((((UINT32)sub_class >> 2) & 0x3F) == p_list[xx * 2]) {
             ((UINT8 *)p_cb)[0x15] = p_list[xx * 2 + 1];
             return TRUE;
         }
