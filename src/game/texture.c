@@ -333,12 +333,12 @@ int fn_802CA7F4(const char *path) { return strchr(path, '/') != 0; }
 /* If the path is a special "*"-prefixed extraction name, return the name after
    its '/' (warning if missing); otherwise return the path unchanged. */
 int texGetExtractionName(int path) {
-    int separator;
+    int slashPtr;
     if (((int (*)(const unsigned char *))texIsExtractionName)((const unsigned char *)path) != 0) {
-        separator = (int)strchr((char *)path, 0x2F);
-        if (separator == 0)
+        slashPtr = (int)strchr((char *)path, 0x2F);
+        if (slashPtr == 0)
             fn_802E317C(texMsgBadExtractionName, path);
-        return separator + 1;
+        return slashPtr + 1;
     }
     return path;
 }
