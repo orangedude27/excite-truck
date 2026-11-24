@@ -1469,7 +1469,7 @@ int fn_802C9E94(void *arg0, int arg1, int arg2, float farg0, float farg1, float 
 }
 /* Submit the object's draw handle at +0 only when its position at +4 is inside
  * the view volume (tolerance at +0x10). */
-void drawIfVisible(void *object) {
+/* Submit the object's draw handle at +0 only when its position at +4 is inside the view volume (tolerance at +0x10). */ void drawIfVisible(void *object) {
     if (((int (*)(int, float))fn_802C9640)((int)((char *)object + 4), *(float *)((char *)object + 0x10)) != 0) {
         fn_801E7894(*(int *)object);
     }
