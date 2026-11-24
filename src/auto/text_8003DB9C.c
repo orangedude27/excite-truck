@@ -5450,28 +5450,22 @@ void GXSetTevColor(s32 tevReg, const unsigned int *color) {
     *(unsigned short *)((char *)gxData + 2) = 0;
 }
 
-void GXSetTevKColorSel(s32 arg0, s32 arg1) {
-    struct OddField {
-        unsigned int unused0 : 13;
-        unsigned int selector : 5;
-        unsigned int unused1 : 14;
-    };
-    struct EvenField {
-        unsigned int unused0 : 23;
-        unsigned int selector : 5;
-        unsigned int unused1 : 4;
-    };
-    unsigned int *base = __GXData;
-    unsigned int odd = arg0 & 1;
-    unsigned int *entry = (unsigned int *)((u8 *)base + (((unsigned int)arg0 << 1) & ~3));
-    if (odd) {
-        ((struct OddField *)(entry + 0x80))->selector = arg1;
+void GXSetTevKColorSel(s32 stage, s32 sel) {
+    /* Pack the constant-color selector into the even/odd half of the TEV register and push it to the GX FIFO. */
+    union TevKColorReg {
+        u32 value;
+        struct { u32 pad0 : 13; u32 selector : 5; u32 pad1 : 14; } odd;
+        struct { u32 pad0 : 23; u32 selector : 5; u32 pad1 : 4; } even;
+    } *reg = (union TevKColorReg *)((char *)__GXData + ((stage * 2) & ~3) + 0x200);
+
+    if (stage & 1) {
+        reg->odd.selector = sel;
     } else {
-        ((struct EvenField *)(entry + 0x80))->selector = arg1;
+        reg->even.selector = sel;
     }
-    *(volatile u8 *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = entry[0x80];
-    *(unsigned short *)((u8 *)base + 2) = 0;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = reg->value;
+    *(volatile unsigned short *)((char *)__GXData + 2) = 0;
 }
 
 /* Set the constant alpha (K-alpha) selector for a TEV stage. */
