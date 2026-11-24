@@ -787,7 +787,7 @@ void fn_80236134(void *namePool, int userValue, const char *name) {
 #pragma processor 750
 extern float lbl_805636C0;
 extern float lbl_805636C8;
-extern void* fn_802CC5B8(int);
+extern void* markTextureSlotUsed(int);
 extern float fn_802C9A4C(float);
 #pragma opt_propagation off
 void fn_802361E8(void *obj, int key, int a, int b, int c, int d) {
@@ -811,7 +811,7 @@ void fn_802361E8(void *obj, int key, int a, int b, int c, int d) {
     while (i < *(volatile int *)((char *)obj + 0xC)) {
         entry = (char *)*(void **)((char *)obj + 4) + textOffset;
         if (*(int *)((char *)entry + 0x28) == key) {
-            fn_802CC5B8(*(int *)((char *)entry + 0x24));
+            markTextureSlotUsed(*(int *)((char *)entry + 0x24));
             handle = *(int *)((char *)entry + 0x24);
             break;
         }
