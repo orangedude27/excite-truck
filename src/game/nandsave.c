@@ -7,7 +7,7 @@ __declspec(section ".data") extern int lbl_80507288;
 extern int NANDCheck(unsigned int, unsigned int, unsigned int *);
 extern char lbl_8034D9C0[];
 // split_file divides it into the game's real files (file_status shows its range).
-extern int fn_802E95E0(void *, void (*)(void), int);
+extern int rmemcardWaitAsync(void *, void (*)(void), int);
 extern void fn_802E9010(void);
 extern int NANDInit(void);
 extern void Abend_Panic(const char *, ...);
@@ -323,7 +323,7 @@ void rmemcardCorruptReset(void) {
 
 int fn_802E8C6C(int request) {
 #define KERNEL_RESET_NOTIFY 1
-#define rmemcard_wait_async fn_802E95E0
+#define rmemcard_wait_async rmemcardWaitAsync
 #define rmemcard_pump_async fn_802E9010
 #define rmemcard_reset_op_name lbl_8034DEC4
     /* Reset callback registered in fn_802E8CA8: when the reset is actually on,
@@ -357,7 +357,7 @@ int fn_802E8C6C(int request) {
 void NandSaveShutdown(void) {
 #define sMemCardEndOpName lbl_8034DF00
 #define sNandSaveAsyncBuffer lbl_80560020
-    ((int (*)(void *, void (*)(void)))fn_802E95E0)(sMemCardEndOpName, rmemcardYield);
+    ((int (*)(void *, void (*)(void)))rmemcardWaitAsync)(sMemCardEndOpName, rmemcardYield);
     fn_80127D58((void *)fn_802E9010);
     fn_802E6B94();
     fn_80128670(sNandSaveAsyncBuffer);
@@ -382,7 +382,7 @@ extern char sRmemcardDeleteFailedMsg[];
   extern int NANDGetLength(void *, unsigned int *);
   extern int NANDClose(void *);
 extern char lbl_80560034;
-extern int fn_802E95E0(void *, void (*)(void), int);
+extern int rmemcardWaitAsync(void *, void (*)(void), int);
 extern int fn_802E2C20(void);
 extern char lbl_8034E024[];
 __declspec(section ".data") extern int lbl_80507288;
@@ -457,7 +457,7 @@ u32 fn_802E8D84(void) { return 1; }
 #define rmemcard_async_buffer   lbl_80560020
 #define rmemcard_log_strings    lbl_8034D9C0
 #define rmemcard_yield          rmemcardYield
-#define rmemcard_wait_async     fn_802E95E0
+#define rmemcard_wait_async     rmemcardWaitAsync
 #define rmemcard_test_banner_ok fn_802E8A18
 #define rmemcard_file_exists    fn_802E8AE8
 #define rmemcard_recover_space  fn_802E8920
@@ -858,7 +858,7 @@ void fn_802E95CC(int result, void **cb_ctx) {
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-int fn_802E95E0(void *opName, void (*pump)(void), int unused) {
+int rmemcardWaitAsync(void *opName, void (*pump)(void), int unused) {
     /* Wait for the NAND/memcard async machine to go idle (rmemcard_async_state < 2),
        pumping once per pass; log a timeout and return 0 past 4000 ms or on clock
        rollback, otherwise return 1. */
@@ -896,7 +896,7 @@ extern void *memcpy(void *, const void *, unsigned int);
  * banner + data write, then copy the target name into the save context.
  * Returns 1 once armed, 0 on a timeout or if the save was flagged invalid. */
 int fn_802E967C(char *path, void *src, int size) {
-#define rmemcard_wait_async   fn_802E95E0
+#define rmemcard_wait_async   rmemcardWaitAsync
 #define rmemcard_yield        rmemcardYield
 #define rmemcard_log_strings  lbl_8034D9C0
 #define nandLogPrintf         fn_802E30C8
