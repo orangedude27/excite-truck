@@ -1296,7 +1296,7 @@ void fn_80241820(void *arg0) {
  * (menu enabled at +0x38 and this index == the selected index at +0x30) into the
  * item's flag byte at +0, and the value the menu follows (*+0x34) into its word
  * at +4. Same refresh as MRollMenuItem_addEntry, without appending an entry first. */
-void fn_80241DE8(void *menu) {
+void MRollMenuItem_refreshEntries(void *menu) {
     void *item;
     s32 index;
     s32 value;
@@ -1314,7 +1314,7 @@ void fn_80241DE8(void *menu) {
     }
 }
 #pragma pop
-/* If the menu is enabled and its followed value (*+0x34) matches the current input nibble, refresh every entry as fn_80241DE8 does and return 1; otherwise return 0. */ s32 fn_80241E40(void *arg0) {
+/* If the menu is enabled and its followed value (*+0x34) matches the current input nibble, refresh every entry as MRollMenuItem_refreshEntries does and return 1; otherwise return 0. */ s32 fn_80241E40(void *arg0) {
     /* If active and synced with the current selection value, write selection/value to each output entry and return 1; otherwise return 0. */
     s32 index;
     s32 isSelected;
