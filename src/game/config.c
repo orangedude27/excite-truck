@@ -99,7 +99,7 @@ void ConfigShutdown(void) {}
  */
 void ConfigCacheWpadSettings(void) {
     sConfigWpadMotor = (SCGetWpadMotorMode() == SC_MOTOR_ON);
-    sConfigWpadSpeakerVolume = (f32)(u32)SCGetWpadSpeakerVolume() / 127.0f;
+    sConfigWpadSpeakerVolume = (f32)(u32)SCGetWpadSpeakerVolume() / (f32)SC_MAX_SPEAKER_VOLUME;
 }
 
 /** @brief Get the console's aspect ratio, as set in the system menu (SCAspectRatio). */
