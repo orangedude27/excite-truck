@@ -934,7 +934,7 @@ extern float lbl_8055FA18;
 extern s32 fn_802B6A70(s32);
 extern void *fn_802B5240(void *);
 extern void fn_802B52B4(void);
-extern s32 fn_802E3BB4(void *, void *, s32);
+extern s32 FileFindFirst(void *, void *, s32);
 extern s32 fn_802E3C24(s32, void *, s32);
 extern void fn_802E3CA4(s32);
 extern char *strchr(char *, int);
@@ -980,7 +980,7 @@ void fn_802B6AC0(void) {
     *(float *)((u8 *)&lbl_8055FA18) = seconds;
     mode = fn_802B6A70(lbl_8055FA38);
     ((s32 (*)(char *, s32, const char *, ...))fn_801345D8)(scratch.imageBuffer, 0x40, lbl_8055CE88, mode);
-    result = fn_802E3BB4(scratch.imageBuffer, scratch.path, 0x20);
+    result = FileFindFirst(scratch.imageBuffer, scratch.path, 0x20);
     if ((u32)result + 0x10000U != 0xFFFFU) {
         register char *suffix = (char *)lbl_8055CE98;
         do {

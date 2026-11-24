@@ -446,7 +446,7 @@ extern "C" void fn_802E3AD0(s32 arg0, const char *fmt, ...) {
 #undef FILESYSTEM_SINK
 }
 #pragma scheduling on
-extern "C" s32 fn_802E3BB4(s32 arg0, s32 arg1, s32 arg2) {
+extern "C" s32 FileFindFirst(s32 arg0, s32 arg1, s32 arg2) {
     class Obj {
     public:
         virtual void v0();

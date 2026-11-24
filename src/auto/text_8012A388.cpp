@@ -1324,7 +1324,7 @@ extern "C" void fn_8012BF24(void *resName) {
     fn_8012E498(resName);
 }
 
-extern "C" s32 fn_802E3BB4(s32, char *, s32);
+extern "C" s32 FileFindFirst(s32, char *, s32);
 extern "C" void fn_802E3A14(s32, s32);
 extern "C" s32 fn_802E3804(s32, void *, s32);
 extern "C" s32 fn_802E3C24(s32, char *, s32);
@@ -1363,7 +1363,7 @@ extern "C" void fn_8012BF28(void) {
     paths[0] = *table++; paths[1] = *table++; paths[2] = *table;
     pathPtr = paths; i = 0;
     do {
-        s32 opened = fn_802E3BB4(*pathPtr, filename, 0x80);
+        s32 opened = FileFindFirst(*pathPtr, filename, 0x80);
         if ((u32)(opened + 0x10000) != 0xFFFF) {
             handle = opened;
             do {
