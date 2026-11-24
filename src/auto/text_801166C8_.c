@@ -8418,45 +8418,45 @@ void fn_80124F90(void *data) {
 }
 #pragma opt_propagation reset
 /* Radix-2 DIF FFT butterfly (the n==8 base case of the inverse transform): four complex samples (re/im float pairs) in `data` are replaced in place by the two-stage butterfly result. */
-void fn_80125014(void *arg0) {
-    f32 temp_f0;
-    f32 temp_f1;
-    f32 temp_f3;
-    f32 temp_f2;
-    f32 temp_f4;
-    f32 temp_f5;
-    f32 temp_f6;
-    f32 temp_f7;
-    f32 temp_f8;
-    f32 temp_f9;
-    f32 temp_f10;
-    f32 temp_f11;
-    f32 temp_f12;
+/* Radix-2 DIF FFT butterfly (n==8 base case of the inverse transform): four complex samples (re/im float pairs) in arg0 are replaced in place by the two-stage butterfly result. */ void fn_80125014(void *data) {
+    f32 t0;
+    f32 t1;
+    f32 re3;
+    f32 re1;
+    f32 t4;
+    f32 im0;
+    f32 sumRe02;
+    f32 sumIm02;
+    f32 diffRe02;
+    f32 diffIm02;
+    f32 sumRe13;
+    f32 diffRe13;
+    f32 diffIm13;
 
-    temp_f1 = *(f32 *)((u8 *)arg0 + 0);
-    temp_f0 = *(f32 *)((u8 *)arg0 + 0x10);
-    temp_f5 = *(f32 *)((u8 *)arg0 + 4);
-    temp_f4 = *(f32 *)((u8 *)arg0 + 0x14);
-    temp_f6 = temp_f1 + temp_f0;
-    temp_f8 = temp_f1 - temp_f0;
-    temp_f2 = *(f32 *)((u8 *)arg0 + 8);
-    temp_f3 = *(f32 *)((u8 *)arg0 + 0x18);
-    temp_f7 = temp_f5 + temp_f4;
-    temp_f1 = *(f32 *)((u8 *)arg0 + 0xC);
-    temp_f0 = *(f32 *)((u8 *)arg0 + 0x1C);
-    temp_f9 = temp_f5 - temp_f4;
-    temp_f12 = temp_f1 - temp_f0;
-    temp_f4 = temp_f1 + temp_f0;
-    temp_f10 = temp_f2 + temp_f3;
-    temp_f11 = temp_f2 - temp_f3;
-    *(f32 *)((u8 *)arg0 + 0) = temp_f6 + temp_f10;
-    *(f32 *)((u8 *)arg0 + 4) = temp_f7 + temp_f4;
-    *(f32 *)((u8 *)arg0 + 0x10) = temp_f6 - temp_f10;
-    *(f32 *)((u8 *)arg0 + 0x14) = temp_f7 - temp_f4;
-    *(f32 *)((u8 *)arg0 + 8) = temp_f8 + temp_f12;
-    *(f32 *)((u8 *)arg0 + 0xC) = temp_f9 - temp_f11;
-    *(f32 *)((u8 *)arg0 + 0x18) = temp_f8 - temp_f12;
-    *(f32 *)((u8 *)arg0 + 0x1C) = temp_f9 + temp_f11;
+    t1 = *(f32 *)((u8 *)data + 0);
+    t0 = *(f32 *)((u8 *)data + 0x10);
+    im0 = *(f32 *)((u8 *)data + 4);
+    t4 = *(f32 *)((u8 *)data + 0x14);
+    sumRe02 = t1 + t0;
+    diffRe02 = t1 - t0;
+    re1 = *(f32 *)((u8 *)data + 8);
+    re3 = *(f32 *)((u8 *)data + 0x18);
+    sumIm02 = im0 + t4;
+    t1 = *(f32 *)((u8 *)data + 0xC);
+    t0 = *(f32 *)((u8 *)data + 0x1C);
+    diffIm02 = im0 - t4;
+    diffIm13 = t1 - t0;
+    t4 = t1 + t0;
+    sumRe13 = re1 + re3;
+    diffRe13 = re1 - re3;
+    *(f32 *)((u8 *)data + 0) = sumRe02 + sumRe13;
+    *(f32 *)((u8 *)data + 4) = sumIm02 + t4;
+    *(f32 *)((u8 *)data + 0x10) = sumRe02 - sumRe13;
+    *(f32 *)((u8 *)data + 0x14) = sumIm02 - t4;
+    *(f32 *)((u8 *)data + 8) = diffRe02 + diffIm13;
+    *(f32 *)((u8 *)data + 0xC) = diffIm02 - diffRe13;
+    *(f32 *)((u8 *)data + 0x18) = diffRe02 - diffIm13;
+    *(f32 *)((u8 *)data + 0x1C) = diffIm02 + diffRe13;
 }
 
 /* Radix-2 DIF FFT butterfly (the n==4 base case): `data` holds two complex
