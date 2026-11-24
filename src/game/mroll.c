@@ -1737,12 +1737,13 @@ extern "C" void fn_802422DC(void *arg0, s32 arg1) {
 /* Returns the item at the object's current index (+0x28) from the collection at
    +0x24, or 0 if the index is negative or out of range. */
 extern "C" s32 getCurrentCollectionItem(void *self) {
+    /* Return the item at the object's current index in its collection, or 0 when out of range. */
     struct Collection {
-        virtual s32 f0() = 0;
-        virtual s32 f1() = 0;
-        virtual s32 f2() = 0;
+        virtual s32 reserved0() = 0;
+        virtual s32 reserved1() = 0;
+        virtual s32 reserved2() = 0;
         virtual s32 getCount() = 0;
-        virtual s32 f4() = 0;
+        virtual s32 reserved4() = 0;
         virtual s32 getItem(s32) = 0;
     };
     s32 index = *(s32 *)((u8 *)self + 0x28);
