@@ -92,7 +92,7 @@ extern int fn_802D31D8(int);
 extern void fn_801E7888(int);
 extern unsigned int lbl_804C1410[];
 extern unsigned int lbl_804C13E0[];
-extern char lbl_8055FC35;
+extern char sDrawListMatrixSaved;
 struct DlMtx34 { unsigned int w[12]; };
 extern float lbl_80564EF8, lbl_80564F00;
 extern void fn_802C7758(int);
@@ -284,7 +284,7 @@ void fn_802C855C(void) {
 
 extern void fn_802C7758(int);
 extern unsigned int lbl_804C13E0[];
-extern char lbl_8055FC35;
+extern char sDrawListMatrixSaved;
 extern void fn_802C89E8(float *);
 extern void fn_802C8638(unsigned int *);
 extern float lbl_80564EF8, lbl_80564F00;
@@ -577,7 +577,7 @@ void fn_802C8C04(int texSlot) {
     float orthoMtx[12];
 
     *savedMtx = *currentMtx;
-    lbl_8055FC35 = 1;
+    sDrawListMatrixSaved = 1;
     fn_802C89E8(orthoMtx);
     fn_802C8638((unsigned int *)orthoMtx);
     ((void (*)(int))fn_802C8BD0)(texSlot);
@@ -591,7 +591,7 @@ void fn_802C8C04(int texSlot) {
     float projMtx[12];
 
     *savedMtx = *currentMtx;
-    lbl_8055FC35 = 1;
+    sDrawListMatrixSaved = 1;
     fn_802C88FC(projMtx);
     fn_802C8638((unsigned int *)projMtx);
     ((void (*)(int))fn_802C8BD0)(texSlot);
@@ -602,10 +602,10 @@ void fn_802C8C04(int texSlot) {
 /* RealName: DrawList_RestoreNormalMode */
 void fn_802C8D74(void) {
     lbl_8055FC70 = 1;
-    if ((unsigned char)lbl_8055FC35 != 0) {
+    if ((unsigned char)sDrawListMatrixSaved != 0) {
         fn_802C8638(lbl_804C13E0);
     }
-    lbl_8055FC35 = 0;
+    sDrawListMatrixSaved = 0;
 }
 #pragma dont_inline reset
 
