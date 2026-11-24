@@ -103,7 +103,7 @@ void ConfigCacheWpadSettings(void) {
 }
 
 /** @brief Get the console's aspect ratio, as set in the system menu (SCAspectRatio). */
-s32 ConfigGetAspectRatio(void) {
+/* Return the cached aspect ratio from the system menu (4:3 or 16:9). */ s32 ConfigGetAspectRatio(void) {
     return sConfigAspectRatio;
 }
 
