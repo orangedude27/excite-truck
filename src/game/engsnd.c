@@ -135,7 +135,8 @@ extern f32 lbl_80563238;
 extern f32 lbl_80563258;
 extern f32 lbl_8055B4FC;
 void fn_80209904(void) {
-    /* Update lbl_8055EDB8 by stepping toward 0.0 when active conditions hold, else toward 0.63. */
+    /* Per-frame ramp of the engine-sound level lbl_8055EDB8: step it down to 0
+       when the tips/results overlay is up or the intro is over, else up to 0.63. */
     f32 decreasedValue;
     f32 increasedValue;
     f32 clampedDown;
