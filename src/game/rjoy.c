@@ -25,7 +25,7 @@ extern int fn_801282F4(void);
 extern int fn_801284E8(void *, int);
 extern int gWpadAllocHandles[];
 extern int lbl_8055D224;
-extern int lbl_8056000C;
+extern int gWpadAllocCount;
 extern unsigned char lbl_80560008;
 extern char ConfigGetWpadMotorMode(void);
   void fn_802E8528(int, float, float);
@@ -151,7 +151,7 @@ extern int fn_801282F4(void);
 extern int fn_801284E8(void *, int);
 extern int gWpadAllocHandles[];
 extern int lbl_8055D224;
-extern int lbl_8056000C;
+extern int gWpadAllocCount;
 #pragma scheduling invalid_target
 /* Registers a WPAD input handler for the given device and stores its handle. */
 void wpadAlloc(int deviceIndex) {
@@ -159,7 +159,7 @@ void wpadAlloc(int deviceIndex) {
     fn_801282EC(0x80);
     fn_801282F4();
     handle = fn_801284E8(&lbl_8055D224, deviceIndex);
-    gWpadAllocHandles[lbl_8056000C++] = handle;
+    gWpadAllocHandles[gWpadAllocCount++] = handle;
 }
 #pragma scheduling on
 extern float lbl_805651A0, lbl_805651A4;
@@ -167,7 +167,7 @@ extern int fn_8005ED8C(void), fn_8005EE20(void), fn_8005EE7C(void);
 extern int fn_80128684(void);
 extern int fn_802E30C8(const char *, ...);
 __declspec(section ".rodata") extern int lbl_8034D8B4, lbl_8034D8E8;
-extern int gWpadAllocHandles[], lbl_8056000C;
+extern int gWpadAllocHandles[], gWpadAllocCount;
 extern int fn_80128658(int, int *);
 #pragma push
 #pragma scheduling invalid_target
@@ -179,10 +179,10 @@ int wpadFree(unsigned int handle) {
     int *cursor;
     int index;
     int lastValue;
-    for (matchIndex = -1, cursor = gWpadAllocHandles, index = 0; index < lbl_8056000C; cursor++, index++)
+    for (matchIndex = -1, cursor = gWpadAllocHandles, index = 0; index < gWpadAllocCount; cursor++, index++)
         if ((unsigned int)*cursor == handle) matchIndex = index;
-    lbl_8056000C--;
-    lastValue = gWpadAllocHandles[lbl_8056000C];
+    gWpadAllocCount--;
+    lastValue = gWpadAllocHandles[gWpadAllocCount];
     gWpadAllocHandles[matchIndex] = lastValue;
     ((void (*)(unsigned int, int))fn_80128658)(handle, lastValue);
     return 1;
@@ -294,7 +294,7 @@ extern int fn_8005ED8C(void);
 extern int fn_8005EE7C(void);
 extern char lbl_8034D908[];
 extern int lbl_8034D8E8;
-extern int lbl_80507268[], gWpadAllocHandles[], lbl_8056000C;
+extern int lbl_80507268[], gWpadAllocHandles[], gWpadAllocCount;
 #pragma scheduling invalid_target
 /* Reset WPAD controllers and sampling callbacks, wait for shutdown, then free any pending controller handles. */ void fn_802E7D0C(void) {
     int *samplingCallbacks;
@@ -327,12 +327,12 @@ extern int lbl_80507268[], gWpadAllocHandles[], lbl_8056000C;
 
     controllerHandles = gWpadAllocHandles;
     handleIdx = 0;
-    while (handleIdx < lbl_8056000C) {
+    while (handleIdx < gWpadAllocCount) {
         ((int (*)(int))fn_80128658)(*controllerHandles);
         controllerHandles++;
         handleIdx++;
     }
-    lbl_8056000C = 0;
+    gWpadAllocCount = 0;
 }
 extern double fn_8002EFB0(float, float);
 extern float RjoyShapeSteeringAxis(float);
