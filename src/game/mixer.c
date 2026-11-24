@@ -613,10 +613,10 @@ void fn_80209398(void *timer) {
 #undef state
 }
 
-int fn_802093A4(void *arg0) {
-    /* If 2000ms elapsed since start, mark the timed object as expired; return its state. */
-#define startTime ((int *)((char *)arg0 + 4))
-#define state ((int *)((char *)arg0 + 8))
+int fn_802093A4(void *timer) {
+    /* Sound-timer check: if 2000 ms have passed since its start time, expire it (state 3); return its state. */
+#define startTime ((int *)((char *)timer + 4))
+#define state ((int *)((char *)timer + 8))
     if (*startTime + 0x7D0 < KERNEL_GetTimeMs()) {
         *state = 3;
     }
