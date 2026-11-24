@@ -399,7 +399,7 @@ void fn_80266150(void *arg0);
 int fn_80178CA4(void);
 float PSQUATMultiply(float *arg0, int arg1);
 /* Initialize the camera spline cursor at cursor and return the same pointer. */
-void *fn_80266120(void *cursor) {
+void *Camera_InitSplineCursor(void *cursor) {
     fn_80266150(cursor);
     return cursor;
 }

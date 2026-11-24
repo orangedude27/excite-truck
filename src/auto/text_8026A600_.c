@@ -4,12 +4,12 @@
 extern unsigned char lbl_80499E60[];
 extern float PSVECDotProduct(const void *, const void *);
 extern void Camera_InitBlock(void *);
-extern void fn_80266120(void *);
+extern void Camera_InitSplineCursor(void *);
 /* Initialize a 0x228-byte camera object's two embedded state blocks - the one at
    +0x160 and the spline cursor at +0x178 - through their init helpers. */
 void *fn_8026A600(void *camera) {
 #define InitCameraBlock_160 Camera_InitBlock /* zeroes the 0x18-byte block at camera+0x160 */
-#define InitCameraSplineCursor fn_80266120 /* zeroes the spline cursor at camera+0x178 */
+#define InitCameraSplineCursor Camera_InitSplineCursor /* zeroes the spline cursor at camera+0x178 */
     InitCameraBlock_160((char *)camera + 0x160);
     InitCameraSplineCursor((char *)camera + 0x178);
     return camera;
