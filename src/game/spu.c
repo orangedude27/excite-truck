@@ -700,13 +700,22 @@ extern int sprintf(char *, const char *, ...);
 #pragma scheduling invalid_target
 /* Builds a SPU resource path from a directory and name, logs it, and warns if it cannot be cached. */
 void Spu_CacheVoiceByPath(int dirName, int fileName) {
-    char path[0x108];
+#define sResourcePathFmt lbl_8055D1E4      /* "*%s/%s" */
+#define sCachingFmt      lbl_8034D490      /* "Spu: caching %s" */
+#define sCacheFailedFmt  lbl_8034D4A0      /* "Spu: couldn't cache %s" */
+#define Abend_warn ((void (*)(char *, char *, ...))fn_802E30C8)
+    /* Build a SPU resource path from a directory and name, log it, and warn if caching fails. */
+    char voicePath[0x108];
 
-    sprintf(path, lbl_8055D1E4, dirName, fileName);
-    ((void (*)(char *, char *, ...))fn_802E30C8)(lbl_8034D490, path);
-    if (((int (*)(char *))Spu_CacheVoiceObject)(path) == 0) {
-        ((void (*)(char *, char *, ...))fn_802E30C8)(lbl_8034D4A0, path);
+    sprintf(voicePath, sResourcePathFmt, dirName, fileName);
+    Abend_warn(sCachingFmt, voicePath);
+    if (((int (*)(char *))Spu_CacheVoiceObject)(voicePath) == 0) {
+        Abend_warn(sCacheFailedFmt, voicePath);
     }
+#undef Abend_warn
+#undef sCacheFailedFmt
+#undef sCachingFmt
+#undef sResourcePathFmt
 }
 #pragma scheduling on
 /* Queue a sound directory to play: copy its name into the next slot of the
