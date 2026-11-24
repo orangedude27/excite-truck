@@ -1219,17 +1219,17 @@ void fn_802CB82C(int arg0) {
     *(int *)(temp_r31 + 0x40) = 0;
 }
 #pragma pop
- void fn_802CBBE8();
+ void TexRequestUnlink();
  extern char texMsgUnlinkNodeNotFound[];
 /* Remove arg2 from the list rooted at arg1, then push arg2 onto the front of *arg0. */
 void fn_802CBB9C(int **arg0, int arg1, int *arg2) {
-    fn_802CBBE8(arg1, arg2);
+    TexRequestUnlink(arg1, arg2);
     *(int **)((char *)arg2 + 0x14) = *arg0;
     *arg0 = arg2;
 }
 
 #pragma scheduling invalid_target
-void fn_802CBBE8(register int **link, int *node, int *scan) {
+void TexRequestUnlink(register int **link, int *node, int *scan) {
     /* Unlink `node` from the texture list threaded through `link` (each node's next pointer is at +0x14);
        log a diagnostic if the node is not in the list. */
     int found = 0;
