@@ -89,49 +89,84 @@ extern int fn_802146BC(int *, int, int, int, int, int, int, int);
 extern void fn_8023DB68(void);
 extern void fn_8023DBCC(void);
 extern void fn_8022D894(void *, int, int, long, int);
-#pragma use_lmw_stmw off
-void fn_8023D4B8(int arg0) {
 #pragma scheduling invalid_target
-    int ctx[14];
-    Rec_8023D4B8 recs[10];
-    int tbl[5];
-    int r7;
-    register int self = arg0;
-    lbl_8055F19C = (void *)self;
-    fn_8023DB68();
-    fn_80137C78(1);
-    fn_80137C84(self, 0);
-    fn_8017EBE0();
-    fn_80137C98(self);
-    lbl_8055F198 = (void *)fn_8018108C();
-    fn_8023E078(ctx, self);
-    lbl_8055F190 = ctx;
-    recs[0].name = &lbl_8055BC58; recs[0].type = 0xD; recs[0].arg = ctx; recs[0].x = 0; recs[0].id = 0;
-    recs[1].name = &lbl_8055BC60; recs[1].type = 0xD; recs[1].arg = ctx; recs[1].x = 1; recs[1].id = 0;
-    recs[2].name = &lbl_8055B860; recs[2].type = 6; recs[2].arg = (void *)fn_8023E028; recs[2].x = 0; recs[2].id = 0x128;
-    recs[3].name = &lbl_8055B860; recs[3].type = 6; recs[3].arg = (void *)fn_8023DFD4; recs[3].x = 0; recs[3].id = 0x126;
-    recs[4].name = &lbl_8055B860; recs[4].type = 6; recs[4].arg = (void *)fn_8023DD80; recs[4].x = 0; recs[4].id = 0xD;
-    recs[5].name = &lbl_8055B860; recs[5].type = 6; recs[5].arg = 0; recs[5].x = -1; recs[5].id = 0x1B;
-    recs[6].name = &lbl_8055B860; recs[6].type = 6; recs[6].arg = (void *)fn_8023DFB0; recs[6].x = 0; recs[6].id = 0x6F;
-    r7 = fn_802E85B8(self, (void *)fn_8023DFB0, 0x1B, -1, (void *)fn_8023DD80, 0x126, (void *)fn_8023DFD4, 0x128);
-    recs[7].name = lbl_803419EC; recs[7].type = 3; recs[7].arg = (void *)r7; recs[7].x = 0; recs[7].id = 0;
-    fn_8000DA10();
-    recs[8].name = lbl_80341A00; recs[8].type = 3; recs[8].arg = (void *)fn_8000DB34(); recs[8].x = 0; recs[8].id = 0;
-    recs[9] = *(Rec_8023D4B8 *)lbl_804987B8;
-    tbl[0] = lbl_802FA258[0];
-    tbl[1] = lbl_802FA258[1];
-    tbl[2] = lbl_802FA258[2];
-    tbl[3] = lbl_802FA258[3];
-    tbl[4] = lbl_802FA258[4];
-    tbl[1] = (int)recs;
-    lbl_8055F194 = 0;
-    ((void (*)(void *, int, int, int, int, int, int, int))fn_8023E0DC)(lbl_8055F190, 0, tbl[4], tbl[3], tbl[2], tbl[0], lbl_804987B8[4], lbl_804987B8[3]);
-    ((int (*)(int *, int, int, int))fn_802146BC)(tbl, -0x3E7, -0x3E7, 1);
-    fn_8017EC30();
-    fn_8023DBCC();
-    fn_8022D7C4(ctx, 0);
+void fn_8023D4B8(int arg0)
+{
+  int ctx[14];
+  Rec_8023D4B8 recs[10];
+  int tbl[5];
+  int i;
+  int r7;
+  lbl_8055F19C = (void *) arg0;
+  fn_8023DB68();
+  fn_80137C78(1);
+  fn_80137C84(arg0, 0);
+  fn_8017EBE0();
+  fn_80137C98(arg0);
+  lbl_8055F198 = (void *) fn_8018108C();
+  fn_8023E078(ctx, arg0);
+  lbl_8055F190 = ctx;
+  recs[0].name = &lbl_8055BC58;
+  recs[0].type = 0xD;
+  recs[0].arg = ctx;
+  recs[0].x = 0;
+  recs[0].id = 0;
+  recs[1].name = &lbl_8055BC60;
+  recs[1].type = 0xD;
+  recs[1].arg = ctx;
+  recs[1].x = 1;
+  recs[1].id = 0;
+  recs[2].name = &lbl_8055B860;
+  recs[2].type = 6;
+  recs[2].arg = (void *) fn_8023E028;
+  recs[2].x = 0;
+  recs[2].id = 0x128;
+  recs[3].name = &lbl_8055B860;
+  recs[3].type = 6;
+  recs[3].arg = (void *) fn_8023DFD4;
+  recs[3].x = 0;
+  recs[3].id = 0x126;
+  recs[4].name = &lbl_8055B860;
+  recs[4].type = 6;
+  recs[4].arg = (void *) fn_8023DD80;
+  recs[4].x = 0;
+  recs[4].id = 0xD;
+  recs[5].name = &lbl_8055B860;
+  recs[5].type = 6;
+  recs[5].arg = 0;
+  recs[5].x = -1;
+  recs[5].id = 0x1B;
+  recs[6].name = &lbl_8055B860;
+  recs[6].type = 6;
+  recs[6].arg = (void *) fn_8023DFB0;
+  recs[6].x = 0;
+  recs[6].id = 0x6F;
+  r7 = fn_802E85B8(arg0, (void *) fn_8023DFB0, 0x1B, -1, (void *) fn_8023DD80, 0x126, (void *) fn_8023DFD4, 0x128);
+  recs[7].name = lbl_803419EC;
+  recs[7].type = 3;
+  recs[7].arg = (void *) r7;
+  recs[7].x = 0;
+  recs[7].id = 0;
+  fn_8000DA10();
+  recs[8].name = lbl_80341A00;
+  recs[8].type = 3;
+  recs[8].arg = (void *) fn_8000DB34();
+  recs[8].x = 0;
+  recs[8].id = 0;
+  recs[9] = *((Rec_8023D4B8 *) lbl_804987B8);
+  tbl[0] = lbl_802FA258[0];
+  tbl[1] = lbl_802FA258[1];
+  tbl[2] = lbl_802FA258[2];
+  tbl[3] = lbl_802FA258[3];
+  tbl[4] = lbl_802FA258[4];
+  tbl[1] = (int) recs;
+  lbl_8055F194 = 0;
+  ((void (*)(void *, int, int, int, int, int, int, int)) fn_8023E0DC)(lbl_8055F190, 0, tbl[4], tbl[3], tbl[2], tbl[0], lbl_804987B8[4], lbl_804987B8[3]);
+  ((int (*)(int *, int, int, int)) fn_802146BC)(tbl, -((short) 0x3E7), -0x3E7, 1);
+  fn_8017EC30();
+  fn_8023DBCC();
+  fn_8022D7C4(ctx, 0);
 }
-#pragma dont_inline on
 void* fn_8023D6FC(void) {
 #define controlScheme lbl_8055F18C
     /* RealName: GetControlScheme - return the currently selected control scheme (0..3). */
@@ -189,7 +224,7 @@ void fn_8023D70C(void) {
 void fn_8023D7CC(void) {
 #define sOptionData          lbl_803416A8
 #define ApplyControlDefaults fn_8023DA64
-#define GetControlScheme     fn_8023D6FC
+#define GetControlScheme     (((void* (*)(void))fn_8023D6FC)())
 #define SetControlOption     fn_8013358C
     char *optionData = sOptionData;
     int slotIndex;
@@ -198,7 +233,7 @@ void fn_8023D7CC(void) {
     slotIndex = 0;
     do {
         ApplyControlDefaults((void *)slotIndex, 1, 0);
-        scheme = (int)GetControlScheme();
+        scheme = (int)GetControlScheme;
         switch (scheme) {
         case 0:
             fn_802E8664(1);
@@ -239,7 +274,7 @@ void fn_8023D7CC(void) {
             SetControlOption(slotIndex + 8, (int)lbl_8055BBC0, optionData + 0x29C);
             break;
         default:
-            fn_802E317C(optionData + 0x474, (int)GetControlScheme());
+            fn_802E317C(optionData + 0x474, (int)GetControlScheme);
             break;
         }
         slotIndex++;
@@ -429,9 +464,11 @@ extern "C" int fn_8023DD80(void) {
         virtual void slot24(); virtual void slot25(); virtual void *query();
     };
     volatile int local[0x33];
-    register int zero = 0;
-    register char **table;
     register char *config;
+    register char **table;
+    register int zero;
+    register int value2, value1, value0;
+    register int c_d, c_m2, c_1b, c_m1, c_B860, c_6, c_BC90;
     int state;
     int query;
     int index;
@@ -439,9 +476,6 @@ extern "C" int fn_8023DD80(void) {
     int arg2;
     int arg3;
     int option4;
-    int value0;
-    int value1;
-    int value2;
     int value3;
     int value4;
     int result;
@@ -454,6 +488,7 @@ extern "C" int fn_8023DD80(void) {
         return 0;
     }
 
+    zero = 0;
     state = (int)lbl_8055F19C;
     *(volatile char *)((char *)local + 0x1C) = zero;
     *(volatile int *)((char *)local + 0x14) = state;
@@ -480,25 +515,33 @@ extern "C" int fn_8023DD80(void) {
     arg3 = options[2];
     option4 = options[3];
 
+    c_BC90 = (int)&lbl_8055BC90;
+    c_6 = 6;
+    c_B860 = (int)&lbl_8055B860;
+    c_m1 = -1;
+    c_1b = 0x1B;
+    c_m2 = -2;
+    c_d = 0xD;
+
     *(volatile int *)((char *)local + 0x60) = (int)&lbl_8055BC88;
     *(volatile int *)((char *)local + 0x64) = 3;
     *(volatile int *)((char *)local + 0x6C) = zero;
     *(volatile int *)((char *)local + 0x70) = zero;
-    *(volatile int *)((char *)local + 0x74) = (int)&lbl_8055BC90;
-    *(volatile int *)((char *)local + 0x78) = 0x10;
+    *(volatile int *)((char *)local + 0x74) = c_BC90;
+    *(volatile int *)((char *)local + 0x78) = c_6;
     *(volatile int *)((char *)local + 0x7C) = zero;
     *(volatile int *)((char *)local + 0x80) = (int)config;
     *(volatile int *)((char *)local + 0x84) = zero;
-    *(volatile int *)((char *)local + 0x88) = (int)&lbl_8055B860;
-    *(volatile int *)((char *)local + 0x8C) = 6;
+    *(volatile int *)((char *)local + 0x88) = c_B860;
+    *(volatile int *)((char *)local + 0x8C) = c_6;
     *(volatile int *)((char *)local + 0x90) = zero;
-    *(volatile int *)((char *)local + 0x94) = -1;
-    *(volatile int *)((char *)local + 0x98) = 0x1B;
-    *(volatile int *)((char *)local + 0x9C) = (int)&lbl_8055B860;
-    *(volatile int *)((char *)local + 0xA0) = 6;
+    *(volatile int *)((char *)local + 0x94) = c_m1;
+    *(volatile int *)((char *)local + 0x98) = c_1b;
+    *(volatile int *)((char *)local + 0x9C) = c_B860;
+    *(volatile int *)((char *)local + 0xA0) = c_6;
     *(volatile int *)((char *)local + 0xA4) = zero;
-    *(volatile int *)((char *)local + 0xA8) = -2;
-    *(volatile int *)((char *)local + 0xAC) = 0xD;
+    *(volatile int *)((char *)local + 0xA8) = c_m2;
+    *(volatile int *)((char *)local + 0xAC) = c_d;
     *(volatile int *)((char *)local + 0xB0) = value0;
     *(volatile int *)((char *)local + 0xB4) = value1;
     *(volatile int *)((char *)local + 0xB8) = value2;
@@ -756,11 +799,9 @@ int fn_8023E3D8(int arg0, int arg1) {
     s32 max = fn_801A902C();
     s32 *p = (s32 *)arg0;
     s32 old = p[4];
-    s32 tmp;
     max += 1;
-    tmp = max + arg1;
     old += 1;
-    p[4] = (old + tmp) % max - 1;
+    p[4] = (old + (max + arg1)) % max - 1;
     fn_8023E33C(p);
 }
 
