@@ -72,37 +72,41 @@ s32 fn_801B53E4(void *obj) {
     return isLinkable;
 }
 
-void fn_801B5410(void *arg0, void *arg1, void *arg2) {
-    f32 *m;
-    f32 scale;
-    f32 product;
-    f32 sum;
-    f32 m6;
-    f32 m9;
-    m = *(f32 **)((u8 *)arg0 + 0xC);
-    scale = *(f32 *)((u8 *)arg0 + 0x2C);
-    m6 = m[6];
-    product = m6 * scale;
-    sum = m[9] + product;
-    *(f32 *)arg1 = sum;
-    product = m[7] * scale;
-    sum = m[10] + product;
-    *(f32 *)((u8 *)arg1 + 4) = sum;
-    product = m[8] * scale;
-    sum = m[11] + product;
-    *(f32 *)((u8 *)arg1 + 8) = sum;
-    scale = -*(f32 *)((u8 *)arg0 + 0x2C);
-    product = m[6] * scale;
-    sum = m[9] + product;
-    *(f32 *)arg2 = sum;
-    product = m[7] * scale;
-    sum = m[10] + product;
-    *(f32 *)((u8 *)arg2 + 4) = sum;
-    product = m[8] * scale;
-    sum = m[11] + product;
-    *(f32 *)((u8 *)arg2 + 4) = 0.0f;
-    *(f32 *)((u8 *)arg2 + 8) = sum;
-    *(f32 *)((u8 *)arg1 + 4) = 0.0f;
+void fn_801B5410(void *object, Vec *plusEnd, Vec *minusEnd) {
+    f32 *matrix;
+    f32 offset;
+    f32 scaled;
+    f32 component;
+    f32 dirX;
+    struct BpxObject *bpx = (struct BpxObject *)object;
+
+    /* Compute the two ends of a linkable BPX object's ground segment: its
+     * position (matrix [9..11]) offset by +-length along its direction
+     * (matrix [6..8]), with the Y component forced to zero. */
+    matrix = bpx->matrix;
+    offset = bpx->length;
+    dirX = matrix[6];
+    scaled = dirX * offset;
+    component = matrix[9] + scaled;
+    plusEnd->x = component;
+    scaled = matrix[7] * offset;
+    component = matrix[10] + scaled;
+    plusEnd->y = component;
+    scaled = matrix[8] * offset;
+    component = matrix[11] + scaled;
+    plusEnd->z = component;
+    offset = -bpx->length;
+    scaled = matrix[6] * offset;
+    component = matrix[9] + scaled;
+    minusEnd->x = component;
+    scaled = matrix[7] * offset;
+    component = matrix[10] + scaled;
+    minusEnd->y = component;
+    scaled = matrix[8] * offset;
+    component = matrix[11] + scaled;
+    minusEnd->y = 0.0f;
+    minusEnd->z = component;
+    plusEnd->y = 0.0f;
 }
 
 /* Return the BPX object pointer held in this ObjectLink (at +0x3C), as an s32. */
