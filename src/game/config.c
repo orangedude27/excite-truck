@@ -89,7 +89,7 @@ void fn_802E98D0(void) {
 
 /* Config subsystem shutdown hook: a no-op, since the config module holds no
  * resources to release (called from the kernel teardown sequence fn_802E2B34). */
-void fn_802E99A8(void) {}
+void ConfigShutdown(void) {}
 
 /**
  * @brief Cache the two Bluetooth-WPAD settings of the system config.
