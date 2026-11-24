@@ -58,7 +58,7 @@ void *fn_802E77C0(int statusCode) {
  #pragma scheduling invalid_target
 /* Dead-zone response: rescale an axis value past its dead zone into +/-1.5,
  * saturating a non-negative value to [0.0, 1.5] and a negative one to [-1.5, 0.0]. */
-float fn_802E7824(float value, float deadZone) {
+/* Dead-zone response: rescale an axis past its dead zone into +/-1.5, saturating positive values to [0, 1.5] and negative ones to [-1.5, 0]. */ float fn_802E7824(float value, float deadZone) {
 #define RJOY_ZERO       lbl_80565164 /* 0.0f: clamp midpoint and input threshold */
 #define RJOY_ONE        lbl_80565160 /* 1.0f: scale numerator */
 #define RJOY_MAX        lbl_80565168 /* 1.5f: positive output ceiling */
