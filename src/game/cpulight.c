@@ -372,16 +372,16 @@ void fn_802DBC70(int positionArray, int vertexCount) {
 }
 
 extern void fn_802DBCFC(int,int);
-/* Sets up GX position vertex array (vtx attr 9, 3 floats, index mode) for the given
- * vertex buffer and flushes it from data cache when the cached buffer changes. */
+/* Sets up the GX position vertex array (GX_VA_POS, XYZ floats, GX_INDEX16) when the
+ * cached buffer changes, then flushes the new buffer from the data cache. */
 void fn_802DBCFC(int positionArray, int vertexCount) {
     if ((void *)lbl_8055FEA8 != (void *)positionArray) {
         lbl_8055FEA8 = (void *)positionArray;
         lbl_8055FEAC = (void *)vertexCount;
         GXClearVtxDesc();
-        GXSetVtxDesc(9, 3);
-        GXSetVtxAttrFmt(0, 9, 1, 4, 0);
-        GXSetArray(9, (void *)positionArray, 0xC);
+        GXSetVtxDesc(GX_VA_POS, GX_INDEX16);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetArray(GX_VA_POS, (void *)positionArray, 0xC);
         DCFlushRange((void *)positionArray, vertexCount * 0xC);
     }
 }
