@@ -1736,7 +1736,7 @@ extern "C" void fn_802422DC(void *arg0, s32 arg1) {
 #pragma cplusplus on
 /* Returns the item at the object's current index (+0x28) from the collection at
    +0x24, or 0 if the index is negative or out of range. */
-extern "C" s32 fn_802426C0(void *self) {
+extern "C" s32 getCurrentCollectionItem(void *self) {
     struct Collection {
         virtual s32 f0() = 0;
         virtual s32 f1() = 0;
