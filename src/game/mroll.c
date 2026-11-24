@@ -972,8 +972,8 @@ extern void fn_8023FE60();
 void fn_802411D0(void) { fn_8023FE60(); }
 
 #pragma dont_inline MRollBothControllersReady
-/* Returns non-zero when player/controller slots 0 and 1 are both ready. */
-/* Return nonzero when both player controller ports (0 and 1) report connected. */ s32 MRollBothControllersReady(void) {
+/* Return nonzero when both player controller ports (0 and 1) report connected. */
+s32 MRollBothControllersReady(void) {
     s32 ready;
     ready = 0;
     if ((RjoyIsPadConnected(0) != 0) && (RjoyIsPadConnected(1) != 0)) {
