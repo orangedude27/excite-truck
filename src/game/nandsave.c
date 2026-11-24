@@ -298,7 +298,7 @@ void rmemcardDeleteSelectedFile(void) {
 #undef sSelectedNandFile
 }
 
-int rmemcardRecover(void) {
+/* Poll NAND request 1 until it completes; on success delete the selected save file and banner and return 1, or return 0 if request 0 signals a fatal condition first. */ int rmemcardRecover(void) {
     /* Poll NAND request 1 until it completes; on success run cleanup and return 1, else 0. */
     for (;;) {
         if (((int (*)(int))fn_802E888C)(1) != 0) {
