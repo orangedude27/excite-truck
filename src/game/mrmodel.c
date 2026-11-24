@@ -502,7 +502,7 @@ extern s8 gModelDisplayDirty;
 /* Release one reference to a model display node: drop its texture slot and
  * decrement its refcount, marking the level-sorted display lists dirty when
  * the count reaches zero. */
-void fn_802C5BA0(int *displayNode) {
+void ModelDisplayNode_release(int *displayNode) {
     u16 refCount;
     fn_802CAC54(((struct ModelDisplayNode *)displayNode)->key0);
     refCount = ((struct ModelDisplayNode *)displayNode)->refs;
@@ -1108,7 +1108,7 @@ void fn_802C6C38(int modelId) {
         element = *(u8 **)(elementTable + elementOff);
         displayNode = *(u8 **)(element + (*(s32 *)(instance + 8) << 2) + 0x14);
         *(u8 **)(element + (*(s32 *)(instance + 8) << 2) + 0x14) = 0;
-        fn_802C5BA0((int *)displayNode);
+        ModelDisplayNode_release((int *)displayNode);
         elementOff += 4;
         elementIndex++;
 
