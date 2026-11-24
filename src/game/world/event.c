@@ -10,13 +10,13 @@ typedef int (*EventHandler)(char *payload);
 typedef struct {
     EventHandler handlers[4];
 } EventHandlerRow;
-extern unsigned char lbl_80488678[];
+extern unsigned char gEventHandlers[];
 void *memset(void *, int, unsigned int);
 extern void *memcpy(void *, const void *, unsigned int);
 #pragma scheduling off
 /* Clears the whole event-handler registry (all 18 event-type rows of handlers). */
 void fn_801EEFC8(void) {
-    memset(lbl_80488678, 0, 18 * sizeof(EventHandlerRow));
+    memset(gEventHandlers, 0, 18 * sizeof(EventHandlerRow));
 }
 #pragma scheduling invalid_target
 /* Registers a handler for event type (eventType & 0xFF): stores it in the first
@@ -25,7 +25,7 @@ void Event_RegisterHandler(int handler, unsigned int eventType) {
     unsigned int *p;
     unsigned int *base;
     int i;
-    base = (unsigned int *)(lbl_80488678 + ((eventType & 0xFF) << 4));
+    base = (unsigned int *)(gEventHandlers + ((eventType & 0xFF) << 4));
     p = base;
     for (i = 0; i < 4; p++, i++) {
         if (*p == 0) {
@@ -41,7 +41,7 @@ extern char lbl_8033A328[];
 /* Removes a handler from the event registry (18 event types x 4 slots);
    reports an error if not found. */
 /* Unregisters a handler from the 18-type x 4-slot event-handler registry; panics ("EventUnInstallHandler: Can't find handler!") if the handler was not registered. */ void fn_801EF024(unsigned int handler) {
-    unsigned int *row = (unsigned int *)lbl_80488678;
+    unsigned int *row = (unsigned int *)gEventHandlers;
     unsigned int *slot;
     int found = 0;
     int eventType;
@@ -51,7 +51,7 @@ extern char lbl_8033A328[];
         slot = row;
         for (slotIndex = 0; slotIndex < 4; slot++, slotIndex++) {
             if (*slot == handler) {
-                *(volatile unsigned int *)((char *)lbl_80488678 + (eventType << 4) + (slotIndex << 2)) = 0;
+                *(volatile unsigned int *)((char *)gEventHandlers + (eventType << 4) + (slotIndex << 2)) = 0;
                 found = 1;
                 goto done;
             }
@@ -71,7 +71,7 @@ extern char lbl_8033A354[];
 /* Runs one event script: a u32 byte count followed by records laid out as
  *   signed char evtType | payload bytes ...
  * Each record's payload is copied into a private 0x400-byte buffer and handed
- * to every handler registered for its type in lbl_80488678 (18 event types x
+ * to every handler registered for its type in gEventHandlers (18 event types x
  * 4 handler slots, see Event_RegisterHandler / fn_801EF024); the last handler run
  * returns how many payload bytes it consumed, and the walk advances past
  * those plus the type byte. A type with no handler is reported
@@ -89,7 +89,7 @@ extern char lbl_8033A354[];
         evtType = (signed char)script[offset + 4];
         payload = script + offset + 5;
         bytesConsumed = -1;
-        handlerSlot = (unsigned int *)(lbl_80488678 + evtType * 16);
+        handlerSlot = (unsigned int *)(gEventHandlers + evtType * 16);
         for (slotIndex = 0; slotIndex < 4; slotIndex++, handlerSlot++) {
             if (*handlerSlot != 0) {
                 memcpy(payloadCopy, payload, 0x400);
