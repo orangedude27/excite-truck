@@ -598,10 +598,10 @@ void fn_802C8C04(int texSlot) {
 }
 
 #pragma dont_inline on
-/* Restores normal render mode and, if a saved matrix state is active, reapplies it then clears the flag. */
-/* RealName: DrawList_RestoreNormalMode */
+/* Return the draw lists to the game's normal GX state: if a matrix was saved
+ * before an overlay pass, reload it, then clear the saved-matrix flag. */
 void fn_802C8D74(void) {
-    lbl_8055FC70 = 1;
+    sRenderMode = RENDER_MODE_NORMAL;
     if ((unsigned char)sDrawListMatrixSaved != 0) {
         DrawList_loadMatrix(sSavedDrawListMatrix);
     }
