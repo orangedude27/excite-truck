@@ -64,7 +64,7 @@ extern void fn_801331C4(int, void *, float *);
 extern void fn_8013323C(int, void *, float);
 extern void fn_801332D0(int, void *, void *);
 extern void SetEffectsVolume(float);
-extern void fn_80209090(int);
+extern void SetSoundQuality(int);
 #pragma scheduling invalid_target
 #pragma push
 #pragma inline_depth(0)
@@ -102,7 +102,7 @@ void ReloadMixerSettings(void) {
     fn_801331C4(4, lbl_8033BEF8, &lbl_8055B4D0);
     SetEffectsVolume(lbl_8055B4D0);
     fn_801332D0(4, &lbl_8055B4E0, &lbl_8055EDA8);
-    fn_80209090((int)lbl_8055EDA8);
+    SetSoundQuality((int)lbl_8055EDA8);
 }
 
 #pragma pop
@@ -368,7 +368,7 @@ void SetEffectsVolume(float volume) {
 #undef gEffectsVolume
 #pragma cplusplus reset
 /* Set the sound-quality setting (config "quality"): accept values 0..2, reset to low otherwise. */
-void fn_80209090(int quality) {
+void SetSoundQuality(int quality) {
     if (quality >= SOUND_QUALITY_LOW && quality <= SOUND_QUALITY_HIGH) {
         gSoundQuality = (void *)quality;
         return;
