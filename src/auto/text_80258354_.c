@@ -250,17 +250,17 @@ copied:
 extern void *fn_80207848(int, int);
 extern float lbl_80563AC8;
 #pragma scheduling invalid_target
-void fn_802586F0(void *container, void *name, int resourceId, int flags) {
-    char *base = (char *)container;
-    int count = 0x20;
+/* Add a named sound to a container's list: copy the name (up to 32 chars), allocate the sound object for resourceId, then store it with flags and a default float value. */ void fn_802586F0(void *container, void *name, int resourceId, int flags) {
+    char *containerData = (char *)container;
+    int charBudget = 0x20;
     char *entry;
     char *dst;
     char *src = (char *)name;
-    entry = *(char **)(base + 0xD9C) + (*(int *)(base + 0xDA0))++ * 0x2C;
+    entry = *(char **)(containerData + 0xD9C) + (*(int *)(containerData + 0xDA0))++ * 0x2C;
     dst = entry;
     goto copy;
 check:
-    if (--count > 0) {
+    if (--charBudget > 0) {
         goto copy;
     }
     dst[-1] = 0;
@@ -339,7 +339,7 @@ void fn_8025878C(void *arg0, const char *arg1, int flags, int arg3, float x, flo
   }
   ((void (*)(int, int, int, float, float, float, float, float)) fn_802354A0)(new_var2, *((int *) (index + 0x44)), arg3, x, y, lbl_80563AD0, cosine, sine);
 }
-#pragma scheduling on
+#pragma opt_common_subs off
 void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, float y, float scale)
 {
   int index = 0;
@@ -404,7 +404,6 @@ void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, flo
   }
   ((void (*)(int, int, int, float, float, float, float, float)) fn_802354A0)(*((int *) (index + 0x40)), *((int *) (index + 0x44)), arg3, x, y, lbl_80563AD0, c, s);
 }
-#pragma scheduling invalid_target
 /* Look up a named entry in a 0x48-byte stride table and return its value via fn_80235EF0, or 0.0f if not found. */
 float fn_80258A00(void *table, int name) {
     int index = 0;
