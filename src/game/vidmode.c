@@ -3,10 +3,10 @@
 // Static-init thunk fn_802CE39C (+ .ctors slot 0x802ED5B4) remains in
 // auto/text_802CE39C_.c pending a promotion pass.
 extern char sVideoModeInfoTable[];
-extern char lbl_8034BCA8[];
+extern char sUnknownVideoModeFmt[];
 extern void fn_802E317C(const char *, ...);
 extern char sVideoModeInfoTable[];
-extern char lbl_8034BCA8[];
+extern char sUnknownVideoModeFmt[];
 extern void fn_802E317C(const char *, ...);
 #pragma scheduling invalid_target
 void *Vid_GetVideoModeInfo(int arg0) {
@@ -16,7 +16,7 @@ void *Vid_GetVideoModeInfo(int arg0) {
     if (arg0 >= 0 && arg0 < 7) {
         result = sVideoModeInfoTable + arg0 * 0x18;
     } else {
-        fn_802E317C(lbl_8034BCA8, arg0);
+        fn_802E317C(sUnknownVideoModeFmt, arg0);
         result = 0;
     }
     return result;
