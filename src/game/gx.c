@@ -302,7 +302,7 @@ int fn_802CEC04(int reason) {
 }
 
 /* Signal completion of the GX operation: set the flag that fn_802CFDE0
-   busy-waits on (cleared to 0 by fn_802CEC50 case 1). */
+   busy-waits on (cleared to 0 by gxHandleDrawSyncToken case 1). */
 void fn_802CEC44(void) {
 #define sGxSyncDone lbl_8055FD3C
     sGxSyncDone = 1;
@@ -311,7 +311,7 @@ void fn_802CEC44(void) {
 
 #pragma scheduling invalid_target
 /* GX draw-sync callback: token 1 records the start tick, token 2 computes and smooths elapsed milliseconds then processes depth queries. */
-/* GX draw-sync callback: token 1 snapshots the start tick and clears the sync-done flag; token 2 smooths the elapsed frame time and processes queued depth queries. */ void fn_802CEC50(int syncToken) {
+/* GX draw-sync callback: token 1 snapshots the start tick and clears the sync-done flag; token 2 smooths the elapsed frame time and processes queued depth queries. */ void gxHandleDrawSyncToken(int syncToken) {
     /* Handle a GX draw-sync token: case 1 snapshots the start tick and clears the
        sync-done flag, case 2 computes the elapsed time (with smoothing) and
        processes queued depth queries, any other token is reported as unhandled. */
@@ -349,10 +349,10 @@ void fn_802CEC44(void) {
 }
 
 /* Cycles gDrawSyncToken through values 1..2 until it equals targetIndex, calling
- * fn_802CEC50 for each step. */
+ * gxHandleDrawSyncToken for each step. */
 /* Advance the GX draw-sync token counter (1..2) and process each token until it reaches targetToken. */ void fn_802CECF4(unsigned int targetToken) {
     extern unsigned short gDrawSyncToken;
-    extern void fn_802CEC50(int);
+    extern void gxHandleDrawSyncToken(int);
     unsigned int token;
     do {
         token = gDrawSyncToken + 1;
@@ -361,7 +361,7 @@ void fn_802CEC44(void) {
             token = 1;
             gDrawSyncToken = 1;
         }
-        fn_802CEC50((unsigned short)token);
+        gxHandleDrawSyncToken((unsigned short)token);
     } while ((unsigned short)gDrawSyncToken != targetToken);
 }
 
