@@ -27,7 +27,7 @@ void fn_80127464(void);
   extern char lbl_8034E9E0[];
   extern void *jumptable_8034EA80[];
   void fn_801345D8(void *, s32, void *, s32);
-  s32 fn_802E36D8(void *);
+  s32 FileLookup(void *);
   void fn_802E317C(void *, void *);
   s32 fn_802E37C4(s32);
   void fn_801282EC(s32);
@@ -49,7 +49,7 @@ s32 fn_802EC4E8(s32 arg0) {
     s32 temp_r30;
     s32 temp_r31;
     ((void (*)(void *, s32, void *, ...))fn_801345D8)(sp10, 0x40, ((struct HomeStr *)lbl_8034E9E0)->s, arg0);
-    sp8 = fn_802E36D8(sp10);
+    sp8 = FileLookup(sp10);
     if (sp8 == -1)
         ((void (*)(void *, ...))fn_802E317C)(base + 0x10, sp10);
     temp_r30 = fn_802E37C4(sp8);
@@ -74,7 +74,7 @@ extern void *memset(void *, int, unsigned int);
   extern char lbl_8034E9E0[];
   extern void *jumptable_8034EA80[];
 extern void fn_801345D8(void *, s32, void *, s32);
-extern s32 fn_802E36D8(void *);
+extern s32 FileLookup(void *);
 extern void fn_802E317C(void *, void *);
 extern s32 fn_802E37C4(s32);
 extern void fn_801282EC(s32);

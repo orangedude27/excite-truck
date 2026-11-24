@@ -32,7 +32,7 @@ struct ResEntry {
  * and the list link is +0xA8. */
 struct ResManager {
     /* 0x00 */ char dirName[0x20]; /* directory this set's entries answer to */
-    /* 0x20 */ char fileName[0x40]; /* the archive fn_802E36D8 opens for the set */
+    /* 0x20 */ char fileName[0x40]; /* the archive FileLookup opens for the set */
     /* 0x60 */ u8 *entries; /* struct ResEntry[entryCount], stride 0x44 */
     char pad64[0x1C];
     /* 0x80 */ s32 dataOffset; /* where the set's data starts in the archive */
@@ -61,7 +61,7 @@ extern "C" s32 lbl_80559984;
 extern "C" char lbl_805599AC[];
 extern "C" void fn_801282F4(void);
 extern "C" void fn_801284F0(void *, void *);
-extern "C" s32 fn_802E36D8(void);
+extern "C" s32 FileLookup(void);
 extern "C" void fn_802E3A14(s32, s32);
 extern "C" s32 fn_802E3804(s32, void *, s32);
 extern "C" void fn_802E3734(s32 *);
@@ -341,7 +341,7 @@ extern "C" s32 fn_802E39D0(s32, s32);
 extern "C" void fn_8012A80C(s32);
 extern "C" s32 fn_8012A6C8(s32, s32, s32);
 extern "C" s32 fn_8012AB34(s32, s32, s32, s32);
-extern "C" s32 fn_802E36D8(void);
+extern "C" s32 FileLookup(void);
 extern "C" s32 fn_802E37C4(void);
 extern "C" void fn_802E3734(s32 *);
 extern "C" s32 fn_802E4CA8(void *, s32, s32);
@@ -484,7 +484,7 @@ extern "C" s32 fn_8012AB34(s32 fileHandle, s32 headerBuffer, s32 fileName, s32 e
  * handed back as -1; otherwise the handle comes back still open with its header in hand. */
 extern "C" s32 fn_8012ABB0(const char *name, void *headerBuffer) {
     /* The engine file API, as this open-check-and-maybe-close sequence uses it. */
-    #define File_open       fn_802E36D8  /* open `name`: file handle, or -1 */
+    #define File_open       FileLookup  /* open `name`: file handle, or -1 */
     #define File_size       fn_802E37C4  /* size of the file the handle has open */
     #define File_close      fn_802E3734  /* close it; the handle goes back to -1 */
     #define Rst0_readHeader fn_8012AB34  /* read the RST0 header and validate it */
@@ -982,7 +982,7 @@ static inline s32 LoadEntryDataBody(struct ResManager *manager, s32 entryIndex) 
         object = AllocAligned80(entry, entry->size + 0x80);
         if (object != 0) {
             startTime = fn_802E2C20();
-            handle = ((s32 (*)(void *))fn_802E36D8)(manager->fileName);
+            handle = ((s32 (*)(void *))FileLookup)(manager->fileName);
             if (handle != -1) {
                 /* The block header sits in front of the data: back-pointer to the
                  * entry, then its 'MGI!' tag. */
@@ -1380,7 +1380,7 @@ limit_1:
 append_1:
                 ch1 = *src_a1++; *dst_s1++ = ch1; if ((s8)ch1 != 0) goto limit_1;
 suffix_done_1:
-                inner = ((s32 (*)(char *))fn_802E36D8)(filename);
+                inner = ((s32 (*)(char *))FileLookup)(filename);
                 if (inner != -1) {
                     fn_802E3A14(inner, 0x14); fn_802E3804(inner, header, 0x14);
                     if (header[0] == 0) {

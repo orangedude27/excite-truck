@@ -11,7 +11,7 @@
   extern void fn_802E3990(void);
 extern int fn_802E3734(int *);
 extern int fn_802E72C8(int);
-extern int fn_802E36D8(void *);
+extern int FileLookup(void *);
 extern void fn_802E3A14(int);
 extern void File_read(int, void *, int);
 extern unsigned char lbl_804FC978[];
@@ -82,7 +82,7 @@ search_body:
 search_test:
     if (index < lbl_8055FFD8)
         goto search_body;
-    fileIndex = fn_802E36D8((void *)name);
+    fileIndex = FileLookup((void *)name);
     if (fileIndex == -1)
         goto fail;
     index = lbl_8055FFD8++;
@@ -131,7 +131,7 @@ void fn_802E746C(int index, int *outStartSector, int *outSize) {
     entryIndex = fn_802E72C8(sector);
     if (entryIndex < 0) return -1;
     entry = lbl_804FC978 + entryIndex * 0x90;
-    fileId = fn_802E36D8(entry + 0x10);
+    fileId = FileLookup(entry + 0x10);
     if (fileId == -1) return -1;
     byteOffset = (sector - *(int *)entry) << 11;
     ((void (*)(int, int))fn_802E3A14)(fileId, byteOffset);

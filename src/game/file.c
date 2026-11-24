@@ -225,7 +225,7 @@ extern "C" s32 File_Open(s32 path) {
     return -1;
 }
 #pragma cplusplus on
-extern "C" s32 fn_802E36D8(s32 pathOrName)
+extern "C" s32 FileLookup(s32 pathOrName)
 {
     /* Resolve path/name via the file manager's vtable method at slot 0x10 (3rd virtual),
      * then if it yields a handle/name token, pass it to AllocOpenFileSlot; otherwise return -1. */

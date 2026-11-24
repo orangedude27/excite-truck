@@ -920,7 +920,7 @@ void *object;
     }
 }
 
-extern s32 fn_802E36D8(void *);
+extern s32 FileLookup(void *);
 extern void fn_802E3804(void *, u32);
 extern void fn_802E3734(s32 *);
 extern s32 fn_8011770C(void *, u32);
@@ -935,7 +935,7 @@ void fn_802E0EAC(void *arg0) {
     s32 binkHandle;
     unsigned char *video = arg0;
     fn_802E0E60(arg0);
-    movieIndex = fn_802E36D8(video + 8);
+    movieIndex = FileLookup(video + 8);
     if (movieIndex != -1) {
         ((void (*)(s32, void *, s32))fn_802E3804)(movieIndex, name, 0x20);
         fn_802E3734(&movieIndex);
