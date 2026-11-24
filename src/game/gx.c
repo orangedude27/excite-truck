@@ -2764,7 +2764,7 @@ void fn_802D2B0C(void) {
     extern void fn_802DF994(void);
     extern void fn_802D2AC4(void);
     extern void fn_802DF6D0(void);
-    extern void fn_802DF938(void);
+    extern void GXResetWaterBumpTevPipelineB(void);
     extern void fn_802DF4A8(void);
     extern void fn_802DF684(void);
     extern void fn_802D1C04(void);
@@ -2813,7 +2813,7 @@ void fn_802D2B0C(void) {
                 } else {
                     if (lbl_804C5700[8] != 0) {
                         fn_802DF6D0();
-                        lbl_8055FD80 = fn_802DF938;
+                        lbl_8055FD80 = GXResetWaterBumpTevPipelineB;
                     } else {
                         fn_802DF4A8();
                         lbl_8055FD80 = fn_802DF684;
