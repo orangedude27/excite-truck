@@ -212,14 +212,14 @@ void *fn_8025343C(void *obj) {
     return obj;
 }
 
-void *__dt__Q210JASDrumSet5TPercFv_802534B0(void *arg0, s32 arg1) {
+/* Destructor for JASDrumSet::TPerc: free the front/rear wheel buffers and, when deleteFlag > 0, the object itself. */ void *__dt__Q210JASDrumSet5TPercFv_802534B0(void *this_, s32 deleteFlag) {
     extern void fn_80128658(s32);
-    if (arg0 != 0) {
-        fn_80128658(*(s32 *)((u8 *)arg0 + 0x20));
-        fn_80128658(*(s32 *)((u8 *)arg0 + 0x24));
-        if (arg1 > 0) ((s32 (*)(void *))fn_80128668)(arg0);
+    if (this_ != 0) {
+        fn_80128658(*(s32 *)((u8 *)this_ + 0x20));
+        fn_80128658(*(s32 *)((u8 *)this_ + 0x24));
+        if (deleteFlag > 0) ((s32 (*)(void *))fn_80128668)(this_);
     }
-    return arg0;
+    return this_;
 }
 
 #pragma cplusplus on
