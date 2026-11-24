@@ -97,7 +97,7 @@ typedef struct Camera {
     float volume;                 /* 0x154: sound level this camera may ask for */
     float startTime;              /* 0x158: time that level was last raised */
     float f15C;                   /* 0x15C */
-    NoiseWalk pathWalk;           /* 0x160: random-path cursor (fn_80265E08/fn_80265EC4) */
+    NoiseWalk pathWalk;           /* 0x160: random-path cursor (NoiseWalk_Reset/fn_80265EC4) */
     int w178[2];                  /* 0x178: spline cursor (fn_80266150) */
     float f180[2];                /* 0x180 */
     int pad188;                   /* 0x188 */
@@ -184,7 +184,7 @@ extern float lbl_80563C6C;
 extern float lbl_80563C20;
 typedef struct { int w[12]; } W12_802693F4;
 void fn_802693F4(char *p, unsigned char *flag, int arg);
-extern void fn_80265E08(void*);
+extern void NoiseWalk_Reset(void*);
 extern float lbl_80563C24;
 extern float lbl_80563C44;
 extern float lbl_80563C48;
@@ -251,15 +251,15 @@ static inline void fn_80266388_multiply(float *out, const float *a, const float 
   out[8] = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
  }
  }
-  /* Zero a state block via fn_80265E08 and return its pointer (camera block initializer). */
+  /* Zero a state block via NoiseWalk_Reset and return its pointer (camera block initializer). */
 void* fn_80265DD8(void* block) {
-    fn_80265E08(block);
+    NoiseWalk_Reset(block);
     return block;
 }
 
 #pragma dont_inline on
 /* Reset a camera NoiseWalk path cursor: index/elapsed/time = 0, weight/x/y = 0.0f. */
-void fn_80265E08(void* path) {
+void NoiseWalk_Reset(void* path) {
     float zero = lbl_80563C20;
     *(int*)((char*)path + 0) = 0;
     *(float*)((char*)path + 0x14) = zero;
@@ -1009,7 +1009,7 @@ void fn_80267680(void) {
         *(float *)(p + 0x30) = zero;
         *(int *)(p + 0x148) = 0;
         *(float *)(p + 0x194) = angle;
-        fn_80265E08(p + 0x160);
+        NoiseWalk_Reset(p + 0x160);
         fn_80266150(p + 0x178);
         *(float *)(p + 0x158) = start;
         *(float *)(p + 0x15C) = (float)i;
