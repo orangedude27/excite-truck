@@ -2918,17 +2918,18 @@ void fn_802D2F70(int light) {
 }
 
 int GX_GetXFB(int *outWidth, int *outHeight) {
-    /* Prepare/framebuffer handoff helper: disable draw-sync callback state, flush VI, mark buffer in-use, and return stored buffer pointer with its dimensions. */
-    int *data;
-    int value;
+    /* Hand out the current external framebuffer for the caller to draw into: wait for
+     * draw sync, flush VI, mark the buffer in use, and report its size and pointer. */
+    int *xfb;
+    int width;
     GXSetDrawSyncCallback();
     VIFlush();
-    data = lbl_804C9760;
-    value = data[2];
-    *((unsigned char *)data + 0x14) = 1;
-    *outWidth = value;
-    *outHeight = data[3];
-    return data[1];
+    xfb = GX_XFB_BLOCK;
+    width = xfb[2];
+    *((unsigned char *)xfb + 0x14) = 1;
+    *outWidth = width;
+    *outHeight = xfb[3];
+    return xfb[1];
 }
 
 /* Show the frame the game just drew into the EFB copy buffer: mark the buffer
