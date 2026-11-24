@@ -97,7 +97,7 @@ void *fn_8020A774(int index) {
     return lbl_804892D0 + index * 0x24;
 }
 
-int fn_8020A788(void) {
+int VoiceSoundPool_Alloc(void) {
     /* Lazily create/initialize the shared voice-sound pool object, then increment the active-use count on success. */
     void *voicePool;
     int initialized;
@@ -466,7 +466,7 @@ extern "C" void *fn_8020AF18(void *arg0, char *name, int unused, unsigned char f
     int i;
     for (i = 0; i < 0x200; i++) {
         if (((void **)*(void **)((char *)arg0 + 4))[i] == 0) {
-            obj = (char *)((void *(*)(int, const char *))fn_8020A788)(0x54, lbl_8033C3D8);
+            obj = (char *)((void *(*)(int, const char *))VoiceSoundPool_Alloc)(0x54, lbl_8033C3D8);
             if (obj != 0) {
                 char buffer[64], *src, *dst, *dot;
                 int left;
