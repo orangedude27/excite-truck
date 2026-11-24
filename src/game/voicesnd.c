@@ -173,7 +173,7 @@ int fn_8020A878(void *arg0) {
     #undef kVoiceWorkBufferSize
 }
 #pragma scheduling on
-void fn_8020A8E8(void *mixer) {
+/* VoiceSoundMixer::End: call the SPU teardown hook, warn about any still-unfreed sound handles in the 0x200-entry work buffer at +4, free that buffer, clear its slot and the global mixer instance. */ void fn_8020A8E8(void *mixer) {
     /* VoiceSoundMixer::End: warn about any still-unfreed sound handles in the
        0x200-entry work buffer, free it, clear its slot, and clear the mixer. */
     int slotOffset;
@@ -182,10 +182,10 @@ void fn_8020A8E8(void *mixer) {
     slotIndex = 0;
     slotOffset = 0;
     while (slotIndex < 0x200) {
-        int *list = *(int **)((char *)mixer + 4);
-        int soundHandle = *(int *)((char *)list + slotOffset);
-        if (soundHandle != 0) {
-            fn_802E317C(kUnfreedSoundFmt, soundHandle);
+        int *handleBuffer = *(int **)((char *)mixer + 4);
+        int unfreedHandle = *(int *)((char *)handleBuffer + slotOffset);
+        if (unfreedHandle != 0) {
+            fn_802E317C(kUnfreedSoundFmt, unfreedHandle);
         }
         slotIndex++;
         slotOffset += 4;
