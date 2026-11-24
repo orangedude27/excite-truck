@@ -1340,11 +1340,10 @@ void fn_802D02F8(int arg0, signed char arg1) {
 #pragma push
 #pragma processor 750
 #pragma scheduling on
-/* Set the camera near/far planes, vertical FOV and aspect width in the graphics parameter block; cache tan(fovY/2) and mirror near/far into the depth/fog record. */ void fn_802D0368(float nearZ, float farZ, float fovY, float aspectWidth)
+/* Set the camera near/far planes, vertical FOV and aspect width in the graphics
+ * parameter block; cache tan(fovY/2) and mirror near/far into the depth record. */
+void fn_802D0368(float nearZ, float farZ, float fovY, float aspectWidth)
 {
-  /* Set the camera's clipping planes, vertical FOV and aspect width in the
-   * graphics parameter block, cache tan(fovY/2), and mirror the near/far
-   * planes into the depth record. */
   register unsigned char *gfxParams = lbl_804C9778;
   register int flagValue = 1;
   float tanHalfFov;
