@@ -353,17 +353,23 @@ int fn_802E8C6C(int request) {
     KERNEL_AddResetCallback((void *)fn_802E8C6C, &lbl_8055D250);
 }
 
-/* Shut down NAND save: wait for async end, detach save pump, and free the async buffer. */
+/* Shut down NAND save: wait for the async machine to go idle, unregister the
+ * rmemcard save-pump callback, shut down the memory card, then free and clear
+ * the shared async staging buffer. */
 void NandSaveShutdown(void) {
 #define sMemCardEndOpName lbl_8034DF00
 #define sNandSaveAsyncBuffer lbl_80560020
+#define removeAsyncCallback fn_80127D58
+#define memFree fn_80128670
     ((int (*)(void *, void (*)(void)))rmemcardWaitAsync)(sMemCardEndOpName, rmemcardYield);
-    fn_80127D58((void *)rmemcardPumpAsync);
+    removeAsyncCallback((void *)rmemcardPumpAsync);
     MemCardShutdown();
-    fn_80128670(sNandSaveAsyncBuffer);
+    memFree(sNandSaveAsyncBuffer);
     sNandSaveAsyncBuffer = 0;
 #undef sMemCardEndOpName
 #undef sNandSaveAsyncBuffer
+#undef removeAsyncCallback
+#undef memFree
 }
 
 extern void *lbl_80560024;
