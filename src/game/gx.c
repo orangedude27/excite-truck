@@ -2729,7 +2729,7 @@ extern void (*lbl_8055FD80)(void);
 }
 #pragma pop
 #pragma scheduling on
-void fn_802D2AC4(void) {
+void GXResetSceneLightsPipeline(void) {
 #define ResetTevSwapModes fn_802DFAF4
     /* Configure one color channel with no lighting and reset TEV swap modes. */
     GXSetNumChans(1);
@@ -2762,7 +2762,7 @@ void fn_802D2B0C(void) {
     extern void GXResetIndirectTevPipeline(void);
     extern void gxSetupSceneLights(void);
     extern void fn_802DF994(void);
-    extern void fn_802D2AC4(void);
+    extern void GXResetSceneLightsPipeline(void);
     extern void fn_802DF6D0(void);
     extern void GXResetWaterBumpTevPipelineB(void);
     extern void fn_802DF4A8(void);
@@ -2804,7 +2804,7 @@ void fn_802D2B0C(void) {
             case 4:
                 gxSetupSceneLights();
                 fn_802DF994();
-                lbl_8055FD80 = fn_802D2AC4;
+                lbl_8055FD80 = GXResetSceneLightsPipeline;
                 lbl_8055FD70 = 1;
                 break;
             case 3:
