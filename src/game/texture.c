@@ -701,12 +701,12 @@ DECL_SECTION(".sdata") extern int lbl_8055FCB0;
 #pragma pop
 void fn_802D8FB4(void);
 extern int lbl_8055D058;
-extern int lbl_8055D078;
+extern int mip0Path;
 #pragma scheduling invalid_target
 #pragma dont_inline loadMipTexture
 int loadMipTexture(void *loadedBlock, void *createParam, void *relocateBase) {
     /* Load a mipmapped texture: byte-swap/relocate the loaded descriptor under the "mip0" label, then create the texture with the default name. */
-    #define mipLabel       lbl_8055D078
+    #define mipLabel       mip0Path
     #define defaultTexName lbl_8055D058
     register int block = (int)loadedBlock;
     register int base = (int)relocateBase;
