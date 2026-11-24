@@ -2939,7 +2939,7 @@ int fn_802D2F78(int *outWidth, int *outHeight) {
  *   [0] base of the allocated buffer   [3] height in rows
  *   [1] buffer drawn into and shown    [4] bytes per pixel (2)
  *   [2] width in pixels                [0x14] in-use flag, as a byte */
-void GX_ShowXFB(void) {
+/* Show the frame just drawn into the EFB copy buffer: clear its in-use flag, flush it from the cache, hand it to the VI, wait one retrace, and reset the buffer pointer for reuse. GX_XFB_BLOCK holds [0] base buffer, [1] shown buffer, [2] width, [3] height, [4] bytes per pixel, and [0x14] the in-use byte. */ void GX_ShowXFB(void) {
     ((unsigned char *)GX_XFB_BLOCK)[0x14] = 0;
     DCFlushRange((void *)GX_XFB_BLOCK[1],
         (unsigned long)(GX_XFB_BLOCK[4] * (GX_XFB_BLOCK[2] * GX_XFB_BLOCK[3])));
