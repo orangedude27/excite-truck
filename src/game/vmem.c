@@ -30,14 +30,37 @@ void fn_802E4C18(void) {
    and log the allocation size in KiB. */
 void *fn_802E4C1C(int size) {
     #pragma scheduling invalid_target
-    char *vmem = fn_801284F8(0xC, &lbl_8055D1C8);
+#define kVTable         lbl_8034D1D0
+#define kAllocTag       lbl_8055D1C8    /* "vmem" */
+#define kBufferTag      lbl_8034D204    /* "vmem_buf" */
+#define kSizeFormat     lbl_8034D1F0    /* "VirtualMemory: %d K" */
+#define allocObject     fn_801284F8
+#define createBuffer    fn_8012850C
+#define logPrint        fn_802E30C8
+    /* Construct a VirtualMemory object: allocate 0xC bytes, install the vtable,
+       attach a "vmem_buf" backing buffer of size bytes, record the size, and
+       log the allocation in KiB. */
+    typedef struct {
+        void *vtable;
+        void *buffer;
+        int size;
+    } VirtualMemory;
+    VirtualMemory *vmem;
+    vmem = (VirtualMemory *)allocObject(0xC, &kAllocTag);
     if (vmem != 0) {
-        *(char **)vmem = lbl_8034D1D0;
-        *(int *)(vmem + 8) = size;
-        *(int *)(vmem + 4) = fn_8012850C(size, lbl_8034D204);
-        fn_802E30C8(lbl_8034D1F0, size / 1024);
+        vmem->vtable = kVTable;
+        vmem->size = size;
+        vmem->buffer = (void *)createBuffer(size, kBufferTag);
+        logPrint(kSizeFormat, size / 1024);
     }
     return vmem;
+#undef logPrint
+#undef createBuffer
+#undef allocObject
+#undef kSizeFormat
+#undef kBufferTag
+#undef kAllocTag
+#undef kVTable
 }
 #pragma scheduling on
 #pragma dont_inline off
