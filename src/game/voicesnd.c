@@ -198,32 +198,32 @@ void fn_8020A8E8(void *mixer) {
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_8020A978(void *arg0) {
-    /* Update voice sound mixer slots, clearing any active entries that are not in state 3, then tick the SPU. */
-    class Dispatch {
+    /* Stop every active voice sound in the mixer's 0x200-entry work buffer, then tick the SPU mixer. */
+    class VoiceSndObj {
     public:
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
-        virtual void f3();
-        virtual void f4();
-        virtual void f5();
-        virtual void clear();
-        virtual int state();
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void releaseVoices();
+        virtual int getState();
     };
-    register int offset = 0;
+    register int slotOffset = 0;
     register int slotIndex = 0;
-    Dispatch *entry;
+    VoiceSndObj *sound;
 
     do {
-        entry = *(Dispatch **)((char *)*(void **)((char *)arg0 + 4) + offset);
-        if (entry != 0) {
-            if (entry->state() != 3) {
-                entry = *(Dispatch **)((char *)*(void **)((char *)arg0 + 4) + offset);
-                entry->clear();
+        sound = *(VoiceSndObj **)((char *)*(void **)((char *)arg0 + 4) + slotOffset);
+        if (sound != 0) {
+            if (sound->getState() != 3) {
+                sound = *(VoiceSndObj **)((char *)*(void **)((char *)arg0 + 4) + slotOffset);
+                sound->releaseVoices();
             }
         }
         slotIndex++;
-        offset += 4;
+        slotOffset += 4;
     } while (slotIndex < 0x200);
     fn_802E6264();
 }
