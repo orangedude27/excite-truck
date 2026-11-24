@@ -259,21 +259,21 @@ extern int lbl_804C1390[];
 #pragma dont_inline on
 #pragma dont_inline on
 /* Refreshes model entries for a specific group (>0) or all groups, then notifies DB. */
-void fn_802C5720(int groupId) {
-    int count;
-    void **items;
-    int i;
+/* Refresh model entries for one detail level (>0) or all levels, then notify the status hook. */ void fn_802C5720(int level) {
+    int itemCount;
+    void **entries;
+    int index;
     fn_802C54D4();
-    if (groupId > 0) {
-        void *entry = fn_802C54B4(groupId);
-        items = *(void ***)entry;
-        count = *(int *)((char *)entry + 4);
+    if (level > 0) {
+        void *entry = fn_802C54B4(level);
+        entries = *(void ***)entry;
+        itemCount = *(int *)((char *)entry + 4);
     } else {
-        count = lbl_804C1390[0];
-        items = *(void ***)(lbl_804C1390 + 2);
+        itemCount = lbl_804C1390[0];
+        entries = *(void ***)(lbl_804C1390 + 2);
     }
-    for (i = 0; i < count; i++) {
-        fn_802C5690(items[i]);
+    for (index = 0; index < itemCount; index++) {
+        fn_802C5690(entries[index]);
     }
     fn_802DB2BC(1);
 }
