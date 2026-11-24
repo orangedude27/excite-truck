@@ -120,30 +120,34 @@ void fn_802DB3FC(void) {
 #pragma push
 #pragma scheduling on
 void fn_802DB4E4(void) {
-    int m[16];
-    float *src = (float *)lbl_804DB068;
-    m[8] = 0;
-    m[14] = 0;
-    m[0] = 0;
-    m[6] = 0;
-    m[9] = 0;
-    m[10] = 0;
-    m[11] = 0;
-    m[12] = 0;
-    m[13] = 0;
-    m[15] = 0;
-    *(float *)&m[8] = src[3];
-    *(float *)&m[14] = src[4];
-    m[1] = 0;
-    m[2] = 0;
-    m[3] = 0;
-    m[4] = 0;
-    m[5] = 0;
-    m[7] = 0;
-    *(float *)&m[0] = src[6];
-    *(float *)&m[6] = src[7];
-    GXLoadTexMtxImm((float *)m + 8, 0x1e, 1);
-    GXLoadTexMtxImm((float *)m, 0x21, 1);
+    /* Build the CPU-light pass's two 2x4 texture matrices from the global light
+     * parameter block and load them into GX_TEXMTX0 and GX_TEXMTX1: TEXMTX0 takes
+     * its U/V terms from params[3]/params[4], TEXMTX1 from params[6]/params[7],
+     * and every other matrix entry is zero. */
+    int texMtx[16];
+    float *params = (float *)lbl_804DB068;
+    texMtx[8] = 0;
+    texMtx[14] = 0;
+    texMtx[0] = 0;
+    texMtx[6] = 0;
+    texMtx[9] = 0;
+    texMtx[10] = 0;
+    texMtx[11] = 0;
+    texMtx[12] = 0;
+    texMtx[13] = 0;
+    texMtx[15] = 0;
+    *(float *)&texMtx[8] = params[3];
+    *(float *)&texMtx[14] = params[4];
+    texMtx[1] = 0;
+    texMtx[2] = 0;
+    texMtx[3] = 0;
+    texMtx[4] = 0;
+    texMtx[5] = 0;
+    texMtx[7] = 0;
+    *(float *)&texMtx[0] = params[6];
+    *(float *)&texMtx[6] = params[7];
+    GXLoadTexMtxImm((float *)texMtx + 8, GX_TEXMTX0, GX_MTX_2x4);
+    GXLoadTexMtxImm((float *)texMtx, GX_TEXMTX1, GX_MTX_2x4);
 }
 #pragma pop
 void fn_802DB58C(void) {
