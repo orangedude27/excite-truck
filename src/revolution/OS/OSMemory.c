@@ -388,6 +388,11 @@ static asm void ConfigMEM2_112MB(void) {
     // clang-format on
 }
 
+/* Program the 128 MB MEM2 BAT map: pair 0 maps 0x90000000 cached, pair 1 maps
+ * the 0xD0000000 alias guarded/uncached, pairs 2-7 are disabled. Each lower
+ * register is written before its upper one, isync-separated; then MSR[IR/DR]
+ * is enabled and rfi returns to protected mode. */
+
 static asm void ConfigMEM2_128MB(void) {
     // clang-format off
     nofralloc
