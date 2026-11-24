@@ -369,7 +369,6 @@ signed long SoundMgr_readyForUpdate(SoundMgr* soundMgr) {
     soundMgr->lastUpdateMs = now;
     return 1;
 }
-#pragma dont_inline reset
 
 #pragma cplusplus on
 /* Per-frame SoundManager update (its first virtual method): at most once every
