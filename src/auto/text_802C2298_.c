@@ -41,8 +41,7 @@ extern "C" void fn_802C2298(void) {
         virtual Vec3 getVector(void *);
     };
     char query[0x20];
-    register float value0;
-    float arg1, arg2;
+    float value0, arg1, arg2;
     int temp_r5;
     struct BoatModel *record;
     void **manager;
@@ -94,16 +93,14 @@ void fn_802C2410(void) {
         int capacity;
     };
     #define boatModels    ((struct BoatModelList *)lbl_804C109C)
-    #define mrModelUnload fn_802C6CF8
 
     int i = 0;
     while (i < boatModels->count) {
-        mrModelUnload((void *)boatModels->models[i].modelId);
+        fn_802C6CF8((void *)boatModels->models[i].modelId);
         i++;
     }
     boatModels->count = 0;
 
-    #undef mrModelUnload
     #undef boatModels
 }
 
@@ -134,7 +131,6 @@ void fn_802C2488(void) {
     volatile struct Scratch scratch;
     register int offset;
     register int index = 0;
-    unsigned char *record;
     register float c31;
     register float c30;
     register float c29;
@@ -156,10 +152,13 @@ void fn_802C2488(void) {
     float result1;
     float result2;
     float result3;
-    int tmpKey;
     float tmpAngle;
-    unsigned int tmpV0, tmpV1, tmpV2;
-    float sineArg;
+    int keyArg;
+    register unsigned int tmpV1;
+    register unsigned int tmpV0;
+    register int tmpKey;
+    unsigned int tmpV2;
+    register unsigned char *record;
     if (*(int *)((char *)lbl_804C109C + 4) <= 0)
         return;
     c26 = lbl_80564E98;
@@ -172,15 +171,14 @@ void fn_802C2488(void) {
     c25 = lbl_80564EAC;
     goto check_count;
 loop:
+    tmpKey = *(int *)(offset + (int)lbl_804C109C[0]);
     record = (unsigned char *)lbl_804C109C[0] + offset;
-    tmpKey = *(int *)record;
     tmpAngle = *(float *)(record + 0x10);
     tmpV0 = *(unsigned int *)(record + 4);
     tmpV1 = *(unsigned int *)(record + 8);
     tmpV2 = *(unsigned int *)(record + 0xC);
     scratch.key = tmpKey;
     angle = tmpAngle;
-    sineArg = c28 * (angle + lbl_8055E3C8);
     scratch.values[0] = tmpV0;
     scratch.values[1] = tmpV1;
     scratch.values[2] = tmpV2;
@@ -197,7 +195,7 @@ loop:
     scratch.matrix[9] = c27;
     scratch.matrix[10] = c27;
     scratch.matrix[11] = c27;
-    sine = (float)sin(sineArg);
+    sine = (float)sin(c28 * (angle + lbl_8055E3C8));
     theta = lbl_8055E3C8 + scratch.angle;
     theta = c28 * theta;
     theta = c29 * theta;
@@ -209,6 +207,7 @@ loop:
     scratch.rotation[2] = angleSine;
     fn_80015A20((void *)scratch.rotationMatrix, (float *)scratch.rotation);
     fn_80015B20((void *)scratch.matrix, (void *)scratch.rotationMatrix, (void *)scratch.matrix);
+    keyArg = scratch.key;
     sum9 = scratch.matrix[9];
     y = *(float *)&scratch.values[0];
     sum9 = sum9 + y;
@@ -228,7 +227,7 @@ loop:
     scratch.matrix[9] = result2;
     scratch.matrix[10] = result1;
     scratch.matrix[11] = result3;
-    fn_802C744C(scratch.key, (float *)scratch.matrix,
+    fn_802C744C(keyArg, (float *)scratch.matrix,
                 result1, result2, lift, sum10, sum9);
     offset += 0x14;
     index++;
