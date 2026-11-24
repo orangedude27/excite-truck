@@ -575,9 +575,10 @@ void fn_802CAD68(void) {
 }
 
 #pragma dont_inline texSelectSlot
-/* Bind the given texture slot to GX: skip if unchanged, restore the built-in default slot on -1, otherwise bump the slot's use count and bind its GPU handle (falling back to the resource handle at +0x28). */ void texSelectSlot(register int slotIndex) {
-    /* Select a texture slot as active: on a change, remember it (or restore the saved default slot on -1),
-       then bump the slot's use counter at +0x48 and bind its texture at +0x40 (fallback +0x28) to GX. */
+void texSelectSlot(register int slotIndex) {
+    /* Bind the given texture slot to GX: skip if unchanged, restore the built-in
+       default slot on -1, otherwise bump the slot's use count and bind its GPU
+       handle (falling back to the resource handle at +0x28). */
     if (slotIndex == gActiveTextureSlot)
         return;
     gActiveTextureSlot = slotIndex;
