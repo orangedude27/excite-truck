@@ -2962,7 +2962,6 @@ void GXInitSpecularDir(unsigned int arg0, void *ctx) {
         OSSetCurrentContext(ctx);
     }
     __peReg[5] |= 4;
-    return;
 }
 /* Atomically sets and returns the previous value of the light-object index global. */
 unsigned int GXLoadLightObjIndx(unsigned int lightObjIndex) {
@@ -5510,7 +5509,7 @@ void GXSetTevSwapMode(s32 stage, s32 rasSel, s32 texSel) {
     *(unsigned short *)((unsigned char *)base + 2) = 0;
 }
 
-void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 texSel2) {
+/* Set the TEV swap-mode table for swapSel: pack the two RAS/TEX channel-selector pairs into the table's two 32-bit words in GXData, write each to the GX FIFO as a BP register write (token 0x61), then mark the BP registers dirty. */ void GXSetTevSwapModeTable(s32 swapSel, s32 rasSel, s32 texSel, s32 rasSel2, s32 texSel2) {
     union {
         u32 value;
         struct {
@@ -5519,35 +5518,35 @@ void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 t
             unsigned int rasSel : 2;
         } fields;
     } word;
-    u32 offset1;
-    u32 offset0;
-    u32 index2;
-    unsigned int *table;
-    unsigned int *data;
+    u32 wordOffset1;
+    u32 wordOffset0;
+    u32 tableIndex;
+    unsigned int *swapTable;
+    unsigned int *gxData;
 
-    index2 = (u32)index << 1;
-    offset0 = index2 << 2;
-    offset1 = index2 + 1;
-    data = __GXData;
-    table = (unsigned int *)((char *)data + 0x200);
+    tableIndex = (u32)swapSel << 1;
+    wordOffset0 = tableIndex << 2;
+    wordOffset1 = tableIndex + 1;
+    gxData = __GXData;
+    swapTable = (unsigned int *)((char *)gxData + 0x200);
 
-    word.value = *(u32 *)((char *)table + offset0);
+    word.value = *(u32 *)((char *)swapTable + wordOffset0);
     word.fields.rasSel = rasSel;
     word.fields.texSel = texSel;
-    *(u32 *)((char *)table + offset0) = word.value;
+    *(u32 *)((char *)swapTable + wordOffset0) = word.value;
 
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = *(u32 *)((char *)table + offset0);
+    *(volatile unsigned int *)0xCC008000 = *(u32 *)((char *)swapTable + wordOffset0);
 
-    offset1 <<= 2;
-    word.value = *(u32 *)((char *)table + offset1);
+    wordOffset1 <<= 2;
+    word.value = *(u32 *)((char *)swapTable + wordOffset1);
     word.fields.rasSel = rasSel2;
     word.fields.texSel = texSel2;
-    *(u32 *)((char *)table + offset1) = word.value;
+    *(u32 *)((char *)swapTable + wordOffset1) = word.value;
 
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = *(u32 *)((char *)table + offset1);
-    *(volatile unsigned short *)((char *)data + 2) = 0;
+    *(volatile unsigned int *)0xCC008000 = *(u32 *)((char *)swapTable + wordOffset1);
+    *(volatile unsigned short *)((char *)gxData + 2) = 0;
 }
 
 /* Set per-fragment alpha comparison: pack the two compare functions (comp0/comp1),
