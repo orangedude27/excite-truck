@@ -375,33 +375,33 @@ void fn_801B8054(int obj, int source, float offset, float interp) {
 }
 
 #pragma scheduling on
-void fn_801B8060(int arg0, const void *arg1) {
+/* Set up a transform on target from an entity record's horizontal position and normalized facing direction. */ void fn_801B8060(int target, const void *record) {
     float position[2];
     float direction[2];
-    float x;
-    float y;
-    float sum;
-    float xPos;
-    float yPos;
-    float length;
-    float scale;
+    float dirX;
+    float dirZ;
+    float dirLenSq;
+    float posX;
+    float posZ;
+    float dirLen;
+    float invDirLen;
 
-    x = *(float *)((char *)arg1 + 0x18);
-    y = *(float *)((char *)arg1 + 0x20);
-    sum = x * x + y * y;
-    xPos = *(float *)((char *)arg1 + 0x24);
-    yPos = *(float *)((char *)arg1 + 0x2C);
-    position[0] = xPos;
-    position[1] = yPos;
-    direction[0] = x;
-    direction[1] = y;
-    length = (float)((double (*)(float, float, float, float, float))fn_8002F234)(
-        sum, y, x, yPos, xPos);
-    scale = (lbl_80562738 > length) ? lbl_80562738 : length;
-    scale = lbl_80562704 / scale;
-    direction[0] *= scale;
-    direction[1] *= scale;
-    fn_801B7C8C(arg0, position, direction);
+    dirX = *(float *)((char *)record + 0x18);
+    dirZ = *(float *)((char *)record + 0x20);
+    dirLenSq = dirX * dirX + dirZ * dirZ;
+    posX = *(float *)((char *)record + 0x24);
+    posZ = *(float *)((char *)record + 0x2C);
+    position[0] = posX;
+    position[1] = posZ;
+    direction[0] = dirX;
+    direction[1] = dirZ;
+    dirLen = (float)((double (*)(float, float, float, float, float))fn_8002F234)(
+        dirLenSq, dirZ, dirX, posZ, posX);
+    invDirLen = (lbl_80562738 > dirLen) ? lbl_80562738 : dirLen;
+    invDirLen = lbl_80562704 / invDirLen;
+    direction[0] *= invDirLen;
+    direction[1] *= invDirLen;
+    fn_801B7C8C(target, position, direction);
 }
 extern char lbl_80336718[];
 extern int fn_802E317C(char *, ...);
