@@ -854,16 +854,20 @@ done:
 }
 #pragma pop
 void fn_802D8FB4(void *texObj) {
-    /* Release a texture object: flush pending work, free owned sub-objects, unlink, and clear global references. */
-    if (*(unsigned int *)((char *)texObj + 0xF0) != 0 &&
-        (unsigned int)(lbl_8055FD2C - *(unsigned int *)((char *)texObj + 0xEC)) >= 0xFFFFFF00U) {
+    DrTexRecord *tex = (DrTexRecord *)texObj;
+
+    /* Release a drgc texture: drain pending GX work if it was bound recently,
+     * free its two CLUT allocations and its slot/resource handle, then clear it
+     * from whichever of the three cached active-texture slots points at it. */
+    if (tex->bindCount != 0 &&
+        (unsigned int)(lbl_8055FD2C - tex->lastBoundFrame) >= 0xFFFFFF00U) {
         fn_802CFEEC();
     }
-    if (*(unsigned int *)((char *)texObj + 0x70) != 0) {
-        fn_80128670((void *)*(unsigned int *)((char *)texObj + 0x70));
+    if (tex->rgbClut != 0) {
+        fn_80128670(tex->rgbClut);
     }
-    if (*(unsigned int *)((char *)texObj + 0xC4) != 0) {
-        fn_80128670((void *)*(unsigned int *)((char *)texObj + 0xC4));
+    if (tex->alphaClut != 0) {
+        fn_80128670(tex->alphaClut);
     }
     fn_802D768C(texObj);
     if (lbl_8055FE18 == texObj) {
