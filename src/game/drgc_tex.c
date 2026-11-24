@@ -166,8 +166,8 @@ typedef struct DrTexRecord {
  * plane TEX1, the environment map TEX2 and its alpha plane TEX4, the lightmap
  * TEX3, which is not allowed an alpha plane at all. */
 enum DrTexMap {
-    DRTEXMAP_BASE = 0,        /* fn_802D9160: base texture */
-    DRTEXMAP_BASE_ALPHA = 1,  /* fn_802D9160: its alpha plane */
+    DRTEXMAP_BASE = 0,        /* gxBindTexture: base texture */
+    DRTEXMAP_BASE_ALPHA = 1,  /* gxBindTexture: its alpha plane */
     DRTEXMAP_ENV = 2,         /* fn_802D9230: environment map */
     DRTEXMAP_LIGHTMAP = 3,    /* fn_802D92B8: lightmap */
     DRTEXMAP_ENV_ALPHA = 4    /* fn_802D9230: the envmap's alpha plane */
@@ -914,7 +914,7 @@ extern void GXLoadTlut(void *, int);
 extern unsigned int lbl_8055FD1C;
 extern unsigned char lbl_8055FD24;
 extern unsigned int lbl_8055FD30;
-/* Bind a texture (and optional secondary texture/TLUT) to GX state and record it as the active primary texture. */ void fn_802D9160(void *texture) {
+/* Bind a texture (and optional secondary texture/TLUT) to GX state and record it as the active primary texture. */ void gxBindTexture(void *texture) {
     char *tex = (char *)texture;
     /* Bind a texture (and optional secondary texture/T LUT) to GX state and record it as the active primary texture. */
     fn_802D6C68();

@@ -34,7 +34,7 @@ DECL_SECTION(".sdata") extern int lbl_8055FCB0;
 DECL_SECTION(".sdata") extern int lbl_8055FCB4;
 DECL_SECTION(".sdata") extern int gActiveTextureSlot;
 void fn_802D8FB4(void);
-void fn_802D9160(int, int);
+void gxBindTexture(int, int);
 void fn_802DBDE8(int, int);
 #pragma small_data off
 #pragma pop
@@ -591,9 +591,9 @@ void texSelectSlot(register int slotIndex) {
         slot[0x48 / 4]++;
         texHandle = slot[0x40 / 4];
         if (texHandle != 0)
-            fn_802D9160(texHandle, 0);
+            gxBindTexture(texHandle, 0);
         else
-            fn_802D9160(slot[0x28 / 4], 0);
+            gxBindTexture(slot[0x28 / 4], 0);
     }
 }
 /* Bind the texture of slot textureSlot (no texture for -1) to unitIndex via fn_802DBDE8. */
