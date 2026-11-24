@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern int fn_802E3D04(void);
+extern int File_OpenSecondary(void);
 extern int fn_802E39D0(int, void *, int);
 extern void fn_802E3734(int *);
 extern void fn_80128658(void *);
@@ -45,7 +45,7 @@ int fn_802B4FD0(void *arg0, int *width, int *height) {
     int handle;
     char header[0x12];
 
-    handle = fn_802E3D04();
+    handle = File_OpenSecondary();
     if (handle != -1) {
         if (fn_802E39D0(handle, header, 0x12) != 0 &&
             (unsigned char)header[2] == 2 &&
@@ -87,7 +87,7 @@ int fn_802B50E8(int unused, int output, int count) {
     int entryValue;
     int index;
 
-    fileHandle = fn_802E3D04();
+    fileHandle = File_OpenSecondary();
     if (fileHandle != -1) {
         if (fn_802E39D0(fileHandle, header, 0x12) != 0 &&
             fn_802B5070(header, count) != 0) {
