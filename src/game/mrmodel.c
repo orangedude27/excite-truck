@@ -147,9 +147,9 @@ void fn_802C543C(void) {
     /* qsort comparator for model display entries: primary key is the signed short at +6 (detail level); ties break by texture name. */
     void *rightEntry = *rightSlot;
     void *leftEntry = *leftSlot;
-    short rightKey = *(short *)((char *)rightEntry + 6);
-    short leftKey = *(short *)((char *)leftEntry + 6);
-    if (leftKey != rightKey) return leftKey - rightKey;
+    short rightDetail = *(short *)((char *)rightEntry + 6);
+    short leftDetail = *(short *)((char *)leftEntry + 6);
+    if (leftDetail != rightDetail) return leftDetail - rightDetail;
     return stricmp(fn_802CAE34(*(char **)leftEntry), fn_802CAE34(*(char **)rightEntry));
 }
 /* Return the 8-byte {items, count} record for a 1-based detail level in the
