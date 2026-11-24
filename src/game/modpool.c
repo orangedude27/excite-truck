@@ -218,7 +218,7 @@ extern int fn_80134424(int, void *, int, int *, void *, void *, int, int);
 #pragma scheduling on
 void fn_802CE7D4(int arg0, int arg1, void *arg2);
 /* ModPool_onLoadComplete: async MODL load callback that fixes up the model resource, registers its textures, and creates a model instance if the slot is still in use. */
-/* Async MODL-load callback: if the model-pool slot is still busy, store the loaded resource, fix it up, register its textures and create a model instance (state 2); otherwise mark the slot idle with no request. */ void fn_802CE7D4(int modelData, int loadedSize, void *modelSlot) {
+/* Async MODL-load callback: if the model-pool slot is still busy, store the loaded resource, fix it up, register its textures and create a model instance (state 2); otherwise mark the slot idle with no request. */ /* Async MODL-load callback: if the model-pool slot is still busy, store the loaded resource, fix it up, register its textures and create a model instance (state 2); otherwise mark the slot idle with no request. */ void fn_802CE7D4(int modelData, int loadedSize, void *modelSlot) {
 #define mrModelFixupResource fn_802C61BC
 #define mrModelRegisterTextures fn_802C6FA8
 #define mrModelCreateInstance fn_802C6DC4
