@@ -37,7 +37,7 @@ extern int stricmp(const char *, const char *);
 // many of them fit in the buffer.
 extern struct TrackMusicList { char **m_entries; long m_count; long m_capacity; } gTrackMusicPathList;
 extern void fn_801345D8(void *, ...);
-extern long lbl_8055B664;
+extern long gMp3PathFormat;
 extern signed char lbl_8055EEF4;
 extern signed char lbl_8055EEF5;
 extern signed char lbl_8055EEF6;
@@ -79,7 +79,7 @@ long fn_8020F3B4(void) { return -1; }
 #pragma scheduling invalid_target
 int formatMp3Path(int path, int buffer, int size) {
     /* Formats a track-music path into the buffer and returns the buffer. */
-    fn_801345D8((void *)buffer, size, (void *)&lbl_8055B664, path);
+    fn_801345D8((void *)buffer, size, (void *)&gMp3PathFormat, path);
     return buffer;
 }
 extern long gSngPathFormat;
@@ -1228,7 +1228,7 @@ void fn_802114C4(void) {
     fn_801769EC();
 }
 extern void fn_801345D8(void *, ...);
-extern long lbl_8055B664;
+extern long gMp3PathFormat;
 extern signed char lbl_8055EEF4;
 extern signed char lbl_8055EEF5;
 extern signed char lbl_8055EEF6;
