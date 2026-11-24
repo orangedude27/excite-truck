@@ -539,14 +539,14 @@ void fn_802E27F0(void) {
 }
 #pragma scheduling on
 /* Checks stack guard slots from the top down and reports stack usage if a guard is corrupted. */
-void KERNEL_ReportStackUsage(void) {
-    int size = *(int *)lbl_804DB780;
-    int *base = *(int **)((char *)lbl_804DB780 + 4);
-    int i;
-    int slotCount = size / 4;
-    for (i = slotCount - 1; i >= 0; --i) {
-        if (base[-i] != 0x53ffeedd) {
-            fn_802E30C8(lbl_8034CD30, (i * 4) / 1024, size / 1024);
+/* At shutdown, scan stack-guard words from deepest to shallowest and log "stack usage: used/totalK" at the first word whose magic value was overwritten. */ void KERNEL_ReportStackUsage(void) {
+    int stackSizeBytes = *(int *)lbl_804DB780;
+    int *guardTop = *(int **)((char *)lbl_804DB780 + 4);
+    int wordIndex;
+    int guardWordCount = stackSizeBytes / 4;
+    for (wordIndex = guardWordCount - 1; wordIndex >= 0; --wordIndex) {
+        if (guardTop[-wordIndex] != 0x53ffeedd) {
+            fn_802E30C8(lbl_8034CD30, (wordIndex * 4) / 1024, stackSizeBytes / 1024);
             return;
         }
     }
