@@ -24,7 +24,7 @@ extern long fn_801E866C(long);
 extern void fn_80203E88(void *, long, long);
 extern void fn_8001A1F0(void);
 extern void fn_801EA394(void);
-extern void fn_802C87B4(long, long, long, long);
+extern void DrawList_setViewport(long, long, long, long);
 extern void fn_802CC73C(int);
 extern void fn_801E83D4(void);
 extern void fn_801E8410(void);
@@ -566,7 +566,7 @@ extern "C" void fn_801E81B8(int arg0, void (*callback)(void)) {
                 ((long)lbl_8055EB2C - 1) == 0);
     fn_8001A1F0();
     fn_801EA394();
-    fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
+    DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
     fn_802CC73C((int)((long)lbl_8055EB2C <= 2));
     i = 0;
     goto first_check;
@@ -587,7 +587,7 @@ second_check:
     fn_802CC73C(1);
     lbl_8055AF0C = (void *)-1;
     if (fn_801B89F8() == 0 && (long)lbl_8055EB2C > 1) {
-        fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
+        DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
         fn_801E88B4(&values[3], &values[2], &values[1], &values[0], 1);
         fn_8020625C();
     }
@@ -644,7 +644,7 @@ extern "C" void fn_801E8410(void) {
     extern void fn_801E8148(void);
     extern void fn_801E95DC(void);
     extern void fn_801EA404(void *, long);
-    extern void fn_802C87B4(long, long, long, long);
+    extern void DrawList_setViewport(long, long, long, long);
     extern void fn_802C8638(void *);
     extern void fn_802C2C64(long);
     extern void fn_80203EC0(void);
@@ -691,7 +691,7 @@ extern "C" void fn_801E8410(void) {
             fn_801E88B4(&a, &b, &c, &d,
                         (long)(*(void * volatile *)&lbl_8055AF0C));
         }
-        fn_802C87B4(a, b, c, d);
+        DrawList_setViewport(a, b, c, d);
         fn_802C8638(base);
         fn_801E8854(-1);
         fn_802C2C64((long)(*(void * volatile *)&lbl_8055AF0C));

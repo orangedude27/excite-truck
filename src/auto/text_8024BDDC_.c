@@ -15,7 +15,7 @@ extern void fn_802C8530(void);
 extern void fn_802C855C(void);
 extern void fn_802C8638(float*);
 extern void fn_802C86E8(unsigned int);
-extern void fn_802C87B4(int, int, int, int);
+extern void DrawList_setViewport(int, int, int, int);
 extern void fn_802C88BC(int);
 extern void fn_802C8BD0(int, unsigned short, unsigned short, unsigned short, unsigned short, unsigned short, float, float);
 extern void fn_802C8D74(void);
@@ -75,7 +75,7 @@ void fn_8024BDFC(void* subobject) {
     __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC((char*)subobject - 0x18);
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_8024BE04(void) {
     unsigned short *tbl;
     char *base;
@@ -88,7 +88,7 @@ void fn_8024BE04(void) {
     unsigned short idx[6];
     float one, zero, z;
     base = lbl_80343E90;
-    fn_802E30C8(base + 0);
+    fn_802E30C8(base);
     h = fn_802CAC28(base + 0xC, 0);
     zero = lbl_8056390C;
     one = lbl_80563908;
@@ -98,7 +98,7 @@ void fn_8024BE04(void) {
         m[4] = one; m[5] = zero; m[6] = zero; m[7] = zero;
         m[8] = one; m[9] = zero; m[10] = zero; m[11] = z;
         fn_802C8530();
-        fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
+        DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
         fn_802C86E8(0xFF7F7F7F);
         fn_802C88BC(3);
         fn_802C974C(lbl_80563914, lbl_80563918, lbl_8056391C);

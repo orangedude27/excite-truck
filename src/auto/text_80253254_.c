@@ -243,10 +243,10 @@ extern "C" float lbl_80563A10, lbl_80563A14, lbl_80563A18;
 #pragma scheduling invalid_target
 extern "C" void fn_80253510(void *arg0, unsigned char *arg1) {
     struct Stack {
-        float sp8;
+        long pad14;
         float spC;
         float sp10;
-        long pad14;
+        float sp8;
         unsigned char sp18[0x20];
         unsigned char sp38[0x100];
     } stack;
@@ -703,7 +703,6 @@ void fn_802543FC(void *arg0) {
     float difference;
     float zero;
     float scale;
-    float sa, sb, sc;
 
     if (*(s32 *)(base + 0x28) != -1) {
         v = fn_802C86DC();
@@ -715,19 +714,16 @@ void fn_802543FC(void *arg0) {
         *(float *)(point + 0x40) = b.f;
         *(float *)(point + 0x44) = c.f;
         scale = lbl_80563A10;
-        sa = a.f * scale;
-        sb = b.f * scale;
-        sc = c.f * scale;
         point = base + *(s32 *)(base + 0x30) * 12;
-        *(float *)(point + 0x3C) = sa;
-        *(float *)(point + 0x40) = sb;
-        *(float *)(point + 0x44) = sc;
+        *(float *)(point + 0x3C) = a.f * scale;
+        *(float *)(point + 0x40) = b.f * scale;
+        *(float *)(point + 0x44) = c.f * scale;
         p = *(void **)(base + 0x3FC);
         if (p != 0) {
-            zero = lbl_80563A04;
             index = *(s32 *)((u8 *)p + 0xCC);
             difference = *(float *)(base + 0x5C8);
             difference -= *(float *)(base + 0x424);
+            zero = lbl_80563A04;
             point = base + index * 12;
             *(float *)(point + 0x3C) = zero;
             *(float *)(point + 0x40) = difference;
@@ -1751,7 +1747,7 @@ void fn_80256548(struct CarUIModelRec *model) {
     extern void fn_80203E88(void *, float *, int);
     extern void fn_802E30C8(void *, ...);
     extern void fn_802C86E8(int);
-    extern void fn_802C87B4(int, int, int, int);
+    extern void DrawList_setViewport(int, int, int, int);
     extern void fn_802C88BC(int);
     struct {
         float pos[3];
@@ -1780,7 +1776,7 @@ void fn_80256548(struct CarUIModelRec *model) {
     if (!lbl_8055F346) { lbl_8055F346 = 1; fn_802E30C8(&lbl_8055C1D0, strings + 0x36C /* "GC: and the GC envmap stomps the backbuffer." */); }
     if (!lbl_8055F347) { lbl_8055F347 = 1; fn_802E30C8(&lbl_8055C1D0, strings + 0x398 /* "GC: so no one is actually clearing the backbuffer besides me" */); }
     fn_802C86E8(0);
-    fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4); /* the whole screen */
+    DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4); /* the whole screen */
     fn_802C88BC(-1);
 }
 
@@ -1812,7 +1808,7 @@ void fn_802566A4(void *arg0) {
     } frame;
     float zero = 0.0f;
     float one = 1.0f;
-    int i = 0;
+    int i;
     void *ctx = arg0;
     float *out = frame.output;
     unsigned int *config = lbl_802FA5B8;
@@ -1824,7 +1820,7 @@ void fn_802566A4(void *arg0) {
     do {
         unsigned int *matrix = (unsigned int *)fn_802C86DC();
         unsigned int m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11;
-        m0 = matrix[0]; m2 = matrix[2]; frame.basis.word[0] = m0;
+        m2 = matrix[2]; m0 = matrix[0]; frame.basis.word[0] = m0;
         m6 = matrix[6]; frame.basis.word[2] = m2; m8 = matrix[8];
         frame.basis.word[6] = m6; m1 = matrix[1]; frame.basis.word[8] = m8;
         m4 = matrix[4]; frame.basis.word[1] = m1; m7 = matrix[7];
@@ -1836,18 +1832,12 @@ void fn_802566A4(void *arg0) {
         frame.basis.value[4] = one;
         frame.basis.value[1] = zero;
         frame.basis.value[7] = zero;
-        {
-            float b2 = frame.basis.value[2];
-            float b0 = frame.basis.value[0];
-            float b8 = frame.basis.value[8];
-            float b6 = frame.basis.value[6];
-            frame.u[0] = b0;
-            frame.u[1] = zero;
-            frame.u[2] = b2;
-            frame.w[0] = b6;
-            frame.w[1] = zero;
-            frame.w[2] = b8;
-        }
+        frame.u[0] = frame.basis.value[0];
+        frame.u[1] = zero;
+        frame.u[2] = frame.basis.value[2];
+        frame.w[0] = frame.basis.value[6];
+        frame.w[1] = zero;
+        frame.w[2] = frame.basis.value[8];
         PSVECCrossProduct(frame.w, frame.u, frame.v);
         PSVECNormalize(frame.u, frame.u);
         PSVECNormalize(frame.v, frame.v);

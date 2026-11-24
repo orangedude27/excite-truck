@@ -62,7 +62,7 @@ extern s32 fn_801D9B58(void); /* draw the current scene */
 extern s32 fn_802C2C00(s32); /* save/restore the depth-test state word */
 extern s32 fn_802C8638(f32 *, f32, f32, f32, f32); /* set a transform matrix and scale */
 extern s32 fn_802C86E8(s32); /* set the clear color */
-extern s32 fn_802C87B4(s32, s32, s32, s32); /* set a screen rectangle */
+extern s32 DrawList_setViewport(s32, s32, s32, s32); /* set a screen rectangle */
 extern s32 fn_802C88BC(s32); /* set a render mode (-1 resets) */
 extern s32 fn_802C9294(s32, s32); /* select the active texture and draw flags */
 extern s32 fn_802C974C(f32, f32, f32); /* update projection / field-of-view parameters */
@@ -117,7 +117,7 @@ void fn_802C276C(void) {
         transform[7] = SWL_NEG_ONE;
         transform[8] = SWL_ZERO;
         fn_802C8638(transform, SWL_ONE, halfScale, scale, SWL_ZERO);
-        fn_802C87B4(0, 0, 0x200, 0x200);
+        DrawList_setViewport(0, 0, 0x200, 0x200);
         fn_802C974C(SWL_ONE, SWL_DEPTH + transform[10], SWL_HALF_PI);
         fn_802C86E8(0xFF00FF00);
         fn_802C88BC(-1);

@@ -24,7 +24,7 @@ extern void *fn_8022EDC4(void);
 extern f64 lbl_80563650;
 extern s32 lbl_8055CFF0, lbl_8055CFF4;
 extern f32 lbl_80563640, lbl_80563644;
-extern void fn_802C87B4(s32, s32, s32, s32);
+extern void DrawList_setViewport(s32, s32, s32, s32);
 extern void fn_802C88BC(s32);
 extern void fn_802C8530(void);
 extern void fn_802C8638(s32);
@@ -397,7 +397,7 @@ void fn_80230AB8(u32 packedColor, u8 *outRed, u8 *outGreen, u8 *outBlue, u8 *out
 
 /* Configure the 2D UI/camera state for the given display list index. */
 void fn_80230AD8(s32 displayListIndex) {
-    fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
+    DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
     fn_802C88BC(3);
     fn_802C8530();
     fn_802C8638(displayListIndex);
@@ -718,59 +718,73 @@ void fn_80231380(void *arg0, s32 color, f32 x, f32 y, f32 z, f32 s, f32 t) {
 
 #pragma push
 #pragma ctrloop on
-void *fn_8023139C(void *buf, int len, u32 val) {
-    int temp = len - 1;
-    int n = temp - (temp - 1) / 3;
-    int p = 1;
-    int used = 0;
-    int i;
-    u32 max;
-    char *dst;
-    int digits;
-
-    if (n > 0) {
-        int m = n - 8;
-        if (n > 8) {
-            int ok = 0;
-            if (n >= 0 && n <= 0x7FFFFFFE)
-                ok = 1;
-            if (ok) {
-                u32 count = (u32)(m + 7) >> 3;
-                if (m > 0) {
-                    do {
-                        p *= 100000000;
-                        used += 8;
-                    } while (--count != 0);
-                }
-            }
+void *fn_8023139C(void *buf, int len, u32 val)
+{
+  int temp = len - 1;
+  int n = temp - ((temp - 1) / 3);
+  int p;
+  int used;
+  int i;
+  u32 max;
+  char *dst;
+  int digits;
+  p = 1;
+  used = 0;
+  if (n > 0)
+  {
+    int m = (0, n - 8);
+    if (n > 8)
+    {
+      int ok = 0;
+      if ((n >= 0) && (n <= 0x7FFFFFFE))
+      {
+        ok = 1;
+      }
+      if (ok)
+      {
+        u32 count = ((u32) (m + 7)) >> 3;
+        if (m > 0)
+        {
+          do
+          {
+            p *= 100000000;
+            used += 8;
+          }
+          while ((--count) != 0);
         }
-        i = n - used;
-        if (used < n) {
-            do {
-                p *= 10;
-            } while (--i != 0);
-        }
+      }
     }
-
-    max = p - 1;
-    if (val < max)
-        max = val;
-
-    dst = (char *)buf + len;
-    dst[-1] = '\0';
-    digits = 4;
-    dst -= 2;
-    do {
-        if (--digits == 0) {
-            *dst = ',';
-            digits = 3;
-            dst--;
-        }
-        *dst = (max % 10) + '0';
-        max /= 10;
-        dst--;
-    } while (max != 0);
-
-    return dst + 1;
+    i = n - used;
+    if (used < n)
+    {
+      do
+      {
+        p *= 10;
+      }
+      while ((--i) != 0);
+    }
+  }
+  max = p - 1;
+  if (val < max)
+  {
+    max = val;
+  }
+  (dst = ((char *) buf) + len)[-1] = '\0';
+  digits = 4;
+  dst -= 2;
+  do
+  {
+    if ((--digits) == 0)
+    {
+      *dst = ',';
+      digits = 3;
+      dst--;
+    }
+    *dst = (max % 10) + '0';
+    max /= 10;
+    dst--;
+  }
+  while (max != 0);
+  return dst + 1;
 }
 #pragma pop

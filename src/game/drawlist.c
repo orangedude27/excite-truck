@@ -17,7 +17,7 @@ extern float lbl_8055FC6C;
 extern void fn_802D362C(int);
 extern void fn_802D3304(void);
 extern void *lbl_8055FC5C, *lbl_8055FC60, *lbl_8055FC64, *lbl_8055FC68;
-extern void fn_802C87B4(int, int, int, int);
+extern void DrawList_setViewport(int, int, int, int);
 /* Fixed-size object pool (constructed by fn_8012A13C/fn_8012A17C, popped by
  * fn_8012A2D8, pushed back by fn_8012A364): `count` elements of `stride`
  * bytes carved out of one block and threaded into a free list at +0x10. */
@@ -359,16 +359,16 @@ void *fn_802C86F0(void *savedViewport, int x, int y, int width, int height) {
     *(int *)((unsigned char *)savedViewport + 4) = (int)lbl_8055FC60;
     *(int *)((unsigned char *)savedViewport + 8) = (int)lbl_8055FC64;
     *(int *)((unsigned char *)savedViewport + 0xC) = (int)lbl_8055FC68;
-    fn_802C87B4(x, y, width, height);
+    DrawList_setViewport(x, y, width, height);
     return savedViewport;
 }
 
-extern void fn_802C87B4(int, int, int, int);
+extern void DrawList_setViewport(int, int, int, int);
 extern void fn_80128668(void *);
 /* Restore a saved viewport rect (x, y, width, height at +0,+4,+8,+0xC) and optionally delete it. */
 void *DrawList_restoreViewport(void *savedRect, int deleteFlag) {
     if (savedRect != 0) {
-        fn_802C87B4(*(int *)((unsigned char *)savedRect), *(int *)((unsigned char *)savedRect + 4), *(int *)((unsigned char *)savedRect + 8), *(int *)((unsigned char *)savedRect + 0xC));
+        DrawList_setViewport(*(int *)((unsigned char *)savedRect), *(int *)((unsigned char *)savedRect + 4), *(int *)((unsigned char *)savedRect + 8), *(int *)((unsigned char *)savedRect + 0xC));
         if (deleteFlag > 0) {
             fn_80128668(savedRect);
         }
@@ -379,7 +379,7 @@ void *DrawList_restoreViewport(void *savedRect, int deleteFlag) {
 #pragma push
 #pragma scheduling invalid_target
 /* Sets the current viewport rectangle (and aspect), applying a vertical scale/offset adjustment when the relevant flags are set, then updates the projection and scissor state. */
-void fn_802C87B4(int x, int y, int width, int height) {
+void DrawList_setViewport(int x, int y, int width, int height) {
     /* Sets the current viewport rectangle (and aspect), applying a vertical scale/offset adjustment when the relevant flags are set, then updates the projection and scissor state. */
     #define gViewMode lbl_8055FC74
     #define sLetterboxMode lbl_8055FC8D
@@ -1230,7 +1230,7 @@ void fn_802C9A70(int drawBars) {
     int verticalDelta;
     lbl_8055FC74 = 1;
     if ((unsigned char)lbl_8055FC8D != 0) {
-        fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
+        DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
         fn_802C88BC(2);
         fn_802C974C(lbl_8055FC38, lbl_8055FC3C, lbl_80564F28);
     }
