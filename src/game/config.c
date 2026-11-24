@@ -123,7 +123,7 @@ char ConfigGetWpadMotorMode(void) {
 }
 
 /** @brief Get the cached WPAD speaker volume, scaled to 0.0 .. 1.0. */
-f32 fn_802E9A2C(void) {
+f32 ConfigGetWpadSpeakerVolume(void) {
     return sConfigWpadSpeakerVolume;
 }
 
