@@ -64,7 +64,7 @@ extern char lbl_8034C8E8[];
 #pragma opt_propagation off
 void fn_802D9C5C(int arg0, void *arg1, int arg2)
 {
-  
+  int __repair_literal;
   extern float lbl_804DB068[];
   float *var_r3;
   float *var_r4;
@@ -94,8 +94,8 @@ void fn_802D9C5C(int arg0, void *arg1, int arg2)
         var_ctr = (((unsigned int) (temp_r7 + 7)) >> 2) >> 1;
         var_r7 = (float *) arg1;
         var_r6 = &lbl_804DB068[arg0 * 3];
-        var_r8 = 0;
-        if (temp_r7 > var_r8)
+        __repair_literal = 0;
+        if (temp_r7 > __repair_literal)
         {
           do
           {
@@ -537,7 +537,7 @@ void fn_802DA1F4(int arg0, void *arg1, int arg2) {
 }
 #pragma pop
 /* Destructor-like cleanup for the stack allocator object: installs its vtable, frees the owned buffer, and optionally deletes the object. */
-void *fn_802DA450(void *object, int shouldDelete) {
+void *StackAlloc_deletingDestructor(void *object, int shouldDelete) {
     if (object) {
         *(void **)object = lbl_8034C8E8;
         fn_80128670(*(int *)((char *)object + 4));
