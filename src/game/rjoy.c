@@ -722,14 +722,12 @@ int fn_802E85B8(int socketIndex) {
 
 #pragma push
 #pragma scheduling invalid_target
-/* Clamps the latest tilt value (at +0x6C) into [-0.523599, 0.261799] and appends
- * it to the 16-entry circular history buffer at +0x70, advancing the write index. */
+/* Clamp the controller's latest tilt value into [-0.523599, 0.261799], append it
+   to the 16-entry circular history buffer at +0x70, and advance the write index. */
 void RjoyUpdateTiltHistory(int padIndex) {
 #define gWiimoteStateTable lbl_80505978
 #define kTiltHistoryMin lbl_805651A0
 #define kTiltHistoryMax lbl_805651A4
-    extern unsigned char gWiimoteStateTable[];
-    extern float kTiltHistoryMin, kTiltHistoryMax;
     unsigned char *padState;
     float currentTilt;
     float minTilt;
