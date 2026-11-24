@@ -21,7 +21,7 @@ extern void fn_80060CC0(int, int, void (*)());
 extern void fn_802E30C8(char *, int, char *, ...);
 extern void *memset(void *, int, unsigned int);
 extern void fn_802E5248(int, int);
-extern void fn_802E51D0();
+extern void SpuSpeaker_MarkStreamReady();
 __declspec(section ".sdata") extern char lbl_8055D1D8[];
 extern char lbl_8034D39C[];
 extern char lbl_8034D384[];
@@ -236,7 +236,7 @@ unsigned short fn_802E5168(float value) {
 }
 
 /* One Wii remote speaker stream per Wii remote channel, 0x2C bytes each in the
- * table at lbl_804FC800; fn_802E51D0 opens one, fn_802E5264 closes it again. */
+ * table at lbl_804FC800; SpuSpeaker_MarkStreamReady opens one, fn_802E5264 closes it again. */
 struct SpkStream {
     unsigned char enabled;   /* +0x00: the channel's speaker stream is open */
     unsigned char enc[0x20]; /* +0x01: the WENCInfo ADPCM encoder state (wenc.h) */
@@ -254,7 +254,7 @@ struct SpkStream {
 #define spuStreams            ((struct SpkStream *)lbl_804FC800)
 
 #pragma scheduling invalid_target
-void fn_802E51D0(int channel, int result) {
+void SpuSpeaker_MarkStreamReady(int channel, int result) {
     /* On success, mark the SPU stream channel ready and log its availability. */
     unsigned char *streamEntry;
 
@@ -271,9 +271,9 @@ void fn_802E51D0(int channel, int result) {
 }
 #pragma scheduling on
 /* Completion callback for the WPAD_SPEAKER_ON command: if the remote accepted
- * it, send WPAD_SPEAKER_PLAY; the reply fn_802E51D0 marks the stream ready. */
+ * it, send WPAD_SPEAKER_PLAY; the reply SpuSpeaker_MarkStreamReady marks the stream ready. */
 void fn_802E5248(int chan, int result) {
-    if (result == 0) fn_80060CC0(chan, WPAD_SPEAKER_PLAY, (void (*)())fn_802E51D0);
+    if (result == 0) fn_80060CC0(chan, WPAD_SPEAKER_PLAY, (void (*)())SpuSpeaker_MarkStreamReady);
 }
 
 /* WPAD connect callback for the Wii remote speaker, reached through
@@ -281,7 +281,7 @@ void fn_802E5248(int chan, int result) {
  * `chan` went (status < 0 is a disconnect), closes that channel's speaker
  * stream, and on a connect turns the remote's speaker on.  fn_802E5248 is
  * answered when the speaker is on and queues the play command, whose answer
- * fn_802E51D0 uses to mark the stream ready. */
+ * SpuSpeaker_MarkStreamReady uses to mark the stream ready. */
 /* WPAD connect callback for the Wii remote speaker: log connect/disconnect, close the channel's speaker stream, and on connect request WPAD_SPEAKER_ON (queued via fn_802E5248). */ void fn_802E5264(int chan, int status) {
     fn_802E30C8(spuConnectMsg, chan,
                  status < 0 ? spuNameDisconnect : spuNameConnect);
