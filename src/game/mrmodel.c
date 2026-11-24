@@ -1113,8 +1113,8 @@ void fn_802C6C38(int modelId) {
         *(void **)(instance + 0xC) = 0;
     }
 }
-/* Release a model instance handle, or warn if MODEL_INVALID (-1). */
-/* Release a loaded model instance: if the handle is MODEL_INVALID (-1), log a warning; otherwise fetch its group list, drop the instance reference, then release the group-list resource. */ void fn_802C6CF8(int modelHandle) {
+/* Release a loaded model instance: if the handle is MODEL_INVALID (-1), log a warning; otherwise fetch its group list, drop the instance reference, then release the group-list resource. */
+void fn_802C6CF8(int modelHandle) {
     int groupList;
     if (modelHandle == -1) {
         ((int (*)(const char *, ...))fn_802E30C8)(lbl_8034B34C);
