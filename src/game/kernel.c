@@ -19,7 +19,7 @@ extern char lbl_8034CEE4[];
 extern int sResetCallbacks[];
 extern int sResetCallbackNames[];
 extern int sResetCallbackCount;
-extern int lbl_8055FEF8;
+extern int kernelBootTicks;
 extern unsigned int lbl_8055FEFC;
 extern unsigned long long __div2i(unsigned long long, unsigned long long);
 typedef unsigned long long u64;
@@ -740,26 +740,26 @@ unsigned int fn_802E2C20(void) {
     unsigned int ticks;
     unsigned int factor;
     now = OSGetTime();
-    if ((*(volatile int *)&lbl_8055FEF8 | *(volatile unsigned int *)&lbl_8055FEFC) == 0) {
+    if ((*(volatile int *)&kernelBootTicks | *(volatile unsigned int *)&lbl_8055FEFC) == 0) {
         *(volatile unsigned int *)&lbl_8055FEFC = (unsigned int)now;
-        *(volatile int *)&lbl_8055FEF8 = (unsigned int)(now >> 32);
+        *(volatile int *)&kernelBootTicks = (unsigned int)(now >> 32);
     }
     baseLow = *(volatile unsigned int *)&lbl_8055FEFC;
     ticks = *(volatile unsigned int *)0x800000F8;
     factor = (ticks >> 2) / 1000;
-    baseHigh = *(volatile unsigned int *)&lbl_8055FEF8;
+    baseHigh = *(volatile unsigned int *)&kernelBootTicks;
     diff = now - (((unsigned long long)baseHigh << 32) | baseLow);
     return (unsigned int)__div2i(diff, factor);
 }
 #pragma scheduling on
-extern int lbl_8055FEF8;
+extern int kernelBootTicks;
 extern unsigned int lbl_8055FEFC;
 extern unsigned long long __div2i(unsigned long long, unsigned long long);
 #pragma scheduling invalid_target
 unsigned long long KERNEL_GetTimeUs(void)
 {
   unsigned long long now = OSGetTime();
-  unsigned long long elapsed = now - (*((unsigned long long *) (&lbl_8055FEF8)));
+  unsigned long long elapsed = now - (*((unsigned long long *) (&kernelBootTicks)));
   unsigned int busClock = (*((volatile unsigned int *) 0x800000F8)) & 0xFFFFFFFF;
   unsigned int scale = (busClock >> 2) / 125000;
   if (1)
