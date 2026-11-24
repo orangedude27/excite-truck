@@ -91,7 +91,7 @@ extern void fn_802CAD68(void);
 extern int fn_802D31D8(int);
 extern void fn_801E7888(int);
 extern unsigned int lbl_804C1410[];
-extern unsigned int lbl_804C13E0[];
+extern unsigned int sSavedDrawListMatrix[];
 extern char sDrawListMatrixSaved;
 struct DlMtx34 { unsigned int w[12]; };
 extern float lbl_80564EF8, lbl_80564F00;
@@ -283,7 +283,7 @@ void fn_802C855C(void) {
 }
 
 extern void fn_802C7758(int);
-extern unsigned int lbl_804C13E0[];
+extern unsigned int sSavedDrawListMatrix[];
 extern char sDrawListMatrixSaved;
 extern void fn_802C89E8(float *);
 extern void fn_802C8638(unsigned int *);
@@ -568,12 +568,12 @@ void fn_802C8BD0(int texSlot) {
 
 #pragma use_lmw_stmw off
 /* Begin a 2D draw-list pass: back up the current draw-list matrix (lbl_804C1410)
- * into lbl_804C13E0 and flag the save as active, build an orthographic projection
+ * into sSavedDrawListMatrix and flag the save as active, build an orthographic projection
  * matrix, load it as the current GX matrix, then reset material/vertex state while
  * selecting texture slot `texSlot`. */
 void fn_802C8C04(int texSlot) {
     struct DlMtx34 *currentMtx = (struct DlMtx34 *)lbl_804C1410;
-    struct DlMtx34 *savedMtx = (struct DlMtx34 *)lbl_804C13E0;
+    struct DlMtx34 *savedMtx = (struct DlMtx34 *)sSavedDrawListMatrix;
     float orthoMtx[12];
 
     *savedMtx = *currentMtx;
@@ -584,10 +584,10 @@ void fn_802C8C04(int texSlot) {
 }
 
 #pragma use_lmw_stmw off
-/* Save the current draw-list matrix (lbl_804C1410) into the backup slot (lbl_804C13E0) and flag that a save is active, then build a perspective projection matrix with fn_802C88FC, load it as the current GX matrix, and reset material/vertex state while selecting texture slot `texSlot`. */
+/* Save the current draw-list matrix (lbl_804C1410) into the backup slot (sSavedDrawListMatrix) and flag that a save is active, then build a perspective projection matrix with fn_802C88FC, load it as the current GX matrix, and reset material/vertex state while selecting texture slot `texSlot`. */
 /* Save the current draw-list matrix into its backup slot and flag the save, then build a perspective projection matrix, load it as the current GX matrix, and reset material/vertex state while selecting the given texture slot. */ void fn_802C8CBC(int texSlot) {
     struct DlMtx34 *currentMtx = (struct DlMtx34 *)lbl_804C1410;
-    struct DlMtx34 *savedMtx = (struct DlMtx34 *)lbl_804C13E0;
+    struct DlMtx34 *savedMtx = (struct DlMtx34 *)sSavedDrawListMatrix;
     float projMtx[12];
 
     *savedMtx = *currentMtx;
@@ -603,7 +603,7 @@ void fn_802C8C04(int texSlot) {
 void fn_802C8D74(void) {
     lbl_8055FC70 = 1;
     if ((unsigned char)sDrawListMatrixSaved != 0) {
-        fn_802C8638(lbl_804C13E0);
+        fn_802C8638(sSavedDrawListMatrix);
     }
     sDrawListMatrixSaved = 0;
 }
