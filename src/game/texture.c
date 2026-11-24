@@ -154,7 +154,7 @@ extern char lbl_8055D048;              /* ".tm0": suffix of a texture archive me
 }
 
 /* Return the size of the "TEX " resource for the named texture, or 0 if missing. */
-int getTextureResourceSize(int textureName) {
+/* Return the size of a texture's "TEX " resource, or 0 when the resource is missing. */ int getTextureResourceSize(int textureName) {
 #define TEX_RESOURCE_TAG 0x54455820
 #define BuildTextureArchiveName fn_802CA2A8
 #define OpenResource fn_8012C5B8
