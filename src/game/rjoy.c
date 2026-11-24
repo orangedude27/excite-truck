@@ -36,7 +36,7 @@ int fn_802E77B8(void) { return 0; }
 #pragma push
 #pragma dont_inline on
 /* Map a controller/WPAD status code to its human-readable label for the rjoy status-change debug log. */
-void *RjoyStatusName(int statusCode) {
+/* Return the human-readable label for a controller/WPAD status code, used by the rjoy status-change debug log. */ void *RjoyStatusName(int statusCode) {
     switch (statusCode) {
     case 0:
         return &lbl_8055D208; /* "NONE" */
