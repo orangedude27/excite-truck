@@ -758,13 +758,12 @@ extern unsigned long long __div2i(unsigned long long, unsigned long long);
 #pragma scheduling invalid_target
 unsigned long long KERNEL_GetTimeUs(void)
 {
+  /* Return microseconds elapsed since boot: convert OSGetTime ticks using the
+   * bus clock and the boot tick count stored in kernelBootTicks. */
   unsigned long long now = OSGetTime();
   unsigned long long elapsed = now - (*((unsigned long long *) (&kernelBootTicks)));
   unsigned int busClock = (*((volatile unsigned int *) 0x800000F8)) & 0xFFFFFFFF;
   unsigned int scale = (busClock >> 2) / 125000;
-  if (1)
-  {
-  }
   return __div2i(elapsed << 3, scale);
 }
 #pragma scheduling on
