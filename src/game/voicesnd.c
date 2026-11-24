@@ -132,7 +132,7 @@ int VoiceSoundPool_Alloc(void) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_8020A800(void *voiceSound) {
+extern "C" void VoiceSoundPool_Free(void *voiceSound) {
     /* Return a voice sound to the shared pool and, when the last user is gone,
      * delete the pool object (virtual destructor, deleting) and clear it. */
     class PoolObject {
@@ -580,7 +580,7 @@ extern char lbl_8033C3F4[];
             ((void (*)(void *, int, int))fn_8020B2BC)(gVoiceMixer, (int)voiceSnd, *(int *)((char *)voiceSnd + 0x40));
         }
         if (shouldFree > 0)
-            ((void (*)(void *))fn_8020A800)(voiceSnd);
+            ((void (*)(void *))VoiceSoundPool_Free)(voiceSnd);
     }
     return voiceSnd;
 }
