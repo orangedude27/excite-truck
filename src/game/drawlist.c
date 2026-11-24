@@ -512,21 +512,25 @@ void fn_802C89E8(float *arg0) {
     arg0[11] = var_f2;
     arg0[9] = (float)x + scale * (float)width;
 }
+/* Copy the current draw-list matrix (the 12-word 3x4 at lbl_804C1410) into dst.
+ * The four word-pairs plus a trailing scalar/pair/scalar split reproduces the
+ * compiler's paired load/store schedule for the copy. */
 void fn_802C8B08(unsigned int *dst) {
-    /* Copy the current 0x30-byte block at lbl_804C1410 (as 4 pairs plus a 0x10-byte tail) to dst. */
-    struct Pair { unsigned int first; unsigned int second; };
-    struct Tail { unsigned int first; struct Pair pair; unsigned int last; };
-    struct Pair *dstPairs = (struct Pair *)dst;
-    struct Pair *srcPairs = (struct Pair *)lbl_804C1410;
-    struct Tail *dstTail = (struct Tail *)((char *)dst + 0x20);
-    struct Tail *srcTail = (struct Tail *)((char *)lbl_804C1410 + 0x20);
-    dstPairs[0] = srcPairs[0];
-    dstPairs[1] = srcPairs[1];
-    dstPairs[2] = srcPairs[2];
-    dstPairs[3] = srcPairs[3];
-    dstTail->first = srcTail->first;
-    dstTail->pair = srcTail->pair;
-    dstTail->last = srcTail->last;
+#define sCurrentMatrix lbl_804C1410
+    struct MtxPair { unsigned int first; unsigned int second; };
+    struct MtxTail { unsigned int first; struct MtxPair pair; unsigned int last; };
+    struct MtxPair *outPairs = (struct MtxPair *)dst;
+    struct MtxPair *curPairs = (struct MtxPair *)sCurrentMatrix;
+    struct MtxTail *outTail = (struct MtxTail *)((char *)dst + 0x20);
+    struct MtxTail *curTail = (struct MtxTail *)((char *)sCurrentMatrix + 0x20);
+    outPairs[0] = curPairs[0];
+    outPairs[1] = curPairs[1];
+    outPairs[2] = curPairs[2];
+    outPairs[3] = curPairs[3];
+    outTail->first = curTail->first;
+    outTail->pair = curTail->pair;
+    outTail->last = curTail->last;
+#undef sCurrentMatrix
 }
 
 extern void fn_802CAD74(void);
