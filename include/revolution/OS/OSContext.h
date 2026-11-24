@@ -33,6 +33,9 @@ typedef struct OSContext {
 
 /* Save the current FPU state into ctx (tail-branches to __OSSaveFPUContext); hand-written assembly. */
 void OSSaveFPUContext(OSContext* ctx);
+/* Make ctx the current OS context: publish it and its 4-byte-aligned physical
+   address in the OS globals, then enable the FPU (MSR_FP in srr1/MSR) when ctx
+   owns the current FPU context and disable it otherwise. Hand-written assembly. */
 void OSSetCurrentContext(OSContext* ctx);
 OSContext* OSGetCurrentContext(void);
 /* Save the current CPU context into ctx: GPRs r13-r31, GQRs 1-7, CR, LR,
