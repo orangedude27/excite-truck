@@ -660,40 +660,40 @@ extern char lbl_8034E108[];
 #define sWriteStartFmt  lbl_8034E130
 
 #pragma scheduling invalid_target
-void NandBeginWrite(void *ctx, const char *path, int buffer, int length) {
-    unsigned char ch;
-    const char *startPath;
-    const char *src;
-    int count;
-    char *dst;
+/* Begin an async NAND write: store the source buffer and byte count in ctx, copy the path into its filename field, reset the callback context and completion flags, set the step to CREATE, and log the start. */ void NandBeginWrite(void *ctx, const char *path, int buffer, int length) {
+    unsigned char c;
+    const char *origPath;
+    const char *pathPtr;
+    int charsLeft;
+    char *filenameDst;
 
     /* Prepare an async NAND write in ctx: record the source buffer address and
      * byte count, copy the NAND path into the context's filename field, point
      * the async callback context back at this block, clear its completion flags
      * and set the state to CREATE (2) before logging the start of the write. */
-    startPath = path;
+    origPath = path;
     *(int *)((char *)ctx + 8) = buffer;
-    src = startPath;
+    pathPtr = origPath;
     *(int *)((char *)ctx + 4) = length;
-    dst = (char *)ctx + 0xC;
-    count = 0x100;
+    filenameDst = (char *)ctx + 0xC;
+    charsLeft = 0x100;
     goto copy;
 decrement:
-    count--;
-    if (count > 0) goto copy;
-    dst[-1] = 0;
+    charsLeft--;
+    if (charsLeft > 0) goto copy;
+    filenameDst[-1] = 0;
     goto done;
 copy:
-    ch = *src++;
-    *dst++ = ch;
-    if ((signed char)ch != 0) goto decrement;
+    c = *pathPtr++;
+    *filenameDst++ = c;
+    if ((signed char)c != 0) goto decrement;
 done:
     *(void **)((char *)ctx + 0x198) = ctx;
     *(int *)((char *)ctx + 0x258) = 0;
     *(char *)((char *)ctx + 0x250) = 0;
     *(int *)((char *)ctx + 0x254) = 0;
     *(int *)ctx = 2;
-    nandLogPrintf(sWriteStartFmt, length, startPath);
+    nandLogPrintf(sWriteStartFmt, length, origPath);
 }
 #pragma scheduling on
 extern void fn_802E95CC(int, void **);
