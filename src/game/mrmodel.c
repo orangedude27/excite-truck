@@ -424,7 +424,7 @@ done:
 }
 #pragma pop
 /* Combine two byte values into a 16-bit key: high in the upper byte, low in the lower. */
-u16 fn_802C5A50(int high, int low) {
+u16 packU16Key(int high, int low) {
     return (u16)((high << 8) | low);
 }
 
@@ -504,7 +504,7 @@ void fn_802C5BA0(int *entry) {
 /* Build the 16-bit texture-cache sub-key: the fixed (5, 0x64) tag from the u16
  * packer, plus the doubled base id and the difference flag's low 16 bits. */
 u16 fn_802C5BEC(int baseId, int differs) {
-    return (((int (*)(int, int))fn_802C5A50)(5, 0x64) - -((baseId * 2) & 0xFFFE)) + (differs & 0xFFFF);
+    return (((int (*)(int, int))packU16Key)(5, 0x64) - -((baseId * 2) & 0xFFFE)) + (differs & 0xFFFF);
 }
 #pragma scheduling on
 extern int fn_802CAC28(void *, int);
@@ -563,7 +563,7 @@ __declspec(section ".sdata") extern const char lbl_8055D010[];
         subKey = fn_802C5BEC(baseId, fn_802CAF8C());
     } else {
         secondKey = fn_802CAFF0();
-        subKey = fn_802C5A50(fn_802CAFC8(textureIndex), secondKey);
+        subKey = packU16Key(fn_802CAFC8(textureIndex), secondKey);
     }
     *(int *)((char *)item + slot * 4 + 0x14) = (int)fn_802C5A60(textureIndex, baseId, subKey);
 }
