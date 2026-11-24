@@ -1482,7 +1482,7 @@ void fn_802CA008(void *owner) {
 
 extern void *DrawListWrapper_init(void *, int);
 extern char lbl_8034B52C[];
-/* Creates and initializes a draw list node (size 0x18) tagged "mrDrawList". */
+/* DrawListWrapper constructor: allocate one (0x18 bytes, "mrDrawList") from the pool and initialize it. */
 void DrawListWrapper_create(int listCount) {
     void *obj;
     obj = DrawListWrapper_alloc(0x18, lbl_8034B52C);
