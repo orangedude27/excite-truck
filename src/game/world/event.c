@@ -21,15 +21,15 @@ void fn_801EEFC8(void) {
 #pragma scheduling invalid_target
 /* Registers a handler for event type (eventType & 0xFF): stores it in the first
    free slot of that type's 4-slot row, or does nothing when the row is full. */
-void Event_RegisterHandler(int handler, unsigned int eventType) {
-    unsigned int *p;
-    unsigned int *base;
-    int i;
-    base = (unsigned int *)(gEventHandlers + ((eventType & 0xFF) << 4));
-    p = base;
-    for (i = 0; i < 4; p++, i++) {
-        if (*p == 0) {
-            base[i] = handler;
+/* Install a handler in the first free slot of its event-type row, or do nothing if all four slots are taken. */ void Event_RegisterHandler(int handler, unsigned int eventType) {
+    unsigned int *scan;
+    unsigned int *row;
+    int slotIndex;
+    row = (unsigned int *)(gEventHandlers + ((eventType & 0xFF) << 4));
+    scan = row;
+    for (slotIndex = 0; slotIndex < 4; scan++, slotIndex++) {
+        if (*scan == 0) {
+            row[slotIndex] = handler;
             return;
         }
     }
