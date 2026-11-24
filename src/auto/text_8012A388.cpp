@@ -1328,7 +1328,7 @@ extern "C" s32 FileFindFirst(s32, char *, s32);
 extern "C" void fn_802E3A14(s32, s32);
 extern "C" s32 fn_802E3804(s32, void *, s32);
 extern "C" s32 fn_802E3C24(s32, char *, s32);
-extern "C" void fn_802E3CA4(s32);
+extern "C" void FileFind_Close(s32);
 extern "C" void fn_8012C4D8(void *);
 extern "C" s32 lbl_802F8E50[3];
 extern "C" const char lbl_8032AF4C[];
@@ -1434,7 +1434,7 @@ suffix_done_2:
 read_rest:
                 ;
             } while (fn_802E3C24(handle, filename, 0x80) != 0);
-            fn_802E3CA4(handle);
+            FileFind_Close(handle);
         }
         ++pathPtr; ++i;
     } while (i < 3);

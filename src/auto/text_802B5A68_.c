@@ -936,7 +936,7 @@ extern void *fn_802B5240(void *);
 extern void fn_802B52B4(void);
 extern s32 FileFindFirst(void *, void *, s32);
 extern s32 fn_802E3C24(s32, void *, s32);
-extern void fn_802E3CA4(s32);
+extern void FileFind_Close(s32);
 extern char *strchr(char *, int);
 extern const char lbl_8055CE88[];
 extern const char lbl_8055CE90[];
@@ -1069,7 +1069,7 @@ void fn_802B6AC0(void) {
             }
         } while ((state[1] + 1 <= state[2]) &&
                  fn_802E3C24(result, scratch.path, 0x20) != 0);
-        fn_802E3CA4(result);
+        FileFind_Close(result);
     }
 }
 #pragma pop

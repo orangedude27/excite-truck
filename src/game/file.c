@@ -490,7 +490,7 @@ extern "C" s32 fn_802E3C24(s32 findHandle, s32 pathBuffer, s32 bufferSize) {
 #pragma cplusplus on
 /* Close an open directory-search handle through the file-find subsystem's close
    method (vtable slot 4); panic with "not supported" if no subsystem is available. */
-extern "C" void fn_802E3CA4(s32 findHandle) {
+extern "C" void FileFind_Close(s32 findHandle) {
     class FileFindSubsystem {
     public:
         virtual void reserved0();
