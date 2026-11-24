@@ -94,16 +94,16 @@ void *fn_802E77C0(int statusCode) {
  * which rounds that response's hard dead-zone corner into a soft knee. The result is
  * then blended toward the squared response v*|v| by RJOY_CURVE_AMOUNT, which is
  * 0.0f, so the output stays linear. */
-float RjoyShapeSteeringAxis(float axis) {
+/* Shapes a Wii Remote tilt axis into rjoy's steering angle: averages two dead-zone samples at axis +/- knee to soften the dead-zone corner, then blends toward a squared response by a curve-amount factor that is currently 0 (linear output). */ float RjoyShapeSteeringAxis(float axis) {
 #define RJOY_KNEE         lbl_80565174 /* 0.05f: how far each sample is shifted */
 #define RJOY_DEAD_ZONE    lbl_80565178 /* 0.1f: dead zone RjoyDeadZoneResponse rescales past */
 #define RJOY_HALF         lbl_80565170 /* 0.5f: weight of the two samples */
 #define RJOY_CURVE_AMOUNT lbl_80565164 /* 0.0f: 0 = linear, 1 = v*|v| */
-    float up = RjoyDeadZoneResponse(RJOY_KNEE + axis, RJOY_DEAD_ZONE);
-    float down = RjoyDeadZoneResponse(axis - RJOY_KNEE, RJOY_DEAD_ZONE);
-    float v = RJOY_HALF * (down + up);
-    float squared = v * (float)__fabs(v) - v;
-    return v + RJOY_CURVE_AMOUNT * squared;
+    float highSample = RjoyDeadZoneResponse(RJOY_KNEE + axis, RJOY_DEAD_ZONE);
+    float lowSample = RjoyDeadZoneResponse(axis - RJOY_KNEE, RJOY_DEAD_ZONE);
+    float shapedAxis = RJOY_HALF * (lowSample + highSample);
+    float curveDelta = shapedAxis * (float)__fabs(shapedAxis) - shapedAxis;
+    return shapedAxis + RJOY_CURVE_AMOUNT * curveDelta;
 #undef RJOY_KNEE
 #undef RJOY_DEAD_ZONE
 #undef RJOY_HALF
