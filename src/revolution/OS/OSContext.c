@@ -180,9 +180,14 @@ asm void OSSaveFPUContext(register OSContext* ctx) {
     nofralloc
 
     addi r5, ctx, 0
-    b __OSSaveFPUContext
-    // clang-format on
-}
+         b __OSSaveFPUContext
+     // clang-format on
+ }
+ 
+ /* Make ctx the current OS context: publish it and its 4-byte-aligned physical
+    address in the OS globals, then enable the FPU (MSR_FP in srr1/MSR) when ctx
+    owns the current FPU context and disable it otherwise. */
+
 
 asm void OSSetCurrentContext(register OSContext* ctx) {
     // clang-format off
