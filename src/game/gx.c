@@ -755,7 +755,7 @@ extern unsigned int lbl_8055CFF4;
 extern unsigned short lbl_8055FD0A;
 extern char lbl_8055FD25;
 extern unsigned char lbl_8055FD85;
-extern char lbl_8055FDB4;
+extern char sSkipRenderStateSync;
 extern int lbl_8055FE20;
 extern float lbl_80564F90;
 extern float lbl_80564F98;
@@ -811,7 +811,7 @@ void fn_802CF850(void) {
     extern char lbl_8055FD70;
     extern unsigned char lbl_8055FD84;
     extern unsigned char lbl_8055FD85;
-    extern char lbl_8055FDB4;
+    extern char sSkipRenderStateSync;
     extern int lbl_8055FE20;
     extern float lbl_80564F8C;
     extern float lbl_80564F90;
@@ -898,7 +898,7 @@ void fn_802CF850(void) {
     fn_802CFFA4(lbl_8055FD0A);
     if (lbl_8055FE1C != 0) fn_802D9230();
     if (lbl_8055FE20 != 0) fn_802D92B8();
-    lbl_8055FDB4 = 0;
+    sSkipRenderStateSync = 0;
 }
 
 /* Reading names for the buffers the graphics shutdown below releases; every
@@ -1935,7 +1935,7 @@ void fn_802D0EEC(void) {
     float scale;
     unsigned int packed;
 
-    if ((unsigned char)lbl_8055FDB4 != 0)
+    if ((unsigned char)sSkipRenderStateSync != 0)
         return;
 
     diff = (unsigned int)lbl_8055FD20 | ((unsigned int)lbl_8055FD1C ^ lbl_8055FD74);
@@ -2773,7 +2773,7 @@ void fn_802D2B0C(void) {
     unsigned char t8, t9, tA, tB, tC, tD;
     unsigned char *src;
     unsigned char *dst;
-    if (*(unsigned char *)&lbl_8055FDB4 == 0) {
+    if (*(unsigned char *)&sSkipRenderStateSync == 0) {
         diff = memcmp(lbl_804C9930, gRenderRequest, 0x10);
         if (((unsigned int)(unsigned int)(0 - diff | diff) >> 31) != 0) {
             if (lbl_8055FD80 != 0) {
@@ -3093,7 +3093,7 @@ int fn_802D31D8(void)
   unsigned long new_var;
   volatile unsigned char col[4];
   unsigned long c;
-  lbl_8055FDB4 = 1;
+  sSkipRenderStateSync = 1;
   GXSetColorUpdate(0);
   GXSetAlphaUpdate(1);
   GXSetDstAlpha(0, 0);
@@ -3124,7 +3124,7 @@ int fn_802D31D8(void)
 void gxResetDefaultState(void) {
     gRenderRequest[0] = 1;
     gxMarkAllStateDirty();
-    lbl_8055FDB4 = 0;
+    sSkipRenderStateSync = 0;
     GXSetCullMode(0);
     GXSetTevOrder(0, 0, 0, 4);
     GXSetTevOp(0, 0);
