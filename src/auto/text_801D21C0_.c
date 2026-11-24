@@ -33,7 +33,7 @@ __declspec(section ".sdata") extern u8 lbl_8055ABF0[];
 extern void fn_801D334C(void *, void *);
 extern void fn_801D3610(void *, void *);
 extern s32 fn_802C6FC0(void *, s32, s32);
-extern s32 fn_802C7830(void *);
+extern s32 parseHexString(void *);
 
 typedef struct UnkObj UnkObj;
 typedef struct {
@@ -106,7 +106,6 @@ extern f32 lbl_8055E3C8;
 extern void fn_801796CC(s32, f32 *, s32);
 #pragma scheduling invalid_target
 void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
-#pragma scheduling invalid_target
     struct Temp {
         f32 position[3];
         f32 velocity[3];
@@ -136,7 +135,6 @@ void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
     active = 1;
     for (; i < *(s32 *)((u8 *)arg0 + 0x28); entry += 8, i++) {
         if (*(s32 *)(entry + 8) < 0) {
-            storedId:
             temp.id = id;
             fn_801796CC(10, (f32 *)&temp, 0x20);
             {
@@ -152,12 +150,13 @@ void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
             done_type:
                 if (isType != 0) {
                     u8 *record;
+                    f32 f8val;
                     index = *(s32 *)(object + 0x1EC) * 0x18;
+                    f8val = *(f32 *)(entry + 0xC) + lbl_8055E3C8;
                     record = (u8 *)(lbl_80438898 + index);
                     *record++ = (u8)active;
                     *(s32 *)(record + 3) = temp.id;
-                    *(f32 *)(lbl_80438898 + index + 8) =
-                        lbl_8055E3C8 + *(f32 *)(entry + 0xC);
+                    *(f32 *)(lbl_80438898 + index + 8) = f8val;
                     {
                         f32 vx = vec[0];
                         f32 vy = vec[1];
@@ -170,24 +169,23 @@ void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
                         *(f32 *)(record + 0x13) = z;
                     }
                     {
-                        f32 m40 = *(volatile f32 *)(object + 0x40);
-                        f32 m3c = *(volatile f32 *)(object + 0x3C);
-                        f32 m48 = *(volatile f32 *)(object + 0x48);
-                        f32 m44 = *(volatile f32 *)(object + 0x44);
-                        f32 m4c = *(volatile f32 *)(object + 0x4C);
-                        f32 m50 = *(volatile f32 *)(object + 0x50);
-                        f32 m54 = *(volatile f32 *)(object + 0x54);
-                        f32 m58 = *(volatile f32 *)(object + 0x58);
-                        f32 m5c = *(volatile f32 *)(object + 0x5C);
-                        *(f32 *)(record + 0xB) = x * m3c + y * m40 + z * m44;
-                        *(f32 *)(record + 0xF) = x * m48 + y * m4c + z * m50;
-                        *(f32 *)(record + 0x13) = x * m54 + y * m58 + z * m5c;
+                        f32 m40 = *(f32 *)(object + 0x40);
+                        f32 m3c = *(f32 *)(object + 0x3C);
+                        f32 m48 = *(f32 *)(object + 0x48);
+                        f32 m44 = *(f32 *)(object + 0x44);
+                        f32 m4c = *(f32 *)(object + 0x4C);
+                        f32 m50 = *(f32 *)(object + 0x50);
+                        f32 m54 = *(f32 *)(object + 0x54);
+                        f32 m58 = *(f32 *)(object + 0x58);
+                        f32 m5c = *(f32 *)(object + 0x5C);
+                        *(f32 *)(record + 0xB) = z * m44 + (x * m3c + y * m40);
+                        *(f32 *)(record + 0xF) = z * m50 + (x * m48 + y * m4c);
+                        *(f32 *)(record + 0x13) = z * m5c + (x * m54 + y * m58);
                     }
                 }
             }
         }
     }
-#pragma scheduling reset
 }
 
 extern f32 lbl_80562A98;
@@ -213,14 +211,15 @@ void fn_801D2E38(void *a0, void *a1, s32 a2, void *a3, f32 scale) {
     f32 sp14[3];
     s32 sp8[3];
     f32 inv, a, b, c, d;
-    register f32 c9C, c98;
+    f32 c9C;
+    register f32 c98;
     u8 *e;
     void *r7;
     s32 r24;
     u8 *obj;
     f32 g1, g2, g3;
     s32 *src = (s32 *)arg1;
-    register s32 i;
+    s32 i;
     #define sp38 tail.w
     #define sp5C tail.v
     c9C = lbl_80562A9C;
@@ -542,8 +541,8 @@ void fn_801D25BC(void *arg0, void *arg1) {
         virtual void f1();
         virtual void f2();
         virtual void f3();
-        virtual void f4();
         virtual s32 fn1C(u32);
+        virtual void f4();
         virtual void f6();
         virtual void f7();
         virtual f32 fn28(void *, f32);
@@ -563,15 +562,14 @@ void fn_801D25BC(void *arg0, void *arg1) {
     };
     char name[0x20];
     Dummy *item;
-    s32 index;
+    long index;
     f32 value;
     s32 i;
-    s32 count;
     if (((s32 (*)(void))fn_801D2550)() != 0) {
-        i = 0;
         *(s32 *)((char *)arg0 + 8) = -1;
-        *(s32 *)((char *)arg0 + 0x28) = ++i;
-        while ((count = *(s32 *)((char *)arg0 + 0x28)) < 4) {
+        i = 0;
+        *(s32 *)((char *)arg0 + 0x28) = i + 1;
+        while (*(s32 *)((char *)arg0 + 0x28) < 4) {
             fn_801345D8(name, 0x20, lbl_8033830C);
             item = (Dummy *)((Dummy *)arg1)->fn5C((u32)name);
             if (item == 0) {
@@ -662,7 +660,7 @@ extern "C" void fn_801D26C8(void *arg0, void *arg1) {
             *(float *)(entry + 0x88) = ret2.y;
             *(float *)(entry + 0x8C) = ret2.z;
             if (child->v1((const char *)lbl_8055AC08))
-                *(int *)(entry + 0x98) = fn_802C7830(child->v3((const char *)lbl_8055AC08));
+                *(int *)(entry + 0x98) = parseHexString(child->v3((const char *)lbl_8055AC08));
             else
                 *(int *)(entry + 0x98) = -1;
             if ((unsigned char)child->v21((const char *)(base + 0x70)) != 0) {

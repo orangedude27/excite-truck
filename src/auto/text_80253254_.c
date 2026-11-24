@@ -410,7 +410,7 @@ extern "C" void fn_80253824(void *object) {
 #pragma dont_inline reset
 
 extern "C" void *fn_80131810(void *);
-extern "C" int fn_802C7830(void);
+extern "C" int parseHexString(void);
 extern "C" int fn_801D2008(char *);
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" void *memset(void *, int, unsigned long);
@@ -467,7 +467,7 @@ void fn_80253890(void *arg0, void *arg1) {
         *(int *)((char *)arg0 + 0x34) = res->getInt(labels + 0x90);
         if (res->has(labels + 0x9C)) {
             res->getString(labels + 0x9C);
-            *(int *)((char *)arg0 + 0x38) = fn_802C7830();
+            *(int *)((char *)arg0 + 0x38) = parseHexString();
         } else {
             *(int *)((char *)arg0 + 0x38) = -1;
         }

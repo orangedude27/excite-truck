@@ -1134,7 +1134,7 @@ extern int fn_801EF1F0(int);
 extern float PSVECMag(void *);
 extern char *strchr(const char *, int);
 extern int fn_802C6FC0(void *, int, int);
-extern int fn_802C7830(void);
+extern int parseHexString(void);
 extern int fn_801284F8(int, void *);
 extern unsigned char lbl_802F9AE0[]; __declspec(section ".sdata") extern char lbl_8055B018[], lbl_8055B020[], lbl_8055B028[], lbl_8055B030[], lbl_8055B038[], lbl_8055B040[], lbl_8055B048[], lbl_8055B050[], lbl_8055B058[], lbl_8055B060[], lbl_8055B068[];
 void fn_801EE0E0(void *arg0, char *arg1, int arg2, int arg3, char *arg4) {
@@ -1281,7 +1281,7 @@ loop36:
         *(int *)node = V1(p3_10, 0x1C, int (*)(void *, void *), base + 0x144);
         *(int *)((char *)node + 4) = V1(p3_10, 0x1C, int (*)(void *, void *), base + 0x150);
         V1(p3_10, 0x14, void (*)(void *, void *), base + 0x15C);
-        h = fn_802C7830();
+        h = parseHexString();
         *(int *)((char *)node + 8) = h;
         k |= h;
         node = (char *)node + 0xC;
@@ -1360,7 +1360,7 @@ extern void fn_801345D8(void *, int, const char *, ...);
 extern void *fn_80131810(void *);
 extern void fn_80131818(void *);
 extern int fn_802C6FC0(void *, int, int);
-extern int fn_802C7830(void);
+extern int parseHexString(void);
 extern char lbl_8033A060[];
 extern char lbl_8055B080;
 #pragma cplusplus on
@@ -1380,7 +1380,7 @@ extern "C" void fn_801EEA64(void *arg0, void *arg1, int arg2, int arg3) {
   *(int *)((char *)arg0+0x494)=obj->m1C(base+0x1B8);
   if(obj->mC(base+0x15C)!=0) {
    obj->m14(base+0x15C);
-   *(int *)((char *)arg0+0x498)=fn_802C7830();
+   *(int *)((char *)arg0+0x498)=parseHexString();
   } else *(int *)((char *)arg0+0x498)=-1;
   shift=obj->m1C(base+0x1C4);
   *(int *)((char *)arg0+0x49C)=1<<shift;

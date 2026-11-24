@@ -1603,7 +1603,7 @@ float fn_802C7808(int instanceId) {
 
 /* Parse a NUL-terminated hexadecimal string (0-9 and uppercase A-F) into an
  * integer: shift the result left four bits per character and OR in its digit. */
-s32 fn_802C7830(char *hexStr) {
+s32 parseHexString(char *hexStr) {
     s32 result = 0;
     s32 digit;
     s32 isDigit;
