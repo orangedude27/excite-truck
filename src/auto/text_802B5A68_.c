@@ -171,16 +171,19 @@ s32 fn_802B5B74(void *arg0) {
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma dont_inline on
-/* Advance the debug viewer's selected-object index (lbl_8055FA40) by `delta` modulo 7, skipping indices past the current material set's object count until it is valid or reaches the index-6 sentinel. */ void fn_802B5C24(s32 delta) {
+/* Advance the debug viewer's selected-object index (lbl_8055FA40) by `delta` modulo 7,
+ * skipping indices past the current material set's object count until it is valid
+ * or reaches the index-6 sentinel. */
+void fn_802B5C24(s32 delta) {
     s32 newIndex;
     s32 sum;
-    s32 value;
+    s32 wrapped;
     void *materialSet;
 
     do {
         sum = delta + lbl_8055FA40;
-        value = sum + 7;
-        lbl_8055FA40 = value % 7;
+        wrapped = sum + 7;
+        lbl_8055FA40 = wrapped % 7;
         newIndex = lbl_8055FA40;
         materialSet = ((void *(*)(void))fn_802B5B6C)();
     } while (newIndex >= fn_802B3F0C(*(s32 *)((u8 *)materialSet + 8)) && newIndex != 6);
