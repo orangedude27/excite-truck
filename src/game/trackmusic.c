@@ -727,13 +727,13 @@ extern "C" void fn_802103BC(void) {
 #pragma cplusplus off
 #pragma pop
 extern long fn_80009C84(void);
-extern unsigned char lbl_8055EEC0;
+extern unsigned char gTrackMusicListChanged;
 extern signed char lbl_8055EEC8, gTrackMusicMuted;
 extern long lbl_8055EECC, lbl_8055B658;
 /* Stop track music: mute, clear selection/hold state, and if a song is selected while inactive reset to none and stop playback. */
 void stopTrackMusic(void) {
 #define trackMusicMuted gTrackMusicMuted
-#define trackMusicSongListReady lbl_8055EEC0
+#define trackMusicSongListReady gTrackMusicListChanged
 #define trackMusicHoldSongChange lbl_8055EEC8
 #define trackMusicHoldUntil lbl_8055EECC
 #define trackMusicCurrentSong lbl_8055B658
@@ -856,9 +856,9 @@ void trackMusicUpdate(unsigned char mute) {
         fn_802EC12C();
         fn_8020F950();
         fn_8020FCC4();
-        lbl_8055EEC0 = 1;
+        gTrackMusicListChanged = 1;
     } else {
-        lbl_8055EEC0 = 0;
+        gTrackMusicListChanged = 0;
     }
     lbl_8055EEBC = songCount;
     overlayUp = 0;
@@ -1072,7 +1072,7 @@ long fn_802111E4(long keyCode) {
  * (OFF / RANDOM / song row + page) to the song in use, then rebuild the page
  * count (10 songs per page, always at least one) and reset an out-of-range page. */
 void fn_802112AC(void) {
-#define trackMusicSongListChanged lbl_8055EEC0 /* the song list was just rebuilt */
+#define trackMusicSongListChanged gTrackMusicListChanged /* the song list was just rebuilt */
 #define trackMusicSelection       lbl_8055EEE0 /* -2 = OFF, -1 = RANDOM, >= 0 = row on the page */
 #define trackMusicPage            lbl_8055EEE4 /* song-list page the menu is on */
 #define trackMusicSongCount       lbl_8055EEBC /* songs the dash found */
