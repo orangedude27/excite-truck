@@ -19,7 +19,7 @@ typedef struct {
 } Record;
 
 #pragma scheduling invalid_target
-/* Construct the four-word squeal sound object: store the owning source and its vtable, attach an SFX handle whose mix field is driven by the source, and a road-sound container. */ void *fn_80209D4C(void *soundSource) {
+/* Construct the four-word squeal sound object: store the owner and vtable, attach an SFX handle driven by the owner, and a road-sound container. */ /* Construct the four-word squeal sound object: store the owning source and its vtable, attach an SFX handle whose mix field is driven by the source, and a road-sound container. */ void *fn_80209D4C(void *soundSource) {
 #define kVtable         lbl_8033C258
 #define kSfxName        lbl_8033C268    /* "squeal.sfx" */
 #define kAllocTag       lbl_8055B548    /* "tiresnd" */
