@@ -730,17 +730,16 @@ extern char lbl_8034CB00[];
 extern char lbl_8034CB24[];
 extern unsigned int gCpuLightTexData;
 extern unsigned int gCpuLightTexData;
-/* CpuLightSampleTexelPair: sample two adjacent 16-bit texels from the CPU-light texture at (x,y) in texel units, returning (texel[x,y+1] | texel[x,y] << 16). gCpuLightTexBase (gCpuLightTexData) is the GX texture data base cached by fn_802DC62C. */
-int sampleCpuLightTexelPair(int a, unsigned int b) {
-#define gCpuLightTexBase gCpuLightTexData
-    int row = a / 4;
-    int col = (int)b / 4;
-    int x = a % 4;
-    int y = (int)b % 4;
-    int index = ((x + (y << 2)) << 4) / 8;
-    char *tile = (char *)gCpuLightTexBase + (row + (col << 7)) * 64 + index;
+/* Sample two vertically adjacent 16-bit CPU-light texels at (x,y) and pack them
+ * as (lower texel << 16) | upper texel. */
+int sampleCpuLightTexelPair(int x, unsigned int y) {
+    int row = x / 4;
+    int col = (int)y / 4;
+    int tileX = x % 4;
+    int tileY = (int)y % 4;
+    int index = ((tileX + (tileY << 2)) << 4) / 8;
+    char *tile = (char *)gCpuLightTexData + (row + (col << 7)) * 64 + index;
     int result = *(unsigned short *)(tile + 32) | ((unsigned int)*(unsigned short *)tile << 16);
-#undef gCpuLightTexBase
     return result;
 }
 
