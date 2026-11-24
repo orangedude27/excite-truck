@@ -1113,7 +1113,7 @@ void fn_802C9904(void) {
     fn_802D007C(lbl_80564EF8);
 }
 
-int setModelColor(int packedColor) {
+/* Set the current packed model color, forward its RGB components to the GX color setter, and return the previous packed color. */ int setModelColor(int packedColor) {
     /* Set the current packed model color, forward its RGB components to the
      * GX color setter, and return the previous packed color. */
     int previousColor = gCurrentModelColor;
