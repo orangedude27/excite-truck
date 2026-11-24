@@ -106,7 +106,7 @@ extern void GXSetAlphaCompare(int, unsigned char, int, int, int);
 extern void GXSetZMode(int, int, int);
 extern int lbl_802FACB0[6];
 extern void *lbl_8055FE1C;
-extern unsigned char lbl_804C9984[];
+extern unsigned char gZQueryPool[];
 extern char sVisQueryStillInUseMsg[];
 extern void fn_802D2ED8(int, int);
 // Render request block (0x804C5700, 16 bytes). The scene sets a field and marks
@@ -3228,7 +3228,7 @@ void fn_802D362C(s32 arg0) {
     fn_802D3420();
 }
 
-// Depth queries, pool at 0x804C9984 (lbl_804C9984). fn_802D39A4 takes a free
+// Depth queries, pool at 0x804C9984 (gZQueryPool). fn_802D39A4 takes a free
 // query, fn_802D3A5C projects a world point into it (pixel x/y + its 24-bit
 // fixed point depth) and queues it for a depth read, and fn_802D3900 reads the
 // depth back for every queued query. fn_802D37E4 releases them all.
@@ -3251,17 +3251,17 @@ typedef struct {
 #pragma dont_inline reset
 /* Release every depth query in the pool: mark all 64 unused/invisible and empty the pending queue. */
 /* Clear the depth-query pool: mark all 64 queries unused and invisible, and reset the pending-query count. */ void fn_802D37E4(void) {
-    ZQueryPool *pool = (ZQueryPool *)lbl_804C9984;
+    ZQueryPool *pool = (ZQueryPool *)gZQueryPool;
     int queryIndex;
     for (queryIndex = 0; queryIndex < 64; queryIndex++) {
         pool->query[queryIndex].used = 0;
         pool->query[queryIndex].visible = 0;
     }
-    *(int *)((char *)lbl_804C9984 + 0x700) = 0;
+    *(int *)((char *)gZQueryPool + 0x700) = 0;
 }
 
 void ZQueryPool_AssertAllReleased(void) {
-    ZQuery *query = (ZQuery *)lbl_804C9984;
+    ZQuery *query = (ZQuery *)gZQueryPool;
     int queryIndex;
     /* Panic with "visibility test still in use." if any of the 64 depth queries is still checked out. */
     for (queryIndex = 0; queryIndex < 0x40; queryIndex++, query++) {
@@ -3282,7 +3282,7 @@ void ZQueryPool_AssertAllReleased(void) {
     int count = 0;
     ZQuery *query;
     unsigned long depth;
-    slot = (ZQuery **)lbl_804C9984;
+    slot = (ZQuery **)gZQueryPool;
     pool = (ZQueryPool *)slot;
     while (count < pool->pendingCount) {
         query = slot[0x600 / sizeof(ZQuery *)];
@@ -3300,14 +3300,14 @@ extern float lbl_80564F88;
 /* Allocate a free depth query from the pool and initialize it with the given fade
  * step. Panics if the pool has no free query. */
 /* Allocate the first unused depth query from the pool, initialize its fade step and state, and return it; panic if all 64 are taken. */ void *fn_802D39A4(float step) {
-    ZQuery *query = (ZQuery *)lbl_804C9984;
+    ZQuery *query = (ZQuery *)gZQueryPool;
     ZQuery *found = 0;
     int index = 0;
     int count;
 
     for (count = 0; count < 0x40; ++count) {
         if (query->used == 0) {
-            found = (ZQuery *)((char *)lbl_804C9984 + index * 0x18);
+            found = (ZQuery *)((char *)gZQueryPool + index * 0x18);
             break;
         }
         query++;
@@ -3354,9 +3354,9 @@ int fn_802D3A5C(void *arg0, const float *arg1) {
         a = -nearZ / delta;
         b = farZ * nearZ / delta;
         *((unsigned int *)arg0 + 2) = (unsigned int)(lbl_80564FE8 + lbl_80564FE8 * ((z * a - b) / -z));
-        if (*(int *)(lbl_804C9984 + 0x700) < 64) {
-            *(void **)(lbl_804C9984 + 0x600 + *(int *)(lbl_804C9984 + 0x700) * 4) = arg0;
-            ++*(int *)(lbl_804C9984 + 0x700);
+        if (*(int *)(gZQueryPool + 0x700) < 64) {
+            *(void **)(gZQueryPool + 0x600 + *(int *)(gZQueryPool + 0x700) * 4) = arg0;
+            ++*(int *)(gZQueryPool + 0x700);
         }
     } else {
         *((unsigned char *)arg0 + 0xD) = 0;
