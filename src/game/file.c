@@ -163,11 +163,11 @@ extern "C" void File_ShutdownSubsystem(void) {
     }
 }
 #pragma cplusplus off
-extern char lbl_8034CF80[];
+extern char gFileStillInUseMsg[];
 #pragma scheduling invalid_target
 void File_checkOpenFiles(void) {
 #define sOpenFileTable gOpenFileTable
-#define sFileStillInUseMsg lbl_8034CF80
+#define sFileStillInUseMsg gFileStillInUseMsg
 #define FilePanic fn_802E317C
     /* Scan the fixed 16-entry open-file table and report any entries still marked in use. */
     char *entry;
