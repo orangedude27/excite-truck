@@ -1110,7 +1110,7 @@ void fn_80010B74(void) {
     fn_802C8BD0(-1);
 }
 
-/* Tail-call wrapper for DrawList_RestoreNormalMode (fn_802C8D74): restores the
+/* Tail-call wrapper for fn_802C8D74: restores the
  * normal GX render mode after a batched quad flush (fn_80010BEC). */
 void fn_80010B7C(void) {
     fn_802C8D74();
@@ -1232,10 +1232,10 @@ void fn_80010D88(f64 farg0, f64 farg1, f64 farg2) {
     volatile f32 sp2C, sp28, sp24, sp20;
     volatile s32 sp1C, sp18;
     volatile f32 sp14, sp10, spC, sp8;
+    register Unk0x18 *base;
+    register u32 *configA;
+    register u32 *configB;
     register s32 index, next, offset;
-    u32 *configA;
-    u32 *configB;
-    Unk0x18 *base;
     register Unk0x18 *current;
     register Unk0x18 *following;
     register s32 value484;
