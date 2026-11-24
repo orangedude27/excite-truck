@@ -620,38 +620,41 @@ extern "C" signed long fn_8020815C(void *arg0) {
 
 #pragma push
 #pragma inline_depth(0)
-extern "C" void fn_802082C0(void *arg0, void *arg1) {
-    register signed long outerOffset;
-    register signed long *source;
-    register signed long *target;
-    register signed long count;
-    register signed long *base;
-    register signed long i;
-    register signed long value;
-    register signed long j;
+extern "C" void fn_802082C0(void *soundMgr, void *classList) {
+    register signed long slotByteOffset;
+    register signed long *nextItem;
+    register signed long *insertSlot;
+    register signed long itemCount;
+    register signed long *items;
+    register signed long itemIndex;
+    register signed long item;
+    register signed long shiftIndex;
 
-    base = *(signed long **)arg1;
-    i = 1;
-    count = *(signed long *)((char *)arg1 + 4);
-    outerOffset = 4;
-    source = (signed long *)((char *)base + 4);
+    /* Insertion-sort a sound class's object list (classList: items pointer at +0,
+     * count at +4) in place, ranking each item with fn_8020820C.  soundMgr is
+     * passed by the caller but unused here. */
+    items = *(signed long **)classList;
+    itemIndex = 1;
+    itemCount = *(signed long *)((char *)classList + 4);
+    slotByteOffset = 4;
+    nextItem = (signed long *)((char *)items + 4);
 
     goto outer_check;
 outer:
-    value = *source;
-    j = i;
-    target = (signed long *)((unsigned long)base + (unsigned long)outerOffset);
-    while (j > 0 && fn_8020820C((SoundMgrObj *)value, (SoundMgrObj *)target[-1]) != 0) {
-        *target = target[-1];
-        j--;
-        target--;
+    item = *nextItem;
+    shiftIndex = itemIndex;
+    insertSlot = (signed long *)((unsigned long)items + (unsigned long)slotByteOffset);
+    while (shiftIndex > 0 && fn_8020820C((SoundMgrObj *)item, (SoundMgrObj *)insertSlot[-1]) != 0) {
+        *insertSlot = insertSlot[-1];
+        shiftIndex--;
+        insertSlot--;
     }
-    base[j] = value;
-    source++;
-    i++;
-    outerOffset += 4;
+    items[shiftIndex] = item;
+    nextItem++;
+    itemIndex++;
+    slotByteOffset += 4;
 outer_check:
-    if (i < count)
+    if (itemIndex < itemCount)
         goto outer;
 }
 #pragma pop
