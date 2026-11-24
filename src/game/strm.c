@@ -31,14 +31,14 @@ int fn_802E72B8(int size) {
 /* Find the stream entry whose sector range [startSector, endSector) contains
  * `sector`; return its index in the entry table, or -1 if none matches. */
 int findStreamEntryBySector(int sector) {
-    unsigned char *entry = sStreamEntries;
-    int index = 0;
-    int remaining;
-    for (remaining = sStreamEntryCount; remaining > 0; remaining--) {
-        if (sector >= *(int *)entry && sector < *(int *)(entry + 4))
-            return index;
-        entry += 0x90;
-        index++;
+    unsigned char *streamEntry = sStreamEntries;
+    int entryIndex = 0;
+    int entriesLeft;
+    for (entriesLeft = sStreamEntryCount; entriesLeft > 0; entriesLeft--) {
+        if (sector >= *(int *)streamEntry && sector < *(int *)(streamEntry + 4))
+            return entryIndex;
+        streamEntry += 0x90;
+        entryIndex++;
     }
     return -1;
 }
