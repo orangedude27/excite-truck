@@ -153,7 +153,7 @@ void fn_802E3F38(void *node) {
 // Start the filecd DVD file system: take this TU's one static FileCd object,
 // bring up the Nintendo DVD services on it and hand it back for file.c to keep
 // as its disc file layer.  Returns 0 when the object did not come up.
-extern "C" void *fn_802E3F94(void) {
+/* Create the singleton FileCd, start the DVD services on it, and return it as the disc file layer; release it and return null if startup failed. */ extern "C" void *fn_802E3F94(void) {
     FileCd *cd;
     cd = (FileCd *)((void *(*)(int, void *))FileCd_alloc)(sizeof(FileCd), &fileCdPoolName);
     if (cd != 0) {
