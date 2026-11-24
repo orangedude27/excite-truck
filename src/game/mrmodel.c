@@ -1113,7 +1113,7 @@ void fn_802C6C38(int modelId) {
         *(void **)(instance + 0xC) = 0;
     }
 }
-/* mrModelUnload: release a model instance handle, or warn if MODEL_INVALID (-1). */
+/* Release a model instance handle, or warn if MODEL_INVALID (-1). */
 void fn_802C6CF8(int modelHandle) {
     int resource;
     if (modelHandle == -1) {
