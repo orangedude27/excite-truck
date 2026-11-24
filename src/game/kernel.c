@@ -602,12 +602,12 @@ extern void fn_802E7578(void);
 extern void fn_802EBE2C(void);
 extern void fn_802CF600(void);
 extern void fn_802EC614(void);
-extern void fn_802E2CFC(void *);
+extern void KERNEL_ReadStartupCalendar(void *);
 extern void fn_802E27F0(void);
 extern void fn_80127C90(void *, void *);
 extern char lbl_8034CCE0[];
 
-/* The halfword-packed calendar fn_802E2CFC writes (struct OSTimeCalendar above
+/* The halfword-packed calendar KERNEL_ReadStartupCalendar writes (struct OSTimeCalendar above
  * compressed into the 0x18 bytes the start-up log prints from). */
 struct StartupCalendar {
     unsigned short year;     /* 0x00 */
@@ -656,7 +656,7 @@ struct StartupCalendar {
     fn_802EBE2C();
     fn_802CF600();
     fn_802EC614();
-    fn_802E2CFC(&startTime);
+    KERNEL_ReadStartupCalendar(&startTime);
     fn_802E30C8(KERNEL_DATE_FORMAT, startTime.month, startTime.day, startTime.year, startTime.weekDay);
     fn_802E30C8(KERNEL_TIME_FORMAT, startTime.hour, startTime.minute, startTime.second);
     fn_802E27F0();
@@ -771,7 +771,7 @@ unsigned long long fn_802E2C9C(void)
  * out by OSTicksToCalendarTime()) into the halfword-packed calendar struct
  * fn_802E2A5C logs "date:" and "time:" from at start-up.  The month is kept
  * 1-12 here, unlike the OS calendar's 0-11. */
-void fn_802E2CFC(void *arg0) {
+void KERNEL_ReadStartupCalendar(void *arg0) {
     struct OSTimeCalendar calendar;
     struct StartupCalendar *now = (struct StartupCalendar *)arg0;
 

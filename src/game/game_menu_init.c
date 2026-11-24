@@ -12,7 +12,7 @@
 #include <extras.h>
 #include <string.h>
 
-extern void fn_802E2CFC(void* out);
+extern void KERNEL_ReadStartupCalendar(void* out);
 extern void fn_80129C80(int, u32, u32);
 extern int  fn_80129D18(int, int);
 extern int  fn_80278A1C(const char* fmt);
@@ -189,7 +189,7 @@ void fn_800049C0(void) DECOMP_DONT_INLINE {
     u16 a, b, c, d;
 
     local.table = *(const struct NameTable*)lbl_802ED680;
-    fn_802E2CFC(&local);
+    KERNEL_ReadStartupCalendar(&local);
 
     a = *(u16*)((u8*)&local.date[1]);
     b = *(u16*)((u8*)&local.date[2]);
