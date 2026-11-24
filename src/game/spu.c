@@ -37,8 +37,8 @@ extern void *fn_802E5AE8();
 extern void fn_8012BEF0(unsigned char *);
 extern void fn_8012C41C(void (*)(void), int, unsigned char *);
 extern void fn_802E589C(void);
-extern int fn_802E582C(void);
-#pragma dont_inline fn_802E582C
+extern int Spu_CacheVoiceObject(void);
+#pragma dont_inline Spu_CacheVoiceObject
 __declspec(section ".sdata") extern char lbl_8055D1E4[];
 extern char lbl_8034D490[];
 extern char lbl_8034D4A0[];
@@ -618,7 +618,7 @@ void fn_802E5828(void) {
 #pragma scheduling invalid_target
 /* Allocates the next voice/sample object and stores it in the sound-name slot
  * table; returns 1 on success, 0 if the table is full or allocation failed. */
-int fn_802E582C(void) {
+int Spu_CacheVoiceObject(void) {
 #define gSoundSlotTable lbl_8055FF9C
 #define gSoundSlotCount lbl_8055FFA0
 #define Spu_allocVoiceObject fn_802E5AE8
@@ -637,18 +637,18 @@ int fn_802E582C(void) {
 #pragma scheduling on
 #pragma dont_inline reset
 
-#pragma dont_inline fn_802E582C
+#pragma dont_inline Spu_CacheVoiceObject
 /* One slot of the sound-name queue lbl_804FC558 (8 slots, count lbl_8055FF78),
  * which holds the resource-directory names currently being played. */
 #define SFX_NAME_SLOT_SIZE 0x20
 
 /* fn_8012C41C resource-directory callback used by fn_802E58B8: allocate a voice
  * object for every loaded entry of the directory, whatever its type. It is a
- * plain tail call to fn_802E582C, so the entry pointer still in r3 reaches
+ * plain tail call to Spu_CacheVoiceObject, so the entry pointer still in r3 reaches
  * fn_802E5AE8 and the allocate/continue result flows back to fn_8012C41C, which
  * stops the walk at the first entry that cannot be allocated. */
 void fn_802E589C(void) {
-    fn_802E582C();
+    Spu_CacheVoiceObject();
 }
 
 /* FourCC of the sample blobs SFXLoad loads, found at a resource entry's data. */
@@ -659,15 +659,15 @@ extern int lbl_8055FFA0;             /* voice table lbl_8055FF9C: entries in use
 extern int *lbl_8055FF9C;            /* voice objects allocated by fn_802E5AE8 */
 extern void fn_8012BEF0(unsigned char *);
 extern void fn_8012C41C(void (*)(void), int, unsigned char *);
-extern int fn_802E582C(void);
-#pragma dont_inline fn_802E582C
+extern int Spu_CacheVoiceObject(void);
+#pragma dont_inline Spu_CacheVoiceObject
 /* fn_8012C41C callback: for every loaded entry of a resource directory whose
- * data is tagged 'SFX0', allocate a voice object for it (fn_802E582C keeps the
+ * data is tagged 'SFX0', allocate a voice object for it (Spu_CacheVoiceObject keeps the
  * resource's name in r3 for fn_802E5AE8); returning 0 stops the walk. */
 int fn_802E58A0(void *entry, int dataTag) {
     /* Resource-directory walk callback: for the 'SFX0' sample type, allocate a
-     * voice object via fn_802E582C; for any other type keep the walk going (1). */
-    if (dataTag == TAG_SFX0) return fn_802E582C();
+     * voice object via Spu_CacheVoiceObject; for any other type keep the walk going (1). */
+    if (dataTag == TAG_SFX0) return Spu_CacheVoiceObject();
     return 1;
 }
 
@@ -707,7 +707,7 @@ void fn_802E5950(int dirName, int fileName) {
 
     sprintf(path, lbl_8055D1E4, dirName, fileName);
     ((void (*)(char *, char *, ...))fn_802E30C8)(lbl_8034D490, path);
-    if (((int (*)(char *))fn_802E582C)(path) == 0) {
+    if (((int (*)(char *))Spu_CacheVoiceObject)(path) == 0) {
         ((void (*)(char *, char *, ...))fn_802E30C8)(lbl_8034D4A0, path);
     }
 }
