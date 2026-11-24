@@ -619,7 +619,7 @@ s32 fn_802C5E7C(void *resource) {
 }
 
 #pragma scheduling invalid_target
-/* Find the first chunk in a resource's tagged list (count at +0x10, chunk-pointer array at +0x14) whose leading tag word matches tag; return the chunk pointer or 0. */ s32 fn_802C5EB8(void *resource, u32 tag) {
+/* Find the first chunk in a resource's tagged list (count at +0x10, chunk-pointer array at +0x14) whose leading tag word matches tag; return the chunk pointer or 0. */ /* Find the first chunk in a resource's tagged list (count at +0x10, chunk-pointer array at +0x14) whose leading tag word matches tag; return the chunk pointer or 0. */ s32 fn_802C5EB8(void *resource, u32 tag) {
     /* Searches the resource's tagged chunk list for an entry whose first field matches tag and returns it, or 0 if not found. */
     s32 count = *(s32 *)((char *)resource + 0x10);
     u32 *result = NULL;
