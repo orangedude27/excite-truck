@@ -1101,7 +1101,7 @@ void fn_80272354(void *obj) {
 }
 
 #pragma processor 750
-void fn_802723B4(void *arg0, void *arg1) {
+void samplePathPosition(void *arg0, void *arg1) {
     void *slot;
     void *object;
     float factor;
@@ -1233,7 +1233,7 @@ extern char lbl_8034705C[];
 /* Log a debug sample: parameter value and the 2D point evaluated on the curve at that parameter. */
 void fn_8027264C(int label, void *curve, float param) {
     float point;
-    ((void (*)(void *, void *, float))fn_802723B4)(curve, &point, param);
+    ((void (*)(void *, void *, float))samplePathPosition)(curve, &point, param);
     DBPrintf_80270B00(lbl_8034705C, label, param, point, *(float *)((char *)&point + 4));
 }
 
@@ -1412,14 +1412,14 @@ void fn_80272738(void *arg0, void *arg1) {
     {
         float a = *(float *)((char *)arg0 + 4);
         float d = *(float *)((char *)arg0 + 8);
-        ((void (*)(void *, void *, float))fn_802723B4)(arg1, s.sp18, lbl_80563F40 * (a + d));
+        ((void (*)(void *, void *, float))samplePathPosition)(arg1, s.sp18, lbl_80563F40 * (a + d));
         s.sp14 = s.sp18[1] - s.sp4C;
         s.sp10 = s.sp18[0] - s.sp48;
         if (s.sp10 * s.sp10 + s.sp14 * s.sp14 > f26) {
             if (*(unsigned char *)((char *)arg0 + 0x14) != 0) {
                 float b = *(float *)((char *)arg0 + 8);
                 float c = *(float *)((char *)arg0 + 0xC);
-                ((void (*)(void *, void *, float))fn_802723B4)(arg1, s.sp18, lbl_80563F40 * (b + c));
+                ((void (*)(void *, void *, float))samplePathPosition)(arg1, s.sp18, lbl_80563F40 * (b + c));
                 s.spC = s.sp18[1] - s.sp4C;
                 s.sp8 = s.sp18[0] - s.sp48;
                 if (s.sp8 * s.sp8 + s.spC * s.spC > f26) {
