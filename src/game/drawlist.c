@@ -1114,12 +1114,12 @@ void fn_802C9904(void) {
     fn_802D007C(lbl_80564EF8);
 }
 
-int setModelColor(int arg0) {
-    /* Set the current packed draw color, forward its RGB components to
-     * fn_802CFFAC, and return the previous packed color. */
+int setModelColor(int packedColor) {
+    /* Set the current packed model color, forward its RGB components to the
+     * GX color setter, and return the previous packed color. */
     int previousColor = gCurrentModelColor;
-    gCurrentModelColor = arg0;
-    fn_802CFFAC((arg0 >> 16) & 0xFF, (arg0 >> 8) & 0xFF, arg0 & 0xFF);
+    gCurrentModelColor = packedColor;
+    fn_802CFFAC((packedColor >> 16) & 0xFF, (packedColor >> 8) & 0xFF, packedColor & 0xFF);
     return previousColor;
 }
 
