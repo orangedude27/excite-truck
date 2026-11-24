@@ -38,7 +38,7 @@ extern void fn_8024BE04(void);
 extern void fn_801E78A0(void);
 extern void fn_80129BF8(void);
 extern void fn_80265D4C(void);
-extern void fn_80005304(void) DECOMP_DONT_INLINE;
+extern void ProbeEventMenus(void) DECOMP_DONT_INLINE;
 extern void fn_80004E20(void);
 extern void fn_80004B5C(void);
 extern void fn_80004CB4(void);
@@ -434,7 +434,7 @@ after_lookup:
     } else if (fn_80019B48() != 0) {
         fn_8024BE04();
     } else if (fn_80019B54() != 0) {
-        fn_80005304();
+        ProbeEventMenus();
     } else if (fn_80019B3C() != 0) {
         fn_800052F8();
     } else {
@@ -581,7 +581,7 @@ int fn_800050D0(int* eventIndex, int* subIndex, const char* name) {
 
 #pragma pop
 
-void fn_80005304(void) DECOMP_DONT_INLINE {
+void ProbeEventMenus(void) DECOMP_DONT_INLINE {
     /* Probe sequential "PA_Eve%d" menu entries until one is not present. */
     char menuName[64];
     int index = 0;
