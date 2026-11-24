@@ -400,25 +400,25 @@ extern void fn_80207C80(void*);
 extern void* lbl_802F9DC8[];
 extern char lbl_8033BE20[];
 #pragma cplusplus on
-extern "C" void fn_80207DE0(void* arg0) {
+/* SoundManager teardown helper: destroy each tracked loop item at +0x94 (count at +0x114) through its virtual f2(1), then clear every item slot and reset the count to zero. */ extern "C" void fn_80207DE0(void* soundMgr) {
     /* Clear/destroy all tracked item pointers at +0x94 (count at +0x114) via virtual f2(1). */
     class Item {
     public:
         virtual void f2(signed long);
     };
-    void* var_r28; void* var_r30; signed long var_r29; signed long var_r31;
-    var_r31 = 0; var_r29 = 0; var_r28 = arg0; var_r30 = var_r28;
-    while (var_r29 < *(signed long*)(((signed char*)var_r28) + 0x114)) {
-        void** temp_r3 = (void**)((signed char*)var_r30 + 0x94);
-        if (*temp_r3 != 0) {
-            Item* obj = (Item*)*temp_r3;
+    void* mgr; void* slotCursor; signed long index; signed long zero;
+    zero = 0; index = 0; mgr = soundMgr; slotCursor = mgr;
+    while (index < *(signed long*)(((signed char*)mgr) + 0x114)) {
+        void** itemSlot = (void**)((signed char*)slotCursor + 0x94);
+        if (*itemSlot != 0) {
+            Item* obj = (Item*)*itemSlot;
             obj->f2(1);
         }
-        *temp_r3 = (void*)var_r31;
-        var_r30 = (void*)(((signed char*)var_r30) + 4);
-        var_r29 += 1;
+        *itemSlot = (void*)zero;
+        slotCursor = (void*)(((signed char*)slotCursor) + 4);
+        index += 1;
     }
-    *(signed long*)(((signed char*)var_r28) + 0x114) = 0;
+    *(signed long*)(((signed char*)mgr) + 0x114) = 0;
 }
 #pragma cplusplus reset
 extern void* memmove(void*, const void*, unsigned long);
