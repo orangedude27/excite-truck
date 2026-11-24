@@ -144,7 +144,7 @@ void fn_802B52B4(void *image) {
 }
 
 extern void *memset(void *, int, unsigned int);
-extern int fn_802E3D68(int, int, int);
+extern int FileOpenSecondary(int, int, int);
 extern int File_writeExact(int, void *, int);
 extern void fn_802E30C8(char *, int);
 extern char lbl_8034A4EC[]; /* "save_simple_tga: Can't create \"%s\"" error format */
@@ -168,7 +168,7 @@ int fn_802B52C0(int filePath, const void *image) {
     *(short *)(header + 0xC) = (short)width;
     *(short *)(header + 0xE) = (short)height;
     header[0x10] = 0x20;
-    fileHandle = fn_802E3D68(filePath, height, width);
+    fileHandle = FileOpenSecondary(filePath, height, width);
     if (fileHandle != -1) {
         File_writeExact(fileHandle, header, 0x12);
         File_writeExact(fileHandle, *(void * const *)((const char *)image + 8),

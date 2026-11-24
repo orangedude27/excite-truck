@@ -538,7 +538,7 @@ done:
     return handle;
 }
 #pragma cplusplus on
-extern "C" s32 fn_802E3D68(s32 path) {
+extern "C" s32 FileOpenSecondary(s32 path) {
     class FileSystem {
     public:
         virtual void reserved0();

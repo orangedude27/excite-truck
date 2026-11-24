@@ -1579,7 +1579,7 @@ void fn_802D09E4(void);
 int fn_802E2C20(void);
 void fn_802E30C8(const char *, ...);
 void fn_802E3734(int *);
-int fn_802E3D68(unsigned char *);
+int FileOpenSecondary(unsigned char *);
 /* Configure the tiled offscreen-render grid: set its column count, row count and mode flag. */
 void fn_802D08B4(int columns, int rows, unsigned char mode) {
 #define tileGridWidth lbl_8055D0BC
@@ -1694,7 +1694,7 @@ void fn_802D09E8(void)
     lbl_8055FDC0 = 0;
     if (lbl_8055D0B8 == 0)
     {
-      int r = fn_802E3D68(lbl_804C9830);
+      int r = FileOpenSecondary(lbl_804C9830);
       lbl_8055D10C = r;
       if (r == (-1))
       {

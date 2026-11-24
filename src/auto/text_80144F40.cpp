@@ -2471,7 +2471,7 @@ extern "C" {
 char *fn_80029004(char *, int);
 char *strcpy(char *, const char *);
 char *strchr(const char *, int);
-s32 fn_802E3D68(const char *);
+s32 FileOpenSecondary(const char *);
 void fn_802E3734(s32 *);
 __declspec(section ".sdata") extern char lbl_80559E70[5];
 extern char lbl_8032D28C[];
@@ -2485,7 +2485,7 @@ extern "C" void fn_80148534(void *arg0) {
     name += 5;
     if (strchr(name, '/') != 0)
         name = strchr(name, '/') + 1;
-    s32 value = fn_802E3D68(name);
+    s32 value = FileOpenSecondary(name);
     if (value != -1) {
         fn_802E3AD0(value, lbl_8032D28C, 1);
         fn_801457D0(*(void **)((u8 *)arg0 + 0x2C), value);

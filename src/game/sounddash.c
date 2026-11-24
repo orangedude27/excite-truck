@@ -37,7 +37,7 @@ enum SoundDashCommand {
 
 #pragma scheduling invalid_target
 extern char lbl_8033C530[];
-extern int fn_802E3D68(const char *);
+extern int FileOpenSecondary(const char *);
 extern void fn_802E3AD0(int, const char *, ...);
 extern void fn_802E3734(int *);
 #pragma push
@@ -49,7 +49,7 @@ extern void fn_802E3734(int *);
     int outFile;
     int entryIdx;
     VoiceSndEntry *sndEntry;
-    outFile = fn_802E3D68("sounds.txt\0");
+    outFile = FileOpenSecondary("sounds.txt\0");
     if (outFile != -1) {
         fn_802E3AD0(outFile, "tabular samples\r\n\0\0");
         fn_802E3AD0(outFile, "\tname\t\t\tvolume\r\n\0\0\0");

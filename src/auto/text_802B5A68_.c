@@ -58,7 +58,7 @@ __declspec(section ".sdata") extern const char lbl_8055CE60[];
 extern double lbl_80564C68;
 extern float lbl_80564C58;
 extern float lbl_80564C60;
-extern s32 fn_802E3D68(void *);
+extern s32 FileOpenSecondary(void *);
 extern void fn_802E3AD0(s32, const char *, ...);
 extern void fn_802E3734(void *);
 extern float fn_801DCF48(float *, float, float);
@@ -418,7 +418,7 @@ void fn_802B5F98(void) {
     float fi, fj;
     float points[3];
 
-    handle = fn_802E3D68(base + 0x2c);
+    handle = FileOpenSecondary(base + 0x2c);
     if (handle == -1) return;
     fn_802E3AD0(handle, lbl_8055CE58);
     fn_802E3AD0(handle, base + 0x3c);
