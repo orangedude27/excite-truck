@@ -13,7 +13,7 @@ extern double atan(double), fn_8002EF30(float);
 extern void fn_802BDD8C(float);
 extern void fn_802BFE48(void *, void *, float), fn_802C0054(void *, const void *), fn_802C00A0(void);
 extern void fn_80144DAC(void *, void *), fn_80144DC8(void *);
-extern void fn_802C10C8(void), DrawModelInstance(int), fn_802C8638(void *), fn_802C86F0(void *, int, int, int, int), fn_802C8750(void *, int), fn_802C88BC(int), fn_802C8B08(void *), fn_802C8B98(int, float *), fn_802C8D74(void), fn_802C8DB8(void *, int, unsigned short *, int), fn_802C9294(int, int), fn_802C9694(void *, float, float, float), fn_802C96DC(void *, int), fn_802CB274(int);
+extern void fn_802C10C8(void), DrawModelInstance(int), fn_802C8638(void *), fn_802C86F0(void *, int, int, int, int), fn_802C8750(void *, int), fn_802C88BC(int), DrawList_copyCurrentMatrix(void *), fn_802C8B98(int, float *), fn_802C8D74(void), fn_802C8DB8(void *, int, unsigned short *, int), fn_802C9294(int, int), fn_802C9694(void *, float, float, float), fn_802C96DC(void *, int), fn_802CB274(int);
 extern float lbl_80564DAC, lbl_80564DB0, lbl_80564DB4, lbl_80564DB8, lbl_80564DBC, lbl_80564DC0, lbl_80564DC4, lbl_80564DC8;
 extern void fn_80128668(void *);
 extern int fn_802BF6AC(void);
@@ -787,7 +787,7 @@ extern "C" void fn_802BFB70(void *arg0, float *worldMtx, float angle) {
             fn_802CB274(*target); fn_802C9294(*target, 0);
             fn_802C9694(savedView0, kOne, kFaceFar, kFaceFov);
             fn_802C86F0(savedViewport0, 0, 0, 0x100, 0x100);
-            fn_802C8B08(savedMtx0); fn_802C8638(face); fn_802C88BC(3); fn_802C10C8();
+            DrawList_copyCurrentMatrix(savedMtx0); fn_802C8638(face); fn_802C88BC(3); fn_802C10C8();
             fn_802C9294(-2, 0); fn_802C8638(savedMtx0); fn_802C8750(savedViewport0, -1); fn_802C96DC(savedView0, -1);
         }
         faces->facesCleared = 1;
@@ -798,7 +798,7 @@ extern "C" void fn_802BFB70(void *arg0, float *worldMtx, float angle) {
     fovAngle = kTwo * (float)atan(self->fovFactor * (float)fn_8002EF30(kHalf * angle));
     fn_802C9694(savedView, kOne, kViewFar, fovAngle);
     fn_802C86F0(savedViewport, 0, 0, 0x100, 0x100);
-    fn_802C8B08(savedMtx); fn_802C8638(viewMtx); fn_802C88BC(2);
+    DrawList_copyCurrentMatrix(savedMtx); fn_802C8638(viewMtx); fn_802C88BC(2);
     if (self->faces) {
         int *target;
         struct EnvFace *face;
@@ -1115,7 +1115,7 @@ extern void fn_802C03F0(void *arg0) {
     float f8, f7, f5_4, f6_4, f3_4, f4_4, f2_4, f8_3;
     unsigned short idx[6];
     float *q;
-    fn_802C8B08(&s[84]);
+    DrawList_copyCurrentMatrix(&s[84]);
     f14 = s[94] - lbl_8055FAF4;
     fn_802C98DC(&s[5], &s[3], &s[4], &s[2], s[94]);
     f2 = lbl_80564DF4 * s[4];
@@ -1236,7 +1236,7 @@ extern void fn_802C03F0(void *arg0) {
     fn_802DD228();
     fn_802C8D74();
     fn_802DBECC();
-    fn_802C8B08(&s[72]);
+    DrawList_copyCurrentMatrix(&s[72]);
     ((void (*)(float *, float *, float *, float *))fn_802C98DC)(&s[0], &s[1], &s[0], &s[0]);
     f8 = lbl_80564D7C;
     s[1] = s[1] + f8;

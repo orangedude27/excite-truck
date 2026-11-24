@@ -515,7 +515,7 @@ void fn_802C89E8(float *arg0) {
 /* Copy the current draw-list matrix (the 12-word 3x4 at lbl_804C1410) into dst.
  * The four word-pairs plus a trailing scalar/pair/scalar split reproduces the
  * compiler's paired load/store schedule for the copy. */
-void fn_802C8B08(unsigned int *dst) {
+void DrawList_copyCurrentMatrix(unsigned int *dst) {
 #define sCurrentMatrix lbl_804C1410
     struct MtxPair { unsigned int first; unsigned int second; };
     struct MtxTail { unsigned int first; struct MtxPair pair; unsigned int last; };

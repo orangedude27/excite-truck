@@ -126,18 +126,17 @@ extern char lbl_80339F6C[];
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_801EB13C(void *arg0, s32 arg1) {
-#define SWAP32(p) { u8 t = (p)[0]; (p)[0] = (p)[3]; (p)[3] = t; } { u8 t = (p)[1]; (p)[1] = (p)[2]; (p)[2] = t; }
+#define SWAP32(p) { u8 t0 = (p)[0]; (p)[0] = (p)[3]; (p)[3] = t0; { u8 t1 = (p)[1]; (p)[1] = (p)[2]; (p)[2] = t1; } }
     u8 *v = (u8 *)arg0;
     u32 offset, address;
     int i;
-    u32 pcur = (u32)arg0;
     (void)arg1;
 
     SWAP32(v + 8);
     SWAP32(v + 4);
     SWAP32(v + 12);
     offset = *(u32 *)(v + 8);
-    address = pcur + offset;
+    address = (u32)v + offset;
     *(u32 *)(v + 8) = address;
     ((void (*)(void *, char *))fn_802C61BC)((void *)address, lbl_80339F6C);
     if (*(s32 *)v == 1) {
@@ -176,6 +175,7 @@ extern "C" void fn_801EB2D4(s32 arg0, register s32 arg1) {
     s32 var_r24 = 8;
     u8 temp_r5;
     u8 temp_r0;
+    u8 *temp_r3_11;
     u8 *temp_r27;
     void *temp_obj;
     u8 *ptr4;
@@ -827,7 +827,7 @@ extern f32 lbl_80562E7C;
 extern double cos(double);
 extern double sin(double);
 extern double fabs(double);
-extern void fn_802C8B08(f32 *);
+extern void DrawList_copyCurrentMatrix(f32 *);
 extern void fn_802C744C(s32, f32 *);
 extern void fn_802C9474(u32);
 extern f32 *fn_802C86DC(void);
@@ -859,7 +859,7 @@ extern "C" void fn_801EBF00(void) {
     if (lbl_8055EBA0 != 0) {
         ((EBF00Widget *)lbl_804885E8[3])->setVisible(0);
         if (lbl_8055AFB8 != -1) {
-            fn_802C8B08(l.modelMtx);
+            DrawList_copyCurrentMatrix(l.modelMtx);
             scale = lbl_80562E68 - lbl_8055EBA4;
             l.modelMtx[9] = l.modelMtx[9] * scale;
             l.modelMtx[10] = l.modelMtx[10] * scale;

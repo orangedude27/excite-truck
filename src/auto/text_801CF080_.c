@@ -358,10 +358,11 @@ static inline void Mesh_SwapVec(volatile Vec *v) {
 
 #pragma push
 void fn_801CFA48(void *arg0) {
-    volatile Mesh *mesh = (volatile Mesh *)arg0;
+    s32 i;
+    s32 off;
     MeshNode *nodes;
     Vec *verts;
-    s32 i;
+    volatile Mesh *mesh = (volatile Mesh *)arg0;
 
     Mesh_Swap32(&mesh->nodes);
     Mesh_Swap32(&mesh->nodeCount);
@@ -379,18 +380,18 @@ void fn_801CFA48(void *arg0) {
         mesh->tris = (MeshTri *)(verts + vertCount);
     }
 
-    for (i = 0; i < mesh->nodeCount; i++) {
-        volatile MeshNode *node = &mesh->nodes[i];
+    for (i = 0, off = 0; i < mesh->nodeCount; i++, off += sizeof(MeshNode)) {
+        volatile MeshNode *node = (volatile MeshNode *)((u8 *)mesh->nodes + off);
         Mesh_SwapVec(&node->center);
         Mesh_Swap32(&node->radius);
         Mesh_Swap32(&node->triStart);
         Mesh_Swap32(&node->triEnd);
     }
-    for (i = 0; i < mesh->vertCount; i++) {
-        Mesh_SwapVec(&mesh->verts[i]);
+    for (i = 0, off = 0; i < mesh->vertCount; i++, off += sizeof(Vec)) {
+        Mesh_SwapVec((volatile Vec *)((u8 *)mesh->verts + off));
     }
-    for (i = 0; i < mesh->triCount; i++) {
-        volatile MeshTri *tri = &mesh->tris[i];
+    for (i = 0, off = 0; i < mesh->triCount; i++, off += sizeof(MeshTri)) {
+        volatile MeshTri *tri = (volatile MeshTri *)((u8 *)mesh->tris + off);
         Mesh_Swap16(&tri->edgeFlags);
         Mesh_Swap16(&tri->vidx[0]);
         Mesh_SwapVec(&tri->edgeNormal[0]);
@@ -428,7 +429,7 @@ void fn_801CFF14(void) {
     fn_8012C4D8();
 }
 
-extern void fn_802C8B08(float *);
+extern void DrawList_copyCurrentMatrix(float *);
 extern void PSVECCrossProduct(const float *, const float *, float *);
 
 extern void fn_801E41D8(void *, void *, int, float);
@@ -483,7 +484,7 @@ void fn_801CFF18(void *arg0, float *arg1)
     ((float *) m)[10] = zero;
     ((float *) m)[11] = zero;
   }
-  fn_802C8B08(scratch);
+  DrawList_copyCurrentMatrix(scratch);
   tx = ((float *) m)[9];
   ty = ((float *) m)[10];
   tz = ((float *) m)[11];
