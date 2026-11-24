@@ -343,8 +343,8 @@ void fn_802DBA1C(unsigned char secondMode) {
 #pragma dont_inline reset
 #pragma use_lmw_stmw on
 
+/* Bind the CPU-light position vertex array: when the cached buffer changes, reset the vertex descriptor, set GX attribute 9 to three floats, point GX at the buffer and flush it from the data cache. */
 void fn_802DBBE4(int positionArray, int vertexCount) {
-    /* Set GX position array (vertex desc/attr/array) if it changed and flush it. */
     if ((void *)lbl_8055FEA8 != (void *)positionArray) {
         lbl_8055FEA8 = (void *)positionArray;
         lbl_8055FEAC = (void *)vertexCount;
