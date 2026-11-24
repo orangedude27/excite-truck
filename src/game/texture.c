@@ -673,7 +673,7 @@ done:
 
 /* Sets the texture slot's filter/wrap (or mode) bytes at +8/+9 of its loaded
  * resource, if the slot handle is valid. */
-void fn_802CAF1C(int textureSlot, signed char value8, signed char value9) {
+void TextureSlot_setModes(int textureSlot, signed char value8, signed char value9) {
 #define TextureSlot_isValid fn_802CAE00
 #define gTextureSlots lbl_8055FCB0
     int slotOffset;
