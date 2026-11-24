@@ -1046,7 +1046,7 @@ void fn_802D5F88(s32 arg0) {
 }
 #pragma pop
 extern void fn_802D0E48(int);
-/* Draw a surface: toggle the draw state, configure its vertex format, then submit its display list. */
+/* Draw a CPU-lit surface: set transparent draw state, rebuild its vertex format, switch to opaque state, then submit its prebuilt display list. */
 void fn_802D6170(struct SurfDraw *surface) {
     fn_802D0E48(0);
     fn_802D5FE4(surface);
