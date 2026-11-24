@@ -74,7 +74,9 @@ void fn_802E4D84(void *dst, void *src, int size) {
 extern unsigned char *fn_8012C370(int, unsigned int *, int, unsigned char *, unsigned char *);
 extern char lbl_8034D280[];
 #pragma scheduling invalid_target
-/* Load an SFX0 sample blob by name: endian-swap its header when the loader says so, relocate its data offset into a pointer, byte-swap 16-bit sample data for non-raw formats, then flush it for the ARAM/DSP reader. */
+/* Load an SFX0 sample blob by name: endian-swap its header when the loader says so,
+ * relocate its data offset into a pointer, byte-swap 16-bit sample data for
+ * non-raw formats, then flush it for the ARAM/DSP reader. */
 void *SFXLoad(char *path) {
     unsigned int version;
     unsigned char attr;
