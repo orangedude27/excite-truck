@@ -30,7 +30,7 @@ s32 fn_802E98C8(void) {
 
 /* SCInit/SCCheckStatus and the SC enums come from the two SDK headers above. */
 extern void fn_802E317C(const char*, ...); /* panic(): "PANIC: <msg>", then ABEND */
-extern void fn_802E99AC(void);             /* ConfigReadWpadSettings(), below */
+extern void ConfigCacheWpadSettings(void);             /* ConfigReadWpadSettings(), below */
 extern char lbl_8034E238[];                /* "config: SCCheckStatus returns error!" */
 extern char lbl_80560040;                  /* sConfigReady */
 #pragma scheduling invalid_target
@@ -41,7 +41,7 @@ extern char lbl_80560040;                  /* sConfigReady */
  * has arrived, panicking with "config: SCCheckStatus returns error!" if the
  * read failed.  Aspect ratio, sound mode and progressive scan are then cached
  * for the getters at the end of this file - an unknown sound mode falls back
- * to stereo - and fn_802E99AC() adds the two WPAD settings.  sConfigReady
+ * to stereo - and ConfigCacheWpadSettings() adds the two WPAD settings.  sConfigReady
  * marks the cache valid; the start-up calls this before anything reads it.
  */
 void fn_802E98D0(void) {
@@ -83,7 +83,7 @@ void fn_802E98D0(void) {
 
     sConfigProgressive = SCGetProgressiveMode() == SC_PROGRESSIVE;
     sConfigReady = 1;
-    fn_802E99AC();
+    ConfigCacheWpadSettings();
 }
 #pragma scheduling on
 
@@ -97,7 +97,7 @@ void fn_802E99A8(void) {}
  * The motor mode becomes a 0/1 and the speaker volume, which the config block
  * stores as 0..SC_MAX_SPEAKER_VOLUME (127), is scaled to 0.0 .. 1.0.
  */
-void fn_802E99AC(void) {
+void ConfigCacheWpadSettings(void) {
     sConfigWpadMotor = (SCGetWpadMotorMode() == SC_MOTOR_ON);
     sConfigWpadSpeakerVolume = (f32)(u32)SCGetWpadSpeakerVolume() / 127.0f;
 }

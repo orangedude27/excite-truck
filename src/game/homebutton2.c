@@ -284,7 +284,7 @@ extern void fn_802E30C8(const char *, ...);
 extern void fn_802E5438(void);
 extern void fn_802E7C40(void);
 extern s32 fn_802E8668(s32);
-extern void fn_802E99AC(void);
+extern void ConfigCacheWpadSettings(void);
 extern s32 lbl_80558898[];
 /* Drive the Home menu / Wii Remote shutdown flow. When a Home-menu request
  * arrives, stop all rumble and snapshot the menu state; then gather WPAD info
@@ -325,7 +325,7 @@ void fn_802EC884(void) {
         wpadInfoOut += 4;
     }
     if (fn_800C65CC(lbl_80558898) >= 0) {
-        fn_802E99AC();
+        ConfigCacheWpadSettings();
         fn_802E7C40();
         fn_802E5438();
         fn_802E30C8(menuStrings + 0x1A4);
