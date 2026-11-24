@@ -6796,7 +6796,7 @@ void bta_hh_api_disable(void) {
 }
 
 #pragma scheduling 750
-/* HID host disconnection complete: deregister, free every device record's buffer and the control block's payload, invoke the disable callback with the result, and zero the control block. */ void bta_hh_disc_cmpl(void) {
+/* HID host disconnection complete: deregister, free every device record's buffer and the control block's payload, invoke the disable callback with the result, and zero the control block. */ /* HID host disconnection complete: deregister, free every device record's buffer and the control block's payload, invoke the disable callback with the result, and zero the control block. */ void bta_hh_disc_cmpl(void) {
     UINT8 deviceIndex;
     UINT8 status;
     void (*disableCb)(int, void *);
