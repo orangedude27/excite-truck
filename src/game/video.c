@@ -279,7 +279,7 @@ void *gxGetDistortTexObj(void); /* the texture it distorts, into GX_TEXMAP6 */
 /* The water surface pass: drgc_surf.c asks for mode 3 of the render request
  * block (gRenderRequest) and fn_802D2B0C builds the pipeline here.  Stage 0 draws
  * the surface itself, stage 1 adds the GX_TEXMAP6 texture whose coordinates
- * indirect stage 0 shifts with the bump map in GX_TEXMAP5.  fn_802DF684 undoes
+ * indirect stage 0 shifts with the bump map in GX_TEXMAP5.  GXResetWaterBumpTevPipelineA undoes
  * it again; GXSetupWaterBumpTevPipelineB is the twin used when a second texture stage is wanted.
  */
 /* Set up the two-stage water-surface TEV pipeline: stage 0 draws the lit surface, stage 1 adds the GX_TEXMAP6 texture shifted by the bump map in GX_TEXMAP5. */ /* Configure the two-stage TEV pipeline for the water surface: stage 0 draws the lit surface, stage 1 adds the GX_TEXMAP6 texture whose coordinates indirect stage 0 shifts with the bump map in GX_TEXMAP5. */ void GXSetupWaterBumpTevPipelineA(void) {
@@ -316,7 +316,7 @@ void *gxGetDistortTexObj(void); /* the texture it distorts, into GX_TEXMAP6 */
 
 #pragma scheduling invalid_target
 /* Reset TEV swap tables to identity for stages 0-1 and disable indirect stages. */
-void fn_802DF684(void) {
+void GXResetWaterBumpTevPipelineA(void) {
     GXSetTevSwapMode(GX_TEVSTAGE0, (GXTevSwapSel)0, (GXTevSwapSel)0);
     GXSetTevSwapMode(GX_TEVSTAGE1, (GXTevSwapSel)0, (GXTevSwapSel)0);
     GXSetNumIndStages(0);

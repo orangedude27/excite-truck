@@ -2766,7 +2766,7 @@ void fn_802D2B0C(void) {
     extern void fn_802DF6D0(void);
     extern void GXResetWaterBumpTevPipelineB(void);
     extern void fn_802DF4A8(void);
-    extern void fn_802DF684(void);
+    extern void GXResetWaterBumpTevPipelineA(void);
     extern void fn_802D1C04(void);
     int diff;
     int t4;
@@ -2816,7 +2816,7 @@ void fn_802D2B0C(void) {
                         lbl_8055FD80 = GXResetWaterBumpTevPipelineB;
                     } else {
                         fn_802DF4A8();
-                        lbl_8055FD80 = fn_802DF684;
+                        lbl_8055FD80 = GXResetWaterBumpTevPipelineA;
                     }
                     lbl_8055FD70 = 1;
                 }
