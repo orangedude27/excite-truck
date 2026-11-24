@@ -9,7 +9,7 @@ extern void Abend_Panic(const char *, ...);
 extern char lbl_8034CF40[];
 extern char lbl_8034CF60[];
 extern char gOpenFileTable[];
-extern char lbl_8055D1A0[];
+extern char sNandPathPrefix[];
 extern s32 lbl_8055FF20;
 extern s32 IsNandPath(const char *);
 extern s32 IsSdPath(s32);
@@ -27,15 +27,15 @@ extern s32 fn_802E33D8(s32, const char *, s32);
 extern void* lbl_8055FF24;
 s32 ConfigGetSDCardHandle(void);
 #pragma small_data on
-__declspec(section ".sdata") extern char lbl_8055D1A0[];
+__declspec(section ".sdata") extern char sNandPathPrefix[];
 __declspec(section ".sdata") extern char lbl_8055D1A8[];
-/* Returns 1 when the path begins with the NAND prefix "nand:" (lbl_8055D1A0),
+/* Returns 1 when the path begins with the NAND prefix "nand:" (sNandPathPrefix),
    0 otherwise; getFileSystemForPath then hands out the NAND file system handle
    lbl_8055FF20 for it.  Its sibling IsSdPath tests the "sd:" prefix. */
 s32 IsNandPath(const char *path) {
     /* the prefix address is held as an integer so the compiler keeps it in one
        callee-saved register instead of re-materializing the small-data address */
-    s32 prefix = (s32)lbl_8055D1A0;
+    s32 prefix = (s32)sNandPathPrefix;
     s32 prefixLen = strlen((char *)prefix);
     s32 result = strncmp(path, (char *)prefix, prefixLen);
     return (unsigned int)__cntlzw(result) >> 5;
@@ -44,7 +44,7 @@ s32 IsNandPath(const char *path) {
 /* Returns 1 when the path begins with the SD-card prefix "sd:"
    (lbl_8055D1A8), 0 otherwise; getFileSystemForPath then hands out the SD-card file
    system handle lbl_8055FF24 for it.  Its sibling IsNandPath tests the
-   "nand:" prefix (lbl_8055D1A0). */
+   "nand:" prefix (sNandPathPrefix). */
 s32 IsSdPath(s32 path) {
     /* the prefix address is held as an integer so the compiler keeps it in one
        callee-saved register instead of re-materializing the small-data address */
