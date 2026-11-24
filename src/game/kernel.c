@@ -12,7 +12,7 @@ extern int lbl_804DB780[];
 extern void DCStoreRange(void *, int);
 extern void DCFlushRange(void *, int);
 extern char lbl_8034CD48[];
-extern char lbl_8034CD30[];
+extern char sStackUsageFormat[];
 extern void fn_802E317C(const char *, ...);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_8034CEE4[];
@@ -547,7 +547,7 @@ void KERNEL_ReportStackUsage(void) {
     int guardWordCount = stackSizeBytes / 4;
     for (wordIndex = guardWordCount - 1; wordIndex >= 0; --wordIndex) {
         if (guardTop[-wordIndex] != 0x53ffeedd) {
-            fn_802E30C8(lbl_8034CD30, (wordIndex * 4) / 1024, stackSizeBytes / 1024);
+            fn_802E30C8(sStackUsageFormat, (wordIndex * 4) / 1024, stackSizeBytes / 1024);
             return;
         }
     }
