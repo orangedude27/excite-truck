@@ -96,7 +96,7 @@ extern void fn_801E7E48(void);
 extern void fn_8026A1F0(s32, s32, s32);
 extern void fn_801E81B8(s32, s32);
 extern void fn_80230B5C(void *);
-extern void fn_802C8638(void *);
+extern void DrawList_loadMatrix(void *);
 extern void fn_802C974C(float, float, float);
 extern void fn_80012624(float);
 extern void fn_802C9A70(s32);
@@ -557,7 +557,7 @@ void fn_80008F98(void) {
         fn_801E81B8(1, 0);
         DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
         fn_80230B5C((void *)tmp);
-        fn_802C8638((void *)tmp);
+        DrawList_loadMatrix((void *)tmp);
         fn_802C974C(lbl_805601B8, lbl_805601D4, lbl_805601D8);
         spC = var_f27;
         sp8 = var_f27;
@@ -930,7 +930,7 @@ skip16:
         KERNEL_GetTimeMs();
         DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
         fn_80230B5C(view);
-        fn_802C8638(view);
+        DrawList_loadMatrix(view);
         fn_802C974C(lbl_805601B8, lbl_805601D4, lbl_805601D8);
         if (var22 != 0) {
             biasedFrames.word.hi = 0x43300000;

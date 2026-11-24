@@ -1908,7 +1908,7 @@ void fn_802569DC(void *arg0, int arg1, float scale) {
     struct Vertex { float x,y,z; unsigned int color; float u,v; };
     extern void fn_802C942C(int);
     extern void *fn_802C86DC(void);
-    extern void fn_802C8638(void *);
+    extern void DrawList_loadMatrix(void *);
     extern float fn_801F159C(int);
     extern void fn_802ABFF8(int, float);
     extern void fn_802AC070(void);
@@ -1946,13 +1946,13 @@ void fn_802569DC(void *arg0, int arg1, float scale) {
     adjusted.m[1] *= lbl_80563A10;
     adjusted.m[4] *= lbl_80563A10;
     adjusted.m[7] *= lbl_80563A10;
-    fn_802C8638(&adjusted);
+    DrawList_loadMatrix(&adjusted);
     if (**(unsigned char **)((char *)arg0 + 8)) {
         if (*(unsigned char *)((char *)arg0 + 0x118)) fn_802ABFF8(arg1, scale);
         fn_8025419C(*(void **)((char *)arg0 + 8));
         if (*(unsigned char *)((char *)arg0 + 0x118)) { fn_802AC070(); fn_802ABE50(); }
     }
-    fn_802C8638(&original);
+    DrawList_loadMatrix(&original);
     fn_802C942C(0x40ffffff);
     obj = *(char **)((char *)arg0 + 8);
     if (*(unsigned char *)obj) height = *(float *)(obj + 0x600) - fn_801F159C(*(int *)(obj + 0x18));
@@ -2023,7 +2023,7 @@ extern void fn_80253004(s32, void *);    /* copy a camera record by index */
 extern void fn_802545C4(void *, s32, s32); /* build the view setup instead */
 extern float fn_802C9744(void);          /* current field of view */
 extern void fn_802C974C(float, float, float); /* projection: near, far, fov */
-extern void fn_802C8638(void *);         /* make a 4x3 matrix the current one */
+extern void DrawList_loadMatrix(void *);         /* make a 4x3 matrix the current one */
 extern void fn_802C99E8(float);          /* light intensity */
 extern void fn_802C9950(s32);            /* light diffuse colour */
 extern void fn_802C9994(s32);            /* light ambient colour */
@@ -2074,7 +2074,7 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
 
     fov = fn_802C9744();
     fn_802C974C(lbl_80563A14 /* 1.0f */, lbl_80563A00 /* 2250.0f */, fov);
-    fn_802C8638(model->modelMtx);
+    DrawList_loadMatrix(model->modelMtx);
     fn_80253258();
     fn_802C99E8(lbl_80563A14);
     if (model->mode == 1)
@@ -2185,7 +2185,7 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
 
     if (model->tinted != 0)
         fn_802ABE50();
-    fn_802C8638(frame + 0xb0);
+    DrawList_loadMatrix(frame + 0xb0);
 }
 #pragma scheduling on
 

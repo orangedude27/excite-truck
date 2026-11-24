@@ -30,54 +30,58 @@ extern int lbl_8055CFF4;
 extern float lbl_80563190, lbl_80563194, lbl_80563198, lbl_8056319C;
 extern float lbl_805631A0, lbl_805631A4, lbl_805631A8;
 #pragma scheduling invalid_target
-void fn_802057A8(int arg0, int arg1, float arg2, float arg3, float arg4, float arg5) {
-    extern double lbl_805631B0;
-    register unsigned int high asm("r5") = 0x43300000;
-    register unsigned int raw asm("r0");
-    register unsigned int converted asm("r6");
-    register float temp_f1 asm("f1") = arg2;
-    register float temp_f6 asm("f6");
-    register float temp_f7 asm("f7");
-    struct {
-        float coords[3];
-        unsigned int pad;
-        union {
-            struct {
-                unsigned int hi;
-                unsigned int lo;
-            } words;
-            double d;
-        } conv1;
-        union {
-            struct {
-                unsigned int hi;
-                unsigned int lo;
-            } words;
-            double d;
-        } conv2;
-    } local;
-
-    temp_f1 -= lbl_80563194;
-    temp_f6 = temp_f1 * lbl_80563198;
-    raw = (unsigned int)lbl_8055CFF0;
-    converted = raw ^ 0x80000000U;
-    local.conv1.words.lo = converted;
-    local.conv1.words.hi = high;
-    raw = (unsigned int)lbl_8055CFF4;
-    raw ^= 0x80000000U;
-    local.conv2.words.lo = raw;
-    local.conv2.words.hi = high;
-    temp_f6 = temp_f6 * lbl_8056319C;
-    temp_f1 = arg3 * lbl_805631A4;
-    temp_f7 = lbl_805631A0 + temp_f1;
-    temp_f6 = lbl_80563190 + temp_f6;
-    local.coords[2] = lbl_805631A8;
-    local.coords[0] = (float)(local.conv1.d - lbl_805631B0);
-    local.coords[0] *= temp_f6;
-    local.coords[1] = (float)(local.conv2.d - lbl_805631B0);
-    local.coords[1] *= temp_f7;
-    ((void (*)(int, int, float, float, float, float, float, float, float))fn_802C8E00)(
-        arg0, arg1, local.coords[0], local.coords[1], local.coords[2], arg4, arg5, temp_f6, temp_f7);
+void fn_802057A8(int arg0, int arg1, float arg2, float arg3, float arg4, float arg5)
+{
+  extern double lbl_805631B0;
+  register unsigned int high asm("r5") = 0x43300000;
+  register unsigned int raw asm("r0");
+  register unsigned int converted asm("r6");
+  register float temp_f1 asm("f1") = (double) arg2;
+  register float temp_f6 asm("f6");
+  register float temp_f7 asm("f7");
+  struct 
+  {
+    float coords[3];
+    unsigned int pad;
+    union 
+    {
+      struct 
+      {
+        unsigned int hi;
+        unsigned int lo;
+      } words;
+      double d;
+    } conv1;
+    union 
+    {
+      struct 
+      {
+        unsigned int hi;
+        unsigned int lo;
+      } words;
+      double d;
+    } conv2;
+  } local;
+  temp_f1 -= lbl_80563194;
+  temp_f6 = temp_f1 * lbl_80563198;
+  raw = (unsigned int) lbl_8055CFF0;
+  converted = raw ^ 0x80000000U;
+  local.conv1.words.lo = converted;
+  local.conv1.words.hi = high;
+  raw = (unsigned int) lbl_8055CFF4;
+  raw ^= 0x80000000U;
+  local.conv2.words.lo = raw;
+  local.conv2.words.hi = high;
+  temp_f6 = temp_f6 * lbl_8056319C;
+  temp_f1 = arg3 * lbl_805631A4;
+  temp_f7 = (temp_f1) + (lbl_805631A0);
+  temp_f6 = lbl_80563190 + temp_f6;
+  local.coords[2] = lbl_805631A8;
+  local.coords[0] = (float) (local.conv1.d - lbl_805631B0);
+  local.coords[0] *= temp_f6;
+  local.coords[1] = (float) (local.conv2.d - lbl_805631B0);
+  local.coords[1] *= temp_f7;
+  ((void (*)(int, int, float, float, float, float, float, float, float)) fn_802C8E00)(arg0, arg1, local.coords[0], local.coords[1], local.coords[2], arg4, arg5, temp_f6, temp_f7);
 }
 #pragma scheduling on
 /* Initializes/configures a set of 8 parameter entries via fn_802057A8 using constant float globals (-1, 0, 1, 0.005, 0.995), bracketed by setup/teardown calls to fn_802C8CBC/DBC/E48/D74. */
@@ -115,69 +119,158 @@ extern double lbl_805631B0;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
-void fn_802059C0(void) {
-    double sp18,sp20,bias;
-    float temp_f14,temp_f15,temp_f16,temp_f19,temp_f21,f1,f0,f2,f18,f20;
-    float k0,k1,kC4,kC8,kCC,kD4,kD0,kD8,kDC,kE0;
-    int i,n,idx,col,col2,c24,c23,c4,cnt;
-    void *obj;
-    union { struct { unsigned int hi,lo; } w; double d; } conv;
-    temp_f21=fn_8013672C();
-    temp_f19=temp_f21*(float)*(int*)((char*)fn_801E7E3C()+8);
-    n=fn_801E85A4();
-    sp18=lbl_805631E8; k0=lbl_805631A8; i=0;
-    sp20=lbl_805631E4; k1=lbl_805631B8; bias=lbl_805631B0;
-    kC4=lbl_805631C4; kC8=lbl_805631C8; kCC=lbl_805631CC; kD4=lbl_805631D4;
-    kD0=lbl_805631D0; kD8=lbl_805631D8; kDC=lbl_805631DC; kE0=lbl_805631E0;
-    for(;i<n;i++){
-        idx=((int(*)(int))fn_801E866C)(i);
-        if(fn_801B8570()==0) continue;
-        obj=fn_801EA9A0(idx);
-        cnt=*(int*)((char*)obj+0x1C);
-        f1=*(float*)((char*)*(void**)((char*)obj+8)+0x2C8);
-        if(cnt==0){cnt=1;f1=lbl_805631A8;}
-        conv.w.hi=0x43300000; conv.w.lo=(unsigned int)(cnt-1)^0x80000000U;
-        f1=(f1+(float)(conv.d-bias)*temp_f21)/temp_f19;
-        if(k1<f1)f1=k1;
-        f0=(f1-k0)/kC4;
-        if(k1<f0)f0=k1;
-        if(k0>f0)f0=k0;
-        c4=(int)(k0+f0*kC8);
-        c24=(c4<<24)|(i==0 ? 0xFFFF0000 : 0xFF0000FF); c23=c24&0xFF7F7F7F;
-        if(i==0)f18=lbl_80563194;else f18=lbl_805631B8;
-        temp_f16=f18*kCC;
-        f2=(f1-k0)/k1;
-        temp_f15=kD0*(kD4*kCC);
-        if(k1<f2)f2=k1;
-        if(k0>f2)f2=k0;
-        temp_f14=temp_f15+f2*(k1-temp_f15);
-        if((unsigned char)c4!=0){
-            fn_802C8CBC(-1); fn_802C8DBC(6);
-            col=c24&0xFFFFFF; col2=c23&0xFFFFFF;
-            fn_802057A8(col,0,f18,temp_f14,lbl_805631A8,lbl_805631A8);
-            fn_802057A8(col2,0,lbl_805631A8,temp_f14,lbl_805631A8,lbl_805631A8);
-            f20=temp_f14-kD8; if(k0>f20)f20=k0;
-            fn_802057A8(c24,1,f18,f20,lbl_805631A8,lbl_805631A8);
-            fn_802057A8(c23,1,lbl_805631A8,f20,lbl_805631A8,lbl_805631A8);
-            f1=(f20-kDC)/kE0;
-            if(k1<f1)f1=k1;
-            if(k0>f1)f1=k0;
-            f20=f20-((float)sp20+f1*(float)sp18);
-            if(k0>f20)f20=k0;
-            fn_802057A8(col,1,f18,f20,lbl_805631A8,lbl_805631A8);
-            fn_802057A8(col2,1,lbl_805631A8,f20,lbl_805631A8,lbl_805631A8);
-            fn_802C8E48(); fn_802C8D74();
-        }
-        if(lbl_8055ED6C!=-2){
-            ((void(*)(int))fn_802C8CBC)(0); fn_802C8DBC(4);
-            fn_802057A8(-1,0,temp_f16,temp_f14,lbl_805631B8,lbl_805631A8);
-            fn_802057A8(-1,0,lbl_805631A8,temp_f14,lbl_805631B8,lbl_805631B8);
-            temp_f14=temp_f14-temp_f15;
-            fn_802057A8(-1,1,temp_f16,temp_f14,lbl_805631A8,lbl_805631A8);
-            fn_802057A8(-1,1,lbl_805631A8,temp_f14,lbl_805631A8,lbl_805631B8);
-            fn_802C8E48(); fn_802C8D74();
-        }
+void fn_802059C0(void)
+{
+  double sp18;
+  double sp20;
+  double bias;
+  float temp_f14;
+  float temp_f15;
+  float temp_f16;
+  float temp_f19;
+  float temp_f21;
+  float f1;
+  float f0;
+  float f2;
+  float f18;
+  float f20;
+  float k0;
+  float k1;
+  float kC4;
+  float kC8;
+  float kCC;
+  float kD4;
+  float kD0;
+  float kD8;
+  float kDC;
+  float kE0;
+  int n;
+  int idx;
+  int i;
+  int col;
+  int col2;
+  int c24;
+  int c23;
+  int c4;
+  int cnt;
+  void *obj;
+  union 
+  {
+    struct 
+    {
+      unsigned int hi;
+      unsigned int lo;
+    } w;
+    double d;
+  } conv;
+  temp_f21 = fn_8013672C();
+  temp_f19 = temp_f21 * ((float) (*((int *) (((char *) fn_801E7E3C()) + 8))));
+  n = fn_801E85A4();
+  sp18 = lbl_805631E8; k0 = lbl_805631A8; i = 0;
+  sp20 = lbl_805631E4; k1 = lbl_805631B8; bias = lbl_805631B0;
+  kC4 = lbl_805631C4; kC8 = lbl_805631C8; kCC = lbl_805631CC; kD4 = lbl_805631D4;
+  kD0 = lbl_805631D0; kD8 = lbl_805631D8; kDC = lbl_805631DC; kE0 = lbl_805631E0;
+  for (; i < n; i++)
+  {
+    idx = ((int (*)(int)) fn_801E866C)(i);
+    if (fn_801B8570() == 0)
+    {
+      continue;
     }
+    obj = fn_801EA9A0(idx);
+    cnt = *((int *) (((char *) obj) + 0x1C));
+    f1 = *((float *) (((char *) (*((void **) (((char *) obj) + 8)))) + 0x2C8));
+    if (cnt == 0)
+    {
+      cnt = 1; f1 = lbl_805631A8;
+    }
+    conv.w.hi = 0x43300000; conv.w.lo = ((unsigned int) (cnt - 1)) ^ 0x80000000U;
+    {
+      float delta = (float) (conv.d - bias);
+      f1 = (f1 + (delta * temp_f21)) / temp_f19;
+    }
+    if (k1 < f1)
+    {
+      f1 = k1;
+    }
+    f0 = (f1 - k0) / kC4;
+    if (k1 < f0)
+    {
+      f0 = k1;
+    }
+    if (k0 > f0)
+    {
+      f0 = k0;
+    }
+    c4 = (int) (k0 + (f0 * kC8));
+    c24 = (c4 << 24) | ((i == 0) ? (0xFFFF0000) : (0xFF0000FF)); c23 = c24 & 0xFF7F7F7F;
+    if (i == 0)
+    {
+      f18 = lbl_80563194;
+    }
+    else
+    {
+      f18 = lbl_805631B8;
+    }
+    temp_f16 = f18 * kCC;
+    temp_f15 = kD0 * (kD4 * kCC);
+    f2 = (f1 - k0) / k1;
+    if (k1 < f2)
+    {
+      f2 = k1;
+    }
+    if (f2 < k0)
+    {
+      f2 = k0;
+    }
+    temp_f14 = temp_f15 + (f2 * (k1 - temp_f15));
+    if (((unsigned char) c4) != 0)
+    {
+      fn_802C8CBC(-1);
+      fn_802C8DBC(6);
+      col = c24 & 0xFFFFFF; col2 = c23 & 0xFFFFFF;
+      fn_802057A8(col, 0, f18, temp_f14, lbl_805631A8, lbl_805631A8);
+      fn_802057A8(col2, 0, lbl_805631A8, temp_f14, lbl_805631A8, lbl_805631A8);
+      f20 = temp_f14 - kD8;
+      if (k0 > f20)
+      {
+        f20 = k0;
+      }
+      fn_802057A8(c24, 1, f18, f20, lbl_805631A8, lbl_805631A8);
+      fn_802057A8(c23, 1, lbl_805631A8, f20, lbl_805631A8, lbl_805631A8);
+      f1 = (f20 - kDC) / kE0;
+      if (k1 < f1)
+      {
+        f1 = k1;
+      }
+      if (k0 > f1)
+      {
+        f1 = k0;
+      }
+      f20 = f20 - (((float) sp20) + (f1 * ((float) sp18)));
+      if (k0 > f20)
+      {
+        f20 = k0;
+      }
+      fn_802057A8(col, 1, f18, f20, lbl_805631A8, lbl_805631A8);
+      fn_802057A8(col2, 1, lbl_805631A8, f20, lbl_805631A8, lbl_805631A8);
+      fn_802C8E48();
+      fn_802C8D74();
+    }
+    if (lbl_8055ED6C != (-2))
+    {
+      ((void (*)(int)) fn_802C8CBC)(0);
+      fn_802C8DBC(4);
+      fn_802057A8(-1, 0, temp_f16, temp_f14, lbl_805631B8, lbl_805631A8);
+      fn_802057A8(-1, 0, lbl_805631A8, temp_f14, lbl_805631B8, lbl_805631B8);
+      temp_f14 = temp_f14 - temp_f15;
+      fn_802057A8(-1, 1, temp_f16, temp_f14, lbl_805631A8, lbl_805631A8);
+      fn_802057A8(-1, 1, lbl_805631A8, temp_f14, lbl_805631A8, lbl_805631B8);
+      fn_802C8E48();
+      fn_802C8D74();
+    }
+  }
+
 }
 #pragma pop
 extern int lbl_802F9D90[4];
@@ -263,7 +356,7 @@ extern unsigned int lbl_8055E044;
 extern unsigned char lbl_8055ED70, lbl_8055ED71;
 extern void *fn_802C86DC(void);
 extern void fn_802C88FC();
-extern void fn_802C8638(void *);
+extern void DrawList_loadMatrix(void *);
 extern void fn_801312EC(void *, void *);
 extern void fn_80131318(void);
 extern void fn_80010188(int, int, int, ...);
@@ -289,7 +382,7 @@ void fn_80205FCC(void) {
     buf.m[3] *= lbl_80563194;
     buf.m[4] *= lbl_80563194;
     buf.m[5] *= lbl_80563194;
-    fn_802C8638(&buf);
+    DrawList_loadMatrix(&buf);
     if ((signed char)lbl_8055ED70 == 0) {
         fn_801312EC(lbl_804891D0, lbl_8033BC18);
         lbl_8055ED70 = 1;
@@ -303,7 +396,7 @@ void fn_80205FCC(void) {
     f31 = lbl_805631A0 * (float)lbl_8055CFF4 + lbl_805631F4;
     if (*(unsigned int *)(lbl_804891D0 + 8) != lbl_8055E044) ((void (*)(void *))fn_80131318)(lbl_804891D0);
     fn_80010188(-1, 0x24, *(int *)(lbl_804891D0 + 4), lbl_805631F0, lbl_80563198 * (float)lbl_8055CFF0, f31);
-    fn_802C8638(&cam);
+    DrawList_loadMatrix(&cam);
 }
 #pragma pop
 void fn_802061F8(void) {

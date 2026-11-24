@@ -13,7 +13,7 @@ extern double atan(double), fn_8002EF30(float);
 extern void fn_802BDD8C(float);
 extern void fn_802BFE48(void *, void *, float), fn_802C0054(void *, const void *), fn_802C00A0(void);
 extern void fn_80144DAC(void *, void *), fn_80144DC8(void *);
-extern void fn_802C10C8(void), DrawModelInstance(int), fn_802C8638(void *), DrawList_saveViewport(void *, int, int, int, int), DrawList_restoreViewport(void *, int), fn_802C88BC(int), DrawList_copyCurrentMatrix(void *), fn_802C8B98(int, float *), fn_802C8D74(void), fn_802C8DB8(void *, int, unsigned short *, int), fn_802C9294(int, int), DrawList_saveProjection(void *, float, float, float), DrawList_restoreProjection(void *, int), fn_802CB274(int);
+extern void fn_802C10C8(void), DrawModelInstance(int), DrawList_loadMatrix(void *), DrawList_saveViewport(void *, int, int, int, int), DrawList_restoreViewport(void *, int), fn_802C88BC(int), DrawList_copyCurrentMatrix(void *), fn_802C8B98(int, float *), fn_802C8D74(void), fn_802C8DB8(void *, int, unsigned short *, int), fn_802C9294(int, int), DrawList_saveProjection(void *, float, float, float), DrawList_restoreProjection(void *, int), fn_802CB274(int);
 extern float lbl_80564DAC, lbl_80564DB0, lbl_80564DB4, lbl_80564DB8, lbl_80564DBC, lbl_80564DC0, lbl_80564DC4, lbl_80564DC8;
 extern void fn_80128668(void *);
 extern int fn_802BF6AC(void);
@@ -787,8 +787,8 @@ extern "C" void fn_802BFB70(void *arg0, float *worldMtx, float angle) {
             fn_802CB274(*target); fn_802C9294(*target, 0);
             DrawList_saveProjection(savedView0, kOne, kFaceFar, kFaceFov);
             DrawList_saveViewport(savedViewport0, 0, 0, 0x100, 0x100);
-            DrawList_copyCurrentMatrix(savedMtx0); fn_802C8638(face); fn_802C88BC(3); fn_802C10C8();
-            fn_802C9294(-2, 0); fn_802C8638(savedMtx0); DrawList_restoreViewport(savedViewport0, -1); DrawList_restoreProjection(savedView0, -1);
+            DrawList_copyCurrentMatrix(savedMtx0); DrawList_loadMatrix(face); fn_802C88BC(3); fn_802C10C8();
+            fn_802C9294(-2, 0); DrawList_loadMatrix(savedMtx0); DrawList_restoreViewport(savedViewport0, -1); DrawList_restoreProjection(savedView0, -1);
         }
         faces->facesCleared = 1;
     }
@@ -798,7 +798,7 @@ extern "C" void fn_802BFB70(void *arg0, float *worldMtx, float angle) {
     fovAngle = kTwo * (float)atan(self->fovFactor * (float)fn_8002EF30(kHalf * angle));
     DrawList_saveProjection(savedView, kOne, kViewFar, fovAngle);
     DrawList_saveViewport(savedViewport, 0, 0, 0x100, 0x100);
-    DrawList_copyCurrentMatrix(savedMtx); fn_802C8638(viewMtx); fn_802C88BC(2);
+    DrawList_copyCurrentMatrix(savedMtx); DrawList_loadMatrix(viewMtx); fn_802C88BC(2);
     if (self->faces) {
         int *target;
         struct EnvFace *face;
@@ -820,7 +820,7 @@ extern "C" void fn_802BFB70(void *arg0, float *worldMtx, float angle) {
     DrawModelInstance(self->worldModel);
     if (fn_801E85A4() == 1) fn_802BDD8C(kSplashRadius);
     if (self->envModel != -1) DrawModelInstance(self->envModel);
-    fn_802C9294(-2, 0); fn_802C8638(savedMtx); DrawList_restoreViewport(savedViewport, -1); DrawList_restoreProjection(savedView, -1);
+    fn_802C9294(-2, 0); DrawList_loadMatrix(savedMtx); DrawList_restoreViewport(savedViewport, -1); DrawList_restoreProjection(savedView, -1);
 #undef kOne
 #undef kZero
 #undef kWideFovFactor

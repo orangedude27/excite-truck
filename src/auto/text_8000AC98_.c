@@ -8,7 +8,7 @@ extern unsigned char lbl_8055D3EC;
 extern int fn_8000B5A8(int, int);
 extern void AXFXSetHooks_8020DE10(void (*)(void), int, unsigned char);
 extern int fn_80230B5C(int *);
-extern int fn_802C8638(int *);
+extern int DrawList_loadMatrix(int *);
 extern int fn_802C974C(float, float, float);
 extern int fn_80010074(int, int, int *, float, float, float);
 extern int fn_80011A2C(void);
@@ -1101,7 +1101,7 @@ void fn_8000C5CC(void) {
     char viewMatrix[0x38];
 
     fn_80230B5C((int *)viewMatrix);
-    fn_802C8638((int *)viewMatrix);
+    DrawList_loadMatrix((int *)viewMatrix);
     fn_802C974C(lbl_805601F8, lbl_805601FC, lbl_80560200);
     ((int (*)(int, int, const char *, ...))fn_80010074)(-0x100, 9, (const char *)&lbl_80558A48,
         lbl_805601F8, lbl_80560208, lbl_8056020C);
@@ -1113,7 +1113,7 @@ void fn_8000C5CC(void) {
 int fn_8000BD9C(int, int, int);
 extern float lbl_805601FC, lbl_80560204;
 int fn_80230B5C(int *);
-int fn_802C8638(int *);
+int DrawList_loadMatrix(int *);
 int fn_802C974C(float, float, float);
 int fn_80010074(int, int, int *, float, float, float);
 int fn_80011A2C(void);

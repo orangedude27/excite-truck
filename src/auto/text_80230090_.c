@@ -27,7 +27,7 @@ extern f32 lbl_80563640, lbl_80563644;
 extern void DrawList_setViewport(s32, s32, s32, s32);
 extern void fn_802C88BC(s32);
 extern void fn_802C8530(void);
-extern void fn_802C8638(s32);
+extern void DrawList_loadMatrix(s32);
 extern void fn_802C974C(f32, f32, f32);
 /* Initialize the rendering/UI subsystem: set up a default transform matrix, create its context, and run dependent init routines. */
 void fn_80230090(void) {
@@ -400,7 +400,7 @@ void fn_80230AD8(s32 displayListIndex) {
     DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
     fn_802C88BC(3);
     fn_802C8530();
-    fn_802C8638(displayListIndex);
+    DrawList_loadMatrix(displayListIndex);
     fn_802C974C(lbl_80563610, lbl_80563640, lbl_80563644);
 }
 

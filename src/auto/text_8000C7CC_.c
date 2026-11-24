@@ -13,7 +13,7 @@ extern u32 fn_8000C7F4(s32);
 extern s32 fn_8000C840(void);
 extern char lbl_80558A7C[];
 extern void fn_80230B5C(void *);
-extern void fn_802C8638(void *);
+extern void DrawList_loadMatrix(void *);
 extern void fn_802C974C(f32, f32, f32);
 extern void fn_800109E4(s32, f32, f32, f32, f32);
 extern void fn_801345D8(void *, s32, const char *, ...);
@@ -281,7 +281,7 @@ extern "C" void fn_8000D1DC(void) {
         ((void (*)(void))(u32)lbl_8055D40C)();
     }
     fn_80230B5C(matrix);
-    fn_802C8638(matrix);
+    DrawList_loadMatrix(matrix);
     fn_802C974C(lbl_80560218, lbl_8056021C, lbl_80560220);
     fn_800109E4(0x7F000000, lbl_80560224, lbl_80560228, lbl_8056022C, lbl_80560230);
     if (lbl_8055D407 != 0) {
@@ -478,7 +478,7 @@ done:
 }
 
 extern void fn_80230B5C(void *);
-extern void fn_802C8638(void *);
+extern void DrawList_loadMatrix(void *);
 extern void fn_802C974C(f32, f32, f32);
 extern void fn_800109E4(s32, f32, f32, f32, f32);
 extern void fn_801345D8(void *, s32, const char *, ...);
@@ -514,7 +514,7 @@ register s32 *labelp;
 register s32 i, selected;
 register s32 *obj;
 fn_80230B5C(matrix);
-fn_802C8638(matrix);
+DrawList_loadMatrix(matrix);
 fn_802C974C(lbl_80560218, lbl_8056021C, lbl_80560220);
 fn_800109E4(0x7F000000, lbl_80560224, lbl_80560228, lbl_8056022C, lbl_80560230);
 if (lbl_8055D414 != 0) {

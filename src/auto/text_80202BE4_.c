@@ -46,7 +46,7 @@ extern int __cntlzw(unsigned int);
 extern f32 lbl_80563134, lbl_80563138, lbl_8056313C;
 extern void fn_802CB274(s32);
 extern void fn_802C9294(s32, s32);
-extern void fn_802C8638(f32 *, f32, f32, f32);
+extern void DrawList_loadMatrix(f32 *, f32, f32, f32);
 extern void DrawList_setViewport(s32, s32, s32, s32);
 extern void fn_802C974C(f32, f32, f32);
 extern void fn_802C86E8(s32);
@@ -686,7 +686,7 @@ void fn_80203B20(s32 arg0, s32 arg1, s32 arg2) {
         ((f32 *)(stack + 0x30))[6] = lbl_805630CC;
         ((f32 *)(stack + 0x30))[7] = lbl_805630F4;
         ((f32 *)(stack + 0x30))[8] = lbl_805630CC;
-        fn_802C8638((f32 *)(stack + 0x30), lbl_805630D4, lbl_80563134, lbl_805630CC);
+        DrawList_loadMatrix((f32 *)(stack + 0x30), lbl_805630D4, lbl_80563134, lbl_805630CC);
         DrawList_setViewport(0, 0, 0x100, 0x100);
         fn_802C974C(lbl_805630D4, lbl_80563138, lbl_8056313C);
         fn_802C86E8(0xFF00FF00);

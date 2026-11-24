@@ -645,7 +645,7 @@ extern "C" void fn_801E8410(void) {
     extern void fn_801E95DC(void);
     extern void fn_801EA404(void *, long);
     extern void DrawList_setViewport(long, long, long, long);
-    extern void fn_802C8638(void *);
+    extern void DrawList_loadMatrix(void *);
     extern void fn_802C2C64(long);
     extern void fn_80203EC0(void);
     extern void fn_802C7A44(void);
@@ -692,7 +692,7 @@ extern "C" void fn_801E8410(void) {
                         (long)(*(void * volatile *)&lbl_8055AF0C));
         }
         DrawList_setViewport(a, b, c, d);
-        fn_802C8638(base);
+        DrawList_loadMatrix(base);
         fn_801E8854(-1);
         fn_802C2C64((long)(*(void * volatile *)&lbl_8055AF0C));
         fn_801EA404(base, 0);

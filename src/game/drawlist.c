@@ -97,7 +97,7 @@ struct DlMtx34 { unsigned int w[12]; };
 extern float lbl_80564EF8, lbl_80564F00;
 extern void fn_802C7758(int);
 extern void fn_802C89E8(float *);
-extern void fn_802C8638(unsigned int *);
+extern void DrawList_loadMatrix(unsigned int *);
 extern void PSVECNormalize(void *, void *);
 extern void PSVECCrossProduct(void *, void *, void *);
 
@@ -286,7 +286,7 @@ extern void fn_802C7758(int);
 extern unsigned int sSavedDrawListMatrix[];
 extern char sDrawListMatrixSaved;
 extern void fn_802C89E8(float *);
-extern void fn_802C8638(unsigned int *);
+extern void DrawList_loadMatrix(unsigned int *);
 extern float lbl_80564EF8, lbl_80564F00;
 extern void PSVECNormalize(void *, void *);
 extern void PSVECCrossProduct(void *, void *, void *);
@@ -320,7 +320,7 @@ void fn_802C8588(float *arg0, const float *arg1, const float *arg2) {
 }
 extern void fn_802D03F4(unsigned int *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int);
 #pragma scheduling invalid_target
-void fn_802C8638(unsigned int *arg0) {
+void DrawList_loadMatrix(unsigned int *arg0) {
     register unsigned int v3 = arg0[3];
     register unsigned int v2 = arg0[2];
     register unsigned int v1 = arg0[1];
@@ -579,7 +579,7 @@ void fn_802C8C04(int texSlot) {
     *savedMtx = *currentMtx;
     sDrawListMatrixSaved = 1;
     fn_802C89E8(orthoMtx);
-    fn_802C8638((unsigned int *)orthoMtx);
+    DrawList_loadMatrix((unsigned int *)orthoMtx);
     ((void (*)(int))fn_802C8BD0)(texSlot);
 }
 
@@ -593,7 +593,7 @@ void fn_802C8C04(int texSlot) {
     *savedMtx = *currentMtx;
     sDrawListMatrixSaved = 1;
     fn_802C88FC(projMtx);
-    fn_802C8638((unsigned int *)projMtx);
+    DrawList_loadMatrix((unsigned int *)projMtx);
     ((void (*)(int))fn_802C8BD0)(texSlot);
 }
 
@@ -603,7 +603,7 @@ void fn_802C8C04(int texSlot) {
 void fn_802C8D74(void) {
     lbl_8055FC70 = 1;
     if ((unsigned char)sDrawListMatrixSaved != 0) {
-        fn_802C8638(sSavedDrawListMatrix);
+        DrawList_loadMatrix(sSavedDrawListMatrix);
     }
     sDrawListMatrixSaved = 0;
 }

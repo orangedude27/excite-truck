@@ -981,7 +981,7 @@ void AXFXSetHooks_80210950(void *allocHook, void *freeHook) {
 
 #pragma cplusplus on
 extern void fn_80230B5C(void *);
-extern void fn_802C8638(void *);
+extern void DrawList_loadMatrix(void *);
 extern void fn_802C974C(float, float, float);
 extern void fn_800109E4(unsigned int, float, float, float, float);
 extern void fn_80011A2C(void);
@@ -1017,7 +1017,7 @@ extern "C" void fn_8021095C(void) {
     Rec20 *a, *b, *c, *d;
     if (lbl_8055EEDC != 0) ((void (*)(void))lbl_8055EEDC)();
     fn_80230B5C(sp100);
-    fn_802C8638(sp100);
+    DrawList_loadMatrix(sp100);
     fn_802C974C(lbl_80563404, lbl_80563408, lbl_8056340C);
     fn_800109E4(0x7F000000, lbl_80563410, lbl_80563414, lbl_80563418, lbl_8056341C);
     fn_80011A2C();

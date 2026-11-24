@@ -19,7 +19,7 @@ __declspec(section ".sdata") extern unsigned int lbl_8055CFF4;
 extern int fn_802328D4(void);
 extern int fn_80230B5C(void *);
 extern int fn_802C974C(float, float, float);
-extern int fn_802C8638(void *, unsigned int, float);
+extern int DrawList_loadMatrix(void *, unsigned int, float);
 extern int fn_8012C33C(int);
 extern int fn_80232578(int);
 extern unsigned char lbl_8055F0D9;
@@ -103,7 +103,7 @@ void fn_8023895C(void) {
     fn_802C974C(1.0f, lbl_80563710, lbl_80563714);
     fn_80230B5C(&viewMatrix[0]);
     viewMatrix[11] = (float)(-((int)lbl_8055CFF0 / 2)) / lbl_8055FC88;
-    ((void (*)(void *))fn_802C8638)(&viewMatrix[0]);
+    ((void (*)(void *))DrawList_loadMatrix)(&viewMatrix[0]);
     text_pass_active = 1;
     text_queue_enable(1);
 #undef text_pass_active

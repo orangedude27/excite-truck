@@ -8,7 +8,7 @@ struct Text80204 {
     float unk_0x10;
     int unk_0x14, color, unk_0x1c;
 };
-extern void fn_80230B5C(void *), fn_802C8638(void *);
+extern void fn_80230B5C(void *), DrawList_loadMatrix(void *);
 extern void fn_802C974C(float, float, float);
 extern void fn_80011A2C(void), fn_801476C4(void);
 extern int fn_801298E8(void *, int);
@@ -149,7 +149,7 @@ extern "C" int fn_802044E8(void) {
  int count, result, start, end, i;
  float step;
  fn_80230B5C(matrix);
- fn_802C8638(matrix);
+ DrawList_loadMatrix(matrix);
  fn_802C974C(lbl_80563168, lbl_80563170, lbl_80563188);
  ((Gui80204 *)lbl_8055ED44)->v5();
  result = fn_8020437C();

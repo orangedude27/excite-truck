@@ -109,7 +109,7 @@ extern void fn_802C8530(void);
 extern void DrawList_setViewport(int, int, int, int);
 extern void fn_802C88BC(int);
 extern void fn_80230B5C(void *);
-extern void fn_802C8638(void *);
+extern void DrawList_loadMatrix(void *);
 extern void fn_802C974C(float, float, float);
 extern void fn_802C5320(int, float, float, float, float, float, int);
 extern void fn_802C92D0(void);
@@ -201,7 +201,7 @@ int fn_80245360(int *a, struct Menu *b)
     DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
     fn_802C88BC(2);
     fn_80230B5C(obj);
-    fn_802C8638(obj);
+    DrawList_loadMatrix(obj);
     fn_802C974C(lbl_80563834, lbl_80563838, lbl_8056383C);
     w = (float) (lbl_8055FB9C + 1);
     h = (float) (lbl_8055FBA0 + 1);
@@ -398,7 +398,7 @@ void fn_8024590C(int *a, int *b) {
     DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
     fn_802C88BC(2);
     fn_80230B5C(obj);
-    fn_802C8638(obj);
+    DrawList_loadMatrix(obj);
     fn_802C974C(lbl_80563834, lbl_80563838, lbl_8056383C);
     w = (float)(lbl_8055FB9C + 1);
     h = (float)(lbl_8055FBA0 + 1);

@@ -13,7 +13,7 @@ extern void fn_80129AFC(void);
 extern void fn_802C2B48(void);
 extern void fn_802C8530(void);
 extern void fn_802C855C(void);
-extern void fn_802C8638(float*);
+extern void DrawList_loadMatrix(float*);
 extern void fn_802C86E8(unsigned int);
 extern void DrawList_setViewport(int, int, int, int);
 extern void fn_802C88BC(int);
@@ -103,7 +103,7 @@ void fn_8024BE04(void) {
         fn_802C88BC(3);
         fn_802C974C(lbl_80563914, lbl_80563918, lbl_8056391C);
         mp = m;
-        fn_802C8638(mp);
+        DrawList_loadMatrix(mp);
         p0.x = zero; p0.y = zero; p0.z = zero;
         p1.x = one; p1.y = zero; p1.z = zero;
         p2.x = zero; p2.y = one; p2.z = zero;

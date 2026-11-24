@@ -29,7 +29,7 @@ extern void fn_802184D0(void);
 extern void fn_80218574(void *);
 extern void fn_80230B5C(void *);
 extern void fn_8023108C(s32);
-extern void fn_802C8638(void *);
+extern void DrawList_loadMatrix(void *);
 extern void fn_802C86E8(u32);
 extern void DrawList_setViewport(s32, s32, s32, s32);
 extern void fn_802C88BC(s32);
@@ -196,7 +196,7 @@ void fn_8021605C(void *rect, s32 canvasState) {
 
 extern s32 fn_8021832C();
 extern void fn_80230B5C(void *);
-extern void fn_802C8638(void *);
+extern void DrawList_loadMatrix(void *);
 extern void fn_802C974C(f32, f32, f32);
 extern void fn_802C5310(s32, s32, f32, f32, f32);
 extern u32 lbl_8055EF80;
@@ -233,7 +233,7 @@ s32 fn_802160AC(void)
   }
   fn_802C974C(lbl_80563468, lbl_8056346C, lbl_80563470);
   fn_80230B5C(scratch);
-  fn_802C8638(scratch);
+  DrawList_loadMatrix(scratch);
   a = (f32)(lbl_8055EF80 ^ 0x80000000u);
   a -= lbl_80563474;
   b = (f32)(lbl_8055EF84 ^ 0x80000000u);
@@ -318,7 +318,7 @@ s32 fn_80216244(void) {
             matrix[9] += pos[0];
             matrix[10] += pos[1];
             matrix[11] += pos[2];
-            fn_802C8638(matrix);
+            DrawList_loadMatrix(matrix);
             fn_8023108C(obj == lbl_8055EF88);
             fn_80218574(obj);
         }

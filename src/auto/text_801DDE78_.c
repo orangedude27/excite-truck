@@ -220,7 +220,7 @@ void fn_801DE150(void) {
 }
 
 extern void fn_80230B5C(void *);
-extern void fn_802C8638(void *);
+extern void DrawList_loadMatrix(void *);
 extern void fn_802C974C(f32, f32, f32);
 extern void fn_80147230(void *, const char *, ...);
 extern void fn_80011A2C(void);
@@ -268,7 +268,7 @@ extern "C" void fn_801DE154(void) {
     f32 off, thr, lim;
     fn_801DDF0C();
     fn_80230B5C(pad);
-    fn_802C8638(pad);
+    DrawList_loadMatrix(pad);
     fn_802C974C(lbl_80562BD0, lbl_80562BD4, lbl_80562BD8);
     ((Gui *)lbl_8055E9C0)->v5();
     p = ((Gui *)lbl_8055E9C0)->v1(lbl_8055ADC0);

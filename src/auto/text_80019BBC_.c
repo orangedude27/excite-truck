@@ -903,7 +903,7 @@ extern void DrawList_saveProjection(float *, float, float, float, float);
 extern void DrawList_saveViewport(int *, int, int, int, int);
 extern void fn_802C88CC(int);
 extern int fn_802C2C00(int);
-extern void fn_802C8638(float *, float, float);
+extern void DrawList_loadMatrix(float *, float, float);
 extern void fn_802C8BD0(int);
 extern int fn_8001B754(float);
 extern void fn_802C8D74(void);
@@ -937,7 +937,7 @@ void fn_8001B7BC(void *obj) {
     frame.modelMtx[0] = lbl_80560424; frame.modelMtx[1] = lbl_80560418; frame.modelMtx[2] = lbl_80560418;
     frame.modelMtx[3] = lbl_80560418; frame.modelMtx[4] = lbl_80560418; frame.modelMtx[5] = lbl_80560424;
     frame.modelMtx[6] = lbl_80560418; frame.modelMtx[7] = lbl_80560440; frame.modelMtx[8] = lbl_80560418;
-    fn_802C8638(frame.modelMtx, lbl_80560424, lbl_80560418);
+    DrawList_loadMatrix(frame.modelMtx, lbl_80560424, lbl_80560418);
     fn_802C8BD0(*(int *)((char *)obj + 0xC));
     fn_8001B754(*(float *)((char *)obj + 0x3C)); fn_802C8D74();
     ((void (*)(int))fn_8001B7B8)(0);

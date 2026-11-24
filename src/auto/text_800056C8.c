@@ -49,7 +49,7 @@ extern s32 lbl_8055D348;
 extern f32 lbl_8055D34C;
 extern void fn_80005C20(void);
 extern void fn_80230B5C(void *);
-extern void fn_802C8638(void *);
+extern void DrawList_loadMatrix(void *);
 extern void fn_802C974C(f32, f32, f32);
 extern f32 lbl_80560130;
 extern f32 lbl_80560124;
@@ -1561,7 +1561,7 @@ void fn_80007238(void) {
     ((s32 *)lbl_8034EE84)[6] = ((s32 (*)(void))fn_801E85A4)();
 
     fn_80230B5C(stack);
-    fn_802C8638(stack);
+    DrawList_loadMatrix(stack);
 
     mode = ((s32 *)lbl_8034EE84)[6];
     f0 = lbl_80560194;
@@ -1608,7 +1608,7 @@ extern "C" void fn_80007318(void) {
     u32 **manager;
     fn_80005C20();
     fn_80230B5C(context);
-    fn_802C8638(context);
+    DrawList_loadMatrix(context);
     fn_802C974C(lbl_80560130, lbl_80560124, lbl_8056019C);
     state = (u32 *)lbl_8034EE84;
     state[0x1C / 4] = 0;
