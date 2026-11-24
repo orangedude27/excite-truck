@@ -188,7 +188,7 @@ void fn_80244D0C(void *window) {
 }
 #pragma scheduling reset
 extern void fn_80230C30(float *, float *, int, int);
-extern int fn_802C51C0(int);
+extern int gxGetImageWidth(int);
 extern int fn_80232B70(int);
 extern void fn_8013C8E8(int);
 extern int fn_8013C9C8(void);
@@ -275,7 +275,7 @@ void fn_80244D6C(void *arg0) {
     fn_80230C30(&x, &y, unl_screen_x(win), unl_screen_y(win)); /* origin, from the screen's centre */
     width = (float)unl_width(win);
     {
-    float icon_width = (float)fn_802C51C0(unl_icon_img(win));
+    float icon_width = (float)gxGetImageWidth(unl_icon_img(win));
     xpos = x;
     xicon = xpos + width - icon_width; /* icon flush with the row's right edge */
     }

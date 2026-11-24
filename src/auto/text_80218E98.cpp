@@ -369,7 +369,7 @@ extern "C" int lbl_8033E350[];
 extern "C" s32 fn_802ECFF4(s32);
 extern "C" void fn_802ECFEC(void);
 extern "C" s32 gxGetImageArt(s32, void *);
-extern "C" s32 fn_802C51C0(s32);
+extern "C" s32 gxGetImageWidth(s32);
 extern "C" s32 fn_802C5220(s32);
 extern "C" void *lbl_8033E878[];
 extern "C" void *lbl_8033DCF8[];
@@ -585,7 +585,7 @@ extern "C" void fn_802353F4(s32, s32, f32, f32, f32);
 extern "C" f32 fn_80235EF0(s32, s32);
 extern "C" f32 fn_80235F64(s32, s32);
 extern "C" void fn_802C5320(s32, s32, f32, f32, f32, f32, f32);
-extern "C" s32 fn_802C51C0(s32);
+extern "C" s32 gxGetImageWidth(s32);
 extern "C" s32 fn_802C5220(s32);
 extern "C" s32 fn_802C3034(s32);
 extern f32 lbl_805634A8;
@@ -1736,7 +1736,7 @@ extern "C" void *fn_8021AC24(void *widget, s32 x, s32 y, s32 imageId, s32 unused
      * animation clock (+0x244 running, +0x248 time, +0x24C step). */
     u8 *base = (u8 *)widget;
     s32 height = fn_802C5220(imageId);
-    s32 width = fn_802C51C0(imageId);
+    s32 width = gxGetImageWidth(imageId);
     fn_80218F34(widget, x, y, x + width, y + height, 0);
     *(void **)base = lbl_8033F6E0;
     *(s32 *)(base + 0x250) = imageId;
@@ -2614,7 +2614,7 @@ extern "C" void *fn_8021C344(void *self, s32 x, s32 y, void *callbackObj, s32 pa
     }
     *(s32 *)((u8 *)self + 0x2BC) = lineHeight;
     *(s32 *)((u8 *)self + 0x2C4) = 8;
-    lineBottom = textY + fn_802C51C0(fn_8021165C(1, 2));
+    lineBottom = textY + gxGetImageWidth(fn_8021165C(1, 2));
     *(s32 *)((u8 *)self + 0x2C0) =
         lineBottom - fn_8022B498(*(s32 *)((u8 *)self + 0x2C4), textId);
     *(u8 *)((u8 *)self + 0x2D0) = 0;
@@ -2860,7 +2860,7 @@ extern "C" void *fn_8021CA0C(void *obj, s32 x, s32 y, s32 w, s32 h, void *resour
         fn_80219440(obj, 0, (void *)dim0, dim1);
     *(s32 *)((u8 *)obj + 0x24C) = ((s32 (*)(void *))gxGetImageArt)(lbl_8033D924);
     *(s32 *)((u8 *)obj + 0x250) = ((s32 (*)(void *))gxGetImageArt)(lbl_8033D934);
-    s32 res = ((s32 (*)(void))fn_802C51C0)();
+    s32 res = ((s32 (*)(void))gxGetImageWidth)();
     f32 f = lbl_805634A0;
     *(s32 *)((u8 *)obj + 0x254) = res;
     *(f32 *)((u8 *)obj + 0x258) = f;
@@ -3245,7 +3245,7 @@ enum IndicatorSide { INDICATOR_LEFT = 0, INDICATOR_RIGHT = 1, INDICATOR_UP = 2, 
  *
  * fn_80230C30 turns a screen position into the screen-centred one the art is
  * drawn in, fn_802C5320(art, frame, x, y, z, width, height) draws the art and
- * fn_802C5220 / fn_802C51C0 are its height and width. */
+ * fn_802C5220 / gxGetImageWidth are its height and width. */
 extern "C" void fn_8021D378(void *object, s32 device) {
     OptionWidget *widget = (OptionWidget *)object;
     f32 scale, zero, leftHeight, rightHeight;
@@ -3274,11 +3274,11 @@ checked:
     fn_80230C30(&x, &y, widget->leftX, widget->arrowY);
     leftHeight = scale * (f32)fn_802C5220(leftArt);
     fn_802C5320(leftArt, frame, x, y - ((f32)fn_802C5220(leftArt) - leftHeight), zero,
-                (f32)fn_802C51C0(leftArt), leftHeight);
+                (f32)gxGetImageWidth(leftArt), leftHeight);
     fn_80230C30(&x, &y, widget->rightX, widget->arrowY);
     rightHeight = scale * (f32)fn_802C5220(rightArt);
     fn_802C5320(rightArt, frame, x, y - ((f32)fn_802C5220(rightArt) - rightHeight), zero,
-                (f32)fn_802C51C0(rightArt), rightHeight);
+                (f32)gxGetImageWidth(rightArt), rightHeight);
 }
 #pragma pop
 
@@ -4756,13 +4756,13 @@ extern "C" void fn_802200AC(void *arg0) {
     fn_80230C30(&sp14, &sp10, *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8));
     f32 step = (f32)((VfObj *)arg0)->vf28();
     f32 range = (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
-    f32 progress = scale * (f32)fn_802C51C0(*(s32 *)((u8 *)arg0 + 0x254));
+    f32 progress = scale * (f32)gxGetImageWidth(*(s32 *)((u8 *)arg0 + 0x254));
     f32 height = (f32)fn_802C5220(*(s32 *)((u8 *)arg0 + 0x254));
     s32 enabled = 0;
     s32 *mode = *(s32 **)((u8 *)arg0 + 0x258);
     if (mode != 0 && *mode == *(s32 *)((u8 *)arg0 + 0x25C))
         enabled = 1;
-    f32 adj = step - (f32)fn_802C51C0(*(s32 *)((u8 *)arg0 + 0x254));
+    f32 adj = step - (f32)gxGetImageWidth(*(s32 *)((u8 *)arg0 + 0x254));
     f32 t = lbl_805634C4 * adj;
     s32 stateB;
     s32 a;
@@ -5190,7 +5190,7 @@ extern "C" void *fn_80220E48(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     }
     ((Dispatch *)arg0)->set(*(s32 *)(p + 4), *(s32 *)(p + 8));
     if (mode == 0) {
-        fn_80219284(arg0, fn_802C51C0(*(s32 *)(p + 0x248)),
+        fn_80219284(arg0, gxGetImageWidth(*(s32 *)(p + 0x248)),
                     *(s32 *)(p + 0x10) - *(s32 *)(p + 8));
     } else {
         s32 width = fn_802C5220(*(s32 *)(p + 0x248));
@@ -5399,7 +5399,7 @@ extern "C" void fn_80221544(void *arg0, s32 arg1) {
             if (y1 - 1 > y0 + 1 && right - 1 > left + 1) {
                 s32 overlay = self->overlay;
                 if (overlay != 0) {
-                    s32 diff = fn_802C51C0(self->texture) - fn_802C51C0(overlay);
+                    s32 diff = gxGetImageWidth(self->texture) - gxGetImageWidth(overlay);
                     fn_80228E80(arg1, overlay, left + ((diff + (diff < 0)) >> 1),
                                 y0, y1 - y0, 0);
                 } else {
@@ -5508,9 +5508,9 @@ extern "C" void fn_80221970(void *arg0)
       {
         if (self->overlay != 0)
         {
-          diff = fn_802C51C0(self->texture) - fn_802C51C0(self->overlay);
+          diff = gxGetImageWidth(self->texture) - gxGetImageWidth(self->overlay);
           fn_80230C30(&spC, &sp8, left + (diff / 2), y0);
-          fn_802C5320(self->overlay, 0, spC, sp8, lbl_805634A8, (f32) fn_802C51C0(self->overlay), (f32) (y1 - y0));
+          fn_802C5320(self->overlay, 0, spC, sp8, lbl_805634A8, (f32) gxGetImageWidth(self->overlay), (f32) (y1 - y0));
         }
         else
         {
@@ -5966,7 +5966,7 @@ extern "C" void *fn_802228B0(void *obj, s32 name, s32 width, s32 height) {
         *(f32 *)((u8 *)obj + 8) = (f32)width;
         *(f32 *)((u8 *)obj + 0xC) = (f32)height;
     } else {
-        *(f32 *)((u8 *)obj + 8) = (f32)fn_802C51C0(*(s32 *)((u8 *)obj + 4));
+        *(f32 *)((u8 *)obj + 8) = (f32)gxGetImageWidth(*(s32 *)((u8 *)obj + 4));
         *(f32 *)((u8 *)obj + 0xC) = (f32)fn_802C5220(*(s32 *)((u8 *)obj + 4));
     }
     return obj;
@@ -9023,7 +9023,7 @@ extern "C" void fn_80228DC4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s3
 
     fn_802C3034(arg0);
     fn_80218E98((void *)arg0, &savedRect);
-    fn_802C51C0(arg1);
+    gxGetImageWidth(arg1);
     imageHeight = fn_802C5220(arg1);
     halfRounded = (u32)arg4 >> 31;
     halfRounded += (u32)arg4;
@@ -9047,7 +9047,7 @@ extern "C" void fn_80228E80(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s3
 
     fn_802C3034(arg0);
     fn_80218E98((void *)arg0, &savedRect);
-    imageWidth = fn_802C51C0(arg1);
+    imageWidth = gxGetImageWidth(arg1);
     imageHeight = fn_802C5220(arg1);
     halfRounded = (u32)arg4 >> 31;
     halfRounded += (u32)arg4;

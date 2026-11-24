@@ -73,7 +73,7 @@ extern "C" void fn_80276D3C(void *, s32);
 extern "C" void fn_802C8D74(void);
 extern "C" void fn_802C8E48(void);
 extern "C" s32 gxGetImageArt(char *);
-extern "C" s32 fn_802C51C0(void *);
+extern "C" s32 gxGetImageWidth(void *);
 extern "C" s32 fn_802C5220(void *);
 extern "C" void *fn_80216770(const char *, s32, s32, s32, s32, s32);
 extern "C" void *fn_80216D40(void *, const char *, s32, s32, s32, s32, s32);
@@ -92,7 +92,7 @@ extern "C" void fn_80276D3C(void *, s32);
 extern "C" void fn_802C8D74(void);
 extern "C" void fn_802C8E48(void);
 extern "C" s32 gxGetImageArt(char *);
-extern "C" s32 fn_802C51C0(void *);
+extern "C" s32 gxGetImageWidth(void *);
 extern "C" s32 fn_802C5220(void *);
 extern "C" void *fn_80216770(const char *, s32, s32, s32, s32, s32);
 extern "C" void *fn_80216D40(void *, const char *, s32, s32, s32, s32, s32);
@@ -1530,9 +1530,9 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
         char *msg = (char *)((u8 *)(*(void **)((u8 *)arg1 + 0xC)) + 4);
         if (msg != NULL && strstr(msg, lbl_8055B788) != NULL && fn_8012C33C((s32)msg) != 0) {
             s32 res = gxGetImageArt((char *)msg);
-            if (fn_802C51C0((void *)res) > 0) {
+            if (gxGetImageWidth((void *)res) > 0) {
                 if (fn_802C5220((void *)res) > 0) {
-                    v28 = fn_802C51C0((void *)res);
+                    v28 = gxGetImageWidth((void *)res);
                     v27 = fn_802C5220((void *)res);
                 }
                 fn_802C519C(res);

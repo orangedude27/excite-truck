@@ -87,7 +87,7 @@ extern int fn_802C4EFC(int);
 extern int fn_802C5220(int);
 #define I2F(x) ((float)((double)((x) ^ 0x80000000) - lbl_80563590))
 extern int fn_802C4EE4(int);
-extern int fn_802C51C0();
+extern int gxGetImageWidth();
 extern unsigned long strlen(const char *);
 extern void fn_802C4F2C(int, int *, int *);
 extern int fn_801E4AB0(int, char *, int);
@@ -416,7 +416,7 @@ void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *o
         maxY = (y0 > t) ? maxY : t;
     } else if (*(int *)(p + 0x68) != 0) {
         float t;
-        maxX = x0 + (float)fn_802C51C0(*(int *)(p + 0x68));
+        maxX = x0 + (float)gxGetImageWidth(*(int *)(p + 0x68));
         if (x0 > maxX) maxX = x0;
         t = y0 + (float)fn_802C5220(*(int *)(p + 0x68));
         maxY = (y0 > t) ? maxY : t;
@@ -592,7 +592,7 @@ int fn_8022B498(int unused, const char *arg1)
     } else {
         int sub = *(int *)((char *)ctx + 0x68);
         if (sub != 0) {
-            *max = fn_802C51C0(sub);
+            *max = gxGetImageWidth(sub);
         }
     }
 

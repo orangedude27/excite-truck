@@ -44,7 +44,7 @@ int fn_802C51AC(void* image) {
     return 1;
 }
 
-int fn_802C51C0(void* arg0) {
+int gxGetImageWidth(void* arg0) {
     /* Return the float value of the node (fn_80235EF0, index 0) rounded to
      * the nearest integer, or 1 if the node is null. */
     f32 value;
@@ -81,7 +81,7 @@ int fn_802C5220(void* arg0) {
     if (image != 0) {
         inside = 0;
         if ((x >= 0) && (y >= 0) &&
-            (x < fn_802C51C0((void*)image)) &&
+            (x < gxGetImageWidth((void*)image)) &&
             (y < fn_802C5220((void*)image))) {
             inside = 1;
         }
