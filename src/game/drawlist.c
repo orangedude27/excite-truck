@@ -1467,10 +1467,11 @@ int fn_802C9E94(void *arg0, int arg1, int arg2, float farg0, float farg1, float 
   state->count = old_count + 1;
   return old_count;
 }
-/* Advance the embedded timer/animation state at +4 by the delta at +0x10; if it expires, notify the owner object at +0. */
-void drawIfVisible(void *owner) {
-    if (((int (*)(int, float))fn_802C9640)((int)((char *)owner + 4), *(float *)((char *)owner + 0x10)) != 0) {
-        fn_801E7894(*(int *)owner);
+/* Submit the object's draw handle at +0 only when its position at +4 is inside
+ * the view volume (tolerance at +0x10). */
+void drawIfVisible(void *object) {
+    if (((int (*)(int, float))fn_802C9640)((int)((char *)object + 4), *(float *)((char *)object + 0x10)) != 0) {
+        fn_801E7894(*(int *)object);
     }
 }
 
