@@ -484,22 +484,21 @@ typedef struct MRollCarIcon {
 
 extern int fn_80128668(); /* free(): releases an allocation back to the primary/secondary buffer */
 #pragma cplusplus on
-/* Deleting destructor of a player's MRollRecordOption: installs this class's vtable,
-   deletes the record collection owned at +0x24 and, when deleteFlag > 0, frees the
-   object itself through the game's free(). */
-extern "C" void *fn_80240830(MRollRecordOption *self, s32 deleteFlag) {
+/* Deleting destructor: reinstall this option's vtable, destroy the record
+ * collection it owns, and free the object itself when shouldFree is set. */
+extern "C" void *fn_80240830(MRollRecordOption *self, s32 shouldFree) {
     class RecordCollection {
     public:
         virtual void destroy(s32 deleteFlag); /* slot 0x8: its deleting destructor */
     };
-    void *records;
+    void *ownedRecords;
     if (self != 0) {
-        records = self->records;
+        ownedRecords = self->records;
         self->vtable = lbl_80342618;
-        if (records != 0) {
-            ((RecordCollection *)records)->destroy(1);
+        if (ownedRecords != 0) {
+            ((RecordCollection *)ownedRecords)->destroy(1);
         }
-        if (deleteFlag > 0) {
+        if (shouldFree > 0) {
             ((void (*)(void *))fn_80128668)(self);
         }
     }
