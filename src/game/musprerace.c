@@ -486,7 +486,7 @@ void fn_8020C91C(s32 songId) {
 
 extern void fn_8012DDA8(s32 *);
 extern void fn_801345D8(char *, s32, const char *, ...);
-extern const char lbl_8033C5D8[];
+extern const char sPreRaceMusicStrings[];
 extern s32 lbl_80489BE0;
 extern s32 lbl_80489C50;
 extern s32 lbl_8055B5D8;
@@ -495,7 +495,7 @@ extern s32 lbl_8055B5DC;
 #pragma use_lmw_stmw off
 #pragma opt_propagation off
 void musicPreRaceSetup(s32 arg0) {
-    const char *base = lbl_8033C5D8;
+    const char *base = sPreRaceMusicStrings;
     char *dst;
     register s32 vol;
     register s32 i;
