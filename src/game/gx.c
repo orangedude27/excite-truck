@@ -305,7 +305,7 @@ void fn_802CEC44(void) {
 
 #pragma scheduling invalid_target
 /* GX draw-sync callback: token 1 records the start tick, token 2 computes and smooths elapsed milliseconds then processes depth queries. */
-void fn_802CEC50(int token) {
+/* GX draw-sync callback: token 1 snapshots the start tick and clears the sync-done flag; token 2 smooths the elapsed frame time and processes queued depth queries. */ void fn_802CEC50(int syncToken) {
     /* Handle a GX draw-sync token: case 1 snapshots the start tick and clears the
        sync-done flag, case 2 computes the elapsed time (with smoothing) and
        processes queued depth queries, any other token is reported as unhandled. */
@@ -320,7 +320,7 @@ void fn_802CEC50(int token) {
     unsigned long long currentTick;
     unsigned long long elapsedTicks;
     float elapsedMs, previousSmoothedMs;
-    switch (token) {
+    switch (syncToken) {
     case 1:
         currentTick = fn_802E2C9C();
         lbl_8055FD14 = (unsigned int)currentTick;
@@ -337,7 +337,7 @@ void fn_802CEC50(int token) {
         fn_802D3900();
         break;
     default:
-        fn_802E317C(lbl_8034BE20, token);
+        fn_802E317C(lbl_8034BE20, syncToken);
         break;
     }
 }
