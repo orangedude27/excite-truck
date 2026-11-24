@@ -78,7 +78,7 @@ extern unsigned char lbl_8055D0FF;
 extern char lbl_8055D100;
   extern int fn_802CEC04(int);
   extern void KERNEL_AddResetCallback(void (*)(void), void *);
-  extern void fn_802D6C68();
+  extern void drInvalidateVertexFormatCache();
   extern void fn_802DA52C(void);
   extern void GXSetDrawSync(void);
   extern void GXGetVtxDesc(void);
@@ -995,7 +995,7 @@ void HomeMenu_beginFrame(void *alarm) {
 #define sRenderRequest    gRenderRequest
 #define sSensorStatus     lbl_804C97B0
 #define sJitterThreshold  lbl_80558DC4
-    fn_802D6C68();
+    drInvalidateVertexFormatCache();
     *(volatile unsigned char *)&lbl_8055FE39 = 1;
     sGxFifoFlushStart = lbl_8055FD94;
     sGxPendingBytes = 0;
@@ -2604,7 +2604,7 @@ void fn_802D2218(void)
     lbl_8055FD70 = 1;
     ((unsigned char *) (&sDefaultLight_802D18E8))[0x5C] = 1;
     sFogState_802D2218[0x1C] = 1;
-    fn_802D6C68();
+    drInvalidateVertexFormatCache();
   }
 }
 #pragma pop
@@ -3199,7 +3199,7 @@ void fn_802D3420(void) {
     *fifo = lbl_80564FE0; *fifo = lbl_80564F88; *fifo = lbl_80564FE4; *fifo = width; *fifo = lbl_80564F88;
     *fifo = lbl_80564FE0; *fifo = lbl_80564FBC; *fifo = lbl_80564FE4; *fifo = width; *fifo = height;
     *fifo = lbl_80564F88; *fifo = lbl_80564FBC; *fifo = lbl_80564FE4; *fifo = lbl_80564F88; *fifo = height;
-    fn_802D6C68();
+    drInvalidateVertexFormatCache();
     lbl_804C9778[0] = 1;
     lbl_8055FD70 = 1;
 }
@@ -3628,7 +3628,7 @@ extern char lbl_8055D100;
 #define gRenderMode         gCurrentRenderMode
 #define gNearPlane          lbl_80564F88
 #define gFarPlane           lbl_80564F8C
-#define invalidateVtxFormat fn_802D6C68
+#define invalidateVtxFormat drInvalidateVertexFormatCache
     if (sViewport[1] != 0) {
         sViewport[1] = 0;
         if (*(unsigned char *)((unsigned char *)gRenderMode + 0x18) != 0) {

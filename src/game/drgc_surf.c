@@ -35,7 +35,7 @@ extern u8 sVertexFormatDlBufTag[];
 extern void fn_801282EC(s32);
 extern void *fn_8012850C(s32, void *);
 extern void DCInvalidateRange(void *, u32);
-extern void fn_802D6C68(void);
+extern void drInvalidateVertexFormatCache(void);
 extern void fn_802D2614(void);
 extern void fn_802D2B0C(void);
 extern void GXClearVtxDesc(void);
@@ -1358,7 +1358,7 @@ void drVertexFormatCacheInit(void) {
     gVertexFormatDlStart = (s32)displayListBuffer;
     gVertexFormatDlEnd = (s32)displayListBuffer;
     DCInvalidateRange(displayListBuffer, 0x4000);
-    fn_802D6C68();
+    drInvalidateVertexFormatCache();
 }
 extern u32 lbl_8055FDE8;
 extern u8 lbl_8055FDEC;
@@ -1481,7 +1481,7 @@ void fn_802D6C54(int index, float value) {
     lbl_804CA308[index] = value;
 }
 
-void fn_802D6C68(void) {
+void drInvalidateVertexFormatCache(void) {
     /* Invalidate the renderer's cached vertex-format descriptor and mode byte. */
 #define sCachedFormat lbl_8055FDE8
 #define sCachedMode   lbl_8055FDEC
@@ -1824,6 +1824,6 @@ extern void fn_80128670(s32);
         *(volatile f32 *)GX_FIFO_ADDR = vtx.u;
         *(volatile f32 *)GX_FIFO_ADDR = vtx.v;
     }
-    fn_802D6C68();
+    drInvalidateVertexFormatCache();
 }
 #pragma scheduling on

@@ -907,7 +907,7 @@ void fn_802D915C(void *record) {
     fn_802D768C(record);
 }
 
-extern void fn_802D6C68(void);
+extern void drInvalidateVertexFormatCache(void);
 extern void fn_802CFF5C(void *);
 extern void fn_802CFFA4(unsigned int);
 extern void GXLoadTlut(void *, int);
@@ -917,7 +917,7 @@ extern unsigned int lbl_8055FD30;
 /* Bind a texture (and optional secondary texture/TLUT) to GX state and record it as the active primary texture. */ void gxBindTexture(void *texture) {
     char *tex = (char *)texture;
     /* Bind a texture (and optional secondary texture/T LUT) to GX state and record it as the active primary texture. */
-    fn_802D6C68();
+    drInvalidateVertexFormatCache();
     lbl_8055FE18 = texture;
     fn_802CFF5C((void *)(*(unsigned int *)(tex + 0xE0) | (lbl_8055FD1C & ~0x14E)));
     fn_802CFFA4(*(unsigned int *)(tex + 0xDC));
