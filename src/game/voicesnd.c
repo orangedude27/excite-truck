@@ -65,7 +65,7 @@ typedef struct { char *callbacks; int state; } VoiceMixerDevice;
 #pragma dont_inline on
 #pragma scheduling invalid_target
 /* Find a 0x24-byte voice entry in lbl_804892D0 by name (case-insensitive); return its pointer or a default label. */
-void *fn_8020A6AC(void *name) {
+/* Find a 0x24-byte voice entry by case-insensitive name in the table at lbl_804892D0; return its pointer, or a default label if not found. */ void *fn_8020A6AC(void *name) {
     char *entry = lbl_804892D0;
     int index = 0;
     while (index < (int)lbl_8055EE08) {
