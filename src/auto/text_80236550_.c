@@ -14,7 +14,7 @@ void fn_802E30C8(const char *, ...);
 void fn_802365D8(void);
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void CheckGTimeFloatPrecision(void) {
+/* Warn and auto-reset the game timer once its millisecond clock (current sample minus accumulated base) exceeds 1e7, before gTime's float representation loses precision. */ void CheckGTimeFloatPrecision(void) {
     if (lbl_8055F09C - lbl_8055F094 > 0x989680) {
         fn_802E30C8(lbl_803408D8);
         fn_802365D8();
