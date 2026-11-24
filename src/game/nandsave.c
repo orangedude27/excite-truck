@@ -272,13 +272,13 @@ int fn_802E8AE8(const char *path) {
     return exists;
 }
 
+/* Log a NAND delete attempt for path, then report an error if NANDDelete fails. */
 void rmemcardDeleteFile(const char *path) {
-    /* Logs the NAND delete attempt and reports an error if NANDDelete fails. */
     fn_802E30C8(sRmemcardDeletingMsg, path);
     {
-        int result = NANDDelete(path);
-        if (result != 0) {
-            fn_802E30C8(sRmemcardDeleteFailedMsg, result, path);
+        int nandResult = NANDDelete(path);
+        if (nandResult != 0) {
+            fn_802E30C8(sRmemcardDeleteFailedMsg, nandResult, path);
         }
     }
 }
