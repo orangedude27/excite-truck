@@ -157,32 +157,24 @@ void fn_8020A860(VoiceMixerDevice *mixer) {
 }
 
 #pragma scheduling invalid_target
-int initVoiceMixer(void *arg0) {
-    // Initialize voice mixer: pick scale, store mixer instance, allocate/clear 0x800-byte work buffer, then start mixer init.
+/* Initialize a voice mixer: select the master volume (0 under -no_sound, else 1),
+ * store the instance, allocate and clear its 0x800-byte work buffer, and register
+ * the SPU reset callback. */
+int initVoiceMixer(void *mixer) {
     void *workBuffer;
 
-    #define gVoiceScale gVoiceMasterVolume
-    #define gVoiceScaleAltA lbl_805632B0
-    #define gVoiceScaleAltB lbl_805632B4
-    #define gActiveVoiceMixer gVoiceMixer
     #define kVoiceWorkBufferSize 0x800
-
     if (fn_80019B60() != 0) {
-        gVoiceScale = gVoiceScaleAltA;
+        gVoiceMasterVolume = lbl_805632B0;
     } else {
-        gVoiceScale = gVoiceScaleAltB;
+        gVoiceMasterVolume = lbl_805632B4;
     }
-    gActiveVoiceMixer = arg0;
+    gVoiceMixer = mixer;
     workBuffer = fn_8012850C(kVoiceWorkBufferSize, lbl_8033C37C);
-    *(void **)((char *)arg0 + 4) = workBuffer;
+    *(void **)((char *)mixer + 4) = workBuffer;
     memset(workBuffer, 0, kVoiceWorkBufferSize);
     fn_802E6B04();
     return 1;
-
-    #undef gVoiceScale
-    #undef gVoiceScaleAltA
-    #undef gVoiceScaleAltB
-    #undef gActiveVoiceMixer
     #undef kVoiceWorkBufferSize
 }
 #pragma scheduling on
