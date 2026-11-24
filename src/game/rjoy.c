@@ -173,17 +173,17 @@ extern int fn_80128658(int, int *);
 #pragma scheduling invalid_target
 /* Removes a value from the lbl_80507258 array by swapping in the last element,
  * notifies fn_80128658 of the removal, and returns 1. */
-int fn_802E7A70(unsigned int value) {
+/* Callback on Wpad device disconnect: removes `handle` from the connected-device array by swap-removing the matching entry with the last element, frees it through fn_80128658, and always reports success. */ int fn_802E7A70(unsigned int handle) {
     int foundIndex;
     int *entry;
-    int i;
+    int index;
     int removedValue;
-    for (foundIndex = -1, entry = lbl_80507258, i = 0; i < lbl_8056000C; entry++, i++)
-        if ((unsigned int)*entry == value) foundIndex = i;
+    for (foundIndex = -1, entry = lbl_80507258, index = 0; index < lbl_8056000C; entry++, index++)
+        if ((unsigned int)*entry == handle) foundIndex = index;
     lbl_8056000C--;
     removedValue = lbl_80507258[lbl_8056000C];
     lbl_80507258[foundIndex] = removedValue;
-    ((void (*)(unsigned int, int))fn_80128658)(value, removedValue);
+    ((void (*)(unsigned int, int))fn_80128658)(handle, removedValue);
     return 1;
 }
 #pragma pop
