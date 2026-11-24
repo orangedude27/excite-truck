@@ -2620,7 +2620,7 @@ void fn_802D2614(void) {
 }
 
 /* Disable indirect texturing and set TEV stages 0-3 to sample their textures directly. */
-void fn_802D2640(void) {
+void gxDisableIndirectTexturing(void) {
     int stage;
 
     GXSetNumIndStages(0);
@@ -2725,7 +2725,7 @@ extern void (*lbl_8055FD80)(void);
         GXSetIndTexOrder(GX_INDTEXSTAGE0, GX_TEXCOORD1, GX_TEXMAP2);
         GXSetNumTexGens(2);
         GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_POS, GX_TEXMTX1, FALSE, GX_PTIDENTITY);
-        lbl_8055FD80 = fn_802D2640;
+        lbl_8055FD80 = gxDisableIndirectTexturing;
     }
 }
 #pragma pop
@@ -3135,7 +3135,7 @@ void gxResetDefaultState(void) {
 
 extern unsigned char lbl_8055FD84;
 extern void fn_802CF5D4(void);
-extern void fn_802D2640(void);
+extern void gxDisableIndirectTexturing(void);
 extern void fn_802D92B0(void);
 
 extern void GXSetTevOrder(int, int, int, int);
@@ -3155,7 +3155,7 @@ extern void GXSetTevOp(int, int);
         GXSetTexCoordGen2(texCoord, 1, 4, 0x3C, 0, 0x7D);
         texCoord += 1;
     } while (texCoord < 4);
-    fn_802D2640();
+    gxDisableIndirectTexturing();
     if (lbl_8055FE1C != 0) fn_802D92B0();
     GXSetTevOrder(0, 0, 0, 4);
     GXSetTevOp(0, 0);
