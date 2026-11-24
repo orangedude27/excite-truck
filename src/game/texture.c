@@ -1308,7 +1308,7 @@ void texUnlinkNode();
  * loaded in the list at +0xC and the spare nodes in the list at +0x10, both chained
  * through the node's +0x10 link; tex_unlink_node reports
  * "tex:unlink_node: can't find node!" if the node was not on srcHead's list. */
-void texMoveNode(void **destHead, void **srcHead, void *node) {
+/* Move one texture node from the source manager list to the front of the destination list; panic if the node is not on the source list. */ void texMoveNode(void **destHead, void **srcHead, void *node) {
     /* One node of those two lists (fn_802CBC3C and fn_802CC10C build and retire them). */
     typedef struct TexNode {
         /* 0x00 */ char *name;        /* the texture table entry's name (+0x04) */
