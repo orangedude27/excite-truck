@@ -674,7 +674,7 @@ int fn_802E58A0(void *entry, int dataTag) {
  * resource system, then walk the directory's loaded entries and allocate a
  * voice object for every one of them (fn_802E589C), stopping at the first
  * failure. fn_802E59BC is the same thing restricted to 'SFX0' entries. */
-void fn_802E58B8(unsigned char *dirName) {
+/* Queue a resource directory to play: copy its name into the next slot of the sound-name queue, request it from the resource system, then allocate a voice object for every loaded entry of the directory, stopping at the first failure. */ void fn_802E58B8(unsigned char *dirName) {
     const unsigned char *src = dirName;
     int remaining;
     unsigned char *slot;
