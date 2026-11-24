@@ -317,8 +317,8 @@ void fn_8023CC84(char *arg0) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_80128668(void *);
-/* Deleting destructor for the sound-options panel: install the panel vtable, destroy the owned widget via its virtual destroy(1), clear its pointer, and free the panel when shouldDelete > 0. */ extern "C" void *fn_8023D134(void *soundOptionsPanel, s32 shouldDelete) {
-    /* Deleting destructor for the sound-options panel: install its vtable, destroy the owned widget, and optionally free. */
+/* Deleting destructor for the sound-options panel: install the panel vtable, destroy the owned widget via its virtual destroy(1), clear its pointer, and free the panel when shouldDelete > 0. */
+extern "C" void *fn_8023D134(void *soundOptionsPanel, s32 shouldDelete) {
     struct VTable_8023D134 {
         virtual void destroy(s32);
     };
