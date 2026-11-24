@@ -264,7 +264,7 @@ extern int lbl_8055D22C;
 #pragma scheduling invalid_target
 /* Initialize WPAD/KPAD input: register callbacks, wait for ready state,
  * install per-controller sampling callbacks, register Joy handler, and mark ready. */
-void fn_802E7C64(void) {
+/* Initialize WPAD/KPAD input: install callbacks, wait for WPAD ready, save each channel's prior sampling callback while installing rjoy's, register the reset handler, and mark input ready. */ void fn_802E7C64(void) {
     extern unsigned char lbl_80560009;
     int *callbackSlot;
     int previousCallback;
