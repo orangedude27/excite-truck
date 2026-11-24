@@ -784,8 +784,8 @@ void fn_80210510(float volume) {
 
 /* Clear the current player's track-music buffer and stamp its 64 slot states to
    slotState (0 idle, 1 active); state 2 is a no-op. */
-/* Clear the current player's track-music buffer and stamp its 64 slot states (0 idle, 1 active); 2 is a no-op. */ void trackMusicSetSlotStates(int state) {
-    switch (state) {
+void trackMusicSetSlotStates(int slotState) {
+    switch (slotState) {
     case 0:
         fn_8020F608(0, fn_8000DA10());
         break;
