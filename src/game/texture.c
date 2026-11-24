@@ -763,11 +763,12 @@ extern void setTextureCopyObject(int);
 extern void copyTextureToEFB(void);
 extern int currentTextureIndex;
 void selectTexture(int textureIndex) {
-    /* Select a texture for the active drawing context, or clear the selection for invalid indices. */
+    /* Bind the GX texture object held in texture slot `textureIndex` for the active
+     * draw context; the -1/-2 sentinel indices instead clear the binding and index. */
     if (textureIndex != -1 && textureIndex != -2) {
-        int offset = textureIndex * 0x4C;
-        int *entry = (int *)(lbl_8055FCB0 + offset);
-        setTextureCopyObject(entry[0x28 / 4]);
+        int slotOffset = textureIndex * 0x4C;
+        int *slot = (int *)(lbl_8055FCB0 + slotOffset);
+        setTextureCopyObject(slot[0x28 / 4]);
         currentTextureIndex = textureIndex;
         return;
     }
