@@ -340,7 +340,7 @@ int fn_802E8C6C(int request) {
 }
 
 /* Initialize NAND/save subsystem: NAND init, allocator setup, async buffer, callbacks, and handlers. */
-void fn_802E8CA8(void) {
+/* Initialize the NAND-save subsystem: bring up NAND (panic on failure), set up the allocator and async buffer, then register the save-pump and reset callbacks. */ void fn_802E8CA8(void) {
     int nandInitResult = NANDInit();
     if (nandInitResult != 0) {
         fn_802E317C(lbl_8034DED4, nandInitResult);
