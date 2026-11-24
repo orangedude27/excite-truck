@@ -675,7 +675,7 @@ typedef struct SndClassList {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-signed long fn_8020835C(void *soundMgr) {
+/* Re-sort the five positional soundclass lists in place by priority (engine, tyre squeal, crash, engine start, wind); the 2D classes are left alone and an out-of-range class aborts with a fatal report. */ signed long fn_8020835C(void *soundMgr) {
     /* Re-sort the object list of every positional sound class - engine, tyre
      * squeal, crash, engine start and wind, the ones fn_802085F0 says may be
      * voiced in 3D - so the ones the comparator ranks highest come first; the
