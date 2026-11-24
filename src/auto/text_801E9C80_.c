@@ -149,15 +149,15 @@ s32 fn_801E9F08(void *context, void *position, void *contactPoint, s32 normalOut
     return 0;
 }
 #pragma scheduling on
-f32 fn_801E9FDC(const s16 *arg0, f32 farg0, f32 farg1) {
-    s16 index = *arg0;
-    f32 data[3];
-    f32 out[3];
-    data[0] = farg0;
-    data[1] = 0.0f;
-    data[2] = farg1;
-    if (((s32 (*)(void *, void *, void *, s32, s32))fn_801DCE14)(&index, data, out, 0, 0) != 0)
-        return out[1];
+/* Return the ground height at world (x, z) for the given ground index: build the query point (x, 0, z), resolve it through the ground lookup, and return the resolved Y (or 0.0f on failure). */ f32 fn_801E9FDC(const s16 *groundIndexPtr, f32 worldX, f32 worldZ) {
+    s16 groundIndex = *groundIndexPtr;
+    f32 queryPos[3];
+    f32 resultPos[3];
+    queryPos[0] = worldX;
+    queryPos[1] = 0.0f;
+    queryPos[2] = worldZ;
+    if (((s32 (*)(void *, void *, void *, s32, s32))fn_801DCE14)(&groundIndex, queryPos, resultPos, 0, 0) != 0)
+        return resultPos[1];
     return 0.0f;
 }
 #pragma scheduling 603
