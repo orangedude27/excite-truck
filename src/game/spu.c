@@ -42,7 +42,7 @@ extern int Spu_CacheVoiceObject(void);
 __declspec(section ".sdata") extern char lbl_8055D1E4[];
 extern char lbl_8034D490[];
 extern char lbl_8034D4A0[];
-extern char lbl_8034D5B0[];
+extern char sChannelStillPlayingFmt[];
 extern void fn_802E317C(char *, ...);
 extern int lbl_8055FF98;
 extern char lbl_8034D584[];
@@ -966,7 +966,7 @@ void fn_802E6138(void *arg0) {
        channel and sample; drop the sample's active-channel count, clear the
        channel's in-use flag, and decrement the global active voice count. */
     if (((unsigned char *)arg0)[0x23] != 0) {
-        fn_802E317C(lbl_8034D5B0, *(int *)arg0, *(void **)((char *)arg0 + 0x1C));
+        fn_802E317C(sChannelStillPlayingFmt, *(int *)arg0, *(void **)((char *)arg0 + 0x1C));
     }
     {
         void *sample = *(void **)((char *)arg0 + 0x1C);
