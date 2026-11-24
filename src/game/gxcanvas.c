@@ -300,7 +300,7 @@ extern const char lbl_8034B060[];
 extern void fn_802C3320(s32 x, s32 y, u32 packedValue);
 extern void fn_802C33A8(s32, s32, u32);
 extern void fn_802E317C(const char *, ...);
-void fn_802C32B8(s32 x, s32 y, u32 packedColor) {
+void gxPoint(s32 x, s32 y, u32 packedColor) {
     /* Plot one pixel of the active canvas at (x, y).  A canvas with the NO_DRAW
      * flag is left alone; a 16-bit one takes the colour's high half through
      * fn_802C3320, a 4-byte (format 5) one through fn_802C33A8, and format 6
@@ -1094,7 +1094,7 @@ extern int fn_800241CC(int); /* abs(): (v >> 31) ^ v - (v >> 31) */
 #pragma processor 750
 #pragma use_lmw_stmw off
 /* Draw a line from (x0, y0) to (x1, y1) on the current canvas in `color`,
-   handing every point to fn_802C32B8, the pixel plotter above.  An
+   handing every point to gxPoint, the pixel plotter above.  An
    axis-aligned line just steps one pixel at a time along the axis it spans;
    any other line is walked by DDA: the major axis (the one spanning more,
    see fn_800241CC = abs) moves a whole pixel at a time in `dir`, while the
@@ -1114,7 +1114,7 @@ void fn_802C47B8(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
             stepInc = dir * dir;
             stepEnd = dir * y1;
             for (; stepPos < stepEnd; stepPos += stepInc, y += dir)
-                fn_802C32B8(x, y, color);
+                gxPoint(x, y, color);
         }
         return;
     }
@@ -1125,7 +1125,7 @@ void fn_802C47B8(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
         stepInc = dir * dir;
         stepEnd = dir * x1;
         for (; stepPos < stepEnd; stepPos += stepInc, x += dir)
-            fn_802C32B8(x, y, color);
+            gxPoint(x, y, color);
         return;
     }
     {
@@ -1138,7 +1138,7 @@ void fn_802C47B8(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
             slope = ((f32)dir * (f32)dx) / (f32)dy;
             fx = (f32)x;
             for (; y != y1; y += dir) {
-                fn_802C32B8((s32)fx, y, color);
+                gxPoint((s32)fx, y, color);
                 fx += slope;
             }
             return;
@@ -1152,7 +1152,7 @@ void fn_802C47B8(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
         slope = ((f32)dir * (f32)dy) / (f32)dx;
         fy = (f32)y;
         for (; x != x1; x += dir, fy += slope) {
-            fn_802C32B8(x, (s32)fy, color);
+            gxPoint(x, (s32)fy, color);
         }
     }
 }

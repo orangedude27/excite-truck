@@ -84,13 +84,13 @@ void fn_802DAE18(void) {
 #pragma opt_propagation off
 #pragma use_lmw_stmw off
 void OSGetFontWidth(char *, int *);
-void fn_802C32B8(int, int, unsigned int);
+void gxPoint(int, int, unsigned int);
 
 #pragma push
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma use_lmw_stmw off
-/* Draw a string on the canvas the gx point plotter (fn_802C32B8) is set to,
+/* Draw a string on the canvas the gx point plotter (gxPoint) is set to,
    using the font OSInitFont loaded: OSGetFontTexture hands out each character's
    texels in the font sheet - a 512 texel wide I4 image, one nibble per texel -
    and every non-empty texel is plotted as a gray pixel, the darker ones the
@@ -187,7 +187,7 @@ void fn_802DAE64(int xStart, int yStart, char *str)
           /* a gray that grows with the texel's density, with the 16-bit value
              the plotter uses in both of its halves */
           gray = ((((nibble * 12) + 16) << 8) & 0xFFFF00) | 0x80;
-          fn_802C32B8(col + x, yDst, (gray << 16) | (gray & 0xFFFF));
+          gxPoint(col + x, yDst, (gray << 16) | (gray & 0xFFFF));
         }
         col++;
       }
