@@ -84,7 +84,7 @@ extern void fn_8022A8E4(int);
 extern double lbl_80563590;
 extern float lbl_80563598;
 extern int fn_802C4EFC(int);
-extern int fn_802C5220(int);
+extern int gxGetImageHeight(int);
 #define I2F(x) ((float)((double)((x) ^ 0x80000000) - lbl_80563590))
 extern int fn_802C4EE4(int);
 extern int gxGetImageWidth();
@@ -418,7 +418,7 @@ void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *o
         float t;
         maxX = x0 + (float)gxGetImageWidth(*(int *)(p + 0x68));
         if (x0 > maxX) maxX = x0;
-        t = y0 + (float)fn_802C5220(*(int *)(p + 0x68));
+        t = y0 + (float)gxGetImageHeight(*(int *)(p + 0x68));
         maxY = (y0 > t) ? maxY : t;
     }
     if (str != 0) {
@@ -711,7 +711,7 @@ int fn_8022B620(int styleIndex, const char *text) {
     if (value != 0) {
         max = fn_802C4EFC(value);
     } else if ((value = style->picture2) != 0) {
-        max = ((int (*)(int))fn_802C5220)(value);
+        max = ((int (*)(int))gxGetImageHeight)(value);
     }
     if (text != 0) {
         above = 0;

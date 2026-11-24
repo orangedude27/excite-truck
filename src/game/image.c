@@ -60,7 +60,7 @@ int gxGetImageWidth(void* image) {
 extern f32 fn_80235F64(int);
 /* Return the image height as an integer, rounding toward zero via a +/-0.5 bias;
  * return 1 for a null image handle. */
-int fn_802C5220(void* image) {
+int gxGetImageHeight(void* image) {
     f32 height;
     f32 roundedHeight;
     if (image != 0) {
@@ -81,7 +81,7 @@ int fn_802C5220(void* image) {
         inside = 0;
         if ((x >= 0) && (y >= 0) &&
             (x < gxGetImageWidth((void*)image)) &&
-            (y < fn_802C5220((void*)image))) {
+            (y < gxGetImageHeight((void*)image))) {
             inside = 1;
         }
     } else {

@@ -370,7 +370,7 @@ extern "C" s32 fn_802ECFF4(s32);
 extern "C" void fn_802ECFEC(void);
 extern "C" s32 gxGetImageArt(s32, void *);
 extern "C" s32 gxGetImageWidth(s32);
-extern "C" s32 fn_802C5220(s32);
+extern "C" s32 gxGetImageHeight(s32);
 extern "C" void *lbl_8033E878[];
 extern "C" void *lbl_8033DCF8[];
 extern "C" void fn_802192AC(void *);
@@ -586,7 +586,7 @@ extern "C" f32 fn_80235EF0(s32, s32);
 extern "C" f32 fn_80235F64(s32, s32);
 extern "C" void fn_802C5320(s32, s32, f32, f32, f32, f32, f32);
 extern "C" s32 gxGetImageWidth(s32);
-extern "C" s32 fn_802C5220(s32);
+extern "C" s32 gxGetImageHeight(s32);
 extern "C" s32 fn_802C3034(s32);
 extern f32 lbl_805634A8;
 extern f32 lbl_805634E8;
@@ -1735,7 +1735,7 @@ extern "C" void *fn_8021AC24(void *widget, s32 x, s32 y, s32 imageId, s32 unused
      * install the widget vtable, remember the image at +0x250, and reset the
      * animation clock (+0x244 running, +0x248 time, +0x24C step). */
     u8 *base = (u8 *)widget;
-    s32 height = fn_802C5220(imageId);
+    s32 height = gxGetImageHeight(imageId);
     s32 width = gxGetImageWidth(imageId);
     fn_80218F34(widget, x, y, x + width, y + height, 0);
     *(void **)base = lbl_8033F6E0;
@@ -3245,7 +3245,7 @@ enum IndicatorSide { INDICATOR_LEFT = 0, INDICATOR_RIGHT = 1, INDICATOR_UP = 2, 
  *
  * fn_80230C30 turns a screen position into the screen-centred one the art is
  * drawn in, fn_802C5320(art, frame, x, y, z, width, height) draws the art and
- * fn_802C5220 / gxGetImageWidth are its height and width. */
+ * gxGetImageHeight / gxGetImageWidth are its height and width. */
 extern "C" void fn_8021D378(void *object, s32 device) {
     OptionWidget *widget = (OptionWidget *)object;
     f32 scale, zero, leftHeight, rightHeight;
@@ -3272,12 +3272,12 @@ checked:
     x = zero;
     y = zero;
     fn_80230C30(&x, &y, widget->leftX, widget->arrowY);
-    leftHeight = scale * (f32)fn_802C5220(leftArt);
-    fn_802C5320(leftArt, frame, x, y - ((f32)fn_802C5220(leftArt) - leftHeight), zero,
+    leftHeight = scale * (f32)gxGetImageHeight(leftArt);
+    fn_802C5320(leftArt, frame, x, y - ((f32)gxGetImageHeight(leftArt) - leftHeight), zero,
                 (f32)gxGetImageWidth(leftArt), leftHeight);
     fn_80230C30(&x, &y, widget->rightX, widget->arrowY);
-    rightHeight = scale * (f32)fn_802C5220(rightArt);
-    fn_802C5320(rightArt, frame, x, y - ((f32)fn_802C5220(rightArt) - rightHeight), zero,
+    rightHeight = scale * (f32)gxGetImageHeight(rightArt);
+    fn_802C5320(rightArt, frame, x, y - ((f32)gxGetImageHeight(rightArt) - rightHeight), zero,
                 (f32)gxGetImageWidth(rightArt), rightHeight);
 }
 #pragma pop
@@ -4079,7 +4079,7 @@ extern "C" void *fn_8021EA64(void *self, s32 x, s32 y, s32 width, s32 height, ch
     words[0x250 / 4] = strlen(textBuffer);
     fn_80219440(self, 0, textBuffer, words[0x248 / 4] * words[0x24C / 4]);
     if (words[0xA60 / 4] != 0) {
-        s32 count = fn_802C5220(words[0xA60 / 4]);
+        s32 count = gxGetImageHeight(words[0xA60 / 4]);
         fn_80219284(self, ((Vf78 *)self)->get(), count);
     }
     return self;
@@ -4168,7 +4168,7 @@ extern "C" void fn_8021EDA4(void *self) {
         f32 height, x, y;
         x = (f32)(box->x - lbl_8055FB9C / 2);
         y = (f32)(lbl_8055FBA0 / 2 - box->y);
-        height = (f32)fn_802C5220(box->sliderArt);
+        height = (f32)gxGetImageHeight(box->sliderArt);
         f32 width = (f32)((Vf78 *)self)->get();
         fn_802C5320(box->sliderArt, 0, x, y, lbl_805634A8, width, height);
     }
@@ -4492,7 +4492,7 @@ extern "C" void *fn_8021F678(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     len = *(s32 *)((u8 *)arg0 + 8);
     end = *(s32 *)((u8 *)arg0 + 0x10);
     *(s32 *)((u8 *)arg0 + 0x270) = end - len;
-    count = ((s32 (*)(s32))fn_802C5220)(*(s32 *)((u8 *)arg0 + 0x25C));
+    count = ((s32 (*)(s32))gxGetImageHeight)(*(s32 *)((u8 *)arg0 + 0x25C));
     len = *(s32 *)((u8 *)arg0 + 8);
     end = *(s32 *)((u8 *)arg0 + 0x10);
     if (end - len > count) count = end - len;
@@ -4757,7 +4757,7 @@ extern "C" void fn_802200AC(void *arg0) {
     f32 step = (f32)((VfObj *)arg0)->vf28();
     f32 range = (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
     f32 progress = scale * (f32)gxGetImageWidth(*(s32 *)((u8 *)arg0 + 0x254));
-    f32 height = (f32)fn_802C5220(*(s32 *)((u8 *)arg0 + 0x254));
+    f32 height = (f32)gxGetImageHeight(*(s32 *)((u8 *)arg0 + 0x254));
     s32 enabled = 0;
     s32 *mode = *(s32 **)((u8 *)arg0 + 0x258);
     if (mode != 0 && *mode == *(s32 *)((u8 *)arg0 + 0x25C))
@@ -4937,7 +4937,7 @@ extern "C" void *fn_80220778(void *self, s32 x, s32 y, s32 width, s32 height, s3
     *(s32 *)((u8 *)self + 0x248) = ((s32 (*)(void *))gxGetImageArt)(lbl_8033D9B0);
     *(s32 *)((u8 *)self + 0x24C) = ((s32 (*)(void *))gxGetImageArt)(lbl_8033D9BC);
     if (*(s32 *)((u8 *)self + 0x248) != 0) {
-        s32 count = fn_802C5220(*(s32 *)((u8 *)self + 0x248));
+        s32 count = gxGetImageHeight(*(s32 *)((u8 *)self + 0x248));
         fn_80219284(self, ((Vf78 *)self)->get(), count);
     }
     *(u8 *)((u8 *)self + 0x258) = 0;
@@ -5145,10 +5145,10 @@ extern "C" void fn_80220C54(void *arg0)
   f32 trackHeight, x, y;
   x = (f32)((*(s32 *) (((u8 *) self) + 4)) - lbl_8055FB9C / 2);
   y = (f32)(lbl_8055FBA0 / 2 - (*(s32 *) (((u8 *) self) + 8)));
-  trackHeight = (f32)fn_802C5220(*(s32 *) (((u8 *) self) + 0x248));
+  trackHeight = (f32)gxGetImageHeight(*(s32 *) (((u8 *) self) + 0x248));
   f32 width = (f32)((Vf78 *) self)->get();
   fn_802C5320(*(s32 *) (((u8 *) self) + 0x248), highlighted, x, y, lbl_805634A8, width, trackHeight);
-  f32 fillHeight = (f32)fn_802C5220(*(s32 *) (((u8 *) self) + 0x24C));
+  f32 fillHeight = (f32)gxGetImageHeight(*(s32 *) (((u8 *) self) + 0x24C));
   fn_802C5320(*(s32 *) (((u8 *) self) + 0x24C), highlighted, lbl_805634E0 + x, y - lbl_805634E0, lbl_805634A8, (f32)fillWidth, fillHeight);
 }
 #pragma pop
@@ -5193,7 +5193,7 @@ extern "C" void *fn_80220E48(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         fn_80219284(arg0, gxGetImageWidth(*(s32 *)(p + 0x248)),
                     *(s32 *)(p + 0x10) - *(s32 *)(p + 8));
     } else {
-        s32 width = fn_802C5220(*(s32 *)(p + 0x248));
+        s32 width = gxGetImageHeight(*(s32 *)(p + 0x248));
         s32 height = ((Vf78 *)arg0)->get();
         fn_80219284(arg0, height, width);
     }
@@ -5423,7 +5423,7 @@ extern "C" void fn_80221544(void *arg0, s32 arg1) {
             if (right - 1 > left + 1 && bottom - 1 > top + 1) {
                 s32 overlay = self->overlay;
                 if (overlay != 0) {
-                    s32 diff = fn_802C5220(self->texture) - fn_802C5220(overlay);
+                    s32 diff = gxGetImageHeight(self->texture) - gxGetImageHeight(overlay);
                     fn_80228DC4(arg1, overlay, left, top + ((diff + (diff < 0)) >> 1),
                                 right - left, 0);
                 } else {
@@ -5538,9 +5538,9 @@ extern "C" void fn_80221970(void *arg0)
       {
         if (self->overlay != 0)
         {
-          diff = fn_802C5220(self->texture) - fn_802C5220(self->overlay);
+          diff = gxGetImageHeight(self->texture) - gxGetImageHeight(self->overlay);
           fn_80230C30(&spC, &sp8, left, top + (diff / 2));
-          fn_802C5320(self->overlay, 0, spC, sp8, lbl_805634A8, (f32) (right - left), (f32) fn_802C5220(self->overlay));
+          fn_802C5320(self->overlay, 0, spC, sp8, lbl_805634A8, (f32) (right - left), (f32) gxGetImageHeight(self->overlay));
         }
         else
         {
@@ -5967,7 +5967,7 @@ extern "C" void *fn_802228B0(void *obj, s32 name, s32 width, s32 height) {
         *(f32 *)((u8 *)obj + 0xC) = (f32)height;
     } else {
         *(f32 *)((u8 *)obj + 8) = (f32)gxGetImageWidth(*(s32 *)((u8 *)obj + 4));
-        *(f32 *)((u8 *)obj + 0xC) = (f32)fn_802C5220(*(s32 *)((u8 *)obj + 4));
+        *(f32 *)((u8 *)obj + 0xC) = (f32)gxGetImageHeight(*(s32 *)((u8 *)obj + 4));
     }
     return obj;
 }
@@ -9024,7 +9024,7 @@ extern "C" void fn_80228DC4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s3
     fn_802C3034(arg0);
     fn_80218E98((void *)arg0, &savedRect);
     gxGetImageWidth(arg1);
-    imageHeight = fn_802C5220(arg1);
+    imageHeight = gxGetImageHeight(arg1);
     halfRounded = (u32)arg4 >> 31;
     halfRounded += (u32)arg4;
     midX = arg2 + ((s32)halfRounded >> 1);
@@ -9048,7 +9048,7 @@ extern "C" void fn_80228E80(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s3
     fn_802C3034(arg0);
     fn_80218E98((void *)arg0, &savedRect);
     imageWidth = gxGetImageWidth(arg1);
-    imageHeight = fn_802C5220(arg1);
+    imageHeight = gxGetImageHeight(arg1);
     halfRounded = (u32)arg4 >> 31;
     halfRounded += (u32)arg4;
     midY = arg3 + ((s32)halfRounded >> 1);
