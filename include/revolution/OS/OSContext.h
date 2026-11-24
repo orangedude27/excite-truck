@@ -35,6 +35,9 @@ typedef struct OSContext {
 void OSSaveFPUContext(OSContext* ctx);
 void OSSetCurrentContext(OSContext* ctx);
 OSContext* OSGetCurrentContext(void);
+/* Save the current CPU context into ctx: GPRs r13-r31, GQRs 1-7, CR, LR,
+   SRR0/SRR1, CTR, XER and the stack/TOC pointers. r3 is stored as 1 so a
+   resumed context returns TRUE. Hand-written assembly. */
 BOOL OSSaveContext(OSContext* ctx);
 void OSLoadContext(OSContext* ctx);
 /* Return the current stack pointer (GPR r1); hand-written assembly. */
