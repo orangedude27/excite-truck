@@ -331,16 +331,14 @@ typedef struct {
     u8 rest[0x38];
 } CamEntry80253104;
 #pragma scheduling invalid_target
-#pragma opt_propagation off
-#pragma opt_dead_assignments off
 #pragma dont_inline on
 void fn_80253104(s32 arg0, void *arg1) {
     f32 z, y, x;
     CamEntry80253104 *cam;
     CamBasis80253104 basis;
-    x = *(f32 *)((u8 *)arg1 + 0x12C);
-    y = *(f32 *)((u8 *)arg1 + 0x130);
-    z = *(f32 *)((u8 *)arg1 + 0x134);
+    x = *(volatile f32 *)((u8 *)arg1 + 0x12C);
+    y = *(volatile f32 *)((u8 *)arg1 + 0x130);
+    z = *(volatile f32 *)((u8 *)arg1 + 0x134);
     ((CamEntry80253104 *)lbl_80498D00)[arg0].f34 = x;
     ((CamEntry80253104 *)lbl_80498D00)[arg0].f38 = y;
     ((CamEntry80253104 *)lbl_80498D00)[arg0].f3c = z;
