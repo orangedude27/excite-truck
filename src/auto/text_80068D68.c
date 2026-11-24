@@ -7845,11 +7845,10 @@ void bta_hh_add_device_to_list(void *devCb, s8 handle, s16 attrMask, void *desc,
 
 BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
     UINT8 xx;
-    UINT8 *p_list;
+    UINT8 cod = (UINT8)(sub_class >> 2);
     for (xx = 0; xx < lbl_80559030[0]; xx++) {
-        p_list = *(UINT8 **)(lbl_80559030 + 4);
-        if (p_list[xx * 2] == (UINT8)(sub_class >> 2)) {
-            ((UINT8 *)p_cb)[0x15] = p_list[xx * 2 + 1];
+        if (cod == *(*(UINT8 **)(lbl_80559030 + 4) + xx * 2)) {
+            ((UINT8 *)p_cb)[0x15] = *(*(UINT8 **)(lbl_80559030 + 4) + xx * 2 + 1);
             return TRUE;
         }
     }
