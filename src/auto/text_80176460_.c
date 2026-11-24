@@ -37,7 +37,7 @@ extern void fn_801AED5C(void);
 extern s32 fn_801CF050(void);
 extern void fn_80176A34(s32);
 extern void fn_80176C4C(void);
-extern s32 fn_802E2C20();
+extern s32 KERNEL_GetTimeMs();
 extern void fn_80176F28(void);
 extern void fn_80176DD4(void);
 extern f32 lbl_8055A2F4;
@@ -116,7 +116,7 @@ extern f32 lbl_80561B40;
  * in) and `onDone` runs -- that is where the pending command is applied. */
 typedef struct FadeState {
     s32 lastTime;         /* 0x00: lbl_8055E3C4 of the last step of the ramp */
-    s32 lastTick;         /* 0x04: fn_802E2C20() the ramp last moved on */
+    s32 lastTick;         /* 0x04: KERNEL_GetTimeMs() the ramp last moved on */
     s32 hold;             /* 0x08: ticks to sit at the end of the ramp */
     s32 mode;             /* 0x0C: FADE_MODE_* state of the ramp */
     void (*onDone)(void); /* 0x10: run when the ramp reaches its end */
@@ -461,7 +461,7 @@ void fn_80176FC4(void) {
     } else {
         *(volatile void **)(lbl_80430558 + 0x10) = (void *)fn_80176F28;
         *(volatile s32 *)(lbl_80430558 + 0xC) = 2;
-        *(s32 *)(lbl_80430558 + 4) = fn_802E2C20((void *)fn_80176F28);
+        *(s32 *)(lbl_80430558 + 4) = KERNEL_GetTimeMs((void *)fn_80176F28);
         *(s32 *)lbl_80430558 = lbl_8055E3C4;
         *(s32 *)(lbl_80430558 + 8) = 7;
         *(u8 *)(lbl_80430558 + 0x14) = 0;
@@ -484,7 +484,7 @@ void fn_80177048(void) {
     }
     *(void **)(sFadeState + 0x10) = (void *)fn_80176F28;
     *(s32 *)(sFadeState + 0xC) = FADE_MODE_OUT;
-    *(s32 *)(sFadeState + 4) = fn_802E2C20();
+    *(s32 *)(sFadeState + 4) = KERNEL_GetTimeMs();
     *(s32 *)sFadeState = lbl_8055E3C4;
     *(s32 *)(sFadeState + 8) = 7;
     *(u8 *)(sFadeState + 0x14) = 0;
@@ -497,7 +497,7 @@ void fn_80177048(void) {
 void fn_801770C8(void) {
     *(void **)(lbl_80430558 + 0x10) = fn_80176DD4;
     *(s32 *)(lbl_80430558 + 0xC) = 2;
-    *(s32 *)(lbl_80430558 + 4) = fn_802E2C20((void *)fn_80176DD4);
+    *(s32 *)(lbl_80430558 + 4) = KERNEL_GetTimeMs((void *)fn_80176DD4);
     *(s32 *)lbl_80430558 = lbl_8055E3C4;
     *(s32 *)(lbl_80430558 + 8) = 7;
     *(u8 *)(lbl_80430558 + 0x14) = 0;
@@ -509,7 +509,7 @@ void fn_80177138(void) {
     /* Configure fade state for callback fn_80176E4C (mode 2, type 7, timing from lbl_8055E3C4). */
     *(void **)(lbl_80430558 + 0x10) = fn_80176E4C;
     *(s32 *)(lbl_80430558 + 0xC) = 2;
-    *(s32 *)(lbl_80430558 + 4) = fn_802E2C20((void *)fn_80176E4C);
+    *(s32 *)(lbl_80430558 + 4) = KERNEL_GetTimeMs((void *)fn_80176E4C);
     *(s32 *)lbl_80430558 = lbl_8055E3C4;
     *(s32 *)(lbl_80430558 + 8) = 7;
     *(u8 *)(lbl_80430558 + 0x14) = 0;
@@ -562,7 +562,7 @@ void fn_801771A8(void) {
             fader.lastTime = frame;
             fader.alpha = value;
         } else {
-            s32 now = fn_802E2C20(); /* milliseconds */
+            s32 now = KERNEL_GetTimeMs(); /* milliseconds */
             s32 n = 0x21;
             s32 cur;
             elapsed = now - fader.lastTick;
@@ -647,7 +647,7 @@ s32 fn_801773E4(void) {
             fader.alpha = value;
         } else {
             /* Physics up: ramp by real time, RAMP_MS for the full ramp. */
-            s32 now = fn_802E2C20(); /* milliseconds */
+            s32 now = KERNEL_GetTimeMs(); /* milliseconds */
             s32 n = RAMP_MS_MAX;
             s32 cur;
             elapsed = now - fader.lastTick;
@@ -759,7 +759,7 @@ void *fn_80176A70(void) {
 
     base = lbl_803315A0;
     generationSnap = lbl_8055E3C4;
-    startTimeMs = fn_802E2C20();
+    startTimeMs = KERNEL_GetTimeMs();
     loopCount = 0;
     startTicks = KERNEL_GetTimeUs();
     nowTicks = startTicks;
@@ -771,7 +771,7 @@ loop:
         goto done;
     }
     fn_802E2D74(0);
-    if (fn_802E2C20() - startTimeMs > 0x2710) {
+    if (KERNEL_GetTimeMs() - startTimeMs > 0x2710) {
         fn_802E30C8(base + 0x190, fn_8017970C());
         Abend_Panic(base + 0x1C8, 10);
     }
@@ -896,7 +896,7 @@ void fn_80176DD4(void) {
 void fn_80176DE0(void) {
     *(s32 *)(sFadeState + 0xC) = FADE_MODE_IN;
     *(s32 *)(sFadeState + 0x10) = 0;
-    *(s32 *)(sFadeState + 4) = ((s32 (*)(void))fn_802E2C20)() + 0x32;
+    *(s32 *)(sFadeState + 4) = ((s32 (*)(void))KERNEL_GetTimeMs)() + 0x32;
     *(s32 *)sFadeState = lbl_8055E3C4 + 3;
     *(s32 *)(sFadeState + 8) = 0;
     *(u8 *)(sFadeState + 0x14) = 0;
@@ -913,7 +913,7 @@ void fn_80176E4C(void) {
     fn_801769EC();
     *(s32 *)(sFadeState + 0xC) = FADE_MODE_IN;
     *(s32 *)(sFadeState + 0x10) = 0;
-    *(s32 *)(sFadeState + 4) = ((s32 (*)(void))fn_802E2C20)() + 0x32;
+    *(s32 *)(sFadeState + 4) = ((s32 (*)(void))KERNEL_GetTimeMs)() + 0x32;
     *(s32 *)sFadeState = lbl_8055E3C4 + 3;
     *(s32 *)(sFadeState + 8) = 0;
     *(u8 *)(sFadeState + 0x14) = 0;
@@ -952,7 +952,7 @@ void fn_80176F28(void) {
     fn_801769EC();
     *(s32 *)(sFadeState + 0xC) = FADE_MODE_IN;
     *(s32 *)(sFadeState + 0x10) = 0;
-    *(s32 *)(sFadeState + 4) = ((s32 (*)(void))fn_802E2C20)() + 0x32;
+    *(s32 *)(sFadeState + 4) = ((s32 (*)(void))KERNEL_GetTimeMs)() + 0x32;
     *(s32 *)sFadeState = lbl_8055E3C4 + 3;
     *(s32 *)(sFadeState + 8) = 0;
     *(u8 *)(sFadeState + 0x14) = 0;

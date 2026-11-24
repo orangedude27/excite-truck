@@ -159,7 +159,7 @@ extern void fn_802B4BDC(void);
 extern void fn_802BBCC4(void);
 extern void fn_802BE840(void);
 extern void fn_802C10B8(void);
-extern int fn_802E2C20();
+extern int KERNEL_GetTimeMs();
 extern void fn_802BEB70(void);
 extern int fn_802E30C8(char *, char *, ...);
 extern void fn_802AE774(void);
@@ -367,9 +367,9 @@ void fn_802AEA44(void) {
     int elapsedMs;
 
     fn_802C10B8();
-    startTime = fn_802E2C20(name = lbl_8034A048);
+    startTime = KERNEL_GetTimeMs(name = lbl_8034A048);
     fn_802BEB70();
-    elapsedMs = fn_802E2C20() - startTime;
+    elapsedMs = KERNEL_GetTimeMs() - startTime;
     if (elapsedMs > 0x1F4)
         fn_802E30C8(lbl_8034A064, name, elapsedMs);
     fn_802AE774();
@@ -1256,7 +1256,9 @@ void fn_802AFF80(void *list, short value) {
         *(unsigned short *)((char *)list + 4) = count;
     }
 }
+#pragma push
 #pragma scheduling on
+#pragma opt_propagation on
 int fn_802AFFA8(int arg0, int arg1) {
     float out[3];
     float x = 2.0f * (float)arg0;
@@ -1266,6 +1268,7 @@ int fn_802AFFA8(int arg0, int arg1) {
     out[1] = fn_801DCF48(0, x, z);
     return (unsigned short)fn_802B127C(lbl_8055F974, (int)out);
 }
+#pragma pop
 /* Reset a bounded short list { short* items; u16 count; u16 capacity; },
  * seed element 0 when capacity allows, then append value if space remains. */
 void fn_802B0024(void *list, short value) {
@@ -1297,15 +1300,17 @@ unsigned short fn_802B0070(int point) {
     return fn_802B127C(lbl_8055F974, point);
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802B009C(void *arg0, int arg1, int arg2, int arg3) {
     float *out = (float *)arg0;
-    float x = (float)arg2 * lbl_80564AF0;
-    float z = (float)arg3 * lbl_80564AF0;
+    float x = (float)arg2 * 2.0f;
+    float z;
+    z = (float)arg3 * 2.0f;
     out[0] = x;
     out[2] = z;
     out[1] = fn_801DCF48(arg1, x, z);
 }
+#pragma scheduling reset
 /* No-op hook: callers pass the address of a Vec-like slot to be initialized
  * (five 12-byte slots at the call site), but this build leaves them untouched. */
 void fn_802B0114(void) {

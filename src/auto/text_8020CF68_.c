@@ -55,7 +55,7 @@ extern float lbl_8056331C, lbl_80563320;
 extern float lbl_8056332C;
 __declspec(section ".data") extern float lbl_80558DC4;
 __declspec(section ".sdata") extern double lbl_80563360;
-extern int fn_802E2C20(void);
+extern int KERNEL_GetTimeMs(void);
 extern void fn_80012158(void);
 extern void fn_8020CF6C(int);
 extern double fabs(double);
@@ -329,7 +329,7 @@ extern "C" void fn_8020D2D4(void)
     fn_80230B5C(buf130);
     fn_802C8638(buf130);
     fn_802C974C(lbl_8056331C, lbl_80563324, lbl_80563328);
-    f21 = lbl_8056332C * (float)fn_802E2C20();
+    f21 = lbl_8056332C * (float)KERNEL_GetTimeMs();
     fn_800109E4(0x7F000000, lbl_80563330, lbl_80563334, lbl_80563338, lbl_8056333C);
     if (lbl_8055EEA0 != 0)
         fn_801473F8(lbl_8055EEA0, lbl_8055B630, lbl_8055B638, fn_80131234(fmt + 0x68));
@@ -530,20 +530,20 @@ int fn_8020DB0C(int arg0) {
         switch (lbl_8055EE78) {
         case 0:
             if (!((float)__fabs(lbl_8055EE8C) <= lbl_80558DC4)) {
-                lbl_8055EE98 = lbl_8056332C * (float)fn_802E2C20();
+                lbl_8055EE98 = lbl_8056332C * (float)KERNEL_GetTimeMs();
             } else {
                 var_r31 = 0;
             }
             break;
         case 1:
             if (!((float)__fabs(lbl_8055EE90) <= lbl_80558DC4)) {
-                lbl_8055EE98 = lbl_8056332C * (float)fn_802E2C20();
+                lbl_8055EE98 = lbl_8056332C * (float)KERNEL_GetTimeMs();
             } else {
                 var_r31 = 0;
             }
             break;
         case 4:
-            lbl_8055EE98 = lbl_8056332C * (float)fn_802E2C20();
+            lbl_8055EE98 = lbl_8056332C * (float)KERNEL_GetTimeMs();
             break;
         default:
             var_r31 = 0;
@@ -555,20 +555,20 @@ int fn_8020DB0C(int arg0) {
         switch (lbl_8055EE78) {
         case 0:
             if (lbl_8055EE8C < lbl_8056331C) {
-                lbl_8055EE9C = lbl_8056332C * (float)fn_802E2C20();
+                lbl_8055EE9C = lbl_8056332C * (float)KERNEL_GetTimeMs();
             } else {
                 var_r31 = 0;
             }
             break;
         case 1:
             if (lbl_8055EE90 < lbl_8056331C) {
-                lbl_8055EE9C = lbl_8056332C * (float)fn_802E2C20();
+                lbl_8055EE9C = lbl_8056332C * (float)KERNEL_GetTimeMs();
             } else {
                 var_r31 = 0;
             }
             break;
         case 4:
-            lbl_8055EE9C = lbl_8056332C * (float)fn_802E2C20();
+            lbl_8055EE9C = lbl_8056332C * (float)KERNEL_GetTimeMs();
             break;
         default:
             var_r31 = 0;

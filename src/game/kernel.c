@@ -732,7 +732,7 @@ int main(void) {
 }
 
 #pragma scheduling invalid_target
-unsigned int fn_802E2C20(void) {
+unsigned int KERNEL_GetTimeMs(void) {
     unsigned long long now;
     unsigned long long diff;
     unsigned int baseHigh;

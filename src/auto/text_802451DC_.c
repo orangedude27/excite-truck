@@ -99,7 +99,7 @@ extern int fn_80129AFC(void);
 extern int fn_802E47B8(void);
 extern int fn_802E46F0(void);
 extern int fn_802E2D74(int);
-extern int fn_802E2C20(void);
+extern int KERNEL_GetTimeMs(void);
 extern double sin(double);
 extern void fn_802C5310(int, int, float, float, float);
 extern void fn_802337A0(int, int, int, void *, void *, float, float, float, float, float, ...);
@@ -299,7 +299,7 @@ int fn_80245360(int *a, struct Menu *b)
       int i = 0;
       while (i < b->count)
       {
-        float wave = (float) sin((temp_f23 * ((float) fn_802E2C20())) / temp_f24);
+        float wave = (float) sin((temp_f23 * ((float) KERNEL_GetTimeMs())) / temp_f24);
         float alpha = temp_f27 * (temp_f26 + (temp_f25 * wave));
         char *name = *((char **) (((char *) item_ptr) + 0x18));
         int color;

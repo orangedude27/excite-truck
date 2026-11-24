@@ -3418,7 +3418,7 @@ void fn_80151C98(void *arg0, s32 arg1) {
 #pragma cplusplus reset
 extern double cos(double), sin(double), fn_8002EFB4(double,double);
 extern f32 fn_80144514(f32,f32,f32,f32,f32,f32);
-extern s32 fn_802E2C20(void);
+extern s32 KERNEL_GetTimeMs(void);
 extern void fn_802C744C(s32,f32*), fn_802C74D8(s32,f32*,s32);
 extern s32 lbl_80559EDC, lbl_8055E254;
 extern f32 lbl_80561638,lbl_8056163C,lbl_8056164C,lbl_805616FC,lbl_80561700;
@@ -3448,7 +3448,7 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     position[2] = p2;
 
     if (arg2 != 0) {
-        val_f21 = lbl_80561700 * (f32)fn_802E2C20();
+        val_f21 = lbl_80561700 * (f32)KERNEL_GetTimeMs();
     } else {
         val_f21 = fn_801E7E18();
     }

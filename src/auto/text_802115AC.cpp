@@ -509,7 +509,7 @@ extern "C" void fn_80211D24(int mode) {
 #pragma use_lmw_stmw reset
 extern "C" void fn_80211690(s32);
 extern "C" void fn_80211D24(int);
-extern "C" int fn_802E2C20(void);
+extern "C" int KERNEL_GetTimeMs(void);
 extern "C" int fn_802ECC10(void);
 extern "C" int lbl_8055EF14;
 extern "C" float lbl_8055EF10;
@@ -539,7 +539,7 @@ extern "C" void fn_80211F64(void) {
     float scaledDelta;
     float clampedDelta;
     int currentTick;
-    currentTick = fn_802E2C20();
+    currentTick = KERNEL_GetTimeMs();
     if (fn_802ECC10() == 0) {
         clampedDelta = lbl_80563444;
         scaledDelta = lbl_80563440 * (float)(currentTick - lbl_8055EF14);

@@ -9,7 +9,7 @@ extern long lbl_8055EB0C;
 extern void *lbl_8055EB30;
 extern float lbl_80562DA4;
 extern void *memcpy(void *, const void *, unsigned long);
-extern long fn_802E2C20(void);
+extern long KERNEL_GetTimeMs(void);
 extern long *fn_8012850C(long, void *);
 extern void fn_8001255C(const char *, float);
 extern void fn_8000D878(void);
@@ -130,7 +130,7 @@ void fn_801E7984(long arg0) {
     long *p;
     strings = lbl_80339BA0; base = (char *)lbl_80487CE0;
     fn_801E78D8(arg0);
-    start = fn_802E2C20();
+    start = KERNEL_GetTimeMs();
     fn_8012E81C(strings);
     memcpy(base + 0x100, (void *)arg0, 0x3f8);
     lbl_8055EB12 = 1;
@@ -164,7 +164,7 @@ void fn_801E7984(long arg0) {
     fn_8001255C(strings + 0x40, lbl_80562DA8); fn_801EA38C(); fn_80127464();
     fn_802023D4(); fn_80127464(); fn_800125D4(strings + 0x4c, 1);
     fn_8000D878(); fn_802C2C60(1); fn_802C8218(0); fn_80203FEC(); fn_80127464();
-    fn_802E30C8(strings + 0x60, fn_802E2C20() - start);
+    fn_802E30C8(strings + 0x60, KERNEL_GetTimeMs() - start);
     fn_802ECC18(1); fn_80127464();
 }
 #pragma scheduling on

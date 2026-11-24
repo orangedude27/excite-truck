@@ -662,7 +662,7 @@ f32 fn_802715F0(void *effect) {
 }
 
 #pragma cplusplus on
-extern "C" int fn_802E2C20(void);
+extern "C" int KERNEL_GetTimeMs(void);
 extern "C" int lbl_8055F548;
 extern "C" unsigned char lbl_8055F55C;
 extern "C" unsigned char lbl_8055F480;
@@ -848,7 +848,7 @@ extern "C" void fn_80271624(int mode, void *arg1)
                 fn_801E9DC4(o + 0x1EC);
             if (e->flags & 2) {
                 void *s = fn_801769F8();
-                NoiseWalk_Advance(o + 0x160, fn_802E2C20(), s);
+                NoiseWalk_Advance(o + 0x160, KERNEL_GetTimeMs(), s);
                 fn_80266070(o + 0x160, o + 0x4C, o + 0xE4, o + 0x12C);
             } else {
                 *(float *)(o + 0x4C) = *(float *)(o + 0xE4);
@@ -858,7 +858,7 @@ extern "C" void fn_80271624(int mode, void *arg1)
             if (e->flags & 1) {
                 void *s = fn_801769F8();
                 float v;
-                fn_80266170(o + 0x178, fn_802E2C20(), s, changed, *(float *)(o + 0xBC));
+                fn_80266170(o + 0x178, KERNEL_GetTimeMs(), s, changed, *(float *)(o + 0xBC));
                 v = *(float *)(o + 0x180) + *(float *)(o + 0x184) * (*(float *)(o + 0xBC) - *(float *)(o + 0x180));
                 *(float *)(o + 0x194) = v;
                 *(float *)(o + 0xBC) = v;

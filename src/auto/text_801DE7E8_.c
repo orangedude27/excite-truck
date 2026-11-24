@@ -106,7 +106,7 @@ void fn_801DE88C(void) {
 
 #pragma cplusplus off
 extern void fn_801473F8(void *, const char *, ...);
-extern int fn_802E2C20(void);
+extern int KERNEL_GetTimeMs(void);
 extern void fn_801476D8(int, int, int);
 extern void fn_80147F30(int, int, int, float, float, float, float, float, float, float, float, float, float);
 extern void fn_8014E7D8(int, int, int);
@@ -127,7 +127,7 @@ extern "C" void fn_801DE890(int arg0) {
         fn_801473F8(*(void **)(entry + 0xC), text + 0x18, text + 0x28);
         break;
     case 2:
-        if ((fn_802E2C20() / 500) % 2 != 0) {
+        if ((KERNEL_GetTimeMs() / 500) % 2 != 0) {
             struct Dummy *object = *(struct Dummy **)(entry + 0xC);
             void *result = object->call(text + 0x38);
             if (result != 0) {

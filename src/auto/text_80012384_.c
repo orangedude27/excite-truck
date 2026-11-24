@@ -11,7 +11,7 @@ typedef struct {
     char message[0x80];       // +0x01: text, strncpy'd 0x7f chars with the last byte forced to NUL
     float progress;           // +0x84: accumulated progress (fn_8001255C adds to it)
     float target;             // +0x88: value the message was started with
-    unsigned int startTime;   // +0x8C: ms (fn_802E2C20) when the message was started
+    unsigned int startTime;   // +0x8C: ms (KERNEL_GetTimeMs) when the message was started
     unsigned int elapsed;     // +0x90: ms between the last update and startTime
 } ProgressMessage;
 extern char lbl_80351790[];   // the ProgressMessage record
@@ -21,7 +21,7 @@ extern float lbl_8056034C;
 extern char lbl_8055D4EC;
 extern char *strncpy(char *, const char *, size_t);
 extern void *memset(void *, int, size_t);
-extern int fn_802E2C20(void);
+extern int KERNEL_GetTimeMs(void);
       void fn_8001255C(const char *, float);
 extern float lbl_80560348;
 extern int lbl_8055FB9C;
@@ -90,7 +90,7 @@ void fn_800124DC(const char *text, float target) {
     record[0x80] = zero;
     ((ProgressMessage *)record)->target = target;
     ((ProgressMessage *)record)->progress = lbl_8056034C;
-    ((ProgressMessage *)record)->startTime = fn_802E2C20();
+    ((ProgressMessage *)record)->startTime = KERNEL_GetTimeMs();
     record[0] = one;
 }
 #pragma pop
@@ -104,7 +104,7 @@ void fn_8001255C(const char *arg0, float farg0) {
     strncpy(p + 1, arg0, 0x7f);
     *(float *)(p + 0x84) = f;
     p[0x80] = 0;
-    *(int *)(p + 0x90) = fn_802E2C20() - *(int *)(p + 0x8c);
+    *(int *)(p + 0x90) = KERNEL_GetTimeMs() - *(int *)(p + 0x8c);
 }
 #pragma pop
 

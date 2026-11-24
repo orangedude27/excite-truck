@@ -42,7 +42,7 @@ extern void fn_80015B20(void *, void *, void *);
 extern f32 lbl_80563D88;
 extern f32 lbl_80563D8C;
 extern f32 lbl_80563D9C;
-extern s32 fn_802E2C20(void);
+extern s32 KERNEL_GetTimeMs(void);
 extern s32 fn_802E4A1C();
 extern s32 fn_801298E8(f32 *, s32);
 extern void fn_80015A20();
@@ -128,9 +128,9 @@ void fn_8026B8A0(void) {
     if (lbl_8055F4E8 != 0 && ((s32 (*)(s32, s32))lbl_8055F4E8)(a, b) == 0) {
         ok = 0;
     }
-    dt = (f32)(fn_802E2C20() - lbl_8055F4FC) / lbl_80563D88;
+    dt = (f32)(KERNEL_GetTimeMs() - lbl_8055F4FC) / lbl_80563D88;
     dt = dt < lbl_80563D8C ? dt : lbl_80563D8C;
-    lbl_8055F4FC = fn_802E2C20();
+    lbl_8055F4FC = KERNEL_GetTimeMs();
     right = *(V3 *)((f32 *)lbl_80499050 + 0);
     right.y = lbl_80563D78;
     fwd = *(V3 *)((f32 *)lbl_80499050 + 6);
@@ -254,7 +254,7 @@ extern s32 lbl_8055F4EC;
 extern u8 lbl_8055F500;
 extern s32 fn_802E4A60(f32 *);
 extern void fn_8026B8A0(void);
-extern s32 fn_802E2C20(void);
+extern s32 KERNEL_GetTimeMs(void);
 extern u8 lbl_8055F501;
 extern u8 lbl_8055F502;
 extern s32 lbl_8055F504;
@@ -612,14 +612,14 @@ void fn_8026C014(s32 arg0, void *arg1) {
                 (*(f32 *)((u8 *)(temp_r3_2) + (8))) = (f32) lbl_80563D78;
                 lbl_8055F502 = 1;
             }
-            var_f28 = (f32) (fn_802E2C20() - lbl_8055F504) / lbl_80563D88;
+            var_f28 = (f32) (KERNEL_GetTimeMs() - lbl_8055F504) / lbl_80563D88;
             if (var_f28 < lbl_80563D8C) {
 
             } else {
                 var_f28 = lbl_80563D8C;
             }
             temp_r5_2 = (f32 *)(globalBase + 0x88);
-            lbl_8055F504 = fn_802E2C20();
+            lbl_8055F504 = KERNEL_GetTimeMs();
             temp_r4 = (f32 *)(globalBase + 0x94);
             temp_f5 = (*(f32 *)((u8 *)(globalBase) + (0x88))) * lbl_80563DD8;
             temp_f4 = (*(f32 *)((u8 *)(temp_r5_2) + (4))) * lbl_80563DD8;
@@ -749,7 +749,7 @@ void fn_8026C014(s32 arg0, void *arg1) {
             fn_80015A20(&(*(f32 *)(localFrame + (0x1e8 - 0x10))), (f32 *)(globalBase + 0x94));
             fn_80015B20(lbl_80499050, &(*(f32 *)(localFrame + (0x1e8 - 0x10))), (f32 *)lbl_80499050);
         } else if ((*(s32 *)(localFrame + (0x2f4 - 0x10))) & 0x10) {
-            temp_r3_6 = fn_802E2C20();
+            temp_r3_6 = KERNEL_GetTimeMs();
             temp_r0_3 = temp_r3_6 - lbl_8055F508;
             var_f4 = lbl_80563DEC;
             lbl_8055F508 = temp_r3_6;
@@ -869,7 +869,7 @@ void fn_8026C014(s32 arg0, void *arg1) {
             (*(f32 *)((u8 *)(lbl_80499050) + (0x28))) = (f32) ((*(f32 *)((u8 *)(lbl_80499050) + (0x28))) + (*(f32 *)(localFrame + (0x60 - 0x10))));
             (*(f32 *)((u8 *)(lbl_80499050) + (0x2C))) = (f32) ((*(f32 *)((u8 *)(lbl_80499050) + (0x2C))) + (*(f32 *)(localFrame + (0x64 - 0x10))));
         } else {
-            temp_r3_7 = fn_802E2C20();
+            temp_r3_7 = KERNEL_GetTimeMs();
             temp_r0_4 = temp_r3_7 - lbl_8055F514;
             var_f5 = lbl_80563DEC;
             lbl_8055F514 = temp_r3_7;

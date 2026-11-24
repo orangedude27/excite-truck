@@ -121,7 +121,7 @@ void *fn_80244BD0(void *obj, s32 freeFlag) {
 
 void fn_8013C804(void);
 void fn_8013C8B8(void);
-s32 fn_802E2C20(void);
+s32 KERNEL_GetTimeMs(void);
 extern char lbl_80342ED8[];
 /* Unlockable-list window thunk: load the car classes from "carclass.val" into
  * the class registry so car rows can resolve their display names. */
@@ -146,11 +146,11 @@ s32 fn_80244C58(void *state, s32 command)
 
     switch (command) {
     case 0x126:
-        *(s32 *)((char *)state + 0xA8) = fn_802E2C20();
+        *(s32 *)((char *)state + 0xA8) = KERNEL_GetTimeMs();
         *indexPtr = *indexPtr - 1;
         break;
     case 0x128:
-        *(s32 *)((char *)state + 0xAC) = fn_802E2C20();
+        *(s32 *)((char *)state + 0xAC) = KERNEL_GetTimeMs();
         *indexPtr = *indexPtr + 1;
         break;
     default:
@@ -178,7 +178,7 @@ s32 fn_80244C58(void *state, s32 command)
  * clock is within SCROLL_REPEAT_MS of the time fn_80244C58 stamped for its
  * last message (+0xA8 up, +0xAC down). */
 void fn_80244D0C(void *window) {
-    int now = fn_802E2C20(); /* milliseconds since the clock started */
+    int now = KERNEL_GetTimeMs(); /* milliseconds since the clock started */
     int *repeat = (int *)((char *)window + 0xA0); /* [0]/[1]: up/down held, [2]/[3]: last pressed */
     int deadline;
     deadline = repeat[2] + SCROLL_REPEAT_MS;

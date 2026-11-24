@@ -60,7 +60,7 @@ extern void fn_80230090(void);
 extern void fn_80230114(void);
 extern void fn_80232230(void);
 extern void fn_8023243C(void);
-extern void fn_802E2C20(void);
+extern void KERNEL_GetTimeMs(void);
 extern void fn_802E47E8(void);
 extern void fn_802E712C(void);
 extern void fn_802E986C(void*);
@@ -293,7 +293,7 @@ int fn_80004D64(char* args) {
     /* Runs the main game/menu initialization sequence: core subsystems, resources/UI,
        audio/DSP, game modules, then registers scene/callback handlers and finalizes setup. */
     void* menuData = lbl_802FAEA0;
-    fn_802E2C20();
+    KERNEL_GetTimeMs();
     fn_80004ACC();
     fn_8012E81C((char*)menuData + 0x90);
     fn_80133024();

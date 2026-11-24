@@ -306,7 +306,7 @@ extern s32 fn_800216D0(void);
 extern s32 fn_80009C84(void);
 extern s32 fn_801B85CC(void);
 extern s32 fn_800216FC(void);
-extern s32 fn_802E2C20(void);
+extern s32 KERNEL_GetTimeMs(void);
 extern void trackMusicUpdate(s32);
 extern s8 lbl_8055EE58;
 extern f32 lbl_805632D8;
@@ -347,7 +347,7 @@ void musicPreRaceUpdate(void) {
                lbl_8055EE44 = active;
                if (fn_80009C84() == 0) {
                    /* Remember when the featured track started; fade it in. */
-                   lbl_8055EE3C = fn_802E2C20();
+                   lbl_8055EE3C = KERNEL_GetTimeMs();
                    musicObj = (void *)lbl_8055EE38;
                    if (musicObj != 0) {
                        *(u8 *)((u8 *)musicObj + 0x49) = active;
@@ -363,7 +363,7 @@ void musicPreRaceUpdate(void) {
                    *(u8 *)(now + 0x4C) = 0;
                }
            } else if (fn_80009C84() == 0) {
-               now = fn_802E2C20();
+               now = KERNEL_GetTimeMs();
                if (now >= lbl_8055EE3C && now < lbl_8055EE3C + 0xFA0) {
                    /* Race starts 0xFA0 frames after the track: ramp the
                     * "start" volume from 0 to 1 over 1000 frames. */
@@ -399,7 +399,7 @@ void musicPreRaceUpdate(void) {
                    /* While the race-start ramp runs, keep the third featured
                     * track silent so the ramp track is the one heard. */
                    if ((u8)lbl_8055EE44 != 0 && featuredTrack == 2 && fn_80009C84() == 0) {
-                       now = fn_802E2C20();
+                       now = KERNEL_GetTimeMs();
                        if (now >= lbl_8055EE3C && now < lbl_8055EE3C + 0xFA0) skip = 1;
                    }
                    track = *(s32 *)((u8 *)selection + 0x20);

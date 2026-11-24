@@ -804,14 +804,14 @@ call_key:
 #pragma pop
 extern int fn_80019BA8(void);
 extern int fn_801298E8(void *, int);
-extern int fn_802E2C20(void);
+extern int KERNEL_GetTimeMs(void);
 extern int lbl_8055D3D8;
 int fn_8000BB08(void) {
     /* Return 1 if no input activity seen and idle timer exceeds 0xEA60 ticks; otherwise update/clear the idle timestamp and return 0. */
     unsigned char sp8[0x68];
     int temp_r31, var_r30, var_r29, old;
     if (fn_80019BA8() != 0) {
-        temp_r31 = fn_802E2C20();
+        temp_r31 = KERNEL_GetTimeMs();
         var_r30 = 0;
         var_r29 = 0;
         do {

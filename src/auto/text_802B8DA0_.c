@@ -993,7 +993,7 @@ void fn_802BA004(void) {
 }
 
 #pragma cplusplus on
-extern "C" int fn_802E2C20(void *);
+extern "C" int KERNEL_GetTimeMs(void *);
 extern "C" void fn_801352B8(void *);
 extern "C" void fn_80135D60(void *, void *);
 extern "C" void *fn_80156A40(void);
@@ -1049,7 +1049,7 @@ extern "C" void fn_802BA010(void *arg0, int arg1) {
     float f30, f31, f29;
     float f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10;
     *(void *volatile *)(sp + 0x10) = lbl_8034A9C0;
-    *(volatile int *)(sp + 0x14) = fn_802E2C20(arg0);
+    *(volatile int *)(sp + 0x14) = KERNEL_GetTimeMs(arg0);
     if (object == 0) object = ((Dummy *)fn_80156A40())->v1(0);
     fn_801352B8(sp + 0x24);
     fn_80135D60(sp + 0x24, object);
@@ -1153,7 +1153,7 @@ extern "C" void fn_802BA010(void *arg0, int arg1) {
         } while (current != 0);
     }
     fn_8013530C(sp + 0x24, -1);
-    if (fn_802E2C20(sp + 0x24) - *(volatile int *)(sp + 0x14) > 0x1F4) {
+    if (KERNEL_GetTimeMs(sp + 0x24) - *(volatile int *)(sp + 0x14) > 0x1F4) {
         fn_802E30C8(&lbl_8034A064, *(void *volatile *)(sp + 0x10));
     }
 }
@@ -1177,7 +1177,7 @@ extern "C" void fn_802BA348(void) {
     int i, k, total, obj, j;
     int elapsed;
     s.name = lbl_8034A9D0;
-    s.start = fn_802E2C20(lbl_8034A9D0);
+    s.start = KERNEL_GetTimeMs(lbl_8034A9D0);
     s.data = s.buf;
     s.cap = 4;
     s.count = 0;
@@ -1219,7 +1219,7 @@ extern "C" void fn_802BA348(void) {
     s.data = 0;
     s.count = 0;
     s.cap = 0;
-    elapsed = ((int (*)(void))fn_802E2C20)() - s.start;
+    elapsed = ((int (*)(void))KERNEL_GetTimeMs)() - s.start;
     if (elapsed > 0x1F4)
         fn_802E30C8(lbl_8034A064, s.name, elapsed);
 }
@@ -1561,7 +1561,7 @@ extern char lbl_8034AA00[];
 extern char lbl_8034AA10[];
 extern int lbl_8055CEF0;
 extern void *lbl_8055FA80;
-extern int fn_802E2C20(void *);
+extern int KERNEL_GetTimeMs(void *);
 extern void fn_802B9108(short);
 extern void fn_801286A0(void *, int);
 extern void fn_80265DCC(void *, void *, int, int (**)(int **, int **));
@@ -1583,7 +1583,7 @@ void fn_802BAE50(void) {
     short passSize;
     int elapsed;
     name = (char *)&lbl_8034AA00;
-    start = fn_802E2C20((char *)&lbl_8034AA00);
+    start = KERNEL_GetTimeMs((char *)&lbl_8034AA00);
     total = 0;
     for (passSize = 4; passSize <= 0x40; passSize *= 2) {
         total += (0x400 / (passSize * 2)) * (0x400 / (passSize * 2)) * 5;
@@ -1608,7 +1608,7 @@ void fn_802BAE50(void) {
     }
     fn_80265DCC(*(void **)lbl_804BFFF4, *((void **)lbl_804BFFF4 + 1), 4,
                 (int (**)(int **, int **))fn_802B9B50);
-    elapsed = ((int (*)(void))fn_802E2C20)() - start;
+    elapsed = ((int (*)(void))KERNEL_GetTimeMs)() - start;
     if (elapsed > 0x1F4)
         fn_802E30C8(&lbl_8034A064, name, elapsed);
 }

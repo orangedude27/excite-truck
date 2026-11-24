@@ -542,7 +542,7 @@ float fn_80230E54(float currentTime, float period) {
 void fn_80230E90(s32 useTickTime) {
     /* Update timing state using the tick counter when requested, otherwise the frame timer. */
     if (useTickTime == 1) {
-        s32 ticks = fn_802E2C20();
+        s32 ticks = KERNEL_GetTimeMs();
         f32 tickSeconds = ticks;
         fn_80230DA4(tickSeconds / lbl_80563640, lbl_80563648);
     } else {
@@ -557,7 +557,7 @@ float fn_80230EF4(long mode) {
     }
 
     if (mode == 1) {
-        s32 ticks = fn_802E2C20();
+        s32 ticks = KERNEL_GetTimeMs();
         f32 tickValue = ticks;
         return fn_80230E54(tickValue / lbl_80563640, lbl_80563648);
     }

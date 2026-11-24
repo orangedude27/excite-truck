@@ -317,7 +317,7 @@ s32 fn_802B5DD0(s32 text) {
 }
 extern double lbl_80564C68;
 extern float lbl_80564C70;
-extern s32 fn_802E2C20(void);
+extern s32 KERNEL_GetTimeMs(void);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
@@ -507,13 +507,13 @@ __declspec(section ".sdata") extern double lbl_80564C68;
 #pragma scheduling invalid_target
 void fn_802B61E0(void) {
     /* Store the current timer value in seconds at lbl_8055FA08. */
-    s32 val = fn_802E2C20();
+    s32 val = KERNEL_GetTimeMs();
     lbl_8055FA08 = (float)val / lbl_80564C70;
 }
 
 void fn_802B6228(void) {
     /* Update the secondary timer accumulator in seconds. */
-    s32 val = fn_802E2C20();
+    s32 val = KERNEL_GetTimeMs();
     lbl_8055FA10 = (float)val / lbl_80564C70;
 }
 
@@ -970,11 +970,11 @@ void fn_802B6AC0(void) {
     char *entryName;
     struct Entry *entry;
     struct Texture *texture;
-    seconds = (float)fn_802E2C20() / lbl_80564C70;
+    seconds = (float)KERNEL_GetTimeMs() / lbl_80564C70;
     below = seconds - *(float *)((u8 *)&lbl_8055FA18 + 4) < lbl_8055FA18;
     if (below)
         return;
-    seconds = (float)fn_802E2C20() / lbl_80564C70;
+    seconds = (float)KERNEL_GetTimeMs() / lbl_80564C70;
     state = (s32 *)&lbl_804BE7D8;
     state[1] = 0;
     *(float *)((u8 *)&lbl_8055FA18) = seconds;
@@ -1387,11 +1387,11 @@ __declspec(section ".sdata") extern float lbl_8055FA20[];
  * previous timestamp exceeds the configured threshold; otherwise return 0. */
 s32 fn_802B7694(void) {
     s32 triggered = 0;
-    f32 elapsedSeconds = (f32)fn_802E2C20() / lbl_80564C70;
+    f32 elapsedSeconds = (f32)KERNEL_GetTimeMs() / lbl_80564C70;
     s32 belowThreshold = elapsedSeconds - lbl_8055FA20[1] < lbl_8055FA20[0];
 
     if (!belowThreshold) {
-        f32 currentSeconds = (f32)fn_802E2C20() / lbl_80564C70;
+        f32 currentSeconds = (f32)KERNEL_GetTimeMs() / lbl_80564C70;
         triggered = 1;
         lbl_8055FA20[0] = currentSeconds;
     }
@@ -1553,7 +1553,7 @@ extern "C" void fn_802B7918(void) {
     uiRoot = (DebugUi *)kPanelRoot;
     object = uiRoot->findPane(kBrushDropdown);
     fn_802B6568(object, kBrushesCaption);
-    elapsed = (f32)fn_802E2C20() / kMsPerSecond -
+    elapsed = (f32)KERNEL_GetTimeMs() / kMsPerSecond -
               kBaseSeconds;
     withinWindow = elapsed < kRefSeconds;
     if (withinWindow != 0) {
@@ -1687,7 +1687,7 @@ s32 fn_802B7B08(void) {
     row.unk14 = *(s32 *)(rowBytes + 0x14);
     row.unk18 = *(s32 *)(rowBytes + 0x18);
     row.unk1C = *(s32 *)(rowBytes + 0x1C);
-    elapsed = (f32)fn_802E2C20() / kMsPerSecond - kBaseSeconds;
+    elapsed = (f32)KERNEL_GetTimeMs() / kMsPerSecond - kBaseSeconds;
     withinWindow = elapsed < kRefSeconds;
     if (withinWindow != 0) {
         /* Still inside the window: list every water layer of this entry. */

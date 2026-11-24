@@ -130,7 +130,7 @@ typedef struct Camera {
 /* The replay spin fn_80267EF8 runs on the chase/replay cameras: one full turn
  * about the camera's up axis over SPIN_DURATION seconds, with the crash level
  * dipping into a crowd cheer over the same clock. */
-#define MS_TO_SEC         lbl_80563C80 /* 0.001f: fn_802E2C20's ms -> seconds */
+#define MS_TO_SEC         lbl_80563C80 /* 0.001f: KERNEL_GetTimeMs's ms -> seconds */
 #define FLOAT_MINUS_ONE   lbl_80563C28 /* -1.0f */
 #define FLOAT_MINUS_TWO   lbl_80563C30 /* -2.0f */
 #define FLOAT_THREE       lbl_80563C34 /* 3.0f */
@@ -154,7 +154,7 @@ typedef struct SoundObj {
 } SoundObj;
 extern float lbl_80563C80, lbl_80563C84, lbl_80563C88, lbl_80563C64;
 extern float lbl_8055F48C;
-extern int fn_802E2C20(void);
+extern int KERNEL_GetTimeMs(void);
 extern void fn_80209190(int, float);
 extern int fn_8000D75C(void);
 extern void fn_801769EC(void);
@@ -1282,7 +1282,7 @@ void *fn_80267EE4(int cameraIndex) {
  * sound, the sound manager is told to go on. */
 void fn_80267EF8(void *arg0) {
     Camera *cam = (Camera *)arg0;
-    float elapsed = MS_TO_SEC * (float)fn_802E2C20() - sSpinStartTime;
+    float elapsed = MS_TO_SEC * (float)KERNEL_GetTimeMs() - sSpinStartTime;
     if (elapsed > SPIN_DURATION) {
         sSpinActive = 0;
         sSpinStartTime = SPIN_IDLE;

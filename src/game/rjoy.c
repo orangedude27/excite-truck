@@ -113,7 +113,7 @@ int fn_802E77B8(void) { return 0; }
 void fn_802E7920(int arg0) {
     extern int WPADControlMotor(int, int);
     extern int fn_802D9BF0(void);
-    extern int fn_802E2C20(void);
+    extern int KERNEL_GetTimeMs(void);
     extern unsigned char lbl_80505978[];
     extern unsigned char lbl_80560008;
     unsigned char *p;
@@ -123,7 +123,7 @@ void fn_802E7920(int arg0) {
     int value;
     int cmd;
     p = lbl_80505978 + player * 0x638;
-    time = fn_802E2C20();
+    time = KERNEL_GetTimeMs();
     motor = fn_802D9BF0();
     if (*(unsigned short *)(p + 0xB0) < 0x5000) {
         if (time - *(int *)(p + 0xBC) > 0x3E8)
@@ -455,7 +455,7 @@ void fn_802E7FD0(void) {
     int timeNow;
 
     formatBase = (char *)&lbl_8034D898;
-    now = fn_802E2C20();
+    now = KERNEL_GetTimeMs();
     previous = lbl_80560010;
     if (previous < now) {
         elapsed = now - previous;
@@ -550,7 +550,7 @@ void fn_802E7FD0(void) {
             record[0x2B] != 0 && record[0x29] != 0 &&
             record[0x27] != 0)
             filtered = 1;
-        timeNow = fn_802E2C20();
+        timeNow = KERNEL_GetTimeMs();
         if (filtered == 0)
             *(int *)(record + 0xC0) = timeNow;
         else if (timeNow - *(int *)(record + 0xC0) > 0x3E8)

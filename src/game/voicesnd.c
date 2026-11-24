@@ -19,7 +19,7 @@ extern void Abend_Panic(const char *, ...);
 extern const char lbl_8033C510[];
 extern void fn_802E61E4(float);
 extern float fn_80209028(void), fn_802091CC(void);
-extern int fn_802090CC(void), fn_802E2C20(void);
+extern int fn_802090CC(void), KERNEL_GetTimeMs(void);
 extern void fn_802E625C(int);
 extern void fn_802E61EC(void *, float), fn_802E620C(void *, float), fn_802E6234(void *, float), fn_802E6238(void *, float), fn_802E623C(void *, float), fn_802E622C(void *, float), fn_802E6240(void *, int);
 __declspec(section ".data") extern float lbl_80558DC4;
@@ -392,7 +392,7 @@ extern "C" void fn_8020AC2C(void *arg0) {
     lbl_8055B590 = fn_80209028();
     lbl_8055B594 = fn_802091CC();
     lbl_8055EDF8++;
-    now = fn_802E2C20();
+    now = KERNEL_GetTimeMs();
     lbl_8055EE00 = now - *slot;
     if (lbl_8055EE00 > 200U) lbl_8055EE00 = 200;
     high = lbl_805632B4;

@@ -8,7 +8,7 @@ extern int lbl_8055F09C;
 extern float lbl_805636D0;
 extern double lbl_805636D8;
 extern char lbl_803408D8[];
-int fn_802E2C20(void);
+int KERNEL_GetTimeMs(void);
 void fn_80236674(void);
 void fn_802E30C8(const char *, ...);
 void fn_802365D8(void);
@@ -37,7 +37,7 @@ float fn_8023659C(void) {
 /* Timer auto-reset: rebase the accumulated time base to the current millisecond
  * count and refresh timing state (called when float precision is running out). */
 void fn_802365D8(void) {
-#define GetCurrentTimeMs fn_802E2C20
+#define GetCurrentTimeMs KERNEL_GetTimeMs
 #define timeBase lbl_8055F094
 #define UpdateTimerState fn_80236674
     timeBase = GetCurrentTimeMs();
@@ -60,7 +60,7 @@ void fn_8023660C(void) {
 #define timerPausedFlag lbl_8055F0A0
 #define timeBase lbl_8055F094
 #define pauseTime lbl_8055F09C
-#define GetCurrentTimeMs fn_802E2C20
+#define GetCurrentTimeMs KERNEL_GetTimeMs
 #define UpdateTimerState fn_80236674
     int adjustedTime;
 
@@ -92,7 +92,7 @@ void fn_80236674(void) {
 
     if (lbl_8055F0A0 == 0) {
         fn_80236550();
-        currentTime = fn_802E2C20();
+        currentTime = KERNEL_GetTimeMs();
         if (fn_802ECC10() != 0) {
             lbl_8055F094 += currentTime - lbl_8055F09C;
         }

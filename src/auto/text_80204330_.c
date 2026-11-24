@@ -19,7 +19,7 @@ extern char lbl_8055B448[4], lbl_8055B44C[8], lbl_8055B454[4], lbl_8055B458[4];
 extern char lbl_8055B45C[4], lbl_8055B460[4];
 extern float lbl_80563188;
 extern void* lbl_8055ED48;
-extern int fn_802E2C20(void);
+extern int KERNEL_GetTimeMs(void);
 int fn_80204354(void);
 extern const float lbl_80563168, lbl_8056316C, lbl_80563170, lbl_80563174, lbl_80563178, lbl_8056317C;
 extern double lbl_80563180;
@@ -27,7 +27,7 @@ extern char lbl_80488BD0[];
 struct Entry80204 { int unk_0x0, unk_0x4, unk_0x8; float unk_0xc, unk_0x10, unk_0x14; };
 #pragma dont_inline on
 void fn_80204330(void) {
-#define getCurrentTime fn_802E2C20
+#define getCurrentTime KERNEL_GetTimeMs
 #define sGuiTimestamp  lbl_8055ED48
     /* Stamp the GUI timestamp with the current time when the screen opens. */
     sGuiTimestamp = (void*)getCurrentTime();
@@ -37,7 +37,7 @@ void fn_80204330(void) {
 #pragma dont_inline off
 
 int fn_80204354(void) {
-#define getCurrentTime fn_802E2C20
+#define getCurrentTime KERNEL_GetTimeMs
 #define sGuiTimestamp  lbl_8055ED48
     /* Return the milliseconds elapsed since the GUI timestamp was set;
      * fn_80204330 stamps it with the current time when the screen opens. */
@@ -46,7 +46,7 @@ int fn_80204354(void) {
 #undef getCurrentTime
 }
 
-int fn_802E2C20(void);
+int KERNEL_GetTimeMs(void);
 extern int fn_80145E70(void*);
 extern char lbl_8033BB18[];
 extern int lbl_8055ED3C, lbl_8055ED40, lbl_8055ED44;
@@ -144,10 +144,9 @@ extern "C" int fn_802044E8(void) {
  float matrix[12];
  struct Text80204 label, value;
  int normal, selected;
- struct Text80204 *b, *c;
+ struct Text80204 *a, *b, *c;
  char *area, *entry;
  int count, result, start, end, i;
- struct Text80204 *a;
  float step;
  fn_80230B5C(matrix);
  fn_802C8638(matrix);
@@ -324,7 +323,7 @@ void fn_80204A1C(int label, int valuePtr)
 #pragma pop
 /* Restart the Tune Dash tuning screen's timer: this is the module's outside
  * entry point for it, and it only tail-calls the timestamp stamper
- * fn_80204330, which stores the current time (fn_802E2C20, milliseconds) in
+ * fn_80204330, which stores the current time (KERNEL_GetTimeMs, milliseconds) in
  * the screen's timestamp; fn_80204354 then counts up from 0 again. */
 void fn_80204A50(void) {
 #define StampGuiTimestamp fn_80204330

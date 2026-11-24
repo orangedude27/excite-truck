@@ -278,7 +278,7 @@ extern void fn_800C6774(s32, s32, s32);
 extern void fn_800C687C(void);
 extern void fn_800C68B0(void);
 extern s32 fn_802D9BF0(void);
-extern void fn_802E2C20(void);
+extern void KERNEL_GetTimeMs(void);
 extern void KERNEL_Reset(s32);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_802E5438(void);
@@ -317,7 +317,7 @@ void fn_802EC884(void) {
             fn_800C675C();
         }
     }
-    fn_802E2C20();
+    KERNEL_GetTimeMs();
     if ((u8)lbl_805600E8 == 0) return;
     wpadInfoOut = lbl_80558898;
     for (i = 0; i < 4; i++) {

@@ -568,14 +568,14 @@ int fn_802092C8(int object, int deleteFlag) {
 /* Trivial mixer helper: always reports 1 (boolean true / success). */
 int fn_80209308(void) { return 1; }
 
-extern int fn_802E2C20(void);
+extern int KERNEL_GetTimeMs(void);
 /* RealName: SoundTimer_Start — begins/restarts a sound timer: record the current
- * millisecond count (kernel clock fn_802E2C20) as its start time (+4) and set
+ * millisecond count (kernel clock KERNEL_GetTimeMs) as its start time (+4) and set
  * the state to running (1) at +8. This layout is shared by the nearby timer helpers. */
 void fn_80209310(void *timer) {
 #define startTime ((int *)((char *)timer + 4))
 #define state ((int *)((char *)timer + 8))
-    *startTime = fn_802E2C20();
+    *startTime = KERNEL_GetTimeMs();
     *state = 1;
 #undef state
 #undef startTime
@@ -585,7 +585,7 @@ void fn_80209348(void *timer) {
 #define startTime ((int *)((char *)timer + 4))
 #define state ((int *)((char *)timer + 8))
     /* Initialize a timed object: record the current time as its start and set its state to 1 (running). */
-    *startTime = fn_802E2C20();
+    *startTime = KERNEL_GetTimeMs();
     *state = 1;
 #undef startTime
 #undef state
@@ -617,7 +617,7 @@ int fn_802093A4(void *arg0) {
     /* If 2000ms elapsed since start, mark the timed object as expired; return its state. */
 #define startTime ((int *)((char *)arg0 + 4))
 #define state ((int *)((char *)arg0 + 8))
-    if (*startTime + 0x7D0 < fn_802E2C20()) {
+    if (*startTime + 0x7D0 < KERNEL_GetTimeMs()) {
         *state = 3;
     }
     return *state;

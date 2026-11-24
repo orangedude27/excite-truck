@@ -891,7 +891,7 @@ void trackMusicUpdate(unsigned char mute) {
         }
         holdSongChange = 0;
         if ((unsigned char)gTrackMusicHoldSongChange != 0) {
-            now = fn_802E2C20();
+            now = KERNEL_GetTimeMs();
             if (now >= gTrackMusicHoldUntil && now < gTrackMusicHoldUntil + 0xFA0) {
                 holdSongChange = 1;
             }

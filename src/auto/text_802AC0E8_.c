@@ -10,7 +10,7 @@ extern const char lbl_8055CC88;
 extern const char lbl_8055CCB8;
 extern float lbl_80564AB0;
 extern double atof(const char *);
-extern int fn_802E2C20(void);
+extern int KERNEL_GetTimeMs(void);
 extern int sscanf(const char *, const char *, ...);
 
 /* One symbol-table record used by the animation parser: a type tag, a name and the resolved id. */
@@ -163,7 +163,7 @@ float fn_802AC454(void *segment, void *root, float *baseTime) {
 /* Initialize the animation state globals (count/index/timestamps and playback flag). */
 void fn_802AC458(void) {
     lbl_8055F93C = 0;
-    lbl_8055F944 = fn_802E2C20();
+    lbl_8055F944 = KERNEL_GetTimeMs();
     lbl_8055F948 = 0;
     lbl_8055F940 = 0;
     lbl_8055F94C = 1;
@@ -830,7 +830,7 @@ extern void *lbl_804BD7C0[];
 void fn_802ADBB4(void) {
     /* Renders a debug overlay for the current animation entry: updates the time offset while
        active, draws index/name and elapsed time, and evaluates the selected animation. */
-    int currentTime = fn_802E2C20();
+    int currentTime = KERNEL_GetTimeMs();
     float elapsedSeconds;
     int isValidIndex;
 
@@ -872,14 +872,14 @@ int fn_802ADCF8(int key) {
         lbl_8055F940 = newIndex;
         return 1;
     case 0x22: /* reset timer */
-        lbl_8055F944 = fn_802E2C20();
+        lbl_8055F944 = KERNEL_GetTimeMs();
         lbl_8055F948 = 0;
         return 1;
     case 0x27: /* toggle timer */
         toggle = ((unsigned char)lbl_8055F94C == 0);
         lbl_8055F94C = toggle;
         if (toggle) {
-            lbl_8055F948 = fn_802E2C20() - lbl_8055F944;
+            lbl_8055F948 = KERNEL_GetTimeMs() - lbl_8055F944;
         }
         return 1;
     default:

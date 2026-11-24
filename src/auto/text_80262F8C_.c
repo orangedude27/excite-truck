@@ -402,7 +402,7 @@ extern const u8 lbl_80346048[];
 extern f32 lbl_80563BD8;
 extern f32 lbl_80563BE8;
 extern f32 lbl_80563BEC;
-extern s32 fn_802E2C20(void);
+extern s32 KERNEL_GetTimeMs(void);
 extern s32 fn_802E8528(s32, f32, f32);
 /* Destroys this object: installs its vtable, releases the owned resource at +0x18,
  * clears it, and optionally deletes the object; returns this. */
@@ -542,7 +542,7 @@ s32 fn_80263998(void *obj, s32 event) {
         case 0x125:
             if (objBytes[0x28] == 0) {
                 objBytes[0x28] = 1;
-                *(f32 *)(objBytes + 0x2C) = (f32)fn_802E2C20() / lbl_80563BD8;
+                *(f32 *)(objBytes + 0x2C) = (f32)KERNEL_GetTimeMs() / lbl_80563BD8;
             }
             break;
         case 0x126:
@@ -576,10 +576,10 @@ s32 fn_80263998(void *obj, s32 event) {
 #pragma scheduling invalid_target
 #pragma fp_contract on
 void fn_80263AB4(void *self) {
-    /* After fn_802E2C20 ticks (ms) exceed the start time at +0x2C by 0.5s, fades
+    /* After KERNEL_GetTimeMs ticks (ms) exceed the start time at +0x2C by 0.5s, fades
        the handle at +0x24 to (0,0) via fn_802E8528, else to (1,0). Mirrors active
        selection (lbl_8055F434 == id at +0x20) into flags at +0x1C/+0x29. */
-    f32 nowMs = (f32)fn_802E2C20();
+    f32 nowMs = (f32)KERNEL_GetTimeMs();
     f32 fadeA;
     f32 fadeB;
     s32 handle;

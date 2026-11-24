@@ -357,12 +357,12 @@ void SoundMgr_refreshSounds(void *soundMgr) {
 
 #pragma dont_inline on
 /* Whether the SoundManager may run its update this frame: only once more than 16
- * ms have gone by since its last pass.  fn_802E2C20 counts the ms since boot, and
+ * ms have gone by since its last pass.  KERNEL_GetTimeMs counts the ms since boot, and
  * the pass started here is stamped into the manager at +0x08. */
 signed long SoundMgr_readyForUpdate(SoundMgr* soundMgr) {
     signed long now;
 
-    now = fn_802E2C20();
+    now = KERNEL_GetTimeMs();
     if ((signed long)(now - soundMgr->lastUpdateMs) <= 0x10) {
         return 0;
     }

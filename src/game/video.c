@@ -24,7 +24,7 @@ extern void fn_802E27B8(void *);
 extern u8 fn_802ECC10(void);
 extern char lbl_8034CBE0[], lbl_8034CBF8[];
 extern void fn_802E30C8(const char *, ...);
-extern void fn_802E2C20(void);
+extern void KERNEL_GetTimeMs(void);
 extern void fn_801284F8(void *, void *);
 extern char lbl_8034CB68[];
  extern void *lbl_8055FEEC; /* SimpleHeap backing memory (0x600000 bytes) */
@@ -950,7 +950,7 @@ void fn_802E0EAC(void *arg0) {
             Abend_Panic(messages + 0x20);
         }
         fn_801176FC(*(s32 *)(video + 4), video + 0x150);
-        *(s32 *)(video + 0x4C) = ((s32 (*)(void))fn_802E2C20)();
+        *(s32 *)(video + 0x4C) = ((s32 (*)(void))KERNEL_GetTimeMs)();
     } else {
         fn_802E30C8(messages + 0x48, video + 8);
     }
@@ -1110,7 +1110,7 @@ void fn_802E12DC(void) {
     if (movie->binkHandle != 0) {
         fn_802E27B8(movie->videoRing);
         fn_801186B8((void *)movie->binkHandle);
-        nowMs = ((s32 (*)(void))fn_802E2C20)();
+        nowMs = ((s32 (*)(void))KERNEL_GetTimeMs)();
         if (nowMs - movie->frameTimerMs > 0x96) {
             fn_802E30C8(lbl_8034CBF8);
             movie->frameTimerMs = nowMs - 0x20;
@@ -1129,7 +1129,7 @@ extern void fn_802C8D74(void);
 extern void fn_802C8DB8(void *, s32, u16 *, s32, u16, u16, u16, u16);
 extern void fn_802D007C(f32);
 extern void fn_802D3360(void);
-extern void fn_802E2C20(void);
+extern void KERNEL_GetTimeMs(void);
 extern void fn_802E1DA4(void *, u32, u32, f32, f32, f32, f32, f32);
 extern const u16 lbl_802FAE28[];
 extern const u8 lbl_805650C8, lbl_805650C9, lbl_805650CA, lbl_805650CB;
@@ -1251,7 +1251,7 @@ void fn_802E13D8(f32 p0, f32 p1, f32 p2, f32 p3, void *arg0) {
         GXSetTevKColor(2, kColor);
         GXSetTevSwapModeTable(0, 0, 1, 2, 3);
         fn_802D3360();
-        fn_802E2C20();
+        KERNEL_GetTimeMs();
     }
 }
 extern void fn_802E30C8(const char *, ...);

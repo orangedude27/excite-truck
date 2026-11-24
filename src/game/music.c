@@ -41,7 +41,7 @@ void fn_8020A600(void) {
 }
 #pragma scheduling on
 
-s32 fn_802E2C20(void);            /* milliseconds since boot */
+s32 KERNEL_GetTimeMs(void);            /* milliseconds since boot */
 extern const char gSetSongIdxFmt[]; /* "music: setting song idx to %d" */
 extern s32 gRequestedSongIdx;          /* song index last requested (-1 = no music) */
 extern s32 gSongChangeTimeMs;          /* ms stamp of that request; fn_8020A100 ramps the crossfade from it */
@@ -55,7 +55,7 @@ extern s32 gSongChangeTimeMs;          /* ms stamp of that request; fn_8020A100 
     if (songIdx != gRequestedSongIdx) {
         fn_802E30C8(gSetSongIdxFmt, songIdx);
         gRequestedSongIdx = songIdx;
-        gSongChangeTimeMs = fn_802E2C20();
+        gSongChangeTimeMs = KERNEL_GetTimeMs();
     }
 }
 #pragma scheduling on
@@ -169,7 +169,7 @@ void fn_8020A100(void) {
     s32 zero;
     if (lbl_8055EDD0 != 0) {
         scale = lbl_80563294;
-        diff = fn_802E2C20() - gSongChangeTimeMs;
+        diff = KERNEL_GetTimeMs() - gSongChangeTimeMs;
         if ((s32)lbl_8055EDE0 != gRequestedSongIdx) {
             if (diff >= 0x190 || diff < 0 || (s32)lbl_8055EDE0 == -1) {
                 lbl_8055EDE0 = (void *)(s32)*(volatile s32 *)&gRequestedSongIdx;

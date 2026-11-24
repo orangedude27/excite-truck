@@ -47,7 +47,7 @@ extern s32 lbl_8041DF30[];
 extern void fn_80127C90(void (*)(void), const char*);
 extern void fn_80127D58(void (*)(void));
 extern void fn_802E30C8(const char*, ...);
-extern s32 fn_802E2C20(void);
+extern s32 KERNEL_GetTimeMs(void);
 extern u64 lbl_8055DF28;
 extern s32 lbl_8055DF28_unused;
 extern s32 lbl_8055DF2C;
@@ -199,7 +199,7 @@ void fn_8012766C(void) {
         r5 += 0x160;
     }
 
-    lbl_8055DF40 = fn_802E2C20();
+    lbl_8055DF40 = KERNEL_GetTimeMs();
 
     c.p = (void (**)(s32))(base + 0x480);
     c.n = 0;
@@ -221,7 +221,7 @@ void fn_80127930(void* alarm) {
 
 // Profiler's periodic elapsed-time refresh callback: samples the millisecond clock, discarding the result.
 void fn_80127954(void) {
-#define sampleElapsedMs fn_802E2C20
+#define sampleElapsedMs KERNEL_GetTimeMs
     sampleElapsedMs();
 #undef sampleElapsedMs
 }

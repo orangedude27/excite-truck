@@ -11,7 +11,7 @@ typedef float f32;
 typedef int BOOL;
 extern void fn_8023905C();
 extern s32 fn_80128668(void);
-extern s32 fn_802E2C20(void);
+extern s32 KERNEL_GetTimeMs(void);
 extern void fn_80238FCC(u32, u32);
 extern void *fn_8022EDC4(void);
 extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
@@ -194,7 +194,7 @@ void fn_8023905C(void *state) {
     *(int *)((char *)state + 8) = 0;
     *(char *)((char *)state + 4) = 1;
     *(char *)((char *)state + 5) = 1;
-    *(int *)state = fn_802E2C20();
+    *(int *)state = KERNEL_GetTimeMs();
     *(int *)((char *)state + 0x10) = 0;
     *(int *)((char *)state + 0xC) = 0;
 }
@@ -325,7 +325,7 @@ void fn_802396BC(void *state) {
     u32 frameRate;
 
     if (*(u32 **)((u8 *)state + 0x14) != 0 && *((u8 *)state + 4) != 0) {
-        now = fn_802E2C20();
+        now = KERNEL_GetTimeMs();
         frameRate = **(u32 **)((u8 *)state + 0x14);
         if ((u32)(now - *(s32 *)state) >= 1000U / frameRate) {
             maxFrame = *(u32 *)((u8 *)state + 0x10);

@@ -82,7 +82,7 @@ extern "C" const char lbl_8032ADF4[];
 extern "C" const char lbl_8032AE20[];
 extern "C" void fn_80128660(s32);
 extern "C" s32 fn_802E748C(s32, s32, void *);
-extern "C" s32 fn_802E2C20(void);
+extern "C" s32 KERNEL_GetTimeMs(void);
 extern "C" void fn_8002B0D8(char *);
 extern "C" char *fn_80029004(char *, int);
 extern "C" s32 fn_8012C370(s32, s32, s32, s32, s32, s32);
@@ -981,7 +981,7 @@ static inline s32 LoadEntryDataBody(struct ResManager *manager, s32 entryIndex) 
         /* The object holds the entry's data behind an 0x80-byte block header. */
         object = AllocAligned80(entry, entry->size + 0x80);
         if (object != 0) {
-            startTime = fn_802E2C20();
+            startTime = KERNEL_GetTimeMs();
             handle = ((s32 (*)(void *))FileLookup)(manager->fileName);
             if (handle != -1) {
                 /* The block header sits in front of the data: back-pointer to the
@@ -999,7 +999,7 @@ static inline s32 LoadEntryDataBody(struct ResManager *manager, s32 entryIndex) 
                     ((void (*)(void *, const char *))fn_8012A46C)(header + 8,
                                                                   strings + 0x3B0); /* "extracted res" */
                     fn_802E30C8(strings + 0x3C0, manager, entry,
-                                fn_802E2C20() - startTime); /* "EXTRACTION: LOADED %s/%s %d msec" */
+                                KERNEL_GetTimeMs() - startTime); /* "EXTRACTION: LOADED %s/%s %d msec" */
                 } else {
                     fn_802E30C8(strings + 0x3E4, entry); /* "res: crc failure on extraction: %s" */
                     fn_8012A7FC();
@@ -1684,7 +1684,7 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
                 *(u8 *)(self + 0xB0) = 1;
                 *(s32 *)(self + 0x68) = 0;
                 *(u8 *)(self + 0xB1) = 0;
-                *(s32 *)self = fn_802E2C20() + *(s32 *)(self + 0xC0) / 3000 + 0x1F4;
+                *(s32 *)self = KERNEL_GetTimeMs() + *(s32 *)(self + 0xC0) / 3000 + 0x1F4;
             }
         }
     parse_next:
@@ -1779,7 +1779,7 @@ extern "C" s32 fn_8012D024(void *request, s32 nameList, s32 arg2) {
                 *(u8 *)(req + 0xB0) = 1;
                 *(s32 *)(req + 0x68) = 0;
                 *(u8 *)(req + 0xB1) = 0;
-                s32 now = fn_802E2C20();
+                s32 now = KERNEL_GetTimeMs();
                 *(s32 *)req = now + *(s32 *)(req + LOAD_REQ_LOADED_VALUE) / 3000 + 0x1F4;
             }
         }
@@ -1869,7 +1869,7 @@ extern "C" void fn_8012D024_old(void *arg0, s32 arg1, s32 arg2) {
         memset((u8 *)arg0 + 0x6C, 0, 0x34);
 
         // Calculate timestamp
-        timestamp = fn_802E2C20();
+        timestamp = KERNEL_GetTimeMs();
         // timestamp += (0x57619f1 * value) >> 38 + sign correction
         s32 scaled = ((s64)0x57619f1 * (s64)value) >> 38;
         if (scaled < 0) {
@@ -2153,7 +2153,7 @@ extern "C" void fn_8012D40C(s32 arg0) {
                 *(u8 *)(self + 0xB0) = 1;
                 object[0x68 / 4] = 0;
                 *(u8 *)(self + 0xB1) = 0;
-                object[0] = fn_802E2C20() + object[0xC0 / 4] / 3000 + 0x1F4;
+                object[0] = KERNEL_GetTimeMs() + object[0xC0 / 4] / 3000 + 0x1F4;
             }
         }
     parse_next:
@@ -2878,12 +2878,12 @@ extern "C" void fn_8012E67C(s32 loader, s32 name) {
     u8 *req;
     for (req = *(u8 **)(self + 0xA18); req != 0; req = *(u8 **)(req + 4)) {
         if (stricmp((const char *)name, (const char *)(req + 0xC)) == 0) {
-            start = fn_802E2C20();
+            start = KERNEL_GetTimeMs();
             deadline = start + 0x7D0;
             while (fn_8012D838(*(s32 *)(req + 0x4C)) != 2) {
                 fn_80127464();
                 fn_802E2D74(0xA);
-                now = fn_802E2C20();
+                now = KERNEL_GetTimeMs();
                 if (now > deadline) {
                     fn_802E30C8(lbl_8032AD88, (const char *)(req + 0xC));
                     deadline = now + 0x7D0;
@@ -2911,7 +2911,7 @@ extern "C" void fn_8012E67C(s32 loader, s32 name) {
                 } while (done != 0);
                 self[0xA20] = 0;
             }
-            fn_802E30C8(lbl_8032AD6C, (const char *)(req + 0xC), fn_802E2C20() - start);
+            fn_802E30C8(lbl_8032AD6C, (const char *)(req + 0xC), KERNEL_GetTimeMs() - start);
             break;
         }
     }
@@ -2942,12 +2942,12 @@ extern "C" void fn_8012E81C(s32 arg0) {
     while (entry != 0) {
         if (stricmp((const char *)arg0,
                     (const char *)((u8 *)entry + 0xC)) == 0) {
-            start = fn_802E2C20();
+            start = KERNEL_GetTimeMs();
             limit = start + 0x7D0;
             do {
                 fn_80127464();
                 fn_802E2D74(0xA);
-                current = fn_802E2C20();
+                current = KERNEL_GetTimeMs();
             } while (current <= limit);
             fn_802E30C8(lbl_8032AD88, (const char *)((u8 *)entry + 0xC));
             limit = current + 0x7D0;
@@ -2955,7 +2955,7 @@ extern "C" void fn_8012E81C(s32 arg0) {
                 fn_8012DEE4(effect);
                 fn_802E30C8(lbl_8032AD6C,
                             (const char *)((u8 *)entry + 0xC),
-                            fn_802E2C20() - start);
+                            KERNEL_GetTimeMs() - start);
                 return;
             }
         }

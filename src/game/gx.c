@@ -1067,7 +1067,7 @@ int HomeMenu_drawUIAndFlush(void) {
     extern int lbl_8055FD40;
     extern char lbl_8034C058[];
     extern void fn_802ECA48(void);
-    extern int fn_802E2C20(void);
+    extern int KERNEL_GetTimeMs(void);
     #define sGxSyncDone lbl_8055FD3C
     #define sGxTimeout lbl_8055FD38
     #define sGxBusy lbl_8055FD34
@@ -1102,7 +1102,7 @@ int HomeMenu_drawUIAndFlush(void) {
             gxReportGPStatus();
             GXReinit();
             fn_802CF048(1);
-            lbl_8055FD40 = fn_802E2C20();
+            lbl_8055FD40 = KERNEL_GetTimeMs();
             break;
         }
     }
@@ -1576,7 +1576,7 @@ extern int lbl_804C9760[];
 extern unsigned char lbl_804C9830[];
 void fn_802D0914(int, short, short);
 void fn_802D09E4(void);
-int fn_802E2C20(void);
+int KERNEL_GetTimeMs(void);
 void fn_802E30C8(const char *, ...);
 void fn_802E3734(int *);
 int FileOpenSecondary(unsigned char *);
@@ -1703,7 +1703,7 @@ void fn_802D09E8(void)
         lbl_8055D0B8 = -1;
         return;
       }
-      lbl_8055FDC4 = fn_802E2C20();
+      lbl_8055FDC4 = KERNEL_GetTimeMs();
       fn_802E30C8(base + 0x43C, lbl_804C9830);
       if (lbl_8055FD18 == 0)
       {
@@ -1724,7 +1724,7 @@ void fn_802D09E8(void)
       lbl_8055D0B8 = -1;
       fn_802E3734(&lbl_8055D10C);
       lbl_8055D10C = -1;
-      val = fn_802E2C20();
+      val = KERNEL_GetTimeMs();
       cvt.w[0] = 0x43300000;
       cvt.w[1] = ((unsigned int) (val - lbl_8055FDC4)) ^ 0x80000000U;
       fn_802E30C8(base + 0x468, lbl_804C9830, lbl_8055FDC4, lbl_80564F80 * (cvt.d - lbl_80564FB0));

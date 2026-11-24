@@ -61,7 +61,7 @@ extern s32 __AXGetStackHead_80137CFC(s32);
 extern void fn_80129AEC(void);
 extern void *fn_801E86F8(s32);
 extern void *fn_80145E70(void *);
-extern s32 fn_802E2C20(void);
+extern s32 KERNEL_GetTimeMs(void);
 extern void fn_80176A00(s32);
 extern void fn_80179588(void);
 extern void fn_80176734(void);
@@ -691,7 +691,7 @@ void fn_80009534(void) {
     lbl_8055D36D = var15;
     lbl_8055D36C = var16;
     lbl_805589B0 = var15;
-    lbl_8055D380[0] = fn_802E2C20();
+    lbl_8055D380[0] = KERNEL_GetTimeMs();
     lbl_8055D380[1] = var16;
     *(s32 *)(lbl_8034F44C + 4) = -0x258;
     *(s32 *)(lbl_8034F44C + 8) = var16;
@@ -704,7 +704,7 @@ void fn_80009534(void) {
     var22 = 0;
     var21 = 0;
     var20 = 0;
-    var19 = fn_802E2C20() - 0x7D0;
+    var19 = KERNEL_GetTimeMs() - 0x7D0;
     var18 = fn_8026DDD0();
     var17 = 0;
     lbl_8055D37A = var17;
@@ -715,7 +715,7 @@ void fn_80009534(void) {
 skip16:
     fn_80007210();
     fn_801E7E04(0, 0);
-    fn_802E2C20();
+    KERNEL_GetTimeMs();
     frameBias = lbl_805601C8;
     frameLimit = lbl_805601E8;
     p28 = lbl_8034F44C;
@@ -726,10 +726,10 @@ skip16:
         fn_80008390();
         if (var22 != 0)
             var21++;
-        else if (fn_8018FD38() != 0 && fn_802E2C20() > var19 + 0x7D0) {
+        else if (fn_8018FD38() != 0 && KERNEL_GetTimeMs() > var19 + 0x7D0) {
             __AXDSPInitCallback_801769E0();
             fn_80176734();
-            var19 = fn_802E2C20();
+            var19 = KERNEL_GetTimeMs();
         }
         vv = fn_801769F8();
         if (vv != var23) {
@@ -877,7 +877,7 @@ skip16:
                     break;
                 case 10:
                     lbl_8055D36C = var26;
-                    var19 = fn_802E2C20();
+                    var19 = KERNEL_GetTimeMs();
                     __AXDSPInitCallback_801769E0();
                     fn_80176734();
                     break;
@@ -927,7 +927,7 @@ skip16:
         fn_8026A1F0(var15, 0, var20);
         var20 = 0;
         fn_801E81B8(1, 0);
-        fn_802E2C20();
+        KERNEL_GetTimeMs();
         DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
         fn_80230B5C(view);
         fn_802C8638(view);
@@ -939,7 +939,7 @@ skip16:
             fn_80206444();
         }
         fn_802C9A70(0);
-        flag31 = fn_802E2C20();
+        flag31 = KERNEL_GetTimeMs();
         if (fn_802ECC10() == 0) {
             p27[1] += flag31 - lbl_8055D380[0];
         }

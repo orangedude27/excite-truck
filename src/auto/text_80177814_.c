@@ -46,13 +46,13 @@ __declspec(section ".data") extern long lbl_8033192C;
 extern void fn_801AFD20(void *);
 extern void fn_8017ACCC(void);
 extern void fn_8018A180(void);
-int fn_802E2C20(void);
+int KERNEL_GetTimeMs(void);
 extern int lbl_8055E464;
 void fn_80177814(int *arg0)
 {
-  *arg0 = (fn_802E2C20() + (lbl_8055E464 & 0xFFFF)) % 30000;
+  *arg0 = (KERNEL_GetTimeMs() + (lbl_8055E464 & 0xFFFF)) % 30000;
   lbl_8055E464 = (unsigned short) ((*arg0) + (0x9947 & 0xFF));
-  arg0[1] = (fn_802E2C20() + (lbl_8055E464 & 0xFFFF)) % 30000;
+  arg0[1] = (KERNEL_GetTimeMs() + (lbl_8055E464 & 0xFFFF)) % 30000;
   lbl_8055E464 = (unsigned short) (arg0[1] + 0x2F1CD);
 }
 

@@ -49,7 +49,7 @@ extern char lbl_80560062;
 extern char lbl_80560063;
 extern char lbl_8034E95C[];
 extern char lbl_8034E980[];
-extern int fn_802E2C20(void);
+extern int KERNEL_GetTimeMs(void);
 extern long fn_802E30C8(char *, long);
 #pragma push
 #pragma scheduling invalid_target
@@ -350,7 +350,7 @@ void fn_802E9EB8(void) {
     {
         float f30;
         if ((unsigned char)lbl_805600C9 != 0) {
-            int now = fn_802E2C20();
+            int now = KERNEL_GetTimeMs();
             int delta = now - lbl_805600CC;
             float t = (lbl_805651BC * (float)delta - lbl_805651C4) / lbl_805651C8;
             if (lbl_805651C0 >= t) ; else t = lbl_805651C0;
@@ -597,7 +597,7 @@ void fn_802EAB28(void) {
     extern void OSLockMutex(void *);
     extern void OSUnlockMutex(void *);
     extern void fn_802EA7E0(void);
-    extern int fn_802E2C20(void);
+    extern int KERNEL_GetTimeMs(void);
     extern void fn_802E9BCC(void *);
     extern void *fn_802E9BEC(long);
     extern void fn_802EAA08(void);
@@ -683,7 +683,7 @@ void fn_802EAB28(void) {
         }
         if ((unsigned char)lbl_805600C8 != 0) {
             if ((unsigned char)lbl_805600C9 == 0) {
-                lbl_805600CC = fn_802E2C20();
+                lbl_805600CC = KERNEL_GetTimeMs();
                 lbl_805600C9 = 1;
             }
             if (curNode != 0) off = consumed;
@@ -1238,9 +1238,9 @@ void fn_802EC1E4(void) {
     int current;
     fn_802EC1D8();
     ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E95C);
-    start = fn_802E2C20();
+    start = KERNEL_GetTimeMs();
     while ((unsigned char)lbl_805600C8 != 0) {
-        current = fn_802E2C20();
+        current = KERNEL_GetTimeMs();
         if (current - start > 0xBB8) {
             ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E980);
             break;

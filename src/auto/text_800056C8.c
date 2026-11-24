@@ -44,7 +44,7 @@ extern u8 lbl_8055F024;
 
 extern s32 lbl_8034EEB8[0x100];
 extern void fn_800070DC(void);
-extern s32 fn_802E2C20(void);
+extern s32 KERNEL_GetTimeMs(void);
 extern s32 lbl_8055D348;
 extern f32 lbl_8055D34C;
 extern void fn_80005C20(void);
@@ -429,7 +429,7 @@ void fn_80005C20(void) {
     f32 clampedDeltaSeconds;
     s32 currentTickMs;
 
-    currentTickMs = fn_802E2C20();
+    currentTickMs = KERNEL_GetTimeMs();
     clampedDeltaSeconds = lbl_8056011C;
     deltaSeconds = (f32)(currentTickMs - lbl_8055D348) / lbl_80560124;
     clampedDeltaSeconds = (clampedDeltaSeconds > deltaSeconds) ? clampedDeltaSeconds : deltaSeconds;
@@ -869,7 +869,7 @@ void fn_800064A8(void *arg0) {
     s32 *p = (s32 *)arg0;
     if (p[2] != p[1]) {
         p[1] = p[2];
-        p[3] = fn_80009C84() != 0 ? lbl_8055D348 : fn_802E2C20();
+        p[3] = fn_80009C84() != 0 ? lbl_8055D348 : KERNEL_GetTimeMs();
     }
     fn_80011A2C();
     switch (p[1]) {
@@ -986,11 +986,11 @@ extern "C" void fn_800066B4(void *arg0) {
     ((void (*)(u32, f32, f32, f32, f32, f64))fn_800109E4)(0x7F000000, lbl_80560140, lbl_80560144, lbl_80560148, lbl_8056014C, (f64)two);
     obj = *(void **)((u8 *)arg0 + 0x1C);
     if (obj != 0) ((void (*)(void *, void *, void *, s32))fn_8014784C)(obj, base + 0x1B4, base + 0x1C0, 0);
-    f = (f32)fn_802E2C20();
+    f = (f32)KERNEL_GetTimeMs();
     sin(lbl_80560150 * (lbl_80560154 * f));
     if (*(void **)((u8 *)arg0 + 0x1C) == 0) return;
     if (fn_80009C84()) now = lbl_8055D348;
-    else now = fn_802E2C20();
+    else now = KERNEL_GetTimeMs();
     f = lbl_80560154 * (f32)(now - *(s32 *)((u8 *)arg0 + 0xC));
     if (f < lbl_8056015C) fn_80230E90(1);
     *(struct Table *)table = *(struct Table *)lbl_802ED6A8;
@@ -1525,7 +1525,7 @@ extern "C" void fn_800070DC(void) {
  * frame timer to the current millisecond tick so the next frame delta is small. */
 void fn_80007210(void) {
 #define ResetOverlays fn_800070DC
-#define GetCurrentTimeMs fn_802E2C20
+#define GetCurrentTimeMs KERNEL_GetTimeMs
 #define hudFrameTimerBase lbl_8055D348
     ResetOverlays();
     hudFrameTimerBase = GetCurrentTimeMs();
@@ -1635,7 +1635,7 @@ void fn_800073D8(s32 mode) {
         if (fn_80009C84() != 0) {
             value = lbl_8055D348;
         } else {
-            value = fn_802E2C20();
+            value = KERNEL_GetTimeMs();
         }
         obj[3] = value;
     }

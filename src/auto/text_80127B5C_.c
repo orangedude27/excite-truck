@@ -228,7 +228,7 @@ void fn_80127E28(unsigned int object) {
     }
 }
 #pragma pop
-extern int fn_802E2C20();
+extern int KERNEL_GetTimeMs();
 extern void fn_80127B5C();
 extern int lbl_8055DF70;
 extern int lbl_8041E098[];
@@ -247,14 +247,14 @@ void fn_80127EF8(void) {
 }
 
 /* OSAlarm callback: dispatch pending background tasks, recording the current
- * elapsed-millisecond time (fn_802E2C20) as the last dispatch time. */
+ * elapsed-millisecond time (KERNEL_GetTimeMs) as the last dispatch time. */
 void fn_80127F70(void* alarm) {
-    fn_80127B5C(fn_802E2C20(alarm));
+    fn_80127B5C(KERNEL_GetTimeMs(alarm));
 }
 
 void fn_80127F94(void) {
     /* Dispatch pending background tasks when over 16 ms have elapsed since the last dispatch (lbl_8055DF70). */
-    if (fn_802E2C20() - lbl_8055DF70 > 0x10)
+    if (KERNEL_GetTimeMs() - lbl_8055DF70 > 0x10)
         fn_80127B5C();
 }
 

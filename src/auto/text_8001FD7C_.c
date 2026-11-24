@@ -55,7 +55,7 @@ extern int lbl_8055D640;
 #define OVERLAY_ON     lbl_8055D644 /* the overlay is being shown */
 #define OVERLAY_PAUSED lbl_8055D645 /* overlay waits for a pause/jump condition to clear */
 #define TIPS_ZOOM_ACTIVE lbl_8055D648 /* timed tips camera zoom is in progress */
-#define GetTimeMs      fn_802E2C20
+#define GetTimeMs      KERNEL_GetTimeMs
 #define RestartPhysics fn_80176734 /* reset the physics fader / pending command to restart the race */
 extern unsigned char lbl_8055D670;
 extern int lbl_8055D64C;
@@ -109,7 +109,7 @@ extern struct lbl_8035BAE4_t lbl_8035BAE4;
 struct lbl_8035BAF0_t { float f0; int f4; int f8; };
 extern struct lbl_8035BAF0_t lbl_8035BAF0;
 extern char lbl_802FE1C0[0x100];
-int fn_802E2C20(void);
+int KERNEL_GetTimeMs(void);
 extern int lbl_8055D630;
 extern int lbl_8055D634;
 extern char lbl_8035B758[];
@@ -347,7 +347,7 @@ int fn_80020184(void) {
     s32 clamped;
     u32 scaled;
 
-    scaled = (((fn_802E2C20() - lbl_8055D63C) - 0x12C) << 8) / 1000;
+    scaled = (((KERNEL_GetTimeMs() - lbl_8055D63C) - 0x12C) << 8) / 1000;
     clamped = scaled & ((s32) (-(s32) scaled & ~scaled) >> 0x1F);
     clamped = (clamped < 0xFF) ? clamped : 0xFF;
     return 0xFF - clamped;
@@ -488,7 +488,7 @@ int fn_80020434(void* arg0, float* arg1) {
     mat[7] = lbl_805604B4;
     mat[8] = out2[1];
     ((Cross7)PSVECCrossProduct)(&mat[3], &mat[6], &mat[0], out2[0], out1[1], lbl_805604B4, out1[0]);
-    temp_r3 = fn_802E2C20();
+    temp_r3 = KERNEL_GetTimeMs();
     temp_r6 = temp_r3 - lbl_8055D63C;
     temp_r0 = temp_r6 / 50000;
     temp_r0 = temp_r6 - temp_r0 * 50000;
@@ -507,11 +507,11 @@ int fn_80020434(void* arg0, float* arg1) {
     var_f1 = lbl_805604D0;
     if (lbl_8055D630 > 0) {
         temp_r28 = &lbl_8035B758[lbl_8055D634 * 0x70];
-        var_f31 = lbl_805604D4 * (float)(fn_802E2C20() - lbl_8055D638);
+        var_f31 = lbl_805604D4 * (float)(KERNEL_GetTimeMs() - lbl_8055D638);
         if (var_f31 > *(float*)&((char*)temp_r28)[0x68]) {
             temp_r4 = lbl_8055D634 + 1;
             lbl_8055D634 = (lbl_8055D634 + 1) % lbl_8055D630;
-            lbl_8055D638 = fn_802E2C20();
+            lbl_8055D638 = KERNEL_GetTimeMs();
         }
         var_f3 = lbl_805604B8;
         temp_f0 = (var_f31 - lbl_805604B4) / (*(float*)&((char*)temp_r28)[0x68] - lbl_805604B4);
@@ -559,9 +559,9 @@ void fn_800207B0(void) {
     float overlayScale;
 
     if ((lbl_8055D644 != 0) && (lbl_8055D645 == 0)) {
-        fn_802E2C20();
+        KERNEL_GetTimeMs();
     }
-    if ((lbl_8055D644 != 0) && (lbl_8055D645 != 0) && ((fn_801E8838() > 0xF0) || ((fn_802E2C20() - lbl_8055D640) > 0x4B0))) {
+    if ((lbl_8055D644 != 0) && (lbl_8055D645 != 0) && ((fn_801E8838() > 0xF0) || ((KERNEL_GetTimeMs() - lbl_8055D640) > 0x4B0))) {
         lbl_8055D645 = 0;
         lbl_8055D644 = 0;
     }
@@ -1148,7 +1148,7 @@ int fn_800217AC(void) {
 }
 
 extern float lbl_80560560, lbl_80560564, lbl_805604B8, lbl_805604B4, lbl_80560568, lbl_80560554, lbl_805604FC;
-extern int fn_802E2C20(void);
+extern int KERNEL_GetTimeMs(void);
 extern void fn_80020860(int);
 void fn_800217E4(void) {
     /* While active, updates a time-based value from elapsed ticks and applies it for up to 1500 ticks. */
@@ -1159,7 +1159,7 @@ void fn_800217E4(void) {
     int amount;
 
     if (lbl_8055D648 != 0) {
-        elapsed = fn_802E2C20() - lbl_8055D63C;
+        elapsed = KERNEL_GetTimeMs() - lbl_8055D63C;
         if (elapsed < 0x5DC) {
             progress = lbl_805604B8;
             progress = progress < ((float)elapsed - lbl_80560560) / lbl_80560564

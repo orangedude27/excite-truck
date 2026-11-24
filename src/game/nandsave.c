@@ -2,7 +2,7 @@
 // Recovered TU window 0x802E86D4..0x802E988C (see docs/attribution_analysis.md).
 // Static-init thunk fn_802E988C (+ .ctors slot 0x802ED61C) remains in
 // auto/text_802E988C_.c pending a promotion pass.
-extern int fn_802E2C20(void);
+extern int KERNEL_GetTimeMs(void);
 __declspec(section ".data") extern int lbl_80507288;
 extern int NANDCheck(unsigned int, unsigned int, unsigned int *);
 extern char lbl_8034D9C0[];
@@ -388,7 +388,7 @@ extern char sRmemcardDeleteFailedMsg[];
   extern int NANDClose(void *);
 extern char lbl_80560034;
 extern int rmemcardWaitAsync(void *, void (*)(void), int);
-extern int fn_802E2C20(void);
+extern int KERNEL_GetTimeMs(void);
 extern char lbl_8034E024[];
 __declspec(section ".data") extern int lbl_80507288;
 extern unsigned char lbl_80560035;
@@ -651,7 +651,7 @@ unsigned int fn_802E91BC(int *ctx) {
     return *ctx < 2;
 }
 #pragma pop
-extern int fn_802E2C20(void);
+extern int KERNEL_GetTimeMs(void);
 extern char lbl_8034E024[];
 extern int lbl_80507288;
 extern unsigned char lbl_80560035;
@@ -872,11 +872,11 @@ int rmemcardWaitAsync(void *opName, void (*pump)(void), int unused) {
     void (*pump_cb)(void);
     name = opName;
     pump_cb = pump;
-    startMs = fn_802E2C20();
+    startMs = KERNEL_GetTimeMs();
     goto check;
 loop:
     {
-        int nowMs = fn_802E2C20();
+        int nowMs = KERNEL_GetTimeMs();
         if (nowMs < startMs || nowMs > startMs + 0xFA0) {
             fn_802E30C8(rmemcard_timeout_msg, name, nowMs - startMs);
             return 0;

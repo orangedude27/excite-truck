@@ -23,7 +23,7 @@ extern void *fn_801E87A8(void);
 extern s32 fn_801E86F8(s32);
 extern void *fn_801EA9CC(void);
 extern s32 fn_801B8570(s32);
-extern s32 fn_802E2C20(void);
+extern s32 KERNEL_GetTimeMs(void);
 extern s32 fn_80005580(s32);
 
 // split_file divides it into the game's real files (file_status shows its range).
@@ -88,7 +88,7 @@ void fn_800054E0(void) {
         p += 8;
     } while (--i != 0);
     *(s32 *)(lbl_8034EC78 + 0x200) = 0;
-    *(s32 *)(lbl_8034EC78 + 0x204) = fn_802E2C20();
+    *(s32 *)(lbl_8034EC78 + 0x204) = KERNEL_GetTimeMs();
     *(s32 *)(lbl_8034EC78 + 0x208) = 0;
 }
 /* Returns non-zero if field at offset 0x50 in lbl_8034EEB8 is non-zero. */
@@ -123,7 +123,7 @@ extern void *fn_801EA9CC(void);
 extern s32 fn_801B8570(s32);
 extern f32 lbl_8056011C;
 extern u8 lbl_8034EC78[];
-extern s32 fn_802E2C20(void);
+extern s32 KERNEL_GetTimeMs(void);
 extern s32 fn_80005580(s32);
 extern u8 *lbl_8055D350;
 /* Iterates through items and returns 1 if all pass fn_80005580. */

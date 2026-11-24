@@ -20,7 +20,7 @@ extern u8 lbl_8055F1AC;
 extern s32 lbl_8055F1C8;
 extern s32 fn_80214A9C(s32);
 extern s32 fn_80214AF0(s32);
-extern s32 fn_802E2C20(void);
+extern s32 KERNEL_GetTimeMs(void);
 
 // Returns the base of the global table of UI layout names and menu messages (starts with "mem3line.lyt").
 void *fn_8023E5A8(void) {
@@ -53,13 +53,13 @@ extern "C" void fn_8023E5B4(void *arg0, int arg1) {
     int length;
     int *base;
     int *e;
-    int t0, t2, t3, t4;
+    register int t0, t2, t3, t4;
     int e0, e1, e2, e3, e4;
     void *second;
     Obj *object;
     int p_cf0, c10, p_bab8, p_6914, c2;
 
-    now = fn_802E2C20();
+    now = KERNEL_GetTimeMs();
     lbl_8055F1B0 = arg0;
     lbl_8055F1B4 = now + 0x5dc;
     lbl_8055F1BC = 0;
@@ -144,7 +144,7 @@ extern int lbl_804987E0[5];
 extern unsigned char lbl_802FA294[];
 extern unsigned char lbl_80341CF0[];
 extern unsigned char lbl_8055F1AC;
-extern int fn_802E2C20(void);
+extern int KERNEL_GetTimeMs(void);
 extern void fn_802E30C8(const char *, ...);
 extern int fn_802146BC(void *, int, int, int);
 extern void fn_8023EC94(void);
@@ -217,7 +217,7 @@ void fn_8023E7A8(unsigned int mode) {
     case 2: hdr[0] = 1; hdr[1] = 1; hdr[2] = 0; lbl_8055F1AC = 1; *((char *)&lbl_8055F1AC+1)=1; *((char *)&lbl_8055F1AC+2)=1; break;
     case 3:
         hdr[1] = 1; lbl_8055F1AC = 1;
-        t = fn_802E2C20();
+        t = KERNEL_GetTimeMs();
         lbl_8055F1C8 = t + 100;
         break;
     }
@@ -272,9 +272,9 @@ void fn_8023EC94(void) {
 }
 #pragma scheduling on
 s32 fn_8023ECF8(void) {
-    /* Timeout check: true once the milliseconds-since-boot clock (fn_802E2C20)
+    /* Timeout check: true once the milliseconds-since-boot clock (KERNEL_GetTimeMs)
        has passed the deadline in lbl_8055F1C8, set earlier to now + 100 ms. */
-    return lbl_8055F1C8 < fn_802E2C20();
+    return lbl_8055F1C8 < KERNEL_GetTimeMs();
 }
 
 extern unsigned char lbl_8055B860;
@@ -547,8 +547,6 @@ int fn_8023F2C4(void) {
     volatile int args[5];
     volatile int values[55];
     int pC = (int)(lbl_80341CC8 + 0x3E8);
-    volatile int *config = (volatile int *)lbl_804987E0;
-    volatile int *input = (volatile int *)lbl_802FA2D0;
     int config0, config1, config2, config3, config4;
     int arg0, arg1, arg2, arg3, arg4;
     values[0] = (int)&lbl_8055B860;
@@ -592,23 +590,27 @@ int fn_8023F2C4(void) {
     values[38] = 4;
     values[39] = 0;
     values[41] = 3;
-    config0 = *(volatile int *)lbl_804987E0;
-    arg0 = input[0];
-    config1 = config[1];
-    config2 = config[2];
-    config3 = config[3];
-    config4 = config[4];
-    arg1 = input[1];
-    arg2 = input[2];
-    arg3 = input[3];
-    arg4 = input[4];
+    {
+        volatile int *config = (volatile int *)lbl_804987E0;
+        volatile int *input = (volatile int *)lbl_802FA2D0;
+        config0 = *(volatile int *)lbl_804987E0;
+        arg0 = input[0];
+        config1 = config[1];
+        config2 = config[2];
+        config3 = config[3];
+        config4 = config[4];
+        arg1 = input[1];
+        arg2 = input[2];
+        arg3 = input[3];
+        arg4 = input[4];
+    }
     values[40] = (int)&lbl_8055BD08;
     values[42] = (int)&lbl_8055BD20;
     values[43] = 4;
     values[44] = 0;
     values[46] = 3;
     values[45] = (int)&lbl_8055BD00;
-    values[47] = pC;
+    values[47] = ((int)(lbl_80341CC8 + 0x3E8));
     values[48] = 4;
     values[49] = 0;
     values[50] = config0;
@@ -718,18 +720,18 @@ int fn_8023F4B8(void) {
 extern unsigned char lbl_8055BD2C;
 #pragma use_lmw_stmw off
 extern int __cntlzw(unsigned int);
+#pragma optimization off
 int fn_8023F694(void) {
     int data[59];
     int args[5];
-    int six = 6, minus_one = -1, zero = 0, four = 4, three = 3, minus_two = -2;
 
     data[7] = (int)&fn_8023F9E8;
     data[0] = (int)&lbl_8055B860;
     data[5] = (int)&lbl_8055B860;
-    data[8] = minus_one;
-    data[1] = six;
-    data[6] = six;
-    data[3] = minus_two;
+    data[8] = -1;
+    data[1] = 6;
+    data[6] = 6;
+    data[3] = -2;
     data[25] = (int)&lbl_8055BCE8;
     data[4] = 0xD;
     data[9] = 0x1B;
@@ -739,40 +741,40 @@ int fn_8023F694(void) {
     data[15] = (int)&lbl_8055BCD8;
     data[20] = (int)&lbl_8055BCE0;
     data[35] = (int)&lbl_8055BCF8;
-    data[2] = zero;
-    data[11] = three;
-    data[13] = four;
-    data[14] = zero;
-    data[16] = three;
+    data[2] = 0;
+    data[11] = 3;
+    data[13] = 4;
+    data[14] = 0;
+    data[16] = 3;
     data[17] = (int)(lbl_80341CC8 + 0x4B8);
-    data[18] = four;
-    data[19] = zero;
-    data[21] = three;
+    data[18] = 4;
+    data[19] = 0;
+    data[21] = 3;
     data[22] = (int)(lbl_80341CC8 + 0x4E0);
-    data[23] = four;
-    data[24] = zero;
-    data[26] = three;
+    data[23] = 4;
+    data[24] = 0;
+    data[26] = 3;
     data[27] = (int)(lbl_80341CC8 + 0x500);
-    data[28] = four;
-    data[29] = zero;
-    data[31] = three;
+    data[28] = 4;
+    data[29] = 0;
+    data[31] = 3;
     data[32] = (int)&lbl_8055BCB8;
-    data[33] = four;
-    data[34] = zero;
-    data[36] = three;
+    data[33] = 4;
+    data[34] = 0;
+    data[36] = 3;
     data[37] = (int)&lbl_8055BCB8;
-    data[38] = four;
-    data[39] = zero;
-    data[41] = three;
+    data[38] = 4;
+    data[39] = 0;
+    data[41] = 3;
     data[40] = (int)&lbl_8055BD08;
     data[42] = (int)&lbl_8055BD2C;
-    data[43] = four;
-    data[44] = zero;
-    data[46] = three;
+    data[43] = 4;
+    data[44] = 0;
+    data[46] = 3;
     data[45] = (int)&lbl_8055BD00;
     data[47] = (int)(lbl_80341CC8 + 0x3E8);
-    data[48] = four;
-    data[49] = zero;
+    data[48] = 4;
+    data[49] = 0;
     data[50] = lbl_804987E0[0];
     data[51] = lbl_804987E0[1];
     data[52] = lbl_804987E0[2];
@@ -786,13 +788,10 @@ int fn_8023F694(void) {
     args[4] = 0;
     args[0] = (int)((int (*)(int, int, int, int, int, int, int, int))fn_8023E5A8)(
         lbl_804987E0[3], lbl_804987E0[2], lbl_804987E0[1],
-        (int)lbl_804987E0, lbl_804987E0[0], three, four, zero);
+        (int)lbl_804987E0, lbl_804987E0[0], 3, 4, 0);
     args[1] = (int)data;
     return (fn_802146BC(args, -999, -999, 1) + 2) == 0;
 }
-#pragma use_lmw_stmw on
-
-#pragma scheduling on
 
 void fn_8023F870(void) {
     /* Intentionally empty no-op callback; occupies a UI menu entry's function-pointer slot when no action is needed. */
@@ -804,7 +803,7 @@ void fn_8023F874(void) {}
 #pragma cplusplus on
 extern "C" int fn_8023F878(void) {
     /* Advance a timed action on lbl_8055F1B0 (v2 checks completion, v3 steps).
-     * Calls optional callback lbl_8055F1C0, samples time via fn_802E2C20, starts
+     * Calls optional callback lbl_8055F1C0, samples time via KERNEL_GetTimeMs, starts
      * after lbl_8055F1B8 (setting lbl_8055F1BC when v2() reports done), and
      * returns 1 once the end time lbl_8055F1B4 passes. */
     class Obj {
@@ -816,7 +815,7 @@ extern "C" int fn_8023F878(void) {
     };
     int now;
     if (lbl_8055F1C0 != 0) ((void (*)(void))lbl_8055F1C0)();
-    now = fn_802E2C20();
+    now = KERNEL_GetTimeMs();
     if (lbl_8055F1BC == 0) {
         if (now > lbl_8055F1B8) {
             if (((Obj *)lbl_8055F1B0)->v2() != 0)

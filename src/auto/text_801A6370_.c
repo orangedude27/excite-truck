@@ -137,7 +137,7 @@ void fn_801A6520(void) {
 extern void fn_8018381C(void);
 extern void fn_801A6558(void *);
 extern void fn_801A67B0(void *);
-extern void *fn_802E2C20(void);
+extern void *KERNEL_GetTimeMs(void);
 extern void fn_80182010(void);
 extern void *fn_801A644C(void *);
 extern void *fn_8012850C(int, void *);
@@ -166,7 +166,7 @@ void fn_801A6558(void *arg0) {
     float one;
     void *tmp;
     *(int *)((char *)arg0 + 0x2778) = 4;
-    tmp = fn_802E2C20();
+    tmp = KERNEL_GetTimeMs();
     zero = lbl_80562430;
     one = lbl_8056242C;
     *(void **)((char *)arg0 + 0x277C) = tmp;
@@ -253,7 +253,7 @@ int fn_801A6724(void *arg0) {
         ret = (v > lbl_80562434);
     } else {
         ret = 0;
-        if (fn_801E89EC() == 1 && ((int)fn_802E2C20() - *(int *)((char *)arg0 + 0x277C) > 0x7D0)) {
+        if (fn_801E89EC() == 1 && ((int)KERNEL_GetTimeMs() - *(int *)((char *)arg0 + 0x277C) > 0x7D0)) {
             ret = 1;
         }
     }
@@ -287,7 +287,7 @@ extern int lbl_8055E0D0;
  *   0x118, 0x124
  *           the camera's up and side vectors
  *   0x2610  the game state the camera runs in; 0x2778 the state it ran in last
- *             frame and 0x277C the time (fn_802E2C20, ms) it entered it
+ *             frame and 0x277C the time (KERNEL_GetTimeMs, ms) it entered it
  *   0x2700  the move record it follows; 0x2704 what that move is doing (0
  *             idle, 1 running, 3 just ended), 0x2740 that one is running and
  *             0x2741 that one has just ended
@@ -308,7 +308,7 @@ extern "C" void fn_801A67C4(void *self) {
     int state = *(int *)(cam + 0x2610);
     *(char *)(cam + 0x1e9) = 0;
     if (state != *(int *)(cam + 0x2778))
-        *(void **)(cam + 0x277C) = fn_802E2C20();
+        *(void **)(cam + 0x277C) = KERNEL_GetTimeMs();
     if (fn_801A6724(self) == 0) {
         if (*(unsigned char *)(cam + 0x2740) != 0) {
             char *attached = (*(Fn801A67C4Vt **)(cam + 0x2774))->d2();
@@ -599,17 +599,14 @@ float fn_801A70EC(int outQuat, const void *fromKey, void *toKey, int nowTick) {
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 extern double fn_8002F234(double);
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
-#pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_801A7178(void *arg0, float *arg1) {
+    int time = lbl_8055E3C4;
     float a[4], b[4], q[4], rot[4];
     float *rotp;
     float (*m)[3];
     char *p = arg0;
     char *data;
-    int time = lbl_8055E3C4;
     float trace, t, scale, blend, tick, step, thr;
     float m00, m11, m22, tmp;
     int k,j,i;
@@ -675,8 +672,6 @@ void fn_801A7178(void *arg0, float *arg1) {
     *(float *)(p+0x50)=a1;
     *(float *)(p+0x5c)=d2;
 }
-#pragma pop
-
 extern float lbl_8056242C, lbl_80562430, lbl_80562448;
 extern void fn_801A69F4(void *, float *);
 extern void fn_801A6C14(void *);

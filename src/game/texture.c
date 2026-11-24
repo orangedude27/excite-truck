@@ -1738,7 +1738,7 @@ void fn_802CC550(int textureIndex, float minWeight, float scale) {
 
 extern int lbl_8055FCC0;
 extern float lbl_80564F48;
-extern int fn_802E2C20(void);
+extern int KERNEL_GetTimeMs(void);
 #pragma scheduling on
 void fn_802CC60C(void) {
     float f = 1000000000000.0f;
@@ -1777,7 +1777,7 @@ void fn_802CC60C(void) {
     *(int *)((char *)root + 0x2840) = 0;
     lbl_8055FCC0 = next;
     if ((unsigned char)counter == 0)
-        *(int *)((char *)root + 0x1C) = fn_802E2C20();
+        *(int *)((char *)root + 0x1C) = KERNEL_GetTimeMs();
 #pragma scheduling on
 }
 

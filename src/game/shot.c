@@ -20,7 +20,7 @@ extern s32 lbl_8055FF5C;
 extern u16 lbl_8055FF5A;
 extern u16 lbl_804FC418[];
 extern s32 fn_802ECC10(void);
-extern s32 fn_802E2C20(void);
+extern s32 KERNEL_GetTimeMs(void);
 extern void fn_802E47E8(void);
 #pragma dont_inline on
 /* No-op screenshot subsystem init hook, called once at boot by fn_802E46B0. */
@@ -134,7 +134,7 @@ void fn_802E4800(u16 inputWord) {
     if (fn_802ECC10() != 0) {
         return;
     }
-    lastInputTime = fn_802E2C20();
+    lastInputTime = KERNEL_GetTimeMs();
     for (idx = 0; idx < 31; idx++) {
         inputHistoryBuffer[idx] = inputHistoryBuffer[idx + 1];
     }

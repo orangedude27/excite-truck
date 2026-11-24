@@ -102,7 +102,7 @@ void *fn_802AE414(void *);
 s32 fn_802C6FC0(void *, s32, s32);
 s32 fn_800216F4(void);
 f32 fn_801E7E24(void);
-s32 fn_802E2C20(void);
+s32 KERNEL_GetTimeMs(void);
 extern s32 lbl_8055F8A4;
 extern f32 lbl_80564840, lbl_80564844;
 extern f32 lbl_80564850, lbl_80564858, lbl_8056485C, lbl_80564888;
@@ -189,7 +189,7 @@ f32 fn_802A4A50(void) {
     s32 nowMs;
     s32 deltaMs;
     if (fn_800216F4() != 0) {
-        nowMs = fn_802E2C20();
+        nowMs = KERNEL_GetTimeMs();
         deltaMs = nowMs - lbl_8055F8A4;
         clampedDelta = lbl_80564844;
         lbl_8055F8A4 = nowMs;

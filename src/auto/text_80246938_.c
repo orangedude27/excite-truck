@@ -22,7 +22,7 @@ void fn_80127464(void);
 void fn_802E2D74(s32);
 void fn_8020A5F8(float);
 void fn_8020A634(void);
-s32 fn_802E2C20(void);
+s32 KERNEL_GetTimeMs(void);
 void fn_80214AF0(s32);
 void fn_80214A9C(s32);
 extern char lbl_80343600[16];
@@ -219,7 +219,7 @@ void fn_80246CB8(void *layoutName) {
     text[8] = 2500;
     text[9] = 1;
     text[10] = 0;
-    text[7] = fn_802E2C20();
+    text[7] = KERNEL_GetTimeMs();
     text[6] = 1;
     item[1] = 5;
     item[0] = 0;
@@ -307,7 +307,7 @@ s32 fn_80246E4C(void) {
     text[8] = 60000;
     text[9] = 3;
     text[10] = var_r25;
-    text[7] = fn_802E2C20();
+    text[7] = KERNEL_GetTimeMs();
     text[10] = 3;
     text[6] = 1;
     *(s32 *)((char *)&obj + 0x14) = var_r25;
@@ -584,7 +584,7 @@ s32 fn_80246AE8(void) {
     s32 result;
     s32 values[20];
 
-    lbl_8055F25C = fn_802E2C20();
+    lbl_8055F25C = KERNEL_GetTimeMs();
     text[0] = (s32)lbl_80343780;
     text[5] = 0;
     result = ArtSetGet(lbl_80343970);
@@ -731,7 +731,7 @@ char fn_80247624(void) {
 
 s32 fn_8024762C(void) {
     /* Periodically toggles a UI state flag on/off based on the millisecond timer (on for 2/3 of each 1500ms cycle). */
-    if (fn_802E2C20() % 1500 > 500) fn_80214AF0(1);
+    if (KERNEL_GetTimeMs() % 1500 > 500) fn_80214AF0(1);
     else fn_80214A9C(1);
     return 0;
 }
@@ -1121,7 +1121,7 @@ void fn_802481A0(float *outX, float *outY, float x, float y) {
     float rawFrac;
     s32 ms, high, offHigh, offLow;
 
-    ms = (fn_802E2C20() - startTime) - 0x5DC; /* 1500 ms before it starts */
+    ms = (KERNEL_GetTimeMs() - startTime) - 0x5DC; /* 1500 ms before it starts */
     progress = (one < (float)ms / msPerSecond) ? one : (float)ms / msPerSecond;
     progress = (progress > zero) ? progress : zero;
     remaining = one - progress;
@@ -1224,7 +1224,7 @@ void fn_802483E0(void)
   textPtr[8] = 0x1388;
   textPtr[9] = zero;
   textPtr[10] = zero;
-  textPtr[7] = fn_802E2C20();
+  textPtr[7] = KERNEL_GetTimeMs();
   one = 1;
   textPtr[6] = one;
   frame.object.unk14 = zero;
@@ -1259,7 +1259,7 @@ void fn_802483E0(void)
   frame.item[17] = lbl_804988F0[2];
   frame.item[18] = lbl_804988F0[3];
   frame.item[19] = lbl_804988F0[4];
-  lbl_8055F274 = fn_802E2C20();
+  lbl_8055F274 = KERNEL_GetTimeMs();
   frame.args[1] = lbl_802FA478[1];
   frame.args[2] = lbl_802FA478[2];
   frame.item[8] = zero;
@@ -1340,7 +1340,7 @@ void fn_80248668(s32 arg0) {
     text[8] = 30000;
     text[9] = 1;
     text[10] = 0;
-    text[7] = ((s32 (*)(void *))fn_802E2C20)(lbl_803436C0);
+    text[7] = ((s32 (*)(void *))KERNEL_GetTimeMs)(lbl_803436C0);
     text[6] = 1;
     item[1] = 5;
     item[0] = 0;
@@ -1576,7 +1576,7 @@ void fn_80248CD8(void *effect)
   s32 now;
   /* Drive a white overlay's alpha: opaque at the start, clear through the
    * middle, opaque again at the end, then apply it as ARGB. */
-  now = fn_802E2C20();
+  now = KERNEL_GetTimeMs();
   factor = FADE_ZERO;
   elapsed = now - (*((s32 *) (((char *) effect) + 0x1C)));
   if (elapsed < 0x1F4)
@@ -1609,7 +1609,7 @@ void fn_80248CD8(void *effect)
 }
 
 /* An "mdemo" end-of-demo timer: the demo window opens at startMs (a
- * fn_802E2C20() millisecond stamp) and stays open durationMs milliseconds;
+ * KERNEL_GetTimeMs() millisecond stamp) and stays open durationMs milliseconds;
  * endingType says how the demo is ended once the window has run out. */
 typedef struct MdemoEnding {
     char pad0[0x18];
@@ -1644,7 +1644,7 @@ void fn_80248E30(MdemoEnding *demo) {
     if (demo->durationMs == 0 && demo->endingType == 1)
         return;
 
-    now = fn_802E2C20();
+    now = KERNEL_GetTimeMs();
     if ((demo->musicEndings & demo->endingType) != 0 && fn_8020A640() != 0) {
         elapsed = now - demo->startMs;
         duration = demo->durationMs;
@@ -1677,7 +1677,7 @@ s32 fn_80248FB0(void *stunt, s32 button) {
      * +0x20 duration ms, +0x24 enabled-button mask): while ready (state 1)
      * and inside the window, an enabled button 13/27 press moves the state
      * to 2/4 and restarts the window. */
-    nowMs = fn_802E2C20();
+    nowMs = KERNEL_GetTimeMs();
     startMs = *(s32 *)((char *)stunt + 0x1C);
     if (nowMs < startMs + 750) return 0;
     durationMs = *(s32 *)((char *)stunt + 0x20);
@@ -1705,7 +1705,7 @@ void fn_802490AC(void *obj) {
     unsigned char *objBytes = (unsigned char *)obj;
 
     *(objBytes + 0x1C) = 0;
-    *(s32 *)((char *)obj + 0x18) = fn_802E2C20();
+    *(s32 *)((char *)obj + 0x18) = KERNEL_GetTimeMs();
     if (fn_802C9A58() != 0) {
         fn_80214A9C(1);
     } else {
@@ -1717,12 +1717,12 @@ void fn_80249104(void *arg0) {
     /* The wait state fn_802490AC sets up in this object. */
     struct WaitTimer {
         char pad[0x18];
-        s32 startTime;        /* +0x18 fn_802E2C20() millisecond stamp */
+        s32 startTime;        /* +0x18 KERNEL_GetTimeMs() millisecond stamp */
         unsigned char waited; /* +0x1C cleared on start, set to stop the timeout */
     };
     struct WaitTimer *wait = (struct WaitTimer *)arg0;
 
-    if (wait->waited == 0 && fn_802E2C20() - wait->startTime >= 15000) {
+    if (wait->waited == 0 && KERNEL_GetTimeMs() - wait->startTime >= 15000) {
         fn_802168BC(-2);
     }
 }
@@ -1734,12 +1734,12 @@ s32 fn_80249154(void *arg0) {
     /* The wait state fn_802490AC sets up in this object. */
     struct WaitTimer {
         char pad[0x18];
-        s32 startTime;        /* +0x18 fn_802E2C20() millisecond stamp */
+        s32 startTime;        /* +0x18 KERNEL_GetTimeMs() millisecond stamp */
         unsigned char waited; /* +0x1C cleared on start, set to stop the timeout */
     };
     struct WaitTimer *wait = (struct WaitTimer *)arg0;
 
-    if (wait->waited == 0 && fn_802E2C20() - wait->startTime >= 1500) {
+    if (wait->waited == 0 && KERNEL_GetTimeMs() - wait->startTime >= 1500) {
         fn_802168BC(-2);
     }
     return 1;

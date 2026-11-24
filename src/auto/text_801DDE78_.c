@@ -32,7 +32,7 @@ extern u32 lbl_804348E8[];
 s32 fn_80179630(s32);
 s32 fn_801DDE78(void);
 void fn_801DDED0(s32, f32*, s32, f32, f32, f32);
-s32 fn_802E2C20(void);
+s32 KERNEL_GetTimeMs(void);
 typedef struct DbgRec { s32 a; s32 b; s32 c; s32 d; f32 e; s32 f; s32 g; s32 h; } DbgRec;
 typedef s32 (*UnkFunc2)(void*, s32);
 typedef struct UnkObj { UnkFunc2 *vtable; } UnkObj;
@@ -169,10 +169,10 @@ void fn_801DE0A4(void) {
 #define editRow         lbl_8055E9BC /* entry the up/down keys select */
 #define entrySet        lbl_8055E9C8 /* table the entry list was built from */
 #define entryCount      lbl_8055E9C4 /* entries gathered in lbl_80486F30 */
-#define lastEditMs      lbl_8055E9CC /* ms of the last edit, see fn_802E2C20 */
+#define lastEditMs      lbl_8055E9CC /* ms of the last edit, see KERNEL_GetTimeMs */
 #define garageValName   lbl_80339478 /* "garage.val" */
 #define OverlayLayoutCreate fn_80145E70 /* OverlayLayout* by .val file name */
-#define GetTimeMs       fn_802E2C20  /* ms since the timer's first call */
+#define GetTimeMs       KERNEL_GetTimeMs  /* ms since the timer's first call */
 
     editRow = 0;
     entrySet = 0;
@@ -207,8 +207,8 @@ extern "C" void fn_801DE0E8(void) {
 }
 #pragma cplusplus reset
 #pragma pop
-#define lastEditMs lbl_8055E9CC /* ms of the last edit, see fn_802E2C20 */
-#define GetTimeMs fn_802E2C20 /* ms since the timer's first call */
+#define lastEditMs lbl_8055E9CC /* ms of the last edit, see KERNEL_GetTimeMs */
+#define GetTimeMs KERNEL_GetTimeMs /* ms since the timer's first call */
 /* Stamp the current time (ms since the timer's first call) as the garage editor's last-edit time. */
 void fn_801DE12C(void) {
     lastEditMs = (void*)GetTimeMs();
@@ -282,7 +282,7 @@ extern "C" void fn_801DE154(void) {
     p = ((Gui *)lbl_8055E9C0)->v1(lbl_8055ADD0);
     rc.a = p->a; rc.b = p->b; rc.c = p->c; rc.d = p->d;
     rc.e = p->e; rc.f = p->f; rc.g = p->g; rc.h = p->h;
-    n = fn_802E2C20() - (s32)lbl_8055E9CC;
+    n = KERNEL_GetTimeMs() - (s32)lbl_8055E9CC;
     if (n >= 0x1388) {
         t = ((n - 0x1388) * 0xC0) / 1000;
         t = t & (((-t) & ~t) >> 31);
@@ -366,7 +366,7 @@ extern void fn_8018A180(s32);
  * text from.  Always returns 0. */
 s32 fn_801DE5C4(s32 key) {
     #define editRow     lbl_8055E9BC /* row the arrows select, -1 for the header */
-    #define lastEditMs  lbl_8055E9CC /* ms of the last edit, see fn_802E2C20 */
+    #define lastEditMs  lbl_8055E9CC /* ms of the last edit, see KERNEL_GetTimeMs */
     #define KEY_LEFT    0x125        /* one step down */
     #define KEY_UP      0x126        /* previous row */
     #define KEY_RIGHT   0x127        /* one step up */
@@ -429,7 +429,7 @@ s32 fn_801DE5C4(s32 key) {
         }
         break;
     }
-    if (edited) lastEditMs = (void *)fn_802E2C20();
+    if (edited) lastEditMs = (void *)KERNEL_GetTimeMs();
     return 0;
 
     #undef editRow

@@ -25,17 +25,17 @@ void fn_802445FC(int arg0, int arg1, int arg2) {
     work[24] = 0;
     work[25] = 1000;
     *(float *)&work[26] = fn_8020A5F0();
-    v1 = lbl_802FA320[1];
-    s0 = lbl_80498860[0];
-    s1 = lbl_80498860[1];
-    s2 = lbl_80498860[2];
-    *(volatile int *)&work[1] = v1;
-    s3 = lbl_80498860[3];
-    s4 = lbl_80498860[4];
     v0 = lbl_802FA320[0];
+    v1 = lbl_802FA320[1];
     v2 = lbl_802FA320[2];
     v3 = lbl_802FA320[3];
     v4 = lbl_802FA320[4];
+    s0 = lbl_80498860[0];
+    s1 = lbl_80498860[1];
+    s2 = lbl_80498860[2];
+    s3 = lbl_80498860[3];
+    s4 = lbl_80498860[4];
+    *(volatile int *)&work[1] = v1;
     work[7] = 5;
     work[6] = 0;
     work[8] = (int)ctx;
@@ -85,7 +85,7 @@ void fn_8024477C(void *arg0) {
 #define raceResName lbl_80342E28
     fn_8012E81C(&raceResName);
     fn_80021464(*(int *)((char *)arg0 + 0x18), *(int *)((char *)arg0 + 0x1C));
-    *(int *)((char *)arg0 + 0x20) = fn_802E2C20();
+    *(int *)((char *)arg0 + 0x20) = KERNEL_GetTimeMs();
 #undef raceResName
 }
 
@@ -118,7 +118,7 @@ void fn_802447FC(void *fadeState) {
     float factor;
     int elapsedMs;
     float blend;
-    elapsedMs = fn_802E2C20() - *(int *)((char *)fadeState + 0x20);
+    elapsedMs = KERNEL_GetTimeMs() - *(int *)((char *)fadeState + 0x20);
     blend = lbl_805637F4;
     factor = lbl_805637F0 - ((float)elapsedMs / (float)*(int *)((char *)fadeState + 0x24));
     blend = blend > factor ? blend : factor;
@@ -136,7 +136,7 @@ void fn_802448BC(void *fadeState) {
     int alpha;
     unsigned char result;
     fn_80021680();
-    elapsedMs = fn_802E2C20() - *(int *)((char *)fadeState + 0x20);
+    elapsedMs = KERNEL_GetTimeMs() - *(int *)((char *)fadeState + 0x20);
     scaled = (elapsedMs << 8) - elapsedMs;
     alpha = 0xFF - scaled / (*(int *)((char *)fadeState + 0x24) - 0x32);
     result = alpha & ((-alpha & ~alpha) >> 31);
