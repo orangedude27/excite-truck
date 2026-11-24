@@ -783,22 +783,22 @@ void fn_802CB29C(int textureIndex) {
 
 #pragma use_lmw_stmw off
 extern int lbl_8055D070;
-int fn_802CB2FC(int x, int y, int type, unsigned char count, unsigned short id, unsigned char flags) {
+/* Allocate and initialize a 0x18-byte texture descriptor with the given dimensions, format, mip count, texture id and creation flags. */ int fn_802CB2FC(int width, int height, int format, unsigned char mipCount, unsigned short texId, unsigned char createFlags) {
     /* Allocate and initialize a 0x18-byte texture/entry record with the given fields and defaults. */
-    unsigned char *entry = (unsigned char *)fn_801284F8(0x18, &lbl_8055D070);
-    *(unsigned short *)(entry + 0) = x;
-    *(unsigned short *)(entry + 2) = y;
-    entry[4] = type;
-    entry[5] = count;
-    *(unsigned short *)(entry + 0xC) = id;
-    entry[6] = 0;
-    entry[8] = 5;
-    entry[9] = 0x32;
-    entry[7] = flags;
-    entry[0xB] = 2;
-    *(int *)(entry + 0x14) = 0;
-    entry[0xA] = 0;
-    return (int)entry;
+    unsigned char *desc = (unsigned char *)fn_801284F8(0x18, &lbl_8055D070);
+    *(unsigned short *)(desc + 0) = width;
+    *(unsigned short *)(desc + 2) = height;
+    desc[4] = format;
+    desc[5] = mipCount;
+    *(unsigned short *)(desc + 0xC) = texId;
+    desc[6] = 0;
+    desc[8] = 5;
+    desc[9] = 0x32;
+    desc[7] = createFlags;
+    desc[0xB] = 2;
+    *(int *)(desc + 0x14) = 0;
+    desc[0xA] = 0;
+    return (int)desc;
 }
 
 /* Return a texture slot's filter byte (+8 of its resource), or 5 for no texture. */
