@@ -112,7 +112,7 @@ extern int lbl_8055FC70;
 extern void fn_802CFDE0(void);
 extern void fn_802CC770(void);
 extern void fn_802CC60C(void);
-extern void fn_802CFCA0(void);
+extern void HomeMenu_beginFrame(void);
 extern int lbl_8055FC78;
 extern void fn_802CFFAC(unsigned char, unsigned char, unsigned char);
 extern float lbl_8055FC38;
@@ -266,11 +266,11 @@ void fn_802C84EC(void) {
     fn_802C6080();
 }
 
-/* Prepare draw lists for a render frame: enter normal GX render mode, reset the 0x40 texture draw slots (fn_802CC60C) and register the GX draw-sync callback (fn_802CFCA0); paired with the fn_802C855C teardown. */
+/* Prepare draw lists for a render frame: enter normal GX render mode, reset the 0x40 texture draw slots (fn_802CC60C) and register the GX draw-sync callback (HomeMenu_beginFrame); paired with the fn_802C855C teardown. */
 void fn_802C8530(void) {
     sRenderMode = RENDER_MODE_NORMAL;
     fn_802CC60C();
-    fn_802CFCA0();
+    HomeMenu_beginFrame();
 }
 
 /* Tear down the draw-list module: reset GX, release the texture list, and mark rendering shut down. */

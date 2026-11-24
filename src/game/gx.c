@@ -981,7 +981,7 @@ void fn_802CFBA8(void) {
 
 extern double __fabs(double);
 #pragma scheduling invalid_target
-void fn_802CFCA0(void *alarm) {
+void HomeMenu_beginFrame(void *alarm) {
     /* GX draw-sync callback: reset per-frame state, arm the FIFO break point,
      * and flag a sensor-threshold exceed once per enabled frame. */
     extern char lbl_80558DC4[];
@@ -1114,12 +1114,12 @@ int fn_802CFDE0(void) {
 
 #pragma pop
 
-extern void fn_802CFCA0(void*);
+extern void HomeMenu_beginFrame(void*);
 /* GX draw-sync alarm callback: begin a fresh frame by resetting per-frame state
-   and arming the FIFO break point (fn_802CFCA0), then flush the just-finished
+   and arming the FIFO break point (HomeMenu_beginFrame), then flush the just-finished
    frame's dynamic-data buffer and disarm the break point (fn_802CFDE0). */
 void fn_802CFEEC(void *alarm) {
-    fn_802CFCA0(alarm);
+    HomeMenu_beginFrame(alarm);
     fn_802CFDE0();
 }
 
