@@ -307,6 +307,8 @@ static void __init_bss_section(void* dst, size_t size) {
     memset(dst, 0, size);
 }
 
+/* Zero GPRs and load stack/SDA base registers from linker symbols at boot. */
+
 DECL_SECTION(".init") static asm void __init_registers(void) {
     // clang-format off
     nofralloc
