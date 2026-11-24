@@ -370,7 +370,8 @@ s32 fn_802E39D0(s32 fileId, s32 buffer, s32 count) {
 }
 
 #pragma cplusplus on
-/* RealName: FileObject_SeekTo? (invokes file stream vtable method 8 with an offset). */
+/* Seek an open file's stream to a byte offset: validate the handle, fetch its
+   stream object and invoke the stream's virtual Seek method. */
 extern "C" void fn_802E3A14(s32 fileHandle, s32 offset) {
 #define kFileSourceFile kFileSourceName
     class FileStream {
@@ -385,8 +386,8 @@ extern "C" void fn_802E3A14(s32 fileHandle, s32 offset) {
         virtual void v7();
         virtual void v6();
     };
-    register int fileEntry = fn_802E33D8(fileHandle, kFileSourceFile, 0x1ab);
-    s32 stream = *(s32 *)(fileEntry + 0x24);
+    register int fileObject = fn_802E33D8(fileHandle, kFileSourceFile, 0x1ab);
+    s32 stream = *(s32 *)(fileObject + 0x24);
     ((FileStream *)stream)->Seek(offset);
 #undef kFileSourceFile
 }
