@@ -24,7 +24,7 @@ extern int fn_801282EC(int);
 extern int fn_801282F4(void);
 extern int fn_801284E8(void *, int);
 extern int gWpadAllocHandles[];
-extern int lbl_8055D224;
+extern int wpadAllocTag;
 extern int gWpadAllocCount;
 extern unsigned char lbl_80560008;
 extern char ConfigGetWpadMotorMode(void);
@@ -150,7 +150,7 @@ extern int fn_801282EC(int);
 extern int fn_801282F4(void);
 extern int fn_801284E8(void *, int);
 extern int gWpadAllocHandles[];
-extern int lbl_8055D224;
+extern int wpadAllocTag;
 extern int gWpadAllocCount;
 #pragma scheduling invalid_target
 /* Registers a WPAD input handler for the given device and stores its handle. */
@@ -158,7 +158,7 @@ void wpadAlloc(int deviceIndex) {
     int handle;
     fn_801282EC(0x80);
     fn_801282F4();
-    handle = fn_801284E8(&lbl_8055D224, deviceIndex);
+    handle = fn_801284E8(&wpadAllocTag, deviceIndex);
     gWpadAllocHandles[gWpadAllocCount++] = handle;
 }
 #pragma scheduling on
