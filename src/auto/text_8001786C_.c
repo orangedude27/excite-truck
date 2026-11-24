@@ -170,20 +170,23 @@ extern s32 fn_80016508(void);
 extern void fn_80017AC8(void *);
 #pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_80017A2C(void *list, s32 exclusionList) {
-    s32 i = 0;
-    while (i < fn_80016508()) {
-        DriverInfo *driver = (DriverInfo *)fn_80016464(i);
+/* Build a shuffled list of every driver number that is not in the exclusion set:
+ * walk the whole driver table, append each non-excluded driver's number to the
+ * counted list (items pointer at +0, count at +4), then shuffle the result. */
+void fn_80017A2C(void *outList, s32 excludedDrivers) {
+    s32 driverIndex = 0;
+    while (driverIndex < fn_80016508()) {
+        DriverInfo *driver = (DriverInfo *)fn_80016464(driverIndex);
         s32 driverNumber = driver->number;
-        if (fn_80017A20((void *)driverNumber, (s32 *)exclusionList) == 0) {
-            s32 count = *(s32 *)((char *)list + 4);
-            void *items = *(void **)list;
-            *(s32 *)((char *)list + 4) = count + 1;
-            ((s32 *)items)[count] = driverNumber;
+        if (fn_80017A20((void *)driverNumber, (s32 *)excludedDrivers) == 0) {
+            s32 itemCount = *(s32 *)((char *)outList + 4);
+            void *values = *(void **)outList;
+            *(s32 *)((char *)outList + 4) = itemCount + 1;
+            ((s32 *)values)[itemCount] = driverNumber;
         }
-        i++;
+        driverIndex++;
     }
-    fn_80017AC8(list);
+    fn_80017AC8(outList);
 }
 // Shuffles an int list (items pointer at +0, count at +4): walk each position
 // and swap its value with one chosen at random in [0, count) from RNG slot 1.
@@ -288,9 +291,12 @@ void fn_80017C18(void *arg0, s32 *arg1) {
         offset = 0;
         target = *(unsigned long *)((char *)object + 0x50);
         while (j < n) {
-            if (*(unsigned long *)((char *)*(s32 **)arg0 + offset) == target) goto found;
-            offset += 4;
-            j++;
+            if (*(unsigned long *)((char *)*(s32 **)arg0 + offset) != target) {
+                offset += 4;
+                j++;
+            } else {
+                goto found;
+            }
         }
         j = -1;
 found:
