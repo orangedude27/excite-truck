@@ -576,7 +576,7 @@ void fn_802E2A1C(void) {
  * fn_802E2A58. */
 void fn_802E2A54(void) {}
 
-/* Empty placeholder in the kernel shutdown sequence (fn_802E2B34): the paired
+/* Empty placeholder in the kernel shutdown sequence (KERNEL_Shutdown): the paired
  * subsystem needs no teardown in this build. Its startup counterpart is
  * fn_802E2A54. */
 void fn_802E2A58(void) {}
@@ -631,7 +631,7 @@ struct StartupCalendar {
  * the game started, then arm the stack watermark check - fn_802E27F0 fills the guard
  * area with 0x53FFEEDD and fn_802E2A1C, registered under the name "check_stack",
  * reports "STACK OVERRUN!" once that marker is gone.  Returning 1 is main()'s cue to
- * run the matching shutdown (fn_802E2B34) and panic. */
+ * run the matching shutdown (KERNEL_Shutdown) and panic. */
 /* Brings up the OS and all engine subsystems in order, logs the console's start date/time, then arms the stack-guard check and returns 1 so main() runs the matching shutdown. */ int fn_802E2A5C(void) {
     struct StartupCalendar startTime;
     char * const base = lbl_8034CCE0;
@@ -688,9 +688,9 @@ extern void fn_802E2A1C(void);
 extern int fn_80004D64(void *);
 extern int fn_802E2A5C(void);
 extern void fn_80004E20(void);
-extern void fn_802E2B34(void);
+extern void KERNEL_Shutdown(void);
 /* Shut down engine/kernel subsystems in reverse startup order; unregisters the stack-overrun check. */
-void fn_802E2B34(void) {
+void KERNEL_Shutdown(void) {
     fn_80127D58((void *)fn_802E2A1C); /* unregister stack check callback */
     fn_802E29AC();
     fn_802EC7AC();
@@ -722,7 +722,7 @@ int main(void) {
     if (fn_80004D64(bootArgs) != 0) {
         if (fn_802E2A5C() != 0) {
             fn_80004E20();
-            fn_802E2B34();
+            KERNEL_Shutdown();
         }
     }
 
@@ -951,5 +951,5 @@ extern void fn_80004E20(void);
 extern void OSPanic(const char *, int, const char *, ...);
 extern char lbl_8034CD8C[];
 extern char lbl_8055D174[];
-extern void fn_802E2B34(void);
+extern void KERNEL_Shutdown(void);
 

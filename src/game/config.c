@@ -88,7 +88,7 @@ void ConfigReadSystemSettings(void) {
 #pragma scheduling on
 
 /* Config subsystem shutdown hook: a no-op, since the config module holds no
- * resources to release (called from the kernel teardown sequence fn_802E2B34). */
+ * resources to release (called from the kernel teardown sequence KERNEL_Shutdown). */
 void ConfigShutdown(void) {}
 
 /**

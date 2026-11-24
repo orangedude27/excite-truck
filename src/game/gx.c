@@ -924,7 +924,7 @@ void fn_802CF850(void) {
 #define GX_DYNAMIC_HIGH_WATER lbl_8055FD98
 
 /* Shuts the graphics subsystem down.  Called from the engine's exit sequence
- * (fn_802E2B34) after that sequence has dropped its own alarm: drops the
+ * (KERNEL_Shutdown) after that sequence has dropped its own alarm: drops the
  * draw-sync alarm fn_802D9A50, the AI DMA callback and the VI retrace callback,
  * reports the GX dynamic-data high-water mark and any visibility tests still in
  * use, blanks the screen over two retraces while waiting for GX to catch up,
