@@ -29,10 +29,10 @@ void *fn_80209D4C(void *soundSource) {
     /* Construct the four-word squeal sound object: record the owning source and
        its vtable, attach an SFX handle driven by the source, and a road-sound container. */
     typedef struct {
-        void *vtable;      /* 0x00 */
-        void *soundSource; /* 0x04 */
-        void *sfxHandle;   /* 0x08 */
-        void *roadSound;   /* 0x0c */
+        void *vtable;
+        void *soundSource;
+        void *sfxHandle;
+        void *roadSound;
     } SquealSound;
     SquealSound *squealObj;
     void *sfxHandle;
