@@ -77,7 +77,7 @@ extern long fn_802EC0FC(void);
 long fn_8020F3B4(void) { return -1; }
  
 #pragma scheduling invalid_target
-int fn_8020F3BC(int path, int buffer, int size) {
+int formatMp3Path(int path, int buffer, int size) {
     /* Formats a track-music path into the buffer and returns the buffer. */
     fn_801345D8((void *)buffer, size, (void *)&lbl_8055B664, path);
     return buffer;
@@ -104,7 +104,7 @@ void fn_8020F444(void) {
         if (fn_8012E938(buildSngSongPath((long)gSongName0, (long)pathBuffer, 0x40)) != 0) {
             buildSngSongPath((long)gSongName0, (long)pathBuffer, 0x40);
             fn_8012E81C();
-            fn_802EC294(0, fn_8020F3BC((int)gSongName0, (int)pathBuffer, 0x40));
+            fn_802EC294(0, formatMp3Path((int)gSongName0, (int)pathBuffer, 0x40));
             fn_802E30C8(gTriedToLoad, pathBuffer);
             gSongLoaded0 = 1;
         }
@@ -113,7 +113,7 @@ void fn_8020F444(void) {
         if (fn_8012E938(buildSngSongPath((long)gSongName1, (long)pathBuffer, 0x40)) != 0) {
             buildSngSongPath((long)gSongName1, (long)pathBuffer, 0x40);
             fn_8012E81C();
-            fn_802EC294(1, fn_8020F3BC((int)gSongName1, (int)pathBuffer, 0x40));
+            fn_802EC294(1, formatMp3Path((int)gSongName1, (int)pathBuffer, 0x40));
             fn_802E30C8(gTriedToLoad, pathBuffer);
             gSongLoaded1 = 1;
         }
@@ -122,7 +122,7 @@ void fn_8020F444(void) {
         if (fn_8012E938(buildSngSongPath((long)gSongName2, (long)pathBuffer, 0x40)) != 0) {
             buildSngSongPath((long)gSongName2, (long)pathBuffer, 0x40);
             fn_8012E81C();
-            fn_802EC294(2, fn_8020F3BC((int)gSongName2, (int)pathBuffer, 0x40));
+            fn_802EC294(2, formatMp3Path((int)gSongName2, (int)pathBuffer, 0x40));
             fn_802E30C8(gTriedToLoad, pathBuffer);
             gSongLoaded2 = 1;
         }
