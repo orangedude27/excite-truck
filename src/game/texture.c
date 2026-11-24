@@ -631,7 +631,7 @@ extern int lbl_8055FCB0;
 extern char lbl_8034B904[];
 extern char lbl_8034B914[];
 /* Returns the name of a texture slot, or a placeholder string for an invalid slot. */
-char *fn_802CAE34(int textureIndex) {
+char *getTextureSlotName(int textureIndex) {
     int slotOffset;
     char *slot;
     if (textureIndex == -1)

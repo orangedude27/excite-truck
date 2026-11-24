@@ -37,7 +37,7 @@ extern s8 lbl_8055FC20;
 extern s8 lbl_8055FC21;
 extern void fn_802C8B98(int, void *);
 extern int fn_802D0514(void *);
-char *fn_802CAE34(char *);
+char *getTextureSlotName(char *);
 int stricmp(const char *, const char *);
 extern const char lbl_8034B3DC[];
 extern const char lbl_8034B34C[];
@@ -150,7 +150,7 @@ int fn_802C544C(void **leftEntryPtr, void **__restrict rightEntryPtr) {
     short rightDetail = *(short *)((char *)rightEntry + 6);
     short leftDetail = *(short *)((char *)leftEntry + 6);
     if (leftDetail != rightDetail) return leftDetail - rightDetail;
-    return stricmp(fn_802CAE34(*(char **)leftEntry), fn_802CAE34(*(char **)rightEntry));
+    return stricmp(getTextureSlotName(*(char **)leftEntry), getTextureSlotName(*(char **)rightEntry));
 }
 /* Return the 8-byte {items, count} record for a 1-based detail level in the
  * level table at lbl_804C1348 (levels 1..9). */
