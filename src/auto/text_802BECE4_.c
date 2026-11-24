@@ -13,7 +13,7 @@ extern double atan(double), fn_8002EF30(float);
 extern void fn_802BDD8C(float);
 extern void fn_802BFE48(void *, void *, float), fn_802C0054(void *, const void *), fn_802C00A0(void);
 extern void fn_80144DAC(void *, void *), fn_80144DC8(void *);
-extern void fn_802C10C8(void), fn_802C7040(int), fn_802C8638(void *), fn_802C86F0(void *, int, int, int, int), fn_802C8750(void *, int), fn_802C88BC(int), fn_802C8B08(void *), fn_802C8B98(int, float *), fn_802C8D74(void), fn_802C8DB8(void *, int, unsigned short *, int), fn_802C9294(int, int), fn_802C9694(void *, float, float, float), fn_802C96DC(void *, int), fn_802CB274(int);
+extern void fn_802C10C8(void), DrawModelInstance(int), fn_802C8638(void *), fn_802C86F0(void *, int, int, int, int), fn_802C8750(void *, int), fn_802C88BC(int), fn_802C8B08(void *), fn_802C8B98(int, float *), fn_802C8D74(void), fn_802C8DB8(void *, int, unsigned short *, int), fn_802C9294(int, int), fn_802C9694(void *, float, float, float), fn_802C96DC(void *, int), fn_802CB274(int);
 extern float lbl_80564DAC, lbl_80564DB0, lbl_80564DB4, lbl_80564DB8, lbl_80564DBC, lbl_80564DC0, lbl_80564DC4, lbl_80564DC8;
 extern void fn_80128668(void *);
 extern int fn_802BF6AC(void);
@@ -208,7 +208,7 @@ extern void fn_802D3D6C(void);
 extern float fn_802BF02C(float, int);
 extern void fn_802C9900(float);
 extern void fn_802D3D94(void *, int);
-extern void fn_802C7040(int);
+extern void DrawModelInstance(int);
 extern void fn_802C9904(void);
 extern void fn_802D3D80(void);
 extern void fn_802C967C(void);
@@ -291,7 +291,7 @@ void fn_802BF160(void) {
         ((volatile float *)scratch)[7] = f4;
         fn_802C9900(fn_802BF02C(f27, (int)m6));
         fn_802D3D94(0, (int)scratch);
-        fn_802C7040(lbl_8055CF6C);
+        DrawModelInstance(lbl_8055CF6C);
         ++i;
         point += 3;
     } while (i < 3);
@@ -399,7 +399,7 @@ extern "C" void fn_802BF598(int param, float value) {
 extern float lbl_80564DA8;
 extern float lbl_80564DB0;
 #pragma scheduling invalid_target
-extern "C" char fn_802BF600(void *arg0, void *dst, void *src)
+extern "C" void fn_802BF600(void *arg0, void *dst, void *src)
 {
   extern float lbl_80564DA8;
   extern float lbl_80564DB0;
@@ -417,16 +417,16 @@ extern "C" char fn_802BF600(void *arg0, void *dst, void *src)
   float s10;
   float s1c;
   float s28;
-  int i0;
-  int i8;
-  int ic;
-  int i14;
-  int i18;
-  int i20;
-  int i24;
   int i2c;
+  int i24;
+  int i20;
+  int i18;
+  int i14;
+  int ic;
+  int i8;
+  int i0;
   scale = lbl_80564DA8;
-  *((int *) (((char *) dst) + 4)) = t4;
+  *((int *) (4 + ((char *) dst))) = t4;
   *((int *) (((char *) dst) + 0x10)) = t10;
   *((int *) (((char *) dst) + 0x1C)) = t1c;
   *((int *) (((char *) dst) + 0x28)) = t28;
@@ -435,9 +435,9 @@ extern "C" char fn_802BF600(void *arg0, void *dst, void *src)
   f1c = *((float *) (((char *) dst) + 0x1C));
   f28 = *((float *) (((char *) dst) + 0x28));
   s4 = f4 * scale;
-  s10 = f10 * scale;
+  ;
   s1c = f1c * scale;
-  s28 = f28 * scale;
+  ;
   i0 = *((int *) (((char *) src) + 0));
   i8 = *((int *) (((char *) src) + 8));
   ic = *((int *) (((char *) src) + 0xC));
@@ -455,9 +455,9 @@ extern "C" char fn_802BF600(void *arg0, void *dst, void *src)
   *((int *) (((char *) dst) + 0x24)) = i24;
   *((int *) (((char *) dst) + 0x2C)) = i2c;
   *((float *) (((char *) dst) + 4)) = s4;
-  *((float *) (((char *) dst) + 0x10)) = s10;
-  *((float *) (((char *) dst) + 0x1C)) = s1c;
-  *((float *) (((char *) dst) + 0x28)) = s28;
+  *((float *) (((char *) dst) + 0x10)) = f10 * scale;
+  *((float *) (0x1C + ((char *) dst))) = s1c;
+  *((float *) (((char *) dst) + 0x28)) = f28 * scale;
   *((float *) (((char *) dst) + 0x28)) += lbl_80564DB0 * lbl_8055FAE0;
 }
 #pragma scheduling reset
@@ -817,9 +817,9 @@ extern "C" void fn_802BFB70(void *arg0, float *worldMtx, float angle) {
         }
         fn_802BFE48(faceTable, viewMtx, kOne); fn_802C96DC(savedViewSun, -1);
     }
-    fn_802C7040(self->worldModel);
+    DrawModelInstance(self->worldModel);
     if (fn_801E85A4() == 1) fn_802BDD8C(kSplashRadius);
-    if (self->envModel != -1) fn_802C7040(self->envModel);
+    if (self->envModel != -1) DrawModelInstance(self->envModel);
     fn_802C9294(-2, 0); fn_802C8638(savedMtx); fn_802C8750(savedViewport, -1); fn_802C96DC(savedView, -1);
 #undef kOne
 #undef kZero
@@ -922,20 +922,23 @@ extern "C" int fn_802C00A4(void) {
 }
 #pragma cplusplus reset
 void *fn_802C0138(void *arg0) {
-    register char *resourceB = lbl_8034ACA0 + 0x144;
-    register char *resourceA = lbl_8034ACA0 + 0x134;
+    register char *resourceB;
+    register char *resourceA;
     void *vtable = lbl_8034AE08;
     float initial = lbl_80564DF0;
     short *out;
     register int row;
     register int rowBase;
     int innerBase;
+    int zero = 0;
 
-    *(unsigned char *)((char *)arg0 + 0x2C5C) = 0;
+    *(unsigned char *)((char *)arg0 + 0x2C5C) = zero;
     *(void **)arg0 = vtable;
+    resourceA = lbl_8034ACA0 + 0x134;
     *(int *)((char *)arg0 + 0x2C50) = -2;
+    resourceB = lbl_8034ACA0 + 0x144;
     *(int *)((char *)arg0 + 0x2C54) = -2;
-    *(int *)((char *)arg0 + 0x2C58) = 0;
+    *(int *)((char *)arg0 + 0x2C58) = zero;
     lbl_8055FB04 = initial;
     if (fn_8012C33C(lbl_8034ACA0 + 0x154, 0, vtable, lbl_8034ACA0) == 0)
         return arg0;

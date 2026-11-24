@@ -5,7 +5,7 @@ extern float lbl_80562B2C;
 extern float lbl_80562B28;
 extern float lbl_80562B30;
 extern int lbl_8055E960;
-extern void fn_802C7040(int);
+extern void DrawModelInstance(int);
 extern void fn_802C9900(float);
 extern void fn_802C9904(void);
 extern unsigned int lbl_8055AD90;
@@ -199,14 +199,13 @@ void fn_801D91D8(void)
   int off;
   void *node;
   void *item;
-#pragma scheduling invalid_target
   for (node = lbl_8055E96C; node != 0; node = *((void **) (((char *) node) + 0x54)))
   {
     for (item = lbl_8055E964; item != 0; item = *((void **) (((char *) item) + 0x34)))
     {
+      count = *((int *) (((char *) item) + 4));
       i = 0;
       off = 0;
-      count = *((int *) (((char *) item) + 4));
       for (; i < count; i++)
       {
         if ((*((void **) (((char *) (*((void **) item))) + off))) == node)
@@ -669,7 +668,7 @@ void fn_801D9B58(void) {
     struct OmlModelSet *modelSet;
     int variantIndex;
 
-    fn_802C7040(wlMapModel);
+    DrawModelInstance(wlMapModel);
     group = morphGroupList;
     zeroWeight = dtbZeroWeight;
     while (group != 0) {
@@ -711,13 +710,13 @@ void fn_801D9B58(void) {
                     firstAlpha = minAlpha;
                 fn_802C9900(firstAlpha);
             }
-            fn_802C7040(*modelSet->models);
+            DrawModelInstance(*modelSet->models);
             variantWeight = blend + 3;
             variantIndex = 1;
             variantOffset = 4;
             while (variantIndex < (count = modelSet->modelCount)) {
                 fn_802C9900(*variantWeight);
-                fn_802C7040(*(int *)((char *)modelSet->models + variantOffset));
+                DrawModelInstance(*(int *)((char *)modelSet->models + variantOffset));
                 ++variantWeight;
                 variantOffset += 4;
                 ++variantIndex;

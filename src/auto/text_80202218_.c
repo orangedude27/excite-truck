@@ -34,7 +34,7 @@ extern int fn_80128670(int);
 extern void *fn_801E87A8(void);
 extern int fn_802C9C58(int);
 extern void fn_802C7A44(void);
-extern int fn_802C7040(int);
+extern int DrawModelInstance(int);
 extern void fn_802C7A50(void);
 extern float lbl_805630A0;
 extern unsigned char lbl_80488964[];
@@ -277,9 +277,9 @@ void fn_8020268C(void) {
     int drawMode = 2;
     if ((frameFlags >> 1) & 1) drawMode = 1;
     savedMode = fn_802C9C58(drawMode);
-    if (sPrimaryModelHandle != -1) { fn_802C7A44(); fn_802C7040(sPrimaryModelHandle); fn_802C7A50(); }
+    if (sPrimaryModelHandle != -1) { fn_802C7A44(); DrawModelInstance(sPrimaryModelHandle); fn_802C7A50(); }
     fn_802C9C58(0);
-    if (sSecondaryModelHandle != -1) { fn_802C7A44(); fn_802C7040(sSecondaryModelHandle); fn_802C7A50(); }
+    if (sSecondaryModelHandle != -1) { fn_802C7A44(); DrawModelInstance(sSecondaryModelHandle); fn_802C7A50(); }
     fn_802C9C58(savedMode);
 }
 
@@ -449,7 +449,7 @@ void fn_802022A0(int *);
 void *fn_801E87A8(void);
 int fn_802C9C58(int);
 void fn_802C7A44(void);
-int fn_802C7040(int);
+int DrawModelInstance(int);
 void fn_802C7A50(void);
 #pragma push
 #pragma scheduling on

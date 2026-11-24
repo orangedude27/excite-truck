@@ -20,7 +20,7 @@ extern float lbl_8056465C;
 extern float lbl_80564628;
 extern int lbl_804B5030[];
 extern void fn_8029E8E0(float *, int);
-extern void fn_802C7040(int);
+extern void DrawModelInstance(int);
 extern void fn_8029D644(void *);
 extern float fn_802C88D4(void *);
 extern void fn_8029D550(void *, float *, float *);
@@ -116,7 +116,7 @@ void fn_8029C2D4(void) {
     int i;
 
     if (lbl_8055CAA8 != -1)
-        fn_802C7040(lbl_8055CAA8);
+        DrawModelInstance(lbl_8055CAA8);
 
     bestDifference = lbl_80564628;
     entry = lbl_804B5010;

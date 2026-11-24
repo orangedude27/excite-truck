@@ -440,10 +440,10 @@ int fn_801F2494(int object, int deleteFlag) {
 }
 
 void fn_801F24D4(void *unused, void *head) {
-    /* Walks a linked list of model-instance nodes, updating each one's visibility/distance via fn_802C7040. Node layout: +4 instance id, +0xC next. */
+    /* Walks a linked list of model-instance nodes, updating each one's visibility/distance via DrawModelInstance. Node layout: +4 instance id, +0xC next. */
     void *node = head;
     while (node != 0) {
-        fn_802C7040(*(int *)((char *)node + 4));
+        DrawModelInstance(*(int *)((char *)node + 4));
         node = *(void **)((char *)node + 0xC);
     }
 }
@@ -455,7 +455,7 @@ void fn_801F2514(void *arg0, void *arg1) {
     fn_802C7730(&stack[0]);
     if (arg1 != 0) {
         fn_801F2570(*(int *)((char *)arg1 + 4));
-        fn_802C7040(*(int *)((char *)*(void **)arg1 + 4));
+        DrawModelInstance(*(int *)((char *)*(void **)arg1 + 4));
         fn_801F2570(*(int *)((char *)arg1 + 8));
     }
 }
@@ -527,7 +527,7 @@ void fn_801F2570(int node) {
     void *nRRRRR;
     /* In-order walk of the model-instance tree rooted at `node`, unrolled five
      * levels deep: for each node recurse into its left child (+4), hide the
-     * node's model instance (fn_802C7040), then recurse into its right child
+     * node's model instance (DrawModelInstance), then recurse into its right child
      * (+8); beyond five levels the walk restarts via fn_801F2570. Local names
      * nL/nR/nLL/... encode the left/right path from this root. */
     if ((void *)node != 0) {
@@ -542,36 +542,36 @@ void fn_801F2570(int node) {
                         nLLLLL = *(void **)((char *)nLLLL + 4);
                         if (nLLLLL != 0) {
                             fn_801F2570(*(int *)((char *)nLLLLL + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nLLLLL) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nLLLLL) + 4));
                             fn_801F2570(*(int *)((char *)nLLLLL + 8));
                         }
-                        fn_802C7040(*(int *)((char *)(*(void **)nLLLL) + 4));
+                        DrawModelInstance(*(int *)((char *)(*(void **)nLLLL) + 4));
                         nLLLLR = *(void **)((char *)nLLLL + 8);
                         if (nLLLLR != 0) {
                             fn_801F2570(*(int *)((char *)nLLLLR + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nLLLLR) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nLLLLR) + 4));
                             fn_801F2570(*(int *)((char *)nLLLLR + 8));
                         }
                     }
-                    fn_802C7040(*(int *)((char *)(*(void **)nLLL) + 4));
+                    DrawModelInstance(*(int *)((char *)(*(void **)nLLL) + 4));
                     nLLLR = *(void **)((char *)nLLL + 8);
                     if (nLLLR != 0) {
                         nLLLRL = *(void **)((char *)nLLLR + 4);
                         if (nLLLRL != 0) {
                             fn_801F2570(*(int *)((char *)nLLLRL + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nLLLRL) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nLLLRL) + 4));
                             fn_801F2570(*(int *)((char *)nLLLRL + 8));
                         }
-                        fn_802C7040(*(int *)((char *)(*(void **)nLLLR) + 4));
+                        DrawModelInstance(*(int *)((char *)(*(void **)nLLLR) + 4));
                         nLLLRR = *(void **)((char *)nLLLR + 8);
                         if (nLLLRR != 0) {
                             fn_801F2570(*(int *)((char *)nLLLRR + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nLLLRR) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nLLLRR) + 4));
                             fn_801F2570(*(int *)((char *)nLLLRR + 8));
                         }
                     }
                 }
-                fn_802C7040(*(int *)((char *)(*(void **)nLL) + 4));
+                DrawModelInstance(*(int *)((char *)(*(void **)nLL) + 4));
                 nLLR = *(void **)((char *)nLL + 8);
                 if (nLLR != 0) {
                     nLLRL = *(void **)((char *)nLLR + 4);
@@ -579,37 +579,37 @@ void fn_801F2570(int node) {
                         nLLRLL = *(void **)((char *)nLLRL + 4);
                         if (nLLRLL != 0) {
                             fn_801F2570(*(int *)((char *)nLLRLL + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nLLRLL) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nLLRLL) + 4));
                             fn_801F2570(*(int *)((char *)nLLRLL + 8));
                         }
-                        fn_802C7040(*(int *)((char *)(*(void **)nLLRL) + 4));
+                        DrawModelInstance(*(int *)((char *)(*(void **)nLLRL) + 4));
                         nLLRLR = *(void **)((char *)nLLRL + 8);
                         if (nLLRLR != 0) {
                             fn_801F2570(*(int *)((char *)nLLRLR + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nLLRLR) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nLLRLR) + 4));
                             fn_801F2570(*(int *)((char *)nLLRLR + 8));
                         }
                     }
-                    fn_802C7040(*(int *)((char *)(*(void **)nLLR) + 4));
+                    DrawModelInstance(*(int *)((char *)(*(void **)nLLR) + 4));
                     nLLRR = *(void **)((char *)nLLR + 8);
                     if (nLLRR != 0) {
                         nLLRRL = *(void **)((char *)nLLRR + 4);
                         if (nLLRRL != 0) {
                             fn_801F2570(*(int *)((char *)nLLRRL + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nLLRRL) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nLLRRL) + 4));
                             fn_801F2570(*(int *)((char *)nLLRRL + 8));
                         }
-                        fn_802C7040(*(int *)((char *)(*(void **)nLLRR) + 4));
+                        DrawModelInstance(*(int *)((char *)(*(void **)nLLRR) + 4));
                         nLLRRR = *(void **)((char *)nLLRR + 8);
                         if (nLLRRR != 0) {
                             fn_801F2570(*(int *)((char *)nLLRRR + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nLLRRR) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nLLRRR) + 4));
                             fn_801F2570(*(int *)((char *)nLLRRR + 8));
                         }
                     }
                 }
             }
-            fn_802C7040(*(int *)((char *)(*(void **)nL) + 4));
+            DrawModelInstance(*(int *)((char *)(*(void **)nL) + 4));
             nLR = *(void **)((char *)nL + 8);
             if (nLR != 0) {
                 nLRL = *(void **)((char *)nLR + 4);
@@ -619,36 +619,36 @@ void fn_801F2570(int node) {
                         nLRLLL = *(void **)((char *)nLRLL + 4);
                         if (nLRLLL != 0) {
                             fn_801F2570(*(int *)((char *)nLRLLL + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nLRLLL) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nLRLLL) + 4));
                             fn_801F2570(*(int *)((char *)nLRLLL + 8));
                         }
-                        fn_802C7040(*(int *)((char *)(*(void **)nLRLL) + 4));
+                        DrawModelInstance(*(int *)((char *)(*(void **)nLRLL) + 4));
                         nLRLLR = *(void **)((char *)nLRLL + 8);
                         if (nLRLLR != 0) {
                             fn_801F2570(*(int *)((char *)nLRLLR + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nLRLLR) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nLRLLR) + 4));
                             fn_801F2570(*(int *)((char *)nLRLLR + 8));
                         }
                     }
-                    fn_802C7040(*(int *)((char *)(*(void **)nLRL) + 4));
+                    DrawModelInstance(*(int *)((char *)(*(void **)nLRL) + 4));
                     nLRLR = *(void **)((char *)nLRL + 8);
                     if (nLRLR != 0) {
                         nLRLRL = *(void **)((char *)nLRLR + 4);
                         if (nLRLRL != 0) {
                             fn_801F2570(*(int *)((char *)nLRLRL + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nLRLRL) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nLRLRL) + 4));
                             fn_801F2570(*(int *)((char *)nLRLRL + 8));
                         }
-                        fn_802C7040(*(int *)((char *)(*(void **)nLRLR) + 4));
+                        DrawModelInstance(*(int *)((char *)(*(void **)nLRLR) + 4));
                         nLRLRR = *(void **)((char *)nLRLR + 8);
                         if (nLRLRR != 0) {
                             fn_801F2570(*(int *)((char *)nLRLRR + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nLRLRR) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nLRLRR) + 4));
                             fn_801F2570(*(int *)((char *)nLRLRR + 8));
                         }
                     }
                 }
-                fn_802C7040(*(int *)((char *)(*(void **)nLR) + 4));
+                DrawModelInstance(*(int *)((char *)(*(void **)nLR) + 4));
                 nLRR = *(void **)((char *)nLR + 8);
                 if (nLRR != 0) {
                     nLRRL = *(void **)((char *)nLRR + 4);
@@ -656,38 +656,38 @@ void fn_801F2570(int node) {
                         nLRRLL = *(void **)((char *)nLRRL + 4);
                         if (nLRRLL != 0) {
                             fn_801F2570(*(int *)((char *)nLRRLL + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nLRRLL) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nLRRLL) + 4));
                             fn_801F2570(*(int *)((char *)nLRRLL + 8));
                         }
-                        fn_802C7040(*(int *)((char *)(*(void **)nLRRL) + 4));
+                        DrawModelInstance(*(int *)((char *)(*(void **)nLRRL) + 4));
                         nLRRLR = *(void **)((char *)nLRRL + 8);
                         if (nLRRLR != 0) {
                             fn_801F2570(*(int *)((char *)nLRRLR + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nLRRLR) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nLRRLR) + 4));
                             fn_801F2570(*(int *)((char *)nLRRLR + 8));
                         }
                     }
-                    fn_802C7040(*(int *)((char *)(*(void **)nLRR) + 4));
+                    DrawModelInstance(*(int *)((char *)(*(void **)nLRR) + 4));
                     nLRRR = *(void **)((char *)nLRR + 8);
                     if (nLRRR != 0) {
                         nLRRRL = *(void **)((char *)nLRRR + 4);
                         if (nLRRRL != 0) {
                             fn_801F2570(*(int *)((char *)nLRRRL + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nLRRRL) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nLRRRL) + 4));
                             fn_801F2570(*(int *)((char *)nLRRRL + 8));
                         }
-                        fn_802C7040(*(int *)((char *)(*(void **)nLRRR) + 4));
+                        DrawModelInstance(*(int *)((char *)(*(void **)nLRRR) + 4));
                         nLRRRR = *(void **)((char *)nLRRR + 8);
                         if (nLRRRR != 0) {
                             fn_801F2570(*(int *)((char *)nLRRRR + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nLRRRR) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nLRRRR) + 4));
                             fn_801F2570(*(int *)((char *)nLRRRR + 8));
                         }
                     }
                 }
             }
         }
-        fn_802C7040(*(int *)((char *)(*(void **)(void *)node) + 4));
+        DrawModelInstance(*(int *)((char *)(*(void **)(void *)node) + 4));
         nR = *(void **)((char *)(void *)node + 8);
         if (nR != 0) {
             nRL = *(void **)((char *)nR + 4);
@@ -699,36 +699,36 @@ void fn_801F2570(int node) {
                         nRLLLL = *(void **)((char *)nRLLL + 4);
                         if (nRLLLL != 0) {
                             fn_801F2570(*(int *)((char *)nRLLLL + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nRLLLL) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nRLLLL) + 4));
                             fn_801F2570(*(int *)((char *)nRLLLL + 8));
                         }
-                        fn_802C7040(*(int *)((char *)(*(void **)nRLLL) + 4));
+                        DrawModelInstance(*(int *)((char *)(*(void **)nRLLL) + 4));
                         nRLLLR = *(void **)((char *)nRLLL + 8);
                         if (nRLLLR != 0) {
                             fn_801F2570(*(int *)((char *)nRLLLR + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nRLLLR) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nRLLLR) + 4));
                             fn_801F2570(*(int *)((char *)nRLLLR + 8));
                         }
                     }
-                    fn_802C7040(*(int *)((char *)(*(void **)nRLL) + 4));
+                    DrawModelInstance(*(int *)((char *)(*(void **)nRLL) + 4));
                     nRLLR = *(void **)((char *)nRLL + 8);
                     if (nRLLR != 0) {
                         nRLLRL = *(void **)((char *)nRLLR + 4);
                         if (nRLLRL != 0) {
                             fn_801F2570(*(int *)((char *)nRLLRL + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nRLLRL) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nRLLRL) + 4));
                             fn_801F2570(*(int *)((char *)nRLLRL + 8));
                         }
-                        fn_802C7040(*(int *)((char *)(*(void **)nRLLR) + 4));
+                        DrawModelInstance(*(int *)((char *)(*(void **)nRLLR) + 4));
                         nRLLRR = *(void **)((char *)nRLLR + 8);
                         if (nRLLRR != 0) {
                             fn_801F2570(*(int *)((char *)nRLLRR + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nRLLRR) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nRLLRR) + 4));
                             fn_801F2570(*(int *)((char *)nRLLRR + 8));
                         }
                     }
                 }
-                fn_802C7040(*(int *)((char *)(*(void **)nRL) + 4));
+                DrawModelInstance(*(int *)((char *)(*(void **)nRL) + 4));
                 nRLR = *(void **)((char *)nRL + 8);
                 if (nRLR != 0) {
                     nRLRL = *(void **)((char *)nRLR + 4);
@@ -736,37 +736,37 @@ void fn_801F2570(int node) {
                         nRLRLL = *(void **)((char *)nRLRL + 4);
                         if (nRLRLL != 0) {
                             fn_801F2570(*(int *)((char *)nRLRLL + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nRLRLL) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nRLRLL) + 4));
                             fn_801F2570(*(int *)((char *)nRLRLL + 8));
                         }
-                        fn_802C7040(*(int *)((char *)(*(void **)nRLRL) + 4));
+                        DrawModelInstance(*(int *)((char *)(*(void **)nRLRL) + 4));
                         nRLRLR = *(void **)((char *)nRLRL + 8);
                         if (nRLRLR != 0) {
                             fn_801F2570(*(int *)((char *)nRLRLR + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nRLRLR) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nRLRLR) + 4));
                             fn_801F2570(*(int *)((char *)nRLRLR + 8));
                         }
                     }
-                    fn_802C7040(*(int *)((char *)(*(void **)nRLR) + 4));
+                    DrawModelInstance(*(int *)((char *)(*(void **)nRLR) + 4));
                     nRLRR = *(void **)((char *)nRLR + 8);
                     if (nRLRR != 0) {
                         nRLRRL = *(void **)((char *)nRLRR + 4);
                         if (nRLRRL != 0) {
                             fn_801F2570(*(int *)((char *)nRLRRL + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nRLRRL) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nRLRRL) + 4));
                             fn_801F2570(*(int *)((char *)nRLRRL + 8));
                         }
-                        fn_802C7040(*(int *)((char *)(*(void **)nRLRR) + 4));
+                        DrawModelInstance(*(int *)((char *)(*(void **)nRLRR) + 4));
                         nRLRRR = *(void **)((char *)nRLRR + 8);
                         if (nRLRRR != 0) {
                             fn_801F2570(*(int *)((char *)nRLRRR + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nRLRRR) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nRLRRR) + 4));
                             fn_801F2570(*(int *)((char *)nRLRRR + 8));
                         }
                     }
                 }
             }
-            fn_802C7040(*(int *)((char *)(*(void **)nR) + 4));
+            DrawModelInstance(*(int *)((char *)(*(void **)nR) + 4));
             nRR = *(void **)((char *)nR + 8);
             if (nRR != 0) {
                 nRRL = *(void **)((char *)nRR + 4);
@@ -776,36 +776,36 @@ void fn_801F2570(int node) {
                         nRRLLL = *(void **)((char *)nRRLL + 4);
                         if (nRRLLL != 0) {
                             fn_801F2570(*(int *)((char *)nRRLLL + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nRRLLL) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nRRLLL) + 4));
                             fn_801F2570(*(int *)((char *)nRRLLL + 8));
                         }
-                        fn_802C7040(*(int *)((char *)(*(void **)nRRLL) + 4));
+                        DrawModelInstance(*(int *)((char *)(*(void **)nRRLL) + 4));
                         nRRLLR = *(void **)((char *)nRRLL + 8);
                         if (nRRLLR != 0) {
                             fn_801F2570(*(int *)((char *)nRRLLR + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nRRLLR) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nRRLLR) + 4));
                             fn_801F2570(*(int *)((char *)nRRLLR + 8));
                         }
                     }
-                    fn_802C7040(*(int *)((char *)(*(void **)nRRL) + 4));
+                    DrawModelInstance(*(int *)((char *)(*(void **)nRRL) + 4));
                     nRRLR = *(void **)((char *)nRRL + 8);
                     if (nRRLR != 0) {
                         nRRLRL = *(void **)((char *)nRRLR + 4);
                         if (nRRLRL != 0) {
                             fn_801F2570(*(int *)((char *)nRRLRL + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nRRLRL) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nRRLRL) + 4));
                             fn_801F2570(*(int *)((char *)nRRLRL + 8));
                         }
-                        fn_802C7040(*(int *)((char *)(*(void **)nRRLR) + 4));
+                        DrawModelInstance(*(int *)((char *)(*(void **)nRRLR) + 4));
                         nRRLRR = *(void **)((char *)nRRLR + 8);
                         if (nRRLRR != 0) {
                             fn_801F2570(*(int *)((char *)nRRLRR + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nRRLRR) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nRRLRR) + 4));
                             fn_801F2570(*(int *)((char *)nRRLRR + 8));
                         }
                     }
                 }
-                fn_802C7040(*(int *)((char *)(*(void **)nRR) + 4));
+                DrawModelInstance(*(int *)((char *)(*(void **)nRR) + 4));
                 nRRR = *(void **)((char *)nRR + 8);
                 if (nRRR != 0) {
                     nRRRL = *(void **)((char *)nRRR + 4);
@@ -813,31 +813,31 @@ void fn_801F2570(int node) {
                         nRRRLL = *(void **)((char *)nRRRL + 4);
                         if (nRRRLL != 0) {
                             fn_801F2570(*(int *)((char *)nRRRLL + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nRRRLL) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nRRRLL) + 4));
                             fn_801F2570(*(int *)((char *)nRRRLL + 8));
                         }
-                        fn_802C7040(*(int *)((char *)(*(void **)nRRRL) + 4));
+                        DrawModelInstance(*(int *)((char *)(*(void **)nRRRL) + 4));
                         nRRRLR = *(void **)((char *)nRRRL + 8);
                         if (nRRRLR != 0) {
                             fn_801F2570(*(int *)((char *)nRRRLR + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nRRRLR) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nRRRLR) + 4));
                             fn_801F2570(*(int *)((char *)nRRRLR + 8));
                         }
                     }
-                    fn_802C7040(*(int *)((char *)(*(void **)nRRR) + 4));
+                    DrawModelInstance(*(int *)((char *)(*(void **)nRRR) + 4));
                     nRRRR = *(void **)((char *)nRRR + 8);
                     if (nRRRR != 0) {
                         nRRRRL = *(void **)((char *)nRRRR + 4);
                         if (nRRRRL != 0) {
                             fn_801F2570(*(int *)((char *)nRRRRL + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nRRRRL) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nRRRRL) + 4));
                             fn_801F2570(*(int *)((char *)nRRRRL + 8));
                         }
-                        fn_802C7040(*(int *)((char *)(*(void **)nRRRR) + 4));
+                        DrawModelInstance(*(int *)((char *)(*(void **)nRRRR) + 4));
                         nRRRRR = *(void **)((char *)nRRRR + 8);
                         if (nRRRRR != 0) {
                             fn_801F2570(*(int *)((char *)nRRRRR + 4));
-                            fn_802C7040(*(int *)((char *)(*(void **)nRRRRR) + 4));
+                            DrawModelInstance(*(int *)((char *)(*(void **)nRRRRR) + 4));
                             fn_801F2570(*(int *)((char *)nRRRRR + 8));
                         }
                     }
@@ -850,7 +850,7 @@ void fn_801F2570(int node) {
 #pragma pop
 
 void fn_801F2D84(void *unused, void *node) {
-    /* Builds camera basis, updates render state, then applies fn_802C7040 to each node in a linked list. */
+    /* Builds camera basis, updates render state, then applies DrawModelInstance to each node in a linked list. */
     extern int fn_801F1C24(void *);
     extern int fn_802C7730(void *);
     int stack[12];
@@ -861,7 +861,7 @@ void fn_801F2D84(void *unused, void *node) {
     goto check;
 
 body:
-    fn_802C7040(*(int *)((char *)p + 4));
+    DrawModelInstance(*(int *)((char *)p + 4));
     p = *(void **)((char *)p + 0xC);
 
 check:
@@ -871,7 +871,7 @@ check:
 }
 
 void fn_801F2DD4(void *unused, void *node) {
-    /* Builds camera basis, updates render state, then applies fn_802C7040 to each node in a linked list. */
+    /* Builds camera basis, updates render state, then applies DrawModelInstance to each node in a linked list. */
     extern int fn_801F1C24(void *);
     extern int fn_802C7730(void *);
     int stack[12];
@@ -880,7 +880,7 @@ void fn_801F2DD4(void *unused, void *node) {
     fn_802C7730(&stack[0]);
     goto check;
 body:
-    fn_802C7040(*(int *)((char *)p + 4));
+    DrawModelInstance(*(int *)((char *)p + 4));
     p = *(void **)((char *)p + 0xC);
 check:
     if (p != 0) {
@@ -1496,8 +1496,8 @@ extern void *fn_8002F37C(void *, void *, int, int, int);
 #pragma push
 #pragma small_data off
 __declspec(section ".data") extern int lbl_8033AA90, lbl_8033AA18, lbl_8033AA24;
-#pragma push
 #pragma processor 750
+#pragma scheduling invalid_target
 void fn_801F3D34(void *arg0, int arg1, void *arg2) {
     float temp_f31;
     void *temp_r31;
@@ -1537,7 +1537,8 @@ void fn_801F3D34(void *arg0, int arg1, void *arg2) {
     *(float *)((char *)temp_r3 + 0x14) = temp_f31;
     (*(int *)((char *)temp_r31 + 8))++;
 }
-#pragma pop
+#pragma scheduling on
+#pragma processor default
 /* Empty stub. */
 void fn_801F3E60(void) {
 
@@ -1630,7 +1631,7 @@ void fn_801F3F8C(void *table, void *node) {
                 if (maxAlpha < alpha) alpha = maxAlpha;
                 if (alpha > minAlpha) alpha = alpha; else alpha = minAlpha;
                 fn_802C9900(alpha);
-                fn_802C7040(*(int *)(entry + 0xC));
+                DrawModelInstance(*(int *)(entry + 0xC));
                 fn_802C9904();
             }
         }
@@ -1658,7 +1659,7 @@ void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
     struct Pool *pool;
     float v[6];
     int count, kind;
-    float hi, start, end, scaled, baseY, baseX, lo;
+    float hi, start, end, baseY, baseX, factor, lo;
     if (owner->pool == 0) {
         void *allocated = fn_801284F8(0x548, (void *)lbl_8033AB0C);
         if (allocated != 0) {
@@ -1677,32 +1678,32 @@ void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
     hi = v[1];
     lo = v[0];
     hi = hi - lo;
-    scaled = hi * lbl_80562F64;
+    factor = lbl_80562F64;
+    start = hi * factor;
     baseX = config->x;
+    lo = lo + start;
     start = config->start;
     end = config->end;
     start = start - end;
     hi = lbl_80562F44;
     baseY = config->y;
-    lo = lo + scaled;
     hi = hi / start;
-    scaled = config->z;
     kind = config->kind;
     baseX = baseX + lo;
     entry->x = baseX;
     start = v[3];
     baseX = v[2];
     start = start - baseX;
-    start = start * lbl_80562F64;
+    start = start * factor;
     start = baseX + start;
     start = baseY + start;
     entry->y = start;
     start = v[5];
     baseY = v[4];
     start = start - baseY;
-    start = start * lbl_80562F64;
+    start = start * factor;
     start = baseY + start;
-    start = scaled + start;
+    start = config->z + start;
     entry->z = start;
     entry->kind = kind;
     entry->rate = hi;
@@ -1765,7 +1766,7 @@ void fn_801F4330(void) {
 
 }
 
-extern int fn_802C7040(int);
+extern int DrawModelInstance(int);
 extern int fn_802CD320(int, void *);
 extern unsigned char lbl_8033AAB8[];
 extern unsigned char lbl_8033AA48[];
@@ -1796,7 +1797,7 @@ __declspec(section ".data") extern int lbl_8033AAA8, lbl_8033AA60;
 #pragma small_data off
 #pragma pop
 #pragma cplusplus on
-extern "C" void fn_801F4378(void *arg0, int arg1, void *arg2, int arg3, int arg4) {
+extern "C" void fn_801F4378(void *arg0, int arg1, void *arg2, int arg3) {
     struct Dummy {
         virtual void v0() = 0;
         virtual void v1() = 0;
@@ -1817,17 +1818,16 @@ extern "C" void fn_801F4378(void *arg0, int arg1, void *arg2, int arg3, int arg4
         virtual void v16() = 0;
         virtual float get(int) = 0;
     };
+    int count;
+    int value;
     void *path;
     void *obj;
     void *newobj;
-    void *entry;
     void *item;
     float f;
-    int count;
-    int value;
 
-    obj = *(void **)((char *)arg0 + 4);
     path = (char *)arg2 + 0x2C;
+    obj = *(void **)((char *)arg0 + 4);
     if (obj == 0) {
         newobj = fn_801284F8(0x108, (void *)&lbl_8033AAA8);
         if (newobj != 0) {
@@ -1841,15 +1841,15 @@ extern "C" void fn_801F4378(void *arg0, int arg1, void *arg2, int arg3, int arg4
     value = *(int *)((char *)arg2 + 4);
     count = *(int *)((char *)obj + 0x104);
     f = lbl_80562F40;
-    entry = (char *)obj + (count << 4);
-    *(int *)((char *)entry + 4) = value;
-    *(int *)((char *)entry + 8) = arg3;
-    *(float *)((char *)entry + 0xC) = f;
-    *(float *)((char *)entry + 0x10) = f;
+    arg2 = (char *)obj + (count << 4);
+    *(int *)((char *)arg2 + 4) = value;
+    *(int *)((char *)arg2 + 8) = arg3;
+    *(float *)((char *)arg2 + 0xC) = f;
+    *(float *)((char *)arg2 + 0x10) = f;
     item = fn_802AE414(path);
     if (item != 0) {
-        *(float *)((char *)entry + 0xC) = ((Dummy *)item)->get((int)&lbl_8055B150);
-        *(float *)((char *)entry + 0x10) = ((Dummy *)item)->get((int)&lbl_8055B148);
+        *(float *)((char *)arg2 + 0xC) = ((Dummy *)item)->get((int)&lbl_8055B150);
+        *(float *)((char *)arg2 + 0x10) = ((Dummy *)item)->get((int)&lbl_8055B148);
     }
     count = *(int *)((char *)obj + 0x104);
     *(int *)((char *)obj + 0x104) = count + 1;
@@ -1861,7 +1861,7 @@ void fn_801F447C(void) {
 }
 
 /* For each node in a linked list starting at head: if the object at node+0x2C passes
- * fn_801F1CF0 (camera-facing / dot-product test), call fn_802C7040 on the node's
+ * fn_801F1CF0 (camera-facing / dot-product test), call DrawModelInstance on the node's
  * value at +4. Node layout used: +4 value, +0xC next, +0x2C test object. */
 void fn_801F4480(int unused, void *head)
 {
@@ -1873,7 +1873,7 @@ void fn_801F4480(int unused, void *head)
 loop:
     value = *(int *)((char *)node + 4);
     if (fn_801F1CF0((int)((char *)node + 0x2C))) {
-        fn_802C7040(value);
+        DrawModelInstance(value);
     }
     node = *(void **)((char *)node + 0xC);
 check:
@@ -2076,7 +2076,7 @@ void fn_801F49F8(void *table, int drawContext) {
             value = (maxAlpha < value) ? maxAlpha : value;
             value = (value > minAlpha) ? value : minAlpha;
             fn_802C9900(value);
-            fn_802C7040(*(int *)((char *)item + 0xC));
+            DrawModelInstance(*(int *)((char *)item + 0xC));
             fn_802C9904();
         }
         cursor++;
@@ -2173,4 +2173,4 @@ void fn_801F4CA0(void) {
 
 }
 #define M2C_FIELD(expr, type, offset) (*(type)((char *)(expr) + (offset)))
-extern int fn_802C7040(int);
+extern int DrawModelInstance(int);

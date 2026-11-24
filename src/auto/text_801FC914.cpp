@@ -1043,17 +1043,17 @@ extern "C" void fn_801FE448(void *spawners) {
 }
 #pragma scheduling on
 #pragma pop
-extern "C" void fn_802C7040(int);
+extern "C" void DrawModelInstance(int);
 float fn_80129DC4(int, void *, float, float);
 extern "C" int fn_801FE88C(void *, void *);
 extern const char lbl_8033B638[];
 extern const char lbl_8033B654[];
 extern char lbl_8033B760[];
 extern "C" void fn_801FE510(void *unused, void *head) {
-    /* Walks a linked list of model-instance nodes, updating each one's visibility/distance via fn_802C7040. Node layout: +4 instance id, +0xC next. */
+    /* Walks a linked list of model-instance nodes, updating each one's visibility/distance via DrawModelInstance. Node layout: +4 instance id, +0xC next. */
     void *node = head;
     while (node != 0) {
-        fn_802C7040(*(int *)((char *)node + 4));
+        DrawModelInstance(*(int *)((char *)node + 4));
         node = *(void **)((char *)node + 0xC);
     }
 }

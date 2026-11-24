@@ -1273,7 +1273,7 @@ int fn_802C6B44(int);
 extern const char lbl_8034B3DC[];
 int fn_802C94A0(void*, unsigned char*, float*, float);
 void fn_802C57B4(int, int, int, unsigned char, float);
-void fn_802C7040(int instanceId) {
+void DrawModelInstance(int instanceId) {
     float distance;
     unsigned char visibility;
     void *groupHeader;
