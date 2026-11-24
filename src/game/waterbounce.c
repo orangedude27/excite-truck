@@ -371,6 +371,8 @@ extern "C" float PSVECDotProduct(void *, void *);
 extern "C" double fabs(double);
 #pragma processor 750
 extern "C" void fn_8020E598(void *arg0) {
+char *__repair_addr;
+
     void *truck;
     void *s54;
     void *s48;
@@ -413,7 +415,7 @@ extern "C" void fn_8020E598(void *arg0) {
                 *(unsigned char *)((char *)arg0 + 0x72) = 0;
             }
         } else {
-            int eq0 = (*(float *)((char *)truck + 0x25BC) == lbl_80558DC4);
+            int eq0 = (*(float *)((char *)truck + 0x25BC) > lbl_80558DC4);
             if (eq0 == 0) {
                 s54 = *(void **)((char *)arg0 + 0x54);
                 *(unsigned char *)((char *)arg0 + 0x58) = 0;
@@ -430,7 +432,9 @@ extern "C" void fn_8020E598(void *arg0) {
         else
             base = lbl_80563378;
         v = lbl_80563368;
-        t = (*(float *)((char *)truck + 0x25A0) - base) / ((lbl_8056337C + base) - base);
+__repair_addr = (char *)((char *)truck + 0x25A0);
+
+        t = (*(float *)(__repair_addr) - base) / ((lbl_8056337C + base) - base);
         v = (v < t) ? v : t;
         v = (v > lbl_80563370) ? v : lbl_80563370;
         t2 = lbl_80563380;
@@ -799,28 +803,26 @@ void fn_8020F240(void *arg0) {
 #pragma scheduling off
 void fn_8020F284(void *carSound, float inputValue) {
 #pragma scheduling invalid_target
-    /* Map inputValue from [5,20] to [0,1], scale it to [0.2,0.8], and apply that
-     * to the sound at +0x1C (updating +8 and raising +0x4D on a change), then
-     * re-arm the sound's +0x49/+0x4A/+0x4B state flags. */
+    /* CarSound vtable handler: map the impact value from [5,20] to [0,1], scale it to [0.2,0.8], and set it as the car_gnd1.sfx volume at +8, raising +0x4D on a change, then re-arm the sound's +0x49/+0x4A/+0x4B flags. */
     float normalized;
     float scaled;
     float value;
-    void *sound;
-    sound = *(void **)((char *)carSound + 0x1C);
-    if (sound != 0) {
+    void *gndSound;
+    gndSound = *(void **)((char *)carSound + 0x1C);
+    if (gndSound != 0) {
         normalized = lbl_80563368;
         scaled = (inputValue - lbl_805633DC) / lbl_805633F4;
         normalized = (normalized < scaled) ? normalized : scaled;
         normalized = (normalized > lbl_80563370) ? normalized : lbl_80563370;
         value = lbl_805633F8 + normalized * lbl_805633FC;
-        if (value != *(float *)((char *)sound + 8)) {
-            *(signed char *)((char *)sound + 0x4D) = 1;
-            *(float *)((char *)sound + 8) = value;
+        if (value != *(float *)((char *)gndSound + 8)) {
+            *(signed char *)((char *)gndSound + 0x4D) = 1;
+            *(float *)((char *)gndSound + 8) = value;
         }
-        sound = *(void **)((char *)carSound + 0x1C);
-        *(signed char *)((char *)sound + 0x49) = 1;
-        *(signed char *)((char *)sound + 0x4B) = 0;
-        *(signed char *)((char *)sound + 0x4A) = 0;
+        gndSound = *(void **)((char *)carSound + 0x1C);
+        *(signed char *)((char *)gndSound + 0x49) = 1;
+        *(signed char *)((char *)gndSound + 0x4B) = 0;
+        *(signed char *)((char *)gndSound + 0x4A) = 0;
     }
 }
 
