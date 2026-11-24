@@ -162,7 +162,8 @@ void fn_802E4800(u16 inputWord) {
 
 #pragma push
 #pragma scheduling invalid_target
-/* Check whether a 16-bit key sequence matches the end of the 32-entry input history (right-aligned by sequence length); 0xFFFF entries in the sequence act as wildcards. */
+/* Return 1 when `sequence` (0-terminated, 0xFFFF entries are wildcards) matches the
+ * tail of the 32-entry input history, 0 otherwise. */
 s32 MatchKeySequence(u16 *sequence) {
 #define inputHistoryBuffer lbl_804FC418
     s32 length;
