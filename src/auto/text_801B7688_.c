@@ -375,7 +375,7 @@ void fn_801B8054(int obj, int source, float offset, float interp) {
 }
 
 #pragma scheduling on
-/* Set up a transform on target from an entity record's horizontal position and normalized facing direction. */ void fn_801B8060(int target, const void *record) {
+/* Set up a transform on target from an entity record's horizontal position and normalized facing direction. */ /* Set up a transform on target from an entity record's horizontal position and normalized facing direction. */ void fn_801B8060(int target, const void *record) {
     float position[2];
     float direction[2];
     float dirX;
