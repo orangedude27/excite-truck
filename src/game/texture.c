@@ -1349,7 +1349,7 @@ void fn_802CBD7C(register void **link, void *node, void *scan) {
 }
 
 extern int fn_802D9068(void);
-extern void fn_802CBFCC(void *, void *);
+extern void startTextureRequestRead(void *, void *);
 extern void fn_802CBFA0(void *, unsigned int);
 extern void fn_802CC03C(int **, int *, int);
 extern int fn_802CC10C(void *, int, int, int);
@@ -1415,7 +1415,7 @@ scan_done:
             if (*(void **)(request + 8) != 0) {
                 fn_802CC03C((int **)base, (int *)request, texId);
                 if (*(int *)(request + 0x10) == zero)
-                    fn_802CBFCC(base, request);
+                    startTextureRequestRead(base, request);
                 allocated = 1;
             } else {
                 fn_802CBFA0(base, (unsigned int)request);
@@ -1454,7 +1454,7 @@ void fn_802CBFA0(void *mgr, unsigned int request) {
     }
 }
 
-void fn_802CBFCC(void *unused, void *request) {
+void startTextureRequestRead(void *unused, void *request) {
     extern char lbl_8055D088;
     /* Mark the request complete and notify the texture load handlers. */
     *(int *)((char *)request + 0x10) = -1;
