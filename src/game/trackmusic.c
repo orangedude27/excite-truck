@@ -705,8 +705,8 @@ void fn_802103B8(void) {
 #pragma push
 #pragma cplusplus on
 #pragma dont_inline on
-extern "C" /* Shut down track music: fade out/stop playback, destroy the track-music resource and goalline SFX objects if present, clear current song state, and mark load slots unloaded. */
-void fn_802103BC(void) {
+/* Shut down track music: fade out/stop playback, destroy the track-music resource and goalline SFX objects if present, clear current song state, and mark load slots unloaded. */
+extern "C" void fn_802103BC(void) {
     class Obj { public: virtual void f(long); };
     ((void (*)(float))fn_802EC1C0)(0.0f);
     fn_802EC12C();
