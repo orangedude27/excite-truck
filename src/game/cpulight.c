@@ -628,7 +628,7 @@ extern int GXGetTexObjFmt(void *);
 extern void fn_802E317C(const char *);
 extern char lbl_8034CB00[];
 extern char lbl_8034CB24[];
-extern unsigned int lbl_8055FEBC;
+extern unsigned int gCpuLightTexData;
   
 void fn_802DC440(void) {
 #define CpuLight_ClearState fn_802DBDD8
@@ -719,7 +719,7 @@ void fn_802DC628(void) {
         ((void (*)(const char *, ...))fn_802E317C)(lbl_8034CB00);
     if (GXGetTexObjWrapS((void *)(cpuLightTexObj + 0x24)) != 0x200)
         ((void (*)(const char *, ...))fn_802E317C)(lbl_8034CB24);
-    lbl_8055FEBC = GXGetTexObjFmt((void *)(cpuLightTexObj + 0x24)) + 0x80000000;
+    gCpuLightTexData = GXGetTexObjFmt((void *)(cpuLightTexObj + 0x24)) + 0x80000000;
 }
 #pragma pop
 extern int GXGetTexObjMipMap(void *);
@@ -728,11 +728,11 @@ extern int GXGetTexObjFmt(void *);
 extern void fn_802E317C(const char *);
 extern char lbl_8034CB00[];
 extern char lbl_8034CB24[];
-extern unsigned int lbl_8055FEBC;
-extern unsigned int lbl_8055FEBC;
-/* CpuLightSampleTexelPair: sample two adjacent 16-bit texels from the CPU-light texture at (x,y) in texel units, returning (texel[x,y+1] | texel[x,y] << 16). gCpuLightTexBase (lbl_8055FEBC) is the GX texture data base cached by fn_802DC62C. */
+extern unsigned int gCpuLightTexData;
+extern unsigned int gCpuLightTexData;
+/* CpuLightSampleTexelPair: sample two adjacent 16-bit texels from the CPU-light texture at (x,y) in texel units, returning (texel[x,y+1] | texel[x,y] << 16). gCpuLightTexBase (gCpuLightTexData) is the GX texture data base cached by fn_802DC62C. */
 int fn_802DC6AC(int a, unsigned int b) {
-#define gCpuLightTexBase lbl_8055FEBC
+#define gCpuLightTexBase gCpuLightTexData
     int row = a / 4;
     int col = (int)b / 4;
     int x = a % 4;
