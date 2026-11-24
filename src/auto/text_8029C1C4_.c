@@ -87,15 +87,15 @@ void fn_8029C22C(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-void WaterPool_StepAll(void) {
-    int *p;
-    int i;
-    float v = fn_801E7E24();
-    if (!((float)__fabs((double)v) <= lbl_80558DC4)) {
-        p = (int *)&lbl_804B5010;
-        for (i = 0; i < lbl_8055F7F0; i++) {
-            fn_8029D574(*p);
-            p++;
+/* Step every registered 3D water pool when the frame delta time is non-negligible (|dt| > epsilon). */ void WaterPool_StepAll(void) {
+    int *poolSlot;
+    int index;
+    float frameTime = fn_801E7E24();
+    if (!((float)__fabs((double)frameTime) <= lbl_80558DC4)) {
+        poolSlot = (int *)&lbl_804B5010;
+        for (index = 0; index < lbl_8055F7F0; index++) {
+            fn_8029D574(*poolSlot);
+            poolSlot++;
         }
     }
 }
