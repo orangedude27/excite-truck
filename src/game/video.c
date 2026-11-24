@@ -906,7 +906,8 @@ void fn_802E0D44(u32 size)
   while (align != 0);
 }
 
-/* RealName: Video_FreeBinkIfLoaded (tentative). If the Bink handle at object+4 is set, cleans up associated subobject at +0x50 via fn_802E1728, frees the Bink via fn_80118DC0 (BinkClose), and clears the handle. */
+/* Close a video object's Bink handle at +4 if loaded: free the subobject at
+ * +0x50, close the Bink through fn_80118DC0, then clear the handle. */
 void VideoObject_FreeBink(object)
 void *object;
 {
