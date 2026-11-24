@@ -787,7 +787,7 @@ void fn_802E2CFC(void *arg0) {
 #pragma scheduling invalid_target
 /* Busy-wait for the given number of milliseconds, polling the microsecond timer
    fn_802E2C9C; also break out if the timer appears to jump backwards. */
-void fn_802E2D74(int milliseconds) {
+/* Busy-wait until fn_802E2C9C's microsecond timer shows `milliseconds` have elapsed, quitting early if the timer jumps backwards. */ void fn_802E2D74(int milliseconds) {
     long long limitUs = (long long)milliseconds * 1000;
     u64 startUs = fn_802E2C9C();
     u64 nowUs;
