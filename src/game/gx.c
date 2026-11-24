@@ -3260,7 +3260,7 @@ typedef struct {
     *(int *)((char *)gZQueryPool + 0x700) = 0;
 }
 
-void ZQueryPool_AssertAllReleased(void) {
+/* Shutdown assertion: panic if any of the 64 visibility-test depth queries in the pool is still checked out. */ void ZQueryPool_AssertAllReleased(void) {
     ZQuery *query = (ZQuery *)gZQueryPool;
     int queryIndex;
     /* Panic with "visibility test still in use." if any of the 64 depth queries is still checked out. */
