@@ -28,7 +28,7 @@ extern u8 lbl_8055FDE4;
 extern f32 lbl_8055FDE0;
 /* Vertex-format display-list cache: a table of CacheEntry at lbl_804CA438,
  * a 0x4000-byte recording buffer and the number of lists cached so far. */
-extern s32 lbl_8055FDF0;  // number of cached vertex-format lists
+extern s32 gVertexFormatCount;  // number of cached vertex-format lists
 extern s32 gVertexFormatDlStart;  // start of the display-list recording buffer
 extern s32 gVertexFormatDlEnd;  // next free byte in that buffer
 extern u8 lbl_8034C3DC[];
@@ -1129,11 +1129,11 @@ s32 fn_802D62E4(void *object) {
  * list into the shared buffer and appends it to the cache. */
 void fn_802D62FC(void *__restrict surface, s32 *outOffset, s32 *outSize) {
 #define vertexFormatCache   lbl_804CA438
-#define vertexFormatCount   lbl_8055FDF0
+#define vertexFormatCount   gVertexFormatCount
 #define vertexFormatDlStart gVertexFormatDlStart
 #define vertexFormatDlEnd   gVertexFormatDlEnd
 #define setVtxDescFromFlags fn_802D5DE8
-    extern s32 lbl_8055FDF0;
+    extern s32 gVertexFormatCount;
     extern s32 gVertexFormatDlStart;
     extern s32 gVertexFormatDlEnd;
     extern void GXBeginDisplayList(void *, u32);
@@ -1358,7 +1358,7 @@ void drVertexFormatCacheInit(void) {
     void *displayListBuffer;
 
     /* Initialize the vertex-format display list buffer and reset its state. */
-    lbl_8055FDF0 = 0;
+    gVertexFormatCount = 0;
     fn_801282EC(0x20);
     displayListBuffer = fn_8012850C(0x4000, lbl_8034C3DC);
     gVertexFormatDlStart = (s32)displayListBuffer;
@@ -1379,7 +1379,7 @@ void drVertexFormatCacheShutdown(void) {
     /* Finalize vertex-format display list logging/cleanup, then report total ymorph verts. */
 #define vertexFormatDlStart gVertexFormatDlStart
 #define vertexFormatDlEnd gVertexFormatDlEnd
-#define vertexFormatCount lbl_8055FDF0
+#define vertexFormatCount gVertexFormatCount
 #define totalYmorphVerts lbl_8055FE00
 #define logVertexFormatDlMsg lbl_8034C3F4
 #define logTotalYmorphVertsMsg lbl_8034C428
