@@ -27,7 +27,7 @@ typedef struct {
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 void fn_802DACD4(void) {
- register const char *message=lbl_8034C918;
+ register const char (*message)[1]=(const char (*)[1])lbl_8034C918;
  volatile int b,c,d;
  int font;
  fn_801282EC(0x20);
@@ -36,11 +36,11 @@ void fn_802DACD4(void) {
  } else {
   font=0x120F00;
  }
- lbl_8055FE78=fn_801284E8(message,font);
+ lbl_8055FE78=fn_801284E8((const void *)message[0],font);
  font=OSInitFont();
- if (OSGetFontEncode()==0x120F00) fn_802E30C8(message+0xC);
+ if (OSGetFontEncode()==0x120F00) fn_802E30C8((const char *)(message+0xC));
  if (font==0) {
-  fn_802E30C8(message+0x30);
+  fn_802E30C8((const char *)(message+0x30));
   fn_80128658(lbl_8055FE78);
   lbl_8055FE78=0;
   return;
@@ -206,7 +206,7 @@ void fn_802DAE64(int xStart, int yStart, char *str)
 
 extern void *fn_802D2F78(int *, int *);
 extern void fn_802C3034(void *, int, int, int);
-extern void fn_802D2FD8(void);
+extern void GX_ShowXFB(void);
 extern char *strcpy(char *, const char *);
 void fn_802DB03C(char *arg0) {
     struct {
@@ -267,7 +267,7 @@ void fn_802DB03C(char *arg0) {
         p++;
     }
     fn_802DAE64(0x140, 0x78, local.text);
-    fn_802D2FD8();
+    GX_ShowXFB();
 }
 
 __declspec(section ".sdata") extern char lbl_8055D140[];
@@ -311,6 +311,6 @@ void fn_802DB168(void) {
     canvas.height2 = fbHeight;
     ((void (*)(void *))fn_802C3034)(&canvas);
     fn_802DAE64(-0x1C2, 0x17C, lbl_8055D140);
-    fn_802D2FD8();
+    GX_ShowXFB();
     fn_802CED50(0x1C2, 0x17C, 0x78, 0x1E);
 }
