@@ -1296,21 +1296,21 @@ void fn_80241820(void *arg0) {
  * (menu enabled at +0x38 and this index == the selected index at +0x30) into the
  * item's flag byte at +0, and the value the menu follows (*+0x34) into its word
  * at +4. Same refresh as MRollMenuItem_addEntry, without appending an entry first. */
-void MRollMenuItem_refreshEntries(void *menu) {
-    void *item;
-    s32 index;
-    s32 value;
+/* Refresh every entry of a selection menu: store the selected flag and followed value into each item's output fields. */ void MRollMenuItem_refreshEntries(void *menu) {
+    void *entryItem;
+    s32 entryIndex;
+    s32 followedValue;
     char *entryCursor = (char *)menu;
     s32 isSelected;
 
-    for (index = 0; index < *(s32 *)((char *)menu + 0x2C);) {
-        value = **(s32 **)((char *)menu + 0x34);
-        isSelected = *(u8 *)((char *)menu + 0x38) != 0 && index == *(s32 *)((char *)menu + 0x30);
-        item = *(void **)(entryCursor + 0x18);
+    for (entryIndex = 0; entryIndex < *(s32 *)((char *)menu + 0x2C);) {
+        followedValue = **(s32 **)((char *)menu + 0x34);
+        isSelected = *(u8 *)((char *)menu + 0x38) != 0 && entryIndex == *(s32 *)((char *)menu + 0x30);
+        entryItem = *(void **)(entryCursor + 0x18);
         entryCursor += 4;
-        index++;
-        *(u8 *)item = isSelected;
-        *(s32 *)((char *)item + 4) = value;
+        entryIndex++;
+        *(u8 *)entryItem = isSelected;
+        *(s32 *)((char *)entryItem + 4) = followedValue;
     }
 }
 #pragma pop
