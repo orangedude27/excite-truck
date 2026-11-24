@@ -497,14 +497,20 @@ void fn_80005364(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
-int fn_80005044(int* eventIndex, int* subIndex, const char* name) {
-    /* Find an event by the name at +8 in its record; return 1 and set outputs if found. */
+int fn_80005044(int* eventIndex, int* subIndex, const char* trackName) {
+    /* Look up a '$'-prefixed scene name: find the event whose track name
+       (record +8) matches, output its index and return 1, else return 0. */
+    struct EventRecord {
+        int index;        /* 0x00 */
+        int league;       /* 0x04 */
+        char track[0x20]; /* 0x08 */
+    };
     int found = 0;
     int i;
 
     for (i = 0; i < fn_80012818(); i++) {
-        u8* eventRecord = fn_80012820(i);
-        if (stricmp(name, (const char*)(eventRecord + 8)) == 0) {
+        struct EventRecord *event = (struct EventRecord *)fn_80012820(i);
+        if (stricmp(trackName, event->track) == 0) {
             *eventIndex = i;
             *subIndex = 0;
             found = 1;
