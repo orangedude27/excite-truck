@@ -609,7 +609,7 @@ void fn_802CADD0(int textureSlot, int unitIndex) {
     }
 }
 
-int fn_802CAE00(int slotIndex) {
+int TextureSlot_isLoaded(int slotIndex) {
     /* Return whether slotIndex names a valid texture slot whose texture is loaded. */
     int inUse = 0;
     if (slotIndex >= 0 && slotIndex < 0x200 &&
@@ -626,7 +626,7 @@ extern int fn_802D8E9C(void *, unsigned int);
 extern char lbl_8034B618[];
 extern char lbl_8034B538[];
 extern void *jumptable_8034B794[];
-extern int fn_802CAE00(int);
+extern int TextureSlot_isLoaded(int);
 extern int lbl_8055FCB0;
 extern char lbl_8034B904[];
 extern char lbl_8034B914[];
@@ -636,7 +636,7 @@ char *fn_802CAE34(int textureIndex) {
     char *slot;
     if (textureIndex == -1)
         return lbl_8034B904;
-    if (!((int (*)(int))fn_802CAE00)(textureIndex))
+    if (!((int (*)(int))TextureSlot_isLoaded)(textureIndex))
         return lbl_8034B914;
     slotOffset = textureIndex * 0x4C;
     slot = (char *)lbl_8055FCB0 + slotOffset;
@@ -651,7 +651,7 @@ void fn_802CAE98(int slotIndex, char *srcName) {
     char *nameDst;
     unsigned char ch;
 
-    if (!((int (*)(int))fn_802CAE00)(slotIndex))
+    if (!((int (*)(int))TextureSlot_isLoaded)(slotIndex))
         return;
     nameDst = (char *)lbl_8055FCB0 + slotIndex * 0x4C + 4;
     charsLeft = 0x20;
@@ -674,7 +674,7 @@ done:
 /* Sets the texture slot's filter/wrap (or mode) bytes at +8/+9 of its loaded
  * resource, if the slot handle is valid. */
 void TextureSlot_setModes(int textureSlot, signed char value8, signed char value9) {
-#define TextureSlot_isValid fn_802CAE00
+#define TextureSlot_isValid TextureSlot_isLoaded
 #define gTextureSlots lbl_8055FCB0
     int slotOffset;
     int textureResource;
@@ -2000,5 +2000,5 @@ int fn_8012C958(int);
 extern char lbl_8034B538[];
 extern char lbl_8034B904[];
 extern char lbl_8034B914[];
-extern int fn_802CAE00(int);
+extern int TextureSlot_isLoaded(int);
 extern char lbl_8034B538[];
