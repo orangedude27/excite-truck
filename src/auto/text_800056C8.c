@@ -280,7 +280,7 @@ extern "C" s32 fn_80005930(void) {
     extern s32 fn_801E85A4(void);                            /* viewports on screen */
     extern void fn_801E88B4(s32 *, s32 *, s32 *, s32 *, s32); /* one player's viewport rect */
     extern s32 fn_801E89EC(void);          /* race phase: 0 before start, 1 racing, 3 finishing */
-    extern s32 fn_802C86F0(void *, s32, s32, s32, s32);  /* save the viewport, set a new one */
+    extern s32 DrawList_saveViewport(void *, s32, s32, s32, s32);  /* save the viewport, set a new one */
     extern s32 DrawList_restoreViewport(void *, s32);                 /* put a saved viewport back */
     extern s32 fn_8000D75C(void);          /* audio-active flag; result unused here */
     extern s32 fn_80010EC8(void);          /* clear the three HUD display lists */
@@ -319,7 +319,7 @@ extern "C" s32 fn_80005930(void) {
         } else {
             fn_801E88B4(&rect[3], &rect[2], &rect[1], &rect[0], i);
         }
-        fn_802C86F0(savedViewport, rect[3], rect[2], rect[1], rect[0]);
+        DrawList_saveViewport(savedViewport, rect[3], rect[2], rect[1], rect[0]);
         overlay->update();
         if (fn_801E89EC() != 3) {
             fn_8000D75C();
@@ -337,7 +337,7 @@ extern "C" s32 fn_80005930(void) {
         fn_80005740(i);
         overlay = *(Overlay **)(entry + 4);
         fn_80010EC8();
-        fn_802C86F0(savedFullScreen, 0, 0, lbl_8055CFF0, lbl_8055CFF4);
+        DrawList_saveViewport(savedFullScreen, 0, 0, lbl_8055CFF0, lbl_8055CFF4);
         overlay->update();
         if (fn_801E89EC() != 3) {
             fn_8000D75C();

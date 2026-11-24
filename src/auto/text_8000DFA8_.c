@@ -343,7 +343,7 @@ extern void fn_80147ABC(void *, void *, const char *, ...);
 extern void *fn_801E7E3C(void);
 extern void fn_80232928(s32);
 extern void fn_80232930(void);
-extern void fn_802C86F0(void *, s32, s32, s32, s32);
+extern void DrawList_saveViewport(void *, s32, s32, s32, s32);
 extern void DrawList_restoreViewport(void *, s32);
 extern s32 lbl_80558A98;
 extern s32 lbl_8055CFF0, lbl_8055CFF4;
@@ -374,7 +374,7 @@ extern "C" void fn_8000F4F0(void)
   s32 b4;
   s32 b8;
   strBase = (char *) lbl_802FC2A8;
-  fn_802C86F0(scope, 0, 0, lbl_8055CFF0, lbl_8055CFF4);
+  DrawList_saveViewport(scope, 0, 0, lbl_8055CFF0, lbl_8055CFF4);
   time = *((f32 *) (((u8 *) fn_801E7E3C()) + 0x10));
   number = -1;
   *((s32 *) (text + 0)) = 0;

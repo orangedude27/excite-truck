@@ -353,7 +353,7 @@ void fn_802C86E8(void* color) {
     lbl_8055D018 = color;
 }
 
-void *fn_802C86F0(void *savedViewport, int x, int y, int width, int height) {
+void *DrawList_saveViewport(void *savedViewport, int x, int y, int width, int height) {
     /* Save the current viewport rectangle, then set a new one. */
     *(int *)((unsigned char *)savedViewport) = (int)lbl_8055FC5C;
     *(int *)((unsigned char *)savedViewport + 4) = (int)lbl_8055FC60;

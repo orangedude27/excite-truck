@@ -900,7 +900,7 @@ extern void fn_802CB274(int);
 extern void fn_802C9294(int, int);
 extern double fn_8002EF30(float);
 extern void fn_802C9694(float *, float, float, float, float);
-extern void fn_802C86F0(int *, int, int, int, int);
+extern void DrawList_saveViewport(int *, int, int, int, int);
 extern void fn_802C88CC(int);
 extern int fn_802C2C00(int);
 extern void fn_802C8638(float *, float, float);
@@ -930,7 +930,7 @@ void fn_8001B7BC(void *obj) {
     aspectRatio = (lbl_80560420 * *(float *)((char *)obj + 0x28)) / tanHalf;
     fn_802C9694(frame.projParams, aspectRatio - lbl_80560424, lbl_80560424 + aspectRatio, (float)angleRad, tanHalf);
     tanHalf = *(float *)((char *)obj + 0x1C);
-    fn_802C86F0(frame.viewport, 0, 0, (int)tanHalf, (int)tanHalf);
+    DrawList_saveViewport(frame.viewport, 0, 0, (int)tanHalf, (int)tanHalf);
     fn_802C88CC(0xFFFFFF);
     savedState = fn_802C2C00(0);
     frame.modelMtx[9] = lbl_80560418; frame.modelMtx[10] = aspectRatio; frame.modelMtx[11] = lbl_80560418;
