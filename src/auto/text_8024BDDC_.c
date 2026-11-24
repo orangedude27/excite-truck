@@ -1,8 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-#pragma paired off
-#pragma paired_single off
 typedef struct { float x, y, z; int color; float u, v; } Vtx;
 typedef struct { float x, y, z; } Vec3;
 typedef union { double d; float f[2]; } VtxXY;
@@ -75,17 +73,18 @@ void fn_8024BDFC(void* subobject) {
     __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC((char*)subobject - 0x18);
 }
 
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_8024BE04(void) {
+    unsigned short *tbl;
+    char *base;
+    int h;
+    int i;
+    volatile Vec3 p3, p2, p1, p0;
+    unsigned short idx[6];
     float m[12];
     Vtx v[4];
-    Vec3 p3, p2, p1, p0;
-    unsigned short idx[6];
     float one, zero, z;
-    int h, i;
-    char *base = lbl_80343E90;
+    base = lbl_80343E90;
     fn_802E30C8(base);
     h = fn_802CAC28(base + 0xC, 0);
     zero = lbl_8056390C;
@@ -106,19 +105,20 @@ void fn_8024BE04(void) {
         p2.x = zero; p2.y = one; p2.z = zero;
         p3.x = one; p3.y = one; p3.z = zero;
         v[0].x = zero; v[0].y = zero; v[0].z = zero; v[0].color = -1; v[0].u = zero; v[0].v = zero;
-        v[1].x = v[0].x; v[1].y = v[0].y; v[1].z = v[0].z;
-        v[2].x = v[0].x; v[2].y = v[0].y; v[2].z = v[0].z;
-        v[1].x = p1.x; v[1].y = p1.y; v[1].z = p1.z; v[1].color = -1; v[1].u = one; v[1].v = zero;
-        v[2].x = p2.x; v[2].y = p2.y; v[2].z = p2.z; v[2].color = -1; v[2].u = zero; v[2].v = one;
-        v[3].x = v[2].x; v[3].y = v[2].y; v[3].z = v[2].z;
-        v[3].x = p3.x; v[3].y = p3.y; v[3].z = p3.z; v[3].color = -1; v[3].u = one; v[3].v = one;
-        idx[0] = lbl_802FA510[0];
-        idx[1] = lbl_802FA510[1];
-        idx[2] = lbl_802FA510[2];
-        idx[3] = lbl_802FA510[3];
-        idx[4] = lbl_802FA510[4];
-        idx[5] = lbl_802FA510[5];
-        fn_802C8BD0(h, idx[4], idx[3], idx[2], idx[1], idx[0], zero, zero);
+        *(double *)&v[1].x = *(double *)&v[0].x; *(int *)&v[1].z = *(int *)&v[0].z;
+        *(double *)&v[2].x = *(double *)&v[0].x; *(int *)&v[2].z = *(int *)&v[0].z;
+        v[1].x = one; v[1].y = zero; v[1].z = zero; v[1].color = -1; v[1].u = one; v[1].v = zero;
+        v[2].x = zero; v[2].y = one; v[2].z = zero; v[2].color = -1; v[2].u = zero; v[2].v = one;
+        *(double *)&v[3].x = *(double *)&v[2].x; *(int *)&v[3].z = *(int *)&v[2].z;
+        v[3].x = one; v[3].y = one; v[3].z = zero; v[3].color = -1; v[3].u = one; v[3].v = one;
+        tbl = lbl_802FA510;
+        idx[0] = tbl[0];
+        idx[1] = tbl[1];
+        idx[2] = tbl[2];
+        idx[3] = tbl[3];
+        idx[4] = tbl[4];
+        idx[5] = tbl[5];
+        fn_802C8BD0(h, tbl[4], tbl[3], tbl[2], tbl[1], tbl[0], v[2].z, v[0].z);
         fn_802C8DB8((float*)v, 4, idx, 6);
         fn_802C8D74();
         fn_802C855C();
@@ -130,4 +130,3 @@ void fn_8024BE04(void) {
     fn_802CAC54(h);
     fn_802E30C8(base + 0x24);
 }
-#pragma pop
