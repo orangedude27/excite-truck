@@ -219,7 +219,7 @@ int fn_802DB69C(void **texObjs, int mode) {
 
 // Re-applies this module's GX pipeline for one of its three draw modes, and only
 // when the mode's textures changed: the flag is raised by the texture setters
-// (fn_802DBD88 / fn_802DBDE8) and cleared here, and each draw entry point calls
+// (cpulightResetGxCache / fn_802DBDE8) and cleared here, and each draw entry point calls
 // this for its mode right before sending its display list. It sets the alpha
 // compare from the texture entry, loads the mode's textures with their TEV order
 // (returning how many TEV stages that needs), picks the TEV stages and the
@@ -390,7 +390,7 @@ void fn_802DBCFC(int positionArray, int vertexCount) {
 #pragma push
 #pragma small_data off
 /* Reset CPU-light GX vertex array cache/state and bind the default texture object. */
-void fn_802DBD88(void) {
+void cpulightResetGxCache(void) {
     void *defaultTex;
     void **texSlots;
     lbl_8055FEA8 = 0;
@@ -461,14 +461,14 @@ void fn_802DBECC(void) {
 #pragma dont_inline on
 /* Reset the CPU-light GX vertex-array/pipeline state, then set the current lighting mode byte (lbl_8055FEBA). */
 void fn_802DBF00(signed char lightMode) {
-    fn_802DBD88();
+    cpulightResetGxCache();
     lbl_8055FEBA = lightMode;
 }
 #pragma dont_inline reset
 typedef unsigned char u8;
 extern void fn_802DBDD8(void);
 extern void GXResetTevSwapModes0To4(void);
-extern void fn_802DBD88(void);
+extern void cpulightResetGxCache(void);
 extern void fn_802D3360(void);
 extern void GXSetTevKAlphaSel(int, int);
 extern void fn_802D0610(int);
@@ -544,9 +544,9 @@ extern void GXBegin(int, int, unsigned short);
 }
 #pragma pop
 extern void GXSetBlendMode(int, int, int, int);
-/* Forwarder: resets the CPU-light GX vertex-array cache and binds the default texture (fn_802DBD88). */
+/* Forwarder: resets the CPU-light GX vertex-array cache and binds the default texture (cpulightResetGxCache). */
 void fn_802DC130(void) {
-    fn_802DBD88();
+    cpulightResetGxCache();
 }
 
 /* Forwarder: invalidate the cached GX position array/vertex count so the next
@@ -577,7 +577,7 @@ void fn_802DC138(int positionArray, int vertexCount, unsigned short *__restrict 
 }
 
 /* Forwarder: resets the CPU-light GX vertex-array cache and binds the default texture (same as fn_802DC130). */
-void fn_802DC278(void) { fn_802DBD88(); }
+void fn_802DC278(void) { cpulightResetGxCache(); }
 
 /* Forwarder: invalidates the cached GX position array/vertex count so the next setup reconfigures it (same as fn_802DC134). */
 void fn_802DC27C(void) { fn_802DBDD8(); }
@@ -610,7 +610,7 @@ void fn_802DC280(int positionArray, int vertexCount, unsigned short *__restrict 
    bind the mode's texture to unit 1, load the two CPU-light textures into texmaps 0 and 1, set the
    alpha compare to always-pass, and configure the two-stage TEV/blend pipeline. */
 void fn_802DC3C0(int mode) {
-    fn_802DBD88();
+    cpulightResetGxCache();
     fn_802DB58C();
     fn_802CADD0(mode, 1);
     GXLoadTexObj((unsigned char *)gCpuLightTextures[0] + 0x24, GX_TEXMAP0);
@@ -775,7 +775,7 @@ extern "C" void fn_802DC71C(int arg0, int arg1) {
     int texFlag;
     void *info;
     int wrapS;
-    fn_802DBD88();
+    cpulightResetGxCache();
     lbl_8055FEB4 = 0;
     fn_802CADD0(arg1, 1);
     buildViewXform();
@@ -1095,7 +1095,7 @@ void CpuLight_BeginIndirectPass(int arg0, int indTexSlot, int texSlot1, float li
     fn_802DCAE4_GXColor col;
 
     lbl_8055D148 = texScale;
-    fn_802DBD88();
+    cpulightResetGxCache();
     if (texSlot1 != -2) {
         fn_802CADD0(texSlot1, 1);
     }
