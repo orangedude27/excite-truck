@@ -51,7 +51,7 @@ void fn_802CE474(void *slot) {
     *(int *)((char *)slot + 0x3C) = -1;
 }
 
-void fn_802CE49C(void *object) {
+void modPoolDestroy(void *object) {
     int value;
     /* Destroys a modpool object: frees its data buffer, releases its load pool, and deletes the object. */
     if (object != 0) {
