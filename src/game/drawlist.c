@@ -9,7 +9,7 @@ extern int lbl_8055D02C;
 extern float lbl_80564F04;
 extern float lbl_80564F08;
 extern void fn_802C5F48(float, int, float *, float, float);
-extern void fn_801332D0(int, void *, int *);
+extern void LoadIntOptionValue(int, void *, int *);
 extern int fn_8013365C(int, int);
 extern int fn_802C9C58(int);
 extern void fn_802C974C(float, float, float);
@@ -245,7 +245,7 @@ void fn_802C83CC(void) {
     fn_802C82C4(0);
     fn_802C9C58(0);
     if (fn_80133010() != 0) {
-        fn_801332D0(1, lbl_8034B498, (int *)&lbl_8055FC90);
+        LoadIntOptionValue(1, lbl_8034B498, (int *)&lbl_8055FC90);
         lbl_8055D028 = fn_8013365C((int)&lbl_8055D02C, (int)fn_802C82C0);
     }
 }

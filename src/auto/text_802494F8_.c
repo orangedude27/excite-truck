@@ -165,7 +165,7 @@ s32 fn_8024974C(s32 arg0, s32 arg1, s32 arg2, int arg3) {
     extern void *fn_801284F8(int, void *);
     extern char lbl_8055BF38[];
     extern s32 lbl_8055BF10, lbl_8055BF14;
-    extern void fn_801332D0(s32, s32, s32 *);
+    extern void LoadIntOptionValue(s32, s32, s32 *);
     extern void fn_8027BCD0(void *);
     extern int MRollBothControllersReady(void);
     void *block;
@@ -184,8 +184,8 @@ s32 fn_8024974C(s32 arg0, s32 arg1, s32 arg2, int arg3) {
     *(int *)arg0 = -1;
     *(int *)arg1 = 5;
     *(int *)arg2 = 0;
-    fn_801332D0(0, lbl_8055BF10, (s32 *)arg1);
-    fn_801332D0(0, lbl_8055BF14, (s32 *)arg0);
+    LoadIntOptionValue(0, lbl_8055BF10, (s32 *)arg1);
+    LoadIntOptionValue(0, lbl_8055BF14, (s32 *)arg0);
     return 0;
 }
 #pragma pop
@@ -395,7 +395,7 @@ void fn_8024A4C4(s32 out0, s32 out1, s32 out2) {
 extern int fn_80012818(void);
 extern int fn_80012820();
 extern int fn_80012870();
-extern void fn_801332D0(s32, s32, s32 *);
+extern void LoadIntOptionValue(s32, s32, s32 *);
 extern s32 fn_80133348(s32, s32, s32);
 extern void fn_8027BCD0(void *);
 extern u8 fn_8024B070(s32 *, s32 **);
@@ -424,8 +424,8 @@ s32 fn_8024A4CC(s32 *arg0, s32 *arg1, s32 *arg2) {
     *arg0 = -1;
     *arg1 = 0;
     *arg2 = 0;
-    fn_801332D0(0, lbl_8055BF14, arg0);
-    fn_801332D0(0, lbl_8055BF10, arg1);
+    LoadIntOptionValue(0, lbl_8055BF14, arg0);
+    LoadIntOptionValue(0, lbl_8055BF10, arg1);
 
     *(volatile s32 *)&buffer.count = 0;
     *(volatile void **)&buffer.data = buffer.bytes;

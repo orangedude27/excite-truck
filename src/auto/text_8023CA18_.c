@@ -36,7 +36,7 @@ extern s32 lbl_8055BB70;
 extern f32 lbl_80563738;
 extern void fn_801333E8(s32, s32 *, u8 *);
 extern void LoadFloatOption(s32, void *, f32 *);
-extern void fn_801332D0(s32, void *, s32 *);
+extern void LoadIntOptionValue(s32, void *, s32 *);
 extern void SetEffectsVolume(f32);
 extern void SetSoundQuality(s32);
 #pragma push
@@ -55,14 +55,14 @@ void fn_8023CA54(void) {
     LoadFloatOption(4, &base[0x30], &lbl_8055F16C);
     SetEffectsVolume(lbl_8055F16C);
     lbl_8055F17C = zero;
-    fn_801332D0(4, &lbl_8055BB70, &lbl_8055F17C);
+    LoadIntOptionValue(4, &lbl_8055BB70, &lbl_8055F17C);
     SetSoundQuality(lbl_8055F17C);
     lbl_8055F170 = lbl_80563738;
     LoadFloatOption(4, &base[0x40], &lbl_8055F170);
     lbl_8055F174 = lbl_80563738;
     LoadFloatOption(4, &base[0x4C], &lbl_8055F174);
     lbl_8055F178 = 1;
-    fn_801332D0(4, &base[0x5C], &lbl_8055F178);
+    LoadIntOptionValue(4, &base[0x5C], &lbl_8055F178);
 }
 #pragma pop
 s32 fn_8023CB54(void) {

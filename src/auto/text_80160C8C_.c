@@ -180,7 +180,7 @@ struct TutorialLevel {
 #pragma cplusplus off
 
 extern s32 fn_8000DA10(void);
-extern void fn_801332D0(s32, s32, s32 *);
+extern void LoadIntOptionValue(s32, s32, s32 *);
 extern void fn_80160CF4(void);
 extern s32 lbl_8055A0B0;
 extern s32 lbl_8055A0B4;
@@ -733,7 +733,7 @@ test:
 
 void fn_80161618(void) {
     /* Initialize runtime state: read a base value via fn_8000DA10 and register
-       it (value+0xC) with fn_801332D0 using lbl_8055A0B0/lbl_8055A0B8, clear
+       it (value+0xC) with LoadIntOptionValue using lbl_8055A0B0/lbl_8055A0B8, clear
        flags, run fn_80160CF4, cache the first item/id from the list at
        lbl_8042FDEC (or clear if count <= 1), then iterate all list items and
        invoke virtual slot1() on each. */
@@ -743,7 +743,7 @@ void fn_80161618(void) {
     void *item;
     value = fn_8000DA10();
     lbl_8055A0B8 = 1;
-    fn_801332D0(value + 0xC, lbl_8055A0B0, &lbl_8055A0B8);
+    LoadIntOptionValue(value + 0xC, lbl_8055A0B0, &lbl_8055A0B8);
     lbl_8055E2DC = 0;
     lbl_8055A0B4 = lbl_8055A0B8;
     lbl_8055E2DD = 0;
@@ -1213,7 +1213,7 @@ extern "C" void **fn_80161C94(void) {
 #pragma cplusplus off
 /* Reads the current player's "tutorial_level" option.  The options live in the
    player's own section (OPTIONS_SECTION_PLAYER0 + the player index fn_8000DA10
-   answers with), and fn_801332D0 writes the value it is handed back into the
+   answers with), and LoadIntOptionValue writes the value it is handed back into the
    table when that option isn't in it yet, so an option that was never written
    reads back as the default 1. */
 s32 fn_80161D14(void) {
@@ -1222,7 +1222,7 @@ s32 fn_80161D14(void) {
     s32 tutorialLevel;
     s32 playerIndex = fn_8000DA10();
     tutorialLevel = 1;
-    fn_801332D0(playerIndex + OPTIONS_SECTION_PLAYER0, OPT_TUTORIAL_LEVEL, &tutorialLevel);
+    LoadIntOptionValue(playerIndex + OPTIONS_SECTION_PLAYER0, OPT_TUTORIAL_LEVEL, &tutorialLevel);
     return tutorialLevel;
 #undef OPT_TUTORIAL_LEVEL
 #undef OPTIONS_SECTION_PLAYER0

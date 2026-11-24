@@ -4,7 +4,7 @@
 // Options files: fn_80133BA0 parses a text file ("default.opt", written back
 // out as "options.dat") into the table lbl_8055E07C, which fn_80133024
 // allocates here.  fn_80133E10 looks an option up by section + key and adds it
-// when it is missing; fn_801332D0/fn_80133348/fn_8013323C/fn_80133460/
+// when it is missing; LoadIntOptionValue/fn_80133348/fn_8013323C/fn_80133460/
 // fn_8013358C read and write the typed values it keeps.
 
 // Fourcc the resource manager (fn_8012C370) looks an options file up by.
@@ -229,7 +229,7 @@ int sprintf(char *, const char *, ...);
  * and adds it when it is missing, so an option that is not in the table yet
  * takes the caller's *value as its default (through fn_80133348, which also
  * writes its bool/float/text readings) instead of reading back 0. */
-void fn_801332D0(int section, int key, int *value) {
+void LoadIntOptionValue(int section, int key, int *value) {
     OptionEntry *entry;
     if (fn_80133E10((void **)&entry, section, key) != 0) {
         *value = entry->intValue;

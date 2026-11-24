@@ -3,7 +3,7 @@
 
 __declspec(section ".data") extern int lbl_80339570;
 extern int fn_8000DA10(void);
-extern void fn_801332D0(int, int*, int*);
+extern void LoadIntOptionValue(int, int*, int*);
 extern int lbl_8055E9F4;
 extern void *fn_80131810(void *);
 extern void fn_802E30C8(const char *, ...);
@@ -285,7 +285,7 @@ extern "C" void fn_801DEC18(void) {
     unsigned int j;
     void *obj;
 
-    fn_801332D0(fn_8000DA10() + 0xC, (int *)(base + 0xC0), &lbl_8055E9DC);
+    LoadIntOptionValue(fn_8000DA10() + 0xC, (int *)(base + 0xC0), &lbl_8055E9DC);
     name = base + 0xCC;
     h = (Handle *)fn_80131810(name);
     lbl_8055E9E4 = (int)h;
@@ -426,7 +426,7 @@ void fn_801DEF98(void) {
 #define sPopupQueueIndex lbl_8055E9E0
 #define sPopupQueue      lbl_804873B8
 #define GetSaveDataBase  fn_8000DA10
-#define LoadIntOption    fn_801332D0
+#define LoadIntOption    LoadIntOptionValue
     extern char lbl_80339570_arr[];
     int *popupsSeenKey = (int *)lbl_80339570_arr;
     LoadIntOption(GetSaveDataBase() + 0xC, popupsSeenKey, &sPopupsSeenFlags);
@@ -481,7 +481,7 @@ extern int fn_80209190(int, float);
 extern void __AXDSPInitCallback_801769E0(void);
 extern void fn_801769EC(void);
 extern int fn_8000DA10(void);
-extern void fn_801332D0(int, int*, int*);
+extern void LoadIntOptionValue(int, int*, int*);
 /* Return nonzero while a popup is being shown (lbl_8055E9E8 holds the active popup id, 0 when none). */
 int fn_801DF060(void) {
     int popupId = lbl_8055E9E8;
@@ -634,7 +634,7 @@ extern unsigned long long KERNEL_GetTimeUs(int);
 extern void LoadFloatOption(int, int *, float *);
 extern int lbl_80339570;
 extern int fn_8000DA10(void);
-extern void fn_801332D0(int, int*, int*);
+extern void LoadIntOptionValue(int, int*, int*);
 extern int lbl_8055E9DC;
 extern int lbl_8055E9E0;
 extern char lbl_804873B8[];

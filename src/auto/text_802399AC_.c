@@ -271,7 +271,7 @@ extern void *fn_8023AA2C(register void *arg0, register s32 arg1, register s32 ar
 extern void *fn_8023A8D8(register void *arg0, register s32 arg1, register s32 arg2, ...);
 extern s32 lbl_804986F8[];
 extern void LoadFloatOption(s32, void *, void *);
-extern void fn_801332D0(s32, void *, void *);
+extern void LoadIntOptionValue(s32, void *, void *);
 extern void *fn_8023AB78(register void *, register s32, register s32, ...);
 extern void *fn_8023AA2C(register void *, register s32, register s32, ...);
 extern void *fn_8023A8D8(register void *, register s32, register s32, ...);
@@ -327,7 +327,7 @@ void fn_80239F74(void) {
     extern s32 lbl_8055BB08, lbl_8055BB10, lbl_8055BB18, lbl_8055BB20, lbl_8055BB28;
     extern s32 fn_8023A8B0(void);
     extern void LoadFloatOption(s32, void *, void *);
-    extern void fn_801332D0(s32, void *, void *);
+    extern void LoadIntOptionValue(s32, void *, void *);
     extern void fn_8013323C(s32, void *, f32);
     extern void fn_80133348(s32, void *, s32);
     extern s32 fn_8027B8C0(s32), fn_802104D0(void), trackMusicSetSlotStates(s32);
@@ -381,7 +381,7 @@ void fn_80239F74(void) {
     lbl_8055F10C = s.desc2;
     p[8] = 0;
     t = fn_8000DA10();
-    fn_801332D0(t + 0xc, base + 0x1E8, p + 8);
+    LoadIntOptionValue(t + 0xc, base + 0x1E8, p + 8);
     a = fn_80131234(base + 0x204);
     b = fn_80131234(base + 0x1F4);
     fn_8023AA2C((void *)s.sA0, (s32)(p + 8), b, a, 0);

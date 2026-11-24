@@ -206,7 +206,7 @@ extern void fn_801617BC(void), fn_802061F8(void), fn_80006D9C(void);
 extern void fn_8000CE60(void), fn_8020D178(void), fn_802108C8(void);
 extern void fn_802B8744(void), fn_801769EC(void);
 extern void *memset(void *, int, unsigned int);
-extern void fn_801332D0(int, void *, int *);
+extern void LoadIntOptionValue(int, void *, int *);
 extern int fn_8000AEC8(int);
 extern void fn_80265D74(void), fn_80128678(void), fn_80206454(void), fn_80127930(void);
 extern void fn_802D3E9C(int);
@@ -236,6 +236,7 @@ void fn_8000AF1C(void *arg0)
   callback = fn_8000AEC4;
   startupMessage = config + 0x21C;
   fn_801E8818(callback, startupMessage);
+startupMessage = 0;
   fn_8012E81C(config + 0x228);
   fn_8000AB44();
   fn_8023889C();
@@ -255,7 +256,7 @@ void fn_8000AF1C(void *arg0)
   {
     memset(entry, 0, 8);
     val = *((int *) (&lbl_8034F5D8));
-    fn_801332D0(i + 0xC, config + 0x238, &val);
+    LoadIntOptionValue(i + 0xC, config + 0x238, &val);
     if ((*((int *) (&lbl_8034F5D8))) >= limit)
     {
       goto invalid;

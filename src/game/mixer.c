@@ -62,7 +62,7 @@ extern char lbl_8033BF08[];
 extern char lbl_8055B4E0;
 extern void LoadFloatOption(int, void *, float *);
 extern void fn_8013323C(int, void *, float);
-extern void fn_801332D0(int, void *, void *);
+extern void LoadIntOptionValue(int, void *, void *);
 extern void SetEffectsVolume(float);
 extern void SetSoundQuality(int);
 #pragma scheduling invalid_target
@@ -101,7 +101,7 @@ void ReloadMixerSettings(void) {
     /* Load saved mixer settings for effects volume and sound quality, then apply them. */
     LoadFloatOption(4, lbl_8033BEF8, &lbl_8055B4D0);
     SetEffectsVolume(lbl_8055B4D0);
-    fn_801332D0(4, &lbl_8055B4E0, &lbl_8055EDA8);
+    LoadIntOptionValue(4, &lbl_8055B4E0, &lbl_8055EDA8);
     SetSoundQuality((int)lbl_8055EDA8);
 }
 
@@ -193,7 +193,7 @@ void fn_80208B8C(int initBackends) {
         int *registry = (int *)MIXER_DEVICES;
         int selected;
 
-        fn_801332D0(OPTIONS_SECTION_SOUND, &CONFIG_KEY_MIXER,
+        LoadIntOptionValue(OPTIONS_SECTION_SOUND, &CONFIG_KEY_MIXER,
                     (char *)registry + MIXER_SELECTED_OFFSET);
         selected = registry[MIXER_DEVICE_MAX + 1];
         if (selected < 0 || selected >= registry[MIXER_DEVICE_MAX])
@@ -488,7 +488,7 @@ int fn_80209214(void) {
 }
 
 extern float lbl_8055B4D0;
-extern void fn_801332D0(int, void *, void *);
+extern void LoadIntOptionValue(int, void *, void *);
 #pragma scheduling on
 int fn_8020921C(void) {
     struct Config { int pad; int value; volatile unsigned int version; };
