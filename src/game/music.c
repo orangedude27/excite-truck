@@ -273,13 +273,15 @@ void fn_8020A368(void) {
  * "Music" volume callback and free both "mus_buf" stream buffers, leaving the
  * slots empty for fn_8020A368 to fill again. */
 void fn_8020A400(void) {
+#define MUSIC_CB_HANDLE  lbl_8055B550
+#define MUSIC_SLOTS      lbl_804892C0
     MusicSlot* musicSlot;
     s32 slotIndex;
 
     fn_8020A634();
-    fn_801336E0(lbl_8055B550, fn_80209FFC);
-    lbl_8055B550 = -1;
-    musicSlot = (MusicSlot*)lbl_804892C0;
+    fn_801336E0(MUSIC_CB_HANDLE, fn_80209FFC);
+    MUSIC_CB_HANDLE = -1;
+    musicSlot = (MusicSlot*)MUSIC_SLOTS;
     slotIndex = 0;
     do {
         fn_80128670(musicSlot->buffer);
@@ -287,6 +289,8 @@ void fn_8020A400(void) {
         musicSlot->buffer = 0;
         musicSlot = (MusicSlot*)((s32)musicSlot + 8);
     } while (slotIndex < 2);
+#undef MUSIC_SLOTS
+#undef MUSIC_CB_HANDLE
 }
 
 extern int sprintf(char*, const char*, ...);
