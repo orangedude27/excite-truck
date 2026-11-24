@@ -785,40 +785,40 @@ void fn_801E1688(void) {
 }
 
 #pragma scheduling safe_target
-void fn_801E168C(const void *arg0) {
-    f32 y;
-    f32 x = lbl_80562C78;
+/* Initialize four per-item status rows (id, flag, value, timer, colors at +0xC..+0x20 stride 0x18) and their parallel id array at +0x6C to default / no-item values. */ void fn_801E168C(const void *status) {
+    f32 initialTimer;
+    f32 initialValue = lbl_80562C78;
     s32 zero = 0;
-    s32 minus = -1;
-    *(s32 *)((u8 *)arg0 + 0x6C) = minus;
-    *(s32 *)((u8 *)arg0 + 0x0C) = minus;
-    *(u8 *)((u8 *)arg0 + 0x10) = zero;
-    *(s32 *)((u8 *)arg0 + 0x1C) = zero;
-    *(s32 *)((u8 *)arg0 + 0x20) = zero;
-    *(f32 *)((u8 *)arg0 + 0x14) = x;
-    y = lbl_80562C7C;
-    *(f32 *)((u8 *)arg0 + 0x18) = y;
-    *(s32 *)((u8 *)arg0 + 0x70) = minus;
-    *(s32 *)((u8 *)arg0 + 0x24) = minus;
-    *(u8 *)((u8 *)arg0 + 0x28) = zero;
-    *(s32 *)((u8 *)arg0 + 0x34) = zero;
-    *(s32 *)((u8 *)arg0 + 0x38) = zero;
-    *(f32 *)((u8 *)arg0 + 0x2C) = x;
-    *(f32 *)((u8 *)arg0 + 0x30) = y;
-    *(s32 *)((u8 *)arg0 + 0x74) = minus;
-    *(s32 *)((u8 *)arg0 + 0x3C) = minus;
-    *(u8 *)((u8 *)arg0 + 0x40) = zero;
-    *(s32 *)((u8 *)arg0 + 0x4C) = zero;
-    *(s32 *)((u8 *)arg0 + 0x50) = zero;
-    *(f32 *)((u8 *)arg0 + 0x44) = x;
-    *(f32 *)((u8 *)arg0 + 0x48) = y;
-    *(s32 *)((u8 *)arg0 + 0x78) = minus;
-    *(s32 *)((u8 *)arg0 + 0x54) = minus;
-    *(u8 *)((u8 *)arg0 + 0x58) = zero;
-    *(s32 *)((u8 *)arg0 + 0x64) = zero;
-    *(s32 *)((u8 *)arg0 + 0x68) = zero;
-    *(f32 *)((u8 *)arg0 + 0x5C) = x;
-    *(f32 *)((u8 *)arg0 + 0x60) = y;
+    s32 invalidId = -1;
+    *(s32 *)((u8 *)status + 0x6C) = invalidId;
+    *(s32 *)((u8 *)status + 0x0C) = invalidId;
+    *(u8 *)((u8 *)status + 0x10) = zero;
+    *(s32 *)((u8 *)status + 0x1C) = zero;
+    *(s32 *)((u8 *)status + 0x20) = zero;
+    *(f32 *)((u8 *)status + 0x14) = initialValue;
+    initialTimer = lbl_80562C7C;
+    *(f32 *)((u8 *)status + 0x18) = initialTimer;
+    *(s32 *)((u8 *)status + 0x70) = invalidId;
+    *(s32 *)((u8 *)status + 0x24) = invalidId;
+    *(u8 *)((u8 *)status + 0x28) = zero;
+    *(s32 *)((u8 *)status + 0x34) = zero;
+    *(s32 *)((u8 *)status + 0x38) = zero;
+    *(f32 *)((u8 *)status + 0x2C) = initialValue;
+    *(f32 *)((u8 *)status + 0x30) = initialTimer;
+    *(s32 *)((u8 *)status + 0x74) = invalidId;
+    *(s32 *)((u8 *)status + 0x3C) = invalidId;
+    *(u8 *)((u8 *)status + 0x40) = zero;
+    *(s32 *)((u8 *)status + 0x4C) = zero;
+    *(s32 *)((u8 *)status + 0x50) = zero;
+    *(f32 *)((u8 *)status + 0x44) = initialValue;
+    *(f32 *)((u8 *)status + 0x48) = initialTimer;
+    *(s32 *)((u8 *)status + 0x78) = invalidId;
+    *(s32 *)((u8 *)status + 0x54) = invalidId;
+    *(u8 *)((u8 *)status + 0x58) = zero;
+    *(s32 *)((u8 *)status + 0x64) = zero;
+    *(s32 *)((u8 *)status + 0x68) = zero;
+    *(f32 *)((u8 *)status + 0x5C) = initialValue;
+    *(f32 *)((u8 *)status + 0x60) = initialTimer;
 }
 
 extern void *fn_8017960C(s32);
