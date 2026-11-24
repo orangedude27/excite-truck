@@ -208,7 +208,7 @@ int fn_802E7AF4(int eventType, int shutdownMode) {
  * to the callback that was installed before rjoy (when there is one), update that
  * channel's state-record sample-ready flag from the result, then notify the sound
  * layer's connect callback. */
-void fn_802E7B6C(int chan, int status) {
+/* WPAD sampling callback: forward the sample to the previously installed callback, set the channel's sample-ready flag, then notify the sound connect callback. */ void fn_802E7B6C(int chan, int status) {
     register int channel = chan;
     int result = status;
     unsigned char *record;
