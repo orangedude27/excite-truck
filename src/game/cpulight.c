@@ -62,8 +62,9 @@ void fn_802DB2D4(void) {
     GXSetAlphaCompare(4, ((unsigned char *)gCpuLightTextures[0])[0xE4], 1, 0, 0);
 }
 
+/* Collect the bound CPU-light texture objects for a draw mode into dest: one for
+ * mode 0, two for mode 2, or three for mode 1. */
 void copyCpuLightTextures(void *dest, int mode) {
-    /* Copy 1, 2, or 3 texture object pointers from gCpuLightTextures into dest based on mode (0, 2, or 1). */
     void **dst = (void **)dest;
 
     switch (mode) {
