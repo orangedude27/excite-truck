@@ -281,7 +281,7 @@ extern "C" s32 fn_80005930(void) {
     extern void fn_801E88B4(s32 *, s32 *, s32 *, s32 *, s32); /* one player's viewport rect */
     extern s32 fn_801E89EC(void);          /* race phase: 0 before start, 1 racing, 3 finishing */
     extern s32 fn_802C86F0(void *, s32, s32, s32, s32);  /* save the viewport, set a new one */
-    extern s32 fn_802C8750(void *, s32);                 /* put a saved viewport back */
+    extern s32 DrawList_restoreViewport(void *, s32);                 /* put a saved viewport back */
     extern s32 fn_8000D75C(void);          /* audio-active flag; result unused here */
     extern s32 fn_80010EC8(void);          /* clear the three HUD display lists */
     extern s32 fn_8001123C(s32);           /* draw them for one player */
@@ -328,7 +328,7 @@ extern "C" s32 fn_80005930(void) {
         }
         fn_8001123C(SESSION->currentPlayer);
         fn_80011A2C();
-        fn_802C8750(savedViewport, -1);
+        DrawList_restoreViewport(savedViewport, -1);
     }
     entry = lbl_8034EEB8;
     for (s32 i = 0; i < playerCount; entry += 4, i++) {
@@ -345,7 +345,7 @@ extern "C" s32 fn_80005930(void) {
         }
         fn_8001123C(SESSION->currentPlayer);
         fn_80011A2C();
-        fn_802C8750(savedFullScreen, -1);
+        DrawList_restoreViewport(savedFullScreen, -1);
     }
 }
 #pragma cplusplus off

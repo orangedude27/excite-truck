@@ -344,7 +344,7 @@ extern void *fn_801E7E3C(void);
 extern void fn_80232928(s32);
 extern void fn_80232930(void);
 extern void fn_802C86F0(void *, s32, s32, s32, s32);
-extern void fn_802C8750(void *, s32);
+extern void DrawList_restoreViewport(void *, s32);
 extern s32 lbl_80558A98;
 extern s32 lbl_8055CFF0, lbl_8055CFF4;
 extern f32 lbl_805602CC, lbl_805602D0, lbl_805602D4;
@@ -483,7 +483,7 @@ extern "C" void fn_8000F4F0(void)
       fn_80232930();
     }
   }
-  fn_802C8750(scope, -1);
+  DrawList_restoreViewport(scope, -1);
 }
 #pragma cplusplus reset
 #pragma use_lmw_stmw off

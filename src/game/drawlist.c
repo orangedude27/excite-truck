@@ -366,7 +366,7 @@ void *fn_802C86F0(void *savedViewport, int x, int y, int width, int height) {
 extern void fn_802C87B4(int, int, int, int);
 extern void fn_80128668(void *);
 /* Restore a saved viewport rect (x, y, width, height at +0,+4,+8,+0xC) and optionally delete it. */
-void *fn_802C8750(void *savedRect, int deleteFlag) {
+void *DrawList_restoreViewport(void *savedRect, int deleteFlag) {
     if (savedRect != 0) {
         fn_802C87B4(*(int *)((unsigned char *)savedRect), *(int *)((unsigned char *)savedRect + 4), *(int *)((unsigned char *)savedRect + 8), *(int *)((unsigned char *)savedRect + 0xC));
         if (deleteFlag > 0) {
