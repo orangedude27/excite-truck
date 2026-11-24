@@ -446,19 +446,20 @@ extern "C" void fn_802E3AD0(s32 arg0, const char *fmt, ...) {
 #undef FILESYSTEM_SINK
 }
 #pragma scheduling on
-extern "C" s32 FileFindFirst(s32 arg0, s32 arg1, s32 arg2) {
-    class Obj {
+extern "C" s32 FileFindFirst(s32 path, s32 buffer, s32 bufferSize) {
+    class FileFindSubsystem {
     public:
-        virtual void v0();
-        virtual void v1();
-        virtual s32 v2(s32, s32, s32);
+        virtual void reserved0();
+        virtual void reserved1();
+        virtual s32 findFirst(s32, s32, s32);
     };
 
-    /* Call file-subsystem vtable slot 2 with (arg0, arg1, arg2); return -1 if unavailable. */
-    s32 obj = ((s32 (*)(void))FileFind_GetSubsystem)();
+    /* Start a directory search: ask the file-find subsystem for the first entry
+       matching path into buffer (bufferSize bytes), returning its find handle or -1. */
+    s32 subsystem = ((s32 (*)(void))FileFind_GetSubsystem)();
     s32 result;
-    if (obj != 0) {
-        result = ((Obj *)obj)->v2(arg0, arg1, arg2);
+    if (subsystem != 0) {
+        result = ((FileFindSubsystem *)subsystem)->findFirst(path, buffer, bufferSize);
     } else {
         result = -1;
     }
