@@ -141,7 +141,7 @@ void fn_802AE5E0(int arg0) {
 }
 #pragma scheduling on
 extern void fn_802AE64C(void *);
-extern void fn_802C9950(int);
+extern void setDrawListColor(int);
 extern void fn_802C9994(int);
 extern void fn_802C10C4(void);
 extern char fn_802B05E4(void);
@@ -261,7 +261,7 @@ int fn_802AE7AC(void) {
   
 void fn_802AE7C0(void) {
     /* Set the two packed RGB colors in the GX draw state: a muted blue-gray (0x555766) and a cream white (0xFFF5D9). */
-    fn_802C9950(0x555766);
+    setDrawListColor(0x555766);
     fn_802C9994(0xFFF5D9);
 }
   
@@ -1262,7 +1262,7 @@ void fn_802AFF80(void *list, short value) {
 int fn_802AFFA8(int arg0, int arg1) {
     float out[3];
     float x = (float)arg0 * 2.0f;
-    float z = 2.0f * (float)arg1;
+    float z = (float)arg1 * 2.0f;
     out[0] = x;
     out[2] = z;
     out[1] = fn_801DCF48(0, x, z);

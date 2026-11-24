@@ -683,7 +683,7 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
     f32 sp8;
     void *temp_r3;
     void *temp_r3_2;
-    register u8 *temp_r3_3;
+    void *temp_r3_3;
 
     if (lbl_8055E2E0 != 0) {
         temp_r3 = ((Service *)lbl_8055E2E0)->lookup((const char *)text + 0xC8);
@@ -696,17 +696,16 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
             fn_80148070(temp_r3_2, -1,
                 (s32)((Service *)lbl_8055E2E0)->create((const char *)text + 0xD4));
         }
-        temp_r3_3 = (u8 *)((Service *)lbl_8055E2E0)->find((const char *)text + 0xF0);
+        temp_r3_3 = ((Service *)lbl_8055E2E0)->find((const char *)text + 0xF0);
         f32 value4 = *(f32 *)((u8 *)temp_r3_3 + 4);
-        u8 *alias = temp_r3_3;
-        f32 value8 = *(f32 *)((u8 *)alias + 8);
+        f32 value8 = *(f32 *)((u8 *)temp_r3_3 + 8);
         s32 valueC = *(s32 *)((u8 *)temp_r3_3 + 0xC);
         fn_80148134(&spC, &sp8, valueC, value4, value8);
         f32 firstValue = *(f32 *)((u8 *)temp_r3 + 0x10);
         f32 settingValue = *(f32 *)((u8 *)temp_r3_3 + 0x10);
         f32 delta = firstValue - lbl_80561844;
-        fn_800103B8(*(s32 *)(temp_r3_3 + 0x18),
-            *(s32 *)(temp_r3_3 + 0x14), (s32 *)&lbl_8055A0DC, arg1,
+        fn_800103B8(*(s32 *)((u8 *)temp_r3_3 + 0x18),
+            *(s32 *)((u8 *)temp_r3_3 + 0x14), (s32 *)&lbl_8055A0DC, arg1,
             settingValue, spC, sp8, delta);
         fn_801473F8(lbl_8055E2E0, (const char *)text + 0xFC,
             &lbl_8055A0DC, arg0);
@@ -2804,7 +2803,7 @@ extern "C" void fn_80164480(void *arg0) {
 }
 #pragma cplusplus off
 extern s32 fn_802A96E8(void *, s32, s32, s32, s32);
-extern s32 fn_802C9950(s32);
+extern s32 setDrawListColor(s32);
 extern s32 fn_802C9994(s32);
 #pragma use_lmw_stmw off
 /* Draw each active entry's sprite when the object is initialized and drawing is enabled. */
@@ -2815,7 +2814,7 @@ void fn_80164510(void *arg0, s32 arg1) {
     s32 i;
     void *entry;
 
-    savedColorState = fn_802C9950(-0x100);
+    savedColorState = setDrawListColor(-0x100);
     savedDrawState = fn_802C9994(0);
     if (*(s32 *)((char *)arg0 + 0xA0) != -1) {
         i = 0;
@@ -2829,7 +2828,7 @@ void fn_80164510(void *arg0, s32 arg1) {
             i++;
         }
     }
-    fn_802C9950(savedColorState);
+    setDrawListColor(savedColorState);
     fn_802C9994(savedDrawState);
 }
 #pragma use_lmw_stmw reset

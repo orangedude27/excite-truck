@@ -3345,7 +3345,7 @@ done:
 
 #pragma cplusplus off
 extern f32 *GXInitLightAttnA_80144B44(void *, f32, f32, f32);
-extern s32 fn_802C9950(s32);
+extern s32 setDrawListColor(s32);
 extern s32 fn_802C9994(s32);
 extern void fn_801533E8(void *, f32 *);
 extern void fn_80151E60(void *, s32, s32);
@@ -3371,7 +3371,7 @@ void fn_80151C98(void *arg0, s32 arg1) {
         s32 state, context;
         f32 y, z, x, angle, rotation, c, s;
         f32 *matrix;
-        context = fn_802C9950(arg1);
+        context = setDrawListColor(arg1);
         state = fn_802C9994(0);
         y = lbl_8056165C;
         y += *(f32 *)((u8 *)base + 4);
@@ -3402,17 +3402,17 @@ void fn_80151C98(void *arg0, s32 arg1) {
         matrix[8] = c;
         fn_802C744C(lbl_80559ECC, matrix);
         fn_802C9994(state);
-        fn_802C9950(context);
+        setDrawListColor(context);
         return;
     }
     {
         s32 state, context;
-        context = fn_802C9950(arg1);
+        context = setDrawListColor(arg1);
         state = fn_802C9994(0);
         fn_80151E60(GXInitLightAttnA_80144B44(scratch + 4, *(f32 *)base,
             lbl_8056165C + *(f32 *)((u8 *)base + 4), *(f32 *)((u8 *)base + 8)), 0, 0);
         fn_802C9994(state);
-        fn_802C9950(context);
+        setDrawListColor(context);
     }
 }
 #pragma cplusplus reset

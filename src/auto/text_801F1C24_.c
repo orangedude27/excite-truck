@@ -1241,7 +1241,7 @@ int fn_801F3724(int object, int deleteFlag) {
 extern int *fn_801F1CE8(int);
 extern int fn_80128668(void);
 extern int *fn_801E1F44(void);
-extern int fn_802C9950(int);
+extern int setDrawListColor(int);
 void fn_801F3764(void *self, int source) {
     /* Load method for a 4-byte TMH render parameter: copy the raw value word
      * from the source parameter block (offset 0x2C, via fn_801F1CE8) into this
@@ -1260,10 +1260,10 @@ void fn_801F3764(void *self, int source) {
 /* Set the draw/text color: a dim gray when the current state is 1, otherwise a lighter gray. */
 void fn_801F37A4(void) {
     if (*fn_801E1F44() == 1) {
-        fn_802C9950(0xFF646464);
+        setDrawListColor(0xFF646464);
         return;
     }
-    fn_802C9950(0xFF909090);
+    setDrawListColor(0xFF909090);
 }
 
 #pragma scheduling invalid_target

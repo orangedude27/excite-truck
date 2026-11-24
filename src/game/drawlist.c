@@ -1126,7 +1126,7 @@ extern int gCurrentDrawListColor;
 extern void fn_802D0160(unsigned char, unsigned char, unsigned char);
 /* Set the current packed drawlist color, forward its RGB components to
  * fn_802D0160, and return the previous packed color. */
-int fn_802C9950(int packedColor)
+int setDrawListColor(int packedColor)
 {
     int previousColor = gCurrentDrawListColor;
     gCurrentDrawListColor = packedColor;

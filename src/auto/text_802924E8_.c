@@ -632,7 +632,7 @@ extern "C" void *fn_80293034(void *effect, void *effectArg, int modelBase) {
 extern float fn_801E7E24(void*);
 extern void fn_802936C4(void*);
 extern float lbl_80558DC4;
-extern int fn_802C9950(int);
+extern int setDrawListColor(int);
 extern int fn_802C9994(int);
 extern int fn_802C744C(void*, void*);
 extern int fn_80128668(void*);
@@ -684,17 +684,17 @@ void fn_80293178(void *arg0, int unused) {
     int savedState9994;
     register int index;
 
-    savedState9950 = fn_802C9950(0);
+    savedState9950 = setDrawListColor(0);
     savedState9994 = fn_802C9994(0);
     entryPtr = (unsigned char *)arg0 + 0x2C;
     index = 0;
     for (; index < *(int *)((char *)arg0 + 0x2FAC); entryPtr += 0x4C, index++) {
-        fn_802C9950(*(int *)((char *)arg0 + (*(unsigned char *)(entryPtr + 0x4A) << 3) + 0x2FB0));
+        setDrawListColor(*(int *)((char *)arg0 + (*(unsigned char *)(entryPtr + 0x4A) << 3) + 0x2FB0));
         fn_802C9994(*(int *)((char *)arg0 + (*(unsigned char *)(entryPtr + 0x4A) << 3) + 0x2FB4));
         fn_802C744C(*(void **)((char *)arg0 + (*(unsigned char *)(entryPtr + 0x48) << 2) + 8), entryPtr);
     }
     fn_802C9994(savedState9994);
-    fn_802C9950(savedState9950);
+    setDrawListColor(savedState9950);
 }
 
 #pragma optimize_for_size on
@@ -1262,7 +1262,7 @@ void fn_80293F20(void *arg0) {
     float dt2;
     float oneF;
     float gravF;
-    float outer;
+    register float outer;
     float dt;
     float scale2;
     float ageDt;
@@ -1272,15 +1272,15 @@ void fn_80293F20(void *arg0) {
     struct Rec *cur;
     struct Rec *out;
     struct Tpl *src;
-    int iter;
-    int kept;
-    int mode;
+    register int iter;
+    register int kept;
+    long mode;
     unsigned char type;
-    float tmp[13];
     float par[3];
+    float tmp[13];
     short entry;
     int zeroI;
-    int r0;
+    long r0;
     dt = fn_801E7E24(arg0);
     scale = lbl_805644F8 * dt;
     scale2 = lbl_805644D4 - scale;
@@ -1308,26 +1308,26 @@ do_work:
         ageDt = age + dt;
         mode = cur->mode;
         type = cur->type;
-        entry = cur->idx;
         gravTerm = (gravF * dt) * *(float *)((unsigned char *)arg0 + 4);
+        entry = cur->idx;
         tmp[0] = cur->vx * scale;
-        tmp[1] = cur->vy * scale;
         tmp[2] = cur->vz * scale;
+        tmp[1] = cur->vy * scale;
         tmp[1] = tmp[1] - gravTerm;
         tmp[6] = tmp[0];
         tmp[7] = tmp[1];
         tmp[8] = tmp[2];
         ((unsigned int *)tmp)[3] = ((unsigned int *)cur)[9];
         ((unsigned int *)tmp)[4] = ((unsigned int *)cur)[10];
-        ((unsigned int *)tmp)[5] = ((unsigned int *)cur)[11];
         par[0] = zeroF;
+        ((unsigned int *)tmp)[5] = ((unsigned int *)cur)[11];
         par[1] = oneF;
         par[2] = zeroF;
         if (mode == 2) {
             tmp[9] = tmp[0] * dt;
             tmp[10] = tmp[6] * dt;
-            tmp[11] = tmp[8] * dt;
             tmp[3] = tmp[3] + tmp[9];
+            tmp[11] = tmp[8] * dt;
             tmp[4] = tmp[4] + tmp[10];
             tmp[5] = tmp[5] + tmp[11];
             zeroI = 0;
@@ -1363,7 +1363,7 @@ write_out:
         r0 = 0;
         if (mode == 2) r0 = 1;
         if (mode == 3) r0 = 1;
-        if (r0 != 0)
+        if (r0)
             src = (struct Tpl *)((unsigned char *)lbl_804B4030 + type * 0x34 + 0x10);
         else
             src = (struct Tpl *)cur;
@@ -1372,14 +1372,14 @@ write_out:
             unsigned int a, b;
             a = src->copy[0];
             b = src->copy[1];
-            out->copy[0] = a;
             out->copy[1] = b;
+            out->copy[0] = a;
             a = src->copy[2];
-            out->copy[2] = a;
-            a = src->copy[3];
+            out->copy[2] = (unsigned)a;
             b = src->copy[4];
-            out->copy[3] = a;
+            a = src->copy[3];
             out->copy[4] = b;
+            out->copy[3] = a;
             a = src->copy[5];
             out->copy[5] = a;
             a = src->copy[6];
@@ -1397,11 +1397,11 @@ write_out:
         out->mode = mode;
         out->b48 = cur->b48;
         out->type = type;
-        out++;
+        ++out;
     }
 next:
+    ++cur;
     iter++;
-    cur++;
 check_loop:
     if (iter < *(int *)((unsigned char *)arg0 + 0x4C2C)) goto body;
     *(int *)((unsigned char *)arg0 + 0x4C2C) = kept;

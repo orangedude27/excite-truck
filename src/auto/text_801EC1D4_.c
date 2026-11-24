@@ -546,7 +546,7 @@ void fn_801ECCE0(long renderObj, long pass) {
         }
     }
     lbl_80488668[2] = ((float (*)(float))fn_802C99E8)(lbl_80562E90);
-    savedState0 = fn_802C9950(((int *)lbl_80488668)[0]);
+    savedState0 = setDrawListColor(((int *)lbl_80488668)[0]);
     savedState1 = fn_802C9994(((int *)lbl_80488668)[1]);
     {
         int k;
@@ -592,7 +592,7 @@ void fn_801ECCE0(long renderObj, long pass) {
     }
     ((float (*)(float))fn_802C99E8)(lbl_80488668[2]);
     fn_802C9994(savedState1);
-    fn_802C9950(savedState0);
+    setDrawListColor(savedState0);
 }
 void fn_801ECF58(void *arg0) {
     long useAltFlag;
