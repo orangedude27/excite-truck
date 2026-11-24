@@ -326,11 +326,9 @@ void fn_802C32B8(s32 x, s32 y, u32 packedColor) {
 
 #pragma push
 #pragma inline_depth(0)
+/* Plot a 16-bit pixel at (x, y) on the active canvas: inside the clip bounds, write the low half of packedValue when the canvas format is 3, otherwise its high half. */
 void fn_802C3320(s32 x, s32 y, u32 packedValue) {
     u32 halfValue;
-    /* If (x, y) is inside the canvas bounds, store the selected 16-bit half of
-     * packedValue at that position (low half when canvas mode is 3, otherwise
-     * high half). */
     if (fn_802C3130((void *)lbl_8055FC00, x, y) != 0) {
         halfValue = packedValue >> 16;
         if ((s8)*(u8 *)lbl_8055FC00 == 3)
