@@ -83,7 +83,7 @@ int fn_8020F3BC(int path, int buffer, int size) {
     return buffer;
 }
 extern long lbl_8055B66C;
-int fn_8020F400(int source, int destination, int size) {
+int buildSngSongPath(int source, int destination, int size) {
     /* Format a track-music song path ("%s.sng") into the destination buffer and return it. */
     fn_801345D8((void *)destination, size, (void *)&lbl_8055B66C, source);
     return destination;
@@ -101,8 +101,8 @@ void fn_8020F444(void) {
     /* Load and register the three track-music song paths once each, then log the path used. */
     char pathBuffer[0x40];
     if ((unsigned char)gSongLoaded0 == 0) {
-        if (fn_8012E938(fn_8020F400((long)gSongName0, (long)pathBuffer, 0x40)) != 0) {
-            fn_8020F400((long)gSongName0, (long)pathBuffer, 0x40);
+        if (fn_8012E938(buildSngSongPath((long)gSongName0, (long)pathBuffer, 0x40)) != 0) {
+            buildSngSongPath((long)gSongName0, (long)pathBuffer, 0x40);
             fn_8012E81C();
             fn_802EC294(0, fn_8020F3BC((int)gSongName0, (int)pathBuffer, 0x40));
             fn_802E30C8(gTriedToLoad, pathBuffer);
@@ -110,8 +110,8 @@ void fn_8020F444(void) {
         }
     }
     if ((unsigned char)gSongLoaded1 == 0) {
-        if (fn_8012E938(fn_8020F400((long)gSongName1, (long)pathBuffer, 0x40)) != 0) {
-            fn_8020F400((long)gSongName1, (long)pathBuffer, 0x40);
+        if (fn_8012E938(buildSngSongPath((long)gSongName1, (long)pathBuffer, 0x40)) != 0) {
+            buildSngSongPath((long)gSongName1, (long)pathBuffer, 0x40);
             fn_8012E81C();
             fn_802EC294(1, fn_8020F3BC((int)gSongName1, (int)pathBuffer, 0x40));
             fn_802E30C8(gTriedToLoad, pathBuffer);
@@ -119,8 +119,8 @@ void fn_8020F444(void) {
         }
     }
     if ((unsigned char)gSongLoaded2 == 0) {
-        if (fn_8012E938(fn_8020F400((long)gSongName2, (long)pathBuffer, 0x40)) != 0) {
-            fn_8020F400((long)gSongName2, (long)pathBuffer, 0x40);
+        if (fn_8012E938(buildSngSongPath((long)gSongName2, (long)pathBuffer, 0x40)) != 0) {
+            buildSngSongPath((long)gSongName2, (long)pathBuffer, 0x40);
             fn_8012E81C();
             fn_802EC294(2, fn_8020F3BC((int)gSongName2, (int)pathBuffer, 0x40));
             fn_802E30C8(gTriedToLoad, pathBuffer);
