@@ -34,7 +34,7 @@ typedef struct MenuListObject {
 } MenuListObject;
 extern char lbl_80342CEC[];
 s32 fn_80243478(s32);
-extern s32 fn_80244558(void *);
+extern s32 MenuList_GetTextLength(void *);
 extern void fn_80230C30(float *, float *, int, int);
 extern void fn_80230F78(signed char *, float *, long, long);
 extern void fn_80230924(void *, float, float, float, float, float);
@@ -442,7 +442,7 @@ void fn_80243C1C(void *arg0) {
                             color = 0xFFC34C05;
                         } else if (type == 1) {
                             color = 0x50000000;
-                        } else if ((type == 5 || type == 2) && fn_80244558(arg0) == 0) {
+                        } else if ((type == 5 || type == 2) && MenuList_GetTextLength(arg0) == 0) {
                             color = 0x78000000;
                             var_r18 = 0x28000000;
                         } else {
@@ -472,7 +472,7 @@ void fn_80243C1C(void *arg0) {
     f23 = lbl_805637C0 + sp1C;
     f24 = lbl_805637C4 + sp18;
     limit = *(s32 *)((u8 *)arg0 + 0x1C) - 1;
-    len2 = fn_80244558(arg0);
+    len2 = MenuList_GetTextLength(arg0);
     maxIdx = limit - 1;
     if (len2 < maxIdx)
         maxIdx = len2;
@@ -491,7 +491,7 @@ void fn_80243C1C(void *arg0) {
             fn_80230924((void *)0x80FFFF00L, lbl_805637D8 + f24, f24 - lbl_805637D8, lbl_805637DC + ((f23 + (lbl_805637D4 * (float)(idx + 1))) - lbl_805637E0), f24 - lbl_805637D8, cA4);
         }
         buf = lbl_8055BE14;
-        if (idx < fn_80244558(arg0))
+        if (idx < MenuList_GetTextLength(arg0))
             buf = (char *)&spC;
         fn_80232BA4(buf, *(s32 *)((u8 *)arg0 + 0x20), col, 0x14, f23 + (lbl_805637D4 * (lbl_805637B8 + (float)idx)), f24, lbl_805637E4, cA4, cAC);
         idx++;
@@ -533,8 +533,8 @@ extern "C" void fn_802440CC(void *menu) {
         break;
     case 1:
     case 2:
-        if (fn_80244558(menu) >= *(s32 *)((u8 *)menu+0x1c)-1) ((MenuListVtbl *)menu)->onAction();
-        if (fn_80244558(menu)+1 < *(s32 *)((u8 *)menu+0x1c)) {
+        if (MenuList_GetTextLength(menu) >= *(s32 *)((u8 *)menu+0x1c)-1) ((MenuListVtbl *)menu)->onAction();
+        if (MenuList_GetTextLength(menu)+1 < *(s32 *)((u8 *)menu+0x1c)) {
             fn_802438EC(*(char **)((u8 *)menu+0x18));
             charBuf[0]=0; charBuf[1]=0; charBuf[2]=0; charBuf[3]=0;
             charBuf[4]=0; charBuf[5]=0; charBuf[6]=0; charBuf[7]=0;
@@ -585,7 +585,7 @@ copy3_body:
 copy3_done:;
             }
             fn_80243938(*(char **)((u8 *)menu+0x18), *(char **)((u8 *)menu+0x1c));
-            if (*(s32 *)((u8 *)menu+0x1c)==fn_80244558(menu)+1) {
+            if (*(s32 *)((u8 *)menu+0x1c)==MenuList_GetTextLength(menu)+1) {
                 for (group=0;group<5;group++) {
                     for (index=0;index<16;index++) {
                         if (lbl_803428B0[group][index][2]==5) {
@@ -634,7 +634,7 @@ void fn_8024442C(void *menu) {
     *(s8 *)((u8 *)menu + 0x29) = !*(u8 *)((u8 *)menu + 0x29);
 }
 
-extern s32 fn_80244558(void *);
+extern s32 MenuList_GetTextLength(void *);
 #pragma push
 #pragma cplusplus on
 struct Dummy_80244440 {
@@ -675,7 +675,7 @@ extern "C" s32 fn_80244440(void *object, s32 inputCode) {
         ((Dummy_80244440 *)object)->f22();
         goto handled;
     case 0x1B:
-        if (fn_80244558(object) > 0) {
+        if (MenuList_GetTextLength(object) > 0) {
             ((Dummy_80244440 *)object)->f23();
             goto handled;
         }
@@ -691,7 +691,7 @@ u8 fn_80244550(void *menu) {
     return ((MenuListObject *)menu)->edited;
 }
 
-s32 fn_80244558(void *arg0) {
+s32 MenuList_GetTextLength(void *arg0) {
     char *str = *(char **)((u8 *)arg0 + 0x18);
     s32 len = strlen(str);
     if (len > 0 && *(s8 *)((u32)len + (u32)str - 1) == '_') len--;
