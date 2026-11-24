@@ -27,7 +27,7 @@ typedef struct SingleMovieInfo {
 } SingleMovieInfo;                /* 0x48: the node the heap tag "single_movie_info" names */
 
 extern void fn_802E12DC(void *); /* video.c: play/advance a movie */
-extern void fn_802E1290(void *); /* video.c: drMovieUnload, close a movie */
+extern void BinkMovie_Unload(void *); /* video.c: drMovieUnload, close a movie */
 extern void fn_80128668(void *); /* free an allocated object block */
 extern s32 lbl_805600F8; /* head of the "single_movie_info" list; while it is set that
                           * one record answers every request, so nothing is allocated,
@@ -91,7 +91,7 @@ s32 fn_802ECDF4(void) {
     SingleMovieInfo *next;
 
     if (lbl_805600F8 != 0) {
-        fn_802E1290(((SingleMovieInfo *)lbl_805600F8)->info.handle);
+        BinkMovie_Unload(((SingleMovieInfo *)lbl_805600F8)->info.handle);
         next = ((SingleMovieInfo *)lbl_805600F8)->next;
         fn_80128668((void *)lbl_805600F8);
         lbl_805600F8 = (s32)next;
@@ -200,7 +200,7 @@ void fn_802ECFEC(MoviePlayInfo *record) {
 /* Destroy the given movie object when no current movie is set. */
 void fn_802ECFF4(void *movie) {
     if (lbl_805600F8 == 0) {
-        fn_802E1290(((void **)movie)[16]);
+        BinkMovie_Unload(((void **)movie)[16]);
         fn_80128668(movie);
     }
 }
