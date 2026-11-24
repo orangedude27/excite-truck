@@ -629,14 +629,14 @@ void fn_802E9118(void *arg0) {
 #undef ReleaseHandle
 }
 
-void fn_802E9160(void *arg0) {
+/* Abort the async NAND save: release the stored handle, clear the request fields, and set the state word to 1 (idle). */ void fn_802E9160(void *saveState) {
     /* Abort/fail the async NAND save: release its buffer, clear state fields, and mark state 1. */
-    fn_8012C4D8(*(int*)((char*)arg0+0x260));
-    *(int*)((char*)arg0+0x260)=0;
-    *(int*)((char*)arg0+0x264)=0;
-    *(int*)((char*)arg0+0x268)=0;
-    *(int*)((char*)arg0+0x26c)=0;
-    *(int*)arg0=1;
+    fn_8012C4D8(*(int*)((char*)saveState+0x260));
+    *(int*)((char*)saveState+0x260)=0;
+    *(int*)((char*)saveState+0x264)=0;
+    *(int*)((char*)saveState+0x268)=0;
+    *(int*)((char*)saveState+0x26c)=0;
+    *(int*)saveState=1;
 }
 
 /* True when the rmemcard async NAND write state word is IDLE (0), i.e. no write was started. */
