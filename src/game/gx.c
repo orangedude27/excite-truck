@@ -3270,7 +3270,7 @@ void fn_802D3894(void) {
 // pixel, then empties the queue. GXInitLightDir (the draft's name for the GX
 // read helper in auto/text_8003DB9C.c) reads one word out of the GX read
 // window: *(volatile u32 *)(0xC8000000 + (1 << 22) + (row << 12) + (col << 2)).
-void fn_802D3900(void) {
+/* Resolve every queued depth query by reading the depth at its pixel, mark it visible if it is nearer, then clear the queue. */ void fn_802D3900(void) {
     ZQueryPool *pool;
     ZQuery **slot;
     int count = 0;
