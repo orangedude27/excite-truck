@@ -8372,45 +8372,49 @@ void fn_80124CE8(void *arg0, void *arg1) {
 }
 
 #pragma opt_propagation off
-void fn_80124F90(void *arg0) {
-    f32 temp_f0;
-    f32 temp_f1;
-    f32 temp_f2;
-    f32 temp_f3;
-    f32 temp_f4;
-    f32 temp_f5;
-    f32 temp_f6;
-    f32 temp_f7;
-    f32 temp_f8;
-    f32 temp_f9;
-    f32 temp_f10;
-    f32 temp_f11;
-    f32 temp_f12;
+/* Final butterfly stage of the 8-point Ooura real FFT (forward direction): combine
+ * the four pairs 0x10 apart into sums/differences, then fold those across 0x08 with
+ * a sign swap on the second half to write the four complex outputs back in place.
+ * Locals are reused to preserve the compiler's float-register mapping. */
+void fn_80124F90(void *data) {
+    f32 evenHi;
+    f32 evenLo;
+    f32 quadHi;
+    f32 quadLo;
+    f32 pairHi;
+    f32 pairLo;
+    f32 sum0;
+    f32 sum1;
+    f32 diff0;
+    f32 diff1;
+    f32 sum2;
+    f32 diff2;
+    f32 diff3;
 
-    temp_f1 = *(f32 *)((u8 *)arg0 + 0);
-    temp_f0 = *(f32 *)((u8 *)arg0 + 0x10);
-    temp_f5 = *(f32 *)((u8 *)arg0 + 4);
-    temp_f4 = *(f32 *)((u8 *)arg0 + 0x14);
-    temp_f6 = temp_f1 + temp_f0;
-    temp_f8 = temp_f1 - temp_f0;
-    temp_f3 = *(f32 *)((u8 *)arg0 + 8);
-    temp_f2 = *(f32 *)((u8 *)arg0 + 0x18);
-    temp_f7 = temp_f5 + temp_f4;
-    temp_f1 = *(f32 *)((u8 *)arg0 + 0xC);
-    temp_f0 = *(f32 *)((u8 *)arg0 + 0x1C);
-    temp_f9 = temp_f5 - temp_f4;
-    temp_f12 = temp_f1 - temp_f0;
-    temp_f4 = temp_f1 + temp_f0;
-    temp_f10 = temp_f3 + temp_f2;
-    temp_f11 = temp_f3 - temp_f2;
-    *(f32 *)((u8 *)arg0 + 0) = temp_f6 + temp_f10;
-    *(f32 *)((u8 *)arg0 + 4) = temp_f7 + temp_f4;
-    *(f32 *)((u8 *)arg0 + 0x10) = temp_f6 - temp_f10;
-    *(f32 *)((u8 *)arg0 + 0x14) = temp_f7 - temp_f4;
-    *(f32 *)((u8 *)arg0 + 8) = temp_f8 - temp_f12;
-    *(f32 *)((u8 *)arg0 + 0xC) = temp_f9 + temp_f11;
-    *(f32 *)((u8 *)arg0 + 0x18) = temp_f8 + temp_f12;
-    *(f32 *)((u8 *)arg0 + 0x1C) = temp_f9 - temp_f11;
+    evenLo = *(f32 *)((u8 *)data + 0);
+    evenHi = *(f32 *)((u8 *)data + 0x10);
+    pairLo = *(f32 *)((u8 *)data + 4);
+    pairHi = *(f32 *)((u8 *)data + 0x14);
+    sum0 = evenLo + evenHi;
+    diff0 = evenLo - evenHi;
+    quadLo = *(f32 *)((u8 *)data + 8);
+    quadHi = *(f32 *)((u8 *)data + 0x18);
+    sum1 = pairLo + pairHi;
+    evenLo = *(f32 *)((u8 *)data + 0xC);
+    evenHi = *(f32 *)((u8 *)data + 0x1C);
+    diff1 = pairLo - pairHi;
+    diff3 = evenLo - evenHi;
+    pairHi = evenLo + evenHi;
+    sum2 = quadLo + quadHi;
+    diff2 = quadLo - quadHi;
+    *(f32 *)((u8 *)data + 0) = sum0 + sum2;
+    *(f32 *)((u8 *)data + 4) = sum1 + pairHi;
+    *(f32 *)((u8 *)data + 0x10) = sum0 - sum2;
+    *(f32 *)((u8 *)data + 0x14) = sum1 - pairHi;
+    *(f32 *)((u8 *)data + 8) = diff0 - diff3;
+    *(f32 *)((u8 *)data + 0xC) = diff1 + diff2;
+    *(f32 *)((u8 *)data + 0x18) = diff0 + diff3;
+    *(f32 *)((u8 *)data + 0x1C) = diff1 - diff2;
 }
 #pragma opt_propagation reset
 void fn_80125014(void *arg0) {
