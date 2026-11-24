@@ -454,14 +454,10 @@ void fn_802ECC18(u8 mode) {
 }
 
 #pragma dont_inline on
-/* One frame of the black screen this module paints while the home-button
- * handover runs (HomeMenu_drainHandover repeats it until the Home Menu takes the screen
- * over), skipped on the frames soundRunPendingRequest() spent on a pending sound request:
- * HomeMenu_beginFrame() opens the frame, HomeMenu_setFade() switches on the fade colour the
- * screen is covered with -- opaque black -- drawFifoTriangles() is asked for no
- * triangles at all (only its renderer setup runs), HomeMenu_drawUIAndFlush() draws the
- * home-button UI and flushes the FIFO to the GPU, and HomeMenu_endFrame() closes the
- * frame again. */
+/* Paint one frame of the black screen shown while the Home Menu handover runs
+ * (HomeMenu_drainHandover repeats it), skipping frames spent on a pending sound
+ * request: open the frame, fade the screen to opaque black, submit no triangles,
+ * draw the home-button UI and flush the FIFO, then close the frame. */
 void HomeMenu_drawBlackFrame(void) {
 #define FADE_BLACK 0xFF000000 /* aRGB: opaque black */
     if (soundRunPendingRequest() == 0) {
