@@ -26,17 +26,24 @@ void *fn_80209D4C(void *soundSource) {
 #define allocObject     fn_801284F8
 #define createSfx       fn_802077A4
 #define createRoadSound RoadSnd_createContainer
-    /* Construct a squeal sound object, attaching its SFX handle and a road-sound helper. */
-    void *squealObj;
+    /* Construct the four-word squeal sound object: record the owning source and
+       its vtable, attach an SFX handle driven by the source, and a road-sound container. */
+    typedef struct {
+        void *vtable;      /* 0x00 */
+        void *soundSource; /* 0x04 */
+        void *sfxHandle;   /* 0x08 */
+        void *roadSound;   /* 0x0c */
+    } SquealSound;
+    SquealSound *squealObj;
     void *sfxHandle;
-    squealObj = allocObject(0x10, &kAllocTag);
+    squealObj = (SquealSound *)allocObject(0x10, &kAllocTag);
     if (squealObj != 0) {
-        *(void **)squealObj = kVtable;
-        *((void **)squealObj + 1) = soundSource;
+        squealObj->vtable = kVtable;
+        squealObj->soundSource = soundSource;
         sfxHandle = createSfx(kSfxName, 4, (char *)soundSource + 0x118, (char *)soundSource + 0x60);
-        *((void **)squealObj + 2) = sfxHandle;
-        if (sfxHandle != 0) *(int *)((char *)sfxHandle + 0x10) = *(int *)((char *)*((void **)squealObj + 1) + 0x1ec);
-        *((void **)squealObj + 3) = (void *)createRoadSound(soundSource);
+        squealObj->sfxHandle = sfxHandle;
+        if (sfxHandle != 0) *(int *)((char *)sfxHandle + 0x10) = *(int *)((char *)squealObj->soundSource + 0x1ec);
+        squealObj->roadSound = (void *)createRoadSound(soundSource);
     }
     return squealObj;
 #undef createRoadSound
