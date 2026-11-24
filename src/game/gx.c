@@ -3120,14 +3120,16 @@ int fn_802D31D8(void)
 
 #pragma dont_inline reset
 
-/* Reset GX render state to a simple default (no cull, TEV stage 0 pass-through). */
+/* Mark a render request pending, force a full GX state refresh and leave any
+ * manually controlled pass, then select the simple default pipeline: no
+ * culling and TEV stage 0 using the default modulate op on its base inputs. */
 void gxResetDefaultState(void) {
     gRenderRequest[0] = 1;
     gxMarkAllStateDirty();
     sSkipRenderStateSync = 0;
-    GXSetCullMode(0);
-    GXSetTevOrder(0, 0, 0, 4);
-    GXSetTevOp(0, 0);
+    GXSetCullMode(GX_CULL_NONE);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR0A0);
+    GXSetTevOp(GX_TEVSTAGE0, GX_MODULATE);
 }
 
 extern unsigned char lbl_8055FD84;
