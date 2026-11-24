@@ -582,7 +582,6 @@ int fn_800050D0(int* eventIndex, int* subIndex, const char* name) {
 #pragma pop
 
 /* Main-loop test hook: build successive PA_Eve%d event-menu names and resolve each until one is not found. */ /* Main-loop test hook: build successive "PA_Eve%d" event-menu names and resolve each until one is not found. */ void ProbeEventMenus(void) DECOMP_DONT_INLINE {
-    /* Probe sequential "PA_Eve%d" menu entries until one is not present. */
     char menuName[64];
     int index = 0;
     while (1) {
