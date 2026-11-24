@@ -477,22 +477,36 @@ static inline long clampTrackDigit(long value, long limit) {
         }
     }
 }
-/* Resolve the selected track-music entry into the current track id (gTrackMusicCurrentSong). */
+/* Resolve the track-music menu selection into the song id now playing: cancel
+ * the pending song request and abort the old MP3, then choose no song (OFF), the
+ * next track of the shuffled order (RANDOM), or the selected row on its page. */
 void fn_8020FE90(void) {
-    long resolvedTrack;
+#define SELECTION     lbl_8055EEE0   /* -2 OFF, -1 RANDOM, >= 0 row on the page */
+#define PAGE          lbl_8055EEE4
+#define SONG          gTrackMusicCurrentSong
+#define OFF           (-2)
+#define RANDOM        (-1)
+#define ROWS_PER_PAGE 10
+    long track;
 
     fn_802EC12C();
     fn_802EC1D8();
-    if (lbl_8055EEE0 == -2) {
-        gTrackMusicCurrentSong = ((long (*)(long))fn_8020F3B4)(0);
+    if (SELECTION == OFF) {
+        SONG = ((long (*)(long))fn_8020F3B4)(0);
         return;
     }
-    if (lbl_8055EEE0 == -1) {
-        resolvedTrack = getNextTrackMusicIndex();
+    if (SELECTION == RANDOM) {
+        track = getNextTrackMusicIndex();
     } else {
-        resolvedTrack = lbl_8055EEE0 + (lbl_8055EEE4 * 0xA);
+        track = SELECTION + (PAGE * ROWS_PER_PAGE);
     }
-    gTrackMusicCurrentSong = resolvedTrack;
+    SONG = track;
+#undef ROWS_PER_PAGE
+#undef RANDOM
+#undef OFF
+#undef SONG
+#undef PAGE
+#undef SELECTION
 }
 
 #pragma push
