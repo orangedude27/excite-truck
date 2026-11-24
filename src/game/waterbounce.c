@@ -783,7 +783,6 @@ void fn_8020F21C(void *sounds) {
 
 #pragma scheduling on
 /* CarSound vtable slot +0x1C: re-arm the backfire sound held at +0x8. If its +0x8 value differs from 1.0, raise the +0x4D update flag and set it to 1.0, then set +0x49 and clear +0x4A/+0x4B. */ void CarSound_ResetBackfire(void *carSound) {
-    /* Resets the sound/effect node at +8 to its default active state (volume/value to 1.0, flags updated). */
     void *backfire = *(void **)((char *)carSound + 8);
     f32 one;
 
