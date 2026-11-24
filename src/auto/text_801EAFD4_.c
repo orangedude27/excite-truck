@@ -757,7 +757,7 @@ extern void fn_8029790C(s32);
 extern void fn_802B01A8(void);
 extern void fn_802C7730(void *);
 extern void fn_802C7A44(void);
-extern void fn_802C7A50(void);
+extern void submitModelBatch(void);
 extern void fn_802C7A94(s32);
 extern void fn_802C7AD4(void);
 extern void fn_802C9648(f32);
@@ -800,7 +800,7 @@ void fn_801EBDCC(void) {
         fn_801FA6B8();
         fn_802C7730(&stack[0]);
         fn_802CDB5C(3);
-        fn_802C7A50();
+        submitModelBatch();
         if (!temp_r3) {
             fn_8029790C(0);
             fn_801F4DCC();

@@ -216,7 +216,7 @@ extern void fn_80287A34(int);
 extern void fn_802C967C(void);
 extern void fn_802879E4(int);
 extern void fn_801FA6B8(void);
-extern void fn_802C7A50(void);
+extern void submitModelBatch(void);
 extern void fn_802C9904(void);
 extern void fn_801FA738(void);
 void fn_802AE728(void) {
@@ -228,7 +228,7 @@ void fn_802AE728(void) {
     fn_802C967C();
     fn_802879E4(0);
     fn_801FA6B8();
-    fn_802C7A50();
+    submitModelBatch();
     fn_802C9904();
     fn_801FA738();
 }
@@ -1261,7 +1261,7 @@ void fn_802AFF80(void *list, short value) {
 #pragma opt_propagation on
 int fn_802AFFA8(int arg0, int arg1) {
     float out[3];
-    float x = 2.0f * (float)arg0;
+    float x = (float)arg0 * 2.0f;
     float z = 2.0f * (float)arg1;
     out[0] = x;
     out[2] = z;

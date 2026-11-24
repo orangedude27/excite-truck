@@ -120,7 +120,7 @@ void *fn_801A4A8C(void *, s32, s32, s32, s32, void *);
 void *fn_801E87A8(void);
 s32 fn_802C9C58(s32);
 void fn_802C7A44(void);
-void fn_802C7A50(void);
+void submitModelBatch(void);
 void fn_802C7AD4(void);
 }
 
@@ -2232,7 +2232,7 @@ extern "C" void fn_801FA550(void) {
 #define RENDER_FLAG_MIRROR  2            /* its +0x10 bit 1: the view is mirrored, so front and back culling swap */
 #define ModelSetCullMode    fn_802C9C58  /* GXSetCullMode for the next draws; returns the mode it replaced */
 #define ModelBeginBatch     fn_802C7A44  /* start a batched submit run */
-#define ModelFlushBatch     fn_802C7A50  /* submit the 9 sort groups and end the run */
+#define ModelFlushBatch     submitModelBatch  /* submit the 9 sort groups and end the run */
 #define ModelFinishBatch    fn_802C7AD4  /* ModelFlushGroup(9): the last group, then reset */
 #define ModelDraw           fn_802C70AC  /* draw a model instance at a world matrix */
 #define GOB_DRAW_LIST       lbl_8055EC48 /* head of the batched GOB list */
@@ -2303,7 +2303,7 @@ extern "C" void fn_801FA738(void) {
         }
         node = *(void **)((u8 *)node + 0x44);
     }
-    fn_802C7A50();
+    submitModelBatch();
     fn_802C7AD4();
     fn_802C9C58(old);
 }
@@ -2380,7 +2380,7 @@ void *fn_801A4A8C(void *, s32, s32, s32, s32, void *);
 void *fn_801E87A8(void);
 s32 fn_802C9C58(s32);
 void fn_802C7A44(void);
-void fn_802C7A50(void);
+void submitModelBatch(void);
 void fn_802C7AD4(void);
 extern "C" void fn_801FA978(void) {
 #define buildStaticGobTable fn_801F9BE8
