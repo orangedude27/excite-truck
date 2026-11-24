@@ -503,8 +503,8 @@ void fn_802C5BA0(int *entry) {
 #pragma scheduling invalid_target
 /* Build the 16-bit texture-cache sub-key: the fixed (5, 0x64) tag from the u16
  * packer, plus the doubled base id and the difference flag's low 16 bits. */
-u16 buildTextureSubKey(int baseId, int differs) {
-    return (((int (*)(int, int))packU16Key)(5, 0x64) - -((baseId * 2) & 0xFFFE)) + (differs & 0xFFFF);
+/* Build the 16-bit texture-cache sub-key used to distinguish texture variants: the fixed 0x0564 tag, the doubled base id, and the low 16 bits of the difference flag. */ u16 buildTextureSubKey(int baseId, int diffFlag) {
+    return (((int (*)(int, int))packU16Key)(5, 0x64) - -((baseId * 2) & 0xFFFE)) + (diffFlag & 0xFFFF);
 }
 #pragma scheduling on
 extern int fn_802CAC28(void *, int);
