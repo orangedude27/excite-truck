@@ -11,8 +11,8 @@ extern char ABEND_Separator[];
 #define sSeparator     ABEND_Separator /* "================================" */
 extern int lbl_8055D178;
 #define sLogFileHandle lbl_8055D178
-extern int lbl_8055D180;
-#define sLogFileName   lbl_8055D180 /* "log.log" */
+extern int ABEND_LogFileName;
+#define sLogFileName   ABEND_LogFileName /* "log.log" */
 extern char lbl_8055D188;
 #define sFmtPercentS   lbl_8055D188 /* "%s" */
 
