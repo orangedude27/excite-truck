@@ -98,11 +98,19 @@ void fn_80208A50(float *unusedVolume) {
 #undef applyVolumeHandles
 
 void ReloadMixerSettings(void) {
-    /* Load saved mixer settings for effects volume and sound quality, then apply them. */
-    LoadFloatOption(4, lbl_8033BEF8, &lbl_8055B4D0);
-    SetEffectsVolume(lbl_8055B4D0);
-    LoadIntOptionValue(4, &lbl_8055B4E0, &lbl_8055EDA8);
-    SetSoundQuality((int)lbl_8055EDA8);
+    /* Reload the saved [SOUND] "effects_volume" and "quality" options and apply them. */
+#define CONFIG_KEY_EFFECTS_VOLUME lbl_8033BEF8
+#define CONFIG_KEY_QUALITY lbl_8055B4E0
+#define OPTIONS_SECTION_SOUND 4
+#define gEffectsVolume lbl_8055B4D0
+    LoadFloatOption(OPTIONS_SECTION_SOUND, CONFIG_KEY_EFFECTS_VOLUME, &gEffectsVolume);
+    SetEffectsVolume(gEffectsVolume);
+    LoadIntOptionValue(OPTIONS_SECTION_SOUND, &CONFIG_KEY_QUALITY, &gSoundQuality);
+    SetSoundQuality((int)gSoundQuality);
+#undef gEffectsVolume
+#undef OPTIONS_SECTION_SOUND
+#undef CONFIG_KEY_QUALITY
+#undef CONFIG_KEY_EFFECTS_VOLUME
 }
 
 #pragma pop
