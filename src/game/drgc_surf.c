@@ -1267,7 +1267,7 @@ void fn_802D657C(s32 *value, s32 delta) {
 /* For layout-0x1A surface records: byte-swap the 32-bit count at +0x34 in place
  * (so it reads correctly as the loop bound), then reverse the bytes of every
  * 32-bit element in the array at +0x38. */
-void fn_802D6594(void *arg0) {
+void drSwapSurfaceExt1A(void *arg0) {
     unsigned char *bytes = (unsigned char *)arg0;
     unsigned char firstByte = bytes[0x34];
     unsigned char *entry = bytes + 0x38;
@@ -1307,7 +1307,7 @@ void fn_802D65F8(s32 arg0, s32 arg1) {
     bytes[0x2C]=b; bytes[0x2F]=a; bytes[0x2D]=d; bytes[0x2E]=c;
     bytes[0x30]=f; bytes[0x33]=e; bytes[0x31]=h; bytes[0x32]=g;
     ((void (*)(s32 *, s32, u8, u8, u8, u8, u8, u8))fn_802D657C)((s32 *)((u8 *)arg0+0x30),arg1,f,d,b,a,e,c);
-    if((s8)bytes[8]==0x1A) fn_802D6594((void *)bytes);
+    if((s8)bytes[8]==0x1A) drSwapSurfaceExt1A((void *)bytes);
     if(bytes[8]==0x13) {
         entries=*(u8 **)(bytes+0x20);
         for(i=0;i<*(s32 *)(bytes+0x1C);i++) {
