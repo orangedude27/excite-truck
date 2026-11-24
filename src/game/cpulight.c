@@ -1144,12 +1144,11 @@ void CpuLight_BeginIndirectPass(int arg0, int indTexSlot, int texSlot1, float li
 }
 
 #pragma pop
-/* Ends the indirect-texture pass CpuLight_BeginIndirectPass set up, once the geometry drawn
- * with it is on screen (its caller fn_802C03F0 draws it with fn_802DD27C in
- * between): drops the indirect texture matrix from the GX state block, forgets
- * the cached position array, unbinds the pass' texture from texcoord slot 1,
- * turns indirect stages off and makes tev stage 0 direct again. */
-/* End the indirect-texture pass: clear the ind tex matrix flag, invalidate the cached position array, unbind the pass texture from texcoord slot 1, disable indirect stages and restore direct TEV stage 0. */ /* End the indirect-texture pass: clear the ind tex matrix flag, invalidate the cached position array, unbind the pass texture from texcoord slot 1, disable indirect stages and restore direct TEV stage 0. */ void CpuLight_EndIndirectPass(void) {
+/* End the indirect-texture pass CpuLight_BeginIndirectPass set up: clear the
+ * indirect tex matrix flag if a pass is running, forget the cached position
+ * array, unbind the pass' texture from texcoord slot 1, turn indirect stages
+ * off and leave tev stage 0 sampling directly. */
+void CpuLight_EndIndirectPass(void) {
     /* Whether CpuLight_BeginIndirectPass left an indirect-texture pass running. */
 #define indirectPassRunning lbl_8055FEC0
 #define ClearIndTexMtxFlag fn_802D3E88 /* gRenderRequest[13]: indirect tex matrix loaded */
