@@ -1453,9 +1453,8 @@ void fn_802CBFA0(void *mgr, unsigned int request) {
     }
 }
 
-void startTextureRequestRead(void *unused, void *request) {
+void startTextureRequestRead(void *mgr, void *request) {
     extern char lbl_8055D088;
-    /* Mark the request complete and notify the texture load handlers. */
     *(int *)((char *)request + 0x10) = -1;
     ((void (*)(int, int, int, int))fn_8012C720)(*(int *)((char *)request + 0), *(int *)((char *)request + 8), *(int *)((char *)lbl_8055FCB0 + *(int *)((char *)request + 4) * 0x4C + 0x3C), 0);
     ((void (*)(void *, void *))fn_802CB3F8)((char *)lbl_8055FCB0 + *(int *)((char *)request + 4) * 0x4C + 4, &lbl_8055D088);
