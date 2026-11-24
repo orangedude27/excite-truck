@@ -5597,7 +5597,7 @@ extern "C" void* fn_801A4548(s32 arg0) {
         Fn801A4548Swap4((u8*)h+12);
         Fn801A4548Swap4((u8*)h+16);
         fn_801A4768(lp, (s32)h);
-        fn_801A4780((s32*)&h->unk10, h);
+        fn_801A4780((s32*)&h->unk10, (s32)h);
         fn_801A4798((s32*)&h->shorts, (s32)h);
         for (s32 i=0; i<h->count; i++) {
             Fn801A4548Swap4(h->list+i*4);
