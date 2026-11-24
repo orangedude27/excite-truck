@@ -605,15 +605,16 @@ void fn_802DC280(int positionArray, int vertexCount, unsigned short *__restrict 
     }
 }
 
-/* Prepare cpulight draw state for the given mode and load the first two texture
- * objects from lbl_804DB468 (GX texobj at +0x24) into GX texmap slots 0 and 1. */
+/* Prepare cpulight draw state for the given light mode: reset the cached GX state and texture matrix,
+   bind the mode's texture to unit 1, load the two CPU-light textures into texmaps 0 and 1, set the
+   alpha compare to always-pass, and configure the two-stage TEV/blend pipeline. */
 void fn_802DC3C0(int mode) {
     fn_802DBD88();
     fn_802DB58C();
     fn_802CADD0(mode, 1);
-    GXLoadTexObj((unsigned char *)lbl_804DB468[0] + 0x24, 0);
-    GXLoadTexObj((unsigned char *)lbl_804DB468[1] + 0x24, 1);
-    GXSetAlphaCompare(7, 0, 1, 7, 0);
+    GXLoadTexObj((unsigned char *)lbl_804DB468[0] + 0x24, GX_TEXMAP0);
+    GXLoadTexObj((unsigned char *)lbl_804DB468[1] + 0x24, GX_TEXMAP1);
+    GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_OR, GX_ALWAYS, 0);
     fn_802DFB30();
 }
 
