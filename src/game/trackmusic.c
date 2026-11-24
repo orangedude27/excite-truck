@@ -731,7 +731,7 @@ extern unsigned char lbl_8055EEC0;
 extern signed char lbl_8055EEC8, lbl_8055B660;
 extern long lbl_8055EECC, lbl_8055B658;
 /* Stop track music: mute, clear selection/hold state, and if a song is selected while inactive reset to none and stop playback. */
-void fn_80210444(void) {
+void stopTrackMusic(void) {
 #define trackMusicMuted lbl_8055B660
 #define trackMusicSongListReady lbl_8055EEC0
 #define trackMusicHoldSongChange lbl_8055EEC8

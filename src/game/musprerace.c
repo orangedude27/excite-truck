@@ -30,7 +30,7 @@ typedef float f32;
 typedef double f64;
 
 extern f32 fn_8020A5F0(void);
-extern void fn_80210444(void);
+extern void stopTrackMusic(void);
 extern void fn_8020C140(void);
 
 extern s32 lbl_8055EE3C;
@@ -265,7 +265,7 @@ extern s8 lbl_8055EE43;
 #pragma pop
 /* Initializes pre-race music state (stops track music, resets fade/volume/state flags). */
 void fn_8020C54C(void) {
-    fn_80210444();
+    stopTrackMusic();
     lbl_8055EE4C = lbl_805632F0;
     lbl_8055EE50 = lbl_805632F0;
     lbl_8055EE54 = lbl_805632F0;
