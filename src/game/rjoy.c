@@ -23,7 +23,7 @@ __declspec(section ".rodata") extern int lbl_8034D8A8;
 extern int fn_801282EC(int);
 extern int fn_801282F4(void);
 extern int fn_801284E8(void *, int);
-extern int lbl_80507258[];
+extern int gWpadAllocHandles[];
 extern int lbl_8055D224;
 extern int lbl_8056000C;
 extern unsigned char lbl_80560008;
@@ -149,7 +149,7 @@ void fn_802E7920(int arg0) {
 extern int fn_801282EC(int);
 extern int fn_801282F4(void);
 extern int fn_801284E8(void *, int);
-extern int lbl_80507258[];
+extern int gWpadAllocHandles[];
 extern int lbl_8055D224;
 extern int lbl_8056000C;
 #pragma scheduling invalid_target
@@ -159,7 +159,7 @@ void wpadAlloc(int deviceIndex) {
     fn_801282EC(0x80);
     fn_801282F4();
     handle = fn_801284E8(&lbl_8055D224, deviceIndex);
-    lbl_80507258[lbl_8056000C++] = handle;
+    gWpadAllocHandles[lbl_8056000C++] = handle;
 }
 #pragma scheduling on
 extern float lbl_805651A0, lbl_805651A4;
@@ -167,7 +167,7 @@ extern int fn_8005ED8C(void), fn_8005EE20(void), fn_8005EE7C(void);
 extern int fn_80128684(void);
 extern int fn_802E30C8(const char *, ...);
 __declspec(section ".rodata") extern int lbl_8034D8B4, lbl_8034D8E8;
-extern int lbl_80507258[], lbl_8056000C;
+extern int gWpadAllocHandles[], lbl_8056000C;
 extern int fn_80128658(int, int *);
 #pragma push
 #pragma scheduling invalid_target
@@ -179,11 +179,11 @@ int wpadFree(unsigned int handle) {
     int *cursor;
     int index;
     int lastValue;
-    for (matchIndex = -1, cursor = lbl_80507258, index = 0; index < lbl_8056000C; cursor++, index++)
+    for (matchIndex = -1, cursor = gWpadAllocHandles, index = 0; index < lbl_8056000C; cursor++, index++)
         if ((unsigned int)*cursor == handle) matchIndex = index;
     lbl_8056000C--;
-    lastValue = lbl_80507258[lbl_8056000C];
-    lbl_80507258[matchIndex] = lastValue;
+    lastValue = gWpadAllocHandles[lbl_8056000C];
+    gWpadAllocHandles[matchIndex] = lastValue;
     ((void (*)(unsigned int, int))fn_80128658)(handle, lastValue);
     return 1;
 }
@@ -294,7 +294,7 @@ extern int fn_8005ED8C(void);
 extern int fn_8005EE7C(void);
 extern char lbl_8034D908[];
 extern int lbl_8034D8E8;
-extern int lbl_80507268[], lbl_80507258[], lbl_8056000C;
+extern int lbl_80507268[], gWpadAllocHandles[], lbl_8056000C;
 #pragma scheduling invalid_target
 /* Reset WPAD controllers and sampling callbacks, wait for shutdown, then free any pending controller handles. */ void fn_802E7D0C(void) {
     int *samplingCallbacks;
@@ -325,7 +325,7 @@ extern int lbl_80507268[], lbl_80507258[], lbl_8056000C;
     }
     fn_802E30C8((const char *)&lbl_8034D8E8);
 
-    controllerHandles = lbl_80507258;
+    controllerHandles = gWpadAllocHandles;
     handleIdx = 0;
     while (handleIdx < lbl_8056000C) {
         ((int (*)(int))fn_80128658)(*controllerHandles);
