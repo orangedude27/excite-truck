@@ -783,7 +783,7 @@ void fn_80210510(float volume) {
 }
 
 /* Select the track-music mode (0/1) using the current DA parameter, or do nothing for 2. */
-void fn_80210514(int mode) {
+void trackMusicSetSlotStates(int mode) {
     switch (mode) {
     case 0:
         fn_8020F608(0, fn_8000DA10());
