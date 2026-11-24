@@ -427,7 +427,7 @@ void *fn_802090D4(int name) {
 /* Releases a volume handle: frees its slot (dropping free slots from the end
  * of the table), recomputes the master volume and clears the caller's pointer
  * so releasing it twice does nothing. */
-void fn_80209110(void **handle) {
+/* Release a mixer volume handle: free its table slot, drop unused slots from the end, recompute the effective master volume, and null the caller's pointer so double-release is a no-op. */ void fn_80209110(void **handle) {
     if (*handle != 0) {
         ((struct MixerVolumeHandle *)*handle)->name = 0;
         while (MIXER_VOLUME_HANDLE_COUNT > 0) {
