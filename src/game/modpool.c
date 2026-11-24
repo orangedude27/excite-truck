@@ -127,21 +127,38 @@ void fn_802CE4F4(void *arg0, int arg1) {
 #pragma push
 #pragma scheduling invalid_target
 void *fn_802CE630(void *pool, const char *name, int value) {
-    /* Find a free 0x40-byte pool entry, initialize it with name/value, and return it (or NULL if full). */
-    int count = *(int *)((char *)pool + 8);
+    /* Reserve a free 0x40-byte slot in the model pool, filling in its name and
+       value, or return NULL if every slot is taken. */
+    struct ModelSlot {
+        unsigned char inUse;      /* 0x00 */
+        unsigned char pad0[3];    /* 0x01 */
+        void *manager;            /* 0x04 */
+        char name[0x20];          /* 0x08 */
+        int value;                /* 0x28 */
+        unsigned char pad2[0x0C]; /* 0x2C */
+        int state;                /* 0x38 */
+    };
+    struct ModelPool {
+        struct ModelSlot *slots;  /* 0x00 */
+        void *loadPool;           /* 0x04 */
+        int slotCount;            /* 0x08 */
+    };
+    struct ModelPool *mgr = (struct ModelPool *)pool;
+    int remaining = mgr->slotCount;
     int offset = 0;
-    unsigned char *entry;
-    while (count > 0) {
-        entry = (unsigned char *)*(char **)pool + offset;
-        if (*entry == 0 && *(int *)(entry + 0x38) == 0) {
-            entry[0] = 1;
-            *(void **)(entry + 4) = pool;
-            strcpy((char *)entry + 8, name);
-            *(int *)(entry + 0x28) = value;
+    struct ModelSlot *entry;
+
+    while (remaining > 0) {
+        entry = (struct ModelSlot *)((char *)mgr->slots + offset);
+        if (entry->inUse == 0 && entry->state == 0) {
+            entry->inUse = 1;
+            entry->manager = mgr;
+            strcpy(entry->name, name);
+            entry->value = value;
             goto done;
         }
         offset += 0x40;
-        count--;
+        remaining--;
     }
     entry = 0;
 done:
