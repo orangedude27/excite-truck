@@ -2112,7 +2112,7 @@ extern "C" u8 fn_80159F24(void* tracker) {
 }
 
 extern "C" f32 lbl_8055E3C8;
-extern "C" void fn_8015A318(Unk8015A368C*);
+extern "C" void flushPendingBonusEvent(Unk8015A368C*);
 extern "C" f32 fn_8015A368(void*);
 extern "C" s32 fn_8015A404(void*);
 extern "C" f32 lbl_805617A0, lbl_805617A4, lbl_805617A8;
@@ -2206,7 +2206,7 @@ skip_reset:
     }
     if (fn_80141F7C(*(f32*)(p+0x254)) || end) {
         if (*(s32*)(p+0x264) > 0) result = ((f32 (*)(void*, void*))fn_8015A368)(a,arg1);
-        if (!end) fn_8015A318((Unk8015A368C*)a);
+        if (!end) flushPendingBonusEvent((Unk8015A368C*)a);
     } else if (*(s32*)(p+0x264) > 0) {
         ((Fn8015889C*)a)->v34();
     }
@@ -2220,7 +2220,7 @@ skip_reset:
 #pragma opt_propagation off
 /* If the bonus tracker has a pending event count, forward its event id, context
  * and count to the event dispatcher, then clear the pending count. */
-extern "C" void fn_8015A318(Unk8015A368C* bonus) {
+extern "C" void flushPendingBonusEvent(Unk8015A368C* bonus) {
     s32 eventCount = bonus->m260;
     if (eventCount > 0) {
         s32 eventId = bonus->m258;
@@ -2533,7 +2533,7 @@ extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
     }
     if (fn_80141F7C(*(f32*)(p+0x254)) || end) {
         if (*(s32*)(p+0x264) > 0) result = ((f32 (*)(void*, void*))fn_8015A368)(a,arg1);
-        if (!end) fn_8015A318((Unk8015A368C*)a);
+        if (!end) flushPendingBonusEvent((Unk8015A368C*)a);
     } else if (*(s32*)(p+0x264) > 0) {
         ((Fn8015889C*)a)->v34();
     }
@@ -2669,7 +2669,7 @@ extern "C" f32 fn_8015AE18(void *a, const void *arg1) {
     }
     if (fn_80141F7C(*(f32 *)(p + 0x254)) || end) {
         if (*(s32 *)(p + 0x264) > 0) result = ((f32 (*)(void *, void *))fn_8015A368)(a, (void *)arg1);
-        if (!end) fn_8015A318((Unk8015A368C *)a);
+        if (!end) flushPendingBonusEvent((Unk8015A368C *)a);
     } else if (*(s32 *)(p + 0x264) > 0) {
         self->v34();
     }
@@ -3357,7 +3357,7 @@ extern "C" f32 fn_8015C264(void *arg0, void *arg1) {
             var_f31 = ((f32 (*)(void*, void*))fn_8015A368)(arg0, arg1);
         }
         if (var_r28 == 0) {
-            fn_8015A318((Unk8015A368C*)arg0);
+            flushPendingBonusEvent((Unk8015A368C*)arg0);
         }
     } else if (*(s32*)((char*)arg0 + 0x264) > 0) {
         ((Fn8015889C*)arg0)->v34();
@@ -3676,7 +3676,7 @@ extern "C" void fn_8015CF00(Unk801577F0* arg0) {
 //   +0x248 BonusDisplay*  the bonus popup, while one is up
 //   +0x250 f32            the bonus time one event buys
 //   +0x254 f32            bonus time left; the bonus ends when it reaches zero
-//   +0x258 void*          the record buffer the scoring fills (fn_8015A318 frees it)
+//   +0x258 void*          the record buffer the scoring fills (flushPendingBonusEvent frees it)
 //   +0x25C f32            multiplier of the event being scored
 //   +0x260 s32            events scored since the last reset
 //   +0x264 s32            events scored since the bonus started
@@ -3758,7 +3758,7 @@ extern "C" f32 fn_8015CFFC(void *tracker, void *truck) {
     }
     if (fn_80141F7C(*(f32 *)(p + 0x254)) || atLastRecord) {
         if (*(s32 *)(p + 0x264) > 0) score = ((f32 (*)(void *, void *))fn_8015A368)(tracker, truck);
-        if (!atLastRecord) fn_8015A318((Unk8015A368C *)tracker);
+        if (!atLastRecord) flushPendingBonusEvent((Unk8015A368C *)tracker);
     } else if (*(s32 *)(p + 0x264) > 0) ((BonusTracker *)tracker)->refreshDisplay();
     return score;
 }
