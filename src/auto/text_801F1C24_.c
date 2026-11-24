@@ -1980,13 +1980,13 @@ static inline void CombineMtx_801F4684(float *dst, const float *left, const floa
         dst[8] = fn_80144514(right[2], left[6], right[5], left[7], right[8], left[8]);
     }
 }
-extern void fn_802CDAB4(int, int, float *);
+extern void MlistSetObjectDraw(int, int, float *);
 /* Virtual method (slot +0xC of the vtable lbl_8033AA90 this class is constructed
  * with; its deleting destructor is fn_801F4614).  For every entry of the spin
  * list -- {vtable, entries, count} with 0x18-byte entries -- build a rotation
  * about Y by spinRate * game-time, combine it with the entry's own 3x3 matrix,
  * append the entry's position and submit the 3x4 transform as that object's
- * draw transform (fn_802CDAB4 -> fn_802D0514). */
+ * draw transform (MlistSetObjectDraw -> fn_802D0514). */
 #pragma scheduling invalid_target
 void fn_801F4684(register void *spinList, register int drawContext) {
     struct SpinEntry {
@@ -2027,7 +2027,7 @@ void fn_801F4684(register void *spinList, register int drawContext) {
             transform[9] = entry->x;
             transform[10] = entry->y;
             transform[11] = entry->z;
-            fn_802CDAB4(drawContext, entry->objectIndex, transform);
+            MlistSetObjectDraw(drawContext, entry->objectIndex, transform);
             byteOffset += sizeof(struct SpinEntry);
             index += 1;
         }

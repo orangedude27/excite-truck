@@ -513,7 +513,7 @@ void fn_802CDAA8(void) {
 /* Submit one object's 12-float model transform (3x3 rotation, position and
  * scale) to the shared draw-entry table and store the returned handle in
  * this object's slot of the draw context. objectList is unused. */
-void fn_802CDAB4(void *objectList, int objectIndex, float *transform) {
+void MlistSetObjectDraw(void *objectList, int objectIndex, float *transform) {
     struct DrawContext {
         unsigned char objectFlags[0x64]; /* +0x00: per-object type/visibility flags */
         int drawHandles[0x100];          /* +0x64: draw-entry handle per object */
