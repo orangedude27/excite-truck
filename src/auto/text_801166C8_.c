@@ -8418,7 +8418,7 @@ void fn_80124F90(void *data) {
 }
 #pragma opt_propagation reset
 /* Radix-2 DIF FFT butterfly (the n==8 base case of the inverse transform): four complex samples (re/im float pairs) in `data` are replaced in place by the two-stage butterfly result. */
-/* Radix-2 DIF FFT butterfly (n==8 base case of the inverse transform): four complex samples (re/im float pairs) are replaced in place by the two-stage butterfly result. */ /* Radix-2 DIF FFT butterfly (n==8 base case of the inverse transform): four complex samples (re/im float pairs) in arg0 are replaced in place by the two-stage butterfly result. */ /* Radix-2 DIF FFT butterfly (n==8 base case of the inverse transform): four complex samples (re/im float pairs) in arg0 are replaced in place by the two-stage butterfly result. */ void fn_80125014(void *data) {
+/* Radix-2 DIF FFT butterfly, n==8 base case of the inverse transform: replaces four complex samples in place with the two-stage butterfly result. */ /* Radix-2 DIF FFT butterfly (n==8 base case of the inverse transform): four complex samples (re/im float pairs) are replaced in place by the two-stage butterfly result. */ /* Radix-2 DIF FFT butterfly (n==8 base case of the inverse transform): four complex samples (re/im float pairs) in arg0 are replaced in place by the two-stage butterfly result. */ /* Radix-2 DIF FFT butterfly (n==8 base case of the inverse transform): four complex samples (re/im float pairs) in arg0 are replaced in place by the two-stage butterfly result. */ void fn_80125014(void *data) {
     f32 t0;
     f32 t1;
     f32 re3;
