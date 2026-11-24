@@ -1400,11 +1400,11 @@ void fn_802C4F2C(void *object, s32 *outFirst, s32 *outSecond) {
  * drawn as '#'.  Callers draw it twice, once offset by a pixel for the shadow. */
 void fn_802C4F58(s32 x, s32 y, const char *text, s32 color) {
     s32 penColor = color;
-    const char *p = text;
+    const char *textPtr = text;
     s32 penY = y;
     s32 penX = x;
     s32 ch;
-    while ((ch = (s8)*p++) != 0) {
+    while ((ch = (s8)*textPtr++) != 0) {
         if ((s8)ch < ' ' || (u8)ch > 0x7F)
             DrawCanvasChar(penX, penY, CANVAS_CHAR_UNKNOWN, penColor);
         else
