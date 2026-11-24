@@ -30,7 +30,7 @@ extern unsigned char lbl_804FC800[];
 extern unsigned char lbl_804FC558[];
 extern int lbl_8055FF78;
 extern int lbl_8055FFA0;
-extern int *lbl_8055FF9C;
+extern int *gSpuSoundSlotTable;
 extern unsigned char *lbl_8055FF94;
 extern void *lbl_8055FF90;
 extern void *fn_802E5AE8();
@@ -390,7 +390,7 @@ void fn_802E5438(void) {
 #define gMixBuffer      lbl_8055FFB0   /* CPU side of that ARAM block */
 #define gSpuSamples     lbl_8055FF90   /* "SpuSample": 256 slots of 0xB0 */
 #define gSpuChannels    lbl_8055FF94   /* "SpuChannel": the 32 voice channels */
-#define gSoundSlotTable lbl_8055FF9C   /* "Spucache" */
+#define gSoundSlotTable gSpuSoundSlotTable   /* "Spucache" */
 #define gSoundSlotCount lbl_8055FFA0   /* entries of it in use */
 #define gSpuRunning     lbl_8055FFA5   /* the voice refill (fn_802E4F98) may run */
 #define gSpuResetPending lbl_8055FFB5  /* set by the reset callback, forces a re-init */
@@ -591,8 +591,8 @@ void fn_802E56F0(void) {
     lbl_8055FF94 = 0;
     fn_80128670((int)lbl_8055FF90);
     lbl_8055FF90 = 0;
-    fn_80128670((int)lbl_8055FF9C);
-    lbl_8055FF9C = 0;
+    fn_80128670((int)gSpuSoundSlotTable);
+    gSpuSoundSlotTable = 0;
     TRKReadBuffer_ui32();
     TRKConstructEvent();
     lbl_8055FF84 = 0;
@@ -619,7 +619,7 @@ void fn_802E5828(void) {
 /* Allocates the next voice/sample object and stores it in the sound-name slot
  * table; returns 1 on success, 0 if the table is full or allocation failed. */
 int Spu_CacheVoiceObject(void) {
-#define gSoundSlotTable lbl_8055FF9C
+#define gSoundSlotTable gSpuSoundSlotTable
 #define gSoundSlotCount lbl_8055FFA0
 #define Spu_allocVoiceObject fn_802E5AE8
     if (gSoundSlotCount < 0x100) {
@@ -655,8 +655,8 @@ void fn_802E589C(void) {
 #define TAG_SFX0 0x53465830
 extern unsigned char lbl_804FC558[]; /* sound-name queue: 0x20-byte NUL-terminated names */
 extern int lbl_8055FF78;             /* sound-name queue: names in use */
-extern int lbl_8055FFA0;             /* voice table lbl_8055FF9C: entries in use */
-extern int *lbl_8055FF9C;            /* voice objects allocated by fn_802E5AE8 */
+extern int lbl_8055FFA0;             /* voice table gSpuSoundSlotTable: entries in use */
+extern int *gSpuSoundSlotTable;            /* voice objects allocated by fn_802E5AE8 */
 extern void fn_8012BEF0(unsigned char *);
 extern void fn_8012C41C(void (*)(void), int, unsigned char *);
 extern int Spu_CacheVoiceObject(void);
@@ -748,7 +748,7 @@ void fn_802E5A54(void) {
     unsigned char *name;
 
     for (slotIndex = 0; slotIndex < lbl_8055FFA0; slotIndex++) {
-        SpuSampleReleaseRef((void *)lbl_8055FF9C[slotIndex]);
+        SpuSampleReleaseRef((void *)gSpuSoundSlotTable[slotIndex]);
     }
     lbl_8055FFA0 = 0;
     for (nameIndex = 0, name = lbl_804FC558; nameIndex < lbl_8055FF78; name += 0x20, nameIndex++) {
