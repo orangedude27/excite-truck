@@ -324,22 +324,25 @@ void fn_80016928(int carDefId, int value) {
 }
 #pragma push
 #pragma scheduling invalid_target
-void fn_80016970(int arg0, int arg1, int arg2, int arg3)
+/* Apply a driver/vehicle selection to fixed driver slot `driverIndex`: record the
+ * driver id, the vehicle resolved from `vehicleId`, and the override value, then
+ * reset the paired fixed-state entry's id sentinel to -1000. */
+void fn_80016970(int driverIndex, int driverId, int vehicleId, int overrideValue)
 {
-  struct E
+  struct DriverInfo
   {
     char pad[0x4];
     int id;
     char pad2[0x44];
-    int f4C;
-    int f50;
+    int vehicle;
+    int overrideValue;
     char rest[0x8];
   };
-  struct E *b = (0, (struct E *) lbl_803577F0);
-  b[arg0].id = arg1;
-  b[arg0].f4C = *((int *) fn_80016544(arg2));
-  b[arg0].f50 = arg3;
-  *((int *) ((lbl_80357960 + (arg0 * 0xA8)) + 4)) = -1000;
+  struct DriverInfo *drivers = (0, (struct DriverInfo *) lbl_803577F0);
+  drivers[driverIndex].id = driverId;
+  drivers[driverIndex].vehicle = *((int *) fn_80016544(vehicleId));
+  drivers[driverIndex].overrideValue = overrideValue;
+  *((int *) ((lbl_80357960 + (driverIndex * 0xA8)) + 4)) = -1000;
 }
 #pragma pop
 /* Copy a string into the name field (+0x08) of entry `entryIndex` in lbl_803577F0, truncating to 0x40 bytes. */
