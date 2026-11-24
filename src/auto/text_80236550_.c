@@ -14,7 +14,7 @@ void fn_802E30C8(const char *, ...);
 void fn_802365D8(void);
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void fn_80236550(void) {
+void CheckGTimeFloatPrecision(void) {
     if (lbl_8055F09C - lbl_8055F094 > 0x989680) {
         fn_802E30C8(lbl_803408D8);
         fn_802365D8();
@@ -83,7 +83,7 @@ void fn_8023660C(void) {
 }
 
 int fn_802ECC10(void);
-void fn_80236550(void);
+void CheckGTimeFloatPrecision(void);
 extern int lbl_8055F094, lbl_8055F098, lbl_8055F09C;
 /* Updates timer state while unpaused: clamps overflow, samples current time,
  * advances the base by elapsed time when timing is active, and stores the sample. */
@@ -91,7 +91,7 @@ void fn_80236674(void) {
     int currentTime;
 
     if (lbl_8055F0A0 == 0) {
-        fn_80236550();
+        CheckGTimeFloatPrecision();
         currentTime = KERNEL_GetTimeMs();
         if (fn_802ECC10() != 0) {
             lbl_8055F094 += currentTime - lbl_8055F09C;
