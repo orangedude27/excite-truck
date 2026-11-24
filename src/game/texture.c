@@ -1325,8 +1325,7 @@ void fn_802CBD30(void **destHead, void **srcHead, void *node) {
 
 void texUnlinkNode(void **, void *, void *);
 extern char texMsgUnlinkNodeNotFound[];
-/* Unlink a texture node from the list whose head pointer is *link, scanning
-   from the given node; report "can't find node!" if it isn't on that list. */
+/* Unlink node from the texture list headed at *link (nodes chained through their +0x10 link); panic with texMsgUnlinkNodeNotFound if the node is not on that list. */
 void texUnlinkNode(register void **link, void *node, void *scan) {
     int found = 0;
     while ((scan = *link) != 0) {
