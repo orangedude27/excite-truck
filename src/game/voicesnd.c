@@ -110,24 +110,24 @@ void *fn_8020A774(int index) {
     return lbl_804892D0 + index * 0x24;
 }
 
+/* Acquire a VoiceSound from the shared pool, creating it on first use, and bump the live count on success. */
 int VoiceSoundPool_Alloc(void) {
-    /* Lazily create/initialize the shared voice-sound pool object, then increment the active-use count on success. */
-    void *voicePool;
-    int initialized;
+    void *pool;
+    int element;
 
-    if (lbl_8055EE0C == 0) {
-        voicePool = (void *)fn_801284F8(0x20, lbl_8033C368);
-        if (voicePool != 0) {
-            voicePool = ((void *(*)(void *, void *, int, int))fn_8012A13C)(voicePool, lbl_8033C368, 0x200, 0x54);
+    if (sVoiceSoundLiveCount == 0) {
+        pool = (void *)NamedAlloc(0x20, STR_VOICESOUND_POOL);
+        if (pool != 0) {
+            pool = ((void *(*)(void *, void *, int, int))Pool_Init)(pool, STR_VOICESOUND_POOL, VOICESOUND_POOL_CAPACITY, VOICESOUND_OBJECT_SIZE);
         }
-        lbl_8055EE10 = voicePool;
+        sVoiceSoundPool = pool;
     }
 
-    initialized = fn_8012A2D8(lbl_8055EE10);
-    if (initialized != 0) {
-        lbl_8055EE0C += 1;
+    element = Pool_Alloc(sVoiceSoundPool);
+    if (element != 0) {
+        sVoiceSoundLiveCount += 1;
     }
-    return initialized;
+    return element;
 }
 
 #pragma push
