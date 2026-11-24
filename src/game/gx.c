@@ -605,7 +605,7 @@ void fn_802CF5A8(void) {
 #pragma push
 #pragma dont_inline on
 void fn_802CF5D0(void) {
-    /* No-op hook in the GX state-reset path (fn_802CFF10 / ResetGxState); nothing to undo. */
+    /* No-op hook in the GX state-reset path (HomeMenu_endFrame / ResetGxState); nothing to undo. */
 }
 #pragma pop
 
@@ -643,7 +643,7 @@ void fn_802CF600(void) {
     extern void fn_802CF830(void), fn_802CF10C(void), fn_802D9A50(void), fn_802CEC44(void);
     extern void fn_80127468(void), fn_8005954C(void), fn_801282EC(int), fn_801282F4(void);
     extern void fn_802D8D1C(void), drVertexFormatCacheInit(void), fn_802CF850(void), fn_802D0BD8(void);
-    extern void fn_802CFF10(void), fn_802DACD4(void), fn_802D9C18(void), fn_802DA2F4(void);
+    extern void HomeMenu_endFrame(void), fn_802DACD4(void), fn_802D9C18(void), fn_802DA2F4(void);
     extern void fn_802CFF5C(void *), fn_802CFFA4(unsigned short), fn_802D37E4(void), fn_802DD4FC(void), fn_802DB168(void);
     extern void *fn_8002F37C(void *, void (*)(void), void *, int, int);
     extern int GXInit(int, int), GXGetTexBufferSize(int, int, int, int, int);
@@ -690,7 +690,7 @@ void fn_802CF600(void) {
     fn_802D0BD8();
     fn_802E30C8(base + 0x2E0);
     fn_80127468();
-    fn_802CFF10();
+    HomeMenu_endFrame();
     fn_802E30C8(base + 0x2FC);
     fn_80127468();
     fn_802CF5A8();
@@ -1131,7 +1131,7 @@ extern void fn_802D0BD8(void);
 /* Reset the per-frame GX state: clear the draw-sync frame counter, perform the
    display copy / frame swap and viewport setup, then clear the dynamic-data ring
    index and the FIFO threshold-exceeded flag. */
-void fn_802CFF10(void) {
+void HomeMenu_endFrame(void) {
 #define sFrameCounter  lbl_8055FD44
 #define sDynDataIndex  lbl_8055FDAC
 #define sThresholdFlag lbl_8055FE39

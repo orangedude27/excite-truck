@@ -20,7 +20,7 @@ void HomeMenu_beginFrame(void);                     /* opens a frame: resets the
 void HomeMenu_setFade(s32 color, s32 on);        /* fade colour (aRGB) and whether to fade with it */
 void drawFifoTriangles(s32, s32, s32, s32);       /* indexed triangles straight into the GX FIFO */
 void HomeMenu_drawUIAndFlush(void);                     /* draws the home-button UI, flushes the FIFO and waits for the GPU */
-void fn_802CFF10(void);                     /* closes the frame: clears the FIFO state */
+void HomeMenu_endFrame(void);                     /* closes the frame: clears the FIFO state */
 void fn_80127464(void);
   extern s32 ConfigGetAspectRatio(void);
   extern char lbl_80558860[];
@@ -460,7 +460,7 @@ void fn_802ECC18(u8 mode) {
  * HomeMenu_beginFrame() opens the frame, HomeMenu_setFade() switches on the fade colour the
  * screen is covered with -- opaque black -- drawFifoTriangles() is asked for no
  * triangles at all (only its renderer setup runs), HomeMenu_drawUIAndFlush() draws the
- * home-button UI and flushes the FIFO to the GPU, and fn_802CFF10() closes the
+ * home-button UI and flushes the FIFO to the GPU, and HomeMenu_endFrame() closes the
  * frame again. */
 void HomeMenu_drawBlackFrame(void) {
 #define FADE_BLACK 0xFF000000 /* aRGB: opaque black */
@@ -469,7 +469,7 @@ void HomeMenu_drawBlackFrame(void) {
         HomeMenu_setFade(FADE_BLACK, 1);
         drawFifoTriangles(0, 0, 0, 0);
         HomeMenu_drawUIAndFlush();
-        fn_802CFF10();
+        HomeMenu_endFrame();
     }
 #undef FADE_BLACK
 }

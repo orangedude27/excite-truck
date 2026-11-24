@@ -84,12 +84,12 @@ void fn_802C2B18(void) {
     fn_802CF5FC();
 }
 
-void fn_802CFF10(void);
+void HomeMenu_endFrame(void);
 void fn_80127468(void);
 void fn_801279B8(void);
 void fn_802E4C18(int);
 void fn_802C2B48(void) {
-#define ResetGxState fn_802CFF10
+#define ResetGxState HomeMenu_endFrame
 #define ResumeWaitingThread fn_80127468
 #define TickFrameCounter fn_801279B8
 #define VmemHook fn_802E4C18
