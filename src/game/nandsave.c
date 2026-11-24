@@ -34,7 +34,7 @@ extern char lbl_8034E108[];
 extern void rmemcardWriteStep(void *);
 extern unsigned int fn_802E91BC(int *);
 extern int fn_802E91AC(int *);
-extern void fn_802E91D8(void *, const char *, int, int);
+extern void NandBeginWrite(void *, const char *, int, int);
 extern void fn_802E9160(void *);
 extern void fn_802E9118(void *);
 extern char lbl_80560028;
@@ -560,7 +560,7 @@ u32 fn_802E8D84(void) { return 1; }
 void fn_802E9010(void) {
 #define rmemcardSave    lbl_80507288
 #define bannerPath      lbl_8034E108
-#define beginWrite      fn_802E91D8
+#define beginWrite      NandBeginWrite
 #define writeIdle       fn_802E91BC
 #define writeDone       fn_802E91AC
 #define finishSave      fn_802E9118
@@ -660,7 +660,7 @@ extern char lbl_8034E108[];
 #define sWriteStartFmt  lbl_8034E130
 
 #pragma scheduling invalid_target
-void fn_802E91D8(void *ctx, const char *path, int buffer, int length) {
+void NandBeginWrite(void *ctx, const char *path, int buffer, int length) {
     unsigned char ch;
     const char *startPath;
     const char *src;
@@ -721,7 +721,7 @@ extern char lbl_8034E1F8[], lbl_8034E218[], lbl_80560034;
  *   0x000 state        - current step (values below)
  *   0x004 length       - byte count to write
  *   0x008 buffer       - source data
- *   0x00C filename     - NAND path (e.g. "banner.bin"), set by fn_802E91D8
+ *   0x00C filename     - NAND path (e.g. "banner.bin"), set by NandBeginWrite
  *   0x10C nand_info    - NANDInfo handle of the open file
  *   0x198 cb_ctx       - points back to this block; handed to the async calls
  *   0x250 async_done   - set to 1 by the completion callback fn_802E95CC
