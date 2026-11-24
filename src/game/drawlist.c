@@ -616,12 +616,11 @@ void fn_802C8DB8(void) {
 #undef drawIndexedTriangles
 }
 
-/* If beginMeshPass() reports active, sets the drawlist active flag (gDrawListActive),
- * switches render mode to 6, and returns 1; otherwise returns 0. */
+/* Begin a deferred draw-list pass when the mesh pass is available: mark lists active, enter render mode 6, and report success. */
 int beginDrawListPass(void) {
     if (beginMeshPass() != 0) {
         gDrawListActive = 1;
-        lbl_8055FC70 = 6;
+        sRenderMode = 6;
         return 1;
     }
     return 0;
