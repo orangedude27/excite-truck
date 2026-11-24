@@ -94,11 +94,11 @@ int fn_802DB378(int mode, int textureIndex) {
 }
 
 void fn_802DB394(void) {
-    /* Configure a simple 2-stage TEV setup: stages 0 and 1 modulate, stage 1 passes alpha through. */
-    GXSetTevOp(0, 3);
-    GXSetTevOp(1, 3);
-    GXSetTevAlphaOp(1, 0, 0, 0, 1, 0);
-    GXSetTevAlphaIn(1, 0, 7, 7, 7);
+    /* Configure a minimal two-stage TEV setup for CPU-light draws: both stages replace colour, stage 1 with APREV/ZERO alpha inputs. */
+    GXSetTevOp(GX_TEVSTAGE0, GX_REPLACE);
+    GXSetTevOp(GX_TEVSTAGE1, GX_REPLACE);
+    GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_ENABLE, GX_TEVPREV);
+    GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_APREV, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO);
 }
 
 #pragma push
