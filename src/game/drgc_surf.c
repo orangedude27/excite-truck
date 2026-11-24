@@ -1351,7 +1351,9 @@ done: ;
 void drVertexFormatCacheInit(void) {
     void *displayListBuffer;
 
-    /* Initialize the vertex-format display list buffer and reset its state. */
+    /* Reset the cache, then allocate the 0x4000-byte recording buffer.  Both
+     * the start and the next-free pointer begin at the buffer's base; the
+     * buffer is invalidated for the GPU and the cached format is cleared. */
     gVertexFormatCount = 0;
     fn_801282EC(0x20);
     displayListBuffer = fn_8012850C(0x4000, sVertexFormatDlBufTag);
