@@ -386,7 +386,7 @@ void fn_8022F8CC(OverlayQuad *quad) {
     extern void fn_8022F868(void *, void *);
     extern void fn_802C8B98(int, QuadMtx *);
     extern void fn_802C8DB8(QuadVtx *, int, u16 *, int);
-    extern void fn_802C8D74(void);
+    extern void DrawList_RestoreNormalMode(void);
     extern unsigned short lbl_802F9FB0[6];
     QuadVtx __declspec(align(16)) vtx[4];
     QuadMtx world, local;
@@ -433,7 +433,7 @@ void fn_8022F8CC(OverlayQuad *quad) {
     fn_8022F868(dst, src); }
     fn_802C8B98(quad->texIndex, &world);
     fn_802C8DB8(vtx, 4, idx, 6);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma pop
 extern float lbl_80563608;

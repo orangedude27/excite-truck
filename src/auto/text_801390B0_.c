@@ -28,7 +28,7 @@ extern "C" void fn_801390B0(void *arg0, float *arg1, float *arg2, int arg3, floa
     float pos[2];
     char *obj;
     int color;
-    float f4, f3, f1, f2;
+    float f1, f2, f3, f4;
     char *tbl = lbl_8032BFAC;
     if (arg3 != 0) tbl = lbl_8032BFA0;
     obj = ((Obj390 *)arg0)->v2(tbl);
@@ -40,7 +40,7 @@ extern "C" void fn_801390B0(void *arg0, float *arg1, float *arg2, int arg3, floa
     d[1] = -(arg2[0] * f4);
     if (obj != 0) {
         color = ((int)(lbl_805613EC * farg1) << 24) | 0xFFFFFF;
-        fn_80148134(&pos[1], &pos[0], 0, d[2] + (arg1[0] - d[0]), d[3] + (arg1[1] - (float)d[1]));
+        fn_80148134(&pos[1], &pos[0], 0, d[2] + (arg1[0] - d[0]), d[3] + (arg1[1] - d[1]));
         fn_802C8E00(color, 0, pos[1], pos[0], lbl_805613E4, *(float *)(obj + 0x18), *(float *)(obj + 0x1C));
         fn_80148134(&pos[1], &pos[0], 0, d[2] + (arg1[0] + d[0]), d[3] + (arg1[1] + d[1]));
         fn_802C8E00(color, 0, pos[1], pos[0], lbl_805613E4, *(float *)(obj + 0x20), *(float *)(obj + 0x1C));
@@ -87,7 +87,7 @@ extern int fn_801B8570(int);
 extern void fn_802C8BD0(int);
 extern int fn_802C8DBC(int);
 extern void fn_802C8E48(void);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void fn_801390B0(void *, float *, float *, int, float, float);
 extern double __fabs(double);
 #pragma push
@@ -208,7 +208,7 @@ void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
             }
             fn_802C8E48();
         }
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
     }
 }
 #pragma pop

@@ -17,7 +17,7 @@ extern void *fn_8022EDC4(void);
 extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8B98(s32, s32, u16, u16, u16, u16, u16, u16);
 extern void fn_802C8DB8(void *, s32, u16 *, s32);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern u16 lbl_802FA030[6];
 extern u16 lbl_80563718;
 extern u16 lbl_8056371A;
@@ -169,7 +169,7 @@ void fn_80238BF4(void *arg0, u8 *arg1) {
     } else {
         fn_802C8DB8(&frame.outputs[0], 3, &frame.indices3[0], 3);
     }
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 void fn_80238FCC(u32 arg0, u32 arg1)
 {

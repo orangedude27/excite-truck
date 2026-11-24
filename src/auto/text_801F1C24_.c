@@ -918,7 +918,7 @@ void fn_801F2E88(void *arg0, void *arg1) {
     extern void fn_801BFD34(void *,void *,void *);
     extern void fn_802C8BD0(int);
     extern void fn_802C8DB8(void *,int,void *,int);
-    extern void fn_802C8D74(void);
+    extern void DrawList_RestoreNormalMode(void);
     unsigned int vertices[4][6];
     float matrix[12];
     unsigned int base[6];
@@ -965,7 +965,7 @@ void fn_801F2E88(void *arg0, void *arg1) {
         fn_801BFD34(vertices[3],GXInitLightAttnA_80144B44(t4,lbl_80562F64,lbl_80562F48,lbl_80562F40),matrix);
         fn_802C8BD0(*(int *)((char *)arg0+4));
         fn_802C8DB8(vertices,4,indices,6);
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
         p=*(void **)((char *)p+12);
     }
 }

@@ -12,7 +12,7 @@ extern float lbl_80558DC4[];
 extern float lbl_80562CF4, lbl_80562CF8, lbl_80562CFC, lbl_80562D00, lbl_80562D04, lbl_80562D28;
 extern int fn_802C8DBC(int);
 extern void fn_802C8BD0(int);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C8E00(int, int, float, float, float, float, float);
 extern void fn_802C8E48(void);
 
@@ -141,7 +141,7 @@ void fn_801E370C(float *arg0, int arg1, int arg2) {
         fn_802C8E00(arg1, 1, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
         fn_802C8E48();
     }
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma scheduling on
 #pragma pop
@@ -185,7 +185,7 @@ void fn_801E3CB4(void *arg0, void *arg1, int arg2, float farg0) {
     extern unsigned short lbl_802F99E8[];
     extern void fn_802C8BD0(int);
     extern void fn_802C8DB8(void *, int, void *, int);
-    extern void fn_802C8D74(void);
+    extern void DrawList_RestoreNormalMode(void);
     extern void fn_802C9904(void);
     float vec[9];
     TrailPt pts[5];
@@ -257,7 +257,7 @@ void fn_801E3CB4(void *arg0, void *arg1, int arg2, float farg0) {
     }
     fn_802C8BD0(lbl_8055EA6C);
     fn_802C8DB8(pts, 5, frame, 6);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
     fn_802C9904();
 }
 #pragma scheduling reset
@@ -352,7 +352,7 @@ void fn_801E41D8(void *from, void *to, int color, float width) {
     fn_801E4040(from, to, color, color, width);
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_801E41E0(void *arg0, int arg1, float farg0) {
     struct LocalData {
         unsigned short frame[3];
@@ -365,15 +365,15 @@ void fn_801E41E0(void *arg0, int arg1, float farg0) {
     float *matrix;
     f64 seedXY = *(volatile f64 *)&local.seed.x;
     s32 seedZ = *(volatile s32 *)&local.seed.z;
-    register float zero = lbl_80562CF4;
     float x, y, z;
     float sidePositive;
     float negScale;
     float depthNegative;
     float sideNegative;
+    float zero = lbl_80562CF4;
 
-    local.seed.u = zero;
     local.seed.v = zero;
+    local.seed.u = zero;
     local.seed.id = arg1;
     *(volatile f64 *)&local.points[0].x = seedXY;
     *(volatile s32 *)&local.points[0].z = seedZ;
@@ -403,76 +403,67 @@ void fn_801E41E0(void *arg0, int arg1, float farg0) {
     y = base[1];
     z = base[2];
 
-    local.points[0].x = x + matrix[3] * farg0;
-    local.points[0].y = y + matrix[4] * farg0;
-    local.points[0].z = z + matrix[5] * farg0;
+    ((TrailPt *)(void *)local.points)[0].x = x + matrix[3] * farg0;
+    ((TrailPt *)(void *)local.points)[0].y = y + matrix[4] * farg0;
+    ((TrailPt *)(void *)local.points)[0].z = z + matrix[5] * farg0;
 
-    local.points[1].x = x + matrix[3] * depthNegative;
-    local.points[1].y = y + matrix[4] * depthNegative;
-    local.points[1].z = z + matrix[5] * depthNegative;
-    local.points[1].x += matrix[0] * sidePositive;
-    local.points[1].y += matrix[1] * sidePositive;
-    local.points[1].z += matrix[2] * sidePositive;
+    ((TrailPt *)(void *)local.points)[1].x = x + matrix[3] * depthNegative;
+    ((TrailPt *)(void *)local.points)[1].y = y + matrix[4] * depthNegative;
+    ((TrailPt *)(void *)local.points)[1].z = z + matrix[5] * depthNegative;
+    ((TrailPt *)(void *)local.points)[1].x += matrix[0] * sidePositive;
+    ((TrailPt *)(void *)local.points)[1].y += matrix[1] * sidePositive;
+    ((TrailPt *)(void *)local.points)[1].z += matrix[2] * sidePositive;
 
-    local.points[2].x = x + matrix[3] * depthNegative;
-    local.points[2].y = y + matrix[4] * depthNegative;
-    local.points[2].z = z + matrix[5] * depthNegative;
-    local.points[2].x += matrix[0] * sideNegative;
-    local.points[2].y += matrix[1] * sideNegative;
-    local.points[2].z += matrix[2] * sideNegative;
+    ((TrailPt *)(void *)local.points)[2].x = x + matrix[3] * depthNegative;
+    ((TrailPt *)(void *)local.points)[2].y = y + matrix[4] * depthNegative;
+    ((TrailPt *)(void *)local.points)[2].z = z + matrix[5] * depthNegative;
+    ((TrailPt *)(void *)local.points)[2].x += matrix[0] * sideNegative;
+    ((TrailPt *)(void *)local.points)[2].y += matrix[1] * sideNegative;
+    ((TrailPt *)(void *)local.points)[2].z += matrix[2] * sideNegative;
 
     fn_802C8BD0(lbl_8055EA6C);
     fn_802C8DB8((void *)local.points, 3, (void *)local.frame, 3);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
     fn_802C9904();
 }
 void fn_801E43BC(void *arg0, float scale, float alpha) {
-    typedef void (*LineCall)(float *, float *, int, float);
+    typedef void (*LineCall)(void *, void *, int, float);
     float p[3];
     float *v = (float *)arg0;
-    float x, y, z, vx, vy, vz;
+    float x, y, z, bx, by, bz;
 
-    vx = v[0];
-    vz = v[2];
-    x = vx * scale;
-    vy = v[1];
-    y = vy * scale;
-    vx = v[9];
-    vy = v[10];
-    z = vz * scale;
-    vz = v[11];
-    p[0] = vx + x;
-    p[1] = vy + y;
-    p[2] = vz + z;
-    ((LineCall)fn_801E41D8)((float *)((char *)v + 0x24), p, 0xFFFF0000, alpha);
+    x = v[0] * scale;
+    bx = v[9];
+    y = v[1] * scale;
+    by = v[10];
+    z = v[2] * scale;
+    bz = v[11];
+    p[0] = bx + x;
+    p[1] = by + y;
+    p[2] = bz + z;
+    ((LineCall)fn_801E41D8)((char *)arg0 + 0x24, p, 0xFFFF0000, alpha);
 
-    vx = v[3];
-    vz = v[5];
-    x = vx * scale;
-    vy = v[4];
-    y = vy * scale;
-    vx = v[9];
-    vy = v[10];
-    z = vz * scale;
-    vz = v[11];
-    p[0] = vx + x;
-    p[1] = vy + y;
-    p[2] = vz + z;
-    ((LineCall)fn_801E41D8)((float *)((char *)v + 0x24), p, 0xFF00FF00, alpha);
+    x = v[3] * scale;
+    bx = v[9];
+    y = v[4] * scale;
+    by = v[10];
+    z = v[5] * scale;
+    bz = v[11];
+    p[0] = bx + x;
+    p[1] = by + y;
+    p[2] = bz + z;
+    ((LineCall)fn_801E41D8)((char *)arg0 + 0x24, p, 0xFF00FF00, alpha);
 
-    vx = v[6];
-    vz = v[8];
-    x = vx * scale;
-    vy = v[7];
-    y = vy * scale;
-    vx = v[9];
-    vy = v[10];
-    z = vz * scale;
-    vz = v[11];
-    p[0] = vx + x;
-    p[1] = vy + y;
-    p[2] = vz + z;
-    ((LineCall)fn_801E41D8)((float *)((char *)v + 0x24), p, 0xFF0000FF, alpha);
+    x = v[6] * scale;
+    bx = v[9];
+    y = v[7] * scale;
+    by = v[10];
+    z = v[8] * scale;
+    bz = v[11];
+    p[0] = bx + x;
+    p[1] = by + y;
+    p[2] = bz + z;
+    ((LineCall)fn_801E41D8)((char *)arg0 + 0x24, p, 0xFF0000FF, alpha);
 }
 #pragma scheduling on
 #pragma pop

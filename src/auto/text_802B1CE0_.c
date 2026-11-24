@@ -765,7 +765,7 @@ extern float fn_801E7E18(void);
 extern void fn_801F1C24(float *);
 extern void fn_802C28C0(void);
 extern void fn_802C8BD0(void);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void fn_802DC71C(int, int);
 extern void fn_802DC8B4(void);
 extern void fn_802DCAE4(int, float *, void *, void *, float);
@@ -924,7 +924,7 @@ outer_body:
             head = *(char **)(head + 0xC);
         } while (head != 0);
         fn_802DC8B4();
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
     }
     arrayOffset += 4;
     index++;

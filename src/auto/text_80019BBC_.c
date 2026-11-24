@@ -12,7 +12,7 @@ extern void fn_802CAC54(int);
 extern void fn_802CB228(int);
 extern void fn_802C8BD0(int);
 extern void fn_802C8DB8(void *, int, unsigned short *, int);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80560444, lbl_80560448, lbl_8056044C;
 extern float fn_80235EF0(void *, int);
@@ -545,7 +545,7 @@ subtractCheck:
     else
         fn_802C8BD0(*(s32 *)obj);
     fn_802C8DB8((u8 *)&frame + 0x280, 0x29, (unsigned short *)((u8 *)&frame + 0x118), 0xB4);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
     record = fn_801EA9A0(s.resource);
     index = 0;
     do {
@@ -906,7 +906,7 @@ extern int fn_802C2C00(int);
 extern void DrawList_loadMatrix(float *, float, float);
 extern void fn_802C8BD0(int);
 extern int fn_8001B754(float);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void DrawList_restoreViewport(int *, int);
 extern void DrawList_restoreProjection(float *, int);
 extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440, lbl_80560458;
@@ -939,10 +939,10 @@ void fn_8001B7BC(void *obj) {
     frame.modelMtx[6] = lbl_80560418; frame.modelMtx[7] = lbl_80560440; frame.modelMtx[8] = lbl_80560418;
     DrawList_loadMatrix(frame.modelMtx, lbl_80560424, lbl_80560418);
     fn_802C8BD0(*(int *)((char *)obj + 0xC));
-    fn_8001B754(*(float *)((char *)obj + 0x3C)); fn_802C8D74();
+    fn_8001B754(*(float *)((char *)obj + 0x3C)); DrawList_RestoreNormalMode();
     ((void (*)(int))fn_8001B7B8)(0);
     fn_802C8BD0(*(int *)((char *)obj + 8));
-    fn_8001B754(*(float *)((char *)obj + 0x3C)); fn_802C8D74();
+    fn_8001B754(*(float *)((char *)obj + 0x3C)); DrawList_RestoreNormalMode();
     ((void (*)(int))fn_8001B7B8)(1);
     fn_802C2C00(savedState); fn_802C9294(-2, 0);
     DrawList_restoreViewport(frame.viewport, -1); DrawList_restoreProjection(frame.projParams, -1);

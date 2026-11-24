@@ -1045,7 +1045,7 @@ extern void *fn_801E8718(void);
 extern s32 fn_801E8758(s32);
 extern void fn_8028C11C(void *, s32 *, s32 *);
 extern void fn_802C8BD0(s32);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern f32 fn_802C9A4C(f32);
 #pragma push
 #pragma processor 750
@@ -1081,7 +1081,7 @@ void fn_8028BD60(s32 arg0) {
             fn_8028C11C((void *)arg0, (s32 *)&copy, (s32 *)(arg0 + index * 0x30 + 0x1C));
         else
             fn_8028C11C((void *)arg0, (s32 *)&copy, (s32 *)&copy);
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
         fn_802C9A4C(saved);
     }
 
@@ -1413,7 +1413,7 @@ void fn_8028CA70(s32 arg0) {
     extern f64 cos(f32);
     extern f32 fn_801E7E18(void);
     extern void fn_802C8BD0(s32);
-    extern void fn_802C8D74(void);
+    extern void DrawList_RestoreNormalMode(void);
     extern s32 fn_802C8DBC(s32);
     extern void fn_802C8E00();
     extern void fn_802C8E48(void);
@@ -1526,7 +1526,7 @@ void fn_8028CA70(s32 arg0) {
             if (var_r29 < *(s32 *)(arg0 + 4)) goto body;
             fn_802C8E48();
         }
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
         fn_802C9A4C(saved);
     }
 }

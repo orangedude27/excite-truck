@@ -399,7 +399,7 @@ void fn_80291E64(void *arg0) {
         if (*(unsigned char *)(ent + 0x14) != 0 && fn_802C8FF4(ent, lbl_80564484) != 0) {
             fn_802C8C04(*(int *)(ent + 0xC));
             fn_80291C7C(ent, 0);
-            fn_802C8D74();
+            DrawList_RestoreNormalMode();
         }
     }
 }
@@ -411,7 +411,7 @@ void fn_802920D0(void) {
     int *state = (int *)&lbl_804B4010;
     fn_802C8C04(state[3]);
     fn_80291C7C(state, 1);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 
 extern void *fn_801E1F44(void);

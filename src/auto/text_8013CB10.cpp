@@ -2128,7 +2128,7 @@ extern "C" void fn_802C8BD0(s32);
 extern "C" s32 fn_802C8DBC(s32);
 extern "C" void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern "C" void fn_802C8E48(void);
-extern "C" void fn_802C8D74(void);
+extern "C" void DrawList_RestoreNormalMode(void);
 extern "C" f32 fn_8013EFB0(f32);
 extern "C" f32 fn_8013EFBC(f32);
 extern "C" u8 lbl_8055E1BC;
@@ -2176,7 +2176,7 @@ extern "C" void fn_8013FDB0(void *arg0, void *arg1, void *arg2) {
         DRAW(-1, 1, x + w - lbl_8056157C, y, lbl_80561580, lbl_80561578);
         DRAW(-1, 1, x + w - lbl_8056157C, y - h, lbl_80561580, lbl_805614AC);
         fn_802C8E48();
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
         return;
     }
     {

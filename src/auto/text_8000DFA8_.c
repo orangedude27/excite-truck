@@ -69,7 +69,7 @@ extern void fn_80010A50(f32, f32, f32, f32, s32, s32);
 extern void fn_80010B74(void);
 extern void fn_80010B7C(void);
 extern void fn_802C8BD0(s32);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void fn_80234AEC(void);
 extern void *fn_80010BEC(void *);
 
@@ -1110,10 +1110,10 @@ void fn_80010B74(void) {
     fn_802C8BD0(-1);
 }
 
-/* Tail-call wrapper for fn_802C8D74: restores the
+/* Tail-call wrapper for DrawList_RestoreNormalMode: restores the
  * normal GX render mode after a batched quad flush (fn_80010BEC). */
 void fn_80010B7C(void) {
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 
 /* Buffer a colored quad entry (left, top, width, height, color) if the queue has space. */
@@ -1717,7 +1717,7 @@ void fn_80011630(s32 arg0, s32 arg1, s32 arg2,
             var_r31++;
         } while (var_r31 < arg1);
         fn_801E4FF4();
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
     }
 }
 #pragma scheduling invalid_target

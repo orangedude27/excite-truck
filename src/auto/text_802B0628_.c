@@ -20,7 +20,7 @@ extern void fn_802CADD0(int, int);
 extern int __AXGetStackHead_802BC30C(int);
 extern void fn_802C28C0(void);
 extern void fn_802C8BD0();
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void fn_802DBF00(void);
 extern void fn_802DBF30(void);
 extern void fn_802DC078(int, int, int, int, int, int);
@@ -725,7 +725,7 @@ void fn_802B14B4(void *arg0) {
             }
         }
         fn_802DBF30();
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
         fn_802C2C00(savedState);
         savedState = fn_802B1BE4((char *)arg0 + 0x318);
         fn_802BB0FC(fn_802B1B28((int *)((char *)arg0 + 0x318), 0), savedState);
@@ -742,7 +742,7 @@ extern float lbl_804BE190[];
 extern unsigned short lbl_802FAAB0[];
 extern void fn_802C28C0(void);
 extern void fn_802C8BD0();
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void fn_802DC3C0(int);
 extern void fn_802DC440(void);
 extern void fn_802DC464();
@@ -796,7 +796,7 @@ void fn_802B1758(void *arg0) {
             v.i++;
         }
         fn_802DC440();
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
     }
 
     if (*(unsigned char *)arg0 != 0) {
@@ -865,7 +865,7 @@ void fn_802B1758(void *arg0) {
             }
             fn_802DC464(lbl_804BE190, 8, values, 0xE);
             fn_802DC440();
-            fn_802C8D74();
+            DrawList_RestoreNormalMode();
         }
     }
     *(int *)((char *)arg0 + 0x328) = 0;

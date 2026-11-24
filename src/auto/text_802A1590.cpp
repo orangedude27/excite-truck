@@ -17,7 +17,7 @@ static inline void MtxMultVecLocal(const unsigned char *m, const f32 *src, f32 *
 }
 extern "C" f32 fn_802C9A4C(f32);
 extern "C" void fn_802C8BD0(void*);
-extern "C" void fn_802C8D74(void);
+extern "C" void DrawList_RestoreNormalMode(void);
 extern "C" int fn_802CE860(void*);
 extern "C" void fn_802CE868(void);
 extern "C" void fn_802CE86C(unsigned int, int, f32, f32, f32, f32);
@@ -1908,7 +1908,7 @@ extern "C" s32 fn_802A47A8(void *arg0) {
             }
             fn_802CE868();
         }
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
         fn_802C9A4C(savedState);
     }
 }

@@ -1126,7 +1126,7 @@ void fn_802E12DC(void) {
 }
 extern void GXSetZMode(GXBool, GXCompare, GXBool);
 extern void fn_802C8C04(s32);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C8DB8(void *, s32, u16 *, s32, u16, u16, u16, u16);
 extern void fn_802D007C(f32);
 extern void fn_802D3360(void);
@@ -1220,7 +1220,7 @@ void fn_802E13D8(f32 p0, f32 p1, f32 p2, f32 p3, void *arg0) {
             sp20[5] = *indexPtr++;
         }
         fn_802C8DB8(sp30, 4, sp20, 6, sp20[4], sp20[3], sp20[2], sp20[1]);
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
         temp_r5_3 = *(u32 **)((u8 *)temp_r31 + 4);
         temp_f1 = (f32)temp_r5_3[0];
         temp_f2 = (f32)temp_r5_3[1];

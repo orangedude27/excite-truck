@@ -152,7 +152,7 @@ void fn_802A0B50(void) {
 extern float lbl_805646D0, lbl_805646D4, lbl_805646D8, lbl_805646DC;
 extern double lbl_805646E0;
 extern void fn_802C8BD0(int);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C8DB8(void *, int, short *, int);
 typedef struct {
     float f0;
@@ -249,6 +249,6 @@ void fn_802A0B54(void) {
         outer++;
         offset += 0x54;
     } while (outer < 0x40);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma pop

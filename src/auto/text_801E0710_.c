@@ -606,7 +606,7 @@ extern void fn_801E1384(s32, s32);
 extern s32 fn_801E1510(s32 *, s32);
 extern s32 fn_801E137C(void *);
 extern void fn_802C8BD0(void *);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 #pragma scheduling invalid_target
 /* Redraw every boost area into the two boost draw lists, tinted with the
  * colours the current player's slot holds (fn_801E1710 works out their RGBA
@@ -624,12 +624,12 @@ void fn_801E12A4(void) {
         for (i = 0; i < fn_801E137C(&man->areas); i++) {
             fn_801E1384(fn_801E1510((s32 *)&man->areas, i), colors->lineColor);
         }
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
         fn_802C8BD0(man->arrowList);
         for (i = 0; i < fn_801E137C(&man->areas); i++) {
             fn_801E1384(fn_801E1510((s32 *)&man->areas, i), colors->arrowColor);
         }
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
     }
 }
 #pragma scheduling on

@@ -13,7 +13,7 @@ extern double atan(double), fn_8002EF30(float);
 extern void fn_802BDD8C(float);
 extern void fn_802BFE48(void *, void *, float), fn_802C0054(void *, const void *), fn_802C00A0(void);
 extern void fn_80144DAC(void *, void *), fn_80144DC8(void *);
-extern void fn_802C10C8(void), DrawModelInstance(int), DrawList_loadMatrix(void *), DrawList_saveViewport(void *, int, int, int, int), DrawList_restoreViewport(void *, int), fn_802C88BC(int), DrawList_copyCurrentMatrix(void *), fn_802C8B98(int, float *), fn_802C8D74(void), fn_802C8DB8(void *, int, unsigned short *, int), fn_802C9294(int, int), DrawList_saveProjection(void *, float, float, float), DrawList_restoreProjection(void *, int), fn_802CB274(int);
+extern void fn_802C10C8(void), DrawModelInstance(int), DrawList_loadMatrix(void *), DrawList_saveViewport(void *, int, int, int, int), DrawList_restoreViewport(void *, int), fn_802C88BC(int), DrawList_copyCurrentMatrix(void *), fn_802C8B98(int, float *), DrawList_RestoreNormalMode(void), fn_802C8DB8(void *, int, unsigned short *, int), fn_802C9294(int, int), DrawList_saveProjection(void *, float, float, float), DrawList_restoreProjection(void *, int), fn_802CB274(int);
 extern float lbl_80564DAC, lbl_80564DB0, lbl_80564DB4, lbl_80564DB8, lbl_80564DBC, lbl_80564DC0, lbl_80564DC4, lbl_80564DC8;
 extern void fn_80128668(void *);
 extern int fn_802BF6AC(void);
@@ -813,7 +813,7 @@ extern "C" void fn_802BFB70(void *arg0, float *worldMtx, float angle) {
             fn_80144DC8(faceMtx); fn_802C0054(faceMtx, face);
             fn_80144DAC(faceMtx + 9, viewMtx + 9);
             fn_802C8B98(*target, faceMtx);
-            fn_802C8DB8(&faceTable->quad[0], 4, faceTable->indices, 6); fn_802C8D74();
+            fn_802C8DB8(&faceTable->quad[0], 4, faceTable->indices, 6); DrawList_RestoreNormalMode();
         }
         fn_802BFE48(faceTable, viewMtx, kOne); DrawList_restoreProjection(savedViewSun, -1);
     }
@@ -841,7 +841,7 @@ extern void fn_80015A20(void *, float *);
 extern void fn_80015B20(float *, void *, float *);
 extern void fn_802C8B98(int, float *);
 extern void fn_802C8DB8(void *, int, unsigned short *, int);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 #pragma scheduling invalid_target
 void fn_802BFE48(void *arg0, void *arg1, float arg2) {
     if (*(int *)((char *)arg0 + 0x18) != -2) {
@@ -874,7 +874,7 @@ void fn_802BFE48(void *arg0, void *arg1, float arg2) {
         fn_80015B20(mat, rot, mat);
         fn_802C8B98(*(int *)((char *)arg0 + 0x18), mat);
         fn_802C8DB8(v, 4, idx.a, 6);
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
     }
 }
 void fn_802C0054(void *dst, const void *src) {
@@ -1234,7 +1234,7 @@ extern void fn_802C03F0(void *arg0) {
     CpuLight_BeginIndirectPass(vr, *(int *)((char *)arg0 + 0x2C54), *(int *)((char *)arg0 + 0x2C50), (int)r25, lbl_8055CF74, lbl_80564D80 / (lbl_80564E20 * lbl_80564D78));
     fn_802DD27C(verts, 0x400, (char *)arg0 + 4, 0x1626);
     CpuLight_EndIndirectPass();
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
     fn_802DBECC();
     DrawList_copyCurrentMatrix(&s[72]);
     ((void (*)(float *, float *, float *, float *))fn_802C98DC)(&s[0], &s[1], &s[0], &s[0]);
@@ -1287,7 +1287,7 @@ extern void fn_802C03F0(void *arg0) {
     }
     fn_802C8BD0(-1);
     fn_802C8DB8(&s[96], 4, idx, 6);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 
 #pragma pop

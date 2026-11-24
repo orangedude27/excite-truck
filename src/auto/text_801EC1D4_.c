@@ -899,7 +899,7 @@ extern void fn_802C88BC(int);
 extern int fn_801E7E2C(void);
 extern void fn_802C8B98(void *, void *, void *, void *, void *);
 extern void fn_802C8DB8(void *, int, void *, int);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern unsigned short lbl_802F9AD0[];
 extern unsigned char lbl_8055AFC8;
 extern float lbl_8055EBBC, lbl_80562E8C, lbl_80562E9C, lbl_80562EA0;
@@ -939,7 +939,7 @@ void fn_801ED718(void *arg0) {
         m[9] += t[0]; m[10] += t[1]; m[11] += t[2];
         fn_802C8B98(m, 0, 0, 0, 0);
         fn_802C8DB8(dv, 4, idx, 6);
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
     }
     if (lbl_8055AFC8 == 0) {
         fn_802C70AC(*(int *)(o + 0x178), o + 4, 0, 5);

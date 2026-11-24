@@ -564,7 +564,7 @@ extern void fn_801293C8(void *);
 extern void fn_801293E8(void *);
 extern void fn_802D0610(int);
 extern void fn_802C8B70(int);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern int fn_802DB2A8(int);
 extern void fn_802DB2B0(int);
 extern void fn_802DB2A0(void);
@@ -696,7 +696,7 @@ void fn_802CDB5C(int arg0) {
                 fn_802C8B70(recordId);
                 cursor = fn_802DB2A8(itemCount2);
                 if (cursor == 0) {
-                    fn_802C8D74();
+                    DrawList_RestoreNormalMode();
                     started = 0;
                     break;
                 }
@@ -717,7 +717,7 @@ void fn_802CDB5C(int arg0) {
         }
         if (started != 0) {
             fn_802DB2B0(callbackCount);
-            fn_802C8D74();
+            DrawList_RestoreNormalMode();
         }
     }
     fn_802DB2A0();

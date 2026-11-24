@@ -14,7 +14,7 @@ extern void fn_802C8BD0(int);
 extern int fn_801E5370(int, int, float);
 extern void fn_8028D7C0(int);
 extern void fn_801E58FC(void);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C967C(void);
 extern float lbl_80558DC4[];
 extern float fn_801E7E24(void);
@@ -102,7 +102,7 @@ void fn_8028CFB0(void) {
                     fn_8028D7C0(i);
                     fn_801E58FC();
                 }
-                fn_802C8D74();
+                DrawList_RestoreNormalMode();
             }
             entry = (int *)((char *)entry + 0x1C);
         }

@@ -8,7 +8,7 @@ extern int fn_802344B0(void);
 extern int fn_802346C8(void);
 extern int fn_802344C4(int);
 extern int fn_802C8BD0(int);
-extern int fn_802C8D74(void);
+extern int DrawList_RestoreNormalMode(void);
 extern int fn_802C92DC(int, int, int, int, int);
 extern int lbl_8055F0D4;   /* uiFont: UI font fn_8023889C loaded, 0 until then */
 extern float lbl_805636F0; /* uiTextScale: 0.4f, the scale overlay text is drawn at */
@@ -173,6 +173,6 @@ void fn_80238B44(int x0, int y0, int x1, int y1, int screen) {
     halfHeight = (int)lbl_8055CFF4 / 2;
     halfWidth = (int)lbl_8055CFF0 / 2;
     fn_802C92DC(x0 - halfWidth, halfHeight - y0, x1 - halfWidth, halfHeight - y1, screen);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma use_lmw_stmw on

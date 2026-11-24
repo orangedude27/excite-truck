@@ -1915,7 +1915,7 @@ void fn_802569DC(void *arg0, int arg1, float scale) {
     extern void fn_802ABE50(void);
     extern void fn_802C8BD0(int);
     extern void fn_802C8DB8(void *, int, void *, int);
-    extern void fn_802C8D74(void);
+    extern void DrawList_RestoreNormalMode(void);
     extern double cos(double), sin(double);
     extern float lbl_80563A04, lbl_80563A10, lbl_80563A8C, lbl_80563A90, lbl_80563A94, lbl_80563A98, lbl_80563A9C;
     struct Matrix original, adjusted;
@@ -1995,7 +1995,7 @@ void fn_802569DC(void *arg0, int arg1, float scale) {
     }
     fn_802C8BD0(*(int *)((char *)arg0 + 0xe8));
     fn_802C8DB8(vertices, 301, indices, 1350);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma pop
 

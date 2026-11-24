@@ -61,7 +61,7 @@ struct DrawListWrapper {
 /* Which GX render state the draw lists are drawing in.  Only 0 is read back
  * (fn_802C90E0 asks whether the module is shut down); the other values record
  * the state the function that set them left GX in: 1 the game's normal one
- * (fn_802C8D74 puts it back), 2 the one texSelectSlot/fn_801E4FF4 set up,
+ * (DrawList_RestoreNormalMode puts it back), 2 the one texSelectSlot/fn_801E4FF4 set up,
  * 3 DrawList_BeginProjection's with the world matrix saved, 4 the alpha-only overlay pass
  * fn_802C9C8C begins, 6 the pass fn_802C8DBC begins. */
 #define sRenderMode  lbl_8055FC70
@@ -599,7 +599,7 @@ void fn_802C8C04(int texSlot) {
 #pragma dont_inline on
 /* Return the draw lists to the game's normal GX state: if a matrix was saved
  * before an overlay pass, reload it, then clear the saved-matrix flag. */
-void fn_802C8D74(void) {
+void DrawList_RestoreNormalMode(void) {
     sRenderMode = RENDER_MODE_NORMAL;
     if ((unsigned char)sDrawListMatrixSaved != 0) {
         DrawList_loadMatrix(sSavedDrawListMatrix);
@@ -742,7 +742,7 @@ void fn_802C9294(int textureIndex, int mode) {
 }
 #pragma scheduling on
 extern void fn_802C8C04(int);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern int lbl_8055FC70;
 extern int selectTexture(void);
 extern char lbl_8055FC74;
@@ -759,10 +759,10 @@ void fn_802C92D0(void) {
     fn_802C8C04(-1);
 }
 
-/* Tail-call wrapper for fn_802C8D74: restores the
+/* Tail-call wrapper for DrawList_RestoreNormalMode: restores the
  * normal GX render mode and reapplies the saved matrix state if pending. */
 void fn_802C92D8(void) {
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 
 /* Draws an axis-aligned quad outline/strip on the given screen if fn_801E4F20(4) succeeds. */
@@ -777,10 +777,10 @@ void fn_802C92D8(void) {
 }
 
 /* Record render mode 2 (the state texSelectSlot/fn_801E4FF4 leave GX in), then hand
- * off to fn_802C8D74 to restore the normal state and drop any pending overlay. */
+ * off to DrawList_RestoreNormalMode to restore the normal state and drop any pending overlay. */
 void fn_802C9118(void) {
     sRenderMode = 2;
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 
 #pragma processor 750

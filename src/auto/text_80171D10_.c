@@ -324,7 +324,7 @@ void fn_801720FC(float *__restrict arg0, int arg1, float arg2) {
     extern unsigned short lbl_802F9520[];
     extern void fn_802C8BD0(int);
     extern void fn_802C8DB8(void *, int, void *, int);
-    extern void fn_802C8D74(void);
+    extern void DrawList_RestoreNormalMode(void);
     struct {
         unsigned short s[6];
         float v2[3];
@@ -407,7 +407,7 @@ void fn_801720FC(float *__restrict arg0, int arg1, float arg2) {
     L.s[5] = *src++;
     fn_802C8BD0(*(int *)&lbl_8055E3A8);
     fn_802C8DB8(L.e, 5, L.s, 6);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
     t = L.e[0].w; *(volatile unsigned int *)&L.e[0].w = t & 0x3FFFFFFF;
     t = L.e[1].w; *(volatile unsigned int *)&L.e[1].w = t & 0x3FFFFFFF;
     t = L.e[2].w; *(volatile unsigned int *)&L.e[2].w = t & 0x3FFFFFFF;
@@ -415,7 +415,7 @@ void fn_801720FC(float *__restrict arg0, int arg1, float arg2) {
     t = L.e[4].w; *(volatile unsigned int *)&L.e[4].w = t & 0x3FFFFFFF;
     fn_802C8BD0(-1);
     fn_802C8DB8(L.e, 5, L.s, 6);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma scheduling on
 extern void *fn_802C86DC(void);

@@ -13,7 +13,7 @@ extern int Abend_Panic(const char *, ...);
 #define PARTICLE_TYPE_UNKNOWN 3
 extern float fn_802C9A4C(float);
 extern void fn_802C8BD0(int);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern int fn_8028FA1C(int);
 extern char lbl_80348FD0[];
 extern int fn_8002F768(void *, int, int);
@@ -317,7 +317,7 @@ void fn_8028E240(void) {
 loop:
     textureSlot = *(int *)((char *)*entry + 0xa4);
     if (textureSlot != currentSlot) {
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
         fn_802C8BD0(textureSlot);
         currentSlot = textureSlot;
     }
@@ -326,7 +326,7 @@ loop:
     index++;
 test:
     if (index < base[64]) goto loop;
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
     fn_802C9A4C(savedState);
 }
 #pragma pop
@@ -346,7 +346,7 @@ int fn_8028E2F8(int initData, int postArg, int resourceId) {
 
 extern float fn_802C9A4C(float);
 extern void fn_802C8BD0(int);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern int fn_8028FA1C(int);
 extern int fn_801284F8(int, void *);
 extern int fn_8028F7AC(void *, void *, int);

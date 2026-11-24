@@ -362,7 +362,7 @@ static inline int is_close(float a, float b) {
     return 0;
 }
 extern void fn_802C8DB8(void *, int, unsigned short *, int);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C8B98(int, int);
 #pragma push
 #pragma processor 750
@@ -459,7 +459,7 @@ void fn_802353F4(int artSet, int pictureIndex, float x, float y, float z) {
   frame.v[3].a = v3.a; frame.v[3].b = v3.b; frame.v[3].c = v3.c; frame.v[3].d = v3.d; frame.v[3].e = v3.e;
   ids = *((Idx_80235CBC *) lbl_802FA008);
   fn_802C8DB8(frame.v, 4, ids.i, 6);
-  fn_802C8D74();
+  DrawList_RestoreNormalMode();
 }
 
 #pragma push
@@ -538,7 +538,7 @@ have_skip:
     ids = *(Idx_80235CBC *)lbl_802FA008;
 
     fn_802C8DB8(frame.v, 4, ids.i, 6);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma pop
 
@@ -611,7 +611,7 @@ void fn_80235AFC(void *arg0, int texNodeIndex, int vertexFlags,
     frame.indices[5] = *p++;
     fn_802C8B98(render, (int)matrix);
     fn_802C8DB8(frame.vertices, 4, frame.indices, 6);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma push
 #pragma paired_single off
@@ -651,7 +651,7 @@ void fn_80235CBC(ArtSet *artSet, int pictureIndex, int rgba, float x, float y, f
     frame.v[3].a = t0.a; frame.v[3].b = t0.b; frame.v[3].c = t0.c; frame.v[3].d = t0.d; frame.v[3].e = t0.e;
     ids = lbl_802FA020;
     fn_802C8DB8(frame.v, 4, ids.i, 6);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma pop
 float fn_80235EF0(int resourceSet, int index) {
@@ -851,7 +851,7 @@ void fn_802361E8(void *obj, int key, int a, int b, int c, int d) {
     frame.v[3].a = t3.a; frame.v[3].b = t3.b; frame.v[3].c = t3.c; frame.v[3].d = t3.d; frame.v[3].e = t3.e;
     ids = *(Idx_80235CBC *)lbl_802FA008;
     fn_802C8DB8(frame.v, 4, ids.i, 6);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
     fn_802C9A4C(scale);
 }
 #pragma opt_propagation reset

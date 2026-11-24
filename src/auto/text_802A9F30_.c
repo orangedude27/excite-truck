@@ -537,7 +537,7 @@ void fn_802AAD5C(int arg0, int arg1, int arg2) {
     extern void fn_802C8DBC(int);
     extern void fn_802C8E00(unsigned int, int, float, float, float, float, float);
     extern void fn_802C8E48(void);
-    extern void fn_802C8D74(void);
+    extern void DrawList_RestoreNormalMode(void);
     extern int lbl_8055CC60, lbl_8055CC70, lbl_8055CC74, lbl_8055CC78;
     extern const double lbl_80564A40;
     extern float lbl_8055CC6C, lbl_805649F0, lbl_805649F4, lbl_805649FC, lbl_80564A24, lbl_80564A30, lbl_80564A54;
@@ -582,7 +582,7 @@ void fn_802AAD5C(int arg0, int arg1, int arg2) {
         }
         fn_802C8E48();
     }
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma pop
 /* Reserved draw step in the stunt-car effect pass: receives the draw list, a
@@ -603,7 +603,7 @@ void fn_802AAF04(int arg0, int arg1, int arg2) {
     extern void fn_802C8DBC(int);
     extern void fn_802C8E00(unsigned int, int, float, float, float, float, float);
     extern void fn_802C8E48(void);
-    extern void fn_802C8D74(void);
+    extern void DrawList_RestoreNormalMode(void);
     extern int lbl_8055CC64;
     extern float lbl_805649F0, lbl_805649F4, lbl_805649F8, lbl_805649FC;
     extern float lbl_80564A20, lbl_80564A34, lbl_80564A4C, lbl_80564A54;
@@ -720,7 +720,7 @@ void fn_802AAF04(int arg0, int arg1, int arg2) {
             fn_802C8E48();
             var_r28 += 1;
         } while (var_r28 < 2);
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
     }
 }
 

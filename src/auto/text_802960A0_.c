@@ -18,7 +18,7 @@ extern float lbl_80564548, lbl_8056454C;
 extern unsigned short lbl_802FA9C0[6];
 extern "C" void *fn_802C86DC(void);
 extern "C" void fn_802C8BD0(int, float, float, float, float, float, float, float, float, float, float, float, float, float);
-extern "C" void fn_802C8D74(void);
+extern "C" void DrawList_RestoreNormalMode(void);
 extern "C" void fn_802C8DB8(void *, int, void *, int, unsigned short, unsigned short, unsigned short, unsigned short);
 #pragma push
 #pragma processor 750
@@ -55,7 +55,7 @@ extern "C" void fn_802960A0(float *pos, unsigned int color, int tex, float s, do
     idx[0] = ip[0]; idx[1] = ip[1]; idx[2] = ip[2];
     idx[3] = ip[3]; idx[4] = ip[4]; idx[5] = ip[5];
     fn_802C8DB8(vtx, 4, idx, 6, ip[4], ip[3], ip[2], ip[1]);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma pop
 #define kFrameName lbl_8055C9B8  // .sdata: "frame", the name of an opening frame entry

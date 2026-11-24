@@ -73,7 +73,7 @@ typedef struct RoadObject {
 #define Mem_freeObject      fn_80128668
 #define Mem_freeArray       fn_80128670
 extern int lbl_802FAB40[];
-extern void fn_802C21B8(void), fn_802C28C0(void), fn_802C8BD0(void), fn_802C8D74(void), fn_802DC130(void), fn_802DC134(void), fn_802DC278(void), fn_802DC27C(void);
+extern void fn_802C21B8(void), fn_802C28C0(void), fn_802C8BD0(void), DrawList_RestoreNormalMode(void), fn_802DC130(void), fn_802DC134(void), fn_802DC278(void), fn_802DC27C(void);
 extern void fn_802CADD0(int,int), fn_802D3D94(int,void*,...);
 extern void fn_802DC138(int,int,void*,int), fn_802DC280(int,int,void*,int);
 int fn_8012C33C(void);
@@ -1344,10 +1344,12 @@ extern "C" void fn_802BA848(f32 *out, const f32 *a, const f32 *b, const f32 *c) 
     f32 u, v, w, q;
     f32 t;
     f32 v5, n_lo, n_hi;
-    out[10] = lbl_80564CD8;
+    f32 one = lbl_80564CD8;
+    f32 cc = lbl_80564CCC;
+    out[10] = one;
     u = y0 / d;
     v = -x0 / d;
-    t = lbl_80564CD8 * k1;
+    t = one * k1;
     out[11] = v;
     w = -y1 / d;
     out[14] = t;
@@ -1356,7 +1358,7 @@ extern "C" void fn_802BA848(f32 *out, const f32 *a, const f32 *b, const f32 *c) 
     out[13] = w * k1;
     out[15] = u * k1;
     out[12] = -(z0 * q + z1 * v);
-    out[16] = (f32)(-(double)(z1 * u + z0 * w)) * k1 + lbl_80564CCC;
+    out[16] = (f32)(-(double)(z1 * u + z0 * w)) * k1 + cc;
     lo = (lo < hi) ? lo : hi;
     hi = c[0] + a[0];
     lo = (hi < lo) ? hi : lo;
@@ -1723,7 +1725,7 @@ void fn_802BB0FC(int a, int b) {
                 }
                 node = node->next;
             }
-            fn_802DC134(); fn_802C8D74();
+            fn_802DC134(); DrawList_RestoreNormalMode();
         break; } case 2: {
             fn_802C28C0(); fn_802C8BD0(); fn_802DC278();
             fn_802CADD0(entry->state,1);
@@ -1748,7 +1750,7 @@ void fn_802BB0FC(int a, int b) {
                 }
                 node = node->next;
             }
-            fn_802CADD0(-1,1); fn_802CADD0(-1,2); fn_802DC27C(); fn_802C8D74();
+            fn_802CADD0(-1,1); fn_802CADD0(-1,2); fn_802DC27C(); DrawList_RestoreNormalMode();
         break; } }
         continue;
 clear_nodes:
@@ -1795,7 +1797,7 @@ void fn_802BB3B8(int a, int b) {
                 }
                 node = node->next;
             }
-            fn_802DC134(); fn_802C8D74();
+            fn_802DC134(); DrawList_RestoreNormalMode();
         break; } case 2: {
             fn_802C28C0(); fn_802C8BD0(); fn_802DC278();
             fn_802CADD0(entry->state,1);
@@ -1820,7 +1822,7 @@ void fn_802BB3B8(int a, int b) {
                 }
                 node = node->next;
             }
-            fn_802CADD0(-1,1); fn_802CADD0(-1,2); fn_802DC27C(); fn_802C8D74();
+            fn_802CADD0(-1,1); fn_802CADD0(-1,2); fn_802DC27C(); DrawList_RestoreNormalMode();
         break; } }
         continue;
 clear_nodes:

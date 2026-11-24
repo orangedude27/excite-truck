@@ -67,7 +67,7 @@ extern "C" int fn_8029C190(void*);
   extern "C" void fn_802C8BD0(int);
   extern "C" int fn_802C8DBC(int);
   extern "C" void fn_802C8E48(void);
-  extern "C" void fn_802C8D74(void);
+  extern "C" void DrawList_RestoreNormalMode(void);
       extern "C" void* fn_80299FA8(void*, void*);
     extern "C" unsigned int fn_80299A04(void*, unsigned int, float);
           extern "C" void fn_8028E584(void*, void*, float*, float);
@@ -1000,7 +1000,7 @@ extern "C" void fn_80299628(void *arg0) {
         } while (slotIndex < 4);
         fn_802C8E48();
     }
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 
 #pragma opt_propagation off
@@ -1113,7 +1113,7 @@ extern "C" void fn_80299830(void*, int);
 extern "C" void fn_802C8BD0(int);
 extern "C" int fn_802C8DBC(int);
 extern "C" void fn_802C8E48(void);
-extern "C" void fn_802C8D74(void);
+extern "C" void DrawList_RestoreNormalMode(void);
 extern "C" void* fn_80299FA8(void*, void*);
 #pragma scheduling invalid_target
 extern "C" void *fn_802998F4(void *container, int freeStorage) {
@@ -1966,13 +1966,13 @@ extern "C" int fn_8029AF24(int managerPtr) {
             fn_8029B6E4(manager);
             fn_802C8E48();
         }
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
         fn_802C8BD0(*(int *)((char *)manager + 0x1E4));
         if (fn_802C8DBC(totalCount * 8)) {
             fn_8029B824(manager);
             fn_802C8E48();
         }
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
         ((float (*)(float))fn_802C9A4C)(converted);
     }
 }

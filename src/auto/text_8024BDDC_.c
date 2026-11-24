@@ -18,7 +18,7 @@ extern void fn_802C86E8(unsigned int);
 extern void DrawList_setViewport(int, int, int, int);
 extern void fn_802C88BC(int);
 extern void fn_802C8BD0(int, unsigned short, unsigned short, unsigned short, unsigned short, unsigned short, float, float);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C8DB8(float*, int, unsigned short*, int);
 extern void fn_802C974C(float, float, float);
 extern int fn_802CAC28(void*, int);
@@ -124,7 +124,7 @@ void fn_8024BE04(void) {
         idx[5] = tbl[5];
         fn_802C8BD0(h, tbl[4], tbl[3], tbl[2], tbl[1], tbl[0], v[2].z, v[0].z);
         fn_802C8DB8((float*)v, 4, idx, 6);
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
         fn_802C855C();
         fn_802C2B48();
         if ((i & 0x3f) == 0) fn_802E30C8(base + 0x18, i);

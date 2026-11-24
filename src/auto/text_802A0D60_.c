@@ -22,7 +22,7 @@ extern s32 lbl_8055F840;
 extern s32 lbl_8055F844;
 extern void fn_802C8BD0(s32);
 extern void fn_802CA0A0(s32);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void fn_802CAC54(s32);
 extern void fn_802CA094(s32);
 extern void fn_802A93A4(void);
@@ -189,7 +189,7 @@ void fn_802A1548(void) {
     if (sDecalDrawList != 0) {
         fn_802C8BD0(sDecalTextureId);
         fn_802CA0A0(sDecalDrawList);
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
     }
 
 #undef sDecalTextureId

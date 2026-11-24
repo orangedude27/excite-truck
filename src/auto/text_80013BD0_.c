@@ -50,7 +50,7 @@ extern void fn_802C8BD0(s32);
 extern void fn_801E4F20(s32);
 extern void fn_801E4F3C(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_801E4FF4(void);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern f32 lbl_805603E8, lbl_805603EC, lbl_805603F0, lbl_805603F4;
 typedef struct { s32 a; f32 x; f32 y; s32 d; f32 e; f32 f; s32 g; } Rec7;
 typedef struct { s32 a; f32 x; f32 y; s32 d; f32 e; s32 f; s32 g; s32 h; } Rec8;
@@ -1239,7 +1239,7 @@ void fn_80015770(void *arg0, f64 x, f64 y, f32 a, f32 b, f32 c) {
         p += 3;
     }
     fn_801E4FF4();
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma pop
 void fn_80015AA0(void *, f32);

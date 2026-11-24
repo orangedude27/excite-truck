@@ -173,7 +173,7 @@ extern void fn_802C8B98(int, int);
 extern int fn_801E501C(int, void *, float, int);
 extern void fn_801E5174(void *, float, float, float);
 extern void fn_801E5348(void);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern f32 lbl_8055F880;
 extern f32 lbl_80564884;
 extern f32 lbl_80564890;
@@ -967,7 +967,7 @@ void fn_802A5FE4(void *arg0) {
             }
             do { fn_801E5348(); } while (0);
         }
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
         fn_802C9A4C(saved);
         fn_802C90F0(o->unk10);
         one = lbl_8056485C;
@@ -1371,7 +1371,7 @@ extern void fn_802C8B98(int, int);
 extern int fn_801E501C(int, void *, float, int);
 extern void fn_801E5174(void *, float, float, float);
 extern void fn_801E5348(void);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 #pragma push
 #pragma processor 750
 void fn_802A6D68(void *arg0) {
@@ -1393,7 +1393,7 @@ void fn_802A6D68(void *arg0) {
             }
             fn_801E5348();
         }
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
         fn_802C9A4C(savedScale);
     }
 }
@@ -1985,7 +1985,7 @@ s32 fn_802A79CC(s32 arg0) {
             fn_802CE868();
         }
 
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
         fn_802C9A4C(rate);
     }
 

@@ -135,7 +135,7 @@ void fn_80230150(s32 colorId, u32 flags, f32 x, f32 y, f32 z, f32 w, f32 h, f32 
     extern void fn_80230C9C(f32 *, f32 *, f32, f32, f32);         // wrap a span into the screen box
     extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);// fill one vertex
     extern void fn_802C8DB8(void *, s32, u16 *, s32);             // draw indexed quads
-    extern void fn_802C8D74(void);                                // flush the draw
+    extern void DrawList_RestoreNormalMode(void);                                // flush the draw
     extern f32 lbl_80563618, lbl_8056361C, lbl_80563620, lbl_80563624, lbl_80563628;
     extern struct QuadIndices lbl_802F9FC0, lbl_802F9FCC;
     struct Quad quad;
@@ -172,7 +172,7 @@ void fn_80230150(s32 colorId, u32 flags, f32 x, f32 y, f32 z, f32 w, f32 h, f32 
     fn_80231380(quad.vertex[3],colorId,quad.right,quad.bottom,z,QUAD_TEX_FULL,QUAD_TEX_FULL);
     quad.indices=QUAD_INDICES;
     fn_802C8DB8(quad.vertex,4,quad.indices.index,6);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma pop
 
@@ -335,7 +335,7 @@ void fn_802307AC(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
 #pragma cplusplus on
 extern "C" void fn_80230924(u32 color, f32 left, f32 top, f32 right, f32 bottom, f32 depth);
 extern "C" void fn_802C8B98(s32, s32);      // begin a draw into a display list
-extern "C" void fn_802C8D74(void);          // end the draw
+extern "C" void DrawList_RestoreNormalMode(void);          // end the draw
 extern "C" void fn_802C8DB8(void *, s32, u16 *, s32); // submit verts: verts, count, indices, index count
 extern "C" void fn_80231380(void *, s32, f32, f32, f32, f32, f32); // fill one vertex: colour, x, y, z, s, t
 extern "C" s32 fn_80230B9C(u32);            // RGBA colour -> packed, RGB scaled by the global brightness
@@ -367,7 +367,7 @@ void fn_80230924(u32 color, f32 left, f32 top, f32 right, f32 bottom, f32 depth)
         quad.indices[5] = *indexList++;
     }
     fn_802C8DB8(quad.vertex, 4, quad.indices, 6);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma scheduling on
 #pragma ppc_psq_save reset
@@ -675,7 +675,7 @@ void fn_80231094(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
 // u0,v0,u1,v1 and z = 0), copies the standard quad index list, submits them, then ends draw.
 void fn_80231220(void *drawCtx, s32 texParam, f32 x, f32 y, f32 w, f32 h, f32 u0, f32 v0, f32 u1, f32 v1) {
     extern void fn_802C8B98(s32, s32);
-    extern void fn_802C8D74(void);
+    extern void DrawList_RestoreNormalMode(void);
     extern void fn_802C8DB8(void *, s32, u16 *, s32);
     extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
     extern s32 fn_80230B9C(u32);
@@ -704,7 +704,7 @@ void fn_80231220(void *drawCtx, s32 texParam, f32 x, f32 y, f32 w, f32 h, f32 u0
     fn_80231380(frame.sp68, state, x + w, y - h, zero, u1, v1);
     frame.indices = lbl_802F9FE4;
     fn_802C8DB8(frame.sp20, 4, frame.indices.idx, 6);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma pop
 

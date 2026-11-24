@@ -1632,7 +1632,7 @@ extern "C" void fn_802C8BD0(s32);
 extern "C" s32 fn_802C8DBC(s32);
 extern "C" void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern "C" void fn_802C8E48(void);
-extern "C" void fn_802C8D74(void);
+extern "C" void DrawList_RestoreNormalMode(void);
 #pragma dont_inline on
 #pragma push
 #pragma processor 750
@@ -1653,7 +1653,7 @@ extern "C" void fn_801470B0(s32 arg0, s32 arg1, s32 arg2, f32 x, f32 y, f32 widt
         fn_802C8E00(arg0, 1, ((f32 (*)(s32, f32))fn_801451DC)(arg2, x + width), temp, lbl_805615D4, u1, v1);
         fn_802C8E48();
     }
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma scheduling on
 #pragma pop
@@ -1787,7 +1787,7 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
     extern void fn_802C8BD0(s32);
     extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
     extern void fn_802C8E48(void);
-    extern void fn_802C8D74(void);
+    extern void DrawList_RestoreNormalMode(void);
     extern f32 fn_801452A0(s32, f32);
     f32 angle;
     register f32 tx;
@@ -1843,7 +1843,7 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
                         *(f32 *)((u8 *)arg0 + 0x24));
             fn_802C8E48();
         }
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
     }
 }
 
@@ -2062,13 +2062,13 @@ extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t)
   f32 prod8;
   f32 src1C;
   f32 prod4;
-  f32 src20;
   f32 end20;
   f32 diff20;
   f32 end18;
   f32 end1C;
   f32 diff18;
   f32 end10;
+  f32 src20;
   f32 diff1C;
   f32 src14;
   f32 diff10;
@@ -2085,13 +2085,13 @@ extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t)
   f32 diff14;
   f32 out1C;
   f32 prod24;
+  u32 wC;
   f32 prod14;
   f32 out10;
   f32 out24;
   f32 out14;
-  u32 w4;
   u32 w0;
-  u32 wC;
+  u32 w4;
   u32 w8;
   f64 pair;
   end8 = end->m8;
@@ -2123,8 +2123,8 @@ extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t)
   diff1C = end1C - src1C;
   src14 = src->m14;
   diff10 = end10 - src10;
-  prod18 = t * diff18;
-  w4 = *((u32 *) (((u8 *) srcArg) + (4 & 0xFF)));
+  diff18 = t * diff18;
+  w4 = *((u32 *) (((u8 *) srcArg) + 4));
   prod20 = t * diff20;
   w0 = *((u32 *) (((u8 *) srcArg) + 0));
   prod1C = t * diff1C;
@@ -2136,7 +2136,7 @@ extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t)
   src24 = src->m24;
   diff24 = end24 - src24;
   w8 = *((u32 *) (((u8 *) srcArg) + 8));
-  out18 = src18 + prod18;
+  out18 = src18 + diff18;
   diff14 = end14 - src14;
   out1C = src1C + prod1C;
   prod24 = t * diff24;

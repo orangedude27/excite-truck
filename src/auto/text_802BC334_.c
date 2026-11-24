@@ -1105,7 +1105,7 @@ char *fn_801E8718(int);
 float PSVECSquareDistance(void *, void *);
 void fn_802DCAE4(int, float *, float);
 void fn_802DC8B4(void);
-void fn_802C8D74(void);
+void DrawList_RestoreNormalMode(void);
 void fn_802DBECC(void);
 
 /* One "tree-volume" entry of the list at lbl_804C00D4 (fn_802BCBDC fills one in
@@ -1181,7 +1181,7 @@ void fn_802BDD8C(float radius) {
 #define isDebugDrawEnabled fn_8020403C
 #define GetSwlMapSlot      fn_802C28C0
 #define BeginDrawList      fn_802C8BD0
-#define EndDrawList        fn_802C8D74
+#define EndDrawList        DrawList_RestoreNormalMode
 #define BeginLightBatch    fn_802DC71C
 #define FlushLightBatch    fn_802DC8B4
 #define QueueLightSprite   fn_802DCAE4
@@ -1558,7 +1558,7 @@ extern "C" void fn_802BD814(void)
     }
 
     fn_802DC8B4();
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
     groups = entry->data->secondPass;
     instances = entry->data->instances;
     if (entry->secondCost <= 10)
@@ -1618,7 +1618,7 @@ extern "C" void fn_802BD814(void)
       }
 
       fn_802DC8B4();
-      fn_802C8D74();
+      DrawList_RestoreNormalMode();
     }
   }
 

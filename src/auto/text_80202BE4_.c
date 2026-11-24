@@ -68,7 +68,7 @@ extern f32 lbl_80563124, lbl_8056312C;
 extern void fn_802D3ECC(u16);
 extern s32 fn_802BE07C(s32, s32, s32, s32, s32, s32, s32, s32);
 extern s32 fn_802C8BD0(s32);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void fn_802D3050(s32);
 extern void fn_802D306C(s32);
 typedef struct { u8 pad[0x24]; f32 x; f32 y; f32 z; } unk_80203A88_dest;
@@ -108,7 +108,7 @@ extern void fn_802C8DB8(f32*, s32, u16*, s32);
 #pragma scheduling invalid_target
 /* Two passes of shadow/SWL-map setup for the given map slot: feed each id to
    fn_802C8C04, then build a 24-value parameter block from the global constants
-   and the u16 table and dispatch it via fn_802C8DB8/fn_802C8D74. */
+   and the u16 table and dispatch it via fn_802C8DB8/DrawList_RestoreNormalMode. */
 void fn_80202BFC(s32 mapSlot) {
     typedef union { f32 f; s32 s; } WorkValue;
     typedef struct { s32 pair2[2]; s32 pair1[2]; u16 table[6]; u16 pad[2]; WorkValue values[24]; } Work;
@@ -153,7 +153,7 @@ void fn_80202BFC(s32 mapSlot) {
         work.values[21].s = rawWord; work.values[15].s = rawWord;
         work.values[9].s = rawWord; work.values[3].s = rawWord;
         fn_802C8DB8(&work.values[0].f, 4, work.table, 6);
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
         iter++; idPtr++; rawPtr++;
     } while (iter < 2);
 }
@@ -359,7 +359,7 @@ void fn_80202F58(const void *arg0, const void *arg1, void *arg2) {
         fn_802C8E00(-1, 1, temp_f1_8, lbl_805630CC, temp_f3_10, lbl_80563110, lbl_80563110);
         fn_802C8E48();
     }
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma pop
 extern s32 fn_802C8DBC(s32, ...);
@@ -518,7 +518,7 @@ void fn_80203380(void *argp) {
         }
     }
     fn_802C8E48();
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 
 #pragma processor 750
@@ -540,7 +540,7 @@ void fn_802036E4(s32 arg0, u8* arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
 
     if (arg0 != lbl_8055ED1C) {
         lbl_8055ED1C = arg0;
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
         fn_802C8BD0(lbl_8055ED1C);
         fn_802D3ECC(lbl_8055ECF0);
     }
@@ -642,7 +642,7 @@ void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1) {
     *dest++ = w10;
     *dest = w11;
     fn_802BE07C(arg0 + 0x24, (s32)fn_802036E4, w10, w9, w8, w7, w6, w5);
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma scheduling invalid_target
 void fn_80203A88(const void* arg0, s32 arg1, unk_80203A88_dest* arg2) {

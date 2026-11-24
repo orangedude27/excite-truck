@@ -228,7 +228,7 @@ void fn_802C54D4(void) {
 #pragma scheduling on
 
 extern void fn_802C8B70(int);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void fn_802D0610(int);
 extern void fn_802D6B08(int);
 extern void fn_802DAA18(void);
@@ -249,7 +249,7 @@ extern int lbl_804C139C[];
             fn_802D6B08(*(int *)resNode);
             resNode = *(void **)((char *)resNode + 16);
         }
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
         *(int *)((char *)modelList + 8) = 0;
     }
 }
@@ -1566,7 +1566,7 @@ void fn_802C74D8(int arg0, void *arg1, int arg2) {
                 char *item = *(char **)((char *)entry + 4) + i * 0x10;
                 fn_802D6B08(*(int *)(item + 0xC));
             }
-            fn_802C8D74();
+            DrawList_RestoreNormalMode();
         }
     }
 }

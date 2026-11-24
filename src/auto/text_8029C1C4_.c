@@ -4,7 +4,7 @@ extern void fn_802C8BD0(int);
 extern int fn_802C8DBC(int);
 extern void fn_802C8E00(int, unsigned int, float, float, float, float, float);
 extern void fn_802C8E48(void);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void fn_8029DB78(void *, void *, int, int);
 typedef struct GridRecord_8029D644 {
     float f0;
@@ -942,7 +942,7 @@ void fn_8029D644(void *arg0) {
         }
         fn_802C8E48();
     }
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 
 extern void fn_8029E49C(int, void *, int);
@@ -1443,7 +1443,7 @@ extern void *fn_802C86DC(void);
 extern void fn_802C8BD0(int);
 extern int fn_802C8DBC(int);
 extern void fn_802C8E48(void);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C8E00(int, unsigned int, float, float, float, float, float);
 extern float lbl_80564658, lbl_8056465C;
 #pragma push
@@ -1501,7 +1501,7 @@ void fn_8029E8E0(float *arg0, int arg1) {
         } while ((unsigned int)i < 4);
         fn_802C8E48();
     }
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma pop
 extern void fn_8029EC64(void *, void *, int);

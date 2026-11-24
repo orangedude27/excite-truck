@@ -170,7 +170,7 @@ extern const f64 lbl_80563698;
 extern f32 fn_8023400C(s32);
 extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern s32 fn_802C8DBC(s32);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8E48(void);
 static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *dst, f32 x, f32 y, f32 z) {
@@ -472,7 +472,7 @@ loop_body:
         fn_802C8E00(color, 1, f25, f28, *(f32 *)(record + 0x0C), lbl_8056368C, lbl_80563684);
         fn_802C8E00(color, 1, f27, f28, *(f32 *)(record + 0x0C), lbl_80563684, lbl_80563684);
         fn_802C8E48();
-        fn_802C8D74();
+        DrawList_RestoreNormalMode();
     }
     offset += 0x1C;
     i += 1;
@@ -1081,7 +1081,7 @@ extern void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f
 extern void fn_80233BF0(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, f32 farg1);
 extern void fn_80233E80(s32 *arg0, s32 arg1);
 extern void fn_80233EBC(void);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 #pragma push
 #pragma processor 750
 #pragma dont_inline on
@@ -1485,7 +1485,7 @@ void fn_80233E80(s32 *font, s32 color) {
 /* gText: end a text draw pass. Restores the drawlist's normal GX render mode and
  * reapplies the matrix state saved by fn_80233E80/fn_802C8C04, then clears it. */
 void fn_80233EBC(void) {
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 
 typedef struct IndexList_80233EC0 { u16 idx[6]; } IndexList_80233EC0;
@@ -1960,7 +1960,7 @@ record_test:
 if (i < *(s32 *)((u8 *)&lbl_8055F058 + 4)) goto record_body;
 fn_802C8E48();
 }
-fn_802C8D74();
+DrawList_RestoreNormalMode();
 if (mode == 2) fn_80231ADC();
 else fn_80231780(0);
 mode--;

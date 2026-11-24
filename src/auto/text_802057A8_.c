@@ -19,7 +19,7 @@ extern void fn_801E866C(int);
 extern void fn_802C8CBC(int);
 extern void fn_802C8DBC(int);
 extern void fn_802C8E48(void);
-extern void fn_802C8D74(void);
+extern void DrawList_RestoreNormalMode(void);
 extern void fn_802057A8(int, int, float, float, float, float);
 #pragma dont_inline fn_802057A8
 extern float lbl_80563194, lbl_805631A8, lbl_805631B8, lbl_805631BC, lbl_805631C0;
@@ -97,7 +97,7 @@ void fn_80205850(void) {
     fn_802057A8(-1, 1, lbl_80563194, lbl_805631B8, lbl_805631A8, lbl_805631A8);
     fn_802057A8(-1, 1, lbl_805631B8, lbl_805631B8, lbl_805631A8, lbl_805631A8);
     fn_802C8E48();
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 
 #pragma dont_inline
@@ -255,7 +255,7 @@ void fn_802059C0(void)
       fn_802057A8(col, 1, f18, f20, lbl_805631A8, lbl_805631A8);
       fn_802057A8(col2, 1, lbl_805631A8, f20, lbl_805631A8, lbl_805631A8);
       fn_802C8E48();
-      fn_802C8D74();
+      DrawList_RestoreNormalMode();
     }
     if (lbl_8055ED6C != (-2))
     {
@@ -267,7 +267,7 @@ void fn_802059C0(void)
       fn_802057A8(-1, 1, temp_f16, temp_f14, lbl_805631A8, lbl_805631A8);
       fn_802057A8(-1, 1, lbl_805631A8, temp_f14, lbl_805631A8, lbl_805631B8);
       fn_802C8E48();
-      fn_802C8D74();
+      DrawList_RestoreNormalMode();
     }
   }
 
@@ -342,7 +342,7 @@ void fn_80205D5C(void)
   }
 
   fn_802C8E48();
-  fn_802C8D74();
+  DrawList_RestoreNormalMode();
 }
 #pragma pop
 extern float lbl_80563198, lbl_805631A0, lbl_805631CC, lbl_805631E4, lbl_805631F0, lbl_805631F4;
