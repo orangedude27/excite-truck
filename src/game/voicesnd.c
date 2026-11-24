@@ -237,27 +237,38 @@ extern void fn_802E5950(int, int);
 extern void fn_802E6138(void);
 extern void fn_802E61D8(void *);
 void fn_8020AA0C(void *self) {
-    /* Release the two active voice handles at +8/+0xC and mark the object state as idle. */
-    int handle = *(int *)((char *)self + 8);
+    /* VoiceSnd::releaseVoices — stop and release both AX voice handles, clear
+       them, set state to stopped (3) and clear the mute flag. */
+    struct VoiceSnd {
+        void *vtable;        /* 0x00 */
+        int state;           /* 0x04: 1 = playing, 2 = muted, 3 = stopped */
+        int voice;           /* 0x08: main voice handle */
+        int voice2;          /* 0x0C: second voice handle */
+        char pad[0x2E];      /* 0x10..0x3D */
+        unsigned char mute;  /* 0x3E */
+    };
+    struct VoiceSnd *snd = (struct VoiceSnd *)self;
+    int handle = snd->voice;
+
     if (handle != 0) {
         fn_802E61D8((void *)handle);
-        handle = *(int *)((char *)self + 0xC);
+        handle = snd->voice2;
         if (handle != 0) {
             fn_802E61D8((void *)handle);
         }
-        handle = *(int *)((char *)self + 0xC);
+        handle = snd->voice2;
         if (handle != 0) {
             ((void (*)(void *))fn_802E6138)((void *)handle);
-            *(int *)((char *)self + 0xC) = 0;
+            snd->voice2 = 0;
         }
-        handle = *(int *)((char *)self + 8);
+        handle = snd->voice;
         if (handle != 0) {
             ((void (*)(void *))fn_802E6138)((void *)handle);
-            *(int *)((char *)self + 8) = 0;
+            snd->voice = 0;
         }
     }
-    *(int *)((char *)self + 4) = 3;
-    *((unsigned char *)self + 0x3E) = 0;
+    snd->state = 3;
+    snd->mute = 0;
 }
 
 /* Return a voice sound's effective state: a playing sound (1) whose mute flag
