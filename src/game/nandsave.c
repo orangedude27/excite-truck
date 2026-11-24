@@ -901,7 +901,7 @@ extern void *memcpy(void *, const void *, unsigned int);
  * payload in the shared buffer, release the old banner resource and arm the
  * banner + data write, then copy the target name into the save context.
  * Returns 1 once armed, 0 on a timeout or if the save was flagged invalid. */
-int fn_802E967C(char *path, void *src, int size) {
+/* Stage a NAND create/write: copy src into the async buffer, build the RMEMCARD_WRITE_CREATE request with the banner resource and truncated destination path, and return 0 if the async machine is busy or NAND is invalid. */ int fn_802E967C(char *path, void *src, int size) {
 #define rmemcard_wait_async   rmemcardWaitAsync
 #define rmemcard_yield        rmemcardYield
 #define rmemcard_log_strings  lbl_8034D9C0
