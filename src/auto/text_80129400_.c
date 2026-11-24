@@ -6,7 +6,7 @@
 extern u8 lbl_80422180[0x200];
 extern u8 lbl_804223A0[0x20];
 void fn_80129690(void *arg0, s32 arg1, void *arg2);
-s32 fn_802E8504(s32);
+s32 RjoyIsPadConnected(s32);
 
 void *fn_801298E8(void *arg0, int arg1);
 extern u8 lbl_804223C0[];
@@ -229,7 +229,7 @@ s32 fn_80129890(void) {
     s32 connectedCount = 0;
     s32 controllerIndex = 0;
     do {
-        if (fn_802E8504(controllerIndex) != 0) {
+        if (RjoyIsPadConnected(controllerIndex) != 0) {
             connectedCount++;
         }
         controllerIndex++;
@@ -245,7 +245,7 @@ void *fn_801298E8(void *dst, int index) {
     u8 *out;
     u8 a, b;
     u32 wordA, wordB;
-    found = fn_802E8504(index);
+    found = RjoyIsPadConnected(index);
     if (found) {
         src = lbl_80422180 + (index << 7);
         out = dst;

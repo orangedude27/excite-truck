@@ -976,7 +976,7 @@ void fn_802411D0(void) { fn_8023FE60(); }
 s32 fn_802411D4(void) {
     s32 bothReady;
     bothReady = 0;
-    if ((fn_802E8504(0) != 0) && (fn_802E8504(1) != 0)) {
+    if ((RjoyIsPadConnected(0) != 0) && (RjoyIsPadConnected(1) != 0)) {
         bothReady = 1;
     }
     return bothReady;
@@ -2031,10 +2031,10 @@ void fn_80242738(void *arg0, s32 arg1)
 }
 #pragma pop
 extern s32 lbl_8055F1F8;
-extern s32 fn_802E8504(s32);
+extern s32 RjoyIsPadConnected(s32);
 #pragma cplusplus on
 extern "C" s32 lbl_8055F1F8;
-extern "C" s32 fn_802E8504(s32);
+extern "C" s32 RjoyIsPadConnected(s32);
 extern "C" u8 *fn_802E85B8(s32);
 extern "C" void fn_80214A9C(s32);
 extern "C" void fn_80214AF0(s32);
@@ -2064,7 +2064,7 @@ extern "C" void fn_80242B1C(void *arg0) {
         outer = 0;
         do {
             if (*(s32 *)(base + 0x34) > 1 &&
-                fn_802E8504(**(s32 **)(*(u8 **)(base + 0x18) + 0x34)) == 0) {
+                RjoyIsPadConnected(**(s32 **)(*(u8 **)(base + 0x18) + 0x34)) == 0) {
                 widget = *(u8 **)slot;
                 **(s32 **)(widget + 0x34) = -1;
                 *(s32 *)(*(u8 **)(widget + 0x28) + 0xD8) =

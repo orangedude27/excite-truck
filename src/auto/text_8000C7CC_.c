@@ -75,7 +75,7 @@ extern void fn_801769EC(void);
 // Externs for fn_8000CCB8
 extern s32 fn_800075A0(s32);
 extern u32 __AXGetStackHead_80137CFC(s32);
-extern s32 fn_802E8504(void);
+extern s32 RjoyIsPadConnected(void);
 extern s32 fn_80137C74(void);
 
 s32 fn_8000CFA8(s32 object, s32 shouldDelete) {
@@ -266,11 +266,11 @@ extern "C" void fn_8000D1DC(void) {
     struct Info item;
     struct Update out;
     u8 alpha;
+    f32 temp_f0;
     f32 baseVal, scale, factor, selectedVal;
-    f32 temp_f0, temp_f1, temp_f1_2, temp_f2, temp_f3, temp_f4, temp_f5, temp_f7;
+    f32 temp_f1, temp_f1_2, temp_f2, temp_f3, temp_f4, temp_f5, temp_f7;
     s32 temp_r8;
-    register s32 i;
-    s32 selected;
+    register s32 i, selected;
     register u8 *base = lbl_802FC058;
     register s32 *obj;
     if (lbl_8055D405 != 0) {
@@ -498,6 +498,7 @@ extern "C" void fn_8000C964(void) {
 class Dummy { public: virtual void *f2(); virtual s32 *get3(const char *); virtual void *f4(); virtual s32 *get5(const char *); };
 struct Info { u32 a, b, c, d; f32 e; u32 f, g, h; };
 struct Update { u32 value, x, y, flags; f32 z, w; u32 color; };
+struct Base { u8 pad[0x40]; s32 entry[1]; };
 f32 matrix[12];
 char name0[0x20], name1[0x20];
 struct Info item;
@@ -507,10 +508,11 @@ u8 alpha;
 f32 baseVal, scale, factor, selectedVal;
 f32 temp_f0, temp_f1, temp_f1_2, temp_f2, temp_f3, temp_f4, temp_f5, temp_f7;
 s32 temp_r8, drawMode;
-register s32 *obj;
-register s32 selected, i;
-register s32 *labelp;
+register int addr;
 register u8 *base = lbl_802FC058;
+register s32 *labelp;
+register s32 i, selected;
+register s32 *obj;
 fn_80230B5C(matrix);
 fn_802C8638(matrix);
 fn_802C974C(lbl_80560218, lbl_8056021C, lbl_80560220);
@@ -518,7 +520,7 @@ fn_800109E4(0x7F000000, lbl_80560224, lbl_80560228, lbl_8056022C, lbl_80560230);
 if (lbl_8055D414 != 0) {
 labels[0] = lbl_80560210;
 labels[1] = lbl_80560214;
-fn_801473F8(lbl_8055D414, (const char *)base + 0x68, lbl_80558A70, fn_80131234(((s32 *)(base + 0x40))[lbl_8055D400]));
+fn_801473F8(lbl_8055D414, (const char *)base + 0x68, lbl_80558A70, fn_80131234(((Base *)base)->entry[lbl_8055D400]));
 fn_801473F8(lbl_8055D414, (const char *)base + 0x78, lbl_80558A70, fn_80131234((s32)(base + 0x84)));
 factor = lbl_80560234;
 labelp = labels;
@@ -526,7 +528,8 @@ scale = lbl_80560238;
 i = 0;
 baseVal = lbl_80560218;
 do {
-fn_801345D8(name0, 0x20, (const char *)lbl_802FC058 + 0x94, i + 1);
+addr = (int)lbl_802FC058;
+fn_801345D8(name0, 0x20, (char *)(addr + 0x94), i + 1);
 fn_801345D8(name1, 0x20, lbl_80558A74, i + 1);
 obj = ((Dummy *)lbl_8055D414)->get3(name1);
 selected = 0;
@@ -541,7 +544,8 @@ obj = ((Dummy *)lbl_8055D414)->get5(name0);
 if (obj != 0) {
 if (((s32 (*)(s32))fn_8000C840)(i) == 0) obj[6] = (obj[6] & 0xFFFFFF) | 0x80000000;
 drawMode = ((-selected | selected) >> 31) + 2;
-((void (*)(void *, void *, const char *, s32))fn_80147940)(lbl_8055D414, obj, (const char *)lbl_802FC058 + 0xA4, drawMode);
+addr = (int)lbl_802FC058;
+((void (*)(void *, void *, const char *, s32))fn_80147940)(lbl_8055D414, obj, (char *)(addr + 0xA4), drawMode);
 if (selected != 0) {
 out.value = obj[0]; out.x = obj[1]; out.y = obj[2]; out.flags = obj[3]; out.z = ((f32 *)obj)[4];
 temp_f0 = baseVal + selectedVal;
@@ -558,7 +562,8 @@ temp_f1_2 = temp_f2 - temp_f3;
 *(f32 *)&out.y = temp_f1_2;
 out.w = temp_f7 * temp_f0;
 out.color = (temp_r8 & 0x00FF0000) | ((u32)alpha << 24) | (temp_r8 & 0xFFFF);
-((void (*)(void *, void *, const char *, s32, u8, s32, f32, f32, f32, f32, f32, f32, f32))fn_80147940)(lbl_8055D414, &out, (const char *)lbl_802FC058 + 0xA4, 1, alpha, temp_r8, temp_f1_2, temp_f2, temp_f3, temp_f4, temp_f5, selectedVal, temp_f7);
+addr = (int)lbl_802FC058;
+((void (*)(void *, void *, const char *, s32, u8, s32, f32, f32, f32, f32, f32, f32, f32))fn_80147940)(lbl_8055D414, &out, (char *)(addr + 0xA4), 1, alpha, temp_r8, temp_f1_2, temp_f2, temp_f3, temp_f4, temp_f5, selectedVal, temp_f7);
 }
 }
 fn_80147230(&item, lbl_80558A70, (const char *)fn_80131234(*labelp));
@@ -572,6 +577,7 @@ fn_801476C4();
 fn_80011A2C();
 fn_802C9904();
 }
+#pragma cplusplus reset
 /* Returns the index of the first active, unoccupied AX stack entry, or -1 if none is available. */
 s32 fn_8000CCB8(void) {
     s32 index = 0;
@@ -579,7 +585,7 @@ s32 fn_8000CCB8(void) {
 body:
     if (fn_800075A0(index) != 0) {
         __AXGetStackHead_80137CFC(index);
-        if (fn_802E8504() == 0) {
+        if (RjoyIsPadConnected() == 0) {
             return index;
         }
     }
@@ -603,14 +609,15 @@ extern s32 lbl_80560244;
 extern const char lbl_80558A70[];
 #pragma cplusplus on
 #pragma scheduling on
+extern "C" void fn_80148134(f32 *, f32 *, s32, f32, f32);
+struct ConfigService {
+    virtual void slot0();
+    virtual void *lookup(const char *);
+    virtual void slot2();
+    virtual void *open(const char *);
+    virtual void *find(const char *);
+};
 extern "C" void fn_8000CD24(void) {
-    struct ConfigService {
-        virtual void slot0();
-        virtual void *lookup(const char *);
-        virtual void slot2();
-        virtual void *open(const char *);
-        virtual void *find(const char *);
-    };
     ConfigService *service;
     u8 *base = lbl_802FC058;
     void *object;
@@ -632,7 +639,7 @@ extern "C" void fn_8000CD24(void) {
     if (temp == 0) return;
     names[0] = lbl_80560240;
     names[1] = lbl_80560244;
-    fn_80148134(&out0, &out1, *(s32 *)((u8 *)temp + 0xC), *(f32 *)((u8 *)temp + 4), *(f32 *)((u8 *)temp + 8));
+    fn_80148134(&out0, &out1, *(volatile s32 *)((u8 *)temp + 0xC), *(f32 *)((u8 *)temp + 4), *(f32 *)((u8 *)temp + 8));
     ((void (*)(s32, s32, f32, f32, f32, f32, const char *, ...))fn_800103B8)(
         *(s32 *)((u8 *)temp + 0x18),
         *(s32 *)((u8 *)temp + 0x14),
