@@ -2,6 +2,10 @@
 
 extern const u64 cvt_fp2unsigned_bounds[3];
 
+/* Convert a float to an unsigned 32-bit integer with saturation: values below
+   0 become 0, values at or above 2^32 become UINT_MAX, and values at or above
+   2^31 are converted after subtracting 2^31 and biased back. */
+
 asm u32 __cvt_fp2unsigned(register f32 x) {
     // clang-format off
     nofralloc
