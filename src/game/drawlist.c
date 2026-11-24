@@ -119,7 +119,7 @@ extern float lbl_8055FC38;
 extern float lbl_8055FC3C;
 extern float lbl_8055FC40;
 extern float lbl_804C144C[3];
-extern unsigned char lbl_8055FC8F;
+extern unsigned char gDrawListActive;
 extern int fn_801E4F3C(void);
 extern int fn_801E4F20(void);
 extern void drawFifoTriangles(void);
@@ -616,11 +616,11 @@ void fn_802C8DB8(void) {
 #undef drawIndexedTriangles
 }
 
-/* If fn_801E4F20() reports active, sets the drawlist active flag (lbl_8055FC8F),
+/* If fn_801E4F20() reports active, sets the drawlist active flag (gDrawListActive),
  * switches render mode to 6, and returns 1; otherwise returns 0. */
 int beginDrawListPass(void) {
     if (fn_801E4F20() != 0) {
-        lbl_8055FC8F = 1;
+        gDrawListActive = 1;
         lbl_8055FC70 = 6;
         return 1;
     }
@@ -631,10 +631,10 @@ int beginDrawListPass(void) {
  * command path reports no pending work. */
 /* Keep the drawlist-active flag set only if it was already set and fn_801E4F3C reports no pending work; otherwise clear it. */ void fn_802C8E00(void) {
     unsigned char keepFlag = 0;
-    if (lbl_8055FC8F != 0 && fn_801E4F3C() == 0) {
+    if (gDrawListActive != 0 && fn_801E4F3C() == 0) {
         keepFlag = 1;
     }
-    lbl_8055FC8F = keepFlag;
+    gDrawListActive = keepFlag;
 }
 
 extern void fn_801E4FF4(void);
