@@ -540,22 +540,21 @@ done:
     return result;
 }
 #pragma cplusplus on
-extern "C" s32 fn_802E3D68(s32 arg0) {
-    class V {
+extern "C" s32 fn_802E3D68(s32 path) {
+    class FileSystem {
     public:
-        virtual void a();
-        virtual s32 b(s32);
+        virtual void reserved0();
+        virtual s32 open(s32 path);
     };
-    V *fileSystem = (V *)fn_802E336C();
+    FileSystem *fileSystem = (FileSystem *)fn_802E336C();
     s32 handle;
 
-    /* Opens/looks up arg0 through the vtable method at slot +0x0C of the
-     * secondary file-system object returned by fn_802E336C, registers the
-     * result via fn_802E35C0, and returns that handle (or -1 on failure). */
+    /* Open a path through the secondary file system and register the native
+     * handle in the open-file table, returning its slot or -1 on failure. */
     if (fileSystem == 0) goto fail;
-    handle = fileSystem->b(arg0);
+    handle = fileSystem->open(path);
     if (handle == 0) goto fail;
-    handle = fn_802E35C0((const char *)arg0, handle);
+    handle = fn_802E35C0((const char *)path, handle);
     goto done;
 fail:
     handle = -1;
