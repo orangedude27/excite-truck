@@ -318,22 +318,22 @@ void fn_8020F730(void) {
 #pragma push
 #pragma dont_inline on
 /* Find the track-music slot in the current context whose key matches `key`, or the first free slot if none match. */
-void *fn_8020FAF0(key)
+/* Find the track-music entry whose key matches, or the first free entry if none match. */ void *fn_8020FAF0(key)
 char *key;
 {
-    char *slot;
-    char *slots = (char *)fn_8020F5F0(fn_8000DA10());
-    long i = 0;
-    slot = slots;
+    char *entry;
+    char *entries = (char *)fn_8020F5F0(fn_8000DA10());
+    long index = 0;
+    entry = entries;
     for (;;) {
-        if (stricmp(slot + 4, key) == 0) {
-            return slots + i * 0x64;
+        if (stricmp(entry + 4, key) == 0) {
+            return entries + index * 0x64;
         }
-        i++;
-        slot += 0x64;
-        if (i >= 0x40) break;
+        index++;
+        entry += 0x64;
+        if (index >= 0x40) break;
     }
-    return slots + fn_8020F9F4() * 0x64;
+    return entries + fn_8020F9F4() * 0x64;
 }
 #pragma dont_inline reset
 #pragma pop
