@@ -1793,7 +1793,7 @@ void fn_802C7A44(void) {
     fn_802C543C();
 }
 
-void submitModelBatch(void) {
+/* End a model draw batch: refresh all nine sort groups (level 0 means all) and clear the batch-active flag set by fn_802C7A44. */ void submitModelBatch(void) {
 #define s_modelBatchActive lbl_8055FC20
     /* Submit all nine model sort groups and clear the batch flag. */
     int groupId = 0;
