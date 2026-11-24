@@ -330,7 +330,7 @@ typedef struct {
     f32 f34, f38, f3c;
     u8 rest[0x38];
 } CamEntry80253104;
-#pragma scheduling off
+#pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_80253104(s32 arg0, void *arg1) {
     f32 z, y, x;
