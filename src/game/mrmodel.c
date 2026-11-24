@@ -517,14 +517,14 @@ extern int lbl_8034B1F0[];
 #pragma scheduling invalid_target
 /* Resolves a texture reference from the "zonly.tex" resource and stores the
  * looked-up entry into the destination slot for the given index. */
-void fn_802C5C40(int *dest, int index, int source) {
-    int baseId = *dest;
-    int texture = fn_802CAC28(lbl_8034B1F0, 0);
-    int *entry = *(int **)((char *)source + index * 4 + 0x14);
-    s16 refId = *(s16 *)((char *)entry + 6);
-    u16 adjusted = refId - 1;
-    *(int *)((char *)dest + index * 4 + 0x14) =
-        (int)fn_802C5A60(texture, baseId, adjusted);
+/* Resolve a texture-only element's "zonly.tex" reference into a model texture node handle and store it in the element's node slot. */ void fn_802C5C40(int *element, int slot, int sourceItems) {
+    int baseId = *element;
+    int textureHandle = fn_802CAC28(lbl_8034B1F0, 0);
+    int *sourceTexNode = *(int **)((char *)sourceItems + slot * 4 + 0x14);
+    s16 texRef = *(s16 *)((char *)sourceTexNode + 6);
+    u16 nodeKey = texRef - 1;
+    *(int *)((char *)element + slot * 4 + 0x14) =
+        (int)fn_802C5A60(textureHandle, baseId, nodeKey);
 }
 #pragma pop
 extern int fn_8012C33C(char *);
