@@ -301,7 +301,7 @@ extern void fn_80128684(void);
 extern void fn_80265D78(void);
 extern int fn_80133348(int, int, int);
 extern void fn_802B87A0(void);
-extern void fn_80210904(void);
+extern void destroyTrackMusicResource(void);
 extern void fn_8020D1C8(void);
 extern void fn_8000CEF0(void);
 extern void fn_80006E54(void);
@@ -329,7 +329,7 @@ void fn_8000B09C(int arg0) {
         entry += 2;
     } while (i < 4);
     fn_802B87A0();
-    fn_80210904();
+    destroyTrackMusicResource();
     fn_8020D1C8();
     fn_8000CEF0();
     fn_80006E54();
