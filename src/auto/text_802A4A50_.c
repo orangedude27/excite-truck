@@ -836,30 +836,30 @@ s32 fn_802A5B8C(s32 arg0, s32 arg1) {
     }
     return arg0;
 }
-void fn_802A5C1C(void *arg0) {
+/* Initialize a snow/weather particle emitter: set default depth limits (z near 0.5, far 5.0) and spread, clear offsets/padding, then seed the noise triplets and generate the initial particle points. */ void fn_802A5C1C(void *emitter) {
     f32 zero = 0.0f;
-    f32 c = lbl_80564888;
-    f32 b = 0.5f;
-    f32 a = 1.0f;
-    *(f32 *)((u8 *)arg0 + 0x20) = a;
-    *(f32 *)((u8 *)arg0 + 0x24) = b;
-    *(f32 *)((u8 *)arg0 + 0x28) = c;
-    *(f32 *)((u8 *)arg0 + 0x2C) = zero;
-    *(f32 *)((u8 *)arg0 + 0x30) = zero;
-    *(f32 *)((u8 *)arg0 + 0x34) = zero;
-    *(f32 *)((u8 *)arg0 + 0x38) = zero;
-    *(f32 *)((u8 *)arg0 + 0x3C) = zero;
-    *(f32 *)((u8 *)arg0 + 0x40) = zero;
-    *(f32 *)((u8 *)arg0 + 0x44) = zero;
-    *(f32 *)((u8 *)arg0 + 0x48) = zero;
-    *(f32 *)((u8 *)arg0 + 0x4C) = zero;
-    *(f32 *)((u8 *)arg0 + 0x50) = zero;
-    *(f32 *)((u8 *)arg0 + 0x54) = a;
-    *(f32 *)((u8 *)arg0 + 0x58) = zero;
-    *(f32 *)((u8 *)arg0 + 0x18) = zero;
-    *(f32 *)((u8 *)arg0 + 0x14) = zero;
-    fn_802A6234(arg0);
-    fn_802A6790(arg0);
+    f32 depthMax = lbl_80564888;
+    f32 depthMin = 0.5f;
+    f32 spread = 1.0f;
+    *(f32 *)((u8 *)emitter + 0x20) = spread;
+    *(f32 *)((u8 *)emitter + 0x24) = depthMin;
+    *(f32 *)((u8 *)emitter + 0x28) = depthMax;
+    *(f32 *)((u8 *)emitter + 0x2C) = zero;
+    *(f32 *)((u8 *)emitter + 0x30) = zero;
+    *(f32 *)((u8 *)emitter + 0x34) = zero;
+    *(f32 *)((u8 *)emitter + 0x38) = zero;
+    *(f32 *)((u8 *)emitter + 0x3C) = zero;
+    *(f32 *)((u8 *)emitter + 0x40) = zero;
+    *(f32 *)((u8 *)emitter + 0x44) = zero;
+    *(f32 *)((u8 *)emitter + 0x48) = zero;
+    *(f32 *)((u8 *)emitter + 0x4C) = zero;
+    *(f32 *)((u8 *)emitter + 0x50) = zero;
+    *(f32 *)((u8 *)emitter + 0x54) = spread;
+    *(f32 *)((u8 *)emitter + 0x58) = zero;
+    *(f32 *)((u8 *)emitter + 0x18) = zero;
+    *(f32 *)((u8 *)emitter + 0x14) = zero;
+    fn_802A6234(emitter);
+    fn_802A6790(emitter);
 }
 #pragma opt_propagation reset
 extern f32 lbl_8056488C;
@@ -1024,14 +1024,8 @@ extern f32 lbl_80564894;
 extern f32 lbl_8056489C;
 extern f32 lbl_805648A0;
 extern double lbl_80564848;
-#pragma push
-#pragma optimization_level 2
-#pragma dont_inline on
-#pragma scheduling invalid_target
+#pragma optimization_level 4
 void fn_802A62CC(void *arg0, s32 arg1) {
-    f32 temp_f30;
-    f32 temp_f31;
-    f32 temp_f29;
     union IntToDouble {
         double value;
         struct { u32 high, low; } words;
@@ -1041,9 +1035,12 @@ void fn_802A62CC(void *arg0, s32 arg1) {
     s32 spC;
     f32 sp8;
     f32 temp_f10;
+    f32 temp_f29;
     f32 temp_f29_2;
     f32 temp_f2;
+    f32 temp_f30;
     f32 temp_f30_2;
+    f32 temp_f31;
     f32 temp_f3;
     f32 temp_f4;
     f32 temp_f6;
@@ -1074,9 +1071,6 @@ void fn_802A62CC(void *arg0, s32 arg1) {
             (lbl_80564890 * temp_f30_2 * (temp_f6 - (temp_f2 / (lbl_80564860 * temp_f10)))))) /
         (lbl_80564860 * temp_f30_2));
 }
-#pragma scheduling on
-#pragma pop
-#pragma pop
 f32 fn_80129DC4(s32, f32, f32);
 extern f32 lbl_80564894, lbl_80564898;
 f32 fn_802A4AD4(void);
@@ -1145,24 +1139,20 @@ void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
 #pragma scheduling push
 #pragma scheduling on
 #pragma dont_inline on
-void fn_802A6758(void *arg0, f32 *arg1)
-{
-  s32 i = *((s32 *) (((u8 *) arg0) + 4));
-  f32 *base = *((f32 **) arg0);
-  f32 z;
-  f32 y;
-  f32 x;
-  x = arg1[0];
-  if (1)
-  {
+void fn_802A6758(void *arg0, f32 *arg1) {
+    s32 i = *(s32 *)((u8 *)arg0 + 4);
+    f32 *base = *(f32 **)arg0;
+    f32 z;
+    f32 y;
+    f32 x;
+    x = arg1[0];
     y = arg1[1];
     z = arg1[2];
     base[i * 3] = x;
-  }
-  base += i * 3;
-  base[1] = y;
-  base[2] = z;
-  *((s32 *) (((u8 *) arg0) + 4)) += 1;
+    base += i * 3;
+    base[1] = y;
+    base[2] = z;
+    *(s32 *)((u8 *)arg0 + 4) += 1;
 }
 #pragma push
 #pragma processor 750
@@ -1222,7 +1212,7 @@ void fn_802A6838(void *arg0)
     curve = fn_80287BC8(lbl_80564858, lbl_8056485C);
     product = scale * curve;
     samples[1] = (*((float *) (p + 0x54))) * (scale - product);
-    samples[0] = (*((float *) (p - -0x50))) * (scale - product);
+    samples[0] = (*((float *) (p + 0x50))) * (scale - product);
     absX = __fabs((double) samples[0]);
     absY = __fabs((double) samples[1]);
     ay = one - ((float) absY);
@@ -1232,8 +1222,8 @@ void fn_802A6838(void *arg0)
     end = *((float *) (p + 0x28));
     start = *((float *) (p + 0x24));
     next = start + (curve * (end - start));
-    values[2] = next;
-    values[1] = (dt * next) * (samples[1] + ry);
+    values[2] = start + (curve * (end - start));
+    values[1] = (dt * (start + (curve * (end - start)))) * (samples[1] + ry);
     values[0] = (speed * next) * (samples[0] + rx);
     fn_802A6758(arg0, values);
   }
@@ -1411,47 +1401,50 @@ extern float lbl_80564850, lbl_8056485C, lbl_80564860, lbl_80564890, lbl_805648B
 #pragma push
 #pragma optimization_level 4
 #pragma processor 750
-void fn_802A6E34(void *arg0)
-{
-  f32 sp14;
-  f32 sp10;
-  s32 spC;
-  f32 sp8;
-  u32 conv[2];
-  f32 temp_f10;
-  f32 temp_f29;
-  f32 temp_f29_2;
-  f32 temp_f2;
-  f32 temp_f30;
-  f32 temp_f30_2;
-  f32 temp_f31;
-  f32 temp_f3;
-  f32 temp_f4;
-  f32 temp_f6;
-  f32 temp_f7;
-  f32 temp_f8;
-  f32 temp_f9;
-  f32 disc;
-  temp_f30 = fn_801E8738(*((s32 *) (((u8 *) arg0) + 0x10))) * lbl_80564850;
-  temp_f31 = fn_801E8874(*((s32 *) (((u8 *) arg0) + 0x10)));
-  temp_f29 = fn_801E8894(*((s32 *) (((u8 *) arg0) + 0x10)));
-  fn_801E88B4(&sp14, &sp10, &spC, &sp8, *((s32 *) (((u8 *) arg0) + 0x10)));
-  temp_f10 = (f32) fn_8002EF30(temp_f30);
-  *((f32 *) (((u8 *) arg0) + 0x14)) = temp_f10;
-  temp_f7 = temp_f29 * lbl_805648BC;
-  temp_f30_2 = temp_f29 + temp_f31;
-  *((f32 *) (((u8 *) arg0) + 0x18)) = lbl_8056485C + temp_f31;
-  temp_f9 = lbl_805648B8 * temp_f30_2;
-  temp_f8 = (lbl_80564860 * temp_f29) * temp_f31;
-  temp_f6 = temp_f31 * temp_f7;
-  temp_f29_2 = temp_f9 - temp_f8;
-  conv[0] = 0x43300000;
-  conv[1] = ((u32) spC) ^ 0x80000000;
-  temp_f3 = lbl_805648B4 * (((f32) ((*((double *) conv)) - lbl_80564848)) * (lbl_80564890 * temp_f31));
-  temp_f4 = temp_f29_2 * temp_f29_2;
-  temp_f2 = temp_f3 * (temp_f29 - temp_f31);
-  disc = temp_f4 - ((lbl_80564890 * temp_f30_2) * (temp_f6 - (temp_f2 / (lbl_80564860 * temp_f10))));
-  *((f32 *) (((0, (u8 *) arg0)) + 0x1C)) = (f32) (((-temp_f29_2) + ((f32) fn_8002F234(disc))) / (lbl_80564860 * temp_f30_2));
+void fn_802A6E34(void *arg0) {
+    f32 temp_f30;
+    f32 temp_f31;
+    f32 temp_f29;
+    union IntToDouble {
+        double value;
+        struct { u32 high, low; } words;
+    } conversion;
+    f32 sp14;
+    f32 sp10;
+    s32 spC;
+    f32 sp8;
+    f32 temp_f10;
+    f32 temp_f29_2;
+    f32 temp_f2;
+    f32 temp_f30_2;
+    f32 temp_f3;
+    f32 temp_f4;
+    f32 temp_f6;
+    f32 temp_f7;
+    f32 temp_f8;
+    f32 temp_f9;
+
+    temp_f30 = lbl_80564850 * fn_801E8738(*(s32 *)((u8 *)arg0 + 0x10));
+    temp_f31 = fn_801E8874(*(s32 *)((u8 *)arg0 + 0x10));
+    temp_f29 = fn_801E8894(*(s32 *)((u8 *)arg0 + 0x10));
+    fn_801E88B4(&sp14, &sp10, &spC, &sp8, *(s32 *)((u8 *)arg0 + 0x10));
+    temp_f10 = (f32)fn_8002EF30(temp_f30);
+    *(f32 *)((u8 *)arg0 + 0x14) = temp_f10;
+    temp_f7 = temp_f29 * lbl_805648BC;
+    temp_f30_2 = temp_f29 + temp_f31;
+    *(f32 *)((u8 *)arg0 + 0x18) = lbl_8056485C + temp_f31;
+    temp_f9 = lbl_805648B8 * temp_f30_2;
+    temp_f8 = lbl_80564860 * temp_f29 * temp_f31;
+    temp_f6 = temp_f31 * temp_f7;
+    temp_f29_2 = temp_f9 - temp_f8;
+    conversion.words.high = 0x43300000;
+    conversion.words.low = (u32)spC ^ 0x80000000;
+    temp_f3 = lbl_805648B4 * ((f32)(conversion.value - lbl_80564848) * (lbl_80564890 * temp_f31));
+    temp_f4 = temp_f29_2 * temp_f29_2;
+    temp_f2 = temp_f3 * (temp_f29 - temp_f31);
+    *(f32 *)((u8 *)arg0 + 0x1C) = (f32)((-temp_f29_2 + (f32)fn_8002F234(temp_f4 -
+        (lbl_80564890 * temp_f30_2 * (temp_f6 - (temp_f2 / (lbl_80564860 * temp_f10)))))) /
+        (lbl_80564860 * temp_f30_2));
 }
 #pragma pop
 extern f32 fn_802A4AD4(void);
@@ -1843,13 +1836,13 @@ void fn_802A775C(void *arg0)
     y = obj->dirY;
     xx = x * x;
     sp10.x = x;
-    tx = x * t;
+    ;
     ty = y * t;
     zz = (new_var = z * z);
     sp10.z = z;
     tz = z * t;
     sum = xx + zz;
-    sp18[0] = tx;
+    sp18[0] = x * t;
     sp18[1] = ty;
     sp18[2] = tz;
     len = (f32) fn_8002F234(sum);
