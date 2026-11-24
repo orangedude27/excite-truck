@@ -188,7 +188,7 @@ int fn_802E7A70(unsigned int handle) {
     return 1;
 }
 #pragma pop
-int handleResetEvent(int eventType, int shutdownMode) {
+/* Reset callback: on a reset event, clear the save-state flag, shut WPAD down, and wait for the shutdown to complete. */ int handleResetEvent(int eventType, int shutdownMode) {
     /* On event type 1, trigger a WPAD shutdown/reconnect sequence and wait until the shutdown completes. */
     if (eventType == 1) {
         fn_80128684();
