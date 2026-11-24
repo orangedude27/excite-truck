@@ -182,7 +182,7 @@ void File_checkOpenFiles(void) {
 }
 #pragma scheduling on
 extern char lbl_8034CF98[];
-/* AllocFileSlot: find a free slot in the open-file table, store the name and handle there, and return its index (or -1/panic if full). */ s32 fn_802E35C0(const char *name, s32 fileHandle) {
+/* AllocFileSlot: find a free slot in the open-file table, store the name and handle there, and return its index (or -1/panic if full). */ s32 AllocOpenFileSlot(const char *name, s32 fileHandle) {
     /* Allocate a free slot in the open-file table: copy the name, store the
      * associated handle, and return its index, or -1 if the table is full. */
     char *tableBase;
@@ -221,14 +221,14 @@ extern "C" s32 fn_802E367C(s32 path) {
     FileSystem *fileSystem = (FileSystem *)fn_802E333C();
     s32 nativeHandle = fileSystem->open(path);
     if (nativeHandle != 0)
-        return fn_802E35C0((const char *)path, nativeHandle);
+        return AllocOpenFileSlot((const char *)path, nativeHandle);
     return -1;
 }
 #pragma cplusplus on
 extern "C" s32 fn_802E36D8(s32 pathOrName)
 {
     /* Resolve path/name via the file manager's vtable method at slot 0x10 (3rd virtual),
-     * then if it yields a handle/name token, pass it to fn_802E35C0; otherwise return -1. */
+     * then if it yields a handle/name token, pass it to AllocOpenFileSlot; otherwise return -1. */
     class V {
     public:
         virtual void a();
@@ -238,7 +238,7 @@ extern "C" s32 fn_802E36D8(s32 pathOrName)
     V *fileManager = (V *)fn_802E333C();
     s32 lookupResult = fileManager->c(pathOrName);
     if (lookupResult != 0)
-        return fn_802E35C0((const char *)pathOrName, lookupResult);
+        return AllocOpenFileSlot((const char *)pathOrName, lookupResult);
     return -1;
 }
 #pragma cplusplus on
@@ -530,7 +530,7 @@ extern "C" s32 FileLookupSecondary(s32 path) {
     if (fileSystem == 0) goto fail;
     handle = fileSystem->c(path);
     if (handle == 0) goto fail;
-    handle = fn_802E35C0((const char *)path, handle);
+    handle = AllocOpenFileSlot((const char *)path, handle);
     goto done;
 fail:
     handle = -1;
@@ -552,7 +552,7 @@ extern "C" s32 FileOpenSecondary(s32 path) {
     if (fileSystem == 0) goto fail;
     handle = fileSystem->open(path);
     if (handle == 0) goto fail;
-    handle = fn_802E35C0((const char *)path, handle);
+    handle = AllocOpenFileSlot((const char *)path, handle);
     goto done;
 fail:
     handle = -1;
