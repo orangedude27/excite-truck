@@ -1035,7 +1035,9 @@ extern void fn_802CF850(void);
 #pragma push
 #pragma dont_inline on
 void GXReinit(void) {
-    /* (Re)initialize the GX FIFO from the CPU FIFO and reconfigure video/GX state. */
+    /* Rebuild GX after a draw-sync timeout or video change: reuse the current CPU
+     * FIFO's base and size, reinitialize GX and the default render state, then
+     * reapply the active video mode. */
     extern int gGxInitResult;
     extern void *gCurrentRenderMode;
     char fifoInfo[0x80];
