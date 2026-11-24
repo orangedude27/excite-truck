@@ -282,7 +282,7 @@ void fn_802E8920(int requestedFreeBytes) {
     }
 }
 
-void fn_802E8B98(void) {
+void rmemcardDeleteSelectedFile(void) {
 #define sSelectedNandFile lbl_80560030
 #define kBannerBinPath lbl_8034DD78
 #define sNoFileSelectedMsg lbl_8034DE94
@@ -302,7 +302,7 @@ int rmemcardRecover(void) {
     /* Poll NAND request 1 until it completes; on success run cleanup and return 1, else 0. */
     for (;;) {
         if (((int (*)(int))fn_802E888C)(1) != 0) {
-            fn_802E8B98();
+            rmemcardDeleteSelectedFile();
             return 1;
         }
         if (fn_802E88D8() != 0)
