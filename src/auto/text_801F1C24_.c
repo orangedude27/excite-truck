@@ -2158,10 +2158,11 @@ void fn_801F4B18(void *collection, int arg1) {
 extern int fn_801F1CF0(int);
 extern int fn_802CDAFC(int, int);
 extern int fn_802CDB20(int, int);
-void fn_801F4C34(void *arg0, int arg1) {
-    int *p = (int *)arg0;
-    if (fn_802CDB20(arg1, p[2]) != 0 && fn_801F1CF0(p[1]) == 0) {
-        fn_802CDAFC(arg1, p[2]);
+void fn_801F4C34(void *entryPtr, int drawContext) {
+    /* Clear an object's per-object draw flag when it is no longer facing the camera. */
+    int *entry = (int *)entryPtr;
+    if (fn_802CDB20(drawContext, entry[2]) != 0 && fn_801F1CF0(entry[1]) == 0) {
+        fn_802CDAFC(drawContext, entry[2]);
     }
 }
 
