@@ -3866,22 +3866,22 @@ void fn_8011C120(void *alarm) {
 
 #pragma dont_inline on
 /* Try to acquire a lock/state object: if valid and unlocked (state==1), set busy, increment the use count, and return whether it is now active. */
-u32 fn_8011C1E0(s32 arg0, void *arg1) {
+/* Try to acquire the manager lock: when the tick and lock object are valid and its guards (+0x14/+0x18) are set, mark it busy (state +0xC: 1->2) and bump its ref count (+0x10) under disabled interrupts; return whether it is now locked. */ u32 fn_8011C1E0(s32 lockTick, void *lockObj) {
     BOOL enabled;
-    s32 temp_r4;
-    s32 temp_r4_2;
+    s32 refCount;
+    s32 state;
 
-    if (arg0 != 0 && arg1 != 0 &&
-        *(s32 *)((u8 *)arg1 + 0x18) != 0 &&
-        *(s32 *)((u8 *)arg1 + 0x14) != 0) {
+    if (lockTick != 0 && lockObj != 0 &&
+        *(s32 *)((u8 *)lockObj + 0x18) != 0 &&
+        *(s32 *)((u8 *)lockObj + 0x14) != 0) {
         enabled = OSDisableInterrupts();
-        if (*(s32 *)((u8 *)arg1 + 0xC) == 1)
-            *(s32 *)((u8 *)arg1 + 0xC) = 2;
-        temp_r4 = *(s32 *)((u8 *)arg1 + 0x10);
-        *(s32 *)((u8 *)arg1 + 0x10) = temp_r4 + 1;
+        if (*(s32 *)((u8 *)lockObj + 0xC) == 1)
+            *(s32 *)((u8 *)lockObj + 0xC) = 2;
+        refCount = *(s32 *)((u8 *)lockObj + 0x10);
+        *(s32 *)((u8 *)lockObj + 0x10) = refCount + 1;
         OSRestoreInterrupts(enabled);
-        temp_r4_2 = *(s32 *)((u8 *)arg1 + 0xC);
-        return (u32)((1 - temp_r4_2) | (temp_r4_2 - 1)) >> 31;
+        state = *(s32 *)((u8 *)lockObj + 0xC);
+        return (u32)((1 - state) | (state - 1)) >> 31;
     }
     return 1;
 }
