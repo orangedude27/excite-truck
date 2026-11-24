@@ -25,9 +25,9 @@ typedef struct M9 { V3 r[3]; } M9;
 static inline void MultVecT_inl(const float *m, const float *src, float *dst) {
     float x, y, z;
     if (dst == src) {
-        x = src[1] * m[1] + src[0] * m[0] + src[2] * m[2];
-        y = src[1] * m[4] + src[0] * m[3] + src[2] * m[5];
-        z = src[1] * m[7] + src[0] * m[6] + src[2] * m[8];
+        x = src[2] * m[2] + (src[0] * m[0] + src[1] * m[1]);
+        y = src[2] * m[5] + (src[0] * m[3] + src[1] * m[4]);
+        z = src[2] * m[8] + (src[0] * m[6] + src[1] * m[7]);
         dst[0] = x; dst[1] = y; dst[2] = z;
     } else {
         dst[0] = src[1] * m[1] + src[0] * m[0] + src[2] * m[2];
@@ -559,260 +559,54 @@ void fn_80182074(void *arg0, void *arg1) {
     unsigned char *a = (unsigned char *)arg0;
     unsigned char *b = (unsigned char *)arg1;
     void *node;
-    V3 in;
-    V3 out1;
-    V3 out2;
+    V3 in, out1, out2;
     char path[0x50];
-    PhysStateScalars state;
-    void *cfg;
-    void *chassis;
-    void *obj;
+    volatile PhysStateScalars state;
+    void *cfg, *chassis, *obj;
     unsigned char c0, c1;
-    int w0, w1;
-    int v;
-    int i;
-    int isPcar;
-    int flag;
-
+    int w0, w1, v, i, isPcar, flag;
+#define BCPY(OFF) c1 = *(unsigned char *)(b + OFF); c0 = *(unsigned char *)(b + OFF + 1); \
+    *(unsigned char *)(a + OFF + 0x88) = c1; *(unsigned char *)(a + OFF + 0x89) = c0;
     *(unsigned char *)(a + 0x2680) = 0;
     *(int *)(a + 0x59C) = *(int *)(b + 0xE4);
     *(int *)(a + 0x5A4) = *(int *)(b + 0xE8);
     v = *(int *)(b + 0xDC);
     *(int *)(a + 0x5A0) = v;
-    if (v == 0) {
-        *(int *)(a + 0x5A0) = 0x0FF807FF;
-    }
-    if (*(int *)((unsigned char *)__AXFXGetLfoSinTable_801769CC() + 4) & 0x400) {
+    if (v == 0) *(int *)(a + 0x5A0) = 0x0FF807FF;
+    if (*(int *)((unsigned char *)__AXFXGetLfoSinTable_801769CC() + 4) & 0x400)
         *(int *)(a + 0x5A0) |= 0x80000000;
-    }
     *(int *)(a + 0x1EC) = *(int *)(b + 0xE0);
     *(int *)(a + 0x1F0) = *(int *)(b + 0x68);
-    c1 = *(unsigned char *)(b + 0x6C);
-    c0 = *(unsigned char *)(b + 0x6D);
-    *(unsigned char *)(a + 0x1F4) = c1;
-    *(unsigned char *)(a + 0x1F5) = c0;
-    c1 = *(unsigned char *)(b + 0x6E);
-    c0 = *(unsigned char *)(b + 0x6F);
-    *(unsigned char *)(a + 0x1F6) = c1;
-    *(unsigned char *)(a + 0x1F7) = c0;
-    c1 = *(unsigned char *)(b + 0x70);
-    c0 = *(unsigned char *)(b + 0x71);
-    *(unsigned char *)(a + 0x1F8) = c1;
-    *(unsigned char *)(a + 0x1F9) = c0;
-    c1 = *(unsigned char *)(b + 0x72);
-    c0 = *(unsigned char *)(b + 0x73);
-    *(unsigned char *)(a + 0x1FA) = c1;
-    *(unsigned char *)(a + 0x1FB) = c0;
-    c1 = *(unsigned char *)(b + 0x74);
-    c0 = *(unsigned char *)(b + 0x75);
-    *(unsigned char *)(a + 0x1FC) = c1;
-    *(unsigned char *)(a + 0x1FD) = c0;
-    c1 = *(unsigned char *)(b + 0x76);
-    c0 = *(unsigned char *)(b + 0x77);
-    *(unsigned char *)(a + 0x1FE) = c1;
-    *(unsigned char *)(a + 0x1FF) = c0;
-    c1 = *(unsigned char *)(b + 0x78);
-    c0 = *(unsigned char *)(b + 0x79);
-    *(unsigned char *)(a + 0x200) = c1;
-    *(unsigned char *)(a + 0x201) = c0;
-    c1 = *(unsigned char *)(b + 0x7A);
-    c0 = *(unsigned char *)(b + 0x7B);
-    *(unsigned char *)(a + 0x202) = c1;
-    *(unsigned char *)(a + 0x203) = c0;
-    c1 = *(unsigned char *)(b + 0x7C);
-    c0 = *(unsigned char *)(b + 0x7D);
-    *(unsigned char *)(a + 0x204) = c1;
-    *(unsigned char *)(a + 0x205) = c0;
-    c1 = *(unsigned char *)(b + 0x7E);
-    c0 = *(unsigned char *)(b + 0x7F);
-    *(unsigned char *)(a + 0x206) = c1;
-    *(unsigned char *)(a + 0x207) = c0;
-    c1 = *(unsigned char *)(b + 0x80);
-    c0 = *(unsigned char *)(b + 0x81);
-    *(unsigned char *)(a + 0x208) = c1;
-    *(unsigned char *)(a + 0x209) = c0;
-    c1 = *(unsigned char *)(b + 0x82);
-    c0 = *(unsigned char *)(b + 0x83);
-    *(unsigned char *)(a + 0x20A) = c1;
-    *(unsigned char *)(a + 0x20B) = c0;
-    c1 = *(unsigned char *)(b + 0x84);
-    c0 = *(unsigned char *)(b + 0x85);
-    *(unsigned char *)(a + 0x20C) = c1;
-    *(unsigned char *)(a + 0x20D) = c0;
-    c1 = *(unsigned char *)(b + 0x86);
-    c0 = *(unsigned char *)(b + 0x87);
-    *(unsigned char *)(a + 0x20E) = c1;
-    *(unsigned char *)(a + 0x20F) = c0;
-    c1 = *(unsigned char *)(b + 0x88);
-    c0 = *(unsigned char *)(b + 0x89);
-    *(unsigned char *)(a + 0x210) = c1;
-    *(unsigned char *)(a + 0x211) = c0;
-    c1 = *(unsigned char *)(b + 0x8A);
-    c0 = *(unsigned char *)(b + 0x8B);
-    *(unsigned char *)(a + 0x212) = c1;
-    *(unsigned char *)(a + 0x213) = c0;
-    c1 = *(unsigned char *)(b + 0x8C);
-    c0 = *(unsigned char *)(b + 0x8D);
-    *(unsigned char *)(a + 0x214) = c1;
-    *(unsigned char *)(a + 0x215) = c0;
-    c1 = *(unsigned char *)(b + 0x8E);
-    c0 = *(unsigned char *)(b + 0x8F);
-    *(unsigned char *)(a + 0x216) = c1;
-    *(unsigned char *)(a + 0x217) = c0;
-    c1 = *(unsigned char *)(b + 0x90);
-    c0 = *(unsigned char *)(b + 0x91);
-    *(unsigned char *)(a + 0x218) = c1;
-    *(unsigned char *)(a + 0x219) = c0;
-    c1 = *(unsigned char *)(b + 0x92);
-    c0 = *(unsigned char *)(b + 0x93);
-    *(unsigned char *)(a + 0x21A) = c1;
-    *(unsigned char *)(a + 0x21B) = c0;
-    c1 = *(unsigned char *)(b + 0x94);
-    c0 = *(unsigned char *)(b + 0x95);
-    *(unsigned char *)(a + 0x21C) = c1;
-    *(unsigned char *)(a + 0x21D) = c0;
-    c1 = *(unsigned char *)(b + 0x96);
-    c0 = *(unsigned char *)(b + 0x97);
-    *(unsigned char *)(a + 0x21E) = c1;
-    *(unsigned char *)(a + 0x21F) = c0;
-    c1 = *(unsigned char *)(b + 0x98);
-    c0 = *(unsigned char *)(b + 0x99);
-    *(unsigned char *)(a + 0x220) = c1;
-    *(unsigned char *)(a + 0x221) = c0;
-    c1 = *(unsigned char *)(b + 0x9A);
-    c0 = *(unsigned char *)(b + 0x9B);
-    *(unsigned char *)(a + 0x222) = c1;
-    *(unsigned char *)(a + 0x223) = c0;
-    c1 = *(unsigned char *)(b + 0x9C);
-    c0 = *(unsigned char *)(b + 0x9D);
-    *(unsigned char *)(a + 0x224) = c1;
-    *(unsigned char *)(a + 0x225) = c0;
-    c1 = *(unsigned char *)(b + 0x9E);
-    c0 = *(unsigned char *)(b + 0x9F);
-    *(unsigned char *)(a + 0x226) = c1;
-    *(unsigned char *)(a + 0x227) = c0;
-    c1 = *(unsigned char *)(b + 0xA0);
-    c0 = *(unsigned char *)(b + 0xA1);
-    *(unsigned char *)(a + 0x228) = c1;
-    *(unsigned char *)(a + 0x229) = c0;
-    c1 = *(unsigned char *)(b + 0xA2);
-    c0 = *(unsigned char *)(b + 0xA3);
-    *(unsigned char *)(a + 0x22A) = c1;
-    *(unsigned char *)(a + 0x22B) = c0;
-    c1 = *(unsigned char *)(b + 0xA4);
-    c0 = *(unsigned char *)(b + 0xA5);
-    *(unsigned char *)(a + 0x22C) = c1;
-    *(unsigned char *)(a + 0x22D) = c0;
-    c1 = *(unsigned char *)(b + 0xA6);
-    c0 = *(unsigned char *)(b + 0xA7);
-    *(unsigned char *)(a + 0x22E) = c1;
-    *(unsigned char *)(a + 0x22F) = c0;
-    c1 = *(unsigned char *)(b + 0xA8);
-    c0 = *(unsigned char *)(b + 0xA9);
-    *(unsigned char *)(a + 0x230) = c1;
-    *(unsigned char *)(a + 0x231) = c0;
-    c1 = *(unsigned char *)(b + 0xAA);
-    c0 = *(unsigned char *)(b + 0xAB);
-    *(unsigned char *)(a + 0x232) = c1;
-    *(unsigned char *)(a + 0x233) = c0;
-    c1 = *(unsigned char *)(b + 0xAC);
-    c0 = *(unsigned char *)(b + 0xAD);
-    *(unsigned char *)(a + 0x234) = c1;
-    *(unsigned char *)(a + 0x235) = c0;
-    c1 = *(unsigned char *)(b + 0xAE);
-    c0 = *(unsigned char *)(b + 0xAF);
-    *(unsigned char *)(a + 0x236) = c1;
-    *(unsigned char *)(a + 0x237) = c0;
-    c1 = *(unsigned char *)(b + 0xB0);
-    c0 = *(unsigned char *)(b + 0xB1);
-    *(unsigned char *)(a + 0x238) = c1;
-    *(unsigned char *)(a + 0x239) = c0;
-    c1 = *(unsigned char *)(b + 0xB2);
-    c0 = *(unsigned char *)(b + 0xB3);
-    *(unsigned char *)(a + 0x23A) = c1;
-    *(unsigned char *)(a + 0x23B) = c0;
-    c1 = *(unsigned char *)(b + 0xB4);
-    c0 = *(unsigned char *)(b + 0xB5);
-    *(unsigned char *)(a + 0x23C) = c1;
-    *(unsigned char *)(a + 0x23D) = c0;
-    c1 = *(unsigned char *)(b + 0xB6);
-    c0 = *(unsigned char *)(b + 0xB7);
-    *(unsigned char *)(a + 0x23E) = c1;
-    *(unsigned char *)(a + 0x23F) = c0;
-    c1 = *(unsigned char *)(b + 0xB8);
-    c0 = *(unsigned char *)(b + 0xB9);
-    *(unsigned char *)(a + 0x240) = c1;
-    *(unsigned char *)(a + 0x241) = c0;
-    c1 = *(unsigned char *)(b + 0xBA);
-    c0 = *(unsigned char *)(b + 0xBB);
-    *(unsigned char *)(a + 0x242) = c1;
-    *(unsigned char *)(a + 0x243) = c0;
-    c1 = *(unsigned char *)(b + 0xBC);
-    c0 = *(unsigned char *)(b + 0xBD);
-    *(unsigned char *)(a + 0x244) = c1;
-    *(unsigned char *)(a + 0x245) = c0;
-    c1 = *(unsigned char *)(b + 0xBE);
-    c0 = *(unsigned char *)(b + 0xBF);
-    *(unsigned char *)(a + 0x246) = c1;
-    *(unsigned char *)(a + 0x247) = c0;
-    c1 = *(unsigned char *)(b + 0xC0);
-    c0 = *(unsigned char *)(b + 0xC1);
-    *(unsigned char *)(a + 0x248) = c1;
-    *(unsigned char *)(a + 0x249) = c0;
-    c1 = *(unsigned char *)(b + 0xC2);
-    c0 = *(unsigned char *)(b + 0xC3);
-    *(unsigned char *)(a + 0x24A) = c1;
-    *(unsigned char *)(a + 0x24B) = c0;
-    c1 = *(unsigned char *)(b + 0xC4);
-    c0 = *(unsigned char *)(b + 0xC5);
-    *(unsigned char *)(a + 0x24C) = c1;
-    *(unsigned char *)(a + 0x24D) = c0;
-    c1 = *(unsigned char *)(b + 0xC6);
-    c0 = *(unsigned char *)(b + 0xC7);
-    *(unsigned char *)(a + 0x24E) = c1;
-    *(unsigned char *)(a + 0x24F) = c0;
-    c1 = *(unsigned char *)(b + 0xC8);
-    c0 = *(unsigned char *)(b + 0xC9);
-    *(unsigned char *)(a + 0x250) = c1;
-    *(unsigned char *)(a + 0x251) = c0;
-    c1 = *(unsigned char *)(b + 0xCA);
-    c0 = *(unsigned char *)(b + 0xCB);
-    *(unsigned char *)(a + 0x252) = c1;
-    *(unsigned char *)(a + 0x253) = c0;
+    BCPY(0x6C) BCPY(0x6E) BCPY(0x70) BCPY(0x72) BCPY(0x74) BCPY(0x76)
+    BCPY(0x78) BCPY(0x7A) BCPY(0x7C) BCPY(0x7E) BCPY(0x80) BCPY(0x82)
+    BCPY(0x84) BCPY(0x86) BCPY(0x88) BCPY(0x8A) BCPY(0x8C) BCPY(0x8E)
+    BCPY(0x90) BCPY(0x92) BCPY(0x94) BCPY(0x96) BCPY(0x98) BCPY(0x9A)
+    BCPY(0x9C) BCPY(0x9E) BCPY(0xA0) BCPY(0xA2) BCPY(0xA4) BCPY(0xA6)
+    BCPY(0xA8) BCPY(0xAA)
+    BCPY(0xAC) BCPY(0xAE) BCPY(0xB0) BCPY(0xB2) BCPY(0xB4) BCPY(0xB6)
+    BCPY(0xB8) BCPY(0xBA) BCPY(0xBC) BCPY(0xBE) BCPY(0xC0) BCPY(0xC2)
+    BCPY(0xC4) BCPY(0xC6) BCPY(0xC8) BCPY(0xCA)
+#undef BCPY
     *(int *)(a + 0x254) = *(int *)(b + 0xCC);
     *(int *)(a + 0x258) = *(int *)(b + 0xD0);
     *(int *)(a + 0x25C) = *(int *)(b + 0xD4);
     *(unsigned char *)(a + 0x260) = *(unsigned char *)(b + 0xD8);
     *(int *)(a + 0x264) = *(int *)(b + 0xDC);
     *(int *)(a + 0x26C) = fn_802792E4((char *)(a + 0x234));
-    w1 = *(int *)(b + 0x18);
-    w0 = *(int *)(b + 0x1C);
-    *(int *)(a + 0x274) = w1;
-    *(int *)(a + 0x278) = w0;
-    w1 = *(int *)(b + 0x20);
-    w0 = *(int *)(b + 0x24);
-    *(int *)(a + 0x27C) = w1;
-    *(int *)(a + 0x280) = w0;
-    w1 = *(int *)(b + 0x28);
-    w0 = *(int *)(b + 0x2C);
-    *(int *)(a + 0x284) = w1;
-    *(int *)(a + 0x288) = w0;
-    w1 = *(int *)(b + 0x30);
-    w0 = *(int *)(b + 0x34);
-    *(int *)(a + 0x28C) = w1;
-    *(int *)(a + 0x290) = w0;
-    w1 = *(int *)(b + 0x38);
-    w0 = *(int *)(b + 0x3C);
-    *(int *)(a + 0x294) = w1;
-    *(int *)(a + 0x298) = w0;
-    w1 = *(int *)(b + 0x40);
-    w0 = *(int *)(b + 0x44);
-    *(int *)(a + 0x29C) = w1;
-    *(int *)(a + 0x2A0) = w0;
-    w1 = *(int *)(b + 0x48);
-    w0 = *(int *)(b + 0x4C);
-    *(int *)(a + 0x2A4) = w1;
-    *(int *)(a + 0x2A8) = w0;
+    w1 = *(int *)(b + 0x18); w0 = *(int *)(b + 0x1C);
+    *(int *)(a + 0x274) = w1; *(int *)(a + 0x278) = w0;
+    w1 = *(int *)(b + 0x20); w0 = *(int *)(b + 0x24);
+    *(int *)(a + 0x27C) = w1; *(int *)(a + 0x280) = w0;
+    w1 = *(int *)(b + 0x28); w0 = *(int *)(b + 0x2C);
+    *(int *)(a + 0x284) = w1; *(int *)(a + 0x288) = w0;
+    w1 = *(int *)(b + 0x30); w0 = *(int *)(b + 0x34);
+    *(int *)(a + 0x28C) = w1; *(int *)(a + 0x290) = w0;
+    w1 = *(int *)(b + 0x38); w0 = *(int *)(b + 0x3C);
+    *(int *)(a + 0x294) = w1; *(int *)(a + 0x298) = w0;
+    w1 = *(int *)(b + 0x40); w0 = *(int *)(b + 0x44);
+    *(int *)(a + 0x29C) = w1; *(int *)(a + 0x2A0) = w0;
+    w1 = *(int *)(b + 0x48); w0 = *(int *)(b + 0x4C);
+    *(int *)(a + 0x2A4) = w1; *(int *)(a + 0x2A8) = w0;
     *(int *)(a + 0x2AC) = *(int *)(b + 0x50);
     *(int *)(a + 0x2B0) = *(int *)(b + 0x54);
     *(short *)(a + 0x2B4) = *(short *)(b + 0x58);
@@ -820,9 +614,7 @@ void fn_80182074(void *arg0, void *arg1) {
     *(int *)(a + 0x2BC) = *(int *)(b + 0x60);
     *(int *)(a + 0x2C0) = *(int *)(b + 0x64);
     *(int *)(a + 0x328) = (int)fn_80279874(*(int *)(a + 0x25C));
-    if (fn_8027AA48() == 0) {
-        *(int *)(a + 0x328) = 0;
-    }
+    if (fn_8027AA48() == 0) *(int *)(a + 0x328) = 0;
     fn_801345D8(path, 0x50, lbl_803322B0 + 0x1D8, (char *)(a + 0x234));
     cfg = fn_80131808(path);
     chassis = ((void *(*)(void *, char *))(*(void ***)cfg)[2])(cfg, lbl_8055A3B8);
@@ -848,18 +640,16 @@ void fn_80182074(void *arg0, void *arg1) {
     *(float *)(a + 0x5D4) = out1.y * lbl_80561D48;
     *(float *)(a + 0x5D8) = out1.z * lbl_80561D48;
     *(float *)(a + 0x5C0) = lbl_80561D4C * ((float (*)(void *, char *, float))(*(void ***)chassis)[9])(chassis, lbl_803322B0 + 0x234, out1.y * lbl_80561D48);
-    if (((int (*)(void *, char *))(*(void ***)chassis)[3])(chassis, lbl_803322B0 + 0x258) != 0) {
+    if (((int (*)(void *, char *))(*(void ***)chassis)[3])(chassis, lbl_803322B0 + 0x258) != 0)
         flag = ((int (*)(void *, char *, char *))(*(void ***)chassis)[21])(chassis, lbl_803322B0 + 0x258, lbl_803322B0 + 0x240);
-    } else {
-        flag = 1;
-    }
+    else flag = 1;
     *(int *)(a + 0x5E8) = flag;
     fn_80016A48(a + 0x2C4, *(int *)(a + 0x25C));
     fn_801B86BC(*(int *)(b + 0xE0), a + 0x2C4);
     obj = fn_80016544(*(int *)(a + 0x25C));
     *(unsigned char *)(a + 0x25C0) = (*(unsigned int *)((unsigned char *)obj + 0xA0) >> 2) & 1;
-    fn_80279F58(&state, cfg);
-    fn_8027A8B4(&state, fn_8027A798(a + 0x234));
+    fn_80279F58((void *)&state, cfg);
+    fn_8027A8B4((void *)&state, fn_8027A798(a + 0x234));
     state.m0 = state.m0 * *(float *)(a + 0x2EC);
     state.g0 = state.g0 * (lbl_80561CDC * (*(float *)(a + 0x2F4) + *(float *)(a + 0x2F8)));
     state.g1 = state.g1 * *(float *)(a + 0x2FC);
@@ -879,9 +669,9 @@ void fn_80182074(void *arg0, void *arg1) {
     *(float *)(a + 0x5AC) = -(lbl_80561D48 * ((float (*)(void *, char *, float))(*(void ***)chassis)[10])(chassis, lbl_8055A3D0, lbl_80561CAC));
     *(float *)(a + 0x5B0) = state.g6;
     *(float *)(a + 0x5A8) = lbl_80561D5C;
-    if ((unsigned int)(*(int *)((unsigned char *)__AXFXGetLfoSinTable_801769CC() + 4) - 0x180000) != 0x201) {
+    if ((unsigned int)(*(int *)((unsigned char *)__AXFXGetLfoSinTable_801769CC() + 4) - 0x180000) != 0x201)
         *(float *)(a + 0x5A8) = lbl_80561D60 * (*(float *)(a + 0x2C8) + ((float (*)(void *, char *, float))(*(void ***)chassis)[10])(chassis, lbl_803322B0 + 0x278, *(float *)(a + 0x5A8)));
-    } else if (lbl_8055E4F7 == 0) {
+    else if (lbl_8055E4F7 == 0) {
         lbl_8055E4F7 = 1;
         fn_802E30C8(lbl_8055A3D8, lbl_803322B0 + 0x288);
     }
@@ -892,132 +682,55 @@ void fn_80182074(void *arg0, void *arg1) {
     *(float *)(a + 0x34) = *(float *)&state.t1;
     *(float *)(a + 0x38) = *(float *)&state.t2;
     fn_8017A57C(a);
-    if (*(int *)(a + 0x10) == 0x41434152) {
-        state.m11 = lbl_80561D64;
-    }
-    *(float *)(a + 0x32C) = state.m0;
-    *(float *)(a + 0x330) = state.m1;
-    *(float *)(a + 0x334) = state.m2;
-    *(float *)(a + 0x338) = state.m3;
-    *(float *)(a + 0x33C) = state.m4;
-    *(float *)(a + 0x340) = state.m5;
-    *(float *)(a + 0x344) = state.m6;
-    *(float *)(a + 0x348) = state.m7;
-    *(float *)(a + 0x34C) = state.m8;
-    *(float *)(a + 0x350) = state.m9;
-    *(float *)(a + 0x354) = state.m10;
-    *(float *)(a + 0x358) = state.m11;
-    *(float *)(a + 0x35C) = state.m12;
-    *(float *)(a + 0x360) = state.m13;
-    *(float *)(a + 0x364) = state.m14;
-    *(float *)(a + 0x368) = state.m15;
-    *(float *)(a + 0x36C) = state.m16;
-    *(float *)(a + 0x370) = state.m17;
-    *(float *)(a + 0x374) = state.m18;
-    *(float *)(a + 0x378) = state.m19;
-    *(float *)(a + 0x37C) = state.m20;
-    *(float *)(a + 0x380) = state.m21;
-    *(float *)(a + 0x384) = state.m22;
-    *(float *)(a + 0x388) = state.m23;
-    *(float *)(a + 0x38C) = state.m24;
-    *(float *)(a + 0x390) = state.m25;
-    *(float *)(a + 0x394) = state.m26;
-    *(float *)(a + 0x398) = state.m27;
-    *(float *)(a + 0x39C) = state.m28;
-    *(float *)(a + 0x3A0) = state.m29;
-    *(float *)(a + 0x3A4) = state.m30;
-    *(float *)(a + 0x3A8) = state.m31;
+    if (*(int *)(a + 0x10) == 0x41434152) state.m11 = lbl_80561D64;
+    *(float *)(a + 0x32C) = state.m0; *(float *)(a + 0x330) = state.m1;
+    *(float *)(a + 0x334) = state.m2; *(float *)(a + 0x338) = state.m3;
+    *(float *)(a + 0x33C) = state.m4; *(float *)(a + 0x340) = state.m5;
+    *(float *)(a + 0x344) = state.m6; *(float *)(a + 0x348) = state.m7;
+    *(float *)(a + 0x34C) = state.m8; *(float *)(a + 0x350) = state.m9;
+    *(float *)(a + 0x354) = state.m10; *(float *)(a + 0x358) = state.m11;
+    *(float *)(a + 0x35C) = state.m12; *(float *)(a + 0x360) = state.m13;
+    *(float *)(a + 0x364) = state.m14; *(float *)(a + 0x368) = state.m15;
+    *(float *)(a + 0x36C) = state.m16; *(float *)(a + 0x370) = state.m17;
+    *(float *)(a + 0x374) = state.m18; *(float *)(a + 0x378) = state.m19;
+    *(float *)(a + 0x37C) = state.m20; *(float *)(a + 0x380) = state.m21;
+    *(float *)(a + 0x384) = state.m22; *(float *)(a + 0x388) = state.m23;
+    *(float *)(a + 0x38C) = state.m24; *(float *)(a + 0x390) = state.m25;
+    *(float *)(a + 0x394) = state.m26; *(float *)(a + 0x398) = state.m27;
+    *(float *)(a + 0x39C) = state.m28; *(float *)(a + 0x3A0) = state.m29;
+    *(float *)(a + 0x3A4) = state.m30; *(float *)(a + 0x3A8) = state.m31;
     *(PhysRecBlock *)(a + 0x3AC) = *(PhysRecBlock *)state.rec;
-    *(float *)(a + 0x43C) = state.g0;
-    *(float *)(a + 0x440) = state.g1;
-    *(float *)(a + 0x444) = state.g2;
-    *(float *)(a + 0x448) = state.g3;
-    *(float *)(a + 0x44C) = state.g4;
-    *(float *)(a + 0x450) = state.g5;
+    *(float *)(a + 0x43C) = state.g0; *(float *)(a + 0x440) = state.g1;
+    *(float *)(a + 0x444) = state.g2; *(float *)(a + 0x448) = state.g3;
+    *(float *)(a + 0x44C) = state.g4; *(float *)(a + 0x450) = state.g5;
     *(float *)(a + 0x454) = state.g6;
-    *(int *)(a + 0x458) = state.t0;
-    *(int *)(a + 0x45C) = state.t1;
-    *(int *)(a + 0x460) = state.t2;
-    *(float *)(a + 0x464) = *(float *)(a + 0x32C);
-    *(float *)(a + 0x468) = *(float *)(a + 0x330);
-    *(float *)(a + 0x46C) = *(float *)(a + 0x334);
-    *(float *)(a + 0x470) = *(float *)(a + 0x338);
-    *(float *)(a + 0x474) = *(float *)(a + 0x33C);
-    *(float *)(a + 0x478) = *(float *)(a + 0x340);
-    *(float *)(a + 0x47C) = *(float *)(a + 0x344);
-    *(float *)(a + 0x480) = *(float *)(a + 0x348);
-    *(float *)(a + 0x484) = *(float *)(a + 0x34C);
-    *(float *)(a + 0x488) = *(float *)(a + 0x350);
-    *(float *)(a + 0x48C) = *(float *)(a + 0x354);
-    *(float *)(a + 0x490) = *(float *)(a + 0x358);
-    *(float *)(a + 0x494) = *(float *)(a + 0x35C);
-    *(float *)(a + 0x498) = *(float *)(a + 0x360);
-    *(float *)(a + 0x49C) = *(float *)(a + 0x364);
-    *(float *)(a + 0x4A0) = *(float *)(a + 0x368);
-    *(float *)(a + 0x4A4) = *(float *)(a + 0x36C);
-    *(float *)(a + 0x4A8) = *(float *)(a + 0x370);
-    *(float *)(a + 0x4AC) = *(float *)(a + 0x374);
-    *(float *)(a + 0x4B0) = *(float *)(a + 0x378);
-    *(float *)(a + 0x4B4) = *(float *)(a + 0x37C);
-    *(float *)(a + 0x4B8) = *(float *)(a + 0x380);
-    *(float *)(a + 0x4BC) = *(float *)(a + 0x384);
-    *(float *)(a + 0x4C0) = *(float *)(a + 0x388);
-    *(float *)(a + 0x4C4) = *(float *)(a + 0x38C);
-    *(float *)(a + 0x4C8) = *(float *)(a + 0x390);
-    *(float *)(a + 0x4CC) = *(float *)(a + 0x394);
-    *(float *)(a + 0x4D0) = *(float *)(a + 0x398);
-    *(float *)(a + 0x4D4) = *(float *)(a + 0x39C);
-    *(float *)(a + 0x4D8) = *(float *)(a + 0x3A0);
-    *(float *)(a + 0x4DC) = *(float *)(a + 0x3A4);
-    *(float *)(a + 0x4E0) = *(float *)(a + 0x3A8);
+    *(int *)(a + 0x458) = state.t0; *(int *)(a + 0x45C) = state.t1; *(int *)(a + 0x460) = state.t2;
+    for (i = 0; i < 0x20; i++) *(float *)(a + 0x464 + i * 4) = *(float *)(a + 0x32C + i * 4);
     *(PhysRecBlock *)(a + 0x4E4) = *(PhysRecBlock *)(a + 0x3AC);
-    *(float *)(a + 0x574) = *(float *)(a + 0x43C);
-    *(float *)(a + 0x578) = *(float *)(a + 0x440);
-    *(float *)(a + 0x57C) = *(float *)(a + 0x444);
-    *(float *)(a + 0x580) = *(float *)(a + 0x448);
-    *(float *)(a + 0x584) = *(float *)(a + 0x44C);
-    *(float *)(a + 0x588) = *(float *)(a + 0x450);
-    *(float *)(a + 0x58C) = *(float *)(a + 0x454);
-    *(int *)(a + 0x590) = *(int *)(a + 0x458);
-    *(int *)(a + 0x594) = *(int *)(a + 0x45C);
-    *(int *)(a + 0x598) = *(int *)(a + 0x460);
+    for (i = 0; i < 7; i++) *(float *)(a + 0x574 + i * 4) = *(float *)(a + 0x43C + i * 4);
+    *(int *)(a + 0x590) = *(int *)(a + 0x458); *(int *)(a + 0x594) = *(int *)(a + 0x45C); *(int *)(a + 0x598) = *(int *)(a + 0x460);
     ((void (*)(int, void *, int, int, float, float, float, float, float, float))fn_801BDA74)(*(int *)(a + 0x1EC), a + 0x32C, *(int *)(a + 0x45C), *(int *)(a + 0x458), *(float *)(a + 0x450), *(float *)(a + 0x44C), *(float *)(a + 0x448), *(float *)(a + 0x444), *(float *)(a + 0x440), *(float *)(a + 0x43C));
     node = 0;
     fn_801BEB30(*(int *)(a + 0x1EC), &node);
-    *(float *)(a + 0x23DC) = ((float *)node)[0];
-    *(float *)(a + 0x23E0) = ((float *)node)[1];
-    *(float *)(a + 0x23E4) = ((float *)node)[2];
-    *(float *)(a + 0x2450) = ((float *)node)[4];
-    *(float *)(a + 0x2454) = ((float *)node)[5];
-    *(float *)(a + 0x2458) = ((float *)node)[6];
-    *(float *)(a + 0x24C4) = ((float *)node)[8];
-    *(float *)(a + 0x24C8) = ((float *)node)[9];
-    *(float *)(a + 0x24CC) = ((float *)node)[10];
-    *(float *)(a + 0x2538) = ((float *)node)[12];
-    *(float *)(a + 0x253C) = ((float *)node)[13];
-    *(float *)(a + 0x2540) = ((float *)node)[14];
+    *(float *)(a + 0x23DC) = ((float *)node)[0]; *(float *)(a + 0x23E0) = ((float *)node)[1]; *(float *)(a + 0x23E4) = ((float *)node)[2];
+    *(float *)(a + 0x2450) = ((float *)node)[4]; *(float *)(a + 0x2454) = ((float *)node)[5]; *(float *)(a + 0x2458) = ((float *)node)[6];
+    *(float *)(a + 0x24C4) = ((float *)node)[8]; *(float *)(a + 0x24C8) = ((float *)node)[9]; *(float *)(a + 0x24CC) = ((float *)node)[10];
+    *(float *)(a + 0x2538) = ((float *)node)[12]; *(float *)(a + 0x253C) = ((float *)node)[13]; *(float *)(a + 0x2540) = ((float *)node)[14];
     ((void (*)(void *, void *))fn_801836DC)(a, b);
     ((void (*)(void *, void *))fn_80182DF4)(a, b);
     fn_8018C5A0(a, b);
     fn_8018A654(a, b);
     isPcar = *(int *)(b) == 0x50434152;
     *(int *)(a + 0x257C) = fn_80209448(a, *(int *)(b));
-    if (isPcar) {
-        *(int *)(a + 0x2580) = fn_80209D4C(a);
-    } else {
-        *(int *)(a + 0x2580) = 0;
-    }
+    if (isPcar) *(int *)(a + 0x2580) = fn_80209D4C(a); else *(int *)(a + 0x2580) = 0;
     *(int *)(a + 0x2584) = fn_8020DE74(a);
     fn_801D108C(*(int *)(a + 0x1EC));
     fn_80131818(cfg);
     flag = 0;
-    if (isPcar && fn_8020503C(lbl_803322B0 + 0x2D8) != 0) {
-        flag = 1;
-    }
+    if (isPcar && fn_8020503C(lbl_803322B0 + 0x2D8) != 0) flag = 1;
     *(signed char *)(a + 0x25C8) = flag;
-    if ((unsigned int)(*(int *)((unsigned char *)__AXFXGetLfoSinTable_801769CC() + 4) - 0x180000) == 0x304) {
+    if ((unsigned int)(*(int *)((unsigned char *)__AXFXGetLfoSinTable_801769CC() + 4) - 0x180000) == 0x304)
         *(signed char *)(a + 0x25C8) = 1;
-    }
     fn_801838C8(a);
 }
 
@@ -1060,7 +773,6 @@ extern "C" void fn_80182DF4(void *arg0) {
         float rearZ;
     };
 #define self ((Truck *)arg0)
-    float m, half, zero, off;
     float minX = 0.0f, maxX = 0.0f, minY = 0.0f;
     float maxY = 0.0f, minZ = 0.0f, maxZ = 0.0f;
     V3 pos;
@@ -1079,7 +791,7 @@ extern "C" void fn_80182DF4(void *arg0) {
     void *obj;
     void *obj2;
     float z27, y26, x25, x24, y23, hy, hz, z20, y19, x18, z17, y16, x15, z14;
-    float x, y, z;
+    float x, y, z, m, half, zero, off;
 
     fn_802C7760(self->model, &minX, &maxX, &minY, &maxY, &minZ, &maxZ);
     handle = fn_801E3004(self->model, lbl_8055A3E8, -1);
@@ -1327,14 +1039,14 @@ void fn_801838C8(void *arg0)
 {
   char *p = (char *) arg0;
   char *r;
-  register float one = 1.0f;
-  register float zero = 0.0f;
+  float one;
+  float zero;
   int i;
   char *q;
   void *obj;
   void *v;
   void *path;
-  *((float *) (p + 0x5e4)) = zero;
+  *((float *) (p + 0x5e4)) = 0.0f;
   fn_8018BE54(p, 1.0f);
   one = 1.0;
   zero = 0.0f;
@@ -1445,6 +1157,7 @@ void fn_801838C8(void *arg0)
     r += 12;
     q += 12;
   }
+
   zero = 0.0f;
   one = 1.0f;
   q = p + 0x152c;
@@ -1509,6 +1222,7 @@ void fn_801838C8(void *arg0)
     *((float *) (q + 0x74)) = zero;
     q += 0x80;
   }
+
   *((int *) (p + 0x1e3c)) = 0;
   *((int *) (p + 0x1e40)) = 0;
   q = p + 0x23ac;
@@ -1571,6 +1285,7 @@ void fn_801838C8(void *arg0)
     *((int *) (q + 0x70)) = 0;
     q += 0x74;
   }
+
   obj = fn_801B2ED0(*((int *) (p + 0x1ec)));
   v = (*((void *(**)(void *)) ((*((char **) obj)) + 0x18)))(obj);
   *((int *) (((char *) v) + 0xc)) = 0;
@@ -1633,198 +1348,198 @@ extern void PSVECCrossProduct(void *, void *, void *);
 extern float lbl_80561CCC, lbl_80561D40, lbl_80561DB0, lbl_80561DBC;
 #pragma paired_single off
 void fn_80183E7C(void *arg0) {
-       unsigned char *self = (unsigned char *)arg0;
-       unsigned char stack_space[0x2b0];
-       int i;
-       if (fn_800216D0() != 0) {
-           *(float *)(self + 0x25dc) = lbl_80561CAC;
-           *(float *)(self + 0x25e0) = lbl_80561CAC;
-           *(float *)(self + 0x25e4) = lbl_80561CD0;
-           self[0x260d] = 0;
-           if (self[0x25c0] != 0) {
-               *(float *)(self + 0x25bc) = lbl_8055E4E0;
-               fn_801BEB1C(*(int *)(self + 0x1ec), (int *)&stack_space[4]);
-               for (i = 0; i != 2; i++) {
-                   unsigned char *src = (unsigned char *)*(int *)&stack_space[4] + i * 0x20;
-                   unsigned char *next = src + 0x10;
-                   unsigned char *dst = self + 0x23ac + i * 0xe8;
-                   *(float *)(dst + 0x4c) = *(float *)(src + 0x150);
-                   *(float *)(dst + 0x50) = *(float *)(src + 0x154);
-                   *(float *)(dst + 0x54) = *(float *)(src + 0x158);
-                   *(float *)(dst + 0x58) = *(float *)(src + 0x110);
-                   *(float *)(dst + 0x5c) = *(float *)(src + 0x114);
-                   *(float *)(dst + 0x60) = *(float *)(src + 0x118);
-                   *(float *)(dst + 0xc0) = *(float *)(next + 0x150);
-                   *(float *)(dst + 0xc4) = *(float *)(next + 0x154);
-                   *(float *)(dst + 0xc8) = *(float *)(next + 0x158);
-                   *(float *)(dst + 0xcc) = *(float *)(next + 0x110);
-                   *(float *)(dst + 0xd0) = *(float *)(next + 0x114);
-                   *(float *)(dst + 0xd4) = *(float *)(next + 0x118);
-               }
-           }
-       }
-       if (self[0x260d] != 0)
-           *(float *)(self + 0x2598) += lbl_80561D9C;
-       else
-           *(float *)(self + 0x2598) = lbl_80561CAC;
-       {
-           float step = *(float *)(self + 0x2650) - lbl_80561D9C;
-           if (step < lbl_80561CAC) step = lbl_80561CAC;
-           *(float *)(self + 0x2650) = step;
-           if (!(fabsf(step) <= lbl_80558DC4) && *(float *)(self + 0x25d4) < lbl_80561DA0) {
-               if (step < lbl_80561CDC) step = lbl_80561CDC;
-               *(float *)(self + 0x2650) = step;
-               if (*(int *)(self + 0x2620) > 2) {
-                   float dot = PSVECDotProduct(self + 0x124, self + 0x48);
-                   if (fabsf(dot) < lbl_80561CD8) {
-                       float t = (step - lbl_80561CAC) / lbl_80561CD0;
-                       float q;
-                       float amount;
-                       float velocity;
-                       float factor;
-                       float vec[3];
-                       if (t > lbl_80561CD0) t = lbl_80561CD0;
-                       if (t < lbl_80561CAC) t = lbl_80561CAC;
-                       q = (*(float *)(self + 0x25d4) - lbl_80561DA4) / lbl_80561DA8;
-                       if (q < lbl_80561CD0) q = lbl_80561CD0;
-                       if (q < lbl_80561CAC) q = lbl_80561CAC;
-                       amount = lbl_80561CAC + t * lbl_80561CD0;
-                       velocity = lbl_80561CE4 * *(float *)(self + 0xd4);
-                       velocity = lbl_80561D98 * velocity;
-                       velocity = lbl_80561DAC * velocity;
-                       velocity = velocity * amount;
-                       factor = (lbl_80561CAC + q * lbl_80561CD0) * velocity;
-                       if (dot <= lbl_80561CAC) factor = -factor;
-                       vec[0] = *(float *)(self + 0x48) * factor;
-                       vec[1] = *(float *)(self + 0x4c) * factor;
-                       vec[2] = *(float *)(self + 0x50) * factor;
-                       fn_8017B4AC(self, vec);
-                   }
-               }
-           }
-       }
-       if (*(float *)(self + 0x258c) <= lbl_80561CCC && self[0x259c] != 0) {
-           unsigned char *args = &stack_space[0x218];
-           int *vtable;
-           *(int *)(args + 0) = *(int *)(self + 0x1ec);
-           *(float *)(args + 4) = lbl_80561CD0;
-           *(float *)(args + 8) = *(float *)(self + 0x25d0);
-           *(int *)(args + 12) = -1;
-           fn_801796CC(4, args, 0x10);
-           if (*(float *)(self + 0x2608) - *(float *)(self + 0x25e0) > lbl_80561D40) {
-               *(float *)(self + 0x2608) = lbl_80561CAC;
-               if (fn_80129D18(4, 0xa) < 3) {
-                   vtable = *(int **)*(void **)(self + 0x2584);
-                   ((void (*)(void *))vtable[7])(*(void **)(self + 0x2584));
-               }
-           }
-           args = &stack_space[0x208];
-           *(int *)(args + 0) = *(int *)(self + 0x1ec);
-           *(float *)(args + 4) = lbl_80561CD0;
-           *(float *)(args + 8) = *(float *)(self + 0x25d0);
-           *(int *)(args + 12) = -1;
-           fn_801796CC(4, args, 0x10);
-           {
-               float current = *(float *)(self + 0x2608);
-               float target = *(float *)(self + 0x25e0);
-               *(float *)(self + 0x2608) = target + lbl_80561DB0 * (current - target);
-           }
-       }
-       {
-           unsigned int flags = *(unsigned int *)((unsigned char *)__AXFXGetLfoSinTable_801769CC() + 4);
-           int active;
-           if ((flags & 0x20000) == 0)
-               active = fabsf(*(float *)(self + 0x2690)) <= lbl_80558DC4;
-           else
-               active = fabsf(*(float *)(self + 0x2690) - lbl_80561CD0) <= lbl_80558DC4;
-           if (!(fabsf(*(float *)(self + 0x2650)) <= lbl_80558DC4) && active) {
-               if (*(unsigned int *)(self + 0x10) == 0x50434152) {
-                   void *obj = *(void **)(self + 0x270);
-                   int *vt = *(int **)obj;
-                   if (((int (*)(void *))vt[5])(obj) != 0) {
-                       int state = *(int *)(self + 0x2620);
-                       float speed = *(float *)(self + 0x4c);
-                       if (state <= 2 && speed < lbl_80561DB4) {
-                           if (state == 0) *(float *)(self + 0x2614) = lbl_80561CAC;
-                           else if (fabsf(*(float *)(self + 0x2614)) <= lbl_80558DC4) {
-                               if (speed < lbl_80561CAC) {
-                                   float next = *(float *)(self + 0x2614) + lbl_80561D9C;
-                                   if (*(float *)(self + 0x25d4) < lbl_80561D50) next += lbl_80561DB8;
-                                   *(float *)(self + 0x2614) = next;
-                               } else *(float *)(self + 0x2614) = lbl_80561CAC;
-                           } else *(float *)(self + 0x2614) = lbl_80561CAC;
-                       }
-                       if (*(float *)(self + 0x2614) >= lbl_80561D44 &&
-                           *(float *)(self + 0x4c) > lbl_80561CDC)
-                           *(float *)(self + 0x2614) = lbl_80561CAC;
-                       if (fabsf(*(float *)(self + 0x58)) <= lbl_80561CAC &&
-                           fabsf(*(float *)(self + 0x40)) < lbl_80561CCC) {
-                           float factor = -*(float *)(self + 0x40) * lbl_80561D00;
-                           float *v = (float *)&stack_space[0x20c];
-                           float *out = (float *)&stack_space[0x200];
-                           float dot, scale;
-                           v[0] = *(float *)(self + 0x54) * factor;
-                           v[1] = *(float *)(self + 0x58) * factor;
-                           v[2] = *(float *)(self + 0x5c) * factor;
-                           dot = PSVECDotProduct(self + 0x124, v);
-                           scale = (dot - lbl_80561CF0) * lbl_80561CF8;
-                           if (scale > lbl_80561CD0) scale = lbl_80561CD0;
-                           if (scale < lbl_80561CAC) scale = lbl_80561CAC;
-                           scale = lbl_80561CD0 - scale;
-                           out[0] = v[0] * scale;
-                           out[1] = v[1] * scale;
-                           out[2] = v[2] * scale;
-                           fn_8017B4AC(self, out);
-                       }
-                   }
-               }
-           }
-       }
-       {
-           int state = *(int *)(self + 0x2620);
-           if (state == 0) {
-               *(int *)(self + 0x2648) = 7;
-           } else if (state >= 3) {
-               *(int *)(self + 0x2648) = 0;
-               self[0x2624] = 0;
-               self[0x2625] = 0;
-           } else if (*(int *)(self + 0x2648) == 0) {
-               *(int *)(self + 0x2648) = 1;
-           }
-           {
-               int mode = *(int *)(self + 0x2648);
-               if (mode >= 1 && mode <= 6) {
-                   float *vec = (float *)&stack_space[0x1e4];
-                   vec[0] = *(float *)(self + 0x124) * lbl_80561DBC;
-                   vec[1] = *(float *)(self + 0x128) * lbl_80561DBC;
-                   vec[2] = *(float *)(self + 0x12c) * lbl_80561DBC;
-                   if (!(fabsf(*(float *)(self + 0x2650)) <= lbl_80558DC4))
-                       fn_8017B4AC(self, vec);
-                   *(int *)(self + 0x2648) = mode + 1;
-                   {
-                       float *a = (float *)&stack_space[0x1d8];
-                       float *b = (float *)&stack_space[0x1cc];
-                       float *c = (float *)&stack_space[0x1c0];
-                       a[0] = *(float *)(self + 0x23f8) - *(float *)(self + 0x2554);
-                       a[1] = *(float *)(self + 0x23fc) - *(float *)(self + 0x2558);
-                       a[2] = *(float *)(self + 0x2400) - *(float *)(self + 0x255c);
-                       b[0] = *(float *)(self + 0x246c) - *(float *)(self + 0x24e0);
-                       b[1] = *(float *)(self + 0x2470) - *(float *)(self + 0x24e4);
-                       b[2] = *(float *)(self + 0x2474) - *(float *)(self + 0x24e8);
-                       PSVECCrossProduct(a, b, c);
-                       {
-                           float x = c[2] - *(float *)(self + 0x25ac);
-                           float y = c[1] - *(float *)(self + 0x25a8);
-                           float z = c[0];
-                           *(float *)(self + 0x25a4) = x * lbl_80561D0C;
-                           (void)y;
-                           (void)z;
-                       }
-                   }
-               }
-           }
-       }
-   }
+    unsigned char *self = (unsigned char *)arg0;
+    unsigned char stack_space[0x2b0];
+    int i;
+    if (fn_800216D0() != 0) {
+        *(float *)(self + 0x25dc) = lbl_80561CAC;
+        *(float *)(self + 0x25e0) = lbl_80561CAC;
+        *(float *)(self + 0x25e4) = lbl_80561CD0;
+        self[0x260d] = 0;
+        if (self[0x25c0] != 0) {
+            *(float *)(self + 0x25bc) = lbl_8055E4E0;
+            fn_801BEB1C(*(int *)(self + 0x1ec), (int *)&stack_space[4]);
+            for (i = 0; i < 2; i++) {
+                unsigned char *src = (unsigned char *)*(int *)&stack_space[4] + i * 0x20;
+                unsigned char *next = src + 0x10;
+                unsigned char *dst = self + 0x23ac + i * 0xe8;
+                *(float *)(dst + 0x4c) = *(float *)(src + 0x150);
+                *(float *)(dst + 0x50) = *(float *)(src + 0x154);
+                *(float *)(dst + 0x54) = *(float *)(src + 0x158);
+                *(float *)(dst + 0x58) = *(float *)(src + 0x110);
+                *(float *)(dst + 0x5c) = *(float *)(src + 0x114);
+                *(float *)(dst + 0x60) = *(float *)(src + 0x118);
+                *(float *)(dst + 0xc0) = *(float *)(next + 0x150);
+                *(float *)(dst + 0xc4) = *(float *)(next + 0x154);
+                *(float *)(dst + 0xc8) = *(float *)(next + 0x158);
+                *(float *)(dst + 0xcc) = *(float *)(next + 0x110);
+                *(float *)(dst + 0xd0) = *(float *)(next + 0x114);
+                *(float *)(dst + 0xd4) = *(float *)(next + 0x118);
+            }
+        }
+    }
+    if (self[0x260d] != 0)
+        *(float *)(self + 0x2598) += lbl_80561D9C;
+    else
+        *(float *)(self + 0x2598) = lbl_80561CAC;
+    {
+        float step = *(float *)(self + 0x2650) - lbl_80561D9C;
+        if (step < lbl_80561CAC) step = lbl_80561CAC;
+        *(float *)(self + 0x2650) = step;
+        if (!(fabsf(step) <= lbl_80558DC4) && *(float *)(self + 0x25d4) < lbl_80561DA0) {
+            if (step < lbl_80561CDC) step = lbl_80561CDC;
+            *(float *)(self + 0x2650) = step;
+            if (*(int *)(self + 0x2620) > 2) {
+                float dot = PSVECDotProduct(self + 0x124, self + 0x48);
+                if (fabsf(dot) < lbl_80561CD8) {
+                    float t = (step - lbl_80561CAC) / lbl_80561CD0;
+                    float q;
+                    float amount;
+                    float velocity;
+                    float factor;
+                    float vec[3];
+                    if (t > lbl_80561CD0) t = lbl_80561CD0;
+                    if (t < lbl_80561CAC) t = lbl_80561CAC;
+                    q = (*(float *)(self + 0x25d4) - lbl_80561DA4) / lbl_80561DA8;
+                    if (q < lbl_80561CD0) q = lbl_80561CD0;
+                    if (q < lbl_80561CAC) q = lbl_80561CAC;
+                    amount = lbl_80561CAC + t * lbl_80561CD0;
+                    velocity = lbl_80561CE4 * *(float *)(self + 0xd4);
+                    velocity = lbl_80561D98 * velocity;
+                    velocity = lbl_80561DAC * velocity;
+                    velocity = velocity * amount;
+                    factor = (lbl_80561CAC + q * lbl_80561CD0) * velocity;
+                    if (dot <= lbl_80561CAC) factor = -factor;
+                    vec[0] = *(float *)(self + 0x48) * factor;
+                    vec[1] = *(float *)(self + 0x4c) * factor;
+                    vec[2] = *(float *)(self + 0x50) * factor;
+                    fn_8017B4AC(self, vec);
+                }
+            }
+        }
+    }
+    if (*(float *)(self + 0x258c) <= lbl_80561CCC && self[0x259c] != 0) {
+        unsigned char *args = &stack_space[0x218];
+        int *vtable;
+        *(int *)(args + 0) = *(int *)(self + 0x1ec);
+        *(float *)(args + 4) = lbl_80561CD0;
+        *(float *)(args + 8) = *(float *)(self + 0x25d0);
+        *(int *)(args + 12) = -1;
+        fn_801796CC(4, args, 0x10);
+        if (*(float *)(self + 0x2608) - *(float *)(self + 0x25e0) > lbl_80561D40) {
+            *(float *)(self + 0x2608) = lbl_80561CAC;
+            if (fn_80129D18(4, 0xa) < 3) {
+                vtable = *(int **)*(void **)(self + 0x2584);
+                ((void (*)(void *))vtable[7])(*(void **)(self + 0x2584));
+            }
+        }
+        args = &stack_space[0x208];
+        *(int *)(args + 0) = *(int *)(self + 0x1ec);
+        *(float *)(args + 4) = lbl_80561CD0;
+        *(float *)(args + 8) = *(float *)(self + 0x25d0);
+        *(int *)(args + 12) = -1;
+        fn_801796CC(4, args, 0x10);
+        {
+            float current = *(float *)(self + 0x2608);
+            float target = *(float *)(self + 0x25e0);
+            *(float *)(self + 0x2608) = target + lbl_80561DB0 * (current - target);
+        }
+    }
+    {
+        unsigned int flags = *(unsigned int *)((unsigned char *)__AXFXGetLfoSinTable_801769CC() + 4);
+        int active;
+        if ((flags & 0x20000) == 0)
+            active = fabsf(*(float *)(self + 0x2690)) <= lbl_80558DC4;
+        else
+            active = fabsf(*(float *)(self + 0x2690) - lbl_80561CD0) <= lbl_80558DC4;
+        if (!(fabsf(*(float *)(self + 0x2650)) <= lbl_80558DC4) && active) {
+            if (*(unsigned int *)(self + 0x10) == 0x50434152) {
+                void *obj = *(void **)(self + 0x270);
+                int *vt = *(int **)obj;
+                if (((int (*)(void *))vt[5])(obj) != 0) {
+                    int state = *(int *)(self + 0x2620);
+                    float speed = *(float *)(self + 0x4c);
+                    if (state <= 2 && speed < lbl_80561DB4) {
+                        if (state == 0) *(float *)(self + 0x2614) = lbl_80561CAC;
+                        else if (fabsf(*(float *)(self + 0x2614)) <= lbl_80558DC4) {
+                            if (speed < lbl_80561CAC) {
+                                float next = *(float *)(self + 0x2614) + lbl_80561D9C;
+                                if (*(float *)(self + 0x25d4) < lbl_80561D50) next += lbl_80561DB8;
+                                *(float *)(self + 0x2614) = next;
+                            } else *(float *)(self + 0x2614) = lbl_80561CAC;
+                        } else *(float *)(self + 0x2614) = lbl_80561CAC;
+                    }
+                    if (*(float *)(self + 0x2614) >= lbl_80561D44 &&
+                        *(float *)(self + 0x4c) > lbl_80561CDC)
+                        *(float *)(self + 0x2614) = lbl_80561CAC;
+                    if (fabsf(*(float *)(self + 0x58)) <= lbl_80561CAC &&
+                        fabsf(*(float *)(self + 0x40)) < lbl_80561CCC) {
+                        float factor = -*(float *)(self + 0x40) * lbl_80561D00;
+                        float *v = (float *)&stack_space[0x20c];
+                        float *out = (float *)&stack_space[0x200];
+                        float dot, scale;
+                        v[0] = *(float *)(self + 0x54) * factor;
+                        v[1] = *(float *)(self + 0x58) * factor;
+                        v[2] = *(float *)(self + 0x5c) * factor;
+                        dot = PSVECDotProduct(self + 0x124, v);
+                        scale = (dot - lbl_80561CF0) * lbl_80561CF8;
+                        if (scale > lbl_80561CD0) scale = lbl_80561CD0;
+                        if (scale < lbl_80561CAC) scale = lbl_80561CAC;
+                        scale = lbl_80561CD0 - scale;
+                        out[0] = v[0] * scale;
+                        out[1] = v[1] * scale;
+                        out[2] = v[2] * scale;
+                        fn_8017B4AC(self, out);
+                    }
+                }
+            }
+        }
+    }
+    {
+        int state = *(int *)(self + 0x2620);
+        if (state == 0) {
+            *(int *)(self + 0x2648) = 7;
+        } else if (state >= 3) {
+            *(int *)(self + 0x2648) = 0;
+            self[0x2624] = 0;
+            self[0x2625] = 0;
+        } else if (*(int *)(self + 0x2648) == 0) {
+            *(int *)(self + 0x2648) = 1;
+        }
+        {
+            int mode = *(int *)(self + 0x2648);
+            if (mode >= 1 && mode <= 6) {
+                float *vec = (float *)&stack_space[0x1e4];
+                vec[0] = *(float *)(self + 0x124) * lbl_80561DBC;
+                vec[1] = *(float *)(self + 0x128) * lbl_80561DBC;
+                vec[2] = *(float *)(self + 0x12c) * lbl_80561DBC;
+                if (!(fabsf(*(float *)(self + 0x2650)) <= lbl_80558DC4))
+                    fn_8017B4AC(self, vec);
+                *(int *)(self + 0x2648) = mode + 1;
+                {
+                    float *a = (float *)&stack_space[0x1d8];
+                    float *b = (float *)&stack_space[0x1cc];
+                    float *c = (float *)&stack_space[0x1c0];
+                    a[0] = *(float *)(self + 0x23f8) - *(float *)(self + 0x2554);
+                    a[1] = *(float *)(self + 0x23fc) - *(float *)(self + 0x2558);
+                    a[2] = *(float *)(self + 0x2400) - *(float *)(self + 0x255c);
+                    b[0] = *(float *)(self + 0x246c) - *(float *)(self + 0x24e0);
+                    b[1] = *(float *)(self + 0x2470) - *(float *)(self + 0x24e4);
+                    b[2] = *(float *)(self + 0x2474) - *(float *)(self + 0x24e8);
+                    PSVECCrossProduct(a, b, c);
+                    {
+                        float x = c[2] - *(float *)(self + 0x25ac);
+                        float y = c[1] - *(float *)(self + 0x25a8);
+                        float z = c[0];
+                        *(float *)(self + 0x25a4) = x * lbl_80561D0C;
+                        (void)y;
+                        (void)z;
+                    }
+                }
+            }
+        }
+    }
+}
 // Default callback / stub: always reports failure (0).
 int fn_80186DDC(void) { return 0; }
 
@@ -2509,7 +2224,7 @@ void fn_80189CB4(void *arg0, void *arg1) {
     float temp_f1, temp_f6, temp_f7;
     int count, index;
     register int i;
-    int word0, word1, word2, word3, word4, word5;
+    int word1, word0, word2, word3, word4, word5;
     int word6, word7, word8, word9;
     char *cursor;
     {
@@ -2770,8 +2485,8 @@ extern "C" void fn_8018A180(void *arg0, float a1, float a2, float a3, float a4, 
     x = *(float *)((char *)arg0 + 0x32C);
     p = (void *)((unsigned int)arg0 + 0x32C);
     inv = lbl_80561CD0;
-    *(float *)((char *)arg0 + 0xD4) = x;
-    *(float *)((char *)arg0 + 0xE4) = inv / x;
+    *(volatile float *)((char *)arg0 + 0xD4) = x;
+    *(volatile float *)((char *)arg0 + 0xE4) = inv / x;
     fn_801BDA74(*(int *)((char *)arg0 + 0x1EC), p, x);
     fn_801D11D8((char *)lbl_8055E908 + *(int *)((char *)arg0 + 0x1EC) * 0x34, *(int *)((char *)arg0 + 0x1EC));
     fn_801D1540((char *)lbl_8055E918 + *(int *)((char *)arg0 + 0x1EC) * 0x9C, *(int *)((char *)arg0 + 0x1EC));
@@ -3286,6 +3001,7 @@ int fn_8018AF04(void *arg0) {
     void *path;
     unsigned char *obj;
     float zero;
+    float tailZero;
     struct {
         void *obj;
         unsigned char pad[4];
@@ -3296,15 +3012,15 @@ int fn_8018AF04(void *arg0) {
         float z;
         float w;
     } frame;
-    int a;
+    int d;
     int b;
     int c;
-    int d;
+    int a;
     int index;
     float tx;
-    float ty;
-    float tz;
     float tw;
+    float tz;
+    float ty;
     float x;
     float y;
     float z;
@@ -3317,16 +3033,16 @@ int fn_8018AF04(void *arg0) {
     fn_8018F2C0(arg0, path);
     a = *(int *)(p + 0x241C);
     b = *(int *)(p + 0x2490);
-    a &= ~8;
     d = *(int *)(p + 0x2578);
-    tx = *(float *)(p + 0x23E8);
-    b &= ~8;
     c = *(int *)(p + 0x2504);
-    d &= ~8;
+    tx = *(float *)(p + 0x23E8);
     ty = *(float *)(p + 0x245C);
-    c &= ~8;
     tz = *(float *)(p + 0x24D0);
     tw = *(float *)(p + 0x2544);
+    a &= ~8;
+    b &= ~8;
+    c &= ~8;
+    d &= ~8;
     *(int *)(p + 0x241C) = a;
     index = *(int *)(p + 0x1EC);
     frame.x = tx;
@@ -3357,8 +3073,8 @@ int fn_8018AF04(void *arg0) {
     *(float *)(obj + 0x144) = zero;
     *(float *)(obj + 0x148) = zero;
     *(float *)(obj + 0x14C) = zero;
-    cond = *(int *)(p + 0x26B0);
     frame.values[2] = z;
+    cond = *(int *)(p + 0x26B0);
     frame.values[3] = w;
     frame.matrix0[4] = zero;
     frame.matrix0[5] = zero;
@@ -3373,9 +3089,10 @@ int fn_8018AF04(void *arg0) {
         *(int *)(p + 0x1E40) = 0;
         if (*fn_801E1F44() == 1)
             fn_8018F6F8(arg0);
-        *(float *)(p + 0x2650) = lbl_80561CAC;
-        *(float *)(p + 0x264C) = lbl_80561CAC;
-        *(float *)(p + 0x25C4) = lbl_80561CAC;
+        tailZero = lbl_80561CAC;
+        *(float *)(p + 0x2650) = tailZero;
+        *(float *)(p + 0x264C) = tailZero;
+        *(float *)(p + 0x25C4) = tailZero;
     }
 }
 #pragma opt_common_subs reset
@@ -3620,10 +3337,10 @@ static inline float BA54_Clamp(float lo, float x) {
 }
 
 extern "C" int fn_8018BA54(void *arg0, void *arg1) {
-    float var_f2;
     float temp_f0, temp_f0_2, temp_f0_3, temp_f0_4, temp_f3;
     float color, value3, second_offset, second_scale, scaled1, middle1, output1;
     float var_f0, var_f0_2, var_f0_3, var_f0_4;
+    register float var_f2;
     float var_f3, var_f3_2, var_f4;
     float loop_y_scale, loop_x_scale, loop_x, loop_height_scale, loop_height;
     float loop_scale, loop_base, loop_max, loop_min;
@@ -3640,7 +3357,7 @@ extern "C" int fn_8018BA54(void *arg0, void *arg1) {
     second_offset = lbl_80561F64;
     second_scale = lbl_80561E60;
     scaled1 = var_f2 * lbl_80561F54;
-    middle1 = lbl_80561CAC + scaled1;
+    middle1 = (scaled1) + (lbl_80561CAC);
     output1 = lbl_80561CDC + middle1;
     *(short *)((char *)arg1 + 0x20) = (short)output1;
     temp_f0_2 = (*(float *)((char *)arg0 + 0x25F0) - second_offset) / second_scale;
@@ -3687,20 +3404,20 @@ extern "C" int fn_8018BA54(void *arg0, void *arg1) {
         var_r5 = *(int *)(var_r3 + 0x70);
         if (*(unsigned char *)(var_r3 + 0x20) != 0) var_r5 |= 1;
         var_f0 = (*(float *)(var_r3 + 0xC) - loop_min) * loop_base;
-        if (loop_max < var_f0) var_f0 = loop_max;
-        if (var_f0 > loop_min) var_f0 = loop_min;
+        var_f0 = (loop_max < var_f0) ? loop_max : var_f0;
+        var_f0 = (var_f0 > loop_min) ? loop_min : var_f0;
         var_r4[2] = (signed char)(loop_base + (loop_min + (var_f0 * loop_scale)));
         var_f0_2 = (*(float *)(var_r3 + 8) - loop_height) / loop_height_scale;
-        if (loop_max < var_f0_2) var_f0_2 = loop_max;
-        if (var_f0_2 > loop_min) var_f0_2 = loop_min;
+        var_f0_2 = (loop_max < var_f0_2) ? loop_max : var_f0_2;
+        var_f0_2 = (var_f0_2 > loop_min) ? loop_min : var_f0_2;
         var_r4[0] = (signed char)(loop_base + (loop_min + (var_f0_2 * loop_scale)));
         var_f0_3 = (*(float *)(var_r3 + 0) - loop_x) / loop_x_scale;
-        if (loop_max < var_f0_3) var_f0_3 = loop_max;
-        if (var_f0_3 > loop_min) var_f0_3 = loop_min;
+        var_f0_3 = (loop_max < var_f0_3) ? loop_max : var_f0_3;
+        var_f0_3 = (var_f0_3 > loop_min) ? loop_min : var_f0_3;
         var_r4[1] = (signed char)(loop_base + (loop_min + (var_f0_3 * loop_scale)));
         var_f0_4 = (*(float *)(var_r3 + 0x68) - loop_min) / loop_y_scale;
-        if (loop_max < var_f0_4) var_f0_4 = loop_max;
-        if (var_f0_4 > loop_min) var_f0_4 = loop_min;
+        var_f0_4 = (loop_max < var_f0_4) ? loop_max : var_f0_4;
+        var_f0_4 = (var_f0_4 > loop_min) ? loop_min : var_f0_4;
         var_r3 += 0x74;
         var_r4[3] = (signed char)(loop_base + (loop_min + (var_f0_4 * loop_scale)));
         var_r4[4] = (signed char)var_r5;
