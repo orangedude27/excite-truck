@@ -864,24 +864,24 @@ void fn_8001766C(int arg0) {
     *(unsigned char *)(offset68 + (unsigned int)(base + 0x430)) = 0;
 }
 #pragma processor reset
-void fn_80017708(const void *arg0, int arg1, void *arg2) {
-    int temp_r0;
-    int temp_r0_2;
-    int temp_r4;
-    int temp_r4_2;
-    memset(arg2, 0, 0xC);
-    temp_r4 = *(int *)((char *)arg0 + 0x94);
-    *(signed char *)((char *)arg2 + 8) = 0;
-    if (temp_r4 >= 0) {
-        temp_r0 = (temp_r4 + arg1) % *(int *)((char *)arg0 + 0x98);
-        *(int *)arg2 = temp_r0;
-        *(int *)((char *)arg2 + 4) = temp_r0;
+/* Fill a vehicle's slot record with the color index for one of its four slots: use the preferred color offset by the slot when set, otherwise derive it from the vehicle number; duplicate the index into both int fields and clear the flag. */ void fn_80017708(const void *vehicle, int slotIndex, void *slot) {
+    int colorIndex;
+    int derivedColor;
+    int preferredColor;
+    int colorCount;
+    memset(slot, 0, 0xC);
+    preferredColor = *(int *)((char *)vehicle + 0x94);
+    *(signed char *)((char *)slot + 8) = 0;
+    if (preferredColor >= 0) {
+        colorIndex = (preferredColor + slotIndex) % *(int *)((char *)vehicle + 0x98);
+        *(int *)slot = colorIndex;
+        *(int *)((char *)slot + 4) = colorIndex;
         return;
     }
-    temp_r4_2 = *(int *)((char *)arg0 + 0x98);
-    temp_r0_2 = (*(int *)((char *)arg0 + 4) + ((arg1 * temp_r4_2) / 4)) % temp_r4_2;
-    *(int *)arg2 = temp_r0_2;
-    *(int *)((char *)arg2 + 4) = temp_r0_2;
+    colorCount = *(int *)((char *)vehicle + 0x98);
+    derivedColor = (*(int *)((char *)vehicle + 4) + ((slotIndex * colorCount) / 4)) % colorCount;
+    *(int *)slot = derivedColor;
+    *(int *)((char *)slot + 4) = derivedColor;
 }
 #pragma dont_inline on
 /* Clear the 0x960-byte output buffer and, for each active vehicle entry (stride 0xA8, count lbl_8055D550) not flagged +0xA0 bit 2, fill 4 slots via fn_80017708/fn_80016BC8. */
