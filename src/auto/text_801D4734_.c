@@ -160,12 +160,12 @@ extern "C" void fn_801D4734(void) {
     extern void fn_801D5520(char *);
     extern void *fn_8001285C(void *);
     extern void **__AXFXGetLfoSinTable_801769CC(void);
-    char *const base = &lbl_80338460;
+    char *base = &lbl_80338460;
     void *obj;
     void *manager;
     Mgr *m;
     lbl_8055E954 = 1;
-    obj = fn_802077A4(base + 0, 5, lbl_804422F0 + 8, lbl_804422F0 + 0x14);
+    obj = fn_802077A4(&lbl_80338460, 5, lbl_804422F0 + 8, lbl_804422F0 + 0x14);
     *(void **)lbl_804422F0 = obj;
     if (obj != 0) {
         *(float *)((char *)obj + 0x6C) = lbl_80562AD8;
@@ -332,11 +332,7 @@ void fn_801D490C(void) {
         while (part && (signed char)*part) {
             caret = strchr(part, 0x5e);
             if (caret) *caret = 0;
-            {
-                float drawX = lbl_80562AE0;
-                float drawScale = lbl_80562ADC;
-                fn_8000FF88(color, 0xC, lbl_8055AD58, drawX, drawScale, y, part);
-            }
+            fn_8000FF88(color, 0xC, lbl_8055AD58, lbl_80562AE0, lbl_80562ADC, y, part);
             if (caret) part = caret + 1; else part = 0;
             y -= dy;
         }
@@ -1490,12 +1486,12 @@ extern "C" s32 fn_801D5E94(void *object) {
 #pragma cplusplus on
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void fn_801D6080(void *arg0) {
-    int *p = (int *)arg0;
+extern "C" void fn_801D6080(void *event) {
+    int *fields = (int *)event;
     int offset;
-    int count;
-    void *obj;
-    struct TObjD1Call {
+    int obstacleIndex;
+    void *obstacle;
+    struct Obstacle {
         virtual void f0();
         virtual void f1();
         virtual void f2();
@@ -1505,19 +1501,23 @@ extern "C" void fn_801D6080(void *arg0) {
         virtual void f6();
         virtual void f7();
         virtual void f8();
-        virtual void f9();
+        virtual void release(); /* vtable +0x24 */
     };
-    /* When playing and its delay has elapsed, notify each element then finish. */
-    if (p[2] == 2 && lbl_8055E3C4 - p[0x1B] >= p[0x1A]) {
-        count = 0;
+    /* ObstacleActionSequenceEvent's reset step: fields[2] is the state (2 = waiting
+     * for the reset); fields[0x1B] is the tick the wait began and fields[0x1A] the
+     * timeout in frames (lbl_8055E3C4 is the global frame tick). Once the timeout
+     * has elapsed, call release() (vtable +0x24) on every obstacle in the group's
+     * list at fields[0x1C] (count at fields[0x1D]), then mark the event done (3). */
+    if (fields[2] == 2 && lbl_8055E3C4 - fields[0x1B] >= fields[0x1A]) {
+        obstacleIndex = 0;
         offset = 0;
-        while (count < p[0x1D]) {
-            obj = *(void **)((char *)p[0x1C] + offset);
-            ((TObjD1Call *)obj)->f9();
+        while (obstacleIndex < fields[0x1D]) {
+            obstacle = *(void **)((char *)fields[0x1C] + offset);
+            ((Obstacle *)obstacle)->release();
             offset += 4;
-            count++;
+            obstacleIndex++;
         }
-        p[2] = 3;
+        fields[2] = 3;
     }
 }
 #pragma pop
@@ -2346,7 +2346,7 @@ extern "C" int fn_801D707C(void *arg0, void *arg1) {
     char *src;
     int remaining;
     char *dst;
-    register float second;
+    float second;
 
     obj = (Dummy *)arg1;
     if (obj->check(&lbl_8055AC80) == 0) {
@@ -3107,7 +3107,7 @@ extern "C" void *fn_801D7EC0(void *arg0, s32 arg1) {
         child = *(void **)((u8 *)arg0 + 0x2C);
         *(void **)arg0 = (void *)lbl_80338CB0;
         *(s32 *)((u8 *)arg0 + 0x40) = 0;
-        if (*(void **)((u8 *)arg0 + 0x2C) != 0) {
+        if (child != 0) {
             if (child != 0)
                 ((Entry_801D7EC0 *)child)->destroy(1);
         }
@@ -4262,10 +4262,9 @@ extern "C" int fn_801D8E10(void *arg0, void *arg1) {
         virtual void f7();
         virtual float get(char *, float);
     };
-    int count;
-    char *dst;
     char *src;
-    char c;
+    char *dst;
+    int count;
     Lookup *lookup;
     Measure *measure;
 
@@ -4281,12 +4280,11 @@ count_check:
     dst[-1] = 0;
     goto copied;
 copy:
-    c = *src++;
-    *dst++ = c;
-    if ((signed char)c != 0)
+    *dst++ = *src++;
+    if ((signed char)dst[-1] != 0)
         goto count_check;
 copied:
-    if ((signed char)((char *)arg0)[8] == 0) {
+    if ((signed char)*((char *)arg0 + 8) == 0) {
         ((void (*)(const char *, ...))fn_802E30C8)(lbl_8033908C);
         return 0;
     }
