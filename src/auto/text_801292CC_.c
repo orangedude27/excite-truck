@@ -8,14 +8,14 @@ extern char lbl_8032A59C[]; /* "SpuQueueUnloadBank!" */
 extern int fn_802E765C(int,int,int);
 extern int fn_802E7684(float);
 extern int fn_802E30C8(const char *, ...);
-extern int fn_802E75FC(int);
+extern int unloadStrmBank(int);
 extern int fn_802E75E4(const char *);
 extern int sprintf(char *, const char *, ...);
 #define spuLogPrint fn_802E30C8
 #define gLoadBankLog lbl_8032A588 /* "SpuQueueLoadBank!" */
 #define gUnloadBankLog lbl_8032A59C /* "SpuQueueUnloadBank!" */
 #define sBankFileNameFmt lbl_80559978 /* "%s.bnk" */
-#define spuUnloadBank fn_802E75FC
+#define spuUnloadBank unloadStrmBank
 #define gLoadedBankId lbl_8055DFA8
 #pragma scheduling invalid_target
 /* Loads a sound bank by id: logs the operation, formats "<id>.bnk", and stores the loaded bank handle. */

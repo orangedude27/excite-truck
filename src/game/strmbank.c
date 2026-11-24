@@ -1,6 +1,6 @@
 // strmbank — the global stream-bank manager and its null implementation.
 // Symbol guide: initStrmBank (fn_802E7578), shutdownStrmBank (fn_802E759C),
-// loadStrmBank (fn_802E75E4), bank-unload helpers (fn_802E75FC, fn_802E765C),
+// loadStrmBank (fn_802E75E4), bank-unload helpers (unloadStrmBank, fn_802E765C),
 // setStrmBankLevel (fn_802E7684), createNullStrmBank (fn_802E769C) and the
 // null manager's vtable methods (fn_802E76F0..fn_802E7764).
 // Recovered TU window 0x802E7578..0x802E7768 (see docs/attribution_analysis.md).
@@ -59,7 +59,7 @@ extern "C" void fn_802E75E4(s32 bankName) {
 
 #pragma scheduling invalid_target
 /* Log before and after unloading a stream bank. */
-extern "C" void fn_802E75FC(s32 bankId) {
+extern "C" void unloadStrmBank(s32 bankId) {
     fn_802E30C8(lbl_8034D808);
     ((StrmBankManager *)lbl_8055FFF0)->unloadBank(bankId);
     fn_802E30C8(lbl_8034D818);
