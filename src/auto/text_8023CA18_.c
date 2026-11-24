@@ -134,12 +134,12 @@ void fn_8023CBA4(void) {
     data[17] = lbl_804987A0[2];
     data[18] = lbl_804987A0[3];
     data[19] = lbl_804987A0[4];
-    data[0] = *v;
+    data[0] = v[0];
     data[2] = v[2];
     data[3] = v[3];
     data[4] = v[4];
     data[1] = (s32)&data[5];
-    fn_802146BC(data, -999, -999, 1, v[4], v[3], v[2], *v);
+    fn_802146BC(data, -999, -999, 1, v[4], v[3], v[2], v[0]);
 }
 #pragma pop
 void fn_8023CC84(char *arg0) {
@@ -317,23 +317,23 @@ void fn_8023CC84(char *arg0) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_80128668(void *);
-extern "C" void *fn_8023D134(void *panel, s32 shouldDelete) {
+/* Deleting destructor for the sound-options panel: install the panel vtable, destroy the owned widget via its virtual destroy(1), clear its pointer, and free the panel when shouldDelete > 0. */ extern "C" void *fn_8023D134(void *soundOptionsPanel, s32 shouldDelete) {
     /* Deleting destructor for the sound-options panel: install its vtable, destroy the owned widget, and optionally free. */
     struct VTable_8023D134 {
         virtual void destroy(s32);
     };
-    if (panel != NULL) {
-        void *widget = *(void **)((u8 *)panel + 0x38);
-        *(void **)panel = (void *)lbl_803415E8;
-        if (widget != NULL) {
-            if (widget != NULL)
-                ((VTable_8023D134 *)widget)->destroy(1);
-            *(void **)((u8 *)panel + 0x38) = NULL;
+    if (soundOptionsPanel != NULL) {
+        void *ownedWidget = *(void **)((u8 *)soundOptionsPanel + 0x38);
+        *(void **)soundOptionsPanel = (void *)lbl_803415E8;
+        if (ownedWidget != NULL) {
+            if (ownedWidget != NULL)
+                ((VTable_8023D134 *)ownedWidget)->destroy(1);
+            *(void **)((u8 *)soundOptionsPanel + 0x38) = NULL;
         }
         if (shouldDelete > 0)
-            fn_80128668(panel);
+            fn_80128668(soundOptionsPanel);
     }
-    return panel;
+    return soundOptionsPanel;
 }
 #pragma scheduling on
 #pragma cplusplus off
