@@ -354,7 +354,7 @@ void fn_802C3320(s32 x, s32 y, u32 packedValue) {
 }
 
 // Fill a rectangle, dispatching to the pixel-format-specific fill routine selected by the canvas's current format.
-void gxCanvasFillRect(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
+/* Fill a rectangle on the active GxCanvas, dispatching by pixel format to the 16-bit, RGBA4444, or 4-byte RGBA filler. */ void gxCanvasFillRect(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     s8 format = *(s8 *)lbl_8055FC00;
     s32 is16Bit = 0;
     if (format != CANVAS_FORMAT_RGBA && format != CANVAS_FORMAT_NONE)
