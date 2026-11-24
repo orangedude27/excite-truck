@@ -7843,12 +7843,16 @@ void bta_hh_add_device_to_list(void *devCb, s8 handle, s16 attrMask, void *desc,
     }
 }
 
-BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
-    UINT8 xx;
+/* Check whether a HID subclass is supported: derive its class-of-device byte
+   (sub_class >> 2) and search the configured device list (pairs of tod/app_id
+   bytes) for a matching 'tod'; on a match copy that entry's app_id into the
+   device control block and return TRUE, otherwise FALSE. */
+BOOLEAN bta_hh_tod_spt(void *p_dev_cb, UINT8 sub_class) {
+    UINT8 dev_idx;
     UINT8 cod = (UINT8)(sub_class >> 2);
-    for (xx = 0; xx < pBtaHhCfg[0]; xx++) {
-        if (cod == *(*(UINT8 **)(pBtaHhCfg + 4) + xx * 2)) {
-            ((UINT8 *)p_cb)[0x15] = *(*(UINT8 **)(pBtaHhCfg + 4) + xx * 2 + 1);
+    for (dev_idx = 0; dev_idx < pBtaHhCfg[0]; dev_idx++) {
+        if (cod == *(*(UINT8 **)(pBtaHhCfg + 4) + dev_idx * 2)) {
+            ((UINT8 *)p_dev_cb)[0x15] = *(*(UINT8 **)(pBtaHhCfg + 4) + dev_idx * 2 + 1);
             return TRUE;
         }
     }
