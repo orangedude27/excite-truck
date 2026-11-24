@@ -1344,7 +1344,7 @@ void fn_802C9CE0(void) {
 /* DrawListWrapper::alloc(size, name): hand out one DrawListWrapper from the
  * class's static pool, building that pool (DRAWLIST_POOL_CAPACITY elements of
  * DRAWLIST_WRAPPER_SIZE bytes, named "DrawListWrapper::pool") the first time
- * one is wanted.  The requested size and name (fn_802CA04C passes 0x18 and
+ * one is wanted.  The requested size and name (DrawListWrapper_create passes 0x18 and
  * "mrDrawList") go unused: every element of this pool is the same.  Returns 0
  * when the pool is empty; fn_802C9D88 hands elements back and tears the pool
  * down once no DrawListWrapper is live any more. */
@@ -1483,7 +1483,7 @@ void fn_802CA008(void *owner) {
 extern void *DrawListWrapper_init(void *, int);
 extern char lbl_8034B52C[];
 /* Creates and initializes a draw list node (size 0x18) tagged "mrDrawList". */
-void fn_802CA04C(int listCount) {
+void DrawListWrapper_create(int listCount) {
     void *obj;
     obj = DrawListWrapper_alloc(0x18, lbl_8034B52C);
     if (obj != 0) {

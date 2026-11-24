@@ -124,39 +124,59 @@ extern float fn_802A0F7C(void *, void *, void *);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void *fn_802A1040(void *arg0, void *arg1, void *arg2) {
-    s32 count = 0;
-    void *entry = arg1;
-    for (;;) {
-        float first;
-        float threshold;
-        float next;
-        union PtrU { u32 i; void *p; } up;
-        up.i = (u32)arg0 + 8;
-        first = fn_802A0F7C(up.p, entry, arg0);
-        threshold = lbl_805646F0;
-        up.i = (u32)arg0 + 8;
-        next = fn_802A0F7C(up.p, *(void **)((char *)entry + 0x14), arg0);
-        if (threshold <= first) {
-            if (next > threshold)
-                break;
-            if (threshold <= first) {
-                entry = *(void **)((char *)entry + 0x14);
-                goto step;
-            }
-        }
-        if ((u32)entry == *(u32 *)((char *)arg2 + 0x1c)) {
-            entry = (void *)(*(u32 *)((char *)arg2 + 0x1c) +
-                             ((*(u32 *)((char *)arg2 + 0x18) >> 16) * 0x3c));
-            entry = (char *)entry - 0x3c;
-        } else {
-            entry = (char *)entry - 0x3c;
-        }
-    step:
-        if (count++ >= 10)
-            break;
+void *fn_802A1040(void *arg0, void *arg1, void *arg2)
+{
+  s32 count = 0;
+  void *entry = arg1;
+  for (;;)
+  {
+    float first;
+    float threshold;
+    float next;
+    union PtrU
+    {
+      u32 i;
+      void *p;
+    } up;
+    up.i = ((u32) arg0) + 8;
+    first = fn_802A0F7C(up.p, entry, arg0);
+    up.i = ((u32) arg0) + 8;
+    next = fn_802A0F7C(up.p, *((void **) (((char *) entry) + 0x14)), arg0);
+    threshold = lbl_805646F0;
+    if (first > (threshold - 1))
+    {
+      if (next > threshold)
+      {
+        break;
+      }
+      if ((threshold - 1) < first)
+      {
+        entry = *((void **) (((char *) entry) + 0x14));
+        goto step;
+      }
     }
-    return entry;
+    if (((u32) entry) == (*((u32 *) (((char *) arg2) + 0x1c))))
+    {
+      entry = (void *) ((*((u32 *) (((char *) arg2) + 0x1c))) + ((((*((u32 *) (((char *) arg2) + 0x18))) >> 16) * 15) * 4));
+      entry = ((char *) entry) - 0x3c;
+    }
+    else
+    {
+      entry = ((char *) entry) - 0x3c;
+    }
+    step:
+    if ((count++) >= 10)
+    {
+      do
+      {
+        break;
+      }
+      while (0);
+    }
+
+  }
+
+  return entry;
 }
 #pragma pop
 
@@ -274,7 +294,7 @@ extern void fn_801E9DC4(void *);
 extern s32 fn_802A0FBC(void);
 extern void fn_802A1120(float *, float *);
 extern void fn_802A92CC(void);
-extern s32 fn_802CA04C(s32);
+extern s32 DrawListWrapper_create(s32);
 extern s32 fn_802CAC28(void *, s32);
 extern char lbl_80349914[];
 extern float lbl_8055F848;
@@ -291,14 +311,14 @@ void fn_802A1290(void) {
     float sp10[2];
     float sp8[2];
     s32 n, i, j;
-    float a, k, sz, scale, lo, d, b, hi;
-    float x, y, t;
+    float k, sz, a, scale, lo, d, b, hi;
+    float t, offsetX, offsetY;
     fn_802A92CC();
     if (fn_802A0FBC() != 0) {
         lbl_8055F844 = fn_802CAC28(lbl_80349914, 0);
         n = (s32)(lbl_80564704 / lbl_80564708) | 1;
         sz = lbl_80564708 * (float)n;
-        lbl_8055F840 = fn_802CA04C(n * 12 / 2);
+        lbl_8055F840 = DrawListWrapper_create(n * 12 / 2);
         lbl_8055F848 = (float)fn_8002F208(lbl_80564710);
         fn_802A1120(lbl_8055F850, lbl_8055F858);
         lbl_8055F860[0] = lbl_8055F858[0];
@@ -315,15 +335,17 @@ void fn_802A1290(void) {
         scale = lbl_8056471C;
         for (i = 0; i < n; i++) {
             for (j = 0; j < 3; j++) {
-                x = lbl_8055F850[0] + lbl_8055F858[0] * (k * (float)j) + lbl_8055F860[0] * (k * (float)i - a);
-                y = lbl_8055F850[1] + lbl_8055F858[1] * (k * (float)j) + lbl_8055F860[1] * (k * (float)i - a);
-                sp10[0] = x - lbl_8055F850[0];
-                sp10[1] = y - lbl_8055F850[1];
-                sp18[0] = x;
-                sp18[1] = y;
+                sp18[0] = lbl_8055F850[0] + lbl_8055F858[0] * (k * (float)j);
+                sp18[1] = lbl_8055F850[1] + lbl_8055F858[1] * (k * (float)j);
+                offsetX = lbl_8055F860[0] * (k * (float)i - a);
+                offsetY = lbl_8055F860[1] * (k * (float)i - a);
+                sp18[0] += offsetX;
+                sp18[1] += offsetY;
+                sp10[1] = sp18[1] - lbl_8055F850[1];
+                sp10[0] = sp18[0] - lbl_8055F850[0];
                 t = ((float)fn_8002F234(sp10[0] * sp10[0] + sp10[1] * sp10[1]) - b) / d;
-                if (hi < t) t = hi;
-                if (t <= lo) t = lo;
+                t = hi < t ? hi : t;
+                t = t > lo ? t : lo;
                 fn_802A0D60((s32)sp8, sp18, lbl_8055F858, lbl_8055F860, (i + j) & 1, lbl_80564708, hi + t * scale);
             }
         }
