@@ -35,7 +35,7 @@ extern int stricmp(const char *, const char *);
 // Track-music file list: m_entries is an array of m_count char* song paths
 // (fn_8020F950 fills it from the dash's scanned music table), m_capacity is how
 // many of them fit in the buffer.
-extern struct TrackMusicList { char **m_entries; long m_count; long m_capacity; } lbl_804900AC;
+extern struct TrackMusicList { char **m_entries; long m_count; long m_capacity; } gTrackMusicPathList;
 extern void fn_801345D8(void *, ...);
 extern long lbl_8055B664;
 extern signed char lbl_8055EEF4;
@@ -213,7 +213,7 @@ long getNextTrackMusicIndex(void) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_8020F730(void) {
-    long count = lbl_804900AC.m_count;
+    long count = gTrackMusicPathList.m_count;
     long i;
     lbl_804902C4.m_count = 0;
     if (count != 0) {
@@ -244,19 +244,19 @@ void fn_8020F730(void) {
     long index;
     char *path;
     char **entries;
-    capacity = lbl_804900AC.m_capacity;
-    lbl_804900AC.m_count = 0;
-    limit = ((long (*)(struct TrackMusicList *))fn_802EC0FC)(&lbl_804900AC);
+    capacity = gTrackMusicPathList.m_capacity;
+    gTrackMusicPathList.m_count = 0;
+    limit = ((long (*)(struct TrackMusicList *))fn_802EC0FC)(&gTrackMusicPathList);
     if (capacity < limit) {
         limit = capacity;
     }
     i = 0;
     while (i < limit) {
         path = fn_802EC104(i);
-        index = lbl_804900AC.m_count;
+        index = gTrackMusicPathList.m_count;
         i++;
-        entries = lbl_804900AC.m_entries;
-        lbl_804900AC.m_count = index + 1;
+        entries = gTrackMusicPathList.m_entries;
+        gTrackMusicPathList.m_count = index + 1;
         entries[index] = path;
     }
     fn_8020F730();
@@ -349,8 +349,8 @@ char *key;
     int index;
     index = 0;
     entryOffset = 0;
-    while (index < lbl_804900AC.m_count) {
-        if (fn_8002B1D8(*(char **)((char *)lbl_804900AC.m_entries + entryOffset), (char *)name, 0x3F) == 0) {
+    while (index < gTrackMusicPathList.m_count) {
+        if (fn_8002B1D8(*(char **)((char *)gTrackMusicPathList.m_entries + entryOffset), (char *)name, 0x3F) == 0) {
             return index;
         }
         entryOffset += 4;
@@ -365,7 +365,7 @@ char *key;
 void *getCurrentTrackMusicPath(void) {
 #define GetCurrentTrackMusicEntry findTrackMusicEntry
 #define GetNextTrackMusicIndex getNextTrackMusicIndex
-#define trackMusicList lbl_804900AC
+#define trackMusicList gTrackMusicPathList
     char *trackEntry = (char *)GetCurrentTrackMusicEntry();
     long entryType;
     if (trackEntry == 0) {
@@ -391,7 +391,7 @@ extern int fn_8020FB80(void *);
 #pragma scheduling invalid_target
 int fn_8020FC6C(void) {
     void *p;
-    if (lbl_804900AC.m_count == 0) {
+    if (gTrackMusicPathList.m_count == 0) {
         return ((int (*)(int))fn_8020F3B4)(0);
     } else if ((p = getCurrentTrackMusicPath()) != 0) {
         return fn_8020FB80(p);
@@ -410,7 +410,7 @@ int fn_8020FC6C(void) {
  * scene's resource, resolve the matching song index, log the choice and switch
  * to it (stopping the old song first when it changes). */
 /* Pick the track-music song for the current scene event, log the choice and switch to it, stopping the old song first when it changes. */ extern "C" void fn_8020FCC4(void) {
-    #define TRACK_SONGS     lbl_804900AC
+    #define TRACK_SONGS     gTrackMusicPathList
     #define CURRENT_SONG    gTrackMusicCurrentSong
     #define EVENT_NAME_OUT  lbl_8055B674
     #define NO_EVENT        lbl_8033C970   /* "invalid_contest" */
@@ -600,7 +600,7 @@ extern signed char lbl_8055EEEC, lbl_8055EEED;
         songIndex = request + lbl_8055EEE4 * 10;
         audioContainer = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
         resourceObj = *(struct Dummy_802113D8 **)((char *)audioContainer + 0x20);
-        fn_8020FDE4(2, (const char *)lbl_804900AC.m_entries[songIndex],
+        fn_8020FDE4(2, (const char *)gTrackMusicPathList.m_entries[songIndex],
                     (char *)resourceObj->f6(&lbl_8055B674, lbl_8033C970));
         gTrackMusicCurrentSong = songIndex;
     }
