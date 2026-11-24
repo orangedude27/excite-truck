@@ -84,7 +84,7 @@ extern void fn_802E3734(s32 *);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 /* Returns the per-language homeBtn_*.arc filename from the homebutton2 string table for the language index at lbl_80558860+0x1C, resetting out-of-range values to 0 (Japanese). */
-void *fn_802EC598(void) {
+void *getHomeBtnArchiveName(void) {
 #define gHomeBtn2Resources lbl_80558860
 #define gHomeBtn2Strings lbl_8034E9E0
     s32 language = *(s32 *)(gHomeBtn2Resources + 0x1c);
@@ -156,7 +156,7 @@ void *fn_802EC598(void) {
     memset(buffer, 0, 0x80000);
     *(s32 *)(resources + 0x24) = 0x80000;
     *(s32 *)(resources + 0x1C) = SCGetLanguage();
-    *(s32 *)(resources + 0x00) = fn_802EC4E8((s32)fn_802EC598());
+    *(s32 *)(resources + 0x00) = fn_802EC4E8((s32)getHomeBtnArchiveName());
     *(s32 *)(resources + 0x04) = fn_802EC4E8((s32)file04Path);
     *(s32 *)(resources + 0x08) = fn_802EC4E8((s32)file08Path);
     *(s32 *)(resources + 0x0C) = fn_802EC4E8((s32)file0CPath);
