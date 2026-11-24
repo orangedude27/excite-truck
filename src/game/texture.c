@@ -1220,7 +1220,7 @@ void fn_802CB82C(int arg0) {
 }
 #pragma pop
  void fn_802CBBE8();
- extern char lbl_8034BA04[];
+ extern char texMsgUnlinkNodeNotFound[];
 /* Remove arg2 from the list rooted at arg1, then push arg2 onto the front of *arg0. */
 void fn_802CBB9C(int **arg0, int arg1, int *arg2) {
     fn_802CBBE8(arg1, arg2);
@@ -1244,7 +1244,7 @@ void fn_802CBBE8(register int **link, int *node, int *scan) {
         link = (int **)((char *)scan + 0x14);
     }
     if (found == 0)
-        Abend_Panic(lbl_8034BA04);
+        Abend_Panic(texMsgUnlinkNodeNotFound);
 }
 
 #pragma use_lmw_stmw off
@@ -1325,7 +1325,7 @@ void fn_802CBD30(void **destHead, void **srcHead, void *node) {
 }
 
 void fn_802CBD7C(void **, void *, void *);
-extern char lbl_8034BA04[];
+extern char texMsgUnlinkNodeNotFound[];
 /* Unlink a texture node from the list whose head pointer is *link, scanning
    from the given node; report "can't find node!" if it isn't on that list. */
 void fn_802CBD7C(register void **link, void *node, void *scan) {
@@ -1341,7 +1341,7 @@ void fn_802CBD7C(register void **link, void *node, void *scan) {
         link = (void **)((char *)scan + 0x10);
     }
     if (found == 0)
-        Abend_Panic(lbl_8034BA04);
+        Abend_Panic(texMsgUnlinkNodeNotFound);
 }
 
 extern int fn_802D9068(void);
