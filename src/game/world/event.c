@@ -21,7 +21,7 @@ void fn_801EEFC8(void) {
 #pragma scheduling invalid_target
 /* Registers a handler for event type (eventType & 0xFF): stores it in the first
    free slot of that type's 4-slot row, or does nothing when the row is full. */
-void fn_801EEFDC(int handler, unsigned int eventType) {
+void Event_RegisterHandler(int handler, unsigned int eventType) {
     unsigned int *p;
     unsigned int *base;
     int i;
@@ -72,7 +72,7 @@ extern char lbl_8033A354[];
  *   signed char evtType | payload bytes ...
  * Each record's payload is copied into a private 0x400-byte buffer and handed
  * to every handler registered for its type in lbl_80488678 (18 event types x
- * 4 handler slots, see fn_801EEFDC / fn_801EF024); the last handler run
+ * 4 handler slots, see Event_RegisterHandler / fn_801EF024); the last handler run
  * returns how many payload bytes it consumed, and the walk advances past
  * those plus the type byte. A type with no handler is reported
  * ("No handler for evt type %d") and aborts the script. */

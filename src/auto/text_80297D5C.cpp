@@ -54,7 +54,7 @@ extern "C" float lbl_8056459C;
 extern "C" float lbl_805645B8;
 extern "C" void fn_802991BC(void*);
 extern "C" void* fn_802974CC(char*);
-extern "C" int fn_801EEFDC(void*, int);
+extern "C" int Event_RegisterHandler(void*, int);
 extern "C" int fn_8029AEE8(void*);
 extern "C" float lbl_805645C8;
 extern "C" float lbl_805645E8;
@@ -1622,8 +1622,8 @@ extern "C" void *fn_8029A6F4(void *owner) {
     *(void **)((char *)owner + 0x160) =
         ((void *(*)(void *, const char *, int))fn_8028E2F8)(
             args.desc, lbl_803494FC, lbl_8055CA8C);
-    fn_801EEFDC((void *)fn_8029C054, 0xE);
-    fn_801EEFDC((void *)fn_8029C024, 0xD);
+    Event_RegisterHandler((void *)fn_8029C054, 0xE);
+    Event_RegisterHandler((void *)fn_8029C024, 0xD);
     return owner;
 }
 #pragma scheduling on
@@ -2317,14 +2317,14 @@ extern "C" void* fn_8029B938(void* arg0) {
         result = fn_8029ADCC((void*)result);
     }
     *(int*)arg0 = result;
-    fn_801EEFDC((void*)fn_8029BFF8, 4);
+    Event_RegisterHandler((void*)fn_8029BFF8, 4);
     fn_8029BA0C(arg0);
     return arg0;
 }
 
 extern "C" void fn_8029BEF8(void *);
 extern "C" int fn_8029C190(void*);
-extern "C" int fn_801EEFDC(void*, int);
+extern "C" int Event_RegisterHandler(void*, int);
 
 /* Destroy the BackfireMan object: unregister the per-frame backfire callback,
    delete the owned ExhaustTorchMan at offset 0, then free this object when the
@@ -2480,7 +2480,7 @@ extern "C" int fn_8029BD14(int object) {
     /* Construct a TorchFireMan: build the "torch fire" effect it owns, register
        fn_8029C190 as the event-9 callback, and return the object. */
     fn_8029BEF8((void*)object);
-    fn_801EEFDC((void*)fn_8029C190, 9);
+    Event_RegisterHandler((void*)fn_8029C190, 9);
     return object;
 }
 #pragma scheduling reset
@@ -2496,7 +2496,7 @@ extern "C" void* fn_8029BD54(void* object, int deletingFlag) {
 }
 
 extern "C" void fn_8029BEF8(void *);
-extern "C" int fn_801EEFDC(void*, int);
+extern "C" int Event_RegisterHandler(void*, int);
 extern "C" int fn_8029C190(void*);
 extern "C" void* fn_80288208(int);
 extern "C" int fn_80287B14(void);
@@ -2509,7 +2509,7 @@ extern "C" void fn_8029BDB8(void *torchFireMan) {
 
 extern "C" void fn_80288A58(void*, float*);
 extern "C" void fn_8029BEF8(void *);
-extern "C" int fn_801EEFDC(void*, int);
+extern "C" int Event_RegisterHandler(void*, int);
 extern "C" int fn_8029C190(void*);
 extern "C" void* fn_80288208(int);
 extern "C" int fn_80287B14(void);

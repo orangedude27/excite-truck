@@ -125,7 +125,7 @@ typedef struct Camera {
 #define sound_volume_open fn_802090D4  /* name -> {float volume; int name} slot */
 #define sound_volume_set  fn_80209190  /* slot, level (clamped to 0..1) */
 #define sound_object_create fn_80207848 /* name, arg -> 0x70-byte sound object */
-#define callback_install  fn_801EEFDC  /* fn, category -> first free of 4 slots */
+#define callback_install  Event_RegisterHandler  /* fn, category -> first free of 4 slots */
 
 /* The replay spin fn_80267EF8 runs on the chase/replay cameras: one full turn
  * about the camera's up axis over SPIN_DURATION seconds, with the crash level

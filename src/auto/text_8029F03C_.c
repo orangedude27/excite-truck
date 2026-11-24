@@ -77,7 +77,7 @@ extern void fn_8029FE00(void);
 extern void fn_8029FD04(void);
 extern int fn_801E85AC(void);
 extern int fn_8012850C(int, void *);
-extern int fn_801EEFDC(void *, int);
+extern int Event_RegisterHandler(void *, int);
 extern char lbl_80349810[];
 extern unsigned char lbl_804B7770[];
 extern int lbl_8055F818;
@@ -106,7 +106,7 @@ void fn_8029F03C(void) {
 #define initTrackEffects fn_8029FEF8
 #define sortEffectRecords fn_8029FE00
 #define registerEmitters fn_8029FD04
-#define registerEventHandler fn_801EEFDC
+#define registerEventHandler Event_RegisterHandler
 #define emitEffectBurst fn_802A0620
 #define triggerEmitters fn_802A0720
 #define screenRectTab lbl_8055F820
@@ -435,7 +435,6 @@ extern "C" void fn_8029F5C8(void *out, unsigned char *config) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 extern "C" void fn_8029F658(void *arg0) {
-#pragma scheduling invalid_target
     class Obj {
     public:
         virtual const char *name();
@@ -450,9 +449,9 @@ extern "C" void fn_8029F658(void *arg0) {
         virtual void v9();
         virtual void v10();
         virtual void v11();
-        virtual Fn8029Vec getVec(const char *, Fn8029Vec);
+        virtual Fn8029Vec getVec(const char *, const Fn8029Vec &);
         virtual void v13();
-        virtual Fn8029Pair getPair(const char *, Fn8029Pair);
+        virtual Fn8029Pair getPair(const char *, const Fn8029Pair &);
         virtual void v15();
         virtual void v16();
         virtual void v17();
@@ -470,17 +469,29 @@ extern "C" void fn_8029F658(void *arg0) {
     char *src;
     const char *str;
     Fn8029Vec defaultVec;
-    Fn8029Vec v1;
-    Fn8029Vec v2;
     Fn8029Vec v2copy;
-    Fn8029Vec v3;
-    Fn8029Pair pairDefault;
-    Fn8029Pair out1;
-    Fn8029Pair out2;
-    Fn8029Pair out3;
-    Fn8029Pair out4;
-    Fn8029Pair out5;
+    Fn8029Vec v1;
+    Fn8029Vec vecArg1;
+    Fn8029Vec v2;
+    Fn8029Vec vecArg2;
     Fn8029Vec defaultVec2;
+    Fn8029Vec v3;
+    Fn8029Vec vecArg3;
+    union PairStorage {
+        Fn8029Pair pair;
+        double bits;
+    };
+    PairStorage pairDefault;
+    Fn8029Pair out1;
+    PairStorage pairArg1;
+    Fn8029Pair out2;
+    PairStorage pairArg2;
+    Fn8029Pair out3;
+    PairStorage pairArg3;
+    Fn8029Pair out4;
+    PairStorage pairArg4;
+    Fn8029Pair out5;
+    PairStorage pairArg5;
     int packed;
     int rPart;
     int gPart;
@@ -494,8 +505,8 @@ extern "C" void fn_8029F658(void *arg0) {
     defaultVec.x = 0.0f;
     defaultVec.y = 0.0f;
     defaultVec.z = 0.0f;
-    pairDefault.x = 0.0f;
-    pairDefault.y = 0.0f;
+    pairDefault.pair.x = 0.0f;
+    pairDefault.pair.y = 0.0f;
     *(int *)record = obj->getId(lbl_8055CAF0);
     str = obj->name();
     src = (char *)str + strlen(&table[0x44]);
@@ -519,23 +530,29 @@ done:
     *(float *)(record + 4) = obj->getFloat(lbl_805646B4, &table[0x50]);
     *(float *)(record + 8) = obj->getFloat(lbl_805646B4, lbl_8055CAF4);
     *(float *)(record + 0xC) = obj->getFloat(lbl_805646B4, lbl_8055CAFC);
-    out1 = obj->getPair(lbl_8055CB04, pairDefault);
+    pairArg1.bits = pairDefault.bits;
+    out1 = obj->getPair(lbl_8055CB04, pairArg1.pair);
     *(float *)(record + 0x10) = out1.x;
     *(float *)(record + 0x14) = out1.y;
-    out2 = obj->getPair(lbl_8055CB0C, pairDefault);
+    pairArg2.bits = pairDefault.bits;
+    out2 = obj->getPair(lbl_8055CB0C, pairArg2.pair);
     *(float *)(record + 0x18) = out2.x;
     *(float *)(record + 0x1C) = out2.y;
-    out3 = obj->getPair(lbl_8055CB14, pairDefault);
+    pairArg3.bits = pairDefault.bits;
+    out3 = obj->getPair(lbl_8055CB14, pairArg3.pair);
     *(float *)(record + 0x20) = out3.x;
     *(float *)(record + 0x24) = out3.y;
-    out4 = obj->getPair(lbl_8055CB18, pairDefault);
+    pairArg4.bits = pairDefault.bits;
+    out4 = obj->getPair(lbl_8055CB18, pairArg4.pair);
     *(float *)(record + 0x28) = out4.x;
     *(float *)(record + 0x2C) = out4.y;
-    v1 = obj->getVec(lbl_8055CB1C, defaultVec);
+    vecArg1 = defaultVec;
+    v1 = obj->getVec(lbl_8055CB1C, vecArg1);
     *(float *)(record + 0x30) = v1.x;
     *(float *)(record + 0x34) = v1.y;
     *(float *)(record + 0x38) = v1.z;
-    out5 = obj->getPair(lbl_8055CB28, pairDefault);
+    pairArg5.bits = pairDefault.bits;
+    out5 = obj->getPair(lbl_8055CB28, pairArg5.pair);
     *(float *)(record + 0x3C) = out5.x;
     *(float *)(record + 0x40) = out5.y;
     *(float *)(record + 0x44) = obj->getFloat(lbl_805646B8, lbl_8055CB30);
@@ -543,17 +560,25 @@ done:
     defaultVec2.x = lbl_805646BC;
     defaultVec2.y = lbl_805646BC;
     defaultVec2.z = lbl_805646BC;
-    v2 = obj->getVec(&table[0x68], defaultVec2);
+    vecArg2 = defaultVec2;
+    v2 = obj->getVec(&table[0x68], vecArg2);
     v2copy = v2;
-    rPart = (int)(lbl_805646C0 * v2copy.x);
-    bPart = (int)(lbl_805646C0 * v2copy.z);
-    gPart = (int)(lbl_805646C0 * v2copy.y);
-    hi = 0xFF000000 | ((rPart & 0xFF) << 16);
-    lo = ((gPart & 0xFF) << 8) | (bPart & 0xFF);
+    {
+        float r = lbl_805646C0 * v2copy.x;
+        float g = lbl_805646C0 * v2copy.y;
+        float b = lbl_805646C0 * v2copy.z;
+        rPart = (int)r;
+        hi = 0xFF000000 | ((rPart & 0xFF) << 16);
+        gPart = (int)g;
+        bPart = (int)b;
+    }
+    lo = (gPart & 0xFF) << 8;
+    lo |= (unsigned char)bPart;
     packed = lo | hi;
     *(int *)(record + 0x4C) = packed;
     *(int *)(record + 0x50) = obj->getProp(lbl_8055CB38, 1);
-    v3 = obj->getVec(lbl_8055CB40, defaultVec);
+    vecArg3 = defaultVec;
+    v3 = obj->getVec(lbl_8055CB40, vecArg3);
     *(float *)(record + 0x54) = v3.x;
     *(float *)(record + 0x58) = v3.y;
     *(float *)(record + 0x5C) = v3.z;
@@ -841,24 +866,22 @@ typedef struct Result_802A0098 {
 extern "C" float PSVECMag(const void *);
 extern float lbl_805646BC;
 #pragma opt_lifetimes off
-extern "C" void fn_802A0098(Result_802A0098 *out, const float *arg0, const Unk802A0794Params *arg1) {
-    float width;
-    {
-        float span = arg0[1] * PSVECMag(&arg1->values[3]);
-        width = lbl_805646BC;
-        width = (width < span) ? width : span;
-    }
-    out->count = (int)(arg0[2] + arg0[3] * width);
-    out->data[0] = arg1->values[0] + arg0[12];
-    out->data[1] = arg1->values[1] + arg0[13];
-    out->data[2] = arg1->values[2] + arg0[14];
-    out->data[3] = arg1->values[3] * arg0[15];
-    out->data[4] = arg1->values[4] * arg0[16];
-    out->data[5] = arg1->values[5] * arg0[15];
-    out->data[6] = arg0[4] + arg0[6] * width;
-    out->data[7] = arg0[5] + arg0[7] * width;
-    out->data[8] = arg0[8] + arg0[10] * width;
-    out->data[9] = arg0[9] + arg0[11] * width;
+extern "C" void fn_802A0098(Result_802A0098 *out, const float *arg0, const Unk802A0794Params *arg1)
+{
+  float span = arg0[1] * PSVECMag(&arg1->values[3]);
+  float width = lbl_805646BC;
+  width = (width < span) ? (width) : (span);
+  out->count = (int) (arg0[2] + (arg0[3] * width));
+  out->data[0] = arg1->values[0] + arg0[12];
+  out->data[(((1 & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF] = arg1->values[1] + arg0[13];
+  out->data[2] = (0, arg1->values[2] + arg0[14]);
+  out->data[3] = arg1->values[3] * arg0[15];
+  out->data[4] = ((0, arg1->values[4])) * arg0[16];
+  out->data[5] = arg1->values[5] * arg0[15];
+  out->data[6] = arg0[4] + (arg0[6] * width);
+  out->data[7] = arg0[5] + (arg0[7] * width);
+  out->data[8] = arg0[8] + (arg0[10] * width);
+  out->data[9] = arg0[9] + (arg0[11] * width);
 }
 #pragma opt_lifetimes reset
 extern "C" float fn_80287BC8(float, float);
@@ -965,77 +988,94 @@ extern "C" float PSVECDotProduct(const float *, const float *);
 extern "C" int fn_801E85A4(void);
 #pragma push
 #pragma scheduling invalid_target
-void fn_802A042C(void *arg0, Unk802A0794Params *arg1) {
-    struct Entry { unsigned int words[12]; };
-    struct Entry copy;
-    float bias, scale, upper, lower;
-    float vec[6];
-    void *obj;
-    int i;
-    float radius2;
-    Unk802A0794Params *pos;
-
-    lower = lbl_805646BC;
-    obj = arg0;
-    upper = lbl_805646B4;
-    pos = arg1;
-    scale = lbl_805646C0;
-    bias = lbl_805646C8;
-    i = 0;
-
-    goto test;
-body:
+void fn_802A042C(void *arg0, Unk802A0794Params *arg1)
+{
+  struct Entry
+  {
+    unsigned int words[12];
+  };
+  struct Entry copy;
+  float bias;
+  float scale;
+  float upper;
+  float lower;
+  struct Fn8029Vec point;
+  struct Fn8029Vec delta;
+  void *obj;
+  int i;
+  float radius2;
+  Unk802A0794Params *pos;
+  lower = lbl_805646BC;
+  obj = arg0;
+  upper = lbl_805646B4;
+  pos = arg1;
+  scale = lbl_805646C0;
+  bias = lbl_805646C8;
+  i = 0;
+  goto test;
+  body:
+  {
+    float dot;
+    struct Entry *entry = (struct Entry *) fn_801E8718(i);
+    float radius;
+    copy = *entry;
+    point.x = pos->values[0] + (*((float *) (((char *) obj) + 0x30)));
+    point.y = pos->values[1] + (*((float *) (((char *) obj) + 0x34)));
+    point.z = pos->values[2] + (*((float *) (((char *) obj) + 0x38)));
+    radius = *((float *) (((char *) obj) + 0x44));
+    radius2 = radius * radius;
+    delta.x = point.x - (*((float *) (&copy.words[9])));
+    delta.y = point.y - (*((float *) (&copy.words[10])));
+    delta.z = point.z - (*((float *) (&copy.words[11])));
+    dot = PSVECDotProduct((const float *) (&delta), (const float *) (&delta));
+    if (dot < radius2)
     {
-        float dx, dy, dz, pointX, pointY, pointZ, dot;
-        struct Entry *entry = (struct Entry *)fn_801E8718(i);
-        float radius;
-        copy = *entry;
-        pointX = pos->values[0] + *(float *)((char *)obj + 0x30);
-        pointY = pos->values[1] + *(float *)((char *)obj + 0x34);
-        pointZ = pos->values[2] + *(float *)((char *)obj + 0x38);
-        radius = *(float *)((char *)obj + 0x44);
-        radius2 = radius * radius;
-        dx = pointX - *(float *)&copy.words[9];
-        dy = pointY - *(float *)&copy.words[10];
-        dz = pointZ - *(float *)&copy.words[11];
-        vec[3] = pointX;
-        vec[4] = pointY;
-        vec[5] = pointZ;
-        vec[0] = dx;
-        vec[1] = dy;
-        vec[2] = dz;
-        dot = PSVECDotProduct(vec, vec);
-        if (dot < radius2) {
-            float amount = dot / radius2;
-            float base;
-            register float next;
-            int alpha;
-            int clamped;
-            unsigned int *colors;
-            unsigned int old;
-            register unsigned int objectColor;
-            long output;
-            if (lower < amount) amount = lower;
-            amount = (amount > upper) ? amount : upper;
-            base = scale * *(float *)((char *)obj + 0x48);
-            next = base + amount * (upper - base);
-            if (next < upper) next -= bias;
-            else next += bias;
-            colors = (unsigned int *)lbl_8055F820;
-            old = colors[i];
-            alpha = (int)next + (int)(old >> 24);
-            alpha = alpha & ((-alpha & ~alpha) >> 31);
-            clamped = 255;
-            if (255 > alpha) clamped = alpha;
-            objectColor = *(unsigned int *)((char *)obj + 0x4C);
-            output = (objectColor & 0x00FF0000) | ((unsigned int)clamped << 24) | (objectColor & 0x0000FFFF);
-            colors[i] = output;
-        }
-        i++;
+      float base;
+      float amount = dot / radius2;
+      register float next;
+      int clamped;
+      int alpha;
+      unsigned int *colors;
+      unsigned int old;
+      unsigned int objectColor;
+      long output;
+      if (lower < amount)
+      {
+        amount = lower;
+      }
+      amount = (amount > upper) ? (amount) : (upper);
+      base = scale * (*((float *) (((char *) obj) + 0x48)));
+      next = base + (amount * (upper - base));
+      if (next < upper)
+      {
+        next = next - bias;
+      }
+      else
+      {
+        next = bias + next;
+      }
+      colors = (unsigned int *) lbl_8055F820;
+      old = colors[i];
+      alpha = ((int) (old >> 24)) + ((int) next);
+      alpha = alpha & (((-alpha) & (~alpha)) >> 31);
+      clamped = 255;
+      if (255 > alpha)
+      {
+        clamped = alpha;
+      }
+      objectColor = *((unsigned int *) (((char *) obj) + 0x4C));
+      output = ((objectColor & 0x00FF0000) | (((unsigned int) clamped) << 24)) | (objectColor & 0x0000FFFF);
+      colors[i] = output;
     }
-test:
-    if (i < fn_801E85A4())
-        goto body;
+    i++;
+  }
+
+  test:
+  if (i < fn_801E85A4())
+  {
+    goto body;
+  }
+
 }
 #pragma pop
 
@@ -1109,30 +1149,29 @@ check:
 
 #pragma push
 #pragma inline off
-void fn_802A0794(void *arg0) {
-    /* Dispatches an effect update/spawn request by id, applying position/params and invoking
-       active handlers, then writes back the possibly-updated request id. Logs if the id is missing. */
+/* Dispatch an effect request: read its id and parameters, look up the effect record, run its base update plus any enabled handlers, and log a warning if the id is unknown. */
+void fn_802A0794(void *request) {
     Unk802A0794Params params;
-    unsigned char *effect;
-    params.unk_0x18 = *(short *)((char *)arg0 + 0x2C);
-    params.values[0] = *(float *)((char *)arg0 + 4);
-    params.values[1] = *(float *)((char *)arg0 + 8);
-    params.values[2] = *(float *)((char *)arg0 + 12);
-    params.values[3] = *(float *)((char *)arg0 + 16);
-    params.values[4] = *(float *)((char *)arg0 + 20);
-    params.values[5] = *(float *)((char *)arg0 + 24);
-    params.unk_0x1C = *(int *)((char *)arg0 + 0x28);
-    effect = (unsigned char *)fn_8029FE1C(params.unk_0x1C);
-    if (effect != 0) {
-        fn_802A042C(effect, &params);
-        if (effect[0x60] != 0)
-            fn_802A01C8(effect, &params);
-        if (effect[0x6C] != 0)
-            fn_802A02F4(effect, &params);
+    unsigned char *pEffect;
+    params.unk_0x18 = *(short *)((char *)request + 0x2C);
+    params.values[0] = *(float *)((char *)request + 4);
+    params.values[1] = *(float *)((char *)request + 8);
+    params.values[2] = *(float *)((char *)request + 12);
+    params.values[3] = *(float *)((char *)request + 16);
+    params.values[4] = *(float *)((char *)request + 20);
+    params.values[5] = *(float *)((char *)request + 24);
+    params.unk_0x1C = *(int *)((char *)request + 0x28);
+    pEffect = (unsigned char *)fn_8029FE1C(params.unk_0x1C);
+    if (pEffect != 0) {
+        fn_802A042C(pEffect, &params);
+        if (pEffect[0x60] != 0)
+            fn_802A01C8(pEffect, &params);
+        if (pEffect[0x6C] != 0)
+            fn_802A02F4(pEffect, &params);
     } else {
         fn_802E30C8(lbl_803498AC, params.unk_0x1C);
     }
-    *(short *)((char *)arg0 + 0x2C) = params.unk_0x18;
+    *(short *)((char *)request + 0x2C) = params.unk_0x18;
 }
 #pragma pop
 

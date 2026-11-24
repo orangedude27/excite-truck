@@ -139,7 +139,7 @@ __declspec(section ".data") extern f32 lbl_80558DC4;
 extern "C" void fn_802A1B20(void*, s32);
 extern "C" void fn_802A1CC4(void);
 extern "C" void fn_8028E61C(void*);
-extern "C" void fn_801EEFDC(void *, s32);
+extern "C" void Event_RegisterHandler(void *, s32);
 #pragma scheduling invalid_target
 extern "C" void fn_802A1590(void) {
     class Item {
@@ -177,7 +177,7 @@ loop:
     fn_802A1CC4();
     {
         register void *callback = (void *)fn_802A1C30;
-        fn_801EEFDC(callback, 5);
+        Event_RegisterHandler(callback, 5);
     }
 }
 #pragma scheduling on

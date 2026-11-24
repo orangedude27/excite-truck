@@ -61,7 +61,7 @@ int fn_801B64B4(const void *p) {
 #pragma scheduling on
 void fn_801B6604(void) {
     /* Register fn_801B64B4 as a handler for world event type 3. */
-    fn_801EEFDC(fn_801B64B4, 3);
+    Event_RegisterHandler(fn_801B64B4, 3);
 }
 #pragma scheduling reset
 /* Unregisters the fn_801B64B4 world-event handler (registered for type 3 by

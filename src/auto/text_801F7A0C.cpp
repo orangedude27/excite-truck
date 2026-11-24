@@ -1846,7 +1846,7 @@ extern "C" s32 fn_801F9D70(void *arg0) {
     return allRequiredFlagsSet;
 }
 
-extern "C" void fn_801EEFDC(void *, s32);
+extern "C" void Event_RegisterHandler(void *, s32);
 extern "C" void fn_8020401C(void);
 __declspec(section ".sdata") extern const char lbl_8055B390[];
 extern "C" void fn_801F9E04(void *context) {
@@ -1882,7 +1882,7 @@ extern "C" void fn_801F9E04(void *context) {
     lbl_8055EC68 = ((void *(*)(void *))fn_801F96B8)((void *)lbl_8055B390);
     lbl_8055EC70 = (s32)(u32)((void *(*)(void *))fn_801F96B8)((void *)lbl_8055B2C4);
     ((void (*)(void *))fn_8020401C)(context);
-    fn_801EEFDC((void *)fn_801F9CF8, 0xC);
+    Event_RegisterHandler((void *)fn_801F9CF8, 0xC);
 }
 
 extern void fn_801EF024(void *);

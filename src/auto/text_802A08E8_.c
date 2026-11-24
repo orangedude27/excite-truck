@@ -50,7 +50,7 @@ s32 fn_802A0944(void *arg0)
 extern void fn_8012850C(void *, void *);
 extern void *fn_8002F37C(void *, int, int, int);
 extern int fn_802CAC28(void *, int);
-extern void fn_801EEFDC(int, unsigned int);
+extern void Event_RegisterHandler(int, unsigned int);
 extern void fn_802A0AF8(void);
 extern char lbl_803498E0[];
 extern char lbl_803498EC[];
@@ -99,7 +99,7 @@ void fn_802A09B0(void) {
         offset += 0x2A0;
     }
     lbl_8055CB68 = fn_802CAC28(lbl_803498EC, 0);
-    fn_801EEFDC((int)fn_802A0944, 6);
+    Event_RegisterHandler((int)fn_802A0944, 6);
 }
 
 void fn_802A0AF8(void) {
@@ -192,7 +192,7 @@ void fn_802A0B54(void) {
     int outer;
     int first;
     int count;
-    int j;
+
     float scale;
     float add;
     float size;
@@ -216,9 +216,9 @@ void fn_802A0B54(void) {
             f3 = size * (float)first;
             f0 = size + f3;
             f4 = base + (float)(first * 6);
-            for (j = 0; j < *(int *)(record + 8); j++) {
-                Fn802A0B54Vertex *v = &work.vertices[j];
-                float f = ((float)j / scale) * f4;
+            for (first = 0; first < *(int *)(record + 8); first++) {
+                Fn802A0B54Vertex *v = &work.vertices[first];
+                float f = ((float)first / scale) * f4;
                 v->f0 = *(float *)(record + 0xC);
                 v->f4 = *(float *)(record + 0x10);
                 v->f8 = *(float *)(record + 0x14);
@@ -232,9 +232,9 @@ void fn_802A0B54(void) {
                 v->f28 = (float)f;
                 *(float *)((u8 *)v + 0x1C) = *(float *)((u8 *)v + 0x1C) + add;
                 v->f2C = f0;
-                if (j > 0) {
-                    short *idx = work.indices + (j - 1) * 6;
-                    int baseIdx = (j - 1) * 2;
+                if (first > 0) {
+                    short *idx = work.indices + (first - 1) * 6;
+                    int baseIdx = (first - 1) * 2;
                     idx[0] = (short)baseIdx;
                     idx[1] = (short)(baseIdx + 2);
                     idx[2] = (short)(baseIdx + 1);

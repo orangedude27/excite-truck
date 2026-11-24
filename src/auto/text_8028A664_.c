@@ -173,7 +173,7 @@ extern void fn_8028BD5C(s32);
 extern void fn_8028BFEC(s32);
 extern void fn_8028C938(s32);
 
-extern void fn_80288A70(void *, f32 *);
+extern void fn_80288A70(void *, f32 *, f32);
 extern void fn_8028AA6C(void *, s32, f32);
 extern s32 lbl_8055F700;
 extern f32 lbl_8056434C;
@@ -199,7 +199,7 @@ void fn_8028A664(void) {
     extern void *fn_802974CC(void *);
     extern void fn_8028ABE8(void *);
     extern void fn_8028B3CC(void);
-    extern void fn_801EEFDC(s32, s32);
+    extern void Event_RegisterHandler(s32, s32);
     extern s32 fn_8028B93C(const f32 *);
     extern s32 fn_8028B500(void *);
     extern s32 fn_8028BA44(void *);
@@ -221,11 +221,11 @@ void fn_8028A664(void) {
     *(volatile s32 *)&lbl_804B32B8[0x50] = 0;
     fn_8028ABE8(handle);
     fn_8028B3CC();
-    fn_801EEFDC((s32)fn_8028B93C, 0);
-    fn_801EEFDC((s32)fn_8028B500, 1);
-    fn_801EEFDC((s32)fn_8028BA44, 2);
-    fn_801EEFDC((s32)fn_8028BA9C, 7);
-    fn_801EEFDC((s32)fn_8028BB14, 8);
+    Event_RegisterHandler((s32)fn_8028B93C, 0);
+    Event_RegisterHandler((s32)fn_8028B500, 1);
+    Event_RegisterHandler((s32)fn_8028BA44, 2);
+    Event_RegisterHandler((s32)fn_8028BA9C, 7);
+    Event_RegisterHandler((s32)fn_8028BB14, 8);
 }
 #pragma pop
 #pragma cplusplus on
@@ -857,7 +857,7 @@ s32 fn_8028BA44(void *arg0) {
     locals.sp8 = 0.0f;
     locals.spC = 0.0f;
     locals.sp10 = 0.0f;
-    fn_80288A70(arg0, &locals.sp8);
+    ((void (*)(void *, f32 *, f32))fn_80288A70)(arg0, &locals.sp8, *(f32 *)((u8 *)arg0 + 0xC));
     val = *(f32 *)((u8 *)arg0 + 0xC);
     gval = lbl_8055F700;
     fn_8028AA6C(arg0, gval, val);
@@ -871,7 +871,7 @@ extern f32 lbl_80564394;
 extern s32 fn_80287B94(s32, s32, f32, f32, f32);
 extern s32 fn_8028CD80(s32, s32, void *, f32 *, f32);
 s32 fn_8028BA9C(void *arg0) {
-    register f32 c, b, a, scale;
+    f32 c, b, a, scale;
     f32 values[3];
     s32 temp;
     a = *(f32 *)((u8 *)arg0 + 0xC);
