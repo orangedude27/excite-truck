@@ -40,7 +40,7 @@ extern signed char gCpuLightTexDirty;
 extern int lbl_8055FEA0, lbl_8055FEA4;
 #pragma push
 #pragma small_data off
-extern void *lbl_804DB468[];
+extern void *gCpuLightTextures[];
 #pragma pop
 extern void *fn_802D94DC(void);
 extern void *lbl_8055FEA8;
@@ -58,26 +58,26 @@ extern unsigned char lbl_8055FEB0, lbl_8055FD24;
  * (offset 0xE4) into lbl_8055FD24, and set GX alpha compare to pass alpha > reference. */
 void fn_802DB2D4(void) {
     lbl_8055FEB0 = 0;
-    lbl_8055FD24 = ((unsigned char *)lbl_804DB468[0])[0xE4];
-    GXSetAlphaCompare(4, ((unsigned char *)lbl_804DB468[0])[0xE4], 1, 0, 0);
+    lbl_8055FD24 = ((unsigned char *)gCpuLightTextures[0])[0xE4];
+    GXSetAlphaCompare(4, ((unsigned char *)gCpuLightTextures[0])[0xE4], 1, 0, 0);
 }
 
 void copyCpuLightTextures(void *dest, int mode) {
-    /* Copy 1, 2, or 3 texture object pointers from lbl_804DB468 into dest based on mode (0, 2, or 1). */
+    /* Copy 1, 2, or 3 texture object pointers from gCpuLightTextures into dest based on mode (0, 2, or 1). */
     void **dst = (void **)dest;
 
     switch (mode) {
     case 0:
-        dst[0] = lbl_804DB468[0];
+        dst[0] = gCpuLightTextures[0];
         return;
     case 2:
-        dst[0] = lbl_804DB468[0];
-        dst[1] = lbl_804DB468[1];
+        dst[0] = gCpuLightTextures[0];
+        dst[1] = gCpuLightTextures[1];
         return;
     case 1:
-        dst[0] = lbl_804DB468[0];
-        dst[1] = lbl_804DB468[1];
-        dst[2] = lbl_804DB468[2];
+        dst[0] = gCpuLightTextures[0];
+        dst[1] = gCpuLightTextures[1];
+        dst[2] = gCpuLightTextures[2];
         return;
     }
 }
@@ -292,7 +292,7 @@ void fn_802DB9DC(int replaceFramebuffer) {
  * The two 2x4 texture matrices of the light pass are copied out of the read-only
  * matrix pair and loaded into GX_TEXMTX2 and GX_TEXMTX3 (fn_802DB4E4 loads the
  * GX_TEXMTX0/GX_TEXMTX1 pair next to them), the alpha compare is set to always
- * pass, and then one of the two texture sets of lbl_804DB468 is bound to texmaps
+ * pass, and then one of the two texture sets of gCpuLightTextures is bound to texmaps
  * 0-4: each entry is a texture wrapper whose first GXTexObj sits at +0x24 and
  * whose second one at +0x78. The first lighting mode binds the plain textures and
  * installs GXSetupFiveStageTevPipelineA; the second mode (lbl_8055FEBA) binds the
@@ -302,7 +302,7 @@ void fn_802DB9DC(int replaceFramebuffer) {
 void fn_802DBA1C(unsigned char secondMode) {
     extern unsigned char lbl_802FAD18[];   /* the light pass's 2x4 matrix, GX_TEXMTX2 */
     extern unsigned char lbl_802FAD38[];   /* the light pass's 2x4 matrix, GX_TEXMTX3 */
-    extern void *lbl_804DB468[];           /* the light pass's textures: GXTexObj at +0x24, a second at +0x78 */
+    extern void *gCpuLightTextures[];           /* the light pass's textures: GXTexObj at +0x24, a second at +0x78 */
     extern void GXSetupFiveStageTevPipelineA(void);
     extern void GXSetupFiveStageTevPipelineB(void);
     int texMtx2[8];
@@ -323,18 +323,18 @@ void fn_802DBA1C(unsigned char secondMode) {
     GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_OR, GX_ALWAYS, 0);
     fn_802DB4E4();
     if (secondMode == 0) {
-        GXLoadTexObj((unsigned char *)lbl_804DB468[0] + 0x24, GX_TEXMAP0);
-        GXLoadTexObj((unsigned char *)lbl_804DB468[1] + 0x24, GX_TEXMAP1);
-        GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x24, GX_TEXMAP2);
-        GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x78, GX_TEXMAP3);
-        GXLoadTexObj((unsigned char *)lbl_804DB468[3] + 0x24, GX_TEXMAP4);
+        GXLoadTexObj((unsigned char *)gCpuLightTextures[0] + 0x24, GX_TEXMAP0);
+        GXLoadTexObj((unsigned char *)gCpuLightTextures[1] + 0x24, GX_TEXMAP1);
+        GXLoadTexObj((unsigned char *)gCpuLightTextures[2] + 0x24, GX_TEXMAP2);
+        GXLoadTexObj((unsigned char *)gCpuLightTextures[2] + 0x78, GX_TEXMAP3);
+        GXLoadTexObj((unsigned char *)gCpuLightTextures[3] + 0x24, GX_TEXMAP4);
         GXSetupFiveStageTevPipelineA();
     } else {
-        GXLoadTexObj((unsigned char *)lbl_804DB468[0] + 0x24, GX_TEXMAP0);
-        GXLoadTexObj((unsigned char *)lbl_804DB468[1] + 0x24, GX_TEXMAP1);
-        GXLoadTexObj((unsigned char *)lbl_804DB468[1] + 0x78, GX_TEXMAP2);
-        GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x24, GX_TEXMAP3);
-        GXLoadTexObj((unsigned char *)lbl_804DB468[2] + 0x78, GX_TEXMAP4);
+        GXLoadTexObj((unsigned char *)gCpuLightTextures[0] + 0x24, GX_TEXMAP0);
+        GXLoadTexObj((unsigned char *)gCpuLightTextures[1] + 0x24, GX_TEXMAP1);
+        GXLoadTexObj((unsigned char *)gCpuLightTextures[1] + 0x78, GX_TEXMAP2);
+        GXLoadTexObj((unsigned char *)gCpuLightTextures[2] + 0x24, GX_TEXMAP3);
+        GXLoadTexObj((unsigned char *)gCpuLightTextures[2] + 0x78, GX_TEXMAP4);
         GXSetupFiveStageTevPipelineB();
         GXSetZMode(GX_DISABLE, GX_ALWAYS, GX_DISABLE);
     }
@@ -398,7 +398,7 @@ void fn_802DBD88(void) {
     lbl_8055FEA0 = -1;
     defaultTex = fn_802D94DC();
     lbl_8055FEA4 = 1;
-    texSlots = (void **)&lbl_804DB468;
+    texSlots = (void **)&gCpuLightTextures;
     *texSlots = defaultTex;
 }
 #pragma pop
@@ -424,8 +424,8 @@ void fn_802DBDE8(int arg0, void *arg1) {
         *(int *)((char *)arg1 + 0xF0) = oldCount + 1;
         *(int *)((char *)arg1 + 0xEC) = value;
     }
-    entry = lbl_804DB468;
-    lbl_804DB468[arg0] = arg1;
+    entry = gCpuLightTextures;
+    gCpuLightTextures[arg0] = arg1;
     count = 0;
     lbl_8055FEA4 = count;
     while (count < 3 && entry[0] != 0) {
@@ -612,8 +612,8 @@ void fn_802DC3C0(int mode) {
     fn_802DBD88();
     fn_802DB58C();
     fn_802CADD0(mode, 1);
-    GXLoadTexObj((unsigned char *)lbl_804DB468[0] + 0x24, GX_TEXMAP0);
-    GXLoadTexObj((unsigned char *)lbl_804DB468[1] + 0x24, GX_TEXMAP1);
+    GXLoadTexObj((unsigned char *)gCpuLightTextures[0] + 0x24, GX_TEXMAP0);
+    GXLoadTexObj((unsigned char *)gCpuLightTextures[1] + 0x24, GX_TEXMAP1);
     GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_OR, GX_ALWAYS, 0);
     fn_802DFB30();
 }
@@ -712,7 +712,7 @@ void fn_802DC628(void) {
 #pragma push
 #pragma small_data off
 /* Validate the CPU-light source GX texture (mipmap count 6, S wrap 0x200) and cache its GX format, tagged with 0x80000000, for texel lookups. */ void fn_802DC62C(void) {
-    volatile unsigned char *cpuLightTexObj = (volatile unsigned char *)*(void **)&lbl_804DB468;
+    volatile unsigned char *cpuLightTexObj = (volatile unsigned char *)*(void **)&gCpuLightTextures;
     /* Validate CPU-light source texture (mipmap/wrap/size expectations) and cache its GX format for lookups. */
     if (GXGetTexObjMipMap((void *)(cpuLightTexObj + 0x24)) != 6)
         ((void (*)(const char *, ...))fn_802E317C)(lbl_8034CB00);
@@ -779,7 +779,7 @@ extern "C" void fn_802DC71C(int arg0, int arg1) {
     lbl_8055FEB4 = 0;
     fn_802CADD0(arg1, 1);
     buildViewXform();
-    base = lbl_804DB468;
+    base = gCpuLightTextures;
     tex1 = base[1];
     useAlt = *((unsigned char *)tex1 + 0xCC);
     info = ((void *(*)(int))fn_802DC628)(arg0);
