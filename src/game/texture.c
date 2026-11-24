@@ -9,7 +9,7 @@ extern char lbl_8034B538[];
 extern char texMsgBadExtractionName[];
 extern void *jumptable_8034B794[];
 extern char lbl_8034B618[];
-extern int lbl_8055D058;
+extern int defaultTextureName;
 extern int fn_802C90E0(void);
 extern int fn_802D8E9C(void *, unsigned int);
 extern int lbl_8055D038;
@@ -229,7 +229,7 @@ int fn_802CA3F4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
 // Creates a texture from a descriptor and name, logging creation to the current scene when needed.
 /* Build a texture-creation request from a descriptor and name, log it in the scene unless it is the default name, then create the texture. */ int fn_802CA4E0(int textureDesc, int textureName, int isRenderTarget, int createParam, int param4) {
     char request[0x34];
-    if (fn_802C90E0() == 0 && (unsigned int)textureName != (unsigned int)lbl_8055D058)
+    if (fn_802C90E0() == 0 && (unsigned int)textureName != (unsigned int)defaultTextureName)
         fn_802E30C8(lbl_8034B618, textureName);
     fn_802CA3F4(request, textureDesc, isRenderTarget == 1 ? 3 : 1, createParam, param4);
     return fn_802D8E9C(request, textureName);
@@ -700,14 +700,14 @@ DECL_SECTION(".sdata") extern int lbl_8055FCB0;
 #pragma small_data off
 #pragma pop
 void fn_802D8FB4(void);
-extern int lbl_8055D058;
+extern int defaultTextureName;
 extern int mip0Path;
 #pragma scheduling invalid_target
 #pragma dont_inline loadMipTexture
 int loadMipTexture(void *loadedBlock, void *createParam, void *relocateBase) {
     /* Load a mipmapped texture: byte-swap/relocate the loaded descriptor under the "mip0" label, then create the texture with the default name. */
     #define mipLabel       mip0Path
-    #define defaultTexName lbl_8055D058
+    #define defaultTexName defaultTextureName
     register int block = (int)loadedBlock;
     register int base = (int)relocateBase;
     register int param = (int)createParam;
