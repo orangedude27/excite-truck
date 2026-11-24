@@ -228,7 +228,7 @@ void fn_80004ACC(void) DECOMP_DONT_INLINE {
 }
 
 /* Iterate a null-terminated table of IDs, handling each and stepping related state. */
-void fn_80004B14(void) DECOMP_DONT_INLINE {
+void ReleaseInitTableResources(void) DECOMP_DONT_INLINE {
 #define sIdTable lbl_802FAFA0
 #define HandleId fn_80004AB8
 #define StepState fn_8012E498
@@ -419,7 +419,7 @@ after_lookup:
     fn_802063D8();
     fn_802C2B18();
     fn_80133144();
-    fn_80004B14();
+    ReleaseInitTableResources();
     fn_8000D878();
 }
 
