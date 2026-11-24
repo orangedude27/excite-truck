@@ -372,12 +372,12 @@ void GXSetupWaterBumpTevPipelineB(void) {
     GXLoadTexObj(fn_802D30FC(), GX_TEXMAP6);
 }
 
-/* Reset TEV swap modes for stages 0-2 to swap 0 (identity), disable indirect
- * texturing stages, and set stage 1 to direct texturing. */
+/* Undo GXSetupWaterBumpTevPipelineB: reset TEV swap modes for stages 0-2 to identity,
+ * disable indirect texturing, and make stage 1 sample directly. */
 void fn_802DF938(void) {
     register GXTevStageID tevStage = GX_TEVSTAGE0;
-    register GXTevSwapSel rasSel = (GXTevSwapSel)0;
-    register GXTevSwapSel texSel = (GXTevSwapSel)0;
+    register GXTevSwapSel rasSel = GX_TEV_SWAP0;
+    register GXTevSwapSel texSel = GX_TEV_SWAP0;
     GXSetTevSwapMode(tevStage, rasSel, texSel);
     tevStage = GX_TEVSTAGE1;
     GXSetTevSwapMode(tevStage, rasSel, texSel);
