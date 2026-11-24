@@ -462,7 +462,7 @@ static inline long clampTrackDigit(long value, long limit) {
     return limit;
 }
 #pragma dont_inline on
-void fn_8020FDE4(long trackId, const char *name, register char *slotKey) {
+/* Initialize the current track-music slot (found by fn_8020FAF0): store the track id, copy the display name, and copy the slot key (truncated to 0x20 bytes). */ void fn_8020FDE4(long trackId, const char *name, register char *slotKey) {
     /* Initialize a track-music slot: store the track id, copy the display name, and copy the slot key (truncated to 0x20). */
     char *entry;
     long remaining;
