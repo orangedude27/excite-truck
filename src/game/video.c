@@ -316,7 +316,7 @@ void *gxGetDistortTexObj(void); /* the texture it distorts, into GX_TEXMAP6 */
 
 #pragma scheduling invalid_target
 /* Reset TEV swap tables to identity for stages 0-1 and disable indirect stages. */
-void GXResetWaterBumpTevPipelineA(void) {
+/* Reset TEV swap tables to identity for stages 0-1 and disable indirect stages (teardown twin of GXSetupWaterBumpTevPipelineA). */ void GXResetWaterBumpTevPipelineA(void) {
     GXSetTevSwapMode(GX_TEVSTAGE0, (GXTevSwapSel)0, (GXTevSwapSel)0);
     GXSetTevSwapMode(GX_TEVSTAGE1, (GXTevSwapSel)0, (GXTevSwapSel)0);
     GXSetNumIndStages(0);
