@@ -785,11 +785,13 @@ void fn_801E1688(void) {
 }
 
 #pragma scheduling safe_target
-/* Initialize four per-item status rows (id, flag, value, timer, colors at +0xC..+0x20 stride 0x18) and their parallel id array at +0x6C to default / no-item values. */ void fn_801E168C(const void *status) {
+void fn_801E168C(const void *status) {
     f32 initialTimer;
     f32 initialValue = lbl_80562C78;
     s32 zero = 0;
     s32 invalidId = -1;
+    /* Initialize four per-item status rows (id, flag, value, timer, colors at +0xC..+0x20, stride 0x18)
+       and their parallel id array at +0x6C to default / no-item values. */
     *(s32 *)((u8 *)status + 0x6C) = invalidId;
     *(s32 *)((u8 *)status + 0x0C) = invalidId;
     *(u8 *)((u8 *)status + 0x10) = zero;
