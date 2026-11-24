@@ -62,16 +62,16 @@ void fn_80129C64(int slotIndex) {
 #pragma scheduling on
 /* Set the RNG seed pair for slot `slotIndex`, logging non-debug seeds, then (re)initialize that slot's state. */
 void fn_80129C80(int slotIndex, int seedA, int seedB) {
-    int value0 = seedA;
-    int value1 = seedB;
+    int finalSeedA = seedA;
+    int finalSeedB = seedB;
     if (IsDebugSeedOverrideEnabled() != 0) {
-        value0 = 0x29885B;
-        value1 = 0x1A5A7D;
+        finalSeedA = 0x29885B;
+        finalSeedB = 0x1A5A7D;
     } else {
         ((int (*)(const char *, ...))DebugPrintf)(
-            sSeedLogFormat, slotIndex, value0, value1);
+            sSeedLogFormat, slotIndex, finalSeedA, finalSeedB);
     }
-    InitRngState((char *)gRngStateBuffer + slotIndex * RNG_STATE_SIZE, value0, value1);
+    InitRngState((char *)gRngStateBuffer + slotIndex * RNG_STATE_SIZE, finalSeedA, finalSeedB);
 }
 
 /* Draw a random integer in [0, range) from RNG slot `slot`: scale that slot's
