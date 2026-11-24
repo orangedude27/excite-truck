@@ -98,7 +98,7 @@ typedef struct Camera {
     float startTime;              /* 0x158: time that level was last raised */
     float f15C;                   /* 0x15C */
     NoiseWalk pathWalk;           /* 0x160: random-path cursor (NoiseWalk_Reset/NoiseWalk_Advance) */
-    int w178[2];                  /* 0x178: spline cursor (fn_80266150) */
+    int w178[2];                  /* 0x178: spline cursor (SplineCursor_Reset) */
     float f180[2];                /* 0x180 */
     int pad188;                   /* 0x188 */
     float f18C[6];                /* 0x18C */
@@ -395,17 +395,17 @@ extern float lbl_80563C2C;
 extern float lbl_8055C4C4;
 extern int lbl_8055CFF0;
 extern int lbl_8055CFF4;
-void fn_80266150(void *arg0);
+void SplineCursor_Reset(void *arg0);
 int fn_80178CA4(void);
 float PSQUATMultiply(float *arg0, int arg1);
 /* Initialize the camera spline cursor at cursor and return the same pointer. */
 void *Camera_InitSplineCursor(void *cursor) {
-    fn_80266150(cursor);
+    SplineCursor_Reset(cursor);
     return cursor;
 }
 
 #pragma scheduling invalid_target
-void fn_80266150(void *cursor) {
+void SplineCursor_Reset(void *cursor) {
     /* Initialize a camera spline cursor: clear both indices, set the value at +8 from lbl_8055C4C0 (130.0), and set the scale at +0xC to 1.0. */
     float scale;
     float limit;
@@ -1010,7 +1010,7 @@ void fn_80267680(void) {
         *(int *)(p + 0x148) = 0;
         *(float *)(p + 0x194) = angle;
         NoiseWalk_Reset(p + 0x160);
-        fn_80266150(p + 0x178);
+        SplineCursor_Reset(p + 0x178);
         *(float *)(p + 0x158) = start;
         *(float *)(p + 0x15C) = (float)i;
         *(float *)(p + 0x198) = zero;
