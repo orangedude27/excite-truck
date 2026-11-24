@@ -342,8 +342,9 @@ char *key;
 
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-/* Find the index of a track-music entry matching the given name, or -1 if not found. */
-/* Return the index of the track-music path matching `name` (compared up to 63 bytes by fn_8002B1D8), or the -1 no-song sentinel (fn_8020F3B4) when absent. */ /* Return the index of the track-music path matching `name` (compared up to 63 bytes by fn_8002B1D8), or the -1 no-song sentinel (fn_8020F3B4) when absent. */ /* Return the index of the track-music path matching `name` (compared up to 63 bytes by fn_8002B1D8), or the -1 no-song sentinel (fn_8020F3B4) when absent. */ int fn_8020FB80(void *name) {
+/* Return the index of the track-music path matching `name` (compared up to 63
+ * bytes by fn_8002B1D8), or the -1 no-song sentinel (fn_8020F3B4) when absent. */
+int fn_8020FB80(void *name) {
     int entryOffset;
     int index;
     index = 0;
