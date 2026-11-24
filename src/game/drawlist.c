@@ -1320,7 +1320,7 @@ int fn_802C9C58(int cullMode) {
  * up, so the caller skips its drawing.
  * (rename_symbol is refused here, so the suggested name
  * DrawList_BeginAlphaOverlay only lives in this comment.) */
-int fn_802C9C8C(unsigned int tintColor) {
+/* Begin an alpha-only overlay pass: invalidate the texture cache, set up GX to write only alpha, save the tint and overlay render mode, and report whether setup succeeded. */ int fn_802C9C8C(unsigned int tintColor) {
     fn_802CAD68();
     if (fn_802D31D8(1) != 0) {
         sOverlayTint = tintColor;
