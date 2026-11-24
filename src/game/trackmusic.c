@@ -83,10 +83,10 @@ int formatMp3Path(int path, int buffer, int size) {
     return buffer;
 }
 extern long gSngPathFormat;
-int buildSngSongPath(int source, int destination, int size) {
+/* Build a "<songName>.sng" track-music path into the caller's buffer and return the buffer. */ int buildSngSongPath(int songName, int buffer, int bufferSize) {
     /* Format a track-music song path ("%s.sng") into the destination buffer and return it. */
-    fn_801345D8((void *)destination, size, (void *)&gSngPathFormat, source);
-    return destination;
+    fn_801345D8((void *)buffer, bufferSize, (void *)&gSngPathFormat, songName);
+    return buffer;
 }
 
 #pragma dont_inline on
