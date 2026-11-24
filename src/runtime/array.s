@@ -600,7 +600,7 @@
 # extabindex:0x0 | 0x80004988 | size: 0xC
 .obj "@eti_80004988", local
 .hidden "@eti_80004988"
-	.4byte fn_8002F634
+	.4byte __array_delete
 	.4byte 0x00000078
 	.4byte "@etb_800046F0"
 .endobj "@eti_80004988"
@@ -610,7 +610,7 @@
 .balign 4
 
 # .text:0x0 | 0x8002F634 | size: 0x78
-.fn fn_8002F634, global
+.fn __array_delete, global
 /* 8002F634 0002B294  94 21 FF E0 */	stwu r1, -0x20(r1)
 /* 8002F638 0002B298  7C 08 02 A6 */	mflr r0
 /* 8002F63C 0002B29C  90 01 00 24 */	stw r0, 0x24(r1)
@@ -643,7 +643,7 @@
 /* 8002F6A0 0002B300  7C 08 03 A6 */	mtlr r0
 /* 8002F6A4 0002B304  38 21 00 20 */	addi r1, r1, 0x20
 /* 8002F6A8 0002B308  4E 80 00 20 */	blr
-.endfn fn_8002F634
+.endfn __array_delete
 
 
 
