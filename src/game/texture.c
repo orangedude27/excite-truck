@@ -153,7 +153,7 @@ extern char lbl_8055D048;              /* ".tm0": suffix of a texture archive me
     return (int)name;
 }
 
-int fn_802CA380(int textureName) {
+int getTextureResourceSize(int textureName) {
     /* Get the size of the "TEX " resource for the named texture, or 0 if absent. */
 #define BuildTextureArchiveName fn_802CA2A8
 #define OpenResource fn_8012C5B8
@@ -458,7 +458,7 @@ copy1_done:
         if (flag != 0)
             size = 0;
         else
-            size = fn_802CA380((int)(char *)path_value);
+            size = getTextureResourceSize((int)(char *)path_value);
         entry->size = size;
         if (size < 0x3E80)
             entry->size = 0;
