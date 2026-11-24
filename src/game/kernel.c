@@ -588,7 +588,7 @@ extern void fn_8005954C(void);
 extern void fn_802E77A8(void);
 extern void fn_802E3498(void);
 extern void fn_801293B4(void);
-extern void fn_802E302C(void);
+extern void Abend_InitLog(void);
 extern void fn_802E2A54(void);
 extern void fn_8012820C(int);
 extern void ConfigReadSystemSettings(void);
@@ -642,7 +642,7 @@ struct StartupCalendar {
     fn_802E77A8();
     fn_802E3498();
     fn_801293B4();
-    fn_802E302C();
+    Abend_InitLog();
     fn_802E2A54();
     fn_8012820C(0x02000000);
     ConfigReadSystemSettings();

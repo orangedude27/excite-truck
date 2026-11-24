@@ -22,7 +22,7 @@ extern char lbl_8055D188;
 void fn_802E3028(const char *fmt, va_list args, int prefix) {}
 
 #pragma scheduling invalid_target
-int fn_802E302C(void) {
+int Abend_InitLog(void) {
     /* Opens the log file, writes a separator banner, the studio name, and another separator. */
     sLogFileHandle = fn_802E367C((int)&sLogFileName);
     fn_802E30C8(sSeparator);
