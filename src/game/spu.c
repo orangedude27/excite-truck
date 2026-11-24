@@ -280,7 +280,7 @@ void fn_802E5248(int chan, int result) {
  * stream, and on a connect turns the remote's speaker on.  fn_802E5248 is
  * answered when the speaker is on and queues the play command, whose answer
  * fn_802E51D0 uses to mark the stream ready. */
-void fn_802E5264(int chan, int status) {
+/* WPAD connect callback for the Wii remote speaker: log connect/disconnect, close the channel's speaker stream, and on connect request WPAD_SPEAKER_ON (queued via fn_802E5248). */ void fn_802E5264(int chan, int status) {
     fn_802E30C8(spuConnectMsg, chan,
                  status < 0 ? spuNameDisconnect : spuNameConnect);
     spuStreams[chan].enabled = 0;
