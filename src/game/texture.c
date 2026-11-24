@@ -30,7 +30,7 @@ int fn_8012C958(int);
 
 #pragma push
 #pragma small_data on
-DECL_SECTION(".sdata") extern int lbl_8055FCB0;
+DECL_SECTION(".sdata") extern int gTextureSlotTable;
 DECL_SECTION(".sdata") extern int lbl_8055FCB4;
 DECL_SECTION(".sdata") extern int gActiveTextureSlot;
 void fn_802D8FB4(void);
@@ -47,19 +47,19 @@ extern void *fn_801284F8(int, void *);
 extern int lbl_8055D080;
 extern void fn_801282EC(int);
 extern void fn_801282F4(void);
-/* Allocate and zero the 512-entry texture-slot table (lbl_8055FCB0), then register the built-in "null" and "gclmap" textures; on success select the lightmap and bind its GPU handle. */ /* Initialize the 0x200-entry texture record table, load the null and lightmap textures, and select the lightmap. */ void fn_802CA0E4(void) {
+/* Allocate and zero the 512-entry texture-slot table (gTextureSlotTable), then register the built-in "null" and "gclmap" textures; on success select the lightmap and bind its GPU handle. */ /* Initialize the 0x200-entry texture record table, load the null and lightmap textures, and select the lightmap. */ void fn_802CA0E4(void) {
     char *messages = lbl_8034B538;
     int recordOffset;
     int slotIndex;
     int textureId;
     register int lightmapEntry;
 
-    lbl_8055FCB0 = fn_8012850C(0x9800, &lbl_8055D040);
+    gTextureSlotTable = fn_8012850C(0x9800, &lbl_8055D040);
     fn_802CB424();
     slotIndex = 0;
     recordOffset = 0;
     do {
-        memset((void *)(lbl_8055FCB0 + recordOffset), 0, 0x4C);
+        memset((void *)(gTextureSlotTable + recordOffset), 0, 0x4C);
         slotIndex++;
         recordOffset += 0x4C;
     } while (slotIndex < 0x200);
@@ -72,7 +72,7 @@ extern void fn_801282F4(void);
     lbl_8055D03C = textureId;
     if (textureId != -1) {
         fn_802E30C8(messages + 0x6C);
-        lightmapEntry = lbl_8055FCB0;
+        lightmapEntry = gTextureSlotTable;
         lightmapEntry += lbl_8055D03C * 0x4C;
         fn_802D92B8(*(int *)(lightmapEntry + 0x28));
         return;
@@ -94,20 +94,20 @@ extern void fn_801282F4(void);
     slotIndex = 0;
     byteOffset = 0;
     do {
-        if (*(int *)(lbl_8055FCB0 + byteOffset) != 0)
-            fn_802E317C(lbl_8034B5F0, slotIndex, lbl_8055FCB0 + byteOffset + 4);
+        if (*(int *)(gTextureSlotTable + byteOffset) != 0)
+            fn_802E317C(lbl_8034B5F0, slotIndex, gTextureSlotTable + byteOffset + 4);
         slotIndex++;
         byteOffset += 0x4C;
     } while (slotIndex < 0x200);
     fn_802CB6B4();
-    fn_80128670(lbl_8055FCB0);
-    lbl_8055FCB0 = 0;
+    fn_80128670(gTextureSlotTable);
+    gTextureSlotTable = 0;
 }
 #pragma scheduling on
 /* Return the texture id (field +0x28) of the given 0x4C-byte texture slot. */
 int fn_802CA294(int textureSlot) {
     int offset = textureSlot * 0x4C;
-    int *slots = (int *)lbl_8055FCB0;
+    int *slots = (int *)gTextureSlotTable;
     return *(int *)((char *)slots + offset + 0x28);
 }
 
@@ -398,15 +398,15 @@ int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
 
     best = -1;
     for (index = 0; index < 0x200; index++) {
-        entry = &((struct Entry *)lbl_8055FCB0)[index];
+        entry = &((struct Entry *)gTextureSlotTable)[index];
         if (entry->refCount > 0) {
             if (stricmp(entry->name, (char *)texGetExtractionName((int)(char *)path_value)) == 0 &&
                 entry->type == arg1 &&
                 flag == 0) {
-                if (((int (*)(int, int, int))fn_802CA7D4)((int)(char *)path_value, arg3, ((struct Entry *)lbl_8055FCB0)[index].arg3) == 0) {
+                if (((int (*)(int, int, int))fn_802CA7D4)((int)(char *)path_value, arg3, ((struct Entry *)gTextureSlotTable)[index].arg3) == 0) {
                     fn_802E30C8((const char *)(strings + 0x318), (char *)path_value);
-                    ((struct Entry *)lbl_8055FCB0)[index].size = 0;
-                    ((struct Entry *)lbl_8055FCB0)[index].arg3 = 0xE;
+                    ((struct Entry *)gTextureSlotTable)[index].size = 0;
+                    ((struct Entry *)gTextureSlotTable)[index].arg3 = 0xE;
                 }
                 entry->refCount++;
                 return index;
@@ -431,7 +431,7 @@ int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
     if (arg2 == 0)
         return -1;
 
-    entry = &((struct Entry *)lbl_8055FCB0)[best];
+    entry = &((struct Entry *)gTextureSlotTable)[best];
     entry->flag = flag;
     entry->refCount = 1;
     entry->unk48 = 0;
@@ -525,7 +525,7 @@ void fn_802CAC54(int arg0)
   if ((arg0 >= 0) && (arg0 < 0x200))
   {
     offset = arg0 * 0x4C;
-    base = (char *) lbl_8055FCB0;
+    base = (char *) gTextureSlotTable;
     entry = (int *) (base + offset);
     if (entry[0] <= 0)
     {
@@ -533,7 +533,7 @@ void fn_802CAC54(int arg0)
     }
   }
   offset = arg0 * ((long) 0x4C);
-  entry = (int *) (((char *) lbl_8055FCB0) + offset);
+  entry = (int *) (((char *) gTextureSlotTable) + offset);
   if ((*((unsigned char *) (((char *) entry) + 0x30))) != 0)
   {
     fn_802CAD28(arg0);
@@ -551,7 +551,7 @@ void fn_802CAC54(int arg0)
 void fn_802CAD28(int slotIndex) {
     int *slot;
     int refCount;
-#define gTextureSlots lbl_8055FCB0
+#define gTextureSlots gTextureSlotTable
     /* Release a texture slot reference; on the last one, drop its resource handle and GPU texture object. */
     if (slotIndex == -1)
         return;
@@ -586,7 +586,7 @@ void texSelectSlot(register int slotIndex) {
         return;
     }
     {
-        int *slot = (int *)(lbl_8055FCB0 + slotIndex * 0x4C);
+        int *slot = (int *)(gTextureSlotTable + slotIndex * 0x4C);
         int texHandle;
         slot[0x48 / 4]++;
         texHandle = slot[0x40 / 4];
@@ -604,7 +604,7 @@ void fn_802CADD0(int textureSlot, int unitIndex) {
         fn_802DBDE8(unitIndex, 0);
     } else {
         slotOffset = textureSlot * 0x4C;
-        slots = (char *)lbl_8055FCB0;
+        slots = (char *)gTextureSlotTable;
         fn_802DBDE8(unitIndex, *(int *)(slots + slotOffset + 0x28));
     }
 }
@@ -613,7 +613,7 @@ int TextureSlot_isLoaded(int slotIndex) {
     /* Return whether slotIndex names a valid texture slot whose texture is loaded. */
     int inUse = 0;
     if (slotIndex >= 0 && slotIndex < 0x200 &&
-        *(int *)(lbl_8055FCB0 + slotIndex * 0x4C) > 0) {
+        *(int *)(gTextureSlotTable + slotIndex * 0x4C) > 0) {
         inUse = 1;
     }
     return inUse;
@@ -627,7 +627,7 @@ extern char lbl_8034B618[];
 extern char lbl_8034B538[];
 extern void *jumptable_8034B794[];
 extern int TextureSlot_isLoaded(int);
-extern int lbl_8055FCB0;
+extern int gTextureSlotTable;
 extern char textureNullName[];
 extern char invalidTextureName[];
 /* Returns the name of a texture slot: "TEXTURE_NULL" for index -1, "(INVALID)" if not loaded, otherwise the slot's stored name. */
@@ -639,7 +639,7 @@ char *getTextureSlotName(int textureIndex) {
     if (!((int (*)(int))TextureSlot_isLoaded)(textureIndex))
         return invalidTextureName;
     slotOffset = textureIndex * 0x4C;
-    slot = (char *)lbl_8055FCB0 + slotOffset;
+    slot = (char *)gTextureSlotTable + slotOffset;
     return slot + 4;
 }
 #pragma dont_inline on
@@ -653,7 +653,7 @@ void fn_802CAE98(int slotIndex, char *srcName) {
 
     if (!((int (*)(int))TextureSlot_isLoaded)(slotIndex))
         return;
-    nameDst = (char *)lbl_8055FCB0 + slotIndex * 0x4C + 4;
+    nameDst = (char *)gTextureSlotTable + slotIndex * 0x4C + 4;
     charsLeft = 0x20;
     goto copy;
 count_check:
@@ -674,7 +674,7 @@ done:
 /* Sets the filter/wrap mode bytes at +8/+9 of a valid texture slot's loaded resource. */
 void TextureSlot_setModes(int textureSlot, signed char mode8, signed char mode9) {
 #define TextureSlot_isValid TextureSlot_isLoaded
-#define gTextureSlots lbl_8055FCB0
+#define gTextureSlots gTextureSlotTable
     int slotOffset;
     int textureResource;
 
@@ -696,7 +696,7 @@ int fn_802CA4E0(int, int, int, int, int);
 int fn_802CA898(int, int, int, int);
 #pragma push
 #pragma small_data on
-DECL_SECTION(".sdata") extern int lbl_8055FCB0;
+DECL_SECTION(".sdata") extern int gTextureSlotTable;
 #pragma small_data off
 #pragma pop
 void fn_802D8FB4(void);
@@ -728,7 +728,7 @@ void fn_802CB3F8(void) {
 DECL_SECTION(".sdata") extern char lbl_8055FCBC[];
 #pragma push
 #pragma small_data on
-DECL_SECTION(".sdata") extern int lbl_8055FCB0;
+DECL_SECTION(".sdata") extern int gTextureSlotTable;
 #pragma small_data off
 #pragma pop
 extern float lbl_80564F40; /* 1.0f: floor for the scale fn_802CC550 weighs a slot by */
@@ -741,21 +741,21 @@ int fn_802CAF8C(int slot) {
     unsigned short expected;
     if (slot == -1)
         return 0;
-    slotEntry = (int *)(slot * 0x4C + lbl_8055FCB0);
+    slotEntry = (int *)(slot * 0x4C + gTextureSlotTable);
     expected = lbl_8055FCA8;
     return *(unsigned short *)(*(slotEntry + 11) + 0xC) != expected;
 }
 void fn_802CC550(int, float, float);
 int fn_802CB274(int textureSlot) {
     /* Forward a texture slot's +0x28 handle to the no-op trace hook fn_802DB2C0. */
-    int *entry = (int *)(lbl_8055FCB0 + textureSlot * 0x4C);
+    int *entry = (int *)(gTextureSlotTable + textureSlot * 0x4C);
     return fn_802DB2C0(entry[0x28 / 4]);
 }
 
 int fn_802DB2C4(int);
 int fn_802CB288(int textureSlot) {
     /* Forward a texture slot's +0x28 handle to the no-op trace hook fn_802DB2C4. */
-    int *entry = (int *)(lbl_8055FCB0 + textureSlot * 0x4C);
+    int *entry = (int *)(gTextureSlotTable + textureSlot * 0x4C);
     return fn_802DB2C4(entry[0x28 / 4]);
 }
 
@@ -767,7 +767,7 @@ void selectTexture(int textureIndex) {
      * draw context; the -1/-2 sentinel indices instead clear the binding and index. */
     if (textureIndex != -1 && textureIndex != -2) {
         int slotOffset = textureIndex * 0x4C;
-        int *slot = (int *)(lbl_8055FCB0 + slotOffset);
+        int *slot = (int *)(gTextureSlotTable + slotOffset);
         setTextureCopyObject(slot[0x28 / 4]);
         currentTextureIndex = textureIndex;
         return;
@@ -803,7 +803,7 @@ char fn_802CAFC8(int textureSlot) {
     if (textureSlot == -1)
         return 5;
     slotOffset = textureSlot * 0x4C;
-    slots = (char *)lbl_8055FCB0;
+    slots = (char *)gTextureSlotTable;
     return *(char *)(*(int *)(slots + slotOffset + 0x2C) + 8);
 }
 
@@ -814,7 +814,7 @@ char fn_802CAFF0(int textureSlot) {
     if (textureSlot == -1)
         return 0x32;
     slotOffset = textureSlot * 0x4C;
-    slots = (char *)lbl_8055FCB0;
+    slots = (char *)gTextureSlotTable;
     return *(char *)(*(int *)(slots + slotOffset + 0x2C) + 9);
 }
 
@@ -823,7 +823,7 @@ extern char lbl_8034B940[];
 // block by fn_802CA0E4. Slot 0 is the reserved "no texture" slot, so
 // allocation starts at 1. A slot is
 // { s32 inUse; char name[0x20]; ?; s32 texture; void *sizeRecord; ... }.
-#define textureSlots lbl_8055FCB0
+#define textureSlots gTextureSlotTable
 #define texSlotSize 0x4C
 #define texSlotGroups 0x49 /* 73 groups of 7 slots: the 511 allocatable ones */
 #pragma push
@@ -918,7 +918,7 @@ int fn_802CB128(int width, int height, int unused, int flagsMask) {
 #pragma pop
 /* Release a texture slot: destroy its GPU texture object, free its resource handle, and clear the slot. */
 void fn_802CB228(int slotIndex) {
-    int *slot = (int *)(lbl_8055FCB0 + slotIndex * 0x4C);
+    int *slot = (int *)(gTextureSlotTable + slotIndex * 0x4C);
     ((void (*)(int))fn_802D8FB4)(slot[0x28 / 4]);
     fn_80128668(slot[0x2C / 4]);
     slot[0x2C / 4] = 0;
@@ -1112,7 +1112,7 @@ void fn_802CB82C(int arg0) {
     temp_r0 = *(int *)(temp_r31 + 0x40);
 
     if (temp_r0 == 2) {
-        temp_r30 = (char *)lbl_8055FCB0 + arg0 * 0x4C;
+        temp_r30 = (char *)gTextureSlotTable + arg0 * 0x4C;
         ((void (*)(int))fn_802CB3F4)(*(int *)(temp_r30 + 0x40));
         *(int *)(temp_r30 + 0x40) = 0;
         pool = *(char **)(*(char **)(temp_r29 + 0x38) + 4);
@@ -1278,10 +1278,10 @@ inspect:
         if (refCount == 0) {
             *(int *)(childResource + 0x10) = minusOne;
             fn_8012C720(*(void **)childResource, *(int *)(childResource + 8),
-                        *(int *)((char *)lbl_8055FCB0 +
+                        *(int *)((char *)gTextureSlotTable +
                             *(int *)(childResource + 4) * 0x4C + 0x3C), 0);
             ((void (*)(void *, const char *))fn_802CB3F8)(
-                (void *)((char *)lbl_8055FCB0 + *(int *)(childResource + 4) * 0x4C + 4),
+                (void *)((char *)gTextureSlotTable + *(int *)(childResource + 4) * 0x4C + 4),
                 &lbl_8055D088);
         }
         *(void **)(node + 0xC) = 0;
@@ -1393,7 +1393,7 @@ scan_done:
     texId = *(int *)activeTex;
     if (request != 0) {
         if (fn_802D9068() != 0) {
-            record = (char *)lbl_8055FCB0 + texId * 0x4C;
+            record = (char *)gTextureSlotTable + texId * 0x4C;
             *(int *)(request + 0x10) = zero;
         alloc_loop:
             *(void **)(request + 8) =
@@ -1417,7 +1417,7 @@ scan_done:
                 *(int *)(request + 0x10) = zero;
             }
         } else if (freeTex != 0 &&
-                   *(int *)((char *)lbl_8055FCB0 +
+                   *(int *)((char *)gTextureSlotTable +
                             *(int *)freeTex * 0x4C + 0x44) != zero &&
                    fn_802CC10C(base, *(int *)freeTex,
                                *(int *)(freeTex + 0xC) + 2, zero) != 0) {
@@ -1452,8 +1452,8 @@ void fn_802CBFA0(void *mgr, unsigned int request) {
 void startTextureRequestRead(void *mgr, void *request) {
     extern char lbl_8055D088;
     *(int *)((char *)request + 0x10) = -1;
-    ((void (*)(int, int, int, int))fn_8012C720)(*(int *)((char *)request + 0), *(int *)((char *)request + 8), *(int *)((char *)lbl_8055FCB0 + *(int *)((char *)request + 4) * 0x4C + 0x3C), 0);
-    ((void (*)(void *, void *))fn_802CB3F8)((char *)lbl_8055FCB0 + *(int *)((char *)request + 4) * 0x4C + 4, &lbl_8055D088);
+    ((void (*)(int, int, int, int))fn_8012C720)(*(int *)((char *)request + 0), *(int *)((char *)request + 8), *(int *)((char *)gTextureSlotTable + *(int *)((char *)request + 4) * 0x4C + 0x3C), 0);
+    ((void (*)(void *, void *))fn_802CB3F8)((char *)gTextureSlotTable + *(int *)((char *)request + 4) * 0x4C + 4, &lbl_8055D088);
 }
 
 extern char lbl_8034BA34[];
@@ -1467,7 +1467,7 @@ void fn_802CC03C(int **listHead, int *record, int texId) {
     /* Set up a texture record for texId: build its ".tm0" name, load the TEX
        resource (version to version), store texId and drgc-tex context, report
        load/version errors, then link the record into the list. */
-    record[0] = fn_8012C5B8((char *)fn_802CA2A8(nameBuf, 0x20, (int)((char *)lbl_8055FCB0 + entryOffset + 4)), 0x54455820, &version);
+    record[0] = fn_8012C5B8((char *)fn_802CA2A8(nameBuf, 0x20, (int)((char *)gTextureSlotTable + entryOffset + 4)), 0x54455820, &version);
     record[1] = texId;
     record[3] = fn_802D9154();
     if (record[0] == 0)
@@ -1495,7 +1495,7 @@ int fn_802CC10C(void *arg0, int arg1, int arg2, int arg3) {
 
     node = *(char **)((char *)arg0 + 0x10);
     if (node != 0) {
-        table = (char *)(lbl_8055FCB0 + arg1 * 0x4C);
+        table = (char *)(gTextureSlotTable + arg1 * 0x4C);
         *(int *)(node + 4) = *(int *)(table + 0x40);
         *(int *)(node + 8) = arg2;
         *(int *)(node + 0xC) = arg3;
@@ -1638,7 +1638,7 @@ void fn_802CC410(void *texMgr) {
     int loadedBlock;
 
     /* Process the manager's pending texture requests: for a request whose async
-     * resource is loaded, fill its 0x4C-byte record in lbl_8055FCB0, tag it
+     * resource is loaded, fill its 0x4C-byte record in gTextureSlotTable, tag it
      * "LOADED", accumulate its size into +0x18, and mark its status slot at
      * +0x40 done; then restart from the list head until none is ready. */
 outer:
@@ -1648,11 +1648,11 @@ outer:
         if (request[4] == -1) {
             loadedBlock = fn_8012C7FC((void *)request[0], &loadedSize);
             if (loadedBlock != 0) {
-                entry = lbl_8055FCB0 + request[1] * 0x4C;
+                entry = gTextureSlotTable + request[1] * 0x4C;
                 *(int *)(entry + 0x44) = request[2];
                 *(int *)(entry + 0x40) = loadMipTexture((void *)loadedBlock,
                     (void *)request[3],
-                    (void *)*(int *)(lbl_8055FCB0 + 0x34 + request[1] * 0x4C));
+                    (void *)*(int *)(gTextureSlotTable + 0x34 + request[1] * 0x4C));
                 request[3] = zero;
                 fn_8012C958(request[0]);
                 request[0] = zero;
@@ -1706,7 +1706,7 @@ void fn_802CC550(int textureIndex, float minWeight, float scale) {
     if (textureIndex == -1)
         return;
     slotOffset = textureIndex * 0x4C;
-    textureSlot = (char *)lbl_8055FCB0 + slotOffset;
+    textureSlot = (char *)gTextureSlotTable + slotOffset;
     if ((unsigned char)lbl_8055D07D == 0)
         return;
     if (*(int *)(textureSlot + 0x3C) == 0)
@@ -1725,7 +1725,7 @@ void fn_802CC550(int textureIndex, float minWeight, float scale) {
  * only weighs slots whose count is positive - leaves it resident.
  * The slot index -1 (no texture) is ignored. */
 void fn_802CC5B8(int textureIndex) {
-#define gTextureSlots lbl_8055FCB0
+#define gTextureSlots gTextureSlotTable
 #define TEX_KEEP_USE_COUNT 1000000
     int slotOffset;
     if (textureIndex == -1)
@@ -1750,22 +1750,22 @@ void fn_802CC60C(void) {
     void *root;
 
     for (i = 0; i < 0x40; i++) {
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x38) = f;
-        *(int *)((char *)lbl_8055FCB0 + offset + 0x48) = 0;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x84) = f;
-        *(int *)((char *)lbl_8055FCB0 + offset + 0x94) = 0;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0xD0) = f;
-        *(int *)((char *)lbl_8055FCB0 + offset + 0xE0) = 0;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x11C) = f;
-        *(int *)((char *)lbl_8055FCB0 + offset + 0x12C) = 0;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x168) = f;
-        *(int *)((char *)lbl_8055FCB0 + offset + 0x178) = 0;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x1B4) = f;
-        *(int *)((char *)lbl_8055FCB0 + offset + 0x1C4) = 0;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x200) = f;
-        *(int *)((char *)lbl_8055FCB0 + offset + 0x210) = 0;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x24C) = f;
-        *(int *)((char *)lbl_8055FCB0 + offset + 0x25C) = 0;
+        *(float *)((char *)gTextureSlotTable + offset + 0x38) = f;
+        *(int *)((char *)gTextureSlotTable + offset + 0x48) = 0;
+        *(float *)((char *)gTextureSlotTable + offset + 0x84) = f;
+        *(int *)((char *)gTextureSlotTable + offset + 0x94) = 0;
+        *(float *)((char *)gTextureSlotTable + offset + 0xD0) = f;
+        *(int *)((char *)gTextureSlotTable + offset + 0xE0) = 0;
+        *(float *)((char *)gTextureSlotTable + offset + 0x11C) = f;
+        *(int *)((char *)gTextureSlotTable + offset + 0x12C) = 0;
+        *(float *)((char *)gTextureSlotTable + offset + 0x168) = f;
+        *(int *)((char *)gTextureSlotTable + offset + 0x178) = 0;
+        *(float *)((char *)gTextureSlotTable + offset + 0x1B4) = f;
+        *(int *)((char *)gTextureSlotTable + offset + 0x1C4) = 0;
+        *(float *)((char *)gTextureSlotTable + offset + 0x200) = f;
+        *(int *)((char *)gTextureSlotTable + offset + 0x210) = 0;
+        *(float *)((char *)gTextureSlotTable + offset + 0x24C) = f;
+        *(int *)((char *)gTextureSlotTable + offset + 0x25C) = 0;
         offset += 0x260;
     }
 
@@ -1819,7 +1819,7 @@ f40 = lbl_80564F40;
 magic = lbl_80564F38;
 f50 = lbl_80564F50;
 do {
-entry = (char *)lbl_8055FCB0 + offset;
+entry = (char *)gTextureSlotTable + offset;
 if (*(int *)entry > 0 && *(int *)(entry + 0x3C) != 0) {
 if (*(int *)(entry + 0x48) > 0) {
 union { double value; unsigned int words[2]; } converted;
@@ -1891,7 +1891,7 @@ if (*(int *)(node + 4) == 2) {
 char *head = *(char **)(root + 0x10);
 int flag = 0;
 if (head != 0) {
-char *entry2 = (char *)lbl_8055FCB0 + *(int *)node * 0x4C;
+char *entry2 = (char *)gTextureSlotTable + *(int *)node * 0x4C;
 *(int *)(head + 4) = *(int *)(entry2 + 0x40);
 *(int *)(head + 8) = *(int *)(node + 0xC) + 2;
 *(int *)(head + 0xC) = 0;
