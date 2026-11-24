@@ -167,24 +167,18 @@ extern char gFileStillInUseMsg[];
 #pragma scheduling invalid_target
 /* Panics if any of the 16 open-file table entries is still in use. */
 void File_checkOpenFiles(void) {
-#define sOpenFileTable gOpenFileTable
-#define sFileStillInUseMsg gFileStillInUseMsg
-#define FilePanic fn_802E317C
     char *entry;
     s32 i;
 
-    entry = sOpenFileTable;
+    entry = gOpenFileTable;
     i = 0;
     do {
         if (((unsigned char *)entry)[0x20] != 0) {
-            FilePanic(sFileStillInUseMsg, (s32)entry);
+            fn_802E317C(gFileStillInUseMsg, (s32)entry);
         }
         i++;
         entry += 0x28;
     } while (i < 16);
-#undef sOpenFileTable
-#undef sFileStillInUseMsg
-#undef FilePanic
 }
 #pragma scheduling on
 extern char lbl_8034CF98[];
