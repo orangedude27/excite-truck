@@ -642,7 +642,7 @@ void fn_802CF600(void) {
     extern unsigned long lbl_8055FDAC;
     extern void fn_802CF830(void), fn_802CF10C(void), fn_802D9A50(void), fn_802CEC44(void);
     extern void fn_80127468(void), fn_8005954C(void), fn_801282EC(int), fn_801282F4(void);
-    extern void fn_802D8D1C(void), fn_802D6810(void), fn_802CF850(void), fn_802D0BD8(void);
+    extern void fn_802D8D1C(void), drVertexFormatCacheInit(void), fn_802CF850(void), fn_802D0BD8(void);
     extern void fn_802CFF10(void), fn_802DACD4(void), fn_802D9C18(void), fn_802DA2F4(void);
     extern void fn_802CFF5C(void *), fn_802CFFA4(unsigned short), fn_802D37E4(void), fn_802DD4FC(void), fn_802DB168(void);
     extern void *fn_8002F37C(void *, void (*)(void), void *, int, int);
@@ -683,7 +683,7 @@ void fn_802CF600(void) {
     fn_80127468();
     lbl_8055FD68 = fn_8012850C((void *)0x300000, base + 0x2BC);
     gGxInitResult = GXInit((int)lbl_8055FD68, 0x300000);
-    fn_802D6810();
+    drVertexFormatCacheInit();
     fn_802CF850();
     fn_80127468();
     fn_802E30C8(base + 0x2C8);

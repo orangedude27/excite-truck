@@ -1352,7 +1352,7 @@ done: ;
 #pragma push
 #pragma small_data off
 /* Allocate the 0x4000-byte vertex-format display-list buffer and reset the vertex-format state. */
-void fn_802D6810(void) {
+void drVertexFormatCacheInit(void) {
     void *displayListBuffer;
 
     /* Initialize the vertex-format display list buffer and reset its state. */
