@@ -108,7 +108,7 @@ void fn_8023D4B8(void);
 void fn_8013C8B8(void);
 void fn_80018B24(void);
 void __array_delete(void *, void *, s32, s32);
-void *fn_80240928(void *, s32);
+void *MRollStatLabel_deletingDestructor(void *, s32);
 s32 fn_80235380(s32, s32);
 void *fn_80255758(void *, s32);
 extern char lbl_803425B8[];
@@ -157,7 +157,7 @@ struct MRollContainer {
     char texts[5][0x64];
     u8 tail[4];
     ~MRollContainer() {
-        __array_delete(widgets, (void *)fn_80240928, 0x28, 5);
+        __array_delete(widgets, (void *)MRollStatLabel_deletingDestructor, 0x28, 5);
     }
 };
 struct MRollRecordOpt {
@@ -544,7 +544,7 @@ enum {
     MROLL_STAT_VALUE_PTR_OFFSET = 0x24
 };
 /* Deleting destructor for a UI car stat label: reinstalls its vtable, clears its value pointer/flag, releases its font, and frees the object when requested. */
-void *fn_80240928(void *thisLabel, s32 shouldFree) {
+void *MRollStatLabel_deletingDestructor(void *thisLabel, s32 shouldFree) {
     s32 zeroValue = 0;
     if (thisLabel != 0) {
         *(s32 *)((char *)thisLabel + MROLL_STAT_VALUE_PTR_OFFSET) = zeroValue;
@@ -886,7 +886,7 @@ void fn_80241010(void *label, s32 rankIndex, s32 valuePtr, s32 flag) {
 
 /* Initializes a container: constructs 5 0x28-byte elements at offset 0x2C and clears the header and per-element flag bytes. */
 void *MRollContainer_init(void *container) {
-    fn_8002F53C((u8 *)container + 0x2C, MRollStatLabel_init, fn_80240928, 0x28, 5);
+    fn_8002F53C((u8 *)container + 0x2C, MRollStatLabel_init, MRollStatLabel_deletingDestructor, 0x28, 5);
     memset(container, 0, 0x2C);
     *(u8 *)((u8 *)container + 0xF4) = 0;
     *(u8 *)((u8 *)container + 0x158) = 0;

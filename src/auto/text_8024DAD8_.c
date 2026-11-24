@@ -112,7 +112,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
     extern s32 fn_80235380(s32);
     extern s32 fn_802CAC54(s32);
     extern s32 MRollStatLabel_init(void);
-    extern s32 fn_80240928(void);
+    extern s32 MRollStatLabel_deletingDestructor(void);
     struct {
         s32 pad0;
         Tbl3 tbl2;
@@ -162,7 +162,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
     result = -1;
     fn_802556BC(m.work, 0);
     *(s32 *)(m.work + 0xd8) = fn_802E4A10();
-    fn_8002F53C(m.res, MRollStatLabel_init, fn_80240928, 0x28, 5);
+    fn_8002F53C(m.res, MRollStatLabel_init, MRollStatLabel_deletingDestructor, 0x28, 5);
     memset(m.opts, 0, 0x2c);
     m.names[0][0] = 0;
     m.names[1][0] = 0;
@@ -307,7 +307,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
     fn_80128670(*(s32 *)(m.screen + 0x18));
     fn_80235380(*(s32 *)(m.screen + 0x24));
     fn_802CAC54(*(s32 *)(m.screen + 0x20));
-    __array_delete(m.res, fn_80240928, 0x28, 5);
+    __array_delete(m.res, MRollStatLabel_deletingDestructor, 0x28, 5);
     fn_80255758(m.work, -1);
     fn_80018B24();
     fn_8013C8B8();
@@ -1113,7 +1113,7 @@ extern "C" void fn_8024FBD8(void *arg0, s32 arg1) {
     extern unsigned char lbl_8055C0D8;
     extern const f32 lbl_80563964;
     extern s32 MRollStatLabel_init(void);
-    extern s32 fn_80240928(void);
+    extern s32 MRollStatLabel_deletingDestructor(void);
     class Counter { public: virtual void d(int); virtual void a(); virtual void b(); virtual int count(); };
     u8 stack[0x728];
     u8 *base = lbl_80344170;
@@ -1123,7 +1123,7 @@ extern "C" void fn_8024FBD8(void *arg0, s32 arg1) {
     fn_8001880C();
     fn_802556BC(stack+0x320, 1);
     *(s32 *)(stack+0x3f8) = fn_802E4A10();
-    fn_8002F53C(stack+0x470, MRollStatLabel_init, fn_80240928, 0x28, 5);
+    fn_8002F53C(stack+0x470, MRollStatLabel_init, MRollStatLabel_deletingDestructor, 0x28, 5);
     memset(stack+0x444, 0, 0x2c);
     *(void * volatile *)(stack+0x198) = arg0;
     *(volatile u8 *)(stack+0x538) = 0;
@@ -1258,7 +1258,7 @@ extern "C" void fn_8024FBD8(void *arg0, s32 arg1) {
         if (object != 0)
             ((Obj *)object)->destroy(1);
     }
-    __array_delete(stack+0x470, fn_80240928, 0x28, 5);
+    __array_delete(stack+0x470, MRollStatLabel_deletingDestructor, 0x28, 5);
     fn_80255758(stack+0x320, -1);
 }
 #pragma cplusplus reset
