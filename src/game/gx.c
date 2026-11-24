@@ -3570,7 +3570,10 @@ extern char lbl_8055D100;
       extern void KERNEL_AddResetCallback(void (*)(void), void *);
     extern int lbl_804C9760[];
 
-/* Build the current view transform (GX_LIGHT_XF_MTX) from the camera at lbl_804C56C0: copy and transpose the camera rotation, rotate its translation by the matrix and negate it, then select matrix 0. */
+/* Compute the view transform as the inverse of the camera transform: copy and
+   transpose the camera rotation, rotate and negate its translation, then make
+   GX matrix 0 current. The two identical branches mirror the original's
+   source-level alias check. */
 void buildViewXform(void) {
 #define gCamera lbl_804C56C0
 #define gViewXform lbl_804CA2D8
@@ -3580,25 +3583,25 @@ void buildViewXform(void) {
     view->r = camera->r;
     mtx33Transpose_802D1C04(view->r.m);
     if (&view->t == &camera->t) {
-        float x, y, z;
+        float camX, camY, camZ;
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
         m10 = camera->r.m[1]; m11 = camera->r.m[4]; m12 = camera->r.m[7];
         m00 = camera->r.m[0]; m01 = camera->r.m[3]; m02 = camera->r.m[6];
         m20 = camera->r.m[2]; m21 = camera->r.m[5]; m22 = camera->r.m[8];
-        x = camera->t.x; y = camera->t.y; z = camera->t.z;
-        view->t.x = z * m20 + (x * m00 + y * m10);
-        view->t.y = z * m21 + (x * m01 + y * m11);
-        view->t.z = z * m22 + (x * m02 + y * m12);
+        camX = camera->t.x; camY = camera->t.y; camZ = camera->t.z;
+        view->t.x = camZ * m20 + (camX * m00 + camY * m10);
+        view->t.y = camZ * m21 + (camX * m01 + camY * m11);
+        view->t.z = camZ * m22 + (camX * m02 + camY * m12);
     } else {
-        float x, y, z;
+        float camX, camY, camZ;
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
         m10 = camera->r.m[1]; m11 = camera->r.m[4]; m12 = camera->r.m[7];
         m00 = camera->r.m[0]; m01 = camera->r.m[3]; m02 = camera->r.m[6];
         m20 = camera->r.m[2]; m21 = camera->r.m[5]; m22 = camera->r.m[8];
-        x = camera->t.x; y = camera->t.y; z = camera->t.z;
-        view->t.x = z * m20 + (x * m00 + y * m10);
-        view->t.y = z * m21 + (x * m01 + y * m11);
-        view->t.z = z * m22 + (x * m02 + y * m12);
+        camX = camera->t.x; camY = camera->t.y; camZ = camera->t.z;
+        view->t.x = camZ * m20 + (camX * m00 + camY * m10);
+        view->t.y = camZ * m21 + (camX * m01 + camY * m11);
+        view->t.z = camZ * m22 + (camX * m02 + camY * m12);
     }
     view->t.x *= gNegOne;
     view->t.y *= gNegOne;
