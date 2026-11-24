@@ -1804,39 +1804,39 @@ void fn_802D0C98(void) {
 }
 
 #pragma scheduling off
-/* Convert a transform's 4x3 matrix (stored as four (x,y,z) rows) into a GX 3x4
- * matrix: transpose it and negate the z row for the GX coordinate convention. */
-int transformToGXPosMtx(void *dst, void *src) {
+/* Transpose a 4x3 transform matrix (four (x,y,z) rows) into a GX 3x4 position
+ * matrix, negating the z row for the GX coordinate convention. */
+int transformToGXPosMtx(void *posMtx, void *transform) {
     float negZ3, y3, x3, negZ2, y2, x2, negZ1, y1, x1, negZ0, y0, x0;
     float z0, z3, z2, z1;
-    z0 = *(float *)((unsigned char *)src + 8);
-    z1 = *(float *)((unsigned char *)src + 0x14);
+    z0 = *(float *)((unsigned char *)transform + 8);
+    z1 = *(float *)((unsigned char *)transform + 0x14);
     negZ0 = -z0;
-    z2 = *(float *)((unsigned char *)src + 0x20);
-    z3 = *(float *)((unsigned char *)src + 0x2c);
+    z2 = *(float *)((unsigned char *)transform + 0x20);
+    z3 = *(float *)((unsigned char *)transform + 0x2c);
     negZ1 = -z1;
     negZ2 = -z2;
     negZ3 = -z3;
-    x0 = *(float *)((unsigned char *)src + 0);
-    y0 = *(float *)((unsigned char *)src + 4);
-    x1 = *(float *)((unsigned char *)src + 0xc);
-    y1 = *(float *)((unsigned char *)src + 0x10);
-    x2 = *(float *)((unsigned char *)src + 0x18);
-    y2 = *(float *)((unsigned char *)src + 0x1c);
-    x3 = *(float *)((unsigned char *)src + 0x24);
-    y3 = *(float *)((unsigned char *)src + 0x28);
-    *(float *)((unsigned char *)dst + 0) = x0;
-    *(float *)((unsigned char *)dst + 0x10) = y0;
-    *(float *)((unsigned char *)dst + 0x20) = negZ0;
-    *(float *)((unsigned char *)dst + 4) = x1;
-    *(float *)((unsigned char *)dst + 0x14) = y1;
-    *(float *)((unsigned char *)dst + 0x24) = negZ1;
-    *(float *)((unsigned char *)dst + 8) = x2;
-    *(float *)((unsigned char *)dst + 0x18) = y2;
-    *(float *)((unsigned char *)dst + 0x28) = negZ2;
-    *(float *)((unsigned char *)dst + 0xc) = x3;
-    *(float *)((unsigned char *)dst + 0x1c) = y3;
-    *(float *)((unsigned char *)dst + 0x2c) = negZ3;
+    x0 = *(float *)((unsigned char *)transform + 0);
+    y0 = *(float *)((unsigned char *)transform + 4);
+    x1 = *(float *)((unsigned char *)transform + 0xc);
+    y1 = *(float *)((unsigned char *)transform + 0x10);
+    x2 = *(float *)((unsigned char *)transform + 0x18);
+    y2 = *(float *)((unsigned char *)transform + 0x1c);
+    x3 = *(float *)((unsigned char *)transform + 0x24);
+    y3 = *(float *)((unsigned char *)transform + 0x28);
+    *(float *)((unsigned char *)posMtx + 0) = x0;
+    *(float *)((unsigned char *)posMtx + 0x10) = y0;
+    *(float *)((unsigned char *)posMtx + 0x20) = negZ0;
+    *(float *)((unsigned char *)posMtx + 4) = x1;
+    *(float *)((unsigned char *)posMtx + 0x14) = y1;
+    *(float *)((unsigned char *)posMtx + 0x24) = negZ1;
+    *(float *)((unsigned char *)posMtx + 8) = x2;
+    *(float *)((unsigned char *)posMtx + 0x18) = y2;
+    *(float *)((unsigned char *)posMtx + 0x28) = negZ2;
+    *(float *)((unsigned char *)posMtx + 0xc) = x3;
+    *(float *)((unsigned char *)posMtx + 0x1c) = y3;
+    *(float *)((unsigned char *)posMtx + 0x2c) = negZ3;
 }
 #pragma scheduling on
 
