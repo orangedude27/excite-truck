@@ -760,7 +760,7 @@ int fn_802CB288(int textureSlot) {
 }
 
 extern void setTextureCopyObject(int);
-extern void fn_802D9418(void);
+extern void copyTextureToEFB(void);
 extern int currentTextureIndex;
 void selectTexture(int textureIndex) {
     /* Select a texture for the active drawing context, or clear the selection for invalid indices. */
@@ -771,7 +771,7 @@ void selectTexture(int textureIndex) {
         currentTextureIndex = textureIndex;
         return;
     }
-    fn_802D9418();
+    copyTextureToEFB();
     currentTextureIndex = -2;
 }
 

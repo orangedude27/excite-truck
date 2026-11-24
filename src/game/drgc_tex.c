@@ -1013,7 +1013,7 @@ float fn_802D93E0(void) {
 extern void fn_802D2614(void);
 extern int lbl_8055FE24;
 /* Reset the GX state, then select `texObj` as the current texture object for the
- * GX texture-copy path (lbl_8055FE24); fn_802D9418 consumes and clears it. */
+ * GX texture-copy path (lbl_8055FE24); copyTextureToEFB consumes and clears it. */
 void setTextureCopyObject(int texObj) {
     fn_802D2614();
     lbl_8055FE24 = texObj;
@@ -1028,7 +1028,7 @@ extern void GXSetZMode(int, int, int);
 extern void GXSetColorUpdate(int);
 extern void fn_802CFF50(void);
 #pragma opt_propagation off
-/* Copy the currently bound texture (lbl_8055FE24) into the EFB, then clear the binding: take the copy size from the texture object's wrap fields, set up the GX texture-copy source/destination, force depth test on with colour writes, copy with a depth clear, and reset lbl_8055FE24 to zero. */ void fn_802D9418(void)
+/* Copy the currently bound texture (lbl_8055FE24) into the EFB, then clear the binding: take the copy size from the texture object's wrap fields, set up the GX texture-copy source/destination, force depth test on with colour writes, copy with a depth clear, and reset lbl_8055FE24 to zero. */ void copyTextureToEFB(void)
 {
   unsigned int zero;
   void *texObj;
