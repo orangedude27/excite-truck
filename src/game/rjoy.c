@@ -94,7 +94,7 @@ void *fn_802E77C0(int statusCode) {
  * which rounds that response's hard dead-zone corner into a soft knee. The result is
  * then blended toward the squared response v*|v| by RJOY_CURVE_AMOUNT, which is
  * 0.0f, so the output stays linear. */
-float fn_802E78A4(float axis) {
+float RjoyShapeSteeringAxis(float axis) {
 #define RJOY_KNEE         lbl_80565174 /* 0.05f: how far each sample is shifted */
 #define RJOY_DEAD_ZONE    lbl_80565178 /* 0.1f: dead zone fn_802E7824 rescales past */
 #define RJOY_HALF         lbl_80565170 /* 0.5f: weight of the two samples */
@@ -335,7 +335,7 @@ extern int lbl_80507268[], lbl_80507258[], lbl_8056000C;
     lbl_8056000C = 0;
 }
 extern double fn_8002EFB0(float, float);
-extern float fn_802E78A4(float);
+extern float RjoyShapeSteeringAxis(float);
 extern float lbl_80565160, lbl_8056517C, lbl_80565180, lbl_80565184, lbl_80565188;
 extern float lbl_8056518C, lbl_80565190, lbl_80565194, lbl_80565198;
 #pragma push
@@ -382,7 +382,7 @@ void fn_802E7DDC(void *arg0, void *arg1) {
     temp_f0 = lbl_8056518C * in->acc.z;
     var_f1 = (var_f1 > temp_f0) ? var_f1 : temp_f0;
     var_f1 = (var_f1 > lbl_8056517C) ? var_f1 : lbl_8056517C;
-    var_f1 = fn_802E78A4(var_f1);
+    var_f1 = RjoyShapeSteeringAxis(var_f1);
     var_f4 = lbl_80565160;
     temp_f0_2 = lbl_80565194 * var_f31;
     out->angle = var_f1;
