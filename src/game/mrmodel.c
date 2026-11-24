@@ -1273,7 +1273,8 @@ int fn_802C6B44(int);
 extern const char lbl_8034B3DC[];
 int fn_802C94A0(void*, unsigned char*, float*, float);
 void fn_802C57B4(int, int, int, unsigned char, float);
-/* Draw one model instance if its stored world position (+0x20) passes the view-volume test with the instance's tolerance (+0x1C): submit it with no transform override and entry id -1. */ void DrawModelInstance(int instanceId) {
+void DrawModelInstance(int instanceId) {
+    /* Draw one model instance if its stored world position passes the view-volume test. */
     float depth;
     unsigned char status;
     void *instanceHeader;
