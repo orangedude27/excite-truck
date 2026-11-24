@@ -199,7 +199,7 @@ long fn_8020F6F8(void) {
 }
  
 #pragma dont_inline on
-long fn_8020F6FC(void) {
+long getNextTrackMusicIndex(void) {
     /* Returns the next track index from the shuffled play order and advances the cursor cyclically. */
     long cursor = lbl_8055EEC4;
     long *order = lbl_804902C4.m_entries;
@@ -364,7 +364,7 @@ char *key;
 /* Returns the current track-music entry's payload: NULL if none, the selected path from the track-music list for type 1, or the inline path at +0x24 for other types. */
 void *getCurrentTrackMusicPath(void) {
 #define GetCurrentTrackMusicEntry findTrackMusicEntry
-#define GetNextTrackMusicIndex fn_8020F6FC
+#define GetNextTrackMusicIndex getNextTrackMusicIndex
 #define trackMusicList lbl_804900AC
     char *trackEntry = (char *)GetCurrentTrackMusicEntry();
     long entryType;
@@ -494,7 +494,7 @@ void fn_8020FE90(void) {
         return;
     }
     if (lbl_8055EEE0 == -1) {
-        resolvedTrack = fn_8020F6FC();
+        resolvedTrack = getNextTrackMusicIndex();
     } else {
         resolvedTrack = lbl_8055EEE0 + (lbl_8055EEE4 * 0xA);
     }
@@ -888,7 +888,7 @@ void trackMusicUpdate(unsigned char mute) {
             resource = *(struct Dummy_802113D8 **)((char *)fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC()) + 0x20);
             resource->f6(&lbl_8055B674, lbl_8033C970);
             if (*(long *)findTrackMusicEntry() == 1 && lbl_8055EEBC > 0) {
-                gTrackMusicCurrentSong = fn_8020F6FC();
+                gTrackMusicCurrentSong = getNextTrackMusicIndex();
             }
         }
         if ((unsigned char)gTrackMusicMuted != mute) {
