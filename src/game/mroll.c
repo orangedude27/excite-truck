@@ -912,7 +912,7 @@ void *fn_80241098(void *statLabel) {
 
 /* Construct an object (vtable lbl_803426B0, secondary +0x18), copy *valuePtr, store id/arg3,
    assign next id from lbl_8055F1F4, load resource "caricona.art" via fn_8023512C, init floats to 0.0f. */
-void *fn_802410F8(void *self, s32 id, s32 *valuePtr, s32 arg3) {
+/* Construct a roll/player-info object: set its two vtables and fields, copy the supplied value, assign and bump the global id counter, load the car-icon art set, and zero its float fields. */ void *fn_802410F8(void *self, s32 id, s32 *valuePtr, s32 arg3) {
     s32 nextId;
     s32 resource;
     float zero;
