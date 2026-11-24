@@ -644,27 +644,28 @@ char *fn_802CAE34(int textureIndex) {
     return slot + 4;
 }
 #pragma dont_inline on
-void fn_802CAE98(int arg0, char *arg1) {
-    /* Copy a texture slot's name into its 0x20-byte name buffer, truncating to
-       0x1F characters and null-terminating. */
-    int count;
-    char *dst;
-    unsigned char c;
+/* Copy a texture name into the given slot's 0x20-byte name buffer, truncating to
+ * 0x1F characters and always null-terminating. Does nothing for an invalid or
+ * unloaded slot. */
+void fn_802CAE98(int slotIndex, char *srcName) {
+    int charsLeft;
+    char *nameDst;
+    unsigned char ch;
 
-    if (!((int (*)(int))fn_802CAE00)(arg0))
+    if (!((int (*)(int))fn_802CAE00)(slotIndex))
         return;
-    dst = (char *)lbl_8055FCB0 + arg0 * 0x4C + 4;
-    count = 0x20;
+    nameDst = (char *)lbl_8055FCB0 + slotIndex * 0x4C + 4;
+    charsLeft = 0x20;
     goto copy;
 count_check:
-    if (--count > 0)
+    if (--charsLeft > 0)
         goto copy;
-    dst[-1] = 0;
+    nameDst[-1] = 0;
     goto done;
 copy:
-    c = *arg1++;
-    *dst++ = c;
-    if ((signed char)c != 0)
+    ch = *srcName++;
+    *nameDst++ = ch;
+    if ((signed char)ch != 0)
         goto count_check;
     goto done;
 done:
