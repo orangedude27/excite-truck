@@ -53,7 +53,7 @@ extern void GXInitTlutObj(void *, void *, int, unsigned short);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_802D7564(void) {
+/* Debug-dump every in-use drgc texture slot, printing its index, address and S/T wrap modes. */ void fn_802D7564(void) {
     /* Debug-dumps active drgc texture table entries, printing index, entry, and S/T wrap modes. */
     int byteOffset;
     int index;
