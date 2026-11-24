@@ -296,25 +296,25 @@ extern void fn_802CA57C(void *, int, int, int);
 }
 #pragma scheduling on
 /* Return the GX texture format name string for a texture format id. */
-char *fn_802CA72C(unsigned int textureFormat) {
-    char *base = lbl_8034B538;
-    switch (textureFormat) {
-    case 0: return base + 0x140;
-    case 1: return base + 0x150;
-    case 2: return base + 0x174;
-    case 3: return base + 0x180;
-    case 4: return base + 0x190;
-    case 5: return base + 0x1A0;
-    case 6: return base + 0x1B4;
-    case 7: return base + 0x1C0;
-    case 8: return base + 0x1CC;
-    case 9: return base + 0x1E0;
-    case 10: return base + 0x1F0;
-    case 11: return base + 0x20C;
-    case 12: return base + 0x21C;
-    case 13: return base + 0x228;
-    case 14: return base + 0x244;
-    default: return base + 0x250;
+/* Return the MMT_* material-type name string for a material type id (15 names, plus "<unknown>" for out-of-range ids). */ char *fn_802CA72C(unsigned int matType) {
+    char *nameTable = lbl_8034B538;
+    switch (matType) {
+    case 0: return nameTable + 0x140;
+    case 1: return nameTable + 0x150;
+    case 2: return nameTable + 0x174;
+    case 3: return nameTable + 0x180;
+    case 4: return nameTable + 0x190;
+    case 5: return nameTable + 0x1A0;
+    case 6: return nameTable + 0x1B4;
+    case 7: return nameTable + 0x1C0;
+    case 8: return nameTable + 0x1CC;
+    case 9: return nameTable + 0x1E0;
+    case 10: return nameTable + 0x1F0;
+    case 11: return nameTable + 0x20C;
+    case 12: return nameTable + 0x21C;
+    case 13: return nameTable + 0x228;
+    case 14: return nameTable + 0x244;
+    default: return nameTable + 0x250;
     }
 }
 
