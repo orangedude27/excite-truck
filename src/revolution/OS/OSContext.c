@@ -186,7 +186,8 @@ asm void OSSaveFPUContext(register OSContext* ctx) {
  
  /* Make ctx the current OS context: publish it and its 4-byte-aligned physical
     address in the OS globals, then enable the FPU (MSR_FP in srr1/MSR) when ctx
-    owns the current FPU context and disable it otherwise. */
+       owns the current FPU context and disable it otherwise. */
+
 asm void OSSetCurrentContext(register OSContext* ctx) {
     // clang-format off
     nofralloc
