@@ -10,7 +10,7 @@
   } StreamEntry;
   extern void fn_802E3990(void);
 extern int fn_802E3734(int *);
-extern int fn_802E72C8(int);
+extern int findStreamEntryBySector(int);
 extern int FileLookup(void *);
 extern void fn_802E3A14(int);
 extern void File_read(int, void *, int);
@@ -30,7 +30,7 @@ int fn_802E72B8(int size) {
 #pragma scheduling invalid_target
 /* Find the stream entry whose sector range [startSector, endSector) contains
  * `sector`; return its index in the entry table, or -1 if none matches. */
-int fn_802E72C8(int sector) {
+int findStreamEntryBySector(int sector) {
     unsigned char *entry = lbl_804FC978;
     int index = 0;
     int remaining;
@@ -128,7 +128,7 @@ void fn_802E746C(int index, int *outStartSector, int *outSize) {
     int entryIndex;
     int fileId;
     int byteOffset;
-    entryIndex = fn_802E72C8(sector);
+    entryIndex = findStreamEntryBySector(sector);
     if (entryIndex < 0) return -1;
     entry = lbl_804FC978 + entryIndex * 0x90;
     fileId = FileLookup(entry + 0x10);
