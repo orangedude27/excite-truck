@@ -603,7 +603,7 @@ void fn_802C5E6C(void *unused, void *groupList) {
 }
 
 #pragma pop
-s32 fn_802C5EB8(void *, u32);
+s32 FindTaggedResourceChunk(void *, u32);
 
 #define SPHL_CHUNK_TAG 0x5350484C /* 'SPHL' tagged chunk of a model resource */
 
@@ -611,7 +611,7 @@ s32 fn_802C5EB8(void *, u32);
  * data (the chunk entry plus 8 bytes), or 0 when the chunk is absent.
  * Readable name: getModelSphlVectors. */
 s32 fn_802C5E7C(void *resource) {
-    char *chunk = (char *)fn_802C5EB8(resource, SPHL_CHUNK_TAG);
+    char *chunk = (char *)FindTaggedResourceChunk(resource, SPHL_CHUNK_TAG);
     if (chunk != 0) {
         return (s32)(chunk + 8);
     }
@@ -619,7 +619,7 @@ s32 fn_802C5E7C(void *resource) {
 }
 
 #pragma scheduling invalid_target
-/* Find the first chunk in a resource's tagged list (count at +0x10, chunk-pointer array at +0x14) whose leading tag word matches tag; return the chunk pointer or 0. */ /* Find the first chunk in a resource's tagged list (count at +0x10, chunk-pointer array at +0x14) whose leading tag word matches tag; return the chunk pointer or 0. */ s32 fn_802C5EB8(void *resource, u32 tag) {
+/* Find the first chunk in a resource's tagged list (count at +0x10, chunk-pointer array at +0x14) whose leading tag word matches tag; return the chunk pointer or 0. */ /* Find the first chunk in a resource's tagged list (count at +0x10, chunk-pointer array at +0x14) whose leading tag word matches tag; return the chunk pointer or 0. */ s32 FindTaggedResourceChunk(void *resource, u32 tag) {
     /* Searches the resource's tagged chunk list for an entry whose first field matches tag and returns it, or 0 if not found. */
     s32 count = *(s32 *)((char *)resource + 0x10);
     u32 *result = NULL;
