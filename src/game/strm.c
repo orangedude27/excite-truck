@@ -14,7 +14,7 @@ extern int findStreamEntryBySector(int);
 extern int FileLookup(void *);
 extern void fn_802E3A14(int);
 extern void File_read(int, void *, int);
-extern unsigned char lbl_804FC978[];
+extern unsigned char sStreamEntries[];
 extern int lbl_8055FFD8;
 extern int lbl_8055FFDC;
 extern signed char lbl_8055FFE0;
@@ -31,7 +31,7 @@ int fn_802E72B8(int size) {
 /* Find the stream entry whose sector range [startSector, endSector) contains
  * `sector`; return its index in the entry table, or -1 if none matches. */
 int findStreamEntryBySector(int sector) {
-    unsigned char *entry = lbl_804FC978;
+    unsigned char *entry = sStreamEntries;
     int index = 0;
     int remaining;
     for (remaining = lbl_8055FFD8; remaining > 0; remaining--) {
@@ -71,7 +71,7 @@ int fn_802E7354(const char *name) {
     unsigned char *entry;
     int size;
     int blocks;
-    entry = lbl_804FC978;
+    entry = sStreamEntries;
     index = 0;
     goto search_test;
 search_body:
@@ -86,7 +86,7 @@ search_test:
     if (fileIndex == -1)
         goto fail;
     index = lbl_8055FFD8++;
-    entry = lbl_804FC978 + index * 0x90;
+    entry = sStreamEntries + index * 0x90;
     dst = (char *)(entry + 0x10);
     remaining = 0x80;
     goto copy_start;
@@ -114,7 +114,7 @@ fail:
 }
 void fn_802E746C(int index, int *outStartSector, int *outSize) {
     /* Report the start sector (in 2048-byte units) and byte size of stream entry `index`. */
-    StreamEntry *entry = (StreamEntry *)(lbl_804FC978 + index * 0x90);
+    StreamEntry *entry = (StreamEntry *)(sStreamEntries + index * 0x90);
     *outStartSector = entry->startSector;
     *outSize = entry->size;
 }
@@ -130,7 +130,7 @@ void fn_802E746C(int index, int *outStartSector, int *outSize) {
     int byteOffset;
     entryIndex = findStreamEntryBySector(sector);
     if (entryIndex < 0) return -1;
-    entry = lbl_804FC978 + entryIndex * 0x90;
+    entry = sStreamEntries + entryIndex * 0x90;
     fileId = FileLookup(entry + 0x10);
     if (fileId == -1) return -1;
     byteOffset = (sector - *(int *)entry) << 11;
