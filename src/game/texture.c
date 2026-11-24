@@ -918,7 +918,7 @@ int fn_802CB128(int width, int height, int unused, int flagsMask) {
 }
 #pragma pop
 /* Release a texture slot: destroy its GPU texture object, free its resource handle, and clear the slot. */
-/* Release a texture slot: destroy its GPU texture handle (+0x28), free its resource handle (+0x2C), then clear both handles and the refcount (+0) to empty the slot. */ /* Release a texture slot: destroy its GPU texture handle (+0x28), free its resource handle (+0x2C), then clear both handles and the refcount (+0) to empty the slot. */ void fn_802CB228(int slotIndex) {
+/* Release a texture slot: destroy its GPU texture handle (+0x28), free its resource handle (+0x2C), then clear both handles and the refcount (+0) to empty the slot. */ /* Release a texture slot: destroy its GPU texture handle (+0x28), free its resource handle (+0x2C), then clear both handles and the refcount (+0) to empty the slot. */ /* Release a texture slot: destroy its GPU texture handle (+0x28), free its resource handle (+0x2C), then clear both handles and the refcount (+0) to empty the slot. */ void fn_802CB228(int slotIndex) {
     int *slot = (int *)(gTextureSlotTable + slotIndex * 0x4C);
     ((void (*)(int))fn_802D8FB4)(slot[0x28 / 4]);
     fn_80128668(slot[0x2C / 4]);
