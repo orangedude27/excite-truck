@@ -462,7 +462,7 @@ void fn_802ECC18(u8 mode) {
  * triangles at all (only its renderer setup runs), fn_802CFDE0() draws the
  * home-button UI and flushes the FIFO to the GPU, and fn_802CFF10() closes the
  * frame again. */
-void fn_802ECC20(void) {
+void HomeMenu_drawBlackFrame(void) {
 #define FADE_BLACK 0xFF000000 /* aRGB: opaque black */
     if (fn_8002173C() == 0) {
         fn_802CFCA0();
@@ -489,10 +489,10 @@ void HomeMenu_drainHandover(void) {
     gHandoverRunning = 1;
     if (wasRequested != 0) {
         while ((u8)gHomeMenuActive != 0) {
-            fn_802ECC20();
+            HomeMenu_drawBlackFrame();
             fn_80127464();
         }
-        fn_802ECC20();
+        HomeMenu_drawBlackFrame();
         gHandoverRequested = 0;
     }
     gHandoverRunning = 0;
