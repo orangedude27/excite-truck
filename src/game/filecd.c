@@ -74,7 +74,7 @@ extern char lbl_8034D098[];
 #define FileCdVTable lbl_8034D098        /* FileCd's vtable */
 extern void DVDInit(void);
 extern void OSReport(const char *, ...);
-extern unsigned char lbl_804FBAA0[0x10 * 0x91];
+extern unsigned char fdoPool[0x10 * 0x91];
 extern unsigned int lbl_8055D1B4;
 extern unsigned int lbl_8055D1B8;
 #define fdoPoolName lbl_8055D1B4    /* "fdo": the node pool fn_802E3EBC hands out */
@@ -115,12 +115,12 @@ void *fn_802E3EBC(void)
 {
   unsigned char *p;
   int i;
-  p = lbl_804FBAA0;
+  p = fdoPool;
   for (i = 0; i < 0x10; i++)
   {
     if (!(*p))
     {
-      p = &lbl_804FBAA0[i * 0x91];
+      p = &fdoPool[i * 0x91];
       *p = 1;
       return p + 1;
     }
@@ -139,10 +139,10 @@ void *fn_802E3EBC(void)
 /* Return a FileDisk node to the fdo pool by clearing its slot's used flag; panic if the pointer is not one of our 16 nodes. */ void fn_802E3F38(void *node) {
     unsigned char *slotBase;
     int slotIndex;
-    slotBase = lbl_804FBAA0;
+    slotBase = fdoPool;
     for (slotIndex = 0; slotIndex < 0x10; slotIndex++) {
         if (node == slotBase + 1) {
-            lbl_804FBAA0[slotIndex * 0x91] = 0;
+            fdoPool[slotIndex * 0x91] = 0;
             return;
         }
         slotBase += 0x91;
