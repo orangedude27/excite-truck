@@ -1332,7 +1332,7 @@ void fn_802C9CE0(void) {
  * "mrDrawList") go unused: every element of this pool is the same.  Returns 0
  * when the pool is empty; fn_802C9D88 hands elements back and tears the pool
  * down once no DrawListWrapper is live any more. */
-void *DrawListWrapper_alloc(int size, const char *name) {
+/* Allocate a DrawListWrapper from the lazily built static pool, ignoring size/name, and bump the live count. */ void *DrawListWrapper_alloc(int size, const char *name) {
     struct ObjectPool *pool;
     void *element;
 
