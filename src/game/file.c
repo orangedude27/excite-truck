@@ -42,11 +42,12 @@ s32 IsNandPath(const char *path) {
    system handle lbl_8055FF24 for it.  Its sibling IsNandPath tests the
    "nand:" prefix (sNandPathPrefix). */
 s32 IsSdPath(s32 path) {
-    /* the prefix address is held as an integer so the compiler keeps it in one
-       callee-saved register instead of re-materializing the small-data address */
-    s32 prefix = (s32)sSdPathPrefix; /* "sd:" */
+    /* Hold the prefix address as an integer so MWCC keeps its small-data
+       address in one callee-saved register instead of rematerializing it. */
+    s32 prefix = (s32)sSdPathPrefix;
     s32 prefixLen = strlen((char *)prefix);
     s32 result = strncmp((const char *)path, (char *)prefix, prefixLen);
+    /* cntlzw is 32 only when result == 0, so >>5 yields the equality flag. */
     return (unsigned int)__cntlzw(result) >> 5;
 }
 
