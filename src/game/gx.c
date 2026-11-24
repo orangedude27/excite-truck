@@ -1806,7 +1806,7 @@ void fn_802D0C98(void) {
 #pragma scheduling off
 /* Transpose a 4x3 transform matrix (four (x,y,z) rows) into a GX 3x4 position
  * matrix, negating the z row for the GX coordinate convention. */
-int transformToGXPosMtx(void *posMtx, void *transform) {
+/* Transpose a 4x3 transform matrix (four (x,y,z) rows) into a GX 3x4 position matrix, negating the z row for the GX coordinate convention. */ int transformToGXPosMtx(void *posMtx, void *transform) {
     float negZ3, y3, x3, negZ2, y2, x2, negZ1, y1, x1, negZ0, y0, x0;
     float z0, z3, z2, z1;
     z0 = *(float *)((unsigned char *)transform + 8);
