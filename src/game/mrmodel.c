@@ -1125,29 +1125,29 @@ void fn_802C6CF8(int modelHandle) {
     fn_802C6C20(resource);
 }
 
-s32 mrModelNeedsSubKeys(void *container) {
-    /* Returns 1 if any nested item in the two-level container has a non-zero first field, else 0. */
-    s32 outerOffset;
-    s32 outerCount;
-    s32 innerOffset;
-    s32 outerIndex;
-    char *outerEntry;
-    s32 innerCount;
-    s32 innerIndex;
-    outerCount = *(s32 *)((char *)container + 8);
-    outerIndex = 0;
-    outerOffset = 0;
-    while (outerIndex < outerCount) {
-        outerEntry = *(char **)(*(char **)((char *)container + 0xC) + outerOffset);
-        innerCount = *(s32 *)outerEntry;
-        for (innerIndex = 0, innerOffset = 0; innerIndex < innerCount; innerIndex++, innerOffset += 4) {
-            char *innerItem = *(char **)(*(char **)(outerEntry + 4) + innerOffset);
-            if (*(s32 *)innerItem != 0) {
+/* Return 1 when any element in the model's group/element tables has a nonzero base id, else 0. */
+s32 mrModelNeedsSubKeys(void *model) {
+    s32 groupOff;
+    s32 groupCount;
+    s32 elementOff;
+    s32 groupIndex;
+    char *group;
+    s32 elementCount;
+    s32 elementIndex;
+    groupCount = *(s32 *)((char *)model + 8);
+    groupIndex = 0;
+    groupOff = 0;
+    while (groupIndex < groupCount) {
+        group = *(char **)(*(char **)((char *)model + 0xC) + groupOff);
+        elementCount = *(s32 *)group;
+        for (elementIndex = 0, elementOff = 0; elementIndex < elementCount; elementIndex++, elementOff += 4) {
+            char *element = *(char **)(*(char **)(group + 4) + elementOff);
+            if (*(s32 *)element != 0) {
                 return 1;
             }
         }
-        outerOffset += 4;
-        outerIndex++;
+        groupOff += 4;
+        groupIndex++;
     }
     return 0;
 }
