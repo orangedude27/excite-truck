@@ -147,7 +147,7 @@ void fn_802E8874(void) {
 #undef nandSaveShutdown
 #undef nandSaveRefCount
 
-/* Dispatches a NAND-save request table entry by index, bracketing it with the save subsystem refcount. */
+/* Enter the NAND-save subsystem, dispatch the 0x38-byte request-table entry at requestIndex, then leave the subsystem and return the result. */
 int fn_802E888C(int requestIndex) {
     int result;
     ((void (*)(void))fn_802E883C)();
