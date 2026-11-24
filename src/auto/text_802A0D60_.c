@@ -3,6 +3,7 @@
 
 typedef signed int s32;
 typedef unsigned int u32;
+typedef struct { float x, y; } Vec2_2A0F7C;
 
 static inline float Vec2Dot_802A0F7C(const float *a, const float *b) {
     return a[0] * b[0] + a[1] * b[1];
