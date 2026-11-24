@@ -1122,14 +1122,14 @@ int setModelColor(int packedColor) {
     return previousColor;
 }
 
-extern int lbl_8055FC7C;
+extern int gCurrentDrawListColor;
 extern void fn_802D0160(unsigned char, unsigned char, unsigned char);
 /* Set the current packed drawlist color, forward its RGB components to
  * fn_802D0160, and return the previous packed color. */
 int fn_802C9950(int packedColor)
 {
-    int previousColor = lbl_8055FC7C;
-    lbl_8055FC7C = packedColor;
+    int previousColor = gCurrentDrawListColor;
+    gCurrentDrawListColor = packedColor;
     fn_802D0160((packedColor >> 16) & 0xFF, (packedColor >> 8) & 0xFF, packedColor & 0xFF);
     return previousColor;
 }
