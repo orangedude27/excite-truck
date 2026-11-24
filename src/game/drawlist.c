@@ -365,8 +365,8 @@ void *DrawList_saveViewport(void *savedViewport, int x, int y, int width, int he
 
 extern void DrawList_setViewport(int, int, int, int);
 extern void fn_80128668(void *);
-/* Restore a saved viewport rect (x, y, width, height at +0,+4,+8,+0xC) and optionally delete it. */
-/* Restore the viewport rectangle saved by DrawList_saveViewport (x, y, width, height at +0,+4,+8,+0xC); when freeBuffer is positive, also free the saved buffer. */ void *DrawList_restoreViewport(void *savedViewport, int freeBuffer) {
+/* Restore the viewport rectangle saved by DrawList_saveViewport (x, y, width, height at +0,+4,+8,+0xC); when freeBuffer is positive, also free the saved buffer. */
+void *DrawList_restoreViewport(void *savedViewport, int freeBuffer) {
     if (savedViewport != 0) {
         DrawList_setViewport(*(int *)((unsigned char *)savedViewport), *(int *)((unsigned char *)savedViewport + 4), *(int *)((unsigned char *)savedViewport + 8), *(int *)((unsigned char *)savedViewport + 0xC));
         if (freeBuffer > 0) {
