@@ -5525,8 +5525,8 @@ void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 t
     unsigned int *table;
     unsigned int *data;
 
-    offset0 = (u32)index << 3;
     index2 = (u32)index << 1;
+    offset0 = index2 << 2;
     offset1 = index2 + 1;
     data = __GXData;
     table = (unsigned int *)((char *)data + 0x200);
