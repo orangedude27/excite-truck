@@ -1062,7 +1062,7 @@ void fn_80021680(void) {
     fn_8001FF34(-1);
 }
 
-/* Audio-DSP init callback: queue request kind 2, serviced by fn_8002173C. */
+/* Audio-DSP init callback: queue request kind 2, serviced by soundRunPendingRequest. */
 void __AXDSPInitCallback_800216B8(void) {
     #define audioDspRequest lbl_8055D62C
     audioDspRequest = 2;
@@ -1110,7 +1110,7 @@ int fn_800216FC(void) {
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw off
-int fn_8002173C(void) {
+int soundRunPendingRequest(void) {
     /* If an audio DSP request is pending, process it (state 2/1 run their handlers), finalize, and report handled. */
     extern void fn_80230B38_0(void);
     char buffer[0x38];

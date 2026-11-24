@@ -15,7 +15,7 @@ extern u8 lbl_805600EB;
 extern u8 lbl_805600ED;
 /* The renderer of src/game/gx.c and src/game/drgc_surf.c, used by the handover
  * loop below to keep the screen covered while the Home Menu starts up. */
-s32 fn_8002173C(void);                      /* runs a pending sound request; 1 when it did work */
+s32 soundRunPendingRequest(void);                      /* runs a pending sound request; 1 when it did work */
 void fn_802CFCA0(void);                     /* opens a frame: resets the GX state, sets the FIFO break point */
 void fn_802D02F8(s32 color, s32 on);        /* fade colour (aRGB) and whether to fade with it */
 void drawFifoTriangles(s32, s32, s32, s32);       /* indexed triangles straight into the GX FIFO */
@@ -456,7 +456,7 @@ void fn_802ECC18(u8 mode) {
 #pragma dont_inline on
 /* One frame of the black screen this module paints while the home-button
  * handover runs (HomeMenu_drainHandover repeats it until the Home Menu takes the screen
- * over), skipped on the frames fn_8002173C() spent on a pending sound request:
+ * over), skipped on the frames soundRunPendingRequest() spent on a pending sound request:
  * fn_802CFCA0() opens the frame, fn_802D02F8() switches on the fade colour the
  * screen is covered with -- opaque black -- drawFifoTriangles() is asked for no
  * triangles at all (only its renderer setup runs), fn_802CFDE0() draws the
@@ -464,7 +464,7 @@ void fn_802ECC18(u8 mode) {
  * frame again. */
 void HomeMenu_drawBlackFrame(void) {
 #define FADE_BLACK 0xFF000000 /* aRGB: opaque black */
-    if (fn_8002173C() == 0) {
+    if (soundRunPendingRequest() == 0) {
         fn_802CFCA0();
         fn_802D02F8(FADE_BLACK, 1);
         drawFifoTriangles(0, 0, 0, 0);
