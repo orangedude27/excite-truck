@@ -12,10 +12,10 @@ extern int fn_8023512C(char*);
 extern int fn_802E30C8(const char*, ...);
 extern unsigned int strlen(const char*);
 extern char gxGetImageLongNameFmt[];
-extern unsigned char lbl_8055FC14;
+extern unsigned char gxGetImageWarnedLongName;
 #define ROUND_HALF      lbl_80564EE8   /* 0.5f: rounding bias for image dimensions */
 #define ZERO_F          lbl_80564EEC   /* 0.0f */
-#define WARNED_LONG_NAME lbl_8055FC14  /* set once an overlong image name is reported */
+#define WARNED_LONG_NAME gxGetImageWarnedLongName  /* set once an overlong image name is reported */
 #pragma push
 #pragma scheduling invalid_target
 int gxGetImageArt(char* imageName) {
