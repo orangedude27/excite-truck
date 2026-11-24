@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma paired off
+#pragma paired_single off
 typedef struct { float x, y, z; int color; float u, v; } Vtx;
 typedef struct { float x, y, z; } Vec3;
 typedef union { double d; float f[2]; } VtxXY;
