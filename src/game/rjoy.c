@@ -174,7 +174,7 @@ extern int fn_80128658(int, int *);
 /* Callback on Wpad device disconnect: swap-removes `handle` from the
  * connected-device array (last element fills the gap), frees it via
  * fn_80128658, and always returns 1. */
-int fn_802E7A70(unsigned int handle) {
+int wpadFree(unsigned int handle) {
     int matchIndex;
     int *cursor;
     int index;
@@ -270,7 +270,7 @@ void fn_802E7C64(void) {
     int previousCallback;
     int controllerIndex;
 
-    fn_8005EE78(&wpadAlloc, &fn_802E7A70);
+    fn_8005EE78(&wpadAlloc, &wpadFree);
     fn_800569D0();
     KPADInit();
     do {
