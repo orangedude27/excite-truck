@@ -212,6 +212,9 @@ asm void PPCSetFpNonIEEEMode(void) {
     // clang-format on
 }
 
+/* Write val to the HID4 special-purpose register. Bit 0 (H4A) must never be
+ * cleared because of a Broadway errata, so if the caller tries to clear it we
+ * report the mistake and force it back on before writing. */
 void PPCMthid4(register u32 val) {
     if (val & HID4_H4A) {
         // clang-format off
