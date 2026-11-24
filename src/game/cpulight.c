@@ -608,7 +608,7 @@ void fn_802DC280(int positionArray, int vertexCount, unsigned short *__restrict 
 /* Prepare cpulight draw state for the given light mode: reset the cached GX state and texture matrix,
    bind the mode's texture to unit 1, load the two CPU-light textures into texmaps 0 and 1, set the
    alpha compare to always-pass, and configure the two-stage TEV/blend pipeline. */
-/* Set up cpulight GX state for a light mode: reset cached state/texmatrix, bind the mode texture to unit 1, load the two CPU-light textures into texmaps 0 and 1, force always-pass alpha compare, then configure the two-stage TEV/blend pipeline. */ void fn_802DC3C0(int mode) {
+void fn_802DC3C0(int mode) {
     fn_802DBD88();
     fn_802DB58C();
     fn_802CADD0(mode, 1);
