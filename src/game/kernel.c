@@ -8,7 +8,7 @@ extern void GXInitTexObj(GXTexObj *, void *, unsigned short, unsigned short, int
 extern void GXInitTexObjLOD(GXTexObj *, int, int, int, int, int, float, float, float);
 extern float lbl_805650F0;
 #include <revolution/GX/GXVert.h>
-extern int lbl_804DB780[];
+extern int sStackGuardInfo[];
 extern void DCStoreRange(void *, int);
 extern void DCFlushRange(void *, int);
 extern char lbl_8034CD48[];
@@ -520,29 +520,29 @@ void fn_802E27B8(void *ring) {
 void fn_802E27F0(void) {
     extern char lbl_8034CD00[];
     int local[2];
-    int **heap = (int **)lbl_804DB780;
+    int **heap = (int **)sStackGuardInfo;
     int size;
     register int count;
     register int i;
 
-    lbl_804DB780[0] = 0x7400;
+    sStackGuardInfo[0] = 0x7400;
     heap[1] = local;
-    size = lbl_804DB780[0];
+    size = sStackGuardInfo[0];
     fn_802E30C8(lbl_8034CD00, size / 1024, local);
-    count = lbl_804DB780[0] / 4;
+    count = sStackGuardInfo[0] / 4;
     for (i = 0; i < count; i++) {
-        (*(int **)((char *)lbl_804DB780 + 4))[-i] = 0x53FFEEDD;
+        (*(int **)((char *)sStackGuardInfo + 4))[-i] = 0x53FFEEDD;
     }
-    *(int **)((char *)lbl_804DB780 + 8) =
-        (int *)((char *)(*(int **)((char *)lbl_804DB780 + 4)) +
+    *(int **)((char *)sStackGuardInfo + 8) =
+        (int *)((char *)(*(int **)((char *)sStackGuardInfo + 4)) +
                 (-(count - 1) * 4));
 }
 #pragma scheduling on
 /* At shutdown, scan stack-guard words from deepest to shallowest and report
  * measured stack usage at the first guard word whose magic value was overwritten. */
 void KERNEL_ReportStackUsage(void) {
-    int stackSizeBytes = *(int *)lbl_804DB780;
-    int *guardTop = *(int **)((char *)lbl_804DB780 + 4);
+    int stackSizeBytes = *(int *)sStackGuardInfo;
+    int *guardTop = *(int **)((char *)sStackGuardInfo + 4);
     int wordIndex;
     int guardWordCount = stackSizeBytes / 4;
     for (wordIndex = guardWordCount - 1; wordIndex >= 0; --wordIndex) {
@@ -554,7 +554,7 @@ void KERNEL_ReportStackUsage(void) {
 }
 
 void fn_802E2A1C(void) {
-#define StackGuardInfo lbl_804DB780
+#define StackGuardInfo sStackGuardInfo
 #define STACK_GUARD_MAGIC 0x53ffeedd
 #define LogError fn_802E317C
 #define StackOverrunMsg lbl_8034CD48
