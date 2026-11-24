@@ -1250,7 +1250,7 @@ void TexRequestUnlink(register int **link, int *node, int *scan) {
 extern void fn_8012C720(void *, int, int, int);
 extern char lbl_8034BA28[];
 extern char lbl_8055D088;
-extern void fn_802CBD30(void **, void **, void *);
+extern void texMoveNode(void **, void **, void *);
 #pragma use_lmw_stmw off
 /* Discard texture nodes with priority <= arg1 from the active list, moving them to
  * the free list and releasing/dereferencing any associated child resources. */
@@ -1270,7 +1270,7 @@ inspect:
     ((void (*)(int, const char *))fn_802CB3F8)(*(int *)node, lbl_8034BA28);
     ((void (*)(int))fn_802CB3F4)(*(int *)(node + 4));
     *(int *)(node + 4) = zero;
-    fn_802CBD30(manager + 4, manager + 3, node);
+    texMoveNode(manager + 4, manager + 3, node);
     childResource = *(char **)(node + 0xC);
     if (childResource != 0) {
         refCount = *(int *)(childResource + 0x10) - 1;
@@ -1308,7 +1308,7 @@ void texUnlinkNode();
  * loaded in the list at +0xC and the spare nodes in the list at +0x10, both chained
  * through the node's +0x10 link; tex_unlink_node reports
  * "tex:unlink_node: can't find node!" if the node was not on srcHead's list. */
-void fn_802CBD30(void **destHead, void **srcHead, void *node) {
+void texMoveNode(void **destHead, void **srcHead, void *node) {
     /* One node of those two lists (fn_802CBC3C and fn_802CC10C build and retire them). */
     typedef struct TexNode {
         /* 0x00 */ char *name;        /* the texture table entry's name (+0x04) */
@@ -1499,7 +1499,7 @@ int fn_802CC10C(void *arg0, int arg1, int arg2, int arg3) {
         *(int *)(node + 8) = arg2;
         *(int *)(node + 0xC) = arg3;
         *(char **)node = table + 4;
-        ((void (*)(void **, void **, void *))fn_802CBD30)(
+        ((void (*)(void **, void **, void *))texMoveNode)(
             (void **)((char *)arg0 + 0xC),
             (void **)((char *)arg0 + 0x10), node);
         *(int *)(table + 0x40) = 0;
@@ -1895,7 +1895,7 @@ char *entry2 = (char *)gTextureSlotTable + *(int *)node * 0x4C;
 *(int *)(head + 8) = *(int *)(node + 0xC) + 2;
 *(int *)(head + 0xC) = 0;
 *(char **)head = entry2 + 4;
-fn_802CBD30((void **)(root + 0xC), (void **)(root + 0x10), head);
+texMoveNode((void **)(root + 0xC), (void **)(root + 0x10), head);
 *(int *)(entry2 + 0x40) = 0;
 {
 char *pool;
