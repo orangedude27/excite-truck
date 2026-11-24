@@ -548,18 +548,17 @@ void *StackAlloc_deletingDestructor(void *self, int deleteFlag) {
     }
     return self;
 }
-/* Destroy the global stack allocator instance: release its owned buffer, free the
-   object, and clear the global pointer. */
+/* Destroy the global stack allocator instance: release its arena buffer, free the object, and clear the global pointer. */
 void fn_802DA4C4(void) {
-    void *instance = lbl_8055FE5C;
-    if (instance != 0) {
-        if (instance != 0) {
-            *(volatile void **)instance = StackAlloc_vtable;
-            fn_80128670(*(int *)((char *)instance + 4));
-            if (instance != 0)
-                *(int *)((char *)instance + 4) = 0;
+    volatile struct StackAlloc *alloc = lbl_8055FE5C;
+    if (alloc != 0) {
+        if (alloc != 0) {
+            alloc->vtable = StackAlloc_vtable;
+            fn_80128670((int)alloc->buffer);
+            if (alloc != 0)
+                alloc->buffer = 0;
         }
-        fn_80128668(instance);
+        fn_80128668((void *)alloc);
     }
     lbl_8055FE5C = 0;
 }
