@@ -1603,22 +1603,22 @@ float fn_802C7808(int instanceId) {
 
 /* Parse a NUL-terminated hexadecimal string (0-9 and uppercase A-F) into an
  * integer: shift the result left four bits per character and OR in its digit. */
-s32 parseHexString(char *hexStr) {
+/* Parse a NUL-terminated hexadecimal string (0-9 and uppercase A-F) into an integer: shift the result left four bits per character, then OR in that character's digit value. */ s32 parseHexString(char *hexString) {
     s32 result = 0;
     s32 digit;
     s32 isDigit;
-    u8 c;
-    while (*hexStr != 0) {
+    u8 ch;
+    while (*hexString != 0) {
         result <<= 4;
-        c = *hexStr;
+        ch = *hexString;
         isDigit = 0;
-        if ((s8)c >= '0' && (s8)c <= '9')
+        if ((s8)ch >= '0' && (s8)ch <= '9')
             isDigit = 1;
-        digit = (s8)c - '7';
+        digit = (s8)ch - '7';
         if (isDigit != 0)
-            digit = (s8)c - '0';
+            digit = (s8)ch - '0';
         result |= digit;
-        hexStr++;
+        hexString++;
     }
     return result;
 }
