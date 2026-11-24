@@ -2948,7 +2948,7 @@ extern void OSInitThreadQueue(void *);
 extern void (*lbl_8055D978_callback)(unsigned short);
 #pragma scheduling on
 /* PE draw-sync token interrupt handler: run the registered draw-sync callback with the token from PE register 7 on a temporary OS context, then acknowledge the token interrupt. */
-void GXInitSpecularDir(unsigned int intr, void *currentCtx) {
+/* PE draw-sync token interrupt handler: run the registered draw-sync callback with the token from PE register 7 on a temporary OS context, then acknowledge the token interrupt. */ void GXInitSpecularDir(unsigned int intr, void *currentCtx) {
     extern unsigned int gDrawSyncCallback;
     extern unsigned short *__peReg;
     extern void OSClearContext(void *);
