@@ -1046,14 +1046,14 @@ void fn_802EBE2C(void) {
     extern char lbl_8055D2D8, lbl_8055D2E0, lbl_8055D2E8, lbl_805584A0, lbl_805584B8, lbl_805544A0;
     extern float lbl_805651C0, lbl_805651CC;
     extern void *fn_8012850C(int, void *);
-    extern int Spu_createStreamSample();
+    extern int fn_802E5DD8();
     extern int fn_802E6058();
     extern void fn_802E61EC(int, float);
     extern void fn_802E61BC(int);
     extern void OSInitMutex(void *);
     extern void fn_802E3DCC(void);
     extern int OSCreateThread();
-    extern void KERNEL_AddResetCallback();
+    extern void fn_802E2E0C();
     extern void OSResumeThread(void *);
     extern void fn_80127C90();
     extern int fn_802EB7D4();
@@ -1068,7 +1068,7 @@ void fn_802EBE2C(void) {
     lbl_8055D25C = lbl_8055D264;
     lbl_8056009C = (int)fn_8012850C(0xED80, (char *)&lbl_8034E260 + 0x6BC);
     lbl_805600A4 = 0x47FC0;
-    ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E260 + 0x6C8, lbl_805600A4 / 1024);
+    ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E260 + 0x6C8, (lbl_805600A4 + 512) >> 10);
     lbl_805600A0 = (int)fn_8012850C((lbl_805600A4 + 0x1200) * 2 - (lbl_805600A4 + 0x1200), &lbl_8055D2D8);
     lbl_805600AC = 0x1E000;
     lbl_805600A8 = (int)fn_8012850C(lbl_805600AC * 2 - lbl_805600AC, &lbl_8055D2E0);
@@ -1076,20 +1076,20 @@ void fn_802EBE2C(void) {
     i = 0;
     off = 0;
     do {
-        *(volatile int *)((char *)&lbl_805600B0 + off) = 0;
-        *(volatile int *)((char *)&lbl_80560088 + off) = Spu_createStreamSample(&lbl_8055D2E8, 0x7FF8, 0, fn_802EB7D4, i);
-        *(volatile int *)((char *)&lbl_80560090 + off) = fn_802E6058();
+        ((volatile int *)&lbl_805600B0)[i] = 0;
+        ((volatile int *)&lbl_80560088)[i] = fn_802E5DD8(&lbl_8055D2E8, 0x7FF8, 0, fn_802EB7D4, i);
+        ((volatile int *)&lbl_80560090)[i] = fn_802E6058();
         if (i == 0) f = lbl_805651CC; else f = lbl_805651C0;
-        fn_802E61EC(*(volatile int *)((char *)&lbl_80560090 + off), f);
+        fn_802E61EC(((volatile int *)&lbl_80560090)[i], f);
         i++;
         off += 4;
     } while (i < 2);
     i = 0;
     off = 0;
     do {
-        fn_802E61E4(*(volatile int *)((char *)&lbl_80560090 + off), lbl_805651C4);
-        fn_802E622C(*(volatile int *)((char *)&lbl_80560090 + off), lbl_805651C4);
-        fn_802E61BC(*(volatile int *)((char *)&lbl_80560090 + off));
+        fn_802E61E4(((volatile int *)&lbl_80560090)[i], lbl_805651C4);
+        fn_802E622C(((volatile int *)&lbl_80560090)[i], lbl_805651C4);
+        fn_802E61BC(((volatile int *)&lbl_80560090)[i]);
         i++;
         off += 4;
     } while (i < 2);
@@ -1103,7 +1103,7 @@ void fn_802EBE2C(void) {
     if (OSCreateThread(&lbl_805584B8, fn_802EAB28, 0, &lbl_805544A0 + 0x3FE0, 0x3FE0, 14, 1) == 0) {
         fn_802E317C((char *)&lbl_8034E260 + 0x6E0);
     }
-    KERNEL_AddResetCallback(fn_802EBE00, &lbl_8055D2E8);
+    fn_802E2E0C(fn_802EBE00, &lbl_8055D2E8);
     OSResumeThread(&lbl_805584B8);
     fn_80127C90(fn_802E9EB8, &lbl_8055D2E8);
 }
@@ -1111,7 +1111,7 @@ void fn_802EBE2C(void) {
 extern int lbl_80560088, lbl_8056009C, lbl_805600A8;
 extern void fn_802E61D8(int);
 extern void fn_802E6138(int);
-extern void fn_802E5FE4(int);
+extern void Spu_freeStreamBuffer(int);
 extern void fn_802E9EB8(void);
 extern void fn_80127D58(void (*)(void));
 extern void fn_802E9DDC(void);
@@ -1130,7 +1130,7 @@ void fn_802EC038(void) {
             fn_802E6138(*slotHandle);
         }
         *slotHandle = 0;
-        fn_802E5FE4(*slotState);
+        Spu_freeStreamBuffer(*slotState);
         i++;
         *slotState = 0;
         slotHandle++;

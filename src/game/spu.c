@@ -913,7 +913,7 @@ end:
 }
 
 // Free the audio buffer/region owned by this object and clear its state fields.
-void fn_802E5FE4(void *obj) {
+void Spu_freeStreamBuffer(void *obj) {
     if (*(int *)((char *)obj + 0x98) > 0) {
         fn_802E317C(lbl_8034D584, obj, *(int *)((char *)obj + 0x98));
     }
