@@ -1,6 +1,6 @@
 extern void *memset(void *, int, unsigned int);
 extern void *lbl_8055F28C;
-extern int fn_802411D4(void);
+extern int MRollBothControllersReady(void);
 extern unsigned char lbl_8055F290;
 static inline int find_sound_entry_inline(int *key) {
     void *table = lbl_8055F28C;
@@ -107,7 +107,7 @@ int fn_80249668(int *outResult) {
     extern char *lbl_802FA4C8[3];
     extern unsigned char lbl_8055F290;
     extern unsigned char *lbl_8055F294;
-    extern int fn_802411D4(void);
+    extern int MRollBothControllersReady(void);
     char *strings[3];
     char **stringPtr = lbl_802FA4C8;
     int index2;
@@ -135,7 +135,7 @@ copy2:
     if ((signed char)c2 != 0)
         goto decrement2;
 done2:
-    if (lbl_8055F290 != 0 && fn_802411D4() == 0) {
+    if (lbl_8055F290 != 0 && MRollBothControllersReady() == 0) {
         *(volatile int *)outResult = -1;
         return 1;
     }
@@ -167,9 +167,9 @@ s32 fn_8024974C(s32 arg0, s32 arg1, s32 arg2, int arg3) {
     extern s32 lbl_8055BF10, lbl_8055BF14;
     extern void fn_801332D0(s32, s32, s32 *);
     extern void fn_8027BCD0(void *);
-    extern int fn_802411D4(void);
+    extern int MRollBothControllersReady(void);
     void *block;
-    if (arg3 != 0 && fn_802411D4() == 0) {
+    if (arg3 != 0 && MRollBothControllersReady() == 0) {
         return 0;
     }
     lbl_8055F290 = (unsigned char)arg3;
@@ -460,8 +460,8 @@ found_entry:
     if (((s32 (*)(s32 *, s32 **))fn_8024B070)(&key, (s32 **)&buffer.data)) {
         *arg0 = *(s32 *)((u8 *)fn_8001285C(key) + 4);
         *arg1 = -1;
-        count = *(s32 *)((u8 *)fn_80012820(*arg0) + 0x70);
         index = count;
+        count = *(s32 *)((u8 *)fn_80012820(*arg0) + 0x70);
         goto record_continue;
 record_loop:
         if (*(s32 *)fn_80012870(*arg0, index) == key) {
@@ -489,7 +489,7 @@ record_done:
 #pragma pop
 /* Sets -1 and returns 1 when the system is not ready, otherwise returns 0. */
 s32 fn_8024A6A4(s32 *outValue) {
-    if (fn_802411D4() == 0) {
+    if (MRollBothControllersReady() == 0) {
         *outValue = -1;
         return 1;
     } else {
@@ -499,7 +499,7 @@ s32 fn_8024A6A4(s32 *outValue) {
 
 #pragma use_lmw_stmw off
 s32 fn_8024A6EC(s32* arg0, void* arg1) {
-    extern int fn_802411D4(void);
+    extern int MRollBothControllersReady(void);
     extern void* fn_8024B3E8(void*, void*, int);
     extern void fn_8024B544(void*, char*);
     extern s32 fn_8024B5D4(void*, s32);
@@ -520,7 +520,7 @@ s32 fn_8024A6EC(s32* arg0, void* arg1) {
     s32 zero = 0;
     s32 three = 3;
     s32 r;
-    if (fn_802411D4() == 0) return 0;
+    if (MRollBothControllersReady() == 0) return 0;
     fn_8024B3E8(work + 0x18, (void*)arg1, 0);
     fn_8024B544(work + 0x18, (char*)*arg0);
     cfg[8] = (s32)(work + 0x18); cfg[6] = (s32)&lbl_8055BF68; cfg[7] = 5; cfg[9] = 0; cfg[10] = 0;
@@ -597,140 +597,140 @@ extern int lbl_8055BF68;
 #pragma opt_common_subs off
 #pragma use_lmw_stmw off
 s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
-    char storage[0x1F8];
+    typedef struct { s32 words[5]; } ConfigTemplate;
+    union {
+        s32 words[126];
+        struct {
+            ConfigTemplate header;
+            s32 setup[116];
+            ConfigTemplate footer;
+        } parts;
+    } config;
     register s32 *output = arg0;
-    register s32 key = arg1;
     register void *work = arg2;
-    register char *name = lbl_80343998;
+    char *const name = lbl_80343998;
     register s32 zero = 0;
     register s32 three = 3;
     register s32 five = 5;
     register s32 minusOne = -1;
     register s32 hex12 = 0x12;
-    register s32 *configStackPointer;
-    register char *label;
+    register const char *label = (const char *)arg1;
     s32 result;
 
-    if (fn_802411D4() == 0) return 0;
-    fn_8024B73C((char *)storage + 0x18, (const char *)key, work);
-    fn_8024B830((char *)storage + 0x18, *output);
-    work = (char *)storage + 0x18;
-    configStackPointer = (s32 *)storage;
+    if (MRollBothControllersReady() == 0) return 0;
+    fn_8024B73C((char *)config.words + 0x18, label, work);
+    fn_8024B830((char *)config.words + 0x18, *output);
+    config.words[49] = zero;
+    work = (char *)config.words + 0x18;
+    config.words[46] = (s32)&lbl_8055BF68;
+    config.words[48] = (s32)work;
+    config.words[47] = five;
+    config.words[50] = zero;
 
-#pragma opt_propagation off
-    configStackPointer[49] = zero;
-    configStackPointer[46] = (s32)&lbl_8055BF68;
-    configStackPointer[48] = (s32)work;
-    configStackPointer[47] = five;
-    configStackPointer[50] = zero;
-
-    configStackPointer[53] = fn_8024B87C(work, 0);
+    config.words[53] = fn_8024B87C(work, 0);
     label = name + 0x16c;
-    configStackPointer[52] = three;
-    configStackPointer[51] = (s32)label;
-    configStackPointer[54] = zero;
-    configStackPointer[55] = zero;
-    configStackPointer[59] = fn_8024B8A4(work, 0);
-    configStackPointer[57] = zero;
-    configStackPointer[56] = (s32)label;
-    configStackPointer[58] = zero;
-    configStackPointer[60] = zero;
+    config.words[52] = three;
+    config.words[51] = (s32)label;
+    config.words[54] = zero;
+    config.words[55] = zero;
+    config.words[59] = fn_8024B8A4(work, 0);
+    config.words[57] = zero;
+    config.words[56] = (s32)label;
+    config.words[58] = zero;
+    config.words[60] = zero;
 
-    configStackPointer[63] = fn_8024B87C(work, 1);
+    config.words[63] = fn_8024B87C(work, 1);
     label = name + 0x178;
-    configStackPointer[62] = three;
-    configStackPointer[61] = (s32)label;
-    configStackPointer[64] = zero;
-    configStackPointer[65] = zero;
-    configStackPointer[69] = fn_8024B8A4(work, 1);
-    configStackPointer[67] = zero;
-    configStackPointer[66] = (s32)label;
-    configStackPointer[68] = zero;
-    configStackPointer[70] = zero;
+    config.words[62] = three;
+    config.words[61] = (s32)label;
+    config.words[64] = zero;
+    config.words[65] = zero;
+    config.words[69] = fn_8024B8A4(work, 1);
+    config.words[67] = zero;
+    config.words[66] = (s32)label;
+    config.words[68] = zero;
+    config.words[70] = zero;
 
-    configStackPointer[73] = fn_8024B87C(work, 2);
+    config.words[73] = fn_8024B87C(work, 2);
     label = name + 0x184;
-    configStackPointer[72] = three;
-    configStackPointer[71] = (s32)label;
-    configStackPointer[74] = zero;
-    configStackPointer[75] = zero;
-    configStackPointer[79] = fn_8024B8A4(work, 2);
-    configStackPointer[77] = zero;
-    configStackPointer[76] = (s32)label;
-    configStackPointer[78] = zero;
-    configStackPointer[80] = zero;
+    config.words[72] = three;
+    config.words[71] = (s32)label;
+    config.words[74] = zero;
+    config.words[75] = zero;
+    config.words[79] = fn_8024B8A4(work, 2);
+    config.words[77] = zero;
+    config.words[76] = (s32)label;
+    config.words[78] = zero;
+    config.words[80] = zero;
 
-    configStackPointer[83] = fn_8024B87C(work, 3);
+    config.words[83] = fn_8024B87C(work, 3);
     label = name + 0x190;
-    configStackPointer[82] = three;
-    configStackPointer[81] = (s32)label;
-    configStackPointer[84] = zero;
-    configStackPointer[85] = zero;
-    configStackPointer[89] = fn_8024B8A4(work, 3);
-    configStackPointer[87] = zero;
-    configStackPointer[86] = (s32)label;
-    configStackPointer[88] = zero;
-    configStackPointer[90] = zero;
+    config.words[82] = three;
+    config.words[81] = (s32)label;
+    config.words[84] = zero;
+    config.words[85] = zero;
+    config.words[89] = fn_8024B8A4(work, 3);
+    config.words[87] = zero;
+    config.words[86] = (s32)label;
+    config.words[88] = zero;
+    config.words[90] = zero;
 
-    configStackPointer[93] = fn_8024B87C(work, 4);
+    config.words[93] = fn_8024B87C(work, 4);
     label = name + 0x19c;
-    configStackPointer[92] = three;
-    configStackPointer[91] = (s32)label;
-    configStackPointer[94] = zero;
-    configStackPointer[95] = zero;
-    configStackPointer[99] = fn_8024B8A4(work, 4);
-    configStackPointer[97] = zero;
-    configStackPointer[96] = (s32)label;
-    configStackPointer[98] = zero;
-    configStackPointer[100] = zero;
+    config.words[92] = three;
+    config.words[91] = (s32)label;
+    config.words[94] = zero;
+    config.words[95] = zero;
+    config.words[99] = fn_8024B8A4(work, 4);
+    config.words[97] = zero;
+    config.words[96] = (s32)label;
+    config.words[98] = zero;
+    config.words[100] = zero;
 
-    configStackPointer[101] = (s32)(name + 0xCC);
-    configStackPointer[102] = hex12;
-    configStackPointer[103] = fn_8024B8CC((s32)work);
-    configStackPointer[104] = zero;
-    configStackPointer[105] = (s32)work;
-    configStackPointer[106] = (s32)(name + 0xCC);
-    configStackPointer[107] = 2;
-    configStackPointer[108] = fn_8024B8D4((s32)work);
-    configStackPointer[109] = zero;
-    configStackPointer[110] = (s32)work;
-    configStackPointer[111] = (s32)(name + 0xBC);
-    configStackPointer[112] = three;
-    configStackPointer[113] = fn_8024B874((s32)work);
-    configStackPointer[114] = zero;
-    configStackPointer[115] = (s32)work;
-    configStackPointer[116] = (s32)&lbl_8055B860;
-    configStackPointer[117] = 6;
-    configStackPointer[118] = zero;
-    configStackPointer[119] = minusOne;
-    configStackPointer[120] = 0x1B;
-    configStackPointer[121] = lbl_80498998[0];
-    configStackPointer[122] = lbl_80498998[1];
-    configStackPointer[123] = lbl_80498998[2];
-    configStackPointer[124] = lbl_80498998[3];
-    configStackPointer[125] = lbl_80498998[4];
-    configStackPointer[0] = lbl_802FA4FC[0];
-    configStackPointer[1] = (s32)&configStackPointer[46];
-    configStackPointer[2] = lbl_802FA4FC[2];
-    configStackPointer[3] = lbl_802FA4FC[3];
-    configStackPointer[4] = lbl_802FA4FC[4];
-#pragma opt_propagation reset
+    config.words[103] = fn_8024B8CC((s32)work);
+    label = name + 0xCC;
+    config.words[102] = hex12;
+    config.words[101] = (s32)label;
+    config.words[104] = zero;
+    config.words[105] = zero;
+    config.words[108] = fn_8024B8D4((s32)work);
+    config.words[107] = 2;
+    config.words[106] = (s32)label;
+    config.words[109] = zero;
+    config.words[110] = zero;
+    config.words[113] = fn_8024B874((s32)work);
+    config.words[111] = (s32)(name + 0xBC);
+    config.words[112] = three;
+    config.words[114] = zero;
+    config.words[115] = zero;
+    config.words[117] = 6;
+    config.words[116] = (s32)&lbl_8055B860;
+    config.words[118] = zero;
+    config.words[119] = minusOne;
+    config.words[120] = 0x1B;
+    config.words[121] = lbl_80498998[0];
+    config.words[122] = lbl_80498998[1];
+    config.words[123] = lbl_80498998[2];
+    config.words[124] = lbl_80498998[3];
+    config.words[125] = lbl_80498998[4];
+    config.parts.header = *(const ConfigTemplate *)lbl_802FA4FC;
+    config.words[1] = (s32)&config.words[46];
 
-    result = fn_802146BC(configStackPointer, -0x3E7, -0x3E7, 1,
-                         lbl_802FA4FC[4], lbl_802FA4FC[3],
-                         lbl_802FA4FC[2], lbl_802FA4FC[0]);
+    result = fn_802146BC(config.words, -0x3E7, -0x3E7, 1,
+                         config.words[4], config.words[3],
+                         config.words[2], config.words[0]);
     if (result != -1) {
         *output = result;
-        fn_80236074((char *)storage + 0x64, -1);
-        configStackPointer[12] = zero;
-        configStackPointer[13] = zero;
-        configStackPointer[14] = zero;
+        fn_80236074((char *)config.words + 0x64, -1);
+        config.words[12] = zero;
+        config.words[13] = zero;
+        config.words[14] = zero;
         return 1;
     }
-    fn_80236074((char *)storage + 0x64, -1);
-    configStackPointer[12] = zero;
-    configStackPointer[13] = zero;
-    configStackPointer[14] = zero;
+    fn_80236074((char *)config.words + 0x64, -1);
+    config.words[12] = zero;
+    config.words[13] = zero;
+    config.words[14] = zero;
     return 0;
 }
 /* Destructor of the sound-archive selector object: tears down the embedded
@@ -790,7 +790,7 @@ static inline s32 findEntry8024B070(s32 **arg1, s32 *arg0, s32 n) {
 #pragma scheduling invalid_target
 u8 fn_8024B070(s32 *arg0, s32 **arg1) {
     s32 sp8;
-    s32 i = findEntry8024B070(arg1, arg0, *(s32 *)((u8 *)arg1 + 4));
+    s32 i = findEntry8024B070(arg1, arg0, *(const s32 *)((const u8 *)arg1 + 4));
     if (i >= 0) {
         sp8 = *(s32 *)((u8 *)*arg1 + i * 0x18 + 0xC);
     } else {

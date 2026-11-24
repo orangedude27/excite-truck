@@ -971,9 +971,9 @@ extern void fn_8023FE60();
  * index and writes that slot's vehicle/track params through the out pointers. */
 void fn_802411D0(void) { fn_8023FE60(); }
 
-#pragma dont_inline fn_802411D4
+#pragma dont_inline MRollBothControllersReady
 /* Returns non-zero when player/controller slots 0 and 1 are both ready. */
-s32 fn_802411D4(void) {
+s32 MRollBothControllersReady(void) {
     s32 bothReady;
     bothReady = 0;
     if ((RjoyIsPadConnected(0) != 0) && (RjoyIsPadConnected(1) != 0)) {
@@ -2231,7 +2231,7 @@ off_child_check:
         }
     }
     *(u8 *)((u8 *)arg0 + 0x58) = (u8)mode;
-    if (fn_802411D4() == 0) {
+    if (MRollBothControllersReady() == 0) {
         lbl_8055F1FC = 1;
         lbl_8055F200 = 0;
     }

@@ -10,7 +10,7 @@ extern char lbl_80343294[];
 extern char lbl_8055BE80;
 extern char lbl_8055BE88;
 extern s32 lbl_8055F26C;
-s32 fn_802411D4(void);
+s32 MRollBothControllersReady(void);
 s32 fn_80214B44(s32);
 s32 fn_80214B94(s32);
 typedef s32 (*UnkFunc)(s32);
@@ -670,7 +670,7 @@ void fn_802473A4(void) {
             case 6: /* head-to-head, then the warning pop-up if a pad is missing */
                 saved = gMenuFlag; menuFlag = saved & 1; gMenuFlag = saved | 1;
                 fn_8023BEA8();
-                if (fn_802411D4() == 0) {
+                if (MRollBothControllersReady() == 0) {
                     /* both lines of the pop-up are filled in lazily: ask for the
                      * text once, and re-resolve it whenever the message table has
                      * moved on since it was last read */
@@ -771,7 +771,7 @@ s32 fn_802476FC(void) {
     /* Enable menu item 4 when multiplayer is allowed and a menu is selected; otherwise disable it. */
     register s32 hasMultiplayerMenu = 0;
     UnkFunc setItemState;
-    if (fn_802411D4() != 0 && lbl_8055F26C > 0) hasMultiplayerMenu = 1;
+    if (MRollBothControllersReady() != 0 && lbl_8055F26C > 0) hasMultiplayerMenu = 1;
     if (hasMultiplayerMenu) setItemState = fn_80214B44;
     else setItemState = fn_80214B94;
     return (setItemState(4), 0);
