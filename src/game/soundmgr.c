@@ -54,7 +54,7 @@ typedef struct SoundMgrObj {
 
 typedef struct SoundMgr {
     char pad0[0x8];
-    signed long lastUpdateMs; /* ms of the last update pass (fn_80207D40) */
+    signed long lastUpdateMs; /* ms of the last update pass (SoundMgr_readyForUpdate) */
     void** list;              /* +0x0C items the manager tracks */
     char pad10[0x4];
     signed long count;        /* +0x14 */
@@ -359,7 +359,7 @@ void fn_80207C80(void *soundMgr) {
 /* Whether the SoundManager may run its update this frame: only once more than 16
  * ms have gone by since its last pass.  fn_802E2C20 counts the ms since boot, and
  * the pass started here is stamped into the manager at +0x08. */
-signed long fn_80207D40(SoundMgr* soundMgr) {
+signed long SoundMgr_readyForUpdate(SoundMgr* soundMgr) {
     signed long now;
 
     now = fn_802E2C20();
@@ -373,7 +373,7 @@ signed long fn_80207D40(SoundMgr* soundMgr) {
 
 #pragma cplusplus on
 /* SoundManager's per-frame update, its first virtual method (vtable lbl_8033BEE8
- * +0x0C, just behind the destructor).  fn_80207D40 lets it run at most once every
+ * +0x0C, just behind the destructor).  SoundMgr_readyForUpdate lets it run at most once every
  * 16 ms (the time of the last pass is kept at +0x08); it refreshes every sound the
  * manager tracks and then ticks the mixer device it plays on (+0x90, virtual
  * +0x20), handing it the manager's sound context at +0x5C -- the four
@@ -390,7 +390,7 @@ extern "C" void SoundMgr_update(SoundMgr *soundMgr) {
         virtual signed long createSound(signed long, signed long, signed long); /* +0x1C */
         virtual void update(void *soundContext);                           /* +0x20 */
     };
-    if (fn_80207D40(soundMgr) != 0) {
+    if (SoundMgr_readyForUpdate(soundMgr) != 0) {
         fn_80207C80(soundMgr);
         ((struct SoundDevice *)*(void **)((char *)soundMgr + 0x90))->update((char *)soundMgr + 0x5C);
     }
