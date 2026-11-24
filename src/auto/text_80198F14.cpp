@@ -3851,32 +3851,32 @@ extern "C" s32 fn_801A15CC(void* arg0, Vec* arg1, Vec* arg2, f32* arg3, Vec* arg
 fail:
     return 0;
 }
-extern "C" void fn_801A17B8(void* arg0) {
+/* Draw a solid yellow debug beam along a capsule collision shape's axis, from center - axis*extent to center + axis*extent; the beam width scales with the capsule radius. */ extern "C" void fn_801A17B8(void* capsule) {
     extern f32 lbl_8056234C;
     extern void fn_801E41D8(void*, void*, s32, f32);
-    f32 src[6];
-    f32 from[3];
-    f32 to[3];
-    const u32* m;
-    f32 t;
-    f32 nt;
+    f32 axisAndCenter[6];
+    f32 start[3];
+    f32 end[3];
+    const u32* axisWords;
+    f32 extent;
+    f32 negExtent;
 
-    m = (const u32*)((u8*)*(void**)((u8*)arg0 + 0xC) + 0x18);
-    ((u32*)src)[0] = m[0];
-    ((u32*)src)[1] = m[1];
-    ((u32*)src)[2] = m[2];
-    ((u32*)src)[3] = m[3];
-    ((u32*)src)[4] = m[4];
-    ((u32*)src)[5] = m[5];
-    t = *(f32*)((u8*)arg0 + 0x28);
-    from[0] = src[3] + src[0] * t;
-    from[1] = src[4] + src[1] * t;
-    from[2] = src[5] + src[2] * t;
-    nt = -*(f32*)((u8*)arg0 + 0x28);
-    to[0] = src[3] + src[0] * nt;
-    to[1] = src[4] + src[1] * nt;
-    to[2] = src[5] + src[2] * nt;
-    fn_801E41D8(from, to, 0x40FFFF00, lbl_8056234C * *(f32*)((u8*)arg0 + 0x24));
+    axisWords = (const u32*)((u8*)*(void**)((u8*)capsule + 0xC) + 0x18);
+    ((u32*)axisAndCenter)[0] = axisWords[0];
+    ((u32*)axisAndCenter)[1] = axisWords[1];
+    ((u32*)axisAndCenter)[2] = axisWords[2];
+    ((u32*)axisAndCenter)[3] = axisWords[3];
+    ((u32*)axisAndCenter)[4] = axisWords[4];
+    ((u32*)axisAndCenter)[5] = axisWords[5];
+    extent = *(f32*)((u8*)capsule + 0x28);
+    start[0] = axisAndCenter[3] + axisAndCenter[0] * extent;
+    start[1] = axisAndCenter[4] + axisAndCenter[1] * extent;
+    start[2] = axisAndCenter[5] + axisAndCenter[2] * extent;
+    negExtent = -*(f32*)((u8*)capsule + 0x28);
+    end[0] = axisAndCenter[3] + axisAndCenter[0] * negExtent;
+    end[1] = axisAndCenter[4] + axisAndCenter[1] * negExtent;
+    end[2] = axisAndCenter[5] + axisAndCenter[2] * negExtent;
+    fn_801E41D8(start, end, 0x40FFFF00, lbl_8056234C * *(f32*)((u8*)capsule + 0x24));
 }
 #pragma scheduling on
 extern int lbl_80333918[64];
