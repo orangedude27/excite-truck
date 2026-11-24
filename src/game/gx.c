@@ -3121,7 +3121,7 @@ int fn_802D31D8(void)
 #pragma dont_inline reset
 
 /* Reset GX render state to a simple default (no cull, TEV stage 0 pass-through). */
-void fn_802D3304(void) {
+void gxResetDefaultState(void) {
     lbl_804C5700[0] = 1;
     fn_802CFF50();
     lbl_8055FDB4 = 0;

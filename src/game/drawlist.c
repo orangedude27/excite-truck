@@ -15,7 +15,7 @@ extern int fn_802C9C58(int);
 extern void fn_802C974C(float, float, float);
 extern float lbl_8055FC6C;
 extern void fn_802D362C(int);
-extern void fn_802D3304(void);
+extern void gxResetDefaultState(void);
 extern void *lbl_8055FC5C, *lbl_8055FC60, *lbl_8055FC64, *lbl_8055FC68;
 extern void DrawList_setViewport(int, int, int, int);
 /* Fixed-size object pool (constructed by fn_8012A13C/fn_8012A17C, popped by
@@ -1333,7 +1333,7 @@ int fn_802C9C8C(unsigned int tintColor) {
 /* Blend the alpha mask drawn since fn_802C9C8C back over the screen with the saved tint, then restore normal GX state. */
 void fn_802C9CE0(void) {
     fn_802D362C(sOverlayTint);
-    fn_802D3304();
+    gxResetDefaultState();
     sRenderMode = RENDER_MODE_NORMAL;
 }
 
