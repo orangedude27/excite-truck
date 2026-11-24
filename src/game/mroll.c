@@ -901,12 +901,12 @@ void *MRollContainer_init(void *container) {
 void *MRollStatLabel_init(void *statLabel) {
     s32 zero = 0;
     s32 minusOne = -1;
-    *(void **)statLabel = lbl_80342734;
+    *(void **)statLabel = sMRollStatLabelVtable;
     *(s32 *)((u8 *)statLabel + 0x14) = zero;
     *(s32 *)((u8 *)statLabel + 0x1C) = minusOne;
-    *(s32 *)((u8 *)statLabel + 0x24) = zero;
-    *(s32 *)((u8 *)statLabel + 0x20) = zero;
-    *(s32 *)((u8 *)statLabel + 0x18) = ((s32 (*)(char *))fn_80232578)(kStatLabelFontName);
+    *(s32 *)((u8 *)statLabel + MROLL_STAT_VALUE_PTR_OFFSET) = zero;
+    *(s32 *)((u8 *)statLabel + MROLL_STAT_FLAG_OFFSET) = zero;
+    *(s32 *)((u8 *)statLabel + MROLL_STAT_FONT_OFFSET) = ((s32 (*)(char *))fn_80232578)(kStatLabelFontName);
     return statLabel;
 }
 
