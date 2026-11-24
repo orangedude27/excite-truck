@@ -1981,8 +1981,8 @@ extern f32 lbl_80562358;
 #pragma processor 750
 #pragma scheduling invalid_target
 extern "C" s32 fn_8019DDFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, void * __restrict arg4, void *arg5, f32 farg0) {
-    f32 * __restrict vec0 = (f32 *)arg0;
-    f32 * __restrict vec2 = (f32 *)arg4;
+    f32 *vec0 = (f32 *)arg0;
+    f32 *vec2 = (f32 *)arg4;
     register f32 x = vec0[0];
     register f32 y = vec2[0];
     register f32 dx = x - y;
@@ -3851,7 +3851,8 @@ extern "C" s32 fn_801A15CC(void* arg0, Vec* arg1, Vec* arg2, f32* arg3, Vec* arg
 fail:
     return 0;
 }
-/* Draw a solid yellow debug beam along a capsule collision shape's axis, from center - axis*extent to center + axis*extent; the beam width scales with the capsule radius. */ extern "C" void fn_801A17B8(void* capsule) {
+/* Draw a solid yellow debug beam along a capsule collision shape's axis, from center - axis*extent to center + axis*extent; the beam width scales with the capsule radius. */
+extern "C" void fn_801A17B8(void* capsule) {
     extern f32 lbl_8056234C;
     extern void fn_801E41D8(void*, void*, s32, f32);
     f32 axisAndCenter[6];
