@@ -882,18 +882,18 @@ extern void *fn_8020A6AC(void *);
 extern void fn_802E30C8(const char *, ...);
 extern const char lbl_8033C4F0[];
 /* Rebinds the voice sound's SPU resource by name, updating stored resource and lookup entry on success. */
-int fn_8020B874(void *object, void *name) {
-    int result = 0;
+/* Rebind a voice object's SPU sample by name: allocate the new resource, release the old one at +0x10, store the new resource and its lookup entry at +0x18, returning 1 on success or logging a failure and returning 0. */ int fn_8020B874(void *voice, void *name) {
+    int success = 0;
     void *newResource = fn_802E5AE8(name);
     if (newResource != 0) {
-        fn_802E5D5C(*(void **)((char *)object + 0x10));
-        *(void **)((char *)object + 0x10) = newResource;
-        *(void **)((char *)object + 0x18) = fn_8020A6AC(name);
-        result = 1;
+        fn_802E5D5C(*(void **)((char *)voice + 0x10));
+        *(void **)((char *)voice + 0x10) = newResource;
+        *(void **)((char *)voice + 0x18) = fn_8020A6AC(name);
+        success = 1;
     } else {
         fn_802E30C8(lbl_8033C4F0, name);
     }
-    return result;
+    return success;
 }
 
 extern void fn_802E61E4(float);
