@@ -19,7 +19,7 @@ extern s32 fn_80128668(void);              /* free */
 extern s32 OSGetConsoleType(void);
 extern s32 fn_801284F8(s32, void *);       /* allocate from a named heap */
 extern s32 createNullStrmBank(void);              /* creates the null stream-bank manager */
-extern char lbl_8034D828[];                /* "StrmBank: creating 'null' manager" */
+extern char strCreatingNullManager[];                /* "StrmBank: creating 'null' manager" */
 extern char lbl_8034D84C[];                /* "NullStrmBank" */
 extern char lbl_8034D860[];                /* null manager vtable */
 
@@ -87,7 +87,7 @@ extern "C" void fn_802E7684(s32 level) {
 s32 createNullStrmBank(void) {
     void **manager;
     OSGetConsoleType();
-    fn_802E30C8(lbl_8034D828);
+    fn_802E30C8(strCreatingNullManager);
     manager = (void **)fn_801284F8(4, lbl_8034D84C);
     if (manager != 0) {
         *manager = (void *)lbl_8034D860;
