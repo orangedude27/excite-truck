@@ -210,23 +210,23 @@ void fn_801AE874(unsigned short *flags, int extra) {
 }
 
 #pragma scheduling invalid_target
-void fn_801AE894(void *arg0) {
-    float temp_f2;
-    float temp_f4;
-    short temp_r0;
+/* Compute a race-result record's speed (offset 0x04): when the count at offset 0x18 is positive and time (offset 0x00) exceeds 1, speed = (speedScale*count/time) * (count/maxCount); otherwise speed is set to -1. */ void fn_801AE894(void *record) {
+    float speed;
+    float time;
+    short count;
 
-    temp_r0 = *(short *)((char *)arg0 + 0x18);
-    if (temp_r0 > 0) {
-        temp_f4 = *(float *)arg0;
-        if (temp_f4 > lbl_8056255C) {
-            temp_f2 = (lbl_8055E630 * (float)temp_r0) / temp_f4;
-            *(float *)((char *)arg0 + 4) = temp_f2;
-            *(float *)((char *)arg0 + 4) =
-                temp_f2 * ((float)(*(short *)((char *)arg0 + 0x18)) / (float)lbl_8055E62C);
+    count = *(short *)((char *)record + 0x18);
+    if (count > 0) {
+        time = *(float *)record;
+        if (time > lbl_8056255C) {
+            speed = (lbl_8055E630 * (float)count) / time;
+            *(float *)((char *)record + 4) = speed;
+            *(float *)((char *)record + 4) =
+                speed * ((float)(*(short *)((char *)record + 0x18)) / (float)lbl_8055E62C);
             return;
         }
     }
-    *(float *)((char *)arg0 + 4) = lbl_80562560;
+    *(float *)((char *)record + 4) = lbl_80562560;
 }
 
 #pragma processor 750
