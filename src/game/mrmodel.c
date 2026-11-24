@@ -1579,14 +1579,14 @@ void fn_802C7758(void) {
 }
 
 /* Copies six float fields (offsets 0x2C-0x40) from a model entry to output parameters. */
-void fn_802C7760(void *arg0, f32 *out1, f32 *out2, f32 *out3, f32 *out4, f32 *out5, f32 *out6) {
-    void *entry = fn_802C5390((int)arg0);
-    *out1 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x2C);
-    *out2 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x30);
-    *out3 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x34);
-    *out4 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x38);
-    *out5 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x3C);
-    *out6 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x40);
+/* Read the six bounding-box floats at +0x2C..+0x40 of the model instance's data into the six output pointers. */ void fn_802C7760(void *modelId, f32 *bound0, f32 *bound1, f32 *bound2, f32 *bound3, f32 *bound4, f32 *bound5) {
+    void *entry = fn_802C5390((int)modelId);
+    *bound0 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x2C);
+    *bound1 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x30);
+    *bound2 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x34);
+    *bound3 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x38);
+    *bound4 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x3C);
+    *bound5 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x40);
 }
 
 #pragma dont_inline fn_802C7760
