@@ -39,7 +39,7 @@ extern int lbl_804C5650[];
 extern int lbl_804CA2D8[];
 extern int fn_801BFD34(void *, void *, void *);
 extern int fn_80015B20(void *, void *, void *);
-extern int fn_802D0DD4(void *, void *);
+extern int transformToGXPosMtx(void *, void *);
   extern char lbl_8055FD70;
   extern float lbl_80564F8C, lbl_80564F94, lbl_80564FCC, lbl_80564FDC;
   extern void *lbl_8055FDB0;
@@ -1806,7 +1806,7 @@ void fn_802D0C98(void) {
 #pragma scheduling off
 /* Convert a transform's 4x3 matrix (stored as four (x,y,z) rows) into a GX 3x4
  * matrix: transpose it and negate the z row for the GX coordinate convention. */
-int fn_802D0DD4(void *dst, void *src) {
+int transformToGXPosMtx(void *dst, void *src) {
     float negZ3, y3, x3, negZ2, y2, x2, negZ1, y1, x1, negZ0, y0, x0;
     float z0, z3, z2, z1;
     z0 = *(float *)((unsigned char *)src + 8);
@@ -2399,7 +2399,7 @@ void fn_802D1C04(void) {
         b = (Xform_802D1C04 *)(base + 0x40);
         fn_801BFD34(&comb.t, &b->t, &inv);
         fn_80015B20(&comb, b, &inv);
-        fn_802D0DD4(base, &comb);
+        transformToGXPosMtx(base, &comb);
         GXLoadPosMtxImm(base, 0);
         if (lbl_8055FD19 != 0) {
             lbl_8055FD19 = 0;
@@ -2430,7 +2430,7 @@ void fn_802D1C04(void) {
             b = (Xform_802D1C04 *)(base + 0x40);
             fn_801BFD34(&view.t, &b->t, &relInv);
             fn_80015B20(&view, b, &relInv);
-            fn_802D0DD4(viewMtx, &view);
+            transformToGXPosMtx(viewMtx, &view);
             PSMTXTranspose(viewMtx, texMtx);
             PSMTXScale(scale, lbl_80564F94, lbl_80564FD8, lbl_80564F88);
             PSMTXRotRad(trans, lbl_80564F94, lbl_80564F94, lbl_80564F8C);
@@ -2458,7 +2458,7 @@ void fn_802D1C04(void) {
             gxSetupSceneLights();
             break;
         }
-        fn_802D0DD4(nrm, b);
+        transformToGXPosMtx(nrm, b);
         nrm[3] = nrm[7] = nrm[11] = lbl_80564F88;
         GXLoadNrmMtxImm(nrm, 0);
         if (*(int *)(base + 0xB4) == 2) fn_802D1B58();
@@ -2515,7 +2515,7 @@ void fn_802D2218(void)
     sp90[9] = lbl_80564F88;
     sp90[10] = lbl_80564F88;
     sp90[11] = lbl_80564F88;
-    fn_802D0DD4(sp60, sp90);
+    transformToGXPosMtx(sp60, sp90);
     GXLoadPosMtxImm(sp60, 0);
     temp_f31 = lbl_80564F94 * ((float) sClearState_802D2218.width);
     temp_f30 = lbl_80564F94 * ((float) sClearState_802D2218.height);
@@ -2904,7 +2904,7 @@ void fn_802D2ED8(int light, int index) {
     viewMtx = GX_LIGHT_XF_MTX;
     fn_801BFD34((unsigned char *)lightMtx + 0x24, (unsigned char *)light + 0x24, viewMtx);
     fn_80015B20(lightMtx, (void *)light, viewMtx);
-    fn_802D0DD4(GX_POSMTX_SCRATCH, lightMtx);
+    transformToGXPosMtx(GX_POSMTX_SCRATCH, lightMtx);
     GXLoadPosMtxImm(GX_POSMTX_SCRATCH, (index * 4) - index);
 }
 #pragma dont_inline off
@@ -3171,7 +3171,7 @@ void fn_802D3420(void) {
     ident[2][1] = zero;
     ident[2][2] = zero;
     ident[2][3] = zero;
-    fn_802D0DD4(p1, p2);
+    transformToGXPosMtx(p1, p2);
     GXLoadPosMtxImm(mtx, 0);
     C_MTXOrtho(proj, lbl_80564F88, lbl_80564FBC, lbl_80564F88, lbl_80564FE0, lbl_80564F8C, lbl_80564FCC);
     GXSetProjection(proj, 1);
@@ -3548,7 +3548,7 @@ extern int lbl_804CA2D8[];
 extern int lbl_804C5650[];
 extern int fn_801BFD34(void *, void *, void *);
 extern int fn_80015B20(void *, void *, void *);
-extern int fn_802D0DD4(void *, void *);
+extern int transformToGXPosMtx(void *, void *);
 extern int GXLoadPosMtxImm(void *, int);
 extern void fn_802D2ED8(int, int);
 extern unsigned long lbl_8055D0B8;
