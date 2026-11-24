@@ -396,7 +396,7 @@ extern "C" void fn_802E3A14(s32 fileHandle, s32 offset) {
 }
 #pragma cplusplus on
 /* Write `size` bytes from `buffer` via the file object's vtable method; return 1 if all bytes were written. */
-extern "C" s32 fn_802E3A64(s32 fileHandle, s32 buffer, s32 size) {
+extern "C" s32 File_writeExact(s32 fileHandle, s32 buffer, s32 size) {
     class Obj {
     public:
         virtual void v0();
@@ -419,7 +419,7 @@ extern "C" void fn_802E3AD0(s32 arg0, const char *fmt, ...) {
     vsprintf(buf, fmt, args);
     va_end(args);
     if (arg0 != FILESYSTEM_SINK) {
-        fn_802E3A64(arg0, (s32)buf, strlen(buf));
+        File_writeExact(arg0, (s32)buf, strlen(buf));
         return;
     }
     s32 *fileSystem = ((s32 *(*)(s32))fn_802E333C)(0);

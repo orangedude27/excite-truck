@@ -1628,7 +1628,7 @@ void fn_802D0910(int tex, int x, int y, int width, int height, int tileSize) {
 
 #pragma use_lmw_stmw on
 void fn_802D0914(int arg0, short arg1, short arg2) {
-    extern int fn_802E3A64(int, unsigned char *, int, int, int, int, int, int);
+    extern int File_writeExact(int, unsigned char *, int, int, int, int, int, int);
     unsigned char buffer[0x12];
     register s32 first = arg0;
     unsigned char b15, b13, b11, b9, b8;
@@ -1658,7 +1658,7 @@ void fn_802D0914(int arg0, short arg1, short arg2) {
     buffer[13] = arg1;
     buffer[14] = b15;
     buffer[15] = (u32)arg2;
-    fn_802E3A64(first, buffer, 0x12, b13, b11, b9, 0x18, 2);
+    File_writeExact(first, buffer, 0x12, b13, b11, b9, 0x18, 2);
 }
 /* No-op hook in the tiled movie renderer (fn_802D09E8): called when its tile
    counter has been reset to -1 (movie playback stopped); nothing to clean up. */
