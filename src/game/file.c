@@ -70,7 +70,7 @@ s32 fn_802E3270(s32 path) {
 #pragma dont_inline reset
 /* Return the file system picked by getFileSystemForPath, or the default file system
    (gDefaultFileSystem) when none is available. */
-s32 *fn_802E333C(void) {
+s32 *GetDefaultFileSystem(void) {
     s32 *fileSystem;
     fileSystem = (s32 *)((s32 (*)())getFileSystemForPath)();
     if (fileSystem != 0) {
@@ -91,7 +91,7 @@ s32 *GetSecondaryFileSystem(void) {
 
 #pragma cplusplus on
 extern "C" void FileFind_GetSubsystem(void) {
-    /* Resolve the default file-system object via fn_802E333C(0) and call its
+    /* Resolve the default file-system object via GetDefaultFileSystem(0) and call its
        vtable method at offset 0x24 (slot 7), with no arguments. */
     class FileSystem {
     public:
@@ -104,7 +104,7 @@ extern "C" void FileFind_GetSubsystem(void) {
         virtual void a6();
         virtual void a7();
     };
-    FileSystem *fileSystem = (FileSystem *)((s32 (*)(s32))fn_802E333C)(0);
+    FileSystem *fileSystem = (FileSystem *)((s32 (*)(s32))GetDefaultFileSystem)(0);
     fileSystem->a7();
 }
 #pragma cplusplus off
@@ -218,7 +218,7 @@ extern "C" s32 File_Open(s32 path) {
         virtual s32 open(s32 path);
     };
 
-    FileSystem *fileSystem = (FileSystem *)fn_802E333C();
+    FileSystem *fileSystem = (FileSystem *)GetDefaultFileSystem();
     s32 nativeHandle = fileSystem->open(path);
     if (nativeHandle != 0)
         return AllocOpenFileSlot((const char *)path, nativeHandle);
@@ -235,7 +235,7 @@ extern "C" s32 FileLookup(s32 pathOrName)
         virtual void b();
         virtual s32 c(s32);
     };
-    V *fileManager = (V *)fn_802E333C();
+    V *fileManager = (V *)GetDefaultFileSystem();
     s32 lookupResult = fileManager->c(pathOrName);
     if (lookupResult != 0)
         return AllocOpenFileSlot((const char *)pathOrName, lookupResult);
@@ -422,7 +422,7 @@ extern "C" void fn_802E3AD0(s32 arg0, const char *fmt, ...) {
         File_writeExact(arg0, (s32)buf, strlen(buf));
         return;
     }
-    s32 *fileSystem = ((s32 *(*)(s32))fn_802E333C)(0);
+    s32 *fileSystem = ((s32 *(*)(s32))GetDefaultFileSystem)(0);
     if (fileSystem != 0) {
         class Obj {
         public:
@@ -434,7 +434,7 @@ extern "C" void fn_802E3AD0(s32 arg0, const char *fmt, ...) {
             virtual void v5();
             virtual void v6(char *);
         };
-        fileSystem = ((s32 *(*)(s32))fn_802E333C)(0);
+        fileSystem = ((s32 *(*)(s32))GetDefaultFileSystem)(0);
         ((Obj *)fileSystem)->v6(buf);
     }
 #undef FILESYSTEM_SINK
