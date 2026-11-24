@@ -565,19 +565,19 @@ void fn_802E7FD0(void) {
 }
 #pragma scheduling invalid_target
 /* Initializes the 14-entry field-offset/state table with its default index map. */
-void rjoyInitFieldOffsets(int *table) {
-    table[0] = 3;
-    table[1] = 0;
-    table[2] = 2;
-    table[3] = 1;
-    table[4] = 7;
-    table[9] = -1;
-    table[12] = 4;
-    table[13] = -1;
-    table[10] = -1;
-    table[11] = -1;
-    table[5] = 5;
-    table[6] = 6;
+/* Initialize the 14-entry controller field-offset table with its default index map; entries left at -1 are unavailable fields. */ void rjoyInitFieldOffsets(int *fieldOffsets) {
+    fieldOffsets[0] = 3;
+    fieldOffsets[1] = 0;
+    fieldOffsets[2] = 2;
+    fieldOffsets[3] = 1;
+    fieldOffsets[4] = 7;
+    fieldOffsets[9] = -1;
+    fieldOffsets[12] = 4;
+    fieldOffsets[13] = -1;
+    fieldOffsets[10] = -1;
+    fieldOffsets[11] = -1;
+    fieldOffsets[5] = 5;
+    fieldOffsets[6] = 6;
 }
 #pragma scheduling on
 /* Take one controller's input snapshot: copy the 0x62 bytes at +0x04 of the
