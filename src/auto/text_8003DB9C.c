@@ -2591,7 +2591,7 @@ void GXGetVtxAttrFmtv(void) {
      * abort to kill the frame in flight, clean the GP FIFO and GX's revision
      * bits, drop the cached BP state and push 32 bytes of zero down the
      * write-gather pipe.  The game runs this just before GXInit() when it
-     * re-initialises video (fn_802CFD74) and from OSFatal() before it takes over
+     * re-initialises video (GXReinit) and from OSFatal() before it takes over
      * the framebuffer. */
     #define GX_FIFO_LIVE     0x5FA                            /* __GXData byte: the GX FIFO is set up */
     #define GX_DIRTY_STATE   0x5FC                            /* __GXData word: state __GXSetDirtyState() must resend */
@@ -2965,6 +2965,7 @@ void GXInitSpecularDir(unsigned int arg0, void *ctx) {
         OSSetCurrentContext(ctx);
     }
     __peReg[5] |= 4;
+    return;
 }
 #pragma scheduling reset
 #pragma pop
@@ -5523,8 +5524,8 @@ void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 t
             unsigned int rasSel : 2;
         } fields;
     } word;
-    u32 offset1;
     u32 offset0;
+    u32 offset1;
     u32 index2;
     unsigned int *table;
     unsigned int *data;
@@ -6164,16 +6165,24 @@ void GXSetProjection(float *arg0, int arg1) {
 #pragma paired on
 #pragma paired_single on
 void GXSetProjectionv(float *arg0) {
+#pragma paired on
+#pragma paired_single on
     unsigned int *data;
     enum E { GX_PERSPECTIVE, GX_ORTHOGRAPHIC };
     enum E type;
+    volatile f64 *dst;
+    f64 p0, p1, p2;
     if (lbl_80560BC8 == arg0[0]) type = GX_PERSPECTIVE;
     else type = GX_ORTHOGRAPHIC;
     data = __GXData;
     data[0x528 / 4] = type;
-    *(f64 *)((char *)data + 0x52C) = *(const f64 *)(arg0 + 1);
-    *(f64 *)((char *)data + 0x534) = *(const f64 *)(arg0 + 3);
-    *(f64 *)((char *)data + 0x53C) = *(const f64 *)(arg0 + 5);
+    p0 = *(const f64 *)&arg0[1];
+    p1 = *(const f64 *)&arg0[3];
+    p2 = *(const f64 *)&arg0[5];
+    dst = (volatile f64 *)((char *)data + 0x52C);
+    dst[0] = p0;
+    dst[1] = p1;
+    dst[2] = p2;
     data[0x5FC / 4] |= 0x08000000;
 }
 #pragma pop

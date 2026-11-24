@@ -19,7 +19,7 @@ extern unsigned long lbl_8055FD44;
 extern int lbl_8055FD4C;
 extern unsigned char lbl_8055FD50;
 #pragma dont_inline fn_802D2ED8
-#pragma dont_inline fn_802CFD74
+#pragma dont_inline GXReinit
 #pragma dont_inline fn_802D1B58
 extern int lbl_804C9760[];
 #pragma small_data off
@@ -1034,7 +1034,7 @@ extern int VIConfigure(void *);
 extern void fn_802CF850(void);
 #pragma push
 #pragma dont_inline on
-void fn_802CFD74(void) {
+void GXReinit(void) {
     /* (Re)initialize the GX FIFO from the CPU FIFO and reconfigure video/GX state. */
     extern int lbl_8055FD6C;
     extern void *lbl_8055FD64;
@@ -1098,7 +1098,7 @@ int fn_802CFDE0(void) {
         if (*(volatile int *)&sGxTimeout > 10) {
             OSReport(lbl_8034C058);
             gxReportGPStatus();
-            fn_802CFD74();
+            GXReinit();
             fn_802CF048(1);
             lbl_8055FD40 = fn_802E2C20();
             break;
