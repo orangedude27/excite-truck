@@ -212,8 +212,8 @@ void fn_802D4060(void *arg0) {
     GXSetArray(14, *(void **)((u8 *)object + 0x24), 4);
     GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
 }
-/* Draw a layout-10 surface: bind 12-byte position, 3-byte normal and 4-byte color arrays, then submit its display list. */ void drDrawSurfLayout10(void *surface) {
-    /* Binds this object's position, normal, and color vertex arrays, then submits its display list. */
+/* Draw a layout-10 surface: bind 12-byte position, 3-byte normal and 4-byte color arrays, then submit its display list. */
+void drDrawSurfLayout10(void *surface) {
     GXSetArray(9, *(void **)((char *)surface + 0x20), 0xC);
     GXSetArray(0xA, *(void **)((char *)surface + 0x24), 3);
     GXSetArray(0xD, *(void **)((char *)surface + 0x28), 4);
