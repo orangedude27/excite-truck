@@ -7,8 +7,8 @@
 extern int fn_802E367C(int);            /* opens the log file, returns its handle */
 extern void fn_802E30C8(const char *, ...);
 extern void *__AXGetStudio_8000D82C(void);
-extern char lbl_8034CEF8[];
-#define sSeparator     lbl_8034CEF8 /* "================================" */
+extern char ABEND_Separator[];
+#define sSeparator     ABEND_Separator /* "================================" */
 extern int lbl_8055D178;
 #define sLogFileHandle lbl_8055D178
 extern int lbl_8055D180;
