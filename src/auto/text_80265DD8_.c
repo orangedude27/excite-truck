@@ -518,7 +518,7 @@ void fn_80266388(int unused, int mode, float *matrix, void *pos, void *owner) {
     char *sel;
     int i, count;
     char *o;
-    float zero, base, best, s1, s2, ka, kb, d, t, u, a, b;
+    float zero, base, s1, s2, ka, kb, d, t, u, a, b, best;
     float rot[9];
     Res_80266388 r;
     Res_80266388 r2;
@@ -536,7 +536,7 @@ void fn_80266388(int unused, int mode, float *matrix, void *pos, void *owner) {
         base = lbl_8055C4CC + (r.p[7] + r.p[6] * r.f);
         count = ((int (*)(void))fn_8026A2C8)();
         best = lbl_8055F49C;
-        zero = 0.0f;
+        zero = lbl_80563C20;
         sel = 0;
         for (i = 0; i < count; i++) {
             VObj_80266388 *ob = (VObj_80266388 *)fn_801B2EC0(i);
@@ -615,7 +615,8 @@ void fn_80266A0C(float *fs, int unused, void *pos) {
     char *sel;
     int i, count;
     char *o;
-    float zero, base, best, s1, s2, ka, kb, d, t, u, a, b;
+    float zero, base, s1, s2, ka, kb, d, t, u, a, b, best;
+    float ac, bc;
     float rot[9];
     Res_80266388 r;
     Res_80266388 r2;
@@ -624,7 +625,6 @@ void fn_80266A0C(float *fs, int unused, void *pos) {
     float p2[2];
     float q[2];
     float t9, t11, tq0, tq2;
-    void *position = pos;
     fn_80274F74();
     if (fn_801769F8() == 0) {
         VObj_80266388 *camobj = *(VObj_80266388 **)(*(char **)((char *)fs + 0x140) + 0x270);
@@ -651,7 +651,7 @@ void fn_80266A0C(float *fs, int unused, void *pos) {
                 d += *(float *)(*(char **)((char *)cam + 0x2C) + idx * 4 + 8);
             }
             if (d * d < lbl_8055F49C) {
-                float sq = PSVECSquareDistance(position, opos);
+                float sq = PSVECSquareDistance(pos, opos);
                 if (sq < best) {
                     best = sq;
                     sel = o;
@@ -661,25 +661,13 @@ void fn_80266A0C(float *fs, int unused, void *pos) {
         if (sel != 0) {
             t = (*(float *)(sel + 0x25CC) - lbl_8055C4D0) / (lbl_8055C4D4 - lbl_8055C4D0);
             a = lbl_80563C2C;
-            if (a < t) {
-            } else {
-                a = t;
-            }
-            if (a > lbl_80563C20) {
-            } else {
-                a = lbl_80563C20;
-            }
+            ac = (a < t) ? a : t;
+            a = (ac > lbl_80563C20) ? ac : lbl_80563C20;
             u = (best - lbl_8055F49C) / (lbl_80563C20 - lbl_8055F49C);
             ka = lbl_80563C20 + a * lbl_80563C2C;
             b = lbl_80563C2C;
-            if (b < u) {
-            } else {
-                b = u;
-            }
-            if (b > lbl_80563C20) {
-            } else {
-                b = lbl_80563C20;
-            }
+            bc = (b < u) ? b : u;
+            b = (bc > lbl_80563C20) ? bc : lbl_80563C20;
             kb = lbl_80563C20 + b * lbl_80563C2C;
             s1 = lbl_8055C4D8 * (ka * kb);
             s2 = lbl_8055C4DC * (ka * kb);
@@ -762,67 +750,83 @@ extern float fn_801EA0E8(float, float);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_802671CC(void *arg0, int arg1) {
-    struct Scratch {
-        float output[3];
-        float input[3];
-    } scratch;
-    float *in = scratch.input;
-    float *out = scratch.output;
-    float *matrix;
-    float z;
-    float delta;
-    float xstep;
-    float widthValue;
-    float heightValue;
-    float ystep;
-    float best;
-    int i;
-
-    matrix = (float *)arg0;
-    z = *(float *)((char *)arg0 + 0x48);
-    delta = z * *(float *)((char *)arg0 + 0x34);
-    xstep = delta / lbl_8055D020;
-    widthValue = (float)*(int *)((char *)arg0 + 0x44);
-    heightValue = (float)*(int *)((char *)arg0 + 0x40);
-    ystep = widthValue * delta / heightValue;
-    best = lbl_80563C20;
-    i = 0;
-
-    for (; i < 4; i++) {
-        float x;
-        float y;
-        float heightDiff;
-
-        if ((i & 1) != 0) x = xstep;
-        else x = -xstep;
-        if ((i & 2) != 0) y = ystep;
-        else y = -ystep;
-
-        in[0] = x;
-        in[1] = y;
-        in[2] = z;
-        if (out == in) {
-            out[0] = x * matrix[0] + y * matrix[3] + z * matrix[6];
-            out[1] = x * matrix[1] + y * matrix[4] + z * matrix[7];
-            out[2] = x * matrix[2] + y * matrix[5] + z * matrix[8];
-        } else {
-            out[0] = in[0] * matrix[0] + in[1] * matrix[3] + in[2] * matrix[6];
-            out[1] = in[0] * matrix[1] + in[1] * matrix[4] + in[2] * matrix[7];
-            out[2] = in[0] * matrix[2] + in[1] * matrix[5] + in[2] * matrix[8];
-        }
-        out[0] += matrix[9];
-        out[1] += matrix[10];
-        out[2] += matrix[11];
-        heightDiff = fn_801EA0E8(out[0], out[2]) - out[1];
-        if (best > heightDiff) best = heightDiff;
+void fn_802671CC(void *arg0, int arg1)
+{
+  struct Scratch
+  {
+    float output[3];
+    float input[3];
+  } scratch;
+  float *in = scratch.input;
+  float *out = scratch.output;
+  float widthValue;
+  float *matrix;
+  float z;
+  float delta;
+  float xstep;
+  float heightValue;
+  float ystep;
+  float best;
+  int i;
+  matrix = (float *) arg0;
+  z = *((float *) (((char *) arg0) + 0x48));
+  delta = z * (*((float *) (((char *) arg0) + 0x34)));
+  xstep = delta / lbl_8055D020;
+  widthValue = (float) (*((int *) (((char *) arg0) + 0x44)));
+  ystep = (widthValue * delta) / (heightValue = (float) (*((int *) (((char *) arg0) + 0x40))));
+  best = lbl_80563C20;
+  i = 0;
+  for (; i < 4; i++)
+  {
+    float x;
+    float y;
+    float heightDiff;
+    if ((i & 1) != 0)
+    {
+      x = xstep;
     }
-
-    if (*(int *)((char *)arg0 + 0x58) != 0x11 &&
-        *(int *)((char *)arg0 + 0x58) != 0x15) {
-        *(float *)((char *)arg0 + 0x28) += best;
+    else
+    {
+      x = -xstep;
     }
-    (void)arg1;
+    if ((i & 2) != 0)
+    {
+      y = ystep;
+    }
+    else
+    {
+      y = -ystep;
+    }
+    in[0] = x;
+    in[1] = y;
+    in[2] = z;
+    if (out == in)
+    {
+      out[0] = ((x * matrix[0]) + (y * matrix[3])) + (z * matrix[6]);
+      out[1] = ((y * matrix[4]) + (matrix[7] * z)) + (x * matrix[1]);
+      out[2] = ((x * matrix[2]) + (y * matrix[5])) + (z * matrix[8]);
+    }
+    else
+    {
+      out[0] = ((in[0] * matrix[0]) + (in[1] * matrix[3])) + (in[2] * matrix[6]);
+      out[1] = ((in[0] * matrix[1]) + (in[1] * matrix[4])) + (in[2] * matrix[7]);
+      out[2] = ((in[0] * matrix[2]) + (in[1] * matrix[5])) + (in[2] * matrix[8]);
+    }
+    out[0] += matrix[9];
+    out[1] += matrix[10];
+    out[2] += matrix[11];
+    heightDiff = fn_801EA0E8(out[0], out[2]) - out[1];
+    if (best > heightDiff)
+    {
+      best = heightDiff;
+    }
+  }
+
+  if (((*((int *) (((char *) arg0) + 0x58))) != 0x11) && ((*((int *) (((char *) arg0) + 0x58))) != 0x15))
+  {
+    *((float *) (((char *) arg0) + 0x28)) += best;
+  }
+  (void) arg1;
 }
 #pragma pop
 
@@ -2171,35 +2175,22 @@ void fn_8026A2C8(void) {
 
 #pragma scheduling invalid_target
 #pragma scheduling on
-void fn_8026A2CC(int *arg0, int arg1, float arg2) {
-    int a, b, c, d, e;
-    Rec2_80269BB0 *dst;
-    a = arg0[0];
-    b = arg0[1];
-    c = arg0[2];
-    d = arg0[3];
-    dst = (Rec2_80269BB0 *)(lbl_80499080 + arg1 * 0x228);
-    e = arg0[4];
-    dst->w1a4 = a;
-    a = arg0[5];
-    dst->w1a8 = b;
-    b = arg0[6];
-    dst->w1ac = c;
-    c = arg0[7];
-    dst->w1b0 = d;
-    d = arg0[8];
-    dst->w1b4 = e;
-    e = arg0[9];
-    dst->w1b8 = a;
-    a = arg0[10];
-    dst->w1bc = b;
-    b = arg0[11];
-    dst->w1c0 = c;
-    dst->w1c4 = d;
-    dst->w1c8 = e;
-    dst->w1cc = a;
-    dst->w1d0 = b;
-    dst->f1d4 = arg2;
+/* Set a camera's 4x3 view matrix and its matching view angle. */ void fn_8026A2CC(const int *srcMatrix, int cameraIndex, float angle) {
+    int *viewMatrix;
+    viewMatrix = (int *)((char *)lbl_80499080 + cameraIndex * 0x228 + 0x1a4);
+    viewMatrix[0] = srcMatrix[0];
+    viewMatrix[1] = srcMatrix[1];
+    viewMatrix[2] = srcMatrix[2];
+    viewMatrix[3] = srcMatrix[3];
+    viewMatrix[4] = srcMatrix[4];
+    viewMatrix[5] = srcMatrix[5];
+    viewMatrix[6] = srcMatrix[6];
+    viewMatrix[7] = srcMatrix[7];
+    viewMatrix[8] = srcMatrix[8];
+    viewMatrix[9] = srcMatrix[9];
+    viewMatrix[10] = srcMatrix[10];
+    viewMatrix[11] = srcMatrix[11];
+    *(float *)(viewMatrix + 12) = angle;
 }
 #pragma cplusplus reset
 /* Return the index of the object the given camera is following (Camera.subject). */
