@@ -227,11 +227,11 @@ int fn_802CA3F4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
 }
 #pragma dont_inline on
 // Creates a texture from a descriptor and name, logging creation to the current scene when needed.
-int fn_802CA4E0(int textureDesc, int textureName, int mode, int param3, int param4) {
+/* Build a texture-creation request from a descriptor and name, log it in the scene unless it is the default name, then create the texture. */ int fn_802CA4E0(int textureDesc, int textureName, int isRenderTarget, int createParam, int param4) {
     char request[0x34];
     if (fn_802C90E0() == 0 && (unsigned int)textureName != (unsigned int)lbl_8055D058)
         fn_802E30C8(lbl_8034B618, textureName);
-    fn_802CA3F4(request, textureDesc, mode == 1 ? 3 : 1, param3, param4);
+    fn_802CA3F4(request, textureDesc, isRenderTarget == 1 ? 3 : 1, createParam, param4);
     return fn_802D8E9C(request, textureName);
 }
 #pragma dont_inline reset
