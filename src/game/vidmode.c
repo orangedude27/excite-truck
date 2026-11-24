@@ -9,7 +9,7 @@ extern char lbl_8034BC00[];
 extern char lbl_8034BCA8[];
 extern void fn_802E317C(const char *, ...);
 #pragma scheduling invalid_target
-void *fn_802CE344(int arg0) {
+void *Vid_GetVideoModeInfo(int arg0) {
     /* Return the video mode info entry (0x18 bytes each, 7 entries) for the given index, or log an error and return NULL if out of range. */
     void *result;
 

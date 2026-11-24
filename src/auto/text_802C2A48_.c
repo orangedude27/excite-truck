@@ -6,7 +6,7 @@ extern unsigned char lbl_8055CFF8;
 extern float lbl_80564ED8;
 extern float lbl_80564EDC;
 extern unsigned char lbl_8055FBA8;
-void *fn_802CE344(int);
+void *Vid_GetVideoModeInfo(int);
 void fn_802C2A48(int);
 void fn_802CF5F8(int);
 void fn_802CA0E4(void);
@@ -24,7 +24,7 @@ void fn_802C2A48(int videoModeId) {
     /* Cache the selected video mode's dimensions/format and set the default viewport size. */
     unsigned int *videoMode;
     lbl_8055FBA4 = videoModeId;
-    videoMode = fn_802CE344(videoModeId);
+    videoMode = Vid_GetVideoModeInfo(videoModeId);
     lbl_8055CFF0 = videoMode[0];
     lbl_8055CFF4 = videoMode[1];
     lbl_8055CFF8 = *(unsigned char *)(videoMode + 3);
@@ -36,7 +36,7 @@ void fn_802C2A48(int videoModeId) {
 
 void fn_802C2AA8(void) {
 #define MenuVideoSelectMode fn_802C2A48
-#define GetVideoModeInfo fn_802CE344
+#define GetVideoModeInfo Vid_GetVideoModeInfo
 #define SetVideoParam fn_802CF5F8
 #define InitTextureState fn_802CA0E4
 #define gMenuSceneFlag lbl_8055FBA8
