@@ -77,9 +77,9 @@ extern long fn_802EC0FC(void);
 long fn_8020F3B4(void) { return -1; }
  
 #pragma scheduling invalid_target
-int formatMp3Path(int path, int buffer, int size) {
-    /* Formats a track-music path into the buffer and returns the buffer. */
-    fn_801345D8((void *)buffer, size, (void *)&gMp3PathFormat, path);
+int formatMp3Path(int songName, int buffer, int bufferSize) {
+    /* Build a "<songName>.mp3" streaming path into the caller's buffer and return the buffer. */
+    fn_801345D8((void *)buffer, bufferSize, (void *)&gMp3PathFormat, songName);
     return buffer;
 }
 extern long gSngPathFormat;
