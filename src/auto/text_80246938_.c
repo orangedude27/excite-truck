@@ -40,7 +40,7 @@ void fn_80235380(s32);
 void fn_802C519C(s32);
 void fn_802328D4(s32);
 void fn_80128668(void *);
-s32 fn_802E499C(unsigned short *, unsigned short, unsigned short, unsigned short, unsigned short);
+s32 MatchKeySequence(unsigned short *, unsigned short, unsigned short, unsigned short, unsigned short);
 void fn_8020C918(s32);
 extern unsigned short lbl_802FA48C[6];
 extern float lbl_805638B0;
@@ -1297,7 +1297,7 @@ void* fn_8024859C(void *object, s32 shouldDelete) {
 #pragma scheduling on
 /* Secret key-code check: copies the trigger sequence stored in .rodata (device 1
  * key codes 0x126, 0x128, 0x125, 0x127, then the 0 terminator) and asks the
- * debug input history (fn_802E499C, filled by fn_802E4800) whether those keys
+ * debug input history (MatchKeySequence, filled by fn_802E4800) whether those keys
  * were the last ones entered.  If they were, the music is silenced -
  * fn_80246CAC scales its argument by the volume saved when the demo mode
  * started, so 0.0 is silence - and the pre-race music hook is called.
@@ -1313,7 +1313,7 @@ s32 fn_802485FC(void) {
     sequence[2] = *next++;
     sequence[3] = *next++;
     sequence[4] = *next++;
-    if (fn_802E499C(sequence, sequence[3], sequence[2], sequence[1], sequence[0]) != 0) {
+    if (MatchKeySequence(sequence, sequence[3], sequence[2], sequence[1], sequence[0]) != 0) {
         fn_80246CAC(silenceVolume);
         fn_8020C918(1);
     }

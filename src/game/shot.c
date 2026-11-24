@@ -3,7 +3,7 @@
 // (fn_802E46AC), initShot (fn_802E46B0), invalidateSavedState (fn_802E46E4),
 // checkScreenshotHotkey (fn_802E46F0), anyInputPending (fn_802E47B8),
 // clearKeyHistory (fn_802E47E8), recordInput (fn_802E4800), matchKeySequence
-// (fn_802E499C), inputNibble (fn_802E4A10), keyPressed (fn_802E4A1C),
+// (MatchKeySequence), inputNibble (fn_802E4A10), keyPressed (fn_802E4A1C),
 // pollInput (fn_802E4A2C), restoreSavedState (fn_802E4A60).
 // Recovered TU window 0x802E46AC..0x802E4C0C (see docs/attribution_analysis.md).
 // Static-init thunk fn_802E4C0C (+ .ctors slot 0x802ED5FC) remains in
@@ -163,7 +163,7 @@ void fn_802E4800(u16 inputWord) {
 #pragma push
 #pragma scheduling invalid_target
 /* Check whether a 16-bit key sequence matches the end of the 32-entry input history (right-aligned by sequence length); 0xFFFF entries in the sequence act as wildcards. */
-s32 fn_802E499C(u16 *sequence) {
+s32 MatchKeySequence(u16 *sequence) {
 #define inputHistoryBuffer lbl_804FC418
     s32 length;
     u16 *scan;
