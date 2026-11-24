@@ -759,7 +759,7 @@ void fn_802C92D0(void) {
     fn_802C8C04(-1);
 }
 
-/* Tail-call wrapper for DrawList_RestoreNormalMode (fn_802C8D74): restores the
+/* Tail-call wrapper for fn_802C8D74: restores the
  * normal GX render mode and reapplies the saved matrix state if pending. */
 void fn_802C92D8(void) {
     fn_802C8D74();
