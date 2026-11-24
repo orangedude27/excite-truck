@@ -141,8 +141,7 @@ void fn_802E3498(void) {
 
 extern void File_checkOpenFiles(void);
 #pragma cplusplus on
-/* Shut down file subsystems: close remaining open files, then destroy the
-   primary (gDefaultFileSystem) and secondary (gSecondaryFileSystem) file-system objects. */
+/* Shuts down the file subsystem: aborts on any open file, then destroys and clears the default and secondary file-system objects. */
 extern "C" void File_ShutdownSubsystem(void) {
     class FileSystem {
     public:
