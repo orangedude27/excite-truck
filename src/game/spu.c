@@ -739,17 +739,18 @@ done:
 
 extern void fn_802E5D5C(void *);
 void fn_802E5A54(void) {
-    /* Shut down SPU state: release each tracked object in lbl_8055FF9C
-     * (count lbl_8055FFA0) via fn_802E5D5C, then finalize each 0x20-byte entry
-     * in lbl_804FC558 (count lbl_8055FF78) via fn_8012BF24, clearing counts. */
-    int i, j;
-    unsigned char *ptr;
-    for (i = 0; i < lbl_8055FFA0; i++) {
-        fn_802E5D5C((void *)lbl_8055FF9C[i]);
+    /* Shut down SPU state: release every allocated sound slot, finalize every
+     * queued sound name, and reset both counts to zero. */
+    int slotIndex;
+    int nameIndex;
+    unsigned char *name;
+
+    for (slotIndex = 0; slotIndex < lbl_8055FFA0; slotIndex++) {
+        fn_802E5D5C((void *)lbl_8055FF9C[slotIndex]);
     }
     lbl_8055FFA0 = 0;
-    for (j = 0, ptr = lbl_804FC558; j < lbl_8055FF78; ptr += 0x20, j++) {
-        fn_8012BF24(ptr);
+    for (nameIndex = 0, name = lbl_804FC558; nameIndex < lbl_8055FF78; name += 0x20, nameIndex++) {
+        fn_8012BF24(name);
     }
     lbl_8055FF78 = 0;
 }
