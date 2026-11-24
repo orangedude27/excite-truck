@@ -38,7 +38,6 @@ extern "C" float lbl_80562908;
 extern "C" int fn_801C109C(int arg0, int arg1, int arg2, int arg3, int arg4) {
     int *base = (int *)arg0;
     register float a, b, c, d;
-#pragma scheduling off
     int size1 = arg2 * 0x14;
     base[2] = arg2;
     base[1] = arg1;
@@ -49,7 +48,6 @@ extern "C" int fn_801C109C(int arg0, int arg1, int arg2, int arg3, int arg4) {
     int size4 = arg1 * 0x30;
     int total = size3 + size4;
     int size = size2 + size1;
-#pragma scheduling on
     int memory = fn_8012850C(total + size, lbl_80336AF0);
     int step12 = arg1 * 0xC;
     base[0] = memory;
@@ -205,7 +203,6 @@ extern "C" float lbl_80562904, lbl_8056290C, lbl_80562918, lbl_8056291C, lbl_805
 #pragma scheduling invalid_target
 void fn_801C1364(int arg0) {
     char *base = (char *)arg0;
-    int iter;
     register float c90C;
     register float c924;
     register float c920;
@@ -228,6 +225,7 @@ void fn_801C1364(int arg0) {
     int i;
     char *e;
     float x, y, z, x0, x1, x2, y0, y1, y2, z0, z1, z2;
+    int iter;
     for (iter = 0; iter < 2; iter++) {
         for (i = 0, offset = 0; i < *(int *)(base + 0x1C); offset += 0x18, i++) {
             e = *(char **)(base + 0x4C) + offset;
@@ -1008,7 +1006,7 @@ static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
 #pragma push
 #pragma dont_inline off
 extern "C" void fn_801C2BF8(void *arg0, float *arg1) {
-    int color;
+    unsigned int color;
     int count = *(int *)((char *)arg0 + 0x18);
     int i = 0;
     if (count > 0) {
