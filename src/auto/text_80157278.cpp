@@ -2218,7 +2218,7 @@ skip_reset:
 #pragma scheduling on
 
 #pragma opt_propagation off
-extern "C" void fn_8015A318(Unk8015A368C* arg0) {
+/* If the bonus tracker has a pending event count, forward its event id, context and count to the event dispatcher, then clear the pending count. */ extern "C" void fn_8015A318(Unk8015A368C* arg0) {
     s32 count = arg0->m260;
     if (count > 0) {
         s32 event = arg0->m258;
