@@ -2961,7 +2961,7 @@ void GXInitSpecularDir(unsigned int arg0, void *ctx) {
         OSClearContext(local);
         OSSetCurrentContext(ctx);
     }
-    __peReg[5] |= 4;
+    *(volatile unsigned short *)&__peReg[5] |= 4;
 }
 /* Atomically sets and returns the previous value of the light-object index global. */
 unsigned int GXLoadLightObjIndx(unsigned int lightObjIndex) {
