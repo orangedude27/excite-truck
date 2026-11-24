@@ -17,7 +17,7 @@ extern u8 lbl_805600ED;
  * loop below to keep the screen covered while the Home Menu starts up. */
 s32 soundRunPendingRequest(void);                      /* runs a pending sound request; 1 when it did work */
 void HomeMenu_beginFrame(void);                     /* opens a frame: resets the GX state, sets the FIFO break point */
-void fn_802D02F8(s32 color, s32 on);        /* fade colour (aRGB) and whether to fade with it */
+void HomeMenu_setFade(s32 color, s32 on);        /* fade colour (aRGB) and whether to fade with it */
 void drawFifoTriangles(s32, s32, s32, s32);       /* indexed triangles straight into the GX FIFO */
 void fn_802CFDE0(void);                     /* draws the home-button UI, flushes the FIFO and waits for the GPU */
 void fn_802CFF10(void);                     /* closes the frame: clears the FIFO state */
@@ -457,7 +457,7 @@ void fn_802ECC18(u8 mode) {
 /* One frame of the black screen this module paints while the home-button
  * handover runs (HomeMenu_drainHandover repeats it until the Home Menu takes the screen
  * over), skipped on the frames soundRunPendingRequest() spent on a pending sound request:
- * HomeMenu_beginFrame() opens the frame, fn_802D02F8() switches on the fade colour the
+ * HomeMenu_beginFrame() opens the frame, HomeMenu_setFade() switches on the fade colour the
  * screen is covered with -- opaque black -- drawFifoTriangles() is asked for no
  * triangles at all (only its renderer setup runs), fn_802CFDE0() draws the
  * home-button UI and flushes the FIFO to the GPU, and fn_802CFF10() closes the
@@ -466,7 +466,7 @@ void HomeMenu_drawBlackFrame(void) {
 #define FADE_BLACK 0xFF000000 /* aRGB: opaque black */
     if (soundRunPendingRequest() == 0) {
         HomeMenu_beginFrame();
-        fn_802D02F8(FADE_BLACK, 1);
+        HomeMenu_setFade(FADE_BLACK, 1);
         drawFifoTriangles(0, 0, 0, 0);
         fn_802CFDE0();
         fn_802CFF10();

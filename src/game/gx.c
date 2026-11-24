@@ -1321,7 +1321,7 @@ void fn_802D2218(void);
 #pragma pop
 
 #pragma scheduling on
-void fn_802D02F8(int arg0, signed char arg1) {
+void HomeMenu_setFade(int arg0, signed char arg1) {
     extern unsigned char lbl_804C9778[];
     volatile unsigned char s2, s3;
     unsigned char s0, s1;

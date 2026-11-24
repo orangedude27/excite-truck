@@ -421,16 +421,16 @@ void DrawList_setViewport(int x, int y, int width, int height) {
 }
 #pragma pop
 
-/* Apply the stored value (set by fn_802C86E8) via fn_802D02F8, passing flags' low bit as its byte argument. */
+/* Apply the stored value (set by fn_802C86E8) via HomeMenu_setFade, passing flags' low bit as its byte argument. */
 void fn_802C88BC(int flags) {
-    fn_802D02F8(lbl_8055D018, flags & 1);
+    HomeMenu_setFade(lbl_8055D018, flags & 1);
 }
 
 extern void *lbl_8055FC5C, *lbl_8055FC60, *lbl_8055FC64, *lbl_8055FC68;
-/* Wrapper around the fade-colour setter fn_802D02F8: set the screen fade colour
+/* Wrapper around the fade-colour setter HomeMenu_setFade: set the screen fade colour
  * to the packed aRGB value `color` and switch fading on. */
 void fn_802C88CC(unsigned int color) {
-    fn_802D02F8(color, 1);
+    HomeMenu_setFade(color, 1);
 }
 
 extern unsigned int lbl_804C1410[];
