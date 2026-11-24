@@ -246,7 +246,7 @@ void fn_802CEA34(void) {
  * status, log the choice, copy it into the working record with a 16-line border
  * inset, then scroll the picture by nudging two screen-rectangle offsets. */
 void fn_802CEAC4(void) {
-    extern int VIGetTvFormat(void), fn_802E9A1C(void), fn_8005AD9C(void);
+    extern int VIGetTvFormat(void), ConfigGetProgressiveMode(void), fn_8005AD9C(void);
     extern void fn_802E30C8(const char *, ...);
     extern void GXDrawCylinder(void *, void *, int, int);
     extern char lbl_8034BD18[], lbl_803038D8[], lbl_80303914[], lbl_80303950[], lbl_8030398C[], lbl_803039C8[];
@@ -256,7 +256,7 @@ void fn_802CEAC4(void) {
     int tvFormat = VIGetTvFormat();
     switch (tvFormat) {
     case 0:
-        if (fn_802E9A1C() == 0 || fn_8005AD9C() == 0) {
+        if (ConfigGetProgressiveMode() == 0 || fn_8005AD9C() == 0) {
             fn_802E30C8(strBase + 0xA0);
             lbl_8055FD64 = lbl_803038D8;
         } else {

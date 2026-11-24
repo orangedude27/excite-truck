@@ -113,7 +113,7 @@ s32 ConfigGetSCSoundMode(void) {
 }
 
 /** @brief Returns the cached display config flag: 1 for progressive (non-interlaced) output. */
-char fn_802E9A1C(void) {
+char ConfigGetProgressiveMode(void) {
     return sConfigProgressive;
 }
 
