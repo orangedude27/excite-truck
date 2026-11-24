@@ -1038,7 +1038,7 @@ void fn_8023B0BC(void *widget) {
 #pragma push
 #pragma cplusplus on
 extern "C" s32 fn_80214D04(void);
-extern "C" void fn_8023B138(void *arg0) {
+extern "C" void UIOptions_SetEnabledForMenuState0(void *arg0) {
     struct Dummy {
         virtual s32 f0();
         virtual s32 f1();
