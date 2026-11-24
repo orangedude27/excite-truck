@@ -30,7 +30,7 @@ s32 ConfigGetSDCardHandle(void);
 __declspec(section ".sdata") extern char sNandPathPrefix[];
 __declspec(section ".sdata") extern char sSdPathPrefix[];
 /* Return 1 when path starts with the "nand:" prefix (sNandPathPrefix), else 0. The prefix address is held as an integer so MWCC keeps it in one callee-saved register across the strlen/strncmp calls instead of reloading the small-data address. */
-/* Returns 1 when path begins with the NAND prefix "nand:" (sNandPathPrefix), else 0; same equality trick as IsSdPath. */ /* Returns 1 when path begins with the NAND prefix "nand:" (sNandPathPrefix), else 0; same equality trick as IsSdPath. */ s32 IsNandPath(const char *path) {
+/* Returns 1 when path begins with the NAND prefix "nand:" (sNandPathPrefix), else 0; same equality trick as IsSdPath. */ s32 IsNandPath(const char *path) {
     s32 prefix = (s32)sNandPathPrefix;
     s32 prefixLen = strlen((char *)prefix);
     s32 result = strncmp(path, (char *)prefix, prefixLen);
