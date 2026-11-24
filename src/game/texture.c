@@ -671,9 +671,8 @@ done:
     ;
 }
 
-/* Sets the texture slot's filter/wrap (or mode) bytes at +8/+9 of its loaded
- * resource, if the slot handle is valid. */
-void TextureSlot_setModes(int textureSlot, signed char value8, signed char value9) {
+/* Sets the filter/wrap mode bytes at +8/+9 of a valid texture slot's loaded resource. */
+void TextureSlot_setModes(int textureSlot, signed char mode8, signed char mode9) {
 #define TextureSlot_isValid TextureSlot_isLoaded
 #define gTextureSlots lbl_8055FCB0
     int slotOffset;
@@ -682,9 +681,9 @@ void TextureSlot_setModes(int textureSlot, signed char value8, signed char value
     if (TextureSlot_isValid(textureSlot)) {
         slotOffset = textureSlot * 0x4C;
         textureResource = *(int *)((char *)gTextureSlots + slotOffset + 0x2C);
-        *(signed char *)(textureResource + 8) = value8;
+        *(signed char *)(textureResource + 8) = mode8;
         textureResource = *(int *)((char *)gTextureSlots + slotOffset + 0x2C);
-        *(signed char *)(textureResource + 9) = value9;
+        *(signed char *)(textureResource + 9) = mode9;
     }
 #undef TextureSlot_isValid
 #undef gTextureSlots
