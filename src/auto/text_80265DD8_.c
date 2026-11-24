@@ -36,7 +36,7 @@ typedef struct { V3_80267EF8 r[4]; } M34_80267EF8;
 typedef struct { float m[9]; } R9_80267EF8;
 typedef struct { float m[9]; V3_80267EF8 pos; } MP_80267EF8;
 
-/* One point of the random path fn_80265E2C refills with random values: where it
+/* One point of the random path NoisePoints_Randomize refills with random values: where it
  * goes and how long the move on to the next point takes.  NOISE_POINT_COUNT of
  * them form the ring every camera's walk below steps through. */
 typedef struct NoisePoint {
@@ -273,7 +273,7 @@ void NoiseWalk_Reset(void* path) {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_80265E2C(void) {
+void NoisePoints_Randomize(void) {
     // Refill the camera noise-point ring with random positions (converted from degrees) and move durations.
     float degreesToRadians = 0.017453292519943295f;
     NoisePoint *point = sNoisePoints;
@@ -1052,7 +1052,7 @@ void fn_80267680(void) {
     lbl_8055F488 = 0;
     lbl_8055F48C = lbl_80563C64;
     fn_80209190(lbl_8055F494, lbl_80563C2C);
-    fn_80265E2C();
+    NoisePoints_Randomize();
     fn_80268B94(0);
     fn_80270484();
     zero = lbl_80563C20;
