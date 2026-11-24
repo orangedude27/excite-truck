@@ -1032,7 +1032,7 @@ void fn_8018381C(void *arg0) {
 extern float lbl_80561D90, lbl_80561D94, lbl_80561D98;
 extern void fn_8018BE54(void *, float), fn_80189C64(void *), fn_8018B0D0(void *, int);
 extern int fn_801BF1B8(int, int), fn_801CF064(void);
-extern void fn_8018F6F8(void *), fn_801B8100(void *, int, int), fn_8013605C(void *);
+extern void resetSceneLights(void *), fn_801B8100(void *, int, int), fn_8013605C(void *);
 extern void *fn_801B2ED0(int);
 extern void *memset(void *, int, unsigned long);
 void fn_801838C8(void *arg0)
@@ -1305,7 +1305,7 @@ void fn_801838C8(void *arg0)
   (*((void (**)(void *)) ((*((char **) obj)) + 0x28)))(obj);
   if ((*fn_801E1F44()) == 1)
   {
-    fn_8018F6F8(p);
+    resetSceneLights(p);
   }
   *((float *) (p + 0x26cc)) = 1.0f;
   *((float *) (p + 0x26d0)) = 1.0f;
@@ -1815,7 +1815,21 @@ float b = lbl_80561EE0 + *(float *)(p + 0x2694);
 a = (a < b) ? a : b;
 *(float *)(p + 0x2694) = a;
 }
-MultVecT_inl((const float *)(p + 0x3C), (const float *)(p + 0x16C), v);
+{
+const float *m = (const float *)(p + 0x3C);
+const float *src = (const float *)(p + 0x16C);
+float *dst = v;
+if (dst == src) {
+float x = src[2] * m[2] + (src[0] * m[0] + src[1] * m[1]);
+float y = src[2] * m[5] + (src[0] * m[3] + src[1] * m[4]);
+float z = src[2] * m[8] + (src[0] * m[6] + src[1] * m[7]);
+dst[0] = x; dst[1] = y; dst[2] = z;
+} else {
+dst[0] = src[2] * m[2] + (src[0] * m[0] + src[1] * m[1]);
+dst[1] = src[2] * m[5] + (src[0] * m[3] + src[1] * m[4]);
+dst[2] = src[2] * m[8] + (src[0] * m[6] + src[1] * m[7]);
+}
+}
 {
 float kDE4 = lbl_80561DE4;
 float kE5C = lbl_80561E5C;
@@ -1836,26 +1850,31 @@ float a0 = acc[0], a1 = acc[1], a2 = acc[2];
 float na0 = a0 * kEE8;
 float na1 = a1 * kEE8;
 float v0 = vel[0], v1 = vel[1], v2 = vel[2], v3 = vel[3], v4 = vel[4], v5 = vel[5];
-s[0] = v[0] + a0 * kE5C + v0 * kD90;
 s[1] = v[1] + a1 * kE5C;
+s[0] = v[0] + a0 * kE5C + v0 * kD90;
 s[2] = v[2] + a2 * kE5C;
+s[1] = s[1] + v1 * kD90;
+s[2] = s[2] + v2 * kD90;
 s[0] = s[0] + v3 * kEE4;
-s[1] = s[1] + v1 * kD90 + v4 * kEE4;
-s[2] = s[2] + v2 * kD90 + v5 * kEE4;
+s[1] = s[1] + v4 * kEE4;
+s[2] = s[2] + v5 * kEE4;
 vel[0] = v0 + s[0] * kD9C;
 vel[1] = v1 + s[1] * kD9C;
-vel[3] = v3 + vel[0] * kD9C;
+acc[2] = a2 * kEE8;
+acc[0] = na0;
 vel[4] = v4 + vel[1] * kD9C;
+acc[1] = na1;
+vel[3] = v3 + vel[0] * kD9C;
 vel[2] = v2 + s[2] * kD9C;
 vel[5] = v5 + vel[2] * kD9C;
 acc[0] = na0 + v[0] * kEEC;
-acc[2] = kCAC;
 acc[1] = na1 + v[1] * kEEC;
-acc[1] = kCAC;
+acc[2] = kCAC;
 if (vel[5] < kEF4) {
 vel[5] = kEF4;
 vel[2] = vel[2] > kCAC ? vel[2] : kCAC;
 }
+acc[1] = kCAC;
 float c = kEF0, d = vel[5];
 vel[5] = (c < d) ? c : d;
 }
@@ -2992,7 +3011,7 @@ void fn_8018AF00(void) {
 extern int fn_801CF064(void);
 extern void fn_801BEB30();
 extern int *fn_801E1F44(void);
-extern void fn_8018F6F8(void *);
+extern void resetSceneLights(void *);
 #pragma scheduling invalid_target
 extern void fn_801BEB30(int, int *);
 #pragma opt_common_subs off
@@ -3088,7 +3107,7 @@ int fn_8018AF04(void *arg0) {
         *(int *)(p + 0x26B0) = -1;
         *(int *)(p + 0x1E40) = 0;
         if (*fn_801E1F44() == 1)
-            fn_8018F6F8(arg0);
+            resetSceneLights(arg0);
         tailZero = lbl_80561CAC;
         *(float *)(p + 0x2650) = tailZero;
         *(float *)(p + 0x264C) = tailZero;

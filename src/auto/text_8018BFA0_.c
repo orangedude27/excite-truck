@@ -532,10 +532,30 @@ static void matVecLocal_8018(Vec_8018 *dest, const float *m, const Vec_8018 *v) 
         dest->z = tz;
     }
 }
-#pragma scheduling invalid_target
+static inline void matVecSA_8018(Vec_8018 *dest, const float *m, const Vec_8018 *v) {
+    if (dest == v) {
+        float tx = dot_8018(v->x, m[0], v->y, m[3], v->z, m[6]);
+        float ty = dot_8018(v->x, m[1], v->y, m[4], v->z, m[7]);
+        float tz = dot_8018(v->x, m[2], v->y, m[5], v->z, m[8]);
+        dest->x = tx;
+        dest->y = ty;
+        dest->z = tz;
+    } else {
+        dest->x = dot_8018(v->x, m[0], v->y, m[3], v->z, m[6]);
+        dest->y = dot_8018(v->x, m[1], v->y, m[4], v->z, m[7]);
+        dest->z = dot_8018(v->x, m[2], v->y, m[5], v->z, m[8]);
+    }
+}
+#pragma scheduling on
 void fn_8018CB3C(char *arg0) {
     typedef struct { float m[9]; } Mtx33_8018;
     typedef struct { Mtx33_8018 rot; Vec_8018 pos; } Transform8018;
+    typedef struct {
+        int unk0, unk4, unk8;
+        Vec_8018 axis;
+        Vec_8018 offset;
+        char pad[0x1C];
+    } Entry8018;
     Transform8018 matrix;
     Transform8018 rotation2;
     Transform8018 rotation4;
@@ -556,7 +576,7 @@ void fn_8018CB3C(char *arg0) {
     float scaled4[3];
     float rotated4[3];
     register char *var_r20 = arg0 + 0x152C;
-    register const char *var_r19 = (const char *)&lbl_80332840;
+    register const Entry8018 *var_r19 = (const Entry8018 *)&lbl_80332840;
     register int var_r18 = 0;
     float var_f1_2;
     float var_f1;
@@ -570,21 +590,24 @@ void fn_8018CB3C(char *arg0) {
     do {
         void *temp_r5 = M2C_FIELD(var_r20, char **, 0);
         if ((temp_r5 != 0) && ((int)M2C_FIELD(var_r20, int *, 0x7C) == 2)) {
+            float ax = var_r19->axis.x;
+            float ay = var_r19->axis.y;
+            float az = var_r19->axis.z;
             matrix.rot = ((Transform8018 *)temp_r5)->rot;
             matrix.pos = ((Transform8018 *)temp_r5)->pos;
             {
                 float temp_f3 = M2C_FIELD(var_r20, float *, 0xC);
-                scaleVec[0] = M2C_FIELD(var_r19, const float *, 0xC) * temp_f3;
-                scaleVec[1] = M2C_FIELD(var_r19, const float *, 0x10) * temp_f3;
-                scaleVec[2] = M2C_FIELD(var_r19, const float *, 0x14) * temp_f3;
+                scaleVec[0] = ax * temp_f3;
+                scaleVec[1] = ay * temp_f3;
+                scaleVec[2] = az * temp_f3;
             }
             fn_80015A20((int *)scaleMatrix, scaleVec);
             fn_80015B20(matrix.rot.m, (int *)scaleMatrix, matrix.rot.m);
-            matVecS_8018((Vec_8018 *)localPos, matrix.rot.m, (const Vec_8018 *)(var_r19 + 0x18));
+            matVecLocal_8018((Vec_8018 *)localPos, matrix.rot.m, &var_r19->offset);
             localPos[0] += matrix.pos.x;
             localPos[1] += matrix.pos.y;
             localPos[2] += matrix.pos.z;
-            matVecS_8018((Vec_8018 *)origin, (float *)(arg0 + 0x3C), (const Vec_8018 *)(M2C_FIELD(var_r20, char **, 0) + 0x24));
+            matVecS_8018((Vec_8018 *)origin, (float *)(arg0 + 0x3C), (Vec_8018 *)(M2C_FIELD(var_r20, char **, 0) + 0x24));
             origin[0] += M2C_FIELD(arg0, float *, 0x60);
             origin[1] += M2C_FIELD(arg0, float *, 0x64);
             origin[2] += M2C_FIELD(arg0, float *, 0x68);
@@ -594,19 +617,20 @@ void fn_8018CB3C(char *arg0) {
             world[2] += M2C_FIELD(arg0, float *, 0x68);
             ((void (*)(void *, float *, float *))fn_8017B6D4)(arg0, velocity, world);
             fn_8017B778(arg0, force, origin);
+            force[1] += 4.905f;
+            force[0] *= 0.4f;
+            force[1] *= 0.4f;
+            force[2] *= 0.4f;
             delta[0] = world[0] - origin[0];
             delta[1] = world[1] - origin[1];
             delta[2] = world[2] - origin[2];
-            force[0] = force[0] * 0.4f;
-            force[1] = (force[1] + 4.905f) * 0.4f;
-            force[2] *= 0.4f;
             if (fn_80129D18(4, 4) < 3) {
-                force[1] += velocity[1] * 0.3f;
                 force[0] += velocity[0] * 0.3f;
+                force[1] += velocity[1] * 0.3f;
                 force[2] += velocity[2] * 0.3f;
             }
             PSVECCrossProduct(delta, force, (int *)cross);
-            matVecS_8018((Vec_8018 *)localAxis, (float *)M2C_FIELD(var_r20, char **, 0), (const Vec_8018 *)(var_r19 + 0xC));
+            matVecS_8018((Vec_8018 *)localAxis, (float *)M2C_FIELD(var_r20, char **, 0), &var_r19->axis);
             matVecS_8018((Vec_8018 *)worldAxis, (float *)(arg0 + 0x3C), (Vec_8018 *)localAxis);
             var_f1 = -PSVECDotProduct((int *)cross, worldAxis);
             if (5.0f < var_f1) {
@@ -641,24 +665,27 @@ void fn_8018CB3C(char *arg0) {
             var_f0_3 = (var_f0_3 > -0.045f) ? var_f0_3 : -0.045f;
             M2C_FIELD(var_r20, float *, 0xC) = var_f0_3;
             {
-                const char *temp_r3_4 = M2C_FIELD(var_r20, const char **, 0);
-                float x = M2C_FIELD(temp_r3_4, const float *, 0x24);
-                float y = M2C_FIELD(temp_r3_4, const float *, 0x28);
-                float z = M2C_FIELD(temp_r3_4, const float *, 0x2C);
-                const char *temp_r3_5;
-                rotation2.pos.x = x;
-                rotation2.pos.y = y;
-                rotation2.pos.z = z;
-                temp_r3_5 = arg0 + (M2C_FIELD(var_r20, int *, 8) * 0xC);
-                rotation2.pos.x = x + M2C_FIELD(temp_r3_5, const float *, 0xD94);
-                rotation2.pos.y = y + M2C_FIELD(temp_r3_5, const float *, 0xD98);
-                rotation2.pos.z = z + M2C_FIELD(temp_r3_5, const float *, 0xD9C);
-            }
-            {
-                float temp_f3_4 = M2C_FIELD(var_r20, float *, 0xC);
-                scaled2[0] = M2C_FIELD(var_r19, const float *, 0xC) * temp_f3_4;
-                scaled2[1] = M2C_FIELD(var_r19, const float *, 0x10) * temp_f3_4;
-                scaled2[2] = M2C_FIELD(var_r19, const float *, 0x14) * temp_f3_4;
+                float ax2 = var_r19->axis.x;
+                float ay2 = var_r19->axis.y;
+                float az2 = var_r19->axis.z;
+                {
+                    char *temp_r3_4 = M2C_FIELD(var_r20, char **, 0);
+                    rotation2.pos.x = M2C_FIELD(temp_r3_4, float *, 0x24);
+                    rotation2.pos.y = M2C_FIELD(temp_r3_4, float *, 0x28);
+                    rotation2.pos.z = M2C_FIELD(temp_r3_4, float *, 0x2C);
+                    {
+                        char *temp_r3_5 = arg0 + (M2C_FIELD(var_r20, int *, 8) * 0xC);
+                        rotation2.pos.x += M2C_FIELD(temp_r3_5, float *, 0xD94);
+                        rotation2.pos.y += M2C_FIELD(temp_r3_5, float *, 0xD98);
+                        rotation2.pos.z += M2C_FIELD(temp_r3_5, float *, 0xD9C);
+                    }
+                }
+                {
+                    float temp_f3_4 = M2C_FIELD(var_r20, float *, 0xC);
+                    scaled2[0] = ax2 * temp_f3_4;
+                    scaled2[1] = ay2 * temp_f3_4;
+                    scaled2[2] = az2 * temp_f3_4;
+                }
             }
             matVecS_8018((Vec_8018 *)rotated2, (float *)M2C_FIELD(var_r20, char **, 0), (Vec_8018 *)scaled2);
             fn_8014452C((int *)&rotation2, rotated2[1], rotated2[0], rotated2[2]);
@@ -675,33 +702,35 @@ void fn_8018CB3C(char *arg0) {
             float temp_f0_3 = M2C_FIELD(var_r20, float *, 0xC) + (0.016683351f * M2C_FIELD(var_r20, float *, 0x10));
             M2C_FIELD(var_r20, float *, 0xC) = temp_f0_3;
             if ((temp_f0_3 < 0.0f) || (M2C_FIELD(var_r20, float *, 0xC) > M2C_FIELD(var_r20, float *, 0x14))) {
-                float temp_f0_4;
-                var_f1_2 = M2C_FIELD(var_r20, float *, 0x14);
-                temp_f0_4 = M2C_FIELD(var_r20, float *, 0xC);
-                var_f1_2 = (var_f1_2 < temp_f0_4) ? var_f1_2 : temp_f0_4;
+                float hi = M2C_FIELD(var_r20, float *, 0x14);
+                float temp_f0_4 = M2C_FIELD(var_r20, float *, 0xC);
+                var_f1_2 = (hi < temp_f0_4) ? hi : temp_f0_4;
                 var_f1_2 = (var_f1_2 > 0.0f) ? var_f1_2 : 0.0f;
                 M2C_FIELD(var_r20, float *, 0xC) = (float)((2.0f * var_f1_2) - M2C_FIELD(var_r20, float *, 0xC));
                 M2C_FIELD(var_r20, float *, 0x10) = (float)-M2C_FIELD(var_r20, float *, 0x10);
             }
             {
-                const char *temp_r3_7 = M2C_FIELD(var_r20, const char **, 0);
-                float x = M2C_FIELD(temp_r3_7, const float *, 0x24);
-                float y = M2C_FIELD(temp_r3_7, const float *, 0x28);
-                float z = M2C_FIELD(temp_r3_7, const float *, 0x2C);
-                const char *temp_r3_8;
-                rotation4.pos.x = x;
-                rotation4.pos.y = y;
-                rotation4.pos.z = z;
-                temp_r3_8 = arg0 + (M2C_FIELD(var_r20, int *, 8) * 0xC);
-                rotation4.pos.x = x + M2C_FIELD(temp_r3_8, const float *, 0xD94);
-                rotation4.pos.y = y + M2C_FIELD(temp_r3_8, const float *, 0xD98);
-                rotation4.pos.z = z + M2C_FIELD(temp_r3_8, const float *, 0xD9C);
-            }
-            {
-                float temp_f3_5 = M2C_FIELD(var_r20, float *, 0xC);
-                scaled4[0] = M2C_FIELD(var_r19, const float *, 0xC) * temp_f3_5;
-                scaled4[1] = M2C_FIELD(var_r19, const float *, 0x10) * temp_f3_5;
-                scaled4[2] = M2C_FIELD(var_r19, const float *, 0x14) * temp_f3_5;
+                float ax4 = var_r19->axis.x;
+                float ay4 = var_r19->axis.y;
+                float az4 = var_r19->axis.z;
+                {
+                    char *temp_r3_7 = M2C_FIELD(var_r20, char **, 0);
+                    rotation4.pos.x = M2C_FIELD(temp_r3_7, float *, 0x24);
+                    rotation4.pos.y = M2C_FIELD(temp_r3_7, float *, 0x28);
+                    rotation4.pos.z = M2C_FIELD(temp_r3_7, float *, 0x2C);
+                    {
+                        char *temp_r3_8 = arg0 + (M2C_FIELD(var_r20, int *, 8) * 0xC);
+                        rotation4.pos.x += M2C_FIELD(temp_r3_8, float *, 0xD94);
+                        rotation4.pos.y += M2C_FIELD(temp_r3_8, float *, 0xD98);
+                        rotation4.pos.z += M2C_FIELD(temp_r3_8, float *, 0xD9C);
+                    }
+                }
+                {
+                    float temp_f3_5 = M2C_FIELD(var_r20, float *, 0xC);
+                    scaled4[0] = ax4 * temp_f3_5;
+                    scaled4[1] = ay4 * temp_f3_5;
+                    scaled4[2] = az4 * temp_f3_5;
+                }
             }
             matVecS_8018((Vec_8018 *)rotated4, (float *)M2C_FIELD(var_r20, char **, 0), (Vec_8018 *)scaled4);
             fn_8014452C((int *)&rotation4, rotated4[1], rotated4[0], rotated4[2]);
@@ -730,14 +759,13 @@ void fn_8018CB3C(char *arg0) {
         }
         var_r18 += 1;
         var_r20 += 0x80;
-        var_r19 += 0x40;
+        var_r19 += 1;
     } while (var_r18 < 0x11);
 }
-#pragma scheduling on
-#pragma use_lmw_stmw reset
 
 extern float lbl_80561FC8, lbl_80561FCC, lbl_80561FD8, lbl_80561FDC, lbl_80561FE0, lbl_80561FE4, lbl_80561FE8, lbl_8055E460;
 extern float lbl_80561FD0, lbl_80561FD4, lbl_80558DC4;
+#pragma scheduling invalid_target
 void fn_8018DA5C(char *arg0, char *arg1) {
     char *p = arg0; float *v = (float *)(arg0 + 0xd94); char *out = arg1; int n;
     float inv=0.2f;
@@ -770,8 +798,8 @@ void fn_8018DA5C(char *arg0, char *arg1) {
             float ey=M2C_FIELD(entry,float*,0x24), ez=M2C_FIELD(entry,float*,0x28);
             dist=(float)fabs(ez);
             t=dist-0.7f;
-            z=cached+(-0.5f)*ez*scale;
             x=cached+scale*((-0.3f)*(M2C_FIELD(entry,float*,0x20)*t));
+            z=cached+(-0.5f)*ez*scale;
             y=cached+scale*((-0.3f)*(ey*t));
             t=3.0f-dist;
             if (t < cached) t = cached;
@@ -812,8 +840,6 @@ void fn_8018DA5C(char *arg0, char *arg1) {
         }
     }
 }
-
-#pragma scheduling on
 extern float PSVECMag(void *);
 extern void PSVECNormalize(float *, float *);
 extern float lbl_80561F74, lbl_80561F88, lbl_80561FC0;
@@ -1847,7 +1873,7 @@ void fn_8018F538(unsigned char *arg0, unsigned char *arg1) {
     *(int *)(p.dst + 0x29C) = *(int *)(arg0 + 0x1E3C);
 }
 #pragma scheduling on
-void fn_8018F6F8(void *arg0) {
+void resetSceneLights(void *arg0) {
     int i;
     float divisor;
     float value;
