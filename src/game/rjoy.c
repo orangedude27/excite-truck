@@ -188,7 +188,7 @@ int fn_802E7A70(unsigned int handle) {
     return 1;
 }
 #pragma pop
-int fn_802E7AF4(int eventType, int shutdownMode) {
+int handleResetEvent(int eventType, int shutdownMode) {
     /* On event type 1, trigger a WPAD shutdown/reconnect sequence and wait until the shutdown completes. */
     if (eventType == 1) {
         fn_80128684();
@@ -283,7 +283,7 @@ void fn_802E7C64(void) {
         *callbackSlot = previousCallback;
         callbackSlot += 1;
     } while (controllerIndex < 4);
-    KERNEL_AddResetCallback((int)fn_802E7AF4, (int)&lbl_8055D22C);
+    KERNEL_AddResetCallback((int)handleResetEvent, (int)&lbl_8055D22C);
     fn_802E7C40();
     lbl_80560009 = 1;
 }
