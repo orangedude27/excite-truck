@@ -29284,16 +29284,16 @@ s32 WriteUARTN(char *msg, u32 n) {
     return err;
 }
 
-u16 fn_8006D8D0(u32 arg0) {
-    u32 diff;
-    u8 val;
-    diff = arg0 - 8;
-    if ((diff & 1) != 0) {
+/* Return the full size of a GKI buffer given its user payload pointer: read the pool id from the BUFFER_HDR_T just before it and look up that pool's size in gki_cb.com.freeq. Returns 0 for a misaligned header or an out-of-range pool id. */ u16 fn_8006D8D0(u32 pBuf) {
+    u32 pHeader;
+    u8 poolId;
+    pHeader = pBuf - 8;
+    if ((pHeader & 1) != 0) {
         return 0;
     }
-    val = *(u8 *)((u8 *)diff + 4);
-    if (val < 9) {
-        return *(u16 *)((u8 *)&lbl_803946C0 + 0x289E8 + (val << 4));
+    poolId = *(u8 *)((u8 *)pHeader + 4);
+    if (poolId < 9) {
+        return *(u16 *)((u8 *)&lbl_803946C0 + 0x289E8 + (poolId << 4));
     }
     return 0;
 }
