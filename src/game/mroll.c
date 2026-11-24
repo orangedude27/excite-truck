@@ -885,7 +885,7 @@ void fn_80241010(void *label, s32 rankIndex, s32 valuePtr, s32 flag) {
 }
 
 /* Constructs an MRollContainer's five stat-label widgets (0x28 bytes each at +0x2C), zeroes the 0x2C-byte header/pair block, and clears the leading flag byte of each of the five 0x64-byte text blocks. */
-/* Constructs an MRollContainer's five stat-label widgets (0x28 bytes each at +0x2C), zeroes the 0x2C-byte header/pair block, and clears the leading flag byte of each of the five 0x64-byte text blocks. */ /* Constructs an MRollContainer's five stat-label widgets (0x28 bytes each at +0x2C), zeroes the 0x2C-byte header/pair block, and clears the leading flag byte of each of the five 0x64-byte text blocks. */ void *MRollContainer_init(void *container) {
+void *MRollContainer_init(void *container) {
     fn_8002F53C((u8 *)container + 0x2C, MRollStatLabel_init, MRollStatLabel_deletingDestructor, 0x28, 5);
     memset(container, 0, 0x2C);
     *(u8 *)((u8 *)container + 0xF4) = 0;
