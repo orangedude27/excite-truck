@@ -8,7 +8,7 @@ extern int NANDCheck(unsigned int, unsigned int, unsigned int *);
 extern char lbl_8034D9C0[];
 // split_file divides it into the game's real files (file_status shows its range).
 extern int rmemcardWaitAsync(void *, void (*)(void), int);
-extern void fn_802E9010(void);
+extern void rmemcardPumpAsync(void);
 extern int NANDInit(void);
 extern void Abend_Panic(const char *, ...);
 extern void fn_801282F4(void);
@@ -324,7 +324,7 @@ void rmemcardCorruptReset(void) {
 int fn_802E8C6C(int request) {
 #define KERNEL_RESET_NOTIFY 1
 #define rmemcard_wait_async rmemcardWaitAsync
-#define rmemcard_pump_async fn_802E9010
+#define rmemcard_pump_async rmemcardPumpAsync
 #define rmemcard_reset_op_name lbl_8034DEC4
     /* Reset callback registered in fn_802E8CA8: when the reset is actually on,
      * block until the async NAND save machine goes idle, pumping it once per
@@ -349,7 +349,7 @@ int fn_802E8C6C(int request) {
     fn_801282EC(0x80);
     lbl_80560020 = fn_8012850C(0x55730, lbl_8034DEF4);
     fn_802E6B50();
-    fn_80127C90((void *)fn_802E9010, &lbl_8055D248);
+    fn_80127C90((void *)rmemcardPumpAsync, &lbl_8055D248);
     KERNEL_AddResetCallback((void *)fn_802E8C6C, &lbl_8055D250);
 }
 
@@ -358,7 +358,7 @@ void NandSaveShutdown(void) {
 #define sMemCardEndOpName lbl_8034DF00
 #define sNandSaveAsyncBuffer lbl_80560020
     ((int (*)(void *, void (*)(void)))rmemcardWaitAsync)(sMemCardEndOpName, rmemcardYield);
-    fn_80127D58((void *)fn_802E9010);
+    fn_80127D58((void *)rmemcardPumpAsync);
     fn_802E6B94();
     fn_80128670(sNandSaveAsyncBuffer);
     sNandSaveAsyncBuffer = 0;
@@ -402,7 +402,7 @@ extern void fn_80127C90(void *, void *);
 extern void KERNEL_AddResetCallback(void *, void *);
 extern int NANDInit(void);
 extern void rmemcardYield(void);
-extern void fn_802E9010(void);
+extern void rmemcardPumpAsync(void);
 extern int fn_802E8C6C(int);
 extern char lbl_8034DF00[];
 extern char lbl_8034DED4[];
@@ -438,7 +438,7 @@ u32 fn_802E8D84(void) { return 1; }
  * rmemcard_yield        - resumes the thread the NAND wait put to sleep, i.e.
  *                         gives the async machine a turn.
  * rmemcard_wait_async   - runs a pump callback until the async NAND machine
- *                         (fn_802E9010) leaves the busy states, giving up
+ *                         (rmemcardPumpAsync) leaves the busy states, giving up
  *                         after 0xFA0 ticks; 1 = idle, 0 = timed out.
  * rmemcard_test_banner_ok - 1 when the title's banner.bin exists and has the
  *                         size the game expects (0xF0A0 bytes).
@@ -557,7 +557,7 @@ u32 fn_802E8D84(void) { return 1; }
 
 #pragma push
 #pragma optimization_level 3
-void fn_802E9010(void) {
+void rmemcardPumpAsync(void) {
 #define rmemcardSave    lbl_80507288
 #define bannerPath      lbl_8034E108
 #define beginWrite      NandBeginWrite
@@ -740,7 +740,7 @@ enum {
 
 #pragma scheduling invalid_target
 /* rmemcardWriteStep - one step of the removable-memory-card ("rmemcard") async
- * NAND file write.  Called repeatedly (from fn_802E9010); each call advances
+ * NAND file write.  Called repeatedly (from rmemcardPumpAsync); each call advances
  * the machine in ctx by one NAND operation.  The async calls all complete
  * through fn_802E95CC, which sets ctx's async_done flag (0x250) and stores the
  * operation's result in async_result (0x254); the machine polls that flag,
