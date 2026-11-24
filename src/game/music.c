@@ -42,7 +42,7 @@ void fn_8020A600(void) {
 #pragma scheduling on
 
 s32 fn_802E2C20(void);            /* milliseconds since boot */
-extern const char lbl_8033C318[]; /* "music: setting song idx to %d" */
+extern const char gSetSongIdxFmt[]; /* "music: setting song idx to %d" */
 extern s32 gRequestedSongIdx;          /* song index last requested (-1 = no music) */
 extern s32 gSongChangeTimeMs;          /* ms stamp of that request; fn_8020A100 ramps the crossfade from it */
 
@@ -53,7 +53,7 @@ extern s32 gSongChangeTimeMs;          /* ms stamp of that request; fn_8020A100 
  * since that stamp. */
 void musicRequestSong(s32 songIdx) {
     if (songIdx != gRequestedSongIdx) {
-        fn_802E30C8(lbl_8033C318, songIdx);
+        fn_802E30C8(gSetSongIdxFmt, songIdx);
         gRequestedSongIdx = songIdx;
         gSongChangeTimeMs = fn_802E2C20();
     }
