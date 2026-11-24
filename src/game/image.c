@@ -61,6 +61,7 @@ extern f32 fn_80235F64(int);
 /* Return the image height as an integer, rounding toward zero via a +/-0.5 bias;
  * return 1 for a null image handle. */
 int gxGetImageHeight(void* image) {
+    /* Return the image node's float height rounded to the nearest integer, or 1 for a null handle. */
     f32 height;
     f32 roundedHeight;
     if (image != 0) {
