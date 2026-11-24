@@ -142,11 +142,11 @@ typedef struct SimpleHeap {
 #pragma scheduling invalid_target
 /* Resets TEV swap modes for stages 0-4 to the identity ras/tex swap selectors. */
 void GXResetTevSwapModes0To4(void) {
-    GXSetTevSwapMode(0, 0, 0);
-    GXSetTevSwapMode(1, 0, 0);
-    GXSetTevSwapMode(2, 0, 0);
-    GXSetTevSwapMode(3, 0, 0);
-    GXSetTevSwapMode(4, 0, 0);
+    GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    GXSetTevSwapMode(GX_TEVSTAGE2, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    GXSetTevSwapMode(GX_TEVSTAGE3, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    GXSetTevSwapMode(GX_TEVSTAGE4, GX_TEV_SWAP0, GX_TEV_SWAP0);
 }
 #pragma scheduling on
 /* Set up the single-texture TEV pipeline: texcoord 0 comes from TEX0 through the
