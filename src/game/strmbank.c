@@ -1,5 +1,5 @@
 // strmbank — the global stream-bank manager and its null implementation.
-// Symbol guide: initStrmBank (fn_802E7578), shutdownStrmBank (fn_802E759C),
+// Symbol guide: initStrmBank (fn_802E7578), shutdownStrmBank (destroyStrmBankManager),
 // loadStrmBank (fn_802E75E4), bank-unload helpers (unloadStrmBank, fn_802E765C),
 // setStrmBankLevel (fn_802E7684), null-manager creation (createNullStrmBank) and the
 // null manager's vtable methods (fn_802E76F0..fn_802E7764).
@@ -46,7 +46,7 @@ struct StrmBankManager {
 };
 #pragma cplusplus on
 /* Destroy and clear the global stream-bank manager. */
-extern "C" void fn_802E759C(void) {
+extern "C" void destroyStrmBankManager(void) {
     if (strmBankManager) {
         delete (StrmBankObject *)strmBankManager;
         strmBankManager = 0;
