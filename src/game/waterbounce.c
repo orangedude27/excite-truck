@@ -782,7 +782,7 @@ void fn_8020F21C(void *sounds) {
 }
 
 #pragma scheduling on
-void fn_8020F240(void *arg0) {
+void CarSound_ResetBackfire(void *arg0) {
     /* Resets the sound/effect node at +8 to its default active state (volume/value to 1.0, flags updated). */
     void *node = *(void **)((char *)arg0 + 8);
     f32 defaultValue;
