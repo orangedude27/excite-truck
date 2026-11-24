@@ -7845,9 +7845,10 @@ void bta_hh_add_device_to_list(void *devCb, s8 handle, s16 attrMask, void *desc,
 
 BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
     UINT8 xx;
+    UINT8 *p_list;
     for (xx = 0; xx < lbl_80559030[0]; xx++) {
-        UINT8 *p_list = *(UINT8 **)(lbl_80559030 + 4);
-        if ((UINT8)(sub_class >> 2) == p_list[xx * 2]) {
+        p_list = *(UINT8 **)(lbl_80559030 + 4);
+        if (p_list[xx * 2] == (UINT8)(sub_class >> 2)) {
             ((UINT8 *)p_cb)[0x15] = p_list[xx * 2 + 1];
             return TRUE;
         }
@@ -22776,23 +22777,24 @@ void rfcomm_l2cap_if_init(void) {
 }
 
 void *rfc_alloc_multiplexer_channel(u8 *, s8);
+/* L2CAP connect indication for the RFCOMM PSM: find or allocate the peer's multiplexer control block (MCB), cache it in the lcid-indexed MCB table, reject with L2CA_ConnectRsp if none is available, otherwise record the lcid and dispatch RFC_MX_EVENT_CONN_IND to the MX state machine. */
 void RFCOMM_ConnectInd(BD_ADDR bd_addr, UINT16 lcid, UINT16 psm, UINT8 id) {
     u8 local_id = id;
-    void *mcb;
-    u8 *base;
-    u32 offset;
+    void *p_mcb;
+    u8 *rfcCb;
+    u32 mcbOffset;
 
     #pragma unused(psm)
-    mcb = rfc_alloc_multiplexer_channel(bd_addr, FALSE);
-    base = lbl_803C4828;
-    offset = (lcid - 0x40) * 4;
-    *(void **)((base + 0x3C) + offset) = mcb;
-    if (mcb == NULL) {
+    p_mcb = rfc_alloc_multiplexer_channel(bd_addr, FALSE);
+    rfcCb = lbl_803C4828;
+    mcbOffset = (lcid - 0x40) * 4;
+    *(void **)((rfcCb + 0x3C) + mcbOffset) = p_mcb;
+    if (p_mcb == NULL) {
         L2CA_ConnectRsp(bd_addr, local_id, lcid, 4, 0);
         return;
     }
-    *(UINT16 *)((u8 *)mcb + 0x68) = lcid;
-    fn_800916F4(mcb, 0xA, (s16 *)&local_id);
+    *(UINT16 *)((u8 *)p_mcb + 0x68) = lcid;
+    fn_800916F4(p_mcb, 0xA, (s16 *)&local_id);
 }
 
 #pragma push
