@@ -455,7 +455,7 @@ void fn_802ECC18(u8 mode) {
 
 #pragma dont_inline on
 /* One frame of the black screen this module paints while the home-button
- * handover runs (fn_802ECC74 repeats it until the Home Menu takes the screen
+ * handover runs (HomeMenu_drainHandover repeats it until the Home Menu takes the screen
  * over), skipped on the frames fn_8002173C() spent on a pending sound request:
  * fn_802CFCA0() opens the frame, fn_802D02F8() switches on the fade colour the
  * screen is covered with -- opaque black -- drawFifoTriangles() is asked for no
@@ -476,7 +476,7 @@ void fn_802ECC20(void) {
 /* Drain the Home-button handover: when one was requested, paint a black frame
  * and service the periodic callback each frame while the Home Menu is active,
  * then paint one final frame and clear the request. A guard prevents reentry. */
-void fn_802ECC74(void) {
+void HomeMenu_drainHandover(void) {
 #define gHomeMenuActive lbl_805600E8
 #define gHandoverRequested lbl_805600EB
 #define gHandoverRunning lbl_805600ED

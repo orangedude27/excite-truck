@@ -51,7 +51,7 @@ void fn_8011C2EC(s32, void *);
 void fn_801195D8();
 #define M2C_FIELD(base, type, offset) (*(type)((u8 *)(base) + (offset)))
 
-extern void* fn_802ECC74(void*);
+extern void* HomeMenu_drainHandover(void*);
 extern void *fn_8011FFC4(s32);
 extern f32 lbl_80329D48[];
 extern const f64 lbl_805611D8;
@@ -9603,8 +9603,8 @@ void fn_80127434(void) {
 
 #pragma dont_inline on
 void fn_80127440(void* alarm) {
-    /* Periodic alarm callback: drain home-button work (fn_802ECC74), then dispatch pending background tasks (fn_80127F94). */
-    fn_80127F94(fn_802ECC74(alarm));
+    /* Periodic alarm callback: drain home-button work (HomeMenu_drainHandover), then dispatch pending background tasks (fn_80127F94). */
+    fn_80127F94(HomeMenu_drainHandover(alarm));
 }
 #pragma dont_inline reset
 
@@ -9615,8 +9615,8 @@ void fn_80127464(void *alarm) {
 
 void fn_80127468(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
-    /* Alarm callback: drain pending home-button work via fn_802ECC74, then hand off to fn_80127F70. */
-    fn_80127F70(fn_802ECC74(alarm));
+    /* Alarm callback: drain pending home-button work via HomeMenu_drainHandover, then hand off to fn_80127F70. */
+    fn_80127F70(HomeMenu_drainHandover(alarm));
 }
 
 /* Platform exit hook: run the registered exit callbacks for this group, then
