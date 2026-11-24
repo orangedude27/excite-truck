@@ -22779,6 +22779,7 @@ void rfcomm_l2cap_if_init(void) {
 void *rfc_alloc_multiplexer_channel(u8 *, s8);
 /* L2CAP connect indication for the RFCOMM PSM: find or allocate the peer's multiplexer control block (MCB), cache it in the lcid-indexed MCB table, reject with L2CA_ConnectRsp if none is available, otherwise record the lcid and dispatch RFC_MX_EVENT_CONN_IND to the MX state machine. */
 void RFCOMM_ConnectInd(BD_ADDR bd_addr, UINT16 lcid, UINT16 psm, UINT8 id) {
+    /* L2CAP connect indication for the RFCOMM PSM: find or allocate the peer's multiplexer control block (MCB), cache it in the lcid-indexed MCB table, reject with L2CA_ConnectRsp if none is available, otherwise record the lcid and dispatch RFC_MX_EVENT_CONN_IND to the MX state machine. */
     u8 local_id = id;
     void *p_mcb;
     u8 *rfcCb;
