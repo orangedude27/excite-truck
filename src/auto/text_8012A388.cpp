@@ -470,7 +470,7 @@ extern "C" s32 fn_8012AA60(void *resource, s32 avail, s32 unusedOffset) {
  * its fields in place, and validate the header against fileName and expectedField. */
 extern "C" s32 fn_8012AB34(s32 fileHandle, s32 headerBuffer, s32 fileName, s32 expectedField) {
     s32 isValid = 0;
-    if (((s32 (*)(s32, s32, s32))fn_802E39D0)(fileHandle, headerBuffer, RST0_HEADER_SIZE) != 0) {
+    if (((s32 (*)(s32, s32, s32))File_readExact)(fileHandle, headerBuffer, RST0_HEADER_SIZE) != 0) {
         Rst0Header_byteSwap(headerBuffer);
         isValid = Rst0Header_validate(headerBuffer, fileName, expectedField);
     }
