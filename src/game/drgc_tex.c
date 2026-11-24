@@ -133,7 +133,7 @@ typedef struct DrTlutObj {
 } DrTlutObj;
 
 /* One slot of the drgc texture table (lbl_8055FE28, 0xF4 bytes per slot;
- * fn_802D7600 hands out a free one and fn_802D768C frees it): the runtime
+ * fn_802D7600 hands out a free one and drTexRecordFree frees it): the runtime
  * texture record the drCreateTexture (fn_802D8E9C) format creators build.
  * Only the fields this TU touches are named; the two GX object pairs are 0x40
  * and 0xC bytes apart, matching GXInitTexObj()/GXInitTlutObj(). */
@@ -181,7 +181,7 @@ enum DrTexMap {
 
 #pragma dont_inline on
 /* Marks a drgc texture record slot free and releases its external resource handle, if any. */
-void fn_802D768C(void *record) {
+void drTexRecordFree(void *record) {
     extern void fn_80128658(s32);
     s32 resourceHandle;
 
@@ -867,7 +867,7 @@ void fn_802D8FB4(void *texObj) {
     if (tex->alphaClut != 0) {
         fn_80128670(tex->alphaClut);
     }
-    fn_802D768C(texObj);
+    drTexRecordFree(texObj);
     if (lbl_8055FE18 == texObj) {
         lbl_8055FE18 = 0;
     }
@@ -901,10 +901,10 @@ void fn_802D9154(void) {
     fn_802D7600(lbl_8055D118);
 }
 
-extern void fn_802D768C(void *);
+extern void drTexRecordFree(void *);
 void fn_802D915C(void *record) {
     /* Texture-manager entry point: release a drgc texture record (free its slot and resource handle) via the shared helper. */
-    fn_802D768C(record);
+    drTexRecordFree(record);
 }
 
 extern void drInvalidateVertexFormatCache(void);
