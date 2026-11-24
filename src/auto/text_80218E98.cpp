@@ -4102,7 +4102,7 @@ extern "C" void *fn_8021EB9C(void *self, s32 deletingFlag) {
     return self;
 }
 
-extern "C" void fn_802C2FC8(s32, s32, s32, s32, s32);
+extern "C" void gxCanvasSetClipRect(s32, s32, s32, s32, s32);
 extern "C" void fn_80228DC4(s32, s32, s32, s32, s32, s32);
 extern "C" void fn_8022B390(s32, s32, s32, s32*, s32*);
 extern "C" void fn_802C47B8(s32, s32, s32, s32, s32, s32);
@@ -4116,7 +4116,7 @@ extern "C" void fn_8021EC1C(void* entity, s32 canvas) {
     fn_802C3034(canvas);
     posX = *(s32*)((u8*)entity+4);
     posY = *(s32*)((u8*)entity+8);
-    fn_802C2FC8(canvas, posX, posY, posX + ((Vf78*)entity)->get(), *(s32*)((u8*)entity+0x10));
+    gxCanvasSetClipRect(canvas, posX, posY, posX + ((Vf78*)entity)->get(), *(s32*)((u8*)entity+0x10));
     ((void(*)(void*,s32))fn_802192A0)(entity,canvas);
     if (*(s32*)((u8*)entity+0xA60)) {
         posY_2 = *(s32*)((u8*)entity+8);
@@ -4125,7 +4125,7 @@ extern "C" void fn_8021EC1C(void* entity, s32 canvas) {
     }
     posX_3 = *(s32*)((u8*)entity+4);
     posY_3 = *(s32*)((u8*)entity+8);
-    fn_802C2FC8(canvas, posX_3, posY_3, posX_3 + ((Vf78*)entity)->get(), *(s32*)((u8*)entity+0x10));
+    gxCanvasSetClipRect(canvas, posX_3, posY_3, posX_3 + ((Vf78*)entity)->get(), *(s32*)((u8*)entity+0x10));
     fn_8022B91C(*(s32*)((u8*)entity+0xA58),*(s32*)((u8*)entity+4),*(s32*)((u8*)entity+8),*(s32*)((u8*)entity+0xA54),(*(u8*)((u8*)entity+0x19)!=0));
     if (*(u8*)((u8*)entity+0x19)) {
         fn_8022B390(*(s32*)((u8*)entity+0xA58),*(s32*)((u8*)entity+0xA54),*(s32*)((u8*)entity+0x250),&outX,&outY);

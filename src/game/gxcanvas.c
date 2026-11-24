@@ -179,7 +179,7 @@ void fn_802C2FC4(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-/* Set a GxCanvas clip rectangle: min corner from the unsigned args (masked to the s32 range), max corner capped by the canvas width/height and the signed args. */ void fn_802C2FC8(void *canvas, u32 newMinX, u32 newMinY, s32 newMaxX, s32 newMaxY)
+/* Set a GxCanvas clip rectangle: min corner from the unsigned args (masked to the s32 range), max corner capped by the canvas width/height and the signed args. */ void gxCanvasSetClipRect(void *canvas, u32 newMinX, u32 newMinY, s32 newMaxX, s32 newMaxY)
 {
   s32 clampedMaxY;
   s32 clampedMaxX;
