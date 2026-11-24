@@ -30,7 +30,7 @@ extern void fn_802DAA18(void *);
 // write into one of the shared bone tables; fn_802DAA18 applies the current
 // record through the copy callback selected by its elemType.
 struct StackAlloc {
-    /* 0x00 */ void *vtable;    // lbl_8034C8E8, destructor at +8
+    /* 0x00 */ void *vtable;    // StackAlloc_vtable, destructor at +8
     /* 0x04 */ unsigned char *buffer; // arena base
     /* 0x08 */ void *name;      // "BoneHandleAlloc"
     /* 0x0C */ int capacity;    // arena size
@@ -59,7 +59,7 @@ struct StackAllocRecord {
 #pragma scheduling off
 extern void fn_80128668(void *);
 extern void fn_80128670(int);
-extern char lbl_8034C8E8[];
+extern char StackAlloc_vtable[];
 #pragma scheduling on
 #pragma opt_propagation off
 void fn_802D9C5C(int arg0, void *arg1, int arg2)
@@ -485,7 +485,7 @@ void fn_802DA1F4(int arg0, void *arg1, int arg2) {
         *(int *)((char *)allocator + 0x10) = 0;
         *(int *)((char *)allocator + 0xC) = 0x19000;
         *(void **)((char *)allocator + 4) = arena;
-        *(void **)allocator = lbl_8034C8E8;
+        *(void **)allocator = StackAlloc_vtable;
         *(void **)((char *)allocator + 0x14) = (void *)fn_802D9C5C;
         *(void **)((char *)allocator + 0x18) = (void *)fn_802D9DE4;
         *(void **)((char *)allocator + 0x1C) = (void *)fn_802DA1F4;
@@ -539,7 +539,7 @@ void fn_802DA1F4(int arg0, void *arg1, int arg2) {
 /* Destructor-like cleanup for the stack allocator object: installs its vtable, frees the owned buffer, and optionally deletes the object. */
 void *StackAlloc_deletingDestructor(void *object, int shouldDelete) {
     if (object) {
-        *(void **)object = lbl_8034C8E8;
+        *(void **)object = StackAlloc_vtable;
         fn_80128670(*(int *)((char *)object + 4));
         if (object)
             *(int *)((char *)object + 4) = 0;
@@ -554,7 +554,7 @@ void fn_802DA4C4(void) {
     void *instance = lbl_8055FE5C;
     if (instance != 0) {
         if (instance != 0) {
-            *(volatile void **)instance = lbl_8034C8E8;
+            *(volatile void **)instance = StackAlloc_vtable;
             fn_80128670(*(int *)((char *)instance + 4));
             if (instance != 0)
                 *(int *)((char *)instance + 4) = 0;
