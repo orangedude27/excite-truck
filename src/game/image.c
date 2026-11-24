@@ -11,7 +11,7 @@ extern f32 lbl_80564EEC;
 extern int fn_8023512C(char*);
 extern int fn_802E30C8(const char*, ...);
 extern unsigned int strlen(const char*);
-extern char lbl_8034B178[];
+extern char gxGetImageLongNameFmt[];
 extern unsigned char lbl_8055FC14;
 #define ROUND_HALF      lbl_80564EE8   /* 0.5f: rounding bias for image dimensions */
 #define ZERO_F          lbl_80564EEC   /* 0.0f */
@@ -22,7 +22,7 @@ int gxGetImageArt(char* imageName) {
     /* Get an image handle, but reject names longer than 15 characters (once). */
     if (strlen(imageName) > 15) {
         if (WARNED_LONG_NAME == 0) {
-            fn_802E30C8(lbl_8034B178, imageName);
+            fn_802E30C8(gxGetImageLongNameFmt, imageName);
         }
         WARNED_LONG_NAME = 1;
         return 0;
