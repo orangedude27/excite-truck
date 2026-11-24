@@ -143,7 +143,7 @@ extern void fn_802E3550(void);
 #pragma cplusplus on
 /* Shut down file subsystems: close remaining open files, then destroy the
    primary (lbl_8055FF18) and secondary (lbl_8055FF1C) file-system objects. */
-extern "C" void fn_802E34DC(void) {
+extern "C" void File_ShutdownSubsystem(void) {
     class FileSystem {
     public:
         virtual void destroy(s32);

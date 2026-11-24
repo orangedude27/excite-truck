@@ -682,7 +682,7 @@ extern void fn_801282A0(void);
 extern void fn_802E2A58(void);
 extern void fn_802E3090(void);
 extern void fn_801293C4(void);
-extern void fn_802E34DC(void);
+extern void File_ShutdownSubsystem(void);
 extern void fn_802E77AC(void);
 extern void fn_802E2A1C(void);
 extern int fn_80004D64(void *);
@@ -709,7 +709,7 @@ void KERNEL_Shutdown(void) {
     fn_802E2A58();
     fn_802E3090();
     fn_801293C4();
-    fn_802E34DC();
+    File_ShutdownSubsystem();
     fn_802E77AC();
 }
 extern void OSPanic(const char *, int, const char *, ...);
@@ -943,7 +943,7 @@ extern void ConfigShutdown(void);
 extern void fn_801282A0(void);
 extern void fn_802E3090(void);
 extern void fn_801293C4(void);
-extern void fn_802E34DC(void);
+extern void File_ShutdownSubsystem(void);
 extern void fn_802E77AC(void);
 extern int fn_80004D64(void *);
 extern int fn_802E2A5C(void);
