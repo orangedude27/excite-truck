@@ -714,27 +714,27 @@ void fn_802E5950(int dirName, int fileName) {
  * sound-name queue (lbl_804FC558, count lbl_8055FF78), hand the name to the
  * resource system, then walk the directory's loaded entries and allocate a
  * voice object for each one tagged 'SFX0', stopping at the first failure. */
-void fn_802E59BC(unsigned char *dirName) {
-    const unsigned char *src = dirName;
-    int remaining;
-    unsigned char *slot;
-    unsigned char c;
-    slot = lbl_804FC558 + (lbl_8055FF78++ << 5);
-    remaining = SFX_NAME_SLOT_SIZE;
+/* Queue an SFX0 sound directory for playback: copy its name (up to 0x20 bytes, NUL-terminated) into the next slot of the sound-name queue lbl_804FC558 (count lbl_8055FF78), request the directory from the resource loader fn_8012BEF0, then walk its loaded entries and allocate a voice object for each one tagged 'SFX0' via fn_802E58A0, stopping at the first failure. */ void fn_802E59BC(unsigned char *sfxDirName) {
+    const unsigned char *srcName = sfxDirName;
+    int charsLeft;
+    unsigned char *dstSlot;
+    unsigned char ch;
+    dstSlot = lbl_804FC558 + (lbl_8055FF78++ << 5);
+    charsLeft = SFX_NAME_SLOT_SIZE;
     goto copy;
 slot_check:
-    if (--remaining > 0)
+    if (--charsLeft > 0)
         goto copy;
-    slot[-1] = 0;
+    dstSlot[-1] = 0;
     goto done;
 copy:
-    c = *src++;
-    *slot++ = c;
-    if ((signed char)c != 0)
+    ch = *srcName++;
+    *dstSlot++ = ch;
+    if ((signed char)ch != 0)
         goto slot_check;
 done:
-    fn_8012BEF0(dirName);
-    fn_8012C41C((void (*)())fn_802E58A0, 0, dirName);
+    fn_8012BEF0(sfxDirName);
+    fn_8012C41C((void (*)())fn_802E58A0, 0, sfxDirName);
 }
 
 extern void fn_802E5D5C(void *);
