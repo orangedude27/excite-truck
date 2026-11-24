@@ -332,7 +332,7 @@ int fn_802CA7F4(const char *path) { return strchr(path, '/') != 0; }
 
 /* If the path is a special "*"-prefixed extraction name, return the name after
    its '/' (warning if missing); otherwise return the path unchanged. */
-int fn_802CA824(int path) {
+int texGetExtractionName(int path) {
     int separator;
     if (((int (*)(const unsigned char *))fn_802CA7DC)((const unsigned char *)path) != 0) {
         separator = (int)strchr((char *)path, 0x2F);
@@ -343,7 +343,7 @@ int fn_802CA824(int path) {
     return path;
 }
 
-extern int fn_802CA824(int);
+extern int texGetExtractionName(int);
 extern void fn_802CA57C(void *, int, int, int);
 extern int fn_802CA4E0(int, int, int, int, int);
 extern int stricmp(const char *, const char *);
@@ -401,7 +401,7 @@ int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
     for (index = 0; index < 0x200; index++) {
         entry = &((struct Entry *)lbl_8055FCB0)[index];
         if (entry->refCount > 0) {
-            if (stricmp(entry->name, (char *)fn_802CA824((int)(char *)path_value)) == 0 &&
+            if (stricmp(entry->name, (char *)texGetExtractionName((int)(char *)path_value)) == 0 &&
                 entry->type == arg1 &&
                 flag == 0) {
                 if (((int (*)(int, int, int))fn_802CA7D4)((int)(char *)path_value, arg3, ((struct Entry *)lbl_8055FCB0)[index].arg3) == 0) {
@@ -464,7 +464,7 @@ copy1_done:
             entry->size = 0;
     } else {
         fn_802E30C8((const char *)(strings + 0x380), (char *)path_value);
-        src = (char *)fn_802CA824((int)(char *)path_value);
+        src = (char *)texGetExtractionName((int)(char *)path_value);
         dst = entry->name;
         count = 0x20;
         goto copy2_body;
