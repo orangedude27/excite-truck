@@ -10,7 +10,7 @@ extern f32 fn_80129DC4(s32, f32, f32);
 extern f64 cos(void);
 extern f64 sin(f32);
 extern void PSVECCrossProduct(void *, void *, void *);
-extern f32 fn_801DCF48(s32, u32, u32, u32, u32, u32, u32, u32, f32, f32);
+extern f32 fn_801DCF48(void *, f32, f32);
 extern s8 lbl_8055F308;
 extern u8 lbl_80498D00[];
 extern f32 lbl_8055F30C, lbl_805639CC, lbl_805639E0, lbl_805639F8, lbl_805639E8;
@@ -333,9 +333,15 @@ typedef struct {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_80253104(s32 arg0, void *arg1) {
+    f32 z, y, x;
     CamEntry80253104 *cam;
     CamBasis80253104 basis;
-    ((CamEntry80253104 *)lbl_80498D00)[arg0].pos = *(Vec *)((u8 *)arg1 + 0x12C);
+    x = *(volatile f32 *)((u8 *)arg1 + 0x12C);
+    y = *(volatile f32 *)((u8 *)arg1 + 0x130);
+    z = *(volatile f32 *)((u8 *)arg1 + 0x134);
+    ((CamEntry80253104 *)lbl_80498D00)[arg0].pos.x = x;
+    ((CamEntry80253104 *)lbl_80498D00)[arg0].pos.y = y;
+    ((CamEntry80253104 *)lbl_80498D00)[arg0].pos.z = z;
     cam = (CamEntry80253104 *)lbl_80498D00;
     fn_801BDA74(arg0, arg1);
     if (cam[arg0].flag30 == 0) {
