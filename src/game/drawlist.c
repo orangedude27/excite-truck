@@ -1386,7 +1386,7 @@ extern "C" void fn_802C9D88(int element) {
 #pragma cplusplus reset
 #pragma pop
 
-void *fn_802C9DE8(void *obj, int listCount) {
+void *DrawListWrapper_init(void *obj, int listCount) {
 #define NewGenericDrawList fn_801E7840
     /* DrawListWrapper constructor: creates the GenericDrawList of `listCount` entries
      * this wrapper draws through, then clears the orientation (x, y, z, w) that
@@ -1476,14 +1476,14 @@ void fn_802CA008(void *owner) {
     }
 }
 
-extern void *fn_802C9DE8(void *, int);
+extern void *DrawListWrapper_init(void *, int);
 extern char lbl_8034B52C[];
 /* Creates and initializes a draw list node (size 0x18) tagged "mrDrawList". */
 void fn_802CA04C(int listCount) {
     void *obj;
     obj = DrawListWrapper_alloc(0x18, lbl_8034B52C);
     if (obj != 0) {
-        fn_802C9DE8(obj, listCount);
+        DrawListWrapper_init(obj, listCount);
     }
 }
 
