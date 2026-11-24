@@ -1724,7 +1724,7 @@ void fn_802CC550(int textureIndex, float minWeight, float scale) {
  * its use count (+0x48) with 1000000, so the eviction pass fn_802CC770 - which
  * only weighs slots whose count is positive - leaves it resident.
  * The slot index -1 (no texture) is ignored. */
-void markTextureSlotUsed(int textureIndex) {
+/* Mark a texture slot as used: raise its keep-alive weight and stamp a large use count so the eviction pass leaves it resident (-1 is ignored). */ void markTextureSlotUsed(int textureIndex) {
 #define gTextureSlots gTextureSlotTable
 #define TEX_KEEP_USE_COUNT 1000000
     int slotOffset;
