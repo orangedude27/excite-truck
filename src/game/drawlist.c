@@ -86,7 +86,7 @@ extern float lbl_8055FC40;
 extern float lbl_8055D020;
 extern int lbl_8055FC30;
 extern int lbl_8055FC84;
-extern void fn_802D08CC(void);
+extern void gxApplyCullMode(void);
 extern void fn_802CAD68(void);
 extern int fn_802D31D8(int);
 extern void fn_801E7888(int);
@@ -1304,7 +1304,7 @@ int fn_802C9C58(int cullMode) {
     /* Set the cached cull mode, apply it to GX, and return the previous value. */
     int previousCullMode = lbl_8055FC30;
     lbl_8055FC30 = cullMode;
-    fn_802D08CC();
+    gxApplyCullMode();
     return previousCullMode;
 }
 

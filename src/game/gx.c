@@ -365,15 +365,16 @@ void fn_802CEC44(void) {
     } while ((unsigned short)gDrawSyncToken != targetToken);
 }
 
-#pragma scheduling 604
+#pragma scheduling 7400
 void fn_802CED50(int arg0, int arg1, int arg2, int arg3) {
+    unsigned char one = 1;
     volatile unsigned char *state = lbl_804C5710;
     *(volatile int *)(state + 4) = arg0;
     *(volatile int *)(state + 8) = arg1;
     *(volatile int *)(state + 0xC) = arg2;
     *(volatile int *)(state + 0x10) = arg3;
-    state[0] = 1;
-    state[1] = 1;
+    state[0] = one;
+    state[1] = one;
 }
 extern void KPADSetBtnRepeat(int *, int *, int *, int *);
 #pragma push
@@ -1601,7 +1602,7 @@ void fn_802D08C4(unsigned char enabled) {
 }
 
 /* Sets the GX cull mode from a small app-specific mode selector. */
-void fn_802D08CC(int cullMode) {
+void gxApplyCullMode(int cullMode) {
     int gxCullMode;
     switch (cullMode) {
     case 1:
