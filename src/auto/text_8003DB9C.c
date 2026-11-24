@@ -2914,18 +2914,18 @@ void GXInitLightDir(unsigned int col, unsigned int row, unsigned int *out) {
 }
 
 unsigned int GXGetLightDir(unsigned int value) {
-    /* Atomically replace lbl_8055D978 with value and return the previous value. */
-    extern unsigned int lbl_8055D978;
+    /* Atomically replace gDrawSyncCallback with value and return the previous value. */
+    extern unsigned int gDrawSyncCallback;
     extern void OSRestoreInterrupts(void);
-    unsigned int previousValue = lbl_8055D978;
+    unsigned int previousValue = gDrawSyncCallback;
     OSDisableInterrupts();
-    lbl_8055D978 = value;
+    gDrawSyncCallback = value;
     OSRestoreInterrupts();
     return previousValue;
 }
 
 extern unsigned short *__peReg;
-extern unsigned int lbl_8055D978;
+extern unsigned int gDrawSyncCallback;
 extern int OSDisableInterrupts(void);
 extern void OSRestoreInterrupts(void);
 extern void OSClearContext(void *);
@@ -2948,16 +2948,16 @@ extern void OSInitThreadQueue(void *);
 extern void (*lbl_8055D978_callback)(unsigned short);
 #pragma scheduling on
 void GXInitSpecularDir(unsigned int arg0, void *ctx) {
-    extern unsigned int lbl_8055D978;
+    extern unsigned int gDrawSyncCallback;
     extern unsigned short *__peReg;
     extern void OSClearContext(void *);
     extern void OSSetCurrentContext(void *);
     char local[0x2D0];
     unsigned short value = __peReg[7];
-    if (lbl_8055D978 != 0) {
+    if (gDrawSyncCallback != 0) {
         OSClearContext(local);
         OSSetCurrentContext(local);
-        ((void (*)(unsigned short))lbl_8055D978)(value);
+        ((void (*)(unsigned short))gDrawSyncCallback)(value);
         OSClearContext(local);
         OSSetCurrentContext(ctx);
     }
