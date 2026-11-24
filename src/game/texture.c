@@ -628,14 +628,14 @@ extern char lbl_8034B538[];
 extern void *jumptable_8034B794[];
 extern int TextureSlot_isLoaded(int);
 extern int lbl_8055FCB0;
-extern char lbl_8034B904[];
+extern char textureNullName[];
 extern char lbl_8034B914[];
 /* Returns the name of a texture slot, or a placeholder string for an invalid slot. */
 char *getTextureSlotName(int textureIndex) {
     int slotOffset;
     char *slot;
     if (textureIndex == -1)
-        return lbl_8034B904;
+        return textureNullName;
     if (!((int (*)(int))TextureSlot_isLoaded)(textureIndex))
         return lbl_8034B914;
     slotOffset = textureIndex * 0x4C;
@@ -1990,7 +1990,7 @@ int fn_8012C5B8(void *, int, int *);
 int fn_8012C6F0(void);
 int fn_8012C958(int);
 extern char lbl_8034B538[];
-extern char lbl_8034B904[];
+extern char textureNullName[];
 extern char lbl_8034B914[];
 extern int TextureSlot_isLoaded(int);
 extern char lbl_8034B538[];
