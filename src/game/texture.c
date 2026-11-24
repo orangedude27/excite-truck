@@ -1301,7 +1301,7 @@ check:
 /* tex_unlink_node(list_head, node), old-style on purpose: its 3rd register only
    carries the scan pointer the search starts from, which the callee overwrites
    with *list_head before reading it. */
-void fn_802CBD7C();
+void texUnlinkNode();
 
 /* Move one texture node from a list of the texture manager to another: unlink it
  * from the list whose head pointer is at srcHead, then push it on the front of the
@@ -1319,16 +1319,16 @@ void fn_802CBD30(void **destHead, void **srcHead, void *node) {
         /* 0x10 */ struct TexNode *next; /* the link this rewires */
     } TexNode;
 
-    fn_802CBD7C(srcHead, node);
+    texUnlinkNode(srcHead, node);
     ((TexNode *)node)->next = *(TexNode **)destHead;
     *destHead = node;
 }
 
-void fn_802CBD7C(void **, void *, void *);
+void texUnlinkNode(void **, void *, void *);
 extern char texMsgUnlinkNodeNotFound[];
 /* Unlink a texture node from the list whose head pointer is *link, scanning
    from the given node; report "can't find node!" if it isn't on that list. */
-void fn_802CBD7C(register void **link, void *node, void *scan) {
+void texUnlinkNode(register void **link, void *node, void *scan) {
     int found = 0;
     while ((scan = *link) != 0) {
         if (scan == node) {
