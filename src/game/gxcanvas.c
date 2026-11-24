@@ -340,16 +340,13 @@ void fn_802C3320(s32 x, s32 y, u32 packedValue) {
 
 #pragma push
 #pragma inline_depth(0)
-/* Paint one pixel of the current canvas (lbl_8055FC00) at (x, y), when that
- * point lies inside the canvas' clip rectangle. The colour is an RGB565 value
- * carried in the high half of packedColor - the same half fn_802C3320 stores on
- * the 16-bit canvases; it is widened to the 4-byte pixel format 5 keeps, each
- * component shifted up into its own byte under a fully opaque alpha. */
-/* Plot one opaque RGBA pixel on the current GxCanvas at (x, y) when the point is inside the clip rectangle; widen the RGB565 colour into a 4-byte pixel. */ /* Plot one opaque RGBA pixel on the current GxCanvas at (x, y) when the point is inside the clip rectangle; the RGB565 colour is widened into a 4-byte pixel. */ void fn_802C33A8(s32 x, s32 y, u32 rgb565) {
+/* Plot one opaque RGBA pixel on the current GxCanvas at (x, y) when that point
+ * lies inside the clip rectangle; the RGB565 colour is widened to 4-byte RGBA. */
+void fn_802C33A8(s32 x, s32 y, u32 rgb565) {
     u32 *pixel;
     u32 rgba;
-    if (fn_802C3130((void *)lbl_8055FC00, x, y) != 0) {
-        pixel = (u32 *)fn_802C3060((void *)lbl_8055FC00, x, y);
+    if (fn_802C3130((void *)sCurrentCanvas, x, y) != 0) {
+        pixel = (u32 *)fn_802C3060((void *)sCurrentCanvas, x, y);
         rgba = ((rgb565 >> 8) & 0x00F80000) | 0xFF000000; /* red, and the opaque alpha */
         rgba = (rgba & ~0x0000FC00) | ((rgb565 >> 11) & 0x0000FC00); /* green */
         rgba = (rgba & ~0x000000F8) | ((rgb565 >> 13) & 0x000000F8); /* blue */
