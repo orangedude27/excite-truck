@@ -759,7 +759,7 @@ int fn_802CB288(int textureSlot) {
     return fn_802DB2C4(entry[0x28 / 4]);
 }
 
-extern void fn_802D93E8(int);
+extern void setTextureCopyObject(int);
 extern void fn_802D9418(void);
 extern int currentTextureIndex;
 void selectTexture(int textureIndex) {
@@ -767,7 +767,7 @@ void selectTexture(int textureIndex) {
     if (textureIndex != -1 && textureIndex != -2) {
         int offset = textureIndex * 0x4C;
         int *entry = (int *)(lbl_8055FCB0 + offset);
-        fn_802D93E8(entry[0x28 / 4]);
+        setTextureCopyObject(entry[0x28 / 4]);
         currentTextureIndex = textureIndex;
         return;
     }

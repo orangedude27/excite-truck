@@ -1014,7 +1014,7 @@ extern void fn_802D2614(void);
 extern int lbl_8055FE24;
 /* Reset the GX state, then select `texObj` as the current texture object for the
  * GX texture-copy path (lbl_8055FE24); fn_802D9418 consumes and clears it. */
-void fn_802D93E8(int texObj) {
+void setTextureCopyObject(int texObj) {
     fn_802D2614();
     lbl_8055FE24 = texObj;
 }
