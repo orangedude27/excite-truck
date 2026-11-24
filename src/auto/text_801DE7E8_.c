@@ -31,7 +31,7 @@ extern void fn_80131818(void);
 extern int lbl_8055ADF0, lbl_8055ADF4, lbl_8055E9E8;
 extern float lbl_80562BF4;
 extern void *memcpy(void *, const void *, unsigned int);
-extern unsigned long long fn_802E2C9C(int);
+extern unsigned long long KERNEL_GetTimeUs(int);
 extern void fn_801331C4(int, int *, float *);
 
 /* Popup ids: the nine rows of lbl_804872B0.  Id 8 is the run-time queue pushed by
@@ -190,7 +190,7 @@ void fn_801DE9F0(int popupId, int playSound) {
         seenBits = lbl_8055E9DC;
         lbl_8055E9E8 = popupId;
         lbl_8055E9DC = seenBits | (1 << popupId);
-        start = fn_802E2C9C(seenBits); /* time in us; the argument is left over */
+        start = KERNEL_GetTimeUs(seenBits); /* time in us; the argument is left over */
         lbl_8055ADF4 = (int)start;
         lbl_8055ADF0 = (int)(start >> 32);
         if (lbl_8055E9F0 != 0 && playSound != 0) {
@@ -220,7 +220,7 @@ void fn_801DEB10(void) {
     }
     lbl_8055E9E8 = 0;
     lbl_8055E9DC |= 1;
-    result = ((unsigned long long (*)(void))fn_802E2C9C)();
+    result = ((unsigned long long (*)(void))KERNEL_GetTimeUs)();
     lbl_8055ADF4 = (unsigned int)result;
     lbl_8055ADF0 = result >> 32;
 }
@@ -276,9 +276,9 @@ extern "C" void fn_801DEC18(void) {
         virtual void m0();
         virtual Node *get(int);
     };
-    char *base = lbl_803394B0;
     float sp8;
     char *name;
+    char *base = lbl_803394B0;
     Handle *h;
     int n;
     Node *node;
@@ -294,7 +294,7 @@ extern "C" void fn_801DEC18(void) {
         node = h->get(0);
         while (node != 0) {
             if (stricmp(node->m0(), lbl_8055AE00) == 0) {
-                name = (char *)(lbl_804872B0 + fn_801DEB6C((const char *)node->m3(lbl_8055AE08)) * 0x1C);
+                name = lbl_804872B0 + fn_801DEB6C((const char *)node->m3(lbl_8055AE08)) * 0x1C;
                 *(int *)(name + 4) = node->m3(lbl_8055AE10);
                 *(char *)name = node->m10(lbl_8055AE18, 0);
             }
@@ -630,7 +630,7 @@ void fn_801DF380(int argValue, int message, int callback, int object) {
 }
 #pragma small_data on
 extern void *memcpy(void *, const void *, unsigned int);
-extern unsigned long long fn_802E2C9C(int);
+extern unsigned long long KERNEL_GetTimeUs(int);
 extern void fn_801331C4(int, int *, float *);
 extern int lbl_80339570;
 extern int fn_8000DA10(void);

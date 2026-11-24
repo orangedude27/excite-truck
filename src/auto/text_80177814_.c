@@ -48,11 +48,12 @@ extern void fn_8017ACCC(void);
 extern void fn_8018A180(void);
 int fn_802E2C20(void);
 extern int lbl_8055E464;
-void fn_80177814(int *arg0) {
-    *arg0 = (lbl_8055E464 + fn_802E2C20()) % 30000;
-    lbl_8055E464 = *arg0 + 0x9947;
-    arg0[1] = (lbl_8055E464 + fn_802E2C20()) % 30000;
-    lbl_8055E464 = arg0[1] + 0x2F1CD;
+void fn_80177814(int *arg0)
+{
+  *arg0 = (fn_802E2C20() + (lbl_8055E464 & 0xFFFF)) % 30000;
+  lbl_8055E464 = (unsigned short) ((*arg0) + (0x9947 & 0xFF));
+  arg0[1] = (fn_802E2C20() + (lbl_8055E464 & 0xFFFF)) % 30000;
+  lbl_8055E464 = (unsigned short) (arg0[1] + 0x2F1CD);
 }
 
 #pragma dont_inline on
@@ -736,7 +737,7 @@ int fn_801787B4(void *arg0)
     extern void fn_802E2D74(int);
     extern void fn_802E30C8(const char *, ...);
     extern int fn_80265D64(void);
-    extern u64 fn_802E2C9C(void);
+    extern u64 KERNEL_GetTimeUs(void);
     extern s64 fn_80178BBC(s32 *);
     extern s32 lbl_8055E3C4;
     extern s32 lbl_8055D430;
@@ -774,7 +775,7 @@ int fn_801787B4(void *arg0)
     if (fn_80176A1C() == 2) {
         float limit;
         f31 = fn_80176A2C();
-        now = fn_802E2C9C();
+        now = KERNEL_GetTimeUs();
         delta = (s32)(now - *(s64 *)(p + 6));
         delta = delta > 0 ? delta : 0;
         w = delta < 0xC350 ? delta : 0xC350;
@@ -818,7 +819,7 @@ int fn_801787B4(void *arg0)
     if (r28 == 0) {
         if (*((u8 *)p + 0x14) != 0) {
             p[0] = lbl_8055E3C4;
-            t = fn_802E2C9C();
+            t = KERNEL_GetTimeUs();
             *((u8 *)p + 0x14) = 0;
             *(s64 *)(p + 2) = (t + 0x2000) & ~(s64)0x3FFF;
         } else {
@@ -849,7 +850,7 @@ int fn_801787B4(void *arg0)
                         diff = lbl_8055E3C4 - p[0];
                         sum = (s64)(s32)diff * 0x412B + *(s64 *)(p + 2);
                         fn_802E30C8(tbl + 0x19C, (s32)diff * 0x412B, (s32)(sum >> 32), (s32)sum);
-                        t3 = fn_802E2C9C();
+                        t3 = KERNEL_GetTimeUs();
                         fn_802E30C8(tbl + 0x1C0, (s32)t3, (s32)(t3 >> 32), (s32)t3);
                     }
                     *((u8 *)p + 0x14) = 1;
@@ -865,7 +866,7 @@ int fn_801787B4(void *arg0)
 }
 extern void DBPrintf_80179758(const char *fmt, ...);
 extern s32 lbl_8055E3C4;
-extern u64 fn_802E2C9C(void);
+extern u64 KERNEL_GetTimeUs(void);
 extern s64 __div2i(s64, s64);
 extern u8 lbl_804305C0[];
 #pragma dont_inline on
@@ -873,7 +874,7 @@ extern u8 lbl_804305C0[];
 s64 fn_80178BBC(s32 *entry) {
     s32 delta = lbl_8055E3C4 - entry[0];
     s64 scaled = *(s64 *)&entry[2] + (s64)delta * 0x412b;
-    return fn_802E2C9C() - scaled;
+    return KERNEL_GetTimeUs() - scaled;
 }
 s32 fn_80178C1C(s32 *entry) {
     /* Convert an entry's remaining tick count into whole time units:
@@ -1702,6 +1703,8 @@ extern char lbl_80558DC4[];
 #pragma push
 #pragma opt_common_subs off
 void fn_80179AF4(void *arg0, int arg1) {
+int __repair_constant = 6;
+
     struct WordPair { unsigned int a, b; };
     extern char lbl_80558DC4[];
     extern float lbl_8055E460;
@@ -1738,7 +1741,7 @@ void fn_80179AF4(void *arg0, int arg1) {
             out[3] = b3 + top * (a3 - b3);
             out[4] = b4 + top * (a4 - b4);
             out[5] = b5 + top * (a5 - b5);
-            a += 6; b += 6; out += 6;
+            a += __repair_constant; b += __repair_constant; out += __repair_constant;
         }
         {
             unsigned int *s = (unsigned int *)temp;

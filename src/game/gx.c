@@ -315,7 +315,7 @@ void fn_802CEC44(void) {
     /* Handle a GX draw-sync token: case 1 snapshots the start tick and clears the
        sync-done flag, case 2 computes the elapsed time (with smoothing) and
        processes queued depth queries, any other token is reported as unhandled. */
-    extern unsigned long long fn_802E2C9C(void);
+    extern unsigned long long KERNEL_GetTimeUs(void);
     extern float fn_8002FD54(unsigned int, unsigned int);
     extern void fn_802D3900(void);
     extern char lbl_8034BE20[];
@@ -328,13 +328,13 @@ void fn_802CEC44(void) {
     float elapsedMs, previousSmoothedMs;
     switch (syncToken) {
     case 1:
-        currentTick = fn_802E2C9C();
+        currentTick = KERNEL_GetTimeUs();
         lbl_8055FD14 = (unsigned int)currentTick;
         lbl_8055FD10 = (unsigned int)(currentTick >> 32);
         lbl_8055FD3C = 0;
         break;
     case 2:
-        currentTick = fn_802E2C9C();
+        currentTick = KERNEL_GetTimeUs();
         elapsedTicks = currentTick - (lbl_8055FD14 | ((unsigned long long)lbl_8055FD10 << 32));
         elapsedMs = lbl_80564F80 * fn_8002FD54((unsigned int)(elapsedTicks >> 32), (unsigned int)elapsedTicks);
         previousSmoothedMs = lbl_8055D0B4;

@@ -17,7 +17,7 @@ extern void fn_802E30C8(const char *, ...);
 extern void fn_802ECC18(long);
 extern void fn_801E89FC(void);
 extern void fn_801E9564(long);
-extern void fn_802E2C9C(void);
+extern void KERNEL_GetTimeUs(void);
 extern void fn_802A4CA8(void);
 extern void fn_802C276C(void);
 extern long fn_801E866C(long);
@@ -429,7 +429,7 @@ void fn_801E7E48(void) {
     char *src;
     float scale;
     unsigned long idx;
-    t0 = ((long long (*)())fn_802E2C9C)();
+    t0 = ((long long (*)())KERNEL_GetTimeUs)();
     obj = (char *)fn_80176A70();
     f = *(float *)obj - lbl_8055EB18;
     g = lbl_80562DB4;
@@ -502,7 +502,7 @@ void fn_801E7E48(void) {
     fn_80202924();
     fn_80134994();
     fn_8000D7FC();
-    t1 = ((long long (*)())fn_802E2C9C)();
+    t1 = ((long long (*)())KERNEL_GetTimeUs)();
     lbl_8055EB28 = (float)(long)(t1 - t0) / lbl_80562DA8;
 }
 /* No-op stub. */
@@ -553,7 +553,7 @@ extern "C" void fn_801E81B8(int arg0, void (*callback)(void)) {
     /* Per-frame/step update: advances frame state, runs per-player update passes, and
      * performs single/multi-player follow-up logic before invoking an optional callback. */
     (void)arg0;
-    fn_802E2C9C();
+    KERNEL_GetTimeUs();
     lbl_8055EB1C = lbl_8055EB1C + 1;
     fn_802A4CA8();
     fn_802C276C();

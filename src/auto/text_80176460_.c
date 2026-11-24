@@ -98,7 +98,7 @@ extern s32 lbl_8055A2F8;
 extern char lbl_803315A0[];
 extern char lbl_803315C8[];
 extern u8 lbl_8055E3BC;
-extern u64 fn_802E2C9C(void);
+extern u64 KERNEL_GetTimeUs(void);
 extern void fn_802E2D74(s32);
 extern f32 fn_8017970C(void);
 extern f32 fn_8002FD54(u32, u32);
@@ -169,64 +169,66 @@ typedef struct PhysicsCommand {
 #define STR_PHYS_FADER_ACTIVE lbl_803316B4 /* "physics: hey, phys-fader was active! (new race mode)" */
 
 #pragma opt_common_subs off
-void fn_80176460(void *arg0, const char *arg1, s32 *arg2) {
-    s32 v0 = arg2[0];
-    s32 p0 = ((s32 *)arg0)[0];
-    s32 p1 = ((s32 *)arg0)[1];
-    s32 p2 = ((s32 *)arg0)[2];
-    s32 p3 = ((s32 *)arg0)[3];
-    s32 p4 = ((s32 *)arg0)[4];
-    u8 *base = (u8 *)&lbl_804303C8;
-    u32 *f = (u32 *)(base + 0x18);
-    u32 one = 1;
-    u32 zero = 0;
-    u32 *blk;
-    u32 *part;
-    lbl_8055E3BC = one;
-    lbl_8055E3F8 = v0;
-    *(u32 *)(base + 0x18) = p0;
-    f[1] = p1;
-    f[2] = p2;
-    f[3] = p3;
-    f[4] = p4;
-    strcpy((char *)base + 0x30, arg1);
-    lbl_8055E3F4 = zero;
-    lbl_8055E3BD = one;
-    lbl_8055E3C0 = zero;
-    lbl_8055E3D4 = zero;
-    lbl_8055E3EC = zero;
-    lbl_8055E3E8 = 0;
-    lbl_8055E3D8 = one;
-    lbl_8055A2F0 = (void *)one;
-    lbl_8055A2F4 = lbl_80561B18;
-    fn_80176A34(0);
-    fn_801E1D20();
-    fn_80178DD0();
-    blk = (u32 *)base;
-    part = blk;
-    blk[1] = zero;
-    blk[0] = 4;
-    memset(base + 8, zero, 1);
-    part = (u32 *)(base + 0xC);
-    part[0] = 4;
-    part[1] = zero;
-    memset((u8 *)part + 8, zero, 1);
-    blk[0] = zero;
-    blk[1] = 0x2800;
-    if ((p4 & 1) == 0) {
-        blk[1] |= 0x400;
-    }
-    lbl_8055E3E4 = 1;
-    lbl_8055A3A0 = lbl_80561B1C;
-    lbl_8055E3CC = zero;
-    lbl_8055E3DC = fn_8012F31C(0x10000);
-    lbl_8055E3E0 = fn_8012F3CC();
-    fn_8012F43C();
-    fn_8017EBE0();
-    fn_801AE5A8();
-    fn_801B6604();
-    fn_801D0BE4();
-    fn_80177790();
+void fn_80176460(void *arg0, const char *arg1, s32 *arg2)
+{
+  s32 v0 = arg2[0];
+  s32 p2 = ((s32 *) arg0)[2];
+  unsigned short p0 = ((s32 *) arg0)[0 & 0xFFFFFFFF];
+  int p1 = ((s32 *) arg0)[1];
+  s32 p3 = ((s32 *) arg0)[3];
+  volatile short p4 = ((s32 *) arg0)[4] & 0xFFu;
+  u8 *base = (u8 *) (&lbl_804303C8);
+  u32 *f = (u32 *) (base + 0x18);
+  u32 one = 1;
+  long long zero = 0;
+  u32 *blk;
+  u32 *part;
+  lbl_8055E3BC = one;
+  lbl_8055E3F8 = v0;
+  *((u32 *) (base + 0x18)) = p0;
+  f[1] = (float) p1;
+  ((u32 *) (base + 0x18))[2] = p2;
+  ((u32 *) (base + 0x18))[3] = p3;
+  ((u32 *) (base + 0x18))[4] = p4;
+  strcpy(((char *) base) + 0x30, arg1);
+  lbl_8055E3F4 = zero;
+  lbl_8055E3BD = one;
+  lbl_8055E3C0 = zero;
+  lbl_8055E3D4 = zero;
+  lbl_8055E3EC = zero;
+  lbl_8055E3E8 = 0;
+  lbl_8055E3D8 = one;
+  lbl_8055A2F0 = (void *) one;
+  lbl_8055A2F4 = lbl_80561B18;
+  fn_80176A34(0);
+  fn_801E1D20();
+  fn_80178DD0();
+  blk = (u32 *) base;
+  part = blk;
+  blk[1] = zero;
+  blk[0] = 4;
+  memset(base + 8, zero, (float) 1);
+  part = (u32 *) (base + 0xC);
+  part[0] = 4;
+  ((u32 *) (base + 0xC))[1] = zero;
+  memset(((u8 *) ((u32 *) (base + 0xC))) + 8, zero, 1);
+  blk[0] = zero;
+  blk[1] = 0x2800;
+  if ((p4 & 1) == 0)
+  {
+    blk[1] |= 0x400;
+  }
+  lbl_8055E3E4 = 1;
+  lbl_8055A3A0 = lbl_80561B1C;
+  lbl_8055E3CC = zero;
+  lbl_8055E3DC = fn_8012F31C(0x10000);
+  lbl_8055E3E0 = fn_8012F3CC();
+  fn_8012F43C();
+  fn_8017EBE0();
+  fn_801AE5A8();
+  fn_801B6604();
+  fn_801D0BE4();
+  fn_80177790();
 }
 #pragma opt_common_subs reset
 /* Shuts down the physics module: unregisters its update callback, clears state, runs subsystem shutdown steps, frees the physics heap/work buffers, resets scene timing, and marks the module inactive. (renames unavailable: fn_801765B8->Physics_Shutdown, lbl_8055E3F4->sPhysicsState, lbl_8055E3E0->sPhysicsHeapBlock, lbl_8055E3DC->sPhysicsWorkBuffer, lbl_8055E3BC->sPhysicsModuleActive) */
@@ -759,7 +761,7 @@ void *fn_80176A70(void) {
     generationSnap = lbl_8055E3C4;
     startTimeMs = fn_802E2C20();
     loopCount = 0;
-    startTicks = fn_802E2C9C();
+    startTicks = KERNEL_GetTimeUs();
     nowTicks = startTicks;
 
 loop:
@@ -777,7 +779,7 @@ loop:
     if ((u16)loopCount == 0) {
         fn_802E30C8(base + 0x204, loopCount);
     }
-    nowTicks = fn_802E2C9C();
+    nowTicks = KERNEL_GetTimeUs();
     goto loop;
 
 done:

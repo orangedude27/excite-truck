@@ -60,7 +60,7 @@ extern s32 lbl_8055DF3C;
 extern s32 lbl_8055DF40;
 extern u64 lbl_8055DF18;
 extern u64 lbl_8055DF20;
-extern u64 fn_802E2C9C(void);
+extern u64 KERNEL_GetTimeUs(void);
 
 #pragma dont_inline on
 s32 fn_801274C8(void) {
@@ -245,7 +245,7 @@ void fn_80127964(void) {
 
 /* Accumulates elapsed time into the running total and updates the last-sampled timestamp. */
 void fn_80127968(void) {
-    u64 currentTime = fn_802E2C9C();
+    u64 currentTime = KERNEL_GetTimeUs();
     lbl_8055DF18 += currentTime - lbl_8055DF20;
     lbl_8055DF20 = currentTime;
 }

@@ -23,7 +23,7 @@ extern int lbl_8055FEF8;
 extern unsigned int lbl_8055FEFC;
 extern unsigned long long __div2i(unsigned long long, unsigned long long);
 typedef unsigned long long u64;
-extern u64 fn_802E2C9C(void);
+extern u64 KERNEL_GetTimeUs(void);
 extern u64 OSGetTime(void);
 /* The Revolution OS calendar (OSCalendarTime) OSTicksToCalendarTime() fills;
  * months count from 0 and the microsecond field is not read here. */
@@ -756,7 +756,7 @@ extern int lbl_8055FEF8;
 extern unsigned int lbl_8055FEFC;
 extern unsigned long long __div2i(unsigned long long, unsigned long long);
 #pragma scheduling invalid_target
-unsigned long long fn_802E2C9C(void)
+unsigned long long KERNEL_GetTimeUs(void)
 {
   unsigned long long now = OSGetTime();
   unsigned long long elapsed = now - (*((unsigned long long *) (&lbl_8055FEF8)));
@@ -787,14 +787,14 @@ unsigned long long fn_802E2C9C(void)
     out->msec = calendar.msec;
 }
 #pragma scheduling invalid_target
-/* Busy-wait until the microsecond timer from fn_802E2C9C shows that
+/* Busy-wait until the microsecond timer from KERNEL_GetTimeUs shows that
  * `milliseconds` have elapsed, quitting early if the timer jumps backwards. */
 void fn_802E2D74(int milliseconds) {
     long long limitUs = (long long)milliseconds * 1000;
-    u64 startUs = fn_802E2C9C();
+    u64 startUs = KERNEL_GetTimeUs();
     u64 nowUs;
     for (;;) {
-        nowUs = fn_802E2C9C();
+        nowUs = KERNEL_GetTimeUs();
         if ((long long)(nowUs - startUs) >= limitUs || (long long)nowUs < (long long)startUs) {
             break;
         }
