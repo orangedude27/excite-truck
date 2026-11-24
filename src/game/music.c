@@ -20,7 +20,7 @@ char fn_8020A640(void) {
 }
 
 extern void *lbl_8055EDE0;
-/* Return lbl_8055EDE0, the index of the currently active music track (compared against the requested track lbl_8055EDE4). */
+/* Return lbl_8055EDE0, the index of the currently active music track (compared against the requested track gRequestedSongIdx). */
 void* fn_8020A69C(void) {
     return lbl_8055EDE0;
 }
@@ -43,7 +43,7 @@ void fn_8020A600(void) {
 
 s32 fn_802E2C20(void);            /* milliseconds since boot */
 extern const char lbl_8033C318[]; /* "music: setting song idx to %d" */
-extern s32 lbl_8055EDE4;          /* song index last requested (-1 = no music) */
+extern s32 gRequestedSongIdx;          /* song index last requested (-1 = no music) */
 extern s32 lbl_8055EDE8;          /* ms stamp of that request; fn_8020A100 ramps the crossfade from it */
 
 #pragma scheduling invalid_target
@@ -52,9 +52,9 @@ extern s32 lbl_8055EDE8;          /* ms stamp of that request; fn_8020A100 ramps
  * the switch; fn_8020A100 crossfades the two music slots over the time elapsed
  * since that stamp. */
 void musicRequestSong(s32 songIdx) {
-    if (songIdx != lbl_8055EDE4) {
+    if (songIdx != gRequestedSongIdx) {
         fn_802E30C8(lbl_8033C318, songIdx);
-        lbl_8055EDE4 = songIdx;
+        gRequestedSongIdx = songIdx;
         lbl_8055EDE8 = fn_802E2C20();
     }
 }
@@ -170,9 +170,9 @@ void fn_8020A100(void) {
     if (lbl_8055EDD0 != 0) {
         scale = lbl_80563294;
         diff = fn_802E2C20() - lbl_8055EDE8;
-        if ((s32)lbl_8055EDE0 != lbl_8055EDE4) {
+        if ((s32)lbl_8055EDE0 != gRequestedSongIdx) {
             if (diff >= 0x190 || diff < 0 || (s32)lbl_8055EDE0 == -1) {
-                lbl_8055EDE0 = (void *)(s32)*(volatile s32 *)&lbl_8055EDE4;
+                lbl_8055EDE0 = (void *)(s32)*(volatile s32 *)&gRequestedSongIdx;
             } else {
                 t = lbl_80563294 < ((f32)diff / lbl_80563298 - lbl_8056329C) / lbl_80563290 ? lbl_80563294 : ((f32)diff / lbl_80563298 - lbl_8056329C) / lbl_80563290;
                 t = t > lbl_8056329C ? t : lbl_8056329C;
@@ -319,7 +319,7 @@ extern const char lbl_8055B588;
     lbl_8055EDD0 = 1;
     trackIdPtr = &lbl_8055B560;
     loadedFlagPtr = &lbl_8055EDD4;
-    lbl_8055EDE4 = zero;
+    gRequestedSongIdx = zero;
     lbl_8055EDE8 = zero;
     do {
         sprintf(local.songPathBuf, &lbl_8055B568, *trackIdPtr);
