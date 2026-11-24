@@ -150,7 +150,7 @@ s32 fn_801E9F08(void *context, void *position, void *contactPoint, s32 normalOut
 }
 #pragma scheduling on
 /* Return the ground height at world (x, z) for the given ground index, or 0.0f when the ground lookup fails. */
-f32 fn_801E9FDC(const s16 *groundIndexPtr, f32 worldX, f32 worldZ) {
+f32 QueryGroundHeightAtXZ(const s16 *groundIndexPtr, f32 worldX, f32 worldZ) {
     s16 groundIndex = *groundIndexPtr;
     f32 queryPos[3];
     f32 resultPos[3];

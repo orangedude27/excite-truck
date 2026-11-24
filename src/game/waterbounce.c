@@ -307,7 +307,7 @@ extern float lbl_805633E8;
 extern float lbl_805633EC;
 extern float lbl_805633F0;
 extern int fn_80129D18(int);
-extern float fn_801E9FDC(void *, float, float);
+extern float QueryGroundHeightAtXZ(void *, float, float);
 extern int fn_80178CA4(void);
 extern int fn_801796C4(void);
 extern int fn_802104B8(void);
@@ -358,7 +358,7 @@ extern "C" float lbl_805633E8;
 extern "C" float lbl_805633EC;
 extern "C" float lbl_805633F0;
 extern "C" int fn_80129D18(int);
-extern "C" float fn_801E9FDC(void *, float, float);
+extern "C" float QueryGroundHeightAtXZ(void *, float, float);
 extern "C" int fn_80178CA4(void);
 extern "C" int fn_801796C4(void);
 extern "C" int fn_802104B8(void);
@@ -557,7 +557,7 @@ __repair_addr = (char *)((char *)truck + 0x25A0);
             *(unsigned char *)((char *)s30 + 0x4A) = 1;
             *(unsigned char *)((char *)s30 + 0x4C) = 0;
         }
-        f30 = fn_801E9FDC((void *)((char *)truck + 0x6C), *(float *)((char *)truck + 0x60), *(float *)((char *)truck + 0x68));
+        f30 = QueryGroundHeightAtXZ((void *)((char *)truck + 0x6C), *(float *)((char *)truck + 0x60), *(float *)((char *)truck + 0x68));
         {
             float tmp[3];
             float *vp = (float *)((char *)truck + 0x118);

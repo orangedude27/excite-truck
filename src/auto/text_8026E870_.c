@@ -44,7 +44,7 @@ extern f32 lbl_80563EA0;
 extern double lbl_80563EB0;
 extern s32 lbl_8049A208[];
 extern s32 fn_8026F408(s32);
-extern f32 fn_801E9FDC(void *, f32, f32);
+extern f32 QueryGroundHeightAtXZ(void *, f32, f32);
 extern s32 fn_801784DC(Vec *, f32 *, s32, s32, s32, f32, f32);
 extern f32 fn_8026A520(s32);
 extern f32 lbl_8049A218[];
@@ -112,20 +112,21 @@ void fn_8026E870(Vec *arg0, Vec *arg1, void *arg2, Vec *arg3) {
     Vec forward;
     Vec side;
     f32 dot;
-    f32 x, y, z, dx;
+    f32 x, z;
+    f32 a1y, a1z;
     f32 sideX, sideY, sideZ;
     f32 upX, upY, upZ;
 
     x = arg0->x;
-    dx = arg1->x - x;
-    out->position.x = x;
-    delta.x = dx;
-    y = arg0->y;
-    out->position.y = y;
-    delta.y = arg1->y - out->position.y;
     z = arg0->z;
+    out->position.x = x;
+    a1y = arg1->y;
+    out->position.y = arg0->y;
+    a1z = arg1->z;
     out->position.z = z;
-    delta.z = arg1->z - out->position.z;
+    delta.x = arg1->x - x;
+    delta.y = a1y - out->position.y;
+    delta.z = a1z - out->position.z;
     dot = PSVECDotProduct(&delta, &delta);
     if (dot < lbl_80563E30) return;
     if (lbl_80563E34 > (f32)__fabs((double)delta.x) &&
@@ -348,78 +349,40 @@ extern f32 lbl_80563E80;
 #pragma scheduling invalid_target
 void fn_8026ED64(s32 *arg0, Vec *arg1, Vec *arg2, f32 farg0) {
     f32 *entry = lbl_8049A218 + (*arg0 * 4);
-    f32 curve;
-    f32 curve2;
-    f32 t;
-    f32 blend;
-    f32 factor;
-    f32 dx;
-    f32 dy;
-    f32 dz;
+    f32 curve, curve2, t, blend, factor, dx, dy, dz, a, b;
     volatile Vec delta;
-    f32 a;
-    f32 b;
-
     curve = entry[3];
-    if (curve < -1.0f)
-        curve = -1.0f;
-    else if (curve > lbl_80563E30)
-        curve = lbl_80563E30;
+    if (curve < -1.0f) curve = -1.0f;
+    else if (curve > lbl_80563E30) curve = lbl_80563E30;
     else if (curve > lbl_80563E78) {
-        a = lbl_80563E70 * curve;
-        b = lbl_80563E74 * curve;
-        a *= curve;
-        b *= curve;
-        a *= curve;
-        curve = a + b;
+        a = lbl_80563E70 * curve; b = lbl_80563E74 * curve;
+        a *= curve; b *= curve; a *= curve; curve = a + b;
     } else {
-        a = lbl_80563E70 * curve;
-        b = lbl_80563E74 * curve;
-        a *= curve;
-        b *= curve;
-        a *= curve;
-        curve = a - b;
+        a = lbl_80563E70 * curve; b = lbl_80563E74 * curve;
+        a *= curve; b *= curve; a *= curve; curve = a - b;
     }
-
     t = (entry[1] - lbl_80563E78) / lbl_80563E7C;
-    if (t < lbl_80563E30)
-        t = lbl_80563E30;
-    if (t > lbl_80563E78)
-        t = lbl_80563E78;
+    if (t < lbl_80563E30) t = lbl_80563E30;
+    if (t > lbl_80563E78) t = lbl_80563E78;
     factor = lbl_80563E78 + t * lbl_80563E30;
     factor = factor * curve;
     factor = lbl_80563E80 * factor;
     factor = farg0 * factor;
     arg1->y = arg1->y + factor;
-
     dx = arg2->x - arg1->x;
-    curve2 = entry[3];
     dy = arg2->y - arg1->y;
     dz = arg2->z - arg1->z;
-    delta.x = dx;
-    delta.y = dy;
-    delta.z = dz;
-
-    if (curve2 < -1.0f)
-        curve2 = -1.0f;
-    else if (curve2 > lbl_80563E30)
-        curve2 = lbl_80563E30;
+    delta.x = dx; delta.y = dy; delta.z = dz;
+    curve2 = entry[3];
+    if (curve2 < -1.0f) curve2 = -1.0f;
+    else if (curve2 > lbl_80563E30) curve2 = lbl_80563E30;
     else if (curve2 > lbl_80563E78) {
-        a = lbl_80563E70 * curve2;
-        b = lbl_80563E74 * curve2;
-        a *= curve2;
-        b *= curve2;
-        a *= curve2;
-        curve2 = a + b;
+        a = lbl_80563E70 * curve2; b = lbl_80563E74 * curve2;
+        a *= curve2; b *= curve2; a *= curve2; curve2 = a + b;
     } else {
-        a = lbl_80563E70 * curve2;
-        b = lbl_80563E74 * curve2;
-        a *= curve2;
-        b *= curve2;
-        a *= curve2;
-        curve2 = a - b;
+        a = lbl_80563E70 * curve2; b = lbl_80563E74 * curve2;
+        a *= curve2; b *= curve2; a *= curve2; curve2 = a - b;
     }
-
     blend = lbl_80563E6C - lbl_80563E50 * curve2;
     arg1->x = arg2->x + delta.x * blend;
     arg1->y = arg2->y + delta.y * blend;
@@ -460,28 +423,28 @@ void fn_8026EF48(void *arg0, void *arg1, void *arg2, f32 farg0) {
         f30 = sp48.z;
         f31 = sp48.y;
         rec = (char *)sub + 0x6C;
-        f29 = fn_801E9FDC(rec, lbl_80563E84 + sp48.x, lbl_80563E84 + f30);
+        f29 = QueryGroundHeightAtXZ(rec, lbl_80563E84 + sp48.x, lbl_80563E84 + f30);
         sp3C.x = lbl_80563E84 + sp48.x;
         sp3C.y = f31;
         sp3C.z = lbl_80563E84 + f30;
         if (fn_801784DC(&sp3C, &sp14, 0, 0, (s32)fn_8026F408, lbl_80563E84 + sp48.x, lbl_80563E84) != 0) {
             f29 = f29 > sp14 ? f29 : sp14;
         }
-        f28 = fn_801E9FDC(rec, sp48.x - lbl_80563E84, lbl_80563E84 + f30);
+        f28 = QueryGroundHeightAtXZ(rec, sp48.x - lbl_80563E84, lbl_80563E84 + f30);
         sp30.x = sp48.x - lbl_80563E84;
         sp30.y = f31;
         sp30.z = lbl_80563E84 + f30;
         if (fn_801784DC(&sp30, &sp10, 0, 0, (s32)fn_8026F408, sp48.x - lbl_80563E84, lbl_80563E84) != 0) {
             f28 = f28 > sp10 ? f28 : sp10;
         }
-        f27 = fn_801E9FDC(rec, sp48.x - lbl_80563E84, f30 - lbl_80563E84);
+        f27 = QueryGroundHeightAtXZ(rec, sp48.x - lbl_80563E84, f30 - lbl_80563E84);
         sp24.x = sp48.x - lbl_80563E84;
         sp24.y = f31;
         sp24.z = f30 - lbl_80563E84;
         if (fn_801784DC(&sp24, &spC, 0, 0, (s32)fn_8026F408, sp48.x - lbl_80563E84, lbl_80563E84) != 0) {
             f27 = f27 > spC ? f27 : spC;
         }
-        f26 = fn_801E9FDC(rec, lbl_80563E84 + sp48.x, f30 - lbl_80563E84);
+        f26 = QueryGroundHeightAtXZ(rec, lbl_80563E84 + sp48.x, f30 - lbl_80563E84);
         sp18.x = lbl_80563E84 + sp48.x;
         sp18.y = f31;
         sp18.z = f30 - lbl_80563E84;
@@ -495,11 +458,11 @@ void fn_8026EF48(void *arg0, void *arg1, void *arg2, f32 farg0) {
         } else {
             entry[2] = entry[2] + lbl_80563E88;
         }
+        f4 = entry[0] + (sp48.y - f2);
         f0 = (entry[2] - lbl_80563E78) / lbl_80563E30;
         f3 = lbl_80563E30;
-        f3 = f3 > f0 ? f3 : f0;
+        f3 = f3 < f0 ? f3 : f0;
         f3 = f3 > lbl_80563E78 ? f3 : lbl_80563E78;
-        f4 = entry[0] + (sp48.y - f2);
         f1 = lbl_80563E88 * (lbl_80563E8C + f3 * lbl_80563E90);
         if (flag != 0) {
             f2 = lbl_80563E94;
@@ -507,16 +470,14 @@ void fn_8026EF48(void *arg0, void *arg1, void *arg2, f32 farg0) {
             f2 = lbl_80563E98;
         }
         if (f4 < entry[1]) {
-            f0 = entry[1] - f2;
-            f4 = f4 > f0 ? f4 : f0;
+            f4 = f4 > entry[1] - f2 ? f4 : entry[1] - f2;
         } else {
-            f0 = entry[1] + f1;
-            f4 = f4 > f0 ? f4 : f0;
+            f4 = f4 < entry[1] + f1 ? f4 : entry[1] + f1;
         }
         entry[1] = f4;
         if ((f32)(unsigned int)(fn_8026A520(*(s32 *)((char *)sub + 0x1EC)) > lbl_80563E78) != lbl_80563E78) {
             f1 = lbl_80563E9C + entry[3];
-            f1 = f1 > lbl_80563E30 ? f1 : lbl_80563E30;
+            f1 = f1 < lbl_80563E30 ? f1 : lbl_80563E30;
             entry[3] = f1;
         } else {
             f0 = entry[3] - lbl_80563EA0;
@@ -532,14 +493,14 @@ void fn_8026EF48(void *arg0, void *arg1, void *arg2, f32 farg0) {
     f3 = f3 > f0 ? f3 : f0;
     f4 = lbl_80563E30;
     f1 = (f2 - ((f32 *)lbl_8049A208)[2]) / (f3 - ((f32 *)lbl_8049A208)[2]);
-    f4 = f4 > f1 ? f4 : f1;
+    f4 = f4 < f1 ? f4 : f1;
     f4 = f4 > lbl_80563E78 ? f4 : lbl_80563E78;
     f4 = lbl_80563E78 + f4 * lbl_80563E30;
+    f0 = lbl_80563E4C * f4;
     ((Vec *)arg1)->y = ((Vec *)arg1)->y + ((f32 *)lbl_8049A208)[0] * f4;
     ((Vec *)arg2)->y = ((Vec *)arg2)->y + ((f32 *)lbl_8049A208)[1] * f4;
     f1 = lbl_80563E30;
-    f0 = lbl_80563E4C * f4;
-    f1 = f1 > f0 ? f1 : f0;
+    f1 = f1 < f0 ? f1 : f0;
     fn_8026ED64((s32 *)arg0, (Vec *)arg1, (Vec *)arg2, f1);
 }
 #pragma pop
@@ -571,8 +532,8 @@ extern "C" void fn_8026F420(s32 arg0, s32 arg1, void *arg2) {
     f32 f29;
     f32 f28;
     f32 f27;
-    f32 f2;
     f32 f1;
+    f32 f2;
     f32 f0;
     f32 f6;
     f32 f5;
@@ -753,6 +714,8 @@ extern "C" void fn_8026F420(s32 arg0, s32 arg1, void *arg2) {
             break;
         case 6:
             f5 = lbl_80563ED8;
+            break;
+        case 7:
             break;
         }
         limit = *(f32 *)((char *)arg2 + 0xE8) + lbl_80563E30;

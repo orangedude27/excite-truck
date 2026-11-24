@@ -21,7 +21,7 @@ extern void fn_80206444(void);
 extern void fn_80206454(void);
 extern void fn_802C2C68(int, int);
 extern void fn_80176A00(int);
-extern float fn_801E9FDC(void *, float, float);
+extern float QueryGroundHeightAtXZ(void *, float, float);
 extern int lbl_8055C4FC, lbl_8055C500;
 extern unsigned char lbl_8049A028[];
 extern void fn_8026A1F0(int, int, int);
@@ -240,7 +240,7 @@ void fn_8026B3D4(int arg0) {
                 j++;
             }
             if (t - ((struct Ent *)((char *)lbl_8049A0E8 + off))->t < lbl_80563D68 && *(int *)(p + 0x2620) == 0) {
-                if (*(float *)(p + 0x64) - fn_801E9FDC(p + 0x6C, *(float *)(p + 0x60), *(float *)(p + 0x68)) > lbl_80563D68) {
+                if (*(float *)(p + 0x64) - QueryGroundHeightAtXZ(p + 0x6C, *(float *)(p + 0x60), *(float *)(p + 0x68)) > lbl_80563D68) {
                     unsigned char *o;
                     e->on = 1;
                     o = (unsigned char *)lbl_8055F4CC;
