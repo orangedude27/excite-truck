@@ -493,29 +493,31 @@ extern s32 lbl_8055B5D8;
 extern s32 lbl_8055B5DC;
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_8020C920(s32 arg0) {
     const char *base = lbl_8033C5D8;
-    register s32 i = 0;
-    register s32 j = 0;
-    char *dst = (char *)&lbl_80489BE0;
+    char *dst;
+    register s32 vol;
+    register s32 i;
+    register s32 j;
+    vol = arg0;
     fn_801345D8((char *)&lbl_80489C50, 0x20, base + 0x34, arg0);
     fn_8012DDA8(&lbl_80489C50);
     fn_8012DDA8(lbl_8055B5D0);
     fn_8012DDA8(lbl_8055B5D4);
+    dst = (char *)&lbl_80489BE0;
+    i = 0;
+    j = 0;
     do {
         switch (i) {
         case 0:
-            if (j != 1)
-                fn_801345D8(dst, 0x20, base + 0x40, arg0, &lbl_8055B5DC);
-            else
-                fn_801345D8(dst, 0x20, base + 0x40, arg0, &lbl_8055B5D8);
+            fn_801345D8(dst, 0x20, base + 0x40, vol, j == 1 ? &lbl_8055B5D8 : &lbl_8055B5DC);
             break;
         case 1:
-            fn_801345D8(dst, 0x20, base + 0x50, arg0);
+            fn_801345D8(dst, 0x20, base + 0x50);
             break;
         case 2:
-            fn_801345D8(dst, 0x20, base + 0x60, arg0);
+            fn_801345D8(dst, 0x20, base + 0x60);
             break;
         default:
             break;
