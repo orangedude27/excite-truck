@@ -9,7 +9,7 @@ typedef int M2C_UNK;
 extern void GXLoadTexObj(void *, int);
 
 #pragma dont_inline fn_802D1678
-#pragma dont_inline fn_802CFF50
+#pragma dont_inline gxMarkAllStateDirty
 #pragma dont_inline fn_802CF104
 #pragma dont_inline fn_802CF5D4
 extern char lbl_8034BF80[];
@@ -797,7 +797,7 @@ void fn_802CF850(void) {
     extern void fn_802D03F4(float *, float);
     extern void fn_802D0610(int);
     extern void fn_802CFF5C(void *);
-    extern void fn_802CFF50(void);
+    extern void gxMarkAllStateDirty(void);
     extern void fn_802CFFA4(unsigned short);
     extern void fn_802D9230(void);
     extern void fn_802D92B8(void);
@@ -894,7 +894,7 @@ void fn_802CF850(void) {
     lbl_8055FD25 = 0;
     lbl_8055FD84 = 1;
     fn_802CFF5C((void *)0x17);
-    fn_802CFF50();
+    gxMarkAllStateDirty();
     fn_802CFFA4(lbl_8055FD0A);
     if (lbl_8055FE1C != 0) fn_802D9230();
     if (lbl_8055FE20 != 0) fn_802D92B8();
@@ -1150,7 +1150,7 @@ void fn_802CFF10(void) {
 extern void *lbl_8055FD20;
 #pragma push
 #pragma dont_inline on
-void fn_802CFF50(void) {
+void gxMarkAllStateDirty(void) {
     /* Reset the GX state-change mask to "everything needs updating" (-1). */
     lbl_8055FD20 = (void*)-1;
 }
@@ -1764,7 +1764,7 @@ extern void GXSetDispCopyDst(unsigned short, unsigned short);
 extern void GXSetCopyFilter(unsigned char, unsigned char *, unsigned char, unsigned char *);
 extern void GXCopyDisp(void *, int);
 extern void fn_802D09E8(void);
-extern void fn_802CFF50(void);
+extern void gxMarkAllStateDirty(void);
 void fn_802D0C98(void) {
     extern int lbl_8055FD48, lbl_8055FD4C;
     extern unsigned int lbl_8055FD74;
@@ -1802,7 +1802,7 @@ void fn_802D0C98(void) {
     }
     VIFlush();
     lbl_804C9760[1] = lbl_804C9760[0];
-    fn_802CFF50();
+    gxMarkAllStateDirty();
 }
 
 #pragma scheduling off
@@ -2597,7 +2597,7 @@ void fn_802D2218(void)
     GXSetDstAlpha(1, lbl_8055FD60);
     sClearState_802D2218.clearZ = 0;
     sClearState_802D2218.clearColor = 0;
-    fn_802CFF50();
+    gxMarkAllStateDirty();
     sClearState_802D2218.dirty = 1;
     fn_802D14D8();
     ((unsigned char *) sViewTo_802D18E8)[0x40] = 1;
@@ -3123,7 +3123,7 @@ int fn_802D31D8(void)
 /* Reset GX render state to a simple default (no cull, TEV stage 0 pass-through). */
 void gxResetDefaultState(void) {
     lbl_804C5700[0] = 1;
-    fn_802CFF50();
+    gxMarkAllStateDirty();
     lbl_8055FDB4 = 0;
     GXSetCullMode(0);
     GXSetTevOrder(0, 0, 0, 4);
@@ -3145,7 +3145,7 @@ extern void GXSetTevOp(int, int);
     fn_802CF5D4();
     lbl_8055FD84 = 1;
     lbl_804C5700[0] = 1;
-    fn_802CFF50();
+    gxMarkAllStateDirty();
     GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
     texCoord = 0;
     do {
