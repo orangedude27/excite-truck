@@ -841,7 +841,7 @@ __repair_addr = (char *)(slot + 0x94);
 }
 #pragma pop
 /* SpuSample_release: decrement a sample's reference count, panicking if the last reference is dropped while channels still use it, and free its loaded SFX0 resource when the count reaches zero. */
-void SpuSampleReleaseRef(void *sample) {
+/* Decrement a sample's reference count; panic if the last reference is dropped while channels still use it, and free its loaded SFX0 resource when the count reaches zero. */ void SpuSampleReleaseRef(void *sample) {
     if (*(int *)((char *)sample + SPU_SAMPLE_REF_COUNT_OFFSET) == 1 &&
         *(int *)((char *)sample + SPU_SAMPLE_ACTIVE_CHANNELS_OFFSET) > 0) {
         Abend_panic(sSampleStillInUseFmt, sample,
