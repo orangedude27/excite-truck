@@ -1873,7 +1873,7 @@ void fn_8018F538(unsigned char *arg0, unsigned char *arg1) {
     *(int *)(p.dst + 0x29C) = *(int *)(arg0 + 0x1E3C);
 }
 #pragma scheduling on
-/* Reset active, idle light slots of definition types 0xE-0x10: mark state 4, clear the flag and intensity, and scale the stored range by 0.75. */ void resetSceneLights(void *sceneState) {
+void resetSceneLights(void *sceneState) {
     int slotsLeft;
     float rangeScale;
     float zero;
