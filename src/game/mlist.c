@@ -121,7 +121,7 @@ struct MListEntry {
 
 // qsort comparator for the 4-byte entry pointers in the array at mlist+0x90
 // (installed by fn_802CCE24): orders the entries by their virtual sort key.
-extern "C" int fn_802CCDC4(void *** __restrict itemA, void *** __restrict itemB) {
+/* qsort comparator: order the MList draw entries by their virtual sort key. */ extern "C" int fn_802CCDC4(void *** __restrict itemA, void *** __restrict itemB) {
     /* qsort comparator: order the MList draw entries by their virtual sort key. */
     MListEntry *entryA = (MListEntry *)*itemA;
     MListEntry *entryB = (MListEntry *)*itemB;
