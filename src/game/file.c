@@ -517,7 +517,7 @@ void fn_802E3D00(void) {
 
 #pragma cplusplus on
 /* Open a file by name through the secondary file system: ask its vtable method at slot 0x10 for a native handle, register it in the open-file table, and return the new file handle index (or -1 on failure). */
-extern "C" s32 File_OpenSecondary(s32 path) {
+extern "C" s32 FileLookupSecondary(s32 path) {
     class V {
     public:
         virtual void a();
