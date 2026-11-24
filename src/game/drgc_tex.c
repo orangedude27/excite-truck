@@ -201,7 +201,7 @@ void fn_802D768C(void *record) {
 /* Does this drgc texture format carry an alpha channel?  1 = yes: fn_802D7780
  * then sets the 0x100 bit of the texture's draw-state word (+0xE0), which is
  * what makes the texture stage take TEV alpha from the texture (GX_CA_TEXA in
- * the TEV pipeline builder buildDefaultTevPipeline).  Paletted formats count as alpha
+ * the TEV pipeline builder fn_802D2684).  Paletted formats count as alpha
  * because their CLUT entries carry it; the CMPR pair splits on the alpha block
  * (DRTEX_CMPR_A vs DRTEX_CMPR), and DRTEX_CMPR_I4 keeps its alpha in the second
  * (I4) texture, so the primary one reports none.  The legacy paletted ids 0 and
