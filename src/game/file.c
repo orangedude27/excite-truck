@@ -338,17 +338,17 @@ extern "C" void fn_802E3898(s32, const char *, s32 *);
     *countPtr = bytesRead;
 }
 #pragma use_lmw_stmw reset
-extern "C" void File_read(s32 fileHandle, s32 offset, s32 whence) {
-    /* Seek the stream for fileHandle to offset/whence via its vtable (file.cpp:0x15e). */
-    class Obj {
+extern "C" void File_read(s32 fileHandle, s32 buffer, s32 byteCount) {
+    /* Read byteCount bytes from the file handle's stream into buffer via its vtable (file.cpp:0x15e). */
+    class FileStream {
     public:
         virtual void v0();
         virtual void v1();
-        virtual void v2(int, int);
+        virtual void read(int, int);
     };
-    s32 fileObject = fn_802E33D8(fileHandle, kFileSourceName, 0x15e);
-    s32 stream = *(s32 *)(fileObject + 0x24);
-    ((Obj *)stream)->v2(offset, whence);
+    s32 fileEntry = fn_802E33D8(fileHandle, kFileSourceName, 0x15e);
+    s32 stream = *(s32 *)(fileEntry + 0x24);
+    ((FileStream *)stream)->read(buffer, byteCount);
 }
 #pragma cplusplus on
 extern "C" void fn_802E3990(s32 fileHandle) {
