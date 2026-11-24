@@ -30,7 +30,7 @@ s32 ConfigGetSDCardHandle(void) {
 
 /* SCInit/SCCheckStatus and the SC enums come from the two SDK headers above. */
 extern void fn_802E317C(const char*, ...); /* panic(): "PANIC: <msg>", then ABEND */
-extern void ConfigCacheWpadSettings(void);             /* ConfigReadWpadSettings(), below */
+extern void ConfigCacheWpadSettings(void);             /* ConfigCacheWpadSettings(), below */
 extern char lbl_8034E238[];                /* "config: SCCheckStatus returns error!" */
 extern char lbl_80560040;                  /* sConfigReady */
 #pragma scheduling invalid_target
