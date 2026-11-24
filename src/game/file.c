@@ -41,7 +41,7 @@ s32 IsNandPath(const char *path) {
    (sSdPathPrefix), 0 otherwise; getFileSystemForPath then hands out the SD-card file
    system handle lbl_8055FF24 for it.  Its sibling IsNandPath tests the
    "nand:" prefix (sNandPathPrefix). */
-s32 IsSdPath(s32 path) {
+/* Returns 1 when path begins with the SD-card prefix "sd:" (sSdPathPrefix), else 0. */ s32 IsSdPath(s32 path) {
     /* Hold the prefix address as an integer so MWCC keeps its small-data
        address in one callee-saved register instead of rematerializing it. */
     s32 prefix = (s32)sSdPathPrefix;
