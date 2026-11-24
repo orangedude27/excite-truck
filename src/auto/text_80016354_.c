@@ -327,7 +327,7 @@ void fn_80016928(int carDefId, int value) {
 /* Apply a driver/vehicle selection to fixed driver slot `driverIndex`: record the
  * driver id, the vehicle resolved from `vehicleId`, and the override value, then
  * reset the paired fixed-state entry's id sentinel to -1000. */
-/* Apply a driver/vehicle selection to fixed driver slot arg0: record the driver id, the vehicle resolved from arg2, and the override value, then reset the paired fixed-state entry's id sentinel to -1000. */ void fn_80016970(int driverIndex, int driverId, int vehicleId, int overrideValue)
+void fn_80016970(int driverIndex, int driverId, int vehicleId, int overrideValue)
 {
   struct DriverInfo
   {
