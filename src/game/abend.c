@@ -43,7 +43,7 @@ void fn_802E3090(void) {
     #undef CloseLogFile
 }
 
-/* Variadic wrapper that forwards a formatted message to fn_802E3028 with flag 0. */
+/* Forward a formatted message to the abnormal-end logger's sink with no panic prefix. */
 void fn_802E30C8(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
