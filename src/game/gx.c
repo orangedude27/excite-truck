@@ -3292,7 +3292,7 @@ extern float lbl_80564F88;
 #pragma processor 7400
 /* Allocate a free depth query from the pool and initialize it with the given fade
  * step. Panics if the pool has no free query. */
-void *fn_802D39A4(float step) {
+/* Allocate the first unused depth query from the pool, initialize its fade step and state, and return it; panic if all 64 are taken. */ void *fn_802D39A4(float step) {
     ZQuery *query = (ZQuery *)lbl_804C9984;
     ZQuery *found = 0;
     int index = 0;
