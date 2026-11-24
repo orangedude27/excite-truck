@@ -30,8 +30,8 @@ void fn_802E6B50(void) {
     #define gChunkCount   lbl_8055FFC0
     #define gMemcardReady lbl_8055FFC4
     #define gMemcardError lbl_8055FFC5
-    /* Reset memory-card save state: clear the chunk-record table and its
-       count, mark the card ready and clear the error flag. */
+    /* Clear all registered save chunk records and reset the memory-card
+       status flags: chunk count to zero, ready true, error false. */
     memset(gChunkTable, 0, 0xC8);
     gChunkCount = 0;
     gMemcardReady = 1;
