@@ -27,7 +27,7 @@ extern int lbl_80507258[];
 extern int lbl_8055D224;
 extern int lbl_8056000C;
 extern unsigned char lbl_80560008;
-extern char fn_802E9A24(void);
+extern char ConfigGetWpadMotorMode(void);
   void fn_802E8528(int, float, float);
 /* Stub for the rjoy input-filter predicate (called with a controller channel):
    always returns 0, so this filter path never marks input as filtered. */
@@ -247,7 +247,7 @@ void fn_802E7C14(int channel) {
 }
 #pragma pop
 #define sRjoyMotorEnabled  lbl_80560008 /* cached WPAD rumble-enabled flag used by the motor driver */
-#define getWpadMotorConfig fn_802E9A24  /* config getter: 1 when WPAD rumble is enabled */
+#define getWpadMotorConfig ConfigGetWpadMotorMode  /* config getter: 1 when WPAD rumble is enabled */
 void fn_802E7C40(void) {
     /* Cache the WPAD rumble config setting into rjoy's motor-enabled flag. */
     sRjoyMotorEnabled = getWpadMotorConfig();

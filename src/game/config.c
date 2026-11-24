@@ -118,7 +118,7 @@ char ConfigGetProgressiveMode(void) {
 }
 
 /** @brief Returns the cached WPAD rumble-motor setting: 1 when the rumble motor is enabled. */
-char fn_802E9A24(void) {
+char ConfigGetWpadMotorMode(void) {
     return sConfigWpadMotor;
 }
 
