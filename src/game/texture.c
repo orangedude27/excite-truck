@@ -1222,10 +1222,10 @@ void fn_802CB82C(int arg0) {
  void TexRequestUnlink();
  extern char texMsgUnlinkNodeNotFound[];
 /* Remove arg2 from the list rooted at arg1, then push arg2 onto the front of *arg0. */
-void fn_802CBB9C(int **arg0, int arg1, int *arg2) {
-    TexRequestUnlink(arg1, arg2);
-    *(int **)((char *)arg2 + 0x14) = *arg0;
-    *arg0 = arg2;
+/* Move a texture-request node from the source list to the front of the destination list: unlink it, then link it at *destHead. */ void fn_802CBB9C(int **destHead, int srcLink, int *requestNode) {
+    TexRequestUnlink(srcLink, requestNode);
+    *(int **)((char *)requestNode + 0x14) = *destHead;
+    *destHead = requestNode;
 }
 
 #pragma scheduling invalid_target
