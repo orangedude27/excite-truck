@@ -907,7 +907,7 @@ void fn_802E0D44(u32 size)
 }
 
 /* RealName: Video_FreeBinkIfLoaded (tentative). If the Bink handle at object+4 is set, cleans up associated subobject at +0x50 via fn_802E1728, frees the Bink via fn_80118DC0 (BinkClose), and clears the handle. */
-void fn_802E0E60(object)
+void VideoObject_FreeBink(object)
 void *object;
 {
     s32 *binkHandle;
@@ -934,7 +934,7 @@ void fn_802E0EAC(void *arg0) {
     char *messages = (char *)lbl_8034CB68;
     s32 binkHandle;
     unsigned char *video = arg0;
-    fn_802E0E60(arg0);
+    VideoObject_FreeBink(arg0);
     movieIndex = FileLookup(video + 8);
     if (movieIndex != -1) {
         ((void (*)(s32, void *, s32))fn_802E3804)(movieIndex, name, 0x20);
@@ -1086,11 +1086,11 @@ s32 fn_802E11A4(const char *name, u8 mode) {
     extern void fn_802E30C8(const char *, ...);
     extern void *fn_802E0BA4(void);
     extern void fn_802E0BE0(void);
-    extern void fn_802E0E60();
+    extern void VideoObject_FreeBink();
     extern char lbl_8034CBD0[];
     fn_802E30C8(lbl_8034CBD0);
     ((void (*)(void *))fn_802E0BA4)(movie);
-    fn_802E0E60();
+    VideoObject_FreeBink();
     ((void (*)(void *))fn_802E0BE0)(movie);
 }
 
@@ -1103,7 +1103,7 @@ void fn_802E12DC(void) {
     if (movie->binkHandle != 0 &&
         *(s32 *)((char *)movie->binkHandle + 0x1C) != 0) {
         fn_802E30C8(lbl_8034CBE0);
-        fn_802E0E60(movie);
+        VideoObject_FreeBink(movie);
     }
     if (movie->binkHandle == 0)
         fn_802E0EAC(movie);
