@@ -354,7 +354,7 @@ int fn_802E8C6C(int request) {
 }
 
 /* Shut down NAND save: wait for async end, detach save pump, and free the async buffer. */
-void fn_802E8D2C(void) {
+void NandSaveShutdown(void) {
 #define sMemCardEndOpName lbl_8034DF00
 #define sNandSaveAsyncBuffer lbl_80560020
     ((int (*)(void *, void (*)(void)))fn_802E95E0)(sMemCardEndOpName, fn_802E8838);
@@ -433,7 +433,7 @@ u32 fn_802E8D84(void) { return 1; }
  *                         blocks; the read below consumes (clears) it.
  * rmemcard_async_buffer - the shared staging buffer fn_802E8CA8 allocates
  *                         RMEMCARD_ASYNC_BUFFER_SIZE bytes of under the name
- *                         "mc_async", and fn_802E8D2C frees; NULL once freed.
+ *                         "mc_async", and NandSaveShutdown frees; NULL once freed.
  * rmemcard_log_strings  - this module's log strings (offsets into the block).
  * rmemcard_yield        - resumes the thread the NAND wait put to sleep, i.e.
  *                         gives the async machine a turn.

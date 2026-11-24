@@ -43,7 +43,7 @@ void fn_802E6B50(void) {
 }
 #pragma scheduling on
 /* Memory-card module shutdown hook, the counterpart of fn_802E6B50 (run from the
- * NAND-save teardown fn_802E8D2C).  The module owns no allocation, so there is
+ * NAND-save teardown NandSaveShutdown).  The module owns no allocation, so there is
  * nothing to release here. */
 void fn_802E6B94(void) {}
 
