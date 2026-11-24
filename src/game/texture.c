@@ -762,7 +762,7 @@ int fn_802CB288(int textureSlot) {
 extern void fn_802D93E8(int);
 extern void fn_802D9418(void);
 extern int lbl_8055D06C;
-void fn_802CB29C(int textureIndex) {
+void selectTexture(int textureIndex) {
     /* Select a texture for the active drawing context, or clear the selection for invalid indices. */
     if (textureIndex != -1 && textureIndex != -2) {
         int offset = textureIndex * 0x4C;
