@@ -204,7 +204,7 @@ void fn_802DAE64(int xStart, int yStart, char *str)
 }
 #pragma pop
 
-extern void *fn_802D2F78(int *, int *);
+extern void *GX_GetXFB(int *, int *);
 extern void fn_802C3034(void *, int, int, int);
 extern void GX_ShowXFB(void);
 extern char *strcpy(char *, const char *);
@@ -237,7 +237,7 @@ void fn_802DB03C(char *arg0) {
 
     local.outputA = 0;
     local.outputB = 0;
-    pixels = (unsigned char *)fn_802D2F78(&local.outputA, &local.outputB);
+    pixels = (unsigned char *)GX_GetXFB(&local.outputA, &local.outputB);
     row = (cursor = pixels, 0);
     for (; row < local.outputB; row++) {
         for (column = 0; column < local.outputA; column++) {
@@ -289,7 +289,7 @@ void fn_802DB168(void) {
     #pragma scheduling invalid_target
     CanvasConfig canvas;
     int fbWidth = 0, fbHeight = 0;
-    unsigned char *framebuffer = fn_802D2F78(&fbWidth, &fbHeight);
+    unsigned char *framebuffer = GX_GetXFB(&fbWidth, &fbHeight);
     unsigned char *cursor = framebuffer;
     int row;
     for (row = 0; row < fbHeight; row++) {

@@ -2917,7 +2917,7 @@ void fn_802D2F70(int light) {
     fn_802D2ED8(light, 0);
 }
 
-int fn_802D2F78(int *outWidth, int *outHeight) {
+int GX_GetXFB(int *outWidth, int *outHeight) {
     /* Prepare/framebuffer handoff helper: disable draw-sync callback state, flush VI, mark buffer in-use, and return stored buffer pointer with its dimensions. */
     int *data;
     int value;
@@ -2933,7 +2933,7 @@ int fn_802D2F78(int *outWidth, int *outHeight) {
 
 /* Show the frame the game just drew into the EFB copy buffer: mark the buffer
  * free again, push it out of the cache, hand it to the video interface and
- * wait one retrace for it to appear.  Pairs with fn_802D2F78, which hands out
+ * wait one retrace for it to appear.  Pairs with GX_GetXFB, which hands out
  * that buffer (and sets the in-use flag this clears) so the on-screen message
  * box can be drawn straight into it.
  *
