@@ -58,7 +58,7 @@ void *fn_802E77C0(int statusCode) {
  #pragma scheduling invalid_target
 /* Dead-zone response: rescale an axis value past its dead zone into +/-1.5,
  * saturating a non-negative value to [0.0, 1.5] and a negative one to [-1.5, 0.0]. */
-/* Dead-zone response: rescale an axis past its dead zone into +/-1.5, saturating positive values to [0, 1.5] and negative ones to [-1.5, 0]. */ float fn_802E7824(float value, float deadZone) {
+/* Dead-zone response: rescale an axis past its dead zone into +/-1.5, saturating positive values to [0, 1.5] and negative ones to [-1.5, 0]. */ float RjoyDeadZoneResponse(float value, float deadZone) {
 #define RJOY_ZERO       lbl_80565164 /* 0.0f: clamp midpoint and input threshold */
 #define RJOY_ONE        lbl_80565160 /* 1.0f: scale numerator */
 #define RJOY_MAX        lbl_80565168 /* 1.5f: positive output ceiling */
@@ -89,18 +89,18 @@ void *fn_802E77C0(int statusCode) {
 #pragma scheduling invalid_target
 #pragma processor 750
 /* Shapes one Wii Remote tilt/stick axis into the steering value fn_802E7DDC stores
- * in its input record: the dead-zone response fn_802E7824() is sampled twice, with
+ * in its input record: the dead-zone response RjoyDeadZoneResponse() is sampled twice, with
  * the axis pushed RJOY_KNEE toward and away from zero, and the two samples averaged,
  * which rounds that response's hard dead-zone corner into a soft knee. The result is
  * then blended toward the squared response v*|v| by RJOY_CURVE_AMOUNT, which is
  * 0.0f, so the output stays linear. */
 float RjoyShapeSteeringAxis(float axis) {
 #define RJOY_KNEE         lbl_80565174 /* 0.05f: how far each sample is shifted */
-#define RJOY_DEAD_ZONE    lbl_80565178 /* 0.1f: dead zone fn_802E7824 rescales past */
+#define RJOY_DEAD_ZONE    lbl_80565178 /* 0.1f: dead zone RjoyDeadZoneResponse rescales past */
 #define RJOY_HALF         lbl_80565170 /* 0.5f: weight of the two samples */
 #define RJOY_CURVE_AMOUNT lbl_80565164 /* 0.0f: 0 = linear, 1 = v*|v| */
-    float up = fn_802E7824(RJOY_KNEE + axis, RJOY_DEAD_ZONE);
-    float down = fn_802E7824(axis - RJOY_KNEE, RJOY_DEAD_ZONE);
+    float up = RjoyDeadZoneResponse(RJOY_KNEE + axis, RJOY_DEAD_ZONE);
+    float down = RjoyDeadZoneResponse(axis - RJOY_KNEE, RJOY_DEAD_ZONE);
     float v = RJOY_HALF * (down + up);
     float squared = v * (float)__fabs(v) - v;
     return v + RJOY_CURVE_AMOUNT * squared;
