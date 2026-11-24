@@ -44,7 +44,7 @@ void fn_8020A600(void) {
 s32 fn_802E2C20(void);            /* milliseconds since boot */
 extern const char lbl_8033C318[]; /* "music: setting song idx to %d" */
 extern s32 gRequestedSongIdx;          /* song index last requested (-1 = no music) */
-extern s32 lbl_8055EDE8;          /* ms stamp of that request; fn_8020A100 ramps the crossfade from it */
+extern s32 gSongChangeTimeMs;          /* ms stamp of that request; fn_8020A100 ramps the crossfade from it */
 
 #pragma scheduling invalid_target
 /* Requests a song change. When the index differs from the one already pending,
@@ -55,7 +55,7 @@ void musicRequestSong(s32 songIdx) {
     if (songIdx != gRequestedSongIdx) {
         fn_802E30C8(lbl_8033C318, songIdx);
         gRequestedSongIdx = songIdx;
-        lbl_8055EDE8 = fn_802E2C20();
+        gSongChangeTimeMs = fn_802E2C20();
     }
 }
 #pragma scheduling on
@@ -169,7 +169,7 @@ void fn_8020A100(void) {
     s32 zero;
     if (lbl_8055EDD0 != 0) {
         scale = lbl_80563294;
-        diff = fn_802E2C20() - lbl_8055EDE8;
+        diff = fn_802E2C20() - gSongChangeTimeMs;
         if ((s32)lbl_8055EDE0 != gRequestedSongIdx) {
             if (diff >= 0x190 || diff < 0 || (s32)lbl_8055EDE0 == -1) {
                 lbl_8055EDE0 = (void *)(s32)*(volatile s32 *)&gRequestedSongIdx;
@@ -320,7 +320,7 @@ extern const char lbl_8055B588;
     trackIdPtr = &lbl_8055B560;
     loadedFlagPtr = &lbl_8055EDD4;
     gRequestedSongIdx = zero;
-    lbl_8055EDE8 = zero;
+    gSongChangeTimeMs = zero;
     do {
         sprintf(local.songPathBuf, &lbl_8055B568, *trackIdPtr);
         *loadedFlagPtr = zero;
