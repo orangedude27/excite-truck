@@ -229,25 +229,44 @@ void fn_8020A100(void) {
 }
 #pragma pop
 void fn_8020A368(void) {
-    /* Initialize two music buffer slots, reset music volume state, register the music manager, and set the music update callback. */
+    /* Initialize the music system: allocate the two "mus_buf" stream buffers,
+       clear the play flag and set the default 0.7 music volume, register the
+       "music_volume" setting and the "Music" volume callback, then hook the
+       music volume event handler. */
+#define MUSIC_SLOTS      lbl_804892C0  /* two channels: {sound, buffer} */
+#define MUS_BUF_TAG      lbl_8055B578  /* "mus_buf" */
+#define DEFAULT_VOLUME   lbl_80563290  /* 0.7f */
+#define PLAY_FLAG        lbl_8055EDDC
+#define MUSIC_VOLUME     lbl_8055EDD8
+#define VOLUME_KEY       lbl_8033C278  /* "music_volume" */
+#define MUSIC_CB_NAME    lbl_8055B580  /* "Music" */
+#define MUSIC_CB_HANDLE  lbl_8055B550
     s32 *musicSlot;
     s32 slotIndex;
     f32 defaultVolume;
     void *volumeCallback;
-    musicSlot = lbl_804892C0;
+    musicSlot = MUSIC_SLOTS;
     slotIndex = 0;
     do {
-        musicSlot[1] = fn_8012850C(0x70, (void *)&lbl_8055B578);
+        musicSlot[1] = fn_8012850C(0x70, (void *)&MUS_BUF_TAG);
         slotIndex += 1;
         musicSlot = (s32 *)((s32)musicSlot + 8);
     } while (slotIndex < 2);
-    defaultVolume = lbl_80563290;
-    lbl_8055EDDC = 0;
-    lbl_8055EDD8 = defaultVolume;
-    fn_8013323C(4, (void *)lbl_8033C278, defaultVolume);
+    defaultVolume = DEFAULT_VOLUME;
+    PLAY_FLAG = 0;
+    MUSIC_VOLUME = defaultVolume;
+    fn_8013323C(4, (void *)VOLUME_KEY, defaultVolume);
     volumeCallback = (void *)fn_80209FFC;
-    lbl_8055B550 = fn_8013365C((void *)&lbl_8055B580, volumeCallback);
+    MUSIC_CB_HANDLE = fn_8013365C((void *)&MUSIC_CB_NAME, volumeCallback);
     fn_8000DBC8((void *)fn_8020A03C);
+#undef MUSIC_CB_HANDLE
+#undef MUSIC_CB_NAME
+#undef VOLUME_KEY
+#undef MUSIC_VOLUME
+#undef PLAY_FLAG
+#undef DEFAULT_VOLUME
+#undef MUS_BUF_TAG
+#undef MUSIC_SLOTS
 }
 
 /* Shut the music system down: clear the "music: play!" flag, unregister the
