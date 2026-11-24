@@ -362,7 +362,7 @@ char *key;
 #pragma use_lmw_stmw reset
 #pragma dont_inline on
 /* Returns the current track-music entry's payload: NULL if none, the selected path from the track-music list for type 1, or the inline path at +0x24 for other types. */
-void *fn_8020FC04(void) {
+void *getCurrentTrackMusicPath(void) {
 #define GetCurrentTrackMusicEntry fn_8020FAF0
 #define GetNextTrackMusicIndex fn_8020F6FC
 #define trackMusicList lbl_804900AC
@@ -393,7 +393,7 @@ int fn_8020FC6C(void) {
     void *p;
     if (lbl_804900AC.m_count == 0) {
         return ((int (*)(int))fn_8020F3B4)(0);
-    } else if ((p = fn_8020FC04()) != 0) {
+    } else if ((p = getCurrentTrackMusicPath()) != 0) {
         return fn_8020FB80(p);
     } else {
         return ((int (*)(int))fn_8020F3B4)(0);
