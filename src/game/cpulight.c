@@ -150,7 +150,7 @@ void fn_802DB4E4(void) {
     GXLoadTexMtxImm((float *)texMtx, GX_TEXMTX1, GX_MTX_2x4);
 }
 #pragma pop
-void fn_802DB58C(void) {
+/* Load texture matrix 0x1E (GX_MTX2x4): copy the 8-word template from lbl_802FACD8 into a scratch matrix, overwrite X/Y scale entries with lbl_804DB068[3], and upload it with GXLoadTexMtxImm. */ void fn_802DB58C(void) {
     /* Load texture matrix 0x1E (GX_MTX2x4) from the lbl_802FACD8 template, scaling X/Y by lbl_804DB068[3]. */
     int texMtx[8];
     int *texMtxTemplate = (int *)lbl_802FACD8;
