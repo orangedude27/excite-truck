@@ -32,7 +32,7 @@ int fn_8012C958(int);
 #pragma small_data on
 DECL_SECTION(".sdata") extern int lbl_8055FCB0;
 DECL_SECTION(".sdata") extern int lbl_8055FCB4;
-DECL_SECTION(".sdata") extern int lbl_8055FCB8;
+DECL_SECTION(".sdata") extern int gActiveTextureSlot;
 void fn_802D8FB4(void);
 void fn_802D9160(int, int);
 void fn_802DBDE8(int, int);
@@ -63,7 +63,7 @@ extern void fn_801282F4(void);
         slotIndex++;
         recordOffset += 0x4C;
     } while (slotIndex < 0x200);
-    lbl_8055FCB8 = -2;
+    gActiveTextureSlot = -2;
     textureId = ((int (*)(int, int))fn_802CAC28)(lbl_8055D038, 0);
     lbl_8055FCB4 = textureId;
     if (textureId == -1)
@@ -487,7 +487,7 @@ copy2_done:
     entry->resource = arg2;
     entry->arg3 = arg3;
     entry->handle = fn_802CA4E0(arg2, (int)(char *)path_value, 0, 0, arg3);
-    lbl_8055FCB8 = -2;
+    gActiveTextureSlot = -2;
     return best;
 }
 #pragma dont_inline reset
@@ -569,7 +569,7 @@ void fn_802CAD28(int slotIndex) {
 /* Invalidate the texture module's "last bound slot" cache by setting it to -2,
    so the next texSelectSlot call rebinds even if the slot number is unchanged. */
 void fn_802CAD68(void) {
-#define gLastBoundTextureSlot lbl_8055FCB8
+#define gLastBoundTextureSlot gActiveTextureSlot
     gLastBoundTextureSlot = -2;
 #undef gLastBoundTextureSlot
 }
@@ -578,9 +578,9 @@ void fn_802CAD68(void) {
 void texSelectSlot(register int slotIndex) {
     /* Select a texture slot as active: on a change, remember it (or restore the saved default slot on -1),
        then bump the slot's use counter at +0x48 and bind its texture at +0x40 (fallback +0x28) to GX. */
-    if (slotIndex == lbl_8055FCB8)
+    if (slotIndex == gActiveTextureSlot)
         return;
-    lbl_8055FCB8 = slotIndex;
+    gActiveTextureSlot = slotIndex;
     if (slotIndex == -1) {
         ((void (*)(int))texSelectSlot)(*(volatile int *)&lbl_8055FCB4);
         return;
@@ -1975,7 +1975,7 @@ texAllocPending(root);
 fn_802CBC3C(root, *(int *)(root + 0x2848));
 *(int *)(root + 0x2848) = *(int *)(root + 0x2848) + 1;
 }
-lbl_8055FCB8 = -2;
+gActiveTextureSlot = -2;
 }
 #pragma pop
 extern void fn_802E317C(const char *, ...);
