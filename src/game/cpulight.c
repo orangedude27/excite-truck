@@ -390,17 +390,17 @@ void fn_802DBCFC(int positionArray, int vertexCount) {
 #pragma push
 #pragma small_data off
 /* Reset CPU-light GX vertex array cache/state and bind the default texture object. */
-void cpulightResetGxCache(void) {
-    void *defaultTex;
-    void **texSlots;
+/* Reset the CPU-light GX vertex-array cache and texture state, then bind the currently active texture as the default. */ void cpulightResetGxCache(void) {
+    void *boundTexture;
+    void **textureSlots;
     lbl_8055FEA8 = 0;
     lbl_8055FEAC = 0;
     gCpuLightTexDirty = 1;
     lbl_8055FEA0 = -1;
-    defaultTex = fn_802D94DC();
+    boundTexture = fn_802D94DC();
     lbl_8055FEA4 = 1;
-    texSlots = (void **)&gCpuLightTextures;
-    *texSlots = defaultTex;
+    textureSlots = (void **)&gCpuLightTextures;
+    *textureSlots = boundTexture;
 }
 #pragma pop
 /* Cached GX position vertex array: the buffer pointer and the vertex count. */
