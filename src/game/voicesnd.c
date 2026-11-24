@@ -133,17 +133,16 @@ int VoiceSoundPool_Alloc(void) {
 #pragma push
 #pragma cplusplus on
 extern "C" void VoiceSoundPool_Free(void *voiceSound) {
-    /* Return a voice sound to the shared pool and, when the last user is gone,
-     * delete the pool object (virtual destructor, deleting) and clear it. */
+    /* Return a voice sound to the shared pool, destroying the pool object when the last user releases it. */
     class PoolObject {
     public:
         virtual void dtor(int shouldDelete);
     };
-    fn_8012A364(lbl_8055EE10, voiceSound);
-    if (--lbl_8055EE0C == 0) {
-        if (lbl_8055EE10 != 0)
-            ((PoolObject *)lbl_8055EE10)->dtor(1);
-        lbl_8055EE10 = 0;
+    Pool_Free(sVoiceSoundPool, voiceSound);
+    if (--sVoiceSoundLiveCount == 0) {
+        if (sVoiceSoundPool != 0)
+            ((PoolObject *)sVoiceSoundPool)->dtor(1);
+        sVoiceSoundPool = 0;
     }
 }
 #pragma cplusplus reset
