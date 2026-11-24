@@ -730,28 +730,20 @@ extern long fn_80009C84(void);
 extern unsigned char gTrackMusicListChanged;
 extern signed char gTrackMusicHoldSongChange, gTrackMusicMuted;
 extern long gTrackMusicHoldUntil, gTrackMusicCurrentSong;
-/* Stop track music: mute, clear selection/hold state, and if a song is selected while inactive reset to none and stop playback. */
+/* Stop track music: mute playback and clear the song-list-changed and
+ * song-change-hold flags.  If no scene or arena event is active and the current
+ * song is the "off" sentinel, reset it to the no-song value and abort playback. */
 void stopTrackMusic(void) {
-#define trackMusicMuted gTrackMusicMuted
-#define trackMusicSongListReady gTrackMusicListChanged
-#define trackMusicHoldSongChange gTrackMusicHoldSongChange
-#define trackMusicHoldUntil gTrackMusicHoldUntil
-#define trackMusicCurrentSong gTrackMusicCurrentSong
-    trackMusicMuted = 1;
-    trackMusicSongListReady = 0;
-    trackMusicHoldSongChange = 0;
-    trackMusicHoldUntil = 0;
+    gTrackMusicMuted = 1;
+    gTrackMusicListChanged = 0;
+    gTrackMusicHoldSongChange = 0;
+    gTrackMusicHoldUntil = 0;
     if (fn_80009C84() == 0 && fn_801B85CC() == 0 &&
-        trackMusicCurrentSong == ((long (*)(long))fn_8020F3B4)(1)) {
-        trackMusicCurrentSong = ((long (*)(long))fn_8020F3B4)(0);
+        gTrackMusicCurrentSong == ((long (*)(long))fn_8020F3B4)(1)) {
+        gTrackMusicCurrentSong = ((long (*)(long))fn_8020F3B4)(0);
         fn_802EC12C();
         fn_802EC1D8();
     }
-#undef trackMusicMuted
-#undef trackMusicSongListReady
-#undef trackMusicHoldSongChange
-#undef trackMusicHoldUntil
-#undef trackMusicCurrentSong
 }
 
 /* True (1) when a track-music song is selected (current song id gTrackMusicCurrentSong != -1). */
