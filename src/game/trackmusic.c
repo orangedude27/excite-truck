@@ -317,8 +317,8 @@ void fn_8020F730(void) {
 
 #pragma push
 #pragma dont_inline on
-/* Find the track-music slot in the current context whose key matches `key`, or the first free slot if none match. */
-/* Find the track-music entry whose key matches, or the first free entry if none match. */ void *fn_8020FAF0(key)
+/* Find the track-music entry whose key matches `key`, or the first free entry if none match. */
+void *fn_8020FAF0(key)
 char *key;
 {
     char *entry;
