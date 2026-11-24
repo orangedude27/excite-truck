@@ -107,7 +107,7 @@ extern void GXSetZMode(int, int, int);
 extern int lbl_802FACB0[6];
 extern void *lbl_8055FE1C;
 extern unsigned char lbl_804C9984[];
-extern char lbl_8034C1C4[];
+extern char sVisQueryStillInUseMsg[];
 extern void fn_802D2ED8(int, int);
 // Render request block (0x804C5700, 16 bytes). The scene sets a field and marks
 // the request pending; fn_802D2B0C compares it with the applied copy at
@@ -3264,7 +3264,7 @@ void ZQueryPool_AssertAllReleased(void) {
     /* Panic if any visibility-test depth query is still checked out of the pool. */
     for (i = 0; i < 0x40; i++, query++) {
         if (query->used != 0) {
-            fn_802E317C((const char *)lbl_8034C1C4);
+            fn_802E317C((const char *)sVisQueryStillInUseMsg);
         }
     }
 }
