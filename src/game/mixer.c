@@ -97,7 +97,7 @@ void fn_80208A50(float *unusedVolume) {
 #undef effectiveMasterVolume
 #undef applyVolumeHandles
 
-void fn_80208A78(void) {
+void ReloadMixerSettings(void) {
     /* Load saved mixer settings for effects volume and sound quality, then apply them. */
     fn_801331C4(4, lbl_8033BEF8, &lbl_8055B4D0);
     SetEffectsVolume(lbl_8055B4D0);
@@ -200,8 +200,8 @@ void fn_80208B8C(int initBackends) {
             *(int *)((char *)MIXER_DEVICES + MIXER_SELECTED_OFFSET) = 0; /* null mixer */
     }
     fn_8013323C(OPTIONS_SECTION_SOUND, CONFIG_KEY_EFFECTS_VOLUME, DEFAULT_EFFECTS_VOLUME);
-    fn_80208A78();
-    gMixerReloadSlot = fn_8013365C((int)&MIXER_CALLBACK_NAME, (int)fn_80208A78);
+    ReloadMixerSettings();
+    gMixerReloadSlot = fn_8013365C((int)&MIXER_CALLBACK_NAME, (int)ReloadMixerSettings);
     fn_8000DBC8((void *)fn_80208AC8);
 }
 #pragma pop
@@ -284,7 +284,7 @@ extern "C" void fn_80208D80(int closeDevices) {
     fn_80133348(OPTIONS_SECTION_SOUND, &CONFIG_KEY_MIXER, MIXER_SELECTED_DEVICE);
     fn_8013323C(OPTIONS_SECTION_SOUND, CONFIG_KEY_EFFECTS_VOLUME, lbl_8055B4D0);
     fn_80133348(OPTIONS_SECTION_SOUND, &CONFIG_KEY_QUALITY, (int)gSoundQuality);
-    fn_801336E0(gMixerReloadSlot, fn_80208A78);
+    fn_801336E0(gMixerReloadSlot, ReloadMixerSettings);
 }
 
 #pragma cplusplus on
