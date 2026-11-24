@@ -8,7 +8,7 @@ typedef signed long s32;
 extern void fn_802E317C(const char *, ...);
 extern char lbl_8034CF40[];
 extern char lbl_8034CF60[];
-extern char lbl_804DB810[];
+extern char gOpenFileTable[];
 extern char lbl_8055D1A0[];
 extern s32 lbl_8055FF20;
 extern s32 fn_802E321C(const char *);
@@ -120,16 +120,16 @@ s32 fn_802E33D0(void) { return 0; }
         fn_802E317C(lbl_8034CF40, fileId, name, line);
     }
     entryOffset = fileId * 0x28;
-    entry = (unsigned char *)(lbl_804DB810 + entryOffset);
+    entry = (unsigned char *)(gOpenFileTable + entryOffset);
     if (entry[0x20] == 0) {
         fn_802E317C(lbl_8034CF60, fileId, entry, name, line);
     }
-    return (s32)lbl_804DB810 + entryOffset;
+    return (s32)gOpenFileTable + entryOffset;
 }
 #pragma scheduling on
 void fn_802E3498(void) {
     /* RealName: File_InitSubsystem (clears the open-file table and lazily creates the default DVD file-system object). */
-#define sOpenFileTable lbl_804DB810
+#define sOpenFileTable gOpenFileTable
 #define sDefaultFileSystem gDefaultFileSystem
     memset((void *)((char *)sOpenFileTable + 0), 0, 0x280);
     if (sDefaultFileSystem == 0) {
@@ -166,7 +166,7 @@ extern "C" void File_ShutdownSubsystem(void) {
 extern char lbl_8034CF80[];
 #pragma scheduling invalid_target
 void File_checkOpenFiles(void) {
-#define sOpenFileTable lbl_804DB810
+#define sOpenFileTable gOpenFileTable
 #define sFileStillInUseMsg lbl_8034CF80
 #define FilePanic fn_802E317C
     /* Scan the fixed 16-entry open-file table and report any entries still marked in use. */
@@ -195,12 +195,12 @@ extern char lbl_8034CF98[];
     s32 entryOffset;
     s32 slotIndex = 0;
     s32 handleValue = fileHandle;
-    unsigned char *scan = (unsigned char *)lbl_804DB810;
+    unsigned char *scan = (unsigned char *)gOpenFileTable;
     s32 slotsLeft;
     for (slotsLeft = 16; slotsLeft != 0; slotsLeft--) {
         if (scan[0x20] == 0) {
             entryOffset = slotIndex * 0x28;
-            tableBase = lbl_804DB810;
+            tableBase = gOpenFileTable;
             *(tableBase + entryOffset + 0x20) = 1;
             strncpy(tableBase + entryOffset, name, 0x20);
             *(s32 *)((u32)tableBase + entryOffset + 0x24) = handleValue;
