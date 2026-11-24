@@ -689,7 +689,7 @@ extern int fn_80004D64(void *);
 extern int fn_802E2A5C(void);
 extern void fn_80004E20(void);
 extern void KERNEL_Shutdown(void);
-/* Shut down engine/kernel subsystems in reverse startup order; unregisters the stack-overrun check. */
+/* Shut down every engine/kernel subsystem in reverse startup order; unregister the stack-overrun check first. */
 void KERNEL_Shutdown(void) {
     fn_80127D58((void *)fn_802E2A1C); /* unregister stack check callback */
     fn_802E29AC();
