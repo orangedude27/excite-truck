@@ -356,8 +356,7 @@ float fn_80209028(void) {
 #define MIN_EFFECTS_VOLUME lbl_80563234
 #define CONFIG_KEY_EFFECTS_VOLUME lbl_8033BEF8
 void SetEffectsVolume(float volume) {
-    /* Set the mixer's effects volume: clamp the input to [0,1], publish it to config
-     * under "effects_volume", then recompute the effective master volume. */
+    /* Clamp the effects volume to [0,1], publish it to config under "effects_volume", then recompute the effective master volume. */
     float clamped = 1.0f < volume ? 1.0f : volume;
     clamped = clamped > MIN_EFFECTS_VOLUME ? clamped : MIN_EFFECTS_VOLUME;
     gEffectsVolume = clamped;
