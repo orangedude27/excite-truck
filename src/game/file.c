@@ -209,9 +209,9 @@ extern char lbl_8034CF98[];
 
 #pragma dont_inline on
 #pragma cplusplus on
+/* Open/create the given path via the active file system and register the returned
+   native handle in the open-file table, or return -1 if the open fails. */
 extern "C" s32 File_Open(s32 path) {
-    /* Open/create the given path via the active file system and register the returned
-       native handle in the open-file table, or return -1 if the open fails. */
     class FileSystem {
     public:
         virtual void v0();
