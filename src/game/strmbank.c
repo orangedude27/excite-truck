@@ -59,7 +59,7 @@ extern "C" void fn_802E75E4(s32 bankName) {
 
 #pragma scheduling invalid_target
 /* Log before and after unloading a stream bank. */
-/* Log the +StrmUnloadBank/-StrmUnloadBank markers around the global stream-bank manager's virtual unloadBank call. */ extern "C" void unloadStrmBank(s32 bankId) {
+/* Log the +StrmUnloadBank/-StrmUnloadBank markers around the global stream-bank manager's virtual unloadBank call. */ /* Log the +StrmUnloadBank/-StrmUnloadBank markers around the global stream-bank manager's virtual unloadBank call. */ extern "C" void unloadStrmBank(s32 bankId) {
     fn_802E30C8(lbl_8034D808);
     ((StrmBankManager *)strmBankManager)->unloadBank(bankId);
     fn_802E30C8(lbl_8034D818);
