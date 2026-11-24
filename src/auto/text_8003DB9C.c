@@ -2946,10 +2946,7 @@ extern void OSWakeupThread(void *);
 extern void OSSleepThread(void *);
 extern void OSInitThreadQueue(void *);
 extern void (*lbl_8055D978_callback)(unsigned short);
-#pragma cplusplus reset
-#pragma push
-#pragma use_lmw_stmw off
-#pragma scheduling 750
+#pragma scheduling on
 void GXInitSpecularDir(unsigned int arg0, void *ctx) {
     extern unsigned int lbl_8055D978;
     extern unsigned short *__peReg;
@@ -2967,9 +2964,6 @@ void GXInitSpecularDir(unsigned int arg0, void *ctx) {
     __peReg[5] |= 4;
     return;
 }
-#pragma scheduling reset
-#pragma pop
-#pragma cplusplus reset
 /* Atomically sets and returns the previous value of the light-object index global. */
 unsigned int GXLoadLightObjIndx(unsigned int lightObjIndex) {
     unsigned int previousIndex = lbl_8055D974;
@@ -5424,13 +5418,13 @@ void GXSetTevColor(s32 tevReg, const unsigned int *color) {
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
-void GXSetTevColorS10(s32 tevReg, const void *color) {
-    unsigned int c0 = ((unsigned int *)color)[0];
-    unsigned int c1 = ((unsigned int *)color)[1];
-    unsigned int *data = __GXData;
-    s32 index = tevReg << 1;
-    unsigned int regRA = __rlwimi(__rlwimi((index + 0xE0) << 24, c0, 16, 21, 31), c1, 12, 9, 19);
-    unsigned int regBG = __rlwimi(__rlwimi((index + 0xE1) << 24, c1, 16, 21, 31), c0, 12, 9, 19);
+/* Set the signed-10-bit TEV color for tevReg: pack the r/g and b/a color words into two RAS registers (0xE0+reg*2, 0xE1+reg*2), write each four times to the GX FIFO, and mark the BP registers dirty. */ void GXSetTevColorS10(s32 tevReg, const void *color) {
+    unsigned int colorRG = ((unsigned int *)color)[0];
+    unsigned int colorBA = ((unsigned int *)color)[1];
+    unsigned int *gxData = __GXData;
+    s32 regIndex = tevReg << 1;
+    unsigned int regRA = __rlwimi(__rlwimi((regIndex + 0xE0) << 24, colorRG, 16, 21, 31), colorBA, 12, 9, 19);
+    unsigned int regBG = __rlwimi(__rlwimi((regIndex + 0xE1) << 24, colorBA, 16, 21, 31), colorRG, 12, 9, 19);
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = regRA;
     *(volatile unsigned char *)0xCC008000 = 0x61;
@@ -5439,7 +5433,7 @@ void GXSetTevColorS10(s32 tevReg, const void *color) {
     *(volatile unsigned int *)0xCC008000 = regBG;
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = regBG;
-    *(unsigned short *)((char *)data + 2) = 0;
+    *(unsigned short *)((char *)gxData + 2) = 0;
 }
 
 void GXSetTevKColor(s32 tevReg, const unsigned int *color) {
@@ -5525,8 +5519,8 @@ void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 t
         } fields;
     } word;
     u32 offset0;
-    u32 offset1;
     u32 index2;
+    u32 offset1;
     unsigned int *table;
     unsigned int *data;
 
@@ -5545,6 +5539,7 @@ void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 t
     *(volatile unsigned int *)0xCC008000 = *(u32 *)((char *)table + offset0);
 
     offset1 <<= 2;
+    word.value = 0;
     word.value = *(u32 *)((char *)table + offset1);
     word.fields.rasSel = rasSel2;
     word.fields.texSel = texSel2;
@@ -6165,24 +6160,16 @@ void GXSetProjection(float *arg0, int arg1) {
 #pragma paired on
 #pragma paired_single on
 void GXSetProjectionv(float *arg0) {
-#pragma paired on
-#pragma paired_single on
     unsigned int *data;
     enum E { GX_PERSPECTIVE, GX_ORTHOGRAPHIC };
     enum E type;
-    volatile f64 *dst;
-    f64 p0, p1, p2;
     if (lbl_80560BC8 == arg0[0]) type = GX_PERSPECTIVE;
     else type = GX_ORTHOGRAPHIC;
     data = __GXData;
     data[0x528 / 4] = type;
-    p0 = *(const f64 *)&arg0[1];
-    p1 = *(const f64 *)&arg0[3];
-    p2 = *(const f64 *)&arg0[5];
-    dst = (volatile f64 *)((char *)data + 0x52C);
-    dst[0] = p0;
-    dst[1] = p1;
-    dst[2] = p2;
+    *(float *)((char *)data + 0x52C) = arg0[1];
+    *(float *)((char *)data + 0x534) = arg0[2];
+    *(float *)((char *)data + 0x53C) = arg0[4];
     data[0x5FC / 4] |= 0x08000000;
 }
 #pragma pop
