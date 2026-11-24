@@ -355,11 +355,19 @@ void fn_802C86E8(void* color) {
 
 void *DrawList_saveViewport(void *savedViewport, int x, int y, int width, int height) {
     /* Save the current viewport rectangle, then set a new one. */
-    *(int *)((unsigned char *)savedViewport) = (int)lbl_8055FC5C;
-    *(int *)((unsigned char *)savedViewport + 4) = (int)lbl_8055FC60;
-    *(int *)((unsigned char *)savedViewport + 8) = (int)lbl_8055FC64;
-    *(int *)((unsigned char *)savedViewport + 0xC) = (int)lbl_8055FC68;
+    #define gViewportX      lbl_8055FC5C
+    #define gViewportY      lbl_8055FC60
+    #define gViewportWidth  lbl_8055FC64
+    #define gViewportHeight lbl_8055FC68
+    *(int *)((unsigned char *)savedViewport) = (int)gViewportX;
+    *(int *)((unsigned char *)savedViewport + 4) = (int)gViewportY;
+    *(int *)((unsigned char *)savedViewport + 8) = (int)gViewportWidth;
+    *(int *)((unsigned char *)savedViewport + 0xC) = (int)gViewportHeight;
     DrawList_setViewport(x, y, width, height);
+    #undef gViewportHeight
+    #undef gViewportWidth
+    #undef gViewportY
+    #undef gViewportX
     return savedViewport;
 }
 
