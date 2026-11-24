@@ -79,45 +79,45 @@ void *SFXLoad(char *path) {
     unsigned int version;
     unsigned char attr;
     unsigned char needsSwap;
-    unsigned char *sfx;
-    unsigned char *samples;
+    unsigned char *sfxData;
+    unsigned char *sampleData;
     unsigned char tmp;
-    int i;
-    register int adjusted;
-    register int length;
+    int sampleIndex;
+    register int byteCount;
+    register int dataBytes;
 
-    sfx = ((unsigned char *(*)(char *, unsigned int, unsigned int *, int, unsigned char *, unsigned char *))fn_8012C370)(
+    sfxData = ((unsigned char *(*)(char *, unsigned int, unsigned int *, int, unsigned char *, unsigned char *))fn_8012C370)(
         path, 0x53465830 /* 'SFX0' */, &version, 0, &attr, &needsSwap);
-    if (sfx == 0) goto return_null;
+    if (sfxData == 0) goto return_null;
     if (version != 3) fn_802E317C(lbl_8034D280, path, version, 3);
     if (needsSwap != 0) {
-        tmp=sfx[0]; sfx[0]=sfx[3]; sfx[3]=tmp;
-        tmp=sfx[1]; sfx[1]=sfx[2]; sfx[2]=tmp;
-        tmp=sfx[4]; sfx[4]=sfx[7]; sfx[7]=tmp;
-        tmp=sfx[5]; sfx[5]=sfx[6]; sfx[6]=tmp;
-        tmp=sfx[12]; sfx[12]=sfx[13]; sfx[13]=tmp;
-        tmp=sfx[14]; sfx[14]=sfx[15]; sfx[15]=tmp;
-        tmp=sfx[16]; sfx[16]=sfx[19]; sfx[19]=tmp;
-        tmp=sfx[17]; sfx[17]=sfx[18]; sfx[18]=tmp;
-        tmp=sfx[20]; sfx[20]=sfx[23]; sfx[23]=tmp;
-        tmp=sfx[21]; sfx[21]=sfx[22]; sfx[22]=tmp;
-        tmp=sfx[24]; sfx[24]=sfx[25]; sfx[25]=tmp;
-        tmp=sfx[26]; sfx[26]=sfx[27]; sfx[27]=tmp;
-        tmp=sfx[28]; sfx[28]=sfx[29]; sfx[29]=tmp;
-        *(unsigned int *)(sfx+4) = (unsigned int)(sfx + *(unsigned int *)(sfx+4));
-        if (*(unsigned short *)(sfx+26) == 16 && sfx[9] != 1) {
-            samples = *(unsigned char **)(sfx+4);
-            for (i=0; (length=*(int *)sfx, adjusted=((unsigned int)length >> 31),
-                       adjusted+=length, i<(adjusted >> 1)); i++) {
-                tmp=samples[0];
-                samples[0]=samples[1];
-                samples[1]=tmp;
-                samples+=2;
+        tmp=sfxData[0]; sfxData[0]=sfxData[3]; sfxData[3]=tmp;
+        tmp=sfxData[1]; sfxData[1]=sfxData[2]; sfxData[2]=tmp;
+        tmp=sfxData[4]; sfxData[4]=sfxData[7]; sfxData[7]=tmp;
+        tmp=sfxData[5]; sfxData[5]=sfxData[6]; sfxData[6]=tmp;
+        tmp=sfxData[12]; sfxData[12]=sfxData[13]; sfxData[13]=tmp;
+        tmp=sfxData[14]; sfxData[14]=sfxData[15]; sfxData[15]=tmp;
+        tmp=sfxData[16]; sfxData[16]=sfxData[19]; sfxData[19]=tmp;
+        tmp=sfxData[17]; sfxData[17]=sfxData[18]; sfxData[18]=tmp;
+        tmp=sfxData[20]; sfxData[20]=sfxData[23]; sfxData[23]=tmp;
+        tmp=sfxData[21]; sfxData[21]=sfxData[22]; sfxData[22]=tmp;
+        tmp=sfxData[24]; sfxData[24]=sfxData[25]; sfxData[25]=tmp;
+        tmp=sfxData[26]; sfxData[26]=sfxData[27]; sfxData[27]=tmp;
+        tmp=sfxData[28]; sfxData[28]=sfxData[29]; sfxData[29]=tmp;
+        *(unsigned int *)(sfxData+4) = (unsigned int)(sfxData + *(unsigned int *)(sfxData+4));
+        if (*(unsigned short *)(sfxData+26) == 16 && sfxData[9] != 1) {
+            sampleData = *(unsigned char **)(sfxData+4);
+            for (sampleIndex=0; (dataBytes=*(int *)sfxData, byteCount=((unsigned int)dataBytes >> 31),
+                       byteCount+=dataBytes, sampleIndex<(byteCount >> 1)); sampleIndex++) {
+                tmp=sampleData[0];
+                sampleData[0]=sampleData[1];
+                sampleData[1]=tmp;
+                sampleData+=2;
             }
         }
-        DCFlushRange(*(void **)(sfx+4), *(unsigned int *)sfx);
+        DCFlushRange(*(void **)(sfxData+4), *(unsigned int *)sfxData);
     }
-    return sfx;
+    return sfxData;
 return_null:
     return 0;
 }
