@@ -4249,7 +4249,7 @@ __declspec(section ".sdata") extern u8 lbl_80560D00[];
 s32 hcisu_h2_receive_msg(u16 arg0, u8 *arg1) {
     extern s32 fn_8007011C(void);
     extern void fn_8007093C(u32, void *);
-    extern u16 fn_8006D8D0(u32);
+    extern u16 GetGkiBufferSize(u32);
     extern BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *);
     extern BOOL l2cap_link_chk_pkt_end(void);
     extern char lbl_80314258[];
@@ -4323,7 +4323,7 @@ for (;;) {
             }
             *(u16 *)(var_r21 + 6) = var_r18;
             if ((u32)var_r18 + lbl_80560CF8[var_r22[0x14] - 1] + 8 >
-                fn_8006D8D0((u32)buf)) {
+                GetGkiBufferSize((u32)buf)) {
                 GKI_freebuf(buf);
                 *(u8 **)(var_r15 + var_r23) = 0;
                 var_r22[0x1A] = 4;
@@ -4612,7 +4612,7 @@ void uusb_issue_bulk_read(void) {
        header whose length field points at a 32-byte-aligned payload area, then
        start the transfer into that area.  On failure, release the buffer. */
     extern char lbl_803142C8[];
-    extern u16 fn_8006D8D0(u32);
+    extern u16 GetGkiBufferSize(u32);
     char *logBase = lbl_803142C8;
     u8 *buf;
     u8 *dataBuf;
@@ -4634,7 +4634,7 @@ void uusb_issue_bulk_read(void) {
     *(u16 *)(buf + 4) = dataBuf - (buf + 8);
 
     status = IUSB_ReadBlkMsgAsync(lbl_803BD1E0.fd, lbl_803BD1E0.endpoint,
-                                  fn_8006D8D0((u32)buf) - 0x28 - *(u16 *)(buf + 4),
+                                  GetGkiBufferSize((u32)buf) - 0x28 - *(u16 *)(buf + 4),
                                   dataBuf, (void (*)(void))uusb_ReadBulkDataCB, buf);
     if (status != 0) {
         if (lbl_803BD1E0.at_0x28 != 0) {
@@ -4653,7 +4653,7 @@ void uusb_issue_bulk_read(void) {
  * the GKI buffer if the transfer could not be started. */
 void uusb_issue_intr_read(void) {
     extern char lbl_803142C8[];
-    extern u16 fn_8006D8D0(u32);
+    extern u16 GetGkiBufferSize(u32);
     extern void uusb_ReadIntrDataCB(s32, BT_HDR *);
     char *logBase = lbl_803142C8;
     u8 *buf;
@@ -4676,7 +4676,7 @@ void uusb_issue_intr_read(void) {
     *(u16 *)(buf + 4) = dataBuf - (buf + 8);
 
     status = IUSB_ReadIntrMsgAsync(lbl_803BD1E0.fd, lbl_803BD1E0.intr_endpoint,
-                                   fn_8006D8D0((u32)buf) - 0x28 - *(u16 *)(buf + 4),
+                                   GetGkiBufferSize((u32)buf) - 0x28 - *(u16 *)(buf + 4),
                                    dataBuf, (void (*)(void))uusb_ReadIntrDataCB, buf);
     if (status != 0) {
         if (lbl_803BD1E0.at_0x28 != 0) {
@@ -4915,7 +4915,7 @@ done:
 s32 fn_8007011C(void) { return 0; }
 
 u16 UUSB_Write(s32 arg0, u8 *arg1, u16 arg2, BT_HDR *arg3) {
-    extern u16 fn_8006D8D0(u32);
+    extern u16 GetGkiBufferSize(u32);
     extern s32 IUSB_WriteCtrlMsgAsync(s32, s32, s32, s32, s32, u32, void *, void *, void *);
     extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
     s32 ret = 0;
@@ -4928,7 +4928,7 @@ u16 UUSB_Write(s32 arg0, u8 *arg1, u16 arg2, BT_HDR *arg3) {
         if (lbl_803BD1E0.at_0x28) OSReport(report + 0x8d0);
         return 0;
     }
-    if (lbl_803BD1E0.at_0x28) OSReport(report + 0x908, fn_8006D8D0((u32)arg3) - 8);
+    if (lbl_803BD1E0.at_0x28) OSReport(report + 0x908, GetGkiBufferSize((u32)arg3) - 8);
     if (lbl_803BD1E0.at_0x28) OSReport(report + 0x928, arg0, arg2);
     cb = &lbl_803BD1E0;
     for (i = 0; i < arg2; i++) {
@@ -29284,7 +29284,7 @@ s32 WriteUARTN(char *msg, u32 n) {
     return err;
 }
 
-/* Return the full size of a GKI buffer given its user payload pointer: read the pool id from the BUFFER_HDR_T just before it and look up that pool's size in gki_cb.com.freeq. Returns 0 for a misaligned header or an out-of-range pool id. */ u16 fn_8006D8D0(u32 pBuf) {
+/* Return the full size of a GKI buffer given its user payload pointer: read the pool id from the BUFFER_HDR_T just before it and look up that pool's size in gki_cb.com.freeq. Returns 0 for a misaligned header or an out-of-range pool id. */ u16 GetGkiBufferSize(u32 pBuf) {
     u32 pHeader;
     u8 poolId;
     pHeader = pBuf - 8;
