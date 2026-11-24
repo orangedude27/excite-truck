@@ -395,16 +395,16 @@ extern "C" void fn_802E3A14(s32 fileHandle, s32 offset) {
 #undef kFileSourceFile
 }
 #pragma cplusplus on
-/* Write `size` bytes from `buffer` via the file object's vtable method; return 1 if all bytes were written. */
+/* Write exactly `size` bytes from `buffer` to the open file `fileHandle`; return 1 only when all bytes were written. */
 extern "C" s32 File_writeExact(s32 fileHandle, s32 buffer, s32 size) {
-    class Obj {
+    class FileStream {
     public:
         virtual void v0();
-        virtual s32 v1(s32, s32);
+        virtual s32 write(s32, s32);
     };
-    s32 fileObject = fn_802E33D8(fileHandle, kFileSourceName, 0x1c3);
-    s32 entry = *(s32 *)(fileObject + 0x24);
-    s32 bytesWritten = ((Obj *)entry)->v1(buffer, size);
+    s32 fileEntry = fn_802E33D8(fileHandle, kFileSourceName, 0x1c3);
+    s32 stream = *(s32 *)(fileEntry + 0x24);
+    s32 bytesWritten = ((FileStream *)stream)->write(buffer, size);
     return size == bytesWritten;
 }
 extern "C" int vsprintf(char *, const char *, va_list);
