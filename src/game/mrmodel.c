@@ -570,13 +570,13 @@ __declspec(section ".sdata") extern const char lbl_8055D010[];
 
 /* Iterate over all 0x10-byte GroupEntry records in a model's GroupList and
  * invoke callback with each group's id (+0x0C). */
-void VisitGroupIds(void *groupList, void *callback) {
+/* Visit every GroupEntry in a model's GroupList, calling groupHook with each group's id (+0x0C). */ void VisitGroupIds(void *groupList, void *groupHook) {
     int offset = 0;
     int index = 0;
     while (index < ((struct GroupList *)groupList)->count) {
-        void *items = ((struct GroupList *)groupList)->items;
-        int groupId = ((struct GroupEntry *)((char *)items + offset))->id;
-        ((void (*)(int))callback)(groupId);
+        void *entries = ((struct GroupList *)groupList)->items;
+        int groupId = ((struct GroupEntry *)((char *)entries + offset))->id;
+        ((void (*)(int))groupHook)(groupId);
         offset += sizeof(struct GroupEntry);
         index += 1;
     }
