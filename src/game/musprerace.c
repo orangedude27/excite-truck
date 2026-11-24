@@ -494,7 +494,7 @@ extern s32 lbl_8055B5DC;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma opt_propagation off
-void fn_8020C920(s32 arg0) {
+void musicPreRaceSetup(s32 arg0) {
     const char *base = lbl_8033C5D8;
     char *dst;
     register s32 vol;

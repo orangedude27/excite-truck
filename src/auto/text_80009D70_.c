@@ -65,7 +65,7 @@ extern u32 lbl_8055D3B0;
 extern u32 lbl_8055D3B8;
 extern u8 lbl_802FBC7C[];
 extern void fn_8000A8C4();
-extern void fn_8020C920(void*);
+extern void musicPreRaceSetup(void*);
 extern void fn_802103B8(void*);
 void fn_8000A644(void* arg0, void* arg1) DECOMP_DONT_INLINE;
 void fn_8000AADC(void* arg0) DECOMP_DONT_INLINE;
@@ -351,7 +351,7 @@ void fn_8000AB48(void* arg0, s32 arg1) {
         p += 0x78;
     }
     fn_8012DDA8(&lbl_802FBC7C);
-    fn_8020C920(arg0);
+    musicPreRaceSetup(arg0);
     fn_802103B8(arg0);
 }
 #pragma pop
