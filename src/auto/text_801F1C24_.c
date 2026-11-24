@@ -34,7 +34,7 @@ extern const char lbl_8033ABA0[];
 extern const char lbl_8033AB3C[];
 extern const char lbl_8033AAE0[];
 extern const char lbl_8033AB80[];
-extern int fn_802E317C(const void *, ...);
+extern int Abend_Panic(const void *, ...);
 extern int *fn_801F1CE8(int);
 extern const char lbl_8033A9E8[];
 extern int lbl_8055B118;
@@ -1270,7 +1270,7 @@ void fn_801F37A4(void) {
 void fn_801F37EC(void) {
 #define kAmbientColorPanic lbl_8033ABA0 /* "AmbientColorTMH: shouldn't draw!" */
     /* Fatal abort: an AmbientColorTMH was drawn when it shouldn't have been. */
-    fn_802E317C(kAmbientColorPanic);
+    Abend_Panic(kAmbientColorPanic);
 #undef kAmbientColorPanic
 }
 int fn_801F37FC(int object, int deleteFlag) {
@@ -1323,7 +1323,7 @@ void fn_801F3920(void *params) {
 void fn_801F393C(void) {
     /* Panics ("ShadowColorTMH: shouldn't draw!") if the shadow-color TMH is drawn when it shouldn't be. */
     #define sShadowColorPanic lbl_8033AB80
-    fn_802E317C(sShadowColorPanic);
+    Abend_Panic(sShadowColorPanic);
     #undef sShadowColorPanic
 }
 
@@ -1374,7 +1374,7 @@ float fn_801F3A94(void *params) {
 extern const char lbl_8033AB5C[];
 int fn_801F3AB0(void) {
     /* Log the "SunIntensityTMH: shouldn't draw!" warning. */
-    return fn_802E317C(lbl_8033AB5C);
+    return Abend_Panic(lbl_8033AB5C);
 }
 
 int fn_801F3AC0(int object, int deleteFlag) {
@@ -1433,7 +1433,7 @@ void fn_801F3BE4(void *fog) {
 void fn_801F3C04(void) {
     #define sFogColorNoDrawMsg lbl_8033AB3C /* "FogColorTMH: shouldn't draw!" */
     /* Report a fatal panic: a FogColorTMH parameter must never be drawn. */
-    fn_802E317C(sFogColorNoDrawMsg);
+    Abend_Panic(sFogColorNoDrawMsg);
     #undef sFogColorNoDrawMsg
 }
 
@@ -1522,7 +1522,7 @@ void fn_801F3D34(void *arg0, int arg1, void *arg2) {
     temp_f31 = *(float *)((char *)arg2 + 0x30);
     temp_r30 = *(int *)((char *)arg2 + 0x2C);
     if (*(int *)((char *)temp_r31 + 8) >= 0x10) {
-        fn_802E317C((const void *)&lbl_8033AA24);
+        Abend_Panic((const void *)&lbl_8033AA24);
     }
     temp_r3 = *(void **)((char *)temp_r31 + 4);
     temp_r3 = (char *)temp_r3 + *(int *)((char *)temp_r31 + 8) * 0x18;
@@ -1644,7 +1644,7 @@ void fn_801F3F8C(void *table, void *node) {
 #pragma use_lmw_stmw off
 void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
     extern void *fn_801284F8(int, void *);
-    extern int fn_802E317C(const void *, ...);
+    extern int Abend_Panic(const void *, ...);
     extern void fn_802C77F0(int, float *);
     extern const char lbl_8033AB0C[], lbl_8033AB18[];
     extern char lbl_8033AA78[];
@@ -1671,7 +1671,7 @@ void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
     }
     pool = owner->pool;
     count = pool->count;
-    if (count >= 0x30) fn_802E317C(lbl_8033AB18);
+    if (count >= 0x30) Abend_Panic(lbl_8033AB18);
     count = pool->count;
     entry = (struct Record *)((char *)pool + count * 0x1C);
     fn_802C77F0(config->kind, (float *)v);
@@ -1730,7 +1730,7 @@ void fn_801F41CC(int unused, volatile unsigned char *bytes) {
 void fn_801F4270(void) {
     /* Abort with a panic: local flare sources are not supported by trackmod. */
     #define sLocalFlareUnsupported lbl_8033AAE0
-    fn_802E317C(sLocalFlareUnsupported);
+    Abend_Panic(sLocalFlareUnsupported);
     #undef sLocalFlareUnsupported
 }
 
@@ -1748,7 +1748,7 @@ void fn_801F4284(void *unused, void *arg1) {
     volatile unsigned char *p;
     int i;
     /* Report unsupported water objects, then byte-swap three 12-byte blocks at offset 0x2C. */
-    fn_802E317C(lbl_8033AAB8);
+    Abend_Panic(lbl_8033AAB8);
     p = (volatile unsigned char *)arg1 + 0x2C;
     for (i = 0; i < 3; i++, p += 12) {
         unsigned char tmp;

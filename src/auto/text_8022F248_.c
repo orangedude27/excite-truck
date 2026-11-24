@@ -91,7 +91,7 @@ void fn_80015E30(void *, float);
 void fn_80015B20(void *, void *, void *);
 void fn_80015AA0(void *, float);
 char *stricmp(const char *, const char *);
-void fn_802E317C();
+void Abend_Panic();
 extern char lbl_80340350[];
 extern char lbl_80497E3C[];
 extern char lbl_8055B988;
@@ -99,7 +99,7 @@ extern char lbl_8055B988;
 /* gBack init: warn if started twice, then reset the current quad's name to empty. */
 void fn_8022F248(void) {
     if (gBackQuadList != 0) {
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80340350);
+        ((void (*)(const char *, ...))Abend_Panic)(lbl_80340350);
     }
     strcpy(lbl_80497E3C + 0x3c, &lbl_8055B988);
 }
@@ -342,7 +342,7 @@ void fn_8022F77C(OverlayQuad *quad) {
     struct QuadNode *prev = 0;
     struct QuadNode *node = lbl_8055F014;
     while (node->payload != quad) {
-        if (node == 0) ((void (*)(const char *, ...))fn_802E317C)(lbl_80340408, quad->name);
+        if (node == 0) ((void (*)(const char *, ...))Abend_Panic)(lbl_80340408, quad->name);
         prev = node;
         node = node->next;
     }

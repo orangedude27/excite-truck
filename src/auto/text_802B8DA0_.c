@@ -104,7 +104,7 @@ extern char lbl_8055CEC8;
 extern int lbl_8055CECC;
 extern char lbl_8034AA2C[];
 extern int fn_802B110C(void *, char *);
-extern int fn_802E317C(const char *, ...);
+extern int Abend_Panic(const char *, ...);
 extern void *lbl_8055FA78;
 extern void *lbl_8055FA80;
 void fn_802B9DD0(void *);
@@ -208,7 +208,7 @@ void *fn_802B8EF0(int slot, void *source) {
                 state = -2;
             entry->state = state;
             if (state == -2 && *(volatile signed char *)name != 0)
-                fn_802E317C(lbl_8034AA2C, name);
+                Abend_Panic(lbl_8034AA2C, name);
             entry->reserved = 0;
             entry->data = data;
         }
@@ -874,6 +874,7 @@ void fn_802B9D08(void) {
         char *clear = base + 0x64;
         *(int *)(clear + 4) = zero;
         ((void (*)(void *, void *))fn_802B9EC8)(&lbl_8055FA80, clear);
+clear = 0;
     }
     memset(base + 0xA0, 0, 0x10);
     fn_802B9F38(&lbl_8055FA74);
@@ -1043,10 +1044,10 @@ extern "C" void fn_802BA010(void *arg0, int arg1) {
     void *next;
     int state = 2;
     int count;
-    short radius, item;
+    short item, radius;
     void *object = arg0;
     float f30, f31, f29;
-    float f0, f2, f1, f3, f4, f5, f6, f7, f8, f9, f10;
+    float f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10;
     *(void *volatile *)(sp + 0x10) = lbl_8034A9C0;
     *(volatile int *)(sp + 0x14) = fn_802E2C20(arg0);
     if (object == 0) object = ((Dummy *)fn_80156A40())->v1(0);
@@ -1249,7 +1250,7 @@ extern "C" void *fn_802BA580(void **arg0, void *arg1, float scale) {
         virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
         virtual void v12(); virtual unsigned long long value(void *);
     };
-    extern int fn_802E317C(const char *, ...);
+    extern int Abend_Panic(const char *, ...);
     extern int fn_802B110C(void *, char *);
     extern int stricmp(const char *,const char *);
     extern void fn_801602B0(void *);
@@ -1319,7 +1320,7 @@ extern "C" void *fn_802BA580(void **arg0, void *arg1, float scale) {
         if ((signed char)*name) state=fn_802B110C((void *)fn_802B8E50,name);
         else state=-2;
         entry[1]=state;
-        if(state==-2 && (signed char)*name) fn_802E317C((char *)&lbl_8034AA2C,name);
+        if(state==-2 && (signed char)*name) Abend_Panic((char *)&lbl_8034AA2C,name);
         entry[3]=0;
         entry[2]=999;
     }
@@ -1333,7 +1334,7 @@ found:
 
 extern f32 lbl_80564CCC, lbl_80564CD8, lbl_80564CEC;
 extern "C" f32 lbl_80564CCC, lbl_80564CD8, lbl_80564CEC;
-extern "C" void fn_802BA848(f32 *out, f32 *a, f32 *b, f32 *c) {
+extern "C" void fn_802BA848(f32 *out, const f32 *a, const f32 *b, const f32 *c) {
     f32 x0 = b[0], y1 = a[1], y0 = a[0], x1 = b[1], z0 = c[0];
     f32 d = y0 * x1 - x0 * y1;
     f32 hi = x0 + (z0 + y0);
@@ -1378,8 +1379,8 @@ extern "C" void fn_802BA848(f32 *out, f32 *a, f32 *b, f32 *c) {
     hi = c[0] + a[0];
     lo = (hi > lo) ? hi : lo;
     hi = c[0];
-    v5 = (hi > lo) ? hi : lo;
     n_lo = c[1] + b[1];
+    v5 = (hi > lo) ? hi : lo;
     n_hi = b[1] + (c[1] + a[1]);
     out[7] = v5;
     lo = n_lo; hi = n_hi;
@@ -1419,7 +1420,7 @@ extern "C" void *fn_802BAA68(void **arg0, char *arg1) {
         virtual void v9(); virtual void v10(); virtual void v11();
         virtual void v12(); virtual unsigned long long value(void *);
     };
-    extern int fn_802E317C(const char *, ...);
+    extern int Abend_Panic(const char *, ...);
     extern int fn_802B110C(void *, char *);
     extern int stricmp(const char *,const char *);
     extern void fn_801602B0(void *);
@@ -1487,7 +1488,7 @@ cond:
         if ((signed char)*name) state=fn_802B110C((void *)fn_802B8E50,name);
         else state=-2;
         entry[1]=state;
-        if(state==-2 && (signed char)*name) fn_802E317C((char *)&lbl_8034AA2C,name);
+        if(state==-2 && (signed char)*name) Abend_Panic((char *)&lbl_8034AA2C,name);
         entry[3]=0;
         entry[2]=extra;
     }
@@ -1832,7 +1833,7 @@ extern int lbl_804C0088[];
 extern char lbl_8034AA50[];
 extern int fn_802B110C(void *, char *);
 extern int fn_802CAC54(void);
-extern int fn_802E317C(const char *, ...);
+extern int Abend_Panic(const char *, ...);
 extern int stricmp(const char *, const char *);
 extern int fn_802B8E50(int);
 #pragma push
@@ -1851,7 +1852,7 @@ void fn_802BB674(char *arg0, int arg1) {
         entry->state = result;
         entry->name = arg0;
         if (result == -2 && (signed char)*(volatile char *)entry->name != 0)
-            fn_802E317C(lbl_8034AA50);
+            Abend_Panic(lbl_8034AA50);
     }
 }
 

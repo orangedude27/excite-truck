@@ -1004,26 +1004,65 @@ extern "C" void fn_80299628(void *arg0) {
 }
 
 #pragma opt_propagation off
-extern "C" int fn_802996B0(void *arg0, int *out) {
- int state, best=-1, found=0, idx;
- state=*(int*)((char*)arg0+0x34);
- idx=0;
- if(state==0){*out=idx;return 1;}
- if(state==2 && (!found || *(float*)((char*)arg0+0x38)<*(float*)((char*)arg0-8))){best=0;found=1;}
- state=*(int*)((char*)arg0+0x74);
- idx=1;
- if(state==0){*out=idx;return 1;}
- if(state==2 && (!found || *(float*)((char*)arg0+0x78)<*(float*)((char*)arg0+(best<<6)+0x38))){best=1;found=1;}
- state=*(int*)((char*)arg0+0xB4);
- idx=2;
- if(state==0){*out=idx;return 1;}
- if(state==2 && (!found || *(float*)((char*)arg0+0xB8)<*(float*)((char*)arg0+(best<<6)+0x38))){best=2;found=1;}
- state=*(int*)((char*)arg0+0xF4);
- idx=3;
- if(state==0){*out=idx;return 1;}
- if(state==2 && (!found || *(float*)((char*)arg0+0xF8)<*(float*)((char*)arg0+(best<<6)+0x38))){best=3;found=1;}
- if(found)*out=best;
- return found;
+extern "C" int fn_802996B0(void *arg0, int *out)
+{
+  int state;
+  int best = -1;
+  int found = 0;
+  int idx;
+  state = *((int *) (((char *) arg0) + 0x34));
+  idx = 0;
+  if (state == ((float) 0))
+  {
+    *out = idx;
+    return 1;
+  }
+  if ((state == 2) && ((!found) || ((*((float *) (((char *) arg0) + 0x38))) < (*((float *) (((char *) arg0) - 8))))))
+  {
+    best = 0;
+    found = 1;
+  }
+  state = *((int *) (((char *) arg0) + 0x74));
+  idx = 1;
+  if (state == 0)
+  {
+    *out = idx;
+    return 1;
+  }
+  if ((state == 2) && ((!found) || ((*((float *) (((char *) arg0) + 0x78))) < (*((float *) ((((char *) arg0) + (best << 6)) + 0x38))))))
+  {
+    best = 1;
+    found = 1;
+  }
+  state = *((int *) (((char *) arg0) + 0xB4));
+  idx = 2;
+  if (state == 0)
+  {
+    *out = idx;
+    return 1;
+  }
+  if ((state == 2) && ((!found) || ((*((float *) (((char *) arg0) + 0xB8))) < (*((float *) ((((char *) arg0) + (best << 6)) + 0x38))))))
+  {
+    best = 2;
+    found = 1;
+  }
+  state = *((int *) (((char *) arg0) + 0xF4));
+  idx = 3;
+  if (state == 0)
+  {
+    *out = idx;
+    return 1;
+  }
+  if ((state == 2) && ((!found) || ((*((float *) (((char *) arg0) + 0xF8))) < (*((float *) ((((char *) arg0) + (best << 6)) + 0x38))))))
+  {
+    best = 3;
+    found = 1;
+  }
+  if (found)
+  {
+    *out = best;
+  }
+  return found;
 }
 #pragma opt_propagation reset
 
@@ -1117,11 +1156,11 @@ extern "C" void fn_8029998C(void *ringFireSet) {
     }
 }
 
-extern "C" int fn_802E317C(const char *, ...);
+extern "C" int Abend_Panic(const char *, ...);
 /* Adds a ring-fire entry at slot index (count at +0x138, stride 0x9C), initializing it via fn_80299A88; warns and returns the previous count if the limit (2) is exceeded. */
 extern "C" unsigned int fn_80299A04(void *self, unsigned int arg, float value) {
     if (*(int *)((char *)self + 0x138) >= 2) {
-        fn_802E317C(lbl_803494D0);
+        Abend_Panic(lbl_803494D0);
     }
     fn_80299A88(self, (char *)self + *(unsigned int *)((char *)self + 0x138) * 0x9C, arg, value);
     unsigned int count = *(unsigned int *)((char *)self + 0x138);
@@ -1987,7 +2026,7 @@ extern "C" void fn_8029B138(void* arg0, int arg1, float* arg2, float* arg3, floa
 extern "C" int fn_802CAC28(int, int);
 extern "C" int fn_80297D5C(void*, int);
 extern "C" int fn_80297D90(void*, int);
-extern "C" int fn_802E317C(const char*, ...);
+extern "C" int Abend_Panic(const char*, ...);
 extern "C" int fn_801284F8(int, const char*);
 extern "C" int fn_8029ADCC(void*);
 extern "C" int fn_8029BA0C(void*);
@@ -2011,7 +2050,7 @@ extern "C" void fn_8029B1B8(void* arg0) {
     *(int*)(p + 0x1E4) = fn_802CAC28(lbl_8055CA84, 0); /* "bfface.tex" */
     *(int*)(p + 0x1E8) = fn_802CAC28(lbl_8055CA88, 0); /* "bfedge.tex" */
     if (fn_80297D5C(p + 0x1EC, 0x10) == 0 || fn_80297D90(p + 0x1F0, *(int*)(p + 0x1EC)) == 0) {
-        fn_802E317C(lbl_8034951C); /* "fire: numerical error with backfire textures" */
+        Abend_Panic(lbl_8034951C); /* "fire: numerical error with backfire textures" */
     }
     int v = *(int*)(p + 0x1F0);
     *(float*)(p + 0x1F8) = lbl_80564590 / (float)*(int*)(p + 0x1EC);
@@ -2350,7 +2389,7 @@ extern "C" void fn_8029BA94(void *__restrict arg0, void *__restrict arg1) {
     int size;
     void *info;
     int value;
-    unsigned short flag;
+    u32 flag;
 
     if (((const Args *)arg1)->index < 0)
         return;
@@ -2359,7 +2398,7 @@ extern "C" void fn_8029BA94(void *__restrict arg0, void *__restrict arg1) {
     if (index >= count)
         return;
     record = (char *)arg0 + index * 0x14;
-    flag = (unsigned short)(*(u32 *)(record + 4) & 0xF);
+    flag = *(u32 *)(record + 4) & 0xF;
     switch (flag) {
     case 1:
         info = fn_80288208(index);

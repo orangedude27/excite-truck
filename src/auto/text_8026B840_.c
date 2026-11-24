@@ -6,7 +6,7 @@ extern void fn_801BFD34(void *, void *, void *);
 extern void fn_8012F57C(f32 *, f32 *, f32 *, f32);
 extern f32 fn_801E9DDC(f32 *, f32, f32);
 extern f64 fn_8002F234(f64);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 
 extern char lbl_80346A50[];
 extern s32 lbl_8055F4F0;
@@ -1037,7 +1037,7 @@ void fn_8026C014(s32 arg0, void *arg1) {
                     (*(f32 *)((u8 *)(globalBase) + (0x2C))) = (f32) ((*(f32 *)((u8 *)(globalBase) + (0x2C))) + (*(f32 *)(localFrame + (0x34 - 0x10))));
                     break;
                 default:                            /* switch 1 */
-                    fn_802E317C(lbl_80346A50);
+                    Abend_Panic(lbl_80346A50);
                     break;
                 }
             }
@@ -1288,7 +1288,6 @@ void fn_8026DAA8(void *arg0) {
             s32 id = fn_8026A344(0);
             u32 *source = (u32 *)((u8 *)fn_8017960C(lbl_8055F4F0) + 0x3C);
             u8 *otherRaw = (u8 *)fn_8017960C(id);
-            f32 *other = (f32 *)(otherRaw + 0x60);
             f32 *target = (f32 *)&local[9];
 
             *(Block2 *)&local[0] = *(Block2 *)&source[0];
@@ -1306,7 +1305,7 @@ void fn_8026DAA8(void *arg0) {
             up[0] = lbl_80563D78;
             up[1] = lbl_80563D94;
             up[2] = lbl_80563D78;
-            fn_8026E688((f32 *)((u8 *)self + 0x58), target, other, up);
+            fn_8026E688((f32 *)((u8 *)self + 0x58), target, (f32 *)(otherRaw + 0x60), up);
         } else {
             f32 *matrix = (f32 *)((u8 *)self + 0x58);
             f32 a = lbl_80563D78;

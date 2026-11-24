@@ -138,7 +138,7 @@ extern "C" void fn_8019BD54(void*, void*, s32, s32);
 extern "C" void fn_8019D06C(void*, void*, s32, s32);
 extern "C" void fn_8019B068(void*, void*, s32, s32);
 extern "C" void fn_8019CE3C(void*, s32);
-extern "C" void fn_802E317C(const char*, ...);
+extern "C" void Abend_Panic(const char*, ...);
 __declspec(section ".sdata") extern char lbl_8055A4C4[];
 extern "C" const char lbl_803335EC[];
 extern void fn_801EA1E0(s32, s32, f32, f32);
@@ -1299,7 +1299,7 @@ extern "C" s32 fn_8019B4D8(void *arg0, void *arg1, void *arg2, s32 arg3, f32 far
             if (!(f30 < lbl_805622D8)) goto block67;
             return 0;
         }
-        if (arg3 != 0) fn_802E317C(dbg + 0x78);
+        if (arg3 != 0) Abend_Panic(dbg + 0x78);
         Vec vel;
         fn_8017B6D4((s32)r26, &vel, (s32)arg2);
         f32 bx = *(f32 *)arg2 + vel.x * lbl_8056233C;
@@ -1981,8 +1981,8 @@ extern f32 lbl_80562358;
 #pragma processor 750
 #pragma scheduling invalid_target
 extern "C" s32 fn_8019DDFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, void * __restrict arg4, void *arg5, f32 farg0) {
-    f32 *vec0 = (f32 *)arg0;
-    f32 *vec2 = (f32 *)arg4;
+    f32 * __restrict vec0 = (f32 *)arg0;
+    f32 * __restrict vec2 = (f32 *)arg4;
     register f32 x = vec0[0];
     register f32 y = vec2[0];
     register f32 dx = x - y;
@@ -2593,7 +2593,7 @@ extern "C" void fn_8019F064(void *arg0, void *arg1) {
     case 'RAGD':
         break;
     default:
-        fn_802E317C(lbl_803335EC, type);
+        Abend_Panic(lbl_803335EC, type);
         break;
     }
 }
@@ -4696,7 +4696,7 @@ extern "C" void fn_801A2D50(s32 arg0, void *arg1) {
         fn_8019D378(arg1, (void *)arg0);
         break;
     default:
-        fn_802E317C(messageBase + 0x280, nodeType);
+        Abend_Panic(messageBase + 0x280, nodeType);
         break;
     }
 }

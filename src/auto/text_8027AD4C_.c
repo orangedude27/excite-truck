@@ -58,7 +58,7 @@ long *fn_8027C26C(void *, const char *);
 long fn_8027C788(void *);
 long *fn_8027C120(long, long);
 long fn_8027C8B0(void);
-void fn_802E317C(char *, long);
+void Abend_Panic(char *, long);
 extern unsigned char lbl_8055F650;
 long fn_80019B3C(void);
 extern char lbl_80347A5C[];
@@ -147,7 +147,7 @@ extern "C" unsigned char fn_8027AD4C(char *a0, void *arg1) {
             }
         }
         if (found == 0) {
-            ((void (*)(char *, ...))fn_802E317C)(base + 0x98, name);
+            ((void (*)(char *, ...))Abend_Panic)(base + 0x98, name);
             return 0;
         }
         *(long *)(a0 + 0x2C) = fn_8027CFB4((long)name);
@@ -280,8 +280,8 @@ extern "C" long fn_8027AFA0(void *self, void *arg1, void *unused) {
                         off++;
                     }
                 }
-                fn_8027D158(*(long *)(a0 + 0x10), a0 + 0x18C, 0x64);
                 *(char *)(a0 + 0x1F3) = rate > 0;
+                fn_8027D158(*(long *)(a0 + 0x10), a0 + 0x18C, 0x64);
             } else {
                 *(unsigned char *)(a0 + 4) = 0;
             }
@@ -409,8 +409,8 @@ process_item:
                                 do {
                                     char *sbase;
                                     char *dbase;
-                                    char *s;
                                     char *d;
+                                    char *s;
                                     sbase = *(char **)(src + 0x18);
                                     j++;
                                     dbase = *(char **)(dst + 0x18);
@@ -465,18 +465,7 @@ process_item:
                                 s += 0x3C;
                             } while (d < end);
                         }
-                        {
-                            char *d = dst + 0x18B;
-                            char *s = src + 0x18B;
-                            unsigned long k;
-                            k = 0x32;
-                            do {
-                                d[1] = s[1];
-                                d[2] = s[2];
-                                d += 2;
-                                s += 2;
-                            } while (--k != 0);
-                        }
+                        *(TailBlock *)(dst + 0x18C) = *(TailBlock *)(src + 0x18C);
                         dst[0x1F0] = src[0x1F0]; dst[0x1F1] = src[0x1F1];
                         dst[0x1F2] = src[0x1F2]; dst[0x1F3] = src[0x1F3];
                     }
@@ -1717,7 +1706,7 @@ long fn_8027CE4C(long contestName) {
     case 1:
         return ((long (*)(void))fn_8027CB20)();
     default:
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C38, contestName, pathType);
+        ((void (*)(const char *, ...))Abend_Panic)(lbl_80347C38, contestName, pathType);
         return 1;
     }
 }
@@ -1740,7 +1729,7 @@ long fn_8027CEC4(long contestName) {
         return ((long (*)(void))fn_8027CA1C)();
     default:
         /* "eventpath: contest %s has unknown event-path type %d" */
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C38, contestName, pathType);
+        ((void (*)(const char *, ...))Abend_Panic)(lbl_80347C38, contestName, pathType);
         return 1;
     }
 }
@@ -1758,7 +1747,7 @@ long fn_8027CF3C(long name) {
     case 1:
         return fn_8027CAB4(event);
     default:
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C38, name, pathType);
+        ((void (*)(const char *, ...))Abend_Panic)(lbl_80347C38, name, pathType);
         return 1;
     }
 }
@@ -1808,7 +1797,7 @@ extern "C" long fn_8027D068(long bracketName) {
         return ((long (*)(void))fn_8027CBF0)();
     default:
         /* "eventpath: bracket %s has unknown event-path type %d" */
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C70, bracketName, pathType);
+        ((void (*)(const char *, ...))Abend_Panic)(lbl_80347C70, bracketName, pathType);
         return 1;
     }
 }
@@ -1831,7 +1820,7 @@ extern "C" long fn_8027D0E0(long bracketName) {
     case 1:
         return ((long (*)(void))fn_8027CB28)();
     default:
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C70, bracketName, pathType);
+        ((void (*)(const char *, ...))Abend_Panic)(lbl_80347C70, bracketName, pathType);
         return 1;
     }
 }
@@ -1850,7 +1839,7 @@ extern "C" void fn_8027D158(long contestName, char *outText, long maxLen) {
         fn_8027CBF8((long)entry, outText, maxLen);
         break;
     default:
-        ((void (*)(char *, ...))fn_802E317C)(lbl_80347C38, contestName, pathType);
+        ((void (*)(char *, ...))Abend_Panic)(lbl_80347C38, contestName, pathType);
         break;
     }
 }

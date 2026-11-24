@@ -432,7 +432,7 @@ extern f32 PSVECMag(void*);
 extern void fn_801A4868(void*, int);
 extern void fn_801D2C70(void*, s32, void*, s32);
 extern void fn_801D2E38(void*, void*, s32, void*, f32);
-extern void fn_802E317C(const char*, ...);
+extern void Abend_Panic(const char*, ...);
 extern const char lbl_803382DC[];
 
 /* A live soevent instance; fn_801A4A8C builds one from a class id and a matrix. */
@@ -504,7 +504,7 @@ void fn_801D2414(SoeventInstance *instance, Vec *position, VehicleObject *object
         } else {
             isCar = instance->classId;
             if (isCar > 0) {
-                fn_802E317C(lbl_803382DC, isCar); /* soevent: no such event class */
+                Abend_Panic(lbl_803382DC, isCar); /* soevent: no such event class */
             }
         }
     }

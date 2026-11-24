@@ -206,7 +206,7 @@ void fn_802E9CAC(int eventArg) {
 extern long fn_800B7CE8(long, void *, void *);
 extern long fn_800B7DB0(long, void (*)(long), void (*)(int));
 extern long fn_800B7968(long, long, long, void *);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 #pragma push
 #pragma scheduling invalid_target
 void fn_802E9CF0(void) {
@@ -222,11 +222,11 @@ void fn_802E9CF0(void) {
     *(volatile long *)(config + 12) = 1;
     *(void *volatile *)(state + 4) = config;
     if (fn_800B7CE8(0x20000, state, config) != 0)
-        fn_802E317C(strings + 0x14C);
+        Abend_Panic(strings + 0x14C);
     if (fn_800B7DB0(0, fn_802E9C68, fn_802E9CAC) != 0)
-        fn_802E317C(strings + 0x15C);
+        Abend_Panic(strings + 0x15C);
     if (fn_800B7968(0, 0, 0, base + 0xB8) != 0)
-        fn_802E317C(strings + 0x170);
+        Abend_Panic(strings + 0x170);
     lbl_80560061 = ((unsigned char *)(base + 0xB8))[9] >> 4 & 1;
 }
 
@@ -239,7 +239,7 @@ void fn_802E9DDC(void) {
     #define CardCheckUnmountError fn_800B7E5C
     #define CardCheckDetachError fn_800B7B34
     #define AbendReport fn_802E30C8
-    #define PanicAbort fn_802E317C
+    #define PanicAbort Abend_Panic
     if (CardCheckUnmountError((signed char)gCardStatus[8], 1) != 0) {
         ((long (*)(char *, ...))AbendReport)((char *)&sFAUnmountFailMsg);
     }
@@ -1101,7 +1101,7 @@ void fn_802EBE2C(void) {
     lbl_80560062 = 1;
     lbl_80560063 = off;
     if (OSCreateThread(&lbl_805584B8, fn_802EAB28, 0, &lbl_805544A0 + 0x3FE0, 0x3FE0, 14, 1) == 0) {
-        fn_802E317C((char *)&lbl_8034E260 + 0x6E0);
+        Abend_Panic((char *)&lbl_8034E260 + 0x6E0);
     }
     fn_802E2E0C(fn_802EBE00, &lbl_8055D2E8);
     OSResumeThread(&lbl_805584B8);

@@ -41,7 +41,7 @@ extern char lbl_8034A0B4[], lbl_8034A0C4[];
 extern int lbl_8055F998, lbl_8055F99C;
 extern void fn_8002F53C(void *, void *, void *, int, int);
 extern void fn_801345D8(char *, int, char *, ...);
-extern void fn_802E317C(char *, ...);
+extern void Abend_Panic(char *, ...);
 extern int fn_802CAF8C(void);
 extern void *memset(void *, int, int);
 extern char lbl_8055CDA8[];
@@ -345,7 +345,7 @@ void fn_802B0B20(void *arg0, void *arg1) {
                     break;
                 mat = ((void *(*)(void *, char *))((void **)*(void ***)arg0)[23])(arg0, buf);
                 if (((void *(*)(void *, char *))((void **)*(void ***)mat)[23])(mat, lbl_8055CDA0) == 0) {
-                    fn_802E317C(sbase + 0x178, buf);
+                    Abend_Panic(sbase + 0x178, buf);
                     idx++;
                     continue;
                 }
@@ -385,9 +385,9 @@ void fn_802B0B20(void *arg0, void *arg1) {
                             v = ((int (*)(void *, void *))fn_802B110C)((void *)fn_802B0628, tex);
                             *(int *)item = v;
                             if (v == -2)
-                                fn_802E317C(sbase + 0xB4, tex);
+                                Abend_Panic(sbase + 0xB4, tex);
                             else if (t == 1 && fn_802CAF8C() != 0 && ((int (*)(void))fn_802B06D4)() == 0)
-                                fn_802E317C(sbase + 0xD8, tex);
+                                Abend_Panic(sbase + 0xD8, tex);
                             pa++; pb++; t++;
                         }
                     }
@@ -399,7 +399,7 @@ void fn_802B0B20(void *arg0, void *arg1) {
                 idx++;
             }
             if (*(int *)(obj + 0x10) == 0)
-                fn_802E317C(sbase + 0x158, *(void **)(obj + 0xA3C));
+                Abend_Panic(sbase + 0x158, *(void **)(obj + 0xA3C));
             *(void **)(obj + 0xA3C) = ((void *(*)(void *, char *))((void **)*(void ***)arg0)[5])(arg0, lbl_8055CDB0);
             ((void (*)(void *, char *, void *))((void **)*(void ***)arg0)[6])(arg0, sbase + 0x1CC, 0);
             *(int *)(obj + 4) = ((int (*)(void))fn_802B0628)();

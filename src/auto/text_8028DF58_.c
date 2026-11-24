@@ -2,7 +2,7 @@
 extern char lbl_80348CF8[];
 extern char lbl_80348D28[];
 extern int stricmp(const char *, const char *);
-extern int fn_802E317C(const char *, ...);
+extern int Abend_Panic(const char *, ...);
 
 /* The particle types a table entry can name, in the order their codes go:
  * 0 "Simple", 1 "Animated", 2 "Rotating".  A name outside the table is logged
@@ -385,7 +385,7 @@ extern "C" int fn_8028EE34(void *, int, int *);
 extern "C" int fn_8028E61C(void *);
 extern "C" void *fn_802AE414(const char *);
 extern "C" void fn_8028E654(void *, void *);
-extern "C" int fn_802E317C(const char *, ...);
+extern "C" int Abend_Panic(const char *, ...);
 extern "C" int fn_801284F8(int, void *);
 extern "C" int fn_8028F7AC(void *, void *, int);
 extern "C" void fn_8028EEB4(void *, int, const char *);
@@ -412,7 +412,7 @@ extern "C" int fn_8028E3F4(const char *tableName) {
     fn_8028E61C(loadState);
     tableObject = (TableObject *)fn_802AE414(tableName);
     if (tableObject == 0) {
-        fn_802E317C(lbl_80348D04, tableName);
+        Abend_Panic(lbl_80348D04, tableName);
     }
     fn_8028E654(loadState, tableObject);
     instance = fn_801284F8(0xB0, &lbl_8055C8E0);
@@ -479,7 +479,7 @@ int fn_8028E594(const char *typeName) {
         i++;
         list++;
     } while (i < PARTICLE_TYPE_COUNT);
-    fn_802E317C(particleTypeNotFound, typeName);
+    Abend_Panic(particleTypeNotFound, typeName);
     return PARTICLE_TYPE_UNKNOWN;
 }
 #pragma pop
@@ -617,7 +617,7 @@ void fn_8028ED8C(void *list, int emitter) {
     *(int *)((char *)list + 0x100) = *(int *)((char *)list + 0x100) + 1;
 }
 
-extern int fn_802E317C(const char *, ...);
+extern int Abend_Panic(const char *, ...);
 extern char lbl_80348CF8[];
 extern char lbl_80348D28[];
 extern int stricmp(const char *, const char *);
@@ -636,7 +636,7 @@ int fn_8028EDA8(unsigned int *list, unsigned int emitter) {
             return 1;
         }
     }
-    fn_802E317C(lbl_80348F4C);
+    Abend_Panic(lbl_80348F4C);
     return 0;
 }
 #pragma pop
@@ -698,7 +698,7 @@ int fn_8028EF44(void *bucket, unsigned int systemId) {
         entryIndex++;
         entryCount--;
     }
-    fn_802E317C(lbl_80348F4C);
+    Abend_Panic(lbl_80348F4C);
     return 0;
 }
 
@@ -959,13 +959,13 @@ extern float fn_80129DC4(int, float, float);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_8028F444(float *arg0, float *arg1, float *arg2, float *arg3, float farg0, float farg1) {
+void fn_8028F444(float *arg0, const float *arg1, const float *arg2, const float *arg3, float farg0, float farg1) {
     float t0 = arg2[0];
     float h0 = fn_80129DC4(0, -t0, t0);
     float a0 = arg1[0];
     float c0 = arg3[0];
     float n1 = arg2[1];
-    float x;
+    float x = a0 * c0 + farg1 * h0;
     float h1;
     float a1;
     float c1;
@@ -975,22 +975,17 @@ void fn_8028F444(float *arg0, float *arg1, float *arg2, float *arg3, float farg0
     float a2;
     float c2;
     float z;
-    float s0, s1, s2;
-    s0 = farg1 * h0;
-    x = a0 * c0 + s0;
     arg0[0] = x;
     h1 = fn_80129DC4(0, -n1, n1);
     a1 = arg1[1];
     c1 = arg3[1];
     n2 = arg2[2];
-    s1 = farg1 * h1;
-    y = a1 * c1 + s1;
+    y = a1 * c1 + farg1 * h1;
     arg0[1] = y;
     h2 = fn_80129DC4(0, -n2, n2);
     a2 = arg1[2];
     c2 = arg3[2];
-    s2 = farg1 * h2;
-    z = a2 * c2 + s2;
+    z = a2 * c2 + farg1 * h2;
     arg0[1] += farg1 * farg0;
     arg0[2] = z;
 }
@@ -1009,7 +1004,7 @@ int fn_8028F534(int bitValue) {
             return 1 << index;
         }
     }
-    fn_802E317C(lbl_80348F9C, bitValue);
+    Abend_Panic(lbl_80348F9C, bitValue);
     return 0;
 }
 /* No-op post-creation hook: called with the caller's name/argument and the
@@ -1502,7 +1497,7 @@ void fn_8028FEE4(void *emitterPtr, int basePosAddr, float *generatedPos, float a
         entry.f0 = angle;
         break;
     default:
-        fn_802E317C(lbl_80349078, emitter->mode);
+        Abend_Panic(lbl_80349078, emitter->mode);
         break;
     }
     if (emitter->head < 0) {

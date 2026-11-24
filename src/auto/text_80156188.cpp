@@ -263,7 +263,7 @@ s32 fn_801563BC(s32 nameArg, void *provider) {
 #pragma pop
 extern "C" void *fn_801284F8(s32, const char *);
 extern "C" void fn_8012E81C(void *);
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
 extern "C" void *fn_801399FC(void *);
 extern "C" u8 lbl_8032E238[];
 extern "C" u8 lbl_8032E424[];
@@ -333,7 +333,7 @@ extern "C" void fn_801564B0(void) {
         s32 helperId = fn_80138968((void *)fn_80156248(path, 0x40));
         *(s32 *)((u8 *)helper + 4) = helperId;
         if (helperId == 0)
-            fn_802E317C((const char *)base + 0xBC, path);
+            Abend_Panic((const char *)base + 0xBC, path);
     }
 
     reader = ((Reader *)(long)fn_8015621C())->open((const char *)base + 0xD8);
@@ -409,7 +409,7 @@ extern "C" void fn_801564B0(void) {
                 entry->kind = category;
             }
             if (resource->count == 0)
-                fn_802E317C((const char *)base + 0xE8);
+                Abend_Panic((const char *)base + 0xE8);
 
             IndexReader *list = (IndexReader *)reader->open((const char *)base + 0x128);
             if (list != 0) {
@@ -768,17 +768,20 @@ extern "C" void fn_80156E74(void *arg0, s32 arg1, void *arg2) {
     volatile f32 vs1;
     volatile f32 vs0;
     f32 minimum;
-    s32 offset = 0;
     s32 best = -1;
+    s32 offset = 0;
     s32 i = 0;
     f32 dx;
     f32 dy;
-    f32 p0 = ((f32 *)arg2)[0];
-    f32 p1 = ((f32 *)arg2)[2];
+    f32 p1;
+    f32 p0;
 
-    minimum = lbl_80561748;
-    point[1] = p1;
+    p0 = ((f32 *)arg2)[0];
+    p1 = ((f32 *)arg2)[2];
+
     point[0] = p0;
+    point[1] = p1;
+    minimum = lbl_80561748;
     while (i < *(s32 *)((u8 *)arg0 + 8)) {
         void *entry = *(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + offset);
         void *result = fn_80135420(point, 0, (s32)entry);
@@ -800,14 +803,11 @@ extern "C" void fn_80156E74(void *arg0, s32 arg1, void *arg2) {
     {
         void *tbl = *(void **)((u8 *)arg0 + 4);
         f32 base;
-        f32 result;
-        s32 idx = arg1 * 8;
         offset = *(s32 *)((u8 *)tbl + best * 8);
         base = lbl_8055E3C8;
-        result = ((f32 (*)(s32, f32, f32))fn_80129DC4)(
+        ((f32 *)arg0)[arg1 * 2 + 0x39] = base + ((f32 (*)(s32, f32, f32))fn_80129DC4)(
             4, *(f32 *)((u8 *)arg0 + 0xDC), *(f32 *)((u8 *)arg0 + 0xE0));
-        *(f32 *)((u8 *)arg0 + idx + 0xE4) = base + result;
-        *(s32 *)((u8 *)arg0 + idx + 0xE8) = offset;
+        *(s32 *)((u8 *)arg0 + arg1 * 8 + 0xE8) = offset;
     }
 }
 #pragma pop

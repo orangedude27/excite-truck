@@ -443,8 +443,7 @@ void fn_8017248C(int arg0) {
     value = (PSQUATMultiply((char *)state + 0x60,
                             (char *)camera + 0x24) - lbl_80561A68) /
             lbl_80561A6C;
-    clamp = lbl_80561A40;
-    if (clamp < value) {
+    if ((clamp = lbl_80561A40) < value) {
         clamp = value;
     } else {
         clamp = clamp;
@@ -456,11 +455,11 @@ void fn_8017248C(int arg0) {
     }
 
     temp_f31 = lbl_80561A70 + (clamp * lbl_80561A70);
-    sp[0] = *((float *)((char *)state + 0x60));
+    sp[0] = *(float *)((char *)state + 0x60);
     temp_f30 = lbl_80561A74;
-    sp[1] = *((float *)((char *)state + 0x64));
+    sp[1] = *(float *)((char *)state + 0x64);
     temp_f29 = lbl_80561A78;
-    sp[2] = *((float *)((char *)state + 0x68));
+    sp[2] = *(float *)((char *)state + 0x68);
 
     wave = (float)fn_8002EFB4(
         (lbl_80561A7C * (lbl_80561A80 * (float)arg0)) + lbl_8055E3C8,
@@ -1987,7 +1986,7 @@ extern "C" void fn_80175080(void **table, int valueKey, int fallbackKey, char *f
     extern void *fn_80147CEC(void *, void *, void *, double);
     extern void fn_80147230(void *, const char *, ...);
     extern void fn_801476C4(void *);
-    extern void fn_802E317C(const char *, ...);
+    extern void Abend_Panic(const char *, ...);
     extern int vsprintf(char *, const char *, void *);
     extern unsigned int strlen(const char *);
     extern const char lbl_803314F8[];
@@ -2017,7 +2016,7 @@ extern "C" void fn_80175080(void **table, int valueKey, int fallbackKey, char *f
         va_start(args, number);
         vsprintf(text, format, args);
         if (strlen(text) >= 0x80) {
-            fn_802E317C(lbl_803314F8, strlen(text), format);
+            Abend_Panic(lbl_803314F8, strlen(text), format);
         }
         fn_80147230(result, lbl_8055A2EC, text);
     } else {

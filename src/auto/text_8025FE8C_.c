@@ -52,7 +52,7 @@ extern void fn_800167FC(s32);
 extern void *fn_80012820(s32);
 extern void *fn_8025007C(s32);
 extern s32 fn_8024DAE0(s32,s32,s32,void*,s32);
-extern void fn_802E317C(void *, ...);
+extern void Abend_Panic(void *, ...);
 extern s32 lbl_8055C400;
 #pragma push
 #pragma small_data off
@@ -64,7 +64,7 @@ extern u8 lbl_80345B40[];
 extern "C" s32 fn_8025FECC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     /* If a global state flag is set, returns success early. Otherwise looks up an
      * object by arg2, queries it for a resource/value (logging errors via
-     * fn_802E317C on failure), wraps a valid value in a temporary handle, passes
+     * Abend_Panic on failure), wraps a valid value in a temporary handle, passes
      * it to fn_8024DAE0, then deletes the handle and returns the result. */
     struct Inner3 {
         virtual void v0();
@@ -121,7 +121,7 @@ extern "C" s32 fn_8025FECC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     if (obj != 0 && obj->inner != 0 && (check = (s32)obj->inner->vfunc_5c(base + 0x90), ((u32)(-check | check) >> 31) != 0)) {
         val = obj->inner->vfunc_5c(base + 0x90)->vfunc_18(base + 0xa0, 0);
     } else {
-        fn_802E317C((void*)(base + 0xb0));
+        Abend_Panic((void*)(base + 0xb0));
     }
 
     Handle* handle = 0;
@@ -129,7 +129,7 @@ extern "C" s32 fn_8025FECC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
         handle = (Handle*)fn_8025007C(1);
         handle->vfunc_0c(val, 1, 0);
     } else {
-        fn_802E317C((void*)(base + 0x104));
+        Abend_Panic((void*)(base + 0x104));
     }
 
     s32 ret = fn_8024DAE0(arg0, arg1, 0, handle, arg3);
@@ -337,7 +337,7 @@ outerCheck:
             *(u8 *)((char *)value + 0x4D) = 1;
             *(float *)((char *)value + 8) = targetValue;
         }
-    } else fn_802E317C(strBase + 0x188);
+    } else Abend_Panic(strBase + 0x188);
     i = 0; j = 0;
     while (i < *(s32 *)(lbl_8055F420 + 8)) {
         if (lbl_8055F3EB == 0) {
@@ -679,7 +679,7 @@ extern "C" void fn_80260954(s32 arg0) {
          goto result_retry;
 
      result_retry:
-         fn_802E317C(stringBase + 0x268);
+         Abend_Panic(stringBase + 0x268);
          goto loop_10;
 
      result_minus_two:
@@ -1545,7 +1545,7 @@ outerCheck:
             *(float *)((char *)object + 8) = targetValue;
         }
     } else {
-        fn_802E317C(stringBase + 0x188);
+        Abend_Panic(stringBase + 0x188);
     }
 
     i = 0;

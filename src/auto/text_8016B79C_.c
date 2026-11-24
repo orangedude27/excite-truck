@@ -84,7 +84,7 @@ extern void fn_802AE0E0(s32);
 extern char lbl_80330AEC[];
 extern char lbl_803306D0[];
 extern void fn_801345D8(void *, s32, const char *, ...);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern void fn_8001B450(s32);
 typedef struct { f32 first; f32 second; } FloatPair8016A6B0;
 extern FloatPair8016A6B0 fn_8016A6B0(const char *, s32);
@@ -928,7 +928,7 @@ extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
                         strcmp(c->search(lbl_8055A220), nm) == 0) break;
                     j++;
                 }
-                if (c == 0) fn_802E317C(str + 0x160, nm);
+                if (c == 0) Abend_Panic(str + 0x160, nm);
                 t = c->check(str + 0x180);
                 if ((u32)(-t | t) >> 31) {
                     *(s32 *)(e + 0xC) = 0;
@@ -947,7 +947,7 @@ extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
                     List8016C768 *l = out[1];
                     u8 *e = (u8 *)l->data + l->index++ * 0x38;
                     if (strcmp(obj->search(&lbl_8055A230), str + 0x120) != 0)
-                        fn_802E317C(str + 0x1A0);
+                        Abend_Panic(str + 0x1A0);
                     *(Blk *)e = obj->getblk(str + 0x190);
                     *(f32 *)(e + 0x34) = obj->getf(&lbl_8055A240, lbl_805619A0);
                     *(u8 *)(e + 0x31) = 1;
@@ -1251,7 +1251,7 @@ void fn_8016D294(s32 unused, s32 kind, s32 setIndex) {
             fn_801345D8(setName, 0x1E, SET_FMT_15, RCM_SET_INDEX(master));
             break;
         default:
-            fn_802E317C(SET_BAD_DIFFICULTY);
+            Abend_Panic(SET_BAD_DIFFICULTY);
             break;
         }
         fn_8016A15C(setName);                  /* reset that set's gems */
@@ -1273,7 +1273,7 @@ void fn_8016D294(s32 unused, s32 kind, s32 setIndex) {
             fn_801345D8(markerName, 0x1E, SET_FMT_15, RCM_SET_INDEX(master));
             break;
         default:
-            fn_802E317C(SET_BAD_DIFFICULTY);
+            Abend_Panic(SET_BAD_DIFFICULTY);
             break;
         }
         difficulty = RCM_DIFFICULTY(master);
@@ -1291,7 +1291,7 @@ void fn_8016D294(s32 unused, s32 kind, s32 setIndex) {
             RCM_MAP_MARKER(master) = fn_8001B308(&pos15, RCM_MAP_ART(master), 2);
             break;
         default:
-            fn_802E317C(SET_BAD_DIFFICULTY);
+            Abend_Panic(SET_BAD_DIFFICULTY);
             break;
         }
         break;
@@ -1571,7 +1571,7 @@ s32 fn_8016DD98(void *arg0) {
         case 1: return 0xA;
         case 2: return 0xF;
         default: {
-            void (*report)(const char *, ...) = fn_802E317C;
+            void (*report)(const char *, ...) = Abend_Panic;
             report(lbl_80330AEC);
             return 0;
         }
@@ -1617,7 +1617,7 @@ void fn_8016DE20(void *obj) {
         fn_801345D8(textBuffer, 0x1E, formatBase + 0x27C, *(s32 *)((u8 *)object + 0x2C));
         break;
     default:
-        fn_802E317C(formatBase + 0x288);
+        Abend_Panic(formatBase + 0x288);
         break;
     }
 
@@ -1642,7 +1642,7 @@ void fn_8016DE20(void *obj) {
         break;
     }
     default:
-        fn_802E317C(formatBase + 0x288);
+        Abend_Panic(formatBase + 0x288);
         break;
     }
 }
@@ -1669,7 +1669,7 @@ void fn_8016DFB8(void *object) {
         fn_801345D8(textBuffer, 0x1E, formatBase + 0x27C, *(s32 *)((u8 *)object + 0x2C));
         break;
     default:
-        fn_802E317C(formatBase + 0x288);
+        Abend_Panic(formatBase + 0x288);
         break;
     }
     fn_8016A15C(textBuffer);
@@ -1756,7 +1756,7 @@ void fn_8016E1B4(void *arg0, s32 arg1) {
         fn_801345D8(sp8, 0x1e, format + 0x27c, *(s32 *)((u8 *)arg0 + 0x2c));
         break;
     default:
-        fn_802E317C(format + 0x288);
+        Abend_Panic(format + 0x288);
         break;
     }
     fn_8016A240(sp8);
@@ -3244,7 +3244,7 @@ loop_80:
                         var_r0 = 2;
                         break;
                     default:
-                        fn_802E317C(lbl_803306D0 + 0x7A8);
+                        Abend_Panic(lbl_803306D0 + 0x7A8);
                         var_r0 = 0;
                         break;
                     }
@@ -3347,7 +3347,7 @@ extern char lbl_80330AEC[];
 extern char lbl_8033072C[];
 extern char lbl_803308A0[];
 extern f32 lbl_80561980;
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 /* Format a status label for arg0's kind (field 0x44) and value (field 0x2C) into the output buffer; panics on unknown kinds. */
 void fn_80170E98(void *source, void *buffer, s32 bufferSize) {
     register const char *messages = lbl_803306D0;
@@ -3367,7 +3367,7 @@ void fn_80170E98(void *source, void *buffer, s32 bufferSize) {
             buffer, bufferSize, messages + 0x27c, *(s32 *)((u8 *)source + 0x2c));
         break;
     default:
-        fn_802E317C(messages + 0x288);
+        Abend_Panic(messages + 0x288);
         break;
     }
 }

@@ -5,7 +5,7 @@
 #include "types.h"
 extern void fn_802CC550(int, void *, float, float);
 extern void *fn_8012C370(int, int, u32 *, int *, u8 *, u8 *);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern void DCStoreRangeNoSync(const void *, u32);
 extern void fn_802C61BC(void *, int);
 extern const char lbl_8034B2E8[];
@@ -471,7 +471,7 @@ void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
                 freeEntry = 0;
             }
             if (freeEntry == 0) {
-                fn_802E317C(lbl_8034B1D8);
+                Abend_Panic(lbl_8034B1D8);
             }
             freeEntry->key0 = savedArg0;
         }
@@ -924,7 +924,7 @@ void fn_802C61BC(void *arg0, int arg1) {
             break;
         }
         default:
-            fn_802E317C(lbl_8034B2BC, (s32)arg0, arg1);
+            Abend_Panic(lbl_8034B2BC, (s32)arg0, arg1);
             break;
         }
     }
@@ -1030,7 +1030,7 @@ int fn_802C6B44(int modelPath) {
     if (modelData != 0) {
         if (swapEndian != 0) {
             if (version != expectedVersion) {
-                fn_802E317C(lbl_8034B2E8, version, expectedVersion, modelPath);
+                Abend_Panic(lbl_8034B2E8, version, expectedVersion, modelPath);
             }
             DCStoreRangeNoSync(modelData, dataSize);
             fixupResource(modelData, modelPath);
@@ -1040,7 +1040,7 @@ int fn_802C6B44(int modelPath) {
         }
         return (int)modelData;
     }
-    fn_802E317C(lbl_8034B314, modelPath);
+    Abend_Panic(lbl_8034B314, modelPath);
     return 0;
 #undef modlTag
 #undef expectedVersion
@@ -1187,7 +1187,7 @@ int fn_802C6DC4(int arg0, int arg1, int arg2, int arg3) {
                 empty = 0;
             }
             if (empty == 0) {
-                fn_802E317C(lbl_8034B378);
+                Abend_Panic(lbl_8034B378);
             }
         }
 
@@ -1198,7 +1198,7 @@ int fn_802C6DC4(int arg0, int arg1, int arg2, int arg3) {
         {
             int limit = *(int *)((char *)(unsigned long)arg1 + 0x18);
             if (arg2 >= limit) {
-                fn_802E317C(lbl_8034B3A4, arg2, limit, arg0);
+                Abend_Panic(lbl_8034B3A4, arg2, limit, arg0);
             }
         }
 

@@ -546,7 +546,7 @@ extern "C" void *fn_80218F80(void *, void *);
 extern "C" char lbl_8033E560[];
 extern "C" char lbl_8033DA60[];
 extern "C" s32 fn_80232578(s32);
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
 extern f32 lbl_8056351C;
 extern f64 lbl_80563520;
 extern "C" void fn_8023986C(s32);
@@ -1297,7 +1297,7 @@ extern "C" void fn_80219AB4(void *widget, s32 kind, s32 text, s32 idleValue, s32
             *(f32 *)(obj+0x27C) = heightScale < widthScale ? heightScale : widthScale;
         }
         break;
-    default: fn_802E317C(UNKNOWN_KIND); break;
+    default: Abend_Panic(UNKNOWN_KIND); break;
     }
     #undef GTexLoadFont
     #undef GTexFontHeight
@@ -5588,7 +5588,7 @@ extern "C" s32 fn_80221EA8(void *arg0) {
             return i;
         }
     }
-    fn_802E317C(lbl_8033DA2C);
+    Abend_Panic(lbl_8033DA2C);
     return 0;
 }
 
@@ -6049,7 +6049,7 @@ extern "C" s32 fn_80222BD4(void *self) {
 
 extern "C" char lbl_8033E560[];
 extern "C" char lbl_8033DA60[];
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
 extern f32 lbl_8056351C;
 extern f64 lbl_80563520;
 #pragma push
@@ -6057,7 +6057,7 @@ extern f64 lbl_80563520;
 extern "C" void *fn_80222BDC(void *resource, void *params, s32 resourceId) {
 #define initBase          fn_80218F80
 #define loadFont          fn_80232578
-#define panic             fn_802E317C
+#define panic             Abend_Panic
 #define gCircleListVtable lbl_8033E560
 #define sInvalidFontMsg   lbl_8033DA60
     /* Construct a "Widget CircleList" memory-card resource: run the base object

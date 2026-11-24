@@ -90,7 +90,7 @@ extern int DVDGetCurrentDir(char **, char *);
 extern char lbl_8034D038[];
 extern char fileCdMsgNodeNotFound[];
 extern unsigned int lbl_8055FF40;
-extern void fn_802E317C(void *, ...);
+extern void Abend_Panic(void *, ...);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_8034D198[];
 #define fileCdMsgWriteNotSupported lbl_8034D198 /* "filecd: write not supported (%s)" */
@@ -127,7 +127,7 @@ void *fn_802E3EBC(void)
     p += 0x91;
   }
 
-  fn_802E317C(lbl_8034D038);
+  Abend_Panic(lbl_8034D038);
   return (void *) lbl_8055FF40;
 }
 #pragma scheduling on
@@ -147,7 +147,7 @@ void *fn_802E3EBC(void)
         }
         slotBase += 0x91;
     }
-    fn_802E317C(fileCdMsgNodeNotFound, node);
+    Abend_Panic(fileCdMsgNodeNotFound, node);
 }
 #pragma cplusplus on
 // Start the filecd DVD file system: take this TU's one static FileCd object,
@@ -427,7 +427,7 @@ int FileDisk_readAsync(void *file, void *dst, int len) {
     int result;
     result = DVDReadAsyncPrio((char *)file + 4, dst, len, *(int *)((char *)file + 0x88), 0, 2);
     if (result <= 0) {
-        fn_802E317C((void *)&fileCdMsgDvdReadFails);
+        Abend_Panic((void *)&fileCdMsgDvdReadFails);
     }
     *(int *)((char *)file + 0x88) += len;
     return 1;
@@ -441,7 +441,7 @@ int fn_802E461C(void *file) {
 #pragma scheduling invalid_target
 int fn_802E4648(void *file) {
     /* FileDisk::write — DVD files are read-only, so panic with the file's path. */
-    fn_802E317C(fileCdMsgWriteNotSupported, (char *)file + 0x40);
+    Abend_Panic(fileCdMsgWriteNotSupported, (char *)file + 0x40);
     return -1;
 }
 #pragma scheduling on

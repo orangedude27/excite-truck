@@ -119,7 +119,7 @@ extern "C" char lbl_8033D1E0[];
 extern "C" u8 *lbl_8055B6BC;
 
 extern "C" s32 fn_80218C14(s32, s32);
-extern "C" s32 fn_802E317C(const char *);
+extern "C" s32 Abend_Panic(const char *);
 extern "C" s32 fn_80214934(const void *, s32, void *, s32);
 extern "C" s32 fn_80029004(const char *, s32);
 extern "C" s32 fn_801345D8(void *, s32, const char *, s32, s32, const char *);
@@ -628,7 +628,7 @@ extern "C" void *fn_8021203C(char *path, s32 countDivisor, s32 imgArgA, s32 imgA
             return ((void *(*)(void *, s32))fn_802226D4)(obj, (s32)path);
         return obj;
     }
-    ((s32 (*)(const char *, const char *, ...))fn_802E317C)(lbl_8033CDA4, dot + 1);
+    ((s32 (*)(const char *, const char *, ...))Abend_Panic)(lbl_8033CDA4, dot + 1);
     return 0;
 }
 
@@ -1483,7 +1483,7 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
     case 54:
         break;
     default:
-        ((s32 (*)(const char *, ...))fn_802E317C)(strings + 0x5A4, type);
+        ((s32 (*)(const char *, ...))Abend_Panic)(strings + 0x5A4, type);
         break;
     }
     {
@@ -1664,7 +1664,7 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
                     *(void **)((u8 *)out + 0x444) = *(void **)(q + 8);
                     break;
                 default:
-                    fn_802E317C((const char *)(base + 0x6e0));
+                    Abend_Panic((const char *)(base + 0x6e0));
                     break;
                 }
                 break;
@@ -1882,7 +1882,7 @@ extern "C" s32 fn_80214A38(s32 groupId) {
     if (window != 0)
         isVisible = ((s32 (*)(s32, s32))fn_802168D4)(window, groupId);
     else
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_8033D274);
+        ((void (*)(const char *, ...))Abend_Panic)(lbl_8033D274);
     return isVisible;
 }
 #pragma scheduling on
@@ -1899,7 +1899,7 @@ extern "C" void fn_80219354(void);
 extern "C" void fn_80214A9C(s32 groupId) {
 #define UIGetActiveWindow fn_802168E4
 #define UIWindow_HideGroup fn_802168CC
-#define UIPanic fn_802E317C
+#define UIPanic Abend_Panic
 #define UIHideGroup_noWindowMsg lbl_8033D2A0
 #define groupFadeTime lbl_80563434
     s32 window = UIGetActiveWindow();
@@ -1927,7 +1927,7 @@ extern "C" char lbl_8033D2C0[];
 extern "C" void fn_80214AF0(s32 groupId) {
 #define UIGetActiveWindow fn_802168E4
 #define UIWindow_ShowGroup fn_802168D0
-#define UIPanic fn_802E317C
+#define UIPanic Abend_Panic
 #define UIShowGroup_noWindowMsg lbl_8033D2C0
 #define groupFadeTime lbl_80563434
     s32 window = UIGetActiveWindow();
@@ -1948,7 +1948,7 @@ extern "C" void fn_80214AF0(s32 groupId) {
 extern "C" void fn_80214B44(s32 groupId) {
 #define UIGetActiveWindow       fn_802168E4
 #define UIWindow_DisableGroup   fn_802168DC
-#define UIPanic                 fn_802E317C
+#define UIPanic                 Abend_Panic
 #define kNoActiveWindowMsg      lbl_8033D2E0
     s32 window = UIGetActiveWindow();
     if (window != 0) {
@@ -1971,7 +1971,7 @@ extern "C" void fn_80214B94(s32 group) {
     if (window != 0) {
         ((s32 (*)(s32, s32))fn_802168D8)(window, group);
     } else {
-        ((s32 (*)(const char *, ...))fn_802E317C)(sNoActiveWindowMsg);
+        ((s32 (*)(const char *, ...))Abend_Panic)(sNoActiveWindowMsg);
     }
 #undef sNoActiveWindowMsg
 }
@@ -1983,7 +1983,7 @@ extern "C" void fn_80214BE4(s32 arg0, s32 arg1, s32 arg2) {
     if (obj != 0) {
         ((void (*)(s32, s32, s32, s32))fn_802168E0)(obj, arg0, arg1, arg2);
     } else {
-        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8033D328);
+        ((s32 (*)(const char *, ...))Abend_Panic)(lbl_8033D328);
     }
 }
 
@@ -1993,7 +1993,7 @@ extern "C" void fn_80214C54(s32 updateId, s32 context) {
     if (window != 0) {
         ((void (*)(s32, s32, s32))fn_80218C14)(window, updateId, context);
     } else {
-        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8033D388);
+        ((s32 (*)(const char *, ...))Abend_Panic)(lbl_8033D388);
     }
 }
 
@@ -2004,7 +2004,7 @@ extern "C" void fn_80214CB4(s32 arg0) {
     if (window != 0) {
         ((s32 (*)(s32, s32))fn_802180E0)(window, arg0);
     } else {
-        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8033D3B0);
+        ((s32 (*)(const char *, ...))Abend_Panic)(lbl_8033D3B0);
     }
 }
 #pragma dont_inline reset
@@ -2012,7 +2012,7 @@ extern "C" void fn_80214CB4(s32 arg0) {
 extern "C" s32 lbl_80490528[];
 extern "C" s32 fn_802168E4(void);
 extern "C" s32 fn_80218120(void);
-extern "C" s32 fn_802E317C(const char *);
+extern "C" s32 Abend_Panic(const char *);
 extern "C" char lbl_8033D3D4[];
 #pragma dont_inline on
 extern "C" s32 fn_80214D04(void) {
@@ -2020,7 +2020,7 @@ extern "C" s32 fn_80214D04(void) {
     if (fn_802168E4() != 0) {
         return fn_80218120();
     } else {
-        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8033D3D4);
+        ((s32 (*)(const char *, ...))Abend_Panic)(lbl_8033D3D4);
     }
     return 0;
 }

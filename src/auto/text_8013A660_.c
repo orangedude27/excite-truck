@@ -17,7 +17,7 @@ extern float fn_80134B58(float *, float);
 extern float fn_8013B5DC(int, int);
 extern int fn_80028E00(char *, int);
 extern int fn_8013A6D4(int);
-extern int fn_802E317C(char *, ...);
+extern int Abend_Panic(char *, ...);
 extern char lbl_8032C1A0[];
 extern char lbl_8032C1E8[];
 extern char lbl_8032C1F8[];
@@ -50,7 +50,7 @@ extern "C" void fn_8013A660(void *arg0, char *arg1, char *arg2) {
     };
     /* Reports an error if the vtable check fails (f1 returns 0). */
     if (((Dummy *)arg0)->f1() == 0) {
-        fn_802E317C(lbl_8032C1A0, arg2, arg1);
+        Abend_Panic(lbl_8032C1A0, arg2, arg1);
     }
 }
 #pragma cplusplus reset
@@ -304,7 +304,7 @@ extern "C" void fn_8013AC78(int arg0, int *arg1) {
     int pr[100];
     float sp8[2];
     float f31;
-    int *a;
+    register int *a;
     int count, n, i, pairs;
     int *q;
     int *pp;
@@ -520,7 +520,7 @@ void fn_8013B6C0(int *arg0, float *arg1, int arg2) {
         *arg0 = lbl_802F9360[arg2 * 2];
         *arg1 = *(float *)((char *)lbl_802F9360 + arg2 * 8 + 4);
     } else {
-        fn_802E317C(lbl_8032C374, arg2);
+        Abend_Panic(lbl_8032C374, arg2);
         {
             float fallback = lbl_80561434;
             *arg0 = 0;

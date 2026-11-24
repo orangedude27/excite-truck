@@ -169,7 +169,7 @@ int fn_801B81E0(void *__restrict arg0) {
     extern int fn_8014DE50(void);
     extern int fn_8016BE60(void);
     extern int fn_80172C28(void);
-    extern void fn_802E317C(const char *, ...);
+    extern void Abend_Panic(const char *, ...);
     extern char lbl_80336740[];
     int value = *(int *)((char *)arg0 + 0x3E8);
     switch (value) {
@@ -182,7 +182,7 @@ int fn_801B81E0(void *__restrict arg0) {
     case 0x180304:
         return fn_80172C28();
     default:
-        fn_802E317C(lbl_80336740);
+        Abend_Panic(lbl_80336740);
         return 0;
     }
 }

@@ -6,7 +6,7 @@
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/GX/GXTypes.h"
 #include "revolution/OS/OSFastCast.h"
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern s32 fn_802DAC64(void);
 extern void fn_802D61BC(void *);
 extern const char lbl_8034C2F8[];
@@ -1045,9 +1045,9 @@ void fn_802D5F88(s32 arg0) {
     case 12: fn_802D4C44(surface); break;
     case 15: fn_802D4ECC(surface); break;
     case 13: fn_802D5B8C(surface); break;
-    case 19: fn_802E317C(lbl_8034C2F8); break;
+    case 19: Abend_Panic(lbl_8034C2F8); break;
     case 20: fn_802D422C(surface); break;
-    default: fn_802E317C(lbl_8034C334, layout); break;
+    default: Abend_Panic(lbl_8034C334, layout); break;
     }
 }
 #pragma pop
@@ -1314,7 +1314,7 @@ void fn_802D65F8(s32 arg0, s32 arg1) {
             if((entries[0xC]!=0x4C && entries[0xC]!=0x4D) || entries[0xD]!=0) goto second;
             entries+=0x10;
         }
-        fn_802E317C(lbl_8034C3B4);
+        Abend_Panic(lbl_8034C3B4);
         bytes[8]=0x1A;
         entries=*(u8 **)(bytes+0x20);
         {
@@ -1419,17 +1419,17 @@ void fn_802D6B7C(void *surface) {
 }
 
 extern void fn_802D65F8(s32, s32);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern const char lbl_8034C440[];
 #pragma scheduling invalid_target
 /* LoadSurface: byte-swap a surface's 4-byte type code in place; convert it if the format is known, otherwise panic reporting the bad type as a string. */ void fn_802D6B80(u8 *surface, s32 modelBase, s32 name) {
     extern s32 fn_802D62E4(void *);
     extern void fn_802D65F8(s32, s32);
-    extern void fn_802E317C(const char *, ...);
+    extern void Abend_Panic(const char *, ...);
     extern const char lbl_8034C440[];
 #define IsKnownSurfFormat fn_802D62E4
 #define ConvertSurfData   fn_802D65F8
-#define Panic             fn_802E317C
+#define Panic             Abend_Panic
 #define kBadSurfTypeMsg   lbl_8034C440 /* "gx: %s has bad surf type %s" */
     /* RealName: LoadSurface. Byte-swap a model surface's 4-byte type code; if it
        is the supported format convert the surface data in place, otherwise

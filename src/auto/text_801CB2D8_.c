@@ -393,7 +393,7 @@ extern void *fn_8001BE94(void *, s32, s32, s32, s32);
 extern void fn_8001BC38(void *, s32, s32, s32, s32);
 extern s32 fn_8001BCF0(void *);
 extern s32 fn_8001BD6C(void *, void *);
-extern void fn_802E317C(char *, s32);
+extern void Abend_Panic(char *, s32);
 #pragma opt_propagation off
 void *fn_801CB954(s32 arg0, void *arg1, s32 arg2) {
     struct Ctx {
@@ -416,7 +416,7 @@ void *fn_801CB954(s32 arg0, void *arg1, s32 arg2) {
 
     switch (mode) {
     default:
-        ((void (*)(char *, ...))fn_802E317C)(c.base, c.arg0);
+        ((void (*)(char *, ...))Abend_Panic)(c.base, c.arg0);
     case 0x200: {
         s32 sp2[9], sp[9];
         c.result = fn_801284F8(0x10, c.base + 0x40);
@@ -695,7 +695,7 @@ void fn_801CBD48(void *arg0, void *arg1) {
     case 3:
         break;
     default:
-        ((void (*)(char *, ...))fn_802E317C)(strings + 0x16C, *(s32 *)obj);
+        ((void (*)(char *, ...))Abend_Panic)(strings + 0x16C, *(s32 *)obj);
         break;
     }
     if (valid) {
@@ -1260,7 +1260,7 @@ var_r29 += 1;
 var_r29 = -1;
 after_search:
 if (var_r29 < 0)
-((void (*)(const char *, ...))fn_802E317C)(lbl_80337CA0, arg0);
+((void (*)(const char *, ...))Abend_Panic)(lbl_80337CA0, arg0);
 temp_r30 = (unsigned char *)*(void **)(*(s32 **)((unsigned char *)temp_r31 + 0x18) + var_r29);
 if (temp_r30 != 0) {
 if (((Dummy_801CCDAC *)temp_r30)->v1(arg2) != 0) {
@@ -1389,9 +1389,9 @@ if (temp_r4 != 0) {
 extern char lbl_80337CCC[];
 #pragma push
 #pragma scheduling invalid_target
-/* Report a fatal panic ("StatHandler: data type \"int\" is not accepted here!") via fn_802E317C and return 0 (unreachable). */
+/* Report a fatal panic ("StatHandler: data type \"int\" is not accepted here!") via Abend_Panic and return 0 (unreachable). */
 s32 fn_801CD100(void) {
-    ((void (*)(const char*, ...))fn_802E317C)(lbl_80337CCC);
+    ((void (*)(const char*, ...))Abend_Panic)(lbl_80337CCC);
     return 0;
 }
 
@@ -1451,7 +1451,7 @@ var_r29 = -1;
 found_item:
 var_r30 = var_r29;
 if (var_r30 < 0)
-((void (*)(const char *, ...))fn_802E317C)(lbl_80337CA0, arg0);
+((void (*)(const char *, ...))Abend_Panic)(lbl_80337CA0, arg0);
 temp_r30 = (unsigned char *)*(void **)(*(s32 **)((unsigned char *)temp_r31 + 0x18) + var_r30);
 if (temp_r30 != 0) {
 if (((Dummy_801CCDAC *)temp_r30)->v2(farg0) != 0) {
@@ -1586,7 +1586,7 @@ extern char lbl_80337D00[];
 #pragma push
 #pragma scheduling invalid_target
 s32 fn_801CD49C(void) {
-#define PanicAbort fn_802E317C
+#define PanicAbort Abend_Panic
 #define kRealTypeRejectedMsg lbl_80337D00
     /* Fatal panic: this stat handler cannot accept a "real" data type. */
     ((void (*)(char *, ...))PanicAbort)(kRealTypeRejectedMsg);
@@ -1629,7 +1629,7 @@ void fn_801CD4CC(int playerIndex, int place) {
         *(s32 *)(awardsBase + 0x2A8) = place;
         if (place == 1) fn_8001EF5C(1, 1);
     } else {
-        ((void (*)(char *, ...))fn_802E317C)(lbl_80337D34);
+        ((void (*)(char *, ...))Abend_Panic)(lbl_80337D34);
     }
 }
 
@@ -1695,7 +1695,7 @@ void fn_801CD5B4(int arg0, int arg1, int arg2) {
     goto done;
 
 warning:
-    ((void (*)(char *, ...))fn_802E317C)(lbl_80337D5C);
+    ((void (*)(char *, ...))Abend_Panic)(lbl_80337D5C);
 done:
     return;
 }
@@ -1772,7 +1772,7 @@ extern "C" void fn_801CD7BC(int playerIndex, int pushEnabled, f32 raceTime) {
         slotIndex = -1;
 found:
         if (slotIndex < 0)
-            ((void (*)(const char *, ...))fn_802E317C)(lbl_80337CA0, statType);
+            ((void (*)(const char *, ...))Abend_Panic)(lbl_80337CA0, statType);
         ((Dummy_801CCDAC *)*(void **)((u8 *)*(s32 **)(awards + 0x18) + slotIndex * 4))->v2(raceTime);
         *(f32 *)(awards + 0x2B8) = raceTime;
         *(u8 *)(awards + 0x2BC) = 1;
@@ -1785,7 +1785,7 @@ found:
             }
         }
     } else {
-        ((void (*)(const char *, f32, ...))fn_802E317C)(
+        ((void (*)(const char *, f32, ...))Abend_Panic)(
             lbl_80337D90, *(f32 *)(awards + 0x2B8), (double)raceTime);
     }
 done:

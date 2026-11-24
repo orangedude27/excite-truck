@@ -7,7 +7,7 @@ typedef unsigned char u8;
 typedef unsigned int u32;
 typedef int s32;
 extern void *fn_8012C370(void *, int, int *, int, int, u8 *);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern char lbl_80339200[];
 extern char lbl_80339218[];
 #define SWAP2(q, a, b) do { u8 t = (q)[a]; (q)[a] = (q)[b]; (q)[b] = t; } while (0)
@@ -27,16 +27,16 @@ void *fn_801D9CC4(void *arg0)
   u32 off;
   volatile u8 *e;
   volatile u8 *r;
-  register u8 t;
+  u32 t;
   base = (volatile u8 *) fn_8012C370(arg0, 0x50507468, &type, 0, 0, &flag);
   if (base == 0)
   {
-    fn_802E317C(lbl_80339200, arg0);
+    Abend_Panic(lbl_80339200, arg0);
     return 0;
   }
   if (type != 0)
   {
-    fn_802E317C(lbl_80339218, arg0, type, 0);
+    Abend_Panic(lbl_80339218, arg0, type, 0);
     return 0;
   }
   if (flag != 0)
@@ -47,7 +47,7 @@ void *fn_801D9CC4(void *arg0)
     {
       SWAP4T(e, 0x10, t);
       SWAP4T(e, 0x14, t);
-      *((u32 *) (e + 0x14)) = ((u32) base) + (*((u32 *) (e + 0x14)));
+      *((u32 *) (e + 0x14)) = (*((u32 *) (e + 0x14))) + ((u32) base);
       for (j = 0, off = 0; j < (*((s32 *) (e + 0x10))); j++, off += 0x20)
       {
         r = ((volatile u8 *) (*((u32 *) (e + 0x14)))) + off;
@@ -180,16 +180,21 @@ void fn_801DA0EC(void *arg0, float farg0) {
     if (farg0 >= zero) goto forward;
     goto backward;
 forward:
-    do {
-        ++vs->idx;
-        o = (void *)vs->obj;
-        idx = vs->idx;
-        if (idx + 1 >= *(int *)((char *)o + 0x10)) {
-            return;
-        }
-        values = *(float **)((char *)o + 0x14);
-    } while (*(float *)((char *)arg0 + 0xC) > values[idx * 8 + 8]);
+    goto fwd_body;
+fwd_inc:
+    ++vs->idx;
+fwd_body:
+    o = (void *)vs->obj;
+    idx = vs->idx;
+    if (idx + 1 >= *(int *)((char *)o + 0x10)) {
+        return;
+    }
+    values = *(float **)((char *)o + 0x14);
+    if (*(float *)((char *)arg0 + 0xC) > values[idx * 8 + 8]) goto fwd_inc;
+    goto done;
+done:
     return;
+    goto backward;
 backward:
     do {
         --vs->idx;
@@ -271,7 +276,7 @@ extern float __fabsf(float);
 #pragma processor 750
 #pragma scheduling invalid_target
 int fn_801DA294(void *arg0, void *arg1, void *arg2, void *arg3) {
-    const float *a = 0, *b = 0;
+    float *a = 0, *b = 0;
     float t = 0.0f;
     float tr[3], ax[3], qb[4], qa[4], dl[3], q[4];
     float inv, sc, len, w, omt;

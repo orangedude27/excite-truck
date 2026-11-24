@@ -230,7 +230,7 @@ int fn_80208D70(void) { return MIXER_SELECTED_DEVICE; }
 extern const char lbl_8033BF28[];
 extern char lbl_8055B4E8;
 extern int lbl_8055B4DC;
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern void fn_80133348(int, void *, int);
 extern void fn_801336E0(int, void (*)(void));
 #pragma scheduling default
@@ -238,7 +238,7 @@ extern void fn_801336E0(int, void (*)(void));
 extern "C" const char lbl_8033BF28[];
 extern "C" char lbl_8055B4E8;
 extern "C" int lbl_8055B4DC;
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
 extern "C" void fn_80133348(int, void *, int);
 extern "C" void fn_801336E0(int, void (*)(void));
 #pragma cplusplus reset
@@ -259,7 +259,7 @@ extern "C" void fn_80208D80(int closeDevices) {
     while (i < MIXER_VOLUME_HANDLE_COUNT) {
         handleName = *(int *)(handleIt + 4);
         if (handleName != 0) {
-            fn_802E317C(lbl_8033BF28, handleName);
+            Abend_Panic(lbl_8033BF28, handleName);
         }
         handleIt += 8;
         i++;

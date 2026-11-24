@@ -26,7 +26,7 @@ extern void fn_8000BF20(void *);
 extern void fn_8000C0E8(void);
 extern u8 lbl_803413A8[];
 extern s32 atoi();
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern const char lbl_80341354[]; /* "Can't set %d players.  That's crazy." */
 extern s32 lbl_8055BB30;
 extern s32 fn_802054EC(s32, s32, s32);
@@ -402,7 +402,7 @@ void fn_8023BF68(const char *countText) {
     s32 playerCount = atoi(countText);
     player_count = playerCount;
     if (playerCount == 0 || (((playerCount >> 31) ^ playerCount) - (playerCount >> 31)) > 4) {
-        fn_802E317C(lbl_80341354, playerCount);
+        Abend_Panic(lbl_80341354, playerCount);
     }
 }
 

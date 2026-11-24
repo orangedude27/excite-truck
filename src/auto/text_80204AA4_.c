@@ -18,7 +18,7 @@ extern int lbl_8055B470;
 extern int lbl_8055B478;
 extern signed char lbl_8055ED58;
 extern int stricmp(const char *, const char *);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern void *fn_8001285C(void);
 extern void fn_80131818(int);
 extern void fn_80128668(void *);
@@ -58,10 +58,12 @@ int fn_80204B2C(const char *name) {
         if (stricmp(name, entry->name) == 0) {
             return index;
         }
+        entry++;
         index++;
+        entry--;
         entry++;
     }
-    fn_802E317C(lbl_8033BBA0, name);
+    Abend_Panic(lbl_8033BBA0, name);
     return 0;
 }
 #pragma dont_inline reset
@@ -171,7 +173,7 @@ extern const char lbl_8033BBF4[];
 #pragma cplusplus on
 extern "C" int fn_801345D8(void *, int, const char *, ...);
 extern "C" double atof(const char *);
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
 #pragma push
 #pragma scheduling invalid_target
 /* Read one difficulty setting of the current scene as a number.  The setting is
@@ -224,7 +226,7 @@ extern "C" float fn_80204CFC(const char *name) {
         }
         setting = found;
     }
-    if (setting == 0) fn_802E317C(lbl_8033BBF4, name);
+    if (setting == 0) Abend_Panic(lbl_8033BBF4, name);
     text = setting;
     return (float)atof((const char *)text);
 }
@@ -281,7 +283,7 @@ extern "C" int fn_80204EA0(const char *name) {
         }
         setting = found;
     }
-    if (setting == 0) fn_802E317C(lbl_8033BBF4, name);
+    if (setting == 0) Abend_Panic(lbl_8033BBF4, name);
     return setting;
 }
 #pragma cplusplus reset
@@ -354,7 +356,7 @@ extern "C" int fn_8020503C(const char *name) {
     done2:
         setting = text;
     }
-    if (setting == 0) fn_802E317C(NOT_FOUND_MSG, name);
+    if (setting == 0) Abend_Panic(NOT_FOUND_MSG, name);
     text = setting;
     on = 0;
     if (stricmp((const char *)text, YES_STRING) == 0 ||
@@ -493,7 +495,7 @@ extern "C" int fn_80205268(const char *propName, int typeIndex, int stageIndex) 
         }
         result = (int)value;
     }
-    if (result == 0) fn_802E317C(NOT_FOUND_PANIC, propName);
+    if (result == 0) Abend_Panic(NOT_FOUND_PANIC, propName);
     group = lookup.group;
     lookup.contest = 0;
     lookup.current = 0;
@@ -595,7 +597,7 @@ extern "C" int fn_802054EC(const char *propName, int typeIndex, int stageIndex) 
     if (value == 0) {
         value = lookup.Find(propName);
     }
-    if (value == 0) fn_802E317C(NOT_FOUND_PANIC, propName);
+    if (value == 0) Abend_Panic(NOT_FOUND_PANIC, propName);
     isYes = 1;
     if (stricmp(value, YES_VALUE) != 0 && stricmp(value, TRUE_VALUE) != 0) isYes = 0;
     return isYes;

@@ -88,7 +88,7 @@ extern s32 fn_80131234(s32);
 extern s32 fn_80131810(void*);
 extern void* fn_801284F8(int, void*);
 extern void* fn_8012850C(int, void*);
-extern void fn_802E317C(const char*, ...);
+extern void Abend_Panic(const char*, ...);
 extern void fn_802E30C8(const char *, ...);
 s32 fn_8001F41C(const char* arg);
 #define VFN(o, off, T) ((T)(*(void***)(o))[(off) / 4])
@@ -280,7 +280,7 @@ void fn_8001EFF0(void) {
                                 }
                             }
                             if (l.res[1] == 0) {
-                                fn_802E317C(lbl_802FE0FC, l.obj->vt->getName(l.obj));
+                                Abend_Panic(lbl_802FE0FC, l.obj->vt->getName(l.obj));
                             }
                             l.res[0] = (s32)fn_8012850C(l.res[1] * 8, lbl_802FE0EC);
                             l.res[1] = 0;
@@ -501,10 +501,12 @@ void fn_8001F76C(void) {
 
 extern void fn_8000DB18(void);
 void fn_8001F780(void) {
-    char *base = lbl_80358698;
-    char *p = base + fn_8000DA10() * ACH_BLOCK_SIZE;
-    ((void (*)())fn_8001F5BC)(p, base + 0x2080);
-    ((void (*)())fn_8001F5BC)(p, base + 0x28a0);
+    typedef struct { char data[ACH_BLOCK_SIZE]; } AchBlock;
+    AchBlock *base = (AchBlock *)lbl_80358698;
+    AchBlock *blk = &base[fn_8000DA10()];
+    char *p = blk->data;
+    ((void (*)())fn_8001F5BC)((blk->data), base[4].data);
+    ((void (*)())fn_8001F5BC)((blk->data), base[5].data);
     fn_8001F578();
     fn_8000DB18();
 }
@@ -559,6 +561,7 @@ s32 fn_8001F89C(s32 counterId, s32 profileIndex) {
     return 0;
 }
 
+#pragma scheduling invalid_target
 void fn_8001F908(void *arg0) {
     int *p = (int *)arg0;
     int *tbl = (int *)lbl_80358698;
@@ -570,8 +573,6 @@ void fn_8001F908(void *arg0) {
     }
     p[2] = p[1] + tbl[0x820 + p[0]] + tbl[0xA28 + p[0]];
 }
-
-#pragma scheduling invalid_target
 /* How many of a lifetime counter's levels `value` reaches: walks the counter's
  * threshold rows in rising order and stops at the first one above it, so the
  * result is the number of levels earned (all of them when none is above).

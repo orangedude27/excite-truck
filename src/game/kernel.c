@@ -13,7 +13,7 @@ extern void DCStoreRange(void *, int);
 extern void DCFlushRange(void *, int);
 extern char lbl_8034CD48[];
 extern char sStackUsageFormat[];
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_8034CEE4[];
 extern int sResetCallbacks[];
@@ -556,7 +556,7 @@ void KERNEL_ReportStackUsage(void) {
 void fn_802E2A1C(void) {
 #define StackGuardInfo sStackGuardInfo
 #define STACK_GUARD_MAGIC 0x53ffeedd
-#define LogError fn_802E317C
+#define LogError Abend_Panic
 #define StackOverrunMsg lbl_8034CD48
     int **guard = (int **)((char *)StackGuardInfo + 8);
     /* Check the deepest stack-guard word: if one is configured and its magic
@@ -915,7 +915,7 @@ extern void OSShutdownSystem(void);
 void fn_802E300C(int exitCode) {
     /* Log "PlatExitProcess(%d)" with the given exit code. */
 #define KERNEL_LOG_PLAT_EXIT lbl_8034CEE4
-    fn_802E317C(KERNEL_LOG_PLAT_EXIT, exitCode);
+    Abend_Panic(KERNEL_LOG_PLAT_EXIT, exitCode);
 #undef KERNEL_LOG_PLAT_EXIT
 }
 #pragma scheduling on

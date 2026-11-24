@@ -129,7 +129,7 @@ struct MListEntry {
 }
 #pragma cplusplus reset
 extern int fn_802CAC28(void *, int);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern void *memset(void *, int, unsigned int);
 extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
 extern char lbl_8034BBC0[];
@@ -262,7 +262,7 @@ loop_41_body:
         else if (type == 4) category = 2;
         else if (type >= 5 && type <= 8) category = 3;
         else if (type == 9) category = 4;
-        else fn_802E317C(lbl_8034BBC0, type);
+        else Abend_Panic(lbl_8034BBC0, type);
         group = (char *)arg0 + category * 0x10 + 0x38;
         if (index < *(int *)group) *(int *)group = index;
         if (index + 1 > *(int *)(group + 4)) *(int *)(group + 4) = index + 1;

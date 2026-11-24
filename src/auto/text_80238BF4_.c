@@ -28,7 +28,7 @@ extern f32 lbl_80563728;
 extern f32 lbl_8056372C;
 extern void *fn_8012C370(s32, s32, u32 *, s32 *, u8 *, u8 *);
 extern void fn_802E30C8(const char *, ...);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern char lbl_80340AD0[];
 extern char lbl_80340B00[];
 
@@ -132,14 +132,18 @@ void fn_80238BF4(void *arg0, u8 *arg1) {
         dest[1] = -(dest[1] - lbl_80563728);
     }
     packed = *(u32 *)(record + 4);
-    if ((c0 = ((s8)color[7] * 2) + (((s8)color[3] * (s32)((((packed >> 24) & 0xFF) * 2))) / 255)) <= 0) c0 = 0;
-    if (c0 >= 0xFF) c0 = 0xFF; else c0 = c0;
-    if ((c1 = ((s8)color[4] * 2) + (((s8)color[0] * (s32)((((packed >> 16) & 0xFF) * 2))) / 255)) <= 0) c1 = 0;
-    if (c1 >= 0xFF) c1 = 0xFF; else c1 = c1;
-    if ((c2 = ((s8)color[5] * 2) + (((s8)color[1] * (s32)((((packed >> 8) & 0xFF) * 2))) / 255)) <= 0) c2 = 0;
-    if (c2 >= 0xFF) c2 = 0xFF; else c2 = c2;
-    if ((c3 = ((s8)color[6] * 2) + (((s8)color[2] * (s32)((((packed) & 0xFF) * 2))) / 255)) <= 0) c3 = 0;
-    if (c3 >= 0xFF) c3 = 0xFF; else c3 = c3;
+    c0 = ((s8)color[7] * 2) + (((s8)color[3] * (s32)((((packed >> 24) & 0xFF) * 2))) / 255);
+    if (c0 > 0) ; else c0 = 0;
+    if (c0 < 0xFF) ; else c0 = 0xFF;
+    c1 = ((s8)color[4] * 2) + (((s8)color[0] * (s32)((((packed >> 16) & 0xFF) * 2))) / 255);
+    if (c1 > 0) ; else c1 = 0;
+    if (c1 < 0xFF) ; else c1 = 0xFF;
+    c2 = ((s8)color[5] * 2) + (((s8)color[1] * (s32)((((packed >> 8) & 0xFF) * 2))) / 255);
+    if (c2 > 0) ; else c2 = 0;
+    if (c2 < 0xFF) ; else c2 = 0xFF;
+    c3 = ((s8)color[6] * 2) + (((s8)color[2] * (s32)((((packed) & 0xFF) * 2))) / 255);
+    if (c3 > 0) ; else c3 = 0;
+    if (c3 < 0xFF) ; else c3 = 0xFF;
     packed = ((u32)c0 << 24) | ((u32)(u8)c1 << 16) | ((u32)(u8)c2 << 8) | (u32)(u8)c3;
     state = (s32)fn_8022EDC4();
     fn_80231380(&frame.outputs[0], (s32)packed, frame.points[0], frame.points[1], lbl_80563720, lbl_80563720, lbl_80563720);
@@ -167,17 +171,20 @@ void fn_80238BF4(void *arg0, u8 *arg1) {
     }
     fn_802C8D74();
 }
-void fn_80238FCC(u32 arg0, u32 arg1) {
-    void *data = *(void **)((u8 *)arg0 + 0x14);
-    s32 stride = *(s32 *)((u8 *)data + 4);
-    s32 offset = 0;
-    u8 *entry = (u8 *)(*(s32 *)((u8 *)data + 0x24) + (s32)((arg1 % (u32)stride) * 0xC));
-    s32 i = 0;
-    while (i < *(u16 *)entry) {
-        fn_80238BF4((void *)arg0, *(u8 **)(entry + 8) + offset);
-        offset += 0x1C;
-        i++;
-    }
+void fn_80238FCC(u32 arg0, u32 arg1)
+{
+  u8 *data = *((u8 **) (((u8 *) arg0) + 0x14));
+  s32 stride = *((s32 *) (data + 4));
+  s32 offset = 0;
+  u8 *entry = (u8 *) ((*((s32 *) (data + 0x24))) + ((s32) ((arg1 % ((u32) stride)) * 0xC)));
+  s32 i = 0;
+  while ((i + 1) <= (*((u16 *) entry)))
+  {
+    fn_80238BF4((void *) arg0, (*((u8 **) (entry + 8))) + offset);
+    offset += 0x1C;
+    i++;
+  }
+
 }
 
 #pragma dont_inline on
@@ -194,7 +201,6 @@ void fn_8023905C(void *state) {
 #pragma scheduling on
 #pragma peephole on
 void fn_802390B4(void *arg0, s32 arg1) {
-#pragma optimization_level 3
     s32 unused;
     u32 version;
     u8 valid;
@@ -212,7 +218,7 @@ void fn_802390B4(void *arg0, s32 arg1) {
         return;
     }
     if (version != 1) {
-        fn_802E317C(lbl_80340B00, 1, version);
+        Abend_Panic(lbl_80340B00, 1, version);
     }
     if (swap != 0) {
         u8 *data = *(u8 **)((u8 *)arg0 + 0x14);
@@ -293,7 +299,6 @@ void fn_802390B4(void *arg0, s32 arg1) {
             }
         }
     }
-#pragma optimization_level 4
 }
 
 #pragma scheduling on

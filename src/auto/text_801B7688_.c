@@ -404,11 +404,11 @@ void fn_801B8054(int obj, int source, float offset, float interp) {
     fn_801B7C8C(target, position, direction);
 }
 extern char lbl_80336718[];
-extern int fn_802E317C(char *, ...);
+extern int Abend_Panic(char *, ...);
 #pragma dont_inline on
 void fn_801B8100(void *placement, int slot, int startType) {
     #define sUnknownStartModeFmt lbl_80336718
-    #define sPanic fn_802E317C
+    #define sPanic Abend_Panic
     /* Clears a car-placement result, lets the UI try to fill it first, otherwise
      * derives a start mode from startType, records it at +0x44 and dispatches to
      * the matching placement routine (panicking on an unrecognised mode). */

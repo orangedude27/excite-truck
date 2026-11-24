@@ -16,7 +16,7 @@ extern int __cntlzw(unsigned int);
 extern int lbl_80488798[64];
 extern unsigned char lbl_80488798_u8[];
 extern char lbl_8033A51C[];
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern char lbl_8033A578[];
 int fn_801F196C(int, int);
 extern void fn_801F163C(void *, int, float);
@@ -253,7 +253,7 @@ typedef struct MatrixPair {
 /* Read a wheel mod's level-of-detail table: lod0..lod7 of the .mod resource each
  * hold "<distance> <flag>", stored as the squared switch distance and whether the
  * flag word said 'y'.  The record gets the number of entries it found; a malformed
- * entry is fatal (fn_802E317C reports it and exits), and the first missing lod ends
+ * entry is fatal (Abend_Panic reports it and exits), and the first missing lod ends
  * the table. */
 extern "C" void fn_801F0208(void *arg0, void *arg1, char *modName) {
     class ModResource {
@@ -282,7 +282,7 @@ extern "C" void fn_801F0208(void *arg0, void *arg1, char *modName) {
         char flagWord[32] = "n";
 
         if (sscanf(res->find(lodName), (const char *)&wheelmod_lod_value_fmt, &dist, flagWord) != 2) {
-            fn_802E317C(wheelmod_bad_lod_msg, modName, res->find(lodName));
+            Abend_Panic(wheelmod_bad_lod_msg, modName, res->find(lodName));
         }
 
         lod->distSq = dist * dist;
@@ -523,7 +523,7 @@ extern "C" void fn_801F08AC(int arg0, const char *arg1) {
     *(char *)(arg0 + 0xF) = 0;
     sprintf(nameBuffer, (const char *)&lbl_8055B100, arg1);
     if (fn_8012C33C(nameBuffer) == 0) {
-        fn_802E317C(lbl_8033A4A4, arg1);
+        Abend_Panic(lbl_8033A4A4, arg1);
     }
     resource = (Fn801F08ACResource *)fn_80131808(nameBuffer);
     fn_801F0148((void *)arg0, resource->lookup(lbl_8033A4C8));
@@ -571,15 +571,17 @@ int fn_801F09FC(const char *name) {
 extern int fn_8012850C(int, void *);
 extern char lbl_8033A4D4[];
 extern float lbl_80562F2C;
-#pragma scheduling invalid_target
+#pragma scheduling on
 int fn_801F0AA0(void) {
+    int *p;
     int off1, off2, count, i;
     float value;
-    int *p;
+
     lbl_8055EBEC = fn_8012850C(0x9C0, lbl_8033A4D4);
     lbl_8055EBF0 = 0;
     value = lbl_80562F2C;
     off1 = 0;
+
     for (i = 0; i < 4; i++) {
         count = i * 2;
         p = (int *)(lbl_8055EBEC + off1);
@@ -632,48 +634,65 @@ int fn_801F0AA0(void) {
     }
     return (int)p;
 }
-#pragma scheduling on
 int fn_80128670(int);
 void fn_802C6CF8(int);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-int fn_801F0CC4(int unused) {
-    int *entry;
-    int i, j, k;
-    int offset;
-    int base;
-    i = 0;
-    offset = 0;
-    while (i < lbl_8055EBF0) {
-        j = 0;
-        base = lbl_8055EBEC + offset;
-        base += 0x28;
-        while (j < *(int *)(offset + lbl_8055EBEC + 0xE8)) {
-            entry = (int *)(base + j * 0x18);
-            for (k = 0; k < 2; k++) {
-                if (entry[k] != -1) fn_802C6CF8(entry[k]);
-                if (entry[k + 2] != -1) fn_802C6CF8(entry[k + 2]);
-            }
-            j++;
+int fn_801F0CC4(int unused)
+{
+  int i;
+  int j;
+  int k;
+  int offset;
+  int base;
+  int *entry;
+  i = 0;
+  offset = 0;
+  while ((i + 1) <= lbl_8055EBF0)
+  {
+    j = 0;
+    base = lbl_8055EBEC + offset;
+    base += 0x28;
+    while (j < (*((int *) ((offset + lbl_8055EBEC) + 0xE8))))
+    {
+      entry = (int *) (base + (j * 0x18));
+      for (k = 0; 0 < 2; k++)
+      {
+        if (entry[k] != (-1))
+        {
+          fn_802C6CF8(entry[k]);
         }
-        k = 0;
-        while (k < *(int *)(offset + lbl_8055EBEC + 0x12C)) {
-            fn_802C6CF8(*(int *)(offset + lbl_8055EBEC + 0xEC + k * 8));
-            k++;
+        if (entry[k + 2] != (-1))
+        {
+          fn_802C6CF8(entry[((unsigned long long) k) + 2]);
         }
-        offset += 0x138;
-        i++;
+      }
+
+      j++;
     }
-    fn_80128670(lbl_8055EBEC);
-    lbl_8055EBEC = 0;
-    lbl_8055EBF0 = 0;
+
+    k = 0;
+    while (k < (*((int *) ((offset + lbl_8055EBEC) + 0x12C))))
+    {
+      fn_802C6CF8(*((int *) (((offset + lbl_8055EBEC) + 0xEC) + (k * 8))));
+      k++;
+    }
+
+    offset += 0x138;
+    i++;
+  }
+
+  fn_80128670(lbl_8055EBEC);
+  lbl_8055EBEC = 0;
+  lbl_8055EBF0 = 0;
 }
 #pragma pop
 int fn_801F09FC(const char *);
 void fn_801F1878(void *);
 #pragma dont_inline on
 int fn_801F0DC0(int arg0, int arg1, int arg2, int arg3) {
+#pragma scheduling on
     int result = fn_801F09FC((const char *)arg1);
     *(int *)(arg0 + 4) = 0;
     *(int *)(arg0 + 0) = result;
@@ -751,17 +770,16 @@ void fn_80015B20(void *, void *, void *);
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
-void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
+void fn_801F0F78(const void *arg0, const void *arg1, const void *arg2, float scale) {
     int flags = *(int *)((char *)arg1 + 0x60);
     float matrix[9], matrix2[9];
     union { Vec v; unsigned int w[3]; } point;
     Vec angles, angles2;
     float *m = (float *)arg2;
-    float x,y,z;
-    float d,e,a,b,c,f,g,h,i;
+    float x,y,z, a,b,c,d,e,f,g,h,i;
     unsigned int w8,w7,w6,w5,w4,w3,w2,w1,w0;
     int mode;
-    if (flags & 8) {
+    if ((*(int *)((char *)arg1 + 0x60)) & 8) {
         *(int *)((char *)arg0 + 4) = 3;
         return;
     }
@@ -849,25 +867,22 @@ int fn_801F1394(int *object, int transform) {
 
     fn_802C70AC(*(int *)((char *)element + 0x28), transform, 0, frameFlags);
 }
-#pragma push
-#pragma opt_propagation off
+#pragma optimization_level 3
 void fn_801F13F4(int *arg0, float arg1, float arg2) {
     char *base = (char *)*(int *)arg0 + 0xEC;
     char *entry;
     int count;
     if (arg1 > *(float *)(base + 0x48)) return;
-    if (*(unsigned int *)(arg0 + 1) != 3) {
-        count = *(int *)(base + 0x40) - 1;
-        entry = base + count * 8;
-        while (count >= 0 && arg1 < *(float *)(entry + 4)) {
-            entry -= 8;
-            count--;
-        }
-        if (count < 0) return;
-        fn_802C7AE0(*(int *)(base + count * 8), (char *)arg0 + 0x18, -1, *(float *)(base + 0x44) + arg2);
+    if (*(unsigned int *)(arg0 + 1) == 3) return;
+    count = *(int *)(base + 0x40) - 1;
+    entry = base + count * 8;
+    while (count >= 0 && arg1 < *(float *)(entry + 4)) {
+        entry -= 8;
+        count--;
     }
+    if (count < 0) return;
+    fn_802C7AE0(*(int *)(base + count * 8), (char *)arg0 + 0x18, -1, *(float *)(base + 0x44) + arg2);
 }
-#pragma pop
 void fn_801F1474(int *objectHandle, void *param) {
     /* If the object has active entries (count at +0x12C > 0), apply its model transform:
        call fn_802C7AE0 with the model handle at +0xEC, the given param and a -1 mask. */
@@ -1026,7 +1041,7 @@ int fn_801F17DC(void *arg0) {
     int i = 0;
     do {
         if (*entry != 0)
-            fn_802E317C(lbl_8033A51C);
+            Abend_Panic(lbl_8033A51C);
         i++;
         entry++;
     } while (i < 0x40);
@@ -1034,7 +1049,7 @@ int fn_801F17DC(void *arg0) {
 #pragma pop
 extern int lbl_80488798[64];
 extern char lbl_8033A544[];
-void fn_802E317C(const char *, ...);
+void Abend_Panic(const char *, ...);
 int fn_801F196C(int, int);
 #pragma push
 #pragma small_data off
@@ -1052,7 +1067,7 @@ void fn_801F1878(void *entry) {
     int slotIndex = fn_801F196C(*(int *)((char *)entry + 8), *(int *)((char *)entry + 0xC));
 
     if (lbl_80488798[slotIndex] != 0) {
-        fn_802E317C(
+        Abend_Panic(
             lbl_8033A544,
             *(int *)((char *)entry + 8),
             *(int *)((char *)entry + 0xC));
@@ -1069,7 +1084,7 @@ int fn_801F18F0(void *entry) {
     int slotIndex = fn_801F196C(*(int *)((char *)entry + 8),
                                 *(int *)((char *)entry + 0xC));
     if (lbl_80488798[slotIndex] == 0) {
-        fn_802E317C(lbl_8033A578,
+        Abend_Panic(lbl_8033A578,
                     *(int *)((char *)entry + 8),
                     *(int *)((char *)entry + 0xC));
     }
@@ -1103,7 +1118,7 @@ int fn_801F1978(int wheelState) {
         modelMask = 0x200;
         break;
     default:
-        fn_802E317C(lbl_8033A5B0, state);
+        Abend_Panic(lbl_8033A5B0, state);
         break;
     }
     return modelMask;

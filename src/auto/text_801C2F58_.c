@@ -9,7 +9,7 @@ extern char lbl_8055E7E2;
 extern char lbl_8055E7E3;
 extern void __AXDSPInitCallback_801769E0(void);
 extern f32 fn_801C3B6C(void);
-extern void fn_802E317C(void *, ...);
+extern void Abend_Panic(void *, ...);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_8055AA48[];
 extern void DBPrintf_80179758(const char *, ...);
@@ -530,7 +530,7 @@ void fn_801C3D88(void *arg0) {
     lbl_8055E7F0 = 0;
     if (fn_8012C33C(arg0) == 0) {
         fn_802E30C8(lbl_80336B00 + 0xe4, arg0);
-        fn_802E317C(lbl_80336B00 + 0x100, arg0);
+        Abend_Panic(lbl_80336B00 + 0x100, arg0);
         return;
     } else {
         void *obj = fn_80131808(arg0);
@@ -553,7 +553,7 @@ void fn_801C3D88(void *arg0) {
         if ((*(s32(**)(void *, s32))(*(u8 **)obj + 0x10))(obj, val) == 0) {
             fn_802E30C8(lbl_80336B00 + 0xe4, val);
             fn_80131818(obj);
-            fn_802E317C(lbl_80336B00 + 0x140, val, arg0);
+            Abend_Panic(lbl_80336B00 + 0x140, val, arg0);
             return;
         }
     }
@@ -823,7 +823,7 @@ __repair_literal = 4;
                 }
                 break;
             default:
-                fn_802E317C(str + 0x2e8);
+                Abend_Panic(str + 0x2e8);
                 break;
             }
             break;
@@ -956,7 +956,7 @@ __repair_literal = 4;
                     }
                     break;
                 default:
-                    fn_802E317C(str + 0x340);
+                    Abend_Panic(str + 0x340);
                     break;
                 }
                 scale = *(f32 *)(rec + 0x214);
@@ -1225,7 +1225,7 @@ extern s32 fn_80179630(s32);
 extern f32 fn_80144514(f32, f32, f32, f32, f32, f32);
 extern void fn_801BFD34(void *, void *, void *);
 extern void fn_8020655C(void *, s32);
-extern void fn_802E317C(void *, ...);
+extern void Abend_Panic(void *, ...);
 extern struct Unk_80437D88 lbl_80437D88;
 #pragma scheduling invalid_target
 #pragma push
@@ -1543,7 +1543,7 @@ s32 fn_801C5B68(char *arg0, s32 arg1) {
             matrixTemp.basis[11] = (*(f32 *)((char *)(temp_r31) + 0x9C));
             break;
         default:
-            fn_802E317C(&lbl_80336E88);
+            Abend_Panic(&lbl_80336E88);
             break;
         }
         if ((s32) (*(s32 *)((char *)(state) + 0x5C)) != 1) {
@@ -2231,7 +2231,7 @@ void fn_801C7C04(void) {
         *(f32 *)(obj + 0x220) = (f32)fn_8002EFB0(p[0]*q[1]-q[0]*p[1], p[0]*q[0]+p[1]*q[1]);
         break;
     default:
-        fn_802E317C(lbl_80336F4C);
+        Abend_Panic(lbl_80336F4C);
         break;
     }
     sprintf(base + 0x238, lbl_80336F88, *(f32 *)(base+0x6F8), sv->z, *(f32 *)obj);
@@ -3474,7 +3474,7 @@ s32 fn_801C9920(s32 arg0, s32 arg1) {
             fn_802E3AD0(handle, base + 0xb98, *(f32 *)(record + 0x218), *(f32 *)(record + 0x21C));
             break;
         default:
-            fn_802E317C(base + 0xbb0);
+            Abend_Panic(base + 0xbb0);
             break;
         }
         break;
@@ -3498,7 +3498,7 @@ s32 fn_801C9920(s32 arg0, s32 arg1) {
         if (*(s32 *)(record + 0xC) == 0)
             fn_802E3AD0(handle, base + 0xc50, *(f32 *)(record + 0x214), *(f32 *)(record + 0x218), *(f32 *)(record + 0x21C));
         else
-            fn_802E317C(base + 0xc68);
+            Abend_Panic(base + 0xc68);
         break;
     case 7:
         fn_802E3AD0(handle, base + 0xc94);
@@ -3506,7 +3506,7 @@ s32 fn_801C9920(s32 arg0, s32 arg1) {
         fn_802E3AD0(handle, base + 0xca4, record + 0xC);
         break;
     default:
-        fn_802E317C(base + 0xcb4);
+        Abend_Panic(base + 0xcb4);
         fn_802E3AD0(handle, lbl_8055AAF8);
         break;
     }
@@ -3656,7 +3656,7 @@ extern "C" void fn_801CA1C4(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         break;
     }
     default:
-        fn_802E317C(base + 0xDF8, *(u32 *)(record + 8));
+        Abend_Panic(base + 0xDF8, *(u32 *)(record + 8));
         break;
     }
 }

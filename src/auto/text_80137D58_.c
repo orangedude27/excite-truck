@@ -236,7 +236,7 @@ void fn_80137F74(void *);
 void fn_80137FF0(void *);
 void fn_801380DC(void *);
 extern char lbl_8032BF00[];
-void fn_802E317C(char *, ...);
+void Abend_Panic(char *, ...);
 #pragma dont_inline fn_80137F30
 #pragma dont_inline fn_80137F74
 #pragma dont_inline fn_80137FF0
@@ -258,7 +258,7 @@ void fn_80138144(void *arg0) {
         case 1: ((void (*)(void *, int))fn_80137F74)((char *)arg0 + 8, type); break;
         case 2: ((void (*)(void *, int))fn_80137FF0)(arg0, type); break;
         case 3: ((void (*)(void *, int))fn_801380DC)(arg0, type); break;
-        default: fn_802E317C(lbl_8032BF00); break;
+        default: Abend_Panic(lbl_8032BF00); break;
         }
     }
 }
@@ -298,7 +298,7 @@ void fn_801381B4(void *arg0) {
         t0 = p[1]; t1 = p[2]; p[1] = t1; p[2] = t0;
         p += 4;
     }
-    r = base;
+    r = ((unsigned char *)arg0);
     for (i1 = 0; i1 < *(int *)(base + 0x2c); i1++) {
         unsigned char *t = base + *(int *)(r + 0x30);
         r += 4;

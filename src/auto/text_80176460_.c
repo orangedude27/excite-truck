@@ -76,7 +76,7 @@ extern void fn_801791A8(void);
 extern void fn_80179140(void);
 extern void fn_801B235C(void);
 void fn_80176CC8(void);
-void fn_802E317C(const char *, ...);
+void Abend_Panic(const char *, ...);
 s32 fn_8017ED00(f32);
 void fn_80177138(void);
 extern void fn_80176E4C(void);
@@ -271,7 +271,7 @@ void fn_80176610(void) {
 loop_body:
     fn_80176CC8();
     ticks++;
-    if (ticks >= 10) fn_802E317C(lbl_803315C8);
+    if (ticks >= 10) Abend_Panic(lbl_803315C8);
 loop_test:
     if (lbl_8055E3F4 == 1) goto loop_body;
     lbl_8055E3F4 = 3;
@@ -291,7 +291,7 @@ loop:
     fn_80176CC8();
     i += 1;
     if (i >= 10)
-        fn_802E317C(lbl_803315E8);
+        Abend_Panic(lbl_803315E8);
 check_state:
     if (lbl_8055E3F4 != 8)
         goto loop;
@@ -361,7 +361,7 @@ void fn_8017685C(s32 arg0) {
         fn_80176CC8();
         i += 1;
         if (i >= 10) {
-            fn_802E317C(lbl_803316EC);
+            Abend_Panic(lbl_803316EC);
         }
     first_test:
         if (lbl_8055E3F4 == 5) {
@@ -376,7 +376,7 @@ second_body:
     fn_80176CC8();
     i += 1;
     if (i >= 10) {
-        fn_802E317C(lbl_8033170C);
+        Abend_Panic(lbl_8033170C);
     }
 second_test:
     if (lbl_8055E3EC != 0) {
@@ -773,7 +773,7 @@ loop:
     fn_802E2D74(0);
     if (fn_802E2C20() - startTimeMs > 0x2710) {
         fn_802E30C8(base + 0x190, fn_8017970C());
-        fn_802E317C(base + 0x1C8, 10);
+        Abend_Panic(base + 0x1C8, 10);
     }
     loopCount++;
     if ((u16)loopCount == 0) {
@@ -875,7 +875,7 @@ void fn_80176CC8(void) {
     }
     goto check_flags;
 log_state:
-    fn_802E317C(lbl_80331810, *(volatile s32 *)&lbl_8055E3F4);
+    Abend_Panic(lbl_80331810, *(volatile s32 *)&lbl_8055E3F4);
 check_flags:
     if (*(u8 *)&lbl_8055E3D4 != 0) {
         fn_801B235C();
@@ -1045,7 +1045,7 @@ void fn_801776C4(u32 listener) {
     s32 i;
     for (i = listenerCount; i > 0; --i) {
         if (listener == *entry) {
-            fn_802E317C(lbl_80331850);
+            Abend_Panic(lbl_80331850);
             return;
         }
         entry++;
@@ -1067,7 +1067,7 @@ void fn_80177720(u32 listener) {
             return;
         }
     }
-    fn_802E317C(lbl_8033189C);
+    Abend_Panic(lbl_8033189C);
 }
 
 extern void fn_80177658(void *);

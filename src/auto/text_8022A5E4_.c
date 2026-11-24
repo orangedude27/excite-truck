@@ -218,7 +218,7 @@ void fn_8022A858(int styleIndex) {
  * fn_8022CAA8 (the block travels in r4) and returns its index.  With every
  * slot taken it reports "UIStyle: too many styles" and returns -1. */
 int fn_8022A86C(void *params) {
-    extern int fn_802E317C(const char *, ...);
+    extern int Abend_Panic(const char *, ...);
     #define StyleTable      lbl_80490968 /* the 0x100 UI text styles */
     #define UI_STYLE_COUNT  0x100
     #define TooManyStyles   lbl_8033FBE8 /* "UIStyle: too many styles" */
@@ -235,7 +235,7 @@ int fn_8022A86C(void *params) {
         entry += 0x74;
         index++;
     }
-    fn_802E317C(TooManyStyles, params);
+    Abend_Panic(TooManyStyles, params);
     #undef StyleTable
     #undef UI_STYLE_COUNT
     #undef TooManyStyles
@@ -807,7 +807,7 @@ void fn_8022B91C(void *unused, int x, int y, char *text, unsigned int flagsArg) 
     extern int fn_802C4F14(int);
     extern int fn_802C4C90(int, int, int, int, int);
     extern int fn_802C51AC(void);
-    extern int fn_802E317C(const char *, ...);
+    extern int Abend_Panic(const char *, ...);
     extern void fn_801E4DBC(int, int, int, int, int, const char *, unsigned long);
     extern char *strchr(const char *, int);
     extern unsigned long strlen(const char *);
@@ -826,7 +826,7 @@ void fn_8022B91C(void *unused, int x, int y, char *text, unsigned int flagsArg) 
     }
     if (text == 0) return;
     if (*(int *)((char *)ctx + 8) != 0) return;
-    fn_802E317C(lbl_8033FC08);
+    Abend_Panic(lbl_8033FC08);
     width = fn_801E4BA8(*(int **)((char *)ctx + 4));
     lines = fn_8022AB94(text, 10) + 1;
     if (*(int *)((char *)ctx + 0x38) & 0x10) {
@@ -878,21 +878,24 @@ void fn_8022BB60(float *arg0, float *arg1, float farg0, float farg1) {
 extern double lbl_805635A0;
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
-unsigned int fn_8022BC30(unsigned int arg0, unsigned int arg1, float farg0) {
-    float e = (float)(unsigned char)arg1;
-    float a = (float)(unsigned char)arg0;
-    float g = (float)(unsigned char)(arg1 >> 8);
-    float f = (float)(unsigned char)(arg1 >> 16);
-    float b = (float)(unsigned char)(arg0 >> 8);
-    float c = (float)(unsigned char)(arg0 >> 16);
-    float h = (float)(unsigned char)(arg1 >> 24);
-    float d = (float)(unsigned char)(arg0 >> 24);
-    int r0 = (int)(a + farg0 * (e - a));
-    int r1 = (int)(b + farg0 * (f - b));
-    int r2 = (int)(c + farg0 * (g - c));
-    int r3 = (int)(d + farg0 * (h - d));
-    return ((r3 & 0xFF) << 24) | ((r2 & 0xFF) << 16) |
-           ((r1 & 0xFF) << 8) | (r0 & 0xFF);
+unsigned int fn_8022BC30(unsigned int arg0, unsigned int arg1, float farg0)
+{
+  float e = (float) ((unsigned char) arg1);
+  float a = (float) ((unsigned char) arg0);
+  float g = (float) ((unsigned char) ((arg1 >> 8) ^ 0));
+  float c = (float) ((unsigned char) (arg0 >> ((((((16 & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF)));
+  float f = (float) ((unsigned char) (arg1 >> 16));
+  float b = (float) ((unsigned char) (arg0 >> 8));
+  float h = (float) ((unsigned char) (arg1 >> 24));
+  int r2 = (int) (c + (farg0 * (g - c)));
+  int r0 = (int) (a + (farg0 * ((0, e - a))));
+  float d = (float) ((unsigned char) (arg0 >> 24));
+  int r1 = (int) (b + (farg0 * (f - b)));
+  int r3 = (int) (d + (farg0 * (h - d)));
+  if (1)
+  {
+    return ((((r3 & 0xFF) << 24) | ((r2 & 0xFF) << 16)) | ((r1 & ((0, 0xFF))) << 8)) | (r0 & ((0, 0xFF)));
+  }
 }
 extern double fn_8002EFB4(float arg0, double arg1);
 extern float fn_8023659C(void);

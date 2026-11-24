@@ -15,7 +15,7 @@ extern const char lbl_8034A588[];
 extern int stricmp(const char *, const char *);
 #pragma cplusplus on
 extern "C" void fn_80131810(int);
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
 #pragma cplusplus off
 extern const char lbl_8034A510[];
 int fn_8012C33C(void);
@@ -146,7 +146,7 @@ fetch_item:
     return;
 
 report_error:
-    fn_802E317C(lbl_8034A53C, resourcePath);
+    Abend_Panic(lbl_8034A53C, resourcePath);
 }
 
 #pragma scheduling invalid_target

@@ -370,7 +370,7 @@ extern void *memset(void *, int, unsigned long);
 extern int fn_801E2CCC(int, void *, void *);
 extern void fn_80279B28();
 extern void fn_80279CD8(void *);
-extern void fn_802E317C(void *, ...);
+extern void Abend_Panic(void *, ...);
 extern void *fn_8001285C(int);
 #pragma push
 #pragma processor 750
@@ -476,7 +476,7 @@ void fn_8018C5A0(char *arg0, char *arg1) {
             if (s4[1] == 0x57) {
                 M2C_FIELD(t26, char *, 0x1E2C) = fn_8018C514(arg0, arg0 + (s4[2] - 0x30) * 0x74 + 0x23DC);
             } else {
-                fn_802E317C(base + 0x694);
+                Abend_Panic(base + 0x694);
             }
         }
         if (fn_801E2CCC(M2C_FIELD(arg0, int *, 0x59C), M2C_FIELD(p30, void **, 0), &sp8) != 0) {

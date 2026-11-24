@@ -12,7 +12,7 @@ extern char lbl_8032BEC0[];        /* "Modified" */
 extern char lbl_8032BEE4[];        /* "AIDriver: league not set!" */
 extern char lbl_8032BECC[];        /* "driver: bad league %d" */
 extern void fn_80128668(void*);    /* free */
-extern void fn_802E317C(const char *, ...); /* debug/log print */
+extern void Abend_Panic(const char *, ...); /* debug/log print */
 extern int fn_800167F4(void);
 void fn_80137C84(int, int);
 extern void *fn_80131808(void *);       /* load a .val file */
@@ -41,7 +41,7 @@ char *fn_80137950(int league) {
             return (char *)&lbl_80559C10;
         default:
             badLeague = league;
-            fn_802E317C(lbl_8032BECC, badLeague);
+            Abend_Panic(lbl_8032BECC, badLeague);
             return (char *)0;
     }
 }
@@ -52,7 +52,7 @@ char *fn_80137950(int league) {
 /* Returns the data for the currently selected AI driver league, warning if none is set. */
 int fn_801379CC(void) {
     if ((int)lbl_80559C00 == -1) {
-        fn_802E317C(lbl_8032BEE4);
+        Abend_Panic(lbl_8032BEE4);
     }
     return (int)lbl_8042F788[(int)lbl_80559C00];
 }

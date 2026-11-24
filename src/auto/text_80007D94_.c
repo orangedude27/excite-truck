@@ -34,7 +34,7 @@ extern const char lbl_805589A8[1];
 void fn_80279464(void);
 void fn_80012778(void);
 void fn_80131818(void*);
-void fn_802E317C(const char*, ...);
+void Abend_Panic(const char*, ...);
 
 int stricmp(const char*, const char*);
 extern void qsort(void *, u32, u32, int (*)(const void *, const void *));
@@ -118,7 +118,7 @@ loop:
         if (count < 0x28) {
             goto loop;
         }
-        fn_802E317C(base + 0x84);
+        Abend_Panic(base + 0x84);
     }
 
 done:
@@ -162,7 +162,7 @@ const char* fn_80007F90(u32 eventId) {
         if (entry->eventId == eventId) return entry->name;
         entry++;
     }
-    fn_802E317C(lbl_802FB77C, eventId);
+    Abend_Panic(lbl_802FB77C, eventId);
     return lbl_80558998;
 }
 #pragma scheduling on
@@ -173,7 +173,7 @@ const char* fn_80007FF0(u32 eventType) {
     for (entry = lbl_802FB70C; (id = entry->eventId) != 0; ++entry) {
         if (id == eventType) return entry->displayName;
     }
-    fn_802E317C(lbl_802FB77C, eventType);
+    Abend_Panic(lbl_802FB77C, eventType);
     return lbl_805589A0;
 }
 

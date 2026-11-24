@@ -27,7 +27,7 @@ extern float fn_801DB398(float grid[4][4], float, float);
 extern void *memset(void *, int, unsigned int);
 extern char lbl_803393B8[];
 extern char lbl_803393E0[];
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 
 /* The ground descriptor block lbl_8055E990 points at (0x34 bytes).  It comes
  * from the "track.gnd" resource, byte-swapped and rebased by fn_801DC32C, or
@@ -382,7 +382,7 @@ void fn_801DC32C(void *base) {
         node = *(unsigned char **)(arg0 + 0x18) + i * 0x894;
         if (*(int *)(node + 0x808) < lbl_8055E99C || *(int *)(node + 0x80C) < lbl_8055E9A0
             || *(int *)(node + 0x808) - lbl_8055E99C >= 0x60 || *(int *)(node + 0x80C) - lbl_8055E9A0 >= 0x60) {
-            fn_802E317C(lbl_803393E0, *(int *)(node + 0x808) - lbl_8055E99C, *(int *)(node + 0x80C) - lbl_8055E9A0, 0x60, 0x60);
+            Abend_Panic(lbl_803393E0, *(int *)(node + 0x808) - lbl_8055E99C, *(int *)(node + 0x80C) - lbl_8055E9A0, 0x60, 0x60);
         }
         ((unsigned short (*)[0x60])lbl_80442708)[*(int *)(node + 0x808) - lbl_8055E99C][*(int *)(node + 0x80C) - lbl_8055E9A0] = i;
     }
@@ -411,7 +411,7 @@ void fn_801DC32C(void *base) {
 #pragma opt_unroll_loops reset
 extern void *fn_8012E96C(const char *);
 extern void *fn_8012C370(const char *, u32, s32 *, void *, void *, u8 *);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern void fn_801DC32C(void *);
 extern char lbl_8033940C[];
 extern char lbl_80339418[];
@@ -428,7 +428,7 @@ int fn_801DC9B0(void) {
     result = (int)fn_8012C370(path, 0x47726E64, &size, 0, 0, &flag);
     if (result != 0) {
         if (size != 0) {
-            fn_802E317C(lbl_80339418, path, size, 0);
+            Abend_Panic(lbl_80339418, path, size, 0);
         }
         if (flag != 0) {
             fn_801DC32C((void *)result);

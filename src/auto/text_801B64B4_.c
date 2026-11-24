@@ -11,50 +11,49 @@ extern int fn_801E43BC(void *, float, float);
 extern void fn_802C8E70(void *, float *);
 extern int fn_802C8FF4(float *, float);
 extern void fn_80010724(int, int, void *);
-extern void fn_802E317C(char *, ...);
+extern void Abend_Panic(char *, ...);
 extern float lbl_805626C0;
 extern float lbl_805626C4;
 extern char lbl_80335F40[];
 extern int strlen(const char *);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
-int fn_801B64B4(void *p) {
+int fn_801B64B4(const void *p) {
     float converted[4];
-    const unsigned char *typePtr = (const unsigned char *)p;
-    switch (*typePtr) {
+    switch (*(const unsigned char *)p) {
     case 0: {
-        float f = *(float *)((unsigned char *)p + 0x1C);
-        fn_801E3CB4((unsigned char *)p + 4, (unsigned char *)p + 0x10, *(int *)((unsigned char *)p + 0x20), f);
+        float f = *(const float *)((const unsigned char *)p + 0x1C);
+        fn_801E3CB4((void *)((const unsigned char *)p + 4), (void *)((const unsigned char *)p + 0x10), *(const int *)((const unsigned char *)p + 0x20), f);
         return 0x24;
     }
     case 1: {
-        float f = *(float *)((unsigned char *)p + 0x1C);
-        fn_801E4040((unsigned char *)p + 4, (unsigned char *)p + 0x10, *(int *)((unsigned char *)p + 0x20), *(int *)((unsigned char *)p + 0x24), f);
+        float f = *(const float *)((const unsigned char *)p + 0x1C);
+        fn_801E4040((void *)((const unsigned char *)p + 4), (void *)((const unsigned char *)p + 0x10), *(const int *)((const unsigned char *)p + 0x20), *(const int *)((const unsigned char *)p + 0x24), f);
         return 0x28;
     }
     case 2: {
-        float f = *(float *)((unsigned char *)p + 0x10);
-        fn_801E3FC8((unsigned char *)p + 4, *(int *)((unsigned char *)p + 0x14), f);
+        float f = *(const float *)((const unsigned char *)p + 0x10);
+        fn_801E3FC8((void *)((const unsigned char *)p + 4), *(const int *)((const unsigned char *)p + 0x14), f);
         return 0x18;
     }
     case 3:
-        fn_802C8E70((unsigned char *)p + 4, converted);
+        fn_802C8E70((void *)((const unsigned char *)p + 4), converted);
         if (fn_802C8FF4(converted, lbl_805626C0) != 0) {
-            fn_80010724((int)converted[0], (int)converted[1], (unsigned char *)p + 0x10);
+            fn_80010724((int)converted[0], (int)converted[1], (void *)((const unsigned char *)p + 0x10));
         }
-        return strlen((char *)((unsigned char *)p + 0x10)) + 0x11;
+        return strlen((const char *)((const unsigned char *)p + 0x10)) + 0x11;
     case 4: {
-        float f = *(float *)((unsigned char *)p + 0x10);
-        fn_801E41E0((unsigned char *)p + 4, *(int *)((unsigned char *)p + 0x14), f);
+        float f = *(const float *)((const unsigned char *)p + 0x10);
+        fn_801E41E0((void *)((const unsigned char *)p + 4), *(const int *)((const unsigned char *)p + 0x14), f);
         return 0x18;
     }
     case 5: {
-        float f = *(float *)((unsigned char *)p + 0x34);
-        fn_801E43BC((unsigned char *)p + 4, f, lbl_805626C4);
+        float f = *(const float *)((const unsigned char *)p + 0x34);
+        fn_801E43BC((void *)((const unsigned char *)p + 4), f, lbl_805626C4);
         return 0x38;
     }
     default:
-        fn_802E317C(lbl_80335F40);
+        Abend_Panic(lbl_80335F40);
         return 0;
     }
 }

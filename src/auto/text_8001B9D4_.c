@@ -43,7 +43,7 @@ extern s32 fn_8001D2E4(s32, s32, s32, s32);
 extern void *lbl_80358658[];
 extern s32 lbl_802ED7B8[];
 extern const char lbl_802FD85C[];
-extern s32 fn_802E317C(const char *);
+extern s32 Abend_Panic(const char *);
 extern void fn_8001C9C4(void);
 extern void fn_8001CAF8(void);
 extern s32 fn_8001D25C(s32);
@@ -463,7 +463,7 @@ s32 fn_8001BF34(s32 arg0, f32 threshold) {
     {
         s32 logBits = fn_8001BD28((void *)arg0) & 0x60000;
         s32 logValue = fn_8001BD28((void *)arg0);
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_802FD6D8, logValue, logBits);
+        ((void (*)(const char *, ...))Abend_Panic)(lbl_802FD6D8, logValue, logBits);
     }
 compare_greater:
     return threshold > limit;
@@ -531,7 +531,7 @@ s32 fn_8001C0EC(void *stat, s32 threshold) {
     case 0x20000: goto compare_less;
     default: break;
     }
-    ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD718, fn_8001BD28(stat), fn_8001BD28(stat) & 0x60000);
+    ((s32 (*)(const char *, ...))Abend_Panic)(lbl_802FD718, fn_8001BD28(stat), fn_8001BD28(stat) & 0x60000);
 compare_greater:
     return limit < threshold;
 compare_less:
@@ -608,7 +608,7 @@ s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
     list = lbl_80358658[arg0];
     count = *(s32 *)((u8 *)list + 4);
     if (count + 1 > *(s32 *)((u8 *)list + 8)) {
-        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD750, arg0, 0x280);
+        ((s32 (*)(const char *, ...))Abend_Panic)(lbl_802FD750, arg0, 0x280);
     }
     list = lbl_80358658[arg0];
     count = *(s32 *)((u8 *)list + 4);
@@ -669,7 +669,7 @@ void fn_8001C4DC(void) {
 extern void *lbl_80358658[];
 extern s32 lbl_802ED7B8[];
 extern const char lbl_802FD85C[];
-extern s32 fn_802E317C(const char *);
+extern s32 Abend_Panic(const char *);
 #pragma scheduling invalid_target
 #pragma scheduling on
 s32 *fn_8001C4E0(s32 statType) {
@@ -681,7 +681,7 @@ s32 *fn_8001C4E0(s32 statType) {
             return entry;
         }
     }
-    ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD85C, statType);
+    ((s32 (*)(const char *, ...))Abend_Panic)(lbl_802FD85C, statType);
     return 0;
 }
 
@@ -724,7 +724,7 @@ void *fn_8001C540(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
     fn_802E30C8(lbl_802FD894, name);
     if (freeEntry == 0) {
-        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD8C4, name);
+        ((s32 (*)(const char *, ...))Abend_Panic)(lbl_802FD8C4, name);
     }
     memset(freeEntry, 0, 0x74);
 
@@ -780,7 +780,7 @@ s32 fn_8001C73C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     extern int fn_80131234();
     extern int fn_801345D8();
     extern int fn_800122B4();
-    extern s32 fn_802E317C(const char *);
+    extern s32 Abend_Panic(const char *);
     char *base = lbl_802FD6D8;
     s32 a3 = arg3;
     s32 a2 = arg2;
@@ -798,7 +798,7 @@ s32 fn_8001C73C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
             ((void (*)(void *, s32, s32, f32))fn_801308E4)((void *)a2, a3, 1, f);
             break;
         default:
-            ((void (*)(const char *, ...))fn_802E317C)(base + 0x218, 0);
+            ((void (*)(const char *, ...))Abend_Panic)(base + 0x218, 0);
         case 0x4000:
             ((void (*)(void *, s32, void *, ...))fn_801345D8)((void *)a2, a3, &lbl_80558CA4, f);
             break;
@@ -826,7 +826,7 @@ s32 fn_8001C73C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
             break;
         }
         default:
-            ((void (*)(const char *, ...))fn_802E317C)(base + 0x294, 0);
+            ((void (*)(const char *, ...))Abend_Panic)(base + 0x294, 0);
         case 0x4000:
             ((void (*)(void *, s32, void *, ...))fn_801345D8)((void *)a2, a3, &lbl_80558CCC, a1);
             break;
@@ -834,7 +834,7 @@ s32 fn_8001C73C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
         break;
     }
     default:
-        ((void (*)(const char *, ...))fn_802E317C)(base + 0x2D8, arg0 & 0x300);
+        ((void (*)(const char *, ...))Abend_Panic)(base + 0x2D8, arg0 & 0x300);
         ((void (*)(void *, s32, void *, ...))fn_801345D8)((void *)a2, a3, base + 0x2FC);
         break;
     }
@@ -858,7 +858,7 @@ check:
     if (entryId != 0) {
         goto loop;
     }
-    ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD9E8, index);
+    ((s32 (*)(const char *, ...))Abend_Panic)(lbl_802FD9E8, index);
     return 0;
 }
 
@@ -1288,7 +1288,7 @@ s32 fn_8001D2E4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
                 case 0x40000:
                     return *(f32 *)(entryA + 8) > *(f32 *)(entryB + 8) ? -1 : 1;
                 default:
-                    ((void (*)(const char *, ...))fn_802E317C)(lbl_802FDAAC, sortMode);
+                    ((void (*)(const char *, ...))Abend_Panic)(lbl_802FDAAC, sortMode);
                     return 0;
                 }
             case 0x200:
@@ -1299,11 +1299,11 @@ s32 fn_8001D2E4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
                 case 0x40000:
                     return *(s32 *)(entryA + 8) > *(s32 *)(entryB + 8) ? -1 : 1;
                 default:
-                    ((void (*)(const char *, ...))fn_802E317C)(lbl_802FDAAC, sortMode);
+                    ((void (*)(const char *, ...))Abend_Panic)(lbl_802FDAAC, sortMode);
                     return 0;
                 }
             default:
-                ((void (*)(const char *, ...))fn_802E317C)(lbl_802FDAD8, dataType);
+                ((void (*)(const char *, ...))Abend_Panic)(lbl_802FDAD8, dataType);
                 return 0;
             }
         }

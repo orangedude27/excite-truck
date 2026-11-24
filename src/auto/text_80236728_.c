@@ -73,7 +73,7 @@ typedef struct QueueNode_80236848 {
     unsigned char pad[0x24];
     struct QueueNode_80236848 *next;
 } QueueNode_80236848;
-extern void fn_802E317C(const char *);
+extern void Abend_Panic(const char *);
 extern char lbl_80340910[];
 #pragma push
 #pragma scheduling invalid_target
@@ -82,7 +82,7 @@ void fn_80236728(void) {
 #define sUiAnimeTail lbl_8055F0C0
 #define sUiAnimeStarted lbl_8055F0C4
 #define sUiAnimeStartedTwiceMsg lbl_80340910
-#define Panic_802E317C fn_802E317C
+#define Panic_802E317C Abend_Panic
     /* Initialize the uiAnime system, panicking if it was already started. */
     if ((unsigned char)sUiAnimeStarted != 0) {
         ((void (*)(const char *, ...))Panic_802E317C)(sUiAnimeStartedTwiceMsg);

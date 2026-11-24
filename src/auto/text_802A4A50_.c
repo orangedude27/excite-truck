@@ -406,7 +406,7 @@ void fn_802A4E08(void) {
 #pragma pop
 extern void PSVECCrossProduct(float *, float *, float *);
 extern float PSVECMag(float *);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern const char lbl_80349C48[];
 extern const char lbl_8055CBD0, lbl_8055CBD4, lbl_8055CBDC, lbl_8055CBE0;
 extern float lbl_80564860, lbl_80564864;
@@ -443,7 +443,7 @@ extern "C" s32 fn_802A4FA8(float *out, void *object) {
         Vec3 cross;
         PSVECCrossProduct(out + 6, out + 9, &cross.x);
         if (lbl_80564864 * PSVECMag(&cross.x) < lbl_80564860)
-            fn_802E317C(lbl_80349C48);
+            Abend_Panic(lbl_80349C48);
         return 1;
     }
     return 0;
@@ -1737,7 +1737,7 @@ extern "C" s32 fn_802A7370(s32 arg0, void *arg1) {
     }
     *(f32 *)(arg0 + 0x38) = obj->v7(&lbl_8055CC28);
     if (fn_801EA140((void *)(arg0 + 0xC)) == 0) {
-        fn_802E317C(lbl_80349CC8, obj->v0());
+        Abend_Panic(lbl_80349CC8, obj->v0());
     }
     return arg0;
 }

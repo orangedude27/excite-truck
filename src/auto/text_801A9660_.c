@@ -39,7 +39,7 @@ extern char lbl_80335718[];
 extern char lbl_80335744[];
 extern char lbl_80335808[];
 extern void *lbl_80435628[];
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern void **fn_801A9700(void **);
 extern int lbl_8055E3C4;
 extern int lbl_8055A858;
@@ -71,7 +71,7 @@ void *fn_801A9660(void) {
     case 9:
     case 13:
     case 16:
-        fn_802E317C(lbl_80335538);
+        Abend_Panic(lbl_80335538);
         return 0;
     default:
         object = ((void *(*)(int, int *))fn_801284F8)(0x23c, &lbl_8055A858);
@@ -1363,9 +1363,27 @@ void fn_801AC544(void *arg0)
 {
 int __repair_literal;
 
-  struct Point { float x; float y; float z; float a; float b; };
-  struct Link { int a; int b; float distance; float value; };
-  struct Anchor { int index; void *matrix; int unused; };
+  struct Point
+  {
+    float x;
+    float y;
+    float z;
+    float a;
+    float b;
+  };
+  struct Link
+  {
+    int a;
+    int b;
+    float distance;
+    float value;
+  };
+  struct Anchor
+  {
+    int index;
+    void *matrix;
+    int unused;
+  };
   struct Point points[320];
   struct Link links[320];
   struct Anchor anchors[64];
@@ -1376,16 +1394,15 @@ int __repair_literal;
   int nanchors;
   int i;
   int j;
-  extern double lbl_80562500;
   fn_801AC184(arg0);
   if (((*((int *) (((char *) arg0) + 0x250))) == (lbl_8055E5EC - 1)) && (lbl_8055E5F0 != 0))
   {
     float divisor = lbl_805624F4;
     float one = lbl_805624AC;
-    float zero = lbl_8056247C;
-    float val = lbl_805624F8;
-    float factor = lbl_805624F0;
     float base = lbl_80562478;
+    float factor = lbl_805624F0;
+    float val = lbl_805624F8;
+    float zero = lbl_8056247C;
     npoints = (nlinks = (nanchors = 0));
     {
       void **iter = lbl_80435628;
@@ -1393,13 +1410,13 @@ int __repair_literal;
       {
         char *obj = *iter;
         float *m = (float *) (obj + 0x1ec);
-        float *v;
+        float *v = (float *) (obj + 0x244);
         char *parent;
-        if ((&a) == ((Vec *) (obj + 0x244)))
+        if ((&a) == ((Vec *) v))
         {
-          float x = *((float *) (obj + 0x244));
-          float y = *((float *) (obj + 0x248));
-          float z = *((float *) (obj + 0x24c));
+          float x = v[0];
+          float y = v[1];
+          float z = v[2];
           float r2 = z * m[8];
           float p0 = x * m[0];
           float p1 = y * m[3];
@@ -1418,9 +1435,9 @@ int __repair_literal;
         }
         else
         {
-          a.x = (*((float *) (obj + 0x24c)) * m[6]) + ((*((float *) (obj + 0x244)) * m[0]) + (*((float *) (obj + 0x248)) * m[3]));
-          a.y = (*((float *) (obj + 0x24c)) * m[7]) + ((*((float *) (obj + 0x244)) * m[1]) + (*((float *) (obj + 0x248)) * m[4]));
-          a.z = (*((float *) (obj + 0x24c)) * m[8]) + ((*((float *) (obj + 0x244)) * m[2]) + (*((float *) (obj + 0x248)) * m[5]));
+          a.x = (v[2] * m[6]) + ((v[0] * m[0]) + (v[1] * m[3]));
+          a.y = (v[2] * m[7]) + ((v[0] * m[1]) + (v[1] * m[4]));
+          a.z = (v[2] * m[8]) + ((v[0] * m[2]) + (v[1] * m[5]));
         }
         a.x += m[9];
         a.y += m[10];

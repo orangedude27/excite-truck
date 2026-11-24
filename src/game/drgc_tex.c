@@ -19,7 +19,7 @@ extern void *lbl_8055FE20;
 extern void fn_802CFEEC(void);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern char lbl_8034C4B0[];
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern unsigned char gRenderRequest[12];
@@ -29,7 +29,7 @@ extern void *lbl_8055FE28;
 extern void *lbl_8055FE18;
 extern void fn_802D7564(void);
 extern void fn_802E30C8(const char *, ...);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern char lbl_8034C460[];
 extern char lbl_8034C47C[];
 extern char lbl_8034C494[];
@@ -95,7 +95,7 @@ void *fn_802D7600(void *requesterName) {
         texEntry += 0xF4;
     }
     fn_802D7564();
-    fn_802E317C(lbl_8034C494, requesterName);
+    Abend_Panic(lbl_8034C494, requesterName);
     return 0;
 }
 #pragma pop
@@ -226,7 +226,7 @@ int fn_802D76DC(int texFormat) {
     case DRTEX_FMT_4C:
         return 0;
     }
-    fn_802E317C(lbl_8034C4B0, texFormat);
+    Abend_Panic(lbl_8034C4B0, texFormat);
     return 1;
 }
 #pragma dont_inline reset
@@ -424,7 +424,7 @@ void *fn_802D7D98(void *arg0, void *arg1) {
     } else if (type == 0x45 || type == 2) {
         format = 4;
     } else {
-        fn_802E317C(lbl_8034C4F8);
+        Abend_Panic(lbl_8034C4F8);
     }
     texture = *(void **)((char *)obj + 0x30);
     switch ((int)texture) {
@@ -541,7 +541,7 @@ void *fn_802D7FA0(void *arg0, void *arg1)
       break;
 
     default:
-      fn_802E317C(base + 0xd8, type);
+      Abend_Panic(base + 0xd8, type);
       break;
 
   }
@@ -845,7 +845,7 @@ build_rgba:
     texture = fn_802D7D98((void *)source, name);
     goto done;
 unknown_format:
-    fn_802E317C(lbl_8034C5C8, format, name);
+    Abend_Panic(lbl_8034C5C8, format, name);
 done:
     fn_802D9340(texture);
     return texture;
@@ -939,7 +939,7 @@ extern char lbl_8034C5F0[];
 extern char lbl_8034C620[];
 extern char lbl_8034C650[];
 extern unsigned char gRenderRequest[12];
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern void GXInitTexObjWrapMode(void *, int, int);
 extern void GXLoadTexObj(void *, int);
 extern void DCFlushRange(void *, unsigned int);
@@ -958,7 +958,7 @@ void fn_802D92B0(void) {
 void fn_802D9230(void *texRecord) {
     DrTexRecord *record;
     lbl_8055FE1C = texRecord;
-    if (((DrTexRecord *)texRecord)->rgbClut != 0) fn_802E317C(lbl_8034C5F0, texRecord);
+    if (((DrTexRecord *)texRecord)->rgbClut != 0) Abend_Panic(lbl_8034C5F0, texRecord);
     record = (DrTexRecord *)texRecord;
     GXLoadTexObj(record->texObj, DRTEXMAP_ENV);
     if (record->hasAlphaTex != 0) GXLoadTexObj(record->alphaTexObj, DRTEXMAP_ENV_ALPHA);
@@ -972,8 +972,8 @@ extern unsigned int lbl_8055FD2C;
 void fn_802D92B8(void *lightmap) {
     char *lightmapBytes;
     lbl_8055FE20 = lightmap;
-    if (((unsigned char *)lightmap)[0xCC]) fn_802E317C(lbl_8034C620, lightmap);
-    if (*(unsigned int *)((char *)lightmap + 0x70)) fn_802E317C(lbl_8034C650, lightmap);
+    if (((unsigned char *)lightmap)[0xCC]) Abend_Panic(lbl_8034C620, lightmap);
+    if (*(unsigned int *)((char *)lightmap + 0x70)) Abend_Panic(lbl_8034C650, lightmap);
     lightmapBytes = (char *)lightmap;
     GXInitTexObjWrapMode(lightmapBytes + 0x24, 0, 0);
     GXLoadTexObj(lightmapBytes + 0x24, 3);

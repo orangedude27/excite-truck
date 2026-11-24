@@ -119,7 +119,7 @@ void fn_801FF5D4(void*, void*, float);
 void fn_801FCA54(void*, int, int);
 void fn_801FF7D4(void*, void*);
 void fn_801FF8DC(void*, void*, int);
-void fn_802E317C(const char*, ...);
+void Abend_Panic(const char*, ...);
 void fn_801FCF18(void*, int, int);
 void fn_801FF484(void*, void*);
 float fn_801E7E24(void);
@@ -160,7 +160,7 @@ extern "C" void fn_801FD3F0(void*, float);
 extern "C" void fn_801FD5E8(void* = 0, float = 0);
 extern "C" void fn_801FDF18(void*, float);
 extern "C" void fn_801FEC74(void*);
-extern "C" void fn_802E317C(const char*, ...);
+extern "C" void Abend_Panic(const char*, ...);
 extern "C" const char lbl_8033B618[];
 extern "C" float fn_802C99E8(float);
 extern "C" void fn_802C744C(void*, void*);
@@ -422,7 +422,7 @@ extern "C" void fn_801FCF74(void *drone, float dt) {
     case PATH_END_STOP:
         return ((void (*)(void *, int))fn_801FDF18)(drone, endBehavior);
     default:
-        return fn_802E317C((const char *)STR_PATH_END_BEHAVIOR);
+        return Abend_Panic((const char *)STR_PATH_END_BEHAVIOR);
     }
 }
 
@@ -983,7 +983,7 @@ extern "C" void fn_801FE3B8(void *container, void *arg1) {
 
     count = *(int *)((char *)container + 0x34);
     if (count >= 6) {
-        fn_802E317C(lbl_8033B638, 6);
+        Abend_Panic(lbl_8033B638, 6);
     }
     count = *(int *)((char *)container + 0x34);
     first = *(float *)(source + 0x314);
@@ -1112,7 +1112,7 @@ extern "C" void fn_801FE708(void *container, void *entry) {
     char *pathData = (char *)entry + 0x2C;
     int count = *(int *)((char *)container + 0x94);
     if (count >= 4)
-        fn_802E317C(hermitePathLimitMsg);
+        Abend_Panic(hermitePathLimitMsg);
     count = *(int *)((char *)container + 0x94);
     char *slot = (char *)container + count * 0x24;
     *(char **)(slot + 4) = pathData;
@@ -1190,7 +1190,7 @@ extern "C" int fn_801FE88C(void *unused, void *outRec) {
     const char *strB = base + 0xB0;
     Obj *obj = (Obj *)fn_802AE414(*(int *)outRec);
     if (obj == 0) {
-        fn_802E317C(base + 0xC8);
+        Abend_Panic(base + 0xC8);
     }
     strncpy((char *)outRec + 4, obj->getName(lbl_8055B3C8), 0x10);
     *((char *)outRec + 0x13) = 0;
@@ -1244,7 +1244,7 @@ extern "C" void fn_801FEA28(void* pEntry) {
     poolBase = NULL;
 foundEntry:
     if (poolBase == NULL) {
-        fn_802E317C(lbl_8033B7F0, *(char**)pEntry);
+        Abend_Panic(lbl_8033B7F0, *(char**)pEntry);
     }
     int usedCount = *(int*)(poolBase + 0x94);
     int foundIdx = 0;
@@ -1257,7 +1257,7 @@ foundEntry:
         foundIdx++;
     }
     if (foundIdx >= usedCount) {
-        fn_802E317C(lbl_8033B820, usedCount, *(int*)(poolBase + 0x90));
+        Abend_Panic(lbl_8033B820, usedCount, *(int*)(poolBase + 0x90));
     }
     int* shiftPtr = (int*)(poolBase + (foundIdx + 1) * 4);
     int j = foundIdx + 1;
@@ -1293,7 +1293,7 @@ extern "C" void fn_801FEB58(void *poolName) {
     base = 0;
 found:
     if (base == 0) {
-        fn_802E317C(lbl_8033B84C, name);
+        Abend_Panic(lbl_8033B84C, name);
     }
     int count = *(int *)(base + 0x90);
     if (count > 0) {
@@ -1331,7 +1331,7 @@ extern "C" void fn_801FEC74(void *arg) {
     pool = 0;
 foundEntry:
     if (pool == 0) {
-        fn_802E317C(lbl_8033B7F0, *(char **)arg);
+        Abend_Panic(lbl_8033B7F0, *(char **)arg);
     }
     int inUseCount = pool->inUseCount;
     int slotIdx = 0;
@@ -1344,7 +1344,7 @@ foundEntry:
         slotIdx++;
     }
     if (slotIdx >= inUseCount) {
-        fn_802E317C(lbl_8033B820, inUseCount, pool->unusedCount);
+        Abend_Panic(lbl_8033B820, inUseCount, pool->unusedCount);
     }
     int *shiftPtr = (int *)((char *)pool + (slotIdx + 1) * 4);
     int j = slotIdx + 1;
@@ -1377,7 +1377,7 @@ void fn_801FEDA4(void *arg0) {
     pool = 0;
 found:
     if (pool == 0) {
-        fn_802E317C(lbl_8033B84C, entry->poolName);
+        Abend_Panic(lbl_8033B84C, entry->poolName);
     }
     int count = pool->unusedCount;
     if (count > 0) {
@@ -1504,7 +1504,7 @@ extern "C" void fn_801FF1C4(void* arg0, int arg1, int arg2) {
     /* Append a drone path segment if the object's drone list has room, else log limit overflow. */
     char* p = (char*)arg0;
     if (*(int*)(p + 0xE04) >= 0x20) {
-        fn_802E317C(&lbl_8033B8C8[0]);
+        Abend_Panic(&lbl_8033B8C8[0]);
     }
     fn_801FCF18(p + *(int*)(p + 0xE04) * 0x70 + 4, arg1, arg2);
     fn_801FF484(p + 0xE08, p + *(int*)(p + 0xE04) * 0x70 + 4);
@@ -1531,7 +1531,7 @@ extern "C" void fn_801FF2B8(void* manager, int record, int name) {
  // table, and count it.  Past 64 segments the game logs the limit overflow and
  // writes the segment anyway.
  char* mgr = (char*)manager;
- if (DMGR_PATH_COUNT(mgr) >= DMGR_PATH_MAX) fn_802E317C(STR_PATH_DRONE_LIMIT);
+ if (DMGR_PATH_COUNT(mgr) >= DMGR_PATH_MAX) Abend_Panic(STR_PATH_DRONE_LIMIT);
  fn_801FCA54(DMGR_PATH(mgr, DMGR_PATH_COUNT(mgr)), record, name);
  fn_801FF7D4(DMGR_POOLS(mgr), DMGR_PATH(mgr, DMGR_PATH_COUNT(mgr)));
  ++DMGR_PATH_COUNT(mgr);
@@ -1608,14 +1608,14 @@ extern "C" void fn_801FF484(void *poolTable, void *object) {
 found:
     if (pool == 0) {
         if (PATH_POOL_TABLE_COUNT(poolTable) >= PATH_POOL_MAX) {
-            fn_802E317C(STR_PATH_POOL_LIMIT, PATH_POOL_MAX);
+            Abend_Panic(STR_PATH_POOL_LIMIT, PATH_POOL_MAX);
         }
         pool = (PathPool *)poolTable + PATH_POOL_TABLE_COUNT(poolTable);
         fn_801FF58C(poolTable, (char *)pool, *(const char **)object);
         PATH_POOL_TABLE_COUNT(poolTable) += 1;
     }
     if (pool->unusedCount + 1 > PATH_POOL_OBJECT_MAX) {
-        fn_802E317C(STR_PATH_POOL_OBJECT_LIMIT, PATH_POOL_OBJECT_MAX);
+        Abend_Panic(STR_PATH_POOL_OBJECT_LIMIT, PATH_POOL_OBJECT_MAX);
     }
     int count = pool->unusedCount;
     pool->unused[count] = object;
@@ -1728,14 +1728,14 @@ void fn_801FF7D4(void *poolTable, void *segment) {
 found:
     if (pool == 0) {
         if (DMGR_POOL_TABLE_COUNT(poolTable) >= DMGR_POOL_MAX) {
-            fn_802E317C(STR_PATH_POOL_LIMIT, DMGR_POOL_MAX);
+            Abend_Panic(STR_PATH_POOL_LIMIT, DMGR_POOL_MAX);
         }
         pool = (DronePool *)poolTable + DMGR_POOL_TABLE_COUNT(poolTable);
         fn_801FF8DC(poolTable, pool, *(int *)segment);
         DMGR_POOL_TABLE_COUNT(poolTable) += 1;
     }
     if (pool->unusedCount + 1 > DMGR_POOL_OBJECT_MAX) {
-        fn_802E317C(STR_PATH_POOL_OBJECT_LIMIT, DMGR_POOL_OBJECT_MAX);
+        Abend_Panic(STR_PATH_POOL_OBJECT_LIMIT, DMGR_POOL_OBJECT_MAX);
     }
     int count = pool->unusedCount;
     pool->unused[count] = segment;

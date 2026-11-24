@@ -198,7 +198,7 @@ void fn_802BBBC8(void) {
     #define sChannelSuffixes lbl_8055CF30
     #define sSoftWaterMapPresent lbl_8055FA90
     #define sFormatPath fn_801345D8
-    #define sPanic fn_802E317C
+    #define sPanic Abend_Panic
     #define sGetTextureIndex fn_802CA294
     #define sLoadTexture fn_802BB87C
     #define sIsSoftWaterMapPresent fn_802B05E4
@@ -502,9 +502,9 @@ int fn_802BC09C(short arg0, int arg1, int arg2, signed char arg3, float farg0) {
     int x;
     short y;
     int bad;
-    int i, k;
     unsigned char base, old;
-    unsigned char *d, *s, *w;
+    int i, k;
+    unsigned char *w;
     int result;
     result = 0;
     cur = fn_802B05DC();
@@ -521,33 +521,17 @@ int fn_802BC09C(short arg0, int arg1, int arg2, signed char arg3, float farg0) {
                 else base = sp10[cur];
                 memset(sp8, 0, 6);
                 sp8[arg2] = arg3;
-                d = sp8;
-                s = sp10;
                 {
-                    int hi = *(int *)&lbl_80564D08;
-                    float zero = lbl_80564D00;
-                    float half = lbl_80564D04;
-                    float f, a, b;
-                    double ds, dd;
-                    for (k = 0; k < 3; k++) {
-                        ((int *)&dd)[0] = hi; ((int *)&dd)[1] = d[0];
-                        b = (float)(dd - lbl_80564D08);
-                        ((int *)&ds)[0] = hi; ((int *)&ds)[1] = s[0];
-                        a = (float)(ds - lbl_80564D08);
-                        f = a + farg0 * (b - a);
-                        if (f < zero) f = f - half;
+                    for (k = 0; k < 6; ++k) {
+                        unsigned int byte = sp8[k];
+                        unsigned int previous = sp10[k];
+                        float b = (float)byte;
+                        float a = (float)previous;
+                        float f = a + farg0 * (b - a);
+                        const float half = lbl_80564D04;
+                        if (f < lbl_80564D00) f = f - half;
                         else f = half + f;
-                        d[0] = (unsigned char)(int)f;
-                        ((int *)&dd)[0] = hi; ((int *)&dd)[1] = d[1];
-                        b = (float)(dd - lbl_80564D08);
-                        ((int *)&ds)[0] = hi; ((int *)&ds)[1] = s[1];
-                        a = (float)(ds - lbl_80564D08);
-                        f = a + farg0 * (b - a);
-                        if (f < zero) f = f - half;
-                        else f = half + f;
-                        d[1] = (unsigned char)(int)f;
-                        s += 2;
-                        d += 2;
+                        sp8[k] = (unsigned char)(int)f;
                     }
                 }
                 if (cur != -1) {
@@ -556,7 +540,7 @@ int fn_802BC09C(short arg0, int arg1, int arg2, signed char arg3, float farg0) {
                     if (old > base) sp8[arg2] = sp8[arg2] - (old - base);
                     else sp8[arg2] = sp8[arg2] - (base - old);
                 }
-                ((void (*)(unsigned char *, int, int))fn_802BBFA4)(sp8, arg2, cur);
+                fn_802BBFA4(sp8, arg2, cur);
                 fn_802BBF44(sp8, arg2);
                 fn_802BB958(arg0, arg1, sp8, sp10);
                 result = 1;

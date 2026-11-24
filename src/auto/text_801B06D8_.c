@@ -45,7 +45,7 @@ extern void *lbl_8055E694;
 extern f32 lbl_805625F0;
 extern void *lbl_8055E68C;
 extern u8 lbl_8055E690;
-extern void fn_802E317C(const char *, s32, s32);
+extern void Abend_Panic(const char *, s32, s32);
 extern char lbl_80335BD8[];
 extern void fn_801B196C(s32, s32);
 extern void fn_801B18B8();
@@ -215,13 +215,15 @@ extern "C" void fn_801B08FC(void *arg0, void *arg1) {
     typedef struct { s32 id; f32 key; } Ent;
     Dummy_801B08FC *self = (Dummy_801B08FC *)arg0;
     s32 cur;
-    s32 t1;
     s32 t0;
+    s32 t1;
     u8 *a;
     u8 *b;
     s32 v1;
     u8 *stop;
     u8 *n;
+    s32 i;
+    Ent *p;
     a = *(u8 **)((u8 *)self->get18() + 4);
     self->get20()->d19((s32)arg1);
     self->get20();
@@ -252,18 +254,15 @@ extern "C" void fn_801B08FC(void *arg0, void *arg1) {
                 f32 key = lbl_8055E3C8 - lbl_805625DC * (f32)(cur + 1) * lbl_805625E0;
                 if (cnt < 8) {
                     Ent tmp;
-                    s32 i;
                     tmp.id = cur;
                     tmp.key = key;
                     for (i = 0; i < (s32)cnt; i++) {
                         if (tbl[i].key > key)
                             break;
                     }
-                    {
-                        Ent *p = &tbl[i];
-                        memmove(p + 1, p, (cnt - i) * 8);
-                        *p = tmp;
-                    }
+                    p = &((Ent *)lbl_80435BE8)[i];
+                    memmove(p + 1, p, (cnt - i) * 8);
+                    *p = tmp;
                     lbl_80435BE8[0x10]++;
                 }
                 break;
@@ -271,9 +270,8 @@ extern "C" void fn_801B08FC(void *arg0, void *arg1) {
         }
     }
     if ((*(s32 *)((u8 *)__AXFXGetLfoSinTable_801769CC() + 4) & 0x4000) == 0) {
-        self->get20();
-        fn_8018AF04(0);
-        self->call34();
+        fn_8018AF04(self->get20());
+        self->d11();
     }
     *(s32 *)((u8 *)self + 0x64) = 0;
     *(s32 *)((u8 *)self + 4) &= ~4;
@@ -996,7 +994,7 @@ extern "C" void fn_801B196C(s32 arg0, s32 arg1) {
     Manager *manager;
     Object *object;
     f32 *data;
-    register f32 scale;
+    f32 scale;
     f32 bx54;
     f32 bx58;
     f32 bx5c;
@@ -1662,8 +1660,7 @@ extern "C" s32 fn_801B25B0(s32 *arg0, s32 *arg1) {
         virtual void v1();
         virtual void *get();
     };
-    register s32 index1 = *arg1;
-    register s32 index0 = *arg0;
+    register s32 index1 = *arg1, index0 = *arg0;
     void *base = lbl_8055E684;
     First *obj0 = (First *)((u8 *)base + (index0 << 7));
     Second *obj1 = (Second *)((u8 *)base + (index1 << 7));
@@ -2120,7 +2117,7 @@ extern "C" void fn_801B3084(void *entityA, void *entityB, s32 pos, s32 vec) {
     }
 }
 #pragma cplusplus off
-extern void fn_802E317C(const char *, s32, s32);
+extern void Abend_Panic(const char *, s32, s32);
 extern char lbl_80335BD8[];
 extern void fn_801B196C(s32, s32);
 #pragma dont_inline on
@@ -2189,7 +2186,7 @@ extern "C" void fn_801B30E0(s32 recordIndex) {
 #pragma processor 750
 /* Log deity-stuff qualify info for entryIndex and store id/float into the entry table at lbl_8055E684. */
 void fn_801B3208(s32 entryIndex, s32 id, f32 qualifyValue) {
-    ((void (*)(const char *, ...))fn_802E317C)(lbl_80335BD8, entryIndex, id, qualifyValue);
+    ((void (*)(const char *, ...))Abend_Panic)(lbl_80335BD8, entryIndex, id, qualifyValue);
     *(s32 *)((u8 *)lbl_8055E684 + (entryIndex << 7) + 0x6C) = id;
     *(f32 *)((u8 *)lbl_8055E684 + (entryIndex << 7) + 0x24) = qualifyValue;
 }

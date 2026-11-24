@@ -2,7 +2,7 @@
 // Recovered TU window 0x802E3DF8..0x802E3EA8 (see docs/attribution_analysis.md).
 // Static-init thunk fn_802E3EA8 (+ .ctors slot 0x802ED5F4) remains in
 // auto/text_802E3EA8_.c pending a promotion pass.
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern char lbl_8034D020[];
 #pragma scheduling invalid_target
 /* Return the 128-byte-aligned base and size of the MEM1 (0) or MEM2 (1) arena; a bad arena id is a fatal error. */ void fn_802E3DF8(int arena, void **outLo, unsigned int *outSize) {
@@ -17,7 +17,7 @@ extern char lbl_8034D020[];
         lo = OSGetMEM2ArenaLo();
         hi = OSGetMEM2ArenaHi();
     } else {
-        fn_802E317C(lbl_8034D020, arena);
+        Abend_Panic(lbl_8034D020, arena);
     }
     lo = (lo + 0x7f) & ~0x7f;
     *outLo = (void *)lo;

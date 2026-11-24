@@ -5,7 +5,7 @@
 #include <stdarg.h>
 #include <string.h>
 typedef signed long s32;
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern char lbl_8034CF40[];
 extern char lbl_8034CF60[];
 extern char gOpenFileTable[];
@@ -117,12 +117,12 @@ s32 fn_802E33D0(void) { return 0; }
     s32 entryOffset;
     unsigned char *entry;
     if (fileId < 0 || fileId == -1 || fileId > 0x10) {
-        fn_802E317C(lbl_8034CF40, fileId, name, line);
+        Abend_Panic(lbl_8034CF40, fileId, name, line);
     }
     entryOffset = fileId * 0x28;
     entry = (unsigned char *)(gOpenFileTable + entryOffset);
     if (entry[0x20] == 0) {
-        fn_802E317C(lbl_8034CF60, fileId, entry, name, line);
+        Abend_Panic(lbl_8034CF60, fileId, entry, name, line);
     }
     return (s32)gOpenFileTable + entryOffset;
 }
@@ -174,7 +174,7 @@ void File_checkOpenFiles(void) {
     i = 0;
     do {
         if (((unsigned char *)entry)[0x20] != 0) {
-            fn_802E317C(gFileStillInUseMsg, (s32)entry);
+            Abend_Panic(gFileStillInUseMsg, (s32)entry);
         }
         i++;
         entry += 0x28;
@@ -203,7 +203,7 @@ extern char lbl_8034CF98[];
         scan += 0x28;
         slotIndex++;
     }
-    fn_802E317C(lbl_8034CF98, name);
+    Abend_Panic(lbl_8034CF98, name);
     return -1;
 }
 
@@ -295,13 +295,13 @@ extern char lbl_8034CFC0[];
 
 #pragma cplusplus on
 extern "C" void fn_802E3898(s32, const char *, s32 *);
-/* Read byteCount bytes from file handle fileId into buffer: validate the handle, read via fn_802E3898, and warn through fn_802E317C if the bytes read differ from the request. */ extern "C" void fn_802E3804(s32 fileId, const char *buffer, s32 byteCount) {
-    /* Read arg2 bytes from file handle arg0 into arg1 (file.cpp:0x130 context), and warn via fn_802E317C if the bytes read differ. */
+/* Read byteCount bytes from file handle fileId into buffer: validate the handle, read via fn_802E3898, and warn through Abend_Panic if the bytes read differ from the request. */ extern "C" void fn_802E3804(s32 fileId, const char *buffer, s32 byteCount) {
+    /* Read arg2 bytes from file handle arg0 into arg1 (file.cpp:0x130 context), and warn via Abend_Panic if the bytes read differ. */
     s32 fileEntry = fn_802E33D8(fileId, kFileSourceName, 0x130);
     s32 bytesRead = byteCount;
     fn_802E3898(fileId, buffer, &bytesRead);
     if (bytesRead != byteCount) {
-        fn_802E317C(lbl_8034CFC0, byteCount, fileEntry);
+        Abend_Panic(lbl_8034CFC0, byteCount, fileEntry);
     }
 }
 #pragma use_lmw_stmw off
@@ -478,7 +478,7 @@ extern "C" s32 fn_802E3C24(s32 findHandle, s32 pathBuffer, s32 bufferSize) {
     if (fileSubsystem != 0) {
         result = ((FileSystem *)fileSubsystem)->findNext(findHandle, pathBuffer, bufferSize);
     } else {
-        fn_802E317C(lbl_8034CFE4);
+        Abend_Panic(lbl_8034CFE4);
         result = 0;
     }
     return result;
@@ -504,7 +504,7 @@ extern "C" void FileFind_Close(s32 findHandle) {
     if (fileSubsystem != 0) {
         ((FileFindSubsystem *)fileSubsystem)->close(findHandle);
     } else {
-        fn_802E317C(lbl_8034D000);
+        Abend_Panic(lbl_8034D000);
     }
 }
 #pragma cplusplus off

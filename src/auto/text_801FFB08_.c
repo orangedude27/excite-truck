@@ -28,7 +28,7 @@ extern void fn_801E5998(void *, void *, void *);
 extern int fn_801C1BA4();
 extern void fn_801C1CBC();
 extern char lbl_802F9C60[], lbl_802F9CC0[];
-extern int fn_802E317C(const char *, ...);
+extern int Abend_Panic(const char *, ...);
 extern double fn_8002EFB0(float, float);
 extern char lbl_802F9BC0[], lbl_802F9C20[];
 typedef struct { float x, y, z; } Vec74;
@@ -113,7 +113,7 @@ void *fn_801FFB74(int arg0, int arg1, int arg2) {
     spC = 0x20;
     fn_801E5998((void *)((int *)o)[3], out, &spC);
     if (fn_801E2CCC(arg1, &lbl_8055B3E0, &sp8) == 0) {
-        fn_802E317C(base + 0x5C, arg0);
+        Abend_Panic(base + 0x5C, arg0);
     }
     o[4] = sp8[9]; o[5] = sp8[10]; o[6] = sp8[11];
     o[12] = fn_8002EFB0(sp8[5], sp8[4]);
@@ -207,7 +207,7 @@ extern int fn_802C6FC0(void *, int, int);
 extern int fn_801E592C(void);
 extern void fn_801E3488(float *, int);
 extern void *fn_801FFB74(int, int, int);
-extern int fn_802E317C(const char *, ...);
+extern int Abend_Panic(const char *, ...);
 extern double fn_8002EFB0(float, float);
 extern char lbl_8055B408;
 extern float lbl_80563060, lbl_80563064;
@@ -223,7 +223,7 @@ void *fn_802002D4(int arg0, int arg1, int arg2) {
 #pragma use_lmw_stmw off
     float *o;
     struct { int n; float r[3]; float P[3]; float Q[3]; } sp8;
-    float v30[3], v3C[3], v48[3], v54[3], v60[3];
+    float v60[3], v54[3], v48[3], v3C[3], v30[3];
     struct { int a, b; } bufBPair[12], *srcPair = (void *)lbl_802F9C60;
     struct { float v[3]; float pad[2]; } bufA[7];
     int *bufC_[15];

@@ -72,7 +72,7 @@ extern int fn_801D04D0(const char *);
 extern int fn_801D37C4(const char *);
 
 #pragma cplusplus on
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
 #pragma cplusplus reset
 
 extern int fn_80128668(void *);
@@ -163,7 +163,7 @@ extern "C" void fn_801D334C(void *outConfig, void *configSource) {
         config->primarySize = source->getFloat((const char *)&lbl_8055AC58);
         break;
     default:
-        fn_802E317C("mut_phob: invalid type %d", type);
+        Abend_Panic("mut_phob: invalid type %d", type);
         break;
     }
 }
@@ -204,7 +204,7 @@ extern "C" void fn_801D3610(void *outConfig, int configName) {
         storeIndex++;
         storeIdPtr++;
     } while (storeIndex < 2U);
-    fn_802E317C(lbl_803383BC, configName);
+    Abend_Panic(lbl_803383BC, configName);
 }
 #pragma scheduling on
 #pragma cplusplus reset
@@ -295,7 +295,7 @@ int fn_801D37C4(const char *typeName) {
         ++i;
         entry += 2;
     } while (i < 4);
-    fn_802E317C(lbl_803383E4, typeName);
+    Abend_Panic(lbl_803383E4, typeName);
     return 0;
 }
 
@@ -699,14 +699,10 @@ void fn_801D3FA4(void *arg0, int arg1, int arg2, void *arg3, void *arg4, void *a
     temp_r6_2 = ((int *)arg3)[8];
     temp_r5 = ((int *)arg3)[9];
     temp_r4_2 = ((int *)arg3)[10];
-    t0 = ((int *)arg3)[0];
-    t1 = temp_r27;
-    t2 = temp_r26;
-    t3 = temp_r25;
-    *(int *)((char *)arg0 + 0x3C) = t0;
-    *(int *)((char *)arg0 + 0x40) = t1;
-    *(int *)((char *)arg0 + 0x44) = t2;
-    *(int *)((char *)arg0 + 0x48) = t3;
+    *(int *)((char *)arg0 + 0x3C) = ((int *)arg3)[0];
+    *(int *)((char *)arg0 + 0x40) = temp_r27;
+    *(int *)((char *)arg0 + 0x44) = temp_r26;
+    *(int *)((char *)arg0 + 0x48) = temp_r25;
     *(int *)((char *)arg0 + 0x4C) = temp_r24;
     *(int *)((char *)arg0 + 0x50) = temp_r23;
     *(int *)((char *)arg0 + 0x54) = temp_r22;
@@ -785,7 +781,7 @@ void fn_801D411C(void *actor) {
 
 extern double fn_8002F234(float);
 extern void fn_8019F564(void *, void *, float *, void *, float, float, float, float, float, float);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern float lbl_80562AAC, lbl_80562AB8, lbl_80562ABC, lbl_80562AC4;
 extern char lbl_8033837C[];
 extern int lbl_80333918[];
@@ -793,7 +789,7 @@ extern int lbl_80333918[];
 extern "C" double fn_8002F234(float);
 extern "C" void fn_8019EECC(void *, void *);
 extern "C" void fn_8019F564(void *, void *, float *, void *, float, float, float, float, float, float);
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
 extern "C" float lbl_80562AAC, lbl_80562AB8, lbl_80562AC4;
 extern "C" char lbl_8033837C[];
 extern "C" int lbl_80333918[];
@@ -802,8 +798,8 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
     unsigned char *self = (unsigned char *)arg0;
     const unsigned char *src = (const unsigned char *)arg1;
     float size;
-    float zero = lbl_80562AB8;
-    int mode = *(int *)(src + 0x28);
+    register float zero = lbl_80562AB8;
+    unsigned int mode = *(int *)(src + 0x28);
     volatile float sp10;
     volatile float spc;
     volatile float sp8;
@@ -816,13 +812,13 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
     case 0: {
         size = *(float *)(src + 0x2C);
         unsigned char *p;
-        float posx;
-        float posy;
-        int z = 0;
+        register float posx;
+        register float posy;
+        register unsigned z = 0;
         *(unsigned int *)(self + 0x23C) = 0x53504852;
         *(float *)(self + 0x240) = size;
         resource = *(void **)(self + 0x244);
-        if (resource == 0) break;
+        if (!resource) break;
         p = (unsigned char *)resource;
         *(void **)(p + 0x0C) = self + 0x3C;
         posx = *(float *)(src + 0x14);
@@ -833,8 +829,8 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
         *(unsigned int *)(p + 0x20) = 0x64;
         *(unsigned int *)(p + 0x1C) = z;
         *(unsigned int *)(p + 0x18) = 0x53504852;
-        *(float *)(p + 0x10) = posx;
         *(float *)(p + 0x14) = posy;
+        *(float *)(p + 0x10) = posx;
         *(volatile float *)(p + 0x28) = sp8;
         *(volatile float *)(p + 0x2C) = spc;
         *(volatile float *)(p + 0x30) = sp10;
@@ -850,7 +846,7 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
         *(volatile float *)(p + 0x28) = sp8;
         *(volatile float *)(p + 0x2C) = spc;
         *(volatile float *)(p + 0x30) = sp10;
-        if (arg0 != 0) fn_8019EECC(arg0, p + 0x28);
+        if (arg0) fn_8019EECC(arg0, p + 0x28);
         break;
     }
     case 1: {
@@ -861,56 +857,55 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
         *(unsigned int *)(self + 0x23C) = 0x54554245;
         *(float *)(self + 0x240) = (float)fn_8002F234(yy + xx);
         resource = *(void **)(self + 0x244);
-        if (resource != 0) {
+        if (resource) {
             unsigned char *p = (unsigned char *)resource;
             unsigned char *subObj;
             float posx, posy, f, h;
             subObj = self + 0x3C;
-            posx = *(float *)(src + 0x14);
             *(void **)(p + 0x0C) = subObj;
             posy = *(float *)(src + 0x18);
+            posx = *(float *)(src + 0x14);
             *(void **)(p + 0x04) = self;
             *(unsigned int *)(p + 0x08) = 0;
             *(unsigned int *)(p + 0x18) = 0x54554245;
             f = lbl_80562AC4 * *(float *)(src + 0x30);
-            h = *(float *)(src + 0x2C);
             *(float *)(p + 0x10) = posx;
+            h = *(float *)(src + 0x2C);
             *(float *)(p + 0x14) = posy;
             *(unsigned int *)(p + 0x20) = 0x64;
             *(unsigned int *)(p + 0x1C) = 0;
-            *(float *)(p + 0x24) = h;
             *(float *)(p + 0x28) = f - h;
+            *(float *)(p + 0x24) = h;
             *(void **)p = lbl_80333918;
         }
         break;
     }
     case 2: {
         float x = *(float *)(src + 0x30);
-        float y = *(float *)(src + 0x2C);
-        float xx = x * x;
+        register float y = *(float *)(src + 0x2C);
+        register float xx = x * x;
         float yy = y * y;
         *(unsigned int *)(self + 0x23C) = 0x54554245;
         *(float *)(self + 0x240) = (float)fn_8002F234(yy + xx);
         resource = *(void **)(self + 0x244);
         if (resource != 0) {
-            unsigned char *p = (unsigned char *)resource;
+            register unsigned char *p = (unsigned char *)resource;
             unsigned char *subObj;
-            float posx, posy, h, f;
             void *vtable;
-            subObj = self + 0x3C;
-            *(void **)(p + 0x0C) = subObj;
-            posx = *(float *)(src + 0x14);
+            float posx, posy, h, f;
+            *(void **)(p + 0x0C) = (self + 0x3C);
             vtable = lbl_80333918;
+            posx = *(float *)(src + 0x14);
             *(unsigned int *)(p + 0x08) = 0;
             posy = *(float *)(src + 0x18);
             *(void **)(p + 0x04) = self;
             *(unsigned int *)(p + 0x18) = 0x54554245;
             h = *(float *)(src + 0x2C);
             *(unsigned int *)(p + 0x20) = 0x64;
-            f = *(float *)(src + 0x30);
-            *(unsigned int *)(p + 0x1C) = 0;
             *(float *)(p + 0x10) = posx;
             *(float *)(p + 0x14) = posy;
+            f = *(float *)(src + 0x30);
+            *(unsigned int *)(p + 0x1C) = 0;
             *(float *)(p + 0x24) = h;
             *(float *)(p + 0x28) = f;
             *(void **)p = vtable;
@@ -919,10 +914,10 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
     }
     case 3: {
         float radius = lbl_80562AC4 * *(float *)(src + 0x2C);
-        *(unsigned int *)(self + 0x23C) = 0x53504852;
         *(float *)(self + 0x240) = radius;
+        *(unsigned int *)(self + 0x23C) = 0x53504852;
         resource = *(void **)(self + 0x244);
-        if (resource != 0) {
+        if (resource) {
             fn_8019F564(resource, self + 0x3C, (float *)&sp8, self,
                         *(float *)(src + 0x14), *(float *)(src + 0x18),
                         lbl_80562AAC, radius, radius, radius);
@@ -930,15 +925,15 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
         break;
     }
     default:
-        fn_802E317C(lbl_8033837C, mode);
+        Abend_Panic(lbl_8033837C, mode);
         break;
     }
 
     resource = *(void **)(self + 0x244);
     {
         struct Resource {
-            virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
             virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
+            virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
             virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11();
             virtual void m12(); virtual void m13();
             virtual void update(int);

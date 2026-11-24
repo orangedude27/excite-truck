@@ -4,7 +4,7 @@
 /* Global table of registered resource handles: up to 32 handles followed by the count. */
 typedef struct HandleTable { void *handles[32]; int count; } HandleTable;
 
-extern void fn_802E317C(void *, ...);
+extern void Abend_Panic(void *, ...);
 extern char lbl_802FC638[];
 extern char lbl_802FC69C[];
 extern char lbl_80352AD0[];
@@ -64,7 +64,7 @@ void *fn_800126CC(int modeId) DECOMP_DONT_INLINE {
         }
     }
     if (index >= 5)
-        fn_802E317C(lbl_802FC69C, modeId); /* "get_mode_info: can't find mode %d" */
+        Abend_Panic(lbl_802FC69C, modeId); /* "get_mode_info: can't find mode %d" */
     return lbl_802FC638 + index * 0x14;
 }
 #pragma scheduling on
@@ -158,7 +158,7 @@ void *fn_80012870(int eventId, int contestIndex) {
             matchCount++;
         }
     }
-    fn_802E317C(lbl_802FC700, eventId, contestIndex);
+    Abend_Panic(lbl_802FC700, eventId, contestIndex);
     return 0;
 }
 #pragma scheduling on
@@ -358,7 +358,7 @@ copy_body:
     if ((signed char)c != 0) goto copy_dec;
 copy_done:
     if (fn_800080E8(obj + 8) == -1) {
-        fn_802E317C(base + 0x168, a3, obj + 8);
+        Abend_Panic(base + 0x168, a3, obj + 8);
     }
     *(int *)(obj + 0x6C) = 1;
     *(int *)(obj + 0x68) = 1;
@@ -374,7 +374,7 @@ copy_done:
         temp = fn_8013C9A4();
         *(int *)(obj + 0x74) = temp;
         if (temp == 6) {
-            fn_802E317C(base + 0x198, a3, obj + 0x28);
+            Abend_Panic(base + 0x198, a3, obj + 0x28);
         }
     } else {
         *(int *)(obj + 0x74) = 1;
@@ -385,12 +385,12 @@ copy_done:
         idx = 0;
         do {
             if (fn_8013C8E8(spC) == 6) {
-                fn_802E317C(base + 0x1D8, obj + 0x28, spC);
+                Abend_Panic(base + 0x1D8, obj + 0x28, spC);
             }
             idx++;
         } while (((int (*)(void *, int, int *, int *))*(void **)((char *)*(void **)(*(void **)(obj + 0x7C)) + 0x10))(*(void **)(obj + 0x7C), idx, &spC, &sp8) != 0);
         if (idx > 7) {
-            fn_802E317C(base + 0x208, obj + 0x28, idx, 7);
+            Abend_Panic(base + 0x208, obj + 0x28, idx, 7);
         }
     }
     *(void **)(obj + 0x80) = a2;
@@ -402,7 +402,7 @@ copy_done:
     fn_800135AC(lbl_80558B38, a2, obj + 0x28);
     if ((H2(a2, base + 0x268) != 0 || H2(a2, base + 0x278) != 0) &&
         (H2(a2, base + 0x268) == 0 || H2(a2, base + 0x278) == 0)) {
-        fn_802E317C(base + 0x284, obj + 0x28);
+        Abend_Panic(base + 0x284, obj + 0x28);
     }
     cnt = ((int (*)(void *, char *, int))*(void **)((char *)*(void **)a2 + 0x20))(a2, base + 0x2C8, 0);
     idx = 0;
@@ -412,10 +412,10 @@ copy_done:
             ((void (*)(void *))*(void **)((char *)*(void **)ch + 8))(ch);
             if (stricmp(((char *(*)(void *, char *))*(void **)((char *)*(void **)ch + 0xC))(ch, lbl_80558B40), 0) == 0) {
                 if (lbl_8055D508 >= 0xFA) {
-                    fn_802E317C(base + 0x2D8);
+                    Abend_Panic(base + 0x2D8);
                 }
                 if (*(int *)(obj + 0x70) >= 0x40) {
-                    fn_802E317C(base + 0x31C, obj + 0x28);
+                    Abend_Panic(base + 0x31C, obj + 0x28);
                 }
                 entry = &lbl_80352AD0[lbl_8055D508 * 0x28];
                 *(int *)entry = lbl_8055D508;
@@ -426,16 +426,16 @@ copy_done:
                     temp = fn_80008050();
                     *(int *)(entry + 8) = temp;
                     if (temp == 0) {
-                        fn_802E317C(base + 0x360, obj + 0x28, lbl_8055D508 + 1);
+                        Abend_Panic(base + 0x360, obj + 0x28, lbl_8055D508 + 1);
                     }
                 } else {
-                    fn_802E317C(base + 0x388, obj + 0x28, lbl_8055D508 + 1);
+                    Abend_Panic(base + 0x388, obj + 0x28, lbl_8055D508 + 1);
                 }
                 sprintf(buf10, lbl_80558B48, obj + 0x28, fn_80007FF0(*(int *)(entry + 8)));
                 *(int *)(entry + 0xC) = ((int (*)(void *, char *, int))*(void **)((char *)*(void **)ch + 0x20))(ch, lbl_80558B24, 0);
                 *(int *)(entry + 0x10) = ((int (*)(void *, char *, int))*(void **)((char *)*(void **)ch + 0x20))(ch, base + 0x25C, 8);
                 if (*(int *)(entry + 0x10) > 8) {
-                    fn_802E317C(base + 0x3B0, buf10, *(int *)(entry + 0x10), 8);
+                    Abend_Panic(base + 0x3B0, buf10, *(int *)(entry + 0x10), 8);
                 }
                 temp = ((int (*)(void *, char *, int))*(void **)((char *)*(void **)ch + 0x20))(ch, base + 0x2C8, -1);
                 *(int *)(entry + 0x14) = temp;
@@ -457,10 +457,10 @@ copy_done:
                 fn_800135AC(lbl_80558B60, ch, buf10);
                 if ((H3(ch, base + 0x268, 0) != 0 || H3(ch, base + 0x278, 0) != 0) &&
                     (H3(ch, base + 0x268, 0) == 0 || H3(ch, base + 0x278, 0) == 0)) {
-                    fn_802E317C(base + 0x3E8, buf10);
+                    Abend_Panic(base + 0x3E8, buf10);
                 }
                 if ((*(int *)(entry + 8) & 0x400) != 0 && *(int *)(entry + 0x10) * 2 > 8) {
-                    fn_802E317C(base + 0x428, buf10, *(int *)(entry + 0x10), 8);
+                    Abend_Panic(base + 0x428, buf10, *(int *)(entry + 0x10), 8);
                 }
                 lbl_8055D508++;
                 *(int *)(obj + 0x70) += 1;
@@ -469,7 +469,7 @@ copy_done:
         }
     }
     if (*(int *)(obj + 0x70) <= 0) {
-        fn_802E317C(base + 0x468, obj + 0x28);
+        Abend_Panic(base + 0x468, obj + 0x28);
     }
 }
 
@@ -520,19 +520,19 @@ extern "C" void fn_8001335C(int a0, int arg1) {
         for (i = 0; (obj = (Dummy *)((Dummy *)a0)->child(i)) != 0; i++) {
             if (stricmp(obj->name(), lbl_80558B68) == 0) {
                 if (fn_8012C33C(obj->get(lbl_80558B1C)) == 0)
-                    fn_802E317C(base + 0x488, obj->get(lbl_80558B1C));
+                    Abend_Panic(base + 0x488, obj->get(lbl_80558B1C));
                 obj->set(lbl_80558B1C, zero);
                 ((void (*)())fn_80013618)();
             } else if (stricmp(obj->name(), lbl_80558B70) == 0) {
                 if ((int)lbl_8055D504 >= 0x23)
-                    fn_802E317C(base + 0x4B4, (int)lbl_8055D504 - 1);
+                    Abend_Panic(base + 0x4B4, (int)lbl_8055D504 - 1);
                 if (fn_80012AB4(obj) != 0) {
                     fn_80012B50(lbl_803518C0 + (int)lbl_8055D504 * 0x84, (int)lbl_8055D504, obj, arg1);
                     lbl_8055D504 = (void *)((int)lbl_8055D504 + 1);
                 }
             } else if (stricmp(obj->name(), lbl_80558B78) == 0) {
                 if (lbl_8055D518 >= 0x23)
-                    fn_802E317C(base + 0x4E4, lbl_8055D518 - 1);
+                    Abend_Panic(base + 0x4E4, lbl_8055D518 - 1);
                 if (fn_80012AB4(obj) != 0) {
                     fn_80012B50(lbl_803551E0 + lbl_8055D518 * 0x88, -1 - lbl_8055D518, obj, arg1);
                     *(int *)(lbl_803551E0 + lbl_8055D518 * 0x88 + 0x84) = zero;
@@ -554,7 +554,7 @@ extern "C" void fn_800135AC(char *fieldName, void *fieldChecker, char *ownerName
         virtual int Matches(char *);
     };
     if (((FieldCheckerVTable *)fieldChecker)->Matches(fieldName) != 0)
-        fn_802E317C(lbl_802FCB50, ownerName, fieldName);
+        Abend_Panic(lbl_802FCB50, ownerName, fieldName);
 }
 #pragma cplusplus reset
 extern char lbl_802FCB74[];

@@ -36,7 +36,7 @@ extern s32 fn_8012C33C(char*);
 extern void* fn_80131808(char*);
 extern void fn_80131818(void*);
 extern void fn_802E30C8(const char*, ...);
-extern void fn_802E317C(const char*, ...);
+extern void Abend_Panic(const char*, ...);
 extern void* fn_8012850C(s32, const char*);
 extern f32 lbl_805640CC;
 extern f32 lbl_805640D0;
@@ -234,7 +234,7 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
 
                 elem->b30 = res->getByte(base->is_welded, 0);
                 elem->f2C = res->getFloat(base->weakness);
-                f32 def = 0.2032f;
+                f32 def = lbl_805640D0;
                 elem->f28 = res->getFloatDefault(base->dmg_dist, def);
             } else {
                 fn_802E30C8(base->warn_bad_bone, name, i);
@@ -267,15 +267,15 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
                 entry->fC = child->getFloat(lbl_8055C698);
                 entry->f10 = child->getFloatDefault(lbl_8055C6A0, 0.0f);
                 if (entry->id1 < 1 || entry->id1 >= 0xA2) {
-                    fn_802E317C(base->link_out_of_range, entry->id1);
+                    Abend_Panic(base->link_out_of_range, entry->id1);
                 }
                 if (entry->id2 < 1 || entry->id2 >= 0xA2) {
-                    fn_802E317C(base->link_out_of_range, entry->id2);
+                    Abend_Panic(base->link_out_of_range, entry->id2);
                 }
             }
         }
 
-        const char* const* tbl = lbl_802FA838;
+        const char* const* volatile tbl = lbl_802FA838;
         keys = *(struct Keys*)tbl;
         const char** key_ptr = keys.k;
         Entry20F4* entry20F4 = car->wheels;

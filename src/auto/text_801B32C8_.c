@@ -567,7 +567,7 @@ s32 fn_801B3FD0(void) {
 
 extern char lbl_80335D50[];
 extern u8 lbl_80335D74[];
-extern void fn_802E317C(const char*, ...);
+extern void Abend_Panic(const char*, ...);
 extern void* fn_8012850C(s32, void*);
 void fn_801B3FD8(void* arg0) {
     struct OutRec { s32 a; f32 c; };
@@ -581,7 +581,7 @@ void fn_801B3FD8(void* arg0) {
         start = pos;
         while (pos < 13 && tbl[pos].group == g) pos++;
         n = pos - start;
-        if (n < 1) fn_802E317C(lbl_80335D50);
+        if (n < 1) Abend_Panic(lbl_80335D50);
         out->p = (Ent801B3FD8*)fn_8012850C(n * 8, lbl_80335D74);
         out->n = n;
         out->z = 0;
@@ -668,7 +668,7 @@ void fn_801B435C(void *arg0) {
     }
 }
 
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern u8 lbl_80335D80[];
 #pragma scheduling invalid_target
 /* qsort comparator for the 0x2B collision-pair nodes fn_801B4204 lays out at +0x48
@@ -680,7 +680,7 @@ s32 fn_801B4428(u32 * __restrict nodeA, u32 * __restrict nodeB) {
 #define STR_SAME_KEY lbl_80335D80 /* "collide: tree nodes can't have the same key" */
     if (*nodeA < *nodeB) return -1;
     if (*nodeA > *nodeB) return 1;
-    fn_802E317C((const char *)STR_SAME_KEY);
+    Abend_Panic((const char *)STR_SAME_KEY);
 #undef STR_SAME_KEY
     return 0;
 }

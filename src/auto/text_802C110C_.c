@@ -20,7 +20,7 @@ extern void fn_80128670(int);
 extern void fn_801D05B4(void *);
 extern void fn_801D0824(void *);
 extern void fn_802C1180(void *);
-extern int fn_802E317C(const char *);
+extern int Abend_Panic(const char *);
 extern char lbl_8034AED0[];
 #pragma cplusplus on
 /* One of the level's tree objects: fn_802C143C gives it a tree class and
@@ -73,7 +73,7 @@ void *fn_802C110C(int treeIndex) {
        [firstTree, lastTree] range contains treeIndex. Panics if none matches. */
 #define treeClassTable lbl_804C0810
 #define treeClassCount lbl_8055FB28
-#define Panic fn_802E317C
+#define Panic Abend_Panic
 #define sTreeClassNotFoundFmt lbl_8034AED0
     char *entry = treeClassTable;
     int count = treeClassCount;

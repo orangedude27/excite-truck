@@ -10,7 +10,7 @@ s32 fn_8027DE68(s32);
 void fn_80131234(void *);
 void fn_80131818(s32);
 s32 fn_80018E44(const char *, s32);
-s32 fn_802E317C(void *, void *);
+s32 Abend_Panic(void *, void *);
 void fn_80018BA4(void);
 void fn_80018CCC(void);
 void *fn_80131808(void *);
@@ -135,8 +135,8 @@ extern "C" void fn_80018CCC(void) {
     extern void *lbl_802FD2A0 __attribute__((section(".rodata")));
     extern const char lbl_80558C48[] __attribute__((section(".sdata")));
     extern s32 stricmp(const char *, const char *);
-    register char *strings = (char *)&lbl_802FD2A0;
     register char *name;
+    register char *strings = (char *)&lbl_802FD2A0;
     register int row;
     register int offset;
     register Item *object;
@@ -150,10 +150,8 @@ check_object:
         offset = 0;
         goto check_count;
 search:
-        if (stricmp(*(const char **)((char *)*(void **)&lbl_803580A4 + offset), name) != 0)
-            goto search_advance;
-        goto found;
-search_advance:
+        if (stricmp(*(const char **)((char *)*(void **)&lbl_803580A4 + offset), name) == 0)
+            goto found;
         offset += 0x10;
         row++;
 check_count:
@@ -569,7 +567,7 @@ int fn_80018FB4(s32 unused) {
             return *(s32 *)((u8 *)*(void **)lbl_80357E0C + i * 0x14 + 8);
         }
     }
-    ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD308, target);
+    ((s32 (*)(const char *, ...))Abend_Panic)(lbl_802FD308, target);
     return 0;
 }
 #pragma pop

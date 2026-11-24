@@ -116,7 +116,7 @@ void fn_802C2D94(void *canvas) {
 }
 
 extern void *fn_8012C370(s32,u32 *,s32 *,s32,u8 *);
-extern void fn_802E317C(const char *,...);
+extern void Abend_Panic(const char *,...);
 extern const char gxCanvasWrongVerFmt[],gxCanvasLoadFailFmt[];
 #pragma scheduling invalid_target
 /* Load the CANV canvas image at path; for version-1 data flagged big-endian, swap the header fields in place and rotate each pixel into GX RGBA order. Panics if the lookup fails or the version is unsupported. */
@@ -163,10 +163,10 @@ void *gxCanvasLoad(s32 path) {
                 }
             }
         } else {
-            fn_802E317C(gxCanvasWrongVerFmt, path, version, 1);
+            Abend_Panic(gxCanvasWrongVerFmt, path, version, 1);
         }
     } else {
-        fn_802E317C(gxCanvasLoadFailFmt, path);
+        Abend_Panic(gxCanvasLoadFailFmt, path);
     }
     return canvas;
 }
@@ -299,7 +299,7 @@ s32 gxCanvasClipBlitRect(void *bounds, s32 *x, s32 *y, s32 *srcX, s32 *srcY, s32
 extern const char lbl_8034B060[];
 extern void fn_802C3320(s32 x, s32 y, u32 packedValue);
 extern void fn_802C33A8(s32, s32, u32);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 /* Plot one pixel of the active canvas at (x, y): ignore NO_DRAW canvases, dispatch to the 16-bit or RGBA plotter by format, else panic on the unsupported format. */ void gxPoint(s32 x, s32 y, u32 color) {
     /* Plot one pixel of the active canvas at (x, y).  A canvas with the NO_DRAW
      * flag is left alone; a 16-bit one takes the colour's high half through
@@ -320,7 +320,7 @@ extern void fn_802E317C(const char *, ...);
         fn_802C33A8(x, y, color);
         return;
     }
-    fn_802E317C(lbl_8034B060, (s32)*(volatile s8 *)canvas);
+    Abend_Panic(lbl_8034B060, (s32)*(volatile s8 *)canvas);
 }
 
 #pragma push
@@ -501,7 +501,7 @@ void fn_802C3754(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight, s32 srcBo
             return;
         }
     }
-    fn_802E317C(lbl_8034B078, (s32)*(s8 *)srcCanvas, (s32)*(s8 *)dstCanvas);
+    Abend_Panic(lbl_8034B078, (s32)*(s8 *)srcCanvas, (s32)*(s8 *)dstCanvas);
 }
 
 #pragma pop
@@ -543,7 +543,7 @@ void fn_802C3850(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight, s32 srcBo
             return;
         }
     }
-    fn_802E317C(lbl_8034B094, (s32)*(s8 *)srcCanvas, (s32)*(s8 *)dstCanvas);
+    Abend_Panic(lbl_8034B094, (s32)*(s8 *)srcCanvas, (s32)*(s8 *)dstCanvas);
 }
 
 extern s32 gxCanvasClipBlitRect(void *, s32 *, s32 *, s32 *, s32 *, s32 *, s32 *);
@@ -704,7 +704,7 @@ conv4444To565:
                 } while (rowsLeft > 0);
                 return;
             }
-            fn_802E317C(lbl_8034B0B8, (s32)srcFormat, (s32)dstFormat);
+            Abend_Panic(lbl_8034B0B8, (s32)srcFormat, (s32)dstFormat);
         }
     }
 }
@@ -824,7 +824,7 @@ void fn_802C3D74(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
                 height--;
             } while (height > 0);
         } else {
-            fn_802E317C(CANVAS_COPY_FORMAT_MSG, (s32)*(s8 *)srcCanvas, *(s8 *)dstCanvas);
+            Abend_Panic(CANVAS_COPY_FORMAT_MSG, (s32)*(s8 *)srcCanvas, *(s8 *)dstCanvas);
         }
     }
 }
@@ -889,7 +889,7 @@ void fn_802C3F00(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
                 sp18 -= 1;
             } while (sp18 > 0);
         } else {
-            fn_802E317C((char *)lbl_8034B100, *(s8 *)sourceObj);
+            Abend_Panic((char *)lbl_8034B100, *(s8 *)sourceObj);
         }
     }
 }
@@ -981,7 +981,7 @@ void fn_802C4108(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
             } while (sp18 > 0);
             return;
         }
-        fn_802E317C(lbl_8034B124);
+        Abend_Panic(lbl_8034B124);
     }
 }
 
@@ -1027,7 +1027,7 @@ void fn_802C4388(s32 src, s32 x, s32 y, s32 x2, s32 y2, s32 dst, s32 dx, s32 dy)
             sp += srcskip;
             dp += dstskip;
         } while (--h > 0);
-    } else fn_802E317C(lbl_8034B124);
+    } else Abend_Panic(lbl_8034B124);
 }
 #pragma scheduling on
 void fn_802C4610(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
@@ -1233,7 +1233,7 @@ extern const char lbl_8034B144[]; /* "Wrong stamp version in \"%s\": %x (expecti
         goto ret0;
     stamp = (Stamp *)stampData;
     if (version != STAMP_VERSION)
-        fn_802E317C(lbl_8034B144, name, version, STAMP_VERSION);
+        Abend_Panic(lbl_8034B144, name, version, STAMP_VERSION);
     if (needsSwap != 0) {
         /* the header's five words and the two pointers, byte-swapped in place */
         STAMP_SWAP_WORD(stampData, 0);
@@ -1422,7 +1422,7 @@ void fn_802C5024(s32 x, s32 y, s32 glyph, s32 color) {}
 extern const char lbl_8034B060[];
 extern void fn_802C3320();
 extern void fn_802C33A8();
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern void fn_802C3850();
 extern const char lbl_8034B078[];
 extern void gxCanvasCopy16to16(s32,s32,s32,s32,s32,s32,s32,s32);

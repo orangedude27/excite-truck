@@ -6,7 +6,7 @@ void fn_80128670(int);
 void fn_80128668(void *);
 void *fn_8012C370(int, unsigned int, unsigned int *, unsigned int *, int, unsigned char *);
 void *fn_80131234(void *);
-void fn_802E317C(char *, ...);
+void Abend_Panic(char *, ...);
 extern char lbl_803401F8[];
 extern char lbl_80340220[];
 
@@ -61,7 +61,7 @@ void *fn_8022E0EC(const char *name) {
     layout = fn_8012C370((int)name, LAYT_TAG, &version, &size, 0, &firstLoad);
     if (layout != 0) {
         if (version != LAYT_VERSION) {
-            fn_802E317C(lbl_803401F8, name, version, LAYT_VERSION);
+            Abend_Panic(lbl_803401F8, name, version, LAYT_VERSION);
         }
         if (firstLoad != 0) {
             entry = layout + 0x68;
@@ -120,7 +120,7 @@ void *fn_8022E0EC(const char *name) {
             }
         }
     } else {
-        fn_802E317C(lbl_80340220, name);
+        Abend_Panic(lbl_80340220, name);
     }
     return layout;
 }
@@ -172,15 +172,21 @@ void *fn_8022E4C0(void *arg0) {
     entry = *(unsigned char **)(base + 0x64) + zero * 0x134;
     *(int *)(entry + 0x00) = 0x21;
     *(int *)(entry + 0x04) = 6;
-    *(int *)(entry + 0x08) = 0;
-    *(int *)(entry + 0x0c) = 0;
+    *(int *)(entry + 0x08) = zero;
+    *(int *)(entry + 0x0c) = zero;
     *(int *)(entry + 0x14) = 0x280;
     *(int *)(entry + 0x18) = 0x1e0;
+    ++zero;
     strcpy((char *)(entry + 0x40), strings + 0x6c);
-    zero = 1;
-    entry = *(unsigned char **)(base + 0x64) + zero * 0x134;
-    *(int *)(entry + 0x00) = 0x1c;
-    strcpy((char *)(entry + 0x40), *(char **)arg0);
+    {
+        unsigned char *entries = *(unsigned char **)(base + 0x64);
+        int offset = zero * 0x134;
+        char *title = *(char **)arg0;
+        *(int *)(entries + offset) = 0x1c;
+        entry = entries + offset;
+        index = (zero + 1) * 0x134;
+        strcpy((char *)(entry + 0x40), title);
+    }
     *(int *)(entry + 0x08) = 0x140;
     *(int *)(entry + 0x0c) = 0x1e;
     *(int *)(entry + 0x14) = 0x20;
@@ -192,18 +198,16 @@ void *fn_8022E4C0(void *arg0) {
     *(int *)(entry + 0x9c) = 0xff000000;
     *(int *)(entry + 0xb0) = 0x1a;
     *(int *)(entry + 0x84) = 2;
-    index = 0x268;
     cur = *(unsigned char **)((unsigned char *)arg0 + 4);
-    scale = lbl_805635DC;
     y = 0x5a;
-    type = *(int *)(cur + 4);
-    while (type != 0x7b) {
+    scale = lbl_805635DC;
+    for (; (type = *(int *)(cur + 4)) != 0x7b; cur += 0x14) {
         dy = 0x1e;
         add_default = 1;
         if (type == 6) {
-            dy = 0;
-            add_default = 0;
-        } else if (type == 9) {
+            continue;
+        }
+        if (type == 9) {
             next = *(unsigned char **)(base + 0x64) + index;
             index += 0x134;
             *(int *)(next + 0x00) = 0x32;
@@ -239,6 +243,7 @@ void *fn_8022E4C0(void *arg0) {
             strcpy((char *)(next + 0x20), *(char **)cur);
             strcpy((char *)(next + 0x40), &lbl_8055B96C);
         } else if (type == 0) {
+            add_default = 0;
             next = *(unsigned char **)(base + 0x64) + index;
             index += 0x134;
             *(int *)(next + 0x00) = 2;
@@ -249,7 +254,6 @@ void *fn_8022E4C0(void *arg0) {
             *(int *)(next + 0x18) = 0x23;
             strcpy((char *)(next + 0x20), *(char **)cur);
             strcpy((char *)(next + 0x40), *(char **)cur);
-            add_default = 0;
         } else if (type == 2) {
             if (cur == *(unsigned char **)((unsigned char *)arg0 + 4)
                 || *(int *)(cur - 0x10) != 9
@@ -263,10 +267,8 @@ void *fn_8022E4C0(void *arg0) {
                 *(int *)(next + 0x18) = 0x23;
                 strcpy((char *)(next + 0x20), *(char **)cur);
                 strcpy((char *)(next + 0x40), &lbl_8055B974);
-                add_default = 0;
             } else {
-                dy = 0;
-                add_default = 0;
+                continue;
             }
         } else if (type == 0xc) {
             next = *(unsigned char **)(base + 0x64) + index;
@@ -319,8 +321,6 @@ void *fn_8022E4C0(void *arg0) {
             *(int *)(next + 0x84) = 2;
         }
         y += dy;
-        cur += 0x14;
-        type = *(int *)(cur + 4);
     }
     return base;
 }

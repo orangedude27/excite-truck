@@ -9,7 +9,7 @@ extern char lbl_8032A5D8[]; /* "Unable to allocate memory for pool" */
 #define sPanicPoolAlloc lbl_8032A5D8
 extern char lbl_8032A620[]; /* this class's vtable */
 #define sPoolVtable     lbl_8032A620
-int fn_802E317C(int *, ...);
+int Abend_Panic(int *, ...);
 int fn_80128658(int);
 int fn_80128668(void *);
 #pragma scheduling invalid_target
@@ -43,7 +43,7 @@ s32 fn_8012A17C(void *thisPool, s32 name, s32 count, s32 blockSize, s32 userBuff
         fn_8012A218(base);
         return;
     }
-    fn_802E317C((int *)&sPanicPoolAlloc);
+    Abend_Panic((int *)&sPanicPoolAlloc);
 }
 
 #pragma push
@@ -101,7 +101,7 @@ int *fn_8012A2D8(void *arg0) {
     int *temp_r3;
     if (temp_r31 == 0) {
         if (*((u8 *)arg0 + 4) != 0) {
-            fn_802E317C((int *)&sPanicPoolEmpty, *(int *)((char *)arg0 + 8));
+            Abend_Panic((int *)&sPanicPoolEmpty, *(int *)((char *)arg0 + 8));
         } else {
             return 0;
         }

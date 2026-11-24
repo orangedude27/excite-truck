@@ -86,7 +86,7 @@ extern char *lbl_8055E6DC;
  * and, from +0x208, the 16 command handlers indexed by the opcode byte. */
 #define REPLAY_CMD_HANDLERS 0x208
 extern void __AXDSPInitCallback_801769E0(void);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern int __dt__15shdStateMachineFv_801B496C();
 extern void *lbl_8055E6D8;
 extern int *fn_801B479C();
@@ -660,6 +660,6 @@ void fn_801B537C(int handler) {
         }
         entry++;
     }
-    fn_802E317C(lbl_80335E48, handler);
+    Abend_Panic(lbl_80335E48, handler);
 }
 #pragma pop

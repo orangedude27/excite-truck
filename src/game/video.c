@@ -767,7 +767,7 @@ void fn_802E0BE0(void) {
     freeVideoObject();
 }
 
-extern void fn_802E317C(char *, ...);
+extern void Abend_Panic(char *, ...);
 extern char lbl_8034BB28[];
 #pragma push
 #pragma optimization_level 3
@@ -832,7 +832,7 @@ void *fn_802E0C04(u32 size) {
         result = (char *)freeNode + *(volatile int *)((char *)head + 4) + 1;
     }
     if (result == 0 && *(volatile u8 *)head != 0) {
-        fn_802E317C(lbl_8034BB28);
+        Abend_Panic(lbl_8034BB28);
     }
     return result;
 }
@@ -947,7 +947,7 @@ void fn_802E0EAC(void *arg0) {
         fn_80117618(*(s32 *)(video + 4), video + 0x150);
         fn_80117618(*(s32 *)(video + 4), video + 0x150);
         if (fn_802E1BB4(video + 0x50) == 0) {
-            fn_802E317C(messages + 0x20);
+            Abend_Panic(messages + 0x20);
         }
         fn_801176FC(*(s32 *)(video + 4), video + 0x150);
         *(s32 *)(video + 0x4C) = ((s32 (*)(void))fn_802E2C20)();
@@ -1014,7 +1014,7 @@ void fn_802E0EAC(void *arg0) {
                 block = block->next;
             }
             fn_802E30C8(lbl_8034BB5C, freeBytes >> 10); /* "\t%dK total" */
-            fn_802E317C(lbl_8034BAEC); /* panic: "SimpleHeap Destroyed with pending allocations" */
+            Abend_Panic(lbl_8034BAEC); /* panic: "SimpleHeap Destroyed with pending allocations" */
         }
         fn_80128668((void *)heap);
     }

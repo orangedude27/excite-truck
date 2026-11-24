@@ -350,7 +350,7 @@ extern const char lbl_803391B4[];
 extern float lbl_8055AD68;
 extern float lbl_8055AD70;
 extern int lbl_8055AD78;
-extern void fn_802E317C(const char*, const char*, ...);
+extern void Abend_Panic(const char*, const char*, ...);
 
 #pragma cplusplus on
 struct DtbItem801D94DC {
@@ -400,7 +400,7 @@ extern "C" int fn_801D94DC(void *head, void *list, const char *name, int object)
                 node->field4 = item->getFloat(&lbl_8055AD70);
                 found = (const char *)item->find(lbl_803391A8);
                 if (((DtbObject801D94DC *)object)->check((void *)found) == 0) {
-                    fn_802E317C(lbl_803391B4, found);
+                    Abend_Panic(lbl_803391B4, found);
                 }
                 node->field8 = ((DtbObject801D94DC *)object)->get((void *)found)->getInt(&lbl_8055AD78);
                 node->next = 0;

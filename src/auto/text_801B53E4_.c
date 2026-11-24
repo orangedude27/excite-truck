@@ -53,7 +53,7 @@ extern void *lbl_8055E6F4;
 extern char lbl_80335E88[], lbl_80335EB4[];
 extern void *fn_8012850C(s32, void *);
 extern void *fn_8002F37C(void *, void *, void *, s32, s32);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern void *fn_801B5984(void *);
 extern void *fn_801B591C(void *, s32);
 extern void fn_8002F6AC(void *(*)(void *, s32));
@@ -241,7 +241,7 @@ void fn_801B561C(void *object, s32 index, void *node, s32 depth, f32 x0, f32 y0,
         }
     }
     if (count == 0) {
-        fn_802E317C(NOT_IN_ANY);
+        Abend_Panic(NOT_IN_ANY);
         return;
     }
     if (count == 1) {

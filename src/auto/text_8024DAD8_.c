@@ -807,7 +807,7 @@ void *fn_8024F17C(void *arg0, void **arg1, s32 *arg2, s32 *arg3, void *arg4, voi
     extern s32 ArtSetGet(void *);
     extern void fn_80255918(void *, s32);
     extern s32 fn_802CAC28(void *, s32);
-    extern void fn_802E317C(void *, void *);
+    extern void Abend_Panic(void *, void *);
     extern int strcmp(const char *, const char *);
     extern int stricmp(const char *, const char *);
     void *this_obj = arg0;
@@ -946,7 +946,7 @@ loop_43:
             else if (stricmp((char *)M2C_FIELD(temp_r26, void *, 0) + var_r28, (const char *)var_r24) == 0) { }
             else { var_r28 += 0x38; var_r27 += 1; goto loop_43; }
             *(s32 *)var_r17 = var_r27;
-            if (var_r27 < 0) { fn_802E317C((void *)(base_4170 + 0x1B8), var_r24); }
+            if (var_r27 < 0) { Abend_Panic((void *)(base_4170 + 0x1B8), var_r24); }
             var_r22_2 += 1; var_r17 = (u8 *)var_r17 + 4;
         } while (var_r22_2 < 2);
         var_r17_2 = 0;

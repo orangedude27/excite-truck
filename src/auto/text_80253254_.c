@@ -32,7 +32,7 @@ extern s32 lbl_8055F33C;
 extern s32 fn_8012D838(s32);
 extern void fn_8012D8A8(s32);
 extern int __cntlzw(unsigned int);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern void *memmove(void *, const void *, unsigned long);
 extern char lbl_803449D4[];
 
@@ -52,7 +52,7 @@ static inline void removeDeadEntry(void) {
             return;
         }
     }
-    fn_802E317C(lbl_803449D4);
+    Abend_Panic(lbl_803449D4);
 }
 #pragma always_inline reset
 
@@ -414,7 +414,7 @@ extern "C" int parseHexString(void);
 extern "C" int fn_801D2008(char *);
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" void *memset(void *, int, unsigned long);
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
 __declspec(section ".sdata") extern char lbl_8055C150[], lbl_8055C158[], lbl_8055C160[], lbl_8055C168[], lbl_8055C16C[];
 #pragma push
 #pragma use_lmw_stmw off
@@ -472,7 +472,7 @@ void fn_80253890(void *arg0, void *arg1) {
             *(int *)((char *)arg0 + 0x38) = -1;
         }
     } else {
-        fn_802E317C(labels + 0xA8, cfgPath);
+        Abend_Panic(labels + 0xA8, cfgPath);
     }
     if (manager->exists(lbl_8055C160)) {
         Vec3 def;
@@ -1330,7 +1330,7 @@ void *fn_80255758(void *arg0, s32 arg1, s32 arg2) {
     extern s32 fn_8012D838(s32); extern void fn_8012D8A8(s32);
     extern int __cntlzw(unsigned int);
     extern void *memmove(void *, const void *, unsigned long);
-    extern void fn_802E317C(const char *, ...);
+    extern void Abend_Panic(const char *, ...);
     (void)arg2;
     if (arg0 != 0) {
         *(void **)arg0 = lbl_80344B98;
@@ -1359,7 +1359,7 @@ void *fn_80255758(void *arg0, s32 arg1, s32 arg2) {
                 cursor++;
                 index++;
             }
-            fn_802E317C(lbl_803449D4);
+            Abend_Panic(lbl_803449D4);
         }
 
     second_pass:
@@ -1385,7 +1385,7 @@ void *fn_80255758(void *arg0, s32 arg1, s32 arg2) {
                 cursor2++;
                 index2++;
             }
-            fn_802E317C(lbl_803449D4);
+            Abend_Panic(lbl_803449D4);
         }
 
     finish:

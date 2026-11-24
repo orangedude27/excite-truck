@@ -625,7 +625,7 @@ extern void fn_802DFCC0(void);
 extern int GXGetTexObjMipMap(void *);
 extern unsigned short GXGetTexObjWrapS(void *);
 extern int GXGetTexObjFmt(void *);
-extern void fn_802E317C(const char *);
+extern void Abend_Panic(const char *);
 extern char lbl_8034CB00[];
 extern char lbl_8034CB24[];
 extern unsigned int gCpuLightTexData;
@@ -716,16 +716,16 @@ void fn_802DC628(void) {
     volatile unsigned char *cpuLightTexObj = (volatile unsigned char *)*(void **)&gCpuLightTextures;
     /* Validate CPU-light source texture (mipmap/wrap/size expectations) and cache its GX format for lookups. */
     if (GXGetTexObjMipMap((void *)(cpuLightTexObj + 0x24)) != 6)
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_8034CB00);
+        ((void (*)(const char *, ...))Abend_Panic)(lbl_8034CB00);
     if (GXGetTexObjWrapS((void *)(cpuLightTexObj + 0x24)) != 0x200)
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_8034CB24);
+        ((void (*)(const char *, ...))Abend_Panic)(lbl_8034CB24);
     gCpuLightTexData = GXGetTexObjFmt((void *)(cpuLightTexObj + 0x24)) + 0x80000000;
 }
 #pragma pop
 extern int GXGetTexObjMipMap(void *);
 extern unsigned short GXGetTexObjWrapS(void *);
 extern int GXGetTexObjFmt(void *);
-extern void fn_802E317C(const char *);
+extern void Abend_Panic(const char *);
 extern char lbl_8034CB00[];
 extern char lbl_8034CB24[];
 extern unsigned int gCpuLightTexData;

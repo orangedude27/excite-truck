@@ -57,13 +57,13 @@ void *fn_802E6B98(int chunkId) {
 }
 
 #pragma dont_inline on
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern char lbl_8034D690[];
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma push
 #pragma use_lmw_stmw off
-/* Register a memcard chunk record: log its id/type/size, then panic (fn_802E317C
+/* Register a memcard chunk record: log its id/type/size, then panic (Abend_Panic
  * aborts) if a record with this cookie id is already in the table; otherwise append
  * a new 0x14-byte record {id, type, addr, size, callback} and bump the record count. */
 void fn_802E6BD8(unsigned int cookieId, unsigned int recordType, unsigned int recordAddr, unsigned int recordSize, unsigned int recordCallback) {
@@ -79,7 +79,7 @@ void fn_802E6BD8(unsigned int cookieId, unsigned int recordType, unsigned int re
     goto loop_check;
 loop_body:
     if (cookieId == *(unsigned int *)chunk)
-        fn_802E317C(lbl_8034D690, cookieId);
+        Abend_Panic(lbl_8034D690, cookieId);
     chunk += 0x14;
     index++;
 loop_check:

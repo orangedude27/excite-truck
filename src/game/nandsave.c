@@ -10,7 +10,7 @@ extern char lbl_8034D9C0[];
 extern int fn_802E95E0(void *, void (*)(void), int);
 extern void fn_802E9010(void);
 extern int NANDInit(void);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern void fn_801282F4(void);
 extern void fn_801282EC(int);
 extern int fn_8012850C(int, const char *);
@@ -343,7 +343,7 @@ int fn_802E8C6C(int request) {
 /* Initialize the NAND-save subsystem: bring up NAND (panic on failure), set up the allocator and async buffer, then register the save-pump and reset callbacks. */ void fn_802E8CA8(void) {
     int nandInitResult = NANDInit();
     if (nandInitResult != 0) {
-        fn_802E317C(lbl_8034DED4, nandInitResult);
+        Abend_Panic(lbl_8034DED4, nandInitResult);
     }
     fn_801282F4();
     fn_801282EC(0x80);
@@ -390,7 +390,7 @@ extern unsigned char lbl_80560035;
 extern char lbl_8034E0BC[];
 extern int fn_802ECC10(void);
 extern char lbl_8034E130[];
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern void fn_802E6B94(void);
 extern void fn_802E6B50(void);
 extern void fn_80127D58(void *);
@@ -525,7 +525,7 @@ u32 fn_802E8D84(void) { return 1; }
     if (rmemcard_async_buffer != 0) {
         /* read into the shared staging buffer and copy out of it */
         if (len > RMEMCARD_ASYNC_BUFFER_SIZE) {
-            fn_802E317C(logStrings + 0x5F0, len, RMEMCARD_ASYNC_BUFFER_SIZE);
+            Abend_Panic(logStrings + 0x5F0, len, RMEMCARD_ASYNC_BUFFER_SIZE);
         }
         bytes_read = NANDRead(file.info, (void *)rmemcard_async_buffer, len);
         if (bytes_read == len) {

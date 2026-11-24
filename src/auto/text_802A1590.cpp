@@ -295,7 +295,7 @@ extern "C" void fn_802A1860(void) {}
 extern "C" char* lbl_802FAA10[];
 extern "C" char lbl_80349934[];
 extern "C" int stricmp(const char*, const char*);
-extern "C" void fn_802E317C(const char*, const char*);
+extern "C" void Abend_Panic(const char*, const char*);
 #pragma use_lmw_stmw off
 /* Look up a trail system type ID by name from a static name/ID table. */
 extern "C" s32 fn_802A1864(const char *name) {
@@ -313,7 +313,7 @@ extern "C" s32 fn_802A1864(const char *name) {
         ++i;
         entry += 2;
     } while (i < 6);
-    ((void (*)(const char *, ...))fn_802E317C)(lbl_80349934, name);
+    ((void (*)(const char *, ...))Abend_Panic)(lbl_80349934, name);
     return 0;
 }
 
@@ -394,7 +394,7 @@ extern "C" void *fn_802A194C(void *terrainObj) {
             return fn_802A3D3C(result, (DummyReceiver_802A3314 *)terrainObj);
         return result;
     default:
-        ((void (*)(const char *, ...))fn_802E317C)(strings + 0xA8, type);
+        ((void (*)(const char *, ...))Abend_Panic)(strings + 0xA8, type);
         return 0;
     }
 }

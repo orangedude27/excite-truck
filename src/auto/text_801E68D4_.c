@@ -26,7 +26,7 @@ extern s32 fn_801E5E24(s32, void*, s32, void*);
 extern void fn_801BFD34(void*, void*, s32);
 extern void fn_80015B20(void*, void*, s32);
 extern void fn_802C70AC(s32, void*, s32, s32);
-extern void fn_802E317C(const char*, ...);
+extern void Abend_Panic(const char*, ...);
 extern char lbl_80339A20[]; /* "anim: release_buffer: unknown buffer %p" */
 #pragma scheduling invalid_target
 /* RealName: AnimBufferPool_Acquire — return the next free anim streaming buffer, or 0 if all 8 slots are in use. */
@@ -66,7 +66,7 @@ void fn_801E6924(s32 buffer) {
         }
         slot++;
     }
-    fn_802E317C(&lbl_80339A20[0], buffer);
+    Abend_Panic(&lbl_80339A20[0], buffer);
 }
 #pragma scheduling reset
 
@@ -126,12 +126,12 @@ void *fn_801E6A3C(s32 arg0, s32 arg1, s32 arg2) {
     handle = fn_802C6FC0(arg0, arg2, 0);
     entry = fn_801E592C();
     if (entry == 0) {
-        ((void (*)(const char *, void *, void *))fn_802E317C)(lbl_80339A48, result, (void *)handle);
+        ((void (*)(const char *, ...))Abend_Panic)(lbl_80339A48, result, (void *)handle);
     }
     result = fn_801284F8(0x73C, (const char *)&lbl_8055AEF8);
     memset(result, 0, 0x73C);
     *(s32 *)((u8 *)result + 8) = fn_801E5990(entry);
-    initial = *(volatile float *)&lbl_80562D78;
+    initial = 0.0f;
     *(s32 **)((u8 *)result + 4) = entry;
     *(s32 *)result = handle;
     *(float *)((u8 *)result + 0x38) = initial;
@@ -142,10 +142,10 @@ void *fn_801E6A3C(s32 arg0, s32 arg1, s32 arg2) {
     if (arg1 == 1) {
         *((u8 *)result + 0xD) = 1;
     }
-    one = *(volatile float *)&lbl_80562D78;
+    one = 0.0f;
     *(s32 *)((u8 *)result + 0x14) = 0;
     base = (u8 *)result;
-    zero = *(volatile float *)&lbl_80562D7C;
+    zero = 1.0f;
     dst = (float *)(base + 0x3C);
     *((u8 *)result + 0xC) = 0;
     src = (float *)(base + 0x53C);
@@ -223,9 +223,9 @@ void *fn_801E6BEC(char *arg0) {
     loadInfo.swapEndian = 0;
     animData = (char *)fn_8012C370(path, 0x416e696d, &loadInfo.version, &loadInfo.dataSize, &loadInfo.isNew, &loadInfo.swapEndian);
     if (animData == 0)
-        fn_802E317C(lbl_80339A64, path);
+        Abend_Panic(lbl_80339A64, path);
     if ((unsigned int)loadInfo.version != 2)
-        fn_802E317C(lbl_80339A78, path, loadInfo.version, 2);
+        Abend_Panic(lbl_80339A78, path, loadInfo.version, 2);
     strcpy(animData + 0x10, path);
     {
         char *dot = fn_80029004(animData + 0x10, 0x2e);
@@ -243,7 +243,7 @@ void fn_801E6CC8(void* animData, s8 value) {
 
 typedef unsigned int u32;
 extern int fn_8012EDA8(void *, int, u32 *);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 typedef unsigned long long u64;
 typedef struct AnimTrack {
     float a[4];
@@ -312,16 +312,16 @@ void fn_801E6CD0(void *arg0, void *arg1, float farg0) {
     float *dst;
     float *src;
     s32 i;
-    float a, b, c, d;
-    u32 sp8 = 0;
+    double a, b, c, d;
+    u32 sp8;
     const char *messages = lbl_80339A20;
 
     *(void **)((u8 *)arg0 + 0x10) = arg1;
     *(s32 *)((u8 *)arg0 + 0x18) = 0;
     *(s32 *)((u8 *)arg0 + 0x1C) = -1;
     *(float *)((u8 *)arg0 + 0x38) = -farg0;
-    if (arg1 != 0 && *(s32 *)((u8 *)arg0 + 8) < *(s32 *)((u8 *)arg1 + 8))
-        fn_802E317C(messages + 0x80);
+    if (arg1 != 0 && *(s32 *)((u8 *)arg1 + 8) > *(s32 *)((u8 *)arg0 + 8))
+        Abend_Panic(messages + 0x80);
 
     dst = (float *)((u8 *)arg0 + 0x3C);
     src = (float *)arg0;
@@ -337,10 +337,10 @@ void fn_801E6CD0(void *arg0, void *arg1, float farg0) {
         d = src[0x548 / 4];
         src += 4;
         dst[7] = d;
-        dst[0] = a;
-        dst[1] = b;
-        dst[2] = c;
-        dst[3] = d;
+        dst[0] = (float)a;
+        dst[1] = (float)b;
+        dst[2] = (float)c;
+        dst[3] = (float)d;
         dst[9] = -farg0;
         dst[8] = -farg0;
         dst += 10;
@@ -348,7 +348,7 @@ void fn_801E6CD0(void *arg0, void *arg1, float farg0) {
 
     if (arg1 != 0 && *(s32 *)arg1 > *(s32 *)((u8 *)arg1 + 4)) {
         if (*((u8 *)arg0 + 0xD) == 0)
-            fn_802E317C(messages + 0xB8);
+            Abend_Panic(messages + 0xB8);
         if (*(s32 *)((u8 *)arg0 + 0x14) == 0)
             *(s32 *)((u8 *)arg0 + 0x14) = fn_801E68D4();
         if (*(s32 *)((u8 *)arg0 + 0x14) == 0) {
@@ -356,8 +356,8 @@ void fn_801E6CD0(void *arg0, void *arg1, float farg0) {
             return;
         }
         if (fn_8012EDA8((u8 *)arg1 + 0x10, 0x416E6D30, &sp8) == 0)
-            fn_802E317C(messages + 0x100, (u8 *)arg1 + 0x10);
-        if (sp8 != 2) fn_802E317C(messages + 0x58, (u8 *)arg1 + 0x10, 2);
+            Abend_Panic(messages + 0x100, (u8 *)arg1 + 0x10);
+        if (sp8 != 2) Abend_Panic(messages + 0x58, (u8 *)arg1 + 0x10, 2);
     } else if (*(s32 *)((u8 *)arg0 + 0x14) != 0) {
         fn_801E6924(*(s32 *)((u8 *)arg0 + 0x14));
         *(s32 *)((u8 *)arg0 + 0x14) = 0;

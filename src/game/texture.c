@@ -4,7 +4,7 @@
 // auto/text_802CCB84_.c pending a promotion pass.
 #include <macros.h>
 extern char lbl_8034BA98[];
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern char lbl_8034B538[];
 extern char texMsgBadExtractionName[];
 extern void *jumptable_8034B794[];
@@ -67,7 +67,7 @@ extern void fn_801282F4(void);
     textureId = ((int (*)(int, int))fn_802CAC28)(lbl_8055D038, 0);
     gDefaultTextureSlot = textureId;
     if (textureId == -1)
-        fn_802E317C(messages + 0x40, lbl_8055D038);
+        Abend_Panic(messages + 0x40, lbl_8055D038);
     textureId = ((int (*)(int, int))fn_802CAC28)((int)(messages + 0x60), 0);
     lbl_8055D03C = textureId;
     if (textureId != -1) {
@@ -95,7 +95,7 @@ extern void fn_801282F4(void);
     byteOffset = 0;
     do {
         if (*(int *)(gTextureSlotTable + byteOffset) != 0)
-            fn_802E317C(lbl_8034B5F0, slotIndex, gTextureSlotTable + byteOffset + 4);
+            Abend_Panic(lbl_8034B5F0, slotIndex, gTextureSlotTable + byteOffset + 4);
         slotIndex++;
         byteOffset += 0x4C;
     } while (slotIndex < 0x200);
@@ -286,9 +286,9 @@ extern void fn_802CA57C(void *, int, int, int);
     textureData = ((int (*)(int, int, unsigned int *, int *, signed char *, unsigned char *))fn_8012C370)(texturePath, 0x54455820, &version, &dataSize, &newlyLoaded, &swapEndian);
     if (textureData != 0) {
         if ((textureData & 0x7F) != 0)
-            fn_802E317C(lbl_8034B634, texturePath, textureData);
+            Abend_Panic(lbl_8034B634, texturePath, textureData);
         if (version != 0xF)
-            fn_802E317C(lbl_8034B658, texturePath, version);
+            Abend_Panic(lbl_8034B658, texturePath, version);
         if (swapEndian != 0)
             fn_802CA57C((void *)textureData, texturePath, 0, flags);
     }
@@ -336,7 +336,7 @@ int texGetExtractionName(int path) {
     if (((int (*)(const unsigned char *))texIsExtractionName)((const unsigned char *)path) != 0) {
         slashPtr = (int)strchr((char *)path, 0x2F);
         if (slashPtr == 0)
-            fn_802E317C(texMsgBadExtractionName, path);
+            Abend_Panic(texMsgBadExtractionName, path);
         return slashPtr + 1;
     }
     return path;
@@ -384,10 +384,10 @@ int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
     if (strlen((char *)path_value) >= 0x10 &&
         ((int (*)(const char *))texIsExtractionName)((char *)path_value) == 0 &&
         fn_802CA7F4((char *)path_value) == 0) {
-        fn_802E317C((const char *)(strings + 0x2B8), (char *)path_value, strlen((char *)path_value), 0x10);
+        Abend_Panic((const char *)(strings + 0x2B8), (char *)path_value, strlen((char *)path_value), 0x10);
     }
     if (strlen((char *)path_value) >= 0x20)
-        fn_802E317C((const char *)(strings + 0x2E0), (char *)path_value, strlen((char *)path_value), 0x20);
+        Abend_Panic((const char *)(strings + 0x2E0), (char *)path_value, strlen((char *)path_value), 0x20);
     if ((signed char)*(char *)path_value == 0 && arg3 == 1)
         path_value = (int)(strings + 0x30C);
 
@@ -417,7 +417,7 @@ int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
     }
 
     if (best < 0)
-        fn_802E317C((const char *)(strings + 0x33C), (char *)path_value);
+        Abend_Panic((const char *)(strings + 0x33C), (char *)path_value);
 
     if (flag == 0) {
         arg2 = fn_802CA658((int)(char *)path_value, arg3);
@@ -529,7 +529,7 @@ void fn_802CAC54(int arg0)
     entry = (int *) (base + offset);
     if (entry[0] <= 0)
     {
-      fn_802E317C(lbl_8034B8E0, (base + offset) + 4);
+      Abend_Panic(lbl_8034B8E0, (base + offset) + 4);
     }
   }
   offset = arg0 * ((long) 0x4C);
@@ -857,7 +857,7 @@ extern char lbl_8034B940[];
     }
 found:
     if (freeSlot < 0)
-        fn_802E317C(lbl_8034B940); /* "tex: Out of texture slots" */
+        Abend_Panic(lbl_8034B940); /* "tex: Out of texture slots" */
     return (int)((unsigned char *)textureSlots + freeSlot * texSlotSize);
 }
 #pragma pop
@@ -1074,7 +1074,7 @@ void fn_802CB6B4(void)
           }
 
           fn_802E30C8(lbl_8034BB5C, secondTotal >> 10);
-          fn_802E317C(lbl_8034BAEC);
+          Abend_Panic(lbl_8034BAEC);
         }
         fn_80128668(manager);
       }
@@ -1244,7 +1244,7 @@ void fn_802CBBE8(register int **link, int *node, int *scan) {
         link = (int **)((char *)scan + 0x14);
     }
     if (found == 0)
-        fn_802E317C(lbl_8034BA04);
+        Abend_Panic(lbl_8034BA04);
 }
 
 #pragma use_lmw_stmw off
@@ -1341,7 +1341,7 @@ void fn_802CBD7C(register void **link, void *node, void *scan) {
         link = (void **)((char *)scan + 0x10);
     }
     if (found == 0)
-        fn_802E317C(lbl_8034BA04);
+        Abend_Panic(lbl_8034BA04);
 }
 
 extern int fn_802D9068(void);
@@ -1472,9 +1472,9 @@ void fn_802CC03C(int **listHead, int *record, int texId) {
     record[1] = texId;
     record[3] = fn_802D9154();
     if (record[0] == 0)
-        fn_802E317C(lbl_8034BA34, nameBuf);
+        Abend_Panic(lbl_8034BA34, nameBuf);
     if ((unsigned int)version != 0xF)
-        fn_802E317C(lbl_8034BA70, nameBuf, version, 0xF);
+        Abend_Panic(lbl_8034BA70, nameBuf, version, 0xF);
     ((void (*)(int **, int, int *))fn_802CBB9C)(listHead, (int)listHead + 4, record);
 }
 
@@ -1610,7 +1610,7 @@ void *fn_802CC2C8(void *arg0, int arg1) {
         result = block + manager[1] + 1;
     }
     if (result == 0 && *(unsigned char *)arg0 != 0)
-        fn_802E317C(lbl_8034BB28);
+        Abend_Panic(lbl_8034BB28);
     return result;
 }
 
@@ -1979,7 +1979,7 @@ fn_802CBC3C(root, *(int *)(root + 0x2848));
 gActiveTextureSlot = -2;
 }
 #pragma pop
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern char texMsgBadExtractionName[];
 
 extern int lbl_8055D03C;

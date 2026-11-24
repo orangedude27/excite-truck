@@ -461,7 +461,7 @@ extern void fn_8013C804(void);
 extern void fn_8013C8B8(void);
 extern void fn_80017558(void);
 extern void fn_80016D14(void **);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 #pragma push
 #pragma processor 750
 /* Rebuilds vehicle-related lookup data: resets counts, loads driver/vehicle tables if present, resolves each entry's vehicle index, then finalizes initialization. */
@@ -478,7 +478,7 @@ void fn_80016C1C(void) {
     lbl_8055D550 = 0;
     if (lbl_8055D538 != 0) fn_80016D14(lbl_8055D538);
     if (lbl_8055D53C != 0) fn_80016D14(lbl_8055D53C);
-    if (lbl_8055D550 == 0) fn_802E317C(lbl_802FCEEC);
+    if (lbl_8055D550 == 0) Abend_Panic(lbl_802FCEEC);
     for (entryIndex = 0, entryOffset = 0; entryIndex < (int)lbl_8055D54C; entryOffset += 0x5C, entryIndex++) {
         vehicleCount = (int)lbl_8055D550;
         foundMatch = 0;
@@ -618,7 +618,7 @@ extern char *fn_80029004(char *, int);
 extern "C" char *fn_80131234(char *);
 extern int fn_80016DD8(const char *);
 extern int fn_8013C8E8(char *);
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
 extern "C" void fn_801345D8(char *, int, const char *, ...);
 extern "C" void fn_80017010(void *arg0) {
 #pragma dont_inline on
@@ -702,9 +702,9 @@ extern "C" void fn_80017010(void *arg0) {
                         off += 0xA8;
                         eidx++;
                     }
-                    if (*(int *)(entry + 8) == 0) fn_802E317C(base + 0x94, entry + 0x2C);
+                    if (*(int *)(entry + 8) == 0) Abend_Panic(base + 0x94, entry + 0x2C);
                 } else {
-                    fn_802E317C(base + 0xC4, entry + 0x2C);
+                    Abend_Panic(base + 0xC4, entry + 0x2C);
                 }
             }
         }
@@ -797,7 +797,7 @@ extern char lbl_802FD040[];
 #define sVehicleCount        lbl_8055D550 /* entries in sVehicleList */
 #define STR_DUP_DRIVER_NUM   lbl_802FD00C /* "driver: Drivers %s and %s have the same number (%d)" */
 #define STR_DUP_VEHICLE_NUM  lbl_802FD040 /* "driver: two vehicles (%s and %s) have the same number (%d)" */
-#define debug_print          fn_802E317C  /* debug console print */
+#define debug_print          Abend_Panic  /* debug console print */
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling on

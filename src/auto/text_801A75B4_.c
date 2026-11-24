@@ -164,6 +164,7 @@ void fn_801A7628(void) {
 }
 #pragma push
 #pragma scheduling invalid_target
+#pragma dont_inline on
 /* Refresh the pointer state: optionally reload all four controller configs, then
  * read the pointer and store its x/y as screen-normalized floats plus its 3 button bits. */
 void fn_801A7844(int resetControllers) {
@@ -345,44 +346,144 @@ static inline void copy_recs_801A7A5C(Rec_801A7A5C *src, Rec_801A7A5C *dst, char
     }
 }
 void fn_801A7A5C(void) {
-    int i, j;
-    float v;
-    Rec_801A7A5C* src;
-    Rec_801A7A5C* dst;
-    v = 0.0f;
-    {
-        Tail_801A7A5C* t = (Tail_801A7A5C*)(lbl_80435050 + 0xC8);
-        t->x = v;
-        t->y = v;
-        t->c = 0;
-        t->b = 0;
-        t->a = 0;
-        ((void (*)(int, void *))fn_801A7844)(1, t);
-    }
+    char *base = (char *)lbl_80435050;
+    Tail_801A7A5C *tail = (Tail_801A7A5C *)(base + 0x320);
+    float zero = 0.0f;
+
+
+    Rec_801A7A5C *src;
+    Rec_801A7A5C *dst;
+    int i;
+    float fa, fb;
+    unsigned char ba, bb;
+    int wa, wb;
+
+    *(float *)(base + 0x320) = zero;
+    tail->y = zero;
+    tail->c = 0;
+    tail->b = 0;
+    tail->a = 0;
     fn_801A7844(1);
-    dst = (Rec_801A7A5C*)(lbl_80435050 + 100);
-    src = (Rec_801A7A5C*)lbl_80435050;
-    i = 4;
-    do {
-        for (j = 0; j < 8; j++) dst->f[j] = src->f[j];
-        for (j = 0; j < 8; j++) dst->b[j] = src->b[j];
-        for (j = 0; j < 8; j++) dst->b[8 + j] = src->b[8 + j];
-        for (j = 0; j < 8; j++) dst->b[16 + j] = src->b[16 + j];
-        for (j = 0; j < 8; j++) dst->b[24 + j] = src->b[24 + j];
-        for (j = 0; j < 8; j++) dst->w[j] = src->w[j];
-        dst->c = src->c;
+    fn_801A7844(1);
+    src = (Rec_801A7A5C *)base;
+    dst = src + 4;
+    for (i = 0; i < 4; i++) {
+        fb = src->f[1];
+        fa = src->f[0];
+        dst->f[0] = fa;
+        fa = src->f[2];
+        dst->f[1] = fb;
+        fb = src->f[3];
+        dst->f[2] = fa;
+        fa = src->f[4];
+        dst->f[3] = fb;
+        fb = src->f[5];
+        dst->f[4] = fa;
+        fa = src->f[6];
+        dst->f[5] = fb;
+        fb = src->f[7];
+        dst->f[6] = fa;
+        ba = src->b[0];
+        dst->f[7] = fb;
+        bb = src->b[1];
+        dst->b[0] = ba;
+        ba = src->b[2];
+        dst->b[1] = bb;
+        bb = src->b[3];
+        dst->b[2] = ba;
+        ba = src->b[4];
+        dst->b[3] = bb;
+        bb = src->b[5];
+        dst->b[4] = ba;
+        ba = src->b[6];
+        dst->b[5] = bb;
+        bb = src->b[7];
+        dst->b[6] = ba;
+        ba = src->b[8];
+        dst->b[7] = bb;
+        bb = src->b[9];
+        dst->b[8] = ba;
+        ba = src->b[10];
+        dst->b[9] = bb;
+        bb = src->b[11];
+        dst->b[10] = ba;
+        ba = src->b[12];
+        dst->b[11] = bb;
+        bb = src->b[13];
+        dst->b[12] = ba;
+        ba = src->b[14];
+        dst->b[13] = bb;
+        bb = src->b[15];
+        dst->b[14] = ba;
+        ba = src->b[16];
+        dst->b[15] = bb;
+        bb = src->b[17];
+        dst->b[16] = ba;
+        ba = src->b[18];
+        dst->b[17] = bb;
+        bb = src->b[19];
+        dst->b[18] = ba;
+        ba = src->b[20];
+        dst->b[19] = bb;
+        bb = src->b[21];
+        dst->b[20] = ba;
+        ba = src->b[22];
+        dst->b[21] = bb;
+        bb = src->b[23];
+        dst->b[22] = ba;
+        ba = src->b[24];
+        dst->b[23] = bb;
+        bb = src->b[25];
+        dst->b[24] = ba;
+        ba = src->b[26];
+        dst->b[25] = bb;
+        bb = src->b[27];
+        dst->b[26] = ba;
+        ba = src->b[28];
+        dst->b[27] = bb;
+        bb = src->b[29];
+        dst->b[28] = ba;
+        ba = src->b[30];
+        dst->b[29] = bb;
+        bb = src->b[31];
+        dst->b[30] = ba;
+        wa = src->w[0];
+        dst->b[31] = bb;
+        wb = src->w[1];
+        dst->w[0] = wa;
+        wa = src->w[2];
+        dst->w[1] = wb;
+        wb = src->w[3];
+        dst->w[2] = wa;
+        wa = src->w[4];
+        dst->w[3] = wb;
+        wb = src->w[5];
+        dst->w[4] = wa;
+        wa = src->w[6];
+        dst->w[5] = wb;
+        wb = src->w[7];
+        dst->w[6] = wa;
+        ba = src->c;
         src++;
+        dst->w[7] = wb;
+        dst->c = ba;
         dst++;
-        i--;
-    } while (i != 0);
+    }
     {
-        Tail_801A7A5C* u = (Tail_801A7A5C*)(lbl_80435050 + 0xC8);
-        Tail_801A7A5C* vv = (Tail_801A7A5C*)(lbl_80435050 + 0xCB);
-        vv->x = u->x;
-        vv->y = u->y;
-        vv->a = u->a;
-        vv->b = u->b;
-        vv->c = u->c;
+        Tail_801A7A5C *u = (Tail_801A7A5C *)(base + 0x320);
+        Tail_801A7A5C *vv = (Tail_801A7A5C *)(base + 0x32C);
+        unsigned char c, b, a;
+        float y, x;
+        x = u->x;
+        y = u->y;
+        a = u->a;
+        b = u->b;
+        c = u->c;
+        vv->x = x;
+        vv->y = y;
+        vv->a = a;
+        vv->b = b;
+        vv->c = c;
     }
 }
 
@@ -643,16 +744,16 @@ float fn_801A85E8(void *arg0) {
         float value1;
         unsigned char flags[3];
     };
-    register struct Row *output;
-    register struct Config *config;
-    register char *base;
-    register struct Row *row;
+    struct Row *output;
+    struct Config *config;
+    char *base;
+    struct Row *row;
     struct Row *source;
     volatile char *sourceBase;
     struct Config *active;
     struct Row snapshot;
     union { unsigned int words[3]; float values[2]; unsigned char bytes[12]; } saved;
-    int index;
+    unsigned int index;
     float result;
     float copyF0, copyF1;
     unsigned char copyB0, copyB1;
@@ -910,11 +1011,11 @@ union { unsigned int words[3]; float values[2]; unsigned char bytes[12]; } saved
 int index;
 int result;
 
-if (*(int *)arg0 == 1)
+if (*(const int *)arg0 == 1)
 return 0;
 
 base = (volatile char *)lbl_80435050;
-index = *(int *)((char *)arg0 + 4);
+index = *(const int *)((const char *)arg0 + 4);
 row = (struct Row *)(base + index * 0x64);
 snapshot = *row;
 output = (struct Row *)(base + index * 0x64);
@@ -1097,7 +1198,7 @@ done:
 int fn_801A8F10(int *__restrict control) {
 #define gControlState lbl_80435050
 #define sUnhandledAxisMsg lbl_80334EE0
-#define Panic fn_802E317C
+#define Panic Abend_Panic
     struct ControlFlags {
         unsigned int axisMask;   /* +0x00 one bit per analog axis/direction */
         unsigned int buttonMask; /* +0x04 one bit per digital button */

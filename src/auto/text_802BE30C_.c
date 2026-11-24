@@ -6,7 +6,7 @@
 extern s32 fn_8012C370(s32, s32, s32, s32, s32, s32);
 extern void fn_8012E96C(s32);
 extern void fn_8012C4D8(void *);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern char lbl_8034AC68[];
 extern char lbl_8034AC74[];
 extern void *lbl_804C06E0[];
@@ -124,7 +124,7 @@ void fn_802BE38C(void) {
             }
             lbl_8055FACC = 1;
         } else {
-            fn_802E317C(lbl_8034AC74, params[2]);
+            Abend_Panic(lbl_8034AC74, params[2]);
         }
         fn_8012C4D8(finfo);
     }

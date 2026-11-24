@@ -60,7 +60,7 @@ extern f64 lbl_80560390;
 #define CP8(R, q) do { (R).a = (q)->a; *(s32 *)&(R).x = *(s32 *)&(q)->x; *(s32 *)&(R).y = *(s32 *)&(q)->y; (R).d = (q)->d; (R).e = (q)->e; (R).f = (q)->f; (R).g = (q)->g; (R).h = (q)->h; } while (0)
 extern f32 fn_80011EB0(s32);
 extern f32 lbl_80560378, lbl_8056037C, lbl_80560380, lbl_80560384, lbl_80560388;
-extern void fn_802E317C(void *, ...);
+extern void Abend_Panic(void *, ...);
 extern void fn_80147230(void *, void *, ...);
 extern void fn_80130978(void *, s32, f32);
 typedef struct { char pad0[4]; int f4; char pad8[4]; void *fC; char pad10[0x20]; void *f30; } State148;
@@ -223,7 +223,7 @@ void fn_80013EDC(void *arg0, void *name, s32 mode, char *first, char *second, f3
         L.f = p->f;
         L.g = p->g;
     } else {
-        fn_802E317C(base + 0x80);
+        Abend_Panic(base + 0x80);
         L.x = lbl_80560378;
         L.y = lbl_8056037C;
         L.e = lbl_80560380;

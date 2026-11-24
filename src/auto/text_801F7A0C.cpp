@@ -285,7 +285,7 @@ extern void *lbl_8055EC38;
 extern void *lbl_8055EC44;
 int stricmp(const char *, const char *);
     void *fn_801F8188(void *a, s32 b, s32 c);
-  void fn_802E317C(const char *, ...);
+  void Abend_Panic(const char *, ...);
   s32 fn_801F9450(void *node);
       void *fn_801F95C4(void *fn, void *node);
           void fn_801F96A8(void *node);
@@ -1058,7 +1058,7 @@ typeChecked:
         idx++;
         p++;
         if (idx == 0x18) {
-            fn_802E317C(base + 0x190, name);
+            Abend_Panic(base + 0x190, name);
         }
     }
     *(s32 *)(dest + 0x50) = idx;
@@ -1473,7 +1473,7 @@ outer_check:
     if (node != 0) goto done;
     if (list != 0) goto next_list;
 done:
-    if (node == 0) fn_802E317C((const char *)lbl_8033B210, (const char *)arg1);
+    if (node == 0) Abend_Panic((const char *)lbl_8033B210, (const char *)arg1);
     return node;
 }
 
@@ -1545,10 +1545,10 @@ extern "C" void fn_801F973C(void *arg0, void *arg1, u32 arg2)
       *((s32 *) (scratch + 0x30)) = zero;
       fn_801BFD34(scratch + 0x24, ((u8 *) node) + 0x54, arg1);
       fn_80015B20(scratch, ((u8 *) node) + 0x30, arg1);
-      s32 value = *((s32 *) (((u8 *) arg1) + 0x34));
+      unsigned int value = *((s32 *) (((u8 *) arg1) + 0x34));
       *((s32 *) (scratch + 0x30)) = flags;
       *((s32 *) (scratch + 0x34)) = value;
-      ((Dispatchable *) node)->call(scratch, arg1);
+      ((Dispatchable *) node)->call(scratch, node);
       node = *((void **) (((u8 *) node) + 0x24));
     }
   }
@@ -1588,7 +1588,7 @@ extern "C" void *fn_801F981C(void *object, s32 flags) {
     ((Dispatch *)typeDef)->init(params, object);
 
     if (*(u8 *)((u8 *)typeDef + 0x2C) != 0 && (flags & 4) == 0) {
-        fn_802E317C(logBase + 0x2A0, typeDef);
+        Abend_Panic(logBase + 0x2A0, typeDef);
     }
     if (*(s32 *)(params + 0x38) != fn_80204CF0()) {
         fn_802E30C8(logBase + 0x2E0, dynoName);
@@ -2452,7 +2452,7 @@ extern "C" void fn_801FAAC4(char *dest, void *mgr) {
         typeIndex++;
         entry++;
         if (typeIndex == 0x18) {
-            fn_802E317C(keyBase + 0x190, typeName);
+            Abend_Panic(keyBase + 0x190, typeName);
         }
     }
     *(s32 *)((u8 *)dest + 0x50) = typeIndex;
@@ -2777,7 +2777,7 @@ extern "C" void fn_801FB420(void *arg0, void *arg1) {
         case 4: r24 = ((FnPtr)fn_801FBFE8)(self + 0x10c); break;
         case 3: r24 = ((FnPtr)fn_801FBF48)(self + 0x10c); break;
         case 16: r24 = ((FnPtr)fn_801FBEA8)(self + 0x10c); break;
-        default: fn_802E317C(base + 0x510); r24 = 0; break;
+        default: Abend_Panic(base + 0x510); r24 = 0; break;
         }
     }
     if (r24 != 0) {
@@ -3017,13 +3017,14 @@ extern "C" void fn_801FBEA8(void *arg0) {
 extern "C" void fn_801FBF48(void *arg0) {
     void *obj = fn_801284F8(0x2C, lbl_8033B52C);
     if (obj != 0) {
-        f32 x = *(volatile f32 *)((char *)arg0 + 0x58);
-        f32 y = *(volatile f32 *)((char *)arg0 + 0x5C);
+        f32 x, y;
         *(void **)obj = lbl_80333B98;
         *(s32 *)((char *)obj + 0xC) = 0;
         *(s32 *)((char *)obj + 4) = 0;
         *(s32 *)((char *)obj + 8) = 0;
         *(s32 *)((char *)obj + 0x18) = 0x52494E47;
+        x = *(const f32 *)((const char *)arg0 + 0x58);
+        y = *(const f32 *)((const char *)arg0 + 0x5C);
         *(f32 *)((char *)obj + 0x10) = 50000.0f;
         *(f32 *)((char *)obj + 0x14) = 1.0f;
         *(s32 *)((char *)obj + 0x20) = 100;

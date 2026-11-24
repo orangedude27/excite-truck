@@ -72,7 +72,7 @@ extern s32 fn_801EE0C8(s32);
 extern s32 fn_801E2CCC(s32, s32);
 extern s32 fn_8002F6AC(s32, void *(*)(void *, s32));
 extern void *fn_80287C80(void *, s32);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern const char lbl_80348A4C[];
 #pragma cplusplus on
 struct Vec3i_80287F90 {
@@ -597,7 +597,7 @@ extern "C" Vec3i_80287F90 fn_80287ED0(void **__restrict objectPtr, s32 featureId
        does not support the feature. */
     ModelInterface *model = *(ModelInterface **)objectPtr;
     if (model == 0 || model->getFeature(featureId) == 0) {
-        fn_802E317C(kUnsupportedModel, featureId);
+        Abend_Panic(kUnsupportedModel, featureId);
     }
     model = *(ModelInterface **)objectPtr;
     return ((ModelInterface *)model->getFeature(featureId))->getNamedVector(name);
@@ -641,7 +641,7 @@ extern "C" Vec3i_80287F90 fn_80287F90(void **arg1, s32 arg2, s32 arg3, s32 *src)
     s32 c;
     Ifc *obj = *(Ifc **)arg1;
     if (obj == 0 || obj->f0(arg2) == 0) {
-        fn_802E317C(lbl_80348A4C, arg2);
+        Abend_Panic(lbl_80348A4C, arg2);
     }
     c = src[2];
     b = src[1];

@@ -35,7 +35,7 @@ void fn_801EEFDC(int handler, unsigned int eventType) {
     }
 }
 #pragma scheduling reset
-void fn_802E317C(const char *, ...);
+void Abend_Panic(const char *, ...);
 extern char lbl_8033A328[];
 #pragma scheduling invalid_target
 /* Removes a handler from the event registry (18 event types x 4 slots);
@@ -59,7 +59,7 @@ extern char lbl_8033A328[];
     }
 done:
     if (!found) {
-        fn_802E317C(lbl_8033A328);
+        Abend_Panic(lbl_8033A328);
     }
 }
 
@@ -99,7 +99,7 @@ extern char lbl_8033A354[];
         if (bytesConsumed != -1) {
             offset = offset + bytesConsumed + 1;
         } else {
-            fn_802E317C(lbl_8033A354, *((volatile unsigned char *)script + offset + 4));
+            Abend_Panic(lbl_8033A354, *((volatile unsigned char *)script + offset + 4));
             return;
         }
     }

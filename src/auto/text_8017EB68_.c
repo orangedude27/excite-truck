@@ -237,7 +237,7 @@ extern int fn_801A8E38(void *);
 extern int fn_801A8E68(void *);
 extern s32 fn_801A8F10(void *);
 extern void fn_802E30C8(const char *, ...);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern s32 fn_802E85B0(s32);
 extern const char lbl_80331E28[];
 extern const char lbl_80332280[];
@@ -404,7 +404,7 @@ void fn_8017ED00(f32 dt) {
 #define LerpTo            fn_80144C80   /* a + t * (b - a) */
 #define ClampTo           fn_8014C8F8   /* value, low, high */
 #define LogPrint          fn_802E30C8
-#define PanicPrint        fn_802E317C
+#define PanicPrint        Abend_Panic
 #define PollInput         fn_801A7844
 #define ControllerType    fn_802E85B0   /* rjoy stub: always reports 3 */
 #define ReadController    fn_801298E8   /* snapshot of one controller's status */

@@ -5,7 +5,7 @@ typedef unsigned char u8;
 typedef signed long s32;
 
 extern void *fn_8012C370(void *, s32, s32 *, s32 *, s32, u8 *);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern char lbl_8032AF68[];
 extern char lbl_8032AF84[];
 #pragma scheduling invalid_target
@@ -23,10 +23,10 @@ void *fn_8012F150(s32 resource) {
     s32 i;
     data = fn_8012C370((void *)resource, 0x53544142, &chunkType, 0, 0, &needsSwap);
     if (data == 0) {
-        fn_802E317C(lbl_8032AF68, resource);
+        Abend_Panic(lbl_8032AF68, resource);
     }
     if (chunkType != 0) {
-        fn_802E317C(lbl_8032AF84, chunkType, 0, resource);
+        Abend_Panic(lbl_8032AF84, chunkType, 0, resource);
     }
     if (needsSwap != 0) {
         base = (volatile u8 *)data;

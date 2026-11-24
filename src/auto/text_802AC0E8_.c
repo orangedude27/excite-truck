@@ -221,7 +221,7 @@ int fn_802AC4A8(const char *name, int table)
     extern void *fn_802C6FC0(int, int, int);
     extern void *fn_80232578(const char *);
     extern void fn_802E30C8(const char *, ...);
-    extern void fn_802E317C(const char *, ...);
+    extern void Abend_Panic(const char *, ...);
     extern float fn_802AC344(void *, void *, float *);
     extern float fn_802AC454(void *, void *, float *);
     extern void *fn_8002F37C(void *, void *, void *, int, int);
@@ -364,7 +364,7 @@ copied:
                     fn_802E30C8(str + 0x88, rec->w[3].s + 1);
             }
         } else {
-            fn_802E317C(str + 0xA4, type);
+            Abend_Panic(str + 0xA4, type);
         }
     }
     }
@@ -437,7 +437,7 @@ copied:
             } else {
                 char *q = ((StrDefFn)(*(void ***)s)[6])(s, lbl_8055CD40, lbl_8055CD48);
                 if (sscanf(q, str + 0xF8, &seg->rot[0], &seg->rot[1], &seg->rot[2], &seg->rot[3]) != 4)
-                    fn_802E317C(str + 0x104, q, name);
+                    Abend_Panic(str + 0x104, q, name);
             }
             if (((HasFn)(*(void ***)s)[3])(s, lbl_8055CCF8)) {
                 volatile LVec2 v;

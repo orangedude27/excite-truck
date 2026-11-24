@@ -29,7 +29,7 @@ s32 ConfigGetSDCardHandle(void) {
 }
 
 /* SCInit/SCCheckStatus and the SC enums come from the two SDK headers above. */
-extern void fn_802E317C(const char*, ...); /* panic(): "PANIC: <msg>", then ABEND */
+extern void Abend_Panic(const char*, ...); /* panic(): "PANIC: <msg>", then ABEND */
 extern void ConfigCacheWpadSettings(void);             /* ConfigCacheWpadSettings(), below */
 extern char lbl_8034E238[];                /* "config: SCCheckStatus returns error!" */
 extern char lbl_80560040;                  /* sConfigReady */
@@ -54,7 +54,7 @@ void ConfigReadSystemSettings(void) {
         scStatus = SCCheckStatus();
     } while (scStatus == SC_STATUS_BUSY);
     if (scStatus == SC_STATUS_FATAL) {
-        fn_802E317C(sScCheckStatusError);
+        Abend_Panic(sScCheckStatusError);
     }
 
     aspectRatio = SCGetAspectRatio();

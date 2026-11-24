@@ -28,7 +28,7 @@ void fn_80127464(void);
   extern void *jumptable_8034EA80[];
   void fn_801345D8(void *, s32, void *, s32);
   s32 FileLookup(void *);
-  void fn_802E317C(void *, void *);
+  void Abend_Panic(void *, void *);
   s32 fn_802E37C4(s32);
   void fn_801282EC(s32);
   s32 fn_8012850C(s32, void *);
@@ -51,7 +51,7 @@ s32 fn_802EC4E8(s32 arg0) {
     ((void (*)(void *, s32, void *, ...))fn_801345D8)(sp10, 0x40, ((struct HomeStr *)lbl_8034E9E0)->s, arg0);
     sp8 = FileLookup(sp10);
     if (sp8 == -1)
-        ((void (*)(void *, ...))fn_802E317C)(base + 0x10, sp10);
+        ((void (*)(void *, ...))Abend_Panic)(base + 0x10, sp10);
     temp_r30 = fn_802E37C4(sp8);
     fn_801282EC(0x20);
     temp_r31 = fn_8012850C(temp_r30, base + 0x28);
@@ -75,7 +75,7 @@ extern void *memset(void *, int, unsigned int);
   extern void *jumptable_8034EA80[];
 extern void fn_801345D8(void *, s32, void *, s32);
 extern s32 FileLookup(void *);
-extern void fn_802E317C(void *, void *);
+extern void Abend_Panic(void *, void *);
 extern s32 fn_802E37C4(s32);
 extern void fn_801282EC(s32);
 extern s32 fn_8012850C(s32, void *);
@@ -242,7 +242,7 @@ void fn_802EC7AC(void) {
     i = 0;
     do {
         if (*callback != 0)
-            ((void (*)(void *, ...))fn_802E317C)(HOMEBTN2_UNREMOVED_MSG, (void *)*callback);
+            ((void (*)(void *, ...))Abend_Panic)(HOMEBTN2_UNREMOVED_MSG, (void *)*callback);
         ++i;
         ++callback;
     } while (i < HOMEBTN2_CALLBACK_COUNT);

@@ -4,7 +4,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern int vsprintf(char *str, const char *format, va_list ap);
-extern void fn_802E317C(void *arg0, ...);
+extern void Abend_Panic(void *arg0, ...);
 extern char lbl_8032BBC0[];
 #pragma push
 #pragma scheduling invalid_target
@@ -17,12 +17,12 @@ void fn_801345D8(char *buffer, int bufferSize, const char *fmt, ...) {
     writtenChars = vsprintf(buffer, fmt, args);
     va_end(args);
     if (writtenChars >= bufferSize) {
-        fn_802E317C(lbl_8032BBC0, writtenChars + 1, bufferSize);
+        Abend_Panic(lbl_8032BBC0, writtenChars + 1, bufferSize);
     }
     buffer[bufferSize - 1] = 0;
 }
 #pragma pop
-void fn_801346B4(char *dst, int len, const unsigned char *src) {
+void fn_801346B4(char *dst, int len, const char *src) {
     char *out = dst;
     signed char c;
     int i = 0;

@@ -107,7 +107,7 @@ extern void fn_8020C91C(s32);
 extern void fn_8023BFBC(s32, s32);
 extern void fn_802483E0(void);
 extern void fn_80248668(s32);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma optimization_level 4
@@ -498,7 +498,7 @@ extern "C" void fn_80247210(void) {
         break;
     }
 
-    fn_802E317C(lbl_8034397C);
+    Abend_Panic(lbl_8034397C);
 
     selectedRootIndex = -1;
     selectedResource = -1;
@@ -566,7 +566,7 @@ extern s32 fn_802E4A10(void);
 extern void fn_80137C84(int, int), fn_8023BCEC(void);
 extern void fn_8025812C(void), fn_8025C054(void), fn_800196FC(void), fn_80161DE4(void);
 extern void fn_8027DE6C(void), fn_80263F30(int,int,int);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern s32 lbl_802FA38C[5];
 extern char lbl_803432C0[];
 extern char lbl_80343970[];
@@ -698,7 +698,7 @@ void fn_802473A4(void) {
             case 14: fn_80263F30(1,1,1); break;
             case 15: again = 0; break;       /* back out to the attract screen */
             case 16: case 17: break;         /* nothing bound to these entries */
-            default: fn_802E317C(messages + 0x168); break;
+            default: Abend_Panic(messages + 0x168); break;
             }
         } while (again);
         /* The attract screen runs until the profile dialog fn_8024CF54 reports
@@ -1662,7 +1662,7 @@ void fn_80248E30(MdemoEnding *demo) {
         case 1: fn_80221F94(demo, -0xEA); break;
         case 4: fn_80221F94(demo, -1); break;
         case 2: fn_80221F94(demo, -2); break;
-        default: fn_802E317C(UNHANDLED_ENDING, demo->endingType); break;
+        default: Abend_Panic(UNHANDLED_ENDING, demo->endingType); break;
         }
         if ((demo->musicEndings & demo->endingType) != 0 && fn_8020A640() != 0) {
             fn_8020A634();

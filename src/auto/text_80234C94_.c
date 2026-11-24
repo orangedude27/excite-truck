@@ -103,7 +103,7 @@ typedef struct ArtSet {
     int drawHandle;              /* 0x84 */
     ArtPicture *pictures;        /* 0x88 */
 } ArtSet;
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern char lbl_80340670[];
 extern unsigned char lbl_80340680[];
 extern void *lbl_8055F084;
@@ -164,14 +164,14 @@ void fn_80234D44(int value) {
 
 void fn_80234DE4(unsigned int artId) {
     /* Remove the node matching artId from the lbl_8055F084 linked list and
-     * free it; if a NULL node is reached, report via fn_802E317C. */
+     * free it; if a NULL node is reached, report via Abend_Panic. */
     unsigned int *node;
     unsigned int *prev;
     node = (unsigned int *)lbl_8055F084;
     prev = 0;
     while (*node != artId) {
         if (node == 0)
-            fn_802E317C((const char *)lbl_80340680, artId);
+            Abend_Panic((const char *)lbl_80340680, artId);
         prev = node;
         node = (unsigned int *)node[1];
     }
@@ -225,7 +225,7 @@ void fn_80234EF4(void *artObject, const char *resourceName) {
         fn_8012F2E4(source);
         *(void **)((char *)last + 0x18) = 0;
     } else {
-        fn_802E317C((const char *)lbl_803406B0, resourceName);
+        Abend_Panic((const char *)lbl_803406B0, resourceName);
     }
 }
 #pragma scheduling on
@@ -263,7 +263,7 @@ void fn_8023509C(void) {
      * already non-empty, i.e. gArt was initialized more than once. */
     #define ART_TRACKER lbl_8055F084
     if (ART_TRACKER != 0)
-        fn_802E317C(lbl_803406FC);
+        Abend_Panic(lbl_803406FC);
     #undef ART_TRACKER
 }
 #pragma scheduling on
@@ -302,7 +302,7 @@ void *ArtSetGet(const char *resourceName) {
     artSet = fn_801284F8(0x8C, lbl_8055B9E8);
     artSet->drawHandle = fn_802CAC28(fullName, 0);
     if (artSet->drawHandle == -1)
-        fn_802E317C(tbl + 0x14C, fullName);
+        Abend_Panic(tbl + 0x14C, fullName);
     artSet->refCount = 1;
     artSet->pictures = 0;
     CopyStrB_8023512C(fullName, 0x80, (char *)artSet);
@@ -312,7 +312,7 @@ void *ArtSetGet(const char *resourceName) {
     if (dot != 0)
         *dot = 0;
     else
-        fn_802E317C(tbl + 0x168, tableName);
+        Abend_Panic(tbl + 0x168, tableName);
     CatStrC_8023512C(lbl_8055B9F0, 0x80, tableName);
     fn_80234EF4(artSet, tableName);
     fn_80234D44((int)artSet);

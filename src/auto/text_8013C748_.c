@@ -92,7 +92,7 @@ void *fn_8013C800(int classType) {
 
 #pragma cplusplus on
 extern "C" int fn_80131808(int);
-extern "C" void fn_802E317C(int, ...);
+extern "C" void Abend_Panic(int, ...);
 extern "C" void fn_8013C748(void);
 extern "C" void *fn_8013C770(const char *);
 extern "C" char lbl_8032C4C0[];
@@ -130,7 +130,7 @@ get_object:
     }
     return;
 report_error:
-    fn_802E317C((int)lbl_8032C4D0);
+    Abend_Panic((int)lbl_8032C4D0);
 }
 #pragma dont_inline off
 #pragma cplusplus off

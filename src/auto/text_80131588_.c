@@ -48,7 +48,7 @@ typedef void *fn_80131960_ret;
 #define fn_80131960_RETURN(x) return (fn_80131960_ret)(x)
 extern fn_80131960_ret fn_80131960(void *, void *);
 extern char lbl_8032B4D0[], lbl_8032B4F8[], lbl_8032B558[], lbl_8032B6B8[], lbl_8032B6E4[], lbl_8032B714[];
-extern void fn_802E317C(const char*, ...);
+extern void Abend_Panic(const char*, ...);
 
 #pragma use_lmw_stmw off
 Unk131588 *fn_80131588(void *arg0, s32 arg1) {
@@ -88,9 +88,9 @@ Unk131588 *fn_80131588(void *arg0, s32 arg1) {
                         for (j = 0; j < r->count; j++) {
                             char *nm = ((Unk131588Elem *)((char *)r->elems + off2))->name;
                             if (stricmp(s, nm) == 0) {
-                                if (i == j) fn_802E317C(lbl_8032B714, s);
+                                if (i == j) Abend_Panic(lbl_8032B714, s);
                                 if (found) {
-                                    fn_802E317C(lbl_8032B6E4, ((char *(*)(void *))((Unk131588Elem *)((char *)r->elems + off1))->vtable[2])((Unk131588Elem *)((char *)r->elems + off1)), s);
+                                    Abend_Panic(lbl_8032B6E4, ((char *(*)(void *))((Unk131588Elem *)((char *)r->elems + off1))->vtable[2])((Unk131588Elem *)((char *)r->elems + off1)), s);
                                 }
                                 found = 1;
                                 ((Unk131588Elem *)((char *)r->elems + off1))->link = (Unk131588Elem *)((char *)r->elems + off2);
@@ -98,17 +98,17 @@ Unk131588 *fn_80131588(void *arg0, s32 arg1) {
                             off2 += 0x1C;
                         }
                         if (!found) {
-                            fn_802E317C(lbl_8032B6B8, ((char *(*)(void *))((Unk131588Elem *)((char *)r->elems + off1))->vtable[2])((Unk131588Elem *)((char *)r->elems + off1)), s);
+                            Abend_Panic(lbl_8032B6B8, ((char *(*)(void *))((Unk131588Elem *)((char *)r->elems + off1))->vtable[2])((Unk131588Elem *)((char *)r->elems + off1)), s);
                         }
                     }
                     off1 += 0x1C;
                 }
             }
         } else {
-            fn_802E317C(lbl_8032B4D0, arg0);
+            Abend_Panic(lbl_8032B4D0, arg0);
         }
     } else if (arg1 == 0) {
-        fn_802E317C(lbl_8032B4F8, arg0);
+        Abend_Panic(lbl_8032B4F8, arg0);
     }
     return r;
 }
@@ -147,7 +147,7 @@ extern signed char lbl_8055E060;
 extern void* lbl_8042F53C[];
 extern s32 fn_80131920(s32, s32);
 extern void __register_global_object(void*, void (*)(void*), void*);
-extern void fn_802E317C(const char*, ...);
+extern void Abend_Panic(const char*, ...);
 extern s32 fn_8012F9E8(void*, s32, const char*);
 __declspec(section ".sdata") extern char lbl_80559B24[7]; /* "%f, %f" */
 __declspec(section ".sdata") extern char lbl_80559B2C[], lbl_80559B38[], lbl_80559B40[], lbl_80559B48[];
@@ -165,8 +165,8 @@ s32 fn_8013181C(void) {
 void* fn_8013184C(void) {
     if (lbl_8055E060 == 0) {
         void *tmp = (void*)lbl_8032B64C;
-        void *regdata = (void*)lbl_8042F530;
         ((void* volatile*)lbl_8042F53C)[0] = tmp;
+tmp = 0;
         tmp = (void*)lbl_8032B574;
         ((void* volatile*)lbl_8042F53C)[0] = tmp;
         ((void* volatile*)lbl_8042F53C)[5] = 0;
@@ -178,7 +178,7 @@ void* fn_8013184C(void) {
         ((void* volatile*)lbl_8042F53C)[5] = 0;
         ((void* volatile*)lbl_8042F53C)[6] = 0;
         tmp = (void*)fn_80131920;
-        __register_global_object(lbl_8042F53C, (void (*)(void*))tmp, regdata);
+        __register_global_object(lbl_8042F53C, (void (*)(void*))tmp, lbl_8042F530);
         lbl_8055E060 = 1;
     }
     return lbl_8042F53C;
@@ -605,7 +605,7 @@ extern "C" s32 fn_801320D8(void *table, const char *name) {
     if (found == NULL && *(void **)((char *)table + 0x14) != NULL)
         found = ((char *(*)(void *, const char *))fn_80131C88)(*(void **)((char *)table + 0x14), name);
     if (found == NULL)
-        fn_802E317C(lbl_8032B764, name, ((Dummy *)table)->v0());
+        Abend_Panic(lbl_8032B764, name, ((Dummy *)table)->v0());
     return *(s32 *)(found + 4);
 }
 #pragma cplusplus reset
@@ -680,7 +680,7 @@ extern "C" s32 fn_80132290(void* valueNode, const char* fieldName, const char* e
         enumStrings += strlen(enumStrings) + 1;
         index++;
     }
-    fn_802E317C(lbl_8032B790, value, fieldName, ((ValueNode *)valueNode)->GetContextName());
+    Abend_Panic(lbl_8032B790, value, fieldName, ((ValueNode *)valueNode)->GetContextName());
     return -1;
 }
 #pragma processor 750
@@ -696,7 +696,7 @@ extern "C" f32 fn_80132354(void *node, s32 index, f32 factor) {
     f32 maxVal;
     char *text = ((A *)node)->f3();
     if (sscanf(text, lbl_80559B1C, &minVal, &maxVal) != 2) {
-        fn_802E317C(lbl_8032B7BC, text, index, ((A *)node)->f0());
+        Abend_Panic(lbl_8032B7BC, text, index, ((A *)node)->f0());
     }
     return minVal + factor * (maxVal - minVal);
 }
@@ -709,7 +709,7 @@ extern char lbl_8032B80C[], lbl_8032B7E4[];
 #pragma cplusplus on
 extern "C" void fn_80132410(void *out, void *node, const char *key) {
     /* Parse a Vec3 ("x, y, z" floats) from this node's string value (vtable slot f3);
-     * on failure, report the bad value via fn_802E317C with the node name (f0). */
+     * on failure, report the bad value via Abend_Panic with the node name (f0). */
     class A {
     public:
         virtual char *f0(); virtual void f1(); virtual void f2(); virtual char *f3(const char *);
@@ -719,7 +719,7 @@ extern "C" void fn_80132410(void *out, void *node, const char *key) {
     Vec3 values;
     char *value = ((A *)node)->f3(key);
     if (sscanf(value, lbl_8032B80C, &values.a.x, &values.a.y, &values.z) != 3) {
-        fn_802E317C(lbl_8032B7E4, value, key, ((A *)node)->f0());
+        Abend_Panic(lbl_8032B7E4, value, key, ((A *)node)->f0());
     }
     *(Vec3 *)out = values;
 }
@@ -727,7 +727,7 @@ extern "C" void fn_80132410(void *out, void *node, const char *key) {
 #pragma cplusplus on
 extern "C" Vec2 fn_801324E0(void *node, s32 index) {
     /* Parse a Vec2 ("x, y") from this node's string value (vtable slot f3).
-     * On parse failure, reports the bad value via fn_802E317C with the node
+     * On parse failure, reports the bad value via Abend_Panic with the node
      * name (f0). Returns the parsed Vec2 (uninitialized on failure). */
     class A {
     public:
@@ -736,20 +736,20 @@ extern "C" Vec2 fn_801324E0(void *node, s32 index) {
     Vec2 result;
     char *value = ((A *)node)->f3();
     if (sscanf(value, lbl_80559B24, &result.x, &result.y) != 2) {
-        fn_802E317C(lbl_8032B818, value, index, ((A *)node)->f0());
+        Abend_Panic(lbl_8032B818, value, index, ((A *)node)->f0());
     }
     return result;
 }
 #pragma cplusplus off
 #pragma small_data off
-void fn_80132584(u32 arg0, u32 arg1, const char *arg2) {
+void fn_80132584(void *arg0, register void *arg1, const char *arg2) {
     typedef struct { float x, y, z; } Vec3;
     Vec3 v1, v2, v3, v4;
     const char *value;
     float *out;
 
-    value = ((const char *(**)(void *, const char *))(*(void **)arg1))[5]((void *)arg1, arg2);
-    if (fn_8012F9E8((void *)arg0, 0x30, value) != 0) {
+    value = ((const char *(**)(void *, const char *))(*(void **)arg1))[5](arg1, arg2);
+    if (fn_8012F9E8(arg0, 0x30, value) != 0) {
         u8 *p = (u8 *)arg0;
         int i;
         for (i = 0; i < 2; i++, p += 0x18) {
@@ -771,14 +771,25 @@ void fn_80132584(u32 arg0, u32 arg1, const char *arg2) {
     }
 
     out = (float *)arg0;
-    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v1, (void *)arg1, lbl_80559B48);
-    out[0] = v1.x; out[1] = v1.y; out[2] = v1.z;
-    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v2, (void *)arg1, lbl_80559B40);
-    out[3] = v2.x; out[4] = v2.y; out[5] = v2.z;
-    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v3, (void *)arg1, lbl_80559B38);
-    out[6] = v3.x; out[7] = v3.y; out[8] = v3.z;
-    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v4, (void *)arg1, lbl_80559B2C);
-    out[9] = v4.x; out[10] = v4.y; out[11] = v4.z;
+    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v1, arg1, lbl_80559B48);
+    out[0] = v1.x;
+    out[1] = v1.y;
+    out[2] = v1.z;
+
+    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v2, arg1, lbl_80559B40);
+    out[3] = v2.x;
+    out[4] = v2.y;
+    out[5] = v2.z;
+
+    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v3, arg1, lbl_80559B38);
+    out[6] = v3.x;
+    out[7] = v3.y;
+    out[8] = v3.z;
+
+    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v4, arg1, lbl_80559B2C);
+    out[9] = v4.x;
+    out[10] = v4.y;
+    out[11] = v4.z;
 }
 #pragma cplusplus on
 extern "C" float fn_8013278C(void *arg0, s32 arg1) {
@@ -800,7 +811,7 @@ extern "C" float fn_8013278C(void *arg0, s32 arg1) {
         p[0] = p[3]; p[3] = t0;
         p[1] = p[2]; p[2] = t1;
     } else {
-        fn_802E317C(lbl_8032B840, (long)name, arg1, ((Dummy*)arg0)->f0());
+        Abend_Panic(lbl_8032B840, (long)name, arg1, ((Dummy*)arg0)->f0());
     }
     return value;
 }
@@ -1013,7 +1024,7 @@ s32 fn_80132C74(void *table, s32 name) {
         byteOffset += 0x1C;
         index++;
     }
-    fn_802E317C(lbl_8032B73C, (char *)name, valueTable->count);
+    Abend_Panic(lbl_8032B73C, (char *)name, valueTable->count);
     return 0;
 }
 #pragma pop
@@ -1065,7 +1076,7 @@ s32 fn_80132E34(s32 object, s32 deleteFlag) {
     return object;
 }
 
-extern void fn_802E317C(const char*, ...);
+extern void Abend_Panic(const char*, ...);
 extern char lbl_80559B24[];
 extern char lbl_8032B818[], lbl_8032B840[];
 typedef struct { void** vtable; } Unk80132BD0;

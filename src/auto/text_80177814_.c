@@ -560,7 +560,7 @@ char *fn_80178374(long id) {
 #pragma cplusplus on
 extern "C" void *lbl_8055E454;
 extern "C" void fn_80179D8C(void *, int);
-extern "C" long fn_802E317C(const char *, long, ...);
+extern "C" long Abend_Panic(const char *, long, ...);
 #pragma cplusplus on
 /* Create a stream-loaded game object from a serialized data block. Look up the provider registered for the four-character id at the head of the block, call its factory, record the block size on the new object and invoke its block-reading virtual method; panic with a formatted error if no provider or factory exists, or creation fails. */ extern "C" void **fn_801783A8(int *dataBlock, int blockSize) {
     struct Provider {
@@ -585,13 +585,13 @@ extern "C" long fn_802E317C(const char *, long, ...);
                 fn_80179D8C(object, blockSize);
                 ((struct Handler *)object)->run(dataBlock);
             } else {
-                fn_802E317C(errorMessages + 0xF4, (long)fn_801781F4(*dataBlock));
+                Abend_Panic(errorMessages + 0xF4, (long)fn_801781F4(*dataBlock));
             }
         } else {
-            fn_802E317C(errorMessages + 0x110, (long)fn_801781F4(*dataBlock));
+            Abend_Panic(errorMessages + 0x110, (long)fn_801781F4(*dataBlock));
         }
     } else {
-        fn_802E317C(errorMessages + 0x134, (long)fn_801781F4(*dataBlock));
+        Abend_Panic(errorMessages + 0x134, (long)fn_801781F4(*dataBlock));
     }
     lbl_8055E454 = 0;
     return object;
@@ -1486,7 +1486,7 @@ int fn_80179630(int playerSlot) {
 
 extern void *lbl_8055E430;
 extern char *fn_80178374(long);
-extern long fn_802E317C(const char *, long, ...);
+extern long Abend_Panic(const char *, long, ...);
 extern const char lbl_80331B40[];
 extern unsigned char *fn_801781F4(long);
 /* Return the cached snapshot of the registered-record count (captured from fn_80137C74 at init), used as the race's record/player count. */
@@ -1502,7 +1502,7 @@ s32 fn_80179658(long arg0) {
     if (entry != 0) {
         return *(s32 *)(entry + 4);
     }
-    fn_802E317C(lbl_80331B40, (long)fn_801781F4(arg0));
+    Abend_Panic(lbl_80331B40, (long)fn_801781F4(arg0));
     return -1;
 }
 
@@ -1773,7 +1773,7 @@ extern long fn_80178C1C(long *);
 extern float lbl_80561B60;
 extern double lbl_80561B70;
 extern char *fn_80178374(long);
-extern long fn_802E317C(const char *, long, ...);
+extern long Abend_Panic(const char *, long, ...);
 extern const char lbl_80331B40[];
 #include <revolution/MTX/vec.h>
 extern int lbl_8055E43C;

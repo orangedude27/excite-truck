@@ -85,7 +85,7 @@ void *fn_801EC204(void) {
 extern double fn_8002EFB0(float,float);
 extern void fn_801345D8(void *,int,const char *,...);
 extern int fn_801E3004(int,const char *,int);
-extern void fn_802E317C(const char *,...);
+extern void Abend_Panic(const char *,...);
 extern float lbl_80562E88;
 extern char lbl_8033A060[];
 __declspec(section ".sdata") extern char lbl_8055AFCC[];
@@ -122,7 +122,7 @@ extern "C" void fn_801EC214(void *outp, void *obj, int arg2, char *name, int arg
     a = lbl_80562E88;
     b = lbl_80562E88;
     if (sscanf((char *)((Unk_801EEA64Iface *)obj)->m14(name), lbl_8055AFCC, &a, &b) != 2)
-        fn_802E317C(base, name);
+        Abend_Panic(base, name);
     out->handle = fn_801E3004(arg2, name, -1);
     scale = f1 - f2;
     zero = lbl_80562E88;
@@ -134,14 +134,14 @@ extern "C" void fn_801EC214(void *outp, void *obj, int arg2, char *name, int arg
         c = zero;
         d = zero;
         if (sscanf((char *)((Unk_801EEA64Iface *)obj)->m14(buf), base + 0x10, &entry->pos, &c, &d) != 3)
-            fn_802E317C(base + 0x1C, buf);
+            Abend_Panic(base + 0x1C, buf);
         nd = -(d - b);
         entry->angle = (float)fn_8002EFB0(c - a, nd);
         t = entry->pos * scale;
         entry->pos = t + f2;
     }
     if (out->count < 2)
-        fn_802E317C(base + 0x34, name);
+        Abend_Panic(base + 0x34, name);
     out->first = out->points[0].pos;
     out->last = out->points[out->count - 1].pos;
 }
@@ -1172,7 +1172,7 @@ loop1:
     found = V1(table, 8, void *(*)(void *, void *), small);
     i--;
     if (found == 0 && i >= 0) goto loop1;
-    if (found == 0) fn_802E317C(base + 0x80, arg1);
+    if (found == 0) Abend_Panic(base + 0x80, arg1);
     node = V1(found, 0x14, void *(*)(void *, void *), lbl_8055AFFC);
     p29 = (void **)V1(table, 8, void *(*)(void *, void *), node);
     *(int *)((char *)arg0 + 0x3FC) = V1(found, 0x1C, int (*)(void *, void *), lbl_8055B000);
@@ -1196,7 +1196,7 @@ loop8:
            lbl_802F9AE0[0x11], lbl_802F9AE0[0x10], lbl_802F9AE0[0xF],
            lbl_802F9AE0[0xE], lbl_802F9AE0[0xD], lbl_802F9AE0[0xC]);
         if (sscanf(lbl_8055B038, &val, (char *)text) != 2) {
-            fn_802E317C(base + 0xB8, arg1, V1(p29, 0x14, int (*)(void *, void *), bufE0));
+            Abend_Panic(base + 0xB8, arg1, V1(p29, 0x14, int (*)(void *, void *), bufE0));
         }
         cp = strchr((char *)text, 'y');
         h = *(int *)((char *)arg0 + 0x148) * 8;

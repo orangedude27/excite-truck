@@ -67,7 +67,7 @@ extern void *memset(void *, int, unsigned int);
 extern int fn_80131808(const char *);
 extern void fn_80131818(void *);
 extern void fn_80279F58(void *, void *);
-extern void fn_802E317C(const char *, const char *);
+extern void Abend_Panic(const char *, const char *);
 extern int sprintf(char *, const char *, ...);
 extern const char lbl_80347A08[];
 extern const char lbl_80347A1C[];
@@ -96,7 +96,7 @@ void fn_80279D40(void *arg0, int arg1) {
     float *f = (float *)arg0;
     int *w = (int *)arg0;
     float c10, c08, c60, c5C, c1C, c18, c14, c0C, c58, c54, c50, c4C, c48, c44, c40, c3C, c38, c34, c30, c2C, c28, c24, c20;
-    float c64, c70, c74, c78, c84, c88, c7C, c68, c80, c6C, c8C, c90, c94;
+    float c64, c70, c88, c78, c68, c84, c7C, c74, c80, c6C, c8C, c90, c94;
     memset(arg0, 0, 0x138);
     c20 = lbl_80564120;
     c0C = lbl_8056410C;
@@ -134,13 +134,26 @@ void fn_80279D40(void *arg0, int arg1) {
     f[8] = c38; f[9] = c38; f[10] = c3C;
     f[30] = c40; f[31] = c44; f[20] = c48; f[21] = c4C; f[22] = c50; f[23] = c54; f[25] = c58; f[26] = c5C;
     f[27] = c20; f[28] = c20; f[29] = c20;
-    f[32] = c64; f[33] = c68; f[34] = c70; f[35] = c74; f[36] = c78; f[37] = c7C; f[39] = c80; f[40] = c84; f[38] = c88;
+    f[32] = c64; f[33] = c68; c68 = lbl_80564168;
+    f[34] = c70; f[35] = c74; f[36] = c78; f[37] = c7C; f[39] = c80; f[40] = c84; f[38] = c88;
+    switch (0) {
+    case 0:
     f[41] = c64; f[42] = c68; f[43] = c70; f[44] = c74; f[45] = c78; f[46] = c7C; f[48] = c80; f[49] = c84; f[47] = c88; f[50] = c64;
+        break;
+    }
+    switch (1) {
+    case 1:
     c68 = lbl_8056416C;
     f[51] = c68; f[52] = c70; f[53] = c74; f[54] = c78; f[55] = c7C; f[57] = c80; f[58] = c84; f[56] = c88; f[59] = c64;
-    f[60] = c68; f[61] = c70; f[62] = c74; f[63] = c78; f[64] = c7C; f[66] = c80; f[67] = c84; f[65] = c88;
+        break;
+    }
+    c68 = lbl_8056416C;
+    f[60] = c68; c8C = lbl_8056418C;
+    f[61] = c70; c90 = lbl_80564190;
+    f[62] = c74; c94 = lbl_80564194;
+    f[63] = c78; f[64] = c7C; f[66] = c80; f[67] = c84; f[65] = c88;
+    c20 = *(volatile float *)&lbl_80564120;
     f[68] = c20; f[69] = c20; f[70] = c20;
-    c8C = lbl_8056418C; c90 = lbl_80564190; c94 = lbl_80564194;
     f[71] = c8C; f[72] = c90; f[73] = c20; f[74] = c94;
 }
 #pragma pop
@@ -152,26 +165,27 @@ void fn_80279D40(void *arg0, int arg1) {
 void fn_80279F58(void *arg0, void *arg1) {
     float *f = (float *)arg0;
     int *w = (int *)arg0;
-    char name[8];
     Vec3_80279F58 tmpVec;
+    char name[24];
+    char *base = lbl_80347848;
     File_80279F58 *file = (File_80279F58 *)arg1;
     Res_80279F58 *res;
     Res_80279F58 *res2;
     Res_80279F58 *res3;
-    char *base = lbl_80347848;
     int i;
     float *dest;
     f32 v;
+f32 __repair_v_1;
     f32 v2;
     f32 t;
     f32 d;
-    register f32 v31;
-    register f32 a;
-    register f32 b;
-    register f32 c;
-    register f32 c8;
-    register f32 cA0;
     register f32 cB0;
+    register f32 cA0;
+    register f32 c8;
+    register f32 c;
+    register f32 b;
+    register f32 a;
+    register f32 v31;
     fn_80279D40(arg0, (int)arg1);
     res = file->getRes(lbl_8055C6E8);
     f[0] = lbl_80564198 * res->getFloat(lbl_8055C6F0);
@@ -188,10 +202,11 @@ void fn_80279F58(void *arg0, void *arg1) {
     res2 = file->getRes(base + 0x38);
     f[11] = res2->getFloat(base + 0x48);
     w[13] = res2->getInt(base + 0x58);
-    dest = f + 14;
+    dest = f;
     for (i = 0; i < w[13]; i++) {
         sprintf(name, lbl_8055C714, i + 1);
-        *dest++ = res2->getFloat(name);
+        dest[14] = res2->getFloat(name);
+        dest++;
     }
     res3 = file->getRes(base + 0x64);
     v = lbl_805641B0 * res3->getFloat(base + 0x74);
@@ -199,20 +214,16 @@ void fn_80279F58(void *arg0, void *arg1) {
     f[22] = res3->getFloat(base + 0x80);
     f[21] = lbl_805641B4 * res3->getFloat(base + 0x8C);
     f[23] = res3->getFloat(base + 0x98);
-    v = lbl_805641B0 * res3->getFloat(lbl_8055C718);
-    f[24] = lbl_8056419C * v;
+    __repair_v_1 = lbl_805641B0 * res3->getFloat(lbl_8055C718);
+    f[24] = lbl_8056419C * __repair_v_1;
     f[26] = res3->getFloat(base + 0xA4);
     f[25] = res3->getFloat(lbl_8055C720);
     f[27] = res3->getFloatDefault(base + 0xB0, lbl_80564120);
     f[28] = res3->getFloatDefault(base + 0xC0, lbl_80564120);
     f[29] = res3->getFloatDefault(base + 0xD4, lbl_80564120);
     v2 = res->getFloatDefault(lbl_8055C728, lbl_805641B8);
-    if (v2 > lbl_805641BC) {
-        v2 = lbl_805641BC;
-    }
-    if (v2 < lbl_805641C0) {
-        v2 = lbl_805641C0;
-    }
+    v2 = (lbl_805641BC < v2) ? lbl_805641BC : v2;
+    v2 = (v2 > lbl_805641C0) ? v2 : lbl_805641C0;
     f[68] = lbl_805641C4 * v2;
     f[69] = lbl_805641C8 * res->getFloatDefault(lbl_8055C730, lbl_80564120);
     f[70] = res->getFloatDefault(base + 0xE4, lbl_80564120);
@@ -221,16 +232,18 @@ void fn_80279F58(void *arg0, void *arg1) {
     f[30] = v / lbl_805641A0;
     v = lbl_805641B0 * res->getFloatDefault(lbl_8055C740, lbl_805641D0);
     f[31] = v / lbl_805641A0;
-    tmpVec = res->getVec(base + 0x100);
-    v31 = lbl_805641A0 * tmpVec.x;
+    v = res->getFloatDefault(base + 0x100, lbl_805641D4);
+    v31 = lbl_805641A0 * v;
+    f32 negY = -(f[7] - lbl_8056411C);
+    f32 negZ = -f[8];
     f[75] = lbl_805641D8;
-    f[76] = -f[8];
-    f[77] = -(f[7] - lbl_8056411C) * f[6];
-    if (res->slot3(base + 0x10C, tmpVec.x, tmpVec.y, tmpVec.z, lbl_805641A0, f[76]) != 0) {
-        Vec3_80279F58 add = res->getVec(base + 0x10C);
-        f[75] += add.x * lbl_805641A0;
-        f[76] += add.y * lbl_805641A0;
-        f[77] += add.z * lbl_805641A0;
+    f[76] = negZ;
+    f[77] = negY * f[6];
+    if (res->slot3(base + 0x10C, v, f[6], negY, lbl_805641A0, negZ) != 0) {
+        tmpVec = res->getVec(base + 0x10C);
+        f[75] += tmpVec.x * lbl_805641A0;
+        f[76] += tmpVec.y * lbl_805641A0;
+        f[77] += tmpVec.z * lbl_805641A0;
     }
     file->getRes(lbl_8055C748);
     file->getRes(lbl_8055C750);
@@ -240,19 +253,19 @@ void fn_80279F58(void *arg0, void *arg1) {
     cB0 = lbl_805641B0;
     for (i = 0; i < 4; i++) {
         int useAlt;
-        useAlt = 0;
-        if (i == 0 || i == 1) {
-            useAlt = 1;
+        useAlt = 1;
+        if (i != 0 && i != 1) {
+            useAlt = 0;
         }
         a = res->getFloatDefault(base + 0x11C, lbl_80564120);
-        b = res->getFloatDefault(base + 0x12C, lbl_80564120);
-        c = res->getFloatDefault(base + 0x13C, lbl_80564120);
+        b = res->getFloatDefault(base + 0x12C, a);
+        c = res->getFloatDefault(base + 0x13C, b);
         t = res->getFloatDefault(base + 0x148, b);
+        const char *dName = base + 0x168;
         if (useAlt) {
-            d = res->getFloatDefault(base + 0x158, t);
-        } else {
-            d = res->getFloatDefault(base + 0x168, t);
+            dName = base + 0x158;
         }
+        d = res->getFloatDefault(dName, t);
         dest[6] = c8;
         dest[1] = dest[1] * a;
         dest[2] = dest[2] * c;
@@ -276,7 +289,7 @@ void fn_8027A714(void *target, const char *carName) {
     sprintf(path, lbl_80347A08, carName);
     resource = (void *)fn_80131808(path);
     if (resource == 0) {
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347A1C, path);
+        ((void (*)(const char *, ...))Abend_Panic)(lbl_80347A1C, path);
     }
     fn_80279F58(target, resource);
     fn_80131818(resource);
@@ -332,7 +345,7 @@ char *fn_8027A798(char *arg0) {
         }
         entry += 0x44;
     }
-    ((void (*)(const char *, ...))fn_802E317C)(lbl_80347A34);
+    ((void (*)(const char *, ...))Abend_Panic)(lbl_80347A34);
     return 0;
 }
 #pragma scheduling on
@@ -355,7 +368,7 @@ void fn_8027A888(float *matrix) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_8027A8B4(float *__restrict arg0, const float *__restrict arg1) {
+void fn_8027A8B4(float *arg0, const float *arg1) {
     float pF8, pD4, pF4, pF0, pD0, pAC, pCC, pB0, pA8, p8C, p88, p84;
     float p114, p30, p50, p54, pC, p8, p4, p0, p110;
 
@@ -369,8 +382,8 @@ void fn_8027A8B4(float *__restrict arg0, const float *__restrict arg1) {
     p114 = arg0[0x114/4] * arg1[8];
     p110 = arg0[0x110/4] * arg1[7];
     pA8 = arg0[0xA8/4] * arg1[6];
-    pCC = arg0[0xCC/4] * arg1[6];
     p84 = arg0[0x84/4] * arg1[6];
+    pCC = arg0[0xCC/4] * arg1[6];
     p88 = arg0[0x88/4] * arg1[4];
     pAC = arg0[0xAC/4] * arg1[4];
     pD0 = arg0[0xD0/4] * arg1[4];

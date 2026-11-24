@@ -942,7 +942,7 @@ extern void fn_8001EFB0(void *);
 extern void fn_80130FCC(void *, int, int);
 extern int fn_80259224(void **);
 extern int fn_8025978C(void **);
-extern void fn_802E317C(const char *, int);
+extern void Abend_Panic(const char *, int);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
@@ -1033,7 +1033,7 @@ void fn_8025A50C(void) {
             do { result = fn_80259224((void **)&text); } while (result != -1);
             break;
         case -1: running = 0; break;
-        default: ((void (*)(const char *, ...))fn_802E317C)(lbl_80344FE0, result); break;
+        default: ((void (*)(const char *, ...))Abend_Panic)(lbl_80344FE0, result); break;
         }
     }
     ((void (*)(void))fn_802591D8)();

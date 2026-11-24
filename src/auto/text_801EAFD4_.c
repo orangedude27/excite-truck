@@ -30,7 +30,7 @@ extern s32 fn_8012C33C(void *);
 extern s32 fn_801E2CCC(void *, f32 **);
 extern void fn_801EB6A8(s32);
 extern void fn_802CDDC8(void *, s32);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern void fn_802AE7F4(void);
 extern void fn_802AEAA8(void);
 extern s32 fn_802C6FC0(void *, s32, s32);
@@ -158,7 +158,7 @@ extern "C" void fn_801EB66C(void *, s32);
 extern "C" void fn_801EB13C(void *, s32);
 extern "C" s32 fn_801EB0F0(s32);
 extern "C" s32 fn_801EB110(void *);
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" char lbl_80339F7C[];
 extern "C" char lbl_80339FA0[];
@@ -311,7 +311,7 @@ extern "C" void fn_801EB2D4(s32 arg0, register s32 arg1) {
             }
             break;
         default:
-            fn_802E317C(lbl_80339FA0);
+            Abend_Panic(lbl_80339FA0);
             break;
         }
         var_r28 = (u8 *)*(u32 *)(var_r28 + 4);
@@ -431,7 +431,7 @@ state4:
         }
         goto next;
 error:
-        fn_802E317C(lbl_80339FD4);
+        Abend_Panic(lbl_80339FD4);
 next:
         node = (s32 *)node[1];
     }
@@ -588,7 +588,7 @@ extern "C" s32 fn_801EB9FC(void *resourceMgr) {
     goto common;
 
 bad_resource:
-    fn_802E317C(strings + 0x180, version, 0x15);
+    Abend_Panic(strings + 0x180, version, 0x15);
     goto common;
 
 no_resource:

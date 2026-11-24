@@ -43,7 +43,7 @@ __declspec(section ".sdata") extern char lbl_8055D1E4[];
 extern char lbl_8034D490[];
 extern char lbl_8034D4A0[];
 extern char sChannelStillPlayingFmt[];
-extern void fn_802E317C(char *, ...);
+extern void Abend_Panic(char *, ...);
 extern int lbl_8055FF98;
 extern char lbl_8034D584[];
 extern char lbl_8034D528[];
@@ -51,7 +51,7 @@ extern void fn_80128670(int);
 extern void fn_8012C4D8(void);
 extern void fn_8012BF24(void *);
 #define sSampleStillInUseFmt lbl_8034D528
-#define Abend_panic fn_802E317C
+#define Abend_panic Abend_Panic
 #define Resource_release(res) ((void (*)(void *))fn_8012C4D8)(res)
 
 enum {
@@ -91,7 +91,7 @@ void *SFXLoad(char *path) {
     sfxData = ((unsigned char *(*)(char *, unsigned int, unsigned int *, int, unsigned char *, unsigned char *))fn_8012C370)(
         path, 0x53465830 /* 'SFX0' */, &version, 0, &attr, &needsSwap);
     if (sfxData == 0) goto return_null;
-    if (version != 3) fn_802E317C(lbl_8034D280, path, version, 3);
+    if (version != 3) Abend_Panic(lbl_8034D280, path, version, 3);
     if (needsSwap != 0) {
         tmp=sfxData[0]; sfxData[0]=sfxData[3]; sfxData[3]=tmp;
         tmp=sfxData[1]; sfxData[1]=sfxData[2]; sfxData[2]=tmp;
@@ -466,7 +466,7 @@ void Spu_Init(void) {
     off = 0;
     do {
         voice = TRKInitializeMessageBuffers(0x1F, 0, 0);
-        if (voice == 0) fn_802E317C(sNoVoiceFmt, chan);
+        if (voice == 0) Abend_Panic(sNoVoiceFmt, chan);
         AXSetVoiceState(voice, 0);
         fn_80033538(voice, 0);
         *(int *)(gSpuChannels + off) = chan;
@@ -569,7 +569,7 @@ void fn_802E56F0(void) {
     do {
         struct SpuChannel *channel = (struct SpuChannel *)(lbl_8055FF94 + channelOffset);
         if (channel->active != 0) {
-            fn_802E317C(lbl_8034D450, channel->sample);
+            Abend_Panic(lbl_8034D450, channel->sample);
         }
         /* the voice object is reached through the pool base each time */
         TRKGetFreeBuffer(((struct SpuChannel *)(lbl_8055FF94 + channelOffset))->voice);
@@ -582,7 +582,7 @@ void fn_802E56F0(void) {
     do {
         struct SpuSample *sample = (struct SpuSample *)((unsigned char *)lbl_8055FF90 + idx);
         if (sample->refCount > 0) {
-            fn_802E317C(lbl_8034D470, sample->name);
+            Abend_Panic(lbl_8034D470, sample->name);
         }
         sampleIndex++;
         idx += 0xB0;
@@ -816,11 +816,11 @@ __repair_addr = (char *)(slot + 0x94);
             freeIdx = i;
         }
     }
-    if (freeIdx < 0) fn_802E317C(msg + 0x2A8, arg0);
+    if (freeIdx < 0) Abend_Panic(msg + 0x2A8, arg0);
     res = (struct Res *)SFXLoad(arg0);
     if (res == 0) return 0;
     res->unkC = 0xCFFE;
-    if (res->unkC != 0xCFFE) fn_802E317C(msg + 0x2C4, arg0);
+    if (res->unkC != 0xCFFE) Abend_Panic(msg + 0x2C4, arg0);
     f31 = (float)(res->size >> 1) / lbl_80565138;
     aligned = (res->size + 0x3F) & ~0x3F;
     if (res->unk9 == 1) f31 = f31 * lbl_8056513C;
@@ -828,7 +828,7 @@ __repair_addr = (char *)(slot + 0x94);
     slot = (char *)lbl_8055FF90 + freeIdx * 0xB0;
     memset(slot, 0, 0xB0);
     unk4 = res->unk4;
-    if (unk4 & 0x1F) fn_802E317C(msg + 0x2FC, name, unk4);
+    if (unk4 & 0x1F) Abend_Panic(msg + 0x2FC, name, unk4);
     *(unsigned int *)(slot + 0xA0) = aligned;
     *(int *)(slot + 0x94) = 1;
     *(int *)(slot + 0x20) = 0;
@@ -880,7 +880,7 @@ void *Spu_createStreamSample(const char *name, unsigned int bufSize, int hasAdpc
     unsigned char ch;
     float lengthValue, rateValue;
     for (i = 0; i < 0x100; walker += 0xB0, i++) if (*(int *)(walker + 0x94) == 0) { freeSlot = i; break; }
-    if (freeSlot < 0) fn_802E317C(sNoStreamSamplesFmt, (int)name);
+    if (freeSlot < 0) Abend_Panic(sNoStreamSamplesFmt, (int)name);
     sample = (char *)lbl_8055FF90 + freeSlot * 0xB0;
     memset(sample, 0, 0xB0);
     fn_801282EC(0x80); fn_801282F4();
@@ -976,7 +976,7 @@ void *fn_802E6058(void *sample) {
        channel and sample; drop the sample's active-channel count, clear the
        channel's in-use flag, and decrement the global active voice count. */
     if (((unsigned char *)channel)[0x23] != 0) {
-        fn_802E317C(sChannelStillPlayingFmt, *(int *)channel, *(void **)((char *)channel + 0x1C));
+        Abend_Panic(sChannelStillPlayingFmt, *(int *)channel, *(void **)((char *)channel + 0x1C));
     }
     {
         void *sample = *(void **)((char *)channel + 0x1C);
@@ -1136,7 +1136,7 @@ void fn_802E6264(void) {
                 fn_80031C6C(2);
                 break;
             default:
-                ((void (*)(char *, ...))fn_802E317C)(msg + 0x3E0);
+                ((void (*)(char *, ...))Abend_Panic)(msg + 0x3E0);
                 break;
             }
         }
@@ -1264,7 +1264,7 @@ void fn_802E6264(void) {
                             spB0[19] = *(unsigned short *)((char *)sp100 + 0x42);
                             fn_80033918(*(void **)(v + 4), &spB0[0]);
                         } else {
-                            ((void (*)(char *, ...))fn_802E317C)(msg + 0x3F8);
+                            ((void (*)(char *, ...))Abend_Panic)(msg + 0x3F8);
                         }
                         memset(&sp10[0], 0, 0xE);
                         sp10[0] = 1;

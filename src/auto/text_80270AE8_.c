@@ -694,7 +694,7 @@ extern "C" void fn_802756A4(void *);
 extern "C" void fn_80275938(void *);
 extern "C" void fn_80275B9C(void *, float, float, float);
 extern "C" void fn_80275D0C(void *);
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
 extern "C" void fn_801BFD34(void *, float *, void *);
 extern "C" void fn_80015B20(void *, float *, void *);
 extern "C" float PSVECDotProduct(const float *, const float *);
@@ -921,7 +921,7 @@ extern "C" void fn_80271624(int mode, void *arg1)
                 fn_80275D0C(o);
                 break;
             default:
-                fn_802E317C(lbl_80346EC8);
+                Abend_Panic(lbl_80346EC8);
                 break;
             }
             lbl_8055F54C = e->mode;

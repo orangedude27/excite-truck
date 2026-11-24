@@ -120,7 +120,7 @@ extern void fn_802D2ED8(int, int);
 //   +0x0C u8  texcoord0 through GX_TEXMTX0 instead of GX_IDENTITY
 //   +0x0D u8  alpha blend + indirect stage (buildDefaultTevPipeline's bump pass)
 extern unsigned char gRenderRequest[12];
-extern int fn_802E317C(const char *, ...);
+extern int Abend_Panic(const char *, ...);
 extern int GXInitLightDir(unsigned short, unsigned short, unsigned long *);
 extern float lbl_80564FAC, lbl_80564FA8, lbl_80564F88;
 #pragma small_data off
@@ -277,7 +277,7 @@ void fn_802CEAC4(void) {
         gCurrentRenderMode = lbl_80303950;
         break;
     default:
-        fn_802E317C(strBase + 0xF0);
+        Abend_Panic(strBase + 0xF0);
         break;
     }
     GXDrawCylinder(gCurrentRenderMode, lbl_804C9724, 0, 0x10);
@@ -343,7 +343,7 @@ void fn_802CEC44(void) {
         fn_802D3900();
         break;
     default:
-        fn_802E317C(lbl_8034BE20, syncToken);
+        Abend_Panic(lbl_8034BE20, syncToken);
         break;
     }
 }
@@ -3275,7 +3275,7 @@ typedef struct {
     /* Panic with "visibility test still in use." if any of the 64 depth queries is still checked out. */
     for (queryIndex = 0; queryIndex < 0x40; queryIndex++, query++) {
         if (query->used != 0) {
-            fn_802E317C((const char *)sVisQueryStillInUseMsg);
+            Abend_Panic((const char *)sVisQueryStillInUseMsg);
         }
     }
 }
@@ -3323,7 +3323,7 @@ extern float lbl_80564F88;
         index++;
     }
     if (found == 0)
-        fn_802E317C(lbl_8034C1E4);
+        Abend_Panic(lbl_8034C1E4);
     found->used = 1;
     found->visible = 0;
     found->step = step;

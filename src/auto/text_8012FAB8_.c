@@ -93,153 +93,178 @@ extern int lbl_8055E04C;
 extern char *lbl_8055E050;
 extern int fn_8012BF24(void *);
 extern int stricmp(const char *, const char *);
-void fn_8012FAB8(void *arg0) {
-    char *srcBase;
-    char *dstBase;
-    srcBase = lbl_80423040 + 0x10000;
-    dstBase = lbl_8032B028;
+void fn_8012FAB8(void *arg0)
+{
+  char *srcBase;
+  char *dstBase;
+  srcBase = lbl_80423040 + 0x10000;
+  dstBase = lbl_8032B028;
+  {
+    int *e = (int *) ((lbl_80423040 + 0x10000) - 0x3C18);
+    if (((unsigned int) e[2]) != ((unsigned int) lbl_8055E044))
     {
-        int *e = (int *)(srcBase - 0x3C18);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0xA0) = (char *)e[1];
+      fn_80131318(e);
     }
+    *((char **) (dstBase + 0xA0)) = (char *) e[1];
+  }
+  {
+    int *e = (int *) (srcBase - 0x3C0C);
+    if (((unsigned int) lbl_8055E044) != ((unsigned int) e[2]))
     {
-        int *e = (int *)(srcBase - 0x3C0C);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0xB0) = (char *)e[1];
+      fn_80131318(e);
     }
+    *((char **) (dstBase + 0xB0)) = (char *) e[1];
+  }
+  {
+    int *e = (int *) (srcBase - 0x3C00);
+    if (((unsigned int) lbl_8055E044) != ((unsigned int) e[2]))
     {
-        int *e = (int *)(srcBase - 0x3C00);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0xC0) = (char *)e[1];
+      fn_80131318(e);
     }
+    *((char **) (dstBase + 0xC0)) = (char *) e[1];
+  }
+  {
+    int *e = (int *) (srcBase - 0x3BF4);
+    if (((unsigned int) e[2]) != ((unsigned int) lbl_8055E044))
     {
-        int *e = (int *)(srcBase - 0x3BF4);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0xD0) = (char *)e[1];
+      fn_80131318(e);
     }
+    *((char **) (dstBase + 0xD0)) = (char *) e[1];
+  }
+  {
+    int *e = (int *) (srcBase - 0x3BE8);
+    if (((unsigned int) lbl_8055E044) != ((unsigned int) e[2]))
     {
-        int *e = (int *)(srcBase - 0x3BE8);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0xE0) = (char *)e[1];
+      fn_80131318(e);
     }
+    *((char **) (dstBase + 0xE0)) = (char *) e[1];
+  }
+  {
+    int *e = (int *) (srcBase - 0x3BDC);
+    if (((unsigned int) e[2]) != ((unsigned int) lbl_8055E044))
     {
-        int *e = (int *)(srcBase - 0x3BDC);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0xF0) = (char *)e[1];
+      fn_80131318(e);
     }
+    *((char **) (dstBase + 0xF0)) = (char *) e[1];
+  }
+  {
+    int *e = (int *) (srcBase - 0x3BD0);
+    if (((unsigned int) lbl_8055E044) != ((unsigned int) e[2]))
     {
-        int *e = (int *)(srcBase - 0x3BD0);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0x124) = (char *)e[1];
+      fn_80131318(e);
     }
+    *((char **) (dstBase + 0x124)) = (char *) e[1];
+  }
+  {
+    int *e = (int *) (srcBase - 0x3BC4);
+    if (((unsigned int) lbl_8055E044) != ((unsigned int) e[2]))
     {
-        int *e = (int *)(srcBase - 0x3BC4);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0x134) = (char *)e[1];
+      fn_80131318(e);
     }
+    *((char **) (dstBase + 0x134)) = (char *) e[1];
+  }
+  {
+    int *e = (int *) (srcBase - 0x3BB8);
+    if (((unsigned int) lbl_8055E044) != ((unsigned int) e[2]))
     {
-        int *e = (int *)(srcBase - 0x3BB8);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0x144) = (char *)e[1];
+      fn_80131318(e);
     }
+    *((char **) (dstBase + 0x144)) = (char *) e[1];
+  }
+  {
+    int *e = (int *) (srcBase - 0x3BAC);
+    if (((unsigned int) lbl_8055E044) != ((unsigned int) e[2]))
     {
-        int *e = (int *)(srcBase - 0x3BAC);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0x154) = (char *)e[1];
+      fn_80131318(e);
     }
+    *((char **) (dstBase + 0x154)) = (char *) e[1];
+  }
+  {
+    int *e = (int *) (srcBase - 0x3BA0);
+    if (((unsigned int) e[2]) != ((unsigned int) lbl_8055E044))
     {
-        int *e = (int *)(srcBase - 0x3BA0);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0x164) = (char *)e[1];
+      fn_80131318(e);
     }
+    *((char **) (dstBase + 0x164)) = (char *) e[1];
+  }
+  {
+    int *e = (int *) (srcBase - 0x3B94);
+    if (((unsigned int) lbl_8055E044) != ((unsigned int) e[2]))
     {
-        int *e = (int *)(srcBase - 0x3B94);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0x174) = (char *)e[1];
+      fn_80131318(e);
     }
-    if (arg0 != 0) {
-        Obj *child;
-        int index;
-        Obj *parent;
-        Rec10 *records;
-        parent = fn_80131808(arg0);
-        if (parent != 0) {
-            index = 1;
-            child = (Obj *)parent->vt->getChild(parent, 0);
-            records = (Rec10 *)(srcBase - 0x3B88);
-            while (child != 0) {
-                if (stricmp(lbl_80559A5C, child->vt->getName(child)) == 0) {
-                    records[0].f0 = child->vt->getString(child, lbl_80559A64, records[0].f0);
-                    records[0].f1 = child->vt->getString(child, lbl_80559A6C, records[0].f0);
-                    records[0].f2 = child->vt->getFloat(child, lbl_80559A74, records[0].f2);
-                    records[0].f3 = child->vt->getInt(child, lbl_80559A7C, records[0].f3);
-                }
-                if (stricmp(lbl_80559A84, child->vt->getName(child)) == 0) {
-                    records[1].f0 = child->vt->getString(child, lbl_80559A64, records[1].f0);
-                    records[1].f1 = child->vt->getString(child, lbl_80559A6C, records[1].f0);
-                    records[1].f2 = child->vt->getFloat(child, lbl_80559A74, records[1].f2);
-                    records[1].f3 = child->vt->getInt(child, lbl_80559A7C, records[1].f3);
-                }
-                if (stricmp(lbl_80559A8C, child->vt->getName(child)) == 0) {
-                    records[2].f0 = child->vt->getString(child, lbl_80559A64, records[2].f0);
-                    records[2].f1 = child->vt->getString(child, lbl_80559A6C, records[2].f0);
-                    records[2].f2 = child->vt->getFloat(child, lbl_80559A74, records[2].f2);
-                    records[2].f3 = child->vt->getInt(child, lbl_80559A7C, records[2].f3);
-                }
-                if (stricmp(dstBase + 0x198, child->vt->getName(child)) == 0) {
-                    records[3].f0 = child->vt->getString(child, lbl_80559A64, records[3].f0);
-                    records[3].f1 = child->vt->getString(child, lbl_80559A6C, records[3].f0);
-                    records[3].f2 = child->vt->getFloat(child, lbl_80559A74, records[3].f2);
-                    records[3].f3 = child->vt->getInt(child, lbl_80559A7C, records[3].f3);
-                }
-                if (stricmp(dstBase + 0x1A8, child->vt->getName(child)) == 0) {
-                    records[4].f0 = child->vt->getString(child, lbl_80559A64, records[4].f0);
-                    records[4].f1 = child->vt->getString(child, lbl_80559A6C, records[4].f0);
-                    records[4].f2 = child->vt->getFloat(child, lbl_80559A74, records[4].f2);
-                    records[4].f3 = child->vt->getInt(child, lbl_80559A7C, records[4].f3);
-                }
-                if (stricmp(lbl_80559A94, child->vt->getName(child)) == 0) {
-                    records[5].f0 = child->vt->getString(child, lbl_80559A64, records[5].f0);
-                    records[5].f1 = child->vt->getString(child, lbl_80559A6C, records[5].f0);
-                    records[5].f2 = child->vt->getFloat(child, lbl_80559A74, records[5].f2);
-                    records[5].f3 = child->vt->getInt(child, lbl_80559A7C, records[5].f3);
-                }
-                if (stricmp(dstBase + 0x1B4, child->vt->getName(child)) == 0) {
-                    records[6].f0 = child->vt->getString(child, lbl_80559A64, records[6].f0);
-                    records[6].f1 = child->vt->getString(child, lbl_80559A6C, records[6].f0);
-                    records[6].f2 = child->vt->getFloat(child, lbl_80559A74, records[6].f2);
-                    records[6].f3 = child->vt->getInt(child, lbl_80559A7C, records[6].f3);
-                }
-                child = (Obj *)parent->vt->getChild(parent, index++);
-            }
-            fn_80131818(parent);
+    *((char **) (dstBase + 0x174)) = (char *) e[1];
+  }
+  if (arg0 != 0)
+  {
+    Obj *child;
+    Obj *parent;
+    Rec10 *records;
+    parent = fn_80131808(arg0);
+    if (parent != 0)
+    {
+      long index;
+      index = 1;
+      child = (Obj *) parent->vt->getChild(parent, 0);
+      records = (Rec10 *) (srcBase - 0x3B88);
+srcBase = 0;
+      while (child != 0)
+      {
+        if (stricmp(lbl_80559A5C, child->vt->getName(child)) == 0)
+        {
+          records[0].f0 = child->vt->getString(child, lbl_80559A64, records[0].f0);
+          records[0].f1 = child->vt->getString(child, lbl_80559A6C, records[0].f0);
+          records[0].f2 = child->vt->getFloat(child, lbl_80559A74, records[0].f2);
+          records[0].f3 = child->vt->getInt(child, lbl_80559A7C, records[0].f3);
         }
+        if (stricmp(lbl_80559A84, child->vt->getName(child)) == 0)
+        {
+          records[1].f0 = child->vt->getString(child, lbl_80559A64, records[1].f0);
+          records[1].f1 = child->vt->getString(child, lbl_80559A6C, records[1].f0);
+          records[1].f2 = child->vt->getFloat(child, lbl_80559A74, records[1].f2);
+          records[1].f3 = child->vt->getInt(child, lbl_80559A7C, records[1].f3);
+        }
+        if (stricmp(lbl_80559A8C, child->vt->getName(child)) == 0)
+        {
+          records[2].f0 = child->vt->getString(child, lbl_80559A64, records[2].f0);
+          records[2].f1 = child->vt->getString(child, lbl_80559A6C, records[2].f0);
+          records[2].f2 = child->vt->getFloat(child, lbl_80559A74, records[2].f2);
+          records[2].f3 = child->vt->getInt(child, lbl_80559A7C, records[2].f3);
+        }
+        if (stricmp(dstBase + 0x198, child->vt->getName(child)) == 0)
+        {
+          records[3].f0 = child->vt->getString(child, lbl_80559A64, records[3].f0);
+          records[3].f1 = child->vt->getString(child, lbl_80559A6C, records[3].f0);
+          records[3].f2 = child->vt->getFloat(child, lbl_80559A74, records[3].f2);
+          records[3].f3 = child->vt->getInt(child, lbl_80559A7C, records[3].f3);
+        }
+        if (stricmp(dstBase + 0x1A8, child->vt->getName(child)) == 0)
+        {
+          records[4].f0 = child->vt->getString(child, lbl_80559A64, records[4].f0);
+          records[4].f1 = child->vt->getString(child, lbl_80559A6C, records[4].f0);
+          records[4].f2 = child->vt->getFloat(child, lbl_80559A74, records[4].f2);
+          records[4].f3 = child->vt->getInt(child, lbl_80559A7C, records[4].f3);
+        }
+        if (stricmp(lbl_80559A94, child->vt->getName(child)) == 0)
+        {
+          records[5].f0 = child->vt->getString(child, lbl_80559A64, records[5].f0);
+          records[5].f1 = child->vt->getString(child, lbl_80559A6C, records[5].f0);
+          records[5].f2 = child->vt->getFloat(child, lbl_80559A74, records[5].f2);
+          records[5].f3 = child->vt->getInt(child, lbl_80559A7C, records[5].f3);
+        }
+        if (stricmp(dstBase - (-0x1B4), child->vt->getName(child)) == 0)
+        {
+          records[6].f0 = child->vt->getString(child, lbl_80559A64, records[6].f0);
+          records[6].f1 = child->vt->getString(child, lbl_80559A6C, records[6].f0);
+          records[6].f2 = child->vt->getFloat(child, lbl_80559A74, records[6].f2);
+          records[6].f3 = child->vt->getInt(child, lbl_80559A7C, records[6].f3);
+        }
+        child = (Obj *) parent->vt->getChild(parent, (0, index++));
+      }
+
+      fn_80131818(parent);
     }
+  }
 }
 
 /* Byte-swap a loaded big-endian LANG table in place: the 32-bit entry count at
@@ -950,21 +975,21 @@ extern int lbl_8055E044;
 /* "LocaleUnXlator - really shouldn't use this in non-DEBUG mode" */
 extern char lbl_8032B328[];
 /* panic(): prints "PANIC: " + fmt (fn_802E3028), reports "PANIC" and exit(-1);
- * matched in src/game/abend.c as fn_802E317C. */
-int fn_802E317C(const char *, ...);
+ * matched in src/game/abend.c as Abend_Panic. */
+int Abend_Panic(const char *, ...);
 
 /* LocaleUnXlator: copy the string src into dst and return dst, copying at most
  * 0x12C bytes -- when the limit runs out the last byte written is replaced by
  * the terminator.  The copy is dead code in this build: the function first
  * panics with "LocaleUnXlator - really shouldn't use this in non-DEBUG mode"
- * (fn_802E317C prints and exits), so reverse translation only exists in DEBUG. */
+ * (Abend_Panic prints and exits), so reverse translation only exists in DEBUG. */
 char *fn_8013126C(char *dst, const char *src) {
     const unsigned char *s = (const unsigned char *)src;
     int count;
     char *out;
     unsigned char c;
 
-    fn_802E317C(lbl_8032B328);
+    Abend_Panic(lbl_8032B328);
     out = dst;
     count = 0x12c;
     goto copy;

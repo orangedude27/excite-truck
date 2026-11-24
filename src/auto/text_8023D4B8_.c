@@ -53,7 +53,7 @@ extern void fn_8023E1FC(void *);
   extern s32 stricmp(const char *, const char *);
   extern char lbl_802FA0A8[];
   extern char lbl_80341B9C[];
-  extern s32 fn_802E317C(const char *, ...);
+  extern s32 Abend_Panic(const char *, ...);
   extern char *lbl_8055BBA0;
   extern void fn_801A7E54(void *, s32, void *);
 extern void fn_8022D76C();
@@ -274,7 +274,7 @@ void fn_8023D7CC(void) {
             SetControlOption(slotIndex + 8, (int)lbl_8055BBC0, optionData + 0x29C);
             break;
         default:
-            fn_802E317C(optionData + 0x474, (int)GetControlScheme);
+            Abend_Panic(optionData + 0x474, (int)GetControlScheme);
             break;
         }
         slotIndex++;
@@ -404,7 +404,7 @@ char *fn_8023DC38(char *controlName) {
         entry += 2;
         index += 1;
     }
-    fn_802E317C(lbl_80341B9C, controlName);
+    Abend_Panic(lbl_80341B9C, controlName);
     return 0;
 }
 
@@ -878,7 +878,7 @@ void fn_8023E550(int record) {
   extern s32 stricmp(const char *, const char *);
   extern char lbl_802FA0A8[];
   extern char lbl_80341B9C[];
-  extern s32 fn_802E317C(const char *, ...);
+  extern s32 Abend_Panic(const char *, ...);
   #pragma cplusplus on
 struct Dummy8023E1FC {
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();

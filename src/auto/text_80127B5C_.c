@@ -4,7 +4,7 @@
 extern int lbl_8041E098[];
 extern int lbl_8055DF70;
 extern char lbl_80329FC0[];
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern char lbl_80329FA0[];
 
 #pragma cplusplus on
@@ -109,7 +109,7 @@ void fn_80127C90(int callback, int arg) {
         entry[20] = 0;
     }
     if (available == 0)
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80329FA0);
+        ((void (*)(const char *, ...))Abend_Panic)(lbl_80329FA0);
 }
 void fn_80127CF4(int arg0, int arg1) {
     /* Register an object task in the bg task table if space is available; log overflow otherwise. */
@@ -135,7 +135,7 @@ void fn_80127CF4(int arg0, int arg1) {
         entry[20] = 0;
     }
     if (available == 0)
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80329FC0);
+        ((void (*)(const char *, ...))Abend_Panic)(lbl_80329FC0);
 }
 /* Remove the alarm entry whose id matches arg0 and whose object slot (+0xC) is 0.
  * If the table is currently iterating (lbl_8041E098 byte 0 set), mark the entry

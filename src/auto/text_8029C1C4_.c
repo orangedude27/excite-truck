@@ -298,7 +298,7 @@ void fn_8029C664(void) {
     extern void fn_8029D550(void *, float *, float *);
     extern float PSQUATMultiply(float *, float *);
     extern char lbl_803495E8[];
-    extern void fn_802E317C(const char *, ...);
+    extern void Abend_Panic(const char *, ...);
     float positionA[3], positionB[3], radiusA, radiusB;
     float minDistance;
     int *poolBase, *poolA, *poolB;
@@ -315,7 +315,7 @@ void fn_8029C664(void) {
         for (; j < lbl_8055F7F0; ++poolB, ++j) {
             fn_8029D550((void *)*poolB, positionB, &radiusB);
             if (PSQUATMultiply(positionA, positionB) < radiusB + (minDistance + radiusA))
-                fn_802E317C(lbl_803495E8);
+                Abend_Panic(lbl_803495E8);
         }
     }
 }
@@ -326,7 +326,7 @@ extern "C" void fn_80131818(void *);
 extern "C" void *fn_801284F8(int, void *);
 extern "C" void *fn_8029D148(void *, void *, float *, int);
 extern "C" void *fn_8029E754(void *, void *, int);
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
 extern "C" void *memset(void *, int, unsigned int);
 #pragma cplusplus off
 
@@ -396,7 +396,7 @@ void fn_8029C73C(void) {
             void *pool;
             int idx;
             if (lbl_8055F7F0 >= 8)
-                fn_802E317C(base + 0xB0, 8);      /* "water: exceeded pool limit (%d)" */
+                Abend_Panic(base + 0xB0, 8);      /* "water: exceeded pool limit (%d)" */
             entry = (ValtEntry *)valt->getEntry(i);
             texture = entry->getInt(base + 0xD0); /* "texture_name" */
             params.origin = entry->getVec3(&lbl_8055CAB4);
@@ -452,7 +452,7 @@ void fn_8029C998(void) {
     extern int lbl_8055CAB4, lbl_8055CABC, lbl_8055CAC4;   /* "origin", "right", "up" */
     extern void *fn_80131810(void *); extern void fn_80131818(void *);
     extern void *fn_8029E754(void *, void *, int);
-    extern void fn_802E317C(const char *, ...);
+    extern void Abend_Panic(const char *, ...);
     Params params; int *dest; char *base; ValtFile *valt; int i; int idx;
 
     base = lbl_80349560; lbl_8055F7F4 = 0; valt = (ValtFile *)fn_80131810(base + 0xEC);
@@ -461,7 +461,7 @@ void fn_8029C998(void) {
         for (i = 0; valt->getEntry(i) != 0; i++) {
             ValtEntry *entry; int texture; void *area;
             if (lbl_8055F7F4 >= 16)
-                fn_802E317C(base + 0xF8, 16);
+                Abend_Panic(base + 0xF8, 16);
             entry = (ValtEntry *)valt->getEntry(i); texture = entry->getInt(base + 0xD0);
             params.pos = entry->getVec3(&lbl_8055CAB4);
             params.v1 = entry->getVec2(&lbl_8055CABC);
@@ -689,7 +689,7 @@ void *fn_8029D148(void *arg0, void *arg1, float *arg2, int arg3) {
     extern double fn_8002F234(float);
     extern void *fn_8012850C(int, const char *);
     extern void *memset(void *, int, unsigned int);
-    extern void fn_802E317C(const char *, ...);
+    extern void Abend_Panic(const char *, ...);
     extern float PSQUATMultiply(float *, float *);
     extern void *fn_802CAC28(int, int);
     extern void fn_8014E740(float *, float, float, float, float, float, float, float, float, float, float, float, float, float, float);
@@ -720,7 +720,7 @@ void *fn_8029D148(void *arg0, void *arg1, float *arg2, int arg3) {
     if (*(int *)((char *)arg0 + 0xC) < 3 ||
         *(int *)((char *)arg0 + 0x10) < 3 ||
         *(int *)((char *)arg0 + 0xC) * *(int *)((char *)arg0 + 0x10) > 0x200)
-        fn_802E317C(base + 0x148, *(int *)((char *)arg0 + 0x10));
+        Abend_Panic(base + 0x148, *(int *)((char *)arg0 + 0x10));
     *(void **)arg0 = fn_8012850C(*(int *)((char *)arg0 + 0x10) * (*(int *)((char *)arg0 + 0xC) * 2) * 2, base + 0x16C);
     memset(*(void **)arg0, 0, *(int *)((char *)arg0 + 0x10) * (*(int *)((char *)arg0 + 0xC) * 4));
 

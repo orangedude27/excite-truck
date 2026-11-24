@@ -15,7 +15,7 @@ extern void *fn_802E5AE8(void *);
 extern float fn_802E6040(void *);
 extern void fn_802E30C8(const char *, ...);
 extern char *strchr(const char *, int);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern const char lbl_8033C510[];
 extern void fn_802E61E4(float);
 extern float fn_80209028(void), fn_802091CC(void);
@@ -189,7 +189,7 @@ int initVoiceMixer(void *mixer) {
         int *handleBuffer = *(int **)((char *)mixer + 4);
         int unfreedHandle = *(int *)((char *)handleBuffer + slotOffset);
         if (unfreedHandle != 0) {
-            fn_802E317C(kUnfreedSoundFmt, unfreedHandle);
+            Abend_Panic(kUnfreedSoundFmt, unfreedHandle);
         }
         slotIndex++;
         slotOffset += 4;
@@ -352,7 +352,7 @@ copy_done:
         }
         fn_80131818(list);
     } else {
-        fn_802E317C(lbl_8033C3C0);
+        Abend_Panic(lbl_8033C3C0);
     }
     fn_802E58B8(directory);
 }
@@ -500,7 +500,7 @@ copy_check:
 copied: ; }
                     dot = strchr(buffer, '.');
                     if (dot != 0) {
-                        if (stricmp(dot, lbl_8055B5C0) != 0) fn_802E317C(lbl_8033C4C8, name);
+                        if (stricmp(dot, lbl_8055B5C0) != 0) Abend_Panic(lbl_8033C4C8, name);
                         *dot = 0;
                         { int append_left = 0x40; char *append_dst = buffer;
                         while (*append_dst != 0) { append_left--; append_dst++; }
@@ -514,7 +514,7 @@ append_check:
                             { unsigned char c = *src++; *append_dst++ = c; if ((signed char)c == 0) goto appended; else goto append_next; }
 appended:                   ;
                         } }
-                    } else fn_802E317C(lbl_8033C4A0, name);
+                    } else Abend_Panic(lbl_8033C4A0, name);
                     *(void **)(obj + 0x14) = fn_802E5AE8(buffer);
                     *(void **)(obj + 0x18) = fn_8020A6AC(name);
                     length = ((double (*)(void *))fn_802E6040)(*(void **)(obj + 0x10));
@@ -1064,7 +1064,7 @@ void fn_8020BC90(VoiceSnd *snd, int auxFlags) { snd->auxFlags = auxFlags; }
 void fn_8020BC98(void) {
 #define kSndVoiceSet3DMsg lbl_8033C510
     /* Unimplemented SndVoice::Set3D; panic with the method name. */
-    fn_802E317C(kSndVoiceSet3DMsg);
+    Abend_Panic(kSndVoiceSet3DMsg);
 #undef kSndVoiceSet3DMsg
 }
 

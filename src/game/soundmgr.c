@@ -34,7 +34,7 @@ extern void fn_80208408(void *, void *);
 extern void fn_80208858(void *, signed long, signed long);
 extern signed long fn_80128668(void);
 extern void* fn_802090B4(void);
-extern signed long fn_802E317C(const char*, ...);
+extern signed long Abend_Panic(const char*, ...);
 extern signed long fn_8026A344(signed long);
 extern signed long fn_80206570(signed long);
 extern signed long fn_8020835C(void *);
@@ -598,7 +598,7 @@ extern "C" signed long fn_8020815C(void *arg0) {
         i++;
     }
     if (matches > limit) {
-        fn_802E317C(lbl_8033BE20, matches, limit);
+        Abend_Panic(lbl_8033BE20, matches, limit);
     }
 }
 
@@ -669,7 +669,7 @@ typedef struct SndClassList {
     signed long count;
 } SndClassList;
 
-/* fn_802E317C (abend.c) reports through the format and then ends the program. */
+/* Abend_Panic (abend.c) reports through the format and then ends the program. */
 #define SNDMGR_INVALID_SOUNDCLASS_FMT lbl_8033BE50   /* "%s/%d: Invalid soundclass! (%s)" */
 #define SNDMGR_FILE                   lbl_8033BE70   /* "soundmgr.cpp" */
 #define SNDMGR_LINE_INVALID_SOUNDCLASS 0x265         /* its line in soundmgr.cpp */
@@ -705,7 +705,7 @@ typedef struct SndClassList {
             fn_802082C0(soundMgr, classList);
             break;
         default:
-            fn_802E317C(SNDMGR_INVALID_SOUNDCLASS_FMT, SNDMGR_FILE,
+            Abend_Panic(SNDMGR_INVALID_SOUNDCLASS_FMT, SNDMGR_FILE,
                         SNDMGR_LINE_INVALID_SOUNDCLASS, fn_80206570(sndClass));
             break;
         }
@@ -872,7 +872,7 @@ void fn_80208620(void *arg0, void *arg1)
   }
   else
   {
-    fn_802E317C(lbl_8033BE80, ((char *) arg1) + 0x37);
+    Abend_Panic(lbl_8033BE80, ((char *) arg1) + 0x37);
   }
 }
 #pragma pop

@@ -6,7 +6,7 @@ __declspec(section ".sdata") extern char lbl_8055CA40[];
 __declspec(section ".sdata") extern char *lbl_8055CA38[];
 extern char lbl_80349384[];
 extern int stricmp(const char *, const char *);
-extern int fn_802E317C(char *, ...);
+extern int Abend_Panic(char *, ...);
 extern s32 fn_80296D28(s32 flipBook); /* FlipBook_release: drop one reference */
 extern s32 fn_80128668(void *);
 extern s32 fn_8002F6AC(s32, void *);
@@ -98,7 +98,7 @@ extern "C" void *fn_802972A4(void *node) {
         handled = 1;
     }
     if (handled == 0) {
-        fn_802E317C(lbl_80349384, typeName);
+        Abend_Panic(lbl_80349384, typeName);
     }
     return element;
 }
@@ -109,7 +109,7 @@ __declspec(section ".sdata") extern char lbl_8055CA40[];
 __declspec(section ".sdata") extern char *lbl_8055CA38[];
 extern char lbl_80349384[];
 extern int stricmp(const char *, const char *);
-extern int fn_802E317C(char *, ...);
+extern int Abend_Panic(char *, ...);
 extern void *fn_802972A4(void *);
 __declspec(section ".sdata") extern char lbl_8055CA48[];
 __declspec(section ".sdata") extern char lbl_8055CA50[];
@@ -369,7 +369,7 @@ __declspec(section ".sdata") extern char lbl_8055CA40[];
 __declspec(section ".sdata") extern char *lbl_8055CA38[];
 extern char lbl_80349384[];
 extern int stricmp(const char *, const char *);
-extern int fn_802E317C(char *, ...);
+extern int Abend_Panic(char *, ...);
 /* FlipBookElem::play (vtable slot 0x14) -- tail-calls the FlipBook keyframe
  * player fn_80296D2C with this element's collection pointer (offset +4),
  * leaving the caller's remaining argument registers untouched for the player. */

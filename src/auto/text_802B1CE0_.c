@@ -131,57 +131,64 @@ extern "C" int fn_802B1DE8(void *item) {
     return stricmp((char *)&kObjectName, ((UMatNamedItem *)item)->getName()) == 0;
 }
 
-extern "C" void fn_802B1E28(void) {
-    typedef struct Pool {
-        void *data;
-        void *nodes;
-        volatile int used;
-        volatile int capacity;
-        void *storage;
-    } Pool;
-    typedef void *(*AllocArray)(void *, void (*)(void *), void *(*)(void *, int), int, int);
-    Pool *pool;
-    void *storage;
-    void *nodes;
+extern "C" char fn_802B1E28(void)
+{
+  typedef struct Pool
+  {
     void *data;
-    void *entry;
-    int count;
-    int size;
-    int offset;
-    int i;
-    int index;
-    fn_802B8AE0(lbl_8034A288 + 0xC, &lbl_8055F9B4);
-    fn_802B8AE0(lbl_8034A288 + 0x18, &lbl_8055F9B0);
-    pool = (Pool *)fn_801284F8(0x14, lbl_8034A288 + 0x28);
-    if (pool != 0) {
-        storage = fn_8012850C(0x610, (const char *)&lbl_8055CDC0);
-        nodes = ((AllocArray)fn_8002F37C)(storage, fn_802B1FC0, fn_802B1F68, 0x10, 0x60);
-        pool->nodes = nodes;
-        pool->capacity = 0x60;
-        pool->used = 0;
-        pool->storage = nodes;
-        count = pool->capacity;
-        size = count << 6;
-        storage = fn_8012850C(size * 0x14 + 0x10, lbl_8034A3F8);
-        data = ((AllocArray)fn_8002F37C)(storage, (void (*)(void *))fn_802B1F64, (void *(*)(void *, int))0, 0x14, size);
-        pool->data = data;
-        i = 0;
-        offset = 0;
-        do {
-            index = pool->used;
-            i++;
-            nodes = pool->nodes;
-            data = pool->data;
-            pool->used = index + 1;
-            entry = (char *)nodes + index * 0x10;
-            *(void **)entry = (char *)data + offset;
-            offset += 0x500;
-            *(int *)((char *)entry + 8) = 0x40;
-            *(int *)((char *)entry + 4) = 0;
-        } while (i < pool->capacity);
-        pool->used = 0;
+    void *nodes;
+    volatile int used;
+    volatile int capacity;
+    void *storage;
+  } Pool;
+  typedef void *(*AllocArray)(void *, void (*)(void *), void *(*)(void *, int), int, int);
+  Pool *pool;
+  void *storage;
+  void *nodes;
+  void *data;
+  void *entry;
+  int count;
+  int size;
+  int offset;
+  int i;
+  s32 index;
+  fn_802B8AE0(lbl_8034A288 + 0xC, &lbl_8055F9B4);
+  fn_802B8AE0(lbl_8034A288 + 0x18, &lbl_8055F9B0);
+  pool = (Pool *) fn_801284F8(0x14, lbl_8034A288 + 0x28);
+  if (pool != 0)
+  {
+    storage = fn_8012850C(0x610, (const char *) (&lbl_8055CDC0));
+    do
+    {
+      nodes = ((AllocArray) fn_8002F37C)(storage, fn_802B1FC0, fn_802B1F68, 0x10, 0x60);
+      pool->nodes = nodes;
+      pool->capacity = 0x60;
+      pool->used = 0;
+      pool->storage = nodes;
+      size = (count = pool->capacity) << 6;
     }
-    lbl_8055F9BC = pool;
+    while (0);
+    storage = fn_8012850C(((size * ((long long) 0x14)) & 0xFF) + 0x10, lbl_8034A3F8);
+    data = ((AllocArray) fn_8002F37C)(storage, (void (*)(void *)) fn_802B1F64, (void *(*)(void *, int)) 0, 0x14, size);
+    pool->data = data;
+    i = 0;
+    offset = 0;
+    do
+    {
+      index = pool->used;
+      i++;
+      nodes = pool->nodes;
+      data = pool->data;
+      pool->used = index + 1;
+      *((void **) (entry = ((char *) nodes) + (index * 0x10))) = ((char *) data) + offset;
+      offset += 0x500;
+      *((int *) (((char *) entry) + 8)) = 0x40;
+      *((int *) (((char *) entry) + 4)) = 0;
+    }
+    while (i < pool->capacity);
+    pool->used = 0;
+  }
+  lbl_8055F9BC = pool;
 }
 
 #pragma cplusplus reset
@@ -638,7 +645,7 @@ extern char lbl_8055CDE0[8], lbl_8055CDE8[4], lbl_8055CDEC[4];
 extern void fn_802C6B44(void *);
 extern int fn_802B110C(void *, int);
 extern int fn_802C9C24(void *);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 #pragma push
 #pragma processor 750
 #pragma cplusplus on
@@ -653,7 +660,7 @@ extern "C" void *fn_802B2958(void *arg0, void *arg1) {
     int key, value, valid;
     char *obj = (char *)arg0;
     float *entry;
-    float radius, angle, x, x2, x3, yz, product0, product1;
+    float radius, angle;
     double one, zero, cosine, sine, negSine;
     unsigned int i;
     if (p != 0) {
@@ -672,13 +679,13 @@ extern "C" void *fn_802B2958(void *arg0, void *arg1) {
                 if (value != 0) {
                     *(int *)(p + 8) = ((int (*)(void *, int))fn_802B110C)((void *)fn_802B1D38, key);
                     if (*(int *)(p + 8) == -2)
-                        fn_802E317C(base + 0x80, key);
+                        Abend_Panic(base + 0x80, key);
                     *(int *)(p + 4) = value;
                     valid = 1;
                 }
-                if (!valid) fn_802E317C(base + 0xA0, name);
+                if (!valid) Abend_Panic(base + 0xA0, name);
             } else {
-                fn_802E317C(base + 0xE4, name);
+                Abend_Panic(base + 0xE4, name);
             }
         }
     }
@@ -700,21 +707,18 @@ extern "C" void *fn_802B2958(void *arg0, void *arg1) {
         cosine = (float)cos(angle);
         sine = (float)sin(angle);
         negSine = -sine;
-        x = entry[9];
-        product1 = (float)zero * x;
-        product0 = (float)cosine * x;
-        entry[0] = product0;
-        entry[1] = product1;
-        entry[2] = (float)negSine * x;
-        x2 = entry[9];
-        yz = (float)zero * x2;
-        entry[3] = yz;
-        entry[4] = (float)one * x2;
-        entry[5] = yz;
-        x3 = entry[9];
-        entry[6] = (float)sine * x3;
-        entry[7] = (float)zero * x3;
-        entry[8] = (float)cosine * x3;
+        radius = entry[9];
+        entry[0] = (float)cosine * radius;
+        entry[1] = (float)zero * radius;
+        entry[2] = (float)negSine * radius;
+        radius = entry[9];
+        entry[3] = (float)zero * radius;
+        entry[4] = (float)one * radius;
+        entry[5] = (float)zero * radius;
+        radius = entry[9];
+        entry[6] = (float)sine * radius;
+        entry[7] = (float)zero * radius;
+        entry[8] = (float)cosine * radius;
     }
     *(char *)(obj + 0x2A0) = 0;
     return obj;

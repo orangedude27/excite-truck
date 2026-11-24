@@ -27,7 +27,7 @@ extern s32 ArtSetGet(char *, s32, char *, s32);
 extern s32 fn_80232578(char *, char *, s32);
 extern char lbl_80498828[];
 extern void *MRollStatLabel_init(void *);
-extern void fn_802E317C(char *, ...);
+extern void Abend_Panic(char *, ...);
 typedef struct Fn241820VT { int pad[3]; int (*isActive)(void *); } Fn241820VT;
 typedef struct Fn241820Obj { char pad[0xc]; Fn241820VT *vt; } Fn241820Obj;
 typedef int (*Fn241820IsActive)(void *);
@@ -84,7 +84,7 @@ typedef struct MRollPlayerSlot {
         }
         activeCount++;
     }
-    fn_802E317C(lbl_803422C0, playerIndex, activeCount); /* bad index abort */
+    Abend_Panic(lbl_803422C0, playerIndex, activeCount); /* bad index abort */
 }
 
 #pragma push
@@ -262,7 +262,7 @@ struct MRollJoinLeaveWidget {
                 return;
             }
         }
-        fn_802E317C(lbl_803422C0 + 0x50, 2);
+        Abend_Panic(lbl_803422C0 + 0x50, 2);
     }
 };
 struct MRollMenuEntry {
@@ -320,7 +320,7 @@ extern "C" s32 fn_8023FF1C(s32 arg0) {
             goto focus0_done;
         }
     }
-    fn_802E317C(strings + 0x50, 2);
+    Abend_Panic(strings + 0x50, 2);
 focus0_done:
 
     entry = focii;
@@ -341,7 +341,7 @@ focus0_done:
             goto focus1_done;
         }
     }
-    fn_802E317C(strings + 0x50, 2);
+    Abend_Panic(strings + 0x50, 2);
 focus1_done:
     {
         const MRollMenuEntry endEntry = *(const MRollMenuEntry *)lbl_80498810;
@@ -413,7 +413,7 @@ focus1_done:
                 running = 0;
                 break;
             default:
-                fn_802E317C(strings + 0x2A0, res);
+                Abend_Panic(strings + 0x2A0, res);
                 break;
             }
         }
@@ -1761,7 +1761,7 @@ extern "C" s32 getCurrentCollectionItem(void *self) {
 #pragma cplusplus off
 extern void fn_80214A9C(s32);
 extern void fn_80214AF0(s32);
-extern void fn_802E317C(char *, ...);
+extern void Abend_Panic(char *, ...);
 extern u8 *fn_802E85B8(s32);
 extern char lbl_80342840[];
 extern char lbl_8055BD60;
@@ -2009,7 +2009,7 @@ void fn_80242738(void *arg0, s32 arg1)
           break;
 
         default:
-          fn_802E317C(lbl_80342840, 0, refreshIndex);
+          Abend_Panic(lbl_80342840, 0, refreshIndex);
           break;
 
       }
@@ -2038,7 +2038,7 @@ extern "C" s32 fn_802E8504(s32);
 extern "C" u8 *fn_802E85B8(s32);
 extern "C" void fn_80214A9C(s32);
 extern "C" void fn_80214AF0(s32);
-extern "C" void fn_802E317C(char *, ...);
+extern "C" void Abend_Panic(char *, ...);
 #pragma optimize_for_size off
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
@@ -2217,7 +2217,7 @@ off_child_check:
                 if (i < *(volatile s32 *)(list + 0x2C)) goto off_child_body;
                 break;
             default:
-                fn_802E317C(lbl_80342840, 0, refreshIndex);
+                Abend_Panic(lbl_80342840, 0, refreshIndex);
                 break;
             }
             *(s32 *)(loopBase + 0x18) = *(s32 *)(loopBase + 0x1C);

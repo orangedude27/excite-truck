@@ -63,7 +63,7 @@ extern void __array_delete(void *, void *, s32, s32);
 extern f32 lbl_8055EF94;
 extern s32 lbl_8055EF74;
 extern s32 fn_80217270(s32);
-extern s32 fn_802E317C(const char *, ...);
+extern s32 Abend_Panic(const char *, ...);
 extern char lbl_8033D7EC[];
 extern void fn_80218464();
 extern u32 lbl_8055EF98;
@@ -439,7 +439,7 @@ void *fn_80216770(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
             return result;
         }
     }
-    fn_802E317C((const char *)&lbl_8033D7B4);
+    Abend_Panic((const char *)&lbl_8033D7B4);
     return 0;
 }
 #pragma small_data off
@@ -454,7 +454,7 @@ void fn_8021683C(u32 windowPtr) {
             return;
         }
     }
-    fn_802E317C((const char *)(void *)&lbl_8033D7EC);
+    Abend_Panic((const char *)(void *)&lbl_8033D7EC);
 }
 #pragma small_data on
 /* Request a fade/transition: store the requested result and signal the fade loop to proceed. */

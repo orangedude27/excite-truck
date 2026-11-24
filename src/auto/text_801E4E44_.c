@@ -201,7 +201,7 @@ s32 fn_801E5370(s32 value, s32 lastIndex, f32 scale) {
 #pragma use_lmw_stmw off
 void fn_801E53A8(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 arg4) {
     extern char lbl_803399F8[];
-    extern void fn_802E317C(const char *, ...);
+    extern void Abend_Panic(const char *, ...);
     extern f32 fn_802C88D4(void *);
     extern f32 lbl_80562D44, lbl_80562D48, lbl_80562D4C, lbl_80562D50, lbl_80562D54, lbl_80562D58;
     Unk801E4E44Vertex *verts = lbl_80487578;
@@ -215,7 +215,7 @@ void fn_801E53A8(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 arg4) {
     s32 n, i, a, c, alpha, count, index, color;
 
     if (state->unk_0x28 >= state->unk_0x2C) {
-        fn_802E317C(lbl_803399F8);
+        Abend_Panic(lbl_803399F8);
     }
 
     delta[0] = arg0[0] - arg2[0];

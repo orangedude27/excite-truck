@@ -202,7 +202,7 @@ static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *
 #define transform_vec(matrix, src, dst) transform_vec_values(matrix, src, dst, (src)[0], (src)[1], (src)[2])
 extern s32 fn_802315FC(s32);
 extern void fn_802E30C8(const char *);
-extern void fn_802E317C(const char *);
+extern void Abend_Panic(const char *);
 extern void *fn_801284F8(s32, const char *);
 extern char lbl_8034044C[];
 extern char lbl_80340488[];
@@ -691,8 +691,8 @@ void fn_802321D8(void) {
     /* (Re)initialize the gText font-tracker cache: warn if a cache is already
        allocated, allocate a fresh 0x16C-byte tracker tagged "gtext:fontTracker",
        and clear it. (lbl_8055F068 = cache, lbl_80340488 = double-init message,
-       lbl_803404C0 = allocation tag; fn_802E317C reports and aborts.) */
-    if (lbl_8055F068 != 0) ((void (*)(const char *, ...))fn_802E317C)(lbl_80340488);
+       lbl_803404C0 = allocation tag; Abend_Panic reports and aborts.) */
+    if (lbl_8055F068 != 0) ((void (*)(const char *, ...))Abend_Panic)(lbl_80340488);
     lbl_8055F068 = fn_801284F8(0x16C, lbl_803404C0);
     memset(lbl_8055F068, 0, 0x16C);
 }
@@ -838,10 +838,10 @@ s32 fn_80232578(const char *name) {
     data = (u8 *)rawBlock;
     if (rawBlock != 0) {
         if (version != 8) {
-            ((void (*)(const char *, ...))fn_802E317C)(stringBase + GTEX_MSG_BAD_VERSION, name, version);
+            ((void (*)(const char *, ...))Abend_Panic)(stringBase + GTEX_MSG_BAD_VERSION, name, version);
         }
         if (firstLoad == 0) {
-            ((void (*)(const char *, ...))fn_802E317C)(stringBase + GTEX_MSG_NULL_FONT, name);
+            ((void (*)(const char *, ...))Abend_Panic)(stringBase + GTEX_MSG_NULL_FONT, name);
         }
     } else {
         ((void (*)(const char *, ...))fn_802E30C8)(stringBase + GTEX_MSG_NO_BLOCK, name);
@@ -895,7 +895,7 @@ s32 fn_80232578(const char *name) {
     nameBuffer.name[0xB] = 0;
     fn_80028E00(nameBuffer.name, (const char *)&gTexExtension);
     if (strlen(nameBuffer.name) > 0x10) {
-        ((void (*)(const char *, ...))fn_802E317C)(stringBase + GTEX_MSG_NAME_TOO_LONG, nameBuffer.name, 0x10, strlen(nameBuffer.name));
+        ((void (*)(const char *, ...))Abend_Panic)(stringBase + GTEX_MSG_NAME_TOO_LONG, nameBuffer.name, 0x10, strlen(nameBuffer.name));
     }
     index = fn_802CAC34(nameBuffer.name, ((GTexBlock *)data)->texture);
     if (index == -1) {
@@ -2006,7 +2006,7 @@ void fn_80234AFC(TextDrawStyle *style, const char *fmt, f32 x, f32 y, ...) {
 #pragma pop
 extern s32 fn_802315FC(s32);
 extern void fn_802E30C8(const char *);
-extern void fn_802E317C(const char *);
+extern void Abend_Panic(const char *);
 extern void *fn_801284F8(s32, const char *);
 extern char lbl_8034044C[];
 extern char lbl_80340488[];

@@ -270,39 +270,40 @@ void fn_8019321C(void *arg0, void *arg1, const void *arg2) {
 }
 #pragma processor reset
 extern float lbl_80562140, lbl_80562148;
-void fn_8019330C(void *arg0, void *arg1, const void *arg2) {
-    float stack[8];
-    float x = *(const float *)((const char *)arg2 + 0x18);
-    float y = *(const float *)((const char *)arg2 + 0x20);
-    float magnitude = x * x + y * y;
-    float length;
-    float denom;
-    float scale;
-    float sx;
-    float sy;
-    float nsx;
-    float dx;
-    float dy;
-    stack[2] = x;
-    stack[3] = y;
-    length = (float)fn_8002F234(magnitude);
-    denom = lbl_80562148 > length ? lbl_80562148 : length;
-    stack[6] = *(const float *)((const char *)arg2 + 0x24);
-    scale = lbl_80562140 / denom;
-    sx = stack[2] * scale;
-    sy = stack[3] * scale;
-    stack[7] = *(const float *)((const char *)arg2 + 0x2C);
-    dx = *(const float *)arg1 - stack[6];
-    dy = *(const float *)((const char *)arg1 + 4) - stack[7];
-    stack[2] = sx;
-    stack[3] = sy;
-    stack[4] = sy;
-    nsx = -sx;
-    stack[5] = nsx;
-    *(float *)((char *)arg0 + 4) = dx * sx + dy * sy;
-    *(float *)arg0 = dx * sy + dy * (float)(double)nsx;
-    stack[0] = dx;
-    stack[1] = dy;
+void fn_8019330C(void *arg0, void *arg1, const void *arg2)
+{
+  float stack[8];
+  float dy;
+  float x = *((const float *) (((const char *) arg2) + 0x18));
+  float y = *((const float *) (((const char *) arg2) + 0x20));
+  float magnitude = (x * x) + ((double) (y * y));
+  float length;
+  float denom;
+  float scale;
+  float sx;
+  float sy;
+  float nsx;
+  float dx;
+  stack[2] = x;
+  stack[3] = y;
+  length = (float) fn_8002F234(magnitude);
+  stack[6] = *((const float *) (((const char *) arg2) + 0x24));
+  denom = (lbl_80562148 > length) ? (lbl_80562148) : (length);
+  scale = lbl_80562140 / denom;
+  sx = scale * stack[2];
+  scale = stack[3] * scale;
+  stack[7] = *((const float *) (((const char *) arg2) + 0x2C));
+  dy = (*((const float *) (((const char *) arg1) + 4))) - stack[7];
+  stack[2] = sx;
+  stack[3] = scale;
+  stack[4] = scale;
+  nsx = -sx;
+  stack[5] = nsx;
+  dx = (*((const float *) arg1)) - stack[6];
+  *((float *) (((char *) arg0) + 4)) = (dx * sx) + (scale * dy);
+  *((float *) arg0) = (scale * dx) + (dy * ((float) ((double) (-sx))));
+  stack[0] = dx;
+  stack[1] = dy;
 }
 
 #pragma scheduling off
@@ -1545,7 +1546,7 @@ void fn_801958C4(void *controller) { *(float *)((unsigned char *)controller+0x24
 
 extern char lbl_803332D8[];
 extern float lbl_805621A0;
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 void fn_801958D8(void *arg0) {
     void *tmp;
     int state;
@@ -1573,7 +1574,7 @@ void fn_801958D8(void *arg0) {
             break;
         }
         default:
-            fn_802E317C(lbl_803332D8);
+            Abend_Panic(lbl_803332D8);
             break;
         }
         cur = state;

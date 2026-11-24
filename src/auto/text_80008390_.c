@@ -88,7 +88,7 @@ extern s32 fn_80008F68(s32);
 extern void fn_8026DDD8(s32);
 extern void fn_801E85DC(s32);
 extern void fn_801E882C(void);
-extern s32 fn_802E317C(void *, s32, ...);
+extern s32 Abend_Panic(void *, s32, ...);
 extern void fn_80012158(void);
 extern void fn_802C8530(void);
 extern void DrawList_setViewport(s32, s32, s32, s32);
@@ -913,7 +913,7 @@ skip16:
                 case 27:
                     break;
                 default:
-                    fn_802E317C(p24 + 0x274, var15);
+                    Abend_Panic(p24 + 0x274, var15);
                     break;
             }
             if (flag31 != 0)

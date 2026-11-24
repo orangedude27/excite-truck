@@ -63,7 +63,7 @@ extern void fn_801E8D48(void);
 extern void fn_801E8DD4(void);
 extern void fn_801E8E38(void);
 extern void fn_801E8F10(long);
-extern int fn_802E317C(const char *, ...);
+extern int Abend_Panic(const char *, ...);
 extern unsigned char lbl_80339CC0[];
 extern char lbl_80339CFC[];
 extern void *memset(void *, int, unsigned long);
@@ -1280,7 +1280,7 @@ load_sentinel:
     if (sentinel != 0) goto check_key;
 done:
     if (sentinel == 0) {
-        fn_802E317C(lbl_80339CFC, carType);
+        Abend_Panic(lbl_80339CFC, carType);
     }
     return entry;
 }

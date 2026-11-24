@@ -15,7 +15,7 @@ extern void fn_8013B7B4(float*, int);
 extern void fn_8013B6C0(int*, float*, int);
 extern void *fn_80131808(void *);
 extern void fn_80131818(void *);
-extern void fn_802E317C(const char *);
+extern void Abend_Panic(const char *);
 extern int stricmp(const char *, const char *);
 extern char lbl_8032C390[];
 extern const char *lbl_802F9388[];
@@ -75,7 +75,7 @@ extern "C" void fn_8013B7B4(float *catchupParams, int carCount) {
     fn_80131818(catchupList);
     return;
 error:
-    ((void (*)(const char *, ...))fn_802E317C)("no catchup.val?");
+    ((void (*)(const char *, ...))Abend_Panic)("no catchup.val?");
 }
 #pragma pop
 
@@ -102,7 +102,7 @@ void fn_8013B950(void) {
     int index;
     int bestIndex;
     double score;
-    float rounded;
+    register float rounded;
 
     *((volatile u8 *)lbl_8042F8A8 + 4) = 0;
     selected = fn_80179630(0);
@@ -122,7 +122,7 @@ void fn_8013B950(void) {
             if (*(int *)((char *)((struct Dummy *)fn_801B2ED0(selected))->get() + 4) >
                 *(int *)((char *)bestItem + 4)) {
                 score = fn_801B2F90(selected, bestIndex);
-                rounded = score;
+                rounded = (float)score;
                 *(float *)lbl_8042F8A8 = score;
                 *(int *)((char *)lbl_8042F8A8 + 0xc) = bestIndex;
                 *((u8 *)lbl_8042F8A8 + 4) = (rounded < lbl_80561470);
@@ -156,7 +156,7 @@ void fn_8013BAE4(int arg0) {
     float sp10[12];
     int spC;
     float sp8;
-    float *q;
+    volatile float *p;
     float t0, t1, t2, t3;
     float vf;
     double v;
@@ -167,15 +167,15 @@ void fn_8013BAE4(int arg0) {
     fn_8013B7B4(sp10, arg0);
     index = *(int*)((char*)fn_801E87A8() + 0xC);
     fn_8013B6C0(&spC, &sp8, index);
-    q = sp10 + spC * 4;
-    t0 = *(volatile float *)(q + 0);
-    *(volatile float*)&lbl_8042F8B8[0] = t0 + sp8 * (*(volatile float *)(q + 4) - t0);
-    t1 = *(volatile float *)(q + 1);
-    *(volatile float*)&lbl_8042F8B8[1] = t1 + sp8 * (*(volatile float *)(q + 5) - t1);
-    t2 = *(volatile float *)(q + 2);
-    *(volatile float*)&lbl_8042F8B8[2] = t2 + sp8 * (*(volatile float *)(q + 6) - t2);
-    t3 = *(volatile float *)(q + 3);
-    v = t3 + sp8 * (*(volatile float *)(q + 7) - t3);
+    p = (volatile float *)(sp10 + spC * 4);
+    t0 = p[0];
+    *(volatile float*)&lbl_8042F8B8[0] = t0 + sp8 * (p[4] - t0);
+    t1 = p[1];
+    *(volatile float*)&lbl_8042F8B8[1] = t1 + sp8 * (p[5] - t1);
+    t2 = p[2];
+    *(volatile float*)&lbl_8042F8B8[2] = t2 + sp8 * (p[6] - t2);
+    t3 = p[3];
+    v = t3 + sp8 * (p[7] - t3);
     vf = (float)v;
     *(volatile float*)&lbl_8042F8B8[3] = (float)v;
     if (vf < lbl_80561478) v = vf - lbl_8056147C;

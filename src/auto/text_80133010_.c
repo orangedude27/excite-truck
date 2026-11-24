@@ -108,7 +108,7 @@ extern int lbl_8055E07C;
 extern int lbl_80559B58;
 extern int fn_80133BA0(int, int, int);
 extern int fn_80133AD8(int);
-extern int fn_802E317C(const char *, ...);
+extern int Abend_Panic(const char *, ...);
 extern const char lbl_8032B8B0[];
 extern int lbl_8042F718[];
 extern const char lbl_8032B8D0[];
@@ -150,7 +150,7 @@ void fn_80133024(void) {
     lbl_8042F718[13] = 0;
     lbl_8042F718[15] = 0;
     if (fn_80133BA0(lbl_80559B58, 0, 0x12) == 0)
-        fn_802E317C(lbl_8032B88C, lbl_80559B58);
+        Abend_Panic(lbl_8032B88C, lbl_80559B58);
     fn_802E6BD8(0x4F505473, 6, lbl_8055E07C, 0x6D68, (void (*)(void))fn_80133FCC);
     fn_8000DBC8(fn_801341B4);
 }
@@ -160,7 +160,7 @@ void fn_801330E8(int section) {
     if (!fn_80133BA0(lbl_80559B58, 0, section)) {
         const char *fmt = lbl_8032B8B0;
         int sectionName = fn_80133AD8(section);
-        fn_802E317C(fmt, sectionName);
+        Abend_Panic(fmt, sectionName);
     }
 }
 
@@ -173,7 +173,7 @@ void fn_80133144(void) {
     int slotIndex;
     for (slotIndex = 0; slotIndex < 8; slotIndex++) {
         if (callbackSlot[1] != 0)
-            fn_802E317C(lbl_8032B8D0, callbackSlot[0], callbackSlot[1]);
+            Abend_Panic(lbl_8032B8D0, callbackSlot[0], callbackSlot[1]);
         callbackSlot += 2;
     }
     fn_80128668(lbl_8055E07C);
@@ -333,7 +333,7 @@ int fn_8013365C(int name, int callback) {
         slot += 2;
         index++;
     }
-    fn_802E317C(lbl_8032B920, name);
+    Abend_Panic(lbl_8032B920, name);
     return -1;
 }
 
@@ -342,10 +342,10 @@ void fn_801336E0(int arg0, int arg1) {
     int offset = arg0 * 8;
     int *entry = &lbl_8042F718[arg0 * 2];
     if (entry[1] == 0) {
-        fn_802E317C(lbl_8032B940, arg0);
+        Abend_Panic(lbl_8032B940, arg0);
     }
     if ((unsigned)entry[1] != (unsigned)arg1) {
-        fn_802E317C(lbl_8032B968, *(int *)((char *)lbl_8042F718 + offset), entry[1], arg1);
+        Abend_Panic(lbl_8032B968, *(int *)((char *)lbl_8042F718 + offset), entry[1], arg1);
     }
     entry[1] = 0;
 }
@@ -451,10 +451,9 @@ check_invalid:
     if (isDigit == 0) {
         if ((signed char)b == '-')
             return atoi(p);
-    } else {
-        return atoi(p);
+        return fn_80133844(p);
     }
-    return fn_80133844(p);
+    return atoi(p);
 }
 
 extern int fn_802E30C8(const char *, ...);
@@ -831,7 +830,7 @@ extern int lbl_8055E07C;
 extern int lbl_80559B58;
 extern int fn_80133BA0(int, int, int);
 extern int fn_80133AD8(int);
-extern int fn_802E317C(const char *, ...);
+extern int Abend_Panic(const char *, ...);
 extern const char lbl_8032B8B0[];
 extern int lbl_8042F718[];
 extern const char lbl_8032B8D0[];

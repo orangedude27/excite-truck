@@ -36,7 +36,7 @@ void fn_801287D0(void *);
 
 s32 fn_801281F4(s32, s32);
 void fn_802E30C8(void *, void *, void *, ...);
-s32 fn_802E317C(void *, void *);
+s32 Abend_Panic(void *, void *);
 void fn_8012834C(void *, void *, s32);
 void fn_802E3DF8(s32, void *, void *);
 void fn_80128714(void *, s32, s32);
@@ -192,7 +192,7 @@ extern "C" void fn_8012834C(void *label, void *size, s32 allocSource) {
 
     fn_80127964();
     if (heapDisabled == 0 && (u8)heapVerbose != 0) {
-        ((s32 (*)(const char *, ...))fn_802E317C)(memAllocDisabledMsg, label);
+        ((s32 (*)(const char *, ...))Abend_Panic)(memAllocDisabledMsg, label);
     }
 
     if (heapPendingSize != 0) {
@@ -265,16 +265,16 @@ void fn_8012850C(void *size, void *name) {
 
 #pragma opt_propagation off
 s32 fn_80128520(s32 arg0) {
-    if (lbl_8055DF80 == 0)
+    if ((u32)lbl_8055DF80 == 0)
         goto do_log;
-    switch ((s32)lbl_8055DF84) {
+    switch (lbl_8055DF84) {
     case 0:
         return ((s32 (*)(void *, void *, s32))fn_8012834C)(lbl_8032A068, (void *)arg0, 3);
     default:
         goto do_log;
     }
 do_log:
-    ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8032A074, arg0);
+    ((s32 (*)(const char *, ...))Abend_Panic)(lbl_8032A074, arg0);
     return lbl_8055DF98;
 }
 #pragma opt_propagation reset
@@ -291,7 +291,7 @@ void fn_80128584(s32 ptr, s32 arg1) {
     if (((s32)lbl_8055DF80 == 0) || (ptr != 0)) {
         fn_80127964();
         if (((s32)lbl_8055DF80 == 0) && ((u8)lbl_8055DF88 != 0))
-            ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8032A0A0);
+            ((s32 (*)(const char *, ...))Abend_Panic)(lbl_8032A0A0);
 
         inPrimaryBuffer = 0;
         bufferStart = *(u32 *)(lbl_8041E140 + 0xC);
@@ -513,7 +513,7 @@ void fn_80128714(void *arg0, s32 arg1, s32 arg2) {
         region[5] = zero;
         return;
     }
-    ((s32 (*)(const char *, ...))fn_802E317C)(strings + 0x130, (void *)(arg2 / 1024));
+    ((s32 (*)(const char *, ...))Abend_Panic)(strings + 0x130, (void *)(arg2 / 1024));
 }
 
 #pragma push
@@ -552,7 +552,7 @@ extern "C" void fn_801287D0(void *arg0) {
     ((void (*)(void *, ...))fn_802E30C8)(lbl_8032A000 + 0x1AC, (void *)((heap->endOffset - heap->startOffset) / 1024));
     if (heap->errorCode != 0) {
         ((Obj *)arg0)->m14(1);
-        ((s32 (*)(void *, ...))fn_802E317C)(lbl_8032A000 + 0x1C8, (void *)heap->errorCode);
+        ((s32 (*)(void *, ...))Abend_Panic)(lbl_8032A000 + 0x1C8, (void *)heap->errorCode);
     }
     heap->currentUsed = 0;
 }
@@ -609,7 +609,7 @@ extern "C" void *fn_801288AC(void *arg0, s32 arg1, char *arg2, s32 arg3) {
     limit = size + *(s32 *)((u8 *)ctx + 4) + 64;
     if (limit >= *(s32 *)((u8 *)ctx + 8)) {
         ((Ring *)ctx)->flush(1);
-        ((s32 (*)(void *, ...))fn_802E317C)(lbl_8032A204, name, size);
+        ((s32 (*)(void *, ...))Abend_Panic)(lbl_8032A204, name, size);
     }
     record = (u8 *)*(void **)((u8 *)ctx + 0xC) + *(s32 *)((u8 *)ctx + 4);
     memset(record, 0, 0x40);
@@ -662,24 +662,24 @@ void fn_80128AA4(void *heap, u8 *pBlock, s32 allocSource, s32 arg3) {
     msgs = lbl_8032A000;
     signature = *(u32 *)header;
     if (signature != STKA_SIGNATURE)
-        ((s32 (*)(void *, ...))fn_802E317C)(msgs + 0x228, header);
+        ((s32 (*)(void *, ...))Abend_Panic)(msgs + 0x228, header);
     if (*(u32 *)(pBlock + ((s32 (*)(s32, s32))fn_801281F4)(*(s32 *)(pBlock - 0x14), 4)) != STKA_SIGNATURE)
-        ((s32 (*)(void *, ...))fn_802E317C)(msgs + 0x244, header + 4);
+        ((s32 (*)(void *, ...))Abend_Panic)(msgs + 0x244, header + 4);
     p = pBlock + *(s32 *)(header + 0x2C);
     while (p < pBlock + ((s32 (*)(s32, s32))fn_801281F4)(*(s32 *)(header + 0x2C), 4)) {
         if (*p != HEAP_FILL_PATTERN)
-            ((s32 (*)(void *, ...))fn_802E317C)(
+            ((s32 (*)(void *, ...))Abend_Panic)(
                 msgs + 0x278, p, p - (pBlock + *(s32 *)(header + 0x2C)), header + 4, *p, HEAP_FILL_PATTERN);
         p++;
     }
     if (*(u32 *)(header + 0x3C) != STKA_SIGNATURE)
-        ((s32 (*)(void *, ...))fn_802E317C)(msgs + 0x2C8, header + 4, *(u32 *)(header + 0x3C));
+        ((s32 (*)(void *, ...))Abend_Panic)(msgs + 0x2C8, header + 4, *(u32 *)(header + 0x3C));
     if (header[0x24] == 0)
-        ((s32 (*)(void *, ...))fn_802E317C)(msgs + 0x304, header + 4);
+        ((s32 (*)(void *, ...))Abend_Panic)(msgs + 0x304, header + 4);
     if (*(s32 *)(header + 0x30) != allocSource) {
         u32 newname = ((u32 (*)(s32))fn_801281A0)(allocSource);
         u32 oldname = ((u32 (*)(s32))fn_801281A0)(*(s32 *)(header + 0x30));
-        ((s32 (*)(void *, ...))fn_802E317C)(msgs + 0x31C, header + 4, oldname, newname);
+        ((s32 (*)(void *, ...))Abend_Panic)(msgs + 0x31C, header + 4, oldname, newname);
     }
     header[0x24] = 0;
     goto check;
@@ -707,52 +707,65 @@ extern int strcmp(const char *, const char *);
 extern char lbl_80559970, lbl_80559974;
 #pragma push
 #pragma use_lmw_stmw off
-void fn_80128C5C(void *arg0, int arg1, int arg2) {
-    register char *text = lbl_8032A000;
-    int used;
-    int count;
-    int offset;
-    int equal;
-    int useAlt;
-    void *message;
-    if ((arg1 & 1) != 0) {
-        ((void (*)(void *, ...))fn_802E30C8)(text + 0x348);
-        offset = 0;
-        used = 0;
-        count = 0;
-        goto check;
+void fn_80128C5C(void *arg0, int arg1, int arg2)
+{
+  register char *text = lbl_8032A000;
+  int used;
+  int count;
+  int offset;
+  int equal;
+  int useAlt;
+  void *message;
+  if ((arg1 & 1) != 0)
+  {
+    ((void (*)(void *, ...)) fn_802E30C8)(text + 0x348);
+    offset = 0;
+    used = 0;
+    count = 0;
+    goto check;
     loop:
+    {
+      char *record = (*((char **) (((char *) arg0) + 0xC))) + offset;
+      if ((*((unsigned int *) record)) != 0x53544B41)
+      {
+        ((void (*)(void *, ...)) Abend_Panic)(text + 0x380, record);
+      }
+      equal = !strcmp(record + 4, text + 0x5C);
+      useAlt = 0;
+      if ((*((unsigned char *) (record + 0x24))) != 0)
+      {
+        if (equal == 0)
         {
-            char *record = *(char **)((char *)arg0 + 0xC) + offset;
-            if (*(unsigned int *)record != 0x53544B41)
-                ((void (*)(void *, ...))fn_802E317C)(text + 0x380, record);
-            equal = !strcmp(record + 4, text + 0x5C);
-            useAlt = 0;
-            if (*(unsigned char *)(record + 0x24) != 0) {
-                if (equal == 0)
-                    useAlt = 1;
-            }
-            message = useAlt ? (void *)&lbl_80559970 : (void *)&lbl_80559974;
-            fn_802E30C8(text + 0x394, message,
-                        record + 4, (void *)*(int *)(record + 0x28), record);
-            if (*(unsigned char *)(record + 0x24) == 0)
-                used += *(int *)(record + 0x28) + 0x40;
-            count++;
-            offset += *(int *)(record + 0x28) + 0x40;
-            if ((offset & 0x1F) == 0)
-                fn_802E2D74(1);
+          useAlt = 1;
         }
-    check:
-        if (offset < *(int *)((char *)arg0 + 4))
-            goto loop;
-        fn_802E30C8(text + 0x3B4,
-                    (void *)(*(int *)((char *)arg0 + 4) / 1024),
-                    (void *)(*(int *)((char *)arg0 + 8) / 1024),
-                    (void *)((*(int *)((char *)arg0 + 8) - *(int *)((char *)arg0 + 4)) / 1024),
-                    (void *)(used / 1024));
-        ((void (*)(void *, ...))fn_802E30C8)(text + 0x3E8, (void *)count);
-        ((void (*)(void *, ...))fn_802E30C8)(text + 0x3F8);
+      }
+      message = (useAlt) ? ((void *) (&lbl_80559970)) : ((void *) (&lbl_80559974));
+      fn_802E30C8(text + 0x394, message, record + 4, (void *) (*((int *) (record + 0x28))), record);
+      if ((*((unsigned char *) (record + 0x24))) == 0)
+      {
+        if (1)
+        {
+        }
+        used += (*((int *) (record + 0x28))) + 0x40;
+      }
+      count++;
+      offset += (*((int *) (record + 0x28))) + 0x40;
+      if ((offset & 0x1F) == 0)
+      {
+        fn_802E2D74(1);
+      }
     }
+
+    check:
+    if (offset < (*((int *) (((char *) arg0) + 4))))
+    {
+      goto loop;
+    }
+
+    fn_802E30C8(text + 0x3B4, (void *) ((*((int *) (((char *) arg0) + 4))) / 1024), (void *) ((*((int *) (((char *) arg0) + 8))) / 1024), (void *) (((*((int *) (((char *) arg0) + 8))) - (*((int *) (((char *) arg0) + 4)))) / 1024), (void *) (used / 1024));
+    ((void (*)(void *, ...)) fn_802E30C8)(text + 0x3E8, (void *) count);
+    ((void (*)(void *, ...)) fn_802E30C8)(text + 0x3F8);
+  }
 }
 #pragma pop
 void fn_80128DCC(void *heap) {
@@ -764,7 +777,7 @@ void fn_80128DCC(void *heap) {
 loop:
     entry = (s32 *)(heapWords[3] + offset);
     if ((u32)entry[0] != 0x53544B41)
-        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8032A430, entry);
+        ((s32 (*)(const char *, ...))Abend_Panic)(lbl_8032A430, entry);
     offset = offset + entry[10] + 0x40;
 check:
     if (offset < heapWords[1])
@@ -830,7 +843,7 @@ void fn_80128F68(void *allocator) {
 }
 
 extern s32 fn_801281F4(s32, s32);
-extern s32 fn_802E317C(void *, void *);
+extern s32 Abend_Panic(void *, void *);
 extern char lbl_8032A470[];
 void *fn_80128F94(void *heapBlock, s32 requestSize, void *allocName, s32 allocTag) {
     /* Allocate from a light/stack heap with debug canaries, logging if it would overflow. */
@@ -849,7 +862,7 @@ void *fn_80128F94(void *heapBlock, s32 requestSize, void *allocName, s32 allocTa
     alignedSize = ((s32 (*)(s32, s32))fn_801281F4)(requestSize, 0x10);
     totalSize = alignedSize + 0x20;
     if (totalSize + heap[2] > heap[3]) {
-        ((void (*)(void *, ...))fn_802E317C)(lbl_8032A470, name, alignedSize / 1024);
+        ((void (*)(void *, ...))Abend_Panic)(lbl_8032A470, name, alignedSize / 1024);
     }
     usedOffset = heap[2];
     bufferStart = (u8 *)heap[1];

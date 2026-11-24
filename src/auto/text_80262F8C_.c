@@ -1,5 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+// DIAGNOSTIC: build probe.
 
 typedef signed int s32;
 typedef signed char s8;
@@ -135,7 +136,7 @@ void fn_8026311C(void) {
     extern void *fn_80207848(void *, s32);
     extern s32 fn_802146BC(s32 *, s32, s32, s32, s32, s32, s32, s32);
     extern void *fn_80232578(void *);
-    extern s32 fn_802E317C(void *, ...);
+    extern s32 Abend_Panic(void *, ...);
     extern void fn_802E6FBC(void);
     extern void fn_802E8518(s32);
     extern s32 fn_802E8D84(void);
@@ -194,7 +195,7 @@ void fn_8026311C(void) {
             *(f32 *)((char *)p + 8) = vf;
         }
     } else {
-        fn_802E317C((void *)lbl_80346248);
+        Abend_Panic((void *)lbl_80346248);
     }
 
     s.sp80 = 0;
@@ -215,7 +216,7 @@ void fn_8026311C(void) {
             *(f32 *)((char *)p + 8) = vf;
         }
     } else {
-        fn_802E317C((void *)lbl_80346248);
+        Abend_Panic((void *)lbl_80346248);
     }
 
     v22 = (char *)&s.spA0;
@@ -330,7 +331,7 @@ void fn_8026311C(void) {
         lbl_8055F434 = 0;
         break;
     default:
-        fn_802E317C((void *)(base45 + 0x40));
+        Abend_Panic((void *)(base45 + 0x40));
         break;
     }
 

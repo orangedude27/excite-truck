@@ -116,7 +116,7 @@ extern "C" const char lbl_805599A4[1];
 extern "C" void *fn_8012B534(char *arg0, s32 *arg1, u32 arg2);
 extern "C" void fn_80127464(void);
 extern "C" void fn_802E30C8(const char *, ...);
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
 extern "C" const char lbl_8032AB78[];
 extern "C" u8 lbl_8055DFF9;
 extern "C" void *lbl_8055E000;
@@ -223,7 +223,7 @@ extern "C" s32 fn_8012A470(void *arg0, s32 arg1, void *arg2, void *arg3) {
             fn_802E30C8(strings + 0x34);
             fn_802E30C8(strings + 0x5C);
             fn_802E30C8(strings + 0xC);
-            fn_802E317C(strings + 0x88, arg0, arg1, arg2);
+            Abend_Panic(strings + 0x88, arg0, arg1, arg2);
         }
         *(u32 *)((char *)arg2 + 0x34) |= 8;
     } else {
@@ -549,7 +549,7 @@ extern "C" s32 fn_8012ACA0(void *arg0, void *arg1, s32 arg2) {
     u32 temp_r4_11;
     u8 *temp_r26, *var_r25_2, *var_r31;
     char *dot;
-    if (lbl_8055DFFC == 0) fn_802E317C(messages + 0x1D0, arg0);
+    if (lbl_8055DFFC == 0) Abend_Panic(messages + 0x1D0, arg0);
     var_r4 = (char *)arg0; var_r6 = sp10; var_r5 = 0x80;
     goto loop_5_copy;
 loop_5_limit:
@@ -602,7 +602,7 @@ loop_10_done:
         temp_r4_10 = temp_r3_3[0x11]; temp_r3_3[0x11] = temp_r3_3[0x12]; temp_r3_3[0x12] = temp_r4_10;
         temp_r4_11 = *(u32 *)temp_r3_3;
         if (temp_r4_11 != 0 || *(u32 *)(temp_r3_3 + 4) != 0x14)
-            fn_802E317C(lbl_8032AE60, temp_r4_11, 0, *(u32 *)(temp_r3_3 + 4), 0x14);
+            Abend_Panic(lbl_8032AE60, temp_r4_11, 0, *(u32 *)(temp_r3_3 + 4), 0x14);
         var_r25_2 = temp_r3_3 + 0x14; var_r26 = 0;
         goto loop_23_test;
 loop_23:
@@ -611,13 +611,13 @@ loop_23:
 loop_23_test:
         if (var_r26 < *(u32 *)(temp_r3_3 + 0xC)) goto loop_23;
     }
-    if (temp_r3_3 == 0) fn_802E317C(messages + 0x200, arg0);
+    if (temp_r3_3 == 0) Abend_Panic(messages + 0x200, arg0);
     if (*(u32 *)(temp_r3_3 + 8) != *(u32 *)((u8 *)arg0 + 0x7C))
-        fn_802E317C(messages + 0x228, arg0);
+        Abend_Panic(messages + 0x228, arg0);
     if (*(u32 *)(temp_r3_3 + 0xC) != *(u32 *)((u8 *)arg0 + 0x88))
-        fn_802E317C(messages + 0x258, arg0);
+        Abend_Panic(messages + 0x258, arg0);
     if (*(u32 *)(temp_r3_3 + 0x10) != *(u32 *)((u8 *)arg0 + 0x8C))
-        fn_802E317C(messages + 0x288, arg0);
+        Abend_Panic(messages + 0x288, arg0);
     temp_r26 = temp_r3_3 + 0x14; var_r31 = temp_r26; var_r25 = 1; var_r24 = 0;
     goto loop_37_test;
 loop_37:
@@ -731,7 +731,7 @@ done2:
                     n = 0;
                     while (var_r31 < *(s32 *)(node + 0x88)) {
                         u8 *e = (u8 *)*(void **)(node + 0x60) + n;
-                        if (*(u32 *)(e + 0x34) & 4) fn_802E317C(lbl_8032AE20, e);
+                        if (*(u32 *)(e + 0x34) & 4) Abend_Panic(lbl_8032AE20, e);
                         var_r31 += 1;
                         e = (u8 *)*(void **)(node + 0x60) + n;
                         u32 fl = *(u32 *)(e + 0x34);
@@ -931,7 +931,7 @@ extern "C" void *fn_8012B534(char *arg0, s32 *arg1, u32 arg2) {
         }
     }
     if (result != 0 && *(u8 *)(result + 0xAD) != 0 && flag1 == 0) {
-        fn_802E317C(lbl_8032A99C, result != 0 ? (char *)result : (char *)&lbl_805599B4, arg0);
+        Abend_Panic(lbl_8032A99C, result != 0 ? (char *)result : (char *)&lbl_805599B4, arg0);
     }
     if (flag0 == 0 && result != 0 && wildcard == 0 &&
         (*(u32 *)(*(u8 **)(result + 0x60) + *arg1 * 0x44 + 0x34) & 8) == 0) {
@@ -1180,7 +1180,7 @@ extern "C" void fn_8012BB20(s32 listHead, void *node) {
             entry = *(u8 **)((u8 *)node + 0x60) + entryOffset;
             flags = *(u32 *)(entry + 0x34);
             if ((flags & 4) != 0) {
-                fn_802E317C(lbl_8032AE20, entry);
+                Abend_Panic(lbl_8032AE20, entry);
             }
             i++;
             entry = *(u8 **)((u8 *)node + 0x60) + entryOffset;
@@ -1414,7 +1414,7 @@ suffix_done_2:
                             t=data[0xC]; data[0xC]=data[0xF]; data[0xF]=t; t=data[0xD]; data[0xD]=data[0xE]; data[0xE]=t;
                             t=data[0x10]; data[0x10]=data[0x13]; data[0x13]=t; t=data[0x11]; data[0x11]=data[0x12]; data[0x12]=t;
                             u32 magic = *(u32 *)data; if (magic != 0 || *(u32 *)(data+4) != 0x14)
-                                fn_802E317C(lbl_8032AE60, magic, 0, *(u32 *)(data+4), 0x14);
+                                Abend_Panic(lbl_8032AE60, magic, 0, *(u32 *)(data+4), 0x14);
                             entry = data+0x14; n=0; while (n < *(u32 *)(data+0xC)) { fn_8012A388(entry); entry += 0x44; ++n; }
                         }
                         if (data != 0) {
@@ -1535,7 +1535,7 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
         sum = *(s32 *)(self + 0x90) + *(s32 *)(self + 0x84);
         *(s32 *)(self + 0xA4) = 0;
         if (sum > *(s32 *)(self + 0xCC))
-            fn_802E317C(lbl_8032ADF4);
+            Abend_Panic(lbl_8032ADF4);
         if (*(s32 *)(self + 0x78) & 1) {
             *(s32 *)(self + 0x64) = 0;
             result = ((s32 (*)(void *, void *, s32, s32))fn_8012ACA0)(
@@ -1574,7 +1574,7 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
     record_body_two:
         record = (s32 *)(*(s32 *)(self + 0x64) + index);
         if (record[0x34 / 4] & 4)
-            fn_802E317C(lbl_8032AE20);
+            Abend_Panic(lbl_8032AE20);
         count++;
         record = (s32 *)(*(s32 *)(self + 0x64) + index);
         index += 0x44;
@@ -1601,7 +1601,7 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
     record_body_three:
         record = (s32 *)(*(s32 *)(self + 0x64) + index);
         if (record[0x34 / 4] & 4)
-            fn_802E317C(lbl_8032AE20);
+            Abend_Panic(lbl_8032AE20);
         count++;
         record = (s32 *)(*(s32 *)(self + 0x64) + index);
         index += 0x44;
@@ -1905,7 +1905,7 @@ extern "C" void fn_8012D1A8(s32 arg0) {
         for (i = 0, off = 0; i < *(s32 *)(self + 0x8C); i++, off += 0x44) {
             u32 *r = (u32 *)(*(s32 *)(self + 0x64) + off);
             if (r[0x34 / 4] & 4) {
-                fn_802E317C(lbl_8032AE20, r);
+                Abend_Panic(lbl_8032AE20, r);
             }
             r = (u32 *)(*(s32 *)(self + 0x64) + off);
             r[0x34 / 4] &= ~0xF;
@@ -1924,7 +1924,7 @@ extern "C" void fn_8012D1A8(s32 arg0) {
         for (i = 0, off = 0; i < *(s32 *)(self + 0x8C); i++, off += 0x44) {
             u32 *r = (u32 *)(*(s32 *)(self + 0x64) + off);
             if (r[0x34 / 4] & 4) {
-                fn_802E317C(lbl_8032AE20, r);
+                Abend_Panic(lbl_8032AE20, r);
             }
             r = (u32 *)(*(s32 *)(self + 0x64) + off);
             r[0x34 / 4] &= ~0xF;
@@ -2016,7 +2016,7 @@ extern "C" void fn_8012D40C(s32 arg0) {
             s32 sum = object[0x90 / 4] + object[0x84 / 4];
             object[0xA4 / 4] = 0;
             if (sum > object[0xCC / 4])
-                fn_802E317C(lbl_8032ADF4);
+                Abend_Panic(lbl_8032ADF4);
         }
         if (object[0x78 / 4] & 1) {
             s32 off = object[0x84 / 4];
@@ -2053,7 +2053,7 @@ extern "C" void fn_8012D40C(s32 arg0) {
     record_body_two:
         record = (s32 *)(object[0x64 / 4] + index);
         if (record[0x34 / 4] & 4)
-            fn_802E317C(lbl_8032AE20);
+            Abend_Panic(lbl_8032AE20);
         count++;
         record = (s32 *)(object[0x64 / 4] + index);
         value = record[0x34 / 4];
@@ -2077,7 +2077,7 @@ extern "C" void fn_8012D40C(s32 arg0) {
     record_body_three:
         record = (s32 *)(object[0x64 / 4] + index);
         if (record[0x34 / 4] & 4)
-            fn_802E317C(lbl_8032AE20);
+            Abend_Panic(lbl_8032AE20);
         count++;
         record = (s32 *)(object[0x64 / 4] + index);
         value = record[0x34 / 4];
@@ -2314,7 +2314,7 @@ path_ready:
         swap9 = toc[0x11]; toc[0x11] = toc[0x12]; toc[0x12] = swap9;
         tocVersion = *(u32 *)toc;
         if (tocVersion != 0 || *(u32 *)(toc + 4) != RES_TOC_HEADER_SIZE)
-            fn_802E317C(lbl_8032AE60, tocVersion, 0, *(u32 *)(toc + 4), RES_TOC_HEADER_SIZE);
+            Abend_Panic(lbl_8032AE60, tocVersion, 0, *(u32 *)(toc + 4), RES_TOC_HEADER_SIZE);
 
         entry = toc + RES_TOC_HEADER_SIZE; entryIndex = 0;
         goto entry_test;
@@ -2339,7 +2339,7 @@ name_found:
     mount = mount->next;
 mount_test:
     if (mount != 0 && matched == 0) goto mount_loop;
-    if (matched != 0) fn_802E317C(lbl_8032ADA0, matched->name, (const char *)arg0);
+    if (matched != 0) Abend_Panic(lbl_8032ADA0, matched->name, (const char *)arg0);
 }
 
 #pragma push
@@ -2655,7 +2655,7 @@ path_all_done:
         t = d[0x10]; d[0x10] = d[0x13]; d[0x13] = t;
         t = d[0x11]; d[0x11] = d[0x12]; d[0x12] = t;
         if (*(u32 *)d != 0 || *(u32 *)(d + 4) != 0x14)
-            fn_802E317C(lbl_8032AE60, *(u32 *)d, 0, *(u32 *)(d + 4), 0x14);
+            Abend_Panic(lbl_8032AE60, *(u32 *)d, 0, *(u32 *)(d + 4), 0x14);
         entry = d + 0x14; i = 0;
         goto entries_test;
 entries_loop:
@@ -2663,7 +2663,7 @@ entries_loop:
 entries_test:
         if (i < *(u32 *)(d + 0xC)) goto entries_loop;
     }
-    if (data == 0) fn_802E317C(lbl_8032ADDC, origPath);
+    if (data == 0) Abend_Panic(lbl_8032ADDC, origPath);
     ret = (void *)(*(s32 *)((char *)data + 0x10) + 0x80);
     fn_8012C4D8(data);
     return ret;
@@ -2810,7 +2810,7 @@ extern "C" void fn_8012E498(void *name) {
             entry = fn_8012E490((s32 *)(effect + 0xA18));
             while (entry != 0) {
                 if (stricmp((const char *)(entry + 0xC), (const char *)name) == 0) {
-                    fn_802E317C(lbl_8032ACF4);
+                    Abend_Panic(lbl_8032ACF4);
                 }
                 entry = *(s32 *)(entry + 4);
             }
@@ -3077,7 +3077,7 @@ path_ready:
         swap9 = toc[0x11]; toc[0x11] = toc[0x12]; toc[0x12] = swap9;
         tocVersion = *(u32 *)toc;
         if (tocVersion != 0 || *(u32 *)(toc + 4) != RES_TOC_HEADER_SIZE)
-            fn_802E317C(lbl_8032AE60, tocVersion, 0, *(u32 *)(toc + 4), RES_TOC_HEADER_SIZE);
+            Abend_Panic(lbl_8032AE60, tocVersion, 0, *(u32 *)(toc + 4), RES_TOC_HEADER_SIZE);
 
         entry = toc + RES_TOC_HEADER_SIZE; entryIndex = 0;
         goto entry_test;
@@ -3334,7 +3334,7 @@ extern "C" void fn_8012F06C(void *arg0) {
 }
 #pragma scheduling on
 extern "C" void fn_802E30C8(const char *, ...);
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
 extern "C" s32 fn_8012BC50(void *arg0, void *arg1, s32 arg2);
 extern "C" void fn_8012BF24(void *);
 extern "C" s32 fn_80128668(void *);
@@ -3375,7 +3375,7 @@ extern "C" void fn_8012C4E8(void) {
             fn_802E30C8(lbl_8032AB9C, (void *)set, set->useCount);
             set = set->next;
         }
-        fn_802E317C(lbl_8032ABC8);
+        Abend_Panic(lbl_8032ABC8);
     }
 }
 extern "C" void *fn_8012C58C(void *arg0) {
@@ -3618,7 +3618,7 @@ extern "C" void *fn_8012CB44(void *resourceSet, s32 shouldFree) {
                 base = *(void **)((char *)resourceSet + 0x60);
                 entry = (char *)base + entryOffset;
                 flags = *(u32 *)((char *)entry + 0x34);
-                if ((flags & 4) != 0) fn_802E317C(lbl_8032AE20, entry);
+                if ((flags & 4) != 0) Abend_Panic(lbl_8032AE20, entry);
                 base = *(void **)((char *)resourceSet + 0x60);
                 entry = (char *)base + entryOffset;
                 flags = *(u32 *)((char *)entry + 0x34);

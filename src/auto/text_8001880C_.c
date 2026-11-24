@@ -5,7 +5,7 @@ typedef int s32;
 typedef unsigned char u8;
 s32 fn_80128670(s32);
 s32 fn_80131818(s32);
-s32 fn_802E317C(const char *, ...);
+s32 Abend_Panic(const char *, ...);
 extern void* fn_8012850C(s32, const char*);
 extern void* fn_80131808(const char*);
 extern int fn_801345D8(char*, int, const char*, ...);
@@ -52,7 +52,7 @@ extern "C" void fn_8001880C(void)
   char buf1[0x14];
   char buf2[0x14];
   int off;
-  struct Tbl8001880C *base = (struct Tbl8001880C *) lbl_802FD1B0;
+  char *base = lbl_802FD1B0;
   int *p;
   int count;
   Item_8001880C *item1;
@@ -60,25 +60,26 @@ extern "C" void fn_8001880C(void)
   int idx;
   int *rec;
   u32 n;
+  const int zero = 0;
   lbl_8055D570 = 1;
-  lbl_8055D574 = (s32) fn_80131808(base->f0);
+  lbl_8055D574 = (s32) fn_80131808(base + zero);
   lbl_8055D57C = 0;
   idx = 0;
   while ((item1 = ((Dir_8001880C *) lbl_8055D574)->getAt(idx)) != 0)
   {
-    if ((stricmp(item1->getName(), base->f10) == 0) && (item1->hasKey(lbl_80558C28) != 0))
+    if ((stricmp(item1->getName(), base + 0x10) == 0) && (item1->hasKey(lbl_80558C28) != 0))
     {
       lbl_8055D57C++;
     }
     idx++;
   }
 
-  lbl_8055D578 = (s32) fn_8012850C(lbl_8055D57C * 0x2C, base->f1C);
+  lbl_8055D578 = (s32) fn_8012850C(lbl_8055D57C * 0x2C, base + 0x1C);
   off = 0;
   count = 0;
   while ((item2 = ((Dir_8001880C *) lbl_8055D574)->getAt(count)) != 0)
   {
-    if ((stricmp(item2->getName(), base->f10) == 0) && (item2->hasKey(lbl_80558C28) != 0))
+    if ((stricmp(item2->getName(), base + 0x10) == 0) && (item2->hasKey(lbl_80558C28) != 0))
     {
       rec = (int *)(lbl_8055D578 + off);
       off += 0x2C;
@@ -88,15 +89,15 @@ extern "C" void fn_8001880C(void)
       n = 0;
       while (1)
       {
-        fn_801345D8(buf1, 0x14, base->f28, n + 1);
-        fn_801345D8(buf2, 0x14, base->f38, n + 1);
+        fn_801345D8(buf1, 0x14, base + 0x28, n + 1);
+        fn_801345D8(buf2, 0x14, base + 0x38, n + 1);
         if ((item2->hasKey(buf1) == 0) || (item2->hasKey(buf2) == 0))
         {
           break;
         }
         if (n >= 5)
         {
-          fn_802E317C(base->f48, rec[0], 5);
+          Abend_Panic(base + 0x48, rec[0], 5);
         }
         p[1] = item2->getA(buf1);
         *(p += 2) = item2->getB(buf2);
@@ -105,7 +106,7 @@ extern "C" void fn_8001880C(void)
 
       if (n == 0)
       {
-        fn_802E317C(base->f7C, rec[0]);
+        Abend_Panic(base + 0x7C, rec[0]);
       }
     }
     count++;
@@ -127,7 +128,7 @@ s32 fn_80018A8C(const char *chassisName) {
         offset += 0x2C;
         index++;
     }
-    fn_802E317C(lbl_802FD270, chassisName);
+    Abend_Panic(lbl_802FD270, chassisName);
     return 0;
 }
 /* RealName: CarStats_Shutdown (see the comment in the body). */

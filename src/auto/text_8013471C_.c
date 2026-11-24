@@ -34,7 +34,7 @@ extern void *fn_801792F8(void);
   extern f32 lbl_805612F4;
 extern f32 lbl_80561318;
   extern const char lbl_8032BD98[];
-  extern s32 fn_802E317C(const char *, ...);
+  extern s32 Abend_Panic(const char *, ...);
   
   // Code of main that had no source file yet: decomp.wtf gave it this one.
   // split_file divides it into the game's real files (file_status shows its range).
@@ -714,11 +714,11 @@ void fn_80135198(void) {
 int fn_8013519C(void) {
 #define kSetCarNotOverriddenMsg lbl_8032BD98
     /* Panic with the message that the idriver SetCar callback is not overridden. */
-    return fn_802E317C(kSetCarNotOverriddenMsg);
+    return Abend_Panic(kSetCarNotOverriddenMsg);
 #undef kSetCarNotOverriddenMsg
 }
 extern const char lbl_8032BD98[];
-extern s32 fn_802E317C(const char *, ...);
+extern s32 Abend_Panic(const char *, ...);
 /* Null-driver default for this driver-interface virtual (vtable slot +0x14): reports no capability flags, i.e. 0. */
 s32 fn_801351AC(void) {
     return 0;

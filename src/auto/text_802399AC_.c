@@ -58,7 +58,7 @@ extern s32 fn_8024C370(void);
 extern s32 fn_80257284(void);
 extern s32 fn_802399DC(s32);
 extern void fn_80236914(void);
-extern s32 fn_802E317C(const char *, ...);
+extern s32 Abend_Panic(const char *, ...);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -159,7 +159,7 @@ void fn_80239AC0(void)
         case 9:
         case 12:
         case 16: break;
-        default: fn_802E317C(err + 0xc); break;
+        default: Abend_Panic(err + 0xc); break;
         }
         if (done) break;
     }

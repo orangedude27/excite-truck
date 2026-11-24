@@ -51,7 +51,7 @@ struct RingBuf8013D2C4 {
     }
 };
 extern "C" s32 fn_80207848(void *, s32);
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
 struct Sub134_8013D2C4 {
     u8 pad0[0x8];
     void *p140;
@@ -211,7 +211,7 @@ static inline void LoadWidget8013D2C4(s32 *dst, const char *base, s32 off) {
     s32 r = fn_80207848((void *)s, 1);
     *dst = r;
     if (r == 0) {
-        fn_802E317C(base + 0x148, s);
+        Abend_Panic(base + 0x148, s);
     }
 }
 extern "C" s32 lbl_8055E1C0;
@@ -230,7 +230,7 @@ extern "C" void *fn_801F181C(void *, const char *, void *, void *);
 extern "C" void fn_8013E3A8(void *, void *);
 extern "C" void fn_8013CC20(void *, s32);
 extern "C" void fn_801331C4(void *, void *, const char *);
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
 extern "C" void *fn_802C6FC0(const char *, s32, s32);
 extern "C" f32 lbl_805614C4;
 class TPathDocument;
@@ -909,7 +909,7 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
         }
         fn_80131818(docA);
     } else {
-        fn_802E317C(base + 0xCC, buf);
+        Abend_Panic(base + 0xCC, buf);
         *(s32 *)(self + 0x64) = 0;
     }
     fn_802049DC(base + 0xE8, lbl_8042FB3C + 0x24, lbl_80561498, lbl_805614C8, lbl_805614CC);
@@ -922,25 +922,25 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
     s32 r1 = fn_80207848((void *)s1, 1);
     *(s32 *)(self + 0x270) = r1;
     if (r1 == 0) {
-        fn_802E317C(base + 0x148, s1);
+        Abend_Panic(base + 0x148, s1);
     }
     const char *s2 = base + 0x15C;
     s32 r2 = fn_80207848((void *)s2, 1);
     *(s32 *)(self + 0x278) = r2;
     if (r2 == 0) {
-        fn_802E317C(base + 0x148, s2);
+        Abend_Panic(base + 0x148, s2);
     }
     const char *s3 = base + 0x168;
     s32 r3 = fn_80207848((void *)s3, 1);
     *(s32 *)(self + 0x27C) = r3;
     if (r3 == 0) {
-        fn_802E317C(base + 0x148, s3);
+        Abend_Panic(base + 0x148, s3);
     }
     const char *s4 = base + 0x178;
     s32 r4 = fn_80207848((void *)s4, 1);
     *(s32 *)(self + 0x274) = r4;
     if (r4 == 0) {
-        fn_802E317C(base + 0x148, s4);
+        Abend_Panic(base + 0x148, s4);
     }
     *(s32 *)(self + 0x288) = -1;
     self[0x26C] = 0;
@@ -1847,7 +1847,7 @@ struct RenderData {
 extern "C" void fn_8013F0A0(void *arg0, void *arg1, void *arg2) {
     struct VStringFloat { virtual void d0(); virtual void d1(); virtual u8 *v10(const char *, f32); };
     struct RenderData { u32 f0; u32 f4; u32 f8; u32 fC; f32 f10; f32 f14; f32 f18; f32 f1C; f32 f20; f32 f24; };
-    f32 delta, progress, normalized, scale, factor, f27, f29, f28;
+    f32 delta, normalized, progress, scale, factor, f28, f27, f29;
     register u8 *dataObj;
     register char *labels;
     s32 drawCount, active = 0;
@@ -1862,13 +1862,13 @@ extern "C" void fn_8013F0A0(void *arg0, void *arg1, void *arg2) {
         delta = fn_8001DAE8(dataObj + 0xC8) - *(f32 *)(dataObj + 0xCC);
         scale = lbl_805614A4;
         active = 0;
-        if (lbl_805614A4 <= delta) {
+        if (delta >= lbl_805614A4) {
             if (delta < *(f32 *)(dataObj + 0xC8)) active = 1;
         }
         if (active != 0) {
             delta = (fn_8001DAF0((f32 *)(dataObj + 0xC8)) - lbl_80561498) / lbl_80561498;
             factor = lbl_805614AC;
-            factor = factor < delta ? delta : factor;
+            factor = factor > delta ? factor : delta;
             factor = factor > lbl_805614A4 ? lbl_805614A4 : factor;
             scale = lbl_805614A4 + factor * lbl_805614AC;
         } else scale = lbl_805614AC;
@@ -1933,7 +1933,6 @@ extern "C" s32 fn_8013F438(f32 value) {
 extern float lbl_805614A4, lbl_805614AC, lbl_805614F8, lbl_80561518, lbl_80561544, lbl_80561548;
 #pragma scheduling on
 extern "C" void fn_8013F498(void *arg0, void *arg1, f32 farg0) {
-#pragma scheduling invalid_target
     volatile f32 scratch[6];
     f32 var_f3 = lbl_805614AC;
     f32 var_f4;
@@ -3523,16 +3522,17 @@ extern "C" s32 fn_801427DC(void *arg0, s32 arg1) {
     u8 *table = *(u8 **)((u8 *)arg0 + 0x64);
     f32 scale = *(f32 *)(lbl_8042FB3C + 0x1C);
     u8 *items = *(u8 **)(table + 4);
-    u8 *item = items + arg1 * 0x14;
+    s32 idx = arg1 * 0x14;
+    u8 *item = items + idx;
     f32 first = (f32)*(s32 *)(item + 0x10);
     f32 second = (f32)*(s32 *)(item + 0xC);
     f32 value = scale * first * second;
-    if (value < lbl_805614A4) {
-        value -= lbl_80561498;
-    } else {
-        value += lbl_80561498;
-    }
-    return (s32)value;
+    f32 out;
+    if (value < lbl_805614A4)
+        out = value - lbl_80561498;
+    else
+        out = lbl_80561498 + value;
+    return (s32)out;
 }
 extern "C" s32 fn_80142870(void *zone, void *entry) {
     /* Item entry (the ZoneMaster+0xB8 record) time-bonus check: the "Time-Bonus X"
@@ -4295,8 +4295,8 @@ extern "C" f32 lbl_805615B4;
 #pragma scheduling invalid_target
 extern "C" void fn_80143DC8(void *arg0) {
     union Word { s32 i; void *p; } stack[95];
-    u8 *obj;
-    char *base;
+    register u8 *obj;
+    register char *base;
     volatile s32 *var_r4;
     s32 temp_r0;
     s32 temp_r0_2;

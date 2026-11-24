@@ -20,7 +20,7 @@ extern void *fn_8012A2D8(void **);     /* pop an element from a pool */
 extern void fn_8012A364(void **, void *); /* push an element back onto a pool */
 extern void fn_8012A570(u32, void *);
 extern void fn_8012A5E8(void *);
-extern void fn_802E317C(const char *);
+extern void Abend_Panic(const char *);
 extern void fn_802E30C8(char *);
 extern void fn_8022ED50(s32);
 extern f32 fn_80144514(f32, f32, f32, f32, f32, f32); /* matrix multiply-accumulate */
@@ -129,7 +129,7 @@ extern "C" void fn_8022EB30(void *context) {
 #pragma scheduling invalid_target
 void fn_8022EB90(void) {
     /* Initialize the global list record: warn if one already exists, allocate an 8-byte {head, tail} block, and clear both links. */
-    if (lbl_8055F004 != 0) ((void (*)(const char *, ...))fn_802E317C)(lbl_803402A0);
+    if (lbl_8055F004 != 0) ((void (*)(const char *, ...))Abend_Panic)(lbl_803402A0);
     lbl_8055F004 = (s32)fn_801284F8(8, lbl_803402F4);
     *(s32 *)lbl_8055F004 = 0;
     ((s32 *)lbl_8055F004)[1] = *(s32 *)lbl_8055F004;

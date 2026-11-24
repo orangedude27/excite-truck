@@ -15,10 +15,10 @@ extern float lbl_80565034;
 extern float lbl_804DAC48[];
 extern float lbl_804DB434[];
 extern char lbl_80346798[];
-extern void fn_802E317C(char *, ...);
+extern void Abend_Panic(char *, ...);
 extern int memcpy(void *, const void *, unsigned int);
 extern char lbl_80346798[];
-extern void fn_802E317C(char *, ...);
+extern void Abend_Panic(char *, ...);
 extern int memcpy(void *, const void *, unsigned int);
 extern float lbl_80565038;
 extern float lbl_8056503C;
@@ -601,7 +601,7 @@ void *fn_802DA550(void *arg0, void *arg1, int arg2, void *arg3, void *arg4, int 
     used = ctx->used;
     if (aligned1 + used + 8 > ctx->capacity) {
         limit = ctx->capacity;
-        fn_802E317C(lbl_80346798, ctx->name, size1, limit / 1024);
+        Abend_Panic(lbl_80346798, ctx->name, size1, limit / 1024);
         record1 = 0;
     } else {
         base = (unsigned char *)used;
@@ -629,7 +629,7 @@ void *fn_802DA550(void *arg0, void *arg1, int arg2, void *arg3, void *arg4, int 
     used = ctx->used;
     if (aligned2 + used + 8 > ctx->capacity) {
         limit = ctx->capacity;
-        fn_802E317C(lbl_80346798, ctx->name, size2, limit / 1024);
+        Abend_Panic(lbl_80346798, ctx->name, size2, limit / 1024);
         record2 = 0;
     } else {
         base = (unsigned char *)used;
@@ -689,7 +689,7 @@ void *fn_802DA704(int owner, void *data, int count) {
     alignedSize = roundedSize & ~3;
     if (alignedSize + used + 8 > allocCapacity) {
         int capacity = allocCapacity;
-        fn_802E317C(lbl_80346798, allocName, recordSize, capacity / 1024);
+        Abend_Panic(lbl_80346798, allocName, recordSize, capacity / 1024);
         record = 0;
     } else {
         blockOffset = allocBuffer;
@@ -751,7 +751,7 @@ struct StackAllocRecord *fn_802DA80C(int index, void *data, int count) {
     alignedSize = roundedSize & ~3;
     if (alignedSize + used + 8 > alloc->capacity) {
         int capacity = alloc->capacity;
-        fn_802E317C(lbl_80346798, alloc->name, recordSize, capacity / 1024);
+        Abend_Panic(lbl_80346798, alloc->name, recordSize, capacity / 1024);
         record = 0;
     } else {
         blockOffset = (unsigned int)alloc->buffer;
@@ -781,7 +781,7 @@ struct StackAllocRecord *fn_802DA80C(int index, void *data, int count) {
 #pragma scheduling on
 
 extern float lbl_80565030;
-extern void fn_802E317C(char *, ...);
+extern void Abend_Panic(char *, ...);
 extern int memcpy(void *, const void *, unsigned int);
 extern char lbl_80346798[];
 #pragma scheduling on
@@ -805,7 +805,7 @@ void *fn_802DA918(float x, float y, float z) {
     alloc->initialized = 0;
     if (alloc->used + 0x2c > alloc->capacity) {
         int capacity = alloc->capacity;
-        fn_802E317C(lbl_80346798, alloc->name, 0x24, capacity / 1024);
+        Abend_Panic(lbl_80346798, alloc->name, 0x24, capacity / 1024);
         record = 0;
     } else {
         blockOffset = (int)alloc->buffer;
@@ -831,7 +831,7 @@ extern void *memset(void *, int, unsigned int);
 void fn_802DAA18(void *arg0) {
     extern void *lbl_8055FE60;
     extern char lbl_80346798[];
-    extern void fn_802E317C(char *, ...);
+    extern void Abend_Panic(char *, ...);
     extern int memcpy(void *, const void *, unsigned int);
     unsigned char sp8[0x3C0];
     void *var_r31 = arg0;
@@ -853,7 +853,7 @@ void fn_802DAA18(void *arg0) {
             if (*(volatile int *)&ctx->used + 0x3E0 > *(volatile int *)&ctx->capacity) {
                 format = lbl_80346798;
                 name = ctx->name;
-                fn_802E317C(format, name, 0x3D8, (size = *(volatile int *)&ctx->capacity) / 0x400);
+                Abend_Panic(format, name, 0x3D8, (size = *(volatile int *)&ctx->capacity) / 0x400);
                 var_r29 = 0;
             } else {
                 allocPtr = (int *)(*(volatile unsigned char **)&ctx->buffer + *(volatile int *)&ctx->used);

@@ -141,7 +141,7 @@ extern f64 lbl_80560278;
 extern f64 fn_8002EFB4(f64);
 extern void fn_801E7E18(void);
 extern char lbl_802FC3DC[];
-extern s32 fn_802E317C(void *, ...);
+extern s32 Abend_Panic(void *, ...);
 extern char lbl_802FC420[];
 extern char lbl_802FC42C[];
 #pragma push
@@ -839,7 +839,7 @@ void fn_8001027C(s32 color, s32 fontId, const char *fmt, f32 y, f32 x, f32 scale
         va_start(args, scale);
         vsprintf(buffer, fmt, args);
         if (strlen(buffer) >= 0x200)
-            fn_802E317C((void *)lbl_802FC518, strlen(buffer), fmt);
+            Abend_Panic((void *)lbl_802FC518, strlen(buffer), fmt);
         fn_802337A0(x, lbl_8055D494, scale, color,
                     lbl_80560280, y, fontId, lbl_80560264,
                     (const char *)&lbl_80558AA4, buffer);
@@ -2556,7 +2556,7 @@ f32 fn_8000EDC0(s32 itemKind) {
     #define CENTER_SCALE_LARGE lbl_805602B8 /* 1.5f */
     #define CENTER_SCALE_TALL  lbl_805602BC /* 1.8f */
     #define sScaleAssertMsg    lbl_802FC3A4 /* "get_center_item_scale(%d) - not a center (DCIT_)" */
-    #define sPanic             fn_802E317C
+    #define sPanic             Abend_Panic
     #define sGetPlayerCount    fn_801E85A4
     if (sGetPlayerCount() > 2)
         return CENTER_SCALE_ONE;
@@ -2590,7 +2590,7 @@ s32 fn_8000EE54(s32 itemKind) {
     case 14:
         return -0x5400;
     default:
-        fn_802E317C(lbl_802FC3DC, itemKind);
+        Abend_Panic(lbl_802FC3DC, itemKind);
     case 11:
         return -1;
     }

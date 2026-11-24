@@ -1902,7 +1902,7 @@ extern void fn_80273490(int, void *);
 extern void fn_80273604(void *, int);
 extern void fn_80275B9C(void *, float, float, float);
 extern void fn_80277A14(void *, int);
-extern void fn_802E317C(char *, ...);
+extern void Abend_Panic(char *, ...);
 extern int fn_80268BA4(int);
 extern float lbl_80563CBC, lbl_80563CA0, lbl_80563CC0, lbl_80563CC4, lbl_80563CC8, lbl_80563CCC, lbl_80563CD0, lbl_80563CD4, lbl_80563CD8, lbl_80563CDC, lbl_80563CE0, lbl_80563CE4, lbl_80563CE8, lbl_80563CEC, lbl_80563CF0, lbl_8055C4B0, lbl_80563CA4;
 #pragma scheduling invalid_target
@@ -2024,7 +2024,7 @@ void fn_802693F4(char *p, unsigned char *flag, int arg) {
         case 31: fn_802704D4(7, p); break;
         case 32: fn_80277A14(p, arg); break;
         case 33:
-        default: fn_802E317C(lbl_80346848, mode, arg); break;
+        default: Abend_Panic(lbl_80346848, mode, arg); break;
         }
     }
     fn_80278360(p);

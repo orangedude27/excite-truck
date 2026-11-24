@@ -107,7 +107,7 @@ void fn_8013436C(LoadPool *pool, s32 unused) {
 s32 fn_8012C5B8(s32, s32, s32); /* open a resource stream (path, tag, size) */
 s32 fn_8012C6F0(void *); /* query a stream's resource size */
 void fn_8012C720(void *, s32, s32, s32); /* start a stream transfer */
-void fn_802E317C(const char *, ...); /* formatted log/warning */
+void Abend_Panic(const char *, ...); /* formatted log/warning */
 #pragma use_lmw_stmw off
 /* Reserve a load-pool slot for a resource stream: refuse if three loads are
  * already active, otherwise claim the first free entry, open the resource with
@@ -146,13 +146,13 @@ s32 fn_80134424(LoadPool *pool, s32 path, s32 dataTag, s32 outSize, s32 callback
         if (entry->state == 0) {
             entry->state = 1;
             entry->obj = (void *)fn_8012C5B8(p.path, dataTag, outSize);
-            if (entry->obj == 0) fn_802E317C(p.msgBase + 0x30, p.path);
+            if (entry->obj == 0) Abend_Panic(p.msgBase + 0x30, p.path);
             entry->cb = (void (*)(void *, void *, void *))p.callback;
             entry->unk10 = (void *)p.userData;
             dataSize = fn_8012C6F0(entry->obj);
             if (byteCount <= 0) byteCount = dataSize;
-            if (byteCount > p.pool->stride) fn_802E317C(p.msgBase + 0x48, p.path, byteCount, p.pool->stride);
-            if (p.sourceOffset + byteCount > dataSize) fn_802E317C(p.msgBase + 0x70, dataSize, p.sourceOffset, byteCount);
+            if (byteCount > p.pool->stride) Abend_Panic(p.msgBase + 0x48, p.path, byteCount, p.pool->stride);
+            if (p.sourceOffset + byteCount > dataSize) Abend_Panic(p.msgBase + 0x70, dataSize, p.sourceOffset, byteCount);
             entry->pad = byteCount;
             fn_8012C720(entry->obj, entry->unk4, byteCount, p.sourceOffset);
             return slot;

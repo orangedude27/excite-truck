@@ -14,7 +14,7 @@ extern void fn_80128668(s32);
 extern void fn_80128670(s32);
 extern void *lbl_8055E710;
 extern char lbl_80335EE0[];
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 #pragma dont_inline on
 #pragma scheduling invalid_target
 /* Pop a node from the global free list (lbl_8055E710), or log "PhobList: out of nodes" and return NULL. */
@@ -27,7 +27,7 @@ void *fn_801B5F40(void) {
         ((void **)node)[1] = 0;
         return node;
     }
-    fn_802E317C(sOutOfNodesMsg);
+    Abend_Panic(sOutOfNodesMsg);
 #undef sFreeNodeHead
 #undef sOutOfNodesMsg
     return 0;
@@ -196,5 +196,5 @@ void fn_801B6428(void **head, void *value) {
         }
         prev = cur;
     }
-    fn_802E317C(lbl_80335F20);
+    Abend_Panic(lbl_80335F20);
 }

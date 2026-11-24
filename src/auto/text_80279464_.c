@@ -15,7 +15,7 @@ void fn_80279488(void* alarm) {
 }
 
 extern void *fn_801E87A8(void);
-extern void fn_802E317C(char *, ...);
+extern void Abend_Panic(char *, ...);
 extern char lbl_803477F0[]; // "CarTypeIsReal: Unrecognized CarType"
 #pragma push
 #pragma scheduling invalid_target
@@ -36,7 +36,7 @@ int fn_802794AC(int carType, void *carInfo) {
         }
         return *(unsigned int *)((char *)carInfo + 0x10) & 1;
     default:
-        fn_802E317C(lbl_803477F0, carType);
+        Abend_Panic(lbl_803477F0, carType);
         return 0;
     }
 }

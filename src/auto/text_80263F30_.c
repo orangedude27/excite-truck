@@ -106,7 +106,7 @@ extern void *fn_80131810(void *);
 extern void fn_80131818(void *);
 extern int fn_802ECF00(int);
 extern int fn_802ECF04(void);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern void fn_80265940(void);
 extern void *fn_802646D0(void *);
 extern void fn_8026451C(void *);
@@ -149,7 +149,7 @@ extern "C" void fn_80263F30(int fadeOut, unsigned char skip, int fadeIn) {
     valList = fn_80131810((void *)(base + CREDITS_VAL_NAME));
     if (valList != 0) {
         if (fn_802ECF00(lbl_8055C450) == 0) {
-            fn_802E317C(base + CREDITS_PUSH_FAIL_MSG, lbl_8055C450);
+            Abend_Panic(base + CREDITS_PUSH_FAIL_MSG, lbl_8055C450);
         }
         fn_80265940();
         fn_802646D0(pageObj);
@@ -165,7 +165,7 @@ extern "C" void fn_80263F30(int fadeOut, unsigned char skip, int fadeIn) {
         musicRequestSong(-1);
         fn_80265A74();
         if (fn_802ECF04() == 0) {
-            fn_802E317C(base + CREDITS_POP_FAIL_MSG);
+            Abend_Panic(base + CREDITS_POP_FAIL_MSG);
         }
         fn_80131818(valList);
         fn_80264538((int)timerObj, -1);
@@ -274,7 +274,7 @@ extern "C" void fn_802640C4(void *item, void *entry) {
         fn_80264098(item,5);
         *(void **)((char *)item+8)=keyItem;
     } else {
-        fn_802E317C(strings+0x138,type);
+        Abend_Panic(strings+0x138,type);
     }
 }
 #pragma pop

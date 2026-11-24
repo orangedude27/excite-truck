@@ -1671,7 +1671,7 @@ extern "C" f32 fn_80147204(void *value, const char *text) {
 
 extern "C" int vsprintf(char *, const char *, va_list);
 extern "C" unsigned int strlen(const char *);
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
   extern "C" char lbl_8032D1A4[];
 #pragma scheduling invalid_target
 // Formats a string into a fixed buffer and applies it to the target if non-null, warning if the result is too large.
@@ -1682,7 +1682,7 @@ extern "C" void fn_80147230(void *arg0, const char *arg1, ...) {
         va_start(args, arg1);
         vsprintf(buffer, arg1, args);
         if (strlen(buffer) >= 0x200)
-            fn_802E317C(lbl_8032D1A4, strlen(buffer), arg1);
+            Abend_Panic(lbl_8032D1A4, strlen(buffer), arg1);
         fn_80145B94(arg0, (u32)buffer);
     }
 }
@@ -1691,7 +1691,7 @@ extern "C" void fn_80145C08(void *arg0, const char *arg1);
 extern "C" void fn_80147314(void *arg0, const char *format, ...) {
     /* Format varargs text into a stack buffer and pass it to the text renderer.
        If the formatted result would be >= 0x200 bytes (including terminator), log
-       an oversized-text error via fn_802E317C with the length and format string,
+       an oversized-text error via Abend_Panic with the length and format string,
        but still pass the buffer to fn_80145C08. No-op if arg0 is NULL. */
     char buffer[0x200];
     if (arg0 != 0) {
@@ -1700,7 +1700,7 @@ extern "C" void fn_80147314(void *arg0, const char *format, ...) {
         vsprintf(buffer, format, args);
         if (strlen(buffer) >= 0x200) {
             s32 length = strlen(buffer);
-            fn_802E317C(lbl_8032D1A4, length, format);
+            Abend_Panic(lbl_8032D1A4, length, format);
         }
         fn_80145C08(arg0, buffer);
     }
@@ -1728,7 +1728,7 @@ extern "C" void fn_801473F8(void *arg0, s32 arg1, const char *format, ...) {
         va_end(args);
         if (strlen(textBuffer) >= 0x200) {
             s32 textLength = strlen(textBuffer);
-            fn_802E317C(lbl_8032D1A4, textLength, format);
+            Abend_Panic(lbl_8032D1A4, textLength, format);
         }
         fn_80145B94(element, (u32)textBuffer);
     }
@@ -1739,7 +1739,7 @@ extern "C" void fn_801473F8(void *arg0, s32 arg1, const char *format, ...) {
 extern "C" void fn_801474EC(void *arg0, const char *arg1, ...) {
     /* Format varargs text into a stack buffer and append it to the text object.
        If the formatted result would be >= 0x200 bytes (including terminator), log
-       an oversized-text error via fn_802E317C with the length and format string,
+       an oversized-text error via Abend_Panic with the length and format string,
        but still pass the buffer to fn_80145C7C. No-op if arg0 is NULL. */
     char buffer[0x200];
     if (arg0 != 0) {
@@ -1747,7 +1747,7 @@ extern "C" void fn_801474EC(void *arg0, const char *arg1, ...) {
         va_start(args, arg1);
         vsprintf(buffer, arg1, args);
         if (strlen(buffer) >= 0x200)
-            fn_802E317C(lbl_8032D1A4, strlen(buffer), arg1);
+            Abend_Panic(lbl_8032D1A4, strlen(buffer), arg1);
         fn_80145C7C(arg0, (u32)buffer);
     }
 }
@@ -1769,7 +1769,7 @@ extern "C" void fn_801475D0(void *arg0, s32 arg1, const char *format, ...) {
         va_end(args);
         if (strlen(buffer) >= 0x200) {
             s32 length = strlen(buffer);
-            fn_802E317C(lbl_8032D1A4, length, format);
+            Abend_Panic(lbl_8032D1A4, length, format);
         }
         fn_80145C7C(result, (u32)buffer);
     }
@@ -1908,7 +1908,7 @@ extern "C" void fn_801479A8(void *param0, void *param1, const char *format, f64 
     va_start(args, value);
     vsprintf(formattedText, format, args);
     if (strlen(formattedText) >= 0x200)
-        fn_802E317C(lbl_8032D1A4, strlen(formattedText), format);
+        Abend_Panic(lbl_8032D1A4, strlen(formattedText), format);
     fn_80147CEC(prefix, (s32)param0, (s32)param1, value);
     fn_80147230(prefix, (const char *)&lbl_80559E1C, formattedText);
 }
@@ -1921,7 +1921,7 @@ extern "C" void fn_80147ABC(void *arg0, void *arg1, const char *format, f64 valu
     va_start(args, value);
     vsprintf(text, format, args);
     if (strlen(text) >= 0x200)
-        fn_802E317C(lbl_8032D1A4, strlen(text), format);
+        Abend_Panic(lbl_8032D1A4, strlen(text), format);
     fn_80147CEC(prefixBuffer, (s32)arg0, (s32)arg1, value);
     fn_80147314(prefixBuffer, (const char *)&lbl_80559E1C, text);
 }

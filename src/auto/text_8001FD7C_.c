@@ -137,7 +137,7 @@ extern void *fn_80131810(void *);
 extern void fn_80131818(void *);
 extern int fn_80277960(void *, void *, void *);
 extern void fn_802E30C8(const char *, ...);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern int fn_80019B84(void);
 extern int fn_80019B90(void);
 extern int fn_80019B3C(void);
@@ -410,11 +410,11 @@ extern "C" void fn_800201F0(void) {
                         (struct TipsCamera_8035B758 *)(lbl_8035B758 + lbl_8055D630 * 0x70);
                     lbl_8055D630 += 1;
                     if (fn_80277960(startName, entry->startCamera, &entry->startCameraParam) == 0) {
-                        fn_802E317C(TIPS_MSG_NO_CAM1, startName);
+                        Abend_Panic(TIPS_MSG_NO_CAM1, startName);
                     }
                     /* the game reports the start camera's name here, too */
                     if (fn_80277960(endName, entry->endCamera, &entry->endCameraParam) == 0) {
-                        fn_802E317C(TIPS_MSG_NO_CAM2, startName);
+                        Abend_Panic(TIPS_MSG_NO_CAM2, startName);
                     }
                     entry->duration = item->f24(TIPS_PROP_TIME);
                     entry->hermite = item->f30(TIPS_PROP_HERMITE, 0);

@@ -251,7 +251,7 @@ void fn_8000A688(void (*callback)(void *), s32 carIndex) DECOMP_DONT_INLINE {
 #pragma pop
 extern void *fn_80131810(const char *);
 extern void fn_80131818(void *);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern int stricmp(const char *, const char *);
 extern char lbl_802FBC08[];
 extern char lbl_802FBC18[];
@@ -261,7 +261,7 @@ extern int lbl_80558A30;
 #pragma cplusplus on
 extern "C" void *fn_80131810(const char *);
 extern "C" void fn_80131818(void *);
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void Abend_Panic(const char *, ...);
 extern "C" int stricmp(const char *, const char *);
 extern "C" char lbl_802FBC08[];
 extern "C" char lbl_802FBC18[];
@@ -301,7 +301,7 @@ extern "C" void fn_8000A6D8(void) {
         fn_80131818(resource);
     }
     if (stricmp(resourceWeather, contestWeather) != 0) {
-        fn_802E317C(lbl_802FBC18, contestWeather, resourceWeather);
+        Abend_Panic(lbl_802FBC18, contestWeather, resourceWeather);
     }
 }
 #pragma pop

@@ -182,7 +182,7 @@ extern s32 lbl_80430260[];
 extern s32 fn_80128668(void);
 extern char lbl_80330020[];
 extern char lbl_803300E0[];
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 #pragma optimization_level 2
 #pragma scheduling invalid_target
 #pragma dont_inline on
@@ -195,7 +195,7 @@ s32 *fn_80167874(s32 type) {
         if (entryType == type)
             return entry;
     }
-    fn_802E317C(lbl_803300E0, type);
+    Abend_Panic(lbl_803300E0, type);
     return (s32 *)lbl_80330020;
 }
 #pragma scheduling on

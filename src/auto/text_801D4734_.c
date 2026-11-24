@@ -2985,7 +2985,7 @@ int fn_801D7C78(struct WorldMorphAse *element) {
     return element->state;
 }
 
-extern int fn_802E317C(const char *, ...);
+extern int Abend_Panic(const char *, ...);
 extern char lbl_80338F50[];
 #pragma push
 #pragma scheduling invalid_target
@@ -3006,7 +3006,7 @@ int fn_801D7C80(void *object, int direction) {
             floatFields[9] = floatFields[5];
             break;
         default:
-            fn_802E317C(lbl_80338F50, direction);
+            Abend_Panic(lbl_80338F50, direction);
             break;
         }
         wordFields[0xA] = 2;

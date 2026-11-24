@@ -20,7 +20,7 @@ void fn_802BD018(void *);
 int fn_802BD070(void *);
 void fn_80128668(void *);
 extern int fn_802C9C24(int);
-extern void fn_802E317C(const char *, ...);
+extern void Abend_Panic(const char *, ...);
 extern int fn_802B110C(void *, int);
 /* The tree list loaded from "treelist.trl" (its "TLST" block, held in
    lbl_8055FAB8): entryCount entries of TREE_ENTRY_SIZE bytes at `entries`,
@@ -116,7 +116,7 @@ int fn_802BC4E0(void *__restrict node) {
     /* Resolve a texture handle for node+4; warn if missing, then invoke callback fn_802BC334 with it. */
     int texture = fn_802C9C24(*(int *)((char *)node + 4));
     if (fn_8012C33C() == 0)
-        fn_802E317C((const char *)&lbl_8034AB38, texture);
+        Abend_Panic((const char *)&lbl_8034AB38, texture);
     return fn_802B110C(&fn_802BC334, texture);
 }
 double fn_8002F234(float, float);
@@ -139,7 +139,6 @@ void fn_801EA18C(void *, s32, s32);
 #pragma push
 #pragma scheduling invalid_target
 void fn_802BC588(float *arg0, float *arg1, float *arg2, float *arg3, float *arg4) {
-#pragma opt_lifetimes off
 float sp14[3];
 float sp8[3];
 float one, f1, f2, f3, zero, f5;
@@ -244,7 +243,7 @@ arg1[1] = z;
 arg1[0] = o;
 arg1[2] = z;
 }
-PSVECCrossProduct((Vec *)(arg1 + 6), (Vec *)arg1, (Vec *)(arg1 + 3));
+do { PSVECCrossProduct((Vec *)(arg1 + 6), (Vec *)arg1, (Vec *)(arg1 + 3)); } while (0);
 PSVECCrossProduct((Vec *)(arg1 + 3), (Vec *)(arg1 + 6), (Vec *)arg1);
 PSVECNormalize((Vec *)(arg1 + 3), (Vec *)(arg1 + 3));
 PSVECNormalize((Vec *)arg1, (Vec *)arg1);
@@ -261,7 +260,6 @@ arg0[6] *= scale;
 arg0[7] *= scale;
 arg0[8] *= scale;
 }
-#pragma opt_lifetimes reset
 }
 #pragma cplusplus on
 #pragma processor 750
@@ -690,7 +688,7 @@ int fn_802BD210(void *arg0) {
                 }
             }
         } else {
-            ((void (*)(void *))fn_802E317C)(strings + 0xC8);
+            ((void (*)(void *))Abend_Panic)(strings + 0xC8);
         }
     }
 }
