@@ -1250,7 +1250,7 @@ void fn_802C6FB4(void *groupList) {
 #define mrModelLoadResource fn_802C6B44
 #define mrModelCreateInstance fn_802C6DC4
 
-/* mrModelLoad: load a MODL resource by path (warning if called during an active scene render pass) and create its model instance. */
+/* Loads a MODL model resource by path and creates a model instance, warning when called during an active scene render pass. */
 void fn_802C6FC0(void *modelPath, int variantIdx, int flags) {
     if (DrawList_isOutsideScene() == 0) {
         Abend_warn(sModelLoadInSceneFmt, modelPath);
