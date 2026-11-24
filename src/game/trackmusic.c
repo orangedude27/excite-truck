@@ -361,29 +361,23 @@ char *key;
 #pragma dont_inline reset
 #pragma use_lmw_stmw reset
 #pragma dont_inline on
-/* Returns the current track-music entry's payload: NULL if none, the selected path from the track-music list for type 1, or the inline path at +0x24 for other types. */
+/* Return the song path of the current track-music entry: none, the next shuffled list path (type 1), or the entry's inline path. */
 void *getCurrentTrackMusicPath(void) {
-#define GetCurrentTrackMusicEntry findTrackMusicEntry
-#define GetNextTrackMusicIndex getNextTrackMusicIndex
-#define trackMusicList gTrackMusicPathList
-    char *trackEntry = (char *)GetCurrentTrackMusicEntry();
-    long entryType;
-    if (trackEntry == 0) {
+    char *entry = (char *)findTrackMusicEntry();
+    long type;
+    if (entry == 0) {
         goto null_result;
     }
-    entryType = *(long *)trackEntry;
-    if (entryType == 0) {
+    type = *(long *)entry;
+    if (type == 0) {
         return (void *)0;
     }
-    if (entryType == 1) {
-        return (void *)trackMusicList.m_entries[GetNextTrackMusicIndex()];
+    if (type == 1) {
+        return (void *)gTrackMusicPathList.m_entries[getNextTrackMusicIndex()];
     }
-    return trackEntry + 0x24;
+    return entry + 0x24;
 null_result:
     return 0;
-#undef GetCurrentTrackMusicEntry
-#undef GetNextTrackMusicIndex
-#undef trackMusicList
 }
 #pragma dont_inline reset
 
