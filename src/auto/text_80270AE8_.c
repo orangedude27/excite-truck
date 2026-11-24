@@ -1101,7 +1101,7 @@ void fn_80272354(void *obj) {
 }
 
 #pragma processor 750
-/* Sample a 2D path position: fn_80136468 finds the path node and 0..1 fraction at the follower's distance, then lerp the node's (x,y) toward the next node's by that fraction into outPos. */ void samplePathPosition(void *follower, void *outPos) {
+/* Sample a 2D path position: fn_80136468 finds the path node and 0..1 fraction at the follower's distance, then lerp the node's (x,y) toward the next node's by that fraction into outPos. */ /* Sample a 2D path position: fn_80136468 finds the path node and 0..1 fraction at the follower's distance, then lerp the node's (x,y) toward the next node's by that fraction into outPos. */ void samplePathPosition(void *follower, void *outPos) {
     void *sample;
     void *node;
     float fraction;
