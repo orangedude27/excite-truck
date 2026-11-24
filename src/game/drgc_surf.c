@@ -752,10 +752,10 @@ void fn_802D5270(void *arg0) {
 void drDrawSurfPosNormals(struct SurfDraw *surface) {
     /* Static draw of a surface laid out as 16-byte position records (three
      * floats plus four y-morph bytes GX ignores) followed by 3-byte s8 normals,
-     * with no color array: bind the arrays and run the surface's prebuilt
+     * with no color array: bind both arrays and run the surface's prebuilt
      * display list.  fn_802D56D4 is the variant used when fn_802DAC64() reports
-     * the bone-handle allocator's status byte clear, y-morphing the positions
-     * into a scratch buffer first; this one draws the raw stored positions. */
+     * the bone-handle allocator's status byte clear, y-morphing positions into
+     * a scratch buffer first; this one draws the raw stored positions. */
     GXSetArray(GX_VA_POS, surface->positions, 0x10);
     GXSetArray(GX_VA_NRM, surface->normals, 3);
     GXCallDisplayList(surface->displayList, surface->listSize);
