@@ -671,7 +671,7 @@ extern "C" float lbl_80563F40, lbl_80563F50, lbl_80563F54, lbl_80563F58, lbl_805
 extern "C" char lbl_80346E9C[], lbl_80346EC8[];
 extern "C" int lbl_80499050[12];
 extern "C" void *fn_801769F8(void);
-extern "C" void fn_80265EC4(void *, int, void *);
+extern "C" void NoiseWalk_Advance(void *, int, void *);
 extern "C" void fn_80266070(void *, void *, void *, void *);
 extern "C" void fn_80266170(void *, int, void *, int, float);
 extern "C" void fn_802662D8(void *, void *, void *, void *, void *);
@@ -848,7 +848,7 @@ extern "C" void fn_80271624(int mode, void *arg1)
                 fn_801E9DC4(o + 0x1EC);
             if (e->flags & 2) {
                 void *s = fn_801769F8();
-                fn_80265EC4(o + 0x160, fn_802E2C20(), s);
+                NoiseWalk_Advance(o + 0x160, fn_802E2C20(), s);
                 fn_80266070(o + 0x160, o + 0x4C, o + 0xE4, o + 0x12C);
             } else {
                 *(float *)(o + 0x4C) = *(float *)(o + 0xE4);

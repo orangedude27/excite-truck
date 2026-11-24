@@ -97,7 +97,7 @@ typedef struct Camera {
     float volume;                 /* 0x154: sound level this camera may ask for */
     float startTime;              /* 0x158: time that level was last raised */
     float f15C;                   /* 0x15C */
-    NoiseWalk pathWalk;           /* 0x160: random-path cursor (NoiseWalk_Reset/fn_80265EC4) */
+    NoiseWalk pathWalk;           /* 0x160: random-path cursor (NoiseWalk_Reset/NoiseWalk_Advance) */
     int w178[2];                  /* 0x178: spline cursor (fn_80266150) */
     float f180[2];                /* 0x180 */
     int pad188;                   /* 0x188 */
@@ -299,7 +299,7 @@ void NoisePoints_Randomize(void) {
  * their fraction (odd about zero, so a negative fraction - time having run
  * backwards - leans back towards the previous point).  A non-zero paused only
  * re-syncs the clock, so time spent paused never moves the walk. */
-void fn_80265EC4(NoiseWalk *path, int time, int paused) {
+void NoiseWalk_Advance(NoiseWalk *path, int time, int paused) {
     volatile NoiseWalk *walk = (volatile NoiseWalk *)path; /* re-read each pass */
     int index;
     int elapsed;
