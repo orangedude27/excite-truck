@@ -165,7 +165,7 @@ done:
     return entry;
 }
 #pragma pop
-void fn_802CE6C0(void *slot) {
+void modPoolReleaseLoadedSlot(void *slot) {
     /* Release a loaded modpool slot (state 2): destroy its model/handle, mark state 3, and clear the in-use flag. */
     if (*(int *)((char *)slot + 0x38) == 2 && *(int *)((char *)slot + 0x38) == 2) {
         fn_802C6FB4(*(int *)((char *)slot + 0x30));

@@ -27,7 +27,7 @@ extern int lbl_8055ECD0; /* secondary model handle (-1 when unset) */
 #define sPrimaryModelHandle lbl_8055ECCC
 #define sSecondaryModelHandle lbl_8055ECD0
 extern unsigned char lbl_8055ECE0;
-extern void fn_802CE6C0(int);
+extern void modPoolReleaseLoadedSlot(int);
 extern int fn_802CE49C(int);
 extern int fn_802CE850(int);
 extern int fn_80128670(int);
@@ -240,7 +240,7 @@ void fn_802025D8(void) {
     extern int lbl_8055ECD0;
     extern int lbl_804888E0[];
     extern void fn_802022A0(int *);
-    extern void fn_802CE6C0(int);
+    extern void modPoolReleaseLoadedSlot(int);
     extern int fn_802CE49C(int);
     extern int fn_80128670(int);
     int entryOffset;
@@ -253,7 +253,7 @@ void fn_802025D8(void) {
     entryOffset = 0;
     goto test;
 loop:
-    fn_802CE6C0(*(int *)((char *)lbl_8055ECC4 + entryOffset + 12));
+    modPoolReleaseLoadedSlot(*(int *)((char *)lbl_8055ECC4 + entryOffset + 12));
     entryOffset += 0x10;
     entryIndex += 1;
 test:
@@ -442,7 +442,7 @@ extern double fn_8002EFB4(double);
 extern int fn_802C7A3C(float, float, float);
 extern void fn_802C70AC(int, float *, int, int);
 int fn_802CE850(int);
-void fn_802CE6C0(int);
+void modPoolReleaseLoadedSlot(int);
 int fn_802CE49C(int);
 int fn_80128670(int);
 void fn_802022A0(int *);
