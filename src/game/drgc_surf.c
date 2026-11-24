@@ -1263,30 +1263,31 @@ void fn_802D657C(s32 *value, s32 delta) {
     }
 }
 
+/* For layout-0x1A surface records: byte-swap the 32-bit count at +0x34 in place
+ * (so it reads correctly as the loop bound), then reverse the bytes of every
+ * 32-bit element in the array at +0x38. */
 void fn_802D6594(void *arg0) {
-    /* Byte-swap the 4-byte header at +0x34..+0x37 and each 4-byte element in the
-     * data block at +0x38 (count taken from the header at +0x34). */
-    unsigned char *base = (unsigned char *)arg0;
-    unsigned char swappedByte = base[0x34];
-    unsigned char *element = base + 0x38;
-    unsigned char headerByte = base[0x35];
-    int elementIndex;
-    unsigned char tempByte;
+    unsigned char *bytes = (unsigned char *)arg0;
+    unsigned char firstByte = bytes[0x34];
+    unsigned char *entry = bytes + 0x38;
+    unsigned char secondByte = bytes[0x35];
+    int i;
+    unsigned char otherByte;
 
-    base[0x34] = base[0x37];
-    base[0x37] = swappedByte;
-    base[0x35] = base[0x36];
-    base[0x36] = headerByte;
-    for (elementIndex = 0; elementIndex < *(int *)(base + 0x34); elementIndex++) {
-        swappedByte = element[0];
-        tempByte = element[3];
-        element[0] = tempByte;
-        element[3] = swappedByte;
-        swappedByte = element[1];
-        tempByte = element[2];
-        element[1] = tempByte;
-        element[2] = swappedByte;
-        element += 4;
+    bytes[0x34] = bytes[0x37];
+    bytes[0x37] = firstByte;
+    bytes[0x35] = bytes[0x36];
+    bytes[0x36] = secondByte;
+    for (i = 0; i < *(int *)(bytes + 0x34); i++) {
+        firstByte = entry[0];
+        otherByte = entry[3];
+        entry[0] = otherByte;
+        entry[3] = firstByte;
+        firstByte = entry[1];
+        otherByte = entry[2];
+        entry[1] = otherByte;
+        entry[2] = firstByte;
+        entry += 4;
     }
 }
 
