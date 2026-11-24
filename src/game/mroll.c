@@ -513,7 +513,7 @@ extern s32 fn_80235380(s32, s32);
    the roll screen): installs this class's two vtables, hands the id it was given
    back to the next-id counter, releases the car-icon resource owned at +0x44
    and, when deleteFlag > 0, frees the object itself through the game's free(). */
-void *MRollCarIcon_deletingDestructor(MRollCarIcon *self, s32 deleteFlag) {
+/* Deleting destructor for a player's roll-screen car icon: restore vtables, recycle its id and release the art resource, freeing the object when deleteFlag > 0. */ void *MRollCarIcon_deletingDestructor(MRollCarIcon *self, s32 deleteFlag) {
 #define CarIcon_vtable lbl_803426B0 /* this class's vtable; the secondary base's is at +0x18 */
 #define sNextCarIconId lbl_8055F1F4 /* next id handed out by fn_802410F8 */
 #define Resource_release fn_80235380 /* drops one reference on a loaded resource */
