@@ -1101,19 +1101,19 @@ void fn_80272354(void *obj) {
 }
 
 #pragma processor 750
-void samplePathPosition(void *arg0, void *arg1) {
-    void *slot;
-    void *object;
-    float factor;
-    float base;
-float __repair_base_1;
-    ((void (*)(void **, void *))fn_80136468)(&slot, arg0);
-    object = slot;
-    factor = *(float *)((char *)&slot + 4);
-    base = *(float *)object;
-    *(float *)arg1 = base + (*(float *)*(void **)((char *)object + 0x14) - base) * factor;
-    __repair_base_1 = *(float *)((char *)object + 4);
-    *(float *)((char *)arg1 + 4) = __repair_base_1 + (*(float *)((char *)*(void **)((char *)object + 0x14) + 4) - __repair_base_1) * factor;
+/* Sample a 2D position along a path: fn_80136468 locates the current path node and 0..1 fraction at the follower's distance, then lerp the node's (x,y) toward the next node's by that fraction into outPos. */ void samplePathPosition(void *follower, void *outPos) {
+    void *sample;
+    void *node;
+    float fraction;
+    float startX;
+float startY;
+    ((void (*)(void **, void *))fn_80136468)(&sample, follower);
+    node = sample;
+    fraction = *(float *)((char *)&sample + 4);
+    startX = *(float *)node;
+    *(float *)outPos = startX + (*(float *)*(void **)((char *)node + 0x14) - startX) * fraction;
+    startY = *(float *)((char *)node + 4);
+    *(float *)((char *)outPos + 4) = startY + (*(float *)((char *)*(void **)((char *)node + 0x14) + 4) - startY) * fraction;
 }
 extern float lbl_8055F560, lbl_80563F40, lbl_80563F48;
 extern void fn_80136468(void **, void *, float);
