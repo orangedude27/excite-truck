@@ -1242,7 +1242,8 @@ void *fn_802D8C00(void *arg0, void *arg1) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-/* Allocates and zero-initializes the texture-list block (450 entries of 0xF4 bytes). */
+/* Allocate the drgc texture cache's "texture_list" pool of DRTEX_SLOT_COUNT
+ * DrTexRecord slots, zero every slot, and clear the bound-texture globals. */
 void fn_802D8D1C(void) {
     int byteOffset;
     int entryIndex;
@@ -1251,15 +1252,15 @@ void fn_802D8D1C(void) {
     lbl_8055FE20 = 0;
     lbl_8055FE1C = 0;
     lbl_8055FE18 = 0;
-    lbl_8055FE28 = fn_8012850C((void *)0x1ACE8, &lbl_8034C5B8);
+    lbl_8055FE28 = fn_8012850C((void *)(DRTEX_SLOT_COUNT * DRTEX_SLOT_STRIDE), &lbl_8034C5B8);
 
     entryIndex = 0;
     byteOffset = 0;
     do {
-        memset((char *)lbl_8055FE28 + byteOffset, 0, 0xF4);
+        memset((char *)lbl_8055FE28 + byteOffset, 0, DRTEX_SLOT_STRIDE);
         entryIndex++;
-        byteOffset += 0xF4;
-    } while (entryIndex < 0x1C2);
+        byteOffset += DRTEX_SLOT_STRIDE;
+    } while (entryIndex < DRTEX_SLOT_COUNT);
 }
 #pragma pop
 
