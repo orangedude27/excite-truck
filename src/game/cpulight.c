@@ -1153,7 +1153,7 @@ void CpuLight_BeginIndirectPass(int arg0, int indTexSlot, int texSlot1, float li
 void fn_802DD228(void) {
     /* Whether CpuLight_BeginIndirectPass left an indirect-texture pass running. */
 #define indirectPassRunning lbl_8055FEC0
-#define ClearIndTexMtxFlag fn_802D3E88 /* lbl_804C5700[13]: indirect tex matrix loaded */
+#define ClearIndTexMtxFlag fn_802D3E88 /* gRenderRequest[13]: indirect tex matrix loaded */
 #define ForgetPositionArray fn_802DBDD8 /* cached position array + vertex count */
 #define BindTextureSlot fn_802CADD0 /* (texture handle, texcoord slot) */
 #define NO_TEXTURE (-1) /* BindTextureSlot's "clear this slot" handle */

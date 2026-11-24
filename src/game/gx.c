@@ -119,7 +119,7 @@ extern void fn_802D2ED8(int, int);
 //   +0x0A u8  add the indirect (bump) texture stage
 //   +0x0C u8  texcoord0 through GX_TEXMTX0 instead of GX_IDENTITY
 //   +0x0D u8  alpha blend + indirect stage (buildDefaultTevPipeline's bump pass)
-extern unsigned char lbl_804C5700[12];
+extern unsigned char gRenderRequest[12];
 extern int fn_802E317C(const char *, ...);
 extern int GXInitLightDir(unsigned short, unsigned short, unsigned long *);
 extern float lbl_80564FAC, lbl_80564FA8, lbl_80564F88;
@@ -992,7 +992,7 @@ void fn_802CFCA0(void *alarm) {
 #define sGxFifoFlushStart lbl_8055FDA4
 #define sGxPendingBytes   lbl_8055FD9C
 #define sGxDrawSyncCount  lbl_8055FD30
-#define sRenderRequest    lbl_804C5700
+#define sRenderRequest    gRenderRequest
 #define sSensorStatus     lbl_804C97B0
 #define sJitterThreshold  lbl_80558DC4
     fn_802D6C68();
@@ -1235,7 +1235,7 @@ void fn_802D007C(float arg0) {
     extern float lbl_80564FA8;
     extern float lbl_80564F88;
     extern char lbl_804C97D0;
-    extern unsigned char lbl_804C5700[];
+    extern unsigned char gRenderRequest[];
     unsigned char *tev;
     float temp_f0;
     float var_f3;
@@ -1257,7 +1257,7 @@ void fn_802D007C(float arg0) {
     tev[8] = temp_r6;
     tev[0x5C] = 1;
     ((void (*)(int, void *))GXSetTevColor)(1, &color);
-    lbl_804C5700[0] = 1;
+    gRenderRequest[0] = 1;
 }
 #pragma scheduling invalid_target
 void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
@@ -2635,7 +2635,7 @@ extern void (*lbl_8055FD80)(void);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 // Builds the GX TEV pipeline for the scene's default draw mode (mode 0 of the
-// render request block lbl_804C5700, applied by fn_802D2B0C): a base texture
+// render request block gRenderRequest, applied by fn_802D2B0C): a base texture
 // pass, plus optional detail, second-texture and indirect (bump) stages.
 /* Builds the GX TEV/texture pipeline for the scene's default material (request mode 0): a base texture pass, plus optional detail, second-texture and indirect bump stages. */ /* Builds the GX TEV/texture pipeline for the scene's default material (request mode 0): a base texture pass plus optional detail, second-texture and indirect bump stages. */ void buildDefaultTevPipeline(void) {
     unsigned int passThroughFlag; // GX state flag 0x40: TEV0 passes the texture through
@@ -2649,16 +2649,16 @@ extern void (*lbl_8055FD80)(void);
     int utcLod;
     int alphaSel;
 
-    detailTexFlag = (unsigned char)lbl_804C5700[9];
+    detailTexFlag = (unsigned char)gRenderRequest[9];
     passThroughFlag = ((unsigned long)lbl_8055FD1C >> 6) & 1;
     tevStage = 0;
-    secondTexFlag = (unsigned char)lbl_804C5700[8];
+    secondTexFlag = (unsigned char)gRenderRequest[8];
     texGen = 0;
-    indirectFlag = (unsigned char)lbl_804C5700[10];
+    indirectFlag = (unsigned char)gRenderRequest[10];
 
     // Texcoord 0 from texture 0, either through the texture matrix or untouched.
     GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0,
-                      lbl_804C5700[12] != 0 ? GX_TEXMTX0 : GX_IDENTITY, FALSE, GX_PTIDENTITY);
+                      gRenderRequest[12] != 0 ? GX_TEXMTX0 : GX_IDENTITY, FALSE, GX_PTIDENTITY);
     GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR0A0);
     if (passThroughFlag != 0) {
         GXSetTevOp(GX_TEVSTAGE0, GX_REPLACE);
@@ -2712,7 +2712,7 @@ extern void (*lbl_8055FD80)(void);
     }
     GXSetNumTevStages((unsigned char)(tevStage + 1));
     GXSetNumTexGens((unsigned char)(texGen + 1));
-    if (lbl_804C5700[13] != 0) {
+    if (gRenderRequest[13] != 0) {
         // Alpha blend the bump-modulated result and read the bump map through
         // indirect stage 0; the stages are reset again before the next pass.
         GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_BL_INVSRCALPHA);
@@ -2774,13 +2774,13 @@ void fn_802D2B0C(void) {
     unsigned char *src;
     unsigned char *dst;
     if (*(unsigned char *)&lbl_8055FDB4 == 0) {
-        diff = memcmp(lbl_804C9930, lbl_804C5700, 0x10);
+        diff = memcmp(lbl_804C9930, gRenderRequest, 0x10);
         if (((unsigned int)(unsigned int)(0 - diff | diff) >> 31) != 0) {
             if (lbl_8055FD80 != 0) {
                 lbl_8055FD80();
                 lbl_8055FD80 = 0;
             }
-            switch (*(int *)(lbl_804C5700 + 4)) {
+            switch (*(int *)(gRenderRequest + 4)) {
             case 1:
                 lbl_8055FD70 = 1;
                 fn_802DF21C();
@@ -2793,7 +2793,7 @@ void fn_802D2B0C(void) {
                 break;
             case 2:
                 lbl_8055FD70 = 1;
-                if (lbl_804C5700[0xA] != 0) {
+                if (gRenderRequest[0xA] != 0) {
                     fn_802DF300();
                     lbl_8055FD80 = fn_802DF46C;
                 } else {
@@ -2811,7 +2811,7 @@ void fn_802D2B0C(void) {
                 if (lbl_8055FD86 == lbl_8055FD0C) {
                     buildDefaultTevPipeline();
                 } else {
-                    if (lbl_804C5700[8] != 0) {
+                    if (gRenderRequest[8] != 0) {
                         fn_802DF6D0();
                         lbl_8055FD80 = GXResetWaterBumpTevPipelineB;
                     } else {
@@ -2827,7 +2827,7 @@ void fn_802D2B0C(void) {
             default:
                 break;
             }
-            src = lbl_804C5700;
+            src = gRenderRequest;
             dst = lbl_804C9930;
             t4 = *(int *)(src + 4);
             t8 = src[8];
@@ -3086,7 +3086,7 @@ void fn_802D3144(void)
     GXSetBlendMode(0, 0, 0, 5);
   }
   lbl_8055FD88 = lbl_8055FD86;
-  lbl_804C5700[0] = 1;
+  gRenderRequest[0] = 1;
 }
 int fn_802D31D8(void)
 {
@@ -3122,7 +3122,7 @@ int fn_802D31D8(void)
 
 /* Reset GX render state to a simple default (no cull, TEV stage 0 pass-through). */
 void gxResetDefaultState(void) {
-    lbl_804C5700[0] = 1;
+    gRenderRequest[0] = 1;
     gxMarkAllStateDirty();
     lbl_8055FDB4 = 0;
     GXSetCullMode(0);
@@ -3144,7 +3144,7 @@ extern void GXSetTevOp(int, int);
 
     fn_802CF5D4();
     lbl_8055FD84 = 1;
-    lbl_804C5700[0] = 1;
+    gRenderRequest[0] = 1;
     gxMarkAllStateDirty();
     GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
     texCoord = 0;
@@ -3450,7 +3450,7 @@ extern char lbl_8034C204[];
 void fn_802D3D6C(void) {
     /* Enable texture-matrix 0 for texcoord 0 in the shared render request block
        (request +0xC selects GX_TEXMTX0 instead of GX_IDENTITY in buildDefaultTevPipeline). */
-#define texCoordMtxFlag lbl_804C5700[12]
+#define texCoordMtxFlag gRenderRequest[12]
     texCoordMtxFlag = 1;
 #undef texCoordMtxFlag
 }
@@ -3458,7 +3458,7 @@ void fn_802D3D6C(void) {
 void fn_802D3D80(void) {
     /* Disable texture-matrix 0 for texcoord 0 in the shared render request block
        (request +0xC selects GX_IDENTITY instead of GX_TEXMTX0 in buildDefaultTevPipeline). */
-    lbl_804C5700[12] = 0;
+    gRenderRequest[12] = 0;
 }
 
 extern void GXLoadTexMtxImm(void *, unsigned int, unsigned char);
@@ -3484,8 +3484,8 @@ void fn_802D3DAC(void) {
     /* Set indirect texture matrix 1 from scale factors and load tex object (+0x24) into map 2. */
     float indMtx[2][3];
 
-    lbl_804C5700[13] = 1;
-    ((void (*)(void *, int, void *))GXLoadTexObj)((char *)texObj + 0x24, 2, lbl_804C5700);
+    gRenderRequest[13] = 1;
+    ((void (*)(void *, int, void *))GXLoadTexObj)((char *)texObj + 0x24, 2, gRenderRequest);
     *(int *)&indMtx[0][0] = 0;
     *(int *)&indMtx[1][1] = 0;
     *(int *)&indMtx[0][1] = 0;
@@ -3501,11 +3501,11 @@ extern unsigned long lbl_8055D0B8;
 __declspec(section ".data") extern unsigned char lbl_804C5710[4];
 extern int lbl_8055FD4C;
 extern unsigned char lbl_8055FD50;
-extern unsigned char lbl_804C5700[12];
+extern unsigned char gRenderRequest[12];
 extern float lbl_80564F90;
 void fn_802D3E88(void) {
     /* Disable the alpha-blend / indirect (bump) stage of the shared render request block. */
-    unsigned char *alphaBlendFlag = &lbl_804C5700[0xD];
+    unsigned char *alphaBlendFlag = &gRenderRequest[0xD];
     *alphaBlendFlag = 0;
 }
 
@@ -3564,7 +3564,7 @@ extern unsigned long lbl_8055D0B8;
 extern unsigned char lbl_804C5710[4];
 extern int lbl_8055FD4C;
 extern unsigned char lbl_8055FD50;
-extern unsigned char lbl_804C5700[12];
+extern unsigned char gRenderRequest[12];
 extern unsigned char lbl_8055FD60;
 extern float lbl_80564F90;
 extern int GXSetDstAlpha(int, int);
@@ -3572,7 +3572,7 @@ extern unsigned long lbl_8055D0B8;
 extern unsigned char lbl_804C5710[4];
 extern int lbl_8055FD4C;
 extern unsigned char lbl_8055FD50;
-extern unsigned char lbl_804C5700[12];
+extern unsigned char gRenderRequest[12];
 extern unsigned char lbl_8055FD91;
 extern unsigned char lbl_8055D0FF;
 extern char lbl_8055D100;

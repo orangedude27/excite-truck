@@ -22,7 +22,7 @@ extern char lbl_8034C4B0[];
 extern void fn_802E317C(const char *, ...);
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern unsigned char lbl_804C5700[12];
+extern unsigned char gRenderRequest[12];
 extern void GXLoadTexObj(void *, int);
 extern void fn_80128670(void *);
 extern void *lbl_8055FE28;
@@ -173,7 +173,7 @@ enum DrTexMap {
     DRTEXMAP_ENV_ALPHA = 4    /* fn_802D9230: the envmap's alpha plane */
 };
 
-/* Byte 0x0B of the render request block lbl_804C5700 (the state the setters
+/* Byte 0x0B of the render request block gRenderRequest (the state the setters
  * hand to the pipeline builder buildDefaultTevPipeline/fn_802D2B0C, which keeps the last
  * applied copy at lbl_804C9930): the texture bound as environment map ships a
  * second, alpha-plane texture, so the pass needs its extra stage. */
@@ -930,7 +930,7 @@ extern unsigned int lbl_8055FD30;
     }
     *(volatile unsigned int *)(tex + 0xEC) = lbl_8055FD30;
     *(unsigned int *)(tex + 0xF0) += 1;
-    lbl_804C5700[8] = *(volatile unsigned char *)(tex + 0xCC);
+    gRenderRequest[8] = *(volatile unsigned char *)(tex + 0xCC);
 }
 
 extern void *lbl_8055FE1C;
@@ -938,7 +938,7 @@ extern void *lbl_8055FE20;
 extern char lbl_8034C5F0[];
 extern char lbl_8034C620[];
 extern char lbl_8034C650[];
-extern unsigned char lbl_804C5700[12];
+extern unsigned char gRenderRequest[12];
 extern void fn_802E317C(const char *, ...);
 extern void GXInitTexObjWrapMode(void *, int, int);
 extern void GXLoadTexObj(void *, int);
@@ -962,7 +962,7 @@ void fn_802D9230(void *texRecord) {
     record = (DrTexRecord *)texRecord;
     GXLoadTexObj(record->texObj, DRTEXMAP_ENV);
     if (record->hasAlphaTex != 0) GXLoadTexObj(record->alphaTexObj, DRTEXMAP_ENV_ALPHA);
-    lbl_804C5700[DRREQ_ENV_ALPHA_TEX] = record->hasAlphaTex;
+    gRenderRequest[DRREQ_ENV_ALPHA_TEX] = record->hasAlphaTex;
 }
 
 extern void fn_802CFEEC(void);

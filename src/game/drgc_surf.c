@@ -43,7 +43,7 @@ extern void GXSetVtxDesc(int, int);
 extern void GXSetVtxAttrFmt(int, int, int, int, int);
 extern void GXBegin(int, int, int);
 extern volatile u8 lbl_8055FD25;
-extern u8 lbl_804C5700[16];
+extern u8 gRenderRequest[16];
 
 typedef struct {
     u8 unk00;
@@ -1064,7 +1064,7 @@ void fn_802D6170(struct SurfDraw *surface) {
 
 /* Update surface state/mode flags from a command packet and apply cache-related side effects. */
 /* Apply a surface state command: packet byte 8 selects the pipeline, byte 0xA carries lighting (bit 3), detail-texture (bit 4) and pipeline-class (bits 0-1) flags, and byte 0x14 is an address compared against lbl_8055FD28; then rebuild GX state. */ void fn_802D61BC(void *packet) {
-    extern u8 lbl_804C5700[16];
+    extern u8 gRenderRequest[16];
     extern s32 lbl_8055FD20;
     extern volatile u8 lbl_8055FD25;
     extern u32 lbl_8055FD28;
@@ -1077,27 +1077,27 @@ void fn_802D6170(struct SurfDraw *surface) {
 
     lbl_8055FD25 = (*(u8 *)(cmd + 0xA) >> 3) & 1;
     detailTexMode = (*(u8 *)(cmd + 0xA) >> 4) & 1;
-    *(volatile s32 *)(lbl_804C5700 + 4) = 6;
-    lbl_804C5700[9] = detailTexMode;
+    *(volatile s32 *)(gRenderRequest + 4) = 6;
+    gRenderRequest[9] = detailTexMode;
 
     switch (*(u8 *)(cmd + 8)) {
     case 16:
-        *(s32 *)(lbl_804C5700 + 4) = 2;
+        *(s32 *)(gRenderRequest + 4) = 2;
         break;
     case 18:
-        *(s32 *)(lbl_804C5700 + 4) = 1;
+        *(s32 *)(gRenderRequest + 4) = 1;
         break;
     default:
         stateFlags = *(u8 *)(cmd + 0xA);
         if (stateFlags & 1) {
-            *(s32 *)(lbl_804C5700 + 4) = 3;
+            *(s32 *)(gRenderRequest + 4) = 3;
         } else if (stateFlags & 2) {
             if (lbl_8055FDFC != 0)
-                *(s32 *)(lbl_804C5700 + 4) = 5;
+                *(s32 *)(gRenderRequest + 4) = 5;
             else
-                *(s32 *)(lbl_804C5700 + 4) = 4;
+                *(s32 *)(gRenderRequest + 4) = 4;
         } else {
-            *(s32 *)(lbl_804C5700 + 4) = 0;
+            *(s32 *)(gRenderRequest + 4) = 0;
         }
         break;
     }
@@ -1798,8 +1798,8 @@ extern void fn_80128670(s32);
     register s32 i;
 
     lbl_8055FD25 = 0;
-    lbl_804C5700[9] = 0;
-    *(u32 *)(lbl_804C5700 + 4) = 0;
+    gRenderRequest[9] = 0;
+    *(u32 *)(gRenderRequest + 4) = 0;
     fn_802D2614();
     fn_802D2B0C();
     GXClearVtxDesc();

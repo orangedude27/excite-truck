@@ -277,7 +277,7 @@ void fn_802DF46C(void) {
 void *gxGetBumpMapTexObj(void); /* the current material's bump map, into GX_TEXMAP5 */
 void *gxGetDistortTexObj(void); /* the texture it distorts, into GX_TEXMAP6 */
 /* The water surface pass: drgc_surf.c asks for mode 3 of the render request
- * block (lbl_804C5700) and fn_802D2B0C builds the pipeline here.  Stage 0 draws
+ * block (gRenderRequest) and fn_802D2B0C builds the pipeline here.  Stage 0 draws
  * the surface itself, stage 1 adds the GX_TEXMAP6 texture whose coordinates
  * indirect stage 0 shifts with the bump map in GX_TEXMAP5.  fn_802DF684 undoes
  * it again; GXSetupWaterBumpTevPipelineB is the twin used when a second texture stage is wanted.
@@ -326,7 +326,7 @@ void fn_802DF684(void) {
 void *fn_802D3134(void); /* the current material's bump map, into GX_TEXMAP5 */
 void *fn_802D30FC(void); /* the texture it distorts, into GX_TEXMAP6 */
 /* Water-surface bump TEV pipeline: the GXSetupWaterBumpTevPipelineA twin used
- * when the render request block lbl_804C5700 also asks for the second texture
+ * when the render request block gRenderRequest also asks for the second texture
  * stage (+0x08); fn_802D2B0C selects it in mode 3 and stores GXResetWaterBumpTevPipelineB as the
  * undo.  Two texgens feed one indirect stage, which shifts GX_TEXMAP6's
  * coordinates by the bump map in GX_TEXMAP5.  Stage 0 draws the surface, stage
