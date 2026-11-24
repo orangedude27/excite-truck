@@ -859,11 +859,9 @@ void fn_802E95CC(int result, void **cb_ctx) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 int fn_802E95E0(void *opName, void (*pump)(void), int unused) {
-    /* rmemcard_wait_async: pump the async NAND machine until it leaves its busy
-       states (rmemcard_async_state < 2), running pump() once per pass. Gives up
-       and returns 0 (after logging rmemcard_timeout_msg with opName and the
-       elapsed ms) if the wait runs past 0xFA0 ms or the clock goes backwards;
-       returns 1 once the machine is idle. */
+    /* Wait for the NAND/memcard async machine to go idle (rmemcard_async_state < 2),
+       pumping once per pass; log a timeout and return 0 past 4000 ms or on clock
+       rollback, otherwise return 1. */
     int startMs;
     void *name;
     void (*pump_cb)(void);
