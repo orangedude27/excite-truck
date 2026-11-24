@@ -423,7 +423,7 @@ after_lookup:
     fn_8000D878();
 }
 
-void fn_80004E20(void) {
+/* One iteration of the main application loop: run startup services, dispatch to the mode chosen by command-line test flags (bit 6 no-op hook, bit 1 model test, bit 2 event menu, bit 0 direct-to-track, otherwise the normal game loop), then run shutdown services. */ void fn_80004E20(void) {
     /* Run the main application loop iteration, dispatching to the active game/menu mode. */
     fn_80265D48();
     fn_80129BD4();
