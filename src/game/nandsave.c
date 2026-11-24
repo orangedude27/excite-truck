@@ -25,7 +25,7 @@ extern char lbl_8055D250;
 extern char lbl_8034DEC4[];
 extern char lbl_8034DF00[];
 extern int lbl_80560020;
-extern void fn_802E6B94(void);
+extern void MemCardShutdown(void);
 extern void fn_80127D58(void *);
 extern void fn_80128670(int);
 
@@ -359,7 +359,7 @@ void NandSaveShutdown(void) {
 #define sNandSaveAsyncBuffer lbl_80560020
     ((int (*)(void *, void (*)(void)))rmemcardWaitAsync)(sMemCardEndOpName, rmemcardYield);
     fn_80127D58((void *)rmemcardPumpAsync);
-    fn_802E6B94();
+    MemCardShutdown();
     fn_80128670(sNandSaveAsyncBuffer);
     sNandSaveAsyncBuffer = 0;
 #undef sMemCardEndOpName
@@ -391,7 +391,7 @@ extern char lbl_8034E0BC[];
 extern int fn_802ECC10(void);
 extern char lbl_8034E130[];
 extern void Abend_Panic(const char *, ...);
-extern void fn_802E6B94(void);
+extern void MemCardShutdown(void);
 extern void fn_802E6B50(void);
 extern void fn_80127D58(void *);
 extern void fn_80128670(int);

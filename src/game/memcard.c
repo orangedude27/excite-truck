@@ -45,7 +45,7 @@ void fn_802E6B50(void) {
 /* Memory-card module shutdown hook, the counterpart of fn_802E6B50 (run from the
  * NAND-save teardown NandSaveShutdown).  The module owns no allocation, so there is
  * nothing to release here. */
-void fn_802E6B94(void) {}
+void MemCardShutdown(void) {}
 
 /* Formats a 4-byte memcard chunk ID (e.g. 'MCSH') as a NUL-terminated string
  * in the static chunkIdString buffer, for the "chunk: %s" registration log. */
