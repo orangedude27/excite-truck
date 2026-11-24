@@ -1384,13 +1384,13 @@ void drVertexFormatCacheShutdown(void) {
 }
 #pragma scheduling on
 /* Update a surface: do common work, then dispatch to the flagged or default path based on lbl_8055FD1C bit 3. */
-void fn_802D6B08(void *arg0) {
-    fn_802D61BC(arg0);
+/* Apply a surface's state command, then draw it through the CPU-lighting path when bit 3 of lbl_8055FD1C is set, otherwise through the standard vertex-layout dispatcher. */ void fn_802D6B08(void *surface) {
+    fn_802D61BC(surface);
     if (lbl_8055FD1C & 8) {
-        fn_802D6170(arg0);
+        fn_802D6170(surface);
         return;
     }
-    fn_802D5FE4(arg0);
+    fn_802D5FE4(surface);
 }
 
 #pragma pop
