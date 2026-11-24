@@ -1314,12 +1314,12 @@ void fn_80241DE8(void *menu) {
     }
 }
 #pragma pop
-s32 fn_80241E40(void *arg0) {
+/* If the menu is enabled and its followed value (*+0x34) matches the current input nibble, refresh every entry as fn_80241DE8 does and return 1; otherwise return 0. */ s32 fn_80241E40(void *arg0) {
     /* If active and synced with the current selection value, write selection/value to each output entry and return 1; otherwise return 0. */
-    s32 i;
-    s32 selected;
-    void *outEntry;
-    s32 currentValue;
+    s32 index;
+    s32 isSelected;
+    void *item;
+    s32 value;
     void *entryCursor;
 
     if (*(s32 *)*(s32 **)((char *)arg0 + 0x34) == fn_802E4A10()) {
@@ -1330,15 +1330,15 @@ s32 fn_80241E40(void *arg0) {
 
 do_loop:
     entryCursor = arg0;
-    i = 0;
-    while (i < *(s32 *)((char *)arg0 + 0x2C)) {
-        currentValue = *(s32 *)*(s32 **)((char *)arg0 + 0x34);
-        selected = (*(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30)) ? 1 : 0;
-        outEntry = *(void **)((char *)entryCursor + 0x18);
+    index = 0;
+    while (index < *(s32 *)((char *)arg0 + 0x2C)) {
+        value = *(s32 *)*(s32 **)((char *)arg0 + 0x34);
+        isSelected = (*(u8 *)((char *)arg0 + 0x38) != 0 && index == *(s32 *)((char *)arg0 + 0x30)) ? 1 : 0;
+        item = *(void **)((char *)entryCursor + 0x18);
         entryCursor = (char *)entryCursor + 4;
-        ++i;
-        *(u8 *)outEntry = selected;
-        *(s32 *)((char *)outEntry + 4) = currentValue;
+        ++index;
+        *(u8 *)item = isSelected;
+        *(s32 *)((char *)item + 4) = value;
     }
     return 1;
 }
