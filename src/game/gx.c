@@ -3466,12 +3466,12 @@ void fn_802D3DAC(void) {
     GXInitVtxDescList(id);
     GXDisableBreakPt();
 }
-void fn_802D3DF8(int texObjBase, signed char scaleExp, float scaleS, float scaleT) {
+/* Enable the indirect/bump stage in the render request block (+0x0D), load the tex object at +0x24 into GX_TEXMAP2, and set indirect texture matrix 1 to a diagonal S/T scale with the given exponent. */ void fn_802D3DF8(int texObj, signed char exponent, float scaleS, float scaleT) {
     /* Set indirect texture matrix 1 from scale factors and load tex object (+0x24) into map 2. */
     float indMtx[2][3];
 
     lbl_804C5700[13] = 1;
-    ((void (*)(void *, int, void *))GXLoadTexObj)((char *)texObjBase + 0x24, 2, lbl_804C5700);
+    ((void (*)(void *, int, void *))GXLoadTexObj)((char *)texObj + 0x24, 2, lbl_804C5700);
     *(int *)&indMtx[0][0] = 0;
     *(int *)&indMtx[1][1] = 0;
     *(int *)&indMtx[0][1] = 0;
@@ -3480,7 +3480,7 @@ void fn_802D3DF8(int texObjBase, signed char scaleExp, float scaleS, float scale
     *(int *)&indMtx[1][2] = 0;
     indMtx[0][0] = scaleS;
     indMtx[1][1] = scaleT;
-    GXSetIndTexMtx(1, indMtx, scaleExp);
+    GXSetIndTexMtx(1, indMtx, exponent);
 }
 
 extern unsigned long lbl_8055D0B8;
