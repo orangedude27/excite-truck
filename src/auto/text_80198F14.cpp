@@ -1825,7 +1825,7 @@ s32 fn_8019D618(void* arg0, void* arg1, s32 clamp, void* arg3) {
         t1 = PSVECDotProduct(&bAxis, &db);
     } else {
         f32 tmp;
-        if ((f32)__fabs((f64)den) == lbl_80558DC4) return 0;
+        if ((f32)__fabs((f64)den) <= lbl_80558DC4) return 0;
         tmp = cross.y * diff.z - diff.y * cross.z;
         t0 = (cross.x * (diff.y * bAxis.z - bAxis.y * diff.z) + diff.x * (bAxis.y * cross.z - cross.y * bAxis.z) + bAxis.x * tmp) / den;
         t1 = (cross.x * (diff.y * aAxis.z - aAxis.y * diff.z) + diff.x * (aAxis.y * cross.z - cross.y * aAxis.z) + aAxis.x * tmp) / den;
@@ -1845,7 +1845,7 @@ s32 fn_8019D618(void* arg0, void* arg1, s32 clamp, void* arg3) {
         f32 dist = PSVECMag(&delta);
         f32 depth;
         f32 scale;
-        if ((f32)__fabs((f64)dist) == lbl_80558DC4) return 0;
+        if ((f32)__fabs((f64)dist) <= lbl_80558DC4) return 0;
         depth = *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)arg1 + 0x24) - dist;
         if (depth < lbl_805622D0) return 0;
         scale = lbl_805622DC / dist;
@@ -3853,30 +3853,30 @@ fail:
 }
 extern "C" void fn_801A17B8(void* arg0) {
     extern f32 lbl_8056234C;
-    extern void fn_801E41D8(f32*, f32*, s32, void*, void*, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32);
-    f32 sp34, sp30, sp2C, sp28, sp24, sp20, sp1C, sp18, sp14, sp10, spC, sp8;
-    f32 temp_f0, temp_f0_2, temp_f2, temp_f3, temp_r6, temp_r7;
-    void* temp_r8;
-    temp_r8 = *(void**)((u8*)arg0 + 0xC);
-    temp_f0 = *(f32*)((u8*)arg0 + 0x28);
-    sp20 = *(f32*)((u8*)temp_r8 + 0x18);
-    sp24 = *(f32*)((u8*)temp_r8 + 0x1C);
-    temp_r7 = *(f32*)((u8*)temp_r8 + 0x24);
-    sp28 = *(f32*)((u8*)temp_r8 + 0x20);
-    temp_r6 = *(f32*)((u8*)temp_r8 + 0x28);
-    sp2C = temp_r7;
-    sp30 = temp_r6;
-    sp34 = *(f32*)((u8*)temp_r8 + 0x2C);
-    sp14 = sp2C + (sp20 * temp_f0);
-    sp18 = sp30 + (sp24 * temp_f0);
-    sp1C = sp34 + (sp28 * temp_f0);
-    temp_f0_2 = -*(f32*)((u8*)arg0 + 0x28);
-    temp_f3 = sp2C + (sp20 * temp_f0_2);
-    temp_f2 = sp30 + (sp24 * temp_f0_2);
-    sp8 = temp_f3;
-    spC = temp_f2;
-    sp10 = sp34 + (sp28 * temp_f0_2);
-    fn_801E41D8(&sp14, &sp8, 0x40FFFF00, temp_r8, arg0, lbl_8056234C * *(f32*)((u8*)arg0 + 0x24), temp_f2, temp_f3, sp34, sp28, sp30, sp24, sp2C, sp20, temp_r6, temp_r7);
+    extern void fn_801E41D8(void*, void*, s32, f32);
+    f32 src[6];
+    f32 from[3];
+    f32 to[3];
+    const u32* m;
+    f32 t;
+    f32 nt;
+
+    m = (const u32*)((u8*)*(void**)((u8*)arg0 + 0xC) + 0x18);
+    ((u32*)src)[0] = m[0];
+    ((u32*)src)[1] = m[1];
+    ((u32*)src)[2] = m[2];
+    ((u32*)src)[3] = m[3];
+    ((u32*)src)[4] = m[4];
+    ((u32*)src)[5] = m[5];
+    t = *(f32*)((u8*)arg0 + 0x28);
+    from[0] = src[3] + src[0] * t;
+    from[1] = src[4] + src[1] * t;
+    from[2] = src[5] + src[2] * t;
+    nt = -*(f32*)((u8*)arg0 + 0x28);
+    to[0] = src[3] + src[0] * nt;
+    to[1] = src[4] + src[1] * nt;
+    to[2] = src[5] + src[2] * nt;
+    fn_801E41D8(from, to, 0x40FFFF00, lbl_8056234C * *(f32*)((u8*)arg0 + 0x24));
 }
 #pragma scheduling on
 extern int lbl_80333918[64];
