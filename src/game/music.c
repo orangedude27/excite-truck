@@ -51,7 +51,7 @@ extern s32 gSongChangeTimeMs;          /* ms stamp of that request; fn_8020A100 
  * log it, make it the pending index (-1 stops the music) and stamp the moment of
  * the switch; fn_8020A100 crossfades the two music slots over the time elapsed
  * since that stamp. */
-void musicRequestSong(s32 songIdx) {
+/* Request a song change: if the new index differs from the pending one, log it, set the pending song index (-1 stops music), and stamp the change time for the crossfade. */ void musicRequestSong(s32 songIdx) {
     if (songIdx != gRequestedSongIdx) {
         fn_802E30C8(gSetSongIdxFmt, songIdx);
         gRequestedSongIdx = songIdx;
