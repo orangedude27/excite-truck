@@ -1699,8 +1699,7 @@ void fn_802CC518(int arg0, float arg1) {
     result = (lbl_80564F30 * arg1) / (float)(number - magic);
     lbl_8055FCC4 = result;
 }
-/* Clamps a texture slot's keep-alive weight (+0x38) to a scaled minimum,
- * ignoring invalid indices, when the texture system is disabled, or unused slots. */
+/* Clamp a texture slot's keep-alive weight (+0x38) to a scaled minimum; ignore invalid indices, a disabled texture system, or unused slots. */
 void fn_802CC550(int textureIndex, float minWeight, float scale) {
     #pragma scheduling invalid_target
     int slotOffset;
