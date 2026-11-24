@@ -864,24 +864,42 @@ void fn_8001766C(int arg0) {
     *(unsigned char *)(offset68 + (unsigned int)(base + 0x430)) = 0;
 }
 #pragma processor reset
-/* Fill a vehicle's slot record with the color index for one of its four slots: use the preferred color offset by the slot when set, otherwise derive it from the vehicle number; duplicate the index into both int fields and clear the flag. */ void fn_80017708(const void *vehicle, int slotIndex, void *slot) {
-    int colorIndex;
-    int derivedColor;
+void fn_80017708(const void *arg0, int slotIndex, void *arg2) {
+    /* Fill a vehicle's slot record with the color index chosen for one of its
+     * four slots: use the preferred color offset by the slot when set, or else
+     * derive it from the vehicle number. */
+    struct VehicleInfo {
+        int index;           /* +0x00 its place in the vehicle table */
+        int number;          /* +0x04 the number the game hands out */
+        char pad[0x8C];      /* includes int colors[12] at +0x64 */
+        int preferredColor;  /* +0x94 -1 when no preferred color */
+        int colorCount;      /* +0x98 number of valid colors */
+    };
+    struct VehicleSlot {
+        int colorIndex;    /* +0x00 */
+        int colorIndex2;   /* +0x04 kept equal to colorIndex here */
+        signed char flag;  /* +0x08 cleared with the record */
+    };
+    const struct VehicleInfo *vehicle = arg0;
+    struct VehicleSlot *slot = arg2;
     int preferredColor;
+    int colorIndex;
     int colorCount;
+    int derivedColor;
+
     memset(slot, 0, 0xC);
-    preferredColor = *(int *)((char *)vehicle + 0x94);
-    *(signed char *)((char *)slot + 8) = 0;
+    preferredColor = vehicle->preferredColor;
+    slot->flag = 0;
     if (preferredColor >= 0) {
-        colorIndex = (preferredColor + slotIndex) % *(int *)((char *)vehicle + 0x98);
-        *(int *)slot = colorIndex;
-        *(int *)((char *)slot + 4) = colorIndex;
+        colorIndex = (preferredColor + slotIndex) % vehicle->colorCount;
+        slot->colorIndex = colorIndex;
+        slot->colorIndex2 = colorIndex;
         return;
     }
-    colorCount = *(int *)((char *)vehicle + 0x98);
-    derivedColor = (*(int *)((char *)vehicle + 4) + ((slotIndex * colorCount) / 4)) % colorCount;
-    *(int *)slot = derivedColor;
-    *(int *)((char *)slot + 4) = derivedColor;
+    colorCount = vehicle->colorCount;
+    derivedColor = (vehicle->number + ((slotIndex * colorCount) / 4)) % colorCount;
+    slot->colorIndex = derivedColor;
+    slot->colorIndex2 = derivedColor;
 }
 #pragma dont_inline on
 /* Clear the 0x960-byte output buffer and, for each active vehicle entry (stride 0xA8, count lbl_8055D550) not flagged +0xA0 bit 2, fill 4 slots via fn_80017708/fn_80016BC8. */
