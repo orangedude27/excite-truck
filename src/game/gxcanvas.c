@@ -342,7 +342,7 @@ void fn_802C3320(s32 x, s32 y, u32 packedValue) {
 #pragma inline_depth(0)
 /* Plot one opaque RGBA pixel on the current GxCanvas at (x, y) when that point
  * lies inside the clip rectangle; the RGB565 colour is widened to 4-byte RGBA. */
-void fn_802C33A8(s32 x, s32 y, u32 rgb565) {
+/* Plot one opaque RGBA pixel on the current GxCanvas at (x, y) when the point is inside the clip rectangle; widen the RGB565 colour into a 4-byte pixel. */ void fn_802C33A8(s32 x, s32 y, u32 rgb565) {
     u32 *pixel;
     u32 rgba;
     if (fn_802C3130((void *)sCurrentCanvas, x, y) != 0) {
