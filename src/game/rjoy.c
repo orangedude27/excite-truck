@@ -565,7 +565,7 @@ void fn_802E7FD0(void) {
 }
 #pragma scheduling invalid_target
 /* Initializes the 14-entry field-offset/state table with its default index map. */
-void fn_802E830C(int *table) {
+void rjoyInitFieldOffsets(int *table) {
     table[0] = 3;
     table[1] = 0;
     table[2] = 2;

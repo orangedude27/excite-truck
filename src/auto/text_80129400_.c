@@ -18,7 +18,7 @@ extern void fn_80129400(void);
 void fn_802E7C64(void);
 void fn_80127C90(void *, void *);
 void fn_80129458(void);
-void fn_802E830C(void *);
+void rjoyInitFieldOffsets(void *);
 void fn_80127D58(void *);
 void fn_802E7D0C(void);
 
@@ -145,54 +145,62 @@ void fn_8012960C(void *state) {
 
 extern void fn_80129508(void *, s32, void *);
 #pragma use_lmw_stmw off
-void fn_80129690(void *arg0, s32 arg1, void *arg2) {
-    u16 type;
-    u8 value;
-    s32 active;
-    s32 offset;
-    s32 *entries;
-    s32 i;
-    u8 *params;
-    u8 *dst;
-    dst = (u8 *)arg0;
-    params = (u8 *)arg2;
-    active = 0;
-    if (params[2] != 0 && (s32)lbl_8055DFD4 != -1 && (s32)lbl_8055DFD4 == arg1) {
-        active = 1;
-    }
-    dst[8] = 0;
-    if (active != 0) {
-        fn_80129508(dst, arg1, params);
-    }
-    entries = (s32 *)lbl_804223C0;
-    i = 0;
-    do {
-        offset = *entries;
-        if (offset >= 0 && (type = *(u16 *)(params + 4)) != 0 && active != 0) {
-            value = dst[offset + 0x3C];
-            if (value != 0) {
-                dst[8] = 1;
-                if (dst[i + 9] == 0) {
-                    ((void (*)(s32, s32))fn_801294FC)(type, arg1);
-                }
-                dst[i + 9] = value;
-            }
+void fn_80129690(register void *arg0, register s32 arg1, register void *arg2)
+{
+  u16 type;
+  u8 value;
+  s32 active;
+  s32 offset;
+  s32 *entries;
+  s32 i;
+  u8 *params;
+  u8 *dst;
+  dst = (u8 *) arg0;
+  params = (u8 *) arg2;
+  active = 0;
+  if (((params[2] != 0) && (((s32) lbl_8055DFD4) != (-1))) && (((s32) lbl_8055DFD4) == arg1))
+  {
+    active = 1;
+  }
+  dst[8] = 0;
+  if (active != 0)
+  {
+    fn_80129508(dst, arg1, params);
+  }
+  entries = (s32 *) lbl_804223C0;
+  i = 0;
+  do
+  {
+    offset = *entries;
+    if (((offset >= 0) && ((type = *((u16 *) (params + 4))) != 0)) && (active != 0))
+    {
+      value = dst[offset + 0x3C];
+      if (value != 0)
+      {
+        dst[8] = 1;
+        if (dst[i + 9] == 0)
+        {
+          ((void (*)(s32, s32)) fn_801294FC)(type, arg1);
         }
-        i++;
-        entries++;
-        params += 2;
-    } while (i < 0xE);
-    ((void (*)(void *))fn_8012960C)(dst);
+      }
+      dst[i + 9] = value;
+    }
+    i++;
+    entries++;
+    params += 2;
+  }
+  while (i < 0xE);
+  ((void (*)(void *)) fn_8012960C)(dst);
 }
 /* Initializes audio/session state, registers fn_80129400, resets the 0x38-byte
- * buffer at lbl_804223C0 to -1, and passes it to fn_802E830C. */
+ * buffer at lbl_804223C0 to -1, and passes it to rjoyInitFieldOffsets. */
 void fn_80129790(void) {
     fn_802E7C64();
     fn_80127C90(fn_80129400, lbl_8032A5B0);
     fn_80129458();
     lbl_8055DFD0 = 1;
     memset(lbl_804223C0, -1, 0x38);
-    fn_802E830C(lbl_804223C0);
+    rjoyInitFieldOffsets(lbl_804223C0);
 }
 
 // Returns a pointer to the global 14-entry s32 offset table used by the audio/session
