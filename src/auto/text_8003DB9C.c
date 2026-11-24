@@ -5402,20 +5402,21 @@ void GXSetTevAlphaOp(s32 stage, s32 op, s32 bias, s32 scale, s32 clamp, s32 outR
 }
 
 void GXSetTevColor(s32 tevReg, const unsigned int *color) {
-    unsigned int value = *color;
-    s32 index = tevReg * 2;
-    unsigned int first = __rlwimi(__rlwimi((index + 0xE0) << 24, value, 8, 24, 31), value, 12, 12, 19);
-    unsigned int second = __rlwimi(__rlwimi((index + 0xE1) << 24, value, 24, 24, 31), value, 28, 12, 19);
-    unsigned int *data = __GXData;
+    /* Pack the RGBA8 color into two TEV RAS words for registers 0xE0+2*tevReg and 0xE1+2*tevReg, emit them with 0x61 tokens, and clear gx->bpSent. */
+    unsigned int colorBits = *color;
+    s32 regIndex = tevReg * 2;
+    unsigned int colorWord0 = __rlwimi(__rlwimi((regIndex + 0xE0) << 24, colorBits, 8, 24, 31), colorBits, 12, 12, 19);
+    unsigned int colorWord1 = __rlwimi(__rlwimi((regIndex + 0xE1) << 24, colorBits, 24, 24, 31), colorBits, 28, 12, 19);
+    unsigned int *gxData = __GXData;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = first;
+    *(volatile unsigned int *)0xCC008000 = colorWord0;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = second;
+    *(volatile unsigned int *)0xCC008000 = colorWord1;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = second;
+    *(volatile unsigned int *)0xCC008000 = colorWord1;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = second;
-    *(unsigned short *)((char *)data + 2) = 0;
+    *(volatile unsigned int *)0xCC008000 = colorWord1;
+    *(unsigned short *)((char *)gxData + 2) = 0;
 }
 
 /* Set the signed-10-bit TEV color for tevReg: pack the r/g and b/a color words into two RAS registers (0xE0+reg*2, 0xE1+reg*2), write each four times to the GX FIFO, and mark the BP registers dirty. */ void GXSetTevColorS10(s32 tevReg, const void *color) {
@@ -5511,16 +5512,16 @@ void GXSetTevSwapMode(s32 stage, s32 rasSel, s32 texSel) {
 
 void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 texSel2) {
     union {
-        u32 value;
+        s32 value;
         struct {
             unsigned int unused : 28;
             unsigned int texSel : 2;
             unsigned int rasSel : 2;
         } fields;
     } word;
+    u32 offset1;
     u32 offset0;
     u32 index2;
-    u32 offset1;
     unsigned int *table;
     unsigned int *data;
 
@@ -5539,7 +5540,6 @@ void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 t
     *(volatile unsigned int *)0xCC008000 = *(u32 *)((char *)table + offset0);
 
     offset1 <<= 2;
-    word.value = 0;
     word.value = *(u32 *)((char *)table + offset1);
     word.fields.rasSel = rasSel2;
     word.fields.texSel = texSel2;
