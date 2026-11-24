@@ -88,7 +88,7 @@ extern char *strcpy(char *, const char *);
 extern void *memset(void *, int, unsigned int);
 extern int DVDGetCurrentDir(char **, char *);
 extern char lbl_8034D038[];
-extern char lbl_8034D054[];
+extern char fileCdMsgNodeNotFound[];
 extern unsigned int lbl_8055FF40;
 extern void fn_802E317C(void *, ...);
 extern void fn_802E30C8(const char *, ...);
@@ -147,7 +147,7 @@ void *fn_802E3EBC(void)
         }
         slotBase += 0x91;
     }
-    fn_802E317C(lbl_8034D054, node);
+    fn_802E317C(fileCdMsgNodeNotFound, node);
 }
 #pragma cplusplus on
 // Start the filecd DVD file system: take this TU's one static FileCd object,
