@@ -1091,7 +1091,7 @@ void fn_802CB6B4(void)
 
 extern void fn_8012C90C(int);
 extern void fn_802D915C(void *);
-extern void fn_802CBB9C(int **, int, int *);
+extern void TexRequestMoveToFront(int **, int, int *);
 extern char lbl_8034B9F4;
 #pragma push
 #pragma small_data on
@@ -1210,7 +1210,7 @@ void fn_802CB82C(int arg0) {
                     }
                 } while (merged != 0);
                 *(int *)(temp_r30 + 8) = 0;
-                fn_802CBB9C((int **)(temp_r29 + 4), (int)temp_r29, (int *)temp_r30);
+                TexRequestMoveToFront((int **)(temp_r29 + 4), (int)temp_r29, (int *)temp_r30);
                 break;
             }
             temp_r30 = *(char **)(temp_r30 + 0x14);
@@ -1222,7 +1222,7 @@ void fn_802CB82C(int arg0) {
  void TexRequestUnlink();
  extern char texMsgUnlinkNodeNotFound[];
 /* Move a texture-request node from the source list to the front of the destination list: unlink it, then link it at *destHead. */
-void fn_802CBB9C(int **destHead, int srcLink, int *requestNode) {
+void TexRequestMoveToFront(int **destHead, int srcLink, int *requestNode) {
     TexRequestUnlink(srcLink, requestNode);
     *(int **)((char *)requestNode + 0x14) = *destHead;
     *destHead = requestNode;
@@ -1473,7 +1473,7 @@ void fn_802CC03C(int **listHead, int *record, int texId) {
         Abend_Panic(lbl_8034BA34, nameBuf);
     if ((unsigned int)version != 0xF)
         Abend_Panic(lbl_8034BA70, nameBuf, version, 0xF);
-    ((void (*)(int **, int, int *))fn_802CBB9C)(listHead, (int)listHead + 4, record);
+    ((void (*)(int **, int, int *))TexRequestMoveToFront)(listHead, (int)listHead + 4, record);
 }
 
 #pragma optimization_level 2
@@ -1656,7 +1656,7 @@ outer:
                 fn_8012C958(request[0]);
                 request[0] = zero;
                 request[2] = zero;
-                fn_802CBB9C((int **)(manager + 4), (int)manager, request);
+                TexRequestMoveToFront((int **)(manager + 4), (int)manager, request);
                 ((void (*)(void *, const char *))fn_802CB3F8)(
                     (void *)(entry + 4), &lbl_8055D090);
                 *(int *)(manager + 0x18) += *(int *)(entry + 0x3C);
