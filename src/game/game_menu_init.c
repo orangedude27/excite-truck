@@ -562,10 +562,8 @@ extern "C" int fn_80004F00(int* eventIndex, int* subIndex, const char* name) {
 
 #pragma push
 #pragma use_lmw_stmw off
+/* Look up an event/menu entry by name: scan the registered event records (name at +0x28) case-insensitively, store the matched index and sub-index 0, and return whether a match was found. */
 int fn_800050D0(int* eventIndex, int* subIndex, const char* name) {
-    /* Generic event lookup (no '$'/'@' prefix in the scene loader): scan the event
-     * table for the record whose name field (+0x28) matches `name`. On a hit store
-     * the event index in *eventIndex, 0 in *subIndex, and return 1; else return 0. */
     int found = 0;
     int i;
 
