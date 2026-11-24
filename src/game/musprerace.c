@@ -264,7 +264,7 @@ extern s8 lbl_8055EE43;
 }
 #pragma pop
 /* Initializes pre-race music state (stops track music, resets fade/volume/state flags). */
-void fn_8020C54C(void) {
+void musicPreRaceInit(void) {
     stopTrackMusic();
     lbl_8055EE4C = lbl_805632F0;
     lbl_8055EE50 = lbl_805632F0;

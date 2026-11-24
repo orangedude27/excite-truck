@@ -1407,7 +1407,7 @@ void fn_80179320(void) {
     fn_801CB320();
     fn_801D481C();
     fn_801C4BAC();
-    fn_8020C54C();
+    musicPreRaceInit();
     fn_801E1E30();
     fn_801D0ED4();
     fn_801777A8();
