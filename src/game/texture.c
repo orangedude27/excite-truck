@@ -630,7 +630,7 @@ extern int TextureSlot_isLoaded(int);
 extern int lbl_8055FCB0;
 extern char textureNullName[];
 extern char invalidTextureName[];
-/* Returns the name of a texture slot, or a placeholder string for an invalid slot. */
+/* Returns the name of a texture slot: "TEXTURE_NULL" for index -1, "(INVALID)" if not loaded, otherwise the slot's stored name. */
 char *getTextureSlotName(int textureIndex) {
     int slotOffset;
     char *slot;
