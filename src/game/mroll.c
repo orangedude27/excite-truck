@@ -22,7 +22,7 @@ extern u8 lbl_8055F1FC;
 extern s32 lbl_8055F200;
 extern float lbl_80563758;
 extern char lbl_803425A8[];
-extern char lbl_8034288C[];
+extern char kStatLabelFontName[];
 extern s32 ArtSetGet(char *, s32, char *, s32);
 extern s32 fn_80232578(char *, char *, s32);
 extern char lbl_80498828[];
@@ -906,7 +906,7 @@ void *MRollStatLabel_init(void *statLabel) {
     *(s32 *)((u8 *)statLabel + 0x1C) = minusOne;
     *(s32 *)((u8 *)statLabel + 0x24) = zero;
     *(s32 *)((u8 *)statLabel + 0x20) = zero;
-    *(s32 *)((u8 *)statLabel + 0x18) = ((s32 (*)(char *))fn_80232578)(lbl_8034288C);
+    *(s32 *)((u8 *)statLabel + 0x18) = ((s32 (*)(char *))fn_80232578)(kStatLabelFontName);
     return statLabel;
 }
 
@@ -986,7 +986,7 @@ extern u8 lbl_8055F1FC;
 extern s32 lbl_8055F200;
 extern float lbl_80563758;
 extern char lbl_803425A8[];
-extern char lbl_8034288C[];
+extern char kStatLabelFontName[];
 s32 ArtSetGet(char *, s32, char *, s32);
 s32 fn_80232578(char *, char *, s32);
 /* Unused no-op stub in the mroll (player-info/roll) module; this build leaves it empty. */
