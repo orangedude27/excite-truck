@@ -3574,7 +3574,7 @@ extern char lbl_8055D100;
    transpose the camera rotation, rotate and negate its translation, then make
    GX matrix 0 current. The two identical branches mirror the original's
    source-level alias check. */
-void buildViewXform(void) {
+/* Compute the view transform as the inverse of the camera transform: copy and transpose the camera rotation, rotate and negate its translation, then make GX matrix 0 current. The two identical branches mirror the original's source-level alias check. */ void buildViewXform(void) {
 #define gCamera lbl_804C56C0
 #define gViewXform lbl_804CA2D8
 #define gNegOne lbl_80564F90
