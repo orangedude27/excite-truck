@@ -80,7 +80,7 @@ s32 *fn_802E333C(void) {
 }
 
 /* Return the file system picked by getFileSystemForPath, or the secondary file system (gSecondaryFileSystem) when none is available. */
-s32 *fn_802E336C(void) {
+s32 *GetSecondaryFileSystem(void) {
     s32 *fileSystem;
     fileSystem = (s32 *)((s32 (*)())getFileSystemForPath)();
     if (fileSystem != 0) {
@@ -524,7 +524,7 @@ extern "C" s32 fn_802E3D04(s32 path) {
         virtual void b();
         virtual s32 c(s32);
     };
-    V *fileSystem = (V *)fn_802E336C();
+    V *fileSystem = (V *)GetSecondaryFileSystem();
     s32 handle;
 
     if (fileSystem == 0) goto fail;
@@ -544,7 +544,7 @@ extern "C" s32 FileOpenSecondary(s32 path) {
         virtual void reserved0();
         virtual s32 open(s32 path);
     };
-    FileSystem *fileSystem = (FileSystem *)fn_802E336C();
+    FileSystem *fileSystem = (FileSystem *)GetSecondaryFileSystem();
     s32 handle;
 
     /* Open a path through the secondary file system and register the native
