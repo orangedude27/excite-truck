@@ -15,7 +15,7 @@ extern int FileLookup(void *);
 extern void fn_802E3A14(int);
 extern void File_read(int, void *, int);
 extern unsigned char sStreamEntries[];
-extern int lbl_8055FFD8;
+extern int sStreamEntryCount;
 extern int lbl_8055FFDC;
 extern signed char lbl_8055FFE0;
 extern const char lbl_8034D7D8[];
@@ -34,7 +34,7 @@ int findStreamEntryBySector(int sector) {
     unsigned char *entry = sStreamEntries;
     int index = 0;
     int remaining;
-    for (remaining = lbl_8055FFD8; remaining > 0; remaining--) {
+    for (remaining = sStreamEntryCount; remaining > 0; remaining--) {
         if (sector >= *(int *)entry && sector < *(int *)(entry + 4))
             return index;
         entry += 0x90;
@@ -47,7 +47,7 @@ int findStreamEntryBySector(int sector) {
 void fn_802E7318(void) {
     /* Begin streaming: reset the sector cursor and entry count, and set the active flag. */
     lbl_8055FFDC = 0;
-    lbl_8055FFD8 = 0;
+    sStreamEntryCount = 0;
     lbl_8055FFE0 = 1;
 }
 
@@ -55,7 +55,7 @@ void fn_802E7318(void) {
 void fn_802E7330(void) {
     /* Stop stream loading, clear the active flag, and log the entries used out of 0x100 plus the sectors used. */
     lbl_8055FFE0 = 0;
-    fn_802E30C8(lbl_8034D7D8, lbl_8055FFD8, 0x100, lbl_8055FFDC);
+    fn_802E30C8(lbl_8034D7D8, sStreamEntryCount, 0x100, lbl_8055FFDC);
 }
 #pragma scheduling on
 extern int stricmp(const char *, const char *);
@@ -80,12 +80,12 @@ search_body:
     entry += 0x90;
     index++;
 search_test:
-    if (index < lbl_8055FFD8)
+    if (index < sStreamEntryCount)
         goto search_body;
     fileIndex = FileLookup((void *)name);
     if (fileIndex == -1)
         goto fail;
-    index = lbl_8055FFD8++;
+    index = sStreamEntryCount++;
     entry = sStreamEntries + index * 0x90;
     dst = (char *)(entry + 0x10);
     remaining = 0x80;
