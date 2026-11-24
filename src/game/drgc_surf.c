@@ -226,7 +226,7 @@ void drDrawSurfLayout10(void *surface) {
  * display list; the lighting and color state come from the display list
  * fn_802D5F88 submitted just before.
  * Proposed name: drDrawSurfPosTex. */
-void fn_802D422C(struct SurfDraw *surface) {
+void drDrawSurfLayout30(struct SurfDraw *surface) {
     GXSetArray(GX_VA_POS, surface->positions, 0xC); /* stride of the position records */
     GXSetArray(GX_VA_TEX0, surface->colors, 4);     /* stride of the texture coordinates */
     GXCallDisplayList(surface->displayList, surface->listSize);
@@ -1046,7 +1046,7 @@ void fn_802D5F88(s32 arg0) {
     case 15: fn_802D4ECC(surface); break;
     case 13: fn_802D5B8C(surface); break;
     case 19: Abend_Panic(lbl_8034C2F8); break;
-    case 20: fn_802D422C(surface); break;
+    case 20: drDrawSurfLayout30(surface); break;
     default: Abend_Panic(lbl_8034C334, layout); break;
     }
 }
