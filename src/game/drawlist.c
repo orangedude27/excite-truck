@@ -61,7 +61,7 @@ struct DrawListWrapper {
 /* Which GX render state the draw lists are drawing in.  Only 0 is read back
  * (fn_802C90E0 asks whether the module is shut down); the other values record
  * the state the function that set them left GX in: 1 the game's normal one
- * (fn_802C8D74 puts it back), 2 the one fn_802CAD74/fn_801E4FF4 set up,
+ * (fn_802C8D74 puts it back), 2 the one texSelectSlot/fn_801E4FF4 set up,
  * 3 DrawList_BeginProjection's with the world matrix saved, 4 the alpha-only overlay pass
  * fn_802C9C8C begins, 6 the pass fn_802C8DBC begins. */
 #define sRenderMode  lbl_8055FC70
@@ -541,10 +541,10 @@ void DrawList_copyCurrentMatrix(unsigned int *dst) {
 #undef sCurrentMatrix
 }
 
-extern void fn_802CAD74(void);
-/* Mode-2 draw-list setup: select the texture slot passed through in r3 (fn_802CAD74), then set the render mode to 2. */
+extern void texSelectSlot(void);
+/* Mode-2 draw-list setup: select the texture slot passed through in r3 (texSelectSlot), then set the render mode to 2. */
 void fn_802C8B70(void) {
-    fn_802CAD74();
+    texSelectSlot();
     sRenderMode = 2;
 }
 
@@ -777,7 +777,7 @@ void fn_802C92D8(void) {
     }
 }
 
-/* Record render mode 2 (the state fn_802CAD74/fn_801E4FF4 leave GX in), then hand
+/* Record render mode 2 (the state texSelectSlot/fn_801E4FF4 leave GX in), then hand
  * off to fn_802C8D74 to restore the normal state and drop any pending overlay. */
 void fn_802C9118(void) {
     sRenderMode = 2;

@@ -567,22 +567,22 @@ void fn_802CAD28(int slotIndex) {
 }
 
 /* Invalidate the texture module's "last bound slot" cache by setting it to -2,
-   so the next fn_802CAD74 call rebinds even if the slot number is unchanged. */
+   so the next texSelectSlot call rebinds even if the slot number is unchanged. */
 void fn_802CAD68(void) {
 #define gLastBoundTextureSlot lbl_8055FCB8
     gLastBoundTextureSlot = -2;
 #undef gLastBoundTextureSlot
 }
 
-#pragma dont_inline fn_802CAD74
-void fn_802CAD74(register int slotIndex) {
+#pragma dont_inline texSelectSlot
+void texSelectSlot(register int slotIndex) {
     /* Select a texture slot as active: on a change, remember it (or restore the saved default slot on -1),
        then bump the slot's use counter at +0x48 and bind its texture at +0x40 (fallback +0x28) to GX. */
     if (slotIndex == lbl_8055FCB8)
         return;
     lbl_8055FCB8 = slotIndex;
     if (slotIndex == -1) {
-        ((void (*)(int))fn_802CAD74)(*(volatile int *)&lbl_8055FCB4);
+        ((void (*)(int))texSelectSlot)(*(volatile int *)&lbl_8055FCB4);
         return;
     }
     {
