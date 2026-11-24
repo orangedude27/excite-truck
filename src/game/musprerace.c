@@ -5,7 +5,7 @@
 #include <types.h>
 #pragma paired_single off
 
-__declspec(section ".data") extern s32 lbl_80489BE0;
+__declspec(section ".data") extern s32 sPreRaceTrackTable;
 __declspec(section ".data") extern s32 sPreRaceSongName;
 extern s32 *lbl_8055B5D0;
 extern s32 *lbl_8055B5D4;
@@ -75,7 +75,7 @@ void fn_8020C140(void) {
         fn_80210510(v1);
         dc = lbl_805632DC;
         for (k = 0; k < 3; k++) {
-            obj = *(void **)((char *)&lbl_80489BE0 + 0x20 + k * 0x24);
+            obj = *(void **)((char *)&sPreRaceTrackTable + 0x20 + k * 0x24);
             if (obj != 0 && dc != *(f32 *)((char *)obj + 8)) {
                 *(char *)((char *)obj + 0x4D) = 1;
                 *(f32 *)((char *)obj + 8) = dc;
@@ -88,7 +88,7 @@ void fn_8020C140(void) {
         fn_80210510(lbl_805632DC);
         factor = lbl_805632D8;
         ctr = 3;
-        base = &lbl_80489BE0;
+        base = &sPreRaceTrackTable;
         do {
             void * __restrict o = *(void **)((char *)base + 0x20);
             if (o != 0) {
@@ -123,7 +123,7 @@ void fn_8020C2AC(void) {
 
     lbl_8055EE40 = 0;
     lbl_8055EE48 = fn_8020A5F0();
-    base = (s32 *)&lbl_80489BE0;
+    base = (s32 *)&sPreRaceTrackTable;
     f31val = lbl_805632DC;
     lbl_8055EE4C = lbl_805632F0;
     idx = 0, one = 1;
@@ -201,11 +201,11 @@ void fn_8020C41C(void) {
 #pragma scheduling on
 extern s32 fn_8012E498(s32 *);
 extern s32 fn_802103BC(void);
-__declspec(section ".data") extern s32 lbl_80489BE0;
+__declspec(section ".data") extern s32 sPreRaceTrackTable;
 __declspec(section ".data") extern s32 sPreRaceSongName;
 extern s32 *lbl_8055B5D0;
 extern s32 *lbl_8055B5D4;
-__declspec(section ".data") extern s32 lbl_80489BE0;
+__declspec(section ".data") extern s32 sPreRaceTrackTable;
 __declspec(section ".data") extern s32 sPreRaceSongName;
 extern s8 lbl_8055EE41;
 extern s8 lbl_8055EE42;
@@ -238,7 +238,7 @@ extern s8 lbl_8055EE43;
     lbl_8055EE38 = 0;
     fn_802103BC();
     {
-        s32 *track = &lbl_80489BE0;
+        s32 *track = &sPreRaceTrackTable;
         s32 trackIndex = 0;
         do {
             sound = *(Releasable **)((char *)track + 0x20);
@@ -367,7 +367,7 @@ void musicPreRaceUpdate(void) {
            lbl_8055EE4C = temp_f1;
            fn_8020C140();
            fullVolume = lbl_805632F0;
-           selection = (s32)&lbl_80489BE0;
+           selection = (s32)&sPreRaceTrackTable;
            i = 0;
            active = 1;
            cached = 0;
@@ -487,7 +487,7 @@ void fn_8020C91C(s32 songId) {
 extern void fn_8012DDA8(s32 *);
 extern void fn_801345D8(char *, s32, const char *, ...);
 extern const char sPreRaceMusicStrings[];
-extern s32 lbl_80489BE0;
+extern s32 sPreRaceTrackTable;
 extern s32 sPreRaceSongName;
 extern s32 lbl_8055B5D8;
 extern s32 lbl_8055B5DC;
@@ -505,7 +505,7 @@ extern s32 lbl_8055B5DC;
     fn_8012DDA8(&sPreRaceSongName);
     fn_8012DDA8(lbl_8055B5D0);
     fn_8012DDA8(lbl_8055B5D4);
-    dst = (char *)&lbl_80489BE0;
+    dst = (char *)&sPreRaceTrackTable;
     i = 0;
     variant = 0;
     do {
