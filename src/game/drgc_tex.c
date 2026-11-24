@@ -83,21 +83,21 @@ extern void GXInitTlutObj(void *, void *, int, unsigned short);
 /* Allocates a free texture-cache entry from the lbl_8055FE28 pool (0x1C2
  * entries, 0xF4 bytes each). Marks the first unused entry (byte at +0x20 == 0)
  * in-use and returns it, or logs an out-of-textures error and returns NULL. */
-void *fn_802D7600(void *arg0) {
-    unsigned char *entry;
-    int i;
+/* Allocate a free drgc texture-cache slot from the lbl_8055FE28 pool (0x1C2 entries of 0xF4 bytes): clear and mark the first unused slot in use, or dump the table and panic with the requester's name if none are free. */ void *fn_802D7600(void *requesterName) {
+    unsigned char *texEntry;
+    int index;
 
-    entry = (unsigned char *)lbl_8055FE28;
-    for (i = 0; i < 0x1C2; i++) {
-        if (entry[0x20] == 0) {
-            memset(entry, 0, 0xF4);
-            entry[0x20] = 1;
-            return entry;
+    texEntry = (unsigned char *)lbl_8055FE28;
+    for (index = 0; index < 0x1C2; index++) {
+        if (texEntry[0x20] == 0) {
+            memset(texEntry, 0, 0xF4);
+            texEntry[0x20] = 1;
+            return texEntry;
         }
-        entry += 0xF4;
+        texEntry += 0xF4;
     }
     fn_802D7564();
-    fn_802E317C(lbl_8034C494, arg0);
+    fn_802E317C(lbl_8034C494, requesterName);
     return 0;
 }
 #pragma pop
