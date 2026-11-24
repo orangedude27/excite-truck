@@ -96,7 +96,7 @@ void fn_8001880C(void);
 void fn_8013C804(void);
 void fn_802556BC(void *, s32);
 void *fn_802410F8(void *, s32, s32 *, s32);
-void *fn_80241024(void *);
+void *MRollContainer_init(void *);
 void *fn_80240BA4(void *, s32, void *, void *, void *, void *);
 void *fn_80240A1C(void *, int *, void *);
 void fn_802409AC(void *, s32);
@@ -192,7 +192,7 @@ struct MRollPlayerData {
     MRollPlayerData() {}
     MRollPlayerData(char *slot, s32 arg0) {
         fn_802410F8(&carIcon, (s32)(slot + 0xC), &value, (s32)this);
-        fn_80241024(&container);
+        MRollContainer_init(&container);
         fn_80240BA4(&recordOpt, (s32)(slot + 4), slot + 8, &carIcon, &container, this);
         fn_80240A1C(&menuItem, (int *)slot, this);
         fn_802409AC(&menuItem, (s32)&recordOpt);
@@ -201,7 +201,7 @@ struct MRollPlayerData {
     }
     void init(char *slot, s32 arg0) {
         fn_802410F8(&carIcon, (s32)(slot + 0xC), &value, (s32)this);
-        fn_80241024(&container);
+        MRollContainer_init(&container);
         fn_80240BA4(&recordOpt, (s32)(slot + 4), slot + 8, &carIcon, &container, this);
         fn_80240A1C(&menuItem, (int *)slot, this);
         fn_802409AC(&menuItem, (s32)&recordOpt);
@@ -211,7 +211,7 @@ struct MRollPlayerData {
     inline void setup(char *slot, s32 arg0) {
         fn_802556BC(&base, 0);
         fn_802410F8(&carIcon, (s32)(slot + 0xC), &value, (s32)this);
-        fn_80241024(&container);
+        MRollContainer_init(&container);
         fn_80240BA4(&recordOpt, (s32)(slot + 4), slot + 8, &carIcon, &container, this);
         fn_80240A1C(&menuItem, (int *)slot, this);
         fn_802409AC(&menuItem, (s32)&recordOpt);
@@ -885,7 +885,7 @@ void fn_80241010(void *label, s32 rankIndex, s32 valuePtr, s32 flag) {
 }
 
 /* Initializes a container: constructs 5 0x28-byte elements at offset 0x2C and clears the header and per-element flag bytes. */
-void *fn_80241024(void *container) {
+void *MRollContainer_init(void *container) {
     fn_8002F53C((u8 *)container + 0x2C, fn_80241098, fn_80240928, 0x28, 5);
     memset(container, 0, 0x2C);
     *(u8 *)((u8 *)container + 0xF4) = 0;
