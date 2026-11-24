@@ -100,7 +100,7 @@ extern int lbl_8055C450;         /* char *creditsMovieName -> "credits.bik" */
 extern unsigned char lbl_8055F450; /* set while the credits may be skipped (read by fn_80265B5C) */
 
 extern int fn_8020A69C(void);
-extern void fn_8020A648(int);
+extern void musicRequestSong(int);
 extern void fn_80265A74(void);
 extern void *fn_80131810(void *);
 extern void fn_80131818(void *);
@@ -142,7 +142,7 @@ extern "C" void fn_80263F30(int fadeOut, unsigned char skip, int fadeIn) {
     register int r_fadeIn asm("r25") = fadeIn;
     lbl_8055F450 = skip;
     prevSong = fn_8020A69C();
-    fn_8020A648(1);
+    musicRequestSong(1);
     if (fadeOutOrIndex != 0) {
         fn_80265A74();
     }
@@ -162,7 +162,7 @@ extern "C" void fn_80263F30(int fadeOut, unsigned char skip, int fadeIn) {
             }
             fadeOutOrIndex++;
         }
-        fn_8020A648(-1);
+        musicRequestSong(-1);
         fn_80265A74();
         if (fn_802ECF04() == 0) {
             fn_802E317C(base + CREDITS_POP_FAIL_MSG);
@@ -174,7 +174,7 @@ extern "C" void fn_80263F30(int fadeOut, unsigned char skip, int fadeIn) {
     if (r_fadeIn != 0) {
         fn_80265940();
     }
-    fn_8020A648(prevSong);
+    musicRequestSong(prevSong);
 }
 #pragma cplusplus off
 #pragma use_lmw_stmw on

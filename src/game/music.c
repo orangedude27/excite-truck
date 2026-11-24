@@ -51,7 +51,7 @@ extern s32 lbl_8055EDE8;          /* ms stamp of that request; fn_8020A100 ramps
  * log it, make it the pending index (-1 stops the music) and stamp the moment of
  * the switch; fn_8020A100 crossfades the two music slots over the time elapsed
  * since that stamp. */
-void fn_8020A648(s32 songIdx) {
+void musicRequestSong(s32 songIdx) {
     if (songIdx != lbl_8055EDE4) {
         fn_802E30C8(lbl_8033C318, songIdx);
         lbl_8055EDE4 = songIdx;
