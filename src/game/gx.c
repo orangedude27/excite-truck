@@ -936,7 +936,7 @@ void fn_802CFBA8(void) {
     extern void fn_800591AC(int);
     extern void fn_802E30C8(const char *, ...);
     extern void fn_802DD5F4(void);
-    extern void fn_802D3894(void);
+    extern void ZQueryPool_AssertAllReleased(void);
     extern void fn_802D6860(void);
     extern void *lbl_8055FD68;
     extern unsigned int lbl_8055FD98;
@@ -951,7 +951,7 @@ void fn_802CFBA8(void) {
     fn_800591AC(0);                    /* VISetPreRetraceCallback(0) */
     fn_802E30C8(lbl_8034C038, GX_DYNAMIC_HIGH_WATER);   /* "gx: max dynamic data used = %d" */
     fn_802DD5F4();                     /* free the cached texture object */
-    fn_802D3894();                     /* report visibility tests still in use */
+    ZQueryPool_AssertAllReleased();                     /* report visibility tests still in use */
     fn_802D6860();                     /* free the vertex-format display list; log the ymorph total */
     fn_80128670(GX_SCREEN_TEX_BUFFER); /* the full-screen texture */
     GX_SCREEN_TEX_BUFFER = 0;
@@ -3258,7 +3258,7 @@ typedef struct {
     *(int *)((char *)lbl_804C9984 + 0x700) = 0;
 }
 
-void fn_802D3894(void) {
+void ZQueryPool_AssertAllReleased(void) {
     ZQuery *query = (ZQuery *)lbl_804C9984;
     int i;
     /* Panic if any visibility-test depth query is still checked out of the pool. */
