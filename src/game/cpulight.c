@@ -62,7 +62,7 @@ void fn_802DB2D4(void) {
     GXSetAlphaCompare(4, ((unsigned char *)lbl_804DB468[0])[0xE4], 1, 0, 0);
 }
 
-void fn_802DB304(void *dest, int mode) {
+void copyCpuLightTextures(void *dest, int mode) {
     /* Copy 1, 2, or 3 texture object pointers from lbl_804DB468 into dest based on mode (0, 2, or 1). */
     void **dst = (void **)dest;
 
@@ -230,7 +230,7 @@ int fn_802DB69C(void **texObjs, int mode) {
     if ((unsigned char)gCpuLightTexDirty != 0) {
         gCpuLightTexDirty = 0;
         fn_802DB2D4();
-        fn_802DB304(texObjs, mode);
+        copyCpuLightTextures(texObjs, mode);
         numTevStages = fn_802DB69C(texObjs, mode);
         switch (mode) {
         case 0:
