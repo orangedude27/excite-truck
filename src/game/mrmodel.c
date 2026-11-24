@@ -1273,15 +1273,15 @@ int fn_802C6B44(int);
 extern const char lbl_8034B3DC[];
 int fn_802C94A0(void*, unsigned char*, float*, float);
 void fn_802C57B4(int, int, int, unsigned char, float);
-void DrawModelInstance(int instanceId) {
-    float distance;
-    unsigned char visibility;
-    void *groupHeader;
+/* Draw one model instance if its stored world position (+0x20) passes the view-volume test with the instance's tolerance (+0x1C): submit it with no transform override and entry id -1. */ void DrawModelInstance(int instanceId) {
+    float depth;
+    unsigned char status;
+    void *instanceHeader;
 
     if (instanceId != -1) {
-        groupHeader = *(void **)((char *)fn_802C5390(instanceId) + 4);
-        if (fn_802C94A0((char *)groupHeader + 0x20, &visibility, &distance, *(float *)((char *)groupHeader + 0x1C))) {
-            fn_802C57B4(instanceId, 0, -1, visibility, distance);
+        instanceHeader = *(void **)((char *)fn_802C5390(instanceId) + 4);
+        if (fn_802C94A0((char *)instanceHeader + 0x20, &status, &depth, *(float *)((char *)instanceHeader + 0x1C))) {
+            fn_802C57B4(instanceId, 0, -1, status, depth);
         }
     }
 }
