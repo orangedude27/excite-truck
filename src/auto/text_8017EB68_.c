@@ -1447,24 +1447,27 @@ extern int sprintf(char *, const char *, ...);
 void fn_801808DC(void) {
     char name[64];
     unsigned char flag;
-    int keys1[4];
     int keys2[4];
-    int *slot;
-    int i;
-    int j;
-    int count;
-    struct Di718 *v;
-    float f7C;
-    float f80;
-    float f48;
-    float f84;
-    float f88;
-    float f8C;
-    float f90;
+    int keys1[4];
     float f4C;
-    Unk8017Object **table;
+    float f90;
+    float f8C;
+    float f88;
+    float f84;
+    float f48;
+    float f80;
+    float f7C;
     int *keyBase1;
     int *keyBase2;
+    int j;
+    int *namedSlot;
+    int i;
+    Unk8017Object **table;
+    const int *readKey2;
+    const int *readKey1;
+    int *slot;
+    struct Di718 *v;
+    int count;
     fn_801333E8(8, lbl_80331E58, &lbl_8055E4B9);
     lbl_8055E4B8 = 1;
     f48 = lbl_80561C48;
@@ -1475,11 +1478,10 @@ void fn_801808DC(void) {
     f8C = lbl_80561C8C;
     f90 = lbl_80561C90;
     f4C = lbl_80561C4C;
+    table = lbl_804348D8;
     keyBase1 = lbl_802F9530;
     keyBase2 = lbl_802F9540;
-    for (count = 0, table = lbl_804348D8; count < 4; count++, table++) {
-        float value;
-        float value2;
+    for (count = 0; count < 4; count++, table++) {
         v = (struct Di718 *)*table;
         if (v == 0) continue;
         v->axStackHead = __AXGetStackHead_80137CFC(v->index);
@@ -1508,23 +1510,18 @@ void fn_801808DC(void) {
         fn_801333E8(v->soundId, lbl_803321C4, (char *)v + 0x340);
         fn_801333E8(v->soundId, lbl_803321B8, &v->flag341);
         v->flag5E = 1;
-        value = f48;
-        value = value < (v->pad60 - f48) ? value : (v->pad60 - f48);
-        value = value > f4C ? value : f4C;
-        value2 = f48;
-        v->pad64 = value;
-        value2 = value2 < v->pad60 ? value2 : v->pad60;
-        value2 = value2 > f4C ? value2 : f4C;
-        value = v->level2C[2];
-        v->pad60 = value2;
-        value = value > lbl_80561C94 ? value : lbl_80561C94;
-        value2 = v->level2C[5];
-        v->level2C[2] = value;
-        value2 = value2 > lbl_80561C94 ? value2 : lbl_80561C94;
-        value = v->level2C[8];
-        v->level2C[5] = value2;
-        value = value > lbl_80561C94 ? value : lbl_80561C94;
-        v->level2C[8] = value;
+        {
+            float limit = lbl_80561C4C;
+            v->pad64 = fn_8014C8F8(v->pad60 - f48, limit, f48);
+            limit = lbl_80561C4C;
+            v->pad60 = fn_8014C8F8(v->pad60, limit, lbl_80561C48);
+            limit = lbl_80561C94;
+            v->level2C[2] = fn_801429D0(v->level2C[2], limit);
+            limit = lbl_80561C94;
+            v->level2C[5] = fn_801429D0(v->level2C[5], limit);
+            limit = lbl_80561C94;
+            v->level2C[8] = fn_801429D0(v->level2C[8], limit);
+        }
 #pragma push
 #pragma cplusplus on
 #pragma paired_single off
@@ -1556,10 +1553,12 @@ void fn_801808DC(void) {
             keys2[2] = *p2++;
             keys2[3] = *p2;
         }
-        slot = (int *)((char *)v + 0x2CC);
-        for (i = 0; i < 4; i++, slot += 4) {
-            fn_801A7DFC(keys1[i], keys2[i], v->soundId);
-            fn_801A7974((char *)slot, (const char *)keys1[i], v->soundId);
+        readKey2 = keys2;
+        readKey1 = keys1;
+        slot = (int *)&v->slot[(0x2CC - 0x6C) / 0x10];
+        for (i = 0; i < 4; i++, readKey2++, readKey1++, slot += 4) {
+            fn_801A7DFC(*readKey1, *readKey2, v->soundId);
+            fn_801A7974((char *)slot, (const char *)*readKey1, v->soundId);
         }
         fn_801A7974((char *)v + 0x6C, lbl_803321AC, v->soundId);
         fn_801A7974((char *)v + 0x7C, lbl_803321A0, v->soundId);
@@ -1618,15 +1617,14 @@ void fn_801808DC(void) {
         fn_801A9110(&v->slot[27], lbl_80331FB4);
         fn_801A9110(&v->slot[28], lbl_80331FA8);
         fn_801A9110(&v->slot[29], lbl_80331F9C);
-        slot = (int *)((char *)v + 0x1DC);
-        for (j = 0; j < 6; j++, slot += 4) {
+        namedSlot = (int *)((char *)v + 0x1DC);
+        for (j = 0; j < 6; j++, namedSlot += 4) {
             sprintf(name, lbl_80331F90, j + 1);
-            fn_801A7974((char *)slot, name, v->soundId);
+            fn_801A7974((char *)namedSlot, name, v->soundId);
         }
         fn_801A7974((char *)v + 0x23C, lbl_80331F80, v->soundId);
         {
             int head = v->axStackHead;
-            v->flag344 = 0;
             v->slot[0].value = head;
             v->slot[1].value = head;
             v->slot[18].value = head;
@@ -1662,6 +1660,7 @@ void fn_801808DC(void) {
             v->slot[39].value = head;
             v->slot[40].value = head;
             v->slot[41].value = head;
+            v->flag344 = 0;
             {
                 char buf[96];
                 if (fn_801298E8(buf, head) != 0 && ((*(int *)(buf + 0x50) & 0x10) != 0)) {
@@ -2034,7 +2033,7 @@ void fn_80181700(void *self, int flag) {
 /* Stop the sound/event on a slot when it is valid and its owner is not type 0x11. */
 void fn_80181720(void *arg0) {
     if (*(int *)((char *)arg0 + 8) >= 0 && fn_8026A368(*(int *)((char *)arg0 + 4)) != 0x11) {
-        fn_802E85F4(*(int *)((char *)arg0 + 8));
+        RjoyUpdateTiltHistory(*(int *)((char *)arg0 + 8));
     }
 }
 
