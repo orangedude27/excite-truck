@@ -6,7 +6,7 @@
 #pragma paired_single off
 
 __declspec(section ".data") extern s32 lbl_80489BE0;
-__declspec(section ".data") extern s32 lbl_80489C50;
+__declspec(section ".data") extern s32 sPreRaceSongName;
 extern s32 *lbl_8055B5D0;
 extern s32 *lbl_8055B5D4;
 extern s8 lbl_8055EE41;
@@ -134,7 +134,7 @@ void fn_8020C2AC(void) {
         flag = 0;
         switch (idx) {
         case 0:
-            sel = (s32 *)&lbl_80489C50;
+            sel = (s32 *)&sPreRaceSongName;
             flag = (u8 *)&lbl_8055EE41;
             break;
         case 1:
@@ -152,7 +152,7 @@ void fn_8020C2AC(void) {
             if ((u8)tmp == 0) {
                 fn_80128684();
             }
-            fn_802064D0((s32 *)&lbl_80489C50);
+            fn_802064D0((s32 *)&sPreRaceSongName);
             if (*(s8 *)base != 0) {
                 *(void **)((char *)base + 0x20) = (void *)fn_80207848((const char *)base, 0);
             }
@@ -202,11 +202,11 @@ void fn_8020C41C(void) {
 extern s32 fn_8012E498(s32 *);
 extern s32 fn_802103BC(void);
 __declspec(section ".data") extern s32 lbl_80489BE0;
-__declspec(section ".data") extern s32 lbl_80489C50;
+__declspec(section ".data") extern s32 sPreRaceSongName;
 extern s32 *lbl_8055B5D0;
 extern s32 *lbl_8055B5D4;
 __declspec(section ".data") extern s32 lbl_80489BE0;
-__declspec(section ".data") extern s32 lbl_80489C50;
+__declspec(section ".data") extern s32 sPreRaceSongName;
 extern s8 lbl_8055EE41;
 extern s8 lbl_8055EE42;
 extern s8 lbl_8055EE43;
@@ -255,7 +255,7 @@ extern s8 lbl_8055EE43;
             track += 9;
         } while (trackIndex < 3);
     }
-    fn_8012E498(&lbl_80489C50);
+    fn_8012E498(&sPreRaceSongName);
     fn_8012E498(lbl_8055B5D4);
     fn_8012E498(lbl_8055B5D0);
     lbl_8055EE43 = 0;
@@ -488,7 +488,7 @@ extern void fn_8012DDA8(s32 *);
 extern void fn_801345D8(char *, s32, const char *, ...);
 extern const char sPreRaceMusicStrings[];
 extern s32 lbl_80489BE0;
-extern s32 lbl_80489C50;
+extern s32 sPreRaceSongName;
 extern s32 lbl_8055B5D8;
 extern s32 lbl_8055B5DC;
 #pragma push
@@ -501,8 +501,8 @@ extern s32 lbl_8055B5DC;
     register s32 i;
     register s32 variant;
     songIdCopy = songId;
-    fn_801345D8((char *)&lbl_80489C50, 0x20, base + 0x34, songId);
-    fn_8012DDA8(&lbl_80489C50);
+    fn_801345D8((char *)&sPreRaceSongName, 0x20, base + 0x34, songId);
+    fn_8012DDA8(&sPreRaceSongName);
     fn_8012DDA8(lbl_8055B5D0);
     fn_8012DDA8(lbl_8055B5D4);
     dst = (char *)&lbl_80489BE0;
