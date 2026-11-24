@@ -15,7 +15,7 @@ extern s32 fn_802E321C(const char *);
 extern s32 fn_802E3270(s32);
 extern s32 getFileSystemForPath(s32);
 extern s32 gDefaultFileSystem;
-extern s32 lbl_8055FF1C;
+extern s32 gSecondaryFileSystem;
 
 extern char lbl_8034CFB4[];
 extern char lbl_8034D000[];
@@ -79,14 +79,14 @@ s32 *fn_802E333C(void) {
     return (s32 *)gDefaultFileSystem;
 }
 
-/* Return the file system picked by getFileSystemForPath, or the secondary file system (lbl_8055FF1C) when none is available. */
+/* Return the file system picked by getFileSystemForPath, or the secondary file system (gSecondaryFileSystem) when none is available. */
 s32 *fn_802E336C(void) {
     s32 *fileSystem;
     fileSystem = (s32 *)((s32 (*)())getFileSystemForPath)();
     if (fileSystem != 0) {
         return fileSystem;
     }
-    return (s32 *)lbl_8055FF1C;
+    return (s32 *)gSecondaryFileSystem;
 }
 
 #pragma cplusplus on
@@ -142,7 +142,7 @@ void fn_802E3498(void) {
 extern void File_checkOpenFiles(void);
 #pragma cplusplus on
 /* Shut down file subsystems: close remaining open files, then destroy the
-   primary (gDefaultFileSystem) and secondary (lbl_8055FF1C) file-system objects. */
+   primary (gDefaultFileSystem) and secondary (gSecondaryFileSystem) file-system objects. */
 extern "C" void File_ShutdownSubsystem(void) {
     class FileSystem {
     public:
@@ -155,12 +155,12 @@ extern "C" void File_ShutdownSubsystem(void) {
         ((FileSystem *)fileSystem)->destroy(1);
     }
     gDefaultFileSystem = 0;
-    fileSystem = lbl_8055FF1C;
+    fileSystem = gSecondaryFileSystem;
     if (fileSystem != 0) {
         if (fileSystem != 0) {
             ((FileSystem *)fileSystem)->destroy(1);
         }
-        lbl_8055FF1C = 0;
+        gSecondaryFileSystem = 0;
     }
 }
 #pragma cplusplus off
