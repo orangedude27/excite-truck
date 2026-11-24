@@ -64,7 +64,7 @@ extern s32 lbl_8055FC00; /* the canvas the gxCanvas* routines below draw on:
 extern void fn_802C3754(s32, s32, s32, s32, s32, s32, s32, s32);
 extern void fn_802DB2C8(void);
 extern void gxCanvasFillRect16(s32, s32, s32, s32, u32);
-extern void fn_802C356C(s32, s32, s32, s32, u32);
+extern void gxCanvasFillRectRGBA(s32, s32, s32, s32, u32);
 extern void fn_802C365C(s32, s32, s32, s32, u32);
 #pragma scheduling invalid_target
 #pragma push
@@ -369,7 +369,7 @@ void gxCanvasFillRect(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     }
     if (*(volatile s8 *)lbl_8055FC00 != CANVAS_FORMAT_RGBA)
         return;
-    fn_802C356C(x0, y0, x1, y1, color);
+    gxCanvasFillRectRGBA(x0, y0, x1, y1, color);
 }
 
 #pragma pop
@@ -407,7 +407,7 @@ void gxCanvasFillRect16(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
 #pragma inline_depth(0)
 /* Fill a clipped x0,y0-x1,y1 rectangle on the current 4-byte canvas, widening the
  * RGB565 value packed in packedColor into opaque RGBA5551 pixels. */
-void fn_802C356C(s32 x0, s32 y0, s32 x1, s32 y1, u32 packedColor) {
+void gxCanvasFillRectRGBA(s32 x0, s32 y0, s32 x1, s32 y1, u32 packedColor) {
     u32 rgba;
     s32 width, height, rowSkip, colCount;
     u32 *pixels;
@@ -1432,4 +1432,4 @@ extern void fn_802C3F00(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802DB2C8(void);
 extern void gxCanvasFillRect16(s32, s32, s32, s32, u32);
 extern void fn_802C365C(s32, s32, s32, s32, u32);
-extern void fn_802C356C(s32, s32, s32, s32, u32);
+extern void gxCanvasFillRectRGBA(s32, s32, s32, s32, u32);
