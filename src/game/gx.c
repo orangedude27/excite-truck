@@ -3262,9 +3262,9 @@ typedef struct {
 
 void ZQueryPool_AssertAllReleased(void) {
     ZQuery *query = (ZQuery *)lbl_804C9984;
-    int i;
-    /* Panic if any visibility-test depth query is still checked out of the pool. */
-    for (i = 0; i < 0x40; i++, query++) {
+    int queryIndex;
+    /* Panic with "visibility test still in use." if any of the 64 depth queries is still checked out. */
+    for (queryIndex = 0; queryIndex < 0x40; queryIndex++, query++) {
         if (query->used != 0) {
             fn_802E317C((const char *)sVisQueryStillInUseMsg);
         }
