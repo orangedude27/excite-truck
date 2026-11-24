@@ -375,7 +375,7 @@ signed long SoundMgr_readyForUpdate(SoundMgr* soundMgr) {
 /* Per-frame SoundManager update (its first virtual method): at most once every
  * 16 ms, refresh every tracked sound and tick the mixer device at +0x90 with
  * the manager's emitter context at +0x5C. */
-/* Per-frame SoundManager update (first virtual method): at most once every 16 ms, refresh all tracked sounds and tick the mixer device with the manager's emitter context. */ extern "C" void SoundMgr_update(SoundMgr *soundMgr) {
+/* Per-frame SoundManager update (first virtual method): at most once every 16 ms, refresh all tracked sounds and tick the mixer device with the manager's emitter context. */ /* Per-frame SoundManager update (first virtual method): at most once every 16 ms, refresh all tracked sounds and tick the mixer device with the manager's emitter context. */ extern "C" void SoundMgr_update(SoundMgr *soundMgr) {
     /* The mixer device of src/game/mixer.c (its vtable is documented there and in
      * fn_80208858); only the slots this file reaches through are declared. */
     struct SoundDevice {
