@@ -990,12 +990,12 @@ void fn_802D92B8(void *arg0) {
  * tlut object) and flush both palettes, then invalidate GX's whole texture
  * cache.  drCreateTexture (fn_802D8E9C) calls it on whatever its format
  * creator returned, including the 0 it returns on an unknown format. */
-void fn_802D9340(void *arg0) {
-    DrTexRecord *tex = (DrTexRecord *)arg0;
-    unsigned int value;
-    value = (unsigned int)tex->texelData;
-    if (value != 0 && tex->texelSize != 0) {
-        DCFlushRange((void *)value, tex->texelSize);
+void fn_802D9340(void *record) {
+    DrTexRecord *tex = (DrTexRecord *)record;
+    unsigned int texelAddr;
+    texelAddr = (unsigned int)tex->texelData;
+    if (texelAddr != 0 && tex->texelSize != 0) {
+        DCFlushRange((void *)texelAddr, tex->texelSize);
     }
     if (tex->rgbClut != 0 && tex->rgbClutSize != 0) {
         fn_802D78D4(tex->rgbClut, tex->alphaClut, (unsigned int)tex->srcClut,
