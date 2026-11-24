@@ -171,9 +171,10 @@ extern int lbl_80507258[], lbl_8056000C;
 extern int fn_80128658(int, int *);
 #pragma push
 #pragma scheduling invalid_target
-/* Removes a value from the lbl_80507258 array by swapping in the last element,
- * notifies fn_80128658 of the removal, and returns 1. */
-/* Callback on Wpad device disconnect: swap-removes `handle` from the connected-device array (last element fills the gap), frees it via fn_80128658, and always returns 1. */ int fn_802E7A70(unsigned int handle) {
+/* Callback on Wpad device disconnect: swap-removes `handle` from the
+ * connected-device array (last element fills the gap), frees it via
+ * fn_80128658, and always returns 1. */
+int fn_802E7A70(unsigned int handle) {
     int matchIndex;
     int *cursor;
     int index;
