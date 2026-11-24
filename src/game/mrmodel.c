@@ -34,7 +34,7 @@ extern int lbl_804C13A8[];
 extern int lbl_804C13B4[];
 extern const char lbl_8034B1D8[];
 extern s8 lbl_8055FC20;
-extern s8 lbl_8055FC21;
+extern s8 gModelDisplayDirty;
 extern void fn_802C8B98(int, void *);
 extern int fn_802D0514(void *);
 char *getTextureSlotName(char *);
@@ -165,7 +165,7 @@ unsigned char fn_802C54CC(unsigned int value) { return (unsigned char)(value >> 
 void fn_802C54D4(void) {
     extern int lbl_804C1390[];
     extern int lbl_804C13A8[];
-    extern s8 lbl_8055FC21;
+    extern s8 gModelDisplayDirty;
     extern void qsort(void *, unsigned int, unsigned int, int (*)(void *, void *));
     int level;
     unsigned int sourceOffset;
@@ -176,7 +176,7 @@ void fn_802C54D4(void) {
     void *table;
     int *list;
 
-    if (*(volatile unsigned char *)&lbl_8055FC21 == 0)
+    if (*(volatile unsigned char *)&gModelDisplayDirty == 0)
         return;
     lbl_804C1390[0] = 0;
     for (sourceIndex = 0, sourceOffset = 0;
@@ -221,7 +221,7 @@ void fn_802C54D4(void) {
         table = fn_802C54B4(level);
         *(int *)((char *)table + 4) = 0;
     }
-    *(volatile unsigned char *)&lbl_8055FC21 = 0;
+    *(volatile unsigned char *)&gModelDisplayDirty = 0;
 }
 #pragma use_lmw_stmw on
 #pragma dont_inline reset
@@ -480,7 +480,7 @@ void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
         freeEntry->key2 = arg2;
         freeEntry->reserved = zero;
         freeEntry->key1 = arg1;
-        lbl_8055FC21 = one;
+        gModelDisplayDirty = one;
     }
 
     match->refs++;
@@ -498,7 +498,7 @@ struct ModelDisplayNode {
     s32 key1;     /* +0x0C */
 };
 extern void fn_802CAC54(int);
-extern s8 lbl_8055FC21;
+extern s8 gModelDisplayDirty;
 /* Release one reference to a model display node: drop its texture slot and
  * decrement its refcount, marking the level-sorted display lists dirty when
  * the count reaches zero. */
@@ -509,7 +509,7 @@ void fn_802C5BA0(int *displayNode) {
     refCount--;
     ((struct ModelDisplayNode *)displayNode)->refs = refCount;
     if (refCount == 0) {
-        lbl_8055FC21 = 1;
+        gModelDisplayDirty = 1;
     }
 }
 
