@@ -11,7 +11,7 @@ extern int lbl_8055B4DC;
 extern char lbl_8055B4E8;
 extern void *fn_801284F8(int, void *);
 extern void fn_8000DBC8(void *);
-extern int fn_802E9A14(void); /* config.c: the cached SCSoundMode */
+extern int ConfigGetSCSoundMode(void); /* config.c: the cached SCSoundMode */
 extern void fn_8020A72C(void);
 extern int fn_8013365C(int, int);
 extern void *memset(void *, int, unsigned int);
@@ -158,7 +158,7 @@ void fn_80208AC8(int playerSlot, int event) {
  * allocate and register a null mixer backend, load saved mixer settings, register
  * the settings-reload callback, and install the identity-event handler. */
 void fn_80208B8C(int initBackends) {
-    int soundMode = (int)fn_802E9A14(); /* ConfigGetSoundMode() */
+    int soundMode = (int)ConfigGetSCSoundMode(); /* ConfigGetSoundMode() */
     switch (soundMode) {
     default: /* anything the config block holds besides mono and surround */
     case SC_SND_STEREO:

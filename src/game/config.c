@@ -108,7 +108,7 @@ s32 ConfigGetAspectRatio(void) {
 }
 
 /** @brief Get the sound mode the game should start in (SCSoundMode). */
-s32 fn_802E9A14(void) {
+s32 ConfigGetSCSoundMode(void) {
     return sConfigSoundMode;
 }
 
