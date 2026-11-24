@@ -28,7 +28,7 @@ extern int lbl_8055EDF8;
 extern unsigned int lbl_8055EE00;
 
 extern void fn_802E6264(void);
-extern void fn_802E5D5C(void *);
+extern void SpuSampleReleaseRef(void *);
 extern void fn_8020B2BC(void *, int, int);
 extern int lbl_8055EE0C;
 extern void *lbl_8055EE10;
@@ -568,10 +568,10 @@ extern char lbl_8033C3F4[];
         }
         resource = *(int *)((char *)voiceSnd + 0x14);
         if (resource != 0)
-            fn_802E5D5C((void *)resource);
+            SpuSampleReleaseRef((void *)resource);
         resource = *(int *)((char *)voiceSnd + 0x10);
         if (resource != 0) {
-            fn_802E5D5C((void *)resource);
+            SpuSampleReleaseRef((void *)resource);
             ((void (*)(void *, int, int))fn_8020B2BC)(lbl_8055EE04, (int)voiceSnd, *(int *)((char *)voiceSnd + 0x40));
         }
         if (shouldFree > 0)
@@ -886,7 +886,7 @@ extern "C" void VoiceSnd_playLooping(void *arg0) {
 #pragma cplusplus reset
 #pragma pop
 extern void *fn_802E5AE8(void *);
-extern void fn_802E5D5C(void *);
+extern void SpuSampleReleaseRef(void *);
 #pragma dont_inline fn_8020A6AC
 extern void *fn_8020A6AC(void *);
 #pragma dont_inline fn_8020A6AC
@@ -897,7 +897,7 @@ extern const char lbl_8033C4F0[];
     int success = 0;
     void *newResource = fn_802E5AE8(name);
     if (newResource != 0) {
-        fn_802E5D5C(*(void **)((char *)voice + 0x10));
+        SpuSampleReleaseRef(*(void **)((char *)voice + 0x10));
         *(void **)((char *)voice + 0x10) = newResource;
         *(void **)((char *)voice + 0x18) = fn_8020A6AC(name);
         success = 1;

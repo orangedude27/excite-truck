@@ -519,7 +519,7 @@ struct SpuChannel {
 };
 
 /* One of the 256 sample slots of the pool at lbl_8055FF90 (0xB000 bytes),
- * filled by fn_802E5AE8 and released by fn_802E5D5C. */
+ * filled by fn_802E5AE8 and released by SpuSampleReleaseRef. */
 struct SpuSample {
     char name[0x20];            /* +0x00: file name, without its directory */
     int streamState;            /* +0x20: 1 while the sample is streamed */
@@ -739,7 +739,7 @@ done:
     fn_8012C41C((void (*)())fn_802E58A0, 0, sfxDirName);
 }
 
-extern void fn_802E5D5C(void *);
+extern void SpuSampleReleaseRef(void *);
 void fn_802E5A54(void) {
     /* Shut down SPU state: release every allocated sound slot, finalize every
      * queued sound name, and reset both counts to zero. */
@@ -748,7 +748,7 @@ void fn_802E5A54(void) {
     unsigned char *name;
 
     for (slotIndex = 0; slotIndex < lbl_8055FFA0; slotIndex++) {
-        fn_802E5D5C((void *)lbl_8055FF9C[slotIndex]);
+        SpuSampleReleaseRef((void *)lbl_8055FF9C[slotIndex]);
     }
     lbl_8055FFA0 = 0;
     for (nameIndex = 0, name = lbl_804FC558; nameIndex < lbl_8055FF78; name += 0x20, nameIndex++) {
@@ -841,7 +841,7 @@ __repair_addr = (char *)(slot + 0x94);
 }
 #pragma pop
 /* SpuSample_release: decrement a sample's reference count, panicking if the last reference is dropped while channels still use it, and free its loaded SFX0 resource when the count reaches zero. */
-void fn_802E5D5C(void *sample) {
+void SpuSampleReleaseRef(void *sample) {
     if (*(int *)((char *)sample + SPU_SAMPLE_REF_COUNT_OFFSET) == 1 &&
         *(int *)((char *)sample + SPU_SAMPLE_ACTIVE_CHANNELS_OFFSET) > 0) {
         Abend_panic(sSampleStillInUseFmt, sample,
