@@ -26,7 +26,7 @@ extern char lbl_8034288C[];
 extern s32 fn_8023512C(char *, s32, char *, s32);
 extern s32 fn_80232578(char *, char *, s32);
 extern char lbl_80498828[];
-extern void *fn_80241098(void *);
+extern void *MRollStatLabel_init(void *);
 extern void fn_802E317C(char *, ...);
 typedef struct Fn241820VT { int pad[3]; int (*isActive)(void *); } Fn241820VT;
 typedef struct Fn241820Obj { char pad[0xc]; Fn241820VT *vt; } Fn241820Obj;
@@ -886,7 +886,7 @@ void fn_80241010(void *label, s32 rankIndex, s32 valuePtr, s32 flag) {
 
 /* Initializes a container: constructs 5 0x28-byte elements at offset 0x2C and clears the header and per-element flag bytes. */
 void *MRollContainer_init(void *container) {
-    fn_8002F53C((u8 *)container + 0x2C, fn_80241098, fn_80240928, 0x28, 5);
+    fn_8002F53C((u8 *)container + 0x2C, MRollStatLabel_init, fn_80240928, 0x28, 5);
     memset(container, 0, 0x2C);
     *(u8 *)((u8 *)container + 0xF4) = 0;
     *(u8 *)((u8 *)container + 0x158) = 0;
@@ -897,7 +897,7 @@ void *MRollContainer_init(void *container) {
 }
 
 /* Initializes an MRoll stat label with its vtable, default fields, and the uifnt_o.gtx font resource. */
-void *fn_80241098(void *statLabel) {
+void *MRollStatLabel_init(void *statLabel) {
     s32 zero = 0;
     s32 minusOne = -1;
     *(void **)statLabel = lbl_80342734;
