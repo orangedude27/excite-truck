@@ -1,7 +1,7 @@
 // strmbank — the global stream-bank manager and its null implementation.
 // Symbol guide: initStrmBank (fn_802E7578), shutdownStrmBank (fn_802E759C),
 // loadStrmBank (fn_802E75E4), bank-unload helpers (unloadStrmBank, fn_802E765C),
-// setStrmBankLevel (fn_802E7684), null-manager creation (fn_802E769C) and the
+// setStrmBankLevel (fn_802E7684), null-manager creation (createNullStrmBank) and the
 // null manager's vtable methods (fn_802E76F0..fn_802E7764).
 // Recovered TU window 0x802E7578..0x802E7768 (see docs/attribution_analysis.md).
 // Static-init thunk fn_802E7768 (+ .ctors slot 0x802ED610) remains in
@@ -18,7 +18,7 @@ extern char lbl_8034D818[];                /* "-StrmUnloadBank" */
 extern s32 fn_80128668(void);              /* free */
 extern s32 OSGetConsoleType(void);
 extern s32 fn_801284F8(s32, void *);       /* allocate from a named heap */
-extern s32 fn_802E769C(void);              /* creates the null stream-bank manager */
+extern s32 createNullStrmBank(void);              /* creates the null stream-bank manager */
 extern char lbl_8034D828[];                /* "StrmBank: creating 'null' manager" */
 extern char lbl_8034D84C[];                /* "NullStrmBank" */
 extern char lbl_8034D860[];                /* null manager vtable */
@@ -30,7 +30,7 @@ struct StrmBankObject { virtual ~StrmBankObject(); };
 
 /* Install the freshly created "null" stream-bank manager as the global manager. */
 void fn_802E7578(void) {
-    strmBankManager = (void *)fn_802E769C();
+    strmBankManager = (void *)createNullStrmBank();
 }
 
 /* Interface of the global stream-bank manager; slots line up with lbl_8034D860. */
@@ -84,7 +84,7 @@ extern "C" void fn_802E7684(s32 level) {
 /* Allocate the do-nothing "null" manager the game falls back on: a single pointer
    to lbl_8034D860, its vtable. fn_802E7578 installs the returned object globally;
    the console-type query first is unused. */
-s32 fn_802E769C(void) {
+s32 createNullStrmBank(void) {
     void **manager;
     OSGetConsoleType();
     fn_802E30C8(lbl_8034D828);
