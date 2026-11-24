@@ -260,7 +260,7 @@ void fn_802E8920(int requestedFreeBytes) {
 }
 
 #pragma scheduling on
-int rmemcardFileExists(const char *path) {
+/* Return 1 if the NAND file at path can be opened for reading, else 0. */ int rmemcardFileExists(const char *path) {
     /* Return 1 if the NAND file at `path` can be opened for reading, else 0. */
     unsigned char fileInfo[0x88];
     int exists = 0;
