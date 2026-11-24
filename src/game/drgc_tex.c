@@ -208,8 +208,8 @@ void fn_802D768C(void *record) {
  * 1 are deliberately absent: they abort here, so only the 0x40.. pair reaches
  * this code.  An id the switch does not know prints
  * "drgc/tex: 0x%x is unrecognized tex format" and exits. */
-int fn_802D76DC(int format) {
-    switch (format) {
+int fn_802D76DC(int texFormat) {
+    switch (texFormat) {
     case DRTEX_OLD_RGBA8:
     case DRTEX_C4:
     case DRTEX_C8:
@@ -228,7 +228,7 @@ int fn_802D76DC(int format) {
     case DRTEX_FMT_4C:
         return 0;
     }
-    fn_802E317C(lbl_8034C4B0, format);
+    fn_802E317C(lbl_8034C4B0, texFormat);
     return 1;
 }
 #pragma dont_inline reset
