@@ -1,14 +1,14 @@
 #include <types.h>
 
-extern const u64 lbl_802EE7F0[3];
+extern const u64 cvt_fp2unsigned_bounds[3];
 
 asm u32 __cvt_fp2unsigned(register f32 x) {
     // clang-format off
     nofralloc
     stwu r1, -0x10(r1)
         
-    lis r4, lbl_802EE7F0@ha
-    addi r4, r4, lbl_802EE7F0@l
+    lis r4, cvt_fp2unsigned_bounds@ha
+    addi r4, r4, cvt_fp2unsigned_bounds@l
 
     li r3, 0
         
