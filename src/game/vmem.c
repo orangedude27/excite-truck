@@ -10,7 +10,7 @@ extern void fn_80128668(void *);       /* free */
 extern void fn_80128670(int);          /* free a named-heap buffer */
 extern void fn_802E30C8(const char *, ...); /* debug/log print */
 extern int lbl_8055D1C8;               /* "vmem" heap tag */
-extern char lbl_8034D1D0[];            /* VirtualMemory vtable */
+extern char VirtualMemory_vtable[];            /* VirtualMemory vtable */
 extern char lbl_8034D204[];            /* "vmem_buf" backing-buffer heap tag */
 extern char lbl_8034D1F0[];            /* "VirtualMemory: %d K" */
 
@@ -25,12 +25,12 @@ void fn_802E4C18(void) {
 }
 
 #pragma dont_inline on
-/* Construct a VirtualMemory object: allocate it, install the vtable lbl_8034D1D0,
+/* Construct a VirtualMemory object: allocate it, install the vtable VirtualMemory_vtable,
    create a "vmem_buf" backing buffer of size bytes (+4), record the size (+8),
    and log the allocation size in KiB. */
 void *fn_802E4C1C(int size) {
     #pragma scheduling invalid_target
-#define kVTable         lbl_8034D1D0
+#define kVTable         VirtualMemory_vtable
 #define kAllocTag       lbl_8055D1C8    /* "vmem" */
 #define kBufferTag      lbl_8034D204    /* "vmem_buf" */
 #define kSizeFormat     lbl_8034D1F0    /* "VirtualMemory: %d K" */
@@ -94,10 +94,10 @@ void fn_802E4CDC(void) {
 }
 
 void *VirtualMemory_Destroy(void *arg0, int arg1) {
-    /* Destroying destructor for VirtualMemory (vtable lbl_8034D1D0): free the
+    /* Destroying destructor for VirtualMemory (vtable VirtualMemory_vtable): free the
        backing buffer at +4, clear buffer and size, and delete if arg1 > 0. */
     if (arg0 != 0) {
-        *(char **)arg0 = lbl_8034D1D0;
+        *(char **)arg0 = VirtualMemory_vtable;
         fn_80128670(*(int *)((char *)arg0 + 4));
         *(int *)((char *)arg0 + 4) = 0;
         *(int *)((char *)arg0 + 8) = 0;
@@ -112,7 +112,7 @@ void *VirtualMemory_Destroy(void *arg0, int arg1) {
 #pragma cplusplus on
 extern "C" void fn_802E4D50(void *vmem) {
     /* Virtual dispatch on a VirtualMemory object: jump to the vtable entry at
-       offset 0x10 (fn_802E4D60). This is slot 1 of vtable lbl_8034D1D0. */
+       offset 0x10 (fn_802E4D60). This is slot 1 of vtable VirtualMemory_vtable. */
     struct VirtualMemoryVtbl {
         virtual void destroy();
         virtual void forward();
@@ -127,12 +127,12 @@ int fn_802E4D60(void *vmem, int offset) {
     return *(int *)((char *)vmem + 4) + offset;
 }
 
-/* Empty stub: vtable slot 0x14 of the VirtualMemory object (lbl_8034D1D0),
+/* Empty stub: vtable slot 0x14 of the VirtualMemory object (VirtualMemory_vtable),
    paired with the slot-0x18 stub fn_802E4D70. Does nothing. */
 void fn_802E4D6C(void) {
 }
 
-/* Empty stub: vtable slot 0x18 of the VirtualMemory object (lbl_8034D1D0),
+/* Empty stub: vtable slot 0x18 of the VirtualMemory object (VirtualMemory_vtable),
    paired with the slot-0x14 stub fn_802E4D6C. */
 void fn_802E4D70(void) {
 }
