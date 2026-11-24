@@ -154,7 +154,7 @@ extern int lbl_8055D224;
 extern int lbl_8056000C;
 #pragma scheduling invalid_target
 /* Registers a WPAD input handler for the given device and stores its handle. */
-void fn_802E7A14(int deviceIndex) {
+void wpadAlloc(int deviceIndex) {
     int handle;
     fn_801282EC(0x80);
     fn_801282F4();
@@ -270,7 +270,7 @@ void fn_802E7C64(void) {
     int previousCallback;
     int controllerIndex;
 
-    fn_8005EE78(&fn_802E7A14, &fn_802E7A70);
+    fn_8005EE78(&wpadAlloc, &fn_802E7A70);
     fn_800569D0();
     KPADInit();
     do {
