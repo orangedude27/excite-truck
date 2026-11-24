@@ -123,7 +123,7 @@ extern char lbl_80313258[];
 extern char lbl_803191B4[];
 extern char lbl_80314110[];
 extern u32 lbl_803946C0[];
-extern u8 *lbl_80559030;
+extern u8 *pBtaHhCfg;
 extern void fn_8006EBF0();
 extern char lbl_80316EE0[];
 extern char lbl_80315EBC[];
@@ -6879,11 +6879,11 @@ void bta_hh_start_sdp(void *arg0, void *arg1) {
     }
 
     if (*(void **)(lbl_803C0D48 + 0x228) == 0) {
-        sdpBuf = GKI_getbuf(*(u16 *)(lbl_80559030 + 8));
+        sdpBuf = GKI_getbuf(*(u16 *)(pBtaHhCfg + 8));
         *(void **)(lbl_803C0D48 + 0x228) = sdpBuf;
         *(void **)(lbl_803C0D48 + 0x210) = arg0;
         status = (u8)HID_HostGetSDPRecord(eventData + 8, sdpBuf,
-                                          *(u16 *)(lbl_80559030 + 8),
+                                          *(u16 *)(pBtaHhCfg + 8),
                                           bta_hh_sdp_cback);
         if (status != 0) {
             if (lbl_8055DC80 >= 5)
@@ -7814,7 +7814,7 @@ void bta_hh_clean_up_kdev(void *dev_cb) {
 
 extern u8 lbl_803C0F78[];
 extern u8 lbl_80317008[];
-extern u8 *lbl_80559030;
+extern u8 *pBtaHhCfg;
 extern u8 lbl_8055DC80;
 extern u8 lbl_803C0D48[];
 extern u8 lbl_80315A64[];
@@ -7846,9 +7846,9 @@ void bta_hh_add_device_to_list(void *devCb, s8 handle, s16 attrMask, void *desc,
 BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
     UINT8 xx;
     UINT8 cod = (UINT8)(sub_class >> 2);
-    for (xx = 0; xx < lbl_80559030[0]; xx++) {
-        if (cod == *(*(UINT8 **)(lbl_80559030 + 4) + xx * 2)) {
-            ((UINT8 *)p_cb)[0x15] = *(*(UINT8 **)(lbl_80559030 + 4) + xx * 2 + 1);
+    for (xx = 0; xx < pBtaHhCfg[0]; xx++) {
+        if (cod == *(*(UINT8 **)(pBtaHhCfg + 4) + xx * 2)) {
+            ((UINT8 *)p_cb)[0x15] = *(*(UINT8 **)(pBtaHhCfg + 4) + xx * 2 + 1);
             return TRUE;
         }
     }
@@ -7883,7 +7883,7 @@ void bta_hh_trace_dev_db(void) {
         fn_8007093C(0x504, traceStrings + 0x280);
 }
 
-extern u8 *lbl_80559030;
+extern u8 *pBtaHhCfg;
 extern u8 lbl_80315A64[];
 extern void fn_800716F0(void *);
 void fn_80076E70(void) {
