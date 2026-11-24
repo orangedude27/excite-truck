@@ -17,7 +17,7 @@ extern s32 getFileSystemForPath(s32);
 extern s32 gDefaultFileSystem;
 extern s32 gSecondaryFileSystem;
 
-extern char lbl_8034CFB4[];
+extern char kFileSourceName[];
 extern char lbl_8034D000[];
 extern s32 fn_802E33D8(s32, const char *, s32);
 
@@ -266,7 +266,7 @@ extern "C" s32 fn_802E36D8(s32 pathOrName)
         virtual void a8();
         virtual ObjectOwner *getOwner();
     };
-    s32 fileEntry = fn_802E33D8(*handlePtr, lbl_8034CFB4, 0xE4);
+    s32 fileEntry = fn_802E33D8(*handlePtr, kFileSourceName, 0xE4);
     FileObject *fileObject = *(FileObject **)((unsigned char *)fileEntry + 0x24);
     ObjectOwner *owner = fileObject->getOwner();
     owner->destroy(fileObject);
@@ -276,7 +276,7 @@ extern "C" s32 fn_802E36D8(s32 pathOrName)
 }
 /* Look up the file object for the handle and invoke its vtable slot-4 method (no arguments) on the underlying stream. */
 extern "C" void fn_802E37C4(s32 fileHandle) {
-#define kFileSourceFile lbl_8034CFB4
+#define kFileSourceFile kFileSourceName
     class Obj {
     public:
         virtual void v0();
@@ -298,7 +298,7 @@ extern char lbl_8034CFC0[];
 extern "C" void fn_802E3898(s32, const char *, s32 *);
 /* Read byteCount bytes from file handle fileId into buffer: validate the handle, read via fn_802E3898, and warn through fn_802E317C if the bytes read differ from the request. */ extern "C" void fn_802E3804(s32 fileId, const char *buffer, s32 byteCount) {
     /* Read arg2 bytes from file handle arg0 into arg1 (file.cpp:0x130 context), and warn via fn_802E317C if the bytes read differ. */
-    s32 fileEntry = fn_802E33D8(fileId, lbl_8034CFB4, 0x130);
+    s32 fileEntry = fn_802E33D8(fileId, kFileSourceName, 0x130);
     s32 bytesRead = byteCount;
     fn_802E3898(fileId, buffer, &bytesRead);
     if (bytesRead != byteCount) {
@@ -319,7 +319,7 @@ extern "C" void fn_802E3898(s32, const char *, s32 *);
     s32 stream;
     s32 justRead;
 
-    fileEntry = fn_802E33D8(fileId, lbl_8034CFB4, 0x142);
+    fileEntry = fn_802E33D8(fileId, kFileSourceName, 0x142);
     bytesToRead = *countPtr;
     bytesRead = 0;
     while (bytesToRead > 0) {
@@ -346,7 +346,7 @@ extern "C" void fn_802E3930(s32 fileHandle, s32 offset, s32 whence) {
         virtual void v1();
         virtual void v2(int, int);
     };
-    s32 fileObject = fn_802E33D8(fileHandle, lbl_8034CFB4, 0x15e);
+    s32 fileObject = fn_802E33D8(fileHandle, kFileSourceName, 0x15e);
     s32 stream = *(s32 *)(fileObject + 0x24);
     ((Obj *)stream)->v2(offset, whence);
 }
@@ -361,7 +361,7 @@ extern "C" void fn_802E3990(s32 fileHandle) {
         virtual void v2();
         virtual void v3();
     };
-    s32 fileEntry = fn_802E33D8(fileHandle, lbl_8034CFB4, 0x16c);
+    s32 fileEntry = fn_802E33D8(fileHandle, kFileSourceName, 0x16c);
     s32 fileObject = *(s32 *)(fileEntry + 0x24);
     ((Obj *)fileObject)->v3();
 }
@@ -376,7 +376,7 @@ s32 fn_802E39D0(s32 fileId, s32 buffer, s32 count) {
 #pragma cplusplus on
 /* RealName: FileObject_SeekTo? (invokes file stream vtable method 8 with an offset). */
 extern "C" void fn_802E3A14(s32 fileHandle, s32 offset) {
-#define kFileSourceFile lbl_8034CFB4
+#define kFileSourceFile kFileSourceName
     class FileStream {
     public:
         virtual void v0();
@@ -402,7 +402,7 @@ extern "C" s32 File_writeExact(s32 fileHandle, s32 buffer, s32 size) {
         virtual void v0();
         virtual s32 v1(s32, s32);
     };
-    s32 fileObject = fn_802E33D8(fileHandle, lbl_8034CFB4, 0x1c3);
+    s32 fileObject = fn_802E33D8(fileHandle, kFileSourceName, 0x1c3);
     s32 entry = *(s32 *)(fileObject + 0x24);
     s32 bytesWritten = ((Obj *)entry)->v1(buffer, size);
     return size == bytesWritten;
