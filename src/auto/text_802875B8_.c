@@ -377,7 +377,7 @@ void fn_80287978(void) {
 /* Initializes game subsystems in order (counterpart to the shutdown sequence in fn_802878A8). */
 void fn_8028797C(void) {
     fn_802882EC(); fn_802A8978(); fn_80298160(); fn_80288A20(); fn_802A1794();
-    fn_8028A92C(); fn_8028CF64(); fn_80297980(); fn_80294CC4(); fn_8029C25C();
+    fn_8028A92C(); fn_8028CF64(); fn_80297980(); fn_80294CC4(); WaterPool_StepAll();
     fn_8029F188(); fn_80292698(); fn_802A0B50(); fn_802A4C60(); fn_801E7E24();
     fn_802AB628(); fn_802885F0(); fn_802887EC(); fn_802885C0();
 }

@@ -87,7 +87,7 @@ void fn_8029C22C(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_8029C25C(void) {
+void WaterPool_StepAll(void) {
     int *p;
     int i;
     float v = fn_801E7E24();
