@@ -213,11 +213,11 @@ void GXSetupIndirectTevPipeline(void) {
 
 #pragma scheduling invalid_target
 /* Configure TEV swap mode table/stages, run shared GX state update, and reset indirect/direct TEV state. */
-void GXResetIndirectTevPipeline(void) {
-    register u32 swapTable = 1;
-    register u32 colorSel = 0;
-    register u32 alphaSel = 3;
-    GXSetTevSwapModeTable(swapTable, colorSel, colorSel, colorSel, alphaSel);
+/* Undo the indirect-texture TEV setup: fill swap table 1, reset stage 0/1 swap modes, reapply the configured blend mode, and disable indirect texturing while making stage 1 sample directly. */ void GXResetIndirectTevPipeline(void) {
+    register u32 swapTableId = 1;
+    register u32 colorChannel = 0;
+    register u32 alphaChannel = 3;
+    GXSetTevSwapModeTable(swapTableId, colorChannel, colorChannel, colorChannel, alphaChannel);
     GXSetTevSwapMode(0, 0, 0);
     GXSetTevSwapMode(1, 0, 0);
     fn_802D3144();
