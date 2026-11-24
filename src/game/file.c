@@ -25,7 +25,7 @@ extern s32 fn_802E33D8(s32, const char *, s32);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void* lbl_8055FF24;
-s32 fn_802E98C8(void);
+s32 ConfigGetSDCardHandle(void);
 #pragma small_data on
 __declspec(section ".sdata") extern char lbl_8055D1A0[];
 __declspec(section ".sdata") extern char lbl_8055D1A8[];
@@ -569,8 +569,8 @@ done:
     return handle;
 }
 #pragma cplusplus off
-/* Initialize the SD-card file system handle (lbl_8055FF24) from the mount stub fn_802E98C8, which returns 0 in this build. */
+/* Initialize the SD-card file system handle (lbl_8055FF24) from the mount stub ConfigGetSDCardHandle, which returns 0 in this build. */
 void fn_802E3DCC(void) {
-    lbl_8055FF24 = (void*)fn_802E98C8();
+    lbl_8055FF24 = (void*)ConfigGetSDCardHandle();
 }
 
