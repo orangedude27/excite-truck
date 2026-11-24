@@ -1125,7 +1125,7 @@ void fn_802C6CF8(int modelHandle) {
     fn_802C6C20(resource);
 }
 
-s32 fn_802C6D5C(void *container) {
+s32 mrModelNeedsSubKeys(void *container) {
     /* Returns 1 if any nested item in the two-level container has a non-zero first field, else 0. */
     s32 outerOffset;
     s32 outerCount;
@@ -1203,7 +1203,7 @@ int fn_802C6DC4(int arg0, int arg1, int arg2, int arg3) {
         }
 
         {
-            register int temp = fn_802C6D5C((void *)(unsigned long)arg1);
+            register int temp = mrModelNeedsSubKeys((void *)(unsigned long)arg1);
             register int outer = 0;
             arg0 = 0;
             for (; outer < *(int *)((char *)(unsigned long)arg1 + 8); arg0 += 4, outer++) {
