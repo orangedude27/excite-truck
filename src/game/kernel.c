@@ -539,7 +539,7 @@ void fn_802E27F0(void) {
 }
 #pragma scheduling on
 /* Checks stack guard slots from the top down and reports stack usage if a guard is corrupted. */
-void fn_802E29AC(void) {
+void KERNEL_ReportStackUsage(void) {
     int size = *(int *)lbl_804DB780;
     int *base = *(int **)((char *)lbl_804DB780 + 4);
     int i;
@@ -665,7 +665,7 @@ struct StartupCalendar {
 }
 extern void DCStoreRange(void *, int);
 extern void fn_80127D58(void *);
-extern void fn_802E29AC(void);
+extern void KERNEL_ReportStackUsage(void);
 extern void fn_802EC7AC(void);
 extern void fn_802CFBA8(void);
 extern void fn_802EC038(void);
@@ -692,7 +692,7 @@ extern void KERNEL_Shutdown(void);
 /* Shut down every engine/kernel subsystem in reverse startup order; unregister the stack-overrun check first. */
 void KERNEL_Shutdown(void) {
     fn_80127D58((void *)fn_802E2A1C); /* unregister stack check callback */
-    fn_802E29AC();
+    KERNEL_ReportStackUsage();
     fn_802EC7AC();
     fn_802CFBA8();
     fn_802EC038();
@@ -927,7 +927,7 @@ extern void DCFlushRange(void *, int);
 
 extern void DCStoreRange(void *, int);
 extern void fn_80127D58(void *);
-extern void fn_802E29AC(void);
+extern void KERNEL_ReportStackUsage(void);
 extern void fn_802EC7AC(void);
 extern void fn_802CFBA8(void);
 extern void fn_802EC038(void);
