@@ -37,18 +37,17 @@ void fn_802526E0(void *arg0) {
     volatile f32 sp8;
     volatile f32 *out = (volatile f32 *)arg0;
     f32 a = 0.0f, b = 6.28319f;
-    f64 temp_f31;
-    f32 temp_f30, temp_f29, temp_f4, temp_f4_2, temp_f5;
+    f32 temp_f31, temp_f30, temp_f29, temp_f4, temp_f4_2, temp_f5;
     f32 temp_f1, temp_f2, temp_f3, temp_f2_2, temp_f4_3, temp_f5_2, temp_f6;
     f32 temp_f1_2;
     temp_f29 = fn_80129DC4(0, a, b);
     temp_f31 = lbl_805639D4;
-    sp8 = (f32)temp_f31;
+    sp8 = temp_f31;
     spC = lbl_805639CC;
     temp_f30 = (f32)cos();
     temp_f4 = (f32)sin(temp_f29);
     out[10] = (f32)lbl_805639CC;
-    temp_f4_2 = (f32)temp_f31 * temp_f4;
+    temp_f4_2 = temp_f31 * temp_f4;
     temp_f5 = ((f32)temp_f31 * temp_f30) - (spC * temp_f4);
     temp_f1 = temp_f5 * lbl_805639C8;
     out[9] = temp_f5;
@@ -321,10 +320,11 @@ void fn_80253004(s32 index, void *out) {
 }
 
 extern f32 lbl_805639FC;
-extern f32 fn_801DCF48(s32, u32, u32, u32, u32, u32, u32, u32, f32, f32);
 typedef struct {
-    u8 pad0[0x24];
-    u32 w24, w28, w2c;
+    f32 m[12];
+} CamBasis80253104;
+typedef struct {
+    CamBasis80253104 basis;
     u8 flag30;
     u8 pad31[3];
     f32 f34, f38, f3c;
@@ -333,34 +333,18 @@ typedef struct {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_80253104(s32 arg0, void *arg1) {
-    f32 z, y, x;
-    u32 args[12];
-    CamEntry80253104 *cam;
-    x = *(volatile f32 *)((u8 *)arg1 + 0x12C);
-    y = *(volatile f32 *)((u8 *)arg1 + 0x130);
-    z = *(volatile f32 *)((u8 *)arg1 + 0x134);
-    cam = (CamEntry80253104 *)lbl_80498D00;
-    cam[arg0].f34 = x;
-    cam[arg0].f38 = y;
-    cam[arg0].f3c = z;
+    CamEntry80253104 *cam = (CamEntry80253104 *)lbl_80498D00;
+    CamBasis80253104 basis;
+    cam[arg0].f34 = *(volatile f32 *)((u8 *)arg1 + 0x12C);
+    cam[arg0].f38 = *(volatile f32 *)((u8 *)arg1 + 0x130);
+    cam[arg0].f3c = *(volatile f32 *)((u8 *)arg1 + 0x134);
     fn_801BDA74(arg0, arg1);
     if (cam[arg0].flag30 == 0) {
         fn_80252B88(arg0);
     } else {
-        args[9] = cam[arg0].w24;
-        args[11] = cam[arg0].w2c;
-        args[0] = *(u32 *)&cam[arg0].pad0[0x00];
-        args[1] = *(u32 *)&cam[arg0].pad0[0x04];
-        args[2] = *(u32 *)&cam[arg0].pad0[0x08];
-        args[3] = *(u32 *)&cam[arg0].pad0[0x0C];
-        args[4] = *(u32 *)&cam[arg0].pad0[0x10];
-        args[5] = *(u32 *)&cam[arg0].pad0[0x14];
-        args[6] = *(u32 *)&cam[arg0].pad0[0x18];
-        args[7] = *(u32 *)&cam[arg0].pad0[0x1C];
-        args[8] = *(u32 *)&cam[arg0].pad0[0x20];
-        args[10] = cam[arg0].w28;
-        *(f32 *)&args[10] = lbl_805639FC + fn_801DCF48(0, args[9], args[8], args[7], args[6], args[5], args[4], args[3], *(f32 *)&args[9], *(f32 *)&args[11]);
-        fn_801BE400(arg0, args, lbl_805639E8);
+        basis = cam[arg0].basis;
+        basis.m[10] = lbl_805639FC + ((f32 (*)(void *, f32, f32))fn_801DCF48)(0, basis.m[9], basis.m[11]);
+        fn_801BE400(arg0, &basis, lbl_805639E8);
     }
 }
 extern s8 lbl_8055F308;
