@@ -36,7 +36,7 @@ int fn_802E77B8(void) { return 0; }
 #pragma push
 #pragma dont_inline on
 /* Returns the status label string for a WPAD/rjoy controller state code. */
-void *fn_802E77C0(int statusCode) {
+void *RjoyStatusName(int statusCode) {
     switch (statusCode) {
     case 0:
         return &lbl_8055D208; /* "NONE" */
@@ -509,8 +509,8 @@ void fn_802E7FD0(void) {
             current = *(signed char *)(record + 0x14D);
             old = *(signed char *)lastState;
             if (current != old) {
-                result = (int)fn_802E77C0((signed char)current);
-                probe = (int)fn_802E77C0(*(signed char *)lastState);
+                result = (int)RjoyStatusName((signed char)current);
+                probe = (int)RjoyStatusName(*(signed char *)lastState);
                 ((void (*)(const char *, ...))fn_802E30C8)(
                     formatBase + 0x94, channel, probe, result);
                 *lastState = (unsigned char)current;
