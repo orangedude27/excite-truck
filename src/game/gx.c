@@ -635,7 +635,7 @@ void fn_802CF5FC(void) {
 #pragma dont_inline reset
 void fn_802CF600(void) {
     extern char lbl_8034BD18[], lbl_8055D104;
-    extern int lbl_8055FD7C, lbl_8055FD48, lbl_8055FD4C, lbl_8055FD2C, lbl_8055FD6C, lbl_8055FD40;
+    extern int lbl_8055FD7C, lbl_8055FD48, lbl_8055FD4C, lbl_8055FD2C, gGxInitResult, lbl_8055FD40;
     extern unsigned char lbl_8055FD50;
     extern unsigned short lbl_8055FD0A;
     extern void *lbl_8055FD68, *lbl_8055FD20;
@@ -682,7 +682,7 @@ void fn_802CF600(void) {
     fn_802D8D1C();
     fn_80127468();
     lbl_8055FD68 = fn_8012850C((void *)0x300000, base + 0x2BC);
-    lbl_8055FD6C = GXInit((int)lbl_8055FD68, 0x300000);
+    gGxInitResult = GXInit((int)lbl_8055FD68, 0x300000);
     fn_802D6810();
     fn_802CF850();
     fn_80127468();
@@ -1036,7 +1036,7 @@ extern void fn_802CF850(void);
 #pragma dont_inline on
 void GXReinit(void) {
     /* (Re)initialize the GX FIFO from the CPU FIFO and reconfigure video/GX state. */
-    extern int lbl_8055FD6C;
+    extern int gGxInitResult;
     extern void *lbl_8055FD64;
     char fifoInfo[0x80];
     int fifoBase;
@@ -1045,7 +1045,7 @@ void GXReinit(void) {
     fifoBase = GXGetFifoBase(fifoInfo);
     fifoSize = GXGetFifoSize(fifoInfo);
     GXGetVtxAttrFmtv();
-    lbl_8055FD6C = GXInit(fifoBase, fifoSize);
+    gGxInitResult = GXInit(fifoBase, fifoSize);
     fn_802CF850();
     VIConfigure(lbl_8055FD64);
 }
