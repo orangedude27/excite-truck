@@ -782,22 +782,22 @@ void fn_8020F21C(void *sounds) {
 }
 
 #pragma scheduling on
-void CarSound_ResetBackfire(void *arg0) {
+/* CarSound vtable slot +0x1C: re-arm the backfire sound held at +0x8. If its +0x8 value differs from 1.0, raise the +0x4D update flag and set it to 1.0, then set +0x49 and clear +0x4A/+0x4B. */ void CarSound_ResetBackfire(void *carSound) {
     /* Resets the sound/effect node at +8 to its default active state (volume/value to 1.0, flags updated). */
-    void *node = *(void **)((char *)arg0 + 8);
-    f32 defaultValue;
+    void *backfire = *(void **)((char *)carSound + 8);
+    f32 one;
 
-    if (node != 0) {
-        defaultValue = lbl_80563368;
-        if (defaultValue != *(f32 *)((char *)node + 8)) {
-            *(signed char *)((char *)node + 0x4D) = 1;
-            *(f32 *)((char *)node + 8) = defaultValue;
+    if (backfire != 0) {
+        one = lbl_80563368;
+        if (one != *(f32 *)((char *)backfire + 8)) {
+            *(signed char *)((char *)backfire + 0x4D) = 1;
+            *(f32 *)((char *)backfire + 8) = one;
         }
 
-        node = *(void **)((char *)arg0 + 8);
-        *(signed char *)((char *)node + 0x49) = 1;
-        *(signed char *)((char *)node + 0x4B) = 0;
-        *(signed char *)((char *)node + 0x4A) = 0;
+        backfire = *(void **)((char *)carSound + 8);
+        *(signed char *)((char *)backfire + 0x49) = 1;
+        *(signed char *)((char *)backfire + 0x4B) = 0;
+        *(signed char *)((char *)backfire + 0x4A) = 0;
     }
 }
 #pragma scheduling off
