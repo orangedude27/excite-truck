@@ -136,7 +136,7 @@ case_four:
 extern float lbl_80563318;
 extern void fn_8020A5F8(float);
 extern void fn_8020C908(float);
-extern void fn_80209030(float);
+extern void SetEffectsVolume(float);
 extern void fn_8013323C(int, char *, float);
 extern void fn_800121F0(void);
 extern void fn_8000C730(void);
@@ -183,16 +183,19 @@ void fn_8020D06C(void) {
     /* Apply current music/effects volume settings and refresh/persist them. */
     fn_8020A5F8(lbl_8055EE8C);
     fn_8020C908(lbl_8055EE8C);
-    fn_80209030(lbl_8055EE90);
+    SetEffectsVolume(lbl_8055EE90);
     fn_8013323C(4, lbl_8033C690, lbl_8055EE8C);
     fn_8013323C(4, lbl_8033C6A0, lbl_8055EE90);
     fn_800121F0();
 }
 
+/* Options-menu stepper: advance the menu selection index (wrapped mod 3). */
 void fn_8020D0CC(int arg0) {
-    int n = lbl_8055EE78;
+    struct { int sum; int num; } t;
     int r;
-    r = (n + arg0 + 3) % 3;
+    t.sum = arg0 + lbl_8055EE78;
+    t.num = t.sum + 3;
+    r = t.num % 3;
     lbl_8055EE78 = r;
     if (r == 2 && (((int (*)(void))fn_8020CF68)() == 0)) {
         lbl_8055EE78 = (arg0 + lbl_8055EE78 + 3) % 3;
@@ -295,8 +298,10 @@ void fn_8020D224(void) {
 #undef VOLUME_MIN
 }
 void fn_8020D29C(void) {
+    float volume = 1.0f;
+    int id = lbl_8055EE74;
     lbl_8055EE94 = 0;
-    fn_80209190(lbl_8055EE74, lbl_8056331C);
+    fn_80209190(id, volume);
     fn_80206454();
     fn_801769EC();
 }
@@ -307,6 +312,7 @@ void fn_8020D29C(void) {
 #pragma use_lmw_stmw off
 extern "C" void fn_8020D2D4(void)
 {
+    char *fmt = lbl_8033C690;
     char buf130[0x30];
     char buf110[32];
     char bufF0[32];
@@ -318,7 +324,6 @@ extern "C" void fn_8020D2D4(void)
     float spC;
     float f31, f30, f29, f28, f27, f26, f25, f24, f23, f22, f21;
     unsigned int i;
-    char *fmt = lbl_8033C690;
 
     if (lbl_8055EE80 != 0) ((void (*)(void))lbl_8055EE80)();
     fn_80230B5C(buf130);
@@ -492,13 +497,13 @@ extern "C" void fn_8020D2D4(void)
 #pragma dont_inline on
 /* Update the volume options menu each frame: apply the current music and SFX volume settings, run the menu's per-frame logic, and if the "Reset/Default" option (index 2) is selected but unavailable, move the selection off it.
  * RealName: unknown (rename_symbol disabled). lbl_8055EE78 = menu selection index, lbl_8055EE8C = music volume, lbl_8055EE90 = SFX/effects volume.
- * Calls: fn_8020C908 set music mixer volume, fn_80209030 set SFX volume, fn_800121F0 menu tick/commit, fn_8020CF68 reset-option-available check, fn_8020D0CC change selection. */
+ * Calls: fn_8020C908 set music mixer volume, SetEffectsVolume set SFX volume, fn_800121F0 menu tick/commit, fn_8020CF68 reset-option-available check, fn_8020D0CC change selection. */
 void fn_8020DABC(void) {
 #define menuSelection lbl_8055EE78
 #define musicVolume lbl_8055EE8C
 #define sfxVolume lbl_8055EE90
     fn_8020C908(musicVolume);
-    fn_80209030(sfxVolume);
+    SetEffectsVolume(sfxVolume);
     fn_800121F0();
     if (menuSelection == 2 && ((int (*)(void))fn_8020CF68)() == 0)
         fn_8020D0CC(-1);

@@ -63,7 +63,7 @@ extern char lbl_8055B4E0;
 extern void fn_801331C4(int, void *, float *);
 extern void fn_8013323C(int, void *, float);
 extern void fn_801332D0(int, void *, void *);
-extern void fn_80209030(float);
+extern void SetEffectsVolume(float);
 extern void fn_80209090(int);
 #pragma scheduling invalid_target
 #pragma push
@@ -100,7 +100,7 @@ void fn_80208A50(float *unusedVolume) {
 void fn_80208A78(void) {
     /* Load saved mixer settings for effects volume and sound quality, then apply them. */
     fn_801331C4(4, lbl_8033BEF8, &lbl_8055B4D0);
-    fn_80209030(lbl_8055B4D0);
+    SetEffectsVolume(lbl_8055B4D0);
     fn_801332D0(4, &lbl_8055B4E0, &lbl_8055EDA8);
     fn_80209090((int)lbl_8055EDA8);
 }
@@ -119,7 +119,7 @@ void fn_80208AC8(int playerSlot, int event) {
     case 3:
         fn_801331C4(playerSlot + 12, CONFIG_KEY_PLAYER_SFX_VOL, &volume);
         fn_8013323C(OPTIONS_SECTION_SOUND, CONFIG_KEY_EFFECTS_VOLUME, volume);
-        fn_80209030(volume);
+        SetEffectsVolume(volume);
         break;
     case 1:
     case 2:
@@ -128,7 +128,7 @@ void fn_80208AC8(int playerSlot, int event) {
         break;
     case 0:
         fn_8013323C(OPTIONS_SECTION_SOUND, CONFIG_KEY_EFFECTS_VOLUME, volume);
-        fn_80209030(volume);
+        SetEffectsVolume(volume);
         break;
     }
 #undef CONFIG_KEY_EFFECTS_VOLUME
@@ -355,7 +355,7 @@ float fn_80209028(void) {
 #define gEffectsVolume lbl_8055B4D0
 #define MIN_EFFECTS_VOLUME lbl_80563234
 #define CONFIG_KEY_EFFECTS_VOLUME lbl_8033BEF8
-void fn_80209030(float volume) {
+void SetEffectsVolume(float volume) {
     /* Set the mixer's effects volume: clamp the input to [0,1], publish it to config
      * under "effects_volume", then recompute the effective master volume. */
     float clamped = 1.0f < volume ? 1.0f : volume;

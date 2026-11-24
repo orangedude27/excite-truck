@@ -37,7 +37,7 @@ extern f32 lbl_80563738;
 extern void fn_801333E8(s32, s32 *, u8 *);
 extern void fn_801331C4(s32, void *, f32 *);
 extern void fn_801332D0(s32, void *, s32 *);
-extern void fn_80209030(f32);
+extern void SetEffectsVolume(f32);
 extern void fn_80209090(s32);
 #pragma push
 #pragma scheduling invalid_target
@@ -53,7 +53,7 @@ void fn_8023CA54(void) {
     fn_801331C4(4, &base[0x20], &lbl_8055F168);
     lbl_8055F16C = lbl_80563738;
     fn_801331C4(4, &base[0x30], &lbl_8055F16C);
-    fn_80209030(lbl_8055F16C);
+    SetEffectsVolume(lbl_8055F16C);
     lbl_8055F17C = zero;
     fn_801332D0(4, &lbl_8055BB70, &lbl_8055F17C);
     fn_80209090(lbl_8055F17C);
@@ -410,7 +410,7 @@ typedef struct SoundOptions {
 #define sound_device_count  fn_80208D3C /* size of the sound device list */
 #define sound_device_get    fn_80208D4C /* index -> device (getName at vtable +0xC) */
 #define sound_device_select fn_80208D60 /* index -> current device */
-#define effects_volume_set  fn_80209030 /* clamped, saved as "effects_volume" */
+#define effects_volume_set  SetEffectsVolume /* clamped, saved as "effects_volume" */
 #define speaker_mode_set    fn_80209090 /* 0..2, else 0 */
 #define music_volume_set    fn_8020A5F8 /* f32 music volume */
 #define STR_N_A             lbl_8055BB98 /* "N/A" */

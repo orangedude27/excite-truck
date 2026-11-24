@@ -2,7 +2,7 @@
 typedef signed long s32;
 typedef s32 (*UnkFunc)(s32);
 extern s32 lbl_8049870C[];
-extern s32 fn_80209030(float);
+extern s32 SetEffectsVolume(float);
 extern s32 fn_802090BC(s32);
 extern s32 fn_8020A5F8(float);
 extern s32 fn_802C82C4(s32);
@@ -196,7 +196,7 @@ s32 fn_80239DE4(void) {
 s32 fn_80239E5C(void *__restrict arg0, s32 arg1) {
 #pragma scheduling invalid_target
     s32 *p = (s32 *)arg0;
-    fn_80209030(*(float *)((char *)arg0 + 0x14));
+    SetEffectsVolume(*(float *)((char *)arg0 + 0x14));
     fn_8020A5F8(*(float *)((char *)arg0 + 0x10));
     if (arg1 != 0 || p[0] != p[1]) {
         ((s32 (*)(s32, ...))fn_802E30C8)((s32)&lbl_8055BB00, p[0]);
@@ -563,7 +563,7 @@ void fn_80239F74(void) {
     }
 }
 #pragma opt_propagation reset
-extern s32 fn_80209030(float);
+extern s32 SetEffectsVolume(float);
 extern s32 fn_802090BC(s32);
 extern s32 fn_8020A5F8(float);
 extern s32 fn_802C82C4(s32);
