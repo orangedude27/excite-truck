@@ -77,10 +77,10 @@ extern long fn_802EC0FC(void);
 long fn_8020F3B4(void) { return -1; }
  
 #pragma scheduling invalid_target
-/* Format a track-music streaming path ("%s.mp3") from a song source name into destination and return it. */ int formatMp3Path(int source, int destination, int size) {
-    /* Formats a track-music path into the buffer and returns the buffer. */
-    fn_801345D8((void *)destination, size, (void *)&gMp3PathFormat, source);
-    return destination;
+int formatMp3Path(int songName, int buffer, int bufferSize) {
+    /* Build a "<songName>.mp3" streaming path into the caller's buffer and return the buffer. */
+    fn_801345D8((void *)buffer, bufferSize, (void *)&gMp3PathFormat, songName);
+    return buffer;
 }
 extern long gSngPathFormat;
 /* Build a "<songName>.sng" track-music path into the caller's buffer and return the buffer. */ int buildSngSongPath(int songName, int buffer, int bufferSize) {
