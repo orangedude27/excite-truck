@@ -1497,8 +1497,7 @@ void fn_802CA09C(void) {
     ((int (*)(void))fn_802C9E94)();
 }
 
-/* Tail-call thunk: forward `owner` to drawIfVisible, which advances its embedded
-   timer at +4 by the delta at +0x10 and notifies the owner at +0 on expiry. */
+/* Tail-call thunk: forward `owner` to drawIfVisible, the view-visibility draw callback. */
 void fn_802CA0A0(void *owner) { drawIfVisible(owner); }
 
 extern char lbl_8055FC94;
