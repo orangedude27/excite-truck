@@ -220,12 +220,7 @@ void drDrawSurfLayout10(void *surface) {
     GXCallDisplayList(*(void **)((char *)surface + 0x30), *(u32 *)((char *)surface + 0x2C));
 }
 #pragma pop
-/* Draw of vertex layout 30 (fn_802D5FE4's case 20): a textured surface with no
- * normals and no color array.  Bind its raw 12-byte position records (three
- * floats) and its 4-byte texture coordinates, then run the surface's prebuilt
- * display list; the lighting and color state come from the display list
- * fn_802D5F88 submitted just before.
- * Proposed name: drDrawSurfPosTex. */
+/* Draw vertex layout 30 (fn_802D5FE4 case 20): bind this textured surface's 12-byte position records as GX_VA_POS and its 4-byte texcoords as GX_VA_TEX0, then submit the prebuilt display list that supplies the lighting and color state. */
 void drDrawSurfLayout30(struct SurfDraw *surface) {
     GXSetArray(GX_VA_POS, surface->positions, 0xC); /* stride of the position records */
     GXSetArray(GX_VA_TEX0, surface->colors, 4);     /* stride of the texture coordinates */
