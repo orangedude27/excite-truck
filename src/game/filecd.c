@@ -136,7 +136,7 @@ void *fn_802E3EBC(void)
 /* Release a DVD file node back to the 16-slot "fdo" pool (fn_802E3EBC hands
  * them out).  The node is the slot base plus one; if it isn't one of our
  * slots, panic with the owner pointer. */
-/* Return a FileDisk node to the fdo pool by clearing its slot's used flag; panic if the pointer is not one of our 16 nodes. */ void fn_802E3F38(void *node) {
+/* Return a FileDisk node to the fdo pool by clearing its slot's used flag; panic if the pointer is not one of our 16 nodes. */ void FileDisk_freeNode(void *node) {
     unsigned char *slotBase;
     int slotIndex;
     slotBase = fdoPool;
@@ -242,7 +242,7 @@ extern char lbl_8034D180[];
 #define fileCdMsgDvdReadFails lbl_8034D180 /* "filecd: DVDRead fails!" */
 extern void DVDInit(void);
 extern int DVDClose(void *);
-extern void fn_802E3F38(void *);
+extern void FileDisk_freeNode(void *);
 #pragma small_data off
 extern char lbl_8034D0E4[];
 extern char lbl_8034D130[];
@@ -262,7 +262,7 @@ void *fn_802E41C4(void *dvdFile, int shouldFree) {
             fn_802E30C8((const char *)&lbl_8034D0E4, (char *)dvdFile + 0x40);
         }
         if (shouldFree > 0) {
-            releaseNode = fn_802E3F38;
+            releaseNode = FileDisk_freeNode;
             releaseNode(dvdFile);
         }
     }
