@@ -13,7 +13,7 @@ extern char lbl_8055D1A0[];
 extern s32 lbl_8055FF20;
 extern s32 fn_802E321C(const char *);
 extern s32 fn_802E3270(s32);
-extern s32 fn_802E32C4(s32);
+extern s32 getFileSystemForPath(s32);
 extern s32 lbl_8055FF18;
 extern s32 lbl_8055FF1C;
 
@@ -30,7 +30,7 @@ s32 fn_802E98C8(void);
 __declspec(section ".sdata") extern char lbl_8055D1A0[];
 __declspec(section ".sdata") extern char lbl_8055D1A8[];
 /* Returns 1 when the path begins with the NAND prefix "nand:" (lbl_8055D1A0),
-   0 otherwise; fn_802E32C4 then hands out the NAND file system handle
+   0 otherwise; getFileSystemForPath then hands out the NAND file system handle
    lbl_8055FF20 for it.  Its sibling fn_802E3270 tests the "sd:" prefix. */
 s32 fn_802E321C(const char *path) {
     /* the prefix address is held as an integer so the compiler keeps it in one
@@ -42,7 +42,7 @@ s32 fn_802E321C(const char *path) {
 }
 
 /* Returns 1 when the path begins with the SD-card prefix "sd:"
-   (lbl_8055D1A8), 0 otherwise; fn_802E32C4 then hands out the SD-card file
+   (lbl_8055D1A8), 0 otherwise; getFileSystemForPath then hands out the SD-card file
    system handle lbl_8055FF24 for it.  Its sibling fn_802E321C tests the
    "nand:" prefix (lbl_8055D1A0). */
 s32 fn_802E3270(s32 path) {
@@ -58,7 +58,7 @@ s32 fn_802E3270(s32 path) {
 /* Returns the file system handle for the given path: NAND (lbl_8055FF20) for
    paths matching the "nand:" prefix, SD card (lbl_8055FF24) for paths matching
    the "sd:" prefix, or 0 if no matching file system is available. */
-s32 fn_802E32C4(s32 path) {
+s32 getFileSystemForPath(s32 path) {
     if (path != 0 && fn_802E321C((const char *)path) != 0 && lbl_8055FF20 != 0) {
         return lbl_8055FF20;
     }
@@ -68,21 +68,21 @@ s32 fn_802E32C4(s32 path) {
     return 0;
 }
 #pragma dont_inline reset
-/* Return the file system picked by fn_802E32C4, or the default file system
+/* Return the file system picked by getFileSystemForPath, or the default file system
    (lbl_8055FF18) when none is available. */
 s32 *fn_802E333C(void) {
     s32 *fileSystem;
-    fileSystem = (s32 *)((s32 (*)())fn_802E32C4)();
+    fileSystem = (s32 *)((s32 (*)())getFileSystemForPath)();
     if (fileSystem != 0) {
         return fileSystem;
     }
     return (s32 *)lbl_8055FF18;
 }
 
-/* Return the file system picked by fn_802E32C4, or the secondary file system (lbl_8055FF1C) when none is available. */
+/* Return the file system picked by getFileSystemForPath, or the secondary file system (lbl_8055FF1C) when none is available. */
 s32 *fn_802E336C(void) {
     s32 *fileSystem;
-    fileSystem = (s32 *)((s32 (*)())fn_802E32C4)();
+    fileSystem = (s32 *)((s32 (*)())getFileSystemForPath)();
     if (fileSystem != 0) {
         return fileSystem;
     }
