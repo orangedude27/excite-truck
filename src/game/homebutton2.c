@@ -22,7 +22,7 @@ void drawFifoTriangles(s32, s32, s32, s32);       /* indexed triangles straight 
 void fn_802CFDE0(void);                     /* draws the home-button UI, flushes the FIFO and waits for the GPU */
 void fn_802CFF10(void);                     /* closes the frame: clears the FIFO state */
 void fn_80127464(void);
-  extern s32 fn_802E9A0C(void);
+  extern s32 ConfigGetAspectRatio(void);
   extern char lbl_80558860[];
   extern char lbl_8034E9E0[];
   extern void *jumptable_8034EA80[];
@@ -36,7 +36,7 @@ void fn_80127464(void);
   void fn_802E3734(s32 *);
 /* Returns true when the console's configured aspect ratio is widescreen (16:9). */
 s32 fn_802EC4BC(void) {
-    return fn_802E9A0C() == SC_ASPECT_WIDE;
+    return ConfigGetAspectRatio() == SC_ASPECT_WIDE;
 }
   
 #pragma scheduling invalid_target

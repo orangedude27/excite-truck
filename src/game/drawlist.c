@@ -140,7 +140,7 @@ static char lbl_8034B4A8[] = "mr: normal mode";
 static char lbl_8034B4B8[] = "mr: widescreen mode";
 static char lbl_8034B4CC[] = "mr: letterbox mode";
 extern int fn_80019B9C(void);
-extern int fn_802E9A0C(void);
+extern int ConfigGetAspectRatio(void);
 extern void fn_80133348(int, const char *, int);
 extern void *lbl_8055FC90;
 /* No-op callback registered under the name "mr" in the drawlist callback table;
@@ -170,7 +170,7 @@ extern "C" void fn_802C82C4(int requestedMode) {
      * 16:9, store it in the "display_type" option, and update the mode flags,
      * the screen scale factors and the log message. */
     int mode = requestedMode;
-    if (fn_80019B9C() != 0 || fn_802E9A0C() == DISPLAY_MODE_WIDESCREEN) mode = DISPLAY_MODE_WIDESCREEN;
+    if (fn_80019B9C() != 0 || ConfigGetAspectRatio() == DISPLAY_MODE_WIDESCREEN) mode = DISPLAY_MODE_WIDESCREEN;
     sDisplayType = (void *)mode;
     if (fn_80133010() != 0) fn_80133348(1, DISPLAY_TYPE_KEY, (int)sDisplayType);
     sWidescreenMode = 0;

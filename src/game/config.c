@@ -103,7 +103,7 @@ void fn_802E99AC(void) {
 }
 
 /** @brief Get the console's aspect ratio, as set in the system menu (SCAspectRatio). */
-s32 fn_802E9A0C(void) {
+s32 ConfigGetAspectRatio(void) {
     return sConfigAspectRatio;
 }
 
