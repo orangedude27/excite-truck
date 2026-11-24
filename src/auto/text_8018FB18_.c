@@ -1393,26 +1393,29 @@ extern "C" s32 fn_80191240(void *owner, s32 baseOffset) {
 }
 
 #pragma cplusplus reset
-extern u8 lbl_80332FC4[];
+extern u8 PlayerDriverVtbl[];
 /* Construct a PlayerDriver object: install its vtable, clear the two state
    words at +0x34/+0x38 and set the input-source id at +8 to -1. */
 void fn_801912B4(void *driver) {
-#define PlayerDriverVtbl lbl_80332FC4
     *(void **)driver = PlayerDriverVtbl;
     *(s32 *)((u8 *)driver + 0x34) = 0;
     *(s32 *)((u8 *)driver + 0x38) = 0;
     *(s32 *)((u8 *)driver + 8) = -1;
-#undef PlayerDriverVtbl
 }
 
 #pragma cplusplus on
+/* PlayerDriver start-up: read this driver's boolean options out of the option
+ * table (registering their defaults) and hand the driver object at +0x38 its
+ * initial settings. */
 extern "C" void fn_801912D8(void *arg0) {
-    class Obj {
+    /* The driver object this PlayerDriver holds at +0x38.  Only the four slots
+     * used here are declared; getKey() is the object's id in the option table. */
+    class Driver {
     public:
         virtual void m08(); virtual void m0C(); virtual void m10(); virtual void m14();
         virtual void m18(); virtual void m1C(); virtual void m20();
-        virtual void setA(int);
-        virtual void setB(void *, float);
+        virtual void setCarIndex(int);
+        virtual void setCar(void *, float);
         virtual void m2C(); virtual void m30(); virtual void m34(); virtual void m38(); virtual void m3C();
         virtual void m40(); virtual void m44(); virtual void m48(); virtual void m4C(); virtual void m50();
         virtual void m54(); virtual void m58(); virtual void m5C(); virtual void m60(); virtual void m64();
@@ -1420,19 +1423,24 @@ extern "C" void fn_801912D8(void *arg0) {
         virtual void *getKey();
     };
     unsigned char *self = (unsigned char *)arg0;
-    char *base = lbl_80332E70;
+    char *optionNames = lbl_80332E70; /* "PlayerDriver": start of this driver's option-name block */
     int enabled;
-    int mask;
-    unsigned int flags;
-    unsigned char spA, sp9, sp8;
-    *(unsigned char *)(*(unsigned char **)(self + 0x34) + 0x2680) = (*(Obj **)(self + 0x38))->getFlag();
+    int forced;
+    unsigned int stateFlags;
+    unsigned char opt98, optAC, optC0;
+
+    /* Publish the driver's state in the car object this driver drives (+0x34). */
+    *(unsigned char *)(*(unsigned char **)(self + 0x34) + 0x2680) = (*(Driver **)(self + 0x38))->getFlag();
     *(int *)(*(unsigned char **)(self + 0x34) + 0x267C) = 0;
     *(float *)(*(unsigned char **)(self + 0x34) + 0x5F0) = 1.0f;
+
+    /* Read the two enable options, defaulting to on: fn_801333E8 stores the
+     * default back into the table when the save file has no such option yet. */
     enabled = 1;
     self[4] = 1;
-    fn_801333E8((*(Obj **)(self + 0x38))->getKey(), base + 0x7C, self + 4);
+    fn_801333E8((*(Driver **)(self + 0x38))->getKey(), optionNames + 0x7C, self + 4);
     self[5] = 1;
-    fn_801333E8((*(Obj **)(self + 0x38))->getKey(), base + 0x8C, self + 5);
+    fn_801333E8((*(Driver **)(self + 0x38))->getKey(), optionNames + 0x8C, self + 5);
     if (self[4] != 0) {
         self[5] = 1;
     }
@@ -1440,38 +1448,42 @@ extern "C" void fn_801912D8(void *arg0) {
         enabled = 0;
     }
     {
-        int v = 0;
+        int mode = 0;
         if (enabled != 0) {
-            v = 4;
+            mode = 4;
         }
-        *(int *)(self + 0x30) = v;
+        *(int *)(self + 0x30) = mode;
     }
-    spA = 1;
-    sp9 = 1;
-    sp8 = 0;
-    fn_801333E8((*(Obj **)(self + 0x38))->getKey(), base + 0x98, &spA);
-    fn_801333E8((*(Obj **)(self + 0x38))->getKey(), base + 0xAC, &sp9);
-    fn_801333E8((*(Obj **)(self + 0x38))->getKey(), base + 0xC0, &sp8);
-    mask = 0;
-    flags = lbl_8055D430;
-    if ((flags & 1) && (flags & 4)) {
-        mask = 1;
+    /* Three more options.  The game-state flags can force the last one on, and
+     * that one overrides the first two. */
+    opt98 = 1;
+    optAC = 1;
+    optC0 = 0;
+    fn_801333E8((*(Driver **)(self + 0x38))->getKey(), optionNames + 0x98, &opt98);
+    fn_801333E8((*(Driver **)(self + 0x38))->getKey(), optionNames + 0xAC, &optAC);
+    fn_801333E8((*(Driver **)(self + 0x38))->getKey(), optionNames + 0xC0, &optC0);
+    forced = 0;
+    stateFlags = lbl_8055D430;
+    if ((stateFlags & 1) && (stateFlags & 4)) {
+        forced = 1;
     }
-    if (mask != 0) {
-        sp8 = 1;
+    if (forced != 0) {
+        optC0 = 1;
     }
-    if (sp8 != 0) {
-        spA = 0;
-        sp9 = 0;
+    if (optC0 != 0) {
+        opt98 = 0;
+        optAC = 0;
     }
-    (*(Obj **)(self + 0x38))->setA(fn_8018B06C(*(void **)(self + 0x34)));
-    (*(Obj **)(self + 0x38))->setB(*(void **)(self + 0x34), *(float *)(*(unsigned char **)(self + 0x34) + 0x25F4));
+    /* Hand the driver its car: the car's index in the race, then the car itself
+     * and the float the car carries at +0x25F4. */
+    (*(Driver **)(self + 0x38))->setCarIndex(fn_8018B06C(*(void **)(self + 0x34)));
+    (*(Driver **)(self + 0x38))->setCar(*(void **)(self + 0x34), *(float *)(*(unsigned char **)(self + 0x34) + 0x25F4));
     {
-        float second = lbl_8056208C;
+        float zero = lbl_8056208C;
         *(int *)(self + 8) = *(int *)(*(unsigned char **)(self + 0x38) + 0x20);
-        *(float *)(self + 0x10) = second;
-        *(float *)(self + 0x14) = second;
-        *(float *)(self + 0x18) = second;
+        *(float *)(self + 0x10) = zero;
+        *(float *)(self + 0x14) = zero;
+        *(float *)(self + 0x18) = zero;
     }
     memset(self + 0x20, 0, 0x10);
 }
@@ -1607,7 +1619,7 @@ extern "C" void fn_80191584(void *arg0) {
 #pragma cplusplus off
 
 #pragma cplusplus on
-extern "C" void fn_801331C4(s32, void *, f32 *);
+extern "C" void LoadFloatOption(s32, void *, f32 *);
 extern char lbl_8055A480;
 extern "C" void *memset(void *, int, u32);
 #pragma cplusplus on
@@ -1669,7 +1681,7 @@ extern "C" void fn_801915FC(void *self, void *source) {
     *(f32 *)(selfBytes + 0x1C) = lbl_80562090;
     sourceInterface = *(SecondVTable **)(selfBytes + 0x38);
     initValue = sourceInterface->g26();
-    fn_801331C4(initValue, &lbl_8055A480, (f32 *)(selfBytes + 0x1C));
+    LoadFloatOption(initValue, &lbl_8055A480, (f32 *)(selfBytes + 0x1C));
 }
 
 #pragma cplusplus on
@@ -1734,7 +1746,6 @@ void *fn_801916AC(void *obj, int doDestroy) {
 #pragma cplusplus on
 #pragma scheduling on
 extern "C" void fn_801916F4(void *arg0) {
-#pragma opt_propagation off
     struct Obj {
         virtual void f0();
         virtual void f1();
@@ -1750,10 +1761,10 @@ extern "C" void fn_801916F4(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 0x30) != 0) {
         *(s32 *)((u8 *)arg0 + 0x30) = 4;
         f32 value = lbl_8056208C;
-        *(volatile s32 *)((u8 *)arg0 + 0x0C) = -1;
+        s32 invalid = -1;
+        *(s32 *)((u8 *)arg0 + 0x0C) = invalid;
         *(f32 *)((u8 *)arg0 + 0x40) = value;
     }
-#pragma opt_propagation reset
 }
 #pragma cplusplus off
 extern char *strcpy(char *, const char *);

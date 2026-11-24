@@ -60,7 +60,7 @@ extern char lbl_8033BEF8[];
 #define MIXER_SELECTED_DEVICE lbl_80489238[7]
 extern char lbl_8033BF08[];
 extern char lbl_8055B4E0;
-extern void fn_801331C4(int, void *, float *);
+extern void LoadFloatOption(int, void *, float *);
 extern void fn_8013323C(int, void *, float);
 extern void fn_801332D0(int, void *, void *);
 extern void SetEffectsVolume(float);
@@ -99,7 +99,7 @@ void fn_80208A50(float *unusedVolume) {
 
 void ReloadMixerSettings(void) {
     /* Load saved mixer settings for effects volume and sound quality, then apply them. */
-    fn_801331C4(4, lbl_8033BEF8, &lbl_8055B4D0);
+    LoadFloatOption(4, lbl_8033BEF8, &lbl_8055B4D0);
     SetEffectsVolume(lbl_8055B4D0);
     fn_801332D0(4, &lbl_8055B4E0, &lbl_8055EDA8);
     SetSoundQuality((int)lbl_8055EDA8);
@@ -117,13 +117,13 @@ void fn_80208AC8(int playerSlot, int event) {
     float volume = 1.0f;
     switch (event) {
     case 3:
-        fn_801331C4(playerSlot + 12, CONFIG_KEY_PLAYER_SFX_VOL, &volume);
+        LoadFloatOption(playerSlot + 12, CONFIG_KEY_PLAYER_SFX_VOL, &volume);
         fn_8013323C(OPTIONS_SECTION_SOUND, CONFIG_KEY_EFFECTS_VOLUME, volume);
         SetEffectsVolume(volume);
         break;
     case 1:
     case 2:
-        fn_801331C4(OPTIONS_SECTION_SOUND, CONFIG_KEY_EFFECTS_VOLUME, &volume);
+        LoadFloatOption(OPTIONS_SECTION_SOUND, CONFIG_KEY_EFFECTS_VOLUME, &volume);
         fn_8013323C(playerSlot + 12, CONFIG_KEY_PLAYER_SFX_VOL, volume);
         break;
     case 0:

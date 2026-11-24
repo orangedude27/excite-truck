@@ -270,7 +270,7 @@ extern void *fn_8023AB78(register void *arg0, register s32 arg1, register s32 ar
 extern void *fn_8023AA2C(register void *arg0, register s32 arg1, register s32 arg2, ...);
 extern void *fn_8023A8D8(register void *arg0, register s32 arg1, register s32 arg2, ...);
 extern s32 lbl_804986F8[];
-extern void fn_801331C4(s32, void *, void *);
+extern void LoadFloatOption(s32, void *, void *);
 extern void fn_801332D0(s32, void *, void *);
 extern void *fn_8023AB78(register void *, register s32, register s32, ...);
 extern void *fn_8023AA2C(register void *, register s32, register s32, ...);
@@ -326,7 +326,7 @@ void fn_80239F74(void) {
     extern void *fn_8023A8D8(register void *, register s32, register s32, ...);
     extern s32 lbl_8055BB08, lbl_8055BB10, lbl_8055BB18, lbl_8055BB20, lbl_8055BB28;
     extern s32 fn_8023A8B0(void);
-    extern void fn_801331C4(s32, void *, void *);
+    extern void LoadFloatOption(s32, void *, void *);
     extern void fn_801332D0(s32, void *, void *);
     extern void fn_8013323C(s32, void *, f32);
     extern void fn_80133348(s32, void *, s32);
@@ -371,9 +371,9 @@ void fn_80239F74(void) {
         fn_8023A8D8((void *)s.sC0, (s32)(p + 6), f, e, d, 0);
     }
     *(f32 *)(p + 4) = lbl_80563730;
-    fn_801331C4(4, base + 0x1C8, p + 4);
+    LoadFloatOption(4, base + 0x1C8, p + 4);
     *(f32 *)(p + 5) = lbl_80563730;
-    fn_801331C4(4, base + 0x1D8, p + 5);
+    LoadFloatOption(4, base + 0x1D8, p + 5);
     *(s32 *)((char *)s.desc2 + 0x14) = 0;
     *(s32 *)s.desc2 = (s32)lbl_80341038;
     *(s32 *)((char *)s.desc2 + 0x1c) = 0;

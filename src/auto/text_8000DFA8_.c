@@ -1994,7 +1994,7 @@ f32 fn_80011EDC(void) {
 void fn_80011F64(void) {
     extern s32 *fn_801284F8(s32, const char *);
     extern s32 fn_80207848(void *, s32);
-    extern void fn_801331C4(s32, void *, f32 *);
+    extern void LoadFloatOption(s32, void *, f32 *);
     extern char lbl_802FC550[];
     extern char lbl_802FC560[];
     extern char lbl_802FC570[];
@@ -2040,7 +2040,7 @@ void fn_80011F64(void) {
             slot2++;
         } while (n < DASH_SLOTS);
         volume = FULL_VOLUME;
-        fn_801331C4(OPTIONS_SECTION_SOUND, (void *)STR_EFFECTS_VOLUME, &volume);
+        LoadFloatOption(OPTIONS_SECTION_SOUND, (void *)STR_EFFECTS_VOLUME, &volume);
         slot = block;
         for (i = 0; i < 2; i++) { /* both groups */
             for (j = 1; j < 4; j++) {
@@ -2139,7 +2139,7 @@ void fn_800121A4(void) {
     state[0] = 0;
 }
 
-extern void fn_801331C4(s32, void *, f32 *);
+extern void LoadFloatOption(s32, void *, f32 *);
 extern char lbl_802FC580[];
 __declspec(section ".data") extern char lbl_802FC580[];
 #pragma unroll off
@@ -2158,7 +2158,7 @@ void fn_800121F0(void) {
     void *sound1;
     void *sound2;
     soundGroup = (s32 *)lbl_8055D4AC;
-    fn_801331C4(4, (void *)lbl_802FC580, &volume);
+    LoadFloatOption(4, (void *)lbl_802FC580, &volume);
     for (groupIndex = 0; groupIndex < 2; groupIndex++) {
         sound0 = (void *)soundGroup[1];
         if (sound0 != 0) {

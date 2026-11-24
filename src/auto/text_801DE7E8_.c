@@ -32,7 +32,7 @@ extern int lbl_8055ADF0, lbl_8055ADF4, lbl_8055E9E8;
 extern float lbl_80562BF4;
 extern void *memcpy(void *, const void *, unsigned int);
 extern unsigned long long KERNEL_GetTimeUs(int);
-extern void fn_801331C4(int, int *, float *);
+extern void LoadFloatOption(int, int *, float *);
 
 /* Popup ids: the nine rows of lbl_804872B0.  Id 8 is the run-time queue pushed by
    fn_801DF380 (level-up and friends); showing it copies the next queued entry into
@@ -195,7 +195,7 @@ void fn_801DE9F0(int popupId, int playSound) {
         lbl_8055ADF0 = (int)(start >> 32);
         if (lbl_8055E9F0 != 0 && playSound != 0) {
             volume = lbl_80562BF4;
-            fn_801331C4(4, (int *)lbl_803394FC, &volume); /* "effects_volume" */
+            LoadFloatOption(4, (int *)lbl_803394FC, &volume); /* "effects_volume" */
             newVolume = volume;
             sound = (struct SoundObject *)lbl_8055E9F0;
             if (newVolume != sound->volume) {
@@ -307,7 +307,7 @@ extern "C" void fn_801DEC18(void) {
     lbl_8055E9EC = fn_802090D4(lbl_8055AE20);
     lbl_8055E9F0 = fn_80207848(base + 0xF8, 0);
     sp8 = lbl_80562BF4;
-    fn_801331C4(4, (int *)(base + 0x4C), &sp8);
+    LoadFloatOption(4, (int *)(base + 0x4C), &sp8);
     obj = lbl_8055E9F0;
     if (obj != 0) {
         float v = sp8;
@@ -553,7 +553,7 @@ return_one:
 int fn_801DF238(int eventId) {
     extern int fn_801769F8(void);
     extern void fn_800121A4(void);
-    extern void fn_801331C4(int, int *, float *);
+    extern void LoadFloatOption(int, int *, float *);
     extern int lbl_804874A8[];
     extern int lbl_8055E9F4;
     extern float lbl_80562BF4;
@@ -586,7 +586,7 @@ handle:
             object = (int *)lbl_804874A8[lbl_8055E9F4];
             if (object != 0 && *(unsigned char *)((char *)object + 0x19) == 0) {
                 value = lbl_80562BF4;
-                fn_801331C4(4, (int *)lbl_803394FC, &value);
+                LoadFloatOption(4, (int *)lbl_803394FC, &value);
                 sampled = value;
                 object = (int *)lbl_804874A8[lbl_8055E9F4];
                 if (sampled != *(float *)((char *)object + 8)) {
@@ -631,7 +631,7 @@ void fn_801DF380(int argValue, int message, int callback, int object) {
 #pragma small_data on
 extern void *memcpy(void *, const void *, unsigned int);
 extern unsigned long long KERNEL_GetTimeUs(int);
-extern void fn_801331C4(int, int *, float *);
+extern void LoadFloatOption(int, int *, float *);
 extern int lbl_80339570;
 extern int fn_8000DA10(void);
 extern void fn_801332D0(int, int*, int*);

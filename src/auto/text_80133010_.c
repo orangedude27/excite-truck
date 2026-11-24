@@ -181,7 +181,7 @@ void fn_80133144(void) {
 }
 
 /* Get a float option value by section/key; on miss, write the provided default via fn_8013323C. */
-void fn_801331C4(int arg0,int arg1,float *arg2) {
+void LoadFloatOption(int arg0,int arg1,float *arg2) {
  void *sp8;
  int ok;
  ok=fn_80133E10(&sp8,arg0,arg1);

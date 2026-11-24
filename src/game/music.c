@@ -140,14 +140,14 @@ s32 fn_8013323C(s32, void*, f32);
 s32 fn_8013365C(void*, void*);
 s32 fn_8000DBC8(void*);
 extern void fn_8020A03C(s32, s32);
-extern void fn_801331C4(int, void *, f32 *);
+extern void LoadFloatOption(int, void *, f32 *);
 #pragma dont_inline on
 void fn_80209FFC(void) {
     f32 volume;
 
     /* Load the saved "music_volume" setting (current volume as default) and apply it. */
     volume = fn_8020A5F0();
-    fn_801331C4(4, (void *)lbl_8033C278, &volume);
+    LoadFloatOption(4, (void *)lbl_8033C278, &volume);
     fn_8020A5F8(volume);
 }
 
@@ -347,13 +347,13 @@ extern "C" void fn_8020A03C(s32 musicObj, s32 event) {
     f32 volume = 0.7f;
     switch (event) {
     case 3:
-        fn_801331C4(musicObj + 0xC, (void *)CONFIG_KEY_PLAYER_MUSIC_VOL, &volume);
+        LoadFloatOption(musicObj + 0xC, (void *)CONFIG_KEY_PLAYER_MUSIC_VOL, &volume);
         fn_8013323C(OPTIONS_SECTION_SOUND, (void *)CONFIG_KEY_MUSIC_VOLUME, volume);
         fn_8020A5F8(volume);
         break;
     case 1:
     case 2:
-        fn_801331C4(OPTIONS_SECTION_SOUND, (void *)CONFIG_KEY_MUSIC_VOLUME, &volume);
+        LoadFloatOption(OPTIONS_SECTION_SOUND, (void *)CONFIG_KEY_MUSIC_VOLUME, &volume);
         fn_8013323C(musicObj + 0xC, (void *)CONFIG_KEY_PLAYER_MUSIC_VOL, volume);
         break;
     case 0:

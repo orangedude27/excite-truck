@@ -229,7 +229,7 @@ extern "C" void fn_8002F30C(void *, s32, s32, void (*)(), void (*)());
 extern "C" void *fn_801F181C(void *, const char *, void *, void *);
 extern "C" void fn_8013E3A8(void *, void *);
 extern "C" void fn_8013CC20(void *, s32);
-extern "C" void fn_801331C4(void *, void *, const char *);
+extern "C" void LoadFloatOption(void *, void *, const char *);
 extern "C" void Abend_Panic(const char *, ...);
 extern "C" void *fn_802C6FC0(const char *, s32, s32);
 extern "C" f32 lbl_805614C4;
@@ -917,7 +917,7 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
     fn_802049DC(base + 0x110, lbl_8042FB3C + 0x1C, lbl_805614CC, lbl_805614D0, lbl_805614CC);
     fn_802049DC(base + 0x120, lbl_8042FB3C + 0x18, lbl_805614C4, lbl_805614D4, lbl_805614C4);
     *(f32 *)(self + 0x268) = lbl_805614AC;
-    ((void (*)(s32, const char *, void *))fn_801331C4)(4, base + 0x12C, self + 0x268);
+    ((void (*)(s32, const char *, void *))LoadFloatOption)(4, base + 0x12C, self + 0x268);
     const char *s1 = base + 0x13C;
     s32 r1 = fn_80207848((void *)s1, 1);
     *(s32 *)(self + 0x270) = r1;

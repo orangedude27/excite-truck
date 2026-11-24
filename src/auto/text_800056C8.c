@@ -1179,7 +1179,7 @@ extern void fn_8000F884(void);
 extern void fn_80011F64(void);
 extern s32 fn_80137C74(void);
 extern s32 fn_802090D4(void *);
-extern void fn_801331C4(s32 kind, void *name, f32 *value); /* the saved float setting `name`, or *value as its default */
+extern void LoadFloatOption(s32 kind, void *name, f32 *value); /* the saved float setting `name`, or *value as its default */
 extern void fn_80005464(void);
 extern void fn_8001DB54(void);
 extern f32 lbl_8055892C; /* the "effects_volume" setting; startup reads it with 1.0 as the default */
@@ -1240,7 +1240,7 @@ extern "C" void fn_80006D9C(void) {
     ((SessionState *)session)->field08 = fn_801E87A8();
     ((SessionState *)session)->playerCount = fn_80137C74();
     lbl_8055D354 = fn_802090D4((u8 *)names + 0x1F8);     /* the "dashboard" sound group */
-    fn_801331C4(4, (u8 *)names + 0x204, &lbl_8055892C);  /* saved "effects_volume", else 1.0 */
+    LoadFloatOption(4, (u8 *)names + 0x204, &lbl_8055892C);  /* saved "effects_volume", else 1.0 */
     fn_80005464();                        /* the session's mode flags off */
     fn_80005C88();                        /* build the HUD overlay managers */
     fn_80011A5C(SESSION->playerCount);    /* the count fn_80006E54 walks later */

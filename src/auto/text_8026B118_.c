@@ -5,7 +5,7 @@
 extern void *fn_80207848(int, int);
 extern float lbl_8055C4F8;
 extern void fn_8026B260(void);
-extern void fn_801331C4(int, void *, float *);
+extern void LoadFloatOption(int, void *, float *);
 extern void fn_8026B11C(void **, void *);
 extern unsigned char lbl_80346988[];
 /* JumpCam config table at lbl_80346988: a = UI/format strings; b = "effects_volume" key; c = "heart.sfx" key; d = "whosh.sfx" key. */
@@ -272,7 +272,7 @@ void fn_8026B644(void) {
     /* JumpCam startup: load the jump file, read the effects-volume option and load the two feedback SFX. */
     T8026B644 *cfg = (T8026B644 *)lbl_80346988;
     fn_8026B260();
-    fn_801331C4(4, cfg->b, &effectsVolume);
+    LoadFloatOption(4, cfg->b, &effectsVolume);
     fn_8026B11C((void **)&heartSfx, cfg->c);
     fn_8026B11C((void **)&whoshSfx, cfg->d);
 #undef effectsVolume
