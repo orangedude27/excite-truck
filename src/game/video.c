@@ -1082,7 +1082,7 @@ s32 fn_802E11A4(const char *name, u8 mode) {
 }
 #pragma pop
 /* Log and unload a movie: destroy it, run movie teardown, and close its handle. */
-void BinkMovie_Unload(void *movie) {
+/* Log "drMovieUnload" and tear down a Bink movie: run the free hook, close the loaded Bink handle, then free the movie object. */ void BinkMovie_Unload(void *movie) {
     extern void fn_802E30C8(const char *, ...);
     extern void *fn_802E0BA4(void);
     extern void fn_802E0BE0(void);
