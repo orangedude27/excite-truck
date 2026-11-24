@@ -153,8 +153,9 @@ extern char lbl_8055D048;              /* ".tm0": suffix of a texture archive me
     return (int)name;
 }
 
+/* Return the size of the "TEX " resource for the named texture, or 0 if missing. */
 int getTextureResourceSize(int textureName) {
-    /* Get the size of the "TEX " resource for the named texture, or 0 if absent. */
+#define TEX_RESOURCE_TAG 0x54455820
 #define BuildTextureArchiveName fn_802CA2A8
 #define OpenResource fn_8012C5B8
 #define GetResourceSize fn_8012C6F0
@@ -165,16 +166,17 @@ int getTextureResourceSize(int textureName) {
     int resourceHandle;
     resourceSize = 0;
     BuildTextureArchiveName(archiveName, 0x20, textureName);
-    resourceHandle = OpenResource(archiveName, 0x54455820, &resourceHandleOut);
+    resourceHandle = OpenResource(archiveName, TEX_RESOURCE_TAG, &resourceHandleOut);
     if (resourceHandle != 0) {
         resourceSize = GetResourceSize();
         CloseResource(resourceHandle);
     }
     return resourceSize;
-#undef BuildTextureArchiveName
-#undef OpenResource
-#undef GetResourceSize
 #undef CloseResource
+#undef GetResourceSize
+#undef OpenResource
+#undef BuildTextureArchiveName
+#undef TEX_RESOURCE_TAG
 }
 
 #pragma use_lmw_stmw off
