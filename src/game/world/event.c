@@ -40,18 +40,18 @@ extern char lbl_8033A328[];
 #pragma scheduling invalid_target
 /* Removes a handler from the event registry (18 event types x 4 slots);
    reports an error if not found. */
-void fn_801EF024(unsigned int handler) {
+/* Unregisters a handler from the 18-type x 4-slot event-handler registry; panics ("EventUnInstallHandler: Can't find handler!") if the handler was not registered. */ void fn_801EF024(unsigned int handler) {
     unsigned int *row = (unsigned int *)lbl_80488678;
     unsigned int *slot;
     int found = 0;
-    int i;
-    int j;
+    int eventType;
+    int slotIndex;
 
-    for (i = 0; i < 18; i++, row += 4) {
+    for (eventType = 0; eventType < 18; eventType++, row += 4) {
         slot = row;
-        for (j = 0; j < 4; slot++, j++) {
+        for (slotIndex = 0; slotIndex < 4; slot++, slotIndex++) {
             if (*slot == handler) {
-                *(volatile unsigned int *)((char *)lbl_80488678 + (i << 4) + (j << 2)) = 0;
+                *(volatile unsigned int *)((char *)lbl_80488678 + (eventType << 4) + (slotIndex << 2)) = 0;
                 found = 1;
                 goto done;
             }
