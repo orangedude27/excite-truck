@@ -344,7 +344,7 @@ char *key;
 #pragma dont_inline on
 /* Return the index of the track-music path matching `name` (compared up to 63
  * bytes by fn_8002B1D8), or the -1 no-song sentinel (fn_8020F3B4) when absent. */
-int fn_8020FB80(void *name) {
+/* Return the index of the track-music path matching `name` (compared up to 63 bytes by fn_8002B1D8), or the -1 no-song sentinel (fn_8020F3B4) when absent. */ int fn_8020FB80(void *name) {
     int entryOffset;
     int index;
     index = 0;
