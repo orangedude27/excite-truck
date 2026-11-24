@@ -486,6 +486,17 @@ void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
     match->refs++;
     return match;
 }
+/* One model display-node entry from the pool at lbl_804C13A8: key0 is the
+ * texture slot whose reference the node holds, refs counts its users and key2
+ * is the detail level; the level-sorted display lists are rebuilt when refs
+ * drops to zero. */
+struct ModelDisplayNode {
+    s32 key0;     /* +0x00 texture slot id, released through fn_802CAC54 */
+    u16 refs;     /* +0x04 reference count */
+    s16 key2;     /* +0x06 detail level */
+    s32 reserved; /* +0x08 */
+    s32 key1;     /* +0x0C */
+};
 extern void fn_802CAC54(int);
 extern s8 lbl_8055FC21;
 /* Release a reference to a model texture entry: decrement its refcount and mark the model cache dirty when it reaches zero. */
