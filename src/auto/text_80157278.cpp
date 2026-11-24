@@ -2218,15 +2218,17 @@ skip_reset:
 #pragma scheduling on
 
 #pragma opt_propagation off
-/* If the bonus tracker has a pending event count, forward its event id, context and count to the event dispatcher, then clear the pending count. */ extern "C" void fn_8015A318(Unk8015A368C* arg0) {
-    s32 eventCount = arg0->m260;
+/* If the bonus tracker has a pending event count, forward its event id, context
+ * and count to the event dispatcher, then clear the pending count. */
+extern "C" void fn_8015A318(Unk8015A368C* bonus) {
+    s32 eventCount = bonus->m260;
     if (eventCount > 0) {
-        s32 eventId = arg0->m258;
+        s32 eventId = bonus->m258;
         if (eventId != 0) {
             void fn_801CB6E4(s32, s32, s32);
-            fn_801CB6E4(eventId, *(s32*)&arg0->m4, eventCount);
+            fn_801CB6E4(eventId, *(s32*)&bonus->m4, eventCount);
         }
-        arg0->m260 = 0;
+        bonus->m260 = 0;
     }
 }
 #pragma opt_propagation reset
