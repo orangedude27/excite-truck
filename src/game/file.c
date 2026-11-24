@@ -225,20 +225,19 @@ extern "C" s32 File_Open(s32 path) {
     return -1;
 }
 #pragma cplusplus on
-extern "C" s32 FileLookup(s32 pathOrName)
-{
-    /* Resolve path/name via the file manager's vtable method at slot 0x10 (3rd virtual),
-     * then if it yields a handle/name token, pass it to AllocOpenFileSlot; otherwise return -1. */
-    class V {
+extern "C" s32 FileLookup(s32 path) {
+    /* Look up a path through the default file system (vtable slot 0x10) and register
+       the returned handle in the open-file table, or return -1 on failure. */
+    class FileSystem {
     public:
-        virtual void a();
-        virtual void b();
-        virtual s32 c(s32);
+        virtual void reserved0();
+        virtual void reserved1();
+        virtual s32 lookup(s32);
     };
-    V *fileManager = (V *)GetDefaultFileSystem();
-    s32 lookupResult = fileManager->c(pathOrName);
-    if (lookupResult != 0)
-        return AllocOpenFileSlot((const char *)pathOrName, lookupResult);
+    FileSystem *fileSystem = (FileSystem *)GetDefaultFileSystem();
+    s32 handle = fileSystem->lookup(path);
+    if (handle != 0)
+        return AllocOpenFileSlot((const char *)path, handle);
     return -1;
 }
 #pragma cplusplus on
