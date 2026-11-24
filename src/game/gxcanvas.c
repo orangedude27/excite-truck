@@ -301,11 +301,10 @@ extern void fn_802C3320(s32 x, s32 y, u32 packedValue);
 extern void fn_802C33A8(s32, s32, u32);
 extern void fn_802E317C(const char *, ...);
 void fn_802C32B8(s32 x, s32 y, u32 packedColor) {
-    /* gxPoint (proposed name): plot one pixel of the canvas being drawn on at
-     * (x, y).  A canvas whose NO_DRAW flag is set is left alone; an RGB565
-     * one takes the colour's high half through fn_802C3320, a 4-byte (format
-     * 5) one through fn_802C33A8, and format 6, which passes for a wide
-     * canvas but is drawn by neither, only reports "gxPoint: bad format". */
+    /* Plot one pixel of the active canvas at (x, y).  A canvas with the NO_DRAW
+     * flag is left alone; a 16-bit one takes the colour's high half through
+     * fn_802C3320, a 4-byte (format 5) one through fn_802C33A8, and format 6
+     * (undrawable in this build) only triggers a bad-format panic. */
     GxCanvas *canvas = (GxCanvas *)lbl_8055FC00;
     u8 format;
     s32 is16Bit;
