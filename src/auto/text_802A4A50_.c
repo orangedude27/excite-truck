@@ -836,7 +836,8 @@ s32 fn_802A5B8C(s32 arg0, s32 arg1) {
     }
     return arg0;
 }
-/* Initialize a snow/weather particle emitter: set default depth limits (z near 0.5, far 5.0) and spread, clear offsets/padding, then seed the noise triplets and generate the initial particle points. */ void fn_802A5C1C(void *emitter) {
+/* Initialize a snow/weather particle emitter: default depth range (0.5..5.0), spread and offsets, then seed noise triplets and generate particle points. */
+void fn_802A5C1C(void *emitter) {
     f32 zero = 0.0f;
     f32 depthMax = lbl_80564888;
     f32 depthMin = 0.5f;
