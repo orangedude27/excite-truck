@@ -1342,7 +1342,7 @@ extern void fn_802C9A1C(void *);
 extern void fn_802D7554(int);
 extern void fn_802CA294(int);
 extern void fn_802D9230(void);
-extern void fn_802C9694(void *, float, float, float);
+extern void DrawList_saveProjection(void *, float, float, float);
 extern void fn_802C744C(int, void *);
 extern void DrawList_restoreProjection(void *, int);
 #pragma push
@@ -1395,7 +1395,7 @@ void fn_8025AE18(void *arg0) {
     fn_802D7554(1);
     fn_802CA294(*(int *)(obj + 0xA8));
     fn_802D9230();
-    fn_802C9694(state, lbl_80563B20, lbl_80563B30, lbl_8055F39C);
+    DrawList_saveProjection(state, lbl_80563B20, lbl_80563B30, lbl_8055F39C);
     fn_802C744C(*(int *)(obj + 0x50), obj + 0x54);
     fn_802D7554(0);
     fn_802C9A1C(oldcolor);

@@ -899,7 +899,7 @@ extern void fn_802C855C(void);
 extern void fn_802CB274(int);
 extern void fn_802C9294(int, int);
 extern double fn_8002EF30(float);
-extern void fn_802C9694(float *, float, float, float, float);
+extern void DrawList_saveProjection(float *, float, float, float, float);
 extern void DrawList_saveViewport(int *, int, int, int, int);
 extern void fn_802C88CC(int);
 extern int fn_802C2C00(int);
@@ -928,7 +928,7 @@ void fn_8001B7BC(void *obj) {
     angleRad = lbl_80560458;
     tanHalf = (float)fn_8002EF30((float)angleRad * lbl_80560420);
     aspectRatio = (lbl_80560420 * *(float *)((char *)obj + 0x28)) / tanHalf;
-    fn_802C9694(frame.projParams, aspectRatio - lbl_80560424, lbl_80560424 + aspectRatio, (float)angleRad, tanHalf);
+    DrawList_saveProjection(frame.projParams, aspectRatio - lbl_80560424, lbl_80560424 + aspectRatio, (float)angleRad, tanHalf);
     tanHalf = *(float *)((char *)obj + 0x1C);
     DrawList_saveViewport(frame.viewport, 0, 0, (int)tanHalf, (int)tanHalf);
     fn_802C88CC(0xFFFFFF);

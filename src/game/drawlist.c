@@ -954,7 +954,7 @@ void fn_802C967C(void) {
     fn_802C974C(lbl_804C144C[0], lbl_804C144C[1], lbl_804C144C[2]);
 }
 
-void *fn_802C9694(void *arg0) {
+void *DrawList_saveProjection(void *arg0) {
     /* Initialize a 3-float vector from view/projection globals (lbl_8055FC38/3C/40),
        run fn_802C974C on it, and return the object. */
 #define kViewX lbl_8055FC38
