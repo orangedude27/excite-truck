@@ -256,9 +256,8 @@ extern void fn_802C6080(void);
 extern int sDrawlistCallbackId;
 extern int fn_802C9E94(void *, int, int, float, float, float, float, float);
 extern int fn_801E7894(int);
-/* RealName: DrawList_UnregisterCallbackAndShutdown_802C84EC */
 void DrawList_UnregisterCallbackAndShutdown(void) {
-    /* Unregister the drawlist debug callback if active, then shut down drawlists. */
+    /* Unregister the "mr" drawlist callback (fn_802C82C0) while the options table is active, invalidate its id, then shut down drawlists. */
     if (fn_80133010() != 0) {
         fn_801336E0(sDrawlistCallbackId, fn_802C82C0);
         sDrawlistCallbackId = -1;
