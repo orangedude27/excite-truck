@@ -254,19 +254,19 @@ struct SpkStream {
 #define spuStreams            ((struct SpkStream *)lbl_804FC800)
 
 #pragma scheduling invalid_target
-void SpuSpeaker_MarkStreamReady(int channel, int result) {
+/* On a successful WPAD_SPEAKER_PLAY reply, mark the channel's SpkStream enabled, clear its WENC encoder state, and log that the speaker stream is ready. */ void SpuSpeaker_MarkStreamReady(int channel, int result) {
     /* On success, mark the SPU stream channel ready and log its availability. */
-    unsigned char *streamEntry;
+    unsigned char *stream;
 
     if (result != 0) {
         return;
     }
 
     lbl_804FC800[channel * 0x2C] = 1;
-    streamEntry = lbl_804FC800 + channel * 0x2C;
-    *(int *)(streamEntry + 0x24) = 1;
-    *(int *)(streamEntry + 0x28) = 0;
-    memset(streamEntry + 1, 0, 0x20);
+    stream = lbl_804FC800 + channel * 0x2C;
+    *(int *)(stream + 0x24) = 1;
+    *(int *)(stream + 0x28) = 0;
+    memset(stream + 1, 0, 0x20);
     ((void (*)(char *, int, ...))fn_802E30C8)(lbl_8034D384, channel);
 }
 #pragma scheduling on
