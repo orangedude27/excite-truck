@@ -45,7 +45,7 @@ struct StrmBankManager {
     virtual void setLevel(s32 level);
 };
 #pragma cplusplus on
-/* Destroy and clear the global stream-bank manager. */
+/* Shut down the global stream-bank manager: run its virtual destructor (deleting flag set) and clear the global so a later init builds a fresh one. */
 extern "C" void destroyStrmBankManager(void) {
     if (strmBankManager) {
         delete (StrmBankObject *)strmBankManager;
