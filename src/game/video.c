@@ -141,7 +141,7 @@ typedef struct SimpleHeap {
 
 #pragma scheduling invalid_target
 /* Resets TEV swap modes for stages 0-4 to the identity ras/tex swap selectors. */
-void fn_802DEE1C(void) {
+void GXResetTevSwapModes0To4(void) {
     GXSetTevSwapMode(0, 0, 0);
     GXSetTevSwapMode(1, 0, 0);
     GXSetTevSwapMode(2, 0, 0);

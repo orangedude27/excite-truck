@@ -467,7 +467,7 @@ void fn_802DBF00(signed char lightMode) {
 #pragma dont_inline reset
 typedef unsigned char u8;
 extern void fn_802DBDD8(void);
-extern void fn_802DEE1C(void);
+extern void GXResetTevSwapModes0To4(void);
 extern void fn_802DBD88(void);
 extern void fn_802D3360(void);
 extern void GXSetTevKAlphaSel(int, int);
@@ -493,10 +493,10 @@ extern unsigned char lbl_8055FEBA;
 #pragma dont_inline on
 /* Reset per-frame render state: clear the CPU light tracking pointers
    (fn_802DBDD8) and restore all TEV swap-mode selectors to their defaults
-   (fn_802DEE1C). */
+   (GXResetTevSwapModes0To4). */
 void fn_802DBF30(void) {
     fn_802DBDD8();
-    fn_802DEE1C();
+    GXResetTevSwapModes0To4();
 }
 
 extern void GXBegin(int, int, unsigned short);
