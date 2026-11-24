@@ -1211,13 +1211,13 @@ void fn_802CFFAC(int arg0, int arg1, int arg2)
   lbl_804C97B0[0x1C] = 1;
   spA = b3;
 }
+/* Set up a float interpolation in the GX state block (start +8, step +0x10, per-step increment +0xC), active only when |delta| exceeds the jitter threshold. */
 void fn_802D0014(float startValue, float endValue, float delta) {
-    /* Sets up a float interpolation in the GX state block: stores start/end-step values and marks it active when |delta| exceeds the threshold. */
     extern unsigned char lbl_804C97B0[];
     extern char lbl_80558DC4[];
-    float magnitude = (float)__fabs((double)delta);
+    float absDelta = (float)__fabs((double)delta);
     ((float *)lbl_804C97B0)[2] = startValue;
-    if (!(magnitude <= *(float *)lbl_80558DC4)) {
+    if (!(absDelta <= *(float *)lbl_80558DC4)) {
         lbl_804C97B0[0] = 1;
         ((float *)lbl_804C97B0)[3] = startValue + ((endValue - startValue) / delta);
     } else {
