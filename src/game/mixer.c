@@ -539,10 +539,7 @@ void fn_8020927C(void) {
 extern void *fn_801284F8(int, void *);
 extern char lbl_8033C1C0[];
 extern char lbl_8033C0E8[];
-/* RealName: Sound_CreateNullSource (allocate a 12-byte "Null Sound" object with vtable and value 3)
- * Allocates a small sound object tagged "Null Sound"; on success installs
- * its vtable pointer and sets its field at +8 to 3.
- */
+/* Allocate a 12-byte "Null Sound" object: on success install its vtable and set value 3. */
 void SoundCreateNullSource(void) {
 #define sNullSoundTag lbl_8033C1C0
 #define sNullSoundVTable lbl_8033C0E8
