@@ -27,7 +27,7 @@ asm u32 __cvt_fp2unsigned(register f32 x) {
     subi r3, r3, 1
     bge cr6, epilogue
 
-    // Convert float to unsigned (subract INT_MAX)
+    // Convert float to unsigned (subtract INT_MAX)
     fcmpu cr7, x, f4
     fmr f2, x
     blt cr7, convert_fp
