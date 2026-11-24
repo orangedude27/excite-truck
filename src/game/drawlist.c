@@ -630,7 +630,7 @@ int fn_802C8DBC(void) {
 
 /* Clear the deferred draw/command flag unless it was set and the active
  * command path reports no pending work. */
-void fn_802C8E00(void) {
+/* Keep the drawlist-active flag set only if it was already set and fn_801E4F3C reports no pending work; otherwise clear it. */ void fn_802C8E00(void) {
     unsigned char keepFlag = 0;
     if (lbl_8055FC8F != 0 && fn_801E4F3C() == 0) {
         keepFlag = 1;
