@@ -1462,7 +1462,7 @@ void fn_802C744C(int instanceId, void *transform) {
 
 /* Draw a model instance with a temporary group mask: test its stored transform
    against the view and submit it for drawing if visible, then restore the mask. */
-void fn_802C7458(int instanceId, int groupMask) {
+/* Draw one model instance under a temporary group mask: set the mask, view-cull the instance, submit it if visible, then restore the previous mask. */ void fn_802C7458(int instanceId, int groupMask) {
     float distance;
     unsigned char visibilityStatus;
     int savedGroupMask;
