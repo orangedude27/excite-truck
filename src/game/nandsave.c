@@ -283,13 +283,19 @@ int rmemcardFileExists(const char *path) {
 }
 
 void fn_802E8B98(void) {
-    /* Delete the currently selected NAND file, appending "banner.bin"; report if no file is selected. */
-    if (lbl_80560030 != 0) {
-        rmemcardDeleteFile((const char *)lbl_80560030);
-        rmemcardDeleteFile(lbl_8034DD78);
+#define sSelectedNandFile lbl_80560030
+#define kBannerBinPath lbl_8034DD78
+#define sNoFileSelectedMsg lbl_8034DE94
+    /* Delete the selected NAND save file and its banner.bin; log an error if no file is selected. */
+    if (sSelectedNandFile != 0) {
+        rmemcardDeleteFile((const char *)sSelectedNandFile);
+        rmemcardDeleteFile(kBannerBinPath);
     } else {
-        fn_802E30C8(lbl_8034DE94);
+        fn_802E30C8(sNoFileSelectedMsg);
     }
+#undef sNoFileSelectedMsg
+#undef kBannerBinPath
+#undef sSelectedNandFile
 }
 
 int rmemcardRecover(void) {
