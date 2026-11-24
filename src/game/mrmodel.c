@@ -235,22 +235,22 @@ extern void fn_802DAA18(void);
 extern void fn_802DB2BC(unsigned char);
 extern int lbl_804C139C[];
 /* Tear down this model/resource list: release its handle, destroy each node's resources, then clear the head. */
-void fn_802C5690(void *obj) {
-    void *node;
-    if (*(int *)((char *)obj + 8) != 0) {
-        fn_802C8B70(*(int *)obj);
-        node = *(void **)((char *)obj + 8);
-        while (node != 0) {
-            fn_802D0610(*(int *)((char *)node + 8));
-            if ((unsigned int)(*(int *)((char *)node + 12) + 0x10000) != 0xFFFF) {
+/* Tear down a model/resource list: release its handle, walk the node chain at +8 (next at +0x10) releasing each node's resources, restore render state, then clear the list head. */ void fn_802C5690(void *modelList) {
+    void *resNode;
+    if (*(int *)((char *)modelList + 8) != 0) {
+        fn_802C8B70(*(int *)modelList);
+        resNode = *(void **)((char *)modelList + 8);
+        while (resNode != 0) {
+            fn_802D0610(*(int *)((char *)resNode + 8));
+            if ((unsigned int)(*(int *)((char *)resNode + 12) + 0x10000) != 0xFFFF) {
                 fn_802DAA18();
             }
-            fn_802DB2BC(*(unsigned char *)((char *)node + 4));
-            fn_802D6B08(*(int *)node);
-            node = *(void **)((char *)node + 16);
+            fn_802DB2BC(*(unsigned char *)((char *)resNode + 4));
+            fn_802D6B08(*(int *)resNode);
+            resNode = *(void **)((char *)resNode + 16);
         }
         fn_802C8D74();
-        *(int *)((char *)obj + 8) = 0;
+        *(int *)((char *)modelList + 8) = 0;
     }
 }
 
