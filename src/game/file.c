@@ -106,7 +106,7 @@ extern "C" void FileFind_GetSubsystem(void) {
 }
 #pragma cplusplus off
 /* FileCd vtable slot 0x24 (flush): a disc is read-only, so there is nothing to flush; report success. */
-s32 fn_802E33D0(void) { return 0; }
+s32 FileCd_flush(void) { return 0; }
 
 #pragma scheduling invalid_target
 /* Validate a file handle index and return the address of its entry in the file table, logging on invalid/unused cases. */

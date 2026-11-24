@@ -58,7 +58,7 @@ public:
     virtual int openAtEnd(void *owner, char *path);     // 0x18 fn_802E4280: opens, then seeks to the end
     virtual void close(void *file);                     // 0x1C fn_802E4408: releases the node
     virtual void report(void);                          // 0x20 fn_802E442C: OSReport("%s") with no argument
-    virtual int flush(void);                            // 0x24 fn_802E33D0: nothing to flush on a disc
+    virtual int flush(void);                            // 0x24 FileCd_flush: nothing to flush on a disc
     unsigned char started; // 0x04 set once DVDInit() has started the DVD services
 };
 #pragma cplusplus reset
