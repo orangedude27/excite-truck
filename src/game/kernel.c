@@ -176,7 +176,7 @@ int fn_802E1980(int imagePtr, void *texObj, void *outWidth, void *outHeight, uns
     return alignedBytes;
 }
 #pragma use_lmw_stmw reset
-void fn_802E1A38(void *obj, int imageBase) {
+void buildLookupTextures(void *obj, int imageBase) {
     /* Build two textures into consecutive image regions and store their tex objs/widths/heights at fixed offsets in obj. */
     int imageBytes;
     imageBytes = fn_802E1980(imageBase, (char *)obj + 0x190, (char *)obj + 0x180, (char *)obj + 0x184, *(int *)((char *)obj + 0x104));
@@ -267,7 +267,7 @@ int fn_802E1BB4(void *obj, int unused) {
         }
     }
     *(int *)((char *)obj + 0x17C) = rowBytes;
-    fn_802E1A38(obj, (int)image);                    /* the two lookup textures after the slots */
+    buildLookupTextures(obj, (int)image);                    /* the two lookup textures after the slots */
     return 1;
 fail:
     fn_802E1728(obj);
