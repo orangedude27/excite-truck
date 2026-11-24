@@ -300,7 +300,7 @@ extern const char lbl_8034B060[];
 extern void fn_802C3320(s32 x, s32 y, u32 packedValue);
 extern void fn_802C33A8(s32, s32, u32);
 extern void fn_802E317C(const char *, ...);
-void gxPoint(s32 x, s32 y, u32 packedColor) {
+/* Plot one pixel of the active canvas at (x, y): ignore NO_DRAW canvases, dispatch to the 16-bit or RGBA plotter by format, else panic on the unsupported format. */ void gxPoint(s32 x, s32 y, u32 color) {
     /* Plot one pixel of the active canvas at (x, y).  A canvas with the NO_DRAW
      * flag is left alone; a 16-bit one takes the colour's high half through
      * fn_802C3320, a 4-byte (format 5) one through fn_802C33A8, and format 6
@@ -313,11 +313,11 @@ void gxPoint(s32 x, s32 y, u32 packedColor) {
     is16Bit = 0;
     if ((s8)format != CANVAS_FORMAT_RGBA && (s8)format != CANVAS_FORMAT_NONE) is16Bit = 1;
     if (is16Bit != 0) {
-        fn_802C3320(x, y, packedColor);
+        fn_802C3320(x, y, color);
         return;
     }
     if ((s8)format == CANVAS_FORMAT_RGBA) {
-        fn_802C33A8(x, y, packedColor);
+        fn_802C33A8(x, y, color);
         return;
     }
     fn_802E317C(lbl_8034B060, (s32)*(volatile s8 *)canvas);
