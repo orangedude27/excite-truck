@@ -16,7 +16,7 @@ extern void fn_802D6C48(void);
 extern void fn_802D6C44(void);
 extern void fn_802D6C4C(float);
 #pragma pop
-void fn_802C5DF0(void *, void *);
+void VisitGroupIds(void *, void *);
 extern int lbl_8055D008;
 void* fn_802C5390(int);
 int fn_802C94A0(void*, unsigned char*, float*, float);
@@ -570,7 +570,7 @@ __declspec(section ".sdata") extern const char lbl_8055D010[];
 
 /* Iterate over all 0x10-byte GroupEntry records in a model's GroupList and
  * invoke callback with each group's id (+0x0C). */
-void fn_802C5DF0(void *groupList, void *callback) {
+void VisitGroupIds(void *groupList, void *callback) {
     int offset = 0;
     int index = 0;
     while (index < ((struct GroupList *)groupList)->count) {
@@ -583,10 +583,10 @@ void fn_802C5DF0(void *groupList, void *callback) {
 }
 
 void fn_802C5E6C(void *unused, void *groupList) {
-    /* Resource callback: visit every group in groupList through fn_802C5DF0,
+    /* Resource callback: visit every group in groupList through VisitGroupIds,
        passing the no-op per-group hook fn_802D6C44. arg0 is unused. */
     void *callback = fn_802D6C44;
-    ((void (*)(void *, void *))fn_802C5DF0)(groupList, callback);
+    ((void (*)(void *, void *))VisitGroupIds)(groupList, callback);
 }
 
 #pragma pop
@@ -1018,7 +1018,7 @@ int fn_802C6B44(int modelPath) {
 #define modlTag         0x4D4F444C
 #define expectedVersion 0xC
 #define fixupResource   fn_802C61BC
-#define forEachGroup    fn_802C5DF0
+#define forEachGroup    VisitGroupIds
 #define groupHook       fn_802D6C48
     void *modelData;
     int dataSize;
@@ -1233,15 +1233,15 @@ int fn_802C6DC4(int arg0, int arg1, int arg2, int arg3) {
 #pragma small_data off
 #pragma pop
 /* Registers a model's textures (mrModelRegisterTextures): visits every group in
- * groupList through fn_802C5DF0 with the per-group hook fn_802D6C48. */
+ * groupList through VisitGroupIds with the per-group hook fn_802D6C48. */
 void fn_802C6FA8(void *groupList) {
-    ((void (*)(void *, void *))fn_802C5DF0)(groupList, fn_802D6C48);
+    ((void (*)(void *, void *))VisitGroupIds)(groupList, fn_802D6C48);
 }
 
 extern void fn_802D6C44(void);
 void fn_802C6FB4(void *groupList) {
     /* Visit every group in groupList with the no-op per-group hook fn_802D6C44. */
-    ((void (*)(void *, void *))fn_802C5DF0)(groupList, fn_802D6C44);
+    ((void (*)(void *, void *))VisitGroupIds)(groupList, fn_802D6C44);
 }
 
 #define DrawList_isOutsideScene fn_802C90E0

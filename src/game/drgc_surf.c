@@ -1472,11 +1472,11 @@ extern const char lbl_8034C440[];
 }
 #pragma scheduling on
 void fn_802D6C44(void) {
-    /* No-op per-group hook passed to fn_802C5DF0 during group-list traversal:
+    /* No-op per-group hook passed to VisitGroupIds during group-list traversal:
        the caller only needs to walk the groups, so this does nothing. */
 }
 
-/* No-op per-group hook passed to fn_802C5DF0 by mrModelRegisterTextures
+/* No-op per-group hook passed to VisitGroupIds by mrModelRegisterTextures
  * (fn_802C6FA8) while it walks a model's group list: the traversal itself is
  * all the caller needs, so this does nothing. */
 void fn_802D6C48(void) {
