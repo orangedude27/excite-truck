@@ -13,8 +13,8 @@ extern int lbl_8055D178;
 #define sLogFileHandle lbl_8055D178
 extern int ABEND_LogFileName;
 #define sLogFileName   ABEND_LogFileName /* "log.log" */
-extern char lbl_8055D188;
-#define sFmtPercentS   lbl_8055D188 /* "%s" */
+extern char ABEND_FormatStringS;
+#define sFmtPercentS   ABEND_FormatStringS /* "%s" */
 
 #pragma dont_inline on
 /* Formatted-message sink for the abnormal-end logger: `prefix` is 0 for a plain
