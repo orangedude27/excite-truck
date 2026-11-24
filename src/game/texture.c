@@ -31,7 +31,7 @@ int fn_8012C958(int);
 #pragma push
 #pragma small_data on
 DECL_SECTION(".sdata") extern int gTextureSlotTable;
-DECL_SECTION(".sdata") extern int lbl_8055FCB4;
+DECL_SECTION(".sdata") extern int gDefaultTextureSlot;
 DECL_SECTION(".sdata") extern int gActiveTextureSlot;
 void fn_802D8FB4(void);
 void gxBindTexture(int, int);
@@ -65,7 +65,7 @@ extern void fn_801282F4(void);
     } while (slotIndex < 0x200);
     gActiveTextureSlot = -2;
     textureId = ((int (*)(int, int))fn_802CAC28)(lbl_8055D038, 0);
-    lbl_8055FCB4 = textureId;
+    gDefaultTextureSlot = textureId;
     if (textureId == -1)
         fn_802E317C(messages + 0x40, lbl_8055D038);
     textureId = ((int (*)(int, int))fn_802CAC28)((int)(messages + 0x60), 0);
@@ -89,8 +89,8 @@ extern void fn_801282F4(void);
         fn_802CAC54(lbl_8055D03C);
         lbl_8055D03C = -1;
     }
-    fn_802CAC54(lbl_8055FCB4);
-    lbl_8055FCB4 = -1;
+    fn_802CAC54(gDefaultTextureSlot);
+    gDefaultTextureSlot = -1;
     slotIndex = 0;
     byteOffset = 0;
     do {
@@ -582,7 +582,7 @@ void texSelectSlot(register int slotIndex) {
         return;
     gActiveTextureSlot = slotIndex;
     if (slotIndex == -1) {
-        ((void (*)(int))texSelectSlot)(*(volatile int *)&lbl_8055FCB4);
+        ((void (*)(int))texSelectSlot)(*(volatile int *)&gDefaultTextureSlot);
         return;
     }
     {
