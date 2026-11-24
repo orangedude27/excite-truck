@@ -72,7 +72,7 @@ extern "C" void *fn_8022E0EC(const void *);
 extern "C" void fn_80276D3C(void *, s32);
 extern "C" void fn_802C8D74(void);
 extern "C" void fn_802C8E48(void);
-extern "C" s32 fn_802C5130(char *);
+extern "C" s32 gxGetImageArt(char *);
 extern "C" s32 fn_802C51C0(void *);
 extern "C" s32 fn_802C5220(void *);
 extern "C" void *fn_80216770(const char *, s32, s32, s32, s32, s32);
@@ -91,7 +91,7 @@ extern "C" void *fn_8022E0EC(const void *);
 extern "C" void fn_80276D3C(void *, s32);
 extern "C" void fn_802C8D74(void);
 extern "C" void fn_802C8E48(void);
-extern "C" s32 fn_802C5130(char *);
+extern "C" s32 gxGetImageArt(char *);
 extern "C" s32 fn_802C51C0(void *);
 extern "C" s32 fn_802C5220(void *);
 extern "C" void *fn_80216770(const char *, s32, s32, s32, s32, s32);
@@ -331,11 +331,11 @@ extern "C" void fn_80211690(s32 arg0) {
         for (j = 0; j < 4; j++) {
             if (isZero != 0) {
                 if (i == 2 && (u32)j <= 1)
-                    *d = fn_802C5130(*s);
+                    *d = gxGetImageArt(*s);
                 else
                     *d = 0;
             } else {
-                *d = fn_802C5130(*s);
+                *d = gxGetImageArt(*s);
             }
             s++;
             d++;
@@ -1529,7 +1529,7 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
     {
         char *msg = (char *)((u8 *)(*(void **)((u8 *)arg1 + 0xC)) + 4);
         if (msg != NULL && strstr(msg, lbl_8055B788) != NULL && fn_8012C33C((s32)msg) != 0) {
-            s32 res = fn_802C5130((char *)msg);
+            s32 res = gxGetImageArt((char *)msg);
             if (fn_802C51C0((void *)res) > 0) {
                 if (fn_802C5220((void *)res) > 0) {
                     v28 = fn_802C51C0((void *)res);

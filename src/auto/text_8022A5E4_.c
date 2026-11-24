@@ -110,38 +110,36 @@ void fn_8022A5E4(void) {
     extern void *memset(void *, int, unsigned int);
     extern void fn_8022C520(void);
     struct Record74 *out;
-    unsigned char *base;
     unsigned char b0;
-    volatile unsigned int s1C, s18, s14, s10, sC, s30, s2C, s28, s24, s20;
-    unsigned int v4, v8, vC, v10, v14, v18, v1C, v20, v24, v28, v2C, v30;
-    unsigned int v3C, v40, v44, v48, v4C, v50, v54, v58;
-    unsigned int v64, v68, v6C, v70;
+    volatile int s1C, s18, s14, s10, sC, s30, s2C, s28, s24, s20;
+    int v4, v8, vC, v10, v14, v18, v1C, v20, v24, v28, v2C, v30;
+    int v3C, v40, v44, v48, v4C, v50, v54, v58;
+    int v64, v68, v6C, v70;
     float v60, v5C, v34;
     int i;
 
     memset(lbl_80497D68, 0, 0x74);
-    base = lbl_80497D68;
-    b0 = base[0];
-    sC = *(unsigned int *)(base + 0xC); s10 = *(unsigned int *)(base + 0x10);
-    s14 = *(unsigned int *)(base + 0x14); s18 = *(unsigned int *)(base + 0x18);
-    s1C = *(unsigned int *)(base + 0x1C); s20 = *(unsigned int *)(base + 0x20);
-    s24 = *(unsigned int *)(base + 0x24); s28 = *(unsigned int *)(base + 0x28);
-    s2C = *(unsigned int *)(base + 0x2C); s30 = *(unsigned int *)(base + 0x30);
-    *(unsigned int *)(base + 0x38) = 9;
-    vC = *(unsigned int *)(base + 0xC); v10 = *(unsigned int *)(base + 0x10);
-    v14 = *(unsigned int *)(base + 0x14); v18 = *(unsigned int *)(base + 0x18);
-    v1C = *(unsigned int *)(base + 0x1C); v20 = *(unsigned int *)(base + 0x20);
-    v24 = *(unsigned int *)(base + 0x24); v28 = *(unsigned int *)(base + 0x28);
-    v2C = *(unsigned int *)(base + 0x2C); v30 = *(unsigned int *)(base + 0x30);
-    v4 = *(unsigned int *)(base + 4); v8 = *(unsigned int *)(base + 8);
-    v3C = *(unsigned int *)(base + 0x3C); v40 = *(unsigned int *)(base + 0x40);
-    v44 = *(unsigned int *)(base + 0x44); v48 = *(unsigned int *)(base + 0x48);
-    v4C = *(unsigned int *)(base + 0x4C); v50 = *(unsigned int *)(base + 0x50);
-    v54 = *(unsigned int *)(base + 0x54); v58 = *(unsigned int *)(base + 0x58);
-    v64 = *(unsigned int *)(base + 0x64); v68 = *(unsigned int *)(base + 0x68);
-    v6C = *(unsigned int *)(base + 0x6C); v70 = *(unsigned int *)(base + 0x70);
-    v34 = *(float *)(base + 0x34); v5C = *(float *)(base + 0x5C);
-    v60 = *(float *)(base + 0x60);
+    b0 = lbl_80497D68[0];
+    sC = *(int *)(lbl_80497D68 + 0xC); s10 = *(int *)(lbl_80497D68 + 0x10);
+    s14 = *(int *)(lbl_80497D68 + 0x14); s18 = *(int *)(lbl_80497D68 + 0x18);
+    s1C = *(int *)(lbl_80497D68 + 0x1C); s20 = *(int *)(lbl_80497D68 + 0x20);
+    s24 = *(int *)(lbl_80497D68 + 0x24); s28 = *(int *)(lbl_80497D68 + 0x28);
+    s2C = *(int *)(lbl_80497D68 + 0x2C); s30 = *(int *)(lbl_80497D68 + 0x30);
+    *(int *)(lbl_80497D68 + 0x38) = 9;
+    vC = *(int *)(lbl_80497D68 + 0xC); v10 = *(int *)(lbl_80497D68 + 0x10);
+    v14 = *(int *)(lbl_80497D68 + 0x14); v18 = *(int *)(lbl_80497D68 + 0x18);
+    v1C = *(int *)(lbl_80497D68 + 0x1C); v20 = *(int *)(lbl_80497D68 + 0x20);
+    v24 = *(int *)(lbl_80497D68 + 0x24); v28 = *(int *)(lbl_80497D68 + 0x28);
+    v2C = *(int *)(lbl_80497D68 + 0x2C); v30 = *(int *)(lbl_80497D68 + 0x30);
+    v4 = *(int *)(lbl_80497D68 + 4); v8 = *(int *)(lbl_80497D68 + 8);
+    v3C = *(int *)(lbl_80497D68 + 0x3C); v40 = *(int *)(lbl_80497D68 + 0x40);
+    v44 = *(int *)(lbl_80497D68 + 0x44); v48 = *(int *)(lbl_80497D68 + 0x48);
+    v4C = *(int *)(lbl_80497D68 + 0x4C); v50 = *(int *)(lbl_80497D68 + 0x50);
+    v54 = *(int *)(lbl_80497D68 + 0x54); v58 = *(int *)(lbl_80497D68 + 0x58);
+    v64 = *(int *)(lbl_80497D68 + 0x64); v68 = *(int *)(lbl_80497D68 + 0x68);
+    v6C = *(int *)(lbl_80497D68 + 0x6C); v70 = *(int *)(lbl_80497D68 + 0x70);
+    v34 = *(float *)(lbl_80497D68 + 0x34); v5C = *(float *)(lbl_80497D68 + 0x5C);
+    v60 = *(float *)(lbl_80497D68 + 0x60);
     out = (struct Record74 *)lbl_80490968;
     for (i = 0; i < 0x80; i++) {
         out[0].b0 = b0;
@@ -1304,7 +1302,7 @@ float fn_8022CA40(void *obj) {
 void fn_8022CAA8(void *arg0, void *arg1) {
     extern int fn_80232578(const char *);
     extern unsigned int fn_8022A834(unsigned int);
-    extern int fn_802C5130(const char *);
+    extern int gxGetImageArt(const char *);
     extern int fn_8023512C(const char *);
     extern int loadStamp(const char *);
     extern char *strstr(const char *, const char *);
@@ -1376,7 +1374,7 @@ void fn_8022CAA8(void *arg0, void *arg1) {
 
     if (resourceName != 0) {
         if (fn_8022A7D4(resourceName) != 0) {
-            *(int *)(dest + 0x68) = fn_802C5130(resourceName);
+            *(int *)(dest + 0x68) = gxGetImageArt(resourceName);
         } else if (fn_8022A804(resourceName) != 0) {
             *(int *)(dest + 0x6C) = fn_8023512C(resourceName);
         } else {

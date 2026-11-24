@@ -18,7 +18,7 @@ extern unsigned char lbl_8055FC14;
 #define WARNED_LONG_NAME lbl_8055FC14  /* set once an overlong image name is reported */
 #pragma push
 #pragma scheduling invalid_target
-int fn_802C5130(char* imageName) {
+int gxGetImageArt(char* imageName) {
     /* Get an image handle, but reject names longer than 15 characters (once). */
     if (strlen(imageName) > 15) {
         if (WARNED_LONG_NAME == 0) {

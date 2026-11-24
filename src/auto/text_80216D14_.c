@@ -127,7 +127,7 @@ extern char lbl_8055B868[];
 extern char lbl_8055B870[];
 extern char lbl_8033D808[];
 extern int fn_8012C33C(char *);
-extern int fn_802C5130(char *);
+extern int gxGetImageArt(char *);
 extern void *fn_8022EE9C(int);
 extern void fn_8022EE98(int, void *);
 extern void fn_802C2CDC(void *, int, int);
@@ -164,7 +164,7 @@ void *fn_80216D40(void *arg0, char *arg1, int arg2, int arg3, int arg4, int arg5
     if (arg1 != (char *)0 && (signed char)*arg1 != 0) {
         if (strstr(arg1, lbl_8055B868) != (char *)0) {
             if (fn_8012C33C(arg1) != 0) {
-                *(int *)(obj + 8) = fn_802C5130(arg1);
+                *(int *)(obj + 8) = gxGetImageArt(arg1);
             } else {
                 fn_802E30C8(lbl_8033D808, arg1);
             }

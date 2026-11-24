@@ -286,7 +286,7 @@ extern float lbl_8056389C;
 extern s32 lbl_802FA3A0[5];
 extern void fn_802ECEC4(void);
 extern void fn_802ECEC0(void);
-extern int fn_802C5130(const char *);
+extern int gxGetImageArt(const char *);
 extern s32 fn_80232578(const char *);
 extern void *fn_801284F8(unsigned long, void *);
 extern s32 fn_8023512C();
@@ -314,7 +314,7 @@ s32 fn_80246E4C(void) {
     obj.vtable = &lbl_80343600;
     obj.field18 = ((s32 (*)(void *, void *))fn_8023512C)(lbl_80343960, &lbl_80343600);
     obj.field1C = fn_8023512C(lbl_80343950);
-    obj.field20 = fn_802C5130(lbl_80343944);
+    obj.field20 = gxGetImageArt(lbl_80343944);
 
     p = (s32 *)fn_801284F8(0x14, &lbl_8055BEF8);
     if (p != 0) {

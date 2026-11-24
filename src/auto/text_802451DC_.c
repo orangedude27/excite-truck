@@ -10,7 +10,7 @@ extern int fn_80214B44(int);
 extern void *lbl_803430E8[];
 extern void *lbl_8055F244;
 extern int fn_80232578(void *);
-extern int fn_802C5130(void *);
+extern int gxGetImageArt(void *);
 extern int fn_802C519C(void *);
 extern void fn_802E30C8(const char *, ...);
 extern int fn_802328D4(void *);
@@ -67,7 +67,7 @@ struct MenuTextContext {
 #pragma processor 750
 #pragma scheduling invalid_target
 /* Loads what the "mc_status" screen draws with into `context`: its image,
-   fetched by the name in the static description block (fn_802C5130 refuses
+   fetched by the name in the static description block (gxGetImageArt refuses
    names over 15 characters, and the block's own message is printed when the
    image is not there), then its gText font twice; the rest is cleared. */
 int fn_80245264(struct MenuTextContext *context) {
@@ -75,7 +75,7 @@ int fn_80245264(struct MenuTextContext *context) {
     int result;
     float value;
 
-    result = fn_802C5130(desc + 0x60); /* the image's name */
+    result = gxGetImageArt(desc + 0x60); /* the image's name */
     context->image = result;
     if (result == 0) {
         fn_802E30C8(desc + 0x78); /* printed once when the image is missing */
@@ -163,145 +163,216 @@ void fn_802452E4(struct MenuTextContext *context) {
 #pragma use_lmw_stmw off
 #pragma opt_unroll_loops off
 extern void *memset(void *, int, unsigned int);
-int fn_80245360(int *a, struct Menu *b) {
-    int sp8;
-    char obj[0x30];
-    char text[0x200];
-    int buf[128];
-    char *s;
-    float y;
-    int selected = b->selected;
-    register float temp_f19 = lbl_80563854;
-    register float temp_f20 = lbl_8056384C;
-    register float temp_f21 = lbl_8056385C;
-    register double temp_f22 = lbl_80563880;
-    register float temp_f23 = lbl_80563864;
-    register float temp_f24 = lbl_80563838;
-    register float temp_f25 = lbl_80563870;
-    register float temp_f26 = lbl_8056386C;
-    register float temp_f27 = lbl_80563868;
-    register float temp_f28 = lbl_80563844;
-    register float temp_f29 = lbl_8056387C;
-    register float temp_f16 = lbl_80563840;
-    register float temp_f17 = lbl_80563834;
-    register float temp_f18 = lbl_80563850;
+int fn_80245360(int *a, struct Menu *b)
+{
+  int sp8;
+  char obj[0x30];
+  char text[0x200];
+  int buf[128];
+  char *s;
+  float y;
+  int selected = b->selected;
+  register float temp_f16 = lbl_80563840;
+  register float temp_f17 = lbl_80563834;
+  register float temp_f18 = lbl_80563850;
+  register float temp_f19 = lbl_80563854;
+  register float temp_f20 = lbl_8056384C;
+  register float temp_f21 = lbl_8056385C;
+  register double temp_f22 = lbl_80563880;
+  register float temp_f23 = lbl_80563864;
+  register float temp_f24 = lbl_80563838;
+  register float temp_f25 = lbl_80563870;
+  register float temp_f26 = lbl_8056386C;
+  register float temp_f27 = lbl_80563868;
+  register float temp_f28 = lbl_80563844;
+  register float temp_f29 = lbl_8056387C;
+  register float temp_f30 = lbl_80563878;
+  for (;;)
+  {
+    float h;
+    float w;
     register float temp_f31 = lbl_80563874;
-    register float temp_f30 = lbl_80563878;
-    for (;;) {
-        float w, h, fw, fh, x0, x1;
-        char *desc;
-        fn_802C8530();
-        fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
-        fn_802C88BC(2);
-        fn_80230B5C(obj);
-        fn_802C8638(obj);
-        fn_802C974C(lbl_80563834, lbl_80563838, lbl_8056383C);
-        w = (float)(lbl_8055FB9C + 1);
-        h = (float)(lbl_8055FBA0 + 1);
-        fw = (float)lbl_8055FB9C;
-        fh = (float)lbl_8055FBA0;
-        (void)temp_f22;
-        x0 = temp_f16 * fw * temp_f28 - temp_f17;
-        x1 = temp_f17 + fh * temp_f28;
-        if (a[1] != 0) {
-            fn_802C5320(a[1], x0, x1, lbl_80563830, w, h, 0);
-        } else {
-            fn_802C92D0();
-            fn_802C92DC(0, 0, (int)w, (int)h, 0xFF000000);
-            fn_802C92D8();
-        }
-        s = b->title;
-        desc = b->desc;
-        y = lbl_80563848;
-        if (strlen(s) != 0) {
-            fn_80232BA4(s, a[3], 0xFF000000, 12, temp_f20 + ((float *)a)[5], y - temp_f20, lbl_80563834, lbl_80563830, lbl_80563834);
-            fn_80232BA4(s, a[3], -1, 12, ((float *)a)[5], y, lbl_80563834, lbl_80563830, lbl_80563834);
-        }
-        y -= temp_f18;
-        strcpy(text, desc);
-        s = text;
-        while (strlen(s) != 0) {
-            char *last_space;
-            char *p_buf;
-            unsigned int j;
-            signed char save;
-            {
-                int *bp = buf;
-                int k = 128;
-                do { *bp++ = 0; } while (--k != 0);
-            }
-            last_space = 0;
-            p_buf = (char *)buf;
-            j = 0;
-            while (j < strlen(s) && fn_8023293C(a[3], (char *)buf, lbl_80563834) < temp_f19) {
-                char ch = s[j];
-                char *curr = &s[j];
-                if (ch == ' ') last_space = curr;
-                else if (ch == '^') *curr = ' ';
-                j++;
-                *p_buf++ = *curr;
-                *p_buf = 0;
-            }
-            save = 0;
-            if (j != strlen(s)) {
-                if (last_space == 0) { last_space = &s[j]; save = s[j]; }
-                *last_space = 0;
-            } else {
-                last_space = &s[j] - 1;
-            }
-            fn_80232BA4(s, a[3], 0xFF000000, 12, temp_f20 + ((float *)a)[5], y - temp_f20, lbl_80563858, lbl_80563830, lbl_80563834);
-            fn_80232BA4(s, a[3], -1, 12, ((float *)a)[5], y, lbl_80563858, lbl_80563830, lbl_80563834);
-            if (save == 0) s = last_space + 1;
-            else { *last_space = save; s = last_space; }
-            y -= temp_f21;
-        }
-        y = lbl_80563860;
-        {
-            void *item_ptr = b;
-            int i = 0;
-            while (i < b->count) {
-                float wave = (float)sin(temp_f23 * (float)fn_802E2C20() / temp_f24);
-                float alpha = temp_f27 * (temp_f26 + temp_f25 * wave);
-                char *name = *(char **)((char *)item_ptr + 0x18);
-                int color;
-                fn_80232BA4(name, a[3], 0xFF000000, 12, temp_f20 + ((float *)a)[5], y - temp_f20, lbl_80563834, lbl_80563830, lbl_80563834);
-                if (selected == i) color = ((int)alpha << 24) | 0x00FFD03F;
-                else color = 0xC8646464;
-                fn_80232BA4(name, a[3], color, 12, ((float *)a)[5], y, lbl_80563834, lbl_80563830, lbl_80563834);
-                y -= temp_f21;
-                item_ptr = (char *)item_ptr + 8;
-                i++;
-            }
-        }
-        if (a[2] != 0) {
-            fn_802C5310(a[2], 0, temp_f29 + (temp_f30 + temp_f28 * fn_8023293C(a[4], &lbl_8055BE50, lbl_80563834)), temp_f23 + temp_f31, lbl_80563830);
-            fn_802337A0(a[4], -1, 9, &lbl_8055BE58, &lbl_8055BE50, temp_f30, temp_f31, lbl_80563830, lbl_80563844, lbl_80563834);
-        } else {
-            fn_802337A0(a[4], -1, 12, lbl_80343080, &lbl_8055BE5C, temp_f30, temp_f31, lbl_80563830, lbl_80563844, lbl_80563834);
-        }
-        fn_802C9A70(1);
-        fn_802C855C();
-        fn_802C2B48();
-        fn_80129AFC();
-        if (fn_802E47B8()) {
-            switch ((unsigned short)fn_802E46F0()) {
-            case 0x126:
-                if (selected > 0) { fn_80214D50(0); selected--; }
-                break;
-            case 0x128:
-                if (selected + 1 < b->count) { fn_80214D50(0); selected++; }
-                break;
-            case 0xd:
-                fn_80214D50(2);
-                return *(int *)((char *)b + 0x1C + selected * 8);
-            }
-        }
-        {
-            int (*callback)(int *) = b->callback;
-            if (callback != 0) { sp8 = -1; if (callback(&sp8) == 1) return sp8; }
-        }
-        fn_802E2D74(5);
+    float fw;
+    float fh;
+    float x0;
+    float x1;
+    char *desc;
+    fn_802C8530();
+    fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
+    fn_802C88BC(2);
+    fn_80230B5C(obj);
+    fn_802C8638(obj);
+    fn_802C974C(lbl_80563834, lbl_80563838, lbl_8056383C);
+    w = (float) (lbl_8055FB9C + 1);
+    h = (float) (lbl_8055FBA0 + 1);
+    fw = (float) lbl_8055FB9C;
+    temp_f22 = temp_f22;
+    x0 = ((temp_f16 * fw) * temp_f28) - temp_f17;
+    fh = (float) lbl_8055FBA0;
+    x1 = temp_f17 + (fh * temp_f28);
+    if (a[1] != 0)
+    {
+      fn_802C5320(a[1], x0, x1, lbl_80563830, w, h, 0);
     }
+    else
+    {
+      fn_802C92D0();
+      fn_802C92DC(0, 0, (int) w, (int) h, 0xFF000000);
+      fn_802C92D8();
+    }
+    s = b->title;
+    desc = b->desc;
+    y = lbl_80563848;
+    if (strlen(s) != 0)
+    {
+      fn_80232BA4(s, a[3], 0xFF000000, 12, temp_f20 + ((float *) a)[5], y - temp_f20, lbl_80563834, lbl_80563830, lbl_80563834);
+      fn_80232BA4(s, a[3], -1, 12, ((float *) a)[5], y, lbl_80563834, lbl_80563830, lbl_80563834);
+    }
+    y -= temp_f18;
+    strcpy(text, desc);
+    s = text;
+    while (strlen(s) != 0)
+    {
+      char *last_space;
+      char *p_buf;
+      unsigned int j;
+      signed char save;
+      {
+        int *bp = buf;
+        int k = 128;
+        do
+        {
+          *(bp++) = 0;
+        }
+        while ((--k) != 0);
+      }
+      last_space = 0;
+      p_buf = (char *) buf;
+      j = 0;
+      while ((j < strlen(s)) && (fn_8023293C(a[3], (char *) buf, lbl_80563834) < temp_f19))
+      {
+        char ch = s[j];
+        char *curr = &s[j];
+        if (ch == ' ')
+        {
+          last_space = curr;
+        }
+        else
+          if (ch == '^')
+        {
+          *curr = ' ';
+        }
+        j++;
+        *(p_buf++) = *curr;
+        *p_buf = 0;
+      }
+
+      save = 0;
+      if (j != strlen(s))
+      {
+        if (last_space == 0)
+        {
+          last_space = &s[j]; save = s[j];
+        }
+        *last_space = 0;
+      }
+      else
+      {
+        last_space = (&s[j]) - 1;
+      }
+      fn_80232BA4(s, a[3], 0xFF000000, 12, temp_f20 + ((float *) a)[5], y - temp_f20, lbl_80563858, lbl_80563830, lbl_80563834);
+      fn_80232BA4(s, a[3], -1, 12, ((float *) a)[5], y, lbl_80563858, lbl_80563830, lbl_80563834);
+      if (save == 0)
+      {
+        s = last_space + 1;
+      }
+      else
+      {
+        *last_space = save; s = last_space;
+      }
+      y -= temp_f21;
+    }
+
+    y = lbl_80563860;
+    {
+      void *item_ptr = b;
+      int i = 0;
+      while (i < b->count)
+      {
+        float wave = (float) sin((temp_f23 * ((float) fn_802E2C20())) / temp_f24);
+        float alpha = temp_f27 * (temp_f26 + (temp_f25 * wave));
+        char *name = *((char **) (((char *) item_ptr) + 0x18));
+        int color;
+        fn_80232BA4(name, a[3], 0xFF000000, 12, temp_f20 + ((float *) a)[5], y - temp_f20, lbl_80563834, lbl_80563830, lbl_80563834);
+        if (selected == i)
+        {
+          color = (((int) alpha) << 24) | 0x00FFD03F;
+        }
+        else
+        {
+          color = (char) 0xC8646464;
+        }
+        fn_80232BA4(name, a[3], color, 12, ((float *) a)[5], y, lbl_80563834, lbl_80563830, lbl_80563834);
+        y -= temp_f21;
+        item_ptr = ((char *) item_ptr) + 8;
+        i++;
+      }
+
+    }
+    if (a[2] != 0)
+    {
+      fn_802C5310(a[2], 0, temp_f29 + (temp_f30 + (temp_f28 * fn_8023293C(a[4], &lbl_8055BE50, lbl_80563834))), temp_f23 + temp_f31, lbl_80563830);
+      fn_802337A0(a[4], -1, 9, &lbl_8055BE58, &lbl_8055BE50, temp_f30, temp_f31, lbl_80563830, lbl_80563844, lbl_80563834);
+    }
+    else
+    {
+      fn_802337A0(a[4], -1, 12, lbl_80343080, &lbl_8055BE5C, temp_f30, temp_f31, lbl_80563830, lbl_80563844, lbl_80563834);
+    }
+    fn_802C9A70(1);
+    fn_802C855C();
+    fn_802C2B48();
+    fn_80129AFC();
+    if (fn_802E47B8())
+    {
+      switch ((unsigned short) fn_802E46F0())
+      {
+        case 0x126:
+          if (selected > 0)
+        {
+          fn_80214D50(0);
+          selected--;
+        }
+          break;
+
+        case 0x128:
+          if ((selected + 1) < b->count)
+        {
+          fn_80214D50(0);
+          selected++;
+        }
+          break;
+
+        case 0xd:
+          fn_80214D50(2);
+          return *((int *) ((((char *) b) + 0x1C) + (selected * 8)));
+
+      }
+
+    }
+    {
+      int (*callback)(int *) = b->callback;
+      if (callback != 0)
+      {
+        sp8 = -1;
+        if (callback(&sp8) == 1)
+        {
+          return sp8;
+        }
+      }
+    }
+    fn_802E2D74(5);
+  }
+
 }
 #pragma pop
 
@@ -354,7 +425,10 @@ void fn_8024590C(int *a, int *b) {
     step = lbl_8056385C;
     line = text;
     while (strlen(line) != 0) {
-        memset(buf, 0, sizeof(buf));
+        {
+            volatile int *vp = (volatile int *)buf;
+            for (i = 0; i < 0x80; i++) vp[i] = 0;
+        }
         split = 0;
         j = 0;
         do {
@@ -464,6 +538,9 @@ extern "C" void fn_80245D74(void *arg0, void *arg1) {
         virtual void f3();
         virtual void f4();
     };
+    void *a0 = arg0;
+    void *a1 = arg1;
+    char *base = (char *)lbl_80342FC0;
     struct Frame frame;
     int *s;
     int *d;
@@ -474,14 +551,14 @@ extern "C" void fn_80245D74(void *arg0, void *arg1) {
     int len1;
     int len2;
     int has8;
-    if (*(unsigned char *)((char *)arg0 + 0x1D) == 0) {
-        ((struct Dummy *)((char *)arg0 + 4))->f2();
+    if (*(unsigned char *)((char *)a0 + 0x1D) == 0) {
+        ((struct Dummy *)((char *)a0 + 4))->f2();
         return;
     }
-    s = (int *)arg1;
+    s = (int *)a1;
     d = &frame.buf[0];
     count = s[5];
-    *(void **)((char *)arg0 + 0x20) = arg1;
+    *(void **)((char *)a0 + 0x20) = a1;
     i = 0;
     if (count > 0) {
         while (i < count) {
@@ -502,7 +579,7 @@ extern "C" void fn_80245D74(void *arg0, void *arg1) {
     frame.state.p1C = (void *)lbl_80343148;
     frame.state.i30 = 0;
     frame.state.c35 = 1;
-    has8 = ((int *)arg1)[2];
+    has8 = ((int *)a1)[2];
     if (has8 != 0) {
         frame.state.c35 = 0;
     }
@@ -516,56 +593,56 @@ extern "C" void fn_80245D74(void *arg0, void *arg1) {
     frame.cfg[7] = (unsigned int)&fn_80246210;
     frame.cfg[8] = 0;
     frame.cfg[9] = 0;
-    name1 = *(char **)arg1;
+    name1 = *(char **)a1;
     len1 = strlen(name1);
     frame.cfg[13] = (unsigned int)len1;
     frame.cfg[11] = 3;
     frame.cfg[10] = (unsigned int)&lbl_8055BE70;
     frame.cfg[12] = (unsigned int)name1;
     frame.cfg[14] = 0;
-    name2 = *(char **)((char *)arg1 + 4);
+    name2 = *(char **)((char *)a1 + 4);
     len2 = strlen(name2);
     frame.cfg[18] = (unsigned int)len2;
     frame.cfg[15] = (unsigned int)&lbl_8055BE78;
     frame.cfg[16] = 3;
     frame.cfg[17] = (unsigned int)name2;
     frame.cfg[19] = 0;
-    frame.cfg[20] = (unsigned int)(lbl_80342FC0 + 0xDC);
+    frame.cfg[20] = (unsigned int)(base + 0xDC);
     frame.cfg[21] = 0;
     frame.cfg[22] = 0;
     frame.cfg[23] = (unsigned int)frame.buf[1];
     frame.cfg[24] = 0;
-    frame.cfg[25] = (unsigned int)(lbl_80342FC0 + 0xDC);
+    frame.cfg[25] = (unsigned int)(base + 0xDC);
     frame.cfg[26] = 3;
     frame.cfg[27] = (unsigned int)frame.buf[0];
     frame.cfg[28] = 0;
     frame.cfg[29] = 0;
-    frame.cfg[30] = (unsigned int)(lbl_80342FC0 + 0xE8);
+    frame.cfg[30] = (unsigned int)(base + 0xE8);
     frame.cfg[31] = 0;
     frame.cfg[32] = 0;
     frame.cfg[33] = (unsigned int)frame.buf[3];
     frame.cfg[34] = 0;
-    frame.cfg[35] = (unsigned int)(lbl_80342FC0 + 0xE8);
+    frame.cfg[35] = (unsigned int)(base + 0xE8);
     frame.cfg[36] = 3;
     frame.cfg[37] = (unsigned int)frame.buf[2];
     frame.cfg[38] = 0;
     frame.cfg[39] = 0;
-    frame.cfg[40] = (unsigned int)(lbl_80342FC0 + 0xF4);
+    frame.cfg[40] = (unsigned int)(base + 0xF4);
     frame.cfg[41] = 0;
     frame.cfg[42] = 0;
     frame.cfg[43] = (unsigned int)frame.buf[5];
     frame.cfg[44] = 0;
-    frame.cfg[45] = (unsigned int)(lbl_80342FC0 + 0xF4);
+    frame.cfg[45] = (unsigned int)(base + 0xF4);
     frame.cfg[46] = 3;
     frame.cfg[47] = (unsigned int)frame.buf[4];
     frame.cfg[48] = 0;
     frame.cfg[49] = 0;
-    frame.cfg[50] = (unsigned int)(lbl_80342FC0 + 0x100);
+    frame.cfg[50] = (unsigned int)(base + 0x100);
     frame.cfg[51] = 0;
     frame.cfg[52] = 0;
     frame.cfg[53] = (unsigned int)frame.buf[7];
     frame.cfg[54] = 0;
-    frame.cfg[55] = (unsigned int)(lbl_80342FC0 + 0x100);
+    frame.cfg[55] = (unsigned int)(base + 0x100);
     frame.cfg[56] = 3;
     frame.cfg[57] = (unsigned int)frame.buf[6];
     frame.cfg[58] = 0;
@@ -581,7 +658,7 @@ extern "C" void fn_80245D74(void *arg0, void *arg1) {
     frame.args[3] = (unsigned int)lbl_802FA364[3];
     frame.args[4] = (unsigned int)lbl_802FA364[4];
     if (has8 == 0) {
-        frame.args[0] = (unsigned int)(lbl_80342FC0 + 0xCC);
+        frame.args[0] = (unsigned int)(base + 0xCC);
     } else {
         frame.args[0] = (unsigned int)has8;
     }
@@ -591,7 +668,7 @@ extern "C" void fn_80245D74(void *arg0, void *arg1) {
         fn_80214D50(5);
     }
     fn_802146BC((int *)frame.args, -999, -999, 1);
-    *(void **)((char *)arg0 + 0x20) = 0;
+    *(void **)((char *)a0 + 0x20) = 0;
 }
 
 #pragma cplusplus reset

@@ -368,7 +368,7 @@ extern "C" int lbl_8033F998[];
 extern "C" int lbl_8033E350[];
 extern "C" s32 fn_802ECFF4(s32);
 extern "C" void fn_802ECFEC(void);
-extern "C" s32 fn_802C5130(s32, void *);
+extern "C" s32 gxGetImageArt(s32, void *);
 extern "C" s32 fn_802C51C0(s32);
 extern "C" s32 fn_802C5220(s32);
 extern "C" void *lbl_8033E878[];
@@ -1005,8 +1005,7 @@ extern "C" void fn_80219510(void *widget, s32 offsetX, s32 offsetY) {
     *(s32 *)((u8 *)widget + 0x248) = scrollY;
 }
 
-#pragma push
-#pragma scheduling 750
+#pragma scheduling on
 extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
     void* p = *(void**)((u8*)arg0 + 0x2C);
     if (*(u8*)((u8*)arg0 + 0x24C) != 0) {
@@ -1014,11 +1013,10 @@ extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
         s32 old1 = *(s32*)((u8*)p + 0x454);
         s32 dy = *(s32*)((u8*)arg0 + 0x248) + arg2;
         s32 old2 = *(s32*)((u8*)p + 0x458);
-        *(s32*)((u8*)p + 0x454) = old1 + dx;
+        *(s32*)((u8*)p + 0x454) = dx + old1;
         *(s32*)((u8*)p + 0x458) = old2 + dy;
     }
 }
-#pragma pop
 extern "C" void *fn_80219568(void *obj, s32 x, s32 y, s32 arg3, s32 arg4, s32 width, s32 height, s32 arg7) {
     /* Initialize a menu text widget: set up base bounds, vtable, and fields at 0x244-0x250. */
     fn_80218F34(obj, x, y, x + width, y + height, arg3);
@@ -2860,8 +2858,8 @@ extern "C" void *fn_8021CA0C(void *obj, s32 x, s32 y, s32 w, s32 h, void *resour
     ((Arg5Type *)resource)->get_dims(&dim0, &dim1);
     if (dim1 > 0)
         fn_80219440(obj, 0, (void *)dim0, dim1);
-    *(s32 *)((u8 *)obj + 0x24C) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D924);
-    *(s32 *)((u8 *)obj + 0x250) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D934);
+    *(s32 *)((u8 *)obj + 0x24C) = ((s32 (*)(void *))gxGetImageArt)(lbl_8033D924);
+    *(s32 *)((u8 *)obj + 0x250) = ((s32 (*)(void *))gxGetImageArt)(lbl_8033D934);
     s32 res = ((s32 (*)(void))fn_802C51C0)();
     f32 f = lbl_805634A0;
     *(s32 *)((u8 *)obj + 0x254) = res;
@@ -3865,7 +3863,7 @@ body:
     result = fn_8022D3F8(*(s32 *)((u8 *)self + 0x244),
                          item, 0, flagMask, equal);
     local.sp8 = 0;
-    combined = equal | ((flagMask & 2) >> 1);
+    combined = equal | (flagMask & 2);
     fn_8022BAD0(7, xBase + 2,
                 yBase + i * *(s32 *)((u8 *)self + 0x258) + 2,
                 0, 0, 0, result, combined, lbl_805634A4);
@@ -4073,11 +4071,11 @@ extern "C" void *fn_8021EA64(void *self, s32 x, s32 y, s32 width, s32 height, ch
     words[0x248 / 4] = ((columns >> 31) ^ columns) - (columns >> 31);
     words[0x24C / 4] = rows;
     if (rows == 1 && columns > 0)
-        words[0xA60 / 4] = ((s32 (*)(void *))fn_802C5130)(lbl_8033D96C);
+        words[0xA60 / 4] = ((s32 (*)(void *))gxGetImageArt)(lbl_8033D96C);
     else
         words[0xA60 / 4] = 0;
     words[0x244 / 4] = 0;
-    words[0xA5C / 4] = ((s32 (*)(void *))fn_802C5130)(lbl_8033D978);
+    words[0xA5C / 4] = ((s32 (*)(void *))gxGetImageArt)(lbl_8033D978);
     words[0x250 / 4] = strlen(textBuffer);
     fn_80219440(self, 0, textBuffer, words[0x248 / 4] * words[0x24C / 4]);
     if (words[0xA60 / 4] != 0) {
@@ -4486,8 +4484,8 @@ extern "C" void *fn_8021F678(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     *(u8 *)((u8 *)arg0 + 0x244) = 0;
     *(s32 *)((u8 *)arg0 + 0x254) = size;
     *(u8 *)((u8 *)arg0 + 0x258) = (u32)arg6 >> 31;
-    *(s32 *)((u8 *)arg0 + 0x25C) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D9B0);
-    *(s32 *)((u8 *)arg0 + 0x260) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D9BC);
+    *(s32 *)((u8 *)arg0 + 0x25C) = ((s32 (*)(void *))gxGetImageArt)(lbl_8033D9B0);
+    *(s32 *)((u8 *)arg0 + 0x260) = ((s32 (*)(void *))gxGetImageArt)(lbl_8033D9BC);
     *(s32 *)((u8 *)arg0 + 0x264) = *(s32 *)((u8 *)arg0 + 4);
     *(s32 *)((u8 *)arg0 + 0x268) = *(s32 *)((u8 *)arg0 + 8);
     *(s32 *)((u8 *)arg0 + 0x26C) = ((Vf78 *)arg0)->get();
@@ -4717,7 +4715,7 @@ extern "C" void *fn_8021FF34(void *self, void *bounds, s32 type, s32 steps, f32 
     *(f32 *)((u8 *)self + 0x24C) = maxValue;
     *(f32 *)((u8 *)self + 0x250) = range / (f32)steps;
     *(s32 *)((u8 *)self + 0x254) =
-        ((s32 (*)(void *, void *))fn_802C5130)(lbl_8033D9BC, lbl_8033E7F4);
+        ((s32 (*)(void *, void *))gxGetImageArt)(lbl_8033D9BC, lbl_8033E7F4);
     *(s32 *)((u8 *)self + 0x258) = 0;
     *(s32 *)((u8 *)self + 0x25C) =
         fn_80228F40(*(s32 *)((u8 *)bounds + 8),
@@ -4936,8 +4934,8 @@ extern "C" void *fn_80220778(void *self, s32 x, s32 y, s32 width, s32 height, s3
     *(s32 *)((u8 *)self + 0x250) = param250;
     *(s32 *)((u8 *)self + 0x254) = param254;
     fn_80219440(self, 0, (void *)param244, 4);
-    *(s32 *)((u8 *)self + 0x248) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D9B0);
-    *(s32 *)((u8 *)self + 0x24C) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D9BC);
+    *(s32 *)((u8 *)self + 0x248) = ((s32 (*)(void *))gxGetImageArt)(lbl_8033D9B0);
+    *(s32 *)((u8 *)self + 0x24C) = ((s32 (*)(void *))gxGetImageArt)(lbl_8033D9BC);
     if (*(s32 *)((u8 *)self + 0x248) != 0) {
         s32 count = fn_802C5220(*(s32 *)((u8 *)self + 0x248));
         fn_80219284(self, ((Vf78 *)self)->get(), count);
@@ -5184,11 +5182,11 @@ extern "C" void *fn_80220E48(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     fn_80218F34(arg0, arg1, arg2, arg1 + arg3, arg2 + arg4, 0);
     *(void **)p = lbl_8033E770;
     if (mode == 0) {
-        *(s32 *)(p + 0x248) = ((s32 (*)(void *))fn_802C5130)(strBase + 0x150);
-        *(s32 *)(p + 0x24C) = ((s32 (*)(void *))fn_802C5130)(strBase + 0x15C);
+        *(s32 *)(p + 0x248) = ((s32 (*)(void *))gxGetImageArt)(strBase + 0x150);
+        *(s32 *)(p + 0x24C) = ((s32 (*)(void *))gxGetImageArt)(strBase + 0x15C);
     } else {
-        *(s32 *)(p + 0x248) = ((s32 (*)(void *))fn_802C5130)(strBase + 0x168);
-        *(s32 *)(p + 0x24C) = ((s32 (*)(void *))fn_802C5130)(strBase + 0x174);
+        *(s32 *)(p + 0x248) = ((s32 (*)(void *))gxGetImageArt)(strBase + 0x168);
+        *(s32 *)(p + 0x24C) = ((s32 (*)(void *))gxGetImageArt)(strBase + 0x174);
     }
     ((Dispatch *)arg0)->set(*(s32 *)(p + 4), *(s32 *)(p + 8));
     if (mode == 0) {
@@ -5963,7 +5961,7 @@ extern "C" void fn_80222800(void *resource, s32 x, s32 y, s32 *outX, s32 *outY, 
 extern "C" void *fn_802228B0(void *obj, s32 name, s32 width, s32 height) {
     typedef s32 (*CreateFn)(s32);
     *(void **)obj = lbl_8033F998;
-    *(s32 *)((u8 *)obj + 4) = ((CreateFn)fn_802C5130)(name);
+    *(s32 *)((u8 *)obj + 4) = ((CreateFn)gxGetImageArt)(name);
     if (width > 0 && height > 0) {
         *(f32 *)((u8 *)obj + 8) = (f32)width;
         *(f32 *)((u8 *)obj + 0xC) = (f32)height;
@@ -6715,7 +6713,7 @@ extern "C" void *fn_80223AB4(void *arg0, void *arg1, s32 arg2) {
                 *(s32 *)((u8 *)arg1 + 0xC));
     *(s32 *)((u8 *)arg0 + 0x24C) = *(s32 *)((u8 *)arg1 + 0x9C);
     if ((u8 *)arg1 + 0x40 != 0) {
-        *(s32 *)((u8 *)arg0 + 0x250) = ((s32 (*)(void *))fn_802C5130)((u8 *)arg1 + 0x40);
+        *(s32 *)((u8 *)arg0 + 0x250) = ((s32 (*)(void *))gxGetImageArt)((u8 *)arg1 + 0x40);
     } else {
         *(s32 *)((u8 *)arg0 + 0x250) = 0;
     }
@@ -6976,7 +6974,7 @@ extern "C" void *fn_802241C8(void *object, void *descriptor) {
     *(f32 *)((u8 *)object + 0x250) = *(s32 *)((u8 *)descriptor + 0x18);
 
     sprintf(pathBuffer, lbl_8033DAAC, (char *)descriptor + 0x40);
-    s32 imageRes = ((s32 (*)(void *))fn_802C5130)(pathBuffer);
+    s32 imageRes = ((s32 (*)(void *))gxGetImageArt)(pathBuffer);
     *(s32 *)((u8 *)object + 0x254) = imageRes;
     if (imageRes == 0) {
         fn_802E30C8(lbl_8033DABC, pathBuffer);
@@ -7059,7 +7057,7 @@ extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2,
         zero = *link;
         *(s32 *)(self + 0x244) = zero;
         strcpy(name, (char *)(resource + 0x40));
-        s32 handle = ((s32 (*)(void *))fn_802C5130)(name);
+        s32 handle = ((s32 (*)(void *))gxGetImageArt)(name);
         *(s32 *)(self + 0x280) = handle;
         if (handle == 0)
             fn_802E30C8(lbl_8033DABC, name);
@@ -7969,7 +7967,7 @@ extern "C" void *fn_802269A8(void *obj, void *param) {
     register Obj28 *image = (Obj28 *)obj;
     fn_80218F80();
     *(void **)image = ROT_VTABLE;
-    if ((image->result = ((s32 (*)(void *))fn_802C5130)((u8 *)param + 0x40)) == 0)
+    if ((image->result = ((s32 (*)(void *))gxGetImageArt)((u8 *)param + 0x40)) == 0)
         fn_802E30C8(ROT_ERR_MSG, (u8 *)((u32)param + 0x40));
     image->region = fn_8022EE9C();
     fn_80230C30(&image->coords[0], &image->coords[1], image->width, image->height);
