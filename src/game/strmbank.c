@@ -1,9 +1,8 @@
 // strmbank — the global stream-bank manager and its null implementation.
-// Symbol guide (the project cannot rename game symbols yet): initStrmBank
-// (fn_802E7578), shutdownStrmBank (fn_802E759C), loadStrmBank (fn_802E75E4),
-// unloadStrmBank (fn_802E75FC), unloadStrmBankEx (fn_802E765C), setStrmBankLevel
-// (fn_802E7684), createNullStrmBank (fn_802E769C) and the null manager's vtable
-// methods (fn_802E76F0..fn_802E7764).
+// Symbol guide: initStrmBank (fn_802E7578), shutdownStrmBank (fn_802E759C),
+// loadStrmBank (fn_802E75E4), bank-unload helpers (fn_802E75FC, fn_802E765C),
+// setStrmBankLevel (fn_802E7684), createNullStrmBank (fn_802E769C) and the
+// null manager's vtable methods (fn_802E76F0..fn_802E7764).
 // Recovered TU window 0x802E7578..0x802E7768 (see docs/attribution_analysis.md).
 // Static-init thunk fn_802E7768 (+ .ctors slot 0x802ED610) remains in
 // auto/text_802E7768_.c pending a promotion pass.
