@@ -298,17 +298,20 @@ void fn_8017EB78(void *child) {
     fn_8017E9FC((char *)child - 0x1EC);
 }
 
-float fn_8017EB80(float arg0, float arg1, float arg2) {
-    float magnitude = (float)__fabs(arg0);
-    float value = lbl_80561C48;
-    float temp = value + arg1;
-    temp = temp + arg2;
-    temp = temp * magnitude;
-    temp = temp - arg1;
-    value = value < temp ? value : temp;
-    value = value > lbl_80561C4C ? value : lbl_80561C4C;
-    if (arg0 >= lbl_80561C4C) return value;
-    return -value;
+float fn_8017EB80(float input, float deadSpot, float overshoot) {
+    /* Shape a signed analog input into a signed [-1,1] response: clamp
+     * (1 + deadSpot + overshoot)*|input| - deadSpot into [0,1]
+     * (lbl_80561C48 = 1.0f, lbl_80561C4C = 0.0f), then reapply the sign. */
+    float absInput = (float)__fabs(input);
+    float response = lbl_80561C48;
+    float scaled = response + deadSpot;
+    scaled = scaled + overshoot;
+    scaled = scaled * absInput;
+    scaled = scaled - deadSpot;
+    response = response < scaled ? response : scaled;
+    response = response > lbl_80561C4C ? response : lbl_80561C4C;
+    if (input >= lbl_80561C4C) return response;
+    return -response;
 }
 
 #pragma push
