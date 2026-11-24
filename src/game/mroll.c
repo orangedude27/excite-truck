@@ -543,18 +543,18 @@ enum {
     MROLL_STAT_FLAG_OFFSET      = 0x20,
     MROLL_STAT_VALUE_PTR_OFFSET = 0x24
 };
-/* MRollStatLabel_destroy: deleting destructor for a UI car stat label (installs its vtable, clears its value pointer and flag, releases its font handle at +0x18, and frees the object when deleteFlag > 0). */
-void *fn_80240928(void *label, s32 deleteFlag) {
-    s32 zero = 0;
-    if (label != 0) {
-        *(s32 *)((char *)label + MROLL_STAT_VALUE_PTR_OFFSET) = zero;
-        *(void **)label = sMRollStatLabelVtable;
-        *(s32 *)((char *)label + MROLL_STAT_FLAG_OFFSET) = zero;
-        Font_release(*(s32 *)((char *)label + MROLL_STAT_FONT_OFFSET), (s32)sMRollStatLabelVtable);
-        *(s32 *)((char *)label + MROLL_STAT_FONT_OFFSET) = zero;
-        if (deleteFlag > 0) Memory_free(label);
+/* Deleting destructor for a UI car stat label: reinstalls its vtable, clears its value pointer/flag, releases its font, and frees the object when requested. */
+void *fn_80240928(void *thisLabel, s32 shouldFree) {
+    s32 zeroValue = 0;
+    if (thisLabel != 0) {
+        *(s32 *)((char *)thisLabel + MROLL_STAT_VALUE_PTR_OFFSET) = zeroValue;
+        *(void **)thisLabel = sMRollStatLabelVtable;
+        *(s32 *)((char *)thisLabel + MROLL_STAT_FLAG_OFFSET) = zeroValue;
+        Font_release(*(s32 *)((char *)thisLabel + MROLL_STAT_FONT_OFFSET), (s32)sMRollStatLabelVtable);
+        *(s32 *)((char *)thisLabel + MROLL_STAT_FONT_OFFSET) = zeroValue;
+        if (shouldFree > 0) Memory_free(thisLabel);
     }
-    return label;
+    return thisLabel;
 }
 
 void fn_802409A4(void *object, s32 value) {
