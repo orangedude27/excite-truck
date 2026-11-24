@@ -32,7 +32,7 @@ extern void gxReportGPStatus(void);
 extern void fn_802D6C78(void);
 extern unsigned char lbl_804C5710[];
 extern unsigned char lbl_8055D0F0;
-extern void *lbl_8055FD64;
+extern void *gCurrentRenderMode;
 extern void *fn_8012850C(void *, void *);
 extern void *memset(void *, int, unsigned long);
 extern int lbl_804C5650[];
@@ -217,7 +217,7 @@ unsigned char fn_802CEA1C(unsigned int argbColor) {
 
 /* Allocate and clear the EFB copy buffer based on the current render mode dimensions. */
 void fn_802CEA34(void) {
-#define sCurrentRenderMode lbl_8055FD64
+#define sCurrentRenderMode gCurrentRenderMode
 #define sXfbCopyInfo       lbl_804C9760
 #define kXfbAllocTag       lbl_8055D0F0  /* "xfb.a" */
     unsigned char *renderMode = (unsigned char *)sCurrentRenderMode;
@@ -250,7 +250,7 @@ void fn_802CEAC4(void) {
     extern void fn_802E30C8(const char *, ...);
     extern void GXDrawCylinder(void *, void *, int, int);
     extern char lbl_8034BD18[], lbl_803038D8[], lbl_80303914[], lbl_80303950[], lbl_8030398C[], lbl_803039C8[];
-    extern void *lbl_8055FD64;
+    extern void *gCurrentRenderMode;
     extern unsigned char lbl_804C9724[];
     char *strBase = lbl_8034BD18;
     int tvFormat = VIGetTvFormat();
@@ -258,30 +258,30 @@ void fn_802CEAC4(void) {
     case 0:
         if (ConfigGetProgressiveMode() == 0 || fn_8005AD9C() == 0) {
             fn_802E30C8(strBase + 0xA0);
-            lbl_8055FD64 = lbl_803038D8;
+            gCurrentRenderMode = lbl_803038D8;
         } else {
             fn_802E30C8(strBase + 0xB0);
-            lbl_8055FD64 = lbl_80303914;
+            gCurrentRenderMode = lbl_80303914;
         }
         break;
     case 1:
         fn_802E30C8(strBase + 0xC0);
-        lbl_8055FD64 = lbl_8030398C;
+        gCurrentRenderMode = lbl_8030398C;
         break;
     case 5:
         fn_802E30C8(strBase + 0xCC);
-        lbl_8055FD64 = lbl_803039C8;
+        gCurrentRenderMode = lbl_803039C8;
         break;
     case 2:
         fn_802E30C8(strBase + 0xE0);
-        lbl_8055FD64 = lbl_80303950;
+        gCurrentRenderMode = lbl_80303950;
         break;
     default:
         fn_802E317C(strBase + 0xF0);
         break;
     }
-    GXDrawCylinder(lbl_8055FD64, lbl_804C9724, 0, 0x10);
-    lbl_8055FD64 = lbl_804C9724;
+    GXDrawCylinder(gCurrentRenderMode, lbl_804C9724, 0, 0x10);
+    gCurrentRenderMode = lbl_804C9724;
     *(unsigned short *)(lbl_804C9724 + 0xE) += 0xA;
     *(unsigned short *)(lbl_804C9724 + 0xA) -= 5;
 }
@@ -663,13 +663,13 @@ void fn_802CF600(void) {
     lbl_8055FD50 = 0;
     lbl_8055FD2C = -0x259;
     lbl_8055FD30 = -0x258;
-    lbl_8055FD64 = 0;
+    gCurrentRenderMode = 0;
     lbl_8055FE24 = 0;
     fn_80127468();
     fn_8005954C();
     fn_802CEAC4();
     fn_80127468();
-    VIConfigure(lbl_8055FD64);
+    VIConfigure(gCurrentRenderMode);
     fn_802CEA34();
     fn_80127468();
     fn_801282EC(0x20);
@@ -772,7 +772,7 @@ static inline void mtxIdentity_802CF850(register float *m, register float one, r
 
 void fn_802CF850(void) {
     extern int lbl_804C5650[];
-    extern void *lbl_8055FD64;
+    extern void *gCurrentRenderMode;
     extern void GXSetViewport(unsigned short, float, float, float, float, float, float);
     extern void GXSetScissor(unsigned int, unsigned int, unsigned int, unsigned int);
     extern void GXSetPixelFmt(int, int);
@@ -827,11 +827,11 @@ void fn_802CF850(void) {
     register volatile float *m70, *m40, *mA0;
 
     fn_802CF104();
-    width = *(unsigned short *)((unsigned char *)lbl_8055FD64 + 4);
-    height = *(unsigned short *)((unsigned char *)lbl_8055FD64 + 6);
+    width = *(unsigned short *)((unsigned char *)gCurrentRenderMode + 4);
+    height = *(unsigned short *)((unsigned char *)gCurrentRenderMode + 6);
     ((void (*)(float, float, float, float, float, float))GXSetViewport)(
         0.0f, 0.0f, (float)width, (float)height, 0.0f, 1.0f);
-    GXSetScissor(0, 0, *(unsigned short *)((unsigned char *)lbl_8055FD64 + 4), *(unsigned short *)((unsigned char *)lbl_8055FD64 + 6));
+    GXSetScissor(0, 0, *(unsigned short *)((unsigned char *)gCurrentRenderMode + 4), *(unsigned short *)((unsigned char *)gCurrentRenderMode + 6));
     GXSetPixelFmt(1, 0);
     GXSetDispCopyGamma(0);
     clearWord = ((unsigned int (*)(unsigned int, unsigned int, unsigned int, unsigned int))fn_802CE9FC)(0, 0, 0, 0);
@@ -846,7 +846,7 @@ void fn_802CF850(void) {
     *(void **)((void **)(base + 0x4110) + 1) = *(void **)(base + 0x4110);
     VIFlush();
 
-    if ((*(unsigned int *)lbl_8055FD64 & 1) != 0) {
+    if ((*(unsigned int *)gCurrentRenderMode & 1) != 0) {
         VIWaitForRetrace();
     }
     GXSetNumChans(1);
@@ -1037,7 +1037,7 @@ extern void fn_802CF850(void);
 void GXReinit(void) {
     /* (Re)initialize the GX FIFO from the CPU FIFO and reconfigure video/GX state. */
     extern int gGxInitResult;
-    extern void *lbl_8055FD64;
+    extern void *gCurrentRenderMode;
     char fifoInfo[0x80];
     int fifoBase;
     int fifoSize;
@@ -1047,7 +1047,7 @@ void GXReinit(void) {
     GXGetVtxAttrFmtv();
     gGxInitResult = GXInit(fifoBase, fifoSize);
     fn_802CF850();
-    VIConfigure(lbl_8055FD64);
+    VIConfigure(gCurrentRenderMode);
 }
 
 #pragma scheduling invalid_target
@@ -1735,7 +1735,7 @@ void fn_802D0BD8(void) {
      * field when the target enables it, otherwise plain; then invalidate the
      * vertex and texture caches. */
     extern void GXInvalidateTexAll(void);
-    unsigned char *renderTarget = (unsigned char *)lbl_8055FD64;
+    unsigned char *renderTarget = (unsigned char *)gCurrentRenderMode;
     unsigned short width;
     unsigned short height;
     unsigned long field;
@@ -1767,7 +1767,7 @@ void fn_802D0C98(void) {
     extern int lbl_8055FD48, lbl_8055FD4C;
     extern unsigned int lbl_8055FD74;
     extern unsigned char lbl_8055D0C4;
-    extern void *lbl_8055FD64;
+    extern void *gCurrentRenderMode;
     extern int lbl_804C9760[];
     unsigned short temp_r31;
     int temp_r30 = 0;
@@ -1782,13 +1782,13 @@ void fn_802D0C98(void) {
     GXSetZMode(1, 7, 1);
     lbl_8055FD74 = (lbl_8055FD74 | 2) & ~4U;
     temp_r31 = (unsigned short)GXSetDispCopyYScale(
-        GXGetYScaleFactor(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 6),
-                          *(unsigned short *)((unsigned char *)lbl_8055FD64 + 8)));
-    GXSetDispCopySrc(0, 0, *(unsigned short *)((display = (unsigned char *)lbl_8055FD64) + 4), *(unsigned short *)(display + 6));
-    GXSetDispCopyDst(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 4), temp_r31);
-    GXSetCopyFilter(*((unsigned char *)lbl_8055FD64 + 0x19),
-                    (unsigned char *)lbl_8055FD64 + 0x1A, 1,
-                    (unsigned char *)lbl_8055FD64 + 0x32);
+        GXGetYScaleFactor(*(unsigned short *)((unsigned char *)gCurrentRenderMode + 6),
+                          *(unsigned short *)((unsigned char *)gCurrentRenderMode + 8)));
+    GXSetDispCopySrc(0, 0, *(unsigned short *)((display = (unsigned char *)gCurrentRenderMode) + 4), *(unsigned short *)(display + 6));
+    GXSetDispCopyDst(*(unsigned short *)((unsigned char *)gCurrentRenderMode + 4), temp_r31);
+    GXSetCopyFilter(*((unsigned char *)gCurrentRenderMode + 0x19),
+                    (unsigned char *)gCurrentRenderMode + 0x1A, 1,
+                    (unsigned char *)gCurrentRenderMode + 0x32);
     GXCopyDisp((void *)lbl_804C9760[1], 1);
     VISetNextFrameBuffer((void *)lbl_804C9760[1]);
     if (lbl_8055FD48 > 0) {
@@ -2859,9 +2859,9 @@ void *fn_802D2D04(void) {
 #undef sDefaultLight
 }
 #pragma small_data on
-extern void *lbl_8055FD64;
+extern void *gCurrentRenderMode;
 void* fn_802D2D14(void) {
-#define renderMode lbl_8055FD64
+#define renderMode gCurrentRenderMode
     /* Get the current video render mode (the active VI/render config block). */
     return renderMode;
 #undef renderMode
@@ -3614,7 +3614,7 @@ extern char lbl_8055D100;
    cached vertex format. */
 /* Applies the pending viewport change held in the sViewport settings block (+1 is the dirty flag): clear it, set the GX viewport (jittered by field when field rendering is enabled), set the matching scissor box, then invalidate the cached vertex format. */ void fn_802D1678() {
 #define sViewport           lbl_804C9778
-#define gRenderMode         lbl_8055FD64
+#define gRenderMode         gCurrentRenderMode
 #define gNearPlane          lbl_80564F88
 #define gFarPlane           lbl_80564F8C
 #define invalidateVtxFormat fn_802D6C68

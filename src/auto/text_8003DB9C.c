@@ -3300,7 +3300,7 @@ void GXSetCoPlanar(s32 enable) {
  * Copies the 0x3C-byte VI/render-mode record `from` over `to` (unless they are
  * the same record) and re-fits its screen rectangle for a border of insetX
  * pixels and insetY lines left around the picture.  This is the record the
- * game keeps in lbl_8055FD64 - the five modes at lbl_803038D8..lbl_803039C8
+ * game keeps in gCurrentRenderMode - the five modes at lbl_803038D8..lbl_803039C8
  * and the working copy lbl_804C9724 that fn_802CEAC4 builds - and the fields
  * are the ones the GX setup calls read: +0x04/+0x06/+0x08 are the frame-buffer
  * width, efb height and xfb height GXSetScissor, GXSetDispCopySrc and
