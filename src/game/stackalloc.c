@@ -536,17 +536,17 @@ void fn_802DA1F4(int arg0, void *arg1, int arg2) {
     *tailMatrix = oneValue;
 }
 #pragma pop
-/* Destructor-like cleanup for the stack allocator object: installs its vtable, frees the owned buffer, and optionally deletes the object. */
-void *StackAlloc_deletingDestructor(void *object, int shouldDelete) {
-    if (object) {
-        *(void **)object = StackAlloc_vtable;
-        fn_80128670(*(int *)((char *)object + 4));
-        if (object)
-            *(int *)((char *)object + 4) = 0;
-        if (shouldDelete > 0)
-            fn_80128668(object);
+/* Deleting destructor for a StackAlloc: reinstalls its vtable, frees its arena buffer, clears the buffer pointer, and optionally frees the object. */
+void *StackAlloc_deletingDestructor(void *self, int deleteFlag) {
+    if (self) {
+        *(void **)self = StackAlloc_vtable;
+        fn_80128670(*(int *)((char *)self + 4));
+        if (self)
+            *(int *)((char *)self + 4) = 0;
+        if (deleteFlag > 0)
+            fn_80128668(self);
     }
-    return object;
+    return self;
 }
 /* Destroy the global stack allocator instance: release its owned buffer, free the
    object, and clear the global pointer. */
