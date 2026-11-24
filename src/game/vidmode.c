@@ -9,14 +9,14 @@ extern char sVideoModeInfoTable[];
 extern char sUnknownVideoModeFmt[];
 extern void Abend_Panic(const char *, ...);
 #pragma scheduling invalid_target
-void *Vid_GetVideoModeInfo(int arg0) {
+/* Return the video-mode info entry for `mode` (7 entries, 0x18 bytes each in sVideoModeInfoTable), or panic with sUnknownVideoModeFmt and return NULL when out of range. */ void *Vid_GetVideoModeInfo(int mode) {
     /* Return the video mode info entry (0x18 bytes each, 7 entries) for the given index, or log an error and return NULL if out of range. */
     void *result;
 
-    if (arg0 >= 0 && arg0 < 7) {
-        result = sVideoModeInfoTable + arg0 * 0x18;
+    if (mode >= 0 && mode < 7) {
+        result = sVideoModeInfoTable + mode * 0x18;
     } else {
-        Abend_Panic(sUnknownVideoModeFmt, arg0);
+        Abend_Panic(sUnknownVideoModeFmt, mode);
         result = 0;
     }
     return result;
