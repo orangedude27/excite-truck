@@ -5549,10 +5549,10 @@ void fn_80070FA4(void *dst_addr, const void *src_addr) {
     dst[5] = src[5];
 }
 
-s32 bdcmp(u8 *arg0, u8 *arg1) {
+/* Compare two 6-byte Bluetooth device addresses; return 0 if equal, -1 otherwise. */ s32 bdcmp(u8 *addrA, u8 *addrB) {
     int i;
     for (i = 0; i < 6; i++) {
-        if (*arg0++ != *arg1++) return -1;
+        if (*addrA++ != *addrB++) return -1;
     }
     return 0;
 }
@@ -7846,7 +7846,7 @@ BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
     UINT8 xx;
     for (xx = 0; xx < lbl_80559030[0]; xx++) {
         UINT8 *p_list = *(UINT8 **)(lbl_80559030 + 4);
-        if ((((UINT32)sub_class >> 2) & 0x3F) == p_list[xx * 2]) {
+        if ((UINT8)(sub_class >> 2) == p_list[xx * 2]) {
             ((UINT8 *)p_cb)[0x15] = p_list[xx * 2 + 1];
             return TRUE;
         }
