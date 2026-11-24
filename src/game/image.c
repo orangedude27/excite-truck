@@ -44,9 +44,8 @@ int fn_802C51AC(void* image) {
     return 1;
 }
 
-/* Round the node's float value (fn_80235EF0, index 0) to the nearest integer, or return 1 for a null node. */ int gxGetImageWidth(void* image) {
-    /* Return the float value of the node (fn_80235EF0, index 0) rounded to
-     * the nearest integer, or 1 if the node is null. */
+int gxGetImageWidth(void* image) {
+    /* Round the image node's float value to the nearest integer, or return 1 for a null handle. */
     f32 imageWidth;
     f32 roundedWidth;
     if (image != 0) {
