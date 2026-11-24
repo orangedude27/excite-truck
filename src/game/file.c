@@ -314,35 +314,35 @@ extern "C" void fn_802E3804(s32 arg0, const char *arg1, s32 arg2) {
 }
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-void fn_802E3898(s32 arg0, const char *arg1, s32 *arg2) {
+/* Read up to *countPtr bytes from the file handle's stream into buffer, looping until the request is filled or the stream ends; write the total bytes read (or a negative read error) back through countPtr. */ void fn_802E3898(s32 fileId, const char *buffer, s32 *countPtr) {
     /* Reads up to *arg2 bytes into arg1 from the file handle's stream, updating *arg2 with bytes read or a negative error. */
     class V {
     public:
         virtual s32 f0(const char *, s32);
     };
-    s32 obj;
-    s32 total;
-    s32 result;
-    s32 entry;
-    s32 count;
+    s32 fileEntry;
+    s32 bytesToRead;
+    s32 bytesRead;
+    s32 stream;
+    s32 justRead;
 
-    obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x142);
-    total = *arg2;
-    result = 0;
-    while (total > 0) {
-        entry = *(s32 *)(obj + 0x24);
-        count = ((V *)entry)->f0(arg1, total - result);
-        if (count < 0) {
-            result = count;
+    fileEntry = fn_802E33D8(fileId, lbl_8034CFB4, 0x142);
+    bytesToRead = *countPtr;
+    bytesRead = 0;
+    while (bytesToRead > 0) {
+        stream = *(s32 *)(fileEntry + 0x24);
+        justRead = ((V *)stream)->f0(buffer, bytesToRead - bytesRead);
+        if (justRead < 0) {
+            bytesRead = justRead;
             break;
         }
-        if (count <= 0) {
+        if (justRead <= 0) {
             break;
         }
-        result += count;
-        arg1 += count;
+        bytesRead += justRead;
+        buffer += justRead;
     }
-    *arg2 = result;
+    *countPtr = bytesRead;
 }
 #pragma use_lmw_stmw reset
 extern "C" void fn_802E3930(s32 fileHandle, s32 offset, s32 whence) {
