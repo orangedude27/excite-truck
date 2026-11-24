@@ -703,8 +703,8 @@ void fn_802D8FB4(void);
 extern int lbl_8055D058;
 extern int lbl_8055D078;
 #pragma scheduling invalid_target
-#pragma dont_inline fn_802CB38C
-int fn_802CB38C(void *loadedBlock, void *createParam, void *relocateBase) {
+#pragma dont_inline loadMipTexture
+int loadMipTexture(void *loadedBlock, void *createParam, void *relocateBase) {
     /* Load a mipmapped texture: byte-swap/relocate the loaded descriptor under the "mip0" label, then create the texture with the default name. */
     #define mipLabel       lbl_8055D078
     #define defaultTexName lbl_8055D058
@@ -1654,7 +1654,7 @@ outer:
             if (loadedBlock != 0) {
                 entry = lbl_8055FCB0 + request[1] * 0x4C;
                 *(int *)(entry + 0x44) = request[2];
-                *(int *)(entry + 0x40) = fn_802CB38C((void *)loadedBlock,
+                *(int *)(entry + 0x40) = loadMipTexture((void *)loadedBlock,
                     (void *)request[3],
                     (void *)*(int *)(lbl_8055FCB0 + 0x34 + request[1] * 0x4C));
                 request[3] = zero;
