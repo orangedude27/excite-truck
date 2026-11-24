@@ -3945,7 +3945,7 @@ extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
     h14 = *(u16 *)(p_buf + 0x14);
     __sthbrx(*(u16 *)(p_buf + 0x16), p_ent + 0x224, 0);
     __sthbrx(*(u16 *)(p_buf + 0x18), p_ent + 0x226, 0);
-    *(u32 *)(p_ent + 0x228) = (word >> 24) | ((word >> 8) & 0xFF00) | ((word & 0xFF00) << 8) | (word << 24);
+    *(u32 *)(p_ent + 0x228) = ((*(u32 *)(p_buf + 0x1C)) >> 24) | ((word >> 8) & 0xFF00) | ((word & 0xFF00) << 8) | (word << 24);
     *(u32 *)(p_ent + 0x234) = (h1A >> 8) | ((h1A & 255) << 8) | ((h14 >> 8) << 16) | ((h14 & 255) << 24);
 }
 
@@ -17729,12 +17729,13 @@ extern "C" void fn_800C280C(s32 *a0, s32 *a1, s32 *o2, s32 *o3) {
 }
 
 extern "C" void fn_800C2A88(volatile s32 *a, volatile s32 *b, volatile s32 *c, volatile s32 *d) {
-    register s32 n0 = -a[0]; c[0] = b[0]; d[0] = n0 + b[17];
-    register s32 n1 = -a[1]; c[64] = b[1]; d[-64] = n1 + b[16];
-    register s32 n2 = -a[2]; c[128] = b[2]; d[-128] = n2 + b[15];
-    register s32 n3 = -a[3]; c[192] = b[3]; d[-192] = n3 + b[14];
-    register s32 n4 = -a[4]; c[256] = b[4]; d[-256] = n4 + b[13];
-    register s32 n5 = -a[5]; c[320] = b[5]; d[-320] = n5 + b[12];
+    s32 n0 = -a[0]; c[0] = b[0]; d[0] = n0 + b[17];
+    s32 n1 = -a[1]; c[64] = b[1]; d[-64] = n1 + b[16];
+    s32 n2 = -a[2]; c[128] = b[2]; d[-128] = n2 + b[15];
+    s32 n3 = -a[3]; c[192] = b[3]; d[-192] = n3 + b[14];
+    s32 n4 = -a[4]; c[256] = b[4]; d[-256] = n4 + b[13];
+    s32 n5 = -a[5]; c[320] = b[5]; d[-320] = n5 + b[12];
+
     volatile const s32 *k = lbl_8031D700;
     s32 value, coefficient0, coefficient1;
     s32 result, reverse;
@@ -20328,8 +20329,8 @@ extern "C" void fn_800D01AC(void *arg0, void *arg1) {
     };
     struct LNode { LNode *next; LNode *prev; };
     struct LList { s32 count; LNode node; };
-    void *sent1 = (void *)&lbl_8055DE00;
-    void *sent2 = (void *)&lbl_8055DE10;
+    void *sent1;
+    void *sent2;
     LList *list = (LList *)arg1;
     void *object;
     u8 *self = (u8 *)arg0;
@@ -20411,12 +20412,13 @@ extern "C" void fn_800D01AC(void *arg0, void *arg1) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
         }
         child = ((Dispatch *)member)->d1();
+        sent1 = (void *)&lbl_8055DE00;
         while (child != 0) {
             if (child == sent1) {
                 found = 1;
                 goto check1;
             }
-            child = *(void **)child;
+            p = *(void **)child; child=(void *)p;
         }
         found = 0;
     check1:
@@ -20432,6 +20434,7 @@ extern "C" void fn_800D01AC(void *arg0, void *arg1) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
         }
         child = ((Dispatch *)member)->d1();
+        sent2 = (void *)&lbl_8055DE10;
         while (child != 0) {
             if (child == sent2) {
                 found = 1;
@@ -22351,7 +22354,7 @@ extern "C" u16 fn_800D441C(void *holder) {
     return *(u16 *)(*(u8 **)((u8 *)holder + 0xC) + 8);
 }
 
-extern "C" s32 fn_800D58F0(void *);
+extern "C" s32 fn_800D58F0(const void *, const void *);
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(void *, void *);
 extern "C" void *lbl_8055DDF0;
 extern "C" f32 lbl_80560E60;
@@ -22474,39 +22477,34 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
   }
 }
 
+void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Material *material) {
+    u8 *entries;
+    u8 *contentOffsets;
+    u16 index;
+    entries = (u8 *)*(void **)((u8 *)this + 0xC);
+    contentOffsets = entries + *(s32 *)(entries + 0x10);
+    index = 0;
+    while (index < *(u16 *)((u8 *)*(void **)((u8 *)this + 0xC) + 0xE)) {
+        u8 *content = (u8 *)*(void **)((u8 *)this + 0xC) + *(s32 *)(contentOffsets + index * 4);
+        if (content[0x15] == 1) {
+            if (((s32 (*)(void *, void *))fn_800D58F0)((u8 *)material + 4, content) != 0) {
+                u8 *link = (u8 *)*(void **)((u8 *)this + 0x18) + index * 0x10;
+                *(void **)(link + 8) = (u8 *)this;
+                *(u16 *)(link + 0xC) = index;
+                AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(
+                    material, (u8 *)*(void **)((u8 *)this + 0x18) + index * 0x10);
+            }
+        }
+        index++;
+    }
+}
+
 /* QUARANTINED (unit would not compile): this draft body uses undeclared nw4hbm
  * types (mpRes, res::AnimationContent, detail::ConvertOffsToPtr,
  * Pane::FindPaneByName/FindMaterialByName, mAnimLinkAry); the compiler stopped at
  * 22389 "undefined identifier 'detail'". Add the missing declarations before
  * re-enabling. */
 #if 0
-void nw4hbm::lyt::AnimTransformBasic::Bind(Pane* pPane, bool recursive) {
-    const u32* const pContentOffsetTbl =
-        detail::ConvertOffsToPtr<u32>(mpRes, mpRes->animContOffsetsOffset);
-
-    for (u16 i = 0; i < mpRes->animContNum; i++) {
-        const res::AnimationContent& rContent =
-            *detail::ConvertOffsToPtr<res::AnimationContent>(
-                mpRes, pContentOffsetTbl[i]);
-
-        if (rContent.type == res::AnimationContent::ANIMTYPE_PANE) {
-            Pane* pResult = pPane->FindPaneByName(rContent.name, recursive);
-
-            if (pResult != NULL) {
-                mAnimLinkAry[i].SetAnimTransform(this, i);
-                pResult->AddAnimationLink(&mAnimLinkAry[i]);
-            }
-        } else /* res::AnimationContent::ANIMTYPE_MATERIAL */ {
-            Material* pResult =
-                pPane->FindMaterialByName(rContent.name, recursive);
-
-            if (pResult != NULL) {
-                mAnimLinkAry[i].SetAnimTransform(this, i);
-                pResult->AddAnimationLink(&mAnimLinkAry[i]);
-            }
-        }
-    }
-}
 
 #endif
 
@@ -24414,11 +24412,9 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                     CbFunc cb = *(CbFunc *)((u8 *)obj4 + 0x14);
                     if (cb != 0) res = cb(5, 8);
                     if (res == 0) {
-                        void *snd5c0 = *(void **)((u8 *)arg0 + 0x5c0);
-                        void *snd5d4 = *(void **)((u8 *)arg0 + 0x5d4);
-                        if (snd5c0 != 0 && snd5d4 != 0) {
+                        if (*(void **)((u8 *)arg0 + 0x5c0) != 0 && *(void **)((u8 *)arg0 + 0x5d4) != 0) {
                             DetachSound__Q34nw4r3snd11SoundHandleFv();
-                            detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo((u8 *)snd5c0 + 0xc, snd5d4, 8, 0, 0, 0);
+                            detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo((u8 *)*(void **)((u8 *)arg0 + 0x5c0) + 0xc, *(void **)((u8 *)arg0 + 0x5d4), 8, 0, 0, 0);
                         }
                     }
                 }
@@ -24445,11 +24441,9 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                     CbFunc cb = *(CbFunc *)((u8 *)obj4 + 0x14);
                     if (cb != 0) res = cb(5, 1);
                     if (res == 0) {
-                        void *snd5c0 = *(void **)((u8 *)arg0 + 0x5c0);
-                        void *snd5d4 = *(void **)((u8 *)arg0 + 0x5d4);
-                        if (snd5c0 != 0 && snd5d4 != 0) {
+                        if (*(void **)((u8 *)arg0 + 0x5c0) != 0 && *(void **)((u8 *)arg0 + 0x5d4) != 0) {
                             DetachSound__Q34nw4r3snd11SoundHandleFv();
-                            detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo((u8 *)snd5c0 + 0xc, snd5d4, 1, 0, 0, 0);
+                            detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo((u8 *)*(void **)((u8 *)arg0 + 0x5c0) + 0xc, *(void **)((u8 *)arg0 + 0x5d4), 1, 0, 0, 0);
                         }
                     }
                 }
@@ -24494,11 +24488,9 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                             CbFunc cb = *(CbFunc *)((u8 *)obj4 + 0x14);
                             if (cb != 0) res = cb(5, 0xc);
                             if (res == 0) {
-                                void *snd5c0 = *(void **)((u8 *)arg0 + 0x5c0);
-                                void *snd5d4 = *(void **)((u8 *)arg0 + 0x5d4);
-                                if (snd5c0 != 0 && snd5d4 != 0) {
+                                if (*(void **)((u8 *)arg0 + 0x5c0) != 0 && *(void **)((u8 *)arg0 + 0x5d4) != 0) {
                                     DetachSound__Q34nw4r3snd11SoundHandleFv();
-                                    detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo((u8 *)snd5c0 + 0xc, snd5d4, 0xc, 0, 0, 0);
+                                    detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo((u8 *)*(void **)((u8 *)arg0 + 0x5c0) + 0xc, *(void **)((u8 *)arg0 + 0x5d4), 0xc, 0, 0, 0);
                                 }
                             }
                         }
@@ -24516,11 +24508,9 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                         CbFunc cb = *(CbFunc *)((u8 *)obj4 + 0x14);
                         if (cb != 0) res = cb(5, 0xa);
                         if (res == 0) {
-                            void *snd5c0 = *(void **)((u8 *)arg0 + 0x5c0);
-                            void *snd5d4 = *(void **)((u8 *)arg0 + 0x5d4);
-                            if (snd5c0 != 0 && snd5d4 != 0) {
+                            if (*(void **)((u8 *)arg0 + 0x5c0) != 0 && *(void **)((u8 *)arg0 + 0x5d4) != 0) {
                                 DetachSound__Q34nw4r3snd11SoundHandleFv();
-                                detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo((u8 *)snd5c0 + 0xc, snd5d4, 0xa, 0, 0, 0);
+                                detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo((u8 *)*(void **)((u8 *)arg0 + 0x5c0) + 0xc, *(void **)((u8 *)arg0 + 0x5d4), 0xa, 0, 0, 0);
                             }
                         }
                     }
@@ -24538,11 +24528,9 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                     CbFunc cb = *(CbFunc *)((u8 *)obj4 + 0x14);
                     if (cb != 0) res = cb(5, 0xd);
                     if (res == 0) {
-                        void *snd5c0 = *(void **)((u8 *)arg0 + 0x5c0);
-                        void *snd5d4 = *(void **)((u8 *)arg0 + 0x5d4);
-                        if (snd5c0 != 0 && snd5d4 != 0) {
+                        if (*(void **)((u8 *)arg0 + 0x5c0) != 0 && *(void **)((u8 *)arg0 + 0x5d4) != 0) {
                             DetachSound__Q34nw4r3snd11SoundHandleFv();
-                            detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo((u8 *)snd5c0 + 0xc, snd5d4, 0xd, 0, 0, 0);
+                            detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo((u8 *)*(void **)((u8 *)arg0 + 0x5c0) + 0xc, *(void **)((u8 *)arg0 + 0x5d4), 0xd, 0, 0, 0);
                         }
                     }
                 }
@@ -24584,11 +24572,9 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                             CbFunc cb = *(CbFunc *)((u8 *)obj4 + 0x14);
                             if (cb != 0) res = cb(5, 0xb);
                             if (res == 0) {
-                                void *snd5c0 = *(void **)((u8 *)arg0 + 0x5c0);
-                                void *snd5d4 = *(void **)((u8 *)arg0 + 0x5d4);
-                                if (snd5c0 != 0 && snd5d4 != 0) {
+                                if (*(void **)((u8 *)arg0 + 0x5c0) != 0 && *(void **)((u8 *)arg0 + 0x5d4) != 0) {
                                     DetachSound__Q34nw4r3snd11SoundHandleFv();
-                                    detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo((u8 *)snd5c0 + 0xc, snd5d4, 0xb, 0, 0, 0);
+                                    detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo((u8 *)*(void **)((u8 *)arg0 + 0x5c0) + 0xc, *(void **)((u8 *)arg0 + 0x5d4), 0xb, 0, 0, 0);
                                 }
                             }
                         }
@@ -24606,11 +24592,9 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                         CbFunc cb = *(CbFunc *)((u8 *)obj4 + 0x14);
                         if (cb != 0) res = cb(5, 9);
                         if (res == 0) {
-                            void *snd5c0 = *(void **)((u8 *)arg0 + 0x5c0);
-                            void *snd5d4 = *(void **)((u8 *)arg0 + 0x5d4);
-                            if (snd5c0 != 0 && snd5d4 != 0) {
+                            if (*(void **)((u8 *)arg0 + 0x5c0) != 0 && *(void **)((u8 *)arg0 + 0x5d4) != 0) {
                                 DetachSound__Q34nw4r3snd11SoundHandleFv();
-                                detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo((u8 *)snd5c0 + 0xc, snd5d4, 9, 0, 0, 0);
+                                detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo((u8 *)*(void **)((u8 *)arg0 + 0x5c0) + 0xc, *(void **)((u8 *)arg0 + 0x5d4), 9, 0, 0, 0);
                             }
                         }
                     }
@@ -24628,11 +24612,9 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
                     CbFunc cb = *(CbFunc *)((u8 *)obj4 + 0x14);
                     if (cb != 0) res = cb(5, 0xd);
                     if (res == 0) {
-                        void *snd5c0 = *(void **)((u8 *)arg0 + 0x5c0);
-                        void *snd5d4 = *(void **)((u8 *)arg0 + 0x5d4);
-                        if (snd5c0 != 0 && snd5d4 != 0) {
+                        if (*(void **)((u8 *)arg0 + 0x5c0) != 0 && *(void **)((u8 *)arg0 + 0x5d4) != 0) {
                             DetachSound__Q34nw4r3snd11SoundHandleFv();
-                            detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo((u8 *)snd5c0 + 0xc, snd5d4, 0xd, 0, 0, 0);
+                            detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo((u8 *)*(void **)((u8 *)arg0 + 0x5c0) + 0xc, *(void **)((u8 *)arg0 + 0x5d4), 0xd, 0, 0, 0);
                         }
                     }
                 }
