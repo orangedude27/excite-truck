@@ -133,8 +133,9 @@ int fn_802E1804(void *dst, void *src, int count, int outerBytes, int stride)
 #pragma dont_inline reset
 #pragma use_lmw_stmw reset
 #pragma optimization_level reset
-/* Initialize a GX texture object with nearest filtering, the same wrap mode on both axes, no mipmaps, and all LOD/bias values zeroed. */ int fn_802E18D4(int width, int height, int texFmt, int wrapST, void *texObj, int image) {
-    /* Initialize a GX texture object and set all LOD parameters to zero. */
+/* Initialize a GX texture object with nearest filtering, the same wrap mode on
+ * both axes, no mipmaps, and all LOD/bias values zeroed. */
+int fn_802E18D4(int width, int height, int texFmt, int wrapST, void *texObj, int image) {
     GXInitTexObj((GXTexObj *)texObj, (void *)image, (unsigned short)width, (unsigned short)height,
                  texFmt, wrapST, wrapST, 0);
     GXInitTexObjLOD((GXTexObj *)texObj, 0, 0, 0, 0, 0,
