@@ -24,7 +24,7 @@ class FileDisk {
 public:
     virtual int read(void *dst, int len);         // 0x08 fn_802E4440
     virtual int write(const void *src, int len);  // 0x0C fn_802E4648: "write not supported"
-    virtual int readAsync(void *dst, int len);    // 0x10 fn_802E45AC
+    virtual int readAsync(void *dst, int len);    // 0x10 FileDisk_readAsync
     virtual int isReadDone(void);                 // 0x14 fn_802E461C
     virtual int getLength(void);                  // 0x18 fn_802E4400
     virtual int tell(void);                       // 0x1C fn_802E4680
@@ -419,7 +419,7 @@ int fn_802E4440(void *arg0, void *arg1, int arg2) {
     }
 }
 #pragma pop
-int fn_802E45AC(void *arg0, void *arg1, int arg2) {
+int FileDisk_readAsync(void *arg0, void *arg1, int arg2) {
     /* Starts an async DVD read from the file node's current cursor into arg1
      * for arg2 bytes (priority 2), reports on failure, advances the cursor,
      * and returns 1. */
