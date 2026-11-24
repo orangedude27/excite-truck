@@ -212,7 +212,7 @@ void fn_802D4060(void *arg0) {
     GXSetArray(14, *(void **)((u8 *)object + 0x24), 4);
     GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
 }
-void fn_802D41C8(void *arg0) {
+void drDrawSurfLayout10(void *arg0) {
     /* Binds this object's position, normal, and color vertex arrays, then submits its display list. */
     GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
     GXSetArray(0xA, *(void **)((char *)arg0 + 0x24), 3);
@@ -1025,7 +1025,7 @@ void fn_802D5F88(s32 arg0) {
     fn_802D5F88((s32)surface);
     layout = (int)((u8 *)surface)[8];
     switch (layout - 10) {
-    case 0: fn_802D41C8(surface); break;
+    case 0: drDrawSurfLayout10(surface); break;
     case 4: if (fn_802DAC64()) drDrawSurfLayout14(surface); else fn_802D42E4(surface); break;
     case 9: fn_802D4458(surface); break;
     case 16: fn_802D45C0(surface); break;
