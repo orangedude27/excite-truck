@@ -461,16 +461,16 @@ void fn_80004EC0(const char* source) {
 
 #pragma cplusplus on
 extern "C" u32 fn_80004FCC(GameVirtualObject* object, u32 argument, u32 fallback) {
-    /* Query a virtual object: if it reports ready, return its value for the argument, otherwise return the fallback. */
-    struct Dummy {
-        virtual s32 f0();
-        virtual s32 f1();
-        virtual s32 f2();
-        virtual u32 f3(u32);
+    /* Return the virtual object's value for argument when it reports ready, else the fallback. */
+    struct VirtualObject {
+        virtual s32 reserved0();
+        virtual s32 isReady();
+        virtual s32 reserved2();
+        virtual u32 getValue(u32);
     };
     u32 result;
-    if (((Dummy*)object)->f1()) {
-        result = ((Dummy*)object)->f3(argument);
+    if (((VirtualObject*)object)->isReady()) {
+        result = ((VirtualObject*)object)->getValue(argument);
     } else {
         result = fallback;
     }
