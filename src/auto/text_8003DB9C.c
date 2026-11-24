@@ -2947,19 +2947,20 @@ extern void OSSleepThread(void *);
 extern void OSInitThreadQueue(void *);
 extern void (*lbl_8055D978_callback)(unsigned short);
 #pragma scheduling on
-void GXInitSpecularDir(unsigned int arg0, void *ctx) {
+/* PE draw-sync token interrupt handler: run the registered draw-sync callback with the token from PE register 7 on a temporary OS context, then acknowledge the token interrupt. */
+void GXInitSpecularDir(unsigned int intr, void *currentCtx) {
     extern unsigned int gDrawSyncCallback;
     extern unsigned short *__peReg;
     extern void OSClearContext(void *);
     extern void OSSetCurrentContext(void *);
     char local[0x2D0];
-    unsigned short value = __peReg[7];
+    unsigned short token = __peReg[7];
     if (gDrawSyncCallback != 0) {
         OSClearContext(local);
         OSSetCurrentContext(local);
-        ((void (*)(unsigned short))gDrawSyncCallback)(value);
+        ((void (*)(unsigned short))gDrawSyncCallback)(token);
         OSClearContext(local);
-        OSSetCurrentContext(ctx);
+        OSSetCurrentContext(currentCtx);
     }
     *(volatile unsigned short *)&__peReg[5] |= 4;
 }
