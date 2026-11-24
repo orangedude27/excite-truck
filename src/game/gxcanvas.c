@@ -179,24 +179,24 @@ void fn_802C2FC4(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_802C2FC8(void *arg0, u32 arg1, u32 arg2, s32 arg3, s32 arg4)
+/* Set a GxCanvas clip rectangle: min corner from the unsigned args (masked to the s32 range), max corner capped by the canvas width/height and the signed args. */ void fn_802C2FC8(void *canvas, u32 newMinX, u32 newMinY, s32 newMaxX, s32 newMaxY)
 {
-  s32 var_r0;
-  s32 var_r10;
-  var_r10 = (0, *((s32 *) (((u8 *) arg0) + 8)));
-  *((s32 *) (((u8 *) arg0) + 0x14)) = (s32) (arg1 & ((arg1 >> 31) - 1));
-  *((s32 *) (((u8 *) arg0) + 0x18)) = (s32) (arg2 & ((arg2 >> 31) - 1));
-  if (arg3 < var_r10)
+  s32 clampedMaxY;
+  s32 clampedMaxX;
+  clampedMaxX = (0, *((s32 *) (((u8 *) canvas) + 8)));
+  *((s32 *) (((u8 *) canvas) + 0x14)) = (s32) (newMinX & ((newMinX >> 31) - 1));
+  *((s32 *) (((u8 *) canvas) + 0x18)) = (s32) (newMinY & ((newMinY >> 31) - 1));
+  if (newMaxX < clampedMaxX)
   {
-    var_r10 = arg3;
+    clampedMaxX = newMaxX;
   }
-  var_r0 = *((s32 *) (((u8 *) arg0) + 0xC));
-  *((s32 *) (((u8 *) arg0) + 0x1C)) = var_r10;
-  if (arg4 < var_r0)
+  clampedMaxY = *((s32 *) (((u8 *) canvas) + 0xC));
+  *((s32 *) (((u8 *) canvas) + 0x1C)) = clampedMaxX;
+  if (newMaxY < clampedMaxY)
   {
-    var_r0 = arg4;
+    clampedMaxY = newMaxY;
   }
-  *((s32 *) (((u8 *) arg0) + 0x20)) = var_r0;
+  *((s32 *) (((u8 *) canvas) + 0x20)) = clampedMaxY;
 }
 #pragma pop
 /* Resets a canvas's clip rectangle to the whole surface: {0, 0, width, height}. */
