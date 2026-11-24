@@ -75,19 +75,20 @@ void fn_8024BDFC(void* subobject) {
     __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC((char*)subobject - 0x18);
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8024BE04(void) {
     unsigned short *tbl;
     char *base;
+    float *mp;
     int h;
     int i;
-    volatile Vec3 p3, p2, p1, p0;
-    unsigned short idx[6];
     float m[12];
     Vtx v[4];
+    volatile Vec3 p3, p2, p1, p0;
+    unsigned short idx[6];
     float one, zero, z;
     base = lbl_80343E90;
-    fn_802E30C8(base);
+    fn_802E30C8(base + 0);
     h = fn_802CAC28(base + 0xC, 0);
     zero = lbl_8056390C;
     one = lbl_80563908;
@@ -101,7 +102,8 @@ void fn_8024BE04(void) {
         fn_802C86E8(0xFF7F7F7F);
         fn_802C88BC(3);
         fn_802C974C(lbl_80563914, lbl_80563918, lbl_8056391C);
-        fn_802C8638(m);
+        mp = m;
+        fn_802C8638(mp);
         p0.x = zero; p0.y = zero; p0.z = zero;
         p1.x = one; p1.y = zero; p1.z = zero;
         p2.x = zero; p2.y = one; p2.z = zero;
