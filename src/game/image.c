@@ -74,21 +74,21 @@ int fn_802C5220(void* arg0) {
 }
 
 #pragma dont_inline on
-int fn_802C5280(int arg0, int arg1, int arg2) {
+/* Return nonzero if point (x, y) lies within the image bounds: 0 <= x < width and 0 <= y < height. */ int fn_802C5280(int image, int x, int y) {
     /* Return nonzero if (x,y) lies within the image bounds (0 <= x < width, 0 <= y < height). */
-    int result;
+    int inside;
 
-    if (arg0 != 0) {
-        result = 0;
-        if ((arg1 >= 0) && (arg2 >= 0) &&
-            (arg1 < fn_802C51C0((void*)arg0)) &&
-            (arg2 < fn_802C5220((void*)arg0))) {
-            result = 1;
+    if (image != 0) {
+        inside = 0;
+        if ((x >= 0) && (y >= 0) &&
+            (x < fn_802C51C0((void*)image)) &&
+            (y < fn_802C5220((void*)image))) {
+            inside = 1;
         }
     } else {
-        result = 0;
+        inside = 0;
     }
-    return result;
+    return inside;
 }
 #pragma dont_inline reset
 extern void fn_802353F4(void);
