@@ -492,9 +492,9 @@ check:
     if (count < base[0x48]) goto loop;
     *((char *)&lbl_804B4010 + 0x14) = 0;
 }
-void fn_8029227C(void)
+/* Debug draw hook gated on two flags: temporarily disable view-range clipping, refresh the track camera and effect overlays when enabled, then restore the previous view-range setting. */ void fn_8029227C(void)
 {
-  int old;
+  int prevViewRange;
   if (lbl_8055F75C == 0)
   {
     goto done;
@@ -515,7 +515,7 @@ void fn_8029227C(void)
   goto done;
 
   body:
-  old = fn_802C2C00(0);
+  prevViewRange = fn_802C2C00(0);
 
   if (*((unsigned char *) (lbl_804B4010 + 0x14)))
   {
@@ -529,7 +529,7 @@ void fn_8029227C(void)
   {
     fn_80291E64(&lbl_804B3EC0);
   }
-  fn_802C2C00(old);
+  fn_802C2C00(prevViewRange);
   done:
   ;
 
