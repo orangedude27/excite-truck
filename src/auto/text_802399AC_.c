@@ -1038,8 +1038,9 @@ void fn_8023B0BC(void *widget) {
 #pragma push
 #pragma cplusplus on
 extern "C" s32 fn_80214D04(void);
-extern "C" void UIOptions_SetEnabledForMenuState0(void *arg0) {
-    struct Dummy {
+extern "C" void UIOptions_SetEnabledForMenuState0(void *widget) {
+    /* Set this option row's enabled flag from menu state 0, unless the erase-data widget is active. */
+    struct EraseDataWidget {
         virtual s32 f0();
         virtual s32 f1();
         virtual s32 f2();
@@ -1062,15 +1063,15 @@ extern "C" void UIOptions_SetEnabledForMenuState0(void *arg0) {
         virtual s32 f19();
         virtual s32 f20();
         virtual s32 f21();
-        virtual s32 f22();
+        virtual s32 isActive();
     };
-    if (((Dummy *)lbl_8055F10C)->f22() == 0) {
+    if (((EraseDataWidget *)lbl_8055F10C)->isActive() == 0) {
         switch (fn_80214D04()) {
         case 0:
-            *(s32 *)((char *)arg0 + 0x18) = 1;
+            *(s32 *)((char *)widget + 0x18) = 1;
             break;
         default:
-            *(s32 *)((char *)arg0 + 0x18) = 0;
+            *(s32 *)((char *)widget + 0x18) = 0;
             break;
         }
     }
