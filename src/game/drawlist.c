@@ -113,7 +113,7 @@ extern void HomeMenu_drawUIAndFlush(void);
 extern void fn_802CC770(void);
 extern void fn_802CC60C(void);
 extern void HomeMenu_beginFrame(void);
-extern int lbl_8055FC78;
+extern int gCurrentModelColor;
 extern void fn_802CFFAC(unsigned char, unsigned char, unsigned char);
 extern float lbl_8055FC38;
 extern float lbl_8055FC3C;
@@ -1117,8 +1117,8 @@ void fn_802C9904(void) {
 int setModelColor(int arg0) {
     /* Set the current packed draw color, forward its RGB components to
      * fn_802CFFAC, and return the previous packed color. */
-    int previousColor = lbl_8055FC78;
-    lbl_8055FC78 = arg0;
+    int previousColor = gCurrentModelColor;
+    gCurrentModelColor = arg0;
     fn_802CFFAC((arg0 >> 16) & 0xFF, (arg0 >> 8) & 0xFF, arg0 & 0xFF);
     return previousColor;
 }
