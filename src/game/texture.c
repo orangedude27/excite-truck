@@ -705,17 +705,12 @@ extern int mip0Path;
 #pragma scheduling invalid_target
 #pragma dont_inline loadMipTexture
 int loadMipTexture(void *loadedBlock, void *createParam, void *relocateBase) {
-    /* Load a mipmapped texture: byte-swap/relocate the loaded descriptor under the "mip0" label, then create the texture with the default name. */
-    #define mipLabel       mip0Path
-    #define defaultTexName defaultTextureName
-    register int block = (int)loadedBlock;
+    /* Load a mipmapped texture: byte-swap/relocate the loaded descriptor under the "mip0" path, then create it with the default "mip-0" name. */
+    register int data = (int)loadedBlock;
     register int base = (int)relocateBase;
     register int param = (int)createParam;
-    ((int (*)(int, int, int, int))fn_802CA57C)(block, (int)&mipLabel, 0, base);
-    return fn_802CA4E0(block, defaultTexName, 0, param, base);
-
-    #undef defaultTexName
-    #undef mipLabel
+    ((int (*)(int, int, int, int))fn_802CA57C)(data, (int)&mip0Path, 0, base);
+    return fn_802CA4E0(data, defaultTextureName, 0, param, base);
 }
 #pragma scheduling on
 void fn_802CB3F4(void) {
