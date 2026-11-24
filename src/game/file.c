@@ -516,7 +516,7 @@ void fn_802E3D00(void) {
 }
 
 #pragma cplusplus on
-extern "C" s32 fn_802E3D04(s32 arg0) {
+/* Open a file by name through the secondary file system: ask its vtable method (slot 0x10) for a native handle, register it in the open-file table, and return the new handle index (or -1 on failure). */ extern "C" s32 fn_802E3D04(s32 path) {
     class V {
     public:
         virtual void a();
@@ -530,9 +530,9 @@ extern "C" s32 fn_802E3D04(s32 arg0) {
      * object returned by fn_802E336C, registers the result via fn_802E35C0,
      * and returns that handle (or -1 on failure). */
     if (obj == 0) goto fail;
-    result = obj->c(arg0);
+    result = obj->c(path);
     if (result == 0) goto fail;
-    result = fn_802E35C0((const char *)arg0, result);
+    result = fn_802E35C0((const char *)path, result);
     goto done;
 fail:
     result = -1;
