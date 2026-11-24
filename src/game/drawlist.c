@@ -366,14 +366,14 @@ void *DrawList_saveViewport(void *savedViewport, int x, int y, int width, int he
 extern void DrawList_setViewport(int, int, int, int);
 extern void fn_80128668(void *);
 /* Restore a saved viewport rect (x, y, width, height at +0,+4,+8,+0xC) and optionally delete it. */
-void *DrawList_restoreViewport(void *savedRect, int deleteFlag) {
-    if (savedRect != 0) {
-        DrawList_setViewport(*(int *)((unsigned char *)savedRect), *(int *)((unsigned char *)savedRect + 4), *(int *)((unsigned char *)savedRect + 8), *(int *)((unsigned char *)savedRect + 0xC));
-        if (deleteFlag > 0) {
-            fn_80128668(savedRect);
+/* Restore the viewport rectangle saved by DrawList_saveViewport (x, y, width, height at +0,+4,+8,+0xC); when freeBuffer is positive, also free the saved buffer. */ void *DrawList_restoreViewport(void *savedViewport, int freeBuffer) {
+    if (savedViewport != 0) {
+        DrawList_setViewport(*(int *)((unsigned char *)savedViewport), *(int *)((unsigned char *)savedViewport + 4), *(int *)((unsigned char *)savedViewport + 8), *(int *)((unsigned char *)savedViewport + 0xC));
+        if (freeBuffer > 0) {
+            fn_80128668(savedViewport);
         }
     }
-    return savedRect;
+    return savedViewport;
 }
 
 #pragma push
