@@ -263,18 +263,40 @@ extern s8 lbl_8055EE43;
     lbl_8055EE41 = 0;
 }
 #pragma pop
-/* Initializes pre-race music state (stops track music, resets fade/volume/state flags). */
+/* Reset pre-race music: stop track music, restore full fade and race-start
+   volume, reload the master volume from the Music setting and clear all
+   track-selection and timing state. */
 void musicPreRaceInit(void) {
+    #define kFullVolume lbl_805632F0
+    #define gMasterFade lbl_8055EE4C
+    #define gFadeTarget lbl_8055EE50
+    #define gStartVolume lbl_8055EE54
+    #define gMusicVolume lbl_8055EE48
+    #define gAudioActive lbl_8055EE40
+    #define gFeaturedTrackActive lbl_8055EE44
+    #define gTrackStartFrame lbl_8055EE3C
+    #define gTrackSelection lbl_8055EE45
+    #define gTrackSelectionLocked lbl_8055EE46
     stopTrackMusic();
-    lbl_8055EE4C = lbl_805632F0;
-    lbl_8055EE50 = lbl_805632F0;
-    lbl_8055EE54 = lbl_805632F0;
-    lbl_8055EE48 = fn_8020A5F0();
-    lbl_8055EE40 = 0;
-    lbl_8055EE44 = 0;
-    lbl_8055EE3C = 0;
-    lbl_8055EE45 = 0;
-    lbl_8055EE46 = 0;
+    gMasterFade = kFullVolume;
+    gFadeTarget = kFullVolume;
+    gStartVolume = kFullVolume;
+    gMusicVolume = fn_8020A5F0();
+    gAudioActive = 0;
+    gFeaturedTrackActive = 0;
+    gTrackStartFrame = 0;
+    gTrackSelection = 0;
+    gTrackSelectionLocked = 0;
+    #undef gTrackSelectionLocked
+    #undef gTrackSelection
+    #undef gTrackStartFrame
+    #undef gFeaturedTrackActive
+    #undef gAudioActive
+    #undef gMusicVolume
+    #undef gStartVolume
+    #undef gFadeTarget
+    #undef gMasterFade
+    #undef kFullVolume
 }
 
 extern void fn_8020C2AC(void);
