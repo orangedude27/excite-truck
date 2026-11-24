@@ -48,7 +48,7 @@ void fn_800053CC(void) {
 }
 #pragma pop
 /* No-op placeholder. */
-void fn_8000545C(void) {
+/* No-op stub. */ void fn_8000545C(void) {
     return;
 }
 
@@ -75,7 +75,8 @@ void fn_80005464(void) {
         lbl_8034EE84[1] = 0;
     }
 }
-#pragma unroll off
+#pragma opt_unroll_loops off
+#pragma ctrloop on
 void fn_800054E0(void) {
     volatile f32 *p = (volatile f32 *)lbl_8034EC78;
     s32 i = 16;
@@ -90,7 +91,6 @@ void fn_800054E0(void) {
     *(s32 *)(lbl_8034EC78 + 0x204) = fn_802E2C20();
     *(s32 *)(lbl_8034EC78 + 0x208) = 0;
 }
-#pragma unroll reset
 /* Returns non-zero if field at offset 0x50 in lbl_8034EEB8 is non-zero. */
 s32 fn_80005564(void) {
     return lbl_8034EEB8[0x50 / 4] != 0;
