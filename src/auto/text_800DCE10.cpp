@@ -174,7 +174,6 @@ extern "C" void *__ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4
     const u8 *entry;
     void *font;
     void *material;
-    u32 zeroBits = 0;
 
     __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(this_, res);
     *(void **)self = (void *)lbl_803208D4;
@@ -187,10 +186,10 @@ extern "C" void *__ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4
     if (count != 0) {
         count = (u16)(count - 1);
         q = self[0xFC] / 3;
-        *(u32 *)(self + 0xD4) = zeroBits;
-        *(u16 *)(self + 0xF8) = zeroBits;
-        *(u16 *)(self + 0xFA) = zeroBits;
-        *(u32 *)(self + 0xE0) = zeroBits;
+        *(u32 *)(self + 0xD4) = 0;
+        *(u16 *)(self + 0xF8) = 0;
+        *(u16 *)(self + 0xFA) = 0;
+        *(u32 *)(self + 0xE0) = 0;
         value = q * 3 + 1;
         rem = value % 3;
         sp8 = zero;
@@ -199,7 +198,7 @@ extern "C" void *__ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4
         *(f32 *)(self + 0xE8) = zero;
         *(f32 *)(self + 0xEC) = zero;
         *(f32 *)(self + 0xF0) = zero;
-        *(u32 *)(self + 0xF4) = zeroBits;
+        *(u32 *)(self + 0xF4) = 0;
         self[0xFC] = (u8)(rem + 3);
         memset(self + 0xFD, 0, 1);
     }
@@ -362,11 +361,11 @@ void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *outColor, const void *textBox
     if (colorIndex >= 2) {
         ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(lbl_80320B8C, 0x5f, lbl_80320B5C);
     }
-    const u8 *base = (const u8 *)textBox + (colorIndex * 4);
-    ((u8 *)outColor)[0] = base[0xD8];
-    ((u8 *)outColor)[1] = base[0xD9];
-    ((u8 *)outColor)[2] = base[0xDA];
-    ((u8 *)outColor)[3] = base[0xDB];
+    const u8 *colorSrc = (const u8 *)textBox + (colorIndex * 4);
+    ((u8 *)outColor)[0] = colorSrc[0xD8];
+    ((u8 *)outColor)[1] = colorSrc[0xD9];
+    ((u8 *)outColor)[2] = colorSrc[0xDA];
+    ((u8 *)outColor)[3] = colorSrc[0xDB];
 }
 
 void SetVtxColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color) {
