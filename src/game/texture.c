@@ -295,8 +295,8 @@ extern void fn_802CA57C(void *, int, int, int);
     return textureData;
 }
 #pragma scheduling on
-/* Return the GX texture format name string for a texture format id. */
-/* Return the MMT_* material-type name string for a material type id (15 names, plus "<unknown>" for out-of-range ids). */ char *fn_802CA72C(unsigned int matType) {
+    /* Return the MMT_* material-type name string for a material type id (15 names, plus "<unknown>" for out-of-range ids). */
+    char *fn_802CA72C(unsigned int matType) {
     char *nameTable = lbl_8034B538;
     switch (matType) {
     case 0: return nameTable + 0x140;
