@@ -4743,7 +4743,7 @@ unsigned short GXGetTexObjTlut(void *tlutObj) {
     return *(unsigned short *)((char *)tlutObj + 8);
 }
 
-void GXLoadTlut(const void *arg0, int arg1) {
+/* Load a texture lookup table (TLUT) from data into the GX TLUT identified by tlut: resolve the destination through the GX data callback, push the load-BP-reg FIFO commands, then copy and pack the source words into the TLUT entry. */ void GXLoadTlut(const void *arg0, int arg1) {
     union Low10 {
         unsigned int v;
         struct { unsigned int hi : 22; unsigned int lo : 10; } f;
@@ -6159,23 +6159,20 @@ void GXSetProjection(float *arg0, int arg1) {
 }
 
 #pragma push
+#pragma processor 750
 #pragma paired on
 #pragma paired_single on
 void GXSetProjectionv(float *arg0) {
     unsigned int *data;
-    double *src;
-    volatile double *dst;
     enum E { GX_PERSPECTIVE, GX_ORTHOGRAPHIC };
     enum E type;
     if (lbl_80560BC8 == arg0[0]) type = GX_PERSPECTIVE;
     else type = GX_ORTHOGRAPHIC;
     data = __GXData;
     data[0x528 / 4] = type;
-    src = (double *)(arg0 + 1);
-    dst = (volatile double *)((char *)data + 0x52C);
-    dst[0] = src[0];
-    dst[1] = src[1];
-    dst[2] = src[2];
+    *(f64 *)((char *)data + 0x52C) = *(const f64 *)(arg0 + 1);
+    *(f64 *)((char *)data + 0x534) = *(const f64 *)(arg0 + 3);
+    *(f64 *)((char *)data + 0x53C) = *(const f64 *)(arg0 + 5);
     data[0x5FC / 4] |= 0x08000000;
 }
 #pragma pop
