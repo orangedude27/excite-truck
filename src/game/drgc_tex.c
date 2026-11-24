@@ -158,6 +158,9 @@ typedef struct DrTexRecord {
     void *texelData;          /* at 0xD0: primary texture image */
     unsigned int texelSize;   /* at 0xD4: its size */
         void *srcClut;            /* at 0xD8: source RGBA8888 palette the CLUTs come from */
+    char pad_DC[0x10];        /* at 0xDC..0xEB */
+    unsigned int lastBoundFrame; /* at 0xEC: GX draw-sync count when last bound (lbl_8055FD30) */
+    unsigned int bindCount;      /* at 0xF0: number of times this record has been GX-bound */
 } DrTexRecord;
 
 /* The GX texture map the setters below bind a record's two GXTexObjs to
