@@ -1101,12 +1101,12 @@ void fn_80272354(void *obj) {
 }
 
 #pragma processor 750
-/* Sample a 2D position along a path: fn_80136468 locates the current path node and 0..1 fraction at the follower's distance, then lerp the node's (x,y) toward the next node's by that fraction into outPos. */ void samplePathPosition(void *follower, void *outPos) {
+void samplePathPosition(void *follower, void *outPos) {
     void *sample;
     void *node;
     float fraction;
     float startX;
-float startY;
+    float startY;
     ((void (*)(void **, void *))fn_80136468)(&sample, follower);
     node = sample;
     fraction = *(float *)((char *)&sample + 4);
