@@ -124,7 +124,7 @@ s32 fn_802E33D8(s32 fileId, const char *name, s32 line) {
     return (s32)gOpenFileTable + entryOffset;
 }
 #pragma scheduling on
-void fn_802E3498(void) {
+/* Initialize the file subsystem: clear the open-file table and lazily create the default DVD file-system object. */ void fn_802E3498(void) {
     /* RealName: File_InitSubsystem (clears the open-file table and lazily creates the default DVD file-system object). */
 #define sOpenFileTable gOpenFileTable
 #define sDefaultFileSystem gDefaultFileSystem
