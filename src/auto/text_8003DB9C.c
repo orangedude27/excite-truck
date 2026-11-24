@@ -5451,7 +5451,6 @@ void GXSetTevColor(s32 tevReg, const unsigned int *color) {
 }
 
 void GXSetTevKColorSel(s32 stage, s32 sel) {
-    /* Pack the constant-color selector into the even/odd half of the TEV register and push it to the GX FIFO. */
     union TevKColorReg {
         u32 value;
         struct { u32 pad0 : 13; u32 selector : 5; u32 pad1 : 14; } odd;
@@ -6155,15 +6154,19 @@ void GXSetProjection(float *arg0, int arg1) {
 #pragma paired_single on
 void GXSetProjectionv(float *arg0) {
     unsigned int *data;
+    double *src;
+    double *dst;
     enum E { GX_PERSPECTIVE, GX_ORTHOGRAPHIC };
     enum E type;
     if (lbl_80560BC8 == arg0[0]) type = GX_PERSPECTIVE;
     else type = GX_ORTHOGRAPHIC;
     data = __GXData;
     data[0x528 / 4] = type;
-    *(float *)((char *)data + 0x52C) = arg0[1];
-    *(float *)((char *)data + 0x534) = arg0[2];
-    *(float *)((char *)data + 0x53C) = arg0[4];
+    src = (double *)(arg0 + 1);
+    dst = (double *)((char *)data + 0x52C);
+    dst[0] = src[0];
+    dst[1] = src[1];
+    dst[2] = src[2];
     data[0x5FC / 4] |= 0x08000000;
 }
 #pragma pop
