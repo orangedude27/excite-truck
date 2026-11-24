@@ -1149,7 +1149,7 @@ void CpuLight_BeginIndirectPass(int arg0, int indTexSlot, int texSlot1, float li
  * between): drops the indirect texture matrix from the GX state block, forgets
  * the cached position array, unbinds the pass' texture from texcoord slot 1,
  * turns indirect stages off and makes tev stage 0 direct again. */
-void fn_802DD228(void) {
+void CpuLight_EndIndirectPass(void) {
     /* Whether CpuLight_BeginIndirectPass left an indirect-texture pass running. */
 #define indirectPassRunning lbl_8055FEC0
 #define ClearIndTexMtxFlag fn_802D3E88 /* gRenderRequest[13]: indirect tex matrix loaded */
