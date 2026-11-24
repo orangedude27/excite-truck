@@ -44,7 +44,7 @@ extern char lbl_80560034;
 extern char lbl_8034DD78[];
 extern char lbl_8034DE94[];
 extern void fn_802E30C8(const char *, ...);
-extern void fn_802E8B34(const char *);
+extern void rmemcardDeleteFile(const char *);
 extern int fn_802E888C(int);
 extern char lbl_8034DB28[];
 extern void fn_802E86D4(void);
@@ -272,7 +272,7 @@ int fn_802E8AE8(const char *path) {
     return exists;
 }
 
-void fn_802E8B34(const char *path) {
+void rmemcardDeleteFile(const char *path) {
     /* Logs the NAND delete attempt and reports an error if NANDDelete fails. */
     fn_802E30C8(lbl_8034DE54, path);
     {
@@ -286,8 +286,8 @@ void fn_802E8B34(const char *path) {
 void fn_802E8B98(void) {
     /* Delete the currently selected NAND file, appending "banner.bin"; report if no file is selected. */
     if (lbl_80560030 != 0) {
-        fn_802E8B34((const char *)lbl_80560030);
-        fn_802E8B34(lbl_8034DD78);
+        rmemcardDeleteFile((const char *)lbl_80560030);
+        rmemcardDeleteFile(lbl_8034DD78);
     } else {
         fn_802E30C8(lbl_8034DE94);
     }
