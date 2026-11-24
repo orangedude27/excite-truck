@@ -238,7 +238,7 @@ extern "C" void fn_8020A978(void *arg0) {
 #pragma scheduling on
 
 extern void fn_802E59BC(void *);
-extern void fn_802E5950(int, int);
+extern void Spu_CacheVoiceByPath(int, int);
 extern void fn_802E6138(void);
 extern void fn_802E61D8(void *);
 void fn_8020AA0C(void *self) {
@@ -360,9 +360,9 @@ copy_done:
 #pragma cplusplus reset
 #pragma pop
 /* Voice-sound thunk: drop the unused object pointer and forward the directory
- * and file names to the path-building helper fn_802E5950. */
+ * and file names to the path-building helper Spu_CacheVoiceByPath. */
 void fn_8020AC0C(int self, int dirName, int fileName) {
-    fn_802E5950(dirName, fileName);
+    Spu_CacheVoiceByPath(dirName, fileName);
 }
 
 /* Voice-sound thunk: drop the unused object pointer and forward the SFX0

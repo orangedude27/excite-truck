@@ -699,7 +699,7 @@ done:
 extern int sprintf(char *, const char *, ...);
 #pragma scheduling invalid_target
 /* Builds a SPU resource path from a directory and name, logs it, and warns if it cannot be cached. */
-void fn_802E5950(int dirName, int fileName) {
+void Spu_CacheVoiceByPath(int dirName, int fileName) {
     char path[0x108];
 
     sprintf(path, lbl_8055D1E4, dirName, fileName);
