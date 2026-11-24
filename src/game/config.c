@@ -44,7 +44,7 @@ extern char lbl_80560040;                  /* sConfigReady */
  * to stereo - and ConfigCacheWpadSettings() adds the two WPAD settings.  sConfigReady
  * marks the cache valid; the start-up calls this before anything reads it.
  */
-void fn_802E98D0(void) {
+void ConfigReadSystemSettings(void) {
     u32 scStatus;      /* SCCheckStatus()'s SCStatus */
     s32 aspectRatio; /* an SCAspectRatio */
     s32 soundMode;   /* an SCSoundMode */
