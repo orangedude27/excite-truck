@@ -23,7 +23,7 @@ extern long lbl_8055EEE0;
 extern long lbl_8055EEE4;
 extern long lbl_8055EEBC;
 extern long gTrackMusicPageCount;
-extern long lbl_8055B658;
+extern long gTrackMusicCurrentSong;
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -60,7 +60,7 @@ extern struct Unk_804902C4 {
 extern long lbl_8055EEC4;
 extern long lbl_8055EED0;
 extern long lbl_8055EED4;
-extern long lbl_8055B658;
+extern long gTrackMusicCurrentSong;
 extern long __AXFXGetLfoSinTable_801769CC();
 extern long lbl_8055B674;
 extern char lbl_8033C970[];
@@ -411,7 +411,7 @@ int fn_8020FC6C(void) {
  * to it (stopping the old song first when it changes). */
 /* Pick the track-music song for the current scene event, log the choice and switch to it, stopping the old song first when it changes. */ extern "C" void fn_8020FCC4(void) {
     #define TRACK_SONGS     lbl_804900AC
-    #define CURRENT_SONG    lbl_8055B658
+    #define CURRENT_SONG    gTrackMusicCurrentSong
     #define EVENT_NAME_OUT  lbl_8055B674
     #define NO_EVENT        lbl_8033C970   /* "invalid_contest" */
     #define FOUND_MSG       lbl_8033C980   /* "TrackMusic: Found song %d (%s) for event %s" */
@@ -483,14 +483,14 @@ static inline long clampTrackDigit(long value, long limit) {
         }
     }
 }
-/* Resolve the selected track-music entry into the current track id (lbl_8055B658). */
+/* Resolve the selected track-music entry into the current track id (gTrackMusicCurrentSong). */
 void fn_8020FE90(void) {
     long resolvedTrack;
 
     fn_802EC12C();
     fn_802EC1D8();
     if (lbl_8055EEE0 == -2) {
-        lbl_8055B658 = ((long (*)(long))fn_8020F3B4)(0);
+        gTrackMusicCurrentSong = ((long (*)(long))fn_8020F3B4)(0);
         return;
     }
     if (lbl_8055EEE0 == -1) {
@@ -498,7 +498,7 @@ void fn_8020FE90(void) {
     } else {
         resolvedTrack = lbl_8055EEE0 + (lbl_8055EEE4 * 0xA);
     }
-    lbl_8055B658 = resolvedTrack;
+    gTrackMusicCurrentSong = resolvedTrack;
 }
 
 #pragma push
@@ -602,7 +602,7 @@ extern signed char lbl_8055EEEC, lbl_8055EEED;
         resourceObj = *(struct Dummy_802113D8 **)((char *)audioContainer + 0x20);
         fn_8020FDE4(2, (const char *)lbl_804900AC.m_entries[songIndex],
                     (char *)resourceObj->f6(&lbl_8055B674, lbl_8033C970));
-        lbl_8055B658 = songIndex;
+        gTrackMusicCurrentSong = songIndex;
     }
 }
 
@@ -716,7 +716,7 @@ extern "C" void fn_802103BC(void) {
         ((Obj *)lbl_8055EED4)->f(1);
     }
     lbl_8055EED4 = 0;
-    lbl_8055B658 = -1;
+    gTrackMusicCurrentSong = -1;
     fn_8020F5DC();
     if (lbl_8055EED0 != 0) {
         ((Obj *)lbl_8055EED0)->f(1);
@@ -729,14 +729,14 @@ extern "C" void fn_802103BC(void) {
 extern long fn_80009C84(void);
 extern unsigned char gTrackMusicListChanged;
 extern signed char gTrackMusicHoldSongChange, gTrackMusicMuted;
-extern long gTrackMusicHoldUntil, lbl_8055B658;
+extern long gTrackMusicHoldUntil, gTrackMusicCurrentSong;
 /* Stop track music: mute, clear selection/hold state, and if a song is selected while inactive reset to none and stop playback. */
 void stopTrackMusic(void) {
 #define trackMusicMuted gTrackMusicMuted
 #define trackMusicSongListReady gTrackMusicListChanged
 #define trackMusicHoldSongChange gTrackMusicHoldSongChange
 #define trackMusicHoldUntil gTrackMusicHoldUntil
-#define trackMusicCurrentSong lbl_8055B658
+#define trackMusicCurrentSong gTrackMusicCurrentSong
     trackMusicMuted = 1;
     trackMusicSongListReady = 0;
     trackMusicHoldSongChange = 0;
@@ -754,9 +754,9 @@ void stopTrackMusic(void) {
 #undef trackMusicCurrentSong
 }
 
-/* True (1) when a track-music song is selected (current song id lbl_8055B658 != -1). */
+/* True (1) when a track-music song is selected (current song id gTrackMusicCurrentSong != -1). */
 long fn_802104B8(void) {
-    return (unsigned long)((-1 - lbl_8055B658) | (lbl_8055B658 + 1)) >> 31;
+    return (unsigned long)((-1 - gTrackMusicCurrentSong) | (gTrackMusicCurrentSong + 1)) >> 31;
 }
 
 /* True when the dash found at least one track-music song (song count > 0). */
@@ -766,7 +766,7 @@ long fn_802104D0(void) {
 
 long fn_802104FC(void) {
     /* Return nonzero when no track-music entry is selected (the current track index is -1). */
-    return (lbl_8055B658 + 1) == 0;
+    return (gTrackMusicCurrentSong + 1) == 0;
 }
 
  
@@ -869,17 +869,17 @@ void trackMusicUpdate(unsigned char mute) {
     if (fn_801B85CC() == 0 && fn_80009C84() == 0) {
         sceneActive = 0;
     }
-    if (lbl_8055B658 != -1) {
-        if (lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(0) && overlayUp != 0) {
-            lbl_8055B658 = ((long (*)(long))fn_8020F3B4)(2);
+    if (gTrackMusicCurrentSong != -1) {
+        if (gTrackMusicCurrentSong == ((long (*)(long))fn_8020F3B4)(0) && overlayUp != 0) {
+            gTrackMusicCurrentSong = ((long (*)(long))fn_8020F3B4)(2);
             fn_802EC12C();
             fn_802EC1D8();
-        } else if (lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(2) && overlayUp == 0) {
-            lbl_8055B658 = ((long (*)(long))fn_8020F3B4)(0);
+        } else if (gTrackMusicCurrentSong == ((long (*)(long))fn_8020F3B4)(2) && overlayUp == 0) {
+            gTrackMusicCurrentSong = ((long (*)(long))fn_8020F3B4)(0);
             fn_802EC12C();
             fn_802EC1D8();
-        } else if (lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(0) && sceneActive != 0) {
-            lbl_8055B658 = ((long (*)(long))fn_8020F3B4)(1);
+        } else if (gTrackMusicCurrentSong == ((long (*)(long))fn_8020F3B4)(0) && sceneActive != 0) {
+            gTrackMusicCurrentSong = ((long (*)(long))fn_8020F3B4)(1);
             fn_802EC12C();
             fn_802EC1D8();
         }
@@ -891,12 +891,12 @@ void trackMusicUpdate(unsigned char mute) {
             }
         }
         if (fn_802EC124() == -1 && holdSongChange == 0) {
-            fn_802EC11C(lbl_8055B658);
+            fn_802EC11C(gTrackMusicCurrentSong);
             fn_802EC138();
             resource = *(struct Dummy_802113D8 **)((char *)fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC()) + 0x20);
             resource->f6(&lbl_8055B674, lbl_8033C970);
             if (*(long *)fn_8020FAF0() == 1 && lbl_8055EEBC > 0) {
-                lbl_8055B658 = fn_8020F6FC();
+                gTrackMusicCurrentSong = fn_8020F6FC();
             }
         }
         if ((unsigned char)gTrackMusicMuted != mute) {
@@ -924,7 +924,7 @@ extern long lbl_8033C9BC[];
 extern long lbl_8033C9C8[];
 extern long lbl_8055EED4;
 extern long lbl_8055EEF0;
-extern long lbl_8055B658;
+extern long gTrackMusicCurrentSong;
 void fn_802108C8(void) {
 #define sTrackMusicResource lbl_8055EED4
 #define sTrackMusicHandle lbl_8055EEF0
@@ -1076,7 +1076,7 @@ void fn_802112AC(void) {
 #define trackMusicSelection       lbl_8055EEE0 /* -2 = OFF, -1 = RANDOM, >= 0 = row on the page */
 #define trackMusicPage            lbl_8055EEE4 /* song-list page the menu is on */
 #define trackMusicSongCount       lbl_8055EEBC /* songs the dash found */
-#define trackMusicCurrentSong     lbl_8055B658 /* song id in use (-1 = none) */
+#define trackMusicCurrentSong     gTrackMusicCurrentSong /* song id in use (-1 = none) */
 #define EVENT_NAME_OUT            lbl_8055B674 /* scene/event name output buffer */
 #define NO_EVENT                  lbl_8033C970 /* "invalid_contest" */
 #define SEL_OFF                   (-2)
@@ -1152,7 +1152,7 @@ void fn_802113D8(void) {
 #define trackMusicSelection   lbl_8055EEE0 /* -2 = OFF, -1 = RANDOM, >= 0 = row on the page */
 #define trackMusicPage        lbl_8055EEE4 /* song-list page the menu is on */
 #define trackMusicPrevSong    lbl_8055B65C /* song id from the previous selection, kept for restart */
-#define trackMusicCurrentSong lbl_8055B658 /* song id in use (-1 = none) */
+#define trackMusicCurrentSong gTrackMusicCurrentSong /* song id in use (-1 = none) */
 #define sResetOnStop          lbl_8055EEEC /* reset the context music buffer when stopped */
 #define sResetOnRandom        lbl_8055EEED /* reset the context music buffer when randomized */
 #define EVENT_NAME_OUT        lbl_8055B674 /* scene/event name output buffer */
