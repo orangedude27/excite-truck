@@ -467,6 +467,7 @@ void fn_80128660(s32 block) {
 
 /* Frees an object using allocator mode 3. */
 void fn_80128668(s32 object) {
+    /* Free a C++ "new" object (allocation source id 3) through the ring-buffer free routine. */
     fn_80128584(object, 3);
 }
 
