@@ -5437,17 +5437,17 @@ void GXSetTevColor(s32 tevReg, const unsigned int *color) {
     *(unsigned short *)((char *)gxData + 2) = 0;
 }
 
-void GXSetTevKColor(s32 tevReg, const unsigned int *color) {
-    unsigned int index = tevReg << 1;
-    unsigned int value = *color;
-    unsigned int first = __rlwimi(__rlwimi(__rlwimi((index + 0xE0) << 24, value, 8, 24, 31), value, 12, 12, 19), 8, 20, 8, 11);
-    unsigned int second = __rlwimi(__rlwimi(__rlwimi((index + 0xE1) << 24, value, 24, 24, 31), value, 28, 12, 19), 8, 20, 8, 11);
-    unsigned int *data = __GXData;
+/* Write the two GX command words that set a TEV constant-color register, then mark the register dirty in GXData. */ void GXSetTevKColor(s32 tevReg, const unsigned int *color) {
+    unsigned int regIndex = tevReg << 1;
+    unsigned int colorBits = *color;
+    unsigned int cmdWord0 = __rlwimi(__rlwimi(__rlwimi((regIndex + 0xE0) << 24, colorBits, 8, 24, 31), colorBits, 12, 12, 19), 8, 20, 8, 11);
+    unsigned int cmdWord1 = __rlwimi(__rlwimi(__rlwimi((regIndex + 0xE1) << 24, colorBits, 24, 24, 31), colorBits, 28, 12, 19), 8, 20, 8, 11);
+    unsigned int *gxData = __GXData;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = first;
+    *(volatile unsigned int *)0xCC008000 = cmdWord0;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = second;
-    *(unsigned short *)((char *)data + 2) = 0;
+    *(volatile unsigned int *)0xCC008000 = cmdWord1;
+    *(unsigned short *)((char *)gxData + 2) = 0;
 }
 
 void GXSetTevKColorSel(s32 arg0, s32 arg1) {
@@ -5512,7 +5512,7 @@ void GXSetTevSwapMode(s32 stage, s32 rasSel, s32 texSel) {
 
 void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 texSel2) {
     union {
-        s32 value;
+        u32 value;
         struct {
             unsigned int unused : 28;
             unsigned int texSel : 2;
