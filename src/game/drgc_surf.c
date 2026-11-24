@@ -1372,7 +1372,7 @@ extern const char lbl_8034C428[];
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80128670(s32);
 #pragma scheduling invalid_target
-void fn_802D6860(void) {
+void drVertexFormatCacheShutdown(void) {
     s32 savedYmorphVertCount;
     /* Finalize vertex-format display list logging/cleanup, then report total ymorph verts. */
 #define vertexFormatDlStart lbl_8055FDF4
