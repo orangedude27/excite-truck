@@ -82,35 +82,35 @@ extern s32 lbl_804892C0[];
 extern s32 lbl_8055B560;
 extern char lbl_8055B568;
 
-void fn_8020A550(void) {
+/* Music shutdown: unregister the crossfade callback, release both music slots, reload their audio paths and clear slot flags. */ void fn_8020A550(void) {
     /* Unregister the music callback, release two music slots, reload their paths, and clear related flags. */
     char pathBuffer[64];
-    s32 zeroValue;
-    s32 *slotPtr;
-    s32 *namePtr;
-    s8 *flagPtr;
-    s32 index;
+    s32 zero;
+    s32 *slot;
+    s32 *name;
+    s8 *flag;
+    s32 i;
 
     fn_80127D58(fn_8020A100);
-    zeroValue = 0;
-    lbl_8055EDD0 = zeroValue;
-    slotPtr = lbl_804892C0;
-    index = 0;
-    namePtr = &lbl_8055B560;
-    flagPtr = &lbl_8055EDD4;
+    zero = 0;
+    lbl_8055EDD0 = zero;
+    slot = lbl_804892C0;
+    i = 0;
+    name = &lbl_8055B560;
+    flag = &lbl_8055EDD4;
     do {
-        if (*slotPtr != 0) {
-            fn_80207924((void *)*slotPtr);
-            *slotPtr = zeroValue;
+        if (*slot != 0) {
+            fn_80207924((void *)*slot);
+            *slot = zero;
         }
-        sprintf(pathBuffer, (char *)&lbl_8055B568, *namePtr);
+        sprintf(pathBuffer, (char *)&lbl_8055B568, *name);
         fn_8012E498(pathBuffer);
-        index += 1;
-        *flagPtr = zeroValue;
-        slotPtr = (s32 *)((s32)slotPtr + 8);
-        namePtr = (s32 *)((s32)namePtr + 4);
-        flagPtr = (s8 *)((s32)flagPtr + 1);
-    } while (index < 2);
+        i += 1;
+        *flag = zero;
+        slot = (s32 *)((s32)slot + 8);
+        name = (s32 *)((s32)name + 4);
+        flag = (s8 *)((s32)flag + 1);
+    } while (i < 2);
 }
 
 /* Return the global music playback volume (the "Music" setting), set by fn_8020A5F8 and used as the level music plays at. */
