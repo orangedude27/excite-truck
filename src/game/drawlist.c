@@ -966,7 +966,7 @@ void *fn_802C9694(void *arg0) {
 #undef kViewZ
 }
 
-void *fn_802C96DC(void *object, int shouldDelete) {
+void *DrawList_restoreProjection(void *object, int shouldDelete) {
     /* Destructor helper: apply stored projection parameters, then optionally free the object. */
     if (object != 0) {
         fn_802C974C(((float *)object)[0], ((float *)object)[1], ((float *)object)[2]);

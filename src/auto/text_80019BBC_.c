@@ -908,7 +908,7 @@ extern void fn_802C8BD0(int);
 extern int fn_8001B754(float);
 extern void fn_802C8D74(void);
 extern void DrawList_restoreViewport(int *, int);
-extern void fn_802C96DC(float *, int);
+extern void DrawList_restoreProjection(float *, int);
 extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440, lbl_80560458;
 #pragma scheduling invalid_target
 /* Sets up projection/model-view for rendering an object and draws two passes. */
@@ -945,7 +945,7 @@ void fn_8001B7BC(void *obj) {
     fn_8001B754(*(float *)((char *)obj + 0x3C)); fn_802C8D74();
     ((void (*)(int))fn_8001B7B8)(1);
     fn_802C2C00(savedState); fn_802C9294(-2, 0);
-    DrawList_restoreViewport(frame.viewport, -1); fn_802C96DC(frame.projParams, -1);
+    DrawList_restoreViewport(frame.viewport, -1); DrawList_restoreProjection(frame.projParams, -1);
 }
 #pragma scheduling on
 
