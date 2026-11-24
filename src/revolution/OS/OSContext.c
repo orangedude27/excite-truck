@@ -552,6 +552,10 @@ void OSDumpContext(const OSContext* ctx) {
     }
 }
 
+/* FPU-unavailable exception handler: enable the FPU and set the SRR1 FP bit,
+ * publish ctx as the current FPU context (saving the previous context when it
+ * differs and is non-null), then load ctx's FPU state, restore the interrupted
+ * context's CR/LR/SRR0/CTR/XER and GPRs, and return from the exception. */
 static asm void OSSwitchFPUContext(register u8 err, register OSContext* ctx) {
     // clang-format off
     nofralloc
