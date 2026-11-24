@@ -246,24 +246,26 @@ extern void fn_802E3F38(void *);
 extern char lbl_8034D0E4[];
 extern char lbl_8034D130[];
 #pragma small_data on
-void *fn_802E41C4(void *file, int destroyFlag) {
-    /* Destructor for a DVD file object: close the open DVD handle if valid, report close failure, and optionally free the object. */
-    void (*releaseFn)(void *);
-    if (file != 0) {
-        if (*((unsigned char *)file + 0x80) != 0) {
-            *(void **)file = &lbl_8034D130;
+/* Deleting destructor for a FileDisk DVD file node: reset its vtable, close the
+ * embedded DVD handle when valid (logging failures), and release the node back
+ * to the pool when shouldFree > 0. */
+void *fn_802E41C4(void *dvdFile, int shouldFree) {
+    void (*releaseNode)(void *);
+    if (dvdFile != 0) {
+        if (*((unsigned char *)dvdFile + 0x80) != 0) {
+            *(void **)dvdFile = &lbl_8034D130;
         } else {
-            *(void **)file = &lbl_8034D130;
+            *(void **)dvdFile = &lbl_8034D130;
         }
-        if (*((unsigned char *)file + 0x80) != 0 && DVDClose((char *)file + 4) == 0) {
-            fn_802E30C8((const char *)&lbl_8034D0E4, (char *)file + 0x40);
+        if (*((unsigned char *)dvdFile + 0x80) != 0 && DVDClose((char *)dvdFile + 4) == 0) {
+            fn_802E30C8((const char *)&lbl_8034D0E4, (char *)dvdFile + 0x40);
         }
-        if (destroyFlag > 0) {
-            releaseFn = fn_802E3F38;
-            releaseFn(file);
+        if (shouldFree > 0) {
+            releaseNode = fn_802E3F38;
+            releaseNode(dvdFile);
         }
     }
-    return file;
+    return dvdFile;
 }
 
 extern const char lbl_8034D104[];
