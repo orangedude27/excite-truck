@@ -494,7 +494,7 @@ extern s32 lbl_8055B5DC;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma opt_propagation off
-/* Pre-race music setup: format the pre-race song resource name from songId, queue its TOC plus the two fixed selector TOCs for loading, then fill the three per-track name buffers in sPreRaceTracks. */ void musicPreRaceSetup(s32 songId) {
+/* Pre-race music setup: format the pre-race song resource name from songId, queue its TOC plus the two fixed selector TOCs for loading, then fill the three per-track name buffers in sPreRaceTrackTable. */ void musicPreRaceSetup(s32 songId) {
     const char *base = sPreRaceMusicStrings;
     char *dst;
     register s32 songIdCopy;
