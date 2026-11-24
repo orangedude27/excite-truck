@@ -499,13 +499,15 @@ struct ModelDisplayNode {
 };
 extern void fn_802CAC54(int);
 extern s8 lbl_8055FC21;
-/* Release a reference to a model texture entry: decrement its refcount and mark the model cache dirty when it reaches zero. */
-void fn_802C5BA0(int *entry) {
+/* Release one reference to a model display node: drop its texture slot and
+ * decrement its refcount, marking the level-sorted display lists dirty when
+ * the count reaches zero. */
+void fn_802C5BA0(int *displayNode) {
     u16 refCount;
-    fn_802CAC54(*entry);
-    refCount = *(u16 *)((char *)entry + 4);
+    fn_802CAC54(((struct ModelDisplayNode *)displayNode)->key0);
+    refCount = ((struct ModelDisplayNode *)displayNode)->refs;
     refCount--;
-    *(u16 *)((char *)entry + 4) = refCount;
+    ((struct ModelDisplayNode *)displayNode)->refs = refCount;
     if (refCount == 0) {
         lbl_8055FC21 = 1;
     }
