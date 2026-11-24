@@ -332,8 +332,7 @@ int texIsExtractionName(const unsigned char *path) { return ((signed char)*path 
 /* Return nonzero when the path string contains a '/' separator. */
 int fn_802CA7F4(const char *path) { return strchr(path, '/') != 0; }
 
-/* If the path is a special "*"-prefixed extraction name, return the name after
-   its '/' (warning if missing); otherwise return the path unchanged. */
+/* Returns the trailing name after '/' for a '*'-prefixed extraction path (warning if the separator is missing); otherwise returns the path unchanged. */
 int texGetExtractionName(int path) {
     int slashPtr;
     if (((int (*)(const unsigned char *))texIsExtractionName)((const unsigned char *)path) != 0) {
