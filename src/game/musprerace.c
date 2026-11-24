@@ -266,7 +266,7 @@ extern s8 lbl_8055EE43;
 /* Reset pre-race music: stop track music, restore full fade and race-start
    volume, reload the master volume from the Music setting and clear all
    track-selection and timing state. */
-void musicPreRaceInit(void) {
+/* Reset pre-race music: stop track music, restore full fade and race-start volume, reload the master volume from the Music setting, and clear all track-selection and timing state. */ void musicPreRaceInit(void) {
     #define kFullVolume lbl_805632F0
     #define gMasterFade lbl_8055EE4C
     #define gFadeTarget lbl_8055EE50
