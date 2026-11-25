@@ -33,7 +33,7 @@ typedef struct Fn241820Obj { char pad[0xc]; Fn241820VT *vt; } Fn241820Obj;
 typedef int (*Fn241820IsActive)(void *);
 /* Clear the player-info table (gMRollPlayerSlots): set the id word of each of its
  * two 0x10-byte slots to -1, marking both slots empty. */
-void fn_8023FE20(void) {
+void MRoll_clearPlayerSlots(void) {
     register int *slots = (int *)gMRollPlayerSlots;
     *slots++ = -1;
     slots[3] = -1;
@@ -955,10 +955,10 @@ void *MRollStatLabel_init(void *statLabel) {
 }
 
 #pragma dont_inline on
-extern void fn_8023FE20(void);
-/* MRoll_Reset: non-inlined wrapper that tail-calls fn_8023FE20 to reset the
+extern void MRoll_clearPlayerSlots(void);
+/* MRoll_Reset: non-inlined wrapper that tail-calls MRoll_clearPlayerSlots to reset the
  * mroll player slots (gMRollPlayerSlots) to -1 before truck selection. */
-void fn_802411C8(void) { fn_8023FE20(); }
+void fn_802411C8(void) { MRoll_clearPlayerSlots(); }
 #pragma dont_inline reset
 
 #pragma dont_inline on
