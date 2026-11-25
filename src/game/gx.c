@@ -1391,7 +1391,7 @@ void fn_802D03F4(register float *arg0, float arg1) {
 extern void *lbl_8055FD54;
 extern void* fn_802D30F0(void);
 extern void gxLoadDefaultIndTexMtx(void);
-/* Set the global GX state block pointer (holds a GXTexObj at +0x24, read by fn_802D30E4); 0 clears it. */
+/* Set the global GX state block pointer (holds a GXTexObj at +0x24, read by gxGetIndirectTexObj); 0 clears it. */
 void fn_802D050C(void* stateBlock) {
     lbl_8055FD54 = stateBlock;
 }
@@ -2349,112 +2349,184 @@ extern Mtx24_802D1C04 lbl_802FAC90;
 extern float lbl_80564F90, lbl_80564FD8, lbl_80564F88;
 #pragma push
 #pragma dont_inline on
-void fn_802D1C04(void) {
-    unsigned char *base = (unsigned char *)lbl_804C5650;
-    if (*(unsigned char *)&lbl_8055FD70 != 0) {
-        Xform_802D1C04 inv;
-        Xform_802D1C04 comb;
-        float texMtx[12];
-        Xform_802D1C04 rel;
-        Xform_802D1C04 relInv;
-        Xform_802D1C04 view;
-        float viewMtx[12];
-        float trans[12];
-        float scale[12];
-        float proj[12];
-        Mtx33_802D1C04 rot;
-        float nrm[12];
-        Mtx24_802D1C04 tex;
-        Xform_802D1C04 *src = (Xform_802D1C04 *)(base + 0x70);
-        Xform_802D1C04 *b;
-        float t;
-        float k;
-        inv.r = src->r;
-        lbl_8055FD70 = 0;
-        t = inv.r.m[1]; inv.r.m[1] = inv.r.m[3]; inv.r.m[3] = t;
-        t = inv.r.m[2]; inv.r.m[2] = inv.r.m[6]; inv.r.m[6] = t;
-        t = inv.r.m[5]; inv.r.m[5] = inv.r.m[7]; inv.r.m[7] = t;
-        if (&inv.t == &src->t) {
-            float x = src->t.z * src->r.m[1] + (src->t.x * src->r.m[0] + src->t.y * src->r.m[2]);
-            float y = src->t.z * src->r.m[4] + (src->t.x * src->r.m[3] + src->t.y * src->r.m[5]);
-            float z = src->t.z * src->r.m[7] + (src->t.x * src->r.m[6] + src->t.y * src->r.m[8]);
-            inv.t.x = x; inv.t.y = y; inv.t.z = z;
-        } else {
-            float x = src->t.z * src->r.m[1] + (src->t.x * src->r.m[0] + src->t.y * src->r.m[2]);
-            float y = src->t.z * src->r.m[4] + (src->t.x * src->r.m[3] + src->t.y * src->r.m[5]);
-            float z = src->t.z * src->r.m[7] + (src->t.x * src->r.m[6] + src->t.y * src->r.m[8]);
-            inv.t.x = x; inv.t.y = y; inv.t.z = z;
-        }
-        inv.t.x *= lbl_80564F90;
-        inv.t.y *= lbl_80564F90;
-        inv.t.z *= lbl_80564F90;
-        b = (Xform_802D1C04 *)(base + 0x40);
-        fn_801BFD34(&comb.t, &b->t, &inv);
-        fn_80015B20(&comb, b, &inv);
-        transformToGXPosMtx(base, &comb);
-        GXLoadPosMtxImm(base, 0);
-        if (lbl_8055FD19 != 0) {
-            lbl_8055FD19 = 0;
-            GXSetCurrentMtx(0);
-        }
-        switch (*(int *)(base + 0xB4)) {
-        case 2:
-        case 3:
-            fn_802C8588(&rel, &src->t, &b->t);
-            relInv.r = rel.r;
-            t = relInv.r.m[1]; relInv.r.m[1] = relInv.r.m[3]; relInv.r.m[3] = t;
-            t = relInv.r.m[2]; relInv.r.m[2] = relInv.r.m[6]; relInv.r.m[6] = t;
-            t = relInv.r.m[5]; relInv.r.m[5] = relInv.r.m[7]; relInv.r.m[7] = t;
-            if (&relInv.t == &rel.t) {
-                float x = rel.t.z * rel.r.m[1] + (rel.t.x * rel.r.m[0] + rel.t.y * rel.r.m[2]);
-                float y = rel.t.z * rel.r.m[4] + (rel.t.x * rel.r.m[3] + rel.t.y * rel.r.m[5]);
-                float z = rel.t.z * rel.r.m[7] + (rel.t.x * rel.r.m[6] + rel.t.y * rel.r.m[8]);
-                relInv.t.x = x; relInv.t.y = y; relInv.t.z = z;
-            } else {
-                float x = rel.t.z * rel.r.m[1] + (rel.t.x * rel.r.m[0] + rel.t.y * rel.r.m[2]);
-                float y = rel.t.z * rel.r.m[4] + (rel.t.x * rel.r.m[3] + rel.t.y * rel.r.m[5]);
-                float z = rel.t.z * rel.r.m[7] + (rel.t.x * rel.r.m[6] + rel.t.y * rel.r.m[8]);
-                relInv.t.x = x; relInv.t.y = y; relInv.t.z = z;
-            }
-            relInv.t.x *= lbl_80564F90;
-            relInv.t.y *= lbl_80564F90;
-            relInv.t.z *= lbl_80564F90;
-            b = (Xform_802D1C04 *)(base + 0x40);
-            fn_801BFD34(&view.t, &b->t, &relInv);
-            fn_80015B20(&view, b, &relInv);
-            transformToGXPosMtx(viewMtx, &view);
-            PSMTXTranspose(viewMtx, texMtx);
-            PSMTXScale(scale, lbl_80564F94, lbl_80564FD8, lbl_80564F88);
-            PSMTXRotRad(trans, lbl_80564F94, lbl_80564F94, lbl_80564F8C);
-            PSMTXConcat(trans, scale, proj);
-            GXLoadTexMtxImm(texMtx, 0x2A, 0);
-            GXLoadTexMtxImm(proj, 0x4C, 0);
-            break;
-        case 1:
-        case 5:
-            rot = b->r;
-            tex = lbl_802FAC90;
-            t = rot.m[1]; rot.m[1] = rot.m[3]; rot.m[3] = t;
-            t = rot.m[2]; rot.m[2] = rot.m[6]; rot.m[6] = t;
-            t = rot.m[5]; rot.m[5] = rot.m[7]; rot.m[7] = t;
-            k = lbl_80564F94;
-            tex.m[0][0] = k * rot.m[0];
-            tex.m[0][1] = k * rot.m[1];
-            tex.m[0][2] = k * rot.m[2];
-            tex.m[1][0] = k * rot.m[3];
-            tex.m[1][1] = k * rot.m[4];
-            tex.m[1][2] = k * rot.m[5];
-            GXLoadTexMtxImm(&tex, 0x2A, 1);
-            break;
-        case 4:
-            gxSetupSceneLights();
-            break;
-        }
-        transformToGXPosMtx(nrm, b);
-        nrm[3] = nrm[7] = nrm[11] = lbl_80564F88;
-        GXLoadNrmMtxImm(nrm, 0);
-        if (*(int *)(base + 0xB4) == 2) fn_802D1B58();
+void fn_802D1C04(void)
+{
+  unsigned char *base = (unsigned char *) lbl_804C5650;
+  if ((*((unsigned char *) (&lbl_8055FD70))) != 0)
+  {
+    Xform_802D1C04 inv;
+    Xform_802D1C04 comb;
+    Xform_802D1C04 rel;
+    float texMtx[12];
+    Xform_802D1C04 relInv;
+    Xform_802D1C04 view;
+    float viewMtx[12];
+    float trans[12];
+    float scale[12];
+    float proj[12];
+    Mtx33_802D1C04 rot;
+    float nrm[12];
+    Mtx24_802D1C04 tex;
+    Xform_802D1C04 *src = (Xform_802D1C04 *) (base + 0x70);
+    Xform_802D1C04 *b;
+    float t;
+    float __repair_t_1;
+    float k;
+    inv.r = src->r;
+    lbl_8055FD70 = 0;
+    t = (0, inv.r.m[1]); inv.r.m[1] = inv.r.m[3]; inv.r.m[3] = t;
+    __repair_t_1 = inv.r.m[2]; inv.r.m[2] = inv.r.m[6]; inv.r.m[6] = __repair_t_1;
+    t = inv.r.m[5]; inv.r.m[5] = inv.r.m[7]; inv.r.m[7] = t;
+    if ((&src->t) == (&inv.t))
+    {
+      float x = (src->t.z * src->r.m[1]) + ((src->t.x * src->r.m[0]) + (src->t.y * src->r.m[2]));
+      float y = (src->t.z * src->r.m[4]) + ((src->t.x * src->r.m[3]) + (src->t.y * src->r.m[5]));
+      float z = (src->t.z * src->r.m[7]) + ((src->t.x * src->r.m[6]) + (src->t.y * src->r.m[8]));
+      inv.t.x = x;
+      inv.t.y = y;
+      inv.t.z = z;
     }
+    else
+    {
+      float x = (src->r.m[1] * src->t.z) + (((0, src->t.x * src->r.m[0])) + (src->r.m[2] * src->t.y));
+      float y = (src->t.z * src->r.m[4]) + ((src->t.x * src->r.m[3]) + (src->t.y * src->r.m[5]));
+      float z = (src->t.z * src->r.m[7]) + ((src->t.y * ((0, src->r.m[8]))) + (src->t.x * ((0, src->r.m[6]))));
+      inv.t.x = x;
+      inv.t.y = y;
+      inv.t.z = z;
+    }
+    inv.t.x *= lbl_80564F90;
+    inv.t.y *= lbl_80564F90;
+    inv.t.z *= lbl_80564F90;
+    b = (Xform_802D1C04 *) (base + 0x40);
+    fn_801BFD34(&comb.t, &b->t, &inv);
+    fn_80015B20(&comb, b, &inv);
+    fn_802D0DD4((unsigned char *) lbl_804C5650, &comb);
+    GXLoadPosMtxImm((unsigned char *) lbl_804C5650, 0);
+    if (lbl_8055FD19 != 0)
+    {
+      lbl_8055FD19 = 0;
+      GXSetCurrentMtx(0);
+    }
+    switch (*((int *) (base + 0xB4)))
+    {
+      case 2:
+
+      case 3:
+        fn_802C8588(&rel, &src->t, &b->t);
+        relInv.r = rel.r;
+        relInv.r.m[1] = relInv.r.m[3];
+        t = relInv.r.m[1];
+        relInv.r.m[3] = t;
+        relInv.r.m[2] = relInv.r.m[6];
+        t = relInv.r.m[2];
+        relInv.r.m[6] = t;
+        t = relInv.r.m[5];
+        relInv.r.m[5] = relInv.r.m[7];
+        relInv.r.m[7] = t;
+        if ((&relInv.t) == (&rel.t))
+      {
+        float x = (rel.t.z * rel.r.m[1]) + ((rel.t.x * rel.r.m[0]) + (rel.t.y * rel.r.m[2]));
+        float y = (rel.t.z * rel.r.m[4]) + ((rel.t.y * rel.r.m[5]) + (rel.t.x * rel.r.m[3]));
+        float z = (rel.t.z * rel.r.m[7]) + ((rel.r.m[6] * rel.t.x) + (rel.t.y * ((0, rel.r.m[8]))));
+        relInv.t.x = x;
+        relInv.t.y = y;
+        relInv.t.z = z;
+      }
+      else
+      {
+        float x = (rel.t.z * rel.r.m[1]) + ((rel.t.x * rel.r.m[0]) + (rel.t.y * rel.r.m[2]));
+        float y = (rel.t.z * rel.r.m[4]) + ((rel.t.x * rel.r.m[3]) + (rel.t.y * rel.r.m[5]));
+        float z = (rel.t.z * rel.r.m[7]) + ((rel.t.x * rel.r.m[6]) + (rel.t.y * rel.r.m[8]));
+        relInv.t.x = x;
+        relInv.t.y = y;
+        relInv.t.z = z;
+      }
+        relInv.t.x *= lbl_80564F90;
+        relInv.t.y *= lbl_80564F90;
+        do
+      {
+        relInv.t.z *= lbl_80564F90; b = (Xform_802D1C04 *) (base + 0x40);
+        fn_801BFD34(&view.t, &b->t, &relInv);
+        fn_80015B20(&view, b, &relInv);
+        fn_802D0DD4(viewMtx, &view);
+        PSMTXTranspose(viewMtx, texMtx);
+        PSMTXScale(scale, lbl_80564F94, lbl_80564FD8, lbl_80564F88);
+      }
+      while (0);
+        PSMTXRotRad(trans, lbl_80564F94, lbl_80564F94, lbl_80564F8C);
+        PSMTXConcat(trans, scale, proj);
+        GXLoadTexMtxImm(texMtx, 0x2A, 0);
+        GXLoadTexMtxImm(proj, 0x4C, k * 0);
+        break;
+
+      case 1:
+
+      case 5:
+        if (&inv)
+      {
+        rot = b->r;
+        t = rot.m[1];
+        rot.m[1] = rot.m[3];
+        rot.m[3] = t;
+        t = rot.m[2];
+        rot.m[2] = rot.m[6];
+        rot.m[6] = t;
+        t = rot.m[5];
+        rot.m[5] = rot.m[7];
+        rot.m[7] = t;
+        k = lbl_80564F94;
+        tex = lbl_802FAC90;
+        tex.m[0][0] = k * rot.m[0];
+        tex.m[0][1] = k * rot.m[1];
+        tex.m[0][2] = k * rot.m[2];
+        tex.m[1][0] = k * rot.m[3];
+        tex.m[1][1] = k * rot.m[4];
+        tex.m[1][2] = k * rot.m[5];
+        GXLoadTexMtxImm(&tex, 0x2A, 1);
+        break;
+      }
+      else
+      {
+        rot = b->r;
+        t = rot.m[1];
+        rot.m[1] = rot.m[3];
+        rot.m[3] = t;
+        t = rot.m[2];
+        rot.m[2] = rot.m[6];
+        rot.m[6] = t;
+        t = rot.m[5];
+        rot.m[5] = rot.m[7];
+        rot.m[7] = t;
+        k = lbl_80564F94;
+        tex = lbl_802FAC90;
+        tex.m[0][0] = k * rot.m[0];
+        tex.m[0][1] = k * rot.m[1];
+        tex.m[0][2] = k * rot.m[2];
+        tex.m[1][0] = k * rot.m[3];
+        tex.m[1][1] = k * rot.m[4];
+        tex.m[1][2] = k * rot.m[5];
+        GXLoadTexMtxImm(&tex, 0x2A, 1);
+        break;
+      }
+
+      case 4:
+        fn_802D18E8();
+        break;
+
+      case 6:
+        break;
+
+    }
+
+    fn_802D0DD4(nrm, b);
+    nrm[3] = (nrm[7] = (nrm[11] = lbl_80564F88));
+    GXLoadNrmMtxImm(nrm, 0);
+    if ((*((int *) (base + 0xB4))) == 2)
+    {
+      fn_802D1B58();
+    }
+  }
 }
 #pragma pop
 extern float lbl_80564FCC;
@@ -2986,7 +3058,7 @@ void fn_802D30DC(void* state) {
 
 /* Return the GXTexObj at +0x24 of the global GX state block; the caller loads it
  * as the indirect texture (GXLoadTexObj, map 7). */
-void* fn_802D30E4(void) {
+void* gxGetIndirectTexObj(void) {
     struct { char pad[0x24]; char texObj; } *state;
     state = lbl_8055FD54;
     return &state->texObj;
