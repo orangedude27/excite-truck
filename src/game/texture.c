@@ -571,7 +571,7 @@ void fn_802CAC54(int arg0)
 
 /* Invalidate the texture module's "last bound slot" cache by setting it to -2,
    so the next texSelectSlot call rebinds even if the slot number is unchanged. */
-void fn_802CAD68(void) {
+void Texture_InvalidateLastBoundSlot(void) {
 #define gLastBoundTextureSlot gActiveTextureSlot
     gLastBoundTextureSlot = -2;
 #undef gLastBoundTextureSlot

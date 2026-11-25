@@ -87,7 +87,7 @@ extern float lbl_8055D020;
 extern int lbl_8055FC30;
 extern int lbl_8055FC84;
 extern void gxApplyCullMode(void);
-extern void fn_802CAD68(void);
+extern void Texture_InvalidateLastBoundSlot(void);
 extern int fn_802D31D8(int);
 extern void fn_801E7888(int);
 extern unsigned int lbl_804C1410[];
@@ -1305,7 +1305,7 @@ void* fn_802C9C50(void) {
 }
 
 /* Begin the alpha-only overlay pass that fn_802C9CE0 finishes.  The texture
- * module's "texture last bound" cache is dropped first (fn_802CAD68, the pass
+ * module's "texture last bound" cache is dropped first (Texture_InvalidateLastBoundSlot, the pass
  * replaces the TEV and blend state behind its back) and fn_802D31D8 then puts
  * GX into the state that writes alpha only: colour updates off, one TEV stage
  * producing a constant alpha, that alpha blended into the frame buffer.  (It
@@ -1320,7 +1320,7 @@ void* fn_802C9C50(void) {
  * (rename_symbol is refused here, so the suggested name
  * DrawList_BeginAlphaOverlay only lives in this comment.) */
 /* Begin an alpha-only overlay pass: invalidate the texture cache, set up GX to write only alpha, save the tint and overlay render mode, and report whether setup succeeded. */ int fn_802C9C8C(unsigned int tintColor) {
-    fn_802CAD68();
+    Texture_InvalidateLastBoundSlot();
     if (fn_802D31D8(1) != 0) {
         sOverlayTint = tintColor;
         sRenderMode = RENDER_MODE_ALPHA_OVERLAY;
