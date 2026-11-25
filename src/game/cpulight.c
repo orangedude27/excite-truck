@@ -406,7 +406,7 @@ void fn_802DBCFC(int positionArray, int vertexCount) {
 /* Cached GX position vertex array: the buffer pointer and the vertex count. */
 #define sCachedPositionArray lbl_8055FEA8
 #define sCachedVertexCount   lbl_8055FEAC
-void fn_802DBDD8(void) {
+void CpuLight_InvalidatePositionArray(void) {
     // Invalidate the cached GX position vertex array so the next setup call reconfigures it.
     sCachedPositionArray = 0;
     sCachedVertexCount = 0;
@@ -469,7 +469,7 @@ void fn_802DBECC(void) {
 }
 #pragma dont_inline reset
 typedef unsigned char u8;
-extern void fn_802DBDD8(void);
+extern void CpuLight_InvalidatePositionArray(void);
 extern void GXResetTevSwapModes0To4(void);
 extern void cpulightResetGxCache(void);
 extern void gxInitRenderState(void);
@@ -495,10 +495,10 @@ extern void GXSetZMode(int,int,int);
 extern unsigned char lbl_8055FEBA;
 #pragma dont_inline on
 /* Reset per-frame render state: clear the CPU light tracking pointers
-   (fn_802DBDD8) and restore all TEV swap-mode selectors to their defaults
+   (CpuLight_InvalidatePositionArray) and restore all TEV swap-mode selectors to their defaults
    (GXResetTevSwapModes0To4). */
 /* Reset per-frame render state: invalidate the cached CPU-light position array (CpuLight_ClearState) and restore default TEV swap modes. */ void CpuLight_ResetFrameState(void) {
-    fn_802DBDD8();
+    CpuLight_InvalidatePositionArray();
     GXResetTevSwapModes0To4();
 }
 
@@ -553,9 +553,9 @@ void fn_802DC130(void) {
 }
 
 /* Forwarder: invalidate the cached GX position array/vertex count so the next
-   setup reconfigures it (fn_802DBDD8). */
+   setup reconfigures it (CpuLight_InvalidatePositionArray). */
 void fn_802DC134(void) {
-    fn_802DBDD8();
+    CpuLight_InvalidatePositionArray();
 }
 
 /* Submit indexed GX triangle-fan primitives (mode 0): apply the mode 0 CPU-light
@@ -583,7 +583,7 @@ void fn_802DC138(int positionArray, int vertexCount, unsigned short *__restrict 
 void fn_802DC278(void) { cpulightResetGxCache(); }
 
 /* Forwarder: invalidates the cached GX position array/vertex count so the next setup reconfigures it (same as fn_802DC134). */
-void fn_802DC27C(void) { fn_802DBDD8(); }
+void fn_802DC27C(void) { CpuLight_InvalidatePositionArray(); }
 
 #pragma push
 #pragma use_lmw_stmw off
@@ -635,7 +635,7 @@ extern unsigned int gCpuLightTexData;
   
 /* Clear the cached CPU-light state (CpuLight_ClearState), then restore the video TEV swap selectors and blend state. */ void CpuLight_ResetVideoState(void) {
     /* Clear the cached CPU-light state, then restore the video TEV swap and blend setup. */
-    ((void (*)(void))fn_802DBDD8)();
+    ((void (*)(void))CpuLight_InvalidatePositionArray)();
     fn_802DFCC0();
 }
 
@@ -885,7 +885,7 @@ void fn_802DC8B4(void) {
         *(void **)(lbl_804DB480 + 0x214) = 0;
     }
     fn_802CADD0(-1, 1);
-    fn_802DBDD8();
+    CpuLight_InvalidatePositionArray();
 }
 #pragma pop
 
@@ -1153,7 +1153,7 @@ void CpuLight_EndIndirectPass(void) {
     /* Whether CpuLight_BeginIndirectPass left an indirect-texture pass running. */
 #define indirectPassRunning lbl_8055FEC0
 #define ClearIndTexMtxFlag gxClearIndTexMtxFlag /* gRenderRequest[13]: indirect tex matrix loaded */
-#define ForgetPositionArray fn_802DBDD8 /* cached position array + vertex count */
+#define ForgetPositionArray CpuLight_InvalidatePositionArray /* cached position array + vertex count */
 #define BindTextureSlot fn_802CADD0 /* (texture handle, texcoord slot) */
 #define NO_TEXTURE (-1) /* BindTextureSlot's "clear this slot" handle */
 #define TEXCOORD_SLOT_INDIRECT 1 /* the slot the indirect pass' texture sits in */
