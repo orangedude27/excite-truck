@@ -766,7 +766,7 @@ long fn_802104B8(void) {
 }
 
 /* True when the dash found at least one track-music song (song count > 0). */
-long hasTrackMusicSongs(void) {
+/* True when the last music dash found at least one track-music song (song count > 0). */ long hasTrackMusicSongs(void) {
     return getTrackMusicSongCount() > 0;
 }
 
