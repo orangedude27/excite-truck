@@ -1852,8 +1852,8 @@ extern unsigned char lbl_8055FD24;
     }
 }
 
-#pragma dont_inline fn_802D0EC8
-int fn_802D0EC8(int blendFactor) {
+#pragma dont_inline gxRemapBlendFactor
+int gxRemapBlendFactor(int blendFactor) {
     /* Remap unsupported destination-color blend codes (8/9) to the equivalent source-color codes (2/3); other factors pass through. */
     switch (blendFactor) {
     case 8:
@@ -1965,8 +1965,8 @@ void fn_802D0EEC(void) {
                 GXSetBlendMode(0, 0, 0, 5);
             } else {
                 hi = (int)lbl_8055FD86 >> 8;
-                lo = fn_802D0EC8((int)lbl_8055FD86 & 0xFF);
-                GXSetBlendMode(1, fn_802D0EC8(hi), lo, 5);
+                lo = gxRemapBlendFactor((int)lbl_8055FD86 & 0xFF);
+                GXSetBlendMode(1, gxRemapBlendFactor(hi), lo, 5);
             }
             lbl_8055FD88 = lbl_8055FD86;
             s->raw[0xB0] = 1;
@@ -1986,8 +1986,8 @@ void fn_802D0EEC(void) {
             GXSetBlendMode(0, 0, 0, 5);
         } else {
             int hi2 = (int)lbl_8055FD86 >> 8;
-            diff = fn_802D0EC8((int)lbl_8055FD86 & 0xFF);
-            GXSetBlendMode(1, fn_802D0EC8(hi2), diff, 5);
+            diff = gxRemapBlendFactor((int)lbl_8055FD86 & 0xFF);
+            GXSetBlendMode(1, gxRemapBlendFactor(hi2), diff, 5);
         }
         lbl_8055FD88 = lbl_8055FD86;
         s->raw[0xB0] = 1;
@@ -3071,8 +3071,8 @@ void fn_802D3144(void)
     int low;
     high = lbl_8055FD86 >> 8;
     low = lbl_8055FD86 & 0xFF;
-    lowMapped = fn_802D0EC8(low);
-    GXSetBlendMode(1, fn_802D0EC8(high), lowMapped, 5);
+    lowMapped = gxRemapBlendFactor(low);
+    GXSetBlendMode(1, gxRemapBlendFactor(high), lowMapped, 5);
   }
   else
   {
