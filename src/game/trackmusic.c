@@ -157,9 +157,9 @@ void fn_8020F5DC(void) {
  
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void *getTrackMusicBuffer(long trackIndex) {
-    /* Return the 0x1900-byte track-music buffer for trackIndex within the trackMusicBuffer table (gTrackMusicBuffers). */
-    long byteOffset = (trackIndex << 6) * 100;
+void *getTrackMusicBuffer(long contextIndex) {
+    /* Return the 0x1900-byte track-music state buffer for contextIndex (4 contexts are packed in gTrackMusicBuffers). */
+    long byteOffset = (contextIndex << 6) * 100;
     return (void *)((char *)&gTrackMusicBuffers + byteOffset);
 }
 #pragma scheduling on
