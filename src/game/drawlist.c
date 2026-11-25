@@ -1176,7 +1176,7 @@ void fn_802C99D8(void) {
 #define globalDirection lbl_804C1440 /* global 3-component direction vector */
 #pragma dont_inline on
 void DrawList_setGlobalDirection(float *direction) {
-    /* Store a 3-component direction in the global and reapply it to the draw list. */
+    /* Copy the 3-component direction into the globalDirection vector and reapply it with fn_802C99D8. */
     float z, y, x;
     x = direction[0];
     y = direction[1];
