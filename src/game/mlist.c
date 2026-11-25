@@ -503,7 +503,7 @@ void fn_802CD37C(void *arg0, void *arg1, float *arg2, int arg3, float farg0, flo
     __AXDSPInitCallback_801293D0();
 }
 #pragma pop
-void MlistClearCurrentContext(void) {
+/* Clear the current mlist context pointer once the scene's draw list has been submitted. */ void MlistClearCurrentContext(void) {
     /* Clear the current mlist context pointer once the scene's draw list has been submitted. */
     #define s_currentMlist gCurrentMlistContext
     s_currentMlist = 0;
