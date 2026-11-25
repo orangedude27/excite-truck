@@ -213,7 +213,7 @@ void fn_80208B8C(int initBackends) {
     fn_8000DBC8((void *)fn_80208AC8);
 }
 #pragma pop
-/* CodeWarrior deleting-destructor helper: when deleteFlag > 0, free a non-null object via operator delete (fn_80128668), then return the object. */ int fn_80208CFC(int object, int deleteFlag) {
+/* CodeWarrior deleting-destructor helper: when deleteFlag > 0, free a non-null object via operator delete (fn_80128668), then return the object. */ /* CodeWarrior deleting-destructor helper: when deleteFlag > 0, free a non-null object via operator delete (fn_80128668), then return the object. */ int fn_80208CFC(int object, int deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object when deleting, then return it. */
     if (object != 0 && deleteFlag > 0) {
         fn_80128668();
