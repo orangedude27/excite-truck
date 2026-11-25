@@ -3396,7 +3396,7 @@ extern float lbl_80564F88;
 }
 #pragma processor gekko
 /* Free a GX effect/light pool entry by clearing its in-use flag at offset 0xC
-   (entries are allocated by fn_802D39A4). */
+   (entries are allocated by fn_802D39A4). Flag 0xC is the entry's busy marker. */
 void ZQueryPool_Free(void *effect) { ((unsigned char *)effect)[0xC] = 0; }
 
 extern float lbl_80564F88, lbl_80564F8C, lbl_80564FB8, lbl_80564FBC, lbl_80564FE8, lbl_80564FEC;
