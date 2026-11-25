@@ -7,7 +7,6 @@ extern const f32 lbl_80560C68; // 0.5f
 extern const f32 lbl_80560C6C; // 3.0f
 
 /* Normalize the 3D vector in into out using paired-single instructions and one Newton-Raphson reciprocal-square-root refinement. */
-/* Normalize the 3D vector in into out using paired-single instructions and one Newton-Raphson reciprocal-square-root refinement. */
 void PSVECNormalize(register const Vec* in, register Vec* out) {
     register f32 c_half, c_three;
     register f32 xy, z;
