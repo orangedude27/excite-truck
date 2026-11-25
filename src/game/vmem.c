@@ -110,7 +110,7 @@ void *VirtualMemory_Destroy(void *arg0, int arg1) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_802E4D50(void *vmem) {
+extern "C" void VirtualMemory_forward(void *vmem) {
     /* Virtual dispatch on a VirtualMemory object: jump to the vtable entry at
        offset 0x10 (fn_802E4D60). This is slot 1 of vtable VirtualMemory_vtable. */
     struct VirtualMemoryVtbl {
