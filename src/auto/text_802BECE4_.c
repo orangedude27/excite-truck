@@ -211,7 +211,7 @@ extern void fn_802D3D94(void *, int);
 extern void DrawModelInstance(int);
 extern void fn_802C9904(void);
 extern void fn_802D3D80(void);
-extern void fn_802C967C(void);
+extern void DrawList_reapplyProjection(void);
 #pragma scheduling invalid_target
 #pragma processor 750
 void fn_802BF160(void) {
@@ -297,7 +297,7 @@ void fn_802BF160(void) {
     } while (i < 3);
     fn_802C9904();
     fn_802D3D80();
-    fn_802C967C();
+    DrawList_reapplyProjection();
 }
 void fn_802BF350(void) {
     // Initializes the water system: resets state, populates per-instance handles, logs activation, and caches an asset handle.
@@ -851,24 +851,28 @@ void fn_802BFE48(void *arg0, void *arg1, float arg2) {
         struct Idx { unsigned short a[6]; } idx;
         float vec[3];
         float x = lbl_80564DCC * arg2;
-        float y = lbl_80564DD0 * arg2;
         float *mat = matbuf;
         register int i;
+        struct V *p;
+        float m11, m10, m9;
         idx = *(const struct Idx *)lbl_802FAC20;
-        for (i = 0; i < 4; i++) {
-            v[i].x = (i & 1) ? x : -x;
-            v[i].y = (i & 2) ? x : -x;
-            v[i].z = y;
-            v[i].color = -1;
-            v[i].u = (i & 1) ? lbl_80564D80 : lbl_80564D90;
-            v[i].v = (i & 2) ? lbl_80564D80 : lbl_80564D90;
+        for (p = v, i = 0; i < 4; i++, p++) {
+            p->x = (i & 1) ? x : -x;
+            p->y = (i & 2) ? x : -x;
+            p->z = lbl_80564DD0 * arg2;
+            p->u = (i & 1) ? lbl_80564D80 : lbl_80564D90;
+            p->v = (i & 2) ? lbl_80564D80 : lbl_80564D90;
+            p->color = -1;
         }
+        m9 = ((float *)arg1)[9];
+        m10 = ((float *)arg1)[10];
+        m11 = ((float *)arg1)[11];
+        mat[9] = m9;
+        mat[10] = m10;
+        mat[11] = m11;
         mat[0] = lbl_80564D80; mat[1] = lbl_80564D90; mat[2] = lbl_80564D90; mat[3] = lbl_80564D90;
         mat[4] = lbl_80564D80; mat[5] = lbl_80564D90; mat[6] = lbl_80564D90; mat[7] = lbl_80564D90;
         mat[8] = lbl_80564D80;
-        mat[9] = ((float *)arg1)[9];
-        mat[10] = ((float *)arg1)[10];
-        mat[11] = ((float *)arg1)[11];
         vec[0] = lbl_80564DD4; vec[1] = lbl_80564D90; vec[2] = lbl_80564D90;
         fn_80015A20(rot, vec);
         fn_80015B20(mat, rot, mat);

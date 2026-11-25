@@ -955,7 +955,7 @@ void fn_802C9648(float scale) {
 #pragma scheduling on
 /* Restores the backed-up view/projection parameters by reapplying the saved
  * triple in lbl_804C144C[0..2] through fn_802C974C. */
-void fn_802C967C(void) {
+void DrawList_reapplyProjection(void) {
     fn_802C974C(lbl_804C144C[0], lbl_804C144C[1], lbl_804C144C[2]);
 }
 

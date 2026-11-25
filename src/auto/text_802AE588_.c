@@ -213,7 +213,7 @@ extern void fn_802C7A44(void);
 extern float lbl_80564B3C;
 extern void fn_802C9648(float);
 extern void fn_80287A34(int);
-extern void fn_802C967C(void);
+extern void DrawList_reapplyProjection(void);
 extern void fn_802879E4(int);
 extern void fn_801FA6B8(void);
 extern void submitModelBatch(void);
@@ -225,7 +225,7 @@ void fn_802AE728(void) {
     fn_802C7A44();
     fn_802C9648(lbl_80564B3C);
     fn_80287A34(0);
-    fn_802C967C();
+    DrawList_reapplyProjection();
     fn_802879E4(0);
     fn_801FA6B8();
     submitModelBatch();

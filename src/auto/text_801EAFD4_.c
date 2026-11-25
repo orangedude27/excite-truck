@@ -761,7 +761,7 @@ extern void submitModelBatch(void);
 extern void fn_802C7A94(s32);
 extern void fn_802C7AD4(void);
 extern void fn_802C9648(f32);
-extern void fn_802C967C(void);
+extern void DrawList_reapplyProjection(void);
 extern void fn_802CD37C(s32, s32, s32, s32, f32, f32);
 extern void fn_802CDAA8(void);
 extern void fn_802CDB5C(s32);
@@ -792,7 +792,7 @@ void fn_801EBDCC(void) {
             fn_802C7A94(2);
             fn_802C7A94(3);
             fn_80287A34(0);
-            fn_802C967C();
+            DrawList_reapplyProjection();
             fn_802CDB5C(2);
             fn_802879E4(0);
             fn_802C7A94(4);

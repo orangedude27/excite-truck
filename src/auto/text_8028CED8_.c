@@ -15,7 +15,7 @@ extern int fn_801E5370(int, int, float);
 extern void fn_8028D7C0(int);
 extern void fn_801E58FC(void);
 extern void DrawList_RestoreNormalMode(void);
-extern void fn_802C967C(void);
+extern void DrawList_reapplyProjection(void);
 extern float lbl_80558DC4[];
 extern float fn_801E7E24(void);
 extern void fn_8028D728(void);
@@ -106,7 +106,7 @@ void fn_8028CFB0(void) {
             }
             entry = (int *)((char *)entry + 0x1C);
         }
-        fn_802C967C();
+        DrawList_reapplyProjection();
         fn_802C9A4C(savedTime);
     }
 }
