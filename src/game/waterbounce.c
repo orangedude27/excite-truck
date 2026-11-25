@@ -849,7 +849,7 @@ void fn_8020F330(void *carSound) {
     }
 }
 #pragma scheduling off
-void fn_8020F354(void *carSound) {
+void CarSound_ResetBoostTurboTap(void *carSound) {
     /* Reset the state flags (+0x49 set, +0x4A/+0x4B clear) of the boostTurboTap
      * sound stored at +0x2C of the car's sound set. */
     void *sound;
@@ -872,7 +872,7 @@ void fn_8020F378(void *carSound) {
     }
 }
 /* CarSound vtable slot 0x34 (vtable lbl_8033C8C4): does nothing.  Its siblings in
- * that table -- fn_8020F1F8, CarSound_ResetWaterBounce, CarSound_ResetNiceLand, fn_8020F330, fn_8020F354
+ * that table -- fn_8020F1F8, CarSound_ResetWaterBounce, CarSound_ResetNiceLand, fn_8020F330, CarSound_ResetBoostTurboTap
  * and fn_8020F378 -- each re-arm one of the car's sounds by raising the sound's
  * +0x49 update flag and clearing its +0x4A/+0x4B stop/play requests; the sound
  * behind this slot is driven entirely by the per-frame update fn_8020E598 and
