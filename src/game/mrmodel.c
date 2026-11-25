@@ -1745,7 +1745,7 @@ float getModelInstanceTolerance(int instanceId) {
 }
 extern int gModelNameOverrideTable[];
 extern void mrModelClearNameOverrides(void);
-void mrModelClearNameOverrides(void) {
+/* Empty the model name-override table by resetting its used-count (gModelNameOverrideTable[0]) to zero. */ void mrModelClearNameOverrides(void) {
     /* Reset the used-count at +0 of the model entry pool gModelNameOverrideTable, emptying it. */
     gModelNameOverrideTable[0] = 0;
 }
