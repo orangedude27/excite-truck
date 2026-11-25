@@ -56,7 +56,7 @@ extern unsigned char lbl_8055FEB0, lbl_8055FD24;
 #pragma scheduling invalid_target
 /* Clear the blend-override flag, copy the first bound texture's alpha-reference byte
  * (offset 0xE4) into lbl_8055FD24, and set GX alpha compare to pass alpha > reference. */
-void fn_802DB2D4(void) {
+/* Clear the blend-override flag, take the alpha-reference byte from the first bound CPU-light texture, and configure GX alpha compare to pass alpha greater than that reference. */ void fn_802DB2D4(void) {
     lbl_8055FEB0 = 0;
     lbl_8055FD24 = ((unsigned char *)gCpuLightTextures[0])[0xE4];
     GXSetAlphaCompare(4, ((unsigned char *)gCpuLightTextures[0])[0xE4], 1, 0, 0);
