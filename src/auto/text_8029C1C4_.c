@@ -22,7 +22,7 @@ extern int lbl_804B5030[];
 extern void fn_8029E8E0(float *, int);
 extern void DrawModelInstance(int);
 extern void fn_8029D644(void *);
-extern float fn_802C88D4(void *);
+extern float DrawList_distanceToCamera(void *);
 extern void fn_8029D550(void *, float *, float *);
 extern int fn_8029D4CC(void *);
 extern int fn_8029EAE8(void *);
@@ -127,7 +127,7 @@ void fn_8029C2D4(void) {
         object = (void *)*entry;
         if (fn_8029D4CC(object)) {
             fn_8029D550(object, position, &spread);
-            difference = fn_802C88D4(position) - spread;
+            difference = DrawList_distanceToCamera(position) - spread;
             if (bestObject == 0 || difference < bestDifference) {
                 bestObject = object;
                 bestDifference = difference;

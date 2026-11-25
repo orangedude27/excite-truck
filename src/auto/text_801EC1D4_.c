@@ -467,7 +467,7 @@ long fn_801ECB60(void *vehicleRender) {
 }
 
 #pragma pop
-float fn_802C88D4(void *);
+float DrawList_distanceToCamera(void *);
 float fn_801E88F0(long);
 #pragma scheduling on
 /* Pick an index for a vehicle render object: scale the value derived from its +0x28
@@ -478,7 +478,7 @@ void fn_801ECB80(void *vehicleRender) {
     long *levelCount;
     long byteOffset;
     long index;
-    amount = fn_802C88D4((char *)vehicleRender + 0x28);
+    amount = DrawList_distanceToCamera((char *)vehicleRender + 0x28);
     amount *= fn_801E88F0(-1);
     levelCount = *(long **)((char *)vehicleRender + 0x174);
     index = 0;

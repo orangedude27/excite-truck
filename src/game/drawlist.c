@@ -437,7 +437,7 @@ extern void PSQUATMultiply(void *, unsigned int, void *);
 extern void MRModelSetTransform(unsigned int);
 extern void DrawList_setupMode2(void);
 #pragma scheduling invalid_target
-void fn_802C88D4(unsigned int quat) {
+void DrawList_distanceToCamera(unsigned int quat) {
     /* Tail-call PSQUATMultiply: write quat (a raw bit pointer) multiplied by the cached quaternion at lbl_804C1410 into lbl_804C1410+0x24. */
     PSQUATMultiply((void *)&lbl_804C1410[9], quat, lbl_804C1410);
 }

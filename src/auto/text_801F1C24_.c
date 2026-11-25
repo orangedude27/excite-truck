@@ -1610,7 +1610,7 @@ void fn_801F3F88(void) {
 
 }
 
-extern float fn_802C88D4(void *);
+extern float DrawList_distanceToCamera(void *);
 extern int fn_802C9900(float);
 extern int fn_802C9904(void);
 #pragma push
@@ -1624,7 +1624,7 @@ void fn_801F3F8C(void *table, void *node) {
         int entryIndex = *(int *)((char *)node + 0x14);
         if (entryIndex >= 0 && entryIndex < 0x30) {
             char *entry = *(char **)((char *)table + 4) + entryIndex * 0x18;
-            float metric = fn_802C88D4(entry);
+            float metric = DrawList_distanceToCamera(entry);
             float threshold = *(float *)(entry + 0x14);
             if (metric > threshold) {
                 float alpha = *(float *)(entry + 0x10) * (metric - threshold);
@@ -2070,7 +2070,7 @@ void fn_801F49F8(void *table, int drawContext) {
     selectedIndex = 0;
     while (selectedIndex < selectedCount) {
         item = *cursor;
-        value = fn_802C88D4(item);
+        value = DrawList_distanceToCamera(item);
         if (value > *(float *)((char *)item + 0x14)) {
             value = *(float *)((char *)item + 0x10) * (value - *(float *)((char *)item + 0x14));
             value = (maxAlpha < value) ? maxAlpha : value;
