@@ -1478,7 +1478,7 @@ void fn_802D6C4C(f32 extrudeScale) {
 }
 
 extern float gSurfAngleTable[];
-/* Sets element @p index of the surf value table at gSurfAngleTable to @p value. */
+/* Write one entry of the surface angle/deformation LUT used by the vertex drawers. */
 void drSetSurfAngleTableEntry(int index, float value) {
     gSurfAngleTable[index] = value;
 }
