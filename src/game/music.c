@@ -35,7 +35,7 @@ void fn_8020A5F8(f32 volume) {
 
 #pragma scheduling invalid_target
 /* Music-playback enable: log "music: play!" and set the music-enabled flag. */
-void fn_8020A600(void) {
+/* Music_Play: log "music: play!" and set the global music-play flag (lbl_8055EDDC) to 1; paired with fn_8020A634 (stop) and fn_8020A640 (status). */ void fn_8020A600(void) {
     fn_802E30C8(lbl_8033C308);
     lbl_8055EDDC = 1;
 }
