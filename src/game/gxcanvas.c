@@ -69,15 +69,15 @@ extern void gxCanvasFillRectRGBA4444(s32, s32, s32, s32, u32);
 #pragma scheduling invalid_target
 #pragma push
 #pragma peephole off
-s32 gxCanvasConvert1555ToRGBA(s32 pixel16) {
+/* Expand one RGB1555 (canvas format 3) pixel into a GX RGBA word: R5/G5/B5 into the colour channels and alpha forced to 0xFF. */ s32 gxCanvasConvert1555ToRGBA(s32 rgb1555) {
     /* Convert a 16-bit packed pixel from a format-3 canvas into a 32-bit GX
        RGBA color word for blitting into a 4-byte-per-pixel canvas (fn_802C3D74). */
-    unsigned int hi = __rlwinm(pixel16, 9, 8, 12);
-    unsigned int lo;
-    hi |= 0xFF000000;
-    lo = __rlwinm(pixel16, 3, 24, 28);
-    hi = __rlwimi(hi, pixel16, 6, 16, 20);
-    return (s32)(lo | hi);
+    unsigned int rgbaHigh = __rlwinm(rgb1555, 9, 8, 12);
+    unsigned int rgbaLow;
+    rgbaHigh |= 0xFF000000;
+    rgbaLow = __rlwinm(rgb1555, 3, 24, 28);
+    rgbaHigh = __rlwimi(rgbaHigh, rgb1555, 6, 16, 20);
+    return (s32)(rgbaLow | rgbaHigh);
 }
 #pragma pop
 #pragma push
