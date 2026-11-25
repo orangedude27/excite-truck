@@ -2669,9 +2669,9 @@ int fn_80283B58(void) {
     }
     return 0;
 }
-#pragma cplusplus off
+#pragma cplusplus on
 #pragma scheduling invalid_target
-int fn_80283E28(void) {
+extern "C" int fn_80283E28(void) {
     char *base = (char *)&lbl_804B2FF8;
     struct Fn80283E28List *list = (struct Fn80283E28List *)(base + 0xE0);
     int count;
