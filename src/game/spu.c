@@ -1354,12 +1354,14 @@ void fn_802E6AC4(void) {
     gSpuResetPending = 1;
 }
 
-int fn_802E6AD0(int request) {
+int fn_802E6AD0(int resetRequest) {
 #define KERNEL_RESET_NOTIFY 1
 #define invokeCallback fn_802E7774
 #define flagSpuReset fn_802E6AC4
-    /* SPU reset callback: on a real reset request, flag the SPU to reset itself. */
-    if (request == KERNEL_RESET_NOTIFY) {
+    /* SPU reset callback registered with KERNEL_AddResetCallback: on a real reset
+     * notification, invoke the routine that flags the SPU to reset itself. Always
+     * returns 0. */
+    if (resetRequest == KERNEL_RESET_NOTIFY) {
         invokeCallback(flagSpuReset);
     }
     return 0;
