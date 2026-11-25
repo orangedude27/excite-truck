@@ -428,15 +428,11 @@ void fn_802ECA48(void) {
 }
 #pragma dont_inline off
 void HomeMenu_request(void) {
-#define gHomeMenuActive HomeMenu_active
-#define gHomeMenuRequest HomeMenu_requestPending
     /* Request the home-button menu: raise the pending-request flag only when the
      * menu isn't already active (the per-frame process loop honours it later). */
-    if ((u8)gHomeMenuActive == 0) {
-        gHomeMenuRequest = 1;
+    if ((u8)HomeMenu_active == 0) {
+        HomeMenu_requestPending = 1;
     }
-#undef gHomeMenuRequest
-#undef gHomeMenuActive
 }
 
 char fn_802ECC10(void) {
