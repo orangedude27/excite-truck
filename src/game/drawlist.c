@@ -1098,7 +1098,7 @@ void fn_802C974C(float nearClip, float farClip, float fov) {
 #define sViewX   lbl_8055FC38
 #define sViewY   lbl_8055FC3C
 #define sSine    lbl_8055FC48
-void DrawList_getViewParams(float *outTan, float *outViewX, float *outViewY, float *outSin) {
+/* DrawList: copy the current projection tangent, view X/Y and view-angle sine into the output floats. */ void DrawList_getViewParams(float *outTan, float *outViewX, float *outViewY, float *outSin) {
     /* Snapshot the current view/projection parameters: projection tangent, view X/Y and the view-angle sine. */
     *outTan = sTangent;
     *outViewX = sViewX;
