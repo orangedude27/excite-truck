@@ -78,7 +78,7 @@ extern "C" void unloadStrmBank(s32 bankId) {
 #pragma cplusplus reset
 #pragma cplusplus on
 /* Set the global stream-bank manager's mix level through its virtual setLevel slot. */
-extern "C" void StrmBank_SetLevel(s32 level) {
+/* Set the global stream-bank manager's mix level through its virtual setLevel slot. */ extern "C" void StrmBank_SetLevel(s32 level) {
     ((StrmBankManager *)strmBankManager)->setLevel(level);
 }
 #pragma cplusplus reset
