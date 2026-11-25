@@ -3495,7 +3495,7 @@ extern int lbl_8055FD4C;
 extern unsigned char lbl_8055FD50;
 extern unsigned char gRenderRequest[12];
 extern float lbl_80564F90;
-void fn_802D3E88(void) {
+void gxClearIndTexMtxFlag(void) {
     /* Disable the alpha-blend / indirect (bump) stage of the shared render request block. */
     unsigned char *alphaBlendFlag = &gRenderRequest[0xD];
     *alphaBlendFlag = 0;
