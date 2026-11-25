@@ -1401,7 +1401,7 @@ void fn_802D03F4(register float *arg0, float arg1) {
 #pragma pop
 extern void *lbl_8055FD54;
 extern void* fn_802D30F0(void);
-extern void fn_802D307C(void);
+extern void gxLoadDefaultIndTexMtx(void);
 /* Set the global GX state block pointer (holds a GXTexObj at +0x24, read by fn_802D30E4); 0 clears it. */
 void fn_802D050C(void* stateBlock) {
     lbl_8055FD54 = stateBlock;
@@ -2975,7 +2975,7 @@ void fn_802D306C(unsigned char alpha) {
 
 extern void GXSetIndTexMtx(int, void *, int);
 /* Loads the default indirect-texture scale matrix into indirect texture matrix 1. */
-void fn_802D307C(void) {
+void gxLoadDefaultIndTexMtx(void) {
     int indTexMtx[6];
     int *defaultMtx = (int *)lbl_802FACB0;
 
@@ -3029,13 +3029,13 @@ void *gxGetDistortTexObj(void) {
     #undef GetDistortTexture
 }
 
-extern void fn_802D307C(void);
+extern void gxLoadDefaultIndTexMtx(void);
 #pragma dont_inline on
 void* fn_802D3104(void) {
     /* Load the default indirect-texture matrix, then return the address of the
        +0x24 field of the global graphics-state object held in lbl_8055FD5C. */
     struct { char pad[0x24]; char m; } *state;
-    fn_802D307C();
+    gxLoadDefaultIndTexMtx();
     state = lbl_8055FD5C;
     return &state->m;
 }
