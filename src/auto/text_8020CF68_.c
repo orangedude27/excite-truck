@@ -84,14 +84,14 @@ public:
 };
 #pragma cplusplus off
 
-extern long fn_802104D0(void); /* trackmusic.c: true when at least one track-music song was found */
+extern long hasTrackMusicSongs(void); /* trackmusic.c: true when at least one track-music song was found */
 
-/* Menu wrapper for the track-music check fn_802104D0: nonzero once the dash has
+/* Menu wrapper for the track-music check hasTrackMusicSongs: nonzero once the dash has
  * found at least one song (its song count is > 0).  The options menu stepper
  * fn_8020D0CC calls it when the selection lands on entry 2 and steps past that
  * entry again when no song is available. */
 int fn_8020CF68(void) {
-    return fn_802104D0();
+    return hasTrackMusicSongs();
 }
 
 #pragma push

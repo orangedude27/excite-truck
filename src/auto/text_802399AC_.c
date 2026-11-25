@@ -89,7 +89,7 @@ extern s32 fn_8000DA10(void);
 extern s32 fn_8000DB34(void);
 extern s32 fn_8021521C(s32, s32, s32);
 extern s32 fn_8027B9EC(s32);
-extern s32 fn_802104D0(void);
+extern s32 hasTrackMusicSongs(void);
 extern s32 fn_80214B44(s32);
 extern s32 fn_80214B94(s32);
 extern void *lbl_8055BAC8;
@@ -172,7 +172,7 @@ void fn_80239AC0(void)
  *
  * gOptionsState[6] is the music-slot state fn_80210570() read for the settings
  * screen and [7] the copy taken with it (fn_80239F74); while they differ and at
- * least one song is available (fn_802104D0), the "confirm change" message box is
+ * least one song is available (hasTrackMusicSongs), the "confirm change" message box is
  * put up from its heading and body texts, and what it answers is returned.
  * Nothing to confirm: 1. */
 s32 fn_80239DE4(void) {
@@ -180,7 +180,7 @@ s32 fn_80239DE4(void) {
 #define MessageLookup fn_80131234  /* message id of a "Group:NAME" text */
 #define ConfirmDialog fn_8021521C  /* message box: heading, body, flag */
     s32 *state = (s32 *)gOptionsState;
-    if (state[6] != state[7] && fn_802104D0()) {
+    if (state[6] != state[7] && hasTrackMusicSongs()) {
         s32 bodyMsg = fn_80131234(lbl_80340C44); /* TrackMusic:CONFIRM_CHANGE_BODY */
         s32 headMsg = fn_80131234(lbl_80340C24); /* TrackMusic:CONFIRM_CHANGE_HEAD */
         return ConfirmDialog(headMsg, bodyMsg, 0);
@@ -330,7 +330,7 @@ void fn_80239F74(void) {
     extern void LoadIntOptionValue(s32, void *, void *);
     extern void fn_8013323C(s32, void *, f32);
     extern void fn_80133348(s32, void *, s32);
-    extern s32 fn_8027B8C0(s32), fn_802104D0(void), trackMusicSetSlotStates(s32);
+    extern s32 fn_8027B8C0(s32), hasTrackMusicSongs(void), trackMusicSetSlotStates(s32);
     extern s32 fn_802E8D84(void), fn_802E6FBC(void);
     extern s32 fn_8027B77C(void), fn_8000DA80(void), fn_8027B690(void);
     extern s32 fn_8026311C(void), fn_80263F30(s32, s32, s32);
@@ -511,7 +511,7 @@ void fn_80239F74(void) {
             fn_8013323C(4, base + 0x1D8, *(f32 *)(p + 5));
             t = fn_8000DA10();
             fn_80133348(t + 0xc, base + 0x1E8, p[8]);
-            if (fn_802104D0() != 0) {
+            if (hasTrackMusicSongs() != 0) {
                 trackMusicSetSlotStates(p[6]);
                 if (fn_802E8D84() != 0) fn_802E6FBC();
             }
@@ -1256,7 +1256,7 @@ extern "C" void fn_8023B40C(void *widget) {
     s32 musicState;
     void *optionObject;
     s32 selectedTrack;
-    musicState = fn_802104D0();
+    musicState = hasTrackMusicSongs();
     if ((unsigned int)musicState == 1) {
         fn_80214B94(3);
     } else {

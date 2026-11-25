@@ -193,7 +193,7 @@ void fn_8020F6E0(long contextIndex, long event) {
  
 /* Track-music wrapper for the dash getter getTrackMusicSongCount: the number of songs the
  * dash found on the disc.  The tail branch leaves that count in r3, which is
- * what the callers test; fn_802104D0 is the same check reduced to a 0/1 flag. */
+ * what the callers test; hasTrackMusicSongs is the same check reduced to a 0/1 flag. */
 long fn_8020F6F8(void) {
     return getTrackMusicSongCount();
 }
@@ -766,7 +766,7 @@ long fn_802104B8(void) {
 }
 
 /* True when the dash found at least one track-music song (song count > 0). */
-long fn_802104D0(void) {
+long hasTrackMusicSongs(void) {
     return getTrackMusicSongCount() > 0;
 }
 
