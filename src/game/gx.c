@@ -2988,11 +2988,11 @@ void gxLoadDefaultIndTexMtx(void) {
     GXSetIndTexMtx(1, indTexMtx, 1);
 }
 
-extern void *lbl_8055FD5C;
+extern void *gBumpMapGfxState;
 /* Set the global graphics-state object pointer (read by gxGetBumpMapTexObjImpl et al.
    for the GXTexObj/indirect-texture state at +0x24). */
 void fn_802D30DC(void* state) {
-    lbl_8055FD5C = state;
+    gBumpMapGfxState = state;
 }
 
 /* Return the GXTexObj at +0x24 of the global GX state block; the caller loads it
@@ -3033,10 +3033,10 @@ extern void gxLoadDefaultIndTexMtx(void);
 #pragma dont_inline on
 void* gxGetBumpMapTexObjImpl(void) {
     /* Load the default indirect-texture matrix, then return the address of the
-       +0x24 field of the global graphics-state object held in lbl_8055FD5C. */
+       +0x24 field of the global graphics-state object held in gBumpMapGfxState. */
     struct { char pad[0x24]; char m; } *state;
     gxLoadDefaultIndTexMtx();
-    state = lbl_8055FD5C;
+    state = gBumpMapGfxState;
     return &state->m;
 }
 #pragma dont_inline off
