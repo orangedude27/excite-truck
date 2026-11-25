@@ -2550,7 +2550,7 @@ int fn_8018A100(void *truck) {
    the "finished" byte at 0x79 of the slot's 0x80-byte record in the slot table
    lbl_8055E684, and the truck keeps its slot index at +0x1EC -- it clears the
    truck's +0x25BC timer and raises the flag of the sound set the truck owns at
-   +0x2584.  That call is vtable slot 0x38 of that class (fn_8020F3A0, which sets
+   +0x2584.  That call is vtable slot 0x38 of that class (CarSound_RequestInvulnerable, which sets
    CarSound+0x72); its per-frame update uses the flag to start or stop the
    "invulnerable.sfx" sound (fn_8020E598). */
 extern "C" void fn_8018A120(void *truck) {
@@ -2758,63 +2758,65 @@ void fn_8018A6F4(void *object) {
 }
 
 extern void fn_801C1CBC(void *, int, void *, int, void *, int, void *);
-void fn_8018A750(void *arg0, int arg_sp0) {
-    struct {
-        int entries[4][3];
-        float vectors[4][4];
-        unsigned int records[4][10];
-        unsigned char pad[16];
-    } work;
-    char *base = (char *)arg0;
-    int handle = *(int *)(base + 0x26C4);
-    int count;
-    void *object;
-
-    if (handle != 0) {
-        fn_801C2170(handle, *(void **)(base + 0x26C0), base + 0x70);
+void fn_8018A750(void *arg0, int arg_sp0)
+{
+  struct
+  {
+    int entries[4][3];
+    float vectors[4][4];
+    unsigned int records[4][10];
+  } work;
+  char *base = (char *) arg0;
+  int handle = *((int *) (base + 0x26C4));
+  int twice;
+  int count;
+  if (handle != 0)
+  {
+    fn_801C2170(handle, *((void **) (base + 0x26C0)), base + 0x70);
+  }
+  if ((*((volatile int *) (base + 0x26C8))) != 0)
+  {
+    count = *((int *) (((char *) (*((void * volatile *) (base + 0x26C0)))) + 0xC8));
+    twice = count * 2;
+    if (count > 0)
+    {
+      int i = 0;
+      int slot = 0;
+      int k = 0;
+      unsigned int *record = work.records[0];
+      float *vec = work.vectors[0];
+      int *entry = work.entries[0];
+      float one = lbl_80561CD0;
+      float half = lbl_80561CDC;
+      for (i = 0; i < (*((int *) (((char *) (*((void * volatile *) (base + 0x26C0)))) + 0xC8))); i += 1)
+      {
+        float *p = (float *) record;
+        p[0] = *((float *) (base + 0x94));
+        p[1] = *((float *) (base + 0x98));
+        p[2] = *((float *) (base + 0x9C));
+        p[3] = one;
+        p[4] = half;
+        record[5] = record[0];
+        record[6] = record[1];
+        record[7] = record[2];
+        p[8] = one;
+        p[9] = half;
+        ((int *) vec)[0] = slot;
+        ((int *) vec)[1] = slot + 1;
+        vec[2] = lbl_80561CAC;
+        vec[3] = one - (*((float *) (((char *) (*((void * volatile *) (base + 0x26C0))) + 0xA8) + k)));
+        entry[0] = slot;
+        entry[1] = (int) (base + 0x70);
+        entry[2] = 0;
+        record += 10;
+        vec += 4;
+        entry += 3;
+        slot += 2;
+        k += 8;
+      }
     }
-    if (*(int *)(base + 0x26C8) != 0) {
-        object = *(void **)(base + 0x26C0);
-        count = *(int *)((char *)object + 0xC8);
-        if (count > 0) {
-            register int i = 0;
-            register int k = 0;
-            register int *entry = work.entries[0];
-            register unsigned int *record = work.records[0];
-            int slot = 0;
-            float *vec = work.vectors[0];
-            float cd0 = lbl_80561CD0;
-            float cdc = lbl_80561CDC;
-            do {
-                float *p = (float *)record;
-                p[0] = *(float *)(base + 0x94);
-                p[1] = *(float *)(base + 0x98);
-                p[2] = *(float *)(base + 0x9C);
-                p[3] = cd0;
-                p[4] = cdc;
-                record[5] = record[0];
-                record[6] = record[1];
-                record[7] = record[2];
-                p[8] = cd0;
-                p[9] = cdc;
-                ((int *)vec)[0] = slot;
-                ((int *)vec)[1] = slot + 1;
-                vec[2] = lbl_80561CAC;
-                vec[3] = cd0 - *(float *)((char *)object + 0xA8 + k);
-                entry[0] = slot;
-                entry[1] = (int)(base + 0x70);
-                entry[2] = 0;
-                record += 10;
-                vec += 4;
-                entry += 3;
-                slot += 2;
-                k += 8;
-                i += 1;
-            } while (i < *(volatile int *)((char *)object + 0xC8));
-        }
-        count = *(int *)((char *)object + 0xC8);
-        fn_801C1CBC((void *)*(int *)(base + 0x26C8), count * 2, work.records, count, work.vectors, count, work.entries);
-    }
+    fn_801C1CBC((void *) (*((int *) (base + 0x26C8))), twice, work.records, count, work.vectors, count, work.entries);
+  }
 }
 
 #pragma push

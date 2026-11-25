@@ -13,7 +13,7 @@ typedef struct CarSound {
                           // +0x8 destructor CarSound_destroy, +0xC per-frame update
                           // fn_8020E598, then one handler per sound -- +0x10..+0x30
                           // and +0x30 re-arm or set the volume of a sound, +0x34
-                          // fn_8020F39C is empty and +0x38 fn_8020F3A0 raises flag72
+                          // fn_8020F39C is empty and +0x38 CarSound_RequestInvulnerable raises flag72
     void *owner;          // at 0x4, the object this sound set was made for
     void *backfire;       // at 0x8, "backfire.sfx"
     void *lastBoost;      // at 0xC, the boost sound created last
@@ -881,7 +881,7 @@ void fn_8020F39C(void) {
 
 }
 
-void fn_8020F3A0(void *carSound) {
+void CarSound_RequestInvulnerable(void *carSound) {
     /* Raise the +0x72 flag (CarSound.flag72): request the invulnerable sfx after a hit. */
     *(signed char *)((char *)carSound + 0x72) = 1;
 }
