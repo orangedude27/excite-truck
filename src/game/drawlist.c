@@ -779,7 +779,7 @@ void fn_802C92D8(void) {
 
 /* Record render mode 2 (the state texSelectSlot/endMeshPass leave GX in), then hand
  * off to DrawList_RestoreNormalMode to restore the normal state and drop any pending overlay. */
-/* Finish a mode-3 overlay pass: record render mode 2 (the GX state the mesh draw leaves behind), then restore the normal draw-list mode and any saved matrix. */ void DrawList_endOverlayPass(void) {
+/* Finish a mode-3 overlay pass: record render mode 2 (the GX state the mesh draw leaves behind), then restore the normal draw-list mode and any saved matrix. */ /* Finish a mode-3 overlay pass: record render mode 2 (the GX state the mesh draw leaves behind), then restore the normal draw-list mode and any saved matrix. */ void DrawList_endOverlayPass(void) {
     sRenderMode = 2;
     DrawList_RestoreNormalMode();
 }
