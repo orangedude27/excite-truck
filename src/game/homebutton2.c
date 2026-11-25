@@ -427,7 +427,7 @@ void fn_802ECA48(void) {
 #undef gHomeMenuActive
 }
 #pragma dont_inline off
-void fn_802ECBF8(void) {
+void HomeMenu_request(void) {
 #define gHomeMenuActive HomeMenu_active
 #define gHomeMenuRequest HomeMenu_requestPending
     /* Request the home-button menu: raise the pending-request flag only when the

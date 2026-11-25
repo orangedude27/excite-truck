@@ -415,7 +415,7 @@ extern unsigned char fn_8005EE80(int);
 extern int fn_800604E8(int, int, void *);
 extern int fn_802ECC10(void);
 extern void fn_802EC884(void);
-extern void fn_802ECBF8(void);
+extern void HomeMenu_request(void);
 extern void KERNEL_Reset(int);
 extern void rjoyWpadCommandDone(int);
 extern void *memset(void *, int, unsigned int);
@@ -537,7 +537,7 @@ void fn_802E7FD0(void) {
         if (record[0x29] != 0) {
             if (record[0xC5] == 0) {
                 record[0xC5] = 1;
-                fn_802ECBF8();
+                HomeMenu_request();
             }
         } else {
             record[0xC5] = 0;
