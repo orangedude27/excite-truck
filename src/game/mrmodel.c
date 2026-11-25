@@ -102,7 +102,7 @@ void *fn_802C5390(int instanceId) {
     return (void *)(instances + (instanceId << 4));
 }
 #pragma scheduling off
-int fn_802C53A8(instanceId)
+int MRModel_GetInstanceGroupList(instanceId)
 int instanceId;
 {
     /* Return the group list (+0x4) of a model instance by id, from the instance table's 0x10-byte records. */
@@ -1072,10 +1072,10 @@ int fn_802C6C20(int resource) {
  * state set up here, so it does nothing. */
 void fn_802C6C30(void) { }
 
-/* Public accessor used across the game: hand an instance id to fn_802C53A8 and
+/* Public accessor used across the game: hand an instance id to MRModel_GetInstanceGroupList and
  * return the model instance's group list (the +0x4 field of its 0x10-byte record)
  * as an opaque pointer. */
-void *fn_802C6C34(int instanceId) { return (void *)fn_802C53A8(instanceId); }
+void *fn_802C6C34(int instanceId) { return (void *)MRModel_GetInstanceGroupList(instanceId); }
 
 #pragma scheduling invalid_target
 void fn_802C6C38(int modelId) {
@@ -1131,7 +1131,7 @@ void fn_802C6CF8(int modelHandle) {
         ((int (*)(const char *, ...))fn_802E30C8)(lbl_8034B34C);
         return;
     }
-    groupList = fn_802C53A8();
+    groupList = MRModel_GetInstanceGroupList();
     fn_802C6C38(modelHandle);
     fn_802C6C20(groupList);
 }
@@ -1278,7 +1278,7 @@ void fn_802C703C(int modelId) {
 int fn_802C90E0(void);
 int fn_802E30C8(const char*, int);
 extern const char lbl_8034B34C[];
-int fn_802C53A8();
+int MRModel_GetInstanceGroupList();
 int fn_802C6C20(int);
 int fn_802C6B44(int);
 extern const char lbl_8034B3DC[];
@@ -1398,7 +1398,7 @@ extern float PSVECSquareDistance(const float *, const float *);
     if (instanceId == -1)
         return;
 
-    groupList = (int *)fn_802C53A8(instanceId);
+    groupList = (int *)MRModel_GetInstanceGroupList(instanceId);
     if (*groupList <= 0)
         return;
 
@@ -1754,7 +1754,7 @@ void fn_802C7A00(void) {
 /* Diagnostic helper: returns the resource name of the model at the given index
    (carried in the pointer-typed argument) for use in debug printf calls. */
 /* Diagnostic helper: return the resource name of the model instance at instanceId (via its group node) for debug printf calls. */ /* Diagnostic helper: return the resource name of the model instance at the given index (via its group node) for debug printf calls. */ void MRModel_GetResourceName(void* instanceId) {
-    fn_8012C58C(fn_802C53A8(instanceId));
+    fn_8012C58C(MRModel_GetInstanceGroupList(instanceId));
 }
 
 /* Tail-call thunk: branches to fn_802DA704, the stack-allocator helper that
