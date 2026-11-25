@@ -57,6 +57,21 @@ void PPCSetFpNonIEEEMode(void);
 /* Write v to the HID4 special-purpose register (SPR 0x3F3). */
 #define PPC_MTSPR_HID4(v) PPC_JOIN(__as, m) { mtspr 0x3F3, v }
 
+/* Write val to the Floating-Point Status and Control Register (FPSCR):
+ * zero-extend it into a 64-bit word and load/store it through f31 with mtfsf. */
+#define PPC_MTFSF(val)                              \
+    register struct {                               \
+        f32 tmp;                                    \
+        f32 data;                                   \
+    } fpscr;                                        \
+    PPC_JOIN(__as, m) {                             \
+        li r4, 0                                    \
+        stw val, fpscr.data                         \
+        stw r4, fpscr.tmp                           \
+        lfd f31, fpscr.tmp                          \
+        mtfs f31                                    \
+    }
+
 void PPCMthid4(u32 val);
 
 #ifdef __cplusplus
