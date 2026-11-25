@@ -32,7 +32,7 @@ int gxGetImageArt(char* imageName) {
 #pragma pop
 /* Release the referenced art set through fn_80235380 when `artSet` is non-null;
    a null handle is ignored. */
-void fn_802C519C(void* artSet) {
+/* Release an image art-set handle when it is non-null; ignore null. */ void fn_802C519C(void* artSet) {
     if (artSet == 0) return;
     fn_80235380();
 }
