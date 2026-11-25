@@ -92,7 +92,7 @@ typedef struct { char *callbacks; int state; } VoiceMixerDevice;
 #pragma scheduling on
 #pragma dont_inline reset
 
-void fn_8020A72C(void) {
+/* Allocate and construct the voice-mixer device, then register it with the mixer device registry (mode 0). */ void fn_8020A72C(void) {
     /* Create the voice-sound mixer object and register it as a sound device. */
     void *mixer = (void *)fn_801284F8(0xC, lbl_8033C35C);
     if (mixer != 0)
