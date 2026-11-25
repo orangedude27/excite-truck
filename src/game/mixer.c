@@ -68,10 +68,10 @@ extern void SetSoundQuality(int);
 #pragma scheduling invalid_target
 #pragma push
 #pragma inline_depth(0)
-/* Return the input volume scaled by the stored volume of every active mixer volume handle (a slot whose name pointer is set). */ float fn_80208A18(float baseVolume) {
-    /* Scale value by the stored volume of every active mixer volume handle (a
-     * slot whose name pointer is set); MIXER_VOLUME_HANDLE_COUNT slots are in
-     * use out of at most MIXER_VOLUME_HANDLE_MAX. */
+/* Return the input volume scaled by the stored volume of every active mixer
+ * volume handle: MIXER_VOLUME_HANDLE_COUNT slots are in use out of at most
+ * MIXER_VOLUME_HANDLE_MAX, and a slot contributes only when its name pointer is set. */
+float fn_80208A18(float baseVolume) {
     struct MixerVolumeHandle *handles = MIXER_VOLUME_HANDLES;
     int count = MIXER_VOLUME_HANDLE_COUNT;
     int i;
