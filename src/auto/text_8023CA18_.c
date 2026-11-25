@@ -386,7 +386,7 @@ void fn_8023D1FC(void *obj) {
     }
 }
 
-extern void fn_80208D60(int);
+extern void SetSelectedMixerDevice(int);
 extern void fn_8020A5F8(float *, float);
 
 /* Sound-options panel (vtable lbl_803415E8: deleting destructor fn_8023D134,
@@ -409,7 +409,7 @@ typedef struct SoundOptions {
 
 #define sound_device_count  GetMixerDeviceCount /* size of the sound device list */
 #define sound_device_get    GetMixerDevice /* index -> device (getName at vtable +0xC) */
-#define sound_device_select fn_80208D60 /* index -> current device */
+#define sound_device_select SetSelectedMixerDevice /* index -> current device */
 #define effects_volume_set  SetEffectsVolume /* clamped, saved as "effects_volume" */
 #define speaker_mode_set    SetSoundQuality /* 0..2, else 0 */
 #define music_volume_set    fn_8020A5F8 /* f32 music volume */

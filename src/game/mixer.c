@@ -231,7 +231,7 @@ int GetMixerDevice(int index) {
 }
 
 /* Set the index of the currently selected mixer device. */
-void fn_80208D60(int index) { MIXER_SELECTED_DEVICE = index; }
+void SetSelectedMixerDevice(int index) { MIXER_SELECTED_DEVICE = index; }
 
 /* Return the index of the currently selected mixer device. */
 int GetSelectedMixerDevice(void) { return MIXER_SELECTED_DEVICE; }
