@@ -195,14 +195,14 @@ static inline void xformInverse_802D1C04(Xform_802D1C04 *dst, const Xform_802D1C
 
 extern char lbl_8055FD3C;
 #pragma dont_inline on
-unsigned long gxPackRGBA(int r, int g, int b, int a) {
+/* Pack four byte color components (r, g, b, a) into one 32-bit RGBA word, r in the high byte (GXColor memory order). */ unsigned long gxPackRGBA(int r, int g, int b, int a) {
     /* Pack four byte color components into a 32-bit GXColor word (r in the high byte). */
-    unsigned char bytes[4];
-    bytes[0] = (unsigned char)r;
-    bytes[1] = (unsigned char)g;
-    bytes[2] = (unsigned char)b;
-    bytes[3] = (unsigned char)a;
-    return *(unsigned long *)bytes;
+    unsigned char rgba[4];
+    rgba[0] = (unsigned char)r;
+    rgba[1] = (unsigned char)g;
+    rgba[2] = (unsigned char)b;
+    rgba[3] = (unsigned char)a;
+    return *(unsigned long *)rgba;
 }
 
 unsigned char fn_802CEA1C(unsigned int argbColor) {
