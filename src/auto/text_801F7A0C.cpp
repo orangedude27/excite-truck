@@ -8,7 +8,7 @@ struct VT_20 { void *v0; void *v4; void *v8; void *vc; void *v10; void *v14; voi
 __declspec(section ".sdata") extern const char lbl_8055B2A8[], lbl_8055B2B0[], lbl_8055B2B8[], lbl_8055B2C0[];
 extern s32 lbl_8055EC48;
 extern "C" s32 fn_802C6B44(void *);
-extern "C" s32 fn_802C6C20(f32);
+extern "C" s32 MRModel_ReleaseResource(f32);
 extern "C" s32 lbl_8055EC64;
 extern "C" const char lbl_8033AFDC[];
 extern "C" const f32 lbl_80562FF8;
@@ -478,7 +478,7 @@ extern "C" void fn_801F7E20(void *arg0, void *arg1) {
         temp = -*(f32 *)((u8 *)fn_802C6B44(obj + 0x61) + 0x34);
         value = lbl_80562FF8 + temp;
         *(f32 *)(obj + 0x28) = value;
-        fn_802C6C20(temp);
+        MRModel_ReleaseResource(temp);
     } else {
         *(f32 *)(obj + 0x28) = lbl_80562FF0;
     }
@@ -640,7 +640,7 @@ extern "C" int stricmp(const char *, const char *);
 extern "C" const char lbl_8033B00C[];
 extern "C" __declspec(section ".sdata") const char lbl_8055B2C4[];
 extern "C" s32 fn_802C6B44(void *);
-extern "C" s32 fn_802C6C20(f32);
+extern "C" s32 MRModel_ReleaseResource(f32);
 extern "C" void fn_80128668(void);
 extern "C" const char lbl_8033AFDC[];
 extern "C" const f32 lbl_80562FF8;
@@ -1213,7 +1213,7 @@ typeChecked:
         res = (void *)fn_802C6B44(model);
         memcpy(dest + 0x58, (u8 *)res + 0x2C, 0x1C);
         *(f32 *)(dest + 0x70) = mgr->getFD(base + 0x1D8, lbl_80562FF0);
-        ((void (*)(void *))fn_802C6C20)(res);
+        ((void (*)(void *))MRModel_ReleaseResource)(res);
         break;
     }
     case 12:
@@ -2607,7 +2607,7 @@ extern "C" void fn_801FAAC4(char *dest, void *mgr) {
         void *model = (void *)fn_802C6B44(modeName);
         memcpy(dest + 0x58, (u8 *)model + 0x2C, 0x1C);
         *(f32 *)(dest + 0x70) = ((FAAMgr *)mgr)->getFD(keyBase + 0x1D8, lbl_80562FF0);
-        ((void (*)(void *))fn_802C6C20)(model);
+        ((void (*)(void *))MRModel_ReleaseResource)(model);
         break;
     }
     case 12:

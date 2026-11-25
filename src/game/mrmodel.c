@@ -41,7 +41,7 @@ char *getTextureSlotName(char *);
 int stricmp(const char *, const char *);
 extern const char lbl_8034B3DC[];
 extern const char lbl_8034B34C[];
-int fn_802C6C20(int);
+int MRModel_ReleaseResource(int);
 int fn_802C90E0(void);
 int fn_802E30C8(const char *, int);
 int fn_802C6B44(int);
@@ -1061,7 +1061,7 @@ int fn_802C6B44(int modelPath) {
 
 #pragma dont_inline on
 /* Release a model resource, with fn_802C5E6C called when its reference count reaches zero. */
-int fn_802C6C20(int resource) {
+int MRModel_ReleaseResource(int resource) {
     return fn_8012C4E4((void *)resource, (void *)fn_802C5E6C, resource);
 }
 #pragma dont_inline reset
@@ -1132,7 +1132,7 @@ void fn_802C6CF8(int modelHandle) {
     }
     groupList = MRModel_GetInstanceGroupList();
     fn_802C6C38(modelHandle);
-    fn_802C6C20(groupList);
+    MRModel_ReleaseResource(groupList);
 }
 
 /* Return 1 when any element in the model's group/element tables has a nonzero base id, else 0. */
@@ -1278,7 +1278,7 @@ int fn_802C90E0(void);
 int fn_802E30C8(const char*, int);
 extern const char lbl_8034B34C[];
 int MRModel_GetInstanceGroupList();
-int fn_802C6C20(int);
+int MRModel_ReleaseResource(int);
 int fn_802C6B44(int);
 extern const char lbl_8034B3DC[];
 int fn_802C94A0(void*, unsigned char*, float*, float);

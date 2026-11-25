@@ -106,7 +106,7 @@ extern char lbl_8033A400[];
 extern char lbl_8033A410[];
 extern int lbl_8055B0C0;
 extern void *fn_802C6B44(void);
-extern int fn_802C6C20(void *);
+extern int MRModel_ReleaseResource(void *);
 extern int fn_802C7888(void *, int);
 extern int ResourceEntry_GetName(int);
 extern int memset(void *, int, unsigned int);
@@ -150,7 +150,7 @@ extern "C" void fn_801F004C(int unused, int recordId, void *provider) {
         entryOffset += 0x10;
         index++;
     }
-    fn_802C6C20(list);
+    MRModel_ReleaseResource(list);
 }
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" int sscanf(const char *, const char *, ...);

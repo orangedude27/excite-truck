@@ -385,7 +385,7 @@ extern void *fn_802B2C34(void *, int);
 extern int fn_802BC4E0(void *);
 void fn_802BCFB0(int *);
 void fn_802CAC54(int);
-int fn_802C6C20(int);
+int MRModel_ReleaseResource(int);
 void fn_80131818();
 extern int fn_802B1DA0(void *);
 extern int fn_801D04D0(void);
@@ -509,10 +509,10 @@ extern "C" void fn_802BCF04(void) {
         entry = *(char **)&lbl_804C00D4 + offset;
         fn_802BCFB0((int *)(entry + 0x58));
         fn_802CAC54(*(int *)(entry + 0x20));
-        fn_802C6C20(*(int *)(entry + 0x18));
+        MRModel_ReleaseResource(*(int *)(entry + 0x18));
         *(int *)(entry + 0x18) = 0;
         fn_802CAC54(*(int *)(entry + 0x10));
-        fn_802C6C20(*(int *)(entry + 8));
+        MRModel_ReleaseResource(*(int *)(entry + 8));
         *(int *)(entry + 8) = 0;
         offset += 0x60;
     }

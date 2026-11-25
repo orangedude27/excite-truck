@@ -172,7 +172,7 @@ void fn_801A9AB0(void *self, void *cfg) {
     extern double lbl_805624B8;
     extern double cos(double), sin(double);
     extern void *fn_802C6B44(void *);
-    extern void fn_802C6C20(void *);
+    extern void MRModel_ReleaseResource(void *);
     extern double __fabs(double);
     extern float lbl_80562488;
     extern void *fn_801A2354(void *, void *, void *, void *, float, float, float, float, float);
@@ -765,7 +765,7 @@ void fn_801A9AB0(void *self, void *cfg) {
                 }
                 outer++;
             }
-            fn_802C6C20(collection);
+            MRModel_ReleaseResource(collection);
             x = *(float *)(c + 0x58);
             y = *(float *)(c + 0x5C);
             {

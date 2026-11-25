@@ -291,7 +291,7 @@ void *fn_802B1F68(void *, int);
 void fn_80128668(void *);
 void fn_802B2104(void **arg0);
 void fn_802CAC54(int);
-void fn_802C6C20(void *);
+void MRModel_ReleaseResource(void *);
 int fn_80129D90(int, int, int);
 
 #pragma push
@@ -343,7 +343,7 @@ void fn_802B21D4(void **arg0) {
             {
                 void *resource = *(void **)ptr;
                 if (resource != 0) {
-                    fn_802C6C20(resource);
+                    MRModel_ReleaseResource(resource);
                 }
             }
             fn_80128668(ptr);

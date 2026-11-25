@@ -412,7 +412,7 @@ int fn_80292BA8(float *arg0, float *arg1, float *__restrict arg2, float *arg3) {
     return 0;
 }
 extern void *fn_802C6B44(void);
-extern void fn_802C6C20(void *);
+extern void MRModel_ReleaseResource(void *);
 extern int fn_802C7888(void *, int);
 extern char *ResourceEntry_GetName(int);
 extern void *memset(void *, int, unsigned int);
@@ -469,7 +469,7 @@ copied_entry:
     indexOrId++;
 check_list:
     if (indexOrId < *(int *)resourceList) goto copy_first;
-    fn_802C6C20(resourceList);
+    MRModel_ReleaseResource(resourceList);
 }
 #pragma scheduling on
 /* One row of lbl_802FA998: a chunk type's name and the id the chunk system uses
