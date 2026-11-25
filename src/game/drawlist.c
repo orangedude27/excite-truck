@@ -434,7 +434,7 @@ void fn_802C88CC(unsigned int color) {
 
 extern unsigned int lbl_804C1410[];
 extern void PSQUATMultiply(void *, unsigned int, void *);
-extern void fn_802C7734(unsigned int);
+extern void MRModelSetTransform(unsigned int);
 extern void DrawList_setupMode2(void);
 #pragma scheduling invalid_target
 void fn_802C88D4(unsigned int quat) {
@@ -551,7 +551,7 @@ void DrawList_setupMode2(void) {
 /* RealName: DrawList_QueueApplyAndBeginMode2 */
 /* Queue and apply the draw record at source as the current GX state, then run handle's mode-2 draw-list setup (select texture slot, set render mode 2). */ void fn_802C8B98(int handle, int source) {
     /* Queue the draw record at `source`, apply it as the current GX state, then run `handle`'s mode-2 draw-list setup. */
-    fn_802C7734(source);
+    MRModelSetTransform(source);
     ((void (*)(int))DrawList_setupMode2)(handle);
 }
 #pragma dont_inline reset

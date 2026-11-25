@@ -1578,7 +1578,7 @@ void fn_802C7730(const float *transform) { fn_802DABA4(transform); }
 /* Queue the caller's 12-float model transform as a draw record, then apply it
  * as the current GX state: fn_802D0514 returns the new record's handle and
  * fn_802D0610 selects that record. */
-void fn_802C7734(void *transform) {
+void MRModelSetTransform(void *transform) {
     fn_802D0610(fn_802D0514(transform));
 }
 
@@ -1896,7 +1896,7 @@ void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
         if (fn_802C9638(local.vector, &local.status, scale + *(float *)((char *)*(void **)((char *)manager + 4) + 0x1C)) != 0) {
             fn_802D6C4C(farg0);
             fn_802DB2BC(local.status);
-            fn_802C7734(arg1);
+            MRModelSetTransform(arg1);
             entry = fn_802C6C34(arg0);
             for (i = 0; i < *(int *)entry; i++) {
                 char *item = *(char **)((char *)entry + 4) + i * 0x10;
