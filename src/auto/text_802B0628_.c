@@ -744,7 +744,7 @@ extern void fn_802C28C0(void);
 extern void fn_802C8BD0();
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_802DC3C0(int);
-extern void fn_802DC440(void);
+extern void CpuLight_ResetVideoState(void);
 extern void fn_802DC464();
 extern float fn_801DCF48(int, float, float);
 #pragma push
@@ -795,7 +795,7 @@ void fn_802B1758(void *arg0) {
             offset += 8;
             v.i++;
         }
-        fn_802DC440();
+        CpuLight_ResetVideoState();
         DrawList_RestoreNormalMode();
     }
 
@@ -864,7 +864,7 @@ void fn_802B1758(void *arg0) {
                 values[13] = *p++;
             }
             fn_802DC464(lbl_804BE190, 8, values, 0xE);
-            fn_802DC440();
+            CpuLight_ResetVideoState();
             DrawList_RestoreNormalMode();
         }
     }

@@ -633,7 +633,7 @@ extern char lbl_8034CB00[];
 extern char lbl_8034CB24[];
 extern unsigned int gCpuLightTexData;
   
-void fn_802DC440(void) {
+void CpuLight_ResetVideoState(void) {
 #define CpuLight_ClearState fn_802DBDD8
     /* Clear the CPU-light state, then restore the video TEV swap/blend setup. */
     ((void (*)(void))CpuLight_ClearState)();
