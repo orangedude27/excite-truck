@@ -720,7 +720,7 @@ void fn_802CF830(void) {
 }
 
 int GX_IsXFBSet(void) {
-    /* Return nonzero when an external frame buffer is currently set: entry [1] of the GX_XFB block holds the buffer being drawn into and shown. */
+    /* True while an external frame buffer is set: gXfbBlock[1] is the buffer currently drawn into and shown. */
     return gXfbBlock[1] != 0;
 }
 
