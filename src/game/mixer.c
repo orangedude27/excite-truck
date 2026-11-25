@@ -68,7 +68,7 @@ extern void SetSoundQuality(int);
 #pragma scheduling invalid_target
 #pragma push
 #pragma inline_depth(0)
-float fn_80208A18(float value) {
+/* Return the input volume scaled by the stored volume of every active mixer volume handle (a slot whose name pointer is set). */ float fn_80208A18(float baseVolume) {
     /* Scale value by the stored volume of every active mixer volume handle (a
      * slot whose name pointer is set); MIXER_VOLUME_HANDLE_COUNT slots are in
      * use out of at most MIXER_VOLUME_HANDLE_MAX. */
@@ -78,10 +78,10 @@ float fn_80208A18(float value) {
 
     for (i = 0; i < count; i++) {
         if (handles[i].name != 0) {
-            value *= handles[i].volume;
+            baseVolume *= handles[i].volume;
         }
     }
-    return value;
+    return baseVolume;
 }
 
 #define baseEffectsVolume lbl_8055B4D0
