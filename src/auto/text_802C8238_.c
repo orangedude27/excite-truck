@@ -3,10 +3,10 @@
 
 extern void fn_8000D838(void *);
 __declspec(section ".sdata") extern unsigned char lbl_8055FC18;
-extern char lbl_804C1338[];
+extern char gDisplayEntryPool[];
 #pragma opt_common_subs off
 void fn_802C8238(void) {
-    unsigned int *base = (unsigned int *)lbl_804C1338;
+    unsigned int *base = (unsigned int *)gDisplayEntryPool;
     unsigned int *p0, *p1, *p2, *p3, *p4;
     fn_8000D838(&lbl_8055FC18);
     p0 = &base[0x00 >> 2];

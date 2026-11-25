@@ -24,7 +24,7 @@ void fn_802C57B4(int, int, int, unsigned char, float);
 
 extern int gModelMode;
 extern void fn_802DB2B4(void);
-extern int lbl_804C1338[];
+extern int gDisplayEntryPool[];
 extern unsigned char gModelDetailLevelTable[];
 struct Entry16 {
     char data[16];
@@ -111,15 +111,15 @@ int instanceId;
 }
 #pragma scheduling invalid_target
 void fn_802C53C4(void *a, void *b, int x, int y, unsigned char z) {
-    register int count = lbl_804C1338[0];
-    register int limit = lbl_804C1338[1];
+    register int count = gDisplayEntryPool[0];
+    register int limit = gDisplayEntryPool[1];
     register int base;
     register int offset;
     register unsigned char *entry;
     if (count < limit) {
-        base = lbl_804C1338[2];
+        base = gDisplayEntryPool[2];
         offset = count * 0x14;
-        lbl_804C1338[0] = count + 1;
+        gDisplayEntryPool[0] = count + 1;
         entry = (unsigned char *)(base + offset);
     } else {
         entry = 0;
@@ -137,8 +137,8 @@ void fn_802C53C4(void *a, void *b, int x, int y, unsigned char z) {
     *(void **)((char *)b + 8) = entry;
 }
 void mrModelResetDisplayEntries(void) {
-    /* Reset the used-count at +0 of the display entry pool lbl_804C1338, emptying it. */
-    lbl_804C1338[0] = 0;
+    /* Reset the used-count at +0 of the display entry pool gDisplayEntryPool, emptying it. */
+    gDisplayEntryPool[0] = 0;
 }
 #pragma dont_inline off
 
@@ -659,7 +659,7 @@ void fn_802C5F48(void) {
     register struct SubList *e70;
     register struct SubList *e58;
     register struct SubList *e7c;
-    register char *base = (char *)lbl_804C1338;
+    register char *base = (char *)gDisplayEntryPool;
     register char *jumpTable = jumptable_8034B1B8;
     int zero = 0;
     void *memory;
@@ -759,7 +759,7 @@ void fn_802C6080(void) {
     int zero;
     void *ptr;
 
-    base = (char *)lbl_804C1338;
+    base = (char *)gDisplayEntryPool;
     e = (struct SubList *)(base + 0x64);
     for (i = 0, offset = 0; i < *(int *)(base + 0x64); i++, offset += 0x10) {
         if (*(int *)((char *)e->buf + offset) > 0) {
