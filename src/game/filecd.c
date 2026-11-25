@@ -25,7 +25,7 @@ public:
     virtual int read(void *dst, int len);         // 0x08 fn_802E4440
     virtual int write(const void *src, int len);  // 0x0C fn_802E4648: "write not supported"
     virtual int readAsync(void *dst, int len);    // 0x10 FileDisk_readAsync
-    virtual int isReadDone(void);                 // 0x14 fn_802E461C
+    virtual int isReadDone(void);                 // 0x14 FileDisk_isReadDone
     virtual int getLength(void);                  // 0x18 fn_802E4400
     virtual int tell(void);                       // 0x1C fn_802E4680
     virtual int seek(int pos);                    // 0x20 fn_802E43D8
@@ -436,7 +436,7 @@ int FileDisk_readAsync(void *file, void *dst, int len) {
 }
 #pragma scheduling on
 /* FileDisk::isReadDone — true when the DVD command block is idle (status 0). */
-/* FileDisk::isReadDone: true when the DVD command block is idle (status 0). */ int fn_802E461C(void *file) {
+/* FileDisk::isReadDone: true when the DVD command block is idle (status 0). */ int FileDisk_isReadDone(void *file) {
     return DVDGetCommandBlockStatus((char *)file + 4) == 0;
 }
 
