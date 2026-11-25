@@ -9,6 +9,7 @@
 // .sdata2 zero literal used by PSMTXScale
 extern f32 lbl_80560C4C;
 
+/* Build a scale matrix: sx/sy/sz on the diagonal, zero elsewhere; the paired-single stores fill two zero entries at a time. */
 void PSMTXScale(Mtx m, f32 sx, f32 sy, f32 sz) {
     register f32 c0 = lbl_80560C4C;
     register void* mp = m;
