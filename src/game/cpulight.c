@@ -752,7 +752,7 @@ extern int fn_802CFF64();
 extern void fn_802D0E48(int);
 extern void fn_802D2ED8(int, int);
 extern void fn_802D2F70(int);
-extern void fn_802D3D94(void *, int);
+extern void gxLoadTexMtx(void *, int);
 extern void drUpdateDisplayList(void *);
 extern void fn_802D6B78(void *);
 extern void fn_802D6B7C(void *);
@@ -1034,7 +1034,7 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
             matrix[1][2] = lbl_80565048;
             matrix[0][3] = lbl_80565044 + x / scale;
             matrix[1][3] = lbl_80565044 + y / scale;
-            fn_802D3D94(0, (int)matrix);
+            gxLoadTexMtx(0, (int)matrix);
             {
                 fn_802DCAE4_GXColor col;
                 float t = lbl_80565040 * alpha;

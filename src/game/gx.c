@@ -3454,7 +3454,7 @@ void fn_802D3D80(void) {
 }
 
 extern void GXLoadTexMtxImm(void *, unsigned int, unsigned char);
-void fn_802D3D94(int texMtxIndex, void *mtx) {
+void gxLoadTexMtx(int texMtxIndex, void *mtx) {
     /* Load a 2x4 texture matrix into GX texture-matrix slot texMtxIndex
        (matrix id 30 + 3*index). */
     GXLoadTexMtxImm(mtx, texMtxIndex * 3 + 30, 1);

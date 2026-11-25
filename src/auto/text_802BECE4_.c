@@ -207,7 +207,7 @@ extern void fn_802C9648(float);
 extern void fn_802D3D6C(void);
 extern float fn_802BF02C(float, int);
 extern void fn_802C9900(float);
-extern void fn_802D3D94(void *, int);
+extern void gxLoadTexMtx(void *, int);
 extern void DrawModelInstance(int);
 extern void fn_802C9904(void);
 extern void fn_802D3D80(void);
@@ -290,7 +290,7 @@ void fn_802BF160(void) {
         ((volatile float *)scratch)[5] = f0;
         ((volatile float *)scratch)[7] = f4;
         fn_802C9900(fn_802BF02C(f27, (int)m6));
-        fn_802D3D94(0, (int)scratch);
+        gxLoadTexMtx(0, (int)scratch);
         DrawModelInstance(lbl_8055CF6C);
         ++i;
         point += 3;
@@ -1226,7 +1226,7 @@ extern void fn_802C03F0(void *arg0) {
     fn_802DBE4C(s[93], s[95], lbl_80564D90);
     for (i = 0; i < 8; i++) s[64 + i] = (float)lbl_802FAC30[i];
     s[67] = (float)fn_8002EFB4(lbl_80564DD8 * fn_801E7E18(lbl_802FAC30[6], lbl_802FAC30[5], lbl_802FAC30[4], lbl_802FAC30[3], lbl_802FAC30[2], lbl_802FAC30[1], lbl_802FAC30[0]), lbl_80564DE0);
-    ((void (*)(int, void *))fn_802D3D94)(2, &s[64]);
+    ((void (*)(int, void *))gxLoadTexMtx)(2, &s[64]);
     f1 = lbl_80564E1C * s[94];
     if (f1 > lbl_80564D80) {} else f1 = lbl_80564D80;
     r25 = (unsigned char *)(int)fn_80147C50(0, lbl_8055FAEC, lbl_80564D80 / f1);
