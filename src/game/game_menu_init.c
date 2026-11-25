@@ -242,7 +242,7 @@ void ReleaseInitTableResources(void) DECOMP_DONT_INLINE {
 #undef ReleaseResource
 }
 
-void fn_800052F8(void) DECOMP_DONT_INLINE {
+/* Start the Direct To Track menu by resolving its name in the event/menu table. */ void fn_800052F8(void) DECOMP_DONT_INLINE {
     /* Start the "Direct To Track" menu flow by looking up its name (kDirectToTrackMenuName) in the menu table. */
     fn_80005158(kDirectToTrackMenuName);
 }
