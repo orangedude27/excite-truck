@@ -2944,14 +2944,14 @@ int GX_GetXFB(int *outWidth, int *outHeight) {
 }
 
 /* Enable or disable alpha updates by toggling bit 4 (0x10) of the global render-state word. */
-void gxSetAlphaUpdateEnable(int enable) {
-    unsigned long value;
+/* Enable or disable alpha updates by setting or clearing bit 4 (0x10) of the cached GX render-state flags. */ void gxSetAlphaUpdateEnable(int enable) {
+    unsigned long flags;
 
-    value = (unsigned long)gxRenderStateFlags & 0xFFFFFFEF;
+    flags = (unsigned long)gxRenderStateFlags & 0xFFFFFFEF;
     if (enable != 0) {
-        value = (unsigned long)gxRenderStateFlags | 0x10;
+        flags = (unsigned long)gxRenderStateFlags | 0x10;
     }
-    gxRenderStateFlags = (void *)value;
+    gxRenderStateFlags = (void *)flags;
 }
 
 /* Enable destination alpha and cache the value for later GXSetDstAlpha calls. */
