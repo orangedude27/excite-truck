@@ -771,8 +771,9 @@ char *__repair_addr;
     if (idx >= lim) {
         idx = lim - 1;
     }
-    driver->record = (char *)driver->entries + idx * 8;
-    if (((int (*)(void *))fn_801CF050)(driver->entries) != 0) {
+    entry = driver->entries;
+    driver->record = (char *)entry + idx * 8;
+    if (((int (*)(void *))fn_801CF050)(entry) != 0) {
         if (idx >= driver->count) {
             int nw = idx + 1;
             driver->count = nw;
