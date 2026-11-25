@@ -76,7 +76,7 @@ static inline f32 fn_fast_s16f(s16 v) {
 }
 extern u8 lbl_8055FD19;
 extern u32 lbl_804C5650[];
-extern u32 lbl_8055FDE8;
+extern u32 gCachedVertexFormat;
 extern u8 lbl_8055FDEC;
 /* The FIFO vertex drawFifoTriangles pushes to the graphics processor: a position, one
    RGBA8 color and one texture coordinate, 24 bytes. */
@@ -1001,9 +1001,9 @@ void fn_802D5F88(s32 arg0) {
     u32 flags = *(u32 *)((u8 *)arg0 + 0xC);
     u32 normalized = flags & 0xFFCFFFFF;
     u8 mode = *(u8 *)((u8 *)arg0 + 9);
-    if (normalized != lbl_8055FDE8) {
+    if (normalized != gCachedVertexFormat) {
         GXCallDisplayList(*(void **)((u8 *)arg0 + 0x10), (u32)*(u8 *)((u8 *)arg0 + 0xB) << 5);
-        lbl_8055FDE8 = normalized;
+        gCachedVertexFormat = normalized;
         lbl_8055FDEC = mode;
     }
 }
@@ -1361,7 +1361,7 @@ void drVertexFormatCacheInit(void) {
     DCInvalidateRange(displayListBuffer, 0x4000);
     drInvalidateVertexFormatCache();
 }
-extern u32 lbl_8055FDE8;
+extern u32 gCachedVertexFormat;
 extern u8 lbl_8055FDEC;
 extern s32 gTotalYmorphVerts;
 extern const char sVertexFormatDlLogMsg[];
@@ -1485,7 +1485,7 @@ void drSetSurfAngleTableEntry(int index, float value) {
 
 /* Reset the cached vertex-format descriptor and mode byte so the next draw reconfigures the format. */ void drInvalidateVertexFormatCache(void) {
     /* Invalidate the renderer's cached vertex-format descriptor and mode byte. */
-#define sCachedFormat lbl_8055FDE8
+#define sCachedFormat gCachedVertexFormat
 #define sCachedMode   lbl_8055FDEC
     sCachedFormat = 0;
     sCachedMode = 0;
@@ -1771,9 +1771,9 @@ void fn_802D7554(u8 value) {
 extern s32 gTotalYmorphVerts;
 extern const char sVertexFormatDlLogMsg[];
 extern const char sTotalYmorphVertsLogMsg[];
-extern u32 lbl_8055FDE8;
+extern u32 gCachedVertexFormat;
 extern u8 lbl_8055FDEC;
-extern u32 lbl_8055FDE8;
+extern u32 gCachedVertexFormat;
 extern u8 lbl_8055FDEC;
 extern s32 gTotalYmorphVerts;
 extern const char sVertexFormatDlLogMsg[];
