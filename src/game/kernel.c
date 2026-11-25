@@ -40,7 +40,7 @@ struct OSTimeCalendar {
 };
 extern void OSTicksToCalendarTime(u64, struct OSTimeCalendar *);
 /* Free the 32-byte-aligned texture-buffer handle stored at +0x178 of the image bank, then clear the field. */
-void freeStoredBufferHandle(void *imageBank) {
+/* Frees the 32-byte-aligned texture-buffer handle cached at +0x178 of the image bank, then clears the field. */ void freeStoredBufferHandle(void *imageBank) {
     int bufferHandle = *(int *)((char *)imageBank + 0x178);
     if (bufferHandle != 0) {
         fn_80120084(bufferHandle);
