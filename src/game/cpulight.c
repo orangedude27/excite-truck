@@ -497,7 +497,7 @@ extern unsigned char lbl_8055FEBA;
 /* Reset per-frame render state: clear the CPU light tracking pointers
    (fn_802DBDD8) and restore all TEV swap-mode selectors to their defaults
    (GXResetTevSwapModes0To4). */
-void CpuLight_ResetFrameState(void) {
+/* Reset per-frame render state: invalidate the cached CPU-light position array (CpuLight_ClearState) and restore default TEV swap modes. */ void CpuLight_ResetFrameState(void) {
     fn_802DBDD8();
     GXResetTevSwapModes0To4();
 }
