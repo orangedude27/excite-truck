@@ -607,8 +607,8 @@ void fn_802CF5D0(void) {
 
 #pragma scheduling invalid_target
 #pragma dont_inline on
-/* Reset alpha comparison to the default "alpha > 0" test and clear both the cached and last-applied alpha reference bytes. */ void gxResetAlphaCompare(void) {
-    /* Reset alpha comparison to "alpha > 0" and clear the cached/applied reference values. */
+void gxResetAlphaCompare(void) {
+    /* Reset alpha comparison to the default "alpha > 0" test, clearing the cached and last-applied alpha reference bytes. */
     alphaCompareRef = 0;
     alphaCompareAppliedRef = 0;
     GXSetAlphaCompare(4, 0, 1, 0, 0);
