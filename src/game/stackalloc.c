@@ -905,7 +905,7 @@ void fn_802DABA4(const float *arg0) {
     fn_802DAA18(fn_802DA704(0x4C, sp, 4));
 }
 
-/* Mark the global BoneHandleAlloc stack allocator as initialized by setting its initialized flag to 1. */ void fn_802DAC54(void) {
+/* Mark the global BoneHandleAlloc stack allocator as initialized. */ /* Mark the global BoneHandleAlloc stack allocator as initialized by setting its initialized flag to 1. */ void fn_802DAC54(void) {
     /* Mark the BoneHandleAlloc stack allocator as initialized. */
     ((struct StackAlloc *)lbl_8055FE5C)->initialized = 1;
 }
