@@ -49,7 +49,7 @@ void MemCardShutdown(void) {}
 
 /* Formats a 4-byte memcard chunk ID (e.g. 'MCSH') as a NUL-terminated string
  * in the static chunkIdString buffer, for the "chunk: %s" registration log. */
-void *fn_802E6B98(int chunkId) {
+/* Format a 4-byte memory-card chunk ID as a NUL-terminated string in the static chunkIdString buffer. */ void *fn_802E6B98(int chunkId) {
     int chunkIdCopy = chunkId;
     ((unsigned char *)&chunkIdString)[4] = 0;
     memcpy(&chunkIdString, &chunkIdCopy, 4);
