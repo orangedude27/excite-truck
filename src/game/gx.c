@@ -2846,7 +2846,7 @@ extern char lbl_804C97D0;
 __declspec(section ".rodata") extern char lbl_804C97D0;
 void *gxGetDefaultLightDirection(void) {
 #define sDefaultLight lbl_804C97D0
-    /* Return a pointer to the default light's float direction vector (offset 0xC). */
+    /* Return a pointer to the default light's float direction vector (DefaultLight.pos at +0xC). */
     return &sDefaultLight + 0xC;
 #undef sDefaultLight
 }
