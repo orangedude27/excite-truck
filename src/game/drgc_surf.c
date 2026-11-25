@@ -818,7 +818,7 @@ void fn_802D56D4(void *arg0) {
 #pragma dont_inline reset
 #pragma scheduling on
 
-extern f32 *fn_802D2D04(void);
+extern f32 *gxGetDefaultLightDirection(void);
 extern f32 PSVECDotProduct(const f32 *, const f32 *);
 extern void GXSetCullMode(u32);
 extern void GXSetBlendMode(u32,u32,u32,u32);
@@ -835,7 +835,7 @@ void fn_802D5838(void *arg0)
   base = (f32 *) fn_802CFF64(count * 12);
   if (base)
   {
-    m = fn_802D2D04();
+    m = gxGetDefaultLightDirection();
     L = lbl_804C5690;
     if (v == m)
     {
