@@ -5552,53 +5552,53 @@ void fn_801254E4(s32, f32 *, s32, f32 *);
    inverse complex-FFT stages, and fn_801250CC/fn_801252D8/fn_801254E4 are the
    real-FFT folds; the surrounding two-point passes apply the DCT symmetry. */
 void fn_8012023C(s32 n, s32 isgn, f32 *a, s32 ip, s32 w) {
-    s32 nw;
-    s32 nc;
-    s32 j;
-    f32 xr;
-    f32 t;
+    s32 twiddleLen;
+    s32 cosLen;
+    s32 i;
+    f32 endValue;
+    f32 first;
 
-    nw = *(s32 *)ip;
-    if (n > nw * 4) {
-        nw = n >> 2;
-        fn_80120834(nw, (s32 *)ip, (f32 *)w);
+    twiddleLen = *(s32 *)ip;
+    if (n > twiddleLen * 4) {
+        twiddleLen = n >> 2;
+        fn_80120834(twiddleLen, (s32 *)ip, (f32 *)w);
     }
-    nc = *(s32 *)(ip + 4);
-    if (n > nc) {
-        nc = n;
-        fn_80120B6C(n, (s32 *)ip, (f32 *)w + nw);
+    cosLen = *(s32 *)(ip + 4);
+    if (n > cosLen) {
+        cosLen = n;
+        fn_80120B6C(n, (s32 *)ip, (f32 *)w + twiddleLen);
     }
     if (isgn < 0) {
-        xr = *(f32 *)((u8 *)a + (n - 1) * 4);
-        for (j = n - 2; j >= 2; j -= 2) {
-            a[j + 1] = a[j] - a[j - 1];
-            a[j] = a[j] + a[j - 1];
+        endValue = *(f32 *)((u8 *)a + (n - 1) * 4);
+        for (i = n - 2; i >= 2; i -= 2) {
+            a[i + 1] = a[i] - a[i - 1];
+            a[i] = a[i] + a[i - 1];
         }
-        t = a[0];
-        a[1] = t - xr;
-        a[0] = t + xr;
+        first = a[0];
+        a[1] = first - endValue;
+        a[0] = first + endValue;
         if (n > 4) {
-            fn_801252D8(n, a, nc, (f32 *)w + nw);
-            fn_80120E14(n, a, ip + 8, nw, (void *)w);
+            fn_801252D8(n, a, cosLen, (f32 *)w + twiddleLen);
+            fn_80120E14(n, a, ip + 8, twiddleLen, (void *)w);
         } else if (n == 4) {
-            fn_80120E14(n, a, ip + 8, nw, (void *)w);
+            fn_80120E14(n, a, ip + 8, twiddleLen, (void *)w);
         }
     }
-    fn_801254E4(n, a, nc, (f32 *)w + nw);
+    fn_801254E4(n, a, cosLen, (f32 *)w + twiddleLen);
     if (isgn >= 0) {
         if (n > 4) {
-            fn_80120CA4(n, a, ip + 8, nw, (void *)w);
-            fn_801250CC(n, (s32)a, nc, (s32)((f32 *)w + nw));
+            fn_80120CA4(n, a, ip + 8, twiddleLen, (void *)w);
+            fn_801250CC(n, (s32)a, cosLen, (s32)((f32 *)w + twiddleLen));
         } else if (n == 4) {
-            fn_80120CA4(n, a, ip + 8, nw, (void *)w);
+            fn_80120CA4(n, a, ip + 8, twiddleLen, (void *)w);
         }
-        xr = a[0] - a[1];
+        endValue = a[0] - a[1];
         a[0] = a[0] + a[1];
-        for (j = 2; j < n; j += 2) {
-            a[j - 1] = a[j] - a[j + 1];
-            a[j] = a[j] + a[j + 1];
+        for (i = 2; i < n; i += 2) {
+            a[i - 1] = a[i] - a[i + 1];
+            a[i] = a[i] + a[i + 1];
         }
-        *(f32 *)((u8 *)a + (n - 1) * 4) = xr;
+        *(f32 *)((u8 *)a + (n - 1) * 4) = endValue;
     }
 }
 
