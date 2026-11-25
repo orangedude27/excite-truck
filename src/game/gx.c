@@ -609,8 +609,8 @@ void fn_802CF5D0(void) {
 #pragma dont_inline on
 void gxResetAlphaCompare(void) {
     /* Reset alpha comparison to the default "alpha > 0" test, clearing the cached and last-applied alpha reference bytes. */
-    alphaCompareRef = 0;
-    alphaCompareAppliedRef = 0;
+    gAlphaCompareRef = 0;
+    gAlphaCompareAppliedRef = 0;
     GXSetAlphaCompare(4, 0, 1, 0, 0);
 }
 #pragma dont_inline reset
