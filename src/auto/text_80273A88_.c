@@ -604,14 +604,16 @@ void fn_802749FC(void *arg0, void *arg1) {
     *(unsigned int *)((char *)arg0 + 0x80) = m10;
     *(unsigned int *)((char *)arg0 + 0x84) = m11;
     if (&local.sp30[0] == arg1) {
-        float t6 = *(float *)((char *)arg1 + 4), t0 = *(float *)((char *)arg1 + 0), t7 = *(float *)((char *)arg1 + 8);
-        local.sp30[0] = t7 * *(float *)((char *)arg0 + 0x70) + (t0 * *(float *)((char *)arg0 + 0x58) + t6 * *(float *)((char *)arg0 + 0x64));
-        local.sp30[1] = t7 * *(float *)((char *)arg0 + 0x74) + (t0 * *(float *)((char *)arg0 + 0x5C) + t6 * *(float *)((char *)arg0 + 0x68));
-        local.sp30[2] = t7 * *(float *)((char *)arg0 + 0x78) + (t0 * *(float *)((char *)arg0 + 0x60) + t6 * *(float *)((char *)arg0 + 0x6C));
+        temp_f6 = (*(float *)((char *)arg1 + 4));
+        temp_f0 = (*(float *)((char *)arg1 + 0));
+        temp_f7 = (*(float *)((char *)arg1 + 8));
+        local.sp30[0] = (temp_f7 * (*(float *)((char *)((char *)arg0 + 0x70)))) + ((temp_f0 * (*(float *)((char *)((char *)arg0 + 0x58)))) + (temp_f6 * (*(float *)((char *)((char *)arg0 + 0x64)))));
+        local.sp30[1] = (temp_f7 * (*(float *)((char *)((char *)arg0 + 0x74)))) + ((temp_f0 * (*(float *)((char *)((char *)arg0 + 0x5C)))) + (temp_f6 * (*(float *)((char *)((char *)arg0 + 0x68)))));
+        local.sp30[2] = (temp_f7 * (*(float *)((char *)((char *)arg0 + 0x78)))) + ((temp_f0 * (*(float *)((char *)((char *)arg0 + 0x60)))) + (temp_f6 * (*(float *)((char *)((char *)arg0 + 0x6C)))));
     } else {
-        local.sp30[0] = *(float *)((char *)arg1 + 8) * *(float *)((char *)arg0 + 0x70) + (*(float *)((char *)arg1 + 0) * *(float *)((char *)arg0 + 0x58) + *(float *)((char *)arg1 + 4) * *(float *)((char *)arg0 + 0x64));
-        local.sp30[1] = *(float *)((char *)arg1 + 8) * *(float *)((char *)arg0 + 0x74) + (*(float *)((char *)arg1 + 0) * *(float *)((char *)arg0 + 0x5C) + *(float *)((char *)arg1 + 4) * *(float *)((char *)arg0 + 0x68));
-        local.sp30[2] = *(float *)((char *)arg1 + 8) * *(float *)((char *)arg0 + 0x78) + (*(float *)((char *)arg1 + 0) * *(float *)((char *)arg0 + 0x60) + *(float *)((char *)arg1 + 4) * *(float *)((char *)arg0 + 0x6C));
+        local.sp30[0] = ((*(float *)((char *)arg1 + 8)) * (*(float *)((char *)((char *)arg0 + 0x70)))) + (((*(float *)((char *)arg1 + 0)) * (*(float *)((char *)((char *)arg0 + 0x58)))) + ((*(float *)((char *)arg1 + 4)) * (*(float *)((char *)((char *)arg0 + 0x64)))));
+        local.sp30[1] = ((*(float *)((char *)arg1 + 8)) * (*(float *)((char *)((char *)arg0 + 0x74)))) + (((*(float *)((char *)arg1 + 0)) * (*(float *)((char *)((char *)arg0 + 0x5C)))) + ((*(float *)((char *)arg1 + 4)) * (*(float *)((char *)((char *)arg0 + 0x68)))));
+        local.sp30[2] = ((*(float *)((char *)arg1 + 8)) * (*(float *)((char *)((char *)arg0 + 0x78)))) + (((*(float *)((char *)arg1 + 0)) * (*(float *)((char *)((char *)arg0 + 0x60)))) + ((*(float *)((char *)arg1 + 4)) * (*(float *)((char *)((char *)arg0 + 0x6C)))));
     }
     (*(float *)((char *)((char *)arg0 + 0x7C))) = (float) ((*(float *)((char *)((char *)arg0 + 0x7C))) + local.sp30[0]);
     (*(float *)((char *)((char *)arg0 + 0x80))) = (float) ((*(float *)((char *)((char *)arg0 + 0x80))) + local.sp30[1]);
@@ -1035,8 +1037,9 @@ void fn_80275B9C(void *arg0, float farg0, float farg1, float farg2) {
     fn_8026E850((float *)&pos, (float *)(p + 0xE4), arg0, (float *)&up);
     *(float *)(p + 0xBC) = lbl_80564040;
 }
+#pragma push
+#pragma use_lmw_stmw off
 void fn_80275D0C(void *arg0, void *arg1) {
-    #pragma use_lmw_stmw off
     struct Words12 { unsigned int value[12]; };
     struct Words7 { unsigned int value[7]; };
     struct Work {
