@@ -11,7 +11,7 @@ extern void GXLoadTexObj(void *, int);
 #pragma dont_inline fn_802D1678
 #pragma dont_inline gxMarkAllStateDirty
 #pragma dont_inline fn_802CF104
-#pragma dont_inline fn_802CF5D4
+#pragma dont_inline gxResetAlphaCompare
 extern char lbl_8034BF80[];
 extern void DCInvalidateRange(void *, unsigned long);
 extern void *memcpy(void *, const void *, unsigned long);
@@ -607,7 +607,7 @@ void fn_802CF5D0(void) {
 
 #pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_802CF5D4(void) {
+void gxResetAlphaCompare(void) {
     /* Reset alpha comparison to "alpha > 0" and clear the cached/applied reference values. */
     alphaCompareRef = 0;
     alphaCompareAppliedRef = 0;
@@ -753,7 +753,7 @@ extern int lbl_8055FE20;
 extern float lbl_80564F90;
 extern float lbl_80564F98;
 extern float lbl_80564F9C;
-#pragma dont_inline fn_802CF5D4
+#pragma dont_inline gxResetAlphaCompare
 #pragma dont_inline fn_802CF104
 /* Fills a 3x4 matrix with the unit diagonal (one on the diagonal, zero
  * everywhere else); the caller's two constant floats are the only values. */
@@ -851,7 +851,7 @@ void fn_802CF850(void) {
     GXSetTevOp(1, 2);
     GXSetTevColorIn(1, 0, 0, 0xF, 0xF);
     GXSetTevColorOp(1, 0, 0, 0, 1, 0);
-    fn_802CF5D4();
+    gxResetAlphaCompare();
     GXSetZCompLoc(0);
 
     m70 = (float *)(base + 0x70);
@@ -1956,7 +1956,7 @@ void fn_802D0EEC(void) {
                 GXSetAlphaCompare(7, 0, 1, 0, 0);
             } else {
                 GXSetDstAlpha(1, lbl_8055FD60);
-                fn_802CF5D4();
+                gxResetAlphaCompare();
             }
             s->raw[0xB0] = 1;
         }
@@ -3091,7 +3091,7 @@ int fn_802D31D8(void)
   GXSetAlphaUpdate(1);
   GXSetDstAlpha(0, 0);
   new_var = c;
-  fn_802CF5D4();
+  gxResetAlphaCompare();
   lbl_8055FD1C = (void *) (((unsigned long) lbl_8055FD1C) & 0xFFFFFFF7);
   GXSetNumTevStages(1);
   GXSetNumTexGens(0);
@@ -3126,7 +3126,7 @@ void gxResetDefaultState(void) {
 }
 
 extern unsigned char lbl_8055FD84;
-extern void fn_802CF5D4(void);
+extern void gxResetAlphaCompare(void);
 extern void gxDisableIndirectTexturing(void);
 extern void fn_802D92B0(void);
 
@@ -3137,7 +3137,7 @@ extern void GXSetTevOp(int, int);
     /* Initialize GX/TEV state for this render path: reset helpers, enable pending render flags, set texcoord generators, configure stages, and select matrix 0. */
     int texCoord;
 
-    fn_802CF5D4();
+    gxResetAlphaCompare();
     lbl_8055FD84 = 1;
     gRenderRequest[0] = 1;
     gxMarkAllStateDirty();
