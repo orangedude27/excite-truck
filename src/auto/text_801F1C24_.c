@@ -1645,7 +1645,7 @@ void fn_801F3F8C(void *table, void *node) {
 void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
     extern void *fn_801284F8(int, void *);
     extern int Abend_Panic(const void *, ...);
-    extern void fn_802C77F0(int, float *);
+    extern void MRModel_GetBoundingBoxArray(int, float *);
     extern const char lbl_8033AB0C[], lbl_8033AB18[];
     extern char lbl_8033AA78[];
     extern float lbl_80562F44, lbl_80562F64;
@@ -1674,7 +1674,7 @@ void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
     if (count >= 0x30) Abend_Panic(lbl_8033AB18);
     count = pool->count;
     entry = (struct Record *)((char *)pool + count * 0x1C);
-    fn_802C77F0(config->kind, (float *)v);
+    MRModel_GetBoundingBoxArray(config->kind, (float *)v);
     hi = v[1];
     lo = v[0];
     hi = hi - lo;

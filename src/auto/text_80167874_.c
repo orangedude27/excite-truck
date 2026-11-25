@@ -259,7 +259,7 @@ extern void *fn_8001285C(s32);
 extern void *fn_801284F8(s32, void *, void *, void *);
 extern void fn_8002F53C(void *, void *, void *, s32, s32);
 extern s32 fn_802C6FC0(s32, s32, s32);
-extern void fn_802C77F0();
+extern void MRModel_GetBoundingBoxArray();
 extern void *fn_80131810(void);
 extern void fn_80131818(void *);
 extern void fn_80168020(void);
@@ -370,7 +370,7 @@ extern "C" void fn_801679F0(void) {
             *(s32 *)(entry + 0x10) = value;
             *(s32 *)(entry + 0x1C) = zero;
             if (value != -1) {
-                fn_802C77F0((void *)value, local.sp28);
+                MRModel_GetBoundingBoxArray((void *)value, local.sp28);
                 f2 = local.sp28[5] - local.sp28[4];
                 f3 = local.sp28[3] - local.sp28[2];
                 if (f3 > f2) {

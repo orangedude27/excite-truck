@@ -12,7 +12,7 @@ extern f32 lbl_80564978;
 extern u8 lbl_8055F8F1;
 extern char lbl_804BD6F8[];
 extern f32 lbl_80564970, lbl_80564974, lbl_8056497C, lbl_80564980;
-extern void fn_802C77F0(void *, f32 *);
+extern void MRModel_GetBoundingBoxArray(void *, f32 *);
 extern void PSVECCrossProduct(f32 *, f32 *, f32 *);
 extern void PSVECNormalize(f32 *, f32 *);
 extern void fn_80128668(void*);
@@ -62,82 +62,108 @@ s32 fn_802A9048(void) {
 }
 
 #pragma dont_inline on
-void fn_802A9090(f32 *pos, f32 *dir) {
-    struct V2 { f32 x, y; };
-    f32 *g = (f32 *)lbl_804BD6F8;
-    f32 *m;
-    f32 w[6];
-    f32 c[3];
-    f32 d[3];
-    f32 r[2];
-    f32 a[2];
-    f32 b[2];
-    f32 s, ns, f9, p0, p1, t0, t1;
-    f32 dx = dir[0], dy = dir[1];
-    r[0] = dx;
-    r[1] = dy;
-    ns = -r[0];
-    r[0] = r[1];
-    r[1] = ns;
-    if (*(s32 *)(lbl_804BD6F8 + 0x4C) != -1) {
-        fn_802C77F0(*(void **)(lbl_804BD6F8 + 0x4C), w);
-        s = w[1] - w[0];
-    } else {
-        s = lbl_80564970;
-    }
-    ns = -s;
-    p0 = pos[0];
-    p1 = pos[1];
-    t0 = r[0] * ns;
-    t1 = r[1] * ns;
-    a[0] = p0 + t0;
-    a[1] = p1 + t1;
-    b[0] = p0 + r[0] * s;
-    b[1] = p1 + r[1] * s;
-    fn_802A8FEC(c, a);
-    g[0] = c[0];
-    g[1] = c[1];
-    g[2] = c[2];
-    fn_802A8FEC(d, b);
-    m = g + 0x68 / 4;
+void fn_802A9090(f32 *pos, f32 *dir)
+{
+  struct V2
+  {
+    f32 x;
+    f32 y;
+  };
+  f32 *g = (f32 *) lbl_804BD6F8;
+  f32 *m;
+  f32 w[6];
+  f32 c[3];
+  f32 d[3];
+  f32 r[2];
+  f32 a[2];
+  f32 b[2];
+  f32 s;
+  f32 ns;
+  f32 f9;
+  f32 p0;
+  f32 p1;
+  f32 t1;
+  f32 t0;
+  f32 dx = dir[0];
+  f32 dy = dir[1];
+  r[0] = dx;
+  r[1] = dy;
+  ns = -r[0];
+  r[0] = r[1];
+  r[1] = ns;
+  if ((*((s32 *) (lbl_804BD6F8 + 0x4C))) != ((-1) & 0xFFFFu))
+  {
+    MRModel_GetBoundingBoxArray(*((void **) (lbl_804BD6F8 + 0x4C)), w);
+    if (1)
     {
-        f32 x = g[0] + d[0], y = g[1] + d[1], z = g[2] + d[2];
-        f9 = g[1];
-        m[0x24 / 4] = x;
-        m[0x28 / 4] = y;
-        m[0x2C / 4] = z;
-        g[3] = d[0];
-        g[4] = d[1];
-        g[5] = d[2];
-        m[0x24 / 4] = x * lbl_80564974;
-        m[0x28 / 4] = y * lbl_80564974;
-        m[0x2C / 4] = z * lbl_80564974;
     }
-    if (f9 > d[1]) {
-    } else {
-        f9 = d[1];
-    }
-    m = g + 0x68 / 4;
-    {
-        f32 dx2 = g[3] - g[0], dy2 = g[4] - g[1], dz = g[5] - g[2];
-        m[1] = dy2;
-        m[0x28 / 4] = f9;
-        m[0] = dx2;
-        m[2] = dz;
-        m[1] = lbl_80564978;
-        m[3] = lbl_80564978;
-        m[4] = lbl_8056497C;
-        m[5] = lbl_80564978;
-    }
-    PSVECCrossProduct(m, m + 3, m + 6);
-    PSVECNormalize(m, m);
-    PSVECNormalize(m + 6, m + 6);
-    PSVECCrossProduct(m + 6, m, m + 3);
-    if (*(u32 *)((char *)fn_801E87A8() + 0x10) & 2) {
-        m[0] *= lbl_80564980;
-        m[1] *= lbl_80564980;
-        m[2] *= lbl_80564980;
-    }
+    s = w[1] - w[0];
+  }
+  else
+  {
+    s = lbl_80564970;
+  }
+  ns = -s;
+  p0 = pos[0];
+  p1 = pos[1];
+  t0 = r[0] * ns;
+  t1 = r[1] * ns;
+  a[0] = p0 + t0;
+  a[1] = p1 + t1;
+  b[0] = p0 + (r[0] * s);
+  b[1] = p1 + (r[1] * s);
+  fn_802A8FEC(c, a);
+  ((f32 *) lbl_804BD6F8)[0] = c[0];
+  g[1] = c[1];
+  g[2] = c[2];
+  fn_802A8FEC(d, b);
+  m = ((f32 *) lbl_804BD6F8) + (0x68 / 4);
+  {
+    f32 x = g[0] + d[0];
+    f32 y = g[1] + d[1];
+    f32 z = g[2] + d[2];
+    f9 = g[1];
+    m[0x24 / 4] = x;
+    m[0x28 / 4] = y;
+    m[0x2C / 4] = z;
+    g[3] = d[0];
+    g[4] = d[1];
+    g[5] = d[2];
+    m[0x24 / 4] = x * lbl_80564974;
+    m[0x28 / 4] = y * lbl_80564974;
+    m[0x2C / 4] = z * lbl_80564974;
+  }
+  if (f9 > d[1])
+  {
+  }
+  else
+  {
+    f9 = d[1];
+  }
+  m = g + (0x68 / 4);
+  {
+    f32 dx2 = g[3] - g[0];
+    f32 dy2 = g[4] - g[1];
+    f32 dz = ((0, g[5])) - ((0, g[2]));
+    m[1] = dy2;
+    m[0x28 / 4] = f9;
+    m[0] = dx2;
+    m[2] = dz;
+    m[1] = lbl_80564978;
+    m[3] = lbl_80564978;
+    m[4] = lbl_8056497C;
+    m[5] = lbl_80564978;
+  }
+  PSVECCrossProduct(m, m + 3, m + 6);
+  PSVECNormalize(m, m);
+  PSVECNormalize(m + 6, m + 6);
+  PSVECCrossProduct(m + 6, m, m + 3);
+  if ((*((u32 *) (((char *) fn_801E87A8()) + 0x10))) & 2)
+  {
+    m[0] *= lbl_80564980;
+    m[1] *= lbl_80564980;
+    m[2] *= lbl_80564980;
+  }
 }
 extern u8 lbl_8055F8F8;
 extern volatile f32 lbl_8055F900[2];
@@ -217,11 +243,11 @@ extern void *fn_801EA9A0(void);
 extern f32 fn_801E7E24(void);
 extern void *fn_801E7E3C(void *);
 extern void fn_802C744C(s32, void *);
+#pragma push
+#pragma use_lmw_stmw off
 void fn_802A9428(void) {
     char *base = lbl_804BD6F8;
-    s32 *entries = (s32 *)(base + 0x98);
     s32 index, kind, value, selected;
-    s32 *entry;
     s32 *current;
     f32 elapsed;
     if (lbl_8055F8F0 == 0)
@@ -230,36 +256,35 @@ void fn_802A9428(void) {
     index = fn_801E85B4();
     kind = fn_801E866C(-1);
     value = *(s32 *)((u8 *)fn_801EA9A0() + 0x1C);
-    entry = entries + index * 4;
-    if (kind != entries[index * 4] || value < entries[index * 4 + 2]) {
-        entry[0] = kind;
-        entry[1] = value;
-        entry[2] = value;
-        *(f32 *)(entry + 3) = lbl_80564978;
-    } else if (value != entries[index * 4 + 2]) {
-        entry[1] = entry[2];
-        entry[2] = value;
-        *(f32 *)(entry + 3) = lbl_80564984;
-    } else if (*(f32 *)(entry + 3) < lbl_80564988) {
-        entry[1] = entry[2];
+    if (kind != ((Unk804BD790 *)(base + 0x98))[index].a ||
+        value < ((Unk804BD790 *)(base + 0x98))[index].c) {
+        ((Unk804BD790 *)(base + 0x98))[index].d = lbl_80564978;
+        ((Unk804BD790 *)(base + 0x98))[index].a = kind;
+        ((Unk804BD790 *)(base + 0x98))[index].b = value;
+        ((Unk804BD790 *)(base + 0x98))[index].c = value;
+    } else if (value != ((Unk804BD790 *)(base + 0x98))[index].c) {
+        ((Unk804BD790 *)(base + 0x98))[index].b = ((Unk804BD790 *)(base + 0x98))[index].c;
+        ((Unk804BD790 *)(base + 0x98))[index].c = value;
+        ((Unk804BD790 *)(base + 0x98))[index].d = lbl_80564984;
+    } else if (((Unk804BD790 *)(base + 0x98))[index].d < lbl_80564988) {
+        ((Unk804BD790 *)(base + 0x98))[index].b = ((Unk804BD790 *)(base + 0x98))[index].c;
     } else {
         elapsed = fn_801E7E24();
-        *(f32 *)(entry + 3) -= elapsed;
+        ((Unk804BD790 *)(base + 0x98))[index].d -= elapsed;
     }
-    index = entry[1];
-    current = (s32 *)fn_801E7E3C(entry);
-    if (lbl_8055F8F1 == 0 && index >= current[2])
+    kind = ((Unk804BD790 *)(base + 0x98))[index].b;
+    current = (s32 *)fn_801E7E3C(&((Unk804BD790 *)(base + 0x98))[index].a);
+    if (lbl_8055F8F1 != 0 || kind >= current[2])
         selected = 3;
-    else if ((u32)(index + 1) < 4U)
-        selected = index;
+    else if ((u32)(kind + 1) < 4U)
+        selected = kind;
     if (selected >= 0) {
-        s32 *slot = (s32 *)(base + 0x48 + selected * 8);
+        s32 *slot = (s32 *)(base + 0x48) + selected * 2;
         if (slot[1] != -1)
             fn_802C744C(slot[1], base + 0x68);
     }
 }
-
-#pragma scheduling invalid_target
+#pragma pop
 void fn_802A9574(void) {
     u32 base = (u32)lbl_804BD790;
     f32 f = lbl_80564978;

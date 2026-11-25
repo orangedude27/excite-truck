@@ -1466,7 +1466,7 @@ extern "C" void fn_8029A318(float *xform, float *centre, float *xEdge, float *zE
 }
 #pragma scheduling on
 extern "C" int fn_801EE0C8(int);   /* render object -> its model (field +0x48) */
-extern "C" void fn_802C77F0(int, float *); /* model -> 6 bounds: minX,maxX,minY,maxY,minZ,maxZ */
+extern "C" void MRModel_GetBoundingBoxArray(int, float *); /* model -> 6 bounds: minX,maxX,minY,maxY,minZ,maxZ */
 extern "C" int lbl_80488648[];     /* up to 8 live vehicle render objects, by vehicle index */
 extern "C" float lbl_80564608;     /* 20.0f: life a freshly reserved shadow slot is given */
 #pragma dont_inline off
@@ -1492,7 +1492,7 @@ extern "C" void fn_8029A4B4(void *shadow, int vehicleIdx) {
     else
         renderObj = 0;
     model = fn_801EE0C8(renderObj);
-    fn_802C77F0(model, bounds);
+    MRModel_GetBoundingBoxArray(model, bounds);
 
     *(Fn80299A88Matrix *)dest = *(Fn80299A88Matrix *)vehicle;
     *(Fn8029A4B4Vec *)((char *)dest + 0x24) = *(Fn8029A4B4Vec *)((char *)vehicle + 0x24);

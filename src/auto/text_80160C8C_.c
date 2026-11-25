@@ -2595,7 +2595,7 @@ unsigned char fn_80163F74(void *hud) {
 }
 
 extern void fn_802E30C8(const char *, const char *);
-extern void fn_802C77F0(s32, f32 *);
+extern void MRModel_GetBoundingBoxArray(s32, f32 *);
 extern s32 fn_80207848(void *, s32);
 extern void *fn_801399FC(void);
 extern void PSVECNormalize(f32 *, f32 *);
@@ -2629,7 +2629,7 @@ extern "C" void fn_80163F7C(void *arg0) {
         ((void (*)(const char *, ...))fn_802E30C8)((const char *)(base + 0x598), name);
     } else {
         f32 first, second;
-        ((void (*)(s32, f32 *))fn_802C77F0)(result, work.bounds);
+        ((void (*)(s32, f32 *))MRModel_GetBoundingBoxArray)(result, work.bounds);
         first = work.bounds[5] - work.bounds[4];
         second = work.bounds[3] - work.bounds[2];
         first = second > first ? second : first;

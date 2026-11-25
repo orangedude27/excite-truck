@@ -3424,7 +3424,6 @@ extern s32 lbl_80559EDC, lbl_8055E254;
 extern f32 lbl_80561638,lbl_8056163C,lbl_8056164C,lbl_805616FC,lbl_80561700;
 extern f64 lbl_805616A0,lbl_80561708;
 #pragma push
-#pragma processor 750
 #pragma dont_inline off
 void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     f32 scale[9];
@@ -3456,10 +3455,10 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
 
     val_f31 = lbl_80561638 * (f32)fn_8002EFB4(lbl_80561688 * val_f21, lbl_805616A0);
     val_f30 = lbl_80561638 * (f32)fn_8002EFB4(lbl_8056163C * val_f21, lbl_805616A0);
-    val_f29 = lbl_805616FC;
 
     r29 = &lbl_8055E254;
 
+    val_f29 = lbl_805616FC;
     scale[0] = val_f29;
     scale[1] = lbl_80561648;
     scale[2] = lbl_80561648;
@@ -3532,20 +3531,21 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     a[7] = -s;
     a[8] = c;
 
+    r30 = b;
     c = (f32)cos(val_f30);
     s = (f32)sin(val_f30);
 
     val_f29 = val_f29 * lbl_805616FC;
 
-    b[1] = lbl_80561648;
-    b[0] = lbl_8056164C;
-    b[2] = lbl_80561648;
-    b[3] = lbl_80561648;
-    b[4] = c;
-    b[5] = s;
-    b[6] = lbl_80561648;
-    b[7] = -s;
-    b[8] = c;
+    r30[1] = lbl_80561648;
+    r30[0] = lbl_8056164C;
+    r30[2] = lbl_80561648;
+    r30[3] = lbl_80561648;
+    r30[4] = c;
+    r30[5] = s;
+    r30[6] = lbl_80561648;
+    r30[7] = -s;
+    r30[8] = c;
 
     scale[0] = val_f29;
     scale[1] = lbl_80561648;
@@ -3557,7 +3557,7 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     scale[7] = lbl_80561648;
     scale[8] = val_f29;
 
-    MatrixMul80151E60(b, scale, b);
+    MatrixMul80151E60(r30, scale, r30);
 
     val_f29 = val_f29 * lbl_805616FC;
 
@@ -3574,9 +3574,9 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     MatrixMul80151E60(a, scale, a);
 
     if (arg1 != 0) {
-        fn_802C74D8(*(s32 *)r29, r30, lbl_80559EDC);
+        fn_802C74D8(*(s32 *)r29, b, lbl_80559EDC);
     } else {
-        fn_802C744C(*(s32 *)r29, r30);
+        fn_802C744C(*(s32 *)r29, b);
     }
 
     if (arg1 != 0) {
@@ -3585,20 +3585,21 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
         fn_802C744C(*(s32 *)r29, a);
     }
 
+    r30 = rotation;
     c = (f32)cos(lbl_80561708);
     s = (f32)sin(lbl_80561708);
 
-    rotation[0] = c;
-    rotation[1] = lbl_80561648;
-    rotation[2] = -s;
-    rotation[3] = lbl_80561648;
-    rotation[4] = lbl_8056164C;
-    rotation[5] = lbl_80561648;
-    rotation[6] = s;
-    rotation[7] = lbl_80561648;
-    rotation[8] = c;
+    r30[0] = c;
+    r30[1] = lbl_80561648;
+    r30[2] = -s;
+    r30[3] = lbl_80561648;
+    r30[4] = lbl_8056164C;
+    r30[5] = lbl_80561648;
+    r30[6] = s;
+    r30[7] = lbl_80561648;
+    r30[8] = c;
 
-    MatrixMul80151E60(a, rotation, a);
+    MatrixMul80151E60(a, r30, a);
     MatrixMul80151E60(b, rotation, b);
 
     val_f29 = val_f29 * lbl_805616FC;
@@ -3630,9 +3631,9 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     MatrixMul80151E60(a, scale, a);
 
     if (arg1 != 0) {
-        fn_802C74D8(*(s32 *)r29, r30, lbl_80559EDC);
+        fn_802C74D8(*(s32 *)r29, b, lbl_80559EDC);
     } else {
-        fn_802C744C(*(s32 *)r29, r30);
+        fn_802C744C(*(s32 *)r29, b);
     }
 
     if (arg1 != 0) {
@@ -3642,9 +3643,8 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     fn_802C744C(*(s32 *)r29, a);
 }
 #pragma pop
-#pragma cplusplus on
 extern "C" void fn_802C86DC(void);
-extern "C" void fn_802C77F0(void *, f32 *);
+extern "C" void MRModel_GetBoundingBoxArray(void *, f32 *);
 extern "C" void fn_802C744C(s32, f32 *);
 extern "C" void *fn_801E87A8(void);
 #pragma cplusplus off
@@ -3687,7 +3687,7 @@ void fn_801533E8(void *arg0, f32 *arg1) {
     ((u32 *)mat.m)[8] = w8;
     *(f64 *)&mat.m[9] = *(f64 *)&values.m[9];
     ((u32 *)mat.m)[11] = w11;
-    fn_802C77F0((void *)lbl_80559ED8, bounds);
+    MRModel_GetBoundingBoxArray((void *)lbl_80559ED8, bounds);
     center[2] = bounds[4] + (bounds[5] - bounds[4]) * lbl_8056163C;
     center[1] = bounds[2] + (bounds[3] - bounds[2]) * lbl_8056163C;
     center[0] = bounds[0] + (bounds[1] - bounds[0]) * lbl_8056163C;

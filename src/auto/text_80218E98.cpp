@@ -10082,7 +10082,7 @@ extern "C" void fn_8022A19C(void *arg0, void *arg1) {
 }
 
 extern "C" void *fn_802C86DC(void);
-extern "C" void fn_802C77F0(s32, f32 *);
+extern "C" void MRModel_GetBoundingBoxArray(s32, f32 *);
 extern "C" void DrawList_getViewParams(f32 *, f32 *, f32 *, f32 *);
 extern "C" f64 fn_8002F234(f32);
 extern "C" f64 atan(f32);
@@ -10124,7 +10124,7 @@ extern "C" void fn_8022A210(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
     ((void (*)(void *, f32 *, s32, f32))fn_80015A20)(&scratch[16], &scratch[4], matrixValue, scratch[5]);
     dst = (u8 *)obj + 8;
     fn_80015B20((void *)dst, &scratch[16], (void *)dst);
-    fn_802C77F0(*(s32 *)((u8 *)obj + 4), &scratch[10]);
+    MRModel_GetBoundingBoxArray(*(s32 *)((u8 *)obj + 4), &scratch[10]);
     deltaY = scratch[13] - scratch[12];
     deltaX = scratch[11] - scratch[10];
     deltaZ = scratch[15] - scratch[14];

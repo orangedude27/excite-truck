@@ -181,11 +181,11 @@ void fn_802AA1D0(unsigned int index) {
     extern int lbl_8055F928;
     extern int lbl_80488648[];
     extern int fn_801EE0C8(int);
-    extern void fn_802C77F0(int, float *);
+    extern void MRModel_GetBoundingBoxArray(int, float *);
     float bounds[8];
     int *entry = (int *)(lbl_8055F928 + index * 0x108);
     int sourceObject = fn_801EE0C8(index < 8 ? lbl_80488648[index] : 0);
-    fn_802C77F0(sourceObject, bounds);
+    MRModel_GetBoundingBoxArray(sourceObject, bounds);
     *(float *)((char *)entry + 0xF8) = bounds[1] - bounds[0];
     *(float *)((char *)entry + 0x100) = bounds[3] - bounds[2];
     *(float *)((char *)entry + 0xFC) = bounds[5] - bounds[4];

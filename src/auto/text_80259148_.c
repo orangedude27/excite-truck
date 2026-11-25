@@ -1327,7 +1327,7 @@ extern void fn_8025B0E8(void *, const void *);
 extern float fn_8025B0A8(void *);
 extern float fn_8025B0C4(float);
 extern void fn_80144D80(void *, float, float, float);
-extern void fn_802C77F0(int, void *);
+extern void MRModel_GetBoundingBoxArray(int, void *);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_801C2B9C(void *, void *, void *);
 extern void fn_8001BA68(void *);
@@ -1364,7 +1364,7 @@ void fn_8025AE18(void *arg0) {
     x = *(float *)(other + 0x38);
     fn_80144D80(matrix, x, x, x);
     fn_80015B20(obj + 0x54, obj + 0x54, matrix);
-    fn_802C77F0(*(int *)(obj + 0x50), ranges);
+    MRModel_GetBoundingBoxArray(*(int *)(obj + 0x50), ranges);
     *(struct RenderWords5 *)values = *(struct RenderWords5 *)lbl_802FA628;
     index = *(int *)(obj + 0x4C);
     if (index <= 0) {

@@ -522,7 +522,7 @@ extern float lbl_80562778;
 extern int lbl_8055A918;
 extern "C" void fn_80182074(void *, int);
 extern "C" void fn_801B8CC0(float *, int, int *, float *, float, float);
-extern "C" void fn_802C77F0(int, float *);
+extern "C" void MRModel_GetBoundingBoxArray(int, float *);
 #pragma dont_inline on
 extern "C" void fn_801B92F0(void *arg0, int arg1) {
     struct Work {
@@ -550,7 +550,7 @@ extern "C" void fn_801B92F0(void *arg0, int arg1) {
     *(float *)((unsigned char *)arg0 + 0x2740) = frame.work.sp5c[1];
     *(float *)((unsigned char *)arg0 + 0x2744) = frame.work.sp5c[2];
 
-    fn_802C77F0(*(int *)((unsigned char *)arg0 + 0x59c), frame.work.sp90);
+    MRModel_GetBoundingBoxArray(*(int *)((unsigned char *)arg0 + 0x59c), frame.work.sp90);
     if (*((unsigned char *)arg0 + 0x275d)) {
         zero = lbl_80562750;
         top = frame.work.sp90[5];
@@ -564,7 +564,7 @@ extern "C" void fn_801B92F0(void *arg0, int arg1) {
         *(float *)((unsigned char *)arg0 + 0x2744) = result;
     }
 
-    fn_802C77F0(*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x2754) + 0x59c),
+    MRModel_GetBoundingBoxArray(*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x2754) + 0x59c),
         frame.work.sp78);
     if (*((unsigned char *)arg0 + 0x275d)) {
         copySrc = (unsigned int *)frame.work.sp2c;

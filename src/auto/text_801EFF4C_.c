@@ -325,7 +325,7 @@ extern char lbl_8033A3F0[];
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" int fn_8012C33C(char *);
 extern "C" int fn_802C6FC0(char *, int, int);
-extern "C" void fn_802C77F0(int, float *);
+extern "C" void MRModel_GetBoundingBoxArray(int, float *);
 extern double fabs(double);
 extern "C" double __fabs(double);
 extern "C" void fn_801F0488(void *arg0, void *arg1) {
@@ -413,7 +413,7 @@ extern "C" void fn_801F0488(void *arg0, void *arg1) {
 
     /* scale the models so that the first one is as wide as the wheel's "width" */
     if (!((float)__fabs(((WheelMod *)arg0)->width) <= wheelmod_zero)) {
-        fn_802C77F0(((WheelMod *)arg0)->lods[0].slowRemap[0], bbox);
+        MRModel_GetBoundingBoxArray(((WheelMod *)arg0)->lods[0].slowRemap[0], bbox);
         ((WheelMod *)arg0)->modelScale = ((WheelMod *)arg0)->width / (bbox[1] - bbox[0]);
     }
 }
