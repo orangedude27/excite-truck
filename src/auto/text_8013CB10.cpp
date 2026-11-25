@@ -4121,6 +4121,8 @@ static inline float HudEase(float t) {
 extern "C" s32 fn_801436E0(void *hudObj, s32 playerIndex) {
     void *style;
     u8 *hud=(u8 *)hudObj;
+    /* lbl_8032C530 is the zone HUD layout table: its slots at +0x470..+0x808 hold
+     * localized string ids, text-style handles and the sliding-panel text offsets. */
     char *base=(char *)lbl_8032C530;
     f32 tTotal,tFadeOut1,elapsed,tFadeIn1,tFadeOut2,tFadeIn2,tFadeStart;
     elapsed=*(f32 *)((u8 *)fn_801E7E3C()+0x10);
