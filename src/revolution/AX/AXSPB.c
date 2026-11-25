@@ -124,7 +124,7 @@ void __AXSPBInit(void) {
 }
 
 
-void fn_80032778(void) {}
+/* No-op hook in the AX speaker (SPB) code; no action required. */ void fn_80032778(void) {}
 
 void __AXDepopVoice(AXPB* pb) {
     /* Accumulates this voice's depop deltas (main/aux L/R/S and remote
