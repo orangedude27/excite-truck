@@ -3,7 +3,7 @@ typedef signed long s32;
 typedef s32 (*UnkFunc)(s32);
 extern s32 lbl_8049870C[];
 extern s32 SetEffectsVolume(float);
-extern s32 fn_802090BC(s32);
+extern s32 NullMixerSetSoundMode(s32);
 extern s32 fn_8020A5F8(float);
 extern s32 fn_802C82C4(s32);
 extern s32 fn_802E30C8(s32, ...);
@@ -202,7 +202,7 @@ s32 fn_80239E5C(void *__restrict arg0, s32 arg1) {
         ((s32 (*)(s32, ...))fn_802E30C8)((s32)&lbl_8055BB00, p[0]);
         fn_802C82C4(p[0]);
     }
-    if (arg1 != 0 || p[2] != p[3]) fn_802090BC(p[2]);
+    if (arg1 != 0 || p[2] != p[3]) NullMixerSetSoundMode(p[2]);
 #pragma scheduling reset
 }
 #pragma dont_inline reset
@@ -564,7 +564,7 @@ void fn_80239F74(void) {
 }
 #pragma opt_propagation reset
 extern s32 SetEffectsVolume(float);
-extern s32 fn_802090BC(s32);
+extern s32 NullMixerSetSoundMode(s32);
 extern s32 fn_8020A5F8(float);
 extern s32 fn_802C82C4(s32);
 extern s32 lbl_8055BB00;

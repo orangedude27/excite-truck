@@ -33,7 +33,7 @@ s32 fn_80214D04(void);
 s32 fn_80214BE4(s32, s32);
 void fn_802E30C8(void *);
 void fn_802C82C4(s32);
-void fn_802090BC(void);
+void NullMixerSetSoundMode(void);
 extern s32 lbl_8055F144, lbl_8055F148, lbl_8055F14C, lbl_8055F150, lbl_8055F154;
 extern char lbl_8055BB48[];
 __declspec(section ".sdata") extern char lbl_8055BB48[];
@@ -71,7 +71,7 @@ s32 fn_8023C308(s32 allowAdjust) {
     }
     if (lbl_8055F144 != lbl_8055F14C) {
         lbl_8055F14C = lbl_8055F144;
-        fn_802090BC();
+        NullMixerSetSoundMode();
     }
     return 0;
 }
@@ -173,14 +173,14 @@ void fn_8023C55C(void *arg0) {
     s32 hdr[5];
     s32 data[35];
     s32 *s = lbl_80498788;
-    register s32 *v = lbl_802FA07C;
+    s32 *v = lbl_802FA07C;
 
     lbl_8055F148 = fn_802C83C4();
     lbl_8055F150 = lbl_8055F148;
-    fn_8023C800(obj1, (s32)&lbl_8055F148, fn_80131234(lbl_803413C0 + 0x10), fn_80131234(lbl_803413C0 + 0x24), 0);
+    fn_8023C800(obj1, (s32)&lbl_8055F148, fn_80131234(base + 0x10), fn_80131234(base + 0x24), 0);
     lbl_8055F144 = fn_802090CC();
     lbl_8055F14C = lbl_8055F144;
-    fn_8023C800(obj2, (s32)&lbl_8055F144, fn_80131234(lbl_803413C0 + 0x38), fn_80131234(lbl_803413C0 + 0x44), fn_80131234(lbl_803413C0 + 0x54), 0);
+    fn_8023C800(obj2, (s32)&lbl_8055F144, fn_80131234(base + 0x38), fn_80131234(base + 0x44), fn_80131234(base + 0x54), 0);
 
     data[0] = (s32)lbl_8055BB50;
     data[3] = (s32)obj1;
@@ -217,10 +217,10 @@ void fn_8023C55C(void *arg0) {
     data[32] = s[2];
     data[33] = s[3];
     data[34] = s[4];
-    hdr[0] = lbl_802FA07C[0];
-    hdr[2] = lbl_802FA07C[2];
-    hdr[3] = lbl_802FA07C[3];
-    hdr[4] = lbl_802FA07C[4];
+    hdr[0] = v[0];
+    hdr[2] = v[2];
+    hdr[3] = v[3];
+    hdr[4] = v[4];
     hdr[0] = (s32)arg0;
     hdr[1] = (s32)data;
     lbl_8055F154 = 0;
