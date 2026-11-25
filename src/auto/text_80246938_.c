@@ -72,7 +72,7 @@ extern float lbl_805638B0;
 extern float lbl_805638C8;
 #pragma pop
 float fn_80214D48(void);
-unsigned char fn_802E8690(s32);
+unsigned char RjoyIsReady(s32);
 void fn_80221F94(void *, s32);
 #pragma push
 #pragma small_data off
@@ -134,7 +134,7 @@ s32 fn_80246938(void) {
         fn_80214A9C(0x1F);
         z14 = 0;
         z18 = 0;
-        while (((s32 (*)(s32))fn_802E8690)(index) != 0) {
+        while (((s32 (*)(s32))RjoyIsReady)(index) != 0) {
             frame.zero = zero;
             frame.text = (s32)lbl_80343720;
             frame.itemIndex = index;
@@ -1512,22 +1512,22 @@ typedef struct ControllerWait {
 #pragma scheduling invalid_target
 /* Restart the controller-wait countdown: put the timer back to its full two
  * seconds and sample the watched controller's ready flag (rjoy state record
- * +0x124, fn_802E8690) once.  The per-frame update fn_80248C0C holds the timer
+ * +0x124, RjoyIsReady) once.  The per-frame update fn_80248C0C holds the timer
  * here while the controller stays ready and counts it down once it is not. */
 void fn_80248BD0(ControllerWait *wait) {
     wait->timer = COUNTDOWN_SECONDS;
-    wait->ready = fn_802E8690(wait->controllerIndex);
+    wait->ready = RjoyIsReady(wait->controllerIndex);
 }
 #pragma scheduling on
 void fn_80248C0C(void *obj) {
-    /* Update a countdown/timer object: read a ready flag from fn_802E8690(obj+0x18) into +0x1C.
+    /* Update a countdown/timer object: read a ready flag from RjoyIsReady(obj+0x18) into +0x1C.
        When ready, reset timer at +0x20 to 2.0f and disable UI element 0x1E; otherwise decrement
        the timer by frame delta and enable UI element 0x1E. If the timer goes below 0, trigger
        fn_80221F94(obj, 0). */
     unsigned char ready;
     float *timer = (float *)((char *)obj + 0x20);
 
-    ready = fn_802E8690(*(s32 *)((char *)obj + 0x18));
+    ready = RjoyIsReady(*(s32 *)((char *)obj + 0x18));
     *(unsigned char *)((char *)obj + 0x1C) = ready;
     if (ready != 0) {
         *timer = lbl_805638CC;
